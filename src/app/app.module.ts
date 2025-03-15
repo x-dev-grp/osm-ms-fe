@@ -10,15 +10,19 @@ import { AppRoutingModule } from './app-routing.module';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { FormsModule } from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import {MatToolbarModule} from "@angular/material/toolbar";
+import { SignupComponent } from './components/signup/signup.component';
+import { PasswordResetComponent } from './components/password-reset/password-reset.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    DashboardComponent
+    DashboardComponent,
+    SignupComponent,
+    PasswordResetComponent
   ],
   imports: [
     AppRoutingModule, // Must explicitly import routing module
@@ -31,7 +35,8 @@ import {MatToolbarModule} from "@angular/material/toolbar";
     MatButtonModule,
     AppRoutingModule,
     FormsModule,
-    MatToolbarModule
+    MatToolbarModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
