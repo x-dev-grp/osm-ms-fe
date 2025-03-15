@@ -13,8 +13,10 @@ export class LoginService {
   constructor(private http: HttpClient) {}
 
   // Example login endpoint
-  loginUsier(username: string, password: string): Observable<any> {
+// Example login endpoint
+  loginUser(username: string, password: string): Observable<any> {
     const payload = { username, password };
-    return this.http.post<any>(`${this.baseUrl}/login`, payload);
+    return this.http.post(`${this.baseUrl}/login`, payload, { responseType: 'text' });
   }
+
 }

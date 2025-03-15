@@ -23,7 +23,7 @@ export class LoginComponent {
   onSubmit(loginForm: any): void {
     if (loginForm.invalid) return;
 
-    this.loginService.loginUsier(this.username, this.password).subscribe({
+    this.loginService.loginUser(this.username, this.password).subscribe({
       next: (response) => {
         // e.g., response.token can be stored in localStorage
         if (response && response.token) {
