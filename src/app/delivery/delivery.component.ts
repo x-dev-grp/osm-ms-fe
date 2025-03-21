@@ -5,7 +5,7 @@ import { GenericTypeService } from '../services/generic-type.service';
 import { QualityControlRuleService } from '../services/quality-control-rule.service';
 
 import { Delivery } from '../models/Delivery';
-import { VarietyDto } from '../models/VarietyDto';
+import { OliveVarietyDto } from '../models/OliveVarietyDto';
 import { QualityControlRule } from '../models/quality-control-rule';
 import { Supplier } from '../models/supplier';
 import { Region } from '../models/region';
@@ -34,7 +34,7 @@ export class DeliveryComponent implements OnInit {
     price: 0,
     paidAmount: 0,
     unpaidAmount: 0,
-    qualityControlResult: {}
+    qualityControlResult: []
   };
   isEditing: boolean = false;
   message: string = '';
@@ -45,7 +45,7 @@ export class DeliveryComponent implements OnInit {
   // Dropdown lists for related entities
   suppliers: Supplier[] = [];
   regions: Region[] = [];
-  varieties: VarietyDto[] = [];
+  varieties: OliveVarietyDto[] = [];
 
   // Quality Control properties
   applyQualityControl: boolean = false;
@@ -132,32 +132,40 @@ export class DeliveryComponent implements OnInit {
     return item1 && item2 ? item1.id === item2.id : item1 === item2;
   }
 
-  loadQualityControlRules(): void {
-    this.qualityControlRuleService.getAllRules().subscribe(
-        res => {
-          if (res && res.success) {
-            this.qualityControlRules = res.data.map(rule => ({
-              ...rule,
-              measuredValue: undefined // Initialize measuredValue to undefined
-            }));
-          }
-        },
-        err => console.error('Error loading quality control rules', err)
-    );
-  }
 
   addDelivery(): void {
     const payload: Delivery = {
       ...this.selectedDelivery,
       qualityControlResult: this.applyQualityControl
-          ? this.qualityControlRules
-              .filter(rule => rule.measuredValue !== undefined && rule.measuredValue !== null)
-              .reduce((result, rule) => {
-                result[rule.id!] = { ruleId: rule.id!, measuredValue: rule.measuredValue! };
-                return result;
-              }, {} as { [key: number]: QualityControlResultDto })
-          : {}
+          ? Object.values(this.qualityControlRules.reduce((result, rule) => {
+            if (rule.measuredValue !== undefined && rule.measuredValue !== null) {
+              result[rule.id!] = { ruleId: rule.id!, measuredValue: rule.measuredValue! };
+            }
+            return result;
+          }, {} as { [key: number]: QualityControlResultDto }))
+          : []
     };
+    // Map region to the loaded instance (if regions are loaded)
+    if (this.regions && this.regions.length > 0 && this.selectedDelivery.region) {
+      const matchedRegion = this.regions.find(r => r.id === this.selectedDelivery.region?.id);
+      if (matchedRegion) {
+        this.selectedDelivery.region = { ...matchedRegion, type: 'region' };
+      }
+    }
+    // Map supplier to the loaded instance (if suppliers are loaded)
+    if (this.suppliers && this.suppliers.length > 0 && this.selectedDelivery.supplier) {
+      const matchedSupplier = this.suppliers.find(s => s.id === this.selectedDelivery.supplier?.id);
+      if (matchedSupplier) {
+        this.selectedDelivery.supplier = matchedSupplier;
+      }
+    }
+    // Map variety to the loaded instance (if varieties are loaded)
+    if (this.varieties && this.varieties.length > 0 && this.selectedDelivery.variety) {
+      const matchedVariety = this.varieties.find(v => v.id === this.selectedDelivery.variety?.id);
+      if (matchedVariety) {
+        this.selectedDelivery.variety = { ...matchedVariety, type: 'variety' };
+      }
+    }
     this.deliveryService.createDelivery(payload).subscribe(
         res => {
           if (res && res.success) {
@@ -169,7 +177,27 @@ export class DeliveryComponent implements OnInit {
         err => console.error('Error creating delivery', err)
     );
   }
-
+  loadQualityControlRules(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.qualityControlRuleService.getAllRules().subscribe(
+          res => {
+            if (res && res.success) {
+              this.qualityControlRules = res.data.map(rule => ({
+                ...rule,
+                measuredValue: undefined
+              }));
+              resolve();
+            } else {
+              reject('Failed to load quality control rules');
+            }
+          },
+          err => {
+            console.error('Error loading quality control rules', err);
+            reject(err);
+          }
+      );
+    });
+  }
   editDelivery(delivery: Delivery): void {
     this.selectedDelivery = { ...delivery };
     this.isEditing = true;
@@ -199,15 +227,17 @@ export class DeliveryComponent implements OnInit {
     }
 
     // Quality control logic
-    if (delivery.qualityControlResult) {
+    if (delivery.qualityControlResult && Object.keys(delivery.qualityControlResult).length > 0) {
       this.applyQualityControl = true;
-      this.loadQualityControlRules();
-      Object.keys(delivery.qualityControlResult).forEach(ruleKey => {
-        const qc = delivery.qualityControlResult[ruleKey];
-        const rule = this.qualityControlRules.find(r => r.id === qc.ruleId);
-        if (rule) {
-          rule.measuredValue = qc.measuredValue;
-        }
+      this.loadQualityControlRules().then(() => {
+        // Populate measured values for the rules
+        Object.keys(delivery.qualityControlResult).forEach(ruleKey => {
+          const qc = delivery.qualityControlResult[ruleKey as unknown as number]; // Ensure proper typing
+          const rule = this.qualityControlRules.find(r => r.id === qc.ruleId);
+          if (rule) {
+            rule.measuredValue = qc.measuredValue;
+          }
+        });
       });
     } else {
       this.applyQualityControl = false;
@@ -221,15 +251,27 @@ export class DeliveryComponent implements OnInit {
     const payload: Delivery = {
       ...this.selectedDelivery,
       qualityControlResult: this.applyQualityControl
-          ? this.qualityControlRules
-              .filter(rule => rule.measuredValue !== undefined && rule.measuredValue !== null)
-              .reduce((result, rule) => {
-                result[rule.id!] = { ruleId: rule.id!, measuredValue: rule.measuredValue! };
-                return result;
-              }, {} as { [key: number]: QualityControlResultDto })
-          : {}
+          ? Object.values(this.qualityControlRules.reduce((result, rule) => {
+            if (rule.measuredValue !== undefined && rule.measuredValue !== null) {
+              result[rule.id!] = { ruleId: rule.id!, measuredValue: rule.measuredValue! };
+            }
+            return result;
+          }, {} as { [key: number]: QualityControlResultDto }))
+          : []
     };
-
+    if (payload.region) {
+      payload.region = {
+        ...payload.region,
+        type: 'region' // Default to 'urban' if type is not set
+      };
+    }
+    // Ensure the region object includes the type property
+    if (payload.variety) {
+      payload.variety = {
+        ...payload.variety,
+        type: 'variety' // Default to 'urban' if type is not set
+      };
+    }
     this.deliveryService.updateDelivery(this.selectedDelivery.id, payload).subscribe(
         res => {
           if (res && res.success) {
@@ -242,7 +284,6 @@ export class DeliveryComponent implements OnInit {
         err => console.error('Error updating delivery', err)
     );
   }
-
   deleteDelivery(delivery: Delivery): void {
     if (!delivery.id) return;
     this.deliveryService.deleteDelivery(delivery.id).subscribe(
@@ -278,7 +319,7 @@ export class DeliveryComponent implements OnInit {
       price: 0,
       paidAmount: 0,
       unpaidAmount: 0,
-      qualityControlResult: {}
+      qualityControlResult: []
     };
     this.applyQualityControl = false;
     this.qualityControlRules.forEach(rule => rule.measuredValue = undefined);
@@ -290,4 +331,6 @@ export class DeliveryComponent implements OnInit {
       this.loadDeliveries();
     }
   }
+
+  protected readonly Object = Object;
 }

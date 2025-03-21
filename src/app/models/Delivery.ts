@@ -1,4 +1,4 @@
- import {VarietyDto} from "./VarietyDto";
+ import {OliveVarietyDto} from "./OliveVarietyDto";
  import {Region} from "./region";
  import {Supplier} from "./supplier";
  import {QualityControlResultDto} from "./QualityControlResultDto";
@@ -13,12 +13,12 @@ export interface Delivery {
    oliveQuantity: number;
    oilQuantity: number;
    region: Region | null;
-   variety: VarietyDto | null;
+   variety: OliveVarietyDto | null;
    storageUnit: string;
    supplier: Supplier | null;
    unitPrice: number;
    price: number;
    paidAmount: number;
    unpaidAmount: number;
-  qualityControlResult: { [key: string]: QualityControlResultDto } ;
+  qualityControlResult: QualityControlResultDto[]; // Updated to an array of QualityControlResultDto
  }
