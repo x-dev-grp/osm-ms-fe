@@ -1,0 +1,190 @@
+<div>
+  <h2>Delivery Management</h2>
+
+  <!-- API Response Message -->
+  <p>{{ message }}</p>
+
+  <!-- Deliveries Table -->
+  <table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Receipt Number</th>
+      <th>Lot Number</th>
+      <th>Delivery Date</th>
+      <th>Status</th>
+      <th>Global Lot</th>
+      <th>Olive Qty</th>
+      <th>Oil Qty</th>
+      <th>Region</th>
+      <th>Variety</th>
+      <th>Storage Unit</th>
+      <th>Supplier</th>
+      <th>Unit Price</th>
+      <th>Price</th>
+      <th>Paid</th>
+      <th>Unpaid</th>
+      <th>Quality Control</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let delivery of deliveries">
+      <td>{{ delivery.id }}</td>
+      <td>{{ delivery.receiptNumber }}</td>
+      <td>{{ delivery.lotNumber }}</td>
+      <td>{{ delivery.deliveryDate | date:'short' }}</td>
+      <td>{{ delivery.status }}</td>
+      <td>{{ delivery.globalLotNumber }}</td>
+      <td>{{ delivery.oliveQuantity }}</td>
+      <td>{{ delivery.oilQuantity }}</td>
+      <td>{{ delivery.region?.name }}</td>
+      <td>{{ delivery.variety?.name }}</td>
+      <td>{{ delivery.storageUnit }}</td>
+      <td>{{ delivery.supplier?.name }} {{ delivery.supplier?.lastname }}</td>
+      <td>{{ delivery.unitPrice }}</td>
+      <td>{{ delivery.price }}</td>
+      <td>{{ delivery.paidAmount }}</td>
+      <td>{{ delivery.unpaidAmount }}</td>
+      <td>
+        {{ delivery.qualityControlResult ? ('Rule: ' + delivery.qualityControlResult.ruleId + ', Value: ' + delivery.qualityControlResult.measuredValue) : 'N/A' }}
+      </td>
+      <td>
+        <button (click)="editDelivery(delivery)">Edit</button>
+        <button (click)="deleteDelivery(delivery)">Delete</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Pagination Controls -->
+  <div style="margin-top: 10px;">
+    <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 0">Previous</button>
+    <span>Page {{ currentPage + 1 }} of {{ totalPages }}</span>
+    <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage >= totalPages - 1">Next</button>
+  </div>
+
+  <!-- Delivery Form -->
+  <div style="margin-top: 20px;">
+    <h3>{{ isEditing ? 'Edit Delivery' : 'Add Delivery' }}</h3>
+    <div>
+      <label>Receipt Number:</label>
+      <input type="text" [(ngModel)]="selectedDelivery.receiptNumber" placeholder="Enter receipt number">
+    </div>
+    <div>
+      <label>Lot Number:</label>
+      <input type="text" [(ngModel)]="selectedDelivery.lotNumber" placeholder="Enter lot number">
+    </div>
+    <div>
+      <label>Delivery Date:</label>
+      <input type="datetime-local" [(ngModel)]="selectedDelivery.deliveryDate">
+    </div>
+    <div>
+      <label>Status:</label>
+      <input type="text" [(ngModel)]="selectedDelivery.status" placeholder="Enter status">
+    </div>
+    <div>
+      <label>Global Lot Number:</label>
+      <input type="text" [(ngModel)]="selectedDelivery.globalLotNumber" placeholder="Enter global lot number">
+    </div>
+    <div>
+      <label>Olive Quantity:</label>
+      <input type="number" [(ngModel)]="selectedDelivery.oliveQuantity" placeholder="Enter olive quantity">
+    </div>
+    <div>
+      <label>Oil Quantity:</label>
+      <input type="number" [(ngModel)]="selectedDelivery.oilQuantity" placeholder="Enter oil quantity">
+    </div>
+
+    <!-- Dropdown for Region (using GenericTypeService) -->
+    <!-- Dropdown for Region -->
+    <div>
+      <label>Region:</label>
+      <select [(ngModel)]="selectedDelivery.region" [compareWith]="compareById">
+        <option *ngFor="let region of regions" [ngValue]="region">
+          {{ region.name }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Dropdown for Variety -->
+    <div>
+      <label>Variety:</label>
+      <select [(ngModel)]="selectedDelivery.variety" [compareWith]="compareById">
+        <option *ngFor="let variety of varieties" [ngValue]="variety">
+          {{ variety.name }}
+        </option>
+      </select>
+    </div>
+
+
+    <div>
+      <label>Storage Unit:</label>
+      <input type="text" [(ngModel)]="selectedDelivery.storageUnit" placeholder="Enter storage unit">
+    </div>
+
+    <!-- Dropdown for Supplier -->
+    <div>
+      <label>Supplier:</label>
+      <select [(ngModel)]="selectedDelivery.supplier" [compareWith]="compareById">
+        <option *ngFor="let supplier of suppliers" [ngValue]="supplier">
+          {{ supplier.name }} {{ supplier.lastname }}
+        </option>
+      </select>
+    </div>
+
+    <div>
+      <label>Unit Price:</label>
+      <input type="number" [(ngModel)]="selectedDelivery.unitPrice" placeholder="Enter unit price">
+    </div>
+    <div>
+      <label>Price:</label>
+      <input type="number" [(ngModel)]="selectedDelivery.price" placeholder="Enter total price">
+    </div>
+    <div>
+      <label>Paid Amount:</label>
+      <input type="number" [(ngModel)]="selectedDelivery.paidAmount" placeholder="Enter paid amount">
+    </div>
+    <div>
+      <label>Unpaid Amount:</label>
+      <input type="number" [(ngModel)]="selectedDelivery.unpaidAmount" placeholder="Enter unpaid amount">
+    </div>
+      <div style="margin-top: 20px;">
+          <label>
+              <input type="checkbox" [(ngModel)]="applyQualityControl" (change)="toggleQualityControl()">
+              Apply Quality Control
+          </label>
+      </div>
+    <!-- Quality Control Section -->
+      <div *ngIf="applyQualityControl" style="margin-top: 15px;">
+          <h4>Quality Control Results</h4>
+          <table style="width: 100%; border-collapse: collapse;">
+              <thead>
+              <tr style="background-color: #f5f5f5;">
+                  <th style="border: 1px solid #ccc; padding: 8px;">Rule ID</th>
+                  <th style="border: 1px solid #ccc; padding: 8px;">Rule Name</th>
+                  <th style="border: 1px solid #ccc; padding: 8px;">Measured Value</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let rule of qualityControlRules">
+                  <td style="border: 1px solid #ccc; padding: 8px;">{{ rule.id }}</td>
+                  <td style="border: 1px solid #ccc; padding: 8px;">{{ rule.ruleName }}</td>
+                  <td style="border: 1px solid #ccc; padding: 8px;">
+                      <input type="number"
+                             [(ngModel)]="rule.measuredValue"
+                             [min]="rule.minValue"
+                             [max]="rule.maxValue"
+                             placeholder="Enter value">
+                  </td>
+              </tr>
+              </tbody>
+          </table>
+      </div>
+    <div style="margin-top: 10px;">
+      <button *ngIf="!isEditing" (click)="addDelivery()">Add Delivery</button>
+      <button *ngIf="isEditing" (click)="updateDelivery()">Update Delivery</button>
+      <button *ngIf="isEditing" (click)="cancelEdit()">Cancel</button>
+    </div>
+  </div>
+</div>

@@ -6,4 +6,5 @@ export interface QualityControlRule {
   description: string;
   minValue: number;
   maxValue: number;
+  measuredValue? :number;
 }

@@ -1,0 +1,71 @@
+<div>
+  <h2>Quality Control Rule Management</h2>
+
+  <!-- Display API response message -->
+  <p>{{ message }}</p>
+
+  <!-- Table of rules -->
+  <table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Rule Key</th>
+      <th>Oil QC</th>
+      <th>Rule Name</th>
+      <th>Description</th>
+      <th>Min Value</th>
+      <th>Max Value</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let rule of rules">
+      <td>{{ rule.id }}</td>
+      <td>{{ rule.ruleKey }}</td>
+      <td>{{ rule.isOilQc }}</td>
+      <td>{{ rule.ruleName }}</td>
+      <td>{{ rule.description }}</td>
+      <td>{{ rule.minValue }}</td>
+      <td>{{ rule.maxValue }}</td>
+      <td>
+        <button (click)="editRule(rule)">Edit</button>
+        <button (click)="deleteRule(rule)">Delete</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Form for adding/updating a rule -->
+  <div style="margin-top: 20px;">
+    <h3>{{ isEditing ? 'Edit Rule' : 'Add Rule' }}</h3>
+    <div>
+      <label>Rule Key:</label>
+      <input type="text" [(ngModel)]="selectedRule.ruleKey" placeholder="Enter rule key">
+    </div>
+    <div>
+      <label>Oil QC:</label>
+      <input type="checkbox" [(ngModel)]="selectedRule.isOilQc">
+    </div>
+    <div>
+      <label>Rule Name:</label>
+      <input type="text" [(ngModel)]="selectedRule.ruleName" placeholder="Enter rule name">
+    </div>
+    <div>
+      <label>Description:</label>
+      <input type="text" [(ngModel)]="selectedRule.description" placeholder="Enter description">
+    </div>
+    <div>
+      <label>Min Value:</label>
+      <input type="number" [(ngModel)]="selectedRule.minValue" placeholder="Enter min value">
+    </div>
+    <div>
+      <label>Max Value:</label>
+      <input type="number" [(ngModel)]="selectedRule.maxValue" placeholder="Enter max value">
+    </div>
+    <div style="margin-top: 10px;">
+      <button *ngIf="!isEditing" (click)="addRule()">Add Rule</button>
+      <button *ngIf="isEditing" (click)="updateRule()">Update Rule</button>
+      <button *ngIf="isEditing" (click)="cancelEdit()">Cancel</button>
+    </div>
+  </div>
+</div>
