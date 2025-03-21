@@ -15,6 +15,10 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import {MatToolbarModule} from "@angular/material/toolbar";
 import { SignupComponent } from './components/signup/signup.component';
 import { PasswordResetComponent } from './components/password-reset/password-reset.component';
+import { GenericTypeComponent } from '../../../datta-able-free-angular-admin-template/src/app/demo/test/components/generic-type/generic-type.component';
+import { SupplierComponent } from './components/supplier/supplier.component';
+import { QualityControlRuleComponent } from './components/quality-control-rule/quality-control-rule.component';
+import { DeliveryComponent } from './components/delivery/delivery.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +26,11 @@ import { PasswordResetComponent } from './components/password-reset/password-res
     LoginComponent,
     DashboardComponent,
     SignupComponent,
-    PasswordResetComponent
+    PasswordResetComponent,
+    GenericTypeComponent,
+    SupplierComponent,
+    QualityControlRuleComponent,
+    DeliveryComponent
   ],
   imports: [
     AppRoutingModule, // Must explicitly import routing module
