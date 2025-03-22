@@ -5,8 +5,8 @@
   <div>
     <label for="typeSelect">Select Type Category:</label>
     <select id="typeSelect" [(ngModel)]="selectedType" (change)="changeType()">
-      <option *ngFor="let type of typeOptions" [value]="type">
-        {{ type | titlecase }}
+      <option *ngFor="let type of typeOptions" [value]="type.value">
+        {{ type.name | titlecase }}
       </option>
     </select>
   </div>

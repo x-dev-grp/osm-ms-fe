@@ -1,5 +1,5 @@
-import {BaseType} from "./base-type";
-import {SupplierType} from "./suppliertypedto";
+import {BaseType} from "./generic/base-type";
+import {suppliertype} from "./generic/SupplierTypeDto";
 
 export interface Supplier {
   id?: number;
@@ -8,7 +8,7 @@ export interface Supplier {
   phone: string;
   email?: string;
   address: string;
-   suppliertype?: SupplierType;
+  suppliertype?: suppliertype;
 }
 
 

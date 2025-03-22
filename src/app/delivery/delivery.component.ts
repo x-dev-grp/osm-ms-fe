@@ -5,11 +5,11 @@ import { GenericTypeService } from '../services/generic-type.service';
 import { QualityControlRuleService } from '../services/quality-control-rule.service';
 
 import { Delivery } from '../models/Delivery';
-import { OliveVarietyDto } from '../models/OliveVarietyDto';
 import { QualityControlRule } from '../models/quality-control-rule';
 import { Supplier } from '../models/supplier';
-import { Region } from '../models/region';
+import { Region } from '../models/generic/region';
 import { QualityControlResultDto } from '../models/QualityControlResultDto';
+import { OliveVarietyTypeDto } from '../models/generic/OliveVarietyTypeDto';
 
 @Component({
   selector: 'app-delivery',
@@ -27,14 +27,14 @@ export class DeliveryComponent implements OnInit {
     oliveQuantity: 0,
     oilQuantity: 0,
     region: null,
-    variety: null,
+    oliveVariety: null,
     storageUnit: '',
     supplier: null,
     unitPrice: 0,
     price: 0,
     paidAmount: 0,
     unpaidAmount: 0,
-    qualityControlResult: []
+    qualityControlResults: []
   };
   isEditing: boolean = false;
   message: string = '';
@@ -42,20 +42,19 @@ export class DeliveryComponent implements OnInit {
   pageSize: number = 10;
   totalPages: number = 0;
 
-  // Dropdown lists for related entities
   suppliers: Supplier[] = [];
   regions: Region[] = [];
-  varieties: OliveVarietyDto[] = [];
+  varieties: OliveVarietyTypeDto[] = [];
 
-  // Quality Control properties
   applyQualityControl: boolean = false;
   qualityControlRules: QualityControlRule[] = [];
+  protected readonly Object = Object;
 
   constructor(
-      private deliveryService: DeliveryService,
-      private supplierService: SupplierService,
-      private genericTypeService: GenericTypeService,
-      private qualityControlRuleService: QualityControlRuleService
+    private deliveryService: DeliveryService,
+    private supplierService: SupplierService,
+    private genericTypeService: GenericTypeService,
+    private qualityControlRuleService: QualityControlRuleService
   ) {}
 
   ngOnInit(): void {
@@ -67,56 +66,64 @@ export class DeliveryComponent implements OnInit {
 
   loadDeliveries(): void {
     this.deliveryService.getAllDeliveries(this.currentPage, this.pageSize).subscribe(
-        res => {
-          if (res && res.success) {
-            this.deliveries = res.data.content;
-            this.totalPages = res.data.totalPages;
-            this.message = res.message;
-          } else {
-            this.deliveries = [];
-            this.message = res.message;
-          }
-        },
-        err => console.error('Error loading deliveries', err)
+      res => {
+        if (res && res.success) {
+          this.deliveries = res.data.content;
+          this.totalPages = res.data.totalPages;
+          this.message = res.message;
+        } else {
+          this.deliveries = [];
+          this.message = res.message;
+        }
+      },
+      err => console.error('Error loading deliveries', err)
     );
   }
 
   loadSuppliers(): void {
     this.supplierService.getAllSuppliers().subscribe(
-        res => {
-          if (res && res.success) {
-            this.suppliers = res.data;
-          }
-        },
-        err => console.error('Error loading suppliers', err)
+      res => {
+        if (res && res.success) {
+          // Fix the suppliertype objects so they always have "type: 'suppliertype'"
+          this.suppliers = res.data.map((supplier: Supplier) => {
+            if (supplier.suppliertype) {
+              return {
+                ...supplier,
+                suppliertype: {
+                  ...supplier.suppliertype,
+                  type: 'suppliertype'
+                }
+              };
+            }
+            return supplier;
+          });
+        }
+      },
+      err => console.error('Error loading suppliers', err)
     );
   }
 
   loadRegions(): void {
     this.genericTypeService.getAllTypes('region').subscribe(
-        res => {
-          if (res && res.success) {
-            this.regions = Array.isArray(res.data) && Array.isArray(res.data[0])
-                ? res.data[0]
-                : res.data;
-            console.log('Regions loaded:', this.regions);
-          }
-        },
-        err => console.error('Error loading regions', err)
+      res => {
+        if (res && res.success) {
+          this.regions = Array.isArray(res.data) && Array.isArray(res.data[0]) ? res.data[0] : res.data;
+          console.log('Regions loaded:', this.regions);
+        }
+      },
+      err => console.error('Error loading regions', err)
     );
   }
 
   loadVarieties(): void {
-    this.genericTypeService.getAllTypes('variety').subscribe(
-        res => {
-          if (res && res.success) {
-            this.varieties = Array.isArray(res.data) && Array.isArray(res.data[0])
-                ? res.data[0]
-                : res.data;
-            console.log('Varieties loaded:', this.varieties);
-          }
-        },
-        err => console.error('Error loading varieties', err)
+    this.genericTypeService.getAllTypes('oliveVariety').subscribe(
+      res => {
+        if (res && res.success) {
+          this.varieties = Array.isArray(res.data) && Array.isArray(res.data[0]) ? res.data[0] : res.data;
+          console.log('Varieties loaded:', this.varieties);
+        }
+      },
+      err => console.error('Error loading varieties', err)
     );
   }
 
@@ -124,7 +131,7 @@ export class DeliveryComponent implements OnInit {
     if (this.applyQualityControl) {
       this.loadQualityControlRules();
     } else {
-      this.qualityControlRules.forEach(rule => rule.measuredValue = undefined);
+      this.qualityControlRules.forEach(rule => (rule.measuredValue = undefined));
     }
   }
 
@@ -132,107 +139,100 @@ export class DeliveryComponent implements OnInit {
     return item1 && item2 ? item1.id === item2.id : item1 === item2;
   }
 
-
   addDelivery(): void {
     const payload: Delivery = {
       ...this.selectedDelivery,
-      qualityControlResult: this.applyQualityControl
-          ? Object.values(this.qualityControlRules.reduce((result, rule) => {
+      // Prepare the qualityControlResult
+      qualityControlResults: this.applyQualityControl
+        ? Object.values(
+          this.qualityControlRules.reduce((result, rule) => {
             if (rule.measuredValue !== undefined && rule.measuredValue !== null) {
               result[rule.id!] = { ruleId: rule.id!, measuredValue: rule.measuredValue! };
             }
             return result;
-          }, {} as { [key: number]: QualityControlResultDto }))
-          : []
+          }, {} as { [key: number]: QualityControlResultDto })
+        )
+        : []
     };
-    // Map region to the loaded instance (if regions are loaded)
-    if (this.regions && this.regions.length > 0 && this.selectedDelivery.region) {
-      const matchedRegion = this.regions.find(r => r.id === this.selectedDelivery.region?.id);
-      if (matchedRegion) {
-        this.selectedDelivery.region = { ...matchedRegion, type: 'region' };
-      }
+
+    // Force the 'type' fields for region, variety, supplier
+    if (payload.region) {
+      payload.region = { ...payload.region, type: 'region' };
     }
-    // Map supplier to the loaded instance (if suppliers are loaded)
-    if (this.suppliers && this.suppliers.length > 0 && this.selectedDelivery.supplier) {
-      const matchedSupplier = this.suppliers.find(s => s.id === this.selectedDelivery.supplier?.id);
-      if (matchedSupplier) {
-        this.selectedDelivery.supplier = matchedSupplier;
-      }
+    if (payload.oliveVariety) {
+      payload.oliveVariety = { ...payload.oliveVariety, type: 'oliveVariety' };
     }
-    // Map variety to the loaded instance (if varieties are loaded)
-    if (this.varieties && this.varieties.length > 0 && this.selectedDelivery.variety) {
-      const matchedVariety = this.varieties.find(v => v.id === this.selectedDelivery.variety?.id);
-      if (matchedVariety) {
-        this.selectedDelivery.variety = { ...matchedVariety, type: 'variety' };
-      }
+    if (payload.supplier?.suppliertype) {
+      payload.supplier.suppliertype = {
+        ...payload.supplier.suppliertype,
+        type: 'suppliertype'
+      };
     }
+
+    // Double check in the console
+    console.log('Creating Delivery PAYLOAD:', payload);
+
     this.deliveryService.createDelivery(payload).subscribe(
-        res => {
-          if (res && res.success) {
-            this.loadDeliveries();
-            this.resetForm();
-            this.message = res.message;
-          }
-        },
-        err => console.error('Error creating delivery', err)
+      res => {
+        if (res && res.success) {
+          this.loadDeliveries();
+          this.resetForm();
+          this.message = res.message;
+        }
+      },
+      err => console.error('Error creating delivery', err)
     );
   }
+
   loadQualityControlRules(): Promise<void> {
     return new Promise((resolve, reject) => {
       this.qualityControlRuleService.getAllRules().subscribe(
-          res => {
-            if (res && res.success) {
-              this.qualityControlRules = res.data.map(rule => ({
-                ...rule,
-                measuredValue: undefined
-              }));
-              resolve();
-            } else {
-              reject('Failed to load quality control rules');
-            }
-          },
-          err => {
-            console.error('Error loading quality control rules', err);
-            reject(err);
+        res => {
+          if (res && res.success) {
+            this.qualityControlRules = res.data.map(rule => ({
+              ...rule,
+              measuredValue: undefined
+            }));
+            resolve();
+          } else {
+            reject('Failed to load quality control rules');
           }
+        },
+        err => {
+          console.error('Error loading quality control rules', err);
+          reject(err);
+        }
       );
     });
   }
+
   editDelivery(delivery: Delivery): void {
     this.selectedDelivery = { ...delivery };
     this.isEditing = true;
 
-    // Map region to the loaded instance (if regions are loaded)
-    if (this.regions && this.regions.length > 0 && delivery.region) {
-      const matchedRegion = this.regions.find(r => r.id === delivery.region?.id);
-      if (matchedRegion) {
-        this.selectedDelivery.region = { ...matchedRegion, type: 'region' };
-      }
+    // Optional: If you want to keep the local selectedDelivery consistent
+    if (delivery.region) {
+      this.selectedDelivery.region = { ...delivery.region, type: 'region' };
     }
-
-    // Map variety to the loaded instance (if varieties are loaded)
-    if (this.varieties && this.varieties.length > 0 && delivery.variety) {
-      const matchedVariety = this.varieties.find(v => v.id === delivery.variety?.id);
-      if (matchedVariety) {
-        this.selectedDelivery.variety = { ...matchedVariety, type: 'variety' };
-      }
+    if (delivery.oliveVariety) {
+      this.selectedDelivery.oliveVariety = { ...delivery.oliveVariety, type: 'oliveVariety' };
     }
-
-    // Map supplier to the loaded instance (if suppliers are loaded)
-    if (this.suppliers && this.suppliers.length > 0 && delivery.supplier) {
-      const matchedSupplier = this.suppliers.find(s => s.id === delivery.supplier?.id);
-      if (matchedSupplier) {
-        this.selectedDelivery.supplier = matchedSupplier;
-      }
+    if (delivery.supplier?.suppliertype) {
+      this.selectedDelivery.supplier = {
+        ...delivery.supplier,
+        suppliertype: {
+          ...delivery.supplier.suppliertype,
+          type: 'suppliertype'
+        }
+      };
     }
 
     // Quality control logic
-    if (delivery.qualityControlResult && Object.keys(delivery.qualityControlResult).length > 0) {
+    if (delivery.qualityControlResults && Object.keys(delivery.qualityControlResults).length > 0) {
       this.applyQualityControl = true;
       this.loadQualityControlRules().then(() => {
-        // Populate measured values for the rules
-        Object.keys(delivery.qualityControlResult).forEach(ruleKey => {
-          const qc = delivery.qualityControlResult[ruleKey as unknown as number]; // Ensure proper typing
+        Object.keys(delivery.qualityControlResults).forEach(ruleKey => {
+          const qc = delivery.qualityControlResults[ruleKey as unknown as number];
           const rule = this.qualityControlRules.find(r => r.id === qc.ruleId);
           if (rule) {
             rule.measuredValue = qc.measuredValue;
@@ -241,7 +241,7 @@ export class DeliveryComponent implements OnInit {
       });
     } else {
       this.applyQualityControl = false;
-      this.qualityControlRules.forEach(rule => rule.measuredValue = undefined);
+      this.qualityControlRules.forEach(rule => (rule.measuredValue = undefined));
     }
   }
 
@@ -250,56 +250,71 @@ export class DeliveryComponent implements OnInit {
 
     const payload: Delivery = {
       ...this.selectedDelivery,
-      qualityControlResult: this.applyQualityControl
-          ? Object.values(this.qualityControlRules.reduce((result, rule) => {
+      qualityControlResults: this.applyQualityControl
+        ? Object.values(
+          this.qualityControlRules.reduce((result, rule) => {
             if (rule.measuredValue !== undefined && rule.measuredValue !== null) {
               result[rule.id!] = { ruleId: rule.id!, measuredValue: rule.measuredValue! };
             }
             return result;
-          }, {} as { [key: number]: QualityControlResultDto }))
-          : []
+          }, {} as { [key: number]: QualityControlResultDto })
+        )
+        : []
     };
+
+    // Ensure the 'type' fields
     if (payload.region) {
-      payload.region = {
-        ...payload.region,
-        type: 'region' // Default to 'urban' if type is not set
+      payload.region = { ...payload.region, type: 'region' };
+    }
+    if (payload.oliveVariety) {
+      payload.oliveVariety = { ...payload.oliveVariety, type: 'oliveVariety' };
+    }
+    if (payload.supplier?.suppliertype) {
+      payload.supplier.suppliertype = {
+        ...payload.supplier.suppliertype,
+        type: 'suppliertype'
       };
     }
-    // Ensure the region object includes the type property
-    if (payload.variety) {
-      payload.variety = {
-        ...payload.variety,
-        type: 'variety' // Default to 'urban' if type is not set
-      };
-    }
-    this.deliveryService.updateDelivery(this.selectedDelivery.id, payload).subscribe(
-        res => {
-          if (res && res.success) {
-            this.loadDeliveries();
-            this.resetForm();
-            this.isEditing = false;
-            this.message = res.message;
-          }
-        },
-        err => console.error('Error updating delivery', err)
+
+    // Double check in the console
+    console.log('Updating Delivery PAYLOAD:', payload);
+
+    this.deliveryService.updateDelivery(payload.id!, payload).subscribe(
+      res => {
+        if (res && res.success) {
+          this.loadDeliveries();
+          this.resetForm();
+          this.isEditing = false;
+          this.message = res.message;
+        }
+      },
+      err => console.error('Error updating delivery', err)
     );
   }
+
   deleteDelivery(delivery: Delivery): void {
     if (!delivery.id) return;
     this.deliveryService.deleteDelivery(delivery.id).subscribe(
-        res => {
-          if (res && res.success) {
-            this.loadDeliveries();
-            this.message = res.message;
-          }
-        },
-        err => console.error('Error deleting delivery', err)
+      res => {
+        if (res && res.success) {
+          this.loadDeliveries();
+          this.message = res.message;
+        }
+      },
+      err => console.error('Error deleting delivery', err)
     );
   }
 
   cancelEdit(): void {
     this.resetForm();
     this.isEditing = false;
+  }
+
+  goToPage(page: number): void {
+    if (page >= 0 && page < this.totalPages) {
+      this.currentPage = page;
+      this.loadDeliveries();
+    }
   }
 
   private resetForm(): void {
@@ -312,25 +327,16 @@ export class DeliveryComponent implements OnInit {
       oliveQuantity: 0,
       oilQuantity: 0,
       region: null,
-      variety: null,
+      oliveVariety: null,
       storageUnit: '',
       supplier: null,
       unitPrice: 0,
       price: 0,
       paidAmount: 0,
       unpaidAmount: 0,
-      qualityControlResult: []
+      qualityControlResults: []
     };
     this.applyQualityControl = false;
-    this.qualityControlRules.forEach(rule => rule.measuredValue = undefined);
+    this.qualityControlRules.forEach(rule => (rule.measuredValue = undefined));
   }
-
-  goToPage(page: number): void {
-    if (page >= 0 && page < this.totalPages) {
-      this.currentPage = page;
-      this.loadDeliveries();
-    }
-  }
-
-  protected readonly Object = Object;
 }

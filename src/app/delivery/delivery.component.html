@@ -39,7 +39,7 @@
             <td>{{ delivery.oliveQuantity }}</td>
             <td>{{ delivery.oilQuantity }}</td>
             <td>{{ delivery.region?.name }}</td>
-            <td>{{ delivery.variety?.name }}</td>
+            <td>{{ delivery.oliveVariety?.name }}</td>
             <td>{{ delivery.storageUnit }}</td>
             <td>{{ delivery.supplier?.name }} {{ delivery.supplier?.lastname }}</td>
             <td>{{ delivery.unitPrice }}</td>
@@ -47,12 +47,12 @@
             <td>{{ delivery.paidAmount }}</td>
             <td>{{ delivery.unpaidAmount }}</td>
             <td>
-                <div *ngIf="delivery.qualityControlResult && delivery.qualityControlResult.length > 0">
-                    <div *ngFor="let qc of delivery.qualityControlResult">
+                <div *ngIf="delivery.qualityControlResults && delivery.qualityControlResults.length > 0">
+                    <div *ngFor="let qc of delivery.qualityControlResults">
                         Rule: {{ qc.ruleId }}, Value: {{ qc.measuredValue }}
                     </div>
                 </div>
-                <div *ngIf="!delivery.qualityControlResult || delivery.qualityControlResult.length === 0">
+                <div *ngIf="!delivery.qualityControlResults || delivery.qualityControlResults.length === 0">
                     N/A
                 </div>
             </td>
@@ -114,8 +114,8 @@
         <!-- Dropdown for Variety -->
         <div>
             <label>Variety:</label>
-            <select [(ngModel)]="selectedDelivery.variety" [compareWith]="compareById">
-                <option *ngFor="let variety of varieties" [ngValue]="variety">{{ variety.name }}</option>
+            <select [(ngModel)]="selectedDelivery.oliveVariety" [compareWith]="compareById">
+                <option *ngFor="let oliveVariety of varieties" [ngValue]="oliveVariety">{{ oliveVariety.name }}</option>
             </select>
         </div>
 

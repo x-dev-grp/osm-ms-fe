@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { BaseType } from '../models/base-type';
+import { BaseType } from '../models/generic/base-type';
 import { ApiResponse } from '../models/api-response';
 
 @Injectable({
@@ -28,13 +28,13 @@ export class GenericTypeService {
   }
 
   // Create a new record
-  createType(type: string, baseType: BaseType): Observable<any>  {
-    return this.http.post<ApiResponse<BaseType>>(`${this.baseUrl}/${type}`, baseType);
+  createType( baseType: BaseType): Observable<any>  {
+    return this.http.post<ApiResponse<BaseType>>(`${this.baseUrl}/`, baseType);
   }
 
   // Update an existing record by type and ID
-  updateType(type: string, id: number, baseType: BaseType): Observable<ApiResponse<BaseType>> {
-    return this.http.put<ApiResponse<BaseType>>(`${this.baseUrl}/${type}/${id}`, baseType);
+  updateType(   baseType: BaseType): Observable<ApiResponse<BaseType>> {
+    return this.http.put<ApiResponse<BaseType>>(`${this.baseUrl}/`, baseType);
   }
 
   // Delete a record by type and ID
