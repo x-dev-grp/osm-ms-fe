@@ -1,4 +1,6 @@
+import {QualityControlRule} from "./quality-control-rule";
+
 export interface QualityControlResultDto {
-  ruleId: number;
+  rule: QualityControlRule;
   measuredValue: number;
 }

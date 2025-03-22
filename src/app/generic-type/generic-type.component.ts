@@ -12,7 +12,7 @@ export class GenericTypeComponent implements OnInit {
   typeOptions = [
     { name: 'Waste Type', value: 'wasteType' },
     { name: 'Region', value: 'region' },
-    { name: 'Supplier Type', value: 'supplierType' },
+    { name: 'Supplier Type', value: 'suppliertype' },
     { name: 'Olive Variety Type', value: 'oliveVariety' }
   ];
 

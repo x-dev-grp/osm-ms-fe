@@ -147,7 +147,7 @@ export class DeliveryComponent implements OnInit {
         ? Object.values(
           this.qualityControlRules.reduce((result, rule) => {
             if (rule.measuredValue !== undefined && rule.measuredValue !== null) {
-              result[rule.id!] = { ruleId: rule.id!, measuredValue: rule.measuredValue! };
+              result[rule.id!] = { rule: {id:rule.id!}, measuredValue: rule.measuredValue! };
             }
             return result;
           }, {} as { [key: number]: QualityControlResultDto })
@@ -233,7 +233,7 @@ export class DeliveryComponent implements OnInit {
       this.loadQualityControlRules().then(() => {
         Object.keys(delivery.qualityControlResults).forEach(ruleKey => {
           const qc = delivery.qualityControlResults[ruleKey as unknown as number];
-          const rule = this.qualityControlRules.find(r => r.id === qc.ruleId);
+          const rule = this.qualityControlRules.find(r => r.id === qc.rule);
           if (rule) {
             rule.measuredValue = qc.measuredValue;
           }
@@ -254,7 +254,7 @@ export class DeliveryComponent implements OnInit {
         ? Object.values(
           this.qualityControlRules.reduce((result, rule) => {
             if (rule.measuredValue !== undefined && rule.measuredValue !== null) {
-              result[rule.id!] = { ruleId: rule.id!, measuredValue: rule.measuredValue! };
+              result[rule.id!] = {rule: {id:rule.id!}, measuredValue: rule.measuredValue! };
             }
             return result;
           }, {} as { [key: number]: QualityControlResultDto })
@@ -263,18 +263,25 @@ export class DeliveryComponent implements OnInit {
     };
 
     // Ensure the 'type' fields
+    if (payload.supplier?.suppliertype) {
+      payload.supplier.suppliertype = {
+        ...payload.supplier.suppliertype,
+        type: 'suppliertype'
+      };
+    }   if (payload.supplier?.suppliertype) {
+      payload.supplier.suppliertype = {
+        ...payload.supplier.suppliertype,
+        type: 'suppliertype'
+      };
+    }
+
     if (payload.region) {
       payload.region = { ...payload.region, type: 'region' };
     }
     if (payload.oliveVariety) {
       payload.oliveVariety = { ...payload.oliveVariety, type: 'oliveVariety' };
     }
-    if (payload.supplier?.suppliertype) {
-      payload.supplier.suppliertype = {
-        ...payload.supplier.suppliertype,
-        type: 'suppliertype'
-      };
-    }
+
 
     // Double check in the console
     console.log('Updating Delivery PAYLOAD:', payload);
@@ -339,4 +346,6 @@ export class DeliveryComponent implements OnInit {
     this.applyQualityControl = false;
     this.qualityControlRules.forEach(rule => (rule.measuredValue = undefined));
   }
+
+
 }
