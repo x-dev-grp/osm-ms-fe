@@ -53,7 +53,7 @@ export class QualityControlRuleComponent implements OnInit {
     this.qualityControlRuleService.createRule(this.selectedRule).subscribe(
       res => {
         if (res && res.success) {
-          this.rules.push(res.data);
+          this.rules.push(res.data[0]);
           this.resetForm();
           this.message = res.message;
         }

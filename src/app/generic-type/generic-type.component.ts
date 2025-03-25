@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { BaseType } from '../models/generic/base-type';
+import { BaseType } from '../models/base-type';
 import { GenericTypeService } from '../services/generic-type.service';
+import {TypeCategory} from "../models/type-category.enum";
 
 @Component({
   selector: 'app-generic-type',
@@ -10,13 +11,13 @@ import { GenericTypeService } from '../services/generic-type.service';
 export class GenericTypeComponent implements OnInit {
   // Define type categories as expected by your backend (lower-case)
   typeOptions = [
-    { name: 'Waste Type', value: 'wasteType' },
-    { name: 'Region', value: 'region' },
-    { name: 'Supplier Type', value: 'suppliertype' },
-    { name: 'Olive Variety Type', value: 'oliveVariety' }
+    { name: 'Waste Type', value: TypeCategory.WASTETYPE},
+    { name: 'Region', value: TypeCategory.REGION },
+    { name: 'Supplier Type', value: TypeCategory.SUPPLIERTYPE},
+    { name: 'Olive Variety Type', value:  TypeCategory.OLIVEVARIETY}
   ];
 
-  selectedType: string = this.typeOptions[0].value.toLowerCase(); // Default to the first option's value
+  selectedType: TypeCategory = this.typeOptions[0].value ; // Default to the first option's value
 
    records: BaseType[] = [];
   selectedRecord: BaseType = {
@@ -24,9 +25,7 @@ export class GenericTypeComponent implements OnInit {
     name: '',
     description: '',
     type: this.selectedType, // Initialize with the default type
-    createdAt: undefined,
-    updatedAt: undefined
-  };
+   };
   isEditing: boolean = false;
   message: string = '';
 
@@ -157,8 +156,7 @@ export class GenericTypeComponent implements OnInit {
       name: '',
       description: '',
       type: this.selectedType, // Reset type to the currently selected type
-      createdAt: undefined,
-      updatedAt: undefined
+
     };
   }
 }

@@ -46,7 +46,7 @@ export class SupplierComponent implements OnInit {
     this.supplierService.addSupplier(this.selectedSupplier).subscribe(
       res => {
         if (res && res.success) {
-          this.suppliers.push(res.data);
+          this.suppliers.push(res.data[0]);
           this.selectedSupplier = { name: '', lastname: '', phone: '', email: '', address: '' };
           this.message = res.message;
         }

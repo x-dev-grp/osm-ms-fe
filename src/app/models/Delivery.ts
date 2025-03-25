@@ -1,7 +1,6 @@
-import {Region} from "./generic/region";
 import {Supplier} from "./supplier";
 import {QualityControlResultDto} from "./QualityControlResultDto";
-import {OliveVarietyTypeDto} from "./generic/OliveVarietyTypeDto";
+import {BaseType} from "./base-type";
 
 export interface Delivery {
   id?: number;
@@ -12,8 +11,8 @@ export interface Delivery {
   globalLotNumber: string;
   oliveQuantity: number;
   oilQuantity: number;
-  region: Region | null;
-  oliveVariety: OliveVarietyTypeDto | null;
+  region: BaseType | null;
+  oliveVariety: BaseType | null;
   storageUnit: string;
   supplier: Supplier | null;
   unitPrice: number;

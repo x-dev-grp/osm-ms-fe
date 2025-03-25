@@ -1,6 +1,9 @@
+// File: supplier.component.ts
+
 import { Component, OnInit } from '@angular/core';
 import { SupplierService } from '../services/supplier.service';
 import { Supplier } from '../models/supplier';
+import { TypeCategory } from '../models/type-category.enum';
 
 @Component({
   selector: 'app-supplier',
@@ -9,8 +12,7 @@ import { Supplier } from '../models/supplier';
 })
 export class SupplierComponent implements OnInit {
   suppliers: Supplier[] = [];
-  // Initialize with empty fields for a new supplier
-  selectedSupplier: Supplier = { name: '', lastname: '', phone: '', email: '', address: '' };
+  selectedSupplier!: Supplier;
   isEditing: boolean = false;
   message: string = '';
 
@@ -25,7 +27,6 @@ export class SupplierComponent implements OnInit {
     this.supplierService.getAllSuppliers().subscribe(
       res => {
         if (res && res.success) {
-          // Unwrap nested array if necessary
           this.suppliers = Array.isArray(res.data) && Array.isArray(res.data[0])
             ? res.data[0]
             : res.data;
@@ -43,11 +44,20 @@ export class SupplierComponent implements OnInit {
 
   // Adds a new supplier
   addSupplier(): void {
+    // Initialize suppliertype with a default BaseType
+    if (!this.selectedSupplier.suppliertype) {
+      this.selectedSupplier.suppliertype = {
+        type: TypeCategory.SUPPLIERTYPE, // Default to SUPPLIERTYPE
+        name: 'Default Supplier Type',
+        description: 'Default supplier type description'
+      };
+    }
+
     this.supplierService.addSupplier(this.selectedSupplier).subscribe(
       res => {
         if (res && res.success) {
-          this.suppliers.push(res.data);
-          this.selectedSupplier = { name: '', lastname: '', phone: '', email: '', address: '' };
+          this.suppliers.push(res.data[0]);
+          this.resetSelectedSupplier();
           this.message = res.message;
         }
       },
@@ -70,7 +80,7 @@ export class SupplierComponent implements OnInit {
       res => {
         if (res && res.success) {
           this.loadSuppliers();
-          this.selectedSupplier = { name: '', lastname: '', phone: '', email: '', address: '' };
+          this.resetSelectedSupplier();
           this.isEditing = false;
           this.message = res.message;
         }
@@ -83,18 +93,23 @@ export class SupplierComponent implements OnInit {
 
   // Cancels editing mode
   cancelEdit(): void {
-    this.selectedSupplier = { name: '', lastname: '', phone: '', email: '', address: '' };
+    this.resetSelectedSupplier();
     this.isEditing = false;
   }
 
-  // If delete functionality is implemented in the back-end, add a method like this:
-  // deleteSupplier(id: number): void {
-  //   this.supplierService.deleteSupplier(id).subscribe(
-  //     res => {
-  //       if (res && res.success) {
-  //         this.suppliers = this.suppliers.filter(s => s.id !== id);
-  //         this.message = res.message;
-  //       }
-  //     },
-  //
+  // Resets the selected supplier to default values
+  private resetSelectedSupplier(): void {
+    this.selectedSupplier = {
+      name: '',
+      lastname: '',
+      phone: '',
+      email: '',
+      address: '',
+      suppliertype: {
+        type: TypeCategory.SUPPLIERTYPE, // Default to SUPPLIERTYPE
+        name: '',
+        description: ''
+      }
+    };
+  }
 }

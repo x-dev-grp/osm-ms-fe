@@ -7,9 +7,9 @@ import { QualityControlRuleService } from '../services/quality-control-rule.serv
 import { Delivery } from '../models/Delivery';
 import { QualityControlRule } from '../models/quality-control-rule';
 import { Supplier } from '../models/supplier';
-import { Region } from '../models/generic/region';
-import { QualityControlResultDto } from '../models/QualityControlResultDto';
-import { OliveVarietyTypeDto } from '../models/generic/OliveVarietyTypeDto';
+ import { QualityControlResultDto } from '../models/QualityControlResultDto';
+import {BaseType} from "../models/base-type";
+import {TypeCategory} from "../models/type-category.enum";
 
 @Component({
   selector: 'app-delivery',
@@ -43,8 +43,8 @@ export class DeliveryComponent implements OnInit {
   totalPages: number = 0;
 
   suppliers: Supplier[] = [];
-  regions: Region[] = [];
-  varieties: OliveVarietyTypeDto[] = [];
+  regions: BaseType[] = [];
+  varieties: BaseType[] = [];
 
   applyQualityControl: boolean = false;
   qualityControlRules: QualityControlRule[] = [];
@@ -68,8 +68,8 @@ export class DeliveryComponent implements OnInit {
     this.deliveryService.getAllDeliveries(this.currentPage, this.pageSize).subscribe(
       res => {
         if (res && res.success) {
-          this.deliveries = res.data.content;
-          this.totalPages = res.data.totalPages;
+          this.deliveries = res.data[0].content;
+          this.totalPages = res.data[0].totalPages;
           this.message = res.message;
         } else {
           this.deliveries = [];
@@ -91,7 +91,7 @@ export class DeliveryComponent implements OnInit {
                 ...supplier,
                 suppliertype: {
                   ...supplier.suppliertype,
-                  type: 'suppliertype'
+                  type: TypeCategory.SUPPLIERTYPE
                 }
               };
             }
@@ -104,7 +104,7 @@ export class DeliveryComponent implements OnInit {
   }
 
   loadRegions(): void {
-    this.genericTypeService.getAllTypes('region').subscribe(
+    this.genericTypeService.getAllTypes(TypeCategory.REGION).subscribe(
       res => {
         if (res && res.success) {
           this.regions = Array.isArray(res.data) && Array.isArray(res.data[0]) ? res.data[0] : res.data;
@@ -116,7 +116,7 @@ export class DeliveryComponent implements OnInit {
   }
 
   loadVarieties(): void {
-    this.genericTypeService.getAllTypes('oliveVariety').subscribe(
+    this.genericTypeService.getAllTypes(TypeCategory.OLIVEVARIETY).subscribe(
       res => {
         if (res && res.success) {
           this.varieties = Array.isArray(res.data) && Array.isArray(res.data[0]) ? res.data[0] : res.data;
@@ -157,15 +157,15 @@ export class DeliveryComponent implements OnInit {
 
     // Force the 'type' fields for region, variety, supplier
     if (payload.region) {
-      payload.region = { ...payload.region, type: 'region' };
+      payload.region = { ...payload.region, type: TypeCategory.REGION };
     }
     if (payload.oliveVariety) {
-      payload.oliveVariety = { ...payload.oliveVariety, type: 'oliveVariety' };
+      payload.oliveVariety = { ...payload.oliveVariety, type: TypeCategory.OLIVEVARIETY };
     }
     if (payload.supplier?.suppliertype) {
       payload.supplier.suppliertype = {
         ...payload.supplier.suppliertype,
-        type: 'suppliertype'
+        type:TypeCategory.SUPPLIERTYPE
       };
     }
 
@@ -212,17 +212,17 @@ export class DeliveryComponent implements OnInit {
 
     // Optional: If you want to keep the local selectedDelivery consistent
     if (delivery.region) {
-      this.selectedDelivery.region = { ...delivery.region, type: 'region' };
+      this.selectedDelivery.region = { ...delivery.region,  type: TypeCategory.REGION};
     }
     if (delivery.oliveVariety) {
-      this.selectedDelivery.oliveVariety = { ...delivery.oliveVariety, type: 'oliveVariety' };
+      this.selectedDelivery.oliveVariety = { ...delivery.oliveVariety, type: TypeCategory.OLIVEVARIETY };
     }
     if (delivery.supplier?.suppliertype) {
       this.selectedDelivery.supplier = {
         ...delivery.supplier,
         suppliertype: {
           ...delivery.supplier.suppliertype,
-          type: 'suppliertype'
+          type: TypeCategory.SUPPLIERTYPE
         }
       };
     }
@@ -266,20 +266,20 @@ export class DeliveryComponent implements OnInit {
     if (payload.supplier?.suppliertype) {
       payload.supplier.suppliertype = {
         ...payload.supplier.suppliertype,
-        type: 'suppliertype'
+        type: TypeCategory.SUPPLIERTYPE
       };
     }   if (payload.supplier?.suppliertype) {
       payload.supplier.suppliertype = {
         ...payload.supplier.suppliertype,
-        type: 'suppliertype'
+        type: TypeCategory.SUPPLIERTYPE
       };
     }
 
     if (payload.region) {
-      payload.region = { ...payload.region, type: 'region' };
+      payload.region = { ...payload.region,  type: TypeCategory.REGION };
     }
     if (payload.oliveVariety) {
-      payload.oliveVariety = { ...payload.oliveVariety, type: 'oliveVariety' };
+      payload.oliveVariety = { ...payload.oliveVariety, type: TypeCategory.OLIVEVARIETY };
     }
 
 

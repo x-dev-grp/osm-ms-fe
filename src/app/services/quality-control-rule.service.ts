@@ -13,8 +13,8 @@ export class QualityControlRuleService {
   constructor(private http: HttpClient) {}
 
   // Get all quality control rules
-  getAllRules(): Observable<ApiResponse<QualityControlRule[]>> {
-    return this.http.get<ApiResponse<QualityControlRule[]>>(this.baseUrl);
+  getAllRules(): Observable<ApiResponse<QualityControlRule>> {
+    return this.http.get<ApiResponse<QualityControlRule>>(this.baseUrl);
   }
 
   // Get a rule by ID

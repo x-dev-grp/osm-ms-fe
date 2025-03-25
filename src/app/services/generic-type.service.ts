@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { BaseType } from '../models/generic/base-type';
+import { BaseType } from '../models/base-type';
 import { ApiResponse } from '../models/api-response';
+import {TypeCategory} from "../models/type-category.enum";
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +14,8 @@ export class GenericTypeService {
   constructor(private http: HttpClient) {}
 
   // Get all records for a specific type category
-  getAllTypes(type: string): Observable<ApiResponse<BaseType[]>> {
-    return this.http.get<ApiResponse<BaseType[]>>(`${this.baseUrl}/${type}`);
+  getAllTypes(type: TypeCategory): Observable<ApiResponse<BaseType>> {
+    return this.http.get<ApiResponse<BaseType>>(`${this.baseUrl}/${type}`);
   }
 
   // Get all types regardless of category
@@ -38,7 +39,7 @@ export class GenericTypeService {
   }
 
   // Delete a record by type and ID
-  deleteType(type: string, id: number): Observable<ApiResponse<void>> {
+  deleteType(type: TypeCategory, id: string): Observable<ApiResponse<void>> {
     return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/${type}/${id}`);
   }
 }

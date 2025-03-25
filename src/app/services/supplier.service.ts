@@ -13,10 +13,9 @@ export class SupplierService {
   constructor(private http: HttpClient) {}
 
   // Get all suppliers
-  getAllSuppliers(): Observable<ApiResponse<Supplier[]>> {
-    return this.http.get<ApiResponse<Supplier[]>>(this.baseUrl);
+  getAllSuppliers(): Observable<ApiResponse<Supplier>> {
+    return this.http.get<ApiResponse<Supplier>>(`${this.baseUrl}/fetchAll`);
   }
-
   // Get supplier by id
   getSupplier(id: number): Observable<ApiResponse<Supplier>> {
     return this.http.get<ApiResponse<Supplier>>(`${this.baseUrl}/${id}`);
@@ -24,11 +23,11 @@ export class SupplierService {
 
   // Add a new supplier
   addSupplier(supplier: Supplier): Observable<ApiResponse<Supplier>> {
-    return this.http.post<ApiResponse<Supplier>>(this.baseUrl, supplier);
+    return this.http.post<ApiResponse<Supplier>>(`${this.baseUrl}`, supplier);
   }
 
   // Update an existing supplier
-  updateSupplier(id: number, supplier: Supplier): Observable<ApiResponse<Supplier>> {
+  updateSupplier(id: string, supplier: Supplier): Observable<ApiResponse<Supplier>> {
     return this.http.put<ApiResponse<Supplier>>(`${this.baseUrl}/${id}`, supplier);
   }
 
