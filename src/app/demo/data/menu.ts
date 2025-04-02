@@ -5,7 +5,7 @@ import { Role } from 'src/app/@theme/types/role';
 export const menus: Navigation[] = [
   {
     id: 'navigation',
-    title: 'Navigation',
+    title: 'Home',
     type: 'group',
     icon: 'icon-navigation',
     role: [Role.Admin, Role.User],
@@ -39,20 +39,64 @@ export const menus: Navigation[] = [
             role: [Role.Admin]
           }
         ]
-      },
-      {
-        id: 'component',
-        title: 'Components',
+
+      },{
+        id: 'Delevery',
+        title: 'Delivery',
         type: 'item',
         classes: 'nav-item',
-        url: '/components/input/button',
-        icon: '#custom-box-1',
-        target: true,
-        breadcrumbs: false,
+        url: '/delivery',
+        icon: '#custom-status-up',
         role: [Role.Admin, Role.User]
-      }
+      },
+      {
+        id: 'generic',
+        title: 'Generic',
+        type: 'item',
+        classes: 'nav-item',
+        url: '/generic',
+        icon: '#custom-status-up',
+        role: [Role.Admin, Role.User]
+      },
+      {
+        id: 'qcr',
+        title: 'Quality Controle rules ',
+        type: 'item',
+        classes: 'nav-item',
+        url: '/qcr',
+        icon: '#custom-status-up',
+        role: [Role.Admin, Role.User]
+      },
+      {
+        id: 'supplier',
+        title: 'Supplier ',
+        type: 'item',
+        classes: 'nav-item',
+        url: '/supplier',
+        icon: '#custom-status-up',
+        role: [Role.Admin, Role.User]
+      },
+      {
+        id: 'millers',
+        title: 'millers ',
+        type: 'item',
+        classes: 'nav-item',
+        url: '/millers',
+        icon: '#custom-status-up',
+        role: [Role.Admin, Role.User]
+      }, {
+        id: 'storage',
+        title: 'storage ',
+        type: 'item',
+        classes: 'nav-item',
+        url: '/storage',
+        icon: '#custom-status-up',
+        role: [Role.Admin, Role.User]
+      },
+
     ]
   },
+
   {
     id: 'widget',
     title: 'Widget',

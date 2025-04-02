@@ -13,6 +13,7 @@ import { AuthenticationService } from 'src/app/@theme/services/authentication.se
   selector: 'app-menu-item-compact',
   imports: [RouterModule, SharedModule, CommonModule],
   templateUrl: './menu-item.component.html',
+  standalone: true,
   styleUrls: ['./menu-item.component.scss']
 })
 export class MenuItemCompactComponent implements OnInit {

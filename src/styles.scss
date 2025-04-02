@@ -143,3 +143,25 @@
 
 // grid
 @import './app/@theme/styles/grid';
+a.flex {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .custom-logo {
+    width: 66px;
+    height: 28px;
+    fill: var(--primary-500); // Applying the same color as original SVG
+    transition: all 0.3s ease-in-out;
+  }
+
+  .version {
+    color: var(--primary-500);
+    font-size: 14px;
+    text-decoration: none;
+  }
+
+  .version:hover {
+    color: var(--primary-700); // Slightly darker color on hover
+  }
+}

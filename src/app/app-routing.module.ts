@@ -5,14 +5,13 @@ import { RouterModule, Routes } from '@angular/router';
 // project import
 import { AdminComponent } from './demo/layout/admin';
 import { EmptyComponent } from './demo/layout/empty/empty.component';
-import { GuestComponent } from './demo/layout/front/guest.component';
 import { AuthGuardChild } from './@theme/helpers/auth.guard';
 
 //Type
 import { Role } from './@theme/types/role';
 
 const routes: Routes = [
-   {
+  {
     path: '',
     component: AdminComponent,
     canActivateChild: [AuthGuardChild],
@@ -65,6 +64,30 @@ const routes: Routes = [
       {
         path: 'material-table',
         loadComponent: () => import('./demo/pages/material-table/material-table.component').then((c) => c.MaterialTableComponent),
+        data: { roles: [Role.Admin, Role.User] }
+      },{
+        path: 'generic',
+        loadComponent: () => import('./osm/generic-type/generic-type.component').then((c) => c.GenericTypeComponent),
+        data: { roles: [Role.Admin, Role.User] }
+      },{
+        path: 'delivery',
+        loadComponent: () => import('./osm/delivery/delivery.component').then((c) => c.DeliveryComponent),
+        data: { roles: [Role.Admin, Role.User] }
+      },{
+        path: 'qcr',
+        loadComponent: () => import('./osm/quality-control-rule/quality-control-rule.component').then((c) => c.QualityControlRuleComponent),
+        data: { roles: [Role.Admin, Role.User] }
+      },{
+        path: 'supplier',
+        loadComponent: () => import('./osm/supplier/supplier.component').then((c) => c.SupplierComponent),
+        data: { roles: [Role.Admin, Role.User] }
+      },{
+        path: 'millers',
+        loadComponent: () => import('./osm/millmachin/millmachin.component').then((c) => c.MillMachineComponent),
+        data: { roles: [Role.Admin, Role.User] }
+      },{
+        path: 'storage',
+        loadComponent: () => import('./osm/storage/storage.component').then((c) => c.StorageUnitsComponent),
         data: { roles: [Role.Admin, Role.User] }
       },
       {

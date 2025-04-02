@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { LoginService } from 'src/app/services/login.service';
+import { LoginService } from 'src/app/osm/services/login.service';
 import { Router } from '@angular/router';
 import {HttpClient} from "@angular/common/http";
 

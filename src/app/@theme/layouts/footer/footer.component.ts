@@ -9,6 +9,7 @@ import { SharedModule } from 'src/app/demo/shared/shared.module';
   selector: 'app-footer',
   imports: [CommonModule, SharedModule],
   templateUrl: './footer.component.html',
+  standalone: true,
   styleUrls: ['./footer.component.scss']
 })
 export class FooterComponent {}

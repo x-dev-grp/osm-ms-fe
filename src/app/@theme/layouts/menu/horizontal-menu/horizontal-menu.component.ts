@@ -13,6 +13,7 @@ import { MenuItemHorizontalComponent } from './menu-item/menu-item.component';
   selector: 'app-horizontal-menu',
   imports: [SharedModule, CommonModule, MenuGroupHorizontalComponent, MenuCollapseComponent, MenuItemHorizontalComponent],
   templateUrl: './horizontal-menu.component.html',
+  standalone: true,
   styleUrls: ['./horizontal-menu.component.scss']
 })
 export class HorizontalMenuComponent implements AfterViewInit {

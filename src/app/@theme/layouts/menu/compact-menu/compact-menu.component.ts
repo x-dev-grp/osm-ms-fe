@@ -14,6 +14,7 @@ import { ThemeLayoutService } from 'src/app/@theme/services/theme-layout.service
   selector: 'app-compact-menu',
   imports: [SharedModule, MenuGroupCompactComponent, MenuItemCompactComponent, MenuCollapseCompactComponent],
   templateUrl: './compact-menu.component.html',
+  standalone: true,
   styleUrls: ['./compact-menu.component.scss']
 })
 export class CompactMenuComponent {

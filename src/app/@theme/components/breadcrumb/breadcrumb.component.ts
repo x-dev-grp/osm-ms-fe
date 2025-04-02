@@ -7,8 +7,8 @@ import { Title } from '@angular/platform-browser';
 // project import
 import { NavigationItem } from '../../types/navigation';
 import { SharedModule } from 'src/app/demo/shared/shared.module';
-import { menus } from 'src/app/demo/data/menu';
-import { componentMenus } from 'src/app/demo/data/component';
+ import { componentMenus } from 'src/app/demo/data/component';
+import { menus } from '../../../demo/data/menu';
 
 interface titleType {
   // eslint-disable-next-line
@@ -23,6 +23,7 @@ interface titleType {
   selector: 'app-breadcrumb',
   imports: [CommonModule, RouterModule, SharedModule],
   templateUrl: './breadcrumb.component.html',
+  standalone: true,
   styleUrls: ['./breadcrumb.component.scss']
 })
 export class BreadcrumbComponent {

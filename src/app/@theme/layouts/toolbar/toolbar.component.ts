@@ -11,6 +11,7 @@ import { NavLeftComponent } from './toolbar-left/toolbar-left.component';
   selector: 'app-nav-bar',
   imports: [SharedModule, NavLeftComponent, NavRightComponent, CommonModule],
   templateUrl: './toolbar.component.html',
+  standalone: true,
   styleUrls: ['./toolbar.component.scss']
 })
 export class NavBarComponent {

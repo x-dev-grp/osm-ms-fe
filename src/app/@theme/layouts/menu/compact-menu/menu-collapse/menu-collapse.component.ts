@@ -15,6 +15,7 @@ import { AuthenticationService } from 'src/app/@theme/services/authentication.se
   imports: [SharedModule, CommonModule, RouterModule, MenuItemCompactComponent],
   templateUrl: './menu-collapse.component.html',
   styleUrls: ['./menu-collapse.component.scss'],
+  standalone: true,
   animations: [
     trigger('slideInOut', [
       transition(':enter', [

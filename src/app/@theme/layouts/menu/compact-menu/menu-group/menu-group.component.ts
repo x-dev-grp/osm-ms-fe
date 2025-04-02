@@ -12,6 +12,7 @@ import { MenuItemCompactComponent } from '../menu-item/menu-item.component';
   selector: 'app-menu-group-compact',
   imports: [SharedModule, MenuCollapseCompactComponent, MenuItemCompactComponent],
   templateUrl: './menu-group.component.html',
+  standalone: true,
   styleUrls: ['./menu-group.component.scss']
 })
 export class MenuGroupCompactComponent implements OnInit {

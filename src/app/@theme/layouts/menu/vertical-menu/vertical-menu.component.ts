@@ -17,6 +17,7 @@ import { MenuCollapseComponent } from './menu-collapse/menu-collapse.component';
   selector: 'app-vertical-menu',
   imports: [SharedModule, MenuGroupVerticalComponent, MenuItemVerticalComponent, MenuCollapseComponent, RouterModule],
   templateUrl: './vertical-menu.component.html',
+  standalone: true,
   styleUrls: ['./vertical-menu.component.scss']
 })
 export class VerticalMenuComponent {

@@ -12,6 +12,7 @@ import { HORIZONTAL, VERTICAL, COMPACT, RTL, LTR, LIGHT, DARK } from '../../cons
   selector: 'app-configuration',
   imports: [CommonModule, SharedModule],
   templateUrl: './configuration.component.html',
+  standalone: true,
   styleUrls: ['./configuration.component.scss']
 })
 export class ConfigurationComponent implements OnInit {
