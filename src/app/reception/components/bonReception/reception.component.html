@@ -1,0 +1,213 @@
+<!-- Expandable Panel for "Add Delivery" -->
+<mat-expansion-panel [(expanded)]="formOpen" style="margin-bottom: 20px;">
+  <mat-expansion-panel-header>
+    <mat-panel-title>Add Delivery</mat-panel-title>
+  </mat-expansion-panel-header>
+
+  <form (ngSubmit)="onSubmitNewDelivery()" style="padding: 15px;">
+    <!-- Receipt Number -->
+    <mat-form-field appearance="outline" class="w-100 m-b-10">
+      <mat-label>Receipt Number</mat-label>
+      <input matInput [(ngModel)]="selectedDelivery.receiptNumber" name="receiptNumber" required />
+    </mat-form-field>
+
+    <!-- Lot Number -->
+    <mat-form-field appearance="outline" class="w-100 m-b-10">
+      <mat-label>Lot Number</mat-label>
+      <input matInput [(ngModel)]="selectedDelivery.lotNumber" name="lotNumber" />
+    </mat-form-field>
+
+    <!-- Delivery Date -->
+    <mat-form-field appearance="outline" class="w-100 m-b-10">
+      <mat-label>Delivery Date</mat-label>
+      <input matInput [matDatepicker]="pickerDeliveryDate" [(ngModel)]="selectedDelivery.deliveryDate" name="deliveryDate" />
+      <mat-datepicker-toggle matSuffix [for]="pickerDeliveryDate"></mat-datepicker-toggle>
+      <mat-datepicker #pickerDeliveryDate></mat-datepicker>
+    </mat-form-field>
+
+    <!-- Trituration Date -->
+    <mat-form-field appearance="outline" class="w-100 m-b-10">
+      <mat-label>Trituration Date</mat-label>
+      <input matInput [matDatepicker]="pickerTriturationDate" [(ngModel)]="selectedDelivery.trtDate" name="triturationDate" />
+      <mat-datepicker-toggle matSuffix [for]="pickerTriturationDate"></mat-datepicker-toggle>
+      <mat-datepicker #pickerTriturationDate></mat-datepicker>
+    </mat-form-field>
+
+    <!-- Status -->
+    <mat-form-field appearance="outline" class="w-100 m-b-10">
+      <mat-label>Status</mat-label>
+      <mat-select [(ngModel)]="selectedDelivery.status" name="status">
+        <mat-option value="NEW">NEW</mat-option>
+        <mat-option value="COMPLETE">COMPLETE</mat-option>
+        <mat-option value="CANCELED">CANCELED</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Storage Unit Dropdown -->
+    <mat-form-field appearance="outline" class="w-100 m-b-10">
+      <mat-label>Storage Unit</mat-label>
+      <mat-select (selectionChange)="onSelectStorageUnit($event.value)" name="storageUnit">
+        <mat-option *ngFor="let unit of storageUnits" [value]="unit.id">
+          {{ unit.name }} {{ unit.currentVolume }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <!-- Milling Machine Dropdown -->
+    <mat-form-field appearance="outline" class="w-100 m-b-10">
+      <mat-label>Milling Machine</mat-label>
+      <mat-select (selectionChange)="onSelectMillMachin($event.value)" name="millingMachine">
+        <mat-option *ngFor="let machine of millingMachines" [value]="machine.id">
+          {{ machine.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Region Dropdown -->
+    <mat-form-field appearance="outline" class="w-100 m-b-10">
+      <mat-label>Region</mat-label>
+      <mat-select (selectionChange)="onSelectRegion($event.value)" name="region">
+        <mat-option *ngFor="let reg of regions" [value]="reg.id">
+          {{ reg.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Olive Variety Dropdown -->
+    <mat-form-field appearance="outline" class="w-100 m-b-10">
+      <mat-label>Olive Variety</mat-label>
+      <mat-select (selectionChange)="onSelectOliveVariety($event.value)" name="oliveVariety">
+        <mat-option *ngFor="let ov of oliveVarieties" [value]="ov.id">
+          {{ ov.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <!-- Global Lot Number -->
+    <mat-form-field appearance="outline" class="w-100 m-b-10">
+      <mat-label>Global Lot Number</mat-label>
+      <input matInput [(ngModel)]="selectedDelivery.globalLotNumber" name="globalLotNumber" />
+    </mat-form-field>
+
+    <!-- Tiers/Base -->
+    <mat-form-field appearance="outline" class="w-100 m-b-10">
+      <mat-label>Tiers/Base</mat-label>
+      <input matInput [(ngModel)]="selectedDelivery.tierOrBase" name="tierOrBase" />
+    </mat-form-field>
+
+    <!-- Parcel -->
+    <mat-form-field appearance="outline" class="w-100 m-b-10">
+      <mat-label>Parcel</mat-label>
+      <input matInput [(ngModel)]="selectedDelivery.parcel" name="parcel" />
+    </mat-form-field>
+
+    <!-- Oil Type (Biologique / Conventionnelle) -->
+    <mat-form-field appearance="outline" class="w-100 m-b-10">
+      <mat-label>Oil Type</mat-label>
+      <mat-select (selectionChange)="onSelectOilType($event.value)" name="oilType">
+        <mat-option *ngFor="let type of oilTypes" [value]="type.id">
+          {{ type.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <!-- Supplier Dropdown -->
+    <mat-form-field appearance="outline" class="w-100 m-b-10">
+      <mat-label>Supplier</mat-label>
+      <mat-select (selectionChange)="onSelectSupplier($event.value)" name="supplier">
+        <mat-option *ngFor="let sup of suppliers" [value]="sup.id">
+          {{ sup.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Olive Quantity -->
+    <mat-form-field appearance="outline" class="w-100 m-b-10">
+      <mat-label>Olive Quantity</mat-label>
+      <input matInput type="number" [(ngModel)]="selectedDelivery.oliveQuantity" name="oliveQuantity" />
+    </mat-form-field>
+
+    <!-- Oil Quantity -->
+    <mat-form-field appearance="outline" class="w-100 m-b-10">
+      <mat-label>Oil Quantity</mat-label>
+      <input matInput type="number" [(ngModel)]="selectedDelivery.oilQuantity" name="oilQuantity" />
+    </mat-form-field>
+
+    <!-- Delivery Number -->
+    <mat-form-field appearance="outline" class="w-100 m-b-10">
+      <mat-label>Delivery Number</mat-label>
+      <input matInput [(ngModel)]="selectedDelivery.deliveryNumber" name="deliveryNumber" />
+    </mat-form-field>
+
+    <!-- Rendement -->
+    <mat-form-field appearance="outline" class="w-100 m-b-10">
+      <mat-label>Rendement</mat-label>
+      <input matInput type="number" [(ngModel)]="selectedDelivery.rendement" name="rendement" />
+    </mat-form-field>
+
+    <!-- Submit & Cancel Buttons -->
+    <div style="margin-top: 10px; display: flex; gap: 10px;">
+      <button mat-flat-button color="primary" type="submit">Add Delivery</button>
+      <button mat-stroked-button color="accent" type="button" (click)="cancelAdd()">Cancel</button>
+    </div>
+  </form>
+</mat-expansion-panel>
+
+<!-- Delivery Table -->
+<div class="col-md-12">
+  <app-card cardTitle="Delivery Table With Filtering">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="FilterSource" class="mat-elevation-z8">
+        <!-- Receipt Number Column -->
+        <ng-container matColumnDef="receiptNumber">
+          <th mat-header-cell *matHeaderCellDef>Receipt #</th>
+          <td mat-cell *matCellDef="let delivery">{{ delivery.receiptNumber }}</td>
+        </ng-container>
+
+        <!-- Lot Number Column -->
+        <ng-container matColumnDef="lotNumber">
+          <th mat-header-cell *matHeaderCellDef>Lot #</th>
+          <td mat-cell *matCellDef="let delivery">{{ delivery.lotNumber }}</td>
+        </ng-container>
+        <ng-container matColumnDef="globalLotNumber">
+          <th mat-header-cell *matHeaderCellDef>Global Lot</th>
+          <td mat-cell *matCellDef="let delivery">{{ delivery.globalLotNumber }}</td>
+        </ng-container>
+        <!-- Fournisseur Column -->
+        <ng-container matColumnDef="fournisseur">
+          <th mat-header-cell *matHeaderCellDef>Fournisseur</th>
+          <td mat-cell *matCellDef="let delivery">{{ delivery.supplier.name}}</td>
+        </ng-container>
+
+        <!-- Delivery Date Column -->
+        <ng-container matColumnDef="deliveryDate">
+          <th mat-header-cell *matHeaderCellDef>Delivery Date</th>
+          <td mat-cell *matCellDef="let delivery">
+            {{ delivery.deliveryDate | date:'shortDate' }}
+          </td>
+        </ng-container>
+
+        <!-- Olive Quantity Column -->
+        <ng-container matColumnDef="oliveQuantity">
+          <th mat-header-cell *matHeaderCellDef>Olive Qty</th>
+          <td mat-cell *matCellDef="let delivery">{{ delivery.oliveQuantity }}</td>
+        </ng-container>
+
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let delivery">{{ delivery.status }}</td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let delivery">
+            <button mat-button (click)="openDialog(delivery)">Edit</button>
+            <button mat-button color="warn" (click)="deleteDelivery(delivery.id)">Delete</button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+  </app-card>
+</div>

@@ -1,25 +1,23 @@
-// File: supplier.component.ts
+import { Component } from '@angular/core';
+import {CommonModule} from "@angular/common";
+import {SharedModule} from "../../../demo/shared/shared.module";
+import {MatExpansionModule, MatExpansionPanel, MatExpansionPanelTitle} from "@angular/material/expansion";
+import {Supplier} from "../../../osm/models/supplier";
+import {MatTableDataSource} from "@angular/material/table";
+import {BaseType} from "../../../osm/models/base-type";
+import {SupplierService} from "../../../osm/services/supplier.service";
+import {GenericTypeService} from "../../../osm/services/generic-type.service";
+import {TypeCategory} from "../../../osm/models/type-category.enum";
 
-import { Component, OnInit } from '@angular/core';
-import { SupplierService } from '../services/supplier.service';
-import { Supplier } from '../models/supplier';
-import { TypeCategory } from '../models/type-category.enum';
-import { CommonModule } from '@angular/common';
-import { SharedModule } from '../../demo/shared/shared.module';
-import { MatTableDataSource } from '@angular/material/table';
-import { GenericTypeService } from '../services/generic-type.service';
-import { BaseType } from '../models/base-type';
-import { MatExpansionModule, MatExpansionPanel, MatExpansionPanelTitle } from '@angular/material/expansion';
 
 @Component({
-  selector: 'app-supplier',
-  templateUrl: './supplier.component.html',
-  imports: [CommonModule, SharedModule, MatExpansionPanelTitle, MatExpansionPanel,    MatExpansionModule,
-  ],
+  selector: 'app-fournisseurs',
+  imports: [CommonModule, SharedModule, MatExpansionPanelTitle, MatExpansionPanel,MatExpansionModule,],
   standalone: true,
-  styleUrls: ['./supplier.component.scss']
+  templateUrl: './fournisseurs.component.html',
+  styleUrl: './fournisseurs.component.scss'
 })
-export class SupplierComponent implements OnInit {
+export class FournisseursComponent {
   suppliers: Supplier[] = [];
   isEditing: boolean = false;
   message: string = '';
@@ -37,7 +35,7 @@ export class SupplierComponent implements OnInit {
   ngOnInit(): void {
     this.loadSuppliers();
     this.loadRecords(TypeCategory.SUPPLIER_TYPE);
-   }
+  }
   loadRecords(type: TypeCategory): void {
     this.genericTypeService.getAllTypes(type).subscribe(
       (res: { success: boolean; data: BaseType[]; message: string }) => {
@@ -124,28 +122,6 @@ export class SupplierComponent implements OnInit {
     this.isEditing = true;
     this.formOpen=true
   }
-
-  // Updates an existing supplier
-  updateSupplier(): void {
-
-  }
-
-  // Cancels editing mode
-  cancelEdit(): void {
-    this.resetSelectedSupplier();
-    this.isEditing = false;
-  }
-
-  openForm(): void {
-    this.selectedSupplier = {} as Supplier;
-    this.formOpen = true;
-    this.isEditing = false;
-  }
-
-  closeForm(): void {
-    this.formOpen = false;
-  }
-
   // Resets the selected supplier to default values
   private resetSelectedSupplier(): void {
     this.selectedSupplier = {

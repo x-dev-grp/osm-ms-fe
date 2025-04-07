@@ -9,6 +9,7 @@ import { AuthGuardChild } from './@theme/helpers/auth.guard';
 
 //Type
 import { Role } from './@theme/types/role';
+import {receptionRoutes} from "./reception/reception.routes";
 
 const routes: Routes = [
   {
@@ -21,6 +22,7 @@ const routes: Routes = [
         loadChildren: () => import('./demo/pages/dashboard/dashboard.module').then((m) => m.DashboardModule),
         data: { roles: [Role.Admin, Role.User] }
       },
+
       {
         path: 'dashboard',
         loadChildren: () => import('./demo/pages/dashboard/dashboard.module').then((m) => m.DashboardModule),
@@ -90,6 +92,7 @@ const routes: Routes = [
         loadComponent: () => import('./osm/storage/storage.component').then((c) => c.StorageUnitsComponent),
         data: { roles: [Role.Admin, Role.User] }
       },
+
       {
         path: 'forms',
         loadChildren: () => import('./demo/pages/forms/forms.module').then((m) => m.FormsModule),
@@ -104,9 +107,16 @@ const routes: Routes = [
         path: 'sample-page',
         loadComponent: () => import('./demo/pages/other/sample-page/sample-page.component').then((c) => c.SamplePageComponent),
         data: { roles: [Role.Admin, Role.User] }
+      },
+
+      {
+        path: 'reception',
+        children: receptionRoutes
       }
     ]
+
   },
+
   {
     path: '',
     component: EmptyComponent,

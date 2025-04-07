@@ -1,0 +1,24 @@
+<div class="row">
+  <div class="col-12">
+    <div class="row">
+      @for (list of priceList; track list) {
+        <div class="col-md-6 col-lg-4 p-b-25">
+          <mat-card class="price-card {{ list.border }}">
+            <mat-card-content class="border-8 p-20 {{ list.background }} v3">
+              <div class="price-head v3">
+                <div class="f-24 f-w-600 m-b-10 {{ list.color }}">{{ list.name }}</div>
+              </div>
+              <div class="grid">
+                <button mat-flat-button color="accent" class="m-t-25" [routerLink]="['/', list.id]">Accéder</button>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      }
+    </div>
+  </div>
+</div>
+
+<!-- Afficher le composant correspondant à la route active -->
+<app-reception-olive *ngIf="activeRoute === 'receptionolive'"></app-reception-olive>
+<app-reception-huile *ngIf="activeRoute === 'receptionhuile'"></app-reception-huile>

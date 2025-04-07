@@ -40,7 +40,9 @@ export const menus: Navigation[] = [
           }
         ]
 
-      },{
+      },
+
+      {
         id: 'Delevery',
         title: 'Delivery',
         type: 'item',
@@ -96,6 +98,42 @@ export const menus: Navigation[] = [
 
     ]
   },
+
+  {
+    id: 'receptionGlobale',
+    title: 'Récepetion',
+    type: 'group',
+    icon: 'icon-navigation',
+    role: [Role.Admin, Role.User],
+    children: [
+      {
+        id: 'reception',
+        title: 'Réception',
+        type: 'item',
+        classes: 'nav-item',
+        url: '/reception',
+        icon: '#custom-story'
+      },
+      {
+        id: 'fournisseur',
+        title: 'Fournisseurs',
+        type: 'item',
+        classes: 'nav-item',
+        url: '/reception/fournisseur',
+        icon: '#custom-story'
+      },
+      {
+        id: 'bonRecepetion',
+        title: 'Bon Réception',
+        type: 'item',
+        classes: 'nav-item',
+        url: '/reception/bonreception',
+        icon: '#custom-fatrows'
+      }
+    ]
+  },
+
+
 
   {
     id: 'widget',

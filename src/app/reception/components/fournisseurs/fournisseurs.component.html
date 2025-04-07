@@ -1,0 +1,153 @@
+<!-- Expandable Panel for the Form -->
+<mat-expansion-panel [(expanded)]="formOpen">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      {{ isEditing ? 'Edit Supplier' : 'Add Supplier' }}
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+
+  <!-- The Form -->
+  <form class="supplier-form" (ngSubmit)="onSubmit()" style="padding: 0 15px 15px 15px;">
+    <!-- Name -->
+    <mat-form-field appearance="outline" class="w-100 m-b-10">
+      <mat-label>Name</mat-label>
+      <input matInput [(ngModel)]="selectedSupplier.name" name="name" required />
+    </mat-form-field>
+
+    <!-- Lastname -->
+    <mat-form-field appearance="outline" class="w-100 m-b-10">
+      <mat-label>Lastname</mat-label>
+      <input matInput [(ngModel)]="selectedSupplier.lastname" name="lastname" />
+    </mat-form-field>
+
+    <!-- Phone -->
+    <mat-form-field appearance="outline" class="w-100 m-b-10">
+      <mat-label>Phone</mat-label>
+      <input matInput [(ngModel)]="selectedSupplier.phone" name="phone" />
+    </mat-form-field>
+
+    <!-- Email -->
+    <mat-form-field appearance="outline" class="w-100 m-b-10">
+      <mat-label>Email</mat-label>
+      <input matInput [(ngModel)]="selectedSupplier.email" name="email" />
+    </mat-form-field>
+
+    <!-- Address -->
+    <mat-form-field appearance="outline" class="w-100 m-b-10">
+      <mat-label>Address</mat-label>
+      <input matInput [(ngModel)]="selectedSupplier.address" name="address" />
+    </mat-form-field>
+
+    <!-- Supplier Type Dropdown -->
+    <mat-form-field appearance="outline" class="w-100 m-b-10">
+      <mat-label>Supplier Type</mat-label>
+      <mat-select [(ngModel)]="selectedSupplier.suppliertype" name="suppliertype">
+        <mat-option *ngFor="let st of supplierTypes" [value]="st">
+          {{ st.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Buttons: Submit & Cancel -->
+    <div class="form-row m-t-10" style="display: flex; gap: 10px;">
+      <button mat-flat-button color="primary" type="submit">
+        {{ isEditing ? 'Update Supplier' : 'Add Supplier' }}
+      </button>
+
+      <button
+        *ngIf="isEditing"
+        mat-stroked-button
+        color="accent"
+        type="button"
+        (click)="cancelEdit()"
+      >
+        Cancel
+      </button>
+    </div>
+  </form>
+</mat-expansion-panel>
+
+<!-- Table of suppliers below the form -->
+<div class="table-area m-t-20">
+  <app-card cardTitle="Supplier Management">
+    <div class="p-t-15">
+      <!-- Display API response message -->
+      <p *ngIf="message">{{ message }}</p>
+
+      <!-- Table of suppliers using Angular Material table -->
+      <div class="table-responsive m-b-15">
+        <table mat-table [dataSource]="suppliers" class="mat-elevation-z8">
+          <!-- ID Column -->
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef> ID </th>
+            <td mat-cell *matCellDef="let supplier">{{ supplier.id }}</td>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef> Name </th>
+            <td mat-cell *matCellDef="let supplier">{{ supplier.name }}</td>
+          </ng-container>
+
+          <!-- Lastname Column -->
+          <ng-container matColumnDef="lastname">
+            <th mat-header-cell *matHeaderCellDef> Lastname </th>
+            <td mat-cell *matCellDef="let supplier">{{ supplier.lastname }}</td>
+          </ng-container>
+
+          <!-- Phone Column -->
+          <ng-container matColumnDef="phone">
+            <th mat-header-cell *matHeaderCellDef> Phone </th>
+            <td mat-cell *matCellDef="let supplier">{{ supplier.phone }}</td>
+          </ng-container>
+
+          <!-- Email Column -->
+          <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef> Email </th>
+            <td mat-cell *matCellDef="let supplier">{{ supplier.email }}</td>
+          </ng-container>
+
+          <!-- Address Column -->
+          <ng-container matColumnDef="address">
+            <th mat-header-cell *matHeaderCellDef> Address </th>
+            <td mat-cell *matCellDef="let supplier">{{ supplier.address }}</td>
+          </ng-container>
+
+          <!-- Supplier Type -->
+          <ng-container matColumnDef="supplierType">
+            <th mat-header-cell *matHeaderCellDef> Supplier Type </th>
+            <td mat-cell *matCellDef="let supplier">
+              {{ supplier.suppliertype?.name || '-' }}
+            </td>
+          </ng-container>
+
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef> Actions </th>
+            <td mat-cell *matCellDef="let supplier">
+              <button
+                mat-icon-button
+                color="primary"
+                (click)="editSupplier(supplier)"
+                matTooltip="Edit"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="deleteSupplier(supplier)"
+                matTooltip="Delete"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+    </div>
+  </app-card>
+</div>
