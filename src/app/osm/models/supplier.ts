@@ -7,6 +7,9 @@ export interface Supplier {
   phone: string;
   email?: string;
   address: string;
+  region:string;
+  rib:string;
+  bankName:string;
   suppliertype:BaseType;
 }
 

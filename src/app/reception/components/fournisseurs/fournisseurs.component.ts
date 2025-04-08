@@ -21,11 +21,12 @@ export class FournisseursComponent {
   suppliers: Supplier[] = [];
   isEditing: boolean = false;
   message: string = '';
-  displayedColumns: string[] = ['name', 'lastname', 'phone', 'email', 'address',  'supplierType', 'actions'];
+  displayedColumns: string[] = ['name', 'lastname', 'phone', 'supplierType', 'actions'];
   selectedSupplier: Supplier = {} as Supplier;
   formOpen = false;
   FilterSource: MatTableDataSource<Supplier> = new MatTableDataSource(this.suppliers);
   supplierTypes: BaseType[] = [];
+  isBawaz = false;
 
   constructor(
     private supplierService: SupplierService,
@@ -53,6 +54,12 @@ export class FournisseursComponent {
       }
     );
   }
+
+  // Méthode appelée lorsque le type de fournisseur change
+  onTypeChange(): void {
+    this.isBawaz = this.selectedSupplier.suppliertype?.name === 'Bawaz';
+  }
+
   deleteSupplier(supplier: Supplier): void {
     // Simple in-memory delete
     this.suppliers = this.suppliers.filter(s => s.id !== supplier.id);
@@ -76,9 +83,28 @@ export class FournisseursComponent {
       }
     );
   }
+
+  onSupplierTypeChange() {
+    this.isBawaz = this.selectedSupplier?.suppliertype?.name?.toLowerCase() === 'bawaz';
+  }
+
   onSubmit(): void {
+    // Validation des champs requis
+    if (!this.selectedSupplier.name || !this.selectedSupplier.lastname || !this.selectedSupplier.phone) {
+      this.message = 'Veuillez remplir tous les champs requis.';
+      return;
+    }
+
+    // Validation spécifique pour les fournisseurs de type "Bawaz"
+    if (this.isBawaz && (!this.selectedSupplier.email || !this.selectedSupplier.address || !this.selectedSupplier.region || !this.selectedSupplier.rib || !this.selectedSupplier.bankName)) {
+      this.message = 'Veuillez remplir tous les champs pour les fournisseurs de type Bawaz.';
+      return;
+    }
+
+    // Mode Édition
     if (this.isEditing) {
       if (!this.selectedSupplier.id) return;
+
       this.supplierService.updateSupplier(this.selectedSupplier.id, this.selectedSupplier).subscribe(
         (res) => {
           if (res && res.success) {
@@ -91,7 +117,9 @@ export class FournisseursComponent {
         (err) => {
           console.error('Error updating supplier', err);
         }
-      );} else {
+      );
+    } else {
+      // Mode Ajout
       if (!this.selectedSupplier.suppliertype) {
         this.selectedSupplier.suppliertype = {
           type: TypeCategory.SUPPLIER_TYPE, // Default to SUPPLIERTYPE
@@ -112,15 +140,18 @@ export class FournisseursComponent {
         (err) => {
           console.error('Error adding supplier', err);
         }
-      );   }
-    this.formOpen = false; // Collapse the panel
+      );
+    }
+
+    this.formOpen = false;
   }
 
   // Prepares a supplier for editing
   editSupplier(supplier: Supplier): void {
     this.selectedSupplier = { ...supplier };
     this.isEditing = true;
-    this.formOpen=true
+    this.formOpen=true;
+    this.isBawaz=true;
   }
   // Resets the selected supplier to default values
   private resetSelectedSupplier(): void {
@@ -130,11 +161,15 @@ export class FournisseursComponent {
       phone: '',
       email: '',
       address: '',
+      region: '',
+      rib: '',
+      bankName: '',
       suppliertype: {
         type: TypeCategory.SUPPLIER_TYPE, // Default to SUPPLIERTYPE
         name: '',
         description: ''
       }
     };
+    this.isBawaz = false;
   }
 }

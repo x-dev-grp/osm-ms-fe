@@ -28,6 +28,7 @@ export class SupplierComponent implements OnInit {
   formOpen = false;
   FilterSource: MatTableDataSource<Supplier> = new MatTableDataSource(this.suppliers);
   supplierTypes: BaseType[] = [];
+  isBawazSupplier: boolean = false;
 
   constructor(
     private supplierService: SupplierService,
@@ -152,13 +153,16 @@ export class SupplierComponent implements OnInit {
       name: '',
       lastname: '',
       phone: '',
-      email: '',
-      address: '',
+      email: '', // Remet à zéro le champ Email
+      address: '', // Remet à zéro le champ Address
+      region: '', // Remet à zéro le champ Region
+      rib: '', // Remet à zéro le champ RIB
+      bankName: '', // Remet à zéro le champ Bank Name
       suppliertype: {
         type: TypeCategory.SUPPLIER_TYPE, // Default to SUPPLIERTYPE
         name: '',
         description: ''
       }
     };
-  }
-}
+    this.isBawazSupplier = false; // Réinitialise l'état des champs supplémentaires
+  }}

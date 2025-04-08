@@ -4,13 +4,12 @@ import {BonReceptionComponent} from "../bonReception/reception.component";
 import {ActivatedRoute, RouterModule} from "@angular/router";
 import {MatButton} from "@angular/material/button";
 import {MatCard, MatCardContent} from "@angular/material/card";
-import {ReceptionOliveComponent} from "../reception-olive/reception-olive.component";
-import {ReceptionhuileComponent} from "../receptionhuile/receptionhuile.component";
+
 
 @Component({
   selector: 'app-reception',
   standalone:true,
-  imports: [RouterModule, MatButton, MatCard, MatCardContent,ReceptionOliveComponent,ReceptionhuileComponent],
+  imports: [RouterModule, MatButton, MatCard, MatCardContent],
   templateUrl: './reception.component.html',
   styleUrl: './reception.component.scss'
 })

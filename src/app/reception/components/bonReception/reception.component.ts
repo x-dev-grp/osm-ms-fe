@@ -49,6 +49,18 @@ import {TypeCategory} from "../../../osm/models/type-category.enum";
   styleUrl: './reception.component.scss'
 })
 export class BonReceptionComponent {
+  selectedReception = {
+    typeReception: '',
+    producteur: '',
+    dateReception: '',
+    typeOlive: '',
+    variete: '',
+    numColis: '',
+    poidsBrut: null,
+    poidsNet: null,
+    matriculeCamion: '',
+    etatCamion: ''
+  };
 
   deliveries: Delivery[] = [];
   displayedColumns: string[] = ['receiptNumber', 'lotNumber', 'globalLotNumber', 'fournisseur', 'deliveryDate', 'oliveQuantity', 'status', 'actions'];
@@ -93,6 +105,8 @@ export class BonReceptionComponent {
 
   }
 
+
+
   openDialog(delivery?: Delivery) {
     this.currentDelivery = delivery || this.getEmptyDelivery();
     this.initForm(this.currentDelivery);
@@ -109,6 +123,22 @@ export class BonReceptionComponent {
       oliveQuantity: [delivery.oliveQuantity, [Validators.required, Validators.min(1)]]
     });
   }
+
+  cancelReception() {
+    this.selectedReception = {
+      typeReception: '',
+      producteur: '',
+      dateReception: '',
+      typeOlive: '',
+      variete: '',
+      numColis: '',
+      poidsBrut: null,
+      poidsNet: null,
+      matriculeCamion: '',
+      etatCamion: ''
+    };
+  }
+
 
   getEmptyDelivery(): Delivery {
     return {
