@@ -1,7 +1,7 @@
 
 import { Routes } from '@angular/router';
 import {FournisseursComponent} from "./components/fournisseurs/fournisseurs.component";
-import {BonReceptionComponent} from "./components/bonReception/reception.component";
+import {BonReceptionComponent} from "./components/bonReception/bonreception.component";
 import {ReceptionComponent} from "./components/reception/reception.component";
 
 

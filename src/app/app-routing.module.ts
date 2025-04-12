@@ -10,6 +10,7 @@ import { AuthGuardChild } from './@theme/helpers/auth.guard';
 //Type
 import { Role } from './@theme/types/role';
 import {receptionRoutes} from "./reception/reception.routes";
+import {ConfigurationComponent} from "./configuration/configuration.component";
 
 const routes: Routes = [
   {
@@ -112,6 +113,11 @@ const routes: Routes = [
       {
         path: 'reception',
         children: receptionRoutes
+      },
+
+      {
+        path: 'configuration',
+        component:ConfigurationComponent
       }
     ]
 

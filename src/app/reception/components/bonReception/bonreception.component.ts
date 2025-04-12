@@ -21,13 +21,11 @@ import {Supplier} from "../../../osm/models/supplier";
 import {DeliveryType} from "../../models/delevery";
 import {OperationType} from "../../models/UnifiedDelivery";
 
-
-
-
 @Component({
-  selector: 'app-reception',
+  selector: 'app-bonReception',
   standalone:true,
-  imports: [ CommonModule,
+  imports: [
+    CommonModule,
     MatButtonModule,
     MatTableModule,
     MatIconModule,
@@ -41,12 +39,12 @@ import {OperationType} from "../../models/UnifiedDelivery";
     SharedModule,
     ConfigurationComponent,
     MatExpansionPanel,
-    MatExpansionPanelTitle],
-  templateUrl: './reception.component.html',
-  styleUrl: './reception.component.scss'
+    MatExpansionPanelTitle
+  ],  templateUrl: './bonreception.component.html',
+  styleUrl: './bonreception.component.scss'
 })
+export class BonReceptionComponent {
 
-export class ReceptionComponent {
   deliveryTypes = Object.values(DeliveryType); // ['OLIVE', 'HUILED']
   selectedDeliveryType: DeliveryType | null = null;
   isFormVisible: boolean = false;
@@ -67,7 +65,6 @@ export class ReceptionComponent {
   // Formulaire Reactif
   receptionForm: FormGroup;
   deliveryForm:FormGroup;
-
 
   constructor(
     public dialog: MatDialog,
@@ -115,18 +112,22 @@ export class ReceptionComponent {
   }
   ngOnInit(): void {
 
-    /* this.deliveryService.getOliveVarieties().subscribe(data => this.oliveVarieties = data);
-     this.deliveryService.getOliveTypes().subscribe(data => this.oliveTypes = data);
-     this.deliveryService.getOilVarieties().subscribe(data => this.oilVarieties = data);
-     this.deliveryService.getTransporters().subscribe(data => this.transporters = data);
-     this.deliveryService.getProductionMethods().subscribe(data => this.productionMethods = data);
-     this.deliveryService.getSupplierTypes().subscribe(data => this.supplierTypes = data);*/
+   /* this.deliveryService.getOliveVarieties().subscribe(data => this.oliveVarieties = data);
+    this.deliveryService.getOliveTypes().subscribe(data => this.oliveTypes = data);
+    this.deliveryService.getOilVarieties().subscribe(data => this.oilVarieties = data);
+    this.deliveryService.getTransporters().subscribe(data => this.transporters = data);
+    this.deliveryService.getProductionMethods().subscribe(data => this.productionMethods = data);
+    this.deliveryService.getSupplierTypes().subscribe(data => this.supplierTypes = data);*/
     const stored = sessionStorage.getItem('deliveries');
     if (stored) {
       this.deliveries = JSON.parse(stored);
     }
 
   }
+
+  // Méthode pour sélectionner un type de réception
+  // Méthode pour soumettre le formulaire
+
 
   priceList = [
     {
@@ -147,22 +148,72 @@ export class ReceptionComponent {
     },
   ];
 
-  selectReception(list: any) {
-    // Mettre à jour la sélection courante avec l'élément sélectionné
-    this.selectedReception = list;
-
-    // Ouvrir le panneau du formulaire
+  editDelivery(delevery:any){}
+  selectReception(reception: any) {
+    this.selectedReception = reception;
     this.formOpen = true;
 
-    // Remplir automatiquement le champ "deliveryType" avec le nom de la carte sélectionnée
-    this.receptionForm.patchValue({
-      deliveryType: list.name // Utiliser le nom de la carte ('Réception Olive' ou 'Réception Huile')
+    // Pré-remplir le champ "deliveryType" dans le formulaire
+    this.deliveryForm.patchValue({
+      deliveryType: reception.code // par exemple 'OLIVE' ou 'HUILE'
     });
-
-    // Optionnel : Réinitialiser les champs spécifiques pour éviter des valeurs résiduelles
-    this.resetSpecificFields();
   }
+  ajouterReception() {
+    if (this.deliveryForm.valid) {
+      const newDelivery = { ...this.deliveryForm.value };
 
+      // Ajouter à la liste locale
+      this.deliveries.push(newDelivery);
+
+      // Enregistrement dans sessionStorage
+      sessionStorage.setItem('deliveries', JSON.stringify(this.deliveries));
+
+      // Toast de succès
+      this.snackBar.open('Livraison enregistrée avec succès', 'Fermer', {
+        duration: 3000,
+        panelClass: ['snackbar-success']
+      });
+
+      // Réinitialisation
+      this.deliveryForm.reset();
+      this.formOpen = false;
+      this.selectedReception = null;
+
+    } else {
+      this.snackBar.open('Veuillez remplir tous les champs obligatoires.', 'Fermer', {
+        duration: 3000,
+        panelClass: ['snackbar-error']
+      });
+    }
+  }
+  deleteDelivery(){}
+
+  getEmptyDelivery(): Delivery {
+    return {
+      receiptNumber: '',
+      millingMachine: undefined,
+      lotNumber: '',
+      deliveryDate: '',
+      trtDate: '',
+      status: OliveLotStatus.NEW,
+      globalLotNumber: '',
+      tierOrBase: '',
+      parcel: '',
+      oliveQuantity: 0,
+      oilQuantity: 0,
+      region: undefined,
+      oliveVariety: undefined,
+      oilType: undefined,
+      oilVariety: undefined,
+      storageUnit: undefined,
+      supplier: undefined,
+      unitPrice: 0,
+      price: 0,
+      paidAmount: 0,
+      unpaidAmount: 0,
+      qualityControlResults: []
+    };
+  }
 
   get qualityControlResults() {
     return this.receptionForm.get('qualityControlResults') as FormArray;
@@ -222,6 +273,3 @@ export class ReceptionComponent {
     // Logique pour annuler l'édition
   }
 }
-
-
-

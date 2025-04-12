@@ -1,0 +1,173 @@
+<mat-tab-group>
+  <mat-tab label="Config Ste">
+    <div class="p-4">
+      <!-- Contenu pour la configuration du site -->
+      <h3> Config Génerale</h3>
+      <form [formGroup]="siteForm"  class="grid gap-4 p-4">
+        <mat-form-field appearance="outline">
+          <mat-label>Société</mat-label>
+          <input matInput formControlName="societe" required />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Numéro de patente</mat-label>
+          <input matInput formControlName="numPatente" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Banque</mat-label>
+          <input matInput formControlName="bank" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>RIB</mat-label>
+          <input matInput formControlName="rib" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Adresse</mat-label>
+          <textarea matInput formControlName="adresse"></textarea>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Site Web</mat-label>
+          <input matInput formControlName="siteWeb" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Téléphone 1</mat-label>
+          <input matInput formControlName="tel1" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Téléphone 2</mat-label>
+          <input matInput formControlName="tel2" />
+        </mat-form-field>
+
+        <div>
+          <label>Logo :</label>
+          <input type="file" (change)="onFileChange($event)" />
+          <div *ngIf="logoPreview" class="mt-2">
+            <img [src]="logoPreview" alt="Logo Preview" width="150" />
+          </div>
+        </div>
+
+        <button mat-raised-button color="primary" (click)="ajouter()" [disabled]="siteForm.invalid">
+          Enregistrer
+        </button>
+      </form>
+
+    </div>
+  </mat-tab>
+
+  <mat-tab label="Config Réception">
+    <div class="p-4">
+      <h3>Configuration Réception</h3>
+      <div class="col-md-12">
+        <app-card cardTitle="Generic Type Table With Filtering">
+          <div class="row">
+            <!-- Left Side: Form -->
+            <div class="col-md-12">
+              <form [formGroup]="recordForm" (ngSubmit)="onSubmit()">
+                <div class="row">
+                  <div class="col-md-4">
+                    <mat-form-field appearance="fill" class="w-100">
+                      <mat-label>Name</mat-label>
+                      <input matInput formControlName="name" placeholder="Enter name" />
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-4">
+                    <mat-form-field appearance="fill" class="w-100">
+                      <mat-label>Description</mat-label>
+                      <input matInput formControlName="description" placeholder="Enter description" />
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-4">
+                    <mat-form-field appearance="fill" class="w-100">
+                      <mat-label>Select Type</mat-label>
+                      <mat-select (selectionChange)="onTypeChange($event.value)">
+                        <mat-option *ngFor="let type of typeOptions" [value]="type.value">
+                          {{ type.name }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-12">
+                    <button mat-raised-button color="primary" type="submit" [disabled]="recordForm.invalid">
+                      {{ editingRecordIndex >= 0 ? 'Update' : 'Create' }} Record
+                    </button>
+                    <button mat-button color="warn" type="button" (click)="cancelEdit()" *ngIf="editingRecordIndex >= 0">
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <mat-form-field class="m-b-15 w-100">
+              <mat-label>Filter</mat-label>
+              <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input />
+            </mat-form-field>
+          </div>
+
+          <!-- Table displaying records below the form -->
+          <div class="table-responsive" style="margin-top: 20px;">
+            <table mat-table [dataSource]="FilterSource" class="mat-elevation-z8 w-100">
+              <!-- Name Column -->
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef> Name </th>
+                <td mat-cell *matCellDef="let record"> {{ record.name }} </td>
+              </ng-container>
+              <!-- Type Column -->
+              <ng-container matColumnDef="type">
+                <th mat-header-cell *matHeaderCellDef> Type </th>
+                <td mat-cell *matCellDef="let record"> {{ record.type }} </td>
+              </ng-container>
+              <!-- Description Column -->
+              <ng-container matColumnDef="description">
+                <th mat-header-cell *matHeaderCellDef> Description </th>
+                <td mat-cell *matCellDef="let record"> {{ record.description }} </td>
+              </ng-container>
+              <!-- Actions Column -->
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef> Actions </th>
+                <td mat-cell *matCellDef="let record">
+                  <!-- Edit icon -->
+                  <button mat-icon-button color="primary" (click)="openDialog(record)" matTooltip="Edit">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <!-- Delete icon -->
+                  <button mat-icon-button color="warn" (click)="deleteRecord(record)" matTooltip="Delete">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+          </div>
+        </app-card>
+      </div>
+
+    </div>
+  </mat-tab>
+
+  <mat-tab label="Config Production">
+    <div class="p-4">
+      <!-- Contenu pour la configuration de la production -->
+      <h3>Configuration Production</h3>
+    </div>
+  </mat-tab>
+
+  <mat-tab label="Config Stock">
+    <div class="p-4">
+      <!-- Contenu pour la configuration du stock -->
+      <h3>Configuration Stock</h3>
+    </div>
+  </mat-tab>
+</mat-tab-group>
+
+

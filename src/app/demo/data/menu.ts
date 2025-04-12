@@ -133,7 +133,23 @@ export const menus: Navigation[] = [
     ]
   },
 
-
+  {
+    id: 'configuration',
+    title: 'Configuration',
+    type: 'group',
+    icon: 'icon-navigation',
+    role: [Role.Admin, Role.User],
+    children: [
+      {
+        id: 'config',
+        title: 'Configuration',
+        type: 'item',
+        classes: 'nav-item',
+        url: '/configuration',
+        icon: '#custom-story'
+      }
+     ]
+  },
 
   {
     id: 'widget',

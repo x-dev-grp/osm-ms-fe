@@ -37,17 +37,14 @@
   </mat-expansion-panel-header>
 
   <form [formGroup]="receptionForm" style="padding: 0 15px 15px 15px;">
-
-
-    <!-- Champs communs -->
-
-    <h3>Informations générales</h3>
-
     <!-- Delivery Type -->
     <mat-form-field appearance="outline" class="w-100 m-b-10">
       <mat-label>Type de livraison</mat-label>
       <input matInput formControlName="deliveryType" readonly />
     </mat-form-field>
+
+    <!-- Champs communs -->
+    <h3>Informations générales</h3>
     <mat-form-field appearance="outline" class="w-100 m-b-10">
       <mat-label>Numéro de livraison</mat-label>
       <input matInput formControlName="deliveryNumber" required />
