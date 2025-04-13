@@ -14,13 +14,9 @@ const routes: Routes = [
   {
     path: '',
     component: AdminComponent,
-    // canActivateChild: [AuthGuardChild],
+    canActivateChild: [AuthGuardChild],
     children: [
-      {
-        path: '',
-        loadChildren: () => import('./demo/pages/dashboard/dashboard.module').then((m) => m.DashboardModule),
-        data: { roles: [Role.Admin, Role.User] }
-      },
+
 
       {
         path: 'dashboard',
@@ -127,7 +123,7 @@ const routes: Routes = [
   },
 
   {
-    path: '',
+    path: 'login',
     loadChildren: () => import('./auth/authentication.module').then((e) => e.AuthenticationModule),
 
   },

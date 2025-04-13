@@ -65,7 +65,7 @@ export class LoginComponent implements OnInit {
           this.tokenService.setToken(response?.access_token);
           this.tokenService.setRefreshToken(response?.refresh_token);
 
-          this.router.navigate(['/pages/dashboard']);
+          this.router.navigate(['/dashboard/default']);
         },
         (error) => {
           console.log(error);
