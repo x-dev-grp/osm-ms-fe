@@ -86,6 +86,14 @@ export const menus: Navigation[] = [
         url: '/millers',
         icon: '#custom-status-up',
         role: [Role.Admin, Role.User]
+      },{
+        id: 'planning',
+        title: 'planning ',
+        type: 'item',
+        classes: 'nav-item',
+        url: '/planning',
+        icon: '#custom-kanban',
+        role: [Role.Admin, Role.User]
       }, {
         id: 'storage',
         title: 'storage ',
@@ -106,22 +114,24 @@ export const menus: Navigation[] = [
     icon: 'icon-navigation',
     role: [Role.Admin, Role.User],
     children: [
-      {
-        id: 'reception',
-        title: 'Réception',
-        type: 'item',
-        classes: 'nav-item',
-        url: '/reception',
-        icon: '#custom-story'
-      },
-      {
-        id: 'fournisseur',
-        title: 'Fournisseurs',
-        type: 'item',
-        classes: 'nav-item',
-        url: '/reception/fournisseur',
-        icon: '#custom-story'
-      },
+      // {
+      //   id: 'reception',
+      //   title: 'Réception',
+      //   type: 'item',
+      //   classes: 'nav-item',
+      //   url: '/reception',
+      //   icon: '#custom-story'
+      // },
+
+      // {
+      //   id: 'reception',
+      //   title: 'Réception',
+      //   type: 'item',
+      //   classes: 'nav-item',
+      //   url: '/reception',
+      //   icon: '#custom-story'
+      // },
+
       {
         id: 'bonRecepetion',
         title: 'Bon Réception',
@@ -129,10 +139,49 @@ export const menus: Navigation[] = [
         classes: 'nav-item',
         url: '/reception/bonreception',
         icon: '#custom-fatrows'
+      },{
+        id: 'qcr',
+        title: 'Controle qualité',
+        type: 'item',
+        classes: 'nav-item',
+        url: '/reception/quality',
+        icon: '#custom-password-check'
+      },{
+        id: 'fournisseur',
+        title: 'Fournisseurs',
+        type: 'item',
+        classes: 'nav-item',
+        url: '/reception/fournisseur',
+        icon: '#custom-story'
       }
     ]
   },
-
+  {
+    id: 'Globale',
+    title: 'Setting',
+    type: 'group',
+    icon: 'icon-navigation',
+    role: [Role.Admin, Role.User],
+    children: [
+      {
+        id: 'generalSettings',
+        title: 'Paramètres Généraux',
+        type: 'item',
+        classes: 'nav-item',
+        url: '/settings/general',
+        icon: '#custom-fatrows'
+      },
+      {
+        id: 'fournisseur',
+        title: 'Fournisseurs',
+        type: 'item',
+        classes: 'nav-item',
+        url: '/settings/fournisseur', // You can define this route separately
+        icon: '#custom-story'
+      }
+    ]
+  }
+,
 
 
   {

@@ -3,92 +3,107 @@
   <mat-expansion-panel-header>
     <mat-panel-title>Reception</mat-panel-title>
   </mat-expansion-panel-header>
+<mat-expansion-panel>
 
-  <form  style="padding: 15px;">
-    <!-- Type de réception -->
+  <form (ngSubmit)="onSubmitNewDelivery()" style="padding: 0 15px 15px 15px;">
+    <!-- Type de Livraison -->
     <mat-form-field appearance="outline" class="w-100 m-b-10">
-      <mat-label>Type de Réception</mat-label>
-      <mat-select [(ngModel)]="selectedReception.typeReception" name="typeReception" required>
-        <mat-option value="olive">Olive</mat-option>
-        <mat-option value="huile">Huile</mat-option>
+      <mat-label>Type de Livraison</mat-label>
+      <mat-select [(ngModel)]="selectedDelivery .deliveryType" name="deliveryType" required>
+        <mat-option *ngFor="let type of deliveryTypes" [value]="type">
+          {{ type }}
+        </mat-option>
       </mat-select>
     </mat-form-field>
 
     <!-- Producteur -->
+<!--    <mat-form-field appearance="outline" class="w-100 m-b-10">-->
+<!--      <mat-label>Producteur</mat-label>-->
+<!--      <input matInput [(ngModel)]="selectedDelivery.supplierType?.supplier" name="producteur" required />-->
+<!--    </mat-form-field>  &lt;!&ndash; Date de Réception &ndash;&gt;-->
     <mat-form-field appearance="outline" class="w-100 m-b-10">
-      <mat-label>Producteur</mat-label>
-      <input matInput [(ngModel)]="selectedReception.producteur" name="producteur" required />
-    </mat-form-field>
-
-    <!-- Date de Réception -->
-    <mat-form-field appearance="outline" class="w-100 m-b-10">
-      <mat-label>Date Réception</mat-label>
-      <input matInput [matDatepicker]="pickerReception" [(ngModel)]="selectedReception.dateReception" name="dateReception" />
+      <mat-label>Date de Réception</mat-label>
+      <input matInput [matDatepicker]="pickerReception" [(ngModel)]="selectedDelivery .deliveryDate" name="deliveryDate"
+             required />
       <mat-datepicker-toggle matSuffix [for]="pickerReception"></mat-datepicker-toggle>
       <mat-datepicker #pickerReception></mat-datepicker>
     </mat-form-field>
 
     <!-- Champs spécifiques au type OLIVE -->
-    <ng-container *ngIf="selectedReception.typeReception === 'olive'">
+    <ng-container >
       <!-- Type Olive (OC ou OB) -->
       <mat-form-field appearance="outline" class="w-100 m-b-10">
-        <mat-label>Type Olive</mat-label>
-        <mat-select [(ngModel)]="selectedReception.typeOlive" name="typeOlive">
-          <mat-option value="OC">OC</mat-option>
-          <mat-option value="OB">OB</mat-option>
+        <mat-label>Variété d'olive</mat-label>
+        <mat-select (selectionChange)="onSelectOliveVariety($event.value)" name="oliveVariety">
+          <mat-option *ngFor="let ov of oliveVarieties" [value]="ov.id">{{ ov.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <!-- Type Olive (OC ou OB) -->
+      <mat-form-field appearance="outline" class="w-100 m-b-10">
+        <mat-label>Type d'olive</mat-label>
+        <mat-select (selectionChange)="onSelectOliveType($event.value)" name="oliveVariety">
+          <mat-option *ngFor="let ov of oliveTypes" [value]="ov.id">{{ ov.name }}</mat-option>
         </mat-select>
       </mat-form-field>
 
-      <!-- Variété -->
+      <!-- Olive Quantity (Poids Net) -->
       <mat-form-field appearance="outline" class="w-100 m-b-10">
-        <mat-label>Variété</mat-label>
-        <mat-select [(ngModel)]="selectedReception.variete" name="variete">
-          <mat-option value="chemlali">Chemlali</mat-option>
-          <mat-option value="zarrazi">Zarrazi</mat-option>
-          <mat-option value="sahli">Sahli</mat-option>
-          <mat-option value="chetoui">Chetoui</mat-option>
+        <mat-label>Poids Net (Kg)</mat-label>
+        <input matInput type="number" [(ngModel)]="selectedDelivery.oliveQuantity" name="oliveQuantity" />
+      </mat-form-field>
+
+      <!-- Number of Sacks -->
+      <mat-form-field appearance="outline" class="w-100 m-b-10">
+        <mat-label>Nombre de Sacs</mat-label>
+        <input matInput type="number" [(ngModel)]="selectedDelivery.sackCount" name="sackCount" />
+      </mat-form-field>
+
+      <!-- Quantité Huile -->
+      <mat-form-field appearance="outline" class="w-100 m-b-10">
+        <mat-label>Quantité Huile (L)</mat-label>
+        <input matInput type="number" [(ngModel)]="selectedDelivery .oilQuantity" name="oilQuantity" />
+      </mat-form-field>
+
+      <!-- Nombre de Sacs -->
+      <mat-form-field appearance="outline" class="w-100 m-b-10">
+        <mat-label>Nombre de Sacs</mat-label>
+        <input matInput type="number" [(ngModel)]="selectedDelivery .sackCount" name="sackCount" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-100 m-b-10">
+        <mat-label>Status</mat-label>
+        <mat-select [(ngModel)]="selectedDelivery.status" name="status">
+          <mat-option value="NEW">Nouveau</mat-option>
+          <mat-option value="ACCEPTED">Accepté</mat-option>
+          <mat-option value="REJECTED">Refusé</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <!-- Transporteur -->
+      <mat-form-field appearance="outline" class="w-100 m-b-10">
+        <mat-label>Transporteur</mat-label>
+        <mat-select [(ngModel)]="selectedDelivery .transporter" name="transporter">
+          <mat-option *ngFor="let t of transporters" [value]="t">
+            {{ t.licenseNumber }}
+          </mat-option>
         </mat-select>
       </mat-form-field>
 
-      <!-- Num Colis/Sac -->
+
+      <!-- Statut -->
       <mat-form-field appearance="outline" class="w-100 m-b-10">
-        <mat-label>Num Colis/Sac</mat-label>
-        <input matInput [(ngModel)]="selectedReception.numColis" name="numColis" />
+        <mat-label>Statut</mat-label>
+        <mat-select [(ngModel)]="selectedDelivery .status" name="status" required>
+          <mat-option *ngFor="let status of statuses" [value]="status">
+            {{ status }}
+          </mat-option>
+        </mat-select>
       </mat-form-field>
-    </ng-container>
 
-    <!-- Poids Brut -->
-    <mat-form-field appearance="outline" class="w-100 m-b-10">
-      <mat-label>Poids Brut (kg)</mat-label>
-      <input matInput type="number" [(ngModel)]="selectedReception.poidsBrut" name="poidsBrut" required />
-    </mat-form-field>
-
-    <!-- Poids Net -->
-    <mat-form-field appearance="outline" class="w-100 m-b-10">
-      <mat-label>Poids Net (kg)</mat-label>
-      <input matInput type="number" [(ngModel)]="selectedReception.poidsNet" name="poidsNet" />
-    </mat-form-field>
-
-    <!-- Matricule Camion -->
-    <mat-form-field appearance="outline" class="w-100 m-b-10">
-      <mat-label>Matricule Camion</mat-label>
-      <input matInput [(ngModel)]="selectedReception.matriculeCamion" name="matriculeCamion" />
-    </mat-form-field>
-
-    <!-- État Camion -->
-    <mat-form-field appearance="outline" class="w-100 m-b-10">
-      <mat-label>État Camion</mat-label>
-      <mat-select [(ngModel)]="selectedReception.etatCamion" name="etatCamion">
-        <mat-option value="conforme">Conforme</mat-option>
-        <mat-option value="nonConforme">Non Conforme</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <!-- Boutons -->
-    <div style="margin-top: 10px; display: flex; gap: 10px;">
-      <button mat-flat-button color="primary" (click)="onSubmitNewDelivery()">Ajouter</button>
-      <button mat-stroked-button color="accent" type="button" (click)="cancelReception()">Annuler</button>
-    </div>
+      <!-- Submit -->
+      <div style="margin-top: 20px; text-align: right;">
+        <button mat-flat-button color="primary" type="submit">Ajouter</button>
+        <button mat-stroked-button color="accent" type="button" (click)="cancelReception()">Annuler</button>
+      </div>
+      </ng-container>
   </form>
 </mat-expansion-panel>
 
@@ -115,7 +130,7 @@
         <!-- Fournisseur Column -->
         <ng-container matColumnDef="fournisseur">
           <th mat-header-cell *matHeaderCellDef>Fournisseur</th>
-          <td mat-cell *matCellDef="let delivery">{{ delivery.supplier.name}}</td>
+          <td mat-cell *matCellDef="let delivery">{{ delivery.supplier?.name }}</td>
         </ng-container>
 
         <!-- Delivery Date Column -->
@@ -130,6 +145,18 @@
         <ng-container matColumnDef="oliveQuantity">
           <th mat-header-cell *matHeaderCellDef>Olive Qty</th>
           <td mat-cell *matCellDef="let delivery">{{ delivery.oliveQuantity }}</td>
+        </ng-container>
+
+        <!-- Oil Quantity Column -->
+        <ng-container matColumnDef="oilQuantity">
+          <th mat-header-cell *matHeaderCellDef>Oil Qty</th>
+          <td mat-cell *matCellDef="let delivery">{{ delivery.oilQuantity }}</td>
+        </ng-container>
+
+        <!-- Sack Count Column -->
+        <ng-container matColumnDef="sackCount">
+          <th mat-header-cell *matHeaderCellDef>Sacks</th>
+          <td mat-cell *matCellDef="let delivery">{{ delivery.sackCount }}</td>
         </ng-container>
 
         <!-- Status Column -->

@@ -31,6 +31,7 @@ export class QualityControlRuleComponent implements OnInit {
 
   createEmptyRule(): QualityControlRule {
     return {
+      id: '',
       ruleKey: '',
       oilQc: false,
       ruleName: '',
@@ -150,7 +151,7 @@ export class QualityControlRuleComponent implements OnInit {
 
   private resetForm(): void {
     this.selectedRule = {
-      ruleKey: '',
+       ruleKey: '',
       oilQc: false,
       ruleName: '',
       description: '',

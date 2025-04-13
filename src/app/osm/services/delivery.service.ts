@@ -5,6 +5,7 @@ import {ApiResponse} from "../models/api-response";
 import { Delivery } from '../models/delivery';
 
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -17,7 +18,7 @@ export class DeliveryService {
   getAllDeliveries(page: number, size: number): Observable<ApiResponse<never>> {
     return this.http.get<ApiResponse<never>>(`${this.baseUrl}/fetchAll?page=${page}&size=${size}`);
   }
-  getAllDeliveriesList( ): Observable<ApiResponse<Delivery>> {
+  getAllDeliveriesList(): Observable<ApiResponse<Delivery>> {
     return this.http.get<ApiResponse<Delivery>>(`${this.baseUrl}/fetchAll`);
   }
 

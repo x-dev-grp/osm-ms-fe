@@ -1,0 +1,8 @@
+export enum OliveLotStatus {
+  NEW = 'NEW',
+  ACCEPTED = 'ACCEPTED',
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED' ,
+  REFUSED = 'REFUSED',
+  CANCELLED = 'CANCELLED'
+}

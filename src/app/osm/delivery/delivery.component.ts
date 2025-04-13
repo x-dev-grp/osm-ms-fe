@@ -9,12 +9,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
-import { Delivery, OliveLotStatus } from '../models/delivery';
+import { Delivery } from '../models/delivery';
 import { SharedModule } from '../../demo/shared/shared.module';
 import { DeliveryService } from '../services/delivery.service';
-import { Supplier } from '../models/supplier';
-import { QualityControlRule } from '../models/quality-control-rule';
-import { SupplierService } from '../services/supplier.service';
+ import { QualityControlRule } from '../models/quality-control-rule';
+import { SupplierTypeService } from '../services/supplier-type.service';
 import { GenericTypeService } from '../services/generic-type.service';
 import { QualityControlRuleService } from '../services/quality-control-rule.service';
 import { BaseType } from '../models/base-type';
@@ -25,6 +24,19 @@ import { StorageUnitDto } from '../models/StorageUnitDto';
 import { StorageUnitDtoService } from '../services/storage.service';
 import { MillMachine } from '../models/millMachine';
 import { MillMachineService } from '../services/mill-machine.service';
+import { Transporter } from '../models/Transporter';
+import { TransporterService } from '../services/TransporterService';
+import { deliveryType } from '../models/deleveryType';
+import { OliveLotStatus } from '../models/OliveLotStatus';
+import { SupplierType } from '../models/supplier-type';
+
+export enum DeliveryOperationType {
+  OIL_PURCHASE = 'oil_purchase',
+  BASE_OIL_PURCHASE = 'base_oil_purchase',
+  OLIVE_PURCHASE = 'olive_purchase',
+  EXCHANGE = 'exchange',
+  MILLING = 'milling'
+}
 
 @Component({
   selector: 'app-delivery',
@@ -51,7 +63,16 @@ import { MillMachineService } from '../services/mill-machine.service';
 })
 export class DeliveryComponent implements OnInit {
   deliveries: Delivery[] = [];
-  displayedColumns: string[] = ['receiptNumber', 'lotNumber', 'globalLotNumber', 'fournisseur', 'deliveryDate', 'oliveQuantity', 'status', 'actions'];
+  displayedColumns: string[] = [
+    'receiptNumber',
+    'lotNumber',
+    'globalLotNumber',
+    'fournisseur',
+    'deliveryDate',
+    'oliveQuantity',
+    'status',
+    'actions'
+  ];
   @ViewChild('dialogTemplate') dialogTemplate!: TemplateRef<never>;
   currentDelivery: Delivery | null = null;
   deliveryForm!: FormGroup;
@@ -61,24 +82,30 @@ export class DeliveryComponent implements OnInit {
   formOpen = false;
   selectedDelivery: Delivery = {} as Delivery;
   oilTypes: BaseType[] = [];
-  suppliers: Supplier[] = [];
+  suppliers: SupplierType[] = [];
   regions: BaseType[] = [];
   oliveVarieties: BaseType[] = [];
   varieties: BaseType[] = [];
   applyQualityControl: boolean = false;
   qualityControlRules: QualityControlRule[] = [];
   FilterSource: MatTableDataSource<Delivery> = new MatTableDataSource(this.deliveries);
+  operationTypes = Object.values(DeliveryOperationType);
+  selectedOperationType: DeliveryOperationType = DeliveryOperationType.OLIVE_PURCHASE;
+  transporters: Transporter[] = []; // full list
+  filteredTransporters: Transporter[] = []; // filtered list
+  transporterSearch: string = '';
+  millingMachines: MillMachine[] = [];
   protected readonly Object = Object;
   protected readonly input = input;
-
 
   constructor(
     public dialog: MatDialog,
     private fb: FormBuilder,
     private deliveryService: DeliveryService,
     private storageUnitsService: StorageUnitDtoService,
-    private supplierService: SupplierService,
+    private supplierService: SupplierTypeService,
     private genericTypeService: GenericTypeService,
+    private transportersService: TransporterService,
     private qualityControlRuleService: QualityControlRuleService,
     private millingMachineService: MillMachineService
   ) {}
@@ -87,12 +114,12 @@ export class DeliveryComponent implements OnInit {
     this.loadDeliveries();
     this.loadSuppliers();
     this.loadMillingMachines();
-     this.loadRegions();
+    this.loadRegions();
     this.loadOLIVEVARIETY();
     this.loadOIL_VARIETY();
     this.loadProductionMethod();
     this.loadStorageUnits();
-
+    this.loadTransporters();
   }
 
   openDialog(delivery?: Delivery) {
@@ -101,15 +128,23 @@ export class DeliveryComponent implements OnInit {
     this.dialog.open(this.dialogTemplate, { width: '600px' });
   }
 
+  compareTransporters = (t1: Transporter, t2: Transporter) => t1 && t2 && t1.id === t2.id;
+  oliveLotStatus: OliveLotStatus;
+
   initForm(delivery: Delivery) {
     this.deliveryForm = this.fb.group({
       receiptNumber: [delivery.receiptNumber, Validators.required],
       lotNumber: [delivery.lotNumber, Validators.required],
-      supplier: [delivery.supplier, Validators.required],
+      supplier: [delivery.supplierType, Validators.required],
       deliveryDate: [delivery.deliveryDate, Validators.required],
       status: [delivery.status, Validators.required],
       oliveQuantity: [delivery.oliveQuantity, [Validators.required, Validators.min(1)]]
     });
+  }
+
+  filterTransporters() {
+    const search = this.transporterSearch.toLowerCase();
+    this.filteredTransporters = this.transporters.filter((t) => t.licenseNumber?.toLowerCase().includes(search));
   }
 
   getEmptyDelivery(): Delivery {
@@ -120,17 +155,20 @@ export class DeliveryComponent implements OnInit {
       deliveryDate: '',
       trtDate: '',
       status: OliveLotStatus.NEW,
+      deliveryType: deliveryType.OLIVE,
       globalLotNumber: '',
       tierOrBase: '',
       parcel: '',
       oliveQuantity: 0,
       oilQuantity: 0,
+      sackCount: 0,
       region: undefined,
       oliveVariety: undefined,
       oilType: undefined,
       oilVariety: undefined,
       storageUnit: undefined,
-      supplier: undefined,
+      supplierType: undefined,
+      transporter: undefined,
       unitPrice: 0,
       price: 0,
       paidAmount: 0,
@@ -146,12 +184,13 @@ export class DeliveryComponent implements OnInit {
   onSelectOilType(oilTypeId: string) {
     this.selectedDelivery.oilType = { id: oilTypeId } as BaseType;
   }
- onSelectMillMachin(mill: string) {
+
+  onSelectMillMachin(mill: string) {
     this.selectedDelivery.millingMachine = { id: mill } as MillMachine;
   }
 
   onSelectSupplier(supplierId: string) {
-    this.selectedDelivery.supplier = { id: supplierId } as Supplier;
+    this.selectedDelivery.supplierType = { id: supplierId } as SupplierType;
   }
 
   onSelectStorageUnit(unitId: string) {
@@ -172,18 +211,28 @@ export class DeliveryComponent implements OnInit {
       error: (err) => console.error('Error saving', err)
     });
   }
-  millingMachines: MillMachine[] = [];
 
   loadMillingMachines(): void {
-    this.millingMachineService.getAllMillMachines().subscribe(machines => {
+    this.millingMachineService.getAllMillMachines().subscribe((machines) => {
       this.millingMachines = machines;
     });
   }
+
   loadDeliveries(): void {
     this.deliveryService.getAllDeliveriesList().subscribe(
       (res) => {
         if (res && res.success) {
           this.deliveries = res.data;
+
+          const parsedLotNumbers = this.deliveries
+            .map((d) => d.lotNumber?.replace(/^\D+/, '') ?? '') // remove prefix
+            .map((numStr) => parseInt(numStr, 10)) // parse to number
+            .filter((n) => !isNaN(n)); // keep valid numbers only
+
+          const maxLotNumber = parsedLotNumbers.length > 0 ? Math.max(...parsedLotNumbers) : 1;
+
+          console.log('Max Lot Number:', maxLotNumber);
+
           this.FilterSource.data = this.deliveries;
           this.message = res.message;
         } else {
@@ -199,17 +248,17 @@ export class DeliveryComponent implements OnInit {
     this.supplierService.getAllSuppliers().subscribe(
       (res) => {
         if (res && res.success) {
-          this.suppliers = res.data.map((supplier: Supplier) => {
-            if (supplier.suppliertype) {
+          this.suppliers = res.data.map((supplier_type: SupplierType) => {
+            if (supplier_type.genericSupplierType) {
               return {
-                ...supplier,
+                ...supplier_type,
                 suppliertype: {
-                  ...supplier.suppliertype,
+                  ...supplier_type.genericSupplierType,
                   type: TypeCategory.SUPPLIER_TYPE
                 }
               };
             }
-            return supplier;
+            return supplier_type;
           });
         }
       },
@@ -266,7 +315,6 @@ export class DeliveryComponent implements OnInit {
       this.storageUnits = units.data;
     });
     console.log('storageUnits', this.storageUnits);
-
   }
 
   loadQualityControlRules(): Promise<void> {
@@ -291,6 +339,13 @@ export class DeliveryComponent implements OnInit {
     });
   }
 
+  private loadTransporters() {
+    this.transportersService.getAllTransporters().subscribe((transporters) => {
+      this.transporters = transporters.data;
+      this.filteredTransporters = transporters.data;
+    });
+  }
+
   deleteDelivery(delivery: Delivery): void {
     if (!delivery.id) return;
     this.deliveryService.deleteDelivery(delivery.id).subscribe(
@@ -306,5 +361,9 @@ export class DeliveryComponent implements OnInit {
 
   cancelAdd(): void {
     this.formOpen = false;
+  }
+
+  onSelectOliveLotStatus(value: OliveLotStatus) {
+    this.selectedDelivery.status = value   ;
   }
 }

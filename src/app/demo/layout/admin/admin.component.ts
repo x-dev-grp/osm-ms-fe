@@ -7,8 +7,7 @@ import { CommonModule } from '@angular/common';
 
 // Project import
 import { AbleProConfig } from 'src/app/app-config';
-import { menus } from 'src/app/demo/data/menu';
-import { ThemeLayoutService } from 'src/app/@theme/services/theme-layout.service';
+ import { ThemeLayoutService } from 'src/app/@theme/services/theme-layout.service';
 import { SharedModule } from 'src/app/demo/shared/shared.module';
 import { NavBarComponent } from 'src/app/@theme/layouts/toolbar/toolbar.component';
 import { VerticalMenuComponent } from 'src/app/@theme/layouts/menu/vertical-menu';
@@ -31,6 +30,7 @@ import { environment } from 'src/environments/environment';
 //type
 import { Navigation } from 'src/app/@theme/types/navigation';
 import { Role } from 'src/app/@theme/types/role';
+import { osm_menus } from '../../../shared/osm_menu';
 
 @Component({
   selector: 'app-admin',
@@ -57,7 +57,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
 
   // public props
   readonly sidebar = viewChild<MatDrawer>('sidebar');
-  menus: Navigation[] = menus;
+  menus: Navigation[] = osm_menus;
   modeValue: MatDrawerMode = 'side';
   direction: string = 'ltr';
   currentApplicationVersion = environment.appVersion;
@@ -101,7 +101,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
     /**
      * Role base menu filtering
      */
-    this.menus = this.RoleBaseFilterMenu(menus, userRoles);
+    this.menus = this.RoleBaseFilterMenu(osm_menus, userRoles);
   }
 
   ngAfterViewInit() {
@@ -168,4 +168,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
       }
     }
   }
+
+  protected readonly osm_menus = osm_menus;
 }

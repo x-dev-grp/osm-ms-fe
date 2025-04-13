@@ -1,8 +1,7 @@
 // mill-machine.component.ts
 
 import { Component, OnInit } from '@angular/core';
-import { MillMachine } from '../models/millMachine';
-import { CommonModule } from '@angular/common';
+ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,12 +9,12 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatAccordion, MatExpansionModule, MatExpansionPanel, MatExpansionPanelTitle } from '@angular/material/expansion';
+import { MatAccordion, MatExpansionModule,    } from '@angular/material/expansion';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSortModule } from '@angular/material/sort';
 import { SharedModule } from '../../demo/shared/shared.module';
+import { MillMachine } from '../models/millMachine';
 import { MillMachineService } from '../services/mill-machine.service';
-import { LocalDateTimePipe } from '../pipes/local-date-time.pipe';
 
 @Component({
   selector: 'app-mill-machine',

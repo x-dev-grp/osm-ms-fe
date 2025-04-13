@@ -30,10 +30,10 @@
           </a>
         </div>
         @if (currentLayout === 'vertical') {
-          <app-vertical-menu [menus]="menus" />
+          <app-vertical-menu [menus]="osm_menus" />
         }
         @if (currentLayout === 'compact') {
-          <app-compact-menu [menus]="menus" />
+          <app-compact-menu [menus]="osm_menus" />
         }
       </div>
     </nav>
@@ -46,7 +46,7 @@
     />
     @if (currentLayout === 'horizontal') {
       <app-horizontal-menu
-        [menus]="menus"
+        [menus]="osm_menus"
         [ngClass]="{
           'horizontal-menu': currentLayout === 'horizontal'
         }"

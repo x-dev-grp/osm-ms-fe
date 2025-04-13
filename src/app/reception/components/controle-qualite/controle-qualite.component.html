@@ -1,1 +1,36 @@
-<p>controle-qualite works!</p>
+<mat-card>
+   <mat-card-content>
+    <form (ngSubmit)="updateDelivery()" style="padding: 0 15px 15px 15px;">
+
+      <!-- Select Delivery -->
+      <mat-form-field appearance="outline" class="w-100 m-b-10">
+        <mat-label>Choisir une livraison</mat-label>
+        <mat-select [(ngModel)]="selectedDeliveryId" name="delivery" required>
+          <mat-option *ngFor="let delivery of deliveries" [value]="delivery.id">
+            {{ delivery.receiptNumber }} - {{ delivery.lotNumber }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Quality Control Rule Inputs -->
+      <div *ngFor="let rule of qualityRules">
+        <mat-form-field appearance="outline" class="w-100 m-b-10">
+          <mat-label>{{ rule.ruleName || rule.ruleKey }}</mat-label>
+          <input
+            matInput
+            type="number"
+            name="rule_{{ rule.index }}"
+            [(ngModel)]="qualityControlResult[rule.ruleKey]"
+            [min]="rule.minValue"
+            [max]="rule.maxValue"
+            required
+          />
+        </mat-form-field>
+      </div>
+      <!-- Submit Button -->
+      <div style="margin-top: 20px; text-align: right;">
+        <button mat-flat-button color="primary" type="submit">Enregistrer</button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

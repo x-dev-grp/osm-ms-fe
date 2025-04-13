@@ -9,7 +9,7 @@ import { AuthGuardChild } from './@theme/helpers/auth.guard';
 
 //Type
 import { Role } from './@theme/types/role';
-import {receptionRoutes} from "./reception/reception.routes";
+import { receptionRoutes } from './reception/reception.routes';
 
 const routes: Routes = [
   {
@@ -67,27 +67,28 @@ const routes: Routes = [
         path: 'material-table',
         loadComponent: () => import('./demo/pages/material-table/material-table.component').then((c) => c.MaterialTableComponent),
         data: { roles: [Role.Admin, Role.User] }
-      },{
+      },
+      {
         path: 'generic',
         loadComponent: () => import('./osm/generic-type/generic-type.component').then((c) => c.GenericTypeComponent),
         data: { roles: [Role.Admin, Role.User] }
-      },{
+      },
+      {
         path: 'delivery',
         loadComponent: () => import('./osm/delivery/delivery.component').then((c) => c.DeliveryComponent),
         data: { roles: [Role.Admin, Role.User] }
-      },{
+      },
+      {
         path: 'qcr',
         loadComponent: () => import('./osm/quality-control-rule/quality-control-rule.component').then((c) => c.QualityControlRuleComponent),
         data: { roles: [Role.Admin, Role.User] }
-      },{
-        path: 'supplier',
-        loadComponent: () => import('./osm/supplier/supplier.component').then((c) => c.SupplierComponent),
+      },
+      {
+        path: 'planning',
+        loadComponent: () => import('./osm/planning/planning.component').then((c) => c.PlanningComponent),
         data: { roles: [Role.Admin, Role.User] }
-      },{
-        path: 'millers',
-        loadComponent: () => import('./osm/millmachin/millmachin.component').then((c) => c.MillMachineComponent),
-        data: { roles: [Role.Admin, Role.User] }
-      },{
+      },
+      {
         path: 'storage',
         loadComponent: () => import('./osm/storage/storage.component').then((c) => c.StorageUnitsComponent),
         data: { roles: [Role.Admin, Role.User] }
@@ -112,9 +113,18 @@ const routes: Routes = [
       {
         path: 'reception',
         children: receptionRoutes
+      },
+      {
+        path: 'millers',
+        loadComponent: () => import('./osm/millmachin/millmachin.component').then((c) => c.MillMachineComponent),
+        data: { roles: [Role.Admin, Role.User] }
+      },
+      {
+        path: 'settings',
+        loadChildren: () => import('./settings/settings.module').then(m => m.SettingsModule)
       }
-    ]
 
+    ]
   },
 
   {
