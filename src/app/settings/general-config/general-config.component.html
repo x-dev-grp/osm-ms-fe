@@ -1,0 +1,46 @@
+<h2 class="mb-3">Mill Profile</h2>
+
+<form [formGroup]="millProfileForm" (ngSubmit)="onSave()">
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Mill Name</mat-label>
+        <input matInput formControlName="millName" placeholder="Enter mill name" />
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Registration Number</mat-label>
+        <input matInput formControlName="registrationNumber" />
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" type="email" />
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Phone</mat-label>
+        <input matInput formControlName="phone" />
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Address</mat-label>
+        <textarea matInput formControlName="address" rows="2"></textarea>
+      </mat-form-field>
+    </div>
+
+  </div>
+
+  <div class="d-flex gap-2">
+    <button mat-raised-button color="primary" type="submit">Save</button>
+    <button mat-stroked-button color="warn" type="button" (click)="onReset()">Reset</button>
+  </div>
+</form>

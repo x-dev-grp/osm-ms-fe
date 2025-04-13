@@ -1,0 +1,197 @@
+<div class="col-md-12">
+  <app-card cardTitle="Supplier Management">
+    <!-- Expandable Form Section -->
+    <mat-accordion>
+      <mat-expansion-panel [expanded]="formOpen">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Supplier Form
+          </mat-panel-title>
+          <mat-panel-description>
+            {{ editingRecordIndex >= 0 ? 'Update Supplier' : 'Create Supplier' }}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <!-- Supplier Form -->
+        <form [formGroup]="supplierForm" (ngSubmit)="onSubmit()">
+          <!-- Supplier Info Group - Row 1 -->
+          <div class="row" formGroupName="supplierInfo">
+            <div class="col-md-4">
+              <mat-form-field appearance="fill" class="w-100">
+                <mat-label>First Name</mat-label>
+                <input matInput formControlName="name" placeholder="Enter first name" />
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field appearance="fill" class="w-100">
+                <mat-label>Last Name</mat-label>
+                <input matInput formControlName="lastname" placeholder="Enter last name" />
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field appearance="fill" class="w-100">
+                <mat-label>Email</mat-label>
+                <input matInput formControlName="email" placeholder="Enter email" />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Supplier Info Group - Row 2 -->
+          <div class="row" formGroupName="supplierInfo">
+            <div class="col-md-4">
+              <mat-form-field appearance="fill" class="w-100">
+                <mat-label>Phone</mat-label>
+                <input matInput formControlName="phone" placeholder="Enter phone" />
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field appearance="fill" class="w-100">
+                <mat-label>Address</mat-label>
+                <input matInput formControlName="address" placeholder="Enter address" />
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field appearance="fill" class="w-100">
+                <mat-label>Region</mat-label>
+                <mat-select [compareWith]="objectComparisonFunction" formControlName="region" (selectionChange)="onSelectRegion($event.value)">
+                  <mat-option *ngFor="let region of regions" [value]="region">
+                    {{ region.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Additional Supplier Fields -->
+          <div class="row" formGroupName="supplierInfo">
+            <div class="col-md-4">
+              <mat-form-field appearance="fill" class="w-100">
+                <mat-label>RIB</mat-label>
+                <input matInput formControlName="rib" placeholder="Enter RIB" />
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field appearance="fill" class="w-100">
+                <mat-label>Bank Name</mat-label>
+                <input matInput formControlName="bankName" placeholder="Enter bank name" />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Supplier Type Dropdown -->
+          <div class="row">
+            <div class="col-md-4">
+              <mat-form-field appearance="fill" class="w-100">
+                <mat-label>Supplier Type</mat-label>
+                <mat-select [compareWith]="objectComparisonFunction" formControlName="genericSupplierType" >
+                  <mat-option *ngFor="let type of supplierTypes" [value]="type">
+                    {{ type.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Form Buttons -->
+          <div class="row" style="margin-top: 10px;">
+            <div class="col-md-12">
+              <button mat-raised-button color="primary" type="submit" [disabled]="supplierForm.invalid">
+                {{ editingRecordIndex >= 0 ? 'Update' : 'Create' }} Supplier
+              </button>
+              <button mat-button color="warn" type="button" (click)="cancelEdit()" *ngIf="editingRecordIndex >= 0">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+      </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- Filter Input -->
+    <div class="col-md-12" style="margin-top: 20px;">
+      <mat-form-field class="m-b-15 w-100">
+        <mat-label>Filter</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Supplier name or type" #input>
+      </mat-form-field>
+    </div>
+
+    <!-- Supplier Table -->
+    <div class="table-responsive" style="margin-top: 20px;">
+      <table mat-table [dataSource]="FilterSource" class="mat-elevation-z8 w-100">
+        <!-- First Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> First Name </th>
+          <td mat-cell *matCellDef="let supplier">
+            {{ supplier.supplierInfo?.name }}
+          </td>
+        </ng-container>
+
+        <!-- Last Name Column -->
+        <ng-container matColumnDef="lastname">
+          <th mat-header-cell *matHeaderCellDef> Last Name </th>
+          <td mat-cell *matCellDef="let supplier">
+            {{ supplier.supplierInfo?.lastname }}
+          </td>
+        </ng-container>
+
+        <!-- Phone Column -->
+        <ng-container matColumnDef="phone">
+          <th mat-header-cell *matHeaderCellDef> Phone </th>
+          <td mat-cell *matCellDef="let supplier">
+            {{ supplier.supplierInfo?.phone }}
+          </td>
+        </ng-container>
+
+        <!-- Email Column -->
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef> Email </th>
+          <td mat-cell *matCellDef="let supplier">
+            {{ supplier.supplierInfo?.email }}
+          </td>
+        </ng-container>
+
+        <!-- Address Column -->
+        <ng-container matColumnDef="address">
+          <th mat-header-cell *matHeaderCellDef> Address </th>
+          <td mat-cell *matCellDef="let supplier">
+            {{ supplier.supplierInfo?.address }}
+          </td>
+        </ng-container>
+
+        <!-- Supplier Type Column -->
+        <ng-container matColumnDef="supplierType">
+          <th mat-header-cell *matHeaderCellDef> Supplier Type </th>
+          <td mat-cell *matCellDef="let supplier">
+            {{ supplier.genericSupplierType?.name }}
+          </td>
+        </ng-container>
+
+        <!-- Region Column -->
+        <ng-container matColumnDef="region">
+          <th mat-header-cell *matHeaderCellDef> Region </th>
+          <td mat-cell *matCellDef="let supplier">
+            {{ supplier.supplierInfo?.region?.name }}
+          </td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef> Actions </th>
+          <td mat-cell *matCellDef="let supplier">
+            <!-- Edit Icon -->
+            <button mat-icon-button color="primary" (click)="openDialog(supplier)" matTooltip="Edit">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <!-- Delete Icon -->
+            <button mat-icon-button color="warn" (click)="deleteRecord(supplier)" matTooltip="Delete">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+  </app-card>
+</div>
