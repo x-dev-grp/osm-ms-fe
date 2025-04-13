@@ -1,3 +1,1 @@
-export interface Transporter {
-
-}
+export interface Transporter {}

@@ -4,19 +4,17 @@ import { RouterModule, Routes } from '@angular/router';
 
 // project import
 import { AdminComponent } from './demo/layout/admin';
-import { EmptyComponent } from './demo/layout/empty/empty.component';
 import { AuthGuardChild } from './@theme/helpers/auth.guard';
 
 //Type
 import { Role } from './@theme/types/role';
 import { receptionRoutes } from './reception/reception.routes';
-import {ConfigurationComponent} from "./configuration/configuration.component";
 
 const routes: Routes = [
   {
     path: '',
     component: AdminComponent,
-    canActivateChild: [AuthGuardChild],
+    // canActivateChild: [AuthGuardChild],
     children: [
       {
         path: '',
@@ -130,55 +128,10 @@ const routes: Routes = [
 
   {
     path: '',
-    component: EmptyComponent,
-    children: [
-      {
-        path: '',
-        redirectTo: '/auth/login',
-        pathMatch: 'full'
-      },
-      {
-        path: 'login',
-        loadComponent: () => import('./demo/pages/auth/authentication-1/login/login.component').then((c) => c.LoginComponent)
-      },
-      {
-        path: 'register',
-        loadComponent: () => import('./demo/pages/auth/authentication-1/register/register.component').then((c) => c.RegisterComponent)
-      },
-      {
-        path: 'forgot-password',
-        loadComponent: () =>
-          import('./demo/pages/auth/authentication-1/forgot-password/forgot-password.component').then((c) => c.ForgotPasswordComponent)
-      },
-      {
-        path: 'authentication-1',
-        canActivateChild: [AuthGuardChild],
-        loadChildren: () => import('./demo/pages/auth/authentication-1/authentication-1.module').then((e) => e.Authentication1Module),
-        data: { roles: [Role.Admin, Role.User] }
-      },
-      {
-        path: 'authentication-2',
-        canActivateChild: [AuthGuardChild],
-        loadChildren: () => import('./demo/pages/auth/authentication-2/authentication-2.module').then((e) => e.Authentication2Module),
-        data: { roles: [Role.Admin, Role.User] }
-      },
-      {
-        path: 'authentication-3',
-        canActivateChild: [AuthGuardChild],
-        loadComponent: () =>
-          import('./demo/pages/auth/authentication-3/authentication-three.component').then((c) => c.AuthenticationThreeComponent),
-        data: { roles: [Role.Admin, Role.User] }
-      },
-      {
-        path: 'maintenance',
-        loadChildren: () => import('./demo/pages/maintenance/maintenance.module').then((m) => m.MaintenanceModule)
-      },
-      {
-        path: 'unauthorized',
-        loadComponent: () => import('./demo/pages/maintenance/error-401/error-401.component').then((c) => c.Error401Component)
-      }
-    ]
+    loadChildren: () => import('./auth/authentication.module').then((e) => e.AuthenticationModule),
+
   },
+
   {
     path: '**',
     loadComponent: () => import('./demo/pages/maintenance/error/error.component').then((c) => c.ErrorComponent)

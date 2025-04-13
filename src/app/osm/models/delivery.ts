@@ -45,7 +45,3 @@ export interface Delivery {
 }
 
 
-// Supporting nested DTO interfaces:
-
-// Enum matching your backend OliveLotStatus:
-

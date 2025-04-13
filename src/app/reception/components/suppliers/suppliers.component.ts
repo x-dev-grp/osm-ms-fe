@@ -1,28 +1,23 @@
 // File: suppliers.component.ts
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  MatAccordion,
-  MatExpansionModule,
-  MatExpansionPanel,
-  MatExpansionPanelTitle
-} from '@angular/material/expansion';
+import { MatAccordion, MatExpansionModule, MatExpansionPanel, MatExpansionPanelTitle } from '@angular/material/expansion';
 import { SharedModule } from '../../../demo/shared/shared.module';
 import { SupplierType } from '../../../osm/models/supplier-type';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { BaseType } from '../../../osm/models/base-type';
 import { SupplierTypeService } from '../../../osm/services/supplier-type.service';
 import { GenericTypeService } from '../../../osm/services/generic-type.service';
-import { TypeCategory } from '../../../shared/models/type-category.enum';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatSortModule, MatSort } from '@angular/material/sort';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { TypeCategory } from '../../../osm/models/type-category.enum';
 
 @Component({
   selector: 'app-suppliers',
@@ -58,7 +53,7 @@ export class SupplierComponent implements OnInit {
   regions: BaseType[] = [];
   editingRecordIndex: number = -1;
   formOpen: boolean = false;
-  selectedSupplier:  SupplierType;
+  selectedSupplier: SupplierType;
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -101,7 +96,7 @@ export class SupplierComponent implements OnInit {
     });
 
     // Log form changes for debugging
-    this.supplierForm.valueChanges.subscribe(value => {
+    this.supplierForm.valueChanges.subscribe((value) => {
       console.log('Form Value Changed:', value);
       console.log('Form Valid:', this.supplierForm.valid);
     });
@@ -175,13 +170,17 @@ export class SupplierComponent implements OnInit {
         phone: formValue.supplierInfo.phone,
         email: formValue.supplierInfo.email,
         address: formValue.supplierInfo.address,
-        region:  formValue.supplierInfo.region ,  // Object with id as required
+        region: formValue.supplierInfo.region, // Object with id as required
         rib: formValue.supplierInfo.rib,
         bankName: formValue.supplierInfo.bankName
       },
       genericSupplierType: formValue.genericSupplierType
     };
-    this.selectedSupplier={...this.selectedSupplier,supplierInfo:formValue.supplierInfo,genericSupplierType:formValue.genericSupplierType}
+    this.selectedSupplier = {
+      ...this.selectedSupplier,
+      supplierInfo: formValue.supplierInfo,
+      genericSupplierType: formValue.genericSupplierType
+    };
 
     console.log('Form Payload:', this.selectedSupplier);
 
@@ -189,7 +188,8 @@ export class SupplierComponent implements OnInit {
     if (this.editingRecordIndex >= 0) {
       const supplierToUpdate = this.suppliers[this.editingRecordIndex];
       if (!supplierToUpdate.id) return;
-      this.supplierService.updateSupplier(this.selectedSupplier).subscribe( // Include the ID for update
+      this.supplierService.updateSupplier(this.selectedSupplier).subscribe(
+        // Include the ID for update
         (res) => {
           if (res && res.success) {
             this.loadSuppliers();
@@ -230,50 +230,57 @@ export class SupplierComponent implements OnInit {
       this.FilterSource.paginator.firstPage();
     }
   }
-  onSelectRegion(selectedRegionId: string): void { // Type should match the value emitted by mat-select
+
+  onSelectRegion(selectedRegionId: string): void {
+    // Type should match the value emitted by mat-select
     // Update the supplierInfo.region in the form
     this.supplierForm.get('supplierInfo')?.get('region')?.setValue(selectedRegionId);
   }
 
-  onSelectSupType(selectedTypeId: string): void { // Type should match the value emitted by mat-select
+  onSelectSupType(selectedTypeId: string): void {
+    // Type should match the value emitted by mat-select
     // Update the genericSupplierType in the form
     this.supplierForm.get('genericSupplierType')?.setValue(selectedTypeId);
   }
+
   // Opens the form for editing a supplier.
   openDialog(selectedSupplier: SupplierType): void {
     this.selectedSupplier = selectedSupplier;
     console.log('openDialog - this.selectedSupplier:', this.selectedSupplier);
 
-    const index = this.suppliers.findIndex(s => s.id === selectedSupplier.id);
+    const index = this.suppliers.findIndex((s) => s.id === selectedSupplier.id);
     if (index >= 0) {
       this.editingRecordIndex = index;
     }
 
-    // @ts-ignore
     const supplierInfo = this.selectedSupplier?.supplierInfo;
     const genericSupplierType = this.selectedSupplier?.genericSupplierType;
 
-    this.supplierForm.get('supplierInfo')?.get('id')?.setValue(supplierInfo?.id );
-    this.supplierForm.get('supplierInfo')?.get('name')?.setValue(supplierInfo?.name );
-    this.supplierForm.get('supplierInfo')?.get('lastname')?.setValue(supplierInfo?.lastname );
-    this.supplierForm.get('supplierInfo')?.get('phone')?.setValue(supplierInfo?.phone );
-    this.supplierForm.get('supplierInfo')?.get('email')?.setValue(supplierInfo?.email );
-    this.supplierForm.get('supplierInfo')?.get('address')?.setValue(supplierInfo?.address );
-    this.supplierForm.get('supplierInfo')?.get('region')?.setValue(supplierInfo?.region || null);
-    this.supplierForm.get('supplierInfo')?.get('rib')?.setValue(supplierInfo?.rib );
-    this.supplierForm.get('supplierInfo')?.get('bankName')?.setValue(supplierInfo?.bankName );
+    this.supplierForm.get('supplierInfo')?.get('id')?.setValue(supplierInfo?.id);
+    this.supplierForm.get('supplierInfo')?.get('name')?.setValue(supplierInfo?.name);
+    this.supplierForm.get('supplierInfo')?.get('lastname')?.setValue(supplierInfo?.lastname);
+    this.supplierForm.get('supplierInfo')?.get('phone')?.setValue(supplierInfo?.phone);
+    this.supplierForm.get('supplierInfo')?.get('email')?.setValue(supplierInfo?.email);
+    this.supplierForm.get('supplierInfo')?.get('address')?.setValue(supplierInfo?.address);
+    this.supplierForm
+      .get('supplierInfo')
+      ?.get('region')
+      ?.setValue(supplierInfo?.region || null);
+    this.supplierForm.get('supplierInfo')?.get('rib')?.setValue(supplierInfo?.rib);
+    this.supplierForm.get('supplierInfo')?.get('bankName')?.setValue(supplierInfo?.bankName);
     this.supplierForm.get('genericSupplierType')?.setValue(genericSupplierType || null);
     console.log('Form value after setting individual controls:', this.supplierForm.value);
     console.log('Form validity after setting individual controls:', this.supplierForm.valid);
     this.formOpen = true;
   }
+
   // Deletes a supplier record.
   deleteRecord(supplier: SupplierType): void {
     if (confirm('Are you sure you want to delete this supplier?')) {
       this.supplierService.deleteSupplier(supplier.id!).subscribe(
         (res) => {
           if (res && res.success) {
-            this.suppliers = this.suppliers.filter(s => s.id !== supplier.id);
+            this.suppliers = this.suppliers.filter((s) => s.id !== supplier.id);
             this.FilterSource.data = this.suppliers;
             this.message = res.message;
           }
@@ -298,7 +305,8 @@ export class SupplierComponent implements OnInit {
     this.editingRecordIndex = -1;
     this.formOpen = false;
   }
-  public objectComparisonFunction = function( option:any, value:any ) : boolean {
+
+  public objectComparisonFunction = function (option: any, value: any): boolean {
     return option.id === value.id;
-  }
+  };
 }

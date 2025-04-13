@@ -1,5 +1,5 @@
 <mat-card>
-   <mat-card-content>
+  <mat-card-content>
     <form (ngSubmit)="updateDelivery()" style="padding: 0 15px 15px 15px;">
 
       <!-- Select Delivery -->
@@ -17,19 +17,19 @@
         <mat-form-field appearance="outline" class="w-100 m-b-10">
           <mat-label>{{ rule.ruleName || rule.ruleKey }}</mat-label>
           <input
-            matInput
-            type="number"
-            name="rule_{{ rule.index }}"
             [(ngModel)]="qualityControlResult[rule.ruleKey]"
-            [min]="rule.minValue"
             [max]="rule.maxValue"
+            [min]="rule.minValue"
+            matInput
+            name="rule_{{ rule.index }}"
             required
+            type="number"
           />
         </mat-form-field>
       </div>
       <!-- Submit Button -->
       <div style="margin-top: 20px; text-align: right;">
-        <button mat-flat-button color="primary" type="submit">Enregistrer</button>
+        <button color="primary" mat-flat-button type="submit">Enregistrer</button>
       </div>
     </form>
   </mat-card-content>

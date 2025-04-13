@@ -29,10 +29,13 @@ export class AppComponent implements OnInit {
     this.router.events.subscribe(
       (event) => {
         if (event instanceof NavigationStart) {
+          console.log('Navigation started to:', event.url);
+
           setTimeout(() => {
             this.isSpinnerVisible = true;
           });
         } else if (event instanceof NavigationEnd || event instanceof NavigationCancel || event instanceof NavigationError) {
+          console.log('Navigation ended at:', event.url);
           setTimeout(() => {
             this.isSpinnerVisible = false;
           });

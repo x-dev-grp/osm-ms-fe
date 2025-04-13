@@ -17,7 +17,7 @@ import { SupplierTypeService } from '../services/supplier-type.service';
 import { GenericTypeService } from '../services/generic-type.service';
 import { QualityControlRuleService } from '../services/quality-control-rule.service';
 import { BaseType } from '../models/base-type';
-import { TypeCategory } from '../models/type-category.enum';
+import { TypeCategory } from '../../osm/models/type-category.enum';
 import { ConfigurationComponent } from '../../@theme/layouts/configuration/configuration.component';
 import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } from '@angular/material/expansion';
 import { StorageUnitDto } from '../models/StorageUnitDto';

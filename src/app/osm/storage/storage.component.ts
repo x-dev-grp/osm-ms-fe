@@ -5,7 +5,7 @@ import { StorageUnitDtoService } from '../services/storage.service';
 import { BaseType } from '../models/base-type';
 import {   StorageUnitDto } from '../models/StorageUnitDto';
 import { GenericTypeService } from '../services/generic-type.service';
-import { TypeCategory } from '../models/type-category.enum';
+import { TypeCategory } from '../../osm/models/type-category.enum';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';

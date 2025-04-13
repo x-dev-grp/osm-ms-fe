@@ -1,9 +1,7 @@
-
-
 export interface QualityControlRule {
   id?: number;
-  ruleKey: string;          // ex: 'infestation_percentage'
-  ruleName: string;         // ex: 'Infestation Percentage'
+  ruleKey: string; // ex: 'infestation_percentage'
+  ruleName: string; // ex: 'Infestation Percentage'
   description: string;
   isOilQc: boolean;
   minValue: number;

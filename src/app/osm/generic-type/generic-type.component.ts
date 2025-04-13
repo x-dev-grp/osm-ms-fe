@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BaseType } from '../models/base-type';
 import { GenericTypeService } from '../services/generic-type.service';
-import { TypeCategory } from '../models/type-category.enum';
+import { TypeCategory } from '../../osm/models/type-category.enum';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import {  MatDialogModule } from '@angular/material/dialog';

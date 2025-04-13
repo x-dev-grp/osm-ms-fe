@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { ApiResponse } from '../../osm/models/api-response';
 import { QualityControlRule } from '../../osm/models/quality-control-rule';
 
-
 @Injectable({
   providedIn: 'root'
 })

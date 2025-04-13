@@ -1,6 +1,7 @@
-import {BaseType} from "./BaseType";
-import {Transporter} from "./Transporter";
-import {SupplierType} from "./SupplierType";
+import { BaseType } from './BaseType';
+import { Transporter } from './Transporter';
+import { SupplierType } from './SupplierType';
+import { DeliveryType } from './deleveryType';
 
 export interface Delivery {
   id?: string;
@@ -10,7 +11,7 @@ export interface Delivery {
   lotNumber?: string;
   deliveryDate?: string; // Utiliser string pour LocalDateTime
   trtDate?: string;
- // status?: OliveLotStatus;
+  // status?: OliveLotStatus;
 
   globalLotNumber?: string;
   oliveQuantity?: number;
@@ -32,16 +33,5 @@ export interface Delivery {
   tierOrBase?: string;
   parcel?: string;
 
- // qualityControlResults?: QualityControlResultDto[];
-}
-
-export enum OliveLotStatus {
-  NEW = 'NEW',
-  IN_PROGRESS = 'IN_PROGRESS',
-  COMPLETED = 'COMPLETED',
-  CANCELED = 'CANCELED'
-}
-export enum DeliveryType {
-  OLIVE = 'OLIVE',
-  OIL = 'OIL'
+  // qualityControlResults?: QualityControlResultDto[];
 }

@@ -1,3 +1,1 @@
-export interface Supplier {
-
-}
+export interface Supplier {}

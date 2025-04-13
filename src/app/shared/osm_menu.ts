@@ -88,6 +88,100 @@ export const osm_menus: Navigation[] = [
     ]
   },
   {
+    id: 'pages',
+    title: 'Pages',
+    type: 'group',
+    icon: 'icon-navigation',
+    role: [Role.Admin, Role.User],
+    children: [
+      {
+        id: 'maintenance',
+        title: 'Maintenance',
+        type: 'collapse',
+        icon: '#custom-flag',
+        role: [Role.Admin, Role.User],
+        children: [
+          {
+            id: 'error',
+            title: 'Error 404',
+            type: 'item',
+            url: '/maintenance/error-404',
+            target: true,
+            breadcrumbs: false
+          },
+          {
+            id: 'error-500',
+            title: 'Error 500',
+            type: 'item',
+            url: '/maintenance/error-500',
+            target: true,
+            breadcrumbs: false
+          },
+          {
+            id: 'under-constructor',
+            title: 'Under Construction',
+            type: 'item',
+            url: '/maintenance/under-constructor',
+            target: true,
+            breadcrumbs: false
+          },
+          {
+            id: 'coming-soon',
+            title: 'Coming Soon',
+            type: 'item',
+            url: '/maintenance/coming-soon',
+            target: true,
+            breadcrumbs: false
+          }
+        ]
+      },
+      {
+        id: 'contact-us',
+        title: 'Contact Us',
+        type: 'item',
+        classes: 'nav-item',
+        url: '/contact-us',
+        icon: '#custom-24-support',
+        role: [Role.Admin, Role.User],
+        target: true,
+        breadcrumbs: false
+      },
+      {
+        id: 'price',
+        title: 'Price',
+        type: 'collapse',
+        icon: '#custom-dollar-square',
+        role: [Role.Admin, Role.User],
+        children: [
+          {
+            id: 'price-1',
+            title: 'Price 1',
+            type: 'item',
+            url: '/price/price-1'
+          },
+          {
+            id: 'price-2',
+            title: 'Price 2',
+            type: 'item',
+            url: '/price/price-2'
+          }
+        ]
+      },
+      {
+        id: 'landing',
+        title: 'Landing',
+        type: 'item',
+        classes: 'nav-item',
+        url: '/landing',
+        icon: '#custom-airplane',
+        role: [Role.Admin, Role.User],
+        target: true,
+        breadcrumbs: false
+      }
+    ]
+  },
+
+  {
     id: 'receptionGlobale',
     title: 'Réception',
     type: 'group',
@@ -100,6 +194,13 @@ export const osm_menus: Navigation[] = [
         type: 'item',
         classes: 'nav-item',
         url: '/reception/bonreception',
+        icon: '#custom-document-text'
+      }, {
+        id: 'recepetion',
+        title: 'Réception',
+        type: 'item',
+        classes: 'nav-item',
+        url: '/reception/reception',
         icon: '#custom-document-text'
       },
       {

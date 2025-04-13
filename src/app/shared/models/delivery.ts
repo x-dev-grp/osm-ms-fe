@@ -6,8 +6,8 @@ import { QualityControlResultDto } from './QualityControlResultDto';
 import { StorageUnitDto } from './StorageUnitDto';
 import { MillMachine } from './millMachine';
 import { Transporter } from './Transporter';
-import { deliveryType } from './deleveryType';
-import { OliveLotStatus } from './OliveLotStatus';
+ import { OliveLotStatus } from './OliveLotStatus';
+import { deliveryType } from '../../osm/models/deleveryType';
 
 export interface Delivery {
   millingMachine?: MillMachine;

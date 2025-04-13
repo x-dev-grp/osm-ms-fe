@@ -20,7 +20,10 @@ import {
 import { TypeCategory } from '../../osm/models/type-category.enum';
 import { BaseType } from '../../osm/models/base-type';
 import { GenericTypeService } from '../../osm/services/generic-type.service';
-
+interface TypeOption {
+  name: string;
+  value: TypeCategory;
+}
 @Component({
   selector: 'app-generic-type',
   templateUrl: './generic-type.component.html',
@@ -47,21 +50,25 @@ import { GenericTypeService } from '../../osm/services/generic-type.service';
 })
 export class GenericTypeComponent implements OnInit {
   recordForm: FormGroup;
-  typeOptions = [
-    { name: 'Waste Type', value: TypeCategory.WASTE_TYPE },
-    { name: 'Region', value: TypeCategory.REGION },
-    { name: 'Supplier Type', value: TypeCategory.SUPPLIER_TYPE },
-    { name: 'Olive Variety', value: TypeCategory.OLIVE_VARIETY },
-    { name: 'Production Method', value: TypeCategory.PRODUCTION_METHOD }, // e.g. Organic, Conventional
-    { name: 'Oil Variety', value: TypeCategory.OIL_VARIETY }
-  ];
+
   showDetails: boolean = false;
 
+
+   typeOptions: TypeOption[] = [];
+
+  // A mapping of TypeCategory to its loaded records.
+  recordsByCategory: Record<TypeCategory, BaseType[]> = {} as Record<TypeCategory, BaseType[]>;
+
+  // Currently selected records to display in the table.
   records: BaseType[] = [];
   displayedColumns: string[] = ['name', 'type', 'description', 'actions'];
   FilterSource: MatTableDataSource<BaseType> = new MatTableDataSource<BaseType>(this.records);
-  selectedType: TypeCategory = this.typeOptions[0].value;
-  editingRecordIndex: number = -1; // Keeps track of the record being edited
+
+  // The currently selected type.
+  selectedType!: TypeCategory;
+
+  // This index is used when editing a record.
+  editingRecordIndex: number = -1;
 
   constructor(private fb: FormBuilder, private genericTypeService: GenericTypeService) {
     this.recordForm = this.fb.group({
@@ -71,9 +78,28 @@ export class GenericTypeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Load initial records based on the default selected type
+    // Dynamically build options based on the TypeCategory enum.
+    // Object.keys returns an array of the enum keys.
+    this.typeOptions = Object.keys(TypeCategory).map(key => {
+      // Convert underscore names into a more readable format.
+      const formattedName = key.replace(/_/g, ' ')
+        .toLowerCase()
+        .replace(/\b\w/g, char => char.toUpperCase());
+      return { name: formattedName, value: TypeCategory[key as keyof typeof TypeCategory] };
+    });
+
+    // Dynamically initialize the recordsByCategory object:
+    Object.values(TypeCategory).forEach((cat: TypeCategory) => {
+      this.recordsByCategory[cat] = [];
+    });
+
+    // Set the default selected type to the first option.
+    this.selectedType = this.typeOptions[0].value;
+
+    // Load records for the default selected type.
     this.loadRecords(this.selectedType);
   }
+
 
   /**
    * Handles the change of type selection from the dropdown.

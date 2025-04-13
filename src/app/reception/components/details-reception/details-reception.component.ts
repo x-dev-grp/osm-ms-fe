@@ -4,8 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-details-reception',
   imports: [],
   templateUrl: './details-reception.component.html',
+  standalone: true,
   styleUrl: './details-reception.component.scss'
 })
-export class DetailsReceptionComponent {
-
-}
+export class DetailsReceptionComponent {}

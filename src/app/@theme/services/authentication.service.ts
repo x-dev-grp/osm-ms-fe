@@ -1,10 +1,10 @@
 // angular import
 import { Injectable, signal, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 // project import
-import { environment } from 'src/environments/environment';
+import { AppConfig, environment } from 'src/environments/environment';
 import { User } from '../types/user';
 
 // Import the 'map' operator from 'rxjs/operators'
@@ -37,19 +37,21 @@ export class AuthenticationService {
     return currentUser ? currentUser.user.name : null;
   }
 
-  login(email: string, password: string) {
-    return this.http.post<User>(`${environment.apiUrl}/api/account/login`, { email, password }).pipe(
-      map((user: User) => {
-        // Explicitly define the type for 'user'
-        // Store user details and JWT token in local storage
-        localStorage.setItem('currentUser', JSON.stringify(user));
-        this.isLogin = true;
-        // Update the signal with the new user
-        this.currentUserSignal.set(user);
-        return user;
-      })
-    );
+
+  login(payload:any) {
+    const body = new URLSearchParams();
+    body.set('grant_type', 'TOKEN'); // Use the appropriate grant type e.g. 'client_credentials'
+    body.set('username', payload.username);
+    body.set('password', payload.password);
+
+
+    const headers = new HttpHeaders({
+      authorization: AppConfig.authentication.authorization_header,
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    return this.http.post<any>(`${AppConfig.authentication.authorization}`,body.toString(),{headers});
   }
+
 
   isLoggedIn() {
     return this.isLogin;
@@ -61,6 +63,6 @@ export class AuthenticationService {
     this.isLogin = false;
     // Update the signal to null
     this.currentUserSignal.set(null);
-    this.router.navigate(['/login']);
+    this.router.navigate(['/auth/login']);
   }
 }

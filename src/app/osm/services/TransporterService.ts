@@ -8,7 +8,7 @@ import { Transporter } from '../models/Transporter';
   providedIn: 'root'
 })
 export class TransporterService {
-  private baseUrl = '/api/production/transporters';
+  private baseUrl = '/api/production/transporter';
 
   constructor(private http: HttpClient) {}
 

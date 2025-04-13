@@ -1,9 +1,11 @@
-
 import { Supplier } from '../models/Supplier';
-import { BaseType} from "./BaseType";
-import { QualityControlResult } from "./QualityControlResult";
+import { BaseType } from './BaseType';
+import { QualityControlResult } from './QualityControlResult';
+import { OliveLotStatus } from '../../shared/models/OliveLotStatus';
+import { DeliveryType } from './deleveryType';
 
 export interface UnifiedDelivery {
+  id?: string;
   // --- Champs communs ---
   deliveryNumber: string;
   deliveryType: DeliveryType;
@@ -30,7 +32,7 @@ export interface UnifiedDelivery {
 
   // --- Champs spécifiques à l’olive ---
   trtDate: Date;
-  operationType: OperationType;
+  operationType: BaseType;
   oliveVariety: BaseType;
   sackCount: number;
   oliveType: BaseType;
@@ -42,19 +44,5 @@ export interface UnifiedDelivery {
 
 // enums.ts
 
-export enum DeliveryType {
-  OLIVE = "OLIVE",
-  HUILED = "HUILED",
-}
-export enum OperationType {
-  ACHAT = 'ACHAT',
-  CHANGEMENT = 'CHANGEMENT',
 
-}
-
-export enum OliveLotStatus {
-  BON = 'BON',
-  ACCEPTABLE = 'ACCEPTABLE',
-  MAUVAIS = 'MAUVAIS',
-}
 
