@@ -35,14 +35,9 @@
       {{ isEditing ? 'Modifier la réception' : 'Ajouter une réception' }}
     </mat-panel-title>
   </mat-expansion-panel-header>
-
   <form [formGroup]="receptionForm" style="padding: 0 15px 15px 15px;">
-
-
     <!-- Champs communs -->
-
     <h3>Informations générales</h3>
-
     <!-- Delivery Type -->
     <mat-form-field appearance="outline" class="w-100 m-b-10">
       <mat-label>Type de livraison</mat-label>
@@ -56,6 +51,11 @@
     <mat-form-field appearance="outline" class="w-100 m-b-10">
       <mat-label>Numéro de lot</mat-label>
       <input formControlName="lotNumber" matInput />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-100 m-b-10">
+      <mat-label>Numéro lot Global</mat-label>
+      <input type="string" formControlName="globalLotNumber" matInput />
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="w-100 m-b-10">
@@ -78,8 +78,15 @@
     <!-- Nouveaux champs ajoutés -->
     <mat-form-field appearance="outline" class="w-100 m-b-10">
       <mat-label>Région</mat-label>
-      <input formControlName="region" matInput />
+      <mat-select formControlName="region">
+        <mat-option *ngFor="let region of regions" [value]="region">
+          {{ region.name }}
+        </mat-option>
+      </mat-select>
     </mat-form-field>
+
+
+
 
     <mat-form-field appearance="outline" class="w-100 m-b-10">
       <mat-label>Matricule du camion</mat-label>
@@ -88,8 +95,12 @@
 
     <mat-form-field appearance="outline" class="w-100 m-b-10">
       <mat-label>État du camion</mat-label>
-      <input formControlName="etatCamion" matInput />
+      <mat-select formControlName="etatCamion">
+        <mat-option value="Conforme">Conforme</mat-option>
+        <mat-option value="Non conforme">Non conforme</mat-option>
+      </mat-select>
     </mat-form-field>
+
 
     <mat-form-field appearance="outline" class="w-100 m-b-10">
       <mat-label>Fournisseur</mat-label>
@@ -101,7 +112,7 @@
     </mat-form-field>
 
     <!-- Champs spécifiques olive -->
-    <ng-container *ngIf="selectedReception?.name === 'Réception Olive'">
+    <ng-container *ngIf="selectedReception?.name === 'OLIVE'">
       <h3>Informations spécifiques à l'olive</h3>
       <mat-form-field appearance="outline" class="w-100 m-b-10">
         <mat-label>Date de traitement</mat-label>
@@ -111,18 +122,14 @@
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="w-100 m-b-10">
-        <mat-label>Type d'opération</mat-label>
-        <mat-select formControlName="operationType">
-          <mat-option *ngFor="let op of operationTypes" [value]="op">
-            {{ op }}
+        <mat-label>Variété d'olive</mat-label>
+        <mat-select formControlName="oliveVariety">
+          <mat-option *ngFor="let variety of oliveVarieties" [value]="variety">
+            {{ variety.name }}
           </mat-option>
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="w-100 m-b-10">
-        <mat-label>Variété d'olive</mat-label>
-        <input formControlName="oliveVariety" matInput />
-      </mat-form-field>
 
       <mat-form-field appearance="outline" class="w-100 m-b-10">
         <mat-label>Nombre de sacs</mat-label>
@@ -131,8 +138,13 @@
 
       <mat-form-field appearance="outline" class="w-100 m-b-10">
         <mat-label>Type d'olive</mat-label>
-        <input formControlName="oliveType" matInput />
+        <mat-select formControlName="oliveType">
+          <mat-option *ngFor="let typeOlive of oliveTypes" [value]="typeOlive">
+            {{ typeOlive.name }}
+          </mat-option>
+        </mat-select>
       </mat-form-field>
+
 
       <mat-form-field appearance="outline" class="w-100 m-b-10">
         <mat-label>Statut</mat-label>
@@ -160,7 +172,7 @@
     </ng-container>
 
     <!-- Champs spécifiques huile -->
-    <ng-container *ngIf="selectedReception?.name === 'Réception Huile'">
+    <ng-container *ngIf="selectedReception?.name === 'OIL'">
       <h3>Informations spécifiques à l'huile</h3>
 <!--      <mat-form-field appearance="outline" class="w-100 m-b-10">-->
 <!--        <mat-label>Numéro de lot global</mat-label>-->
@@ -210,25 +222,11 @@
     </ng-container>
 
     <!-- Contrôle qualité -->
-    <div class="m-b-10" formArrayName="qualityControlResults">
-      <h3>Contrôle qualité</h3>
-      <div *ngFor="let control of qualityControlResults.controls; let i = index" [formGroupName]="i">
-        <mat-form-field appearance="outline" class="w-100 m-b-10">
-          <mat-label>Résultat {{ i + 1 }}</mat-label>
-          <input formControlName="result" matInput />
-        </mat-form-field>
-        <button (click)="removeQualityControl(i)" color="warn" mat-stroked-button type="button">
-          Supprimer
-        </button>
-      </div>
-      <button (click)="addQualityControl()" color="accent" mat-flat-button type="button">
-        Ajouter un résultat
-      </button>
-    </div>
+
 
     <!-- Boutons -->
     <div class="form-row m-t-10" style="display: flex; gap: 10px;">
-      <button color="primary" mat-flat-button type="submit">
+      <button color="primary" mat-flat-button  (click)="Enregistrer()" >
         {{ isEditing ? 'Mettre à jour' : 'Ajouter' }}
       </button>
       <button
@@ -247,6 +245,13 @@
   <app-card cardTitle="Delivery Table With Filtering">
     <div class="table-responsive">
       <table mat-table [dataSource]="FilterSource" class="mat-elevation-z8">
+
+        <!-- Reception Type Column -->
+        <ng-container matColumnDef="receptionType">
+          <th mat-header-cell *matHeaderCellDef>Reception Type</th>
+          <td mat-cell *matCellDef="let delivery">{{ delivery.receptionType }}</td>
+        </ng-container>
+
         <!-- Receipt Number Column -->
         <ng-container matColumnDef="receiptNumber">
           <th mat-header-cell *matHeaderCellDef>Receipt #</th>
@@ -265,8 +270,8 @@
           <td mat-cell *matCellDef="let delivery">{{ delivery.globalLotNumber }}</td>
         </ng-container>
 
-        <!-- Fournisseur Column -->
-        <ng-container matColumnDef="fournisseur">
+        <!-- Supplier Column -->
+        <ng-container matColumnDef="supplier">
           <th mat-header-cell *matHeaderCellDef>Fournisseur</th>
           <td mat-cell *matCellDef="let delivery">{{ delivery.supplier.name }}</td>
         </ng-container>

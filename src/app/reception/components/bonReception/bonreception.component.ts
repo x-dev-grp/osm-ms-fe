@@ -165,7 +165,7 @@ export class BonReceptionComponent implements OnInit {
 
     // Deliveries call and logging the result after subscription.
     this.deliveryService.getAllDeliveriesList().subscribe((data) => {
-      this.deliveries = data.data;
+      //this.deliveries = data.data;
       console.log('Loaded Deliveries:', this.deliveries);
     });
 
@@ -302,33 +302,7 @@ export class BonReceptionComponent implements OnInit {
 
   deleteDelivery() {}
 
-  getEmptyDelivery(): Delivery {
-    return {
-      receiptNumber: '',
-      millingMachine: undefined,
-      lotNumber: '',
-      deliveryDate: '',
-      deliveryType: deliveryType.OLIVE,
-      trtDate: '',
-      status: OliveLotStatus.NEW,
-      globalLotNumber: '',
-      tierOrBase: '',
-      parcel: '',
-      oliveQuantity: 0,
-      oilQuantity: 0,
-      region: undefined,
-      oliveVariety: undefined,
-      oilType: undefined,
-      oilVariety: undefined,
-      storageUnit: undefined,
-      supplierType: undefined,
-      unitPrice: 0,
-      price: 0,
-      paidAmount: 0,
-      unpaidAmount: 0,
-      qualityControlResults: []
-    };
-  }
+
 
   addQualityControl() {
     const newControl = this.fb.group({

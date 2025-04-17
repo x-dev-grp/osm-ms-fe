@@ -1,36 +1,176 @@
-<mat-card>
-  <mat-card-content>
-    <form (ngSubmit)="updateDelivery()" style="padding: 0 15px 15px 15px;">
+<app-card cardTitle="Contrôle Qualité">
+  <!-- Affichage du Tableau -->
+  <div *ngIf="currentView === 'table'; else detailsOrForm">
+    <div class="table-responsive">
+      <div class="mat-elevation-z8">
+        <!-- Table -->
+        <table mat-table [dataSource]="paginatorSource" class="full-width-table">
+          <!-- Type Réception Column -->
+          <ng-container matColumnDef="typeReception">
+            <th mat-header-cell *matHeaderCellDef>Type Réception</th>
+            <td mat-cell *matCellDef="let element">{{ element.type }}</td>
+          </ng-container>
 
-      <!-- Select Delivery -->
-      <mat-form-field appearance="outline" class="w-100 m-b-10">
-        <mat-label>Choisir une livraison</mat-label>
-        <mat-select [(ngModel)]="selectedDeliveryId" name="delivery" required>
-          <mat-option *ngFor="let delivery of deliveries" [value]="delivery.id">
-            {{ delivery.receiptNumber }} - {{ delivery.lotNumber }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+          <!-- Date Column -->
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef>Date</th>
+            <td mat-cell *matCellDef="let element">{{ element.deliveryDate | date: 'dd/MM/yyyy' }}</td>
+          </ng-container>
 
-      <!-- Quality Control Rule Inputs -->
-      <div *ngFor="let rule of qualityRules">
-        <mat-form-field appearance="outline" class="w-100 m-b-10">
-          <mat-label>{{ rule.ruleName || rule.ruleKey }}</mat-label>
-          <input
-            [(ngModel)]="qualityControlResult[rule.ruleKey]"
-            [max]="rule.maxValue"
-            [min]="rule.minValue"
-            matInput
-            name="rule_{{ rule.index }}"
-            required
-            type="number"
-          />
-        </mat-form-field>
+          <!-- Fournisseur Column -->
+          <ng-container matColumnDef="fournisseur">
+            <th mat-header-cell *matHeaderCellDef>Fournisseur</th>
+            <td mat-cell *matCellDef="let element">{{ element.supplier.name }}</td>
+          </ng-container>
+
+          <!-- État Column -->
+          <ng-container matColumnDef="etat">
+            <th mat-header-cell *matHeaderCellDef>État</th>
+            <td mat-cell *matCellDef="let element">{{ element.status }}</td>
+          </ng-container>
+
+          <!-- Action Column -->
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef>Action</th>
+            <td mat-cell *matCellDef="let element">
+              <!-- Contrôle Qualité -->
+              <button
+                *ngIf="!element.qualityControlDone"
+                (click)="startQualityControl(element)"
+                mat-icon-button
+                color="primary"
+                matTooltip="Contrôle Qualité">
+                <mat-icon>check_circle</mat-icon>
+              </button>
+
+              <!-- Consulter Détails -->
+              <button
+                (click)="viewDetails(element)"
+                mat-icon-button
+                color="accent"
+                matTooltip="Consulter Détails">
+                <mat-icon>visibility</mat-icon>
+              </button>
+
+              <!-- Supprimer -->
+              <button
+                (click)="deleteReception(element)"
+                mat-icon-button
+                color="warn"
+                matTooltip="Supprimer">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+          <!-- Header and Row Definitions -->
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+
+        <!-- Paginator -->
+        <mat-paginator
+          [pageSizeOptions]="[5, 10, 20]"
+          showFirstLastButtons
+          aria-label="Select page of periodic elements">
+        </mat-paginator>
       </div>
-      <!-- Submit Button -->
-      <div style="margin-top: 20px; text-align: right;">
-        <button color="primary" mat-flat-button type="submit">Enregistrer</button>
+    </div>
+  </div>
+
+  <!-- Formulaire de Contrôle Qualité ou Vue des Détails -->
+  <ng-template #detailsOrForm>
+    <!-- Formulaire de Contrôle Qualité -->
+    <div *ngIf="currentView === 'form'">
+      <div class="container">
+        <h3>Formulaire de Contrôle Qualité</h3>
+        <form (ngSubmit)="submitForm()">
+          <!-- Type de Réception -->
+          <p><strong>Type de Réception :</strong> {{ selectedReception?.type }}</p>
+
+          <!-- Champs pour Huile -->
+          <div *ngIf="selectedReception?.type === 'Huile'">
+            <div class="form-group">
+              <label for="acidity">Acidité</label>
+              <input type="number" [(ngModel)]="formFields.acidity" name="acidity" class="form-control" required />
+            </div>
+            <div class="form-group">
+              <label for="humidity">Humidité</label>
+              <input type="number" [(ngModel)]="formFields.humidity" name="humidity" class="form-control" required />
+            </div>
+            <div class="form-group">
+              <label for="impurities">Impuretés</label>
+              <input type="number" [(ngModel)]="formFields.impurities" name="impurities" class="form-control" required />
+            </div>
+            <div class="form-group">
+              <label for="peroxideIndex">Indice de Peroxyde</label>
+              <input type="number" [(ngModel)]="formFields.peroxideIndex" name="peroxideIndex" class="form-control" required />
+            </div>
+            <div class="form-group">
+              <label for="waxes">Cires</label>
+              <input type="number" [(ngModel)]="formFields.waxes" name="waxes" class="form-control" required />
+            </div>
+          </div>
+
+          <!-- Champs pour Olive -->
+          <div *ngIf="selectedReception?.type === 'Olive'">
+            <div class="form-group">
+              <label for="oliveCondition">État de l'Olive</label>
+              <select [(ngModel)]="formFields.oliveCondition" name="oliveCondition" class="form-control" required>
+                <option value="Bon">Bon</option>
+                <option value="Moyen">Moyen</option>
+                <option value="Mauvais">Mauvais</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="acceptanceStatus">Statut d'Acceptation</label>
+              <select [(ngModel)]="formFields.acceptanceStatus" name="acceptanceStatus" class="form-control" required>
+                <option value="Accepté">Accepté</option>
+                <option value="Refusé">Refusé</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Boutons -->
+          <button type="submit" class="btn btn-success">Valider</button>
+          <button type="button" class="btn btn-secondary ml-2" (click)="backToTable()">Retour</button>
+        </form>
       </div>
-    </form>
-  </mat-card-content>
-</mat-card>
+    </div>
+
+    <!-- Vue des Détails -->
+    <div *ngIf="currentView === 'details'">
+      <div class="container">
+        <h3>Détails de la Réception</h3>
+        <p><strong>Type :</strong> {{ selectedReception?.type }}</p>
+        <p><strong>Date :</strong> {{ selectedReception?.deliveryDate | date: 'dd/MM/yyyy' }}</p>
+        <p><strong>Fournisseur :</strong> {{ selectedReception?.supplier.name }}</p>
+        <p><strong>État :</strong> {{ selectedReception?.status }}</p>
+        <p><strong>Contrôle Qualité Effectué :</strong> {{ selectedReception?.qualityControlDone ? 'Oui' : 'Non' }}</p>
+
+        <!-- Afficher les données de contrôle qualité si elles existent -->
+        <div *ngIf="selectedReception?.qualityControlData; else noQualityControl">
+          <h4>Données de Contrôle Qualité</h4>
+          <div *ngIf="selectedReception?.type === 'Huile'">
+            <p><strong>Acidité :</strong> {{ selectedReception?.qualityControlData.acidity }}</p>
+            <p><strong>Humidité :</strong> {{ selectedReception?.qualityControlData.humidity }}</p>
+            <p><strong>Impuretés :</strong> {{ selectedReception?.qualityControlData.impurities }}</p>
+            <p><strong>Indice de Peroxyde :</strong> {{ selectedReception?.qualityControlData.peroxideIndex }}</p>
+            <p><strong>Cires :</strong> {{ selectedReception?.qualityControlData.waxes }}</p>
+          </div>
+          <div *ngIf="selectedReception?.type === 'Olive'">
+            <p><strong>État de l'Olive :</strong> {{ selectedReception?.qualityControlData.oliveCondition }}</p>
+            <p><strong>Statut d'Acceptation :</strong> {{ selectedReception?.qualityControlData.acceptanceStatus }}</p>
+          </div>
+        </div>
+
+        <!-- Afficher un message si aucun contrôle qualité n'a été effectué -->
+        <ng-template #noQualityControl>
+          <p><em>Aucun contrôle qualité effectué pour cette réception.</em></p>
+        </ng-template>
+
+        <!-- Bouton Retour -->
+        <button type="button" class="btn btn-secondary mt-3" (click)="backToTable()">Retour</button>
+      </div>
+    </div>
+  </ng-template>
+</app-card>

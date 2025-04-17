@@ -18,7 +18,6 @@ export interface UnifiedDelivery {
   matriculeCamion: string;
   etatCamion: string;
   supplier: Supplier;
-  qualityControlResults: QualityControlResult[];
 
   // --- Champs spécifiques à l'huile ---
   globalLotNumber: string;

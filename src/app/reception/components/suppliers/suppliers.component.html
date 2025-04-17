@@ -13,7 +13,7 @@
         </mat-expansion-panel-header>
 
         <!-- Supplier Form -->
-        <form (ngSubmit)="onSubmit()" [formGroup]="supplierForm">
+        <form  [formGroup]="supplierForm">
           <!-- Supplier Info Group - Row 1 -->
           <div class="row" formGroupName="supplierInfo">
             <div class="col-md-4">
@@ -96,7 +96,7 @@
           <!-- Form Buttons -->
           <div class="row" style="margin-top: 10px;">
             <div class="col-md-12">
-              <button [disabled]="supplierForm.invalid" color="primary" mat-raised-button type="submit">
+              <button [disabled]="supplierForm.invalid" color="primary" mat-raised-button (click)="onSubmit()">
                 {{ editingRecordIndex >= 0 ? 'Update' : 'Create' }} Supplier
               </button>
               <button (click)="cancelEdit()" *ngIf="editingRecordIndex >= 0" color="warn" mat-button type="button">

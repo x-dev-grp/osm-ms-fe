@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../models/api-response';
-import { UnifiedDelivery } from '../../reception/models/UnifiedDelivery';
+import {UnifiedDelivery} from "../models/UnifiedDelivery";
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +24,7 @@ export class UnifiedDeliveryService {
   getUnifiedDelivery(id: number): Observable<ApiResponse<UnifiedDelivery>> {
     return this.http.get<ApiResponse<UnifiedDelivery>>(`${this.baseUrl}/${id}`);
   }
+
 
   // Create a new UnifiedDeliverycc. The UnifiedDeliverycc payload may include qualityControlResults.
   createUnifiedDelivery(UnifiedDelivery: UnifiedDelivery): Observable<ApiResponse<UnifiedDelivery>> {
