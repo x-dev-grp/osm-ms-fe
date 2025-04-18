@@ -19,7 +19,7 @@ import { FooterComponent } from 'src/app/@theme/layouts/footer/footer.component'
 
 // service
 import { BuyNowLinkService } from 'src/app/@theme/services/buy-now-link.service';
-import { AuthenticationService } from 'src/app/@theme/services/authentication.service';
+import { AuthenticationService } from 'src/app/auth/services/authentication.service';
 
 // const import
 import { MIN_WIDTH_1025PX, MAX_WIDTH_1024PX, VERTICAL, HORIZONTAL, COMPACT, RTL, LTR } from 'src/app/@theme/const';

@@ -7,7 +7,7 @@ import { RouterModule } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
 // project import
-import { AuthenticationService } from 'src/app/@theme/services/authentication.service';
+import { AuthenticationService } from 'src/app/auth/services/authentication.service';
 import { BuyNowLinkService } from 'src/app/@theme/services/buy-now-link.service';
 import { ThemeLayoutService } from 'src/app/@theme/services/theme-layout.service';
 import { AbleProConfig } from 'src/app/app-config';
