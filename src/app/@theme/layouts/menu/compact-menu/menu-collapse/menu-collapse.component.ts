@@ -8,7 +8,7 @@ import { CommonModule, Location } from '@angular/common';
 import { NavigationItem } from 'src/app/@theme/types/navigation';
 import { SharedModule } from 'src/app/demo/shared/shared.module';
 import { MenuItemCompactComponent } from '../menu-item/menu-item.component';
-import { AuthenticationService } from 'src/app/@theme/services/authentication.service';
+import { AuthenticationService } from 'src/app/auth/services/authentication.service';
 
 @Component({
   selector: 'app-menu-collapse-compact',

@@ -8,7 +8,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
 import { NavigationItem } from 'src/app/@theme/types/navigation';
 import { SharedModule } from 'src/app/demo/shared/shared.module';
 import { MenuItemVerticalComponent } from '../menu-item/menu-item.component';
-import { AuthenticationService } from 'src/app/@theme/services/authentication.service';
+import { AuthenticationService } from 'src/app/auth/services/authentication.service';
 import { Role } from 'src/app/@theme/types/role';
 
 @Component({

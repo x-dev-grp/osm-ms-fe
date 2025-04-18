@@ -5,7 +5,7 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 
 // service
 import { BuyNowLinkService } from 'src/app/@theme/services/buy-now-link.service';
-import { AuthenticationService } from 'src/app/@theme/services/authentication.service';
+import { AuthenticationService } from 'src/app/auth/services/authentication.service';
 import { ThemeLayoutService } from 'src/app/@theme/services/theme-layout.service';
 
 // project import

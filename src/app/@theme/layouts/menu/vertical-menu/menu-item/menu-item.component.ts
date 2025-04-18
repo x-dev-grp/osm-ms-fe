@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
 import { NavigationItem } from 'src/app/@theme/types/navigation';
 import { ThemeLayoutService } from 'src/app/@theme/services/theme-layout.service';
 import { SharedModule } from 'src/app/demo/shared/shared.module';
-import { AuthenticationService } from 'src/app/@theme/services/authentication.service';
+import { AuthenticationService } from 'src/app/auth/services/authentication.service';
 import { Role } from 'src/app/@theme/types/role';
 
 @Component({

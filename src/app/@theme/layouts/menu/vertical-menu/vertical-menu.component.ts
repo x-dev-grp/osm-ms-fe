@@ -10,7 +10,7 @@ import { HORIZONTAL, VERTICAL, COMPACT } from 'src/app/@theme/const';
 import { SharedModule } from 'src/app/demo/shared/shared.module';
 import { MenuGroupVerticalComponent } from './menu-group/menu-group.component';
 import { MenuItemVerticalComponent } from './menu-item/menu-item.component';
-import { AuthenticationService } from 'src/app/@theme/services/authentication.service';
+import { AuthenticationService } from 'src/app/auth/services/authentication.service';
 import { MenuCollapseComponent } from './menu-collapse/menu-collapse.component';
 
 @Component({

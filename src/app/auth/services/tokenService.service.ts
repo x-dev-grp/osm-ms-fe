@@ -1,5 +1,6 @@
 // src/app/services/cookie.service.ts
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { jwtDecode } from 'jwt-decode';
 import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({
@@ -8,26 +9,45 @@ import { CookieService } from 'ngx-cookie-service';
 export class TokenService {
   private tokenKey = 'auth_token'; // Name of the cookie
   private refreshTokenKey = 'auth_refresh_token';
-  constructor(private cookieService: CookieService) {}
-
+  constructor() {}
+  private _cookieService=inject(CookieService);
   // Set token in the cookie
   setToken(token: string): void {
-    this.cookieService.set(this.tokenKey, token);
+    this._cookieService.set(this.tokenKey, token,{
+      expires:3,
+      path:'/',
+      secure : true,
+      sameSite :'Strict'
+    });
   }
   // Set token in the cookie
-  setRefreshToken(token: string): void {
-    this.cookieService.set(this.refreshTokenKey, token);
+  setRefreshToken(refreshToken: string): void {
+    this._cookieService.set(this.refreshTokenKey, refreshToken,{
+      expires:3,
+      path:'/',
+      secure : true,
+      sameSite :'Strict'
+    });
   }
   // Get token from the cookie
   getToken(): string | null {
-    return this.cookieService.get(this.tokenKey);
+    return this._cookieService.get(this.tokenKey);
   }
   getRefreshToken(): string | null {
-    return this.cookieService.get(this.refreshTokenKey);
+    return this._cookieService.get(this.refreshTokenKey) ;
   }
   // Delete token from the cookie
   deleteToken(): void {
-    this.cookieService.delete(this.tokenKey);
-    this.cookieService.delete(this.refreshTokenKey);
+    this._cookieService.delete(this.tokenKey);
+    this._cookieService.delete(this.refreshTokenKey);
+  }
+  clearTokens(): void {
+    this._cookieService.delete(this.tokenKey, '/');
+    this._cookieService.delete(this.refreshTokenKey, '/');
+  }
+  decodeToken(){
+    if(this._cookieService.get(this.tokenKey))
+       return jwtDecode( this._cookieService.get(this.tokenKey))
+    return null;
   }
 }

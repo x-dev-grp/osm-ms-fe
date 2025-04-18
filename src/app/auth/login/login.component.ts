@@ -7,7 +7,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 // project import
 import { SharedModule } from 'src/app/demo/shared/shared.module';
 import { TokenService } from '../services/tokenService.service';
-import { AuthenticationService } from '../../@theme/services/authentication.service';
+import { AuthenticationService } from '../services/authentication.service';
 import { first } from 'rxjs';
 
 @Component({

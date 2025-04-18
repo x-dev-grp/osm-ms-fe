@@ -3,7 +3,7 @@ import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/c
 import { Observable } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
-import { AuthenticationService } from '../services/authentication.service';
+import { AuthenticationService } from '../../auth/services/authentication.service';
 
 @Injectable()
 export class BasicAuthInterceptor implements HttpInterceptor {
