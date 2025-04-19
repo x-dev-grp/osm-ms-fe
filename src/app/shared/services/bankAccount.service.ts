@@ -26,6 +26,7 @@ export class BankAccountService {
     return this.http.get<ApiResponse<BankAccount>>(`${this.baseUrl}/${id}`);
   }
 
+
   // Create a new BankAccountcc. The BankAccountcc payload may include qualityControlResults.
   createBankAccount(BankAccount: BankAccount): Observable<ApiResponse<BankAccount>> {
     return this.http.post<ApiResponse<BankAccount>>(this.baseUrl, BankAccount);
