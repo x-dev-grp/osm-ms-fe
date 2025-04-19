@@ -163,7 +163,6 @@ export class ReceptionComponent implements OnInit {
     this.loadRecords(TypeCategory.OPERATION_TYPE);
     this.loadRecords(TypeCategory.REGION);
     this.loadSuppliers();
-    //this.loadDeliveries();
   }
 
   showToast(message: string, duration: number = 3000): void {
@@ -457,6 +456,7 @@ export class ReceptionComponent implements OnInit {
     this.isEditing = false;
     this.selectedReceptionId = undefined;
   }
+
 
   cancelEdit(): void {
     this.resetForm();

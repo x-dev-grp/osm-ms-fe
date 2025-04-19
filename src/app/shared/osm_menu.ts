@@ -255,14 +255,13 @@ export const osm_menus: Navigation[] = [
         title: 'Pricing & Accounting',
         type: 'item',
         url: '/settings/pricing',
-        role: [Role.Admin, Role.User]
-      },
-      {
+         role: [Role.Admin, Role.User]
+      },{
         id: 'banks',
         title: 'Banks managment',
         type: 'item',
         url: '/settings/banks',
-        role: [Role.Admin, Role.User]
+         role: [Role.Admin, Role.User]
       },
       {
         id: 'genericTypes',
