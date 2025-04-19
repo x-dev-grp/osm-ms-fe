@@ -1,0 +1,38 @@
+.rule-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+
+  /* Default: two columns ----------------------------------------------- */
+  mat-form-field,
+  mat-checkbox {
+    flex: 1 1 calc(50% - 16px);
+  }
+
+  /* Elements that must span the full width ----------------------------- */
+  .full-width {
+    flex: 1 1 100%;
+  }
+
+  /* Fine‑tune checkbox alignment --------------------------------------- */
+  .oil-qc,
+  .boolean-expected {
+    align-self: center;      // keeps checkboxes vertically centred
+    margin-top: 4px;
+  }
+
+  /* Action buttons container ------------------------------------------- */
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  /* Mobile: stack everything in one column ----------------------------- */
+  @media (max-width: 600px) {
+    mat-form-field,
+    mat-checkbox {
+      flex: 1 1 100%;
+    }
+  }
+}

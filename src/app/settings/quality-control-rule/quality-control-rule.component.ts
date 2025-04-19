@@ -1,163 +1,194 @@
-import { Component, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
-import { SharedModule } from '../../demo/shared/shared.module';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { Subject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { SharedModule } from '../../demo/shared/shared.module';
 import { QualityControlRule } from '../../shared/models/quality-control-rule';
 import { QualityControlRuleService } from '../../shared/services/quality-control-rule.service';
 
-
 @Component({
   selector: 'app-quality-control-rule',
-  imports: [CommonModule, SharedModule],
-
-  templateUrl: './quality-control-rule.component.html',
   standalone: true,
-  styleUrls: ['./quality-control-rule.component.scss']
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatTableModule,
+    MatExpansionModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatCheckboxModule,
+    MatButtonModule,
+    MatIconModule,
+    SharedModule
+  ],
+  templateUrl: './quality-control-rule.component.html',
+  styleUrls: ['./quality-control-rule.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class QualityControlRuleComponent implements OnInit {
-  message: string = '';
-  rules: QualityControlRule[] = [];
-  displayedColumns: string[] = ['ruleKey', 'isOilQc', 'ruleName', 'description', 'minValue', 'maxValue', 'actions'];
-  selectedRule: QualityControlRule = this.createEmptyRule();
-  isEditing: boolean = false;
-  formOpen: boolean = false;
-   FilterSource: MatTableDataSource<QualityControlRule> = new MatTableDataSource(this.rules);
+export class QualityControlRuleComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+  ruleForm: FormGroup;
+  dataSource = new MatTableDataSource<QualityControlRule>([]);
+  displayedColumns = ['ruleKey', 'Oil QC', 'ruleType', 'ruleName', 'minValue', 'maxValue', 'actions'] as const;
+  formOpen = false;
+  isEditing = false;
+  message = '';
+  isLoading = false;
 
-  constructor(private qualityControlRuleService: QualityControlRuleService) {}
+  constructor(
+    private fb: FormBuilder,
+    private service: QualityControlRuleService
+  ) {
+    this.ruleForm = this.fb.group({
+      id: [''],
+      ruleKey: ['', Validators.required],
+      oilQc:  [false],
+      ruleType: ['numeric', Validators.required],
+      booleanValue: [false],
+      minValue: [0, Validators.required],
+      maxValue: [0, Validators.required],
+      ruleName: ['', Validators.required],
+      description: ['']
+    });
+    this.ruleForm.get('ruleType')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(type => {
+        const boolCtrl = this.ruleForm.get('booleanValue')!;
+        const minCtrl = this.ruleForm.get('minValue')!;
+        const maxCtrl = this.ruleForm.get('maxValue')!;
+        if (type === 'numeric') {
+          minCtrl.setValidators([Validators.required]);
+          maxCtrl.setValidators([Validators.required]);
+          boolCtrl.clearValidators();
+        } else {
+          boolCtrl.setValidators([Validators.required]);
+          minCtrl.clearValidators();
+          maxCtrl.clearValidators();
+        }
+        boolCtrl.updateValueAndValidity();
+        minCtrl.updateValueAndValidity();
+        maxCtrl.updateValueAndValidity();
+      });
+  }
 
   ngOnInit(): void {
-    // Initialize with sample data
     this.loadRules();
   }
 
-  createEmptyRule(): QualityControlRule {
-    return {
-      id: '',
-      ruleKey: '',
-      oilQc: false,
-      ruleName: '',
-      description: '',
-      minValue: 0,
-      maxValue: 0
-    };
-  }
-
   loadRules(): void {
-    this.qualityControlRuleService.getAllRules().subscribe(
-      (res) => {
-        if (res && res.success) {
-          // Unwrap nested array if necessary
-          this.rules = Array.isArray(res.data) && Array.isArray(res.data[0]) ? res.data[0] : res.data;
-          this.FilterSource.data = this.rules;
-
-          this.message = res.message;
+    this.isLoading = true;
+    this.service.getAllRules().pipe(
+      takeUntil(this.destroy$),
+      finalize(() => this.isLoading = false)
+    ).subscribe(
+      res => {
+        if (res?.success) {
+          this.dataSource.data = Array.isArray(res.data[0]) ? res.data[0] : res.data;
+          this.message = '';
         } else {
-          this.rules = [];
           this.message = res.message;
         }
       },
-      (err) => {
-        console.error('Error loading quality control rules', err);
-      }
+      () => this.message = 'Failed to load rules.'
     );
   }
 
-  addRule(): void {
-     this.qualityControlRuleService.createRule(this.selectedRule).subscribe(
-      (res) => {
-        if (res && res.success) {
-          this.loadRules();
-          this.resetForm();
-          this.message = res.message;
-        }
-      },
-      (err) => {
-        console.error('Error creating quality control rule', err);
-      }
-    );
-     this.selectedRule = this.createEmptyRule();
+  openForm(edit?: QualityControlRule): void {
+    if (edit) {
+      this.ruleForm.reset({
+        id:           edit.id        ?? '',
+        ruleKey:      edit.ruleKey,
+        oilQc:        edit.oilQc     ?? false,
+        ruleType:     (edit.ruleType ?? 'numeric').toLowerCase(),
+        booleanValue: edit.booleanValue ?? false,
+        minValue:     edit.minValue  ?? 0,
+        maxValue:     edit.maxValue  ?? 0,
+        ruleName:     edit.ruleName  ?? '',
+        description:  edit.description ?? ''
+      });
+      this.isEditing = true;
+    } else {
+      this.ruleForm.reset({
+        id:           '',
+        ruleKey:      '',
+        oilQc:        false,
+        ruleType:     'numeric',
+        booleanValue: false,
+        minValue:     0,
+        maxValue:     0,
+        ruleName:     '',
+        description:  ''
+      });
+      this.isEditing = false;
+    }
+    this.formOpen = true;
   }
 
-  editRule(rule: QualityControlRule): void {
-    this.selectedRule = { ...rule };
-    this.isEditing = true;
+  cancel(): void {
+    this.formOpen = false;
+    this.isEditing = false;
     this.message = '';
   }
 
-  updateRule(): void {
-    if (!this.selectedRule.id) return;
-    this.qualityControlRuleService.updateRule(  this.selectedRule).subscribe(
-      (res) => {
-        if (res && res.success) {
-          this.loadRules();
-          this.resetForm();
-          this.isEditing = false;
-          this.message = res.message;
-          this.isEditing = false;
-          this.selectedRule = this.createEmptyRule();}
+  onSubmit(): void {
+    if (this.ruleForm.invalid) {
+      this.ruleForm.markAllAsTouched();
+      return;
+    }
+    const v = this.ruleForm.value;
+    const payload: any = {
+      id:           v.id,
+      ruleKey:      v.ruleKey,
+      oilQc:        v.oilQc,
+      ruleType:     v.ruleType,
+      ruleName:     v.ruleName,
+      description:  v.description,
+      minValue:     v.ruleType === 'numeric' ? v.minValue : null,
+      maxValue:     v.ruleType === 'numeric' ? v.maxValue : null,
+      booleanValue: v.ruleType === 'boolean' ? v.booleanValue : null
+    };
+    this.isLoading = true;
+    const op$ = this.isEditing
+      ? this.service.updateRule(payload)
+      : this.service.createRule(payload);
+    op$.pipe(
+      takeUntil(this.destroy$),
+      finalize(() => this.isLoading = false)
+    ).subscribe(
+      res => {
+        if (res?.success) this.loadRules();
+        this.cancel();
       },
-      (err) => {
-        console.error('Error updating quality control rule', err);
-      }
+      () => this.message = 'Operation failed.'
     );
-
-
   }
 
   deleteRule(rule: QualityControlRule): void {
     if (!rule.id) return;
-    this.qualityControlRuleService.deleteRule(rule.id).subscribe(
-      (res) => {
-        if (res && res.success) {
-          this.rules = this.rules.filter((r) => r.id !== rule.id);
-          this.message = res.message;
-        }
+    this.isLoading = true;
+    this.service.deleteRule(rule.id).pipe(
+      takeUntil(this.destroy$),
+      finalize(() => this.isLoading = false)
+    ).subscribe(
+      res => {
+        if (res?.success) this.loadRules();
       },
-      (err) => {
-        console.error('Error deleting quality control rule', err);
-      }
+      () => this.message = 'Delete failed.'
     );
-
   }
 
-  cancelEdit(): void {
-    this.isEditing = false;
-    this.selectedRule = this.createEmptyRule();
-    this.message = 'Edit cancelled.';
-    this.closeForm();
-  }
-
-  onSubmit(): void {
-    if (this.isEditing) {
-      this.updateRule();
-    } else {
-      this.addRule();
-    }
-    this.closeForm();
-  }
-
-  openForm(): void {
-    this.cancelEdit();
-    this.formOpen = true;
-  }
-
-  openFormForEdit(rule: QualityControlRule): void {
-    this.editRule(rule);
-    this.formOpen = true;
-  }
-
-  closeForm(): void {
-    this.formOpen = false;
-  }
-
-  private resetForm(): void {
-    this.selectedRule = {
-       ruleKey: '',
-      oilQc: false,
-      ruleName: '',
-      description: '',
-      minValue: 0,
-      maxValue: 0
-    };
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
