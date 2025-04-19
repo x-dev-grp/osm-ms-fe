@@ -1,46 +1,168 @@
-<h2 class="mb-3">Mill Profile</h2>
+<app-card cardTitle="Company Profile">
+  <form
+    [formGroup]="millProfileForm"
+    (ngSubmit)="onSave()"
+    class="needs-validation">
 
-<form [formGroup]="millProfileForm" (ngSubmit)="onSave()">
-  <div class="row">
-    <div class="col-md-6 mb-3">
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Mill Name</mat-label>
-        <input matInput formControlName="millName" placeholder="Enter mill name" />
-      </mat-form-field>
+    <div class="row">
+      <!-- ───── Left column ────────────────────────────────────────── -->
+      <div class="col-lg-6">
+
+        <mat-form-field appearance="outline" class="w-100 mb-3">
+          <mat-label>Legal Name</mat-label>
+          <input matInput formControlName="legalName" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100 mb-3">
+          <mat-label>Reg. Commerce (RC)</mat-label>
+          <input matInput formControlName="registrationNumber" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100 mb-3">
+          <mat-label>Matricule Fiscale</mat-label>
+          <input matInput formControlName="taxId" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100 mb-3">
+          <mat-label>Matricule CNSS</mat-label>
+          <input matInput formControlName="cnssNumber" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100 mb-3">
+          <mat-label>Legal Form</mat-label>
+          <mat-select formControlName="legalForm">
+            <mat-option value="SARL">SARL</mat-option>
+            <mat-option value="SUARL">SUARL</mat-option>
+            <mat-option value="SA">SA</mat-option>
+            <mat-option value="SNC">SNC</mat-option>
+            <mat-option value="Autre">Autre</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100 mb-3">
+          <mat-label>Capital (TND)</mat-label>
+          <input matInput type="number" formControlName="capital" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100 mb-3">
+          <mat-label>Creation Date</mat-label>
+          <input matInput formControlName="creationDate" [matDatepicker]="picker" />
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <!-- ───── Right column ───────────────────────────────────────── -->
+      <div class="col-lg-6">
+
+        <mat-form-field appearance="outline" class="w-100 mb-3">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" type="email" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100 mb-3">
+          <mat-label>Phone</mat-label>
+          <input matInput formControlName="phone" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100 mb-3">
+          <mat-label>Website</mat-label>
+          <input matInput formControlName="website" />
+        </mat-form-field>
+
+        <!-- Address now a simple input -->
+        <mat-form-field appearance="outline" class="w-100 mb-3">
+          <mat-label>Address</mat-label>
+          <input matInput formControlName="addressLine1" />
+        </mat-form-field>
+
+        <div class="d-flex gap-3 mb-3">
+          <mat-form-field appearance="outline" class="flex-fill">
+            <mat-label>City</mat-label>
+            <input matInput formControlName="city" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="flex-fill">
+            <mat-label>Postal Code</mat-label>
+            <input matInput formControlName="postalCode" maxlength="4" />
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="w-100 mb-3">
+          <mat-label>Governorate</mat-label>
+          <mat-select formControlName="governorate">
+            <mat-option *ngFor="let g of governorates" [value]="g">{{ g }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Bank‑accounts read‑only list -->
+        <ng-container *ngIf="bankAccounts?.length">
+          <h6 class="mt-4 mb-2 fw-semibold">Bank Accounts</h6>
+          <mat-list dense>
+            <mat-list-item *ngFor="let acc of bankAccounts">
+              {{ acc.rib }} : {{ acc.bankName }}
+            </mat-list-item>
+          </mat-list>
+        </ng-container>
+      </div>
+
+      <!-- ───── Logo drop‑zone spans full width ───────────────────────── -->
+      <div class="col-12 mb-3">
+        <div
+          class="logo-drop-zone"
+          [class.file-over]="fileOver"
+          (dragover)="onDragOver($event)"
+          (dragleave)="onDragLeave($event)"
+          (drop)="onFileDropped($event)"
+          (click)="fileInput.click()">
+          <input
+            #fileInput
+            type="file"
+            accept="image/png, image/jpeg"
+            hidden
+            (change)="onFilePicked($event)" />
+
+          <ng-container *ngIf="logoPreview; else placeholder">
+            <img [src]="logoPreview" class="logo-preview" alt="Logo preview" />
+            <button
+              mat-icon-button
+              color="warn"
+              class="remove-btn"
+              (click)="removeLogo(); $event.stopPropagation()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </ng-container>
+
+          <ng-template #placeholder>
+            <p>Drag &amp; drop logo here,<br/>or click to browse</p>
+          </ng-template>
+        </div>
+      </div>
     </div>
 
-    <div class="col-md-6 mb-3">
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Registration Number</mat-label>
-        <input matInput formControlName="registrationNumber" />
-      </mat-form-field>
-    </div>
+    <!-- ───── Action buttons ───────────────────────────────────────── -->
+       <div class="actions full-width mt-3">
+         <button
+           mat-flat-button
+           color="primary"
+           type="submit"
+           [disabled]="millProfileForm.invalid"
+           matTooltip="Save company profile"
+         >
+           <mat-icon class="me-1">save</mat-icon>
+           Save
+         </button>
 
-    <div class="col-md-6 mb-3">
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Email</mat-label>
-        <input matInput formControlName="email" type="email" />
-      </mat-form-field>
-    </div>
-
-    <div class="col-md-6 mb-3">
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Phone</mat-label>
-        <input matInput formControlName="phone" />
-      </mat-form-field>
-    </div>
-
-    <div class="col-12 mb-3">
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Address</mat-label>
-        <textarea matInput formControlName="address" rows="2"></textarea>
-      </mat-form-field>
-    </div>
-
-  </div>
-
-  <div class="d-flex gap-2">
-    <button mat-raised-button color="primary" type="submit">Save</button>
-    <button mat-stroked-button color="warn" type="button" (click)="onReset()">Reset</button>
-  </div>
-</form>
+         <button
+           mat-stroked-button
+           color="warn"
+           type="button"
+           (click)="onReset()"
+           matTooltip="Reset all fields"
+         >
+           <mat-icon class="me-1">undo</mat-icon>
+           Reset
+         </button>
+       </div>
+  </form>
+</app-card>

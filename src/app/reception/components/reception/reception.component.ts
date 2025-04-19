@@ -147,7 +147,7 @@ export class ReceptionComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
+this.loadDeliveries()
     this.loadRecords(TypeCategory.SUPPLIER_TYPE);
     this.loadRecords(TypeCategory.PRODUCTION_METHOD);
     this.loadRecords(TypeCategory.OLIVE_VARIETY);
@@ -166,6 +166,31 @@ export class ReceptionComponent implements OnInit {
       verticalPosition: 'top',
       panelClass: ['custom-snackbar']
     });
+  }
+  loadDeliveries(): void {
+    this.deliveryService.getAllDeliveriesList().subscribe(
+      (res) => {
+        if (res && res.success) {
+          this.deliveries = res.data;
+
+          const parsedLotNumbers = this.deliveries
+            .map((d) => d.lotNumber?.replace(/^\D+/, '') ?? '') // remove prefix
+            .map((numStr) => parseInt(numStr, 10)) // parse to number
+            .filter((n) => !isNaN(n)); // keep valid numbers only
+
+          const maxLotNumber = parsedLotNumbers.length > 0 ? Math.max(...parsedLotNumbers) : 1;
+
+          console.log('Max Lot Number:', maxLotNumber);
+
+          this.FilterSource.data = this.deliveries;
+          this.message = res.message;
+        } else {
+          this.deliveries = [];
+          this.message = res.message;
+        }
+      },
+      (err) => console.error('Error loading deliveries', err)
+    );
   }
 
   deleteDelivery(delivery: Delivery): void {
