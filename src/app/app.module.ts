@@ -29,7 +29,6 @@ import {
 import { SharedModule } from './demo/shared/shared.module';
 import { LocalDateTimePipe } from './osm/pipes/local-date-time.pipe';
 import { SupplierComponent } from './reception/components/suppliers/suppliers.component';
-import { LoginComponent } from './auth/login/login.component';
 
 @NgModule({
   declarations: [],
