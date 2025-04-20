@@ -1,5 +1,5 @@
-import { SupplierInfo } from '../../shared/models/supplierInfo';
-import { BaseType } from './BaseType';
+import { SupplierInfo } from './supplierInfo';
+import { BaseType } from './base-type';
 
 export interface SupplierType {
   id?: string;

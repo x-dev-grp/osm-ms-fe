@@ -23,8 +23,8 @@ import {
 import {MatSelect} from "@angular/material/select";
 import {MatTooltip} from "@angular/material/tooltip";
 import {NgForOf, NgIf} from "@angular/common";
-import {TypeCategory} from "../osm/models/type-category.enum";
-import {BaseType} from "../osm/models/base-type";
+import {TypeCategory} from "../shared/models/type-category.enum";
+import {BaseType} from "../shared/models/base-type";
 import {GenericTypeService} from "../osm/services/generic-type.service";
 
 @Component({

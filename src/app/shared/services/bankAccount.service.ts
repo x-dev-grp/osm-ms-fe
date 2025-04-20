@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../models/api-response';
- import { BankAccount } from '../models/BankAccount';
+import { BankAccount } from '../models/BankAccount';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +16,7 @@ export class BankAccountService {
   getAllBanks(page: number, size: number): Observable<ApiResponse<never>> {
     return this.http.get<ApiResponse<never>>(`${this.baseUrl}/fetchAll?page=${page}&size=${size}`);
   }
+
   getAllBanksList(): Observable<ApiResponse<BankAccount>> {
     return this.http.get<ApiResponse<BankAccount>>(`${this.baseUrl}/fetchAll`);
   }
@@ -24,7 +25,6 @@ export class BankAccountService {
   getBankAccount(id: number): Observable<ApiResponse<BankAccount>> {
     return this.http.get<ApiResponse<BankAccount>>(`${this.baseUrl}/${id}`);
   }
-
 
   // Create a new BankAccountcc. The BankAccountcc payload may include qualityControlResults.
   createBankAccount(BankAccount: BankAccount): Observable<ApiResponse<BankAccount>> {

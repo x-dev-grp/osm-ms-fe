@@ -63,29 +63,25 @@ const routes: Routes = [
         loadComponent: () => import('./demo/pages/material-table/material-table.component').then((c) => c.MaterialTableComponent),
         data: { roles: [Role.Admin, Role.User] }
       },
-      {
-        path: 'generic',
-        loadComponent: () => import('./osm/generic-type/generic-type.component').then((c) => c.GenericTypeComponent),
-        data: { roles: [Role.Admin, Role.User] }
-      },
-      {
-        path: 'delivery',
-        loadComponent: () => import('./osm/delivery/delivery.component').then((c) => c.DeliveryComponent),
-        data: { roles: [Role.Admin, Role.User] }
-      },
+      // {
+      //   path: 'generic',
+      //   loadComponent: () => import('./osm/generic-type/generic-type.component').then((c) => c.GenericTypeComponent),
+      //   data: { roles: [Role.Admin, Role.User] }
+      // },
+      // {
+      //   path: 'delivery',
+      //   loadComponent: () => import('./osm/delivery/delivery.component').then((c) => c.DeliveryComponent),
+      //   data: { roles: [Role.Admin, Role.User] }
+      // },
       {
         path: 'qcr',
-        loadComponent: () => import('./osm/quality-control-rule/quality-control-rule.component').then((c) => c.QualityControlRuleComponent),
+        loadComponent: () => import('./settings/quality-control-rule/quality-control-rule.component').then((c) => c.QualityControlRuleComponent),
         data: { roles: [Role.Admin, Role.User] }
       },
-      {
-        path: 'planning',
-        loadComponent: () => import('./osm/planning/planning.component').then((c) => c.PlanningComponent),
-        data: { roles: [Role.Admin, Role.User] }
-      },
+
       {
         path: 'storage',
-        loadComponent: () => import('./osm/storage/storage.component').then((c) => c.StorageUnitsComponent),
+        loadComponent: () => import('./settings/storage/storage.component').then((c) => c.StorageUnitsComponent),
         data: { roles: [Role.Admin, Role.User] }
       },
 
@@ -111,7 +107,7 @@ const routes: Routes = [
       },
       {
         path: 'millers',
-        loadComponent: () => import('./osm/millmachin/millmachin.component').then((c) => c.MillMachineComponent),
+        loadComponent: () => import('./settings/millmachin/millmachin.component').then((c) => c.MillMachineComponent),
         data: { roles: [Role.Admin, Role.User] }
       },
       {

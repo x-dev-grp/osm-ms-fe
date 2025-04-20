@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
- import {ApiResponse} from "../models/api-response";
+import { ApiResponse } from '../models/api-response';
 import { Transporter } from '../models/Transporter';
 
 @Injectable({
@@ -16,6 +16,7 @@ export class TransporterService {
   getAllTransporters(): Observable<ApiResponse<Transporter>> {
     return this.http.get<ApiResponse<Transporter>>(`${this.baseUrl}/fetchAll`);
   }
+
   // Get transporter by id
   getTransporter(id: number): Observable<ApiResponse<Transporter>> {
     return this.http.get<ApiResponse<Transporter>>(`${this.baseUrl}/${id}`);

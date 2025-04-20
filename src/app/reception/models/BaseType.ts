@@ -1,4 +1,4 @@
-import { TypeCategory } from '../../osm/models/type-category.enum';
+import { TypeCategory } from '../../shared/models/type-category.enum';
 
 export interface BaseType {
   id?: number;

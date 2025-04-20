@@ -1,7 +1,5 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import { DeliveryService } from '../../../osm/services/delivery.service';
-import { Delivery } from '../../../osm/models/delivery';
-import { QualityControlRuleService } from '../../services/quality-control-rule.service';
+  import { QualityControlRuleService } from '../../services/quality-control-rule.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -16,6 +14,8 @@ import { MatSortModule } from '@angular/material/sort';
 import { SharedModule } from '../../../demo/shared/shared.module';
 import { MatTableDataSource } from '@angular/material/table';
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
+import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
 
 export interface QualityControlRule {
   id?: string; // original backend ID
@@ -187,7 +187,7 @@ export class ControleQualiteComponent implements OnInit,AfterViewInit {
     }
 
   ];
-  deliveries: Delivery[] = [];
+  deliveries: UnifiedDelivery[] = [];
   selectedDeliveryId: string | null = null;
 
   paginatorSource = new MatTableDataSource<any>();
@@ -199,7 +199,7 @@ export class ControleQualiteComponent implements OnInit,AfterViewInit {
 
   constructor(
     private qcService: QualityControlRuleService,
-    private deliveryService: DeliveryService
+    private deliveryService: UnifiedDeliveryService
   ) {}
 
   ngOnInit(): void {
@@ -265,10 +265,10 @@ export class ControleQualiteComponent implements OnInit,AfterViewInit {
     }
 
     // Map into QualityControlResultDto[] with full rule object
-    selectedDelivery.qualityControlResults = this.qualityRules.map((rule) => ({
-      ruleId: rule,
-      measuredValue: this.qualityControlResult[rule.ruleKey]
-    }));
+    // selectedDelivery.qualityControlResults = this.qualityRules.map((rule) => ({
+    //   ruleId: rule,
+    //   measuredValue: this.qualityControlResult[rule.ruleKey]
+    // }));
 
     this.deliveryService.updateDelivery(selectedDelivery).subscribe({
       next: () => alert('Contrôle qualité enregistré avec succès.'),
@@ -306,5 +306,4 @@ export class ControleQualiteComponent implements OnInit,AfterViewInit {
     this.selectedReception = reception;
     this.currentView = 'details';
   }
-  deleteReception(reception:any){}
-}
+ }

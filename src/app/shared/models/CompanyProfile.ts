@@ -1,16 +1,15 @@
 // src/app/shared/models/company-profile.ts
 
-
 import { BankAccount } from './BankAccount';
 
 export interface CompanyProfile {
   id?: string;
-  legalName: string;             // Raison sociale
-  registrationNumber: string;     // RC
-  taxId: string;                  // Matricule fiscale
-  cnssNumber?: string;            // CNSS ID
-  legalForm: 'SARL'|'SUARL'|'SA'|'SNC'|'Autre';
-  capital: number;                // en TND
+  legalName: string; // Raison sociale
+  registrationNumber: string; // RC
+  taxId: string; // Matricule fiscale
+  cnssNumber?: string; // CNSS ID
+  legalForm: 'SARL' | 'SUARL' | 'SA' | 'SNC' | 'Autre';
+  capital: number; // en TND
 
   email?: string;
   phone?: string;

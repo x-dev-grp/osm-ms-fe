@@ -13,8 +13,8 @@ import { MatAccordion, MatExpansionModule,    } from '@angular/material/expansio
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSortModule } from '@angular/material/sort';
 import { SharedModule } from '../../demo/shared/shared.module';
-import { MillMachine } from '../models/millMachine';
-import { MillMachineService } from '../services/mill-machine.service';
+import { MillMachine } from '../../shared/models/millMachine';
+import { MillMachineService } from '../../shared/services/mill-machine.service';
 
 @Component({
   selector: 'app-mill-machine',

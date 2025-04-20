@@ -7,4 +7,5 @@ export interface BankAccount {
   bankBranch: string;
   currency: string;
   accountType: string;
-  active: boolean;}
+  active: boolean;
+}

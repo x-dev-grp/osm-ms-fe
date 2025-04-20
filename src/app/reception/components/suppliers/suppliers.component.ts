@@ -3,11 +3,10 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatAccordion, MatExpansionModule, MatExpansionPanel, MatExpansionPanelTitle } from '@angular/material/expansion';
 import { SharedModule } from '../../../demo/shared/shared.module';
-import { SupplierType } from '../../../osm/models/supplier-type';
+import { SupplierType } from '../../../shared/models/supplier-type';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { BaseType } from '../../../osm/models/base-type';
-import { SupplierTypeService } from '../../../osm/services/supplier-type.service';
-import { GenericTypeService } from '../../../osm/services/generic-type.service';
+import { BaseType } from '../../../shared/models/base-type';
+
  import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -17,7 +16,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { TypeCategory } from '../../../osm/models/type-category.enum';
+import { TypeCategory } from '../../../shared/models/type-category.enum';
+import { SupplierTypeService } from '../../../shared/services/supplier-type.service';
+import { GenericTypeService } from '../../../shared/services/generic-type.service';
 
 @Component({
   selector: 'app-suppliers',
@@ -60,7 +61,7 @@ export class SupplierComponent implements OnInit {
   @ViewChild('input') input: any;
 
   constructor(
-    private supplierService: SupplierTypeService,
+    private supplierService: SupplierTypeService    ,
     private genericTypeService: GenericTypeService,
     private fb: FormBuilder
   ) {}

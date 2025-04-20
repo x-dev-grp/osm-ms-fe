@@ -8,24 +8,22 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } from '@angular/material/expansion';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import {FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatSortModule } from '@angular/material/sort';
 import { SharedModule } from '../../../demo/shared/shared.module';
 import { ConfigurationComponent } from '../../../@theme/layouts/configuration/configuration.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { UnifiedDelivery} from "../../../shared/models/UnifiedDelivery";
+import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
 import { OliveLotStatus } from '../../../shared/models/OliveLotStatus';
-import { SupplierType } from '../../models/SupplierType';
 import { DeliveryType } from '../../models/deleveryType';
- import { BaseType } from '../../../osm/models/base-type';
+import { BaseType } from '../../../shared/models/base-type';
 import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
-import { TransporterService } from '../../../osm/services/TransporterService';
-import { GenericTypeService } from '../../../shared/services/generic-type.service';
+ import { GenericTypeService } from '../../../shared/services/generic-type.service';
 import { Transporter } from '../../models/Transporter';
-import { TypeCategory } from '../../../osm/models/type-category.enum';
-import { Delivery } from '../../../osm/models/delivery';
-import {SupplierTypeService} from "../../../osm/services/supplier-type.service";
+import { TypeCategory } from '../../../shared/models/type-category.enum';
+import { TransporterService } from '../../../shared/services/TransporterService';
+import { SupplierTypeService } from '../../../shared/services/supplier-type.service';
 
 @Component({
   selector: 'app-reception',
@@ -63,11 +61,20 @@ export class ReceptionComponent implements OnInit {
   isEditing: boolean = false;
   selectedDeliveryId: string | null = null;
 
-
   showAllCards: boolean = true; // Contrôle l'affichage de tous les cards
 
   deliveries: UnifiedDelivery[] = []; // la liste des livraisons
-  displayedColumns: string[] = ['receptionType', 'receiptNumber', 'lotNumber', 'globalLotNumber', 'supplier', 'deliveryDate', 'oliveQuantity', 'status', 'actions'];
+  displayedColumns: string[] = [
+    'receptionType',
+    'receiptNumber',
+    'lotNumber',
+    'globalLotNumber',
+    'supplier',
+    'deliveryDate',
+    'oliveQuantity',
+    'status',
+    'actions'
+  ];
   // Formulaire Reactif
   receptionForm: FormGroup;
   deliveryForm: FormGroup;
@@ -108,8 +115,8 @@ export class ReceptionComponent implements OnInit {
     private transportersService: TransporterService,
     private genericTypeService: GenericTypeService,
     private snackBar: MatSnackBar,
-    private supplierService: SupplierTypeService,
-   // private supplierServices : SupplierService //il faut etre recupere de supplier Service non supplier type
+    private supplierService: SupplierTypeService
+    // private supplierServices : SupplierService //il faut etre recupere de supplier Service non supplier type
   ) {
     this.receptionForm = this.fb.group({
       // Champs communs
@@ -147,7 +154,7 @@ export class ReceptionComponent implements OnInit {
   }
 
   ngOnInit(): void {
-this.loadDeliveries()
+    this.loadDeliveries();
     this.loadRecords(TypeCategory.SUPPLIER_TYPE);
     this.loadRecords(TypeCategory.PRODUCTION_METHOD);
     this.loadRecords(TypeCategory.OLIVE_VARIETY);
@@ -156,7 +163,7 @@ this.loadDeliveries()
     this.loadRecords(TypeCategory.OPERATION_TYPE);
     this.loadRecords(TypeCategory.REGION);
     this.loadSuppliers();
-   //this.loadDeliveries();
+    //this.loadDeliveries();
   }
 
   showToast(message: string, duration: number = 3000): void {
@@ -193,7 +200,7 @@ this.loadDeliveries()
     );
   }
 
-  deleteDelivery(delivery: Delivery): void {
+  deleteDelivery(delivery: UnifiedDelivery): void {
     if (!delivery.id) return;
     this.deliveryService.deleteUnifiedDelivery(delivery.id).subscribe(
       (res) => {
@@ -238,7 +245,6 @@ this.loadDeliveries()
           } else if (category === TypeCategory.SUPPLIER_TYPE) {
             this.supplierTypes = res.data;
             console.log('Loaded Supplier Types:', this.supplierTypes);
-
           } else if (category === TypeCategory.WASTE_TYPE) {
             this.wasteTypes = res.data;
             console.log('Loaded Waste Types:', this.wasteTypes);
@@ -382,7 +388,6 @@ this.loadDeliveries()
       oilType: cleanedFormValue.oilType, // Formaté comme { id: "101", name: "test-oil-type" }
       trtDate: this.formatDate(cleanedFormValue.trtDate),
 
-
       oliveVariety: cleanedFormValue.oliveVariety, // Formaté comme { id: "303", name: "test-olive-variety" }
       sackCount: cleanedFormValue.sackCount,
       oliveType: cleanedFormValue.oliveType, // Formaté comme { id: "404", name: "test-olive-type" }
@@ -401,13 +406,11 @@ this.loadDeliveries()
     request$.subscribe({
       next: (res) => {
         if (res.success) {
-          const message = this.isEditing
-            ? 'Réception mise à jour avec succès.'
-            : 'Réception ajoutée avec succès.';
+          const message = this.isEditing ? 'Réception mise à jour avec succès.' : 'Réception ajoutée avec succès.';
           this.showToast(message);
           this.resetForm();
         } else {
-          this.showToast(res.message || 'Échec de l\'opération.');
+          this.showToast(res.message || "Échec de l'opération.");
         }
       },
       error: (err) => {
@@ -417,7 +420,7 @@ this.loadDeliveries()
     });
   }
 
-// Méthode pour nettoyer et formater les valeurs du formulaire
+  // Méthode pour nettoyer et formater les valeurs du formulaire
   cleanPayload(payload: any): any {
     if (payload.deliveryType === 'OIL') {
       delete payload.oliveVariety;
@@ -448,20 +451,18 @@ this.loadDeliveries()
     return { id: field }; // au cas où tu reçois juste un ID
   }
 
-// Méthode pour réinitialiser le formulaire
+  // Méthode pour réinitialiser le formulaire
   resetForm(): void {
     this.receptionForm.reset();
     this.isEditing = false;
     this.selectedReceptionId = undefined;
   }
 
-
   cancelEdit(): void {
     this.resetForm();
   }
 
-
-  openDialog(delivery: Delivery): void {
+  openDialog(delivery: UnifiedDelivery): void {
     this.deliveryForm.patchValue(delivery);
     this.isEditing = true;
     this.selectedDeliveryId = delivery.id!;
@@ -490,6 +491,4 @@ this.loadDeliveries()
     formControls['oliveQuantity'].reset();
     formControls['parcel'].reset();
   }
-
-
 }

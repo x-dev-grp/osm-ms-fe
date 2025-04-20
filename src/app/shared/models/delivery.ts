@@ -6,8 +6,8 @@ import { QualityControlResultDto } from './QualityControlResultDto';
 import { StorageUnitDto } from './StorageUnitDto';
 import { MillMachine } from './millMachine';
 import { Transporter } from './Transporter';
- import { OliveLotStatus } from './OliveLotStatus';
-import { deliveryType } from '../../osm/models/deleveryType';
+import { OliveLotStatus } from './OliveLotStatus';
+import { deliveryType } from './deleveryType';
 
 export interface Delivery {
   millingMachine?: MillMachine;
@@ -17,7 +17,7 @@ export interface Delivery {
   deliveryDate?: string;
   trtDate?: string; // Date de TRT (Trituration Date)
   status?: OliveLotStatus;
-  deliveryType:deliveryType;
+  deliveryType: deliveryType;
   storageUnit?: StorageUnitDto;
   globalLotNumber?: string;
   oliveQuantity?: number;
@@ -34,7 +34,7 @@ export interface Delivery {
   olivType?: BaseType;
   oliveVariety?: BaseType;
   oilVariety?: BaseType; // optional, not used in form but keep it
-  oilType?: BaseType;    // Biologique / Conventionnelle
+  oilType?: BaseType; // Biologique / Conventionnelle
   supplier?: Supplier;
   tierOrBase?: string;
   parcel?: string;

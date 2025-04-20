@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
- import {ApiResponse} from "../models/api-response";
+ import { ApiResponse } from '../models/api-response';
 import { SupplierType } from '../models/supplier-type';
 
 @Injectable({
@@ -16,19 +16,20 @@ export class SupplierTypeService {
   getAllSuppliers(): Observable<ApiResponse<SupplierType>> {
     return this.http.get<ApiResponse<SupplierType>>(`${this.baseUrl}/fetchAll`);
   }
-  // Get SupplierType by id
+
+  // Get supplier by id
   getSupplier(id: number): Observable<ApiResponse<SupplierType>> {
     return this.http.get<ApiResponse<SupplierType>>(`${this.baseUrl}/${id}`);
   }
 
-  // Add a new SupplierType
-  addSupplier(SupplierType: SupplierType): Observable<ApiResponse<SupplierType>> {
-    return this.http.post<ApiResponse<SupplierType>>(`${this.baseUrl}`, SupplierType);
+  // Add a new supplier
+  addSupplier(supplier: SupplierType): Observable<ApiResponse<SupplierType>> {
+    return this.http.post<ApiResponse<SupplierType>>(`${this.baseUrl}`, supplier);
   }
 
-  // Update an existing SupplierType
-  updateSupplier( SupplierType: SupplierType): Observable<ApiResponse<SupplierType>> {
-    return this.http.put<ApiResponse<SupplierType>>(`${this.baseUrl}`, SupplierType);
+  // Update an existing supplier
+  updateSupplier( supplier: SupplierType): Observable<ApiResponse<SupplierType>> {
+    return this.http.put<ApiResponse<SupplierType>>(`${this.baseUrl}`, supplier);
   }
 
   // Optionally, if a delete endpoint exists, you can implement it here
