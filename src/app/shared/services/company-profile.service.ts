@@ -8,7 +8,6 @@ import { ApiResponse } from '../models/api-response';
   providedIn: 'root'
 })
 export class CompanyProfileService {
-
   private readonly baseUrl = '/api/production/company-profile';
 
   constructor(private http: HttpClient) {}
@@ -16,7 +15,6 @@ export class CompanyProfileService {
   /** Fetches the existing profile (or an empty one if none) */
   getProfile(): Observable<ApiResponse<CompanyProfile>> {
     return this.http.get<ApiResponse<CompanyProfile>>(`${this.baseUrl}/fetchAll`);
-
   }
 
   /** Creates or updates based on presence of `id` */

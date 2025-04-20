@@ -457,7 +457,6 @@ export class ReceptionComponent implements OnInit {
     this.selectedReceptionId = undefined;
   }
 
-
   cancelEdit(): void {
     this.resetForm();
   }
