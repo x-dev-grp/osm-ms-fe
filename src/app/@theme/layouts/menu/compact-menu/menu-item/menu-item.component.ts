@@ -31,7 +31,7 @@ export class MenuItemCompactComponent implements OnInit {
     /**
      * current login user role
      */
-    const CurrentUserRole = this.authenticationService.currentUserValue?.user.role;
+    const CurrentUserRole = this.authenticationService.currentUserValue?.roles[0];
 
     /**
      * menu items

@@ -10,11 +10,6 @@ const authroutes: Routes = [
     path: '',
     loadComponent: () => import('./login/login.component').then((c) => c.LoginComponent),
   },
-  {
-    path: 'login',
-    loadComponent: () => import('./login/login.component').then((c) => c.LoginComponent),
-    data: { roles: [Role.Admin, Role.User] }
-  },
   // {
   //   path: 'register',
   //   loadComponent: () => import('./register/register.component').then((c) => c.RegisterComponent),

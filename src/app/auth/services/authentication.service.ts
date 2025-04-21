@@ -17,31 +17,39 @@ export class AuthenticationService {
   private http = inject(HttpClient);
   private _tokenService=inject(TokenService);
   private currentUserSignal = signal<User | null>(null);
-  isLogin: boolean = false;
 
   constructor() {
-    const token=this._tokenService.getToken();
-    const decoded =this._tokenService.decodeToken()
-    console.log(decoded)
+   const decodedToken :any=this._tokenService.decodeToken()
+   if (decodedToken!=null){
+    console.log(decodedToken)
+    const roles:any=decodedToken?.roles;
+    const permissions=decodedToken?.permissions;
+    let user:User=decodedToken?.osmUser;
+    user.roles=roles;
+    user.permissions=permissions;
+    this.setCurrentUserValue=user;
+   }
+  }
+
+  public set setCurrentUserValue(user:User | null){
+    this.currentUserSignal.set(user);
   }
 
   public get currentUserValue(): User | null {
-    // Access the current user value from the signal
+    // Access the current user valueg from the signal
     return this.currentUserSignal(); 
   }
 
   public get currentUserName(): string | null {
-    const currentUser = this.currentUserValue;
-    return currentUser ? currentUser?.user?.name : null;
+    return this.currentUserValue?.userName || null;
   }
 
   login(payload: any):Observable<any> {
     const body = new URLSearchParams();
-    body.set('grant_type', 'TOKEN'); // Use the appropriate grant type e.g. 'client_credentials'
+    body.set('grant_type', 'TOKEN'); 
     body.set('username', payload.username);
     body.set('password', payload.password);
 
-    this.isLogin = true;
     const headers = new HttpHeaders({
       authorization: AppConfig.authentication.authorization_header,
       'Content-Type': 'application/x-www-form-urlencoded'
@@ -50,10 +58,8 @@ export class AuthenticationService {
   }
   refreshToken(refreshToken:string):Observable<any> {
     const body = new URLSearchParams();
-    body.set('grant_type', 'refresh_token'); // Use the appropriate grant type e.g. 'client_credentials'
+    body.set('grant_type', 'refresh_token'); 
     body.set('refresh_token', refreshToken);
-
-    this.isLogin = true;
     const headers = new HttpHeaders({
       authorization: AppConfig.authentication.authorization_header,
       'Content-Type': 'application/x-www-form-urlencoded'
@@ -61,12 +67,18 @@ export class AuthenticationService {
     return this.http.post<any>(`${AppConfig.authentication.authorization}`, body.toString(), { headers });
   }
 
-  isLoggedIn() {
-    return this.isLogin;
-  }
 
-  logout() {
+  logout(queryParams?:string) {
      this._tokenService.deleteToken()
-     this.router.navigate(["/login"])  }
+     this.setCurrentUserValue=null;
+     if(!queryParams){
+      this.router.navigate(["/login"]) 
+      return;
+     }
+     this.router.navigate(['/login'], {
+      queryParams: { error: queryParams }
+    });
+    
+    }
 }
   

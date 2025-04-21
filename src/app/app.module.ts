@@ -4,18 +4,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
-import { LoginComponent } from './components/login/login.component';
 import { AppRoutingModule } from './app-routing.module';
 
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
 import {MatToolbarModule} from "@angular/material/toolbar";
-import { SignupComponent } from './components/signup/signup.component';
-import { PasswordResetComponent } from './components/password-reset/password-reset.component';
-import { SupplierComponent } from './osm/supplier/supplier.component';
+
 import { QualityControlRuleComponent } from './osm/quality-control-rule/quality-control-rule.component';
  import {GenericTypeComponent} from "./osm/generic-type/generic-type.component";
 import { DeliveryComponent } from './osm/delivery/delivery.component';
@@ -32,9 +28,11 @@ import {
 } from '@angular/material/table';
 import { SharedModule } from './demo/shared/shared.module';
 import { LocalDateTimePipe } from './osm/pipes/local-date-time.pipe';
+import { SupplierComponent } from './reception/components/suppliers/suppliers.component';
+import { LoginComponent } from './auth/login/login.component';
 
 @NgModule({
-  declarations: [LoginComponent, DashboardComponent, SignupComponent, PasswordResetComponent],
+  declarations: [],
   imports: [
     AppRoutingModule, // Must explicitly import routing module
     BrowserModule,
