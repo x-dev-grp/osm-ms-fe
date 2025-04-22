@@ -96,7 +96,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
      * current login user role
      */
     const currentUser = this.authenticationService.currentUserValue;
-    const userRoles = currentUser?.user.role ? [currentUser.user.role] : [Role.Admin];
+    const userRoles = currentUser?.roles[0] ? [currentUser.roles[0]] : [Role.Admin];
 
     /**
      * Role base menu filtering

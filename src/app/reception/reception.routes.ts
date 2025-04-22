@@ -6,7 +6,7 @@ import { ReceptionComponent } from './components/reception/reception.component';
 // import {ReceptionComponent} from "./components/reception/reception.component";
 
 export const receptionRoutes: Routes = [
-  { path: 'reception', component: ReceptionComponent },
+  { path: '', component: ReceptionComponent },
   { path: 'fournisseur', component: SupplierComponent },
   { path: 'bonreception', component: BonReceptionComponent },
   { path: 'quality', component: ControleQualiteComponent }

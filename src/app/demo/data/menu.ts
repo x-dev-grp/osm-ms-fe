@@ -21,7 +21,7 @@ export const menus: Navigation[] = [
             id: 'default',
             title: 'Default',
             type: 'item',
-            url: '/dashboard/default',
+            url: '/dashboard',
             breadcrumbs: false
           },
           {

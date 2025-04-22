@@ -20,7 +20,7 @@
             </div>
             <div class="preview-button animate__animated animate__delay-3s animate__fadeInUp">
               <a mat-stroked-button [routerLink]="['/components/input/button']" class="m-r-10 b-rad-20 component">Explore Components</a>
-              <a mat-flat-button class="b-rad-20" color="primary" [routerLink]="['/login']" [matMenuTriggerFor]="menu">Live Preview</a>
+              <a mat-flat-button class="b-rad-20" color="primary" [routerLink]="['/auth/login']" [matMenuTriggerFor]="menu">Live Preview</a>
               <mat-menu #menu="matMenu" (closed)="resetIcon()">
                 @for (item of techDetails; track item) {
                   @if (item.tech_name === 'Angular') {

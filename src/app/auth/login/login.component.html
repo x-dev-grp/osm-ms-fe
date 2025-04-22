@@ -1,7 +1,7 @@
 <div class="auth-main">
   <div class="auth-wrapper version-2">
     <div class="auth-side-content">
-      <img src="../../../assets/images/authentication/img-auth-sideimg.jpg" alt="images" class="img-fluid img-auth-side" />
+      <img src="../../../assets/images/authentication/olive-oil.webp" alt="images" class="img-fluid img-auth-side" />
     </div>
     <div class="auth-form">
       <app-card [showHeader]="false" class="auth-form-card" padding="40">
@@ -13,14 +13,18 @@
         </div>
 
         <div class="text-center m-b-25 f-20 f-w-500">Login With Your Email</div>
+        @if (errorMessage) {  <div class="alert alert-danger" role="alert">
+              {{errorMessage?.message}}
+        </div>}
         <form [formGroup]="form">
           <div class="text-start">
             <label for="name" class="f-w-500">Enter Your Email</label>
             <mat-form-field appearance="outline" class="w-100 m-t-5">
               <input matInput formControlName="username"  />
               @if (form.controls["username"].invalid) {
-                <mat-error>{{ getErrorMessage() }}</mat-error>
+                <mat-error>{{ getUserNameErrorMessage() }}</mat-error>
               }
+             
             </mat-form-field>
             <label for="name" class="f-w-500">Enter your password</label>
             <mat-form-field appearance="outline" class="w-100 m-t-5">
@@ -35,15 +39,18 @@
           </div>
           <div class="check-me">
             <mat-checkbox class="float-start" checked color="primary">Remember me?</mat-checkbox>
-            <div class="f-w-400 text-muted" [routerLink]="['/forgot-password']">Forgot Password</div>
+            <div class="f-w-400 text-muted" [routerLink]="['/auth/forgot-password']">Forgot Password</div>
           </div>
           <div class="grid">
-            <button (click)="submit()" mat-flat-button color="primary" class="b-rad-20 m-t-20">Login</button>
+            <button [disabled]="loading || form.invalid" (click)="submit()" mat-flat-button color="primary" class="b-rad-20 m-t-20">
+             @if(loading) {<mat-spinner  diameter="25" color="warn"></mat-spinner>}
+             @else {<ng-container >Login</ng-container>}  
+            </button>
           </div>
         </form>
         <!--        <div class="check-me m-t-20">-->
         <!--          <div class="f-w-400 text-muted">Don't have an Account?</div>-->
-        <!--          <a [routerLink]="['/register']" class="text-primary-500">Create Account</a>-->
+        <!--          <a [routerLink]="['/auth/register']" class="text-primary-500">Create Account</a>-->
         <!--        </div>-->
       </app-card>
     </div>
