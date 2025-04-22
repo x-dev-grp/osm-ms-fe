@@ -4,7 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 // project import
 import { AdminComponent } from './demo/layout/admin';
-import { AuthGuardChild } from './@theme/helpers/auth.guard';
+import { AuthGuardChild } from './interceptors/guards/auth.guard';
 
 //Type
 import { Role } from './@theme/types/role';
@@ -17,9 +17,8 @@ const routes: Routes = [
     canActivateChild: [AuthGuardChild],
     children: [
 
-
       {
-        path: 'dashboard',
+        path: '',
         loadChildren: () => import('./demo/pages/dashboard/dashboard.module').then((m) => m.DashboardModule),
         data: { roles: [Role.Admin, Role.User] }
       },
@@ -119,9 +118,9 @@ const routes: Routes = [
   },
 
   {
-    path: 'login',
+    path: 'auth',
     loadChildren: () => import('./auth/authentication.module').then((e) => e.AuthenticationModule),
-
+    
   },
 
   {

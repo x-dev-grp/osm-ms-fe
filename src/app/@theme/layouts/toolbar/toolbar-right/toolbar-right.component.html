@@ -208,8 +208,8 @@
             <img src="assets/images/user/avatar-2.png" alt="user-images" class="user-avatar" />
           </div>
           <div class="topic-description m-l-15">
-            <div class="user-name mat-body f-w-600">{{ this.authenticationService.currentUserName }} 🖖</div>
-            <p class="mat-caption">{{ this.authenticationService.currentUserValue?.user.email }}</p>
+            <div class="user-name mat-body f-w-600">{{ this.authenticationService?.currentUserName || "testUser" }} 🖖</div>
+            <p class="mat-caption">{{ this.authenticationService?.currentUserValue?.email || "test@gmail.com"}}</p>
           </div>
         </div>
         <mat-divider class="m-y-15"></mat-divider>
