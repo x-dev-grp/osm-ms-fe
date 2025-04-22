@@ -69,7 +69,7 @@ export class MenuCollapseComponent implements OnInit {
     /**
      * current login user role
      */
-    const currentUserRole = this.authenticationService.currentUserValue?.user.role || Role.Admin;
+    const currentUserRole = this.authenticationService.currentUserValue?.roles[0] || Role.Admin;
 
     /**
      * items parent role

@@ -9,10 +9,10 @@
                 <ul class="breadcrumb align-item-center">
                   <li class="breadcrumb-item">
                     @if (type === 'theme2') {
-                      <a [routerLink]="['/dashboard/default']" title="Home"><i class="ti ti-home-2"></i></a>
+                      <a [routerLink]="['/dashboard']" title="Home"><i class="ti ti-home-2"></i></a>
                     }
                     @if (type === 'theme1') {
-                      <a [routerLink]="['/dashboard/default']">{{ 'Home' | translate }}</a>
+                      <a [routerLink]="['/dashboard']">{{ 'Home' | translate }}</a>
                     }
                   </li>
                   @for (breadcrumb of navigationList; track breadcrumb) {

@@ -8,9 +8,14 @@ import { Role } from 'src/app/@theme/types/role';
 const routes: Routes = [
   {
     path: '',
-    children: [
+    redirectTo:"dashboard",
+    pathMatch:"full"
+  },
+  {
+    path:"dashboard",
+    children:[
       {
-        path: 'default',
+        path: '',
         loadComponent: () => import('./default/default.component').then((c) => c.DefaultComponent),
         data: { roles: [Role.Admin, Role.User] }
       },
@@ -25,7 +30,8 @@ const routes: Routes = [
         data: { roles: [Role.Admin] }
       }
     ]
-  }
+  },
+  
 ];
 
 @NgModule({
