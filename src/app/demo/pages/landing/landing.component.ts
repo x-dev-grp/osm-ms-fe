@@ -87,7 +87,7 @@ export class LandingComponent implements OnInit, OnDestroy {
 
   openProVersion() {
     window.open(
-      window.location.href.replace(window.location.search, '') + 'dashboard/default' + this.buyNowLinkService.queryString,
+      window.location.href.replace(window.location.search, '') + 'dashboard' + this.buyNowLinkService.queryString,
       '_blank'
     );
   }

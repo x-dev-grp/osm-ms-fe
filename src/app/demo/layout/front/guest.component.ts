@@ -73,7 +73,7 @@ export class GuestComponent {
   }
   openDashboard() {
     window.open(
-      window.location.href.replace(window.location.href, '') + 'dashboard/default' + this.buyNowLinkService.queryString,
+      window.location.href.replace(window.location.href, '') + 'dashboard' + this.buyNowLinkService.queryString,
       '_blank'
     );
   }

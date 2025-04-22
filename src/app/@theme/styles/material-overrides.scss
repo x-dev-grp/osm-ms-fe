@@ -382,4 +382,12 @@ body {
   .cdk-overlay-container {
     z-index: 1035 !important;
   }
+
+    .invalid-feedback {
+      font-size: 0.65rem;
+      color: #e13636;
+      margin-top: 0;
+      font-size: medium;
+      display: block !important;
+    }
 }

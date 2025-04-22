@@ -1,14 +1,12 @@
-import { Role } from './role';
 
-export class User {
-  serviceToken!: string;
-  user!: {
-    firstName?: string;
-    lastName?: string;
+export interface User {
     id: string;
+    username?: string;
     email: string;
     password: string;
-    name: string;
-    role: Role;
-  };
+    phoneNumber: string;
+    confirmationMethod:string;
+    isLocked:boolean;
+    roles: any;
+    permissions:any;
 }

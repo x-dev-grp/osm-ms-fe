@@ -21,7 +21,7 @@ export const osm_menus: Navigation[] = [
             id: 'default',
             title: 'Default',
             type: 'item',
-            url: '/dashboard/default',
+            url: '/dashboard',
             breadcrumbs: false
           },
           {
@@ -200,7 +200,7 @@ export const osm_menus: Navigation[] = [
         title: 'Réception',
         type: 'item',
         classes: 'nav-item',
-        url: '/reception/reception',
+        url: '/reception',
         icon: '#custom-document-text'
       },
       {

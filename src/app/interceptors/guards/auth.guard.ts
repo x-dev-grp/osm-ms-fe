@@ -2,11 +2,13 @@ import { Injectable, inject } from '@angular/core';
 import { Router, CanActivateChild, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 
 import { AuthenticationService } from '../../auth/services/authentication.service';
+import { TokenService } from 'src/app/auth/services/tokenService.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuardChild implements CanActivateChild {
   private router = inject(Router);
   private authenticationService = inject(AuthenticationService);
+  private _tokenService=inject(TokenService)
 
   /**
    * Determines whether a child route can be activated based on user authentication and authorization.
@@ -21,21 +23,23 @@ export class AuthGuardChild implements CanActivateChild {
    */
 
   canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    // const currentUser = this.authenticationService.currentUserValue;
-    // if (currentUser && this.authenticationService.isLoggedIn()) {
-    //   const { roles } = route.data;
-    //   if (roles && !roles.includes(currentUser.user.role)) {
-    //     // User not authorized, redirect to unauthorized page
-    //     this.router.navigate(['/unauthorized']);
-    //     return false;
-    //   }
-    //   // User is logged in and authorized for child routes
-    //   return true;
-    // }
-    //
-    // // User not logged in, redirect to login page
-    // this.router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
-    // return false;
-    return true
+    const token = this._tokenService.getToken();
+    const currentUser = this.authenticationService.currentUserValue;
+    if(token ){
+      if(currentUser ){
+        if(currentUser?.isLocked){
+          this.authenticationService.logout("locked");
+         // this.router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
+          return false;
+        }
+        // if(!currentUser?.roles.includes("ADMIN")){
+        //   this.router.navigate(['/unauthorized']);
+        //   return false;
+        // }
+      }
+      return true;
+    }
+    this.authenticationService.logout();
+    return false;
   }
 }
