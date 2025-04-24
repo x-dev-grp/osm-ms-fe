@@ -16,7 +16,7 @@ import { QualityControlRule } from '../models/quality-control-rule';
 export class QualityControlRuleComponent implements OnInit {
   message: string = '';
   rules: QualityControlRule[] = [];
-  displayedColumns: string[] = ['ruleKey', 'isOilQc', 'ruleName', 'description', 'minValue', 'maxValue', 'actions'];
+  displayedColumns: string[] = ['ruleKey', 'isisOilQc', 'ruleName', 'description', 'minValue', 'maxValue', 'actions'];
   selectedRule: QualityControlRule = this.createEmptyRule();
   isEditing: boolean = false;
   formOpen: boolean = false;
