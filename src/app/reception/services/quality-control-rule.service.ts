@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApiResponse } from '../../osm/models/api-response';
-import { QualityControlRule } from '../../osm/models/quality-control-rule';
+import { ApiResponse } from '../../shared/models/api-response';
+import { QualityControlRule } from '../../shared/models/quality-control-rule';
 
 @Injectable({
   providedIn: 'root'

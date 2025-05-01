@@ -1,5 +1,5 @@
-import { UnifiedDelivery } from '../models/UnifiedDelivery';
-import { BaseType } from '../models/BaseType';
+import { UnifiedDelivery } from '../../shared/models/UnifiedDelivery';
+import { BaseType } from '../../shared/models/base-type';
 
 /**
  * Generates a lot number based on the delivery's ID (or deliveryNumber), olive type code, and delivery year.

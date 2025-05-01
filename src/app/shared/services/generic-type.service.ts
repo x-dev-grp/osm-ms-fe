@@ -3,8 +3,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BaseType } from '../models/base-type';
 import { ApiResponse } from '../models/api-response';
-import { TypeCategory } from '../../osm/models/type-category.enum';
-// import {TypeCategory} from "../../osm/models/type-category.enum";
+import { TypeCategory } from '../models/type-category.enum';
+ // import {TypeCategory} from "../../osm/models/type-category.enum";
 
 @Injectable({
   providedIn: 'root'

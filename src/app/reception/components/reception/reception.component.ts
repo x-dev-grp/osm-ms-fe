@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -8,24 +8,23 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } from '@angular/material/expansion';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import {FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatSortModule } from '@angular/material/sort';
 import { SharedModule } from '../../../demo/shared/shared.module';
 import { ConfigurationComponent } from '../../../@theme/layouts/configuration/configuration.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { UnifiedDelivery} from "../../../shared/models/UnifiedDelivery";
+import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
 import { OliveLotStatus } from '../../../shared/models/OliveLotStatus';
-import { SupplierType } from '../../models/SupplierType';
-import { DeliveryType } from '../../models/deleveryType';
- import { BaseType } from '../../../osm/models/base-type';
+import { BaseType } from '../../../shared/models/base-type';
 import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
-import { TransporterService } from '../../../osm/services/TransporterService';
-import { GenericTypeService } from '../../../shared/services/generic-type.service';
-import { Transporter } from '../../models/Transporter';
-import { TypeCategory } from '../../../osm/models/type-category.enum';
-import { Delivery } from '../../../osm/models/delivery';
-import {SupplierTypeService} from "../../../osm/services/supplier-type.service";
+ import { GenericTypeService } from '../../../shared/services/generic-type.service';
+import { TypeCategory } from '../../../shared/models/type-category.enum';
+import { TransporterService } from '../../../shared/services/TransporterService';
+ import {MatPaginator} from "@angular/material/paginator";
+import { Router } from '@angular/router';
+import { SupplierType } from '../../../shared/models/supplier-type';
+import { SupplierTypeService } from '../../services/supplier-type.service';
 
 @Component({
   selector: 'app-reception',
@@ -51,26 +50,29 @@ import {SupplierTypeService} from "../../../osm/services/supplier-type.service";
   styleUrl: './reception.component.scss'
 })
 export class ReceptionComponent implements OnInit {
-  deliveryTypes = Object.values(DeliveryType); // ['OLIVE', 'HUILED']
-  selectedDeliveryType: DeliveryType | null = null;
-  isFormVisible: boolean = false;
   oliveLotStatuses = Object.values(OliveLotStatus); // ['BON', 'ACCEPTABLE', 'MAUVAIS']
-  //suppliers: Supplier[] = [];
-
+  loading: boolean = false;
+  receptionType: 'OLIVE' | 'OIL' | null = null;
+  selectedReceptionId?: string;
   // Variables pour gérer l'état
-  selectedReception: UnifiedDelivery[] | null = null;
+  selectedReception: UnifiedDelivery;
+
   formOpen: boolean = false;
   isEditing: boolean = false;
-  selectedDeliveryId: string | null = null;
-
-
   showAllCards: boolean = true; // Contrôle l'affichage de tous les cards
-
   deliveries: UnifiedDelivery[] = []; // la liste des livraisons
-  displayedColumns: string[] = ['receptionType', 'receiptNumber', 'lotNumber', 'globalLotNumber', 'supplier', 'deliveryDate', 'oliveQuantity', 'status', 'actions'];
+  displayedColumns: string[] = [
+    'receptionType', 'receiptNumber', 'lotNumber',
+    'globalLotNumber', 'supplier', 'deliveryDate',
+    'oliveQuantity', 'status', 'actions'
+  ];
+
+  selectedType: string = '';
+  selectedSupplier: string = '';
+  selectedDate: Date | null = null;
+
   // Formulaire Reactif
   receptionForm: FormGroup;
-  deliveryForm: FormGroup;
   public regions: BaseType[] = [];
   public supplierTypes: BaseType[] = [];
   public wasteTypes: BaseType[] = [];
@@ -78,13 +80,13 @@ export class ReceptionComponent implements OnInit {
   public oliveTypes: BaseType[] = [];
   public productionMethods: BaseType[] = [];
   public oilVarieties: BaseType[] = [];
-  public transporters: Transporter[] = [];
+  public oilTypes: BaseType[] = [];
   priceList = [
     {
       id: 'OLIVE',
       border: 'border-success',
       background: 'bg-success-50',
-      name: 'OLIVE',
+      deliveryType: 'OLIVE',
 
       color: 'text-success-500'
     },
@@ -92,14 +94,21 @@ export class ReceptionComponent implements OnInit {
       id: 'OIL',
       border: 'border-primary',
       background: 'bg-primary-50',
-      name: 'OIL',
+      deliveryType: 'OIL',
 
       color: 'text-primary-500'
     }
   ];
   FilterSource: MatTableDataSource<UnifiedDelivery> = new MatTableDataSource(this.deliveries);
   private message: string;
-  suppliers: any[] = [];
+  suppliers: SupplierType[] = [];
+  dataSource: MatTableDataSource<UnifiedDelivery> = new MatTableDataSource<UnifiedDelivery>([]);
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  private originalData: UnifiedDelivery[];
+
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+  }
 
   constructor(
     public dialog: MatDialog,
@@ -109,12 +118,13 @@ export class ReceptionComponent implements OnInit {
     private genericTypeService: GenericTypeService,
     private snackBar: MatSnackBar,
     private supplierService: SupplierTypeService,
-   // private supplierServices : SupplierService //il faut etre recupere de supplier Service non supplier type
+     private router: Router
   ) {
     this.receptionForm = this.fb.group({
       // Champs communs
       deliveryNumber: ['', Validators.required],
       deliveryType: [''],
+      receptionType: [''],
       lotNumber: ['', Validators.required],
       deliveryDate: [new Date(), Validators.required],
       region: [null, Validators.required],
@@ -135,7 +145,7 @@ export class ReceptionComponent implements OnInit {
       oilType: [null],
 
       // Champs spécifiques à l'olive
-      trtDate: [null],
+      trtDate: [new Date()],
       oliveVariety: [null],
       sackCount: [null],
       oliveType: [null],
@@ -147,7 +157,7 @@ export class ReceptionComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
+    this.loadDeliveries();
     this.loadRecords(TypeCategory.SUPPLIER_TYPE);
     this.loadRecords(TypeCategory.PRODUCTION_METHOD);
     this.loadRecords(TypeCategory.OLIVE_VARIETY);
@@ -156,7 +166,14 @@ export class ReceptionComponent implements OnInit {
     this.loadRecords(TypeCategory.OPERATION_TYPE);
     this.loadRecords(TypeCategory.REGION);
     this.loadSuppliers();
-   //this.loadDeliveries();
+    // assigner le valeur du chmps parcel lors la selection du champs region
+    this.receptionForm.get('region')?.valueChanges.subscribe((selectedRegion) => {
+      if (selectedRegion && selectedRegion.name) {
+        this.receptionForm.patchValue({
+          parcel: selectedRegion.name
+        });
+      }
+    });
   }
 
   showToast(message: string, duration: number = 3000): void {
@@ -168,7 +185,41 @@ export class ReceptionComponent implements OnInit {
     });
   }
 
-  deleteDelivery(delivery: Delivery): void {
+  loadDeliveries(): void {
+    this.deliveryService.getAllDeliveriesList().subscribe((res) => {
+      if (res && res.success) {
+        this.deliveries = res.data;
+
+        // Sauvegarde des données originales pour les filtres
+        this.originalData = res.data;
+
+        // Auto patch des champs
+        const deliveryCount = this.deliveries.length;
+        const parsedLotNumbers = this.deliveries
+          .map((d) => d.lotNumber?.replace(/^\D+/, '') ?? '')
+          .map((numStr) => parseInt(numStr, 10))
+          .filter((n) => !isNaN(n));
+        const maxLotNumber = parsedLotNumbers.length > 0 ? Math.max(...parsedLotNumbers) : 0;
+
+        this.receptionForm.patchValue({
+          deliveryNumber: deliveryCount + 1,
+          lotNumber: maxLotNumber + 1
+        });
+
+        // Appliquer les filtres initiaux (même s'ils sont vides au départ)
+        this.applyFilters();
+
+        this.message = res.message;
+      } else {
+        this.deliveries = [];
+        this.originalData = [];
+        this.dataSource.data = [];
+        this.message = res.message;
+      }
+    });
+  }
+
+  deleteDelivery(delivery: UnifiedDelivery): void {
     if (!delivery.id) return;
     this.deliveryService.deleteUnifiedDelivery(delivery.id).subscribe(
       (res) => {
@@ -180,10 +231,6 @@ export class ReceptionComponent implements OnInit {
       (err) => console.error('Error deleting delivery', err)
     );
   }
-
-  /*openDialog(delivery: UnifiedDelivery) {
-    this.formOpen = true;
-  }*/
 
   loadSuppliers(): void {
     this.supplierService.getAllSuppliers().subscribe(
@@ -213,7 +260,6 @@ export class ReceptionComponent implements OnInit {
           } else if (category === TypeCategory.SUPPLIER_TYPE) {
             this.supplierTypes = res.data;
             console.log('Loaded Supplier Types:', this.supplierTypes);
-
           } else if (category === TypeCategory.WASTE_TYPE) {
             this.wasteTypes = res.data;
             console.log('Loaded Waste Types:', this.wasteTypes);
@@ -288,21 +334,15 @@ export class ReceptionComponent implements OnInit {
   selectReception(list: any) {
     // Mettre à jour la sélection courante avec l'élément sélectionné
     this.selectedReception = list;
-
     // Ouvrir le panneau du formulaire
     this.formOpen = true;
-
     // Remplir automatiquement le champ "deliveryType" avec le nom de la carte sélectionnée
     this.receptionForm.patchValue({
-      deliveryType: list.name // Utiliser le nom de la carte ('Réception Olive' ou 'Réception Huile')
+      deliveryType: list.deliveryType // Utiliser le nom de la carte ('Réception Olive' ou 'Réception Huile')
     });
-
     // Optionnel : Réinitialiser les champs spécifiques pour éviter des valeurs résiduelles
     this.resetSpecificFields();
   }
-
-  // ajouter une reception
-  selectedReceptionId?: string;
 
   formatDate(date: Date | string | null): string | null {
     if (!date) return null;
@@ -310,30 +350,37 @@ export class ReceptionComponent implements OnInit {
   }
 
   // Ajouter / Modifier Reception
+  private extractIdOnly(entity: any): { id: string } | null {
+    return entity && entity.id ? {id: entity.id} : null;
+  }
+
+  extractFullSupplierIds(supplier: any): any {
+    return {
+      id: supplier?.id,
+      supplierInfo: supplier?.supplierInfo ? {id: supplier.supplierInfo.id} : null,
+      genericSupplierType: supplier?.genericSupplierType ? {id: supplier.genericSupplierType.id} : null
+    };
+  }
+
   Enregistrer(): void {
     // Vérifier si le formulaire est valide
     if (this.receptionForm.invalid) {
       this.showToast('Veuillez remplir tous les champs obligatoires.', 4000);
       return;
     }
-
     // Récupérer les valeurs du formulaire
     const formValue = this.receptionForm.value;
-
     // Nettoyer et formater les valeurs du formulaire
     const cleanedFormValue = this.cleanPayload(formValue);
-
     // Validation supplémentaire pour les champs complexes
     if (!cleanedFormValue.region || !cleanedFormValue.region.id) {
       this.showToast('Veuillez sélectionner une région valide.', 4000);
       return;
     }
-
     if (!cleanedFormValue.supplier || !cleanedFormValue.supplier.id) {
       this.showToast('Veuillez sélectionner un fournisseur valide.', 4000);
       return;
     }
-
     // Construire le payload
     const payload: any = {
       id: this.isEditing ? this.selectedReceptionId : undefined,
@@ -341,48 +388,44 @@ export class ReceptionComponent implements OnInit {
       deliveryType: cleanedFormValue.deliveryType,
       lotNumber: cleanedFormValue.lotNumber,
       deliveryDate: this.formatDate(cleanedFormValue.deliveryDate),
-      region: cleanedFormValue.region, // Formaté comme { id: "123", name: "test-region" }
+      region: cleanedFormValue.region,
       poidsBrute: cleanedFormValue.poidsBrute,
       poidsNet: cleanedFormValue.poidsNet,
       matriculeCamion: cleanedFormValue.matriculeCamion,
       etatCamion: cleanedFormValue.etatCamion,
-      supplier: cleanedFormValue.supplier, // Formaté comme { id: "456", name: "test-supplier" }
+      supplier: cleanedFormValue.supplier,
       globalLotNumber: cleanedFormValue.globalLotNumber,
-      oilVariety: cleanedFormValue.oilVariety, // Formaté comme { id: "789", name: "test-oil-variety" }
+      oilVariety: cleanedFormValue.oilVariety,
       oilQuantity: cleanedFormValue.oilQuantity,
       unitPrice: cleanedFormValue.unitPrice,
       price: cleanedFormValue.price,
       paidAmount: cleanedFormValue.paidAmount,
       unpaidAmount: cleanedFormValue.unpaidAmount,
-      oilType: cleanedFormValue.oilType, // Formaté comme { id: "101", name: "test-oil-type" }
+      oilType: cleanedFormValue.oilType,
       trtDate: this.formatDate(cleanedFormValue.trtDate),
 
-
-      oliveVariety: cleanedFormValue.oliveVariety, // Formaté comme { id: "303", name: "test-olive-variety" }
+      oliveVariety: cleanedFormValue.oliveVariety,
       sackCount: cleanedFormValue.sackCount,
-      oliveType: cleanedFormValue.oliveType, // Formaté comme { id: "404", name: "test-olive-type" }
+      oliveType: cleanedFormValue.oliveType,
       status: cleanedFormValue.status,
       rendement: cleanedFormValue.rendement,
       oliveQuantity: cleanedFormValue.oliveQuantity,
       parcel: cleanedFormValue.parcel
     };
-
+    console.log("Payload envoyé :", payload);
     // Appel du service pour créer ou mettre à jour la réception
     const request$ = this.isEditing
       ? this.deliveryService.updateUnifiedDelivery(payload)
       : this.deliveryService.createUnifiedDelivery(payload);
-
     // Souscrire à la réponse du backend
     request$.subscribe({
       next: (res) => {
         if (res.success) {
-          const message = this.isEditing
-            ? 'Réception mise à jour avec succès.'
-            : 'Réception ajoutée avec succès.';
+          const message = this.isEditing ? 'Réception mise à jour avec succès.' : 'Réception ajoutée avec succès.';
           this.showToast(message);
           this.resetForm();
         } else {
-          this.showToast(res.message || 'Échec de l\'opération.');
+          this.showToast(res.message || "Échec de l'opération.");
         }
       },
       error: (err) => {
@@ -392,54 +435,44 @@ export class ReceptionComponent implements OnInit {
     });
   }
 
-// Méthode pour nettoyer et formater les valeurs du formulaire
+  // Méthode pour nettoyer et formater les valeurs du formulaire
   cleanPayload(payload: any): any {
+    const cleaned = {...payload};
+
     if (payload.deliveryType === 'OIL') {
-      delete payload.oliveVariety;
-      delete payload.oliveType;
-      delete payload.sackCount;
-      delete payload.trtDate;
-      delete payload.rendement;
-      delete payload.oliveQuantity;
-      delete payload.status;
+      cleaned.oliveVariety = null;
+      cleaned.oliveType = null;
+      cleaned.sackCount = null;
+      cleaned.trtDate = null;
+      cleaned.rendement = null;
+      cleaned.oliveQuantity = null;
+      cleaned.status = null;
     } else if (payload.deliveryType === 'OLIVE') {
-      delete payload.oilVariety;
-      delete payload.oilQuantity;
-      delete payload.oilType;
-      delete payload.unitPrice;
-      delete payload.price;
-      delete payload.paidAmount;
-      delete payload.unpaidAmount;
-      delete payload.storageUnit;
+      cleaned.oilVariety = null;
+      cleaned.oilQuantity = null;
+      cleaned.oilType = null;
+      cleaned.unitPrice = null;
+      cleaned.price = null;
+      cleaned.paidAmount = null;
+      cleaned.unpaidAmount = null;
+      cleaned.storageUnit = null;
     }
-    return payload;
+    return cleaned;
   }
 
-  formatComplexField(field: any): any {
-    if (!field) return null;
-    if (typeof field === 'object' && field.id) {
-      return { id: field.id };
-    }
-    return { id: field }; // au cas où tu reçois juste un ID
-  }
-
-// Méthode pour réinitialiser le formulaire
+  // Méthode pour réinitialiser le formulaire
   resetForm(): void {
+    // Réinitialiser le formulaire
     this.receptionForm.reset();
+
+    // Désactiver le mode édition
     this.isEditing = false;
+
+    // Fermer le panneau extensible
+    this.formOpen = false;
+
+    // Effacer l'ID de la réception sélectionnée
     this.selectedReceptionId = undefined;
-  }
-
-
-  cancelEdit(): void {
-    this.resetForm();
-  }
-
-
-  openDialog(delivery: Delivery): void {
-    this.deliveryForm.patchValue(delivery);
-    this.isEditing = true;
-    this.selectedDeliveryId = delivery.id!;
   }
 
   resetSpecificFields() {
@@ -466,5 +499,126 @@ export class ReceptionComponent implements OnInit {
     formControls['parcel'].reset();
   }
 
+  ubdateDelivery(delivery: UnifiedDelivery): void {
+    // Vérifie que l'objet reçu est valide
+    if (!delivery || !delivery.id) {
+      this.showToast("Données de réception invalides.");
+      return;
+    }
+    this.selectedReceptionId = delivery.id;
+    this.isEditing = true;
+    this.loading = true;
+    // Récupère les données complètes de la réception via le service
+    this.deliveryService.getUnifiedDelivery(this.selectedReceptionId).subscribe({
+      next: (res) => {
+        this.loading = false;
+        if (res.success && res.data && res.data.length > 0) {
+          const fullReception = res.data[0];
+          this.selectedReception = fullReception;
+          this.formOpen = true;
+          console.log("Region reçue :", fullReception.region);
+          console.log("Fournisseur reçu :", fullReception.supplier);
+          console.log(res)
+          // Appel de la méthode pour remplir le formulaire avec les données
+          this.ubdateForm(fullReception);
+          // Log pour debug
+          console.log("Données réception chargées :", fullReception);
+        } else {
+          this.showToast("Impossible de charger les détails de la réception.");
+        }
+      },
+      error: (err) => {
+        this.loading = false;
+        console.error("Erreur de chargement :", err);
+        this.showToast("Erreur lors du chargement des détails de la réception.");
+      }
+    });
+  }
+
+  ubdateForm(data: any): void {
+    console.log('oliveTypes dans updateForm au moment de patchValue :', this.oliveTypes);
+    if (!data) return;
+
+    const parseDate = (dateArray: any[]): Date | null => {
+      if (!Array.isArray(dateArray) || dateArray.length < 3) return null;
+      const [year, month, day, hour = 0, minute = 0, second = 0, ms = 0] = dateArray;
+      return new Date(year, month - 1, day, hour, minute, second, ms / 1000000);
+    };
+    console.log("data.oliveType:", data.oliveType);
+    console.log("this.oliveTypes:", this.oliveTypes);
+
+
+    const formattedData = {
+      ...data,
+      deliveryDate: data.deliveryDate ? new Date(data.deliveryDate) : null,
+      trtDate: parseDate(data.trtDate),
+      region: this.regions.find(r => r.id === data.region?.id) || null,
+      supplier: this.suppliers.find(s => s.id === data.supplier?.id) || null,
+      oliveVariety: this.oliveVarieties.find(v => v.id === data.oliveVariety?.id) || null,
+      oilVariety: this.oilVarieties.find(v => v.id === data.oilVariety?.id) || null,
+      oliveType: this.oliveTypes.find(t => t.id === data.oliveType?.id) || null,
+      oilType: this.oilTypes.find(t => t.id === data.oilType?.id) || null
+    };
+
+
+    console.log("oliveType dans updateForm:", formattedData.oliveType);
+
+    // Affecter automatiquement le type selon la donnée
+    if (data.oilQuantity !== null && data.oilQuantity !== undefined) {
+      this.receptionType = 'OIL';
+    } else if (data.oliveQuantity !== null && data.oliveQuantity !== undefined) {
+      this.receptionType = 'OLIVE';
+    } else {
+      this.receptionType = null;
+    }
+
+    this.receptionForm.patchValue(formattedData);
+  }
+
+  viewDelivery(delivery: UnifiedDelivery): void {
+    // Rediriger vers la route avec l'ID de la réception
+    this.router.navigate(['reception/reception-details', delivery.id]);
+  }
+  QualityControl(delivery: UnifiedDelivery): void {
+    // ouvrir dialog de contrôle qualité
+    this.router.navigate(['reception/quality', delivery.id])
+  }
+
+  applyFilters() {
+    let filtered = this.originalData;
+    // Filtre par type
+    if (this.selectedType) {
+      filtered = filtered.filter(delivery => delivery.deliveryType === this.selectedType);
+    }
+    // Filtre par fournisseur
+    if (this.selectedSupplier) {
+      filtered = filtered.filter(delivery =>
+        delivery.supplier?.supplierInfo?.name?.toLowerCase().includes(this.selectedSupplier.toLowerCase())
+      );
+    }
+    // Filtre par date (en ignorant l'heure)
+    if (this.selectedDate) {
+      const selectedStr = this.dateFormat(this.selectedDate); // Normalise la date sélectionnée
+      filtered = filtered.filter(delivery => {
+        const deliveryDateStr = this.dateFormat(new Date(delivery.deliveryDate)); // Normalise la date de livraison
+        return deliveryDateStr === selectedStr; // Compare uniquement les dates (pas les heures)
+      });
+    }
+    this.dataSource.data = filtered;
+  }
+
+  dateFormat(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Ajoute un 0 si nécessaire
+    const day = String(date.getDate()).padStart(2, '0'); // Ajoute un 0 si nécessaire
+    return `${year}-${month}-${day}`;
+  }
+
+  resetFilters(): void {
+    this.selectedType = '';
+    this.selectedSupplier = '';
+    this.selectedDate = null;
+    this.applyFilters();
+  }
 
 }

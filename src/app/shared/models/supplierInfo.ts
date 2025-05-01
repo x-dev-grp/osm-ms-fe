@@ -1,4 +1,5 @@
 import { BaseType } from './base-type';
+
 export interface SupplierInfo {
   id?: string;
   name: string;
@@ -10,5 +11,3 @@ export interface SupplierInfo {
   rib: string;
   bankName: string;
 }
-
-

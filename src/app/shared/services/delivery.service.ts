@@ -21,7 +21,7 @@ export class UnifiedDeliveryService {
   }
 
   // Retrieve a single UnifiedDeliverycc by ID.
-  getUnifiedDelivery(id: number): Observable<ApiResponse<UnifiedDelivery>> {
+  getUnifiedDelivery(id: string): Observable<ApiResponse<UnifiedDelivery>> {
     return this.http.get<ApiResponse<UnifiedDelivery>>(`${this.baseUrl}/${id}`);
   }
 

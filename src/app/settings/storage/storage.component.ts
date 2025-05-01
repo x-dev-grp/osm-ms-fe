@@ -14,11 +14,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatSortModule } from '@angular/material/sort';
 import { SharedModule } from '../../demo/shared/shared.module';
 import { ConfigurationComponent } from '../../@theme/layouts/configuration/configuration.component';
-import { StorageUnitDto } from '../../osm/models/StorageUnitDto';
-import { BaseType } from '../../osm/models/base-type';
-import { StorageUnitDtoService } from '../../osm/services/storage.service';
-import { GenericTypeService } from '../../osm/services/generic-type.service';
-import { TypeCategory } from '../../osm/models/type-category.enum';
+import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
+import { BaseType } from '../../shared/models/base-type';
+import { StorageUnitDtoService } from '../../shared/services/storage.service';
+import { GenericTypeService } from '../../shared/services/generic-type.service';
+import { TypeCategory } from '../../shared/models/type-category.enum';
 
 @Component({
   selector: 'app-storage',

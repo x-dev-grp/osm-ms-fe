@@ -1,16 +1,14 @@
 import { Component } from '@angular/core';
-import {FormControl, ReactiveFormsModule} from "@angular/forms";
-import {MatOption, ThemePalette} from "@angular/material/core";
-import {CardComponent} from "../@theme/components/card/card.component";
-import {MatTab, MatTabGroup, MatTabLabel, MatTabLink, MatTabNav, MatTabNavPanel} from "@angular/material/tabs";
-import {MatIcon} from "@angular/material/icon";
-import {MatButtonToggle, MatButtonToggleGroup} from "@angular/material/button-toggle";
-import {MatFormField} from "@angular/material/form-field";
-import {MatCheckbox} from "@angular/material/checkbox";
-import { MatFormFieldModule } from '@angular/material/form-field';
-import {MatButton, MatIconButton} from "@angular/material/button";
-import {MatInput} from "@angular/material/input";
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatOption } from '@angular/material/core';
+import { CardComponent } from '../@theme/components/card/card.component';
+import { MatTab, MatTabGroup, MatTabLabel, MatTabLink, MatTabNav, MatTabNavPanel } from '@angular/material/tabs';
+import { MatIcon } from '@angular/material/icon';
+import { MatButtonToggle, MatButtonToggleGroup } from '@angular/material/button-toggle';
+import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatInput } from '@angular/material/input';
 import {
   MatCell,
   MatCellDef,
@@ -18,18 +16,21 @@ import {
   MatHeaderCell,
   MatHeaderRow,
   MatHeaderRowDef,
-  MatRow, MatRowDef, MatTable, MatTableDataSource
-} from "@angular/material/table";
-import {MatSelect} from "@angular/material/select";
-import {MatTooltip} from "@angular/material/tooltip";
-import {NgForOf, NgIf} from "@angular/common";
-import {TypeCategory} from "../osm/models/type-category.enum";
-import {BaseType} from "../osm/models/base-type";
-import {GenericTypeService} from "../osm/services/generic-type.service";
+  MatRow,
+  MatRowDef,
+  MatTable,
+  MatTableDataSource
+} from '@angular/material/table';
+import { MatSelect } from '@angular/material/select';
+import { MatTooltip } from '@angular/material/tooltip';
+import { NgForOf, NgIf } from '@angular/common';
+import { TypeCategory } from '../shared/models/type-category.enum';
+import { BaseType } from '../shared/models/base-type';
+import { GenericTypeService } from '../shared/services/generic-type.service';
 
 @Component({
   selector: 'app-configuration',
-  standalone:true,
+  standalone: true,
   imports: [
     CardComponent,
     MatTab,
@@ -88,21 +89,23 @@ export class ConfigurationComponent {
   selectedType: TypeCategory = this.typeOptions[0].value;
   editingRecordIndex: number = -1; // Keeps track of the record being edited
 
-  constructor(private fb: FormBuilder, private genericTypeService: GenericTypeService) {
-
+  constructor(
+    private fb: FormBuilder,
+    private genericTypeService: GenericTypeService
+  ) {
     this.recordForm = this.fb.group({
       name: ['', Validators.required],
-      description: [''],
+      description: ['']
     });
 
     this.siteForm = this.fb.group({
       societe: ['', Validators.required],
       numPatente: ['', Validators.required],
-      bank: ['',Validators.required],
-      rib: ['',Validators.required],
+      bank: ['', Validators.required],
+      rib: ['', Validators.required],
       adresse: [''],
       siteWeb: [''],
-      tel1: ['' ,Validators.required],
+      tel1: ['', Validators.required],
       tel2: [''],
       logo: [null]
     });
@@ -113,11 +116,10 @@ export class ConfigurationComponent {
     this.loadRecords(this.selectedType);
   }
 
-
   onFileChange(event: any) {
     const file = event.target.files[0];
     if (file) {
-      this.siteForm.patchValue({logo: file});
+      this.siteForm.patchValue({ logo: file });
 
       const reader = new FileReader();
       reader.onload = () => {
@@ -125,12 +127,11 @@ export class ConfigurationComponent {
       };
       reader.readAsDataURL(file);
     }
-
   }
 
   protected readonly onsubmit = onsubmit;
 
-  ajouter(){}
+  ajouter() {}
 
   onTypeChange(selectedType: TypeCategory): void {
     this.selectedType = selectedType;
@@ -175,7 +176,7 @@ export class ConfigurationComponent {
 
     const recordData: BaseType = {
       ...this.recordForm.value,
-      type: this.selectedType, // Use the selected type
+      type: this.selectedType // Use the selected type
     };
 
     if (this.editingRecordIndex >= 0) {
@@ -260,5 +261,4 @@ export class ConfigurationComponent {
     this.recordForm.markAsUntouched();
     this.editingRecordIndex = -1;
   }
-
 }

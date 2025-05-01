@@ -12,9 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatToolbarModule} from "@angular/material/toolbar";
 
-import { QualityControlRuleComponent } from './osm/quality-control-rule/quality-control-rule.component';
- import {GenericTypeComponent} from "./osm/generic-type/generic-type.component";
-import { DeliveryComponent } from './osm/delivery/delivery.component';
+
 import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import {
@@ -27,8 +25,9 @@ import {
   MatTable
 } from '@angular/material/table';
 import { SharedModule } from './demo/shared/shared.module';
-import { LocalDateTimePipe } from './osm/pipes/local-date-time.pipe';
-import { SupplierComponent } from './reception/components/suppliers/suppliers.component';
+ import { SupplierComponent } from './reception/components/suppliers/suppliers.component';
+ import { GenericTypeComponent } from './settings/generic-type/generic-type.component';
+import { QualityControlRuleComponent } from './settings/quality-control-rule/quality-control-rule.component';
 
 @NgModule({
   declarations: [],
@@ -45,8 +44,7 @@ import { SupplierComponent } from './reception/components/suppliers/suppliers.co
     MatToolbarModule,
     ReactiveFormsModule,
     AppComponent,
-    DeliveryComponent,
-    MatDialogActions,
+     MatDialogActions,
     MatIcon,
     MatTable,
     MatDialogTitle,
@@ -65,8 +63,7 @@ import { SupplierComponent } from './reception/components/suppliers/suppliers.co
     GenericTypeComponent,
     SupplierComponent,
     QualityControlRuleComponent,
-    LocalDateTimePipe
-  ],
+   ],
   providers: [],
   bootstrap: []
 })

@@ -1,16 +1,14 @@
 import { BaseType } from './base-type';
-
-export interface Supplier {
+export interface SupplierInfo {
   id?: string;
   name: string;
   lastname: string;
   phone: string;
-  email?: string;
+  email: string; // Remove the '?' to make it required
   address: string;
-  region:string;
-  rib:string;
-  bankName:string;
-  suppliertype:BaseType;
+  region: BaseType;
+  rib: string;
+  bankName: string;
 }
 
 

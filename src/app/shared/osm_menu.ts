@@ -1,8 +1,10 @@
-// type
 import { Navigation } from 'src/app/@theme/types/navigation';
 import { Role } from 'src/app/@theme/types/role';
 
 export const osm_menus: Navigation[] = [
+  // ────────────────────────
+  // Home / Dashboard
+  // ────────────────────────
   {
     id: 'navigation',
     title: 'Home',
@@ -39,192 +41,229 @@ export const osm_menus: Navigation[] = [
             role: [Role.Admin]
           }
         ]
-      },
-      {
-        id: 'Delevery',
-        title: 'Delivery',
-        type: 'item',
-        classes: 'nav-item',
-        url: '/delivery',
-        icon: '#custom-shopping-bag',
-        role: [Role.Admin, Role.User]
-      },
-      {
-        id: 'supplier',
-        title: 'Supplier',
-        type: 'item',
-        classes: 'nav-item',
-        url: '/supplier',
-        icon: '#custom-user',
-        role: [Role.Admin, Role.User]
-      },
-      {
-        id: 'millers',
-        title: 'Millers',
-        type: 'item',
-        classes: 'nav-item',
-        url: '/millers',
-        icon: '#custom-cpu-charge',
-        role: [Role.Admin, Role.User]
-      },
-      {
-        id: 'planning',
-        title: 'Planning',
-        type: 'item',
-        classes: 'nav-item',
-        url: '/planning',
-        icon: '#custom-kanban',
-        role: [Role.Admin, Role.User]
-      },
-      {
-        id: 'storage',
-        title: 'Storage',
-        type: 'item',
-        classes: 'nav-item',
-        url: '/storage',
-        icon: '#custom-layer',
-        role: [Role.Admin, Role.User]
-      }
-    ]
-  },
-  {
-    id: 'pages',
-    title: 'Pages',
-    type: 'group',
-    icon: 'icon-navigation',
-    role: [Role.Admin, Role.User],
-    children: [
-      {
-        id: 'maintenance',
-        title: 'Maintenance',
-        type: 'collapse',
-        icon: '#custom-flag',
-        role: [Role.Admin, Role.User],
-        children: [
-          {
-            id: 'error',
-            title: 'Error 404',
-            type: 'item',
-            url: '/maintenance/error-404',
-            target: true,
-            breadcrumbs: false
-          },
-          {
-            id: 'error-500',
-            title: 'Error 500',
-            type: 'item',
-            url: '/maintenance/error-500',
-            target: true,
-            breadcrumbs: false
-          },
-          {
-            id: 'under-constructor',
-            title: 'Under Construction',
-            type: 'item',
-            url: '/maintenance/under-constructor',
-            target: true,
-            breadcrumbs: false
-          },
-          {
-            id: 'coming-soon',
-            title: 'Coming Soon',
-            type: 'item',
-            url: '/maintenance/coming-soon',
-            target: true,
-            breadcrumbs: false
-          }
-        ]
-      },
-      {
-        id: 'contact-us',
-        title: 'Contact Us',
-        type: 'item',
-        classes: 'nav-item',
-        url: '/contact-us',
-        icon: '#custom-24-support',
-        role: [Role.Admin, Role.User],
-        target: true,
-        breadcrumbs: false
-      },
-      {
-        id: 'price',
-        title: 'Price',
-        type: 'collapse',
-        icon: '#custom-dollar-square',
-        role: [Role.Admin, Role.User],
-        children: [
-          {
-            id: 'price-1',
-            title: 'Price 1',
-            type: 'item',
-            url: '/price/price-1'
-          },
-          {
-            id: 'price-2',
-            title: 'Price 2',
-            type: 'item',
-            url: '/price/price-2'
-          }
-        ]
-      },
-      {
-        id: 'landing',
-        title: 'Landing',
-        type: 'item',
-        classes: 'nav-item',
-        url: '/landing',
-        icon: '#custom-airplane',
-        role: [Role.Admin, Role.User],
-        target: true,
-        breadcrumbs: false
       }
     ]
   },
 
+  // ────────────────────────
+  // Production Operations
+  // ────────────────────────
   {
-    id: 'receptionGlobale',
-    title: 'Réception',
+    id: 'productionGroup',
+    title: 'Production',
     type: 'group',
-    icon: 'icon-navigation',
+    icon: '#custom-factory',
     role: [Role.Admin, Role.User],
     children: [
       {
-        id: 'bonRecepetion',
-        title: 'Bon Réception',
-        type: 'item',
-        classes: 'nav-item',
-        url: '/reception/bonreception',
-        icon: '#custom-document-text'
-      }, {
-        id: 'recepetion',
-        title: 'Réception',
-        type: 'item',
-        classes: 'nav-item',
-        url: '/reception',
-        icon: '#custom-document-text'
+        id: 'operations',
+        title: 'Operations',
+        type: 'collapse',
+        icon: '#custom-layer',
+        role: [Role.Admin, Role.User],
+        children: [
+          {
+            id: 'reception',
+            title: 'Réception',
+            type: 'item',
+            url: '/reception/reception',
+            icon: '#custom-document-text'
+          },
+          {
+            id: 'qcrReception',
+            title: 'Contrôle Qualité',
+            type: 'item',
+            url: '/reception/quality',
+            icon: '#custom-password-check'
+          },
+          {
+            id: 'fournisseurReception',
+            title: 'Fournisseurs',
+            type: 'item',
+            url: '/reception/fournisseur',
+            icon: '#custom-user'
+          }
+        ]
       },
       {
-        id: 'qcrReception',
-        title: 'Contrôle Qualité',
-        type: 'item',
-        classes: 'nav-item',
-        url: '/reception/quality',
-        icon: '#custom-password-check'
+        id: 'deliveries',
+        title: 'Deliveries',
+        type: 'collapse',
+        icon: '#custom-truck',
+        role: [Role.Admin, Role.User],
+        children: [
+          {
+            id: 'receptionOrders',
+            title: 'Réception d’huile',
+            type: 'item',
+            url: '/deliveries/reception-order',
+            icon: '#custom-arrow-down-line'
+          },
+          {
+            id: 'receiptOrders',
+            title: 'Réception Base Oil',
+            type: 'item',
+            url: '/deliveries/receipt-order',
+            icon: '#custom-document'
+          },
+          {
+            id: 'baseOilOrders',
+            title: 'Achat Base Oil',
+            type: 'item',
+            url: '/deliveries/base-oil',
+            icon: '#custom-dollar-square'
+          },
+          {
+            id: 'exchange',
+            title: 'Échanges',
+            type: 'item',
+            url: '/deliveries/exchange',
+            icon: '#custom-refresh-2'
+          },
+          {
+            id: 'millingRequests',
+            title: 'Milling Requests',
+            type: 'item',
+            url: '/deliveries/mill-requests',
+            icon: '#custom-layer'
+          }
+        ]
       },
       {
-        id: 'fournisseurReception',
-        title: 'Fournisseurs',
-        type: 'item',
-        classes: 'nav-item',
-        url: '/reception/fournisseur',
-        icon: '#custom-user'
+        id: 'productionPlanning',
+        title: 'Production Planning',
+        type: 'collapse',
+        icon: '#custom-factory',
+        role: [Role.Admin],
+        children: [
+          {
+            id: 'millingSchedule',
+            title: 'Milling Schedules',
+            type: 'item',
+            url: '/planning/mill-schedules',
+            icon: '#custom-calendar-1'
+          },
+          {
+            id: 'machineStatus',
+            title: 'Machine Status',
+            type: 'item',
+            url: '/planning/machine-status',
+            icon: '#custom-notification-status'
+          },
+          {
+            id: 'lotAllocation',
+            title: 'Lot Allocation',
+            type: 'item',
+            url: '/planning/lot-allocation',
+            icon: '#custom-layer'
+          }
+        ]
       }
     ]
   },
+
+  // ────────────────────────
+  // Finance & Accounting
+  // ────────────────────────
+  {
+    id: 'financeGroup',
+    title: 'Finance',
+    type: 'group',
+    icon: '#custom-dollar-square',
+    role: [Role.Admin, Role.User],
+    children: [
+      {
+        id: 'salesOrders',
+        title: 'Sales Orders',
+        type: 'item',
+        url: '/finance/sales-orders',
+        icon: '#custom-document'
+      },
+      {
+        id: 'invoicesPayments',
+        title: 'Invoices & Payments',
+        type: 'item',
+        url: '/finance/invoices',
+        icon: '#custom-document-2'
+      },
+      {
+        id: 'financialReports',
+        title: 'Financial Reports',
+        type: 'item',
+        url: '/finance/reports',
+        icon: '#custom-presentation-chart'
+      },
+      {
+        id: 'pricingSettings',
+        title: 'Pricing & Accounting',
+        type: 'item',
+        url: '/settings/pricing',
+        icon: '#custom-dollar-square'
+      },
+      {
+        id: 'banksManagement',
+        title: 'Banks Management',
+        type: 'item',
+        url: '/settings/banks',
+        icon: '#custom-dollar-square'
+      }
+    ]
+  },
+
+  // ────────────────────────
+  // Storage & Inventory
+  // ────────────────────────
+  {
+    id: 'storageGroup',
+    title: 'Storage',
+    type: 'group',
+    icon: '#custom-box-1',
+    role: [Role.Admin, Role.User],
+    children: [
+      {
+        id: 'storageSettings',
+        title: 'Storage & Oil Units',
+        type: 'item',
+        url: '/settings/storage',
+        icon: '#custom-box-1'
+      }
+    ]
+  },
+
+  // ────────────────────────
+  // Human Resources
+  // ────────────────────────
+  {
+    id: 'hrGroup',
+    title: 'HR',
+    type: 'group',
+    icon: '#custom-user-bold',
+    role: [Role.Admin],
+    children: [
+      {
+        id: 'employees',
+        title: 'Employees',
+        type: 'item',
+        url: '/hr/employees',
+        icon: '#custom-user'
+      },
+      {
+        id: 'rolesPermissions',
+        title: 'Roles & Permissions',
+        type: 'item',
+        url: '/hr/roles',
+        icon: '#custom-lock-outline'
+      }
+    ]
+  },
+
+  // ────────────────────────
+  // System Settings
+  // ────────────────────────
   {
     id: 'settingsGroup',
     title: 'Settings',
-    type: 'collapse',
+    type: 'group',
     icon: '#custom-setting-2',
     role: [Role.Admin, Role.User],
     children: [
@@ -233,35 +272,69 @@ export const osm_menus: Navigation[] = [
         title: 'General Configuration',
         type: 'item',
         url: '/settings/general-config',
-         role: [Role.Admin, Role.User]
+        icon: '#custom-setting-2'
       },
       {
-        id: 'qualityControl',
+        id: 'qualityControlRules',
         title: 'Quality Control Rules',
         type: 'item',
         url: '/settings/quality-control',
-         role: [Role.Admin, Role.User]
-      },
-      {
-        id: 'storageSettings',
-        title: 'Storage & Oil Units',
-        type: 'item',
-        url: '/settings/storage',
-         role: [Role.Admin, Role.User]
-      },
-      {
-        id: 'pricingSettings',
-        title: 'Pricing & Accounting',
-        type: 'item',
-        url: '/settings/pricing',
-         role: [Role.Admin, Role.User]
+        icon: '#custom-password-check'
       },
       {
         id: 'genericTypes',
         title: 'Generic Types',
         type: 'item',
         url: '/settings/generic',
-         role: [Role.Admin, Role.User]
+        icon: '#custom-layer'
+      }
+    ]
+  },
+
+  // ────────────────────────
+  // Reports (stand-alone)
+  // ────────────────────────
+  {
+    id: 'reportsGroup',
+    title: 'Reports',
+    type: 'group',
+    icon: '#custom-report',
+    role: [Role.Admin, Role.User],
+    children: [
+      {
+        id: 'productionReports',
+        title: 'Production Reports',
+        type: 'item',
+        url: '/reports/production',
+        icon: '#custom-factory'
+      },
+      {
+        id: 'deliveryReports',
+        title: 'Delivery Reports',
+        type: 'item',
+        url: '/reports/deliveries',
+        icon: '#custom-truck'
+      },
+      {
+        id: 'financeReports',
+        title: 'Finance Reports',
+        type: 'item',
+        url: '/reports/finance',
+        icon: '#custom-presentation-chart'
+      },
+      {
+        id: 'storageReports',
+        title: 'Storage Reports',
+        type: 'item',
+        url: '/reports/storage',
+        icon: '#custom-box-1'
+      },
+      {
+        id: 'hrReports',
+        title: 'HR Reports',
+        type: 'item',
+        url: '/reports/hr',
+        icon: '#custom-user'
       }
     ]
   }

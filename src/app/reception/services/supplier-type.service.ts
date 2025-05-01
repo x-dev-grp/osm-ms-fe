@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
- import {ApiResponse} from "../models/api-response";
-import { SupplierType } from '../models/supplier-type';
+import { SupplierType } from '../../shared/models/supplier-type';
+import { ApiResponse } from '../../shared/models/api-response';
+
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class SupplierTypeService {
     return this.http.get<ApiResponse<SupplierType>>(`${this.baseUrl}/fetchAll`);
   }
   // Get SupplierType by id
-  getSupplier(id: number): Observable<ApiResponse<SupplierType>> {
+  getSupplier(id: string): Observable<ApiResponse<SupplierType>> {
     return this.http.get<ApiResponse<SupplierType>>(`${this.baseUrl}/${id}`);
   }
 

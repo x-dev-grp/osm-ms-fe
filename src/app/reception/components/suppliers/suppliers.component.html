@@ -11,7 +11,6 @@
             {{ editingRecordIndex >= 0 ? 'Update Supplier' : 'Create Supplier' }}
           </mat-panel-description>
         </mat-expansion-panel-header>
-
         <!-- Supplier Form -->
         <form  [formGroup]="supplierForm">
           <!-- Supplier Info Group - Row 1 -->
@@ -107,92 +106,108 @@
         </form>
       </mat-expansion-panel>
     </mat-accordion>
-
-    <!-- Filter Input -->
-    <div class="col-md-12" style="margin-top: 20px;">
-      <mat-form-field class="m-b-15 w-100">
-        <mat-label>Filter</mat-label>
-        <input #input (keyup)="applyFilter($event)" matInput placeholder="Ex. Supplier name or type">
-      </mat-form-field>
-    </div>
-
+  </app-card>
+  <app-card>
     <!-- Supplier Table -->
-    <div class="table-responsive" style="margin-top: 20px;">
-      <table [dataSource]="FilterSource" class="mat-elevation-z8 w-100" mat-table>
-        <!-- First Name Column -->
-        <ng-container matColumnDef="name">
-          <th *matHeaderCellDef mat-header-cell> First Name</th>
-          <td *matCellDef="let supplier" mat-cell>
-            {{ supplier.supplierInfo?.name }}
-          </td>
+    <div class="table-container">
+      <!-- Filtres Alignés avec les Colonnes -->
+      <div class="filters-row d-flex align-items-center gap-3">
+        <!-- Filtre par Nom Complet -->
+        <mat-form-field appearance="fill" style="width: 250px;" class="mx-2">
+          <mat-label>Nom Complet</mat-label>
+          <input matInput [(ngModel)]="filterFullName" (input)="applyFilters()" placeholder="Nom ou Prénom">
+        </mat-form-field>
+
+        <!-- Filtre par Téléphone -->
+        <mat-form-field appearance="fill" style="width: 200px;" class="mx-2">
+          <mat-label>Téléphone</mat-label>
+          <input matInput [(ngModel)]="filterPhone" (input)="applyFilters()" placeholder="Numéro de téléphone">
+        </mat-form-field>
+
+        <!-- Filtre par Type de Fournisseur -->
+        <mat-form-field appearance="fill" style="width: 200px;" class="mx-2">
+          <mat-label>Type de Fournisseur</mat-label>
+          <mat-select [(value)]="filterSupplierType" (selectionChange)="applyFilters()">
+            <mat-option value="">Tous</mat-option>
+            <mat-option *ngFor="let type of getUniqueSupplierTypes()" [value]="type">{{ type }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Bouton de Réinitialisation -->
+        <button mat-icon-button color="primary" (click)="resetFilters()" matTooltip="Réinitialiser les filtres" class="mx-2">
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </div>
+      <!-- Tableau des Fournisseurs -->
+      <table mat-table [dataSource]="FilterSource" class="mat-elevation-z8 w-100">
+
+        <!-- Nom Complet Column -->
+        <ng-container matColumnDef="fullName">
+          <th mat-header-cell *matHeaderCellDef>Nom Complet</th>
+          <td mat-cell *matCellDef="let supplier">{{ supplier.supplierInfo?.name }} {{ supplier.supplierInfo?.lastname }}</td>
         </ng-container>
 
-        <!-- Last Name Column -->
-        <ng-container matColumnDef="lastname">
-          <th *matHeaderCellDef mat-header-cell> Last Name</th>
-          <td *matCellDef="let supplier" mat-cell>
-            {{ supplier.supplierInfo?.lastname }}
-          </td>
-        </ng-container>
-
-        <!-- Phone Column -->
+        <!-- Téléphone Column -->
         <ng-container matColumnDef="phone">
-          <th *matHeaderCellDef mat-header-cell> Phone</th>
-          <td *matCellDef="let supplier" mat-cell>
-            {{ supplier.supplierInfo?.phone }}
-          </td>
+          <th mat-header-cell *matHeaderCellDef>Téléphone</th>
+          <td mat-cell *matCellDef="let supplier">{{ supplier.supplierInfo?.phone }}</td>
         </ng-container>
 
         <!-- Email Column -->
         <ng-container matColumnDef="email">
-          <th *matHeaderCellDef mat-header-cell> Email</th>
-          <td *matCellDef="let supplier" mat-cell>
-            {{ supplier.supplierInfo?.email }}
-          </td>
+          <th mat-header-cell *matHeaderCellDef>Email</th>
+          <td mat-cell *matCellDef="let supplier">{{ supplier.supplierInfo?.email }}</td>
         </ng-container>
 
-        <!-- Address Column -->
+        <!-- Adresse Column -->
         <ng-container matColumnDef="address">
-          <th *matHeaderCellDef mat-header-cell> Address</th>
-          <td *matCellDef="let supplier" mat-cell>
-            {{ supplier.supplierInfo?.address }}
-          </td>
+          <th mat-header-cell *matHeaderCellDef>Adresse</th>
+          <td mat-cell *matCellDef="let supplier">{{ supplier.supplierInfo?.address }}</td>
         </ng-container>
 
-        <!-- Supplier Type Column -->
+        <!-- Type de Fournisseur Column -->
         <ng-container matColumnDef="supplierType">
-          <th *matHeaderCellDef mat-header-cell> Supplier Type</th>
-          <td *matCellDef="let supplier" mat-cell>
-            {{ supplier.genericSupplierType?.name }}
-          </td>
+          <th mat-header-cell *matHeaderCellDef>Type de Fournisseur</th>
+          <td mat-cell *matCellDef="let supplier">{{ supplier.genericSupplierType?.name }}</td>
         </ng-container>
 
-        <!-- Region Column -->
+        <!-- Région Column -->
         <ng-container matColumnDef="region">
-          <th *matHeaderCellDef mat-header-cell> Region</th>
-          <td *matCellDef="let supplier" mat-cell>
-            {{ supplier.supplierInfo?.region?.name }}
-          </td>
+          <th mat-header-cell *matHeaderCellDef>Région</th>
+          <td mat-cell *matCellDef="let supplier">{{ supplier.supplierInfo?.region?.name }}</td>
         </ng-container>
 
         <!-- Actions Column -->
         <ng-container matColumnDef="actions">
-          <th *matHeaderCellDef mat-header-cell> Actions</th>
-          <td *matCellDef="let supplier" mat-cell>
-            <!-- Edit Icon -->
-            <button (click)="openDialog(supplier)" color="primary" mat-icon-button matTooltip="Edit">
-              <mat-icon>edit</mat-icon>
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let supplier">
+            <button mat-icon-button [matMenuTriggerFor]="actionMenu">
+              <mat-icon>more_vert</mat-icon>
             </button>
-            <!-- Delete Icon -->
-            <button (click)="deleteRecord(supplier)" color="warn" mat-icon-button matTooltip="Delete">
-              <mat-icon>delete</mat-icon>
-            </button>
+            <mat-menu #actionMenu="matMenu">
+              <button mat-menu-item (click)="editSupplier(supplier)">
+                <mat-icon>edit</mat-icon>
+                <span>Modifier</span>
+              </button>
+              <button mat-menu-item (click)="viewSupplier(supplier)">
+                <mat-icon>visibility</mat-icon>
+                <span>Consulter</span>
+              </button>
+              <button mat-menu-item (click)="deleteSupplier(supplier)">
+                <mat-icon color="warn">delete</mat-icon>
+                <span>Supprimer</span>
+              </button>
+            </mat-menu>
           </td>
         </ng-container>
-
-        <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
-        <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
+        <!-- Définition des Lignes -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
+
+      <!-- Pagination -->
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons aria-label="Select page of suppliers">
+      </mat-paginator>
     </div>
   </app-card>
 </div>

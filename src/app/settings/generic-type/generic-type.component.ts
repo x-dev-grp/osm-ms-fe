@@ -17,10 +17,10 @@ import {
   MatExpansionPanel,
   MatExpansionPanelTitle
 } from '@angular/material/expansion';
-import { TypeCategory } from '../../osm/models/type-category.enum';
-import { BaseType } from '../../osm/models/base-type';
-import { GenericTypeService } from '../../osm/services/generic-type.service';
-interface TypeOption {
+import { TypeCategory } from '../../shared/models/type-category.enum';
+import { BaseType } from '../../shared/models/base-type';
+import { GenericTypeService } from '../../shared/services/generic-type.service';
+ interface TypeOption {
   name: string;
   value: TypeCategory;
 }

@@ -1,7 +1,6 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpHeaders } from '@angular/common/http';
-import { AuthService } from '../osm/services/auth.service';
-import { TokenService } from '../auth/services/tokenService.service';
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
+ import { TokenService } from '../auth/services/tokenService.service';
 import { AuthenticationService } from '../auth/services/authentication.service';
 import { Observable } from 'rxjs';
 import { AppConfig } from 'src/environments/environment';

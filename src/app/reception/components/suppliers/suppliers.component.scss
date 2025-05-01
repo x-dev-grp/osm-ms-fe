@@ -1,0 +1,12 @@
+.filter-item {
+  margin-right: 16px;
+}
+.filters-row {
+  display: flex;
+  align-items: center;
+  gap: 16px; /* Espacement entre les champs */
+}
+
+.mat-form-field {
+  margin: 0 8px; /* Espacement supplémentaire autour des champs */
+}

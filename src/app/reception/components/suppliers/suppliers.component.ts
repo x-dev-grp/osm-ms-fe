@@ -3,11 +3,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatAccordion, MatExpansionModule, MatExpansionPanel, MatExpansionPanelTitle } from '@angular/material/expansion';
 import { SharedModule } from '../../../demo/shared/shared.module';
-import { SupplierType } from '../../../osm/models/supplier-type';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { BaseType } from '../../../osm/models/base-type';
-import { SupplierTypeService } from '../../../osm/services/supplier-type.service';
-import { GenericTypeService } from '../../../osm/services/generic-type.service';
+ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { BaseType } from '../../../shared/models/base-type';
+
  import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -17,7 +15,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { TypeCategory } from '../../../osm/models/type-category.enum';
+import { TypeCategory } from '../../../shared/models/type-category.enum';
+ import { GenericTypeService } from '../../../shared/services/generic-type.service';
+import {Router} from "@angular/router";
+import { SupplierType } from '../../../shared/models/supplier-type';
+import { SupplierTypeService } from '../../services/supplier-type.service';
 
 @Component({
   selector: 'app-suppliers',
@@ -46,7 +48,7 @@ import { TypeCategory } from '../../../osm/models/type-category.enum';
 export class SupplierComponent implements OnInit {
   suppliers: SupplierType[] = [];
   message: string = '';
-  displayedColumns: string[] = ['name', 'lastname', 'phone', 'email', 'address', 'supplierType', 'region', 'actions'];
+  displayedColumns: string[] = ['fullName', 'phone', 'email', 'address', 'supplierType', 'region', 'actions'];
   supplierForm: FormGroup;
   FilterSource: MatTableDataSource<SupplierType> = new MatTableDataSource(this.suppliers);
   supplierTypes: BaseType[] = [];
@@ -54,15 +56,22 @@ export class SupplierComponent implements OnInit {
   editingRecordIndex: number = -1;
   formOpen: boolean = false;
   selectedSupplier: SupplierType;
+  // Filtres
+  filterFullName: string = '';
+  filterPhone: string = '';
+  filterSupplierType: string = '';
+
+  // Pagination et Tri
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild('input') input: any;
 
   constructor(
-    private supplierService: SupplierTypeService,
+    private supplierService: SupplierTypeService    ,
     private genericTypeService: GenericTypeService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -141,6 +150,7 @@ export class SupplierComponent implements OnInit {
           this.FilterSource.sort = this.sort;
           this.FilterSource.paginator = this.paginator;
           console.log('Loaded Suppliers:', this.suppliers);
+          console.log("liste des suppliers ",res)
           this.message = res.message;
         } else {
           this.suppliers = [];
@@ -222,13 +232,71 @@ export class SupplierComponent implements OnInit {
   }
 
   // Filters the table by the given input.
-  applyFilter(event: Event): void {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.FilterSource.filter = filterValue.trim().toLowerCase();
+  // applyFilter(event: Event): void {
+  //   const filterValue = (event.target as HTMLInputElement).value;
+  //   this.FilterSource.filter = filterValue.trim().toLowerCase();
+  //
+  //   if (this.FilterSource.paginator) {
+  //     this.FilterSource.paginator.firstPage();
+  //   }
+  // }
 
-    if (this.FilterSource.paginator) {
-      this.FilterSource.paginator.firstPage();
+// Appliquer les filtres
+  applyFilters(): void {
+    let filtered = this.suppliers;
+
+    // Filtre par Nom Complet
+    if (this.filterFullName) {
+      const fullName = this.filterFullName.toLowerCase();
+      filtered = filtered.filter(supplier =>
+        `${supplier.supplierInfo?.name} ${supplier.supplierInfo?.lastname}`.toLowerCase().includes(fullName)
+      );
     }
+
+    // Filtre par Téléphone
+    if (this.filterPhone) {
+      filtered = filtered.filter(supplier =>
+        supplier.supplierInfo?.phone.includes(this.filterPhone)
+      );
+    }
+
+    // Filtre par Type de Fournisseur
+    if (this.filterSupplierType) {
+      filtered = filtered.filter(supplier =>
+        supplier.genericSupplierType?.name === this.filterSupplierType
+      );
+    }
+
+    // Mettre à jour les données filtrées
+    this.FilterSource.data = filtered;
+  }
+  getUniqueSupplierTypes(): string[] {
+    const types = this.suppliers.map(supplier => supplier.genericSupplierType?.name);
+    return [...new Set(types)].filter(type => type); // Supprimer les doublons et valeurs nulles
+  }
+
+  // Réinitialiser les filtres
+  resetFilters(): void {
+    this.filterFullName = '';
+    this.filterPhone = '';
+    this.filterSupplierType = '';
+    this.FilterSource.data = this.suppliers; // Réinitialiser les données
+  }
+  editSupplier(supplier: SupplierType): void {
+    console.log('Éditer fournisseur :', supplier);
+    // Logique pour ouvrir une boîte de dialogue d'édition
+  }
+
+// Méthode pour supprimer un fournisseur
+  deleteSupplier(supplier: SupplierType): void {
+    console.log('Supprimer fournisseur :', supplier);
+    // Logique pour confirmer la suppression
+  }
+
+  viewSupplier(supplier:SupplierType){
+    // Rediriger vers la route avec l'ID  du supplier
+    this.router.navigate(['reception/supplier-details', supplier.id]);
+
   }
 
   onSelectRegion(selectedRegionId: string): void {

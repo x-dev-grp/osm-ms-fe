@@ -1,0 +1,26 @@
+<div *ngIf="message" class="alert">{{ message }}</div>
+
+<form [formGroup]="dynamicForm"  *ngIf="dynamicForm">
+  <div *ngFor="let control of dynamicForm.controls | keyvalue">
+    <label [for]="control.key">{{ control.key }}</label>
+    <input
+      type="number"
+      [id]="control.key"
+      [formControlName]="control.key"
+      placeholder="Entrez une valeur"
+    />
+    <div *ngIf="dynamicForm.get(control.key)?.invalid && dynamicForm.get(control.key)?.touched">
+      <small *ngIf="dynamicForm.get(control.key)?.errors?.['required']">
+        Ce champ est requis.
+      </small>
+      <small *ngIf="dynamicForm.get(control.key)?.errors?.['min']">
+        La valeur minimale est {{ dynamicForm.get(control.key)?.errors?.['min'].min }}.
+      </small>
+      <small *ngIf="dynamicForm.get(control.key)?.errors?.['max']">
+        La valeur maximale est {{ dynamicForm.get(control.key)?.errors?.['max'].max }}.
+      </small>
+    </div>
+  </div>
+
+  <button (click)="onSubmit()" [disabled]="dynamicForm.invalid">Valider</button>
+</form>

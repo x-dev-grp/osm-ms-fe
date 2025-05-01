@@ -1,14 +1,10 @@
-import {QualityControlResult} from "../../reception/models/QualityControlResult";
-import { BaseType } from './base-type';
-import { Supplier } from './supplier';
-import { StorageUnitDto } from './StorageUnitDto';
-import { MillMachine } from './millMachine';
-import { Transporter } from './Transporter';
+ import { BaseType } from './base-type';
 import { OliveLotStatus } from './OliveLotStatus';
-import { deliveryType } from '../../osm/models/deleveryType';
+ import { SupplierType } from './supplier-type';
 
 export class UnifiedDelivery {
-  deliveryNumber!: string;
+ id!:string;
+ deliveryNumber!: string;
   deliveryType!: string;
   lotNumber!: string;
   deliveryDate!: Date;
@@ -17,7 +13,7 @@ export class UnifiedDelivery {
   poidsNet!: number;
   matriculeCamion!: string;
   etatCamion!: string;
-  supplier!: Supplier;
+  supplier!: SupplierType;
   globalLotNumber?: string | null;
   oilVariety?: BaseType | null;
   oilQuantity?: number | null;
@@ -30,7 +26,7 @@ export class UnifiedDelivery {
   operationType?: BaseType | null;
   oliveVariety?: BaseType | null;
   sackCount?: number | null;
-  oliveType?: BaseType| null;
+  oliveType: BaseType ;
   status?: OliveLotStatus | null;
   rendement?: number | null;
   oliveQuantity?: number | null;

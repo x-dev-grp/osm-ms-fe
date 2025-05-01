@@ -1,0 +1,57 @@
+.logo-preview {
+  max-height: 120px;
+  display: block;
+  margin-bottom: 16px;
+}
+ .mat-form-field .mat-form-field-wrapper input[type=file] {
+  cursor: pointer;
+  padding: 8px 0;
+}
+.logo-drop-zone {
+  border: 2px dashed #ccc;
+  border-radius: 4px;
+  text-align: center;
+  padding: 24px;
+  position: relative;
+  cursor: pointer;
+  transition: background-color .2s, border-color .2s;
+
+  &.file-over {
+    background-color: rgba(63,81,181,0.1);
+    border-color: #3f51b5;
+  }
+
+  p {
+    margin: 0;
+    color: #666;
+  }
+
+  .logo-preview {
+    max-height: 120px;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .remove-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+  }
+}
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+
+  button {
+    min-width: 120px;
+    transition: transform .1s ease-in-out;
+  }
+  button:disabled {
+    opacity: 0.6;
+  }
+  button:not(:disabled):hover {
+    transform: scale(1.05);
+  }
+}

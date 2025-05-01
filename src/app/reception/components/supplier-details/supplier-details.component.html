@@ -1,0 +1,65 @@
+<div class="supplier-details-container">
+  <!-- Carte principale pour les détails du fournisseur -->
+  <mat-card class="supplier-card">
+    <mat-card-header>
+      <mat-card-title>Détails du Fournisseur</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <!-- Section : Informations Générales -->
+      <div class="details-section">
+        <h3>Informations Générales</h3>
+        <div class="detail-row">
+          <strong>Nom :</strong>
+          <span>{{ supplierData.supplierInfo?.name || 'Non spécifié' }}</span>
+        </div>
+        <div class="detail-row">
+          <strong>Prénom :</strong>
+          <span>{{ supplierData.supplierInfo?.lastname || 'Non spécifié' }}</span>
+        </div>
+        <div class="detail-row">
+          <strong>Téléphone :</strong>
+          <span>{{ supplierData.supplierInfo?.phone || 'Non spécifié' }}</span>
+        </div>
+        <div class="detail-row">
+          <strong>Email :</strong>
+          <span>{{ supplierData.supplierInfo?.email || 'Non spécifié' }}</span>
+        </div>
+        <div class="detail-row">
+          <strong>Adresse :</strong>
+          <span>{{ supplierData.supplierInfo?.address || 'Non spécifié' }}</span>
+        </div>
+        <div class="detail-row">
+          <strong>Région :</strong>
+          <span>{{ supplierData.supplierInfo?.region?.name || 'Non spécifié' }}</span>
+        </div>
+      </div>
+
+      <!-- Section : Détails Bancaires -->
+      <div class="details-section">
+        <h3>Détails Bancaires</h3>
+        <div class="detail-row">
+          <strong>Nom de la Banque :</strong>
+          <span>{{ supplierData.supplierInfo?.bankName || 'Non spécifié' }}</span>
+        </div>
+        <div class="detail-row">
+          <strong>RIB :</strong>
+          <span>{{ supplierData.supplierInfo?.rib || 'Non spécifié' }}</span>
+        </div>
+      </div>
+
+      <!-- Section : Type de Fournisseur -->
+      <div class="details-section">
+        <h3>Type de Fournisseur</h3>
+        <div class="detail-row">
+          <strong>Type :</strong>
+          <span>{{ supplierData.genericSupplierType?.name || 'Non spécifié' }}</span>
+        </div>
+        <div class="detail-row">
+          <strong>Description :</strong>
+          <span>{{ supplierData.genericSupplierType?.description || 'Non spécifiée' }}</span>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
