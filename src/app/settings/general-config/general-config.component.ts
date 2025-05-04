@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatFormField } from '@angular/material/form-field';
 import { SharedModule } from '../../demo/shared/shared.module';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { BankAccount } from '../../shared/models/BankAccount';
+import { BankAccount } from '../../finance/models/BankAccount';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CompanyProfileService } from '../../shared/services/company-profile.service';
 import { CommonModule } from '@angular/common';

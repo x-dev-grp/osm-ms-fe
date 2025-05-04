@@ -29,7 +29,7 @@
   ],
   "dataGroups": [
     {
-      "name": "api-performance",
+      "name": "api",
       "urls": [
         "/api/**"
       ],

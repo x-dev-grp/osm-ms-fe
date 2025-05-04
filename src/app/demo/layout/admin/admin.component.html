@@ -14,17 +14,13 @@
         <div class="m-header">
           <a href="/" class="flex align-item-center">
             <img
-              src="assets/OSM.svg"
+              [src]="logoPreview || 'assets/OSM.svg'"
               width="66"
-              height="28"
+              height="66"
               alt="OSM Logo"
-              class="custom-logo"
+               style="background: transparent;"
             />
-            <a
-              href="https://phoenixcoded.gitbook.io/able-pro/versioning"
-              target="_blank"
-              class="version"
-            >
+            <a>
               v{{ currentApplicationVersion }}
             </a>
           </a>

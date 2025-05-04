@@ -1,6 +1,6 @@
 // src/app/shared/models/company-profile.ts
 
-import { BankAccount } from './BankAccount';
+import { BankAccount } from '../../finance/models/BankAccount';
 
 export interface CompanyProfile {
   id?: string;

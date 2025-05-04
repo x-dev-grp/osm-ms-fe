@@ -1,0 +1,42 @@
+<!-- view-expense.component.html -->
+<div *ngIf="expense" class="invoice">
+  <div class="invoice-header">
+    <button mat-icon-button (click)="onBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1>
+      {{ 'EXPENSE.LABEL.INVOICE' | translate }}
+      {{ expense.invoiceRef }}
+    </h1>
+  </div>
+  <mat-divider></mat-divider>
+
+  <div class="invoice-details">
+    <p>
+      <strong>{{ 'EXPENSE.LABEL.DATE'    | translate }} :</strong>
+      {{ expense.date | date:'shortDate' }}
+    </p>
+    <p>
+      <strong>{{ 'EXPENSE.LABEL.NATURE'  | translate }} :</strong>
+      {{ expense.purchaseNature }}
+    </p>
+    <p>
+      <strong>{{ 'EXPENSE.LABEL.OBJECT'  | translate }} :</strong>
+      {{ expense.object || '-' }}
+    </p>
+  </div>
+
+  <div class="invoice-amount">
+    <h2>
+      {{ 'EXPENSE.LABEL.AMOUNT' | translate }} :
+      {{ expense.amount | number:'1.2-2' }} €
+    </h2>
+  </div>
+
+  <div class="invoice-actions">
+    <button mat-flat-button color="primary" (click)="onPrint()">
+      <mat-icon>print</mat-icon>
+      <span>{{ 'EXPENSE.ACTIONS.PRINT' | translate }}</span>
+    </button>
+  </div>
+</div>

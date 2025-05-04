@@ -4,7 +4,7 @@ import { SettingsRoutingModule } from './settings-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { GeneralConfigComponent } from './general-config/general-config.component';
-  import { PricingComponent } from './pricing/pricing.component';
+  import { PricingComponent } from '../finance/pricing/pricing.component';
 import { StorageUnitsComponent } from './storage/storage.component';
 import { GenericTypeComponent } from './generic-type/generic-type.component';
 import { QualityControlRuleComponent } from './quality-control-rule/quality-control-rule.component';

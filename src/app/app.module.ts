@@ -28,6 +28,8 @@ import { SharedModule } from './demo/shared/shared.module';
  import { SupplierComponent } from './reception/components/suppliers/suppliers.component';
  import { GenericTypeComponent } from './settings/generic-type/generic-type.component';
 import { QualityControlRuleComponent } from './settings/quality-control-rule/quality-control-rule.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [],
@@ -63,7 +65,11 @@ import { QualityControlRuleComponent } from './settings/quality-control-rule/qua
     GenericTypeComponent,
     SupplierComponent,
     QualityControlRuleComponent,
-   ],
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+      // Mise en cache dès la première visite (optionnel)
+      registrationStrategy: 'registerWhenStable:30000'
+    }),],
   providers: [],
   bootstrap: []
 })

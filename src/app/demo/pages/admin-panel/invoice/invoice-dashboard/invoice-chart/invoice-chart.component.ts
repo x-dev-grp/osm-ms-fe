@@ -15,6 +15,7 @@ import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
   selector: 'app-invoice-chart',
   imports: [SharedModule, NgApexchartsModule],
   templateUrl: './invoice-chart.component.html',
+  standalone: true,
   styleUrl: './invoice-chart.component.scss'
 })
 export class InvoiceChartComponent implements OnInit {

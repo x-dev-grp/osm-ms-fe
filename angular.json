@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "able-pro": {
+    "osm": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -52,7 +52,7 @@
             },
             "scripts": [
               "node_modules/apexcharts/dist/apexcharts.min.js",
-              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"           
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
             ],
             "serviceWorker": true,
             "ngswConfigPath": "ngsw-config.json"
@@ -88,10 +88,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "able-pro:build:production"
+              "buildTarget": "osm:build:production"
             },
             "development": {
-              "buildTarget": "able-pro:build:development"
+              "buildTarget": "osm:build:development"
             }
           },
           "options": {
@@ -102,7 +102,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "able-pro:build"
+            "buildTarget": "osm:build"
           }
         },
         "test": {

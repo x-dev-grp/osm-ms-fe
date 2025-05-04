@@ -172,39 +172,39 @@ export const osm_menus: Navigation[] = [
     icon: '#custom-dollar-square',
     role: [Role.Admin, Role.User],
     children: [
+      // {
+      //   id: 'salesOrders',
+      //   title: 'Sales Orders',
+      //   type: 'item',
+      //   url: '/finance/sales-orders',
+      //   icon: '#custom-document'
+      // },
+      // {
+      //   id: 'invoicesPayments',
+      //   title: 'Invoices & Payments',
+      //   type: 'item',
+      //   url: '/finance/invoices',
+      //   icon: '#custom-document-2'
+      // },
+      // {
+      //   id: 'financialReports',
+      //   title: 'Financial Reports',
+      //   type: 'item',
+      //   url: '/finance/reports',
+      //   icon: '#custom-presentation-chart'
+      // },
       {
-        id: 'salesOrders',
-        title: 'Sales Orders',
+        id: 'Expenses',
+        title: 'Depenses',
         type: 'item',
-        url: '/finance/sales-orders',
-        icon: '#custom-document'
-      },
-      {
-        id: 'invoicesPayments',
-        title: 'Invoices & Payments',
-        type: 'item',
-        url: '/finance/invoices',
-        icon: '#custom-document-2'
-      },
-      {
-        id: 'financialReports',
-        title: 'Financial Reports',
-        type: 'item',
-        url: '/finance/reports',
-        icon: '#custom-presentation-chart'
-      },
-      {
-        id: 'pricingSettings',
-        title: 'Pricing & Accounting',
-        type: 'item',
-        url: '/settings/pricing',
+        url: '/finance/expenses',
         icon: '#custom-dollar-square'
       },
       {
         id: 'banksManagement',
         title: 'Banks Management',
         type: 'item',
-        url: '/settings/banks',
+        url: '/finance/banks',
         icon: '#custom-dollar-square'
       }
     ]
