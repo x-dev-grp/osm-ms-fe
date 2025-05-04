@@ -71,19 +71,19 @@
               <form [formGroup]="recordForm" (ngSubmit)="onSubmit()">
                 <div class="row">
                   <div class="col-md-4">
-                    <mat-form-field appearance="fill" class="w-100">
+                    <mat-form-field appearance="outline" class="w-100">
                       <mat-label>Name</mat-label>
                       <input matInput formControlName="name" placeholder="Enter name" />
                     </mat-form-field>
                   </div>
                   <div class="col-md-4">
-                    <mat-form-field appearance="fill" class="w-100">
+                    <mat-form-field appearance="outline" class="w-100">
                       <mat-label>Description</mat-label>
                       <input matInput formControlName="description" placeholder="Enter description" />
                     </mat-form-field>
                   </div>
                   <div class="col-md-4">
-                    <mat-form-field appearance="fill" class="w-100">
+                    <mat-form-field appearance="outline" class="w-100">
                       <mat-label>Select Type</mat-label>
                       <mat-select (selectionChange)="onTypeChange($event.value)">
                         <mat-option *ngFor="let type of typeOptions" [value]="type.value">

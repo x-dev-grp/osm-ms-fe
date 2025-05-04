@@ -1,5 +1,5 @@
 // Angular import
-import { Component, effect, inject, input } from '@angular/core';
+import { Component, effect, inject, input, OnInit } from '@angular/core';
 import { Location, LocationStrategy } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
@@ -12,6 +12,9 @@ import { MenuGroupVerticalComponent } from './menu-group/menu-group.component';
 import { MenuItemVerticalComponent } from './menu-item/menu-item.component';
 import { AuthenticationService } from 'src/app/auth/services/authentication.service';
 import { MenuCollapseComponent } from './menu-collapse/menu-collapse.component';
+import { CompanyProfileService } from '../../../../shared/services/company-profile.service';
+import { CompanyProfile } from '../../../../shared/models/CompanyProfile';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-vertical-menu',
@@ -20,19 +23,23 @@ import { MenuCollapseComponent } from './menu-collapse/menu-collapse.component';
   standalone: true,
   styleUrls: ['./vertical-menu.component.scss']
 })
-export class VerticalMenuComponent {
+export class VerticalMenuComponent  implements OnInit{
   private location = inject(Location);
   private locationStrategy = inject(LocationStrategy);
   private themeService = inject(ThemeLayoutService);
   authenticationService = inject(AuthenticationService);
+  companyProfileService = inject(CompanyProfileService);
+  currentApplicationVersion = environment.appVersion;
 
   // public props
   readonly menus = input<NavigationItem[]>();
   showUser: false;
   showContent = true;
   direction: string = 'ltr';
+  logoPreview: string | null = null;
 
   // Constructor
+  private profile: CompanyProfile;
   constructor() {
     effect(() => {
       this.updateThemeLayout(this.themeService.layout());
@@ -40,6 +47,24 @@ export class VerticalMenuComponent {
     effect(() => {
       this.isRtlTheme(this.themeService.directionChange());
     });
+  }
+
+  ngOnInit(): void {
+    this.loadProfile();
+    }
+  private loadProfile(): void {
+    this.companyProfileService.getProfile().subscribe(
+      (res) => {
+        if (res && res.success) {
+          this.profile = res.data[0];
+
+          if (this.profile.logoData && this.profile.logoContentType) {
+            this.logoPreview = `data:${this.profile.logoContentType};base64,${this.profile.logoData}`;
+          }
+        }
+      },
+      (err) => console.error('Error loading deliveries', err)
+    );
   }
 
   // public method

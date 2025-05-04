@@ -83,3 +83,16 @@
     box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
   }
 }
+/* styles.scss */
+
+/* Ensure logo itself never gets a fill */
+
+.custom-logo:hover {
+  transform: scale(1.1);
+}
+
+/* If your drawer or header has a solid bg, make it see-through */
+.mat-drawer,
+.m-header {
+  background: transparent !important;
+}

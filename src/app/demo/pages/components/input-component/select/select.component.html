@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-sm-6">
     <app-card cardTitle="Select With Custom Trigger Text">
-      <mat-form-field appearance="fill" class="w-100">
+      <mat-form-field appearance="outline" class="w-100">
         <mat-label>Toppings</mat-label>
         <mat-select [formControl]="toppings" multiple>
           <mat-select-trigger>
@@ -21,7 +21,7 @@
   </div>
   <div class="col-sm-6">
     <app-card cardTitle="Select with no option ripple">
-      <mat-form-field appearance="fill" class="w-100">
+      <mat-form-field appearance="outline" class="w-100">
         <mat-label>Select an option</mat-label>
         <mat-select disableRipple>
           <mat-option value="1">Option 1</mat-option>
@@ -37,7 +37,7 @@
         <mat-checkbox [formControl]="disableSelect">Disable select</mat-checkbox>
       </p>
       <h4>mat-select</h4>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <mat-label>Choose an Option</mat-label>
         <mat-select [disabled]="disableSelect.value">
           <mat-option value="option1">Option 1</mat-option>
@@ -46,7 +46,7 @@
         </mat-select>
       </mat-form-field>
       <h4>Native Html Select</h4>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <mat-label>Choose an option</mat-label>
         <select matNativeControl [disabled]="disableSelect.value">
           <option value="volvo">Volvo</option>
@@ -61,7 +61,7 @@
     <app-card cardTitle="Select in Form">
       <form>
         <h4>mat-select</h4>
-        <mat-form-field appearance="fill">
+        <mat-form-field appearance="outline">
           <mat-label>Favorite food</mat-label>
           <mat-select [(ngModel)]="selectedValue" name="food">
             @for (food of foods; track food) {
@@ -71,7 +71,7 @@
         </mat-form-field>
         <p>Selected food: {{ selectedValue }}</p>
         <h4>native html select</h4>
-        <mat-form-field appearance="fill">
+        <mat-form-field appearance="outline">
           <mat-label>Favorite car</mat-label>
           <select matNativeControl [(ngModel)]="selectedCar" name="car">
             <option value="" selected></option>
@@ -87,7 +87,7 @@
   <div class="col-sm-6">
     <app-card cardTitle="Select With a Custom ErrorStateMatcher">
       <h4>mat-select</h4>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <mat-label>Choose one</mat-label>
         <mat-select [formControl]="selected" [errorStateMatcher]="matcher">
           <mat-option>Clear</mat-option>
@@ -104,7 +104,7 @@
       </mat-form-field>
 
       <h4>native html select</h4>
-      <mat-form-field class="demo-full-width" appearance="fill">
+      <mat-form-field class="demo-full-width" appearance="outline">
         <mat-label>Choose one</mat-label>
         <select matNativeControl [formControl]="nativeSelectFormControl" [errorStateMatcher]="matcher">
           <option value=""></option>
@@ -122,7 +122,7 @@
   </div>
   <div class="col-sm-6">
     <app-card cardTitle="Basic select with initial value and no form">
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <mat-label>Select an option</mat-label>
         <mat-select [(value)]="selected1">
           <mat-option>None</mat-option>

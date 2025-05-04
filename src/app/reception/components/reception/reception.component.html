@@ -257,7 +257,7 @@
       <div class="mat-elevation-z8">
         <div class="filters d-flex align-items-end gap-3 flex-wrap">
           <!-- Type de réception -->
-          <mat-form-field appearance="fill" style="width: 200px; margin-right: 16px;">
+          <mat-form-field appearance="outline" style="width: 200px; margin-right: 16px;">
             <mat-label>Type de réception</mat-label>
             <mat-select [(value)]="selectedType" (selectionChange)="applyFilters()">
               <mat-option value="">Tous</mat-option>
@@ -267,13 +267,13 @@
           </mat-form-field>
 
           <!-- Fournisseur -->
-          <mat-form-field appearance="fill" style="width: 250px; margin-right: 16px;">
+          <mat-form-field appearance="outline" style="width: 250px; margin-right: 16px;">
             <mat-label>Fournisseur</mat-label>
             <input matInput [(ngModel)]="selectedSupplier" (input)="applyFilters()" placeholder="Nom fournisseur">
           </mat-form-field>
 
           <!-- Date de livraison -->
-          <mat-form-field appearance="fill" style="width: 220px; margin-right: 16px;">
+          <mat-form-field appearance="outline" style="width: 220px; margin-right: 16px;">
             <mat-label>Date de livraison</mat-label>
             <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate" (dateChange)="applyFilters()">
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>

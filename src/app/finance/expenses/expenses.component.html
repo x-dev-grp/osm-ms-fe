@@ -1,0 +1,124 @@
+<mat-expansion-panel class="panel" [expanded]="form.dirty || editing">
+  <mat-expansion-panel-header color="primary">
+    <mat-panel-title>
+      {{ editing ? 'Modifier dépense' : 'Nouvelle dépense' }}
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+
+  <form [formGroup]="form" (ngSubmit)="save()" class="expenses-form">
+    <div class="row">
+      <mat-form-field appearance="fill" class="col">
+        <mat-label>Facture</mat-label>
+        <input matInput formControlName="invoiceRef">
+      </mat-form-field>
+      <mat-form-field appearance="fill" class="col">
+        <mat-label>Nature</mat-label>
+        <input matInput formControlName="purchaseNature">
+      </mat-form-field>
+      <mat-form-field appearance="fill" class="col">
+        <mat-label>Objet</mat-label>
+        <input matInput formControlName="object">
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-form-field appearance="fill" class="col">
+        <mat-label>Date</mat-label>
+        <input matInput type="date" formControlName="date">
+      </mat-form-field>
+      <mat-form-field appearance="fill" class="col">
+        <mat-label>Montant</mat-label>
+        <input matInput type="number" formControlName="amount">
+      </mat-form-field>
+    </div>
+    <div class="actions">
+      <button mat-flat-button color="primary" type="submit">{{ editing ? 'Mettre à jour' : 'Enregistrer' }}</button>
+      <button mat-stroked-button color="warn" type="button" (click)="cancel()">Annuler</button>
+    </div>
+  </form>
+</mat-expansion-panel>
+
+<div class="filters">
+  <mat-form-field appearance="fill" class="col">
+    <mat-label>Facture</mat-label>
+    <input matInput
+           [(ngModel)]="filterValues.invoiceRef"
+           (ngModelChange)="applyFilter()"
+           placeholder="Rechercher facture" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="col">
+    <mat-label>Nature</mat-label>
+    <input matInput
+           [(ngModel)]="filterValues.purchaseNature"
+           (ngModelChange)="applyFilter()"
+           placeholder="Rechercher nature" />
+  </mat-form-field>
+</div>
+
+<app-card cardTitle="Liste des dépenses">
+  <div class="table-container">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 expenses-table">
+
+      <!-- Invoice Ref Column -->
+      <ng-container matColumnDef="invoiceRef">
+        <th mat-header-cell *matHeaderCellDef>Facture</th>
+        <td mat-cell *matCellDef="let e">{{ e.invoiceRef || '-' }}</td>
+      </ng-container>
+
+      <!-- Purchase Nature Column -->
+      <ng-container matColumnDef="purchaseNature">
+        <th mat-header-cell *matHeaderCellDef>Nature</th>
+        <td mat-cell *matCellDef="let e">{{ e.purchaseNature }}</td>
+      </ng-container>
+
+      <!-- Object Column -->
+      <ng-container matColumnDef="object">
+        <th mat-header-cell *matHeaderCellDef>Objet</th>
+        <td mat-cell *matCellDef="let e">{{ e.object || '-' }}</td>
+      </ng-container>
+
+      <!-- Date Column -->
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef>Date</th>
+        <td mat-cell *matCellDef="let e">{{ e.date | date:'shortDate' }}</td>
+      </ng-container>
+
+      <!-- Amount Column -->
+      <ng-container matColumnDef="amount">
+        <th mat-header-cell *matHeaderCellDef>Montant</th>
+        <td mat-cell *matCellDef="let e">{{ e.amount | number }}</td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let e">
+          <button mat-icon-button [matMenuTriggerFor]="actionMenu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #actionMenu="matMenu">
+            <button mat-menu-item (click)="view(e.id!)">
+              <mat-icon>visibility</mat-icon>
+              <span>Voir</span>
+            </button>
+            <button mat-menu-item (click)="print(e.id!)">
+              <mat-icon>print</mat-icon>
+              <span>Imprimer</span>
+            </button>
+            <button mat-menu-item (click)="openForm(e)">
+              <mat-icon>edit</mat-icon>
+              <span>Modifier</span>
+            </button>
+            <button mat-menu-item (click)="delete(e.id!)">
+              <mat-icon color="warn">delete</mat-icon>
+              <span>Delete</span>
+            </button>
+          </mat-menu>        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <mat-paginator [pageSizeOptions]="[5,10,20]" showFirstLastButtons></mat-paginator>
+  </div>
+</app-card>

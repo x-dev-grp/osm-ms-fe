@@ -1,5 +1,5 @@
 // Angular import
-import { AfterViewInit, Component, OnInit, effect, inject, viewChild } from '@angular/core';
+import { AfterViewInit, Component, effect, inject, OnInit, viewChild } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { MatDrawer, MatDrawerMode } from '@angular/material/sidenav';
 import { RouterModule } from '@angular/router';
@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
 
 // Project import
 import { AbleProConfig } from 'src/app/app-config';
- import { ThemeLayoutService } from 'src/app/@theme/services/theme-layout.service';
+import { ThemeLayoutService } from 'src/app/@theme/services/theme-layout.service';
 import { SharedModule } from 'src/app/demo/shared/shared.module';
 import { NavBarComponent } from 'src/app/@theme/layouts/toolbar/toolbar.component';
 import { VerticalMenuComponent } from 'src/app/@theme/layouts/menu/vertical-menu';
@@ -22,7 +22,7 @@ import { BuyNowLinkService } from 'src/app/@theme/services/buy-now-link.service'
 import { AuthenticationService } from 'src/app/auth/services/authentication.service';
 
 // const import
-import { MIN_WIDTH_1025PX, MAX_WIDTH_1024PX, VERTICAL, HORIZONTAL, COMPACT, RTL, LTR } from 'src/app/@theme/const';
+import { COMPACT, HORIZONTAL, LTR, MAX_WIDTH_1024PX, MIN_WIDTH_1025PX, RTL, VERTICAL } from 'src/app/@theme/const';
 
 // theme version
 import { environment } from 'src/environments/environment';
@@ -31,6 +31,8 @@ import { environment } from 'src/environments/environment';
 import { Navigation } from 'src/app/@theme/types/navigation';
 import { Role } from 'src/app/@theme/types/role';
 import { osm_menus } from '../../../shared/osm_menu';
+import { CompanyProfileService } from '../../../shared/services/company-profile.service';
+import { CompanyProfile } from '../../../shared/models/CompanyProfile';
 
 @Component({
   selector: 'app-admin',
@@ -50,11 +52,9 @@ import { osm_menus } from '../../../shared/osm_menu';
   styleUrls: ['./admin.component.scss']
 })
 export class AdminComponent implements OnInit, AfterViewInit {
-  private breakpointObserver = inject(BreakpointObserver);
-  private themeService = inject(ThemeLayoutService);
   buyNowLinkService = inject(BuyNowLinkService);
   authenticationService = inject(AuthenticationService);
-
+  companyProfileService = inject(CompanyProfileService);
   // public props
   readonly sidebar = viewChild<MatDrawer>('sidebar');
   menus: Navigation[] = osm_menus;
@@ -64,6 +64,10 @@ export class AdminComponent implements OnInit, AfterViewInit {
   currentLayout: string = 'vertical';
   rtlMode: boolean = false;
   windowWidth: number = window.innerWidth;
+  protected readonly osm_menus = osm_menus;
+  private breakpointObserver = inject(BreakpointObserver);
+  private themeService = inject(ThemeLayoutService);
+  private profile: CompanyProfile;
 
   // Constructor
   constructor() {
@@ -76,6 +80,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   }
 
   // life cycle event
+  logoPreview: string | null = null;
   ngOnInit() {
     this.breakpointObserver.observe([MIN_WIDTH_1025PX, MAX_WIDTH_1024PX]).subscribe((result) => {
       if (result.breakpoints[MAX_WIDTH_1024PX]) {
@@ -91,7 +96,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
     this.themeService.dashBoardMenuState.subscribe(() => {
       this.sidebar()!.toggle();
     });
-
+    this.loadProfile();
     /**
      * current login user role
      */
@@ -127,6 +132,21 @@ export class AdminComponent implements OnInit, AfterViewInit {
 
       return item; // Return the item whether it is visible or disabled
     });
+  }
+
+  private loadProfile(): void {
+    this.companyProfileService.getProfile().subscribe(
+      (res) => {
+        if (res && res.success) {
+          this.profile = res.data[0];
+
+          if (this.profile.logoData && this.profile.logoContentType) {
+            this.logoPreview = `data:${this.profile.logoContentType};base64,${this.profile.logoData}`;
+          }
+        }
+      },
+      (err) => console.error('Error loading deliveries', err)
+    );
   }
 
   /**
@@ -168,6 +188,4 @@ export class AdminComponent implements OnInit, AfterViewInit {
       }
     }
   }
-
-  protected readonly osm_menus = osm_menus;
 }

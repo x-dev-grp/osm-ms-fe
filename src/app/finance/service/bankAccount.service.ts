@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApiResponse } from '../models/api-response';
+import { ApiResponse } from '../../shared/models/api-response';
 import { BankAccount } from '../models/BankAccount';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BankAccountService {
-  private baseUrl = '/api/production/banks';
+  private baseUrl = '/api/finance/banks';
 
   constructor(private http: HttpClient) {}
 

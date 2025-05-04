@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { BankAccount } from '../../shared/models/BankAccount';
+import { BankAccount } from '../models/BankAccount';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -11,7 +11,7 @@ import { SharedModule } from '../../demo/shared/shared.module';
 import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { BankAccountService } from '../../shared/services/bankAccount.service';
+import { BankAccountService } from '../service/bankAccount.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CompanyProfileService } from '../../shared/services/company-profile.service';
 import { CompanyProfile } from '../../shared/models/CompanyProfile';

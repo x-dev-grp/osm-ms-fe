@@ -9,6 +9,7 @@ import { AuthGuardChild } from './interceptors/guards/auth.guard';
 //Type
 import { Role } from './@theme/types/role';
 import { receptionRoutes } from './reception/reception.routes';
+import { FinanceRoutingModule } from './finance/finance-routing.module';
 
 const routes: Routes = [
   {
@@ -104,6 +105,9 @@ const routes: Routes = [
       {
         path: 'settings',
         loadChildren: () => import('./settings/settings.module').then(m => m.SettingsModule)
+      }, {
+        path: 'finance',
+        loadChildren: () => import('./finance/finance-routing.module').then(m => m.FinanceRoutingModule)
       }
 
     ]

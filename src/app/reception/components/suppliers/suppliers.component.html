@@ -16,19 +16,19 @@
           <!-- Supplier Info Group - Row 1 -->
           <div class="row" formGroupName="supplierInfo">
             <div class="col-md-4">
-              <mat-form-field appearance="fill" class="w-100">
+              <mat-form-field appearance="outline" class="w-100">
                 <mat-label>First Name</mat-label>
                 <input formControlName="name" matInput placeholder="Enter first name" />
               </mat-form-field>
             </div>
             <div class="col-md-4">
-              <mat-form-field appearance="fill" class="w-100">
+              <mat-form-field appearance="outline" class="w-100">
                 <mat-label>Last Name</mat-label>
                 <input formControlName="lastname" matInput placeholder="Enter last name" />
               </mat-form-field>
             </div>
             <div class="col-md-4">
-              <mat-form-field appearance="fill" class="w-100">
+              <mat-form-field appearance="outline" class="w-100">
                 <mat-label>Email</mat-label>
                 <input formControlName="email" matInput placeholder="Enter email" />
               </mat-form-field>
@@ -38,19 +38,19 @@
           <!-- Supplier Info Group - Row 2 -->
           <div class="row" formGroupName="supplierInfo">
             <div class="col-md-4">
-              <mat-form-field appearance="fill" class="w-100">
+              <mat-form-field appearance="outline" class="w-100">
                 <mat-label>Phone</mat-label>
                 <input formControlName="phone" matInput placeholder="Enter phone" />
               </mat-form-field>
             </div>
             <div class="col-md-4">
-              <mat-form-field appearance="fill" class="w-100">
+              <mat-form-field appearance="outline" class="w-100">
                 <mat-label>Address</mat-label>
                 <input formControlName="address" matInput placeholder="Enter address" />
               </mat-form-field>
             </div>
             <div class="col-md-4">
-              <mat-form-field appearance="fill" class="w-100">
+              <mat-form-field appearance="outline" class="w-100">
                 <mat-label>Region</mat-label>
                 <mat-select (selectionChange)="onSelectRegion($event.value)" [compareWith]="objectComparisonFunction"
                             formControlName="region">
@@ -65,13 +65,13 @@
           <!-- Additional Supplier Fields -->
           <div class="row" formGroupName="supplierInfo">
             <div class="col-md-4">
-              <mat-form-field appearance="fill" class="w-100">
+              <mat-form-field appearance="outline" class="w-100">
                 <mat-label>RIB</mat-label>
                 <input formControlName="rib" matInput placeholder="Enter RIB" />
               </mat-form-field>
             </div>
             <div class="col-md-4">
-              <mat-form-field appearance="fill" class="w-100">
+              <mat-form-field appearance="outline" class="w-100">
                 <mat-label>Bank Name</mat-label>
                 <input formControlName="bankName" matInput placeholder="Enter bank name" />
               </mat-form-field>
@@ -81,7 +81,7 @@
           <!-- Supplier Type Dropdown -->
           <div class="row">
             <div class="col-md-4">
-              <mat-form-field appearance="fill" class="w-100">
+              <mat-form-field appearance="outline" class="w-100">
                 <mat-label>Supplier Type</mat-label>
                 <mat-select [compareWith]="objectComparisonFunction" formControlName="genericSupplierType">
                   <mat-option *ngFor="let type of supplierTypes" [value]="type">
@@ -113,19 +113,19 @@
       <!-- Filtres Alignés avec les Colonnes -->
       <div class="filters-row d-flex align-items-center gap-3">
         <!-- Filtre par Nom Complet -->
-        <mat-form-field appearance="fill" style="width: 250px;" class="mx-2">
+        <mat-form-field appearance="outline" style="width: 250px;" class="mx-2">
           <mat-label>Nom Complet</mat-label>
           <input matInput [(ngModel)]="filterFullName" (input)="applyFilters()" placeholder="Nom ou Prénom">
         </mat-form-field>
 
         <!-- Filtre par Téléphone -->
-        <mat-form-field appearance="fill" style="width: 200px;" class="mx-2">
+        <mat-form-field appearance="outline" style="width: 200px;" class="mx-2">
           <mat-label>Téléphone</mat-label>
           <input matInput [(ngModel)]="filterPhone" (input)="applyFilters()" placeholder="Numéro de téléphone">
         </mat-form-field>
 
         <!-- Filtre par Type de Fournisseur -->
-        <mat-form-field appearance="fill" style="width: 200px;" class="mx-2">
+        <mat-form-field appearance="outline" style="width: 200px;" class="mx-2">
           <mat-label>Type de Fournisseur</mat-label>
           <mat-select [(value)]="filterSupplierType" (selectionChange)="applyFilters()">
             <mat-option value="">Tous</mat-option>

@@ -2,7 +2,7 @@
   <div class="col-sm-6">
     <app-card cardTitle="Highlight The First Autocomplete Option">
       <form class="example-form">
-        <mat-form-field class="w-100" appearance="fill">
+        <mat-form-field class="w-100" appearance="outline">
           <mat-label>Number</mat-label>
           <input type="text" placeholder="Pick one" aria-label="Number" matInput [formControl]="myControl" [matAutocomplete]="auto" />
           <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
@@ -17,7 +17,7 @@
   <div class="col-sm-6">
     <app-card cardTitle="Display Value Autocomplete">
       <form class="example-form">
-        <mat-form-field class="w-100" appearance="fill">
+        <mat-form-field class="w-100" appearance="outline">
           <mat-label>Assignee</mat-label>
           <input type="text" matInput [formControl]="myControl_2" [matAutocomplete]="auto_1" />
           <mat-autocomplete #auto_1="matAutocomplete" [displayWith]="displayFn">
@@ -32,7 +32,7 @@
   <div class="col-sm-6">
     <app-card cardTitle="Options Groups Autocomplete">
       <form [formGroup]="stateForm">
-        <mat-form-field class="w-100" appearance="fill">
+        <mat-form-field class="w-100" appearance="outline">
           <mat-label>States Group</mat-label>
           <input type="text" matInput formControlName="stateGroup" required [matAutocomplete]="autoGroup" />
           <mat-autocomplete #autoGroup="matAutocomplete">
@@ -51,7 +51,7 @@
   <div class="col-sm-6">
     <app-card cardTitle="Autocomplete overview">
       <form class="example-form">
-        <mat-form-field class="w-100 m-b-15" appearance="fill">
+        <mat-form-field class="w-100 m-b-15" appearance="outline">
           <mat-label>State</mat-label>
           <input matInput aria-label="State" [matAutocomplete]="autoState" [formControl]="stateCtrl" />
           <mat-autocomplete #autoState="matAutocomplete">
