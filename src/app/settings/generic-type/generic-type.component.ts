@@ -198,6 +198,7 @@ export class GenericTypeComponent implements OnInit {
     if (index !== -1) {
       this.editingRecordIndex = index;
       this.recordForm.patchValue(record);
+    this.showDetails=true;
     }
   }
 
