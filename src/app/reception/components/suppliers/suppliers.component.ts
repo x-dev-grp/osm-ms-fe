@@ -18,8 +18,8 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { TypeCategory } from '../../../shared/models/type-category.enum';
  import { GenericTypeService } from '../../../shared/services/generic-type.service';
 import {Router} from "@angular/router";
-import { SupplierType } from '../../../shared/models/supplier-type';
-import { SupplierTypeService } from '../../services/supplier-type.service';
+ import {SupplierType} from "../../../shared/models/supplier-type";
+import { SupplierTypeService} from "../../../shared/services/supplier.service";
 
 @Component({
   selector: 'app-suppliers',
