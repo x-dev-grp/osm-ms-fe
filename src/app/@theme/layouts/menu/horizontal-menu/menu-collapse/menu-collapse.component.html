@@ -1,21 +1,18 @@
 @if (!item()!.hidden) {
-  <li
-    data-username="able-pro dashboard dashboard"
-    class="nav-item coded-hasmenu"
-    [routerLinkActive]="['active']"
-    [ngClass]="item().groupClasses"
-  >
-    <a [routerLinkActive]="['active']" class="nav-link arrow-edge" (mouseenter)="navCollapse($event)">
-      @if (item().icon) {
-        <span class="coded-micon">
-          <svg class="pc-icon">
-            <use attr.xlink:href="assets/fonts/custom-icon.svg{{ item().icon }}"></use>
-          </svg>
-        </span>
-      }
+  <li class="nav-item coded-hasmenu"
+      [routerLinkActive]="['active']"
+      [ngClass]="item().groupClasses">
+    <a class="nav-link arrow-edge"
+       (mouseenter)="navCollapse($event)"
+       [routerLinkActive]="['active']">
+
+            <mat-icon *ngIf="item().icon" class="coded-micon">{{ item().icon }}</mat-icon>
+
       <span class="coded-mtext">{{ item().title }}</span>
     </a>
-    <ul class="coded-submenu" [routerLinkActive]="['active']" [ngClass]="item().classes!">
+    <ul class="coded-submenu"
+        [routerLinkActive]="['active']"
+        [ngClass]="item().classes!">
       @for (item of item().children; track item) {
         @if (item.type === 'item') {
           <app-menu-item [item]="item"></app-menu-item>

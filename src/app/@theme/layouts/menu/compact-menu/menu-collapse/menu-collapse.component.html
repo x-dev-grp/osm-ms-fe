@@ -7,19 +7,17 @@
     matTooltip="{{ !isEnabled ? 'Logout and Login with Admin to view this page ' : '' }}"
   >
     <a [routerLinkActive]="['active']" class="nav-link" (click)="navCollapse($event)">
-      @if (item()!.icon) {
-        <span class="coded-micon">
-          <svg class="pc-icon">
-            <use attr.xlink:href="assets/fonts/custom-icon.svg{{ item()!.icon }}"></use>
-          </svg>
-        </span>
-      }
+      <!-- replaced SVG use with mat-icon -->
+      <mat-icon *ngIf="item()!.icon" class="coded-micon">{{ item()!.icon }}</mat-icon>
       <span class="coded-mtext">{{ item()!.title | translate }}</span>
     </a>
     <ul class="coded-submenu" [routerLinkActive]="['active']" [ngClass]="item()!.classes!">
       @for (items of item()!.children; track $index) {
         @if (items.type === 'item') {
-          <app-menu-item-compact [item]="items" [parentRole]="item()!.role && item()!.role!.length > 0 ? item()!.role : parentRole.role" />
+          <app-menu-item-compact
+            [item]="items"
+            [parentRole]="item()!.role && item()!.role!.length > 0 ? item()!.role : parentRole.role"
+          />
         } @else if (items.type === 'collapse') {
           <app-menu-collapse-compact
             [item]="items"

@@ -7,56 +7,25 @@
     >
       <a
         class="nav-link"
+        [routerLink]="[item().url]"
         [target]="item().target ? '_blank' : '_self'"
         [ngClass]="{ disabled: !isEnabled }"
-        [routerLink]="[item().url]"
         (click)="toggleMenu($event)"
-        [routerLinkActive]="['active']"
       >
-        @if (!isEnabled) {
-          <span class="coded-micon">
-            <svg class="pc-icon">
-              <use xlink:href="assets/fonts/custom-icon.svg#custom-lock"></use>
-            </svg>
-          </span>
-        } @else {
-          @if (item().icon) {
-            <span class="coded-micon">
-              <svg class="pc-icon">
-                <use attr.xlink:href="assets/fonts/custom-icon.svg{{ item().icon }}"></use>
-              </svg>
-            </span>
-          }
-        }
-        @if (item().icon) {
-          <span class="coded-mtext">{{ item().title | translate }}</span>
-        } @else {
-          @if (!isEnabled) {
-            <span class="coded-micon">
-              <svg class="pc-icon">
-                <use attr.xlink:href="assets/fonts/custom-icon.svg{{ item().icon }}"></use>
-              </svg>
-            </span>
-          }
-          {{ item().title | translate }}
-        }
+        <mat-icon *ngIf="!isEnabled" class="coded-micon">lock</mat-icon>
+        <mat-icon *ngIf="isEnabled && item().icon" class="coded-micon">{{ item().icon }}</mat-icon>
+        <span class="coded-mtext">{{ item().title | translate }}</span>
       </a>
     </li>
   } @else if (item().url && item().external) {
     <li [ngClass]="item().classes!" matTooltip="{{ !isEnabled ? 'Logout and Login with Admin to view this page ' : '' }}">
-      <a [target]="item().target ? '_blank' : '_self'" [href]="item().url" [ngClass]="{ disabled: !isEnabled }">
-        @if (item().icon) {
-          <span class="coded-micon">
-            <svg class="pc-icon">
-              <use attr.xlink:href="assets/fonts/custom-icon.svg{{ item().icon }}"></use>
-            </svg>
-          </span>
-        }
-        @if (item().icon) {
-          <span class="coded-mtext">{{ item().title | translate }}</span>
-        } @else {
-          {{ item().title | translate }}
-        }
+      <a
+        [href]="item().url"
+        [target]="item().target ? '_blank' : '_self'"
+        [ngClass]="{ disabled: !isEnabled }"
+      >
+        <mat-icon *ngIf="item().icon" class="coded-micon">{{ item().icon }}</mat-icon>
+        <span class="coded-mtext">{{ item().title | translate }}</span>
       </a>
     </li>
   }

@@ -7,13 +7,7 @@
     matTooltip="{{ !isEnabled ? 'Logout and Login with Admin to view this page ' : '' }}"
   >
     <a [routerLinkActive]="['active']" class="nav-link" (click)="navCollapse($event)">
-      @if (item()!.icon) {
-        <span class="coded-micon">
-          <svg class="pc-icon">
-            <use attr.xlink:href="assets/fonts/custom-icon.svg{{ item()!.icon }}"></use>
-          </svg>
-        </span>
-      }
+      <mat-icon *ngIf="item()!.icon" class="coded-micon">{{ item()!.icon }}</mat-icon>
       <span class="coded-mtext">{{ item()!.title | translate }}</span>
     </a>
     <ul class="coded-submenu" [routerLinkActive]="['active']" [ngClass]="item()!.classes!">

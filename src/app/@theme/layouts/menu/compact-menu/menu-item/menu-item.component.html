@@ -13,50 +13,30 @@
         (click)="toggleMenu($event)"
         [routerLinkActive]="['active']"
       >
+        <!-- lock icon when disabled -->
         @if (!isEnabled) {
-          <span class="coded-micon">
-            <svg class="pc-icon">
-              <use xlink:href="assets/fonts/custom-icon.svg#custom-lock"></use>
-            </svg>
-          </span>
+          <mat-icon class="coded-micon">lock</mat-icon>
         } @else {
-          @if (item().icon) {
-            <span class="coded-micon">
-              <svg class="pc-icon">
-                <use attr.xlink:href="assets/fonts/custom-icon.svg{{ item().icon }}"></use>
-              </svg>
-            </span>
-          }
+          <!-- normal item icon when enabled -->
+          <mat-icon *ngIf="item().icon" class="coded-micon">{{ item().icon }}</mat-icon>
         }
-        @if (item().icon) {
-          <span class="coded-mtext">{{ item().title | translate }}</span>
-        } @else {
-          @if (!isEnabled) {
-            <span class="coded-micon">
-              <svg class="pc-icon">
-                <use attr.xlink:href="assets/fonts/custom-icon.svg{{ item().icon }}"></use>
-              </svg>
-            </span>
-          }
-          {{ item().title | translate }}
-        }
+
+        <!-- title -->
+        <span class="coded-mtext">{{ item().title | translate }}</span>
       </a>
     </li>
   } @else if (item().url && item().external) {
-    <li [ngClass]="item().classes!" matTooltip="{{ !isEnabled ? 'Logout and Login with Admin to view this page ' : '' }}">
-      <a [target]="item().target ? '_blank' : '_self'" [href]="item().url" [ngClass]="{ disabled: !isEnabled }">
-        @if (item().icon) {
-          <span class="coded-micon">
-            <svg class="pc-icon">
-              <use attr.xlink:href="assets/fonts/custom-icon.svg{{ item().icon }}"></use>
-            </svg>
-          </span>
-        }
-        @if (item().icon) {
-          <span class="coded-mtext">{{ item().title | translate }}</span>
-        } @else {
-          {{ item().title | translate }}
-        }
+    <li
+      [ngClass]="item().classes!"
+      matTooltip="{{ !isEnabled ? 'Logout and Login with Admin to view this page ' : '' }}"
+    >
+      <a
+        [target]="item().target ? '_blank' : '_self'"
+        [href]="item().url"
+        [ngClass]="{ disabled: !isEnabled }"
+      >
+        <mat-icon *ngIf="item().icon" class="coded-micon">{{ item().icon }}</mat-icon>
+        <span class="coded-mtext">{{ item().title | translate }}</span>
       </a>
     </li>
   }
