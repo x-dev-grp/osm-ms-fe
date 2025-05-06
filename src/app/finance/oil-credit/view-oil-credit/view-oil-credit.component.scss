@@ -1,0 +1,118 @@
+.oil-credit-detail-card {
+  margin: 24px auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.detail-content {
+  padding: 16px;
+}
+
+.detail-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.detail-row {
+  display: grid;
+  grid-template-columns: 32px 120px 1fr;
+  align-items: center;
+  padding: 8px 0;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+  }
+}
+
+.detail-icon {
+  color: #666;
+}
+
+.detail-label {
+  font-weight: 500;
+  color: #444;
+}
+
+.detail-value {
+  color: #333;
+}
+
+.skeleton {
+  .skeleton-header {
+    height: 24px;
+    width: 60%;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 4px;
+    margin: 16px;
+  }
+
+  .skeleton-row {
+    display: grid;
+    grid-template-columns: 32px 120px 1fr;
+    padding: 8px 0;
+  }
+
+  .skeleton-icon {
+    height: 24px;
+    width: 24px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 4px;
+  }
+
+  .skeleton-label {
+    height: 16px;
+    width: 80%;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 4px;
+  }
+
+  .skeleton-value {
+    height: 16px;
+    width: 60%;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 4px;
+  }
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .oil-credit-detail-card {
+    margin: 16px;
+  }
+
+  .detail-row {
+    grid-template-columns: 32px 1fr;
+    gap: 8px;
+  }
+
+  .detail-label {
+    grid-column: 2;
+  }
+
+  .detail-value {
+    grid-column: 2;
+  }
+}

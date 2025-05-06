@@ -191,7 +191,8 @@ export const osm_menus: Navigation[] = [
         title: 'Oil Credit',
         type: 'item',
         url: '/finance/oil-credit',
-        icon: 'credit_score'
+        icon: 'credit_score',
+        role: [Role.Admin]
       }
     ]
   },

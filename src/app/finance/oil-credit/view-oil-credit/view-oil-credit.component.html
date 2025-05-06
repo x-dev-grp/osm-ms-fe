@@ -1,0 +1,68 @@
+<mat-card *ngIf="!credit" class="oil-credit-detail-card skeleton">
+  <mat-card-header>
+    <div class="skeleton-header"></div>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content class="detail-content">
+    <div class="detail-row skeleton-row" *ngFor="let _ of [1,2,3,4,5]">
+      <div class="skeleton-icon"></div>
+      <div class="skeleton-label"></div>
+      <div class="skeleton-value"></div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="credit" class="oil-credit-detail-card">
+  <mat-card-header>
+    <button mat-icon-button (click)="onBack()" aria-label="Retour à la liste">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <mat-card-title class="card-title">Crédit Huile #{{ credit.id }}</mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+
+  <mat-card-content class="detail-content">
+    <div class="detail-grid">
+      <div class="detail-row">
+        <mat-icon class="detail-icon">calendar_today</mat-icon>
+        <div class="detail-label">Date</div>
+        <div class="detail-value">{{ credit.credit_date | date:'longDate' }}</div>
+      </div>
+      <div class="detail-row">
+        <mat-icon class="detail-icon">local_shipping</mat-icon>
+        <div class="detail-label">Citerne/Pile</div>
+        <div class="detail-value">
+          <a mat-button color="primary" (click)="navigateToStorageUnits()"
+             aria-label="Voir les unités de stockage">
+            {{ getStorageUnitName() }}
+          </a>
+        </div>
+      </div>
+      <div class="detail-row">
+        <mat-icon class="detail-icon">inventory</mat-icon>
+        <div class="detail-label">Emballage</div>
+        <div class="detail-value">{{ credit.emballage || '-' }}</div>
+      </div>
+      <div class="detail-row">
+        <mat-icon class="detail-icon">height</mat-icon>
+        <div class="detail-label">Quantité</div>
+        <div class="detail-value">{{ credit.quantity }} {{ credit.unit }}</div>
+      </div>
+      <div class="detail-row">
+        <mat-icon class="detail-icon">person</mat-icon>
+        <div class="detail-label">Destinataire</div>
+        <div class="detail-value">{{ credit.destinataire || '-' }}</div>
+      </div>
+    </div>
+  </mat-card-content>
+
+  <mat-divider></mat-divider>
+  <mat-card-actions align="end">
+    <button mat-flat-button color="accent" (click)="onPrint()"
+            matTooltip="Imprimer le crédit"
+            aria-label="Imprimer le crédit">
+      <mat-icon>print</mat-icon>
+      Imprimer
+    </button>
+  </mat-card-actions>
+</mat-card>

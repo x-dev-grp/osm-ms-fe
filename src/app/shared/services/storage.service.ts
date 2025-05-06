@@ -18,8 +18,8 @@ export class StorageUnitDtoService {
   }
 
   // Get a StorageUnit by ID
-  getStorageUnit(id: number): Observable<ApiResponse<StorageUnitDto>> {
-    return this.http.get<ApiResponse<StorageUnitDto>>(`${this.baseUrl}/${id}`);
+  getStorageUnit(id: string): Observable<ApiResponse<StorageUnitDto>> {
+    return this.http.get<ApiResponse<StorageUnitDto>>(`${this.baseUrl}/fetch/${id}`);
   }
 
   // Create a new StorageUnit
