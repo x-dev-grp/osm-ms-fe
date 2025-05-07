@@ -1,28 +1,21 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
-import { QualityControlRuleService } from "../../../shared/services/quality-control-rule.service";
-import { QualityControlRule } from "../../../shared/models/quality-control-rule";
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-  FormControl
-} from "@angular/forms";
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { QualityControlRuleService } from '../../../shared/services/quality-control-rule.service';
+import { QualityControlRule } from '../../../shared/models/quality-control-rule';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { UnifiedDeliveryService } from "../../../shared/services/delivery.service";
-import { UnifiedDelivery } from "../../../shared/models/UnifiedDelivery";
+import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
+import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
+import { QualityControlResultService } from '../../../shared/services/quality-control-result.service';
+import { QualityControlResultDto } from '../../../shared/models/QualityControlResultDto';
+import { forkJoin, Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-controleQualite',
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-  ],
+  selector: 'app-controlequalite',
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './controleQualite.component.html',
-  styleUrl: './controleQualite.component.scss',
+  styleUrls: ['./controleQualite.component.scss'],
   standalone: true
 })
 export class ControleQualiteComponent implements OnInit {
@@ -30,11 +23,15 @@ export class ControleQualiteComponent implements OnInit {
   rules: QualityControlRule[] = [];
   dynamicForm!: FormGroup;
   receptionId: string | null = null;
-  deliveryData: UnifiedDelivery | null = null;
+  deliveryData: UnifiedDelivery | undefined;
+  submitted = false;
+  isLoading = false;
+  qualityControlResults: QualityControlResultDto[] = [];
 
   constructor(
     private fb: FormBuilder,
     private qcService: QualityControlRuleService,
+    private qcResService: QualityControlResultService,
     private route: ActivatedRoute,
     private deliveryService: UnifiedDeliveryService,
     private cdr: ChangeDetectorRef
@@ -48,18 +45,21 @@ export class ControleQualiteComponent implements OnInit {
   loadReception(): void {
     if (!this.receptionId) {
       this.message = 'ID de réception manquant';
+      this.cdr.detectChanges();
       return;
     }
 
+    this.isLoading = true;
     this.deliveryService.getUnifiedDelivery(this.receptionId).subscribe({
       next: (response) => {
         this.deliveryData = Array.isArray(response.data) ? response.data[0] : response.data;
         console.log('Delivery Data:', this.deliveryData);
-        this.loadRules(); // Load rules after delivery data is available
+        this.loadRules();
       },
       error: (error) => {
         console.error('Erreur réception:', error);
         this.message = 'Erreur lors du chargement des données de réception';
+        this.isLoading = false;
         this.cdr.detectChanges();
       }
     });
@@ -69,31 +69,28 @@ export class ControleQualiteComponent implements OnInit {
     this.qcService.getAllRules().subscribe({
       next: (res) => {
         if (res?.success) {
-          // Normalize rules data to always be an array
           let allRules: QualityControlRule[] = [];
 
           if (Array.isArray(res.data)) {
             allRules = Array.isArray(res.data[0]) ? res.data[0] : res.data;
           } else {
-            // If res.data is not an array, wrap it as a single-element array
             allRules = res.data ? [res.data] : [];
           }
 
-          // Filter rules based on deliveryType
           this.rules = this.filterRules(allRules);
           console.log('Filtered Rules:', this.rules);
 
-          // Create dynamic form only if rules exist
           if (this.rules.length > 0) {
-            this.createDynamicForm();
+            this.loadQualityControlResults();
           } else {
             this.message = 'Aucune règle applicable trouvée pour ce type de livraison';
+            this.isLoading = false;
+            this.cdr.detectChanges();
           }
-
-          this.cdr.detectChanges();
         } else {
           this.rules = [];
           this.message = res.message || 'Aucune règle trouvée';
+          this.isLoading = false;
           this.cdr.detectChanges();
         }
       },
@@ -101,6 +98,190 @@ export class ControleQualiteComponent implements OnInit {
         console.error('Erreur chargement règles:', error);
         this.rules = [];
         this.message = 'Erreur lors du chargement des règles';
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  loadQualityControlResults(): void {
+    if (!this.deliveryData?.id) {
+      this.message = 'ID de livraison non disponible';
+      this.isLoading = false;
+      this.cdr.detectChanges();
+      return;
+    }
+
+    this.qcResService.getAllResultsByDeliveryID(this.deliveryData.id).subscribe({
+      next: (res) => {
+        this.qualityControlResults = res.data || [];
+        console.log('Quality Control Results:', this.qualityControlResults);
+        this.createDynamicForm();
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Erreur chargement résultats:', error);
+        this.message = 'Erreur lors du chargement des résultats de contrôle qualité';
+        this.isLoading = false;
+        this.createDynamicForm();
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  createDynamicForm(): void {
+    const group: { [key: string]: FormControl } = {};
+
+    this.rules.forEach((rule) => {
+      const validators = [];
+      if (rule.ruleType === 'NUMERIC') {
+        validators.push(Validators.required);
+        if (rule.minValue !== undefined && rule.minValue !== null) {
+          validators.push(Validators.min(rule.minValue));
+        }
+        if (rule.maxValue !== undefined && rule.maxValue !== null) {
+          validators.push(Validators.max(rule.maxValue));
+        }
+      } else {
+        validators.push(Validators.required);
+      }
+
+      const existingResult = this.qualityControlResults.find((result) => result.rule?.ruleKey === rule.ruleKey);
+      let initialValue: number | boolean | null = null;
+      if (existingResult) {
+        initialValue = rule.ruleType === 'NUMERIC' ? Number(existingResult.measuredValue) : existingResult.measuredValue === 'true';
+      }
+
+      group[rule.ruleKey] = new FormControl(initialValue, validators);
+    });
+
+    this.dynamicForm = this.fb.group(group);
+  }
+
+  getRuleType(ruleKey: string): 'NUMERIC' | 'BOOLEAN' {
+    return this.rules.find((r) => r.ruleKey === ruleKey)?.ruleType || 'NUMERIC';
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+
+    /* 1. Basic guard rails -------------------------------------------------- */
+    if (this.dynamicForm.invalid) {
+      this.message = 'Le formulaire contient des erreurs. Veuillez corriger les champs.';
+      this.dynamicForm.markAllAsTouched();
+      this.cdr.detectChanges();
+      return;
+    }
+
+    if (!this.deliveryData?.id) {
+      this.message = 'Données de livraison non disponibles.';
+      this.cdr.detectChanges();
+      return;
+    }
+
+    /* 2. Build and separate result payloads ------------------------------- */
+    const updates: QualityControlResultDto[] = [];
+    const creates: QualityControlResultDto[] = [];
+
+    Object.entries(this.dynamicForm.value as Record<string, unknown>).forEach(([ruleKey, rawValue]) => {
+      /* a. Match the rule --------------------------------------------------- */
+      const rule = this.rules.find((r) => r.ruleKey === ruleKey);
+      if (!rule) {
+        throw new Error(`Aucune règle trouvée pour la clé : ${ruleKey}`);
+      }
+
+      /* b. Validate the measured value ------------------------------------- */
+      if (rule.ruleType === 'NUMERIC' && (typeof rawValue !== 'number' || isNaN(rawValue as number))) {
+        throw new Error(`Valeur mesurée invalide pour la règle numérique : ${ruleKey}`);
+      }
+      if (rule.ruleType === 'BOOLEAN' && typeof rawValue !== 'boolean') {
+        throw new Error(`Valeur mesurée invalide pour la règle booléenne : ${ruleKey}`);
+      }
+
+      /* c. Find existing result, if any ------------------------------------- */
+      const existingResult = this.qualityControlResults.find((result) => result.rule?.ruleKey === ruleKey);
+
+      /* d. Create DTO and categorize --------------------------------------- */
+      const dto: QualityControlResultDto = {
+        id: existingResult?.id,
+        rule: rule,
+        measuredValue: String(rawValue), // Convert to string for backend
+        delivery: this.deliveryData!
+      };
+
+      if (existingResult?.id) {
+        updates.push(dto);
+        console.log(`Preparing update for ruleKey: ${ruleKey}, id: ${existingResult.id}`);
+      } else {
+        creates.push(dto);
+        console.log(`Preparing create for ruleKey: ${ruleKey}`);
+      }
+    });
+
+    /* 3. Persist updates and creates --------------------------------------- */
+    this.isLoading = true;
+    this.message = '';
+
+    const requests: Observable<{ success: boolean; message?: string }>[] = [];
+
+    if (updates.length > 0) {
+      requests.push(
+        this.qcResService.updateResults(updates).pipe(
+          catchError((err) => {
+            console.error('Erreur lors de la mise à jour:', err);
+            return of({ success: false, message: err.error?.message || 'Erreur lors de la mise à jour des résultats.' });
+          })
+        )
+      );
+    }
+
+    if (creates.length > 0) {
+      requests.push(
+        this.qcResService.createResults(creates).pipe(
+          catchError((err) => {
+            console.error('Erreur lors de la création:', err);
+            return of({ success: false, message: err.error?.message || 'Erreur lors de la création des résultats.' });
+          })
+        )
+      );
+    }
+
+    if (requests.length === 0) {
+      this.message = 'Aucun résultat à enregistrer.';
+      this.isLoading = false;
+      this.cdr.detectChanges();
+      return;
+    }
+
+    forkJoin(requests).subscribe({
+      next: (responses) => {
+        const allSuccessful = responses.every((res) => res.success);
+        const anySuccessful = responses.some((res) => res.success);
+
+        if (allSuccessful) {
+          if (updates.length > 0 && creates.length > 0) {
+            this.message = 'Résultats de contrôle qualité mis à jour et créés avec succès.';
+          } else if (updates.length > 0) {
+            this.message = 'Résultats de contrôle qualité mis à jour avec succès.';
+          } else {
+            this.message = 'Résultats de contrôle qualité créés avec succès.';
+          }
+          this.dynamicForm.reset();
+          this.submitted = false;
+          this.loadQualityControlResults(); // Reload results to reflect updates
+        } else {
+          this.message = anySuccessful
+            ? 'Certains résultats ont été enregistrés, mais des erreurs sont survenues.'
+            : responses.map((res) => res.message).join(' ');
+        }
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error("Erreur lors de l'enregistrement:", err);
+        this.message = "Erreur lors de l'enregistrement des résultats de contrôle qualité.";
+        this.isLoading = false;
         this.cdr.detectChanges();
       }
     });
@@ -113,77 +294,11 @@ export class ControleQualiteComponent implements OnInit {
 
     switch (this.deliveryData.deliveryType) {
       case 'OIL':
-        return allRules.filter(rule => rule.oilQc === true);
+        return allRules.filter((rule) => rule.oilQc === true);
       case 'OLIVE':
-        return allRules.filter(rule => rule.oilQc === false || rule.oilQc === null);
+        return allRules.filter((rule) => rule.oilQc === false || rule.oilQc === null);
       default:
         return [];
     }
-  }
-
-  createDynamicForm(): void {
-    const group: { [key: string]: FormControl } = {};
-
-    this.rules.forEach((rule) => {
-      // Use empty string as default if oilQc is undefined
-      const value = rule.oilQc !== undefined ? rule.oilQc : '';
-      const validators = [];
-
-      // Add validators only if defined
-      if (rule.minValue !== undefined && rule.minValue !== null) {
-        validators.push(Validators.min(rule.minValue));
-      }
-      if (rule.maxValue !== undefined && rule.maxValue !== null) {
-        validators.push(Validators.max(rule.maxValue));
-      }
-
-      group[rule.ruleKey] = new FormControl(value, validators);
-    });
-
-    this.dynamicForm = this.fb.group(group);
-  }
-
-  onSubmit(): void {
-    // Vérifier si le formulaire est valide
-    if (this.dynamicForm.invalid) {
-      this.message = 'Le formulaire contient des erreurs. Veuillez corriger les champs.';
-      return;
-    }
-    // Récupérer les valeurs du formulaire
-    const formValues = this.dynamicForm.value;
-    // Créer l'objet qualityControl
-    const qualityControl: { [key: string]: any } = {};
-    Object.keys(formValues).forEach((ruleName) => {
-      qualityControl[ruleName] = formValues[ruleName];
-    });
-
-    // Afficher les données pour vérification
-    console.log('Quality Control:', qualityControl);
-
-    // Vérifier si deliveryData existe
-    if (!this.deliveryData) {
-      this.message = 'Données de livraison non disponibles.';
-      return;
-    }
-
-    // Mettre à jour l'objet UnifiedDelivery avec le nouveau qualityControl
-    const updatedDeliveryData = {
-      ...this.deliveryData, // Copier les données existantes
-      qualityControl: qualityControl, // Ajouter ou remplacer le champ qualityControl
-    };
-
-    console.log('Updated Delivery Data:', updatedDeliveryData);
-
-    //Envoyer les données mises à jour au backend
-    this.deliveryService.updateDelivery(updatedDeliveryData).subscribe({
-      next: (response) => {
-        this.message = 'Contrôle qualité soumis avec succès.';
-        console.log('Réponse du serveur:', response);
-      },
-      error: (error) => {
-        console.error('Erreur lors de la soumission:', error);
-        this.message = 'Erreur lors de la soumission du contrôle qualité.';
-      },
-    });
   }
 }
