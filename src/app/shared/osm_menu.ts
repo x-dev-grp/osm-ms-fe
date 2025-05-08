@@ -140,7 +140,7 @@ export const osm_menus: Navigation[] = [
             id: 'millingSchedule',
             title: 'Milling Schedules',
             type: 'item',
-            url: '/planning/mill-schedules',
+            url: '/reception/mill-schedules',
             icon: 'calendar_today'
           },
           {
@@ -154,7 +154,7 @@ export const osm_menus: Navigation[] = [
             id: 'lotAllocation',
             title: 'Lot Allocation',
             type: 'item',
-            url: '/planning/lot-allocation',
+            url: '/reception/lot-allocation',
             icon: 'layers'
           }
         ]
@@ -254,11 +254,27 @@ export const osm_menus: Navigation[] = [
     role: [Role.Admin, Role.User],
     children: [
       {
-        id: 'generalConfig',
-        title: 'General Configuration',
-        type: 'item',
-        url: '/settings/general-config',
-        icon: 'settings'
+        id: 'settingsGroup',
+        title: 'Settings',
+        type: 'collapse',
+        icon: 'settings',
+        role: [Role.Admin, Role.User],
+        children: [
+          {
+            id: 'generalConfig',
+            title: 'General Configuration',
+            type: 'item',
+            url: '/settings/general-config',
+            icon: 'settings'
+          },{
+            id: 'genericTypes',
+            title: 'Application Configuration',
+            type: 'item',
+            url: '/settings/configuration',
+            icon: 'build'
+          },
+
+        ]
       },
       {
         id: 'qualityControlRules',

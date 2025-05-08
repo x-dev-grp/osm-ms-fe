@@ -27,6 +27,8 @@
 ::ng-deep.dropdown-user-profile {
   min-width: 352px !important;
   max-width: 100% !important;
+  max-height: 80vh !important; /* Dynamic max-height to prevent overflow */
+  overflow-y: auto; /* Fallback for scrollbar */
 
   .user-title {
     font-size: 16px !important;
@@ -56,6 +58,16 @@
       width: 18px;
       height: 18px;
     }
+
+    /* Ensure icons from settings menu (ti icons) align with svg icons */
+    i {
+      font-size: 18px;
+      margin-right: 10px;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+    }
   }
 
   .user-group {
@@ -84,6 +96,12 @@
     &.mdc-button {
       border-radius: 20px;
     }
+  }
+
+  /* Ensure scrollbar is styled and functional */
+  ng-scrollbar {
+    max-height: inherit; /* Inherit max-height from parent */
+    visibility: hover;
   }
 }
 

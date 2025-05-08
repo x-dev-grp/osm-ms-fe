@@ -1,0 +1,191 @@
+<!-- ───────── Planning Board inside a single card ───────── -->
+<div class="col-md-12">
+  <app-card cardTitle="Olive Reception Planning" id="planning-card">
+    <!-- ── Toolbar ── -->
+    <mat-toolbar class="osm-toolbar" id="planning-toolbar">
+      <span class="title" id="planning-title">Olive Reception Planning</span>
+      <span class="spacer"></span>
+
+      <mat-form-field appearance="outline" class="toolbar-field" id="filter-type-field">
+        <mat-label>Type</mat-label>
+        <mat-select (selectionChange)="filterReceptions($event.value)" id="filter-type-select">
+          <mat-option value="">All</mat-option>
+          <mat-option value="OIL">Oil</mat-option>
+          <mat-option value="OLIVE">Olive</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="toolbar-field" id="search-field">
+        <mat-label>Search…</mat-label>
+        <input matInput (input)="filterReceptions($event.target.value)" id="search-input" />
+      </mat-form-field>
+
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="openLotModal()"
+        id="create-lot-button"
+      >
+        Create Lot
+      </button>
+    </mat-toolbar>
+
+    <!-- ── Board (responsive) ── -->
+    <div class="board-container" id="board-container">
+      <!-- Unassigned -->
+      <mat-expansion-panel
+        class="unassigned-panel mat-elevation-z3"
+        [expanded]="isDesktop"
+        id="unassigned-panel"
+      >
+        <mat-expansion-panel-header id="unassigned-header">
+          <mat-panel-title id="unassigned-title">
+            Unassigned Receptions
+            <span class="ml-2 text-sm" id="unassigned-count">
+        ({{ unassignedReceptions.length }})
+      </span>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <!-- panel body -->
+        <div
+          id="unassigned-list"
+          cdkDropList
+          [cdkDropListData]="unassignedReceptions"
+          (cdkDropListDropped)="drop($event)"
+          class="space-y-2"
+        >
+          <mat-card
+            *ngFor="let item of unassignedReceptions"
+            class="reception-card"
+            cdkDrag
+            [cdkDragData]="item"
+            [attr.id]="'card-' + item.reception.id"
+          >
+            <!-- simplified header -->
+            <div class="reception-header" [attr.id]="'unassigned-header-' + item.reception.id">
+              <strong [attr.id]="'unassigned-title-' + item.reception.id">
+                Delivery ID: {{ item.reception.id }}
+              </strong>
+              <small
+                *ngIf="item.type === 'reception'"
+                [attr.id]="'unassigned-subtitle-' + item.reception.id"
+                class="block text-xs text-gray-600"
+              >
+                {{ item.reception.deliveryDate | date:'shortDate' }}
+              </small>
+            </div>
+
+            <!-- lot info if applicable -->
+            <mat-card-content>
+              <div
+                *ngIf="item.type === 'lot'"
+                class="text-sm"
+                [attr.id]="'unassigned-lotinfo-' + item.lotNumber"
+              >
+                Receptions: {{ item.receptions.length }}
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-expansion-panel>
+
+
+      <!-- Mills grid -->
+      <div class="mills-grid" id="mills-grid">
+        <mat-expansion-panel
+          *ngFor="let mill of mills; let i = index"
+          class="mill-panel mat-elevation-z3"
+          [expanded]="isDesktop"
+          [attr.id]="'mill-panel-' + i"
+        >
+          <mat-expansion-panel-header [attr.id]="'mill-header-' + i">
+            <mat-panel-title [attr.id]="'mill-title-' + i">
+              {{ mill.name }}
+              <span class="ml-2 text-sm" [attr.id]="'mill-count-' + i">
+                ({{ mill.receptions.length }} planned)
+              </span>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <mat-card-content [attr.id]="'mill-list-' + i">
+            <div
+              cdkDropList
+              [cdkDropListData]="mill.receptions"
+              (cdkDropListDropped)="drop($event)"
+              class="space-y-2"
+            >
+              <mat-card
+                *ngFor="let item of mill.receptions"
+                cdkDrag
+                [cdkDragData]="item"
+                [attr.id]="'mill-' + i + '-item-' + (item.type==='reception' ? item.reception.id : item.lotNumber)"
+              >
+                <mat-card-header>
+                  <mat-card-title>
+                    <ng-container *ngIf="item.type==='reception'; else lotLabelMill">
+                      {{ item.reception.id }}
+                    </ng-container>
+                    <ng-template #lotLabelMill>
+                      Lot {{ item.lotNumber }}
+                    </ng-template>
+                  </mat-card-title>
+                  <mat-card-subtitle>
+                    <ng-container *ngIf="item.type==='reception'">
+                      {{ item.reception.deliveryDate | date }}
+                    </ng-container>
+                  </mat-card-subtitle>
+                </mat-card-header>
+
+                <mat-card-content>
+                  <div *ngIf="item.type === 'lot'" class="text-sm">
+                    Receptions: {{ item.receptions.length }}
+                  </div>
+                </mat-card-content>
+              </mat-card>
+            </div>
+          </mat-card-content>
+        </mat-expansion-panel>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="mt-4 flex justify-between" id="planning-footer">
+      <div id="footer-stats">
+        <span id="footer-unassigned">Unassigned: {{ unassignedReceptions.length }}</span> |
+        <span id="footer-assigned">Assigned: {{ totalAssigned }}</span>
+      </div>
+      <div id="footer-actions">
+        <button mat-button color="primary" (click)="savePlan()" id="save-button">Save</button>
+        <button mat-button (click)="cancelPlan()" id="cancel-button">Cancel</button>
+      </div>
+    </div>
+  </app-card>
+</div>
+
+<!-- Dialog template unchanged -->
+
+<!-- Lot Creation Dialog -->
+<ng-template #lotDialog>
+  <h2 mat-dialog-title>Create New Lot</h2>
+  <mat-dialog-content>
+    <mat-selection-list #receptionsList (selectionChange)="onSelectionChange($event)">
+      <mat-list-option
+        *ngFor="let reception of unassignedReceptions"
+        [value]="reception"
+        [disabled]="reception.type === 'lot'"
+      >
+        {{ reception.type === 'reception' ? reception.reception.id : reception.lotNumber }}
+      </mat-list-option>
+    </mat-selection-list>
+    <mat-form-field appearance="fill" class="w-full mt-2">
+      <mat-label>Lot Number</mat-label>
+      <input matInput [(ngModel)]="newLotNumber" />
+    </mat-form-field>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="closeLotModal()">Cancel</button>
+    <button mat-button color="primary" [mat-dialog-close]="true" (click)="createLot()" [disabled]="!newLotNumber || selectedReceptions.length === 0">Create</button>
+  </mat-dialog-actions>
+</ng-template>
+
