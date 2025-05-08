@@ -10,7 +10,7 @@
   <div class="row">
     <div class="col-md-3 mb-4" *ngFor="let control of dynamicForm.controls | keyvalue">
       <label [for]="control.key" class="form-label fw-bold">{{ control.key }}</label>
-      <ng-container *ngIf="getRuleType(control.key) === 'NUMERIC'; else booleanInput">
+      <ng-container *ngIf="getRuleType(control.key) === 'NUMERIC'; else booleanOrSelectInput">
         <input
           type="number"
           class="form-control"
@@ -18,28 +18,52 @@
           [formControlName]="control.key"
           placeholder="Entrez une valeur"
         />
-        <div class="text-danger mt-1" *ngIf="submitted && dynamicForm.get(control.key)?.invalid && dynamicForm.get(control.key)?.touched">
-          <small *ngIf="dynamicForm.get(control.key)?.errors?.['required']">
+        <!-- Proactive error messages for min/max violations -->
+        <div class="text-danger mt-1" *ngIf="dynamicForm.get(control.key)?.invalid && dynamicForm.get(control.key)?.touched">
+          <span *ngIf="dynamicForm.get(control.key)?.errors?.['min']">
+            La valeur doit être supérieure ou égale à {{ getRuleMinValue(control.key) }}.
+          </span>
+          <span *ngIf="dynamicForm.get(control.key)?.errors?.['max']">
+            La valeur doit être inférieure ou égale à {{ getRuleMaxValue(control.key) }}.
+          </span>
+          <span *ngIf="dynamicForm.get(control.key)?.errors?.['required']">
             Ce champ est requis.
-          </small>
-          <small *ngIf="dynamicForm.get(control.key)?.errors?.['min']">
-            La valeur minimale est {{ dynamicForm.get(control.key)?.errors?.['min'].min }}.
-          </small>
-          <small *ngIf="dynamicForm.get(control.key)?.errors?.['max']">
-            La valeur maximale est {{ dynamicForm.get(control.key)?.errors?.['max'].max }}.
-          </small>
+          </span>
+        </div>
+        <!-- Existing error messages after submission -->
+        <div class="text-danger mt-1" *ngIf="submitted && dynamicForm.get(control.key)?.invalid && dynamicForm.get(control.key)?.touched">
+          <span *ngIf="dynamicForm.get(control.key)?.errors?.['required']">
+            Ce champ est requis.
+          </span>
+          <span *ngIf="dynamicForm.get(control.key)?.errors?.['min']">
+            La valeur minimale est {{ getRuleMinValue(control.key) }}.
+          </span>
+          <span *ngIf="dynamicForm.get(control.key)?.errors?.['max']">
+            La valeur maximale est {{ getRuleMaxValue(control.key) }}.
+          </span>
         </div>
       </ng-container>
-      <ng-template #booleanInput>
-        <input
-          type="checkbox"
-          [id]="control.key"
-          [formControlName]="control.key"
-        />
+      <ng-template #booleanOrSelectInput>
+        <ng-container *ngIf="isBooleanSelect(control.key); else checkboxInput">
+          <mat-form-field appearance="fill" class="w-100">
+            <mat-label>{{ control.key }}</mat-label>
+            <mat-select [id]="control.key" [formControlName]="control.key">
+              <mat-option [value]="true">Vrai</mat-option>
+              <mat-option [value]="false">Faux</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-container>
+        <ng-template #checkboxInput>
+          <input
+            type="checkbox"
+            [id]="control.key"
+            [formControlName]="control.key"
+          />
+        </ng-template>
         <div class="text-danger mt-1" *ngIf="submitted && dynamicForm.get(control.key)?.invalid && dynamicForm.get(control.key)?.touched">
-          <small *ngIf="dynamicForm.get(control.key)?.errors?.['required']">
+          <span *ngIf="dynamicForm.get(control.key)?.errors?.['required']">
             Ce champ est requis.
-          </small>
+          </span>
         </div>
       </ng-template>
     </div>

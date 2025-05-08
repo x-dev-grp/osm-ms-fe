@@ -351,19 +351,6 @@ export class ReceptionComponent implements OnInit {
     return new Date(date).toISOString(); // <-- renvoie "2025-04-16T16:25:59.000Z"
   }
 
-  // // Ajouter / Modifier Reception
-  // private extractIdOnly(entity: any): { id: string } | null {
-  //   return entity && entity.id ? {id: entity.id} : null;
-  // }
-
-  // extractFullSupplierIds(supplier: any): any {
-  //   return {
-  //     id: supplier?.id,
-  //     supplierInfo: supplier?.supplierInfo ? {id: supplier.supplierInfo.id} : null,
-  //     genericSupplierType: supplier?.genericSupplierType ? {id: supplier.genericSupplierType.id} : null
-  //   };
-  // }
-
   Enregistrer(): void {
     // Vérifier si le formulaire est valide
     if (this.receptionForm.invalid) {
@@ -404,8 +391,8 @@ export class ReceptionComponent implements OnInit {
       paidAmount: cleanedFormValue.paidAmount,
       unpaidAmount: cleanedFormValue.unpaidAmount,
       oilType: cleanedFormValue.oilType,
+      qualityControl: cleanedFormValue.qualityControl,
       trtDate: this.formatDate(cleanedFormValue.trtDate),
-
       oliveVariety: cleanedFormValue.oliveVariety,
       sackCount: cleanedFormValue.sackCount,
       oliveType: cleanedFormValue.oliveType,
@@ -425,6 +412,19 @@ export class ReceptionComponent implements OnInit {
         if (res.success) {
           const message = this.isEditing ? 'Réception mise à jour avec succès.' : 'Réception ajoutée avec succès.';
           this.showToast(message);
+
+          // Mettre à jour ou ajouter dans dataSource.data
+          if (this.isEditing) {
+            // Mise à jour de la ligne existante
+            const updatedData = this.dataSource.data.map((item) =>
+              item.id === payload.id ? { ...item, ...payload } : item
+            );
+            this.dataSource.data = updatedData;
+          } else {
+            // Ajout d'une nouvelle ligne
+            this.dataSource.data = [...this.dataSource.data, payload];
+          }
+
           this.resetForm();
         } else {
           this.showToast(res.message || "Échec de l'opération.");
@@ -524,6 +524,8 @@ export class ReceptionComponent implements OnInit {
           this.ubdateForm(fullReception);
           // Log pour debug
           console.log("Données réception chargées :", fullReception);
+          console.log(fullReception)
+
         } else {
           this.showToast("Impossible de charger les détails de la réception.");
         }

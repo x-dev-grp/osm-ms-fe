@@ -274,38 +274,41 @@
 
 <div class="col-md-12">
   <app-card>
+
+    <div class="filters d-flex align-items-center gap-3 flex-wrap">
+      <!-- Type de réception -->
+      <mat-form-field appearance="outline" style="width: 200px; margin-right: 16px;">
+        <mat-label>Type de réception</mat-label>
+        <mat-select [(value)]="selectedType" (selectionChange)="applyFilters()">
+          <mat-option value="">Tous</mat-option>
+          <mat-option value="OIL">OIL</mat-option>
+          <mat-option value="OLIVE">OLIVE</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Fournisseur -->
+      <mat-form-field appearance="outline" style="width: 250px; margin-right: 16px;">
+        <mat-label>Fournisseur</mat-label>
+        <input matInput [(ngModel)]="selectedSupplier" (input)="applyFilters()" placeholder="Nom fournisseur">
+      </mat-form-field>
+
+      <!-- Date de livraison -->
+      <mat-form-field appearance="outline" style="width: 220px; margin-right: 16px;">
+        <mat-label>Date de livraison</mat-label>
+        <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate" (dateChange)="applyFilters()">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <!-- Bouton de réinitialisation -->
+      <button mat-icon-button color="primary" (click)="resetFilters()" matTooltip="Réinitialiser les filtres" style="margin-top: 0; height: 75px;">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
     <div class="table-responsive">
       <div class="mat-elevation-z8">
-        <div class="filters d-flex align-items-center gap-3 flex-wrap">
-          <!-- Type de réception -->
-          <mat-form-field appearance="outline" style="width: 200px; margin-right: 16px;">
-            <mat-label>Type de réception</mat-label>
-            <mat-select [(value)]="selectedType" (selectionChange)="applyFilters()">
-              <mat-option value="">Tous</mat-option>
-              <mat-option value="OIL">OIL</mat-option>
-              <mat-option value="OLIVE">OLIVE</mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <!-- Fournisseur -->
-          <mat-form-field appearance="outline" style="width: 250px; margin-right: 16px;">
-            <mat-label>Fournisseur</mat-label>
-            <input matInput [(ngModel)]="selectedSupplier" (input)="applyFilters()" placeholder="Nom fournisseur">
-          </mat-form-field>
-
-          <!-- Date de livraison -->
-          <mat-form-field appearance="outline" style="width: 220px; margin-right: 16px;">
-            <mat-label>Date de livraison</mat-label>
-            <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate" (dateChange)="applyFilters()">
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-          </mat-form-field>
-
-          <!-- Bouton de réinitialisation -->
-          <button mat-icon-button color="primary" (click)="resetFilters()" matTooltip="Réinitialiser les filtres" style="margin-top: 0; height: 75px;">
-            <mat-icon>close</mat-icon>
-          </button>
-        </div>        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
           <!-- Reception Type Column -->
           <ng-container matColumnDef="receptionType">

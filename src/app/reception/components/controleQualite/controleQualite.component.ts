@@ -10,10 +10,12 @@ import { QualityControlResultService } from '../../../shared/services/quality-co
 import { QualityControlResultDto } from '../../../shared/models/QualityControlResultDto';
 import { forkJoin, Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import {MatFormField} from "@angular/material/form-field";
+import {MatOption, MatSelect} from "@angular/material/select";
 
 @Component({
   selector: 'app-controlequalite',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, MatFormField, MatSelect, MatOption],
   templateUrl: './controleQualite.component.html',
   styleUrls: ['./controleQualite.component.scss'],
   standalone: true
@@ -27,6 +29,7 @@ export class ControleQualiteComponent implements OnInit {
   submitted = false;
   isLoading = false;
   qualityControlResults: QualityControlResultDto[] = [];
+
 
   constructor(
     private fb: FormBuilder,
@@ -135,6 +138,8 @@ export class ControleQualiteComponent implements OnInit {
 
     this.rules.forEach((rule) => {
       const validators = [];
+      let initialValue: number | boolean | null = null;
+
       if (rule.ruleType === 'NUMERIC') {
         validators.push(Validators.required);
         if (rule.minValue !== undefined && rule.minValue !== null) {
@@ -148,7 +153,6 @@ export class ControleQualiteComponent implements OnInit {
       }
 
       const existingResult = this.qualityControlResults.find((result) => result.rule?.ruleKey === rule.ruleKey);
-      let initialValue: number | boolean | null = null;
       if (existingResult) {
         initialValue = rule.ruleType === 'NUMERIC' ? Number(existingResult.measuredValue) : existingResult.measuredValue === 'true';
       }
@@ -157,6 +161,21 @@ export class ControleQualiteComponent implements OnInit {
     });
 
     this.dynamicForm = this.fb.group(group);
+  }
+
+  getRuleMinValue(ruleKey: string): number | null {
+    const rule = this.rules.find((r) => r.ruleKey === ruleKey);
+    return rule?.minValue !== undefined ? rule.minValue : null;
+  }
+
+  getRuleMaxValue(ruleKey: string): number | null {
+    const rule = this.rules.find((r) => r.ruleKey === ruleKey);
+    return rule?.maxValue !== undefined ? rule.maxValue : null;
+  }
+
+  isBooleanSelect(ruleKey: string): boolean {
+    const rule = this.rules.find((r) => r.ruleKey === ruleKey);
+    return rule?.booleanValue === true;
   }
 
   getRuleType(ruleKey: string): 'NUMERIC' | 'BOOLEAN' {
