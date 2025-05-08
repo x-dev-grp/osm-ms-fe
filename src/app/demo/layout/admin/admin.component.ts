@@ -33,9 +33,11 @@ import { Role } from 'src/app/@theme/types/role';
 import { osm_menus } from '../../../shared/osm_menu';
 import { CompanyProfileService } from '../../../shared/services/company-profile.service';
 import { CompanyProfile } from '../../../shared/models/CompanyProfile';
+import { ThemeConfig, ThemeConfigService } from '../../../shared/services/theme-config.service';
 
 @Component({
   selector: 'app-admin',
+  standalone: true,
   imports: [
     SharedModule,
     RouterModule,
@@ -55,7 +57,8 @@ export class AdminComponent implements OnInit, AfterViewInit {
   buyNowLinkService = inject(BuyNowLinkService);
   authenticationService = inject(AuthenticationService);
   companyProfileService = inject(CompanyProfileService);
-  // public props
+  private themeConfig = inject(ThemeConfigService);
+// public props
   readonly sidebar = viewChild<MatDrawer>('sidebar');
   menus: Navigation[] = osm_menus;
   modeValue: MatDrawerMode = 'side';
@@ -78,11 +81,17 @@ export class AdminComponent implements OnInit, AfterViewInit {
       this.themeDirection(this.themeService.directionChange());
     });
   }
-
+// wherever you handle “Apply” in your config UI, call:
+  onApply(cfg: ThemeConfig) {
+    this.themeConfig.saveConfig(cfg);
+    this.themeConfig.applyConfig(cfg);
+  }
   // life cycle event
   logoPreview: string | null = null;
   ngOnInit() {
-    this.breakpointObserver.observe([MIN_WIDTH_1025PX, MAX_WIDTH_1024PX]).subscribe((result) => {
+  const cfg = this.themeConfig.loadConfig();
+   this.themeConfig.applyConfig(cfg)
+   this.breakpointObserver.observe([MIN_WIDTH_1025PX, MAX_WIDTH_1024PX]).subscribe((result) => {
       if (result.breakpoints[MAX_WIDTH_1024PX]) {
         this.modeValue = 'over';
       } else if (result.breakpoints[MIN_WIDTH_1025PX]) {
@@ -110,16 +119,55 @@ export class AdminComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.rtlMode = AbleProConfig.isRtlLayout;
-
-    this.currentLayout = AbleProConfig.layout;
-
+    const cfg = this.themeConfig.loadConfig();
+    this.themeConfig.applyConfig(cfg);
+    // now your currentLayout/rtlMode etc can read from cfg:
+    this.rtlMode = cfg.rtlLayout;
+    this.currentLayout = cfg.layout;
     this.manageLayout(this.currentLayout);
   }
 
-  /**
-   * Role base menu filtering
-   */
+
+  private applySavedTheme(): void {
+    // AbleProConfig has already been seeded from localStorage in your config component
+    // We simply read the static fields here:
+
+    // 1) Light/Dark/Auto
+    document.body.classList.remove('light','dark');
+    if (AbleProConfig.isDarkMode === 'light') document.body.classList.add('light');
+    if (AbleProConfig.isDarkMode === 'dark')  document.body.classList.add('dark');
+    // (auto you’d handle separately if desired)
+
+    // 2) Contrast
+    document.body.classList.toggle('gray-contrast', !AbleProConfig.theme_contrast);
+
+    // 3) Sidebar caption
+    document.body.classList.toggle('hide-caption', AbleProConfig.menu_caption);
+
+    // 4) RTL/LTR
+    this.rtlMode = AbleProConfig.isRtlLayout;
+    document.body.dir = this.rtlMode ? 'rtl' : 'ltr';
+
+    // 5) Primary color
+    const themes = [
+      'blue-theme','indigo-theme','purple-theme','pink-theme',
+      'red-theme','orange-theme','yellow-theme','green-theme',
+      'teal-theme','cyan-theme'
+    ];
+    document.body.classList.remove(...themes);
+    document.body.classList.add(AbleProConfig.theme_color);
+
+    // 6) Boxed vs full container
+    document.body.classList.toggle('boxed', AbleProConfig.isBox_container);
+
+    // 7) Menu layout
+    this.currentLayout = AbleProConfig.layout as any;
+  }
+
+  // ────────────────────────────────────
+  // EXISTING METHODS (UNCHANGED)
+  // ────────────────────────────────────
+
   RoleBaseFilterMenu(menus: Navigation[], userRoles: string[], parentRoles: string[] = [Role.Admin]): Navigation[] {
     return menus.map((item) => {
       // If item doesn't have a specific role, inherit roles from parent
@@ -161,7 +209,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
    * Listen to theme layout changes
    */
   private updateThemeLayout(layout: string) {
-    this.currentLayout = layout;
+    this.currentLayout = layout as any;
     this.manageLayout(layout);
   }
 

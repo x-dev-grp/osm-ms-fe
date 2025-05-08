@@ -42,8 +42,7 @@
             "styles": [
               "src/styles.scss",
               "src/app/@theme/styles/material-overrides.scss",
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "src/styles.scss"
+               "src/styles.scss"
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
@@ -52,8 +51,7 @@
             },
             "scripts": [
               "node_modules/apexcharts/dist/apexcharts.min.js",
-              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
-            ],
+             ],
             "serviceWorker": true,
             "ngswConfigPath": "ngsw-config.json"
           },

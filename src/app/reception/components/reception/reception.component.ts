@@ -521,7 +521,7 @@ export class ReceptionComponent implements OnInit {
           console.log("Fournisseur reçu :", fullReception.supplier);
           console.log(res)
           // Appel de la méthode pour remplir le formulaire avec les données
-          this.ubdateForm(fullReception);
+          this.updateForm(fullReception);
           // Log pour debug
           console.log("Données réception chargées :", fullReception);
           console.log(fullReception)
@@ -538,7 +538,7 @@ export class ReceptionComponent implements OnInit {
     });
   }
 
-  ubdateForm(data: any): void {
+  updateForm(data: any): void {
     console.log('oliveTypes dans updateForm au moment de patchValue :', this.oliveTypes);
     if (!data) return;
     const parseDate = (dateValue: any): Date | null => {

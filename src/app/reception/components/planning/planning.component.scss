@@ -1,0 +1,115 @@
+/* ───────────────────────── Toolbar styling ───────────────────────── */
+.osm-toolbar {
+  background: #ffffff;          /* white instead of theme primary */
+  color: #1e293b;               /* slate-800 text for contrast   */
+  padding: 0 16px;
+
+  .title        { font-weight: 600; font-size: 1.125rem; } /* 18 px */
+  .spacer       { flex: 1 1 auto; }
+
+  .toolbar-field {
+    width: 160px;
+    margin-right: 12px;
+
+    ::ng-deep .mat-form-field-wrapper { padding-bottom: 0; } /* keeps it compact */
+  }
+}
+
+/* ─────────────── Layout tweaks ─────────────── */
+.w-25 { width: 25%; }                   /* tailwind-like helper; matches left column */
+.grid.grid-cols-3 { height: 100%; }     /* lets the kanban lanes stretch fully  */
+/* Board wrapper */
+.board-container {
+  display: flex;
+  flex-direction: column;          /* mobile default */
+  gap: 1rem;
+  height: calc(100vh - 220px);     /* fill the card while respecting header/footer */
+  overflow: hidden;
+}
+
+/* Unassigned column */
+.unassigned-column {
+  overflow: auto;
+  flex: 0 0 100%;
+}
+
+/* Mills area */
+.mills-grid {
+  overflow: auto;
+  display: grid;
+  grid-template-columns: 1fr;      /* one column on phones */
+  gap: 1rem;
+}
+
+/* ───── Desktop override ───── */
+@media (min-width: 1024px) {        /* lg breakpoint */
+  .board-container { flex-direction: row; }
+  .unassigned-column { flex: 0 0 25%; }   /* fixed quarter width   */
+  .mills-grid {
+    flex: 1 1 auto;
+    grid-template-columns: repeat(3, 1fr); /* 3 equal columns      */
+  }
+}
+
+/* Tiny helper for the toolbar */
+.osm-toolbar { /* same rules as before */ }
+/* ───── Mill panel styled as a card ───── */
+.mill-panel {
+  background: #ffffff;          /* same white as mat-card */
+  border-radius: 8px;           /* mat-card default */
+  overflow: hidden;             /* clip child content corners */
+
+  /* Header looks like a card header */
+  .mat-expansion-panel-header {
+    padding: 12px 16px;
+    min-height: 56px;
+    border-bottom: 1px solid #e0e0e0;   /* subtle divider like mat-card */
+    font-weight: 600;
+    color: #374151;                     /* slate-700 */
+
+    .mat-expansion-indicator {
+      color: #64748b;                   /* slate-500 arrow */
+    }
+  }
+
+  /* Slight tint while opened (optional) */
+  &.mat-expanded .mat-expansion-panel-header {
+    background: #f9fafb;
+  }
+
+  /* Remove default panel border line */
+  .mat-expansion-panel-content {
+    padding: 0 16px 16px;
+  }
+}
+/* ───── Both mills & unassigned share the same card skin ───── */
+.mill-panel,
+.unassigned-panel {
+  background: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;          /* clip corners when open */
+}
+
+/* Shared header look */
+.mill-panel .mat-expansion-panel-header,
+.unassigned-panel .mat-expansion-panel-header {
+  padding: 12px 16px;
+  min-height: 56px;
+  font-weight: 600;
+  color: #374151;
+  border-bottom: 1px solid #e0e0e0;
+
+  .mat-expansion-indicator { color: #64748b; }
+}
+
+/* Subtle tint when panel is expanded */
+.mill-panel.mat-expanded   .mat-expansion-panel-header,
+.unassigned-panel.mat-expanded .mat-expansion-panel-header {
+  background: #f9fafb;
+}
+
+/* Layout helpers */
+.unassigned-panel { flex: 0 0 100%; }
+@media (min-width: 1024px) {
+  .unassigned-panel { flex: 0 0 25%; }  /* 25 % width on desktop */
+}
