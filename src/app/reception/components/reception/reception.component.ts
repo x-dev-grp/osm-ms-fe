@@ -24,7 +24,7 @@ import { TransporterService } from '../../../shared/services/TransporterService'
  import {MatPaginator} from "@angular/material/paginator";
 import { Router } from '@angular/router';
 import { SupplierType } from '../../../shared/models/supplier-type';
-import { SupplierTypeService } from '../../services/supplier-type.service';
+import {SupplierTypeService} from "../../../shared/services/supplier.service";
 
 @Component({
   selector: 'app-reception',
@@ -152,6 +152,7 @@ export class ReceptionComponent implements OnInit {
       status: [null],
       rendement: [null],
       oliveQuantity: [null],
+      qualityControl: [null],
       parcel: ['']
     });
   }
@@ -189,6 +190,7 @@ export class ReceptionComponent implements OnInit {
     this.deliveryService.getAllDeliveriesList().subscribe((res) => {
       if (res && res.success) {
         this.deliveries = res.data;
+        console.log(res)
 
         // Sauvegarde des données originales pour les filtres
         this.originalData = res.data;
@@ -349,19 +351,6 @@ export class ReceptionComponent implements OnInit {
     return new Date(date).toISOString(); // <-- renvoie "2025-04-16T16:25:59.000Z"
   }
 
-  // Ajouter / Modifier Reception
-  private extractIdOnly(entity: any): { id: string } | null {
-    return entity && entity.id ? {id: entity.id} : null;
-  }
-
-  extractFullSupplierIds(supplier: any): any {
-    return {
-      id: supplier?.id,
-      supplierInfo: supplier?.supplierInfo ? {id: supplier.supplierInfo.id} : null,
-      genericSupplierType: supplier?.genericSupplierType ? {id: supplier.genericSupplierType.id} : null
-    };
-  }
-
   Enregistrer(): void {
     // Vérifier si le formulaire est valide
     if (this.receptionForm.invalid) {
@@ -402,8 +391,8 @@ export class ReceptionComponent implements OnInit {
       paidAmount: cleanedFormValue.paidAmount,
       unpaidAmount: cleanedFormValue.unpaidAmount,
       oilType: cleanedFormValue.oilType,
+      qualityControl: cleanedFormValue.qualityControl,
       trtDate: this.formatDate(cleanedFormValue.trtDate),
-
       oliveVariety: cleanedFormValue.oliveVariety,
       sackCount: cleanedFormValue.sackCount,
       oliveType: cleanedFormValue.oliveType,
@@ -423,6 +412,19 @@ export class ReceptionComponent implements OnInit {
         if (res.success) {
           const message = this.isEditing ? 'Réception mise à jour avec succès.' : 'Réception ajoutée avec succès.';
           this.showToast(message);
+
+          // Mettre à jour ou ajouter dans dataSource.data
+          if (this.isEditing) {
+            // Mise à jour de la ligne existante
+            const updatedData = this.dataSource.data.map((item) =>
+              item.id === payload.id ? { ...item, ...payload } : item
+            );
+            this.dataSource.data = updatedData;
+          } else {
+            // Ajout d'une nouvelle ligne
+            this.dataSource.data = [...this.dataSource.data, payload];
+          }
+
           this.resetForm();
         } else {
           this.showToast(res.message || "Échec de l'opération.");
@@ -434,7 +436,6 @@ export class ReceptionComponent implements OnInit {
       }
     });
   }
-
   // Méthode pour nettoyer et formater les valeurs du formulaire
   cleanPayload(payload: any): any {
     const cleaned = {...payload};
@@ -523,6 +524,8 @@ export class ReceptionComponent implements OnInit {
           this.ubdateForm(fullReception);
           // Log pour debug
           console.log("Données réception chargées :", fullReception);
+          console.log(fullReception)
+
         } else {
           this.showToast("Impossible de charger les détails de la réception.");
         }
@@ -538,20 +541,28 @@ export class ReceptionComponent implements OnInit {
   ubdateForm(data: any): void {
     console.log('oliveTypes dans updateForm au moment de patchValue :', this.oliveTypes);
     if (!data) return;
+    const parseDate = (dateValue: any): Date | null => {
+      if (!dateValue) return null;
 
-    const parseDate = (dateArray: any[]): Date | null => {
-      if (!Array.isArray(dateArray) || dateArray.length < 3) return null;
-      const [year, month, day, hour = 0, minute = 0, second = 0, ms = 0] = dateArray;
-      return new Date(year, month - 1, day, hour, minute, second, ms / 1000000);
+      // Si c'est déjà une instance de Date, retournez-la directement
+      if (dateValue instanceof Date) {
+        return dateValue;
+      }
+      // Si c'est une chaîne de caractères (format ISO ou autre)
+      if (typeof dateValue === 'string') {
+        const parsedDate = new Date(dateValue);
+        if (!isNaN(parsedDate.getTime())) {
+          return parsedDate; // Retourne la date si elle est valide
+        }
+      }
+      // Si aucun format ne correspond, retournez null
+      console.warn("Format de date non pris en charge :", dateValue);
+      return null;
     };
-    console.log("data.oliveType:", data.oliveType);
-    console.log("this.oliveTypes:", this.oliveTypes);
-
-
     const formattedData = {
       ...data,
       deliveryDate: data.deliveryDate ? new Date(data.deliveryDate) : null,
-      trtDate: parseDate(data.trtDate),
+      trtDate: parseDate(data.trtDate), // Conversion avec parseDate
       region: this.regions.find(r => r.id === data.region?.id) || null,
       supplier: this.suppliers.find(s => s.id === data.supplier?.id) || null,
       oliveVariety: this.oliveVarieties.find(v => v.id === data.oliveVariety?.id) || null,
@@ -560,9 +571,9 @@ export class ReceptionComponent implements OnInit {
       oilType: this.oilTypes.find(t => t.id === data.oilType?.id) || null
     };
 
-
+    console.log("Formatted trtDate:", formattedData.trtDate);
     console.log("oliveType dans updateForm:", formattedData.oliveType);
-
+    console.log("Raw trtDate apres :", data.trtDate);
     // Affecter automatiquement le type selon la donnée
     if (data.oilQuantity !== null && data.oilQuantity !== undefined) {
       this.receptionType = 'OIL';

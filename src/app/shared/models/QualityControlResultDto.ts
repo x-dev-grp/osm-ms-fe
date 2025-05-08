@@ -1,6 +1,9 @@
-import {QualityControlRule} from "./quality-control-rule";
+import { QualityControlRule } from './quality-control-rule';
+import { UnifiedDelivery } from './UnifiedDelivery';
 
 export interface QualityControlResultDto {
-  ruleId: QualityControlRule;
-  measuredValue: number;
+  id?: string;
+  rule: QualityControlRule;
+  measuredValue: string;
+  delivery: UnifiedDelivery;
 }

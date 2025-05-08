@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
  import {ActivatedRoute} from "@angular/router";
  import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from "@angular/material/card";
 import { SupplierType } from '../../../shared/models/supplier-type';
-import { SupplierTypeService } from '../../services/supplier-type.service';
+import {SupplierTypeService} from "../../../shared/services/supplier.service";
 
 @Component({
   selector: 'app-supplier-details',
