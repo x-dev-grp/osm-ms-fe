@@ -1,4 +1,18 @@
 {
+  "STANDARD":{
+    "BTNS":{
+      "ADD": "Add",
+      "EDIT": "Edit",
+      "DELETE": "Delete",
+      "SAVE": "Save",
+      "CANCEL": "Cancel",
+      "BACK": "Back",
+      "NEXT": "Next",
+      "PREVIOUS": "Previous",
+      "SUBMIT": "Submit",
+      "SEARCH": "Search"
+    }
+  },
   "Navigation": "Navigation",
   "Dashboard": "Dashboard",
   "Default": "Default",

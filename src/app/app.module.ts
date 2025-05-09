@@ -12,7 +12,6 @@ import { MatButtonModule } from '@angular/material/button';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatToolbarModule} from "@angular/material/toolbar";
 
-
 import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import {
@@ -30,6 +29,7 @@ import { SharedModule } from './demo/shared/shared.module';
 import { QualityControlRuleComponent } from './settings/quality-control-rule/quality-control-rule.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [],
@@ -65,6 +65,7 @@ import { environment } from '../environments/environment';
     GenericTypeComponent,
     SupplierComponent,
     QualityControlRuleComponent,
+    TranslateModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production,
       // Mise en cache dès la première visite (optionnel)

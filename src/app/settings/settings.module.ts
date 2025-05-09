@@ -8,6 +8,8 @@ import { GeneralConfigComponent } from './general-config/general-config.componen
 import { StorageUnitsComponent } from './storage/storage.component';
 import { GenericTypeComponent } from './generic-type/generic-type.component';
 import { QualityControlRuleComponent } from './quality-control-rule/quality-control-rule.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { SharedModule } from '../demo/shared/shared.module';
 
 @NgModule({
   declarations: [],
@@ -19,7 +21,8 @@ import { QualityControlRuleComponent } from './quality-control-rule/quality-cont
     StorageUnitsComponent,
     GeneralConfigComponent,
     QualityControlRuleComponent,
-    PricingComponent,GenericTypeComponent
+    PricingComponent,GenericTypeComponent,
+    SharedModule
   ]
 })
 export class SettingsModule {}

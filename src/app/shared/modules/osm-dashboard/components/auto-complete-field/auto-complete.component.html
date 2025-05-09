@@ -1,0 +1,21 @@
+
+
+<mat-form-field appearance="outline" >
+    <mat-label>{{field().labelTranslatePath?(field().labelTranslatePath|translate):field().label}}</mat-label>
+            <input
+            matInput
+            [placeholder]="field().labelTranslatePath?(field().labelTranslatePath|translate):field().label"
+            [formControl]="formControl"
+            [matAutocomplete]="auto"
+          
+          />
+          <mat-autocomplete    [displayWith]="displayWith"
+          (optionsScroll)="scroll($event)" #auto="matAutocomplete" (optionSelected)="autoCompleteSelect($event.option.value)">
+            @for (item of autoCompleteOptions?.data ; track item?.id) {
+              <mat-option [value]="item">
+                {{ getValue(field()?.valuePath,item) }}
+              </mat-option>
+            }
+          </mat-autocomplete>
+ 
+</mat-form-field>

@@ -1,0 +1,8 @@
+
+
+<mat-form-field appearance="outline" >
+      <mat-label>{{ field().labelTranslatePath ? (field().labelTranslatePath | translate) : field().label }}</mat-label>
+            <mat-select (selectionChange)="selectChange($event)" [formControl]="formControl" [placeholder]="field().labelTranslatePath?(field().labelTranslatePath|translate):field().label" class="w-100">
+                <mat-option *ngFor="let option of field().options" [value]="option.value">{{option.label}}</mat-option>
+            </mat-select>
+</mat-form-field>

@@ -1,7 +1,11 @@
 // ==========================//
 //    table css start        //
 // ==========================//
-
+.slider-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 tr {
   &.example-detail-row {
     height: 0 !important;

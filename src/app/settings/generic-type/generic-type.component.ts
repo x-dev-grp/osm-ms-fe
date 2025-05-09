@@ -20,7 +20,12 @@ import {
 import { TypeCategory } from '../../shared/models/type-category.enum';
 import { BaseType } from '../../shared/models/base-type';
 import { GenericTypeService } from '../../shared/services/generic-type.service';
- interface TypeOption {
+ import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatMenuModule } from '@angular/material/menu';
+import { AttributeType, DashboardConfig, FieldType } from 'src/app/shared/modules/osm-dashboard/models/dashboard-config';
+import { OsmDashboard } from 'src/app/shared/modules/osm-dashboard/osm-dashboard';
+import { SearchOperation } from 'src/app/shared/models/advanced-search/searchOperation';
+interface TypeOption {
   name: string;
   value: TypeCategory;
 }
@@ -30,6 +35,7 @@ import { GenericTypeService } from '../../shared/services/generic-type.service';
   styleUrls: ['./generic-type.component.scss'],
   standalone: true,
   imports: [
+    OsmDashboard,
     CommonModule,
     MatButtonModule,
     MatTableModule,
@@ -45,8 +51,9 @@ import { GenericTypeService } from '../../shared/services/generic-type.service';
     SharedModule,
     MatAccordion,
     MatExpansionPanel,
-    MatExpansionPanelTitle
-  ]
+    MatExpansionPanelTitle,
+    MatPaginatorModule,
+    MatMenuModule  ]
 })
 export class GenericTypeComponent implements OnInit {
   recordForm: FormGroup;
@@ -55,13 +62,18 @@ export class GenericTypeComponent implements OnInit {
 
 
    typeOptions: TypeOption[] = [];
-
+   announceSortChange(event:any){
+    console.log(event)
+   }
+   onPageChange(event:any){
+    console.log(event)
+   }
   // A mapping of TypeCategory to its loaded records.
   recordsByCategory: Record<TypeCategory, BaseType[]> = {} as Record<TypeCategory, BaseType[]>;
 
   // Currently selected records to display in the table.
   records: BaseType[] = [];
-  displayedColumns: string[] = ['name', 'type', 'description', 'actions'];
+  displayedColumns: string[] = ['name', 'type', 'description', 'actions','action'];
   FilterSource: MatTableDataSource<BaseType> = new MatTableDataSource<BaseType>(this.records);
 
   // The currently selected type.
@@ -238,5 +250,161 @@ export class GenericTypeComponent implements OnInit {
     this.recordForm.markAsPristine();
     this.recordForm.markAsUntouched();
     this.editingRecordIndex = -1;
+  }
+   config:DashboardConfig = {
+    title: 'Generic Type Management',
+    baseURL: 'generic-type',
+    searchEndpoint: 'production/types',
+    addNewItem: true,
+    addNewItemUrl: '/dashboard',
+    fileName: 'generic-type',
+    actions:{
+
+            statusMapping:false,
+            actionsList:
+              [
+                {
+                  action:"consulter"
+                },
+                {
+                  action:"modier"
+                },
+                {
+                  action:"spprimer"
+                }
+
+            ],
+            statusAttributeName:"name",
+            actionsStatusList:{
+              'bhhnh':[
+                {
+                  action:"consulter"
+                },
+                {
+                  action:"modier"
+                },
+                {
+                  action:"spprimer"
+                }
+              ],
+              'cdcd':[
+                {
+                  action:"view"
+                },
+                {
+                  action:"edit"
+                },
+                {
+                  action:"delete"
+                }
+              ]
+            }
+        },
+    defaultSearchData: {
+        page: 0,
+        size: 10,
+        sort: 'createdDate',
+        order: 'DESC',
+        searchData: {
+          operation: SearchOperation.AND,
+           searchs:[],
+            search: {
+                type: {
+                  equalValue: "REGION"
+                },
+
+            }
+        }
+    },
+    fields: [
+      {
+        name: 'name',
+        label: 'Name',
+        attributeType: AttributeType.string,
+        fieldType: FieldType.text,
+        sortable: true,
+        filterable: true,
+        defaultFilter: true,
+        dataTable:true,
+        exportable:true,
+        exportLabel:'Name',
+        exportLabelTranslatePath:'generic-type.name',
+        filterAttribute:'name',
+
+
+      },
+      {
+        name: 'description',
+        label: 'Description',
+        valuePath:"description",
+        attributeType: AttributeType.string,
+        fieldType: FieldType.text,
+        sortable: true,
+        filterable: true,
+        defaultFilter: true,
+        dataTable:true,
+        exportable:true,
+      },
+      {
+        name: 'type',
+        label: 'Type',
+        attributeType: AttributeType.string,
+        fieldType: FieldType.select,
+        sortable: true,
+        filterable: true,
+        defaultFilter: true,
+        dataTable:true,
+        options:[
+          {label:'Option 1',value:'option1'},
+          {label:'Option 2',value:'option2'},
+          {label:'Option 3',value:'option3'},
+        ],
+        exportable:true
+      },
+
+      // {
+      //   name: 'createdDate',
+      //   label: 'Created Date',
+      //   attributeType: AttributeType.date,
+      //   fieldType: FieldType.date,
+      //   sortable: true,
+      //   filterable: true,
+      //   defaultFilter: true,
+      //   dataTable:true,
+      //   exportable:true,
+      //   exportLabel:'Created Date',
+      //   exportLabelTranslatePath:'generic-type.created-date',
+      // },
+      // {
+      //   name: 'updatedDate',
+      //   label: 'Updated Date',
+      //   attributeType: AttributeType.date,
+      //   fieldType: FieldType.date,
+      //   sortable: true,
+      //   filterable: true,
+      //   defaultFilter: true,
+      //   dataTable:true,
+      // },
+      // {
+      //   name: 'amount',
+      //   label: 'Montant',
+      //   attributeType: AttributeType.number,
+      //   fieldType: FieldType.slider,
+      //   sortable: false,
+      //   filterable: true,
+      //   defaultFilter: true,
+      //   dataTable:true,
+      //   sliderMinValue: 0,
+      //   sliderMaxValue: 10000,
+      //   exportable:true,
+      //   exportLabel:'Montant',
+
+      // },
+
+    ],
+  }
+
+  applyAction(event:string){
+    console.log(event);
   }
 }

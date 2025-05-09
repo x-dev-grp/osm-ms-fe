@@ -1,0 +1,332 @@
+import { SearchData } from 'src/app/shared/models/advanced-search/searchData';
+import { SearchResponse } from '../../../models/advanced-search/searchResponse';
+import {  Field, FieldType } from '../models/dashboard-config';
+import { patchState, signalStore, withComputed, withHooks, withMethods, withState } from '@ngrx/signals';
+import { computed, effect, inject } from '@angular/core';
+import { AdvancedSearchService } from 'src/app/shared/services/advanced-serach.service';
+import { catchError, defer, EMPTY, finalize, Subject, switchMap, tap } from 'rxjs';
+import { SearchDetails } from 'src/app/shared/models/advanced-search/searchDetails';
+import { SearchOperation } from 'src/app/shared/models/advanced-search/searchOperation';
+import { SearchModel } from 'src/app/shared/models/advanced-search/searchModel';
+import { HttpClient } from '@angular/common/http';
+import { saveAs } from 'file-saver';
+export interface DashboardState {
+  endpoint: string;
+  data: SearchResponse;
+  loading: boolean;
+  exportPdfLoading: boolean;
+  exportExcelLoading: boolean;
+  searchData: SearchData;
+  allFields: Field[];
+  filterFields: { field: Field; checked: boolean }[];
+  exportFields: { field: Field; checked: boolean }[];
+  dataTableFields: Field[];
+  resetFieldsSubject: Subject<void>;
+  searchTrigger$: Subject<SearchData>;
+  fileName:string;
+
+}
+
+const initialState: DashboardState = {
+  endpoint: '',
+  data: {
+    total: 0,
+    data: [],
+    totalPages: 0,
+    page: 0
+  },
+  loading: false,
+  exportPdfLoading: false,
+  exportExcelLoading: false,
+  searchData: new SearchData(),
+  allFields: [],
+  filterFields: [],
+  exportFields: [],
+  dataTableFields: [],
+  resetFieldsSubject: new Subject<void>(),
+  searchTrigger$: new Subject<SearchData>(),
+  fileName:'default',
+
+};
+
+export const DashboardStore = signalStore(
+    
+  withState(initialState),
+  withComputed((store) => ({
+    data: store.data,
+    loading: store.loading,
+    exportPdfLoading: store.exportPdfLoading,
+    exportExcelLoading: store.exportExcelLoading,
+    searchData: store.searchData,
+    allFields: store.allFields,
+    filterFields: store.filterFields,
+    checkedFilterFields: computed(() => store.filterFields().filter((field) => field.checked)),
+    checkedExportFields: computed(() => store.exportFields().filter((field) => field.checked)),
+    exportFields: store.exportFields,
+    dataTableFields: store.dataTableFields,
+    endpoint: store.endpoint,
+    resetFields$:  store.resetFieldsSubject,
+    searchTrigger$: store.searchTrigger$,
+    fileName:store.fileName
+  })),
+  withMethods((store, _searchService = inject(AdvancedSearchService),_http=inject(HttpClient)) => {
+    return {
+      initialize(endpoint: string, allFields: Field[], searchData?: SearchData,fileName?:string): void {
+        patchState(store, {
+          endpoint: endpoint,
+          allFields: allFields,
+          filterFields: allFields.filter((field) => field.filterable).map((field) => ({ field, checked: field.defaultFilter ?? false })),
+          exportFields: allFields.filter((field) => field.exportable).map((field) => ({ field, checked: true })),
+          dataTableFields: allFields.filter((field) => field.dataTable),
+          fileName:fileName ?? 'default'
+        });
+        if (searchData) {
+          patchState(store, { searchData });
+        }
+      },
+      export(exportType: string) {
+        exportType=='pdf'?this.setExportPdfLoading(true):this.setExportExcelLoading(true);
+        const fieldsToExport = store.checkedExportFields().map((field) =>{ 
+            return {
+                name: field.field.fieldType==FieldType.autocomplete? field.field.valuePath : field.field.name,
+                label: field.field.exportLabel??field.field.label,
+            }
+        });
+        if(!fieldsToExport || fieldsToExport?.length<=0){
+            return ;
+        }
+        const exportDetails={
+            fieldDetails:fieldsToExport,
+            fileName:store.fileName(),
+            searchData:store.searchData()
+        }
+        return _http.post(`/api/${store.endpoint()}/export/${exportType}`,exportDetails,{
+            responseType: 'blob', 
+            observe: 'response'   
+          }).pipe(
+          tap((response) => {
+            const contentDisposition = response.headers.get('content-disposition');
+            let filename = 'export.pdf';
+      
+            if (contentDisposition) {
+              const match = contentDisposition.match(/filename="?(.+)"?/);
+              if (match) {
+             
+                filename = match[1]?.slice(0,-1);
+              }
+            }
+      
+            const blob = new Blob([response.body!], {
+              type: response.body!.type
+            });
+      
+            saveAs(blob, filename);
+            exportType=='pdf'?this.setExportPdfLoading(false):this.setExportExcelLoading(false);
+          }),
+          catchError((error) => {
+            console.error('Error exporting PDF:', error);
+            exportType=='pdf'?this.setExportPdfLoading(false):this.setExportExcelLoading(false);
+            return EMPTY;
+          })
+        ).subscribe();
+         
+      },
+      fetchData(){
+        store.searchTrigger$().pipe(
+            switchMap((searchData) => {
+              console.log('New search triggered with:', searchData);
+              return defer(() => {
+                this.setLoading(true);
+                return _searchService.search(searchData, store.endpoint());
+              }).pipe(
+                tap((response) => {
+                  console.log('Data fetched:', response);
+                  this.setData(response);
+                  this.setLoading(false);
+                }),
+                catchError((error) => {
+                  console.error('Error fetching data:', error);
+                  this.setLoading(false);
+                  return EMPTY;
+                }),
+                finalize(() => {
+                  this.setLoading(false);
+                })
+              );
+            })
+          ).subscribe();
+      },
+      fetchData2() {
+        this.setLoading(true);
+          console.log('Api call triggered');
+          const searchData = store.searchData();
+          const endpoint = store.endpoint();
+          return _searchService.search(searchData, endpoint).pipe(
+            tap((response) => {
+              console.log('Data fetched:', response);
+              this.setData(response);
+              this.setLoading(false);
+            }),
+            catchError((error) => {
+              console.error('Error fetching data:', error);
+              this.setLoading(false);
+              return EMPTY;
+            }),
+            finalize(() => {
+              this.setLoading(false);
+            })
+          );     
+      },
+      setLoading: (loading: boolean) => {
+        patchState(store, { loading });
+      },
+        setExportPdfLoading: (loading: boolean) => {
+            patchState(store, { exportPdfLoading: loading });
+        },
+        setExportExcelLoading: (loading: boolean) => {
+            patchState(store, { exportExcelLoading: loading });
+        },
+      setData: (data: SearchResponse) => {
+        patchState(store, { data });
+      },
+      setSearchData: (searchData: SearchData) => {
+        patchState(store, { searchData });
+      },
+      setSearchDataAttribute: (attribute: { [key: string]: SearchDetails }) => {
+        const currentSearchData = store.searchData();
+        const searchs = currentSearchData.searchData?.searchs ?? [];
+
+        // Determine the new list of searches
+        const updatedSearchs: SearchModel[] =
+          searchs.length > 0
+            ? [
+                {
+                  ...searchs[0],
+                  search: {
+                    ...searchs[0].search,
+                    ...attribute
+                  }
+                }
+              ]
+            : [
+                {
+                  search: { ...attribute },
+                  operation: SearchOperation.AND
+                }
+              ];
+
+        const newSearchData = {
+          ...currentSearchData,
+          searchData: {
+            ...currentSearchData.searchData,
+            searchs: updatedSearchs
+          }
+        };
+
+        patchState(store, { searchData: newSearchData });
+      },
+      resetSearchData: () => {
+        const currentSearchData = store.searchData();
+        const newSearchData = {
+          ...currentSearchData,
+          searchData: {
+            ...currentSearchData.searchData,
+            searchs: []
+          }
+        };
+        patchState(store, { searchData: newSearchData });
+        store.resetFieldsSubject().next();
+      },
+      setAllFields: (allFields: Field[]) => {
+        patchState(store, { allFields });
+      },
+
+      setDataTableFields: (dataTableFields: Field[]) => {
+        patchState(store, { dataTableFields });
+      },
+
+      setExportableField(field: Field, checked: boolean): void {
+        const updatedFields = [...store.exportFields()];
+        const index = updatedFields.findIndex((f) => f.field.name === field.name);
+
+        if (index !== -1) {
+          updatedFields[index] = { ...updatedFields[index], checked };
+          patchState(store, { exportFields: updatedFields });
+        }
+      },
+
+      setFilteredField(field: Field, checked: boolean): void {
+        const updatedFields = [...store.filterFields()];
+        const index = updatedFields.findIndex((f) => f.field.name === field.name);
+
+        if (index !== -1) {
+          updatedFields[index] = { ...updatedFields[index], checked };
+          patchState(store, { filterFields: updatedFields });
+        }
+      },
+        setExportField(field: Field, checked: boolean): void {
+            const updatedFields = [...store.exportFields()];
+            const index = updatedFields.findIndex((f) => f.field.name === field.name);
+            if (index !== -1) {
+                updatedFields[index] = { ...updatedFields[index], checked };
+                patchState(store, { exportFields: updatedFields });
+            }
+        },
+      setAllFilterField(checked: boolean): void {
+        const updatedFields = [...store.filterFields()];
+        updatedFields.forEach((f) => {
+          f.checked = checked;
+        });
+        patchState(store, { filterFields: updatedFields });
+      },
+        setAllExportField(checked: boolean): void {
+            const updatedFields = [...store.exportFields()];
+            updatedFields.forEach((f) => {
+            f.checked = checked;
+            });
+            patchState(store, { exportFields: updatedFields });
+        },
+      isAllFilterFieldsChecked(): boolean {
+        return !store.filterFields().some((f) => !f.checked);
+      },
+      isAllExportFieldsChecked(): boolean {
+        return !store.exportFields().some((f) => !f.checked);
+        },
+      setEndpoint: (endpoint: string) => {
+        patchState(store, { endpoint });
+      },
+      setPage: (page: number) => {
+        const currentSearchData = store.searchData();
+        const newSearchData = { ...currentSearchData, page };
+        patchState(store, { searchData: newSearchData });
+      },
+      setPageSize: (size: number) => {
+        const currentSearchData = store.searchData();
+        const newSearchData = { ...currentSearchData, size, page: 0 };
+        patchState(store, { searchData: newSearchData });
+      },
+      setSort: (sort: string, order: string) => {
+        const currentSearchData = store.searchData();
+        const newSearchData = { ...currentSearchData, sort, order };
+        patchState(store, { searchData: newSearchData });
+      }
+    };
+  }),
+  withHooks({
+    onInit: (store) => {
+       store.fetchData();
+      effect(() => {
+        console.log('DashboardStore changed');
+        const currentSearchData = store.searchData();
+        console.log('currentSearchData', currentSearchData);
+        console.log('store.endpoint()', store.endpoint());
+        if (store.endpoint() && currentSearchData) {
+          console.log('Fetching data...');
+          //store.fetchData2().subscribe();
+          store.searchTrigger$().next(currentSearchData);
+        }
+      });
+  
+    }
+  })
+);

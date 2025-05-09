@@ -1,4 +1,18 @@
 {
+  "STANDARD":{
+    "BTNS":{
+      "ADD": "Ajouter",
+      "EDIT": "Modifier",
+      "DELETE": "Supprimer",
+      "SAVE": "Enregistrer",
+      "CANCEL": "Annuler",
+      "BACK": "Retourner",
+      "NEXT": "Suivant",
+      "PREVIOUS": "Précédent",
+      "SUBMIT": "Soumettre",
+      "SEARCH": "Chercher"
+    }
+  },
   "Navigation": "La navigation",
   "Dashboard": "Tableau de bord",
   "Default": "Défaut",

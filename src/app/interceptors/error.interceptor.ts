@@ -62,7 +62,7 @@ export class ErrorInterceptor implements HttpInterceptor {
         filter((result) => result !== null),
         take(1),
         switchMap((token) => {
-          return next.handle(this.addToken(req, this._tokenService.getToken()));
+          return next.handle(this.addToken(req,token));
         })
       );
     } else {
@@ -73,11 +73,11 @@ export class ErrorInterceptor implements HttpInterceptor {
           this.refreshTokenInProgress = false;
           this.refreshTokenSubject.next(response?.access_token);
           this._tokenService.setToken(response?.access_token);
-          this._tokenService.setRefreshToken(response?.refresh_token)
           return next.handle(this.addToken(req,response?.access_token));
         }),
-        catchError((e) => {
-          this._authService.logout();
+        catchError((e:HttpErrorResponse) => {
+          if(e.status!==500)
+            this._authService.logout();
           return EMPTY;
         })
       );
