@@ -83,7 +83,8 @@ const MaterialModules = [
   MatTableModule,
   MatAutocompleteModule,
   MatChipsModule,
-  MatSnackBarModule
+  MatSnackBarModule,
+  MatPaginatorModule
 ];
 
 @NgModule({

@@ -1,0 +1,9 @@
+
+      <mat-label>{{ field().labelTranslatePath ? (field().labelTranslatePath | translate) : field().label }}</mat-label>
+      <div class="slider-container">
+      <mat-slider (change)="sliderValueChange()" showTickMarks  discrete  [displayWith]="formatLabel" step="1"  [formGroup]="rangeNumber"[min]="field()?.sliderMinValue || 0" [max]="field()?.sliderMaxValue || 100000" class="w-100">
+          <input  formControlName="start"  matSliderStartThumb />
+          <input  formControlName="end" matSliderEndThumb />
+      </mat-slider>
+        <span >De {{rangeNumber?.controls?.start?.value || field()?.sliderMinValue || 0}} - à {{rangeNumber?.controls?.end?.value || field()?.sliderMaxValue || 100000}}</span>
+     </div>

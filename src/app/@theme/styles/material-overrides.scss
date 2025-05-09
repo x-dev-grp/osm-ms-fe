@@ -294,7 +294,12 @@ body {
   .mat-calendar-body-selected {
     color: $white;
   }
-
+  mat-form-field {
+    width: 100% !important;
+  }
+  .mat-mdc-form-field {
+    width: 100% !important;
+  }
   // form input
   .mat-mdc-form-field-has-icon-suffix .mat-mdc-text-field-wrapper {
     padding-left: 16px;

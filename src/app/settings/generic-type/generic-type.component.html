@@ -1,140 +1,71 @@
-<div class="col-md-12">
-  <app-card cardTitle="Generic Type Table With Filtering">
-    <!-- Form Section -->
-    <form [formGroup]="recordForm" (ngSubmit)="onSubmit()">
-      <div class="row align-items-center">
-        <!-- Inline Fields: Shown when details are toggled -->
-        <div class="col-md-3" *ngIf="showDetails">
-          <mat-form-field appearance="outline" class="w-100">
-            <mat-label>Name</mat-label>
-            <input matInput formControlName="name" placeholder="Enter name" />
-          </mat-form-field>
-        </div>
-        <div class="col-md-3" *ngIf="showDetails">
-          <mat-form-field appearance="outline" class="w-100">
-            <mat-label>Description</mat-label>
-            <input
-              matInput
-              formControlName="description"
-              placeholder="Enter description"
-            />
-          </mat-form-field>
-        </div>
-        <!-- Dropdown: Always visible; pushed to the right -->
-        <div class="col-md-3 ml-auto">
-          <mat-form-field appearance="outline" class="w-100">
-            <mat-label>Select Type</mat-label>
-            <mat-select (selectionChange)="onTypeChange($event.value)">
-              <mat-option *ngFor="let type of typeOptions" [value]="type.value">
-                {{ type.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-
-        <!-- Action Buttons: Inline on the right -->
-        <div class="col-auto d-flex align-items-center">
-          <!-- Submit Icon Button: Displayed only when details are visible -->
-          <button
-            *ngIf="showDetails"
-            mat-icon-button
-            color="primary"
-            type="submit"
-            [disabled]="recordForm.invalid"
-            matTooltip="{{ editingRecordIndex >= 0 ? 'Update Record' : 'Create Record' }}"
-          >
-            <mat-icon>check_circle</mat-icon>
-          </button>
-          <!-- Toggle Form Details Icon Button -->
-          <button
-            mat-icon-button
-            color="primary"
-            type="button"
-            (click)="toggleDetails()"
-            matTooltip="{{ showDetails ? 'Hide Details' : 'Add Record' }}"
-          >
-            <mat-icon>{{ showDetails ? 'close' : 'add' }}</mat-icon>
-          </button>
-          <!-- Cancel Icon Button: Only visible when editing -->
-          <button
-            *ngIf="showDetails && editingRecordIndex >= 0"
-            mat-icon-button
-            color="warn"
-            type="button"
-            (click)="cancelEdit()"
-            matTooltip="Cancel Edit"
-          >
-            <mat-icon>cancel</mat-icon>
-          </button>
-        </div>
+<form [formGroup]="recordForm" (ngSubmit)="onSubmit()">
+    <div class="row align-items-center">
+      <!-- Inline Fields: Shown when details are toggled -->
+      <div class="col-md-3" *ngIf="showDetails">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name" placeholder="Enter name" />
+        </mat-form-field>
       </div>
-    </form>
+      <div class="col-md-3" *ngIf="showDetails">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Description</mat-label>
+          <input
+            matInput
+            formControlName="description"
+            placeholder="Enter description"
+          />
+        </mat-form-field>
+      </div>
+      <!-- Dropdown: Always visible; pushed to the right -->
+      <div class="col-md-3 ml-auto">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Select Type</mat-label>
+          <mat-select (selectionChange)="onTypeChange($event.value)">
+            <mat-option *ngFor="let type of typeOptions" [value]="type.value">
+              {{ type.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
 
-    <!-- Filter Bar Section -->
-    <div class="row mt-4">
-      <div class="col-md-12">
-        <div class="filter-bar p-3 bg-light rounded">
-          <mat-form-field appearance="outline" class="w-100">
-            <mat-label>Filter Records</mat-label>
-            <input
-              matInput
-              (keyup)="applyFilter($event)"
-              placeholder="Ex. ium"
-              #input
-            />
-          </mat-form-field>
-        </div>
+      <!-- Action Buttons: Inline on the right -->
+      <div class="col-auto d-flex align-items-center">
+        <!-- Submit Icon Button: Displayed only when details are visible -->
+        <button
+          *ngIf="showDetails"
+          mat-icon-button
+          color="primary"
+          type="submit"
+          [disabled]="recordForm.invalid"
+          matTooltip="{{ editingRecordIndex >= 0 ? 'Update Record' : 'Create Record' }}"
+        >
+          <mat-icon>check_circle</mat-icon>
+        </button>
+        <!-- Toggle Form Details Icon Button -->
+        <button
+          mat-icon-button
+          color="primary"
+          type="button"
+          (click)="toggleDetails()"
+          matTooltip="{{ showDetails ? 'Hide Details' : 'Add Record' }}"
+        >
+          <mat-icon>{{ showDetails ? 'close' : 'add' }}</mat-icon>
+        </button>
+        <!-- Cancel Icon Button: Only visible when editing -->
+        <button
+          *ngIf="showDetails && editingRecordIndex >= 0"
+          mat-icon-button
+          color="warn"
+          type="button"
+          (click)="cancelEdit()"
+          matTooltip="Cancel Edit"
+        >
+          <mat-icon>cancel</mat-icon>
+        </button>
       </div>
     </div>
+  </form>
 
-    <!-- Table Section -->
-    <div class="table-responsive mt-3">
-      <table mat-table [dataSource]="FilterSource" class="mat-elevation-z8 w-100">
-        <!-- Name Column -->
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef> Name </th>
-          <td mat-cell *matCellDef="let record"> {{ record.name }} </td>
-        </ng-container>
 
-        <!-- Type Column -->
-        <ng-container matColumnDef="type">
-          <th mat-header-cell *matHeaderCellDef> Type </th>
-          <td mat-cell *matCellDef="let record"> {{ record.type }} </td>
-        </ng-container>
-
-        <!-- Description Column -->
-        <ng-container matColumnDef="description">
-          <th mat-header-cell *matHeaderCellDef> Description </th>
-          <td mat-cell *matCellDef="let record"> {{ record.description }} </td>
-        </ng-container>
-
-        <!-- Actions Column -->
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef> Actions </th>
-          <td mat-cell *matCellDef="let record">
-            <button
-              mat-icon-button
-              color="primary"
-              (click)="openDialog(record)"
-              matTooltip="Edit"
-            >
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button
-              mat-icon-button
-              color="warn"
-              (click)="deleteRecord(record)"
-              matTooltip="Delete"
-            >
-              <mat-icon>delete</mat-icon>
-            </button>
-          </td>
-        </ng-container>
-
-        <!-- Header and Row Declarations -->
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-      </table>
-    </div>
-  </app-card>
-</div>
+<osm-dashboard (applyAction)="applyAction($event)" [config]="config"></osm-dashboard>
