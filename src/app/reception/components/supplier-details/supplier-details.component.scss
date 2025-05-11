@@ -1,0 +1,5 @@
+.toolbar-spacer { flex: 1 1 auto; }
+.w-40 { width: 40%; min-width: 110px; }
+@media (max-width: 599px) {
+  mat-grid-list { grid-template-columns: 1fr !important; }
+}

@@ -13,8 +13,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { BankAccountService } from '../service/bankAccount.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { CompanyProfileService } from '../../shared/services/company-profile.service';
 import { CompanyProfile } from '../../shared/models/CompanyProfile';
+import { Action, DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { BANK_ACCOUNTS_DASHBOARD_CONFIG } from './bank-accounts-dashboard.config';
+import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
 
 @Component({
   selector: 'app-bank-account', // <-- plural
@@ -32,35 +34,31 @@ import { CompanyProfile } from '../../shared/models/CompanyProfile';
     MatCheckboxModule,
     MatButtonModule,
     MatIconModule,
-    SharedModule
+    SharedModule,
+    OsmDashboard
   ]
 })
 export class BankAccountsComponent implements OnInit {
   bankForm!: FormGroup;
   formOpen = false;
   isEditing = false;
-
-  displayedColumns = ['rib', 'iban', 'bicSwift', 'bankName', 'bankBranch', 'currency', 'accountType',  'active', 'actions'];
+  dashboardConfig: DashboardConfig = BANK_ACCOUNTS_DASHBOARD_CONFIG;
 
   currencies = ['TND', 'EUR', 'USD'];
   accountTypes = ['Current', 'Savings', 'Payroll'];
 
-  private editIndex: number | null = null;
   banks: BankAccount[] = [];
   dataSource: MatTableDataSource<BankAccount> = new MatTableDataSource(this.banks);
-  private profile: CompanyProfile;
 
   constructor(
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
     private bankAccountService: BankAccountService
-
   ) {}
 
   ngOnInit(): void {
     this.buildBankForm();
     this.loadBankAccounts();
-
   }
 
   private buildBankForm(): void {
@@ -79,11 +77,9 @@ export class BankAccountsComponent implements OnInit {
   openForm(account?: BankAccount): void {
     if (account) {
       this.isEditing = true;
-      this.editIndex = this.dataSource.data.indexOf(account);
       this.bankForm.patchValue(account);
     } else {
       this.isEditing = false;
-      this.editIndex = null;
       this.bankForm.reset({
         currency: 'TND',
         accountType: 'Current',
@@ -110,7 +106,6 @@ export class BankAccountsComponent implements OnInit {
   cancel(): void {
     this.formOpen = false;
     this.isEditing = false;
-    this.editIndex = null;
     this.bankForm.reset({
       currency: 'TND',
       accountType: 'Current',
@@ -138,5 +133,22 @@ export class BankAccountsComponent implements OnInit {
       this.snackBar.open('Bank account deleted', 'Close', { duration: 3000 });
       this.loadBankAccounts();
     });
+  }
+
+  handleAction(event: { action: Action; row: BankAccount }): void {
+    switch (event.action.label?.toUpperCase()) {
+      case 'VIEW':
+      case 'VOIR':
+      case 'CONSULTER':
+      case 'EDIT':
+      case 'MODIFIER':
+        this.openForm(event.row);
+        break;
+
+      case 'DELETE':
+      case 'SUPPRIMER':
+        this.deleteAccount(event.row);
+        break;
+    }
   }
 }

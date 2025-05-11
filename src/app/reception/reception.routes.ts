@@ -1,19 +1,29 @@
 import { Routes } from '@angular/router';
- import { SupplierComponent } from './components/suppliers/suppliers.component';
-import { ReceptionComponent } from './components/reception/reception.component';
-import {DetailsReceptionComponent} from "./components/details-reception/details-reception.component";
-import {SupplierDetailsComponent} from "./components/supplier-details/supplier-details.component";
+import { SupplierComponent } from './components/suppliers/suppliers.component';
+import { DetailsReceptionComponent } from './components/details-reception/details-reception.component';
+import { SupplierDetailsComponent } from './components/supplier-details/supplier-details.component';
 import { ControleQualiteComponent } from './components/controleQualite/controleQualite.component';
 import { PlanningComponent } from './components/planning/planning.component';
-// import {ReceptionComponent} from "./components/reception/reception.component";
+import { MillMachineComponent } from './components/mill-machine/mill-machine.component';
+import { OliveReceptionComponent } from './components/olive-reception/olive-reception.component';
+import {
+  OliveReceptionFormComponent
+} from './components/olive-reception/olive-reception-add/olive-reception-form.component';
+import { OilReceptionFormComponent } from './components/oil-reception/oil-reception-add/oil-reception-add.component';
+import { OilReceptionComponent } from './components/oil-reception/oil-reception.component';
 
 export const receptionRoutes: Routes = [
-  { path: 'reception', component: ReceptionComponent },
+  { path: 'reception-olive', component: OliveReceptionComponent },
+  { path: 'reception-olive/:id', component: OliveReceptionFormComponent },
+
+  { path: 'reception-huile', component: OilReceptionComponent },
+  { path: 'reception-huile/:id', component: OilReceptionFormComponent },
+
   { path: 'fournisseur', component: SupplierComponent },
   { path: 'quality/:id', component: ControleQualiteComponent },
   { path: 'reception-details/:id', component: DetailsReceptionComponent },
   { path: 'supplier-details/:id', component: SupplierDetailsComponent },
-  { path: 'mill-schedules', component: PlanningComponent }
 
-
+   { path: 'mill-schedules', component: PlanningComponent },
+  { path: 'mill-machines', component: MillMachineComponent }
 ];

@@ -1,0 +1,156 @@
+<!-- Loading Spinner -->
+<div *ngIf="loading" class="loading-overlay">
+  <mat-spinner diameter="50"></mat-spinner>
+</div>
+
+<!-- Error Message -->
+<div *ngIf="errorMessage && !loading" class="error-message">
+  {{ errorMessage }}
+</div>
+
+<!-- Form within Card -->
+<app-card
+  *ngIf="!errorMessage && !loading"
+  [cardTitle]="isEditing ? 'Modifier la réception huile' : 'Ajouter une réception huile'"
+  [showHeader]="false"
+  [showContent]="true"
+  [padding]="20"
+>
+  <form [formGroup]="receptionForm" class="form-content">
+    <!-- General Information -->
+    <div class="header-row">
+      <button mat-icon-button (click)="onBack()" [disabled]="loading" title="Retour">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h3>Informations générales</h3>
+    </div>
+    <hr />
+
+    <!-- Scrollable Form Content -->
+    <div class="scrollable-form">
+      <div class="form-body">
+        <div class="row">
+          <div class="col-md-3">
+            <mat-form-field appearance="outline" class="w-100 m-b-10">
+              <mat-label>Type de livraison</mat-label>
+              <input formControlName="deliveryType" matInput readonly />
+            </mat-form-field>
+          </div>
+          <div class="col-md-3">
+            <mat-form-field appearance="outline" class="w-100 m-b-10">
+              <mat-label>Numéro de livraison</mat-label>
+              <input formControlName="deliveryNumber" matInput readonly />
+            </mat-form-field>
+          </div>
+          <div class="col-md-3">
+            <mat-form-field appearance="outline" class="w-100 m-b-10">
+              <mat-label>Numéro de lot</mat-label>
+              <input formControlName="lotNumber" matInput readonly />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-3">
+            <mat-form-field appearance="outline" class="w-100 m-b-10">
+              <mat-label>Date de réception</mat-label>
+              <input [matDatepicker]="recPicker" formControlName="deliveryDate" matInput required />
+              <mat-datepicker-toggle [for]="recPicker" matSuffix></mat-datepicker-toggle>
+              <mat-datepicker #recPicker></mat-datepicker>
+              <mat-error *ngIf="receptionForm.get('deliveryDate')?.hasError('required')">
+                Ce champ est requis
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3">
+            <mat-form-field appearance="outline" class="w-100 m-b-10">
+              <mat-label>Volume (L)</mat-label>
+              <input formControlName="poidsNet" matInput type="number" min="0" />
+              <mat-error *ngIf="receptionForm.get('poidsNet')?.hasError('min')">
+                La valeur doit être positive
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-3">
+            <mat-form-field appearance="outline" class="w-100 m-b-10">
+              <mat-label>Acidité (%)</mat-label>
+              <input formControlName="acidity" matInput type="number" min="0" max="20" step="0.01" />
+              <mat-error *ngIf="receptionForm.get('acidity')?.hasError('required')">
+                Ce champ est requis
+              </mat-error>
+              <mat-error *ngIf="receptionForm.get('acidity')?.hasError('min') || receptionForm.get('acidity')?.hasError('max')">
+                La valeur doit être comprise entre 0 et 20 %
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-3">
+            <mat-form-field appearance="outline" class="w-100 m-b-10">
+              <mat-label>Type d'huile</mat-label>
+              <mat-select formControlName="oilVariety" required>
+                <mat-option *ngFor="let type of oilCategories" [value]="type">
+                  {{ type }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="receptionForm.get('oilVariety')?.hasError('required')">
+                Ce champ est requis
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3">
+            <mat-form-field appearance="outline" class="w-100 m-b-10">
+              <mat-label>Région</mat-label>
+              <mat-select formControlName="region" required>
+                <mat-option *ngFor="let region of regions" [value]="region">
+                  {{ region.name }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="receptionForm.get('region')?.hasError('required')">
+                Ce champ est requis
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3">
+            <mat-form-field appearance="outline" class="w-100 m-b-10">
+              <mat-label>Fournisseur</mat-label>
+              <mat-select formControlName="supplier" required>
+                <mat-option *ngFor="let supplier of suppliers" [value]="supplier">
+                  {{ supplier.supplierInfo.name }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="receptionForm.get('supplier')?.hasError('required')">
+                Ce champ est requis
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3">
+            <mat-form-field appearance="outline" class="w-100 m-b-10">
+              <mat-label>Numéro de cuve</mat-label>
+              <input formControlName="tankNumber" matInput />
+            </mat-form-field>
+          </div>
+        </div>
+
+
+
+        <!-- Action Buttons -->
+        <div class="form-row m-t-10">
+          <button
+            color="primary"
+            mat-flat-button
+            (click)="save()"
+            [disabled]="receptionForm.invalid || loading"
+          >
+            {{ isEditing ? 'Mettre à jour' : 'Ajouter' }}
+          </button>
+          <button color="warn" mat-stroked-button type="button" (click)="resetForm()" [disabled]="loading">
+            Annuler
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</app-card>

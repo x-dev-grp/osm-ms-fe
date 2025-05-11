@@ -33,7 +33,7 @@ export class StorageUnitDtoService {
   }
 
   // Delete a StorageUnit by ID
-  deleteStorageUnit(id: number): Observable<ApiResponse<void>> {
+  deleteStorageUnit(id: string): Observable<ApiResponse<void>> {
     return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/${id}`);
   }
 }

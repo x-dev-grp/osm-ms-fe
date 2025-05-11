@@ -162,6 +162,16 @@ export class ControleQualiteComponent implements OnInit {
 
     this.dynamicForm = this.fb.group(group);
   }
+  getRuleName(key: string): string {
+    const r = this.rules.find(rule => rule.ruleKey === key);
+    return r ? r.ruleName! : key;
+  }
+
+  getRuleDescription(key: string): string {
+    const r = this.rules.find(rule => rule.ruleKey === key);
+    return r ? r.description! : '';
+  }
+
 
   getRuleMinValue(ruleKey: string): number | null {
     const rule = this.rules.find((r) => r.ruleKey === ruleKey);

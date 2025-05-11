@@ -1,0 +1,97 @@
+/* Form-specific styles within mat-card-content */
+mat-card-content {
+  padding: 20px;
+}
+
+.form-content {
+  width: 100%;
+}
+
+h3 {
+  color: #333;
+  margin-bottom: 15px;
+  margin-top: 0;
+}
+
+/* Header row for back button and h3 */
+.header-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.header-row button[mat-icon-button] {
+  margin-right: 10px;
+}
+
+/* Divider */
+hr {
+  border: none;
+  border-top: 1px solid #ccc;
+  margin: 10px 0;
+}
+
+
+
+/* Form body */
+.form-body {
+  margin-top: 20px;
+}
+
+/* Form grid */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.col-md-3 {
+  flex: 1;
+  min-width: 250px;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.m-b-10 {
+  margin-bottom: 10px;
+}
+
+/* Action buttons */
+.form-row {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.m-t-10 {
+  margin-top: 10px;
+}
+
+/* Loading overlay */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  z-index: 1000;
+}
+
+/* Error message */
+.error-message {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 15px;
+  border-radius: 4px;
+  margin: 20px auto;
+  max-width: 1200px;
+  text-align: center;
+}

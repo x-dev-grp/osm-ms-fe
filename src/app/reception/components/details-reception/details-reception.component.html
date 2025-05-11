@@ -1,111 +1,127 @@
-<mat-card *ngIf="deliveryData">
-  <mat-card-title> Détails de la Réception</mat-card-title>
-  <mat-card-content>
-    <!-- Informations générales -->
-    <div class="row">
-      <div class="col-md-6">
-        <strong>Numéro de réception:</strong> {{ deliveryData.deliveryNumber }}
+<!-- Loading Spinner -->
+<div *ngIf="loading" class="loading-overlay">
+  <mat-spinner diameter="50"></mat-spinner>
+</div>
+
+<!-- Error Message -->
+<div *ngIf="errorMessage && !loading" class="error-message">
+  {{ errorMessage }}
+</div>
+
+<!-- Details Card -->
+<mat-card *ngIf="deliveryData && !loading" class="details-card">
+  <div class="card-header">
+    <button mat-icon-button (click)="onBack()" aria-label="Retour" matTooltip="Retour à la liste">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <mat-card-title>Détails de la Réception</mat-card-title>
+  </div>
+
+  <mat-card-content class="scrollable-content">
+    <!-- General Information Section -->
+    <div class="section">
+      <h3 class="section-title">Informations Générales</h3>
+      <div class="grid-row">
+        <div class="grid-item">
+          <strong>Numéro de réception:</strong> {{ deliveryData.deliveryNumber }}
+        </div>
+        <div class="grid-item">
+          <strong>Type:</strong> {{ deliveryData.deliveryType }}
+        </div>
       </div>
-      <div class="col-md-6">
-        <strong>Type:</strong> {{ deliveryData.deliveryType }}
+      <div class="grid-row">
+        <div class="grid-item">
+          <strong>Lot:</strong> {{ deliveryData.lotNumber }}
+        </div>
+        <div class="grid-item">
+          <strong>Date:</strong> {{ deliveryData.deliveryDate | date: 'short' }}
+        </div>
+      </div>
+      <div class="grid-row">
+        <div class="grid-item">
+          <strong>Région:</strong> {{ deliveryData.region?.name || 'N/A' }}
+        </div>
+        <div class="grid-item">
+          <strong>Global Lot Number:</strong> {{ deliveryData.globalLotNumber || 'N/A' }}
+        </div>
+      </div>
+      <div class="grid-row">
+        <div class="grid-item">
+          <strong>Poids Brut:</strong> {{ deliveryData.poidsBrute || 0 }} kg
+        </div>
+        <div class="grid-item">
+          <strong>Poids Net:</strong> {{ deliveryData.poidsNet || 0 }} kg
+        </div>
+      </div>
+      <div class="grid-row">
+        <div class="grid-item">
+          <strong>Matricule Camion:</strong> {{ deliveryData.matriculeCamion || 'N/A' }}
+        </div>
+        <div class="grid-item">
+          <strong>État Camion:</strong> {{ deliveryData.etatCamion || 'N/A' }}
+        </div>
+      </div>
+      <div class="grid-row">
+        <div class="grid-item">
+          <strong>Sacs:</strong> {{ deliveryData.sackCount || 0 }}
+        </div>
+        <div class="grid-item">
+          <strong>Rendement:</strong> {{ deliveryData.rendement || 0 }}%
+        </div>
+      </div>
+      <div class="grid-row">
+        <div class="grid-item">
+          <strong>Quantité d'olives:</strong> {{ deliveryData.oliveQuantity || 0 }} kg
+        </div>
+        <div class="grid-item">
+          <strong>Parcelle:</strong> {{ deliveryData.parcel || 'N/A' }}
+        </div>
       </div>
     </div>
 
-    <div class="row">
-      <div class="col-md-6">
-        <strong>Lot:</strong> {{ deliveryData.lotNumber }}
+    <mat-divider class="divider"></mat-divider>
+
+    <!-- Supplier Section -->
+    <div class="section">
+      <h3 class="section-title">👤 Fournisseur</h3>
+      <div class="grid-row">
+        <div class="grid-item">
+          <strong>Nom:</strong> {{ (deliveryData.supplier?.supplierInfo?.name || '') + ' ' + (deliveryData.supplier?.supplierInfo?.lastname || '') || 'N/A' }}
+        </div>
+        <div class="grid-item">
+          <strong>Téléphone:</strong> {{ deliveryData.supplier?.supplierInfo?.phone || 'N/A' }}
+        </div>
       </div>
-      <div class="col-md-6">
-        <strong>Date:</strong> {{ deliveryData.deliveryDate | date: 'short' }}
+      <div class="grid-row">
+        <div class="grid-item">
+          <strong>Email:</strong> {{ deliveryData.supplier?.supplierInfo?.email || 'N/A' }}
+        </div>
+        <div class="grid-item">
+          <strong>Adresse:</strong> {{ deliveryData.supplier?.supplierInfo?.address || 'N/A' }}
+        </div>
+      </div>
+      <div class="grid-row">
+        <div class="grid-item">
+          <strong>RIB:</strong> {{ deliveryData.supplier?.supplierInfo?.rib || 'N/A' }}
+        </div>
+        <div class="grid-item">
+          <strong>Banque:</strong> {{ deliveryData.supplier?.supplierInfo?.bankName || 'N/A' }}
+        </div>
       </div>
     </div>
 
-    <div class="row">
-      <div class="col-md-6">
-        <strong>Région:</strong> {{ deliveryData.region?.name }}
-      </div>
-      <div class="col-md-6">
-        <strong>Global Lot Number:</strong> {{ deliveryData.globalLotNumber }}
-      </div>
-    </div>
+    <mat-divider class="divider"></mat-divider>
 
-    <div class="row">
-      <div class="col-md-6">
-        <strong>Poids Brut:</strong> {{ deliveryData.poidsBrute }} kg
-      </div>
-      <div class="col-md-6">
-        <strong>Poids Net:</strong> {{ deliveryData.poidsNet }} kg
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-6">
-        <strong>Matricule Camion:</strong> {{ deliveryData.matriculeCamion }}
-      </div>
-      <div class="col-md-6">
-        <strong>État Camion:</strong> {{ deliveryData.etatCamion }}
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-6">
-        <strong>Sacs:</strong> {{ deliveryData.sackCount }}
-      </div>
-      <div class="col-md-6">
-        <strong>Rendement:</strong> {{ deliveryData.rendement }}
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-6">
-        <strong>Quantité d'olives:</strong> {{ deliveryData.oliveQuantity }} kg
-      </div>
-      <div class="col-md-6">
-        <strong>Parcelle:</strong> {{ deliveryData.parcel }}
-      </div>
-    </div>
-
-    <mat-divider class="my-4"></mat-divider>
-
-    <!-- Fournisseur -->
-    <h3>👤 Fournisseur</h3>
-    <div class="row">
-      <div class="col-md-6">
-        <strong>Nom:</strong> {{ deliveryData.supplier?.supplierInfo?.name }} {{ deliveryData.supplier?.supplierInfo?.lastname }}
-      </div>
-      <div class="col-md-6">
-        <strong>Téléphone:</strong> {{ deliveryData.supplier?.supplierInfo?.phone }}
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-6">
-        <strong>Email:</strong> {{ deliveryData.supplier?.supplierInfo?.email }}
-      </div>
-      <div class="col-md-6">
-        <strong>Adresse:</strong> {{ deliveryData.supplier?.supplierInfo?.address }}
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-6">
-        <strong>RIB:</strong> {{ deliveryData.supplier?.supplierInfo?.rib }}
-      </div>
-      <div class="col-md-6">
-        <strong>Banque:</strong> {{ deliveryData.supplier?.supplierInfo?.bankName }}
-      </div>
-    </div>
-
-    <mat-divider class="my-4"></mat-divider>
-
-    <!-- Variété d'olive -->
-    <h3>🌿 Variété d’olive</h3>
-    <div class="row">
-      <div class="col-md-6">
-        <strong>Variété:</strong> {{ deliveryData.oliveVariety?.name }}
-      </div>
-      <div class="col-md-6">
-        <strong>Type:</strong> {{ deliveryData.oliveType?.name }}
+    <!-- Olive Variety Section -->
+    <div class="section">
+      <h3 class="section-title">🌿 Variété d’olive</h3>
+      <div class="grid-row">
+        <div class="grid-item">
+          <strong>Variété:</strong> {{ deliveryData.oliveVariety?.name || 'N/A' }}
+        </div>
+        <div class="grid-item">
+          <strong>Type:</strong> {{ deliveryData.oliveType?.name || 'N/A' }}
+        </div>
       </div>
     </div>
   </mat-card-content>

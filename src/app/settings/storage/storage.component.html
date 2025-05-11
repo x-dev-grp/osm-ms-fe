@@ -86,73 +86,77 @@
     </div>
   </form>
 </mat-expansion-panel>
-<div class="col-md-12">
-  <app-card cardTitle="Storage Units Table With Filtering">
-    <div class="table-responsive">
-      <table mat-table [dataSource]="storageUnits" class="mat-elevation-z8">
+<!--<div class="col-md-12">-->
+<!--  <app-card cardTitle="Storage Units Table With Filtering">-->
+<!--    <div class="table-responsive">-->
+<!--      <table mat-table [dataSource]="storageUnits" class="mat-elevation-z8">-->
 
-        <!-- Name Column -->
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>Name</th>
-          <td mat-cell *matCellDef="let unit">{{ unit.name }}</td>
-        </ng-container>
+<!--        &lt;!&ndash; Name Column &ndash;&gt;-->
+<!--        <ng-container matColumnDef="name">-->
+<!--          <th mat-header-cell *matHeaderCellDef>Name</th>-->
+<!--          <td mat-cell *matCellDef="let unit">{{ unit.name }}</td>-->
+<!--        </ng-container>-->
 
-        <!-- Location Column -->
-        <ng-container matColumnDef="location">
-          <th mat-header-cell *matHeaderCellDef>Location</th>
-          <td mat-cell *matCellDef="let unit">{{ unit.location }}</td>
-        </ng-container>
+<!--        &lt;!&ndash; Location Column &ndash;&gt;-->
+<!--        <ng-container matColumnDef="location">-->
+<!--          <th mat-header-cell *matHeaderCellDef>Location</th>-->
+<!--          <td mat-cell *matCellDef="let unit">{{ unit.location }}</td>-->
+<!--        </ng-container>-->
 
-        <!-- Max Capacity Column -->
-        <ng-container matColumnDef="maxCapacity">
-          <th mat-header-cell *matHeaderCellDef>Max Capacity</th>
-          <td mat-cell *matCellDef="let unit">{{ unit.maxCapacity }}</td>
-        </ng-container>
+<!--        &lt;!&ndash; Max Capacity Column &ndash;&gt;-->
+<!--        <ng-container matColumnDef="maxCapacity">-->
+<!--          <th mat-header-cell *matHeaderCellDef>Max Capacity</th>-->
+<!--          <td mat-cell *matCellDef="let unit">{{ unit.maxCapacity }}</td>-->
+<!--        </ng-container>-->
 
-        <!-- Current Volume Column -->
-        <ng-container matColumnDef="currentVolume">
-          <th mat-header-cell *matHeaderCellDef>Current Volume</th>
-          <td mat-cell *matCellDef="let unit">{{ unit.currentVolume }}</td>
-        </ng-container>
+<!--        &lt;!&ndash; Current Volume Column &ndash;&gt;-->
+<!--        <ng-container matColumnDef="currentVolume">-->
+<!--          <th mat-header-cell *matHeaderCellDef>Current Volume</th>-->
+<!--          <td mat-cell *matCellDef="let unit">{{ unit.currentVolume }}</td>-->
+<!--        </ng-container>-->
 
-        <!-- Oil Type Column -->
-        <ng-container matColumnDef="oilType">
-          <th mat-header-cell *matHeaderCellDef>Oil Type</th>
-          <td mat-cell *matCellDef="let unit">{{ unit.oilType?.name }}</td>
-        </ng-container>
+<!--        &lt;!&ndash; Oil Type Column &ndash;&gt;-->
+<!--        <ng-container matColumnDef="oilType">-->
+<!--          <th mat-header-cell *matHeaderCellDef>Oil Type</th>-->
+<!--          <td mat-cell *matCellDef="let unit">{{ unit.oilType?.name }}</td>-->
+<!--        </ng-container>-->
 
-        <!-- Status Column -->
-        <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef>Status</th>
-          <td mat-cell *matCellDef="let unit">{{ unit.status }}</td>
-        </ng-container>
+<!--        &lt;!&ndash; Status Column &ndash;&gt;-->
+<!--        <ng-container matColumnDef="status">-->
+<!--          <th mat-header-cell *matHeaderCellDef>Status</th>-->
+<!--          <td mat-cell *matCellDef="let unit">{{ unit.status }}</td>-->
+<!--        </ng-container>-->
 
-        <!-- Actions Column -->
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Actions</th>
-          <td mat-cell *matCellDef="let unit">
-            <button mat-button (click)="edit(unit)">Edit</button>
-            <button mat-button color="warn" (click)="delete(unit.id)">Delete</button>
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="fillLevel">
-          <th mat-header-cell *matHeaderCellDef>Fill Level</th>
-          <td mat-cell *matCellDef="let unit">
-            <mat-progress-bar
-              [value]="getFillPercentage(unit)"
-              color="accent"
-              mode="determinate"
-              style="height: 20px; border-radius: 5px;">
-            </mat-progress-bar>
-            <div style="font-size: 12px; margin-top: 4px;">
-              {{ getFillPercentage(unit) | number:'1.0-0' }}%
-            </div>
-          </td>
-        </ng-container>
-        <!-- Table Row Definitions -->
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
-    </div>
-  </app-card>
-</div>
+<!--        &lt;!&ndash; Actions Column &ndash;&gt;-->
+<!--        <ng-container matColumnDef="actions">-->
+<!--          <th mat-header-cell *matHeaderCellDef>Actions</th>-->
+<!--          <td mat-cell *matCellDef="let unit">-->
+<!--            <button mat-button (click)="edit(unit)">Edit</button>-->
+<!--            <button mat-button color="warn" (click)="delete(unit.id)">Delete</button>-->
+<!--          </td>-->
+<!--        </ng-container>-->
+<!--        <ng-container matColumnDef="fillLevel">-->
+<!--          <th mat-header-cell *matHeaderCellDef>Fill Level</th>-->
+<!--          <td mat-cell *matCellDef="let unit">-->
+<!--            <mat-progress-bar-->
+<!--              [value]="getFillPercentage(unit)"-->
+<!--              color="accent"-->
+<!--              mode="determinate"-->
+<!--              style="height: 20px; border-radius: 5px;">-->
+<!--            </mat-progress-bar>-->
+<!--            <div style="font-size: 12px; margin-top: 4px;">-->
+<!--              {{ getFillPercentage(unit) | number:'1.0-0' }}%-->
+<!--            </div>-->
+<!--          </td>-->
+<!--        </ng-container>-->
+<!--        &lt;!&ndash; Table Row Definitions &ndash;&gt;-->
+<!--        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>-->
+<!--        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>-->
+<!--      </table>-->
+<!--    </div>-->
+<!--  </app-card>-->
+<!--</div>-->
+<osm-dashboard
+  [config]="storagConfig"
+  (applyAction)="onRowAction($event)">
+</osm-dashboard>

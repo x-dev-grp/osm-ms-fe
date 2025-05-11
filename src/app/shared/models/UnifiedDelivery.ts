@@ -8,7 +8,7 @@ export class UnifiedDelivery {
   deliveryType!: string;
   lotNumber!: string;
   deliveryDate!: Date;
-  region!: string;
+  region!: BaseType | null;
   poidsBrute!: number;
   poidsNet!: number;
   matriculeCamion!: string;

@@ -1,5 +1,4 @@
-// angular import
-import { Component, ContentChild, ElementRef, TemplateRef, contentChild, input } from '@angular/core';
+import { Component, ContentChild, TemplateRef, contentChild, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 
@@ -11,12 +10,10 @@ import { MatCardModule } from '@angular/material/card';
   styleUrls: ['./card.component.scss']
 })
 export class CardComponent {
-  // public props
-
   /**
    * Class to be applied at card level
    */
-  cardClass = input<string>();
+  cardClass = input<string>('');
 
   /**
    * To hide header from card
@@ -31,35 +28,35 @@ export class CardComponent {
   /**
    * Class to be applied on card header
    */
-  headerClass = input<string>();
+  headerClass = input<string>('');
 
   /**
    * Class to be applied on action section of mat card
    */
-  actionClass = input<string>();
+  actionClass = input<string>('card-action');
 
   /**
    * Title of card. It will be visible at left side of card header
    */
-  cardTitle = input<string>();
+  cardTitle = input<string>('');
 
   /**
-   * padding around card content. default in px
+   * Padding around card content. Default in px
    */
-  padding = input<number>(24); // set default to 24 px
+  padding = input<number>(24);
 
   /**
    * Template reference of header actions on right side
    */
-  readonly headerOptionsTemplate = contentChild<TemplateRef<ElementRef>>('headerOptionsTemplate');
+  readonly headerOptionsTemplate = contentChild<TemplateRef<any>>('headerOptionsTemplate');
 
   /**
    * Template reference of header actions besides title at left
    */
-  readonly headerTitleTemplate = contentChild<TemplateRef<ElementRef>>('headerTitleTemplate');
+  readonly headerTitleTemplate = contentChild<TemplateRef<any>>('headerTitleTemplate');
 
   /**
    * Template reference for mat-actions at bottom
    */
-  @ContentChild('actionTemplate') actionTemplate: TemplateRef<ElementRef>;
+  @ContentChild('actionTemplate') actionTemplate: TemplateRef<any> | null = null;
 }

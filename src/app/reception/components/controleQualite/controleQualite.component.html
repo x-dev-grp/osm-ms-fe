@@ -1,4 +1,6 @@
-<div *ngIf="message" class="alert alert-info text-center my-3">{{ message }}</div>
+<div *ngIf="message" class="alert alert-danger text-center my-3">
+  {{ message }}
+</div>
 
 <div *ngIf="isLoading" class="text-center my-3">
   <div class="spinner-border text-primary" role="status">
@@ -6,71 +8,72 @@
   </div>
 </div>
 
-<form [formGroup]="dynamicForm" *ngIf="dynamicForm && !isLoading" class="container" (ngSubmit)="onSubmit()">
-  <div class="row">
-    <div class="col-md-3 mb-4" *ngFor="let control of dynamicForm.controls | keyvalue">
-      <label [for]="control.key" class="form-label fw-bold">{{ control.key }}</label>
-      <ng-container *ngIf="getRuleType(control.key) === 'NUMERIC'; else booleanOrSelectInput">
-        <input
-          type="number"
-          class="form-control"
-          [id]="control.key"
-          [formControlName]="control.key"
-          placeholder="Entrez une valeur"
-        />
-        <!-- Proactive error messages for min/max violations -->
-        <div class="text-danger mt-1" *ngIf="dynamicForm.get(control.key)?.invalid && dynamicForm.get(control.key)?.touched">
-          <span *ngIf="dynamicForm.get(control.key)?.errors?.['min']">
-            La valeur doit être supérieure ou égale à {{ getRuleMinValue(control.key) }}.
-          </span>
-          <span *ngIf="dynamicForm.get(control.key)?.errors?.['max']">
-            La valeur doit être inférieure ou égale à {{ getRuleMaxValue(control.key) }}.
-          </span>
-          <span *ngIf="dynamicForm.get(control.key)?.errors?.['required']">
-            Ce champ est requis.
-          </span>
+<form [formGroup]="dynamicForm" *ngIf="dynamicForm && !isLoading" class="quality-form container-fluid" (ngSubmit)="onSubmit()">
+  <div class="row g-4 justify-content-center">
+    <div class="col-sm-12 col-md-6 col-lg-4 d-flex" *ngFor="let control of dynamicForm.controls | keyvalue">
+      <div class="rule-card flex-fill p-3 border rounded">
+        <div class="rule-header mb-3">
+          <label [for]="control.key" class="form-label fw-bold">
+            {{ getRuleName(control.key) }}
+          </label>
+          <p class="rule-description">
+            {{ getRuleDescription(control.key) }}
+          </p>
         </div>
-        <!-- Existing error messages after submission -->
-        <div class="text-danger mt-1" *ngIf="submitted && dynamicForm.get(control.key)?.invalid && dynamicForm.get(control.key)?.touched">
-          <span *ngIf="dynamicForm.get(control.key)?.errors?.['required']">
-            Ce champ est requis.
-          </span>
-          <span *ngIf="dynamicForm.get(control.key)?.errors?.['min']">
-            La valeur minimale est {{ getRuleMinValue(control.key) }}.
-          </span>
-          <span *ngIf="dynamicForm.get(control.key)?.errors?.['max']">
-            La valeur maximale est {{ getRuleMaxValue(control.key) }}.
-          </span>
-        </div>
-      </ng-container>
-      <ng-template #booleanOrSelectInput>
-        <ng-container *ngIf="isBooleanSelect(control.key); else checkboxInput">
-          <mat-form-field appearance="fill" class="w-100">
-            <mat-label>{{ control.key }}</mat-label>
-            <mat-select [id]="control.key" [formControlName]="control.key">
-              <mat-option [value]="true">Vrai</mat-option>
-              <mat-option [value]="false">Faux</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </ng-container>
-        <ng-template #checkboxInput>
+
+        <ng-container *ngIf="getRuleType(control.key) === 'NUMERIC'; else booleanOrSelectInput">
           <input
-            type="checkbox"
+            type="number"
+            class="form-control"
             [id]="control.key"
             [formControlName]="control.key"
+            placeholder="Entrez une valeur"
           />
+        </ng-container>
+
+        <ng-template #booleanOrSelectInput>
+          <ng-container *ngIf="isBooleanSelect(control.key); else checkboxInput">
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label>{{ getRuleName(control.key) }}</mat-label>
+              <mat-select [id]="control.key" [formControlName]="control.key">
+                <mat-option [value]="true">Vrai</mat-option>
+                <mat-option [value]="false">Faux</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-container>
+          <ng-template #checkboxInput>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                [id]="control.key"
+                [formControlName]="control.key"
+              />
+              <label class="form-check-label" [for]="control.key">
+                {{ getRuleName(control.key) }}
+              </label>
+            </div>
+          </ng-template>
         </ng-template>
-        <div class="text-danger mt-1" *ngIf="submitted && dynamicForm.get(control.key)?.invalid && dynamicForm.get(control.key)?.touched">
-          <span *ngIf="dynamicForm.get(control.key)?.errors?.['required']">
+
+        <!-- Validation Errors -->
+        <div class="text-danger mt-2" *ngIf="(dynamicForm.get(control.key)?.invalid && (dynamicForm.get(control.key)?.touched || submitted))">
+          <div *ngIf="dynamicForm.get(control.key)?.errors?.['required']">
             Ce champ est requis.
-          </span>
+          </div>
+          <div *ngIf="dynamicForm.get(control.key)?.errors?.['min']">
+            La valeur doit être ≥ {{ getRuleMinValue(control.key) }}.
+          </div>
+          <div *ngIf="dynamicForm.get(control.key)?.errors?.['max']">
+            La valeur doit être ≤ {{ getRuleMaxValue(control.key) }}.
+          </div>
         </div>
-      </ng-template>
+      </div>
     </div>
   </div>
 
-  <div class="text-center my-3">
-    <button class="btn btn-primary" type="submit" [disabled]="dynamicForm.invalid || isLoading">
+  <div class="text-center my-4">
+    <button class="btn btn-primary px-5" type="submit" [disabled]="dynamicForm.invalid || isLoading">
       Valider
     </button>
   </div>

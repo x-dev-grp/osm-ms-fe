@@ -1,9 +1,10 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
- import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
 import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
- // Material Module Imports
+
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -17,6 +18,10 @@ import { FormsModule } from '@angular/forms';
 import { MatChipsModule } from '@angular/material/chips';
 import { CardComponent } from '../../../@theme/components/card/card.component';
 import { BreakpointObserver } from '@angular/cdk/layout';
+import { debounceTime, Subject } from 'rxjs';
+import { Pipe, PipeTransform } from '@angular/core';
+import { MatSelectionListChange } from '@angular/material/list';
+import { MillMachineService } from '../../../shared/services/mill-machine.service';
 
 interface Item {
   type: 'reception' | 'lot';
@@ -28,6 +33,13 @@ interface Item {
 interface Mill {
   name: string;
   receptions: Item[];
+}
+
+@Pipe({ name: 'filterByType', standalone: true })
+export class FilterByTypePipe implements PipeTransform {
+  transform(items: Item[], type: string): Item[] {
+    return items.filter((item) => item.type === type);
+  }
 }
 
 @Component({
@@ -49,153 +61,127 @@ interface Mill {
     DragDropModule,
     CommonModule,
     FormsModule,
-    CardComponent
+    CardComponent,
+    MatSnackBarModule,
+    FilterByTypePipe
   ]
 })
 export class PlanningComponent implements OnInit {
   unassignedReceptions: Item[] = [];
-  mills: Mill[] = [
-    { name: 'Mill ', receptions: [] },
-    { name: 'Mill extravierge', receptions: [] },
-    {
-      name: 'Mill base',
-      receptions: []
-    }
-  ];
+  filteredReceptions: Item[] = [];
+  mills: Mill[] = [];
   newLotNumber: string = '';
   selectedReceptions: Item[] = [];
+   isDesktop = true;
+  private filterSubject = new Subject<string>();
+
   @ViewChild('lotDialog') lotDialog!: TemplateRef<never>;
-  isDesktop = true;                             // default
-  allCardDropListIds: string[] = [];
 
   constructor(
-     private deliveryService: UnifiedDeliveryService,
+    private deliveryService: UnifiedDeliveryService,
+    private millService: MillMachineService,
+    // private planningService: PlanningService,
     private dialog: MatDialog,
-    private bp: BreakpointObserver
+    private bp: BreakpointObserver,
+    private cdr: ChangeDetectorRef,
+    private snackBar: MatSnackBar
   ) {}
 
+  get totalAssigned(): number {
+    return this.mills.reduce((sum, mill) => sum + mill.receptions.length, 0);
+  }
+
   ngOnInit(): void {
-    this.bp.observe('(min-width: 1024px)').subscribe(r => {
-      this.isDesktop = r.matches;               // ≥1024 px ⇒ true
+    this.bp.observe('(min-width: 1024px)').subscribe((r) => {
+      this.isDesktop = r.matches;
+      this.cdr.detectChanges();
     });
+    this.filterSubject.pipe(debounceTime(300)).subscribe((value) => {
+      this.applyFilter(value);
+    });
+    this.loadMills();
     this.loadReceptions();
-    this.buildDropListIds();
-  }
-  private buildDropListIds() {
-    // Unassigned cards
-    this.allCardDropListIds = this.unassignedReceptions
-      .map(r => `card-${r.reception!.id}`)
-      // plus every mill card
-      .concat(
-        this.mills.flatMap((mill, mi) =>
-          mill.receptions.map(r => `card-${r.reception!.id}`)
-        )
-      );
   }
 
-  onCardDropped(event: CdkDragDrop<Item[]>) {
-    const src: Item = event.item.data;
-    const destList: Item[] = event.container.data;
-    const dest: Item      = destList[0];
-
-    // if dropped onto itself or onto same container, ignore
-    if (!dest || src === dest) return;
-
-    // If both are receptions, create a new global lot
-    if (src.type === 'reception' && dest.type === 'reception') {
-      this.createGlobalLot([ src.reception!, dest.reception! ]);
-    }
-
-    // otherwise let the normal transfer logic run (e.g. into mills/unassigned)
-    else {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-      transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
-    }
-  }
-
-  private createGlobalLot(selectedDeliveries: UnifiedDelivery[]) {
-    // remove those 2 from wherever they were
-    this.unassignedReceptions = this.unassignedReceptions.filter(
-      it => !selectedDeliveries.find(d => d.id === it.reception?.id)
-    );
-    this.mills.forEach(mill => {
-      mill.receptions = mill.receptions.filter(
-        it => !selectedDeliveries.find(d => d.id === it.reception?.id)
-      );
+  private loadMills(): void {
+    this.millService.getAllMillMachines().subscribe({
+      next: (mills) => {
+        this.mills = mills.map((mill) => ({ name: mill.name, receptions: [] }));
+       },
+      error: (err) => {
+        console.error('Error loading mills:', err);
+        this.snackBar.open('Failed to load mills. Please try again.', 'Close', { duration: 3000 });
+      }
     });
-    const newLotNumber = this.pickHighestLotNumber(selectedDeliveries);
-
-    // now build a new "lot" Item with all selected deliveries
-    const newLot: Item = {
-      type: 'lot',
-      lotNumber: newLotNumber,    // your logic to pick a new lot ID
-      receptions: selectedDeliveries
-    };
-
-    // add it back to unassigned (or to lots column if you have one)
-    this.unassignedReceptions.push(newLot);
-
-    // rebuild drop-list IDs so this new lot can also accept merges if you like:
-    this.buildDropListIds();
   }
 
   loadReceptions(): void {
     this.deliveryService.getAllDeliveriesList().subscribe({
       next: (response) => {
-        const deliveries: UnifiedDelivery[] = Array.isArray(response.data)
-          ? response.data
-          : [response.data];
-
+        const deliveries: UnifiedDelivery[] = Array.isArray(response.data) ? response.data : [response.data];
         this.unassignedReceptions = deliveries.map((delivery) => ({
           type: 'reception',
           reception: delivery
         }));
-      },
-      error: (err) => console.error('Error loading deliveries:', err)
+        this.filteredReceptions = [...this.unassignedReceptions];
+       },
+      error: (err) => {
+        console.error('Error loading deliveries:', err);
+        this.snackBar.open('Failed to load receptions. Please try again.', 'Close', { duration: 3000 });
+      }
     });
-  }
-  /**
-   * Given an array of UnifiedDelivery, each of which
-   * has either `lotNumber` or (fallback) `id`, parse
-   * out the numeric value, and return the highest one
-   * as a string.
-   */
-  private pickHighestLotNumber(deliveries: UnifiedDelivery[]): string {
-    const nums = deliveries
-      .map(d => {
-        // assume d.lotNumber is a string of digits, else fallback to d.id
-        const raw = d.lotNumber ?? d.id;
-        const parsed = parseInt(raw, 10);
-        return isNaN(parsed) ? 0 : parsed;
-      });
-
-    const max = nums.length ? Math.max(...nums) : 0;
-    return max.toString();
   }
 
   filterReceptions(raw: string): void {
-    const value = raw?.trim().toLowerCase();
-    this.unassignedReceptions = this.unassignedReceptions.filter((item) => {
-      if (!value) {
-        return true;
-      }
-      if (item.type === 'reception') {
-        return item.reception!.id.toLowerCase().includes(value);
-      }
-      return item.lotNumber!.toLowerCase().includes(value);
-    });
+    this.filterSubject.next(raw);
   }
+
+  private applyFilter(value: string): void {
+    const search = value?.trim().toLowerCase() ?? '';
+    this.filteredReceptions = search
+      ? this.unassignedReceptions.filter((item) => {
+        if (item.type === 'reception' && item.reception) {
+          return item.reception.id.toLowerCase().includes(search);
+        }
+        if (item.type === 'lot' && item.lotNumber) {
+          return item.lotNumber.toLowerCase().includes(search);
+        }
+        return false;
+      })
+      : [...this.unassignedReceptions];
+  }
+
   drop(event: CdkDragDrop<Item[]>): void {
+    const srcItem: Item = event.item.data;
+    const destArray: Item[] = event.container.data;
+    const destItem: Item | undefined = destArray[event.currentIndex];
+
+    // ── 1. Same list → reorder
     if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-    } else {
-      transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
+      moveItemInArray(destArray, event.previousIndex, event.currentIndex);
     }
+    // ── 2. Reception dropped onto another reception-olive → create global lot
+    else if (srcItem.type === 'reception' && destItem?.type === 'reception') {
+      this.createGlobalLot([srcItem.reception!, destItem.reception!]);
+    }
+    // ── 3. Move reception-olive between lists
+    else if (srcItem.type === 'reception') {
+      transferArrayItem(
+        event.previousContainer.data,
+        destArray,
+        event.previousIndex,
+        event.currentIndex
+      );
+    }
+    // ── 4. Block dragging complete lots to a mill
+    else {
+      this.snackBar.open('Lots cannot be dragged to mills directly.', 'Close', { duration: 3000 });
+      return;
+    }
+
+    // Refresh lists and UI
+    this.filteredReceptions = [...this.unassignedReceptions];
+     this.cdr.detectChanges();
   }
 
   openLotModal(): void {
@@ -208,8 +194,11 @@ export class PlanningComponent implements OnInit {
     this.dialog.closeAll();
   }
 
-  onSelectionChange(event: any): void {
-    this.selectedReceptions = event.source.selectedOptions.selected.map((option: any) => option.value);
+  onSelectionChange(event: MatSelectionListChange): void {
+    this.selectedReceptions = event.options
+      .filter((option) => option.selected)
+      .map((option) => option.value as Item)
+      .filter((item) => item.type === 'reception');
   }
 
   createLot(): void {
@@ -224,8 +213,8 @@ export class PlanningComponent implements OnInit {
 
     this.unassignedReceptions = this.unassignedReceptions.filter((item) => !receptionsToGroup.includes(item));
     this.unassignedReceptions.push(lot);
-
-    this.closeLotModal();
+    this.filteredReceptions = [...this.unassignedReceptions];
+     this.closeLotModal();
   }
 
   savePlan(): void {
@@ -241,17 +230,59 @@ export class PlanningComponent implements OnInit {
       }))
     };
 
-    console.log('Saving plan:', payload);
-    // TODO: Call PlanningService to save the plan
+    // this.planningService.savePlan(payload).subscribe({
+    //   next: () => this.snackBar.open('Plan saved successfully!', 'Close', { duration: 3000 }),
+    //   error: (err) => this.snackBar.open('Failed to save plan. Please try again.', 'Close', { duration: 3000 })
+    // });
   }
 
   cancelPlan(): void {
     this.unassignedReceptions = [];
+    this.filteredReceptions = [];
     this.mills.forEach((mill) => (mill.receptions = []));
     this.loadReceptions();
+   }
+
+  /** Recompute the list of drop-list IDs so every list can talk to every other list */
+
+
+  private createGlobalLot(selectedDeliveries: UnifiedDelivery[]): void {
+    this.unassignedReceptions = this.unassignedReceptions.filter(
+      (it) => !selectedDeliveries.find((d) => d.id === it.reception?.id)
+    );
+    this.mills.forEach((mill) => {
+      mill.receptions = mill.receptions.filter(
+        (it) => !selectedDeliveries.find((d) => d.id === it.reception?.id)
+      );
+    });
+    const newLotNumber = this.pickHighestLotNumber(selectedDeliveries);
+
+    const newLot: Item = {
+      type: 'lot',
+      lotNumber: newLotNumber,
+      receptions: selectedDeliveries
+    };
+
+    this.unassignedReceptions.push(newLot);
+    this.filteredReceptions = [...this.unassignedReceptions];
+   }
+
+  private pickHighestLotNumber(deliveries: UnifiedDelivery[]): string {
+    const nums = deliveries.map((d) => {
+      const raw = d.lotNumber ?? d.id;
+      const parsed = parseInt(raw, 10);
+      return isNaN(parsed) ? 0 : parsed;
+    });
+
+    const max = nums.length ? Math.max(...nums) : 0;
+    return max.toString();
   }
 
-  get totalAssigned(): number {
-    return this.mills.reduce((sum, mill) => sum + mill.receptions.length, 0);
+  onDragStart(event: any): void {
+    event.source.element.nativeElement.setAttribute('aria-grabbed', 'true');
+  }
+
+  onDragEnd(event: any): void {
+    event.source.element.nativeElement.setAttribute('aria-grabbed', 'false');
   }
 }

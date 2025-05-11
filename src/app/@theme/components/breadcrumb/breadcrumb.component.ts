@@ -58,7 +58,7 @@ export class BreadcrumbComponent {
         this.navigationList = breadcrumbList;
         this.componentList = this.filterNavigation(this.ComponentNavigations, activeLink);
         const title = breadcrumbList[breadcrumbList.length - 1]?.title || 'Welcome';
-        this.titleService.setTitle(title + ' | Able pro Angular Admin Template');
+        this.titleService.setTitle(title);
       }
     });
   }

@@ -8,6 +8,7 @@
 
   <form [formGroup]="form" (ngSubmit)="save()" class="credit-form">
     <div class="row">
+      <div class="col-lg-6">
       <mat-form-field appearance="outline" class="col">
         <mat-label>Date</mat-label>
         <input matInput [matDatepicker]="picker" formControlName="credit_date">
@@ -17,7 +18,9 @@
           La date est requise.
         </mat-error>
       </mat-form-field>
-      <mat-form-field appearance="outline" class="col">
+      </div>
+      <div class="col-lg-6">
+        <mat-form-field appearance="outline" class="col">
         <mat-label>Citerne/Pile</mat-label>
         <mat-select formControlName="citerne_pile" (selectionChange)="onStorageUnitSelected($event.value)">
           <mat-option *ngFor="let unit of storageUnits" [value]="unit.id" [ngClass]="getVolumeClass(unit.currentVolume, unit.maxCapacity)">
@@ -27,14 +30,17 @@
         <mat-error *ngIf="submitted && form.get('citerne_pile')?.hasError('required')">
           La citerne/pile est requise.
         </mat-error>
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="col">
+        </mat-form-field>
+      </div>
+      <div class="col-lg-6">
+        <mat-form-field appearance="outline" class="col">
         <mat-label>Emballage</mat-label>
         <input matInput formControlName="emballage">
-      </mat-form-field>
+        </mat-form-field>
+      </div>
     </div>
     <div class="row">
-      <mat-form-field appearance="outline" class="col">
+      <div class="col-lg-6">    <mat-form-field appearance="outline" class="col">
         <mat-label>Quantité</mat-label>
         <input matInput type="number" formControlName="quantity">
         <mat-error *ngIf="submitted && form.get('quantity')?.hasError('required')">
@@ -49,8 +55,8 @@
         <mat-error *ngIf="submitted && form.get('quantity')?.hasError('unitMismatch')">
           La quantité en KG n'est pas compatible avec le volume en litres.
         </mat-error>
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="col">
+      </mat-form-field>  </div>
+        <div class="col-lg-6">     <mat-form-field appearance="outline" class="col">
         <mat-label>Unité (kg/L)</mat-label>
         <mat-select formControlName="unit">
           <mat-option value="KG">KG</mat-option>
@@ -59,11 +65,11 @@
         <mat-error *ngIf="submitted && form.get('unit')?.hasError('required')">
           L'unité est requise.
         </mat-error>
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="col">
+      </mat-form-field>  </div>
+          <div class="col-lg-6">    <mat-form-field appearance="outline" class="col">
         <mat-label>Destinataire</mat-label>
         <input matInput formControlName="destinataire">
-      </mat-form-field>
+      </mat-form-field>  </div>
     </div>
     <div class="actions">
       <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid && !form.dirty">
@@ -76,86 +82,7 @@
   </form>
 </mat-expansion-panel>
 
-<div class="filters">
-  <form [formGroup]="filterForm">
-    <mat-form-field appearance="outline" class="col">
-      <mat-label>Citerne/Pile</mat-label>
-      <input matInput formControlName="citerne_pile" placeholder="Rechercher citerne/pile">
-    </mat-form-field>
-    <mat-form-field appearance="outline" class="col">
-      <mat-label>Destinataire</mat-label>
-      <input matInput formControlName="destinataire" placeholder="Rechercher destinataire">
-    </mat-form-field>
-  </form>
-</div>
-
-<app-card cardTitle="Liste des crédits d'huile">
-  <div class="table-container">
-    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 credit-table">
-      <!-- Date -->
-      <ng-container matColumnDef="credit_date">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header="credit_date">Date</th>
-        <td mat-cell *matCellDef="let c">{{ c.credit_date | date:'shortDate' }}</td>
-      </ng-container>
-
-      <!-- Citerne/Pile (display name) -->
-      <ng-container matColumnDef="citerne_pile">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header="citerne_pile">Citerne/Pile</th>
-        <td mat-cell *matCellDef="let c">{{ getStorageUnitName(c.citerne_pile) }}</td>
-      </ng-container>
-
-      <!-- Emballage -->
-      <ng-container matColumnDef="emballage">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header="emballage">Emballage</th>
-        <td mat-cell *matCellDef="let c">{{ c.emballage }}</td>
-      </ng-container>
-
-      <!-- Quantité -->
-      <ng-container matColumnDef="quantity">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header="quantity">Quantité</th>
-        <td mat-cell *matCellDef="let c">{{ c.quantity | number }}</td>
-      </ng-container>
-
-      <!-- Unité -->
-      <ng-container matColumnDef="unit">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header="unit">Unité</th>
-        <td mat-cell *matCellDef="let c">{{ c.unit }}</td>
-      </ng-container>
-
-      <!-- Destinataire -->
-      <ng-container matColumnDef="destinataire">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header="destinataire">Destinataire</th>
-        <td mat-cell *matCellDef="let c">{{ c.destinataire }}</td>
-      </ng-container>
-
-      <!-- Actions -->
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Actions</th>
-        <td mat-cell *matCellDef="let e">
-          <button mat-icon-button [matMenuTriggerFor]="actionMenu">
-            <mat-icon>more_vert</mat-icon>
-          </button>
-          <mat-menu #actionMenu="matMenu">
-            <button mat-menu-item (click)="view(e.id!)">
-              <mat-icon>visibility</mat-icon>
-              <span>Voir</span>
-            </button>
-            <button mat-menu-item (click)="openForm(e)">
-              <mat-icon>edit</mat-icon>
-              <span>Modifier</span>
-            </button>
-            <button mat-menu-item (click)="delete(e.id!)">
-              <mat-icon color="warn">delete</mat-icon>
-              <span>Supprimer</span>
-            </button>
-          </mat-menu>
-        </td>
-      </ng-container>
-
-      <!-- rows -->
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
-    <mat-paginator [pageSizeOptions]="[5,10,20]" showFirstLastButtons></mat-paginator>
-  </div>
-</app-card>
+<osm-dashboard
+  [config]="OIL_CREDIT_DASHBOARD"
+  (applyAction)="onRowAction($event)">
+</osm-dashboard>

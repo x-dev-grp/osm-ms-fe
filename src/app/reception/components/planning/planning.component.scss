@@ -1,115 +1,147 @@
-/* ───────────────────────── Toolbar styling ───────────────────────── */
+/* Toolbar styling */
 .osm-toolbar {
-  background: #ffffff;          /* white instead of theme primary */
-  color: #1e293b;               /* slate-800 text for contrast   */
-  padding: 0 16px;
 
-  .title        { font-weight: 600; font-size: 1.125rem; } /* 18 px */
-  .spacer       { flex: 1 1 auto; }
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  min-height: 64px; /* Matches mat-toolbar height */
+
+  .title {
+    font-weight: 600;
+    font-size: 1.125rem;
+  }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
 
   .toolbar-field {
     width: 160px;
     margin-right: 12px;
 
-    ::ng-deep .mat-form-field-wrapper { padding-bottom: 0; } /* keeps it compact */
+    ::ng-deep .mat-form-field-wrapper {
+      padding-bottom: 0;
+    }
   }
 }
 
-/* ─────────────── Layout tweaks ─────────────── */
-.w-25 { width: 25%; }                   /* tailwind-like helper; matches left column */
-.grid.grid-cols-3 { height: 100%; }     /* lets the kanban lanes stretch fully  */
-/* Board wrapper */
-.board-container {
-  display: flex;
-  flex-direction: column;          /* mobile default */
-  gap: 1rem;
-  height: calc(100vh - 220px);     /* fill the card while respecting header/footer */
-  overflow: hidden;
+/* Layout tweaks */
+.w-25 {
+  width: 25%;
 }
 
-/* Unassigned column */
+.grid.grid-cols-3 {
+  height: 100%;
+}
+
+.board-container {
+  display: flex;
+  flex-direction: column;
+}
+
 .unassigned-column {
   overflow: auto;
   flex: 0 0 100%;
 }
 
-/* Mills area */
 .mills-grid {
   overflow: auto;
-  display: grid;
-  grid-template-columns: 1fr;      /* one column on phones */
+  display: inline-flex;
+  grid-template-columns: 1fr;
   gap: 1rem;
+  flex-direction: row;
+  justify-content: space-evenly;
+  flex-wrap: nowrap;
+  align-content: center;
+  align-items: flex-start;
 }
 
-/* ───── Desktop override ───── */
-@media (min-width: 1024px) {        /* lg breakpoint */
-  .board-container { flex-direction: row; }
-  .unassigned-column { flex: 0 0 25%; }   /* fixed quarter width   */
+/* Desktop override */
+@media (min-width: 1024px) {
+  .board-container {
+    flex-direction: row;
+  }
+  .unassigned-column {
+    flex: 0 0 18%;
+  }
   .mills-grid {
     flex: 1 1 auto;
-    grid-template-columns: repeat(3, 1fr); /* 3 equal columns      */
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .unassigned-panel {
+    flex: 0 0 18%;
   }
 }
 
-/* Tiny helper for the toolbar */
-.osm-toolbar { /* same rules as before */ }
-/* ───── Mill panel styled as a card ───── */
-.mill-panel {
-  background: #ffffff;          /* same white as mat-card */
-  border-radius: 8px;           /* mat-card default */
-  overflow: hidden;             /* clip child content corners */
+/* Shared panel styles */
+.panel-card {
+  background: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
 
-  /* Header looks like a card header */
   .mat-expansion-panel-header {
     padding: 12px 16px;
     min-height: 56px;
-    border-bottom: 1px solid #e0e0e0;   /* subtle divider like mat-card */
     font-weight: 600;
-    color: #374151;                     /* slate-700 */
+    color: #374151;
+    border-bottom: 1px solid #e0e0e0;
 
     .mat-expansion-indicator {
-      color: #64748b;                   /* slate-500 arrow */
+      color: #64748b;
     }
   }
 
-  /* Slight tint while opened (optional) */
   &.mat-expanded .mat-expansion-panel-header {
     background: #f9fafb;
   }
 
-  /* Remove default panel border line */
   .mat-expansion-panel-content {
     padding: 0 16px 16px;
   }
 }
-/* ───── Both mills & unassigned share the same card skin ───── */
+
 .mill-panel,
 .unassigned-panel {
-  background: #ffffff;
-  border-radius: 8px;
-  overflow: hidden;          /* clip corners when open */
+  @extend .panel-card;
+}
+/* Style all expansion panels (mills and unassigned) */
+.mat-expansion-panel.mill-panel,
+.mat-expansion-panel.unassigned-panel {
+  /* Rounded corners */
+  border-radius: 8px !important; /* Adjust radius as needed (e.g., 8px for subtle rounding) */
+
+  /* Shadow (enhance mat-elevation-z3 if needed) */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important; /* Slightly stronger shadow */
+
+  /* Ensure content inside panel respects border radius */
+  overflow: hidden;
+
+  /* Default background for mill panels (theme-dependent, usually white) */
+  background-color: #ffffff; /* Fallback for mill panels */
 }
 
-/* Shared header look */
-.mill-panel .mat-expansion-panel-header,
-.unassigned-panel .mat-expansion-panel-header {
-  padding: 12px 16px;
-  min-height: 56px;
-  font-weight: 600;
-  color: #374151;
-  border-bottom: 1px solid #e0e0e0;
-
-  .mat-expansion-indicator { color: #64748b; }
+/* Specific styling for mill panels */
+.mat-expansion-panel.mill-panel {
+  /* Set minimum width for mill panels */
+  min-width: 160px; /* Adjust as needed (e.g., 250px, 300px) */
 }
 
-/* Subtle tint when panel is expanded */
-.mill-panel.mat-expanded   .mat-expansion-panel-header,
-.unassigned-panel.mat-expanded .mat-expansion-panel-header {
-  background: #f9fafb;
+/* Specific styling for unassigned panel */
+.mat-expansion-panel.unassigned-panel {
+  /* Different background color to distinguish unassigned panel */
+  background-color: #f0f4f8; /* Light gray-blue for contrast */
+  /* Optional: Subtle border for additional distinction */
+  border: 1px solid #e0e0e0;
 }
 
-/* Layout helpers */
-.unassigned-panel { flex: 0 0 100%; }
-@media (min-width: 1024px) {
-  .unassigned-panel { flex: 0 0 25%; }  /* 25 % width on desktop */
+/* Ensure panel header and content inherit rounded corners */
+.mat-expansion-panel-header,
+.mat-expansion-panel-content {
+  border-radius: inherit;
+}
+
+/* Optional: Style cards inside panels for consistency */
+.reception-card {
+  border-radius: 4px; /* Slightly rounded corners for cards */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow for cards */
 }

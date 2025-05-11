@@ -17,6 +17,10 @@ import { MatSortModule } from '@angular/material/sort';
 import { ConfigurationComponent } from '../../@theme/layouts/configuration/configuration.component';
 import { MatPaginator } from '@angular/material/paginator';
 import { Router } from '@angular/router';
+import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
+import { EXPENSES_DASHBOARD_CONFIG } from './expenses-dashboard.config';
+import { Action, DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { OilCredit } from '../models/OilCredit';
 
 @Component({
   selector: 'app-expenses',
@@ -37,7 +41,8 @@ import { Router } from '@angular/router';
     SharedModule,
     ConfigurationComponent,
     MatExpansionPanel,
-    MatExpansionPanelTitle
+    MatExpansionPanelTitle,
+    OsmDashboard
   ],
   styleUrls: ['./expenses.component.scss']
 })
@@ -48,7 +53,7 @@ export class ExpensesComponent implements OnInit, AfterViewInit {
   // table + pagination
   dataSource = new MatTableDataSource<Expense>([]);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-
+  dashboardConfig: DashboardConfig = EXPENSES_DASHBOARD_CONFIG;
   displayedColumns: string[] = ['invoiceRef', 'purchaseNature', 'object', 'date', 'amount', 'actions'];
 
   // filtering fields
@@ -150,6 +155,33 @@ export class ExpensesComponent implements OnInit, AfterViewInit {
     this.dataSource.filter = JSON.stringify(this.filterValues);
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
+    }
+  }
+
+  handleAction(event: { action: Action; record: Expense }): void {
+    /* prefer the explicit value, fall back to the label */
+
+
+    switch (event.action.label) {
+      case 'VIEW':
+      case 'CONSULTER':
+        this.openForm(event.record) ;
+        break;
+
+      case 'PRINT':
+        this.print(event.record.id!);
+        break;
+
+      case 'EDIT':
+      case 'MODIFIER':
+        this.router.navigate(['/expenses', event.record.id!, 'edit']);
+        break;
+
+      case 'DELETE':
+      case 'SUPPRIMER':
+        this.delete(event.record.id!);
+        break;
+
     }
   }
 }

@@ -1,0 +1,94 @@
+/* ================================================================== */
+/*  SPACING UTILITIES — Bootstrap-like classes for Angular projects   */
+/*  Save as src/styles/_spacing-utils.scss and import in styles.scss  */
+/* ================================================================== */
+
+/* ------------------------------------------------------------------ */
+/* 1. Scale definitions                                               */
+/* ------------------------------------------------------------------ */
+$spacer-base: 1rem !default;       // change to 8px, 10px, etc. if preferred
+$spacers: (
+  0: 0,
+  1: $spacer-base * 0.25,   // 4px if base = 16px
+  2: $spacer-base * 0.5,    // 8px
+  3: $spacer-base,          // 16px
+  4: $spacer-base * 1.5,    // 24px
+  5: $spacer-base * 3       // 48px
+);
+
+/* Negative scale (margin only) */
+$negative-spacers: ();
+@each $k, $v in $spacers {
+  @if $v != 0 {
+    $negative-spacers: map-merge($negative-spacers, ('n#{$k}': -$v));
+  }
+}
+$all-spacers: map-merge($spacers, $negative-spacers);
+
+/* ------------------------------------------------------------------ */
+/* 2. Generator mixins                                                */
+/* ------------------------------------------------------------------ */
+/* Logical (RTL-aware) directions */
+@mixin logical-spacing($prop, $dir, $abbr) {
+  @each $key, $size in $all-spacers {
+    .#{$abbr}-#{$key} { #{$prop}-#{$dir}: $size !important; }
+  }
+}
+
+/* Physical (left / right) directions  */
+@mixin physical-spacing($prop, $side, $abbr) {
+  @each $key, $size in $all-spacers {
+    .#{$abbr}-#{$key} { #{$prop}-#{$side}: $size !important; }
+  }
+}
+
+/* Axes (inline / block) */
+@mixin axis-spacing($prop, $axis, $abbr-x, $abbr-y) {
+  @each $key, $size in $all-spacers {
+    .#{$abbr-x}-#{$key} { #{$prop}-inline: $size !important; }
+    .#{$abbr-y}-#{$key} { #{$prop}-block:  $size !important; }
+  }
+}
+
+/* All-sides helper */
+@mixin all-sides($prop, $abbr) {
+  @each $key, $size in $all-spacers {
+    .#{$abbr}-#{$key} { #{$prop}: $size !important; }
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* 3. Margin utilities                                                */
+/* ------------------------------------------------------------------ */
+@include all-sides(margin, m);              /* m-*        */
+@include axis-spacing(margin, both, mx, my);/* mx-*, my-* */
+
+@include logical-spacing(margin, block-start,  mt); /* top    */
+@include logical-spacing(margin, block-end,    mb); /* bottom */
+@include logical-spacing(margin, inline-start, ms); /* start  */
+@include logical-spacing(margin, inline-end,   me); /* end    */
+
+@include physical-spacing(margin, left,  ml);       /* left   */
+@include physical-spacing(margin, right, mr);       /* right  */
+
+/* ------------------------------------------------------------------ */
+/* 4. Padding utilities                                               */
+/* ------------------------------------------------------------------ */
+@include all-sides(padding, p);             /* p-*        */
+@include axis-spacing(padding, both, px, py);/* px-*, py-* */
+
+@include logical-spacing(padding, block-start,  pt); /* top    */
+@include logical-spacing(padding, block-end,    pb); /* bottom */
+@include logical-spacing(padding, inline-start, ps); /* start  */
+@include logical-spacing(padding, inline-end,   pe); /* end    */
+
+@include physical-spacing(padding, left,  pl);       /* left   */
+@include physical-spacing(padding, right, pr);       /* right  */
+
+/* ------------------------------------------------------------------ */
+/* 5. Optional: reset Material defaults you don’t want                */
+/* ------------------------------------------------------------------ */
+/* Example: remove default padding on mat-card so utilities control it
+.mat-card { padding: 0 !important; }
+*/
+/* ================================================================== */

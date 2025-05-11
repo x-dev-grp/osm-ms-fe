@@ -115,20 +115,20 @@ export const menus: Navigation[] = [
     role: [Role.Admin, Role.User],
     children: [
       // {
-      //   id: 'reception',
+      //   id: 'reception-olive',
       //   title: 'Réception',
       //   type: 'item',
       //   classes: 'nav-item',
-      //   url: '/reception',
+      //   url: '/reception-olive',
       //   icon: '#custom-story'
       // },
 
       // {
-      //   id: 'reception',
+      //   id: 'reception-olive',
       //   title: 'Réception',
       //   type: 'item',
       //   classes: 'nav-item',
-      //   url: '/reception',
+      //   url: '/reception-olive',
       //   icon: '#custom-story'
       // },
 
