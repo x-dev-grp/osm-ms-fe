@@ -58,3 +58,50 @@
   color: #1e3720;
   background-color: #83da9c;
 }
+
+.filter-actions{
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+.actions{
+  display: flex;
+  justify-content:space-between;
+  align-items: center;
+}
+.filter-details {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  min-height: 4rem;
+  border-radius: 12px;
+  border: 1px solid hsla(0, 0%, 20%, 0.1);
+  // display: flex;
+  // flex-wrap: wrap;
+  padding: 1rem 1rem;
+ // gap: 2rem; 
+}
+
+fieldset {
+  legend {
+    color: #dbe0e5;
+    font-weight: 500;
+  }
+ // padding:20px ;
+  border: solid 1px #dbe0e5;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+  width: max-content;
+  margin-right: 1.5rem;
+
+}
+.checkbox-cell{
+  width: 17px;
+  height: 17px;
+}
+
+.button-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+}

@@ -31,7 +31,7 @@ export class MenuItemVerticalComponent implements OnInit {
     /**
      * current login user role
      */
-    const CurrentUserRole = this.authenticationService.currentUserValue?.roles[0] || Role.Admin;
+    const CurrentUserRole = this.authenticationService.currentUserValue?.role || Role.Admin;
 
     /**
      * menu items

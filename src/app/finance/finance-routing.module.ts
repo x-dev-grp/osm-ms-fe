@@ -7,15 +7,16 @@ import { BankAccountsComponent } from './bank-accounts/bank-accounts.component';
 import { ViewExpenseComponent } from './expenses/view-expense/view-expense.component';
 import { OilCreditComponent } from './oil-credit/oil-credit.component';
 import { ViewOilCreditComponent } from './oil-credit/view-oil-credit/view-oil-credit.component';
+import { AuthGuardChild } from '../interceptors/guards/auth.guard';
 
 
 const routes: Routes = [
-  { path: 'expenses', component: ExpensesComponent },
-  { path: 'expenses/:id/view',  component: ViewExpenseComponent },
-  { path: 'pricing', component: PricingComponent },
-  { path: 'banks', component: BankAccountsComponent },
-  { path: 'oil-credit', component: OilCreditComponent },
-  { path: 'oil-credit/:id/view',  component: ViewOilCreditComponent },
+  { path: 'expenses', component: ExpensesComponent , canActivate: [AuthGuardChild]},
+  { path: 'expenses/:id/view',  component: ViewExpenseComponent , canActivate: [AuthGuardChild]},
+  { path: 'pricing', component: PricingComponent , canActivate: [AuthGuardChild]},
+  { path: 'banks', component: BankAccountsComponent , canActivate: [AuthGuardChild]},
+  { path: 'oil-credit', component: OilCreditComponent , canActivate: [AuthGuardChild]},
+  { path: 'oil-credit/:id/view',  component: ViewOilCreditComponent , canActivate: [AuthGuardChild]},
 ];
 
 @NgModule({

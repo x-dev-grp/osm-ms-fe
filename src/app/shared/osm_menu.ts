@@ -243,7 +243,14 @@ export const osm_menus: Navigation[] = [
         title: 'Generic Types',
         type: 'item',
         url: '/settings/generic',
-        icon: 'category', // Changed: Better represents "Generic Types"
+        icon: 'category'
+      },
+      {
+        id: 'users',
+        title: 'Gestion des utilisateurs',
+        type: 'item',
+        url: '/settings/users',
+        icon: 'layers'
       }
     ]
   },

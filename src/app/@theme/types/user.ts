@@ -2,11 +2,14 @@
 export interface User {
     id: string;
     username?: string;
+    firstName?:string;
+    lastName?:string;
     email: string;
     password: string;
     phoneNumber: string;
     confirmationMethod:string;
     isLocked:boolean;
-    roles: any;
+    role: any;
     permissions:any;
+    isNewUser?:boolean;
 }

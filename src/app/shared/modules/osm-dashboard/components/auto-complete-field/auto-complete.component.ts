@@ -60,10 +60,13 @@ export class AutoCompleteComponent implements OnInit, AfterViewInit, OnChanges, 
         switchMap((value: string) => {
           console.log(value);
           const searchs: Record<string, any> = {};
+          if(this.field().autoCompleteFilterAttributes && this.field()?.autoCompleteFilterAttributes?.length){
           this.field().autoCompleteFilterAttributes?.forEach((attr) => {
             searchs[attr] = { likeValue: value };
           });
-
+        }else{
+          searchs[this.field()?.valuePath!] = { likeValue: value };
+        }
           this.autoCompleteDefaultCriteria = {
             ...this.autoCompleteDefaultCriteria,
             searchData: {
@@ -105,9 +108,9 @@ export class AutoCompleteComponent implements OnInit, AfterViewInit, OnChanges, 
     const search: { [key: string]: SearchDetails } = {
       [`${this.field()?.name}.id`]: {
         equalValue: event?.id.toString()
-      }
-    };
-    this._store.setSearchDataAttribute(search);
+        }
+      };
+      this._store.setSearchDataAttribute(search);
   }
  
   getValue(path: string, object: any): any {
@@ -148,7 +151,7 @@ export class AutoCompleteComponent implements OnInit, AfterViewInit, OnChanges, 
     }
   }
 
-  displayWith(option: any): string {
-     return  this.getValue(this.field()?.valuePath!,option);
-}
+  displayWith = (option: any): string => {
+    return this.getValue(this.field()?.valuePath!, option);
+  };
 }
