@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 //type
 import { Role } from 'src/app/@theme/types/role';
+import { AuthGuardChild } from 'src/app/interceptors/guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -13,6 +14,7 @@ const routes: Routes = [
   },
   {
     path:"dashboard",
+    canActivateChild: [AuthGuardChild],
     children:[
       {
         path: '',

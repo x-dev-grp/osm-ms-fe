@@ -18,9 +18,7 @@
            <slider [field]="field()"></slider>
         }
         @case ("checkbox") {
-            <mat-checkbox [formControl]="formControl" [placeholder]="field().labelTranslatePath?(field().labelTranslatePath|translate):field().label" class="w-100">
-                {{field().labelTranslatePath?(field().labelTranslatePath|translate):field().label}}
-            </mat-checkbox>
+          <slide [field]="field()"> </slide>
         }
         @case ("radio") {
             <mat-radio-group [formControl]="formControl" [placeholder]="field().labelTranslatePath?(field().labelTranslatePath|translate):field().label" class="w-100">

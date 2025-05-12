@@ -15,12 +15,12 @@ const routes: Routes = [
   {
     path: '',
     component: AdminComponent,
-    canActivateChild: [AuthGuardChild],
     children: [
 
       {
         path: '',
         loadChildren: () => import('./demo/pages/dashboard/dashboard.module').then((m) => m.DashboardModule),
+       
         data: { roles: [Role.Admin, Role.User] }
       },
       {
@@ -116,9 +116,7 @@ const routes: Routes = [
   {
     path: 'auth',
     loadChildren: () => import('./auth/authentication.module').then((e) => e.AuthenticationModule),
-
   },
-
   {
     path: '**',
     loadComponent: () => import('./demo/pages/maintenance/error/error.component').then((c) => c.ErrorComponent)

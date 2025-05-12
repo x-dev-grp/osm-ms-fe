@@ -1,0 +1,114 @@
+<app-card [showHeader]="true" [showContent]="true" cardTitle="Ajouter un utilisateur">
+  <div *ngIf="errorMessage" class="mat-alert mat-error" role="alert">
+    {{ errorMessage }}
+  </div>
+  
+ <form [formGroup]="userForm">
+  <div class="row">
+   
+    <div class="col-lg-4 col-md-6 col-sm-12">
+      <label for="name" class="f-w-500">Nom</label>
+      <mat-form-field appearance="outline" class="w-100 ">
+        <input id="name" matInput type="text" formControlName="firstName" placeholder="Nom" />
+        
+      </mat-form-field>
+    </div>
+   
+    <div class="col-lg-4 col-md-6 col-sm-12">
+      <label for="lastName" class="f-w-500">Prénom</label>
+      <mat-form-field appearance="outline" class="w-100 ">
+        <input matInput id="lastName" type="text" formControlName="lastName" placeholder="Prénom" />
+      </mat-form-field>
+    </div>
+    
+    <div class="col-lg-4 col-md-6 col-sm-12">
+      <label for="username" class="f-w-500">Nom d'utilisateur  <span class="text-warn-500">*</span></label>
+      <mat-form-field appearance="outline" class="w-100 ">
+        <input matInput id="username" type="text" formControlName="username" placeholder="Nom d'utilisateur" />
+        <mat-error *ngIf="userForm.get('username')?.hasError('required')">
+          Le nom d'utilisateur est requis.
+        </mat-error>
+      </mat-form-field>
+    </div>
+    
+    <div class="col-lg-4 col-md-6 col-sm-12">
+      <label for="email" class="f-w-500">Email  <span *ngIf="userForm.get('email')?.hasError('emailRequired')" class="text-warn-500">*</span></label>
+      <mat-form-field appearance="outline" class="w-100 ">
+        <input matInput id="email" type="text" formControlName="email" placeholder="Email" />
+        <mat-error *ngIf="userForm.get('email')?.hasError('emailRequired')">
+          L’email est requis!.
+        </mat-error>
+        <mat-error *ngIf="userForm.get('email')?.hasError('email')">
+          Format d’email invalide.
+        </mat-error>
+      </mat-form-field>
+    </div>
+    
+    <div class="col-lg-4 col-md-6 col-sm-12">
+      <label for="phone" class="f-w-500">Numéro de téléphone  <span *ngIf="userForm.get('phoneNumber')?.hasError('phoneRequired')" class="text-warn-500">*</span></label>
+      <mat-form-field appearance="outline" class="w-100">
+        <input matInput id="phone" type="text" formControlName="phoneNumber" placeholder="Numéro de téléphone"/>
+        <mat-error *ngIf="userForm.get('phoneNumber')?.hasError('phoneRequired')">
+          Le numéro de téléphone est requis.
+        </mat-error>
+        <mat-error *ngIf="userForm.get('phoneNumber')?.hasError('pattern')">
+          Format de numéro invalide.
+        </mat-error>
+      </mat-form-field>
+     
+    </div>
+   
+    <div class="col-lg-4 col-md-6 col-sm-12">
+      <label for="method" class="f-w-500">Méthode de confirmation  <span class="text-warn-500">*</span></label>
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-select formControlName="confirmationMethod" id="method">
+          <mat-option value="EMAIL">Email</mat-option>
+          <mat-option value="PHONE">Téléphone</mat-option>
+        </mat-select>
+        <mat-error *ngIf="userForm.get('confirmationMethod')?.hasError('required')">
+          Le nom d'utilisateur est requis.
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    
+    <div class="col-lg-4 col-md-6 col-sm-12">
+      <label for="role" class="f-w-500">Role  <span class="text-warn-500">*</span></label>
+      <mat-form-field appearance="outline">
+                <input
+                matInput
+                placeholder="Role"
+                formControlName="role"
+                [matAutocomplete]="auto"
+              
+              />
+              <mat-autocomplete    [displayWith]="displayWith"
+              (optionsScroll)="scroll($event)" #auto="matAutocomplete">
+                @for (role of roles ; track role?.id) {
+                  <mat-option [value]="role">
+                    {{role?.roleName}}
+                  </mat-option>
+                }
+              </mat-autocomplete>
+     
+    </mat-form-field>
+    </div>
+    
+    <div class="col-lg-4 col-md-6 col-sm-12 mt-3">
+      <mat-slide-toggle id="locked" formControlName="locked" color="primary"> Désactiver </mat-slide-toggle>
+    </div>
+
+  </div>
+</form>
+<div class="text-end">
+  <button (click)="cancel()" mat-stroked-button class="m-r-10">Annuler</button>
+  <button [disabled]="userForm.invalid" (click)="onSubmit()" mat-flat-button *ngIf="updateMode" class="m-r-10" color="primary">
+    <mat-spinner *ngIf="loading" diameter="25" color="warn"></mat-spinner>
+    <span *ngIf="!loading">Modifier</span>
+  </button>
+  <button [disabled]="userForm.invalid" (click)="onSubmit()" mat-flat-button *ngIf="!viewMode" class="m-r-10" color="primary">
+    <mat-spinner *ngIf="loading" diameter="25" color="warn"></mat-spinner>
+    <span *ngIf="!loading">Sauvgarder</span>
+  </button>
+</div>
+</app-card>

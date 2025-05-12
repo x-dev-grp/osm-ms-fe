@@ -16,6 +16,10 @@ import { SliderComponent } from '../slider-field/slider.component';
 import { InputTextComponent } from '../text-field/text-input.component';
 import { SelectComponent } from '../select-field/select.component';
 import { AutoCompleteComponent } from '../auto-complete-field/auto-complete.component';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { DashboardStore } from '../../services/dashboard-state.service';
+import { SearchDetails } from 'src/app/shared/models/advanced-search/searchDetails';
+import { SlideComponent } from '../slide-field copy/slide-field.component';
 
 @Component({
   selector: 'dynamic-input',
@@ -34,10 +38,12 @@ import { AutoCompleteComponent } from '../auto-complete-field/auto-complete.comp
     InputTextComponent,
     SelectComponent,
     AutoCompleteComponent,
+    SlideComponent
   ]
 })
 export class DynamicInput implements OnInit, AfterViewInit, OnChanges, OnDestroy {
   field = input.required<Field>();
+  _store=inject(DashboardStore)
   formControl: AbstractControl;
   ngOnDestroy(): void {}
  
@@ -46,11 +52,10 @@ export class DynamicInput implements OnInit, AfterViewInit, OnChanges, OnDestroy
   
   }
 
-  ngOnChanges(changes: SimpleChanges): void {}
+  ngOnChanges(changes: SimpleChanges): void {
+  }
   ngOnInit(): void {
     this.formControl = new FormControl(null);
-    
-   console.log(this.field());
-  }
+    }
  
 }

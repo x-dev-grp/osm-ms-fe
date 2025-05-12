@@ -22,10 +22,10 @@ export class AuthenticationService {
    const decodedToken :any=this._tokenService.decodeToken()
    if (decodedToken!=null){
     console.log(decodedToken)
-    const roles:any=decodedToken?.roles;
+    const role:any=decodedToken?.role;
     const permissions=decodedToken?.permissions;
     let user:User=decodedToken?.osmUser;
-    user.roles=roles;
+    user.role=role;
     user.permissions=permissions;
     this.setCurrentUserValue=user;
    }

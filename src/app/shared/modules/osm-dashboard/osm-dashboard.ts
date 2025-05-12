@@ -15,7 +15,7 @@ import {
 } from '@angular/material/expansion';
 import { SharedModule } from 'src/app/demo/shared/shared.module';
 import { DashboardStore } from './services/dashboard-state.service';
-import { DashboardConfig, Field } from './models/dashboard-config';
+import { Action, DashboardConfig, Field } from './models/dashboard-config';
 import { Router } from '@angular/router';
 import { DynamicInput } from './components/dynamic-input/dynamic-input.component';
 
@@ -46,15 +46,15 @@ export class OsmDashboard implements OnInit,AfterViewInit,OnChanges {
 readonly _store=inject(DashboardStore);
 _router=inject(Router);
 config=input.required<DashboardConfig>();
-applyAction=output<{row:any,action:string}>();
+applyAction = output<{ row: any; action: Action }>();
 displayedColumns:string[]=[];
-actions:string[]|undefined;
+actions:Action[]|undefined;
   ngOnInit(): void {
     this.displayedColumns=[...this.config().fields.filter((field)=>field.dataTable).map((field)=>field.label),'actions'];
     console.log(this.displayedColumns);
     this._store.initialize(this.config()?.searchEndpoint,this.config().fields,this.config()?.defaultSearchData,this.config().fileName);
     if(!this.config().actions?.statusMapping)
-       this.actions=this.config().actions?.actionsList?.map(action=>action.action);
+       this.actions=this.config().actions?.actionsList
   }
   ngAfterViewInit(): void {
   
@@ -75,6 +75,11 @@ actions:string[]|undefined;
   }
   getValue(path: string,object:any): any {
     return path?.split('.')?.reduce((acc, key) => acc && acc[key], object);
+  }
+  getSelectDataTableValue(value:string,fieldName:string):string{
+    const field=this.config().fields.find(field=>field.name==fieldName);
+    const option=field?.options?.find(option=>option.value==value);
+    return option?.label || option?.value;
   }
   redirectToFormPage(){
     this._router.navigate([this.config().addNewItemUrl]);
@@ -101,14 +106,14 @@ actions:string[]|undefined;
     this._store.export('excel');
   }
 
-  mapActions(item:any):string[]{
+  mapActions(item:any):Action[]{
     const configActions:any=this.config()?.actions?.actionsStatusList ;
     const statusAttribute=this.config().actions?.statusAttributeName || "status";
     const status=item[statusAttribute]?.trim();
     console.log({status:status,actions:configActions[status]?.map((action:any)=>action?.action)})
-    return configActions[status]?.map((action:any)=>action?.action)|| []
+    return configActions[status];
   }
-  actionApply(action:string,row:any){
+  actionApply(action:Action,row:any){
     this.applyAction.emit({row:row,action:action});
   }
 }

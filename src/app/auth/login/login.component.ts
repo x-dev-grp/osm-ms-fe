@@ -51,7 +51,7 @@ export class LoginComponent implements OnInit {
     this.errorMessage=null
     this.form = this._fb.group({
       username: ['', [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(8)]]
+      password: ['', [Validators.required]]
     });
   }
 
@@ -65,14 +65,18 @@ export class LoginComponent implements OnInit {
       .pipe(
         first(),
        catchError((err:any) => {
+        this.loading=false;
         console.log(err)
         if([504,503].includes(err?.status)){
           this.errorMessage={message:"Service unavailable please try again later"};
-        }else{
+        }else if(err?.error?.error_uri && err?.error?.error_description){
+            this.router.navigate(['/auth/user/update-password',{username:err.error.error_description,id:err.error.error_uri}]);
+        }
+        else{
           this.errorMessage=err?.error;
         }
-        this.authenticationService.logout();
-        this.loading=false;
+        //this.authenticationService.logout();
+      
         return of(null); 
        })
       )
@@ -85,10 +89,10 @@ export class LoginComponent implements OnInit {
           this.tokenService.setRefreshToken(response?.refresh_token);
           const decodedToken:any=this.tokenService.decodeToken();
           if( decodedToken && decodedToken?.osmUser){
-            const roles:any=decodedToken?.roles;
+            const role:any=decodedToken?.role;
             const permissions=decodedToken?.permissions;
             let user:User=decodedToken?.osmUser;
-            user.roles=roles;
+            user.role=role;
             user.permissions=permissions;
             this.authenticationService.setCurrentUserValue=user;
           }

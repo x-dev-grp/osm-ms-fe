@@ -14,13 +14,13 @@
             <img src="assets/XDEV.svg" alt="Logo XDEV" class="logo" />
           </a>
         </div>
-        <h2 class="text-center">Connexion avec votre email</h2>
-        <div *ngIf="errorMessage" class="error-message" role="alert">
+        <h2 class="text-center">Connexion avec votre nom d'étulisateur</h2>
+        <div *ngIf="errorMessage" class="mat-alert mat-error" role="alert">
           {{ errorMessage?.message }}
         </div>
         <form [formGroup]="form" class="form-container">
           <div class="form-group">
-            <label for="username" class="form-label">Entrez votre email</label>
+            <label for="username" class="form-label">Entrez votre non d'utilisateur</label>
             <mat-form-field appearance="outline" class="w-full">
               <input matInput formControlName="username" id="username" />
               <mat-error *ngIf="form.controls['username'].invalid">{{ getUserNameErrorMessage() }}</mat-error>

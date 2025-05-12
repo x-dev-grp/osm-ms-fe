@@ -1,3 +1,4 @@
+import { booleanAttribute } from "@angular/core";
 import { SearchData } from "src/app/shared/models/advanced-search/searchData";
 
 export interface DashboardConfig {
@@ -18,7 +19,9 @@ export interface DashboardConfig {
     fileName?:string;
 }
 export interface Action {
-    action: string;
+  label: string;
+  icon?: string;
+  value?: any;
 }
 
 export enum AttributeType{
@@ -46,6 +49,7 @@ export enum FieldType{
 }
 export interface Field {
     name: string;
+    booleanAttributeName?:string,
     valuePath?:string;
     valueAttributeType?:AttributeType;
     label: string;
