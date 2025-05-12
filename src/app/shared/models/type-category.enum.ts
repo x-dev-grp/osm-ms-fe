@@ -6,5 +6,7 @@ export enum TypeCategory {
   OLIVE_TYPE = 'OLIVE_TYPE',
   OPERATION_TYPE = 'OPERATION_TYPE',
   PRODUCTION_METHOD = 'PRODUCTION_METHOD', // Bio / Conventional, etc.
-  OIL_VARIETY = 'OIL_VARIETY'
+  OIL_VARIETY = 'OIL_VARIETY',
+  OIL_TYPE  = 'OIL_TYPE',
+
 }

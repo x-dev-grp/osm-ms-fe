@@ -1,172 +1,113 @@
-<!-- Planning Board inside a single card -->
-<div class="col-md-12">
+<div class="w-full">
   <app-card cardTitle="Olive Reception Planning" id="planning-card">
-    <!-- Toolbar replaced with div -->
+    <!-- Toolbar -->
     <div class="osm-toolbar" id="planning-toolbar">
       <span class="title" id="planning-title">Olive Reception Planning</span>
       <span class="spacer"></span>
-
-      <mat-form-field appearance="outline" class="toolbar-field" id="filter-type-field">
-        <mat-label>Type</mat-label>
-        <mat-select (selectionChange)="filterReceptions($event.value)" id="filter-type-select">
-          <mat-option value="">All</mat-option>
-          <mat-option value="OIL">Oil</mat-option>
-          <mat-option value="OLIVE">Olive</mat-option>
-        </mat-select>
-      </mat-form-field>
-
       <mat-form-field appearance="outline" class="toolbar-field" id="search-field">
         <mat-label>Search…</mat-label>
         <input matInput (input)="filterReceptions($event.target.value)" id="search-input" />
       </mat-form-field>
     </div>
 
-    <!-- Board (responsive) -->
-    <div class="board-container" id="board-container" cdkDropListGroup>
-      <!-- Unassigned -->
-      <mat-expansion-panel
-        class="unassigned-panel mat-elevation-z3"
-        [expanded]="isDesktop"
-        id="unassigned-panel"
-        aria-labelledby="unassigned-title"
-      >
-        <mat-expansion-panel-header id="unassigned-header">
-          <mat-panel-title id="unassigned-title" role="heading" aria-level="2">
-            Unassigned Receptions
-            <span class="ml-2 text-sm" id="unassigned-count">
-              ({{ filteredReceptions.length }})
-            </span>
-          </mat-panel-title>
+    <!-- Columns as expansion panels -->
+    <div #scrollContainer class="columns-container" cdkDropListGroup>
+      <!-- Unassigned Column -->
+      <mat-expansion-panel expanded>
+        <mat-expansion-panel-header>
+          <mat-tab-nav-panel>
+            Unassigned Receptions ({{ unassignedReceptions.length }})
+          </mat-tab-nav-panel>
         </mat-expansion-panel-header>
 
-        <!-- panel body -->
-        <div
-          id="unassigned-list"
-          cdkDropList
-          [cdkDropListData]="unassignedReceptions"
-           (cdkDropListDropped)="drop($event)"
-          class="space-y-2"
-          role="list"
-        >
-          <mat-card
-           *ngFor="let item of filteredReceptions"
-            class="reception-card"
-            cdkDrag
-            [cdkDragData]="item"
-            [attr.id]="'card-' + (item.type === 'reception-olive' ? item.reception.id : item.lotNumber)"
-            role="listitem"
-            aria-grabbed="false"
-            (cdkDragStarted)="onDragStart($event)"
-            (cdkDragEnded)="onDragEnd($event)"
-          >
-            <!-- simplified header -->
-            <div
-              class="reception-header"
-              [attr.id]="'unassigned-header-' + (item.type === 'reception-olive' ? item.reception.id : item.lotNumber)"
-              [attr.aria-label]=" 'Lot N°: ' + item.reception.lotNumber "
-            >
-              <strong
-                [attr.id]="'unassigned-title-' + (item.type === 'reception-olive' ? item.reception.id : item.lotNumber)">
-                {{ 'Lot N°: ' + item.reception.lotNumber }}
-              </strong>
-              <small
-                *ngIf="item.type === 'reception-olive'"
-                [attr.id]="'unassigned-subtitle-' + item.reception.id"
-                class="block text-xs text-gray-600"
-              >
-                {{ item.reception.deliveryDate | date:'shortDate' }}
-              </small>
+        <div class="drop-list"
+             id="unassigned-list"
+             cdkDropList
+             [cdkDropListData]="filteredReceptions"
+             [cdkDropListConnectedTo]="connectedDropLists"
+             (cdkDropListDropped)="drop($event)"
+             (cdkDropListEntered)="onDropListEntered($event)"
+             role="list">
+          <div *ngFor="let item of filteredReceptions; trackBy: trackByItem"
+               class="reception-card"
+               cdkDrag
+               (cdkDragMoved)="onDragMove($event)"
+               [cdkDragData]="item"
+               [attr.id]="'item-' + item.data.id"
+               role="listitem"
+               (cdkDragStarted)="onDragStart($event)"
+               (cdkDragEnded)="onDragEnd($event)">
+            <mat-checkbox class="select-box"
+                          [(ngModel)]="selection[item.data.id]"
+                          (change)="onSelectChange(item)"></mat-checkbox>
+            <div class="card-content">
+              <strong>{{ item.data.lotNumber }}</strong>
+              <strong>{{ item.data.oliveQuantity }}</strong>
+              <span *ngIf="item.data.globalLotNumber" class="gl-badge">{{ item.data.globalLotNumber }}</span>
+              <small class="block text-xs text-gray-600">{{ item.data.deliveryDate | date: 'shortDate' }}</small>
             </div>
-
-            <!-- lot info if applicable -->
-            <mat-card-content>
-              <div
-                *ngIf="item.type === 'lot'"
-                class="text-sm"
-                [attr.id]="'unassigned-lotinfo-' + item.lotNumber"
-              >
-                Receptions: {{ item.receptions.length }}
-              </div>
-            </mat-card-content>
-          </mat-card>
+          </div>
         </div>
       </mat-expansion-panel>
 
-       <!-- Mills grid -->
-      <div class="mills-grid" id="mills-grid">
-        <mat-expansion-panel
-          *ngFor="let mill of mills; let i = index"
-          class="mill-panel mat-elevation-z3"
-          [expanded]="isDesktop"
-          [attr.id]="'mill-panel-' + i"
-          aria-labelledby="'mill-title-' + i"
-        >
-          <mat-expansion-panel-header [attr.id]="'mill-header-' + i">
-            <mat-panel-title [attr.id]="'mill-title-' + i" role="heading" aria-level="2">
-              {{ mill.name }}
-              <span class="ml-2 text-sm" [attr.id]="'mill-count-' + i">
-          ({{ mill.receptions.length }})
-        </span>
-            </mat-panel-title>
-          </mat-expansion-panel-header>
+      <!-- Mill Columns -->
+      <mat-expansion-panel *ngFor="let mill of mills; let i = index" expanded>
+        <mat-expansion-panel-header>
+          <span>
+          </span>
+          <mat-panel-description>
+            <mat-chip color="warn" *ngIf="getMillRemainingCapacity(mill) <= 0">FULL</mat-chip>
+            <mat-chip *ngIf="getMillRemainingCapacity(mill) > 0">
+              {{ mill.name }} | {{ getMillRemainingCapacity(mill) }} kg left
+            </mat-chip>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
 
-          <mat-card-content [attr.id]="'mill-list-' + i">
-            <div
-              cdkDropList
-              [cdkDropListData]="mill.receptions"
-               (cdkDropListDropped)="drop($event)"
-              class="space-y-2"
-              role="list"
-              [id]="'mill-list-' + i"
-            >
-            <mat-card
-              *ngFor="let item of mill.receptions"
-              cdkDrag
-              [cdkDragData]="item"
-              [attr.id]="'mill-' + i + '-item-' + (item.type==='reception-olive' ? item.reception.id : item.lotNumber)"
-              role="listitem"
-              aria-grabbed="false"
-              (cdkDragStarted)="onDragStart($event)"
-              (cdkDragEnded)="onDragEnd($event)"
-            >
-              <mat-card-header>
-                <mat-card-title>
-                  <ng-container *ngIf="item.type==='reception-olive'; else lotLabelMill">
-                    {{ item.reception.id }}
-                  </ng-container>
-                  <ng-template #lotLabelMill>
-                    Lot {{ item.lotNumber }}
-                  </ng-template>
-                </mat-card-title>
-                <mat-card-subtitle>
-                  <ng-container *ngIf="item.type==='reception-olive'">
-                    {{ item.reception.deliveryDate | date }}
-                  </ng-container>
-                </mat-card-subtitle>
-              </mat-card-header>
-
-              <mat-card-content>
-                <div *ngIf="item.type === 'lot'" class="text-sm">
-                  Receptions: {{ item.receptions.length }}
-                </div>
-              </mat-card-content>
-            </mat-card></div></mat-card-content>
-         </mat-expansion-panel>
-      </div>
-
+        <div class="drop-list"
+             [id]="'mill-list-' + i"
+             cdkDropList
+             [cdkDropListData]="mill.receptions"
+             [cdkDropListConnectedTo]="connectedDropLists"
+             (cdkDropListDropped)="drop($event)"
+             (cdkDropListEntered)="onDropListEntered($event)"
+             role="list">
+          <div *ngFor="let item of mill.receptions; trackBy: trackByItem"
+               class="reception-card"
+               cdkDrag
+               (cdkDragMoved)="onDragMove($event)"
+               [cdkDragData]="item"
+               [attr.id]="'mill-' + i + '-item-' + item.data.id"
+               role="listitem"
+               (cdkDragStarted)="onDragStart($event)"
+               (cdkDragEnded)="onDragEnd($event)">
+            <mat-checkbox class="select-box"
+                          [(ngModel)]="selection[item.data.id]"
+                          (change)="onSelectChange(item)"></mat-checkbox>
+            <div class="card-content">
+              <strong>{{ item.data.lotNumber }}</strong>
+              <strong>{{ item.data.oliveQuantity }}</strong>
+              <span *ngIf="item.data.globalLotNumber" class="gl-badge">{{ item.data.globalLotNumber }}</span>
+              <small class="block text-xs text-gray-600">{{ item.data.deliveryDate | date: 'shortDate' }}</small>
+            </div>
+          </div>
+        </div>
+      </mat-expansion-panel>
     </div>
 
     <!-- Footer -->
     <div class="mt-4 flex justify-between" id="planning-footer">
       <div id="footer-stats">
-        <span id="footer-unassigned">Unassigned: {{ filteredReceptions.length }}</span> |
+        <span id="footer-unassigned">Unassigned: {{ filteredReceptions.length }}</span>
+        |
         <span id="footer-assigned">Assigned: {{ totalAssigned }}</span>
       </div>
       <div id="footer-actions">
+        <button mat-raised-button color="accent" *ngIf="hasSelection()" (click)="groupSelected()" id="group-button">
+          Group ({{ selectedIds().length }})
+        </button>
         <button mat-button color="primary" (click)="savePlan()" id="save-button">Save</button>
         <button mat-button (click)="cancelPlan()" id="cancel-button">Cancel</button>
       </div>
     </div>
   </app-card>
 </div>
-

@@ -159,6 +159,7 @@ export class GenericTypeComponent implements OnInit {
           { label: 'Type de fournisseur', value: TypeCategory.SUPPLIER_TYPE },
           { label: "Variété d'olive", value: TypeCategory.OLIVE_VARIETY },
           { label: "Type d'olive", value: TypeCategory.OLIVE_TYPE },
+          { label: "Type d'huile", value: TypeCategory.OIL_TYPE },
           { label: "Type d'opération", value: TypeCategory.OPERATION_TYPE },
           { label: 'Méthode de production', value: TypeCategory.PRODUCTION_METHOD },
           { label: "Variété d'huile", value: TypeCategory.OIL_VARIETY }

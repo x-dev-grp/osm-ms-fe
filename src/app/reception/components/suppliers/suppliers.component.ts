@@ -85,7 +85,7 @@ export class SupplierComponent implements OnInit {
         name: ['', Validators.required],
         lastname: ['', Validators.required],
         phone: [''],
-        email: ['', [Validators.required, Validators.email]],
+        email: ['', [Validators.email]],
         address: ['', Validators.required],
         region: [null, Validators.required], // Expecting the ID directly
         rib: [''],

@@ -10,7 +10,21 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
   searchEndpoint: 'production/deliveries',
   addNewItem: true,
   addNewItemUrl: 'reception/reception-olive/new',
-
+  defaultSearchData: {
+    page: 0,
+    size: 10,
+    sort: 'createdDate',
+    order: 'DESC',
+    searchData: {
+      operation: SearchOperation.AND,
+      searchs: [],
+      search: {
+        deliveryType: {
+          equalValue: deliveryType.OLIVE
+        }
+      }
+    }
+  },
   /* ────────────────────────────────────────────────────────────── */
   /*         Champs pour les livraisons d'olives                   */
   /* ────────────────────────────────────────────────────────────── */

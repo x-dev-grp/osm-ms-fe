@@ -1,6 +1,7 @@
  import { BaseType } from './base-type';
 import { OliveLotStatus } from './OliveLotStatus';
  import { SupplierType } from './supplier-type';
+ import { StorageUnitDto } from './StorageUnitDto';
 
 export class UnifiedDelivery {
  id!:string;
@@ -31,4 +32,5 @@ export class UnifiedDelivery {
   rendement?: number | null;
   oliveQuantity?: number | null;
   parcel?: string | null;
+  storageUnit?: StorageUnitDto | null;
 }

@@ -4,13 +4,27 @@ import { SearchOperation } from '../../../shared/models/advanced-search/searchOp
 import { TypeCategory } from '../../../shared/models/type-category.enum';
 
 export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
-  title: 'Livraisons d\'Huile',
+  title: "Livraisons d'Huile",
   titleTranslatePath: 'DELIVERIES.OIL_TITLE',
   baseURL: 'deliveries',
   searchEndpoint: 'production/deliveries',
   addNewItem: true,
   addNewItemUrl: 'reception/reception-huile/new',
-
+  defaultSearchData: {
+    page: 0,
+    size: 10,
+    sort: 'createdDate',
+    order: 'DESC',
+    searchData: {
+      operation: SearchOperation.AND,
+      searchs: [],
+      search: {
+        deliveryType: {
+          equalValue: deliveryType.OIL
+        }
+      }
+    }
+  },
   /* ────────────────────────────────────────────────────────────── */
   /*         Champs pour les livraisons d'huile                    */
   /* ────────────────────────────────────────────────────────────── */
@@ -32,11 +46,10 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.select,
       exportable: true,
       sortable: true,
-      dataTable: false,
-      options: [
-        { label: 'Huile', value: deliveryType.OIL }
-      ],
-       defaultFilter:  true
+      filterable: true,
+      dataTable: true,
+      options: [{ label: 'Huile', value: deliveryType.OIL }],
+      defaultFilter: true
     },
     {
       name: 'lotNumber',
@@ -72,7 +85,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       name: 'region.name',
       label: 'Région',
       attributeType: AttributeType.string,
-      fieldType: FieldType.autocomplete,
+      fieldType: FieldType.text,
       exportable: true,
       valuePath: 'name',
       getOptionsUrl: 'production/types',
@@ -86,12 +99,12 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
           searchs: [],
           search: {
             type: {
-              equalValue: 'REGION'
+              equalValue: TypeCategory.REGION
             }
           }
         }
       },
-      autoCompleteFilterAttributes: ['name'],
+      autoCompleteFilterAttributes: ['region.name'],
       filterable: true,
       dataTable: true
     },
@@ -188,34 +201,16 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
 
     /* Oil-specific fields */
     {
-      name: 'oilVariety',
+      name: 'oilVariety.name',
       label: "Variété d'huile",
-      attributeType: AttributeType.object,
-      fieldType: FieldType.autocomplete,
-      getOptionsUrl: 'production/types',
-      valuePath: 'name',
-      autoCompleteDefaultCriteria: {
-        page: 0,
-        size: 10,
-        sort: 'createdDate',
-        order: 'DESC',
-        searchData: {
-          operation: SearchOperation.AND,
-          searchs: [],
-          search: {
-            type: {
-              equalValue: TypeCategory.OIL_VARIETY
-            }
-          }
-        }
-      },
+      attributeType: AttributeType.string,
+      fieldType: FieldType.text,
       filterable: true,
-      autoCompleteFilterAttributes: ['name'],
       exportable: true,
       dataTable: true
     },
     {
-      name: 'oilType',
+      name: 'oilType.name',
       label: "Type d'huile",
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
