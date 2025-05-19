@@ -30,6 +30,7 @@
       <mat-select formControlName="ruleType">
         <mat-option value="numeric">Numeric</mat-option>
         <mat-option value="boolean">Boolean</mat-option>
+        <mat-option value="text">Text</mat-option>
       </mat-select>
     </mat-form-field>
 
@@ -61,6 +62,17 @@
       <mat-label>Description</mat-label>
       <input matInput formControlName="description" />
     </mat-form-field>
+
+    <!-- Affichage uniquement si ruleType est "text" -->
+
+    <mat-form-field
+      *ngIf="ruleForm.get('ruleType')?.value === 'text'"
+      appearance="outline"
+      class="full-width">
+      <mat-label>Valeurs possibles (séparées par des virgules)</mat-label>
+      <input matInput formControlName="textInput"  required/>
+    </mat-form-field>
+
 
     <!-- Action buttons -->
     <div class="actions full-width">

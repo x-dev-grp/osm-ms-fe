@@ -36,3 +36,14 @@
     }
   }
 }
+.rule-card {
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.rule-description {
+  font-size: 0.85rem;
+  color: #666;
+}

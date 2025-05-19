@@ -226,7 +226,8 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
     actionsList: [
       { label: 'Consulter', icon: 'visibility', value: 'CONSULTER' },
       { label: 'Modifier', icon: 'edit', value: 'MODIFIER' },
-      { label: 'Supprimer', icon: 'delete', value: 'SUPPRIMER' }
+      { label: 'Supprimer', icon: 'delete', value: 'SUPPRIMER' },
+      { label: 'Contrôle Qualité', icon: 'fact_check', value: 'QUALITY' }
     ]
   },
 

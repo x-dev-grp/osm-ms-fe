@@ -58,7 +58,8 @@ export class QualityControlRuleComponent implements OnInit, OnDestroy {
       minValue: [0, Validators.required],
       maxValue: [0, Validators.required],
       ruleName: ['', Validators.required],
-      description: ['']
+      description: [''],
+      textInput:    [[]] // valeurs séparées par virgule si ruleType === text
     });
     this.ruleForm.get('ruleType')?.valueChanges
       .pipe(takeUntil(this.destroy$))
@@ -106,15 +107,16 @@ export class QualityControlRuleComponent implements OnInit, OnDestroy {
   openForm(edit?: QualityControlRule): void {
     if (edit) {
       this.ruleForm.reset({
-        id:           edit.id        ?? '',
+        id:           edit.id ?? '',
         ruleKey:      edit.ruleKey,
-        oilQc:        edit.oilQc     ?? false,
+        oilQc:        edit.oilQc ?? false,
         ruleType:     (edit.ruleType ?? 'numeric').toLowerCase(),
         booleanValue: edit.booleanValue ?? false,
-        minValue:     edit.minValue  ?? 0,
-        maxValue:     edit.maxValue  ?? 0,
-        ruleName:     edit.ruleName  ?? '',
-        description:  edit.description ?? ''
+        minValue:     edit.minValue ?? 0,
+        maxValue:     edit.maxValue ?? 0,
+        ruleName:     edit.ruleName ?? '',
+        description:  edit.description ?? '',
+        textInput:    Array.isArray(edit.textValues) ? edit.textValues.join(', ') : ''
       });
       this.isEditing = true;
     } else {
@@ -127,10 +129,12 @@ export class QualityControlRuleComponent implements OnInit, OnDestroy {
         minValue:     0,
         maxValue:     0,
         ruleName:     '',
-        description:  ''
+        description:  '',
+        textInput:    ''
       });
       this.isEditing = false;
     }
+
     this.formOpen = true;
   }
 
@@ -145,22 +149,30 @@ export class QualityControlRuleComponent implements OnInit, OnDestroy {
       this.ruleForm.markAllAsTouched();
       return;
     }
+
     const v = this.ruleForm.value;
+    const ruleType = v.ruleType?.toLowerCase();
+
     const payload: any = {
       id:           v.id,
       ruleKey:      v.ruleKey,
       oilQc:        v.oilQc,
-      ruleType:     v.ruleType,
+      ruleType:     ruleType,
       ruleName:     v.ruleName,
       description:  v.description,
-      minValue:     v.ruleType === 'numeric' ? v.minValue : null,
-      maxValue:     v.ruleType === 'numeric' ? v.maxValue : null,
-      booleanValue: v.ruleType === 'boolean' ? v.booleanValue : null
+      minValue:     ruleType === 'numeric' ? v.minValue : null,
+      maxValue:     ruleType === 'numeric' ? v.maxValue : null,
+      booleanValue: ruleType === 'boolean' ? v.booleanValue : null,
+      textValues: ruleType === 'text'
+        ? (v.textInput?.split(',').map((val: string) => val.trim()).filter((val: string) => val !== ''))
+        : null
     };
+
     this.isLoading = true;
     const op$ = this.isEditing
       ? this.service.updateRule(payload)
       : this.service.createRule(payload);
+
     op$.pipe(
       takeUntil(this.destroy$),
       finalize(() => this.isLoading = false)

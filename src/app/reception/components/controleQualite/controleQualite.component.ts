@@ -137,26 +137,35 @@ export class ControleQualiteComponent implements OnInit {
     const group: { [key: string]: FormControl } = {};
 
     this.rules.forEach((rule) => {
-      const validators = [];
-      let initialValue: number | boolean | null = null;
+      const validators = [Validators.required];
+      let initialValue: number | boolean | string | null = null;
 
+      const existingResult = this.qualityControlResults.find(
+        (result) => result.rule?.ruleKey === rule.ruleKey
+      );
+      if (existingResult) {
+        switch (rule.ruleType) {
+          case 'NUMERIC':
+            initialValue = Number(existingResult.measuredValue);
+            break;
+          case 'BOOLEAN':
+            initialValue = existingResult.measuredValue === 'true';
+            break;
+          case 'TEXT':
+            initialValue = existingResult.measuredValue || null;
+            break;
+        }
+      }
+
+      // Gérer les types de validation
       if (rule.ruleType === 'NUMERIC') {
-        validators.push(Validators.required);
         if (rule.minValue !== undefined && rule.minValue !== null) {
           validators.push(Validators.min(rule.minValue));
         }
         if (rule.maxValue !== undefined && rule.maxValue !== null) {
           validators.push(Validators.max(rule.maxValue));
         }
-      } else {
-        validators.push(Validators.required);
       }
-
-      const existingResult = this.qualityControlResults.find((result) => result.rule?.ruleKey === rule.ruleKey);
-      if (existingResult) {
-        initialValue = rule.ruleType === 'NUMERIC' ? Number(existingResult.measuredValue) : existingResult.measuredValue === 'true';
-      }
-
       group[rule.ruleKey] = new FormControl(initialValue, validators);
     });
 
@@ -167,10 +176,17 @@ export class ControleQualiteComponent implements OnInit {
     return r ? r.ruleName! : key;
   }
 
-  getRuleDescription(key: string): string {
-    const r = this.rules.find(rule => rule.ruleKey === key);
-    return r ? r.description! : '';
+  getTextOptions(ruleKey: string): string[] {
+    const rule = this.rules.find(r => r.ruleKey === ruleKey);
+    return (rule?.textValues || '').toString().split(',').map(v => v.trim());
   }
+
+
+  getRuleTextValues(ruleKey: string): string[] {
+    const rule = this.rules.find(r => r.ruleKey === ruleKey);
+    return rule?.textValues || [];
+  }
+
 
 
   getRuleMinValue(ruleKey: string): number | null {
@@ -188,7 +204,7 @@ export class ControleQualiteComponent implements OnInit {
     return rule?.booleanValue === true;
   }
 
-  getRuleType(ruleKey: string): 'NUMERIC' | 'BOOLEAN' {
+  getRuleType(ruleKey: string): 'NUMERIC' | 'BOOLEAN'| 'TEXT' {
     return this.rules.find((r) => r.ruleKey === ruleKey)?.ruleType || 'NUMERIC';
   }
 
@@ -315,7 +331,6 @@ export class ControleQualiteComponent implements OnInit {
       }
     });
   }
-
   private filterRules(allRules: QualityControlRule[]): QualityControlRule[] {
     if (!this.deliveryData?.deliveryType) {
       return [];
@@ -330,4 +345,6 @@ export class ControleQualiteComponent implements OnInit {
         return [];
     }
   }
+
+
 }

@@ -297,11 +297,23 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
     this.router.navigate(['reception/reception-details', d.id]);
   }
 
+  QualityControl(d: UnifiedDelivery): void {
+    this.router.navigate(['/reception/quality', d.id]);
+  }
+
   onRowAction(e: { row: UnifiedDelivery; action: Action }): void {
     switch (e.action.label) {
-      case 'Consulter': this.viewDelivery(e.row);            break;
-      case 'Modifier':  this.selectReception(e.row);         break;
-      case 'Supprimer': if (e.row.id) this.deleteDelivery(e.row); break;
+      case 'Consulter': this.viewDelivery(e.row);
+      break;
+      case 'Modifier':  this.selectReception(e.row);
+      break;
+      case 'Controle quality':
+      case 'QUALITY':
+      case 'Contrôle Qualité':
+        this.QualityControl(e.row);
+        break;
+      case 'Supprimer': if (e.row.id) this.deleteDelivery(e.row);
+      break;
     }
   }
 
