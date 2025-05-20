@@ -1,26 +1,26 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule } from '@angular/material/table';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatCardModule } from '@angular/material/card';
-import { MatSortModule } from '@angular/material/sort';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatPaginator } from '@angular/material/paginator';
-import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {MatButtonModule} from '@angular/material/button';
+import {MatTableModule} from '@angular/material/table';
+import {MatIconModule} from '@angular/material/icon';
+import {MatDialogModule} from '@angular/material/dialog';
+import {MatCardModule} from '@angular/material/card';
+import {MatSortModule} from '@angular/material/sort';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {MatPaginator} from '@angular/material/paginator';
+import {Router} from '@angular/router';
+import {Subscription} from 'rxjs';
 
-import { SharedModule } from '../../../demo/shared/shared.module';
-import { ConfigurationComponent } from '../../../@theme/layouts/configuration/configuration.component';
-import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
-import { Action, DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
-import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
-import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
-import { OliveReceptionFormComponent } from './olive-reception-add/olive-reception-form.component';
+import {SharedModule} from '../../../demo/shared/shared.module';
+import {ConfigurationComponent} from '../../../@theme/layouts/configuration/configuration.component';
+import {OsmDashboard} from '../../../shared/modules/osm-dashboard/osm-dashboard';
+import {Action, DashboardConfig} from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import {UnifiedDelivery} from '../../../shared/models/UnifiedDelivery';
+import {UnifiedDeliveryService} from '../../../shared/services/delivery.service';
+import {OliveReceptionFormComponent} from './olive-reception-add/olive-reception-form.component';
 
-import { OLIVE_DELIVERY_DASHBOARD } from './OLIVE_DELIVERY_DASHBOARD';
-import { OilReceptionComponent } from '../oil-reception/oil-reception.component';
+import {OLIVE_DELIVERY_DASHBOARD} from './OLIVE_DELIVERY_DASHBOARD';
+import {OilReceptionComponent} from '../oil-reception/oil-reception.component';
 
 @Component({
   selector: 'app-olive-reception',
@@ -88,7 +88,7 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
   }
 
   QualityControl(d: UnifiedDelivery): void {
-    this.router.navigate(['/quality', d.id]);
+    this.router.navigate(['reception/quality', d.id]);
   }
 
   onRowAction(e: { row: UnifiedDelivery; action: Action }): void {

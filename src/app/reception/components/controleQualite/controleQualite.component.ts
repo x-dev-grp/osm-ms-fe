@@ -1,17 +1,18 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { QualityControlRuleService } from '../../../shared/services/quality-control-rule.service';
-import { QualityControlRule } from '../../../shared/models/quality-control-rule';
-import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
-import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
-import { QualityControlResultService } from '../../../shared/services/quality-control-result.service';
-import { QualityControlResultDto } from '../../../shared/models/QualityControlResultDto';
-import { forkJoin, Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import {CommonModule} from '@angular/common';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {QualityControlRuleService} from '../../../shared/services/quality-control-rule.service';
+import {QualityControlRule} from '../../../shared/models/quality-control-rule';
+import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
+import {UnifiedDeliveryService} from '../../../shared/services/delivery.service';
+import {UnifiedDelivery} from '../../../shared/models/UnifiedDelivery';
+import {QualityControlResultService} from '../../../shared/services/quality-control-result.service';
+import {QualityControlResultDto} from '../../../shared/models/QualityControlResultDto';
+import {forkJoin, Observable, of} from 'rxjs';
+import {catchError} from 'rxjs/operators';
 import {MatFormField} from "@angular/material/form-field";
 import {MatOption, MatSelect} from "@angular/material/select";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-controlequalite',
@@ -29,7 +30,7 @@ export class ControleQualiteComponent implements OnInit {
   submitted = false;
   isLoading = false;
   qualityControlResults: QualityControlResultDto[] = [];
-
+  isQualityControlDone: boolean = false; // verfifier si le controle qualité est deja fait!
 
   constructor(
     private fb: FormBuilder,
@@ -37,7 +38,8 @@ export class ControleQualiteComponent implements OnInit {
     private qcResService: QualityControlResultService,
     private route: ActivatedRoute,
     private deliveryService: UnifiedDeliveryService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private snackBar: MatSnackBar,
   ) {}
 
   ngOnInit(): void {
@@ -119,6 +121,10 @@ export class ControleQualiteComponent implements OnInit {
       next: (res) => {
         this.qualityControlResults = res.data || [];
         console.log('Quality Control Results:', this.qualityControlResults);
+
+        // S'il existe au moins un résultat => QC déjà fait => champs readonly
+        this.isQualityControlDone = this.qualityControlResults.length > 0;
+
         this.createDynamicForm();
         this.isLoading = false;
         this.cdr.detectChanges();
@@ -127,6 +133,7 @@ export class ControleQualiteComponent implements OnInit {
         console.error('Erreur chargement résultats:', error);
         this.message = 'Erreur lors du chargement des résultats de contrôle qualité';
         this.isLoading = false;
+        this.isQualityControlDone = false;
         this.createDynamicForm();
         this.cdr.detectChanges();
       }
@@ -143,6 +150,7 @@ export class ControleQualiteComponent implements OnInit {
       const existingResult = this.qualityControlResults.find(
         (result) => result.rule?.ruleKey === rule.ruleKey
       );
+
       if (existingResult) {
         switch (rule.ruleType) {
           case 'NUMERIC':
@@ -151,13 +159,12 @@ export class ControleQualiteComponent implements OnInit {
           case 'BOOLEAN':
             initialValue = existingResult.measuredValue === 'true';
             break;
-          case 'TEXT':
+          case 'STRING':
             initialValue = existingResult.measuredValue || null;
             break;
         }
       }
 
-      // Gérer les types de validation
       if (rule.ruleType === 'NUMERIC') {
         if (rule.minValue !== undefined && rule.minValue !== null) {
           validators.push(Validators.min(rule.minValue));
@@ -166,11 +173,187 @@ export class ControleQualiteComponent implements OnInit {
           validators.push(Validators.max(rule.maxValue));
         }
       }
-      group[rule.ruleKey] = new FormControl(initialValue, validators);
+
+      group[rule.ruleKey] = new FormControl(
+        {value: initialValue, disabled: this.isQualityControlDone},
+        validators
+      );
     });
 
+    // Ajouter le champ 'categorie'
+    group['categorie'] = new FormControl('', Validators.required);
+
     this.dynamicForm = this.fb.group(group);
+
+    // S'abonner pour mettre à jour la catégorie automatiquement
+    this.dynamicForm.valueChanges.subscribe(() => {
+      this.updateCategorie();
+    });
   }
+
+  getRuleType(ruleKey: string): 'NUMERIC' | 'BOOLEAN' | 'STRING' {
+    return this.rules.find((r) => r.ruleKey === ruleKey)?.ruleType || 'NUMERIC';
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+
+    if (this.dynamicForm.invalid) {
+      this.message = 'Le formulaire contient des erreurs. Veuillez corriger les champs.';
+      this.dynamicForm.markAllAsTouched();
+      this.cdr.detectChanges();
+
+      this.snackBar.open('Le formulaire contient des erreurs.', 'Fermer', {
+        duration: 4000,
+        panelClass: ['mat-snack-bar-container-error']
+      });
+      return;
+    }
+
+    if (!this.deliveryData?.id) {
+      this.message = 'Données de livraison non disponibles.';
+      this.cdr.detectChanges();
+
+      this.snackBar.open('Données de livraison manquantes.', 'Fermer', {
+        duration: 4000,
+        panelClass: ['mat-snack-bar-container-warning']
+      });
+      return;
+    }
+
+    const updates: QualityControlResultDto[] = [];
+    const creates: QualityControlResultDto[] = [];
+
+    Object.entries(this.dynamicForm.value as Record<string, unknown>).forEach(([ruleKey, rawValue]) => {
+      const rule = this.rules.find((r) => r.ruleKey === ruleKey);
+      if (!rule) throw new Error(`Aucune règle trouvée pour la clé : ${ruleKey}`);
+
+      // Validation par type
+      if (rule.ruleType === 'NUMERIC') {
+        if (typeof rawValue !== 'number' || isNaN(rawValue)) {
+          throw new Error(`Valeur mesurée invalide pour la règle numérique : ${ruleKey}`);
+        }
+      } else if (rule.ruleType === 'BOOLEAN') {
+        if (typeof rawValue !== 'boolean') {
+          throw new Error(`Valeur mesurée invalide pour la règle booléenne : ${ruleKey}`);
+        }
+      } else if (rule.ruleType === 'STRING') {
+        if (typeof rawValue !== 'string' || rawValue.trim() === '') {
+          throw new Error(`Valeur mesurée invalide pour la règle chaîne de caractères : ${ruleKey}`);
+        }
+      } else {
+        throw new Error(`Type de règle non supporté : ${rule.ruleType}`);
+      }
+
+      const existingResult = this.qualityControlResults.find((result) => result.rule?.ruleKey === ruleKey);
+
+      const dto: QualityControlResultDto = {
+        id: existingResult?.id,
+        rule: rule,
+        measuredValue: String(rawValue), // Toujours converti en string
+        delivery: this.deliveryData!
+      };
+
+      if (existingResult?.id) {
+        updates.push(dto);
+      } else {
+        creates.push(dto);
+      }
+    });
+
+    this.isLoading = true;
+
+    const requests: Observable<{ success: boolean; message?: string }>[] = [];
+
+    if (updates.length > 0) {
+      requests.push(
+        this.qcResService.updateResults(updates).pipe(
+          catchError((err) => {
+            console.error('Erreur lors de la mise à jour:', err);
+            return of({success: false, message: 'Erreur lors de la mise à jour des résultats.'});
+          })
+        )
+      );
+    }
+
+    if (creates.length > 0) {
+      requests.push(
+        this.qcResService.createResults(creates).pipe(
+          catchError((err) => {
+            console.error('Erreur lors de la création:', err);
+            console.log('Payload ajout :', creates);
+            return of({success: false, message: 'Erreur lors de la création des résultats.'});
+          })
+        )
+      );
+    }
+
+    if (requests.length === 0) {
+      this.snackBar.open('Aucun changement à enregistrer.', 'Fermer', {
+        duration: 3000,
+        panelClass: ['mat-snack-bar-container-info']
+      });
+      this.isLoading = false;
+      this.cdr.detectChanges();
+      return;
+    }
+
+    forkJoin(requests).subscribe({
+      next: (responses) => {
+        const allSuccessful = responses.every((res) => res.success);
+        const anySuccessful = responses.some((res) => res.success);
+
+        if (allSuccessful) {
+          let message = '';
+          if (updates.length > 0 && creates.length > 0) {
+            message = 'Résultats mis à jour et créés avec succès.';
+          } else if (updates.length > 0) {
+            message = 'Résultats mis à jour avec succès.';
+          } else {
+            message = 'Résultats créés avec succès.';
+          }
+
+          this.snackBar.open(message, 'Fermer', {
+            duration: 4000,
+            panelClass: ['mat-snack-bar-container-success']
+          });
+
+          this.dynamicForm.reset();
+          this.submitted = false;
+          this.loadQualityControlResults();
+        } else {
+          const errorMessage = anySuccessful
+            ? 'Certains résultats ont été enregistrés, mais certains échecs sont survenus.'
+            : 'Échec de l’enregistrement des résultats.';
+
+          this.snackBar.open(errorMessage, 'Fermer', {
+            duration: 5000,
+            panelClass: ['mat-snack-bar-container-error']
+          });
+        }
+
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error("Erreur lors de l'enregistrement:", err);
+        this.snackBar.open("Une erreur serveur est survenue.", "Fermer", {
+          duration: 6000,
+          panelClass: ['mat-snack-bar-container-critical']
+        });
+
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  private updateCategorie(): void {
+    const categorie = this.calculateCategorie();
+    this.dynamicForm.get('categorie')?.setValue(categorie, {emitEvent: false});
+  }
+
+
   getRuleName(key: string): string {
     const r = this.rules.find(rule => rule.ruleKey === key);
     return r ? r.ruleName! : key;
@@ -180,13 +363,6 @@ export class ControleQualiteComponent implements OnInit {
     const rule = this.rules.find(r => r.ruleKey === ruleKey);
     return (rule?.textValues || '').toString().split(',').map(v => v.trim());
   }
-
-
-  getRuleTextValues(ruleKey: string): string[] {
-    const rule = this.rules.find(r => r.ruleKey === ruleKey);
-    return rule?.textValues || [];
-  }
-
 
 
   getRuleMinValue(ruleKey: string): number | null {
@@ -199,138 +375,27 @@ export class ControleQualiteComponent implements OnInit {
     return rule?.maxValue !== undefined ? rule.maxValue : null;
   }
 
-  isBooleanSelect(ruleKey: string): boolean {
-    const rule = this.rules.find((r) => r.ruleKey === ruleKey);
-    return rule?.booleanValue === true;
+  private calculateCategorie(): string {
+    const acidite = this.dynamicForm.get(this.findRuleKey('acidite'))?.value;
+    const k270 = this.dynamicForm.get(this.findRuleKey('k270'))?.value;
+    const k232 = this.dynamicForm.get(this.findRuleKey('k232'))?.value;
+
+    if (acidite == null || k270 == null || k232 == null) return '';
+
+    if (acidite < 0.8 && k270 < 0.22 && k232 < 2.5) {
+      return 'vierge extra';
+    } else if (acidite < 2 && k270 < 0.25 && k232 < 2.6) {
+      return 'vierge';
+    } else {
+      return 'lampante';
+    }
   }
 
-  getRuleType(ruleKey: string): 'NUMERIC' | 'BOOLEAN'| 'TEXT' {
-    return this.rules.find((r) => r.ruleKey === ruleKey)?.ruleType || 'NUMERIC';
+  private findRuleKey(partialKey: string): string {
+    const match = this.rules.find(rule => rule.ruleKey.toLowerCase().includes(partialKey.toLowerCase()));
+    return match?.ruleKey || '';
   }
 
-  onSubmit(): void {
-    this.submitted = true;
-
-    /* 1. Basic guard rails -------------------------------------------------- */
-    if (this.dynamicForm.invalid) {
-      this.message = 'Le formulaire contient des erreurs. Veuillez corriger les champs.';
-      this.dynamicForm.markAllAsTouched();
-      this.cdr.detectChanges();
-      return;
-    }
-
-    if (!this.deliveryData?.id) {
-      this.message = 'Données de livraison non disponibles.';
-      this.cdr.detectChanges();
-      return;
-    }
-
-    /* 2. Build and separate result payloads ------------------------------- */
-    const updates: QualityControlResultDto[] = [];
-    const creates: QualityControlResultDto[] = [];
-
-    Object.entries(this.dynamicForm.value as Record<string, unknown>).forEach(([ruleKey, rawValue]) => {
-      /* a. Match the rule --------------------------------------------------- */
-      const rule = this.rules.find((r) => r.ruleKey === ruleKey);
-      if (!rule) {
-        throw new Error(`Aucune règle trouvée pour la clé : ${ruleKey}`);
-      }
-
-      /* b. Validate the measured value ------------------------------------- */
-      if (rule.ruleType === 'NUMERIC' && (typeof rawValue !== 'number' || isNaN(rawValue as number))) {
-        throw new Error(`Valeur mesurée invalide pour la règle numérique : ${ruleKey}`);
-      }
-      if (rule.ruleType === 'BOOLEAN' && typeof rawValue !== 'boolean') {
-        throw new Error(`Valeur mesurée invalide pour la règle booléenne : ${ruleKey}`);
-      }
-
-      /* c. Find existing result, if any ------------------------------------- */
-      const existingResult = this.qualityControlResults.find((result) => result.rule?.ruleKey === ruleKey);
-
-      /* d. Create DTO and categorize --------------------------------------- */
-      const dto: QualityControlResultDto = {
-        id: existingResult?.id,
-        rule: rule,
-        measuredValue: String(rawValue), // Convert to string for backend
-        delivery: this.deliveryData!
-      };
-
-      if (existingResult?.id) {
-        updates.push(dto);
-        console.log(`Preparing update for ruleKey: ${ruleKey}, id: ${existingResult.id}`);
-      } else {
-        creates.push(dto);
-        console.log(`Preparing create for ruleKey: ${ruleKey}`);
-      }
-    });
-
-    /* 3. Persist updates and creates --------------------------------------- */
-    this.isLoading = true;
-    this.message = '';
-
-    const requests: Observable<{ success: boolean; message?: string }>[] = [];
-
-    if (updates.length > 0) {
-      requests.push(
-        this.qcResService.updateResults(updates).pipe(
-          catchError((err) => {
-            console.error('Erreur lors de la mise à jour:', err);
-            return of({ success: false, message: err.error?.message || 'Erreur lors de la mise à jour des résultats.' });
-          })
-        )
-      );
-    }
-
-    if (creates.length > 0) {
-      requests.push(
-        this.qcResService.createResults(creates).pipe(
-          catchError((err) => {
-            console.error('Erreur lors de la création:', err);
-            return of({ success: false, message: err.error?.message || 'Erreur lors de la création des résultats.' });
-          })
-        )
-      );
-    }
-
-    if (requests.length === 0) {
-      this.message = 'Aucun résultat à enregistrer.';
-      this.isLoading = false;
-      this.cdr.detectChanges();
-      return;
-    }
-
-    forkJoin(requests).subscribe({
-      next: (responses) => {
-        const allSuccessful = responses.every((res) => res.success);
-        const anySuccessful = responses.some((res) => res.success);
-
-        if (allSuccessful) {
-          if (updates.length > 0 && creates.length > 0) {
-            this.message = 'Résultats de contrôle qualité mis à jour et créés avec succès.';
-          } else if (updates.length > 0) {
-            this.message = 'Résultats de contrôle qualité mis à jour avec succès.';
-          } else {
-            this.message = 'Résultats de contrôle qualité créés avec succès.';
-          }
-          this.dynamicForm.reset();
-          this.submitted = false;
-          this.loadQualityControlResults(); // Reload results to reflect updates
-        } else {
-          this.message = anySuccessful
-            ? 'Certains résultats ont été enregistrés, mais des erreurs sont survenues.'
-            : responses.map((res) => res.message).join(' ');
-        }
-        this.isLoading = false;
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        console.error("Erreur lors de l'enregistrement:", err);
-        this.message = "Erreur lors de l'enregistrement des résultats de contrôle qualité.";
-        this.isLoading = false;
-        this.cdr.detectChanges();
-      }
-    });
-  }
   private filterRules(allRules: QualityControlRule[]): QualityControlRule[] {
     if (!this.deliveryData?.deliveryType) {
       return [];

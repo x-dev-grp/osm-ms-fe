@@ -1,9 +1,8 @@
 <form [formGroup]="dynamicForm" *ngIf="dynamicForm && !isLoading" (ngSubmit)="onSubmit()" class="quality-form container-fluid">
   <div class="row g-4">
-    <div
-      class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex"
-      *ngFor="let control of dynamicForm.controls | keyvalue"
-      [hidden]="control.key === 'testSensoriel' || control.key === 'classificationHuile'">
+    <div *ngFor="let control of dynamicForm.controls | keyvalue"
+         [hidden]="control.key === 'testSensoriel' || control.key === 'classificationHuile'"
+         class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
 
       <div class="rule-card flex-fill p-3 border rounded">
         <!-- Affichage du nom de la règle uniquement -->
@@ -22,12 +21,12 @@
           />
         </ng-container>
 
-        <!-- TEXT & BOOLEAN -->
+        <!-- STRING & BOOLEAN -->
         <ng-template #nonNumericInput>
           <ng-container [ngSwitch]="getRuleType(control.key)">
 
-            <!-- TEXT -->
-            <mat-form-field *ngSwitchCase="'TEXT'" appearance="outline" class="w-100">
+            <!-- STRING -->
+            <mat-form-field *ngSwitchCase="'STRING'" appearance="outline" class="w-100">
               <mat-select [formControlName]="control.key" [id]="control.key">
                 <mat-option *ngFor="let option of getTextOptions(control.key)" [value]="option">
                   {{ option }}
@@ -42,7 +41,6 @@
                 <mat-option [value]="false">Faux</mat-option>
               </mat-select>
             </mat-form-field>
-
           </ng-container>
         </ng-template>
 
@@ -55,9 +53,28 @@
       </div>
     </div>
   </div>
+  <!-- Champ Catégorie -->
+  <div class="row mt-4">
+    <div class="col-md-6 offset-md-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Catégorie</mat-label>
+        <mat-select formControlName="categorie">
+          <mat-option value="vierge extra">Vierge Extra</mat-option>
+          <mat-option value="vierge">Vierge</mat-option>
+          <mat-option value="lampante">Lampante</mat-option>
+        </mat-select>
+      </mat-form-field>
 
+      <!-- Gestion des erreurs -->
+      <div *ngIf="dynamicForm.get('categorie')?.invalid && dynamicForm.get('categorie')?.touched"
+           class="text-danger mt-1">
+        Ce champ est requis.
+      </div>
+    </div>
+  </div>
   <div class="text-center my-4">
-    <button class="btn btn-primary px-5" type="submit" [disabled]="dynamicForm.invalid || isLoading">
+    <button [disabled]="dynamicForm.invalid || isLoading || isQualityControlDone" class="btn btn-primary px-5"
+            type="submit">
       Valider
     </button>
   </div>
