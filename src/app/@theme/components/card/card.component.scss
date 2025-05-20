@@ -6,3 +6,28 @@
   border-top: 1px solid var(--accent-300);
   padding: 20px;
 }
+.role-actions{
+  display: flex;
+  justify-content: center;
+  padding-bottom: 24px;
+  gap: 1rem;
+}
+.actions{
+   display: flex;
+  justify-content: end;
+  padding: 0 24px 24px 0;
+  gap: 1rem;
+}
+
+.role-card {
+  position: relative;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.header-class{
+  display: flex;
+  justify-content: start !important;
+  gap: 2rem;
+}

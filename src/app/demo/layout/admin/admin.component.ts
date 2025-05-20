@@ -186,10 +186,10 @@ export class AdminComponent implements OnInit, AfterViewInit {
     this.companyProfileService.getProfile().subscribe(
       (res) => {
         if (res && res.success) {
-          this.profile = res.data[0];
+          this.profile = res?.data[0];
 
-          if (this.profile.logoData && this.profile.logoContentType) {
-            this.logoPreview = `data:${this.profile.logoContentType};base64,${this.profile.logoData}`;
+          if (this.profile?.logoData && this.profile?.logoContentType) {
+            this.logoPreview = `data:${this.profile?.logoContentType};base64,${this.profile?.logoData}`;
           }
         }
       },

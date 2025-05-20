@@ -251,6 +251,13 @@ export const osm_menus: Navigation[] = [
         type: 'item',
         url: '/settings/users',
         icon: 'layers'
+      },
+      {
+        id: 'roles',
+        title: 'Gestion des roles',
+        type: 'item',
+        url: '/settings/roles',
+        icon: 'layers'
       }
     ]
   },

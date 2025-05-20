@@ -21,3 +21,11 @@
   -webkit-font-feature-settings: 'liga';
   -webkit-font-smoothing: antialiased;
 }
+
+:root 
+  .errorPanelClass {
+      --mdc-snackbar-container-color: red;    
+      .mdc-button__label   {
+        color: aliceblue;
+      }
+  }

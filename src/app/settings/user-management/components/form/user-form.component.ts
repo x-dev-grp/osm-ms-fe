@@ -7,10 +7,11 @@ import { catchError, EMPTY, filter, Observable, of, switchMap, tap } from 'rxjs'
 import { UserService } from '../../services/user.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AdvancedSearchService } from 'src/app/shared/services/advanced-serach.service';
 import { SearchResponse } from 'src/app/shared/models/advanced-search/searchResponse';
 import { SearchData } from 'src/app/shared/models/advanced-search/searchData';
+import { User } from 'src/app/@theme/types/user';
 
 @Component({
   selector: 'user-form',
@@ -30,12 +31,14 @@ export class UserFormComponent implements OnInit,AfterViewInit {
   _userService=inject(UserService);
   _searchService=inject(AdvancedSearchService);
   _router=inject(Router);
+  _activatedRoute=inject(ActivatedRoute)
   roles:any[];
   updateMode:boolean=false;
   viewMode:boolean=false;
   roleCriteria:SearchData=new SearchData();
   loading:boolean=false;
   errorMessage:string=""
+  user:User;
   constructor() {
   }
   ngAfterViewInit(): void {
@@ -78,12 +81,23 @@ export class UserFormComponent implements OnInit,AfterViewInit {
     });
     this.userForm.get("confirmationMethod")?.valueChanges.pipe(
       tap(value=>{
-        console.log(value)
-        console.log(this.userForm)
+   
       })
-    ).subscribe()
+    ).subscribe();
+    this.getRoutingData();
   }
-
+  getRoutingData(){
+    this._activatedRoute.data.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((data:any) => {
+      this.viewMode=!!data?.viewMode
+      this.updateMode=!!data?.updateMode
+      if(this.viewMode)  
+        this.userForm.disable()
+      if(data?.user?.data?.length){
+         this.user = data?.user?.data[0];
+         this.userForm.patchValue(this.user);
+      }
+    })
+  }
   private emailOrPhoneRequired() {
     return (group: AbstractControl): ValidationErrors | null => {
       const methodCtrl = group.get('confirmationMethod')!;
@@ -136,7 +150,6 @@ export class UserFormComponent implements OnInit,AfterViewInit {
              scroll ? [...this.roles, ...response.data] : response.data
         
   
-          console.log(response);
         }),
         catchError((err) => {
           console.error('Autocomplete fetch failed:', err);
@@ -151,11 +164,10 @@ export class UserFormComponent implements OnInit,AfterViewInit {
     } 
     this.loading=true;
     const user = this.userForm.value;
-    this._userService.addUser(user).pipe(
+   (!this.updateMode? this._userService.addUser(user):this._userService.updateUser(user,this.user?.id)).pipe(
       takeUntilDestroyed(this.destroyRef),
       tap((response:any)=>{
         this.errorMessage="";
-        console.log(response)
         this.loading=false;
         this._router.navigate(['/settings/users/dashboard'])
       }),
@@ -167,8 +179,6 @@ export class UserFormComponent implements OnInit,AfterViewInit {
                       this.errorMessage=err?.error;
                     }
                     this.loading=false;
-                    console.log(err);
-                    console.log(err?.error);
                     return of(null); 
                    })
     ).subscribe();
@@ -185,9 +195,6 @@ export class UserFormComponent implements OnInit,AfterViewInit {
     return option?.roleName;
   };
   cancel(){
-    this.userForm.reset({
-      locked:false
-    });
-    this.errorMessage="";
+    this._router.navigate(['/settings/users/dashboard']);
   }
 }

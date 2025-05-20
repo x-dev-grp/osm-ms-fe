@@ -1,0 +1,31 @@
+.permissions-tree-container {
+    max-height: 500px;
+    overflow: auto;
+    margin: 15px 0;
+  }
+  
+  .permissions-tree {
+    background: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+  }
+  
+  .mat-tree-node {
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+  }
+  
+  .nested-tree-node {
+    padding-left: 40px;
+  }
+  
+  mat-checkbox {
+    margin-left: 8px;
+  }
+  
+  /* Give a distinct style to expanded items */
+  .expanded-node {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
