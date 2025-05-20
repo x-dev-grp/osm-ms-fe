@@ -1,7 +1,7 @@
-import { AttributeType, DashboardConfig, FieldType } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
-import { deliveryType } from '../../../shared/models/deleveryType';
-import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
-import { TypeCategory } from '../../../shared/models/type-category.enum';
+import {AttributeType, DashboardConfig, FieldType} from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import {deliveryType} from '../../../shared/models/deleveryType';
+import {SearchOperation} from '../../../shared/models/advanced-search/searchOperation';
+import {TypeCategory} from '../../../shared/models/type-category.enum';
 
 export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
   title: "Livraisons d'Huile",
@@ -226,7 +226,9 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
     actionsList: [
       { label: 'Consulter', icon: 'visibility', value: 'CONSULTER' },
       { label: 'Modifier', icon: 'edit', value: 'MODIFIER' },
-      { label: 'Supprimer', icon: 'delete', value: 'SUPPRIMER' }
+      { label: 'Supprimer', icon: 'delete', value: 'SUPPRIMER' },
+      {label: 'Contrôle Qualité', icon: 'fact_check', value: 'QUALITY'},
+      {label: 'Générer PDF', icon: 'picture_as_pdf', value: 'generer_pdf'}
     ]
   },
 

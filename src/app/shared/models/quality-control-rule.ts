@@ -1,8 +1,8 @@
 export interface QualityControlRule {
   id?: string;              // original backend ID
-   ruleKey: string;          // used to associate user-entered value
+  ruleKey: string;          // used to associate user-entered value
   oilQc?: boolean;
-  ruleType?: 'NUMERIC' | 'BOOLEAN';
+  ruleType?: 'NUMERIC' | 'BOOLEAN' | 'STRING';
   booleanValue?: boolean;
   numericValue?: number;
   ruleName?: string;
@@ -10,4 +10,5 @@ export interface QualityControlRule {
   minValue?: number;
   maxValue?: number;
   measuredValue?: number;
+  textValues?:string[];
 }

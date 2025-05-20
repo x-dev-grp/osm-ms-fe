@@ -1,33 +1,33 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {MatButtonModule} from '@angular/material/button';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {
+  AbstractControl,
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
-  Validators,
   ValidationErrors,
-  AbstractControl
+  Validators
 } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
-import { UnifiedDelivery } from '../../../../shared/models/UnifiedDelivery';
-import { OliveLotStatus } from '../../../../shared/models/OliveLotStatus';
-import { BaseType } from '../../../../shared/models/base-type';
-import { SupplierType } from '../../../../shared/models/supplier-type';
-import { GenericTypeService } from '../../../../shared/services/generic-type.service';
-import { UnifiedDeliveryService } from '../../../../shared/services/delivery.service';
-import { SupplierTypeService } from '../../../../shared/services/supplier.service';
-import { TypeCategory } from '../../../../shared/models/type-category.enum';
-import { CardComponent } from '../../../../@theme/components/card/card.component';
-import { MatIcon } from '@angular/material/icon';
-import { MatDivider } from '@angular/material/divider';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {Subscription} from 'rxjs';
+import {ActivatedRoute, Router} from '@angular/router';
+import {UnifiedDelivery} from '../../../../shared/models/UnifiedDelivery';
+import {OliveLotStatus} from '../../../../shared/models/OliveLotStatus';
+import {BaseType} from '../../../../shared/models/base-type';
+import {SupplierType} from '../../../../shared/models/supplier-type';
+import {GenericTypeService} from '../../../../shared/services/generic-type.service';
+import {UnifiedDeliveryService} from '../../../../shared/services/delivery.service';
+import {SupplierTypeService} from '../../../../shared/services/supplier.service';
+import {TypeCategory} from '../../../../shared/models/type-category.enum';
+import {CardComponent} from '../../../../@theme/components/card/card.component';
+import {MatIcon} from '@angular/material/icon';
+import {MatDivider} from '@angular/material/divider';
 
 // Validator to ensure net weight does not exceed gross weight
 const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | null => {
@@ -217,7 +217,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
 
       if (response?.success && response.data) {
         this.showToast(this.isEditing ? 'Réception olive mise à jour.' : 'Réception olive ajoutée.');
-        this.router.navigate(['/reception-olive']);
+        this.router.navigate(['reception/reception-olive']);
       } else {
         this.showToast(response?.message || 'Échec de l’opération.');
       }

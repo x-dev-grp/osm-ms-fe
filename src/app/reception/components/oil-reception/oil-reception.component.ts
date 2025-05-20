@@ -1,15 +1,15 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule } from '@angular/material/table';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatCardModule } from '@angular/material/card';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {MatButtonModule} from '@angular/material/button';
+import {MatTableModule} from '@angular/material/table';
+import {MatIconModule} from '@angular/material/icon';
+import {MatDialogModule} from '@angular/material/dialog';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatCardModule} from '@angular/material/card';
 import {
   AbstractControl,
   FormBuilder,
@@ -19,26 +19,28 @@ import {
   ValidatorFn,
   Validators
 } from '@angular/forms';
-import { MatSortModule } from '@angular/material/sort';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatPaginator } from '@angular/material/paginator';
-import { Router } from '@angular/router';
-import { Subscription, combineLatest, forkJoin } from 'rxjs';
+import {MatSortModule} from '@angular/material/sort';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {MatPaginator} from '@angular/material/paginator';
+import {Router} from '@angular/router';
+import {combineLatest, forkJoin, Subscription} from 'rxjs';
 
-import { SharedModule } from '../../../demo/shared/shared.module';
-import { ConfigurationComponent } from '../../../@theme/layouts/configuration/configuration.component';
-import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
-import { Action, DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
-import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
-import { BaseType } from '../../../shared/models/base-type';
-import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
-import { GenericTypeService } from '../../../shared/services/generic-type.service';
-import { TypeCategory } from '../../../shared/models/type-category.enum';
-import { SupplierType } from '../../../shared/models/supplier-type';
-import { SupplierTypeService } from '../../../shared/services/supplier.service';
+import {SharedModule} from '../../../demo/shared/shared.module';
+import {ConfigurationComponent} from '../../../@theme/layouts/configuration/configuration.component';
+import {OsmDashboard} from '../../../shared/modules/osm-dashboard/osm-dashboard';
+import {Action, DashboardConfig} from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import {UnifiedDelivery} from '../../../shared/models/UnifiedDelivery';
+import {BaseType} from '../../../shared/models/base-type';
+import {UnifiedDeliveryService} from '../../../shared/services/delivery.service';
+import {GenericTypeService} from '../../../shared/services/generic-type.service';
+import {TypeCategory} from '../../../shared/models/type-category.enum';
+import {SupplierType} from '../../../shared/models/supplier-type';
+import {SupplierTypeService} from '../../../shared/services/supplier.service';
 
+// Charger les polices (nécessaire une seule fois dans ton projet)
+// (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 /* local dashboard definition for oil receptions only */
-import { OIL_DELIVERY_DASHBOARD } from './OIL_DELIVERY_DASHBOARD';
+import {OIL_DELIVERY_DASHBOARD} from './OIL_DELIVERY_DASHBOARD';
 
 /* ──────────────────────────────────────────────────────────── */
 /* validators                                                   */
@@ -297,13 +299,70 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
     this.router.navigate(['reception/reception-details', d.id]);
   }
 
+  QualityControl(d: UnifiedDelivery): void {
+    this.router.navigate(['/reception/quality', d.id]);
+  }
+
+  genererBonReception(delivery: UnifiedDelivery): void {
+    const documentDefinition = {
+      content: [
+        {text: 'Bon de Réception', style: 'header'},
+        {text: `Type: ${delivery.deliveryType}`},
+        {text: `Date: ${delivery.deliveryDate}`},
+        {text: `Fournisseur: ${delivery.supplier?.supplierInfo.name}`},
+        {
+          table: {
+            widths: ['*', '*'],
+            body: [
+              ['Champ', 'Valeur'],
+              ['Quantité Olive', delivery.oliveQuantity ?? 'N/A'],
+              ['Quantité Huile', delivery.oilQuantity ?? 'N/A']
+            ]
+          },
+          layout: 'lightHorizontalLines'
+        }
+      ],
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+          alignment: 'center' // ✅ Type correct
+        }
+      },
+      defaultStyle: {
+        fontSize: 12
+      }
+    };
+
+    // pdfMake.createPdf(documentDefinition).open();
+  }
+
+
   onRowAction(e: { row: UnifiedDelivery; action: Action }): void {
     switch (e.action.label) {
-      case 'Consulter': this.viewDelivery(e.row);            break;
-      case 'Modifier':  this.selectReception(e.row);         break;
-      case 'Supprimer': if (e.row.id) this.deleteDelivery(e.row); break;
+      case 'Consulter':
+        this.viewDelivery(e.row);
+        break;
+
+      case 'Modifier':
+        this.selectReception(e.row);
+        break;
+
+      case 'QUALITY':
+      case 'Contrôle Qualité':
+        this.QualityControl(e.row);
+        break;
+
+      case 'Supprimer':
+        if (e.row.id) this.deleteDelivery(e.row);
+        break;
+
+      case 'generer_pdf':
+        this.genererBonReception(e.row);
+        break;
     }
   }
+
 
   private deleteDelivery(d: UnifiedDelivery): void {
     this.deliveryService.deleteUnifiedDelivery(d.id!).subscribe(
