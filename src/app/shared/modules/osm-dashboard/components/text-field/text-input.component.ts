@@ -57,9 +57,9 @@ export class InputTextComponent implements OnInit, AfterViewInit, OnChanges, OnD
     this.formControl.valueChanges
       .pipe(
         takeUntilDestroyed(this.destroyRef),
+        debounceTime(1000),
         filter((value: any) => typeof value === 'string'),
         tap((value: string) => {
-          console.log(value);
           const search: { [key: string]: SearchDetails } =
            {
                   [this.field()?.name!]: {

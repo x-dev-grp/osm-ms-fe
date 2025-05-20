@@ -1,16 +1,11 @@
 import { Component, OnInit, ViewChild, inject, Renderer2 } from '@angular/core';
-import { MatDrawer } from '@angular/material/sidenav';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatButtonModule }    from '@angular/material/button';
-import { MatIconModule }      from '@angular/material/icon';
-import { MatTooltipModule }   from '@angular/material/tooltip';
+
 import { CommonModule }       from '@angular/common';
 import { SharedModule } from '../../demo/shared/shared.module';
-import { AbleProConfig } from '../../app-config';
-import { ThemeLayoutService } from '../../@theme/services/theme-layout.service';
+
 import { OsmDashboard } from 'src/app/shared/modules/osm-dashboard/osm-dashboard';
-import { AttributeType, DashboardConfig, FieldType } from 'src/app/shared/modules/osm-dashboard/models/dashboard-config';
-import { SearchOperation } from 'src/app/shared/models/advanced-search/searchOperation';
+import { Action, AttributeType, DashboardConfig, FieldType } from 'src/app/shared/modules/osm-dashboard/models/dashboard-config';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -25,7 +20,7 @@ import { SearchOperation } from 'src/app/shared/models/advanced-search/searchOpe
   styleUrls: ['./user-mangement.component.scss']
 })
 export class UserManagementComponent implements OnInit {
-
+  _router=inject(Router);
   ngOnInit(): void {
     
   }
@@ -42,13 +37,14 @@ export class UserManagementComponent implements OnInit {
             actionsList:
               [
                 {
-                  label:"consulter",         
+                  label:"Consulter",         
                 },
                 {
-                  label:"modier"
+                  label:"Modifier"
                 },
                 {
-                  label:"spprimer"
+                  label:"Spprimer",
+                  isRemoveAction:true
                 }
 
             ],
@@ -127,17 +123,6 @@ export class UserManagementComponent implements OnInit {
         defaultFilter: false,
         dataTable:true,
         exportable:true,
-        options:[
-          {
-            label:"Oui",
-            value:true
-          },
-          {
-            label:"Non",
-            value:false
-          },
-          
-        ]
       },
       {
         name: 'role',
@@ -151,52 +136,22 @@ export class UserManagementComponent implements OnInit {
         exportable:true,
         getOptionsUrl:"security/role",
         valuePath:"roleName"
-    
-        
       }
-      // {
-      //   name: 'createdDate',
-      //   label: 'Created Date',
-      //   attributeType: AttributeType.date,
-      //   fieldType: FieldType.date,
-      //   sortable: true,
-      //   filterable: true,
-      //   defaultFilter: true,
-      //   dataTable:true,
-      //   exportable:true,
-      //   exportLabel:'Created Date',
-      //   exportLabelTranslatePath:'generic-type.created-date',
-      // },
-      // {
-      //   name: 'updatedDate',
-      //   label: 'Updated Date',
-      //   attributeType: AttributeType.date,
-      //   fieldType: FieldType.date,
-      //   sortable: true,
-      //   filterable: true,
-      //   defaultFilter: true,
-      //   dataTable:true,
-      // },
-      // {
-      //   name: 'amount',
-      //   label: 'Montant',
-      //   attributeType: AttributeType.number,
-      //   fieldType: FieldType.slider,
-      //   sortable: false,
-      //   filterable: true,
-      //   defaultFilter: true,
-      //   dataTable:true,
-      //   sliderMinValue: 0,
-      //   sliderMaxValue: 10000,
-      //   exportable:true,
-      //   exportLabel:'Montant',
-
-      // },
-
     ],
   }
 
-  applyAction(event:string){
+  applyAction(event:{row:any,action:Action}){
     console.log(event);
+    switch (event?.action?.label.toUpperCase()) {
+      case "CONSULTER":
+        this._router.navigate(['/settings/users/view',event.row?.id]);
+        break;
+      case "MODIFIER":
+        this._router.navigate(['/settings/users/update',event.row?.id]);
+
+        break;
+      default:
+        break;
+    }
   }
 }

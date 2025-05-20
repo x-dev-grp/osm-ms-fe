@@ -10,10 +10,13 @@ import { SearchOperation } from 'src/app/shared/models/advanced-search/searchOpe
 import { SearchModel } from 'src/app/shared/models/advanced-search/searchModel';
 import { HttpClient } from '@angular/common/http';
 import { saveAs } from 'file-saver';
+import { BaseService } from 'src/app/shared/services/base.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 export interface DashboardState {
   endpoint: string;
   data: SearchResponse;
   loading: boolean;
+  actionLoading:boolean;
   exportPdfLoading: boolean;
   exportExcelLoading: boolean;
   searchData: SearchData;
@@ -36,6 +39,7 @@ const initialState: DashboardState = {
     page: 0
   },
   loading: false,
+  actionLoading:false,
   exportPdfLoading: false,
   exportExcelLoading: false,
   searchData: new SearchData(),
@@ -46,7 +50,7 @@ const initialState: DashboardState = {
   resetFieldsSubject: new Subject<void>(),
   searchTrigger$: new Subject<SearchData>(),
   fileName:'default',
-
+  
 };
 
 export const DashboardStore = signalStore(
@@ -55,6 +59,7 @@ export const DashboardStore = signalStore(
   withComputed((store) => ({
     data: store.data,
     loading: store.loading,
+    actionLoading:store.actionLoading,
     exportPdfLoading: store.exportPdfLoading,
     exportExcelLoading: store.exportExcelLoading,
     searchData: store.searchData,
@@ -69,7 +74,7 @@ export const DashboardStore = signalStore(
     searchTrigger$: store.searchTrigger$,
     fileName:store.fileName
   })),
-  withMethods((store, _searchService = inject(AdvancedSearchService),_http=inject(HttpClient)) => {
+  withMethods((store, _searchService = inject(AdvancedSearchService),_http=inject(HttpClient),_baseService=inject(BaseService)) => {
     return {
       initialize(endpoint: string, allFields: Field[], searchData?: SearchData,fileName?:string): void {
         patchState(store, {
@@ -177,8 +182,30 @@ export const DashboardStore = signalStore(
             })
           );     
       },
+      removeItem(id:string,path:string){
+        this.setActionLoading(true);
+        _baseService.removeItem(path,id).pipe(
+          tap((response) => {
+            console.log('item deleted');
+            this.setActionLoading(false);
+            store.searchTrigger$().next(store.searchData());
+          }),
+          catchError((error) => {
+            console.error('Error deleting item:', error);
+            this.setActionLoading(false);
+            return EMPTY;
+          }),
+          finalize(() => {
+            this.setActionLoading(false);
+          })
+        )
+      },
       setLoading: (loading: boolean) => {
         patchState(store, { loading });
+      },
+      
+      setActionLoading: (actionLoading: boolean) => {
+        patchState(store, { actionLoading });
       },
         setExportPdfLoading: (loading: boolean) => {
             patchState(store, { exportPdfLoading: loading });
@@ -214,7 +241,15 @@ export const DashboardStore = signalStore(
                   operation: SearchOperation.AND
                 }
               ];
-
+              const keys = Object.keys(attribute);
+              const key = keys[0];
+              const operationKeys= Object.keys(attribute[key])
+              const equalValue = operationKeys[0];
+              if(equalValue=="equalValue" && !attribute[key][equalValue]){
+                if (updatedSearchs[0].search) {
+                  delete updatedSearchs[0].search[key];
+                }
+              }    
         const newSearchData = {
           ...currentSearchData,
           searchData: {

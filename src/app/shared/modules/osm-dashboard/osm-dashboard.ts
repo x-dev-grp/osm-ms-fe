@@ -114,6 +114,10 @@ actions:Action[]|undefined;
     return configActions[status];
   }
   actionApply(action:Action,row:any){
+    if(action?.isRemoveAction){
+      this._store.removeItem(this.config().baseURL,row?.id);
+      return;
+    }
     this.applyAction.emit({row:row,action:action});
   }
 }

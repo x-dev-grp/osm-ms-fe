@@ -56,6 +56,7 @@ export class AutoCompleteComponent implements OnInit, AfterViewInit, OnChanges, 
     this.formControl.valueChanges
       .pipe(
         takeUntilDestroyed(this.destroyRef),
+        debounceTime(1000),
         filter((value: any) => typeof value === 'string'),
         switchMap((value: string) => {
           console.log(value);

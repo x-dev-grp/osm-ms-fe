@@ -106,7 +106,7 @@
     <mat-spinner *ngIf="loading" diameter="25" color="warn"></mat-spinner>
     <span *ngIf="!loading">Modifier</span>
   </button>
-  <button [disabled]="userForm.invalid" (click)="onSubmit()" mat-flat-button *ngIf="!viewMode" class="m-r-10" color="primary">
+  <button [disabled]="userForm.invalid" (click)="onSubmit()" mat-flat-button *ngIf="!viewMode && !updateMode" class="m-r-10" color="primary">
     <mat-spinner *ngIf="loading" diameter="25" color="warn"></mat-spinner>
     <span *ngIf="!loading">Sauvgarder</span>
   </button>

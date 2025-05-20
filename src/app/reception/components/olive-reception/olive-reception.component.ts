@@ -129,7 +129,7 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
       duration,
       horizontalPosition: 'right',
       verticalPosition: 'top',
-      panelClass: ['custom-snackbar']
+      panelClass: ['']
     });
   }
 }

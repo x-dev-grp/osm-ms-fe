@@ -22,6 +22,8 @@ export interface Action {
   label: string;
   icon?: string;
   value?: any;
+  isRemoveAction?:boolean;
+  isDeeleteAction?:boolean;
 }
 
 export enum AttributeType{

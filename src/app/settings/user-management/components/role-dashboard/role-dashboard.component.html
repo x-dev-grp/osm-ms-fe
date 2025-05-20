@@ -1,0 +1,65 @@
+<div class="roles-container">
+  
+  <div class="roles-actions">
+    <button mat-raised-button color="primary" (click)="onAddRole()">
+      <mat-icon>add</mat-icon>
+      Creer nouveau role
+    </button>
+    
+  </div>
+  <div class="roles-grid">
+    @for (role of roles; track $index) {
+    <app-card headerClass="header-class" cardClass="role-card" [showHeader]="true" actionClass="role-actions" [showContent]="true" >
+      <ng-template #headerOptionsTemplate >
+        
+        <div mat-card-avatar class="role-avatar">
+          <mat-icon>{{ getRoleIcon(role) }}</mat-icon>
+        </div>
+        <span class="role-name"><strong>{{ role?.roleName }}</strong></span>
+        <span matBadge="{{ role?.usersCount }}" matBadgeOverlap="false" matBadgeColor="accent">
+            utilisateurs
+        </span>
+     </ng-template>
+
+      <p class="role-description">{{ role?.description }}</p>
+        
+      <div class="permissions-summary">
+        <p><strong>{{ role?.permissions?.length }} Permissions</strong></p>
+        <div class="permission-highlights">
+          <mat-chip *ngFor="let perm of getHighlightPermissions(role)" class="permission-chip">
+            {{ formatPermissionName(perm?.permissionName) }}
+          </mat-chip>
+          <span *ngIf="role.permissions?.length > 3" class="more-permissions">
+            +{{ role.permissions.length - 3 }} autres
+          </span>
+        </div>
+      </div>
+
+         
+      <mat-divider></mat-divider>
+
+      <ng-template #actionTemplate >
+        <button mat-button color="primary" (click)="onViewRole(role)" matTooltip="View role details">
+          <mat-icon>visibility</mat-icon> Consulter
+        </button>
+        <button mat-button color="accent" (click)="onEditRole(role)" [disabled]="role?.roleName?.toUpperCase()=='ADMIN'" matTooltip="Edit role">
+          <mat-icon>edit</mat-icon> Mdifier
+        </button>
+        <button mat-button color="warn" (click)="onDeleteRole(role)" [disabled]="role?.roleName?.toUpperCase()=='ADMIN'" matTooltip="Delete role">
+          <mat-icon>delete</mat-icon> 
+            <mat-spinner *ngIf="deleteLoanding" diameter="25" color="warn"></mat-spinner>
+             <span *ngIf="!deleteLoanding">Supprimer</span> 
+        </button>
+     </ng-template>
+   </app-card>
+  }
+   
+  </div>
+  
+  <!-- Empty state -->
+  <div *ngIf="roles.length === 0" class="empty-state">
+    <mat-icon class="empty-icon">person_off</mat-icon>
+    <h2>Pas de données!</h2>
+    <button mat-raised-button color="primary" (click)="onAddRole()">Create Role</button>
+  </div>
+</div>
