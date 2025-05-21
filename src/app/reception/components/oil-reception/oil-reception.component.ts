@@ -37,9 +37,10 @@ import {TypeCategory} from '../../../shared/models/type-category.enum';
 import {SupplierType} from '../../../shared/models/supplier-type';
 import {SupplierTypeService} from '../../../shared/services/supplier.service';
 
-// Charger les polices (nécessaire une seule fois dans ton projet)
-// (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
-/* local dashboard definition for oil receptions only */
+
+import jsPDF from 'jspdf';
+
+
 import {OIL_DELIVERY_DASHBOARD} from './OIL_DELIVERY_DASHBOARD';
 
 /* ──────────────────────────────────────────────────────────── */
@@ -303,43 +304,109 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
     this.router.navigate(['/reception/quality', d.id]);
   }
 
-  // genererBonReception(delivery: UnifiedDelivery): void {
-  //   const documentDefinition = {
-  //     content: [
-  //       {text: 'Bon de Réception', style: 'header'},
-  //       {text: `Type: ${delivery.deliveryType}`},
-  //       {text: `Date: ${delivery.deliveryDate}`},
-  //       {text: `Fournisseur: ${delivery.supplier?.supplierInfo.name}`},
-  //       {
-  //         table: {
-  //           widths: ['*', '*'],
-  //           body: [
-  //             ['Champ', 'Valeur'],
-  //             ['Quantité Olive', delivery.oliveQuantity ?? 'N/A'],
-  //             ['Quantité Huile', delivery.oilQuantity ?? 'N/A']
-  //           ]
-  //         },
-  //         layout: 'lightHorizontalLines'
-  //       }
-  //     ],
-  //     styles: {
-  //       header: {
-  //         fontSize: 18,
-  //         bold: true,
-  //         alignment: 'center' // ✅ Type correct
-  //       }
-  //     },
-  //     defaultStyle: {
-  //       fontSize: 12
-  //     }
-  //   };
-  //
-  //   // pdfMake.createPdf(documentDefinition).open();
-  // }
+  genererBonReception(delivery: UnifiedDelivery) {
+    const doc = new jsPDF();
 
+    // Header: Logo placeholder (left)
+    doc.setFontSize(10);
+    doc.rect(10, 10, 30, 20); // Placeholder for logo
+    doc.text('Logo', 15, 20); // Text indicating logo position
+
+    // Header: Create a table for the title and details
+    const headerTableTop = 10;
+    const headerTableLeft = 45; // Starting position of the table
+    const headerTableWidth = 160; // Width of the table
+    const headerCellHeight = 8; // Height of each cell
+    const headerColWidth = headerTableWidth / 2; // Width of each column
+
+    // Draw the header table
+    let currentY = headerTableTop;
+
+    // First row: Formulaire
+    doc.setFillColor(200, 200, 200); // Light gray background for the first row
+    doc.rect(headerTableLeft, currentY, headerTableWidth, headerCellHeight, 'F');
+    doc.text('Formulaire', headerTableLeft + headerColWidth, currentY + 5, {align: 'center'});
+    currentY += headerCellHeight;
+
+    // Second row: Bon De Réception and Référence
+    doc.rect(headerTableLeft, currentY, headerColWidth, headerCellHeight); // Left cell
+    doc.rect(headerTableLeft + headerColWidth, currentY, headerColWidth, headerCellHeight); // Right cell
+    doc.text(`Bon De Réception Huile`, headerTableLeft + 5, currentY + 5);
+    doc.text(`Référence : ${delivery.deliveryNumber || ''}`, headerTableLeft + headerColWidth + 5, currentY + 5);
+    currentY += headerCellHeight;
+
+    // Third row: N° and Date
+    doc.rect(headerTableLeft, currentY, headerColWidth, headerCellHeight); // Left cell
+    doc.rect(headerTableLeft + headerColWidth, currentY, headerColWidth, headerCellHeight); // Right cell
+    doc.text(`N° : ${delivery.deliveryNumber || ''}`, headerTableLeft + 5, currentY + 5);
+    doc.text(`Date : ${new Date(delivery.deliveryDate || Date.now()).toLocaleDateString()}`, headerTableLeft + headerColWidth + 5, currentY + 5);
+    currentY += headerCellHeight;
+
+    // Fourth row: Page and Révision
+    doc.rect(headerTableLeft, currentY, headerColWidth, headerCellHeight); // Left cell
+    doc.rect(headerTableLeft + headerColWidth, currentY, headerColWidth, headerCellHeight); // Right cell
+    doc.text('Page : 1/1', headerTableLeft + 5, currentY + 5);
+    doc.text('Révision : 01', headerTableLeft + headerColWidth + 5, currentY + 5);
+
+    // Separator line
+    doc.line(10, currentY + 10, 200, currentY + 10);
+
+    // Body: Standalone values
+    doc.setFontSize(11);
+    let y = currentY + 20;
+    doc.text(`Type : ${delivery.deliveryType || ''}`, 10, y);
+    y += 7;
+    doc.text(`Fournisseur : ${(delivery.supplier?.supplierInfo?.name || '') + ' ' + (delivery.supplier?.supplierInfo?.lastname || '')}`, 10, y);
+    y += 7;
+    doc.text(`Téléphone : ${delivery.supplier?.supplierInfo?.phone || ''}`, 10, y);
+    y += 7;
+    doc.text(`Adresse : ${delivery.supplier?.supplierInfo?.address || ''}`, 10, y);
+    y += 14; // Extra space before table
+
+    // Manual Table: Remaining values
+    const tableData = [
+      ['Lot', delivery.lotNumber || ''],
+      ['Lot Global', delivery.globalLotNumber || ''],
+      ['Quantité d\'huile', `${delivery.oilQuantity || ''} L`],
+      ['Poids Net', `${delivery.poidsNet || ''} kg`],
+      ['Poids Brut', `${delivery.poidsBrute || ''} kg`],
+      ['Prix total', `${delivery.price || ''} TND`],
+      ['Montant payé', `${delivery.paidAmount || ''} TND`],
+      ['Montant impayé', `${delivery.unpaidAmount || ''} TND`],
+      ['Matricule camion', delivery.matriculeCamion || ''],
+      ['État camion', delivery.etatCamion || ''],
+      ['Région', delivery.region?.name || '']
+    ];
+
+    const tableTop = y;
+    const tableLeft = 10;
+    const tableWidth = 180;
+    const cellHeight = 7;
+    const colWidth = tableWidth / 2;
+
+    // Draw table header
+    doc.setFillColor(200, 200, 200);
+    doc.rect(tableLeft, tableTop, colWidth, cellHeight, 'F');
+    doc.rect(tableLeft + colWidth, tableTop, colWidth, cellHeight, 'F');
+    doc.text('Champ', tableLeft + 2, tableTop + 5);
+    doc.text('Valeur', tableLeft + colWidth + 2, tableTop + 5);
+
+    // Draw table rows
+    let rowY = tableTop + cellHeight;
+    tableData.forEach(row => {
+      doc.rect(tableLeft, rowY, colWidth, cellHeight);
+      doc.rect(tableLeft + colWidth, rowY, colWidth, cellHeight);
+      doc.text(row[0], tableLeft + 2, rowY + 5);
+      doc.text(row[1] || '', tableLeft + colWidth + 2, rowY + 5); // Fallback to empty string
+      rowY += cellHeight;
+    });
+
+    // Open in a new tab
+    window.open(doc.output('bloburl'), '_blank');
+  }
 
   onRowAction(e: { row: UnifiedDelivery; action: Action }): void {
-    switch (e.action.label) {
+    switch (e.action.value) {
       case 'Consulter':
         this.viewDelivery(e.row);
         break;
@@ -357,9 +424,11 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
         if (e.row.id) this.deleteDelivery(e.row);
         break;
 
-      // case 'generer_pdf':
-      //   this.genererBonReception(e.row);
-      //   break;
+      case 'generer_pdf':
+        if (e.row) {
+          this.genererBonReception(e.row);
+        }
+        break;
     }
   }
 
