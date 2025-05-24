@@ -1,86 +1,85 @@
-<!-- Expandable Panel for Add/Edit Form -->
+<!-- Panneau extensible pour le formulaire d'ajout/modification -->
 <mat-expansion-panel [(expanded)]="formOpen">
   <mat-expansion-panel-header>
     <mat-panel-title>
-      {{ isEditing ? 'Edit Mill Machine' : 'Add Mill Machine' }}
+      {{ isEditing ? 'Modifier une machine' : 'Ajouter une machine' }}
     </mat-panel-title>
   </mat-expansion-panel-header>
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()" style="padding: 15px;">
-    <!-- Grid Layout for Form Fields -->
     <div class="form-grid">
-      <!-- Name -->
+      <!-- Nom -->
       <mat-form-field appearance="outline">
-        <mat-label>Name</mat-label>
+        <mat-label>Nom</mat-label>
         <input matInput formControlName="name" required />
         <mat-error *ngIf="form.get('name')?.hasError('required')">
-          Name is required
+          Le nom est requis
         </mat-error>
       </mat-form-field>
 
-      <!-- Machine Type -->
+      <!-- Type de machine -->
       <mat-form-field appearance="outline">
-        <mat-label>Machine Type</mat-label>
+        <mat-label>Type de machine</mat-label>
         <input matInput formControlName="machineType" required />
         <mat-error *ngIf="form.get('machineType')?.hasError('required')">
-          Machine Type is required
+          Le type est requis
         </mat-error>
       </mat-form-field>
 
-      <!-- Manufacturer -->
+      <!-- Fabricant -->
       <mat-form-field appearance="outline">
-        <mat-label>Manufacturer</mat-label>
+        <mat-label>Fabricant</mat-label>
         <input matInput formControlName="manufacturer" />
       </mat-form-field>
 
-      <!-- Model -->
+      <!-- Modèle -->
       <mat-form-field appearance="outline">
-        <mat-label>Model</mat-label>
+        <mat-label>Modèle</mat-label>
         <input matInput formControlName="model" />
       </mat-form-field>
 
-      <!-- Serial Number -->
+      <!-- Numéro de série -->
       <mat-form-field appearance="outline">
-        <mat-label>Serial Number</mat-label>
+        <mat-label>Numéro de série</mat-label>
         <input matInput formControlName="serialNumber" />
       </mat-form-field>
 
-      <!-- Capacity -->
+      <!-- Capacité -->
       <mat-form-field appearance="outline">
-        <mat-label>Capacity</mat-label>
+        <mat-label>Capacité</mat-label>
         <input matInput type="number" formControlName="capacity" required />
         <mat-error *ngIf="form.get('capacity')?.hasError('required')">
-          Capacity is required
+          La capacité est requise
         </mat-error>
         <mat-error *ngIf="form.get('capacity')?.hasError('min')">
-          Capacity must be greater than 0
+          La capacité doit être supérieure à 0
         </mat-error>
       </mat-form-field>
 
-      <!-- Operating Status -->
+      <!-- Statut -->
       <mat-form-field appearance="outline">
-        <mat-label>Operating Status</mat-label>
+        <mat-label>Statut</mat-label>
         <input matInput formControlName="operatingStatus" required />
         <mat-error *ngIf="form.get('operatingStatus')?.hasError('required')">
-          Operating Status is required
+          Le statut est requis
         </mat-error>
       </mat-form-field>
 
-      <!-- Hours Operated -->
+      <!-- Heures de fonctionnement -->
       <mat-form-field appearance="outline">
-        <mat-label>Hours Operated</mat-label>
+        <mat-label>Heures de fonctionnement</mat-label>
         <input matInput type="number" formControlName="hoursOperated" required />
         <mat-error *ngIf="form.get('hoursOperated')?.hasError('required')">
-          Hours Operated is required
+          Ce champ est requis
         </mat-error>
         <mat-error *ngIf="form.get('hoursOperated')?.hasError('min')">
-          Hours Operated cannot be negative
+          Ne peut pas être négatif
         </mat-error>
       </mat-form-field>
 
-      <!-- Last Maintenance Date -->
+      <!-- Dernière maintenance -->
       <mat-form-field appearance="outline">
-        <mat-label>Last Maintenance Date</mat-label>
+        <mat-label>Date de dernière maintenance</mat-label>
         <input
           matInput
           [matDatepicker]="pickerLast"
@@ -90,9 +89,9 @@
         <mat-datepicker #pickerLast></mat-datepicker>
       </mat-form-field>
 
-      <!-- Next Maintenance Date -->
+      <!-- Prochaine maintenance -->
       <mat-form-field appearance="outline">
-        <mat-label>Next Maintenance Date</mat-label>
+        <mat-label>Date de prochaine maintenance</mat-label>
         <input
           matInput
           [matDatepicker]="pickerNext"
@@ -102,21 +101,17 @@
         <mat-datepicker #pickerNext></mat-datepicker>
       </mat-form-field>
 
-      <!-- Description (Spans full width) -->
+      <!-- Description -->
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Description</mat-label>
-        <textarea
-          matInput
-          formControlName="description"
-          rows="3"
-        ></textarea>
+        <textarea matInput formControlName="description" rows="3"></textarea>
       </mat-form-field>
     </div>
 
-    <!-- Form Buttons -->
+    <!-- Boutons du formulaire -->
     <div style="margin-top: 10px; display: flex; gap: 10px;">
       <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
-        {{ isEditing ? 'Update Machine' : 'Add Machine' }}
+        {{ isEditing ? 'Mettre à jour' : 'Ajouter' }}
       </button>
       <button
         *ngIf="isEditing"
@@ -125,107 +120,85 @@
         type="button"
         (click)="cancel()"
       >
-        Cancel
+        Annuler
       </button>
     </div>
   </form>
 </mat-expansion-panel>
 
-<!-- Button to Add New Machine -->
+<!-- Bouton d’ajout -->
 <div class="m-t-10">
-  <button mat-raised-button color="primary" (click)="openForm()" matTooltip="Add a new mill machine">
-    Add New Machine
+  <button mat-raised-button color="primary" (click)="openForm()" matTooltip="Ajouter une nouvelle machine">
+    Nouvelle machine
   </button>
 </div>
 
-<!-- Table of Machines -->
+<!-- Tableau des machines -->
 <div class="table-container m-t-20">
-  <app-card cardTitle="Mill Machines">
+  <app-card cardTitle="Liste des machines">
     <div class="p-t-15">
       <div class="table-responsive m-b-15">
         <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
-          <!-- ID -->
+
+          <!-- Colonnes -->
           <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
             <td mat-cell *matCellDef="let mm">{{ mm.id }}</td>
           </ng-container>
 
-          <!-- Name -->
           <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Nom </th>
             <td mat-cell *matCellDef="let mm">{{ mm.name }}</td>
           </ng-container>
 
-          <!-- Machine Type -->
           <ng-container matColumnDef="machineType">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Type </th>
             <td mat-cell *matCellDef="let mm">{{ mm.machineType }}</td>
           </ng-container>
 
-          <!-- Manufacturer -->
           <ng-container matColumnDef="manufacturer">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Manufacturer </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Fabricant </th>
             <td mat-cell *matCellDef="let mm">{{ mm.manufacturer }}</td>
           </ng-container>
 
-          <!-- Model -->
           <ng-container matColumnDef="model">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Model </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Modèle </th>
             <td mat-cell *matCellDef="let mm">{{ mm.model }}</td>
           </ng-container>
 
-          <!-- Capacity -->
           <ng-container matColumnDef="capacity">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Capacity </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Capacité </th>
             <td mat-cell *matCellDef="let mm">{{ mm.capacity }}</td>
           </ng-container>
 
-          <!-- Operating Status -->
           <ng-container matColumnDef="operatingStatus">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Statut </th>
             <td mat-cell *matCellDef="let mm">{{ mm.operatingStatus }}</td>
           </ng-container>
 
-          <!-- Hours -->
           <ng-container matColumnDef="hoursOperated">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Hours </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Heures </th>
             <td mat-cell *matCellDef="let mm">{{ mm.hoursOperated }}</td>
           </ng-container>
 
-          <!-- Last Maint Date -->
           <ng-container matColumnDef="lastMaintenanceDate">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Last Maint. </th>
-            <td mat-cell *matCellDef="let mm">
-              {{ mm.lastMaintenanceDate | date:'shortDate' }}
-            </td>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Dern. Maint. </th>
+            <td mat-cell *matCellDef="let mm">{{ mm.lastMaintenanceDate | date:'shortDate' }}</td>
           </ng-container>
 
-          <!-- Next Maint Date -->
           <ng-container matColumnDef="nextMaintenanceDate">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Next Maint. </th>
-            <td mat-cell *matCellDef="let mm">
-              {{ mm.nextMaintenanceDate | date:'shortDate' }}
-            </td>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Proch. Maint. </th>
+            <td mat-cell *matCellDef="let mm">{{ mm.nextMaintenanceDate | date:'shortDate' }}</td>
           </ng-container>
 
           <!-- Actions -->
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef> Actions </th>
             <td mat-cell *matCellDef="let mm">
-              <button
-                mat-icon-button
-                color="primary"
-                (click)="editMachine(mm)"
-                matTooltip="Edit"
-              >
+              <button mat-icon-button color="primary" (click)="editMachine(mm)" matTooltip="Modifier">
                 <mat-icon>edit</mat-icon>
               </button>
-              <button
-                mat-icon-button
-                color="warn"
-                (click)="deleteMachine(mm)"
-                matTooltip="Delete"
-              >
+              <button mat-icon-button color="warn" (click)="deleteMachine(mm)" matTooltip="Supprimer">
                 <mat-icon>delete</mat-icon>
               </button>
             </td>

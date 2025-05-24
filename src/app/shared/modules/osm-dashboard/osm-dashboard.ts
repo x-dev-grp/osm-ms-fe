@@ -20,6 +20,7 @@ import { Router } from '@angular/router';
 import { DynamicInput } from './components/dynamic-input/dynamic-input.component';
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'osm-dashboard',
   templateUrl: './osm-dashboard.html',
   styleUrls: ['./osm-dashboard.scss'],
@@ -57,13 +58,13 @@ actions:Action[]|undefined;
        this.actions=this.config().actions?.actionsList
   }
   ngAfterViewInit(): void {
-  
+
   }
   ngOnChanges(changes: SimpleChanges): void {
     console.log(changes);
   }
   ngOnDestroy(): void {
-    
+
   }
   sortChange(event:any){
     console.log(event);
@@ -84,7 +85,7 @@ actions:Action[]|undefined;
   redirectToFormPage(){
     this._router.navigate([this.config().addNewItemUrl]);
   }
-  onFilterFieldChange(event:any,field: Field) { 
+  onFilterFieldChange(event:any,field: Field) {
     this._store.setFilteredField(field,event?.target["checked"]);
   }
   onExportFieldChange(event:any,field: Field) {
@@ -94,7 +95,7 @@ actions:Action[]|undefined;
      this._store.setAllFilterField(event?.target["checked"])
   }
   selectAllExportFields(event:any,field: Field) {
-    this._store.setAllExportField(event?.target["checked"]);    
+    this._store.setAllExportField(event?.target["checked"]);
   }
   resetFilter(){
     this._store.resetSearchData();

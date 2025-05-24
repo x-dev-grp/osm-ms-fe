@@ -13,11 +13,8 @@ import { provideServiceWorker } from '@angular/service-worker';
 import { AuthInterceptor } from './app/interceptors/auth.interceptor';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { AuthenticationService } from './app/auth/services/authentication.service';
-import { AuthGuardChild } from './app/interceptors/guards/auth.guard';
-import { CookieService } from 'ngx-cookie-service';
+ import { CookieService } from 'ngx-cookie-service';
 import { TranslateService } from '@ngx-translate/core';
-import { AuthGuardLogin } from './app/interceptors/guards/auth-login.guard';
-import { AuthGuardPassword } from './app/interceptors/guards/auth-update-password.guard';
 
 if (environment.production) {
   enableProdMode();

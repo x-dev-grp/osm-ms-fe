@@ -20,7 +20,6 @@ import { Router } from '@angular/router';
 import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
 import { EXPENSES_DASHBOARD_CONFIG } from './expenses-dashboard.config';
 import { Action, DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
-import { OilCredit } from '../models/OilCredit';
 
 @Component({
   selector: 'app-expenses',
@@ -56,7 +55,7 @@ export class ExpensesComponent implements OnInit, AfterViewInit {
   dashboardConfig: DashboardConfig = EXPENSES_DASHBOARD_CONFIG;
   displayedColumns: string[] = ['invoiceRef', 'purchaseNature', 'object', 'date', 'amount', 'actions'];
 
-  // filtering fields
+  // champs de filtrage
   filterValues = {
     invoiceRef: '',
     purchaseNature: ''
@@ -76,7 +75,7 @@ export class ExpensesComponent implements OnInit, AfterViewInit {
       amount: [0, [Validators.required, Validators.min(0.01)]]
     });
 
-    // custom predicate to filter by both fields
+    // prédicat personnalisé pour filtrer par plusieurs champs
     this.dataSource.filterPredicate = (data: Expense, filter: string): boolean => {
       const search = JSON.parse(filter);
       const invoiceText = data.invoiceRef ? data.invoiceRef.toLowerCase() : '';
@@ -107,7 +106,7 @@ export class ExpensesComponent implements OnInit, AfterViewInit {
           this.dataSource.data = [];
         }
       },
-      (err) => console.error('Error loading expenses', err)
+      (err) => console.error('Erreur lors du chargement des dépenses', err)
     );
   }
 
@@ -116,23 +115,26 @@ export class ExpensesComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/finance/expenses', id, 'view']);
   }
 
-  /** Ouvre dans un nouvel onglet la vue + déclenche impression */
+  /** Ouvre dans un nouvel onglet la vue et imprime */
   print(id: string): void {
     const tree = this.router.createUrlTree(['/finance/expenses', id, 'view'], { queryParams: { print: true } });
     const url = window.location.origin + this.router.serializeUrl(tree);
     window.open(url, '_blank');
   }
 
+  /** Ouvre le formulaire pour ajout ou édition */
   openForm(expense?: Expense): void {
     this.editing = !!expense;
     this.form.reset(expense ?? { amount: 0, date: '' });
   }
 
+  /** Annule l’opération en cours et réinitialise le formulaire */
   cancel(): void {
     this.editing = false;
     this.form.reset({ amount: 0, date: '' });
   }
 
+  /** Enregistre la dépense */
   save(): void {
     if (this.form.invalid) {
       return;
@@ -144,6 +146,7 @@ export class ExpensesComponent implements OnInit, AfterViewInit {
     });
   }
 
+  /** Supprime une dépense avec confirmation */
   delete(id: string): void {
     if (!confirm('Supprimer cette dépense ?')) {
       return;
@@ -151,6 +154,7 @@ export class ExpensesComponent implements OnInit, AfterViewInit {
     this.svc.deleteExpense(id).subscribe(() => this.loadExpenses());
   }
 
+  /** Applique les filtres de recherche */
   applyFilter(): void {
     this.dataSource.filter = JSON.stringify(this.filterValues);
     if (this.dataSource.paginator) {
@@ -158,14 +162,14 @@ export class ExpensesComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /** Gère les actions depuis le tableau */
   handleAction(event: { action: Action; record: Expense }): void {
-    /* prefer the explicit value, fall back to the label */
+    const actionLabel = event.action.label?.toUpperCase();
 
-
-    switch (event.action.label) {
+    switch (actionLabel) {
       case 'VIEW':
       case 'CONSULTER':
-        this.openForm(event.record) ;
+        this.openForm(event.record);
         break;
 
       case 'PRINT':
@@ -181,7 +185,6 @@ export class ExpensesComponent implements OnInit, AfterViewInit {
       case 'SUPPRIMER':
         this.delete(event.record.id!);
         break;
-
     }
   }
 }

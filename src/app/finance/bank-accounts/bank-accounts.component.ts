@@ -45,7 +45,7 @@ export class BankAccountsComponent implements OnInit {
   dashboardConfig: DashboardConfig = BANK_ACCOUNTS_DASHBOARD_CONFIG;
 
   currencies = ['TND', 'EUR', 'USD'];
-  accountTypes = ['Current', 'Savings', 'Payroll'];
+  accountTypes = ['Courant', 'Épargne', 'Salaire'];
 
   banks: BankAccount[] = [];
   dataSource: MatTableDataSource<BankAccount> = new MatTableDataSource(this.banks);
@@ -69,7 +69,7 @@ export class BankAccountsComponent implements OnInit {
       bankName: ['', Validators.required],
       bankBranch: [''],
       currency: ['TND', Validators.required],
-      accountType: ['Current', Validators.required],
+      accountType: ['Courant', Validators.required],
       active: [true]
     });
   }
@@ -82,7 +82,7 @@ export class BankAccountsComponent implements OnInit {
       this.isEditing = false;
       this.bankForm.reset({
         currency: 'TND',
-        accountType: 'Current',
+        accountType: 'Courant',
         active: true
       });
     }
@@ -99,7 +99,7 @@ export class BankAccountsComponent implements OnInit {
           this.banks = [];
         }
       },
-      (err) => console.error('Error loading deliveries', err)
+      (err) => console.error('Erreur lors du chargement des comptes bancaires', err)
     );
   }
 
@@ -108,7 +108,7 @@ export class BankAccountsComponent implements OnInit {
     this.isEditing = false;
     this.bankForm.reset({
       currency: 'TND',
-      accountType: 'Current',
+      accountType: 'Courant',
       active: true
     });
   }
@@ -119,9 +119,16 @@ export class BankAccountsComponent implements OnInit {
       return;
     }
     const acct = this.bankForm.value as BankAccount;
-    const op$ = this.isEditing ? this.bankAccountService.updateBankAccount(acct) : this.bankAccountService.createBankAccount(acct);
+    const op$ = this.isEditing
+      ? this.bankAccountService.updateBankAccount(acct)
+      : this.bankAccountService.createBankAccount(acct);
+
     op$.subscribe(() => {
-      this.snackBar.open(this.isEditing ? 'Bank account updated' : 'Bank account created', 'Close', { duration: 3000 });
+      this.snackBar.open(
+        this.isEditing ? 'Compte bancaire mis à jour' : 'Compte bancaire créé',
+        'Fermer',
+        { duration: 3000 }
+      );
       this.loadBankAccounts();
       this.cancel();
     });
@@ -130,7 +137,7 @@ export class BankAccountsComponent implements OnInit {
   deleteAccount(acc: BankAccount): void {
     if (!acc.id) return;
     this.bankAccountService.deleteBankAccount(acc.id).subscribe(() => {
-      this.snackBar.open('Bank account deleted', 'Close', { duration: 3000 });
+      this.snackBar.open('Compte bancaire supprimé', 'Fermer', { duration: 3000 });
       this.loadBankAccounts();
     });
   }

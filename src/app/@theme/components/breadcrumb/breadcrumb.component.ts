@@ -7,8 +7,7 @@ import { Title } from '@angular/platform-browser';
 // project import
 import { NavigationItem } from '../../types/navigation';
 import { SharedModule } from 'src/app/demo/shared/shared.module';
- import { componentMenus } from 'src/app/demo/data/component';
-import { osm_menus } from '../../../shared/osm_menu';
+ import { osm_menus } from '../../../shared/osm_menu';
 
 interface titleType {
   // eslint-disable-next-line
@@ -44,8 +43,7 @@ export class BreadcrumbComponent {
   // constructor
   constructor() {
     this.navigations = osm_menus;
-    this.ComponentNavigations = componentMenus;
-    this.type = 'theme1';
+     this.type = 'theme1';
     this.setBreadcrumb();
   }
 

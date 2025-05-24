@@ -14,67 +14,68 @@
     <button mat-icon-button (click)="onBack()" aria-label="Retour" matTooltip="Retour à la liste">
       <mat-icon>arrow_back</mat-icon>
     </button>
-    <mat-card-title>Détails de la Réception</mat-card-title>
+    <mat-card-title>Détails de la réception</mat-card-title>
   </div>
 
   <mat-card-content class="scrollable-content">
+
     <!-- General Information Section -->
     <div class="section">
-      <h3 class="section-title">Informations Générales</h3>
+      <h3 class="section-title">📦 Informations générales</h3>
       <div class="grid-row">
         <div class="grid-item">
-          <strong>Numéro de réception:</strong> {{ deliveryData.deliveryNumber }}
+          <strong>Numéro de réception :</strong> {{ deliveryData.deliveryNumber }}
         </div>
         <div class="grid-item">
-          <strong>Type:</strong> {{ deliveryData.deliveryType }}
+          <strong>Type :</strong> {{ deliveryData.deliveryType }}
         </div>
       </div>
       <div class="grid-row">
         <div class="grid-item">
-          <strong>Lot:</strong> {{ deliveryData.lotNumber }}
+          <strong>Lot :</strong> {{ deliveryData.lotNumber }}
         </div>
         <div class="grid-item">
-          <strong>Date:</strong> {{ deliveryData.deliveryDate | date: 'short' }}
-        </div>
-      </div>
-      <div class="grid-row">
-        <div class="grid-item">
-          <strong>Région:</strong> {{ deliveryData.region?.name || 'N/A' }}
-        </div>
-        <div class="grid-item">
-          <strong>Global Lot Number:</strong> {{ deliveryData.globalLotNumber || 'N/A' }}
+          <strong>Date :</strong> {{ deliveryData.deliveryDate | date: 'short' }}
         </div>
       </div>
       <div class="grid-row">
         <div class="grid-item">
-          <strong>Poids Brut:</strong> {{ deliveryData.poidsBrute || 0 }} kg
+          <strong>Région :</strong> {{ deliveryData.region?.name || 'Non renseigné' }}
         </div>
         <div class="grid-item">
-          <strong>Poids Net:</strong> {{ deliveryData.poidsNet || 0 }} kg
-        </div>
-      </div>
-      <div class="grid-row">
-        <div class="grid-item">
-          <strong>Matricule Camion:</strong> {{ deliveryData.matriculeCamion || 'N/A' }}
-        </div>
-        <div class="grid-item">
-          <strong>État Camion:</strong> {{ deliveryData.etatCamion || 'N/A' }}
+          <strong>Lot global :</strong> {{ deliveryData.globalLotNumber || 'Non renseigné' }}
         </div>
       </div>
       <div class="grid-row">
         <div class="grid-item">
-          <strong>Sacs:</strong> {{ deliveryData.sackCount || 0 }}
+          <strong>Poids brut :</strong> {{ deliveryData.poidsBrute || 0 }} kg
         </div>
         <div class="grid-item">
-          <strong>Rendement:</strong> {{ deliveryData.rendement || 0 }}%
+          <strong>Poids net :</strong> {{ deliveryData.poidsNet || 0 }} kg
         </div>
       </div>
       <div class="grid-row">
         <div class="grid-item">
-          <strong>Quantité d'olives:</strong> {{ deliveryData.oliveQuantity || 0 }} kg
+          <strong>Matricule camion :</strong> {{ deliveryData.matriculeCamion || 'Non renseigné' }}
         </div>
         <div class="grid-item">
-          <strong>Parcelle:</strong> {{ deliveryData.parcel || 'N/A' }}
+          <strong>État du camion :</strong> {{ deliveryData.etatCamion || 'Non renseigné' }}
+        </div>
+      </div>
+      <div class="grid-row">
+        <div class="grid-item">
+          <strong>Sacs :</strong> {{ deliveryData.sackCount || 0 }}
+        </div>
+        <div class="grid-item">
+          <strong>Rendement :</strong> {{ deliveryData.rendement || 0 }} %
+        </div>
+      </div>
+      <div class="grid-row">
+        <div class="grid-item">
+          <strong>Quantité d’olives :</strong> {{ deliveryData.oliveQuantity || 0 }} kg
+        </div>
+        <div class="grid-item">
+          <strong>Parcelle :</strong> {{ deliveryData.parcel || 'Non renseigné' }}
         </div>
       </div>
     </div>
@@ -86,26 +87,30 @@
       <h3 class="section-title">👤 Fournisseur</h3>
       <div class="grid-row">
         <div class="grid-item">
-          <strong>Nom:</strong> {{ (deliveryData.supplier?.supplierInfo?.name || '') + ' ' + (deliveryData.supplier?.supplierInfo?.lastname || '') || 'N/A' }}
+          <strong>Nom :</strong>
+          {{
+            (deliveryData.supplier?.supplierInfo?.name || '') + ' ' +
+            (deliveryData.supplier?.supplierInfo?.lastname || '') || 'Non renseigné'
+          }}
         </div>
         <div class="grid-item">
-          <strong>Téléphone:</strong> {{ deliveryData.supplier?.supplierInfo?.phone || 'N/A' }}
-        </div>
-      </div>
-      <div class="grid-row">
-        <div class="grid-item">
-          <strong>Email:</strong> {{ deliveryData.supplier?.supplierInfo?.email || 'N/A' }}
-        </div>
-        <div class="grid-item">
-          <strong>Adresse:</strong> {{ deliveryData.supplier?.supplierInfo?.address || 'N/A' }}
+          <strong>Téléphone :</strong> {{ deliveryData.supplier?.supplierInfo?.phone || 'Non renseigné' }}
         </div>
       </div>
       <div class="grid-row">
         <div class="grid-item">
-          <strong>RIB:</strong> {{ deliveryData.supplier?.supplierInfo?.rib || 'N/A' }}
+          <strong>Email :</strong> {{ deliveryData.supplier?.supplierInfo?.email || 'Non renseigné' }}
         </div>
         <div class="grid-item">
-          <strong>Banque:</strong> {{ deliveryData.supplier?.supplierInfo?.bankName || 'N/A' }}
+          <strong>Adresse :</strong> {{ deliveryData.supplier?.supplierInfo?.address || 'Non renseigné' }}
+        </div>
+      </div>
+      <div class="grid-row">
+        <div class="grid-item">
+          <strong>RIB :</strong> {{ deliveryData.supplier?.supplierInfo?.rib || 'Non renseigné' }}
+        </div>
+        <div class="grid-item">
+          <strong>Banque :</strong> {{ deliveryData.supplier?.supplierInfo?.bankName || 'Non renseigné' }}
         </div>
       </div>
     </div>
@@ -117,10 +122,10 @@
       <h3 class="section-title">🌿 Variété d’olive</h3>
       <div class="grid-row">
         <div class="grid-item">
-          <strong>Variété:</strong> {{ deliveryData.oliveVariety?.name || 'N/A' }}
+          <strong>Variété :</strong> {{ deliveryData.oliveVariety?.name || 'Non renseigné' }}
         </div>
         <div class="grid-item">
-          <strong>Type:</strong> {{ deliveryData.oliveType?.name || 'N/A' }}
+          <strong>Type :</strong> {{ deliveryData.oliveType?.name || 'Non renseigné' }}
         </div>
       </div>
     </div>

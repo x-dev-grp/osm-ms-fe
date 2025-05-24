@@ -303,39 +303,39 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
     this.router.navigate(['/reception/quality', d.id]);
   }
 
-  genererBonReception(delivery: UnifiedDelivery): void {
-    const documentDefinition = {
-      content: [
-        {text: 'Bon de Réception', style: 'header'},
-        {text: `Type: ${delivery.deliveryType}`},
-        {text: `Date: ${delivery.deliveryDate}`},
-        {text: `Fournisseur: ${delivery.supplier?.supplierInfo.name}`},
-        {
-          table: {
-            widths: ['*', '*'],
-            body: [
-              ['Champ', 'Valeur'],
-              ['Quantité Olive', delivery.oliveQuantity ?? 'N/A'],
-              ['Quantité Huile', delivery.oilQuantity ?? 'N/A']
-            ]
-          },
-          layout: 'lightHorizontalLines'
-        }
-      ],
-      styles: {
-        header: {
-          fontSize: 18,
-          bold: true,
-          alignment: 'center' // ✅ Type correct
-        }
-      },
-      defaultStyle: {
-        fontSize: 12
-      }
-    };
-
-    // pdfMake.createPdf(documentDefinition).open();
-  }
+  // genererBonReception(delivery: UnifiedDelivery): void {
+  //   const documentDefinition = {
+  //     content: [
+  //       {text: 'Bon de Réception', style: 'header'},
+  //       {text: `Type: ${delivery.deliveryType}`},
+  //       {text: `Date: ${delivery.deliveryDate}`},
+  //       {text: `Fournisseur: ${delivery.supplier?.supplierInfo.name}`},
+  //       {
+  //         table: {
+  //           widths: ['*', '*'],
+  //           body: [
+  //             ['Champ', 'Valeur'],
+  //             ['Quantité Olive', delivery.oliveQuantity ?? 'N/A'],
+  //             ['Quantité Huile', delivery.oilQuantity ?? 'N/A']
+  //           ]
+  //         },
+  //         layout: 'lightHorizontalLines'
+  //       }
+  //     ],
+  //     styles: {
+  //       header: {
+  //         fontSize: 18,
+  //         bold: true,
+  //         alignment: 'center' // ✅ Type correct
+  //       }
+  //     },
+  //     defaultStyle: {
+  //       fontSize: 12
+  //     }
+  //   };
+  //
+  //   // pdfMake.createPdf(documentDefinition).open();
+  // }
 
 
   onRowAction(e: { row: UnifiedDelivery; action: Action }): void {
@@ -357,9 +357,9 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
         if (e.row.id) this.deleteDelivery(e.row);
         break;
 
-      case 'generer_pdf':
-        this.genererBonReception(e.row);
-        break;
+      // case 'generer_pdf':
+      //   this.genererBonReception(e.row);
+      //   break;
     }
   }
 
