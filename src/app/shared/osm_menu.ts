@@ -105,6 +105,7 @@ export const osm_menus: Navigation[] = [
         type: 'item',
         url: '/reception/mill-schedules',
         icon: 'schedule', // Added: Represents scheduling
+        breadcrumbs:false
       },
       {
         id: 'machineStatus',

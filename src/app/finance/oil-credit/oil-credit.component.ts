@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -17,7 +17,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { SharedModule } from '../../demo/shared/shared.module';
 import { ConfigurationComponent } from '../../@theme/layouts/configuration/configuration.component';
-import { OilCredit, UnitType } from '../models/OilCredit';
+import { OilCredit } from '../models/OilCredit';
 import { OilCreditService } from '../service/oil-credit.service';
 import { StorageUnitDtoService } from '../../shared/services/storage.service';
 import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
@@ -25,7 +25,8 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
-import { AttributeType, DashboardConfig, FieldType } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { OIL_CREDIT_DASHBOARDFile } from './OIL_CREDIT_DASHBOARDFile';
 
 @Component({
   selector: 'app-oil-credit',
@@ -62,101 +63,7 @@ export class OilCreditComponent implements OnInit {
   submitted = false;
   displayedColumns = ['credit_date', 'citerne_pile', 'emballage', 'quantity', 'unit', 'destinataire', 'actions'];
 
-  OIL_CREDIT_DASHBOARD: DashboardConfig = {
-    title: "Crédits d'huile",
-    titleTranslatePath: 'FINANCE.OIL_CREDITS.TITLE',
-    baseURL: 'finance/oil-credit',
-    searchEndpoint: 'finance/oil-credit',
-    addNewItem: true,
-    addNewItemUrl: 'finance/oil-credits/new',
-
-    fields: [
-      // Identifiant interne
-      {
-        name: 'id',
-        label: 'ID',
-        attributeType: AttributeType.string,
-        fieldType: FieldType.text,
-        exportable: false,
-        sortable: false,
-        dataTable: false
-      },
-      // Date du crédit
-      {
-        name: 'credit_date',
-        label: 'Date',
-        attributeType: AttributeType.date,
-        fieldType: FieldType.date,
-        exportable: true,
-        sortable: true,
-        dataTable: true
-      },
-      // Citerne / Pile
-      {
-        name: 'citerne_pile',
-        label: 'Citerne/Pile',
-        attributeType: AttributeType.string,
-        fieldType: FieldType.text,
-        exportable: true,
-        sortable: true,
-        dataTable: true
-      },
-      // Type d\'emballage
-      {
-        name: 'emballage',
-        label: 'Emballage',
-        attributeType: AttributeType.string,
-        fieldType: FieldType.text,
-        exportable: true,
-        sortable: true,
-        dataTable: true
-      },
-      // Quantité créditée
-      {
-        name: 'quantity',
-        label: 'Quantité',
-        attributeType: AttributeType.number,
-        fieldType: FieldType.number,
-        exportable: true,
-        sortable: true,
-        dataTable: true
-      },
-      // Unité (KG, L)
-      {
-        name: 'unit',
-        label: 'Unité',
-        attributeType: AttributeType.enum,
-        fieldType: FieldType.select,
-        exportable: true,
-        sortable: true,
-        dataTable: true,
-        options: [
-          { label: UnitType.KG, value: UnitType.KG },
-          { label: UnitType.L, value: UnitType.L }
-        ]
-      },
-      // Destinataire
-      {
-        name: 'destinataire',
-        label: 'Destinataire',
-        attributeType: AttributeType.string,
-        fieldType: FieldType.text,
-        exportable: true,
-        sortable: true,
-        dataTable: true
-      }
-    ],
-
-    actions: {
-      statusMapping: false,
-      statusAttributeName: 'name',
-      actionsList: [  { label: 'Consulter',          icon: '',  value: 'CONSULTER'  },
-        { label: 'Modifier',           icon: 'edit',        value: 'MODIFIER'   },
-        { label: 'Supprimer',          icon: 'delete',      value: 'SUPPRIMER'  },]
-    },
-
-    fileName: 'oil_credits'
-  };
+  OIL_CREDIT_DASHBOARD: DashboardConfig = OIL_CREDIT_DASHBOARDFile;
   storageUnits: StorageUnitDto[] = [];
   selectedStorageUnit: StorageUnitDto | null = null;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -422,7 +329,7 @@ export class OilCreditComponent implements OnInit {
 
   /** Handle row‐level actions emitted by the dashboard */
   onRowAction(event: { action: string; record: OilCredit }): void {
-     switch (event.action) {
+    switch (event.action) {
       case 'consulter':
         this.router.navigate(['/finance/oil-credit', event.record.id, 'view']);
         break;
@@ -454,6 +361,4 @@ export class OilCreditComponent implements OnInit {
       }
     });
   }
-
-
 }

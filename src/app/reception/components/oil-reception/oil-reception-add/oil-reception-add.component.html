@@ -1,23 +1,23 @@
-<!-- Loading Spinner -->
+<!-- Indicateur de chargement -->
 <div *ngIf="loading" class="loading-overlay">
   <mat-spinner diameter="50"></mat-spinner>
 </div>
 
-<!-- Error Message -->
+<!-- Message d’erreur -->
 <div *ngIf="errorMessage && !loading" class="error-message">
   {{ errorMessage }}
 </div>
 
-<!-- Form within Card -->
+<!-- Formulaire -->
 <app-card
   *ngIf="!errorMessage && !loading"
-  [cardTitle]="isEditing ? 'Modifier la réception huile' : 'Ajouter une réception huile'"
+  [cardTitle]="isEditing ? 'Modifier la réception d’huile' : 'Ajouter une réception d’huile'"
   [showHeader]="false"
   [showContent]="true"
   [padding]="20"
 >
   <form [formGroup]="receptionForm" class="form-content">
-    <!-- General Information -->
+    <!-- En-tête -->
     <div class="header-row">
       <button mat-icon-button (click)="onBack()" [disabled]="loading" title="Retour">
         <mat-icon>arrow_back</mat-icon>
@@ -26,52 +26,59 @@
     </div>
     <hr />
 
-    <!-- Scrollable Form Content -->
+    <!-- Contenu du formulaire -->
     <div class="scrollable-form">
       <div class="form-body">
+
+        <!-- Ligne 1 -->
         <div class="row">
           <div class="col-md-3">
             <mat-form-field appearance="outline" class="w-100 m-b-10">
               <mat-label>Type de livraison</mat-label>
-              <input formControlName="deliveryType" matInput readonly />
+              <input matInput formControlName="deliveryType" readonly />
             </mat-form-field>
           </div>
+
           <div class="col-md-3">
             <mat-form-field appearance="outline" class="w-100 m-b-10">
               <mat-label>Numéro de livraison</mat-label>
-              <input formControlName="deliveryNumber" matInput readonly />
+              <input matInput formControlName="deliveryNumber" readonly />
             </mat-form-field>
           </div>
+
           <div class="col-md-3">
             <mat-form-field appearance="outline" class="w-100 m-b-10">
               <mat-label>Numéro de lot</mat-label>
-              <input formControlName="lotNumber" matInput readonly />
+              <input matInput formControlName="lotNumber" readonly />
             </mat-form-field>
           </div>
+
           <div class="col-md-3">
             <mat-form-field appearance="outline" class="w-100 m-b-10">
-              <mat-label>Numéro lot global</mat-label>
-              <input formControlName="globalLotNumber" matInput />
+              <mat-label>Numéro de lot global</mat-label>
+              <input matInput formControlName="globalLotNumber" />
             </mat-form-field>
           </div>
         </div>
 
+        <!-- Ligne 2 -->
         <div class="row">
           <div class="col-md-3">
             <mat-form-field appearance="outline" class="w-100 m-b-10">
               <mat-label>Date de réception</mat-label>
-              <input [matDatepicker]="recPicker" formControlName="deliveryDate" matInput required />
-              <mat-datepicker-toggle [for]="recPicker" matSuffix></mat-datepicker-toggle>
+              <input matInput [matDatepicker]="recPicker" formControlName="deliveryDate" required />
+              <mat-datepicker-toggle matSuffix [for]="recPicker"></mat-datepicker-toggle>
               <mat-datepicker #recPicker></mat-datepicker>
               <mat-error *ngIf="receptionForm.get('deliveryDate')?.hasError('required')">
                 Ce champ est requis
               </mat-error>
             </mat-form-field>
           </div>
+
           <div class="col-md-3">
             <mat-form-field appearance="outline" class="w-100 m-b-10">
               <mat-label>Poids brut (kg)</mat-label>
-              <input formControlName="poidsBrut" matInput type="number" min="0" />
+              <input matInput formControlName="poidsBrut" type="number" min="0" />
               <mat-error *ngIf="receptionForm.get('poidsBrut')?.hasError('min')">
                 La valeur doit être positive
               </mat-error>
@@ -80,10 +87,11 @@
               </mat-error>
             </mat-form-field>
           </div>
+
           <div class="col-md-3">
             <mat-form-field appearance="outline" class="w-100 m-b-10">
               <mat-label>Volume (L)</mat-label>
-              <input formControlName="oilQuantity" matInput type="number" min="0" />
+              <input matInput formControlName="oilQuantity" type="number" min="0" />
               <mat-error *ngIf="receptionForm.get('oilQuantity')?.hasError('min')">
                 La valeur doit être positive
               </mat-error>
@@ -95,6 +103,7 @@
               </mat-error>
             </mat-form-field>
           </div>
+
           <div class="col-md-3">
             <mat-form-field appearance="outline" class="w-100 m-b-10">
               <mat-label>Région</mat-label>
@@ -110,16 +119,18 @@
           </div>
         </div>
 
+        <!-- Ligne 3 -->
         <div class="row">
           <div class="col-md-3">
             <mat-form-field appearance="outline" class="w-100 m-b-10">
               <mat-label>Matricule du camion</mat-label>
-              <input formControlName="matriculeCamion" matInput required />
+              <input matInput formControlName="matriculeCamion" required />
               <mat-error *ngIf="receptionForm.get('matriculeCamion')?.hasError('required')">
                 Ce champ est requis
               </mat-error>
             </mat-form-field>
           </div>
+
           <div class="col-md-3">
             <mat-form-field appearance="outline" class="w-100 m-b-10">
               <mat-label>État du camion</mat-label>
@@ -132,6 +143,7 @@
               </mat-error>
             </mat-form-field>
           </div>
+
           <div class="col-md-3">
             <mat-form-field appearance="outline" class="w-100 m-b-10">
               <mat-label>Fournisseur</mat-label>
@@ -145,6 +157,7 @@
               </mat-error>
             </mat-form-field>
           </div>
+
           <div class="col-md-3">
             <mat-form-field appearance="outline" class="w-100 m-b-10">
               <mat-label>Type d'huile</mat-label>
@@ -160,10 +173,11 @@
           </div>
         </div>
 
+        <!-- Ligne 4 -->
         <div class="row">
           <div class="col-md-3">
             <mat-form-field appearance="outline" class="w-100 m-b-10">
-              <mat-label>Type d'huile (qualité)</mat-label>
+              <mat-label>Type d’huile (qualité)</mat-label>
               <mat-select formControlName="oilType" required>
                 <mat-option *ngFor="let type of oilTypes" [value]="type">
                   {{ type.name }}
@@ -174,10 +188,11 @@
               </mat-error>
             </mat-form-field>
           </div>
+
           <div class="col-md-3">
             <mat-form-field appearance="outline" class="w-100 m-b-10">
               <mat-label>Prix unitaire (DH/L)</mat-label>
-              <input formControlName="unitPrice" matInput type="number" min="0" required />
+              <input matInput formControlName="unitPrice" type="number" min="0" required />
               <mat-error *ngIf="receptionForm.get('unitPrice')?.hasError('required')">
                 Ce champ est requis
               </mat-error>
@@ -186,19 +201,18 @@
               </mat-error>
             </mat-form-field>
           </div>
+
           <div class="col-md-3">
             <mat-form-field appearance="outline" class="w-100 m-b-10">
               <mat-label>Prix total (DH)</mat-label>
-              <input formControlName="price" matInput type="number" min="0" readonly />
-              <mat-error *ngIf="receptionForm.get('price')?.hasError('min')">
-                La valeur doit être positive
-              </mat-error>
+              <input matInput formControlName="price" type="number" min="0" readonly />
             </mat-form-field>
           </div>
+
           <div class="col-md-3">
             <mat-form-field appearance="outline" class="w-100 m-b-10">
               <mat-label>Montant payé (DH)</mat-label>
-              <input formControlName="paidAmount" matInput type="number" min="0" />
+              <input matInput formControlName="paidAmount" type="number" min="0" />
               <mat-error *ngIf="receptionForm.get('paidAmount')?.hasError('min')">
                 La valeur doit être positive
               </mat-error>
@@ -206,16 +220,15 @@
           </div>
         </div>
 
+        <!-- Ligne 5 -->
         <div class="row">
           <div class="col-md-3">
             <mat-form-field appearance="outline" class="w-100 m-b-10">
               <mat-label>Montant impayé (DH)</mat-label>
-              <input formControlName="unpaidAmount" matInput type="number" min="0" readonly />
-              <mat-error *ngIf="receptionForm.get('unpaidAmount')?.hasError('min')">
-                La valeur doit être positive
-              </mat-error>
+              <input matInput formControlName="unpaidAmount" type="number" min="0" readonly />
             </mat-form-field>
           </div>
+
           <div class="col-md-3">
             <mat-form-field appearance="outline" class="w-100 m-b-10">
               <mat-label>Cuve</mat-label>
@@ -230,9 +243,10 @@
               </mat-error>
             </mat-form-field>
           </div>
-          <div class="col-md-3">
-            <mat-form-field appearance="outline" class="w-100 m-b-10" *ngIf="oliveTypes.length > 0">
-              <mat-label>Type d'olive</mat-label>
+
+          <div class="col-md-3" *ngIf="oliveTypes.length > 0">
+            <mat-form-field appearance="outline" class="w-100 m-b-10">
+              <mat-label>Type d’olive</mat-label>
               <mat-select formControlName="oliveType">
                 <mat-option *ngFor="let type of oliveTypes" [value]="type">
                   {{ type.name }}
@@ -242,20 +256,16 @@
           </div>
         </div>
 
-        <!-- Action Buttons -->
+        <!-- Boutons d'action -->
         <div class="form-row m-t-10">
-          <button
-            color="primary"
-            mat-flat-button
-            (click)="save()"
-            [disabled]="receptionForm.invalid || loading"
-          >
+          <button mat-flat-button color="primary" (click)="save()" [disabled]="receptionForm.invalid || loading">
             {{ isEditing ? 'Mettre à jour' : 'Ajouter' }}
           </button>
-          <button color="warn" mat-stroked-button type="button" (click)="resetForm()" [disabled]="loading">
+          <button mat-stroked-button color="warn" type="button" (click)="resetForm()" [disabled]="loading">
             Annuler
           </button>
         </div>
+
       </div>
     </div>
   </form>

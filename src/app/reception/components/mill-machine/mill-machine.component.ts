@@ -13,6 +13,7 @@ import { MatSortModule, MatSort } from '@angular/material/sort';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { SharedModule } from '../../../demo/shared/shared.module';
+
 import { MillMachine } from '../../../shared/models/millMachine';
 import { MillMachineService } from '../../../shared/services/mill-machine.service';
 
@@ -23,6 +24,7 @@ import { MillMachineService } from '../../../shared/services/mill-machine.servic
   standalone: true,
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     MatButtonModule,
     MatTableModule,
     MatIconModule,
@@ -34,16 +36,16 @@ import { MillMachineService } from '../../../shared/services/mill-machine.servic
     MatSortModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    ReactiveFormsModule,
-    SharedModule,
-  ],
+    SharedModule
+  ]
 })
 export class MillMachineComponent implements OnInit {
   form: FormGroup;
   machines: MillMachine[] = [];
-  dataSource: MatTableDataSource<MillMachine> = new MatTableDataSource<MillMachine>([]);
+  dataSource = new MatTableDataSource<MillMachine>([]);
   formOpen = false;
   isEditing = false;
+
   displayedColumns = [
     'id',
     'name',
@@ -90,12 +92,12 @@ export class MillMachineComponent implements OnInit {
 
   loadAll(): void {
     this.service.getAllMillMachines().subscribe({
-      next: (data: MillMachine[]) => {
+      next: (data) => {
         this.machines = data;
-        this.dataSource.data = this.machines;
+        this.dataSource.data = data;
       },
       error: (err) => {
-        console.error('Error loading mill machines:', err);
+        console.error('Erreur lors du chargement des machines :', err);
       }
     });
   }
@@ -103,6 +105,7 @@ export class MillMachineComponent implements OnInit {
   openForm(edit: boolean = false, machine?: MillMachine): void {
     this.isEditing = edit;
     this.formOpen = true;
+
     if (edit && machine) {
       this.form.patchValue(machine);
     } else {
@@ -134,30 +137,35 @@ export class MillMachineComponent implements OnInit {
       this.form.markAllAsTouched();
       return;
     }
-    const payload: MillMachine = this.form.value;
-    const obs = this.isEditing ? this.service.updateMillMachine(payload) : this.service.addMillMachine(payload);
 
-    obs.subscribe({
+    const payload: MillMachine = this.form.value;
+    const request$ = this.isEditing
+      ? this.service.updateMillMachine(payload)
+      : this.service.addMillMachine(payload);
+
+    request$.subscribe({
       next: () => {
         this.loadAll();
         this.cancel();
       },
       error: (err) => {
-        console.error('Error saving mill machine:', err);
+        console.error('Erreur lors de l’enregistrement de la machine :', err);
       }
     });
   }
 
-  editMachine(m: MillMachine): void {
-    this.openForm(true, m);
+  editMachine(machine: MillMachine): void {
+    this.openForm(true, machine);
   }
 
-  deleteMachine(m: MillMachine): void {
-    if (m.id) {
-      this.service.deleteMillMachine(m.id).subscribe({
+  deleteMachine(machine: MillMachine): void {
+    if (!machine.id) return;
+
+    if (confirm('Voulez-vous vraiment supprimer cette machine ?')) {
+      this.service.deleteMillMachine(machine.id).subscribe({
         next: () => this.loadAll(),
         error: (err) => {
-          console.error('Error deleting mill machine:', err);
+          console.error('Erreur lors de la suppression de la machine :', err);
         }
       });
     }

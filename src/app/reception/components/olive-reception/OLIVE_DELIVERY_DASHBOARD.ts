@@ -4,12 +4,12 @@ import { SearchOperation } from '../../../shared/models/advanced-search/searchOp
 import { TypeCategory } from '../../../shared/models/type-category.enum';
 
 export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
-  title: 'Livraisons d\'Olives',
-  titleTranslatePath: 'DELIVERIES.OLIVE_TITLE',
-  baseURL: 'deliveries',
-  searchEndpoint: 'production/deliveries',
-  addNewItem: true,
-  addNewItemUrl: 'reception/reception-olive/new',
+  title: 'Livraisons d\'Olives',// afficehr titre fi dashboard
+  titleTranslatePath: 'DELIVERIES.OLIVE_TITLE', //tradusction
+  baseURL: 'deliveries', //todo remove it usless
+  searchEndpoint: 'production/deliveries',//endpoint fl backedn
+  addNewItem: true,//show new button
+  addNewItemUrl: 'reception/reception-olive/new',//add new componnt path
   defaultSearchData: {
     page: 0,
     size: 10,
@@ -24,7 +24,7 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
         }
       }
     }
-  },
+  },// if youy need ot load the dta initilly based on this
   /* ────────────────────────────────────────────────────────────── */
   /*         Champs pour les livraisons d'olives                   */
   /* ────────────────────────────────────────────────────────────── */
@@ -34,10 +34,10 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
       name: 'deliveryNumber',
       label: 'N° Livraison',
       attributeType: AttributeType.string,
-      fieldType: FieldType.text,
-      exportable: true,
+      fieldType: FieldType.text,// how to displaye it in front end
+      exportable: true,// export to csv or pdf
       sortable: true,
-      dataTable: true
+      dataTable: true // display in datatabele
     },
     {
       name: 'deliveryType',
@@ -102,6 +102,32 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
           search: {
             type: {
               equalValue: 'REGION'
+            }
+          }
+        }
+      },
+      autoCompleteFilterAttributes: ['name'],
+      filterable: true,
+      dataTable: true
+    }, {
+      name: 'operationType.name',
+      label: 'Type operation',
+      attributeType: AttributeType.string,
+      fieldType: FieldType.autocomplete,
+      exportable: true,
+      valuePath: 'name',
+      getOptionsUrl: 'production/types',
+      autoCompleteDefaultCriteria: {
+        page: 0,
+        size: 10,
+        sort: 'createdDate',
+        order: 'DESC',
+        searchData: {
+          operation: SearchOperation.AND,
+          searchs: [],
+          search: {
+            type: {
+              equalValue: 'OPERATION_TYPE'
             }
           }
         }
@@ -260,9 +286,9 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
     statusMapping: false,
     statusAttributeName: 'status',
     actionsList: [
-      { label: 'Consulter', icon: 'visibility', value: 'CONSULTER' },
-      { label: 'Modifier', icon: 'edit', value: 'MODIFIER' },
-      { label: 'Supprimer', icon: 'delete', value: 'SUPPRIMER' },
+      { label: 'Consulter',        icon: 'visibility', value: 'CONSULTER' },
+      { label: 'Modifier',         icon: 'edit',       value: 'MODIFIER' },
+      { label: 'Supprimer',        icon: 'delete',     value: 'SUPPRIMER' },
       { label: 'Contrôle Qualité', icon: 'fact_check', value: 'QUALITY' }
     ]
   },

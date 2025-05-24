@@ -1,3 +1,4 @@
+<!-- Skeleton loading card -->
 <mat-card *ngIf="!credit" class="oil-credit-detail-card skeleton">
   <mat-card-header>
     <div class="skeleton-header"></div>
@@ -12,12 +13,13 @@
   </mat-card-content>
 </mat-card>
 
+<!-- Actual credit detail card -->
 <mat-card *ngIf="credit" class="oil-credit-detail-card">
   <mat-card-header>
     <button mat-icon-button (click)="onBack()" aria-label="Retour à la liste">
       <mat-icon>arrow_back</mat-icon>
     </button>
-    <mat-card-title class="card-title">Crédit Huile #{{ credit.id }}</mat-card-title>
+    <mat-card-title class="card-title">Crédit d’huile #{{ credit.id }}</mat-card-title>
   </mat-card-header>
   <mat-divider></mat-divider>
 
@@ -28,9 +30,10 @@
         <div class="detail-label">Date</div>
         <div class="detail-value">{{ credit.credit_date | date:'longDate' }}</div>
       </div>
+
       <div class="detail-row">
         <mat-icon class="detail-icon">local_shipping</mat-icon>
-        <div class="detail-label">Citerne/Pile</div>
+        <div class="detail-label">Citerne / Pile</div>
         <div class="detail-value">
           <a mat-button color="primary" (click)="navigateToStorageUnits()"
              aria-label="Voir les unités de stockage">
@@ -38,16 +41,19 @@
           </a>
         </div>
       </div>
+
       <div class="detail-row">
         <mat-icon class="detail-icon">inventory</mat-icon>
         <div class="detail-label">Emballage</div>
         <div class="detail-value">{{ credit.emballage || '-' }}</div>
       </div>
+
       <div class="detail-row">
         <mat-icon class="detail-icon">height</mat-icon>
         <div class="detail-label">Quantité</div>
         <div class="detail-value">{{ credit.quantity }} {{ credit.unit }}</div>
       </div>
+
       <div class="detail-row">
         <mat-icon class="detail-icon">person</mat-icon>
         <div class="detail-label">Destinataire</div>

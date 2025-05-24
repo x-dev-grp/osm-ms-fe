@@ -50,11 +50,11 @@ export enum FieldType{
     value: any;
 }
 export interface Field {
-    name: string;
-    booleanAttributeName?:string,
+    name: string; //name in the backend entety  with nesting
+    booleanAttributeName?:string, //only when we need to display check box
     valuePath?:string;
     valueAttributeType?:AttributeType;
-    label: string;
+    label: string;// displayed label
     labelTranslatePath?:string;
     attributeType: AttributeType;
     fieldType:FieldType;

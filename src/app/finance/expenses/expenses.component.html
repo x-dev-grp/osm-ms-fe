@@ -1,7 +1,7 @@
 <mat-expansion-panel class="panel" [expanded]="form.dirty || editing">
   <mat-expansion-panel-header color="primary">
     <mat-panel-title>
-      {{ editing ? 'Modifier dépense' : 'Nouvelle dépense' }}
+      {{ editing ? 'Modifier la dépense' : 'Nouvelle dépense' }}
     </mat-panel-title>
   </mat-expansion-panel-header>
 
@@ -31,11 +31,13 @@
       </mat-form-field>
     </div>
     <div class="actions">
-      <button mat-flat-button color="primary" type="submit">{{ editing ? 'Mettre à jour' : 'Enregistrer' }}</button>
+      <button mat-flat-button color="primary" type="submit">
+        {{ editing ? 'Mettre à jour' : 'Enregistrer' }}
+      </button>
       <button mat-stroked-button color="warn" type="button" (click)="cancel()">Annuler</button>
     </div>
   </form>
 </mat-expansion-panel>
-<osm-dashboard [config]="dashboardConfig"
-               (applyAction)="handleAction($event)">
+
+<osm-dashboard [config]="dashboardConfig" (applyAction)="handleAction($event)">
 </osm-dashboard>

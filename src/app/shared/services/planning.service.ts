@@ -1,20 +1,36 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { PlanningSaveRequest, PlanningSaveResponse } from '../models/planning-save.dto';
-import { GlobalLot } from '../../reception/components/planning/planning.component';
+import { PlanningSaveRequest } from '../../reception/components/planning/planning.component';
+
+// adjust the path to your models
 
 @Injectable({ providedIn: 'root' })
 export class PlanningService {
+  API_BASE_URL = '/api/production/planning';
   constructor(private http: HttpClient) {}
 
-  save(req: PlanningSaveRequest): Observable<PlanningSaveResponse> {
-    return this.http.post<PlanningSaveResponse>('/api/plannings', req);
+  /* ───── planning CRUD ───────────────────────────────────────── */
+
+  /** GET current board snapshot */
+  getPlanning(): Observable<PlanningSaveRequest> {
+    return this.http.get<PlanningSaveRequest>(`${this.API_BASE_URL}`);
   }
 
-  createGlobalLot(body: { millMachineId?: string; receptionIds: string[] }) {
-    // TODO replace URL when the real endpoint is live
-    // return this.http.post<GlobalLot>('/api/global-lots', body);
-    console.log(body);
+  /** POST/PUT the whole plan */
+  savePlanning(body: PlanningSaveRequest): Observable<void> {
+    return this.http.post<void>(`${this.API_BASE_URL}`, body);
+  }
+
+  /* ───── NEW: mark lot(s) completed ──────────────────────────── */
+
+  /** PATCH one single LOT’s status → COMPLETED */
+  completeLot(lotNumber: string): Observable<void> {
+    return this.http.patch<void>(`${this.API_BASE_URL}/lots/${lotNumber}/completed`, {});
+  }
+
+  /** PATCH **all** lots in a global lot → COMPLETED */
+  completeGlobalLot(globalLotNumber: string): Observable<void> {
+    return this.http.patch<void>(`${this.API_BASE_URL}/globalLots/${globalLotNumber}/completed`, {});
   }
 }

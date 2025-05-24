@@ -6,17 +6,17 @@ import {
 } from '../../shared/modules/osm-dashboard/models/dashboard-config';
 
 export const EXPENSES_DASHBOARD_CONFIG: DashboardConfig = {
-  /* ───────────────────────────── meta ──────────────────────────── */
+  /* ───────────────────────────── méta ───────────────────────────── */
   title: 'Dépenses',
   titleTranslatePath: 'expenses.title',
   baseURL: 'finance/expense',
   searchEndpoint: 'finance/expense',
 
-  /* ─────────────────────── add-new button ──────────────────────── */
+  /* ─────────────────── bouton "ajouter une dépense" ─────────────── */
   addNewItem: true,
   addNewItemUrl: 'finance/expense/new',
 
-  /* ─────────────────────────── data grid ───────────────────────── */
+  /* ─────────────────────────── colonnes du tableau ──────────────── */
   fields: [
     {
       name: 'invoiceRef',
@@ -57,7 +57,6 @@ export const EXPENSES_DASHBOARD_CONFIG: DashboardConfig = {
       dataTable: true,
       filterable: true,
       exportable: true,
-
     },
     {
       name: 'amount',
@@ -71,7 +70,7 @@ export const EXPENSES_DASHBOARD_CONFIG: DashboardConfig = {
     }
   ],
 
-  /* ───────────────────────── actions menu ──────────────────────── */
+  /* ───────────────────────────── actions ─────────────────────────── */
   actions: {
     statusMapping: false,
     actionsList: <Action[]>[
@@ -82,6 +81,6 @@ export const EXPENSES_DASHBOARD_CONFIG: DashboardConfig = {
     ]
   },
 
-  /* optional export filename */
-  fileName: 'expenses'
+  /* ──────────────── nom du fichier exporté (optionnel) ───────────── */
+  fileName: 'depenses'
 };

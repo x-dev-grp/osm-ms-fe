@@ -1,7 +1,7 @@
 <mat-expansion-panel [(expanded)]="formOpen" hideToggle class="m-b-20">
   <mat-expansion-panel-header>
     <mat-panel-title>
-      {{ isEditing ? 'Edit Bank Account' : 'Add Bank Account' }}
+      {{ isEditing ? 'Modifier le compte bancaire' : 'Ajouter un compte bancaire' }}
     </mat-panel-title>
   </mat-expansion-panel-header>
 
@@ -23,15 +23,15 @@
 
     <div class="row">
       <mat-form-field appearance="outline" class="col">
-        <mat-label>Bank Name</mat-label>
+        <mat-label>Nom de la banque</mat-label>
         <input matInput formControlName="bankName" />
       </mat-form-field>
       <mat-form-field appearance="outline" class="col">
-        <mat-label>Branch</mat-label>
+        <mat-label>Agence</mat-label>
         <input matInput formControlName="bankBranch" />
       </mat-form-field>
       <mat-form-field appearance="outline" class="col">
-        <mat-label>Currency</mat-label>
+        <mat-label>Devise</mat-label>
         <mat-select formControlName="currency">
           <mat-option *ngFor="let c of currencies" [value]="c">{{ c }}</mat-option>
         </mat-select>
@@ -40,23 +40,23 @@
 
     <div class="row">
       <mat-form-field appearance="outline" class="col">
-        <mat-label>Account Type</mat-label>
+        <mat-label>Type de compte</mat-label>
         <mat-select formControlName="accountType">
           <mat-option *ngFor="let t of accountTypes" [value]="t">{{ t }}</mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-checkbox formControlName="active">Active</mat-checkbox>
+      <mat-checkbox formControlName="active">Actif</mat-checkbox>
     </div>
 
     <div class="actions full-width">
       <button mat-flat-button color="primary" type="submit">
-        {{ isEditing ? 'Update' : 'Add' }}
+        {{ isEditing ? 'Mettre à jour' : 'Ajouter' }}
       </button>
       <button mat-stroked-button color="accent" type="button" (click)="cancel()">
-        Cancel
+        Annuler
       </button>
     </div>
   </form>
 </mat-expansion-panel>
 
-<osm-dashboard [config]="dashboardConfig" (applyAction)="handleAction($event)" > </osm-dashboard>
+<osm-dashboard [config]="dashboardConfig" (applyAction)="handleAction($event)"> </osm-dashboard>
