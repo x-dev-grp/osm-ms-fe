@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { GeneralConfigComponent } from './general-config/general-config.component';
- import { StorageUnitsComponent } from './storage/storage.component';
+import { StorageUnitsComponent } from './storage/storage.component';
 import { GenericTypeComponent } from './generic-type/generic-type.component';
 import { QualityControlRuleComponent } from './quality-control-rule/quality-control-rule.component';
 import { ApplicationConfigComponent } from './application-config/application-config.component';
@@ -12,9 +12,31 @@ import { RoleResolver } from './user-management/services/role.resolver';
 const routes: Routes = [
   { path: 'general-config', component: GeneralConfigComponent, canActivate: [AuthGuardChild] },
   { path: 'quality-control', component: QualityControlRuleComponent, canActivate: [AuthGuardChild] },
-  { path: 'storage', component: StorageUnitsComponent },
+  { path: 'storage',
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./storage/storage.component').then(m => m.StorageUnitsComponent),
+        canActivate: [AuthGuardChild]
+      },
+      {
+        path: 'new',
+        loadComponent: () => import('./storage/storage-add/storage-add.component').then(m => m.StorageAddComponent),
+        canActivate: [AuthGuardChild]
+      },
+      {
+        path: ':id/edit',
+        loadComponent: () => import('./storage/storage-add/storage-add.component').then(m => m.StorageAddComponent),
+        canActivate: [AuthGuardChild]
+      },
+      {
+        path: ':id/view',
+        loadComponent: () => import('./storage/view-storage/view-storage.component').then(m => m.ViewStorageComponent),
+        canActivate: [AuthGuardChild]
+      }
+    ]
+  },
   { path: 'configuration', component: ApplicationConfigComponent, canActivate: [AuthGuardChild] },
-
   { path: 'generic', component: GenericTypeComponent, canActivate: [AuthGuardChild] },
   { path: 'users', 
     children:[

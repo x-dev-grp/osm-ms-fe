@@ -1,40 +1,52 @@
-<!-- view-expense.component.html -->
-<div *ngIf="expense" class="invoice">
-  <div class="invoice-header">
-    <button mat-icon-button (click)="onBack()">
+<app-card [title]="'Détails de la dépense'">
+  <div class="header-actions">
+    <button mat-button type="button" (click)="onBack()">
       <mat-icon>arrow_back</mat-icon>
-    </button>
-    <h1>
-      Facture n° {{ expense.invoiceRef }}
-    </h1>
-  </div>
-  <mat-divider></mat-divider>
-
-  <div class="invoice-details">
-    <p>
-      <strong>Date :</strong>
-      {{ expense.date | date:'shortDate' }}
-    </p>
-    <p>
-      <strong>Nature :</strong>
-      {{ expense.purchaseNature }}
-    </p>
-    <p>
-      <strong>Objet :</strong>
-      {{ expense.object || '-' }}
-    </p>
-  </div>
-
-  <div class="invoice-amount">
-    <h2>
-      Montant : {{ expense.amount | number:'1.2-2' }} €
-    </h2>
-  </div>
-
-  <div class="invoice-actions">
-    <button mat-flat-button color="primary" (click)="onPrint()">
-      <mat-icon>print</mat-icon>
-      <span>Imprimer</span>
+      Retour
     </button>
   </div>
-</div>
+
+  <div *ngIf="!loading && expense; else loadingTemplate" class="expense-details">
+    <div class="detail-row">
+      <div class="detail-label">Référence facture</div>
+      <div class="detail-value">{{ expense.invoiceRef }}</div>
+    </div>
+
+    <div class="detail-row">
+      <div class="detail-label">Nature de l'achat</div>
+      <div class="detail-value">{{ expense.purchaseNature }}</div>
+    </div>
+
+    <div class="detail-row">
+      <div class="detail-label">Objet</div>
+      <div class="detail-value">{{ expense.object || '-' }}</div>
+    </div>
+
+    <div class="detail-row">
+      <div class="detail-label">Date</div>
+      <div class="detail-value">{{ expense.date | date:'shortDate' }}</div>
+    </div>
+
+    <div class="detail-row">
+      <div class="detail-label">Montant</div>
+      <div class="detail-value">{{ expense.amount | number:'1.2-2' }} €</div>
+    </div>
+
+    <div class="actions">
+      <button mat-flat-button color="primary" (click)="onPrint()">
+        <mat-icon>print</mat-icon>
+        Imprimer
+      </button>
+      <button mat-flat-button color="accent" (click)="onEdit()">
+        <mat-icon>edit</mat-icon>
+        Modifier
+      </button>
+    </div>
+  </div>
+
+  <ng-template #loadingTemplate>
+    <div class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  </ng-template>
+</app-card>

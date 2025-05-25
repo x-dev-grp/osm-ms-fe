@@ -1,5 +1,5 @@
 // File: suppliers.component.ts
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatAccordion, MatExpansionModule, MatExpansionPanel, MatExpansionPanelTitle } from '@angular/material/expansion';
 import { SharedModule } from '../../../demo/shared/shared.module';
@@ -23,6 +23,12 @@ import { SupplierTypeService } from '../../../shared/services/supplier.service';
 import { SUPPLIERS_DASHBOARD_CONFIG } from './suppliers-dashboard.config';
 import { Action, DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
 import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
+import { MatCardModule } from '@angular/material/card';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Subscription } from 'rxjs';
+import { ConfigurationComponent } from '../../../@theme/layouts/configuration/configuration.component';
+import { ApiResponse } from '../../../shared/models/api-response';
+import { Expense } from '../../../finance/models/expense.model';
 
 @Component({
   selector: 'app-suppliers',
@@ -44,12 +50,14 @@ import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboar
     MatExpansionPanel,
     MatExpansionPanelTitle,
     MatPaginatorModule,
-    OsmDashboard
+    OsmDashboard,
+    MatCardModule,
+    ConfigurationComponent
   ],
   standalone: true,
   styleUrls: ['./suppliers.component.scss']
 })
-export class SupplierComponent implements OnInit {
+export class SupplierComponent implements OnInit, OnDestroy {
   suppliers: SupplierType[] = [];
   message: string = '';
   supplierForm: FormGroup;
@@ -57,51 +65,70 @@ export class SupplierComponent implements OnInit {
   regions: BaseType[] = [];
   editingRecordIndex: number = -1;
   formOpen: boolean = false;
-  selectedSupplier: SupplierType;
+  selectedSupplier: SupplierType | null = null;
   dashboardConfig: DashboardConfig = SUPPLIERS_DASHBOARD_CONFIG;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild('input') input: any;
+  private subs = new Subscription();
 
   constructor(
     private supplierService: SupplierTypeService,
     private genericTypeService: GenericTypeService,
     private fb: FormBuilder,
-    private router: Router
-  ) {}
+    private router: Router,
+    private snackBar: MatSnackBar
+  ) {
+    this.initializeForm();
+  }
 
   ngOnInit(): void {
-    this.initializeForm();
     this.loadSuppliers();
     this.loadRecords(TypeCategory.SUPPLIER_TYPE);
     this.loadRecords(TypeCategory.REGION);
   }
 
-  // Initialize the reactive form.
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
+  }
+
   initializeForm(): void {
     this.supplierForm = this.fb.group({
       supplierInfo: this.fb.group({
         id: [''],
         name: ['', Validators.required],
         lastname: ['', Validators.required],
-        phone: [''],
-        email: ['', [Validators.email]],
+        phone: ['', Validators.required],
+        email: ['', [Validators.required, Validators.email]],
         address: ['', Validators.required],
-        region: [null, Validators.required], // Expecting the ID directly
+        region: [null, Validators.required],
         rib: [''],
         bankName: ['']
       }),
-      genericSupplierType: [null, Validators.required] // Expecting the ID directly
-    });
-
-    // Log form changes for debugging
-    this.supplierForm.valueChanges.subscribe((value) => {
-      console.log('Form Value Changed:', value);
-      console.log('Form Valid:', this.supplierForm.valid);
+      genericSupplierType: [null, Validators.required]
     });
   }
 
-  // Loads BaseType records (for supplier types or regions).
+  loadSuppliers(): void {
+    this.subs.add(
+      this.supplierService.getAllSuppliers().subscribe(
+        (res) => {
+          if (res && res.success) {
+            this.suppliers = res.data;
+          } else {
+            this.suppliers = [];
+            this.toast(res.message || 'Erreur lors du chargement des fournisseurs');
+          }
+        },
+        (err) => {
+          console.error('Error loading suppliers:', err);
+          this.suppliers = [];
+          this.toast('Erreur lors du chargement des fournisseurs');
+        }
+      )
+    );
+  }
+
   loadRecords(type: TypeCategory): void {
     this.genericTypeService.getAllTypes(type).subscribe(
       (res: { success: boolean; data: BaseType[]; message: string }) => {
@@ -130,28 +157,6 @@ export class SupplierComponent implements OnInit {
     );
   }
 
-  // Loads suppliers from the back end and assigns them to the table data source.
-  loadSuppliers(): void {
-    this.supplierService.getAllSuppliers().subscribe(
-      (res) => {
-        if (res && res.success) {
-          this.suppliers = res.data;
-
-          console.log('Loaded Suppliers:', this.suppliers);
-          console.log('liste des suppliers ', res);
-          this.message = res.message;
-        } else {
-          this.suppliers = [];
-          this.message = res.message;
-        }
-      },
-      (err) => {
-        console.error('Error loading suppliers', err);
-      }
-    );
-  }
-
-  // Called when the form is submitted. Builds a payload matching the working JSON.
   onSubmit(): void {
     if (this.supplierForm.invalid) {
       console.log('Form is invalid. Submission prevented.');
@@ -159,7 +164,6 @@ export class SupplierComponent implements OnInit {
     }
 
     const formValue = this.supplierForm.value;
-    //Build the payload with the keys 'supplier' and 'genericSupplierType'.
     const payload: any = {
       supplierInfo: {
         id: formValue.supplierInfo.id,
@@ -168,7 +172,7 @@ export class SupplierComponent implements OnInit {
         phone: formValue.supplierInfo.phone,
         email: formValue.supplierInfo.email,
         address: formValue.supplierInfo.address,
-        region: formValue.supplierInfo.region, // Object with id as required
+        region: formValue.supplierInfo.region,
         rib: formValue.supplierInfo.rib,
         bankName: formValue.supplierInfo.bankName
       },
@@ -182,39 +186,40 @@ export class SupplierComponent implements OnInit {
 
     console.log('Form Payload:', this.selectedSupplier);
 
-    // If editing, update; else add.
     if (this.editingRecordIndex >= 0) {
       const supplierToUpdate = this.suppliers[this.editingRecordIndex];
       if (!supplierToUpdate.id) return;
-      this.supplierService.updateSupplier(this.selectedSupplier).subscribe(
-        // Include the ID for update
-        (res) => {
-          if (res && res.success) {
-            this.loadSuppliers();
-            this.resetForm();
-            this.editingRecordIndex = -1;
-            this.message = res.message;
+      this.subs.add(
+        this.supplierService.updateSupplier(this.selectedSupplier).subscribe(
+          (res) => {
+            if (res && res.success) {
+              this.loadSuppliers();
+              this.resetForm();
+              this.editingRecordIndex = -1;
+              this.message = res.message;
+            }
+          },
+          (err) => {
+            console.error('Error updating supplier', err);
           }
-        },
-        (err) => {
-          console.error('Error updating supplier', err);
-        }
+        )
       );
     } else {
-      this.supplierService.addSupplier(payload).subscribe(
-        (res) => {
-          if (res && res.success && res.data && res.data.length > 0) {
-            this.suppliers = [...this.suppliers, res.data[0]]; // Update the local array
-            this.resetForm();
-            this.message = res.message;
+      this.subs.add(
+        this.supplierService.addSupplier(payload).subscribe(
+          (res) => {
+            if (res && res.success && res.data && res.data.length > 0) {
+              this.suppliers = [...this.suppliers, res.data[0]];
+              this.resetForm();
+              this.message = res.message;
+            }
+          },
+          (err) => {
+            console.error('Error adding supplier', err);
           }
-        },
-        (err) => {
-          console.error('Error adding supplier', err);
-        }
+        )
       );
     }
-    // Collapse the form panel.
     this.formOpen = false;
   }
 
@@ -230,7 +235,6 @@ export class SupplierComponent implements OnInit {
     this.supplierForm.get('genericSupplierType')?.setValue(selectedTypeId);
   }
 
-  // Opens the form for editing a supplier.
   openDialog(selectedSupplier: SupplierType): void {
     this.selectedSupplier = selectedSupplier;
     console.log('openDialog - this.selectedSupplier:', this.selectedSupplier);
@@ -261,34 +265,36 @@ export class SupplierComponent implements OnInit {
     this.formOpen = true;
   }
 
-  // Deletes a supplier record.
-  deleteRecord(supplier: SupplierType): void {
-    if (confirm('Are you sure you want to delete this supplier?')) {
-      this.supplierService.deleteSupplier(supplier.id!).subscribe(
-        (res) => {
-          if (res && res.success) {
-            this.suppliers = this.suppliers.filter((s) => s.id !== supplier.id);
-            this.message = res.message;
+  deleteRecord(id: string): void {
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce fournisseur ?')) {
+      this.subs.add(
+        this.supplierService.deleteSupplier(id).subscribe({
+          next: (res) => {
+            if (res.success) {
+              this.suppliers = this.suppliers.filter(s => s.id !== id);
+              this.toast('Fournisseur supprimé avec succès');
+            } else {
+              this.toast(res.message || 'Erreur lors de la suppression');
+            }
+          },
+          error: () => {
+            this.toast('Erreur lors de la suppression');
           }
-        },
-        (err) => {
-          console.error('Error deleting supplier', err);
-        }
+        })
       );
     }
   }
 
-  // Cancels editing mode.
   cancelEdit(): void {
     this.resetForm();
     this.editingRecordIndex = -1;
-    this.formOpen = false; // Ensure the form collapses on cancel
+    this.formOpen = false;
   }
 
-  // Resets the form and collapses the panel.
   resetForm(): void {
     this.supplierForm.reset();
     this.editingRecordIndex = -1;
+    this.selectedSupplier = null;
     this.formOpen = false;
   }
 
@@ -296,22 +302,34 @@ export class SupplierComponent implements OnInit {
     return option.id === value.id;
   };
 
-  handleAction(event: { action: Action; row: SupplierType }): void {
-    switch (event.action.label?.toUpperCase()) {
+  handleAction(event: { row: SupplierType; action: Action }): void {
+    switch (event.action.value) {
       case 'CONSULTER':
-      case 'VIEW':
-        this.viewSupplier(event.row);
+        if (event.row.id) {
+          this.router.navigate(['/reception/fournisseur/details', event.row.id]);
+        }
         break;
-
       case 'MODIFIER':
-      case 'EDIT':
-        this.openDialog(event.row);
+        if (event.row.id) {
+          this.router.navigate(['/reception/fournisseur', event.row.id]);
+        }
         break;
-
       case 'SUPPRIMER':
-      case 'DELETE':
-        this.deleteRecord(event.row);
+        if (event.row.id) {
+          this.deleteRecord(event.row.id);
+        }
+        break;
+      case 'AJOUTER':
+        this.router.navigate(['/reception/fournisseur/new']);
         break;
     }
+  }
+
+  toast(message: string): void {
+    this.snackBar.open(message, 'Fermer', {
+      duration: 3000,
+      horizontalPosition: 'right',
+      verticalPosition: 'top'
+    });
   }
 }

@@ -1,0 +1,91 @@
+<app-card [title]="'Storage Unit Details'">
+  <div class="view-container">
+    <div class="header-actions">
+      <button mat-stroked-button (click)="onBack()">
+        <mat-icon>arrow_back</mat-icon>
+        Back
+      </button>
+      <button mat-flat-button color="primary" (click)="onEdit()">
+        <mat-icon>edit</mat-icon>
+        Edit
+      </button>
+    </div>
+
+    <div *ngIf="loading" class="loading-container">
+      <mat-spinner></mat-spinner>
+    </div>
+
+    <div *ngIf="!loading && storageUnit" class="main-content">
+      <!-- Storage Unit Card -->
+      <div class="storage-card">
+        <div class="storage-card-header">
+          <div class="storage-title">
+            <mat-icon class="storage-icon" [ngClass]="getStatusIconClass()">{{ getStatusIcon() }}</mat-icon>
+            <h2>{{ storageUnit.name }}</h2>
+          </div>
+          <div class="storage-status" [ngClass]="getStatusClass()">
+            {{ storageUnit.status }}
+          </div>
+        </div>
+
+        <div class="storage-visualization">
+          <div class="storage-unit">
+            <div class="storage-unit-body">
+              <div class="fill-level-indicator" [style.height.%]="getFillPercentage()" [ngClass]="getFillLevelClass()">
+                <div class="fill-pattern"></div>
+                <span class="fill-level-text">{{ getFillPercentage() | number:'1.0-0' }}%</span>
+              </div>
+            </div>
+          </div>
+          <div class="storage-metrics">
+            <div class="metric">
+              <span class="metric-label">Current Volume</span>
+              <span class="metric-value">{{ storageUnit.currentVolume }} L</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Max Capacity</span>
+              <span class="metric-value">{{ storageUnit.maxCapacity }} L</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Location</span>
+              <span class="metric-value">{{ storageUnit.location }}</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Oil Type</span>
+              <span class="metric-value">{{ storageUnit.oilType?.name || 'N/A' }}</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Next Maintenance</span>
+              <span class="metric-value">{{ storageUnit.nextMaintenanceDate | date:'mediumDate' || 'N/A' }}</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Last Inspection</span>
+              <span class="metric-value">{{ storageUnit.lastInspectionDate | date:'mediumDate' || 'N/A' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Transaction List -->
+      <div class="transaction-list">
+        <div class="transaction-header">
+          <h2>Transaction History</h2>
+        </div>
+<!--        <div class="transaction-list-content">-->
+<!--          <div *ngFor="let transaction of transactions" class="transaction-item">-->
+<!--            <div class="transaction-details">-->
+<!--              <span class="transaction-type">{{ transaction.type }}</span>-->
+<!--              <span class="transaction-date">{{ transaction.date | date:'medium' }}</span>-->
+<!--            </div>-->
+<!--            <span class="transaction-amount" [ngClass]="{'negative': transaction.amount < 0}">-->
+<!--              {{ transaction.amount > 0 ? '+' : '' }}{{ transaction.amount }} L-->
+<!--            </span>-->
+<!--          </div>-->
+<!--          <div *ngIf="!transactions?.length" class="transaction-item">-->
+<!--            <span class="transaction-type">No transactions available</span>-->
+<!--          </div>-->
+<!--        </div>-->
+      </div>
+    </div>
+  </div>
+</app-card>

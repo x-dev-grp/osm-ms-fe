@@ -1,0 +1,101 @@
+<app-card [title]="isEditMode ? 'Edit Bank Account' : 'Add Bank Account'">
+  <div header-action>
+    <button mat-icon-button (click)="onBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+  </div>
+
+  <div class="form-container">
+    <form [formGroup]="bankAccountForm" (ngSubmit)="save()">
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>RIB</mat-label>
+          <input matInput formControlName="rib" required>
+          <mat-error *ngIf="bankAccountForm.get('rib')?.hasError('required')">
+            RIB is required
+          </mat-error>
+          <mat-error *ngIf="bankAccountForm.get('rib')?.hasError('minlength') || bankAccountForm.get('rib')?.hasError('maxlength')">
+            RIB must be 24 characters long
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>IBAN</mat-label>
+          <input matInput formControlName="iban" required>
+          <mat-error *ngIf="bankAccountForm.get('iban')?.hasError('required')">
+            IBAN is required
+          </mat-error>
+          <mat-error *ngIf="bankAccountForm.get('iban')?.hasError('minlength') || bankAccountForm.get('iban')?.hasError('maxlength')">
+            IBAN must be 24 characters long
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>BIC/SWIFT</mat-label>
+          <input matInput formControlName="bicSwift" required>
+          <mat-error *ngIf="bankAccountForm.get('bicSwift')?.hasError('required')">
+            BIC/SWIFT is required
+          </mat-error>
+          <mat-error *ngIf="bankAccountForm.get('bicSwift')?.hasError('minlength') || bankAccountForm.get('bicSwift')?.hasError('maxlength')">
+            BIC/SWIFT must be between 8 and 11 characters
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Bank Name</mat-label>
+          <input matInput formControlName="bankName" required>
+          <mat-error *ngIf="bankAccountForm.get('bankName')?.hasError('required')">
+            Bank name is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Bank Branch</mat-label>
+          <input matInput formControlName="bankBranch" required>
+          <mat-error *ngIf="bankAccountForm.get('bankBranch')?.hasError('required')">
+            Bank branch is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Currency</mat-label>
+          <mat-select formControlName="currency" required>
+            <mat-option value="EUR">EUR</mat-option>
+            <mat-option value="USD">USD</mat-option>
+            <mat-option value="GBP">GBP</mat-option>
+          </mat-select>
+          <mat-error *ngIf="bankAccountForm.get('currency')?.hasError('required')">
+            Currency is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Account Type</mat-label>
+          <mat-select formControlName="accountType" required>
+            <mat-option value="CHECKING">Checking</mat-option>
+            <mat-option value="SAVINGS">Savings</mat-option>
+            <mat-option value="BUSINESS">Business</mat-option>
+          </mat-select>
+          <mat-error *ngIf="bankAccountForm.get('accountType')?.hasError('required')">
+            Account type is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-checkbox formControlName="active">Active</mat-checkbox>
+      </div>
+
+      <div class="form-actions">
+        <button mat-button type="button" (click)="onBack()">Cancel</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="loading">
+          {{ isEditMode ? 'Update' : 'Save' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</app-card> 

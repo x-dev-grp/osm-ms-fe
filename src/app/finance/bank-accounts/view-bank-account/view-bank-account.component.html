@@ -1,0 +1,70 @@
+<app-card title="Bank Account Details">
+  <div>
+    <button mat-icon-button (click)="onBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+  </div>
+
+  <div class="details-container">
+    <div *ngIf="loading" class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+
+    <div *ngIf="!loading && bankAccount" class="details-content">
+      <div class="details-row">
+        <div class="details-label">RIB:</div>
+        <div class="details-value">{{ bankAccount.rib }}</div>
+      </div>
+
+      <div class="details-row">
+        <div class="details-label">IBAN:</div>
+        <div class="details-value">{{ bankAccount.iban }}</div>
+      </div>
+
+      <div class="details-row">
+        <div class="details-label">BIC/SWIFT:</div>
+        <div class="details-value">{{ bankAccount.bicSwift }}</div>
+      </div>
+
+      <div class="details-row">
+        <div class="details-label">Bank Name:</div>
+        <div class="details-value">{{ bankAccount.bankName }}</div>
+      </div>
+
+      <div class="details-row">
+        <div class="details-label">Bank Branch:</div>
+        <div class="details-value">{{ bankAccount.bankBranch }}</div>
+      </div>
+
+      <div class="details-row">
+        <div class="details-label">Currency:</div>
+        <div class="details-value">{{ bankAccount.currency }}</div>
+      </div>
+
+      <div class="details-row">
+        <div class="details-label">Account Type:</div>
+        <div class="details-value">{{ bankAccount.accountType }}</div>
+      </div>
+
+      <div class="details-row">
+        <div class="details-label">Status:</div>
+        <div class="details-value">
+          <mat-chip [color]="bankAccount.active ? 'primary' : 'warn'" selected>
+            {{ bankAccount.active ? 'Active' : 'Inactive' }}
+          </mat-chip>
+        </div>
+      </div>
+
+      <div class="details-actions">
+        <button mat-button (click)="onPrint()">
+          <mat-icon>print</mat-icon>
+          Print
+        </button>
+        <button mat-raised-button color="primary" (click)="onEdit()">
+          <mat-icon>edit</mat-icon>
+          Edit
+        </button>
+      </div>
+    </div>
+  </div>
+</app-card>

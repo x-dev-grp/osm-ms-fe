@@ -1,10 +1,30 @@
 <!-- Back button (floats above the card) -->
-<button mat-icon-button (click)="onBack()" aria-label="Retour" style="margin-bottom:8px">
-  <mat-icon>arrow_back</mat-icon>
-</button>
+<div class="action-buttons">
+  <button mat-icon-button (click)="onBack()" aria-label="Retour">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <button mat-raised-button color="primary" (click)="onEdit()" *ngIf="supplierData">
+    <mat-icon>edit</mat-icon>
+    Modifier
+  </button>
+</div>
+
+<!-- Loading spinner -->
+<div *ngIf="loading" class="loading-container">
+  <mat-spinner></mat-spinner>
+</div>
+
+<!-- Error message -->
+<div *ngIf="error" class="error-container">
+  <mat-icon color="warn">error</mat-icon>
+  <p>{{ error }}</p>
+  <button mat-raised-button color="primary" (click)="onBack()">
+    Retour à la liste
+  </button>
+</div>
 
 <!-- Supplier details card -->
-<mat-card class="mat-elevation-z2">
+<mat-card class="mat-elevation-z2" *ngIf="!loading && !error && supplierData">
   <mat-card-title>Détails du Fournisseur</mat-card-title>
   <mat-divider></mat-divider>
 

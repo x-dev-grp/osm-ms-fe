@@ -32,3 +32,8 @@
   background-color: #fff;
   font-weight: bold;
 }
+
+:host {
+  display: block;
+  padding: 1rem;
+}

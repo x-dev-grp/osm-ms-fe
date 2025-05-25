@@ -1,0 +1,129 @@
+<div class="supplier-add-container">
+  <h2>{{ isEditing ? 'Modifier le fournisseur' : 'Ajouter un fournisseur' }}</h2>
+
+  <!-- Loading spinner -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <!-- Error message -->
+  <div *ngIf="error" class="error-container">
+    <mat-icon color="warn">error</mat-icon>
+    <p>{{ error }}</p>
+  </div>
+
+  <form [formGroup]="supplierForm" (ngSubmit)="onSubmit()" class="supplier-form" *ngIf="!loading">
+    <div formGroupName="supplierInfo">
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Nom</mat-label>
+          <input matInput formControlName="name" required>
+          <mat-error *ngIf="supplierForm.get('supplierInfo.name')?.hasError('required')">
+            Le nom est requis
+          </mat-error>
+          <mat-error *ngIf="supplierForm.get('supplierInfo.name')?.hasError('minlength')">
+            Le nom doit contenir au moins 2 caractères
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Prénom</mat-label>
+          <input matInput formControlName="lastname" required>
+          <mat-error *ngIf="supplierForm.get('supplierInfo.lastname')?.hasError('required')">
+            Le prénom est requis
+          </mat-error>
+          <mat-error *ngIf="supplierForm.get('supplierInfo.lastname')?.hasError('minlength')">
+            Le prénom doit contenir au moins 2 caractères
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Téléphone</mat-label>
+          <input matInput formControlName="phone" required>
+          <mat-error *ngIf="supplierForm.get('supplierInfo.phone')?.hasError('required')">
+            Le téléphone est requis
+          </mat-error>
+          <mat-error *ngIf="supplierForm.get('supplierInfo.phone')?.hasError('pattern')">
+            Le téléphone doit contenir 10 chiffres
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" required type="email">
+          <mat-error *ngIf="supplierForm.get('supplierInfo.email')?.hasError('required')">
+            L'email est requis
+          </mat-error>
+          <mat-error *ngIf="supplierForm.get('supplierInfo.email')?.hasError('email')">
+            Format d'email invalide
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Adresse</mat-label>
+          <input matInput formControlName="address" required>
+          <mat-error *ngIf="supplierForm.get('supplierInfo.address')?.hasError('required')">
+            L'adresse est requise
+          </mat-error>
+          <mat-error *ngIf="supplierForm.get('supplierInfo.address')?.hasError('minlength')">
+            L'adresse doit contenir au moins 5 caractères
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Région</mat-label>
+          <mat-select formControlName="region" required [compareWith]="objectComparisonFunction">
+            <mat-option *ngFor="let region of regions" [value]="region">
+              {{region.name}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="supplierForm.get('supplierInfo.region')?.hasError('required')">
+            La région est requise
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>RIB</mat-label>
+          <input matInput formControlName="rib">
+          <mat-error *ngIf="supplierForm.get('supplierInfo.rib')?.hasError('pattern')">
+            Le RIB doit contenir 24 chiffres
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Nom de la banque</mat-label>
+          <input matInput formControlName="bankName">
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Type de fournisseur</mat-label>
+        <mat-select formControlName="genericSupplierType" required [compareWith]="objectComparisonFunction">
+          <mat-option *ngFor="let type of supplierTypes" [value]="type">
+            {{type.name}}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="supplierForm.get('genericSupplierType')?.hasError('required')">
+          Le type de fournisseur est requis
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-actions">
+      <button mat-button type="button" (click)="router.navigate(['/reception/fournisseur'])">
+        Annuler
+      </button>
+      <button mat-raised-button color="primary" type="submit" [disabled]="supplierForm.invalid || loading">
+        {{ isEditing ? 'Modifier' : 'Ajouter' }}
+      </button>
+    </div>
+  </form>
+</div>

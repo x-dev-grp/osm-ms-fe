@@ -1,0 +1,90 @@
+<app-card [title]="editing ? 'Modifier le crédit d\'huile' : 'Nouveau crédit d\'huile'">
+  <form [formGroup]="form" (ngSubmit)="save()" class="credit-form">
+    <div class="row">
+      <div class="col-lg-6">
+        <mat-form-field appearance="outline" class="col">
+          <mat-label>Date</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="credit_date">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error *ngIf="submitted && form.get('credit_date')?.hasError('required')">
+            La date est requise.
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-6">
+        <mat-form-field appearance="outline" class="col">
+          <mat-label>Citerne / Pile</mat-label>
+          <mat-select formControlName="citerne_pile" (selectionChange)="onStorageUnitSelected($event.value)">
+            <mat-option *ngFor="let unit of storageUnits"
+                        [value]="unit.id"
+                        [ngClass]="getVolumeClass(unit.currentVolume, unit.maxCapacity)">
+              {{ unit.name }} ({{ unit.currentVolume | number }} / {{ unit.maxCapacity | number }} L)
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="submitted && form.get('citerne_pile')?.hasError('required')">
+            La citerne / pile est requise.
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-6">
+        <mat-form-field appearance="outline" class="col">
+          <mat-label>Emballage</mat-label>
+          <input matInput formControlName="emballage">
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-6">
+        <mat-form-field appearance="outline" class="col">
+          <mat-label>Destinataire</mat-label>
+          <input matInput formControlName="destinataire">
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-6">
+        <mat-form-field appearance="outline" class="col">
+          <mat-label>Quantité</mat-label>
+          <input matInput type="number" formControlName="quantity">
+          <mat-error *ngIf="submitted && form.get('quantity')?.hasError('required')">
+            La quantité est requise.
+          </mat-error>
+          <mat-error *ngIf="submitted && form.get('quantity')?.hasError('min')">
+            La quantité doit être supérieure à 0.
+          </mat-error>
+          <mat-error *ngIf="submitted && form.get('quantity')?.hasError('insufficientVolume')">
+            La quantité demandée dépasse le volume disponible.
+          </mat-error>
+          <mat-error *ngIf="submitted && form.get('quantity')?.hasError('unitMismatch')">
+            La quantité en KG n'est pas compatible avec le volume en litres.
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-6">
+        <mat-form-field appearance="outline" class="col">
+          <mat-label>Unité</mat-label>
+          <mat-select formControlName="unit">
+            <mat-option value="L">Litre</mat-option>
+            <mat-option value="KG">Kilogramme</mat-option>
+          </mat-select>
+          <mat-error *ngIf="submitted && form.get('unit')?.hasError('required')">
+            L'unité est requise.
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button mat-stroked-button type="button" (click)="cancel()">Annuler</button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="loading">
+        {{ editing ? 'Mettre à jour' : 'Créer' }}
+      </button>
+    </div>
+  </form>
+</app-card> 

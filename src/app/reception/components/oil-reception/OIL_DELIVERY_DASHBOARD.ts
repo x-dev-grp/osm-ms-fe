@@ -29,7 +29,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
   /*         Champs pour les livraisons d'huile                    */
   /* ────────────────────────────────────────────────────────────── */
   fields: [
-    /* Identifiants & méta */
+    /* Identifiants */
     {
       name: 'deliveryNumber',
       label: 'N° Livraison',
@@ -37,19 +37,8 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.text,
       exportable: true,
       sortable: true,
-      dataTable: true
-    },
-    {
-      name: 'deliveryType',
-      label: 'Type de livraison',
-      attributeType: AttributeType.enum,
-      fieldType: FieldType.select,
-      exportable: true,
-      sortable: true,
-      filterable: true,
       dataTable: true,
-      options: [{ label: 'Huile', value: deliveryType.OIL }],
-      defaultFilter: true
+      filterable: true
     },
     {
       name: 'lotNumber',
@@ -58,7 +47,8 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.text,
       exportable: true,
       sortable: true,
-      dataTable: true
+      dataTable: true,
+      filterable: true
     },
     {
       name: 'globalLotNumber',
@@ -66,9 +56,9 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
-      dataTable: true
+      dataTable: true,
+      filterable: true
     },
-
     /* Dates */
     {
       name: 'deliveryDate',
@@ -77,75 +67,52 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.date,
       exportable: true,
       sortable: true,
-      dataTable: true
+      dataTable: true,
+      filterable: true
     },
-
-    /* Localisation */
+    /* Fournisseur & Localisation */
     {
-      name: 'region.name',
-      label: 'Région',
-      attributeType: AttributeType.string,
+      name: 'supplier.supplierInfo',
+      label: 'Fournisseur',
+      attributeType: AttributeType.object,
       fieldType: FieldType.text,
       exportable: true,
-      valuePath: 'name',
-      getOptionsUrl: 'production/types',
-      autoCompleteDefaultCriteria: {
-        page: 0,
-        size: 10,
-        sort: 'createdDate',
-        order: 'DESC',
-        searchData: {
-          operation: SearchOperation.AND,
-          searchs: [],
-          search: {
-            type: {
-              equalValue: TypeCategory.REGION
-            }
-          }
-        }
-      },
-      autoCompleteFilterAttributes: ['region.name'],
+      dataTable: true,
       filterable: true,
-      dataTable: true
-    },
-
-    /* Poids & quantités */
-    {
-      name: 'poidsBrute',
-      label: 'Poids brut (kg)',
-      attributeType: AttributeType.number,
-      fieldType: FieldType.number,
-      exportable: false,
-      sortable: false,
-      dataTable: false
+      valuePath: 'name',
+      valueAttributeType: AttributeType.string
     },
     {
-      name: 'poidsNet',
-      label: 'Poids net (kg)',
-      attributeType: AttributeType.number,
-      fieldType: FieldType.slider,
-      exportable: false,
-      filterAttribute: FieldType.slider,
-      sortable: false,
-      dataTable: false
+      name: 'region',
+      label: 'Région',
+      attributeType: AttributeType.object,
+      fieldType: FieldType.text,
+      exportable: true,
+      dataTable: true,
+      filterable: true,
+      valuePath: 'name',
+      valueAttributeType: AttributeType.string
     },
+    /* Quantités & Prix */
     {
       name: 'oilQuantity',
       label: 'Qté huile (L)',
       attributeType: AttributeType.number,
       fieldType: FieldType.number,
       exportable: true,
-      dataTable: true
+      sortable: true,
+      dataTable: true,
+      filterable: true
     },
-
-    /* Prix */
     {
       name: 'unitPrice',
       label: 'Prix unitaire (€/L)',
       attributeType: AttributeType.number,
       fieldType: FieldType.number,
       exportable: true,
-      dataTable: true
+      sortable: true,
+      dataTable: true,
+      filterable: true
     },
     {
       name: 'price',
@@ -153,69 +120,61 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       attributeType: AttributeType.number,
       fieldType: FieldType.number,
       exportable: true,
-      dataTable: true
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },
+    /* Type d'huile */
+    {
+      name: 'oilType',
+      label: "Type d'huile",
+      attributeType: AttributeType.object,
+      fieldType: FieldType.text,
+      exportable: true,
+      dataTable: true,
+      filterable: true,
+      valuePath: 'name',
+      valueAttributeType: AttributeType.string
     },
     {
-      name: 'paidAmount',
-      label: 'Montant payé (€)',
-      attributeType: AttributeType.number,
-      fieldType: FieldType.number,
-      exportable: true
+      name: 'oilVariety',
+      label: "Variété d'huile",
+      attributeType: AttributeType.object,
+      fieldType: FieldType.text,
+      exportable: true,
+      dataTable: true,
+      filterable: true,
+      valuePath: 'name',
+      valueAttributeType: AttributeType.string
     },
-    {
-      name: 'unpaidAmount',
-      label: 'Montant impayé (€)',
-      attributeType: AttributeType.number,
-      fieldType: FieldType.number,
-      exportable: true
-    },
-
-    /* Camion & état */
+    /* Camion */
     {
       name: 'matriculeCamion',
       label: 'Matricule camion',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
-      exportable: true
-    },
-    {
-      name: 'etatCamion',
-      label: 'État camion',
-      attributeType: AttributeType.string,
-      fieldType: FieldType.text,
-      exportable: true
-    },
-
-    /* Fournisseur */
-    {
-      name: 'supplier.supplierInfo.name',
-      label: 'Fournisseur',
-      attributeType: AttributeType.object,
-      fieldType: FieldType.autocomplete,
-      getOptionsUrl: 'production/suppliers_type',
-      autoCompleteFilterAttributes: ['supplierInfo.name'],
-      valuePath: 'name',
       exportable: true,
-      dataTable: true
+      dataTable: true,
+      filterable: true
     },
-
-    /* Oil-specific fields */
+    /* Statut */
     {
-      name: 'oilVariety.name',
-      label: "Variété d'huile",
+      name: 'status',
+      label: 'Statut',
       attributeType: AttributeType.string,
-      fieldType: FieldType.text,
+      fieldType: FieldType.select,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
       filterable: true,
-      exportable: true,
-      dataTable: true
-    },
-    {
-      name: 'oilType.name',
-      label: "Type d'huile",
-      attributeType: AttributeType.string,
-      fieldType: FieldType.text,
-      exportable: true,
-      dataTable: true
+      options: [
+        { label: 'Nouveau', value: 'NEW' },
+        { label: 'Accepté', value: 'ACCEPTED' },
+        { label: 'En cours', value: 'IN_PROGRESS' },
+        { label: 'Terminé', value: 'COMPLETED' },
+        { label: 'Refusé', value: 'REFUSED' },
+        { label: 'Annulé', value: 'CANCELLED' }
+      ]
     }
   ],
 
@@ -227,11 +186,10 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       { label: 'Consulter', icon: 'visibility', value: 'CONSULTER' },
       { label: 'Modifier', icon: 'edit', value: 'MODIFIER' },
       { label: 'Supprimer', icon: 'delete', value: 'SUPPRIMER' },
-      {label: 'Contrôle Qualité', icon: 'fact_check', value: 'QUALITY'},
-      {label: 'Générer PDF', icon: 'picture_as_pdf', value: 'generer_pdf'}
+      { label: 'Contrôle Qualité', icon: 'fact_check', value: 'QUALITY' }
     ]
   },
 
-  /* Nom par défaut du fichier d’export CSV */
+  /* Nom par défaut du fichier d'export CSV */
   fileName: 'oil_deliveries'
 };

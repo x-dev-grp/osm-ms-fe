@@ -1,0 +1,58 @@
+<div class="container">
+  <h2>{{ isEditing ? 'Modifier le fournisseur' : 'Nouveau fournisseur' }}</h2>
+
+  <form [formGroup]="supplierForm" (ngSubmit)="onSubmit()" class="form-container">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Nom</mat-label>
+      <input matInput formControlName="name" required>
+      <mat-error *ngIf="supplierForm.get('name')?.hasError('required')">
+        Le nom est requis
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Type</mat-label>
+      <mat-select formControlName="type" required>
+        <mat-option value="OLIVE">Olive</mat-option>
+        <mat-option value="OIL">Huile</mat-option>
+      </mat-select>
+      <mat-error *ngIf="supplierForm.get('type')?.hasError('required')">
+        Le type est requis
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Téléphone</mat-label>
+      <input matInput formControlName="phone" required>
+      <mat-error *ngIf="supplierForm.get('phone')?.hasError('required')">
+        Le téléphone est requis
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" required type="email">
+      <mat-error *ngIf="supplierForm.get('email')?.hasError('required')">
+        L'email est requis
+      </mat-error>
+      <mat-error *ngIf="supplierForm.get('email')?.hasError('email')">
+        Format d'email invalide
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Adresse</mat-label>
+      <textarea matInput formControlName="address" required rows="3"></textarea>
+      <mat-error *ngIf="supplierForm.get('address')?.hasError('required')">
+        L'adresse est requise
+      </mat-error>
+    </mat-form-field>
+
+    <div class="button-container">
+      <button mat-button type="button" (click)="router.navigate(['/fournisseur'])">Annuler</button>
+      <button mat-raised-button color="primary" type="submit" [disabled]="supplierForm.invalid">
+        {{ isEditing ? 'Modifier' : 'Créer' }}
+      </button>
+    </div>
+  </form>
+</div>

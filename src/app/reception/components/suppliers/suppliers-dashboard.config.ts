@@ -1,47 +1,56 @@
-import { Action, AttributeType, DashboardConfig, FieldType } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { AttributeType, DashboardConfig, FieldType } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
 
 export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
   /* ─────────── basic info ─────────── */
-  title: 'Suppliers',
-  baseURL: 'production/suppliers_type',
+  title: 'Fournisseurs',
+  titleTranslatePath: 'SUPPLIERS.TITLE',
+  baseURL: 'suppliers',
   searchEndpoint: 'production/suppliers_type',
 
   /* ───────── add-new button ───────── */
   addNewItem: true,
-  addNewItemUrl: 'production/suppliers_type/new',
+  addNewItemUrl: 'reception/fournisseur/new',
 
   /* ─────────── table & filters ────── */
+  defaultSearchData: {
+    page: 0,
+    size: 10,
+    sort: 'createdDate',
+    order: 'DESC',
+    searchData: {
+      operation: SearchOperation.AND,
+      searchs: [],
+      search: {}
+    }
+  },
   fields: [
     {
       name: 'supplierInfo.name',
-      label: 'First Name',
+      label: 'Prénom',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
-      sortable: true,
       exportable: true,
+      sortable: true,
       dataTable: true,
-      filterable: true,
-      defaultFilter: true
+      filterable: true
     },
     {
       name: 'supplierInfo.lastname',
-      label: 'Last Name',
+      label: 'Nom',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
+      exportable: true,
       sortable: true,
       dataTable: true,
-      exportable: true,
-
       filterable: true
     },
     {
       name: 'supplierInfo.phone',
-      label: 'Phone',
+      label: 'Téléphone',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
-      sortable: true,
       exportable: true,
-
       dataTable: true,
       filterable: true
     },
@@ -50,50 +59,51 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
       label: 'Email',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
-      sortable: true,
-      dataTable: true,
       exportable: true,
-
+      dataTable: true,
       filterable: true
     },
     {
       name: 'supplierInfo.address',
-      label: 'Address',
+      label: 'Adresse',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
-
-      dataTable: true
+      dataTable: true,
+      filterable: true
     },
     {
       name: 'genericSupplierType.name',
-      label: 'Supplier Type',
-      attributeType: AttributeType.string,
-      fieldType: FieldType.select,
+      label: 'Type de fournisseur',
+      attributeType: AttributeType.object,
+      fieldType: FieldType.text,
       exportable: true,
-
       dataTable: true,
-      filterable: true
+      filterable: true,
+      valuePath: 'name',
+      valueAttributeType: AttributeType.string
     },
     {
       name: 'supplierInfo.region.name',
-      label: 'Region',
-      attributeType: AttributeType.string,
-      fieldType: FieldType.select,
+      label: 'Région',
+      attributeType: AttributeType.object,
+      fieldType: FieldType.text,
       exportable: true,
-
       dataTable: true,
-      filterable: true
+      filterable: true,
+      valuePath: 'name',
+      valueAttributeType: AttributeType.string
     }
   ],
 
   /* ─────────── action menu ────────── */
   actions: {
     statusMapping: false,
-    actionsList: <Action[]>[
-      { label: 'Consulter', icon: 'visibility', value: 'VIEW' },
-      { label: 'Modifier', icon: 'edit', value: 'EDIT' },
-      { label: 'Supprimer', icon: 'delete', value: 'DELETE' }
+    statusAttributeName: 'status',
+    actionsList: [
+      { label: 'Consulter', icon: 'visibility', value: 'CONSULTER' },
+      { label: 'Modifier', icon: 'edit', value: 'MODIFIER' },
+      { label: 'Supprimer', icon: 'delete', value: 'SUPPRIMER' }
     ]
   },
 

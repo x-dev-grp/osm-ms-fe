@@ -66,6 +66,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
   suppliers: SupplierType[] = [];
   oliveVarieties: BaseType[] = [];
   oliveTypes: BaseType[] = [];
+  operationTypes: BaseType[] = [];
   deliveries: UnifiedDelivery[] = [];
 
   private subscriptions = new Subscription();
@@ -96,9 +97,8 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
         oliveVariety: [null],
         sackCount: [null, Validators.min(0)],
         oliveType: [null],
-        status: [null],
-        rendement: [null, Validators.min(0)],
-        oliveQuantity: [null, Validators.min(0)],
+        status: [OliveLotStatus.NEW],
+        operationType: [null],
         parcel: ['']
       },
       { validators: netNotGreaterThanGross }
@@ -118,15 +118,17 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       this.genericTypeService.getAllTypes(TypeCategory.OLIVE_VARIETY).toPromise(),
       this.genericTypeService.getAllTypes(TypeCategory.OLIVE_TYPE).toPromise(),
       this.genericTypeService.getAllTypes(TypeCategory.REGION).toPromise(),
+      this.genericTypeService.getAllTypes(TypeCategory.OPERATION_TYPE).toPromise(),
       this.supplierService.getAllSuppliers().toPromise(),
       this.deliveryService.getAllDeliveriesList().toPromise(),
       this.isEditing && deliveryId ? this.deliveryService.getUnifiedDelivery(deliveryId).toPromise() : Promise.resolve(null)
     ])
-      .then(([varieties, types, regions, suppliers, deliveries, delivery]) => {
+      .then(([varieties, types, regions, operationTypes, suppliers, deliveries, delivery]) => {
         // Initialize data arrays
         this.oliveVarieties = varieties?.success ? varieties.data : [];
         this.oliveTypes = types?.success ? types.data : [];
         this.regions = regions?.success ? regions.data : [];
+        this.operationTypes = operationTypes?.success ? operationTypes.data : [];
         this.suppliers = suppliers?.success ? suppliers.data : [];
         this.deliveries = deliveries?.success ? deliveries.data : [];
 
@@ -204,8 +206,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       sackCount: formValue.sackCount,
       oliveType: formValue.oliveType,
       status: formValue.status,
-      rendement: formValue.rendement,
-      oliveQuantity: formValue.oliveQuantity,
+      operationType: formValue.operationType,
       parcel: formValue.parcel
     };
 

@@ -1,0 +1,62 @@
+<div class="container" *ngIf="supplier">
+  <div class="header">
+    <h2>Détails du fournisseur</h2>
+    <div class="actions">
+      <button mat-button (click)="router.navigate(['/supplier'])">
+        <mat-icon>arrow_back</mat-icon>
+        Retour
+      </button>
+      <button mat-raised-button color="primary" (click)="onEdit()">
+        <mat-icon>edit</mat-icon>
+        Modifier
+      </button>
+      <button mat-raised-button color="warn" (click)="onDelete()">
+        <mat-icon>delete</mat-icon>
+        Supprimer
+      </button>
+    </div>
+  </div>
+
+  <mat-card class="details-card">
+    <mat-card-content>
+      <div class="detail-row">
+        <div class="label">N° Fournisseur:</div>
+        <div class="value">{{ supplier.supplierNumber }}</div>
+      </div>
+
+      <div class="detail-row">
+        <div class="label">Nom:</div>
+        <div class="value">{{ supplier.name }}</div>
+      </div>
+
+      <div class="detail-row">
+        <div class="label">Type:</div>
+        <div class="value">{{ supplier.type === 'OLIVE' ? 'Olive' : 'Huile' }}</div>
+      </div>
+
+      <div class="detail-row">
+        <div class="label">Téléphone:</div>
+        <div class="value">{{ supplier.phone }}</div>
+      </div>
+
+      <div class="detail-row">
+        <div class="label">Email:</div>
+        <div class="value">{{ supplier.email }}</div>
+      </div>
+
+      <div class="detail-row">
+        <div class="label">Adresse:</div>
+        <div class="value">{{ supplier.address }}</div>
+      </div>
+
+      <div class="detail-row">
+        <div class="label">Statut:</div>
+        <div class="value">
+          <span [class]="supplier.status === 'ACTIVE' ? 'status-active' : 'status-inactive'">
+            {{ supplier.status === 'ACTIVE' ? 'Actif' : 'Inactif' }}
+          </span>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div> 

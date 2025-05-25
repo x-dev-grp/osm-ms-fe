@@ -1,0 +1,53 @@
+.form-container {
+  padding: 1rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+
+  .form-field {
+    flex: 1;
+    min-width: 200px;
+  }
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+:host {
+  display: block;
+  padding: 1rem;
+}
+
+// Responsive adjustments
+@media screen and (max-width: 768px) {
+  .form-container {
+    .form-row {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .form-actions {
+      flex-direction: column;
+      gap: 15px;
+
+      .right-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+    }
+  }
+} 

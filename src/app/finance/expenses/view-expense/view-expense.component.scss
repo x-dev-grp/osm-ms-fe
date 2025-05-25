@@ -1,0 +1,55 @@
+.header-actions {
+  margin-bottom: 1rem;
+}
+
+.expense-details {
+  padding: 1rem;
+}
+
+.detail-row {
+  display: flex;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .detail-label {
+    flex: 0 0 200px;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  .detail-value {
+    flex: 1;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+:host {
+  display: block;
+  padding: 1rem;
+}
+
+@media print {
+  .header-actions,
+  .actions {
+    display: none;
+  }
+}

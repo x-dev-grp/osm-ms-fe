@@ -29,28 +29,16 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
   /*         Champs pour les livraisons d'olives                   */
   /* ────────────────────────────────────────────────────────────── */
   fields: [
-    /* Identifiants & méta */
+    /* Identifiants */
     {
       name: 'deliveryNumber',
       label: 'N° Livraison',
       attributeType: AttributeType.string,
-      fieldType: FieldType.text,// how to displaye it in front end
-      exportable: true,// export to csv or pdf
-      sortable: true,
-      dataTable: true // display in datatabele
-    },
-    {
-      name: 'deliveryType',
-      label: 'Type de livraison',
-      attributeType: AttributeType.enum,
-      fieldType: FieldType.select,
+      fieldType: FieldType.text,
       exportable: true,
       sortable: true,
       dataTable: true,
-      options: [
-        { label: 'Olive', value: deliveryType.OLIVE }
-      ],
-      defaultFilter:  true
+      filterable: true
     },
     {
       name: 'lotNumber',
@@ -59,9 +47,9 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.text,
       exportable: true,
       sortable: true,
-      dataTable: true
+      dataTable: true,
+      filterable: true
     },
-
     /* Dates */
     {
       name: 'deliveryDate',
@@ -70,214 +58,94 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.date,
       exportable: true,
       sortable: true,
-      dataTable: true
-    },
-    {
-      name: 'trtDate',
-      label: 'Date de trituration',
-      attributeType: AttributeType.date,
-      fieldType: FieldType.date,
-      exportable: true,
       dataTable: true,
-
+      filterable: true
     },
-
-    /* Localisation & parcelle */
+    /* Fournisseur & Localisation */
     {
-      name: 'region.name',
-      label: 'Région',
-      attributeType: AttributeType.string,
-      fieldType: FieldType.autocomplete,
-      exportable: true,
-      valuePath: 'name',
-      getOptionsUrl: 'production/types',
-      autoCompleteDefaultCriteria: {
-        page: 0,
-        size: 10,
-        sort: 'createdDate',
-        order: 'DESC',
-        searchData: {
-          operation: SearchOperation.AND,
-          searchs: [],
-          search: {
-            type: {
-              equalValue: 'REGION'
-            }
-          }
-        }
-      },
-      autoCompleteFilterAttributes: ['name'],
-      filterable: true,
-      dataTable: true
-    }, {
-      name: 'operationType.name',
-      label: 'Type operation',
-      attributeType: AttributeType.string,
-      fieldType: FieldType.autocomplete,
-      exportable: true,
-      valuePath: 'name',
-      getOptionsUrl: 'production/types',
-      autoCompleteDefaultCriteria: {
-        page: 0,
-        size: 10,
-        sort: 'createdDate',
-        order: 'DESC',
-        searchData: {
-          operation: SearchOperation.AND,
-          searchs: [],
-          search: {
-            type: {
-              equalValue: 'OPERATION_TYPE'
-            }
-          }
-        }
-      },
-      autoCompleteFilterAttributes: ['name'],
-      filterable: true,
-      dataTable: true
-    },
-    {
-      name: 'parcel',
-      label: 'Parcelle',
-      attributeType: AttributeType.string,
+      name: 'supplier.supplierInfo',
+      label: 'Fournisseur',
+      attributeType: AttributeType.object,
       fieldType: FieldType.text,
       exportable: true,
+      dataTable: true,
       filterable: true,
-      dataTable: true
+      valuePath: 'name',
+      valueAttributeType: AttributeType.string
     },
-
-    /* Poids & quantités */
     {
-      name: 'poidsBrute',
-      label: 'Poids brut (kg)',
-      attributeType: AttributeType.number,
-      fieldType: FieldType.number,
+      name: 'region',
+      label: 'Région',
+      attributeType: AttributeType.object,
+      fieldType: FieldType.text,
       exportable: true,
-      sortable: true,
-      dataTable: true
+      dataTable: true,
+      filterable: true,
+      valuePath: 'name',
+      valueAttributeType: AttributeType.string
     },
+    /* Poids */
     {
       name: 'poidsNet',
       label: 'Poids net (kg)',
       attributeType: AttributeType.number,
-      fieldType: FieldType.slider,
+      fieldType: FieldType.number,
       exportable: true,
-      filterAttribute: FieldType.slider,
       sortable: true,
-      dataTable: true
+      dataTable: true,
+      filterable: true
+    },
+    /* Type d'olive */
+    {
+      name: 'oliveType',
+      label: "Type d'olive",
+      attributeType: AttributeType.object,
+      fieldType: FieldType.text,
+      exportable: true,
+      dataTable: true,
+      filterable: true,
+      valuePath: 'name',
+      valueAttributeType: AttributeType.string
     },
     {
-      name: 'oliveQuantity',
-      label: 'Qté olives (kg)',
-      attributeType: AttributeType.number,
-      fieldType: FieldType.number,
+      name: 'oliveVariety',
+      label: "Variété d'olive",
+      attributeType: AttributeType.object,
+      fieldType: FieldType.text,
       exportable: true,
-      dataTable: true
+      dataTable: true,
+      filterable: true,
+      valuePath: 'name',
+      valueAttributeType: AttributeType.string
     },
-
-    /* Rendement & sacs */
-    {
-      name: 'rendement',
-      label: 'Rendement (%)',
-      attributeType: AttributeType.number,
-      fieldType: FieldType.slider,
-      sliderMinValue: 0,
-      sliderMaxValue: 100,
-      exportable: true,
-      dataTable: true
-    },
-    {
-      name: 'sackCount',
-      label: 'Nb sacs',
-      attributeType: AttributeType.number,
-      fieldType: FieldType.number,
-      exportable: true,
-      dataTable: true
-    },
-
-    /* Camion & état */
+    /* Camion */
     {
       name: 'matriculeCamion',
       label: 'Matricule camion',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
-      exportable: true
+      exportable: true,
+      dataTable: true,
+      filterable: true
     },
+    /* Statut */
     {
-      name: 'etatCamion',
-      label: 'État camion',
+      name: 'status',
+      label: 'Statut',
       attributeType: AttributeType.string,
-      fieldType: FieldType.text,
-      exportable: true
-    },
-
-    /* Fournisseur */
-    {
-      name: 'supplier.supplierInfo.name',
-      label: 'Fournisseur',
-      attributeType: AttributeType.object,
-      fieldType: FieldType.autocomplete,
-      getOptionsUrl: 'production/suppliers_type',
-      autoCompleteFilterAttributes: ['supplierInfo.name'],
-      valuePath: 'name',
+      fieldType: FieldType.select,
       exportable: true,
-      dataTable: true
-    },
-
-    /* Olive-specific fields */
-    {
-      name: 'oliveVariety.name',
-      label: "Variété d'olive",
-      attributeType: AttributeType.object,
-      fieldType: FieldType.autocomplete,
-      getOptionsUrl: 'production/types',
-      valuePath: 'name',
-      autoCompleteDefaultCriteria: {
-        page: 0,
-        size: 10,
-        sort: 'createdDate',
-        order: 'DESC',
-        searchData: {
-          operation: SearchOperation.AND,
-          searchs: [],
-          search: {
-            type: {
-              equalValue: TypeCategory.OLIVE_VARIETY
-            }
-          }
-        }
-      },
+      sortable: true,
+      dataTable: true,
       filterable: true,
-      autoCompleteFilterAttributes: ['oliveVariety.name'],
-      exportable: true,
-      dataTable: true
-    },
-    {
-      name: 'oliveType.name',
-      label: "Type d'olive",
-      attributeType: AttributeType.object,
-      fieldType: FieldType.autocomplete,
-      getOptionsUrl: 'production/types',
-      valuePath: 'name',
-      autoCompleteDefaultCriteria: {
-        page: 0,
-        size: 10,
-        sort: 'createdDate',
-        order: 'DESC',
-        searchData: {
-          operation: SearchOperation.AND,
-          searchs: [],
-          search: {
-            type: {
-              equalValue: TypeCategory.OLIVE_TYPE
-            }
-          }
-        }
-      },
-      filterable: true,
-      autoCompleteFilterAttributes: ['oliveType.name'],
-      exportable: true,
-      dataTable: true
+      options: [
+        { label: 'Nouveau', value: 'NEW' },
+        { label: 'Accepté', value: 'ACCEPTED' },
+        { label: 'En cours', value: 'IN_PROGRESS' },
+        { label: 'Terminé', value: 'COMPLETED' },
+        { label: 'Refusé', value: 'REFUSED' },
+        { label: 'Annulé', value: 'CANCELLED' }
+      ]
     }
   ],
 
@@ -293,6 +161,6 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
     ]
   },
 
-  /* Nom par défaut du fichier d’export CSV */
+  /* Nom par défaut du fichier d'export CSV */
   fileName: 'olive_deliveries'
 };

@@ -17,11 +17,12 @@ import { CompanyProfile } from '../../shared/models/CompanyProfile';
 import { Action, DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
 import { BANK_ACCOUNTS_DASHBOARD_CONFIG } from './bank-accounts-dashboard.config';
 import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-bank-account', // <-- plural
+  selector: 'app-bank-accounts',
   standalone: true,
-  templateUrl: './bank-accounts.component.html', // <-- plural
+  templateUrl: './bank-accounts.component.html',
   styleUrls: ['./bank-accounts.component.scss'],
   imports: [
     CommonModule,
@@ -53,12 +54,12 @@ export class BankAccountsComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
-    private bankAccountService: BankAccountService
+    private bankAccountService: BankAccountService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.buildBankForm();
-    this.loadBankAccounts();
   }
 
   private buildBankForm(): void {
@@ -74,88 +75,54 @@ export class BankAccountsComponent implements OnInit {
     });
   }
 
-  openForm(account?: BankAccount): void {
-    if (account) {
-      this.isEditing = true;
-      this.bankForm.patchValue(account);
-    } else {
-      this.isEditing = false;
-      this.bankForm.reset({
-        currency: 'TND',
-        accountType: 'Courant',
-        active: true
-      });
-    }
-    this.formOpen = true;
-  }
-
-  loadBankAccounts(): void {
-    this.bankAccountService.getAllBanksList().subscribe(
-      (res) => {
-        if (res && res.success) {
-          this.banks = res.data;
-          this.dataSource.data = this.banks;
-        } else {
-          this.banks = [];
-        }
-      },
-      (err) => console.error('Erreur lors du chargement des comptes bancaires', err)
-    );
-  }
-
-  cancel(): void {
-    this.formOpen = false;
-    this.isEditing = false;
-    this.bankForm.reset({
-      currency: 'TND',
-      accountType: 'Courant',
-      active: true
-    });
-  }
-
-  onSubmit(): void {
-    if (this.bankForm.invalid) {
-      this.bankForm.markAllAsTouched();
-      return;
-    }
-    const acct = this.bankForm.value as BankAccount;
-    const op$ = this.isEditing
-      ? this.bankAccountService.updateBankAccount(acct)
-      : this.bankAccountService.createBankAccount(acct);
-
-    op$.subscribe(() => {
-      this.snackBar.open(
-        this.isEditing ? 'Compte bancaire mis à jour' : 'Compte bancaire créé',
-        'Fermer',
-        { duration: 3000 }
-      );
-      this.loadBankAccounts();
-      this.cancel();
-    });
-  }
-
-  deleteAccount(acc: BankAccount): void {
-    if (!acc.id) return;
-    this.bankAccountService.deleteBankAccount(acc.id).subscribe(() => {
-      this.snackBar.open('Compte bancaire supprimé', 'Fermer', { duration: 3000 });
-      this.loadBankAccounts();
-    });
-  }
-
   handleAction(event: { action: Action; row: BankAccount }): void {
-    switch (event.action.label?.toUpperCase()) {
+    switch (event.action.value?.toUpperCase()) {
       case 'VIEW':
-      case 'VOIR':
-      case 'CONSULTER':
+        this.router.navigate(['/finance/banks', event.row.id, 'view']);
+        break;
+
       case 'EDIT':
-      case 'MODIFIER':
-        this.openForm(event.row);
+        this.router.navigate(['/finance/banks', event.row.id, 'edit']);
         break;
 
       case 'DELETE':
-      case 'SUPPRIMER':
         this.deleteAccount(event.row);
         break;
     }
+  }
+
+  private deleteAccount(account: BankAccount): void {
+    if (confirm('Are you sure you want to delete this bank account?')) {
+      this.bankAccountService.deleteBankAccount(account.id!).subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.snackBar.open('Bank account deleted successfully', 'Close', { duration: 3000 });
+            // Refresh the list
+            this.loadBanks();
+          } else {
+            this.snackBar.open(response.message || 'Failed to delete bank account', 'Close', { duration: 3000 });
+          }
+        },
+        error: (error) => {
+          console.error('Error deleting bank account:', error);
+          this.snackBar.open('Error deleting bank account', 'Close', { duration: 3000 });
+        }
+      });
+    }
+  }
+
+  private loadBanks(): void {
+    this.bankAccountService.getAllBanksList().subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          this.banks = response.data;
+          this.dataSource.data = this.banks;
+        }
+      },
+      error: (error) => {
+        console.error('Error loading bank accounts:', error);
+        this.snackBar.open('Error loading bank accounts', 'Close', { duration: 3000 });
+      }
+    });
   }
 }

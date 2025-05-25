@@ -1,0 +1,69 @@
+<app-card [title]="editing ? 'Modifier la dépense' : 'Nouvelle dépense'">
+  <button mat-button type="button" (click)="onBack()">
+    <mat-icon>arrow_back</mat-icon>
+    Retour
+  </button>
+  <div class="form-container" *ngIf="!loading; else loadingTemplate">
+    <form [formGroup]="form" (ngSubmit)="save()">
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Référence facture</mat-label>
+          <input matInput formControlName="invoiceRef" required>
+          <mat-error *ngIf="form.get('invoiceRef')?.hasError('required')">
+            La référence de la facture est requise
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Nature de l'achat</mat-label>
+          <input matInput formControlName="purchaseNature" required>
+          <mat-error *ngIf="form.get('purchaseNature')?.hasError('required')">
+            La nature de l'achat est requise
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Objet</mat-label>
+          <input matInput formControlName="object">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Date</mat-label>
+          <input matInput [matDatepicker]="datePicker" formControlName="date" required>
+          <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+          <mat-datepicker #datePicker></mat-datepicker>
+          <mat-error *ngIf="form.get('date')?.hasError('required')">
+            La date est requise
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Montant</mat-label>
+          <input matInput type="number" formControlName="amount" required>
+          <mat-error *ngIf="form.get('amount')?.hasError('required')">
+            Le montant est requis
+          </mat-error>
+          <mat-error *ngIf="form.get('amount')?.hasError('min')">
+            Le montant doit être positif
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-actions">
+        <button mat-button type="button" (click)="onBack()">Annuler</button>
+        <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
+          {{ editing ? 'Mettre à jour' : 'Enregistrer' }}
+        </button>
+      </div>
+    </form>
+  </div>
+  <ng-template #loadingTemplate>
+    <div class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  </ng-template>
+</app-card>

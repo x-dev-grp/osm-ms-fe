@@ -20,13 +20,15 @@ import { ConfigurationComponent } from '../../@theme/layouts/configuration/confi
 import { OilCredit } from '../models/OilCredit';
 import { OilCreditService } from '../service/oil-credit.service';
 import { StorageUnitDtoService } from '../../shared/services/storage.service';
-import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
-import { OIL_CREDIT_DASHBOARDFile } from './OIL_CREDIT_DASHBOARDFile';
+import { Action, DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { OIL_CREDIT_DASHBOARD } from './oil-credit-dashboard.config';
+import { ActivatedRoute } from '@angular/router';
+import { ApiResponse } from '../../shared/models/api-response';
+import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
 
 @Component({
   selector: 'app-oil-credit',
@@ -63,7 +65,7 @@ export class OilCreditComponent implements OnInit {
   submitted = false;
   displayedColumns = ['credit_date', 'citerne_pile', 'emballage', 'quantity', 'unit', 'destinataire', 'actions'];
 
-  OIL_CREDIT_DASHBOARD: DashboardConfig = OIL_CREDIT_DASHBOARDFile;
+  OIL_CREDIT_DASHBOARD: DashboardConfig = OIL_CREDIT_DASHBOARD;
   storageUnits: StorageUnitDto[] = [];
   selectedStorageUnit: StorageUnitDto | null = null;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -77,6 +79,8 @@ export class OilCreditComponent implements OnInit {
   private quantitySubscription: Subscription | null = null;
   private filterSubscription: Subscription | null = null;
   private data: OilCredit[];
+  private route = inject(ActivatedRoute);
+  private storageUnitService = inject(StorageUnitDtoService);
 
   constructor() {
     this.form = this.fb.group({
@@ -165,12 +169,12 @@ export class OilCreditComponent implements OnInit {
     this.storageService.getStorageUnit(selectedId).subscribe({
       next: (response) => {
         if (response.success && response.data.length > 0) {
-          const storageUnit = response.data[0];
-          this.selectedStorageUnit = storageUnit;
+          const StorageUnitDto = response.data[0];
+          this.selectedStorageUnit = StorageUnitDto;
 
           // Check if storage unit has oil
-          const hasOil = storageUnit.currentVolume > 0;
-          const isAvailable = storageUnit.status === 'AVAILABLE' || storageUnit.status === 'FULL';
+          const hasOil = StorageUnitDto.currentVolume > 0;
+          const isAvailable = StorageUnitDto.status === 'AVAILABLE' || StorageUnitDto.status === 'FULL';
 
           if (!hasOil) {
             this.snackBar.open("Cette citerne/pile ne contient pas d'huile.", 'Fermer', { duration: 3000 });
@@ -180,7 +184,7 @@ export class OilCreditComponent implements OnInit {
           }
 
           if (!isAvailable) {
-            this.snackBar.open(`Cette citerne/pile n'est pas disponible (Status: ${storageUnit.status})`, 'Fermer', { duration: 3000 });
+            this.snackBar.open(`Cette citerne/pile n'est pas disponible (Status: ${StorageUnitDto.status})`, 'Fermer', { duration: 3000 });
             this.form.get('citerne_pile')?.setValue(null);
             this.selectedStorageUnit = null;
             return;
@@ -327,18 +331,36 @@ export class OilCreditComponent implements OnInit {
     });
   }
 
-  /** Handle row‐level actions emitted by the dashboard */
-  onRowAction(event: { action: string; record: OilCredit }): void {
-    switch (event.action) {
-      case 'consulter':
-        this.router.navigate(['/finance/oil-credit', event.record.id, 'view']);
+  handleAction(event: { action: Action; row: OilCredit }): void {
+    switch (event.action.value) {
+      case 'view':
+        this.router.navigate(['/finance/oil-credit', event.row.id, 'view']);
         break;
-      case 'modifier':
-        this.openForm(event.record);
+      case 'edit':
+        this.router.navigate(['/finance/oil-credit', event.row.id, 'edit']);
         break;
-      case 'supprimer':
-        this.svc.deleteOilCredit(event.record.id!);
+      case 'delete':
+        this.confirmDelete(event.row.id);
         break;
+    }
+  }
+
+  private confirmDelete(id?: string): void {
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce crédit d\'huile ?')) {
+      this.svc.deleteOilCredit(id!).subscribe({
+        next: () => {
+          this.snackBar.open('Crédit d\'huile supprimé avec succès', 'Fermer', {
+            duration: 3000
+          });
+          // Refresh the dashboard
+          this.router.navigate(['/finance/oil-credit']);
+        },
+        error: (error: any) => {
+          this.snackBar.open('Erreur lors de la suppression du crédit d\'huile', 'Fermer', {
+            duration: 3000
+          });
+        }
+      });
     }
   }
 

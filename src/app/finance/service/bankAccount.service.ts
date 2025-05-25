@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../../shared/models/api-response';
 import { BankAccount } from '../models/BankAccount';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -22,19 +23,18 @@ export class BankAccountService {
   }
 
   // Retrieve a single BankAccountcc by ID.
-  getBankAccount(id: number): Observable<ApiResponse<BankAccount>> {
-    return this.http.get<ApiResponse<BankAccount>>(`${this.baseUrl}/${id}`);
+  getBankAccount(id: string): Observable<ApiResponse<BankAccount>> {
+    return this.http.get<ApiResponse<BankAccount>>(`${this.baseUrl}/fetch/${id}`);
   }
 
-
   // Create a new BankAccountcc. The BankAccountcc payload may include qualityControlResults.
-  createBankAccount(BankAccount: BankAccount): Observable<ApiResponse<BankAccount>> {
-    return this.http.post<ApiResponse<BankAccount>>(this.baseUrl, BankAccount);
+  createBankAccount(bankAccount: BankAccount): Observable<ApiResponse<BankAccount>> {
+    return this.http.post<ApiResponse<BankAccount>>(`${this.baseUrl}`, bankAccount);
   }
 
   // Update an existing BankAccountcc.
-  updateBankAccount(BankAccount: BankAccount): Observable<ApiResponse<BankAccount>> {
-    return this.http.put<ApiResponse<BankAccount>>(`${this.baseUrl}`, BankAccount);
+  updateBankAccount(bankAccount: BankAccount): Observable<ApiResponse<BankAccount>> {
+    return this.http.put<ApiResponse<BankAccount>>(`${this.baseUrl}`, bankAccount);
   }
 
   // Delete a BankAccountcc by ID.

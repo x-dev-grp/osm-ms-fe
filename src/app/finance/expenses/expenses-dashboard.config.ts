@@ -1,62 +1,64 @@
+import { SearchOperation } from 'src/app/shared/models/advanced-search/searchOperation';
 import {
   Action,
   AttributeType,
   DashboardConfig,
-  FieldType
+  FieldType,
 } from '../../shared/modules/osm-dashboard/models/dashboard-config';
 
 export const EXPENSES_DASHBOARD_CONFIG: DashboardConfig = {
   /* ───────────────────────────── méta ───────────────────────────── */
   title: 'Dépenses',
-  titleTranslatePath: 'expenses.title',
+  titleTranslatePath: 'EXPENSES.TITLE',
   baseURL: 'finance/expense',
   searchEndpoint: 'finance/expense',
 
+
   /* ─────────────────── bouton "ajouter une dépense" ─────────────── */
   addNewItem: true,
-  addNewItemUrl: 'finance/expense/new',
+  addNewItemUrl: '/finance/expenses/new',
 
   /* ─────────────────────────── colonnes du tableau ──────────────── */
   fields: [
     {
       name: 'invoiceRef',
-      label: 'Facture',
+      label: 'Référence facture',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
+      exportable: true,
       sortable: true,
       dataTable: true,
-      filterable: true,
-      exportable: true,
+      filterable: true
     },
     {
       name: 'purchaseNature',
-      label: 'Nature',
+      label: 'Nature de l\'achat',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
+      exportable: true,
       sortable: true,
       dataTable: true,
-      filterable: true,
-      exportable: true,
+      filterable: true
     },
     {
       name: 'object',
       label: 'Objet',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
+      exportable: true,
       sortable: true,
       dataTable: true,
-      filterable: true,
-      exportable: true,
+      filterable: true
     },
     {
       name: 'date',
       label: 'Date',
       attributeType: AttributeType.date,
       fieldType: FieldType.date,
+      exportable: true,
       sortable: true,
       dataTable: true,
-      filterable: true,
-      exportable: true,
+      filterable: true
     },
     {
       name: 'amount',
@@ -64,23 +66,35 @@ export const EXPENSES_DASHBOARD_CONFIG: DashboardConfig = {
       attributeType: AttributeType.number,
       fieldType: FieldType.number,
       exportable: true,
-      filterable: true,
-      sortable: false,
-      dataTable: true
+      sortable: true,
+      dataTable: true,
+      filterable: true
     }
   ],
 
   /* ───────────────────────────── actions ─────────────────────────── */
   actions: {
     statusMapping: false,
+    statusAttributeName: 'status',
     actionsList: <Action[]>[
-      { label: 'Voir',       icon: 'visibility', value: 'VIEW'      },
-      { label: 'Imprimer',   icon: 'print',      value: 'PRINT'     },
-      { label: 'Modifier',   icon: 'edit',       value: 'EDIT'      },
-      { label: 'Supprimer',  icon: 'delete',     value: 'DELETE'    }
+      { label: 'Consulter', icon: 'visibility', value: 'VIEW' },
+      { label: 'Modifier', icon: 'edit', value: 'EDIT' },
+      { label: 'Imprimer', icon: 'print', value: 'PRINT' },
+      { label: 'Supprimer', icon: 'delete', value: 'DELETE' }
     ]
   },
 
   /* ──────────────── nom du fichier exporté (optionnel) ───────────── */
-  fileName: 'depenses'
+  fileName: 'expenses',
+
+  defaultSearchData: {
+    page: 0,
+    size: 10,
+    sort: 'createdDate',
+    order: 'DESC',
+    searchData: {
+      operation: SearchOperation.AND,
+      searchs: []
+    }
+  }
 };

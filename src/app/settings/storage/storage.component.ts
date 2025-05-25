@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-
 import { MatSnackBar } from '@angular/material/snack-bar';
- import { CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,6 +21,7 @@ import { TypeCategory } from '../../shared/models/type-category.enum';
 import { AttributeType, DashboardConfig, FieldType } from '../../shared/modules/osm-dashboard/models/dashboard-config';
 import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
 import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-storage',
@@ -50,30 +50,27 @@ import { SearchOperation } from '../../shared/models/advanced-search/searchOpera
 export class StorageUnitsComponent implements OnInit {
   storageUnits: StorageUnitDto[] = [];
   oilTypes: BaseType[] = [];
+  loading = false;
 
-  formOpen = false;
-  selectedStorageUnit: StorageUnitDto = this.createEmptyUnit();
-
-  displayedColumns: string[] = ['name', 'location', 'maxCapacity', 'currentVolume', 'oilType', 'status', 'actions', 'fillLevel'];
-  storagConfig: DashboardConfig = {
+  dashboardConfig: DashboardConfig = {
     title: 'Gestion des réservoirs',
-    baseURL: 'storage-units', // CRUD root
-    searchEndpoint: 'production/storage-units', // POST /search
-    addNewItem: false,
-    addNewItemUrl: '/storage-units', // change if you add a “+” button
-    fileName: 'storage-units', // CSV/PDF file name
+    baseURL: 'storage-units',
+    searchEndpoint: 'production/storage-units',
+    addNewItem: true,
+    addNewItemUrl: '/settings/storage/new',
+    fileName: 'storage-units',
 
-    /* -------- Row-level actions (static list) ------------------------- */
     actions: {
       statusMapping: false,
       statusAttributeName: 'status',
-      actionsList: [  { label: 'Consulter',          icon: 'visibility',  value: 'CONSULTER'  },
-        { label: 'Modifier',           icon: 'edit',        value: 'MODIFIER'   },
-        { label: 'Supprimer',          icon: 'delete',      value: 'SUPPRIMER'  },],
-      actionsStatusList: {} // keep empty until you need status→actions mapping
+      actionsList: [
+        { label: 'View', icon: 'visibility', value: 'VIEW' },
+        { label: 'Edit', icon: 'edit', value: 'EDIT' },
+        { label: 'Delete', icon: 'delete', value: 'DELETE' }
+      ],
+      actionsStatusList: {}
     },
 
-    /* -------- Table columns / filters / export ----------------------- */
     fields: [
       {
         name: 'name',
@@ -142,7 +139,7 @@ export class StorageUnitsComponent implements OnInit {
       },
       {
         name: 'oilVariety.name',
-        label: 'Variety d’huile',
+        label: 'Variété d\'huile',
         valuePath: 'oilVariety.name',
         attributeType: AttributeType.string,
         fieldType: FieldType.autocomplete,
@@ -166,9 +163,8 @@ export class StorageUnitsComponent implements OnInit {
             }
           }
         },
-        autoCompleteFilterAttributes: ['name'],
-       },
-
+        autoCompleteFilterAttributes: ['name']
+      },
       {
         name: 'nextMaintenanceDate',
         label: 'Prochaine maintenance',
@@ -176,7 +172,7 @@ export class StorageUnitsComponent implements OnInit {
         fieldType: FieldType.date,
         sortable: true,
         filterable: true,
-        dataTable: false, // hide from table, still filter/export
+        dataTable: false,
         exportable: true
       },
       {
@@ -190,13 +186,13 @@ export class StorageUnitsComponent implements OnInit {
         exportable: true
       }
     ]
-
   };
 
   constructor(
     private storageUnitService: StorageUnitDtoService,
     private oilTypeService: GenericTypeService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -204,92 +200,71 @@ export class StorageUnitsComponent implements OnInit {
     this.loadOilTypes();
   }
 
-  createEmptyUnit(): StorageUnitDto {
-    return {
-      name: '',
-      location: '',
-      description: '',
-      maxCapacity: 0,
-      currentVolume: 0,
-      status: 'AVAILABLE',
-      oilType: undefined,
-      nextMaintenanceDate: undefined,
-      lastInspectionDate: undefined,
-      lastFillDate: undefined,
-      lastEmptyDate: undefined
-    };
-  }
-
   loadStorageUnits(): void {
-    this.storageUnitService.getAllStorageUnit().subscribe((units) => {
-      this.storageUnits = units.data;
+    this.loading = true;
+    this.storageUnitService.getAllStorageUnit().subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.storageUnits = response.data;
+        } else {
+          this.snackBar.open(response.message || 'Error loading storage units', 'Close', { duration: 3000 });
+        }
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading storage units:', error);
+        this.snackBar.open('Error loading storage units', 'Close', { duration: 3000 });
+        this.loading = false;
+      }
     });
   }
 
   loadOilTypes(): void {
-    this.oilTypeService.getAllTypes(TypeCategory.OIL_VARIETY).subscribe((types) => {
-      this.oilTypes = types.data;
+    this.oilTypeService.getAllTypes(TypeCategory.OIL_VARIETY).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.oilTypes = response.data;
+        }
+      },
+      error: (error) => {
+        console.error('Error loading oil types:', error);
+        this.snackBar.open('Error loading oil types', 'Close', { duration: 3000 });
+      }
     });
   }
-  onSelectOliveVariety(varId: string) {
-    this.selectedStorageUnit.oilType = { id: varId } as BaseType;
-  }
-  onSubmit(): void {
-    if (this.selectedStorageUnit.id) {
-      this.storageUnitService.updateStorageUnit(this.selectedStorageUnit).subscribe(() => {
-        this.snackBar.open('Storage unit updated successfully!', 'Close', { duration: 3000 });
-        this.resetForm();
-        this.loadStorageUnits();
-      });
-    } else {
-      this.storageUnitService.createStorageUnit(this.selectedStorageUnit).subscribe(() => {
-        this.snackBar.open('Storage unit created!', 'Close', { duration: 3000 });
-        this.resetForm();
-        this.loadStorageUnits();
-      });
+
+  handleAction(event: { action: { value: string }; row: StorageUnitDto }): void {
+    switch (event.action.value?.toUpperCase()) {
+      case 'VIEW':
+        this.router.navigate(['/settings/storage', event.row.id, 'view']);
+        break;
+
+      case 'EDIT':
+        this.router.navigate(['/settings/storage', event.row.id, 'edit']);
+        break;
+
+      case 'DELETE':
+        this.deleteStorageUnit(event.row);
+        break;
     }
   }
 
-  edit(unit: StorageUnitDto): void {
-    this.selectedStorageUnit = { ...unit };
-    this.formOpen = true;
-  }
-
-  delete(id: string): void {
-    this.storageUnitService.deleteStorageUnit(id).subscribe(() => {
-      this.snackBar.open('Storage unit deleted.', 'Close', { duration: 3000 });
-      this.loadStorageUnits();
-    });
-  }
-
-  cancel(): void {
-    this.resetForm();
-  }
-
-  resetForm(): void {
-    this.selectedStorageUnit = this.createEmptyUnit();
-    this.formOpen = false;
-  }
-  getFillPercentage(unit: StorageUnitDto): number {
-    return unit.maxCapacity && unit.maxCapacity > 0 ? (unit.currentVolume / unit.maxCapacity) * 100 : 0;
-  }
-  onRowAction(event: { row: StorageUnitDto; action: string }): void {
-    switch (event.action) {
-   case 'Consulter':
-        // Re-use the edit form in read-only mode if you like.
-        // For now we open the record just as for “modier”.
-        this.edit(event.row);
-        break;
-
-      case 'MODIFIER':
-        this.edit(event.row);
-        break;
-
-      case 'Supprimer':
-        if (event.row.id) {
-          this.delete(event.row.id );
+  private deleteStorageUnit(unit: StorageUnitDto): void {
+    if (confirm('Are you sure you want to delete this storage unit?')) {
+      this.storageUnitService.deleteStorageUnit(unit.id!).subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.snackBar.open('Storage unit deleted successfully', 'Close', { duration: 3000 });
+            this.loadStorageUnits();
+          } else {
+            this.snackBar.open(response.message || 'Failed to delete storage unit', 'Close', { duration: 3000 });
+          }
+        },
+        error: (error) => {
+          console.error('Error deleting storage unit:', error);
+          this.snackBar.open('Error deleting storage unit', 'Close', { duration: 3000 });
         }
-        break;
+      });
     }
   }
 }

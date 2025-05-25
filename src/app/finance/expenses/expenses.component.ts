@@ -1,24 +1,15 @@
 // 4) Combined Component: expenses.component.ts
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 import { Expense } from '../models/expense.model';
 import { ExpenseService } from '../service/expense.service';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { CommonModule } from '@angular/common';
-import { SharedModule } from '../../demo/shared/shared.module';
-import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } from '@angular/material/expansion';
-import { MatButtonModule } from '@angular/material/button';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSortModule } from '@angular/material/sort';
-import { ConfigurationComponent } from '../../@theme/layouts/configuration/configuration.component';
-import { MatPaginator } from '@angular/material/paginator';
-import { Router } from '@angular/router';
-import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
 import { EXPENSES_DASHBOARD_CONFIG } from './expenses-dashboard.config';
+import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
+import { SharedModule } from '../../demo/shared/shared.module';
 import { Action, DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
 
 @Component({
@@ -28,91 +19,47 @@ import { Action, DashboardConfig } from '../../shared/modules/osm-dashboard/mode
   imports: [
     CommonModule,
     MatButtonModule,
-    MatTableModule,
     MatIconModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatExpansionPanelHeader,
-    MatInputModule,
-    MatSelectModule,
-    ReactiveFormsModule,
-    MatSortModule,
     SharedModule,
-    ConfigurationComponent,
-    MatExpansionPanel,
-    MatExpansionPanelTitle,
     OsmDashboard
   ],
   styleUrls: ['./expenses.component.scss']
 })
-export class ExpensesComponent implements OnInit, AfterViewInit {
-  form: FormGroup;
-  editing = false;
-
-  // table + pagination
-  dataSource = new MatTableDataSource<Expense>([]);
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+export class ExpensesComponent implements OnInit {
   dashboardConfig: DashboardConfig = EXPENSES_DASHBOARD_CONFIG;
-  displayedColumns: string[] = ['invoiceRef', 'purchaseNature', 'object', 'date', 'amount', 'actions'];
-
-  // champs de filtrage
-  filterValues = {
-    invoiceRef: '',
-    purchaseNature: ''
-  };
 
   constructor(
-    private fb: FormBuilder,
-    private svc: ExpenseService,
-    private router: Router
-  ) {
-    this.form = this.fb.group({
-      id: [],
-      invoiceRef: [''],
-      purchaseNature: ['', Validators.required],
-      object: [''],
-      date: ['', Validators.required],
-      amount: [0, [Validators.required, Validators.min(0.01)]]
-    });
-
-    // prédicat personnalisé pour filtrer par plusieurs champs
-    this.dataSource.filterPredicate = (data: Expense, filter: string): boolean => {
-      const search = JSON.parse(filter);
-      const invoiceText = data.invoiceRef ? data.invoiceRef.toLowerCase() : '';
-      const natureText = data.purchaseNature ? data.purchaseNature.toLowerCase() : '';
-      const searchInvoice = search.invoiceRef ? search.invoiceRef.toLowerCase() : '';
-      const searchNature = search.purchaseNature ? search.purchaseNature.toLowerCase() : '';
-      const matchesInvoice = !searchInvoice || invoiceText.includes(searchInvoice);
-      const matchesNature = !searchNature || natureText.includes(searchNature);
-      return matchesInvoice && matchesNature;
-    };
-  }
+    private expenseService: ExpenseService,
+    private router: Router,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit(): void {
-    this.loadExpenses();
+    // Component initialization if needed
   }
 
-  ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
-  }
+  /** Gère les actions depuis le tableau */
+  handleAction(event: {  row: Expense;action: Action }): void {
+    const actionLabel = event.action.value?.toUpperCase();
 
-  loadExpenses(): void {
-    this.svc.getAllExpensesList().subscribe(
-      (res) => {
-        if (res?.success) {
-          this.dataSource.data = res.data;
-          this.applyFilter();
-        } else {
-          this.dataSource.data = [];
-        }
-      },
-      (err) => console.error('Erreur lors du chargement des dépenses', err)
-    );
-  }
+    switch (actionLabel) {
+      case 'VIEW':
+      case 'CONSULTER':
+        this.router.navigate(['/finance/expenses', event.row.id, 'view']);
+        break;
 
-  /** Navigue vers la page de visualisation */
-  view(id: string): void {
-    this.router.navigate(['/finance/expenses', id, 'view']);
+      case 'PRINT':
+        this.print(event.row.id!);
+        break;
+
+      case 'EDIT':
+        this.router.navigate(['/finance/expenses', event.row.id, 'edit']);
+        break;
+
+      case 'DELETE':
+        this.delete(event.row.id!);
+        break;
+    }
   }
 
   /** Ouvre dans un nouvel onglet la vue et imprime */
@@ -122,69 +69,36 @@ export class ExpensesComponent implements OnInit, AfterViewInit {
     window.open(url, '_blank');
   }
 
-  /** Ouvre le formulaire pour ajout ou édition */
-  openForm(expense?: Expense): void {
-    this.editing = !!expense;
-    this.form.reset(expense ?? { amount: 0, date: '' });
-  }
-
-  /** Annule l’opération en cours et réinitialise le formulaire */
-  cancel(): void {
-    this.editing = false;
-    this.form.reset({ amount: 0, date: '' });
-  }
-
-  /** Enregistre la dépense */
-  save(): void {
-    if (this.form.invalid) {
+  /** Supprime une dépense avec confirmation */
+  delete(id: string): void {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer cette dépense ?')) {
       return;
     }
-    const exp: Expense = this.form.value;
-    this.svc.createExpense(exp).subscribe(() => {
-      this.loadExpenses();
-      this.cancel();
+    this.expenseService.deleteExpense(id).subscribe({
+      next: (response: any) => {
+        if (response.success) {
+          this.showSuccess('Dépense supprimée avec succès');
+          // Refresh the dashboard
+          window.location.reload();
+        } else {
+          this.showError(response.message || 'Erreur lors de la suppression');
+        }
+      },
+      error: () => this.showError('Erreur lors de la suppression')
     });
   }
 
-  /** Supprime une dépense avec confirmation */
-  delete(id: string): void {
-    if (!confirm('Supprimer cette dépense ?')) {
-      return;
-    }
-    this.svc.deleteExpense(id).subscribe(() => this.loadExpenses());
+  private showSuccess(message: string): void {
+    this.snackBar.open(message, 'Fermer', {
+      duration: 3000,
+      panelClass: ['success-snackbar']
+    });
   }
 
-  /** Applique les filtres de recherche */
-  applyFilter(): void {
-    this.dataSource.filter = JSON.stringify(this.filterValues);
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
-  }
-
-  /** Gère les actions depuis le tableau */
-  handleAction(event: { action: Action; record: Expense }): void {
-    const actionLabel = event.action.label?.toUpperCase();
-
-    switch (actionLabel) {
-      case 'VIEW':
-      case 'CONSULTER':
-        this.openForm(event.record);
-        break;
-
-      case 'PRINT':
-        this.print(event.record.id!);
-        break;
-
-      case 'EDIT':
-      case 'MODIFIER':
-        this.router.navigate(['/expenses', event.record.id!, 'edit']);
-        break;
-
-      case 'DELETE':
-      case 'SUPPRIMER':
-        this.delete(event.record.id!);
-        break;
-    }
+  private showError(message: string): void {
+    this.snackBar.open(message, 'Fermer', {
+      duration: 5000,
+      panelClass: ['error-snackbar']
+    });
   }
 }
