@@ -60,7 +60,6 @@ export class BankAccountsComponent implements OnInit {
 
   ngOnInit(): void {
     this.buildBankForm();
-    this.loadBankAccounts();
   }
 
   private buildBankForm(): void {
@@ -73,74 +72,6 @@ export class BankAccountsComponent implements OnInit {
       currency: ['TND', Validators.required],
       accountType: ['Courant', Validators.required],
       active: [true]
-    });
-  }
-
-  openForm(account?: BankAccount): void {
-    if (account) {
-      this.isEditing = true;
-      this.bankForm.patchValue(account);
-    } else {
-      this.isEditing = false;
-      this.bankForm.reset({
-        currency: 'TND',
-        accountType: 'Courant',
-        active: true
-      });
-    }
-    this.formOpen = true;
-  }
-
-  loadBankAccounts(): void {
-    this.bankAccountService.getAllBanksList().subscribe(
-      (res) => {
-        if (res && res.success) {
-          this.banks = res.data;
-          this.dataSource.data = this.banks;
-        } else {
-          this.banks = [];
-        }
-      },
-      (err) => console.error('Erreur lors du chargement des comptes bancaires', err)
-    );
-  }
-
-  cancel(): void {
-    this.formOpen = false;
-    this.isEditing = false;
-    this.bankForm.reset({
-      currency: 'TND',
-      accountType: 'Courant',
-      active: true
-    });
-  }
-
-  onSubmit(): void {
-    if (this.bankForm.invalid) {
-      this.bankForm.markAllAsTouched();
-      return;
-    }
-    const acct = this.bankForm.value as BankAccount;
-    const op$ = this.isEditing
-      ? this.bankAccountService.updateBankAccount(acct)
-      : this.bankAccountService.createBankAccount(acct);
-
-    op$.subscribe(() => {
-      this.snackBar.open(
-        this.isEditing ? 'Compte bancaire mis à jour' : 'Compte bancaire créé',
-        'Fermer',
-        { duration: 3000 }
-      );
-      this.loadBankAccounts();
-      this.cancel();
-    });
-  }
-
-  deleteAccount(acc: BankAccount): void {
-    if (!acc.id) return;
-    this.bankAccountService.deleteBankAccount(acc.id).subscribe(() => {
-      this.snackBar.open('Compte bancaire supprimé', 'Fermer', { duration: 3000 });
-      this.loadBankAccounts();
     });
   }
 
