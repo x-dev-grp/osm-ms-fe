@@ -49,6 +49,15 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
       sortable: true,
       dataTable: true,
       filterable: true
+    }, {
+      name: 'globalLotNumber',
+      label: 'N° Lot Global',
+      attributeType: AttributeType.string,
+      fieldType: FieldType.text,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
     },
     /* Dates */
     {

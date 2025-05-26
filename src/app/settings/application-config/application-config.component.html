@@ -12,9 +12,10 @@
               mat-stroked-button
               class="customize-button w-100"
               [ngClass]="{ active: layoutType === 'light' }"
-              (click)="SetLayouts('light')"
+              (click)="setLayouts('light')"
+              aria-label="Set light mode"
             >
-              <svg class="pc-icon light">
+              <svg class="pc-icon light" aria-hidden="true">
                 <use xlink:href="assets/fonts/custom-icon.svg#custom-sun-1"></use>
               </svg>
               Light
@@ -26,9 +27,10 @@
               mat-stroked-button
               class="customize-button w-100"
               [ngClass]="{ active: layoutType === 'dark' }"
-              (click)="SetLayouts('dark')"
+              (click)="setLayouts('dark')"
+              aria-label="Set dark mode"
             >
-              <svg class="pc-icon">
+              <svg class="pc-icon" aria-hidden="true">
                 <use xlink:href="assets/fonts/custom-icon.svg#custom-moon"></use>
               </svg>
               Dark
@@ -40,9 +42,10 @@
               mat-stroked-button
               class="customize-button auto-button w-100"
               [ngClass]="{ active: layoutType === 'auto' }"
-              (click)="SetLayouts('auto')"
+              (click)="setLayouts('auto')"
+              aria-label="Set auto mode"
             >
-              <svg class="pc-icon">
+              <svg class="pc-icon" aria-hidden="true">
                 <use xlink:href="assets/fonts/custom-icon.svg#custom-setting-2"></use>
               </svg>
               Auto
@@ -62,8 +65,9 @@
               class="customize-button w-100"
               [ngClass]="{ active: contrast === true }"
               (click)="setThemeContrast(true)"
+              aria-label="Set light contrast"
             >
-              <svg class="pc-icon">
+              <svg class="pc-icon" aria-hidden="true">
                 <use xlink:href="assets/fonts/custom-icon.svg#custom-mask"></use>
               </svg>
               Light
@@ -76,8 +80,9 @@
               class="customize-button w-100"
               [ngClass]="{ active: contrast === false }"
               (click)="setThemeContrast(false)"
+              aria-label="Set gray contrast"
             >
-              <svg class="pc-icon">
+              <svg class="pc-icon" aria-hidden="true">
                 <use xlink:href="assets/fonts/custom-icon.svg#custom-mask-1-outline"></use>
               </svg>
               Gray
@@ -97,8 +102,9 @@
               class="customize-button w-100"
               [ngClass]="{ active: caption === false }"
               (click)="setMenuCaption(false)"
+              aria-label="Show menu caption"
             >
-              <img src="assets/images/customizer/img-caption-1.svg" alt="img" class="img-fluid" width="70%" />
+              <img src="assets/images/customizer/img-caption-1.svg" alt="Show caption" class="img-fluid" width="70%" />
               Show
             </button>
           </div>
@@ -109,8 +115,9 @@
               class="customize-button w-100"
               [ngClass]="{ active: caption === true }"
               (click)="setMenuCaption(true)"
+              aria-label="Hide menu caption"
             >
-              <img src="assets/images/customizer/img-caption-2.svg" alt="img" class="img-fluid" width="70%" />
+              <img src="assets/images/customizer/img-caption-2.svg" alt="Hide caption" class="img-fluid" width="70%" />
               Hide
             </button>
           </div>
@@ -128,8 +135,9 @@
               class="customize-button w-100"
               [ngClass]="{ active: rtlLayout === false }"
               (click)="setRtlLayout(false)"
+              aria-label="Set LTR layout"
             >
-              <img src="assets/images/customizer/img-layout-1.svg" alt="img" class="img-fluid" width="70%" />
+              <img src="assets/images/customizer/img-layout-1.svg" alt="LTR layout" class="img-fluid" width="70%" />
               LTR
             </button>
           </div>
@@ -141,8 +149,9 @@
               class="customize-button w-100"
               [ngClass]="{ active: rtlLayout === true }"
               (click)="setRtlLayout(true)"
+              aria-label="Set RTL layout"
             >
-              <img src="assets/images/customizer/img-layout-2.svg" alt="img" class="img-fluid" width="70%" />
+              <img src="assets/images/customizer/img-layout-2.svg" alt="RTL layout" class="img-fluid" width="70%" />
               RTL
             </button>
           </div>
@@ -156,125 +165,95 @@
         <h6 class="fw-semibold">Custom Theme</h6>
         <p class="text-muted">Choose your Primary color</p>
         <div class="theme-color">
-          <a
-            href="javascript:"
-            matTooltip="Blue Layout"
-            (click)="SetBodyColor('blue-theme')"
-            data-value="blue-theme"
-          >
-    <span
-      class="color-swatch blue-layout"
-      [ngClass]="{ active: bodyColor === 'blue-theme' }"
-    ></span>
-          </a>
+          <button
+            type="button"
+            class="color-swatch blue-layout"
+            [ngClass]="{ active: bodyColor === 'blue-theme' }"
+            (click)="setBodyColor('blue-theme')"
+            matTooltip="Blue Theme"
+            aria-label="Set blue theme"
+          ></button>
 
-          <a
-            href="javascript:"
-            matTooltip="Indigo Layout"
-            (click)="SetBodyColor('indigo-theme')"
-            data-value="indigo-theme"
-          >
-    <span
-      class="color-swatch indigo-layout"
-      [ngClass]="{ active: bodyColor === 'indigo-theme' }"
-    ></span>
-          </a>
+          <button
+            type="button"
+            class="color-swatch indigo-layout"
+            [ngClass]="{ active: bodyColor === 'indigo-theme' }"
+            (click)="setBodyColor('indigo-theme')"
+            matTooltip="Indigo Theme"
+            aria-label="Set indigo theme"
+          ></button>
 
-          <a
-            href="javascript:"
-            matTooltip="Purple Layout"
-            (click)="SetBodyColor('purple-theme')"
-            data-value="purple-theme"
-          >
-    <span
-      class="color-swatch purple-layout"
-      [ngClass]="{ active: bodyColor === 'purple-theme' }"
-    ></span>
-          </a>
+          <button
+            type="button"
+            class="color-swatch purple-layout"
+            [ngClass]="{ active: bodyColor === 'purple-theme' }"
+            (click)="setBodyColor('purple-theme')"
+            matTooltip="Purple Theme"
+            aria-label="Set purple theme"
+          ></button>
 
-          <a
-            href="javascript:"
-            matTooltip="Pink Layout"
-            (click)="SetBodyColor('pink-theme')"
-            data-value="pink-theme"
-          >
-    <span
-      class="color-swatch pink-layout"
-      [ngClass]="{ active: bodyColor === 'pink-theme' }"
-    ></span>
-          </a>
+          <button
+            type="button"
+            class="color-swatch pink-layout"
+            [ngClass]="{ active: bodyColor === 'pink-theme' }"
+            (click)="setBodyColor('pink-theme')"
+            matTooltip="Pink Theme"
+            aria-label="Set pink theme"
+          ></button>
 
-          <a
-            href="javascript:"
-            matTooltip="Red Layout"
-            (click)="SetBodyColor('red-theme')"
-            data-value="red-theme"
-          >
-    <span
-      class="color-swatch red-layout"
-      [ngClass]="{ active: bodyColor === 'red-theme' }"
-    ></span>
-          </a>
+          <button
+            type="button"
+            class="color-swatch red-layout"
+            [ngClass]="{ active: bodyColor === 'red-theme' }"
+            (click)="setBodyColor('red-theme')"
+            matTooltip="Red Theme"
+            aria-label="Set red theme"
+          ></button>
 
-          <a
-            href="javascript:"
-            matTooltip="Orange Layout"
-            (click)="SetBodyColor('orange-theme')"
-            data-value="orange-theme"
-          >
-    <span
-      class="color-swatch orange-layout"
-      [ngClass]="{ active: bodyColor === 'orange-theme' }"
-    ></span>
-          </a>
+          <button
+            type="button"
+            class="color-swatch orange-layout"
+            [ngClass]="{ active: bodyColor === 'orange-theme' }"
+            (click)="setBodyColor('orange-theme')"
+            matTooltip="Orange Theme"
+            aria-label="Set orange theme"
+          ></button>
 
-          <a
-            href="javascript:"
-            matTooltip="Yellow Layout"
-            (click)="SetBodyColor('yellow-theme')"
-            data-value="yellow-theme"
-          >
-    <span
-      class="color-swatch yellow-layout"
-      [ngClass]="{ active: bodyColor === 'yellow-theme' }"
-    ></span>
-          </a>
+          <button
+            type="button"
+            class="color-swatch yellow-layout"
+            [ngClass]="{ active: bodyColor === 'yellow-theme' }"
+            (click)="setBodyColor('yellow-theme')"
+            matTooltip="Yellow Theme"
+            aria-label="Set yellow theme"
+          ></button>
 
-          <a
-            href="javascript:"
-            matTooltip="Green Layout"
-            (click)="SetBodyColor('green-theme')"
-            data-value="green-theme"
-          >
-    <span
-      class="color-swatch green-layout"
-      [ngClass]="{ active: bodyColor === 'green-theme' }"
-    ></span>
-          </a>
+          <button
+            type="button"
+            class="color-swatch green-layout"
+            [ngClass]="{ active: bodyColor === 'green-theme' }"
+            (click)="setBodyColor('green-theme')"
+            matTooltip="Green Theme"
+            aria-label="Set green theme"
+          ></button>
 
-          <a
-            href="javascript:"
-            matTooltip="Teal Layout"
-            (click)="SetBodyColor('teal-theme')"
-            data-value="teal-theme"
-          >
-    <span
-      class="color-swatch teal-layout"
-      [ngClass]="{ active: bodyColor === 'teal-theme' }"
-    ></span>
-          </a>
+          <button
+            type="button"
+            class="color-swatch teal-layout"
+            [ngClass]="{ active: bodyColor === 'teal-theme' }"
+            (click)="setBodyColor('teal-theme')"
+            matTooltip="Teal Theme"
+            aria-label="Set teal theme"
+          ></button>
 
-          <a
-            href="javascript:"
-            matTooltip="Cyan Layout"
-            (click)="SetBodyColor('cyan-theme')"
-            data-value="cyan-theme"
-          >
-    <span
-      class="color-swatch cyan-layout"
-      [ngClass]="{ active: bodyColor === 'cyan-theme' }"
-    ></span>
-          </a>
+          <button
+            type="button"
+            class="color-swatch cyan-layout"
+            [ngClass]="{ active: bodyColor === 'cyan-theme' }"
+            (click)="setBodyColor('cyan-theme')"
+            matTooltip="Cyan Theme"
+            aria-label="Set cyan theme"
+          ></button>
         </div>
       </div>
 
@@ -362,6 +341,7 @@
           color="primary"
           matTooltip="Apply theme settings"
           (click)="applySettings()"
+          aria-label="Apply settings"
         >
           <mat-icon class="me-1">save</mat-icon>
           Apply
@@ -370,7 +350,8 @@
           mat-stroked-button
           color="warn"
           matTooltip="Reset all settings"
-          (click)="setResetLayout()"
+          (click)="resetLayout()"
+          aria-label="Reset layout"
         >
           <mat-icon class="me-1">undo</mat-icon>
           Reset

@@ -12,6 +12,9 @@ import {
 import {OilReceptionFormComponent} from './components/oil-reception/oil-reception-add/oil-reception-add.component';
 import {OilReceptionComponent} from './components/oil-reception/oil-reception.component';
 import {SupplierAddComponent} from './components/suppliers/supplier-add/supplier-add.component';
+import {MillMachineAddComponent} from './components/mill-machine/mill-machine-add/mill-machine-add.component';
+import {MillMachineViewComponent} from './components/mill-machine/mill-machine-view/mill-machine-view.component';
+import {MillMachineMaintenanceComponent} from './components/mill-machine/mill-machine-maintenance/mill-machine-maintenance.component';
 
 export const receptionRoutes: Routes = [
   { path: 'reception-olive', component: OliveReceptionComponent },
@@ -30,4 +33,8 @@ export const receptionRoutes: Routes = [
 
   { path: 'mill-schedules', component: PlanningComponent },
   { path: 'mill-machines', component: MillMachineComponent },
+  { path: 'mill-machines/new', component: MillMachineAddComponent },
+  { path: 'mill-machines/:id', component: MillMachineAddComponent },
+  { path: 'mill-machines/view/:id', component: MillMachineViewComponent },
+  { path: 'mill-machines/maintenance/:id', component: MillMachineMaintenanceComponent },
 ];

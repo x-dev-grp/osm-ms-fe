@@ -14,9 +14,9 @@ import { SharedModule } from '../../../demo/shared/shared.module';
 import { ConfigurationComponent } from '../../../@theme/layouts/configuration/configuration.component';
 import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
 import { Action, DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
-import { Supplier } from '../../../shared/models/supplier';
-import { SupplierService } from '../../../shared/services/supplier.service';
-import { SUPPLIER_DASHBOARD } from './SUPPLIER_DASHBOARD';
+ import { SUPPLIER_DASHBOARD } from './SUPPLIER_DASHBOARD';
+import { SupplierTypeService } from '../../../shared/services/supplier.service';
+import { SupplierType } from '../../../shared/models/supplier-type';
 
 @Component({
   selector: 'app-supplier-dashboard',
@@ -37,13 +37,13 @@ import { SUPPLIER_DASHBOARD } from './SUPPLIER_DASHBOARD';
   styleUrls: ['./supplier-dashboard.component.scss']
 })
 export class SupplierDashboardComponent implements OnInit, OnDestroy {
-  suppliers: Supplier[] = [];
+  suppliers: SupplierType[] = [];
   dashboardConfig: DashboardConfig = SUPPLIER_DASHBOARD;
 
   private subs = new Subscription();
 
   constructor(
-    private supplierService: SupplierService,
+    private supplierService: SupplierTypeService,
     private snackBar: MatSnackBar,
     private router: Router
   ) {}
@@ -65,11 +65,11 @@ export class SupplierDashboardComponent implements OnInit, OnDestroy {
     );
   }
 
-  viewSupplier(s: Supplier): void {
+  viewSupplier(s: SupplierType): void {
     this.router.navigate(['supplier', s.id]);
   }
 
-  onRowAction(e: { row: Supplier; action: Action }): void {
+  onRowAction(e: { row: SupplierType; action: Action }): void {
     switch (e.action.value) {
       case 'CONSULTER':
         this.viewSupplier(e.row);
@@ -83,7 +83,7 @@ export class SupplierDashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  private deleteSupplier(s: Supplier): void {
+  private deleteSupplier(s: SupplierType): void {
     this.subs.add(
       this.supplierService.deleteSupplier(s.id!).subscribe(
         (res) => {
@@ -105,4 +105,4 @@ export class SupplierDashboardComponent implements OnInit, OnDestroy {
       panelClass: ['']
     });
   }
-} 
+}

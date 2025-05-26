@@ -1,0 +1,116 @@
+import { AttributeType, DashboardConfig, FieldType } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
+
+export const MILL_MACHINE_DASHBOARD: DashboardConfig = {
+  title: 'Machines de Moulin',
+  titleTranslatePath: 'MILL.MACHINE_TITLE',
+  baseURL: 'production/millers',
+  searchEndpoint: 'production/millers',
+  addNewItem: true,
+  addNewItemUrl: 'reception/mill-machines/new',
+  defaultSearchData: {
+    page: 0,
+    size: 10,
+    sort: 'name',
+    order: 'ASC',
+    searchData: {
+      operation: SearchOperation.AND,
+      searchs: [],
+      search: {}
+    }
+  },
+  fields: [
+    {
+      name: 'name',
+      label: 'Nom',
+      attributeType: AttributeType.string,
+      fieldType: FieldType.text,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },
+    {
+      name: 'machineType',
+      label: 'Type de Machine',
+      attributeType: AttributeType.string,
+      fieldType: FieldType.text,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },
+    {
+      name: 'manufacturer',
+      label: 'Fabricant',
+      attributeType: AttributeType.string,
+      fieldType: FieldType.text,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },
+    {
+      name: 'model',
+      label: 'Modèle',
+      attributeType: AttributeType.string,
+      fieldType: FieldType.text,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },
+    {
+      name: 'capacity',
+      label: 'Capacité',
+      attributeType: AttributeType.number,
+      fieldType: FieldType.number,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },
+    
+    {
+      name: 'hoursOperated',
+      label: 'Heures d\'opération',
+      attributeType: AttributeType.number,
+      fieldType: FieldType.number,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },
+    {
+      name: 'lastMaintenanceDate',
+      label: 'Dernière Maintenance',
+      attributeType: AttributeType.date,
+      fieldType: FieldType.date,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },
+    {
+      name: 'nextMaintenanceDate',
+      label: 'Prochaine Maintenance',
+      attributeType: AttributeType.date,
+      fieldType: FieldType.date,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    }
+  ],
+  actions: {
+    statusMapping: false,
+    statusAttributeName: 'operatingStatus',
+    actionsList: [
+      { label: 'Consulter', icon: 'visibility', value: 'CONSULTER' },
+      { label: 'Modifier', icon: 'edit', value: 'MODIFIER' },
+      { label: 'Supprimer', icon: 'delete', value: 'SUPPRIMER' },
+      { label: 'Maintenance', icon: 'build', value: 'MAINTENANCE' }
+    ]
+  },
+  fileName: 'mill_machines'
+};

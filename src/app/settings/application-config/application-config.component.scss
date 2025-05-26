@@ -1,13 +1,22 @@
 @import 'src/app/@theme/styles/theme-palette-colors.scss';
+
 .customize-body {
   padding: 0;
+
+  // Grid system fixes
+  .row {
+    margin: 0;
+  }
+
+  // Theme color swatches
   .theme-color {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
+    padding: 0;
 
     .color-swatch {
-      display: block;            // now it’s a true box
+      display: block;
       width: 2.5rem;
       height: 2.5rem;
       border-radius: 0.25rem;
@@ -19,35 +28,55 @@
         border-color: rgba(0, 0, 0, 0.4);
       }
 
-      // your actual colors
-      &.blue-layout   { background: #007bff; }
-      &.indigo-layout { background: #6610f2; }
-      &.purple-layout { background: #6f42c1; }
-      &.pink-layout   { background: #e83e8c; }
-      &.red-layout    { background: #dc3545; }
-      &.orange-layout { background: #fd7e14; }
-      &.yellow-layout { background: #ffc107; }
-      &.green-layout  { background: #28a745; }
-      &.teal-layout   { background: #20c997; }
-      &.cyan-layout   { background: #17a2b8; }
+      // Theme colors
+      &.blue-layout   { background: map-get($blue-theme, 500); }
+      &.indigo-layout { background: map-get($indigo-theme, 500); }
+      &.purple-layout { background: map-get($purple-theme, 500); }
+      &.pink-layout   { background: map-get($pink-theme, 500); }
+      &.red-layout    { background: map-get($red-theme, 500); }
+      &.orange-layout { background: map-get($orange-theme, 500); }
+      &.yellow-layout { background: map-get($yellow-theme, 500); }
+      &.green-layout  { background: map-get($green-theme, 500); }
+      &.teal-layout   { background: map-get($teal-theme, 500); }
+      &.cyan-layout   { background: map-get($cyan-theme, 500); }
     }
   }
+
+  // Customize buttons
   .customize-button {
     display: flex !important;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;            // keep icon/text spacing
-    padding: 0.75rem 1.25rem !important;  // vertical × horizontal
-    min-height: 3rem;       // boost clickable area
-    font-size: 1rem;        // a touch larger
-  }
-
-  /* also bump the action bar buttons */
-  .actions button {
-    padding: 0.75rem 1.25rem;
+    gap: 0.5rem;
+    height: 100%;
+    text-align: center;
+    padding: 0.75rem 1.25rem !important;
     min-height: 3rem;
     font-size: 1rem;
+
+    img,
+    svg {
+      width: 24px;
+      height: 24px;
+      margin: 0;
+    }
+
+    .pc-icon {
+      width: 22px;
+      height: 22px;
+      margin-right: 8px;
+
+      &.light {
+        color: map-get($yellow-theme, 500);
+      }
+    }
+
+    &.active {
+      border: 2px solid var(--primary-500);
+    }
   }
+
+  // List group styles
   .list-group {
     display: flex;
     flex-direction: column;
@@ -62,132 +91,13 @@
       .customize-button {
         height: 60px;
         border-radius: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         padding: 0 10px;
-
-        .pc-icon {
-          width: 22px;
-          height: 22px;
-          margin-right: 8px;
-        }
-
-        .pc-icon.light {
-          color: map-get($yellow-theme, 500);
-        }
-
-        &.active {
-          border: 2px solid var(--primary-500);
-        }
-      }
-
-      .theme-color {
-        display: flex;
-        position: relative;
-        padding: 0;
-        flex-wrap: wrap;
-        gap: 5px;
-
-        > a {
-          position: relative;
-          border-radius: 4px;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          flex-direction: column;
-          overflow: hidden;
-          transition: all 0.15s ease-in-out;
-          width: 20px;
-          height: 60px;
-          flex: none;
-
-          &::after {
-            content: '';
-            position: absolute;
-            top: 5px;
-            left: 5px;
-            right: 5px;
-            bottom: 5px;
-            border-radius: 4px;
-            background: rgba(255, 255, 255, 0.3);
-            z-index: 1;
-            transform: scale(0);
-            transition: all 0.15s ease-in-out;
-          }
-
-          i {
-            font-size: 20px;
-            color: #fff;
-            transform: scale(0);
-            transition: all 0.15s ease-in-out;
-
-            &::before {
-              position: relative;
-              z-index: 5;
-            }
-          }
-
-          &:hover {
-            &::after {
-              transform: scale(1);
-            }
-          }
-
-          &.blue-layout {
-            background: map-get($blue-theme, 500);
-          }
-
-          &.indigo-layout {
-            background: map-get($indigo-theme, 500);
-          }
-
-          &.purple-layout {
-            background: map-get($purple-theme, 500);
-          }
-
-          &.pink-layout {
-            background: map-get($pink-theme, 500);
-          }
-
-          &.red-layout {
-            background: map-get($red-theme, 500);
-          }
-
-          &.orange-layout {
-            background: map-get($orange-theme, 500);
-          }
-
-          &.yellow-layout {
-            background: map-get($yellow-theme, 500);
-          }
-
-          &.green-layout {
-            background: map-get($green-theme, 500);
-          }
-
-          &.teal-layout {
-            background: map-get($teal-theme, 500);
-          }
-
-          &.cyan-layout {
-            background: map-get($cyan-theme, 500);
-          }
-
-          &.active {
-            flex: 1;
-
-            &::after,
-            i {
-              transform: scale(1);
-            }
-          }
-        }
       }
     }
   }
 }
 
+// Action buttons
 .actions {
   display: flex;
   gap: 10px;
@@ -195,37 +105,8 @@
 
   button {
     min-width: 120px;
-  }
-}
-.customize-body {
-  // snap all of the Bootstrap cols back into your grid
-  .row {
-    margin: 0;
-  }
-
-  // make every “.customize-button” a flex-box
-  // so that icons and text line up perfectly
-  .customize-button {
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    height: 100%;
-    text-align: center;
-  }
-
-  // tighten up the icon sizing
-  .customize-button img,
-  .customize-button svg {
-    width: 24px;
-    height: 24px;
-    margin: 0;
-  }
-
-  // and for your little color-swatches row…
-  .theme-color {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    min-height: 3rem;
+    font-size: 1rem;
   }
 }

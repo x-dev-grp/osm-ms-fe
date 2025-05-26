@@ -50,11 +50,11 @@ const initialState: DashboardState = {
   resetFieldsSubject: new Subject<void>(),
   searchTrigger$: new Subject<SearchData>(),
   fileName:'default',
-  
+
 };
 
 export const DashboardStore = signalStore(
-    
+
   withState(initialState),
   withComputed((store) => ({
     data: store.data,
@@ -91,7 +91,7 @@ export const DashboardStore = signalStore(
       },
       export(exportType: string) {
         exportType=='pdf'?this.setExportPdfLoading(true):this.setExportExcelLoading(true);
-        const fieldsToExport = store.checkedExportFields().map((field) =>{ 
+        const fieldsToExport = store.checkedExportFields().map((field) =>{
             return {
                 name: field.field.fieldType==FieldType.autocomplete? field.field.valuePath : field.field.name,
                 label: field.field.exportLabel??field.field.label,
@@ -106,25 +106,25 @@ export const DashboardStore = signalStore(
             searchData:store.searchData()
         }
         return _http.post(`/api/${store.endpoint()}/export/${exportType}`,exportDetails,{
-            responseType: 'blob', 
-            observe: 'response'   
+            responseType: 'blob',
+            observe: 'response'
           }).pipe(
           tap((response) => {
             const contentDisposition = response.headers.get('content-disposition');
             let filename = 'export.pdf';
-      
+
             if (contentDisposition) {
               const match = contentDisposition.match(/filename="?(.+)"?/);
               if (match) {
-             
+
                 filename = match[1]?.slice(0,-1);
               }
             }
-      
+
             const blob = new Blob([response.body!], {
               type: response.body!.type
             });
-      
+
             saveAs(blob, filename);
             exportType=='pdf'?this.setExportPdfLoading(false):this.setExportExcelLoading(false);
           }),
@@ -134,7 +134,7 @@ export const DashboardStore = signalStore(
             return EMPTY;
           })
         ).subscribe();
-         
+
       },
       fetchData(){
         store.searchTrigger$().pipe(
@@ -180,7 +180,7 @@ export const DashboardStore = signalStore(
             finalize(() => {
               this.setLoading(false);
             })
-          );     
+          );
       },
       removeItem(id:string,path:string){
         this.setActionLoading(true);
@@ -203,7 +203,7 @@ export const DashboardStore = signalStore(
       setLoading: (loading: boolean) => {
         patchState(store, { loading });
       },
-      
+
       setActionLoading: (actionLoading: boolean) => {
         patchState(store, { actionLoading });
       },
@@ -244,12 +244,12 @@ export const DashboardStore = signalStore(
               const keys = Object.keys(attribute);
               const key = keys[0];
               const operationKeys= Object.keys(attribute[key])
-              const equalValue = operationKeys[0];
-              if(equalValue=="equalValue" && !attribute[key][equalValue]){
+              const op = operationKeys[0];
+              if((op=="equalValue" || op=="likeValue")  && !attribute[key][op]){
                 if (updatedSearchs[0].search) {
                   delete updatedSearchs[0].search[key];
                 }
-              }    
+              }
         const newSearchData = {
           ...currentSearchData,
           searchData: {
@@ -361,7 +361,7 @@ export const DashboardStore = signalStore(
           store.searchTrigger$().next(currentSearchData);
         }
       });
-  
+
     }
   })
 );

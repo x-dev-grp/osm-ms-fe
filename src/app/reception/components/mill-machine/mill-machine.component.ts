@@ -1,21 +1,22 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule, MatTableDataSource } from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatSortModule, MatSort } from '@angular/material/sort';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { SharedModule } from '../../../demo/shared/shared.module';
+import { MatCardModule } from '@angular/material/card';
+import { MatSortModule } from '@angular/material/sort';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
+import { SharedModule } from '../../../demo/shared/shared.module';
+import { ConfigurationComponent } from '../../../@theme/layouts/configuration/configuration.component';
+import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
+import { Action, DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
 import { MillMachine } from '../../../shared/models/millMachine';
 import { MillMachineService } from '../../../shared/services/mill-machine.service';
+import { MILL_MACHINE_DASHBOARD } from './MILL_MACHINE_DASHBOARD';
 
 @Component({
   selector: 'app-mill-machine',
@@ -24,150 +25,119 @@ import { MillMachineService } from '../../../shared/services/mill-machine.servic
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule,
     MatButtonModule,
     MatTableModule,
     MatIconModule,
     MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatExpansionModule,
+    MatCardModule,
     MatSortModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    SharedModule
+    SharedModule,
+    ConfigurationComponent,
+    OsmDashboard
   ]
 })
-export class MillMachineComponent implements OnInit {
-  form: FormGroup;
+export class MillMachineComponent implements OnInit, OnDestroy {
   machines: MillMachine[] = [];
-  dataSource = new MatTableDataSource<MillMachine>([]);
-  formOpen = false;
-  isEditing = false;
-
-  displayedColumns = [
-    'id',
-    'name',
-    'machineType',
-    'manufacturer',
-    'model',
-    'capacity',
-    'operatingStatus',
-    'hoursOperated',
-    'lastMaintenanceDate',
-    'nextMaintenanceDate',
-    'actions'
-  ];
-
-  @ViewChild(MatSort) sort!: MatSort;
+  loading = false;
+  error: string | null = null;
+  dashboardConfig: DashboardConfig = MILL_MACHINE_DASHBOARD;
+  private subs = new Subscription();
 
   constructor(
-    private fb: FormBuilder,
-    private service: MillMachineService
-  ) {
-    this.form = this.fb.group({
-      id: [null],
-      name: ['', Validators.required],
-      machineType: ['', Validators.required],
-      manufacturer: [''],
-      model: [''],
-      serialNumber: [''],
-      capacity: [0, [Validators.required, Validators.min(0.1)]],
-      operatingStatus: ['', Validators.required],
-      hoursOperated: [0, [Validators.required, Validators.min(0)]],
-      lastMaintenanceDate: [null],
-      nextMaintenanceDate: [null],
-      description: ['']
-    });
-  }
+    private millMachineService: MillMachineService,
+    private snackBar: MatSnackBar,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    this.loadAll();
+    this.loadMachines();
   }
 
-  ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort;
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 
-  loadAll(): void {
-    this.service.getAllMillMachines().subscribe({
-      next: (data) => {
-        this.machines = data;
-        this.dataSource.data = data;
+  loadMachines(): void {
+    this.loading = true;
+    this.error = null;
+
+    this.millMachineService.getAllMillMachines().subscribe({
+      next: (response: any) => {
+        if (response && response.success) {
+          this.machines = response.data;
+        } else {
+          this.error = response.message || 'Failed to load machines';
+          this.showToast(this.error || 'Failed to load machines');
+        }
+        this.loading = false;
       },
-      error: (err) => {
-        console.error('Erreur lors du chargement des machines :', err);
+      error: (err: any) => {
+        this.error = 'An error occurred while loading machines';
+        this.showToast(this.error);
+        this.loading = false;
       }
     });
   }
 
-  openForm(edit: boolean = false, machine?: MillMachine): void {
-    this.isEditing = edit;
-    this.formOpen = true;
-
-    if (edit && machine) {
-      this.form.patchValue(machine);
-    } else {
-      this.form.reset({
-        id: null,
-        name: '',
-        machineType: '',
-        manufacturer: '',
-        model: '',
-        serialNumber: '',
-        capacity: 0,
-        operatingStatus: '',
-        hoursOperated: 0,
-        lastMaintenanceDate: null,
-        nextMaintenanceDate: null,
-        description: ''
-      });
-    }
-  }
-
-  cancel(): void {
-    this.formOpen = false;
-    this.isEditing = false;
-    this.form.reset();
-  }
-
-  onSubmit(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-
-    const payload: MillMachine = this.form.value;
-    const request$ = this.isEditing
-      ? this.service.updateMillMachine(payload)
-      : this.service.addMillMachine(payload);
-
-    request$.subscribe({
-      next: () => {
-        this.loadAll();
-        this.cancel();
-      },
-      error: (err) => {
-        console.error('Erreur lors de l’enregistrement de la machine :', err);
-      }
+  showToast(message: string, duration: number = 3000): void {
+    this.snackBar.open(message, 'Close', {
+      duration,
+      horizontalPosition: 'right',
+      verticalPosition: 'top',
+      panelClass: ['custom-snackbar']
     });
+  }
+
+  onRowAction(event: { row: MillMachine; action: Action }): void {
+    switch (event.action.value) {
+      case 'CONSULTER':
+        this.viewMachine(event.row);
+        break;
+      case 'MODIFIER':
+        this.editMachine(event.row);
+        break;
+      case 'SUPPRIMER':
+        this.deleteMachine(event.row);
+        break;
+      case 'MAINTENANCE':
+        this.maintenanceMachine(event.row);
+        break;
+    }
+  }
+
+  viewMachine(machine: MillMachine): void {
+    if (machine.id) {
+      this.router.navigate(['/reception/mill-machines/view', machine.id]);
+    }
   }
 
   editMachine(machine: MillMachine): void {
-    this.openForm(true, machine);
+    if (machine.id) {
+      this.router.navigate(['/reception/mill-machines', machine.id]);
+    }
+  }
+
+  maintenanceMachine(machine: MillMachine): void {
+    if (machine.id) {
+      this.router.navigate(['/reception/mill-machines/maintenance', machine.id]);
+    }
   }
 
   deleteMachine(machine: MillMachine): void {
     if (!machine.id) return;
 
-    if (confirm('Voulez-vous vraiment supprimer cette machine ?')) {
-      this.service.deleteMillMachine(machine.id).subscribe({
-        next: () => this.loadAll(),
-        error: (err) => {
-          console.error('Erreur lors de la suppression de la machine :', err);
+    this.millMachineService.deleteMillMachine(machine.id).subscribe({
+      next: (response: any) => {
+        if (response && response.success) {
+          this.showToast('Machine deleted successfully');
+          this.loadMachines();
+        } else {
+          this.showToast(response.message || 'Failed to delete machine');
         }
-      });
-    }
+      },
+      error: (err: any) => {
+        this.showToast('An error occurred while deleting the machine');
+      }
+    });
   }
 }

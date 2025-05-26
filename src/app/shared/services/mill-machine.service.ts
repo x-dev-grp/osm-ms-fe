@@ -38,8 +38,8 @@ export class MillMachineService {
     return new Date(year, month - 1, day, hour, minute, second);
   }
   // Get MillMachine by id
-  getMillMachine(id: number): Observable<ApiResponse<MillMachine>> {
-    return this.http.get<ApiResponse<MillMachine>>(`${this.baseUrl}/${id}`);
+  getMillMachine(id: string): Observable<ApiResponse<MillMachine>> {
+    return this.http.get<ApiResponse<MillMachine>>(`${this.baseUrl}/fetch/${id}`);
   }
 
   // Add a new MillMachine

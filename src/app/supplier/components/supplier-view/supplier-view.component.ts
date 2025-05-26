@@ -7,9 +7,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { SupplierType } from '../../../shared/models/supplier-type';
+import { SupplierTypeService } from '../../../shared/services/supplier.service';
 
-import { Supplier } from '../../../shared/models/supplier';
-import { SupplierService } from '../../../shared/services/supplier.service';
 
 @Component({
   selector: 'app-supplier-view',
@@ -24,11 +24,11 @@ import { SupplierService } from '../../../shared/services/supplier.service';
   styleUrls: ['./supplier-view.component.scss']
 })
 export class SupplierViewComponent implements OnInit, OnDestroy {
-  supplier?: Supplier;
+  supplier?: SupplierType;
   private subs = new Subscription();
 
   constructor(
-    private supplierService: SupplierService,
+    private supplierService: SupplierTypeService,
     private snackBar: MatSnackBar,
     private router: Router,
     private route: ActivatedRoute
@@ -49,10 +49,10 @@ export class SupplierViewComponent implements OnInit, OnDestroy {
 
   private loadSupplier(id: string): void {
     this.subs.add(
-      this.supplierService.getSupplierById(id).subscribe(
+      this.supplierService.getSupplier(id).subscribe(
         (res) => {
           if (res.success && res.data) {
-            this.supplier = res.data;
+            this.supplier = res.data[0];
           } else {
             this.toast('Erreur lors du chargement du fournisseur.');
             this.router.navigate(['/supplier']);
@@ -96,4 +96,4 @@ export class SupplierViewComponent implements OnInit, OnDestroy {
       panelClass: ['']
     });
   }
-} 
+}
