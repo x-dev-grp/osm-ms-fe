@@ -53,25 +53,7 @@
       </div>
     </div>
   </div>
-  <!-- Champ Catégorie -->
-  <div class="row mt-4">
-    <div class="col-md-6 offset-md-3">
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Catégorie</mat-label>
-        <mat-select formControlName="categorie">
-          <mat-option value="vierge extra">Vierge Extra</mat-option>
-          <mat-option value="vierge">Vierge</mat-option>
-          <mat-option value="lampante">Lampante</mat-option>
-        </mat-select>
-      </mat-form-field>
 
-      <!-- Gestion des erreurs -->
-      <div *ngIf="dynamicForm.get('categorie')?.invalid && dynamicForm.get('categorie')?.touched"
-           class="text-danger mt-1">
-        Ce champ est requis.
-      </div>
-    </div>
-  </div>
   <div class="text-center my-4">
     <button [disabled]="dynamicForm.invalid || isLoading || isQualityControlDone" class="btn btn-primary px-5"
             type="submit">

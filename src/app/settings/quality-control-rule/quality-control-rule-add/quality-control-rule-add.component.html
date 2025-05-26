@@ -1,0 +1,197 @@
+<div *ngIf="loading" class="loading-overlay">
+  <mat-spinner diameter="50"></mat-spinner>
+</div>
+<!-- Error Message -->
+<div *ngIf="errorMessage && !loading" class="error-message">
+  {{ errorMessage }}
+</div>
+
+<app-card
+  *ngIf="!errorMessage && !loading"
+  [cardTitle]="isEditing ? 'Modifier Rule' : 'Ajouter Rule'"
+  [padding]="20"
+  [showContent]="true"
+  [showHeader]="false"
+>
+
+  <form [formGroup]="ruleForm" class="form-content">
+    <!-- Header with Back Button -->
+    <div class="header-row" style="display: flex; align-items: center; gap: 10px;">
+      <button (click)="onBack()" [disabled]="loading" mat-icon-button title="Retour">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h3>{{ isEditing ? 'Modifier Rule' : 'Ajouter Rule' }}</h3>
+    </div>
+
+    <hr style="margin-bottom: 40px;"/>
+
+    <div class="row mb-4">
+      <div class="col-md-3">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Rule Key</mat-label>
+          <input formControlName="ruleKey" matInput/>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-3 d-flex align-items-end">
+        <mat-checkbox formControlName="oilQc">Oil QC</mat-checkbox>
+      </div>
+
+      <div class="col-md-3">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Rule Name</mat-label>
+          <input formControlName="ruleName" matInput/>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-3">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Type</mat-label>
+          <mat-select formControlName="ruleType">
+            <mat-option value="numeric">Numeric</mat-option>
+            <mat-option value="boolean">Boolean</mat-option>
+            <mat-option value="string">Text</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Row 2: Min Value, Max Value, Expected Value, Description -->
+    <div class="row mb-4">
+
+      <!-- Min Value (only if numeric) -->
+      <div *ngIf="ruleForm.get('ruleType')?.value === 'numeric'" class="col-md-3">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Min Value</mat-label>
+          <input formControlName="minValue" matInput type="number"/>
+        </mat-form-field>
+      </div>
+
+      <!-- Max Value (only if numeric) -->
+      <div *ngIf="ruleForm.get('ruleType')?.value === 'numeric'" class="col-md-3">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Max Value</mat-label>
+          <input formControlName="maxValue" matInput type="number"/>
+        </mat-form-field>
+      </div>
+
+      <!-- Expected Value (only if boolean) -->
+      <div *ngIf="ruleForm.get('ruleType')?.value === 'boolean'" class="col-md-3">
+        <mat-checkbox class="boolean-expected" formControlName="booleanValue">
+          Expected Value
+        </mat-checkbox>
+      </div>
+
+      <!-- Description -->
+      <div class="col-md-3">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Description</mat-label>
+          <input formControlName="description" matInput/>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Row 3: Text Values (only if string) -->
+    <div *ngIf="ruleForm.get('ruleType')?.value === 'string'" class="row mb-4">
+      <div class="col-md-12">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Valeurs possibles (séparées par des virgules)</mat-label>
+          <input formControlName="textInput" matInput required/>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="row mt-4">
+      <div class="col-md-12 d-flex gap-2">
+        <button (click)="save()" [disabled]="ruleForm.invalid || loading" color="primary" mat-flat-button>
+          {{ isEditing ? 'Mettre à jour' : 'Ajouter' }}
+        </button>
+        <button (click)="cancel()" [disabled]="loading" color="warn" mat-stroked-button type="button">
+          Annuler
+        </button>
+      </div>
+    </div>
+
+  </form>
+</app-card>
+<!--  <form-->
+<!--    class="rule-form"-->
+<!--    [formGroup]="ruleForm"-->
+<!--    (ngSubmit)="onSubmit()">-->
+
+<!--    &lt;!&ndash; Rule key + Oil QC &ndash;&gt;-->
+<!--    <mat-form-field appearance="outline">-->
+<!--      <mat-label>Rule Key</mat-label>-->
+<!--      <input matInput formControlName="ruleKey" />-->
+<!--    </mat-form-field>-->
+
+<!--    <mat-checkbox formControlName="oilQc">Oil QC</mat-checkbox>-->
+
+
+<!--    &lt;!&ndash; Rule name &ndash;&gt;-->
+<!--    <mat-form-field appearance="outline">-->
+<!--      <mat-label>Rule Name</mat-label>-->
+<!--      <input matInput formControlName="ruleName" />-->
+<!--    </mat-form-field>-->
+
+<!--    &lt;!&ndash; Type &ndash;&gt;-->
+<!--    <mat-form-field appearance="outline">-->
+<!--      <mat-label>Type</mat-label>-->
+<!--      <mat-select formControlName="ruleType">-->
+<!--        <mat-option value="numeric">Numeric</mat-option>-->
+<!--        <mat-option value="boolean">Boolean</mat-option>-->
+<!--        <mat-option value="string">Text</mat-option>-->
+<!--      </mat-select>-->
+<!--    </mat-form-field>-->
+
+<!--    &lt;!&ndash; Numeric min / max &ndash;&gt;-->
+<!--    <mat-form-field-->
+<!--      *ngIf="ruleForm.get('ruleType')?.value === 'numeric'"-->
+<!--      appearance="outline">-->
+<!--      <mat-label>Min Value</mat-label>-->
+<!--      <input matInput type="number" formControlName="minValue" />-->
+<!--    </mat-form-field>-->
+
+<!--    <mat-form-field-->
+<!--      *ngIf="ruleForm.get('ruleType')?.value === 'numeric'"-->
+<!--      appearance="outline">-->
+<!--      <mat-label>Max Value</mat-label>-->
+<!--      <input matInput type="number" formControlName="maxValue" />-->
+<!--    </mat-form-field>-->
+
+<!--    &lt;!&ndash; Boolean expected value &ndash;&gt;-->
+<!--    <mat-checkbox-->
+<!--      *ngIf="ruleForm.get('ruleType')?.value === 'boolean'"-->
+<!--      formControlName="booleanValue"-->
+<!--      class="boolean-expected">-->
+<!--      Expected Value-->
+<!--    </mat-checkbox>-->
+
+<!--    &lt;!&ndash; Description &ndash;&gt;-->
+<!--    <mat-form-field appearance="outline" class="full-width">-->
+<!--      <mat-label>Description</mat-label>-->
+<!--      <input matInput formControlName="description" />-->
+<!--    </mat-form-field>-->
+
+<!--    &lt;!&ndash; Affichage uniquement si ruleType est "text" &ndash;&gt;-->
+
+<!--    <mat-form-field-->
+<!--      *ngIf="ruleForm.get('ruleType')?.value === 'string'"-->
+<!--      appearance="outline"-->
+<!--      class="full-width">-->
+<!--      <mat-label>Valeurs possibles (séparées par des virgules)</mat-label>-->
+<!--      <input matInput formControlName="textInput"  required/>-->
+<!--    </mat-form-field>-->
+
+
+<!--    &lt;!&ndash; Action buttons &ndash;&gt;-->
+<!--    <div class="actions full-width">-->
+<!--      <button mat-flat-button color="primary" type="submit">-->
+<!--        {{ isEditing ? 'Update' : 'Add' }}-->
+<!--      </button>-->
+<!--      <button mat-stroked-button color="accent" type="button" (click)="cancel()">-->
+<!--        Cancel-->
+<!--      </button>-->
+<!--    </div>-->
+<!--  </form>-->

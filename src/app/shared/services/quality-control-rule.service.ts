@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { QualityControlRule } from '../models/quality-control-rule';
-import { ApiResponse } from '../models/api-response';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {QualityControlRule} from '../models/quality-control-rule';
+import {ApiResponse} from '../models/api-response';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +26,7 @@ export class QualityControlRuleService {
   }
 
   // Get a rule by ID
-  getRule(id: number): Observable<ApiResponse<QualityControlRule>> {
+  getRule(id: string): Observable<ApiResponse<QualityControlRule>> {
     return this.http.get<ApiResponse<QualityControlRule>>(`${this.baseUrl}/${id}`);
   }
 
