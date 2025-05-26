@@ -94,7 +94,7 @@ export const BANK_ACCOUNTS_DASHBOARD_CONFIG: DashboardConfig = {
       sortable: true,
       dataTable: true,
       filterable: true
-    }
+    },
     { name: 'rib',        label: 'RIB',                exportable:true, attributeType: AttributeType.string, fieldType: FieldType.text, dataTable: true, sortable: true, filterable: true },
     { name: 'iban',       label: 'IBAN',               exportable:true, attributeType: AttributeType.string, fieldType: FieldType.text, dataTable: true, sortable: true, filterable: true },
     { name: 'bicSwift',   label: 'BIC / SWIFT',        exportable:true, attributeType: AttributeType.string, fieldType: FieldType.text, dataTable: true, sortable: true },

@@ -40,7 +40,8 @@ import {MatExpansionPanel, MatExpansionPanelDescription, MatExpansionPanelHeader
 import {SharedModule} from '../../../demo/shared/shared.module';
 import {DialogModule} from '@angular/cdk/dialog';
 import {PlanningService} from '../../../shared/services/planning.service';
-// import { ConfirmDialogComponent } from '../../../shared/component/confirm-dialog/confirm-dialog.component';
+import {ConfirmDialogComponent} from "../../../shared/component/confirm-dialog/confirm-dialog/confirm-dialog.component";
+
 
 // Interfaces
 export interface BoardItem {
