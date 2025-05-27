@@ -166,8 +166,8 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
       { label: 'Consulter',        icon: 'visibility', value: 'CONSULTER' },
       { label: 'Modifier',         icon: 'edit',       value: 'MODIFIER' },
       { label: 'Supprimer',        icon: 'delete',     value: 'SUPPRIMER' },
-      { label: 'Contrôle Qualité', icon: 'fact_check', value: 'QUALITY' }
-    ]
+      { label: 'Contrôle Qualité', icon: 'fact_check', value: 'QUALITY' },
+      { label: 'Générer bon de réception', icon: 'picture_as_pdf', value: 'generate_pdf' }    ]
   },
 
   /* Nom par défaut du fichier d'export CSV */

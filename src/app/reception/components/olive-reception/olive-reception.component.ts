@@ -194,22 +194,20 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
   }
 
   onRowAction(e: { row: UnifiedDelivery; action: Action }): void {
-    switch (e.action.value.toLowerCase()) {
-      case 'consulter':
+    switch (e.action.value) {
+      case 'CONSULTER':
         this.viewDelivery(e.row);
         break;
-      case 'modifier':
+      case 'MODIFIER':
         this.selectReception(e.row);
         break;
-      case 'Controle quality':
-      case 'QUALITY':
-      case 'Contrôle Qualité':
-        this.QualityControl(e.row);
+       case 'QUALITY':
+         this.QualityControl(e.row);
         break;
-      case 'Supprimer':
+      case 'SUPPRIMER':
         if (e.row.id) this.deleteDelivery(e.row);
         break;
-      case 'generer_pdf':
+      case 'generate_pdf':
         if (e.row) {
           this.genererBonReception(e.row);
         }
