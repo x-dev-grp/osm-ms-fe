@@ -15,6 +15,10 @@ import {SharedModule} from '../../demo/shared/shared.module';
 import {QualityControlRule} from '../../shared/models/quality-control-rule';
 import {QualityControlRuleService} from '../../shared/services/quality-control-rule.service';
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {OsmDashboard} from "../../shared/modules/osm-dashboard/osm-dashboard";
+import {Action, DashboardConfig} from "../../shared/modules/osm-dashboard/models/dashboard-config";
+import {Router} from "@angular/router";
+import {QUALTITY_CONTROL_RULE_DASHBOARD} from "./QUALTITY_CONTROL_RULE_DASHBOARD";
 
 @Component({
   selector: 'app-quality-control-rule',
@@ -30,7 +34,8 @@ import {MatSnackBar} from "@angular/material/snack-bar";
     MatCheckboxModule,
     MatButtonModule,
     MatIconModule,
-    SharedModule
+    SharedModule,
+    OsmDashboard
   ],
   templateUrl: './quality-control-rule.component.html',
   styleUrls: ['./quality-control-rule.component.scss'],
@@ -40,16 +45,20 @@ export class QualityControlRuleComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   ruleForm: FormGroup;
   dataSource = new MatTableDataSource<QualityControlRule>([]);
-  displayedColumns = ['ruleKey', 'Oil QC', 'ruleType', 'ruleName', 'minValue', 'maxValue', 'actions'] as const;
+  displayedColumns = ['ruleName', 'ruleType', 'oilQc', 'actions'] as const;
   formOpen = false;
   isEditing = false;
   message = '';
   isLoading = false;
 
+  dashboardConfig: DashboardConfig = QUALTITY_CONTROL_RULE_DASHBOARD;
+
+
   constructor(
     private fb: FormBuilder,
     private service: QualityControlRuleService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private router: Router
   ) {
     this.ruleForm = this.fb.group({
       id: [''],
@@ -85,60 +94,31 @@ export class QualityControlRuleComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.loadRules();
+
+
   }
 
-  loadRules(): void {
-    this.isLoading = true;
-    this.service.getAllRules().pipe(
-      takeUntil(this.destroy$),
-      finalize(() => this.isLoading = false)
-    ).subscribe(
-      res => {
-        if (res?.success) {
-          this.dataSource.data = Array.isArray(res.data[0]) ? res.data[0] : res.data;
-          this.message = '';
-        } else {
-          this.message = res.message;
-        }
-      },
-      () => this.message = 'Failed to load rules.'
-    );
-  }
-
-  openForm(edit?: QualityControlRule): void {
-    if (edit) {
-      this.ruleForm.reset({
-        id:           edit.id ?? '',
-        ruleKey:      edit.ruleKey,
-        oilQc:        edit.oilQc ?? false,
-        ruleType:     (edit.ruleType ?? 'numeric').toLowerCase(),
-        booleanValue: edit.booleanValue ?? false,
-        minValue:     edit.minValue ?? 0,
-        maxValue:     edit.maxValue ?? 0,
-        ruleName:     edit.ruleName ?? '',
-        description:  edit.description ?? '',
-        textInput:    Array.isArray(edit.textValues) ? edit.textValues.join(', ') : ''
-      });
-      this.isEditing = true;
-    } else {
-      this.ruleForm.reset({
-        id:           '',
-        ruleKey:      '',
-        oilQc:        false,
-        ruleType:     'numeric',
-        booleanValue: false,
-        minValue:     0,
-        maxValue:     0,
-        ruleName:     '',
-        description:  '',
-        textInput:    ''
-      });
-      this.isEditing = false;
-    }
-
-    this.formOpen = true;
-  }
+  // loadRules(): void {
+  //   this.isLoading = true;
+  //   this.service.getAllRules().pipe(
+  //     takeUntil(this.destroy$),
+  //     finalize(() => this.isLoading = false)
+  //   ).subscribe(
+  //     res => {
+  //       console.log('API Response:', res); // Vérifie ici la structure
+  //       if (res?.success) {
+  //         const data = Array.isArray(res.data[0]) ? res.data[0] : res.data;
+  //         this.dataSource.data = data;
+  //         this.message = '';
+  //       } else {
+  //         this.message = res.message;
+  //       }
+  //     },
+  //     () => {
+  //       this.message = 'Failed to load rules.';
+  //     }
+  //   );
+  // }
 
   cancel(): void {
     this.formOpen = false;
@@ -187,7 +167,7 @@ export class QualityControlRuleComponent implements OnInit, OnDestroy {
             verticalPosition: 'top',
             panelClass: ['snackbar-success']
           });
-          this.loadRules();
+          // this.loadRules();
           this.cancel();
         } else {
           this.snackBar.open('Échec de l\'enregistrement ❌', 'Fermer', {
@@ -214,7 +194,7 @@ export class QualityControlRuleComponent implements OnInit, OnDestroy {
       finalize(() => this.isLoading = false)
     ).subscribe(
       res => {
-        if (res?.success) this.loadRules();
+        // if (res?.success) this.loadRules();
       },
       () => this.message = 'Delete failed.'
     );
@@ -224,4 +204,47 @@ export class QualityControlRuleComponent implements OnInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
+
+  onRowAction(e: { row: QualityControlRule; action: Action }): void {
+
+    switch (e.action.value) {
+      case 'CONSULTER':
+        this.viewRule(e.row);
+        break;
+      case 'MODIFIER':
+        this.selectRule(e.row);
+        break;
+
+      case 'Supprimer':
+        if (e.row.id) this.deleteRule(e.row);
+        break;
+
+    }
+  }
+
+  // private deleteRule(r: QualityControlRule): void {
+  //   // this.deliveryService.deleteUnifiedDelivery(r.id!).subscribe(
+  //   //   res => {
+  //   //     if (res.success) {
+  //   //       this.fetchDeliveries();
+  //   //       this.toast('Réception supprimée avec succès.');
+  //   //     }
+  //   //   },
+  //   //   () => this.toast('Erreur lors de la suppression.')
+  //   // );
+  // }
+
+  selectRule(r?: QualityControlRule): void {
+    if (r?.id) {
+      this.router.navigate(['/settings/quality-control', r.id]);
+    } else {
+      this.router.navigate(['/settings/quality-control', 'new']);
+    }
+  }
+
+
+  viewRule(r: QualityControlRule): void {
+    this.router.navigate(['settings/quality-control-rule-details', r.id]);
+  }
+
 }

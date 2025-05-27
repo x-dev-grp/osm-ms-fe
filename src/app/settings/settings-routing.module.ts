@@ -1,17 +1,20 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { GeneralConfigComponent } from './general-config/general-config.component';
-import { StorageUnitsComponent } from './storage/storage.component';
-import { GenericTypeComponent } from './generic-type/generic-type.component';
-import { QualityControlRuleComponent } from './quality-control-rule/quality-control-rule.component';
-import { ApplicationConfigComponent } from './application-config/application-config.component';
-import { AuthGuardChild } from '../interceptors/guards/auth.guard';
-import { UserResolver } from './user-management/services/user.resolver';
-import { RoleResolver } from './user-management/services/role.resolver';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {GeneralConfigComponent} from './general-config/general-config.component';
+import {GenericTypeComponent} from './generic-type/generic-type.component';
+import {ApplicationConfigComponent} from './application-config/application-config.component';
+import {AuthGuardChild} from '../interceptors/guards/auth.guard';
+import {UserResolver} from './user-management/services/user.resolver';
+import {RoleResolver} from './user-management/services/role.resolver';
+import {qualityControlRoutes} from "./quality-control-rule/qualityControlQualityRule.routes";
 
 const routes: Routes = [
   { path: 'general-config', component: GeneralConfigComponent, canActivate: [AuthGuardChild] },
-  { path: 'quality-control', component: QualityControlRuleComponent, canActivate: [AuthGuardChild] },
+  {
+    path: 'quality-control',
+    canActivateChild: [AuthGuardChild], // 👈 meilleure pratique
+    children: qualityControlRoutes
+  },
   { path: 'storage',
     children: [
       {
@@ -38,7 +41,8 @@ const routes: Routes = [
   },
   { path: 'configuration', component: ApplicationConfigComponent, canActivate: [AuthGuardChild] },
   { path: 'generic', component: GenericTypeComponent, canActivate: [AuthGuardChild] },
-  { path: 'users', 
+  {
+    path: 'users',
     children:[
       {
         path: '',
@@ -75,7 +79,8 @@ const routes: Routes = [
         loadComponent: () => import('./user-management/components/form/user-form.component').then((c) => c.UserFormComponent),
       }
     ] },
-    { path: 'roles', 
+  {
+    path: 'roles',
       children:[
         {
           path: '',

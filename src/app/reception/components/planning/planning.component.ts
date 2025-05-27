@@ -5,34 +5,43 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
-  HostListener, OnDestroy,
+  HostListener,
+  OnDestroy,
   OnInit,
   ViewChild
 } from '@angular/core';
-import { CdkDragDrop, CdkDragEnter, CdkDragMove, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
-import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { CardComponent } from '../../../@theme/components/card/card.component';
-import { BreakpointObserver } from '@angular/cdk/layout';
-import { debounceTime, filter, map, Observable, Subject } from 'rxjs';
-import { MillMachineService } from '../../../shared/services/mill-machine.service';
-import { MillMachine } from '../../../shared/models/millMachine';
-import { MatDialog } from '@angular/material/dialog';
-import { MatChip, MatChipRow } from '@angular/material/chips';
-import { MatCheckbox } from '@angular/material/checkbox';
-import { MatExpansionPanel, MatExpansionPanelDescription, MatExpansionPanelHeader } from '@angular/material/expansion';
-import { SharedModule } from '../../../demo/shared/shared.module';
-import { DialogModule } from '@angular/cdk/dialog';
-import { PlanningService } from '../../../shared/services/planning.service';
-import { ConfirmDialogComponent } from '../../../shared/component/confirm-dialog/confirm-dialog.component';
+import {
+  CdkDragDrop,
+  CdkDragEnter,
+  CdkDragMove,
+  DragDropModule,
+  moveItemInArray,
+  transferArrayItem
+} from '@angular/cdk/drag-drop';
+import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
+import {UnifiedDeliveryService} from '../../../shared/services/delivery.service';
+import {UnifiedDelivery} from '../../../shared/models/UnifiedDelivery';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatCardModule} from '@angular/material/card';
+import {MatButtonModule} from '@angular/material/button';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+import {CardComponent} from '../../../@theme/components/card/card.component';
+import {BreakpointObserver} from '@angular/cdk/layout';
+import {debounceTime, filter, map, Observable, Subject} from 'rxjs';
+import {MillMachineService} from '../../../shared/services/mill-machine.service';
+import {MillMachine} from '../../../shared/models/millMachine';
+import {MatDialog} from '@angular/material/dialog';
+import {MatChip, MatChipRow} from '@angular/material/chips';
+import {MatCheckbox} from '@angular/material/checkbox';
+import {MatExpansionPanel, MatExpansionPanelDescription, MatExpansionPanelHeader} from '@angular/material/expansion';
+import {SharedModule} from '../../../demo/shared/shared.module';
+import {DialogModule} from '@angular/cdk/dialog';
+import {PlanningService} from '../../../shared/services/planning.service';
+import {ConfirmDialogComponent} from "../../../shared/component/confirm-dialog/confirm-dialog/confirm-dialog.component";
+
 
 // Interfaces
 export interface BoardItem {
