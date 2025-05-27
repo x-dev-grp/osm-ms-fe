@@ -218,74 +218,74 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
     }
   }
 
-  async Enregistrer(): Promise<void> {
-    if (this.receptionForm.invalid) {
-      this.toast('Veuillez remplir tous les champs obligatoires.', 4000);
-      return;
-    }
+  // async Enregistrer(): Promise<void> {
+  //   if (this.receptionForm.invalid) {
+  //     this.toast('Veuillez remplir tous les champs obligatoires.', 4000);
+  //     return;
+  //   }
+  //
+  //   const f = this.receptionForm.value;
+  //
+  //   if (!f.region?.id)   { this.toast('Veuillez sélectionner une région valide.', 4000);   return; }
+  //   if (!f.supplier?.id) { this.toast('Veuillez sélectionner un fournisseur valide.', 4000); return; }
+  //
+  //   const payload: any = {
+  //     id: this.isEditing ? this.selectedReceptionId : undefined,
+  //
+  //     deliveryType: 'OIL',
+  //     deliveryNumber: f.deliveryNumber,
+  //     lotNumber:      f.lotNumber,
+  //     globalLotNumber:f.globalLotNumber,
+  //
+  //     deliveryDate: this.iso(f.deliveryDate),
+  //     region:       f.region,
+  //
+  //     poidsBrute: f.poidsBrute,
+  //     poidsNet:   f.poidsNet,
+  //
+  //     matriculeCamion: f.matriculeCamion,
+  //     etatCamion:      f.etatCamion,
+  //
+  //     supplier:   f.supplier,
+  //     oilVariety: f.oilVariety,
+  //     oliveType:  f.oliveType,
+  //
+  //     oilQuantity:  f.oilQuantity,
+  //     unitPrice:    f.unitPrice,
+  //     price:        f.price,
+  //     paidAmount:   f.paidAmount,
+  //     unpaidAmount: f.unpaidAmount
+  //   };
+  //
+  //   const req$ = this.isEditing
+  //     ? this.deliveryService.updateUnifiedDelivery(payload)
+  //     : this.deliveryService.createUnifiedDelivery(payload);
+  //
+  //   req$.subscribe({
+  //     next: res => {
+  //       if (res.success) {
+  //         this.toast(this.isEditing ? 'Réception huile mise à jour.' : 'Réception huile ajoutée.');
+  //         this.fetchDeliveries();
+  //         this.resetForm();
+  //       } else {
+  //         this.toast(res.message || "Échec de l'opération.");
+  //       }
+  //     },
+  //     error: () => this.toast(this.isEditing ? 'Erreur lors de la mise à jour' : 'Erreur lors de l’ajout')
+  //   });
+  // }
 
-    const f = this.receptionForm.value;
-
-    if (!f.region?.id)   { this.toast('Veuillez sélectionner une région valide.', 4000);   return; }
-    if (!f.supplier?.id) { this.toast('Veuillez sélectionner un fournisseur valide.', 4000); return; }
-
-    const payload: any = {
-      id: this.isEditing ? this.selectedReceptionId : undefined,
-
-      deliveryType: 'OIL',
-      deliveryNumber: f.deliveryNumber,
-      lotNumber:      f.lotNumber,
-      globalLotNumber:f.globalLotNumber,
-
-      deliveryDate: this.iso(f.deliveryDate),
-      region:       f.region,
-
-      poidsBrute: f.poidsBrute,
-      poidsNet:   f.poidsNet,
-
-      matriculeCamion: f.matriculeCamion,
-      etatCamion:      f.etatCamion,
-
-      supplier:   f.supplier,
-      oilVariety: f.oilVariety,
-      oliveType:  f.oliveType,
-
-      oilQuantity:  f.oilQuantity,
-      unitPrice:    f.unitPrice,
-      price:        f.price,
-      paidAmount:   f.paidAmount,
-      unpaidAmount: f.unpaidAmount
-    };
-
-    const req$ = this.isEditing
-      ? this.deliveryService.updateUnifiedDelivery(payload)
-      : this.deliveryService.createUnifiedDelivery(payload);
-
-    req$.subscribe({
-      next: res => {
-        if (res.success) {
-          this.toast(this.isEditing ? 'Réception huile mise à jour.' : 'Réception huile ajoutée.');
-          this.fetchDeliveries();
-          this.resetForm();
-        } else {
-          this.toast(res.message || "Échec de l'opération.");
-        }
-      },
-      error: () => this.toast(this.isEditing ? 'Erreur lors de la mise à jour' : 'Erreur lors de l’ajout')
-    });
-  }
-
-  resetForm(): void {
-    this.receptionForm.reset({
-      deliveryType: 'OIL',
-      deliveryDate: new Date(),
-      poidsBrute: 0,
-      poidsNet: 0
-    });
-    this.isEditing = false;
-    this.formOpen  = false;
-    this.selectedReceptionId = undefined;
-  }
+  // resetForm(): void {
+  //   this.receptionForm.reset({
+  //     deliveryType: 'OIL',
+  //     deliveryDate: new Date(),
+  //     poidsBrute: 0,
+  //     poidsNet: 0
+  //   });
+  //   this.isEditing = false;
+  //   this.formOpen  = false;
+  //   this.selectedReceptionId = undefined;
+  // }
 
   /* ——— data loading & table helpers ——— */
 
@@ -407,11 +407,11 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
 
   onRowAction(e: { row: UnifiedDelivery; action: Action }): void {
     switch (e.action.value) {
-      case 'Consulter':
+      case 'CONSULTER':
         this.viewDelivery(e.row);
         break;
 
-      case 'Modifier':
+      case 'MODIFIER':
         this.selectReception(e.row);
         break;
 

@@ -95,7 +95,7 @@ export class QualityControlRuleComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    // this.loadRules();
+
   }
 
   // loadRules(): void {
@@ -208,11 +208,11 @@ export class QualityControlRuleComponent implements OnInit, OnDestroy {
   onRowAction(e: { row: QualityControlRule; action: Action }): void {
 
     switch (e.action.value) {
-      case 'Consulter':
+      case 'CONSULTER':
         this.viewRule(e.row);
         break;
-      case 'Modifier':
-        this.modifierRule(e.row);
+      case 'MODIFIER':
+        this.selectRule(e.row);
         break;
 
       case 'Supprimer':
@@ -234,7 +234,7 @@ export class QualityControlRuleComponent implements OnInit, OnDestroy {
   //   // );
   // }
 
-  modifierRule(r?: QualityControlRule): void {
+  selectRule(r?: QualityControlRule): void {
     if (r?.id) {
       this.router.navigate(['/settings/quality-control', r.id]);
     } else {
@@ -242,8 +242,9 @@ export class QualityControlRuleComponent implements OnInit, OnDestroy {
     }
   }
 
+
   viewRule(r: QualityControlRule): void {
-    this.router.navigate(['reception/reception-details', r.id]);
+    this.router.navigate(['settings/quality-control-rule-details', r.id]);
   }
 
 }

@@ -9,9 +9,9 @@
 <app-card
   *ngIf="!errorMessage && !loading"
   [cardTitle]="isEditing ? 'Modifier Rule' : 'Ajouter Rule'"
+  [showHeader]="false"
   [padding]="20"
   [showContent]="true"
-  [showHeader]="false"
 >
 
   <form [formGroup]="ruleForm" class="form-content">

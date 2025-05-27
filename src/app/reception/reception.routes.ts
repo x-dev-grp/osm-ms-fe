@@ -1,7 +1,6 @@
 import {Routes} from '@angular/router';
 import {SupplierComponent} from './components/suppliers/suppliers.component';
 import {DetailsReceptionComponent} from './components/details-reception/details-reception.component';
-import {SupplierDetailsComponent} from './components/suppliers/supplier-details/supplier-details.component';
 import {ControleQualiteComponent} from './components/controleQualite/controleQualite.component';
 import {PlanningComponent} from './components/planning/planning.component';
 import {MillMachineComponent} from './components/mill-machine/mill-machine.component';
@@ -14,7 +13,10 @@ import {OilReceptionComponent} from './components/oil-reception/oil-reception.co
 import {SupplierAddComponent} from './components/suppliers/supplier-add/supplier-add.component';
 import {MillMachineAddComponent} from './components/mill-machine/mill-machine-add/mill-machine-add.component';
 import {MillMachineViewComponent} from './components/mill-machine/mill-machine-view/mill-machine-view.component';
-import {MillMachineMaintenanceComponent} from './components/mill-machine/mill-machine-maintenance/mill-machine-maintenance.component';
+import {
+  MillMachineMaintenanceComponent
+} from './components/mill-machine/mill-machine-maintenance/mill-machine-maintenance.component';
+import {SupplierDetailsComponent} from "./components/suppliers/supplier-details/supplier-details.component";
 
 export const receptionRoutes: Routes = [
   { path: 'reception-olive', component: OliveReceptionComponent },

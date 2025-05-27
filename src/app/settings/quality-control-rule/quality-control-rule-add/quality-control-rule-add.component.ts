@@ -49,13 +49,14 @@ import {MatInput} from "@angular/material/input";
 })
 export class QualityControlRuleAddComponent {
   ruleForm: FormGroup;
+  private destroy$ = new Subject<void>();
   formOpen = false;
   isEditing = false;
   message = '';
   isLoading = false;
   loading: boolean = false;
   errorMessage: string | null = null;
-  private destroy$ = new Subject<void>();
+
 
   constructor(
     private fb: FormBuilder,
@@ -64,16 +65,14 @@ export class QualityControlRuleAddComponent {
     private route: ActivatedRoute,
     private router: Router,
   ) {
-
   }
 
   ngOnInit(): void {
     this.loading = true;
-
     const ruleID = this.route.snapshot.paramMap.get('id');
     this.isEditing = ruleID !== null && ruleID !== 'new';
 
-    // ✅ Initialiser le formulaire dès le début
+    //  Initialiser le formulaire dès le début
     this.initForm();
     // Si c'est une modification, charger les données
     if (this.isEditing && ruleID) {
@@ -125,6 +124,48 @@ export class QualityControlRuleAddComponent {
       });
   }
 
+  private async loadRuleData(ruleID: string): Promise<void> {
+    try {
+      const res = await this.service.getRule(ruleID).toPromise();
+      if (res?.success && res.data) {
+        this.patchForm(res.data[0]);
+      } else {
+        throw new Error('Données introuvables');
+      }
+    } catch (error) {
+      this.errorMessage = 'Erreur lors du chargement de la règle.';
+      console.error(this.errorMessage, error);
+      this.showToast(this.errorMessage);
+      this.router.navigate(['/settings/quality-control']); // Rediriger si erreur
+      throw error;
+    }
+  }
+
+  private patchForm(data: QualityControlRule): void {
+    this.ruleForm.patchValue({
+      id: data.id,
+      ruleKey: data.ruleKey,
+      oilQc: data.oilQc ?? false,
+      ruleType: data.ruleType ? data.ruleType.toLowerCase() : 'numeric',
+      booleanValue: data.booleanValue,
+      numericValue: data.numericValue,
+      ruleName: data.ruleName ?? '',
+      description: data.description ?? '',
+      minValue: data.minValue ?? 0,
+      maxValue: data.maxValue ?? 0,
+      measuredValue: data.measuredValue,
+      textInput: data.textValues?.join(', ') ?? ''
+    });
+  }
+
+  private showToast(message: string, duration = 3000): void {
+    this.snackBar.open(message, 'Fermer', {
+      duration,
+      horizontalPosition: 'right',
+      verticalPosition: 'top',
+      panelClass: ['custom-snackbar']
+    });
+  }
   save(): void {
     if (this.ruleForm.invalid) {
       this.ruleForm.markAllAsTouched();
@@ -187,61 +228,19 @@ export class QualityControlRuleAddComponent {
     });
   }
 
+
   cancel(): void {
     this.formOpen = false;
     this.isEditing = false;
     this.message = '';
   }
 
+
   onBack(): void {
     window.history.back();
   }
-
   resetForm(): void {
     this.router.navigate(['/settings/quality-control']);
-  }
-
-  private async loadRuleData(ruleID: string): Promise<void> {
-    try {
-      const res = await this.service.getRule(ruleID).toPromise();
-      if (res?.success && res.data) {
-        this.patchForm(res.data[0]);
-      } else {
-        throw new Error('Données introuvables');
-      }
-    } catch (error) {
-      this.errorMessage = 'Erreur lors du chargement de la règle.';
-      console.error(this.errorMessage, error);
-      this.showToast(this.errorMessage);
-      this.router.navigate(['/settings/quality-control']); // Rediriger si erreur
-      throw error;
-    }
-  }
-
-  private patchForm(data: QualityControlRule): void {
-    this.ruleForm.patchValue({
-      id: data.id,
-      ruleKey: data.ruleKey,
-      oilQc: data.oilQc ?? false,
-      ruleType: data.ruleType ? data.ruleType.toLowerCase() : 'numeric',
-      booleanValue: data.booleanValue,
-      numericValue: data.numericValue,
-      ruleName: data.ruleName ?? '',
-      description: data.description ?? '',
-      minValue: data.minValue ?? 0,
-      maxValue: data.maxValue ?? 0,
-      measuredValue: data.measuredValue,
-      textInput: data.textValues?.join(', ') ?? ''
-    });
-  }
-
-  private showToast(message: string, duration = 3000): void {
-    this.snackBar.open(message, 'Fermer', {
-      duration,
-      horizontalPosition: 'right',
-      verticalPosition: 'top',
-      panelClass: ['custom-snackbar']
-    });
   }
 
 }
