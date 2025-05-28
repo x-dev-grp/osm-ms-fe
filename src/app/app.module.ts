@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -27,8 +29,6 @@ import { SharedModule } from './demo/shared/shared.module';
  import { SupplierComponent } from './reception/components/suppliers/suppliers.component';
  import { GenericTypeComponent } from './settings/generic-type/generic-type.component';
 import { QualityControlRuleComponent } from './settings/quality-control-rule/quality-control-rule.component';
-import { ServiceWorkerModule } from '@angular/service-worker';
-import { environment } from '../environments/environment';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({

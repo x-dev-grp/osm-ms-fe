@@ -1,15 +1,14 @@
 import { AttributeType, DashboardConfig, FieldType } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
 import { deliveryType } from '../../../shared/models/deleveryType';
 import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
-import { TypeCategory } from '../../../shared/models/type-category.enum';
 
 export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
-  title: 'Livraisons d\'Olives',// afficehr titre fi dashboard
+  title: "Livraisons d'Olives", // afficehr titre fi dashboard
   titleTranslatePath: 'DELIVERIES.OLIVE_TITLE', //tradusction
   baseURL: 'deliveries', //todo remove it usless
-  searchEndpoint: 'production/deliveries',//endpoint fl backedn
-  addNewItem: true,//show new button
-  addNewItemUrl: 'reception/reception-olive/new',//add new componnt path
+  searchEndpoint: 'production/deliveries', //endpoint fl backedn
+  addNewItem: true, //show new button
+  addNewItemUrl: 'reception/reception-olive/new', //add new componnt path
   defaultSearchData: {
     page: 0,
     size: 10,
@@ -24,7 +23,7 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
         }
       }
     }
-  },// if youy need ot load the dta initilly based on this
+  }, // if youy need ot load the dta initilly based on this
   /* ────────────────────────────────────────────────────────────── */
   /*         Champs pour les livraisons d'olives                   */
   /* ────────────────────────────────────────────────────────────── */
@@ -49,7 +48,8 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
       sortable: true,
       dataTable: true,
       filterable: true
-    }, {
+    },
+    {
       name: 'globalLotNumber',
       label: 'N° Lot Global',
       attributeType: AttributeType.string,
@@ -149,7 +149,6 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
       filterable: true,
       options: [
         { label: 'Nouveau', value: 'NEW' },
-        { label: 'Accepté', value: 'ACCEPTED' },
         { label: 'En cours', value: 'IN_PROGRESS' },
         { label: 'Terminé', value: 'COMPLETED' },
         { label: 'Refusé', value: 'REFUSED' },
@@ -163,11 +162,12 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
     statusMapping: false,
     statusAttributeName: 'status',
     actionsList: [
-      { label: 'Consulter',        icon: 'visibility', value: 'CONSULTER' },
-      { label: 'Modifier',         icon: 'edit',       value: 'MODIFIER' },
-      { label: 'Supprimer',        icon: 'delete',     value: 'SUPPRIMER' },
+      { label: 'Consulter', icon: 'visibility', value: 'CONSULTER' },
+      { label: 'Modifier', icon: 'edit', value: 'MODIFIER' },
+      { label: 'Supprimer', icon: 'delete', value: 'SUPPRIMER' },
       { label: 'Contrôle Qualité', icon: 'fact_check', value: 'QUALITY' },
-      { label: 'Générer bon de réception', icon: 'picture_as_pdf', value: 'generate_pdf' }    ]
+      { label: 'Générer bon de réception', icon: 'picture_as_pdf', value: 'generate_pdf' }
+    ]
   },
 
   /* Nom par défaut du fichier d'export CSV */

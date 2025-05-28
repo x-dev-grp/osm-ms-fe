@@ -95,7 +95,10 @@ export const UNIFIED_DELIVERY_DASHBOARD: DashboardConfig = {
       filterable: true
     },
     {
-      name: 'parcel', label: 'Parcelle', attributeType: AttributeType.string, fieldType: FieldType.text
+      name: 'parcel',
+      label: 'Parcelle',
+      attributeType: AttributeType.string,
+      fieldType: FieldType.text
     },
     {
       name: 'poidsBrute',
@@ -140,7 +143,10 @@ export const UNIFIED_DELIVERY_DASHBOARD: DashboardConfig = {
     },
 
     {
-      name: 'sackCount', label: 'Nb sacs', attributeType: AttributeType.number, fieldType: FieldType.number
+      name: 'sackCount',
+      label: 'Nb sacs',
+      attributeType: AttributeType.number,
+      fieldType: FieldType.number
     },
 
     /* Camion & état */
@@ -151,7 +157,10 @@ export const UNIFIED_DELIVERY_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.text
     },
     {
-      name: 'etatCamion', label: 'État camion', attributeType: AttributeType.string, fieldType: FieldType.text
+      name: 'etatCamion',
+      label: 'État camion',
+      attributeType: AttributeType.string,
+      fieldType: FieldType.text
     },
 
     /* Fournisseur */

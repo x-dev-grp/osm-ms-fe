@@ -8,6 +8,7 @@ import { AppConfig } from 'src/environments/environment';
 import { User } from '../../@theme/types/user';
 import { TokenService } from 'src/app/auth/services/tokenService.service';
 import { Observable } from 'rxjs';
+import { CompanyProfileService } from '../../shared/services/company-profile.service';
 
 // Import the 'map' operator from 'rxjs/operators'
 
@@ -15,23 +16,24 @@ import { Observable } from 'rxjs';
 export class AuthenticationService {
   private router = inject(Router);
   private http = inject(HttpClient);
-  private _tokenService=inject(TokenService);
+  private _tokenService = inject(TokenService);
+  private _companyProfileService = inject(CompanyProfileService);
   private currentUserSignal = signal<User | null>(null);
 
   constructor() {
-   const decodedToken :any=this._tokenService.decodeToken()
-   if (decodedToken!=null){
-    console.log(decodedToken)
-    const role:any=decodedToken?.role;
-    const permissions=decodedToken?.permissions;
-    let user:User=decodedToken?.osmUser;
-    user.role=role;
-    user.permissions=permissions;
-    this.setCurrentUserValue=user;
-   }
+    const decodedToken: any = this._tokenService.decodeToken();
+    if (decodedToken != null) {
+      console.log(decodedToken);
+      const role: any = decodedToken?.role;
+      const permissions = decodedToken?.permissions;
+      let user: User = decodedToken?.osmUser;
+      user.role = role;
+      user.permissions = permissions;
+      this.setCurrentUserValue = user;
+    }
   }
 
-  public set setCurrentUserValue(user:User | null){
+  public set setCurrentUserValue(user: User | null) {
     this.currentUserSignal.set(user);
   }
 
@@ -44,7 +46,7 @@ export class AuthenticationService {
     return this.currentUserValue?.username || null;
   }
 
-  login(payload: any):Observable<any> {
+  login(payload: any): Observable<any> {
     const body = new URLSearchParams();
     body.set('grant_type', 'TOKEN'); 
     body.set('username', payload.username);
@@ -70,6 +72,7 @@ export class AuthenticationService {
 
   logout(queryParams?:string) {
      this._tokenService.clearTokens()
+     this._companyProfileService.clearCache();
      this.setCurrentUserValue=null;
      if(!queryParams){
       this.router.navigate(["/auth/login"]) 

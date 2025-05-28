@@ -12,13 +12,11 @@ import { OilCreditComponent } from './oil-credit/oil-credit.component';
   declarations: [],
   imports: [
     CommonModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-    FinanceRoutingModule,
-    RouterModule,
-    CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    HttpClientModule,
+    RouterModule,
+    FinanceRoutingModule,
     OilCreditComponent,
     PricingComponent
   ]

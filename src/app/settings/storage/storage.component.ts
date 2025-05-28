@@ -34,15 +34,11 @@ import { Router } from '@angular/router';
     MatIconModule,
     MatDialogModule,
     MatFormFieldModule,
-    MatExpansionPanelHeader,
     MatInputModule,
     MatSelectModule,
     ReactiveFormsModule,
     MatSortModule,
     SharedModule,
-    ConfigurationComponent,
-    MatExpansionPanel,
-    MatExpansionPanelTitle,
     OsmDashboard
   ],
   styleUrls: ['./storage.component.scss']

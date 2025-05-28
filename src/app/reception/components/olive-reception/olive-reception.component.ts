@@ -1,27 +1,25 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {MatButtonModule} from '@angular/material/button';
-import {MatTableModule} from '@angular/material/table';
-import {MatIconModule} from '@angular/material/icon';
-import {MatDialogModule} from '@angular/material/dialog';
-import {MatCardModule} from '@angular/material/card';
-import {MatSortModule} from '@angular/material/sort';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {MatPaginator} from '@angular/material/paginator';
-import {Router} from '@angular/router';
-import {Subscription} from 'rxjs';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatCardModule } from '@angular/material/card';
+import { MatSortModule } from '@angular/material/sort';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatPaginator } from '@angular/material/paginator';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
-import {SharedModule} from '../../../demo/shared/shared.module';
-import {ConfigurationComponent} from '../../../@theme/layouts/configuration/configuration.component';
-import {OsmDashboard} from '../../../shared/modules/osm-dashboard/osm-dashboard';
-import {Action, DashboardConfig} from '../../../shared/modules/osm-dashboard/models/dashboard-config';
-import {UnifiedDelivery} from '../../../shared/models/UnifiedDelivery';
-import {UnifiedDeliveryService} from '../../../shared/services/delivery.service';
-import {OliveReceptionFormComponent} from './olive-reception-add/olive-reception-form.component';
+import { SharedModule } from '../../../demo/shared/shared.module';
+import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
+import { Action, DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
+import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
+import { OliveReceptionFormComponent } from './olive-reception-add/olive-reception-form.component';
 
-import {OLIVE_DELIVERY_DASHBOARD} from './OLIVE_DELIVERY_DASHBOARD';
-import {OilReceptionComponent} from '../oil-reception/oil-reception.component';
-import jsPDF from "jspdf";
+import { OLIVE_DELIVERY_DASHBOARD } from './OLIVE_DELIVERY_DASHBOARD';
+import jsPDF from 'jspdf';
 
 @Component({
   selector: 'app-olive-reception',
@@ -35,10 +33,8 @@ import jsPDF from "jspdf";
     MatCardModule,
     MatSortModule,
     SharedModule,
-    ConfigurationComponent,
     OsmDashboard,
-    OliveReceptionFormComponent,
-    OilReceptionComponent
+    OliveReceptionFormComponent
   ],
   templateUrl: './olive-reception.component.html',
   styleUrls: ['./olive-reception.component.scss']
@@ -113,7 +109,7 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
     // First row: Formulaire
     doc.setFillColor(200, 200, 200); // Light gray background for the first row
     doc.rect(headerTableLeft, currentY, headerTableWidth, headerCellHeight, 'F');
-    doc.text('Formulaire', headerTableLeft + headerColWidth, currentY + 5, {align: 'center'});
+    doc.text('Formulaire', headerTableLeft + headerColWidth, currentY + 5, { align: 'center' });
     currentY += headerCellHeight;
 
     // Second row: Bon De Réception and Référence
@@ -127,7 +123,11 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
     doc.rect(headerTableLeft, currentY, headerColWidth, headerCellHeight); // Left cell
     doc.rect(headerTableLeft + headerColWidth, currentY, headerColWidth, headerCellHeight); // Right cell
     doc.text(`N° : ${delivery.deliveryNumber || ''}`, headerTableLeft + 5, currentY + 5);
-    doc.text(`Date : ${new Date(delivery.deliveryDate || Date.now()).toLocaleDateString()}`, headerTableLeft + headerColWidth + 5, currentY + 5);
+    doc.text(
+      `Date : ${new Date(delivery.deliveryDate || Date.now()).toLocaleDateString()}`,
+      headerTableLeft + headerColWidth + 5,
+      currentY + 5
+    );
     currentY += headerCellHeight;
 
     // Fourth row: Page and Révision
@@ -144,7 +144,11 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
     let y = currentY + 20;
     doc.text(`Type : ${delivery.deliveryType || ''}`, 10, y);
     y += 7;
-    doc.text(`Fournisseur : ${(delivery.supplier?.supplierInfo?.name || '') + ' ' + (delivery.supplier?.supplierInfo?.lastname || '')}`, 10, y);
+    doc.text(
+      `Fournisseur : ${(delivery.supplier?.supplierInfo?.name || '') + ' ' + (delivery.supplier?.supplierInfo?.lastname || '')}`,
+      10,
+      y
+    );
     y += 7;
     doc.text(`Téléphone : ${delivery.supplier?.supplierInfo?.phone || ''}`, 10, y);
     y += 7;
@@ -155,7 +159,7 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
     const tableData = [
       ['Lot', delivery.lotNumber || ''],
       ['Lot Global', delivery.globalLotNumber || ''],
-      ['Quantité d\'huile', `${delivery.oilQuantity || ''} L`],
+      ["Quantité d'huile", `${delivery.oilQuantity || ''} L`],
       ['Poids Net', `${delivery.poidsNet || ''} kg`],
       ['Poids Brut', `${delivery.poidsBrute || ''} kg`],
       ['Prix total', `${delivery.price || ''} TND`],
@@ -181,7 +185,7 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
 
     // Draw table rows
     let rowY = tableTop + cellHeight;
-    tableData.forEach(row => {
+    tableData.forEach((row) => {
       doc.rect(tableLeft, rowY, colWidth, cellHeight);
       doc.rect(tableLeft + colWidth, rowY, colWidth, cellHeight);
       doc.text(row[0], tableLeft + 2, rowY + 5);
@@ -201,8 +205,8 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
       case 'MODIFIER':
         this.selectReception(e.row);
         break;
-       case 'QUALITY':
-         this.QualityControl(e.row);
+      case 'QUALITY':
+        this.QualityControl(e.row);
         break;
       case 'SUPPRIMER':
         if (e.row.id) this.deleteDelivery(e.row);

@@ -1,18 +1,18 @@
-import {CommonModule} from '@angular/common';
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {QualityControlRuleService} from '../../../shared/services/quality-control-rule.service';
-import {QualityControlRule} from '../../../shared/models/quality-control-rule';
-import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
-import {UnifiedDeliveryService} from '../../../shared/services/delivery.service';
-import {UnifiedDelivery} from '../../../shared/models/UnifiedDelivery';
-import {QualityControlResultService} from '../../../shared/services/quality-control-result.service';
-import {QualityControlResultDto} from '../../../shared/models/QualityControlResultDto';
-import {forkJoin, Observable, of} from 'rxjs';
-import {catchError} from 'rxjs/operators';
-import {MatFormField} from "@angular/material/form-field";
-import {MatOption, MatSelect} from "@angular/material/select";
-import {MatSnackBar} from "@angular/material/snack-bar";
+import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { QualityControlRuleService } from '../../../shared/services/quality-control-rule.service';
+import { QualityControlRule } from '../../../shared/models/quality-control-rule';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
+import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
+import { QualityControlResultService } from '../../../shared/services/quality-control-result.service';
+import { QualityControlResultDto } from '../../../shared/models/QualityControlResultDto';
+import { forkJoin, Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { MatFormField } from '@angular/material/form-field';
+import { MatOption, MatSelect } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { CardComponent } from '../../../@theme/components/card/card.component';
 
 @Component({

@@ -1,15 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SettingsRoutingModule } from './settings-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SettingsRoutingModule } from './settings-routing.module';
+import { SharedModule } from '../demo/shared/shared.module';
 
 import { GeneralConfigComponent } from './general-config/general-config.component';
-  import { PricingComponent } from '../finance/pricing/pricing.component';
+import { PricingComponent } from '../finance/pricing/pricing.component';
 import { StorageUnitsComponent } from './storage/storage.component';
 import { GenericTypeComponent } from './generic-type/generic-type.component';
 import { QualityControlRuleComponent } from './quality-control-rule/quality-control-rule.component';
-import { TranslateModule } from '@ngx-translate/core';
-import { SharedModule } from '../demo/shared/shared.module';
 
 @NgModule({
   declarations: [],
@@ -18,11 +17,12 @@ import { SharedModule } from '../demo/shared/shared.module';
     FormsModule,
     ReactiveFormsModule,
     SettingsRoutingModule,
+    SharedModule,
     StorageUnitsComponent,
     GeneralConfigComponent,
     QualityControlRuleComponent,
-    PricingComponent,GenericTypeComponent,
-    SharedModule
+    PricingComponent,
+    GenericTypeComponent
   ]
 })
 export class SettingsModule {}

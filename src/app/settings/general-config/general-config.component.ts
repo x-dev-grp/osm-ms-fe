@@ -1,18 +1,41 @@
 import { Component, OnInit } from '@angular/core';
-import { MatFormField } from '@angular/material/form-field';
-import { SharedModule } from '../../demo/shared/shared.module';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { BankAccount } from '../../finance/models/BankAccount';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { CompanyProfileService } from '../../shared/services/company-profile.service';
 import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatCardModule } from '@angular/material/card';
+import { MatListModule } from '@angular/material/list';
+import { SharedModule } from '../../demo/shared/shared.module';
+import { BankAccount } from '../../finance/models/BankAccount';
+import { CompanyProfileService } from '../../shared/services/company-profile.service';
 import { CompanyProfile } from '../../shared/models/CompanyProfile';
 
 @Component({
   selector: 'app-general-config',
-  imports: [MatFormField, MatFormField, CommonModule, SharedModule],
-  templateUrl: './general-config.component.html',
   standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatIconModule,
+    MatButtonModule,
+    MatTooltipModule,
+    MatCardModule,
+    MatListModule,
+    SharedModule
+  ],
+  templateUrl: './general-config.component.html',
   styleUrl: './general-config.component.scss'
 })
 export class GeneralConfigComponent implements OnInit {

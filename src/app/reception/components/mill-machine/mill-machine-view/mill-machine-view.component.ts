@@ -14,12 +14,7 @@ import { MillMachineService } from '../../../../shared/services/mill-machine.ser
   templateUrl: './mill-machine-view.component.html',
   styleUrls: ['./mill-machine-view.component.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    MatButtonModule,
-    MatIconModule,
-    SharedModule
-  ]
+  imports: [CommonModule, MatButtonModule, MatIconModule, SharedModule]
 })
 export class MillMachineViewComponent implements OnInit {
   machine: MillMachine | null = null;

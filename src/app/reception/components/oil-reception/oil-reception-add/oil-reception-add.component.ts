@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -12,15 +12,7 @@ import { GenericTypeService } from '../../../../shared/services/generic-type.ser
 import { SupplierTypeService } from '../../../../shared/services/supplier.service';
 import { UnifiedDeliveryService } from '../../../../shared/services/delivery.service';
 import { TypeCategory } from '../../../../shared/models/type-category.enum';
-import {
-  AbstractControl,
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  ValidationErrors,
-  ValidatorFn,
-  Validators
-} from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -40,14 +32,12 @@ const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | nu
 // Validator for ensuring volume fits storage unit capacity
 const volumeFitsCuve = (component: OilReceptionFormComponent): ValidatorFn => {
   return (control: AbstractControl): ValidationErrors | null => {
-    const cuveId = control.get('storageUnit')?.value;
-    const volume = control.get('oilQuantity')?.value as number; // Changed from poidsNet to oilQuantity
-    if (!cuveId || volume == null) return null;
+    const storageUnit = control.get('storageUnit')?.value;
+    const volume = control.get('oilQuantity')?.value as number;
+    
+    if (!storageUnit || volume == null) return null;
 
-    const cuve = component.storageUnits.find((c) => c.id === cuveId);
-    if (!cuve) return null;
-
-    const available = cuve.maxCapacity - cuve.currentVolume;
+    const available = storageUnit.maxCapacity - storageUnit.currentVolume;
     return volume > available ? { exceedsCapacity: { available } } : null;
   };
 };
@@ -80,7 +70,8 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
   regions: BaseType[] = [];
   suppliers: SupplierType[] = [];
   oilCategories: BaseType[] = [];
-  oilTypes: BaseType[] = []; // Added for oilType selection
+  oilTypes: BaseType[] = [];
+  operationTypes: BaseType[] = []; // Added for operation type
   deliveries: UnifiedDelivery[] = [];
   oliveTypes: BaseType[] = [];
 
@@ -96,7 +87,6 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     private storageService: StorageUnitDtoService,
     private router: Router
   ) {
-    // Construction du FormGroup with validators
     this.receptionForm = this.fb.group(
       {
         deliveryType: [{ value: 'OIL', disabled: true }, Validators.required],
@@ -108,16 +98,17 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
         matriculeCamion: ['', Validators.required],
         etatCamion: ['', Validators.required],
         poidsBrut: [0, Validators.min(0)],
-        oilQuantity: [0, Validators.min(0)], // Renamed from poidsNet to oilQuantity
+        oilQuantity: [0, Validators.min(0)],
         oilVariety: [null, Validators.required],
-        oilType: [null, Validators.required], // Added oilType
+        oilType: [null, Validators.required],
         oliveType: [null, Validators.required],
         storageUnit: [null, Validators.required],
         globalLotNumber: [''],
-        unitPrice: [0, [Validators.min(0), Validators.required]], // Added unitPrice
-        price: [0, Validators.min(0)], // Added price
-        paidAmount: [0, Validators.min(0)], // Added paidAmount
-        unpaidAmount: [0, Validators.min(0)] // Added unpaidAmount
+        unitPrice: [0, [Validators.min(0), Validators.required]],
+        price: [0, Validators.min(0)],
+        paidAmount: [0, Validators.min(0)],
+        unpaidAmount: [0, Validators.min(0)],
+        operationType: [null, Validators.required]
       },
       { validators: [netNotGreaterThanGross, volumeFitsCuve(this)] }
     );
@@ -135,17 +126,19 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       this.supplierSrv.getAllSuppliers().toPromise(),
       this.deliverySrv.getAllDeliveriesList().toPromise(),
       this.genericSrv.getAllTypes(TypeCategory.OLIVE_TYPE).toPromise(),
-      this.genericSrv.getAllTypes(TypeCategory.OIL_TYPE).toPromise(), // Added to fetch oil types
+      this.genericSrv.getAllTypes(TypeCategory.OIL_TYPE).toPromise(),
+      this.genericSrv.getAllTypes(TypeCategory.OPERATION_TYPE).toPromise(), // Added to fetch operation types
       this.isEditing && deliveryId ? this.deliverySrv.getUnifiedDelivery(deliveryId).toPromise() : Promise.resolve(null)
     ])
-      .then(([cats, storageUnits, regions, suppliers, deliveries, oliveTypes, oilTypes, delivery]) => {
+      .then(([cats, storageUnits, regions, suppliers, deliveries, oliveTypes, oilTypes, operationTypes, delivery]) => {
         this.oilCategories = cats?.success ? cats.data : [];
         this.storageUnits = storageUnits?.success ? storageUnits.data : [];
         this.regions = regions?.success ? regions.data : [];
         this.suppliers = suppliers?.success ? suppliers.data : [];
         this.deliveries = deliveries?.success ? deliveries.data : [];
         this.oliveTypes = oliveTypes?.success ? oliveTypes.data : [];
-        this.oilTypes = oilTypes?.success ? oilTypes.data : []; // Initialized oilTypes
+        this.oilTypes = oilTypes?.success ? oilTypes.data : [];
+        this.operationTypes = operationTypes?.success ? operationTypes.data : []; // Initialize operation types
 
         if (this.isEditing && delivery?.success && delivery.data) {
           this.patchForm(delivery.data[0]);
@@ -159,13 +152,13 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
         this.setNextNumbers();
         this.setupFormSubscriptions();
         this.setupDynamicValidation();
-        this.updatePrice(); // Initialize price calculation
+        this.updatePrice();
 
         this.loading = false;
       })
       .catch((error) => {
         this.errorMessage = 'Erreur lors du chargement des données.';
-        console.log(this.errorMessage + "    " + error);
+        console.log(this.errorMessage + '    ' + error);
         this.showToast(this.errorMessage);
         this.loading = false;
       });
@@ -192,28 +185,33 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       region: this.regions.find((r) => r.id === d.region?.id) || null,
       supplier: this.suppliers.find((s) => s.id === d.supplier?.id) || null,
       oilVariety: this.oilCategories.find((c) => c.id === d.oilVariety?.id) || null,
-      oilType: this.oilTypes.find((t) => t.id === d.oilType?.id) || null, // Patch oilType
+      oilType: this.oilTypes.find((t) => t.id === d.oilType?.id) || null,
       oliveType: this.oliveTypes.find((t) => t.id === d.oliveType?.id) || null,
       storageUnit: this.storageUnits.find((s) => s.id === d.storageUnit?.id) || null,
+      operationType: this.operationTypes.find((t) => t.id === d.operationType?.id) || null, // Patch operation type
       globalLotNumber: d.globalLotNumber || '',
       unitPrice: d.unitPrice || 0,
       price: d.price || 0,
       paidAmount: d.paidAmount || 0,
       unpaidAmount: d.unpaidAmount || 0
     });
-    this.updatePrice(); // Update price after patching
+    this.updatePrice();
   }
 
   save(): void {
     if (this.receptionForm.invalid) {
-      this.showToast('Formulaire incomplet ou validation échouée.');
+      if (this.receptionForm.hasError('exceedsCapacity')) {
+        this.showToast('La quantité dépasse la capacité disponible de la cuve sélectionnée.', 4000);
+      } else {
+        this.showToast('Formulaire incomplet ou validation échouée.', 4000);
+      }
       return;
     }
 
     const payload = {
       ...this.receptionForm.getRawValue(),
       deliveryType: 'OIL',
-      oilQuantity: this.receptionForm.get('oilQuantity')?.value // Ensure oilQuantity is set
+      oilQuantity: this.receptionForm.get('oilQuantity')?.value
     } as UnifiedDelivery;
 
     const op = this.isEditing
@@ -221,8 +219,14 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       : this.deliverySrv.createUnifiedDelivery(payload).toPromise();
 
     this.loading = true;
-    op
-      .then((res) => this.showToast(res?.success ? 'Enregistré' : res?.message ?? 'Échec'))
+    op.then((res) => {
+      if (res?.success) {
+        this.showToast(this.isEditing ? 'Réception huile mise à jour.' : 'Réception huile ajoutée.');
+        this.router.navigate(['/reception-huile']);
+      } else {
+        this.showToast(res?.message || "Échec de l'opération.");
+      }
+    })
       .catch(() => this.showToast('Erreur serveur'))
       .finally(() => (this.loading = false));
   }
@@ -257,6 +261,25 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
   }
 
   private setupFormSubscriptions(): void {
+    // Subscribe to paid amount changes to update unpaid amount
+    this.subscriptions.add(
+      this.receptionForm.get('paidAmount')!.valueChanges.subscribe((paidAmount: number) => {
+        const price = this.receptionForm.get('price')?.value || 0;
+        const unpaidAmount = Math.max(0, price - (paidAmount || 0));
+        this.receptionForm.patchValue({ unpaidAmount }, { emitEvent: false });
+      })
+    );
+
+    // Subscribe to price changes to update unpaid amount
+    this.subscriptions.add(
+      this.receptionForm.get('price')!.valueChanges.subscribe((price: number) => {
+        const paidAmount = this.receptionForm.get('paidAmount')?.value || 0;
+        const unpaidAmount = Math.max(0, price - paidAmount);
+        this.receptionForm.patchValue({ unpaidAmount }, { emitEvent: false });
+      })
+    );
+
+    // Subscribe to olive type changes to update lot number
     this.subscriptions.add(
       this.receptionForm.get('oliveType')!.valueChanges.subscribe((oliveType: BaseType | null) => {
         const deliveryNumber = this.receptionForm.get('deliveryNumber')?.value || this.deliveries.length + 1;
@@ -265,6 +288,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       })
     );
 
+    // Subscribe to region changes to update parcel
     this.subscriptions.add(
       this.receptionForm.get('region')!.valueChanges.subscribe((region: BaseType | null) => {
         if (region?.name) {
@@ -274,20 +298,19 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     );
 
     // Subscribe to unitPrice and oilQuantity changes to update price
-    this.subscriptions.add(
-      this.receptionForm.get('unitPrice')!.valueChanges.subscribe(() => this.updatePrice())
-    );
-    this.subscriptions.add(
-      this.receptionForm.get('oilQuantity')!.valueChanges.subscribe(() => this.updatePrice())
-    );
+    this.subscriptions.add(this.receptionForm.get('unitPrice')!.valueChanges.subscribe(() => this.updatePrice()));
+    this.subscriptions.add(this.receptionForm.get('oilQuantity')!.valueChanges.subscribe(() => this.updatePrice()));
   }
 
   private setupDynamicValidation(): void {
+    // Update validation when storage unit changes
     this.subscriptions.add(
       this.receptionForm.get('storageUnit')!.valueChanges.subscribe(() => {
         this.receptionForm.updateValueAndValidity();
       })
     );
+
+    // Update validation when oil quantity changes
     this.subscriptions.add(
       this.receptionForm.get('oilQuantity')!.valueChanges.subscribe(() => {
         this.receptionForm.updateValueAndValidity();

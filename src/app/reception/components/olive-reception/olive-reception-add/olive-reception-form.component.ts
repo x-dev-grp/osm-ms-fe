@@ -1,33 +1,25 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {MatButtonModule} from '@angular/material/button';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
-import {MatSelectModule} from '@angular/material/select';
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {
-  AbstractControl,
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validators
-} from '@angular/forms';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {Subscription} from 'rxjs';
-import {ActivatedRoute, Router} from '@angular/router';
-import {UnifiedDelivery} from '../../../../shared/models/UnifiedDelivery';
-import {OliveLotStatus} from '../../../../shared/models/OliveLotStatus';
-import {BaseType} from '../../../../shared/models/base-type';
-import {SupplierType} from '../../../../shared/models/supplier-type';
-import {GenericTypeService} from '../../../../shared/services/generic-type.service';
-import {UnifiedDeliveryService} from '../../../../shared/services/delivery.service';
-import {SupplierTypeService} from '../../../../shared/services/supplier.service';
-import {TypeCategory} from '../../../../shared/models/type-category.enum';
-import {CardComponent} from '../../../../@theme/components/card/card.component';
-import {MatIcon} from '@angular/material/icon';
-import {MatDivider} from '@angular/material/divider';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Subscription } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { UnifiedDelivery } from '../../../../shared/models/UnifiedDelivery';
+import { OliveLotStatus } from '../../../../shared/models/OliveLotStatus';
+import { BaseType } from '../../../../shared/models/base-type';
+import { SupplierType } from '../../../../shared/models/supplier-type';
+import { GenericTypeService } from '../../../../shared/services/generic-type.service';
+import { UnifiedDeliveryService } from '../../../../shared/services/delivery.service';
+import { SupplierTypeService } from '../../../../shared/services/supplier.service';
+import { TypeCategory } from '../../../../shared/models/type-category.enum';
+import { CardComponent } from '../../../../@theme/components/card/card.component';
+import { MatIcon } from '@angular/material/icon';
 
 // Validator to ensure net weight does not exceed gross weight
 const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | null => {
@@ -49,14 +41,12 @@ const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | nu
     MatProgressSpinnerModule,
     ReactiveFormsModule,
     CardComponent,
-    MatIcon,
-    MatDivider
+    MatIcon
   ],
   templateUrl: './olive-reception-form.component.html',
   styleUrls: ['./olive-reception-form.component.scss']
 })
 export class OliveReceptionFormComponent implements OnInit, OnDestroy {
-  oliveLotStatuses = Object.values(OliveLotStatus);
   loading = false;
   isEditing = false;
   errorMessage: string | null = null;
@@ -97,7 +87,6 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
         oliveVariety: [null],
         sackCount: [null, Validators.min(0)],
         oliveType: [null],
-        status: [OliveLotStatus.NEW],
         operationType: [null],
         parcel: ['']
       },
@@ -205,7 +194,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       oliveVariety: formValue.oliveVariety,
       sackCount: formValue.sackCount,
       oliveType: formValue.oliveType,
-      status: formValue.status,
+      status: OliveLotStatus.NEW,
       operationType: formValue.operationType,
       parcel: formValue.parcel
     };
@@ -220,10 +209,10 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
         this.showToast(this.isEditing ? 'Réception olive mise à jour.' : 'Réception olive ajoutée.');
         this.router.navigate(['reception/reception-olive']);
       } else {
-        this.showToast(response?.message || 'Échec de l’opération.');
+        this.showToast(response?.message || "Échec de l'opération.");
       }
     } catch (error) {
-      this.showToast(this.isEditing ? 'Erreur lors de la mise à jour.' : 'Erreur lors de l’ajout.');
+      this.showToast(this.isEditing ? 'Erreur lors de la mise à jour.' : "Erreur lors de l'ajout.");
       console.error('Save error:', error);
     } finally {
       this.loading = false;
@@ -257,22 +246,21 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
   }
 
   // Patch form with delivery data
-  private patchForm(delivery: UnifiedDelivery): void {
+  private patchForm(d: UnifiedDelivery): void {
     const parseDate = (value: any): Date | null => (value ? (value instanceof Date ? value : new Date(value)) : null);
-
     this.receptionForm.patchValue({
-      ...delivery,
-      deliveryType: 'OLIVE',
-      deliveryDate: parseDate(delivery.deliveryDate),
-      trtDate: parseDate(delivery.trtDate),
-      region: this.regions.find((r) => r.id === delivery.region?.id) || null,
-      supplier: this.suppliers.find((s) => s.id === delivery.supplier?.id) || null,
-      oliveVariety: this.oliveVarieties.find((v) => v.id === delivery.oliveVariety?.id) || null,
-      oliveType: this.oliveTypes.find((t) => t.id === delivery.oliveType?.id) || null
+      ...d,
+      deliveryDate: parseDate(d.deliveryDate),
+      trtDate: parseDate(d.trtDate),
+      region: this.regions.find((r) => r.id === d.region?.id) || null,
+      supplier: this.suppliers.find((s) => s.id === d.supplier?.id) || null,
+      oliveVariety: this.oliveVarieties.find((v) => v.id === d.oliveVariety?.id) || null,
+      oliveType: this.oliveTypes.find((t) => t.id === d.oliveType?.id) || null,
+      operationType: this.operationTypes.find((t) => t.id === d.operationType?.id) || null
     });
   }
 
-  // Setup subscriptions for olive type and region changes
+  // Setup form subscriptions
   private setupFormSubscriptions(): void {
     this.subscriptions.add(
       this.receptionForm.get('oliveType')!.valueChanges.subscribe((oliveType: BaseType | null) => {
@@ -298,6 +286,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     const paddedNumber = deliveryNumber.toString().padStart(4, '0');
     return `${paddedNumber}${oliveType.name.toUpperCase()}${year}`;
   }
+
   onBack(): void {
     window.history.back();
   }

@@ -1,46 +1,36 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {MatButtonModule} from '@angular/material/button';
-import {MatTableModule} from '@angular/material/table';
-import {MatIconModule} from '@angular/material/icon';
-import {MatDialogModule} from '@angular/material/dialog';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatExpansionModule} from '@angular/material/expansion';
-import {MatInputModule} from '@angular/material/input';
-import {MatSelectModule} from '@angular/material/select';
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatCardModule} from '@angular/material/card';
-import {
-  AbstractControl,
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  ValidationErrors,
-  ValidatorFn,
-  Validators
-} from '@angular/forms';
-import {MatSortModule} from '@angular/material/sort';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {MatPaginator} from '@angular/material/paginator';
-import {Router} from '@angular/router';
-import {combineLatest, Subscription} from 'rxjs';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatCardModule } from '@angular/material/card';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { MatSortModule } from '@angular/material/sort';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatPaginator } from '@angular/material/paginator';
+import { Router } from '@angular/router';
+import { combineLatest, forkJoin, Subscription } from 'rxjs';
 
-import {SharedModule} from '../../../demo/shared/shared.module';
-import {ConfigurationComponent} from '../../../@theme/layouts/configuration/configuration.component';
-import {OsmDashboard} from '../../../shared/modules/osm-dashboard/osm-dashboard';
-import {Action, DashboardConfig} from '../../../shared/modules/osm-dashboard/models/dashboard-config';
-import {UnifiedDelivery} from '../../../shared/models/UnifiedDelivery';
-import {BaseType} from '../../../shared/models/base-type';
-import {UnifiedDeliveryService} from '../../../shared/services/delivery.service';
-import {GenericTypeService} from '../../../shared/services/generic-type.service';
-import {SupplierType} from '../../../shared/models/supplier-type';
-import {SupplierTypeService} from '../../../shared/services/supplier.service';
-
+import { SharedModule } from '../../../demo/shared/shared.module';
+import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
+import { Action, DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
+import { BaseType } from '../../../shared/models/base-type';
+import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
+import { GenericTypeService } from '../../../shared/services/generic-type.service';
+import { TypeCategory } from '../../../shared/models/type-category.enum';
+import { SupplierType } from '../../../shared/models/supplier-type';
+import { SupplierTypeService } from '../../../shared/services/supplier.service';
 
 import jsPDF from 'jspdf';
 
-
-import {OIL_DELIVERY_DASHBOARD} from './OIL_DELIVERY_DASHBOARD';
+import { OIL_DELIVERY_DASHBOARD } from './OIL_DELIVERY_DASHBOARD';
 
 /* ──────────────────────────────────────────────────────────── */
 /* validators                                                   */
@@ -48,7 +38,7 @@ import {OIL_DELIVERY_DASHBOARD} from './OIL_DELIVERY_DASHBOARD';
 
 export const netNotGreaterThanGross: ValidatorFn = (g: AbstractControl): ValidationErrors | null => {
   const brut = g.get('poidsBrute')?.value;
-  const net  = g.get('poidsNet')?.value;
+  const net = g.get('poidsNet')?.value;
   return brut != null && net != null && net > brut ? { netGreater: true } : null;
 };
 
@@ -74,7 +64,6 @@ export const netNotGreaterThanGross: ValidatorFn = (g: AbstractControl): Validat
     ReactiveFormsModule,
     MatSortModule,
     SharedModule,
-    ConfigurationComponent,
     OsmDashboard
   ],
   templateUrl: './oil-reception.component.html',
@@ -130,7 +119,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
 
         /* oil-specific details */
         oilVariety: [null],
-        oliveType: [null],           // still used to stamp the lot code
+        oliveType: [null], // still used to stamp the lot code
         oilQuantity: [null, Validators.min(0)],
         unitPrice: [null, Validators.min(0)],
         price: [null, Validators.min(0)],
@@ -146,7 +135,38 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loading = true;
 
-    this.fetchDeliveries();
+    forkJoin([
+      this.genericTypeService.getAllTypes(TypeCategory.OIL_VARIETY),
+      this.genericTypeService.getAllTypes(TypeCategory.OLIVE_TYPE),
+      this.genericTypeService.getAllTypes(TypeCategory.REGION),
+      this.supplierService.getAllSuppliers(),
+      this.deliveryService.getAllDeliveriesList()
+    ]).subscribe({
+      next: ([oilVarieties, oliveTypes, regions, suppliers, deliveries]) => {
+        this.oilVarieties = oilVarieties.success ? oilVarieties.data : [];
+        this.oliveTypes = oliveTypes.success ? oliveTypes.data : [];
+        this.regions = regions.success ? regions.data : [];
+        this.suppliers = suppliers.success ? suppliers.data : [];
+        this.deliveries = deliveries.success ? deliveries.data : [];
+
+        const deliveryCount = this.deliveries.length;
+        const maxLot = this.maxLotNumber();
+
+        this.receptionForm.patchValue({
+          deliveryNumber: deliveryCount + 1,
+          lotNumber: maxLot + 1
+        });
+
+        this.setupOliveTypeSubscription();
+        this.setupAutoCalculations();
+
+        this.loading = false;
+      },
+      error: () => {
+        this.toast('Erreur lors du chargement des données initiales.');
+        this.loading = false;
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -166,9 +186,9 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
 
   private maxLotNumber(): number {
     const nums = this.deliveries
-      .map(d => d.lotNumber?.replace(/^\D+/, '') ?? '')
-      .map(n => parseInt(n, 10))
-      .filter(n => !isNaN(n));
+      .map((d) => d.lotNumber?.replace(/^\D+/, '') ?? '')
+      .map((n) => parseInt(n, 10))
+      .filter((n) => !isNaN(n));
     return nums.length ? Math.max(...nums) : 0;
   }
 
@@ -258,8 +278,8 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
   /* ——— data loading & table helpers ——— */
 
   private fetchDeliveries(): void {
-    this.deliveryService.getAllDeliveriesList().subscribe(res => {
-      this.deliveries = res.success ? res.data.filter(d => d.deliveryType === 'OIL') : [];
+    this.deliveryService.getAllDeliveriesList().subscribe((res) => {
+      this.deliveries = res.success ? res.data.filter((d) => d.deliveryType === 'OIL') : [];
       if (!res.success) this.toast(res.message || 'Erreur lors du chargement des réceptions.');
     });
   }
@@ -293,7 +313,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
     // First row: Formulaire
     doc.setFillColor(200, 200, 200); // Light gray background for the first row
     doc.rect(headerTableLeft, currentY, headerTableWidth, headerCellHeight, 'F');
-    doc.text('Formulaire', headerTableLeft + headerColWidth, currentY + 5, {align: 'center'});
+    doc.text('Formulaire', headerTableLeft + headerColWidth, currentY + 5, { align: 'center' });
     currentY += headerCellHeight;
 
     // Second row: Bon De Réception and Référence
@@ -307,7 +327,11 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
     doc.rect(headerTableLeft, currentY, headerColWidth, headerCellHeight); // Left cell
     doc.rect(headerTableLeft + headerColWidth, currentY, headerColWidth, headerCellHeight); // Right cell
     doc.text(`N° : ${delivery.deliveryNumber || ''}`, headerTableLeft + 5, currentY + 5);
-    doc.text(`Date : ${new Date(delivery.deliveryDate || Date.now()).toLocaleDateString()}`, headerTableLeft + headerColWidth + 5, currentY + 5);
+    doc.text(
+      `Date : ${new Date(delivery.deliveryDate || Date.now()).toLocaleDateString()}`,
+      headerTableLeft + headerColWidth + 5,
+      currentY + 5
+    );
     currentY += headerCellHeight;
 
     // Fourth row: Page and Révision
@@ -324,7 +348,11 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
     let y = currentY + 20;
     doc.text(`Type : ${delivery.deliveryType || ''}`, 10, y);
     y += 7;
-    doc.text(`Fournisseur : ${(delivery.supplier?.supplierInfo?.name || '') + ' ' + (delivery.supplier?.supplierInfo?.lastname || '')}`, 10, y);
+    doc.text(
+      `Fournisseur : ${(delivery.supplier?.supplierInfo?.name || '') + ' ' + (delivery.supplier?.supplierInfo?.lastname || '')}`,
+      10,
+      y
+    );
     y += 7;
     doc.text(`Téléphone : ${delivery.supplier?.supplierInfo?.phone || ''}`, 10, y);
     y += 7;
@@ -335,7 +363,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
     const tableData = [
       ['Lot', delivery.lotNumber || ''],
       ['Lot Global', delivery.globalLotNumber || ''],
-      ['Quantité d\'huile', `${delivery.oilQuantity || ''} L`],
+      ["Quantité d'huile", `${delivery.oilQuantity || ''} L`],
       ['Poids Net', `${delivery.poidsNet || ''} kg`],
       ['Poids Brut', `${delivery.poidsBrute || ''} kg`],
       ['Prix total', `${delivery.price || ''} TND`],
@@ -361,7 +389,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
 
     // Draw table rows
     let rowY = tableTop + cellHeight;
-    tableData.forEach(row => {
+    tableData.forEach((row) => {
       doc.rect(tableLeft, rowY, colWidth, cellHeight);
       doc.rect(tableLeft + colWidth, rowY, colWidth, cellHeight);
       doc.text(row[0], tableLeft + 2, rowY + 5);
@@ -400,10 +428,9 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
     }
   }
 
-
   private deleteDelivery(d: UnifiedDelivery): void {
     this.deliveryService.deleteUnifiedDelivery(d.id!).subscribe(
-      res => {
+      (res) => {
         if (res.success) {
           this.fetchDeliveries();
           this.toast('Réception supprimée avec succès.');
@@ -416,32 +443,30 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
   /* ——— form patch & subscriptions ——— */
 
   private patchForm(d: UnifiedDelivery): void {
-    const parseDate = (v: any): Date | null =>
-      !v ? null : v instanceof Date ? v : new Date(v);
+    const parseDate = (v: any): Date | null => (!v ? null : v instanceof Date ? v : new Date(v));
 
     this.receptionForm.patchValue({
       ...d,
       deliveryType: 'OIL',
       deliveryDate: parseDate(d.deliveryDate),
-      region     : this.regions  .find(r => r.id === d.region?.id)   || null,
-      supplier   : this.suppliers.find(s => s.id === d.supplier?.id) || null,
-      oilVariety : this.oilVarieties.find(v => v.id === d.oilVariety?.id) || null,
-      oliveType  : this.oliveTypes.find(t => t.id === d.oliveType?.id)    || null
+      region: this.regions.find((r) => r.id === d.region?.id) || null,
+      supplier: this.suppliers.find((s) => s.id === d.supplier?.id) || null,
+      oilVariety: this.oilVarieties.find((v) => v.id === d.oilVariety?.id) || null,
+      oliveType: this.oliveTypes.find((t) => t.id === d.oliveType?.id) || null
     });
   }
 
   private setupOliveTypeSubscription(): void {
-    const sub = this.receptionForm.get('oliveType')!
-      .valueChanges.subscribe((ol: BaseType | null) => {
-        const num = this.receptionForm.get('deliveryNumber')?.value || this.deliveries.length + 1;
-        const lot = this.generateLotNumber(ol, num);
-        this.receptionForm.patchValue({ lotNumber: lot }, { emitEvent: false });
-      });
+    const sub = this.receptionForm.get('oliveType')!.valueChanges.subscribe((ol: BaseType | null) => {
+      const num = this.receptionForm.get('deliveryNumber')?.value || this.deliveries.length + 1;
+      const lot = this.generateLotNumber(ol, num);
+      this.receptionForm.patchValue({ lotNumber: lot }, { emitEvent: false });
+    });
     this.subs.add(sub);
   }
 
   private setupAutoCalculations(): void {
-    const qty$  = this.receptionForm.get('oilQuantity')!.valueChanges;
+    const qty$ = this.receptionForm.get('oilQuantity')!.valueChanges;
     const unit$ = this.receptionForm.get('unitPrice')!.valueChanges;
     const paid$ = this.receptionForm.get('paidAmount')!.valueChanges;
 
@@ -453,11 +478,10 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
     );
 
     this.subs.add(
-      combineLatest([this.receptionForm.get('price')!.valueChanges, paid$])
-        .subscribe(([price, paid]) => {
-          const unpaid = (price || 0) - (paid || 0);
-          this.receptionForm.patchValue({ unpaidAmount: unpaid }, { emitEvent: false });
-        })
+      combineLatest([this.receptionForm.get('price')!.valueChanges, paid$]).subscribe(([price, paid]) => {
+        const unpaid = (price || 0) - (paid || 0);
+        this.receptionForm.patchValue({ unpaidAmount: unpaid }, { emitEvent: false });
+      })
     );
   }
 

@@ -15,14 +15,7 @@ import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
   standalone: true,
   templateUrl: './details-reception.component.html',
   styleUrl: './details-reception.component.scss',
-  imports: [
-    CommonModule,
-    DatePipe,
-    MatCardModule,
-    MatDividerModule,
-    MatIconModule,
-    MatButtonModule
-  ]
+  imports: [CommonModule, DatePipe, MatCardModule, MatDividerModule, MatIconModule, MatButtonModule]
 })
 export class DetailsReceptionComponent implements OnInit {
   receptionId!: string | null;

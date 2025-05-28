@@ -1,16 +1,13 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
- import { ActivatedRoute, Router, RouterLink } from '@angular/router';
- import { StorageUnitDtoService } from '../../../shared/services/storage.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { StorageUnitDtoService } from '../../../shared/services/storage.service';
 import { OilCredit } from '../../models/OilCredit';
 import { OilCreditService } from '../../service/oil-credit.service';
-import { CardComponent } from '../../../@theme/components/card/card.component';
 import { MatCard, MatCardActions, MatCardContent, MatCardHeader } from '@angular/material/card';
-import { MatList, MatListItem } from '@angular/material/list';
-import { MatLine } from '@angular/material/core';
 import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
@@ -21,15 +18,10 @@ import { MatTooltip } from '@angular/material/tooltip';
     MatButtonModule,
     MatIconModule,
     MatDividerModule,
-    RouterLink,
-    CardComponent,
     MatCardActions,
-    MatListItem,
     MatCardContent,
-    MatList,
     MatCardHeader,
     MatCard,
-    MatLine,
     MatTooltip
   ],
   templateUrl: './view-oil-credit.component.html',

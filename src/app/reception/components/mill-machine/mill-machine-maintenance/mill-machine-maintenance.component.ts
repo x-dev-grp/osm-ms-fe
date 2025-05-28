@@ -179,4 +179,4 @@ export class MillMachineMaintenanceComponent implements OnInit {
       panelClass: ['custom-snackbar']
     });
   }
-} 
+}

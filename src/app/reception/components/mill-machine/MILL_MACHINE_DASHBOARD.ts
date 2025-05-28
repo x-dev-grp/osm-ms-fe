@@ -70,10 +70,10 @@ export const MILL_MACHINE_DASHBOARD: DashboardConfig = {
       dataTable: true,
       filterable: true
     },
-    
+
     {
       name: 'hoursOperated',
-      label: 'Heures d\'opération',
+      label: "Heures d'opération",
       attributeType: AttributeType.number,
       fieldType: FieldType.number,
       exportable: true,

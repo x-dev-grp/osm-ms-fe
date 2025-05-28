@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/material/card';
+import { MatCard, MatCardTitle } from '@angular/material/card';
 import { SupplierType } from '../../../../shared/models/supplier-type';
 import { SupplierTypeService } from '../../../../shared/services/supplier.service';
 import { MatList, MatListItem } from '@angular/material/list';
@@ -14,19 +14,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-supplier-details',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatCardContent,
-    MatCardTitle,
-    MatCard,
-    MatCardHeader,
-    MatList,
-    MatListItem,
-    MatDivider,
-    MatIcon,
-    MatButtonModule,
-    MatProgressSpinnerModule
-  ],
+  imports: [CommonModule, MatCardTitle, MatCard, MatList, MatListItem, MatDivider, MatIcon, MatButtonModule, MatProgressSpinnerModule],
   templateUrl: './supplier-details.component.html',
   styleUrl: './supplier-details.component.scss'
 })

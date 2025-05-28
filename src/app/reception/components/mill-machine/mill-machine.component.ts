@@ -11,7 +11,6 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { SharedModule } from '../../../demo/shared/shared.module';
-import { ConfigurationComponent } from '../../../@theme/layouts/configuration/configuration.component';
 import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
 import { Action, DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
 import { MillMachine } from '../../../shared/models/millMachine';
@@ -32,7 +31,6 @@ import { MILL_MACHINE_DASHBOARD } from './MILL_MACHINE_DASHBOARD';
     MatCardModule,
     MatSortModule,
     SharedModule,
-    ConfigurationComponent,
     OsmDashboard
   ]
 })

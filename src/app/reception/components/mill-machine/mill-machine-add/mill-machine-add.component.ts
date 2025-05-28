@@ -120,9 +120,7 @@ export class MillMachineAddComponent implements OnInit {
     this.error = null;
 
     const payload: MillMachine = this.form.value;
-    const request$ = this.isEditing
-      ? this.service.updateMillMachine(payload)
-      : this.service.addMillMachine(payload);
+    const request$ = this.isEditing ? this.service.updateMillMachine(payload) : this.service.addMillMachine(payload);
 
     request$.subscribe({
       next: () => {
@@ -131,10 +129,10 @@ export class MillMachineAddComponent implements OnInit {
         this.router.navigate(['/reception/mill-machines']);
       },
       error: (err) => {
-        console.error('Erreur lors de l\'enregistrement de la machine :', err);
-        this.error = 'Erreur lors de l\'enregistrement de la machine';
+        console.error("Erreur lors de l'enregistrement de la machine :", err);
+        this.error = "Erreur lors de l'enregistrement de la machine";
         this.loading = false;
-        this.toast('Erreur lors de l\'enregistrement de la machine');
+        this.toast("Erreur lors de l'enregistrement de la machine");
       }
     });
   }

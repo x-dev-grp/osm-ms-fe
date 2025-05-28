@@ -1,7 +1,7 @@
 // File: suppliers.component.ts
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatAccordion, MatExpansionModule, MatExpansionPanel, MatExpansionPanelTitle } from '@angular/material/expansion';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { SharedModule } from '../../../demo/shared/shared.module';
 import { MatTableModule } from '@angular/material/table';
 import { BaseType } from '../../../shared/models/base-type';
@@ -26,9 +26,6 @@ import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboar
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
-import { ConfigurationComponent } from '../../../@theme/layouts/configuration/configuration.component';
-import { ApiResponse } from '../../../shared/models/api-response';
-import { Expense } from '../../../finance/models/expense.model';
 
 @Component({
   selector: 'app-suppliers',
@@ -46,13 +43,9 @@ import { Expense } from '../../../finance/models/expense.model';
     ReactiveFormsModule,
     MatSortModule,
     SharedModule,
-    MatAccordion,
-    MatExpansionPanel,
-    MatExpansionPanelTitle,
-    MatPaginatorModule,
+      MatPaginatorModule,
     OsmDashboard,
     MatCardModule,
-    ConfigurationComponent
   ],
   standalone: true,
   styleUrls: ['./suppliers.component.scss']

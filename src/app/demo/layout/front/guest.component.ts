@@ -41,8 +41,7 @@ import { MatTooltip } from '@angular/material/tooltip';
     NgStyle,
     MatAnchor,
     RouterOutlet,
-    ConfigurationComponent
-  ]
+   ]
 })
 export class GuestComponent {
   buyNowLinkService = inject(BuyNowLinkService);

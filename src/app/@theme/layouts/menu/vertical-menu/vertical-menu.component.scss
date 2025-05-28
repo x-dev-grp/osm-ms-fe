@@ -1,0 +1,171 @@
+// Vertical Menu Styles
+.navbar-content {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+
+  .coded-inner-navbar {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+}
+
+// User Card Styles
+.user-card {
+  margin-bottom: 1rem;
+  
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .user-details {
+    margin-left: 1rem;
+  }
+
+  .user-setting {
+    margin-left: auto;
+  }
+}
+
+// Menu Item Styles
+.nav-item {
+  position: relative;
+  margin: 0;
+  padding: 0;
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    color: var(--text-color);
+    text-decoration: none;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: var(--hover-bg);
+      color: var(--primary-color);
+    }
+
+    &.active {
+      background: var(--active-bg, rgba(70, 128, 255, 0.1));
+      color: var(--primary-color, #4680ff);
+      font-weight: 500;
+    }
+
+    &.disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  .coded-micon {
+    margin-right: 0.5rem;
+    font-size: 1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    line-height: 1.25rem;
+  }
+
+  .coded-mtext {
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+}
+
+// Menu Group Styles
+.coded-menu-caption {
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+
+  label {
+    display: flex;
+    align-items: center;
+    margin: 0;
+  }
+}
+
+// Submenu Styles
+.coded-submenu {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  background: var(--submenu-bg);
+  display: none;
+
+  &.active {
+    display: block;
+  }
+
+  .nav-item {
+    .nav-link {
+      padding-left: 2.5rem;
+    }
+  }
+}
+
+// Collapse Trigger
+.coded-hasmenu {
+  &.coded-trigger {
+    > .coded-submenu {
+      display: block;
+    }
+
+    > .nav-link {
+      background: var(--active-bg, rgba(70, 128, 255, 0.1));
+      color: var(--primary-color, #4680ff);
+    }
+  }
+}
+
+// Active Route Styles
+.router-link-active {
+  background: var(--active-bg, rgba(70, 128, 255, 0.1)) !important;
+  color: var(--primary-color, #4680ff) !important;
+  font-weight: 500 !important;
+
+  .coded-micon {
+    color: var(--primary-color, #4680ff) !important;
+  }
+}
+
+// RTL Support
+[dir="rtl"] {
+  .nav-item {
+    .nav-link {
+      .coded-micon {
+        margin-right: 0;
+        margin-left: 0.5rem;
+      }
+    }
+  }
+
+  .coded-submenu {
+    .nav-item {
+      .nav-link {
+        padding-right: 2.5rem;
+        padding-left: 1rem;
+      }
+    }
+  }
+}
+
+// Mobile Responsiveness
+@media (max-width: 1024px) {
+  .navbar-content {
+    .coded-inner-navbar {
+      .nav-item {
+        .nav-link {
+          padding: 0.5rem 1rem;
+        }
+      }
+    }
+  }
+}

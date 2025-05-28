@@ -9,14 +9,14 @@ export const osm_menus: Navigation[] = [
     id: 'navigation',
     title: 'Home',
     type: 'group',
-    icon: 'home', // Kept: Represents the "Home" group well
+    icon: 'home',
     role: [Role.Admin, Role.User],
     children: [
       {
         id: 'Dashboard',
         title: 'Dashboard',
         type: 'collapse',
-        icon: 'dashboard', // Kept: Suitable for "Dashboard"
+        icon: 'dashboard',
         role: [Role.Admin, Role.User],
         children: [
           {
@@ -24,7 +24,7 @@ export const osm_menus: Navigation[] = [
             title: 'Default',
             type: 'item',
             url: '/dashboard',
-            icon: 'dashboard', // Added: Matches the parent "Dashboard"
+            icon: 'space_dashboard',
             breadcrumbs: false
           },
           {
@@ -32,7 +32,7 @@ export const osm_menus: Navigation[] = [
             title: 'Analytics',
             type: 'item',
             url: '/dashboard/analytics',
-            icon: 'analytics', // Added: Reflects data analysis
+            icon: 'insights',
             role: [Role.Admin]
           },
           {
@@ -40,7 +40,7 @@ export const osm_menus: Navigation[] = [
             title: 'Finance',
             type: 'item',
             url: '/dashboard/finance',
-            icon: 'account_balance_wallet', // Added: Represents financial data
+            icon: 'account_balance_wallet',
             role: [Role.Admin]
           }
         ]
@@ -55,7 +55,7 @@ export const osm_menus: Navigation[] = [
     id: 'receptionGroup',
     title: 'Reception',
     type: 'group',
-    icon: 'local_shipping', // Kept: Perfect for "Reception" (delivery/receiving)
+    icon: 'local_shipping',
     role: [Role.Admin, Role.User],
     children: [
       {
@@ -63,28 +63,32 @@ export const osm_menus: Navigation[] = [
         title: 'Réception Olive',
         type: 'item',
         url: '/reception/reception-olive',
-        icon: 'grass', // Changed: Represents olives (plant-based)
+        icon: 'eco',
+        breadcrumbs: false
       },
       {
         id: 'oilReception',
         title: 'Réception d’huile',
         type: 'item',
         url: '/reception/reception-huile',
-        icon: 'opacity', // Changed: Represents oil (liquid drop)
+        icon: 'water_drop',
+        breadcrumbs: false
       },
       {
         id: 'qualityControlReception',
         title: 'Contrôle Qualité',
         type: 'item',
         url: '/reception/quality',
-        icon: 'check_circle', // Changed: Represents quality assurance
+        icon: 'verified',
+        breadcrumbs: false
       },
       {
         id: 'receptionFournisseurs',
         title: 'Fournisseurs',
         type: 'item',
         url: '/reception/fournisseur',
-        icon: 'person', // Kept: Suitable for "Suppliers"
+        icon: 'business',
+        breadcrumbs: false
       }
     ]
   },
@@ -96,7 +100,7 @@ export const osm_menus: Navigation[] = [
     id: 'productionGroup',
     title: 'Production',
     type: 'group',
-    icon: 'factory', // Kept: Perfect for "Production"
+    icon: 'factory',
     role: [Role.Admin, Role.User],
     children: [
       {
@@ -104,15 +108,16 @@ export const osm_menus: Navigation[] = [
         title: 'Milling Schedules',
         type: 'item',
         url: '/reception/mill-schedules',
-        icon: 'schedule', // Added: Represents scheduling
-        breadcrumbs:false
+        icon: 'calendar_month',
+        breadcrumbs: false
       },
       {
         id: 'machineStatus',
         title: 'Milling Machine',
         type: 'item',
         url: '/reception/mill-machines',
-        icon: 'precision_manufacturing', // Added: Represents machinery
+        icon: 'precision_manufacturing',
+        breadcrumbs: false
       }
     ]
   },
@@ -124,7 +129,7 @@ export const osm_menus: Navigation[] = [
     id: 'financeGroup',
     title: 'Finance',
     type: 'group',
-    icon: 'account_balance', // Kept: Suitable for "Finance"
+    icon: 'account_balance',
     role: [Role.Admin, Role.User],
     children: [
       {
@@ -132,22 +137,25 @@ export const osm_menus: Navigation[] = [
         title: 'Depenses',
         type: 'item',
         url: '/finance/expenses',
-        icon: 'money_off', // Kept: Good for "Expenses"
+        icon: 'payments',
+        breadcrumbs: false
       },
       {
         id: 'banksManagement',
         title: 'Banks Management',
         type: 'item',
         url: '/finance/banks',
-        icon: 'account_balance', // Kept: Matches the group icon for consistency
+        icon: 'account_balance',
+        breadcrumbs: false
       },
       {
         id: 'oilCredit',
         title: 'Oil Credit',
         type: 'item',
         url: '/finance/oil-credit',
-        icon: 'credit_card', // Changed: Better represents "Credit"
-        role: [Role.Admin]
+        icon: 'credit_score',
+        role: [Role.Admin],
+        breadcrumbs: false
       }
     ]
   },
@@ -159,7 +167,7 @@ export const osm_menus: Navigation[] = [
     id: 'storageGroup',
     title: 'Storage',
     type: 'group',
-    icon: 'warehouse', // Changed: More specific than "inventory" for "Storage"
+    icon: 'warehouse',
     role: [Role.Admin, Role.User],
     children: [
       {
@@ -167,7 +175,8 @@ export const osm_menus: Navigation[] = [
         title: 'Storage & Oil Units',
         type: 'item',
         url: '/settings/storage',
-        icon: 'inventory_2', // Changed: Represents inventory/storage units
+        icon: 'inventory_2',
+        breadcrumbs: false
       }
     ]
   },
@@ -179,7 +188,7 @@ export const osm_menus: Navigation[] = [
     id: 'hrGroup',
     title: 'HR',
     type: 'group',
-    icon: 'groups', // Kept: Good for "Human Resources"
+    icon: 'groups',
     role: [Role.Admin],
     children: [
       {
@@ -187,14 +196,16 @@ export const osm_menus: Navigation[] = [
         title: 'Employees',
         type: 'item',
         url: '/hr/employees',
-        icon: 'people', // Kept: Suitable for "Employees"
+        icon: 'badge',
+        breadcrumbs: false
       },
       {
         id: 'rolesPermissions',
         title: 'Roles & Permissions',
         type: 'item',
         url: '/hr/roles',
-        icon: 'admin_panel_settings', // Changed: Better represents roles/permissions
+        icon: 'admin_panel_settings',
+        breadcrumbs: false
       }
     ]
   },
@@ -206,14 +217,14 @@ export const osm_menus: Navigation[] = [
     id: 'settingsGroup',
     title: 'Settings',
     type: 'group',
-    icon: 'settings', // Kept: Perfect for "Settings"
+    icon: 'settings',
     role: [Role.Admin, Role.User],
     children: [
       {
         id: 'settingsGroup',
         title: 'Settings',
         type: 'collapse',
-        icon: 'settings', // Kept: Matches the group
+        icon: 'settings',
         role: [Role.Admin, Role.User],
         children: [
           {
@@ -221,14 +232,16 @@ export const osm_menus: Navigation[] = [
             title: 'General Configuration',
             type: 'item',
             url: '/settings/general-config',
-            icon: 'tune', // Changed: Represents general configuration
+            icon: 'tune',
+            breadcrumbs: false
           },
           {
             id: 'genericTypes',
             title: 'Application Configuration',
             type: 'item',
             url: '/settings/configuration',
-            icon: 'build', // Kept: Suitable for app configuration
+            icon: 'build',
+            breadcrumbs: false
           }
         ]
       },
@@ -237,28 +250,32 @@ export const osm_menus: Navigation[] = [
         title: 'Quality Control Rules',
         type: 'item',
         url: '/settings/quality-control',
-        icon: 'rule', // Changed: Represents rules/checks
+        icon: 'rule',
+        breadcrumbs: false
       },
       {
         id: 'genericTypes',
         title: 'Generic Types',
         type: 'item',
         url: '/settings/generic',
-        icon: 'category'
+        icon: 'category',
+        breadcrumbs: false
       },
       {
         id: 'users',
         title: 'Gestion des utilisateurs',
         type: 'item',
         url: '/settings/users',
-        icon: 'layers'
+        icon: 'manage_accounts',
+        breadcrumbs: false
       },
       {
         id: 'roles',
         title: 'Gestion des roles',
         type: 'item',
         url: '/settings/roles',
-        icon: 'layers'
+        icon: 'security',
+        breadcrumbs: false
       }
     ]
   },
@@ -270,7 +287,7 @@ export const osm_menus: Navigation[] = [
     id: 'reportsGroup',
     title: 'Reports',
     type: 'group',
-    icon: 'assessment', // Changed: More specific for "Reports"
+    icon: 'assessment',
     role: [Role.Admin, Role.User],
     children: [
       {
@@ -278,35 +295,24 @@ export const osm_menus: Navigation[] = [
         title: 'Production Reports',
         type: 'item',
         url: '/reports/production',
-        icon: 'factory', // Kept: Matches "Production"
+        icon: 'factory',
+        breadcrumbs: false
       },
       {
         id: 'deliveryReports',
         title: 'Delivery Reports',
         type: 'item',
         url: '/reports/deliveries',
-        icon: 'local_shipping', // Kept: Matches "Delivery"
+        icon: 'local_shipping',
+        breadcrumbs: false
       },
       {
         id: 'financeReports',
         title: 'Finance Reports',
         type: 'item',
         url: '/reports/finance',
-        icon: 'account_balance', // Kept: Matches "Finance"
-      },
-      {
-        id: 'storageReports',
-        title: 'Storage Reports',
-        type: 'item',
-        url: '/reports/storage',
-        icon: 'warehouse', // Changed: Matches "Storage"
-      },
-      {
-        id: 'hrReports',
-        title: 'HR Reports',
-        type: 'item',
-        url: '/reports/hr',
-        icon: 'people', // Kept: Matches "HR"
+        icon: 'account_balance',
+        breadcrumbs: false
       }
     ]
   }

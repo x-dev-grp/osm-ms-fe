@@ -22,8 +22,7 @@ import {MatInput} from "@angular/material/input";
   selector: 'app-quality-control-rule-add',
   standalone: true,
   imports: [
-    MatExpansionPanelHeader,
-    MatFormField,
+     MatFormField,
     MatCheckbox,
     MatSelect,
     MatOption,
@@ -35,15 +34,8 @@ import {MatInput} from "@angular/material/input";
     MatIcon,
     MatIconButton,
     MatButton,
-    MatDatepicker,
-    MatDatepickerInput,
-    MatDatepickerToggle,
-    MatError,
-    MatInput,
-    MatLabel,
-    MatSuffix,
-    NgForOf
-  ],
+     MatInput,
+    MatLabel ],
   templateUrl: './quality-control-rule-add.component.html',
   styleUrl: './quality-control-rule-add.component.scss'
 })

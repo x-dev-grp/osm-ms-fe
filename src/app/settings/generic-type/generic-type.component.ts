@@ -44,10 +44,7 @@ interface TypeOption {
     ReactiveFormsModule,
     MatSortModule,
     SharedModule,
-    MatAccordion,
-    MatExpansionPanel,
-    MatExpansionPanelTitle,
-    MatPaginatorModule,
+     MatPaginatorModule,
     MatMenuModule
   ]
 })

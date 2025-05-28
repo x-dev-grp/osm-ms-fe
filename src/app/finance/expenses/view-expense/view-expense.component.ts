@@ -1,19 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CommonModule }    from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule }   from '@angular/material/icon';
-import { MatDividerModule }from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
 import { Expense } from '../../models/expense.model';
 import { ExpenseService } from '../../service/expense.service';
-import { TranslatePipe } from '@ngx-translate/core';
 import { CardComponent } from '../../../@theme/components/card/card.component';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-view-expense',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatDividerModule, TranslatePipe, CardComponent, MatProgressSpinner],
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatDividerModule, CardComponent, MatProgressSpinner],
   templateUrl: './view-expense.component.html',
   styleUrls: ['./view-expense.component.scss']
 })

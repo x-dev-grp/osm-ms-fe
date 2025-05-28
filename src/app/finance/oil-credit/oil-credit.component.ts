@@ -16,18 +16,15 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { SharedModule } from '../../demo/shared/shared.module';
-import { ConfigurationComponent } from '../../@theme/layouts/configuration/configuration.component';
 import { OilCredit } from '../models/OilCredit';
 import { OilCreditService } from '../service/oil-credit.service';
 import { StorageUnitDtoService } from '../../shared/services/storage.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
 import { Action, DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
 import { OIL_CREDIT_DASHBOARD } from './oil-credit-dashboard.config';
-import { ActivatedRoute } from '@angular/router';
-import { ApiResponse } from '../../shared/models/api-response';
 import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
 
 @Component({
@@ -51,7 +48,6 @@ import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
     MatExpansionModule,
     MatSnackBarModule,
     SharedModule,
-    ConfigurationComponent,
     OsmDashboard
   ],
   templateUrl: './oil-credit.component.html',
@@ -346,17 +342,17 @@ export class OilCreditComponent implements OnInit {
   }
 
   private confirmDelete(id?: string): void {
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce crédit d\'huile ?')) {
+    if (confirm("Êtes-vous sûr de vouloir supprimer ce crédit d'huile ?")) {
       this.svc.deleteOilCredit(id!).subscribe({
         next: () => {
-          this.snackBar.open('Crédit d\'huile supprimé avec succès', 'Fermer', {
+          this.snackBar.open("Crédit d'huile supprimé avec succès", 'Fermer', {
             duration: 3000
           });
           // Refresh the dashboard
           this.router.navigate(['/finance/oil-credit']);
         },
         error: (error: any) => {
-          this.snackBar.open('Erreur lors de la suppression du crédit d\'huile', 'Fermer', {
+          this.snackBar.open("Erreur lors de la suppression du crédit d'huile", 'Fermer', {
             duration: 3000
           });
         }

@@ -18,8 +18,6 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSortModule } from '@angular/material/sort';
 import { SharedModule } from '../../../demo/shared/shared.module';
-import { ConfigurationComponent } from '../../../@theme/layouts/configuration/configuration.component';
-import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
 
 @Component({
   selector: 'app-view-bank-account',
@@ -38,9 +36,7 @@ import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboar
     MatExpansionModule,
     ReactiveFormsModule,
     MatSortModule,
-    SharedModule,
-    ConfigurationComponent,
-    OsmDashboard
+    SharedModule
   ],
   standalone: true,
   styleUrls: ['./view-bank-account.component.scss']

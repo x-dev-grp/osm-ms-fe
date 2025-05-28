@@ -17,8 +17,6 @@ import { MatCardModule } from '@angular/material/card';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSortModule } from '@angular/material/sort';
 import { SharedModule } from '../../../demo/shared/shared.module';
-import { ConfigurationComponent } from '../../../@theme/layouts/configuration/configuration.component';
-import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
 
 @Component({
   selector: 'app-bank-account-add',
@@ -37,9 +35,7 @@ import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboar
     MatExpansionModule,
     ReactiveFormsModule,
     MatSortModule,
-    SharedModule,
-    ConfigurationComponent,
-    OsmDashboard
+    SharedModule
   ],
   standalone: true,
 

@@ -10,6 +10,6 @@ import { SharedModule } from 'src/app/demo/shared/shared.module';
   selector: 'app-check-mail',
   imports: [CommonModule, SharedModule, RouterModule],
   templateUrl: './check-mail.component.html',
-  styleUrls: ['./check-mail.component.scss',  '../authentication.scss']
+  styleUrls: ['./check-mail.component.scss', '../authentication.scss']
 })
 export class CheckMailComponent {}

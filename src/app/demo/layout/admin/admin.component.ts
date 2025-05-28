@@ -47,8 +47,7 @@ import { ThemeConfig, ThemeConfigService } from '../../../shared/services/theme-
     HorizontalMenuComponent,
     CompactMenuComponent,
     BreadcrumbComponent,
-    ConfigurationComponent,
-    FooterComponent
+     FooterComponent
   ],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
