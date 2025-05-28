@@ -10,5 +10,5 @@ export interface QualityControlRule {
   minValue?: number;
   maxValue?: number;
   measuredValue?: number;
-  textValues?:string[];
+  ruleTextValue?: string | null;
 }

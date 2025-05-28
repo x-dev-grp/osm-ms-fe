@@ -101,29 +101,46 @@ export class QualityControlRuleAddComponent {
       maxValue: [0, Validators.required],
       ruleName: ['', Validators.required],
       description: [''],
-      textInput: [[]] // valeurs séparées par virgule si ruleType === text
+      textInput: [[], []] // Initialisé sans validateur ici, géré dynamiquement
     });
-    this.ruleForm.get('ruleType')?.valueChanges
+
+    const ruleTypeCtrl = this.ruleForm.get('ruleType');
+    const boolCtrl = this.ruleForm.get('booleanValue')!;
+    const minCtrl = this.ruleForm.get('minValue')!;
+    const maxCtrl = this.ruleForm.get('maxValue')!;
+    const textInputCtrl = this.ruleForm.get('textInput')!;
+
+    // Gestion des validateurs selon le type de règle
+    ruleTypeCtrl?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(type => {
-        const boolCtrl = this.ruleForm.get('booleanValue')!;
-        const minCtrl = this.ruleForm.get('minValue')!;
-        const maxCtrl = this.ruleForm.get('maxValue')!;
         if (type === 'numeric') {
           minCtrl.setValidators([Validators.required]);
           maxCtrl.setValidators([Validators.required]);
           boolCtrl.clearValidators();
-        } else {
+          textInputCtrl.clearValidators();
+        } else if (type === 'boolean') {
           boolCtrl.setValidators([Validators.required]);
           minCtrl.clearValidators();
           maxCtrl.clearValidators();
+          textInputCtrl.clearValidators();
+        } else if (type === 'string') {
+          textInputCtrl.setValidators([Validators.required]);
+          minCtrl.clearValidators();
+          maxCtrl.clearValidators();
+          boolCtrl.clearValidators();
         }
+
+        // Mettre à jour les validations
         boolCtrl.updateValueAndValidity();
         minCtrl.updateValueAndValidity();
         maxCtrl.updateValueAndValidity();
+        textInputCtrl.updateValueAndValidity();
       });
-  }
 
+    // Déclenche une première mise à jour des validateurs
+    ruleTypeCtrl?.setValue(ruleTypeCtrl?.value); // ou appeler .updateValueAndValidity()
+  }
   private async loadRuleData(ruleID: string): Promise<void> {
     try {
       const res = await this.service.getRule(ruleID).toPromise();
@@ -141,31 +158,6 @@ export class QualityControlRuleAddComponent {
     }
   }
 
-  private patchForm(data: QualityControlRule): void {
-    this.ruleForm.patchValue({
-      id: data.id,
-      ruleKey: data.ruleKey,
-      oilQc: data.oilQc ?? false,
-      ruleType: data.ruleType ? data.ruleType.toLowerCase() : 'numeric',
-      booleanValue: data.booleanValue,
-      numericValue: data.numericValue,
-      ruleName: data.ruleName ?? '',
-      description: data.description ?? '',
-      minValue: data.minValue ?? 0,
-      maxValue: data.maxValue ?? 0,
-      measuredValue: data.measuredValue,
-      textInput: data.textValues?.join(', ') ?? ''
-    });
-  }
-
-  private showToast(message: string, duration = 3000): void {
-    this.snackBar.open(message, 'Fermer', {
-      duration,
-      horizontalPosition: 'right',
-      verticalPosition: 'top',
-      panelClass: ['custom-snackbar']
-    });
-  }
   save(): void {
     if (this.ruleForm.invalid) {
       this.ruleForm.markAllAsTouched();
@@ -185,11 +177,12 @@ export class QualityControlRuleAddComponent {
       minValue: ruleType === 'numeric' ? v.minValue : null,
       maxValue: ruleType === 'numeric' ? v.maxValue : null,
       booleanValue: ruleType === 'boolean' ? v.booleanValue : null,
-      textValues: ruleType?.toLowerCase() === 'string'
-        ? (v.textInput?.split(',').map((val: string) => val.trim()).filter((val: string) => val !== ''))
+      ruleTextValue: ruleType?.toLowerCase() === 'string'
+        ? Array.isArray(v.textInput)
+          ? v.textInput.filter((val: string) => val && val.trim()).join(',') // 👈 on convertit en string
+          : String(v.textInput || '').trim()
         : null
     };
-
     this.isLoading = true;
 
     const op$ = this.isEditing
@@ -225,6 +218,32 @@ export class QualityControlRuleAddComponent {
           panelClass: ['snackbar-error']
         });
       }
+    });
+  }
+
+  private showToast(message: string, duration = 3000): void {
+    this.snackBar.open(message, 'Fermer', {
+      duration,
+      horizontalPosition: 'right',
+      verticalPosition: 'top',
+      panelClass: ['custom-snackbar']
+    });
+  }
+
+  private patchForm(data: QualityControlRule): void {
+    this.ruleForm.patchValue({
+      id: data.id,
+      ruleKey: data.ruleKey,
+      oilQc: data.oilQc ?? false,
+      ruleType: data.ruleType ? data.ruleType.toLowerCase() : 'numeric',
+      booleanValue: data.booleanValue,
+      numericValue: data.numericValue,
+      ruleName: data.ruleName ?? '',
+      description: data.description ?? '',
+      minValue: data.minValue ?? 0,
+      maxValue: data.maxValue ?? 0,
+      measuredValue: data.measuredValue,
+      textInput: data.ruleTextValue ? data.ruleTextValue.split(',').map(v => v.trim()) : []
     });
   }
 

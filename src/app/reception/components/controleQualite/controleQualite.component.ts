@@ -146,9 +146,12 @@ export class ControleQualiteComponent implements OnInit {
 
     this.rules.forEach((rule) => {
       const validators = [Validators.required];
-      let initialValue: number | boolean | string | null = null;
+      let initialValue: any = null;
 
-      const existingResult = this.qualityControlResults.find((result) => result.rule?.ruleKey === rule.ruleKey);
+      // Recherche d'une réponse existante pour cette règle
+      const existingResult = this.qualityControlResults.find(
+        (result) => result.rule?.ruleKey === rule.ruleKey
+      );
 
       if (existingResult) {
         switch (rule.ruleType) {
@@ -159,9 +162,15 @@ export class ControleQualiteComponent implements OnInit {
             initialValue = existingResult.measuredValue === 'true';
             break;
           case 'STRING':
-            initialValue = existingResult.measuredValue || null;
+            initialValue = existingResult.measuredValue || '';
             break;
         }
+      }
+
+      // Gestion spéciale pour STRING avec valeurs définies
+      if (rule.ruleType === 'STRING' && rule.ruleTextValue) {
+        // On ne met pas de validateur ici car on force le choix parmi les valeurs proposées via select
+        initialValue = initialValue || '';
       }
 
       if (rule.ruleType === 'NUMERIC') {
@@ -173,11 +182,11 @@ export class ControleQualiteComponent implements OnInit {
         }
       }
 
-      group[rule.ruleKey] = new FormControl({ value: initialValue, disabled: this.isQualityControlDone }, validators);
+      group[rule.ruleKey] = new FormControl(
+        {value: initialValue, disabled: this.isQualityControlDone},
+        rule.ruleType === 'STRING' && rule.ruleTextValue ? [] : validators
+      );
     });
-
-    // Ajouter le champ 'categorie'
-    group['categorie'] = new FormControl('', Validators.required);
 
     this.dynamicForm = this.fb.group(group);
 
@@ -225,29 +234,28 @@ export class ControleQualiteComponent implements OnInit {
       if (!rule) throw new Error(`Aucune règle trouvée pour la clé : ${ruleKey}`);
 
       // Validation par type
+      let isValid = false;
       if (rule.ruleType === 'NUMERIC') {
-        if (typeof rawValue !== 'number' || isNaN(rawValue)) {
-          throw new Error(`Valeur mesurée invalide pour la règle numérique : ${ruleKey}`);
-        }
+        isValid = typeof rawValue === 'number' && !isNaN(rawValue);
       } else if (rule.ruleType === 'BOOLEAN') {
-        if (typeof rawValue !== 'boolean') {
-          throw new Error(`Valeur mesurée invalide pour la règle booléenne : ${ruleKey}`);
-        }
+        isValid = typeof rawValue === 'boolean';
       } else if (rule.ruleType === 'STRING') {
-        if (typeof rawValue !== 'string' || rawValue.trim() === '') {
-          throw new Error(`Valeur mesurée invalide pour la règle chaîne de caractères : ${ruleKey}`);
-        }
-      } else {
-        throw new Error(`Type de règle non supporté : ${rule.ruleType}`);
+        isValid = typeof rawValue === 'string' && rawValue.trim() !== '';
       }
 
-      const existingResult = this.qualityControlResults.find((result) => result.rule?.ruleKey === ruleKey);
+      if (!isValid) {
+        throw new Error(`Valeur mesurée invalide pour la règle : ${ruleKey}`);
+      }
+
+      const existingResult = this.qualityControlResults.find(
+        (result) => result.rule?.ruleKey === ruleKey
+      );
 
       const dto: QualityControlResultDto = {
         id: existingResult?.id,
         rule: rule,
-        measuredValue: String(rawValue), // Toujours converti en string
-        delivery: this.deliveryData!
+        measuredValue: String(rawValue),
+        deliveryId: this.deliveryData!.id // ✅ Envoie uniquement l'ID
       };
 
       if (existingResult?.id) {
@@ -266,7 +274,7 @@ export class ControleQualiteComponent implements OnInit {
         this.qcResService.updateResults(updates).pipe(
           catchError((err) => {
             console.error('Erreur lors de la mise à jour:', err);
-            return of({ success: false, message: 'Erreur lors de la mise à jour des résultats.' });
+            return of({success: false, message: 'Erreur lors de la mise à jour des résultats.'});
           })
         )
       );
@@ -278,7 +286,7 @@ export class ControleQualiteComponent implements OnInit {
           catchError((err) => {
             console.error('Erreur lors de la création:', err);
             console.log('Payload ajout :', creates);
-            return of({ success: false, message: 'Erreur lors de la création des résultats.' });
+            return of({success: false, message: 'Erreur lors de la création des résultats.'});
           })
         )
       );
@@ -296,11 +304,11 @@ export class ControleQualiteComponent implements OnInit {
 
     forkJoin(requests).subscribe({
       next: (responses) => {
-        const allSuccessful = responses.every((res) => res.success);
-        const anySuccessful = responses.some((res) => res.success);
+        const allSuccessful = responses.every(res => res.success);
+        const anySuccessful = responses.some(res => res.success);
 
+        let message = '';
         if (allSuccessful) {
-          let message = '';
           if (updates.length > 0 && creates.length > 0) {
             message = 'Résultats mis à jour et créés avec succès.';
           } else if (updates.length > 0) {
@@ -317,6 +325,7 @@ export class ControleQualiteComponent implements OnInit {
           this.dynamicForm.reset();
           this.submitted = false;
           this.loadQualityControlResults();
+
         } else {
           const errorMessage = anySuccessful
             ? 'Certains résultats ont été enregistrés, mais certains échecs sont survenus.'
@@ -333,34 +342,38 @@ export class ControleQualiteComponent implements OnInit {
       },
       error: (err) => {
         console.error("Erreur lors de l'enregistrement:", err);
-        this.snackBar.open('Une erreur serveur est survenue.', 'Fermer', {
+        this.snackBar.open("Une erreur serveur est survenue.", "Fermer", {
           duration: 6000,
           panelClass: ['mat-snack-bar-container-critical']
         });
-
         this.isLoading = false;
         this.cdr.detectChanges();
       }
     });
   }
 
+
   private updateCategorie(): void {
     const categorie = this.calculateCategorie();
-    this.dynamicForm.get('categorie')?.setValue(categorie, { emitEvent: false });
+    this.dynamicForm.get('categorie')?.setValue(categorie, {emitEvent: false});
   }
 
+
   getRuleName(key: string): string {
-    const r = this.rules.find((rule) => rule.ruleKey === key);
+    const r = this.rules.find(rule => rule.ruleKey === key);
     return r ? r.ruleName! : key;
   }
 
   getTextOptions(ruleKey: string): string[] {
-    const rule = this.rules.find((r) => r.ruleKey === ruleKey);
-    return (rule?.textValues || '')
-      .toString()
+    const rule = this.rules.find(r => r.ruleKey === ruleKey);
+    if (!rule || !rule.ruleTextValue) return [];
+
+    return rule.ruleTextValue
       .split(',')
-      .map((v) => v.trim());
+      .map(val => val.trim())
+      .filter(val => val.length > 0);
   }
+
 
   getRuleMinValue(ruleKey: string): number | null {
     const rule = this.rules.find((r) => r.ruleKey === ruleKey);
@@ -372,6 +385,10 @@ export class ControleQualiteComponent implements OnInit {
     return rule?.maxValue !== undefined ? rule.maxValue : null;
   }
 
+  private areRulesAvailable(): boolean {
+    const requiredKeys = ['acidite', 'k270', 'k232', 'categorie'];
+    return requiredKeys.every(key => this.rules.some(rule => rule.ruleKey === key));
+  }
   private calculateCategorie(): string {
     const acidite = this.dynamicForm.get(this.findRuleKey('acidite'))?.value;
     const k270 = this.dynamicForm.get(this.findRuleKey('k270'))?.value;
@@ -389,7 +406,7 @@ export class ControleQualiteComponent implements OnInit {
   }
 
   private findRuleKey(partialKey: string): string {
-    const match = this.rules.find((rule) => rule.ruleKey.toLowerCase().includes(partialKey.toLowerCase()));
+    const match = this.rules.find(rule => rule.ruleKey.toLowerCase().includes(partialKey.toLowerCase()));
     return match?.ruleKey || '';
   }
 
@@ -407,4 +424,6 @@ export class ControleQualiteComponent implements OnInit {
         return [];
     }
   }
+
+
 }

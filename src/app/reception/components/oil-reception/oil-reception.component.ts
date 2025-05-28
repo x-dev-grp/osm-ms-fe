@@ -23,7 +23,7 @@ import {MatSortModule} from '@angular/material/sort';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatPaginator} from '@angular/material/paginator';
 import {Router} from '@angular/router';
-import {combineLatest, forkJoin, Subscription} from 'rxjs';
+import {combineLatest, Subscription} from 'rxjs';
 
 import {SharedModule} from '../../../demo/shared/shared.module';
 import {ConfigurationComponent} from '../../../@theme/layouts/configuration/configuration.component';
@@ -33,7 +33,6 @@ import {UnifiedDelivery} from '../../../shared/models/UnifiedDelivery';
 import {BaseType} from '../../../shared/models/base-type';
 import {UnifiedDeliveryService} from '../../../shared/services/delivery.service';
 import {GenericTypeService} from '../../../shared/services/generic-type.service';
-import {TypeCategory} from '../../../shared/models/type-category.enum';
 import {SupplierType} from '../../../shared/models/supplier-type';
 import {SupplierTypeService} from '../../../shared/services/supplier.service';
 
@@ -147,38 +146,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loading = true;
 
-    forkJoin([
-      this.genericTypeService.getAllTypes(TypeCategory.OIL_VARIETY),
-      this.genericTypeService.getAllTypes(TypeCategory.OLIVE_TYPE),
-      this.genericTypeService.getAllTypes(TypeCategory.REGION),
-      this.supplierService.getAllSuppliers(),
-      this.deliveryService.getAllDeliveriesList()
-    ]).subscribe({
-      next: ([oilVarieties, oliveTypes, regions, suppliers, deliveries]) => {
-        this.oilVarieties = oilVarieties.success ? oilVarieties.data : [];
-        this.oliveTypes   = oliveTypes.success ? oliveTypes.data   : [];
-        this.regions      = regions.success    ? regions.data      : [];
-        this.suppliers    = suppliers.success  ? suppliers.data    : [];
-        this.deliveries   = deliveries.success ? deliveries.data   : [];
-
-        const deliveryCount = this.deliveries.length;
-        const maxLot        = this.maxLotNumber();
-
-        this.receptionForm.patchValue({
-          deliveryNumber: deliveryCount + 1,
-          lotNumber:      maxLot + 1
-        });
-
-        this.setupOliveTypeSubscription();
-        this.setupAutoCalculations();
-
-        this.loading = false;
-      },
-      error: () => {
-        this.toast('Erreur lors du chargement des données initiales.');
-        this.loading = false;
-      }
-    });
+    this.fetchDeliveries();
   }
 
   ngOnDestroy(): void {

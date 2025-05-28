@@ -26,14 +26,19 @@
           <ng-template #nonNumericInput>
             <ng-container [ngSwitch]="getRuleType(control.key)">
 
-              <!-- STRING -->
-              <mat-form-field *ngSwitchCase="'STRING'" appearance="outline" class="w-100">
-                <mat-select [formControlName]="control.key" [id]="control.key">
-                  <mat-option *ngFor="let option of getTextOptions(control.key)" [value]="option">
-                    {{ option }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
+            <!-- STRING -->
+            <mat-form-field *ngSwitchCase="'STRING'" appearance="outline" class="w-100">
+              <mat-label>{{ getRuleName(control.key) }}</mat-label>
+              <mat-select [formControlName]="control.key" [id]="control.key">
+                <!-- Options extraites depuis ruleTextValue -->
+                <mat-option *ngFor="let option of getTextOptions(control.key)" [value]="option">
+                  {{ option }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="dynamicForm.get(control.key)?.hasError('required')">
+                Ce champ est requis
+              </mat-error>
+            </mat-form-field>
 
               <!-- BOOLEAN -->
               <mat-form-field *ngSwitchCase="'BOOLEAN'" appearance="outline" class="w-100">
