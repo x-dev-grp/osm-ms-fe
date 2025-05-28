@@ -1,63 +1,66 @@
-<form *ngIf="dynamicForm && !isLoading" [formGroup]="dynamicForm" class="quality-form container-fluid">
-  <div class="row g-4">
-    <div *ngFor="let control of dynamicForm.controls | keyvalue"
-         [hidden]="control.key === 'testSensoriel' || control.key === 'classificationHuile'"
-         class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
+<app-card>
+  <form *ngIf="dynamicForm && !isLoading" [formGroup]="dynamicForm" class="quality-form container-fluid">
+    <div class="row g-4">
+      <div *ngFor="let control of dynamicForm.controls | keyvalue"
+           [hidden]="control.key === 'testSensoriel' || control.key === 'classificationHuile'"
+           class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
 
-      <div class="rule-card flex-fill p-3 border rounded">
-        <!-- Affichage du nom de la règle uniquement -->
-        <label [for]="control.key" class="form-label fw-bold mb-3 d-block">
-          {{ getRuleName(control.key) }}
-        </label>
+        <div class="rule-card flex-fill p-3 border rounded">
+          <!-- Affichage du nom de la règle uniquement -->
+          <label [for]="control.key" class="form-label fw-bold mb-2 d-block">
+            {{ getRuleName(control.key) }}
+          </label>
 
-        <!-- NUMERIC -->
-        <ng-container *ngIf="getRuleType(control.key) === 'NUMERIC'; else nonNumericInput">
-          <input
-            type="number"
-            class="form-control"
-            [id]="control.key"
-            [formControlName]="control.key"
-            placeholder="Entrez une valeur"
-          />
-        </ng-container>
-
-        <!-- STRING & BOOLEAN -->
-        <ng-template #nonNumericInput>
-          <ng-container [ngSwitch]="getRuleType(control.key)">
-
-            <!-- STRING -->
-            <mat-form-field *ngSwitchCase="'STRING'" appearance="outline" class="w-100">
-              <mat-select [formControlName]="control.key" [id]="control.key">
-                <mat-option *ngFor="let option of getTextOptions(control.key)" [value]="option">
-                  {{ option }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-
-            <!-- BOOLEAN -->
-            <mat-form-field *ngSwitchCase="'BOOLEAN'" appearance="outline" class="w-100">
-              <mat-select [formControlName]="control.key" [id]="control.key">
-                <mat-option [value]="true">Vrai</mat-option>
-                <mat-option [value]="false">Faux</mat-option>
-              </mat-select>
-            </mat-form-field>
+          <!-- NUMERIC -->
+          <ng-container *ngIf="getRuleType(control.key) === 'NUMERIC'; else nonNumericInput">
+            <input
+              type="number"
+              class="form-control"
+              [id]="control.key"
+              [formControlName]="control.key"
+              placeholder="Entrez une valeur"
+            />
           </ng-container>
-        </ng-template>
 
-        <!-- Erreurs -->
-        <div class="text-danger mt-2" *ngIf="dynamicForm.get(control.key)?.invalid && (dynamicForm.get(control.key)?.touched || submitted)">
-          <div *ngIf="dynamicForm.get(control.key)?.errors?.['required']">Ce champ est requis.</div>
-          <div *ngIf="dynamicForm.get(control.key)?.errors?.['min']">Min: {{ getRuleMinValue(control.key) }}</div>
-          <div *ngIf="dynamicForm.get(control.key)?.errors?.['max']">Max: {{ getRuleMaxValue(control.key) }}</div>
+          <!-- STRING & BOOLEAN -->
+          <ng-template #nonNumericInput>
+            <ng-container [ngSwitch]="getRuleType(control.key)">
+
+              <!-- STRING -->
+              <mat-form-field *ngSwitchCase="'STRING'" appearance="outline" class="w-100">
+                <mat-select [formControlName]="control.key" [id]="control.key">
+                  <mat-option *ngFor="let option of getTextOptions(control.key)" [value]="option">
+                    {{ option }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <!-- BOOLEAN -->
+              <mat-form-field *ngSwitchCase="'BOOLEAN'" appearance="outline" class="w-100">
+                <mat-select [formControlName]="control.key" [id]="control.key">
+                  <mat-option [value]="true">Vrai</mat-option>
+                  <mat-option [value]="false">Faux</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </ng-container>
+          </ng-template>
+
+          <!-- Erreurs -->
+          <div class="error-messages" *ngIf="dynamicForm.get(control.key)?.invalid && (dynamicForm.get(control.key)?.touched || submitted)">
+            <small *ngIf="dynamicForm.get(control.key)?.errors?.['required']">Ce champ est requis.</small>
+            <small *ngIf="dynamicForm.get(control.key)?.errors?.['min']">Min: {{ getRuleMinValue(control.key) }}</small>
+            <small *ngIf="dynamicForm.get(control.key)?.errors?.['max']">Max: {{ getRuleMaxValue(control.key) }}</small>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="text-center my-4">
-    <button [disabled]="dynamicForm.invalid || isLoading || isQualityControlDone" class="btn btn-primary px-5"
-            (click)="onSubmit()">
-      Valider
-    </button>
-  </div>
-</form>
+    <div class="button-container">
+      <button [disabled]="dynamicForm.invalid || isLoading || isQualityControlDone"
+              class="btn btn-primary"
+              (click)="onSubmit()">
+        Valider
+      </button>
+    </div>
+  </form>
+</app-card>
