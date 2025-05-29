@@ -1,19 +1,19 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { QualityControlRuleService } from '../../../shared/services/quality-control-rule.service';
-import { QualityControlRule } from '../../../shared/models/quality-control-rule';
-import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
-import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
-import { QualityControlResultService } from '../../../shared/services/quality-control-result.service';
-import { QualityControlResultDto } from '../../../shared/models/QualityControlResultDto';
-import { forkJoin, Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
-import { MatFormField } from '@angular/material/form-field';
-import { MatOption, MatSelect } from '@angular/material/select';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { CardComponent } from '../../../@theme/components/card/card.component';
+import {CommonModule} from '@angular/common';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {QualityControlRuleService} from '../../../shared/services/quality-control-rule.service';
+import {QualityControlRule} from '../../../shared/models/quality-control-rule';
+import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
+import {UnifiedDeliveryService} from '../../../shared/services/delivery.service';
+import {UnifiedDelivery} from '../../../shared/models/UnifiedDelivery';
+import {QualityControlResultService} from '../../../shared/services/quality-control-result.service';
+import {QualityControlResultDto} from '../../../shared/models/QualityControlResultDto';
+import {forkJoin, Observable, of} from 'rxjs';
+import {catchError} from 'rxjs/operators';
+import {MatFormField} from '@angular/material/form-field';
+import {MatOption, MatSelect} from '@angular/material/select';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {CardComponent} from '../../../@theme/components/card/card.component';
 
 @Component({
   selector: 'app-controlequalite',
@@ -189,13 +189,22 @@ export class ControleQualiteComponent implements OnInit {
     });
 
     this.dynamicForm = this.fb.group(group);
+    console.log("Contenu du dynamicForm :", this.dynamicForm.controls);
 
-    // S'abonner pour mettre à jour la catégorie automatiquement
-    this.dynamicForm.valueChanges.subscribe(() => {
-      this.updateCategorie();
-    });
+
+    // S'abonner uniquement aux changements de acidite, k270 et k232
+    const aciditeKey = this.findRuleKey('Acidite');
+    const k270Key = this.findRuleKey('k270');
+    const k232Key = this.findRuleKey('k232');
+
+    [this.dynamicForm.get(aciditeKey), this.dynamicForm.get(k270Key), this.dynamicForm.get(k232Key)]
+      .forEach(control => {
+        control?.valueChanges.subscribe(() => {
+          console.log("les valeur dans la fonction calcule values", control?.value);
+          this.updateCategorie();
+        });
+      });
   }
-
   getRuleType(ruleKey: string): 'NUMERIC' | 'BOOLEAN' | 'STRING' {
     return this.rules.find((r) => r.ruleKey === ruleKey)?.ruleType || 'NUMERIC';
   }
@@ -354,10 +363,20 @@ export class ControleQualiteComponent implements OnInit {
 
 
   private updateCategorie(): void {
-    const categorie = this.calculateCategorie();
-    this.dynamicForm.get('categorie')?.setValue(categorie, {emitEvent: false});
-  }
+    const calculated = this.calculateCategorie();
+    const categorieControl = this.dynamicForm.get('Categorie');
 
+    if (!categorieControl) {
+      console.warn("Le champ 'Categorie' n'existe pas dans le formulaire.");
+      return;
+    }
+    const currentCategorie = categorieControl.value;
+
+    if (currentCategorie !== calculated) {
+      console.log("Mise à jour automatique de la catégorie en :", calculated);
+      categorieControl.setValue(calculated, {emitEvent: false}); // évite boucle infinie
+    }
+  }
 
   getRuleName(key: string): string {
     const r = this.rules.find(rule => rule.ruleKey === key);
@@ -375,6 +394,7 @@ export class ControleQualiteComponent implements OnInit {
   }
 
 
+
   getRuleMinValue(ruleKey: string): number | null {
     const rule = this.rules.find((r) => r.ruleKey === ruleKey);
     return rule?.minValue !== undefined ? rule.minValue : null;
@@ -385,31 +405,36 @@ export class ControleQualiteComponent implements OnInit {
     return rule?.maxValue !== undefined ? rule.maxValue : null;
   }
 
-  private areRulesAvailable(): boolean {
-    const requiredKeys = ['acidite', 'k270', 'k232', 'categorie'];
-    return requiredKeys.every(key => this.rules.some(rule => rule.ruleKey === key));
-  }
-  private calculateCategorie(): string {
-    const acidite = this.dynamicForm.get(this.findRuleKey('acidite'))?.value;
-    const k270 = this.dynamicForm.get(this.findRuleKey('k270'))?.value;
-    const k232 = this.dynamicForm.get(this.findRuleKey('k232'))?.value;
 
-    if (acidite == null || k270 == null || k232 == null) return '';
+  private calculateCategorie(): string {
+    const acidite = this.dynamicForm.get('Acidite')?.value;
+    const k270 = this.dynamicForm.get('K270')?.value;
+    const k232 = this.dynamicForm.get('K232')?.value;
+
+    console.log("Valeurs avant calcul :", {acidite, k270, k232});
+
+    if (
+      acidite == null || typeof acidite !== 'number' ||
+      k270 == null || typeof k270 !== 'number' ||
+      k232 == null || typeof k232 !== 'number'
+    ) {
+      return '';
+    }
 
     if (acidite < 0.8 && k270 < 0.22 && k232 < 2.5) {
-      return 'vierge extra';
+      return 'Vierge Extra'; // majuscules alignées avec ruleTextValue
     } else if (acidite < 2 && k270 < 0.25 && k232 < 2.6) {
-      return 'vierge';
+      return 'Vierge';
     } else {
-      return 'lampante';
+      return 'Lampante';
     }
   }
 
-  private findRuleKey(partialKey: string): string {
-    const match = this.rules.find(rule => rule.ruleKey.toLowerCase().includes(partialKey.toLowerCase()));
-    return match?.ruleKey || '';
+  private findRuleKey(displayedName: string): string {
+    const normalized = displayedName.toLowerCase();
+    const rule = this.rules.find(r => r.ruleName?.toLowerCase() === normalized);
+    return rule ? rule.ruleKey : '';
   }
-
   private filterRules(allRules: QualityControlRule[]): QualityControlRule[] {
     if (!this.deliveryData?.deliveryType) {
       return [];
