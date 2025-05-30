@@ -1,8 +1,8 @@
-import { BaseType } from './base-type';
-import { OliveLotStatus } from './OliveLotStatus';
-import { SupplierType } from './supplier-type';
-import { StorageUnitDto } from './StorageUnitDto';
-import { QualityControlResultDto } from './QualityControlResultDto';
+import {BaseType} from './base-type';
+import {OliveLotStatus} from './OliveLotStatus';
+import {SupplierType} from './supplier-type';
+import {StorageUnitDto} from './StorageUnitDto';
+import {QualityControlResultDto} from './QualityControlResultDto';
 
 export class UnifiedDelivery {
   id!: string;
