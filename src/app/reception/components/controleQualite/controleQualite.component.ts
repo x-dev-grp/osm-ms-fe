@@ -192,19 +192,49 @@ export class ControleQualiteComponent implements OnInit {
     console.log("Contenu du dynamicForm :", this.dynamicForm.controls);
 
 
-    // S'abonner uniquement aux changements de acidite, k270 et k232
-    const aciditeKey = this.findRuleKey('Acidite');
-    const k270Key = this.findRuleKey('k270');
-    const k232Key = this.findRuleKey('k232');
+    // Déterminer les clés à observer selon le type de livraison
+    let ruleKeysToWatch: string[];
 
-    [this.dynamicForm.get(aciditeKey), this.dynamicForm.get(k270Key), this.dynamicForm.get(k232Key)]
-      .forEach(control => {
-        control?.valueChanges.subscribe(() => {
-          console.log("les valeur dans la fonction calcule values", control?.value);
+    if (this.isOliveDelivery()) {
+      // OLIVE : Observer Infestees, Fermentees, Endommagees
+      ruleKeysToWatch = [
+        this.findRuleKey('Infestees'),
+        this.findRuleKey('Fermentees'),
+        this.findRuleKey('Endommagees')
+      ];
+    } else {
+      // OIL : Observer Acidite, K270, K232
+      ruleKeysToWatch = [
+        this.findRuleKey('Acidite'),
+        this.findRuleKey('K270'),
+        this.findRuleKey('K232')
+      ];
+    }
+
+// S'abonner aux changements des champs pertinents
+    ruleKeysToWatch.forEach(ruleKey => {
+      const control = this.dynamicForm.get(ruleKey);
+      if (control) {
+        control.valueChanges.subscribe(() => {
+          // Log toutes les valeurs des champs concernés
+          const infesteesVal = this.dynamicForm.get(this.findRuleKey('Infestees'))?.value;
+          const fermenteesVal = this.dynamicForm.get(this.findRuleKey('Fermentees'))?.value;
+          const endommageesVal = this.dynamicForm.get(this.findRuleKey('Endommagees'))?.value;
+          const categorieVal = this.dynamicForm.get(this.findRuleKey('Categorie'))?.value;
+
+          console.log("🔍 Debug valeurs OLIVE :");
+          console.log("Infestees:", infesteesVal);
+          console.log("Fermentees:", fermenteesVal);
+          console.log("Endommagees:", endommageesVal);
+          console.log("Categorie actuelle:", categorieVal);
+
+          // Mettre à jour la catégorie
           this.updateCategorie();
         });
-      });
+      }
+    });
   }
+
   getRuleType(ruleKey: string): 'NUMERIC' | 'BOOLEAN' | 'STRING' {
     return this.rules.find((r) => r.ruleKey === ruleKey)?.ruleType || 'NUMERIC';
   }
@@ -370,11 +400,13 @@ export class ControleQualiteComponent implements OnInit {
       console.warn("Le champ 'Categorie' n'existe pas dans le formulaire.");
       return;
     }
+
     const currentCategorie = categorieControl.value;
 
     if (currentCategorie !== calculated) {
       console.log("Mise à jour automatique de la catégorie en :", calculated);
-      categorieControl.setValue(calculated, {emitEvent: false}); // évite boucle infinie
+      categorieControl.setValue(calculated, {emitEvent: false});
+      categorieControl.updateValueAndValidity();
     }
   }
 
@@ -393,8 +425,6 @@ export class ControleQualiteComponent implements OnInit {
       .filter(val => val.length > 0);
   }
 
-
-
   getRuleMinValue(ruleKey: string): number | null {
     const rule = this.rules.find((r) => r.ruleKey === ruleKey);
     return rule?.minValue !== undefined ? rule.minValue : null;
@@ -406,35 +436,36 @@ export class ControleQualiteComponent implements OnInit {
   }
 
 
-  private calculateCategorie(): string {
-    const acidite = this.dynamicForm.get('Acidite')?.value;
-    const k270 = this.dynamicForm.get('K270')?.value;
-    const k232 = this.dynamicForm.get('K232')?.value;
-
-    console.log("Valeurs avant calcul :", {acidite, k270, k232});
-
-    if (
-      acidite == null || typeof acidite !== 'number' ||
-      k270 == null || typeof k270 !== 'number' ||
-      k232 == null || typeof k232 !== 'number'
-    ) {
-      return '';
-    }
-
-    if (acidite < 0.8 && k270 < 0.22 && k232 < 2.5) {
-      return 'Vierge Extra'; // majuscules alignées avec ruleTextValue
-    } else if (acidite < 2 && k270 < 0.25 && k232 < 2.6) {
-      return 'Vierge';
-    } else {
-      return 'Lampante';
-    }
-  }
+  // private calculateCategorie(): string {
+  //   const acidite = this.dynamicForm.get('Acidite')?.value;
+  //   const k270 = this.dynamicForm.get('K270')?.value;
+  //   const k232 = this.dynamicForm.get('K232')?.value;
+  //
+  //   console.log("Valeurs avant calcul :", {acidite, k270, k232});
+  //
+  //   if (
+  //     acidite == null || typeof acidite !== 'number' ||
+  //     k270 == null || typeof k270 !== 'number' ||
+  //     k232 == null || typeof k232 !== 'number'
+  //   ) {
+  //     return '';
+  //   }
+  //
+  //   if (acidite < 0.8 && k270 < 0.22 && k232 < 2.5) {
+  //     return 'Vierge Extra'; // majuscules alignées avec ruleTextValue
+  //   } else if (acidite < 2 && k270 < 0.25 && k232 < 2.6) {
+  //     return 'Vierge';
+  //   } else {
+  //     return 'Lampante';
+  //   }
+  // }
 
   private findRuleKey(displayedName: string): string {
     const normalized = displayedName.toLowerCase();
-    const rule = this.rules.find(r => r.ruleName?.toLowerCase() === normalized);
+    const rule = this.rules.find(r => r.ruleKey?.toLowerCase() === normalized);
     return rule ? rule.ruleKey : '';
   }
+
   private filterRules(allRules: QualityControlRule[]): QualityControlRule[] {
     if (!this.deliveryData?.deliveryType) {
       return [];
@@ -450,5 +481,67 @@ export class ControleQualiteComponent implements OnInit {
     }
   }
 
+  private isOliveDelivery(): boolean {
+    return this.deliveryData?.deliveryType === 'OLIVE';
+  }
+
+  private calculateCategorie(): string {
+    if (this.isOliveDelivery()) {
+      return this.calculateCategorieOlive();
+    } else {
+      return this.calculateCategorieOil();
+    }
+  }
+
+  private calculateCategorieOil(): string {
+    const acidite = this.dynamicForm.get('Acidite')?.value;
+    const k270 = this.dynamicForm.get('K270')?.value;
+    const k232 = this.dynamicForm.get('K232')?.value;
+
+    console.log("Valeurs avant calcul (OIL):", {acidite, k270, k232});
+
+    if (
+      acidite == null || typeof acidite !== 'number' ||
+      k270 == null || typeof k270 !== 'number' ||
+      k232 == null || typeof k232 !== 'number'
+    ) {
+      return '';
+    }
+
+    if (acidite < 0.8 && k270 < 0.22 && k232 < 2.5) {
+      return 'Vierge Extra';
+    } else if (acidite < 2 && k270 < 0.25 && k232 < 2.6) {
+      return 'Vierge';
+    } else {
+      return 'Lampante';
+    }
+  }
+
+  private calculateCategorieOlive(): string {
+    const infestees = this.dynamicForm.get('Infestees')?.value;
+    const fermentees = this.dynamicForm.get('Fermentees')?.value;
+    const endommagees = this.dynamicForm.get('Endommagees')?.value;
+
+    console.log("Valeurs avant calcul (OLIVE):", {infestees, fermentees, endommagees});
+
+    if (
+      infestees == null || typeof infestees !== 'number' ||
+      fermentees == null || typeof fermentees !== 'number' ||
+      endommagees == null || typeof endommagees !== 'number'
+    ) {
+      return '';
+    }
+
+    const allLessThanOrEqual30 = infestees <= 30 && fermentees <= 30 && endommagees <= 30;
+    const allLessThanOrEqual60 = infestees <= 60 && fermentees <= 60 && endommagees <= 60;
+
+    if (allLessThanOrEqual30) {
+      return 'Vierge Extra';
+    } else if (allLessThanOrEqual60) {
+      return 'Vierge';
+    } else {
+      return 'Lampante';
+    }
+  }
 
 }

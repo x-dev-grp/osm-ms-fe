@@ -98,27 +98,6 @@ export class QualityControlRuleComponent implements OnInit, OnDestroy {
 
   }
 
-  // loadRules(): void {
-  //   this.isLoading = true;
-  //   this.service.getAllRules().pipe(
-  //     takeUntil(this.destroy$),
-  //     finalize(() => this.isLoading = false)
-  //   ).subscribe(
-  //     res => {
-  //       console.log('API Response:', res); // Vérifie ici la structure
-  //       if (res?.success) {
-  //         const data = Array.isArray(res.data[0]) ? res.data[0] : res.data;
-  //         this.dataSource.data = data;
-  //         this.message = '';
-  //       } else {
-  //         this.message = res.message;
-  //       }
-  //     },
-  //     () => {
-  //       this.message = 'Failed to load rules.';
-  //     }
-  //   );
-  // }
 
   cancel(): void {
     this.formOpen = false;
@@ -186,6 +165,7 @@ export class QualityControlRuleComponent implements OnInit, OnDestroy {
       }
     });
   }
+
   deleteRule(rule: QualityControlRule): void {
     if (!rule.id) return;
     this.isLoading = true;
