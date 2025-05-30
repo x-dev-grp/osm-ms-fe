@@ -37,17 +37,6 @@ export class UnifiedDelivery {
   hasQualityControlResults?: boolean;
   qualityControlResults?: QualityControlResultDto[] | null;
 }
- export interface QualityControlRuleDto {
-   id: string;
-   ruleKey: string;
-   ruleName: string;
-   description: string | null;
-   oilQc: boolean;
- }
 
- export interface QualityControlResultDto {
-   id: string;
-   deliveryId: string;
-   measuredValue: string;
-   rule: QualityControlRuleDto;
- }
+
+
