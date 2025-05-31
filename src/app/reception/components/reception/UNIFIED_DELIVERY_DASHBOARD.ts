@@ -18,7 +18,7 @@ export const UNIFIED_DELIVERY_DASHBOARD: DashboardConfig = {
     /* Identifiants & méta */
     {
       name: 'deliveryNumber',
-      label: 'N° Livraison',
+      label: 'N° Bon de réception',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,

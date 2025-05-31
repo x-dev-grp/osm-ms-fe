@@ -34,13 +34,19 @@
       >
         <!-- Name Column -->
         <tr class="mat-row" *matNoDataRow>
-          <td class="mat-cell" [attr.colspan]="displayedColumns.length">No data existing!.</td>
+          <td class="mat-cell" [attr.colspan]="displayedColumns.length">Pas des données </td>
         </tr>
         @let dataTableFields = _store.dataTableFields(); @for (item of dataTableFields; track item.name;) {
         <ng-container matColumnDef="{{item.label}}">
-          <th mat-header-cell *matHeaderCellDef [mat-sort-header]="item?.valuePath?item?.valuePath:item?.name" [disabled]="!item?.sortable">
-            {{item?.labelTranslatePath ?(item?.labelTranslatePath|translate):item.label }}
-          </th>
+          @if(item?.sortable) {
+            <th mat-header-cell *matHeaderCellDef [mat-sort-header]="item?.valuePath?item?.valuePath:item?.name">
+              {{item?.labelTranslatePath ?(item?.labelTranslatePath|translate):item.label }}
+            </th>
+          } @else {
+            <th mat-header-cell *matHeaderCellDef>
+               {{item?.labelTranslatePath ?(item?.labelTranslatePath|translate):item.label }}
+            </th>
+          }
           <td mat-cell *matCellDef="let record">
             @if (item?.fieldType=="checkbox") {
               <input

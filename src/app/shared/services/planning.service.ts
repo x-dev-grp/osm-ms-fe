@@ -18,8 +18,8 @@ export class PlanningService {
   }
 
   /** POST/PUT the whole plan */
-  savePlanning(body: PlanningSaveRequest): Observable<void> {
-    return this.http.post<void>(`${this.API_BASE_URL}`, body);
+  savePlanning(body: PlanningSaveRequest): Observable<string> {
+    return this.http.post(`${this.API_BASE_URL}`, body, { responseType: 'text' });
   }
 
   /* ───── NEW: mark lot(s) completed ──────────────────────────── */

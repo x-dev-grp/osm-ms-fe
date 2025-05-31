@@ -1,11 +1,12 @@
- import { BaseType } from './base-type';
+import { BaseType } from './base-type';
 import { OliveLotStatus } from './OliveLotStatus';
- import { SupplierType } from './supplier-type';
- import { StorageUnitDto } from './StorageUnitDto';
+import { SupplierType } from './supplier-type';
+import { StorageUnitDto } from './StorageUnitDto';
+import { QualityControlResultDto } from './QualityControlResultDto';
 
 export class UnifiedDelivery {
- id!:string;
- deliveryNumber!: string;
+  id!: string;
+  deliveryNumber!: string;
   deliveryType!: string;
   lotNumber!: string;
   deliveryDate!: Date;
@@ -33,4 +34,6 @@ export class UnifiedDelivery {
   oliveQuantity?: number | null;
   parcel?: string | null;
   storageUnit?: StorageUnitDto | null;
+  hasQualityControlResults?: boolean;
+  qualityControlResults?: QualityControlResultDto[] | null;
 }

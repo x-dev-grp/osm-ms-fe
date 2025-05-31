@@ -1,5 +1,6 @@
 import { AttributeType, DashboardConfig, FieldType } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
 import { deliveryType } from '../../../shared/models/deleveryType';
+import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
 
 export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
   title: 'Contrôle Qualité',
@@ -13,9 +14,10 @@ export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
     sort: 'createdDate',
     order: 'DESC',
     searchData: {
+      operation: SearchOperation.AND,
       search: {
-        deliveryType: {
-          in: [deliveryType.OLIVE, deliveryType.OIL]
+        hasQualityControl: {
+          equalValue: "false"
         }
       }
     }
@@ -23,7 +25,7 @@ export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
   fields: [
     {
       name: 'deliveryNumber',
-      label: 'N° Livraison',
+      label: 'N° Bon de réception',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -50,6 +52,7 @@ export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
       sortable: true,
       dataTable: true,
       filterable: true,
+      defaultFilter:true,
       options: [
         { label: 'Olive', value: deliveryType.OLIVE },
         { label: 'Huile', value: deliveryType.OIL }

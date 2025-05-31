@@ -89,6 +89,18 @@ export const DashboardStore = signalStore(
           patchState(store, { searchData });
         }
       },
+      initializeWithData(endpoint: string, allFields: Field[], data: SearchResponse, fileName?: string): void {
+        patchState(store, {
+          endpoint: endpoint,
+          allFields: allFields,
+          filterFields: allFields.filter((field) => field.filterable).map((field) => ({ field, checked: field.defaultFilter ?? false })),
+          exportFields: allFields.filter((field) => field.exportable).map((field) => ({ field, checked: true })),
+          dataTableFields: allFields.filter((field) => field.dataTable),
+          fileName: fileName ?? 'default',
+          data: data,
+          loading: false
+        });
+      },
       export(exportType: string) {
         exportType=='pdf'?this.setExportPdfLoading(true):this.setExportExcelLoading(true);
         const fieldsToExport = store.checkedExportFields().map((field) =>{
@@ -140,6 +152,9 @@ export const DashboardStore = signalStore(
         store.searchTrigger$().pipe(
             switchMap((searchData) => {
               console.log('New search triggered with:', searchData);
+              if (!store.endpoint()) {
+                 return EMPTY;
+              }
               return defer(() => {
                 this.setLoading(true);
                 return _searchService.search(searchData, store.endpoint());

@@ -31,7 +31,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
     /* Identifiants */
     {
       name: 'deliveryNumber',
-      label: 'N° Livraison',
+      label: 'N° Bon de réception',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,

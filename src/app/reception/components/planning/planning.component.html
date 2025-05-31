@@ -1,184 +1,62 @@
 <div class="w-full">
-  <app-card cardTitle="Olive Reception Planning" id="planning-card">
+  <app-card cardTitle="Planification des Réceptions d'Olives" id="planning-card">
     <ng-template #headerOptionsTemplate>
       <div class="header-actions">
 
     <span class="stats">
-      Unassigned: {{ filteredReceptions.length }} |
-      Assigned: {{ totalAssigned }}
+      Non Assignées: {{ filteredReceptions.length }} |
+      Assignées: {{ totalAssigned }}
     </span>
 
         <button *ngIf="hasSelection()"
                 class="action-btn accent"
                 mat-raised-button
                 (click)="groupSelected()">
-          Group&nbsp;({{ selectedIds().length }})
+          Grouper&nbsp;({{ selectedIds().length }})
         </button>
 
         <button class="action-btn primary"
                 mat-raised-button
                 (click)="savePlan()">
-          Save
+          Enregistrer
         </button>
 
         <button class="action-btn"
                 mat-raised-button
                 (click)="cancelPlan()">
-          Cancel
+          Annuler
         </button>
         <button mat-icon-button
                 class="fs-btn"
                 (click)="toggleFullScreen()"
-                [matTooltip]="isFullScreen ? 'Exit full screen' : 'Full screen'">
+                [matTooltip]="isFullScreen ? 'Quitter le plein écran' : 'Plein écran'">
           <mat-icon>{{ isFullScreen ? 'fullscreen_exit' : 'fullscreen' }}</mat-icon>
         </button>
       </div>
     </ng-template>
 
     <!-- Columns as expansion panels -->
-    <div #scrollContainer cdkDropListGroup class="columns-container">
-      <!-- Unassigned Column -->
-      <mat-expansion-panel expanded>
-        <mat-expansion-panel-header>
-          <mat-tab-nav-panel>
-            Unassigned Receptions ({{ unassignedReceptions.length }})
-          </mat-tab-nav-panel>
-        </mat-expansion-panel-header>
-
-        <div
-          (cdkDropListDropped)="drop($event)"
-          (cdkDropListEntered)="onDropListEntered($event)"
-          [cdkDropListConnectedTo]="connectedDropLists"
-          [cdkDropListData]="filteredReceptions"
-          cdkDropList
-          class="drop-list"
-          id="unassigned-list"
-          role="list"
-        >
-          @for (item of filteredReceptions; track trackByItem($index, item)) {
-            @if (item.type === LOT) {
-              @let data = item.data ;
-              <div
-                class="reception-card"
-                cdkDrag
-                (cdkDragMoved)="onDragMove($event)"
-                [cdkDragData]="item"
-                [attr.id]="'item-' + data.id"
-                role="listitem"
-                (cdkDragStarted)="onDragStart($event)"
-                (cdkDragEnded)="onDragEnd($event)"
-              >
-                <div class="side-controls">
-                  <div class="drag-handle" cdkDragHandle>
-                    <mat-icon fontIcon="drag_indicator"></mat-icon>
-                  </div>
-                  <mat-checkbox
-                    class="select-box"
-                    [(ngModel)]="selection[data.id]"
-                    (change)="onSelectChange(item)"
-                  ></mat-checkbox>
-                </div>
-                <div class="card-content">
-                  <div class="flex space-between">
-                    <div>
-                      {{ data.lotNumber }}
-                      <span>{{ data.oliveQuantity }} kg</span>
-                      @if (data.globalLotNumber) {
-                        <span class="gl-badge">{{ data.globalLotNumber }}</span>
-                      }
-                      <small class="block text-xs text-gray-600">{{ data.deliveryDate | date: 'shortDate' }}</small>
-                    </div>
-                    @if (data.completed) {
-                      <mat-icon class="text-green-500">check_circle</mat-icon>
-                    }
-                  </div>
-                </div>
-              </div>
-            }
-            @if (item.type === GLOBAL_LOT) {
-              @let data = item.data ;
-              <div
-                class="reception-card flex"
-                cdkDrag
-                (cdkDragMoved)="onDragMove($event)"
-                [cdkDragData]="item"
-                [attr.id]="'item-' + data.globalLotNumber"
-                role="listitem"
-                (cdkDragStarted)="onDragStart($event)"
-                (cdkDragEnded)="onDragEnd($event)"
-              >
-                <div class="side-controls">
-                  <div class="drag-handle" cdkDragHandle>
-                    <mat-icon fontIcon="drag_indicator"></mat-icon>
-                  </div>
-                  <mat-checkbox
-                    class="select-box"
-                    [(ngModel)]="selection[data.id]"
-                    (change)="onSelectChange(item)"
-                  ></mat-checkbox>
-                </div>
-                <div class="card-content">
-                  <div class="flex space-between">
-                    <div>
-                      <strong>Global Lot: {{ data.globalLotNumber }}</strong>
-                      <br>
-                      <span>Total: {{ data.totalKg }} kg</span>
-                      <span class="gl-badge">Global Lot</span>
-                      <small class="block text-xs text-gray-600">Child
-                        Lots: {{ data.childLotNumbers.join(', ') }}</small>
-                    </div>
-                    <div>
-                      <button mat-icon-button (click)="markAsCompleted(item)">
-                        <mat-icon>check_circle</mat-icon>
-                      </button>
-                      <button mat-icon-button [matMenuTriggerFor]="lotMenu">
-                        <mat-icon>more_vert</mat-icon>
-                      </button>
-                      <mat-menu #lotMenu="matMenu">
-                        <button mat-menu-item (click)="ungroupLot(data)">
-                          <mat-icon>undo</mat-icon>
-                          Ungroup
-                        </button>
-                      </mat-menu>
-                    </div>
-                    @if (data.completed) {
-                      <mat-icon class="text-green-500">check_circle</mat-icon>
-                    }
-                  </div>
-                </div>
-              </div>
-            }
-          }
-        </div>
-      </mat-expansion-panel>
-
-      <!-- Mill Columns -->
-      @for (mill of mills; track mill; let i = $index) {
-        <mat-expansion-panel expanded [ngClass]="getMillCapacityClass(mill)">
+    <div class="planning-container">
+      <!-- Fixed Unassigned Column -->
+      <div class="fixed-column">
+        <mat-expansion-panel expanded>
           <mat-expansion-panel-header>
-            <mat-panel-description>
-              @if (getMillRemainingCapacity(mill) <= 0) {
-                <mat-chip color="warn">FULL</mat-chip>
-              }
-              @if (getMillRemainingCapacity(mill) > 0) {
-                <mat-chip>
-                  {{ mill.name }} | {{ getMillRemainingCapacity(mill) }} kg left
-                </mat-chip>
-              }
-            </mat-panel-description>
+            <mat-tab-nav-panel>
+              Réceptions Non Assignées ({{ unassignedReceptions.length }})
+            </mat-tab-nav-panel>
           </mat-expansion-panel-header>
 
           <div
-            class="drop-list"
-            [id]="'mill-list-' + i"
-            cdkDropList
-            [cdkDropListData]="mill.receptions"
-            [cdkDropListConnectedTo]="connectedDropLists"
             (cdkDropListDropped)="drop($event)"
             (cdkDropListEntered)="onDropListEntered($event)"
+            [cdkDropListConnectedTo]="connectedDropLists"
+            [cdkDropListData]="filteredReceptions"
+            cdkDropList
+            class="drop-list"
+            id="unassigned-list"
             role="list"
           >
-            @for (item of mill.receptions; track trackByItem($index, item)) {
+            @for (item of filteredReceptions; track trackByItem($index, item)) {
               @if (item.type === LOT) {
                 @let data = item.data ;
                 <div
@@ -186,7 +64,7 @@
                   cdkDrag
                   (cdkDragMoved)="onDragMove($event)"
                   [cdkDragData]="item"
-                  [attr.id]="'mill-' + i + '-item-' + data.id"
+                  [attr.id]="'item-' + data.id"
                   role="listitem"
                   (cdkDragStarted)="onDragStart($event)"
                   (cdkDragEnded)="onDragEnd($event)"
@@ -204,21 +82,35 @@
                   <div class="card-content">
                     <div class="flex space-between">
                       <div>
-                        {{ data.lotNumber }}
-                        <span>{{ data.oliveQuantity }} kg</span>
+                        <div class="lot-info">
+                          <strong>{{ data.lotNumber }}</strong>
+                          <span class="delivery-number">#{{ data.deliveryNumber }}</span>
+                        </div>
+                        <div class="quantity-info">
+                           @if (data.poidsNet) {
+                            <span class="quantity">Net : {{ data.poidsNet }} kg</span>
+                          }
+                        </div>
+                        <div class="details-info">
+                          @if (data.supplier) {
+                            <span class="supplier">Fournisseur : {{ data.supplier }}</span>
+                          }
+
+                          @if (data.oliveVariety) {
+                            <span class="variety">Variété : {{ data.oliveVariety }}</span>
+                          }
+                          @if (data.oliveType) {
+                            <span class="type">Type : {{ data.oliveType }}</span>
+                          }
+                          @if (data.sackCount) {
+                            <span class="sacks">Sacs : {{ data.sackCount }}</span>
+                          }
+                        </div>
                         @if (data.globalLotNumber) {
                           <span class="gl-badge">{{ data.globalLotNumber }}</span>
                         }
                         <small class="block text-xs text-gray-600">{{ data.deliveryDate | date: 'shortDate' }}</small>
                       </div>
-                      <div>
-                        <button mat-icon-button (click)="markAsCompleted(item)" class="complete-btn">
-                          <mat-icon>check_circle</mat-icon>
-                        </button>
-                      </div>
-                      @if (data.completed) {
-                        <mat-icon class="text-green-500">check_circle</mat-icon>
-                      }
                     </div>
                   </div>
                 </div>
@@ -230,7 +122,7 @@
                   cdkDrag
                   (cdkDragMoved)="onDragMove($event)"
                   [cdkDragData]="item"
-                  [attr.id]="'mill-' + i + '-item-' + data.globalLotNumber"
+                  [attr.id]="'item-' + data.globalLotNumber"
                   role="listitem"
                   (cdkDragStarted)="onDragStart($event)"
                   (cdkDragEnded)="onDragEnd($event)"
@@ -239,7 +131,7 @@
                     <div class="drag-handle" cdkDragHandle>
                       <mat-icon fontIcon="drag_indicator"></mat-icon>
                     </div>
-                    <mat-checkbox
+                     <mat-checkbox
                       class="select-box"
                       [(ngModel)]="selection[data.id]"
                       (change)="onSelectChange(item)"
@@ -248,30 +140,36 @@
                   <div class="card-content">
                     <div class="flex space-between">
                       <div>
-                        <strong>Global Lot: {{ data.globalLotNumber }}</strong>
-                        <br>
-                        <span>Total: {{ data.totalKg }} kg</span>
-                        <span class="gl-badge">Global Lot</span>
-                        <small class="block text-xs text-gray-600">Child
-                          Lots: {{ data.childLotNumbers.join(', ') }}</small>
+                        <!-- Global Lot Summary -->
+                        <div class="global-lot-summary">
+                          <div class="lot-info">
+                            <strong>{{ data.globalLotNumber }}</strong>
+                          </div>
+                            <div class="quantity-info">
+                              <span class="quantity">Net : {{ data.items | sum:'data.poidsNet' }} kg</span>
+                          </div>
+                           @if (data.completed) {
+                            <mat-icon class="text-green-500">check_circle</mat-icon>
+                          }
+                        </div>
+
+                        <!-- Child Lot Details -->
+                        <div class="child-lot-details">
+                          <div class="details-header">Liste des Lots :</div>
+                          <div class="child-lot-numbers">
+                             @for (childItem of data.items; track trackByItem($index, childItem)) {
+                                @let childData = childItem.data;
+                                <span class="child-lot-number">#{{ childData.lotNumber }}</span>@if (!$last){, }
+                             }
+                          </div>
+                        </div>
                       </div>
                       <div>
-                        <button mat-icon-button (click)="markAsCompleted(item)" class="complete-btn">
-                          <mat-icon>check_circle</mat-icon>
+                        <button  mat-icon-button  (click)="ungroupLot(data)">
+                          <mat-icon>call_split</mat-icon>
                         </button>
-                        <button mat-icon-button [matMenuTriggerFor]="lotMenu">
-                          <mat-icon>more_vert</mat-icon>
-                        </button>
-                        <mat-menu #lotMenu="matMenu">
-                          <button mat-menu-item (click)="ungroupLot(data)">
-                            <mat-icon>undo</mat-icon>
-                            Ungroup
-                          </button>
-                        </mat-menu>
+
                       </div>
-                      @if (data.completed) {
-                        <mat-icon class="text-green-500">check_circle</mat-icon>
-                      }
                     </div>
                   </div>
                 </div>
@@ -279,7 +177,156 @@
             }
           </div>
         </mat-expansion-panel>
-      }
+      </div>
+
+      <!-- Scrollable Mill Columns -->
+      <div #scrollContainer class="scrollable-columns">
+        @for (mill of mills; track mill; let i = $index) {
+          <mat-expansion-panel expanded>
+            <mat-expansion-panel-header>
+              <mat-panel-description>
+                {{ mill.name }}
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <div
+              class="drop-list"
+              [id]="'mill-list-' + i"
+              cdkDropList
+              [cdkDropListData]="mill.receptions"
+              [cdkDropListConnectedTo]="connectedDropLists"
+              (cdkDropListDropped)="drop($event)"
+              (cdkDropListEntered)="onDropListEntered($event)"
+              role="list"
+            >
+              @for (item of mill.receptions; track trackByItem($index, item)) {
+                @if (item.type === LOT) {
+                  @let data = item.data ;
+                  <div
+                    class="reception-card"
+                    cdkDrag
+                    (cdkDragMoved)="onDragMove($event)"
+                    [cdkDragData]="item"
+                    [attr.id]="'mill-' + i + '-item-' + data.id"
+                    role="listitem"
+                    (cdkDragStarted)="onDragStart($event)"
+                    (cdkDragEnded)="onDragEnd($event)"
+                  >
+                    <div class="side-controls">
+                      <div class="drag-handle" cdkDragHandle>
+                        <mat-icon fontIcon="drag_indicator"></mat-icon>
+                      </div>
+                      <mat-checkbox
+                        class="select-box"
+                        [(ngModel)]="selection[data.id]"
+                        (change)="onSelectChange(item)"
+                      ></mat-checkbox>
+                    </div>
+                    <div class="card-content">
+                      <div class="flex space-between">
+                        <div>
+                          <div class="lot-info">
+                            <strong>{{ data.lotNumber }}</strong>
+                            <span class="delivery-number">#{{ data.deliveryNumber }}</span>
+                          </div>
+                          <div class="quantity-info">
+
+                            @if (data.poidsNet) {
+                              <span class="quantity">Net : {{ data.poidsNet }} kg</span>                            }
+                          </div>
+                          <div class="details-info">
+                            @if (data.supplier) {
+                              <span class="supplier">Fournisseur : {{ data.supplier }}</span>
+                            }
+
+                            @if (data.oliveVariety) {
+                              <span class="variety">Variété : {{ data.oliveVariety }}</span>
+                            }
+                            @if (data.oliveType) {
+                              <span class="type">Type : {{ data.oliveType }}</span>
+                            }
+                            @if (data.sackCount) {
+                              <span class="sacks">Sacs : {{ data.sackCount }}</span>
+                            }
+                          </div>
+                          @if (data.globalLotNumber) {
+                            <span class="gl-badge">{{ data.globalLotNumber }}</span>
+                          }
+                          <small class="block text-xs text-gray-600">{{ data.deliveryDate | date: 'shortDate' }}</small>
+                        </div>
+                        <div>
+                          <button mat-icon-button (click)="markAsCompleted(item)" >
+                            <mat-icon class="text-green-500">check_circle</mat-icon>
+                          </button>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                }
+                @if (item.type === GLOBAL_LOT) {
+                  @let data = item.data ;
+                  <div
+                    class="reception-card flex"
+                    cdkDrag
+                    (cdkDragMoved)="onDragMove($event)"
+                    [cdkDragData]="item"
+                    [attr.id]="'mill-' + i + '-item-' + data.globalLotNumber"
+                    role="listitem"
+                    (cdkDragStarted)="onDragStart($event)"
+                    (cdkDragEnded)="onDragEnd($event)"
+                  >
+                    <div class="side-controls">
+                      <div class="drag-handle" cdkDragHandle>
+                        <mat-icon fontIcon="drag_indicator"></mat-icon>
+                      </div>
+                      <mat-checkbox
+                        class="select-box"
+                        [(ngModel)]="selection[data.id]"
+                        (change)="onSelectChange(item)"
+                      ></mat-checkbox>
+                    </div>
+                    <div class="card-content">
+                      <div class="flex space-between">
+                        <div>
+                          <div class="lot-info">
+                            <strong>{{ data.globalLotNumber }}</strong>
+                          </div>
+
+                               <div class="quantity-info">
+                                <span class="quantity">Net : {{ data.items | sum:'data.poidsNet' }} kg</span>
+                              </div>
+
+
+
+                          <div class="child-lot-details">
+                            <div class="details-header">Liste des Lots :</div>
+                            <div class="child-lot-numbers">
+                              @for (childItem of data.items; track trackByItem($index, childItem)) {
+                                @let childData = childItem.data;
+                                <span class="child-lot-number">#{{ childData.lotNumber }}</span>@if (!$last){, }
+                              }
+                            </div>
+                          </div> <small class="block text-xs text-gray-600">{{ data.deliveryDate | date: 'shortDate' }}</small>
+                        </div>
+                        <div>
+                          <button mat-icon-button (click)="markAsCompleted(item)" >
+                            <mat-icon class="text-green-500">check_circle</mat-icon>
+                          </button>
+                          <button  mat-icon-button  (click)="ungroupLot(data)">
+                            <mat-icon>call_split</mat-icon>
+                          </button>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                }
+              }
+            </div>
+          </mat-expansion-panel>
+        }
+      </div>
     </div>
   </app-card>
 </div>
