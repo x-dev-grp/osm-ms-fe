@@ -31,6 +31,17 @@ button:hover {
   flex-direction: column;
   min-height: 100%;
 
+  .rules-grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-end;
+    align-items: baseline;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
   .row {
     flex: 1;
     margin-bottom: 2rem;
@@ -43,82 +54,82 @@ button:hover {
     border: 1px solid #e0e0e0;
     border-radius: 8px;
     height: 100%;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
 
     &:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(0,0,0,0.15);
     }
-  }
 
-  .rule-header {
-    label {
+    .form-label {
       font-size: 1rem;
       font-weight: 600;
       color: #333;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    // Common styles for all form controls
+    .form-control,
+    .mat-form-field {
+      width: 100%;
       margin-bottom: 0.75rem;
-      display: block;
-    }
-  }
-
-  // Common styles for all form controls
-  .form-control,
-  .mat-form-field {
-    width: 100%;
-    margin-bottom: 0.25rem;
-    font-size: 0.95rem;
-  }
-
-  // Input styles
-  input[type="number"] {
-    height: 40px;
-    padding: 8px 12px;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-
-    &:focus {
-      border-color: #80bdff;
-      outline: 0;
-      box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
-    }
-  }
-
-  // Mat-form-field customization
-  ::ng-deep .mat-form-field {
-    .mat-form-field-wrapper {
-      padding-bottom: 0;
+      font-size: 0.95rem;
     }
 
-    .mat-form-field-flex {
-      background-color: #fff;
+    // Input styles
+    input[type="number"] {
+      height: 40px;
+      padding: 8px 12px;
+      border: 1px solid #ced4da;
       border-radius: 4px;
+      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+      &:focus {
+        border-color: #80bdff;
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+      }
     }
 
-    .mat-form-field-outline {
-      color: #ced4da;
+    // Mat-form-field customization
+    ::ng-deep .mat-form-field {
+      .mat-form-field-wrapper {
+        padding-bottom: 0;
+      }
+
+      .mat-form-field-flex {
+        background-color: #fff;
+        border-radius: 4px;
+      }
+
+      .mat-form-field-outline {
+        color: #ced4da;
+      }
+
+      .mat-form-field-infix {
+        padding: 0.5em 0;
+      }
+
+      .mat-select-value {
+        color: #495057;
+      }
     }
 
-    .mat-form-field-infix {
-      padding: 0.5em 0;
-    }
-
-    .mat-select-value {
-      color: #495057;
-    }
-  }
-
-  // Error messages
-  .error-messages {
-    margin-top: 0.25rem;
-    padding: 0;
-
-    small {
-      display: block;
-      color: #dc3545;
-      font-size: 0.75rem;
-      line-height: 1.2;
-      margin: 0;
+    // Error messages
+    .error-messages {
+      margin-top: 0.5rem;
       padding: 0;
+
+      small {
+        display: block;
+        color: #dc3545;
+        font-size: 0.75rem;
+        line-height: 1.2;
+        margin: 0;
+        padding: 0;
+      }
     }
   }
 
@@ -216,13 +227,13 @@ button:hover {
 // Mobile landscape (576px to 767px)
 @media (max-width: 767px) {
   .quality-form {
-    .row {
-      margin-bottom: 1rem;
+    .rules-grid {
+      gap: 1rem;
     }
 
     .rule-card {
       padding: 0.875rem;
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
     }
   }
 }
@@ -230,6 +241,10 @@ button:hover {
 // Mobile portrait (up to 575px)
 @media (max-width: 575px) {
   .quality-form {
+    .rules-grid {
+      gap: 0.75rem;
+    }
+
     .rule-card {
       padding: 0.75rem;
     }

@@ -34,7 +34,7 @@ const volumeFitsCuve = (component: OilReceptionFormComponent): ValidatorFn => {
   return (control: AbstractControl): ValidationErrors | null => {
     const storageUnit = control.get('storageUnit')?.value;
     const volume = control.get('oilQuantity')?.value as number;
-    
+
     if (!storageUnit || volume == null) return null;
 
     const available = storageUnit.maxCapacity - storageUnit.currentVolume;
@@ -222,7 +222,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     op.then((res) => {
       if (res?.success) {
         this.showToast(this.isEditing ? 'Réception huile mise à jour.' : 'Réception huile ajoutée.');
-        this.router.navigate(['/reception-huile']);
+        this.router.navigate(['/reception/reception-huile']);
       } else {
         this.showToast(res?.message || "Échec de l'opération.");
       }

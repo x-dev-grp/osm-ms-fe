@@ -1,13 +1,13 @@
 <app-card>
   <form *ngIf="dynamicForm && !isLoading" [formGroup]="dynamicForm" class="quality-form container-fluid">
-    <div class="row g-4">
+    <div class="rules-grid g-4">
       <div *ngFor="let control of dynamicForm.controls | keyvalue"
            [hidden]="control.key === 'testSensoriel' || control.key === 'classificationHuile'"
            class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
 
-        <div class="rule-card flex-fill p-3 border rounded">
+        <div class="rule-card flex-fill">
           <!-- Affichage du nom de la règle uniquement -->
-          <label [for]="control.key" class="form-label fw-bold mb-2 d-block">
+          <label [for]="control.key" class="form-label">
             {{ getRuleName(control.key) }}
           </label>
 
