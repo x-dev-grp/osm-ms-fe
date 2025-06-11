@@ -89,18 +89,6 @@ export const DashboardStore = signalStore(
           patchState(store, { searchData });
         }
       },
-      initializeWithData(endpoint: string, allFields: Field[], data: SearchResponse, fileName?: string): void {
-        patchState(store, {
-          endpoint: endpoint,
-          allFields: allFields,
-          filterFields: allFields.filter((field) => field.filterable).map((field) => ({ field, checked: field.defaultFilter ?? false })),
-          exportFields: allFields.filter((field) => field.exportable).map((field) => ({ field, checked: true })),
-          dataTableFields: allFields.filter((field) => field.dataTable),
-          fileName: fileName ?? 'default',
-          data: data,
-          loading: false
-        });
-      },
       export(exportType: string) {
         exportType=='pdf'?this.setExportPdfLoading(true):this.setExportExcelLoading(true);
         const fieldsToExport = store.checkedExportFields().map((field) =>{
@@ -148,17 +136,11 @@ export const DashboardStore = signalStore(
         ).subscribe();
 
       },
-      fetchData(){
-        store.searchTrigger$().pipe(
-            switchMap((searchData) => {
-              console.log('New search triggered with:', searchData);
-              if (!store.endpoint()) {
-                 return EMPTY;
-              }
-              return defer(() => {
-                this.setLoading(true);
-                return _searchService.search(searchData, store.endpoint());
-              }).pipe(
+      fetchData(searchData: SearchData) {
+         console.log('New search triggered with:', searchData);
+         this.setLoading(true);
+      _searchService.search(searchData, store.endpoint())
+             .pipe(
                 tap((response) => {
                   console.log('Data fetched:', response);
                   this.setData(response);
@@ -172,9 +154,8 @@ export const DashboardStore = signalStore(
                 finalize(() => {
                   this.setLoading(false);
                 })
-              );
-            })
-          ).subscribe();
+              ).subscribe();
+
       },
       fetchData2() {
         this.setLoading(true);
@@ -364,7 +345,6 @@ export const DashboardStore = signalStore(
   }),
   withHooks({
     onInit: (store) => {
-       store.fetchData();
       effect(() => {
         console.log('DashboardStore changed');
         const currentSearchData = store.searchData();
@@ -372,8 +352,8 @@ export const DashboardStore = signalStore(
         console.log('store.endpoint()', store.endpoint());
         if (store.endpoint() && currentSearchData) {
           console.log('Fetching data...');
-          //store.fetchData2().subscribe();
-          store.searchTrigger$().next(currentSearchData);
+          store.fetchData(currentSearchData);
+        //  store.searchTrigger$().next(currentSearchData);
         }
       });
 

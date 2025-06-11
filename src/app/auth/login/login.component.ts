@@ -79,23 +79,23 @@ export class LoginComponent implements OnInit {
         })
       )
       .subscribe({
-        next: (response: any) => {
-          if (response) {
-            this.errorMessage = null;
-            this.loading = false;
-            this.tokenService.setToken(response?.access_token);
-            this.tokenService.setRefreshToken(response?.refresh_token);
-            const decodedToken: any = this.tokenService.decodeToken();
-            if (decodedToken && decodedToken?.osmUser) {
-              const role: any = decodedToken?.role;
-              const permissions = decodedToken?.permissions;
-              let user: User = decodedToken?.osmUser;
-              user.role = role;
-              user.permissions = permissions;
-              this.authenticationService.setCurrentUserValue = user;
-            }
-            this.router.navigate(['/dashboard']);
+        next:(response: any) => {
+          if(response){
+          this.errorMessage=null
+          this.loading = false;
+          this.tokenService.setToken(response?.access_token);
+          this.tokenService.setRefreshToken(response?.refresh_token);
+          const decodedToken:any=this.tokenService.decodeToken();
+          if( decodedToken && decodedToken?.osmUser){
+            const role:any=decodedToken?.role;
+            const permissions=decodedToken?.authorities;
+            let user:User=decodedToken?.osmUser;
+            user.role=role;
+            user.permissions=permissions;
+            this.authenticationService.setCurrentUserValue=user;
           }
+          this.router.navigate(['/dashboard']);
+        }
         },
         error: (error) => {
           this.errorMessage = error?.error;

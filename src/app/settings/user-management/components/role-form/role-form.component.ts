@@ -71,7 +71,7 @@ export class RoleFormComponent implements OnInit {
            return{
                 id:p?.id,
                 permissionName:p?.permissionName,
-                category:p?.category,
+                entity:p?.entity,
                 module:p?.module
            } 
 

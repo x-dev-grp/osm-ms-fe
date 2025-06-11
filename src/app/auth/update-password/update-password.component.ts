@@ -179,7 +179,7 @@ export class UpdatePasswordComponent implements OnInit {
       const user: User = {
         ...decodedToken.osmUser,
         role: decodedToken.role,
-        permissions: decodedToken.permissions
+        permissions: decodedToken?.authorities
       };
       
       this.authService.setCurrentUserValue = user;

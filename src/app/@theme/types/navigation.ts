@@ -18,6 +18,9 @@ export interface NavigationItem {
   isMainParent?: boolean;
 
   children?: Navigation[];
+  modulePermission?: string;
+  ressourcePermission?: string;
+  permissions?: string[];
 }
 
 export interface Navigation extends NavigationItem {

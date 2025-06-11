@@ -12,7 +12,7 @@ import { tap } from 'rxjs';
 interface PermissionNode {
   id: string;
   permissionName: string;
-  type: 'category' | 'module' | 'permission';
+  type: 'entity' | 'module' | 'permission';
   children?: any[];
   module:string;
 }
@@ -20,7 +20,7 @@ export interface Permission {
   id: string;
   permissionName: string;
   module: string;
-  category: string;
+  entity: string;
 }
 
 @Component({
@@ -59,25 +59,25 @@ export class PermissionComponent implements OnInit,OnChanges {
 
   for (const perm of permissions) {
     // Group by category
-    if (!categoryMap.has(perm.category)) {
-      categoryMap.set(perm.category, {
-        id: perm.category,
-        permissionName: this.formatName(perm?.category),
-        type: 'category',
+    if (!categoryMap.has(perm.module)) {
+      categoryMap.set(perm.module, {
+        id: perm.module,
+        permissionName: this.formatName(perm?.module),
+        type: 'module',
         children: [],
         module:perm?.module
       });
     }
 
-    const categoryNode = categoryMap.get(perm.category)!;
+    const categoryNode = categoryMap.get(perm.module)!;
 
     // Group by module inside category
-    let moduleNode = categoryNode.children!.find(m => m.id === perm.module);
+    let moduleNode = categoryNode.children!.find(m => m.id === perm.entity);
     if (!moduleNode) {
       moduleNode = {
-        id: perm?.module,
-        permissionName: this.formatName(perm.module),
-        type: 'module',
+        id: perm?.entity,
+        permissionName: this.formatName(perm.entity),
+        type: 'entity',
         children: [],
         module:perm?.module
       };
@@ -88,7 +88,7 @@ export class PermissionComponent implements OnInit,OnChanges {
     moduleNode.children!.push({
       id:perm?.id,
       permissionName: perm?.permissionName,
-      category:perm?.category,
+      category:perm?.module,
       module:perm?.module,
       type: 'permission'
     });
@@ -216,8 +216,8 @@ private formatName(name: string): string {
  }
 
  getLevel(node: PermissionNode): number {
-   if (node.type === 'category') return 1;
-   if (node.type === 'module') return 2;
+   if (node.type === 'entity') return 2;
+   if (node.type === 'module') return 1;
    return 3; 
  }
  hasChild(_: number, node: PermissionNode): boolean {

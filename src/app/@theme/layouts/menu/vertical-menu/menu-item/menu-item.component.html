@@ -3,7 +3,7 @@
     <li
       [ngClass]="item().classes!"
       [routerLinkActive]="['active']"
-      matTooltip="{{ !isEnabled ? 'Logout and Login with Admin to view this page ' : '' }}"
+      matTooltip="{{ !isEnabled ? ('STANDARD.ACCESS_RESSOURCE_ERROR'|translate) : '' }}"
     >
       <a
         class="nav-link"
