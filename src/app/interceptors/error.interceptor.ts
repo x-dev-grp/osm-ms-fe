@@ -81,7 +81,7 @@ export class ErrorInterceptor implements HttpInterceptor {
             this._authService.logout();
           else
           this._snackBar.open("Server error", 'Fermer', {
-            duration:50000,
+            duration:3000,
             horizontalPosition: 'right',
             verticalPosition: 'top',
             panelClass: ['errorPanelClass'],

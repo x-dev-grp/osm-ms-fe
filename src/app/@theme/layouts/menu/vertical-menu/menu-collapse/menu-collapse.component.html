@@ -4,7 +4,7 @@
     class="nav-item coded-hasmenu"
     [routerLinkActive]="['active']"
     [ngClass]="{ disabled: !isEnabled }"
-    matTooltip="{{ !isEnabled ? 'Logout and Login with Admin to view this page ' : '' }}"
+    matTooltip="{{ !isEnabled ? ('STANDARD.ACCESS_RESSOURCE_ERROR'|translate) : '' }}"
   >
     <a [routerLinkActive]="['active']" class="nav-link" (click)="navCollapse($event)">
       <mat-icon *ngIf="item()!.icon" class="coded-micon">{{ item()!.icon }}</mat-icon>

@@ -59,7 +59,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   private themeConfig = inject(ThemeConfigService);
 // public props
   readonly sidebar = viewChild<MatDrawer>('sidebar');
-  menus: Navigation[] = osm_menus;
+  menus: Navigation[] = structuredClone( osm_menus);
   modeValue: MatDrawerMode = 'side';
   direction: string = 'ltr';
   currentApplicationVersion = environment.appVersion;
@@ -109,14 +109,76 @@ export class AdminComponent implements OnInit, AfterViewInit {
      * current login user role
      */
     const currentUser = this.authenticationService.currentUserValue;
-    const userRoles = currentUser?.role? [currentUser.role] : [Role.Admin];
-
+    const userRole = currentUser?.role? currentUser.role : Role.Admin;
+    const userPermissions = currentUser?.permissions || [];
+    // const permissionModules:string[] = Array.from(new Set(userPermissions?.map((p:string) => p.split(':')[0])));
+    // const permissionRessources:string[] = Array.from(new Set(userPermissions?.map((p:string)=> p.split(':')[1])));
+ 
     /**
      * Role base menu filtering
      */
-    this.menus = this.RoleBaseFilterMenu(osm_menus, userRoles);
+    if(userRole !== Role.Admin) 
+       this.menus = this.filterMenuByPermissions(this.menus, userPermissions);
   }
+filterMenuByPermissions(
+  menuItems: Navigation[],
+  userPermissions: string[]
+): Navigation[] {
+  const permissionSet = new Set(userPermissions);
 
+  const hasAccess = (item: Navigation): boolean => {
+    if (item.permissions) {
+      return item.permissions?.some((p:string) => permissionSet.has(p.toUpperCase()));
+    }
+
+    if (item.modulePermission || item.ressourcePermission) {
+      return Array.from(permissionSet)?.some((p:string) => {
+        const [module, resource] = p.split(':');
+        return (
+          (!item.modulePermission || item.modulePermission?.toUpperCase() === module) &&
+          (!item.ressourcePermission || item.ressourcePermission?.toUpperCase() === resource)
+        );
+      });
+    }
+
+    return true; 
+  };
+
+ const processItem = (
+    item: Navigation,
+    parentDisabled=false
+  ): Navigation => {
+    const copy: Navigation = { ...item };
+
+    const itemHasAccess = hasAccess(copy);
+    const isDisabled = parentDisabled || !itemHasAccess;
+    copy.disabled = isDisabled;
+
+    if (copy.children && copy.children.length > 0) {
+      copy.children = copy.children.map(child =>
+        processItem(child, isDisabled)
+      );
+    }
+
+    return copy;
+  };
+
+ return menuItems.map(item => processItem(item, false));
+
+}
+  RoleBaseFilterMenu(menus: Navigation[], userRoles: string[], parentRoles: string[] = [Role.Admin]): Navigation[] {
+    return menus.map((item) => {
+      // If item doesn't have a specific role, inherit roles from parent
+      const itemRoles = item.role ? item.role : parentRoles;
+      
+      // If item has children, recursively filter them, passing current item's roles as parentRoles
+      if (item.children) {
+        item.children = this.RoleBaseFilterMenu(item.children, userRoles, itemRoles);
+      }
+
+      return item; // Return the item whether it is visible or disabled
+    });
+  }
   ngAfterViewInit() {
     const cfg = this.themeConfig.loadConfig();
     this.themeConfig.applyConfig(cfg);
@@ -167,19 +229,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   // EXISTING METHODS (UNCHANGED)
   // ────────────────────────────────────
 
-  RoleBaseFilterMenu(menus: Navigation[], userRoles: string[], parentRoles: string[] = [Role.Admin]): Navigation[] {
-    return menus.map((item) => {
-      // If item doesn't have a specific role, inherit roles from parent
-      const itemRoles = item.role ? item.role : parentRoles;
 
-      // If item has children, recursively filter them, passing current item's roles as parentRoles
-      if (item.children) {
-        item.children = this.RoleBaseFilterMenu(item.children, userRoles, itemRoles);
-      }
-
-      return item; // Return the item whether it is visible or disabled
-    });
-  }
 
   private loadProfile(): void {
     this.companyProfileService.getProfile().subscribe(

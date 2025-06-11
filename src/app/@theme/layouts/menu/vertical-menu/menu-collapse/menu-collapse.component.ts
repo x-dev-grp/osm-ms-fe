@@ -69,28 +69,29 @@ export class MenuCollapseComponent implements OnInit {
     /**
      * current login user role
      */
-    const currentUserRole = this.authenticationService.currentUserValue?.role || Role.Admin;
-
+  //  const currentUserRole = this.authenticationService.currentUserValue?.role || Role.Admin;
+    const item = this.item();
+    this.isEnabled=item?.disabled? false : true;
     /**
      * items parent role
      */
-    const parentRoleValue = this.parentRole();
+    // const parentRoleValue = this.parentRole();
 
-    if (this.item()!.role && this.item()!.role!.length > 0) {
-      if (currentUserRole) {
-        const parentRole = this.parentRole();
-        const allowedFromParent =
-          this.item()!.isMainParent || (parentRole && parentRole.length > 0 && parentRole.includes(currentUserRole));
-        if (allowedFromParent) {
-          this.isEnabled = this.item()!.role!.includes(currentUserRole);
-        }
-      }
-    } else if (parentRoleValue && parentRoleValue.length > 0) {
-      // If item.role is empty, check parentRole
-      if (currentUserRole) {
-        this.isEnabled = parentRoleValue.includes(currentUserRole);
-      }
-    }
+    // if (this.item()!.role && this.item()!.role!.length > 0) {
+    //   if (currentUserRole) {
+    //     const parentRole = this.parentRole();
+    //     const allowedFromParent =
+    //       this.item()!.isMainParent || (parentRole && parentRole.length > 0 && parentRole.includes(currentUserRole));
+    //     if (allowedFromParent) {
+    //       this.isEnabled = this.item()!.role!.includes(currentUserRole);
+    //     }
+    //   }
+    // } else if (parentRoleValue && parentRoleValue.length > 0) {
+    //   // If item.role is empty, check parentRole
+    //   if (currentUserRole) {
+    //     this.isEnabled = parentRoleValue.includes(currentUserRole);
+    //   }
+    // }
   }
 
   // Method to handle the collapse of the navigation menu

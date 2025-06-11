@@ -9,15 +9,17 @@ export const osm_menus: Navigation[] = [
     id: 'navigation',
     title: 'Home',
     type: 'group',
-    icon: 'home',
+    icon: 'home', // Kept: Represents the "Home" group well
     role: [Role.Admin, Role.User],
+    modulePermission:'RECEPTION',
     children: [
       {
         id: 'Dashboard',
         title: 'Dashboard',
         type: 'collapse',
-        icon: 'dashboard',
+        icon: 'dashboard', // Kept: Suitable for "Dashboard"
         role: [Role.Admin, Role.User],
+        ressourcePermission: 'RECEPTION',
         children: [
           {
             id: 'default',
@@ -25,7 +27,8 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/dashboard',
             icon: 'space_dashboard',
-            breadcrumbs: false
+            breadcrumbs: false,
+            permissions: ['RECEPTION:RECEPTION:DELETE'],
           },
           {
             id: 'analytics',
@@ -311,8 +314,21 @@ export const osm_menus: Navigation[] = [
         title: 'Finance Reports',
         type: 'item',
         url: '/reports/finance',
-        icon: 'account_balance',
-        breadcrumbs: false
+        icon: 'account_balance', // Kept: Matches "Finance"
+      },
+      {
+        id: 'storageReports',
+        title: 'Storage Reports',
+        type: 'item',
+        url: '/reports/storage',
+        icon: 'warehouse', // Changed: Matches "Storage"
+      },
+      {
+        id: 'hrReports',
+        title: 'HR Reports',
+        type: 'item',
+        url: '/reports/hr',
+        icon: 'people', // Kept: Matches "HR"
       }
     ]
   }

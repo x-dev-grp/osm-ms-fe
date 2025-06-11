@@ -78,7 +78,13 @@
               </button>}
 
               <mat-menu #menu="matMenu">
-                <ng-container *ngFor="let action of (!config().actions?.statusMapping)?actions:mapActions(record)">
+                <!-- <ng-container *ngFor="let action of (!config().actions?.statusMapping)?actions:mapActions(record)">
+                  <button (click)="actionApply(action,record)" mat-menu-item>
+                    <mat-icon *ngIf="action?.icon" aria-hidden="true">{{ action.icon }}</mat-icon>
+                    <span>{{action?.label}}</span>
+                  </button>
+                </ng-container> -->
+                  <ng-container *ngFor="let action of record?.actions">
                   <button (click)="actionApply(action,record)" mat-menu-item>
                     <mat-icon *ngIf="action?.icon" aria-hidden="true">{{ action.icon }}</mat-icon>
                     <span>{{action?.label}}</span>

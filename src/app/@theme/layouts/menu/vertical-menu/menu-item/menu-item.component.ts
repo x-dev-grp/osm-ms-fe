@@ -37,26 +37,26 @@ export class MenuItemVerticalComponent implements OnInit {
      * menu items
      */
     const item = this.item();
-
+    this.isEnabled=item?.disabled? false : true;
     /**
      * items parent role
      */
-    const parentRoleValue = this.parentRole();
+    // const parentRoleValue = this.parentRole();
 
-    if (item.role && item.role.length > 0) {
-      if (CurrentUserRole) {
-        const parentRole = this.parentRole();
-        const allowedFromParent = item.isMainParent || (parentRole && parentRole.length > 0 && parentRole.includes(CurrentUserRole));
-        if (allowedFromParent) {
-          this.isEnabled = item.role.includes(CurrentUserRole);
-        }
-      }
-    } else if (parentRoleValue && parentRoleValue.length > 0) {
-      // If item.role is empty, check parentRole
-      if (CurrentUserRole) {
-        this.isEnabled = parentRoleValue.includes(CurrentUserRole);
-      }
-    }
+    // if (item.role && item.role.length > 0) {
+    //   if (CurrentUserRole) {
+    //     const parentRole = this.parentRole();
+    //     const allowedFromParent = item.isMainParent || (parentRole && parentRole.length > 0 && parentRole.includes(CurrentUserRole));
+    //     if (allowedFromParent) {
+    //       this.isEnabled = item.role.includes(CurrentUserRole);
+    //     }
+    //   }
+    // } else if (parentRoleValue && parentRoleValue.length > 0) {
+    //   // If item.role is empty, check parentRole
+    //   if (CurrentUserRole) {
+    //     this.isEnabled = parentRoleValue.includes(CurrentUserRole);
+    //   }
+    // }
   }
 
   // public method

@@ -1,5 +1,6 @@
 {
   "STANDARD":{
+    "ACCESS_RESSOURCE_ERROR": "You do not have access to this resource.",
     "BTNS":{
       "ADD": "Add",
       "EDIT": "Edit",
