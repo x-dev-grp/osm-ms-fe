@@ -19,8 +19,8 @@ import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
 import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
 import { OliveReceptionFormComponent } from './olive-reception-add/olive-reception-form.component';
 
-import { OLIVE_DELIVERY_DASHBOARD } from './OLIVE_DELIVERY_DASHBOARD';
-import jsPDF from 'jspdf';
+import {OLIVE_DELIVERY_DASHBOARD} from './OLIVE_DELIVERY_DASHBOARD';
+import {PdfGeneratorService} from "../../../shared/services/pdf-generator.service";
 
 @Component({
   selector: 'app-olive-reception',
@@ -34,7 +34,8 @@ import jsPDF from 'jspdf';
     MatCardModule,
     MatSortModule,
     SharedModule,
-    OsmDashboard
+    OsmDashboard,
+    OliveReceptionFormComponent
   ],
   templateUrl: './olive-reception.component.html',
   styleUrls: ['./olive-reception.component.scss']
@@ -54,6 +55,7 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
     private deliveryService: UnifiedDeliveryService,
     private snackBar: MatSnackBar,
     private router: Router,
+    private pdfService: PdfGeneratorService,
     private translate: TranslateService
   ) {}
 
@@ -111,7 +113,7 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
     // First row: Formulaire
     doc.setFillColor(200, 200, 200); // Light gray background for the first row
     doc.rect(headerTableLeft, currentY, headerTableWidth, headerCellHeight, 'F');
-    doc.text('Formulaire', headerTableLeft + headerColWidth, currentY + 5, { align: 'center' });
+    doc.text('Formulaire', headerTableLeft + headerColWidth, currentY + 5, {align: 'center'});
     currentY += headerCellHeight;
 
     // Second row: Bon De Réception and Référence
