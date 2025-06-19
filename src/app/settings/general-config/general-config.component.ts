@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -16,6 +16,7 @@ import { SharedModule } from '../../demo/shared/shared.module';
 import { BankAccount } from '../../finance/models/BankAccount';
 import { CompanyProfileService } from '../../shared/services/company-profile.service';
 import { CompanyProfile } from '../../shared/models/CompanyProfile';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-general-config',
@@ -33,7 +34,8 @@ import { CompanyProfile } from '../../shared/models/CompanyProfile';
     MatTooltipModule,
     MatCardModule,
     MatListModule,
-    SharedModule
+    SharedModule,
+    TranslateModule
   ],
   templateUrl: './general-config.component.html',
   styleUrl: './general-config.component.scss'
@@ -73,6 +75,7 @@ export class GeneralConfigComponent implements OnInit {
 
   bankAccounts: BankAccount[] = [];
   private profile: CompanyProfile;
+  private translate = inject(TranslateService);
 
   constructor(
     private fb: FormBuilder,
@@ -120,10 +123,10 @@ export class GeneralConfigComponent implements OnInit {
 
     this.companyProfileService.saveProfile(dto).subscribe({
       next: () => {
-        this.snackBar.open('Profile saved successfully', 'Close', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('GENERAL_CONFIG.MESSAGES.SAVE_SUCCESS'), 'Close', { duration: 3000 });
         this.loadProfile();
       },
-      error: () => this.snackBar.open('Save failed', 'Close', { duration: 3000 })
+      error: () => this.snackBar.open(this.translate.instant('GENERAL_CONFIG.MESSAGES.SAVE_ERROR'), 'Close', { duration: 3000 })
     });
   }
 
@@ -138,7 +141,7 @@ export class GeneralConfigComponent implements OnInit {
 
     const maxKb = 200 * 1024; // 200 KB
     if (file.size > maxKb) {
-      this.snackBar.open('Logo too large (max 200 KB)', 'Close', { duration: 3000 });
+      this.snackBar.open(this.translate.instant('GENERAL_CONFIG.MESSAGES.LOGO_TOO_LARGE'), 'Close', { duration: 3000 });
       return;
     }
 
@@ -212,7 +215,10 @@ export class GeneralConfigComponent implements OnInit {
           }
         }
       },
-      (err) => console.error('Error loading deliveries', err)
+      (error) => {
+        console.error('Error loading profile:', error);
+        this.snackBar.open(this.translate.instant('GENERAL_CONFIG.MESSAGES.LOAD_ERROR'), 'Close', { duration: 3000 });
+      }
     );
   }
 
@@ -223,7 +229,7 @@ export class GeneralConfigComponent implements OnInit {
       return;
     }
     if (file.size > maxBytes) {
-      this.snackBar.open('Logo too large (max 200 KB)', 'Close', { duration: 3000 });
+      this.snackBar.open(this.translate.instant('GENERAL_CONFIG.MESSAGES.LOGO_TOO_LARGE'), 'Close', { duration: 3000 });
       return;
     }
 

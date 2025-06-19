@@ -10,7 +10,7 @@
           "/favicon.ico",
           "/index.csr.html",
           "/index.html",
-          "/site.webmanifest",
+          "/manifest.webmanifest",
           "/*.css",
           "/*.js"
         ]

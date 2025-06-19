@@ -9,6 +9,7 @@ import { PricingComponent } from '../finance/pricing/pricing.component';
 import { StorageUnitsComponent } from './storage/storage.component';
 import { GenericTypeComponent } from './generic-type/generic-type.component';
 import { QualityControlRuleComponent } from './quality-control-rule/quality-control-rule.component';
+import { ApplicationConfigComponent } from './application-config/application-config.component';
 
 @NgModule({
   declarations: [],
@@ -22,7 +23,8 @@ import { QualityControlRuleComponent } from './quality-control-rule/quality-cont
     GeneralConfigComponent,
     QualityControlRuleComponent,
     PricingComponent,
-    GenericTypeComponent
+    GenericTypeComponent,
+    ApplicationConfigComponent
   ]
 })
 export class SettingsModule {}

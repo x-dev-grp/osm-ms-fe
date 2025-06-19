@@ -1,9 +1,11 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -26,18 +28,30 @@ import {
   MatTable
 } from '@angular/material/table';
 import { SharedModule } from './demo/shared/shared.module';
- import { SupplierComponent } from './reception/components/suppliers/suppliers.component';
- import { GenericTypeComponent } from './settings/generic-type/generic-type.component';
+import { SupplierComponent } from './reception/components/suppliers/suppliers.component';
+import { GenericTypeComponent } from './settings/generic-type/generic-type.component';
 import { QualityControlRuleComponent } from './settings/quality-control-rule/quality-control-rule.component';
-import { TranslateModule } from '@ngx-translate/core';
+
+// AoT requires an exported function for factories
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
 
 @NgModule({
   declarations: [],
   imports: [
-    AppRoutingModule, // Must explicitly import routing module
+    AppRoutingModule,
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
+    TranslateModule.forRoot({
+      defaultLanguage: 'en',
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    }),
     MatCardModule,
     MatInputModule,
     MatButtonModule,
@@ -46,7 +60,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatToolbarModule,
     ReactiveFormsModule,
     AppComponent,
-     MatDialogActions,
+    MatDialogActions,
     MatIcon,
     MatTable,
     MatDialogTitle,
@@ -65,12 +79,11 @@ import { TranslateModule } from '@ngx-translate/core';
     GenericTypeComponent,
     SupplierComponent,
     QualityControlRuleComponent,
-    TranslateModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production,
-      // Mise en cache dès la première visite (optionnel)
       registrationStrategy: 'registerWhenStable:30000'
-    }),],
+    }),
+  ],
   providers: [],
   bootstrap: []
 })

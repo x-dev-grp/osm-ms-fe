@@ -10,6 +10,7 @@ import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validatio
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { UnifiedDelivery } from '../../../../shared/models/UnifiedDelivery';
 import { OliveLotStatus } from '../../../../shared/models/OliveLotStatus';
 import { BaseType } from '../../../../shared/models/base-type';
@@ -20,6 +21,10 @@ import { SupplierTypeService } from '../../../../shared/services/supplier.servic
 import { TypeCategory } from '../../../../shared/models/type-category.enum';
 import { CardComponent } from '../../../../@theme/components/card/card.component';
 import { MatIcon } from '@angular/material/icon';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { FormsModule } from '@angular/forms';
+import { map, startWith } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 // Validator to ensure net weight does not exceed gross weight
 const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | null => {
@@ -41,7 +46,10 @@ const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | nu
     MatProgressSpinnerModule,
     ReactiveFormsModule,
     CardComponent,
-    MatIcon
+    MatIcon,
+    MatAutocompleteModule,
+    FormsModule,
+    TranslateModule
   ],
   templateUrl: './olive-reception-form.component.html',
   styleUrls: ['./olive-reception-form.component.scss']
@@ -51,7 +59,6 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
   isEditing = false;
   errorMessage: string | null = null;
   receptionForm: FormGroup;
-
   regions: BaseType[] = [];
   suppliers: SupplierType[] = [];
   oliveVarieties: BaseType[] = [];
@@ -59,7 +66,14 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
   operationTypes: BaseType[] = [];
   deliveries: UnifiedDelivery[] = [];
 
-  private subscriptions = new Subscription();
+  // Autocomplete filtered options
+  filteredRegions: Observable<BaseType[]>;
+  filteredSuppliers: Observable<SupplierType[]>;
+  filteredOliveVarieties: Observable<BaseType[]>;
+  filteredOliveTypes: Observable<BaseType[]>;
+  filteredOperationTypes: Observable<BaseType[]>;
+
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -68,14 +82,14 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     private supplierService: SupplierTypeService,
     private snackBar: MatSnackBar,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService
   ) {
     this.receptionForm = this.fb.group(
       {
         deliveryType: [{ value: 'OLIVE', disabled: true }, Validators.required],
         deliveryNumber: [{ value: '', disabled: true }, Validators.required],
         lotNumber: [{ value: '', disabled: true }, Validators.required],
-        globalLotNumber: [''],
         deliveryDate: [new Date(), Validators.required],
         region: [null, Validators.required],
         poidsBrute: [0, Validators.min(0)],
@@ -121,6 +135,9 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
         this.suppliers = suppliers?.success ? suppliers.data : [];
         this.deliveries = deliveries?.success ? deliveries.data : [];
 
+        // Set up autocomplete filters
+        this.setupAutocompleteFilters();
+
         // Set delivery and lot numbers for new receptions
         if (!this.isEditing) {
           const deliveryCount = this.deliveries.length;
@@ -135,8 +152,8 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
         if (delivery?.success && delivery.data) {
           this.patchForm(delivery.data[0]);
         } else if (this.isEditing) {
-          this.errorMessage = 'Erreur lors du chargement de la réception.';
-          this.showToast(this.errorMessage);
+          this.errorMessage = this.translate.instant('DELIVERIES.FORM.MESSAGES.RECEPTION_LOAD_ERROR');
+          this.showToast(this.errorMessage!);
           this.router.navigate(['/reception-olive']);
           return;
         }
@@ -147,8 +164,8 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
         this.loading = false;
       })
       .catch((error) => {
-        this.errorMessage = 'Erreur lors du chargement des données initiales.';
-        this.showToast(this.errorMessage);
+        this.errorMessage = this.translate.instant('DELIVERIES.FORM.MESSAGES.LOAD_ERROR');
+        this.showToast(this.errorMessage!);
         console.error('Initialization error:', error);
         this.loading = false;
         this.router.navigate(['/reception/reception-olive']);
@@ -156,43 +173,56 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
   // Save or update the reception
   async saveReception(): Promise<void> {
     if (this.receptionForm.invalid) {
-      this.showToast('Veuillez remplir tous les champs obligatoires.', 4000);
+      this.showToast(this.translate.instant('DELIVERIES.FORM.VALIDATION.FILL_REQUIRED'), 4000);
       return;
     }
 
     const formValue = this.receptionForm.getRawValue();
+
+    // Validate required references
     if (!formValue.region?.id) {
-      this.showToast('Veuillez sélectionner une région valide.', 4000);
+      this.showToast(this.translate.instant('DELIVERIES.FORM.VALIDATION.INVALID_REGION'), 4000);
       return;
     }
     if (!formValue.supplier?.id) {
-      this.showToast('Veuillez sélectionner un fournisseur valide.', 4000);
+      this.showToast(this.translate.instant('DELIVERIES.FORM.VALIDATION.INVALID_SUPPLIER'), 4000);
+      return;
+    }
+
+    // Validate numeric values
+    if (formValue.poidsBrute < 0 || formValue.poidsNet < 0) {
+      this.showToast(this.translate.instant('DELIVERIES.FORM.VALIDATION.POSITIVE_VALUE'), 4000);
+      return;
+    }
+
+    // Validate dates
+    if (!formValue.deliveryDate) {
+      this.showToast(this.translate.instant('DELIVERIES.FORM.VALIDATION.REQUIRED_DATE'), 4000);
       return;
     }
 
     const deliveryId = this.route.snapshot.paramMap.get('id');
-    const payload: any = {
-      id: this.isEditing && deliveryId !== 'new' ? deliveryId : undefined,
+    const payload: Partial<UnifiedDelivery> = {
+      id: this.isEditing && deliveryId ? deliveryId : undefined,
       deliveryType: 'OLIVE',
       deliveryNumber: formValue.deliveryNumber,
       lotNumber: formValue.lotNumber,
-      globalLotNumber: formValue.globalLotNumber,
-      deliveryDate: this.toISOString(formValue.deliveryDate),
+      deliveryDate: new Date(formValue.deliveryDate),
       region: formValue.region,
-      poidsBrute: formValue.poidsBrute,
-      poidsNet: formValue.poidsNet,
+      poidsBrute: Number(formValue.poidsBrute),
+      poidsNet: Number(formValue.poidsNet),
       matriculeCamion: formValue.matriculeCamion,
       etatCamion: formValue.etatCamion,
       supplier: formValue.supplier,
-      trtDate: this.toISOString(formValue.trtDate),
+      trtDate: formValue.trtDate ? new Date(formValue.trtDate) : null,
       oliveVariety: formValue.oliveVariety,
-      sackCount: formValue.sackCount,
+      sackCount: formValue.sackCount ? Number(formValue.sackCount) : null,
       oliveType: formValue.oliveType,
       status: OliveLotStatus.NEW,
       operationType: formValue.operationType,
@@ -202,17 +232,31 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     this.loading = true;
     try {
       const response = await (this.isEditing
-        ? this.deliveryService.updateUnifiedDelivery(payload).toPromise()
-        : this.deliveryService.createUnifiedDelivery(payload).toPromise());
+        ? this.deliveryService.updateUnifiedDelivery(payload as UnifiedDelivery).toPromise()
+        : this.deliveryService.createUnifiedDelivery(payload as UnifiedDelivery).toPromise());
 
       if (response?.success && response.data) {
-        this.showToast(this.isEditing ? 'Réception olive mise à jour.' : 'Réception olive ajoutée.');
+        this.showToast(
+          this.translate.instant(
+            this.isEditing ? 'DELIVERIES.FORM.MESSAGES.UPDATE_SUCCESS' : 'DELIVERIES.FORM.MESSAGES.SAVE_SUCCESS'
+          )
+        );
         this.router.navigate(['reception/reception-olive']);
       } else {
-        this.showToast(response?.message || "Échec de l'opération.");
+        const errorMessage = response?.message || this.translate.instant('DELIVERIES.FORM.MESSAGES.OPERATION_FAILED');
+        this.showToast(errorMessage);
       }
-    } catch (error) {
-      this.showToast(this.isEditing ? 'Erreur lors de la mise à jour.' : "Erreur lors de l'ajout.");
+    } catch (error: unknown) {
+      let errorMessage = this.translate.instant(
+        this.isEditing ? 'DELIVERIES.FORM.MESSAGES.UPDATE_ERROR' : 'DELIVERIES.FORM.MESSAGES.SAVE_ERROR'
+      );
+
+      if (error && typeof error === 'object' && 'status' in error && error.status === 400) {
+        const errorObj = error as { error?: { message?: string } };
+        errorMessage = errorObj.error?.message || this.translate.instant('DELIVERIES.FORM.MESSAGES.VALIDATION_ERROR');
+      }
+
+      this.showToast(errorMessage);
       console.error('Save error:', error);
     } finally {
       this.loading = false;
@@ -226,7 +270,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
 
   // Display toast notification
   private showToast(message: string, duration = 3000): void {
-    this.snackBar.open(message, 'Fermer', {
+    this.snackBar.open(message, this.translate.instant('STANDARD.BTNS.CANCEL'), {
       duration,
       horizontalPosition: 'right',
       verticalPosition: 'top',
@@ -247,7 +291,11 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
 
   // Patch form with delivery data
   private patchForm(d: UnifiedDelivery): void {
-    const parseDate = (value: any): Date | null => (value ? (value instanceof Date ? value : new Date(value)) : null);
+    const parseDate = (value: string | Date | null | undefined): Date | null => {
+      if (!value) return null;
+      return value instanceof Date ? value : new Date(value);
+    };
+
     this.receptionForm.patchValue({
       ...d,
       deliveryDate: parseDate(d.deliveryDate),
@@ -262,7 +310,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
 
   // Setup form subscriptions
   private setupFormSubscriptions(): void {
-    this.subscriptions.add(
+    this.subscriptions.push(
       this.receptionForm.get('oliveType')!.valueChanges.subscribe((oliveType: BaseType | null) => {
         const deliveryNumber = this.receptionForm.get('deliveryNumber')?.value || this.deliveries.length + 1;
         const lotNumber = this.generateLotNumber(oliveType, deliveryNumber);
@@ -270,7 +318,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       })
     );
 
-    this.subscriptions.add(
+    this.subscriptions.push(
       this.receptionForm.get('region')!.valueChanges.subscribe((region: BaseType | null) => {
         if (region?.name) {
           this.receptionForm.patchValue({ parcel: region.name }, { emitEvent: false });
@@ -289,5 +337,69 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
 
   onBack(): void {
     window.history.back();
+  }
+
+  private setupAutocompleteFilters(): void {
+    // Region filter
+    this.filteredRegions = this.receptionForm.get('region')!.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(this.regions, value, 'name'))
+    );
+
+    // Supplier filter
+    this.filteredSuppliers = this.receptionForm.get('supplier')!.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(this.suppliers, value, 'supplierInfo.name'))
+    );
+
+    // Olive variety filter
+    this.filteredOliveVarieties = this.receptionForm.get('oliveVariety')!.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(this.oliveVarieties, value, 'name'))
+    );
+
+    // Olive type filter
+    this.filteredOliveTypes = this.receptionForm.get('oliveType')!.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(this.oliveTypes, value, 'name'))
+    );
+
+    // Operation type filter
+    this.filteredOperationTypes = this.receptionForm.get('operationType')!.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(this.operationTypes, value, 'name'))
+    );
+  }
+
+  private _filter<T extends { name?: string; supplierInfo?: { name: string } }>(
+    items: T[],
+    value: string | T,
+    displayField: string
+  ): T[] {
+    if (!value || typeof value === 'object') {
+      return items;
+    }
+    const filterValue = value.toLowerCase();
+    return items.filter(item => {
+      const fieldValue = this._getNestedValue(item, displayField);
+      return fieldValue.toLowerCase().includes(filterValue);
+    });
+  }
+
+  private _getNestedValue<T extends Record<string, unknown>>(obj: T, path: string): string {
+    return path.split('.').reduce((acc, part) => {
+      if (acc && typeof acc === 'object') {
+        return (acc as Record<string, unknown>)[part];
+      }
+      return '';
+    }, obj as unknown) as string;
+  }
+
+  displayFn<T extends { name?: string; supplierInfo?: { name: string } }>(item: T): string {
+    if (!item) return '';
+    if (item.supplierInfo) {
+      return item.supplierInfo.name;
+    }
+    return item.name || '';
   }
 }

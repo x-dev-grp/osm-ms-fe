@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, inject, Renderer2 } from '@angular/core';
+import { Component, OnInit, ViewChild, inject, Renderer2, ChangeDetectorRef } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule }    from '@angular/material/button';
@@ -8,11 +8,12 @@ import { CommonModule }       from '@angular/common';
 import { SharedModule } from '../../demo/shared/shared.module';
 import { AbleProConfig } from '../../app-config';
 import { ThemeLayoutService } from '../../@theme/services/theme-layout.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 type ThemeMode = 'light' | 'dark' | 'auto';
 type LayoutType = 'vertical' | 'horizontal' | 'compact';
-type ThemeColor = 'blue-theme' | 'indigo-theme' | 'purple-theme' | 'pink-theme' | 
-                 'red-theme' | 'orange-theme' | 'yellow-theme' | 'green-theme' | 
+type ThemeColor = 'blue-theme' | 'indigo-theme' | 'purple-theme' | 'pink-theme' |
+                 'red-theme' | 'orange-theme' | 'yellow-theme' | 'green-theme' |
                  'teal-theme' | 'cyan-theme';
 
 interface ThemeConfig {
@@ -34,7 +35,8 @@ interface ThemeConfig {
     MatFormFieldModule,
     MatButtonModule,
     MatIconModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslateModule
   ],
   templateUrl: './application-config.component.html',
   styleUrls: ['./application-config.component.scss']
@@ -42,6 +44,8 @@ interface ThemeConfig {
 export class ApplicationConfigComponent implements OnInit {
   private renderer = inject(Renderer2);
   private themeService = inject(ThemeLayoutService);
+  private translate = inject(TranslateService);
+  private cdr = inject(ChangeDetectorRef);
 
   @ViewChild('drawer') drawer!: MatDrawer;
 
@@ -66,6 +70,16 @@ export class ApplicationConfigComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadThemeConfig();
+
+    // Subscribe to language changes
+    this.translate.onLangChange.subscribe(() => {
+      // Force view update when language changes
+      this.cdr.detectChanges();
+    });
+
+    // Set initial language
+    const currentLang = this.translate.currentLang || 'en';
+    this.translate.use(currentLang);
   }
 
   setLayouts(type: ThemeMode): void {
@@ -188,7 +202,8 @@ export class ApplicationConfigComponent implements OnInit {
       // Update AbleProConfig
       AbleProConfig.layout = this.layout;
       AbleProConfig.isDarkMode = this.layoutType;
-      AbleProConfig.theme_color = this.bodyColor;
+      AbleProConfig.theme_contrast = this.contrast;
+      AbleProConfig.menu_caption = this.caption;
       AbleProConfig.isRtlLayout = this.rtlLayout;
       AbleProConfig.isBox_container = this.boxLayouts;
       AbleProConfig.theme_contrast = this.contrast;
@@ -205,7 +220,7 @@ export class ApplicationConfigComponent implements OnInit {
       if (!json) return;
 
       const cfg = JSON.parse(json) as ThemeConfig;
-      
+
       // Update component state
       this.layoutType = cfg.layoutType;
       this.contrast = cfg.contrast;

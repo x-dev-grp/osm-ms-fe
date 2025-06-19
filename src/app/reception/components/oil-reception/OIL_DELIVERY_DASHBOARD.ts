@@ -4,7 +4,7 @@ import { SearchOperation } from '../../../shared/models/advanced-search/searchOp
 
 export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
   title: "Livraisons d'Huile",
-  titleTranslatePath: 'DELIVERIES.OIL_TITLE',
+  titleTranslatePath: 'OIL_RECEPTION.DASHBOARD.TITLE',
   baseURL: 'deliveries',
   searchEndpoint: 'production/deliveries',
   addNewItem: true,
@@ -16,12 +16,18 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
     order: 'DESC',
     searchData: {
       operation: SearchOperation.AND,
-      searchs: [],
-      search: {
-        deliveryType: {
-          equalValue: deliveryType.OIL
+      searchs: [
+        {
+          search: {
+            deliveryType: {
+              equalValue: deliveryType.OIL
+            },
+            hasQualityControl: {
+              equalValue: false
+            }
+          }
         }
-      }
+      ]
     }
   },
   /* ────────────────────────────────────────────────────────────── */
@@ -32,6 +38,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
     {
       name: 'deliveryNumber',
       label: 'N° Bon de réception',
+      labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.DELIVERY_NUMBER',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -42,6 +49,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
     {
       name: 'lotNumber',
       label: 'N° Lot',
+      labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.LOT_NUMBER',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -52,6 +60,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
     {
       name: 'globalLotNumber',
       label: 'N° Lot Global',
+      labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.GLOBAL_LOT_NUMBER',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -62,6 +71,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
     {
       name: 'deliveryDate',
       label: 'Date de livraison',
+      labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.DELIVERY_DATE',
       attributeType: AttributeType.date,
       fieldType: FieldType.date,
       exportable: true,
@@ -73,6 +83,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
     {
       name: 'supplier.supplierInfo',
       label: 'Fournisseur',
+      labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.SUPPLIER',
       attributeType: AttributeType.object,
       fieldType: FieldType.text,
       exportable: true,
@@ -84,6 +95,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
     {
       name: 'region',
       label: 'Région',
+      labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.REGION',
       attributeType: AttributeType.object,
       fieldType: FieldType.text,
       exportable: true,
@@ -96,6 +108,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
     {
       name: 'oilQuantity',
       label: 'Qté huile (L)',
+      labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.OIL_QUANTITY',
       attributeType: AttributeType.number,
       fieldType: FieldType.number,
       exportable: true,
@@ -106,6 +119,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
     {
       name: 'unitPrice',
       label: 'Prix unitaire (€/L)',
+      labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.UNIT_PRICE',
       attributeType: AttributeType.number,
       fieldType: FieldType.number,
       exportable: true,
@@ -116,6 +130,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
     {
       name: 'price',
       label: 'Prix total (€)',
+      labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.TOTAL_PRICE',
       attributeType: AttributeType.number,
       fieldType: FieldType.number,
       exportable: true,
@@ -127,6 +142,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
     {
       name: 'oilType',
       label: "Type d'huile",
+      labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.OIL_TYPE',
       attributeType: AttributeType.object,
       fieldType: FieldType.text,
       exportable: true,
@@ -138,6 +154,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
     {
       name: 'oilVariety',
       label: "Variété d'huile",
+      labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.OIL_VARIETY',
       attributeType: AttributeType.object,
       fieldType: FieldType.text,
       exportable: true,
@@ -150,6 +167,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
     {
       name: 'matriculeCamion',
       label: 'Matricule camion',
+      labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.TRUCK_PLATE',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -160,6 +178,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
     {
       name: 'status',
       label: 'Statut',
+      labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.STATUS',
       attributeType: AttributeType.string,
       fieldType: FieldType.select,
       exportable: true,
@@ -167,11 +186,11 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       dataTable: true,
       filterable: true,
       options: [
-        { label: 'Nouveau', value: 'NEW' },
-        { label: 'En cours', value: 'IN_PROGRESS' },
-        { label: 'Terminé', value: 'COMPLETED' },
-        { label: 'Refusé', value: 'REFUSED' },
-        { label: 'Annulé', value: 'CANCELLED' }
+        { label: 'Nouveau', value: 'NEW', labelTranslatePath: 'DELIVERIES.STATUS.NEW' },
+        { label: 'En cours', value: 'IN_PROGRESS', labelTranslatePath: 'DELIVERIES.STATUS.IN_PROGRESS' },
+        { label: 'Terminé', value: 'COMPLETED', labelTranslatePath: 'DELIVERIES.STATUS.COMPLETED' },
+        { label: 'Refusé', value: 'REFUSED', labelTranslatePath: 'DELIVERIES.STATUS.REFUSED' },
+        { label: 'Annulé', value: 'CANCELLED', labelTranslatePath: 'DELIVERIES.STATUS.CANCELLED' }
       ]
     }
   ],

@@ -295,26 +295,25 @@ export class SupplierComponent implements OnInit, OnDestroy {
     return option.id === value.id;
   };
 
-  handleAction(event: { row: SupplierType; action: Action }): void {
-    switch (event.action.value) {
-      case 'CONSULTER':
+  handleAction(event: { row: SupplierType; action: string }): void {
+    const { row, action } = event;
+    switch (action) {
+      case 'READ':
+        localStorage.setItem('selectedSupplierId', event.row.id!);
+        this.router.navigate(['/reception/fournisseur/details']);
+        break;
+      case 'UPDATE':
         if (event.row.id) {
-          this.router.navigate(['/reception/fournisseur/details', event.row.id]);
+          this.router.navigate(['/reception/fournisseur/edit', event.row.id]);
         }
         break;
-      case 'MODIFIER':
-        if (event.row.id) {
-          this.router.navigate(['/reception/fournisseur', event.row.id]);
-        }
-        break;
-      case 'SUPPRIMER':
+      case 'DELETE':
         if (event.row.id) {
           this.deleteRecord(event.row.id);
         }
         break;
-      case 'AJOUTER':
-        this.router.navigate(['/reception/fournisseur/new']);
-        break;
+      default:
+        console.warn('Unknown action:', action);
     }
   }
 

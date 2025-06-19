@@ -6,6 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 
 import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
 import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
@@ -15,7 +16,7 @@ import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
   standalone: true,
   templateUrl: './details-reception.component.html',
   styleUrl: './details-reception.component.scss',
-  imports: [CommonModule, DatePipe, MatCardModule, MatDividerModule, MatIconModule, MatButtonModule]
+  imports: [CommonModule, DatePipe, MatCardModule, MatDividerModule, MatIconModule, MatButtonModule, TranslateModule]
 })
 export class DetailsReceptionComponent implements OnInit {
   receptionId!: string | null;
@@ -26,7 +27,8 @@ export class DetailsReceptionComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private deliveryService: UnifiedDeliveryService
+    private deliveryService: UnifiedDeliveryService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -42,19 +44,19 @@ export class DetailsReceptionComponent implements OnInit {
           if (response.success && response.data) {
             this.deliveryData = response.data[0];
           } else {
-            this.errorMessage = 'Erreur lors du chargement des détails.';
-            this.snackBar.open(this.errorMessage, 'Fermer', { duration: 3000 });
+            this.errorMessage = this.translate.instant('DELIVERIES.DETAILS.MESSAGES.LOAD_ERROR');
+            this.snackBar.open(this.errorMessage!, this.translate.instant('STANDARD.BTNS.CLOSE'), { duration: 3000 });
           }
           this.loading = false;
         },
         error: () => {
-          this.errorMessage = 'Erreur lors du chargement des données.';
-          this.snackBar.open(this.errorMessage, 'Fermer', { duration: 3000 });
+          this.errorMessage = this.translate.instant('DELIVERIES.DETAILS.MESSAGES.DATA_ERROR');
+          this.snackBar.open(this.errorMessage!, this.translate.instant('STANDARD.BTNS.CLOSE'), { duration: 3000 });
           this.loading = false;
         }
       });
     } else {
-      this.errorMessage = 'ID de réception invalide.';
+      this.errorMessage = this.translate.instant('DELIVERIES.DETAILS.MESSAGES.INVALID_ID');
       this.loading = false;
     }
   }

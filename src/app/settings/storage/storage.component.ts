@@ -22,6 +22,7 @@ import { AttributeType, DashboardConfig, FieldType } from '../../shared/modules/
 import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
 import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
 import { Router } from '@angular/router';
+import { UnifiedDelivery } from '../../shared/models/UnifiedDelivery';
 
 @Component({
   selector: 'app-storage',
@@ -228,14 +229,14 @@ export class StorageUnitsComponent implements OnInit {
       }
     });
   }
-
-  handleAction(event: { action: { value: string }; row: StorageUnitDto }): void {
-    switch (event.action.value?.toUpperCase()) {
-      case 'VIEW':
+  e: { row: UnifiedDelivery; action: string }
+  handleAction(event: { row: StorageUnitDto; action: string } ): void {
+    switch (event.action) {
+      case 'READ':
         this.router.navigate(['/settings/storage', event.row.id, 'view']);
         break;
 
-      case 'EDIT':
+      case 'UPDATE':
         this.router.navigate(['/settings/storage', event.row.id, 'edit']);
         break;
 

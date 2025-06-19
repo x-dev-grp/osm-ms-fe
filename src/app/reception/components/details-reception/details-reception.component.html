@@ -11,71 +11,70 @@
 <!-- Details Card -->
 <mat-card *ngIf="deliveryData && !loading" class="details-card">
   <div class="card-header">
-    <button mat-icon-button (click)="onBack()" aria-label="Retour" matTooltip="Retour à la liste">
+    <button mat-icon-button (click)="onBack()" [title]="translate.instant('DELIVERIES.DETAILS.BUTTONS.BACK')">
       <mat-icon>arrow_back</mat-icon>
     </button>
-    <mat-card-title>Détails de la réception</mat-card-title>
+    <mat-card-title>{{ translate.instant('DELIVERIES.DETAILS.TITLE') }}</mat-card-title>
   </div>
 
   <mat-card-content class="scrollable-content">
-
     <!-- General Information Section -->
     <div class="section">
-      <h3 class="section-title">📦 Informations générales</h3>
+      <h3 class="section-title">{{ translate.instant('DELIVERIES.DETAILS.SECTIONS.GENERAL_INFO') }}</h3>
       <div class="grid-row">
         <div class="grid-item">
-          <strong>Numéro de réception :</strong> {{ deliveryData.deliveryNumber }}
+          <strong>{{ translate.instant('DELIVERIES.FIELDS.DELIVERY_NUMBER') }} :</strong> {{ deliveryData.deliveryNumber }}
         </div>
         <div class="grid-item">
-          <strong>Type :</strong> {{ deliveryData.deliveryType }}
+          <strong>{{ translate.instant('DELIVERIES.FIELDS.DELIVERY_TYPE') }} :</strong> {{ deliveryData.deliveryType }}
         </div>
       </div>
       <div class="grid-row">
         <div class="grid-item">
-          <strong>Lot :</strong> {{ deliveryData.lotNumber }}
+          <strong>{{ translate.instant('DELIVERIES.FIELDS.LOT_NUMBER') }} :</strong> {{ deliveryData.lotNumber }}
         </div>
         <div class="grid-item">
-          <strong>Date :</strong> {{ deliveryData.deliveryDate | date: 'short' }}
-        </div>
-      </div>
-      <div class="grid-row">
-        <div class="grid-item">
-          <strong>Région :</strong> {{ deliveryData.region?.name || 'Non renseigné' }}
-        </div>
-        <div class="grid-item">
-          <strong>Lot global :</strong> {{ deliveryData.globalLotNumber || 'Non renseigné' }}
+          <strong>{{ translate.instant('DELIVERIES.FIELDS.DELIVERY_DATE') }} :</strong> {{ deliveryData.deliveryDate | date: 'short' }}
         </div>
       </div>
       <div class="grid-row">
         <div class="grid-item">
-          <strong>Poids brut :</strong> {{ deliveryData.poidsBrute || 0 }} kg
+          <strong>{{ translate.instant('DELIVERIES.FIELDS.REGION') }} :</strong> {{ deliveryData.region?.name || translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED') }}
         </div>
         <div class="grid-item">
-          <strong>Poids net :</strong> {{ deliveryData.poidsNet || 0 }} kg
-        </div>
-      </div>
-      <div class="grid-row">
-        <div class="grid-item">
-          <strong>Matricule camion :</strong> {{ deliveryData.matriculeCamion || 'Non renseigné' }}
-        </div>
-        <div class="grid-item">
-          <strong>État du camion :</strong> {{ deliveryData.etatCamion || 'Non renseigné' }}
+          <strong>{{ translate.instant('DELIVERIES.FIELDS.GLOBAL_LOT_NUMBER') }} :</strong> {{ deliveryData.globalLotNumber || translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED') }}
         </div>
       </div>
       <div class="grid-row">
         <div class="grid-item">
-          <strong>Sacs :</strong> {{ deliveryData.sackCount || 0 }}
+          <strong>{{ translate.instant('DELIVERIES.FIELDS.GROSS_WEIGHT') }} :</strong> {{ deliveryData.poidsBrute || 0 }} kg
         </div>
         <div class="grid-item">
-          <strong>Rendement :</strong> {{ deliveryData.rendement || 0 }} %
+          <strong>{{ translate.instant('DELIVERIES.FIELDS.NET_WEIGHT') }} :</strong> {{ deliveryData.poidsNet || 0 }} kg
         </div>
       </div>
       <div class="grid-row">
         <div class="grid-item">
-          <strong>Quantité d’olives :</strong> {{ deliveryData.oliveQuantity || 0 }} kg
+          <strong>{{ translate.instant('DELIVERIES.FIELDS.TRUCK_PLATE') }} :</strong> {{ deliveryData.matriculeCamion || translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED') }}
         </div>
         <div class="grid-item">
-          <strong>Parcelle :</strong> {{ deliveryData.parcel || 'Non renseigné' }}
+          <strong>{{ translate.instant('DELIVERIES.FIELDS.TRUCK_STATE') }} :</strong> {{ deliveryData.etatCamion || translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED') }}
+        </div>
+      </div>
+      <div class="grid-row">
+        <div class="grid-item">
+          <strong>{{ translate.instant('DELIVERIES.FIELDS.SACK_COUNT') }} :</strong> {{ deliveryData.sackCount || 0 }}
+        </div>
+        <div class="grid-item">
+          <strong>{{ translate.instant('DELIVERIES.FIELDS.YIELD') }} :</strong> {{ deliveryData.rendement || 0 }} %
+        </div>
+      </div>
+      <div class="grid-row">
+        <div class="grid-item">
+          <strong>{{ translate.instant('DELIVERIES.FIELDS.OLIVE_QUANTITY') }} :</strong> {{ deliveryData.oliveQuantity || 0 }} kg
+        </div>
+        <div class="grid-item">
+          <strong>{{ translate.instant('DELIVERIES.FIELDS.PARCEL') }} :</strong> {{ deliveryData.parcel || translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED') }}
         </div>
       </div>
     </div>
@@ -84,33 +83,33 @@
 
     <!-- Supplier Section -->
     <div class="section">
-      <h3 class="section-title">👤 Fournisseur</h3>
+      <h3 class="section-title">{{ translate.instant('DELIVERIES.DETAILS.SECTIONS.SUPPLIER') }}</h3>
       <div class="grid-row">
         <div class="grid-item">
-          <strong>Nom :</strong>
+          <strong>{{ translate.instant('DELIVERIES.FIELDS.SUPPLIER_NAME') }} :</strong>
           {{
             (deliveryData.supplier?.supplierInfo?.name || '') + ' ' +
-            (deliveryData.supplier?.supplierInfo?.lastname || '') || 'Non renseigné'
+            (deliveryData.supplier?.supplierInfo?.lastname || '') || translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED')
           }}
         </div>
         <div class="grid-item">
-          <strong>Téléphone :</strong> {{ deliveryData.supplier?.supplierInfo?.phone || 'Non renseigné' }}
+          <strong>{{ translate.instant('DELIVERIES.FIELDS.SUPPLIER_PHONE') }} :</strong> {{ deliveryData.supplier?.supplierInfo?.phone || translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED') }}
         </div>
       </div>
       <div class="grid-row">
         <div class="grid-item">
-          <strong>Email :</strong> {{ deliveryData.supplier?.supplierInfo?.email || 'Non renseigné' }}
+          <strong>{{ translate.instant('DELIVERIES.FIELDS.SUPPLIER_EMAIL') }} :</strong> {{ deliveryData.supplier?.supplierInfo?.email || translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED') }}
         </div>
         <div class="grid-item">
-          <strong>Adresse :</strong> {{ deliveryData.supplier?.supplierInfo?.address || 'Non renseigné' }}
+          <strong>{{ translate.instant('DELIVERIES.FIELDS.SUPPLIER_ADDRESS') }} :</strong> {{ deliveryData.supplier?.supplierInfo?.address || translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED') }}
         </div>
       </div>
       <div class="grid-row">
         <div class="grid-item">
-          <strong>RIB :</strong> {{ deliveryData.supplier?.supplierInfo?.rib || 'Non renseigné' }}
+          <strong>{{ translate.instant('DELIVERIES.FIELDS.SUPPLIER_RIB') }} :</strong> {{ deliveryData.supplier?.supplierInfo?.rib || translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED') }}
         </div>
         <div class="grid-item">
-          <strong>Banque :</strong> {{ deliveryData.supplier?.supplierInfo?.bankName || 'Non renseigné' }}
+          <strong>{{ translate.instant('DELIVERIES.FIELDS.SUPPLIER_BANK') }} :</strong> {{ deliveryData.supplier?.supplierInfo?.bankName || translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED') }}
         </div>
       </div>
     </div>
@@ -119,13 +118,13 @@
 
     <!-- Olive Variety Section -->
     <div class="section">
-      <h3 class="section-title">🌿 Variété d’olive</h3>
+      <h3 class="section-title">{{ translate.instant('DELIVERIES.DETAILS.SECTIONS.OLIVE_INFO') }}</h3>
       <div class="grid-row">
         <div class="grid-item">
-          <strong>Variété :</strong> {{ deliveryData.oliveVariety?.name || 'Non renseigné' }}
+          <strong>{{ translate.instant('DELIVERIES.FIELDS.OLIVE_VARIETY') }} :</strong> {{ deliveryData.oliveVariety?.name || translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED') }}
         </div>
         <div class="grid-item">
-          <strong>Type :</strong> {{ deliveryData.oliveType?.name || 'Non renseigné' }}
+          <strong>{{ translate.instant('DELIVERIES.FIELDS.OLIVE_TYPE') }} :</strong> {{ deliveryData.oliveType?.name || translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED') }}
         </div>
       </div>
     </div>

@@ -8,10 +8,11 @@ import { PwaService } from './services/pwa.service';
 
 // Angular material
 import { MatProgressBar } from '@angular/material/progress-bar';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, MatProgressBar],
+  imports: [RouterOutlet, MatProgressBar, TranslateModule],
   templateUrl: './app.component.html',
   standalone: true,
   styleUrls: ['./app.component.scss']
@@ -21,13 +22,23 @@ export class AppComponent implements OnInit {
   activeRoute = inject(ActivatedRoute);
   private productIdService = inject(BuyNowLinkService);
   private pwaService = inject(PwaService);
+  private translate = inject(TranslateService);
 
   // public props
   isSpinnerVisible = true;
   mainUrl: string;
 
+  constructor() {
+    // Initialize translations
+    this.translate.addLangs(['en', 'fr']);
+    this.translate.setDefaultLang('en');
+
+    // Get browser language or use default
+    const browserLang = this.translate.getBrowserLang();
+    this.translate.use(browserLang?.match(/en|fr/) ? browserLang : 'en');
+  }
+
   ngOnInit() {
-    // Use ngOnInit instead of ngAfterViewInit
     this.router.events.subscribe(
       (event) => {
         if (event instanceof NavigationStart) {

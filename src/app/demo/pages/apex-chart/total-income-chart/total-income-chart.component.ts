@@ -11,6 +11,7 @@ import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
   selector: 'app-total-income-chart',
   imports: [SharedModule, NgApexchartsModule],
   templateUrl: './total-income-chart.component.html',
+  standalone: true,
   styleUrl: './total-income-chart.component.scss'
 })
 export class TotalIncomeChartComponent {

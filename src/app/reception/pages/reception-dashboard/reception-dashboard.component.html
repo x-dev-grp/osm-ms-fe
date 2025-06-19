@@ -1,0 +1,92 @@
+<!-- DASHBOARD KPI CARDS -->
+<div class="dashboard-kpis row">
+  <div class="col-md-6 col-xxl-4">
+    <app-earning-chart iconImage="#wallet-2" [headerTitle]="'DASHBOARD.KPIS.TOTAL_RECEPTIONS' | translate" [earningValue]="totalReceptions.toString()" background="bg-primary-50" textColor="text-primary-500" [color]="primaryColor" percentageValue="" [data]="receptionsPerDay"></app-earning-chart>
+  </div>
+  <div class="col-md-6 col-xxl-4">
+    <app-earning-chart iconImage="#calendar" [headerTitle]="'DASHBOARD.KPIS.PENDING_RECEPTIONS' | translate" [earningValue]="pendingReceptions.toString()" background="bg-warning-50" textColor="text-warning-500" [color]="warningColor" percentageValue="" [data]="receptionsPerDay"></app-earning-chart>
+  </div>
+  <div class="col-md-6 col-xxl-4">
+    <app-earning-chart iconImage="#book" [headerTitle]="'DASHBOARD.KPIS.COMPLETED_RECEPTIONS' | translate" [earningValue]="completedReceptions.toString()" background="bg-success-50" textColor="text-success-500" [color]="successColor" percentageValue="" [data]="receptionsPerDay"></app-earning-chart>
+  </div>
+  <div class="col-md-6 col-xxl-2">
+    <app-earning-chart iconImage="#coludChange" [headerTitle]="'DASHBOARD.KPIS.TOTAL_VOLUME' | translate" [earningValue]="totalVolume.toFixed(2)" background="bg-info-50" textColor="text-info-500" [color]="infoColor" percentageValue=""[data]="[]"></app-earning-chart>
+  </div>
+  <div class="col-md-6 col-xxl-2">
+    <app-earning-chart iconImage="#wallet-2" [headerTitle]="'DASHBOARD.KPIS.AVG_VOLUME' | translate" [earningValue]="avgVolumePerReception.toFixed(2)" background="bg-primary-50" textColor="text-primary-500" [color]="primaryColor" percentageValue=""[data]="[]"></app-earning-chart>
+  </div>
+  <div class="col-md-6 col-xxl-2">
+    <app-earning-chart iconImage="#wallet-2" [headerTitle]="'DASHBOARD.KPIS.AVG_UNIT_PRICE' | translate" [earningValue]="avgUnitPrice.toFixed(2)" background="bg-info-50" textColor="text-info-500" [color]="infoColor" percentageValue=""[data]="[]"></app-earning-chart>
+  </div>
+  <div class="col-md-6 col-xxl-2">
+    <app-earning-chart iconImage="#wallet-2" [headerTitle]="'DASHBOARD.KPIS.TOTAL_PAID' | translate" [earningValue]="totalPaidAmount.toFixed(2)" background="bg-success-50" textColor="text-success-500" [color]="successColor" percentageValue=""[data]="[]"></app-earning-chart>
+  </div>
+  <div class="col-md-6 col-xxl-2">
+    <app-earning-chart iconImage="#wallet-2" [headerTitle]="'DASHBOARD.KPIS.TOTAL_UNPAID' | translate" [earningValue]="totalUnpaidAmount.toFixed(2)" background="bg-warning-50" textColor="text-warning-500" [color]="warningColor" percentageValue=""[data]="[]"></app-earning-chart>
+  </div>
+  <div class="col-md-6 col-xxl-2">
+    <app-earning-chart iconImage="#wallet-2" [headerTitle]="'DASHBOARD.KPIS.UNIQUE_SUPPLIERS' | translate" [earningValue]="uniqueSuppliers.toString()" background="bg-secondary-50" textColor="text-secondary-500" [color]="['var(--secondary-500)']" percentageValue=""[data]="[]"></app-earning-chart>
+  </div>
+</div>
+
+<!-- DASHBOARD ANALYTICS SECTION -->
+<div class="dashboard-analytics row">
+  <!-- Left Column: Main Analytics -->
+  <div class="col-lg-8">
+    <app-card [cardTitle]="'DASHBOARD.ANALYTICS.RECEPTION_TREND.TITLE' | translate">
+      <div class="d-flex justify-content-between mb-3">
+        <div class="btn-group">
+          <button mat-button [class.active]="currentReceptionTrendView === 'monthly'" (click)="updateReceptionTrendView('monthly')">{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.MONTHLY' | translate }}</button>
+          <button mat-button [class.active]="currentReceptionTrendView === 'weekly'" (click)="updateReceptionTrendView('weekly')">{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.WEEKLY' | translate }}</button>
+          <button mat-button [class.active]="currentReceptionTrendView === 'daily'" (click)="updateReceptionTrendView('daily')">{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.DAILY' | translate }}</button>
+        </div>
+        <div class="btn-group">
+          <button mat-button [class.active]="currentChartSize === 'small'" (click)="updateChartSize('small')">
+            <mat-icon>crop_square</mat-icon>
+          </button>
+          <button mat-button [class.active]="currentChartSize === 'medium'" (click)="updateChartSize('medium')">
+            <mat-icon>crop_landscape</mat-icon>
+          </button>
+          <button mat-button [class.active]="currentChartSize === 'large'" (click)="updateChartSize('large')">
+            <mat-icon>crop_169</mat-icon>
+          </button>
+        </div>
+      </div>
+      <apx-chart [series]="receptionsTrendChartOptions.series" [chart]="receptionsTrendChartOptions.chart" [xaxis]="receptionsTrendChartOptions.xaxis" [colors]="receptionsTrendChartOptions.colors"></apx-chart>
+    </app-card>
+    <app-card [cardTitle]="'DASHBOARD.ANALYTICS.RECEPTION_STATUS' | translate">
+      <apx-chart [series]="receptionsByStatusChartOptions.series" [chart]="receptionsByStatusChartOptions.chart" [labels]="receptionsByStatusChartOptions.labels" [colors]="receptionsByStatusChartOptions.colors"></apx-chart>
+    </app-card>
+    <app-card [cardTitle]="'DASHBOARD.ANALYTICS.RECEPTION_TYPE' | translate">
+      <apx-chart [series]="receptionsByTypeChartOptions.series" [chart]="receptionsByTypeChartOptions.chart" [xaxis]="receptionsByTypeChartOptions.xaxis" [colors]="receptionsByTypeChartOptions.colors"></apx-chart>
+    </app-card>
+  </div>
+  <!-- Right Column: Supplier, Storage, Quality -->
+  <div class="col-lg-4">
+    <app-card [cardTitle]="'DASHBOARD.ANALYTICS.VOLUME_BY_SUPPLIER' | translate">
+      <apx-chart [series]="volumeBySupplierChartOptions.series" [chart]="volumeBySupplierChartOptions.chart" [xaxis]="volumeBySupplierChartOptions.xaxis" [colors]="volumeBySupplierChartOptions.colors"></apx-chart>
+    </app-card>
+    <app-card [cardTitle]="'DASHBOARD.ANALYTICS.VOLUME_BY_STORAGE' | translate">
+      <apx-chart [series]="volumeByStorageChartOptions.series" [chart]="volumeByStorageChartOptions.chart" [xaxis]="volumeByStorageChartOptions.xaxis" [colors]="volumeByStorageChartOptions.colors"></apx-chart>
+    </app-card>
+    <app-card [cardTitle]="'DASHBOARD.ANALYTICS.QUALITY_CONTROL' | translate">
+      <apx-chart [series]="qualityControlChartOptions.series" [chart]="qualityControlChartOptions.chart" [labels]="qualityControlChartOptions.labels" [colors]="qualityControlChartOptions.colors"></apx-chart>
+    </app-card>
+  </div>
+</div>
+
+<!-- RECENT RECEPTIONS CHART -->
+<div class="dashboard-recent row">
+  <div class="col-lg-12">
+    <app-card [cardTitle]="'DASHBOARD.ANALYTICS.RECENT_RECEPTIONS' | translate">
+      <apx-chart
+        [series]="recentReceptionsChartOptions.series"
+        [chart]="recentReceptionsChartOptions.chart"
+        [xaxis]="recentReceptionsChartOptions.xaxis"
+        [yaxis]="recentReceptionsChartOptions.yaxis"
+        [tooltip]="recentReceptionsChartOptions.tooltip"
+        [colors]="recentReceptionsChartOptions.colors"
+      ></apx-chart>
+    </app-card>
+  </div>
+</div>

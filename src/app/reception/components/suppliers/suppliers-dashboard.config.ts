@@ -101,9 +101,9 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
     statusMapping: false,
     statusAttributeName: 'status',
     actionsList: [
-      { label: 'Consulter', icon: 'visibility', value: 'CONSULTER' },
-      { label: 'Modifier', icon: 'edit', value: 'MODIFIER' },
-      { label: 'Supprimer', icon: 'delete', value: 'SUPPRIMER' }
+      { label: 'Consulter', icon: 'visibility', value: 'READ' },
+      { label: 'Modifier', icon: 'edit', value: 'EDIT' },
+      { label: 'Supprimer', icon: 'delete', value: 'DELETE' }
     ]
   },
 

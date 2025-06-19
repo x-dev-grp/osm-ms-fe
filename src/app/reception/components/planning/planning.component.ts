@@ -150,15 +150,13 @@ export type Mill = MillMachine & { receptions: BoardItem[] };
     CardComponent,
     MatSnackBarModule,
     SharedModule,
-    MatChip,
-     MatCheckbox,
+      MatCheckbox,
     MatExpansionPanelDescription,
     MatExpansionPanelHeader,
     MatExpansionPanel,
     DialogModule,
     SumPipe,
-    CompletionDetailsDialogComponent
-  ],
+   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlanningComponent implements OnInit, OnDestroy ,AfterViewInit {
@@ -407,7 +405,7 @@ export class PlanningComponent implements OnInit, OnDestroy ,AfterViewInit {
         n2 = parseInt(cur, 10);
       return n2 > n1 ? cur : max;
     }, lotNumbers[0]);
-    const globalLotNumber = `G${largestLot.padStart(4, '0')}`; // Ensure format matches backend validation
+    const globalLotNumber = `G${largestLot.padStart(4, '0')}`;
 
     // 4) Build the GlobalLot with all properties
     const globalLot: GlobalLot = {

@@ -1,5 +1,5 @@
 // angular import
-import { Component, OnInit, effect, inject, input } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, effect, inject, input } from '@angular/core';
 
 // project import
 import { SharedModule } from 'src/app/demo/shared/shared.module';
@@ -15,6 +15,7 @@ import { DARK, LIGHT } from 'src/app/@theme/const';
   selector: 'app-earning-chart',
   imports: [SharedModule, NgApexchartsModule],
   templateUrl: './earning-chart.component.html',
+  standalone: true,
   styleUrl: './earning-chart.component.scss'
 })
 export class EarningChartComponent implements OnInit {
@@ -41,6 +42,16 @@ export class EarningChartComponent implements OnInit {
 
   // life cycle
   ngOnInit() {
+    this.setChartOptions();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['data']) {
+      this.setChartOptions();
+    }
+  }
+
+  setChartOptions() {
     this.chartOptions = {
       chart: { type: 'bar', background: 'transparent', height: 50, sparkline: { enabled: true } },
       plotOptions: { bar: { columnWidth: '80%' } },
@@ -61,11 +72,11 @@ export class EarningChartComponent implements OnInit {
           }
         },
         marker: { show: false },
-        theme: LIGHT
+        theme: 'light'
       },
       colors: this.color(),
       theme: {
-        mode: LIGHT
+        mode: 'light'
       }
     };
   }

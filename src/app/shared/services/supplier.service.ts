@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { SupplierType } from '../models/supplier-type';
 import { ApiResponse } from '../models/api-response';
-import {SupplierType} from "../models/supplier-type";
 
 @Injectable({
   providedIn: 'root'
@@ -32,8 +33,15 @@ export class SupplierTypeService {
     return this.http.put<ApiResponse<SupplierType>>(`${this.baseUrl}`, supplier);
   }
 
-  // Optionally, if a delete endpoint exists, you can implement it here
   deleteSupplier(id: string): Observable<ApiResponse<void>> {
     return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/${id}`);
+  }
+
+  getPaidPaymentsCount(supplierId: string): Observable<number> {
+    return this.http.get<number>(`${this.baseUrl}/${supplierId}/payments/paid/count`);
+  }
+
+  getUnpaidPaymentsCount(supplierId: string): Observable<number> {
+    return this.http.get<number>(`${this.baseUrl}/${supplierId}/payments/unpaid/count`);
   }
 }

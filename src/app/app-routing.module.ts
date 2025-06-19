@@ -10,6 +10,7 @@ import { AuthGuardChild } from './interceptors/guards/auth.guard';
 import { Role } from './@theme/types/role';
 import { receptionRoutes } from './reception/reception.routes';
 import { FinanceRoutingModule } from './finance/finance-routing.module';
+import { SupplierDetailsComponent } from './reception/components/suppliers/supplier-details/supplier-details.component';
 
 const routes: Routes = [
   {
@@ -20,7 +21,7 @@ const routes: Routes = [
       {
         path: '',
         loadChildren: () => import('./demo/pages/dashboard/dashboard.module').then((m) => m.DashboardModule),
-       
+
         data: { roles: [Role.Admin, Role.User] }
       },
       {
@@ -78,6 +79,13 @@ const routes: Routes = [
       {
         path: 'storage',
         loadComponent: () => import('./settings/storage/storage.component').then((c) => c.StorageUnitsComponent),
+        data: { roles: [Role.Admin, Role.User] }
+      },
+
+      {
+
+      path: 'fournisseur',
+        loadComponent: () => import('./reception/components/suppliers/supplier-details/supplier-details.component').then((c) => c.SupplierDetailsComponent),
         data: { roles: [Role.Admin, Role.User] }
       },
 

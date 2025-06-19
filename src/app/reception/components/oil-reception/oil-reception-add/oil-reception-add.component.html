@@ -11,7 +11,7 @@
 <!-- Formulaire -->
 <app-card
   *ngIf="!errorMessage && !loading"
-  [cardTitle]="isEditing ? 'Modifier la réception d’huile' : 'Ajouter une réception d’huile'"
+  [cardTitle]="isEditing ? ('OIL_RECEPTION.ADD.EDIT_TITLE' | translate) : ('OIL_RECEPTION.ADD.TITLE' | translate)"
   [showHeader]="false"
   [showContent]="true"
   [padding]="20"
@@ -19,10 +19,10 @@
   <form [formGroup]="receptionForm" class="form-content">
     <!-- En-tête -->
     <div class="header-row">
-      <button mat-icon-button (click)="onBack()" [disabled]="loading" title="Retour">
+      <button mat-icon-button (click)="onBack()" [disabled]="loading" [title]="'STANDARD.BTNS.BACK' | translate">
         <mat-icon>arrow_back</mat-icon>
       </button>
-      <h3>Informations générales</h3>
+      <h3>{{ 'OIL_RECEPTION.ADD.GENERAL_INFO' | translate }}</h3>
     </div>
     <hr />
 
@@ -31,29 +31,29 @@
       <div class="form-body">
         <!-- Delivery Information Section -->
         <div class="section">
-          <h4>Informations de livraison</h4>
+          <h4>{{ 'OIL_RECEPTION.ADD.DELIVERY_INFO' | translate }}</h4>
           <div class="row">
             <div class="col-md-3">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>Type de livraison</mat-label>
+                <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.DELIVERY_TYPE' | translate }}</mat-label>
                 <input formControlName="deliveryType" matInput readonly />
               </mat-form-field>
             </div>
             <div class="col-md-3">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>Numéro de livraison</mat-label>
+                <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.DELIVERY_NUMBER' | translate }}</mat-label>
                 <input formControlName="deliveryNumber" matInput readonly />
               </mat-form-field>
             </div>
             <div class="col-md-3">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>Numéro de lot</mat-label>
+                <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.LOT_NUMBER' | translate }}</mat-label>
                 <input formControlName="lotNumber" matInput readonly />
               </mat-form-field>
             </div>
             <div class="col-md-3">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>Date de livraison</mat-label>
+                <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.DELIVERY_DATE' | translate }}</mat-label>
                 <input [matDatepicker]="picker" formControlName="deliveryDate" matInput required />
                 <mat-datepicker-toggle [for]="picker" matSuffix></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
@@ -64,11 +64,11 @@
 
         <!-- Supplier and Region Section -->
         <div class="section">
-          <h4>Fournisseur et région</h4>
+          <h4>{{ 'OIL_RECEPTION.ADD.SUPPLIER_REGION' | translate }}</h4>
           <div class="row">
             <div class="col-md-4">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>Fournisseur</mat-label>
+                <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.SUPPLIER' | translate }}</mat-label>
                 <mat-select formControlName="supplier" required>
                   <mat-option *ngFor="let supplier of suppliers" [value]="supplier">
                     {{ supplier.supplierInfo.name }}
@@ -78,7 +78,7 @@
             </div>
             <div class="col-md-4">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>Région</mat-label>
+                <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.REGION' | translate }}</mat-label>
                 <mat-select formControlName="region" required>
                   <mat-option *ngFor="let region of regions" [value]="region">
                     {{ region.name }}
@@ -88,7 +88,7 @@
             </div>
             <div class="col-md-4">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>Parcelle</mat-label>
+                <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.PARCEL' | translate }}</mat-label>
                 <input formControlName="parcel" matInput />
               </mat-form-field>
             </div>
@@ -97,20 +97,20 @@
 
         <!-- Vehicle Information Section -->
         <div class="section">
-          <h4>Informations du véhicule</h4>
+          <h4>{{ 'OIL_RECEPTION.ADD.VEHICLE_INFO' | translate }}</h4>
           <div class="row">
             <div class="col-md-6">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>Matricule du camion</mat-label>
+                <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.TRUCK_PLATE' | translate }}</mat-label>
                 <input formControlName="matriculeCamion" matInput required />
               </mat-form-field>
             </div>
             <div class="col-md-6">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>État du camion</mat-label>
+                <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.TRUCK_STATE' | translate }}</mat-label>
                 <mat-select formControlName="etatCamion" required>
-                  <mat-option value="Conforme">Conforme</mat-option>
-                  <mat-option value="Non conforme">Non conforme</mat-option>
+                  <mat-option value="Conforme">{{ 'OIL_RECEPTION.ADD.FIELDS.TRUCK_STATE_CONFORM' | translate }}</mat-option>
+                  <mat-option value="Non conforme">{{ 'OIL_RECEPTION.ADD.FIELDS.TRUCK_STATE_NON_CONFORM' | translate }}</mat-option>
                 </mat-select>
               </mat-form-field>
             </div>
@@ -119,11 +119,11 @@
 
         <!-- Oil Details Section -->
         <div class="section">
-          <h4>Détails de l'huile</h4>
+          <h4>{{ 'OIL_RECEPTION.ADD.OIL_DETAILS' | translate }}</h4>
           <div class="row">
             <div class="col-md-3">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>Variété d'huile</mat-label>
+                <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.OIL_VARIETY' | translate }}</mat-label>
                 <mat-select formControlName="oilVariety" required>
                   <mat-option *ngFor="let variety of oilCategories" [value]="variety">
                     {{ variety.name }}
@@ -133,7 +133,7 @@
             </div>
             <div class="col-md-3">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>Type d'huile</mat-label>
+                <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.OIL_TYPE' | translate }}</mat-label>
                 <mat-select formControlName="oilType" required>
                   <mat-option *ngFor="let type of oilTypes" [value]="type">
                     {{ type.name }}
@@ -143,7 +143,7 @@
             </div>
             <div class="col-md-3">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>Type d'olive</mat-label>
+                <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.OLIVE_TYPE' | translate }}</mat-label>
                 <mat-select formControlName="oliveType" required>
                   <mat-option *ngFor="let type of oliveTypes" [value]="type">
                     {{ type.name }}
@@ -153,14 +153,14 @@
             </div>
             <div class="col-md-3">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>Type d'opération</mat-label>
+                <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.OPERATION_TYPE' | translate }}</mat-label>
                 <mat-select formControlName="operationType" required>
                   <mat-option *ngFor="let type of operationTypes" [value]="type">
                     {{ type.name }}
                   </mat-option>
                 </mat-select>
                 <mat-error *ngIf="receptionForm.get('operationType')?.hasError('required')">
-                  Le type d'opération est requis
+                  {{ 'OIL_RECEPTION.ADD.ERRORS.OPERATION_TYPE_REQUIRED' | translate }}
                 </mat-error>
               </mat-form-field>
             </div>
@@ -169,39 +169,39 @@
 
         <!-- Weight and Quantity Section -->
         <div class="section">
-          <h4>Poids et quantité</h4>
+          <h4>{{ 'OIL_RECEPTION.ADD.WEIGHT_QUANTITY' | translate }}</h4>
           <div class="row">
             <div class="col-md-3">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>Poids brut (kg)</mat-label>
+                <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.GROSS_WEIGHT' | translate }}</mat-label>
                 <input formControlName="poidsBrut" matInput type="number" min="0" />
               </mat-form-field>
             </div>
             <div class="col-md-3">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>Quantité d'huile (L)</mat-label>
+                <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.OIL_QUANTITY' | translate }}</mat-label>
                 <input formControlName="oilQuantity" matInput type="number" min="0" />
                 <mat-error *ngIf="receptionForm.hasError('netGreater')">
-                  La quantité ne peut pas être supérieure au poids brut
+                  {{ 'OIL_RECEPTION.ADD.ERRORS.NET_GREATER' | translate }}
                 </mat-error>
                 <mat-error *ngIf="receptionForm.hasError('exceedsCapacity')">
-                  La quantité dépasse la capacité disponible de la cuve
+                  {{ 'OIL_RECEPTION.ADD.ERRORS.EXCEEDS_CAPACITY' | translate }}
                 </mat-error>
               </mat-form-field>
             </div>
             <div class="col-md-3">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>Cuve de stockage</mat-label>
+                <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.STORAGE_UNIT' | translate }}</mat-label>
                 <mat-select formControlName="storageUnit" required>
                   <mat-option *ngFor="let unit of storageUnits" [value]="unit">
                     {{ unit.name }} ({{ unit.currentVolume }}/{{ unit.maxCapacity }} L)
                   </mat-option>
                 </mat-select>
                 <mat-error *ngIf="receptionForm.get('storageUnit')?.hasError('required')">
-                  La cuve de stockage est requise
+                  {{ 'OIL_RECEPTION.ADD.ERRORS.STORAGE_UNIT_REQUIRED' | translate }}
                 </mat-error>
                 <mat-error *ngIf="receptionForm.hasError('exceedsCapacity')">
-                  La quantité dépasse la capacité disponible ({{ receptionForm.getError('exceedsCapacity')?.available }} L restants)
+                  {{ 'OIL_RECEPTION.ADD.ERRORS.AVAILABLE_CAPACITY' | translate: { available: receptionForm.getError('exceedsCapacity')?.available } }}
                 </mat-error>
               </mat-form-field>
             </div>
@@ -210,29 +210,29 @@
 
         <!-- Financial Information Section -->
         <div class="section">
-          <h4>Informations financières</h4>
+          <h4>{{ 'OIL_RECEPTION.ADD.FINANCIAL_INFO' | translate }}</h4>
           <div class="row">
             <div class="col-md-3">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>Prix unitaire (DH/L)</mat-label>
+                <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.UNIT_PRICE' | translate }}</mat-label>
                 <input formControlName="unitPrice" matInput type="number" min="0" required />
               </mat-form-field>
             </div>
             <div class="col-md-3">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>Prix total (DH)</mat-label>
+                <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.TOTAL_PRICE' | translate }}</mat-label>
                 <input formControlName="price" matInput type="number" readonly />
               </mat-form-field>
             </div>
             <div class="col-md-3">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>Montant payé (DH)</mat-label>
+                <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.PAID_AMOUNT' | translate }}</mat-label>
                 <input formControlName="paidAmount" matInput type="number" min="0" />
               </mat-form-field>
             </div>
             <div class="col-md-3">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>Montant restant (DH)</mat-label>
+                <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.UNPAID_AMOUNT' | translate }}</mat-label>
                 <input formControlName="unpaidAmount" matInput type="number" readonly />
               </mat-form-field>
             </div>
@@ -242,10 +242,10 @@
         <!-- Boutons d'action -->
         <div class="form-row m-t-10">
           <button mat-flat-button color="primary" (click)="save()" [disabled]="receptionForm.invalid || loading">
-            {{ isEditing ? 'Mettre à jour' : 'Ajouter' }}
+            {{ isEditing ? ('OIL_RECEPTION.ADD.BUTTONS.UPDATE' | translate) : ('OIL_RECEPTION.ADD.BUTTONS.ADD' | translate) }}
           </button>
           <button mat-stroked-button color="warn" type="button" (click)="resetForm()" [disabled]="loading">
-            Annuler
+            {{ 'OIL_RECEPTION.ADD.BUTTONS.CANCEL' | translate }}
           </button>
         </div>
 

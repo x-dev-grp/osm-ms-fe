@@ -1,79 +1,35 @@
-<!-- Back button (floats above the card) -->
-<div class="action-buttons">
-  <button mat-icon-button (click)="onBack()" aria-label="Retour">
-    <mat-icon>arrow_back</mat-icon>
-  </button>
-  <button mat-raised-button color="primary" (click)="onEdit()" *ngIf="supplierData">
-    <mat-icon>edit</mat-icon>
-    Modifier
-  </button>
+
+<!-- History Cards -->
+<div class="history-cards-container" >
+  <div class="history-cards">
+    <mat-card class="history-card" (click)="navigateToHistory('paid')">
+      <mat-card-content>
+        <div class="card-content">
+          <mat-icon class="card-icon" color="primary">payments</mat-icon>
+          <div class="card-info">
+            <h3>Historique des Paiements</h3>
+            <p>{{ paidCount }} paiements effectués</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="history-card" (click)="navigateToHistory('unpaid')">
+      <mat-card-content>
+        <div class="card-content">
+          <mat-icon class="card-icon" color="warn">pending_actions</mat-icon>
+          <div class="card-info">
+            <h3>Paiements en Attente</h3>
+            <p>{{ unpaidCount }} paiements en attente</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
 </div>
 
-<!-- Loading spinner -->
-<div *ngIf="loading" class="loading-container">
-  <mat-spinner></mat-spinner>
-</div>
-
-<!-- Error message -->
-<div *ngIf="error" class="error-container">
-  <mat-icon color="warn">error</mat-icon>
-  <p>{{ error }}</p>
-  <button mat-raised-button color="primary" (click)="onBack()">
-    Retour à la liste
-  </button>
-</div>
-
-<!-- Supplier details card -->
-<mat-card class="mat-elevation-z2" *ngIf="!loading && !error && supplierData">
-  <mat-card-title>Détails du Fournisseur</mat-card-title>
-  <mat-divider></mat-divider>
-
-  <!-- Informations Générales -->
-  <h3 class="section-title">Informations Générales</h3>
-  <mat-list dense>
-    <mat-list-item>
-      <strong>Nom :</strong>&nbsp;{{ supplierData.supplierInfo?.name || 'Non spécifié' }}
-    </mat-list-item>
-    <mat-list-item>
-      <strong>Prénom :</strong>&nbsp;{{ supplierData.supplierInfo?.lastname || 'Non spécifié' }}
-    </mat-list-item>
-    <mat-list-item>
-      <strong>Téléphone :</strong>&nbsp;{{ supplierData.supplierInfo?.phone || 'Non spécifié' }}
-    </mat-list-item>
-    <mat-list-item>
-      <strong>Email :</strong>&nbsp;{{ supplierData.supplierInfo?.email || 'Non spécifié' }}
-    </mat-list-item>
-    <mat-list-item>
-      <strong>Adresse :</strong>&nbsp;{{ supplierData.supplierInfo?.address || 'Non spécifié' }}
-    </mat-list-item>
-    <mat-list-item>
-      <strong>Région :</strong>&nbsp;{{ supplierData.supplierInfo?.region?.name || 'Non spécifié' }}
-    </mat-list-item>
-  </mat-list>
-
-  <mat-divider></mat-divider>
-
-  <!-- Détails Bancaires -->
-  <h3 class="section-title">Détails Bancaires</h3>
-  <mat-list dense>
-    <mat-list-item>
-      <strong>Nom de la Banque :</strong>&nbsp;{{ supplierData.supplierInfo?.bankName || 'Non spécifié' }}
-    </mat-list-item>
-    <mat-list-item>
-      <strong>RIB :</strong>&nbsp;{{ supplierData.supplierInfo?.rib || 'Non spécifié' }}
-    </mat-list-item>
-  </mat-list>
-
-  <mat-divider></mat-divider>
-
-  <!-- Type de Fournisseur -->
-  <h3 class="section-title">Type de Fournisseur</h3>
-  <mat-list dense>
-    <mat-list-item>
-      <strong>Type :</strong>&nbsp;{{ supplierData.genericSupplierType?.name || 'Non spécifié' }}
-    </mat-list-item>
-    <mat-list-item>
-      <strong>Description :</strong>&nbsp;{{ supplierData.genericSupplierType?.description || 'Non spécifiée' }}
-    </mat-list-item>
-  </mat-list>
-</mat-card>
+<!-- Supplier details dashboard -->
+<osm-dashboard
+  [config]="dashboardConfig"
+  (applyAction)="handleAction($event)">
+</osm-dashboard>

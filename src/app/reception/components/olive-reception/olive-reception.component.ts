@@ -10,10 +10,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatPaginator } from '@angular/material/paginator';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 import { SharedModule } from '../../../demo/shared/shared.module';
 import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
-import { Action, DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
 import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
 import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
 import { OliveReceptionFormComponent } from './olive-reception-add/olive-reception-form.component';
@@ -53,7 +54,8 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
   constructor(
     private deliveryService: UnifiedDeliveryService,
     private snackBar: MatSnackBar,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -71,11 +73,12 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
       this.router.navigate(['/reception/reception-olive', 'new']);
     }
   }
+
   private fetchDeliveries(): void {
     this.subs.add(
       this.deliveryService.getAllDeliveriesList().subscribe((res) => {
         this.deliveries = res.success ? res.data.filter((d) => d.deliveryType === 'OLIVE') : [];
-        if (!res.success) this.toast(res.message || 'Erreur lors du chargement des réceptions.');
+        if (!res.success) this.toast(this.translate.instant('DELIVERIES.MESSAGES.LOAD_ERROR'));
       })
     );
   }
@@ -197,21 +200,21 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
     window.open(doc.output('bloburl'), '_blank');
   }
 
-  onRowAction(e: { row: UnifiedDelivery; action: Action }): void {
-    switch (e.action.value) {
-      case 'CONSULTER':
+  onRowAction(e: { row: UnifiedDelivery; action: string }): void {
+    switch (e.action) {
+      case 'READ':
         this.viewDelivery(e.row);
         break;
-      case 'MODIFIER':
+      case 'UPDATE':
         this.selectReception(e.row);
         break;
       case 'QUALITY':
         this.QualityControl(e.row);
         break;
-      case 'SUPPRIMER':
+      case 'DELETE':
         if (e.row.id) this.deleteDelivery(e.row);
         break;
-      case 'generate_pdf':
+      case 'GENPDF':
         if (e.row) {
           this.genererBonReception(e.row);
         }
@@ -225,16 +228,16 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
         (res) => {
           if (res.success) {
             this.fetchDeliveries();
-            this.toast('Réception supprimée avec succès.');
+            this.toast(this.translate.instant('DELIVERIES.MESSAGES.DELETE_SUCCESS'));
           }
         },
-        () => this.toast('Erreur lors de la suppression.')
+        () => this.toast(this.translate.instant('DELIVERIES.MESSAGES.DELETE_ERROR'))
       )
     );
   }
 
   private toast(message: string, duration = 3000): void {
-    this.snackBar.open(message, 'Fermer', {
+    this.snackBar.open(message, this.translate.instant('STANDARD.BTNS.CANCEL'), {
       duration,
       horizontalPosition: 'right',
       verticalPosition: 'top',

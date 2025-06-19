@@ -1,6 +1,7 @@
 // angular import
-import { Component, OnInit, Renderer2, inject } from '@angular/core';
+import { Component, OnInit, Renderer2, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 // project import
 import { SharedModule } from 'src/app/demo/shared/shared.module';
@@ -10,7 +11,7 @@ import { HORIZONTAL, VERTICAL, COMPACT, RTL, LTR, LIGHT, DARK } from '../../cons
 
 @Component({
   selector: 'app-configuration',
-  imports: [CommonModule, SharedModule],
+  imports: [CommonModule, SharedModule, TranslateModule],
   templateUrl: './configuration.component.html',
   standalone: true,
   styleUrls: ['./configuration.component.scss']
@@ -18,6 +19,8 @@ import { HORIZONTAL, VERTICAL, COMPACT, RTL, LTR, LIGHT, DARK } from '../../cons
 export class ConfigurationComponent implements OnInit {
   private renderer = inject(Renderer2);
   private themeService = inject(ThemeLayoutService);
+  private translate = inject(TranslateService);
+  private cdr = inject(ChangeDetectorRef);
 
   // public props
   styleSelectorToggle!: boolean; // open configuration menu
@@ -47,6 +50,18 @@ export class ConfigurationComponent implements OnInit {
     this.setRtlLayout(this.rtlLayout);
     this.boxLayouts = AbleProConfig.isBox_container;
     this.setBoxLayouts(this.boxLayouts);
+
+    // Subscribe to language changes
+    this.translate.onLangChange.subscribe(() => {
+      // Force view update when language changes
+      this.updateView();
+    });
+  }
+
+  // Add method to force view update
+  private updateView() {
+    // Trigger change detection
+    this.cdr.detectChanges();
   }
 
   // public method

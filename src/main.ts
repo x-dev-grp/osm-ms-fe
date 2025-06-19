@@ -13,8 +13,9 @@ import { provideServiceWorker } from '@angular/service-worker';
 import { AuthInterceptor } from './app/interceptors/auth.interceptor';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { AuthenticationService } from './app/auth/services/authentication.service';
- import { CookieService } from 'ngx-cookie-service';
-import { TranslateService } from '@ngx-translate/core';
+import { CookieService } from 'ngx-cookie-service';
+import { TranslateService, TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { CustomTranslateLoader } from './app/demo/shared/custom-translate-loader';
 
 if (environment.production) {
   enableProdMode();
@@ -25,14 +26,27 @@ bootstrapApplication(AppComponent, {
     AuthenticationService,
     CookieService,
     TranslateService,
-    importProvidersFrom(AppRoutingModule, SharedModule, BrowserModule, GuestModule),
+    importProvidersFrom(
+      AppRoutingModule,
+      SharedModule,
+      BrowserModule,
+      GuestModule,
+      TranslateModule.forRoot({
+        defaultLanguage: 'en',
+        loader: {
+          provide: TranslateLoader,
+          useClass: CustomTranslateLoader
+        }
+      })
+    ),
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: MAT_DATE_LOCALE, useValue: 'fr' },
     [provideHttpClient(withInterceptorsFromDi())],
-    provideAnimations(), provideServiceWorker('ngsw-worker.js', {
-            enabled: !isDevMode(),
-            registrationStrategy: 'registerWhenStable:30000'
-          })
+    provideAnimations(),
+    provideServiceWorker('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      registrationStrategy: 'registerWhenStable:30000'
+    })
   ]
 }).catch((err) => console.error(err));

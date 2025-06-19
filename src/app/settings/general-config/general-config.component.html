@@ -1,4 +1,4 @@
-<app-card cardTitle="Company Profile" [showHeader]="true">
+<app-card [cardTitle]="'GENERAL_CONFIG.TITLE' | translate" [showHeader]="true">
   <ng-template #headerOptionsTemplate>
     <div class="header-actions">
       <button
@@ -6,10 +6,10 @@
         color="primary"
         type="submit"
         [disabled]="millProfileForm.invalid"
-        matTooltip="Save company profile"
+        [matTooltip]="'GENERAL_CONFIG.ACTIONS.SAVE_TOOLTIP' | translate"
         (click)="onSave()">
         <mat-icon>save</mat-icon>
-        <span>Save Changes</span>
+        <span>{{ 'GENERAL_CONFIG.ACTIONS.SAVE' | translate }}</span>
       </button>
 
       <button
@@ -17,9 +17,9 @@
         color="warn"
         type="button"
         (click)="onReset()"
-        matTooltip="Reset all fields">
+        [matTooltip]="'GENERAL_CONFIG.ACTIONS.RESET_TOOLTIP' | translate">
         <mat-icon>undo</mat-icon>
-        <span>Reset</span>
+        <span>{{ 'GENERAL_CONFIG.ACTIONS.RESET' | translate }}</span>
       </button>
     </div>
   </ng-template>
@@ -33,7 +33,7 @@
     <div class="profile-section logo-section-wrapper">
       <div class="section-header">
         <mat-icon class="me-2">image</mat-icon>
-        <span>Company Logo</span>
+        <span>{{ 'GENERAL_CONFIG.LOGO.TITLE' | translate }}</span>
       </div>
       <div class="logo-section text-center">
         <div
@@ -64,9 +64,9 @@
           <ng-template #placeholder>
             <div class="placeholder-content">
               <mat-icon class="upload-icon">cloud_upload</mat-icon>
-              <p class="mt-2 mb-1">Drag &amp; drop logo here</p>
-              <p class="text-muted small">or click to browse</p>
-              <p class="text-muted small">(PNG or JPEG, max 200KB)</p>
+              <p class="mt-2 mb-1">{{ 'GENERAL_CONFIG.LOGO.DRAG_DROP' | translate }}</p>
+              <p class="text-muted small">{{ 'GENERAL_CONFIG.LOGO.CLICK_BROWSE' | translate }}</p>
+              <p class="text-muted small">{{ 'GENERAL_CONFIG.LOGO.FILE_TYPES' | translate }}</p>
             </div>
           </ng-template>
         </div>
@@ -77,20 +77,20 @@
     <div class="profile-section">
       <div class="section-header">
         <mat-icon class="me-2">business</mat-icon>
-        <span>Company Information</span>
+        <span>{{ 'GENERAL_CONFIG.COMPANY_INFO.TITLE' | translate }}</span>
       </div>
       <div class="section-content">
         <div class="row">
           <div class="col-md-6">
             <mat-form-field appearance="outline" class="w-100 mb-3">
-              <mat-label>Legal Name</mat-label>
+              <mat-label>{{ 'GENERAL_CONFIG.COMPANY_INFO.LEGAL_NAME' | translate }}</mat-label>
               <input matInput formControlName="legalName" />
               <mat-icon matSuffix>business</mat-icon>
             </mat-form-field>
           </div>
           <div class="col-md-6">
             <mat-form-field appearance="outline" class="w-100 mb-3">
-              <mat-label>Reg. Commerce (RC)</mat-label>
+              <mat-label>{{ 'GENERAL_CONFIG.COMPANY_INFO.REG_NUMBER' | translate }}</mat-label>
               <input matInput formControlName="registrationNumber" />
               <mat-icon matSuffix>badge</mat-icon>
             </mat-form-field>
@@ -100,14 +100,14 @@
         <div class="row">
           <div class="col-md-6">
             <mat-form-field appearance="outline" class="w-100 mb-3">
-              <mat-label>Matricule Fiscale</mat-label>
+              <mat-label>{{ 'GENERAL_CONFIG.COMPANY_INFO.TAX_ID' | translate }}</mat-label>
               <input matInput formControlName="taxId" />
               <mat-icon matSuffix>receipt_long</mat-icon>
             </mat-form-field>
           </div>
           <div class="col-md-6">
             <mat-form-field appearance="outline" class="w-100 mb-3">
-              <mat-label>Matricule CNSS</mat-label>
+              <mat-label>{{ 'GENERAL_CONFIG.COMPANY_INFO.CNSS_NUMBER' | translate }}</mat-label>
               <input matInput formControlName="cnssNumber" />
               <mat-icon matSuffix>health_and_safety</mat-icon>
             </mat-form-field>
@@ -117,27 +117,27 @@
         <div class="row">
           <div class="col-md-4">
             <mat-form-field appearance="outline" class="w-100 mb-3">
-              <mat-label>Legal Form</mat-label>
+              <mat-label>{{ 'GENERAL_CONFIG.COMPANY_INFO.LEGAL_FORM' | translate }}</mat-label>
               <mat-select formControlName="legalForm">
-                <mat-option value="SARL">SARL</mat-option>
-                <mat-option value="SUARL">SUARL</mat-option>
-                <mat-option value="SA">SA</mat-option>
-                <mat-option value="SNC">SNC</mat-option>
-                <mat-option value="Autre">Autre</mat-option>
+                <mat-option value="SARL">{{ 'GENERAL_CONFIG.COMPANY_INFO.LEGAL_FORMS.SARL' | translate }}</mat-option>
+                <mat-option value="SUARL">{{ 'GENERAL_CONFIG.COMPANY_INFO.LEGAL_FORMS.SUARL' | translate }}</mat-option>
+                <mat-option value="SA">{{ 'GENERAL_CONFIG.COMPANY_INFO.LEGAL_FORMS.SA' | translate }}</mat-option>
+                <mat-option value="SNC">{{ 'GENERAL_CONFIG.COMPANY_INFO.LEGAL_FORMS.SNC' | translate }}</mat-option>
+                <mat-option value="Autre">{{ 'GENERAL_CONFIG.COMPANY_INFO.LEGAL_FORMS.OTHER' | translate }}</mat-option>
               </mat-select>
               <mat-icon matSuffix>category</mat-icon>
             </mat-form-field>
           </div>
           <div class="col-md-4">
             <mat-form-field appearance="outline" class="w-100 mb-3">
-              <mat-label>Capital (TND)</mat-label>
+              <mat-label>{{ 'GENERAL_CONFIG.COMPANY_INFO.CAPITAL' | translate }}</mat-label>
               <input matInput type="number" formControlName="capital" />
               <mat-icon matSuffix>payments</mat-icon>
             </mat-form-field>
           </div>
           <div class="col-md-4">
             <mat-form-field appearance="outline" class="w-100 mb-3">
-              <mat-label>Creation Date</mat-label>
+              <mat-label>{{ 'GENERAL_CONFIG.COMPANY_INFO.CREATION_DATE' | translate }}</mat-label>
               <input matInput formControlName="creationDate" [matDatepicker]="picker" />
               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
               <mat-datepicker #picker></mat-datepicker>
@@ -152,27 +152,27 @@
     <div class="profile-section">
       <div class="section-header">
         <mat-icon class="me-2">contact_mail</mat-icon>
-        <span>Contact Information</span>
+        <span>{{ 'GENERAL_CONFIG.CONTACT_INFO.TITLE' | translate }}</span>
       </div>
       <div class="section-content">
         <div class="row">
           <div class="col-md-4">
             <mat-form-field appearance="outline" class="w-100 mb-3">
-              <mat-label>Email</mat-label>
+              <mat-label>{{ 'GENERAL_CONFIG.CONTACT_INFO.EMAIL' | translate }}</mat-label>
               <input matInput formControlName="email" type="email" />
               <mat-icon matSuffix>email</mat-icon>
             </mat-form-field>
           </div>
           <div class="col-md-4">
             <mat-form-field appearance="outline" class="w-100 mb-3">
-              <mat-label>Phone</mat-label>
+              <mat-label>{{ 'GENERAL_CONFIG.CONTACT_INFO.PHONE' | translate }}</mat-label>
               <input matInput formControlName="phone" />
               <mat-icon matSuffix>phone</mat-icon>
             </mat-form-field>
           </div>
           <div class="col-md-4">
             <mat-form-field appearance="outline" class="w-100 mb-3">
-              <mat-label>Website</mat-label>
+              <mat-label>{{ 'GENERAL_CONFIG.CONTACT_INFO.WEBSITE' | translate }}</mat-label>
               <input matInput formControlName="website" />
               <mat-icon matSuffix>language</mat-icon>
             </mat-form-field>
@@ -185,13 +185,13 @@
     <div class="profile-section">
       <div class="section-header">
         <mat-icon class="me-2">location_on</mat-icon>
-        <span>Address Information</span>
+        <span>{{ 'GENERAL_CONFIG.ADDRESS_INFO.TITLE' | translate }}</span>
       </div>
       <div class="section-content">
         <div class="row">
           <div class="col-12">
             <mat-form-field appearance="outline" class="w-100 mb-3">
-              <mat-label>Address</mat-label>
+              <mat-label>{{ 'GENERAL_CONFIG.ADDRESS_INFO.ADDRESS' | translate }}</mat-label>
               <input matInput formControlName="addressLine1" />
               <mat-icon matSuffix>home</mat-icon>
             </mat-form-field>

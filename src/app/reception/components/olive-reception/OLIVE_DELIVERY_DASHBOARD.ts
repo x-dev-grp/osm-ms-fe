@@ -1,6 +1,7 @@
 import { AttributeType, DashboardConfig, FieldType } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
 import { deliveryType } from '../../../shared/models/deleveryType';
 import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
+import { SearchModel } from '../../../shared/models/advanced-search/searchModel';
 
 export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
   title: "Livraisons d'Olives", // afficehr titre fi dashboard
@@ -16,12 +17,17 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
     order: 'DESC',
     searchData: {
       operation: SearchOperation.AND,
-      searchs: [],
-      search: {
-        deliveryType: {
-          equalValue: deliveryType.OLIVE
-        }
-      }
+      searchs: [
+        {
+          search: {
+            hasQualityControl: {
+              equalValue: "false"
+            },deliveryType:{
+              equalValue: deliveryType.OLIVE
+            }
+          }
+        },
+      ]
     }
   }, // if youy need ot load the dta initilly based on this
   /* ────────────────────────────────────────────────────────────── */
@@ -32,6 +38,7 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
     {
       name: 'deliveryNumber',
       label: 'N° Bon de réception',
+      labelTranslatePath: 'DELIVERIES.FIELDS.DELIVERY_NUMBER',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -42,6 +49,7 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
     {
       name: 'lotNumber',
       label: 'N° Lot',
+      labelTranslatePath: 'DELIVERIES.FIELDS.LOT_NUMBER',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -52,6 +60,7 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
     {
       name: 'globalLotNumber',
       label: 'N° Lot Global',
+      labelTranslatePath: 'DELIVERIES.FIELDS.GLOBAL_LOT_NUMBER',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -63,6 +72,7 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
     {
       name: 'deliveryDate',
       label: 'Date de livraison',
+      labelTranslatePath: 'DELIVERIES.FIELDS.DELIVERY_DATE',
       attributeType: AttributeType.date,
       fieldType: FieldType.date,
       exportable: true,
@@ -74,29 +84,34 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
     {
       name: 'supplier.supplierInfo',
       label: 'Fournisseur',
+      labelTranslatePath: 'DELIVERIES.FIELDS.SUPPLIER',
       attributeType: AttributeType.object,
       fieldType: FieldType.text,
       exportable: true,
       dataTable: true,
       filterable: true,
       valuePath: 'name',
-      valueAttributeType: AttributeType.string
+      valueAttributeType: AttributeType.string,
+      filterAttribute: 'supplier.supplierInfo.name'
     },
     {
       name: 'region',
       label: 'Région',
+      labelTranslatePath: 'DELIVERIES.FIELDS.REGION',
       attributeType: AttributeType.object,
       fieldType: FieldType.text,
       exportable: true,
       dataTable: true,
       filterable: true,
       valuePath: 'name',
-      valueAttributeType: AttributeType.string
+      valueAttributeType: AttributeType.string,
+      filterAttribute: 'region.name'
     },
     /* Poids */
     {
       name: 'poidsNet',
       label: 'Poids net (kg)',
+      labelTranslatePath: 'DELIVERIES.FIELDS.NET_WEIGHT',
       attributeType: AttributeType.number,
       fieldType: FieldType.number,
       exportable: true,
@@ -108,29 +123,34 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
     {
       name: 'oliveType',
       label: "Type d'olive",
+      labelTranslatePath: 'DELIVERIES.FIELDS.OLIVE_TYPE',
       attributeType: AttributeType.object,
       fieldType: FieldType.text,
       exportable: true,
       dataTable: true,
       filterable: true,
       valuePath: 'name',
-      valueAttributeType: AttributeType.string
+      valueAttributeType: AttributeType.string,
+      filterAttribute: 'oliveType.name'
     },
     {
       name: 'oliveVariety',
       label: "Variété d'olive",
+      labelTranslatePath: 'DELIVERIES.FIELDS.OLIVE_VARIETY',
       attributeType: AttributeType.object,
       fieldType: FieldType.text,
       exportable: true,
       dataTable: true,
       filterable: true,
       valuePath: 'name',
-      valueAttributeType: AttributeType.string
+      valueAttributeType: AttributeType.string,
+      filterAttribute: 'oliveVariety.name'
     },
     /* Camion */
     {
       name: 'matriculeCamion',
       label: 'Matricule camion',
+      labelTranslatePath: 'DELIVERIES.FIELDS.TRUCK_PLATE',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -141,6 +161,7 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
     {
       name: 'status',
       label: 'Statut',
+      labelTranslatePath: 'DELIVERIES.FIELDS.STATUS',
       attributeType: AttributeType.string,
       fieldType: FieldType.select,
       exportable: true,
@@ -148,11 +169,11 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
       dataTable: true,
       filterable: true,
       options: [
-        { label: 'Nouveau', value: 'NEW' },
-        { label: 'En cours', value: 'IN_PROGRESS' },
-        { label: 'Terminé', value: 'COMPLETED' },
-        { label: 'Refusé', value: 'REFUSED' },
-        { label: 'Annulé', value: 'CANCELLED' }
+        { label: 'Nouveau', value: 'NEW', labelTranslatePath: 'DELIVERIES.STATUS.NEW' },
+        { label: 'En cours', value: 'IN_PROGRESS', labelTranslatePath: 'DELIVERIES.STATUS.IN_PROGRESS' },
+        { label: 'Terminé', value: 'COMPLETED', labelTranslatePath: 'DELIVERIES.STATUS.COMPLETED' },
+        { label: 'Refusé', value: 'REFUSED', labelTranslatePath: 'DELIVERIES.STATUS.REFUSED' },
+        { label: 'Annulé', value: 'CANCELLED', labelTranslatePath: 'DELIVERIES.STATUS.CANCELLED' }
       ]
     }
   ],
@@ -162,11 +183,11 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
     statusMapping: false,
     statusAttributeName: 'status',
     actionsList: [
-      { label: 'Consulter', icon: 'visibility', value: 'CONSULTER' },
-      { label: 'Modifier', icon: 'edit', value: 'MODIFIER' },
-      { label: 'Supprimer', icon: 'delete', value: 'SUPPRIMER' },
+      { label: 'Consulter', icon: 'visibility', value: 'READ' },
+      { label: 'Modifier', icon: 'edit', value: 'UPDATE' },
+      { label: 'Supprimer', icon: 'delete', value: 'DELETE' },
       { label: 'Contrôle Qualité', icon: 'fact_check', value: 'QUALITY' },
-      { label: 'Générer bon de réception', icon: 'picture_as_pdf', value: 'generate_pdf' }
+      { label: 'Générer bon de réception', icon: 'picture_as_pdf', value: 'GENPDF' }
     ]
   },
 

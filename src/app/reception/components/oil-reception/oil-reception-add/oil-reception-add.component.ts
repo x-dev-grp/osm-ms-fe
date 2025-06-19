@@ -21,6 +21,9 @@ import { CardComponent } from '../../../../@theme/components/card/card.component
 import { MatIcon } from '@angular/material/icon';
 import { StorageUnitDtoService } from '../../../../shared/services/storage.service';
 import { StorageUnitDto } from '../../../../shared/models/StorageUnitDto';
+import { OliveLotStatus } from '../../../../shared/models/OliveLotStatus';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 // Validator for net weight not exceeding gross weight
 const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | null => {
@@ -30,7 +33,7 @@ const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | nu
 };
 
 // Validator for ensuring volume fits storage unit capacity
-const volumeFitsCuve = (component: OilReceptionFormComponent): ValidatorFn => {
+const volumeFitsCuve = (): ValidatorFn => {
   return (control: AbstractControl): ValidationErrors | null => {
     const storageUnit = control.get('storageUnit')?.value;
     const volume = control.get('oilQuantity')?.value as number;
@@ -55,7 +58,9 @@ const volumeFitsCuve = (component: OilReceptionFormComponent): ValidatorFn => {
     MatButtonModule,
     MatProgressSpinnerModule,
     CardComponent,
-    MatIcon
+    MatIcon,
+    MatAutocompleteModule,
+    TranslateModule
   ],
   templateUrl: './oil-reception-add.component.html',
   styleUrls: ['./oil-reception-add.component.scss']
@@ -85,7 +90,8 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     private snack: MatSnackBar,
     private route: ActivatedRoute,
     private storageService: StorageUnitDtoService,
-    private router: Router
+    private router: Router,
+    public translate: TranslateService
   ) {
     this.receptionForm = this.fb.group(
       {
@@ -110,7 +116,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
         unpaidAmount: [0, Validators.min(0)],
         operationType: [null, Validators.required]
       },
-      { validators: [netNotGreaterThanGross, volumeFitsCuve(this)] }
+      { validators: [netNotGreaterThanGross, volumeFitsCuve()] }
     );
   }
 
@@ -178,7 +184,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
   }
 
   private patchForm(d: UnifiedDelivery): void {
-    const parse = (v: any) => (v ? new Date(v) : null);
+    const parse = (v: string | Date | null): Date | null => (v ? new Date(v) : null);
     this.receptionForm.patchValue({
       ...d,
       deliveryDate: parse(d.deliveryDate),
@@ -188,7 +194,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       oilType: this.oilTypes.find((t) => t.id === d.oilType?.id) || null,
       oliveType: this.oliveTypes.find((t) => t.id === d.oliveType?.id) || null,
       storageUnit: this.storageUnits.find((s) => s.id === d.storageUnit?.id) || null,
-      operationType: this.operationTypes.find((t) => t.id === d.operationType?.id) || null, // Patch operation type
+      operationType: this.operationTypes.find((t) => t.id === d.operationType?.id) || null,
       globalLotNumber: d.globalLotNumber || '',
       unitPrice: d.unitPrice || 0,
       price: d.price || 0,
@@ -201,9 +207,13 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
   save(): void {
     if (this.receptionForm.invalid) {
       if (this.receptionForm.hasError('exceedsCapacity')) {
-        this.showToast('La quantité dépasse la capacité disponible de la cuve sélectionnée.', 4000);
+        this.translate.get('OIL_RECEPTION.ADD.ERRORS.EXCEEDS_CAPACITY').subscribe(message => {
+          this.showToast(message, 4000);
+        });
       } else {
-        this.showToast('Formulaire incomplet ou validation échouée.', 4000);
+        this.translate.get('OIL_RECEPTION.ADD.MESSAGES.ERROR.INCOMPLETE_FORM').subscribe(message => {
+          this.showToast(message, 4000);
+        });
       }
       return;
     }
@@ -211,6 +221,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     const payload = {
       ...this.receptionForm.getRawValue(),
       deliveryType: 'OIL',
+      status: OliveLotStatus.NEW,
       oilQuantity: this.receptionForm.get('oilQuantity')?.value
     } as UnifiedDelivery;
 
@@ -221,13 +232,23 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     this.loading = true;
     op.then((res) => {
       if (res?.success) {
-        this.showToast(this.isEditing ? 'Réception huile mise à jour.' : 'Réception huile ajoutée.');
-        this.router.navigate(['/reception/reception-huile']);
+        this.translate.get(this.isEditing ? 'OIL_RECEPTION.ADD.MESSAGES.SUCCESS.UPDATE' : 'OIL_RECEPTION.ADD.MESSAGES.SUCCESS.ADD')
+          .subscribe(message => {
+            this.showToast(message);
+            this.router.navigate(['/reception/reception-huile']);
+          });
       } else {
-        this.showToast(res?.message || "Échec de l'opération.");
+        this.translate.get('OIL_RECEPTION.ADD.MESSAGES.ERROR.' + (this.isEditing ? 'UPDATE' : 'ADD'))
+          .subscribe(message => {
+            this.showToast(message);
+          });
       }
     })
-      .catch(() => this.showToast('Erreur serveur'))
+      .catch(() => {
+        this.translate.get('OIL_RECEPTION.ADD.MESSAGES.ERROR.SERVER').subscribe(message => {
+          this.showToast(message);
+        });
+      })
       .finally(() => (this.loading = false));
   }
 
@@ -261,6 +282,52 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
   }
 
   private setupFormSubscriptions(): void {
+    // Subscribe to storage unit changes
+    this.subscriptions.add(
+      this.receptionForm.get('storageUnit')?.valueChanges.subscribe(unit => {
+        if (unit) {
+          const available = unit.maxCapacity - unit.currentVolume;
+          this.translate.get('OIL_RECEPTION.ADD.MESSAGES.STORAGE_CAPACITY', {
+            name: unit.name,
+            available: available,
+            max: unit.maxCapacity
+          }).subscribe(message => {
+            this.showToast(message, 4000);
+          });
+        }
+      })
+    );
+
+    // Subscribe to oil quantity changes
+    this.subscriptions.add(
+      this.receptionForm.get('oilQuantity')?.valueChanges.subscribe(quantity => {
+        if (quantity) {
+          const storageUnit = this.receptionForm.get('storageUnit')?.value;
+          if (storageUnit) {
+            const available = storageUnit.maxCapacity - storageUnit.currentVolume;
+            if (quantity > available) {
+              this.translate.get('OIL_RECEPTION.ADD.ERRORS.EXCEEDS_CAPACITY', {
+                available: available
+              }).subscribe(message => {
+                this.showToast(message, 4000);
+              });
+            }
+          }
+        }
+      })
+    );
+
+    // Subscribe to form validation errors
+    this.subscriptions.add(
+      this.receptionForm.statusChanges.subscribe(() => {
+        if (this.receptionForm.hasError('netGreater')) {
+          this.translate.get('OIL_RECEPTION.ADD.ERRORS.NET_GREATER').subscribe(message => {
+            this.showToast(message, 4000);
+          });
+        }
+      })
+    );
+
     // Subscribe to paid amount changes to update unpaid amount
     this.subscriptions.add(
       this.receptionForm.get('paidAmount')!.valueChanges.subscribe((paidAmount: number) => {

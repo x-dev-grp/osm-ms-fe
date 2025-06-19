@@ -15,6 +15,7 @@ import { DARK, LIGHT } from 'src/app/@theme/const';
   selector: 'app-revenue-chart',
   imports: [SharedModule, NgApexchartsModule],
   templateUrl: './revenue-chart.component.html',
+  standalone: true,
   styleUrl: './revenue-chart.component.scss'
 })
 export class RevenueChartComponent implements OnInit {

@@ -18,6 +18,8 @@ export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
       search: {
         hasQualityControl: {
           equalValue: "false"
+        },deliveryType:{
+          equalValue: deliveryType.OLIVE
         }
       }
     }

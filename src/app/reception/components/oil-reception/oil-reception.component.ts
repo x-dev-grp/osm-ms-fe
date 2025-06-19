@@ -40,6 +40,7 @@ import jsPDF from 'jspdf';
 
 import {OIL_DELIVERY_DASHBOARD} from './OIL_DELIVERY_DASHBOARD';
 import autoTable from "jspdf-autotable";
+import { SUPPLIERS_DASHBOARD_CONFIG } from '../suppliers/suppliers-dashboard.config';
 
 /* ──────────────────────────────────────────────────────────── */
 /* validators                                                   */
@@ -113,7 +114,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
         deliveryType: ['OIL', Validators.required],
         deliveryNumber: ['', Validators.required],
         lotNumber: ['', Validators.required],
-        globalLotNumber: [''],
+        globalLotNumber: [null],
 
         deliveryDate: [new Date(), Validators.required],
         region: [null, Validators.required],
@@ -423,26 +424,25 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
   }
 
 
-  onRowAction(e: { row: UnifiedDelivery; action: Action }): void {
-    switch (e.action.value) {
-      case 'CONSULTER':
+  onRowAction(e: { row: UnifiedDelivery; action: string }): void {
+    switch (e.action) {
+      case 'READ':
         this.viewDelivery(e.row);
         break;
 
-      case 'MODIFIER':
+      case 'UPDATE':
         this.selectReception(e.row);
         break;
 
       case 'QUALITY':
-      case 'Contrôle Qualité':
         this.QualityControl(e.row);
         break;
 
-      case 'Supprimer':
+      case 'DELETE':
         if (e.row.id) this.deleteDelivery(e.row);
         break;
 
-      case 'generer_pdf':
+      case 'GENPDF':
         if (e.row) {
           this.genererBonReception(e.row);
         }

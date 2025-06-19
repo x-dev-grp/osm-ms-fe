@@ -1,158 +1,158 @@
-<app-card class="customize-body" cardTitle="Theme Configuration">
+<app-card class="customize-body" [cardTitle]="'APPLICATION_CONFIG.TITLE' | translate">
   <div class="row">
     <!-- Left column -->
     <div class="col-lg-6">
       <div class="mb-4">
-        <h6 class="fw-semibold">Theme Mode</h6>
-        <p class="text-muted">Choose Light or Dark Mode or Auto</p>
+        <h6 class="fw-semibold">{{ 'APPLICATION_CONFIG.THEME_MODE.TITLE' | translate }}</h6>
+        <p class="text-muted">{{ 'APPLICATION_CONFIG.THEME_MODE.DESCRIPTION' | translate }}</p>
         <div class="row">
           <div class="col-4">
             <button
-              matTooltip="Light Mode"
+              [matTooltip]="'APPLICATION_CONFIG.THEME_MODE.LIGHT' | translate"
               mat-stroked-button
               class="customize-button w-100"
               [ngClass]="{ active: layoutType === 'light' }"
               (click)="setLayouts('light')"
-              aria-label="Set light mode"
+              [attr.aria-label]="'APPLICATION_CONFIG.THEME_MODE.LIGHT' | translate"
             >
               <svg class="pc-icon light" aria-hidden="true">
                 <use xlink:href="assets/fonts/custom-icon.svg#custom-sun-1"></use>
               </svg>
-              Light
+              {{ 'APPLICATION_CONFIG.THEME_MODE.LIGHT' | translate }}
             </button>
           </div>
           <div class="col-4">
             <button
-              matTooltip="Dark Mode"
+              [matTooltip]="'APPLICATION_CONFIG.THEME_MODE.DARK' | translate"
               mat-stroked-button
               class="customize-button w-100"
               [ngClass]="{ active: layoutType === 'dark' }"
               (click)="setLayouts('dark')"
-              aria-label="Set dark mode"
+              [attr.aria-label]="'APPLICATION_CONFIG.THEME_MODE.DARK' | translate"
             >
               <svg class="pc-icon" aria-hidden="true">
                 <use xlink:href="assets/fonts/custom-icon.svg#custom-moon"></use>
               </svg>
-              Dark
+              {{ 'APPLICATION_CONFIG.THEME_MODE.DARK' | translate }}
             </button>
           </div>
           <div class="col-4">
             <button
-              matTooltip="Auto Mode"
+              [matTooltip]="'APPLICATION_CONFIG.THEME_MODE.AUTO' | translate"
               mat-stroked-button
               class="customize-button auto-button w-100"
               [ngClass]="{ active: layoutType === 'auto' }"
               (click)="setLayouts('auto')"
-              aria-label="Set auto mode"
+              [attr.aria-label]="'APPLICATION_CONFIG.THEME_MODE.AUTO' | translate"
             >
               <svg class="pc-icon" aria-hidden="true">
                 <use xlink:href="assets/fonts/custom-icon.svg#custom-setting-2"></use>
               </svg>
-              Auto
+              {{ 'APPLICATION_CONFIG.THEME_MODE.AUTO' | translate }}
             </button>
           </div>
         </div>
       </div>
 
       <div class="mb-4" *ngIf="layoutType !== 'dark'">
-        <h6 class="fw-semibold">Theme Contrast</h6>
-        <p class="text-muted">Choose Theme Contrast</p>
+        <h6 class="fw-semibold">{{ 'APPLICATION_CONFIG.THEME_CONTRAST.TITLE' | translate }}</h6>
+        <p class="text-muted">{{ 'APPLICATION_CONFIG.THEME_CONTRAST.DESCRIPTION' | translate }}</p>
         <div class="row">
           <div class="col-6">
             <button
-              matTooltip="Light Contrast"
+              [matTooltip]="'APPLICATION_CONFIG.THEME_CONTRAST.LIGHT' | translate"
               mat-stroked-button
               class="customize-button w-100"
               [ngClass]="{ active: contrast === true }"
               (click)="setThemeContrast(true)"
-              aria-label="Set light contrast"
+              [attr.aria-label]="'APPLICATION_CONFIG.THEME_CONTRAST.LIGHT' | translate"
             >
               <svg class="pc-icon" aria-hidden="true">
                 <use xlink:href="assets/fonts/custom-icon.svg#custom-mask"></use>
               </svg>
-              Light
+              {{ 'APPLICATION_CONFIG.THEME_CONTRAST.LIGHT' | translate }}
             </button>
           </div>
           <div class="col-6">
             <button
-              matTooltip="Gray Contrast"
+              [matTooltip]="'APPLICATION_CONFIG.THEME_CONTRAST.GRAY' | translate"
               mat-stroked-button
               class="customize-button w-100"
               [ngClass]="{ active: contrast === false }"
               (click)="setThemeContrast(false)"
-              aria-label="Set gray contrast"
+              [attr.aria-label]="'APPLICATION_CONFIG.THEME_CONTRAST.GRAY' | translate"
             >
               <svg class="pc-icon" aria-hidden="true">
                 <use xlink:href="assets/fonts/custom-icon.svg#custom-mask-1-outline"></use>
               </svg>
-              Gray
+              {{ 'APPLICATION_CONFIG.THEME_CONTRAST.GRAY' | translate }}
             </button>
           </div>
         </div>
       </div>
 
       <div class="mb-4">
-        <h6 class="fw-semibold">Sidebar Caption</h6>
-        <p class="text-muted">Sidebar Caption Hide/Show</p>
+        <h6 class="fw-semibold">{{ 'APPLICATION_CONFIG.SIDEBAR_CAPTION.TITLE' | translate }}</h6>
+        <p class="text-muted">{{ 'APPLICATION_CONFIG.SIDEBAR_CAPTION.DESCRIPTION' | translate }}</p>
         <div class="row">
           <div class="col-6">
             <button
-              matTooltip="Show Menu Caption"
+              [matTooltip]="'APPLICATION_CONFIG.SIDEBAR_CAPTION.SHOW' | translate"
               mat-stroked-button
               class="customize-button w-100"
               [ngClass]="{ active: caption === false }"
               (click)="setMenuCaption(false)"
-              aria-label="Show menu caption"
+              [attr.aria-label]="'APPLICATION_CONFIG.SIDEBAR_CAPTION.SHOW' | translate"
             >
-              <img src="assets/images/customizer/img-caption-1.svg" alt="Show caption" class="img-fluid" width="70%" />
-              Show
+              <img src="assets/images/customizer/img-caption-1.svg" [alt]="'APPLICATION_CONFIG.SIDEBAR_CAPTION.SHOW' | translate" class="img-fluid" width="70%" />
+              {{ 'APPLICATION_CONFIG.SIDEBAR_CAPTION.SHOW' | translate }}
             </button>
           </div>
           <div class="col-6">
             <button
-              matTooltip="Hide Menu Caption"
+              [matTooltip]="'APPLICATION_CONFIG.SIDEBAR_CAPTION.HIDE' | translate"
               mat-stroked-button
               class="customize-button w-100"
               [ngClass]="{ active: caption === true }"
               (click)="setMenuCaption(true)"
-              aria-label="Hide menu caption"
+              [attr.aria-label]="'APPLICATION_CONFIG.SIDEBAR_CAPTION.HIDE' | translate"
             >
-              <img src="assets/images/customizer/img-caption-2.svg" alt="Hide caption" class="img-fluid" width="70%" />
-              Hide
+              <img src="assets/images/customizer/img-caption-2.svg" [alt]="'APPLICATION_CONFIG.SIDEBAR_CAPTION.HIDE' | translate" class="img-fluid" width="70%" />
+              {{ 'APPLICATION_CONFIG.SIDEBAR_CAPTION.HIDE' | translate }}
             </button>
           </div>
         </div>
       </div>
 
       <div class="mb-4">
-        <h6 class="fw-semibold">Theme Layout</h6>
-        <p class="text-muted">LTR/RTL</p>
+        <h6 class="fw-semibold">{{ 'APPLICATION_CONFIG.THEME_LAYOUT.TITLE' | translate }}</h6>
+        <p class="text-muted">{{ 'APPLICATION_CONFIG.THEME_LAYOUT.DESCRIPTION' | translate }}</p>
         <div class="row">
           <div class="col-6">
             <button
-              matTooltip="LTR Mode"
+              [matTooltip]="'APPLICATION_CONFIG.THEME_LAYOUT.LTR' | translate"
               mat-stroked-button
               class="customize-button w-100"
               [ngClass]="{ active: rtlLayout === false }"
               (click)="setRtlLayout(false)"
-              aria-label="Set LTR layout"
+              [attr.aria-label]="'APPLICATION_CONFIG.THEME_LAYOUT.LTR' | translate"
             >
-              <img src="assets/images/customizer/img-layout-1.svg" alt="LTR layout" class="img-fluid" width="70%" />
-              LTR
+              <img src="assets/images/customizer/img-layout-1.svg" [alt]="'APPLICATION_CONFIG.THEME_LAYOUT.LTR' | translate" class="img-fluid" width="70%" />
+              {{ 'APPLICATION_CONFIG.THEME_LAYOUT.LTR' | translate }}
             </button>
           </div>
           <div class="col-6">
             <button
-              matTooltip="RTL Mode"
+              [matTooltip]="'APPLICATION_CONFIG.THEME_LAYOUT.RTL' | translate"
               [disabled]="layout === 'horizontal'"
               mat-stroked-button
               class="customize-button w-100"
               [ngClass]="{ active: rtlLayout === true }"
               (click)="setRtlLayout(true)"
-              aria-label="Set RTL layout"
+              [attr.aria-label]="'APPLICATION_CONFIG.THEME_LAYOUT.RTL' | translate"
             >
-              <img src="assets/images/customizer/img-layout-2.svg" alt="RTL layout" class="img-fluid" width="70%" />
-              RTL
+              <img src="assets/images/customizer/img-layout-2.svg" [alt]="'APPLICATION_CONFIG.THEME_LAYOUT.RTL' | translate" class="img-fluid" width="70%" />
+              {{ 'APPLICATION_CONFIG.THEME_LAYOUT.RTL' | translate }}
             </button>
           </div>
         </div>
@@ -162,16 +162,16 @@
     <!-- Right column -->
     <div class="col-lg-6">
       <div class="mb-4">
-        <h6 class="fw-semibold">Custom Theme</h6>
-        <p class="text-muted">Choose your Primary color</p>
+        <h6 class="fw-semibold">{{ 'APPLICATION_CONFIG.CUSTOM_THEME.TITLE' | translate }}</h6>
+        <p class="text-muted">{{ 'APPLICATION_CONFIG.CUSTOM_THEME.DESCRIPTION' | translate }}</p>
         <div class="theme-color">
           <button
             type="button"
             class="color-swatch blue-layout"
             [ngClass]="{ active: bodyColor === 'blue-theme' }"
             (click)="setBodyColor('blue-theme')"
-            matTooltip="Blue Theme"
-            aria-label="Set blue theme"
+            [matTooltip]="'APPLICATION_CONFIG.CUSTOM_THEME.BLUE' | translate"
+            [attr.aria-label]="'APPLICATION_CONFIG.CUSTOM_THEME.BLUE' | translate"
           ></button>
 
           <button
@@ -179,8 +179,8 @@
             class="color-swatch indigo-layout"
             [ngClass]="{ active: bodyColor === 'indigo-theme' }"
             (click)="setBodyColor('indigo-theme')"
-            matTooltip="Indigo Theme"
-            aria-label="Set indigo theme"
+            [matTooltip]="'APPLICATION_CONFIG.CUSTOM_THEME.INDIGO' | translate"
+            [attr.aria-label]="'APPLICATION_CONFIG.CUSTOM_THEME.INDIGO' | translate"
           ></button>
 
           <button
@@ -188,8 +188,8 @@
             class="color-swatch purple-layout"
             [ngClass]="{ active: bodyColor === 'purple-theme' }"
             (click)="setBodyColor('purple-theme')"
-            matTooltip="Purple Theme"
-            aria-label="Set purple theme"
+            [matTooltip]="'APPLICATION_CONFIG.CUSTOM_THEME.PURPLE' | translate"
+            [attr.aria-label]="'APPLICATION_CONFIG.CUSTOM_THEME.PURPLE' | translate"
           ></button>
 
           <button
@@ -197,8 +197,8 @@
             class="color-swatch pink-layout"
             [ngClass]="{ active: bodyColor === 'pink-theme' }"
             (click)="setBodyColor('pink-theme')"
-            matTooltip="Pink Theme"
-            aria-label="Set pink theme"
+            [matTooltip]="'APPLICATION_CONFIG.CUSTOM_THEME.PINK' | translate"
+            [attr.aria-label]="'APPLICATION_CONFIG.CUSTOM_THEME.PINK' | translate"
           ></button>
 
           <button
@@ -206,8 +206,8 @@
             class="color-swatch red-layout"
             [ngClass]="{ active: bodyColor === 'red-theme' }"
             (click)="setBodyColor('red-theme')"
-            matTooltip="Red Theme"
-            aria-label="Set red theme"
+            [matTooltip]="'APPLICATION_CONFIG.CUSTOM_THEME.RED' | translate"
+            [attr.aria-label]="'APPLICATION_CONFIG.CUSTOM_THEME.RED' | translate"
           ></button>
 
           <button
@@ -215,8 +215,8 @@
             class="color-swatch orange-layout"
             [ngClass]="{ active: bodyColor === 'orange-theme' }"
             (click)="setBodyColor('orange-theme')"
-            matTooltip="Orange Theme"
-            aria-label="Set orange theme"
+            [matTooltip]="'APPLICATION_CONFIG.CUSTOM_THEME.ORANGE' | translate"
+            [attr.aria-label]="'APPLICATION_CONFIG.CUSTOM_THEME.ORANGE' | translate"
           ></button>
 
           <button
@@ -224,8 +224,8 @@
             class="color-swatch yellow-layout"
             [ngClass]="{ active: bodyColor === 'yellow-theme' }"
             (click)="setBodyColor('yellow-theme')"
-            matTooltip="Yellow Theme"
-            aria-label="Set yellow theme"
+            [matTooltip]="'APPLICATION_CONFIG.CUSTOM_THEME.YELLOW' | translate"
+            [attr.aria-label]="'APPLICATION_CONFIG.CUSTOM_THEME.YELLOW' | translate"
           ></button>
 
           <button
@@ -233,8 +233,8 @@
             class="color-swatch green-layout"
             [ngClass]="{ active: bodyColor === 'green-theme' }"
             (click)="setBodyColor('green-theme')"
-            matTooltip="Green Theme"
-            aria-label="Set green theme"
+            [matTooltip]="'APPLICATION_CONFIG.CUSTOM_THEME.GREEN' | translate"
+            [attr.aria-label]="'APPLICATION_CONFIG.CUSTOM_THEME.GREEN' | translate"
           ></button>
 
           <button
@@ -242,91 +242,74 @@
             class="color-swatch teal-layout"
             [ngClass]="{ active: bodyColor === 'teal-theme' }"
             (click)="setBodyColor('teal-theme')"
-            matTooltip="Teal Theme"
-            aria-label="Set teal theme"
-          ></button>
-
-          <button
-            type="button"
-            class="color-swatch cyan-layout"
-            [ngClass]="{ active: bodyColor === 'cyan-theme' }"
-            (click)="setBodyColor('cyan-theme')"
-            matTooltip="Cyan Theme"
-            aria-label="Set cyan theme"
+            [matTooltip]="'APPLICATION_CONFIG.CUSTOM_THEME.TEAL' | translate"
+            [attr.aria-label]="'APPLICATION_CONFIG.CUSTOM_THEME.TEAL' | translate"
           ></button>
         </div>
       </div>
 
       <div class="mb-4">
-        <h6 class="fw-semibold">Menu Orientation</h6>
-        <p class="text-muted">Choose Vertical or Horizontal or Compact Menu Orientation</p>
+        <h6 class="fw-semibold">{{ 'APPLICATION_CONFIG.MENU_ORIENTATION.TITLE' | translate }}</h6>
+        <p class="text-muted">{{ 'APPLICATION_CONFIG.MENU_ORIENTATION.DESCRIPTION' | translate }}</p>
         <div class="row">
-          <div class="col-4">
+          <div class="col-6">
             <button
-              matTooltip="Vertical Menu"
+              [matTooltip]="'APPLICATION_CONFIG.MENU_ORIENTATION.VERTICAL' | translate"
               mat-stroked-button
               class="customize-button w-100"
               [ngClass]="{ active: layout === 'vertical' }"
               (click)="setMenuOrientation('vertical')"
+              [attr.aria-label]="'APPLICATION_CONFIG.MENU_ORIENTATION.VERTICAL' | translate"
             >
-              <img src="assets/images/customizer/vertical.svg" alt="img" class="img-fluid" />
-              Vertical
+              <img src="assets/images/customizer/vertical.svg" [alt]="'APPLICATION_CONFIG.MENU_ORIENTATION.VERTICAL' | translate" class="img-fluid" width="70%" />
+              {{ 'APPLICATION_CONFIG.MENU_ORIENTATION.VERTICAL' | translate }}
             </button>
           </div>
-          <div class="col-4">
+          <div class="col-6">
             <button
-              matTooltip="Horizontal Menu"
-              [disabled]="rtlLayout === true"
+              [matTooltip]="'APPLICATION_CONFIG.MENU_ORIENTATION.HORIZONTAL' | translate"
               mat-stroked-button
               class="customize-button w-100"
               [ngClass]="{ active: layout === 'horizontal' }"
               (click)="setMenuOrientation('horizontal')"
+              [attr.aria-label]="'APPLICATION_CONFIG.MENU_ORIENTATION.HORIZONTAL' | translate"
             >
-              <img src="assets/images/customizer/horizontal.svg" alt="img" class="img-fluid" />
-              Horizontal
-            </button>
-          </div>
-          <div class="col-4">
-            <button
-              matTooltip="Compact Menu"
-              mat-stroked-button
-              class="customize-button w-100"
-              [ngClass]="{ active: layout === 'compact' }"
-              (click)="setMenuOrientation('compact')"
-            >
-              <img src="assets/images/customizer/mini-menu.svg" alt="img" class="img-fluid" />
-              Compact
+              <img src="assets/images/customizer/horizontal.svg" [alt]="'APPLICATION_CONFIG.MENU_ORIENTATION.HORIZONTAL' | translate" class="img-fluid" width="70%" />
+              {{ 'APPLICATION_CONFIG.MENU_ORIENTATION.HORIZONTAL' | translate }}
             </button>
           </div>
         </div>
       </div>
 
       <div class="mb-4">
-        <h6 class="fw-semibold">Layout Width</h6>
-        <p class="text-muted">Choose Full or Container Layout</p>
+        <h6 class="fw-semibold">{{ 'APPLICATION_CONFIG.LAYOUT_WIDTH.TITLE' | translate }}</h6>
+        <p class="text-muted">{{ 'APPLICATION_CONFIG.LAYOUT_WIDTH.DESCRIPTION' | translate }}</p>
         <div class="row">
           <div class="col-6">
             <button
-              matTooltip="Full Layout"
+              [matTooltip]="'APPLICATION_CONFIG.LAYOUT_WIDTH.FULL' | translate"
               mat-stroked-button
               class="customize-button w-100"
               [ngClass]="{ active: boxLayouts === false }"
               (click)="setBoxLayouts(false)"
             >
-              <img src="assets/images/customizer/img-container-1.svg" alt="img" class="img-fluid" width="70%" />
-              Full
+              <img src="assets/images/customizer/img-container-1.svg"
+                   [alt]="'APPLICATION_CONFIG.LAYOUT_WIDTH.FULL' | translate" class="img-fluid" width="70%" />
+              {{ 'APPLICATION_CONFIG.LAYOUT_WIDTH.FULL' | translate }}
             </button>
           </div>
           <div class="col-6">
             <button
-              matTooltip="Container Layout"
+              [matTooltip]="'APPLICATION_CONFIG.LAYOUT_WIDTH.BOXED' | translate"
               mat-stroked-button
               class="customize-button w-100"
               [ngClass]="{ active: boxLayouts === true }"
               (click)="setBoxLayouts(true)"
+              [attr.aria-label]="'APPLICATION_CONFIG.LAYOUT_WIDTH.BOXED' | translate"
+
             >
-              <img src="assets/images/customizer/img-container-2.svg" alt="img" class="img-fluid" width="70%" />
-              Container
+              <img src="assets/images/customizer/img-container-2.svg" [alt]="'APPLICATION_CONFIG.LAYOUT_WIDTH.BOXED' | translate" class="img-fluid" width="70%" />
+              {{ 'APPLICATION_CONFIG.LAYOUT_WIDTH.BOXED' | translate }}
             </button>
           </div>
         </div>

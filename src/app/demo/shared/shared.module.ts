@@ -2,6 +2,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
 // angular material import
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -43,9 +44,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 // third party import
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { CustomTranslateLoader } from './custom-translate-loader';
 
 // project import
-import { CustomTranslateLoader } from './custom-translate-loader';
 import { CardComponent } from 'src/app/@theme/components/card/card.component';
 
 const MaterialModules = [
@@ -95,7 +96,7 @@ const MaterialModules = [
     FormsModule,
     ReactiveFormsModule,
     NgScrollbarModule,
-    TranslateModule.forRoot({
+    TranslateModule.forChild({
       loader: {
         provide: TranslateLoader,
         useClass: CustomTranslateLoader

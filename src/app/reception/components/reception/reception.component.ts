@@ -143,7 +143,6 @@ export class ReceptionComponent implements OnInit {
       supplier: [null, Validators.required],
 
       // Champs spécifiques à l'huile
-      globalLotNumber: [''],
       oilVariety: [null],
       oilQuantity: [null],
       unitPrice: [null],
@@ -161,7 +160,8 @@ export class ReceptionComponent implements OnInit {
       rendement: [null],
       oliveQuantity: [null],
       qualityControl: [null],
-      parcel: ['']
+      parcel: [''],
+      operationType: [null]
     });
   }
 
@@ -347,18 +347,25 @@ export class ReceptionComponent implements OnInit {
     this.selectedReceptionId = list.id;
     this.formOpen = true;
     this.receptionForm.patchValue({
-      deliveryType: list.deliveryType // Utiliser le nom de la carte ('Réception Olive' ou 'Réception Huile')
+      deliveryType: list.deliveryType,
+      globalLotNumber: null
     });
 
     this.resetSpecificFields();
     if (list.deliveryType === 'OLIVE') {
-      this.receptionForm.patchValue(list);
+      this.receptionForm.patchValue({
+        ...list,
+        globalLotNumber: null
+      });
       const oliveType = this.receptionForm.get('oliveType')?.value;
       const deliveryNumber = this.receptionForm.get('deliveryNumber')?.value || this.deliveries.length + 1;
       const lotNumber = this.generateLotNumberForOlive(oliveType, deliveryNumber);
       this.receptionForm.patchValue({ lotNumber }, { emitEvent: false });
     } else {
-      this.receptionForm.patchValue({ lotNumber: '' }, { emitEvent: false });
+      this.receptionForm.patchValue({
+        lotNumber: '',
+        globalLotNumber: null
+      }, { emitEvent: false });
     }
   }
   async Enregistrer(): Promise<void> {
@@ -406,7 +413,8 @@ export class ReceptionComponent implements OnInit {
       status: cleanedFormValue.status,
       rendement: cleanedFormValue.rendement,
       oliveQuantity: cleanedFormValue.oliveQuantity,
-      parcel: cleanedFormValue.parcel
+      parcel: cleanedFormValue.parcel,
+      operationType: cleanedFormValue.operationType
     };
 
     const request$ = this.isEditing
@@ -467,6 +475,7 @@ export class ReceptionComponent implements OnInit {
     formControls['rendement'].reset();
     formControls['oliveQuantity'].reset();
     formControls['parcel'].reset();
+    formControls['operationType'].reset();
   }
 
   cleanPayload(payload: any): any {

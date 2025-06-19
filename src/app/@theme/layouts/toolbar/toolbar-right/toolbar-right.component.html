@@ -1,8 +1,25 @@
 <div class="header-button">
+  <button mat-button [matMenuTriggerFor]="languages" aria-label="mode" class="header-item">
+    <a class="pc-head-link">
+      <svg class="pc-icon">
+        <use xlink:href="assets/fonts/custom-icon.svg#custom-global"></use>
+      </svg>
+    </a>
+  </button>
   <button mat-button [matMenuTriggerFor]="user" aria-label="mode" class="header-item">
     <a class="pc-head-link">
       <img src="assets/images/user/avatar-2.png" alt="user-image" class="user-avatar" />
     </a>
+    <mat-menu #languages="matMenu" xPosition="before">
+      <button mat-menu-item>
+        <div class="mat-body" (click)="useLanguage('en')">English (uk)</div>
+      </button>
+      <button mat-menu-item>
+        <div class="mat-body" (click)="useLanguage('fr')">français</div>
+      </button>
+
+    </mat-menu>
+
   </button>
   <mat-menu #user="matMenu" xPosition="before" class="dropdown-user-profile">
     <div class="dropdown-header flex align-item-center justify-content-between">

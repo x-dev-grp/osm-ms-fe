@@ -60,7 +60,7 @@
       <div class="col-md-3">
         <mat-form-field appearance="outline" class="w-100 m-b-10">
           <mat-label>Numéro lot Global</mat-label>
-          <input type="string" formControlName="globalLotNumber" matInput />
+          <input type="string" formControlName="globalLotNumber" matInput readonly disabled />
         </mat-form-field>
       </div>
     </div>
@@ -190,6 +190,19 @@
           </mat-form-field>
         </div>
         <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100 m-b-10">
+            <mat-label>Type d'opération</mat-label>
+            <mat-select formControlName="operationType">
+              <mat-option *ngFor="let type of productionMethods" [value]="type">
+                {{ type.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
           <mat-form-field appearance="outline" class="w-100 m-b-10">
             <mat-label>Parcelle</mat-label>
             <input formControlName="parcel" matInput />

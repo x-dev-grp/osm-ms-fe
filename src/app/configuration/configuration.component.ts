@@ -27,6 +27,7 @@ import { NgForOf, NgIf } from '@angular/common';
 import { TypeCategory } from '../shared/models/type-category.enum';
 import { BaseType } from '../shared/models/base-type';
 import { GenericTypeService } from '../shared/services/generic-type.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-configuration',
@@ -62,7 +63,8 @@ import { GenericTypeService } from '../shared/services/generic-type.service';
     MatTable,
     MatTooltip,
     NgForOf,
-    NgIf
+    NgIf,
+    TranslatePipe
   ],
   templateUrl: './configuration.component.html',
   styleUrl: './configuration.component.scss'

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, inject, input, OnChanges, OnInit, output, SimpleChanges } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, inject, input, OnChanges, OnInit, output, SimpleChanges } from '@angular/core';
 
 import {  MatTableModule } from '@angular/material/table';
 import {  ReactiveFormsModule } from '@angular/forms';
@@ -46,6 +46,7 @@ export class OsmDashboard implements OnInit,AfterViewInit,OnChanges {
 
 readonly _store=inject(DashboardStore);
 _router=inject(Router);
+  private cdr = inject(ChangeDetectorRef);
 config=input.required<DashboardConfig>();
 applyAction = output<{ row: any; action: Action }>();
 displayedColumns:string[]=[];
@@ -56,6 +57,7 @@ actions:Action[]|undefined;
     this._store.initialize(this.config()?.searchEndpoint,this.config().fields,this.config()?.defaultSearchData,this.config().fileName);
     if(!this.config().actions?.statusMapping)
        this.actions=this.config().actions?.actionsList
+    this.cdr.detectChanges(); // Force change detection
   }
   ngAfterViewInit(): void {
 
@@ -94,7 +96,7 @@ actions:Action[]|undefined;
   selectAllFilterFields(event:any){
      this._store.setAllFilterField(event?.target["checked"])
   }
-  selectAllExportFields(event:any,field: Field) {
+  selectAllExportFields(event:any) {
     this._store.setAllExportField(event?.target["checked"]);
   }
   resetFilter(){
