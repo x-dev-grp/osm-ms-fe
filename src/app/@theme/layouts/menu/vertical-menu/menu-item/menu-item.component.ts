@@ -14,6 +14,7 @@ import { Role } from 'src/app/@theme/types/role';
   selector: 'app-menu-item',
   imports: [RouterModule, SharedModule, CommonModule],
   templateUrl: './menu-item.component.html',
+  standalone: true,
   styleUrls: ['./menu-item.component.scss']
 })
 export class MenuItemVerticalComponent implements OnInit {
@@ -37,7 +38,7 @@ export class MenuItemVerticalComponent implements OnInit {
      * menu items
      */
     const item = this.item();
-    this.isEnabled=item?.disabled? false : true;
+    this.isEnabled = item?.disabled ? false : true;
     /**
      * items parent role
      */

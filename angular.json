@@ -26,7 +26,9 @@
               "lodash",
               "quill-delta"
             ],
-            "outputPath": "dist",
+            "outputPath": "dist/ui",
+            "baseHref": "/",
+            "deployUrl": "/",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [

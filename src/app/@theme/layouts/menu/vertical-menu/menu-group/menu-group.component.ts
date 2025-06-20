@@ -1,6 +1,7 @@
 // Angular import
 import { Component, OnInit, inject, input } from '@angular/core';
 import { Location } from '@angular/common';
+import { CommonModule } from '@angular/common';
 
 // project import
 import { NavigationItem } from 'src/app/@theme/types/navigation';
@@ -10,8 +11,9 @@ import { MenuItemVerticalComponent } from '../menu-item/menu-item.component';
 
 @Component({
   selector: 'app-menu-group-vertical',
-  imports: [SharedModule, MenuCollapseComponent, MenuItemVerticalComponent],
+  imports: [CommonModule, SharedModule, MenuCollapseComponent, MenuItemVerticalComponent],
   templateUrl: './menu-group.component.html',
+  standalone: true,
   styleUrls: ['./menu-group.component.scss']
 })
 export class MenuGroupVerticalComponent implements OnInit {

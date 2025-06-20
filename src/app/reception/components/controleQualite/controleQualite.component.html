@@ -18,7 +18,7 @@
               class="form-control"
               [id]="control.key"
               [formControlName]="control.key"
-              placeholder="Entrez une valeur"
+              placeholder="{{ 'CONTROLE_QUALITE.PLACEHOLDER.ENTER_VALUE' | translate }}"
             />
           </ng-container>
 
@@ -36,15 +36,15 @@
                 </mat-option>
               </mat-select>
               <mat-error *ngIf="dynamicForm.get(control.key)?.hasError('required')">
-                Ce champ est requis
+                {{ 'CONTROLE_QUALITE.ERRORS.REQUIRED' | translate }}
               </mat-error>
             </mat-form-field>
 
               <!-- BOOLEAN -->
               <mat-form-field *ngSwitchCase="'BOOLEAN'" appearance="outline" class="w-100">
                 <mat-select [formControlName]="control.key" [id]="control.key">
-                  <mat-option [value]="true">Vrai</mat-option>
-                  <mat-option [value]="false">Faux</mat-option>
+                  <mat-option [value]="false">{{ 'CONTROLE_QUALITE.BOOLEAN.FALSE' | translate }}</mat-option>
+                  <mat-option [value]="true">{{ 'CONTROLE_QUALITE.BOOLEAN.TRUE' | translate }}</mat-option>
                 </mat-select>
               </mat-form-field>
             </ng-container>
@@ -52,9 +52,9 @@
 
           <!-- Erreurs -->
           <div class="error-messages" *ngIf="dynamicForm.get(control.key)?.invalid && (dynamicForm.get(control.key)?.touched || submitted)">
-            <small *ngIf="dynamicForm.get(control.key)?.errors?.['required']">Ce champ est requis.</small>
-            <small *ngIf="dynamicForm.get(control.key)?.errors?.['min']">Min: {{ getRuleMinValue(control.key) }}</small>
-            <small *ngIf="dynamicForm.get(control.key)?.errors?.['max']">Max: {{ getRuleMaxValue(control.key) }}</small>
+            <small *ngIf="dynamicForm.get(control.key)?.errors?.['required']">{{ 'CONTROLE_QUALITE.ERRORS.REQUIRED' | translate }}</small>
+            <small *ngIf="dynamicForm.get(control.key)?.errors?.['min']">{{ 'CONTROLE_QUALITE.ERRORS.MIN' | translate }} {{ getRuleMinValue(control.key) }}</small>
+            <small *ngIf="dynamicForm.get(control.key)?.errors?.['max']">{{ 'CONTROLE_QUALITE.ERRORS.MAX' | translate }} {{ getRuleMaxValue(control.key) }}</small>
           </div>
         </div>
       </div>
@@ -64,7 +64,7 @@
       <button [disabled]="dynamicForm.invalid || isLoading || isQualityControlDone"
               class="btn btn-primary"
               (click)="onSubmit()">
-        Valider
+        {{ 'CONTROLE_QUALITE.BUTTONS.SUBMIT' | translate }}
       </button>
     </div>
   </form>

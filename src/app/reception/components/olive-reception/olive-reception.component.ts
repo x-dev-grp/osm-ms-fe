@@ -34,8 +34,7 @@ import jsPDF from 'jspdf';
     MatCardModule,
     MatSortModule,
     SharedModule,
-    OsmDashboard,
-    OliveReceptionFormComponent
+    OsmDashboard
   ],
   templateUrl: './olive-reception.component.html',
   styleUrls: ['./olive-reception.component.scss']

@@ -802,5 +802,44 @@
         "LOAD_ERROR": "Erreur lors du chargement des réceptions"
       }
     }
+  },
+  "CONTROLE_QUALITE": {
+    "PLACEHOLDER": {
+      "ENTER_VALUE": "Entrez une valeur"
+    },
+    "ERRORS": {
+      "REQUIRED": "Ce champ est requis.",
+      "MIN": "Min :",
+      "MAX": "Max :",
+      "FORM_INVALID": "Le formulaire contient des erreurs. Veuillez corriger les champs.",
+      "NO_DELIVERY_DATA": "Données de livraison non disponibles.",
+      "MISSING_DELIVERY_DATA": "Données de livraison manquantes.",
+      "INVALID_MEASURED_VALUE": "Valeur mesurée invalide pour la règle : {{ruleKey}}",
+      "NO_RULE_FOR_KEY": "Aucune règle trouvée pour la clé : {{ruleKey}}",
+      "NO_APPLICABLE_RULES": "Aucune règle applicable trouvée pour ce type de livraison.",
+      "NO_RULES_FOUND": "Aucune règle trouvée.",
+      "SAVE_FAILED": "Échec de l'enregistrement des résultats.",
+      "PARTIAL_SAVE": "Certains résultats ont été enregistrés, mais certains échecs sont survenus.",
+      "SERVER": "Une erreur serveur est survenue.",
+      "LOAD_DELIVERY": "Erreur lors du chargement des données de réception.",
+      "LOAD_RULES": "Erreur lors du chargement des règles.",
+      "LOAD_RESULTS": "Erreur lors du chargement des résultats de contrôle qualité.",
+      "NO_CATEGORIE_FIELD": "Le champ 'Categorie' n'existe pas dans le formulaire."
+    },
+    "BOOLEAN": {
+      "TRUE": "Vrai",
+      "FALSE": "Faux"
+    },
+    "BUTTONS": {
+      "SUBMIT": "Valider"
+    },
+    "INFO": {
+      "NO_CHANGES": "Aucun changement à enregistrer."
+    },
+    "SUCCESS": {
+      "UPDATED_AND_CREATED": "Résultats mis à jour et créés avec succès.",
+      "UPDATED": "Résultats mis à jour avec succès.",
+      "CREATED": "Résultats créés avec succès."
+    }
   }
 }

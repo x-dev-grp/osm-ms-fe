@@ -43,7 +43,8 @@ export class BreadcrumbComponent {
   // constructor
   constructor() {
     this.navigations = osm_menus;
-     this.type = 'theme1';
+    this.ComponentNavigations = [];
+    this.type = 'theme1';
     this.setBreadcrumb();
   }
 
@@ -62,6 +63,7 @@ export class BreadcrumbComponent {
   }
 
   filterNavigation(navItems: NavigationItem[], activeLink: string): titleType[] {
+    if (!Array.isArray(navItems)) return [];
     for (const navItem of navItems) {
       if (navItem.type === 'item' && 'url' in navItem && navItem.url === activeLink) {
         return [

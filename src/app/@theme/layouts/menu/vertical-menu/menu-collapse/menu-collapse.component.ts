@@ -16,6 +16,7 @@ import { Role } from 'src/app/@theme/types/role';
   imports: [SharedModule, RouterModule, MenuItemVerticalComponent, CommonModule],
   templateUrl: './menu-collapse.component.html',
   styleUrls: ['./menu-collapse.component.scss'],
+  standalone: true,
   animations: [
     trigger('slideInOut', [
       transition(':enter', [
@@ -69,9 +70,9 @@ export class MenuCollapseComponent implements OnInit {
     /**
      * current login user role
      */
-  //  const currentUserRole = this.authenticationService.currentUserValue?.role || Role.Admin;
+    //  const currentUserRole = this.authenticationService.currentUserValue?.role || Role.Admin;
     const item = this.item();
-    this.isEnabled=item?.disabled? false : true;
+    this.isEnabled = item?.disabled ? false : true;
     /**
      * items parent role
      */

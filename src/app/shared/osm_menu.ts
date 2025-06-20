@@ -9,7 +9,6 @@ export const osm_menus: Navigation[] = [
     id: 'navigation',
     title: 'MENU.HOME.TITLE',
     type: 'group',
-    icon: 'home',
     role: [Role.Admin, Role.User],
     modulePermission: 'RECEPTION',
     children: [
@@ -66,7 +65,6 @@ export const osm_menus: Navigation[] = [
     id: 'receptionGroup',
     title: 'MENU.RECEPTION.TITLE',
     type: 'group',
-    icon: 'local_shipping',
     role: [Role.Admin, Role.User],
     children: [
       {
@@ -104,40 +102,6 @@ export const osm_menus: Navigation[] = [
     ]
   },
 
-  {
-    id: 'supplierGroup',
-    title: 'MENU.SUPPLIER.TITLE',
-    type: 'group',
-    icon: 'business',
-    role: [Role.Admin, Role.User],
-    children: [
-      {
-        id: 'supplierDashboard',
-        title: 'MENU.SUPPLIER.DASHBOARD',
-        type: 'item',
-        url: '/supplier/dashboard',
-        icon: 'dashboard',
-        breadcrumbs: false
-      },
-      {
-        id: 'supplierList',
-        title: 'MENU.SUPPLIER.LIST',
-        type: 'item',
-        url: '/supplier/dashboard/list',
-        icon: 'list',
-        breadcrumbs: false
-      },
-      {
-        id: 'supplierHistory',
-        title: 'MENU.SUPPLIER.HISTORY',
-        type: 'item',
-        url: '/supplier/dashboard/history',
-        icon: 'history',
-        breadcrumbs: false
-      }
-    ]
-  },
-
   // ────────────────────────
   // Production
   // ────────────────────────
@@ -145,7 +109,6 @@ export const osm_menus: Navigation[] = [
     id: 'productionGroup',
     title: 'MENU.PRODUCTION.TITLE',
     type: 'group',
-    icon: 'factory',
     role: [Role.Admin, Role.User],
     children: [
       {
@@ -201,7 +164,6 @@ export const osm_menus: Navigation[] = [
     id: 'financeGroup',
     title: 'MENU.FINANCE.TITLE',
     type: 'group',
-    icon: 'account_balance',
     role: [Role.Admin, Role.User],
     children: [
       {
@@ -239,7 +201,6 @@ export const osm_menus: Navigation[] = [
     id: 'storageGroup',
     title: 'MENU.STORAGE.TITLE',
     type: 'group',
-    icon: 'warehouse',
     role: [Role.Admin, Role.User],
     children: [
       {
@@ -260,7 +221,6 @@ export const osm_menus: Navigation[] = [
     id: 'hrGroup',
     title: 'MENU.HR.TITLE',
     type: 'group',
-    icon: 'groups',
     role: [Role.Admin],
     children: [
       {
@@ -289,7 +249,6 @@ export const osm_menus: Navigation[] = [
     id: 'settingsGroup',
     title: 'MENU.SETTINGS.TITLE',
     type: 'group',
-    icon: 'settings',
     role: [Role.Admin, Role.User],
     children: [
       {
@@ -367,7 +326,6 @@ export const osm_menus: Navigation[] = [
     id: 'reportsGroup',
     title: 'Reports',
     type: 'group',
-    icon: 'assessment',
     role: [Role.Admin, Role.User],
     children: [
       {

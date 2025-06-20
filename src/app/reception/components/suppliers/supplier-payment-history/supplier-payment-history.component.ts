@@ -12,6 +12,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SupplierTypeService } from '../../../../shared/services/supplier.service';
+import { Location } from '@angular/common';
 
 interface Payment {
   id: string;
@@ -53,7 +54,8 @@ export class SupplierPaymentHistoryComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private supplierService: SupplierTypeService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -70,8 +72,12 @@ export class SupplierPaymentHistoryComponent implements OnInit {
   }
 
   onBack(): void {
-    this.router.navigate(['/reception/fournisseur', this.supplierId]);
-  }
+    const supplierId = localStorage.getItem('selectedSupplierId');
+    if (supplierId) {
+      localStorage.setItem('selectedSupplierId',supplierId);
+      this.router.navigate(['/reception/fournisseur/details']);
+    }
+   }
 
   loadPaymentHistory(): void {
     // TODO: Replace with actual API call
@@ -100,7 +106,7 @@ export class SupplierPaymentHistoryComponent implements OnInit {
     }, 1000);
   }
 
-  viewPaymentDetails(payment: Payment): void {
+  viewPaymentDetails(): void {
     // TODO: Implement payment details view
     this.snackBar.open('Détails du paiement à implémenter', 'Fermer', {
       duration: 3000

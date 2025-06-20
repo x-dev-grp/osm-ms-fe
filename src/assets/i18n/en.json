@@ -770,5 +770,44 @@
         "LOAD_ERROR": "Error loading receptions"
       }
     }
+  },
+  "CONTROLE_QUALITE": {
+    "PLACEHOLDER": {
+      "ENTER_VALUE": "Enter a value"
+    },
+    "ERRORS": {
+      "REQUIRED": "This field is required.",
+      "MIN": "Min:",
+      "MAX": "Max:",
+      "FORM_INVALID": "The form contains errors. Please correct the fields.",
+      "NO_DELIVERY_DATA": "Delivery data not available.",
+      "MISSING_DELIVERY_DATA": "Missing delivery data.",
+      "INVALID_MEASURED_VALUE": "Invalid measured value for rule: {{ruleKey}}",
+      "NO_RULE_FOR_KEY": "No rule found for key: {{ruleKey}}",
+      "NO_APPLICABLE_RULES": "No applicable rule found for this delivery type.",
+      "NO_RULES_FOUND": "No rules found.",
+      "SAVE_FAILED": "Failed to save results.",
+      "PARTIAL_SAVE": "Some results were saved, but some failed.",
+      "SERVER": "A server error occurred.",
+      "LOAD_DELIVERY": "Error loading delivery data.",
+      "LOAD_RULES": "Error loading rules.",
+      "LOAD_RESULTS": "Error loading quality control results.",
+      "NO_CATEGORIE_FIELD": "The 'Categorie' field does not exist in the form."
+    },
+    "BOOLEAN": {
+      "TRUE": "True",
+      "FALSE": "False"
+    },
+    "BUTTONS": {
+      "SUBMIT": "Submit"
+    },
+    "INFO": {
+      "NO_CHANGES": "No changes to save."
+    },
+    "SUCCESS": {
+      "UPDATED_AND_CREATED": "Results updated and created successfully.",
+      "UPDATED": "Results updated successfully.",
+      "CREATED": "Results created successfully."
+    }
   }
 }

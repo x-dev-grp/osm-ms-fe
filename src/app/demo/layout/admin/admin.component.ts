@@ -1,5 +1,5 @@
 // Angular import
-import { AfterViewInit, Component, effect, inject, OnInit, viewChild } from '@angular/core';
+import { AfterViewInit, Component, effect, inject, OnInit, viewChild, ChangeDetectorRef } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { MatDrawer, MatDrawerMode } from '@angular/material/sidenav';
 import { RouterModule } from '@angular/router';
@@ -70,6 +70,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   private breakpointObserver = inject(BreakpointObserver);
   private themeService = inject(ThemeLayoutService);
   private profile: CompanyProfile;
+  private cdr: ChangeDetectorRef;
 
   // Constructor
   constructor() {
@@ -79,6 +80,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
     effect(() => {
       this.themeDirection(this.themeService.directionChange());
     });
+    this.cdr = inject(ChangeDetectorRef);
   }
 // wherever you handle “Apply” in your config UI, call:
   onApply(cfg: ThemeConfig) {
@@ -113,11 +115,11 @@ export class AdminComponent implements OnInit, AfterViewInit {
     const userPermissions = currentUser?.permissions || [];
     // const permissionModules:string[] = Array.from(new Set(userPermissions?.map((p:string) => p.split(':')[0])));
     // const permissionRessources:string[] = Array.from(new Set(userPermissions?.map((p:string)=> p.split(':')[1])));
- 
+
     /**
      * Role base menu filtering
      */
-    if(userRole !== Role.Admin) 
+    if(userRole !== Role.Admin)
        this.menus = this.filterMenuByPermissions(this.menus, userPermissions);
   }
 filterMenuByPermissions(
@@ -141,7 +143,7 @@ filterMenuByPermissions(
       });
     }
 
-    return true; 
+    return true;
   };
 
  const processItem = (
@@ -170,7 +172,7 @@ filterMenuByPermissions(
     return menus.map((item) => {
       // If item doesn't have a specific role, inherit roles from parent
       const itemRoles = item.role ? item.role : parentRoles;
-      
+
       // If item has children, recursively filter them, passing current item's roles as parentRoles
       if (item.children) {
         item.children = this.RoleBaseFilterMenu(item.children, userRoles, itemRoles);
@@ -186,6 +188,7 @@ filterMenuByPermissions(
     this.rtlMode = cfg.rtlLayout;
     this.currentLayout = cfg.layout;
     this.manageLayout(this.currentLayout);
+    this.cdr.detectChanges();
   }
 
 
@@ -197,7 +200,7 @@ filterMenuByPermissions(
     document.body.classList.remove('light','dark');
     if (AbleProConfig.isDarkMode === 'light') document.body.classList.add('light');
     if (AbleProConfig.isDarkMode === 'dark')  document.body.classList.add('dark');
-    // (auto you’d handle separately if desired)
+    // (auto you'd handle separately if desired)
 
     // 2) Contrast
     document.body.classList.toggle('gray-contrast', !AbleProConfig.theme_contrast);

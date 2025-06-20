@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { SupplierTypeService } from '../../../../shared/services/supplier.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -12,8 +12,8 @@ import { OsmDashboard } from '../../../../shared/modules/osm-dashboard/osm-dashb
 import { DashboardConfig } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
 import { AttributeType, FieldType } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
 import { SearchOperation } from '../../../../shared/models/advanced-search/searchOperation';
-import { ApiResponse } from '../../../../shared/models/api-response';
 import { SupplierType } from '../../../../shared/models/supplier-type';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-supplier-details',
@@ -30,23 +30,34 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
   unpaidCount: number = 0;
   dashboardConfig: DashboardConfig;
   private destroy$ = new Subject<void>();
+  supplierId: string | null = null;
 
   constructor(
     private router: Router,
-    private supplierService: SupplierTypeService
+    private route: ActivatedRoute,
+    private supplierService: SupplierTypeService,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
-    const supplierId = localStorage.getItem('selectedSupplierId');
+    // 1. get id from the URL if it exists (preferred)
+    const routeId = this.route.snapshot.paramMap.get('id');
+    // 2. fall back to what is in localStorage
+    const storedId = localStorage.getItem('selectedSupplierId');
+    // 3. final value
+    const supplierId = routeId || storedId;
+
     if (supplierId) {
-      // this.loadPaymentCounts(supplierId);
+      // keep it in localStorage so a hard-refresh still works
+      localStorage.setItem('selectedSupplierId', supplierId);
+
       this.setupConfig(supplierId);
+      this.loadPaymentCounts(supplierId);
     } else {
       this.error = 'No supplier ID found';
       this.router.navigate(['/reception/fournisseur']);
     }
   }
-
   private setupConfig(supplierId: string) {
     this.dashboardConfig = {
       title: 'Détails du Fournisseur',
@@ -221,7 +232,6 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-    localStorage.removeItem('selectedSupplierId');
   }
 
   onBack(): void {

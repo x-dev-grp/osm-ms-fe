@@ -1,7 +1,7 @@
 [
   {
     "context": ["/api", "/oauth2"],
-    "target": "http://localhost:8084",
+    "target": "https://osm-gateway.onrender.com",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
