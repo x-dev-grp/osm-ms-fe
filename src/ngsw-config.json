@@ -51,5 +51,8 @@
         "maxAge": "7d"
       }
     }
+  ],
+  "navigationUrls": [
+    { "positive": true, "regex": "^\\/((?!oauth2\\/token).)*$" }
   ]
-} 
+}
