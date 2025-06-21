@@ -54,7 +54,7 @@
             "scripts": [
               "node_modules/apexcharts/dist/apexcharts.min.js"
              ],
-            "serviceWorker": true,
+            "serviceWorker": false,
             "ngswConfigPath": "ngsw-config.json"
           },
           "configurations": {

@@ -39,5 +39,11 @@
         "strategy": "performance"
       }
     }
+  ],
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/((?!oauth2\\/token).)*$"
+    }
   ]
 }
