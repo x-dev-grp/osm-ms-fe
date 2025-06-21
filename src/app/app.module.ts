@@ -79,10 +79,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     GenericTypeComponent,
     SupplierComponent,
     QualityControlRuleComponent,
-    ServiceWorkerModule.register('ngsw-worker.js', {
-      enabled: environment.production,
-      registrationStrategy: 'registerWhenStable:30000'
-    }),
   ],
   providers: [],
   bootstrap: []

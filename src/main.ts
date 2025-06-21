@@ -43,10 +43,6 @@ bootstrapApplication(AppComponent, {
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: MAT_DATE_LOCALE, useValue: 'fr' },
     [provideHttpClient(withInterceptorsFromDi())],
-    provideAnimations(),
-    provideServiceWorker('ngsw-worker.js', {
-      enabled: !isDevMode(),
-      registrationStrategy: 'registerWhenStable:30000'
-    })
+    provideAnimations()
   ]
 }).catch((err) => console.error(err));

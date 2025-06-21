@@ -54,8 +54,7 @@
             "scripts": [
               "node_modules/apexcharts/dist/apexcharts.min.js"
              ],
-            "serviceWorker": false,
-            "ngswConfigPath": "ngsw-config.json"
+            "serviceWorker": false
           },
           "configurations": {
             "production": {
@@ -72,7 +71,7 @@
                 }
               ],
               "outputHashing": "all",
-              "serviceWorker": true
+              "serviceWorker": false
             },
             "development": {
               "buildOptimizer": false,
@@ -81,7 +80,7 @@
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true,
-              "serviceWorker": true
+              "serviceWorker": false
             }
           },
           "defaultConfiguration": "production"
