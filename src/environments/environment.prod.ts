@@ -8,7 +8,7 @@ export const AppConfig={
 
   authentication: {
     authorization:`${environment.apiUrl}/oauth2/token`,
-    authorization_header:"Basic ..."
+    authorization_header:"Basic b3NtLWNsaWVudDpYN2tQOW1OMnZROHJUNHdZNnpBMWJDM2RFNWZHOGhKOQ=="
 
   }
 }
