@@ -4,7 +4,6 @@ import { Router, NavigationStart, NavigationEnd, NavigationCancel, NavigationErr
 
 // project import
 import { BuyNowLinkService } from './@theme/services/buy-now-link.service';
-import { PwaService } from './services/pwa.service';
 
 // Angular material
 import { MatProgressBar } from '@angular/material/progress-bar';
@@ -21,7 +20,6 @@ export class AppComponent implements OnInit {
   private router = inject(Router);
   activeRoute = inject(ActivatedRoute);
   private productIdService = inject(BuyNowLinkService);
-  private pwaService = inject(PwaService);
   private translate = inject(TranslateService);
 
   // public props
