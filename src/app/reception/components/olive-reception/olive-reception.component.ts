@@ -21,6 +21,7 @@ import { OliveReceptionFormComponent } from './olive-reception-add/olive-recepti
 
 import {OLIVE_DELIVERY_DASHBOARD} from './OLIVE_DELIVERY_DASHBOARD';
 import {PdfGeneratorService} from "../../../shared/services/pdf-generator.service";
+import jsPDF from 'jspdf';
 
 @Component({
   selector: 'app-olive-reception',
