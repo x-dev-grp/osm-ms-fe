@@ -2,12 +2,13 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
 
 // project import
 import { AppConfig } from 'src/environments/environment';
 import { User } from '../../@theme/types/user';
 import { TokenService } from 'src/app/auth/services/tokenService.service';
-import { Observable } from 'rxjs';
 import { Role } from 'src/app/@theme/types/role';
 import { CompanyProfileService } from '../../shared/services/company-profile.service';
 
@@ -22,16 +23,19 @@ export class AuthenticationService {
   private currentUserSignal = signal<User | null>(null);
 
   constructor() {
-   const decodedToken :any=this._tokenService.decodeToken()
-   if (decodedToken!=null){
+   const decodedToken = this._tokenService.decodeToken() as unknown;
+   if (decodedToken != null) {
     console.log(decodedToken)
-    const role:any=decodedToken?.role;
-    const permissions=decodedToken?.authorities;
-    let user:User=structuredClone( decodedToken?.osmUser);
-    user.role=role;
-    user.permissions=permissions;
-    console.log(user)
-    this.setCurrentUserValue=user;
+    const role: string = (decodedToken as Record<string, unknown>)['role'] as string;
+    const permissions = (decodedToken as Record<string, unknown>)['authorities'];
+    const osmUser = (decodedToken as Record<string, unknown>)['osmUser'];
+    if (osmUser && typeof osmUser === 'object') {
+      const user: User = structuredClone(osmUser as User);
+      user.role = role;
+      user.permissions = permissions;
+      console.log(user)
+      this.setCurrentUserValue = user;
+    }
    }
   }
 
@@ -72,27 +76,42 @@ export class AuthenticationService {
 isAdmin(): boolean {
     return this.currentUserValue?.role === Role.Admin;
 }
-  login(payload: any):Observable<any> {
+  login(payload: Record<string, string>): Observable<Record<string, unknown>> {
     const body = new URLSearchParams();
     body.set('grant_type', 'TOKEN');
-    body.set('username', payload.username);
-    body.set('password', payload.password);
+    body.set('username', payload['username']);
+    body.set('password', payload['password']);
 
     const headers = new HttpHeaders({
       authorization: AppConfig.authentication.authorization_header,
       'Content-Type': 'application/x-www-form-urlencoded'
     });
-    return this.http.post<any>(`${AppConfig.authentication.authorization}`, body.toString(), { headers });
+    // Logging for debugging in production
+    console.log('[AuthService] Login request:', {
+      url: AppConfig.authentication.authorization,
+      payload: { ...payload, password: '***' }, // mask password
+      headers: headers.keys().reduce((acc, key) => ({ ...acc, [key]: headers.get(key) }), {})
+    });
+    return this.http.post<Record<string, unknown>>(`${AppConfig.authentication.authorization}`, body.toString(), { headers }).pipe(
+      // Log the response for debugging
+      tap(response => {
+        console.log('[AuthService] Login response:', response);
+      }),
+      catchError(error => {
+        console.error('[AuthService] Login error:', error);
+        throw error;
+      })
+    );
   }
-  refreshToken(refreshToken:string):Observable<any> {
+  refreshToken(refreshToken: string | null): Observable<Record<string, unknown>> {
     const body = new URLSearchParams();
     body.set('grant_type', 'refresh_token');
-    body.set('refresh_token', refreshToken);
+    body.set('refresh_token', refreshToken ?? '');
     const headers = new HttpHeaders({
       authorization: AppConfig.authentication.authorization_header,
       'Content-Type': 'application/x-www-form-urlencoded'
     });
-    return this.http.post<any>(`${AppConfig.authentication.authorization}`, body.toString(), { headers });
+    return this.http.post<Record<string, unknown>>(`${AppConfig.authentication.authorization}`, body.toString(), { headers });
   }
 
 

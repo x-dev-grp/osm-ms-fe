@@ -6,13 +6,13 @@ import packageInfo from '../../package.json';
 export const environment = {
   appVersion: packageInfo.version,
   production: false,
-  apiUrl: 'https://mock-data-api-nextjs.vercel.app'
+  apiUrl: 'http://localhost:4200',
 };
 
 export const AppConfig={
 
   authentication: {
-    authorization:`/oauth2/token`,
+    authorization:`${environment.apiUrl}/oauth2/token`,
     authorization_header:"Basic b3NtLWNsaWVudDpYN2tQOW1OMnZROHJUNHdZNnpBMWJDM2RFNWZHOGhKOQ=="
 
   }

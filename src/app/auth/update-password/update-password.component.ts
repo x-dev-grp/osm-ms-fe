@@ -1,9 +1,9 @@
-import { AfterViewInit, Component, DestroyRef, inject, OnInit, TemplateRef, viewChild, ViewChild } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild, inject } from '@angular/core';
 
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from 'src/app/demo/shared/shared.module';
-import { catchError, EMPTY, filter, first, Observable, of, switchMap, tap } from 'rxjs';
+import { catchError, first, of, tap } from 'rxjs';
 import { UserService } from '../../settings/user-management/services/user.service';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
@@ -13,14 +13,14 @@ import { User } from 'src/app/@theme/types/user';
 import { TokenService } from '../services/tokenService.service';
 
 @Component({
-  selector: 'update-password',
+  selector: 'app-update-password',
   templateUrl: './update-password.component.html',
   styleUrls: ['../authentication.scss'],
   standalone: true,
   imports: [CommonModule, SharedModule, RouterModule]
 })
 export class UpdatePasswordComponent implements OnInit {
-  @ViewChild('changePwdTpl') changePwdTpl: TemplateRef<any>;
+  @ViewChild('changePwdTpl') changePwdTpl: TemplateRef<unknown>;
   private fb = inject(FormBuilder);
   private userService = inject(UserService);
   private authService = inject(AuthenticationService);
@@ -34,7 +34,7 @@ export class UpdatePasswordComponent implements OnInit {
   _form: FormGroup;
   errorMessage = '';
   loading = false;
-  
+
   // Password visibility toggles
   hideNewPassword = true;
   hideConfirmPassword = true;
@@ -64,11 +64,11 @@ export class UpdatePasswordComponent implements OnInit {
     const hasUpperCase = /[A-Z]/.test(value);
     const hasLowerCase = /[a-z]/.test(value);
     const hasNumber = /[0-9]/.test(value);
-    const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(value);
+    const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]+/.test(value);
 
     const passwordValid = hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar;
 
-    return passwordValid ? null : { 
+    return passwordValid ? null : {
       passwordStrength: {
         hasUpperCase,
         hasLowerCase,
@@ -118,7 +118,7 @@ export class UpdatePasswordComponent implements OnInit {
           this.loading = false;
           this.openChangePasswordDialog();
         }),
-        catchError((err: any) => {
+        catchError((err: unknown) => {
           this.loading = false;
           this.handleError(err);
           return of(null);
@@ -132,12 +132,12 @@ export class UpdatePasswordComponent implements OnInit {
     , {
       width: '400px',
       disableClose: true
-      // data: { 
-      //   username: this.route.snapshot.paramMap?.get('username') 
+      // data: {
+      //   username: this.route.snapshot.paramMap?.get('username')
       // }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result: unknown) => {
       if (result === 'continue') {
         this.performLogin();
       } else {
@@ -147,9 +147,14 @@ export class UpdatePasswordComponent implements OnInit {
   }
 
   private performLogin(): void {
-    const payload = {
-      username: this.route.snapshot.paramMap?.get('username'),
-      password: this._form.get('newPassword')?.value
+    const username = this.route.snapshot.paramMap?.get('username');
+    if (!username) {
+      this.errorMessage = "Nom d'utilisateur manquant pour la connexion.";
+      return;
+    }
+    const payload: Record<string, string> = {
+      username: username,
+      password: this._form.get('newPassword')?.value || ''
     };
 
     this.loading = true;
@@ -170,28 +175,37 @@ export class UpdatePasswordComponent implements OnInit {
       .subscribe();
   }
 
-  private handleSuccessfulLogin(response: any): void {
-    this.tokenService.setToken(response?.access_token);
-    this.tokenService.setRefreshToken(response?.refresh_token);
-    
-    const decodedToken: any = this.tokenService.decodeToken();
-    if (decodedToken?.osmUser) {
+  private handleSuccessfulLogin(response: unknown): void {
+    const resp = response as Record<string, unknown>;
+    this.tokenService.setToken(resp['access_token'] as string);
+    this.tokenService.setRefreshToken(resp['refresh_token'] as string);
+    const decodedToken = this.tokenService.decodeToken() as Record<string, unknown>;
+    if (decodedToken && decodedToken['osmUser']) {
       const user: User = {
-        ...decodedToken.osmUser,
-        role: decodedToken.role,
-        permissions: decodedToken?.authorities
+        ...(decodedToken['osmUser'] as User),
+        role: decodedToken['role'] as string,
+        permissions: decodedToken['authorities']
       };
-      
       this.authService.setCurrentUserValue = user;
-      this.router.navigate(['/dashboard']);
+      console.log('[UpdatePassword] User set for navigation:', user);
+      console.log('[UpdatePassword] Token:', this.tokenService.getToken());
+      this.router.navigate(['/dashboard'])
+        .then(success => {
+          console.log('[UpdatePassword] Navigation to /dashboard success:', success);
+        })
+        .catch(err => {
+          console.error('[UpdatePassword] Navigation error:', err);
+        });
     }
   }
 
-  private handleError(err: any): void {
-    if ([504, 503].includes(err?.status)) {
+  private handleError(err: unknown): void {
+    if (typeof err === 'object' && err !== null && 'status' in err && [504, 503].includes((err as any).status)) {
       this.errorMessage = 'Service temporarily unavailable. Please try again later.';
+    } else if (typeof err === 'object' && err !== null && 'error' in err) {
+      this.errorMessage = (err as any).error || 'An unexpected error occurred';
     } else {
-      this.errorMessage = err?.error || 'An unexpected error occurred';
+      this.errorMessage = 'An unexpected error occurred';
     }
     console.error('Error:', err);
   }

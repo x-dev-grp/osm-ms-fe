@@ -1,7 +1,8 @@
 import packageInfo from '../../package.json';
 
 export const environment = {
-   production: true,
+  appVersion: packageInfo.version,
+  production: true,
   apiUrl: 'https://osm-gateway.onrender.com'
 };
 export const AppConfig={

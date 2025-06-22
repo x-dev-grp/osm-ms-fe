@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
- import { TokenService } from '../auth/services/tokenService.service';
+import { TokenService } from '../auth/services/tokenService.service';
 import { AuthenticationService } from '../auth/services/authentication.service';
 import { Observable } from 'rxjs';
 import { AppConfig } from 'src/environments/environment';
@@ -40,7 +40,7 @@ export class AuthInterceptor implements HttpInterceptor {
   private isUrlExcluded(url: string): boolean {
     return this.excludedUrls.some((excludedUrl) => url.startsWith(excludedUrl));
   }
-  }
+}
 
 
 
