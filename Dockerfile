@@ -12,13 +12,7 @@ RUN npm ci --omit=dev    # or just `npm ci` if you keep devDeps
 # ② copy the rest of the source and compile
 COPY . .
 # allow base-href / deploy-url to be overridden at build-time
-ARG BASE_HREF=/
-ARG DEPLOY_URL=/
-RUN npm run build -- \
-      --configuration=production \
-      --base-href="${BASE_HREF}" \
-      --deploy-url="${DEPLOY_URL}"
-
+RUN npm run build  --configuration=production
 ################################################################################
 # 2 ─────────────── RUNTIME STAGE ─ NGINX 1.27 ────────────────────────────────
 ################################################################################
