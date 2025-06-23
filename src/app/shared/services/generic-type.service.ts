@@ -4,13 +4,14 @@ import { Observable } from 'rxjs';
 import { BaseType } from '../models/base-type';
 import { ApiResponse } from '../models/api-response';
 import { TypeCategory } from '../models/type-category.enum';
+import { environment } from '../../../environments/environment';
  // import {TypeCategory} from "../../osm/models/type-category.enum";
 
 @Injectable({
   providedIn: 'root'
 })
 export class GenericTypeService {
-  private baseUrl = '/api/production/types';
+  private baseUrl = `${environment.apiUrl}/api/production/types`;
 
   constructor(private http: HttpClient) {}
 

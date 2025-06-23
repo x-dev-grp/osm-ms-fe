@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
- import {ApiResponse} from "../models/api-response";
+import { environment } from '../../../environments/environment';
+import {ApiResponse} from "../models/api-response";
 import { StorageUnitDto } from '../models/StorageUnitDto';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StorageUnitDtoService {
-  private baseUrl = '/api/production/storage-units';
+  private baseUrl = `${environment.apiUrl}/api/production/storage-units`;
 
   constructor(private http: HttpClient) {}
 

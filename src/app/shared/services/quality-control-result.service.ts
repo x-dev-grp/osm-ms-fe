@@ -1,25 +1,21 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
- import { ApiResponse } from '../models/api-response';
+import { ApiResponse } from '../models/api-response';
 import { QualityControlResultDto } from '../models/QualityControlResultDto';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class QualityControlResultService {
-  private baseUrl = '/api/production/qualitycontrolresult';
+  private baseUrl = `${environment.apiUrl}/api/production/qualitycontrolresult`;
 
   constructor(private http: HttpClient) {}
-
-
 
   getAllResultsByDeliveryID(deleveryID: string): Observable<ApiResponse<QualityControlResultDto>> {
     return this.http.get<ApiResponse<QualityControlResultDto>>(`${this.baseUrl}/fetchByDelivery/${deleveryID}`);
   }
-
-
-
 
   // Create a new results
   createResults(results: QualityControlResultDto[]): Observable<ApiResponse<QualityControlResultDto>> {

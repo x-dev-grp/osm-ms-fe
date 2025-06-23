@@ -9,7 +9,7 @@ import { ApiResponse } from '../models/api-response';
   providedIn: 'root'
 })
 export class SupplierTypeService {
-  private baseUrl = '/api/production/suppliers_type';
+  private baseUrl = `${environment.apiUrl}/api/production/suppliers_type`;
 
   constructor(private http: HttpClient) {}
 

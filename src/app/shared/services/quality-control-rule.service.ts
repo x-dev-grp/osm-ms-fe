@@ -3,12 +3,13 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {QualityControlRule} from '../models/quality-control-rule';
 import {ApiResponse} from '../models/api-response';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class QualityControlRuleService {
-  private baseUrl = '/api/production/qualitycontrolrules';
+  private baseUrl = `${environment.apiUrl}/api/production/qualitycontrolrules`;
 
   constructor(private http: HttpClient) {}
 

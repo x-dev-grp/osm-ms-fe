@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
- import {ApiResponse} from "../models/api-response";
+import { ApiResponse } from "../models/api-response";
 import { MillMachine } from '../models/millMachine';
 import { map } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MillMachineService {
-  private baseUrl = '/api/production/millers';
+  private baseUrl = `${environment.apiUrl}/api/production/millers`;
 
   constructor(private http: HttpClient) {}
 
@@ -55,5 +56,9 @@ export class MillMachineService {
   // Optionally, if a delete endpoint exists, you can implement it here
   deleteMillMachine(id: string): Observable<ApiResponse<void>> {
     return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/${id}`);
+  }
+
+  getMillMachineById(id: string): Observable<MillMachine> {
+    return this.http.get<MillMachine>(`${this.baseUrl}/fetch/${id}`);
   }
 }
