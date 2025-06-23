@@ -22,6 +22,8 @@ RUN rm -rf /usr/share/nginx/html/*
 
 # copy built files
 COPY --from=build /app/dist/ui /usr/share/nginx/html
+# copy custom nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # optional: add a basic health-check page for Render
 HEALTHCHECK CMD wget -qO- http://localhost || exit 1
