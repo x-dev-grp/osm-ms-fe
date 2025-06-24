@@ -6,7 +6,7 @@ import packageInfo from '../../package.json';
 export const environment = {
   appVersion: packageInfo.version,
   production: false,
-  apiUrl: 'https://osm-gateway.onrender.com'
+  apiUrl: 'http://localhost:8084'
 };
 
 export const AppConfig={
