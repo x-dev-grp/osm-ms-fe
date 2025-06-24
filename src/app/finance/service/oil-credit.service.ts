@@ -8,7 +8,7 @@ import { OilCredit } from '../models/OilCredit';
   providedIn: 'root'
 })
 export class OilCreditService {
-  private baseUrl = '/api/finance/oil-credit';
+  private baseUrl = environment.apiUrl + '/api/finance/oil-credit';
 
   constructor(private http: HttpClient) {}
 

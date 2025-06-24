@@ -9,7 +9,7 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root'
 })
 export class BankAccountService {
-  private baseUrl = '/api/finance/banks';
+  private baseUrl = environment.apiUrl + '/api/finance/banks';
 
   constructor(private http: HttpClient) {}
 

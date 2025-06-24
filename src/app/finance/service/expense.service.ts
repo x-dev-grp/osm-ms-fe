@@ -6,7 +6,7 @@ import { Expense } from '../models/expense.model';
 
 @Injectable({ providedIn: 'root' })
 export class ExpenseService {
-  private baseUrl = '/api/finance/expense';
+  private baseUrl = environment.apiUrl + '/api/finance/expense';
   constructor(private http: HttpClient) {}
 
   getExpense(id: string): Observable<ApiResponse<Expense>> {

@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 export class LoginService {
 
   // This base URL points to your Gateway, which routes to the security microservice
-  private baseUrl = '/api/security';
+  private baseUrl = environment.apiUrl + '/api/security';
 
   constructor(private http: HttpClient) {}
 

@@ -8,7 +8,7 @@ import { User } from "src/app/@theme/types/user";
 })
 export class PermissionService {
     _http=inject(HttpClient);
-    private baseUrl = '/api/security/permission';
+    private baseUrl = environment.apiUrl + '/api/security/permission';
     fetchAll(): Observable<any> {
       return this._http.get<User>(`${this.baseUrl}/fetchAll`);
     }
