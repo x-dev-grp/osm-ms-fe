@@ -4,12 +4,13 @@ import { CompanyProfile } from '../models/CompanyProfile';
 import { Observable, of } from 'rxjs';
 import { ApiResponse } from '../models/api-response';
 import { map, tap } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CompanyProfileService {
-  private readonly baseUrl = '/api/production/company-profile';
+  private readonly baseUrl = environment.apiUrl + '/api/production/company-profile';
   private readonly STORAGE_KEY = 'company_profile';
 
   constructor(private http: HttpClient) {}

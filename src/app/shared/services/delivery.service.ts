@@ -3,12 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../models/api-response';
 import { UnifiedDelivery } from '../models/UnifiedDelivery';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UnifiedDeliveryService {
-  private baseUrl = '/api/production/deliveries';
+  private baseUrl = environment.apiUrl + '/api/production/deliveries';
 
   constructor(private http: HttpClient) {}
 

@@ -3,12 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
  import {ApiResponse} from "../models/api-response";
 import { Transporter } from '../models/Transporter';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TransporterService {
-  private baseUrl = '/api/production/transporters';
+  private baseUrl = environment.apiUrl + '/api/production/transporters';
 
   constructor(private http: HttpClient) {}
 

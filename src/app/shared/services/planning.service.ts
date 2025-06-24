@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { PlanningSaveRequest } from '../../reception/components/planning/planning.component';
+import { environment } from '../../../environments/environment';
 
 // adjust the path to your models
 
 @Injectable({ providedIn: 'root' })
 export class PlanningService {
-  API_BASE_URL = '/api/production/planning';
+  API_BASE_URL =environment.apiUrl +  '/api/production/planning';
   constructor(private http: HttpClient) {}
 
   /* ───── planning CRUD ───────────────────────────────────────── */
