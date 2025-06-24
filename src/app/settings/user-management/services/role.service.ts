@@ -10,7 +10,7 @@ import { environment } from '../../../../environments/environment';
 })
 export class RoleService {
     _http=inject(HttpClient);
-    private baseUrl = environment.apiUrl + environment.apiUrl + '/api/security/role';
+    private baseUrl = environment.apiUrl  + '/api/security/role';
     addRole(role: Role): Observable<any> {
       return this._http.post<User>(`${this.baseUrl}`,role);
     }
