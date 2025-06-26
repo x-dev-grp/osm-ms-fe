@@ -14,5 +14,8 @@ import { environment } from '../../../environments/environment';
     removeItem( path:string,itemId:string): Observable<any>  {
       return this.http.delete<any>(`${environment.apiUrl}/api/${path}/remove/${itemId}`);
     }
+  deleteItem( path:string,itemId:string): Observable<any>  {
+    return this.http.delete<any>(`${environment.apiUrl}/api/${path}/delete/${itemId}`);
+  }
 
   }

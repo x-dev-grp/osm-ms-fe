@@ -801,11 +801,50 @@
         "DELETE_ERROR": "Erreur lors de la suppression",
         "LOAD_ERROR": "Erreur lors du chargement des réceptions"
       }
-    }
+    },
+    "SUBMIT": "Enregistrer les informations"
   },
   "CONTROLE_QUALITE": {
     "PLACEHOLDER": {
       "ENTER_VALUE": "Entrez une valeur"
+    },
+    "STORAGE_UNIT": {
+      "LABEL": "Cuve de stockage",
+      "ERRORS": {
+        "REQUIRED": "La cuve de stockage est requise"
+      }
+    },
+    "OIL_DETAILS": {
+      "TITLE": "Détails de l'huile",
+      "OIL_VARIETY": "Variété d'huile",
+      "OIL_TYPE": "Type d'huile",
+      "OLIVE_TYPE": "Type d'olive",
+      "OPERATION_TYPE": "Type d'opération"
+    },
+    "OLIVE_DETAILS": {
+      "TITLE": "Détails des olives",
+      "OLIVE_VARIETY": "Variété d'olive",
+      "OLIVE_TYPE": "Type d'olive",
+      "OPERATION_TYPE": "Type d'opération",
+      "PARCEL": "Parcelle",
+      "TREATMENT_DATE": "Date de traitement",
+      "SACK_COUNT": "Nombre de sacs"
+    },
+    "FINANCIAL": {
+      "TITLE": "Informations financières",
+      "UNIT_PRICE": "Prix unitaire (TND/L)",
+      "PRICE": "Prix total (TND)",
+      "PAID_AMOUNT": "Montant payé (TND)",
+      "UNPAID_AMOUNT": "Montant restant (TND)"
+    },
+    "RULES": {
+      "TITLE": "Règles de contrôle qualité"
+    },
+    "OIL_RECEPTION": {
+      "SUBMIT": "Enregistrer les informations"
+    },
+    "OLIVE_RECEPTION": {
+      "SUBMIT": "Enregistrer les informations"
     },
     "ERRORS": {
       "REQUIRED": "Ce champ est requis.",
@@ -824,7 +863,8 @@
       "LOAD_DELIVERY": "Erreur lors du chargement des données de réception.",
       "LOAD_RULES": "Erreur lors du chargement des règles.",
       "LOAD_RESULTS": "Erreur lors du chargement des résultats de contrôle qualité.",
-      "NO_CATEGORIE_FIELD": "Le champ 'Categorie' n'existe pas dans le formulaire."
+      "NO_CATEGORIE_FIELD": "Le champ 'Categorie' n'existe pas dans le formulaire.",
+      "NET_GREATER_THAN_GROSS": "La quantité d'huile ne peut pas être supérieure au poids brut."
     },
     "BOOLEAN": {
       "TRUE": "Vrai",
@@ -840,6 +880,10 @@
       "UPDATED_AND_CREATED": "Résultats mis à jour et créés avec succès.",
       "UPDATED": "Résultats mis à jour avec succès.",
       "CREATED": "Résultats créés avec succès."
-    }
+    },
+    "LOADING": "Chargement...",
+    "ALREADY_DONE": "Contrôle qualité déjà effectué",
+    "SUBMIT": "Valider le contrôle qualité",
+    "SELECT_PLACEHOLDER": "Sélectionner..."
   }
 }

@@ -1,9 +1,10 @@
 // angular import
 import { OnInit, Component, inject } from '@angular/core';
 import { Router, NavigationStart, NavigationEnd, NavigationCancel, NavigationError, ActivatedRoute, RouterOutlet } from '@angular/router';
+import { Title } from '@angular/platform-browser';
+import { filter, map, mergeMap } from 'rxjs/operators';
 
 // project import
-import { BuyNowLinkService } from './@theme/services/buy-now-link.service';
 
 // Angular material
 import { MatProgressBar } from '@angular/material/progress-bar';
@@ -19,8 +20,8 @@ import { TranslateService, TranslateModule } from '@ngx-translate/core';
 export class AppComponent implements OnInit {
   private router = inject(Router);
   activeRoute = inject(ActivatedRoute);
-  private productIdService = inject(BuyNowLinkService);
   private translate = inject(TranslateService);
+  private titleService = inject(Title);
 
   // public props
   isSpinnerVisible = true;
@@ -31,9 +32,12 @@ export class AppComponent implements OnInit {
     this.translate.addLangs(['en', 'fr']);
     this.translate.setDefaultLang('en');
 
+    // Force language to English for testing
+    this.translate.use('en');
+
     // Get browser language or use default
-    const browserLang = this.translate.getBrowserLang();
-    this.translate.use(browserLang?.match(/en|fr/) ? browserLang : 'en');
+    // const browserLang = this.translate.getBrowserLang();
+    // this.translate.use(browserLang?.match(/en|fr/) ? browserLang : 'en');
   }
 
   ngOnInit() {
@@ -57,6 +61,23 @@ export class AppComponent implements OnInit {
     );
     const queryString = window.location.search;
     const params = new URLSearchParams(queryString);
-    this.productIdService.setBuyNowLink(params);
+
+    // Dynamically set the page title based on route data and translation
+    this.router.events
+      .pipe(
+        filter(event => event instanceof NavigationEnd),
+        map(() => {
+          let route = this.activeRoute;
+          while (route.firstChild) route = route.firstChild;
+          return route;
+        }),
+        mergeMap(route => route.data)
+      )
+      .subscribe(data => {
+        const titleKey = data['title'];
+        this.translate.get(titleKey).subscribe(translatedTitle => {
+          this.titleService.setTitle(translatedTitle);
+        });
+      });
   }
 }

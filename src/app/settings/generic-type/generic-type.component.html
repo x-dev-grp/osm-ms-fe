@@ -1,13 +1,13 @@
 <form [formGroup]="recordForm" (ngSubmit)="onSubmit()">
     <div class="row align-items-center">
       <!-- Inline Fields: Shown when details are toggled -->
-      <div class="col-md-3" *ngIf="showDetails">
+      <div class="col-md-3"  >
         <mat-form-field appearance="fill" class="w-100">
           <mat-label>Name</mat-label>
           <input matInput formControlName="name" placeholder="Enter name" />
         </mat-form-field>
       </div>
-      <div class="col-md-3" *ngIf="showDetails">
+      <div class="col-md-3">
         <mat-form-field appearance="fill" class="w-100">
           <mat-label>Description</mat-label>
           <input
@@ -33,8 +33,7 @@
       <div class="col-auto d-flex align-items-center">
         <!-- Submit Icon Button: Displayed only when details are visible -->
         <button
-          *ngIf="showDetails"
-          mat-icon-button
+           mat-icon-button
           color="primary"
           type="submit"
           [disabled]="recordForm.invalid"
@@ -42,16 +41,7 @@
         >
           <mat-icon>check_circle</mat-icon>
         </button>
-        <!-- Toggle Form Details Icon Button -->
-        <button
-          mat-icon-button
-          color="primary"
-          type="button"
-          (click)="toggleDetails()"
-          matTooltip="{{ showDetails ? 'Hide Details' : 'Add Record' }}"
-        >
-          <mat-icon>{{ showDetails ? 'close' : 'add' }}</mat-icon>
-        </button>
+
         <!-- Cancel Icon Button: Only visible when editing -->
         <button
           *ngIf="showDetails && editingRecordIndex >= 0"

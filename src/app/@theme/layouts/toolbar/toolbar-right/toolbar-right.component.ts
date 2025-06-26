@@ -8,7 +8,6 @@ import { TranslateService } from '@ngx-translate/core';
 
 // project import
 import { AuthenticationService } from 'src/app/auth/services/authentication.service';
-import { BuyNowLinkService } from 'src/app/@theme/services/buy-now-link.service';
 import { ThemeLayoutService } from 'src/app/@theme/services/theme-layout.service';
 import { AbleProConfig } from 'src/app/app-config';
 import { SharedModule } from 'src/app/demo/shared/shared.module';
@@ -23,7 +22,6 @@ export class NavRightComponent {
   private translate = inject(TranslateService);
   authenticationService = inject(AuthenticationService);
   private themeService = inject(ThemeLayoutService);
-  buyNowLinkService = inject(BuyNowLinkService);
 
   // public props
   readonly HeaderBlur = output();

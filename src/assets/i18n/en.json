@@ -775,6 +775,44 @@
     "PLACEHOLDER": {
       "ENTER_VALUE": "Enter a value"
     },
+    "STORAGE_UNIT": {
+      "LABEL": "Storage Unit",
+      "ERRORS": {
+        "REQUIRED": "Storage unit is required"
+      }
+    },
+    "OIL_DETAILS": {
+      "TITLE": "Oil Details",
+      "OIL_VARIETY": "Oil Variety",
+      "OIL_TYPE": "Oil Type",
+      "OLIVE_TYPE": "Olive Type",
+      "OPERATION_TYPE": "Operation Type"
+    },
+    "OLIVE_DETAILS": {
+      "TITLE": "Olive Details",
+      "OLIVE_VARIETY": "Olive Variety",
+      "OLIVE_TYPE": "Olive Type",
+      "OPERATION_TYPE": "Operation Type",
+      "PARCEL": "Parcel",
+      "TREATMENT_DATE": "Treatment Date",
+      "SACK_COUNT": "Sack Count"
+    },
+    "FINANCIAL": {
+      "TITLE": "Financial Information",
+      "UNIT_PRICE": "Unit Price (TND/L)",
+      "PRICE": "Total Price (TND)",
+      "PAID_AMOUNT": "Paid Amount (TND)",
+      "UNPAID_AMOUNT": "Remaining Amount (TND)"
+    },
+    "RULES": {
+      "TITLE": "Quality Control Rules"
+    },
+    "OIL_RECEPTION": {
+      "SUBMIT": "Save Information"
+    },
+    "OLIVE_RECEPTION": {
+      "SUBMIT": "Save Information"
+    },
     "ERRORS": {
       "REQUIRED": "This field is required.",
       "MIN": "Min:",
@@ -792,7 +830,8 @@
       "LOAD_DELIVERY": "Error loading delivery data.",
       "LOAD_RULES": "Error loading rules.",
       "LOAD_RESULTS": "Error loading quality control results.",
-      "NO_CATEGORIE_FIELD": "The 'Categorie' field does not exist in the form."
+      "NO_CATEGORIE_FIELD": "The 'Categorie' field does not exist in the form.",
+      "NET_GREATER_THAN_GROSS": "Oil quantity cannot be greater than gross weight."
     },
     "BOOLEAN": {
       "TRUE": "True",
@@ -808,6 +847,10 @@
       "UPDATED_AND_CREATED": "Results updated and created successfully.",
       "UPDATED": "Results updated successfully.",
       "CREATED": "Results created successfully."
-    }
+    },
+    "LOADING": "Loading...",
+    "ALREADY_DONE": "Quality control already completed",
+    "SUBMIT": "Submit Quality Control",
+    "SELECT_PLACEHOLDER": "Select..."
   }
 }

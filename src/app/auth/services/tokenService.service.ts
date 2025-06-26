@@ -17,7 +17,7 @@ export class TokenService {
       expires: 3,
       path: '/',
       secure: true,
-      sameSite: 'Lax'
+      sameSite: 'Strict'
     });
   }
   // Set refresh token in the cookie
@@ -26,17 +26,15 @@ export class TokenService {
       expires: 3,
       path: '/',
       secure: true,
-      sameSite: 'Lax'
+      sameSite: 'Strict'
     });
   }
   // Get token from the cookie
-  getToken(): string | null {
-    const token = this._cookieService.get(this.tokenKey);
-    return token ? token : null;
+  getToken(): string {
+    return this._cookieService.get(this.tokenKey);
   }
-  getRefreshToken(): string | null {
-    const refreshToken = this._cookieService.get(this.refreshTokenKey);
-    return refreshToken ? refreshToken : null;
+  getRefreshToken(): string {
+    return this._cookieService.get(this.refreshTokenKey);
   }
   // Delete token from the cookie
   // deleteToken(): void {

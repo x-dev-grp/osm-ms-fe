@@ -180,11 +180,11 @@ export const DashboardStore = signalStore(
       },
       removeItem(id:string,path:string){
         this.setActionLoading(true);
-        _baseService.removeItem(path,id).pipe(
+        _baseService.deleteItem(path,id).pipe(
           tap((response) => {
             console.log('item deleted');
             this.setActionLoading(false);
-            store.searchTrigger$().next(store.searchData());
+            this.fetchData(store.searchData())
           }),
           catchError((error) => {
             console.error('Error deleting item:', error);
@@ -194,7 +194,7 @@ export const DashboardStore = signalStore(
           finalize(() => {
             this.setActionLoading(false);
           })
-        )
+        ).subscribe()
       },
       setLoading: (loading: boolean) => {
         patchState(store, { loading });

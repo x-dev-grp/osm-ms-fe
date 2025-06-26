@@ -18,8 +18,7 @@ import { ConfigurationComponent } from 'src/app/@theme/layouts/configuration/con
 import { FooterComponent } from 'src/app/@theme/layouts/footer/footer.component';
 
 // service
-import { BuyNowLinkService } from 'src/app/@theme/services/buy-now-link.service';
-import { AuthenticationService } from 'src/app/auth/services/authentication.service';
+ import { AuthenticationService } from 'src/app/auth/services/authentication.service';
 
 // const import
 import { COMPACT, HORIZONTAL, LTR, MAX_WIDTH_1024PX, MIN_WIDTH_1025PX, RTL, VERTICAL } from 'src/app/@theme/const';
@@ -53,8 +52,7 @@ import { ThemeConfig, ThemeConfigService } from '../../../shared/services/theme-
   styleUrls: ['./admin.component.scss']
 })
 export class AdminComponent implements OnInit, AfterViewInit {
-  buyNowLinkService = inject(BuyNowLinkService);
-  authenticationService = inject(AuthenticationService);
+   authenticationService = inject(AuthenticationService);
   companyProfileService = inject(CompanyProfileService);
   private themeConfig = inject(ThemeConfigService);
 // public props

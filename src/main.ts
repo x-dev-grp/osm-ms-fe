@@ -7,8 +7,7 @@ import { AppRoutingModule } from './app/app-routing.module';
 import { SharedModule } from './app/demo/shared/shared.module';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
-import { GuestModule } from './app/demo/layout/front';
-import { AppComponent } from './app/app.component';
+ import { AppComponent } from './app/app.component';
 import { provideServiceWorker } from '@angular/service-worker';
 import { AuthInterceptor } from './app/interceptors/auth.interceptor';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
@@ -30,8 +29,7 @@ bootstrapApplication(AppComponent, {
       AppRoutingModule,
       SharedModule,
       BrowserModule,
-      GuestModule,
-      TranslateModule.forRoot({
+       TranslateModule.forRoot({
         defaultLanguage: 'en',
         loader: {
           provide: TranslateLoader,

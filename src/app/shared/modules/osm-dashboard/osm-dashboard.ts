@@ -1,8 +1,8 @@
 import { AfterViewInit, ChangeDetectorRef, Component, inject, input, OnChanges, OnInit, output, SimpleChanges } from '@angular/core';
 
-import {  MatTableModule } from '@angular/material/table';
-import {  ReactiveFormsModule } from '@angular/forms';
-import {  MatDialogModule } from '@angular/material/dialog';
+import { MatTableModule } from '@angular/material/table';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,14 +10,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
-import {
-  MatExpansionModule,
-} from '@angular/material/expansion';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { SharedModule } from 'src/app/demo/shared/shared.module';
 import { DashboardStore } from './services/dashboard-state.service';
 import { Action, DashboardConfig, Field } from './models/dashboard-config';
 import { Router } from '@angular/router';
 import { DynamicInput } from './components/dynamic-input/dynamic-input.component';
+import { map, Observable, tap } from 'rxjs';
+import { ConfirmDialogComponent } from '../../component/confirm-dialog/confirm-dialog/confirm-dialog.component';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -25,7 +25,7 @@ import { DynamicInput } from './components/dynamic-input/dynamic-input.component
   templateUrl: './osm-dashboard.html',
   styleUrls: ['./osm-dashboard.scss'],
   standalone: true,
-  providers:[DashboardStore],
+  providers: [DashboardStore],
   imports: [
     CommonModule,
     MatButtonModule,
@@ -42,85 +42,104 @@ import { DynamicInput } from './components/dynamic-input/dynamic-input.component
     DynamicInput
   ]
 })
-export class OsmDashboard implements OnInit,AfterViewInit,OnChanges {
-
-readonly _store=inject(DashboardStore);
-_router=inject(Router);
+export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
+  readonly _store = inject(DashboardStore);
+  _router = inject(Router);
+  _dialog = inject(MatDialog);
   private cdr = inject(ChangeDetectorRef);
-config=input.required<DashboardConfig>();
-applyAction = output<{ row: any; action: Action }>();
-displayedColumns:string[]=[];
-actions:Action[]|undefined;
-  ngOnInit(): void {
-    this.displayedColumns=[...this.config().fields.filter((field)=>field.dataTable).map((field)=>field.label),'actions'];
-    console.log(this.displayedColumns);
-    this._store.initialize(this.config()?.searchEndpoint,this.config().fields,this.config()?.defaultSearchData,this.config().fileName);
-    if(!this.config().actions?.statusMapping)
-       this.actions=this.config().actions?.actionsList
-    this.cdr.detectChanges(); // Force change detection
-  }
-  ngAfterViewInit(): void {
-
-  }
+  config = input.required<DashboardConfig>();
+  applyAction = output<{ row: any; action: string }>();
+  displayedColumns: string[] = [];
+  actions: Action[] | undefined;
+  private readonly _checked = 'checked';
+  private readonly _delete = 'DELETE';
+  private readonly  _actions = 'actions';
   ngOnChanges(changes: SimpleChanges): void {
     console.log(changes);
   }
-  ngOnDestroy(): void {
 
+  ngOnInit(): void {
+    this.displayedColumns = [
+      ...this.config()
+        .fields.filter((field) => field.dataTable)
+        .map((field) => field.label),
+      this._actions
+    ];
+    console.log(this.displayedColumns);
+    this._store.initialize(this.config()?.searchEndpoint, this.config().fields, this.config()?.defaultSearchData, this.config().fileName);
+    if (!this.config().actions?.statusMapping) this.actions = this.config().actions?.actionsList;
+    this.cdr.detectChanges(); // Force change detection
   }
-  sortChange(event:any){
+
+  ngAfterViewInit(): void {}
+
+
+  sortChange(event: any) {
     console.log(event);
-    this._store.setSort(event.active,event.direction);
+    this._store.setSort(event.active, event.direction);
   }
-  onPageChange(event:any){
+
+  onPageChange(event: any) {
     this._store.setPageSize(event?.pageSize);
     this._store.setPage(event?.pageIndex);
   }
-  getValue(path: string,object:any): any {
+
+  getValue(path: string, object: any): any {
     return path?.split('.')?.reduce((acc, key) => acc && acc[key], object);
   }
-  getSelectDataTableValue(value:string,fieldName:string):string{
-    const field=this.config().fields.find(field=>field.name==fieldName);
-    const option=field?.options?.find(option=>option.value==value);
+
+  getSelectDataTableValue(value: string, fieldName: string): string {
+    const field = this.config().fields.find((field) => field.name == fieldName);
+    const option = field?.options?.find((option) => option.value == value);
     return option?.label || option?.value;
   }
-  redirectToFormPage(){
+
+  redirectToFormPage() {
     this._router.navigate([this.config().addNewItemUrl]);
   }
-  onFilterFieldChange(event:any,field: Field) {
-    this._store.setFilteredField(field,event?.target["checked"]);
+
+  onFilterFieldChange(event: any, field: Field) {
+    this._store.setFilteredField(field, event?.target[this._checked]);
   }
-  onExportFieldChange(event:any,field: Field) {
-    this._store.setExportField(field,event?.target["checked"]);
+
+  onExportFieldChange(event: any, field: Field) {
+    this._store.setExportField(field, event?.target[this._checked]);
   }
-  selectAllFilterFields(event:any){
-     this._store.setAllFilterField(event?.target["checked"])
+
+  selectAllFilterFields(event: any) {
+    this._store.setAllFilterField(event?.target[this._checked]);
   }
-  selectAllExportFields(event:any) {
-    this._store.setAllExportField(event?.target["checked"]);
+
+  selectAllExportFields(event: any) {
+    this._store.setAllExportField(event?.target[this._checked]);
   }
-  resetFilter(){
+
+  resetFilter() {
     this._store.resetSearchData();
   }
-  exportPdf(){
+
+  exportPdf() {
     this._store.export('pdf');
   }
-  exportCsv(){
+
+  exportCsv() {
     this._store.export('excel');
   }
 
-  mapActions(item:any):Action[]{
-    const configActions:any=this.config()?.actions?.actionsStatusList ;
-    const statusAttribute=this.config().actions?.statusAttributeName || "status";
-    const status=item[statusAttribute]?.trim();
-    console.log({status:status,actions:configActions[status]?.map((action:any)=>action?.action)})
-    return configActions[status];
-  }
-  actionApply(action:Action,row:any){
-    if(action?.isRemoveAction){
-      this._store.removeItem(this.config().baseURL,row?.id);
+
+  actionApply(action: string, row: any) {
+    if (action === this._delete) {
+      this._dialog.open(ConfirmDialogComponent, {
+        data: { message:"delete" }
+      }).afterClosed().pipe(
+        tap(v=>{
+          if(v)
+            this._store.removeItem( row?.id,this.config().baseURL);
+        })
+      ).subscribe()
+     //
       return;
     }
-    this.applyAction.emit({row:row,action:action});
+    this.applyAction.emit({ row: row, action: action });
   }
 }
