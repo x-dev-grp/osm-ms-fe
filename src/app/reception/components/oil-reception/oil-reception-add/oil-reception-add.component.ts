@@ -103,7 +103,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
         supplier: [null, Validators.required],
         matriculeCamion: ['', Validators.required],
         etatCamion: ['', Validators.required],
-        poidsBrut: [0, Validators.min(0)],
+        poidsBrute: [0, Validators.min(0)],
         oilQuantity: [0, Validators.min(0)],
         oilVariety: [null, Validators.required],
         oilType: [null, Validators.required],

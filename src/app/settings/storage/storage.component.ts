@@ -51,7 +51,7 @@ export class StorageUnitsComponent implements OnInit {
 
   dashboardConfig: DashboardConfig = {
     title: 'Gestion des réservoirs',
-    baseURL: 'storage-units',
+    baseURL: 'production/storage-units',
     searchEndpoint: 'production/storage-units',
     addNewItem: true,
     addNewItemUrl: '/settings/storage/new',
