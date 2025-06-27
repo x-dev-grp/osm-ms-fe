@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { ApiResponse } from '../models/api-response';
-import { UnifiedDelivery } from '../models/UnifiedDelivery';
-import { environment } from '../../../environments/environment';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {ApiResponse} from '../models/api-response';
+import {UnifiedDelivery} from '../models/UnifiedDelivery';
+import {environment} from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -46,7 +46,7 @@ export class UnifiedDeliveryService {
     return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/${id}`);
   }
 
-  updateDelivery(  delivery: UnifiedDelivery): Observable<ApiResponse<UnifiedDelivery>> {
+  updateDelivery(delivery: UnifiedDelivery): Observable<ApiResponse<UnifiedDelivery>> {
     return this.http.put<ApiResponse<UnifiedDelivery>>(`${this.baseUrl}`, delivery);
   }
 

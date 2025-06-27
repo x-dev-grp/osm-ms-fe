@@ -189,55 +189,10 @@
                 </mat-error>
               </mat-form-field>
             </div>
-            <div class="col-md-3">
-              <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.STORAGE_UNIT' | translate }}</mat-label>
-                <mat-select formControlName="storageUnit" required>
-                  <mat-option *ngFor="let unit of storageUnits" [value]="unit">
-                    {{ unit.name }} ({{ unit.currentVolume }}/{{ unit.maxCapacity }} L)
-                  </mat-option>
-                </mat-select>
-                <mat-error *ngIf="receptionForm.get('storageUnit')?.hasError('required')">
-                  {{ 'OIL_RECEPTION.ADD.ERRORS.STORAGE_UNIT_REQUIRED' | translate }}
-                </mat-error>
-                <mat-error *ngIf="receptionForm.hasError('exceedsCapacity')">
-                  {{ 'OIL_RECEPTION.ADD.ERRORS.AVAILABLE_CAPACITY' | translate: { available: receptionForm.getError('exceedsCapacity')?.available } }}
-                </mat-error>
-              </mat-form-field>
-            </div>
           </div>
         </div>
 
         <!-- Financial Information Section -->
-        <div class="section">
-          <h4>{{ 'OIL_RECEPTION.ADD.FINANCIAL_INFO' | translate }}</h4>
-          <div class="row">
-            <div class="col-md-3">
-              <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.UNIT_PRICE' | translate }}</mat-label>
-                <input formControlName="unitPrice" matInput type="number" min="0" required />
-              </mat-form-field>
-            </div>
-            <div class="col-md-3">
-              <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.TOTAL_PRICE' | translate }}</mat-label>
-                <input formControlName="price" matInput type="number" readonly />
-              </mat-form-field>
-            </div>
-            <div class="col-md-3">
-              <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.PAID_AMOUNT' | translate }}</mat-label>
-                <input formControlName="paidAmount" matInput type="number" min="0" />
-              </mat-form-field>
-            </div>
-            <div class="col-md-3">
-              <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.UNPAID_AMOUNT' | translate }}</mat-label>
-                <input formControlName="unpaidAmount" matInput type="number" readonly />
-              </mat-form-field>
-            </div>
-          </div>
-        </div>
 
         <!-- Boutons d'action -->
         <div class="form-row m-t-10">

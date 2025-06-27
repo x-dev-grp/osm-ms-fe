@@ -1,12 +1,14 @@
 <app-card>
+
+  <!-- Formulaire Dynamique -->
   <form *ngIf="dynamicForm && !isLoading" [formGroup]="dynamicForm" class="quality-form container-fluid">
-    <div class="rules-grid g-4">
+    <div class="rules-grid row g-4">
       <div *ngFor="let control of dynamicForm.controls | keyvalue"
            [hidden]="control.key === 'testSensoriel' || control.key === 'classificationHuile'"
            class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
-
         <div class="rule-card flex-fill">
-          <!-- Affichage du nom de la règle uniquement -->
+
+          <!-- Label -->
           <label [for]="control.key" class="form-label">
             {{ getRuleName(control.key) }}
           </label>
@@ -26,41 +28,44 @@
           <ng-template #nonNumericInput>
             <ng-container [ngSwitch]="getRuleType(control.key)">
 
-            <!-- STRING -->
-            <mat-form-field *ngSwitchCase="'STRING'" appearance="outline" class="w-100">
-              <mat-label>{{ getRuleName(control.key) }}</mat-label>
-              <mat-select [formControlName]="control.key" [id]="control.key">
-                <!-- Options extraites depuis ruleTextValue -->
-                <mat-option *ngFor="let option of getTextOptions(control.key)" [value]="option">
-                  {{ option }}
-                </mat-option>
-              </mat-select>
-              <mat-error *ngIf="dynamicForm.get(control.key)?.hasError('required')">
-                {{ 'CONTROLE_QUALITE.ERRORS.REQUIRED' | translate }}
-              </mat-error>
-            </mat-form-field>
+              <!-- STRING -->
+              <mat-form-field *ngSwitchCase="'STRING'" appearance="outline" class="w-100">
+                <mat-label>{{ getRuleName(control.key) }}</mat-label>
+                <mat-select [formControlName]="control.key" [id]="control.key">
+                  <mat-option *ngFor="let option of getTextOptions(control.key)" [value]="option">
+                    {{ option }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="dynamicForm.get(control.key)?.hasError('required')">
+                  {{ 'CONTROLE_QUALITE.ERRORS.REQUIRED' | translate }}
+                </mat-error>
+              </mat-form-field>
 
               <!-- BOOLEAN -->
               <mat-form-field *ngSwitchCase="'BOOLEAN'" appearance="outline" class="w-100">
+                <mat-label>{{ getRuleName(control.key) }}</mat-label>
                 <mat-select [formControlName]="control.key" [id]="control.key">
                   <mat-option [value]="false">{{ 'CONTROLE_QUALITE.BOOLEAN.FALSE' | translate }}</mat-option>
                   <mat-option [value]="true">{{ 'CONTROLE_QUALITE.BOOLEAN.TRUE' | translate }}</mat-option>
                 </mat-select>
               </mat-form-field>
+
             </ng-container>
           </ng-template>
 
-          <!-- Erreurs -->
+          <!-- Messages d'erreur -->
           <div class="error-messages" *ngIf="dynamicForm.get(control.key)?.invalid && (dynamicForm.get(control.key)?.touched || submitted)">
             <small *ngIf="dynamicForm.get(control.key)?.errors?.['required']">{{ 'CONTROLE_QUALITE.ERRORS.REQUIRED' | translate }}</small>
             <small *ngIf="dynamicForm.get(control.key)?.errors?.['min']">{{ 'CONTROLE_QUALITE.ERRORS.MIN' | translate }} {{ getRuleMinValue(control.key) }}</small>
             <small *ngIf="dynamicForm.get(control.key)?.errors?.['max']">{{ 'CONTROLE_QUALITE.ERRORS.MAX' | translate }} {{ getRuleMaxValue(control.key) }}</small>
           </div>
+
         </div>
       </div>
     </div>
 
-    <div class="button-container">
+    <!-- Bouton Soumettre (formulaire dynamique) -->
+    <div class="button-container mt-4">
       <button [disabled]="dynamicForm.invalid || isLoading || isQualityControlDone"
               class="btn btn-primary"
               (click)="onSubmit()">
@@ -68,4 +73,60 @@
       </button>
     </div>
   </form>
+
+  <!-- Formulaire Statique -->
+  <form *ngIf="staticForm && !isLoading" [formGroup]="staticForm" class="quality-form container-fluid mt-5">
+    <div class="rules-grid">
+
+      <!-- Prix unitaire -->
+      <div class="rule-card">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ 'PRIX_UNITAIRE' | translate }}</mat-label>
+          <input formControlName="unitPrice" matInput placeholder="{{ 'ENTRER_PRIX' | translate }}" type="number"/>
+          <mat-error *ngIf="staticForm.get('unitPrice')?.hasError('required')">
+            {{ 'CONTROLE_QUALITE.ERRORS.REQUIRED' | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Prix total -->
+      <div class="rule-card">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ 'PRIX_TOTAL' | translate }}</mat-label>
+          <input formControlName="price" matInput placeholder="{{ 'PRIX_TOTAL' | translate }}" type="number"/>
+          <mat-error *ngIf="staticForm.get('price')?.hasError('required')">
+            {{ 'CONTROLE_QUALITE.ERRORS.REQUIRED' | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Unité de stockage -->
+      <div class="rule-card">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ 'UNIT_STORAGE' | translate }}</mat-label>
+          <mat-select formControlName="storageUnits" required>
+            <mat-option *ngFor="let unit of storageUnits" [value]="unit">
+              {{ unit.name }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="staticForm.get('unitStorage')?.hasError('required')">
+            {{ 'CONTROLE_QUALITE.ERRORS.REQUIRED' | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+
+    </div>
+
+    <!-- Bouton de soumission -->
+    <div class="button-container">
+      <button (click)="onSubmitStaticForm()" [disabled]="staticForm.invalid || isLoading" class="btn-primary"
+              color="primary"
+              mat-flat-button
+              type="button">
+        {{ 'CONTROLE_QUALITE.BUTTONS.SUBMIT' | translate }}
+      </button>
+    </div>
+  </form>
+
 </app-card>

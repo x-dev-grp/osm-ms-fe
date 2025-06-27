@@ -10,15 +10,19 @@ import {QualityControlResultService} from '../../../shared/services/quality-cont
 import {QualityControlResultDto} from '../../../shared/models/QualityControlResultDto';
 import {forkJoin, Observable, of} from 'rxjs';
 import {catchError} from 'rxjs/operators';
-import {MatFormField} from '@angular/material/form-field';
-import {MatOption, MatSelect} from '@angular/material/select';
+import {MatFormField, MatFormFieldModule} from '@angular/material/form-field';
+import {MatOption, MatSelect, MatSelectModule} from '@angular/material/select';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {CardComponent} from '../../../@theme/components/card/card.component';
-import { TranslatePipe } from '@ngx-translate/core';
+import {TranslatePipe} from '@ngx-translate/core';
+import {StorageUnitDtoService} from "../../../shared/services/storage.service";
+import {StorageUnitDto} from "../../../shared/models/StorageUnitDto";
+import {MatInputModule} from '@angular/material/input';
+
 
 @Component({
   selector: 'app-controlequalite',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, MatFormField, MatSelect, MatOption, CardComponent, TranslatePipe],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, MatFormField, MatSelect, MatOption, CardComponent, TranslatePipe, MatFormFieldModule, MatInputModule, MatSelectModule],
   templateUrl: './controleQualite.component.html',
   styleUrls: ['./controleQualite.component.scss'],
   standalone: true
@@ -27,12 +31,15 @@ export class ControleQualiteComponent implements OnInit {
   message: string = '';
   rules: QualityControlRule[] = [];
   dynamicForm!: FormGroup;
+  staticForm!: FormGroup;   // Pour les champs unitPrice, price, storageUnit
   receptionId: string | null = null;
   deliveryData: UnifiedDelivery | undefined;
   submitted = false;
   isLoading = false;
   qualityControlResults: QualityControlResultDto[] = [];
   isQualityControlDone: boolean = false; // verfifier si le controle qualité est deja fait!
+  storageUnits: StorageUnitDto[] = [];
+
 
   constructor(
     private fb: FormBuilder,
@@ -41,12 +48,24 @@ export class ControleQualiteComponent implements OnInit {
     private route: ActivatedRoute,
     private deliveryService: UnifiedDeliveryService,
     private cdr: ChangeDetectorRef,
-    private snackBar: MatSnackBar
-  ) {}
+    private snackBar: MatSnackBar,
+    private storageUnitService: StorageUnitDtoService,
+  ) {
+    this.creerStaticFormulaire();
+  }
 
   ngOnInit(): void {
     this.receptionId = this.route.snapshot.paramMap.get('id');
     this.loadReception();
+    this.loadStorageUnits();
+  }
+
+  creerStaticFormulaire(): void {
+    this.staticForm = this.fb.group({
+      unitPrice: [null, Validators.required],
+      price: [null, Validators.required],
+      storageUnits: [null, Validators.required]
+    })
   }
 
   loadReception(): void {
@@ -212,7 +231,7 @@ export class ControleQualiteComponent implements OnInit {
           const endommageesVal = this.dynamicForm.get(this.findRuleKey('Endommagees'))?.value;
           const categorieVal = this.dynamicForm.get(this.findRuleKey('Categorie'))?.value;
 
-          console.log('🔍 Debug valeurs OLIVE :');
+          console.log(' Debug valeurs OLIVE :');
           console.log('Infestees:', infesteesVal);
           console.log('Fermentees:', fermenteesVal);
           console.log('Endommagees:', endommageesVal);
@@ -421,6 +440,28 @@ export class ControleQualiteComponent implements OnInit {
     return rule?.maxValue !== undefined ? rule.maxValue : null;
   }
 
+  loadStorageUnits(): void {
+    this.isLoading = true;
+    this.storageUnitService.getAllStorageUnit().subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.storageUnits = response.data;
+          console.log("unit sotarge", this.storageUnits)
+        } else {
+          this.snackBar.open(response.message || 'Error loading storage units', 'Close', {duration: 3000});
+        }
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error loading storage units:', error);
+        this.snackBar.open('Error loading storage units', 'Close', {duration: 3000});
+        this.isLoading = false;
+      }
+    });
+  }
+
+
+
   // private calculateCategorie(): string {
   //   const acidite = this.dynamicForm.get('Acidite')?.value;
   //   const k270 = this.dynamicForm.get('K270')?.value;
@@ -533,5 +574,36 @@ export class ControleQualiteComponent implements OnInit {
     } else {
       return 'Lampante';
     }
+  }
+
+  onSubmitStaticForm(): void {
+    if (this.staticForm.invalid || !this.deliveryData) {
+      return;
+    }
+
+    // Mise à jour des champs statiques dans deliveryData
+    this.deliveryData.unitPrice = this.staticForm.get('unitPrice')?.value;
+    this.deliveryData.price = this.staticForm.get('price')?.value;
+    const selectedStorageUnit = this.staticForm.get('unitStorage')?.value;
+
+    this.deliveryData.storageUnit = selectedStorageUnit;
+
+
+    // Optionnel : Envoyer les données mises à jour au backend
+    this.isLoading = true;
+    this.deliveryService.updateDelivery(this.deliveryData).subscribe({
+      next: (updatedDelivery) => {
+        console.log('Livraison mise à jour', updatedDelivery);
+        this.message = 'Données mises à jour avec succès';
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error("Erreur lors de la mise à jour", err);
+        this.message = "Erreur lors de la sauvegarde";
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      }
+    });
   }
 }
