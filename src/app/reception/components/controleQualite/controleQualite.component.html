@@ -97,8 +97,8 @@
       <div class="rule-card">
         <mat-form-field appearance="outline" class="w-100">
           <mat-label>{{ 'CONTROLE_QUALITE.FINANCIAL.PRICE' | translate }}</mat-label>
-          <input formControlName="price" matInput placeholder="{{ 'CONTROLE_QUALITE.FINANCIAL.PRICE' | translate }} "
-                 readonly type="number"/>
+          <input formControlName="price" matInput placeholder="{{ 'CONTROLE_QUALITE.FINANCIAL.PRICE' | translate }}"
+                 type="number"/>
           <mat-error *ngIf="staticForm.get('price')?.hasError('required')">
             {{ 'CONTROLE_QUALITE.FORM.VALIDATION.REQUIRED' | translate }}
           </mat-error>

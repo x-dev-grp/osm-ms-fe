@@ -65,18 +65,8 @@ export class ControleQualiteComponent implements OnInit {
   creerStaticFormulaire(): void {
     this.staticForm = this.fb.group({
       unitPrice: [null, Validators.required],
-      price: [{value: null, disabled: true}, Validators.required],
+      price: [null, Validators.required],
       storageUnit: [null, Validators.required]
-    });
-
-    // Mise à jour automatique du champ 'price' lorsque 'unitPrice' change
-    this.staticForm.get('unitPrice')?.valueChanges.subscribe((unitPrice: number) => {
-      const oilQty = this.deliveryData?.oilQuantity || 0;
-      const calculatedPrice = (unitPrice || 0) * oilQty;
-
-      // Arrondi numérique à 3 décimales
-      const roundedPrice = Math.round((calculatedPrice + Number.EPSILON) * 1000) / 1000;
-      this.staticForm.get('price')?.setValue(roundedPrice, {emitEvent: false});
     });
 
     this.staticForm.get('storageUnit')?.valueChanges.subscribe((value) => {
@@ -492,11 +482,15 @@ export class ControleQualiteComponent implements OnInit {
       .filter((val) => val.length > 0);
   }
 
+  getRuleMinValue(ruleKey: string): number | null {
+    const rule = this.rules.find((r) => r.ruleKey === ruleKey);
+    return rule?.minValue !== undefined ? rule.minValue : null;
+  }
 
-  // getRuleMaxValue(ruleKey: string): number | null {
-  //   const rule = this.rules.find((r) => r.ruleKey === ruleKey);
-  //   return rule?.maxValue !== undefined ? rule.maxValue : null;
-  // }
+  getRuleMaxValue(ruleKey: string): number | null {
+    const rule = this.rules.find((r) => r.ruleKey === ruleKey);
+    return rule?.maxValue !== undefined ? rule.maxValue : null;
+  }
 
   loadStorageUnits(): void {
     this.isLoading = true;
@@ -538,9 +532,12 @@ export class ControleQualiteComponent implements OnInit {
       const selectedStorageUnit = this.storageUnits.find(unit => unit.id === formValues.storageUnit);
       if (selectedStorageUnit) {
         this.deliveryData.storageUnit = selectedStorageUnit;
-
+        console.log('Found and assigned storage unit:', selectedStorageUnit);
+        console.log('deliveryData.storageUnit.id:', this.deliveryData.storageUnit?.id);
+        console.log('deliveryData.storageUnit.name:', this.deliveryData.storageUnit?.name);
       } else {
-
+        console.error('Storage unit not found for ID:', formValues.storageUnit);
+        console.log('Available storage units:', this.storageUnits);
         this.translate.get('CONTROLE_QUALITE.STORAGE_UNIT.ERRORS.NOT_FOUND').subscribe((message: string) => {
           this.snackBar.open(message, this.translate.instant('STANDARD.BTNS.CANCEL'), {
             duration: 3000,
