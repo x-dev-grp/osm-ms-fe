@@ -53,9 +53,11 @@ export class CompletionDetailsDialogComponent {
 
   get oliveWeight(): number | null {
     if (this.itemType === PlanItemType.LOT) {
-      return (this.item as PlanningItem)?.oliveQuantity ?? null;
+      const planningItem = this.item as PlanningItem;
+      return planningItem?.oliveQuantity ?? null;
     } else if (this.itemType === PlanItemType.GLOBAL_LOT) {
-      return (this.item as GlobalLot)?.totalKg ?? null;
+      const globalLot = this.item as GlobalLot;
+      return globalLot?.totalKg ?? null;
     }
     return null;
   }

@@ -50,8 +50,8 @@ export class OilTransactionService {
   }
 
   // Retrieve a single oil transaction by ID
-  getOilTransaction(id: string): Observable<{ success: boolean; message: string; data: OilTransaction }> {
-    return this.http.get<{ success: boolean; message: string; data: OilTransaction }>(`${this.baseUrl}/fetch/${id}`);
+  getOilTransaction(id: string): Observable<ApiResponse<OilTransaction>> {
+    return this.http.get<ApiResponse<OilTransaction>>(`${this.baseUrl}/fetch/${id}`);
   }
 
   // Create a new oil transaction

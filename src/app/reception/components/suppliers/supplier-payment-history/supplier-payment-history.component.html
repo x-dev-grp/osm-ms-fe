@@ -1,84 +1,395 @@
 <div class="container">
   <!-- Back button -->
-  <div class="action-buttons">
-    <button mat-icon-button (click)="onBack()" aria-label="Retour">
-      <mat-icon>arrow_back</mat-icon>
-    </button>
-  </div>
 
   <!-- Loading spinner -->
   <div *ngIf="loading" class="loading-container">
     <mat-spinner></mat-spinner>
   </div>
-
-  <!-- Error message -->
-  <div *ngIf="error" class="error-container">
-    <mat-icon color="warn">error</mat-icon>
-    <p>{{ error }}</p>
-    <button mat-raised-button color="primary" (click)="onBack()">
-      Retour
-    </button>
-  </div>
-
   <!-- Payment history content -->
   <div *ngIf="!loading && !error" class="content">
-    <mat-card>
-      <mat-card-title>
-        {{ historyType === 'paid' ? 'Historique des Paiements' : 'Paiements en Attente' }}
-      </mat-card-title>
-      <mat-divider></mat-divider>
-      <mat-card-content>
-        <table mat-table [dataSource]="payments" class="payment-table">
-          <!-- Date Column -->
-          <ng-container matColumnDef="date">
-            <th mat-header-cell *matHeaderCellDef>Date</th>
-            <td mat-cell *matCellDef="let payment">{{ payment.date | date:'dd/MM/yyyy' }}</td>
-          </ng-container>
+    <!-- Split Layout Container - Now includes everything -->
+    <div class="split-layout" [class.payment-active]="selectedPayment">
+      <!-- Left Side: Summary Stats + Deliveries Table -->
+      <div class="left-section" [class.minimized]="selectedPayment">
+        <!-- Summary Statistics -->
+        <div class="summary-stats">
+          <mat-card class="stat-card" *ngIf="historyType === 'unpaid' || historyType === 'paid' || historyType === 'all'">
+            <mat-card-content>
+              <div class="stat-item">
+                <span class="stat-label">{{ 'SUPPLIER_PAYMENT.TOTAL_DELIVERIES' | translate }}</span>
+                <span class="stat-value">{{ totalDeliveries }}</span>
+              </div>
+            </mat-card-content>
+          </mat-card>
 
-          <!-- Amount Column -->
-          <ng-container matColumnDef="amount">
-            <th mat-header-cell *matHeaderCellDef>Montant</th>
-            <td mat-cell *matCellDef="let payment">{{ payment.amount | currency:'MAD':'symbol-narrow':'1.2-2' }}</td>
-          </ng-container>
+          <mat-card class="stat-card" *ngIf="historyType === 'paid' || historyType === 'all'">
+            <mat-card-content>
+              <div class="stat-item">
+                <span class="stat-label">{{ 'SUPPLIER_PAYMENT.TOTAL_PAID' | translate }}</span>
+                <span class="stat-value success">{{ totalPaid | currency:'TND':'symbol-narrow':'1.2-2' }}</span>
+              </div>
+            </mat-card-content>
+          </mat-card>
 
-          <!-- Status Column -->
-          <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef>Statut</th>
-            <td mat-cell *matCellDef="let payment">
-              <mat-chip-list>
-                <mat-chip [color]="payment.status === 'paid' ? 'primary' : 'warn'" selected>
-                  {{ payment.status === 'paid' ? 'Payé' : 'En attente' }}
-                </mat-chip>
-              </mat-chip-list>
-            </td>
-          </ng-container>
+          <mat-card class="stat-card" *ngIf="historyType === 'unpaid' || historyType === 'all'">
+            <mat-card-content>
+              <div class="stat-item">
+                <span class="stat-label">{{ 'SUPPLIER_PAYMENT.TOTAL_UNPAID' | translate }}</span>
+                <span class="stat-value error">{{ totalUnpaid | currency:'TND':'symbol-narrow':'1.2-2' }}</span>
+              </div>
+            </mat-card-content>
+          </mat-card>
 
-          <!-- Reference Column -->
-          <ng-container matColumnDef="reference">
-            <th mat-header-cell *matHeaderCellDef>Référence</th>
-            <td mat-cell *matCellDef="let payment">{{ payment.reference }}</td>
-          </ng-container>
+          <mat-card class="stat-card" *ngIf="historyType === 'all'">
+            <mat-card-content>
+              <div class="stat-item">
+                <span class="stat-label">{{ 'SUPPLIER_PAYMENT.TOTAL_OLIVE_WEIGHT' | translate }}</span>
+                <span class="stat-value">{{ totalOliveWeight | number:'1.2-2' }} kg</span>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+        <!-- Deliveries Table -->
+        <div class="table-section">
+          <mat-card>
+            <mat-card-title>
+              {{ 'SUPPLIER_PAYMENT.PAYMENT_HISTORY' | translate }} - {{ historyType === 'paid' ? ('SUPPLIER_PAYMENT.PAID' | translate) : historyType === 'unpaid' ? ('SUPPLIER_PAYMENT.UNPAID' | translate) : ('SUPPLIER_PAYMENT.ALL' | translate) }}
+            </mat-card-title>
+            <mat-divider></mat-divider>
+            <mat-card-content>
+              <table mat-table [dataSource]="payments" class="payment-table">
+                <!-- Delivery Number Column -->
+                <ng-container matColumnDef="deliveryNumber">
+                  <th mat-header-cell *matHeaderCellDef>N° Livraison</th>
+                  <td mat-cell *matCellDef="let payment">{{ payment.deliveryNumber }}</td>
+                </ng-container>
 
-          <!-- Actions Column -->
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef>Actions</th>
-            <td mat-cell *matCellDef="let payment">
-              <button mat-icon-button color="primary" (click)="viewPaymentDetails(payment)">
-                <mat-icon>visibility</mat-icon>
+                <!-- Lot Number Column -->
+                <ng-container matColumnDef="lotNumber">
+                  <th mat-header-cell *matHeaderCellDef>N° Lot</th>
+                  <td mat-cell *matCellDef="let payment">{{ payment.lotNumber }}</td>
+                </ng-container>
+
+                <!-- Delivery Date Column -->
+                <ng-container matColumnDef="deliveryDate">
+                  <th mat-header-cell *matHeaderCellDef>Date Livraison</th>
+                  <td mat-cell *matCellDef="let payment">{{ payment.deliveryDate | date:'dd/MM/yyyy' }}</td>
+                </ng-container>
+
+                <!-- Olive Weight Column -->
+                <ng-container matColumnDef="poidsNet">
+                  <th mat-header-cell *matHeaderCellDef>Poids Olives (kg)</th>
+                  <td mat-cell *matCellDef="let payment">{{ payment.poidsNet | number:'1.2-2' }}</td>
+                </ng-container>
+
+                <!-- Price Column -->
+                <ng-container matColumnDef="price">
+                  <th mat-header-cell *matHeaderCellDef>Prix Total</th>
+                  <td mat-cell *matCellDef="let payment">{{ payment.price | currency:'TND':'symbol-narrow':'1.2-2' }}</td>
+                </ng-container>
+
+                <!-- Paid Amount Column -->
+                <ng-container matColumnDef="paidAmount">
+                  <th mat-header-cell *matHeaderCellDef>Montant Payé</th>
+                  <td mat-cell *matCellDef="let payment">{{ payment.paidAmount | currency:'TND':'symbol-narrow':'1.2-2' }}</td>
+                </ng-container>
+
+                <!-- Unpaid Amount Column -->
+                <ng-container matColumnDef="unpaidAmount">
+                  <th mat-header-cell *matHeaderCellDef>Montant Non Payé</th>
+                  <td mat-cell *matCellDef="let payment">{{ payment.unpaidAmount | currency:'TND':'symbol-narrow':'1.2-2' }}</td>
+                </ng-container>
+
+                <!-- Status Column -->
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell *matHeaderCellDef>Statut</th>
+                  <td mat-cell *matCellDef="let payment">
+                    <mat-chip-list>
+                      <mat-chip [color]="getStatusColor(payment.status)" selected>
+                        {{ getStatusLabel(payment.status) }}
+                      </mat-chip>
+                    </mat-chip-list>
+                  </td>
+                </ng-container>
+
+                <!-- Actions Column -->
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef>Actions</th>
+                  <td mat-cell *matCellDef="let payment">
+                    <button
+                      mat-raised-button
+                      color="primary"
+                      size="small"
+                      (click)="initiatePayment(payment)"
+                      [disabled]="payment.status === 'paid'">
+                      <mat-icon>payment</mat-icon>
+                      Payer
+                    </button>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+
+              <mat-paginator
+                [pageSize]="10"
+                [pageSizeOptions]="[5, 10, 25, 100]"
+                aria-label="Select page of payments">
+              </mat-paginator>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+      <!-- Right Side: Payment Form -->
+      <div class="payment-section" [class.active]="selectedPayment">
+        <mat-card *ngIf="selectedPayment" class="payment-form-card">
+          <mat-card-title>
+            <div class="payment-header">
+              <span>Paiement - Lot {{ selectedPayment.lotNumber }}</span>
+              <button mat-icon-button (click)="closePaymentForm()" aria-label="Fermer">
+                <mat-icon>close</mat-icon>
               </button>
-            </td>
-          </ng-container>
+            </div>
+          </mat-card-title>
+          <mat-divider></mat-divider>
+          <mat-card-content>
+            <!-- Payment Method Selection -->
+            <div class="payment-method-section">
+              <h4>{{ 'SUPPLIER_PAYMENT.PAYMENT_METHOD' | translate }}</h4>
+              <mat-radio-group [(ngModel)]="paymentMethod" (change)="onPaymentMethodChange()">
+                <mat-radio-button value="money" class="payment-option">
+                  <div class="payment-option-content">
+                    <mat-icon>account_balance_wallet</mat-icon>
+                    <div>
+                      <strong>{{ 'SUPPLIER_PAYMENT.MONEY_PAYMENT' | translate }}</strong>
+                      <p>{{ 'SUPPLIER_PAYMENT.MONEY_PAYMENT_DESC' | translate }}</p>
+                     </div>
+                  </div>
+                </mat-radio-button>
+                <mat-radio-button value="oil" class="payment-option">
+                  <div class="payment-option-content">
+                    <mat-icon>local_gas_station</mat-icon>
+                    <div>
+                      <strong>{{ 'SUPPLIER_PAYMENT.OIL_PAYMENT' | translate }}</strong>
+                      <p>{{ 'SUPPLIER_PAYMENT.OIL_PAYMENT_DESC' | translate }}</p>
+                     </div>
+                  </div>
+                </mat-radio-button>
+              </mat-radio-group>
+            </div>
 
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
+            <!-- Payment Details Form -->
+            <div class="payment-details-section" *ngIf="paymentMethod">
+              <!-- Money Payment Form -->
+              <div class="money-payment-form" *ngIf="paymentMethod === 'money'">
+                <h4>Paiement en Espèces</h4>
 
-        <mat-paginator
-          [pageSize]="10"
-          [pageSizeOptions]="[5, 10, 25, 100]"
-          aria-label="Select page of payments">
-        </mat-paginator>
-      </mat-card-content>
-    </mat-card>
+                <!-- Payment Method Selection -->
+                <div class="form-row">
+                  <mat-radio-group [(ngModel)]="moneyPaymentMethod"
+                                  (change)="onMoneyPaymentMethodChange()"
+                                  class="payment-method-group">
+                    <mat-radio-button value="cash" class="payment-option">
+                      <div class="payment-option-content">
+                        <mat-icon>money</mat-icon>
+                        <div>
+                          <strong>{{ 'SUPPLIER_PAYMENT.CASH' | translate }}</strong>
+                          <p>{{ 'SUPPLIER_PAYMENT.CASH' | translate }}</p>
+                        </div>
+                      </div>
+                    </mat-radio-button>
+
+                    <mat-radio-button value="check" class="payment-option">
+                      <div class="payment-option-content">
+                        <mat-icon>receipt</mat-icon>
+                        <div>
+                          <strong>{{ 'SUPPLIER_PAYMENT.CHECK' | translate }}</strong>
+                          <p>{{ 'SUPPLIER_PAYMENT.CHECK' | translate }}</p>
+                        </div>
+                      </div>
+                    </mat-radio-button>
+
+                    <mat-radio-button value="bank_transfer" class="payment-option">
+                      <div class="payment-option-content">
+                        <mat-icon>account_balance</mat-icon>
+                        <div>
+                          <strong>{{ 'SUPPLIER_PAYMENT.BANK_TRANSFER' | translate }}</strong>
+                          <p>{{ 'SUPPLIER_PAYMENT.BANK_TRANSFER' | translate }}</p>
+                        </div>
+                      </div>
+                    </mat-radio-button>
+                  </mat-radio-group>
+                </div>
+
+                <!-- Cash Payment -->
+                <div class="form-row" *ngIf="moneyPaymentMethod === 'cash'">
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>{{ 'SUPPLIER_PAYMENT.AMOUNT' | translate }}</mat-label>
+                    <input matInput type="number" [formControl]="paymentForm.get('amount')"
+                           [max]="selectedPayment?.unpaidAmount" step="0.01"
+                           (input)="calculatePayment()">
+                    <mat-error *ngIf="paymentForm.get('amount')?.hasError('required')">
+                      {{ 'SUPPLIER_PAYMENT.ERRORS.AMOUNT_REQUIRED' | translate }}
+                    </mat-error>
+                    <mat-error *ngIf="paymentForm.get('amount')?.hasError('min')">
+                      {{ 'SUPPLIER_PAYMENT.ERRORS.AMOUNT_MIN' | translate }}
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <!-- Check Payment -->
+                <div class="form-row" *ngIf="moneyPaymentMethod === 'check'">
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>{{ 'SUPPLIER_PAYMENT.CHECK_NUMBER' | translate }}</mat-label>
+                    <input matInput [formControl]="paymentForm.get('checkNumber')"
+                           placeholder="Ex: CHK-2024-001">
+                    <mat-error *ngIf="paymentForm.get('checkNumber')?.hasError('required')">
+                      {{ 'SUPPLIER_PAYMENT.ERRORS.CHECK_NUMBER_REQUIRED' | translate }}
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>{{ 'SUPPLIER_PAYMENT.AMOUNT' | translate }}</mat-label>
+                    <input matInput type="number" [formControl]="paymentForm.get('amount')"
+                           [max]="selectedPayment?.unpaidAmount" step="0.01"
+                           (input)="calculatePayment()">
+                    <mat-error *ngIf="paymentForm.get('amount')?.hasError('required')">
+                      {{ 'SUPPLIER_PAYMENT.ERRORS.AMOUNT_REQUIRED' | translate }}
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <!-- Bank Transfer Payment -->
+                <div class="form-row" *ngIf="moneyPaymentMethod === 'bank_transfer'">
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>{{ 'SUPPLIER_PAYMENT.BANK_ACCOUNT' | translate }}</mat-label>
+                    <mat-select [formControl]="paymentForm.get('bankAccountId')"
+                               [disabled]="loadingBankAccounts">
+                      <mat-option *ngFor="let account of bankAccounts" [value]="account.id">
+                        {{ account.bankName }} - {{ account.rib }}
+                      </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="paymentForm.get('bankAccountId')?.hasError('required')">
+                      {{ 'SUPPLIER_PAYMENT.ERRORS.BANK_ACCOUNT_REQUIRED' | translate }}
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>{{ 'SUPPLIER_PAYMENT.AMOUNT' | translate }}</mat-label>
+                    <input matInput type="number" [formControl]="paymentForm.get('amount')"
+                           [max]="selectedPayment?.unpaidAmount" step="0.01"
+                           (input)="calculatePayment()">
+                    <mat-error *ngIf="paymentForm.get('amount')?.hasError('required')">
+                      {{ 'SUPPLIER_PAYMENT.ERRORS.AMOUNT_REQUIRED' | translate }}
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <!-- Oil Payment Form -->
+              <div class="oil-payment-form" *ngIf="paymentMethod === 'oil'">
+                <h4>Paiement en Huile</h4>
+
+                <div class="oil-info">
+                  <p><strong>{{ 'SUPPLIER_PAYMENT.UNPAID_AMOUNT' | translate }}:</strong> {{ selectedPayment?.unpaidAmount | currency:'TND' }}</p>
+                  <p><strong>Prix de référence:</strong> {{ oilPricePerLiter | currency:'TND' }}/kg</p>
+                  <p><strong>Équivalent en huile:</strong> {{ oilEquivalent | number:'1.2-2' }} kg</p>
+                </div>
+
+                <!-- Negotiable Oil Price -->
+                <div class="form-row">
+                  <div class="price-negotiation">
+                    <div class="negotiation-header">
+                      <mat-icon>trending_up</mat-icon>
+                      <span>Négociation du Prix</span>
+                    </div>
+                    <div class="reference-price">
+                      Prix de référence: {{ oilPricePerLiter | currency:'TND' }}/kg
+                    </div>
+                    <mat-form-field appearance="outline" class="full-width">
+                      <mat-label>Prix négocié par kg (TND)</mat-label>
+                      <input matInput type="number" [formControl]="paymentForm.get('oilPricePerKg')"
+                             [min]="0.01" step="0.01"
+                             (input)="onOilPriceChange()"
+                             placeholder="Entrez le prix négocié" />
+                      <mat-hint>Prix négocié pour ce paiement spécifique</mat-hint>
+                      <mat-error *ngIf="paymentForm.get('oilPricePerKg')?.hasError('required')">
+                        {{ 'SUPPLIER_PAYMENT.ERRORS.OIL_PRICE_REQUIRED' | translate }}
+                      </mat-error>
+                      <mat-error *ngIf="paymentForm.get('oilPricePerKg')?.hasError('min')">
+                        {{ 'SUPPLIER_PAYMENT.ERRORS.OIL_PRICE_MIN' | translate }}
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>{{ 'SUPPLIER_PAYMENT.OIL_QUANTITY' | translate }}</mat-label>
+                    <input matInput type="number" [formControl]="paymentForm.get('oilQuantity')"
+                           [max]="oilEquivalent" step="0.01"
+                           (input)="calculateOilPayment()">
+                    <mat-hint>Quantité maximum: {{ oilEquivalent | number:'1.2-2' }} kg</mat-hint>
+                    <mat-error *ngIf="paymentForm.get('oilQuantity')?.hasError('required')">
+                      {{ 'SUPPLIER_PAYMENT.ERRORS.OIL_QUANTITY_REQUIRED' | translate }}
+                    </mat-error>
+                    <mat-error *ngIf="paymentForm.get('oilQuantity')?.hasError('min')">
+                      {{ 'SUPPLIER_PAYMENT.ERRORS.OIL_QUANTITY_MIN' | translate }}
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <!-- Payment Summary -->
+              <div class="payment-summary">
+                <h4>{{ 'SUPPLIER_PAYMENT.PAYMENT_SUMMARY' | translate }}</h4>
+                <div class="summary-item">
+                  <span>{{ 'SUPPLIER_PAYMENT.UNPAID_AMOUNT' | translate }}:</span>
+                  <span>{{ selectedPayment?.unpaidAmount | currency:'TND' }}</span>
+                </div>
+                <div class="summary-item" *ngIf="paymentMethod === 'money'">
+                  <span>{{ 'SUPPLIER_PAYMENT.PAID_AMOUNT' | translate }}:</span>
+                  <span>{{ paymentForm.get('amount')?.value | currency:'TND' }}</span>
+                </div>
+                <div class="summary-item" *ngIf="paymentMethod === 'oil'">
+                  <span>{{ 'SUPPLIER_PAYMENT.NEGOTIATED_PRICE' | translate }}:</span>
+                  <span>{{ paymentForm.get('oilPricePerKg')?.value | currency:'TND' }}/kg</span>
+                </div>
+                <div class="summary-item" *ngIf="paymentMethod === 'oil'">
+                  <span>{{ 'SUPPLIER_PAYMENT.OIL_QUANTITY' | translate }}:</span>
+                  <span>{{ paymentForm.get('oilQuantity')?.value | number:'1.2-2' }} kg</span>
+                </div>
+                <div class="summary-item" *ngIf="paymentMethod === 'oil'">
+                  <span>{{ 'SUPPLIER_PAYMENT.OIL_VALUE' | translate }}:</span>
+                  <span>{{ (paymentForm.get('oilQuantity')?.value || 0) * (paymentForm.get('oilPricePerKg')?.value || 0) | currency:'TND' }}</span>
+                </div>
+                <div class="summary-item">
+                  <span>{{ 'SUPPLIER_PAYMENT.REMAINING_AMOUNT' | translate }}:</span>
+                  <span>{{ remainingAmount | currency:'TND' }}</span>
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="payment-actions">
+                <button
+                  mat-raised-button
+                  color="primary"
+                  (click)="processPayment()"
+                  [disabled]="!isPaymentFormValid()">
+                  <mat-icon>check</mat-icon>
+                  {{ 'SUPPLIER_PAYMENT.CONFIRM_PAYMENT' | translate }}
+                </button>
+                <button
+                  mat-stroked-button
+                  (click)="closePaymentForm()">
+                  {{ 'SUPPLIER_PAYMENT.CANCEL' | translate }}
+                </button>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
   </div>
 </div>

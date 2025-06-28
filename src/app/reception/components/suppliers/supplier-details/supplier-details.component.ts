@@ -40,19 +40,11 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // 1. get id from the URL if it exists (preferred)
-    const routeId = this.route.snapshot.paramMap.get('id');
-    // 2. fall back to what is in localStorage
-    const storedId = localStorage.getItem('selectedSupplierId');
-    // 3. final value
-    const supplierId = routeId || storedId;
+    this.supplierId = this.route.snapshot.paramMap.get('id');
 
-    if (supplierId) {
-      // keep it in localStorage so a hard-refresh still works
-      localStorage.setItem('selectedSupplierId', supplierId);
-
-      this.setupConfig(supplierId);
-      this.loadPaymentCounts(supplierId);
+    if (this.supplierId) {
+      this.setupConfig(this.supplierId);
+      this.loadPaymentCounts(this.supplierId);
     } else {
       this.error = 'No supplier ID found';
       this.router.navigate(['/reception/fournisseur']);
@@ -62,7 +54,7 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
     this.dashboardConfig = {
       title: 'Détails du Fournisseur',
       titleTranslatePath: 'SUPPLIERS.DETAILS.TITLE',
-      baseURL: 'deliveries',
+      baseURL: 'production/deliveries',
       searchEndpoint: 'production/deliveries',
       addNewItem: false,
       defaultSearchData: {
@@ -239,16 +231,15 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
   }
 
   navigateToHistory(type: 'paid' | 'unpaid'): void {
-    const supplierId = localStorage.getItem('selectedSupplierId');
-    if (supplierId) {
-      this.router.navigate(['/reception/fournisseur/payments'], {
-        queryParams: { type, id: supplierId }
+    if (this.supplierId) {
+      this.router.navigate(['/reception/fournisseur/payments', this.supplierId], {
+        queryParams: { type }
       });
     }
   }
 
   handleAction(event: { row: SupplierType; action: string }): void {
-    const { row, action } = event;
+    const { action } = event;
     switch (action) {
 
       default:

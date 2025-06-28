@@ -31,7 +31,13 @@ export class NavRightComponent {
   constructor() {
     const translate = this.translate;
 
-    translate.setDefaultLang(AbleProConfig.i18n);
+    // Load language from localStorage if available
+    const savedLang = localStorage.getItem('app_language');
+    if (savedLang) {
+      translate.use(savedLang);
+    } else {
+      translate.setDefaultLang(AbleProConfig.i18n);
+    }
     effect(() => {
       this.isRtlTheme(this.themeService.directionChange());
     });
@@ -46,6 +52,7 @@ export class NavRightComponent {
   // user according language change of sidebar menu item
   useLanguage(language: string) {
     this.translate.use(language);
+    localStorage.setItem('app_language', language);
   }
 
   headerBlur() {

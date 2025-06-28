@@ -2,7 +2,6 @@
 import { OnInit, Component, inject } from '@angular/core';
 import { Router, NavigationStart, NavigationEnd, NavigationCancel, NavigationError, ActivatedRoute, RouterOutlet } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { filter, map, mergeMap } from 'rxjs/operators';
 
 // project import
 
@@ -32,12 +31,15 @@ export class AppComponent implements OnInit {
     this.translate.addLangs(['en', 'fr']);
     this.translate.setDefaultLang('en');
 
-    // Force language to English for testing
-    this.translate.use('en');
-
-    // Get browser language or use default
-    // const browserLang = this.translate.getBrowserLang();
-    // this.translate.use(browserLang?.match(/en|fr/) ? browserLang : 'en');
+    // Use saved language from localStorage if available
+    const savedLang = localStorage.getItem('app_language');
+    if (savedLang) {
+      this.translate.use(savedLang);
+    } else {
+      // Get browser language or use default
+      const browserLang = this.translate.getBrowserLang();
+      this.translate.use(browserLang?.match(/en|fr/) ? browserLang : 'en');
+    }
   }
 
   ngOnInit() {
@@ -59,9 +61,5 @@ export class AppComponent implements OnInit {
         });
       }
     );
-    const queryString = window.location.search;
-    const params = new URLSearchParams(queryString);
-
-
   }
 }

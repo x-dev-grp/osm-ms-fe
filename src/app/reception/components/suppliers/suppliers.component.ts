@@ -217,7 +217,7 @@ export class SupplierComponent implements OnInit, OnDestroy {
   }
 
   viewSupplier(supplier: SupplierType) {
-    this.router.navigate(['reception/supplier-details', supplier.id]);
+    this.router.navigate(['/reception/fournisseur/details', supplier.id]);
   }
 
   onSelectRegion(selectedRegionId: string): void {
@@ -299,17 +299,16 @@ export class SupplierComponent implements OnInit, OnDestroy {
     const { row, action } = event;
     switch (action) {
       case 'READ':
-        localStorage.setItem('selectedSupplierId', event.row.id!);
-        this.router.navigate(['/reception/fournisseur/details']);
+        this.router.navigate(['/reception/fournisseur/details', row.id!]);
         break;
       case 'UPDATE':
-        if (event.row.id) {
-          this.router.navigate(['/reception/fournisseur/edit', event.row.id]);
+        if (row.id) {
+          this.router.navigate(['/reception/fournisseur/edit', row.id]);
         }
         break;
       case 'DELETE':
-        if (event.row.id) {
-          this.deleteRecord(event.row.id);
+        if (row.id) {
+          this.deleteRecord(row.id);
         }
         break;
       default:

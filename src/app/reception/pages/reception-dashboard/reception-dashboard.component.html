@@ -16,13 +16,13 @@
     <app-earning-chart iconImage="#wallet-2" [headerTitle]="'DASHBOARD.KPIS.AVG_VOLUME' | translate" [earningValue]="avgVolumePerReception.toFixed(2)" background="bg-primary-50" textColor="text-primary-500" [color]="primaryColor" percentageValue=""[data]="[]"></app-earning-chart>
   </div>
   <div class="col-md-6 col-xxl-2">
-    <app-earning-chart iconImage="#wallet-2" [headerTitle]="'DASHBOARD.KPIS.AVG_UNIT_PRICE' | translate" [earningValue]="avgUnitPrice.toFixed(2)" background="bg-info-50" textColor="text-info-500" [color]="infoColor" percentageValue=""[data]="[]"></app-earning-chart>
+    <app-earning-chart iconImage="#wallet-2" [headerTitle]="'DASHBOARD.KPIS.AVG_UNIT_PRICE' | translate" [earningValue]="formattedAvgUnitPrice" background="bg-info-50" textColor="text-info-500" [color]="infoColor" percentageValue=""[data]="[]"></app-earning-chart>
   </div>
   <div class="col-md-6 col-xxl-2">
-    <app-earning-chart iconImage="#wallet-2" [headerTitle]="'DASHBOARD.KPIS.TOTAL_PAID' | translate" [earningValue]="totalPaidAmount.toFixed(2)" background="bg-success-50" textColor="text-success-500" [color]="successColor" percentageValue=""[data]="[]"></app-earning-chart>
+    <app-earning-chart iconImage="#wallet-2" [headerTitle]="'DASHBOARD.KPIS.TOTAL_PAID' | translate" [earningValue]="formattedTotalPaidAmount" background="bg-success-50" textColor="text-success-500" [color]="successColor" percentageValue=""[data]="[]"></app-earning-chart>
   </div>
   <div class="col-md-6 col-xxl-2">
-    <app-earning-chart iconImage="#wallet-2" [headerTitle]="'DASHBOARD.KPIS.TOTAL_UNPAID' | translate" [earningValue]="totalUnpaidAmount.toFixed(2)" background="bg-warning-50" textColor="text-warning-500" [color]="warningColor" percentageValue=""[data]="[]"></app-earning-chart>
+    <app-earning-chart iconImage="#wallet-2" [headerTitle]="'DASHBOARD.KPIS.TOTAL_UNPAID' | translate" [earningValue]="formattedTotalUnpaidAmount" background="bg-warning-50" textColor="text-warning-500" [color]="warningColor" percentageValue=""[data]="[]"></app-earning-chart>
   </div>
   <div class="col-md-6 col-xxl-2">
     <app-earning-chart iconImage="#wallet-2" [headerTitle]="'DASHBOARD.KPIS.UNIQUE_SUPPLIERS' | translate" [earningValue]="uniqueSuppliers.toString()" background="bg-secondary-50" textColor="text-secondary-500" [color]="['var(--secondary-500)']" percentageValue=""[data]="[]"></app-earning-chart>

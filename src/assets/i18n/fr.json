@@ -1206,5 +1206,48 @@
       "STORAGE_UNIT": "Unité de stockage",
       "PARCEL": "Parcelle"
     }
+  },
+  "SUPPLIER_PAYMENT": {
+    "TOTAL_DELIVERIES": "Total Livraisons",
+    "TOTAL_PAID": "Total Payé",
+    "TOTAL_UNPAID": "Total Non Payé",
+    "TOTAL_OLIVE_WEIGHT": "Poids Total Olives",
+    "PAYMENT_HISTORY": "Historique des Paiements",
+    "PAID": "Payés",
+    "UNPAID": "Non Payés",
+    "ALL": "Tous",
+    "PAYMENT_METHOD": "Méthode de Paiement",
+    "MONEY_PAYMENT": "Paiement en Argent",
+    "MONEY_PAYMENT_DESC": "Paiement par espèces, virement ou chèque",
+    "OIL_PAYMENT": "Paiement en Huile",
+    "OIL_PAYMENT_DESC": "Paiement en quantité d'huile d'olive",
+    "CASH": "Espèces",
+    "CHECK": "Chèque",
+    "BANK_TRANSFER": "Virement Bancaire",
+    "AMOUNT": "Montant (TND)",
+    "CHECK_NUMBER": "Numéro de Chèque",
+    "BANK_ACCOUNT": "Compte Bancaire",
+    "PAYMENT_SUMMARY": "Résumé du Paiement",
+    "UNPAID_AMOUNT": "Montant impayé",
+    "PAID_AMOUNT": "Montant payé",
+    "NEGOTIATED_PRICE": "Prix négocié",
+    "OIL_QUANTITY": "Quantité d'huile",
+    "OIL_VALUE": "Valeur en huile",
+    "REMAINING_AMOUNT": "Reste à payer",
+    "CONFIRM_PAYMENT": "Confirmer le Paiement",
+    "CANCEL": "Annuler",
+    "ERRORS": {
+      "SUPPLIER_ID_NOT_FOUND": "ID du fournisseur non trouvé",
+      "NO_DATA_FOUND": "Aucune donnée trouvée",
+      "LOAD_ERROR": "Erreur lors du chargement de l'historique des paiements",
+      "AMOUNT_REQUIRED": "Le montant est requis",
+      "AMOUNT_MIN": "Le montant doit être supérieur à 0",
+      "CHECK_NUMBER_REQUIRED": "Le numéro de chèque est requis",
+      "BANK_ACCOUNT_REQUIRED": "Le compte bancaire est requis",
+      "OIL_PRICE_REQUIRED": "Le prix de l'huile est requis",
+      "OIL_PRICE_MIN": "Le prix doit être supérieur à 0",
+      "OIL_QUANTITY_REQUIRED": "La quantité d'huile est requise",
+      "OIL_QUANTITY_MIN": "La quantité doit être supérieure à 0"
+    }
   }
 }

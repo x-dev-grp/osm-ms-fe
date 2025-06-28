@@ -456,7 +456,7 @@ export class PlanningComponent implements OnInit, OnDestroy ,AfterViewInit {
   private buildPlanningItemFromLotDTO(lot: LotDTO): PlanningItem {
     const rich = this.fullReceptionMap.get(lot.lotNumber);
 
-    return <PlanningItem>{
+    const result = <PlanningItem>{
       // keep everything we already know about the lot
       ...rich,
 
@@ -464,7 +464,7 @@ export class PlanningComponent implements OnInit, OnDestroy ,AfterViewInit {
          from the saved planning document ───────── */
       id              : lot.lotNumber,
       lotNumber       : lot.lotNumber,
-      oliveQuantity   : lot.oliveQuantity,
+      oliveQuantity   : rich?.oliveQuantity || lot.oliveQuantity, // Prioritize rich data over DTO
       deliveryDate: lot.deliveryDate
         ? new Date(lot.deliveryDate)               // ← ensure Date
         : undefined,
@@ -474,6 +474,8 @@ export class PlanningComponent implements OnInit, OnDestroy ,AfterViewInit {
       oilQuantity     : lot.oilQuantity,
       rendement       : lot.rendement
     };
+
+    return result;
   }
 
   _ungroupLot(globalLot: GlobalLot): void {
@@ -764,12 +766,12 @@ export class PlanningComponent implements OnInit, OnDestroy ,AfterViewInit {
   }
 
   toPlanningItem(d: UnifiedDelivery): PlanningItem {
-    return {
+    const result = {
       id: d.id,
       lotNumber: d.lotNumber,
       deliveryDate: new Date(d.deliveryDate),
       deliveryNumber: d.deliveryNumber,
-      oliveQuantity: d.oliveQuantity || 0,
+      oliveQuantity: d.poidsNet || 0, // Use poidsNet instead of oliveQuantity
       globalLotNumber: d.globalLotNumber,
       completed: d.status === 'COMPLETED',
       supplier: d.supplier?.supplierInfo?.name,
@@ -782,6 +784,8 @@ export class PlanningComponent implements OnInit, OnDestroy ,AfterViewInit {
       oilQuantity: d.oilQuantity,
       rendement: d.rendement,
     };
+
+    return result;
   }
 
   private applyFilter(value: string): void {
@@ -973,20 +977,24 @@ export class PlanningComponent implements OnInit, OnDestroy ,AfterViewInit {
                     totalKg: gl.totalKg,
                     childLotNumbers: gl.lots.map(lot => lot.lotNumber),
                     receptionIds: gl.lots.map(lot => lot.lotNumber),
-                    items: gl.lots.map(lot => ({
-                      type: PlanItemType.LOT,
-                      data: { // Basic data from DTO
-                           id: lot.lotNumber,
-                           lotNumber: lot.lotNumber,
-                           oliveQuantity: lot.oliveQuantity,
-                           deliveryDate: new Date(lot.deliveryDate),
-                           millMachineId: lot.millMachineId,
-                           globalLotNumber: gl.globalLotNumber,
-                           completed: lot.completed,
-                           oilQuantity: lot.oilQuantity,
-                           rendement: lot.rendement
-                       } as PlanningItem
-                    })),
+                    items: gl.lots.map(lot => {
+                      // Try to get rich data from map if available
+                      const rich = this.fullReceptionMap.get(lot.lotNumber);
+                      return {
+                        type: PlanItemType.LOT,
+                        data: { // Basic data from DTO
+                             id: lot.lotNumber,
+                             lotNumber: lot.lotNumber,
+                             oliveQuantity: rich?.oliveQuantity || lot.oliveQuantity, // Prioritize rich data
+                             deliveryDate: new Date(lot.deliveryDate),
+                             millMachineId: lot.millMachineId,
+                             globalLotNumber: gl.globalLotNumber,
+                             completed: lot.completed,
+                             oilQuantity: lot.oilQuantity,
+                             rendement: lot.rendement
+                         } as PlanningItem
+                      };
+                    }),
                     completed: gl.completed
                   };
                   return globalLot;
@@ -1003,10 +1011,12 @@ export class PlanningComponent implements OnInit, OnDestroy ,AfterViewInit {
                             gl.childLotNumbers.includes(item.lot?.lotNumber || '')
                           );
                            if(!isPartOfGlobalLot) {
+                               // Try to get rich data from map if available
+                               const rich = this.fullReceptionMap.get(item.lot.lotNumber);
                                const planningItem: PlanningItem = { // Basic data from DTO
                                 id: item.id || item.lot.lotNumber,
                                 lotNumber: item.lot.lotNumber,
-                                oliveQuantity: item.lot.oliveQuantity,
+                                oliveQuantity: rich?.oliveQuantity || item.lot.oliveQuantity, // Prioritize rich data
                                 deliveryDate: new Date(item.lot.deliveryDate),
                                 millMachineId: item.lot.millMachineId,
                                 globalLotNumber: item.lot.globalLotNumber,

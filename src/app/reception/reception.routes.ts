@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { ReceptionDashboardComponent } from './pages/reception-dashboard/reception-dashboard.component';
 import { SupplierComponent } from './components/suppliers/suppliers.component';
 import { SupplierAddComponent } from './components/suppliers/supplier-add/supplier-add.component';
 import { SupplierDetailsComponent } from './components/suppliers/supplier-details/supplier-details.component';
@@ -29,9 +28,9 @@ export const receptionRoutes: Routes = [
 
   { path: 'fournisseur', component: SupplierComponent },
   { path: 'fournisseur/new', component: SupplierAddComponent },
-  { path: 'fournisseur/details', component: SupplierDetailsComponent },
+  { path: 'fournisseur/details/:id', component: SupplierDetailsComponent },
   { path: 'fournisseur/edit/:id', component: SupplierAddComponent },
-  { path: 'fournisseur/payments', component: SupplierPaymentHistoryComponent },
+  { path: 'fournisseur/payments/:id', component: SupplierPaymentHistoryComponent },
 
   { path: 'quality', component: QualityControlListComponent },
   { path: 'quality/:id', component: ControleQualiteComponent },

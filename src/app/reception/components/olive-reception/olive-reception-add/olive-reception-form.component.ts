@@ -83,7 +83,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar,
     private route: ActivatedRoute,
     private router: Router,
-    private translate: TranslateService
+    protected translate: TranslateService
   ) {
     this.receptionForm = this.fb.group(
       {

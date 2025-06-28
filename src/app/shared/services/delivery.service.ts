@@ -50,4 +50,18 @@ export class UnifiedDeliveryService {
     return this.http.put<ApiResponse<UnifiedDelivery>>(`${this.baseUrl}`, delivery);
   }
 
+  // Get deliveries by supplier ID for payment history
+  getDeliveriesBySupplier(supplierId: string): Observable<ApiResponse<UnifiedDelivery>> {
+    return this.http.get<ApiResponse<UnifiedDelivery>>(`${this.baseUrl}/supplier/${supplierId}`);
+  }
+
+  // Get paid deliveries by supplier ID
+  getPaidDeliveriesBySupplier(supplierId: string): Observable<ApiResponse<UnifiedDelivery>> {
+    return this.http.get<ApiResponse<UnifiedDelivery>>(`${this.baseUrl}/supplier/${supplierId}/paid`);
+  }
+
+  // Get unpaid deliveries by supplier ID
+  getUnpaidDeliveriesBySupplier(supplierId: string): Observable<ApiResponse<UnifiedDelivery>> {
+    return this.http.get<ApiResponse<UnifiedDelivery>>(`${this.baseUrl}/supplier/${supplierId}/unpaid`);
+  }
 }

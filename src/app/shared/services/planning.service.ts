@@ -25,13 +25,13 @@ export class PlanningService {
 
   /* ───── NEW: mark lot(s) completed ──────────────────────────── */
 
-  /** PATCH one single LOT’s status → COMPLETED */
+  /** POST one single LOT's status → COMPLETED */
   completeLot(lotNumber: string): Observable<void> {
-    return this.http.patch<void>(`${this.API_BASE_URL}/lots/${lotNumber}/completed`, {});
+    return this.http.post<void>(`${this.API_BASE_URL}/lots/${lotNumber}/completed`, {});
   }
 
-  /** PATCH **all** lots in a global lot → COMPLETED */
+  /** POST **all** lots in a global lot → COMPLETED */
   completeGlobalLot(globalLotNumber: string): Observable<void> {
-    return this.http.patch<void>(`${this.API_BASE_URL}/globalLots/${globalLotNumber}/completed`, {});
+    return this.http.post<void>(`${this.API_BASE_URL}/globalLots/${globalLotNumber}/completed`, {});
   }
 }

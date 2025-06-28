@@ -141,7 +141,7 @@ export class OilTransactionAddComponent implements OnInit {
     this.oilTransactionService.getOilTransaction(this.transactionId).subscribe({
       next: (response) => {
         if (response.success && response.data) {
-          this.populateForm(response.data);
+          this.populateForm(response.data[0]);
         } else {
           this.snackBar.open(
             this.translate.instant('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.LOAD'),

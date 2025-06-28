@@ -466,6 +466,19 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
     return ['var(--info-500)'];
   }
 
+  // Currency formatting getters for dashboard display
+  get formattedAvgUnitPrice(): string {
+    return this.avgUnitPrice.toFixed(2) + ' TND';
+  }
+
+  get formattedTotalPaidAmount(): string {
+    return this.totalPaidAmount.toFixed(2) + ' TND';
+  }
+
+  get formattedTotalUnpaidAmount(): string {
+    return this.totalUnpaidAmount.toFixed(2) + ' TND';
+  }
+
   updateChartSize(size: 'small' | 'medium' | 'large') {
     this.currentChartSize = size;
     // Re-render charts to apply new size

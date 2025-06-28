@@ -249,7 +249,7 @@
           <button
             color="primary"
             mat-flat-button
-            (click)="save()"
+            (click)="saveReception()"
             [disabled]="receptionForm.invalid || loading"
           >
             {{ isEditing ? translate.instant('OLIVE_RECEPTION.FORM.BUTTONS.UPDATE') : translate.instant('OLIVE_RECEPTION.FORM.BUTTONS.ADD') }}
