@@ -1,47 +1,29 @@
-<!-- Skeleton loading card -->
-<mat-card *ngIf="!credit" class="oil-credit-detail-card skeleton">
-  <mat-card-header>
-    <div class="skeleton-header"></div>
-  </mat-card-header>
-  <mat-divider></mat-divider>
-  <mat-card-content class="detail-content">
-    <div class="detail-row skeleton-row" *ngFor="let _ of [1,2,3,4,5]">
-      <div class="skeleton-icon"></div>
-      <div class="skeleton-label"></div>
-      <div class="skeleton-value"></div>
-    </div>
-  </mat-card-content>
-</mat-card>
+<!-- Loading state -->
+<div *ngIf="loading" class="loading-container">
+  <mat-spinner></mat-spinner>
+  <p>Chargement du crédit d'huile...</p>
+</div>
+
+<!-- Error state -->
+<div *ngIf="error && !loading" class="error-container">
+  <mat-icon class="error-icon">error</mat-icon>
+  <h3>Erreur</h3>
+  <p>Impossible de charger le crédit d'huile.</p>
+  <button mat-flat-button color="primary" (click)="onBack()">Retour</button>
+</div>
 
 <!-- Actual credit detail card -->
-<mat-card *ngIf="credit" class="oil-credit-detail-card">
+<mat-card *ngIf="credit && !loading" class="oil-credit-detail-card">
   <mat-card-header>
     <button mat-icon-button (click)="onBack()" aria-label="Retour à la liste">
       <mat-icon>arrow_back</mat-icon>
     </button>
-    <mat-card-title class="card-title">Crédit d’huile #{{ credit.id }}</mat-card-title>
+    <mat-card-title class="card-title">Crédit d'huile #{{ credit.id }}</mat-card-title>
   </mat-card-header>
   <mat-divider></mat-divider>
 
   <mat-card-content class="detail-content">
     <div class="detail-grid">
-      <div class="detail-row">
-        <mat-icon class="detail-icon">calendar_today</mat-icon>
-        <div class="detail-label">Date</div>
-        <div class="detail-value">{{ credit.credit_date | date:'longDate' }}</div>
-      </div>
-
-      <div class="detail-row">
-        <mat-icon class="detail-icon">local_shipping</mat-icon>
-        <div class="detail-label">Citerne / Pile</div>
-        <div class="detail-value">
-          <a mat-button color="primary" (click)="navigateToStorageUnits()"
-             aria-label="Voir les unités de stockage">
-            {{ getStorageUnitName() }}
-          </a>
-        </div>
-      </div>
-
       <div class="detail-row">
         <mat-icon class="detail-icon">inventory</mat-icon>
         <div class="detail-label">Emballage</div>
@@ -51,13 +33,53 @@
       <div class="detail-row">
         <mat-icon class="detail-icon">height</mat-icon>
         <div class="detail-label">Quantité</div>
-        <div class="detail-value">{{ credit.quantity }} {{ credit.unit }}</div>
+        <div class="detail-value">{{ credit.quantity }} {{ getUnitLabel(credit.unit) }}</div>
+      </div>
+
+      <div class="detail-row">
+        <mat-icon class="detail-icon">category</mat-icon>
+        <div class="detail-label">Type d'huile</div>
+        <div class="detail-value">{{ credit.oil_type || '-' }}</div>
       </div>
 
       <div class="detail-row">
         <mat-icon class="detail-icon">person</mat-icon>
         <div class="detail-label">Destinataire</div>
         <div class="detail-value">{{ credit.destinataire || '-' }}</div>
+      </div>
+
+      <div class="detail-row">
+        <mat-icon class="detail-icon">pending</mat-icon>
+        <div class="detail-label">État du crédit</div>
+        <div class="detail-value">
+          <span class="state-badge" [ngClass]="getCreditStateClass(credit.creditState)">
+            {{ getCreditStateLabel(credit.creditState) }}
+          </span>
+        </div>
+      </div>
+
+      <div class="detail-row" *ngIf="credit.transaction_id_in">
+        <mat-icon class="detail-icon">input</mat-icon>
+        <div class="detail-label">ID Transaction Entrée</div>
+        <div class="detail-value">{{ credit.transaction_id_in }}</div>
+      </div>
+
+      <div class="detail-row" *ngIf="credit.transaction_id_out">
+        <mat-icon class="detail-icon">output</mat-icon>
+        <div class="detail-label">ID Transaction Sortie</div>
+        <div class="detail-value">{{ credit.transaction_id_out }}</div>
+      </div>
+
+      <div class="detail-row" *ngIf="credit.createdDate">
+        <mat-icon class="detail-icon">schedule</mat-icon>
+        <div class="detail-label">Date de création</div>
+        <div class="detail-value">{{ credit.createdDate | date:'longDate' }}</div>
+      </div>
+
+      <div class="detail-row" *ngIf="credit.lastModifiedDate">
+        <mat-icon class="detail-icon">update</mat-icon>
+        <div class="detail-label">Dernière modification</div>
+        <div class="detail-value">{{ credit.lastModifiedDate | date:'longDate' }}</div>
       </div>
     </div>
   </mat-card-content>

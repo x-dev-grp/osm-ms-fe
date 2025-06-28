@@ -65,6 +65,39 @@
       "TITLE": "Configuration Stock"
     }
   },
+  "STORAGE": {
+    "TITLE": "Configuration Stock",
+    "VIEW": {
+      "TITLE": "Détails de l'unité de stockage",
+      "STATUS": {
+        "AVAILABLE": "Disponible",
+        "FULL": "Pleine",
+        "FILLING": "Remplissage",
+        "MAINTENANCE": "Maintenance",
+        "IN_USE": "En service",
+        "CLEANING": "Nettoyage",
+        "RESERVED": "Réservée",
+        "OUT_OF_SERVICE": "Hors service"
+      },
+      "CURRENT_VOLUME": "Volume actuel",
+      "MAX_CAPACITY": "Capacité max",
+      "OIL_TYPE": "Type d'huile",
+      "NA": "N/A",
+      "TRANSACTION_HISTORY": "Historique des transactions",
+      "DASHBOARD": {
+        "FIELDS": {
+          "TRANSACTION_TYPE": "Type de transaction",
+          "QUANTITY_KG": "Quantité (kg)",
+          "UNIT_PRICE": "Prix unitaire",
+          "TOTAL_PRICE": "Prix total",
+          "QUALITY_GRADE": "Qualité",
+          "CREATED_DATE": "Date de création"
+        }
+      }
+    },
+    "OIL_STORAGE_UNITS": "Unités de Stockage d'Huile",
+    "OIL_TRANSACTIONS": "Transactions d'Huile"
+  },
   "MENU": {
     "HOME": {
       "TITLE": "Accueil",
@@ -96,8 +129,9 @@
     "FINANCE": {
       "TITLE": "Finance & Comptabilité",
       "EXPENSES": "Dépenses",
-      "BANK_MANAGEMENT": "Gestion des banques",
-      "OIL_CREDIT": "Crédit d'huile"
+      "BANK_MANAGEMENT": "Gestion des Comptes Bancaires",
+      "OIL_CREDIT": "Crédit d'Huile",
+      "OIL_TRANSACTIONS": "Transactions d'Huile"
     },
     "STORAGE": {
       "TITLE": "Stockage & Inventaire",
@@ -885,5 +919,292 @@
     "ALREADY_DONE": "Contrôle qualité déjà effectué",
     "SUBMIT": "Valider le contrôle qualité",
     "SELECT_PLACEHOLDER": "Sélectionner..."
+  },
+  "OIL_CREDIT": {
+    "TITLE": "Crédit d'Huile",
+    "DASHBOARD": {
+      "TITLE": "Gestion des Crédits d'Huile",
+      "FIELDS": {
+        "ID": "ID",
+        "EMBALLAGE": "Emballage",
+        "QUANTITY": "Quantité",
+        "UNIT": "Unité",
+        "OIL_TYPE": "Type d'Huile",
+        "DESTINATAIRE": "Destinataire",
+        "CITERNE_PILE": "Unité de Stockage",
+        "CREDIT_STATE": "État du Crédit",
+        "CREATED_DATE": "Date de Création"
+      },
+      "STATUS": {
+        "PENDING": "En Attente",
+        "APPROVED": "Approuvé",
+        "REJECTED": "Rejeté",
+        "COMPLETED": "Terminé",
+        "CANCELLED": "Annulé"
+      },
+      "ACTIONS": {
+        "VIEW": "Voir",
+        "EDIT": "Modifier",
+        "DELETE": "Supprimer",
+        "ADD": "Ajouter un Nouveau Crédit"
+      },
+      "MESSAGES": {
+        "DELETE_SUCCESS": "Crédit d'huile supprimé avec succès",
+        "DELETE_ERROR": "Erreur lors de la suppression du crédit d'huile",
+        "LOAD_ERROR": "Erreur lors du chargement des crédits d'huile"
+      }
+    },
+    "FORM": {
+      "TITLE_NEW": "Nouveau Crédit d'Huile",
+      "TITLE_EDIT": "Modifier le Crédit d'Huile",
+      "FIELDS": {
+        "CITERNE_PILE": "Unité de Stockage",
+        "EMBALLAGE": "Emballage",
+        "OIL_TYPE": "Type d'Huile",
+        "QUANTITY": "Quantité",
+        "UNIT": "Unité",
+        "DESTINATAIRE": "Destinataire",
+        "CREDIT_STATE": "État du Crédit"
+      },
+      "PLACEHOLDERS": {
+        "SEARCH_CITERNE_PILE": "Rechercher une unité de stockage...",
+        "SEARCH_OIL_TYPE": "Rechercher un type d'huile...",
+        "SEARCH_DESTINATAIRE": "Rechercher un destinataire..."
+      },
+      "UNITS": {
+        "LITRE": "Litre",
+        "KILOGRAM": "Kilogramme"
+      },
+      "CREDIT_STATES": {
+        "PENDING": "En Attente",
+        "APPROVED": "Approuvé",
+        "REJECTED": "Rejeté",
+        "COMPLETED": "Terminé",
+        "CANCELLED": "Annulé"
+      },
+      "ERRORS": {
+        "CITERNE_PILE_REQUIRED": "L'unité de stockage est requise",
+        "EMBALLAGE_REQUIRED": "L'emballage est requis",
+        "OIL_TYPE_REQUIRED": "Le type d'huile est requis",
+        "QUANTITY_REQUIRED": "La quantité est requise",
+        "QUANTITY_MIN": "La quantité doit être supérieure à 0",
+        "QUANTITY_INSUFFICIENT": "Volume insuffisant dans l'unité de stockage",
+        "QUANTITY_UNIT_MISMATCH": "Incompatibilité d'unité de quantité avec l'unité de stockage",
+        "UNIT_REQUIRED": "L'unité est requise",
+        "DESTINATAIRE_REQUIRED": "Le destinataire est requis",
+        "CREDIT_STATE_REQUIRED": "L'état du crédit est requis"
+      },
+      "BUTTONS": {
+        "CREATE": "Créer",
+        "UPDATE": "Mettre à jour",
+        "CANCEL": "Annuler"
+      },
+      "MESSAGES": {
+        "SAVE_SUCCESS": "Crédit d'huile créé avec succès",
+        "UPDATE_SUCCESS": "Crédit d'huile mis à jour avec succès",
+        "SAVE_ERROR": "Erreur lors de la sauvegarde du crédit d'huile",
+        "LOAD_ERROR": "Erreur lors du chargement des données du crédit d'huile",
+        "FORM_INVALID": "Veuillez corriger les erreurs du formulaire",
+        "QUANTITY_INSUFFICIENT_SNACK": "La quantité {{quantity}} dépasse le volume disponible {{available}} L",
+        "QUANTITY_UNIT_MISMATCH_SNACK": "L'unité de stockage n'accepte que les litres (L), pas les kilogrammes (KG)"
+      }
+    },
+    "VIEW": {
+      "TITLE": "Détails du Crédit d'Huile",
+      "SECTIONS": {
+        "GENERAL_INFO": "Informations Générales",
+        "STORAGE_INFO": "Informations de Stockage",
+        "RECIPIENT_INFO": "Informations du Destinataire",
+        "CREDIT_STATUS": "Statut du Crédit"
+      },
+      "FIELDS": {
+        "ID": "ID du Crédit",
+        "EMBALLAGE": "Emballage",
+        "QUANTITY": "Quantité",
+        "UNIT": "Unité",
+        "OIL_TYPE": "Type d'Huile",
+        "DESTINATAIRE": "Destinataire",
+        "CITERNE_PILE": "Unité de Stockage",
+        "CREDIT_STATE": "État du Crédit",
+        "CREATED_DATE": "Date de Création",
+        "UPDATED_DATE": "Dernière Modification"
+      },
+      "ACTIONS": {
+        "BACK": "Retour à la Liste",
+        "EDIT": "Modifier",
+        "DELETE": "Supprimer"
+      },
+      "MESSAGES": {
+        "LOADING": "Chargement des détails du crédit...",
+        "ERROR": "Impossible de charger les détails du crédit.",
+        "DELETE_CONFIRM": "Êtes-vous sûr de vouloir supprimer ce crédit ?",
+        "DELETE_SUCCESS": "Crédit supprimé avec succès",
+        "DELETE_ERROR": "Échec de la suppression du crédit"
+      }
+    }
+  },
+  "OIL_TRANSACTIONS": {
+    "TITLE": "Transactions d'huile",
+    "DASHBOARD": {
+      "TITLE": "Transactions d'huile",
+      "FIELDS": {
+        "TRANSACTION_TYPE": "Type de transaction",
+        "TRANSACTION_STATE": "État de la transaction",
+        "STORAGE_UNIT_DESTINATION": "Unité de destination",
+        "STORAGE_UNIT_SOURCE": "Unité source",
+        "QUALITY_GRADE": "Grade de qualité",
+        "QUANTITY_KG": "Quantité (kg)",
+        "UNIT_PRICE": "Prix unitaire",
+        "TOTAL_PRICE": "Prix total",
+        "RECEPTION": "Réception",
+        "CREATED_DATE": "Date de création"
+      },
+      "STATUS": {
+        "PENDING": "En attente",
+        "COMPLETED": "Terminé"
+      },
+      "TYPES": {
+        "RECEPTION_IN": "Réception Entrée",
+        "TRANSFER_IN": "Transfert Entrée",
+        "LOAN": "Prêt",
+        "SALE": "Vente"
+      },
+      "ACTIONS": {
+        "VIEW": "Voir",
+        "EDIT": "Modifier",
+        "DELETE": "Supprimer"
+      },
+      "MESSAGES": {
+        "DELETE_SUCCESS": "Transaction supprimée avec succès",
+        "DELETE_ERROR": "Erreur lors de la suppression",
+        "LOAD_ERROR": "Erreur lors du chargement des transactions"
+      }
+    },
+    "FORM": {
+      "TITLE": {
+        "CREATE": "Nouvelle Transaction d'Huile",
+        "EDIT": "Modifier la Transaction d'Huile"
+      },
+      "SECTIONS": {
+        "TRANSACTION_TYPE_AND_STATE": "Type et État de la Transaction",
+        "STORAGE_UNITS": "Unités de Stockage",
+        "QUALITY_AND_QUANTITY": "Qualité et Quantité",
+        "FINANCIAL_INFORMATION": "Informations Financières"
+      },
+      "FIELDS": {
+        "TRANSACTION_TYPE": "Type de transaction",
+        "TRANSACTION_STATE": "État de la transaction",
+        "STORAGE_UNIT_DESTINATION": "Unité de destination",
+        "STORAGE_UNIT_SOURCE": "Unité source",
+        "QUALITY_GRADE": "Grade de qualité",
+        "QUANTITY_KG": "Quantité (kg)",
+        "UNIT_PRICE": "Prix unitaire",
+        "TOTAL_PRICE": "Prix total"
+      },
+      "PLACEHOLDERS": {
+        "QUANTITY_KG": "0.00",
+        "UNIT_PRICE": "0.00",
+        "SELECT_STORAGE_UNIT": "Sélectionner une unité"
+      },
+      "HINTS": {
+        "STORAGE_UNIT_SOURCE": "Optionnel - pour les transferts entre unités",
+        "TOTAL_PRICE": "Calculé automatiquement"
+      },
+      "ACTIONS": {
+        "CREATE": "Créer",
+        "UPDATE": "Mettre à jour",
+        "CANCEL": "Annuler"
+      },
+      "VALIDATION": {
+        "REQUIRED": "Ce champ est requis",
+        "MIN_VALUE": "La valeur doit être supérieure à 0"
+      },
+      "MESSAGES": {
+        "LOADING": "Chargement...",
+        "SUCCESS": {
+          "CREATE": "Transaction créée avec succès",
+          "UPDATE": "Transaction mise à jour avec succès"
+        },
+        "ERROR": {
+          "LOAD": "Erreur lors du chargement",
+          "UPDATE": "Erreur lors de la sauvegarde",
+          "LOAD_STORAGE_UNITS": "Erreur lors du chargement des unités de stockage"
+        }
+      }
+    },
+    "VIEW": {
+      "TITLE": "Détails de la Transaction d'Huile",
+      "SECTIONS": {
+        "TYPE_AND_STATE": "Type et État",
+        "STORAGE_UNITS": "Unités de Stockage",
+        "QUALITY_AND_QUANTITY": "Qualité et Quantité",
+        "FINANCIAL_INFO": "Informations Financières",
+        "RECEPTION_INFO": "Réception",
+        "AUDIT_INFO": "Informations d'Audit"
+      },
+      "FIELDS": {
+        "TRANSACTION_TYPE": "Type de transaction",
+        "TRANSACTION_STATE": "État de la transaction",
+        "STORAGE_UNIT_DESTINATION": "Unité de destination",
+        "STORAGE_UNIT_SOURCE": "Unité source",
+        "QUALITY_GRADE": "Grade de qualité",
+        "QUANTITY_KG": "Quantité (kg)",
+        "UNIT_PRICE": "Prix unitaire",
+        "TOTAL_PRICE": "Prix total",
+        "RECEPTION_ID": "Réception ID",
+        "CREATED_DATE": "Date de création",
+        "LAST_MODIFIED_DATE": "Dernière modification"
+      },
+      "ACTIONS": {
+        "BACK": "Retour à la liste",
+        "EDIT": "Modifier",
+        "DELETE": "Supprimer"
+      },
+      "MESSAGES": {
+        "LOADING": "Chargement de la transaction...",
+        "ERROR": "Impossible de charger les détails de la transaction.",
+        "DELETE_CONFIRM": "Êtes-vous sûr de vouloir supprimer cette transaction ?",
+        "DELETE_SUCCESS": "Transaction supprimée avec succès",
+        "DELETE_ERROR": "Échec de la suppression"
+      }
+    },
+    "QUALITY_GRADES": {
+      "EXTRA_VIRGIN": "Extra Vierge",
+      "VIRGIN": "Vierge",
+      "REFINED": "Raffiné",
+      "LAMPANTE": "Lampante"
+    }
+  },
+  "OIL_TRANSACTION": {
+    "DETAILS": {
+      "TITLE": "Détails de la transaction d'huile et de la livraison",
+      "SECTION": "Détails de la transaction",
+      "ID": "ID",
+      "TYPE": "Type",
+      "QUANTITY_KG": "Quantité (kg)",
+      "UNIT_PRICE": "Prix unitaire",
+      "TOTAL_PRICE": "Prix total",
+      "QUALITY_GRADE": "Qualité",
+      "CREATED_DATE": "Date de création",
+      "RECEPTION_ID": "ID de réception",
+      "DEST_UNIT_ID": "ID unité de stockage destination",
+      "SRC_UNIT_ID": "ID unité de stockage source"
+    },
+    "DELIVERY": {
+      "SECTION": "Détails de la livraison associée",
+      "NUMBER": "Numéro de livraison",
+      "TYPE": "Type",
+      "LOT_NUMBER": "Numéro de lot",
+      "DATE": "Date de livraison",
+      "SUPPLIER": "Fournisseur",
+      "REGION": "Région",
+      "OIL_VARIETY": "Variété d'huile",
+      "OIL_QUANTITY": "Quantité d'huile",
+      "UNIT_PRICE": "Prix unitaire",
+      "TOTAL_PRICE": "Prix total",
+      "STATUS": "Statut",
+      "STORAGE_UNIT": "Unité de stockage",
+      "PARCEL": "Parcelle"
+    }
   }
 }

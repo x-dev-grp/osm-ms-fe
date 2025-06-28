@@ -15,30 +15,6 @@ const routes: Routes = [
     canActivateChild: [AuthGuardChild], // 👈 meilleure pratique
     children: qualityControlRoutes
   },
-  { path: 'storage',
-    children: [
-      {
-        path: '',
-        loadComponent: () => import('./storage/storage.component').then(m => m.StorageUnitsComponent),
-        canActivate: [AuthGuardChild]
-      },
-      {
-        path: 'new',
-        loadComponent: () => import('./storage/storage-add/storage-add.component').then(m => m.StorageAddComponent),
-        canActivate: [AuthGuardChild]
-      },
-      {
-        path: ':id/edit',
-        loadComponent: () => import('./storage/storage-add/storage-add.component').then(m => m.StorageAddComponent),
-        canActivate: [AuthGuardChild]
-      },
-      {
-        path: ':id/view',
-        loadComponent: () => import('./storage/view-storage/view-storage.component').then(m => m.ViewStorageComponent),
-        canActivate: [AuthGuardChild]
-      }
-    ]
-  },
   { path: 'configuration', component: ApplicationConfigComponent, canActivate: [AuthGuardChild] },
   { path: 'generic', component: GenericTypeComponent, canActivate: [AuthGuardChild] },
   {

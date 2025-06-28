@@ -22,11 +22,11 @@ import { Router } from '@angular/router';
 export class UserManagementComponent implements OnInit {
   _router=inject(Router);
   ngOnInit(): void {
-    
+
   }
   config:DashboardConfig = {
     title: 'Gestion des utilisateurs',
-    baseURL: 'security',
+    baseURL: 'security/user',
     searchEndpoint: 'security/user',
     addNewItem: true,
     addNewItemUrl: 'settings/users/add',
@@ -37,7 +37,7 @@ export class UserManagementComponent implements OnInit {
             actionsList:
               [
                 {
-                  label:"Consulter",         
+                  label:"Consulter",
                 },
                 {
                   label:"Modifier"
@@ -48,9 +48,9 @@ export class UserManagementComponent implements OnInit {
                 }
 
             ],
-           
+
         },
-   
+
     fields: [
       {
         name: 'username',
@@ -62,7 +62,7 @@ export class UserManagementComponent implements OnInit {
         defaultFilter: false,
         dataTable:true,
         exportable:true,
-       
+
       },
       {
         name: 'email',
@@ -74,7 +74,7 @@ export class UserManagementComponent implements OnInit {
         defaultFilter: false,
         dataTable:true,
         exportable:true,
-       
+
       },
       {
         name: 'phoneNumber',
@@ -86,7 +86,7 @@ export class UserManagementComponent implements OnInit {
         defaultFilter: false,
         dataTable:true,
         exportable:true,
-       
+
       },
       {
         name: 'confirmationMethod',
@@ -107,10 +107,10 @@ export class UserManagementComponent implements OnInit {
             label:"Téléphone",
             value:"PHONE"
           },
-          
+
         ]
 
-       
+
       },
       {
         name: 'locked',

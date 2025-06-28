@@ -85,7 +85,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       label: 'Fournisseur',
       labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.SUPPLIER',
       attributeType: AttributeType.object,
-      fieldType: FieldType.text,
+      fieldType: FieldType.autocomplete,
       exportable: true,
       dataTable: true,
       filterable: true,

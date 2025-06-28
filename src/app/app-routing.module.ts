@@ -78,7 +78,7 @@ const routes: Routes = [
 
       {
         path: 'storage',
-        loadComponent: () => import('./settings/storage/storage.component').then((c) => c.StorageUnitsComponent),
+        loadChildren: () => import('./storage/storage-routing.module').then(m => m.StorageRoutingModule),
         data: { roles: [Role.Admin, Role.User] }
       },
 

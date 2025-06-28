@@ -1,8 +1,9 @@
 import { DashboardConfig, AttributeType, FieldType } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { CreditState, UnitType } from '../models/OilCredit';
 
 export const OIL_CREDIT_DASHBOARD: DashboardConfig = {
   title: 'Gestion des crédits d\'huile',
-  baseURL: 'oil-credit',
+  baseURL: 'finance/oil-credit',
   searchEndpoint: 'finance/oil-credit',
   addNewItem: true,
   addNewItemUrl: '/finance/oil-credit/new',
@@ -21,30 +22,6 @@ export const OIL_CREDIT_DASHBOARD: DashboardConfig = {
 
   fields: [
     {
-      name: 'credit_date',
-      label: 'Date',
-      attributeType: AttributeType.date,
-      fieldType: FieldType.date,
-      sortable: true,
-      filterable: true,
-      defaultFilter: true,
-      dataTable: true,
-      exportable: true,
-      exportLabel: 'Date'
-    },
-    {
-      name: 'citerne_pile.name',
-      label: 'Citerne / Pile',
-      attributeType: AttributeType.string,
-      fieldType: FieldType.text,
-      sortable: true,
-      filterable: true,
-      defaultFilter: true,
-      dataTable: true,
-      exportable: true,
-      exportLabel: 'Citerne / Pile'
-    },
-    {
       name: 'emballage',
       label: 'Emballage',
       attributeType: AttributeType.string,
@@ -59,7 +36,7 @@ export const OIL_CREDIT_DASHBOARD: DashboardConfig = {
       name: 'quantity',
       label: 'Quantité',
       attributeType: AttributeType.number,
-      fieldType: FieldType.text,
+      fieldType: FieldType.number,
       sortable: true,
       filterable: true,
       dataTable: true,
@@ -76,10 +53,21 @@ export const OIL_CREDIT_DASHBOARD: DashboardConfig = {
       dataTable: true,
       exportable: true,
       options: [
-        { label: 'Litre', value: 'L' },
-        { label: 'Kilogramme', value: 'KG' }
+        { label: 'Litre', value: UnitType.L },
+        { label: 'Kilogramme', value: UnitType.KG }
       ],
       exportLabel: 'Unité'
+    },
+    {
+      name: 'oil_type',
+      label: 'Type d\'huile',
+      attributeType: AttributeType.string,
+      fieldType: FieldType.text,
+      sortable: true,
+      filterable: true,
+      dataTable: true,
+      exportable: true,
+      exportLabel: 'Type d\'huile'
     },
     {
       name: 'destinataire',
@@ -91,6 +79,35 @@ export const OIL_CREDIT_DASHBOARD: DashboardConfig = {
       dataTable: true,
       exportable: true,
       exportLabel: 'Destinataire'
+    },
+    {
+      name: 'creditState',
+      label: 'État du crédit',
+      attributeType: AttributeType.string,
+      fieldType: FieldType.select,
+      sortable: true,
+      filterable: true,
+      dataTable: true,
+      exportable: true,
+      options: [
+        { label: 'En attente', value: CreditState.PENDING },
+        { label: 'Approuvé', value: CreditState.APPROVED },
+        { label: 'Rejeté', value: CreditState.REJECTED },
+        { label: 'Terminé', value: CreditState.COMPLETED },
+        { label: 'Annulé', value: CreditState.CANCELLED }
+      ],
+      exportLabel: 'État du crédit'
+    },
+    {
+      name: 'createdDate',
+      label: 'Date de création',
+      attributeType: AttributeType.date,
+      fieldType: FieldType.date,
+      sortable: true,
+      filterable: true,
+      dataTable: true,
+      exportable: true,
+      exportLabel: 'Date de création'
     }
   ]
 };

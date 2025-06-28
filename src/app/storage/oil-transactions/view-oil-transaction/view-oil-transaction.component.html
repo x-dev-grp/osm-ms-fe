@@ -1,0 +1,129 @@
+<div class="view-oil-transaction-container">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>{{ 'OIL_TRANSACTIONS.VIEW.MESSAGES.LOADING' | translate }}</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-container">
+    <mat-icon class="error-icon">error</mat-icon>
+    <h2>{{ 'STANDARD.BTNS.CANCEL' | translate }}</h2>
+    <p>{{ 'OIL_TRANSACTIONS.VIEW.MESSAGES.ERROR' | translate }}</p>
+    <button mat-raised-button color="primary" (click)="onBack()">
+      <mat-icon>arrow_back</mat-icon>
+      {{ 'OIL_TRANSACTIONS.VIEW.ACTIONS.BACK' | translate }}
+    </button>
+  </div>
+
+  <!-- Transaction Details -->
+  <div *ngIf="oilTransaction && !loading" class="transaction-details">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-content">
+        <button mat-icon-button (click)="onBack()" class="back-button">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <h1>{{ 'OIL_TRANSACTIONS.VIEW.TITLE' | translate }}</h1>
+      </div>
+      <div class="header-actions">
+        <button mat-raised-button color="primary" (click)="onEdit()">
+          <mat-icon>edit</mat-icon>
+          {{ 'OIL_TRANSACTIONS.VIEW.ACTIONS.EDIT' | translate }}
+        </button>
+        <button mat-raised-button color="warn" (click)="onDelete()">
+          <mat-icon>delete</mat-icon>
+          {{ 'OIL_TRANSACTIONS.VIEW.ACTIONS.DELETE' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Transaction Information Card -->
+    <mat-card class="transaction-card">
+      <mat-card-header>
+        <mat-card-title>{{ 'OIL_TRANSACTIONS.VIEW.SECTIONS.TYPE_AND_STATE' | translate }}</mat-card-title>
+        <mat-card-subtitle>{{ 'OIL_TRANSACTIONS.VIEW.FIELDS.TRANSACTION_TYPE' | translate }}: {{ oilTransaction.id }}</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="transaction-grid">
+          <!-- Transaction Type and State -->
+          <div class="info-section">
+            <h3>{{ 'OIL_TRANSACTIONS.VIEW.SECTIONS.TYPE_AND_STATE' | translate }}</h3>
+            <div class="info-row">
+              <span class="label">{{ 'OIL_TRANSACTIONS.VIEW.FIELDS.TRANSACTION_TYPE' | translate }}:</span>
+              <span class="value">{{ getTransactionTypeLabel(oilTransaction.transactionType) }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">{{ 'OIL_TRANSACTIONS.VIEW.FIELDS.TRANSACTION_STATE' | translate }}:</span>
+              <span class="value status-badge" [class]="'status-' + oilTransaction.transactionState?.toLowerCase()">
+                {{ getTransactionStateLabel(oilTransaction.transactionState) }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Storage Units -->
+          <div class="info-section">
+            <h3>{{ 'OIL_TRANSACTIONS.VIEW.SECTIONS.STORAGE_UNITS' | translate }}</h3>
+            <div class="info-row">
+              <span class="label">{{ 'OIL_TRANSACTIONS.VIEW.FIELDS.STORAGE_UNIT_DESTINATION' | translate }}:</span>
+              <span class="value">{{ oilTransaction.storageUnitDestination?.name || 'N/A' }}</span>
+            </div>
+            <div class="info-row" *ngIf="oilTransaction.storageUnitSource">
+              <span class="label">{{ 'OIL_TRANSACTIONS.VIEW.FIELDS.STORAGE_UNIT_SOURCE' | translate }}:</span>
+              <span class="value">{{ oilTransaction.storageUnitSource?.name || 'N/A' }}</span>
+            </div>
+          </div>
+
+          <!-- Quality and Quantity -->
+          <div class="info-section">
+            <h3>{{ 'OIL_TRANSACTIONS.VIEW.SECTIONS.QUALITY_AND_QUANTITY' | translate }}</h3>
+            <div class="info-row">
+              <span class="label">{{ 'OIL_TRANSACTIONS.VIEW.FIELDS.QUALITY_GRADE' | translate }}:</span>
+              <span class="value">{{ oilTransaction.qualityGrade || 'N/A' }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">{{ 'OIL_TRANSACTIONS.VIEW.FIELDS.QUANTITY_KG' | translate }}:</span>
+              <span class="value">{{ oilTransaction.quantityKg | number:'1.2-2' }} kg</span>
+            </div>
+          </div>
+
+          <!-- Financial Information -->
+          <div class="info-section">
+            <h3>{{ 'OIL_TRANSACTIONS.VIEW.SECTIONS.FINANCIAL_INFO' | translate }}</h3>
+            <div class="info-row">
+              <span class="label">{{ 'OIL_TRANSACTIONS.VIEW.FIELDS.UNIT_PRICE' | translate }}:</span>
+              <span class="value">{{ oilTransaction.unitPrice | currency:'TND':'symbol':'1.2-2' }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">{{ 'OIL_TRANSACTIONS.VIEW.FIELDS.TOTAL_PRICE' | translate }}:</span>
+              <span class="value total-price">{{ oilTransaction.totalPrice | currency:'TND':'symbol':'1.2-2' }}</span>
+            </div>
+          </div>
+
+          <!-- Reception Information -->
+          <div class="info-section" *ngIf="oilTransaction.reception">
+            <h3>{{ 'OIL_TRANSACTIONS.VIEW.SECTIONS.RECEPTION_INFO' | translate }}</h3>
+            <div class="info-row">
+              <span class="label">{{ 'OIL_TRANSACTIONS.VIEW.FIELDS.RECEPTION_ID' | translate }}:</span>
+              <span class="value">{{ oilTransaction.reception?.id || 'N/A' }}</span>
+            </div>
+          </div>
+
+          <!-- Audit Information -->
+          <div class="info-section">
+            <h3>{{ 'OIL_TRANSACTIONS.VIEW.SECTIONS.AUDIT_INFO' | translate }}</h3>
+            <div class="info-row">
+              <span class="label">{{ 'OIL_TRANSACTIONS.VIEW.FIELDS.CREATED_DATE' | translate }}:</span>
+              <span class="value">{{ oilTransaction.createdDate | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+            <div class="info-row" *ngIf="oilTransaction.lastModifiedDate">
+              <span class="label">{{ 'OIL_TRANSACTIONS.VIEW.FIELDS.LAST_MODIFIED_DATE' | translate }}:</span>
+              <span class="value">{{ oilTransaction.lastModifiedDate | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

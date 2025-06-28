@@ -207,8 +207,17 @@ export const osm_menus: Navigation[] = [
         id: 'storageSettings',
         title: 'MENU.STORAGE.OIL_STORAGE_UNITS',
         type: 'item',
-        url: '/settings/storage',
+        url: '/storage',
         icon: 'inventory_2',
+        breadcrumbs: false
+      },
+      {
+        id: 'oilTransactionsStorage',
+        title: 'MENU.FINANCE.OIL_TRANSACTIONS',
+        type: 'item',
+        url: '/storage/oil-transactions',
+        icon: 'swap_horiz',
+        role: [Role.Admin],
         breadcrumbs: false
       }
     ]

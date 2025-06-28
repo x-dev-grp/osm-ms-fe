@@ -6,7 +6,7 @@ import { SearchModel } from '../../../shared/models/advanced-search/searchModel'
 export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
   title: "Livraisons d'Olives", // afficehr titre fi dashboard
   titleTranslatePath: 'DELIVERIES.OLIVE_TITLE', //tradusction
-  baseURL: 'deliveries', //todo remove it usless
+  baseURL: 'production/deliveries', //todo remove it usless
   searchEndpoint: 'production/deliveries', //endpoint fl backedn
   addNewItem: true, //show new button
   addNewItemUrl: 'reception/reception-olive/new', //add new componnt path
@@ -22,7 +22,8 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
           search: {
             hasQualityControl: {
               equalValue: "false"
-            },deliveryType:{
+            },
+            deliveryType:{
               equalValue: deliveryType.OLIVE
             }
           }

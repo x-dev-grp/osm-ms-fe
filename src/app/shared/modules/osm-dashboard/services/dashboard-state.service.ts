@@ -12,6 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { saveAs } from 'file-saver';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { environment } from '../../../../../environments/environment';
 export interface DashboardState {
   endpoint: string;
   data: SearchResponse;
@@ -93,7 +94,7 @@ export const DashboardStore = signalStore(
         exportType=='pdf'?this.setExportPdfLoading(true):this.setExportExcelLoading(true);
         const fieldsToExport = store.checkedExportFields().map((field) =>{
             return {
-                name: field.field.fieldType==FieldType.autocomplete? field.field.valuePath : field.field.name,
+                name: field.field.fieldType==FieldType.autocomplete? field.field.name+"."+field.field.valuePath : field.field.name,
                 label: field.field.exportLabel??field.field.label,
             }
         });
@@ -105,7 +106,7 @@ export const DashboardStore = signalStore(
             fileName:store.fileName(),
             searchData:store.searchData()
         }
-        return _http.post(`/api/${store.endpoint()}/export/${exportType}`,exportDetails,{
+        return _http.post(`${environment.apiUrl}/api/${store.endpoint()}/export/${exportType}`,exportDetails,{
             responseType: 'blob',
             observe: 'response'
           }).pipe(

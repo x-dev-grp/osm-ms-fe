@@ -16,16 +16,12 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { SharedModule } from '../../demo/shared/shared.module';
-import { OilCredit } from '../models/OilCredit';
+import { OilCredit, CreditState, UnitType } from '../models/OilCredit';
 import { OilCreditService } from '../service/oil-credit.service';
-import { StorageUnitDtoService } from '../../shared/services/storage.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
 import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
 import { Action, DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
 import { OIL_CREDIT_DASHBOARD } from './oil-credit-dashboard.config';
-import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
 
 @Component({
   selector: 'app-oil-credit',
@@ -55,259 +51,97 @@ import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
 })
 export class OilCreditComponent implements OnInit {
   form: FormGroup;
-  filterForm: FormGroup;
   editing = false;
   isLoading = true;
   submitted = false;
-  displayedColumns = ['credit_date', 'citerne_pile', 'emballage', 'quantity', 'unit', 'destinataire', 'actions'];
+  displayedColumns = ['emballage', 'quantity', 'unit', 'oil_type', 'destinataire', 'creditState', 'actions'];
 
   OIL_CREDIT_DASHBOARD: DashboardConfig = OIL_CREDIT_DASHBOARD;
-  storageUnits: StorageUnitDto[] = [];
-  selectedStorageUnit: StorageUnitDto | null = null;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  private storageService = inject(StorageUnitDtoService);
   private svc = inject(OilCreditService);
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
-  private quantitySubscription: Subscription | null = null;
-  private filterSubscription: Subscription | null = null;
-  private data: OilCredit[];
+  private data: OilCredit[] = [];
   private route = inject(ActivatedRoute);
-  private storageUnitService = inject(StorageUnitDtoService);
 
   constructor() {
     this.form = this.fb.group({
       id: [null],
-      credit_date: [null, Validators.required],
-      citerne_pile: [null, Validators.required],
-      emballage: [''],
+      emballage: ['', Validators.required],
       quantity: [null, [Validators.required, Validators.min(0.01)]],
-      unit: ['L', Validators.required],
-      destinataire: ['']
+      unit: [UnitType.L, Validators.required],
+      oil_type: ['', Validators.required],
+      destinataire: ['', Validators.required],
+      transaction_id_in: [null],
+      transaction_id_out: [null],
+      creditState: [CreditState.PENDING, Validators.required]
     });
   }
 
   ngOnInit(): void {
-    // 1) Load storage units and then credits
-    this.storageService.getAllStorageUnit().subscribe({
-      next: (units) => {
-        // Sort storage units by currentVolume in descending order
-        this.storageUnits = units.data.sort((a, b) => b.currentVolume - a.currentVolume);
-        this.loadCredits();
-      },
-      error: () => {
-        this.snackBar.open('Échec du chargement des unités de stockage', 'Fermer', { duration: 3000 });
-        this.isLoading = false;
-      }
-    });
-
-    // 5) Subscribe to quantity changes with debounce
-    const quantityControl = this.form.get('quantity');
-    if (quantityControl) {
-      this.quantitySubscription = quantityControl.valueChanges.pipe(debounceTime(300)).subscribe((quantity) => {
-        this.validateQuantity(quantity);
-      });
-    }
-  }
-
-  ngOnDestroy(): void {
-    if (this.quantitySubscription) {
-      this.quantitySubscription.unsubscribe();
-    }
-    if (this.filterSubscription) {
-      this.filterSubscription.unsubscribe();
-    }
-  }
-
-  validateQuantity(quantity: number): void {
-    if (!this.selectedStorageUnit || !quantity) {
-      return;
-    }
-
-    const unit = this.form.get('unit')?.value;
-    const availableVolume = this.selectedStorageUnit.currentVolume;
-
-    // Clear previous errors
-    const quantityControl = this.form.get('quantity');
-    if (quantityControl?.hasError('insufficientVolume') || quantityControl?.hasError('unitMismatch')) {
-      quantityControl.setErrors(null);
-    }
-
-    // Validate unit
-    if (unit === 'KG') {
-      quantityControl?.setErrors({ unitMismatch: true });
-      this.snackBar.open(`La quantité en KG n'est pas compatible avec le volume en litres de la citerne/pile.`, 'Fermer', {
-        duration: 3000
-      });
-      return;
-    }
-
-    // Validate volume
-    if (quantity > availableVolume) {
-      quantityControl?.setErrors({ insufficientVolume: true });
-      this.snackBar.open(`La quantité demandée (${quantity} L) dépasse le volume disponible (${availableVolume} L).`, 'Fermer', {
-        duration: 3000
-      });
-    }
-  }
-
-  onStorageUnitSelected(selectedId: string): void {
-    if (!selectedId) {
-      this.selectedStorageUnit = null;
-      this.form.get('citerne_pile')?.setValue(null);
-      return;
-    }
-
-    // Get detailed storage unit info
-    this.storageService.getStorageUnit(selectedId).subscribe({
-      next: (response) => {
-        if (response.success && response.data.length > 0) {
-          const StorageUnitDto = response.data[0];
-          this.selectedStorageUnit = StorageUnitDto;
-
-          // Check if storage unit has oil
-          const hasOil = StorageUnitDto.currentVolume > 0;
-          const isAvailable = StorageUnitDto.status === 'AVAILABLE' || StorageUnitDto.status === 'FULL';
-
-          if (!hasOil) {
-            this.snackBar.open("Cette citerne/pile ne contient pas d'huile.", 'Fermer', { duration: 3000 });
-            this.form.get('citerne_pile')?.setValue(null);
-            this.selectedStorageUnit = null;
-            return;
-          }
-
-          if (!isAvailable) {
-            this.snackBar.open(`Cette citerne/pile n'est pas disponible (Status: ${StorageUnitDto.status})`, 'Fermer', { duration: 3000 });
-            this.form.get('citerne_pile')?.setValue(null);
-            this.selectedStorageUnit = null;
-            return;
-          }
-
-          // Validate current quantity (if already entered)
-          const currentQuantity = this.form.get('quantity')?.value;
-          if (currentQuantity) {
-            this.validateQuantity(currentQuantity);
-          }
-        } else {
-          this.snackBar.open('Impossible de récupérer les informations de la citerne/pile', 'Fermer', { duration: 3000 });
-          this.form.get('citerne_pile')?.setValue(null);
-          this.selectedStorageUnit = null;
-        }
-      },
-      error: () => {
-        this.snackBar.open('Erreur lors de la récupération des informations de la citerne/pile', 'Fermer', { duration: 3000 });
-        this.form.get('citerne_pile')?.setValue(null);
-        this.selectedStorageUnit = null;
-      }
-    });
+    this.loadCredits();
   }
 
   save(): void {
     this.submitted = true;
 
-    if (this.form.invalid || !this.selectedStorageUnit) {
+    if (this.form.invalid) {
       this.form.markAllAsTouched();
       this.snackBar.open('Veuillez corriger les erreurs dans le formulaire.', 'Fermer', { duration: 3000 });
       return;
     }
 
     const dto: OilCredit = this.form.value;
-    const quantity = dto.quantity;
-    const unit = dto.unit;
 
-    // Validate unit compatibility
-    if (unit === 'KG') {
-      this.form.get('quantity')?.setErrors({ unitMismatch: true });
-      this.snackBar.open(`La quantité en KG n'est pas compatible avec le volume en litres de la citerne/pile.`, 'Fermer', {
-        duration: 3000
-      });
-      return;
+    // Set default credit state if not provided
+    if (!dto.creditState) {
+      dto.creditState = CreditState.PENDING;
     }
 
-    let originalVolume = 0;
-
-    // Handle editing: Add back the original quantity
-    if (this.editing) {
-      const originalCredit = this.data.find((c) => c.id === dto.id);
-      if (originalCredit && originalCredit.unit === 'L') {
-        originalVolume = originalCredit.quantity;
-      }
-    }
-
-    // Calculate new volume: add back original (if editing), subtract new
-    const newVolume = this.selectedStorageUnit.currentVolume + originalVolume - quantity;
-
-    if (newVolume < 0) {
-      this.form.get('quantity')?.setErrors({ insufficientVolume: true });
-      this.snackBar.open('La quantité demandée dépasse le volume disponible dans la citerne/pile.', 'Fermer', { duration: 3000 });
-      return;
-    }
-
-    // Prepare storage unit update
-    const updatedStorageUnit: StorageUnitDto = {
-      ...this.selectedStorageUnit,
-      currentVolume: newVolume
-    };
-
-    // Save oil credit
     const creditObs = this.editing ? this.svc.updateOilCredit(dto) : this.svc.createOilCredit(dto);
 
-    // Execute credit save and storage unit update
     creditObs.subscribe({
       next: () => {
-        // Update storage unit
-        this.storageService.updateStorageUnit(updatedStorageUnit).subscribe({
-          next: () => {
-            this.snackBar.open(this.editing ? 'Crédit huile mis à jour et volume ajusté' : 'Crédit huile créé et volume ajusté', 'Fermer', {
-              duration: 3000
-            });
-            this.cancel();
-          },
-          error: () => {
-            this.snackBar.open('Échec de la mise à jour du volume de la citerne/pile', 'Fermer', { duration: 3000 });
-          }
-        });
+        this.snackBar.open(
+          this.editing ? 'Crédit huile mis à jour avec succès' : 'Crédit huile créé avec succès',
+          'Fermer',
+          { duration: 3000 }
+        );
+        this.cancel();
+        this.loadCredits();
       },
-      error: () => {
-        this.snackBar.open("Échec de l'enregistrement du crédit huile", 'Fermer', { duration: 3000 });
+      error: (error) => {
+        console.error('Error saving oil credit:', error);
+        this.snackBar.open(
+          this.editing ? 'Erreur lors de la mise à jour du crédit huile' : 'Erreur lors de la création du crédit huile',
+          'Fermer',
+          { duration: 3000 }
+        );
       }
     });
-  }
-
-  getVolumeClass(currentVolume: number, maxCapacity: number): string {
-    if (!maxCapacity || maxCapacity <= 0) return 'volume-low';
-    const percentage = (currentVolume / maxCapacity) * 100;
-    if (percentage >= 75) return 'volume-high';
-    if (percentage >= 25) return 'volume-medium';
-    return 'volume-low';
-  }
-
-  getStorageUnitName(id: string): string {
-    const unit = this.storageUnits.find((s) => s.id === id);
-    return unit ? unit.name : '-';
   }
 
   cancel(): void {
     this.editing = false;
     this.submitted = false;
-    this.form.reset({ id: null, credit_date: null, citerne_pile: null, emballage: '', quantity: null, unit: 'L', destinataire: '' });
-    this.selectedStorageUnit = null;
+    this.form.reset({
+      unit: UnitType.L,
+      creditState: CreditState.PENDING
+    });
   }
 
   openForm(o?: OilCredit): void {
+    this.editing = !!o;
     if (o) {
-      this.editing = true;
-      this.submitted = false;
       this.form.patchValue(o);
-      // Re-fetch storage unit details for editing
-      if (o.citerne_pile) {
-        this.onStorageUnitSelected(o.citerne_pile);
-      }
     } else {
-      this.cancel();
+      this.form.reset({
+        unit: UnitType.L,
+        creditState: CreditState.PENDING
+      });
     }
   }
 
@@ -316,45 +150,36 @@ export class OilCreditComponent implements OnInit {
   }
 
   delete(id: string): void {
-    if (!confirm('Supprimer ce crédit huile ?')) return;
-    this.svc.deleteOilCredit(id).subscribe({
-      next: () => {
-        this.snackBar.open('Crédit huile supprimé', 'Fermer', { duration: 3000 });
-      },
-      error: () => {
-        this.snackBar.open('Échec de la suppression du crédit huile', 'Fermer', { duration: 3000 });
-      }
-    });
+    this.confirmDelete(id);
   }
 
   handleAction(event: { action: Action; row: OilCredit }): void {
-    switch (event.action.value) {
+    const { action, row } = event;
+    const id = row.id;
+
+    switch (action.value) {
       case 'view':
-        this.router.navigate(['/finance/oil-credit', event.row.id, 'view']);
+        this.view(id!);
         break;
       case 'edit':
-        this.router.navigate(['/finance/oil-credit', event.row.id, 'edit']);
+        this.openForm(row);
         break;
       case 'delete':
-        this.confirmDelete(event.row.id);
+        this.confirmDelete(id);
         break;
     }
   }
 
   private confirmDelete(id?: string): void {
-    if (confirm("Êtes-vous sûr de vouloir supprimer ce crédit d'huile ?")) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce crédit huile ?')) {
       this.svc.deleteOilCredit(id!).subscribe({
         next: () => {
-          this.snackBar.open("Crédit d'huile supprimé avec succès", 'Fermer', {
-            duration: 3000
-          });
-          // Refresh the dashboard
-          this.router.navigate(['/finance/oil-credit']);
+          this.snackBar.open('Crédit huile supprimé avec succès', 'Fermer', { duration: 3000 });
+          this.loadCredits();
         },
-        error: (error: any) => {
-          this.snackBar.open("Erreur lors de la suppression du crédit d'huile", 'Fermer', {
-            duration: 3000
-          });
+        error: (error) => {
+          console.error('Error deleting oil credit:', error);
+          this.snackBar.open('Erreur lors de la suppression du crédit huile', 'Fermer', { duration: 3000 });
         }
       });
     }
@@ -363,20 +188,32 @@ export class OilCreditComponent implements OnInit {
   private loadCredits(): void {
     this.isLoading = true;
     this.svc.getAllOilCreditList().subscribe({
-      next: (res) => {
-        if (res.success) {
-          this.data = res.data;
-        } else {
-          this.data = [];
-          this.snackBar.open('Aucun crédit huile trouvé', 'Fermer', { duration: 3000 });
-        }
+      next: (response) => {
+        this.data = response.data || [];
         this.isLoading = false;
       },
-      error: () => {
-        this.snackBar.open('Échec du chargement des crédits huile', 'Fermer', { duration: 3000 });
-        this.data = [];
+      error: (error) => {
+        console.error('Error loading oil credits:', error);
+        this.snackBar.open('Erreur lors du chargement des crédits huile', 'Fermer', { duration: 3000 });
         this.isLoading = false;
       }
     });
   }
+
+  // Helper methods for display
+  getCreditStateLabel(state: CreditState): string {
+    const labels = {
+      [CreditState.PENDING]: 'En attente',
+      [CreditState.APPROVED]: 'Approuvé',
+      [CreditState.REJECTED]: 'Rejeté',
+      [CreditState.COMPLETED]: 'Terminé',
+      [CreditState.CANCELLED]: 'Annulé'
+    };
+    return labels[state] || state;
+  }
+
+  getUnitLabel(unit: UnitType): string {
+    return unit === UnitType.L ? 'Litre' : 'Kilogramme';
+  }
 }
+

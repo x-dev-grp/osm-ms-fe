@@ -113,6 +113,40 @@
       "TITLE": "Stock Configuration"
     }
   },
+  "STORAGE": {
+    "TITLE": "Storage & Inventory",
+    "OIL_STORAGE_UNITS": "Oil Storage Units",
+    "OIL_TRANSACTIONS": "Oil Transactions",
+    "VIEW": {
+      "TITLE": "Storage Unit Details",
+      "STATUS": {
+        "AVAILABLE": "Available",
+        "FULL": "Full",
+        "FILLING": "Filling",
+        "MAINTENANCE": "Maintenance",
+        "IN_USE": "In Use",
+        "CLEANING": "Cleaning",
+        "RESERVED": "Reserved",
+        "OUT_OF_SERVICE": "Out of Service"
+      },
+      "CURRENT_VOLUME": "Current Volume",
+      "MAX_CAPACITY": "Max Capacity",
+      "OIL_TYPE": "Oil Type",
+      "NA": "N/A",
+      "TRANSACTION_HISTORY": "Transaction History",
+      "DASHBOARD": {
+        "FIELDS": {
+          "TRANSACTION_TYPE": "Transaction Type",
+          "QUANTITY_KG": "Quantity (kg)",
+          "UNIT_PRICE": "Unit Price",
+          "TOTAL_PRICE": "Total Price",
+          "QUALITY_GRADE": "Quality Grade",
+          "CREATED_DATE": "Created Date"
+        }
+      }
+    }
+  },
+
   "MENU": {
     "HOME": {
       "TITLE": "Home",
@@ -144,8 +178,9 @@
     "FINANCE": {
       "TITLE": "Finance & Accounting",
       "EXPENSES": "Expenses",
-      "BANK_MANAGEMENT": "Bank Management",
-      "OIL_CREDIT": "Oil Credit"
+      "BANK_MANAGEMENT": "Bank Account Management",
+      "OIL_CREDIT": "Oil Credit",
+      "OIL_TRANSACTIONS": "Oil Transactions"
     },
     "STORAGE": {
       "TITLE": "Storage & Inventory",
@@ -852,5 +887,292 @@
     "ALREADY_DONE": "Quality control already completed",
     "SUBMIT": "Submit Quality Control",
     "SELECT_PLACEHOLDER": "Select..."
+  },
+  "OIL_CREDIT": {
+    "TITLE": "Oil Credit",
+    "DASHBOARD": {
+      "TITLE": "Oil Credit Management",
+      "FIELDS": {
+        "ID": "ID",
+        "EMBALLAGE": "Packaging",
+        "QUANTITY": "Quantity",
+        "UNIT": "Unit",
+        "OIL_TYPE": "Oil Type",
+        "DESTINATAIRE": "Recipient",
+        "CITERNE_PILE": "Storage Unit",
+        "CREDIT_STATE": "Credit State",
+        "CREATED_DATE": "Created Date"
+      },
+      "STATUS": {
+        "PENDING": "Pending",
+        "APPROVED": "Approved",
+        "REJECTED": "Rejected",
+        "COMPLETED": "Completed",
+        "CANCELLED": "Cancelled"
+      },
+      "ACTIONS": {
+        "VIEW": "View",
+        "EDIT": "Edit",
+        "DELETE": "Delete",
+        "ADD": "Add New Credit"
+      },
+      "MESSAGES": {
+        "DELETE_SUCCESS": "Oil credit deleted successfully",
+        "DELETE_ERROR": "Error deleting oil credit",
+        "LOAD_ERROR": "Error loading oil credits"
+      }
+    },
+    "FORM": {
+      "TITLE_NEW": "New Oil Credit",
+      "TITLE_EDIT": "Edit Oil Credit",
+      "FIELDS": {
+        "CITERNE_PILE": "Storage Unit",
+        "EMBALLAGE": "Packaging",
+        "OIL_TYPE": "Oil Type",
+        "QUANTITY": "Quantity",
+        "UNIT": "Unit",
+        "DESTINATAIRE": "Recipient",
+        "CREDIT_STATE": "Credit State"
+      },
+      "PLACEHOLDERS": {
+        "SEARCH_CITERNE_PILE": "Search storage unit...",
+        "SEARCH_OIL_TYPE": "Search oil type...",
+        "SEARCH_DESTINATAIRE": "Search recipient..."
+      },
+      "UNITS": {
+        "LITRE": "Liter",
+        "KILOGRAM": "Kilogram"
+      },
+      "CREDIT_STATES": {
+        "PENDING": "Pending",
+        "APPROVED": "Approved",
+        "REJECTED": "Rejected",
+        "COMPLETED": "Completed",
+        "CANCELLED": "Cancelled"
+      },
+      "ERRORS": {
+        "CITERNE_PILE_REQUIRED": "Storage unit is required",
+        "EMBALLAGE_REQUIRED": "Packaging is required",
+        "OIL_TYPE_REQUIRED": "Oil type is required",
+        "QUANTITY_REQUIRED": "Quantity is required",
+        "QUANTITY_MIN": "Quantity must be greater than 0",
+        "QUANTITY_INSUFFICIENT": "Insufficient volume in storage unit",
+        "QUANTITY_UNIT_MISMATCH": "Quantity unit mismatch with storage unit",
+        "UNIT_REQUIRED": "Unit is required",
+        "DESTINATAIRE_REQUIRED": "Recipient is required",
+        "CREDIT_STATE_REQUIRED": "Credit state is required"
+      },
+      "BUTTONS": {
+        "CREATE": "Create",
+        "UPDATE": "Update",
+        "CANCEL": "Cancel"
+      },
+      "MESSAGES": {
+        "SAVE_SUCCESS": "Oil credit created successfully",
+        "UPDATE_SUCCESS": "Oil credit updated successfully",
+        "SAVE_ERROR": "Error saving oil credit",
+        "LOAD_ERROR": "Error loading oil credit data",
+        "FORM_INVALID": "Please correct the form errors",
+        "QUANTITY_INSUFFICIENT_SNACK": "Quantity {{quantity}} exceeds available volume {{available}} L",
+        "QUANTITY_UNIT_MISMATCH_SNACK": "Storage unit only accepts liters (L), not kilograms (KG)"
+      }
+    },
+    "VIEW": {
+      "TITLE": "Oil Credit Details",
+      "SECTIONS": {
+        "GENERAL_INFO": "General Information",
+        "STORAGE_INFO": "Storage Information",
+        "RECIPIENT_INFO": "Recipient Information",
+        "CREDIT_STATUS": "Credit Status"
+      },
+      "FIELDS": {
+        "ID": "Credit ID",
+        "EMBALLAGE": "Packaging",
+        "QUANTITY": "Quantity",
+        "UNIT": "Unit",
+        "OIL_TYPE": "Oil Type",
+        "DESTINATAIRE": "Recipient",
+        "CITERNE_PILE": "Storage Unit",
+        "CREDIT_STATE": "Credit State",
+        "CREATED_DATE": "Created Date",
+        "UPDATED_DATE": "Last Modified Date"
+      },
+      "ACTIONS": {
+        "BACK": "Back to List",
+        "EDIT": "Edit",
+        "DELETE": "Delete"
+      },
+      "MESSAGES": {
+        "LOADING": "Loading credit details...",
+        "ERROR": "Unable to load credit details.",
+        "DELETE_CONFIRM": "Are you sure you want to delete this credit?",
+        "DELETE_SUCCESS": "Credit deleted successfully",
+        "DELETE_ERROR": "Failed to delete credit"
+      }
+    }
+  },
+  "OIL_TRANSACTIONS": {
+    "TITLE": "Oil Transactions",
+    "DASHBOARD": {
+      "TITLE": "Oil Transactions",
+      "FIELDS": {
+        "TRANSACTION_TYPE": "Transaction Type",
+        "TRANSACTION_STATE": "Transaction State",
+        "STORAGE_UNIT_DESTINATION": "Destination Unit",
+        "STORAGE_UNIT_SOURCE": "Source Unit",
+        "QUALITY_GRADE": "Quality Grade",
+        "QUANTITY_KG": "Quantity (kg)",
+        "UNIT_PRICE": "Unit Price",
+        "TOTAL_PRICE": "Total Price",
+        "RECEPTION": "Reception",
+        "CREATED_DATE": "Created Date"
+      },
+      "STATUS": {
+        "PENDING": "Pending",
+        "COMPLETED": "Completed"
+      },
+      "TYPES": {
+        "RECEPTION_IN": "Reception In",
+        "TRANSFER_IN": "Transfer In",
+        "LOAN": "Loan",
+        "SALE": "Sale"
+      },
+      "ACTIONS": {
+        "VIEW": "View",
+        "EDIT": "Edit",
+        "DELETE": "Delete"
+      },
+      "MESSAGES": {
+        "DELETE_SUCCESS": "Transaction deleted successfully",
+        "DELETE_ERROR": "Error deleting transaction",
+        "LOAD_ERROR": "Error loading transactions"
+      }
+    },
+    "FORM": {
+      "TITLE": {
+        "CREATE": "New Oil Transaction",
+        "EDIT": "Edit Oil Transaction"
+      },
+      "SECTIONS": {
+        "TRANSACTION_TYPE_AND_STATE": "Transaction Type and State",
+        "STORAGE_UNITS": "Storage Units",
+        "QUALITY_AND_QUANTITY": "Quality and Quantity",
+        "FINANCIAL_INFORMATION": "Financial Information"
+      },
+      "FIELDS": {
+        "TRANSACTION_TYPE": "Transaction type",
+        "TRANSACTION_STATE": "Transaction state",
+        "STORAGE_UNIT_DESTINATION": "Destination unit",
+        "STORAGE_UNIT_SOURCE": "Source unit",
+        "QUALITY_GRADE": "Quality grade",
+        "QUANTITY_KG": "Quantity (kg)",
+        "UNIT_PRICE": "Unit price",
+        "TOTAL_PRICE": "Total price"
+      },
+      "PLACEHOLDERS": {
+        "QUANTITY_KG": "0.00",
+        "UNIT_PRICE": "0.00",
+        "SELECT_STORAGE_UNIT": "Select a unit"
+      },
+      "HINTS": {
+        "STORAGE_UNIT_SOURCE": "Optional - for transfers between units",
+        "TOTAL_PRICE": "Calculated automatically"
+      },
+      "ACTIONS": {
+        "CREATE": "Create",
+        "UPDATE": "Update",
+        "CANCEL": "Cancel"
+      },
+      "VALIDATION": {
+        "REQUIRED": "This field is required",
+        "MIN_VALUE": "Value must be greater than 0"
+      },
+      "MESSAGES": {
+        "LOADING": "Loading...",
+        "SUCCESS": {
+          "CREATE": "Transaction created successfully",
+          "UPDATE": "Transaction updated successfully"
+        },
+        "ERROR": {
+          "LOAD": "Error loading data",
+          "UPDATE": "Error saving data",
+          "LOAD_STORAGE_UNITS": "Error loading storage units"
+        }
+      }
+    },
+    "VIEW": {
+      "TITLE": "Oil Transaction Details",
+      "SECTIONS": {
+        "TYPE_AND_STATE": "Type and State",
+        "STORAGE_UNITS": "Storage Units",
+        "QUALITY_AND_QUANTITY": "Quality and Quantity",
+        "FINANCIAL_INFO": "Financial Information",
+        "RECEPTION_INFO": "Reception",
+        "AUDIT_INFO": "Audit Information"
+      },
+      "FIELDS": {
+        "TRANSACTION_TYPE": "Transaction Type",
+        "TRANSACTION_STATE": "Transaction State",
+        "STORAGE_UNIT_DESTINATION": "Destination Unit",
+        "STORAGE_UNIT_SOURCE": "Source Unit",
+        "QUALITY_GRADE": "Quality Grade",
+        "QUANTITY_KG": "Quantity (kg)",
+        "UNIT_PRICE": "Unit Price",
+        "TOTAL_PRICE": "Total Price",
+        "RECEPTION_ID": "Reception ID",
+        "CREATED_DATE": "Created Date",
+        "LAST_MODIFIED_DATE": "Last Modified Date"
+      },
+      "ACTIONS": {
+        "BACK": "Back to List",
+        "EDIT": "Edit",
+        "DELETE": "Delete"
+      },
+      "MESSAGES": {
+        "LOADING": "Loading transaction...",
+        "ERROR": "Unable to load transaction details.",
+        "DELETE_CONFIRM": "Are you sure you want to delete this transaction?",
+        "DELETE_SUCCESS": "Transaction deleted successfully",
+        "DELETE_ERROR": "Failed to delete transaction"
+      }
+    },
+    "QUALITY_GRADES": {
+      "EXTRA_VIRGIN": "Extra Virgin",
+      "VIRGIN": "Virgin",
+      "REFINED": "Refined",
+      "LAMPANTE": "Lampante"
+    }
+  },
+  "OIL_TRANSACTION": {
+    "DETAILS": {
+      "TITLE": "Oil Transaction & Delivery Details",
+      "SECTION": "Transaction Details",
+      "ID": "ID",
+      "TYPE": "Type",
+      "QUANTITY_KG": "Quantity (kg)",
+      "UNIT_PRICE": "Unit Price",
+      "TOTAL_PRICE": "Total Price",
+      "QUALITY_GRADE": "Quality Grade",
+      "CREATED_DATE": "Created Date",
+      "RECEPTION_ID": "Reception ID",
+      "DEST_UNIT_ID": "Destination Storage Unit ID",
+      "SRC_UNIT_ID": "Source Storage Unit ID"
+    },
+    "DELIVERY": {
+      "SECTION": "Related Delivery Details",
+      "NUMBER": "Delivery Number",
+      "TYPE": "Type",
+      "LOT_NUMBER": "Lot Number",
+      "DATE": "Delivery Date",
+      "SUPPLIER": "Supplier",
+      "REGION": "Region",
+      "OIL_VARIETY": "Oil Variety",
+      "OIL_QUANTITY": "Oil Quantity",
+      "UNIT_PRICE": "Unit Price",
+      "TOTAL_PRICE": "Total Price",
+      "STATUS": "Status",
+      "STORAGE_UNIT": "Storage Unit",
+      "PARCEL": "Parcel"
+    }
   }
 }

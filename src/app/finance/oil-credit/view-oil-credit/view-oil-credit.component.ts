@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
-import { StorageUnitDtoService } from '../../../shared/services/storage.service';
-import { OilCredit } from '../../models/OilCredit';
+import { OilCredit, CreditState, UnitType } from '../../models/OilCredit';
 import { OilCreditService } from '../../service/oil-credit.service';
 import { MatCard, MatCardActions, MatCardContent, MatCardHeader } from '@angular/material/card';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -18,6 +18,7 @@ import { MatTooltip } from '@angular/material/tooltip';
     MatButtonModule,
     MatIconModule,
     MatDividerModule,
+    MatProgressSpinnerModule,
     MatCardActions,
     MatCardContent,
     MatCardHeader,
@@ -29,34 +30,37 @@ import { MatTooltip } from '@angular/material/tooltip';
 })
 export class ViewOilCreditComponent implements OnInit {
   credit?: OilCredit;
-  storageUnitName?: string;
+  loading = true;
+  error = false;
+
   private svc = inject(OilCreditService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private storageSvc = inject(StorageUnitDtoService);
+
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      // Fetch only the credit first
-      this.svc.getOilCredit(id).subscribe((res) => {
-        this.credit = res.data[0];
-        // Then fetch only the used storage unit
-        const pileId = this.credit?.citerne_pile;
-        if (pileId) {
-          this.storageSvc.getStorageUnit(pileId).subscribe((u) => {
-            this.storageUnitName = u.data[0].name;
-          });
-        }
-      });
+      this.loadOilCredit(id);
     }
   }
 
-  getStorageUnitName(): string {
-    // Return the fetched name or fallback to ID
-    return this.storageUnitName || this.credit?.citerne_pile || '';
-  }
-  navigateToStorageUnits(): void {
-    this.router.navigate(['/settings/storage']);
+  private loadOilCredit(id: string): void {
+    this.loading = true;
+    this.svc.getOilCredit(id).subscribe({
+      next: (res) => {
+        if (res.data && res.data.length > 0) {
+          this.credit = res.data[0];
+        } else {
+          this.error = true;
+        }
+        this.loading = false;
+      },
+      error: (error: unknown) => {
+        console.error('Error loading oil credit:', error);
+        this.error = true;
+        this.loading = false;
+      }
+    });
   }
 
   onBack(): void {
@@ -65,5 +69,32 @@ export class ViewOilCreditComponent implements OnInit {
 
   onPrint(): void {
     window.print();
+  }
+
+  // Helper methods for display
+  getCreditStateLabel(state: CreditState): string {
+    const labels = {
+      [CreditState.PENDING]: 'En attente',
+      [CreditState.APPROVED]: 'Approuvé',
+      [CreditState.REJECTED]: 'Rejeté',
+      [CreditState.COMPLETED]: 'Terminé',
+      [CreditState.CANCELLED]: 'Annulé'
+    };
+    return labels[state] || state;
+  }
+
+  getUnitLabel(unit: UnitType): string {
+    return unit === UnitType.L ? 'Litre' : 'Kilogramme';
+  }
+
+  getCreditStateClass(state: CreditState): string {
+    const classes = {
+      [CreditState.PENDING]: 'state-pending',
+      [CreditState.APPROVED]: 'state-approved',
+      [CreditState.REJECTED]: 'state-rejected',
+      [CreditState.COMPLETED]: 'state-completed',
+      [CreditState.CANCELLED]: 'state-cancelled'
+    };
+    return classes[state] || '';
   }
 }

@@ -37,11 +37,11 @@ export class QualityControlListComponent implements OnInit {
   ngOnInit(): void {}
 
   onRowAction(event: { row: UnifiedDelivery; action: any }): void {
-    switch (event.action.value) {
-      case 'START_CONTROL':
+    switch (event.action) {
+      case 'QUALITY':
         this.startQualityControl(event.row);
         break;
-      case 'VIEW':
+      case 'READ':
         this.viewDelivery(event.row);
         break;
     }

@@ -8,52 +8,182 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SharedModule } from '../../../demo/shared/shared.module';
+import { ApiResponse } from '../../../shared/models/api-response';
+import { OilCredit, CreditState, UnitType } from '../../models/OilCredit';
+import { OilCreditService } from '../../service/oil-credit.service';
+import { BaseType } from '../../../shared/models/base-type';
+import { GenericTypeService } from '../../../shared/services/generic-type.service';
+import { SupplierType } from '../../../shared/models/supplier-type';
+import { SupplierTypeService } from '../../../shared/services/supplier.service';
+import { TypeCategory } from '../../../shared/models/type-category.enum';
 import { StorageUnitDtoService } from '../../../shared/services/storage.service';
 import { StorageUnitDto } from '../../../shared/models/StorageUnitDto';
-import { ApiResponse } from '../../../shared/models/api-response';
-import { OilCredit } from '../../models/OilCredit';
-import { OilCreditService } from '../../service/oil-credit.service';
+import { map, startWith } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-oil-credit-add',
   templateUrl: './oil-credit-add.component.html',
   styleUrls: ['./oil-credit-add.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatDatepickerModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule, MatSnackBarModule, SharedModule]
+  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, TranslateModule,MatDatepickerModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule, MatSnackBarModule, MatAutocompleteModule, SharedModule]
 })
 export class OilCreditAddComponent implements OnInit {
   form: FormGroup;
   editing = false;
   submitted = false;
   loading = false;
+  oilTypes: BaseType[] = [];
+  suppliers: SupplierType[] = [];
   storageUnits: StorageUnitDto[] = [];
   selectedStorageUnit: StorageUnitDto | null = null;
   private data: OilCredit[] = [];
 
-  constructor(private fb: FormBuilder, private oilCreditService: OilCreditService, private storageUnitService: StorageUnitDtoService, private snackBar: MatSnackBar, private route: ActivatedRoute, private router: Router) {
+  // Autocomplete filtered options
+  filteredOilTypes: Observable<BaseType[]>;
+  filteredSuppliers: Observable<SupplierType[]>;
+  filteredStorageUnits: Observable<StorageUnitDto[]>;
+
+  constructor(
+    private fb: FormBuilder,
+    private oilCreditService: OilCreditService,
+    private genericTypeService: GenericTypeService,
+    private supplierService: SupplierTypeService,
+    private storageUnitService: StorageUnitDtoService,
+    private snackBar: MatSnackBar,
+    private route: ActivatedRoute,
+    private router: Router,
+    private translate: TranslateService
+  ) {
     this.form = this.fb.group({
       id: [null],
-      credit_date: [null, Validators.required],
-      citerne_pile: [null, Validators.required],
-      emballage: [''],
+      emballage: ['', Validators.required],
       quantity: [null, [Validators.required, Validators.min(0.01)]],
-      unit: ['L', Validators.required],
-      destinataire: ['']
+      unit: [UnitType.L, Validators.required],
+      oil_type: [null, Validators.required],
+      destinataire: [null, Validators.required],
+      citerne_pile: [null, Validators.required],
+      creditState: [CreditState.PENDING, Validators.required]
     });
+
+    // Initialize filtered observables
+    this.filteredOilTypes = new Observable<BaseType[]>();
+    this.filteredSuppliers = new Observable<SupplierType[]>();
+    this.filteredStorageUnits = new Observable<StorageUnitDto[]>();
   }
 
   ngOnInit(): void {
-    this.loadStorageUnits();
+    this.genericTypeService.getAllTypes(TypeCategory.OIL_TYPE).subscribe({
+      next: (res) => {
+        this.oilTypes = res.data || [];
+        this.setupAutocompleteFilters();
+      },
+      error: () => {
+        this.snackBar.open(
+          this.translate.instant('OIL_CREDIT.FORM.MESSAGES.LOAD_ERROR'),
+          this.translate.instant('OIL_CREDIT.FORM.BUTTONS.CANCEL'),
+          { duration: 3000 }
+        );
+      }
+    });
+    this.supplierService.getAllSuppliers().subscribe({
+      next: (res) => {
+        this.suppliers = res.data || [];
+        this.setupAutocompleteFilters();
+      },
+      error: () => {
+        this.snackBar.open(
+          this.translate.instant('OIL_CREDIT.FORM.MESSAGES.LOAD_ERROR'),
+          this.translate.instant('OIL_CREDIT.FORM.BUTTONS.CANCEL'),
+          { duration: 3000 }
+        );
+      }
+    });
+    this.storageUnitService.getAllStorageUnit().subscribe({
+      next: (response) => {
+        this.storageUnits = response.data.sort((a, b) => b.currentVolume - a.currentVolume);
+        this.setupAutocompleteFilters();
+      },
+      error: () => {
+        this.snackBar.open(
+          this.translate.instant('OIL_CREDIT.FORM.MESSAGES.LOAD_ERROR'),
+          this.translate.instant('OIL_CREDIT.FORM.BUTTONS.CANCEL'),
+          { duration: 3000 }
+        );
+      }
+    });
     const id = this.route.snapshot.params['id'];
     if (id) {
       this.loadOilCredit(id);
     }
+    this.form.get('quantity')?.valueChanges.subscribe((quantity) => this.validateQuantity(quantity));
+    this.form.get('unit')?.valueChanges.subscribe(() => this.validateQuantity(this.form.get('quantity')?.value));
+
+    // Subscribe to storage unit changes for validation
+    this.form.get('citerne_pile')?.valueChanges.subscribe((unit) => {
+      if (unit) {
+        this.onStorageUnitSelected(unit);
+      }
+    });
   }
 
-  onStorageUnitSelected(unitId: string): void {
-    const unit = this.storageUnits.find(u => u.id === unitId);
+  private setupAutocompleteFilters(): void {
+    // Oil type filter
+    this.filteredOilTypes = this.form.get('oil_type')!.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(this.oilTypes, value, 'name'))
+    );
+
+    // Supplier filter
+    this.filteredSuppliers = this.form.get('destinataire')!.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(this.suppliers, value, 'supplierInfo.name'))
+    );
+
+    // Storage unit filter
+    this.filteredStorageUnits = this.form.get('citerne_pile')!.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(this.storageUnits, value, 'name'))
+    );
+  }
+
+  private _filter<T extends { name?: string; supplierInfo?: { name: string } }>(
+    items: T[],
+    value: string | T,
+    displayField: string
+  ): T[] {
+    if (!value || typeof value === 'object') {
+      return items;
+    }
+    const filterValue = value.toLowerCase();
+    return items.filter(item => {
+      const fieldValue = this._getNestedValue(item, displayField);
+      return fieldValue.toLowerCase().includes(filterValue);
+    });
+  }
+
+  private _getNestedValue<T extends Record<string, unknown>>(obj: T, path: string): string {
+    return path.split('.').reduce((acc, part) => {
+      if (acc && typeof acc === 'object') {
+        return (acc as Record<string, unknown>)[part];
+      }
+      return '';
+    }, obj as unknown) as string;
+  }
+
+  displayFn<T extends { name?: string; supplierInfo?: { name: string } }>(item: T): string {
+    if (!item) return '';
+    if (item.supplierInfo) {
+      return item.supplierInfo.name;
+    }
+    return item.name || '';
+  }
+
+  onStorageUnitSelected(unit: StorageUnitDto): void {
     if (unit) {
       this.selectedStorageUnit = unit;
       this.validateQuantity(this.form.get('quantity')?.value);
@@ -64,31 +194,28 @@ export class OilCreditAddComponent implements OnInit {
     if (!this.selectedStorageUnit || !quantity) {
       return;
     }
-
     const unit = this.form.get('unit')?.value;
     const availableVolume = this.selectedStorageUnit.currentVolume;
-
-    // Clear previous errors
     const quantityControl = this.form.get('quantity');
     if (quantityControl?.hasError('insufficientVolume') || quantityControl?.hasError('unitMismatch')) {
       quantityControl.setErrors(null);
     }
-
-    // Validate unit
     if (unit === 'KG') {
       quantityControl?.setErrors({ unitMismatch: true });
-      this.snackBar.open(`La quantité en KG n'est pas compatible avec le volume en litres de la citerne/pile.`, 'Fermer', {
-        duration: 3000
-      });
+      this.snackBar.open(
+        this.translate.instant('OIL_CREDIT.FORM.MESSAGES.QUANTITY_UNIT_MISMATCH_SNACK'),
+        this.translate.instant('OIL_CREDIT.FORM.BUTTONS.CANCEL'),
+        { duration: 3000 }
+      );
       return;
     }
-
-    // Validate volume
     if (quantity > availableVolume) {
       quantityControl?.setErrors({ insufficientVolume: true });
-      this.snackBar.open(`La quantité demandée (${quantity} L) dépasse le volume disponible (${availableVolume} L).`, 'Fermer', {
-        duration: 3000
-      });
+      this.snackBar.open(
+        this.translate.instant('OIL_CREDIT.FORM.MESSAGES.QUANTITY_INSUFFICIENT_SNACK', { quantity, available: availableVolume }),
+        this.translate.instant('OIL_CREDIT.FORM.BUTTONS.CANCEL'),
+        { duration: 3000 }
+      );
     }
   }
 
@@ -102,67 +229,44 @@ export class OilCreditAddComponent implements OnInit {
 
   save(): void {
     this.submitted = true;
-
-    if (this.form.invalid || !this.selectedStorageUnit) {
+    if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.snackBar.open('Veuillez corriger les erreurs dans le formulaire.', 'Fermer', { duration: 3000 });
+      this.snackBar.open(
+        this.translate.instant('OIL_CREDIT.FORM.MESSAGES.FORM_INVALID'),
+        this.translate.instant('OIL_CREDIT.FORM.BUTTONS.CANCEL'),
+        { duration: 3000 }
+      );
       return;
     }
 
-    const dto = this.form.value;
-    const quantity = dto.quantity;
-    const unit = dto.unit;
-
-    // Validate unit compatibility
-    if (unit === 'KG') {
-      this.form.get('quantity')?.setErrors({ unitMismatch: true });
-      this.snackBar.open(`La quantité en KG n'est pas compatible avec le volume en litres de la citerne/pile.`, 'Fermer', {
-        duration: 3000
-      });
-      return;
-    }
-
-    let originalVolume = 0;
-
-    // Handle editing: Add back the original quantity
-    if (this.editing) {
-      const originalCredit = this.data.find((c) => c.id === dto.id);
-      if (originalCredit && originalCredit.unit === 'L') {
-        originalVolume = originalCredit.quantity;
-      }
-    }
-
-    // Calculate new volume: add back original (if editing), subtract new
-    const newVolume = this.selectedStorageUnit.currentVolume + originalVolume - quantity;
-
-    if (newVolume < 0) {
-      this.form.get('quantity')?.setErrors({ insufficientVolume: true });
-      this.snackBar.open('La quantité demandée dépasse le volume disponible dans la citerne/pile.', 'Fermer', { duration: 3000 });
-      return;
-    }
-
-    // Prepare storage unit update
-    const updatedStorageUnit: StorageUnitDto = {
-      ...this.selectedStorageUnit, currentVolume: newVolume
+    const formValue = this.form.value;
+    const dto = {
+      ...formValue,
+      oil_type: formValue.oil_type?.id || formValue.oil_type,
+      destinataire: formValue.destinataire?.id || formValue.destinataire,
+      citerne_pile: formValue.citerne_pile?.id || formValue.citerne_pile
     };
 
-    // Save oil credit
-    const creditObs = this.editing ? this.oilCreditService.updateOilCredit(dto) : this.oilCreditService.createOilCredit(dto);
+    if (!dto.creditState) {
+      dto.creditState = CreditState.PENDING;
+    }
 
-    // Execute credit save and storage unit update
+    const creditObs = this.editing ? this.oilCreditService.updateOilCredit(dto) : this.oilCreditService.createOilCredit(dto);
     creditObs.subscribe({
       next: () => {
-        // Update storage unit
-        this.storageUnitService.updateStorageUnit(updatedStorageUnit).subscribe({
-          next: () => {
-            this.snackBar.open(this.editing ? 'Crédit huile mis à jour et volume ajusté' : 'Crédit huile créé et volume ajusté', 'Fermer', { duration: 3000 });
-            this.router.navigate(['/finance/oil-credit']);
-          }, error: () => {
-            this.snackBar.open('Échec de la mise à jour du volume de la citerne/pile', 'Fermer', { duration: 3000 });
-          }
-        });
-      }, error: () => {
-        this.snackBar.open('Échec de l\'enregistrement du crédit huile', 'Fermer', { duration: 3000 });
+        this.snackBar.open(
+          this.translate.instant(this.editing ? 'OIL_CREDIT.FORM.MESSAGES.UPDATE_SUCCESS' : 'OIL_CREDIT.FORM.MESSAGES.SAVE_SUCCESS'),
+          this.translate.instant('OIL_CREDIT.FORM.BUTTONS.CANCEL'),
+          { duration: 3000 }
+        );
+        this.router.navigate(['/finance/oil-credit']);
+      }, error: (error: unknown) => {
+        console.error('Error saving oil credit:', error);
+        this.snackBar.open(
+          this.translate.instant('OIL_CREDIT.FORM.MESSAGES.SAVE_ERROR'),
+          this.translate.instant('OIL_CREDIT.FORM.BUTTONS.CANCEL'),
+          { duration: 3000 }
+        );
       }
     });
   }
@@ -171,38 +275,53 @@ export class OilCreditAddComponent implements OnInit {
     this.router.navigate(['/finance/oil-credit']);
   }
 
-  private loadStorageUnits(): void {
-    this.storageUnitService.getAllStorageUnit().subscribe({
-      next: (response: ApiResponse<StorageUnitDto>) => {
-        this.storageUnits = response.data.sort((a, b) => b.currentVolume - a.currentVolume);
-      }, error: (error: any) => {
-        this.snackBar.open('Erreur lors du chargement des unités de stockage', 'Fermer', {
-          duration: 3000
-        });
-      }
-    });
-  }
-
   private loadOilCredit(id: string): void {
     this.loading = true;
     this.oilCreditService.getOilCredit(id).subscribe({
       next: (response: ApiResponse<OilCredit>) => {
         if (response.data && response.data.length > 0) {
           const credit = response.data[0];
-          this.form.patchValue(credit);
+          const oilType = this.oilTypes.find(type => type.id === credit.oil_type);
+          const supplier = this.suppliers.find(sup => sup.id === credit.destinataire);
+          const storageUnit = this.storageUnits.find(unit => unit.id === credit.transaction_id_in);
+          this.form.patchValue({
+            ...credit,
+            oil_type: oilType || credit.oil_type,
+            destinataire: supplier || credit.destinataire,
+            citerne_pile: storageUnit || credit.transaction_id_in
+          });
           this.editing = true;
-          if (credit.citerne_pile) {
-            this.onStorageUnitSelected(credit.citerne_pile);
-          }
         }
         this.loading = false;
       },
-      error: (error: any) => {
-        this.snackBar.open('Erreur lors du chargement du crédit d\'huile', 'Fermer', {
-          duration: 3000
-        });
+      error: (error: unknown) => {
+        console.error('Error loading oil credit:', error);
+        this.snackBar.open(
+          this.translate.instant('OIL_CREDIT.FORM.MESSAGES.LOAD_ERROR'),
+          this.translate.instant('OIL_CREDIT.FORM.BUTTONS.CANCEL'),
+          { duration: 3000 }
+        );
         this.loading = false;
       }
     });
+  }
+
+  getCreditStateLabel(state: CreditState): string {
+    const labels = {
+      [CreditState.PENDING]: 'En attente',
+      [CreditState.APPROVED]: 'Approuvé',
+      [CreditState.REJECTED]: 'Rejeté',
+      [CreditState.COMPLETED]: 'Terminé',
+      [CreditState.CANCELLED]: 'Annulé'
+    };
+    return labels[state] || state;
+  }
+
+  getUnitLabel(unit: UnitType): string {
+    const labels = {
+      [UnitType.L]: 'Litre',
+      [UnitType.KG]: 'Kilogramme'
+    };
+    return labels[unit] || unit;
   }
 }

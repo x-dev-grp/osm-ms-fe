@@ -5,7 +5,7 @@ import { SearchOperation } from '../../../shared/models/advanced-search/searchOp
 export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
   title: 'Contrôle Qualité',
   titleTranslatePath: 'QUALITY_CONTROL.TITLE',
-  baseURL: 'quality-control',
+  baseURL: 'production/deliveries',
   searchEndpoint: 'production/deliveries',
   addNewItem: false,
   defaultSearchData: {
@@ -18,8 +18,6 @@ export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
       search: {
         hasQualityControl: {
           equalValue: "false"
-        },deliveryType:{
-          equalValue: deliveryType.OLIVE
         }
       }
     }

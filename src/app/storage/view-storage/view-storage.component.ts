@@ -6,14 +6,14 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 
-import { SharedModule } from '../../../demo/shared/shared.module';
-import { StorageUnitDto } from '../../../shared/models/StorageUnitDto';
-import { StorageUnitDtoService } from '../../../shared/services/storage.service';
+import { SharedModule } from '../../demo/shared/shared.module';
+import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
+import { StorageUnitDtoService } from '../../shared/services/storage.service';
 import { TranslateModule } from '@ngx-translate/core';
-import { AttributeType, DashboardConfig, FieldType } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
-import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
-import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
-import { OilTransaction } from '../../../shared/models/OilTransaction';
+import { AttributeType, DashboardConfig, FieldType } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
+import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
+import { OilTransaction } from '../../shared/models/OilTransaction';
 
 @Component({
   selector: 'app-view-storage',
@@ -45,7 +45,7 @@ export class ViewStorageComponent implements OnInit {
   handleAction(event: { action: string; row: OilTransaction }): void {
     switch (event.action?.toUpperCase()) {
       case 'READ':
-        this.router.navigate([`/settings/storage/oil-transaction`, event.row.id]);
+        this.router.navigate([`/storage/oil-transaction`, event.row.id]);
         break;
     }
   }
@@ -100,7 +100,7 @@ export class ViewStorageComponent implements OnInit {
 
     if (!this.storageUnitId) {
       this.snackBar.open('Invalid storage unit ID', 'Close', { duration: 3000 });
-      this.router.navigate(['/settings/storage']);
+      this.router.navigate(['/storage']);
       return;
     }
 
@@ -110,14 +110,14 @@ export class ViewStorageComponent implements OnInit {
           this.storageUnit = response.data[0];
         } else {
           this.snackBar.open(response.message || 'Error loading storage unit', 'Close', { duration: 3000 });
-          this.router.navigate(['/settings/storage']);
+          this.router.navigate(['/storage']);
         }
         this.loading = false;
       },
       error: (error) => {
         console.error('Error loading storage unit:', error);
         this.snackBar.open('Error loading storage unit', 'Close', { duration: 3000 });
-        this.router.navigate(['/settings/storage']);
+        this.router.navigate(['/storage']);
         this.loading = false;
       }
     });

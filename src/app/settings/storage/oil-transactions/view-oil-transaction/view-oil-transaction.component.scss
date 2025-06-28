@@ -1,0 +1,234 @@
+.view-oil-transaction-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  // Loading State
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    gap: 16px;
+
+    p {
+      color: #666;
+      font-size: 16px;
+    }
+  }
+
+  // Error State
+  .error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    gap: 16px;
+    text-align: center;
+
+    .error-icon {
+      font-size: 64px;
+      width: 64px;
+      height: 64px;
+      color: #f44336;
+    }
+
+    h2 {
+      color: #333;
+      margin: 0;
+    }
+
+    p {
+      color: #666;
+      margin: 0;
+    }
+  }
+
+  // Transaction Details
+  .transaction-details {
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #e0e0e0;
+
+      .header-content {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+
+        .back-button {
+          color: #666;
+
+          &:hover {
+            background-color: #f5f5f5;
+          }
+        }
+
+        h1 {
+          margin: 0;
+          color: #333;
+          font-size: 28px;
+          font-weight: 500;
+        }
+      }
+
+      .header-actions {
+        display: flex;
+        gap: 12px;
+      }
+    }
+
+    .transaction-card {
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+
+      mat-card-header {
+        padding: 24px 24px 0 24px;
+
+        mat-card-title {
+          font-size: 20px;
+          font-weight: 500;
+          color: #333;
+          margin-bottom: 4px;
+        }
+
+        mat-card-subtitle {
+          color: #666;
+          font-size: 14px;
+        }
+      }
+
+      mat-card-content {
+        padding: 24px;
+
+        .transaction-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 32px;
+
+          .info-section {
+            h3 {
+              color: #333;
+              font-size: 16px;
+              font-weight: 500;
+              margin: 0 0 16px 0;
+              padding-bottom: 8px;
+              border-bottom: 2px solid #e0e0e0;
+            }
+
+            .info-row {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              padding: 12px 0;
+              border-bottom: 1px solid #f5f5f5;
+
+              &:last-child {
+                border-bottom: none;
+              }
+
+              .label {
+                font-weight: 500;
+                color: #555;
+                min-width: 140px;
+              }
+
+              .value {
+                color: #333;
+                text-align: right;
+                flex: 1;
+                margin-left: 16px;
+
+                &.total-price {
+                  font-weight: 600;
+                  color: #1976d2;
+                  font-size: 16px;
+                }
+
+                &.status-badge {
+                  padding: 4px 12px;
+                  border-radius: 16px;
+                  font-size: 12px;
+                  font-weight: 500;
+                  text-transform: uppercase;
+                  letter-spacing: 0.5px;
+
+                  &.status-pending {
+                    background-color: #fff3e0;
+                    color: #f57c00;
+                  }
+
+                  &.status-completed {
+                    background-color: #e8f5e8;
+                    color: #388e3c;
+                  }
+
+                  &.status-cancelled {
+                    background-color: #ffebee;
+                    color: #d32f2f;
+                  }
+
+                  &.status-processing {
+                    background-color: #e3f2fd;
+                    color: #1976d2;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .view-oil-transaction-container {
+    padding: 16px;
+
+    .transaction-details {
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+
+        .header-actions {
+          width: 100%;
+          justify-content: flex-end;
+        }
+      }
+
+      .transaction-card {
+        mat-card-content {
+          .transaction-grid {
+            grid-template-columns: 1fr;
+            gap: 24px;
+
+            .info-section {
+              .info-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+
+                .label {
+                  min-width: auto;
+                }
+
+                .value {
+                  text-align: left;
+                  margin-left: 0;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
