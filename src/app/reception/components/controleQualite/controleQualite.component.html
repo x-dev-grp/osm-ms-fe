@@ -37,7 +37,7 @@
                   </mat-option>
                 </mat-select>
                 <mat-error *ngIf="dynamicForm.get(control.key)?.hasError('required')">
-                  {{ 'CONTROLE_QUALITE.ERRORS.REQUIRED' | translate }}
+                  {{ 'CONTROLE_QUALITE.FORM.VALIDATION.REQUIRED' | translate }}
                 </mat-error>
               </mat-form-field>
 
@@ -45,8 +45,8 @@
               <mat-form-field *ngSwitchCase="'BOOLEAN'" appearance="outline" class="w-100">
                 <mat-label>{{ getRuleName(control.key) }}</mat-label>
                 <mat-select [formControlName]="control.key" [id]="control.key">
-                  <mat-option [value]="false">{{ 'CONTROLE_QUALITE.BOOLEAN.FALSE' | translate }}</mat-option>
-                  <mat-option [value]="true">{{ 'CONTROLE_QUALITE.BOOLEAN.TRUE' | translate }}</mat-option>
+                  <mat-option [value]="false">{{ 'STANDARD.BOOLEAN.FALSE' | translate }}</mat-option>
+                  <mat-option [value]="true">{{ 'STANDARD.BOOLEAN.TRUE' | translate }}</mat-option>
                 </mat-select>
               </mat-form-field>
 
@@ -55,9 +55,12 @@
 
           <!-- Messages d'erreur -->
           <div class="error-messages" *ngIf="dynamicForm.get(control.key)?.invalid && (dynamicForm.get(control.key)?.touched || submitted)">
-            <small *ngIf="dynamicForm.get(control.key)?.errors?.['required']">{{ 'CONTROLE_QUALITE.ERRORS.REQUIRED' | translate }}</small>
-            <small *ngIf="dynamicForm.get(control.key)?.errors?.['min']">{{ 'CONTROLE_QUALITE.ERRORS.MIN' | translate }} {{ getRuleMinValue(control.key) }}</small>
-            <small *ngIf="dynamicForm.get(control.key)?.errors?.['max']">{{ 'CONTROLE_QUALITE.ERRORS.MAX' | translate }} {{ getRuleMaxValue(control.key) }}</small>
+            <small
+              *ngIf="dynamicForm.get(control.key)?.errors?.['required']">{{ 'CONTROLE_QUALITE.FORM.VALIDATION.REQUIRED' | translate }}</small>
+            <small
+              *ngIf="dynamicForm.get(control.key)?.errors?.['min']">{{ 'CONTROLE_QUALITE.FORM.VALIDATION.MIN_VALUE' | translate }}</small>
+            <small
+              *ngIf="dynamicForm.get(control.key)?.errors?.['max']">{{ 'CONTROLE_QUALITE.FORM.VALIDATION.MAX_VALUE' | translate: {max: getRuleMaxValue(control.key)} }}</small>
           </div>
 
         </div>
@@ -81,10 +84,11 @@
       <!-- Prix unitaire -->
       <div class="rule-card">
         <mat-form-field appearance="outline" class="w-100">
-          <mat-label>{{ 'PRIX_UNITAIRE' | translate }}</mat-label>
-          <input formControlName="unitPrice" matInput placeholder="{{ 'ENTRER_PRIX' | translate }}" type="number"/>
+          <mat-label>{{ 'CONTROLE_QUALITE.FINANCIAL.UNIT_PRICE' | translate }}</mat-label>
+          <input formControlName="unitPrice" matInput
+                 placeholder="{{ 'CONTROLE_QUALITE.FINANCIAL.UNIT_PRICE' | translate }}" type="number"/>
           <mat-error *ngIf="staticForm.get('unitPrice')?.hasError('required')">
-            {{ 'CONTROLE_QUALITE.ERRORS.REQUIRED' | translate }}
+            {{ 'CONTROLE_QUALITE.FORM.VALIDATION.REQUIRED' | translate }}
           </mat-error>
         </mat-form-field>
       </div>
@@ -92,10 +96,11 @@
       <!-- Prix total -->
       <div class="rule-card">
         <mat-form-field appearance="outline" class="w-100">
-          <mat-label>{{ 'PRIX_TOTAL' | translate }}</mat-label>
-          <input formControlName="price" matInput placeholder="{{ 'PRIX_TOTAL' | translate }}" type="number"/>
+          <mat-label>{{ 'CONTROLE_QUALITE.FINANCIAL.PRICE' | translate }}</mat-label>
+          <input formControlName="price" matInput placeholder="{{ 'CONTROLE_QUALITE.FINANCIAL.PRICE' | translate }}"
+                 type="number"/>
           <mat-error *ngIf="staticForm.get('price')?.hasError('required')">
-            {{ 'CONTROLE_QUALITE.ERRORS.REQUIRED' | translate }}
+            {{ 'CONTROLE_QUALITE.FORM.VALIDATION.REQUIRED' | translate }}
           </mat-error>
         </mat-form-field>
       </div>
@@ -103,18 +108,17 @@
       <!-- Unité de stockage -->
       <div class="rule-card">
         <mat-form-field appearance="outline" class="w-100">
-          <mat-label>{{ 'UNIT_STORAGE' | translate }}</mat-label>
-          <mat-select formControlName="storageUnits" required>
-            <mat-option *ngFor="let unit of storageUnits" [value]="unit">
-              {{ unit.name }}
+          <mat-label>{{ 'CONTROLE_QUALITE.STORAGE_UNIT.LABEL' | translate }}</mat-label>
+          <mat-select (selectionChange)="onStorageUnitChange($event)" formControlName="storageUnit" required>
+            <mat-option *ngFor="let unit of storageUnits" [value]="unit.id">
+              {{ unit.name }} ({{ unit.currentVolume | number }} / {{ unit.maxCapacity | number }} L)
             </mat-option>
           </mat-select>
-          <mat-error *ngIf="staticForm.get('unitStorage')?.hasError('required')">
-            {{ 'CONTROLE_QUALITE.ERRORS.REQUIRED' | translate }}
+          <mat-error *ngIf="staticForm.get('storageUnit')?.hasError('required')">
+            {{ 'CONTROLE_QUALITE.STORAGE_UNIT.ERRORS.REQUIRED' | translate }}
           </mat-error>
         </mat-form-field>
       </div>
-
 
     </div>
 
@@ -124,7 +128,7 @@
               color="primary"
               mat-flat-button
               type="button">
-        {{ 'CONTROLE_QUALITE.BUTTONS.SUBMIT' | translate }}
+        {{ 'CONTROLE_QUALITE.BUTTONS.VALIDATE' | translate }}
       </button>
     </div>
   </form>
