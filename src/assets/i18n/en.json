@@ -12,6 +12,10 @@
       "PREVIOUS": "Previous",
       "SUBMIT": "Submit",
       "SEARCH": "Search"
+    },
+    "BOOLEAN": {
+      "TRUE": "True",
+      "FALSE": "False"
     }
   },
   "GENERAL_CONFIG": {
@@ -807,13 +811,20 @@
     }
   },
   "CONTROLE_QUALITE": {
+    "TITLE": "Quality Control",
     "PLACEHOLDER": {
       "ENTER_VALUE": "Enter a value"
     },
     "STORAGE_UNIT": {
       "LABEL": "Storage Unit",
+      "PLACEHOLDER": "Select storage unit",
       "ERRORS": {
-        "REQUIRED": "Storage unit is required"
+        "REQUIRED": "Storage unit is required",
+        "NOT_FOUND": "Storage unit not found"
+      },
+      "MESSAGES": {
+        "SELECTED": "Storage unit selected: {{name}} (to validate)",
+        "SELECTION_ERROR": "Error: Storage unit not found"
       }
     },
     "OIL_DETAILS": {
@@ -837,56 +848,66 @@
       "UNIT_PRICE": "Unit Price (TND/L)",
       "PRICE": "Total Price (TND)",
       "PAID_AMOUNT": "Paid Amount (TND)",
-      "UNPAID_AMOUNT": "Remaining Amount (TND)"
+      "UNPAID_AMOUNT": "Unpaid Amount (TND)"
     },
-    "RULES": {
-      "TITLE": "Quality Control Rules"
+    "QUALITY_PARAMETERS": {
+      "TITLE": "Quality Parameters",
+      "ACIDITY": "Acidity",
+      "K270": "K270",
+      "K232": "K232",
+      "INFESTED": "Infested",
+      "FERMENTED": "Fermented",
+      "DAMAGED": "Damaged"
     },
-    "OIL_RECEPTION": {
-      "SUBMIT": "Save Information"
-    },
-    "OLIVE_RECEPTION": {
-      "SUBMIT": "Save Information"
-    },
-    "ERRORS": {
-      "REQUIRED": "This field is required.",
-      "MIN": "Min:",
-      "MAX": "Max:",
-      "FORM_INVALID": "The form contains errors. Please correct the fields.",
-      "NO_DELIVERY_DATA": "Delivery data not available.",
-      "MISSING_DELIVERY_DATA": "Missing delivery data.",
-      "INVALID_MEASURED_VALUE": "Invalid measured value for rule: {{ruleKey}}",
-      "NO_RULE_FOR_KEY": "No rule found for key: {{ruleKey}}",
-      "NO_APPLICABLE_RULES": "No applicable rule found for this delivery type.",
-      "NO_RULES_FOUND": "No rules found.",
-      "SAVE_FAILED": "Failed to save results.",
-      "PARTIAL_SAVE": "Some results were saved, but some failed.",
-      "SERVER": "A server error occurred.",
-      "LOAD_DELIVERY": "Error loading delivery data.",
-      "LOAD_RULES": "Error loading rules.",
-      "LOAD_RESULTS": "Error loading quality control results.",
-      "NO_CATEGORIE_FIELD": "The 'Categorie' field does not exist in the form.",
-      "NET_GREATER_THAN_GROSS": "Oil quantity cannot be greater than gross weight."
-    },
-    "BOOLEAN": {
-      "TRUE": "True",
-      "FALSE": "False"
+    "CATEGORIES": {
+      "VIERGE_EXTRA": "Extra Virgin",
+      "VIERGE": "Virgin",
+      "LAMPANTE": "Lampante"
     },
     "BUTTONS": {
-      "SUBMIT": "Submit"
+      "VALIDATE": "Validate",
+      "SUBMIT": "Submit",
+      "CANCEL": "Cancel",
+      "BACK": "Back"
     },
-    "INFO": {
-      "NO_CHANGES": "No changes to save."
+    "MESSAGES": {
+      "SUCCESS": {
+        "SAVE": "Data updated successfully",
+        "STORAGE_UNIT_SAVED": "Data updated successfully - Unit: {{name}}"
+      },
+      "ERROR": {
+        "SAVE": "Error saving data",
+        "LOAD": "Error loading data",
+        "INVALID_FORM": "Invalid form or missing delivery data",
+        "STORAGE_UNIT_NOT_FOUND": "Error: Storage unit not found"
+      },
+      "INFO": {
+        "LOADING": "Loading...",
+        "NO_STORAGE_UNIT": "No storage unit selected"
+      }
     },
-    "SUCCESS": {
-      "UPDATED_AND_CREATED": "Results updated and created successfully.",
-      "UPDATED": "Results updated successfully.",
-      "CREATED": "Results created successfully."
-    },
-    "LOADING": "Loading...",
-    "ALREADY_DONE": "Quality control already completed",
-    "SUBMIT": "Submit Quality Control",
-    "SELECT_PLACEHOLDER": "Select..."
+    "FORM": {
+      "TITLE": "Quality Control Form",
+      "SECTIONS": {
+        "DELIVERY_INFO": "Delivery Information",
+        "QUALITY_CONTROL": "Quality Control",
+        "FINANCIAL_INFO": "Financial Information"
+      },
+      "FIELDS": {
+        "DELIVERY_NUMBER": "Delivery Number",
+        "LOT_NUMBER": "Lot Number",
+        "DELIVERY_DATE": "Delivery Date",
+        "SUPPLIER": "Supplier",
+        "REGION": "Region",
+        "DELIVERY_TYPE": "Delivery Type",
+        "CATEGORY": "Category"
+      },
+      "VALIDATION": {
+        "REQUIRED": "This field is required",
+        "MIN_VALUE": "Value must be greater than 0",
+        "MAX_VALUE": "Value must be less than {{max}}"
+      }
+    }
   },
   "OIL_CREDIT": {
     "TITLE": "Oil Credit",

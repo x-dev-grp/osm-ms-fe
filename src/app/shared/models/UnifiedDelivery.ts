@@ -34,7 +34,6 @@ export class UnifiedDelivery {
   oliveQuantity?: number | null;
   parcel?: string | null;
   storageUnit?: StorageUnitDto | null;
-  hasQualityControlResults?: boolean;
   qualityControlResults?: QualityControlResultDto[] | null;
 }
 

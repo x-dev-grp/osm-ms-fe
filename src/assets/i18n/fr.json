@@ -12,6 +12,10 @@
       "PREVIOUS": "Précédent",
       "SUBMIT": "Soumettre",
       "SEARCH": "Rechercher"
+    },
+    "BOOLEAN": {
+      "TRUE": "Vrai",
+      "FALSE": "Faux"
     }
   },
   "CONFIGURATION": {
@@ -839,13 +843,20 @@
     "SUBMIT": "Enregistrer les informations"
   },
   "CONTROLE_QUALITE": {
+    "TITLE": "Contrôle Qualité",
     "PLACEHOLDER": {
       "ENTER_VALUE": "Entrez une valeur"
     },
     "STORAGE_UNIT": {
       "LABEL": "Cuve de stockage",
+      "PLACEHOLDER": "Sélectionner une cuve",
       "ERRORS": {
-        "REQUIRED": "La cuve de stockage est requise"
+        "REQUIRED": "La cuve de stockage est requise",
+        "NOT_FOUND": "Cuve de stockage non trouvée"
+      },
+      "MESSAGES": {
+        "SELECTED": "Cuve sélectionnée : {{name}} (à valider)",
+        "SELECTION_ERROR": "Erreur : Cuve de stockage non trouvée"
       }
     },
     "OIL_DETAILS": {
@@ -869,56 +880,66 @@
       "UNIT_PRICE": "Prix unitaire (TND/L)",
       "PRICE": "Prix total (TND)",
       "PAID_AMOUNT": "Montant payé (TND)",
-      "UNPAID_AMOUNT": "Montant restant (TND)"
+      "UNPAID_AMOUNT": "Montant impayé (TND)"
     },
-    "RULES": {
-      "TITLE": "Règles de contrôle qualité"
+    "QUALITY_PARAMETERS": {
+      "TITLE": "Paramètres de qualité",
+      "ACIDITY": "Acidité",
+      "K270": "K270",
+      "K232": "K232",
+      "INFESTED": "Infestées",
+      "FERMENTED": "Fermentées",
+      "DAMAGED": "Endommagées"
     },
-    "OIL_RECEPTION": {
-      "SUBMIT": "Enregistrer les informations"
-    },
-    "OLIVE_RECEPTION": {
-      "SUBMIT": "Enregistrer les informations"
-    },
-    "ERRORS": {
-      "REQUIRED": "Ce champ est requis.",
-      "MIN": "Min :",
-      "MAX": "Max :",
-      "FORM_INVALID": "Le formulaire contient des erreurs. Veuillez corriger les champs.",
-      "NO_DELIVERY_DATA": "Données de livraison non disponibles.",
-      "MISSING_DELIVERY_DATA": "Données de livraison manquantes.",
-      "INVALID_MEASURED_VALUE": "Valeur mesurée invalide pour la règle : {{ruleKey}}",
-      "NO_RULE_FOR_KEY": "Aucune règle trouvée pour la clé : {{ruleKey}}",
-      "NO_APPLICABLE_RULES": "Aucune règle applicable trouvée pour ce type de livraison.",
-      "NO_RULES_FOUND": "Aucune règle trouvée.",
-      "SAVE_FAILED": "Échec de l'enregistrement des résultats.",
-      "PARTIAL_SAVE": "Certains résultats ont été enregistrés, mais certains échecs sont survenus.",
-      "SERVER": "Une erreur serveur est survenue.",
-      "LOAD_DELIVERY": "Erreur lors du chargement des données de réception.",
-      "LOAD_RULES": "Erreur lors du chargement des règles.",
-      "LOAD_RESULTS": "Erreur lors du chargement des résultats de contrôle qualité.",
-      "NO_CATEGORIE_FIELD": "Le champ 'Categorie' n'existe pas dans le formulaire.",
-      "NET_GREATER_THAN_GROSS": "La quantité d'huile ne peut pas être supérieure au poids brut."
-    },
-    "BOOLEAN": {
-      "TRUE": "Vrai",
-      "FALSE": "Faux"
+    "CATEGORIES": {
+      "VIERGE_EXTRA": "Vierge Extra",
+      "VIERGE": "Vierge",
+      "LAMPANTE": "Lampante"
     },
     "BUTTONS": {
-      "SUBMIT": "Valider"
+      "VALIDATE": "Valider",
+      "SUBMIT": "Soumettre",
+      "CANCEL": "Annuler",
+      "BACK": "Retour"
     },
-    "INFO": {
-      "NO_CHANGES": "Aucun changement à enregistrer."
+    "MESSAGES": {
+      "SUCCESS": {
+        "SAVE": "Données mises à jour avec succès",
+        "STORAGE_UNIT_SAVED": "Données mises à jour avec succès - Cuve : {{name}}"
+      },
+      "ERROR": {
+        "SAVE": "Erreur lors de la sauvegarde",
+        "LOAD": "Erreur lors du chargement",
+        "INVALID_FORM": "Formulaire invalide ou données de livraison manquantes",
+        "STORAGE_UNIT_NOT_FOUND": "Erreur : Cuve de stockage non trouvée"
+      },
+      "INFO": {
+        "LOADING": "Chargement...",
+        "NO_STORAGE_UNIT": "Aucune cuve sélectionnée"
+      }
     },
-    "SUCCESS": {
-      "UPDATED_AND_CREATED": "Résultats mis à jour et créés avec succès.",
-      "UPDATED": "Résultats mis à jour avec succès.",
-      "CREATED": "Résultats créés avec succès."
-    },
-    "LOADING": "Chargement...",
-    "ALREADY_DONE": "Contrôle qualité déjà effectué",
-    "SUBMIT": "Valider le contrôle qualité",
-    "SELECT_PLACEHOLDER": "Sélectionner..."
+    "FORM": {
+      "TITLE": "Formulaire de Contrôle Qualité",
+      "SECTIONS": {
+        "DELIVERY_INFO": "Informations de livraison",
+        "QUALITY_CONTROL": "Contrôle qualité",
+        "FINANCIAL_INFO": "Informations financières"
+      },
+      "FIELDS": {
+        "DELIVERY_NUMBER": "Numéro de livraison",
+        "LOT_NUMBER": "Numéro de lot",
+        "DELIVERY_DATE": "Date de livraison",
+        "SUPPLIER": "Fournisseur",
+        "REGION": "Région",
+        "DELIVERY_TYPE": "Type de livraison",
+        "CATEGORY": "Catégorie"
+      },
+      "VALIDATION": {
+        "REQUIRED": "Ce champ est obligatoire",
+        "MIN_VALUE": "La valeur doit être supérieure à 0",
+        "MAX_VALUE": "La valeur doit être inférieure à {{max}}"
+      }
+    }
   },
   "OIL_CREDIT": {
     "TITLE": "Crédit d'Huile",
