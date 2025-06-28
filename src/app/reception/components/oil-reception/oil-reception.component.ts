@@ -27,7 +27,7 @@ import {combineLatest, forkJoin, Subscription} from 'rxjs';
 
 import {SharedModule} from '../../../demo/shared/shared.module';
 import {OsmDashboard} from '../../../shared/modules/osm-dashboard/osm-dashboard';
-import {Action, DashboardConfig} from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import {DashboardConfig} from '../../../shared/modules/osm-dashboard/models/dashboard-config';
 import {UnifiedDelivery} from '../../../shared/models/UnifiedDelivery';
 import {BaseType} from '../../../shared/models/base-type';
 import {UnifiedDeliveryService} from '../../../shared/services/delivery.service';
@@ -36,11 +36,9 @@ import {TypeCategory} from '../../../shared/models/type-category.enum';
 import {SupplierType} from '../../../shared/models/supplier-type';
 import {SupplierTypeService} from '../../../shared/services/supplier.service';
 
-import jsPDF from 'jspdf';
-
+import {PdfGeneratorService} from '../../../shared/services/pdf-generator.service';
 import {OIL_DELIVERY_DASHBOARD} from './OIL_DELIVERY_DASHBOARD';
-import autoTable from "jspdf-autotable";
-import { SUPPLIERS_DASHBOARD_CONFIG } from '../suppliers/suppliers-dashboard.config';
+
 
 /* ──────────────────────────────────────────────────────────── */
 /* validators                                                   */
@@ -106,7 +104,8 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
     private genericTypeService: GenericTypeService,
     private supplierService: SupplierTypeService,
     private snackBar: MatSnackBar,
-    private router: Router
+    private router: Router,
+    private pdfService: PdfGeneratorService
   ) {
     this.receptionForm = this.fb.group(
       {
@@ -303,126 +302,45 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
   }
 
   genererBonReception(delivery: UnifiedDelivery): void {
-    const doc = new jsPDF();
+    const bonReceptionData = {
+      title: 'Bon De Réception Huile',
+      reference: delivery.lotNumber || '',
+      date: '',
+      revision: '01',
+      page: '1/1',
+      generalInfo: [
+        {label: 'Type', value: delivery.deliveryType || ''},
+        {
+          label: 'Fournisseur',
+          value: `${delivery.supplier?.supplierInfo?.name || ''} ${delivery.supplier?.supplierInfo?.lastname || ''}`,
+        },
+        {label: 'Téléphone', value: delivery.supplier?.supplierInfo?.phone || ''},
+        {label: 'Adresse', value: delivery.supplier?.supplierInfo?.address || ''},
 
-    let currentY = 10;
+      ],
+      fields: [
+        {label: 'Lot', value: delivery.lotNumber || ''},
+        {label: 'Lot Global', value: delivery.globalLotNumber || ''},
+        {label: "Quantité d'huile", value: `${delivery.oilQuantity || ''} L`},
+        {label: 'Poids Net', value: `${delivery.poidsNet || ''} kg`},
+        {label: 'Poids Brut', value: `${delivery.poidsBrute || ''} kg`},
+        {label: 'Variéte Huile', value: `${delivery.oilVariety?.name || ''} `},
+        {label: 'Type Huile', value: `${delivery.oilType?.name || ''} `},
+        {label: 'Matricule camion', value: delivery.matriculeCamion || ''},
+        {label: 'État camion', value: delivery.etatCamion || ''},
+        {label: 'Région', value: delivery.region?.name || ''}
+      ],
+      footerInfo: [
+        {label: 'Signature Agent (bascule) ', placeholder: ''},
+        {label: 'Signature Réspensable CQ', placeholder: ''},
 
-    // --- HEADER ---
 
-    // Logo placeholder
-    doc.setFontSize(10);
-    doc.rect(10, currentY, 30, 20);
-    doc.text('Logo', 15, currentY + 10);
+      ],
+      fileName: `Bon_Reception_Huile_${delivery.deliveryNumber || 'inconnu'}.pdf`
+    };
 
-    // Tableau titre + référence
-    const headerLeft = 45;
-    const headerWidth = 160;
-    const headerCellHeight = 8;
-
-    doc.setFillColor(200, 200, 200); // Gris foncé pour le header
-    doc.rect(headerLeft, currentY, headerWidth, headerCellHeight, 'F');
-    doc.text('Formulaire', headerLeft + headerWidth / 2, currentY + 5, {align: 'center'});
-    currentY += headerCellHeight;
-
-    doc.rect(headerLeft, currentY, headerWidth / 2, headerCellHeight);
-    doc.rect(headerLeft + headerWidth / 2, currentY, headerWidth / 2, headerCellHeight);
-    doc.text(`Bon De Réception Huile`, headerLeft + 5, currentY + 5);
-    doc.text(`Référence : ${delivery.deliveryNumber || ''}`, headerLeft + headerWidth / 2 + 5, currentY + 5);
-    currentY += headerCellHeight;
-
-    doc.rect(headerLeft, currentY, headerWidth / 2, headerCellHeight);
-    doc.rect(headerLeft + headerWidth / 2, currentY, headerWidth / 2, headerCellHeight);
-    doc.text(`N° : ${delivery.deliveryNumber || ''}`, headerLeft + 5, currentY + 5);
-    doc.text(`Date : ${new Date(delivery.deliveryDate).toLocaleDateString()}`, headerLeft + headerWidth / 2 + 5, currentY + 5);
-    currentY += headerCellHeight;
-
-    doc.rect(headerLeft, currentY, headerWidth / 2, headerCellHeight);
-    doc.rect(headerLeft + headerWidth / 2, currentY, headerWidth / 2, headerCellHeight);
-    doc.text('Page : 1/1', headerLeft + 5, currentY + 5);
-    doc.text('Révision : 01', headerLeft + headerWidth / 2 + 5, currentY + 5);
-    currentY += headerCellHeight;
-
-    doc.line(10, currentY + 10, 200, currentY + 10);
-    currentY += 20;
-
-    // --- INFOS LIVRAISON ---
-
-    doc.setFontSize(11);
-    doc.text(`Type : ${delivery.deliveryType || ''}`, 10, currentY);
-    currentY += 7;
-
-    doc.text(
-      `Fournisseur : ${(delivery.supplier?.supplierInfo?.name || '') + ' ' + (delivery.supplier?.supplierInfo?.lastname || '')}`,
-      10,
-      currentY
-    );
-    currentY += 7;
-
-    doc.text(`Téléphone : ${delivery.supplier?.supplierInfo?.phone || ''}`, 10, currentY);
-    currentY += 7;
-
-    doc.text(`Adresse : ${delivery.supplier?.supplierInfo?.address || ''}`, 10, currentY);
-    currentY += 14;
-
-    // --- TABLEAU INFOS LIVRAISON ---
-
-    const tableData = [
-      ['Lot', delivery.lotNumber || ''],
-      ['Lot Global', delivery.globalLotNumber || ''],
-      ["Quantité d'huile", `${delivery.oilQuantity || ''} L`],
-      ['Poids Net', `${delivery.poidsNet || ''} kg`],
-      ['Poids Brut', `${delivery.poidsBrute || ''} kg`],
-      ['Prix total', `${delivery.price || ''} TND`],
-      ['Montant payé', `${delivery.paidAmount || ''} TND`],
-      ['Montant impayé', `${delivery.unpaidAmount || ''} TND`],
-      ['Matricule camion', delivery.matriculeCamion || ''],
-      ['État camion', delivery.etatCamion || ''],
-      ['Région', delivery.region?.name || '']
-    ];
-
-    autoTable(doc, {
-      startY: currentY,
-      head: [['Champ', 'Valeur']],
-      body: tableData,
-      theme: 'grid',
-      styles: {fontSize: 10},
-      margin: {left: 10, right: 10},
-      headStyles: {fillColor: [211, 211, 211]}, //  Gris clair : #D3D3D3
-      bodyStyles: {fillColor: [255, 255, 255]} // Fond blanc pour les lignes
-    });
-
-    currentY = (doc as any).lastAutoTable.finalY + 10;
-
-    // --- CONTRÔLE QUALITÉ (optionnel) ---
-    if (
-      delivery.qualityControlResults &&
-      Array.isArray(delivery.qualityControlResults) &&
-      delivery.qualityControlResults.length > 0
-    ) {
-      const qcData = delivery.qualityControlResults
-        .filter(qc => qc.rule && qc.measuredValue != null)
-        .map(qc => [qc.rule.ruleName || qc.rule.ruleKey, qc.measuredValue]);
-
-      // Ajoute un titre <h2> centré pour "Contrôle Qualité"
-      doc.setFont('helvetica', 'bold'); // Titre en gras
-      doc.text('Contrôle Qualité', 100, currentY, {align: 'center'});
-      currentY += 10; // Espacement après le titre
-
-      autoTable(doc, {
-        startY: currentY,
-        head: [['Critère', 'Valeur']],
-        body: qcData,
-        theme: 'grid',
-        styles: {fontSize: 10},
-        margin: {left: 10, right: 10},
-        headStyles: {fillColor: [200, 200, 200]},
-        bodyStyles: {fillColor: [255, 255, 255]}
-      });
-    }
-
-    window.open(doc.output('bloburl'), '_blank');
+    this.pdfService.generatePdfDocument(bonReceptionData);
   }
-
 
   onRowAction(e: { row: UnifiedDelivery; action: string }): void {
     switch (e.action) {

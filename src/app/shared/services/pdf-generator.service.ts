@@ -16,7 +16,7 @@ export class PdfGeneratorService {
     footerInfo?: { label: string; placeholder?: string }[];
     fileName?: string;
   }): void {
-    const logoPath = 'assets/images/logo.jpeg';
+    const logoPath = 'assets/logo.jpg';
 
     this.getBase64ImageFromUrl(logoPath).then(base64Logo => {
       const doc = new jsPDF();
@@ -24,16 +24,18 @@ export class PdfGeneratorService {
 
       const documentDate = config.date || new Date().toLocaleDateString();
 
+      // Dimensions
       const marginLeft = 10;
       const logoWidth = 30;
       const logoHeight = 20;
       const headerHeight = 20;
       const pageWidth = 210;
 
-      // === Header ===
+      // Logo
       doc.rect(marginLeft, currentY, logoWidth, logoHeight);
       doc.addImage(base64Logo, 'JPEG', marginLeft + 1, currentY + 1, logoWidth - 2, logoHeight - 2);
 
+      // Centre
       const centerX = marginLeft + logoWidth;
       const centerWidth = 100;
       doc.rect(centerX, currentY, centerWidth, headerHeight);
@@ -44,6 +46,7 @@ export class PdfGeneratorService {
       doc.setFont('helvetica', 'italic');
       doc.text(config.title, centerX + centerWidth / 2, currentY + 14, {align: 'center'});
 
+      // Droite
       const rightX = centerX + centerWidth;
       const rowHeight = 5;
       const infoWidth = pageWidth - rightX - marginLeft;
@@ -53,6 +56,7 @@ export class PdfGeneratorService {
         {label: 'Date', value: documentDate},
         {label: 'Page', value: '1/1'},
       ];
+
       infoRows.forEach((row, index) => {
         const y = currentY + index * rowHeight;
         doc.rect(rightX, y, infoWidth, rowHeight);
@@ -69,9 +73,9 @@ export class PdfGeneratorService {
       doc.text('N° : ......./........', pageWidth / 2, currentY, {align: 'center'});
       currentY += 15;
 
-      // === Infos générales ===
+      // Infos générales
       if (config.generalInfo && config.generalInfo.length > 0) {
-        doc.setFontSize(10);
+        doc.setFontSize(12);
         doc.setFont('helvetica', 'normal');
         config.generalInfo.forEach(info => {
           doc.text(`${info.label} : ${info.value}`, marginLeft, currentY);
@@ -80,7 +84,7 @@ export class PdfGeneratorService {
         currentY += 15;
       }
 
-      // === Tableau : TH + TD avec hauteur uniforme ===
+      // === Tableau horizontal (labels en haut, données en bas) ===
       if (config.fields && config.fields.length > 0) {
         const tableLeft = marginLeft;
         const tableWidth = 190;
@@ -88,12 +92,15 @@ export class PdfGeneratorService {
         const colWidth = tableWidth / colCount;
         const baseFontSize = 9;
 
+        // Split & calcul des lignes pour les labels
         const splitLabels: string[][] = config.fields.map(field =>
           doc.splitTextToSize(field.label, colWidth - 4)
         );
-        const maxLabelLines = Math.max(...splitLabels.map(lines => lines.length));
-        const labelRowHeight = maxLabelLines * 5 + 4;
+        const lineHeights = splitLabels.map(lines => lines.length);
+        const maxLines = Math.max(...lineHeights);
+        const labelRowHeight = maxLines * 5 + 2;
 
+        // TH (labels)
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(baseFontSize);
         for (let i = 0; i < colCount; i++) {
@@ -101,43 +108,45 @@ export class PdfGeneratorService {
           doc.setFillColor(200, 200, 200);
           doc.rect(x, currentY, colWidth, labelRowHeight, 'FD');
 
-          splitLabels[i].forEach((line, lineIndex) => {
+          const lines = splitLabels[i];
+          lines.forEach((line, lineIndex) => {
             const yText = currentY + 6 + lineIndex * 5;
             doc.text(line, x + 2, yText);
           });
         }
 
+        // TD (données)
         currentY += labelRowHeight;
-
-        // === Données ===
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(baseFontSize);
-
-        const dataRowHeightPerLine = 5;
-        const maxDataLines = 6;
-
+        // Split & calcul des lignes pour les valeurs (données)
         const splitValues: string[][] = config.fields.map(field =>
           doc.splitTextToSize(field.value || '', colWidth - 4)
         );
-        const dataHeights = splitValues.map(lines =>
-          Math.min(lines.length, maxDataLines) * dataRowHeightPerLine + 4
-        );
-        const maxDataHeight = Math.max(...dataHeights);
+        const valueLineHeights = splitValues.map(lines => lines.length);
+        const maxValueLines = Math.max(...valueLineHeights);
+        const dataRowHeight = maxValueLines * 5 + 2;
+
+// TD (données)
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(baseFontSize);
 
         for (let i = 0; i < colCount; i++) {
           const x = tableLeft + i * colWidth;
-          const linesToShow = splitValues[i].slice(0, maxDataLines);
+          doc.rect(x, currentY, colWidth, dataRowHeight);
 
-          doc.rect(x, currentY, colWidth, maxDataHeight);
-          linesToShow.forEach((line, lineIndex) => {
-            doc.text(line, x + 2, currentY + 4 + lineIndex * dataRowHeightPerLine);
+          const lines = splitValues[i];
+          lines.forEach((line, lineIndex) => {
+            const yText = currentY + 6 + lineIndex * 5;
+            doc.text(line, x + 2, yText);
           });
         }
+        currentY += dataRowHeight + 5;
 
-        currentY += maxDataHeight + 5;
+        currentY += rowHeight + 15;
       }
 
-      // === Footer ===
+      // FOOTER
       if (config.footerInfo && config.footerInfo.length > 0) {
         const separatorY = 270;
         doc.setDrawColor(0);
@@ -167,7 +176,7 @@ export class PdfGeneratorService {
         });
       }
 
-      // === Affichage ===
+      // Affichage du PDF
       window.open(doc.output('bloburl'), '_blank');
     });
   }
