@@ -42,7 +42,7 @@ export class DetailsReceptionComponent implements OnInit {
       this.deliveryService.getUnifiedDelivery(id).subscribe({
         next: (response) => {
           if (response.success && response.data) {
-            this.deliveryData = response.data[0];
+            this.deliveryData = Array.isArray(response.data) ? response.data[0] : response.data;
           } else {
             this.errorMessage = this.translate.instant('DELIVERIES.DETAILS.MESSAGES.LOAD_ERROR');
             this.snackBar.open(this.errorMessage!, this.translate.instant('STANDARD.BTNS.CLOSE'), { duration: 3000 });
