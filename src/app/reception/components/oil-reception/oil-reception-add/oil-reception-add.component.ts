@@ -1,35 +1,28 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {MatButtonModule} from '@angular/material/button';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Subscription} from 'rxjs';
-import {BaseType} from '../../../../shared/models/base-type';
-import {SupplierType} from '../../../../shared/models/supplier-type';
-import {UnifiedDelivery} from '../../../../shared/models/UnifiedDelivery';
-import {GenericTypeService} from '../../../../shared/services/generic-type.service';
-import {SupplierTypeService} from '../../../../shared/services/supplier.service';
-import {UnifiedDeliveryService} from '../../../../shared/services/delivery.service';
-import {TypeCategory} from '../../../../shared/models/type-category.enum';
-import {
-  AbstractControl,
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validators
-} from '@angular/forms';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
-import {MatSelectModule} from '@angular/material/select';
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import {CardComponent} from '../../../../@theme/components/card/card.component';
-import {MatIcon} from '@angular/material/icon';
-import {StorageUnitDtoService} from '../../../../shared/services/storage.service';
-import {OliveLotStatus} from '../../../../shared/models/OliveLotStatus';
-import {MatAutocompleteModule} from '@angular/material/autocomplete';
-import {TranslateModule, TranslateService} from '@ngx-translate/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { BaseType } from '../../../../shared/models/base-type';
+import { SupplierType } from '../../../../shared/models/supplier-type';
+import { UnifiedDelivery } from '../../../../shared/models/UnifiedDelivery';
+import { GenericTypeService } from '../../../../shared/services/generic-type.service';
+import { SupplierTypeService } from '../../../../shared/services/supplier.service';
+import { UnifiedDeliveryService } from '../../../../shared/services/delivery.service';
+import { TypeCategory } from '../../../../shared/models/type-category.enum';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { CardComponent } from '../../../../@theme/components/card/card.component';
+import { MatIcon } from '@angular/material/icon';
+import { StorageUnitDtoService } from '../../../../shared/services/storage.service';
+import { OliveLotStatus } from '../../../../shared/models/OliveLotStatus';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 // Validator for net weight not exceeding gross weight
 const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | null => {
@@ -86,6 +79,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
   oliveTypes: BaseType[] = [];
 
   private subscriptions = new Subscription();
+  private deliveryId: string | null;
 
   constructor(
     private fb: FormBuilder,
@@ -100,6 +94,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
   ) {
     this.receptionForm = this.fb.group(
       {
+        id: [null],
         deliveryType: [{ value: 'OIL', disabled: true }, Validators.required],
         deliveryNumber: [{ value: '', disabled: true }, Validators.required],
         lotNumber: [{ value: '', disabled: true }, Validators.required],
@@ -117,15 +112,14 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
         globalLotNumber: [''],
         operationType: [null, Validators.required]
       },
-      {validators: [netNotGreaterThanGross]}
+      { validators: [netNotGreaterThanGross] }
     );
   }
 
-
   ngOnInit(): void {
     this.loading = true;
-    const deliveryId = this.route.snapshot.paramMap.get('id');
-    this.isEditing = deliveryId !== null && deliveryId !== 'new';
+    this.deliveryId = this.route.snapshot.paramMap.get('id');
+    this.isEditing = this.deliveryId !== null && this.deliveryId !== 'new';
 
     Promise.all([
       this.genericSrv.getAllTypes(TypeCategory.OIL_VARIETY).toPromise(),
@@ -135,7 +129,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       this.genericSrv.getAllTypes(TypeCategory.OLIVE_TYPE).toPromise(),
       this.genericSrv.getAllTypes(TypeCategory.OIL_TYPE).toPromise(),
       this.genericSrv.getAllTypes(TypeCategory.OPERATION_TYPE).toPromise(), // Added to fetch operation types
-      this.isEditing && deliveryId ? this.deliverySrv.getUnifiedDelivery(deliveryId).toPromise() : Promise.resolve(null)
+      this.isEditing && this.deliveryId ? this.deliverySrv.getUnifiedDelivery(this.deliveryId).toPromise() : Promise.resolve(null)
     ])
       .then(([cats, regions, suppliers, deliveries, oliveTypes, oilTypes, operationTypes, delivery]) => {
         this.oilCategories = cats?.success ? cats.data : [];
@@ -147,7 +141,8 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
         this.operationTypes = operationTypes?.success ? operationTypes.data : []; // Initialize operation types
 
         if (this.isEditing && delivery?.success && delivery.data) {
-          this.patchForm(delivery.data[0]);
+          const deliveryObj = Array.isArray(delivery.data) ? delivery.data[0] : delivery.data;
+          this.patchForm(deliveryObj);
         } else if (this.isEditing) {
           this.errorMessage = 'Erreur lors du chargement de la réception.';
           this.showToast(this.errorMessage);
@@ -181,38 +176,14 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  private patchForm(d: UnifiedDelivery): void {
-    const parse = (v: string | Date | null): Date | null => (v ? new Date(v) : null);
-
-    this.receptionForm.patchValue({
-      deliveryType: d.deliveryType,
-      deliveryNumber: d.deliveryNumber,
-      lotNumber: d.lotNumber,
-      deliveryDate: parse(d.deliveryDate),
-      region: this.regions.find((r) => r.id === d.region?.id) || null,
-      supplier: this.suppliers.find((s) => s.id === d.supplier?.id) || null,
-      matriculeCamion: d.matriculeCamion,
-      etatCamion: d.etatCamion,
-      poidsBrute: d.poidsBrute,
-      oilQuantity: d.oilQuantity,
-      oilVariety: this.oilCategories.find((c) => c.id === d.oilVariety?.id) || null,
-      oilType: this.oilTypes.find((t) => t.id === d.oilType?.id) || null,
-      oliveType: this.oliveTypes.find((t) => t.id === d.oliveType?.id) || null,
-      globalLotNumber: d.globalLotNumber || '',
-      operationType: this.operationTypes.find((t) => t.id === d.operationType?.id) || null
-    });
-
-  }
-
-
   save(): void {
     if (this.receptionForm.invalid) {
       if (this.receptionForm.hasError('exceedsCapacity')) {
-        this.translate.get('OIL_RECEPTION.ADD.ERRORS.EXCEEDS_CAPACITY').subscribe(message => {
+        this.translate.get('OIL_RECEPTION.ADD.ERRORS.EXCEEDS_CAPACITY').subscribe((message) => {
           this.showToast(message, 4000);
         });
       } else {
-        this.translate.get('OIL_RECEPTION.ADD.MESSAGES.ERROR.INCOMPLETE_FORM').subscribe(message => {
+        this.translate.get('OIL_RECEPTION.ADD.MESSAGES.ERROR.INCOMPLETE_FORM').subscribe((message) => {
           this.showToast(message, 4000);
         });
       }
@@ -233,24 +204,54 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     this.loading = true;
     op.then((res) => {
       if (res?.success) {
-        this.translate.get(this.isEditing ? 'OIL_RECEPTION.ADD.MESSAGES.SUCCESS.UPDATE' : 'OIL_RECEPTION.ADD.MESSAGES.SUCCESS.ADD')
-          .subscribe(message => {
+        this.translate
+          .get(this.isEditing ? 'OIL_RECEPTION.ADD.MESSAGES.SUCCESS.UPDATE' : 'OIL_RECEPTION.ADD.MESSAGES.SUCCESS.ADD')
+          .subscribe((message) => {
             this.showToast(message);
             this.router.navigate(['/reception/reception-huile']);
           });
       } else {
-        this.translate.get('OIL_RECEPTION.ADD.MESSAGES.ERROR.' + (this.isEditing ? 'UPDATE' : 'ADD'))
-          .subscribe(message => {
-            this.showToast(message);
-          });
+        this.translate.get('OIL_RECEPTION.ADD.MESSAGES.ERROR.' + (this.isEditing ? 'UPDATE' : 'ADD')).subscribe((message) => {
+          this.showToast(message);
+        });
       }
     })
       .catch(() => {
-        this.translate.get('OIL_RECEPTION.ADD.MESSAGES.ERROR.SERVER').subscribe(message => {
+        this.translate.get('OIL_RECEPTION.ADD.MESSAGES.ERROR.SERVER').subscribe((message) => {
           this.showToast(message);
         });
       })
       .finally(() => (this.loading = false));
+  }
+
+  private patchForm(d: UnifiedDelivery): void {
+    const parse = (v: string | Date | null): Date | null => (v ? new Date(v) : null);
+
+    this.receptionForm.patchValue({
+      id: this.isEditing ? this.deliveryId : null,
+      deliveryType: d.deliveryType,
+      deliveryNumber: d.deliveryNumber,
+      lotNumber: d.lotNumber,
+      parcel: d.parcel,
+      deliveryDate: parse(d.deliveryDate),
+      region: this.regions.find((r) => r.id === d.region?.id) || null,
+      supplier: this.suppliers.find((s) => s.id === d.supplier?.id) || null,
+      matriculeCamion: d.matriculeCamion,
+      etatCamion: d.etatCamion,
+      poidsBrute: d.poidsBrute,
+      oilQuantity: d.oilQuantity,
+      oilVariety: this.oilCategories.find((c) => c.id === d.oilVariety?.id) || null,
+      oilType: this.oilTypes.find((t) => t.id === d.oilType?.id) || null,
+      oliveType: this.oliveTypes.find((t) => t.id === d.oliveType?.id) || null,
+      globalLotNumber: d.globalLotNumber || '',
+      operationType: this.operationTypes.find((t) => t.id === d.operationType?.id) || null
+    });
+
+    // Mark all controls as touched and update validity to ensure UI updates
+    Object.values(this.receptionForm.controls).forEach((control) => {
+      control.markAsTouched();
+      control.updateValueAndValidity();
+    });
   }
 
   private showToast(message: string, duration = 3000): void {
@@ -367,5 +368,4 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
   //
   //
   // }
-
 }
