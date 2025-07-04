@@ -9,13 +9,14 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 
-import {SupplierType} from '../../../../shared/models/supplier-type';
-import {SupplierTypeService} from '../../../../shared/services/supplier.service';
-import {GenericTypeService} from '../../../../shared/services/generic-type.service';
-import {BaseType} from '../../../../shared/models/base-type';
-import {TypeCategory} from '../../../../shared/models/type-category.enum';
-import {MatProgressSpinner} from '@angular/material/progress-spinner';
-import {MatIcon} from '@angular/material/icon';
+import { SupplierType } from '../../../../shared/models/supplier-type';
+import { SupplierTypeService } from '../../../../shared/services/supplier.service';
+import { GenericTypeService } from '../../../../shared/services/generic-type.service';
+import { BaseType } from '../../../../shared/models/base-type';
+import { TypeCategory } from '../../../../shared/models/type-category.enum';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatIcon } from '@angular/material/icon';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-supplier-add',
@@ -28,7 +29,8 @@ import {MatIcon} from '@angular/material/icon';
     MatInputModule,
     MatSelectModule,
     MatProgressSpinner,
-    MatIcon
+    MatIcon,
+    TranslateModule
   ],
   templateUrl: './supplier-add.component.html',
   styleUrls: ['./supplier-add.component.scss']
@@ -116,7 +118,7 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
       this.supplierService.getSupplier(this.supplierId).subscribe({
         next: (res) => {
           if (res.success && res.data && res.data.length > 0) {
-            const supplier = res.data[0];
+            const supplier = Array.isArray(res.data) ? res.data[0] : res.data;
             this.supplierForm.patchValue({
               supplierInfo: {
                 id: supplier.supplierInfo?.id,

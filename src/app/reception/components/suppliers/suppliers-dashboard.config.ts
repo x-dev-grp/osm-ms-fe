@@ -73,7 +73,7 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
       filterable: true
     },
     {
-      name: 'genericSupplierType.name',
+      name: 'genericSupplierType',
       label: 'Type de fournisseur',
       attributeType: AttributeType.object,
       fieldType: FieldType.text,
@@ -84,7 +84,7 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
       valueAttributeType: AttributeType.string
     },
     {
-      name: 'supplierInfo.region.name',
+      name: 'supplierInfo.region',
       label: 'Région',
       attributeType: AttributeType.object,
       fieldType: FieldType.text,

@@ -19,8 +19,8 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       searchs: [
         {
           search: {
-            deliveryType: {
-              equalValue: deliveryType.OIL
+            status: {
+              inValues: ['NEW', 'IN_PROGRESS', 'CONTROLLED', 'REFUSED', 'CANCELLED']
             },
             hasQualityControl: {
               equalValue: false

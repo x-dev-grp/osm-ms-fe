@@ -24,20 +24,24 @@
       </button>
       <h3>{{ translate.instant('OLIVE_RECEPTION.FORM.SECTIONS.GENERAL_INFO') }}</h3>
     </div>
-    <hr />
 
-    <div class="scrollable-form">
-      <div class="form-body">
-        <!-- Delivery Information Section -->
-        <div class="section">
-          <h4>{{ translate.instant('OLIVE_RECEPTION.FORM.SECTIONS.DELIVERY_INFO') }}</h4>
-          <div class="row">
+
+    <!-- Remove scrollable-form wrapper and use form-body directly -->
+    <div class="form-body">
+      <!-- Delivery Information Section -->
+      <div class="section">
+        <h4>{{ translate.instant('OLIVE_RECEPTION.FORM.SECTIONS.DELIVERY_INFO') }}</h4>
+        <div class="row g-2">
             <div class="col-md-3">
-              <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.DELIVERY_TYPE') }}</mat-label>
-                <input formControlName="deliveryType" matInput readonly />
-              </mat-form-field>
-            </div>
+                 <mat-form-field appearance="outline" class="w-100 m-b-4">
+                   <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.OPERATION_TYPE') }}</mat-label>
+                  <mat-select formControlName="operationType" required>
+                    <mat-option *ngFor="let type of operationTypes" [value]="type.value">
+                      {{ ('OPERATION_TYPE.' + type.name) | translate }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+             </div>
             <div class="col-md-3">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
                 <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.DELIVERY_NUMBER') }}</mat-label>
@@ -74,6 +78,7 @@
                   [matAutocomplete]="supplierAuto"
                   [placeholder]="translate.instant('OLIVE_RECEPTION.FORM.PLACEHOLDERS.SEARCH_SUPPLIER')"
                   required
+                  (blur)="validateSupplier()"
                 />
                 <mat-autocomplete #supplierAuto="matAutocomplete" [displayWith]="displayFn">
                   <mat-option *ngFor="let supplier of filteredSuppliers | async" [value]="supplier">
@@ -94,6 +99,7 @@
                   [matAutocomplete]="regionAuto"
                   [placeholder]="translate.instant('OLIVE_RECEPTION.FORM.PLACEHOLDERS.SEARCH_REGION')"
                   required
+                  (blur)="validateRegion()"
                 />
                 <mat-autocomplete #regionAuto="matAutocomplete" [displayWith]="displayFn">
                   <mat-option *ngFor="let region of filteredRegions | async" [value]="region">
@@ -121,7 +127,15 @@
             <div class="col-md-6">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
                 <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.TRUCK_PLATE') }}</mat-label>
-                <input formControlName="matriculeCamion" matInput required />
+                <input
+                  formControlName="matriculeCamion"
+                  matInput
+                  required
+                  [pattern]="'^[0-9]{3}TN[0-9]{4}$'"
+                  placeholder="e.g. 258TN1234" />
+                <mat-error *ngIf="receptionForm.get('matriculeCamion')?.hasError('pattern')">
+                  Le format doit être 3 chiffres + TN + 4 chiffres (ex 258TN1234)
+                </mat-error>
               </mat-form-field>
             </div>
             <div class="col-md-6">
@@ -156,6 +170,7 @@
                   formControlName="oliveVariety"
                   [matAutocomplete]="oliveVarietyAuto"
                   [placeholder]="translate.instant('OLIVE_RECEPTION.FORM.PLACEHOLDERS.SEARCH_VARIETY')"
+                  (blur)="validateOliveVariety()"
                 />
                 <mat-autocomplete #oliveVarietyAuto="matAutocomplete" [displayWith]="displayFn">
                   <mat-option *ngFor="let variety of filteredOliveVarieties | async" [value]="variety">
@@ -181,6 +196,7 @@
                   formControlName="oliveType"
                   [matAutocomplete]="oliveTypeAuto"
                   [placeholder]="translate.instant('OLIVE_RECEPTION.FORM.PLACEHOLDERS.SEARCH_TYPE')"
+                  (blur)="validateOliveType()"
                 />
                 <mat-autocomplete #oliveTypeAuto="matAutocomplete" [displayWith]="displayFn">
                   <mat-option *ngFor="let type of filteredOliveTypes | async" [value]="type">
@@ -191,22 +207,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-md-3" *ngIf="operationTypes.length > 0">
-              <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.OPERATION_TYPE') }}</mat-label>
-                <input
-                  matInput
-                  formControlName="operationType"
-                  [matAutocomplete]="operationTypeAuto"
-                  [placeholder]="translate.instant('OLIVE_RECEPTION.FORM.PLACEHOLDERS.SEARCH_OPERATION')"
-                />
-                <mat-autocomplete #operationTypeAuto="matAutocomplete" [displayWith]="displayFn">
-                  <mat-option *ngFor="let type of filteredOperationTypes | async" [value]="type">
-                    {{ type.name }}
-                  </mat-option>
-                </mat-autocomplete>
-              </mat-form-field>
-            </div>
+
           </div>
         </div>
 
@@ -214,13 +215,13 @@
         <div class="section">
           <h4>{{ translate.instant('OLIVE_RECEPTION.FORM.SECTIONS.WEIGHT_QUANTITY') }}</h4>
           <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-6">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
                 <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.GROSS_WEIGHT') }}</mat-label>
                 <input formControlName="poidsBrute" matInput type="number" min="0" />
               </mat-form-field>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-6">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
                 <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.NET_WEIGHT') }}</mat-label>
                 <input formControlName="poidsNet" matInput type="number" min="0" />
@@ -229,18 +230,8 @@
                 </mat-error>
               </mat-form-field>
             </div>
-            <div class="col-md-3">
-              <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.OLIVE_QUANTITY') }}</mat-label>
-                <input formControlName="oliveQuantity" matInput type="number" min="0" />
-              </mat-form-field>
-            </div>
-            <div class="col-md-3">
-              <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.YIELD') }}</mat-label>
-                <input formControlName="rendement" matInput type="number" min="0" />
-              </mat-form-field>
-            </div>
+
+
           </div>
         </div>
 
@@ -265,6 +256,5 @@
           </button>
         </div>
       </div>
-    </div>
-  </form>
+   </form>
 </app-card>

@@ -1196,47 +1196,122 @@
       "PARCEL": "Parcel"
     }
   },
-  "SUPPLIER_PAYMENT": {
-    "TOTAL_DELIVERIES": "Total Deliveries",
-    "TOTAL_PAID": "Total Paid",
-    "TOTAL_UNPAID": "Total Unpaid",
-    "TOTAL_OLIVE_WEIGHT": "Total Olive Weight",
-    "PAYMENT_HISTORY": "Payment History",
-    "PAID": "Paid",
-    "UNPAID": "Unpaid",
-    "ALL": "All",
-    "PAYMENT_METHOD": "Payment Method",
-    "MONEY_PAYMENT": "Money Payment",
-    "MONEY_PAYMENT_DESC": "Payment by cash, transfer or check",
-    "OIL_PAYMENT": "Oil Payment",
-    "OIL_PAYMENT_DESC": "Payment in olive oil quantity",
-    "CASH": "Cash",
-    "CHECK": "Check",
-    "BANK_TRANSFER": "Bank Transfer",
-    "AMOUNT": "Amount (TND)",
-    "CHECK_NUMBER": "Check Number",
-    "BANK_ACCOUNT": "Bank Account",
-    "PAYMENT_SUMMARY": "Payment Summary",
-    "UNPAID_AMOUNT": "Unpaid Amount",
-    "PAID_AMOUNT": "Paid Amount",
-    "NEGOTIATED_PRICE": "Negotiated Price",
-    "OIL_QUANTITY": "Oil Quantity",
-    "OIL_VALUE": "Oil Value",
-    "REMAINING_AMOUNT": "Remaining Amount",
-    "CONFIRM_PAYMENT": "Confirm Payment",
-    "CANCEL": "Cancel",
+  "SUPPLIER": {
+    "DETAILS": {
+      "PAYMENT_HISTORY_TITLE": "Payment History",
+      "PAYMENT_HISTORY_COUNT": "payments made",
+      "UNPAID_TITLE": "Unpaid Payments",
+      "UNPAID_COUNT": "payments pending"
+    },
+    "ADD": {
+      "TITLE_ADD": "Add Supplier",
+      "TITLE_EDIT": "Edit Supplier"
+    },
+    "FIELDS": {
+      "NAME": "Name",
+      "LASTNAME": "Last Name",
+      "ADDRESS": "Address",
+      "PHONE": "Phone",
+      "EMAIL": "Email",
+      "REGION": "Region",
+      "PARCEL": "Parcel",
+      "RIB": "RIB",
+      "BANK_NAME": "Bank Name",
+      "SUPPLIER_TYPE": "Supplier Type"
+    },
     "ERRORS": {
-      "SUPPLIER_ID_NOT_FOUND": "Supplier ID not found",
-      "NO_DATA_FOUND": "No data found",
-      "LOAD_ERROR": "Error loading payment history",
-      "AMOUNT_REQUIRED": "Amount is required",
-      "AMOUNT_MIN": "Amount must be greater than 0",
-      "CHECK_NUMBER_REQUIRED": "Check number is required",
-      "BANK_ACCOUNT_REQUIRED": "Bank account is required",
+      "NAME_REQUIRED": "Name is required",
+      "NAME_MIN": "Name must be at least 2 characters",
+      "LASTNAME_REQUIRED": "Last name is required",
+      "LASTNAME_MIN": "Last name must be at least 2 characters",
+      "ADDRESS_REQUIRED": "Address is required",
+      "ADDRESS_MIN": "Address must be at least 5 characters",
+      "EMAIL_REQUIRED": "Email is required",
+      "EMAIL_INVALID": "Invalid email address",
+      "PHONE_REQUIRED": "Phone is required",
+      "PHONE_PATTERN": "Phone must be 8 digits",
+      "REGION_REQUIRED": "Region is required",
+      "RIB_PATTERN": "RIB must be 24 digits",
+      "SUPPLIER_TYPE_REQUIRED": "Supplier type is required"
+    },
+    "ACTIONS": {
+      "CANCEL": "Cancel",
+      "ADD": "Add",
+      "EDIT": "Edit"
+    }
+  },
+  "SUPPLIER_PAYMENT": {
+    "DELIVERY_NUMBER": "Delivery No.",
+    "LOT_NUMBER": "Lot No.",
+    "DELIVERY_DATE": "Delivery Date",
+    "OLIVE_WEIGHT": "Olive Weight (kg)",
+    "TOTAL_PRICE": "Total Price",
+    "PAID_AMOUNT": "Paid Amount",
+    "UNPAID_AMOUNT": "Unpaid Amount",
+    "STATUS": "Status",
+    "ACTIONS": "Actions",
+    "PAY": "Pay",
+    "PAYMENT": "Payment",
+    "LOT": "Lot",
+    "CASH_PAYMENT": "Cash Payment",
+    "OIL_PAYMENT": "Oil Payment",
+    "REFERENCE_PRICE": "Reference Price",
+    "OIL_EQUIVALENT": "Oil Equivalent",
+    "PRICE_NEGOTIATION": "Price Negotiation",
+    "NEGOTIATED_PRICE_PER_KG": "Negotiated Price per kg (TND)",
+    "ENTER_NEGOTIATED_PRICE": "Enter negotiated price",
+    "NEGOTIATED_PRICE_HINT": "Negotiated price for this payment",
+    "OIL_QUANTITY_HINT": "Maximum quantity:",
+    "ERRORS": {
       "OIL_PRICE_REQUIRED": "Oil price is required",
-      "OIL_PRICE_MIN": "Price must be greater than 0",
-      "OIL_QUANTITY_REQUIRED": "Oil quantity is required",
-      "OIL_QUANTITY_MIN": "Quantity must be greater than 0"
+      "OIL_QUANTITY_REQUIRED": "Oil quantity is required"
+    }
+  },
+  "OPERATION_TYPE": {
+    "BASE": "Base milling",
+    "OLIVE_PURCHASE": "Olive purchase",
+    "OIL_PURCHASE": "Oil purchase",
+    "EXCHANGE": "Exchange",
+    "SIMPLE_RECEPTION": "Private milling"
+  },
+  "BANK_ACCOUNTS": {
+    "TITLE": "Bank Accounts",
+    "ADD_TITLE": "Add Bank Account",
+    "EDIT_TITLE": "Edit Bank Account",
+    "DETAILS_TITLE": "Bank Account Details",
+    "FIELDS": {
+      "RIB": "RIB",
+      "IBAN": "IBAN",
+      "BIC_SWIFT": "BIC/SWIFT",
+      "BANK_NAME": "Bank Name",
+      "BANK_BRANCH": "Bank Branch",
+      "CURRENCY": "Currency",
+      "ACCOUNT_TYPE": "Account Type",
+      "CHECKING": "Checking",
+      "SAVINGS": "Savings",
+      "BUSINESS": "Business",
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive",
+      "STATUS": "Status"
+    },
+    "ACTIONS": {
+      "CANCEL": "Cancel",
+      "SAVE": "Save",
+      "UPDATE": "Update",
+      "EDIT": "Edit",
+      "PRINT": "Print"
+    },
+    "ERRORS": {
+      "RIB_REQUIRED": "RIB is required",
+      "RIB_LENGTH": "RIB must be 24 characters long",
+      "IBAN_REQUIRED": "IBAN is required",
+      "IBAN_LENGTH": "IBAN must be 24 characters long",
+      "BIC_REQUIRED": "BIC/SWIFT is required",
+      "BIC_LENGTH": "BIC/SWIFT must be between 8 and 11 characters",
+      "BANK_NAME_REQUIRED": "Bank name is required",
+      "BANK_BRANCH_REQUIRED": "Bank branch is required",
+      "CURRENCY_REQUIRED": "Currency is required",
+      "ACCOUNT_TYPE_REQUIRED": "Account type is required"
     }
   }
 }

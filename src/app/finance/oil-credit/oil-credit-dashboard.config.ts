@@ -60,25 +60,26 @@ export const OIL_CREDIT_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'oil_type',
-      label: 'Type d\'huile',
-      attributeType: AttributeType.string,
+      label: "Type d'huile",
+      attributeType: AttributeType.object,
       fieldType: FieldType.text,
-      sortable: true,
-      filterable: true,
-      dataTable: true,
       exportable: true,
-      exportLabel: 'Type d\'huile'
+      dataTable: true,
+      filterable: true,
+      valuePath: 'name',
+      valueAttributeType: AttributeType.string
     },
     {
-      name: 'destinataire',
+      name: 'supplier.supplierInfo',
       label: 'Destinataire',
-      attributeType: AttributeType.string,
-      fieldType: FieldType.text,
-      sortable: true,
-      filterable: true,
-      dataTable: true,
+      labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.SUPPLIER',
+      attributeType: AttributeType.object,
+      fieldType: FieldType.autocomplete,
       exportable: true,
-      exportLabel: 'Destinataire'
+      dataTable: true,
+      filterable: true,
+      valuePath: 'name',
+      valueAttributeType: AttributeType.string
     },
     {
       name: 'creditState',

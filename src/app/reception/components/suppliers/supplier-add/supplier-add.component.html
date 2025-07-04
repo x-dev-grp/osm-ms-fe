@@ -1,5 +1,5 @@
 <div class="supplier-add-container">
-  <h2>{{ isEditing ? 'Modifier le fournisseur' : 'Ajouter un fournisseur' }}</h2>
+  <h2>{{ isEditing ? ('SUPPLIER.ADD.TITLE_EDIT' | translate) : ('SUPPLIER.ADD.TITLE_ADD' | translate) }}</h2>
 
   <!-- Loading spinner -->
   <div *ngIf="loading" class="loading-container">
@@ -16,88 +16,88 @@
     <div formGroupName="supplierInfo">
       <div class="form-row">
         <mat-form-field appearance="outline">
-          <mat-label>Nom</mat-label>
+          <mat-label>{{ 'SUPPLIER.FIELDS.NAME' | translate }}</mat-label>
           <input matInput formControlName="name" required>
           <mat-error *ngIf="supplierForm.get('supplierInfo.name')?.hasError('required')">
-            Le nom est requis
+            {{ 'SUPPLIER.ERRORS.NAME_REQUIRED' | translate }}
           </mat-error>
           <mat-error *ngIf="supplierForm.get('supplierInfo.name')?.hasError('minlength')">
-            Le nom doit contenir au moins 2 caractères
+            {{ 'SUPPLIER.ERRORS.NAME_MIN' | translate }}
           </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>Prénom</mat-label>
+          <mat-label>{{ 'SUPPLIER.FIELDS.LASTNAME' | translate }}</mat-label>
           <input matInput formControlName="lastname" required>
           <mat-error *ngIf="supplierForm.get('supplierInfo.lastname')?.hasError('required')">
-            Le prénom est requis
+            {{ 'SUPPLIER.ERRORS.LASTNAME_REQUIRED' | translate }}
           </mat-error>
           <mat-error *ngIf="supplierForm.get('supplierInfo.lastname')?.hasError('minlength')">
-            Le prénom doit contenir au moins 2 caractères
+            {{ 'SUPPLIER.ERRORS.LASTNAME_MIN' | translate }}
           </mat-error>
         </mat-form-field>
       </div>
 
       <div class="form-row">
         <mat-form-field appearance="outline">
-          <mat-label>Téléphone</mat-label>
+          <mat-label>{{ 'SUPPLIER.FIELDS.PHONE' | translate }}</mat-label>
           <input matInput formControlName="phone" required>
           <mat-error *ngIf="supplierForm.get('supplierInfo.phone')?.hasError('required')">
-            Le téléphone est requis
+            {{ 'SUPPLIER.ERRORS.PHONE_REQUIRED' | translate }}
           </mat-error>
           <mat-error *ngIf="supplierForm.get('supplierInfo.phone')?.hasError('pattern')">
-            Le téléphone doit contenir 8 chiffres
+            {{ 'SUPPLIER.ERRORS.PHONE_PATTERN' | translate }}
           </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>Email</mat-label>
+          <mat-label>{{ 'SUPPLIER.FIELDS.EMAIL' | translate }}</mat-label>
           <input matInput formControlName="email" required type="email">
           <mat-error *ngIf="supplierForm.get('supplierInfo.email')?.hasError('required')">
-            L'email est requis
+            {{ 'SUPPLIER.ERRORS.EMAIL_REQUIRED' | translate }}
           </mat-error>
           <mat-error *ngIf="supplierForm.get('supplierInfo.email')?.hasError('email')">
-            Format d'email invalide
+            {{ 'SUPPLIER.ERRORS.EMAIL_INVALID' | translate }}
           </mat-error>
         </mat-form-field>
       </div>
 
       <div class="form-row">
         <mat-form-field appearance="outline">
-          <mat-label>Adresse</mat-label>
+          <mat-label>{{ 'SUPPLIER.FIELDS.ADDRESS' | translate }}</mat-label>
           <input matInput formControlName="address" required>
           <mat-error *ngIf="supplierForm.get('supplierInfo.address')?.hasError('required')">
-            L'adresse est requise
+            {{ 'SUPPLIER.ERRORS.ADDRESS_REQUIRED' | translate }}
           </mat-error>
           <mat-error *ngIf="supplierForm.get('supplierInfo.address')?.hasError('minlength')">
-            L'adresse doit contenir au moins 5 caractères
+            {{ 'SUPPLIER.ERRORS.ADDRESS_MIN' | translate }}
           </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>Région</mat-label>
+          <mat-label>{{ 'SUPPLIER.FIELDS.REGION' | translate }}</mat-label>
           <mat-select formControlName="region" required [compareWith]="objectComparisonFunction">
             <mat-option *ngFor="let region of regions" [value]="region">
               {{region.name}}
             </mat-option>
           </mat-select>
           <mat-error *ngIf="supplierForm.get('supplierInfo.region')?.hasError('required')">
-            La région est requise
+            {{ 'SUPPLIER.ERRORS.REGION_REQUIRED' | translate }}
           </mat-error>
         </mat-form-field>
       </div>
 
       <div class="form-row">
         <mat-form-field appearance="outline">
-          <mat-label>RIB</mat-label>
+          <mat-label>{{ 'SUPPLIER.FIELDS.RIB' | translate }}</mat-label>
           <input matInput formControlName="rib">
           <mat-error *ngIf="supplierForm.get('supplierInfo.rib')?.hasError('pattern')">
-            Le RIB doit contenir 24 chiffres
+            {{ 'SUPPLIER.ERRORS.RIB_PATTERN' | translate }}
           </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>Nom de la banque</mat-label>
+          <mat-label>{{ 'SUPPLIER.FIELDS.BANK_NAME' | translate }}</mat-label>
           <input matInput formControlName="bankName">
         </mat-form-field>
       </div>
@@ -105,24 +105,24 @@
 
     <div class="form-row">
       <mat-form-field appearance="outline">
-        <mat-label>Type de fournisseur</mat-label>
+        <mat-label>{{ 'SUPPLIER.FIELDS.SUPPLIER_TYPE' | translate }}</mat-label>
         <mat-select formControlName="genericSupplierType" required [compareWith]="objectComparisonFunction">
           <mat-option *ngFor="let type of supplierTypes" [value]="type">
             {{type.name}}
           </mat-option>
         </mat-select>
         <mat-error *ngIf="supplierForm.get('genericSupplierType')?.hasError('required')">
-          Le type de fournisseur est requis
+          {{ 'SUPPLIER.ERRORS.SUPPLIER_TYPE_REQUIRED' | translate }}
         </mat-error>
       </mat-form-field>
     </div>
 
     <div class="form-actions">
       <button mat-button type="button" (click)="router.navigate(['/reception/fournisseur'])">
-        Annuler
+        {{ 'SUPPLIER.ACTIONS.CANCEL' | translate }}
       </button>
       <button mat-raised-button color="primary" type="submit" [disabled]="supplierForm.invalid || loading">
-        {{ isEditing ? 'Modifier' : 'Ajouter' }}
+        {{ isEditing ? ('SUPPLIER.ACTIONS.EDIT' | translate) : ('SUPPLIER.ACTIONS.ADD' | translate) }}
       </button>
     </div>
   </form>

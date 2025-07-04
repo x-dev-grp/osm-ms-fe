@@ -18,6 +18,7 @@ export const BANK_ACCOUNTS_DASHBOARD_CONFIG: DashboardConfig = {
     {
       name: 'rib',
       label: 'RIB',
+      labelTranslatePath: 'BANK_ACCOUNTS.FIELDS.RIB',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -28,6 +29,7 @@ export const BANK_ACCOUNTS_DASHBOARD_CONFIG: DashboardConfig = {
     {
       name: 'iban',
       label: 'IBAN',
+      labelTranslatePath: 'BANK_ACCOUNTS.FIELDS.IBAN',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -38,6 +40,7 @@ export const BANK_ACCOUNTS_DASHBOARD_CONFIG: DashboardConfig = {
     {
       name: 'bicSwift',
       label: 'BIC / SWIFT',
+      labelTranslatePath: 'BANK_ACCOUNTS.FIELDS.BIC_SWIFT',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -48,6 +51,7 @@ export const BANK_ACCOUNTS_DASHBOARD_CONFIG: DashboardConfig = {
     {
       name: 'bankName',
       label: 'Nom de la banque',
+      labelTranslatePath: 'BANK_ACCOUNTS.FIELDS.BANK_NAME',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -58,6 +62,7 @@ export const BANK_ACCOUNTS_DASHBOARD_CONFIG: DashboardConfig = {
     {
       name: 'bankBranch',
       label: 'Agence',
+      labelTranslatePath: 'BANK_ACCOUNTS.FIELDS.BANK_BRANCH',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -68,6 +73,7 @@ export const BANK_ACCOUNTS_DASHBOARD_CONFIG: DashboardConfig = {
     {
       name: 'currency',
       label: 'Devise',
+      labelTranslatePath: 'BANK_ACCOUNTS.FIELDS.CURRENCY',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -78,6 +84,7 @@ export const BANK_ACCOUNTS_DASHBOARD_CONFIG: DashboardConfig = {
     {
       name: 'accountType',
       label: 'Type de compte',
+      labelTranslatePath: 'BANK_ACCOUNTS.FIELDS.ACCOUNT_TYPE',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -88,6 +95,7 @@ export const BANK_ACCOUNTS_DASHBOARD_CONFIG: DashboardConfig = {
     {
       name: 'active',
       label: 'Actif',
+      labelTranslatePath: 'BANK_ACCOUNTS.FIELDS.ACTIVE',
       attributeType: AttributeType.boolean,
       fieldType: FieldType.checkbox,
       exportable: true,
@@ -101,9 +109,9 @@ export const BANK_ACCOUNTS_DASHBOARD_CONFIG: DashboardConfig = {
   actions: {
     statusMapping: false,
     actionsList: <Action[]>[
-      { label: 'Voir',      icon: 'visibility', value: 'VIEW' },
-      { label: 'Modifier',  icon: 'edit',       value: 'EDIT' },
-      { label: 'Supprimer', icon: 'delete',     value: 'DELETE' }
+      { label: 'BANK_ACCOUNTS.ACTIONS.VIEW',      icon: 'visibility', value: 'VIEW' },
+      { label: 'BANK_ACCOUNTS.ACTIONS.EDIT',      icon: 'edit',       value: 'EDIT' },
+      { label: 'BANK_ACCOUNTS.ACTIONS.DELETE',    icon: 'delete',     value: 'DELETE' }
     ]
   },
   fileName: 'comptes-bancaires'

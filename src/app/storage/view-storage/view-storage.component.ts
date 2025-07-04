@@ -107,7 +107,7 @@ export class ViewStorageComponent implements OnInit {
     this.storageService.getStorageUnit(this.storageUnitId).subscribe({
       next: (response) => {
         if (response.success && response.data) {
-          this.storageUnit = response.data[0];
+          this.storageUnit = Array.isArray(response.data) ? response.data[0] : response.data;
         } else {
           this.snackBar.open(response.message || 'Error loading storage unit', 'Close', { duration: 3000 });
           this.router.navigate(['/storage']);

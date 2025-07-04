@@ -30,6 +30,7 @@ import {StorageUnitDtoService} from '../../../../shared/services/storage.service
 import {OliveLotStatus} from '../../../../shared/models/OliveLotStatus';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {TranslateModule, TranslateService} from '@ngx-translate/core';
+import { OperationType } from '../../../../shared/models/operation-type.enum';
 
 // Validator for net weight not exceeding gross weight
 const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | null => {
@@ -38,18 +39,11 @@ const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | nu
   return brut != null && net != null && net > brut ? { netGreater: true } : null;
 };
 
-// Validator for ensuring volume fits storage unit capacity
-// const volumeFitsCuve = (): ValidatorFn => {
-//   return (control: AbstractControl): ValidationErrors | null => {
-//     const storageUnit = control.get('storageUnit')?.value;
-//     const volume = control.get('oilQuantity')?.value as number;
-//
-//     if (!storageUnit || volume == null) return null;
-//
-//     const available = storageUnit.maxCapacity - storageUnit.currentVolume;
-//     return volume > available ? { exceedsCapacity: { available } } : null;
-//   };
-// };
+
+// Helper to check if value is a valid object from the list
+function isValidSelection<T extends { id?: string }>(value: unknown, list: T[]): boolean {
+  return !!value && typeof value === 'object' && 'id' in value && list.some((item) => item.id && item.id === (value as T).id);
+}
 
 @Component({
   selector: 'app-oil-reception-form',
@@ -82,7 +76,6 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
   oilCategories: BaseType[] = [];
   oilTypes: BaseType[] = [];
   oilVariety: BaseType[] = [];
-  operationTypes: BaseType[] = []; // Added for operation type
   deliveries: UnifiedDelivery[] = [];
   oliveTypes: BaseType[] = [];
 
@@ -136,17 +129,16 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       this.deliverySrv.getAllDeliveriesList().toPromise(),
       this.genericSrv.getAllTypes(TypeCategory.OLIVE_TYPE).toPromise(),
       this.genericSrv.getAllTypes(TypeCategory.OIL_TYPE).toPromise(),
-      this.genericSrv.getAllTypes(TypeCategory.OPERATION_TYPE).toPromise(), // Added to fetch operation types
       this.isEditing && this.deliveryId ? this.deliverySrv.getUnifiedDelivery(this.deliveryId).toPromise() : Promise.resolve(null)
     ])
-      .then(([cats, regions, suppliers, deliveries, oliveTypes, oilTypes, operationTypes, delivery]) => {
+      .then(([cats, regions, suppliers, deliveries, oliveTypes, oilTypes, delivery]) => {
         this.oilCategories = cats?.success ? cats.data : [];
         this.regions = regions?.success ? regions.data : [];
         this.suppliers = suppliers?.success ? suppliers.data : [];
         this.deliveries = deliveries?.success ? deliveries.data : [];
         this.oliveTypes = oliveTypes?.success ? oliveTypes.data : [];
         this.oilTypes = oilTypes?.success ? oilTypes.data : [];
-        this.operationTypes = operationTypes?.success ? operationTypes.data : []; // Initialize operation types
+        // operationTypes is now from enum
 
         if (this.isEditing && delivery?.success && delivery.data) {
           const deliveryObj = Array.isArray(delivery.data) ? delivery.data[0] : delivery.data;
@@ -157,7 +149,12 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
           this.router.navigate(['/reception-huile']);
           return;
         }
-
+        // When region changes, set parcel to region name
+        this.receptionForm.get('region')?.valueChanges.subscribe((region: BaseType | null) => {
+          if (region?.name) {
+            this.receptionForm.patchValue({ parcel: region.name });
+          }
+        });
         this.setNextNumbers();
         // this.setupFormSubscriptions();
 
@@ -251,7 +248,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       oilType: this.oilTypes.find((t) => t.id === d.oilType?.id) || null,
       oliveType: this.oliveTypes.find((t) => t.id === d.oliveType?.id) || null,
       globalLotNumber: d.globalLotNumber || '',
-      operationType: this.operationTypes.find((t) => t.id === d.operationType?.id) || null
+      operationType: OperationType.OIL_PURCHASE
     });
 
     // Mark all controls as touched and update validity to ensure UI updates
@@ -288,6 +285,49 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     const year = new Date().getFullYear().toString().slice(-2);
     const paddedNumber = deliveryNumber.toString().padStart(4, '0');
     return `${paddedNumber}${oliveType.name.toUpperCase()}${year}`;
+  }
+
+  validateSupplier() {
+    const value = this.receptionForm.get('supplier')!.value;
+    if (!isValidSelection(value, this.suppliers)) {
+      this.receptionForm.get('supplier')!.setValue(null);
+    }
+  }
+
+  validateRegion() {
+    const value = this.receptionForm.get('region')!.value;
+    if (!isValidSelection(value, this.regions)) {
+      this.receptionForm.get('region')!.setValue(null);
+    }
+  }
+
+  validateOilVariety() {
+    const value = this.receptionForm.get('oilVariety')!.value;
+    if (!isValidSelection(value, this.oilCategories)) {
+      this.receptionForm.get('oilVariety')!.setValue(null);
+    }
+  }
+
+  validateOilType() {
+    const value = this.receptionForm.get('oilType')!.value;
+    if (!isValidSelection(value, this.oilTypes)) {
+      this.receptionForm.get('oilType')!.setValue(null);
+    }
+  }
+
+  validateOliveType() {
+    const value = this.receptionForm.get('oliveType')!.value;
+    if (!isValidSelection(value, this.oliveTypes)) {
+      this.receptionForm.get('oliveType')!.setValue(null);
+    }
+  }
+
+  displayFn<T extends { name?: string; supplierInfo?: { name: string } }>(item: T): string {
+    if (!item) return '';
+    if (item.supplierInfo) {
+      return item.supplierInfo.name;
+    }
+    return item.name || '';
   }
 
   // private setupFormSubscriptions(): void {

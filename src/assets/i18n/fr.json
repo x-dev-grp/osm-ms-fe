@@ -1228,47 +1228,122 @@
       "PARCEL": "Parcelle"
     }
   },
-  "SUPPLIER_PAYMENT": {
-    "TOTAL_DELIVERIES": "Total Livraisons",
-    "TOTAL_PAID": "Total Payé",
-    "TOTAL_UNPAID": "Total Non Payé",
-    "TOTAL_OLIVE_WEIGHT": "Poids Total Olives",
-    "PAYMENT_HISTORY": "Historique des Paiements",
-    "PAID": "Payés",
-    "UNPAID": "Non Payés",
-    "ALL": "Tous",
-    "PAYMENT_METHOD": "Méthode de Paiement",
-    "MONEY_PAYMENT": "Paiement en Argent",
-    "MONEY_PAYMENT_DESC": "Paiement par espèces, virement ou chèque",
-    "OIL_PAYMENT": "Paiement en Huile",
-    "OIL_PAYMENT_DESC": "Paiement en quantité d'huile d'olive",
-    "CASH": "Espèces",
-    "CHECK": "Chèque",
-    "BANK_TRANSFER": "Virement Bancaire",
-    "AMOUNT": "Montant (TND)",
-    "CHECK_NUMBER": "Numéro de Chèque",
-    "BANK_ACCOUNT": "Compte Bancaire",
-    "PAYMENT_SUMMARY": "Résumé du Paiement",
-    "UNPAID_AMOUNT": "Montant impayé",
-    "PAID_AMOUNT": "Montant payé",
-    "NEGOTIATED_PRICE": "Prix négocié",
-    "OIL_QUANTITY": "Quantité d'huile",
-    "OIL_VALUE": "Valeur en huile",
-    "REMAINING_AMOUNT": "Reste à payer",
-    "CONFIRM_PAYMENT": "Confirmer le Paiement",
-    "CANCEL": "Annuler",
+  "SUPPLIER": {
+    "DETAILS": {
+      "PAYMENT_HISTORY_TITLE": "Historique des Paiements",
+      "PAYMENT_HISTORY_COUNT": "paiements effectués",
+      "UNPAID_TITLE": "Paiements en Attente",
+      "UNPAID_COUNT": "paiements en attente"
+    },
+    "ADD": {
+      "TITLE_ADD": "Ajouter un fournisseur",
+      "TITLE_EDIT": "Modifier le fournisseur"
+    },
+    "FIELDS": {
+      "NAME": "Nom",
+      "LASTNAME": "Prénom",
+      "ADDRESS": "Adresse",
+      "PHONE": "Téléphone",
+      "EMAIL": "Email",
+      "REGION": "Région",
+      "PARCEL": "Parcelle",
+      "RIB": "RIB",
+      "BANK_NAME": "Nom de la banque",
+      "SUPPLIER_TYPE": "Type de fournisseur"
+    },
     "ERRORS": {
-      "SUPPLIER_ID_NOT_FOUND": "ID du fournisseur non trouvé",
-      "NO_DATA_FOUND": "Aucune donnée trouvée",
-      "LOAD_ERROR": "Erreur lors du chargement de l'historique des paiements",
-      "AMOUNT_REQUIRED": "Le montant est requis",
-      "AMOUNT_MIN": "Le montant doit être supérieur à 0",
-      "CHECK_NUMBER_REQUIRED": "Le numéro de chèque est requis",
-      "BANK_ACCOUNT_REQUIRED": "Le compte bancaire est requis",
+      "NAME_REQUIRED": "Le nom est requis",
+      "NAME_MIN": "Le nom doit contenir au moins 2 caractères",
+      "LASTNAME_REQUIRED": "Le prénom est requis",
+      "LASTNAME_MIN": "Le prénom doit contenir au moins 2 caractères",
+      "ADDRESS_REQUIRED": "L'adresse est requise",
+      "ADDRESS_MIN": "L'adresse doit contenir au moins 5 caractères",
+      "EMAIL_REQUIRED": "L'email est requis",
+      "EMAIL_INVALID": "Format d'email invalide",
+      "PHONE_REQUIRED": "Le téléphone est requis",
+      "PHONE_PATTERN": "Le téléphone doit contenir 8 chiffres",
+      "REGION_REQUIRED": "La région est requise",
+      "RIB_PATTERN": "Le RIB doit contenir 24 chiffres",
+      "SUPPLIER_TYPE_REQUIRED": "Le type de fournisseur est requis"
+    },
+    "ACTIONS": {
+      "CANCEL": "Annuler",
+      "ADD": "Ajouter",
+      "EDIT": "Modifier"
+    }
+  },
+  "SUPPLIER_PAYMENT": {
+    "DELIVERY_NUMBER": "N° Livraison",
+    "LOT_NUMBER": "N° Lot",
+    "DELIVERY_DATE": "Date Livraison",
+    "OLIVE_WEIGHT": "Poids Olives (kg)",
+    "TOTAL_PRICE": "Prix Total",
+    "PAID_AMOUNT": "Montant Payé",
+    "UNPAID_AMOUNT": "Montant Non Payé",
+    "STATUS": "Statut",
+    "ACTIONS": "Actions",
+    "PAY": "Payer",
+    "PAYMENT": "Paiement",
+    "LOT": "Lot",
+    "CASH_PAYMENT": "Paiement en Espèces",
+    "OIL_PAYMENT": "Paiement en Huile",
+    "REFERENCE_PRICE": "Prix de référence",
+    "OIL_EQUIVALENT": "Équivalent en huile",
+    "PRICE_NEGOTIATION": "Négociation du Prix",
+    "NEGOTIATED_PRICE_PER_KG": "Prix négocié par kg (TND)",
+    "ENTER_NEGOTIATED_PRICE": "Entrez le prix négocié",
+    "NEGOTIATED_PRICE_HINT": "Prix négocié pour ce paiement spécifique",
+    "OIL_QUANTITY_HINT": "Quantité maximum :",
+    "ERRORS": {
       "OIL_PRICE_REQUIRED": "Le prix de l'huile est requis",
-      "OIL_PRICE_MIN": "Le prix doit être supérieur à 0",
-      "OIL_QUANTITY_REQUIRED": "La quantité d'huile est requise",
-      "OIL_QUANTITY_MIN": "La quantité doit être supérieure à 0"
+      "OIL_QUANTITY_REQUIRED": "La quantité d'huile est requise"
+    }
+  },
+  "OPERATION_TYPE": {
+    "BASE": "Trituration sur base",
+    "OLIVE_PURCHASE": "Achat d'olives",
+    "OIL_PURCHASE": "Achat d'huile",
+    "EXCHANGE": "Échange",
+    "SIMPLE_RECEPTION": "Trituration particulier"
+  },
+  "BANK_ACCOUNTS": {
+    "TITLE": "Comptes bancaires",
+    "ADD_TITLE": "Ajouter un compte bancaire",
+    "EDIT_TITLE": "Modifier le compte bancaire",
+    "DETAILS_TITLE": "Détails du compte bancaire",
+    "FIELDS": {
+      "RIB": "RIB",
+      "IBAN": "IBAN",
+      "BIC_SWIFT": "BIC/SWIFT",
+      "BANK_NAME": "Nom de la banque",
+      "BANK_BRANCH": "Agence",
+      "CURRENCY": "Devise",
+      "ACCOUNT_TYPE": "Type de compte",
+      "CHECKING": "Courant",
+      "SAVINGS": "Épargne",
+      "BUSINESS": "Professionnel",
+      "ACTIVE": "Actif",
+      "INACTIVE": "Inactif",
+      "STATUS": "Statut"
+    },
+    "ACTIONS": {
+      "CANCEL": "Annuler",
+      "SAVE": "Enregistrer",
+      "UPDATE": "Mettre à jour",
+      "EDIT": "Modifier",
+      "PRINT": "Imprimer"
+    },
+    "ERRORS": {
+      "RIB_REQUIRED": "Le RIB est requis",
+      "RIB_LENGTH": "Le RIB doit comporter 24 caractères",
+      "IBAN_REQUIRED": "L'IBAN est requis",
+      "IBAN_LENGTH": "L'IBAN doit comporter 24 caractères",
+      "BIC_REQUIRED": "Le BIC/SWIFT est requis",
+      "BIC_LENGTH": "Le BIC/SWIFT doit comporter entre 8 et 11 caractères",
+      "BANK_NAME_REQUIRED": "Le nom de la banque est requis",
+      "BANK_BRANCH_REQUIRED": "L'agence est requise",
+      "CURRENCY_REQUIRED": "La devise est requise",
+      "ACCOUNT_TYPE_REQUIRED": "Le type de compte est requis"
     }
   }
 }

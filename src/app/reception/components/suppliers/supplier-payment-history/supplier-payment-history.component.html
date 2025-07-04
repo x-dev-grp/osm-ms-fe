@@ -60,49 +60,49 @@
               <table mat-table [dataSource]="payments" class="payment-table">
                 <!-- Delivery Number Column -->
                 <ng-container matColumnDef="deliveryNumber">
-                  <th mat-header-cell *matHeaderCellDef>N° Livraison</th>
+                  <th mat-header-cell *matHeaderCellDef>{{ 'SUPPLIER_PAYMENT.DELIVERY_NUMBER' | translate }}</th>
                   <td mat-cell *matCellDef="let payment">{{ payment.deliveryNumber }}</td>
                 </ng-container>
 
                 <!-- Lot Number Column -->
                 <ng-container matColumnDef="lotNumber">
-                  <th mat-header-cell *matHeaderCellDef>N° Lot</th>
+                  <th mat-header-cell *matHeaderCellDef>{{ 'SUPPLIER_PAYMENT.LOT_NUMBER' | translate }}</th>
                   <td mat-cell *matCellDef="let payment">{{ payment.lotNumber }}</td>
                 </ng-container>
 
                 <!-- Delivery Date Column -->
                 <ng-container matColumnDef="deliveryDate">
-                  <th mat-header-cell *matHeaderCellDef>Date Livraison</th>
+                  <th mat-header-cell *matHeaderCellDef>{{ 'SUPPLIER_PAYMENT.DELIVERY_DATE' | translate }}</th>
                   <td mat-cell *matCellDef="let payment">{{ payment.deliveryDate | date:'dd/MM/yyyy' }}</td>
                 </ng-container>
 
                 <!-- Olive Weight Column -->
                 <ng-container matColumnDef="poidsNet">
-                  <th mat-header-cell *matHeaderCellDef>Poids Olives (kg)</th>
+                  <th mat-header-cell *matHeaderCellDef>{{ 'SUPPLIER_PAYMENT.OLIVE_WEIGHT' | translate }}</th>
                   <td mat-cell *matCellDef="let payment">{{ payment.poidsNet | number:'1.2-2' }}</td>
                 </ng-container>
 
                 <!-- Price Column -->
                 <ng-container matColumnDef="price">
-                  <th mat-header-cell *matHeaderCellDef>Prix Total</th>
+                  <th mat-header-cell *matHeaderCellDef>{{ 'SUPPLIER_PAYMENT.TOTAL_PRICE' | translate }}</th>
                   <td mat-cell *matCellDef="let payment">{{ payment.price | currency:'TND':'symbol-narrow':'1.2-2' }}</td>
                 </ng-container>
 
                 <!-- Paid Amount Column -->
                 <ng-container matColumnDef="paidAmount">
-                  <th mat-header-cell *matHeaderCellDef>Montant Payé</th>
+                  <th mat-header-cell *matHeaderCellDef>{{ 'SUPPLIER_PAYMENT.PAID_AMOUNT' | translate }}</th>
                   <td mat-cell *matCellDef="let payment">{{ payment.paidAmount | currency:'TND':'symbol-narrow':'1.2-2' }}</td>
                 </ng-container>
 
                 <!-- Unpaid Amount Column -->
                 <ng-container matColumnDef="unpaidAmount">
-                  <th mat-header-cell *matHeaderCellDef>Montant Non Payé</th>
+                  <th mat-header-cell *matHeaderCellDef>{{ 'SUPPLIER_PAYMENT.UNPAID_AMOUNT' | translate }}</th>
                   <td mat-cell *matCellDef="let payment">{{ payment.unpaidAmount | currency:'TND':'symbol-narrow':'1.2-2' }}</td>
                 </ng-container>
 
                 <!-- Status Column -->
                 <ng-container matColumnDef="status">
-                  <th mat-header-cell *matHeaderCellDef>Statut</th>
+                  <th mat-header-cell *matHeaderCellDef>{{ 'SUPPLIER_PAYMENT.STATUS' | translate }}</th>
                   <td mat-cell *matCellDef="let payment">
                     <mat-chip-list>
                       <mat-chip [color]="getStatusColor(payment.status)" selected>
@@ -114,7 +114,7 @@
 
                 <!-- Actions Column -->
                 <ng-container matColumnDef="actions">
-                  <th mat-header-cell *matHeaderCellDef>Actions</th>
+                  <th mat-header-cell *matHeaderCellDef>{{ 'SUPPLIER_PAYMENT.ACTIONS' | translate }}</th>
                   <td mat-cell *matCellDef="let payment">
                     <button
                       mat-raised-button
@@ -123,7 +123,7 @@
                       (click)="initiatePayment(payment)"
                       [disabled]="payment.status === 'paid'">
                       <mat-icon>payment</mat-icon>
-                      Payer
+                      {{ 'SUPPLIER_PAYMENT.PAY' | translate }}
                     </button>
                   </td>
                 </ng-container>
@@ -146,7 +146,7 @@
         <mat-card *ngIf="selectedPayment" class="payment-form-card">
           <mat-card-title>
             <div class="payment-header">
-              <span>Paiement - Lot {{ selectedPayment.lotNumber }}</span>
+              <span>{{ 'SUPPLIER_PAYMENT.PAYMENT' | translate }} - {{ 'SUPPLIER_PAYMENT.LOT' | translate }} {{ selectedPayment.lotNumber }}</span>
               <button mat-icon-button (click)="closePaymentForm()" aria-label="Fermer">
                 <mat-icon>close</mat-icon>
               </button>
@@ -183,7 +183,7 @@
             <div class="payment-details-section" *ngIf="paymentMethod">
               <!-- Money Payment Form -->
               <div class="money-payment-form" *ngIf="paymentMethod === 'money'">
-                <h4>Paiement en Espèces</h4>
+                <h4>{{ 'SUPPLIER_PAYMENT.CASH_PAYMENT' | translate }}</h4>
 
                 <!-- Payment Method Selection -->
                 <div class="form-row">
@@ -289,12 +289,12 @@
 
               <!-- Oil Payment Form -->
               <div class="oil-payment-form" *ngIf="paymentMethod === 'oil'">
-                <h4>Paiement en Huile</h4>
+                <h4>{{ 'SUPPLIER_PAYMENT.OIL_PAYMENT' | translate }}</h4>
 
                 <div class="oil-info">
                   <p><strong>{{ 'SUPPLIER_PAYMENT.UNPAID_AMOUNT' | translate }}:</strong> {{ selectedPayment?.unpaidAmount | currency:'TND' }}</p>
-                  <p><strong>Prix de référence:</strong> {{ oilPricePerLiter | currency:'TND' }}/kg</p>
-                  <p><strong>Équivalent en huile:</strong> {{ oilEquivalent | number:'1.2-2' }} kg</p>
+                  <p><strong>{{ 'SUPPLIER_PAYMENT.REFERENCE_PRICE' | translate }}:</strong> {{ oilPricePerLiter | currency:'TND' }}/kg</p>
+                  <p><strong>{{ 'SUPPLIER_PAYMENT.OIL_EQUIVALENT' | translate }}:</strong> {{ oilEquivalent | number:'1.2-2' }} kg</p>
                 </div>
 
                 <!-- Negotiable Oil Price -->
@@ -302,18 +302,18 @@
                   <div class="price-negotiation">
                     <div class="negotiation-header">
                       <mat-icon>trending_up</mat-icon>
-                      <span>Négociation du Prix</span>
+                      <span>{{ 'SUPPLIER_PAYMENT.PRICE_NEGOTIATION' | translate }}</span>
                     </div>
                     <div class="reference-price">
-                      Prix de référence: {{ oilPricePerLiter | currency:'TND' }}/kg
+                      {{ 'SUPPLIER_PAYMENT.REFERENCE_PRICE' | translate }}: {{ oilPricePerLiter | currency:'TND' }}/kg
                     </div>
                     <mat-form-field appearance="outline" class="full-width">
-                      <mat-label>Prix négocié par kg (TND)</mat-label>
+                      <mat-label>{{ 'SUPPLIER_PAYMENT.NEGOTIATED_PRICE_PER_KG' | translate }}</mat-label>
                       <input matInput type="number" [formControl]="paymentForm.get('oilPricePerKg')"
                              [min]="0.01" step="0.01"
                              (input)="onOilPriceChange()"
-                             placeholder="Entrez le prix négocié" />
-                      <mat-hint>Prix négocié pour ce paiement spécifique</mat-hint>
+                             placeholder="{{ 'SUPPLIER_PAYMENT.ENTER_NEGOTIATED_PRICE' | translate }}" />
+                      <mat-hint>{{ 'SUPPLIER_PAYMENT.NEGOTIATED_PRICE_HINT' | translate }}</mat-hint>
                       <mat-error *ngIf="paymentForm.get('oilPricePerKg')?.hasError('required')">
                         {{ 'SUPPLIER_PAYMENT.ERRORS.OIL_PRICE_REQUIRED' | translate }}
                       </mat-error>
@@ -330,7 +330,7 @@
                     <input matInput type="number" [formControl]="paymentForm.get('oilQuantity')"
                            [max]="oilEquivalent" step="0.01"
                            (input)="calculateOilPayment()">
-                    <mat-hint>Quantité maximum: {{ oilEquivalent | number:'1.2-2' }} kg</mat-hint>
+                    <mat-hint>{{ 'SUPPLIER_PAYMENT.OIL_QUANTITY_HINT' | translate }} {{ oilEquivalent | number:'1.2-2' }} kg</mat-hint>
                     <mat-error *ngIf="paymentForm.get('oilQuantity')?.hasError('required')">
                       {{ 'SUPPLIER_PAYMENT.ERRORS.OIL_QUANTITY_REQUIRED' | translate }}
                     </mat-error>

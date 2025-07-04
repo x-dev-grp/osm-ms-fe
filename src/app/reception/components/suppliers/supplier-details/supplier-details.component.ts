@@ -14,13 +14,14 @@ import { AttributeType, FieldType } from '../../../../shared/modules/osm-dashboa
 import { SearchOperation } from '../../../../shared/models/advanced-search/searchOperation';
 import { SupplierType } from '../../../../shared/models/supplier-type';
 import { Location } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-supplier-details',
   templateUrl: './supplier-details.component.html',
   styleUrls: ['./supplier-details.component.scss'],
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatCardModule, MatIconModule, MatProgressSpinnerModule, OsmDashboard]
+  imports: [CommonModule, MatButtonModule, MatCardModule, MatIconModule, MatProgressSpinnerModule, OsmDashboard,TranslateModule]
 })
 export class SupplierDetailsComponent implements OnInit, OnDestroy {
   supplierData: SupplierType | null = null;

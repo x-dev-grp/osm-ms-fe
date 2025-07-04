@@ -1,7 +1,6 @@
 import { AttributeType, DashboardConfig, FieldType } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
 import { deliveryType } from '../../../shared/models/deleveryType';
 import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
-import { SearchModel } from '../../../shared/models/advanced-search/searchModel';
 
 export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
   title: "Livraisons d'Olives", // afficehr titre fi dashboard
@@ -20,14 +19,14 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
       searchs: [
         {
           search: {
-            hasQualityControl: {
-              equalValue: "false"
+            status: {
+              inValues: ['NEW', 'IN_PROGRESS', 'CONTROLLED', 'REFUSED', 'CANCELLED']
             },
-            deliveryType:{
+            deliveryType: {
               equalValue: deliveryType.OLIVE
             }
           }
-        },
+        }
       ]
     }
   }, // if youy need ot load the dta initilly based on this

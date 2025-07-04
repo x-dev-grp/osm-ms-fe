@@ -54,7 +54,6 @@ export class OilCreditComponent implements OnInit {
   editing = false;
   isLoading = true;
   submitted = false;
-  displayedColumns = ['emballage', 'quantity', 'unit', 'oil_type', 'destinataire', 'creditState', 'actions'];
 
   OIL_CREDIT_DASHBOARD: DashboardConfig = OIL_CREDIT_DASHBOARD;
   @ViewChild(MatPaginator) paginator!: MatPaginator;

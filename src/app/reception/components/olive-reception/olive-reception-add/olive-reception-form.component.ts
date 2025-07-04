@@ -6,9 +6,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { UnifiedDelivery } from '../../../../shared/models/UnifiedDelivery';
@@ -22,9 +22,8 @@ import { TypeCategory } from '../../../../shared/models/type-category.enum';
 import { CardComponent } from '../../../../@theme/components/card/card.component';
 import { MatIcon } from '@angular/material/icon';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { FormsModule } from '@angular/forms';
 import { map, startWith } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { OperationType } from '../../../../shared/models/operation-type.enum';
 
 // Validator to ensure net weight does not exceed gross weight
 const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | null => {
@@ -32,6 +31,11 @@ const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | nu
   const net = control.get('poidsNet')?.value;
   return gross != null && net != null && net > gross ? { netGreater: true } : null;
 };
+
+// Helper to check if value is a valid object from the list
+function isValidSelection<T extends { id?: string }>(value: unknown, list: T[]): boolean {
+  return !!value && typeof value === 'object' && 'id' in value && list.some((item) => item.id && item.id === (value as T).id);
+}
 
 @Component({
   selector: 'app-olive-reception-form',
@@ -63,7 +67,12 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
   suppliers: SupplierType[] = [];
   oliveVarieties: BaseType[] = [];
   oliveTypes: BaseType[] = [];
-  operationTypes: BaseType[] = [];
+  operationTypes: { name: string; value: OperationType }[] = [
+    { name: 'EXCHANGE', value: OperationType.EXCHANGE },
+    { name: 'SIMPLE_RECEPTION', value: OperationType.SIMPLE_RECEPTION },
+    { name: 'BASE', value: OperationType.BASE },
+    { name: 'OLIVE_PURCHASE', value: OperationType.OLIVE_PURCHASE }
+  ];
   deliveries: UnifiedDelivery[] = [];
 
   // Autocomplete filtered options
@@ -94,7 +103,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
         region: [null, Validators.required],
         poidsBrute: [0, Validators.min(0)],
         poidsNet: [0, Validators.min(0)],
-        matriculeCamion: ['', Validators.required],
+        matriculeCamion: ['', [Validators.required, Validators.pattern(/^[0-9]{3}TN[0-9]{4}$/)]],
         etatCamion: ['', Validators.required],
         supplier: [null, Validators.required],
         trtDate: [new Date()],
@@ -121,17 +130,15 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       this.genericTypeService.getAllTypes(TypeCategory.OLIVE_VARIETY).toPromise(),
       this.genericTypeService.getAllTypes(TypeCategory.OLIVE_TYPE).toPromise(),
       this.genericTypeService.getAllTypes(TypeCategory.REGION).toPromise(),
-      this.genericTypeService.getAllTypes(TypeCategory.OPERATION_TYPE).toPromise(),
       this.supplierService.getAllSuppliers().toPromise(),
       this.deliveryService.getAllDeliveriesList().toPromise(),
       this.isEditing && deliveryId ? this.deliveryService.getUnifiedDelivery(deliveryId).toPromise() : Promise.resolve(null)
     ])
-      .then(([varieties, types, regions, operationTypes, suppliers, deliveries, delivery]) => {
+      .then(([varieties, types, regions, suppliers, deliveries, delivery]) => {
         // Initialize data arrays
         this.oliveVarieties = varieties?.success ? varieties.data : [];
         this.oliveTypes = types?.success ? types.data : [];
         this.regions = regions?.success ? regions.data : [];
-        this.operationTypes = operationTypes?.success ? operationTypes.data : [];
         this.suppliers = suppliers?.success ? suppliers.data : [];
         this.deliveries = deliveries?.success ? deliveries.data : [];
 
@@ -161,6 +168,13 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
         // Setup form subscriptions
         this.setupFormSubscriptions();
 
+        // When region changes, set parcel to region name
+        this.receptionForm.get('region')?.valueChanges.subscribe((region: BaseType | null) => {
+          if (region?.name) {
+            this.receptionForm.patchValue({ parcel: region.name });
+          }
+        });
+
         this.loading = false;
       })
       .catch((error) => {
@@ -173,7 +187,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 
   // Save or update the reception
@@ -237,9 +251,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
 
       if (response?.success && response.data) {
         this.showToast(
-          this.translate.instant(
-            this.isEditing ? 'DELIVERIES.FORM.MESSAGES.UPDATE_SUCCESS' : 'DELIVERIES.FORM.MESSAGES.SAVE_SUCCESS'
-          )
+          this.translate.instant(this.isEditing ? 'DELIVERIES.FORM.MESSAGES.UPDATE_SUCCESS' : 'DELIVERIES.FORM.MESSAGES.SAVE_SUCCESS')
         );
         this.router.navigate(['reception/reception-olive']);
       } else {
@@ -289,6 +301,63 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     return date ? new Date(date).toISOString() : null;
   }
 
+  displayFn<T extends { name?: string; supplierInfo?: { name: string } }>(item: T): string {
+    if (!item) return '';
+    if (item.supplierInfo) {
+      return item.supplierInfo.name;
+    }
+    return item.name || '';
+  }
+
+  validateSupplier() {
+    const value = this.receptionForm.get('supplier')!.value;
+    if (!isValidSelection(value, this.suppliers)) {
+      this.receptionForm.get('supplier')!.setValue(null);
+    }
+  }
+
+  // Generate lot number based on olive type and delivery number
+  private generateLotNumber(oliveType: BaseType | null, deliveryNumber: number): string {
+    if (!oliveType?.name) return '';
+    const year = new Date().getFullYear().toString().slice(-2);
+    const paddedNumber = deliveryNumber.toString().padStart(4, '0');
+    return `${paddedNumber}${oliveType.name.toUpperCase()}${year}`;
+  }
+
+  onBack(): void {
+    window.history.back();
+  }
+
+  validateRegion() {
+    const value = this.receptionForm.get('region')!.value;
+    if (!isValidSelection(value, this.regions)) {
+      this.receptionForm.get('region')!.setValue(null);
+    }
+  }
+
+  validateOliveVariety() {
+    const value = this.receptionForm.get('oliveVariety')!.value;
+    if (!isValidSelection(value, this.oliveVarieties)) {
+      this.receptionForm.get('oliveVariety')!.setValue(null);
+    }
+  }
+
+  private _getNestedValue<T extends Record<string, unknown>>(obj: T, path: string): string {
+    return path.split('.').reduce((acc, part) => {
+      if (acc && typeof acc === 'object') {
+        return (acc as Record<string, unknown>)[part];
+      }
+      return '';
+    }, obj as unknown) as string;
+  }
+
+  validateOliveType() {
+    const value = this.receptionForm.get('oliveType')!.value;
+    if (!isValidSelection(value, this.oliveTypes)) {
+      this.receptionForm.get('oliveType')!.setValue(null);
+    }
+  }
+
   // Patch form with delivery data
   private patchForm(d: UnifiedDelivery): void {
     const parseDate = (value: string | Date | null | undefined): Date | null => {
@@ -301,10 +370,16 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       deliveryDate: parseDate(d.deliveryDate),
       trtDate: parseDate(d.trtDate),
       region: this.regions.find((r) => r.id === d.region?.id) || null,
+      poidsBrute: d.poidsBrute,
+      poidsNet: d.poidsNet,
+      matriculeCamion: d.matriculeCamion,
+      etatCamion: d.etatCamion,
       supplier: this.suppliers.find((s) => s.id === d.supplier?.id) || null,
       oliveVariety: this.oliveVarieties.find((v) => v.id === d.oliveVariety?.id) || null,
+      sackCount: d.sackCount,
       oliveType: this.oliveTypes.find((t) => t.id === d.oliveType?.id) || null,
-      operationType: this.operationTypes.find((t) => t.id === d.operationType?.id) || null
+      operationType: d.operationType || null,
+      parcel: d.parcel || ''
     });
   }
 
@@ -325,81 +400,78 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
         }
       })
     );
-  }
 
-  // Generate lot number based on olive type and delivery number
-  private generateLotNumber(oliveType: BaseType | null, deliveryNumber: number): string {
-    if (!oliveType?.name) return '';
-    const year = new Date().getFullYear().toString().slice(-2);
-    const paddedNumber = deliveryNumber.toString().padStart(4, '0');
-    return `${paddedNumber}${oliveType.name.toUpperCase()}${year}`;
-  }
-
-  onBack(): void {
-    window.history.back();
+    // Enforce autocomplete selection for supplier
+    this.receptionForm.get('supplier')!.valueChanges.subscribe((value) => {
+      if (value && !this.suppliers.some((s) => s.id === value.id)) {
+        this.receptionForm.get('supplier')!.setValue(null);
+      }
+    });
+    // Enforce autocomplete selection for region
+    this.receptionForm.get('region')!.valueChanges.subscribe((value) => {
+      if (value && !this.regions.some((r) => r.id === value.id)) {
+        this.receptionForm.get('region')!.setValue(null);
+      }
+    });
+    // Enforce autocomplete selection for oliveVariety
+    this.receptionForm.get('oliveVariety')!.valueChanges.subscribe((value) => {
+      if (value && !this.oliveVarieties.some((v) => v.id === value.id)) {
+        this.receptionForm.get('oliveVariety')!.setValue(null);
+      }
+    });
+    // Enforce autocomplete selection for oliveType
+    this.receptionForm.get('oliveType')!.valueChanges.subscribe((value) => {
+      if (value && !this.oliveTypes.some((t) => t.id === value.id)) {
+        this.receptionForm.get('oliveType')!.setValue(null);
+      }
+    });
   }
 
   private setupAutocompleteFilters(): void {
     // Region filter
     this.filteredRegions = this.receptionForm.get('region')!.valueChanges.pipe(
       startWith(''),
-      map(value => this._filter(this.regions, value, 'name'))
+      map((value) => this._filter(this.regions, value, 'name'))
     );
 
     // Supplier filter
     this.filteredSuppliers = this.receptionForm.get('supplier')!.valueChanges.pipe(
       startWith(''),
-      map(value => this._filter(this.suppliers, value, 'supplierInfo.name'))
+      map((value) => this._filter(this.suppliers, value, 'supplierInfo.name'))
     );
 
     // Olive variety filter
     this.filteredOliveVarieties = this.receptionForm.get('oliveVariety')!.valueChanges.pipe(
       startWith(''),
-      map(value => this._filter(this.oliveVarieties, value, 'name'))
+      map((value) => this._filter(this.oliveVarieties, value, 'name'))
     );
 
     // Olive type filter
     this.filteredOliveTypes = this.receptionForm.get('oliveType')!.valueChanges.pipe(
       startWith(''),
-      map(value => this._filter(this.oliveTypes, value, 'name'))
+      map((value) => this._filter(this.oliveTypes, value, 'name'))
     );
 
     // Operation type filter
     this.filteredOperationTypes = this.receptionForm.get('operationType')!.valueChanges.pipe(
       startWith(''),
-      map(value => this._filter(this.operationTypes, value, 'name'))
+      map((value) => this._filter(this.operationTypes, value, 'name'))
     );
   }
 
-  private _filter<T extends { name?: string; supplierInfo?: { name: string } }>(
-    items: T[],
-    value: string | T,
-    displayField: string
-  ): T[] {
+  private _filter<
+    T extends {
+      name?: string;
+      supplierInfo?: { name: string };
+    }
+  >(items: T[], value: string | T, displayField: string): T[] {
     if (!value || typeof value === 'object') {
       return items;
     }
     const filterValue = value.toLowerCase();
-    return items.filter(item => {
+    return items.filter((item) => {
       const fieldValue = this._getNestedValue(item, displayField);
       return fieldValue.toLowerCase().includes(filterValue);
     });
-  }
-
-  private _getNestedValue<T extends Record<string, unknown>>(obj: T, path: string): string {
-    return path.split('.').reduce((acc, part) => {
-      if (acc && typeof acc === 'object') {
-        return (acc as Record<string, unknown>)[part];
-      }
-      return '';
-    }, obj as unknown) as string;
-  }
-
-  displayFn<T extends { name?: string; supplierInfo?: { name: string } }>(item: T): string {
-    if (!item) return '';
-    if (item.supplierInfo) {
-      return item.supplierInfo.name;
-    }
-    return item.name || '';
   }
 }

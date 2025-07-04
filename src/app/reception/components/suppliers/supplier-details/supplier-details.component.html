@@ -7,8 +7,8 @@
         <div class="card-content">
           <mat-icon class="card-icon" color="primary">payments</mat-icon>
           <div class="card-info">
-            <h3>Historique des Paiements</h3>
-            <p>{{ paidCount }} paiements effectués</p>
+            <h3>{{ 'SUPPLIER.DETAILS.PAYMENT_HISTORY_TITLE' | translate }}</h3>
+            <p>{{ paidCount }} {{ 'SUPPLIER.DETAILS.PAYMENT_HISTORY_COUNT' | translate }}</p>
           </div>
         </div>
       </mat-card-content>
@@ -19,8 +19,8 @@
         <div class="card-content">
           <mat-icon class="card-icon" color="warn">pending_actions</mat-icon>
           <div class="card-info">
-            <h3>Paiements en Attente</h3>
-            <p>{{ unpaidCount }} paiements en attente</p>
+            <h3>{{ 'SUPPLIER.DETAILS.UNPAID_TITLE' | translate }}</h3>
+            <p>{{ unpaidCount }} {{ 'SUPPLIER.DETAILS.UNPAID_COUNT' | translate }}</p>
           </div>
         </div>
       </mat-card-content>

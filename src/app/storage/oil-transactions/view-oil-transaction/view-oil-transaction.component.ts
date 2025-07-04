@@ -59,7 +59,7 @@ export class ViewOilTransactionComponent implements OnInit {
     this.oilTransactionService.getOilTransaction(id).subscribe({
       next: (response) => {
         if (response.success && response.data) {
-          this.oilTransaction = response.data[0];
+          this.oilTransaction = Array.isArray(response.data) ? response.data[0] : response.data;
         } else {
           this.error = true;
           this.snackBar.open(

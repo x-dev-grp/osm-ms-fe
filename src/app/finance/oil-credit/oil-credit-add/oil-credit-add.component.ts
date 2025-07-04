@@ -282,7 +282,7 @@ export class OilCreditAddComponent implements OnInit {
         if (response.data && response.data.length > 0) {
           const credit = response.data[0];
           const oilType = this.oilTypes.find(type => type.id === credit.oil_type);
-          const supplier = this.suppliers.find(sup => sup.id === credit.destinataire);
+          const supplier = this.suppliers.find(sup => sup.id === credit.destinataire.id);
           const storageUnit = this.storageUnits.find(unit => unit.id === credit.transaction_id_in);
           this.form.patchValue({
             ...credit,

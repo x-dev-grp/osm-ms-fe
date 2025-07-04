@@ -1,5 +1,7 @@
 // src/app/modules/finance/oil-credits/oil-credit.model.ts
 
+import { SupplierType } from '../../shared/models/supplier-type';
+
 /**
  * Model representing an oil credit entry in the finance microservice.
  */
@@ -22,7 +24,7 @@ export interface OilCredit {
   quantity: number;
   unit: UnitType;
   oil_type: string; // UUID as string
-  destinataire: string; // UUID as string
+  destinataire: SupplierType; // UUID as string
   transaction_id_in?: string; // UUID as string, optional
   transaction_id_out?: string; // UUID as string, optional
   creditState: CreditState;

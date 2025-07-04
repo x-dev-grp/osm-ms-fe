@@ -17,6 +17,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSortModule } from '@angular/material/sort';
 import { SharedModule } from '../../../demo/shared/shared.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-bank-account-add',
@@ -35,7 +36,8 @@ import { SharedModule } from '../../../demo/shared/shared.module';
     MatExpansionModule,
     ReactiveFormsModule,
     MatSortModule,
-    SharedModule
+    SharedModule,
+    TranslateModule
   ],
   standalone: true,
 
