@@ -1,21 +1,21 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Subscription} from 'rxjs';
 
-import { SupplierType } from '../../../../shared/models/supplier-type';
-import { SupplierTypeService } from '../../../../shared/services/supplier.service';
-import { GenericTypeService } from '../../../../shared/services/generic-type.service';
-import { BaseType } from '../../../../shared/models/base-type';
-import { TypeCategory } from '../../../../shared/models/type-category.enum';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { MatIcon } from '@angular/material/icon';
+import {SupplierType} from '../../../../shared/models/supplier-type';
+import {SupplierTypeService} from '../../../../shared/services/supplier.service';
+import {GenericTypeService} from '../../../../shared/services/generic-type.service';
+import {BaseType} from '../../../../shared/models/base-type';
+import {TypeCategory} from '../../../../shared/models/type-category.enum';
+import {MatProgressSpinner} from '@angular/material/progress-spinner';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'app-supplier-add',
@@ -75,11 +75,11 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
         id: [''],
         name: ['', [Validators.required, Validators.minLength(2)]],
         lastname: ['', [Validators.required, Validators.minLength(2)]],
-        phone: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+        phone: ['', [Validators.required, Validators.pattern(/^[0-9]{8}$/)]],
         email: ['', [Validators.required, Validators.email]],
         address: ['', [Validators.required, Validators.minLength(5)]],
         region: [null, Validators.required],
-        rib: ['', Validators.pattern(/^[0-9]{24}$/)],
+        rib: ['', Validators.pattern(/^[0-9]{15}$/)],
         bankName: ['']
       }),
       genericSupplierType: [null, Validators.required]

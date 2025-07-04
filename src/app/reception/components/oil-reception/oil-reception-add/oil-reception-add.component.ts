@@ -1,28 +1,35 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { BaseType } from '../../../../shared/models/base-type';
-import { SupplierType } from '../../../../shared/models/supplier-type';
-import { UnifiedDelivery } from '../../../../shared/models/UnifiedDelivery';
-import { GenericTypeService } from '../../../../shared/services/generic-type.service';
-import { SupplierTypeService } from '../../../../shared/services/supplier.service';
-import { UnifiedDeliveryService } from '../../../../shared/services/delivery.service';
-import { TypeCategory } from '../../../../shared/models/type-category.enum';
-import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { CardComponent } from '../../../../@theme/components/card/card.component';
-import { MatIcon } from '@angular/material/icon';
-import { StorageUnitDtoService } from '../../../../shared/services/storage.service';
-import { OliveLotStatus } from '../../../../shared/models/OliveLotStatus';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {MatButtonModule} from '@angular/material/button';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {BaseType} from '../../../../shared/models/base-type';
+import {SupplierType} from '../../../../shared/models/supplier-type';
+import {UnifiedDelivery} from '../../../../shared/models/UnifiedDelivery';
+import {GenericTypeService} from '../../../../shared/services/generic-type.service';
+import {SupplierTypeService} from '../../../../shared/services/supplier.service';
+import {UnifiedDeliveryService} from '../../../../shared/services/delivery.service';
+import {TypeCategory} from '../../../../shared/models/type-category.enum';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators
+} from '@angular/forms';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {CardComponent} from '../../../../@theme/components/card/card.component';
+import {MatIcon} from '@angular/material/icon';
+import {StorageUnitDtoService} from '../../../../shared/services/storage.service';
+import {OliveLotStatus} from '../../../../shared/models/OliveLotStatus';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
 
 // Validator for net weight not exceeding gross weight
 const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | null => {
@@ -74,6 +81,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
   suppliers: SupplierType[] = [];
   oilCategories: BaseType[] = [];
   oilTypes: BaseType[] = [];
+  oilVariety: BaseType[] = [];
   operationTypes: BaseType[] = []; // Added for operation type
   deliveries: UnifiedDelivery[] = [];
   oliveTypes: BaseType[] = [];
@@ -226,7 +234,6 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
 
   private patchForm(d: UnifiedDelivery): void {
     const parse = (v: string | Date | null): Date | null => (v ? new Date(v) : null);
-
     this.receptionForm.patchValue({
       id: this.isEditing ? this.deliveryId : null,
       deliveryType: d.deliveryType,

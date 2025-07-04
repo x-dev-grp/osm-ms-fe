@@ -321,13 +321,10 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
       fields: [
         {label: 'Lot', value: delivery.lotNumber || ''},
         {label: 'Lot Global', value: delivery.globalLotNumber || ''},
-        {label: "Quantité d'huile", value: `${delivery.oilQuantity || ''} L`},
-        {label: 'Poids Net', value: `${delivery.poidsNet || ''} kg`},
         {label: 'Poids Brut', value: `${delivery.poidsBrute || ''} kg`},
+        {label: "Quantité d'huile", value: `${delivery.oilQuantity || ''} kg`},
         {label: 'Variéte Huile', value: `${delivery.oilVariety?.name || ''} `},
         {label: 'Type Huile', value: `${delivery.oilType?.name || ''} `},
-        {label: 'Matricule camion', value: delivery.matriculeCamion || ''},
-        {label: 'État camion', value: delivery.etatCamion || ''},
         {label: 'Région', value: delivery.region?.name || ''}
       ],
       footerInfo: [

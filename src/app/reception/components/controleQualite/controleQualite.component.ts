@@ -40,6 +40,7 @@ export class ControleQualiteComponent implements OnInit {
   qualityControlResults: QualityControlResultDto[] = [];
   isQualityControlDone: boolean = false; // verfifier si le controle qualité est deja fait!
   storageUnits: StorageUnitDto[] = [];
+  isReadOnlyForm: boolean = false;
 
 
   constructor(
@@ -53,19 +54,21 @@ export class ControleQualiteComponent implements OnInit {
     private storageUnitService: StorageUnitDtoService,
     private translate: TranslateService
   ) {
-    this.creerStaticFormulaire();
   }
 
   ngOnInit(): void {
     this.receptionId = this.route.snapshot.paramMap.get('id');
     this.loadReception();
     this.loadStorageUnits();
+    this.creerStaticFormulaire();
+
   }
 
   creerStaticFormulaire(): void {
+    this.isReadOnlyForm = !!(this.deliveryData?.unitPrice || this.deliveryData?.price || this.deliveryData?.storageUnit);
     this.staticForm = this.fb.group({
       unitPrice: [null, Validators.required],
-      price: [{value: null, disabled: true}, Validators.required],
+      price: [null, Validators.required],
       storageUnit: [null, Validators.required]
     });
 
@@ -232,14 +235,6 @@ export class ControleQualiteComponent implements OnInit {
         initialValue = initialValue || '';
       }
 
-      if (rule.ruleType === 'NUMERIC') {
-        if (rule.minValue !== undefined && rule.minValue !== null) {
-          validators.push(Validators.min(rule.minValue));
-        }
-        if (rule.maxValue !== undefined && rule.maxValue !== null) {
-          validators.push(Validators.max(rule.maxValue));
-        }
-      }
 
       group[rule.ruleKey] = new FormControl(
         {value: initialValue, disabled: this.isQualityControlDone},
@@ -528,7 +523,6 @@ export class ControleQualiteComponent implements OnInit {
 
     // Get form values
     const formValues = this.staticForm.value;
-
     // Update price and unitPrice
     this.deliveryData.unitPrice = formValues.unitPrice;
     this.deliveryData.price = formValues.price;
@@ -634,7 +628,7 @@ export class ControleQualiteComponent implements OnInit {
     }
   }
 
-  private isOliveDelivery(): boolean {
+  isOliveDelivery(): boolean {
     return this.deliveryData?.deliveryType === 'OLIVE';
   }
 
@@ -670,7 +664,6 @@ export class ControleQualiteComponent implements OnInit {
     const k232 = this.dynamicForm.get('K232')?.value;
 
     console.log('Valeurs avant calcul (OIL):', {acidite, k270, k232});
-
     if (
       acidite == null ||
       typeof acidite !== 'number' ||

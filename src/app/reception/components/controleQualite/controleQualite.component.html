@@ -53,17 +53,6 @@
             </ng-container>
           </ng-template>
 
-          <!-- Messages d'erreur -->
-          <div class="error-messages" *ngIf="dynamicForm.get(control.key)?.invalid && (dynamicForm.get(control.key)?.touched || submitted)">
-            <small
-              *ngIf="dynamicForm.get(control.key)?.errors?.['required']">{{ 'CONTROLE_QUALITE.FORM.VALIDATION.REQUIRED' | translate }}</small>
-            <small
-              *ngIf="dynamicForm.get(control.key)?.errors?.['min']">{{ 'CONTROLE_QUALITE.FORM.VALIDATION.MIN_VALUE' | translate }}</small>
-            <small
-              *ngIf="dynamicForm.get(control.key)?.errors?.['max']">{{ 'CONTROLE_QUALITE.FORM.VALIDATION.MAX_VALUE' | translate: {max: getRuleMaxValue(control.key)} }}</small>
-          </div>
-
-        </div>
       </div>
     </div>
 
@@ -75,18 +64,20 @@
         {{ 'CONTROLE_QUALITE.BUTTONS.SUBMIT' | translate }}
       </button>
     </div>
+    </div>
   </form>
 
   <!-- Formulaire Statique -->
-  <form *ngIf="staticForm && !isLoading" [formGroup]="staticForm" class="quality-form container-fluid mt-5">
+  <form *ngIf="staticForm && !isLoading && !isOliveDelivery()" [formGroup]="staticForm"
+        class="quality-form container-fluid mt-5">
     <div class="rules-grid">
 
       <!-- Prix unitaire -->
       <div class="rule-card">
         <mat-form-field appearance="outline" class="w-100">
           <mat-label>{{ 'CONTROLE_QUALITE.FINANCIAL.UNIT_PRICE' | translate }}</mat-label>
-          <input formControlName="unitPrice" matInput
-                 placeholder="{{ 'CONTROLE_QUALITE.FINANCIAL.UNIT_PRICE' | translate }}" type="number"/>
+          <input [readonly]="isReadOnlyForm" formControlName="unitPrice" matInput
+                 placeholder="{{ 'CONTROLE_QUALITE.FINANCIAL .UNIT_PRICE' | translate }}" type="number"/>
           <mat-error *ngIf="staticForm.get('unitPrice')?.hasError('required')">
             {{ 'CONTROLE_QUALITE.FORM.VALIDATION.REQUIRED' | translate }}
           </mat-error>
@@ -124,7 +115,7 @@
 
     <!-- Bouton de soumission -->
     <div class="button-container">
-      <button (click)="onSubmitStaticForm()" [disabled]="staticForm.invalid || isLoading" class="btn-primary"
+      <button (click)="onSubmitStaticForm()" [disabled]="staticForm.invalid || isReadOnlyForm" class="btn-primary"
               color="primary"
               mat-flat-button
               type="button">

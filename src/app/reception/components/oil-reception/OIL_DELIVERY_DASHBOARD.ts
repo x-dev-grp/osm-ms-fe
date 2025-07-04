@@ -1,6 +1,6 @@
-import { AttributeType, DashboardConfig, FieldType } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
-import { deliveryType } from '../../../shared/models/deleveryType';
-import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
+import {AttributeType, DashboardConfig, FieldType} from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import {deliveryType} from '../../../shared/models/deleveryType';
+import {SearchOperation} from '../../../shared/models/advanced-search/searchOperation';
 
 export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
   title: "Livraisons d'Huile",
@@ -116,28 +116,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       dataTable: true,
       filterable: true
     },
-    {
-      name: 'unitPrice',
-      label: 'Prix unitaire (€/L)',
-      labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.UNIT_PRICE',
-      attributeType: AttributeType.number,
-      fieldType: FieldType.number,
-      exportable: true,
-      sortable: true,
-      dataTable: true,
-      filterable: true
-    },
-    {
-      name: 'price',
-      label: 'Prix total (€)',
-      labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.TOTAL_PRICE',
-      attributeType: AttributeType.number,
-      fieldType: FieldType.number,
-      exportable: true,
-      sortable: true,
-      dataTable: true,
-      filterable: true
-    },
+
     /* Type d'huile */
     {
       name: 'oilType',
@@ -163,17 +142,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       valuePath: 'name',
       valueAttributeType: AttributeType.string
     },
-    /* Camion */
-    {
-      name: 'matriculeCamion',
-      label: 'Matricule camion',
-      labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.TRUCK_PLATE',
-      attributeType: AttributeType.string,
-      fieldType: FieldType.text,
-      exportable: true,
-      dataTable: true,
-      filterable: true
-    },
+
     /* Statut */
     {
       name: 'status',
@@ -200,11 +169,11 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
     statusMapping: false,
     statusAttributeName: 'status',
     actionsList: [
-      { label: 'Consulter', icon: 'visibility', value: 'CONSULTER' },
-      { label: 'Modifier', icon: 'edit', value: 'MODIFIER' },
-      { label: 'Supprimer', icon: 'delete', value: 'SUPPRIMER' },
+      {label: 'Consulter', icon: 'visibility', value: 'READ'},
+      {label: 'Modifier', icon: 'edit', value: 'UPDATE'},
+      {label: 'Supprimer', icon: 'delete', value: 'DELETE'},
       { label: 'Contrôle Qualité', icon: 'fact_check', value: 'QUALITY' },
-      { label: 'Génerer Bon Réception', icon: 'fact_check', value: 'generer_pdf' }
+      {label: 'Génerer Bon Réception', icon: 'fact_check', value: 'GEN_PDF'}
     ]
   },
 
