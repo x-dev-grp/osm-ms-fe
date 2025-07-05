@@ -28,7 +28,8 @@ import { FormGroup } from '@angular/forms';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ApiResponse } from '../../../../shared/models/api-response';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { ToastService } from '../../../../shared/services/toast.service';
 
 interface PaymentHistoryItem {
   id: string;
@@ -110,7 +111,9 @@ export class SupplierPaymentHistoryComponent implements OnInit {
     private snackBar: MatSnackBar,
     private location: Location,
     private bankAccountService: BankAccountService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private translateService: TranslateService,
+    private toastService: ToastService
   ) {
     this.paymentForm = this.fb.group({
       amount: [0, [Validators.required, Validators.min(0.01)]],
@@ -127,7 +130,7 @@ export class SupplierPaymentHistoryComponent implements OnInit {
     this.historyType = this.route.snapshot.queryParams['type'] || 'all';
 
     if (!this.supplierId) {
-      this.error = 'ID du fournisseur non trouvé';
+      this.error = this.translateService.instant('SUPPLIER_PAYMENT.ERRORS.SUPPLIER_ID_NOT_FOUND');
       this.loading = false;
       return;
     }
@@ -169,13 +172,13 @@ export class SupplierPaymentHistoryComponent implements OnInit {
           this.calculateSummaryStatistics();
         } else {
           this.payments = [];
-          this.error = response.message || 'Aucune donnée trouvée';
+          this.error = response.message || this.translateService.instant('SUPPLIER_PAYMENT.ERRORS.NO_DATA_FOUND');
         }
         this.loading = false;
       },
       error: (error) => {
         console.error('Error loading payment history:', error);
-        this.error = 'Erreur lors du chargement de l\'historique des paiements';
+        this.error = this.translateService.instant('SUPPLIER_PAYMENT.ERRORS.LOAD_ERROR');
         this.loading = false;
       }
     });
@@ -232,13 +235,13 @@ export class SupplierPaymentHistoryComponent implements OnInit {
   getStatusLabel(status: string): string {
     switch (status) {
       case 'paid':
-        return 'Payé';
+        return this.translateService.instant('SUPPLIER_PAYMENT.STATUS_PAID');
       case 'partial':
-        return 'Partiel';
+        return this.translateService.instant('SUPPLIER_PAYMENT.STATUS_PARTIAL');
       case 'unpaid':
-        return 'Non payé';
+        return this.translateService.instant('SUPPLIER_PAYMENT.STATUS_UNPAID');
       default:
-        return 'Inconnu';
+        return this.translateService.instant('SUPPLIER_PAYMENT.STATUS_UNKNOWN');
     }
   }
 
@@ -382,20 +385,18 @@ export class SupplierPaymentHistoryComponent implements OnInit {
     console.log('Processing payment:', paymentData);
 
     // TODO: Call payment service to process the payment
-    this.snackBar.open('Paiement traité avec succès', 'Fermer', {
-      duration: 3000,
-      horizontalPosition: 'center',
-      verticalPosition: 'top'
-    });
+    this.toastService.success(
+      this.translateService.instant('SUPPLIER_PAYMENT.PAYMENT_SUCCESS')
+    );
 
     this.closePaymentForm();
     this.loadPaymentHistory(); // Refresh the data
   }
 
   viewPaymentDetails(payment: PaymentHistoryItem): void {
-    this.snackBar.open(`Détails du lot ${payment.lotNumber}`, 'Fermer', {
-      duration: 3000
-    });
+    this.toastService.info(
+      this.translateService.instant('SUPPLIER_PAYMENT.LOT_DETAILS', { lotNumber: payment.lotNumber })
+    );
   }
 
   loadBankAccounts(): void {

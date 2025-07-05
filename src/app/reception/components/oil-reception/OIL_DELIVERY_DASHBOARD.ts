@@ -20,10 +20,10 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
         {
           search: {
             status: {
-              inValues: ['NEW', 'IN_PROGRESS', 'CONTROLLED', 'REFUSED', 'CANCELLED']
+              inValues: ['NEW', 'IN_PROGRESS', 'OIL_CONTROLLED', 'REFUSED', 'CANCELLED']
             },
-            hasQualityControl: {
-              equalValue: false
+            deliveryType: {
+              equalValue: deliveryType.OIL
             }
           }
         }
@@ -169,11 +169,11 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
     statusMapping: false,
     statusAttributeName: 'status',
     actionsList: [
-      {label: 'Consulter', icon: 'visibility', value: 'READ'},
-      {label: 'Modifier', icon: 'edit', value: 'UPDATE'},
-      {label: 'Supprimer', icon: 'delete', value: 'DELETE'},
-      { label: 'Contrôle Qualité', icon: 'fact_check', value: 'QUALITY' },
-      {label: 'Génerer Bon Réception', icon: 'fact_check', value: 'GEN_PDF'}
+      {label: 'ACTIONS.READ', icon: 'visibility', value: 'READ'},
+      {label: 'ACTIONS.UPDATE', icon: 'edit', value: 'UPDATE'},
+      {label: 'ACTIONS.DELETE', icon: 'delete', value: 'DELETE'},
+      {label: 'ACTIONS.OIL_QUALITY', icon: 'fact_check', value: 'OIL_QUALITY'},
+      {label: 'ACTIONS.GEN_PDF', icon: 'fact_check', value: 'GEN_PDF'}
     ]
   },
 

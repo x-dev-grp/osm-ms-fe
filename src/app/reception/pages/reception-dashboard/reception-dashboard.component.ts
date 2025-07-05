@@ -107,6 +107,7 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
   private translate = inject(TranslateService);
 
   constructor() {
+    console.log('ReceptionDashboardComponent constructor called');
     // Subscribe to language changes
     this.translate.onLangChange.subscribe(() => {
       this.updateChartLabels();
@@ -114,6 +115,7 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    console.log('ReceptionDashboardComponent ngOnInit called');
     this.loadData();
   }
 
@@ -203,9 +205,12 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
       .pipe(finalize(() => (this.isLoading = false)), takeUntil(this.destroy$))
       .subscribe({
         next: ({ deliveries, suppliers, storage }) => {
-          this.receptions = deliveries.data || [];
-          this.suppliers = suppliers.data || [];
-          this.storageUnits = storage.data || [];
+          this.receptions = Array.isArray(deliveries.data) ? deliveries.data : [deliveries.data];
+          this.suppliers = Array.isArray(suppliers.data) ? suppliers.data : [suppliers.data];
+          this.storageUnits = Array.isArray(storage.data) ? storage.data : [storage.data];
+          console.log('Receptions:', this.receptions);
+          console.log('Suppliers:', this.suppliers);
+          console.log('Storage Units:', this.storageUnits);
           this.prepareStatsAndCharts();
         },
         error: () => {

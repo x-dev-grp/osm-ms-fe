@@ -16,8 +16,8 @@ import { DashboardStore } from './services/dashboard-state.service';
 import { Action, DashboardConfig, Field } from './models/dashboard-config';
 import { Router } from '@angular/router';
 import { DynamicInput } from './components/dynamic-input/dynamic-input.component';
-import { map, Observable, tap } from 'rxjs';
-import { ConfirmDialogComponent } from '../../component/confirm-dialog/confirm-dialog/confirm-dialog.component';
+
+import { ConfirmationDialogService } from '../../services/confirmation-dialog.service';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -47,6 +47,7 @@ export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
   _router = inject(Router);
   _dialog = inject(MatDialog);
   private cdr = inject(ChangeDetectorRef);
+  private _confirmationDialog = inject(ConfirmationDialogService);
   config = input.required<DashboardConfig>();
   applyAction = output<{ row: any; action: string }>();
   displayedColumns: string[] = [];
@@ -127,17 +128,13 @@ export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
   }
 
 
-  actionApply(action: string, row: any) {
+  actionApply(action: string, row: unknown) {
     if (action === this._delete) {
-      this._dialog.open(ConfirmDialogComponent, {
-        data: { message:"delete" }
-      }).afterClosed().pipe(
-        tap(v=>{
-          if(v)
-            this._store.removeItem( row?.id,this.config().baseURL);
-        })
-      ).subscribe()
-     //
+      this._confirmationDialog.confirmDelete().subscribe(result => {
+        if (result.confirmed) {
+          this._store.removeItem((row as { id: string })?.id, this.config().baseURL);
+        }
+      });
       return;
     }
     this.applyAction.emit({ row: row, action: action });

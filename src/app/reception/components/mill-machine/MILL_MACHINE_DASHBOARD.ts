@@ -23,6 +23,7 @@ export const MILL_MACHINE_DASHBOARD: DashboardConfig = {
     {
       name: 'name',
       label: 'Nom',
+      labelTranslatePath: 'MILL_MACHINE.FIELDS.NAME',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -33,6 +34,7 @@ export const MILL_MACHINE_DASHBOARD: DashboardConfig = {
     {
       name: 'machineType',
       label: 'Type de Machine',
+      labelTranslatePath: 'MILL_MACHINE.FIELDS.MACHINE_TYPE',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -43,6 +45,7 @@ export const MILL_MACHINE_DASHBOARD: DashboardConfig = {
     {
       name: 'manufacturer',
       label: 'Fabricant',
+      labelTranslatePath: 'MILL_MACHINE.FIELDS.MANUFACTURER',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -53,6 +56,7 @@ export const MILL_MACHINE_DASHBOARD: DashboardConfig = {
     {
       name: 'model',
       label: 'Modèle',
+      labelTranslatePath: 'MILL_MACHINE.FIELDS.MODEL',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -63,6 +67,7 @@ export const MILL_MACHINE_DASHBOARD: DashboardConfig = {
     {
       name: 'capacity',
       label: 'Capacité',
+      labelTranslatePath: 'MILL_MACHINE.FIELDS.CAPACITY',
       attributeType: AttributeType.number,
       fieldType: FieldType.number,
       exportable: true,
@@ -74,6 +79,7 @@ export const MILL_MACHINE_DASHBOARD: DashboardConfig = {
     {
       name: 'hoursOperated',
       label: "Heures d'opération",
+      labelTranslatePath: 'MILL_MACHINE.FIELDS.HOURS_OPERATED',
       attributeType: AttributeType.number,
       fieldType: FieldType.number,
       exportable: true,
@@ -84,6 +90,7 @@ export const MILL_MACHINE_DASHBOARD: DashboardConfig = {
     {
       name: 'lastMaintenanceDate',
       label: 'Dernière Maintenance',
+      labelTranslatePath: 'MILL_MACHINE.FIELDS.LAST_MAINTENANCE_DATE',
       attributeType: AttributeType.date,
       fieldType: FieldType.date,
       exportable: true,
@@ -94,6 +101,7 @@ export const MILL_MACHINE_DASHBOARD: DashboardConfig = {
     {
       name: 'nextMaintenanceDate',
       label: 'Prochaine Maintenance',
+      labelTranslatePath: 'MILL_MACHINE.FIELDS.NEXT_MAINTENANCE_DATE',
       attributeType: AttributeType.date,
       fieldType: FieldType.date,
       exportable: true,

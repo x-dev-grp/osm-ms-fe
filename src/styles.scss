@@ -144,6 +144,9 @@
 
 // grid
 @import './app/@theme/styles/grid';
+
+// Enhanced toast styles
+@import './app/shared/styles/toast.scss';
 a.flex {
   display: flex;
   align-items: center;

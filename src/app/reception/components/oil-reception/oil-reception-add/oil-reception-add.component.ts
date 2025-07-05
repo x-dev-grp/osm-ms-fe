@@ -195,11 +195,38 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       return;
     }
 
+    const formValue = this.receptionForm.getRawValue();
     const payload = {
-      ...this.receptionForm.getRawValue(),
+      id: this.isEditing && this.deliveryId ? this.deliveryId : '',
+      deliveryNumber: formValue.deliveryNumber || '',
       deliveryType: 'OIL',
+      lotNumber: formValue.lotNumber || '',
+      deliveryDate: formValue.deliveryDate ? new Date(formValue.deliveryDate) : new Date(),
+      region: formValue.region || null,
+      poidsBrute: Number(formValue.poidsBrute) || 0,
+      poidsNet: Number(formValue.poidsNet) || 0,
+      matriculeCamion: formValue.matriculeCamion || '',
+      etatCamion: formValue.etatCamion || '',
+      supplier: formValue.supplier || null,
+      oliveType: formValue.oliveType || null,
+      globalLotNumber: formValue.globalLotNumber || null,
+      oilVariety: formValue.oilVariety || null,
+      oilQuantity: Number(formValue.oilQuantity) || 0,
+      unitPrice: Number(formValue.unitPrice) || 0,
+      price: Number(formValue.price) || 0,
+      paidAmount: Number(formValue.paidAmount) || 0,
+      unpaidAmount: Number(formValue.unpaidAmount) || 0,
+      oilType: formValue.oilType || null,
+      trtDate: formValue.trtDate ? new Date(formValue.trtDate) : null,
+      operationType: formValue.operationType || OperationType.OIL_PURCHASE,
+      oliveVariety: formValue.oliveVariety || null,
+      sackCount: Number(formValue.sackCount) || 0,
       status: OliveLotStatus.NEW,
-      oilQuantity: this.receptionForm.get('oilQuantity')?.value
+      rendement: Number(formValue.rendement) || 0,
+      oliveQuantity: Number(formValue.oliveQuantity) || 0,
+      parcel: formValue.parcel || '',
+      storageUnit: formValue.storageUnit || null,
+      qualityControlResults: formValue.qualityControlResults || null
     } as UnifiedDelivery;
 
     const op = this.isEditing

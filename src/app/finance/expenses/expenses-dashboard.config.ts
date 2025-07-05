@@ -23,6 +23,7 @@ export const EXPENSES_DASHBOARD_CONFIG: DashboardConfig = {
     {
       name: 'invoiceRef',
       label: 'Référence facture',
+      labelTranslatePath: 'EXPENSES.FIELDS.INVOICE_REF',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -33,6 +34,7 @@ export const EXPENSES_DASHBOARD_CONFIG: DashboardConfig = {
     {
       name: 'purchaseNature',
       label: 'Nature de l\'achat',
+      labelTranslatePath: 'EXPENSES.FIELDS.PURCHASE_NATURE',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -43,6 +45,7 @@ export const EXPENSES_DASHBOARD_CONFIG: DashboardConfig = {
     {
       name: 'object',
       label: 'Objet',
+      labelTranslatePath: 'EXPENSES.FIELDS.OBJECT',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -53,6 +56,7 @@ export const EXPENSES_DASHBOARD_CONFIG: DashboardConfig = {
     {
       name: 'date',
       label: 'Date',
+      labelTranslatePath: 'EXPENSES.FIELDS.DATE',
       attributeType: AttributeType.date,
       fieldType: FieldType.date,
       exportable: true,
@@ -63,6 +67,7 @@ export const EXPENSES_DASHBOARD_CONFIG: DashboardConfig = {
     {
       name: 'amount',
       label: 'Montant',
+      labelTranslatePath: 'EXPENSES.FIELDS.AMOUNT',
       attributeType: AttributeType.number,
       fieldType: FieldType.number,
       exportable: true,

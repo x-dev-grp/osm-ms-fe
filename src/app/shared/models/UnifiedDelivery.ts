@@ -3,6 +3,7 @@ import {OliveLotStatus} from './OliveLotStatus';
 import {SupplierType} from './supplier-type';
 import {StorageUnitDto} from './StorageUnitDto';
 import {QualityControlResultDto} from './QualityControlResultDto';
+import { OperationType } from './operation-type.enum';
 
 export class UnifiedDelivery {
   id!: string;
@@ -25,7 +26,7 @@ export class UnifiedDelivery {
   unpaidAmount?: number | null;
   oilType?: BaseType | null;
   trtDate?: Date | null;
-  operationType?: BaseType | null;
+  operationType?: OperationType ;
   oliveVariety?: BaseType | null;
   sackCount?: number | null;
   oliveType: BaseType ;

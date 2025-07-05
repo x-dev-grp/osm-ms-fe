@@ -28,6 +28,7 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
     {
       name: 'supplierInfo.name',
       label: 'Prénom',
+      labelTranslatePath: 'SUPPLIERS.FIRST_NAME',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -38,6 +39,7 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
     {
       name: 'supplierInfo.lastname',
       label: 'Nom',
+      labelTranslatePath: 'SUPPLIERS.LAST_NAME',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -48,6 +50,7 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
     {
       name: 'supplierInfo.phone',
       label: 'Téléphone',
+      labelTranslatePath: 'SUPPLIERS.PHONE',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -57,6 +60,7 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
     {
       name: 'supplierInfo.email',
       label: 'Email',
+      labelTranslatePath: 'SUPPLIERS.EMAIL',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -66,6 +70,7 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
     {
       name: 'supplierInfo.address',
       label: 'Adresse',
+      labelTranslatePath: 'SUPPLIERS.ADDRESS',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -75,6 +80,7 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
     {
       name: 'genericSupplierType',
       label: 'Type de fournisseur',
+      labelTranslatePath: 'SUPPLIERS.TYPE',
       attributeType: AttributeType.object,
       fieldType: FieldType.text,
       exportable: true,
@@ -86,6 +92,7 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
     {
       name: 'supplierInfo.region',
       label: 'Région',
+      labelTranslatePath: 'SUPPLIERS.REGION',
       attributeType: AttributeType.object,
       fieldType: FieldType.text,
       exportable: true,

@@ -26,6 +26,7 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
     {
       name: 'deliveryNumber',
       label: 'N° Bon de réception',
+      labelTranslatePath: 'RECEPTION_LIST.FIELDS.DELIVERY_NUMBER',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -36,6 +37,7 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
     {
       name: 'lotNumber',
       label: 'N° Lot',
+      labelTranslatePath: 'RECEPTION_LIST.FIELDS.LOT_NUMBER',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -46,6 +48,7 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
     {
       name: 'globalLotNumber',
       label: 'N° Lot Global',
+      labelTranslatePath: 'RECEPTION_LIST.FIELDS.GLOBAL_LOT_NUMBER',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -56,6 +59,7 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
     {
       name: 'deliveryDate',
       label: 'Date de réception',
+      labelTranslatePath: 'RECEPTION_LIST.FIELDS.DELIVERY_DATE',
       attributeType: AttributeType.date,
       fieldType: FieldType.date,
       exportable: true,
@@ -66,6 +70,7 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
     {
       name: 'supplier.supplierInfo',
       label: 'Fournisseur',
+      labelTranslatePath: 'RECEPTION_LIST.FIELDS.SUPPLIER',
       attributeType: AttributeType.object,
       fieldType: FieldType.text,
       exportable: true,
@@ -77,6 +82,7 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
     {
       name: 'region',
       label: 'Région',
+      labelTranslatePath: 'RECEPTION_LIST.FIELDS.REGION',
       attributeType: AttributeType.object,
       fieldType: FieldType.text,
       exportable: true,
@@ -88,6 +94,7 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
     {
       name: 'poidsNet',
       label: 'Poids net (kg)',
+      labelTranslatePath: 'RECEPTION_LIST.FIELDS.NET_WEIGHT',
       attributeType: AttributeType.number,
       fieldType: FieldType.number,
       exportable: true,
@@ -98,6 +105,7 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
     {
       name: 'oilType',
       label: "Type d'huile",
+      labelTranslatePath: 'RECEPTION_LIST.FIELDS.OIL_TYPE',
       attributeType: AttributeType.object,
       fieldType: FieldType.text,
       exportable: true,
@@ -108,6 +116,7 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
     },{
       name: 'oliveType',
       label: "Type d'olive",
+      labelTranslatePath: 'RECEPTION_LIST.FIELDS.OLIVE_TYPE',
       attributeType: AttributeType.object,
       fieldType: FieldType.text,
       exportable: true,
@@ -119,6 +128,7 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
     {
       name: 'operationType',
       label: 'Type de trituration',
+      labelTranslatePath: 'RECEPTION_LIST.FIELDS.OPERATION_TYPE',
       attributeType: AttributeType.object,
       fieldType: FieldType.text,
       exportable: true,
@@ -130,6 +140,7 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
     {
       name: 'matriculeCamion',
       label: 'Matricule camion',
+      labelTranslatePath: 'RECEPTION_LIST.FIELDS.TRUCK_PLATE',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -139,6 +150,7 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
     {
       name: 'status',
       label: 'Statut',
+      labelTranslatePath: 'RECEPTION_LIST.FIELDS.STATUS',
       attributeType: AttributeType.string,
       fieldType: FieldType.select,
       exportable: true,
@@ -146,11 +158,11 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
       dataTable: true,
       filterable: true,
       options: [
-        { label: 'Nouveau', value: 'NEW' },
-        { label: 'En cours', value: 'IN_PROGRESS' },
-        { label: 'Terminé', value: 'COMPLETED' },
-        { label: 'Refusé', value: 'REFUSED' },
-        { label: 'Annulé', value: 'CANCELLED' }
+        { label: 'Nouveau', value: 'NEW', labelTranslatePath: 'RECEPTION_LIST.STATUS.NEW' },
+        { label: 'En cours', value: 'IN_PROGRESS', labelTranslatePath: 'RECEPTION_LIST.STATUS.IN_PROGRESS' },
+        { label: 'Terminé', value: 'COMPLETED', labelTranslatePath: 'RECEPTION_LIST.STATUS.COMPLETED' },
+        { label: 'Refusé', value: 'REFUSED', labelTranslatePath: 'RECEPTION_LIST.STATUS.REFUSED' },
+        { label: 'Annulé', value: 'CANCELLED', labelTranslatePath: 'RECEPTION_LIST.STATUS.CANCELLED' }
       ]
     }
   ],

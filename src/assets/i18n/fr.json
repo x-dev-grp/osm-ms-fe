@@ -1,6 +1,57 @@
 {
   "STANDARD":{
     "ACCESS_RESSOURCE_ERROR": "Vous n'avez pas accès à cette ressource.",
+    "TOAST": {
+      "SUCCESS": "Opération terminée avec succès",
+      "ERROR": "Une erreur s'est produite",
+      "WARNING": "Vérifiez votre saisie",
+      "INFO": "Information",
+      "NETWORK_ERROR": "Erreur de connexion réseau",
+      "VALIDATION_ERROR": "Vérifiez votre saisie et réessayez"
+    },
+    "CONFIRMATION": {
+      "DELETE": {
+        "TITLE": "Confirmer la suppression",
+        "MESSAGE": "Êtes-vous sûr de vouloir supprimer cet élément ? Cette action ne peut pas être annulée.",
+        "CONFIRM": "Supprimer",
+        "CANCEL": "Annuler"
+      },
+      "WARNING": {
+        "TITLE": "Avertissement",
+        "MESSAGE": "Veuillez confirmer cette action.",
+        "CONFIRM": "Continuer",
+        "CANCEL": "Annuler"
+      },
+      "SIMPLE": {
+        "TITLE": "Confirmation",
+        "MESSAGE": "Êtes-vous sûr ?",
+        "CONFIRM": "Oui",
+        "CANCEL": "Non"
+      },
+      "BULK_DELETE": {
+        "TITLE": "Confirmer la suppression en masse",
+        "MESSAGE": "Êtes-vous sûr de vouloir supprimer les éléments sélectionnés ? Cette action ne peut pas être annulée.",
+        "CONFIRM": "Tout supprimer",
+        "CANCEL": "Annuler"
+      },
+      "DATA_LOSS": {
+        "TITLE": "Avertissement de perte de données",
+        "MESSAGE": "Cette action entraînera une perte permanente de données. Êtes-vous sûr de vouloir continuer ?",
+        "CONFIRM": "Continuer",
+        "CANCEL": "Annuler"
+      },
+      "UNSAVED_CHANGES": {
+        "TITLE": "Modifications non sauvegardées",
+        "MESSAGE": "Vous avez des modifications non sauvegardées. Êtes-vous sûr de vouloir partir sans sauvegarder ?",
+        "CONFIRM": "Partir",
+        "CANCEL": "Rester"
+      },
+      "DEFAULT": {
+        "CONFIRM": "Confirmer",
+        "CANCEL": "Annuler"
+      },
+      "DESTRUCTIVE_WARNING": "Cette action est irréversible et supprimera définitivement les données."
+    },
     "BTNS":{
       "ADD": "Ajouter",
       "EDIT": "Modifier",
@@ -11,7 +62,8 @@
       "NEXT": "Suivant",
       "PREVIOUS": "Précédent",
       "SUBMIT": "Soumettre",
-      "SEARCH": "Rechercher"
+      "SEARCH": "Rechercher",
+      "CLOSE": "Fermer"
     },
     "BOOLEAN": {
       "TRUE": "Vrai",
@@ -662,7 +714,18 @@
       "SUCCESS": "Opération terminée avec succès",
       "ERROR": "Une erreur s'est produite",
       "GENPDF": "Générer PDF",
-      "QUALITY": "Qualité"
+      "QUALITY": "Qualité",
+      "OIL_QUALITY": "Contrôle Qualité Huile",
+      "GEN_PDF": "Générer Bon Réception",
+      "OLIVE_QUALITY": "Contrôle Qualité Olives",
+      "UPDATE_OLIVE_QUALITY": "Modifier Qualité Olives",
+      "UPDATE_OIL_QUALITY": "Modifier Qualité Huile",
+      "TO_PROD": "Envoyer en Production",
+      "COMPLETE": "Terminer",
+      "OIL_PAYMENT": "Paiement Huile",
+      "OIL_OUT_TRANSACTION": "Transaction Sortie Huile",
+      "OIL_IN_TRANSACTION": "Transaction Entrée Huile",
+      "OIL_RECEPTION": "Réception Huile"
     },
     "COLUMNS": {
       "TITLE": "Colonnes",
@@ -1228,6 +1291,17 @@
       "PARCEL": "Parcelle"
     }
   },
+  "SUPPLIERS": {
+    "TITLE": "Fournisseurs",
+    "FIRST_NAME": "Prénom",
+    "LAST_NAME": "Nom",
+    "PHONE": "Téléphone",
+    "EMAIL": "Email",
+    "ADDRESS": "Adresse",
+    "TYPE": "Type",
+    "REGION": "Région",
+    "ACTIONS": "Actions"
+  },
   "SUPPLIER": {
     "DETAILS": {
       "PAYMENT_HISTORY_TITLE": "Historique des Paiements",
@@ -1273,6 +1347,14 @@
     }
   },
   "SUPPLIER_PAYMENT": {
+    "TOTAL_DELIVERIES": "Total Livraisons",
+    "TOTAL_PAID": "Total Payé",
+    "TOTAL_UNPAID": "Total Non Payé",
+    "TOTAL_OLIVE_WEIGHT": "Total Poids Olives",
+    "PAYMENT_HISTORY": "Historique des Paiements",
+    "PAID": "Payé",
+    "UNPAID": "Non Payé",
+    "ALL": "Tous",
     "DELIVERY_NUMBER": "N° Livraison",
     "LOT_NUMBER": "N° Lot",
     "DELIVERY_DATE": "Date Livraison",
@@ -1285,8 +1367,23 @@
     "PAY": "Payer",
     "PAYMENT": "Paiement",
     "LOT": "Lot",
-    "CASH_PAYMENT": "Paiement en Espèces",
+    "PAYMENT_METHOD": "Méthode de Paiement",
+    "MONEY_PAYMENT": "Paiement en Argent",
+    "MONEY_PAYMENT_DESC": "Payer en espèces, chèque ou virement bancaire",
     "OIL_PAYMENT": "Paiement en Huile",
+    "OIL_PAYMENT_DESC": "Payer avec l'équivalent en huile d'olive",
+    "CASH_PAYMENT": "Paiement en Espèces",
+    "CASH": "Espèces",
+    "CHECK": "Chèque",
+    "BANK_TRANSFER": "Virement Bancaire",
+    "CHECK_NUMBER": "Numéro de Chèque",
+    "CHECK_NUMBER_PLACEHOLDER": "Ex: CHK-2024-001",
+    "BANK_ACCOUNT": "Compte Bancaire",
+    "AMOUNT": "Montant",
+    "OIL_QUANTITY": "Quantité d'Huile (L)",
+    "OIL_PRICE_PER_KG": "Prix de l'Huile par kg (TND)",
+    "REMAINING_AMOUNT": "Montant Restant",
+    "PROCESS_PAYMENT": "Traiter le Paiement",
     "REFERENCE_PRICE": "Prix de référence",
     "OIL_EQUIVALENT": "Équivalent en huile",
     "PRICE_NEGOTIATION": "Négociation du Prix",
@@ -1294,10 +1391,30 @@
     "ENTER_NEGOTIATED_PRICE": "Entrez le prix négocié",
     "NEGOTIATED_PRICE_HINT": "Prix négocié pour ce paiement spécifique",
     "OIL_QUANTITY_HINT": "Quantité maximum :",
+    "STATUS_PAID": "Payé",
+    "STATUS_PARTIAL": "Partiel",
+    "STATUS_UNPAID": "Non Payé",
+    "STATUS_UNKNOWN": "Inconnu",
+    "PAYMENT_SUCCESS": "Paiement traité avec succès",
+    "LOT_DETAILS": "Détails du lot {{lotNumber}}",
     "ERRORS": {
       "OIL_PRICE_REQUIRED": "Le prix de l'huile est requis",
-      "OIL_QUANTITY_REQUIRED": "La quantité d'huile est requise"
-    }
+      "OIL_QUANTITY_REQUIRED": "La quantité d'huile est requise",
+      "OIL_PRICE_MIN": "Le prix de l'huile doit être supérieur à 0",
+      "OIL_QUANTITY_MIN": "La quantité d'huile doit être supérieure à 0",
+      "AMOUNT_REQUIRED": "Le montant est requis",
+      "AMOUNT_MIN": "Le montant doit être supérieur à 0",
+      "CHECK_NUMBER_REQUIRED": "Le numéro de chèque est requis",
+      "BANK_ACCOUNT_REQUIRED": "Le compte bancaire est requis",
+      "SUPPLIER_ID_NOT_FOUND": "ID du fournisseur non trouvé",
+      "LOAD_ERROR": "Erreur lors du chargement de l'historique des paiements",
+      "NO_DATA_FOUND": "Aucune donnée trouvée"
+    },
+    "PAYMENT_SUMMARY": "Résumé du Paiement",
+    "NEGOTIATED_PRICE": "Prix Négocié",
+    "OIL_VALUE": "Valeur de l'Huile",
+    "CONFIRM_PAYMENT": "Confirmer le Paiement",
+    "CANCEL": "Annuler"
   },
   "OPERATION_TYPE": {
     "BASE": "Trituration sur base",
@@ -1344,6 +1461,163 @@
       "BANK_BRANCH_REQUIRED": "L'agence est requise",
       "CURRENCY_REQUIRED": "La devise est requise",
       "ACCOUNT_TYPE_REQUIRED": "Le type de compte est requis"
+    }
+  },
+  "EXPENSES": {
+    "TITLE": "Dépenses",
+    "ADD_TITLE": "Ajouter une dépense",
+    "EDIT_TITLE": "Modifier la dépense",
+    "DETAILS_TITLE": "Détails de la dépense",
+    "FIELDS": {
+      "INVOICE_REF": "Référence facture",
+      "PURCHASE_NATURE": "Nature de l'achat",
+      "OBJECT": "Objet",
+      "DATE": "Date",
+      "AMOUNT": "Montant"
+    },
+    "ACTIONS": {
+      "CANCEL": "Annuler",
+      "SAVE": "Enregistrer",
+      "UPDATE": "Mettre à jour",
+      "EDIT": "Modifier",
+      "PRINT": "Imprimer"
+    },
+    "ERRORS": {
+      "INVOICE_REF_REQUIRED": "La référence de facture est requise",
+      "PURCHASE_NATURE_REQUIRED": "La nature de l'achat est requise",
+      "OBJECT_REQUIRED": "L'objet est requis",
+      "DATE_REQUIRED": "La date est requise",
+      "AMOUNT_REQUIRED": "Le montant est requis",
+      "AMOUNT_MIN": "Le montant doit être supérieur à 0"
+    }
+  },
+  "OIL_CREDIT": {
+    "TITLE": "Gestion des crédits d'huile",
+    "ADD_TITLE": "Ajouter un crédit d'huile",
+    "EDIT_TITLE": "Modifier le crédit d'huile",
+    "DETAILS_TITLE": "Détails du crédit d'huile",
+    "FIELDS": {
+      "PACKAGING": "Emballage",
+      "QUANTITY": "Quantité",
+      "UNIT": "Unité",
+      "OIL_TYPE": "Type d'huile",
+      "SUPPLIER": "Fournisseur",
+      "CREDIT_STATE": "État du crédit",
+      "CREATED_DATE": "Date de création"
+    },
+    "UNITS": {
+      "LITER": "Litre",
+      "KILOGRAM": "Kilogramme"
+    },
+    "STATES": {
+      "PENDING": "En attente",
+      "APPROVED": "Approuvé",
+      "REJECTED": "Rejeté",
+      "COMPLETED": "Terminé",
+      "CANCELLED": "Annulé"
+    },
+    "ACTIONS": {
+      "CANCEL": "Annuler",
+      "SAVE": "Enregistrer",
+      "UPDATE": "Mettre à jour",
+      "EDIT": "Modifier"
+    },
+    "ERRORS": {
+      "PACKAGING_REQUIRED": "L'emballage est requis",
+      "QUANTITY_REQUIRED": "La quantité est requise",
+      "QUANTITY_MIN": "La quantité doit être supérieure à 0",
+      "UNIT_REQUIRED": "L'unité est requise",
+      "OIL_TYPE_REQUIRED": "Le type d'huile est requis",
+      "SUPPLIER_REQUIRED": "Le fournisseur est requis",
+      "CREDIT_STATE_REQUIRED": "L'état du crédit est requis"
+    }
+  },
+  "QUALITY_CONTROL_RULE": {
+    "TITLE": "Règles de contrôle qualité",
+    "ADD_TITLE": "Ajouter une règle de contrôle qualité",
+    "EDIT_TITLE": "Modifier la règle de contrôle qualité",
+    "DETAILS_TITLE": "Détails de la règle de contrôle qualité",
+    "FIELDS": {
+      "RULE_NAME": "Nom de la règle",
+      "RULE_TYPE": "Type de règle",
+      "OIL_QC": "Contrôle qualité huile"
+    },
+    "RULE_TYPES": {
+      "NUMERIC": "Numérique",
+      "STRING": "Texte",
+      "BOOLEAN": "Booléen"
+    },
+    "ACTIONS": {
+      "CANCEL": "Annuler",
+      "SAVE": "Enregistrer",
+      "UPDATE": "Mettre à jour",
+      "EDIT": "Modifier"
+    },
+    "ERRORS": {
+      "RULE_NAME_REQUIRED": "Le nom de la règle est requis",
+      "RULE_TYPE_REQUIRED": "Le type de règle est requis",
+      "OIL_QC_REQUIRED": "Le contrôle qualité huile est requis"
+    }
+  },
+  "MILL_MACHINE": {
+    "TITLE": "Machines de moulin",
+    "ADD_TITLE": "Ajouter une machine de moulin",
+    "EDIT_TITLE": "Modifier la machine de moulin",
+    "DETAILS_TITLE": "Détails de la machine de moulin",
+    "FIELDS": {
+      "NAME": "Nom",
+      "MACHINE_TYPE": "Type de machine",
+      "MANUFACTURER": "Fabricant",
+      "MODEL": "Modèle",
+      "CAPACITY": "Capacité",
+      "HOURS_OPERATED": "Heures d'opération",
+      "LAST_MAINTENANCE_DATE": "Dernière maintenance",
+      "NEXT_MAINTENANCE_DATE": "Prochaine maintenance"
+    },
+    "ACTIONS": {
+      "CANCEL": "Annuler",
+      "SAVE": "Enregistrer",
+      "UPDATE": "Mettre à jour",
+      "EDIT": "Modifier",
+      "MAINTENANCE": "Maintenance"
+    },
+    "ERRORS": {
+      "NAME_REQUIRED": "Le nom est requis",
+      "MACHINE_TYPE_REQUIRED": "Le type de machine est requis",
+      "MANUFACTURER_REQUIRED": "Le fabricant est requis",
+      "MODEL_REQUIRED": "Le modèle est requis",
+      "CAPACITY_REQUIRED": "La capacité est requise",
+      "CAPACITY_MIN": "La capacité doit être supérieure à 0"
+    }
+  },
+  "RECEPTION_LIST": {
+    "TITLE": "Réceptions d'huile et triturations",
+    "FIELDS": {
+      "DELIVERY_NUMBER": "N° Bon de réception",
+      "LOT_NUMBER": "N° Lot",
+      "GLOBAL_LOT_NUMBER": "N° Lot Global",
+      "DELIVERY_DATE": "Date de réception",
+      "SUPPLIER": "Fournisseur",
+      "REGION": "Région",
+      "NET_WEIGHT": "Poids net (kg)",
+      "OIL_TYPE": "Type d'huile",
+      "OLIVE_TYPE": "Type d'olive",
+      "OPERATION_TYPE": "Type de trituration",
+      "TRUCK_PLATE": "Matricule camion",
+      "STATUS": "Statut"
+    },
+    "STATUS": {
+      "NEW": "Nouveau",
+      "IN_PROGRESS": "En cours",
+      "COMPLETED": "Terminé",
+      "REFUSED": "Refusé",
+      "CANCELLED": "Annulé"
+    },
+    "ACTIONS": {
+      "VIEW": "Consulter",
+      "EDIT": "Modifier",
+      "DELETE": "Supprimer",
+      "GENERATE_PDF": "Générer bon de réception"
     }
   }
 }

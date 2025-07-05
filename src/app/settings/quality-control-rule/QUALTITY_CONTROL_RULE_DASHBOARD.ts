@@ -24,6 +24,7 @@ export const QUALTITY_CONTROL_RULE_DASHBOARD: DashboardConfig = {
     {
       name: 'ruleName',
       label: 'Rule Name',
+      labelTranslatePath: 'QUALITY_CONTROL_RULE.FIELDS.RULE_NAME',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -33,6 +34,7 @@ export const QUALTITY_CONTROL_RULE_DASHBOARD: DashboardConfig = {
     {
       name: 'ruleType',
       label: 'Type Rule',
+      labelTranslatePath: 'QUALITY_CONTROL_RULE.FIELDS.RULE_TYPE',
       attributeType: AttributeType.enum,
       fieldType: FieldType.select,
       exportable: true,
@@ -40,15 +42,16 @@ export const QUALTITY_CONTROL_RULE_DASHBOARD: DashboardConfig = {
       filterable: true,
       dataTable: true,
       options: [
-        {label: 'NUMERIC', value: 'NUMERIC'},
-        {label: 'STRING', value: 'STRING'},
-        {label: 'BOOLEAN', value: 'BOOLEAN'}
+        {label: 'NUMERIC', value: 'NUMERIC', labelTranslatePath: 'QUALITY_CONTROL_RULE.RULE_TYPES.NUMERIC'},
+        {label: 'STRING', value: 'STRING', labelTranslatePath: 'QUALITY_CONTROL_RULE.RULE_TYPES.STRING'},
+        {label: 'BOOLEAN', value: 'BOOLEAN', labelTranslatePath: 'QUALITY_CONTROL_RULE.RULE_TYPES.BOOLEAN'}
       ],
       defaultFilter: true
     },
     {
       name: 'oilQc',
       label: 'Controle Qualtiy Oil ',
+      labelTranslatePath: 'QUALITY_CONTROL_RULE.FIELDS.OIL_QC',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,

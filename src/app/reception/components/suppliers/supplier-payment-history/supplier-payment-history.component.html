@@ -147,7 +147,7 @@
           <mat-card-title>
             <div class="payment-header">
               <span>{{ 'SUPPLIER_PAYMENT.PAYMENT' | translate }} - {{ 'SUPPLIER_PAYMENT.LOT' | translate }} {{ selectedPayment.lotNumber }}</span>
-              <button mat-icon-button (click)="closePaymentForm()" aria-label="Fermer">
+              <button mat-icon-button (click)="closePaymentForm()" aria-label="{{ 'ACTIONS.CLOSE' | translate }}">
                 <mat-icon>close</mat-icon>
               </button>
             </div>
@@ -243,7 +243,7 @@
                   <mat-form-field appearance="outline" class="full-width">
                     <mat-label>{{ 'SUPPLIER_PAYMENT.CHECK_NUMBER' | translate }}</mat-label>
                     <input matInput [formControl]="paymentForm.get('checkNumber')"
-                           placeholder="Ex: CHK-2024-001">
+                           placeholder="{{ 'SUPPLIER_PAYMENT.CHECK_NUMBER_PLACEHOLDER' | translate }}">
                     <mat-error *ngIf="paymentForm.get('checkNumber')?.hasError('required')">
                       {{ 'SUPPLIER_PAYMENT.ERRORS.CHECK_NUMBER_REQUIRED' | translate }}
                     </mat-error>

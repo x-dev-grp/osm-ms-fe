@@ -20,7 +20,7 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
         {
           search: {
             status: {
-              inValues: ['NEW', 'IN_PROGRESS', 'CONTROLLED', 'REFUSED', 'CANCELLED']
+              inValues: ['NEW', 'IN_PROGRESS', 'OLIVE_CONTROLLED', 'REFUSED', 'CANCELLED']
             },
             deliveryType: {
               equalValue: deliveryType.OLIVE
