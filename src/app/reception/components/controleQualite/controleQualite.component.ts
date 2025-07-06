@@ -38,6 +38,7 @@ export class ControleQualiteComponent implements OnInit {
   rules: QualityControlRule[] = [];
   dynamicForm!: FormGroup;
   staticForm!: FormGroup;   // Pour les champs unitPrice, price, storageUnit
+  mainForm!: FormGroup;
   receptionId: string | null = null;
   deliveryData: UnifiedDelivery | undefined;
   submitted = false;
@@ -62,7 +63,6 @@ export class ControleQualiteComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Use input deliveryId if provided, otherwise get from route
     this.receptionId = this.deliveryId || this.route.snapshot.paramMap.get('id');
     this.loadReception();
     this.loadStorageUnits();
@@ -76,17 +76,12 @@ export class ControleQualiteComponent implements OnInit {
       price: [null, Validators.required],
       storageUnit: [null, Validators.required]
     });
-
-    // Mise à jour automatique du champ 'price' lorsque 'unitPrice' change
     this.staticForm.get('unitPrice')?.valueChanges.subscribe((unitPrice: number) => {
       const oilQty = this.deliveryData?.oilQuantity || 0;
       const calculatedPrice = (unitPrice || 0) * oilQty;
-
-      // Arrondi numérique à 3 décimales
       const roundedPrice = Math.round((calculatedPrice + Number.EPSILON) * 1000) / 1000;
       this.staticForm.get('price')?.setValue(roundedPrice, {emitEvent: false});
     });
-
     this.staticForm.get('storageUnit')?.valueChanges.subscribe((value) => {
       console.log('FormControl storageUnit a changé :', value);
     });
@@ -248,6 +243,24 @@ export class ControleQualiteComponent implements OnInit {
     });
 
     this.dynamicForm = this.fb.group(group);
+    // Merge dynamicForm and staticForm into mainForm
+    this.mainForm = this.fb.group({
+      ...this.dynamicForm.controls,
+      unitPrice: this.staticForm.get('unitPrice'),
+      price: this.staticForm.get('price'),
+      storageUnit: this.staticForm.get('storageUnit')
+    });
+    // Subscribe to price calculation as before
+    this.mainForm.get('unitPrice')?.valueChanges.subscribe((unitPrice: number) => {
+      const oilQty = this.deliveryData?.oilQuantity || 0;
+      const calculatedPrice = (unitPrice || 0) * oilQty;
+      const roundedPrice = Math.round((calculatedPrice + Number.EPSILON) * 1000) / 1000;
+      this.mainForm.get('price')?.setValue(roundedPrice, {emitEvent: false});
+    });
+    // Subscribe to storageUnit changes as before
+    this.mainForm.get('storageUnit')?.valueChanges.subscribe((value) => {
+      console.log('FormControl storageUnit a changé (mainForm) :', value);
+    });
     console.log('Contenu du dynamicForm :', this.dynamicForm.controls);
 
     // Déterminer les clés à observer selon le type de livraison
@@ -263,14 +276,14 @@ export class ControleQualiteComponent implements OnInit {
 
     // S'abonner aux changements des champs pertinents
     ruleKeysToWatch.forEach((ruleKey) => {
-      const control = this.dynamicForm.get(ruleKey);
+      const control = this.mainForm.get(ruleKey);
       if (control) {
         control.valueChanges.subscribe(() => {
           // Log toutes les valeurs des champs concernés
-          const infesteesVal = this.dynamicForm.get(this.findRuleKey('Infestees'))?.value;
-          const fermenteesVal = this.dynamicForm.get(this.findRuleKey('Fermentees'))?.value;
-          const endommageesVal = this.dynamicForm.get(this.findRuleKey('Endommagees'))?.value;
-          const categorieVal = this.dynamicForm.get(this.findRuleKey('Categorie'))?.value;
+          const infesteesVal = this.mainForm.get(this.findRuleKey('Infestees'))?.value;
+          const fermenteesVal = this.mainForm.get(this.findRuleKey('Fermentees'))?.value;
+          const endommageesVal = this.mainForm.get(this.findRuleKey('Endommagees'))?.value;
+          const categorieVal = this.mainForm.get(this.findRuleKey('Categorie'))?.value;
 
           console.log(' Debug valeurs OLIVE :');
           console.log('Infestees:', infesteesVal);
@@ -289,12 +302,12 @@ export class ControleQualiteComponent implements OnInit {
     return this.rules.find((r) => r.ruleKey === ruleKey)?.ruleType || 'NUMERIC';
   }
 
-  onSubmit(): void {
+  onSave(): void {
     this.submitted = true;
 
-    if (this.dynamicForm.invalid) {
+    if (this.mainForm.invalid) {
       this.message = 'Le formulaire contient des erreurs. Veuillez corriger les champs.';
-      this.dynamicForm.markAllAsTouched();
+      this.mainForm.markAllAsTouched();
       this.cdr.detectChanges();
 
       this.snackBar.open('Le formulaire contient des erreurs.', 'Fermer', {
@@ -315,14 +328,45 @@ export class ControleQualiteComponent implements OnInit {
       return;
     }
 
+    // Save static fields (unitPrice, price, storageUnit) first
+    if (this.deliveryData) {
+      this.deliveryData.unitPrice = this.mainForm.get('unitPrice')?.value;
+      this.deliveryData.price = this.mainForm.get('price')?.value;
+      // Find the selected storage unit object by ID
+      const selectedStorageUnitId = this.mainForm.get('storageUnit')?.value;
+      if (selectedStorageUnitId) {
+        const selectedStorageUnit = this.storageUnits.find(unit => unit.id === selectedStorageUnitId);
+        this.deliveryData.storageUnit = selectedStorageUnit || null;
+      } else {
+        this.deliveryData.storageUnit = null;
+      }
+      this.isLoading = true;
+      this.deliveryService.updateDelivery(this.deliveryData).subscribe({
+        next: (updatedDelivery) => {
+          this.deliveryData = Array.isArray(updatedDelivery.data) ? updatedDelivery.data[0] : updatedDelivery.data;
+          // Now save QC results
+          this.saveQualityControlResults();
+        },
+        error: () => {
+          this.snackBar.open('Erreur lors de l\'enregistrement des données financières.', 'Fermer', {
+            duration: 4000,
+            panelClass: ['mat-snack-bar-container-error']
+          });
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        }
+      });
+    }
+  }
+
+  saveQualityControlResults(): void {
+    // Handle dynamic fields
     const updates: QualityControlResultDto[] = [];
     const creates: QualityControlResultDto[] = [];
-
-    Object.entries(this.dynamicForm.value as Record<string, unknown>).forEach(([ruleKey, rawValue]) => {
+    Object.keys(this.dynamicForm.controls).forEach((ruleKey) => {
       const rule = this.rules.find((r) => r.ruleKey === ruleKey);
-      if (!rule) throw new Error(`Aucune règle trouvée pour la clé : ${ruleKey}`);
-
-      // Validation par type
+      if (!rule) return;
+      const rawValue = this.mainForm.get(ruleKey)?.value;
       let isValid = false;
       if (rule.ruleType === 'NUMERIC') {
         isValid = typeof rawValue === 'number' && !isNaN(rawValue);
@@ -331,31 +375,23 @@ export class ControleQualiteComponent implements OnInit {
       } else if (rule.ruleType === 'STRING') {
         isValid = typeof rawValue === 'string' && rawValue.trim() !== '';
       }
-
       if (!isValid) {
         throw new Error(`Valeur mesurée invalide pour la règle : ${ruleKey}`);
       }
-
       const existingResult = this.qualityControlResults.find((result) => result.rule?.ruleKey === ruleKey);
-
       const dto: QualityControlResultDto = {
         id: existingResult?.id,
         rule: rule,
         measuredValue: String(rawValue),
-        deliveryId: this.deliveryData!.id // ✅ Envoie uniquement l'ID
+        deliveryId: this.deliveryData!.id
       };
-
       if (existingResult?.id) {
         updates.push(dto);
       } else {
         creates.push(dto);
       }
     });
-
-    this.isLoading = true;
-
     const requests: Observable<{ success: boolean; message?: string }>[] = [];
-
     if (updates.length > 0) {
       requests.push(
         this.qcResService.updateResults(updates).pipe(
@@ -366,19 +402,16 @@ export class ControleQualiteComponent implements OnInit {
         )
       );
     }
-
     if (creates.length > 0) {
       requests.push(
         this.qcResService.createResults(creates).pipe(
           catchError((err) => {
             console.error('Erreur lors de la création:', err);
-            console.log('Payload ajout :', creates);
             return of({success: false, message: 'Erreur lors de la création des résultats.'});
           })
         )
       );
     }
-
     if (requests.length === 0) {
       this.snackBar.open('Aucun changement à enregistrer.', 'Fermer', {
         duration: 3000,
@@ -388,49 +421,36 @@ export class ControleQualiteComponent implements OnInit {
       this.cdr.detectChanges();
       return;
     }
-
     forkJoin(requests).subscribe({
       next: (responses) => {
         const allSuccessful = responses.every((res) => res.success);
         const anySuccessful = responses.some((res) => res.success);
-
         let message = '';
         if (allSuccessful) {
           if (updates.length > 0 && creates.length > 0) {
             message = 'Résultats mis à jour et créés avec succès.';
           } else if (updates.length > 0) {
             message = 'Résultats mis à jour avec succès.';
-          } else {
+          } else if (creates.length > 0) {
             message = 'Résultats créés avec succès.';
           }
-
-          this.snackBar.open(message, 'Fermer', {
-            duration: 4000,
-            panelClass: ['mat-snack-bar-container-success']
-          });
-
-          this.dynamicForm.reset();
-          this.submitted = false;
-          this.loadQualityControlResults();
+        } else if (anySuccessful) {
+          message = 'Certains résultats ont été enregistrés, d\'autres ont échoué.';
         } else {
-          const errorMessage = anySuccessful
-            ? 'Certains résultats ont été enregistrés, mais certains échecs sont survenus.'
-            : 'Échec de l\'enregistrement des résultats.';
-
-          this.snackBar.open(errorMessage, 'Fermer', {
-            duration: 5000,
-            panelClass: ['mat-snack-bar-container-error']
-          });
+          message = 'Aucun résultat n\'a pu être enregistré.';
         }
-
+        this.snackBar.open(message, 'Fermer', {
+          duration: 4000,
+          panelClass: allSuccessful ? ['mat-snack-bar-container-success'] : ['mat-snack-bar-container-warning']
+        });
         this.isLoading = false;
         this.cdr.detectChanges();
+        this.loadQualityControlResults();
       },
-      error: (err) => {
-        console.error("Erreur lors de l'enregistrement:", err);
-        this.snackBar.open('Une erreur serveur est survenue.', 'Fermer', {
-          duration: 6000,
-          panelClass: ['mat-snack-bar-container-critical']
+      error: () => {
+        this.snackBar.open('Erreur lors de l\'enregistrement des résultats de contrôle qualité.', 'Fermer', {
+          duration: 4000,
+          panelClass: ['mat-snack-bar-container-error']
         });
         this.isLoading = false;
         this.cdr.detectChanges();
@@ -514,100 +534,6 @@ export class ControleQualiteComponent implements OnInit {
         console.error('Error loading storage units:', error);
         this.snackBar.open('Error loading storage units', 'Close', {duration: 3000});
         this.isLoading = false;
-      }
-    });
-  }
-
-  onSubmitStaticForm(): void {
-    if (this.staticForm.invalid || !this.deliveryData) {
-      console.log('Formulaire invalide ou données de livraison manquantes');
-      return;
-    }
-
-    console.log('=== SUBMITTING STATIC FORM (STORAGE UNIT + PRICE) ===');
-
-    // Get form values
-    const formValues = this.staticForm.value;
-    // Update price and unitPrice
-    this.deliveryData.unitPrice = formValues.unitPrice;
-    this.deliveryData.price = formValues.price;
-
-    // Handle storage unit - find the selected storage unit object by ID
-    if (formValues.storageUnit) {
-      const selectedStorageUnit = this.storageUnits.find(unit => unit.id === formValues.storageUnit);
-      if (selectedStorageUnit) {
-        this.deliveryData.storageUnit = selectedStorageUnit;
-
-      } else {
-
-        this.translate.get('CONTROLE_QUALITE.STORAGE_UNIT.ERRORS.NOT_FOUND').subscribe((message: string) => {
-          this.snackBar.open(message, this.translate.instant('STANDARD.BTNS.CANCEL'), {
-            duration: 3000,
-            panelClass: ['mat-snack-bar-container-error']
-          });
-        });
-        return;
-      }
-    } else {
-      this.deliveryData.storageUnit = null;
-      console.log('No storage unit selected - setting to null');
-    }
-
-    console.log('Final deliveryData to save:', {
-      unitPrice: this.deliveryData.unitPrice,
-      price: this.deliveryData.price,
-      storageUnit: this.deliveryData.storageUnit,
-      storageUnitId: this.deliveryData.storageUnit?.id,
-      storageUnitName: this.deliveryData.storageUnit?.name
-    });
-
-    console.log('=== END SUBMITTING STATIC FORM ===');
-
-    // Envoyer les données mises à jour au backend
-    this.isLoading = true;
-    this.deliveryService.updateDelivery(this.deliveryData).subscribe({
-      next: (updatedDelivery) => {
-        console.log('=== FORM SUBMIT SUCCESS ===');
-        console.log('Updated delivery response:', updatedDelivery);
-
-        // Handle both array and single object responses
-        const deliveryData = Array.isArray(updatedDelivery.data) ? updatedDelivery.data[0] : updatedDelivery.data;
-        console.log('Updated delivery data:', {
-          unitPrice: deliveryData?.unitPrice,
-          price: deliveryData?.price,
-          storageUnit: deliveryData?.storageUnit
-        });
-
-        // Update the local delivery data with the response
-        this.deliveryData = deliveryData;
-
-        this.message = this.translate.instant('CONTROLE_QUALITE.MESSAGES.SUCCESS.SAVE');
-        this.isLoading = false;
-        this.cdr.detectChanges();
-
-        // Afficher un message de succès avec traduction
-        const storageUnitName = this.deliveryData.storageUnit?.name || this.translate.instant('CONTROLE_QUALITE.MESSAGES.INFO.NO_STORAGE_UNIT');
-        this.translate.get('CONTROLE_QUALITE.MESSAGES.SUCCESS.STORAGE_UNIT_SAVED', {name: storageUnitName}).subscribe((message: string) => {
-          this.snackBar.open(message, this.translate.instant('STANDARD.BTNS.CANCEL'), {
-            duration: 4000,
-            panelClass: ['mat-snack-bar-container-success']
-          });
-        });
-      },
-      error: (err) => {
-        console.error('=== FORM SUBMIT ERROR ===');
-        console.error("Erreur lors de la mise à jour", err);
-        this.message = this.translate.instant('CONTROLE_QUALITE.MESSAGES.ERROR.SAVE');
-        this.isLoading = false;
-        this.cdr.detectChanges();
-
-        // Afficher un message d'erreur avec traduction
-        this.translate.get('CONTROLE_QUALITE.MESSAGES.ERROR.SAVE').subscribe((message: string) => {
-          this.snackBar.open(message, this.translate.instant('STANDARD.BTNS.CANCEL'), {
-            duration: 4000,
-            panelClass: ['mat-snack-bar-container-error']
-          });
-        });
       }
     });
   }

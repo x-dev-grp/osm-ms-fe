@@ -31,20 +31,18 @@
   </div>
 
   <!-- Dynamic Quality Control Form -->
-  <div *ngIf="dynamicForm && !isLoading && !message" class="quality-content">
-    <form [formGroup]="dynamicForm" class="quality-form">
-      <!-- Quality Parameters Section -->
+  <div *ngIf="mainForm && !isLoading && !message" class="quality-content">
+    <form [formGroup]="mainForm" class="quality-form">
+      <!-- Quality Parameters Section (Dynamic) -->
       <div class="form-section">
         <div class="section-header">
           <mat-icon>tune</mat-icon>
           <h3>{{ 'CONTROLE_QUALITE.SECTIONS.PARAMETERS' | translate }}</h3>
         </div>
-
         <div class="parameters-grid">
           <div *ngFor="let control of dynamicForm.controls | keyvalue"
                [hidden]="control.key === 'testSensoriel' || control.key === 'classificationHuile'"
                class="parameter-card">
-
             <div class="parameter-header">
               <label [for]="control.key" class="parameter-label">
                 {{ getRuleName(control.key) }}
@@ -53,48 +51,43 @@
                 {{ getRuleType(control.key) }}
               </div>
             </div>
-
             <!-- NUMERIC Input -->
             <ng-container *ngIf="getRuleType(control.key) === 'NUMERIC'; else nonNumericInput">
               <mat-form-field appearance="outline" class="parameter-field">
                 <mat-label>{{ getRuleName(control.key) }}</mat-label>
                 <input [disabled]="isQualityControlDone"
                        [formControlName]="control.key"
-                       [id]="control.key" [placeholder]="'CONTROLE_QUALITE.PLACEHOLDER.ENTER_VALUE' | translate"
+                       [id]="control.key"
+                       [placeholder]="'CONTROLE_QUALITE.PLACEHOLDER.ENTER_VALUE' | translate"
                        matInput
                        step="0.01"
                        type="number">
                 <mat-icon matSuffix>calculate</mat-icon>
-                <mat-error *ngIf="dynamicForm.get(control.key)?.hasError('required')">
+                <mat-error *ngIf="mainForm.get(control.key)?.hasError('required')">
                   {{ 'CONTROLE_QUALITE.FORM.VALIDATION.REQUIRED' | translate }}
                 </mat-error>
               </mat-form-field>
             </ng-container>
-
             <!-- STRING & BOOLEAN Inputs -->
             <ng-template #nonNumericInput>
               <ng-container [ngSwitch]="getRuleType(control.key)">
-
                 <!-- STRING Select -->
                 <mat-form-field *ngSwitchCase="'STRING'" appearance="outline" class="parameter-field">
                   <mat-label>{{ getRuleName(control.key) }}</mat-label>
-                  <mat-select [disabled]="isQualityControlDone" [formControlName]="control.key" [id]="control.key"
-                              step="0.01">
+                  <mat-select [disabled]="isQualityControlDone" [formControlName]="control.key" [id]="control.key">
                     <mat-option *ngFor="let option of getTextOptions(control.key)" [value]="option">
                       {{ option }}
                     </mat-option>
                   </mat-select>
                   <mat-icon matSuffix>list</mat-icon>
-                  <mat-error *ngIf="dynamicForm.get(control.key)?.hasError('required')">
+                  <mat-error *ngIf="mainForm.get(control.key)?.hasError('required')">
                     {{ 'CONTROLE_QUALITE.FORM.VALIDATION.REQUIRED' | translate }}
                   </mat-error>
                 </mat-form-field>
-
                 <!-- BOOLEAN Select -->
                 <mat-form-field *ngSwitchCase="'BOOLEAN'" appearance="outline" class="parameter-field">
                   <mat-label>{{ getRuleName(control.key) }}</mat-label>
-                  <mat-select [disabled]="isQualityControlDone" [formControlName]="control.key" [id]="control.key"
-                              step="0.01">
+                  <mat-select [disabled]="isQualityControlDone" [formControlName]="control.key" [id]="control.key">
                     <mat-option [value]="false">
                       <mat-icon>cancel</mat-icon>
                       {{ 'STANDARD.BOOLEAN.FALSE' | translate }}
@@ -106,36 +99,18 @@
                   </mat-select>
                   <mat-icon matSuffix>toggle_on</mat-icon>
                 </mat-form-field>
-
               </ng-container>
             </ng-template>
           </div>
         </div>
       </div>
 
-      <!-- Submit Button -->
-      <div class="form-actions">
-        <button (click)="onSubmit()"
-                [disabled]="dynamicForm.invalid || isLoading || isQualityControlDone"
-                class="submit-button"
-                color="primary"
-                mat-raised-button>
-          <mat-icon>save</mat-icon>
-          {{ 'CONTROLE_QUALITE.BUTTONS.SUBMIT' | translate }}
-        </button>
-      </div>
-    </form>
-  </div>
-
-  <!-- Static Form (Financial & Storage) -->
-  <div *ngIf="staticForm && !isLoading && !isOliveDelivery() && !message" class="quality-content">
-    <form [formGroup]="staticForm" class="quality-form">
+      <!-- Financial & Storage Section (Static) -->
       <div class="form-section">
         <div class="section-header">
           <mat-icon>account_balance</mat-icon>
           <h3>{{ 'CONTROLE_QUALITE.SECTIONS.FINANCIAL' | translate }}</h3>
         </div>
-
         <div class="financial-grid">
           <!-- Unit Price -->
           <div class="financial-card">
@@ -145,15 +120,13 @@
                      [readonly]="isReadOnlyForm"
                      formControlName="unitPrice"
                      matInput step="0.01"
-
                      type="number">
               <mat-icon matSuffix>attach_money</mat-icon>
-              <mat-error *ngIf="staticForm.get('unitPrice')?.hasError('required')">
+              <mat-error *ngIf="mainForm.get('unitPrice')?.hasError('required')">
                 {{ 'CONTROLE_QUALITE.FORM.VALIDATION.REQUIRED' | translate }}
               </mat-error>
             </mat-form-field>
           </div>
-
           <!-- Total Price -->
           <div class="financial-card">
             <mat-form-field appearance="outline" class="financial-field">
@@ -164,12 +137,11 @@
                      step="0.01"
                      type="number">
               <mat-icon matSuffix>account_balance_wallet</mat-icon>
-              <mat-error *ngIf="staticForm.get('price')?.hasError('required')">
+              <mat-error *ngIf="mainForm.get('price')?.hasError('required')">
                 {{ 'CONTROLE_QUALITE.FORM.VALIDATION.REQUIRED' | translate }}
               </mat-error>
             </mat-form-field>
           </div>
-
           <!-- Storage Unit -->
           <div class="financial-card">
             <mat-form-field appearance="outline" class="financial-field">
@@ -187,7 +159,7 @@
                 </mat-option>
               </mat-select>
               <mat-icon matSuffix>warehouse</mat-icon>
-              <mat-error *ngIf="staticForm.get('storageUnit')?.hasError('required')">
+              <mat-error *ngIf="mainForm.get('storageUnit')?.hasError('required')">
                 {{ 'CONTROLE_QUALITE.STORAGE_UNIT.ERRORS.REQUIRED' | translate }}
               </mat-error>
             </mat-form-field>
@@ -195,15 +167,15 @@
         </div>
       </div>
 
-      <!-- Submit Button -->
+      <!-- Single Save Button -->
       <div class="form-actions">
-        <button (click)="onSubmitStaticForm()"
-                [disabled]="staticForm.invalid || isReadOnlyForm"
+        <button (click)="onSave()"
+                [disabled]="mainForm.invalid || isLoading || isQualityControlDone || isReadOnlyForm"
                 class="submit-button"
-                color="accent"
+                color="primary"
                 mat-raised-button>
-          <mat-icon>verified</mat-icon>
-          {{ 'CONTROLE_QUALITE.BUTTONS.VALIDATE' | translate }}
+          <mat-icon>save</mat-icon>
+          {{ 'CONTROLE_QUALITE.BUTTONS.SAVE' | translate }}
         </button>
       </div>
     </form>
