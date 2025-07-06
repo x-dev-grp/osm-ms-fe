@@ -1,27 +1,26 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SupplierTypeService } from '../../../../shared/services/supplier.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { OsmDashboard } from '../../../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
-import { AttributeType, FieldType } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { AttributeType, DashboardConfig, FieldType } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
 import { SearchOperation } from '../../../../shared/models/advanced-search/searchOperation';
 import { SupplierType } from '../../../../shared/models/supplier-type';
-import { Location } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
+import { deliveryType } from '../../../../shared/models/deleveryType';
 
 @Component({
   selector: 'app-supplier-details',
   templateUrl: './supplier-details.component.html',
   styleUrls: ['./supplier-details.component.scss'],
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatCardModule, MatIconModule, MatProgressSpinnerModule, OsmDashboard,TranslateModule]
+  imports: [CommonModule, MatButtonModule, MatCardModule, MatIconModule, MatProgressSpinnerModule, OsmDashboard, TranslateModule]
 })
 export class SupplierDetailsComponent implements OnInit, OnDestroy {
   supplierData: SupplierType | null = null;
@@ -30,8 +29,8 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
   paidCount: number = 0;
   unpaidCount: number = 0;
   dashboardConfig: DashboardConfig;
-  private destroy$ = new Subject<void>();
   supplierId: string | null = null;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private router: Router,
@@ -51,6 +50,32 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
       this.router.navigate(['/reception/fournisseur']);
     }
   }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  onBack(): void {
+    this.router.navigate(['/reception/fournisseur']);
+  }
+
+  navigateToHistory(type: 'paid' | 'unpaid'): void {
+    if (this.supplierId) {
+      this.router.navigate(['/reception/fournisseur/payments', this.supplierId], {
+        queryParams: { type }
+      });
+    }
+  }
+
+  handleAction(event: { row: SupplierType; action: string }): void {
+    const { action } = event;
+    switch (action) {
+      default:
+        console.warn('Unknown action:', action);
+    }
+  }
+
   private setupConfig(supplierId: string) {
     this.dashboardConfig = {
       title: 'Détails du Fournisseur',
@@ -84,7 +109,7 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
           fieldType: FieldType.text,
           exportable: true,
           sortable: true,
-          dataTable: true,
+          dataTable: false,
           filterable: true
         },
         {
@@ -96,6 +121,21 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
           sortable: true,
           dataTable: true,
           filterable: true
+        },
+        {
+          name: 'deliveryType',
+          label: 'Type de livraison',
+          attributeType: AttributeType.enum,
+          fieldType: FieldType.select,
+          exportable: true,
+          sortable: true,
+          dataTable: true,
+          filterable: true,
+          defaultFilter: true,
+          options: [
+            { label: 'Olive', value: deliveryType.OLIVE },
+            { label: 'Huile', value: deliveryType.OIL }
+          ]
         },
         {
           name: 'globalLotNumber',
@@ -159,7 +199,8 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
           filterable: true,
           valuePath: 'name',
           valueAttributeType: AttributeType.string
-        },{
+        },
+        {
           name: 'oliveType',
           label: "Type d'olive",
           attributeType: AttributeType.object,
@@ -202,7 +243,10 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
           options: [
             { label: 'Nouveau', value: 'NEW' },
             { label: 'En cours', value: 'IN_PROGRESS' },
-            { label: 'Terminé', value: 'COMPLETED' },
+            {
+              label: 'Terminé',
+              value: 'COMPLETED'
+            },
             { label: 'Refusé', value: 'REFUSED' },
             { label: 'Annulé', value: 'CANCELLED' }
           ]
@@ -213,45 +257,25 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
         statusAttributeName: 'status',
         actionsList: [
           { label: 'Consulter', icon: 'visibility', value: 'CONSULTER' },
-          { label: 'Modifier', icon: 'edit', value: 'MODIFIER' },
+          {
+            label: 'Modifier',
+            icon: 'edit',
+            value: 'MODIFIER'
+          },
           { label: 'Supprimer', icon: 'delete', value: 'SUPPRIMER' },
-          { label: 'Générer bon de réception', icon: 'picture_as_pdf', value: 'generate_pdf' }
+          {
+            label: 'Générer bon de réception',
+            icon: 'picture_as_pdf',
+            value: 'generate_pdf'
+          }
         ]
       },
       fileName: 'supplier-details'
     };
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  onBack(): void {
-    this.router.navigate(['/reception/fournisseur']);
-  }
-
-  navigateToHistory(type: 'paid' | 'unpaid'): void {
-    if (this.supplierId) {
-      this.router.navigate(['/reception/fournisseur/payments', this.supplierId], {
-        queryParams: { type }
-      });
-    }
-  }
-
-  handleAction(event: { row: SupplierType; action: string }): void {
-    const { action } = event;
-    switch (action) {
-
-      default:
-        console.warn('Unknown action:', action);
-    }
-  }
-
-
-
-  private loadPaymentCounts(supplierId:string): void {
-     if (!supplierId) return;
+  private loadPaymentCounts(supplierId: string): void {
+    if (!supplierId) return;
 
     // Load paid payments count
     this.supplierService

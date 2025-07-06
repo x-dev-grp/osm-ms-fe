@@ -1,5 +1,5 @@
 import {CommonModule} from '@angular/common';
-import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnInit, Inject, Optional} from '@angular/core';
 import {QualityControlRuleService} from '../../../shared/services/quality-control-rule.service';
 import {QualityControlRule} from '../../../shared/models/quality-control-rule';
 import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
@@ -22,6 +22,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {MatChipsModule} from '@angular/material/chips';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 
 @Component({
@@ -58,8 +59,13 @@ export class ControleQualiteComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private snackBar: MatSnackBar,
     private storageUnitService: StorageUnitDtoService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: Record<string, unknown> | null = null
   ) {
+    // If opened as a dialog, set deliveryId from dialogData
+    if (dialogData && dialogData['deliveryId']) {
+      this.deliveryId = dialogData['deliveryId'] as string;
+    }
   }
 
   ngOnInit(): void {
@@ -243,13 +249,19 @@ export class ControleQualiteComponent implements OnInit {
     });
 
     this.dynamicForm = this.fb.group(group);
-    // Merge dynamicForm and staticForm into mainForm
-    this.mainForm = this.fb.group({
-      ...this.dynamicForm.controls,
-      unitPrice: this.staticForm.get('unitPrice'),
-      price: this.staticForm.get('price'),
-      storageUnit: this.staticForm.get('storageUnit')
-    });
+    // Build mainForm with only the correct controls for the delivery type
+    if (this.isOilReception()) {
+      this.mainForm = this.fb.group({
+        ...this.dynamicForm.controls,
+        unitPrice: this.staticForm.get('unitPrice'),
+        price: this.staticForm.get('price'),
+        storageUnit: this.staticForm.get('storageUnit')
+      });
+    } else {
+      this.mainForm = this.fb.group({
+        ...this.dynamicForm.controls
+      });
+    }
     // Subscribe to price calculation as before
     this.mainForm.get('unitPrice')?.valueChanges.subscribe((unitPrice: number) => {
       const oilQty = this.deliveryData?.oilQuantity || 0;
@@ -561,6 +573,18 @@ export class ControleQualiteComponent implements OnInit {
 
   isOliveDelivery(): boolean {
     return this.deliveryData?.deliveryType === 'OLIVE';
+  }
+
+  isOilReception(): boolean {
+    return this.deliveryData?.deliveryType === 'OIL';
+  }
+
+  isFormValid(): boolean {
+    return this.mainForm.valid;
+  }
+
+  isStaticField(key: string): boolean {
+    return key === 'unitPrice' || key === 'price' || key === 'storageUnit';
   }
 
   private calculateCategorie(): string {

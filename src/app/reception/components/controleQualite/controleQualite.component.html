@@ -105,8 +105,8 @@
         </div>
       </div>
 
-      <!-- Financial & Storage Section (Static) -->
-      <div class="form-section">
+      <!-- Financial & Storage Section (Static, only for oil receptions) -->
+      <div class="form-section" *ngIf="isOilReception()">
         <div class="section-header">
           <mat-icon>account_balance</mat-icon>
           <h3>{{ 'CONTROLE_QUALITE.SECTIONS.FINANCIAL' | translate }}</h3>
@@ -170,12 +170,12 @@
       <!-- Single Save Button -->
       <div class="form-actions">
         <button (click)="onSave()"
-                [disabled]="mainForm.invalid || isLoading || isQualityControlDone || isReadOnlyForm"
+                [disabled]="!isFormValid() || isLoading || isQualityControlDone || isReadOnlyForm"
                 class="submit-button"
                 color="primary"
                 mat-raised-button>
           <mat-icon>save</mat-icon>
-          {{ 'CONTROLE_QUALITE.BUTTONS.SAVE' | translate }}
+          {{'CONFIGURATION.SITE.BTNS.SAVE' | translate }}
         </button>
       </div>
     </form>

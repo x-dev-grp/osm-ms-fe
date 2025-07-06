@@ -307,21 +307,12 @@ export class OilCreditAddComponent implements OnInit {
   }
 
   getCreditStateLabel(state: CreditState): string {
-    const labels = {
-      [CreditState.PENDING]: 'En attente',
-      [CreditState.APPROVED]: 'Approuvé',
-      [CreditState.REJECTED]: 'Rejeté',
-      [CreditState.COMPLETED]: 'Terminé',
-      [CreditState.CANCELLED]: 'Annulé'
-    };
-    return labels[state] || state;
+    const key = `OIL_CREDIT.FORM.CREDIT_STATES.${state}`;
+    return this.translate.instant(key);
   }
 
   getUnitLabel(unit: UnitType): string {
-    const labels = {
-      [UnitType.L]: 'Litre',
-      [UnitType.KG]: 'Kilogramme'
-    };
-    return labels[unit] || unit;
+    const key = unit === UnitType.L ? 'OIL_CREDIT.FORM.UNITS.LITRE' : 'OIL_CREDIT.FORM.UNITS.KILOGRAM';
+    return this.translate.instant(key);
   }
 }

@@ -3,22 +3,22 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 
 import { SharedModule } from '../../demo/shared/shared.module';
 import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
 import { StorageUnitDtoService } from '../../shared/services/storage.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AttributeType, DashboardConfig, FieldType } from '../../shared/modules/osm-dashboard/models/dashboard-config';
 import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
 import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
-import { OilTransaction } from '../../shared/models/OilTransaction';
+import { OilTransaction, TransactionType } from '../../shared/models/OilTransaction';
+import { ToastService } from '../../shared/services/toast.service';
 
 @Component({
   selector: 'app-view-storage',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatProgressBarModule, SharedModule, TranslateModule, OsmDashboard, RouterOutlet],
+  imports: [CommonModule, MatButtonModule, TranslateModule,MatIconModule, MatProgressBarModule, SharedModule, TranslateModule, OsmDashboard, RouterOutlet],
   templateUrl: './view-storage.component.html',
   styleUrls: ['./view-storage.component.scss']
 })
@@ -32,7 +32,8 @@ export class ViewStorageComponent implements OnInit {
     private storageService: StorageUnitDtoService,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: MatSnackBar
+    private toastService: ToastService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -99,7 +100,7 @@ export class ViewStorageComponent implements OnInit {
     this.loading = true;
 
     if (!this.storageUnitId) {
-      this.snackBar.open('Invalid storage unit ID', 'Close', { duration: 3000 });
+      this.toastService.error('STORAGE.ERROR.INVALID_ID');
       this.router.navigate(['/storage']);
       return;
     }
@@ -109,14 +110,14 @@ export class ViewStorageComponent implements OnInit {
         if (response.success && response.data) {
           this.storageUnit = Array.isArray(response.data) ? response.data[0] : response.data;
         } else {
-          this.snackBar.open(response.message || 'Error loading storage unit', 'Close', { duration: 3000 });
+          this.toastService.error(response.message || 'STORAGE.ERROR.LOAD');
           this.router.navigate(['/storage']);
         }
         this.loading = false;
       },
       error: (error) => {
         console.error('Error loading storage unit:', error);
-        this.snackBar.open('Error loading storage unit', 'Close', { duration: 3000 });
+        this.toastService.error('STORAGE.ERROR.LOAD');
         this.router.navigate(['/storage']);
         this.loading = false;
       }
@@ -125,7 +126,7 @@ export class ViewStorageComponent implements OnInit {
 
   private setupConfig(storageUnitId: string | null) {
     this.dashboardConfig = {
-      title: 'STORAGE.VIEW.TRANSACTION_HISTORY',
+      title: '',
       titleTranslatePath: 'STORAGE.VIEW.TRANSACTION_HISTORY',
       baseURL: 'production/oil_transaction',
       searchEndpoint: 'production/oil_transaction',
@@ -159,7 +160,13 @@ export class ViewStorageComponent implements OnInit {
           sortable: true,
           exportable: true,
           dataTable: true,
-          filterable: true
+          filterable: true,
+          options: [
+            { value: TransactionType.RECEPTION_IN, label: 'Réception Entrée', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.RECEPTION_IN' },
+            { value: TransactionType.TRANSFER_IN, label: 'Transfert Entrée', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.TRANSFER_IN' },
+            { value: TransactionType.LOAN, label: 'Prêt', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.LOAN' },
+            { value: TransactionType.SALE, label: 'Vente', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.SALE' }
+          ]
         },
         {
           name: 'quantityKg',

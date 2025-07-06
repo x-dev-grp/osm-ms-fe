@@ -31,6 +31,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { ControleQualiteComponent } from '../../controleQualite/controleQualite.component';
+import { MatDialog } from '@angular/material/dialog';
 
 interface PaymentHistoryItem {
   id: string;
@@ -43,6 +44,7 @@ interface PaymentHistoryItem {
   unpaidAmount: number;
   status: 'paid' | 'unpaid' | 'partial';
   reference: string;
+  deliveryType?: string; // Added for oil deliveries
 }
 
 @Component({
@@ -81,7 +83,7 @@ export class SupplierPaymentHistoryComponent implements OnInit {
   loading = true;
   error: string | null = null;
   payments: PaymentHistoryItem[] = [];
-  displayedColumns: string[] = ['deliveryNumber', 'lotNumber', 'deliveryDate', 'poidsNet', 'price', 'paidAmount', 'unpaidAmount', 'status', 'actions'];
+  displayedColumns: string[] = ['deliveryNumber', 'deliveryType', 'lotNumber', 'deliveryDate', 'poidsNet', 'price', 'paidAmount', 'unpaidAmount', 'status', 'actions'];
 
   // Summary statistics
   totalDeliveries = 0;
@@ -116,7 +118,8 @@ export class SupplierPaymentHistoryComponent implements OnInit {
     private bankAccountService: BankAccountService,
     private fb: FormBuilder,
     private translateService: TranslateService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private dialog: MatDialog
   ) {
     this.paymentForm = this.fb.group({
       amount: [0, [Validators.required, Validators.min(0.01)]],
@@ -196,16 +199,17 @@ export class SupplierPaymentHistoryComponent implements OnInit {
       const paidAmount = delivery.paidAmount || 0;
       const price = delivery.price || 0;
       const unpaidAmount = delivery.unpaidAmount || (price - paidAmount);
-
+      const type = (delivery as UnifiedDelivery & { deliveryType?: string }).deliveryType || undefined;
       let status: 'paid' | 'unpaid' | 'partial' = 'unpaid';
-      if (paidAmount >= price && price > 0) {
+      if (type === 'OIL') {
+        status = 'paid';
+      } else if (paidAmount >= price && price > 0) {
         status = 'paid';
       } else if (paidAmount > 0 && paidAmount < price) {
         status = 'partial';
       } else {
         status = 'unpaid';
       }
-
       return {
         id: delivery.id,
         lotNumber: delivery.lotNumber,
@@ -216,7 +220,8 @@ export class SupplierPaymentHistoryComponent implements OnInit {
         paidAmount: paidAmount,
         unpaidAmount: unpaidAmount,
         status: status,
-        reference: `LOT-${delivery.lotNumber}`
+        reference: `LOT-${delivery.lotNumber}`,
+        deliveryType: type
       };
     });
   }
@@ -227,7 +232,8 @@ export class SupplierPaymentHistoryComponent implements OnInit {
       case 'paid':
         return payments.filter(payment => payment.status === 'paid');
       case 'unpaid':
-        return payments.filter(payment => payment.status === 'unpaid' || payment.status === 'partial');
+        // Exclude OIL receptions from unpaid/partial
+        return payments.filter(payment => (payment.status === 'unpaid' || payment.status === 'partial') && payment.deliveryType !== 'OIL');
       default:
         return payments;
     }
@@ -450,5 +456,22 @@ export class SupplierPaymentHistoryComponent implements OnInit {
         this.loadingBankAccounts = false;
       }
     });
+  }
+
+  openQualityControlDialog(deliveryId: string | null): void {
+    if (!deliveryId) return;
+    this.dialog.open(ControleQualiteComponent, {
+      width: '900px',
+      data: { deliveryId },
+      autoFocus: false,
+      disableClose: false
+    });
+  }
+
+  getSelectedDeliveryType(): string | null {
+    if (!this.selectedPayment) return null;
+    // If the PaymentHistoryItem does not have deliveryType, you may need to store it in the mapping
+    // For now, try to get it from the selectedPayment if available
+    return (this.selectedPayment as unknown as { deliveryType?: string }).deliveryType || null;
   }
 }
