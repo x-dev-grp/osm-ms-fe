@@ -414,7 +414,11 @@
     "MESSAGES": {
       "DELETE_SUCCESS": "Reception deleted successfully",
       "DELETE_ERROR": "Error while deleting",
-      "LOAD_ERROR": "Error loading receptions"
+      "LOAD_ERROR": "Error loading receptions",
+      "SENT_TO_PRODUCTION_SUCCESS": "Reception sent to production successfully",
+      "SENT_TO_PRODUCTION_ERROR": "Error sending reception to production",
+      "CANCELLED_SUCCESS": "Reception cancelled successfully",
+      "CANCELLED_ERROR": "Error cancelling reception"
     },
     "FORM": {
       "TITLE": {
@@ -785,6 +789,7 @@
       "VEHICLE_INFO": "Vehicle Information",
       "OIL_DETAILS": "Oil Details",
       "WEIGHT_QUANTITY": "Weight and Quantity",
+      "OPERATION_TYPE": "Operation Type",
       "FINANCIAL_INFO": "Financial Information",
       "FIELDS": {
         "DELIVERY_TYPE": "Delivery Type",
@@ -802,6 +807,9 @@
         "OIL_TYPE": "Oil Type",
         "OLIVE_TYPE": "Olive Type",
         "OPERATION_TYPE": "Operation Type",
+        "OPERATION_TYPE_PURCHASE": "Oil Purchase (Default)",
+        "OPERATION_TYPE_RECEPTION": "Simple Reception",
+        "OPERATION_TYPE_HINT": "Oil Purchase is the default operation type for oil reception",
         "GROSS_WEIGHT": "Gross Weight (kg)",
         "OIL_QUANTITY": "Oil Quantity (L)",
         "STORAGE_UNIT": "Storage Unit",
@@ -831,7 +839,8 @@
         "ERROR": {
           "ADD": "Error adding oil reception",
           "UPDATE": "Error updating oil reception",
-          "LOAD": "Error loading oil reception data"
+          "LOAD": "Error loading oil reception data",
+          "INCOMPLETE_FORM": "Please fill in all required fields"
         }
       }
     },
@@ -875,6 +884,15 @@
   },
   "CONTROLE_QUALITE": {
     "TITLE": "Quality Control",
+    "SUBTITLE": "Complete the quality assessment for this delivery",
+    "LOADING": "Loading quality control parameters...",
+    "STATUS": {
+      "COMPLETED": "Quality Control Completed"
+    },
+    "SECTIONS": {
+      "PARAMETERS": "Quality Parameters",
+      "FINANCIAL": "Financial Information"
+    },
     "PLACEHOLDER": {
       "ENTER_VALUE": "Enter a value"
     },
@@ -1382,7 +1400,12 @@
     "NEGOTIATED_PRICE": "Negotiated Price",
     "OIL_VALUE": "Oil Value",
     "CONFIRM_PAYMENT": "Confirm Payment",
-    "CANCEL": "Cancel"
+    "CANCEL": "Cancel",
+    "PAID_DELIVERIES": "Paid Deliveries",
+    "UNPAID_DELIVERIES": "Unpaid Deliveries",
+    "ALL_DELIVERIES": "All Deliveries",
+    "OIL_QUALITY_CONTROL": "Oil Quality Control",
+    "OIL_QUALITY_CONTROL_DESC": "Quality control is required for oil payments. Please complete the quality assessment below."
   },
   "OPERATION_TYPE": {
     "BASE": "Base milling",

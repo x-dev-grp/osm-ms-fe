@@ -121,6 +121,7 @@ export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
       dataTable: true,
       filterable: true,
       options: [
+        { label: 'NEW', value: 'NEW' },
         { label: 'En attente', value: 'PENDING' },
         { label: 'En cours', value: 'IN_PROGRESS' },
         { label: 'Terminé', value: 'COMPLETED' },

@@ -1,10 +1,47 @@
 <div class="container">
-  <!-- Back button -->
+  <!-- Header with navigation and filters -->
+  <div class="header-section">
+    <div class="header-left">
+      <button mat-icon-button (click)="onBack()" class="back-button">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h2>{{ 'SUPPLIER_PAYMENT.PAYMENT_HISTORY' | translate }} - {{ supplierName }}</h2>
+    </div>
+
+    <!-- Filter buttons -->
+    <div class="filter-buttons">
+      <button mat-stroked-button
+              [class.active]="historyType === 'all'"
+              (click)="setHistoryType('all')">
+        {{ 'SUPPLIER_PAYMENT.ALL' | translate }}
+      </button>
+      <button mat-stroked-button
+              [class.active]="historyType === 'paid'"
+              (click)="setHistoryType('paid')">
+        {{ 'SUPPLIER_PAYMENT.PAID' | translate }}
+      </button>
+      <button mat-stroked-button
+              [class.active]="historyType === 'unpaid'"
+              (click)="setHistoryType('unpaid')">
+        {{ 'SUPPLIER_PAYMENT.UNPAID' | translate }}
+      </button>
+    </div>
+  </div>
 
   <!-- Loading spinner -->
   <div *ngIf="loading" class="loading-container">
     <mat-spinner></mat-spinner>
   </div>
+
+  <!-- Error message -->
+  <div *ngIf="!loading && error" class="error-container">
+    <mat-icon>error_outline</mat-icon>
+    <p>{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="loadPaymentHistory()">
+      {{ 'ACTIONS.RETRY' | translate }}
+    </button>
+  </div>
+
   <!-- Payment history content -->
   <div *ngIf="!loading && !error" class="content">
     <!-- Split Layout Container - Now includes everything -->
@@ -53,7 +90,7 @@
         <div class="table-section">
           <mat-card>
             <mat-card-title>
-              {{ 'SUPPLIER_PAYMENT.PAYMENT_HISTORY' | translate }} - {{ historyType === 'paid' ? ('SUPPLIER_PAYMENT.PAID' | translate) : historyType === 'unpaid' ? ('SUPPLIER_PAYMENT.UNPAID' | translate) : ('SUPPLIER_PAYMENT.ALL' | translate) }}
+              {{ getHistoryTypeTitle() | translate }}
             </mat-card-title>
             <mat-divider></mat-divider>
             <mat-card-content>
@@ -163,8 +200,7 @@
                     <mat-icon>account_balance_wallet</mat-icon>
                     <div>
                       <strong>{{ 'SUPPLIER_PAYMENT.MONEY_PAYMENT' | translate }}</strong>
-                      <p>{{ 'SUPPLIER_PAYMENT.MONEY_PAYMENT_DESC' | translate }}</p>
-                     </div>
+                      </div>
                   </div>
                 </mat-radio-button>
                 <mat-radio-button value="oil" class="payment-option">
@@ -172,8 +208,7 @@
                     <mat-icon>local_gas_station</mat-icon>
                     <div>
                       <strong>{{ 'SUPPLIER_PAYMENT.OIL_PAYMENT' | translate }}</strong>
-                      <p>{{ 'SUPPLIER_PAYMENT.OIL_PAYMENT_DESC' | translate }}</p>
-                     </div>
+                      </div>
                   </div>
                 </mat-radio-button>
               </mat-radio-group>
@@ -295,6 +330,22 @@
                   <p><strong>{{ 'SUPPLIER_PAYMENT.UNPAID_AMOUNT' | translate }}:</strong> {{ selectedPayment?.unpaidAmount | currency:'TND' }}</p>
                   <p><strong>{{ 'SUPPLIER_PAYMENT.REFERENCE_PRICE' | translate }}:</strong> {{ oilPricePerLiter | currency:'TND' }}/kg</p>
                   <p><strong>{{ 'SUPPLIER_PAYMENT.OIL_EQUIVALENT' | translate }}:</strong> {{ oilEquivalent | number:'1.2-2' }} kg</p>
+                </div>
+
+                <!-- Oil Quality Control Component -->
+                <div class="oil-quality-control-section">
+                  <div class="quality-control-header">
+                    <mat-icon>science</mat-icon>
+                    <span>{{ 'SUPPLIER_PAYMENT.OIL_QUALITY_CONTROL' | translate }}</span>
+                  </div>
+                  <p class="quality-control-description">
+                    {{ 'SUPPLIER_PAYMENT.OIL_QUALITY_CONTROL_DESC' | translate }}
+                  </p>
+
+                  <!-- Embedded Quality Control Component -->
+                  <div class="quality-control-embedded">
+                    <app-controlequalite [deliveryId]="selectedPayment?.id"></app-controlequalite>
+                  </div>
                 </div>
 
                 <!-- Negotiable Oil Price -->

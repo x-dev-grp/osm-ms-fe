@@ -1,35 +1,28 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {MatButtonModule} from '@angular/material/button';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Subscription} from 'rxjs';
-import {BaseType} from '../../../../shared/models/base-type';
-import {SupplierType} from '../../../../shared/models/supplier-type';
-import {UnifiedDelivery} from '../../../../shared/models/UnifiedDelivery';
-import {GenericTypeService} from '../../../../shared/services/generic-type.service';
-import {SupplierTypeService} from '../../../../shared/services/supplier.service';
-import {UnifiedDeliveryService} from '../../../../shared/services/delivery.service';
-import {TypeCategory} from '../../../../shared/models/type-category.enum';
-import {
-  AbstractControl,
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validators
-} from '@angular/forms';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
-import {MatSelectModule} from '@angular/material/select';
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import {CardComponent} from '../../../../@theme/components/card/card.component';
-import {MatIcon} from '@angular/material/icon';
-import {StorageUnitDtoService} from '../../../../shared/services/storage.service';
-import {OliveLotStatus} from '../../../../shared/models/OliveLotStatus';
-import {MatAutocompleteModule} from '@angular/material/autocomplete';
-import {TranslateModule, TranslateService} from '@ngx-translate/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { BaseType } from '../../../../shared/models/base-type';
+import { SupplierType } from '../../../../shared/models/supplier-type';
+import { UnifiedDelivery } from '../../../../shared/models/UnifiedDelivery';
+import { GenericTypeService } from '../../../../shared/services/generic-type.service';
+import { SupplierTypeService } from '../../../../shared/services/supplier.service';
+import { UnifiedDeliveryService } from '../../../../shared/services/delivery.service';
+import { TypeCategory } from '../../../../shared/models/type-category.enum';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { CardComponent } from '../../../../@theme/components/card/card.component';
+import { MatIcon } from '@angular/material/icon';
+import { StorageUnitDtoService } from '../../../../shared/services/storage.service';
+import { OliveLotStatus } from '../../../../shared/models/OliveLotStatus';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { OperationType } from '../../../../shared/models/operation-type.enum';
 
 // Validator for net weight not exceeding gross weight
@@ -38,7 +31,6 @@ const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | nu
   const net = control.get('oilQuantity')?.value; // Changed from poidsNet to oilQuantity
   return brut != null && net != null && net > brut ? { netGreater: true } : null;
 };
-
 
 // Helper to check if value is a valid object from the list
 function isValidSelection<T extends { id?: string }>(value: unknown, list: T[]): boolean {
@@ -78,8 +70,9 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
   oilVariety: BaseType[] = [];
   deliveries: UnifiedDelivery[] = [];
   oliveTypes: BaseType[] = [];
+  operationTypes: { value: OperationType; label: string }[] = [];
 
-  private subscriptions = new Subscription();
+  private subscriptions: Subscription[] = [];
   private deliveryId: string | null;
 
   constructor(
@@ -111,7 +104,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
         parcel: [null, Validators.required],
         oliveType: [null, Validators.required],
         globalLotNumber: [''],
-        operationType: [null, Validators.required]
+        operationType: [OperationType.OIL_PURCHASE, Validators.required]
       },
       { validators: [netNotGreaterThanGross] }
     );
@@ -138,7 +131,23 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
         this.deliveries = deliveries?.success ? deliveries.data : [];
         this.oliveTypes = oliveTypes?.success ? oliveTypes.data : [];
         this.oilTypes = oilTypes?.success ? oilTypes.data : [];
-        // operationTypes is now from enum
+        // Initialize operation types
+        this.operationTypes = [
+          { value: OperationType.OIL_PURCHASE, label: 'OIL_RECEPTION.ADD.FIELDS.OPERATION_TYPE_PURCHASE' },
+          { value: OperationType.SIMPLE_RECEPTION, label: 'OIL_RECEPTION.ADD.FIELDS.OPERATION_TYPE_RECEPTION' }
+        ];
+        this.setupFormSubscriptions();
+
+        // Set default operation type for oil reception
+        if (!this.isEditing) {
+          // If there's only one operation type, automatically select it
+          if (this.operationTypes.length === 1) {
+            this.receptionForm.patchValue({ operationType: this.operationTypes[0].value });
+          } else {
+            // Default to OIL_PURCHASE if multiple options
+            this.receptionForm.patchValue({ operationType: OperationType.OIL_PURCHASE });
+          }
+        }
 
         if (this.isEditing && delivery?.success && delivery.data) {
           const deliveryObj = Array.isArray(delivery.data) ? delivery.data[0] : delivery.data;
@@ -169,7 +178,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 
   private setNextNumbers(): void {
@@ -442,4 +451,14 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
   //
   //
   // }
+
+  private setupFormSubscriptions(): void {
+    this.subscriptions.push(
+      this.receptionForm.get('oliveType')!.valueChanges.subscribe((oliveType: BaseType | null) => {
+        const deliveryNumber = this.receptionForm.get('deliveryNumber')?.value || this.deliveries.length + 1;
+        const lotNumber = this.generateLotNumber(oliveType, deliveryNumber);
+        this.receptionForm.patchValue({ lotNumber }, { emitEvent: false });
+      })
+    );
+  }
 }

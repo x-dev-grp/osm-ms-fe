@@ -3,14 +3,14 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 // project import
-import { AdminComponent } from './demo/layout/admin';
-import { AuthGuardChild } from './interceptors/guards/auth.guard';
+ import { AuthGuardChild } from './interceptors/guards/auth.guard';
 
 //Type
 import { Role } from './@theme/types/role';
 import { receptionRoutes } from './reception/reception.routes';
 import { FinanceRoutingModule } from './finance/finance-routing.module';
 import { SupplierDetailsComponent } from './reception/components/suppliers/supplier-details/supplier-details.component';
+import { AdminComponent } from './demo/layout/admin/admin.component';
 
 const routes: Routes = [
   {

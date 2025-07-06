@@ -350,6 +350,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
         break;
 
       case 'QUALITY':
+        case 'OIL_QUALITY':
         this.QualityControl(e.row);
         break;
 

@@ -63,7 +63,8 @@
       "PREVIOUS": "Précédent",
       "SUBMIT": "Soumettre",
       "SEARCH": "Rechercher",
-      "CLOSE": "Fermer"
+      "CLOSE": "Fermer",
+    "RETRY": "Réessayer"
     },
     "BOOLEAN": {
       "TRUE": "Vrai",
@@ -387,7 +388,11 @@
     "MESSAGES": {
       "DELETE_SUCCESS": "Réception supprimée avec succès",
       "DELETE_ERROR": "Erreur lors de la suppression",
-      "LOAD_ERROR": "Erreur lors du chargement des réceptions"
+      "LOAD_ERROR": "Erreur lors du chargement des réceptions",
+      "SENT_TO_PRODUCTION_SUCCESS": "Réception envoyée en production avec succès",
+      "SENT_TO_PRODUCTION_ERROR": "Erreur lors de l'envoi en production",
+      "CANCELLED_SUCCESS": "Réception annulée avec succès",
+      "CANCELLED_ERROR": "Erreur lors de l'annulation"
     },
     "FORM": {
       "TITLE": {
@@ -816,6 +821,7 @@
       "VEHICLE_INFO": "Informations du véhicule",
       "OIL_DETAILS": "Détails de l'huile",
       "WEIGHT_QUANTITY": "Poids et quantité",
+      "OPERATION_TYPE": "Type d'opération",
       "FINANCIAL_INFO": "Informations financières",
       "FIELDS": {
         "DELIVERY_TYPE": "Type de livraison",
@@ -833,6 +839,9 @@
         "OIL_TYPE": "Type d'huile",
         "OLIVE_TYPE": "Type d'olive",
         "OPERATION_TYPE": "Type d'opération",
+        "OPERATION_TYPE_PURCHASE": "Achat d'huile (Par défaut)",
+        "OPERATION_TYPE_RECEPTION": "Réception simple",
+        "OPERATION_TYPE_HINT": "L'achat d'huile est le type d'opération par défaut pour la réception d'huile",
         "GROSS_WEIGHT": "Poids brut (kg)",
         "OIL_QUANTITY": "Quantité d'huile (L)",
         "STORAGE_UNIT": "Cuve de stockage",
@@ -862,7 +871,8 @@
         "ERROR": {
           "ADD": "Erreur lors de l'ajout de la réception d'huile",
           "UPDATE": "Erreur lors de la mise à jour de la réception d'huile",
-          "LOAD": "Erreur lors du chargement des données de réception d'huile"
+          "LOAD": "Erreur lors du chargement des données de réception d'huile",
+          "INCOMPLETE_FORM": "Veuillez remplir tous les champs obligatoires"
         }
       }
     },
@@ -907,6 +917,15 @@
   },
   "CONTROLE_QUALITE": {
     "TITLE": "Contrôle Qualité",
+    "SUBTITLE": "Complétez l'évaluation de qualité pour cette livraison",
+    "LOADING": "Chargement des paramètres de contrôle qualité...",
+    "STATUS": {
+      "COMPLETED": "Contrôle Qualité Terminé"
+    },
+    "SECTIONS": {
+      "PARAMETERS": "Paramètres de Qualité",
+      "FINANCIAL": "Informations Financières"
+    },
     "PLACEHOLDER": {
       "ENTER_VALUE": "Entrez une valeur"
     },
@@ -1414,7 +1433,12 @@
     "NEGOTIATED_PRICE": "Prix Négocié",
     "OIL_VALUE": "Valeur de l'Huile",
     "CONFIRM_PAYMENT": "Confirmer le Paiement",
-    "CANCEL": "Annuler"
+    "CANCEL": "Annuler",
+    "PAID_DELIVERIES": "Livraisons Payées",
+    "UNPAID_DELIVERIES": "Livraisons Non Payées",
+    "ALL_DELIVERIES": "Toutes les Livraisons",
+    "OIL_QUALITY_CONTROL": "Contrôle Qualité Huile",
+    "OIL_QUALITY_CONTROL_DESC": "Le contrôle qualité est requis pour les paiements en huile. Veuillez compléter l'évaluation de qualité ci-dessous."
   },
   "OPERATION_TYPE": {
     "BASE": "Trituration sur base",

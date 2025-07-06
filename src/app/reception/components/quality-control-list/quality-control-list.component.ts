@@ -38,7 +38,8 @@ export class QualityControlListComponent implements OnInit {
 
   onRowAction(event: { row: UnifiedDelivery; action: any }): void {
     switch (event.action) {
-      case 'QUALITY':
+      case 'OLIVE_QUALITY':
+      case 'OIL_QUALITY':
         this.startQualityControl(event.row);
         break;
       case 'READ':

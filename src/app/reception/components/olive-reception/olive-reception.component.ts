@@ -19,8 +19,10 @@ import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
 import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
 import { OliveReceptionFormComponent } from './olive-reception-add/olive-reception-form.component';
 
-import {OLIVE_DELIVERY_DASHBOARD} from './OLIVE_DELIVERY_DASHBOARD';
-import {PdfGeneratorService} from "../../../shared/services/pdf-generator.service";
+import { OLIVE_DELIVERY_DASHBOARD } from './OLIVE_DELIVERY_DASHBOARD';
+import { PdfGeneratorService } from '../../../shared/services/pdf-generator.service';
+import { ApiResponse } from '../../../shared/models/api-response';
+import { OliveLotStatus } from '../../../shared/models/OliveLotStatus';
 import jsPDF from 'jspdf';
 
 @Component({
@@ -93,6 +95,44 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
     this.router.navigate(['reception/quality', d.id]);
   }
 
+  sendToProduction(d: UnifiedDelivery): void {
+    if (d.id) {
+      const updatedDelivery = { ...d, status: OliveLotStatus.IN_PROGRESS };
+      this.subs.add(
+        this.deliveryService.updateUnifiedDelivery(updatedDelivery).subscribe(
+          (res: ApiResponse<UnifiedDelivery>) => {
+            if (res.success) {
+              this.fetchDeliveries();
+              this.toast(this.translate.instant('DELIVERIES.MESSAGES.SENT_TO_PRODUCTION_SUCCESS'));
+            } else {
+              this.toast(this.translate.instant('DELIVERIES.MESSAGES.SENT_TO_PRODUCTION_ERROR'));
+            }
+          },
+          () => this.toast(this.translate.instant('DELIVERIES.MESSAGES.SENT_TO_PRODUCTION_ERROR'))
+        )
+      );
+    }
+  }
+
+  cancelDelivery(d: UnifiedDelivery): void {
+    if (d.id) {
+      const updatedDelivery = { ...d, status: OliveLotStatus.CANCELLED };
+      this.subs.add(
+        this.deliveryService.updateUnifiedDelivery(updatedDelivery).subscribe(
+          (res: ApiResponse<UnifiedDelivery>) => {
+            if (res.success) {
+              this.fetchDeliveries();
+              this.toast(this.translate.instant('DELIVERIES.MESSAGES.CANCELLED_SUCCESS'));
+            } else {
+              this.toast(this.translate.instant('DELIVERIES.MESSAGES.CANCELLED_ERROR'));
+            }
+          },
+          () => this.toast(this.translate.instant('DELIVERIES.MESSAGES.CANCELLED_ERROR'))
+        )
+      );
+    }
+  }
+
   genererBonReception(delivery: UnifiedDelivery) {
     const doc = new jsPDF();
 
@@ -114,7 +154,7 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
     // First row: Formulaire
     doc.setFillColor(200, 200, 200); // Light gray background for the first row
     doc.rect(headerTableLeft, currentY, headerTableWidth, headerCellHeight, 'F');
-    doc.text('Formulaire', headerTableLeft + headerColWidth, currentY + 5, {align: 'center'});
+    doc.text('Formulaire', headerTableLeft + headerColWidth, currentY + 5, { align: 'center' });
     currentY += headerCellHeight;
 
     // Second row: Bon De Réception and Référence
@@ -210,9 +250,6 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
       case 'UPDATE':
         this.selectReception(e.row);
         break;
-      case 'QUALITY':
-        this.QualityControl(e.row);
-        break;
       case 'DELETE':
         if (e.row.id) this.deleteDelivery(e.row);
         break;
@@ -220,6 +257,16 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
         if (e.row) {
           this.genererBonReception(e.row);
         }
+        break;
+      case 'TO_PROD':
+        this.sendToProduction(e.row);
+        break;
+      case 'OLIVE_QUALITY':
+      case 'QUALITY':
+        this.QualityControl(e.row);
+        break;
+      case 'CANCEL':
+        this.cancelDelivery(e.row);
         break;
     }
   }

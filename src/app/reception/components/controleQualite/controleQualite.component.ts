@@ -1,5 +1,5 @@
 import {CommonModule} from '@angular/common';
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {QualityControlRuleService} from '../../../shared/services/quality-control-rule.service';
 import {QualityControlRule} from '../../../shared/models/quality-control-rule';
 import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
@@ -19,16 +19,21 @@ import {StorageUnitDtoService} from "../../../shared/services/storage.service";
 import {StorageUnitDto} from "../../../shared/models/StorageUnitDto";
 import {MatInputModule} from '@angular/material/input';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import {MatChipsModule} from '@angular/material/chips';
 
 
 @Component({
   selector: 'app-controlequalite',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, MatFormField, MatSelect, MatOption, CardComponent, TranslateModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatProgressSpinnerModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, MatFormField, MatSelect, MatOption, CardComponent, TranslateModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatProgressSpinnerModule, MatIconModule, MatButtonModule, MatChipsModule],
   templateUrl: './controleQualite.component.html',
   styleUrls: ['./controleQualite.component.scss'],
   standalone: true
 })
 export class ControleQualiteComponent implements OnInit {
+  @Input() deliveryId: string | null = null;
+
   message: string = '';
   rules: QualityControlRule[] = [];
   dynamicForm!: FormGroup;
@@ -57,11 +62,11 @@ export class ControleQualiteComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.receptionId = this.route.snapshot.paramMap.get('id');
+    // Use input deliveryId if provided, otherwise get from route
+    this.receptionId = this.deliveryId || this.route.snapshot.paramMap.get('id');
     this.loadReception();
     this.loadStorageUnits();
     this.creerStaticFormulaire();
-
   }
 
   creerStaticFormulaire(): void {
@@ -210,7 +215,7 @@ export class ControleQualiteComponent implements OnInit {
 
     this.rules.forEach((rule) => {
       const validators = [Validators.required];
-      let initialValue: any = null;
+      let initialValue: number | boolean | string | null = null;
 
       // Recherche d'une réponse existante pour cette règle
       const existingResult = this.qualityControlResults.find((result) => result.rule?.ruleKey === rule.ruleKey);

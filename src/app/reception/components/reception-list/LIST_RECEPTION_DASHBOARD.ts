@@ -17,7 +17,14 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
       searchs: [],
       search: {
         status: {
-          equalValue: 'COMPLETED' // Change as needed for oil/trituration
+          inValues: [  'NEW',
+            'IN_PROGRESS',
+            'OLIVE_CONTROLLED',
+            'OIL_CONTROLLED',
+            'COMPLETED',
+            'REFUSED',
+            'CANCELLED',
+            'IN_STOCK'] // Change as needed for oil/trituration
         }
       }
     }
@@ -160,9 +167,12 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
       options: [
         { label: 'Nouveau', value: 'NEW', labelTranslatePath: 'RECEPTION_LIST.STATUS.NEW' },
         { label: 'En cours', value: 'IN_PROGRESS', labelTranslatePath: 'RECEPTION_LIST.STATUS.IN_PROGRESS' },
+        { label: 'Contrôle Olives', value: 'OLIVE_CONTROLLED', labelTranslatePath: 'RECEPTION_LIST.STATUS.OLIVE_CONTROLLED' },
+        { label: 'Contrôle Huile', value: 'OIL_CONTROLLED', labelTranslatePath: 'RECEPTION_LIST.STATUS.OIL_CONTROLLED' },
         { label: 'Terminé', value: 'COMPLETED', labelTranslatePath: 'RECEPTION_LIST.STATUS.COMPLETED' },
         { label: 'Refusé', value: 'REFUSED', labelTranslatePath: 'RECEPTION_LIST.STATUS.REFUSED' },
-        { label: 'Annulé', value: 'CANCELLED', labelTranslatePath: 'RECEPTION_LIST.STATUS.CANCELLED' }
+        { label: 'Annulé', value: 'CANCELLED', labelTranslatePath: 'RECEPTION_LIST.STATUS.CANCELLED' },
+        { label: 'En stock', value: 'IN_STOCK', labelTranslatePath: 'RECEPTION_LIST.STATUS.IN_STOCK' }
       ]
     }
   ],

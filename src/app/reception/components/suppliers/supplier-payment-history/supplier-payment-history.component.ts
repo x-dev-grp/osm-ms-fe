@@ -30,6 +30,7 @@ import { ApiResponse } from '../../../../shared/models/api-response';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastService } from '../../../../shared/services/toast.service';
+import { ControleQualiteComponent } from '../../controleQualite/controleQualite.component';
 
 interface PaymentHistoryItem {
   id: string;
@@ -66,7 +67,9 @@ interface PaymentHistoryItem {
     MatNativeDateModule,
     FormsModule,
     ReactiveFormsModule,
-    MatSnackBarModule,TranslateModule
+    MatSnackBarModule,
+    TranslateModule,
+    ControleQualiteComponent
   ],
   templateUrl: './supplier-payment-history.component.html',
   styleUrls: ['./supplier-payment-history.component.scss']
@@ -147,28 +150,32 @@ export class SupplierPaymentHistoryComponent implements OnInit {
     }
   }
 
+  setHistoryType(type: 'paid' | 'unpaid' | 'all'): void {
+    this.historyType = type;
+    this.loadPaymentHistory();
+  }
+
+  getHistoryTypeTitle(): string {
+    switch (this.historyType) {
+      case 'paid':
+        return 'SUPPLIER_PAYMENT.PAID_DELIVERIES';
+      case 'unpaid':
+        return 'SUPPLIER_PAYMENT.UNPAID_DELIVERIES';
+      default:
+        return 'SUPPLIER_PAYMENT.ALL_DELIVERIES';
+    }
+  }
+
   loadPaymentHistory(): void {
     this.loading = true;
     this.error = null;
 
-    let deliveryObservable;
-
-    switch (this.historyType) {
-      case 'paid':
-        deliveryObservable = this.deliveryService.getPaidDeliveriesBySupplier(this.supplierId);
-        break;
-      case 'unpaid':
-        deliveryObservable = this.deliveryService.getUnpaidDeliveriesBySupplier(this.supplierId);
-        break;
-      default:
-        deliveryObservable = this.deliveryService.getDeliveriesBySupplier(this.supplierId);
-        break;
-    }
-
-    deliveryObservable.subscribe({
+    // Always load all deliveries and filter client-side for better control
+    this.deliveryService.getDeliveriesBySupplier(this.supplierId).subscribe({
       next: (response) => {
         if (response.success && response.data) {
-          this.payments = this.convertDeliveriesToPaymentHistory(response.data);
+          const allPayments = this.convertDeliveriesToPaymentHistory(response.data);
+          this.payments = this.filterPaymentsByType(allPayments);
           this.calculateSummaryStatistics();
         } else {
           this.payments = [];
@@ -191,10 +198,12 @@ export class SupplierPaymentHistoryComponent implements OnInit {
       const unpaidAmount = delivery.unpaidAmount || (price - paidAmount);
 
       let status: 'paid' | 'unpaid' | 'partial' = 'unpaid';
-      if (paidAmount >= price) {
+      if (paidAmount >= price && price > 0) {
         status = 'paid';
-      } else if (paidAmount > 0) {
+      } else if (paidAmount > 0 && paidAmount < price) {
         status = 'partial';
+      } else {
+        status = 'unpaid';
       }
 
       return {
@@ -212,11 +221,35 @@ export class SupplierPaymentHistoryComponent implements OnInit {
     });
   }
 
+  // Filter payments based on history type
+  private filterPaymentsByType(payments: PaymentHistoryItem[]): PaymentHistoryItem[] {
+    switch (this.historyType) {
+      case 'paid':
+        return payments.filter(payment => payment.status === 'paid');
+      case 'unpaid':
+        return payments.filter(payment => payment.status === 'unpaid' || payment.status === 'partial');
+      default:
+        return payments;
+    }
+  }
+
   private calculateSummaryStatistics(): void {
     this.totalDeliveries = this.payments.length;
     this.totalPaid = this.payments.reduce((sum, payment) => sum + payment.paidAmount, 0);
     this.totalUnpaid = this.payments.reduce((sum, payment) => sum + payment.unpaidAmount, 0);
     this.totalOliveWeight = this.payments.reduce((sum, payment) => sum + payment.poidsNet, 0);
+  }
+
+  // Get summary statistics for all deliveries (not just filtered ones)
+  private getAllDeliveriesSummary(): { totalDeliveries: number; totalPaid: number; totalUnpaid: number; totalOliveWeight: number } {
+    // This would need to be called with all deliveries data
+    // For now, we'll use the current payments array
+    return {
+      totalDeliveries: this.payments.length,
+      totalPaid: this.payments.reduce((sum, payment) => sum + payment.paidAmount, 0),
+      totalUnpaid: this.payments.reduce((sum, payment) => sum + payment.unpaidAmount, 0),
+      totalOliveWeight: this.payments.reduce((sum, payment) => sum + payment.poidsNet, 0)
+    };
   }
 
   getStatusColor(status: string): string {
