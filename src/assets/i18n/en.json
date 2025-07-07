@@ -297,7 +297,7 @@
     },
     "KPIS": {
       "AVG_UNIT_PRICE": "Average Unit Price",
-      "AVG_VOLUME": "Average Volume/Reception",
+      "AVG_VOLUME": "Avg Volume",
       "COMPLETED_RECEPTIONS": "Completed Receptions",
       "PENDING_RECEPTIONS": "Pending Receptions",
       "TOTAL_PAID": "Total Paid",
@@ -318,8 +318,8 @@
     "DETAILS": {
       "BUTTONS": {
         "BACK": "Back to list"
-      },
-      "MESSAGES": {
+    },
+    "MESSAGES": {
         "DATA_ERROR": "Error loading data.",
         "INVALID_ID": "Invalid reception ID.",
         "LOAD_ERROR": "Error loading details."
@@ -331,19 +331,19 @@
         "SUPPLIER": "👤 Supplier"
       },
       "TITLE": "Reception Details"
-    },
-    "FIELDS": {
+      },
+      "FIELDS": {
       "DELIVERY_DATE": "Delivery Date",
       "DELIVERY_NUMBER": "Reception Number",
-      "DELIVERY_TYPE": "Delivery Type",
+        "DELIVERY_TYPE": "Delivery Type",
       "GLOBAL_LOT_NUMBER": "Global Lot Number",
       "GROSS_WEIGHT": "Gross Weight",
-      "LOT_NUMBER": "Lot Number",
+        "LOT_NUMBER": "Lot Number",
       "NET_WEIGHT": "Net Weight",
       "OLIVE_QUANTITY": "Olive Quantity",
       "OLIVE_TYPE": "Olive Type",
       "OLIVE_VARIETY": "Olive Variety",
-      "PARCEL": "Parcel",
+        "PARCEL": "Parcel",
       "REGION": "Region",
       "SACK_COUNT": "Sack Count",
       "STATUS": "Status",
@@ -354,8 +354,8 @@
       "SUPPLIER_NAME": "Name",
       "SUPPLIER_PHONE": "Phone",
       "SUPPLIER_RIB": "RIB",
-      "TRUCK_PLATE": "Truck Plate",
-      "TRUCK_STATE": "Truck State",
+        "TRUCK_PLATE": "Truck Plate",
+        "TRUCK_STATE": "Truck State",
       "YIELD": "Yield"
     },
     "FORM": {
@@ -429,8 +429,8 @@
         "REMAINING_CAPACITY": "{{available}} L remaining",
         "REQUIRED": "This field is required"
       }
-    },
-    "MESSAGES": {
+      },
+      "MESSAGES": {
       "CANCELLED_ERROR": "Error cancelling reception",
       "CANCELLED_SUCCESS": "Reception cancelled successfully",
       "DELETE_ERROR": "Error while deleting",
@@ -619,8 +619,8 @@
       "MANUFACTURER_REQUIRED": "Manufacturer is required",
       "MODEL_REQUIRED": "Model is required",
       "NAME_REQUIRED": "Name is required"
-    },
-    "FIELDS": {
+      },
+      "FIELDS": {
       "CAPACITY": "Capacity",
       "HOURS_OPERATED": "Hours Operated",
       "LAST_MAINTENANCE_DATE": "Last Maintenance Date",
@@ -795,8 +795,8 @@
         "DELETE_ERROR": "Error deleting reception",
         "DELETE_SUCCESS": "Reception deleted successfully",
         "LOAD_ERROR": "Error loading receptions"
-      },
-      "STATUS": {
+  },
+    "STATUS": {
         "CANCELLED": "Cancelled",
         "COMPLETED": "Completed",
         "IN_PROGRESS": "In Progress",
@@ -814,7 +814,7 @@
       "OIL_QUANTITY": "Oil Quantity",
       "OIL_VARIETY": "Oil Variety",
       "PARCEL": "Parcel",
-      "REGION": "Region",
+        "REGION": "Region",
       "SECTION": "Related Delivery Details",
       "STATUS": "Status",
       "STORAGE_UNIT": "Storage Unit",
@@ -984,14 +984,14 @@
         "DELIVERY_NUMBER": "Delivery Number",
         "DELIVERY_TYPE": "Delivery Type",
         "GROSS_WEIGHT": "Gross Weight (kg)",
-        "LOT_NUMBER": "Lot Number",
+      "LOT_NUMBER": "Lot Number",
         "NET_WEIGHT": "Net Weight (kg)",
         "OLIVE_QUANTITY": "Olive Quantity (kg)",
         "OLIVE_TYPE": "Olive Type",
         "OLIVE_VARIETY": "Olive Variety",
         "OPERATION_TYPE": "Operation Type",
         "PARCEL": "Parcel",
-        "REGION": "Region",
+      "REGION": "Region",
         "SACK_COUNT": "Sack Count",
         "SUPPLIER": "Supplier",
         "TREATMENT_DATE": "Treatment Date",

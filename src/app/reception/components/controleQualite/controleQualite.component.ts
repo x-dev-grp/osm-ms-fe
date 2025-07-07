@@ -316,16 +316,7 @@ export class ControleQualiteComponent implements OnInit {
 
   onSave(): void {
     this.submitted = true;
-
-    if (this.mainForm.invalid) {
-      this.message = 'Le formulaire contient des erreurs. Veuillez corriger les champs.';
-      this.mainForm.markAllAsTouched();
-      this.cdr.detectChanges();
-
-      this.snackBar.open('Le formulaire contient des erreurs.', 'Fermer', {
-        duration: 4000,
-        panelClass: ['mat-snack-bar-container-error']
-      });
+    if (!this.mainForm.valid || this.isLoading || this.isQualityControlDone || this.isReadOnlyForm) {
       return;
     }
 
@@ -580,7 +571,8 @@ export class ControleQualiteComponent implements OnInit {
   }
 
   isFormValid(): boolean {
-    return this.mainForm.valid;
+    // Only rely on mainForm.valid, which covers visible fields
+    return this.mainForm && this.mainForm.valid;
   }
 
   isStaticField(key: string): boolean {

@@ -88,7 +88,7 @@
       "RIB_LENGTH": "Le RIB doit comporter 24 caractères",
       "RIB_REQUIRED": "Le RIB est requis"
     },
-    "FIELDS": {
+      "FIELDS": {
       "ACCOUNT_TYPE": "Type de compte",
       "ACTIVE": "Actif",
       "BANK_BRANCH": "Agence",
@@ -99,7 +99,7 @@
       "CURRENCY": "Devise",
       "IBAN": "IBAN",
       "INACTIVE": "Inactif",
-      "RIB": "RIB",
+        "RIB": "RIB",
       "SAVINGS": "Épargne",
       "STATUS": "Statut"
     },
@@ -177,7 +177,7 @@
       "UNPAID_AMOUNT": "Montant impayé (TND)"
     },
     "FORM": {
-      "FIELDS": {
+        "FIELDS": {
         "CATEGORY": "Catégorie",
         "DELIVERY_DATE": "Date de livraison",
         "DELIVERY_NUMBER": "Numéro de livraison",
@@ -301,14 +301,14 @@
     },
     "KPIS": {
       "AVG_UNIT_PRICE": "Prix unitaire moyen",
-      "AVG_VOLUME": "Volume moyen/réception",
+      "AVG_VOLUME": "Volume ⌀",
       "COMPLETED_RECEPTIONS": "Réceptions terminées",
       "PENDING_RECEPTIONS": "Réceptions en attente",
       "TOTAL_PAID": "Total payé",
       "TOTAL_RECEPTIONS": "Total Réceptions",
       "TOTAL_UNPAID": "Total non payé",
       "TOTAL_VOLUME": "Volume total (T)",
-      "UNIQUE_SUPPLIERS": "Fournisseurs uniques"
+      "UNIQUE_SUPPLIERS": "N° Fournisseurs"
     }
   },
   "DELIVERIES": {
@@ -443,8 +443,8 @@
         "REMAINING_CAPACITY": "{{available}} L restants",
         "REQUIRED": "Ce champ est obligatoire"
       }
-    },
-    "MESSAGES": {
+      },
+      "MESSAGES": {
       "CANCELLED_ERROR": "Erreur lors de l'annulation",
       "CANCELLED_SUCCESS": "Réception annulée avec succès",
       "DELETE_ERROR": "Erreur lors de la suppression",
@@ -638,8 +638,8 @@
       "MANUFACTURER_REQUIRED": "Le fabricant est requis",
       "MODEL_REQUIRED": "Le modèle est requis",
       "NAME_REQUIRED": "Le nom est requis"
-    },
-    "FIELDS": {
+      },
+      "FIELDS": {
       "CAPACITY": "Capacité",
       "HOURS_OPERATED": "Heures d'opération",
       "LAST_MAINTENANCE_DATE": "Dernière maintenance",
@@ -817,7 +817,7 @@
         "DELETE_SUCCESS": "Réception supprimée avec succès",
         "LOAD_ERROR": "Erreur lors du chargement des réceptions"
       },
-      "STATUS": {
+    "STATUS": {
         "CANCELLED": "Annulé",
         "COMPLETED": "Terminé",
         "IN_PROGRESS": "En cours",
@@ -836,7 +836,7 @@
       "OIL_QUANTITY": "Quantité d'huile",
       "OIL_VARIETY": "Variété d'huile",
       "PARCEL": "Parcelle",
-      "REGION": "Région",
+        "REGION": "Région",
       "SECTION": "Détails de la livraison associée",
       "STATUS": "Statut",
       "STORAGE_UNIT": "Unité de stockage",
@@ -1006,14 +1006,14 @@
         "DELIVERY_NUMBER": "Numéro de livraison",
         "DELIVERY_TYPE": "Type de livraison",
         "GROSS_WEIGHT": "Poids brut (kg)",
-        "LOT_NUMBER": "Numéro de lot",
+      "LOT_NUMBER": "Numéro de lot",
         "NET_WEIGHT": "Poids net (kg)",
         "OLIVE_QUANTITY": "Quantité d'olives (kg)",
         "OLIVE_TYPE": "Type d'olive",
         "OLIVE_VARIETY": "Variété d'olive",
         "OPERATION_TYPE": "Type d'opération",
         "PARCEL": "Parcelle",
-        "REGION": "Région",
+      "REGION": "Région",
         "SACK_COUNT": "Nombre de sacs",
         "SUPPLIER": "Fournisseur",
         "TREATMENT_DATE": "Date de traitement",

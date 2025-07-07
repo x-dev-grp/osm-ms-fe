@@ -1,0 +1,13 @@
+.dashboard-kpis .col-md-2, .dashboard-kpis .col-xxl-2 {
+  min-width: 180px;
+  min-height: 110px;
+  display: flex;
+  align-items: stretch;
+}
+
+app-card .card-title, [cardTitle] {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}

@@ -9,11 +9,7 @@ const routes: Routes = [
   {
     path: '',
     children: [
-      {
-        path: 'chat',
-        loadComponent: () => import('./chat/chat.component').then((c) => c.ChatComponent),
-        data: { roles: [Role.Admin, Role.User] }
-      },
+
       {
         path: 'kanban',
         loadComponent: () => import('./kanban/kanban.component').then((c) => c.KanbanComponent),

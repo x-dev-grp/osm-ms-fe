@@ -1,5 +1,5 @@
 <div class="supplier-add-container">
-  <h2>{{ isEditing ? ('SUPPLIER.ADD.TITLE_EDIT' | translate) : ('SUPPLIER.ADD.TITLE_ADD' | translate) }}</h2>
+  <h2>{{ isEditMode ? ('SUPPLIER.ADD.TITLE_EDIT' | translate) : ('SUPPLIER.ADD.TITLE_ADD' | translate) }}</h2>
 
   <!-- Loading spinner -->
   <div *ngIf="loading" class="loading-container">
@@ -52,10 +52,7 @@
 
         <mat-form-field appearance="outline">
           <mat-label>{{ 'SUPPLIER.FIELDS.EMAIL' | translate }}</mat-label>
-          <input matInput formControlName="email" required type="email">
-          <mat-error *ngIf="supplierForm.get('supplierInfo.email')?.hasError('required')">
-            {{ 'SUPPLIER.ERRORS.EMAIL_REQUIRED' | translate }}
-          </mat-error>
+          <input matInput formControlName="email" type="email">
           <mat-error *ngIf="supplierForm.get('supplierInfo.email')?.hasError('email')">
             {{ 'SUPPLIER.ERRORS.EMAIL_INVALID' | translate }}
           </mat-error>
@@ -121,8 +118,8 @@
       <button mat-button type="button" (click)="router.navigate(['/reception/fournisseur'])">
         {{ 'SUPPLIER.ACTIONS.CANCEL' | translate }}
       </button>
-      <button mat-raised-button color="primary" type="submit" [disabled]="supplierForm.invalid || loading">
-        {{ isEditing ? ('SUPPLIER.ACTIONS.EDIT' | translate) : ('SUPPLIER.ACTIONS.ADD' | translate) }}
+      <button mat-flat-button color="primary" type="submit" [disabled]="loading">
+        {{ isEditMode ? ('STANDARD.BTNS.SAVE' | translate) : ('STANDARD.BTNS.ADD' | translate) }}
       </button>
     </div>
   </form>

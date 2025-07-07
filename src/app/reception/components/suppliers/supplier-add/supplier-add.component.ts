@@ -37,8 +37,8 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class SupplierAddComponent implements OnInit, OnDestroy {
   supplierForm: FormGroup;
-  isEditing = false;
-  supplierId?: string;
+  isEditMode = false;
+  supplierId: string | null = null;
   supplierTypes: BaseType[] = [];
   regions: BaseType[] = [];
   loading = false;
@@ -53,17 +53,30 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
     protected router: Router,
     private route: ActivatedRoute
   ) {
-    this.initializeForm();
+    this.supplierForm = this.fb.group({
+      supplierInfo: this.fb.group({
+        id: [''],
+        name: ['', Validators.required],
+        lastname: ['', Validators.required],
+        phone: ['', Validators.required],
+        email: ['', [Validators.email]], // <-- only email format, not required
+        address: ['', Validators.required],
+        region: [null, Validators.required],
+        rib: [''],
+        bankName: ['']
+      }),
+      genericSupplierType: [null, Validators.required]
+    });
   }
 
   ngOnInit(): void {
     this.loadRecords(TypeCategory.SUPPLIER_TYPE);
     this.loadRecords(TypeCategory.REGION);
 
-    this.supplierId = this.route.snapshot.params['id'];
-    if (this.supplierId && this.supplierId !== 'new') {
-      this.isEditing = true;
-      this.loadSupplier();
+    this.supplierId = this.route.snapshot.paramMap.get('id');
+    if (this.supplierId) {
+      this.isEditMode = true;
+      this.loadSupplier(this.supplierId);
     }
   }
 
@@ -78,7 +91,7 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
         name: ['', [Validators.required, Validators.minLength(2)]],
         lastname: ['', [Validators.required, Validators.minLength(2)]],
         phone: ['', [Validators.required, Validators.pattern(/^[0-9]{8}$/)]],
-        email: ['', [Validators.required, Validators.email]],
+        email: ['', [Validators.email]], // <-- only email format, not required
         address: ['', [Validators.required, Validators.minLength(5)]],
         region: [null, Validators.required],
         rib: ['', Validators.pattern(/^[0-9]{15}$/)],
@@ -108,30 +121,28 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
     );
   }
 
-  loadSupplier(): void {
-    if (!this.supplierId) return;
-
+  loadSupplier(id: string): void {
     this.loading = true;
     this.error = null;
 
     this.subs.add(
-      this.supplierService.getSupplier(this.supplierId).subscribe({
+      this.supplierService.getSupplier(id).subscribe({
         next: (res) => {
-          if (res.success && res.data && res.data.length > 0) {
+          if (res && res.success && res.data) {
             const supplier = Array.isArray(res.data) ? res.data[0] : res.data;
             this.supplierForm.patchValue({
               supplierInfo: {
-                id: supplier.supplierInfo?.id,
-                name: supplier.supplierInfo?.name,
-                lastname: supplier.supplierInfo?.lastname,
-                phone: supplier.supplierInfo?.phone,
-                email: supplier.supplierInfo?.email,
-                address: supplier.supplierInfo?.address,
-                region: supplier.supplierInfo?.region,
-                rib: supplier.supplierInfo?.rib,
-                bankName: supplier.supplierInfo?.bankName
+                id: supplier.supplierInfo?.id || '',
+                name: supplier.supplierInfo?.name || '',
+                lastname: supplier.supplierInfo?.lastname || '',
+                phone: supplier.supplierInfo?.phone || '',
+                email: supplier.supplierInfo?.email || '',
+                address: supplier.supplierInfo?.address || '',
+                region: supplier.supplierInfo?.region || null,
+                rib: supplier.supplierInfo?.rib || '',
+                bankName: supplier.supplierInfo?.bankName || ''
               },
-              genericSupplierType: supplier.genericSupplierType
+              genericSupplierType: supplier.genericSupplierType || null
             });
           } else {
             this.error = 'Fournisseur non trouvé';
@@ -172,7 +183,7 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
       genericSupplierType: formValue.genericSupplierType
     };
 
-    if (this.isEditing && this.supplierId) {
+    if (this.isEditMode && this.supplierId) {
       this.subs.add(
         this.supplierService.updateSupplier(payload).subscribe({
           next: (res) => {
@@ -230,7 +241,7 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
     });
   }
 
-  objectComparisonFunction(option: any, value: any): boolean {
-    return option?.id === value?.id;
+  objectComparisonFunction(option: BaseType | null, value: BaseType | null): boolean {
+    return option && value ? option.id === value.id : option === value;
   }
 }

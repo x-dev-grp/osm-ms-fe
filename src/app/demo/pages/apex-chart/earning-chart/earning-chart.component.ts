@@ -53,14 +53,15 @@ export class EarningChartComponent implements OnInit {
 
   setChartOptions() {
     this.chartOptions = {
-      chart: { type: 'bar', background: 'transparent', height: 50, sparkline: { enabled: true } },
-      plotOptions: { bar: { columnWidth: '80%' } },
+      chart: { type: 'line', background: 'transparent', height: 40, sparkline: { enabled: true } },
+      stroke: { width: 2, curve: 'smooth' },
       series: [
         {
-          data: this.data()
+          data: (this.data() && this.data().length) ? this.data() : [0]
         }
       ],
-      xaxis: { crosshairs: { width: 1 } },
+      xaxis: { crosshairs: { width: 1 }, labels: { show: false }, axisTicks: { show: false }, axisBorder: { show: false } },
+      yaxis: { show: false },
       tooltip: {
         fixed: { enabled: false },
         x: { show: false },
@@ -74,6 +75,7 @@ export class EarningChartComponent implements OnInit {
         marker: { show: false },
         theme: 'light'
       },
+      grid: { show: false },
       colors: this.color(),
       theme: {
         mode: 'light'

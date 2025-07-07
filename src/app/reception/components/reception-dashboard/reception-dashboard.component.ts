@@ -64,6 +64,8 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
 
   // Chart data (for earning charts that take array of numbers)
   receptionsPerDay: number[] = [];
+  pendingReceptionsPerDay: number[] = [];
+  completedReceptionsPerDay: number[] = [];
   volumePerDay: number[] = [];
 
   // Chart data (for apx-charts)
@@ -208,6 +210,11 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
           this.receptions = Array.isArray(deliveries.data) ? deliveries.data : [deliveries.data];
           this.suppliers = Array.isArray(suppliers.data) ? suppliers.data : [suppliers.data];
           this.storageUnits = Array.isArray(storage.data) ? storage.data : [storage.data];
+          // Compute per-day arrays for sparklines
+          this.receptionsPerDay = this.getReceptionsPerDay(this.receptions, 7);
+          this.pendingReceptionsPerDay = this.getReceptionsPerDay(this.receptions.filter(r => r.status === OliveLotStatus.IN_PROGRESS), 7);
+          this.completedReceptionsPerDay = this.getReceptionsPerDay(this.receptions.filter(r => r.status === 'COMPLETED'), 7);
+          this.volumePerDay = this.getVolumePerDay(this.receptions, 7);
           console.log('Receptions:', this.receptions);
           console.log('Suppliers:', this.suppliers);
           console.log('Storage Units:', this.storageUnits);
@@ -217,6 +224,32 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
           this.error = 'Erreur lors du chargement des données';
         }
       });
+  }
+
+  getReceptionsPerDay(receptions: UnifiedDelivery[], days: number = 7): number[] {
+    const counts = Array(days).fill(0);
+    const today = new Date();
+    for (let i = 0; i < days; i++) {
+      const day = new Date(today);
+      day.setDate(today.getDate() - i);
+      const dayStr = day.toISOString().split('T')[0];
+      counts[days - i - 1] = receptions.filter(r => r.deliveryDate && new Date(r.deliveryDate).toISOString().split('T')[0] === dayStr).length;
+    }
+    return counts;
+  }
+
+  getVolumePerDay(receptions: UnifiedDelivery[], days: number = 7): number[] {
+    const volumes = Array(days).fill(0);
+    const today = new Date();
+    for (let i = 0; i < days; i++) {
+      const day = new Date(today);
+      day.setDate(today.getDate() - i);
+      const dayStr = day.toISOString().split('T')[0];
+      volumes[days - i - 1] = receptions
+        .filter(r => r.deliveryDate && new Date(r.deliveryDate).toISOString().split('T')[0] === dayStr)
+        .reduce((sum, r) => sum + (r.oilQuantity || 0), 0);
+    }
+    return volumes;
   }
 
   prepareStatsAndCharts() {

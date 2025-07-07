@@ -4,31 +4,45 @@
     <app-earning-chart iconImage="#wallet-2" [headerTitle]="'DASHBOARD.KPIS.TOTAL_RECEPTIONS' | translate" [earningValue]="totalReceptions.toString()" background="bg-primary-50" textColor="text-primary-500" [color]="primaryColor" percentageValue="" [data]="receptionsPerDay"></app-earning-chart>
   </div>
   <div class="col-md-6 col-xxl-4">
-    <app-earning-chart iconImage="#calendar" [headerTitle]="'DASHBOARD.KPIS.PENDING_RECEPTIONS' | translate" [earningValue]="pendingReceptions.toString()" background="bg-warning-50" textColor="text-warning-500" [color]="warningColor" percentageValue="" [data]="receptionsPerDay"></app-earning-chart>
+    <app-earning-chart iconImage="#calendar" [headerTitle]="'DASHBOARD.KPIS.PENDING_RECEPTIONS' | translate" [earningValue]="pendingReceptions.toString()" background="bg-warning-50" textColor="text-warning-500" [color]="warningColor" percentageValue="" [data]="pendingReceptionsPerDay"></app-earning-chart>
   </div>
   <div class="col-md-6 col-xxl-4">
-    <app-earning-chart iconImage="#book" [headerTitle]="'DASHBOARD.KPIS.COMPLETED_RECEPTIONS' | translate" [earningValue]="completedReceptions.toString()" background="bg-success-50" textColor="text-success-500" [color]="successColor" percentageValue="" [data]="receptionsPerDay"></app-earning-chart>
+    <app-earning-chart iconImage="#book" [headerTitle]="'DASHBOARD.KPIS.COMPLETED_RECEPTIONS' | translate" [earningValue]="completedReceptions.toString()" background="bg-success-50" textColor="text-success-500" [color]="successColor" percentageValue="" [data]="completedReceptionsPerDay"></app-earning-chart>
   </div>
-  <div class="col-md-6 col-xxl-2">
-    <app-earning-chart iconImage="#coludChange" [headerTitle]="'DASHBOARD.KPIS.TOTAL_VOLUME' | translate" [earningValue]="totalVolume.toFixed(2)" background="bg-info-50" textColor="text-info-500" [color]="infoColor" percentageValue=""[data]="[]"></app-earning-chart>
-  </div>
-  <div class="col-md-6 col-xxl-2">
-    <app-earning-chart iconImage="#wallet-2" [headerTitle]="'DASHBOARD.KPIS.AVG_VOLUME' | translate" [earningValue]="avgVolumePerReception.toFixed(2)" background="bg-primary-50" textColor="text-primary-500" [color]="primaryColor" percentageValue=""[data]="[]"></app-earning-chart>
-  </div>
-  <div class="col-md-6 col-xxl-2">
-    <app-earning-chart iconImage="#wallet-2" [headerTitle]="'DASHBOARD.KPIS.AVG_UNIT_PRICE' | translate" [earningValue]="formattedAvgUnitPrice" background="bg-info-50" textColor="text-info-500" [color]="infoColor" percentageValue=""[data]="[]"></app-earning-chart>
-  </div>
-  <div class="col-md-6 col-xxl-2">
-    <app-earning-chart iconImage="#wallet-2" [headerTitle]="'DASHBOARD.KPIS.TOTAL_PAID' | translate" [earningValue]="formattedTotalPaidAmount" background="bg-success-50" textColor="text-success-500" [color]="successColor" percentageValue=""[data]="[]"></app-earning-chart>
-  </div>
-  <div class="col-md-6 col-xxl-2">
-    <app-earning-chart iconImage="#wallet-2" [headerTitle]="'DASHBOARD.KPIS.TOTAL_UNPAID' | translate" [earningValue]="formattedTotalUnpaidAmount" background="bg-warning-50" textColor="text-warning-500" [color]="warningColor" percentageValue=""[data]="[]"></app-earning-chart>
-  </div>
-  <div class="col-md-6 col-xxl-2">
-    <app-earning-chart iconImage="#wallet-2" [headerTitle]="'DASHBOARD.KPIS.UNIQUE_SUPPLIERS' | translate" [earningValue]="uniqueSuppliers.toString()" background="bg-secondary-50" textColor="text-secondary-500" [color]="['var(--secondary-500)']" percentageValue=""[data]="[]"></app-earning-chart>
+  <!-- Lower KPI cards: show only the value, not a chart -->
+  <div class="dashboard-kpis row">
+    <div class="col-md-4 col-xxl-4">
+      <app-card [cardTitle]="'DASHBOARD.KPIS.TOTAL_VOLUME' | translate">
+        <div class="f-w-600 f-20 m-t-15">{{ totalVolume.toFixed(2) }}</div>
+      </app-card>
+    </div>
+    <div class="col-md-4 col-xxl-4">
+      <app-card [cardTitle]="'DASHBOARD.KPIS.AVG_VOLUME' | translate">
+        <div class="f-w-600 f-20 m-t-15">{{ avgVolumePerReception.toFixed(2) }}</div>
+      </app-card>
+    </div>
+    <div class="col-md-4 col-xxl-4">
+      <app-card [cardTitle]="'DASHBOARD.KPIS.AVG_UNIT_PRICE' | translate">
+        <div class="f-w-600 f-20 m-t-15">{{ formattedAvgUnitPrice }}</div>
+      </app-card>
+    </div>
+    <div class="col-md-4 col-xxl-4">
+      <app-card [cardTitle]="'DASHBOARD.KPIS.TOTAL_PAID' | translate">
+        <div class="f-w-600 f-20 m-t-15">{{ formattedTotalPaidAmount }}</div>
+      </app-card>
+    </div>
+    <div class="col-md-4 col-xxl-4">
+      <app-card [cardTitle]="'DASHBOARD.KPIS.TOTAL_UNPAID' | translate">
+        <div class="f-w-600 f-20 m-t-15">{{ formattedTotalUnpaidAmount }}</div>
+      </app-card>
+    </div>
+    <div class="col-md-4 col-xxl-4">
+      <app-card [cardTitle]="'DASHBOARD.KPIS.UNIQUE_SUPPLIERS' | translate">
+        <div class="f-w-600 f-20 m-t-15">{{ uniqueSuppliers.toString() }}</div>
+      </app-card>
+    </div>
   </div>
 </div>
-
 <!-- DASHBOARD ANALYTICS SECTION -->
 <div class="dashboard-analytics row">
   <!-- Left Column: Main Analytics -->

@@ -15,7 +15,7 @@ import { MillMachineViewComponent } from './components/mill-machine/mill-machine
 import { MillMachineMaintenanceComponent } from './components/mill-machine/mill-machine-maintenance/mill-machine-maintenance.component';
 import { QualityControlListComponent } from './components/quality-control-list/quality-control-list.component';
 import { ReceptionListComponent } from './components/reception-list/reception-list.component';
-import { ReceptionDashboardComponent } from './pages/reception-dashboard/reception-dashboard.component';
+import { ReceptionDashboardComponent } from './components/reception-dashboard/reception-dashboard.component';
 import {
   SupplierPaymentHistoryComponent
 } from './components/suppliers/supplier-payment-history/supplier-payment-history.component';
