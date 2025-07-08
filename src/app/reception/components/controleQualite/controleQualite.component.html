@@ -147,8 +147,7 @@
             <mat-form-field appearance="outline" class="financial-field">
               <mat-label>{{ 'CONTROLE_QUALITE.STORAGE_UNIT.LABEL' | translate }}</mat-label>
               <mat-select (selectionChange)="onStorageUnitChange($event)"
-                          formControlName="storageUnit"
-                          required>
+                          formControlName="storageUnit">
                 <mat-option *ngFor="let unit of storageUnits" [value]="unit.id">
                   <div class="storage-option">
                     <span class="storage-name">{{ unit.name }}</span>
@@ -170,7 +169,7 @@
       <!-- Single Save Button -->
       <div class="form-actions">
         <button (click)="onSave()"
-                [disabled]="!isFormValid() || isLoading || isQualityControlDone || isReadOnlyForm"
+                [disabled]="!isFormValid() || isLoading "
                 class="submit-button"
                 color="primary"
                 mat-raised-button>

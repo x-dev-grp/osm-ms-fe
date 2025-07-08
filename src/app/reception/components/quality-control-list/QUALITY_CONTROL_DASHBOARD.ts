@@ -129,13 +129,6 @@ export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
       ]
     }
   ],
-  actions: {
-    statusMapping: false,
-    statusAttributeName: 'status',
-    actionsList: [
-      { label: 'Démarrer contrôle', icon: 'fact_check', value: 'START_CONTROL' },
-      { label: 'Consulter', icon: 'visibility', value: 'VIEW' }
-    ]
-  },
+
   fileName: 'quality_control_list'
 };

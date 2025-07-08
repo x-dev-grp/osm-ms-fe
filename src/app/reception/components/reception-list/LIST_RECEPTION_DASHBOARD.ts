@@ -20,6 +20,7 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
           inValues: [  'NEW',
             'IN_PROGRESS',
             'OLIVE_CONTROLLED',
+            'WAITING_FOR_PRICING',
             'OIL_CONTROLLED',
             'COMPLETED',
             'REFUSED',
@@ -176,15 +177,6 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
       ]
     }
   ],
-  actions: {
-    statusMapping: false,
-    statusAttributeName: 'status',
-    actionsList: [
-      { label: 'Consulter', icon: 'visibility', value: 'CONSULTER' },
-      { label: 'Modifier', icon: 'edit', value: 'MODIFIER' },
-      { label: 'Supprimer', icon: 'delete', value: 'SUPPRIMER' },
-      { label: 'Générer bon de réception', icon: 'picture_as_pdf', value: 'generate_pdf' }
-    ]
-  },
+
   fileName: 'oil_receptions'
 };

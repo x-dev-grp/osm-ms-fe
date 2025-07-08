@@ -57,16 +57,7 @@ export class StorageUnitsComponent implements OnInit {
     addNewItemUrl: '/storage/new',
     fileName: 'storage-units',
 
-    actions: {
-      statusMapping: false,
-      statusAttributeName: 'status',
-      actionsList: [
-        { label: 'View', icon: 'visibility', value: 'VIEW' },
-        { label: 'Edit', icon: 'edit', value: 'EDIT' },
-        { label: 'Delete', icon: 'delete', value: 'DELETE' }
-      ],
-      actionsStatusList: {}
-    },
+
 
     fields: [
       {

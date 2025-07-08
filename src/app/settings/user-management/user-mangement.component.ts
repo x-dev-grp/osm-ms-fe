@@ -31,25 +31,6 @@ export class UserManagementComponent implements OnInit {
     addNewItem: true,
     addNewItemUrl: 'settings/users/add',
     fileName: 'utilisateur',
-    actions:{
-
-            statusMapping:false,
-            actionsList:
-              [
-                {
-                  label:"Consulter",
-                },
-                {
-                  label:"Modifier"
-                },
-                {
-                  label:"Spprimer",
-                  isRemoveAction:true
-                }
-
-            ],
-
-        },
 
     fields: [
       {

@@ -154,7 +154,7 @@
         <div class="section">
           <h4>{{ translate.instant('OLIVE_RECEPTION.FORM.SECTIONS.OLIVE_INFO') }}</h4>
           <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-4">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
                 <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.TREATMENT_DATE') }}</mat-label>
                 <input [matDatepicker]="trtPicker" formControlName="trtDate" matInput />
@@ -162,7 +162,7 @@
                 <mat-datepicker #trtPicker></mat-datepicker>
               </mat-form-field>
             </div>
-            <div class="col-md-3" *ngIf="oliveVarieties.length > 0">
+            <div class="col-md-4" *ngIf="oliveVarieties.length > 0">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
                 <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.OLIVE_VARIETY') }}</mat-label>
                 <input
@@ -179,16 +179,8 @@
                 </mat-autocomplete>
               </mat-form-field>
             </div>
-            <div class="col-md-3">
-              <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.SACK_COUNT') }}</mat-label>
-                <input formControlName="sackCount" matInput type="number" min="0" />
-                <mat-error *ngIf="receptionForm.get('sackCount')?.hasError('min')">
-                  {{ translate.instant('OLIVE_RECEPTION.FORM.VALIDATION.MIN_VALUE') }}
-                </mat-error>
-              </mat-form-field>
-            </div>
-            <div class="col-md-3" *ngIf="oliveTypes.length > 0">
+
+            <div class="col-md-4" *ngIf="oliveTypes.length > 0">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
                 <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.OLIVE_TYPE') }}</mat-label>
                 <input
@@ -215,13 +207,22 @@
         <div class="section">
           <h4>{{ translate.instant('OLIVE_RECEPTION.FORM.SECTIONS.WEIGHT_QUANTITY') }}</h4>
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
                 <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.GROSS_WEIGHT') }}</mat-label>
                 <input formControlName="poidsBrute" matInput type="number" min="0" />
               </mat-form-field>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
+              <mat-form-field appearance="outline" class="w-100 m-b-10">
+                <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.SACK_COUNT') }}</mat-label>
+                <input formControlName="sackCount" matInput type="number" min="0" />
+                <mat-error *ngIf="receptionForm.get('sackCount')?.hasError('min')">
+                  {{ translate.instant('OLIVE_RECEPTION.FORM.VALIDATION.MIN_VALUE') }}
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
                 <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.NET_WEIGHT') }}</mat-label>
                 <input formControlName="poidsNet" matInput type="number" min="0" />

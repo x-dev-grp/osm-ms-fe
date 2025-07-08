@@ -27,7 +27,6 @@ import { debounceTime, filter, map, Observable, Subject } from 'rxjs';
 import { MillMachineService } from '../../../shared/services/mill-machine.service';
 import { MillMachine } from '../../../shared/models/millMachine';
 import { MatDialog } from '@angular/material/dialog';
-import { MatChip } from '@angular/material/chips';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatExpansionPanel, MatExpansionPanelDescription, MatExpansionPanelHeader } from '@angular/material/expansion';
 import { SharedModule } from '../../../demo/shared/shared.module';
@@ -604,8 +603,16 @@ export class PlanningComponent implements OnInit, OnDestroy ,AfterViewInit {
   toggleFullScreen(): void {
     const el = document.documentElement;
     // Use type assertion for browser-specific properties, checking for existence
-    const doc = document as any;
-    const elem = el as any;
+    const doc: Document & {
+      webkitExitFullscreen?: () => Promise<void>;
+      mozCancelFullScreen?: () => Promise<void>;
+      msExitFullscreen?: () => Promise<void>;
+    } = document;
+    const elem: HTMLElement & {
+      webkitRequestFullscreen?: () => Promise<void>;
+      mozRequestFullScreen?: () => Promise<void>;
+      msRequestFullscreen?: () => Promise<void>;
+    } = el;
 
     if (!this.isFullScreen) {
       // Request fullscreen
@@ -1157,10 +1164,10 @@ export class PlanningComponent implements OnInit, OnDestroy ,AfterViewInit {
           ? (itemToComplete.data as PlanningItem).lotNumber
           : (itemToComplete.data as GlobalLot).globalLotNumber;
 
-        // Call the backend (you should extend the service if you want to send oilQuantity and rendement too)
+        // Call the backend (now sending oilQuantity and rendement)
         const req$ = itemToComplete.type === PlanItemType.LOT
-          ? this.planningService.completeLot(label)
-          : this.planningService.completeGlobalLot(label);
+          ? this.planningService.completeLotWithDetails(label, oilQuantity, rendement)
+          : this.planningService.completeGlobalLotWithDetails(label, oilQuantity, rendement);
 
         req$.subscribe({
           next: () => {

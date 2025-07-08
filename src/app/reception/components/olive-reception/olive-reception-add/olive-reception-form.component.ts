@@ -12,7 +12,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { UnifiedDelivery } from '../../../../shared/models/UnifiedDelivery';
-import { OliveLotStatus } from '../../../../shared/models/OliveLotStatus';
 import { BaseType } from '../../../../shared/models/base-type';
 import { SupplierType } from '../../../../shared/models/supplier-type';
 import { GenericTypeService } from '../../../../shared/services/generic-type.service';
@@ -255,19 +254,15 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       oliveVariety: formValue.oliveVariety || null,
       sackCount: formValue.sackCount ? Number(formValue.sackCount) : 0,
       oliveType: formValue.oliveType || null,
-      status: OliveLotStatus.NEW,
       operationType: formValue.operationType || null,
       parcel: formValue.parcel || '',
       price: Number(formValue.price) || 0,
       globalLotNumber: formValue.globalLotNumber || null,
-      oilQuantity: Number(formValue.oilQuantity) || 0,
       unitPrice: Number(formValue.unitPrice) || 0,
       paidAmount: Number(formValue.paidAmount) || 0,
       unpaidAmount: Number(formValue.unpaidAmount) || 0,
       rendement: Number(formValue.rendement) || 0,
       oliveQuantity: Number(formValue.oliveQuantity) || 0,
-      oilVariety: formValue.oilVariety || null,
-      oilType: formValue.oilType || null,
       storageUnit: formValue.storageUnit || null,
       qualityControlResults: formValue.qualityControlResults || null
     };

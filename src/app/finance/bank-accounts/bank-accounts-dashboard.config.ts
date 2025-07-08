@@ -106,13 +106,6 @@ export const BANK_ACCOUNTS_DASHBOARD_CONFIG: DashboardConfig = {
      ],
 
   /* ── Menu actions (no status mapping) ───────────────────────── */
-  actions: {
-    statusMapping: false,
-    actionsList: <Action[]>[
-      { label: 'BANK_ACCOUNTS.ACTIONS.VIEW',      icon: 'visibility', value: 'VIEW' },
-      { label: 'BANK_ACCOUNTS.ACTIONS.EDIT',      icon: 'edit',       value: 'EDIT' },
-      { label: 'BANK_ACCOUNTS.ACTIONS.DELETE',    icon: 'delete',     value: 'DELETE' }
-    ]
-  },
+
   fileName: 'comptes-bancaires'
 };

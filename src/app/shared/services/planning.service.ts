@@ -25,13 +25,21 @@ export class PlanningService {
 
   /* ───── NEW: mark lot(s) completed ──────────────────────────── */
 
-  /** POST one single LOT's status → COMPLETED */
-  completeLot(lotNumber: string): Observable<void> {
-    return this.http.post<void>(`${this.API_BASE_URL}/lots/${lotNumber}/completed`, {});
+
+
+  /** POST one single LOT's status → COMPLETED, with oilQuantity and rendement */
+  completeLotWithDetails(lotNumber: string, oilQuantity: number, rendement: number): Observable<void> {
+    return this.http.post<void>(
+      `${this.API_BASE_URL}/lots/${lotNumber}/completed`,
+      { oilQuantity, rendement }
+    );
   }
 
-  /** POST **all** lots in a global lot → COMPLETED */
-  completeGlobalLot(globalLotNumber: string): Observable<void> {
-    return this.http.post<void>(`${this.API_BASE_URL}/globalLots/${globalLotNumber}/completed`, {});
+  /** POST all lots in a global lot → COMPLETED, with oilQuantity and rendement */
+  completeGlobalLotWithDetails(globalLotNumber: string, oilQuantity: number, rendement: number): Observable<void> {
+    return this.http.post<void>(
+      `${this.API_BASE_URL}/globalLots/${globalLotNumber}/completed`,
+      { oilQuantity, rendement }
+    );
   }
 }

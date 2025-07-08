@@ -118,13 +118,6 @@ export const OIL_TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
   ],
 
   /* ── Menu actions (no status mapping) ───────────────────────── */
-  actions: {
-    statusMapping: false,
-    actionsList: <Action[]>[
-      { label: 'Voir', icon: 'visibility', value: 'VIEW' },
-      { label: 'Modifier', icon: 'edit', value: 'EDIT' },
-      { label: 'Supprimer', icon: 'delete', value: 'DELETE' }
-    ]
-  },
+
   fileName: 'transactions-huile'
 };

@@ -20,7 +20,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
         {
           search: {
             status: {
-              inValues: ['NEW', 'IN_PROGRESS', 'OIL_CONTROLLED', 'REFUSED', 'CANCELLED']
+              inValues: ['NEW', 'IN_PROGRESS', 'OIL_CONTROLLED', 'WAITING_FOR_PRICING','REFUSED', 'CANCELLED']
             },
             deliveryType: {
               equalValue: deliveryType.OIL
@@ -167,18 +167,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
     }
   ],
 
-  /* Actions pour les livraisons d'huile */
-  actions: {
-    statusMapping: false,
-    statusAttributeName: 'status',
-    actionsList: [
-      {label: 'ACTIONS.READ', icon: 'visibility', value: 'READ'},
-      {label: 'ACTIONS.UPDATE', icon: 'edit', value: 'UPDATE'},
-      {label: 'ACTIONS.DELETE', icon: 'delete', value: 'DELETE'},
-      {label: 'ACTIONS.OIL_QUALITY', icon: 'fact_check', value: 'OIL_QUALITY'},
-      {label: 'ACTIONS.GEN_PDF', icon: 'fact_check', value: 'GEN_PDF'}
-    ]
-  },
+  /* Actions pour les livraisons d'huile
 
   /* Nom par défaut du fichier d'export CSV */
   fileName: 'oil_deliveries'

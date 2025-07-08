@@ -252,16 +252,7 @@ export const UNIFIED_DELIVERY_DASHBOARD: DashboardConfig = {
   ],
 
   /* Actions génériques (exemple) */
-  actions: {
-    statusMapping: false,
-    statusAttributeName: 'status',
-    actionsList: [
-      { label: 'Consulter', icon: 'visibility', value: 'CONSULTER' },
-      { label: 'Modifier', icon: 'edit', value: 'MODIFIER' },
-      { label: 'Supprimer', icon: 'delete', value: 'SUPPRIMER' },
-      { label: 'Contrôle Qualité', icon: 'fact_check', value: 'QUALITY' }
-    ]
-  },
+
 
   /* Nom par défaut du fichier d’export CSV */
   fileName: 'deliveries'

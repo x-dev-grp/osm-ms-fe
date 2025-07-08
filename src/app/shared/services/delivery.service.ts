@@ -35,6 +35,10 @@ export class UnifiedDeliveryService {
   createUnifiedDelivery(UnifiedDelivery: UnifiedDelivery): Observable<ApiResponse<UnifiedDelivery>> {
     return this.http.post<ApiResponse<UnifiedDelivery>>(this.baseUrl, UnifiedDelivery);
   }
+ // Create a new UnifiedDeliverycc. The UnifiedDeliverycc payload may include qualityControlResults.
+  createOilDeliveryFromOlive(uuid: string): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/createOilRecFromOliveRec/${uuid}` );
+  }
 
   // Update an existing UnifiedDeliverycc.
   updateUnifiedDelivery(UnifiedDelivery: UnifiedDelivery): Observable<ApiResponse<UnifiedDelivery>> {

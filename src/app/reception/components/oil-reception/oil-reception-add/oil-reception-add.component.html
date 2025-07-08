@@ -117,7 +117,7 @@
         <div class="section">
           <h4>{{ 'OIL_RECEPTION.ADD.OIL_DETAILS' | translate }}</h4>
           <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-6">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
                 <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.OIL_VARIETY' | translate }}</mat-label>
                 <input matInput formControlName="oilVariety" [matAutocomplete]="oilVarietyAuto" required (blur)="validateOilVariety()" />
@@ -128,7 +128,7 @@
                 </mat-autocomplete>
               </mat-form-field>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
                 <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.OIL_TYPE' | translate }}</mat-label>
                 <input matInput formControlName="oilType" [matAutocomplete]="oilTypeAuto" required (blur)="validateOilType()" />
@@ -139,17 +139,7 @@
                 </mat-autocomplete>
               </mat-form-field>
             </div>
-            <div class="col-md-4">
-              <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.OLIVE_TYPE' | translate }}</mat-label>
-                <input matInput formControlName="oliveType" [matAutocomplete]="oliveTypeAuto" required (blur)="validateOliveType()" />
-                <mat-autocomplete #oliveTypeAuto="matAutocomplete" [displayWith]="displayFn">
-                  <mat-option *ngFor="let type of oliveTypes" [value]="type">
-                    {{ type.name }}
-                  </mat-option>
-                </mat-autocomplete>
-              </mat-form-field>
-            </div>
+
           </div>
         </div>
 

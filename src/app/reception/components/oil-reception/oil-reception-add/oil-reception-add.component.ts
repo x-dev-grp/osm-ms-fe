@@ -69,8 +69,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
   oilTypes: BaseType[] = [];
   oilVariety: BaseType[] = [];
   deliveries: UnifiedDelivery[] = [];
-  oliveTypes: BaseType[] = [];
-  operationTypes: { value: OperationType; label: string }[] = [];
+   operationTypes: { value: OperationType; label: string }[] = [];
 
   private subscriptions: Subscription[] = [];
   private deliveryId: string | null;
@@ -102,8 +101,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
         oilVariety: [null, Validators.required],
         oilType: [null, Validators.required],
         parcel: [null, Validators.required],
-        oliveType: [null, Validators.required],
-        globalLotNumber: [''],
+         globalLotNumber: [''],
         operationType: [OperationType.OIL_PURCHASE, Validators.required]
       },
       { validators: [netNotGreaterThanGross] }
@@ -120,17 +118,15 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       this.genericSrv.getAllTypes(TypeCategory.REGION).toPromise(),
       this.supplierSrv.getAllSuppliers().toPromise(),
       this.deliverySrv.getAllDeliveriesList().toPromise(),
-      this.genericSrv.getAllTypes(TypeCategory.OLIVE_TYPE).toPromise(),
       this.genericSrv.getAllTypes(TypeCategory.OIL_TYPE).toPromise(),
       this.isEditing && this.deliveryId ? this.deliverySrv.getUnifiedDelivery(this.deliveryId).toPromise() : Promise.resolve(null)
     ])
-      .then(([cats, regions, suppliers, deliveries, oliveTypes, oilTypes, delivery]) => {
+      .then(([cats, regions, suppliers, deliveries, oilTypes, delivery]) => {
         this.oilCategories = cats?.success ? cats.data : [];
         this.regions = regions?.success ? regions.data : [];
         this.suppliers = suppliers?.success ? suppliers.data : [];
         this.deliveries = deliveries?.success ? deliveries.data : [];
-        this.oliveTypes = oliveTypes?.success ? oliveTypes.data : [];
-        this.oilTypes = oilTypes?.success ? oilTypes.data : [];
+         this.oilTypes = oilTypes?.success ? oilTypes.data : [];
         // Initialize operation types
         this.operationTypes = [
           { value: OperationType.OIL_PURCHASE, label: 'OIL_RECEPTION.ADD.FIELDS.OPERATION_TYPE_PURCHASE' },
@@ -217,8 +213,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       matriculeCamion: formValue.matriculeCamion || '',
       etatCamion: formValue.etatCamion || '',
       supplier: formValue.supplier || null,
-      oliveType: formValue.oliveType || null,
-      globalLotNumber: formValue.globalLotNumber || null,
+       globalLotNumber: formValue.globalLotNumber || null,
       oilVariety: formValue.oilVariety || null,
       oilQuantity: Number(formValue.oilQuantity) || 0,
       unitPrice: Number(formValue.unitPrice) || 0,
@@ -282,8 +277,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       oilQuantity: d.oilQuantity,
       oilVariety: this.oilCategories.find((c) => c.id === d.oilVariety?.id) || null,
       oilType: this.oilTypes.find((t) => t.id === d.oilType?.id) || null,
-      oliveType: this.oliveTypes.find((t) => t.id === d.oliveType?.id) || null,
-      globalLotNumber: d.globalLotNumber || '',
+       globalLotNumber: d.globalLotNumber || '',
       operationType: OperationType.OIL_PURCHASE
     });
 
@@ -303,10 +297,6 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  private failAndExit(msg: string): void {
-    this.showToast(msg);
-    this.router.navigate(['/reception-huile']);
-  }
 
   resetForm(): void {
     this.router.navigate(['/reception-huile']);
@@ -316,11 +306,11 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     window.history.back();
   }
 
-  private generateLotNumber(oliveType: BaseType | null, deliveryNumber: number): string {
-    if (!oliveType?.name) return '';
+  private generateLotNumber(oilTye: BaseType | null, deliveryNumber: number): string {
+    if (!oilTye?.name) return '';
     const year = new Date().getFullYear().toString().slice(-2);
     const paddedNumber = deliveryNumber.toString().padStart(4, '0');
-    return `${paddedNumber}${oliveType.name.toUpperCase()}${year}`;
+    return `${paddedNumber}${oilTye.name.toUpperCase()}${year}`;
   }
 
   validateSupplier() {
@@ -351,12 +341,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  validateOliveType() {
-    const value = this.receptionForm.get('oliveType')!.value;
-    if (!isValidSelection(value, this.oliveTypes)) {
-      this.receptionForm.get('oliveType')!.setValue(null);
-    }
-  }
+
 
   displayFn<T extends { name?: string; supplierInfo?: { name: string } }>(item: T): string {
     if (!item) return '';
@@ -366,97 +351,12 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     return item.name || '';
   }
 
-  // private setupFormSubscriptions(): void {
-  //   // Subscribe to storage unit changes
-  //   this.subscriptions.add(
-  //     this.receptionForm.get('storageUnit')?.valueChanges.subscribe(unit => {
-  //       if (unit) {
-  //         const available = unit.maxCapacity - unit.currentVolume;
-  //         this.translate.get('OIL_RECEPTION.ADD.MESSAGES.STORAGE_CAPACITY', {
-  //           name: unit.name,
-  //           available: available,
-  //           max: unit.maxCapacity
-  //         }).subscribe(message => {
-  //           this.showToast(message, 4000);
-  //         });
-  //       }
-  //     })
-  //   );
-  //
-  //   // Subscribe to oil quantity changes
-  //   this.subscriptions.add(
-  //     this.receptionForm.get('oilQuantity')?.valueChanges.subscribe(quantity => {
-  //       if (quantity) {
-  //         const storageUnit = this.receptionForm.get('storageUnit')?.value;
-  //         if (storageUnit) {
-  //           const available = storageUnit.maxCapacity - storageUnit.currentVolume;
-  //           if (quantity > available) {
-  //             this.translate.get('OIL_RECEPTION.ADD.ERRORS.EXCEEDS_CAPACITY', {
-  //               available: available
-  //             }).subscribe(message => {
-  //               this.showToast(message, 4000);
-  //             });
-  //           }
-  //         }
-  //       }
-  //     })
-  //   );
-  //
-  //   // Subscribe to form validation errors
-  //   this.subscriptions.add(
-  //     this.receptionForm.statusChanges.subscribe(() => {
-  //       if (this.receptionForm.hasError('netGreater')) {
-  //         this.translate.get('OIL_RECEPTION.ADD.ERRORS.NET_GREATER').subscribe(message => {
-  //           this.showToast(message, 4000);
-  //         });
-  //       }
-  //     })
-  //   );
-  //
-  //   // Subscribe to paid amount changes to update unpaid amount
-  //   this.subscriptions.add(
-  //     this.receptionForm.get('paidAmount')!.valueChanges.subscribe((paidAmount: number) => {
-  //       const price = this.receptionForm.get('price')?.value || 0;
-  //       const unpaidAmount = Math.max(0, price - (paidAmount || 0));
-  //       this.receptionForm.patchValue({ unpaidAmount }, { emitEvent: false });
-  //     })
-  //   );
-  //
-  //   // Subscribe to price changes to update unpaid amount
-  //   this.subscriptions.add(
-  //     this.receptionForm.get('price')!.valueChanges.subscribe((price: number) => {
-  //       const paidAmount = this.receptionForm.get('paidAmount')?.value || 0;
-  //       const unpaidAmount = Math.max(0, price - paidAmount);
-  //       this.receptionForm.patchValue({ unpaidAmount }, { emitEvent: false });
-  //     })
-  //   );
-  //
-  //   // Subscribe to olive type changes to update lot number
-  //   this.subscriptions.add(
-  //     this.receptionForm.get('oliveType')!.valueChanges.subscribe((oliveType: BaseType | null) => {
-  //       const deliveryNumber = this.receptionForm.get('deliveryNumber')?.value || this.deliveries.length + 1;
-  //       const lotNumber = this.generateLotNumber(oliveType, deliveryNumber);
-  //       this.receptionForm.patchValue({ lotNumber }, { emitEvent: false });
-  //     })
-  //   );
-  //
-  //   // Subscribe to region changes to update parcel
-  //   this.subscriptions.add(
-  //     this.receptionForm.get('region')!.valueChanges.subscribe((region: BaseType | null) => {
-  //       if (region?.name) {
-  //         this.receptionForm.patchValue({ parcel: region.name }, { emitEvent: false });
-  //       }
-  //     })
-  //   );
-  //
-  //
-  // }
 
   private setupFormSubscriptions(): void {
     this.subscriptions.push(
-      this.receptionForm.get('oliveType')!.valueChanges.subscribe((oliveType: BaseType | null) => {
+      this.receptionForm.get('oilType')!.valueChanges.subscribe((oilTye: BaseType | null) => {
         const deliveryNumber = this.receptionForm.get('deliveryNumber')?.value || this.deliveries.length + 1;
-        const lotNumber = this.generateLotNumber(oliveType, deliveryNumber);
+        const lotNumber = this.generateLotNumber(oilTye, deliveryNumber);
         this.receptionForm.patchValue({ lotNumber }, { emitEvent: false });
       })
     );

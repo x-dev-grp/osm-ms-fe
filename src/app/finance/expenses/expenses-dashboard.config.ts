@@ -78,16 +78,7 @@ export const EXPENSES_DASHBOARD_CONFIG: DashboardConfig = {
   ],
 
   /* ───────────────────────────── actions ─────────────────────────── */
-  actions: {
-    statusMapping: false,
-    statusAttributeName: 'status',
-    actionsList: <Action[]>[
-      { label: 'Consulter', icon: 'visibility', value: 'VIEW' },
-      { label: 'Modifier', icon: 'edit', value: 'EDIT' },
-      { label: 'Imprimer', icon: 'print', value: 'PRINT' },
-      { label: 'Supprimer', icon: 'delete', value: 'DELETE' }
-    ]
-  },
+
 
   /* ──────────────── nom du fichier exporté (optionnel) ───────────── */
   fileName: 'expenses',

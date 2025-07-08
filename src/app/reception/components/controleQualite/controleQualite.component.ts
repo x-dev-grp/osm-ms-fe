@@ -78,9 +78,9 @@ export class ControleQualiteComponent implements OnInit {
   creerStaticFormulaire(): void {
     this.isReadOnlyForm = !!(this.deliveryData?.unitPrice || this.deliveryData?.price || this.deliveryData?.storageUnit);
     this.staticForm = this.fb.group({
-      unitPrice: [null, Validators.required],
-      price: [null, Validators.required],
-      storageUnit: [null, Validators.required]
+      unitPrice: [null],
+      price: [null],
+      storageUnit: [null]
     });
     this.staticForm.get('unitPrice')?.valueChanges.subscribe((unitPrice: number) => {
       const oilQty = this.deliveryData?.oilQuantity || 0;
@@ -179,7 +179,7 @@ export class ControleQualiteComponent implements OnInit {
       }
     });
   }
-
+//todo split pricing and storage unit each in a dialog , update the statue based on the missing variable (stataue to_complete )
   loadQualityControlResults(): void {
     if (!this.deliveryData?.id) {
       this.message = 'ID de livraison non disponible';
@@ -316,7 +316,7 @@ export class ControleQualiteComponent implements OnInit {
 
   onSave(): void {
     this.submitted = true;
-    if (!this.mainForm.valid || this.isLoading || this.isQualityControlDone || this.isReadOnlyForm) {
+    if (!this.mainForm.valid || this.isLoading ) {
       return;
     }
 

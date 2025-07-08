@@ -59,13 +59,5 @@ export const QUALTITY_CONTROL_RULE_DASHBOARD: DashboardConfig = {
       dataTable: true
     },
   ],
-  actions: {
-    statusMapping: false,
-    statusAttributeName: 'status',
-    actionsList: [
-      {label: 'Consulter', icon: 'visibility', value: 'CONSULTER'},
-      {label: 'Modifier', icon: 'edit', value: 'MODIFIER'},
-      {label: 'Supprimer', icon: 'delete', value: 'SUPPRIMER'},
-    ]
-  }
+
 }

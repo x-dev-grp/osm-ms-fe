@@ -9,16 +9,7 @@ export const OIL_CREDIT_DASHBOARD: DashboardConfig = {
   addNewItemUrl: '/finance/oil-credit/new',
   fileName: 'oil-credits',
 
-  actions: {
-    statusMapping: false,
-    statusAttributeName: 'status',
-    actionsList: [
-      { label: 'Consulter', icon: 'visibility', value: 'view' },
-      { label: 'Modifier', icon: 'edit', value: 'edit' },
-      { label: 'Supprimer', icon: 'delete', value: 'delete' }
-    ],
-    actionsStatusList: {}
-  },
+
 
   fields: [
     {

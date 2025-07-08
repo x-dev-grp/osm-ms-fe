@@ -20,7 +20,7 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
         {
           search: {
             status: {
-              inValues: ['NEW', 'IN_PROGRESS', 'OLIVE_CONTROLLED', 'REFUSED', 'CANCELLED']
+              inValues: ['NEW', 'IN_PROGRESS', 'OLIVE_CONTROLLED','WAITING_FOR_PRICING', 'REFUSED', 'CANCELLED']
             },
             deliveryType: {
               equalValue: deliveryType.OLIVE
@@ -182,17 +182,11 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
   ],
 
   /* Actions pour les livraisons d'olives */
-  actions: {
-    statusMapping: false,
-    statusAttributeName: 'status',
-    actionsList: [
-      { label: 'Consulter', icon: 'visibility', value: 'READ' },
-      { label: 'Modifier', icon: 'edit', value: 'UPDATE' },
-      { label: 'Supprimer', icon: 'delete', value: 'DELETE' },
-      { label: 'Contrôle Qualité', icon: 'fact_check', value: 'QUALITY' },
-      { label: 'Générer bon de réception', icon: 'picture_as_pdf', value: 'GENPDF' }
-    ]
-  },
+  actions: new Map<string, string>([
+    ["UPDATE", "visibility"],
+
+  ]),
+
 
   /* Nom par défaut du fichier d'export CSV */
   fileName: 'olive_deliveries'

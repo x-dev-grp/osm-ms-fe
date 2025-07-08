@@ -110,15 +110,6 @@ export const MILL_MACHINE_DASHBOARD: DashboardConfig = {
       filterable: true
     }
   ],
-  actions: {
-    statusMapping: false,
-    statusAttributeName: 'operatingStatus',
-    actionsList: [
-      { label: 'Consulter', icon: 'visibility', value: 'CONSULTER' },
-      { label: 'Modifier', icon: 'edit', value: 'MODIFIER' },
-      { label: 'Supprimer', icon: 'delete', value: 'SUPPRIMER' },
-      { label: 'Maintenance', icon: 'build', value: 'MAINTENANCE' }
-    ]
-  },
+
   fileName: 'mill_machines'
 };

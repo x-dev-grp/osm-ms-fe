@@ -1,44 +1,35 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {MatButtonModule} from '@angular/material/button';
-import {MatTableModule} from '@angular/material/table';
-import {MatIconModule} from '@angular/material/icon';
-import {MatDialogModule} from '@angular/material/dialog';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatExpansionModule} from '@angular/material/expansion';
-import {MatInputModule} from '@angular/material/input';
-import {MatSelectModule} from '@angular/material/select';
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatCardModule} from '@angular/material/card';
-import {
-  AbstractControl,
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  ValidationErrors,
-  ValidatorFn,
-  Validators
-} from '@angular/forms';
-import {MatSortModule} from '@angular/material/sort';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {MatPaginator} from '@angular/material/paginator';
-import {Router} from '@angular/router';
-import {combineLatest, forkJoin, Subscription} from 'rxjs';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatCardModule } from '@angular/material/card';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { MatSortModule } from '@angular/material/sort';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatPaginator } from '@angular/material/paginator';
+import { Router } from '@angular/router';
+import { combineLatest, forkJoin, Subscription } from 'rxjs';
 
-import {SharedModule} from '../../../demo/shared/shared.module';
-import {OsmDashboard} from '../../../shared/modules/osm-dashboard/osm-dashboard';
-import {DashboardConfig} from '../../../shared/modules/osm-dashboard/models/dashboard-config';
-import {UnifiedDelivery} from '../../../shared/models/UnifiedDelivery';
-import {BaseType} from '../../../shared/models/base-type';
-import {UnifiedDeliveryService} from '../../../shared/services/delivery.service';
-import {GenericTypeService} from '../../../shared/services/generic-type.service';
-import {TypeCategory} from '../../../shared/models/type-category.enum';
-import {SupplierType} from '../../../shared/models/supplier-type';
-import {SupplierTypeService} from '../../../shared/services/supplier.service';
+import { SharedModule } from '../../../demo/shared/shared.module';
+import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
+import { DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
+import { BaseType } from '../../../shared/models/base-type';
+import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
+import { GenericTypeService } from '../../../shared/services/generic-type.service';
+import { TypeCategory } from '../../../shared/models/type-category.enum';
+import { SupplierType } from '../../../shared/models/supplier-type';
+import { SupplierTypeService } from '../../../shared/services/supplier.service';
 
-import {PdfGeneratorService} from '../../../shared/services/pdf-generator.service';
-import {OIL_DELIVERY_DASHBOARD} from './OIL_DELIVERY_DASHBOARD';
-
+import { PdfGeneratorService } from '../../../shared/services/pdf-generator.service';
+import { OIL_DELIVERY_DASHBOARD } from './OIL_DELIVERY_DASHBOARD';
 
 /* ──────────────────────────────────────────────────────────── */
 /* validators                                                   */
@@ -52,6 +43,7 @@ export const netNotGreaterThanGross: ValidatorFn = (g: AbstractControl): Validat
 
 /* ──────────────────────────────────────────────────────────── */
 /* component                                                    */
+
 /* ──────────────────────────────────────────────────────────── */
 
 @Component({
@@ -184,6 +176,90 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
 
   /* ——— helpers ——— */
 
+  selectReception(d?: UnifiedDelivery): void {
+    if (d?.id) {
+      this.router.navigate(['/reception/reception-huile', d.id]);
+    } else {
+      this.router.navigate(['/reception/reception-huile', 'new']);
+    }
+  }
+
+  viewDelivery(d: UnifiedDelivery): void {
+    this.router.navigate(['reception/reception-details', d.id]);
+  }
+
+  QualityControl(d: UnifiedDelivery): void {
+    this.router.navigate(['/reception/quality', d.id]);
+  }
+
+  /* ——— UI actions ——— */
+
+  genererBonReception(delivery: UnifiedDelivery): void {
+    const bonReceptionData = {
+      title: 'Bon De Réception Huile',
+      reference: delivery.lotNumber || '',
+      date: '',
+      revision: '01',
+      page: '1/1',
+      generalInfo: [
+        { label: 'Type', value: delivery.deliveryType || '' },
+        {
+          label: 'Fournisseur',
+          value: `${delivery.supplier?.supplierInfo?.name || ''} ${delivery.supplier?.supplierInfo?.lastname || ''}`
+        },
+        { label: 'Téléphone', value: delivery.supplier?.supplierInfo?.phone || '' },
+        { label: 'Adresse', value: delivery.supplier?.supplierInfo?.address || '' }
+      ],
+      fields: [
+        { label: 'Lot', value: delivery.lotNumber || '' },
+        { label: 'Lot Global', value: delivery.globalLotNumber || '' },
+        { label: 'Poids Brut', value: `${delivery.poidsBrute || ''} kg` },
+        { label: "Quantité d'huile", value: `${delivery.oilQuantity || ''} kg` },
+        { label: 'Variéte Huile', value: `${delivery.oilVariety?.name || ''} ` },
+        { label: 'Type Huile', value: `${delivery.oilType?.name || ''} ` },
+        { label: 'Région', value: delivery.region?.name || '' }
+      ],
+      footerInfo: [
+        { label: 'Signature Agent (bascule) ', placeholder: '' },
+        { label: 'Signature Réspensable CQ', placeholder: '' }
+      ],
+      fileName: `Bon_Reception_Huile_${delivery.deliveryNumber || 'inconnu'}.pdf`
+    };
+
+    this.pdfService.generatePdfDocument(bonReceptionData);
+  }
+
+
+  /* ——— data loading & table helpers ——— */
+
+  onRowAction(e: { row: UnifiedDelivery; action: string }): void {
+    switch (e.action) {
+      case 'READ':
+        this.viewDelivery(e.row);
+        break;
+
+      case 'UPDATE':
+        this.selectReception(e.row);
+        break;
+
+      case 'QUALITY':
+      case 'OIL_QUALITY':
+      case 'UPDATE_OIL_QUALITY':
+        this.QualityControl(e.row);
+        break;
+
+      case 'DELETE':
+        if (e.row.id) this.deleteDelivery(e.row);
+        break;
+
+      case 'GENPDF':
+        if (e.row) {
+          this.genererBonReception(e.row);
+        }
+        break;
+    }
+  }
+
   private toast(message: string, duration = 3000): void {
     this.snackBar.open(message, 'Fermer', {
       duration,
@@ -205,165 +281,11 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
     return date ? new Date(date).toISOString() : null;
   }
 
-  /* ——— UI actions ——— */
-
-  selectReception(d?: UnifiedDelivery): void {
-    if (d?.id) {
-      this.router.navigate(['/reception/reception-huile', d.id]);
-    } else {
-      this.router.navigate(['/reception/reception-huile', 'new']);
-    }
-  }
-
-  // async Enregistrer(): Promise<void> {
-  //   if (this.receptionForm.invalid) {
-  //     this.toast('Veuillez remplir tous les champs obligatoires.', 4000);
-  //     return;
-  //   }
-  //
-  //   const f = this.receptionForm.value;
-  //
-  //   if (!f.region?.id)   { this.toast('Veuillez sélectionner une région valide.', 4000);   return; }
-  //   if (!f.supplier?.id) { this.toast('Veuillez sélectionner un fournisseur valide.', 4000); return; }
-  //
-  //   const payload: any = {
-  //     id: this.isEditing ? this.selectedReceptionId : undefined,
-  //
-  //     deliveryType: 'OIL',
-  //     deliveryNumber: f.deliveryNumber,
-  //     lotNumber:      f.lotNumber,
-  //     globalLotNumber:f.globalLotNumber,
-  //
-  //     deliveryDate: this.iso(f.deliveryDate),
-  //     region:       f.region,
-  //
-  //     poidsBrute: f.poidsBrute,
-  //     poidsNet:   f.poidsNet,
-  //
-  //     matriculeCamion: f.matriculeCamion,
-  //     etatCamion:      f.etatCamion,
-  //
-  //     supplier:   f.supplier,
-  //     oilVariety: f.oilVariety,
-  //     oliveType:  f.oliveType,
-  //
-  //     oilQuantity:  f.oilQuantity,
-  //     unitPrice:    f.unitPrice,
-  //     price:        f.price,
-  //     paidAmount:   f.paidAmount,
-  //     unpaidAmount: f.unpaidAmount
-  //   };
-  //
-  //   const req$ = this.isEditing
-  //     ? this.deliveryService.updateUnifiedDelivery(payload)
-  //     : this.deliveryService.createUnifiedDelivery(payload);
-  //
-  //   req$.subscribe({
-  //     next: res => {
-  //       if (res.success) {
-  //         this.toast(this.isEditing ? 'Réception huile mise à jour.' : 'Réception huile ajoutée.');
-  //         this.fetchDeliveries();
-  //         this.resetForm();
-  //       } else {
-  //         this.toast(res.message || "Échec de l'opération.");
-  //       }
-  //     },
-  //     error: () => this.toast(this.isEditing ? 'Erreur lors de la mise à jour' : 'Erreur lors de l’ajout')
-  //   });
-  // }
-
-  // resetForm(): void {
-  //   this.receptionForm.reset({
-  //     deliveryType: 'OIL',
-  //     deliveryDate: new Date(),
-  //     poidsBrute: 0,
-  //     poidsNet: 0
-  //   });
-  //   this.isEditing = false;
-  //   this.formOpen  = false;
-  //   this.selectedReceptionId = undefined;
-  // }
-
-  /* ——— data loading & table helpers ——— */
-
   private fetchDeliveries(): void {
     this.deliveryService.getAllDeliveriesList().subscribe((res) => {
       this.deliveries = res.success ? res.data.filter((d) => d.deliveryType === 'OIL') : [];
       if (!res.success) this.toast(res.message || 'Erreur lors du chargement des réceptions.');
     });
-  }
-
-  viewDelivery(d: UnifiedDelivery): void {
-    this.router.navigate(['reception/reception-details', d.id]);
-  }
-
-  QualityControl(d: UnifiedDelivery): void {
-    this.router.navigate(['/reception/quality', d.id]);
-  }
-
-  genererBonReception(delivery: UnifiedDelivery): void {
-    const bonReceptionData = {
-      title: 'Bon De Réception Huile',
-      reference: delivery.lotNumber || '',
-      date: '',
-      revision: '01',
-      page: '1/1',
-      generalInfo: [
-        {label: 'Type', value: delivery.deliveryType || ''},
-        {
-          label: 'Fournisseur',
-          value: `${delivery.supplier?.supplierInfo?.name || ''} ${delivery.supplier?.supplierInfo?.lastname || ''}`,
-        },
-        {label: 'Téléphone', value: delivery.supplier?.supplierInfo?.phone || ''},
-        {label: 'Adresse', value: delivery.supplier?.supplierInfo?.address || ''},
-
-      ],
-      fields: [
-        {label: 'Lot', value: delivery.lotNumber || ''},
-        {label: 'Lot Global', value: delivery.globalLotNumber || ''},
-        {label: 'Poids Brut', value: `${delivery.poidsBrute || ''} kg`},
-        {label: "Quantité d'huile", value: `${delivery.oilQuantity || ''} kg`},
-        {label: 'Variéte Huile', value: `${delivery.oilVariety?.name || ''} `},
-        {label: 'Type Huile', value: `${delivery.oilType?.name || ''} `},
-        {label: 'Région', value: delivery.region?.name || ''}
-      ],
-      footerInfo: [
-        {label: 'Signature Agent (bascule) ', placeholder: ''},
-        {label: 'Signature Réspensable CQ', placeholder: ''},
-
-
-      ],
-      fileName: `Bon_Reception_Huile_${delivery.deliveryNumber || 'inconnu'}.pdf`
-    };
-
-    this.pdfService.generatePdfDocument(bonReceptionData);
-  }
-
-  onRowAction(e: { row: UnifiedDelivery; action: string }): void {
-    switch (e.action) {
-      case 'READ':
-        this.viewDelivery(e.row);
-        break;
-
-      case 'UPDATE':
-        this.selectReception(e.row);
-        break;
-
-      case 'QUALITY':
-        case 'OIL_QUALITY':
-        this.QualityControl(e.row);
-        break;
-
-      case 'DELETE':
-        if (e.row.id) this.deleteDelivery(e.row);
-        break;
-
-      case 'GENPDF':
-        if (e.row) {
-          this.genererBonReception(e.row);
-        }
-        break;
-    }
   }
 
   private deleteDelivery(d: UnifiedDelivery): void {

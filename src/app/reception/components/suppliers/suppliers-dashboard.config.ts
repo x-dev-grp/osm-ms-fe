@@ -104,15 +104,7 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
   ],
 
   /* ─────────── action menu ────────── */
-  actions: {
-    statusMapping: false,
-    statusAttributeName: 'status',
-    actionsList: [
-      { label: 'Consulter', icon: 'visibility', value: 'READ' },
-      { label: 'Modifier', icon: 'edit', value: 'EDIT' },
-      { label: 'Supprimer', icon: 'delete', value: 'DELETE' }
-    ]
-  },
+
 
   fileName: 'suppliers'
 };

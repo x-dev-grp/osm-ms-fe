@@ -10,12 +10,7 @@ export interface DashboardConfig {
     addNewItem:boolean;
     addNewItemUrl?:string;
     fields:Field[];
-    actions?:{
-        statusMapping:boolean;
-        actionsList?:Action[];
-        actionsStatusList?:{ [key: string]: Action[] };
-        statusAttributeName?:string
-    };
+    actions?:Map<string,string>
     fileName?:string;
 }
 export interface Action {

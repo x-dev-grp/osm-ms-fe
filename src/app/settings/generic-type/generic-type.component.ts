@@ -62,40 +62,7 @@ export class GenericTypeComponent implements OnInit {
     addNewItem: false,
     addNewItemUrl: '/dashboard',
     fileName: 'generic-type',
-    actions: {
-      statusMapping: false,
-      actionsList: [
-        { label: 'Consulter',          icon: 'visibility',  value: 'CONSULTER'  },
-        { label: 'Modifier',           icon: 'edit',        value: 'MODIFIER'   },
-        { label: 'Supprimer',          icon: 'delete',      value: 'SUPPRIMER'  },
-      ]
-,
-      statusAttributeName: 'name',
-      // actionsStatusList: {
-      //   bhhnh: [
-      //     {
-      //       action: 'consulter'
-      //     },
-      //     {
-      //       action: 'modier'
-      //     },
-      //     {
-      //       action: 'spprimer'
-      //     }
-      //   ],
-      //   cdcd: [
-      //     {
-      //       action: 'view'
-      //     },
-      //     {
-      //       action: 'edit'
-      //     },
-      //     {
-      //       action: 'delete'
-      //     }
-      //   ]
-      // }
-    },
+
     // defaultSearchData: {
     //     page: 0,
     //     size: 10,

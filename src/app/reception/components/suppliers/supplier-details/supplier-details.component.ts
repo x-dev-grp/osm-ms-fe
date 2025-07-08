@@ -252,24 +252,6 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
           ]
         }
       ],
-      actions: {
-        statusMapping: false,
-        statusAttributeName: 'status',
-        actionsList: [
-          { label: 'Consulter', icon: 'visibility', value: 'CONSULTER' },
-          {
-            label: 'Modifier',
-            icon: 'edit',
-            value: 'MODIFIER'
-          },
-          { label: 'Supprimer', icon: 'delete', value: 'SUPPRIMER' },
-          {
-            label: 'Générer bon de réception',
-            icon: 'picture_as_pdf',
-            value: 'generate_pdf'
-          }
-        ]
-      },
       fileName: 'supplier-details'
     };
   }
