@@ -13,11 +13,12 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { SharedModule } from 'src/app/demo/shared/shared.module';
 import { DashboardStore } from './services/dashboard-state.service';
-import { Action, DashboardConfig, Field } from './models/dashboard-config';
+import { DashboardConfig, Field } from './models/dashboard-config';
 import { Router } from '@angular/router';
 import { DynamicInput } from './components/dynamic-input/dynamic-input.component';
 
 import { ConfirmationDialogService } from '../../services/confirmation-dialog.service';
+import { ACTION_ICONS } from './models/actions';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -46,15 +47,16 @@ export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
   readonly _store = inject(DashboardStore);
   _router = inject(Router);
   _dialog = inject(MatDialog);
-  private cdr = inject(ChangeDetectorRef);
-  private _confirmationDialog = inject(ConfirmationDialogService);
   config = input.required<DashboardConfig>();
   applyAction = output<{ row: any; action: string }>();
   displayedColumns: string[] = [];
-  actions: Action[] | undefined;
+  actions: Map<string, string> = ACTION_ICONS;
+  private cdr = inject(ChangeDetectorRef);
+  private _confirmationDialog = inject(ConfirmationDialogService);
   private readonly _checked = 'checked';
   private readonly _delete = 'DELETE';
-  private readonly  _actions = 'actions';
+  private readonly _actions = 'actions';
+
   ngOnChanges(changes: SimpleChanges): void {
     console.log(changes);
   }
@@ -73,7 +75,6 @@ export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngAfterViewInit(): void {}
-
 
   sortChange(event: any) {
     console.log(event);
@@ -130,7 +131,7 @@ export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
 
   actionApply(action: string, row: unknown) {
     if (action === this._delete) {
-      this._confirmationDialog.confirmDelete().subscribe(result => {
+      this._confirmationDialog.confirmDelete().subscribe((result) => {
         if (result.confirmed) {
           this._store.removeItem((row as { id: string })?.id, this.config().baseURL);
         }

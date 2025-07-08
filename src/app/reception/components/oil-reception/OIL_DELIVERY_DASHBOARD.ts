@@ -1,6 +1,6 @@
-import {AttributeType, DashboardConfig, FieldType} from '../../../shared/modules/osm-dashboard/models/dashboard-config';
-import {deliveryType} from '../../../shared/models/deleveryType';
-import {SearchOperation} from '../../../shared/models/advanced-search/searchOperation';
+import { AttributeType, DashboardConfig, FieldType } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { deliveryType } from '../../../shared/models/deleveryType';
+import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
 
 export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
   title: "Livraisons d'Huile",
@@ -20,7 +20,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
         {
           search: {
             status: {
-              inValues: ['NEW', 'IN_PROGRESS', 'OIL_CONTROLLED', 'WAITING_FOR_PRICING','REFUSED', 'CANCELLED']
+              inValues: ['NEW', 'IN_PROGRESS', 'OIL_CONTROLLED', 'WAITING_FOR_PRICING', 'REFUSED', 'CANCELLED']
             },
             deliveryType: {
               equalValue: deliveryType.OIL
@@ -29,9 +29,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
         }
       ]
     }
-  },
-  /* ────────────────────────────────────────────────────────────── */
-  /*         Champs pour les livraisons d'huile                    */
+  } /* ────────────────────────────────────────────────────────────── */ /*         Champs pour les livraisons d'huile                    */,
   /* ────────────────────────────────────────────────────────────── */
   fields: [
     /* Identifiants */
@@ -66,8 +64,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       exportable: true,
       dataTable: true,
       filterable: true
-    },
-    /* Dates */
+    } /* Dates */,
     {
       name: 'deliveryDate',
       label: 'Date de livraison',
@@ -78,8 +75,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       sortable: true,
       dataTable: true,
       filterable: true
-    },
-    /* Fournisseur & Localisation */
+    } /* Fournisseur & Localisation */,
     {
       name: 'supplier.supplierInfo',
       label: 'Fournisseur',
@@ -103,8 +99,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       filterable: true,
       valuePath: 'name',
       valueAttributeType: AttributeType.string
-    },
-    /* Quantités & Prix */
+    } /* Quantités & Prix */,
     {
       name: 'oilQuantity',
       label: 'Qté huile (L)',
@@ -155,20 +150,42 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       dataTable: true,
       filterable: true,
       options: [
-        { label: 'Nouveau', value: 'NEW', labelTranslatePath: 'RECEPTION_LIST.STATUS.NEW' },
-        { label: 'En cours', value: 'IN_PROGRESS', labelTranslatePath: 'RECEPTION_LIST.STATUS.IN_PROGRESS' },
-        { label: 'Contrôle Olives', value: 'OLIVE_CONTROLLED', labelTranslatePath: 'RECEPTION_LIST.STATUS.OLIVE_CONTROLLED' },
-        { label: 'Contrôle Huile', value: 'OIL_CONTROLLED', labelTranslatePath: 'RECEPTION_LIST.STATUS.OIL_CONTROLLED' },
-        { label: 'Terminé', value: 'COMPLETED', labelTranslatePath: 'RECEPTION_LIST.STATUS.COMPLETED' },
+        {
+          label: 'Nouveau',
+          value: 'NEW',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.NEW'
+        },
+        {
+          label: 'En cours',
+          value: 'IN_PROGRESS',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.IN_PROGRESS'
+        },
+        {
+          label: 'Contrôle Olives',
+          value: 'OLIVE_CONTROLLED',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.OLIVE_CONTROLLED'
+        },
+        {
+          label: 'Contrôle Huile',
+          value: 'OIL_CONTROLLED',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.OIL_CONTROLLED'
+        },
+        {
+          label: 'Terminé',
+          value: 'COMPLETED',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.COMPLETED'
+        },
         { label: 'Refusé', value: 'REFUSED', labelTranslatePath: 'RECEPTION_LIST.STATUS.REFUSED' },
-        { label: 'Annulé', value: 'CANCELLED', labelTranslatePath: 'RECEPTION_LIST.STATUS.CANCELLED' },
+        {
+          label: 'Annulé',
+          value: 'CANCELLED',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.CANCELLED'
+        },
         { label: 'En stock', value: 'IN_STOCK', labelTranslatePath: 'RECEPTION_LIST.STATUS.IN_STOCK' }
       ]
     }
   ],
 
-  /* Actions pour les livraisons d'huile
 
-  /* Nom par défaut du fichier d'export CSV */
   fileName: 'oil_deliveries'
 };

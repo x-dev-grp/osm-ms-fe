@@ -181,12 +181,6 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
     }
   ],
 
-  /* Actions pour les livraisons d'olives */
-  actions: new Map<string, string>([
-    ["UPDATE", "visibility"],
-
-  ]),
-
 
   /* Nom par défaut du fichier d'export CSV */
   fileName: 'olive_deliveries'

@@ -44,6 +44,18 @@ export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
       filterable: true
     },
     {
+      name: 'operationType',
+      label: 'Type de trituration',
+      labelTranslatePath: 'RECEPTION_LIST.FIELDS.OPERATION_TYPE',
+      attributeType: AttributeType.object,
+      fieldType: FieldType.text,
+      exportable: true,
+      dataTable: true,
+      filterable: true,
+      valuePath: 'name',
+      valueAttributeType: AttributeType.string
+    },
+    {
       name: 'deliveryType',
       label: 'Type de livraison',
       attributeType: AttributeType.enum,

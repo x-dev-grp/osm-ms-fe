@@ -104,7 +104,5 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
   ],
 
   /* ─────────── action menu ────────── */
-
-
   fileName: 'suppliers'
 };
