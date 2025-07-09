@@ -1,1 +1,43 @@
 <osm-dashboard (applyAction)="onRowAction($event)" [config]="dashboardConfig"></osm-dashboard>
+
+
+<ng-template #setPriceDialog let-dialogRef="dialogRef">
+  <form [formGroup]="setPriceForm" class="form-section">
+    <div *ngIf="selectedRow?.deliveryType === 'OIL'">
+      <div class="section-header">
+        <mat-icon>account_balance</mat-icon>
+        <h3>{{ 'CONTROLE_QUALITE.SECTIONS.FINANCIAL' | translate }}</h3>
+      </div>
+
+      <div class="financial-grid">
+        <!-- Unit Price -->
+        <div class="financial-card">
+          <mat-form-field appearance="outline" class="financial-field">
+            <mat-label>{{ 'CONTROLE_QUALITE.FINANCIAL.UNIT_PRICE' | translate }}</mat-label>
+            <input formControlName="unitPrice" matInput step="0.01" type="number">
+            <mat-icon matSuffix>attach_money</mat-icon>
+            <mat-error *ngIf="setPriceForm.get('unitPrice')?.hasError('required')">
+              {{ 'CONTROLE_QUALITE.FORM.VALIDATION.REQUIRED' | translate }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Total Price -->
+        <div class="financial-card">
+          <mat-form-field appearance="outline" class="financial-field">
+            <mat-label>{{ 'CONTROLE_QUALITE.FINANCIAL.PRICE' | translate }}</mat-label>
+            <input formControlName="price" matInput readonly step="0.01" type="number">
+            <mat-icon matSuffix>account_balance_wallet</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="dialog-actions">
+        <button (click)="dialogRef.close()" mat-button>Annuler</button>
+        <button (click)="confirmPrice(dialogRef)" [disabled]="setPriceForm.invalid" color="primary" mat-flat-button>
+          Valider
+        </button>
+      </div>
+    </div>
+  </form>
+</ng-template>

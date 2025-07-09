@@ -1,5 +1,5 @@
 import {CommonModule} from '@angular/common';
-import {ChangeDetectorRef, Component, Input, OnInit, Inject, Optional} from '@angular/core';
+import {ChangeDetectorRef, Component, Inject, Input, OnInit, Optional} from '@angular/core';
 import {QualityControlRuleService} from '../../../shared/services/quality-control-rule.service';
 import {QualityControlRule} from '../../../shared/models/quality-control-rule';
 import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
@@ -22,7 +22,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {MatChipsModule} from '@angular/material/chips';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 
 @Component({
@@ -47,7 +47,6 @@ export class ControleQualiteComponent implements OnInit {
   qualityControlResults: QualityControlResultDto[] = [];
   isQualityControlDone: boolean = false; // verfifier si le controle qualité est deja fait!
   storageUnits: StorageUnitDto[] = [];
-  isReadOnlyForm: boolean = false;
 
 
   constructor(
@@ -60,7 +59,9 @@ export class ControleQualiteComponent implements OnInit {
     private snackBar: MatSnackBar,
     private storageUnitService: StorageUnitDtoService,
     private translate: TranslateService,
+
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: Record<string, unknown> | null = null
+
   ) {
     // If opened as a dialog, set deliveryId from dialogData
     if (dialogData && dialogData['deliveryId']) {
@@ -71,27 +72,27 @@ export class ControleQualiteComponent implements OnInit {
   ngOnInit(): void {
     this.receptionId = this.deliveryId || this.route.snapshot.paramMap.get('id');
     this.loadReception();
-    this.loadStorageUnits();
-    this.creerStaticFormulaire();
+    // this.loadStorageUnits();
+    // this.creerStaticFormulaire();
   }
 
-  creerStaticFormulaire(): void {
-    this.isReadOnlyForm = !!(this.deliveryData?.unitPrice || this.deliveryData?.price || this.deliveryData?.storageUnit);
-    this.staticForm = this.fb.group({
-      unitPrice: [null],
-      price: [null],
-      storageUnit: [null]
-    });
-    this.staticForm.get('unitPrice')?.valueChanges.subscribe((unitPrice: number) => {
-      const oilQty = this.deliveryData?.oilQuantity || 0;
-      const calculatedPrice = (unitPrice || 0) * oilQty;
-      const roundedPrice = Math.round((calculatedPrice + Number.EPSILON) * 1000) / 1000;
-      this.staticForm.get('price')?.setValue(roundedPrice, {emitEvent: false});
-    });
-    this.staticForm.get('storageUnit')?.valueChanges.subscribe((value) => {
-      console.log('FormControl storageUnit a changé :', value);
-    });
-  }
+  // creerStaticFormulaire(): void {
+  //   this.isReadOnlyForm = !!(this.deliveryData?.unitPrice || this.deliveryData?.price || this.deliveryData?.storageUnit);
+  //   this.staticForm = this.fb.group({
+  //     unitPrice: [null],
+  //     price: [null],
+  //     storageUnit: [null]
+  //   });
+  //   this.staticForm.get('unitPrice')?.valueChanges.subscribe((unitPrice: number) => {
+  //     const oilQty = this.deliveryData?.oilQuantity || 0;
+  //     const calculatedPrice = (unitPrice || 0) * oilQty;
+  //     const roundedPrice = Math.round((calculatedPrice + Number.EPSILON) * 1000) / 1000;
+  //     this.staticForm.get('price')?.setValue(roundedPrice, {emitEvent: false});
+  //   });
+  //   this.staticForm.get('storageUnit')?.valueChanges.subscribe((value) => {
+  //     console.log('FormControl storageUnit a changé :', value);
+  //   });
+  // }
 
   updateStaticForm(): void {
     if (this.staticForm && this.deliveryData) {
@@ -253,9 +254,6 @@ export class ControleQualiteComponent implements OnInit {
     if (this.isOilReception()) {
       this.mainForm = this.fb.group({
         ...this.dynamicForm.controls,
-        unitPrice: this.staticForm.get('unitPrice'),
-        price: this.staticForm.get('price'),
-        storageUnit: this.staticForm.get('storageUnit')
       });
     } else {
       this.mainForm = this.fb.group({
@@ -331,7 +329,7 @@ export class ControleQualiteComponent implements OnInit {
       return;
     }
 
-    // Save static fields (unitPrice, price, storageUnit) first
+    // Save static fields (unitPrice, price) first
     if (this.deliveryData) {
       this.deliveryData.unitPrice = this.mainForm.get('unitPrice')?.value;
       this.deliveryData.price = this.mainForm.get('price')?.value;
@@ -521,25 +519,25 @@ export class ControleQualiteComponent implements OnInit {
   //   return rule?.maxValue !== undefined ? rule.maxValue : null;
   // }
 
-  loadStorageUnits(): void {
-    this.isLoading = true;
-    this.storageUnitService.getAllStorageUnit().subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.storageUnits = response.data;
-          console.log("unit sotarge", this.storageUnits)
-        } else {
-          this.snackBar.open(response.message || 'Error loading storage units', 'Close', {duration: 3000});
-        }
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Error loading storage units:', error);
-        this.snackBar.open('Error loading storage units', 'Close', {duration: 3000});
-        this.isLoading = false;
-      }
-    });
-  }
+  // loadStorageUnits(): void {
+  //   this.isLoading = true;
+  //   this.storageUnitService.getAllStorageUnit().subscribe({
+  //     next: (response) => {
+  //       if (response.success) {
+  //         this.storageUnits = response.data;
+  //         console.log("unit sotarge", this.storageUnits)
+  //       } else {
+  //         this.snackBar.open(response.message || 'Error loading storage units', 'Close', {duration: 3000});
+  //       }
+  //       this.isLoading = false;
+  //     },
+  //     error: (error) => {
+  //       console.error('Error loading storage units:', error);
+  //       this.snackBar.open('Error loading storage units', 'Close', {duration: 3000});
+  //       this.isLoading = false;
+  //     }
+  //   });
+  // }
 
   private findRuleKey(displayedName: string): string {
     const normalized = displayedName.toLowerCase();

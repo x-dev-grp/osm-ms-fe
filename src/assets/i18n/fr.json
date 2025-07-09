@@ -1087,6 +1087,7 @@
       "TITLE": "Actions",
       "TO_PROD": "Envoyer en Production",
       "UPDATE": "Modifier",
+      "SET_PRICE": "Définir Le Prix",
       "UPDATE_OIL_QUALITY": "Modifier Qualité Huile",
       "UPDATE_OLIVE_QUALITY": "Modifier Qualité Olives"
     },

@@ -1,6 +1,6 @@
-import { AttributeType, DashboardConfig, FieldType } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
-import { deliveryType } from '../../../shared/models/deleveryType';
-import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
+import {AttributeType, DashboardConfig, FieldType} from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import {deliveryType} from '../../../shared/models/deleveryType';
+import {SearchOperation} from '../../../shared/models/advanced-search/searchOperation';
 
 export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
   title: "Livraisons d'Olives", // afficehr titre fi dashboard
@@ -146,11 +146,11 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
       valueAttributeType: AttributeType.string,
       filterAttribute: 'oliveVariety.name'
     },
-    /* Camion */
+    /* type operation */
     {
-      name: 'matriculeCamion',
-      label: 'Matricule camion',
-      labelTranslatePath: 'DELIVERIES.FIELDS.TRUCK_PLATE',
+      name: 'operationType',
+      label: 'Type opération',
+      // labelTranslatePath: 'DELIVERIES.FIELDS.TRUCK_PLATE',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
