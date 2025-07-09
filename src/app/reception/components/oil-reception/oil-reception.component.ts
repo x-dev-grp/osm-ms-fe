@@ -1,35 +1,44 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule } from '@angular/material/table';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatCardModule } from '@angular/material/card';
-import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { MatSortModule } from '@angular/material/sort';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatPaginator } from '@angular/material/paginator';
-import { Router } from '@angular/router';
-import { combineLatest, forkJoin, Subscription } from 'rxjs';
+import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {MatButtonModule} from '@angular/material/button';
+import {MatTableModule} from '@angular/material/table';
+import {MatIconModule} from '@angular/material/icon';
+import {MatDialog, MatDialogModule} from '@angular/material/dialog';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatCardModule} from '@angular/material/card';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
+  Validators
+} from '@angular/forms';
+import {MatSortModule} from '@angular/material/sort';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {MatPaginator} from '@angular/material/paginator';
+import {Router} from '@angular/router';
+import {combineLatest, forkJoin, Subscription} from 'rxjs';
 
-import { SharedModule } from '../../../demo/shared/shared.module';
-import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
-import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
-import { BaseType } from '../../../shared/models/base-type';
-import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
-import { GenericTypeService } from '../../../shared/services/generic-type.service';
-import { TypeCategory } from '../../../shared/models/type-category.enum';
-import { SupplierType } from '../../../shared/models/supplier-type';
-import { SupplierTypeService } from '../../../shared/services/supplier.service';
+import {SharedModule} from '../../../demo/shared/shared.module';
+import {OsmDashboard} from '../../../shared/modules/osm-dashboard/osm-dashboard';
+import {DashboardConfig} from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import {UnifiedDelivery} from '../../../shared/models/UnifiedDelivery';
+import {BaseType} from '../../../shared/models/base-type';
+import {UnifiedDeliveryService} from '../../../shared/services/delivery.service';
+import {GenericTypeService} from '../../../shared/services/generic-type.service';
+import {TypeCategory} from '../../../shared/models/type-category.enum';
+import {SupplierType} from '../../../shared/models/supplier-type';
+import {SupplierTypeService} from '../../../shared/services/supplier.service';
 
-import { PdfGeneratorService } from '../../../shared/services/pdf-generator.service';
-import { OIL_DELIVERY_DASHBOARD } from './OIL_DELIVERY_DASHBOARD';
+import {PdfGeneratorService} from '../../../shared/services/pdf-generator.service';
+import {OIL_DELIVERY_DASHBOARD} from './OIL_DELIVERY_DASHBOARD';
+
 
 /* ──────────────────────────────────────────────────────────── */
 /* validators                                                   */
@@ -70,11 +79,11 @@ export const netNotGreaterThanGross: ValidatorFn = (g: AbstractControl): Validat
   styleUrl: './oil-reception.component.scss'
 })
 export class OilReceptionComponent implements OnInit, OnDestroy {
+  @ViewChild('setPriceDialog') setPriceDialogTemplate!: TemplateRef<any>;
+
   /* ——— state ——— */
   loading = false;
-  formOpen = false;
   isEditing = false;
-  selectedReceptionId?: string;
 
   deliveries: UnifiedDelivery[] = [];
   receptionForm: FormGroup;
@@ -83,10 +92,13 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
   suppliers: SupplierType[] = [];
   oilVarieties: BaseType[] = [];
   oliveTypes: BaseType[] = [];
+  setPriceForm!: FormGroup;
+  isLoading: boolean = false;
 
   dashboardConfig: DashboardConfig = OIL_DELIVERY_DASHBOARD;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  selectedRow: any;
 
   private subs = new Subscription();
 
@@ -97,7 +109,8 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
     private supplierService: SupplierTypeService,
     private snackBar: MatSnackBar,
     private router: Router,
-    private pdfService: PdfGeneratorService
+    private pdfService: PdfGeneratorService,
+    private dialog: MatDialog
   ) {
     this.receptionForm = this.fb.group(
       {
@@ -252,6 +265,10 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
         if (e.row.id) this.deleteDelivery(e.row);
         break;
 
+      case 'SET_PRICE':
+        this.setPrice(e.row);
+        break;
+
       case 'GENPDF':
         if (e.row) {
           this.genererBonReception(e.row);
@@ -275,10 +292,6 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
       .map((n) => parseInt(n, 10))
       .filter((n) => !isNaN(n));
     return nums.length ? Math.max(...nums) : 0;
-  }
-
-  private iso(date: Date | string | null): string | null {
-    return date ? new Date(date).toISOString() : null;
   }
 
   private fetchDeliveries(): void {
@@ -351,4 +364,56 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
     const nStr = num.toString().padStart(4, '0');
     return `${nStr}${ol.name.toUpperCase()}${year}`;
   }
+
+  confirmPrice(dialogRef: any): void {
+    if (!this.setPriceForm.valid || !this.selectedRow) return;
+
+    // Met à jour les champs
+    this.selectedRow.unitPrice = this.setPriceForm.get('unitPrice')?.value;
+    this.selectedRow.price = this.setPriceForm.get('price')?.value;
+
+    this.isLoading = true;
+
+    this.deliveryService.updateDelivery(this.selectedRow).subscribe({
+      next: (updatedDelivery) => {
+        this.selectedRow = Array.isArray(updatedDelivery.data) ? updatedDelivery.data[0] : updatedDelivery.data;
+        dialogRef.close(); // Ferme le dialog après succès
+        this.isLoading = false;
+        this.snackBar.open('Prix mis à jour avec succès.', 'Fermer', {
+          duration: 3000,
+          panelClass: ['mat-snack-bar-container-success']
+        });
+      },
+      error: () => {
+        this.snackBar.open('Erreur lors de l\'enregistrement du prix.', 'Fermer', {
+          duration: 4000,
+          panelClass: ['mat-snack-bar-container-error']
+        });
+        this.isLoading = false;
+      }
+    });
+  }
+
+  private setPrice(row: any): void {
+    this.selectedRow = row;
+
+    this.setPriceForm = this.fb.group({
+      unitPrice: [row.unitPrice || null, Validators.required],
+      price: [{value: row.price || null, disabled: true}, Validators.required]
+    });
+
+    // Mettre à jour automatiquement le prix
+    this.setPriceForm.get('unitPrice')?.valueChanges.subscribe(unitPrice => {
+      const quantity = row.oilQuantity || 0; // adapte selon ton modèle
+      const price = parseFloat(unitPrice) * quantity;
+      this.setPriceForm.get('price')?.setValue(+price.toFixed(3));
+    });
+
+    this.dialog.open(this.setPriceDialogTemplate, {
+      width: '500px',
+      data: row,
+      disableClose: true
+    });
+  }
+
 }

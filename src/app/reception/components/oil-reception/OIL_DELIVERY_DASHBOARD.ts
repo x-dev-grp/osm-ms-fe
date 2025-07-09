@@ -1,6 +1,6 @@
-import { AttributeType, DashboardConfig, FieldType } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
-import { deliveryType } from '../../../shared/models/deleveryType';
-import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
+import {AttributeType, DashboardConfig, FieldType} from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import {deliveryType} from '../../../shared/models/deleveryType';
+import {SearchOperation} from '../../../shared/models/advanced-search/searchOperation';
 
 export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
   title: "Livraisons d'Huile",
@@ -176,6 +176,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
           labelTranslatePath: 'RECEPTION_LIST.STATUS.COMPLETED'
         },
         { label: 'Refusé', value: 'REFUSED', labelTranslatePath: 'RECEPTION_LIST.STATUS.REFUSED' },
+
         {
           label: 'Annulé',
           value: 'CANCELLED',
@@ -185,7 +186,6 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       ]
     }
   ],
-
 
   fileName: 'oil_deliveries'
 };

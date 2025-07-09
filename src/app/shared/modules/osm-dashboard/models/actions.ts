@@ -13,5 +13,7 @@ export const ACTION_ICONS: Map<string, string> = new Map<string, string>([
   ['OIL_PAYMENT', 'payment'],
   ['OIL_OUT_TRANSACTION', 'call_made'],
   ['OIL_IN_TRANSACTION', 'call_received'],
-  ['OIL_RECEPTION', 'download']
+  ['OIL_RECEPTION', 'download'],
+  ['SET_PRICE', 'attach_money ']
+
 ]);
