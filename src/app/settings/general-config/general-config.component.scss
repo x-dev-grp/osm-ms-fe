@@ -326,12 +326,38 @@
   }
 }
 
+// Spacing between expansion panels
+mat-accordion {
+  margin-bottom: 32px;
+}
+
+mat-expansion-panel {
+  margin-bottom: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(60,60,60,0.04);
+  background: #fff;
+}
+
+mat-card-content {
+  padding: 24px 16px 16px 16px;
+}
+
+.form-section {
+  padding: 24px 16px 16px 16px;
+}
+
+// Page padding
+:host {
+  display: block;
+  padding: 32px 0 32px 0;
+}
+
 // Responsive adjustments
 @media (max-width: 768px) {
   .card-header-actions {
     flex-direction: column;
     width: 100%;
-    
+
     button {
       width: 100%;
     }

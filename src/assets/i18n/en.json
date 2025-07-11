@@ -343,6 +343,7 @@
       "OLIVE_QUANTITY": "Olive Quantity",
       "OLIVE_TYPE": "Olive Type",
       "OLIVE_VARIETY": "Olive Variety",
+      "OPERATION_TYPE": "Operation Type",
       "PARCEL": "Parcel",
       "REGION": "Region",
       "SACK_COUNT": "Sack Count",
@@ -356,8 +357,7 @@
       "SUPPLIER_RIB": "RIB",
       "TRUCK_PLATE": "Truck Plate",
       "TRUCK_STATE": "Truck State",
-      "YIELD": "Yield",
-      "OPERATION_TYPE": "Operation Type"
+      "YIELD": "Yield"
     },
     "FORM": {
       "BUTTONS": {
@@ -442,20 +442,20 @@
     },
     "OIL_TITLE": "Oil Deliveries",
     "OLIVE_TITLE": "Olive Deliveries",
+    "OPERATION_TYPE": {
+      "BASE": "Base",
+      "EXCHANGE": "Exchange",
+      "OIL_PURCHASE": "Oil Purchase",
+      "OLIVE_PURCHASE": "Olive Purchase",
+      "PAYMENT": "Payment",
+      "SIMPLE_RECEPTION": "Simple Reception"
+    },
     "STATUS": {
       "CANCELLED": "Cancelled",
       "COMPLETED": "Completed",
       "IN_PROGRESS": "In Progress",
       "NEW": "New",
       "REFUSED": "Refused"
-    },
-    "OPERATION_TYPE": {
-      "SIMPLE_RECEPTION": "Simple Reception",
-      "BASE": "Base",
-      "OLIVE_PURCHASE": "Olive Purchase",
-      "OIL_PURCHASE": "Oil Purchase",
-      "EXCHANGE": "Exchange",
-      "PAYMENT": "Payment"
     }
   },
   "Dashboard": "Dashboard",
@@ -509,13 +509,6 @@
       "SAVE": "Save Changes",
       "SAVE_TOOLTIP": "Save company profile"
     },
-    "EXPANDABLE": {
-      "CONFIGURATIONS": "Configurations",
-      "PRODUCTION_CONFIG": "Production Config",
-      "FINANCE_CONFIG": "Finance Config",
-      "HR_CONFIG": "HR Config",
-      "OTHER_CONFIG": "Other Config"
-    },
     "ADDRESS_INFO": {
       "ADDRESS": "Address",
       "TITLE": "Address Information"
@@ -542,6 +535,13 @@
       "PHONE": "Phone",
       "TITLE": "Contact Information",
       "WEBSITE": "Website"
+    },
+    "EXPANDABLE": {
+      "CONFIGURATIONS": "Configurations",
+      "FINANCE_CONFIG": "Finance Config",
+      "HR_CONFIG": "HR Config",
+      "OTHER_CONFIG": "Other Config",
+      "PRODUCTION_CONFIG": "Production Config"
     },
     "LOGO": {
       "CLICK_BROWSE": "or click to browse",
@@ -663,7 +663,6 @@
   "Multi Column": "Multi Column",
   "Navigation": "Navigation",
   "OIL_CREDIT": {
-    "TITLE": "Oil Credit Management",
     "ACTIONS": {
       "CANCEL": "Cancel",
       "EDIT": "Edit",
@@ -673,82 +672,83 @@
     "ADD_TITLE": "Add Oil Credit",
     "DETAILS_TITLE": "Oil Credit Details",
     "EDIT_TITLE": "Edit Oil Credit",
+    "ERRORS": {
+      "CREDIT_STATE_REQUIRED": "Credit state is required.",
+      "OIL_TYPE_REQUIRED": "Oil type is required.",
+      "PACKAGING_REQUIRED": "Packaging is required.",
+      "QUANTITY_INSUFFICIENT": "Insufficient quantity in storage.",
+      "QUANTITY_MIN": "Quantity must be greater than 0.",
+      "QUANTITY_REQUIRED": "Quantity is required.",
+      "QUANTITY_UNIT_MISMATCH": "Unit mismatch for selected storage.",
+      "RECIPIENT_REQUIRED": "Recipient is required.",
+      "STORAGE_TANK_REQUIRED": "Storage tank is required.",
+      "SUPPLIER_REQUIRED": "Supplier is required.",
+      "UNIT_REQUIRED": "Unit is required."
+    },
     "FIELDS": {
       "CREATED_DATE": "Created Date",
       "CREDIT_STATE": "Credit State",
       "OIL_TYPE": "Oil Type",
       "PACKAGING": "Packaging",
       "QUANTITY": "Quantity",
-      "SUPPLIER": "Supplier",
-      "UNIT": "Unit",
       "RECIPIENT": "Recipient",
-      "STORAGE_TANK": "Storage Tank"
-    },
-    "UNITS": {
-      "LITER": "Liter",
-      "KILOGRAM": "Kilogram"
-    },
-    "STATES": {
-      "PENDING": "Pending",
-      "APPROVED": "Approved",
-      "REJECTED": "Rejected",
-      "COMPLETED": "Completed",
-      "CANCELLED": "Cancelled"
+      "STORAGE_TANK": "Storage Tank",
+      "SUPPLIER": "Supplier",
+      "UNIT": "Unit"
     },
     "FORM": {
-      "TITLE_NEW": "Add Oil Credit",
-      "TITLE_EDIT": "Edit Oil Credit",
-      "PLACEHOLDERS": {
-        "SEARCH_STORAGE_TANK": "Search storage tank...",
-        "SEARCH_OIL_TYPE": "Search oil type...",
-        "SEARCH_RECIPIENT": "Search recipient..."
-      },
       "BUTTONS": {
         "CANCEL": "Cancel",
         "CREATE": "Create",
         "UPDATE": "Update"
       },
       "CREDIT_STATES": {
-        "PENDING": "Pending",
         "APPROVED": "Approved",
-        "REJECTED": "Rejected",
+        "CANCELLED": "Cancelled",
         "COMPLETED": "Completed",
-        "CANCELLED": "Cancelled"
-      }
-    },
-    "ERRORS": {
-      "CREDIT_STATE_REQUIRED": "Credit state is required.",
-      "OIL_TYPE_REQUIRED": "Oil type is required.",
-      "PACKAGING_REQUIRED": "Packaging is required.",
-      "QUANTITY_REQUIRED": "Quantity is required.",
-      "QUANTITY_MIN": "Quantity must be greater than 0.",
-      "QUANTITY_INSUFFICIENT": "Insufficient quantity in storage.",
-      "QUANTITY_UNIT_MISMATCH": "Unit mismatch for selected storage.",
-      "SUPPLIER_REQUIRED": "Supplier is required.",
-      "UNIT_REQUIRED": "Unit is required.",
-      "RECIPIENT_REQUIRED": "Recipient is required.",
-      "STORAGE_TANK_REQUIRED": "Storage tank is required."
+        "PENDING": "Pending",
+        "REJECTED": "Rejected"
+      },
+      "PLACEHOLDERS": {
+        "SEARCH_OIL_TYPE": "Search oil type...",
+        "SEARCH_RECIPIENT": "Search recipient...",
+        "SEARCH_STORAGE_TANK": "Search storage tank..."
+      },
+      "TITLE_EDIT": "Edit Oil Credit",
+      "TITLE_NEW": "Add Oil Credit"
     },
     "MESSAGES": {
       "FORM_INVALID": "Please correct the errors in the form.",
-      "SAVE_SUCCESS": "Oil credit saved successfully.",
-      "UPDATE_SUCCESS": "Oil credit updated successfully.",
-      "SAVE_ERROR": "Error saving oil credit.",
       "LOAD_ERROR": "Error loading data.",
+      "QUANTITY_INSUFFICIENT_SNACK": "Insufficient quantity in storage.",
       "QUANTITY_UNIT_MISMATCH_SNACK": "Unit mismatch for selected storage.",
-      "QUANTITY_INSUFFICIENT_SNACK": "Insufficient quantity in storage."
+      "SAVE_ERROR": "Error saving oil credit.",
+      "SAVE_SUCCESS": "Oil credit saved successfully.",
+      "UPDATE_SUCCESS": "Oil credit updated successfully."
+    },
+    "STATES": {
+      "APPROVED": "Approved",
+      "CANCELLED": "Cancelled",
+      "COMPLETED": "Completed",
+      "PENDING": "Pending",
+      "REJECTED": "Rejected"
+    },
+    "TITLE": "Oil Credit Management",
+    "UNITS": {
+      "KILOGRAM": "Kilogram",
+      "LITER": "Liter"
     },
     "VIEW": {
-      "LOADING": "Loading oil credit...",
-      "ERROR_TITLE": "Error",
-      "ERROR_MESSAGE": "Unable to load oil credit.",
       "BACK": "Back",
+      "ERROR_MESSAGE": "Unable to load oil credit.",
+      "ERROR_TITLE": "Error",
+      "LAST_MODIFIED": "Last Modified",
+      "LOADING": "Loading oil credit...",
+      "PRINT": "Print",
+      "PRINT_TOOLTIP": "Print oil credit",
       "TITLE": "Oil Credit",
       "TRANSACTION_ID_IN": "Input Transaction ID",
-      "TRANSACTION_ID_OUT": "Output Transaction ID",
-      "LAST_MODIFIED": "Last Modified",
-      "PRINT": "Print",
-      "PRINT_TOOLTIP": "Print oil credit"
+      "TRANSACTION_ID_OUT": "Output Transaction ID"
     }
   },
   "OIL_RECEPTION": {
@@ -1098,7 +1098,7 @@
       "CREATE": "Create",
       "DELETE": "Delete",
       "ERROR": "An error occurred",
-      "GENPDF": "Generate PDF",
+      "GEN_PDF": "Generate PDF",
       "GEN_PDF": "Generate Receipt",
       "MORE": "More",
       "OIL_IN_TRANSACTION": "Oil In Transaction",
@@ -1226,6 +1226,7 @@
       "COMPLETED": "Completed",
       "IN_PROGRESS": "In Progress",
       "NEW": "New",
+      "PROD_READY": "Ready for production",
       "REFUSED": "Refused"
     },
     "TITLE": "Oil Receptions and Milling"
@@ -1351,12 +1352,12 @@
       "TITLE_EDIT": "Edit Supplier"
     },
     "DETAILS": {
+      "OIL_CREDIT_STATS_TITLE": "Oil Credit Stats",
+      "OIL_CREDIT_TOTAL": "Oil Credits",
       "PAYMENT_HISTORY_COUNT": "payments made",
       "PAYMENT_HISTORY_TITLE": "Payment History",
       "UNPAID_COUNT": "payments pending",
-      "UNPAID_TITLE": "Unpaid Payments",
-      "OIL_CREDIT_STATS_TITLE": "Oil Credit Stats",
-      "OIL_CREDIT_TOTAL": "Oil Credits"
+      "UNPAID_TITLE": "Unpaid Payments"
     },
     "ERRORS": {
       "ADDRESS_MIN": "Address must be at least 5 characters",
@@ -1406,6 +1407,7 @@
     "AMOUNT": "Amount",
     "BANK_ACCOUNT": "Bank Account",
     "BANK_TRANSFER": "Bank Transfer",
+    "BATCH_PAYMENT": "Batch Payment",
     "CANCEL": "Cancel",
     "CASH": "Cash",
     "CASH_PAYMENT": "Cash Payment",
@@ -1437,6 +1439,18 @@
     "NEGOTIATED_PRICE": "Negotiated Price",
     "NEGOTIATED_PRICE_HINT": "Negotiated price for this payment",
     "NEGOTIATED_PRICE_PER_KG": "Negotiated Price per kg (TND)",
+    "OIL_CREDITS": "Oil Credits",
+    "OIL_CREDITS_LIST": "Oil Credits List",
+    "OIL_CREDITS_TOTAL": "Total Oil Credits",
+    "OIL_CREDITS_TOTAL_KG": "Total Quantity (KG)",
+    "OIL_CREDITS_TOTAL_L": "Total Quantity (L)",
+    "OIL_CREDIT_CREATED_DATE": "Created Date",
+    "OIL_CREDIT_ID": "ID",
+    "OIL_CREDIT_PACKAGING": "Packaging",
+    "OIL_CREDIT_QUANTITY": "Quantity",
+    "OIL_CREDIT_STATE": "Credit State",
+    "OIL_CREDIT_TYPE": "Oil Type",
+    "OIL_CREDIT_UNIT": "Unit",
     "OIL_EQUIVALENT": "Oil Equivalent",
     "OIL_PAYMENT": "Oil Payment",
     "OIL_PAYMENT_DESC": "Pay with olive oil equivalent",
@@ -1458,8 +1472,12 @@
     "PAYMENT_SUMMARY": "Payment Summary",
     "PRICE_NEGOTIATION": "Price Negotiation",
     "PROCESS_PAYMENT": "Process Payment",
+    "RECEPTION_TYPE": "Reception Type",
+    "RECEPTION_TYPE_OIL": "Oil",
+    "RECEPTION_TYPE_OLIVE": "Olive",
     "REFERENCE_PRICE": "Reference Price",
     "REMAINING_AMOUNT": "Remaining Amount",
+    "SELECT_LOTS_FOR_OIL_PAYMENT": "Select lots for oil payment",
     "STATUS": "Status",
     "STATUS_PAID": "Paid",
     "STATUS_PARTIAL": "Partial",
@@ -1472,24 +1490,7 @@
     "TOTAL_UNPAID": "Total Unpaid",
     "UNPAID": "Unpaid",
     "UNPAID_AMOUNT": "Unpaid Amount",
-    "UNPAID_DELIVERIES": "Unpaid Deliveries",
-    "RECEPTION_TYPE": "Reception Type",
-    "RECEPTION_TYPE_OLIVE": "Olive",
-    "RECEPTION_TYPE_OIL": "Oil",
-    "BATCH_PAYMENT": "Batch Payment",
-    "SELECT_LOTS_FOR_OIL_PAYMENT": "Select lots for oil payment",
-    "OIL_CREDITS": "Oil Credits",
-    "OIL_CREDITS_LIST": "Oil Credits List",
-    "OIL_CREDIT_ID": "ID",
-    "OIL_CREDIT_PACKAGING": "Packaging",
-    "OIL_CREDIT_QUANTITY": "Quantity",
-    "OIL_CREDIT_UNIT": "Unit",
-    "OIL_CREDIT_TYPE": "Oil Type",
-    "OIL_CREDIT_STATE": "Credit State",
-    "OIL_CREDIT_CREATED_DATE": "Created Date",
-    "OIL_CREDITS_TOTAL": "Total Oil Credits",
-    "OIL_CREDITS_TOTAL_L": "Total Quantity (L)",
-    "OIL_CREDITS_TOTAL_KG": "Total Quantity (KG)"
+    "UNPAID_DELIVERIES": "Unpaid Deliveries"
   },
   "Sample Page": "Sample Page",
   "Setting": "Settings",

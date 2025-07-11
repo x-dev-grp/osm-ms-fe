@@ -269,7 +269,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
         this.setPrice(e.row);
         break;
 
-      case 'GENPDF':
+      case 'GEN_PDF':
         if (e.row) {
           this.genererBonReception(e.row);
         }
@@ -374,10 +374,9 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
 
     this.isLoading = true;
 
-    this.deliveryService.updateDelivery(this.selectedRow).subscribe({
-      next: (updatedDelivery) => {
-        this.selectedRow = Array.isArray(updatedDelivery.data) ? updatedDelivery.data[0] : updatedDelivery.data;
-        dialogRef.close(); // Ferme le dialog après succès
+    this.deliveryService.updatePricing(this.selectedRow.id,this.selectedRow.unitPrice).subscribe({
+      next: () => {
+         dialogRef.close(); // Ferme le dialog après succès
         this.isLoading = false;
         this.snackBar.open('Prix mis à jour avec succès.', 'Fermer', {
           duration: 3000,

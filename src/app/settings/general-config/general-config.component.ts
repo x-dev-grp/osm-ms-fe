@@ -17,6 +17,8 @@ import { BankAccount } from '../../finance/models/BankAccount';
 import { CompanyProfileService } from '../../shared/services/company-profile.service';
 import { CompanyProfile } from '../../shared/models/CompanyProfile';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TypeCategory } from '../../shared/models/type-category.enum';
+
 
 @Component({
   selector: 'app-general-config',
@@ -35,8 +37,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
     MatCardModule,
     MatListModule,
     SharedModule,
-    TranslateModule
-  ],
+    TranslateModule,
+   ],
   templateUrl: './general-config.component.html',
   styleUrl: './general-config.component.scss'
 })
@@ -77,11 +79,24 @@ export class GeneralConfigComponent implements OnInit {
   private profile: CompanyProfile;
   private translate = inject(TranslateService);
 
+  productionConfigForm!: FormGroup;
+  financeConfigForm!: FormGroup;
+  hrConfigForm!: FormGroup;
+  otherConfigForm!: FormGroup;
+
+  public TypeCategory = TypeCategory;
+
+  millProfileFormEnabled = false;
+  productionConfigFormEnabled = false;
+  financeConfigFormEnabled = false;
+  hrConfigFormEnabled = false;
+  otherConfigFormEnabled = false;
+
   constructor(
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
-    private companyProfileService: CompanyProfileService
-  ) {}
+    private companyProfileService: CompanyProfileService,
+   ) {}
 
   ngOnInit(): void {
     this.millProfileForm = this.fb.group({
@@ -92,46 +107,117 @@ export class GeneralConfigComponent implements OnInit {
       legalForm: ['SARL'],
       capital: [0],
       creationDate: [null],
-
       email: ['', [Validators.email]],
       phone: [''],
       website: [''],
-
       addressLine1: [''],
       city: [''],
       postalCode: [''],
       governorate: [''],
-
-      // Logo fields
       logoData: [null],
       logoContentType: [null]
     });
+    this.productionConfigForm = this.fb.group({});
+    this.financeConfigForm = this.fb.group({
+      millingPricePerKg: [0]
+    });
+    this.hrConfigForm = this.fb.group({   });
+    this.otherConfigForm = this.fb.group({   });
+    this.loadAllConfigSections();
+    this.millProfileForm.disable();
+    this.productionConfigForm.disable();
+    this.financeConfigForm.disable();
+    this.hrConfigForm.disable();
+    this.otherConfigForm.disable();
+  }
 
-    this.loadProfile();
+  loadAllConfigSections() {
+    this.companyProfileService.getProfile().subscribe(
+      (res) => {
+        if (res && res.success) {
+          this.profile = res.data[0];
+          this.millProfileForm.patchValue({
+            legalName: this.profile.legalName,
+            registrationNumber: this.profile.registrationNumber,
+            taxId: this.profile.taxId,
+            cnssNumber: this.profile.cnssNumber,
+            legalForm: this.profile.legalForm,
+            capital: this.profile.capital,
+            email: this.profile.email,
+            phone: this.profile.phone,
+            website: this.profile.website,
+            addressLine1: this.profile.addressLine1,
+            city: this.profile.city,
+            postalCode: this.profile.postalCode,
+            governorate: this.profile.governorate,
+            logoData: this.profile.logoData,
+            logoContentType: this.profile.logoContentType
+          });
+
+          this.bankAccounts = this.profile.bankAccounts || [];
+
+          if (this.profile.logoData && this.profile.logoContentType) {
+            this.logoPreview = `data:${this.profile.logoContentType};base64,${this.profile.logoData}`;
+          }
+        }
+      },
+      (error) => {
+        console.error('Error loading profile:', error);
+        this.snackBar.open(this.translate.instant('GENERAL_CONFIG.MESSAGES.LOAD_ERROR'), 'Close', { duration: 3000 });
+      }
+    );
+
   }
 
   onSave(): void {
-    if (this.millProfileForm.invalid) {
-      this.millProfileForm.markAllAsTouched();
-      return;
-    }
+    if (this.millProfileForm.invalid) return;
 
-    const dto = {
-      ...this.millProfileForm.value,
-      bankAccounts: this.bankAccounts
-    };
+  }
+  onSaveProductionConfig(): void {
+    if (this.productionConfigForm.invalid) return;
 
-    this.companyProfileService.saveProfile(dto).subscribe({
-      next: () => {
-        this.snackBar.open(this.translate.instant('GENERAL_CONFIG.MESSAGES.SAVE_SUCCESS'), 'Close', { duration: 3000 });
-        this.loadProfile();
-      },
-      error: () => this.snackBar.open(this.translate.instant('GENERAL_CONFIG.MESSAGES.SAVE_ERROR'), 'Close', { duration: 3000 })
-    });
+  }
+  onSaveFinanceConfig(): void {
+    if (this.financeConfigForm.invalid) return;
+
+  }
+  onSaveHrConfig(): void {
+    if (this.hrConfigForm.invalid) return;
+
+  }
+  onSaveOtherConfig(): void {
+    if (this.otherConfigForm.invalid) return;
+
   }
 
   onReset(): void {
     this.millProfileForm.reset();
+  }
+
+  onResetProductionConfig() { this.productionConfigForm.reset(); }
+  onResetFinanceConfig() { this.financeConfigForm.reset(); }
+  onResetHrConfig() { this.hrConfigForm.reset(); }
+  onResetOtherConfig() { this.otherConfigForm.reset(); }
+
+  enableMillProfileForm() {
+    this.millProfileFormEnabled = true;
+    this.millProfileForm.enable();
+  }
+  enableProductionConfigForm() {
+    this.productionConfigFormEnabled = true;
+    this.productionConfigForm.enable();
+  }
+  enableFinanceConfigForm() {
+    this.financeConfigFormEnabled = true;
+    this.financeConfigForm.enable();
+  }
+  enableHrConfigForm() {
+    this.hrConfigFormEnabled = true;
+    this.hrConfigForm.enable();
+  }
+  enableOtherConfigForm() {
+    this.otherConfigFormEnabled = true;
+    this.otherConfigForm.enable();
   }
 
   /** Handle file input, enforce <200KB, store base64   mime */
@@ -184,43 +270,7 @@ export class GeneralConfigComponent implements OnInit {
     this.millProfileForm.patchValue({ logoData: null, logoContentType: null });
   }
 
-  /** Pretend service call – replace with real API later */
-  private loadProfile(): void {
-    this.companyProfileService.getProfile().subscribe(
-      (res) => {
-        if (res && res.success) {
-          this.profile = res.data[0];
-          this.millProfileForm.patchValue({
-            legalName: this.profile.legalName,
-            registrationNumber: this.profile.registrationNumber,
-            taxId: this.profile.taxId,
-            cnssNumber: this.profile.cnssNumber,
-            legalForm: this.profile.legalForm,
-            capital: this.profile.capital,
-            email: this.profile.email,
-            phone: this.profile.phone,
-            website: this.profile.website,
-            addressLine1: this.profile.addressLine1,
-            city: this.profile.city,
-            postalCode: this.profile.postalCode,
-            governorate: this.profile.governorate,
-            logoData: this.profile.logoData,
-            logoContentType: this.profile.logoContentType
-          });
 
-          this.bankAccounts = this.profile.bankAccounts || [];
-
-          if (this.profile.logoData && this.profile.logoContentType) {
-            this.logoPreview = `data:${this.profile.logoContentType};base64,${this.profile.logoData}`;
-          }
-        }
-      },
-      (error) => {
-        console.error('Error loading profile:', error);
-        this.snackBar.open(this.translate.instant('GENERAL_CONFIG.MESSAGES.LOAD_ERROR'), 'Close', { duration: 3000 });
-      }
-    );
-  }
 
   private handleFile(file: File) {
     const maxBytes = 200 * 1024; // 200 KB

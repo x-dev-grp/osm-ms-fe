@@ -363,44 +363,6 @@ export class ControleQualiteComponent implements OnInit {
     });
   }
 
-  onStorageUnitChange(event: MatSelectChange): void {
-    const selectedStorageUnitId = event.value;
-
-    // Find the selected storage unit object
-    const selectedStorageUnit = this.storageUnits.find(unit => unit.id === selectedStorageUnitId);
-
-    if (selectedStorageUnit) {
-      console.log('Found selected storage unit object:', selectedStorageUnit);
-      console.log('Storage unit name:', selectedStorageUnit.name);
-      console.log('Storage unit current volume:', selectedStorageUnit.currentVolume);
-      console.log('Storage unit max capacity:', selectedStorageUnit.maxCapacity);
-      console.log('Storage unit status:', selectedStorageUnit.status);
-
-      // Save the selected storage unit to deliveryData (local only, not saved yet)
-      this.deliveryData!.storageUnit = selectedStorageUnit;
-
-      console.log('Updated deliveryData.storageUnit (local):', this.deliveryData!.storageUnit);
-      console.log('deliveryData.storageUnit.id:', this.deliveryData!.storageUnit?.id);
-      console.log('deliveryData.storageUnit.name:', this.deliveryData!.storageUnit?.name);
-
-      // Show success message (local selection only) with translation
-      this.translate.get('CONTROLE_QUALITE.STORAGE_UNIT.MESSAGES.SELECTED', {name: selectedStorageUnit.name}).subscribe((message: string) => {
-        this.snackBar.open(message, this.translate.instant('STANDARD.BTNS.CANCEL'), {
-          duration: 3000,
-          panelClass: ['mat-snack-bar-container-success']
-        });
-      });
-    } else {
-      console.error('Selected storage unit not found in storageUnits array');
-      console.log('Available storage units:', this.storageUnits);
-      this.translate.get('CONTROLE_QUALITE.STORAGE_UNIT.MESSAGES.SELECTION_ERROR').subscribe((message: string) => {
-        this.snackBar.open(message, this.translate.instant('STANDARD.BTNS.CANCEL'), {
-          duration: 3000,
-          panelClass: ['mat-snack-bar-container-error']
-        });
-      });
-    }
-  }
 
   getRuleName(key: string): string {
     const r = this.rules.find((rule) => rule.ruleKey === key);
@@ -417,31 +379,6 @@ export class ControleQualiteComponent implements OnInit {
       .filter((val) => val.length > 0);
   }
 
-
-  // getRuleMaxValue(ruleKey: string): number | null {
-  //   const rule = this.rules.find((r) => r.ruleKey === ruleKey);
-  //   return rule?.maxValue !== undefined ? rule.maxValue : null;
-  // }
-
-  // loadStorageUnits(): void {
-  //   this.isLoading = true;
-  //   this.storageUnitService.getAllStorageUnit().subscribe({
-  //     next: (response) => {
-  //       if (response.success) {
-  //         this.storageUnits = response.data;
-  //         console.log("unit sotarge", this.storageUnits)
-  //       } else {
-  //         this.snackBar.open(response.message || 'Error loading storage units', 'Close', {duration: 3000});
-  //       }
-  //       this.isLoading = false;
-  //     },
-  //     error: (error) => {
-  //       console.error('Error loading storage units:', error);
-  //       this.snackBar.open('Error loading storage units', 'Close', {duration: 3000});
-  //       this.isLoading = false;
-  //     }
-  //   });
-  // }
 
   private findRuleKey(displayedName: string): string {
     const normalized = displayedName.toLowerCase();
@@ -468,17 +405,9 @@ export class ControleQualiteComponent implements OnInit {
     return this.deliveryData?.deliveryType === 'OLIVE';
   }
 
-  isOilReception(): boolean {
-    return this.deliveryData?.deliveryType === 'OIL';
-  }
-
   isFormValid(): boolean {
     // Only rely on mainForm.valid, which covers visible fields
     return this.mainForm && this.mainForm.valid;
-  }
-
-  isStaticField(key: string): boolean {
-    return key === 'unitPrice' || key === 'price' || key === 'storageUnit';
   }
 
   private calculateCategorie(): string {

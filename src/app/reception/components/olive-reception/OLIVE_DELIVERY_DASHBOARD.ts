@@ -18,7 +18,7 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
       operation: SearchOperation.AND,
       search:{
         status: {
-          inValues: ['NEW', 'IN_PROGRESS', 'OLIVE_CONTROLLED','WAITING_FOR_PRICING', 'REFUSED', 'CANCELLED']
+          inValues: ['NEW', 'IN_PROGRESS', 'OLIVE_CONTROLLED','WAITING_FOR_PRICING','PROD_READY', 'REFUSED', 'CANCELLED']
         },
         deliveryType: {
           equalValue: deliveryType.OLIVE
@@ -176,6 +176,7 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
       filterable: true,
       options: [
         { label: 'Nouveau', value: 'NEW', labelTranslatePath: 'RECEPTION_LIST.STATUS.NEW' },
+        { label: 'prét pour production', value: 'PROD_READY', labelTranslatePath: 'RECEPTION_LIST.STATUS.PROD_READY' },
         { label: 'En cours', value: 'IN_PROGRESS', labelTranslatePath: 'RECEPTION_LIST.STATUS.IN_PROGRESS' },
         { label: 'Contrôle Olives', value: 'OLIVE_CONTROLLED', labelTranslatePath: 'RECEPTION_LIST.STATUS.OLIVE_CONTROLLED' },
         { label: 'Contrôle Huile', value: 'OIL_CONTROLLED', labelTranslatePath: 'RECEPTION_LIST.STATUS.OIL_CONTROLLED' },

@@ -258,7 +258,7 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
       case 'DELETE':
         if (e.row.id) this.deleteDelivery(e.row);
         break;
-      case 'GENPDF':
+      case 'GEN_PDF':
         if (e.row) {
           this.genererBonReception(e.row);
         }
@@ -331,10 +331,11 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
     this.selectedRow.unitPrice = this.setPriceForm.get('unitPrice')?.value;
     this.selectedRow.price = this.setPriceForm.get('price')?.value;
     this.isLoading = true;
-    this.deliveryService.updateDelivery(this.selectedRow).subscribe({
+    this.deliveryService.updatePricing(this.selectedRow.id,this.selectedRow.unitPrice).subscribe({
       next: (updatedDelivery) => {
-        this.selectedRow = Array.isArray(updatedDelivery.data) ? updatedDelivery.data[0] : updatedDelivery.data;
         dialogRef.close();
+        this.dashboard.refrechData();
+
         this.isLoading = false;
         this.snackBar.open('Prix mis à jour avec succès.', 'Fermer', {
           duration: 3000,

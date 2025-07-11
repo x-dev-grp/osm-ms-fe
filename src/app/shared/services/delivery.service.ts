@@ -74,4 +74,7 @@ export class UnifiedDeliveryService {
   updateStatus(id: string, status: OliveLotStatus): Observable<ApiResponse<void>> {
     return this.http.get<ApiResponse<void>>(`${this.baseUrl}/updateStatue/${id}/${status}`);
   }
+  updatePricing(id: string, price: any): Observable<ApiResponse<void>> {
+    return this.http.get<ApiResponse<void>>(`${this.baseUrl}/updateprice/${id}/${price}`);
+  }
 }
