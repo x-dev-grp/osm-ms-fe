@@ -23,6 +23,11 @@ import { CardComponent } from '../../../@theme/components/card/card.component';
 import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
 import { SharedModule } from 'src/app/demo/shared/shared.module';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
+// Step 1: Import Gridster types
+import { GridsterConfig, GridsterItem } from 'angular-gridster2';
+
+// Define DashboardCard interface for CDK-based dashboard
+// Remove DashboardCard interface and CDK imports
 
 @Component({
   selector: 'app-reception-dashboard',
@@ -45,6 +50,7 @@ import { TranslateService, TranslateModule } from '@ngx-translate/core';
     NgApexchartsModule,
     SharedModule,
     TranslateModule
+    // GridsterModule removed as it's not used directly here
   ]
 })
 export class ReceptionDashboardComponent implements OnInit, OnDestroy {
@@ -96,17 +102,39 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
   recentReceptionsChartOptions: Partial<ApexOptions> = {};
 
   currentReceptionTrendView: 'monthly' | 'weekly' | 'daily' = 'monthly';
-  currentChartSize: 'small' | 'medium' | 'large' = 'medium';
-  chartDimensions = {
-    small: { width: '100%', height: 200 },
-    medium: { width: '100%', height: 400 },
-    large: { width: '100%', height: 600 }
+
+  // Step 1: Add gridOptions and cards array
+  gridOptions: GridsterConfig = {
+    draggable: { enabled: true },
+    resizable: { enabled: true },
+    pushItems: true,
+    swap: true,
+    minCols: 6,
+    minRows: 6,
+    // You can adjust these options as needed
   };
+
+  cards: GridsterItem[] = [
+    // Example cards, will fill with real data in next steps
+    { x: 0, y: 0, cols: 2, rows: 2, title: 'Total Receptions', type: 'kpi' },
+    { x: 2, y: 0, cols: 2, rows: 2, title: 'Pending Receptions', type: 'kpi' },
+    // Add more cards as needed
+  ];
 
   private deliveryService = inject(UnifiedDeliveryService);
   private supplierService = inject(SupplierTypeService);
   private storageService = inject(StorageUnitDtoService);
   private translate = inject(TranslateService);
+
+  // Central color map for statuses
+  private statusColorMap: Record<string, string> = {
+    COMPLETED: '#4CAF50',
+    IN_PROGRESS: '#FFC107',
+    CANCELLED: '#F44336',
+    NEW: '#2196F3',
+    REFUSED: '#9C27B0',
+    INCONNU: '#BDBDBD'
+  };
 
   constructor() {
     console.log('ReceptionDashboardComponent constructor called');
@@ -285,12 +313,15 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
       const status = r.status || 'INCONNU';
       statusCounts[status] = (statusCounts[status] || 0) + 1;
     });
-    this.receptionsByStatusChartOptions = {
-      series: Object.values(statusCounts),
-      chart: { type: 'pie', height: 200 },
-      labels: Object.keys(statusCounts),
-      colors: ['#4CAF50', '#FFC107', '#F44336', '#2196F3', '#9C27B0']
-    };
+    const statusKeys = Object.keys(statusCounts);
+    this.translate.get(statusKeys.map(s => this.getStatusTranslationKey(s))).subscribe(translatedLabels => {
+      this.receptionsByStatusChartOptions = {
+        series: statusKeys.map(s => statusCounts[s]),
+        chart: { type: 'pie', height: 200 },
+        labels: statusKeys.map(s => translatedLabels[this.getStatusTranslationKey(s)] || s),
+        colors: statusKeys.map(s => this.getStatusColor(s))
+      };
+    });
 
     // Supplier performance
     const supplierMap = new Map<string, number>();
@@ -383,7 +414,7 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
     const data = this.getReceptionsTrendData(this.receptions, view);
     this.receptionsTrendChartOptions = {
       series: [{ name: 'Réceptions', data: data.data }],
-      chart: { type: 'line', height: this.chartDimensions[this.currentChartSize].height, toolbar: { show: false } },
+      chart: { type: 'line', height: 200, toolbar: { show: false } },
       xaxis: { categories: data.categories },
       colors: ['var(--primary-500)']
     };
@@ -488,6 +519,16 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
            a.getDate() === b.getDate();
   }
 
+  // Helper: Map status code to translation key (correct path)
+  private getStatusTranslationKey(status: string): string {
+    return `DASHBOARD.OIL_RECEPTION.DASHBOARD.STATUS.${status}`;
+  }
+
+  // Helper: Get color for status
+  private getStatusColor(status: string): string {
+    return this.statusColorMap[status] || this.statusColorMap['INCONNU'];
+  }
+
   get primaryColor() {
     return ['var(--primary-500)'];
   }
@@ -517,10 +558,5 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
     return this.totalUnpaidAmount.toFixed(2) + ' TND';
   }
 
-  updateChartSize(size: 'small' | 'medium' | 'large') {
-    this.currentChartSize = size;
-    // Re-render charts to apply new size
-    this.updateReceptionTrendView(this.currentReceptionTrendView);
-    this.prepareStatsAndCharts();
-  }
+  // Remove drop, getCardStyle, and startResize methods
 }

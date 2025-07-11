@@ -13,7 +13,6 @@ import {catchError} from 'rxjs/operators';
 import {MatFormField, MatFormFieldModule} from '@angular/material/form-field';
 import {MatOption, MatSelect, MatSelectChange, MatSelectModule} from '@angular/material/select';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {CardComponent} from '../../../@theme/components/card/card.component';
 import {TranslateModule, TranslateService} from '@ngx-translate/core';
 import {StorageUnitDtoService} from "../../../shared/services/storage.service";
 import {StorageUnitDto} from "../../../shared/models/StorageUnitDto";
@@ -23,11 +22,12 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {MatChipsModule} from '@angular/material/chips';
 import {MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { Router } from '@angular/router';
 
 
 @Component({
   selector: 'app-controlequalite',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, MatFormField, MatSelect, MatOption, CardComponent, TranslateModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatProgressSpinnerModule, MatIconModule, MatButtonModule, MatChipsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, MatFormField, MatSelect, MatOption,  TranslateModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatProgressSpinnerModule, MatIconModule, MatButtonModule, MatChipsModule],
   templateUrl: './controleQualite.component.html',
   styleUrls: ['./controleQualite.component.scss'],
   standalone: true
@@ -38,16 +38,14 @@ export class ControleQualiteComponent implements OnInit {
   message: string = '';
   rules: QualityControlRule[] = [];
   dynamicForm!: FormGroup;
-  staticForm!: FormGroup;   // Pour les champs unitPrice, price, storageUnit
   mainForm!: FormGroup;
   receptionId: string | null = null;
   deliveryData: UnifiedDelivery | undefined;
   submitted = false;
   isLoading = false;
   qualityControlResults: QualityControlResultDto[] = [];
-  isQualityControlDone: boolean = false; // verfifier si le controle qualité est deja fait!
+  isQualityControlDone: boolean = false;
   storageUnits: StorageUnitDto[] = [];
-
 
   constructor(
     private fb: FormBuilder,
@@ -59,11 +57,9 @@ export class ControleQualiteComponent implements OnInit {
     private snackBar: MatSnackBar,
     private storageUnitService: StorageUnitDtoService,
     private translate: TranslateService,
-
+    private router: Router,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: Record<string, unknown> | null = null
-
   ) {
-    // If opened as a dialog, set deliveryId from dialogData
     if (dialogData && dialogData['deliveryId']) {
       this.deliveryId = dialogData['deliveryId'] as string;
     }
@@ -72,50 +68,6 @@ export class ControleQualiteComponent implements OnInit {
   ngOnInit(): void {
     this.receptionId = this.deliveryId || this.route.snapshot.paramMap.get('id');
     this.loadReception();
-    // this.loadStorageUnits();
-    // this.creerStaticFormulaire();
-  }
-
-  // creerStaticFormulaire(): void {
-  //   this.isReadOnlyForm = !!(this.deliveryData?.unitPrice || this.deliveryData?.price || this.deliveryData?.storageUnit);
-  //   this.staticForm = this.fb.group({
-  //     unitPrice: [null],
-  //     price: [null],
-  //     storageUnit: [null]
-  //   });
-  //   this.staticForm.get('unitPrice')?.valueChanges.subscribe((unitPrice: number) => {
-  //     const oilQty = this.deliveryData?.oilQuantity || 0;
-  //     const calculatedPrice = (unitPrice || 0) * oilQty;
-  //     const roundedPrice = Math.round((calculatedPrice + Number.EPSILON) * 1000) / 1000;
-  //     this.staticForm.get('price')?.setValue(roundedPrice, {emitEvent: false});
-  //   });
-  //   this.staticForm.get('storageUnit')?.valueChanges.subscribe((value) => {
-  //     console.log('FormControl storageUnit a changé :', value);
-  //   });
-  // }
-
-  updateStaticForm(): void {
-    if (this.staticForm && this.deliveryData) {
-      console.log('=== UPDATING STATIC FORM ===');
-      console.log('deliveryData.storageUnit:', this.deliveryData.storageUnit);
-      console.log('deliveryData.storageUnit?.id:', this.deliveryData.storageUnit?.id);
-
-      // For storage unit, we need to set the ID, not the entire object
-      const storageUnitId = this.deliveryData.storageUnit?.id || null;
-
-      this.staticForm.patchValue({
-        unitPrice: this.deliveryData.unitPrice,
-        price: this.deliveryData.price,
-        storageUnit: storageUnitId
-      });
-
-      console.log('Static form patched with values:', {
-        unitPrice: this.deliveryData.unitPrice,
-        price: this.deliveryData.price,
-        storageUnit: storageUnitId
-      });
-      console.log('=== END UPDATING STATIC FORM ===');
-    }
   }
 
   loadReception(): void {
@@ -124,17 +76,13 @@ export class ControleQualiteComponent implements OnInit {
       this.cdr.detectChanges();
       return;
     }
-
     this.isLoading = true;
     this.deliveryService.getUnifiedDelivery(this.receptionId).subscribe({
       next: (response) => {
         this.deliveryData = Array.isArray(response.data) ? response.data[0] : response.data;
-        console.log('Delivery Data:', this.deliveryData);
-        this.updateStaticForm();
         this.loadRules();
       },
-      error: (error) => {
-        console.error('Erreur réception:', error);
+      error: () => {
         this.message = 'Erreur lors du chargement des données de réception';
         this.isLoading = false;
         this.cdr.detectChanges();
@@ -147,16 +95,12 @@ export class ControleQualiteComponent implements OnInit {
       next: (res) => {
         if (res?.success) {
           let allRules: QualityControlRule[] = [];
-
           if (Array.isArray(res.data)) {
             allRules = Array.isArray(res.data[0]) ? res.data[0] : res.data;
           } else {
             allRules = res.data ? [res.data] : [];
           }
-
           this.rules = this.filterRules(allRules);
-          console.log('Filtered Rules:', this.rules);
-
           if (this.rules.length > 0) {
             this.loadQualityControlResults();
           } else {
@@ -171,8 +115,7 @@ export class ControleQualiteComponent implements OnInit {
           this.cdr.detectChanges();
         }
       },
-      error: (error) => {
-        console.error('Erreur chargement règles:', error);
+      error: () => {
         this.rules = [];
         this.message = 'Erreur lors du chargement des règles';
         this.isLoading = false;
@@ -180,7 +123,7 @@ export class ControleQualiteComponent implements OnInit {
       }
     });
   }
-//todo split pricing and storage unit each in a dialog , update the statue based on the missing variable (stataue to_complete )
+
   loadQualityControlResults(): void {
     if (!this.deliveryData?.id) {
       this.message = 'ID de livraison non disponible';
@@ -188,21 +131,15 @@ export class ControleQualiteComponent implements OnInit {
       this.cdr.detectChanges();
       return;
     }
-
     this.qcResService.getAllResultsByDeliveryID(this.deliveryData.id).subscribe({
       next: (res) => {
         this.qualityControlResults = res.data || [];
-        console.log('Quality Control Results:', this.qualityControlResults);
-
-        // S'il existe au moins un résultat => QC déjà fait => champs readonly
         this.isQualityControlDone = this.qualityControlResults.length > 0;
-
         this.createDynamicForm();
         this.isLoading = false;
         this.cdr.detectChanges();
       },
-      error: (error) => {
-        console.error('Erreur chargement résultats:', error);
+      error: () => {
         this.message = 'Erreur lors du chargement des résultats de contrôle qualité';
         this.isLoading = false;
         this.isQualityControlDone = false;
@@ -214,14 +151,10 @@ export class ControleQualiteComponent implements OnInit {
 
   createDynamicForm(): void {
     const group: { [key: string]: FormControl } = {};
-
     this.rules.forEach((rule) => {
       const validators = [Validators.required];
       let initialValue: number | boolean | string | null = null;
-
-      // Recherche d'une réponse existante pour cette règle
       const existingResult = this.qualityControlResults.find((result) => result.rule?.ruleKey === rule.ruleKey);
-
       if (existingResult) {
         switch (rule.ruleType) {
           case 'NUMERIC':
@@ -235,73 +168,35 @@ export class ControleQualiteComponent implements OnInit {
             break;
         }
       }
-
-      // Gestion spéciale pour STRING avec valeurs définies
       if (rule.ruleType === 'STRING' && rule.ruleTextValue) {
-        // On ne met pas de validateur ici car on force le choix parmi les valeurs proposées via select
         initialValue = initialValue || '';
       }
-
-
       group[rule.ruleKey] = new FormControl(
         {value: initialValue, disabled: this.isQualityControlDone},
         rule.ruleType === 'STRING' && rule.ruleTextValue ? [] : validators
       );
     });
-
     this.dynamicForm = this.fb.group(group);
-    // Build mainForm with only the correct controls for the delivery type
-    if (this.isOilReception()) {
-      this.mainForm = this.fb.group({
-        ...this.dynamicForm.controls,
-      });
-    } else {
-      this.mainForm = this.fb.group({
-        ...this.dynamicForm.controls
-      });
-    }
-    // Subscribe to price calculation as before
+    this.mainForm = this.fb.group({ ...this.dynamicForm.controls });
     this.mainForm.get('unitPrice')?.valueChanges.subscribe((unitPrice: number) => {
       const oilQty = this.deliveryData?.oilQuantity || 0;
       const calculatedPrice = (unitPrice || 0) * oilQty;
       const roundedPrice = Math.round((calculatedPrice + Number.EPSILON) * 1000) / 1000;
       this.mainForm.get('price')?.setValue(roundedPrice, {emitEvent: false});
     });
-    // Subscribe to storageUnit changes as before
-    this.mainForm.get('storageUnit')?.valueChanges.subscribe((value) => {
-      console.log('FormControl storageUnit a changé (mainForm) :', value);
+    this.mainForm.get('storageUnit')?.valueChanges.subscribe(() => {
+      // storageUnit change logic if needed
     });
-    console.log('Contenu du dynamicForm :', this.dynamicForm.controls);
-
-    // Déterminer les clés à observer selon le type de livraison
     let ruleKeysToWatch: string[];
-
     if (this.isOliveDelivery()) {
-      // OLIVE : Observer Infestees, Fermentees, Endommagees
       ruleKeysToWatch = [this.findRuleKey('Infestees'), this.findRuleKey('Fermentees'), this.findRuleKey('Endommagees')];
     } else {
-      // OIL : Observer Acidite, K270, K232
       ruleKeysToWatch = [this.findRuleKey('Acidite'), this.findRuleKey('K270'), this.findRuleKey('K232')];
     }
-
-    // S'abonner aux changements des champs pertinents
     ruleKeysToWatch.forEach((ruleKey) => {
       const control = this.mainForm.get(ruleKey);
       if (control) {
         control.valueChanges.subscribe(() => {
-          // Log toutes les valeurs des champs concernés
-          const infesteesVal = this.mainForm.get(this.findRuleKey('Infestees'))?.value;
-          const fermenteesVal = this.mainForm.get(this.findRuleKey('Fermentees'))?.value;
-          const endommageesVal = this.mainForm.get(this.findRuleKey('Endommagees'))?.value;
-          const categorieVal = this.mainForm.get(this.findRuleKey('Categorie'))?.value;
-
-          console.log(' Debug valeurs OLIVE :');
-          console.log('Infestees:', infesteesVal);
-          console.log('Fermentees:', fermenteesVal);
-          console.log('Endommagees:', endommageesVal);
-          console.log('Categorie actuelle:', categorieVal);
-
-          // Mettre à jour la catégorie
           this.updateCategorie();
         });
       }
@@ -447,6 +342,15 @@ export class ControleQualiteComponent implements OnInit {
         this.isLoading = false;
         this.cdr.detectChanges();
         this.loadQualityControlResults();
+        if (allSuccessful) {
+          if (this.deliveryData?.deliveryType === 'OIL') {
+            this.router.navigate(['reception/reception-huile']);
+          } else if (this.deliveryData?.deliveryType === 'OLIVE') {
+            this.router.navigate(['reception/reception-olive']);
+          } else {
+            this.router.navigate(['../'], { relativeTo: this.route });
+          }
+        }
       },
       error: () => {
         this.snackBar.open('Erreur lors de l\'enregistrement des résultats de contrôle qualité.', 'Fermer', {

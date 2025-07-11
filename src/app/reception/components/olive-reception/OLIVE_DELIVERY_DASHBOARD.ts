@@ -5,7 +5,7 @@ import {SearchOperation} from '../../../shared/models/advanced-search/searchOper
 export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
   title: "Livraisons d'Olives", // afficehr titre fi dashboard
   titleTranslatePath: 'DELIVERIES.OLIVE_TITLE', //tradusction
-  baseURL: 'production/deliveries', //todo remove it usless
+  baseURL: 'production/deliveries',
   searchEndpoint: 'production/deliveries', //endpoint fl backedn
   addNewItem: true, //show new button
   addNewItemUrl: 'reception/reception-olive/new', //add new componnt path
@@ -16,18 +16,15 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
     order: 'DESC',
     searchData: {
       operation: SearchOperation.AND,
-      searchs: [
-        {
-          search: {
-            status: {
-              inValues: ['NEW', 'IN_PROGRESS', 'OLIVE_CONTROLLED','WAITING_FOR_PRICING', 'REFUSED', 'CANCELLED']
-            },
-            deliveryType: {
-              equalValue: deliveryType.OLIVE
-            }
-          }
+      search:{
+        status: {
+          inValues: ['NEW', 'IN_PROGRESS', 'OLIVE_CONTROLLED','WAITING_FOR_PRICING', 'REFUSED', 'CANCELLED']
+        },
+        deliveryType: {
+          equalValue: deliveryType.OLIVE
         }
-      ]
+      },
+      searchs:[]
     }
   }, // if youy need ot load the dta initilly based on this
   /* ────────────────────────────────────────────────────────────── */
@@ -82,17 +79,18 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
     },
     /* Fournisseur & Localisation */
     {
-      name: 'supplier.supplierInfo',
+      name: 'supplier',
       label: 'Fournisseur',
       labelTranslatePath: 'DELIVERIES.FIELDS.SUPPLIER',
       attributeType: AttributeType.object,
-      fieldType: FieldType.text,
+      fieldType: FieldType.autocomplete,
       exportable: true,
       dataTable: true,
       filterable: true,
-      valuePath: 'name',
+      valuePath: 'supplierInfo.name',
       valueAttributeType: AttributeType.string,
-      filterAttribute: 'supplier.supplierInfo.name'
+      filterAttribute: 'supplier.supplierInfo.name',
+      getOptionsUrl:'production/suppliers_type'
     },
     {
       name: 'region',
@@ -150,12 +148,20 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
     {
       name: 'operationType',
       label: 'Type opération',
-      // labelTranslatePath: 'DELIVERIES.FIELDS.TRUCK_PLATE',
+      labelTranslatePath: 'DELIVERIES.FIELDS.OPERATION_TYPE',
       attributeType: AttributeType.string,
-      fieldType: FieldType.text,
+      fieldType: FieldType.select,
       exportable: true,
       dataTable: true,
-      filterable: true
+      filterable: true,
+      options: [
+        { label: 'Réception simple', value: 'SIMPLE_RECEPTION', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.SIMPLE_RECEPTION' },
+        { label: 'Base', value: 'BASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.BASE' },
+        { label: 'Achat Olive', value: 'OLIVE_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OLIVE_PURCHASE' },
+        { label: 'Achat Huile', value: 'OIL_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OIL_PURCHASE' },
+        { label: 'Echange', value: 'EXCHANGE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.EXCHANGE' },
+        { label: 'Paiement', value: 'PAYMENT', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.PAYMENT' }
+      ]
     },
     /* Statut */
     {

@@ -2,7 +2,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 
 // angular material import
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -40,6 +39,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 // third party import
 import { NgScrollbarModule } from 'ngx-scrollbar';
@@ -85,7 +85,8 @@ const MaterialModules = [
   MatAutocompleteModule,
   MatChipsModule,
   MatSnackBarModule,
-  MatPaginatorModule
+  MatPaginatorModule,
+  MatExpansionModule
 ];
 
 @NgModule({

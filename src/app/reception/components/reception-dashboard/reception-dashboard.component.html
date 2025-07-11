@@ -46,7 +46,7 @@
 <!-- DASHBOARD ANALYTICS SECTION -->
 <div class="dashboard-analytics row">
   <!-- Left Column: Main Analytics -->
-  <div class="col-lg-8">
+  <div class="col-lg-6">
     <app-card [cardTitle]="'DASHBOARD.ANALYTICS.RECEPTION_TREND.TITLE' | translate">
       <div class="d-flex justify-content-between mb-3">
         <div class="btn-group">
@@ -54,17 +54,7 @@
           <button mat-button [class.active]="currentReceptionTrendView === 'weekly'" (click)="updateReceptionTrendView('weekly')">{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.WEEKLY' | translate }}</button>
           <button mat-button [class.active]="currentReceptionTrendView === 'daily'" (click)="updateReceptionTrendView('daily')">{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.DAILY' | translate }}</button>
         </div>
-        <div class="btn-group">
-          <button mat-button [class.active]="currentChartSize === 'small'" (click)="updateChartSize('small')">
-            <mat-icon>crop_square</mat-icon>
-          </button>
-          <button mat-button [class.active]="currentChartSize === 'medium'" (click)="updateChartSize('medium')">
-            <mat-icon>crop_landscape</mat-icon>
-          </button>
-          <button mat-button [class.active]="currentChartSize === 'large'" (click)="updateChartSize('large')">
-            <mat-icon>crop_169</mat-icon>
-          </button>
-        </div>
+        <!-- Removed chart size buttons -->
       </div>
       <apx-chart [series]="receptionsTrendChartOptions.series" [chart]="receptionsTrendChartOptions.chart" [xaxis]="receptionsTrendChartOptions.xaxis" [colors]="receptionsTrendChartOptions.colors"></apx-chart>
     </app-card>
@@ -74,17 +64,17 @@
     <app-card [cardTitle]="'DASHBOARD.ANALYTICS.RECEPTION_TYPE' | translate">
       <apx-chart [series]="receptionsByTypeChartOptions.series" [chart]="receptionsByTypeChartOptions.chart" [xaxis]="receptionsByTypeChartOptions.xaxis" [colors]="receptionsByTypeChartOptions.colors"></apx-chart>
     </app-card>
+    <app-card [cardTitle]="'DASHBOARD.ANALYTICS.QUALITY_CONTROL' | translate">
+      <apx-chart [series]="qualityControlChartOptions.series" [chart]="qualityControlChartOptions.chart" [labels]="qualityControlChartOptions.labels" [colors]="qualityControlChartOptions.colors"></apx-chart>
+    </app-card>
   </div>
   <!-- Right Column: Supplier, Storage, Quality -->
-  <div class="col-lg-4">
+  <div class="col-lg-12">
     <app-card [cardTitle]="'DASHBOARD.ANALYTICS.VOLUME_BY_SUPPLIER' | translate">
       <apx-chart [series]="volumeBySupplierChartOptions.series" [chart]="volumeBySupplierChartOptions.chart" [xaxis]="volumeBySupplierChartOptions.xaxis" [colors]="volumeBySupplierChartOptions.colors"></apx-chart>
     </app-card>
     <app-card [cardTitle]="'DASHBOARD.ANALYTICS.VOLUME_BY_STORAGE' | translate">
       <apx-chart [series]="volumeByStorageChartOptions.series" [chart]="volumeByStorageChartOptions.chart" [xaxis]="volumeByStorageChartOptions.xaxis" [colors]="volumeByStorageChartOptions.colors"></apx-chart>
-    </app-card>
-    <app-card [cardTitle]="'DASHBOARD.ANALYTICS.QUALITY_CONTROL' | translate">
-      <apx-chart [series]="qualityControlChartOptions.series" [chart]="qualityControlChartOptions.chart" [labels]="qualityControlChartOptions.labels" [colors]="qualityControlChartOptions.colors"></apx-chart>
     </app-card>
   </div>
 </div>

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
@@ -17,13 +17,15 @@ import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboar
 import { DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
 import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
 import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
-import { OliveReceptionFormComponent } from './olive-reception-add/olive-reception-form.component';
 
 import { OLIVE_DELIVERY_DASHBOARD } from './OLIVE_DELIVERY_DASHBOARD';
 import { PdfGeneratorService } from '../../../shared/services/pdf-generator.service';
 import { ApiResponse } from '../../../shared/models/api-response';
 import { OliveLotStatus } from '../../../shared/models/OliveLotStatus';
 import jsPDF from 'jspdf';
+import { DashboardStore } from '../../../shared/modules/osm-dashboard/services/dashboard-state.service';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-olive-reception',
@@ -37,13 +39,13 @@ import jsPDF from 'jspdf';
     MatCardModule,
     MatSortModule,
     SharedModule,
-    OsmDashboard,
-    OliveReceptionFormComponent
-  ],
+    OsmDashboard],
   templateUrl: './olive-reception.component.html',
   styleUrls: ['./olive-reception.component.scss']
 })
 export class OliveReceptionComponent implements OnInit, OnDestroy {
+  @ViewChild('dashboard') dashboard!: OsmDashboard;
+  @ViewChild('setPriceDialog') setPriceDialogTemplate!: TemplateRef<object>;
   formOpen = false;
   isEditing = false;
   selectedDelivery?: UnifiedDelivery;
@@ -51,15 +53,20 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
   dashboardConfig: DashboardConfig = OLIVE_DELIVERY_DASHBOARD;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  selectedRow?: UnifiedDelivery;
+  setPriceForm!: FormGroup;
 
   private subs = new Subscription();
+  isLoading: boolean = false;
 
   constructor(
     private deliveryService: UnifiedDeliveryService,
     private snackBar: MatSnackBar,
     private router: Router,
     private pdfService: PdfGeneratorService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private fb: FormBuilder,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -97,13 +104,11 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
 
   sendToProduction(d: UnifiedDelivery): void {
     if (d.id) {
-      const updatedDelivery = { ...d, status: OliveLotStatus.IN_PROGRESS };
-      this.subs.add(
-        this.deliveryService.updateUnifiedDelivery(updatedDelivery).subscribe(
-          (res: ApiResponse<UnifiedDelivery>) => {
+       this.subs.add(
+        this.deliveryService.updateStatus(d.id,OliveLotStatus.IN_PROGRESS).subscribe(
+          (res: ApiResponse<void>) => {
             if (res.success) {
-              this.fetchDeliveries();
-              this.toast(this.translate.instant('DELIVERIES.MESSAGES.SENT_TO_PRODUCTION_SUCCESS'));
+              this.dashboard.refrechData();
             } else {
               this.toast(this.translate.instant('DELIVERIES.MESSAGES.SENT_TO_PRODUCTION_ERROR'));
             }
@@ -258,6 +263,9 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
           this.genererBonReception(e.row);
         }
         break;
+      case 'SET_PRICE':
+        this.setPrice(e.row);
+        break;
       case 'TO_PROD':
         this.sendToProduction(e.row);
         break;
@@ -293,4 +301,54 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
       panelClass: ['']
     });
   }
+  private setPrice(row: UnifiedDelivery): void {
+    this.selectedRow = row;
+    const poidsNet = row.poidsNet || 0;
+    const initialUnitPrice = row.unitPrice || 0;
+    const initialPrice = initialUnitPrice * poidsNet;
+
+    this.setPriceForm = this.fb.group({
+      unitPrice: [initialUnitPrice, Validators.required],
+      price: [initialPrice, Validators.required]
+    });
+
+    // Update price live as unitPrice changes
+    this.setPriceForm.get('unitPrice')?.valueChanges.subscribe((unitPrice: string) => {
+      const price = (parseFloat(unitPrice) || 0) * poidsNet;
+      this.setPriceForm.get('price')?.setValue(+price.toFixed(3), { emitEvent: false });
+    });
+
+    this.dialog.open(this.setPriceDialogTemplate, {
+      width: '500px',
+      data: row,
+      disableClose: true,
+      panelClass: 'set-price-dialog'
+    });
+  }
+
+  confirmPrice(dialogRef: MatDialogRef<unknown>): void {
+    if (!this.setPriceForm.valid || !this.selectedRow) return;
+    this.selectedRow.unitPrice = this.setPriceForm.get('unitPrice')?.value;
+    this.selectedRow.price = this.setPriceForm.get('price')?.value;
+    this.isLoading = true;
+    this.deliveryService.updateDelivery(this.selectedRow).subscribe({
+      next: (updatedDelivery) => {
+        this.selectedRow = Array.isArray(updatedDelivery.data) ? updatedDelivery.data[0] : updatedDelivery.data;
+        dialogRef.close();
+        this.isLoading = false;
+        this.snackBar.open('Prix mis à jour avec succès.', 'Fermer', {
+          duration: 3000,
+          panelClass: ['mat-snack-bar-container-success']
+        });
+      },
+      error: () => {
+        this.snackBar.open('Erreur lors de l\'enregistrement du prix.', 'Fermer', {
+          duration: 4000,
+          panelClass: ['mat-snack-bar-container-error']
+        });
+        this.isLoading = false;
+      }
+    });
+  }
+
 }

@@ -435,10 +435,14 @@
     }
   }
 }
-
+.scrollable-table {
+  width: 100%;
+  overflow-x: auto;
+}
 .payment-table {
   width: 100%;
   margin-bottom: 1rem;
+  min-width: 900px; /* or whatever width fits your columns */
 
   .mat-column-actions {
     width: 120px;

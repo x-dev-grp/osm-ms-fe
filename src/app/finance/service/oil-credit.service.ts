@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApiResponse } from '../models/api-response';
-import { OilCredit } from '../models/OilCredit';
+ import { OilCredit } from '../models/OilCredit';
 import { environment } from '../../../environments/environment';
+import { ApiResponse } from '../../shared/models/api-response';
 
 @Injectable({
   providedIn: 'root'

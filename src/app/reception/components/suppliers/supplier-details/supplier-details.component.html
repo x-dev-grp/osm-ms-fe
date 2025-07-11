@@ -25,6 +25,18 @@
         </div>
       </mat-card-content>
     </mat-card>
+
+    <mat-card class="history-card oil-credit-card" (click)="navigateToHistory('oil_credit')">
+      <mat-card-content>
+        <div class="card-content">
+          <mat-icon class="card-icon" color="accent">water_drop</mat-icon>
+          <div class="card-info">
+            <h3>{{ 'SUPPLIER.DETAILS.OIL_CREDIT_STATS_TITLE' | translate }}</h3>
+            <p>{{ oilCreditStats.total }} {{ 'SUPPLIER.DETAILS.OIL_CREDIT_TOTAL' | translate }}</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
   </div>
 </div>
 

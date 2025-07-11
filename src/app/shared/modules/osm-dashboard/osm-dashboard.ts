@@ -127,7 +127,9 @@ export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
   exportCsv() {
     this._store.export('excel');
   }
-
+  refrechData(){
+    this._store.fetchData();
+  }
 
   actionApply(action: string, row: unknown) {
     if (action === this._delete) {

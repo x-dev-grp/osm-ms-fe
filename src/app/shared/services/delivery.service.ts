@@ -1,9 +1,10 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {ApiResponse} from '../models/api-response';
-import {UnifiedDelivery} from '../models/UnifiedDelivery';
-import {environment} from '../../../environments/environment';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { ApiResponse } from '../models/api-response';
+import { UnifiedDelivery } from '../models/UnifiedDelivery';
+import { environment } from '../../../environments/environment';
+import { OliveLotStatus } from '../models/OliveLotStatus';
 
 @Injectable({
   providedIn: 'root'
@@ -35,9 +36,10 @@ export class UnifiedDeliveryService {
   createUnifiedDelivery(UnifiedDelivery: UnifiedDelivery): Observable<ApiResponse<UnifiedDelivery>> {
     return this.http.post<ApiResponse<UnifiedDelivery>>(this.baseUrl, UnifiedDelivery);
   }
- // Create a new UnifiedDeliverycc. The UnifiedDeliverycc payload may include qualityControlResults.
+
+  // Create a new UnifiedDeliverycc. The UnifiedDeliverycc payload may include qualityControlResults.
   createOilDeliveryFromOlive(uuid: string): Observable<ApiResponse<any>> {
-    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/createOilRecFromOliveRec/${uuid}` );
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/createOilRecFromOliveRec/${uuid}`);
   }
 
   // Update an existing UnifiedDeliverycc.
@@ -49,7 +51,7 @@ export class UnifiedDeliveryService {
   deleteUnifiedDelivery(id: string): Observable<ApiResponse<void>> {
     return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/${id}`);
   }
-
+//todo change it to new endpoint , updte statue to  creat the oil transaction with waitng statue
   updateDelivery(delivery: UnifiedDelivery): Observable<ApiResponse<UnifiedDelivery>> {
     return this.http.put<ApiResponse<UnifiedDelivery>>(`${this.baseUrl}`, delivery);
   }
@@ -67,5 +69,9 @@ export class UnifiedDeliveryService {
   // Get unpaid deliveries by supplier ID
   getUnpaidDeliveriesBySupplier(supplierId: string): Observable<ApiResponse<UnifiedDelivery>> {
     return this.http.get<ApiResponse<UnifiedDelivery>>(`${this.baseUrl}/supplier/${supplierId}/unpaid`);
+  }
+
+  updateStatus(id: string, status: OliveLotStatus): Observable<ApiResponse<void>> {
+    return this.http.get<ApiResponse<void>>(`${this.baseUrl}/updateStatue/${id}/${status}`);
   }
 }

@@ -16,17 +16,16 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
     order: 'DESC',
     searchData: {
       operation: SearchOperation.AND,
-      searchs: [
-        {
-          search: {
-            status: {
-              inValues: ['NEW', 'IN_PROGRESS', 'OIL_CONTROLLED', 'WAITING_FOR_PRICING', 'REFUSED', 'CANCELLED']
-            },
-            deliveryType: {
-              equalValue: deliveryType.OIL
-            }
-          }
+      search: {
+        status: {
+          inValues: ['NEW', 'IN_PROGRESS', 'OIL_CONTROLLED', 'WAITING_FOR_PRICING', 'REFUSED', 'CANCELLED']
+        },
+        deliveryType: {
+          equalValue: deliveryType.OIL
         }
+      },
+      searchs: [
+
       ]
     }
   } /* ────────────────────────────────────────────────────────────── */ /*         Champs pour les livraisons d'huile                    */,

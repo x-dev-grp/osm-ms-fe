@@ -4,7 +4,15 @@ import { Observable } from 'rxjs';
 import { PlanningSaveRequest } from '../../reception/components/planning/planning.component';
 import { environment } from '../../../environments/environment';
 
-// adjust the path to your models
+/**
+ * DTO for completing a child lot in a global lot
+ */
+export interface ChildLotCompletionDto {
+  lotNumber: string;
+  oilQuantity: number;
+  rendement: number;
+  unpaidPrice: number;
+}
 
 @Injectable({ providedIn: 'root' })
 export class PlanningService {
@@ -28,18 +36,17 @@ export class PlanningService {
 
 
   /** POST one single LOT's status → COMPLETED, with oilQuantity and rendement */
-  completeLotWithDetails(lotNumber: string, oilQuantity: number, rendement: number): Observable<void> {
+  completeLotWithDetails(lotNumber: string, oilQuantity: number, rendement: number, unpaidPrice: number): Observable<void> {
     return this.http.post<void>(
       `${this.API_BASE_URL}/lots/${lotNumber}/completed`,
-      { oilQuantity, rendement }
+      { oilQuantity, rendement,unpaidPrice }
     );
   }
-
   /** POST all lots in a global lot → COMPLETED, with oilQuantity and rendement */
-  completeGlobalLotWithDetails(globalLotNumber: string, oilQuantity: number, rendement: number): Observable<void> {
+  completeGlobalLotWithDetails(globalLotNumber: string, childLots: ChildLotCompletionDto[]): Observable<void> {
     return this.http.post<void>(
       `${this.API_BASE_URL}/globalLots/${globalLotNumber}/completed`,
-      { oilQuantity, rendement }
+      childLots
     );
   }
 }

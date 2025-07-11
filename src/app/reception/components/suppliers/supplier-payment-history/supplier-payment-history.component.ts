@@ -6,32 +6,29 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { FormsModule } from '@angular/forms';
-import { SupplierTypeService } from '../../../../shared/services/supplier.service';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UnifiedDeliveryService } from '../../../../shared/services/delivery.service';
 import { UnifiedDelivery } from '../../../../shared/models/UnifiedDelivery';
-import { Location } from '@angular/common';
 import { BankAccountService } from '../../../../finance/service/bankAccount.service';
 import { BankAccount } from '../../../../finance/models/BankAccount';
-import { FormGroup } from '@angular/forms';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ApiResponse } from '../../../../shared/models/api-response';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { ControleQualiteComponent } from '../../controleQualite/controleQualite.component';
 import { MatDialog } from '@angular/material/dialog';
+import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
+import { OilCredit } from '../../../../finance/models/OilCredit';
+import { OilCreditService } from '../../../../finance/service/oil-credit.service';
 
 interface PaymentHistoryItem {
   id: string;
@@ -40,6 +37,7 @@ interface PaymentHistoryItem {
   deliveryNumber: string;
   poidsNet: number;
   price: number;
+  oilQuantity: number;
   paidAmount: number;
   unpaidAmount: number;
   status: 'paid' | 'unpaid' | 'partial';
@@ -69,9 +67,8 @@ interface PaymentHistoryItem {
     MatNativeDateModule,
     FormsModule,
     ReactiveFormsModule,
-    MatSnackBarModule,
     TranslateModule,
-    ControleQualiteComponent
+    MatCheckbox
   ],
   templateUrl: './supplier-payment-history.component.html',
   styleUrls: ['./supplier-payment-history.component.scss']
@@ -79,11 +76,93 @@ interface PaymentHistoryItem {
 export class SupplierPaymentHistoryComponent implements OnInit {
   supplierId: string = '';
   supplierName: string = '';
-  historyType: 'paid' | 'unpaid' | 'all' = 'all';
+  historyType: 'oil_credit' | 'paid' | 'unpaid' | 'all' = 'oil_credit';
   loading = true;
   error: string | null = null;
   payments: PaymentHistoryItem[] = [];
-  displayedColumns: string[] = ['deliveryNumber', 'deliveryType', 'lotNumber', 'deliveryDate', 'poidsNet', 'price', 'paidAmount', 'unpaidAmount', 'status', 'actions'];
+  displayedColumns: string[] = [
+    'deliveryNumber',
+    'deliveryType',
+    'lotNumber',
+    'deliveryDate',
+    'poidsNet',
+    'price',
+    'paidAmount',
+    'unpaidAmount',
+    'status',
+    'actions'
+  ];
+  displayedColumnsWithSelect: string[] = ['select', ...this.displayedColumns];
+
+  // Selection logic for batch operations
+  selectedPayments: PaymentHistoryItem[] = [];
+
+  isSelected(payment: PaymentHistoryItem): boolean {
+    return this.selectedPayments.includes(payment);
+  }
+
+  toggleSelection(payment: PaymentHistoryItem): void {
+    if (this.isSelected(payment)) {
+      this.selectedPayments = this.selectedPayments.filter((p) => p !== payment);
+    } else {
+      this.selectedPayments.push(payment);
+    }
+  }
+
+  toggleSelectAll(event: MatCheckboxChange): void {
+    if (event.checked) {
+      this.selectedPayments = [...this.payments];
+    } else {
+      this.selectedPayments = [];
+    }
+  }
+
+  isAllSelected(): boolean {
+    return this.selectedPayments.length === this.payments.length && this.payments.length > 0;
+  }
+
+  isSomeSelected(): boolean {
+    return this.selectedPayments.length > 0 && this.selectedPayments.length < this.payments.length;
+  }
+
+  batchPaymentMode = false;
+  batchPaymentForm: FormGroup;
+
+  openBatchPayment(): void {
+    this.batchPaymentMode = true;
+    const totalUnpaid = this.selectedPayments.reduce((sum, p) => sum + p.unpaidAmount, 0);
+    this.batchPaymentForm = this.fb.group({
+      amount: [totalUnpaid, [Validators.required, Validators.min(0.01)]],
+      // Add more fields as needed (e.g., payment method)
+    });
+  }
+
+  closeBatchPaymentForm(): void {
+    this.batchPaymentMode = false;
+  }
+
+  processBatchPayment(): void {
+    if (this.batchPaymentForm.valid) {
+      // TODO: Send batchPaymentForm.value and selectedPayments to backend/service
+      // After success:
+      this.batchPaymentMode = false;
+      this.selectedPayments = [];
+      // Optionally reload data
+    }
+  }
+
+  get batchLots(): string {
+    return this.selectedPayments.map(p => p.lotNumber).join(', ');
+  }
+
+  get batchOilLots() {
+    return this.selectedPayments.map(p => ({
+      lotNumber: p.lotNumber,
+      oilQuantity: p.oilQuantity || 0
+    }));
+  }
+
+  selectedBatchOilLots: string[] = [];
 
   // Summary statistics
   totalDeliveries = 0;
@@ -93,7 +172,7 @@ export class SupplierPaymentHistoryComponent implements OnInit {
 
   // Payment functionality
   selectedPayment: PaymentHistoryItem | null = null;
-  paymentForm: FormGroup;
+  paymentForm: FormGroup |null=null;
   oilPricePerLiter = 25; // Default oil price per liter in TND
   oilEquivalent = 0;
   remainingAmount = 0;
@@ -106,20 +185,41 @@ export class SupplierPaymentHistoryComponent implements OnInit {
   paymentMethod: 'money' | 'oil' = 'money';
   moneyPaymentMethod: 'cash' | 'check' | 'bank_transfer' = 'cash';
 
+  // Mock properties for batch payment UI demo
+  mockBatchPaymentMethod: 'money' | 'oil' = 'money';
+  mockBatchMoneyMethod: 'cash' | 'check' | 'bank_transfer' = 'cash';
+
+  onBatchPaymentMethodChange(event: any) {
+    console.log('Batch payment method changed:', event.value);
+    console.log('mockBatchPaymentMethod:', this.mockBatchPaymentMethod);
+  }
+
+  onBatchMoneyMethodChange(event: any) {
+    console.log('Batch money method changed:', event.value);
+    console.log('mockBatchMoneyMethod:', this.mockBatchMoneyMethod);
+  }
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  oilCredits: OilCredit[] = [];
+  oilCreditColumns: string[] = ['id', 'emballage', 'quantity', 'unit', 'oil_type', 'creditState', 'createdDate'];
+
+  // Oil credit statistics
+  totalOilCredits = 0;
+  totalOilCreditQuantityL = 0;
+  totalOilCreditQuantityKG = 0;
+  oilCreditStateCounts: { [key: string]: number } = {};
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private supplierService: SupplierTypeService,
     private deliveryService: UnifiedDeliveryService,
-    private snackBar: MatSnackBar,
-    private location: Location,
     private bankAccountService: BankAccountService,
     private fb: FormBuilder,
     private translateService: TranslateService,
     private toastService: ToastService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private oilCreditService: OilCreditService
   ) {
     this.paymentForm = this.fb.group({
       amount: [0, [Validators.required, Validators.min(0.01)]],
@@ -133,7 +233,7 @@ export class SupplierPaymentHistoryComponent implements OnInit {
   ngOnInit(): void {
     this.supplierId = this.route.snapshot.paramMap.get('id') || '';
     this.supplierName = this.route.snapshot.paramMap.get('name') || '';
-    this.historyType = this.route.snapshot.queryParams['type'] || 'all';
+    this.historyType = 'oil_credit';
 
     if (!this.supplierId) {
       this.error = this.translateService.instant('SUPPLIER_PAYMENT.ERRORS.SUPPLIER_ID_NOT_FOUND');
@@ -141,7 +241,7 @@ export class SupplierPaymentHistoryComponent implements OnInit {
       return;
     }
 
-    this.loadPaymentHistory();
+    this.loadOilCredits();
     this.loadBankAccounts();
   }
 
@@ -153,9 +253,54 @@ export class SupplierPaymentHistoryComponent implements OnInit {
     }
   }
 
-  setHistoryType(type: 'paid' | 'unpaid' | 'all'): void {
+  setHistoryType(type: 'oil_credit' | 'paid' | 'unpaid' | 'all'): void {
     this.historyType = type;
-    this.loadPaymentHistory();
+    if (type === 'oil_credit') {
+      this.loadOilCredits();
+    } else {
+      this.loadPaymentHistory();
+    }
+  }
+
+  loadOilCredits(): void {
+    this.loading = true;
+    this.error = null;
+    this.oilCredits = [];
+    this.oilCreditService.getAllOilCreditList().subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          this.oilCredits = response.data.filter((credit: OilCredit) => credit.destinataire && credit.destinataire.id === this.supplierId);
+          this.calculateOilCreditStatistics();
+        } else {
+          this.oilCredits = [];
+          this.error = response.message || this.translateService.instant('SUPPLIER_PAYMENT.ERRORS.NO_DATA_FOUND');
+          this.calculateOilCreditStatistics();
+        }
+        this.loading = false;
+      },
+      error: (error: unknown) => {
+        console.error('Error loading oil credits:', error);
+        this.error = this.translateService.instant('SUPPLIER_PAYMENT.ERRORS.LOAD_ERROR');
+        this.oilCredits = [];
+        this.calculateOilCreditStatistics();
+        this.loading = false;
+      }
+    });
+  }
+
+  calculateOilCreditStatistics(): void {
+    this.totalOilCredits = this.oilCredits.length;
+    this.totalOilCreditQuantityL = this.oilCredits
+      .filter(c => c.unit === 'L')
+      .reduce((sum, c) => sum + (c.quantity || 0), 0);
+    this.totalOilCreditQuantityKG = this.oilCredits
+      .filter(c => c.unit === 'KG')
+      .reduce((sum, c) => sum + (c.quantity || 0), 0);
+    this.oilCreditStateCounts = {};
+    for (const c of this.oilCredits) {
+      const state = c.creditState || 'UNKNOWN';
+      this.oilCreditStateCounts[state] = (this.oilCreditStateCounts[state] || 0) + 1;
+    }
   }
 
   getHistoryTypeTitle(): string {
@@ -195,10 +340,11 @@ export class SupplierPaymentHistoryComponent implements OnInit {
   }
 
   private convertDeliveriesToPaymentHistory(deliveries: UnifiedDelivery[]): PaymentHistoryItem[] {
-    return deliveries.map(delivery => {
+    return deliveries.map((delivery) => {
       const paidAmount = delivery.paidAmount || 0;
       const price = delivery.price || 0;
-      const unpaidAmount = delivery.unpaidAmount || (price - paidAmount);
+      const oilQuantity = delivery.oilQuantity || 0;
+      const unpaidAmount = delivery.unpaidAmount || price - paidAmount;
       const type = (delivery as UnifiedDelivery & { deliveryType?: string }).deliveryType || undefined;
       let status: 'paid' | 'unpaid' | 'partial' = 'unpaid';
       if (type === 'OIL') {
@@ -217,6 +363,7 @@ export class SupplierPaymentHistoryComponent implements OnInit {
         deliveryNumber: delivery.deliveryNumber,
         poidsNet: delivery.poidsNet || 0,
         price: price,
+        oilQuantity: oilQuantity,
         paidAmount: paidAmount,
         unpaidAmount: unpaidAmount,
         status: status,
@@ -230,10 +377,12 @@ export class SupplierPaymentHistoryComponent implements OnInit {
   private filterPaymentsByType(payments: PaymentHistoryItem[]): PaymentHistoryItem[] {
     switch (this.historyType) {
       case 'paid':
-        return payments.filter(payment => payment.status === 'paid');
+        return payments.filter((payment) => payment.status === 'paid');
       case 'unpaid':
         // Exclude OIL receptions from unpaid/partial
-        return payments.filter(payment => (payment.status === 'unpaid' || payment.status === 'partial') && payment.deliveryType !== 'OIL');
+        return payments.filter(
+          (payment) => (payment.status === 'unpaid' || payment.status === 'partial') && payment.deliveryType !== 'OIL'
+        );
       default:
         return payments;
     }
@@ -297,7 +446,7 @@ export class SupplierPaymentHistoryComponent implements OnInit {
   }
 
   resetPaymentForm(): void {
-    this.paymentForm.reset();
+    this.paymentForm!.reset();
     this.oilEquivalent = 0;
     this.remainingAmount = 0;
   }
@@ -305,13 +454,13 @@ export class SupplierPaymentHistoryComponent implements OnInit {
   onPaymentMethodChange(): void {
     if (this.paymentMethod === 'oil') {
       this.calculateOilEquivalent();
-      this.paymentForm.patchValue({
+      this.paymentForm!.patchValue({
         oilQuantity: 0,
         amount: 0,
         oilPricePerKg: this.oilPricePerLiter
       });
     } else if (this.paymentMethod === 'money') {
-      this.paymentForm.patchValue({
+      this.paymentForm!.patchValue({
         amount: this.selectedPayment?.unpaidAmount || 0,
         oilQuantity: 0
       });
@@ -322,53 +471,53 @@ export class SupplierPaymentHistoryComponent implements OnInit {
   onMoneyPaymentMethodChange(): void {
     // Reset form controls based on payment method
     if (this.moneyPaymentMethod === 'cash') {
-      this.paymentForm.patchValue({
+      this.paymentForm!.patchValue({
         checkNumber: '',
         bankAccountId: ''
       });
     } else if (this.moneyPaymentMethod === 'check') {
-      this.paymentForm.patchValue({
+      this.paymentForm!.patchValue({
         bankAccountId: ''
       });
-      this.paymentForm.get('checkNumber')?.setValidators([Validators.required]);
+      this.paymentForm!.get('checkNumber')?.setValidators([Validators.required]);
     } else if (this.moneyPaymentMethod === 'bank_transfer') {
-      this.paymentForm.patchValue({
+      this.paymentForm!.patchValue({
         checkNumber: ''
       });
-      this.paymentForm.get('bankAccountId')?.setValidators([Validators.required]);
+      this.paymentForm!.get('bankAccountId')?.setValidators([Validators.required]);
     }
 
-    this.paymentForm.get('checkNumber')?.updateValueAndValidity();
-    this.paymentForm.get('bankAccountId')?.updateValueAndValidity();
+    this.paymentForm!.get('checkNumber')?.updateValueAndValidity();
+    this.paymentForm!.get('bankAccountId')?.updateValueAndValidity();
   }
 
   onOilPriceChange(): void {
     // Recalculate oil equivalent when price changes
     this.calculateOilEquivalent();
     // Recalculate payment if oil quantity is already set
-    if (this.paymentForm.get('oilQuantity')?.value > 0) {
+    if (this.paymentForm!.get('oilQuantity')?.value > 0) {
       this.calculateOilPayment();
     }
   }
 
   calculateOilEquivalent(): void {
     if (this.selectedPayment) {
-      const currentOilPrice = this.paymentForm.get('oilPricePerKg')?.value || this.oilPricePerLiter;
+      const currentOilPrice = this.paymentForm!.get('oilPricePerKg')?.value || this.oilPricePerLiter;
       this.oilEquivalent = this.selectedPayment.unpaidAmount / currentOilPrice;
     }
   }
 
   calculatePayment(): void {
     if (this.selectedPayment) {
-      const paymentAmount = this.paymentForm.get('amount')?.value || 0;
+      const paymentAmount = this.paymentForm!.get('amount')?.value || 0;
       this.remainingAmount = Math.max(0, this.selectedPayment.unpaidAmount - paymentAmount);
     }
   }
 
   calculateOilPayment(): void {
     if (this.selectedPayment) {
-      const oilQuantity = this.paymentForm.get('oilQuantity')?.value || 0;
-      const oilPricePerKg = this.paymentForm.get('oilPricePerKg')?.value || this.oilPricePerLiter;
+      const oilQuantity = this.paymentForm!.get('oilQuantity')?.value || 0;
+      const oilPricePerKg = this.paymentForm!.get('oilPricePerKg')?.value || this.oilPricePerLiter;
       const oilValue = oilQuantity * oilPricePerKg;
       this.remainingAmount = Math.max(0, this.selectedPayment.unpaidAmount - oilValue);
     }
@@ -380,24 +529,24 @@ export class SupplierPaymentHistoryComponent implements OnInit {
     }
 
     if (this.paymentMethod === 'money') {
-      const amount = this.paymentForm.get('amount')?.value || 0;
+      const amount = this.paymentForm!.get('amount')?.value || 0;
       if (amount <= 0 || amount > this.selectedPayment.unpaidAmount) {
         return false;
       }
 
       // Check specific payment method requirements
       if (this.moneyPaymentMethod === 'check') {
-        const checkNumber = this.paymentForm.get('checkNumber')?.value;
+        const checkNumber = this.paymentForm!.get('checkNumber')?.value;
         return !!checkNumber && checkNumber.trim() !== '';
       } else if (this.moneyPaymentMethod === 'bank_transfer') {
-        const bankAccountId = this.paymentForm.get('bankAccountId')?.value;
+        const bankAccountId = this.paymentForm!.get('bankAccountId')?.value;
         return !!bankAccountId;
       }
 
       return true; // Cash payment only needs amount
     } else if (this.paymentMethod === 'oil') {
-      const oilQuantity = this.paymentForm.get('oilQuantity')?.value || 0;
-      const oilPricePerKg = this.paymentForm.get('oilPricePerKg')?.value || 0;
+      const oilQuantity = this.paymentForm!.get('oilQuantity')?.value || 0;
+      const oilPricePerKg = this.paymentForm!.get('oilPricePerKg')?.value || 0;
       return oilQuantity > 0 && oilQuantity <= this.oilEquivalent && oilPricePerKg > 0;
     }
 
@@ -413,29 +562,25 @@ export class SupplierPaymentHistoryComponent implements OnInit {
       deliveryId: this.selectedPayment.id,
       paymentMethod: this.paymentMethod,
       moneyPaymentMethod: this.moneyPaymentMethod,
-      amount: this.paymentForm.get('amount')?.value || 0,
-      oilQuantity: this.paymentForm.get('oilQuantity')?.value || 0,
-      oilPricePerKg: this.paymentForm.get('oilPricePerKg')?.value || this.oilPricePerLiter,
-      checkNumber: this.paymentForm.get('checkNumber')?.value || '',
-      bankAccountId: this.paymentForm.get('bankAccountId')?.value || '',
+      amount: this.paymentForm!.get('amount')?.value || 0,
+      oilQuantity: this.paymentForm!.get('oilQuantity')?.value || 0,
+      oilPricePerKg: this.paymentForm!.get('oilPricePerKg')?.value || this.oilPricePerLiter,
+      checkNumber: this.paymentForm!.get('checkNumber')?.value || '',
+      bankAccountId: this.paymentForm!.get('bankAccountId')?.value || '',
       remainingAmount: this.remainingAmount
     };
 
     console.log('Processing payment:', paymentData);
 
     // TODO: Call payment service to process the payment
-    this.toastService.success(
-      this.translateService.instant('SUPPLIER_PAYMENT.PAYMENT_SUCCESS')
-    );
+    this.toastService.success(this.translateService.instant('SUPPLIER_PAYMENT.PAYMENT_SUCCESS'));
 
     this.closePaymentForm();
     this.loadPaymentHistory(); // Refresh the data
   }
 
   viewPaymentDetails(payment: PaymentHistoryItem): void {
-    this.toastService.info(
-      this.translateService.instant('SUPPLIER_PAYMENT.LOT_DETAILS', { lotNumber: payment.lotNumber })
-    );
+    this.toastService.info(this.translateService.instant('SUPPLIER_PAYMENT.LOT_DETAILS', { lotNumber: payment.lotNumber }));
   }
 
   loadBankAccounts(): void {

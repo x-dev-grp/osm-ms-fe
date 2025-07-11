@@ -5,7 +5,7 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
   /* ─────────── basic info ─────────── */
   title: 'Fournisseurs',
   titleTranslatePath: 'SUPPLIERS.TITLE',
-  baseURL: 'suppliers',
+  baseURL: 'production/suppliers_type',
   searchEndpoint: 'production/suppliers_type',
 
   /* ───────── add-new button ───────── */

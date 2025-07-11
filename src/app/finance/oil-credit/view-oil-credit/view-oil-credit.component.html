@@ -1,24 +1,24 @@
 <!-- Loading state -->
 <div *ngIf="loading" class="loading-container">
   <mat-spinner></mat-spinner>
-  <p>Chargement du crédit d'huile...</p>
+  <p>{{ 'OIL_CREDIT.VIEW.LOADING' | translate }}</p>
 </div>
 
 <!-- Error state -->
 <div *ngIf="error && !loading" class="error-container">
   <mat-icon class="error-icon">error</mat-icon>
-  <h3>Erreur</h3>
-  <p>Impossible de charger le crédit d'huile.</p>
-  <button mat-flat-button color="primary" (click)="onBack()">Retour</button>
+  <h3>{{ 'OIL_CREDIT.VIEW.ERROR_TITLE' | translate }}</h3>
+  <p>{{ 'OIL_CREDIT.VIEW.ERROR_MESSAGE' | translate }}</p>
+  <button mat-flat-button color="primary" (click)="onBack()">{{ 'OIL_CREDIT.VIEW.BACK' | translate }}</button>
 </div>
 
 <!-- Actual credit detail card -->
 <mat-card *ngIf="credit && !loading" class="oil-credit-detail-card">
   <mat-card-header>
-    <button mat-icon-button (click)="onBack()" aria-label="Retour à la liste">
+    <button mat-icon-button (click)="onBack()" aria-label="{{ 'OIL_CREDIT.VIEW.BACK' | translate }}">
       <mat-icon>arrow_back</mat-icon>
     </button>
-    <mat-card-title class="card-title">Crédit d'huile #{{ credit.id }}</mat-card-title>
+    <mat-card-title class="card-title">{{ 'OIL_CREDIT.VIEW.TITLE' | translate }} #{{ credit.id }}</mat-card-title>
   </mat-card-header>
   <mat-divider></mat-divider>
 
@@ -26,31 +26,31 @@
     <div class="detail-grid">
       <div class="detail-row">
         <mat-icon class="detail-icon">inventory</mat-icon>
-        <div class="detail-label">Emballage</div>
+        <div class="detail-label">{{ 'OIL_CREDIT.FORM.FIELDS.EMBALLAGE' | translate }}</div>
         <div class="detail-value">{{ credit.emballage || '-' }}</div>
       </div>
 
       <div class="detail-row">
         <mat-icon class="detail-icon">height</mat-icon>
-        <div class="detail-label">Quantité</div>
+        <div class="detail-label">{{ 'OIL_CREDIT.FORM.FIELDS.QUANTITY' | translate }}</div>
         <div class="detail-value">{{ credit.quantity }} {{ getUnitLabel(credit.unit) }}</div>
       </div>
 
       <div class="detail-row">
         <mat-icon class="detail-icon">category</mat-icon>
-        <div class="detail-label">Type d'huile</div>
+        <div class="detail-label">{{ 'OIL_CREDIT.FORM.FIELDS.OIL_TYPE' | translate }}</div>
         <div class="detail-value">{{ credit.oil_type || '-' }}</div>
       </div>
 
       <div class="detail-row">
         <mat-icon class="detail-icon">person</mat-icon>
-        <div class="detail-label">Destinataire</div>
+        <div class="detail-label">{{ 'OIL_CREDIT.FORM.FIELDS.DESTINATAIRE' | translate }}</div>
         <div class="detail-value">{{ credit.destinataire || '-' }}</div>
       </div>
 
       <div class="detail-row">
         <mat-icon class="detail-icon">pending</mat-icon>
-        <div class="detail-label">État du crédit</div>
+        <div class="detail-label">{{ 'OIL_CREDIT.FORM.FIELDS.CREDIT_STATE' | translate }}</div>
         <div class="detail-value">
           <span class="state-badge" [ngClass]="getCreditStateClass(credit.creditState)">
             {{ getCreditStateLabel(credit.creditState) }}
@@ -60,25 +60,25 @@
 
       <div class="detail-row" *ngIf="credit.transaction_id_in">
         <mat-icon class="detail-icon">input</mat-icon>
-        <div class="detail-label">ID Transaction Entrée</div>
+        <div class="detail-label">{{ 'OIL_CREDIT.VIEW.TRANSACTION_ID_IN' | translate }}</div>
         <div class="detail-value">{{ credit.transaction_id_in }}</div>
       </div>
 
       <div class="detail-row" *ngIf="credit.transaction_id_out">
         <mat-icon class="detail-icon">output</mat-icon>
-        <div class="detail-label">ID Transaction Sortie</div>
+        <div class="detail-label">{{ 'OIL_CREDIT.VIEW.TRANSACTION_ID_OUT' | translate }}</div>
         <div class="detail-value">{{ credit.transaction_id_out }}</div>
       </div>
 
       <div class="detail-row" *ngIf="credit.createdDate">
         <mat-icon class="detail-icon">schedule</mat-icon>
-        <div class="detail-label">Date de création</div>
+        <div class="detail-label">{{ 'OIL_CREDIT.FORM.FIELDS.CREATED_DATE' | translate }}</div>
         <div class="detail-value">{{ credit.createdDate | date:'longDate' }}</div>
       </div>
 
       <div class="detail-row" *ngIf="credit.lastModifiedDate">
         <mat-icon class="detail-icon">update</mat-icon>
-        <div class="detail-label">Dernière modification</div>
+        <div class="detail-label">{{ 'OIL_CREDIT.VIEW.LAST_MODIFIED' | translate }}</div>
         <div class="detail-value">{{ credit.lastModifiedDate | date:'longDate' }}</div>
       </div>
     </div>
@@ -87,10 +87,10 @@
   <mat-divider></mat-divider>
   <mat-card-actions align="end">
     <button mat-flat-button color="accent" (click)="onPrint()"
-            matTooltip="Imprimer le crédit"
-            aria-label="Imprimer le crédit">
+            matTooltip="{{ 'OIL_CREDIT.VIEW.PRINT_TOOLTIP' | translate }}"
+            aria-label="{{ 'OIL_CREDIT.VIEW.PRINT' | translate }}">
       <mat-icon>print</mat-icon>
-      Imprimer
+      {{ 'OIL_CREDIT.VIEW.PRINT' | translate }}
     </button>
   </mat-card-actions>
 </mat-card>

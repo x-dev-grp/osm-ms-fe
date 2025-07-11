@@ -17,15 +17,11 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
       searchs: [],
       search: {
         status: {
-          inValues: [  'NEW',
-            'IN_PROGRESS',
-            'OLIVE_CONTROLLED',
-            'WAITING_FOR_PRICING',
-            'OIL_CONTROLLED',
+          inValues: [
             'COMPLETED',
             'REFUSED',
             'CANCELLED',
-            'IN_STOCK'] // Change as needed for oil/trituration
+           ]
         }
       }
     }

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { SharedModule } from '../../demo/shared/shared.module';
 import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
@@ -18,7 +18,16 @@ import { ToastService } from '../../shared/services/toast.service';
 @Component({
   selector: 'app-view-storage',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, TranslateModule,MatIconModule, MatProgressBarModule, SharedModule, TranslateModule, OsmDashboard, RouterOutlet],
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    TranslateModule,
+    MatIconModule,
+    MatProgressBarModule,
+    SharedModule,
+    TranslateModule,
+    OsmDashboard
+  ],
   templateUrl: './view-storage.component.html',
   styleUrls: ['./view-storage.component.scss']
 })
@@ -162,8 +171,16 @@ export class ViewStorageComponent implements OnInit {
           dataTable: true,
           filterable: true,
           options: [
-            { value: TransactionType.RECEPTION_IN, label: 'Réception Entrée', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.RECEPTION_IN' },
-            { value: TransactionType.TRANSFER_IN, label: 'Transfert Entrée', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.TRANSFER_IN' },
+            {
+              value: TransactionType.RECEPTION_IN,
+              label: 'Réception Entrée',
+              labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.RECEPTION_IN'
+            },
+            {
+              value: TransactionType.TRANSFER_IN,
+              label: 'Transfert Entrée',
+              labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.TRANSFER_IN'
+            },
             { value: TransactionType.LOAN, label: 'Prêt', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.LOAN' },
             { value: TransactionType.SALE, label: 'Vente', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.SALE' }
           ]

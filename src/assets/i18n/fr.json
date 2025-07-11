@@ -88,7 +88,7 @@
       "RIB_LENGTH": "Le RIB doit comporter 24 caractères",
       "RIB_REQUIRED": "Le RIB est requis"
     },
-      "FIELDS": {
+    "FIELDS": {
       "ACCOUNT_TYPE": "Type de compte",
       "ACTIVE": "Actif",
       "BANK_BRANCH": "Agence",
@@ -99,7 +99,7 @@
       "CURRENCY": "Devise",
       "IBAN": "IBAN",
       "INACTIVE": "Inactif",
-        "RIB": "RIB",
+      "RIB": "RIB",
       "SAVINGS": "Épargne",
       "STATUS": "Statut"
     },
@@ -177,7 +177,7 @@
       "UNPAID_AMOUNT": "Montant impayé (TND)"
     },
     "FORM": {
-        "FIELDS": {
+      "FIELDS": {
         "CATEGORY": "Catégorie",
         "DELIVERY_DATE": "Date de livraison",
         "DELIVERY_NUMBER": "Numéro de livraison",
@@ -360,7 +360,8 @@
       "SUPPLIER_RIB": "RIB",
       "TRUCK_PLATE": "Matricule du camion",
       "TRUCK_STATE": "État du camion",
-      "YIELD": "Rendement"
+      "YIELD": "Rendement",
+      "OPERATION_TYPE": "Type d'opération"
     },
     "FORM": {
       "BUTTONS": {
@@ -443,8 +444,8 @@
         "REMAINING_CAPACITY": "{{available}} L restants",
         "REQUIRED": "Ce champ est obligatoire"
       }
-      },
-      "MESSAGES": {
+    },
+    "MESSAGES": {
       "CANCELLED_ERROR": "Erreur lors de l'annulation",
       "CANCELLED_SUCCESS": "Réception annulée avec succès",
       "DELETE_ERROR": "Erreur lors de la suppression",
@@ -461,6 +462,14 @@
       "IN_PROGRESS": "En cours",
       "NEW": "Nouveau",
       "REFUSED": "Refusé"
+    },
+    "OPERATION_TYPE": {
+      "SIMPLE_RECEPTION": "Réception simple",
+      "BASE": "Base",
+      "OLIVE_PURCHASE": "Achat d'olive",
+      "OIL_PURCHASE": "Achat d'huile",
+      "EXCHANGE": "Échange",
+      "PAYMENT": "Paiement"
     }
   },
   "Dashboard": "Tableau de bord",
@@ -515,6 +524,13 @@
       "RESET_TOOLTIP": "Réinitialiser tous les champs",
       "SAVE": "Enregistrer les Modifications",
       "SAVE_TOOLTIP": "Enregistrer le profil de l'entreprise"
+    },
+    "EXPANDABLE": {
+      "CONFIGURATIONS": "Configurations",
+      "PRODUCTION_CONFIG": "Configuration de production",
+      "FINANCE_CONFIG": "Configuration financière",
+      "HR_CONFIG": "Configuration RH",
+      "OTHER_CONFIG": "Autre configuration"
     },
     "ADDRESS_INFO": {
       "ADDRESS": "Adresse",
@@ -638,8 +654,8 @@
       "MANUFACTURER_REQUIRED": "Le fabricant est requis",
       "MODEL_REQUIRED": "Le modèle est requis",
       "NAME_REQUIRED": "Le nom est requis"
-      },
-      "FIELDS": {
+    },
+    "FIELDS": {
       "CAPACITY": "Capacité",
       "HOURS_OPERATED": "Heures d'opération",
       "LAST_MAINTENANCE_DATE": "Dernière maintenance",
@@ -668,17 +684,68 @@
   "Navigation": "La navigation",
   "Notification": "Notification",
   "OIL_CREDIT": {
+    "TITLE": "Gestion des crédits d'huile",
+    "ACTIONS": {
+      "CANCEL": "Annuler",
+      "EDIT": "Modifier",
+      "SAVE": "Enregistrer",
+      "UPDATE": "Mettre à jour"
+    },
+    "ADD_TITLE": "Ajouter un crédit d'huile",
+    "DETAILS_TITLE": "Détails du crédit d'huile",
+    "EDIT_TITLE": "Modifier le crédit d'huile",
+    "FIELDS": {
+      "CREATED_DATE": "Date de création",
+      "CREDIT_STATE": "État du crédit",
+      "OIL_TYPE": "Type d'huile",
+      "PACKAGING": "Emballage",
+      "QUANTITY": "Quantité",
+      "SUPPLIER": "Fournisseur",
+      "UNIT": "Unité",
+      "RECIPIENT": "Destinataire"
+    },
+    "UNITS": {
+      "LITER": "Litre",
+      "KILOGRAM": "Kilogramme"
+    },
+    "STATES": {
+      "PENDING": "En attente",
+      "APPROVED": "Approuvé",
+      "REJECTED": "Rejeté",
+      "COMPLETED": "Terminé",
+      "CANCELLED": "Annulé"
+    },
+    "ERRORS": {
+      "CREDIT_STATE_REQUIRED": "L'état du crédit est requis",
+      "OIL_TYPE_REQUIRED": "Le type d'huile est requis",
+      "PACKAGING_REQUIRED": "L'emballage est requis",
+      "QUANTITY_REQUIRED": "La quantité est requise",
+      "QUANTITY_MIN": "La quantité doit être supérieure à 0",
+      "QUANTITY_INSUFFICIENT": "Quantité insuffisante en stock",
+      "QUANTITY_UNIT_MISMATCH": "Unité incompatible avec la citerne sélectionnée",
+      "SUPPLIER_REQUIRED": "Le fournisseur est requis",
+      "UNIT_REQUIRED": "L'unité est requise",
+      "RECIPIENT_REQUIRED": "Le destinataire est requis"
+    },
+    "MESSAGES": {
+      "FORM_INVALID": "Veuillez corriger les erreurs dans le formulaire.",
+      "SAVE_SUCCESS": "Crédit d'huile enregistré avec succès.",
+      "UPDATE_SUCCESS": "Crédit d'huile mis à jour avec succès.",
+      "SAVE_ERROR": "Erreur lors de l'enregistrement du crédit d'huile.",
+      "LOAD_ERROR": "Erreur lors du chargement des données.",
+      "QUANTITY_UNIT_MISMATCH_SNACK": "Unité incompatible avec la citerne sélectionnée.",
+      "QUANTITY_INSUFFICIENT_SNACK": "Quantité insuffisante en stock."
+    },
     "FORM": {
-      "TITLE_NEW": "Ajouter un crédit huile",
-      "TITLE_EDIT": "Modifier le crédit huile",
       "FIELDS": {
-        "CITERNE_PILE": "Citerne",
+        "CITERNE_PILE": "Citerne/Pile",
         "EMBALLAGE": "Emballage",
         "OIL_TYPE": "Type d'huile",
         "QUANTITY": "Quantité",
         "UNIT": "Unité",
         "DESTINATAIRE": "Destinataire",
-        "CREDIT_STATE": "État du crédit"
+        "CREDIT_STATE": "État du crédit",
+        "CREATED_DATE": "Date de création"
       },
       "UNITS": {
         "LITRE": "Litre",
@@ -691,13 +758,13 @@
         "COMPLETED": "Terminé",
         "CANCELLED": "Annulé"
       },
-      "BUTTONS": {
-        "CANCEL": "Annuler",
-        "CREATE": "Créer",
-        "UPDATE": "Mettre à jour"
+      "PLACEHOLDERS": {
+        "SEARCH_CITERNE_PILE": "Rechercher une citerne/pile...",
+        "SEARCH_OIL_TYPE": "Rechercher un type d'huile...",
+        "SEARCH_DESTINATAIRE": "Rechercher un destinataire..."
       },
       "ERRORS": {
-        "CITERNE_PILE_REQUIRED": "La citerne est requise.",
+        "CITERNE_PILE_REQUIRED": "La citerne/pile est requise.",
         "EMBALLAGE_REQUIRED": "L'emballage est requis.",
         "OIL_TYPE_REQUIRED": "Le type d'huile est requis.",
         "QUANTITY_REQUIRED": "La quantité est requise.",
@@ -708,20 +775,32 @@
         "DESTINATAIRE_REQUIRED": "Le destinataire est requis.",
         "CREDIT_STATE_REQUIRED": "L'état du crédit est requis."
       },
-      "PLACEHOLDERS": {
-        "SEARCH_CITERNE_PILE": "Rechercher une citerne...",
-        "SEARCH_OIL_TYPE": "Rechercher un type d'huile...",
-        "SEARCH_DESTINATAIRE": "Rechercher un destinataire..."
+      "BUTTONS": {
+        "CANCEL": "Annuler",
+        "CREATE": "Créer",
+        "UPDATE": "Mettre à jour"
       },
       "MESSAGES": {
         "FORM_INVALID": "Veuillez corriger les erreurs dans le formulaire.",
-        "SAVE_SUCCESS": "Crédit huile enregistré avec succès.",
-        "UPDATE_SUCCESS": "Crédit huile mis à jour avec succès.",
-        "SAVE_ERROR": "Erreur lors de l'enregistrement du crédit huile.",
+        "SAVE_SUCCESS": "Crédit d'huile enregistré avec succès.",
+        "UPDATE_SUCCESS": "Crédit d'huile mis à jour avec succès.",
+        "SAVE_ERROR": "Erreur lors de l'enregistrement du crédit d'huile.",
         "LOAD_ERROR": "Erreur lors du chargement des données.",
         "QUANTITY_UNIT_MISMATCH_SNACK": "Unité incompatible avec la citerne sélectionnée.",
         "QUANTITY_INSUFFICIENT_SNACK": "Quantité insuffisante en stock."
       }
+    },
+    "VIEW": {
+      "LOADING": "Chargement du crédit d'huile...",
+      "ERROR_TITLE": "Erreur",
+      "ERROR_MESSAGE": "Impossible de charger le crédit d'huile.",
+      "BACK": "Retour",
+      "TITLE": "Crédit d'huile",
+      "TRANSACTION_ID_IN": "ID Transaction Entrée",
+      "TRANSACTION_ID_OUT": "ID Transaction Sortie",
+      "LAST_MODIFIED": "Dernière modification",
+      "PRINT": "Imprimer",
+      "PRINT_TOOLTIP": "Imprimer le crédit d'huile"
     }
   },
   "OIL_RECEPTION": {
@@ -817,7 +896,7 @@
         "DELETE_SUCCESS": "Réception supprimée avec succès",
         "LOAD_ERROR": "Erreur lors du chargement des réceptions"
       },
-    "STATUS": {
+      "STATUS": {
         "CANCELLED": "Annulé",
         "COMPLETED": "Terminé",
         "IN_PROGRESS": "En cours",
@@ -836,7 +915,7 @@
       "OIL_QUANTITY": "Quantité d'huile",
       "OIL_VARIETY": "Variété d'huile",
       "PARCEL": "Parcelle",
-        "REGION": "Région",
+      "REGION": "Région",
       "SECTION": "Détails de la livraison associée",
       "STATUS": "Statut",
       "STORAGE_UNIT": "Unité de stockage",
@@ -1006,14 +1085,14 @@
         "DELIVERY_NUMBER": "Numéro de livraison",
         "DELIVERY_TYPE": "Type de livraison",
         "GROSS_WEIGHT": "Poids brut (kg)",
-      "LOT_NUMBER": "Numéro de lot",
+        "LOT_NUMBER": "Numéro de lot",
         "NET_WEIGHT": "Poids net (kg)",
         "OLIVE_QUANTITY": "Quantité d'olives (kg)",
         "OLIVE_TYPE": "Type d'olive",
         "OLIVE_VARIETY": "Variété d'olive",
         "OPERATION_TYPE": "Type d'opération",
         "PARCEL": "Parcelle",
-      "REGION": "Région",
+        "REGION": "Région",
         "SACK_COUNT": "Nombre de sacs",
         "SUPPLIER": "Fournisseur",
         "TREATMENT_DATE": "Date de traitement",
@@ -1333,7 +1412,9 @@
       "PAYMENT_HISTORY_COUNT": "paiements effectués",
       "PAYMENT_HISTORY_TITLE": "Historique des Paiements",
       "UNPAID_COUNT": "paiements en attente",
-      "UNPAID_TITLE": "Paiements en Attente"
+      "UNPAID_TITLE": "Paiements en Attente",
+      "OIL_CREDIT_STATS_TITLE": "Statistiques crédits d'huile",
+      "OIL_CREDIT_TOTAL": "Crédits d'huile"
     },
     "ERRORS": {
       "ADDRESS_MIN": "L'adresse doit contenir au moins 5 caractères",
@@ -1447,7 +1528,24 @@
     "TOTAL_UNPAID": "Total Non Payé",
     "UNPAID": "Non Payé",
     "UNPAID_AMOUNT": "Montant Non Payé",
-    "UNPAID_DELIVERIES": "Livraisons Non Payées"
+    "UNPAID_DELIVERIES": "Livraisons Non Payées",
+    "RECEPTION_TYPE": "Type de réception",
+    "RECEPTION_TYPE_OLIVE": "Olive",
+    "RECEPTION_TYPE_OIL": "Huile",
+    "OIL_CREDITS": "Crédits d'huile",
+    "OIL_CREDITS_LIST": "Liste des crédits d'huile",
+    "OIL_CREDIT_ID": "ID",
+    "OIL_CREDIT_PACKAGING": "Emballage",
+    "OIL_CREDIT_QUANTITY": "Quantité",
+    "OIL_CREDIT_UNIT": "Unité",
+    "OIL_CREDIT_TYPE": "Type d'huile",
+    "OIL_CREDIT_STATE": "État du crédit",
+    "OIL_CREDIT_CREATED_DATE": "Date de création",
+    "OIL_CREDITS_TOTAL": "Total crédits d'huile",
+    "OIL_CREDITS_TOTAL_L": "Quantité totale (L)",
+    "OIL_CREDITS_TOTAL_KG": "Quantité totale (KG)",
+    "OIL_CREDIT_STATS_TITLE": "Statistiques crédits d'huile",
+    "OIL_CREDIT_TOTAL": "Crédits d'huile"
   },
   "Sample Page": "Page d'exemple",
   "Setting": "Paramètre",

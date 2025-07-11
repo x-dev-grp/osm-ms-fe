@@ -25,6 +25,11 @@
               (click)="setHistoryType('unpaid')">
         {{ 'SUPPLIER_PAYMENT.UNPAID' | translate }}
       </button>
+      <button mat-stroked-button
+              [class.active]="historyType === 'oil_credit'"
+              (click)="setHistoryType('oil_credit')">
+        {{ 'SUPPLIER_PAYMENT.OIL_CREDITS' | translate }}
+      </button>
     </div>
   </div>
 
@@ -44,51 +49,122 @@
 
   <!-- Payment history content -->
   <div *ngIf="!loading && !error" class="content">
-    <!-- Split Layout Container - Now includes everything -->
     <div class="split-layout" [class.payment-active]="selectedPayment">
-      <!-- Left Side: Summary Stats + Deliveries Table -->
+      <!-- Left Side: Summary Stats + Table (Unified for all filters) -->
       <div class="left-section" [class.minimized]="selectedPayment">
         <!-- Summary Statistics -->
         <div class="summary-stats">
-          <mat-card class="stat-card" *ngIf="historyType === 'unpaid' || historyType === 'paid' || historyType === 'all'">
-            <mat-card-content>
-              <div class="stat-item">
-                <span class="stat-label">{{ 'SUPPLIER_PAYMENT.TOTAL_DELIVERIES' | translate }}</span>
-                <span class="stat-value">{{ totalDeliveries }}</span>
-              </div>
-            </mat-card-content>
-          </mat-card>
-
-          <mat-card class="stat-card" *ngIf="historyType === 'paid' || historyType === 'all'">
-            <mat-card-content>
-              <div class="stat-item">
-                <span class="stat-label">{{ 'SUPPLIER_PAYMENT.TOTAL_PAID' | translate }}</span>
-                <span class="stat-value success">{{ totalPaid | currency:'TND':'symbol-narrow':'1.2-2' }}</span>
-              </div>
-            </mat-card-content>
-          </mat-card>
-
-          <mat-card class="stat-card" *ngIf="historyType === 'unpaid' || historyType === 'all'">
-            <mat-card-content>
-              <div class="stat-item">
-                <span class="stat-label">{{ 'SUPPLIER_PAYMENT.TOTAL_UNPAID' | translate }}</span>
-                <span class="stat-value error">{{ totalUnpaid | currency:'TND':'symbol-narrow':'1.2-2' }}</span>
-              </div>
-            </mat-card-content>
-          </mat-card>
-
-          <mat-card class="stat-card" *ngIf="historyType === 'all'">
-            <mat-card-content>
-              <div class="stat-item">
-                <span class="stat-label">{{ 'SUPPLIER_PAYMENT.TOTAL_OLIVE_WEIGHT' | translate }}</span>
-                <span class="stat-value">{{ totalOliveWeight | number:'1.2-2' }} kg</span>
-              </div>
-            </mat-card-content>
-          </mat-card>
+          <!-- Oil Credit Cards -->
+          <ng-container *ngIf="historyType === 'oil_credit'">
+            <mat-card class="stat-card">
+              <mat-card-content>
+                <div class="stat-item">
+                   <span class="stat-label">{{ 'SUPPLIER_PAYMENT.OIL_CREDITS_TOTAL' | translate }}</span>
+                  <span class="stat-value">{{ totalOilCredits }}</span>
+                </div>
+              </mat-card-content>
+            </mat-card>
+            <mat-card class="stat-card">
+              <mat-card-content>
+                <div class="stat-item">
+                   <span class="stat-label">{{ 'SUPPLIER_PAYMENT.OIL_CREDITS_TOTAL_L' | translate }}</span>
+                  <span class="stat-value stat-value-l">{{ totalOilCreditQuantityL | number:'1.2-2' }} L</span>
+                </div>
+              </mat-card-content>
+            </mat-card>
+            <mat-card class="stat-card">
+              <mat-card-content>
+                <div class="stat-item">
+                   <span class="stat-label">{{ 'SUPPLIER_PAYMENT.OIL_CREDITS_TOTAL_KG' | translate }}</span>
+                  <span class="stat-value stat-value-kg">{{ totalOilCreditQuantityKG | number:'1.2-2' }} KG</span>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </ng-container>
+          <!-- Paid/Unpaid/All Cards -->
+          <ng-container *ngIf="historyType !== 'oil_credit'">
+            <mat-card class="stat-card">
+              <mat-card-content>
+                <div class="stat-item">
+                   <span class="stat-label">{{ 'SUPPLIER_PAYMENT.TOTAL_DELIVERIES' | translate }}</span>
+                  <span class="stat-value">{{ totalDeliveries }}</span>
+                </div>
+              </mat-card-content>
+            </mat-card>
+            <mat-card class="stat-card" *ngIf="historyType === 'paid' || historyType === 'all'">
+              <mat-card-content>
+                <div class="stat-item">
+                   <span class="stat-label">{{ 'SUPPLIER_PAYMENT.TOTAL_PAID' | translate }}</span>
+                  <span class="stat-value stat-value-paid">{{ totalPaid | currency:'TND':'symbol-narrow':'1.2-2' }}</span>
+                </div>
+              </mat-card-content>
+            </mat-card>
+            <mat-card class="stat-card" *ngIf="historyType === 'unpaid' || historyType === 'all'">
+              <mat-card-content>
+                <div class="stat-item">
+                   <span class="stat-label">{{ 'SUPPLIER_PAYMENT.TOTAL_UNPAID' | translate }}</span>
+                  <span class="stat-value stat-value-unpaid">{{ totalUnpaid | currency:'TND':'symbol-narrow':'1.2-2' }}</span>
+                </div>
+              </mat-card-content>
+            </mat-card>
+            <mat-card class="stat-card" *ngIf="historyType === 'all'">
+              <mat-card-content>
+                <div class="stat-item">
+                   <span class="stat-label">{{ 'SUPPLIER_PAYMENT.TOTAL_OLIVE_WEIGHT' | translate }}</span>
+                  <span class="stat-value stat-value-olive">{{ totalOliveWeight | number:'1.2-2' }} kg</span>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </ng-container>
         </div>
-        <!-- Deliveries Table -->
+        <!-- Table Section -->
         <div class="table-section">
-          <mat-card>
+          <mat-card *ngIf="historyType === 'oil_credit'">
+            <mat-card-title>{{ 'SUPPLIER_PAYMENT.OIL_CREDITS_LIST' | translate }}</mat-card-title>
+            <mat-divider></mat-divider>
+            <mat-card-content>
+              <div class="scrollable-table">
+                <table mat-table [dataSource]="oilCredits" class="payment-table">
+                  <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef>{{ 'SUPPLIER_PAYMENT.OIL_CREDIT_ID' | translate }}</th>
+                    <td mat-cell *matCellDef="let credit">{{ credit.id }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="emballage">
+                    <th mat-header-cell *matHeaderCellDef>{{ 'SUPPLIER_PAYMENT.OIL_CREDIT_PACKAGING' | translate }}</th>
+                    <td mat-cell *matCellDef="let credit">{{ credit.emballage }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="quantity">
+                    <th mat-header-cell *matHeaderCellDef>{{ 'SUPPLIER_PAYMENT.OIL_CREDIT_QUANTITY' | translate }}</th>
+                    <td mat-cell *matCellDef="let credit">{{ credit.quantity }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="unit">
+                    <th mat-header-cell *matHeaderCellDef>{{ 'SUPPLIER_PAYMENT.OIL_CREDIT_UNIT' | translate }}</th>
+                    <td mat-cell *matCellDef="let credit">{{ credit.unit }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="oil_type">
+                    <th mat-header-cell *matHeaderCellDef>{{ 'SUPPLIER_PAYMENT.OIL_CREDIT_TYPE' | translate }}</th>
+                    <td mat-cell *matCellDef="let credit">{{ credit.oil_type?.name || credit.oil_type }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="creditState">
+                    <th mat-header-cell *matHeaderCellDef>{{ 'SUPPLIER_PAYMENT.OIL_CREDIT_STATE' | translate }}</th>
+                    <td mat-cell *matCellDef="let credit">{{ credit.creditState }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="createdDate">
+                    <th mat-header-cell *matHeaderCellDef>{{ 'SUPPLIER_PAYMENT.OIL_CREDIT_CREATED_DATE' | translate }}</th>
+                    <td mat-cell *matCellDef="let credit">{{ credit.createdDate | date:'dd/MM/yyyy' }}</td>
+                  </ng-container>
+                  <tr mat-header-row *matHeaderRowDef="oilCreditColumns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: oilCreditColumns;"></tr>
+                </table>
+              </div>
+              <mat-paginator
+                [pageSize]="10"
+                [pageSizeOptions]="[5, 10, 25, 100]"
+                aria-label="Select page of payments">
+              </mat-paginator>
+            </mat-card-content>
+          </mat-card>
+          <mat-card *ngIf="historyType !== 'oil_credit'">
             <mat-card-title>
               {{ getHistoryTypeTitle() | translate }}
             </mat-card-title>

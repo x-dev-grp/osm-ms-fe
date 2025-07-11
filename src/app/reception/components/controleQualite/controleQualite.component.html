@@ -47,9 +47,6 @@
               <label [for]="control.key" class="parameter-label">
                 {{ getRuleName(control.key) }}
               </label>
-              <div [ngClass]="getRuleType(control.key).toLowerCase()" class="parameter-type">
-                {{ getRuleType(control.key) }}
-              </div>
             </div>
             <!-- NUMERIC Input -->
             <ng-container *ngIf="getRuleType(control.key) === 'NUMERIC'; else nonNumericInput">
@@ -104,47 +101,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Financial & Storage Section (Static, only for oil receptions) -->
-      <!--      <div class="form-section" *ngIf="isOilReception()">-->
-      <!--        <div class="section-header">-->
-      <!--          <mat-icon>account_balance</mat-icon>-->
-      <!--          <h3>{{ 'CONTROLE_QUALITE.SECTIONS.FINANCIAL' | translate }}</h3>-->
-      <!--        </div>-->
-      <!--        <div class="financial-grid">-->
-      <!--          &lt;!&ndash; Unit Price &ndash;&gt;-->
-      <!--          <div class="financial-card">-->
-      <!--            <mat-form-field appearance="outline" class="financial-field">-->
-      <!--              <mat-label>{{ 'CONTROLE_QUALITE.FINANCIAL.UNIT_PRICE' | translate }}</mat-label>-->
-      <!--              <input [placeholder]="'CONTROLE_QUALITE.FINANCIAL.UNIT_PRICE' | translate"-->
-      <!--                     [readonly]="isReadOnlyForm"-->
-      <!--                     formControlName="unitPrice"-->
-      <!--                     matInput step="0.01"-->
-      <!--                     type="number">-->
-      <!--              <mat-icon matSuffix>attach_money</mat-icon>-->
-      <!--              <mat-error *ngIf="mainForm.get('unitPrice')?.hasError('required')">-->
-      <!--                {{ 'CONTROLE_QUALITE.FORM.VALIDATION.REQUIRED' | translate }}-->
-      <!--              </mat-error>-->
-      <!--            </mat-form-field>-->
-      <!--          </div>-->
-      <!--          &lt;!&ndash; Total Price &ndash;&gt;-->
-      <!--          <div class="financial-card">-->
-      <!--            <mat-form-field appearance="outline" class="financial-field">-->
-      <!--              <mat-label>{{ 'CONTROLE_QUALITE.FINANCIAL.PRICE' | translate }}</mat-label>-->
-      <!--              <input [placeholder]="'CONTROLE_QUALITE.FINANCIAL.PRICE' | translate"-->
-      <!--                     formControlName="price"-->
-      <!--                     matInput readonly-->
-      <!--                     step="0.01"-->
-      <!--                     type="number">-->
-      <!--              <mat-icon matSuffix>account_balance_wallet</mat-icon>-->
-      <!--              <mat-error *ngIf="mainForm.get('price')?.hasError('required')">-->
-      <!--                {{ 'CONTROLE_QUALITE.FORM.VALIDATION.REQUIRED' | translate }}-->
-      <!--              </mat-error>-->
-      <!--            </mat-form-field>-->
-      <!--          </div>-->
-      <!--        </div>-->
-      <!--      </div>-->
-
       <!-- Single Save Button -->
       <div class="form-actions">
         <button (click)="onSave()"

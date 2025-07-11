@@ -14,6 +14,8 @@ import { SearchOperation } from '../../../../shared/models/advanced-search/searc
 import { SupplierType } from '../../../../shared/models/supplier-type';
 import { TranslateModule } from '@ngx-translate/core';
 import { deliveryType } from '../../../../shared/models/deleveryType';
+import { OilCreditService } from '../../../../finance/service/oil-credit.service';
+import { OilCredit } from '../../../../finance/models/OilCredit';
 
 @Component({
   selector: 'app-supplier-details',
@@ -31,12 +33,19 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
   dashboardConfig: DashboardConfig;
   supplierId: string | null = null;
   private destroy$ = new Subject<void>();
+  oilCreditStats = {
+    total: 0,
+    totalL: 0,
+    totalKG: 0,
+    stateCounts: {} as { [key: string]: number }
+  };
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private supplierService: SupplierTypeService,
-    private location: Location
+    private location: Location,
+    private oilCreditService: OilCreditService
   ) {}
 
   ngOnInit(): void {
@@ -45,6 +54,7 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
     if (this.supplierId) {
       this.setupConfig(this.supplierId);
       this.loadPaymentCounts(this.supplierId);
+      this.loadOilCreditStats(this.supplierId);
     } else {
       this.error = 'No supplier ID found';
       this.router.navigate(['/reception/fournisseur']);
@@ -60,7 +70,7 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
     this.router.navigate(['/reception/fournisseur']);
   }
 
-  navigateToHistory(type: 'paid' | 'unpaid'): void {
+  navigateToHistory(type: 'paid' | 'unpaid' | 'oil_credit'): void {
     if (this.supplierId) {
       this.router.navigate(['/reception/fournisseur/payments', this.supplierId], {
         queryParams: { type }
@@ -284,5 +294,32 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
           console.error('Error loading unpaid payments:', error);
         }
       });
+  }
+
+  loadOilCreditStats(supplierId: string): void {
+    this.oilCreditService.getAllOilCreditList().subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          const credits = response.data.filter((credit: OilCredit) => credit.destinataire && credit.destinataire.id === supplierId);
+          this.oilCreditStats.total = credits.length;
+          this.oilCreditStats.totalL = credits
+            .filter((c: OilCredit) => c.unit === 'L')
+            .reduce((sum: number, c: OilCredit) => sum + (c.quantity || 0), 0);
+          this.oilCreditStats.totalKG = credits
+            .filter((c: OilCredit) => c.unit === 'KG')
+            .reduce((sum: number, c: OilCredit) => sum + (c.quantity || 0), 0);
+          this.oilCreditStats.stateCounts = {};
+          for (const c of credits) {
+            const state = c.creditState || 'UNKNOWN';
+            this.oilCreditStats.stateCounts[state] = (this.oilCreditStats.stateCounts[state] || 0) + 1;
+          }
+        } else {
+          this.oilCreditStats = { total: 0, totalL: 0, totalKG: 0, stateCounts: {} };
+        }
+      },
+      error: () => {
+        this.oilCreditStats = { total: 0, totalL: 0, totalKG: 0, stateCounts: {} };
+      }
+    });
   }
 }

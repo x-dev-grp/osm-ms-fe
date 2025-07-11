@@ -412,7 +412,8 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
     this.dialog.open(this.setPriceDialogTemplate, {
       width: '500px',
       data: row,
-      disableClose: true
+      disableClose: true,
+      panelClass: 'set-price-dialog'
     });
   }
 

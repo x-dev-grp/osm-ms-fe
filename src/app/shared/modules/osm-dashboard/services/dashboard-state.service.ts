@@ -26,7 +26,7 @@ export interface DashboardState {
   exportFields: { field: Field; checked: boolean }[];
   dataTableFields: Field[];
   resetFieldsSubject: Subject<void>;
-  searchTrigger$: Subject<SearchData>;
+  searchTrigger$: Subject<any>;
   fileName:string;
 
 }
@@ -137,10 +137,10 @@ export const DashboardStore = signalStore(
         ).subscribe();
 
       },
-      fetchData(searchData: SearchData) {
-         console.log('New search triggered with:', searchData);
+      fetchData() {
+         console.log('New search triggered with:', store.searchData());
          this.setLoading(true);
-      _searchService.search(searchData, store.endpoint())
+      _searchService.search(store.searchData(), store.endpoint())
              .pipe(
                 tap((response) => {
                   console.log('Data fetched:', response);
@@ -158,34 +158,14 @@ export const DashboardStore = signalStore(
               ).subscribe();
 
       },
-      fetchData2() {
-        this.setLoading(true);
-          console.log('Api call triggered');
-          const searchData = store.searchData();
-          const endpoint = store.endpoint();
-          return _searchService.search(searchData, endpoint).pipe(
-            tap((response) => {
-              console.log('Data fetched:', response);
-              this.setData(response);
-              this.setLoading(false);
-            }),
-            catchError((error) => {
-              console.error('Error fetching data:', error);
-              this.setLoading(false);
-              return EMPTY;
-            }),
-            finalize(() => {
-              this.setLoading(false);
-            })
-          );
-      },
+
       removeItem(id:string,path:string){
         this.setActionLoading(true);
         _baseService.deleteItem(path,id).pipe(
           tap((response) => {
             console.log('item deleted');
             this.setActionLoading(false);
-            this.fetchData(store.searchData())
+            this.fetchData()
           }),
           catchError((error) => {
             console.error('Error deleting item:', error);
@@ -353,7 +333,7 @@ export const DashboardStore = signalStore(
         console.log('store.endpoint()', store.endpoint());
         if (store.endpoint() && currentSearchData) {
           console.log('Fetching data...');
-          store.fetchData(currentSearchData);
+          store.fetchData();
         //  store.searchTrigger$().next(currentSearchData);
         }
       });

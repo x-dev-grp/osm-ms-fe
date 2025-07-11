@@ -83,18 +83,20 @@
                           <th>N°</th>
                           <th>Fournisseur</th>
                           <th>QT (kg)</th>
-                          <th>Rendement (%)</th>
+                          <th>Huile (kg)</th>
+                          <th class="rendement">Rendement (%)</th>
+                          <th class="rendement">Prix de trituration</th>
                         </tr>
                       </thead>
                       <tbody>
-                        @for (child of childLotsWithRendement; track child) {
-                          <tr>
-                            <td class="lot-number">{{ child.lotNumber }}</td>
-                            <td class="supplier">{{ child.supplier || '-' }}</td>
-                            <td class="quantity">{{ child.oliveQuantity }} kg</td>
-                            <td class="rendement">{{ (child.calculatedRendement ?? 0) | number: '1.2-2' }}%</td>
-                          </tr>
-                        }
+                        <tr *ngFor="let child of childLotsWithRendement; let i = index; trackBy: trackByLotNumber">
+                          <td class="lot-number">{{ child.lotNumber }}</td>
+                          <td class="supplier">{{ child.supplier || '-' }}</td>
+                          <td class="quantity">{{ child.oliveQuantity }} kg</td>
+                          <td>{{ child.oilQuantity | number: '1.2-2' }} kg</td>
+                          <td class="rendement">{{ (child.calculatedRendement ?? 0) | number: '1.2-2' }}%</td>
+                          <td class="rendement">{{ child.calculatedTriturationPrice | number: '1.2-2' }} DZD</td>
+                        </tr>
                       </tbody>
                     </table>
                   </div>
@@ -141,6 +143,31 @@
             />
           </mat-form-field>
         </div>
+
+        <!-- Price per kg input and total price display -->
+        <ng-container >
+          <div class="w-full" style="display: flex; gap: 1rem;">
+            <mat-form-field appearance="outline" class="col-6" style="flex: 1;">
+              <mat-label>Prix de trituration (par kg)</mat-label>
+              <input
+                [(ngModel)]="triturationPricePerKg"
+                matInput
+                min="0"
+                step="0.01"
+                type="number"
+              />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="col-6" style="flex: 1;">
+              <mat-label>Prix total de trituration</mat-label>
+              <input
+                [value]="totalTriturationPrice | number: '1.2-2'"
+                matInput
+                type="text"
+                disabled
+              />
+            </mat-form-field>
+          </div>
+        </ng-container>
 
         <!-- Completion Date Picker -->
         <mat-form-field appearance="outline" class="w-full">
