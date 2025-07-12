@@ -39,6 +39,7 @@ export const OIL_TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
       filterable: true,
       options: [
         { value: TransactionType.RECEPTION_IN, label: 'Réception Entrée', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.RECEPTION_IN' },
+        { value: TransactionType.EXCHANGE, label: 'Echange', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.EXCHANGE' },
         { value: TransactionType.TRANSFER_IN, label: 'Transfert Entrée', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.TRANSFER_IN' },
         { value: TransactionType.LOAN, label: 'Prêt', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.LOAN' },
         { value: TransactionType.SALE, label: 'Vente', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.SALE' }

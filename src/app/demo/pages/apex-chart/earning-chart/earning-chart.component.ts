@@ -18,7 +18,7 @@ import { DARK, LIGHT } from 'src/app/@theme/const';
   standalone: true,
   styleUrl: './earning-chart.component.scss'
 })
-export class EarningChartComponent implements OnInit {
+export class EarningChartComponent implements OnInit, OnChanges {
   private themeService = inject(ThemeLayoutService);
 
   // public props

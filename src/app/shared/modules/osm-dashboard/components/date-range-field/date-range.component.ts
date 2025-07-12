@@ -56,7 +56,7 @@ export class DateRangeComponent implements OnInit, AfterViewInit, OnChanges, OnD
   }
   onDateRangeClosed() {
     console.log('date range closed');
-    let { start, end } = this.range.value;
+    const { start, end } = this.range.value;
     end?.setHours(23, 59, 59, 999);
     start?.setHours(0, 0, 0, 0);
 

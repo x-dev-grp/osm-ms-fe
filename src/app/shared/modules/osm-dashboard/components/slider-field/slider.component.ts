@@ -53,7 +53,7 @@ export class SliderComponent implements OnInit, AfterViewInit, OnChanges, OnDest
   }
   sliderValueChange() {
     console.log(this.rangeNumber.value);
-    let { start, end } = this.rangeNumber.value;
+    const { start, end } = this.rangeNumber.value;
     if ((start!=null && start!=undefined) && (end!=null && end!=undefined)) {
       const search: { [key: string]: SearchDetails } = {
         [this.field()?.name!]: {

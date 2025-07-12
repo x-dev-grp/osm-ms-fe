@@ -42,10 +42,10 @@
         <button mat-button color="primary" (click)="onViewRole(role)" matTooltip="View role details">
           <mat-icon>visibility</mat-icon> Consulter
         </button>
-        <button mat-button color="accent" (click)="onEditRole(role)" [disabled]="role?.roleName?.toUpperCase()=='ADMIN'" matTooltip="Edit role">
+        <button mat-button color="accent" (click)="onEditRole(role)" [disabled]="role?.roleName?.toUpperCase()==='ADMIN'" matTooltip="Edit role">
           <mat-icon>edit</mat-icon> Mdifier
         </button>
-        <button mat-button color="warn" (click)="onDeleteRole(role)" [disabled]="role?.roleName?.toUpperCase()=='ADMIN'" matTooltip="Delete role">
+        <button mat-button color="warn" (click)="onDeleteRole(role)" [disabled]="role?.roleName?.toUpperCase()==='ADMIN'" matTooltip="Delete role">
           <mat-icon>delete</mat-icon> 
             <mat-spinner *ngIf="deleteLoanding" diameter="25" color="warn"></mat-spinner>
              <span *ngIf="!deleteLoanding">Supprimer</span> 

@@ -23,6 +23,8 @@ import { OsmDashboard } from '../shared/modules/osm-dashboard/osm-dashboard';
 import { SearchOperation } from '../shared/models/advanced-search/searchOperation';
 import { Router } from '@angular/router';
 import { UnifiedDelivery } from '../shared/models/UnifiedDelivery';
+import { dashboardConfig } from './storage_dash_config';
+import { OIL_TRANSACTIONS_DASHBOARD_CONFIG } from './oil-transactions/oil-transactions-dashboard.config';
 
 @Component({
   selector: 'app-storage',
@@ -49,132 +51,7 @@ export class StorageUnitsComponent implements OnInit {
   oilTypes: BaseType[] = [];
   loading = false;
 
-  dashboardConfig: DashboardConfig = {
-    title: 'Gestion des réservoirs',
-    baseURL: 'production/storage-units',
-    searchEndpoint: 'production/storage-units',
-    addNewItem: true,
-    addNewItemUrl: '/storage/new',
-    fileName: 'storage-units',
-
-
-
-    fields: [
-      {
-        name: 'name',
-        label: 'Nom',
-        attributeType: AttributeType.string,
-        fieldType: FieldType.text,
-        sortable: true,
-        filterable: true,
-        defaultFilter: true,
-        dataTable: true,
-        exportable: true,
-        exportLabel: 'Nom',
-        filterAttribute: 'name'
-      },
-      {
-        name: 'location',
-        label: 'Emplacement',
-        attributeType: AttributeType.string,
-        fieldType: FieldType.text,
-        sortable: true,
-        filterable: true,
-        defaultFilter: true,
-        dataTable: true,
-        exportable: true
-      },
-      {
-        name: 'maxCapacity',
-        label: 'Capacité (l)',
-        attributeType: AttributeType.number,
-        fieldType: FieldType.number,
-        sortable: true,
-        filterable: false,
-        dataTable: true,
-        exportable: true
-      },
-      {
-        name: 'currentVolume',
-        label: 'Volume (l)',
-        attributeType: AttributeType.number,
-        fieldType: FieldType.number,
-        sortable: true,
-        filterable: false,
-        dataTable: true,
-        exportable: true
-      },
-      {
-        name: 'status',
-        label: 'Statut',
-        attributeType: AttributeType.string,
-        fieldType: FieldType.select,
-        sortable: true,
-        filterable: true,
-        defaultFilter: true,
-        dataTable: true,
-        options: [
-          { label: 'Disponible', value: 'AVAILABLE' },
-          { label: 'Pleine', value: 'FULL' },
-          { label: 'Remplissage', value: 'FILLING' },
-          { label: 'Maintenance', value: 'MAINTENANCE' },
-          { label: 'En service', value: 'IN_USE' },
-          { label: 'Nettoyage', value: 'CLEANING' },
-          { label: 'Réservée', value: 'RESERVED' },
-          { label: 'Hors service', value: 'OUT_OF_SERVICE' }
-        ],
-        exportable: true
-      },
-      {
-        name: 'oilVariety.name',
-        label: 'Variété d\'huile',
-        valuePath: 'oilVariety.name',
-        attributeType: AttributeType.string,
-        fieldType: FieldType.autocomplete,
-        sortable: true,
-        filterable: true,
-        dataTable: true,
-        exportable: true,
-        getOptionsUrl: 'production/types',
-        autoCompleteDefaultCriteria: {
-          page: 0,
-          size: 10,
-          sort: 'createdDate',
-          order: 'DESC',
-          searchData: {
-            operation: SearchOperation.AND,
-            searchs: [],
-            search: {
-              type: {
-                equalValue: TypeCategory.OIL_VARIETY
-              }
-            }
-          }
-        },
-        autoCompleteFilterAttributes: ['name']
-      },
-      {
-        name: 'nextMaintenanceDate',
-        label: 'Prochaine maintenance',
-        attributeType: AttributeType.date,
-        fieldType: FieldType.date,
-        sortable: true,
-        filterable: true,
-        dataTable: false,
-        exportable: true
-      },
-      {
-        name: 'lastInspectionDate',
-        label: 'Dernière inspection',
-        attributeType: AttributeType.date,
-        fieldType: FieldType.date,
-        sortable: true,
-        filterable: true,
-        dataTable: false,
-        exportable: true
-      }
-    ]
-  };
+  dashboardConfig: DashboardConfig = dashboardConfig;
 
   constructor(
     private storageUnitService: StorageUnitDtoService,

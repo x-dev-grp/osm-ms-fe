@@ -16,7 +16,8 @@ export interface ChildLotCompletionDto {
 
 @Injectable({ providedIn: 'root' })
 export class PlanningService {
-  API_BASE_URL =environment.apiUrl +  '/api/production/planning';
+  API_BASE_URL = environment.apiUrl + '/api/production/planning';
+
   constructor(private http: HttpClient) {}
 
   /* ───── planning CRUD ───────────────────────────────────────── */
@@ -36,17 +37,16 @@ export class PlanningService {
 
 
   /** POST one single LOT's status → COMPLETED, with oilQuantity and rendement */
-  completeLotWithDetails(lotNumber: string, oilQuantity: number, rendement: number, unpaidPrice: number): Observable<void> {
-    return this.http.post<void>(
-      `${this.API_BASE_URL}/lots/${lotNumber}/completed`,
-      { oilQuantity, rendement,unpaidPrice }
-    );
+  completeLotWithDetails(lotNumber: string, oilQuantity: number, rendement: number, unpaidPrice: number): Observable<any> {
+    const payload = { oilQuantity, rendement, unpaidPrice };
+    console.log('[SERVICE] Completing lot with details:', { lotNumber, payload });
+
+    return this.http.post<any>(`${this.API_BASE_URL}/lots/${lotNumber}/completed`, payload);
   }
   /** POST all lots in a global lot → COMPLETED, with oilQuantity and rendement */
   completeGlobalLotWithDetails(globalLotNumber: string, childLots: ChildLotCompletionDto[]): Observable<void> {
-    return this.http.post<void>(
-      `${this.API_BASE_URL}/globalLots/${globalLotNumber}/completed`,
-      childLots
-    );
+    console.log('[SERVICE] Completing global lot with details:', { globalLotNumber, childLots });
+
+    return this.http.post<any>(`${this.API_BASE_URL}/globalLots/${globalLotNumber}/completed`, childLots);
   }
 }

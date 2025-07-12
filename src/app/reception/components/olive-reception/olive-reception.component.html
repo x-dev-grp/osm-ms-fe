@@ -7,6 +7,7 @@
         <h3>{{ 'CONTROLE_QUALITE.SECTIONS.FINANCIAL' | translate }}</h3>
       </div>
 
+      <!-- Standard pricing fields - always shown -->
       <div class="financial-grid">
         <!-- Unit Price -->
         <div class="financial-card">
@@ -25,6 +26,58 @@
           <mat-form-field appearance="outline" class="financial-field">
             <mat-label>{{ 'CONTROLE_QUALITE.FINANCIAL.PRICE' | translate }}</mat-label>
             <input formControlName="price" matInput readonly step="0.01" type="number">
+            <mat-icon matSuffix>account_balance_wallet</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Exchange pricing fields - only shown for exchange deliveries -->
+      <div class="financial-grid" *ngIf="selectedRow?.operationType === OperationType.EXCHANGE">
+        <!-- Oil Type -->
+        <div class="financial-card">
+          <mat-form-field appearance="outline" class="financial-field">
+            <mat-label>Type d'huile</mat-label>
+            <mat-select formControlName="qualityGrade">
+              <mat-option *ngFor="let oilType of qualityGrade" [value]="oilType.id">
+                {{ oilType.name }}
+              </mat-option>
+            </mat-select>
+            <mat-icon matSuffix>water_drop</mat-icon>
+            <mat-error *ngIf="setPriceForm.get('qualityGrade')?.hasError('required')">
+              {{ 'CONTROLE_QUALITE.FORM.VALIDATION.REQUIRED' | translate }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Oil Unit Price -->
+        <div class="financial-card">
+          <mat-form-field appearance="outline" class="financial-field">
+            <mat-label>Prix unitaire d'huile (TND/L)</mat-label>
+            <input formControlName="oilUnitPrice" matInput step="0.01" type="number">
+            <mat-icon matSuffix>attach_money</mat-icon>
+            <mat-error *ngIf="setPriceForm.get('oilUnitPrice')?.hasError('required')">
+              {{ 'CONTROLE_QUALITE.FORM.VALIDATION.REQUIRED' | translate }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Oil Quantity -->
+        <div class="financial-card">
+          <mat-form-field appearance="outline" class="financial-field">
+            <mat-label>Quantité d'huile (L)</mat-label>
+            <input formControlName="oilQuantity" matInput step="0.01" type="number">
+            <mat-icon matSuffix>water_drop</mat-icon>
+            <mat-error *ngIf="setPriceForm.get('oilQuantity')?.hasError('required')">
+              {{ 'CONTROLE_QUALITE.FORM.VALIDATION.REQUIRED' | translate }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Total Oil Value (calculated) -->
+        <div class="financial-card">
+          <mat-form-field appearance="outline" class="financial-field">
+            <mat-label>Valeur totale de l'huile (égale au prix total des olives) (TND)</mat-label>
+            <input formControlName="oilTotalValue" matInput readonly step="0.01" type="number">
             <mat-icon matSuffix>account_balance_wallet</mat-icon>
           </mat-form-field>
         </div>

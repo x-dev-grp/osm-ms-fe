@@ -40,7 +40,7 @@
       <!-- Fixed Unassigned Column -->
       <div class="fixed-column">
         <mat-expansion-panel expanded>
-          <mat-expansion-panel-header>
+          <mat-expansion-panel-header class="sticky-header">
             <mat-tab-nav-panel>
               Réceptions Non Assignées ({{ unassignedReceptions.length }})
             </mat-tab-nav-panel>
@@ -56,7 +56,7 @@
             id="unassigned-list"
             role="list"
           >
-            @for (item of filteredReceptions; track trackByItem($index, item)) {
+            @for (item of filteredReceptions; track trackByReception($index, item)) {
               @if (item.type === LOT) {
                 @let data = item.data ;
                 <div
@@ -81,35 +81,45 @@
                   </div>
                   <div class="card-content">
                     <div class="flex space-between">
-                      <div>
-                        <div class="lot-info">
-                          <strong>{{ data.lotNumber }}</strong>
-                          <span class="delivery-number">#{{ data.deliveryNumber }}</span>
-                        </div>
-                        <div class="quantity-info">
-                           @if (data.poidsNet) {
-                            <span class="quantity">Net : {{ data.poidsNet }} kg</span>
-                          }
-                        </div>
-                        <div class="details-info">
-                          @if (data.supplier) {
-                            <span class="supplier">Fournisseur : {{ data.supplier }}</span>
-                          }
+                      <div class="card-content">
+                        <div class="flex space-between">
+                          <div>
+                            <div class="lot-info">
+                              <strong>{{ data.lotNumber }}</strong>
+                              <span class="delivery-number">#{{ data.deliveryNumber }}</span>
+                            </div>
+                            <div class="quantity-info">
 
-                          @if (data.oliveVariety) {
-                            <span class="variety">Variété : {{ data.oliveVariety }}</span>
-                          }
-                          @if (data.oliveType) {
-                            <span class="type">Type : {{ data.oliveType }}</span>
-                          }
-                          @if (data.sackCount) {
-                            <span class="sacks">Sacs : {{ data.sackCount }}</span>
-                          }
+                              @if (data.poidsNet) {
+                                <span class="quantity">Net : {{ data.poidsNet }} kg</span>                            }
+                            </div>
+                            <div class="details-info">
+                              @if (data.supplier) {
+                                <span class="supplier">Fournisseur : {{ data.supplier }}</span>
+                              }
+
+                              @if (data.oliveVariety) {
+                                <span class="variety">Variété : {{ data.oliveVariety }}</span>
+                              }
+                              @if (data.oliveType) {
+                                <span class="type">Type : {{ data.oliveType }}</span>
+                              }
+                              @if (data.sackCount) {
+                                <span class="sacks">Sacs : {{ data.sackCount }}</span>
+                              }
+                            </div>
+                            @if (data.globalLotNumber) {
+                              <span class="gl-badge">{{ data.globalLotNumber }}</span>
+                            }
+                            <small class="block text-xs text-gray-600">{{ data.deliveryDate | date: 'shortDate' }}</small>
+                          </div>
+                          <div>
+                            <button mat-icon-button (click)="markAsCompleted(item)" >
+                              <mat-icon class="text-green-500">check_circle</mat-icon>
+                            </button>
+                          </div>
+
                         </div>
-                        @if (data.globalLotNumber) {
-                          <span class="gl-badge">{{ data.globalLotNumber }}</span>
-                        }
-                        <small class="block text-xs text-gray-600">{{ data.deliveryDate | date: 'shortDate' }}</small>
                       </div>
                     </div>
                   </div>
@@ -157,7 +167,7 @@
                         <div class="child-lot-details">
                           <div class="details-header">Liste des Lots :</div>
                           <div class="child-lot-numbers">
-                             @for (childItem of data.items; track trackByItem($index, childItem)) {
+                             @for (childItem of data.items; track trackByReception($index, childItem)) {
                                 @let childData = childItem.data;
                                 <span class="child-lot-number">#{{ childData.lotNumber }}</span>@if (!$last){, }
                              }
@@ -181,9 +191,9 @@
 
       <!-- Scrollable Mill Columns -->
       <div #scrollContainer class="scrollable-columns">
-        @for (mill of mills; track mill; let i = $index) {
+        @for (mill of mills; track trackByMill($index, mill); let i = $index) {
           <mat-expansion-panel expanded>
-            <mat-expansion-panel-header>
+            <mat-expansion-panel-header class="sticky-header">
               <mat-panel-description>
                 {{ mill.name }}
               </mat-panel-description>
@@ -199,7 +209,7 @@
               (cdkDropListEntered)="onDropListEntered($event)"
               role="list"
             >
-              @for (item of mill.receptions; track trackByItem($index, item)) {
+              @for (item of mill.receptions; track trackByReception($index, item)) {
                 @if (item.type === LOT) {
                   @let data = item.data ;
                   <div
@@ -302,7 +312,7 @@
                           <div class="child-lot-details">
                             <div class="details-header">Liste des Lots :</div>
                             <div class="child-lot-numbers">
-                              @for (childItem of data.items; track trackByItem($index, childItem)) {
+                              @for (childItem of data.items; track trackByReception($index, childItem)) {
                                 @let childData = childItem.data;
                                 <span class="child-lot-number">#{{ childData.lotNumber }}</span>@if (!$last){, }
                               }

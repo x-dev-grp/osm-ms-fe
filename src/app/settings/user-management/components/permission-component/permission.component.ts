@@ -202,7 +202,7 @@ private formatName(name: string): string {
  }
 
  private flattenNodes(nodes: PermissionNode[]): PermissionNode[] {
-   let result: PermissionNode[] = [];
+   const result: PermissionNode[] = [];
    
    const addToResult = (node: PermissionNode) => {
      result.push(node);

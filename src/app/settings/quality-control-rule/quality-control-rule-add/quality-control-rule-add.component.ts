@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {QualityControlRuleService} from "../../../shared/services/quality-control-rule.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -39,7 +39,7 @@ import {MatInput} from "@angular/material/input";
   templateUrl: './quality-control-rule-add.component.html',
   styleUrl: './quality-control-rule-add.component.scss'
 })
-export class QualityControlRuleAddComponent {
+export class QualityControlRuleAddComponent implements OnInit {
   ruleForm: FormGroup;
   private destroy$ = new Subject<void>();
   formOpen = false;

@@ -6,7 +6,8 @@ export enum TransactionType {
   RECEPTION_IN = 'RECEPTION_IN',
   TRANSFER_IN = 'TRANSFER_IN',
   LOAN = 'LOAN',
-  SALE = 'SALE'
+  SALE = 'SALE',
+EXCHANGE = 'EXCHANGE'
 }
 
 // Transaction State enum matching backend

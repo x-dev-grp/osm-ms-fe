@@ -2,8 +2,19 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { OilTransaction } from '../models/OilTransaction';
+import { OilTransaction, TransactionState } from '../models/OilTransaction';
 import { ApiResponse } from '../models/api-response';
+
+// Interface for exchange completion payload
+export interface ExchangeCompletionPayload {
+  id: string;
+  storageUnitDestinationId: string;
+  oilQuantity: number;
+  oilUnitPrice: number;
+  qualityGrade: string;
+  notes?: string;
+  transactionState: TransactionState;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -83,5 +94,10 @@ export class OilTransactionService {
   // Delete an oil transaction by ID
   deleteOilTransaction(id: string): Observable<{ success: boolean; message: string; data: void }> {
     return this.http.delete<{ success: boolean; message: string; data: void }>(`${this.baseUrl}/${id}`);
+  }
+
+  // Complete an exchange transaction
+  completeExchange(payload: ExchangeCompletionPayload): Observable<ApiResponse<OilTransaction>> {
+    return this.http.post<ApiResponse<OilTransaction>>(`${this.baseUrl}/complete-exchange`, payload);
   }
 }

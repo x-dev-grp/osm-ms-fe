@@ -38,6 +38,122 @@
       </div>
     </div>
 
+    <!-- Exchange Completion Form -->
+    <div *ngIf="showExchangeForm" class="exchange-completion-section">
+      <mat-card class="exchange-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>swap_horiz</mat-icon>
+            {{ 'OIL_TRANSACTIONS.VIEW.EXCHANGE_COMPLETION.TITLE' | translate }}
+          </mat-card-title>
+          <mat-card-subtitle>
+            {{ 'OIL_TRANSACTIONS.VIEW.EXCHANGE_COMPLETION.SUBTITLE' | translate }}
+          </mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+          <!-- Exchange Calculation Summary -->
+          <div *ngIf="exchangeCalculation" class="exchange-summary">
+            <h3>{{ 'OIL_TRANSACTIONS.VIEW.EXCHANGE_COMPLETION.SUMMARY' | translate }}</h3>
+            <div class="exchange-summary-grid">
+              <div class="summary-item">
+                <span class="label">{{ 'OIL_TRANSACTIONS.VIEW.EXCHANGE_COMPLETION.OLIVE_QUANTITY' | translate }}:</span>
+                <span class="value">{{ exchangeCalculation.oliveQuantity | number:'1.2-2' }} kg</span>
+              </div>
+              <div class="summary-item">
+                <span class="label">{{ 'OIL_TRANSACTIONS.VIEW.EXCHANGE_COMPLETION.OLIVE_UNIT_PRICE' | translate }}:</span>
+                <span class="value">{{ exchangeCalculation.oliveUnitPrice | currency:'TND':'symbol':'1.2-2' }}</span>
+              </div>
+              <div class="summary-item">
+                <span class="label">{{ 'OIL_TRANSACTIONS.VIEW.EXCHANGE_COMPLETION.OLIVE_TOTAL_VALUE' | translate }}:</span>
+                <span class="value total-value">{{ exchangeCalculation.oliveTotalValue | currency:'TND':'symbol':'1.2-2' }}</span>
+              </div>
+              <div class="summary-item">
+                <span class="label">{{ 'OIL_TRANSACTIONS.VIEW.EXCHANGE_COMPLETION.CALCULATED_OIL_QUANTITY' | translate }}:</span>
+                <span class="value">{{ exchangeCalculation.calculatedOilQuantity | number:'1.2-2' }} kg</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Exchange Completion Form -->
+          <form [formGroup]="exchangeForm" class="exchange-form">
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>{{ 'OIL_TRANSACTIONS.VIEW.EXCHANGE_COMPLETION.STORAGE_UNIT' | translate }}</mat-label>
+                <mat-select formControlName="storageUnitDestinationId">
+                  <mat-option *ngFor="let unit of availableStorageUnits" [value]="unit.id">
+                    {{ getStorageUnitInfo(unit.id!) }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="exchangeForm.get('storageUnitDestinationId')?.hasError('required')">
+                  {{ 'OIL_TRANSACTIONS.VIEW.EXCHANGE_COMPLETION.ERRORS.STORAGE_UNIT_REQUIRED' | translate }}
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>{{ 'OIL_TRANSACTIONS.VIEW.EXCHANGE_COMPLETION.OIL_QUANTITY' | translate }}</mat-label>
+                <input matInput type="number" formControlName="oilQuantity" step="0.01" min="0.01">
+                <mat-hint>{{ 'OIL_TRANSACTIONS.VIEW.EXCHANGE_COMPLETION.OIL_QUANTITY_HINT' | translate }}</mat-hint>
+                <mat-error *ngIf="exchangeForm.get('oilQuantity')?.hasError('required')">
+                  {{ 'OIL_TRANSACTIONS.VIEW.EXCHANGE_COMPLETION.ERRORS.OIL_QUANTITY_REQUIRED' | translate }}
+                </mat-error>
+                <mat-error *ngIf="exchangeForm.get('oilQuantity')?.hasError('min')">
+                  {{ 'OIL_TRANSACTIONS.VIEW.EXCHANGE_COMPLETION.ERRORS.OIL_QUANTITY_MIN' | translate }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>{{ 'OIL_TRANSACTIONS.VIEW.EXCHANGE_COMPLETION.OIL_UNIT_PRICE' | translate }}</mat-label>
+                <input matInput type="number" formControlName="oilUnitPrice" step="0.01" min="0">
+                <mat-hint>{{ 'OIL_TRANSACTIONS.VIEW.EXCHANGE_COMPLETION.OIL_UNIT_PRICE_HINT' | translate }}</mat-hint>
+                <mat-error *ngIf="exchangeForm.get('oilUnitPrice')?.hasError('required')">
+                  {{ 'OIL_TRANSACTIONS.VIEW.EXCHANGE_COMPLETION.ERRORS.OIL_UNIT_PRICE_REQUIRED' | translate }}
+                </mat-error>
+                <mat-error *ngIf="exchangeForm.get('oilUnitPrice')?.hasError('min')">
+                  {{ 'OIL_TRANSACTIONS.VIEW.EXCHANGE_COMPLETION.ERRORS.OIL_UNIT_PRICE_MIN' | translate }}
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>{{ 'OIL_TRANSACTIONS.VIEW.EXCHANGE_COMPLETION.QUALITY_GRADE' | translate }}</mat-label>
+                <mat-select formControlName="qualityGrade">
+                  <mat-option value="EXTRA_VIRGIN">{{ 'OIL_TRANSACTIONS.VIEW.EXCHANGE_COMPLETION.QUALITY.EXTRA_VIRGIN' | translate }}</mat-option>
+                  <mat-option value="VIRGIN">{{ 'OIL_TRANSACTIONS.VIEW.EXCHANGE_COMPLETION.QUALITY.VIRGIN' | translate }}</mat-option>
+                  <mat-option value="REFINED">{{ 'OIL_TRANSACTIONS.VIEW.EXCHANGE_COMPLETION.QUALITY.REFINED' | translate }}</mat-option>
+                  <mat-option value="LAMPANTE">{{ 'OIL_TRANSACTIONS.VIEW.EXCHANGE_COMPLETION.QUALITY.LAMPANTE' | translate }}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="exchangeForm.get('qualityGrade')?.hasError('required')">
+                  {{ 'OIL_TRANSACTIONS.VIEW.EXCHANGE_COMPLETION.ERRORS.QUALITY_GRADE_REQUIRED' | translate }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>{{ 'OIL_TRANSACTIONS.VIEW.EXCHANGE_COMPLETION.NOTES' | translate }}</mat-label>
+                <textarea matInput formControlName="notes" rows="3"></textarea>
+                <mat-hint>{{ 'OIL_TRANSACTIONS.VIEW.EXCHANGE_COMPLETION.NOTES_HINT' | translate }}</mat-hint>
+              </mat-form-field>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+              <button mat-raised-button color="primary" (click)="onCompleteExchange()" [disabled]="exchangeForm.invalid">
+                <mat-icon>check_circle</mat-icon>
+                {{ 'OIL_TRANSACTIONS.VIEW.EXCHANGE_COMPLETION.COMPLETE' | translate }}
+              </button>
+              <button mat-stroked-button (click)="onCancelExchange()">
+                <mat-icon>cancel</mat-icon>
+                {{ 'OIL_TRANSACTIONS.VIEW.EXCHANGE_COMPLETION.CANCEL' | translate }}
+              </button>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
     <!-- Transaction Information Card -->
     <mat-card class="transaction-card">
       <mat-card-header>
@@ -107,6 +223,14 @@
             <div class="info-row">
               <span class="label">{{ 'OIL_TRANSACTIONS.VIEW.FIELDS.RECEPTION_ID' | translate }}:</span>
               <span class="value">{{ oilTransaction.reception?.id || 'N/A' }}</span>
+            </div>
+            <div class="info-row" *ngIf="oilTransaction.reception?.oliveQuantity">
+              <span class="label">{{ 'OIL_TRANSACTIONS.VIEW.FIELDS.OLIVE_QUANTITY' | translate }}:</span>
+              <span class="value">{{ oilTransaction.reception.oliveQuantity | number:'1.2-2' }} kg</span>
+            </div>
+            <div class="info-row" *ngIf="oilTransaction.reception?.unitPrice">
+              <span class="label">{{ 'OIL_TRANSACTIONS.VIEW.FIELDS.OLIVE_UNIT_PRICE' | translate }}:</span>
+              <span class="value">{{ oilTransaction.reception.unitPrice | currency:'TND':'symbol':'1.2-2' }}</span>
             </div>
           </div>
 

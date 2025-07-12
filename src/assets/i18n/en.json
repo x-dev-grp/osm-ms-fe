@@ -916,6 +916,7 @@
       },
       "TITLE": "Oil Transactions",
       "TYPES": {
+        "EXCHANGE": "Exchange",
         "LOAN": "Loan",
         "RECEPTION_IN": "Reception In",
         "SALE": "Sale",
@@ -987,6 +988,39 @@
         "DELETE": "Delete",
         "EDIT": "Edit"
       },
+      "EXCHANGE_COMPLETION": {
+        "TITLE": "Complete Exchange",
+        "SUBTITLE": "Complete the olive-to-oil exchange transaction",
+        "SUMMARY": "Exchange Summary",
+        "OLIVE_QUANTITY": "Olive Quantity",
+        "OLIVE_UNIT_PRICE": "Olive Unit Price",
+        "OLIVE_TOTAL_VALUE": "Olive Total Value",
+        "CALCULATED_OIL_QUANTITY": "Calculated Oil Quantity",
+        "STORAGE_UNIT": "Storage Unit",
+        "OIL_QUANTITY": "Oil Quantity",
+        "OIL_UNIT_PRICE": "Oil Unit Price",
+        "QUALITY_GRADE": "Quality Grade",
+        "NOTES": "Notes",
+        "COMPLETE": "Complete Exchange",
+        "CANCEL": "Cancel",
+        "OIL_QUANTITY_HINT": "Enter the oil quantity to receive",
+        "OIL_UNIT_PRICE_HINT": "Enter the oil unit price",
+        "NOTES_HINT": "Additional notes for this exchange",
+        "QUALITY": {
+          "EXTRA_VIRGIN": "Extra Virgin",
+          "VIRGIN": "Virgin",
+          "REFINED": "Refined",
+          "LAMPANTE": "Lampante"
+        },
+        "ERRORS": {
+          "STORAGE_UNIT_REQUIRED": "Storage unit is required",
+          "OIL_QUANTITY_REQUIRED": "Oil quantity is required",
+          "OIL_QUANTITY_MIN": "Oil quantity must be greater than 0",
+          "OIL_UNIT_PRICE_REQUIRED": "Oil unit price is required",
+          "OIL_UNIT_PRICE_MIN": "Oil unit price must be greater than 0",
+          "QUALITY_GRADE_REQUIRED": "Quality grade is required"
+        }
+      },
       "FIELDS": {
         "CREATED_DATE": "Created Date",
         "LAST_MODIFIED_DATE": "Last Modified Date",
@@ -998,14 +1032,21 @@
         "TOTAL_PRICE": "Total Price",
         "TRANSACTION_STATE": "Transaction State",
         "TRANSACTION_TYPE": "Transaction Type",
-        "UNIT_PRICE": "Unit Price"
+        "UNIT_PRICE": "Unit Price",
+        "OLIVE_QUANTITY": "Olive Quantity",
+        "OLIVE_UNIT_PRICE": "Olive Unit Price"
       },
       "MESSAGES": {
         "DELETE_CONFIRM": "Are you sure you want to delete this transaction?",
         "DELETE_ERROR": "Failed to delete transaction",
         "DELETE_SUCCESS": "Transaction deleted successfully",
         "ERROR": "Unable to load transaction details.",
-        "LOADING": "Loading transaction..."
+        "LOADING": "Loading transaction...",
+        "EXCHANGE_COMPLETED": "Exchange completed successfully",
+        "EXCHANGE_ERROR": "Error completing exchange",
+        "FORM_INVALID": "Please fill all required fields correctly",
+        "INVALID_STORAGE_UNIT": "Invalid storage unit selected",
+        "INSUFFICIENT_CAPACITY": "Insufficient storage capacity"
       },
       "SECTIONS": {
         "AUDIT_INFO": "Audit Information",
@@ -1098,7 +1139,6 @@
       "CREATE": "Create",
       "DELETE": "Delete",
       "ERROR": "An error occurred",
-      "GEN_PDF": "Generate PDF",
       "GEN_PDF": "Generate Receipt",
       "MORE": "More",
       "OIL_IN_TRANSACTION": "Oil In Transaction",

@@ -83,6 +83,131 @@
       }
     }
 
+    // Exchange Completion Section
+    .exchange-completion-section {
+      margin-bottom: 24px;
+
+      .exchange-card {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        border-left: 4px solid #ff9800;
+
+        mat-card-header {
+          padding: 24px 24px 0 24px;
+
+          mat-card-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 4px;
+
+            mat-icon {
+              color: #ff9800;
+            }
+          }
+
+          mat-card-subtitle {
+            color: #666;
+            font-size: 14px;
+          }
+        }
+
+        mat-card-content {
+          padding: 24px;
+
+          .exchange-summary {
+            margin-bottom: 24px;
+            padding: 16px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+
+            h3 {
+              color: #333;
+              font-size: 16px;
+              font-weight: 500;
+              margin: 0 0 16px 0;
+              padding-bottom: 8px;
+              border-bottom: 2px solid #dee2e6;
+            }
+
+            .exchange-summary-grid {
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+              gap: 16px;
+
+              .summary-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 8px 0;
+
+                .label {
+                  font-weight: 500;
+                  color: #555;
+                  font-size: 14px;
+                }
+
+                .value {
+                  color: #333;
+                  font-weight: 500;
+                  text-align: right;
+
+                  &.total-value {
+                    color: #1976d2;
+                    font-weight: 600;
+                    font-size: 16px;
+                  }
+                }
+              }
+            }
+          }
+
+          .exchange-form {
+            .form-row {
+              display: flex;
+              gap: 16px;
+              margin-bottom: 16px;
+
+              &.full-width {
+                .full-width {
+                  flex: 1;
+                }
+              }
+
+              .half-width {
+                flex: 1;
+              }
+
+              mat-form-field {
+                width: 100%;
+              }
+            }
+
+            .form-actions {
+              display: flex;
+              gap: 12px;
+              justify-content: flex-end;
+              margin-top: 24px;
+              padding-top: 16px;
+              border-top: 1px solid #e0e0e0;
+
+              button {
+                min-width: 120px;
+
+                mat-icon {
+                  margin-right: 8px;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
     .transaction-card {
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       border-radius: 8px;
@@ -201,6 +326,49 @@
         .header-actions {
           width: 100%;
           justify-content: flex-end;
+        }
+      }
+
+      .exchange-completion-section {
+        .exchange-card {
+          mat-card-content {
+            .exchange-summary {
+              .exchange-summary-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+
+                .summary-item {
+                  flex-direction: column;
+                  align-items: flex-start;
+                  gap: 4px;
+
+                  .value {
+                    text-align: left;
+                  }
+                }
+              }
+            }
+
+            .exchange-form {
+              .form-row {
+                flex-direction: column;
+                gap: 12px;
+
+                .half-width {
+                  width: 100%;
+                }
+              }
+
+              .form-actions {
+                flex-direction: column;
+                gap: 8px;
+
+                button {
+                  width: 100%;
+                }
+              }
+            }
+          }
         }
       }
 

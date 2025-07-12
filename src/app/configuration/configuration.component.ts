@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatOption } from '@angular/material/core';
 import { CardComponent } from '../@theme/components/card/card.component';
@@ -69,7 +69,7 @@ import { TranslatePipe } from '@ngx-translate/core';
   templateUrl: './configuration.component.html',
   styleUrl: './configuration.component.scss'
 })
-export class ConfigurationComponent {
+export class ConfigurationComponent implements OnInit {
   siteForm: FormGroup;
   logoPreview: string | ArrayBuffer | null = null;
 

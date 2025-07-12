@@ -9,6 +9,8 @@ export interface StorageUnitDto {
   maxCapacity: number;
   currentVolume: number;
 
+  avgCost: number;
+  totalCost: number;
   nextMaintenanceDate?: Date;
   lastInspectionDate?: Date;
 

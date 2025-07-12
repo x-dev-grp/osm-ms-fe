@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormField } from '@angular/material/form-field';
 import { MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from '@angular/material/datepicker';
@@ -35,7 +35,7 @@ interface ChildLotWithRendement extends PlanningItem {
   ],
   styleUrls: ['./completion-details-dialog.component.scss']
 })
-export class CompletionDetailsDialogComponent {
+export class CompletionDetailsDialogComponent implements OnInit {
   inputOilQuantity: number | null = null;
   finalObservation: string = '';
   completionDate: Date = new Date();
@@ -136,17 +136,50 @@ export class CompletionDetailsDialogComponent {
   }
 
   onConfirm(): void {
-    if (this.inputOilQuantity === null || this.inputOilQuantity < 0) {
+    // Enhanced validation
+    if (this.inputOilQuantity === null || this.inputOilQuantity === undefined) {
+      console.error('[DIALOG] Oil quantity is null or undefined');
       return;
     }
 
-    this.calculateChildLotsPrice(); // Ensure prices are up to date
-    // No need to recalculate oilQuantity here, it's done in rendement getter
+    if (this.inputOilQuantity < 0) {
+      console.error('[DIALOG] Oil quantity is negative:', this.inputOilQuantity);
+      return;
+    }
 
-    this.dialogRef.close({
+    if (this.oliveWeight === null || this.oliveWeight <= 0) {
+      console.error('[DIALOG] Invalid olive weight:', this.oliveWeight);
+      return;
+    }
+
+    const calculatedRendement = this.rendement;
+    if (calculatedRendement === null || calculatedRendement < 0) {
+      console.error('[DIALOG] Invalid rendement calculated:', calculatedRendement);
+      return;
+    }
+
+    // Validate global lot child data if applicable
+    if (this.itemType === PlanItemType.GLOBAL_LOT) {
+      if (!this.childLotsWithRendement || this.childLotsWithRendement.length === 0) {
+        console.error('[DIALOG] No child lots found for global lot');
+        return;
+      }
+
+      // Validate each child lot
+      for (const childLot of this.childLotsWithRendement) {
+        if (childLot.oilQuantity === null || childLot.oilQuantity === undefined || childLot.oilQuantity < 0) {
+          console.error('[DIALOG] Invalid child lot oil quantity:', childLot.lotNumber, childLot.oilQuantity);
+          return;
+        }
+      }
+    }
+
+    this.calculateChildLotsPrice(); // Ensure prices are up to date
+
+    const result = {
       confirmed: true,
       oilQuantity: this.inputOilQuantity,
-      rendement: this.rendement,
+      rendement: calculatedRendement,
       completionDate: this.completionDate,
       finalObservation: this.finalObservation.trim() || undefined,
       triturationPricePerKg: this.triturationPricePerKg,
@@ -157,7 +190,10 @@ export class CompletionDetailsDialogComponent {
         rendement: lot.calculatedRendement ?? 0,
         triturationPrice: lot.calculatedTriturationPrice ?? 0 // This is the unpaid amount
       }))
-    });
+    };
+
+    console.log('[DIALOG] Confirming completion with data:', result);
+    this.dialogRef.close(result);
   }
 
   private initializeChildLots(): void {

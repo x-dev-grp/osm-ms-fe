@@ -5,6 +5,7 @@ import { ApiResponse } from '../models/api-response';
 import { UnifiedDelivery } from '../models/UnifiedDelivery';
 import { environment } from '../../../environments/environment';
 import { OliveLotStatus } from '../models/OliveLotStatus';
+import { ExchangePricingDto } from '../models/ExchangePricingDto';
 
 @Injectable({
   providedIn: 'root'
@@ -38,8 +39,12 @@ export class UnifiedDeliveryService {
   }
 
   // Create a new UnifiedDeliverycc. The UnifiedDeliverycc payload may include qualityControlResults.
-  createOilDeliveryFromOlive(uuid: string): Observable<ApiResponse<any>> {
-    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/createOilRecFromOliveRec/${uuid}`);
+  createOilDeliveryFromOlive(uuid: string): Observable<ApiResponse<UnifiedDelivery>> {
+    return this.http.get<ApiResponse<UnifiedDelivery>>(`${this.baseUrl}/createOilRecFromOliveRec/${uuid}`);
+  }
+
+  createOilTransactionFromExchange(uuid: string): Observable<ApiResponse<UnifiedDelivery>> {
+    return this.http.get<ApiResponse<UnifiedDelivery>>(`${this.baseUrl}/createOilTransactionFromExchange/${uuid}`);
   }
 
   // Update an existing UnifiedDeliverycc.
@@ -74,7 +79,15 @@ export class UnifiedDeliveryService {
   updateStatus(id: string, status: OliveLotStatus): Observable<ApiResponse<void>> {
     return this.http.get<ApiResponse<void>>(`${this.baseUrl}/updateStatue/${id}/${status}`);
   }
-  updatePricing(id: string, price: any): Observable<ApiResponse<void>> {
+  updatePricing(id: string, price: number): Observable<ApiResponse<void>> {
     return this.http.get<ApiResponse<void>>(`${this.baseUrl}/updateprice/${id}/${price}`);
+  }
+
+  /**
+   * Update pricing for exchange deliveries and create oil transaction
+   * @param exchangePricingDto DTO containing all exchange pricing data
+   */
+  updatePricingAndCreatOilTransactionOut(exchangePricingDto: ExchangePricingDto): Observable<ApiResponse<void>> {
+    return this.http.post<ApiResponse<void>>(`${this.baseUrl}/update-exchange-pricing`, exchangePricingDto);
   }
 }
