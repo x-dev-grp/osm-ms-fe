@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -8,15 +8,15 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { Subject, takeUntil, catchError, of } from 'rxjs';
 import { OilTransaction, TransactionState, TransactionType } from '../../../shared/models/OilTransaction';
-import { OilTransactionService, ExchangeCompletionPayload } from '../../../shared/services/OilTransactionService';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { StorageUnitDto } from '../../../shared/models/StorageUnitDto';
-import { StorageUnitDtoService } from '../../../shared/services/storage.service';
 import { ApiResponse } from '../../../shared/models/api-response';
+import { OilTransactionViewService, TransactionViewData, ExchangeCalculation, StorageUnitInfo } from '../../../shared/services/oil-transaction-view.service';
+import { OilTransactionFormService } from '../../../shared/services/oil-transaction-form.service';
 
 @Component({
   selector: 'app-view-oil-transaction',
@@ -37,23 +37,22 @@ import { ApiResponse } from '../../../shared/models/api-response';
   templateUrl: './view-oil-transaction.component.html',
   styleUrls: ['./view-oil-transaction.component.scss']
 })
-export class ViewOilTransactionComponent implements OnInit {
-  oilTransaction: OilTransaction | null = null;
+export class ViewOilTransactionComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+
+  // Component state
   loading = true;
   error = false;
+  errorMessage = '';
 
-  // Exchange completion form
-  exchangeForm: FormGroup;
+  // Data
+  viewData: TransactionViewData | null = null;
+  exchangeForm: FormGroup | null = null;
+  exchangeCalculation: ExchangeCalculation | null = null;
+
+  // UI state
   showExchangeForm = false;
-  availableStorageUnits: StorageUnitDto[] = [];
-  exchangeCalculation: {
-    oliveQuantity: number;
-    oliveUnitPrice: number;
-    oliveTotalValue: number;
-    oilUnitPrice: number;
-    calculatedOilQuantity: number;
-    selectedStorageUnitName: string;
-  } | null = null;
+  submitting = false;
 
   // Enum references for template
   TransactionType = TransactionType;
@@ -62,295 +61,323 @@ export class ViewOilTransactionComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private oilTransactionService: OilTransactionService,
-    private storageService: StorageUnitDtoService,
+    private viewService: OilTransactionViewService,
+    private formService: OilTransactionFormService,
     private snackBar: MatSnackBar,
-    private translate: TranslateService,
-    private fb: FormBuilder
-  ) {
-    this.exchangeForm = this.fb.group({
-      storageUnitDestinationId: ['', Validators.required],
-      oilQuantity: ['', [Validators.required, Validators.min(0.01)]],
-      oilUnitPrice: ['', [Validators.required, Validators.min(0)]],
-      qualityGrade: ['', Validators.required],
-      notes: ['']
-    });
-  }
+    private translate: TranslateService
+  ) {}
 
   ngOnInit(): void {
-    this.loadOilTransaction();
-    this.loadStorageUnits();
-    this.setupFormListeners();
+    this.initializeComponent();
   }
 
-  private setupFormListeners(): void {
-    // Listen to storage unit changes to recalculate exchange values
-    this.exchangeForm.get('storageUnitDestinationId')?.valueChanges.subscribe((storageUnitId) => {
-      if (storageUnitId && this.showExchangeForm) {
-        this.recalculateExchangeValues(storageUnitId);
-      }
-    });
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
-  private loadOilTransaction(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (!id) {
-      this.error = true;
-      this.loading = false;
+  /**
+   * Initialize component data and subscriptions
+   */
+  private initializeComponent(): void {
+    const transactionId = this.route.snapshot.paramMap.get('id');
+    if (!transactionId) {
+      this.handleError('Transaction ID not provided');
       return;
     }
 
-    this.oilTransactionService.getOilTransaction(id).subscribe({
-      next: (response: ApiResponse<OilTransaction>) => {
-        if (response.success && response.data) {
-          this.oilTransaction = Array.isArray(response.data) ? response.data[0] : response.data;
-          this.checkExchangeCompletion();
-        } else {
-          this.error = true;
-          this.snackBar.open(
-            this.translate.instant('OIL_TRANSACTIONS.VIEW.MESSAGES.ERROR'),
-            this.translate.instant('STANDARD.BTNS.CANCEL'),
-            { duration: 3000 }
-          );
-        }
-        this.loading = false;
-      },
-      error: (error: Error) => {
-        console.error('Error loading oil transaction:', error);
-        this.error = true;
-        this.loading = false;
-        this.snackBar.open(
-          this.translate.instant('OIL_TRANSACTIONS.VIEW.MESSAGES.ERROR'),
-          this.translate.instant('STANDARD.BTNS.CANCEL'),
-          { duration: 3000 }
-        );
-      }
-    });
+    // Load transaction data
+    this.loadTransactionData(transactionId);
+
+    // Setup form subscriptions
+    this.setupFormSubscriptions();
   }
 
-  private loadStorageUnits(): void {
-    this.storageService.getAllStorageUnit().subscribe({
-      next: (response) => {
-        if (response.success) {
-          // Filter for available storage units that can receive oil
-          this.availableStorageUnits = response.data.filter(unit =>
-            unit.status === 'AVAILABLE' && unit.currentVolume < unit.maxCapacity
-          );
+  /**
+   * Load transaction data using the view service
+   */
+  private loadTransactionData(transactionId: string): void {
+    this.loading = true;
+    this.error = false;
+
+    this.viewService.loadTransactionViewData(transactionId)
+      .pipe(
+        takeUntil(this.destroy$),
+        catchError(error => {
+          console.error('Error loading transaction data:', error);
+          this.handleError('Failed to load transaction data');
+          return of(null);
+        })
+      )
+      .subscribe(data => {
+        if (data) {
+          this.viewData = data;
+          this.showExchangeForm = data.showExchangeForm;
+          this.setupExchangeForm();
         }
-      },
-      error: (error: Error) => {
-        console.error('Error loading storage units:', error);
-      }
-    });
+        this.loading = false;
+      });
   }
 
-  private checkExchangeCompletion(): void {
-    if (this.oilTransaction &&
-        this.oilTransaction.transactionType === TransactionType.EXCHANGE &&
-        this.oilTransaction.transactionState === TransactionState.PENDING &&
-        this.oilTransaction.reception) {
+  /**
+   * Setup form subscriptions
+   */
+  private setupFormSubscriptions(): void {
+    // Subscribe to exchange form
+    this.formService.getExchangeForm()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(form => {
+        this.exchangeForm = form;
+      });
 
-      this.showExchangeForm = true;
-      // Don't calculate here, wait for storage unit selection
+    // Subscribe to exchange calculation
+    this.formService.getExchangeCalculation()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(calculation => {
+        this.exchangeCalculation = calculation;
+      });
+  }
+
+  /**
+   * Setup exchange form if needed
+   */
+  private setupExchangeForm(): void {
+    if (this.showExchangeForm && this.viewData) {
+      // Listen to storage unit changes for recalculation
+      this.exchangeForm?.get('storageUnitDestinationId')?.valueChanges
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(storageUnitId => {
+          if (storageUnitId && this.viewData) {
+            this.recalculateExchangeValues(storageUnitId);
+          }
+        });
     }
   }
 
+  /**
+   * Recalculate exchange values when storage unit changes
+   */
   private recalculateExchangeValues(storageUnitId: string): void {
-    if (!this.oilTransaction?.reception) return;
+    if (!this.viewData) return;
 
-    const reception = this.oilTransaction.reception;
-    const oliveQuantity = reception.oliveQuantity || reception.poidsNet || 0;
-    const oliveUnitPrice = reception.unitPrice || 0;
-    const oliveTotalValue = oliveQuantity * oliveUnitPrice;
+    const calculation = this.viewService.calculateExchangeValues(
+      this.viewData.transaction,
+      storageUnitId,
+      this.viewData.availableStorageUnits
+    );
 
-    // Get the selected storage unit and its average cost
-    const selectedStorageUnit = this.availableStorageUnits.find(unit => unit.id === storageUnitId);
-
-    let oilUnitPrice: number;
-    let calculatedOilQuantity: number;
-
-    if (selectedStorageUnit && selectedStorageUnit.avgCost > 0) {
-      // Use the average cost from storage unit
-      oilUnitPrice = selectedStorageUnit.avgCost;
-      calculatedOilQuantity = oliveTotalValue / oilUnitPrice;
-    } else {
-      // Fallback to default calculation if no average cost available
-      oilUnitPrice = oliveUnitPrice * 1.5; // 50% markup as fallback
-      calculatedOilQuantity = oliveTotalValue / oilUnitPrice;
+    if (calculation) {
+      this.formService.updateExchangeCalculation(calculation);
+      this.formService.prefillExchangeForm(calculation, this.viewData.transaction.qualityGrade || 'vierge_extra');
     }
-
-    this.exchangeCalculation = {
-      oliveQuantity,
-      oliveUnitPrice,
-      oliveTotalValue,
-      oilUnitPrice,
-      calculatedOilQuantity,
-      selectedStorageUnitName: selectedStorageUnit?.name || 'Unknown'
-    };
-
-    // Pre-fill the form
-    this.exchangeForm.patchValue({
-      oilQuantity: calculatedOilQuantity,
-      oilUnitPrice: oilUnitPrice,
-      qualityGrade: 'EXTRA_VIRGIN' // Default quality grade
-    }, { emitEvent: false }); // Prevent infinite loop
   }
 
+  /**
+   * Handle errors
+   */
+  private handleError(message: string): void {
+    this.error = true;
+    this.errorMessage = message;
+    this.loading = false;
+    this.snackBar.open(
+      this.translate.instant('OIL_TRANSACTIONS.VIEW.MESSAGES.ERROR'),
+      this.translate.instant('STANDARD.BTNS.CANCEL'),
+      { duration: 3000 }
+    );
+  }
+
+  /**
+   * Handle successful operations
+   */
+  private handleSuccess(message: string): void {
+    this.snackBar.open(
+      this.translate.instant(message),
+      this.translate.instant('STANDARD.BTNS.CANCEL'),
+      { duration: 3000 }
+    );
+  }
+
+  // Public methods for template
+
+  /**
+   * Navigate to edit page
+   */
   onEdit(): void {
-    if (this.oilTransaction) {
-      this.router.navigate(['/storage/oil-transactions', this.oilTransaction.id, 'edit']);
+    if (this.viewData?.transaction) {
+      this.router.navigate(['/storage/oil-transactions', this.viewData.transaction.id, 'edit']);
     }
   }
 
+  /**
+   * Navigate back to list
+   */
   onBack(): void {
     this.router.navigate(['/storage/oil-transactions']);
   }
 
+  /**
+   * Delete transaction
+   */
   onDelete(): void {
-    if (this.oilTransaction && confirm(this.translate.instant('OIL_TRANSACTIONS.VIEW.MESSAGES.DELETE_CONFIRM'))) {
-      this.oilTransactionService.deleteOilTransaction(this.oilTransaction.id).subscribe({
-        next: (response) => {
+    if (!this.viewData?.transaction) return;
+
+    const confirmMessage = this.translate.instant('OIL_TRANSACTIONS.VIEW.MESSAGES.DELETE_CONFIRM');
+    if (!confirm(confirmMessage)) return;
+
+         this.viewService.deleteTransaction(this.viewData.transaction.id)
+       .pipe(takeUntil(this.destroy$))
+       .subscribe({
+         next: (response: { success: boolean; message: string; data: void }) => {
           if (response.success) {
-            this.snackBar.open(
-              this.translate.instant('OIL_TRANSACTIONS.VIEW.MESSAGES.DELETE_SUCCESS'),
-              this.translate.instant('STANDARD.BTNS.CANCEL'),
-              { duration: 3000 }
-            );
+            this.handleSuccess('OIL_TRANSACTIONS.VIEW.MESSAGES.DELETE_SUCCESS');
             this.router.navigate(['/storage/oil-transactions']);
           } else {
-            this.snackBar.open(
-              this.translate.instant('OIL_TRANSACTIONS.VIEW.MESSAGES.DELETE_ERROR'),
-              this.translate.instant('STANDARD.BTNS.CANCEL'),
-              { duration: 3000 }
-            );
+            this.handleError('OIL_TRANSACTIONS.VIEW.MESSAGES.DELETE_ERROR');
           }
         },
         error: (error: Error) => {
-          console.error('Error deleting oil transaction:', error);
-          this.snackBar.open(
-            this.translate.instant('OIL_TRANSACTIONS.VIEW.MESSAGES.DELETE_ERROR'),
-            this.translate.instant('STANDARD.BTNS.CANCEL'),
-            { duration: 3000 }
-          );
+          console.error('Error deleting transaction:', error);
+          this.handleError('OIL_TRANSACTIONS.VIEW.MESSAGES.DELETE_ERROR');
         }
       });
-    }
   }
 
+  /**
+   *
+   *
+   * Complete exchange transaction
+   *
+   *
+   **/
   onCompleteExchange(): void {
-    if (this.exchangeForm.invalid) {
+    if (!this.exchangeForm || !this.viewData) return;
+
+    // Validate form
+    const validation = this.formService.validateForm();
+    if (!validation.isValid) {
       this.snackBar.open(
-        this.translate.instant('OIL_TRANSACTIONS.VIEW.MESSAGES.FORM_INVALID'),
+        validation.errors.join(', '),
         this.translate.instant('STANDARD.BTNS.CANCEL'),
         { duration: 3000 }
       );
       return;
     }
 
-    const formValue = this.exchangeForm.value;
-    const selectedStorageUnit = this.availableStorageUnits.find(
-      unit => unit.id === formValue.storageUnitDestinationId
+    // Get form data
+    const formData = this.formService.getFormData();
+    if (!formData) {
+      this.handleError('Invalid form data');
+      return;
+    }
+
+    // Validate with business rules
+    const businessValidation = this.viewService.validateExchangeCompletion(
+      formData,
+      this.viewData.availableStorageUnits
     );
 
-    if (!selectedStorageUnit) {
+    if (!businessValidation.isValid) {
       this.snackBar.open(
-        this.translate.instant('OIL_TRANSACTIONS.VIEW.MESSAGES.INVALID_STORAGE_UNIT'),
+        businessValidation.errors.join(', '),
         this.translate.instant('STANDARD.BTNS.CANCEL'),
         { duration: 3000 }
       );
       return;
     }
 
-    // Check storage capacity
-    const availableCapacity = selectedStorageUnit.maxCapacity - selectedStorageUnit.currentVolume;
-    if (formValue.oilQuantity > availableCapacity) {
-      this.snackBar.open(
-        this.translate.instant('OIL_TRANSACTIONS.VIEW.MESSAGES.INSUFFICIENT_CAPACITY'),
-        this.translate.instant('STANDARD.BTNS.CANCEL'),
-        { duration: 3000 }
-      );
-      return;
-    }
-
-    // Prepare completion payload
-    const completionPayload: ExchangeCompletionPayload = {
-      id: this.oilTransaction!.id,
-      storageUnitDestinationId: formValue.storageUnitDestinationId,
-      oilQuantity: formValue.oilQuantity,
-      oilUnitPrice: formValue.oilUnitPrice,
-      qualityGrade: formValue.qualityGrade,
-      notes: formValue.notes,
+    // Submit
+    this.submitting = true;
+    const payload = {
+      id: this.viewData.transaction.id,
+      storageUnitDestinationId: formData.storageUnitDestinationId,
+      oilQuantity: formData.oilQuantity,
+      oilUnitPrice: formData.oilUnitPrice,
+      qualityGrade: formData.qualityGrade,
+      notes: formData.notes,
       transactionState: TransactionState.COMPLETED
     };
 
-    // Call service to complete exchange
-    this.oilTransactionService.completeExchange(completionPayload).subscribe({
-      next: (response: ApiResponse<OilTransaction>) => {
-        if (response.success) {
-          this.snackBar.open(
-            this.translate.instant('OIL_TRANSACTIONS.VIEW.MESSAGES.EXCHANGE_COMPLETED'),
-            this.translate.instant('STANDARD.BTNS.CANCEL'),
-            { duration: 3000 }
-          );
-          // Reload the transaction to show updated state
-          this.loadOilTransaction();
-          this.showExchangeForm = false;
-        } else {
-          this.snackBar.open(
-            response.message || this.translate.instant('OIL_TRANSACTIONS.VIEW.MESSAGES.EXCHANGE_ERROR'),
-            this.translate.instant('STANDARD.BTNS.CANCEL'),
-            { duration: 3000 }
-          );
+    this.viewService.completeExchange(payload)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response: ApiResponse<OilTransaction>) => {
+          this.submitting = false;
+          if (response.success) {
+            this.handleSuccess('OIL_TRANSACTIONS.VIEW.MESSAGES.EXCHANGE_COMPLETED');
+            // Reload transaction data
+            this.loadTransactionData(this.viewData!.transaction.id);
+            this.showExchangeForm = false;
+          } else {
+            this.handleError(response.message || 'OIL_TRANSACTIONS.VIEW.MESSAGES.EXCHANGE_ERROR');
+          }
+        },
+        error: (error: Error) => {
+          this.submitting = false;
+          console.error('Error completing exchange:', error);
+          this.handleError('OIL_TRANSACTIONS.VIEW.MESSAGES.EXCHANGE_ERROR');
         }
-      },
-      error: (error: Error) => {
-        console.error('Error completing exchange:', error);
-        this.snackBar.open(
-          this.translate.instant('OIL_TRANSACTIONS.VIEW.MESSAGES.EXCHANGE_ERROR'),
-          this.translate.instant('STANDARD.BTNS.CANCEL'),
-          { duration: 3000 }
-        );
-      }
-    });
+      });
   }
 
+  /**
+   * Cancel exchange form
+   */
   onCancelExchange(): void {
     this.showExchangeForm = false;
-    this.exchangeForm.reset();
+    this.formService.resetExchangeForm();
   }
 
-  // Helper method to get transaction type label
+  // Helper methods for template
+
+  /**
+   * Get transaction type label
+   */
   getTransactionTypeLabel(type: TransactionType): string {
     return this.translate.instant(`OIL_TRANSACTIONS.DASHBOARD.TYPES.${type}`);
   }
 
-  // Helper method to get transaction state label
+  /**
+   * Get transaction state label
+   */
   getTransactionStateLabel(state: TransactionState): string {
     return this.translate.instant(`OIL_TRANSACTIONS.DASHBOARD.STATUS.${state}`);
   }
 
-  // Helper method to get storage unit name
+  /**
+   * Get storage unit name
+   */
   getStorageUnitName(unitId: string): string {
-    const unit = this.availableStorageUnits.find(u => u.id === unitId);
-    return unit ? unit.name : 'Unknown';
+    const unit = this.viewData?.availableStorageUnits.find(u => u.unit.id === unitId);
+    return unit ? unit.unit.name : 'Unknown';
   }
 
-  // Helper method to get available capacity for a storage unit
+  /**
+   * Get available capacity for storage unit
+   */
   getAvailableCapacity(unitId: string): number {
-    const unit = this.availableStorageUnits.find(u => u.id === unitId);
-    return unit ? unit.maxCapacity - unit.currentVolume : 0;
+    const unit = this.viewData?.availableStorageUnits.find(u => u.unit.id === unitId);
+    return unit ? unit.availableCapacity : 0;
   }
 
-  // Helper method to get storage unit info for display
+  /**
+   * Get storage unit display info
+   */
   getStorageUnitInfo(unitId: string): string {
-    const unit = this.availableStorageUnits.find(u => u.id === unitId);
-    if (!unit) return 'Unknown';
+    const unit = this.viewData?.availableStorageUnits.find(u => u.unit.id === unitId);
+    return unit ? unit.displayInfo : 'Unknown';
+  }
 
-    let info = `${unit.name} (${this.getAvailableCapacity(unitId).toFixed(2)} kg available)`;
-    if (unit.avgCost > 0) {
-      info += ` - Avg: ${unit.avgCost.toFixed(2)} TND/kg`;
-    }
+  // Getters for template
 
-    return info;
+  get oilTransaction(): OilTransaction | null {
+    return this.viewData?.transaction || null;
+  }
+
+  get availableStorageUnits(): StorageUnitInfo[] {
+    return this.viewData?.availableStorageUnits || [];
+  }
+
+  get canCompleteExchange(): boolean {
+    return this.viewData?.canCompleteExchange || false;
   }
 }

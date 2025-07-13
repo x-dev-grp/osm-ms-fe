@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { PlanningSaveRequest } from '../../reception/components/planning/planning.component';
 import { environment } from '../../../environments/environment';
+import { PlanningSaveRequest } from '../models/planningDTOS';
 
 /**
  * DTO for completing a child lot in a global lot

@@ -1041,75 +1041,37 @@
         "DELETE": "Supprimer",
         "EDIT": "Modifier"
       },
-      "EXCHANGE_COMPLETION": {
-        "TITLE": "Finaliser l'Échange",
-        "SUBTITLE": "Finaliser la transaction d'échange olives-huile",
-        "SUMMARY": "Résumé de l'Échange",
-        "OLIVE_QUANTITY": "Quantité d'Olives",
-        "OLIVE_UNIT_PRICE": "Prix Unitaire des Olives",
-        "OLIVE_TOTAL_VALUE": "Valeur Totale des Olives",
-        "CALCULATED_OIL_QUANTITY": "Quantité d'Huile Calculée",
-        "STORAGE_UNIT": "Unité de Stockage",
-        "OIL_QUANTITY": "Quantité d'Huile",
-        "OIL_UNIT_PRICE": "Prix Unitaire de l'Huile",
-        "QUALITY_GRADE": "Grade de Qualité",
-        "NOTES": "Notes",
-        "COMPLETE": "Finaliser l'Échange",
-        "CANCEL": "Annuler",
-        "OIL_QUANTITY_HINT": "Entrez la quantité d'huile à recevoir",
-        "OIL_UNIT_PRICE_HINT": "Entrez le prix unitaire de l'huile",
-        "NOTES_HINT": "Notes supplémentaires pour cet échange",
-        "QUALITY": {
-          "EXTRA_VIRGIN": "Extra Vierge",
-          "VIRGIN": "Vierge",
-          "REFINED": "Raffiné",
-          "LAMPANTE": "Lampante"
-        },
-        "ERRORS": {
-          "STORAGE_UNIT_REQUIRED": "L'unité de stockage est requise",
-          "OIL_QUANTITY_REQUIRED": "La quantité d'huile est requise",
-          "OIL_QUANTITY_MIN": "La quantité d'huile doit être supérieure à 0",
-          "OIL_UNIT_PRICE_REQUIRED": "Le prix unitaire de l'huile est requis",
-          "OIL_UNIT_PRICE_MIN": "Le prix unitaire de l'huile doit être supérieur à 0",
-          "QUALITY_GRADE_REQUIRED": "Le grade de qualité est requis"
-        }
-      },
       "FIELDS": {
         "CREATED_DATE": "Date de création",
-        "LAST_MODIFIED_DATE": "Dernière modification",
+        "ID": "ID",
+        "LAST_MODIFIED_DATE": "Date de modification",
+        "NOTES": "Notes",
+        "OLIVE_QUANTITY": "Quantité d'olives",
+        "OLIVE_UNIT_PRICE": "Prix unitaire des olives",
+        "PAID_AMOUNT": "Montant payé",
         "QUALITY_GRADE": "Grade de qualité",
         "QUANTITY_KG": "Quantité (kg)",
-        "RECEPTION_ID": "Réception ID",
+        "RECEPTION_DATE": "Date de réception",
+        "RECEPTION_ID": "ID de réception",
+        "RECEPTION_REGION": "Région de la réception",
+        "RECEPTION_SUPPLIER": "Fournisseur de la réception",
         "STORAGE_UNIT_DESTINATION": "Unité de destination",
         "STORAGE_UNIT_SOURCE": "Unité source",
         "TOTAL_PRICE": "Prix total",
         "TRANSACTION_STATE": "État de la transaction",
         "TRANSACTION_TYPE": "Type de transaction",
         "UNIT_PRICE": "Prix unitaire",
-        "OLIVE_QUANTITY": "Quantité d'Olives",
-        "OLIVE_UNIT_PRICE": "Prix Unitaire des Olives"
-      },
-      "MESSAGES": {
-        "DELETE_CONFIRM": "Êtes-vous sûr de vouloir supprimer cette transaction ?",
-        "DELETE_ERROR": "Échec de la suppression",
-        "DELETE_SUCCESS": "Transaction supprimée avec succès",
-        "ERROR": "Impossible de charger les détails de la transaction.",
-        "LOADING": "Chargement de la transaction...",
-        "EXCHANGE_COMPLETED": "Échange finalisé avec succès",
-        "EXCHANGE_ERROR": "Erreur lors de la finalisation de l'échange",
-        "FORM_INVALID": "Veuillez remplir tous les champs requis correctement",
-        "INVALID_STORAGE_UNIT": "Unité de stockage invalide sélectionnée",
-        "INSUFFICIENT_CAPACITY": "Capacité de stockage insuffisante"
+        "UNPAID_AMOUNT": "Montant impayé"
       },
       "SECTIONS": {
-        "AUDIT_INFO": "Informations d'Audit",
-        "FINANCIAL_INFO": "Informations Financières",
-        "QUALITY_AND_QUANTITY": "Qualité et Quantité",
+        "AUDIT_INFO": "Informations d'audit",
+        "FINANCIAL_INFO": "Informations financières",
+        "GENERAL_INFO": "Informations générales",
+        "QUALITY_AND_QUANTITY": "Qualité et quantité",
         "RECEPTION_INFO": "Réception",
-        "STORAGE_UNITS": "Unités de Stockage",
-        "TYPE_AND_STATE": "Type et État"
+        "STORAGE_UNITS": "Unités de stockage"
       },
-      "TITLE": "Détails de la Transaction d'Huile"
+      "TITLE": "Détails de la transaction d'huile"
     }
   },
   "OLIVE_RECEPTION": {
@@ -1208,7 +1170,8 @@
       "TO_PROD": "Envoyer en Production",
       "UPDATE": "Modifier",
       "UPDATE_OIL_QUALITY": "Modifier Qualité Huile",
-      "UPDATE_OLIVE_QUALITY": "Modifier Qualité Olives"
+      "UPDATE_OLIVE_QUALITY": "Modifier Qualité Olives",
+      "VALIDATE": "Valider"
     },
     "COLUMNS": {
       "HIDE": "Masquer les colonnes",
@@ -1324,7 +1287,8 @@
       "IN_PROGRESS": "En cours",
       "NEW": "Nouveau",
       "PROD_READY": "Prét pour production",
-      "REFUSED": "Refusé"
+      "REFUSED": "Refusé",
+      "STOCK_READY": "Prét à stocker"
     },
     "TITLE": "Réceptions d'huile et triturations"
   },

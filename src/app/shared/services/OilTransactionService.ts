@@ -88,7 +88,7 @@ export class OilTransactionService {
       success: boolean;
       message: string;
       data: OilTransaction;
-    }>(`${this.baseUrl}`, oilTransaction);
+    }>(`${this.baseUrl}/${oilTransaction.id}`, oilTransaction);
   }
 
   // Delete an oil transaction by ID

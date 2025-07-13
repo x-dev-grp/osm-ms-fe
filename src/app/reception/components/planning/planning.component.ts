@@ -35,101 +35,15 @@ import { PlanningService, ChildLotCompletionDto } from '../../../shared/services
 import { ConfirmDialogComponent } from '../../../shared/component/confirm-dialog/confirm-dialog/confirm-dialog.component';
 import { CompletionDetailsDialogComponent } from './completion-details-dialog/completion-details-dialog.component';
 import { SumPipe } from '../../../shared/pipes/sum.pipe';
+import {
+  BoardItem,
+  GlobalLot, GlobalLotDTO,
+  GlobalLotGroup, LotDTO,
+  Mill, MillPlanDTO,
+  PlanItemType,
+  PlanningItem, PlanningSaveRequest
+} from '../../../shared/models/planningDTOS';
 
-// Interfaces
-export interface BoardItem {
-  type: PlanItemType;
-  data: PlanningItem | GlobalLot;
-}
-
-export interface PlanningItem {
-  completed?: boolean; // tracks completion status
-  id: string;
-  lotNumber: string;
-  deliveryDate: Date;
-  millMachineId?: string;
-  deliveryNumber?: string;
-  oliveQuantity: number; // original olive weight
-  globalLotNumber?: string | null | undefined;
-  supplier?: string;
-  region?: string;
-  oliveVariety?: string;
-  oliveType?: string;
-  poidsBrute?: number;
-  poidsNet?: number;
-  sackCount?: number | null | undefined;
-
-  // ← NEW FIELDS BEGIN ↓
-  oilQuantity?: number | null; // how much oil (kg) was produced
-  rendement?: number | null; // yield percentage
-  completionDate?: Date; // when the lot was completed
-  finalObservation?: string; // any final comment
-  // ← NEW FIELDS END ↑
-}
-
-export interface GlobalLot {
-  id?: string;
-  globalLotNumber: string;
-  millMachineId?: string;
-  totalKg: number; // total olive weight
-  childLotNumbers: string[];
-  receptionIds: string[];
-  items: BoardItem[];
-  completed?: boolean; // track completion
-
-  // ← NEW FIELDS BEGIN ↓
-  oilQuantity?: number | null; // aggregated oil across child lots
-  rendement?: number | null; // aggregated yield %
-  completionDate?: Date; // when this global lot was completed
-  finalObservation?: string; // final comment/note
-  // ← NEW FIELDS END ↑
-}
-
-export interface GlobalLotGroup {
-  globalLotNumber: string | null;
-  items: BoardItem[];
-}
-
-export enum PlanItemType {
-  LOT = 'LOT',
-  GLOBAL_LOT = 'GLOBAL_LOT'
-}
-
-export interface PlanItemDTO {
-  type: PlanItemType;
-  id: string;
-  lot?: LotDTO;
-}
-
-export interface MillPlanDTO {
-  millMachineId: string;
-  items: PlanItemDTO[];
-}
-
-export interface LotDTO {
-  rendement: number | null;
-  oilQuantity: number | null;
-  lotNumber: string;
-  oliveQuantity: number;
-  deliveryDate: string;
-  millMachineId?: string;
-  globalLotNumber?: string | null;
-  completed?: boolean; // Added to track completion status
-}
-
-export interface GlobalLotDTO {
-  globalLotNumber: string;
-  totalKg: number;
-  lots: LotDTO[];
-  completed?: boolean; // Added to track completion status
-}
-
-export interface PlanningSaveRequest {
-  mills: MillPlanDTO[];
-  globalLots: GlobalLotDTO[];
-}
-
-export type Mill = MillMachine & { receptions: BoardItem[] };
 
 @Component({
   selector: 'app-planning',
@@ -1074,7 +988,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     // Step 3: Process mill assignments with validation
     if (planning.mills && planning.mills.length > 0) {
       planning.mills.forEach(millPlan => {
-        const mill = this.mills.find(m => m.id === millPlan.millMachineId);
+        const mill = this.mills.find((m) => m.id === millPlan.millMachineId);
         if (!mill) {
           console.warn(`[MILL] Mill not found for ID: ${millPlan.millMachineId}`);
           return;
@@ -1082,15 +996,13 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
 
         console.log(`[MILL] Processing mill: ${mill.name} (${mill.id})`);
 
-        millPlan.items.forEach(item => {
+        millPlan.items.forEach((item) => {
           if (item.type === PlanItemType.LOT && item.lot) {
             const lotNumber = item.lot.lotNumber;
             assignedLotNumbers.add(lotNumber);
 
             // Check if this lot is part of a global lot
-            const globalLot = this.globalLots.find(gl =>
-              gl.childLotNumbers.includes(lotNumber)
-            );
+            const globalLot = this.globalLots.find((gl) => gl.childLotNumbers.includes(lotNumber));
 
             if (globalLot) {
               console.log(`[ASSIGN] Lot ${lotNumber} is part of global lot ${globalLot.globalLotNumber}`);
@@ -1100,14 +1012,13 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
               globalLotAssignments.set(globalLot.globalLotNumber, millPlan.millMachineId);
 
               // Update all child items with mill assignment
-              globalLot.items.forEach(childItem => {
+              globalLot.items.forEach((childItem) => {
                 (childItem.data as PlanningItem).millMachineId = millPlan.millMachineId;
               });
 
               // Add global lot to mill if not already added
-              const existingGlobalLot = mill.receptions.find(r =>
-                r.type === PlanItemType.GLOBAL_LOT &&
-                (r.data as GlobalLot).globalLotNumber === globalLot.globalLotNumber
+              const existingGlobalLot = mill.receptions.find(
+                (r) => r.type === PlanItemType.GLOBAL_LOT && (r.data as GlobalLot).globalLotNumber === globalLot.globalLotNumber
               );
 
               if (!existingGlobalLot) {
@@ -1125,9 +1036,8 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
               individualLotAssignments.set(lotNumber, millPlan.millMachineId);
 
               // Check for duplicates
-              const existingLot = mill.receptions.find(r =>
-                r.type === PlanItemType.LOT &&
-                (r.data as PlanningItem).lotNumber === lotNumber
+              const existingLot = mill.receptions.find(
+                (r) => r.type === PlanItemType.LOT && (r.data as PlanningItem).lotNumber === lotNumber
               );
 
               if (!existingLot) {
@@ -1140,21 +1050,20 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
           } else if (item.type === PlanItemType.GLOBAL_LOT) {
             console.log(`[ASSIGN] Processing global lot assignment: ${item.id}`);
 
-            const globalLot = this.globalLots.find(gl => gl.globalLotNumber === item.id);
+            const globalLot = this.globalLots.find((gl) => gl.globalLotNumber === item.id);
             if (globalLot) {
               globalLot.millMachineId = millPlan.millMachineId;
               globalLotAssignments.set(globalLot.globalLotNumber, millPlan.millMachineId);
 
               // Update all child items with mill assignment
-              globalLot.items.forEach(childItem => {
+              globalLot.items.forEach((childItem) => {
                 (childItem.data as PlanningItem).millMachineId = millPlan.millMachineId;
                 assignedLotNumbers.add((childItem.data as PlanningItem).lotNumber);
               });
 
               // Add global lot to mill if not already added
-              const existingGlobalLot = mill.receptions.find(r =>
-                r.type === PlanItemType.GLOBAL_LOT &&
-                (r.data as GlobalLot).globalLotNumber === globalLot.globalLotNumber
+              const existingGlobalLot = mill.receptions.find(
+                (r) => r.type === PlanItemType.GLOBAL_LOT && (r.data as GlobalLot).globalLotNumber === globalLot.globalLotNumber
               );
 
               if (!existingGlobalLot) {

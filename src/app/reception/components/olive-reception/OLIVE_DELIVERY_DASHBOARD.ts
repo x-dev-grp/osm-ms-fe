@@ -168,7 +168,7 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
       name: 'status',
       label: 'Statut',
       labelTranslatePath: 'DELIVERIES.FIELDS.STATUS',
-      attributeType: AttributeType.string,
+      attributeType: AttributeType.enum,
       fieldType: FieldType.select,
       exportable: true,
       sortable: true,

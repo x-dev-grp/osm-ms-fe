@@ -18,7 +18,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       operation: SearchOperation.AND,
       search: {
         status: {
-          inValues: ['NEW', 'IN_PROGRESS', 'OIL_CONTROLLED', 'WAITING_FOR_PRICING', 'REFUSED', 'CANCELLED']
+          inValues: ['NEW', 'IN_PROGRESS', 'OIL_CONTROLLED', 'WAITING_FOR_PRICING', 'REFUSED','STOCK_READY', 'CANCELLED']
         },
         deliveryType: {
           equalValue: deliveryType.OIL
@@ -175,6 +175,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
           labelTranslatePath: 'RECEPTION_LIST.STATUS.COMPLETED'
         },
         { label: 'Refusé', value: 'REFUSED', labelTranslatePath: 'RECEPTION_LIST.STATUS.REFUSED' },
+        { label: 'Prét à stocker', value: 'STOCK_READY', labelTranslatePath: 'RECEPTION_LIST.STATUS.REFUSED' },
 
         {
           label: 'Annulé',

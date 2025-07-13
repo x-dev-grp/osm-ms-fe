@@ -95,9 +95,9 @@ export const DashboardStore = signalStore(
         const fieldsToExport:{
                  name: string;
                  label: string;
-                 enumValue: boolean;
-                 enumValues: { [key: string]: string }; 
-               } = store.checkedExportFields().map((field:any) =>{
+                  enumValue: boolean;
+                 enumValues: { [key: string]: string };
+               } []= store.checkedExportFields().map((field:any) =>{
             return {
                 name: field.field.fieldType==FieldType.autocomplete? field.field.name+"."+field.field.valuePath : field.field.name,
                 label: field.field.exportLabel??field.field.label,
@@ -105,7 +105,7 @@ export const DashboardStore = signalStore(
                 enumValues:  field.field.options?.reduce((acc:any, option:any) => {
                     acc[option.value] = option.label;
                     return acc;
-                }, {}) || {}
+                }, {}) || null
             }
         });
         if(!fieldsToExport || fieldsToExport?.length<=0){

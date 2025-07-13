@@ -312,6 +312,143 @@
   }
 }
 
+.enhanced-details-card {
+  background: #fafbfc;
+  border-radius: 18px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  padding-bottom: 32px;
+}
+
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #fff;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px 8px 24px;
+}
+
+.header-actions button {
+  margin-left: 8px;
+}
+
+.enhanced-content {
+  padding: 0 16px 16px 16px;
+}
+
+.section-card {
+  margin: 24px 0;
+  border-radius: 14px;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.04);
+  background: #fff;
+  padding: 20px 24px 12px 24px;
+  transition: box-shadow 0.2s;
+}
+.section-card:hover {
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 18px;
+}
+.section-header mat-icon {
+  margin-right: 10px;
+  font-size: 28px;
+}
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2d3a4a;
+  margin: 0;
+}
+
+.responsive-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 32px;
+}
+@media (max-width: 900px) {
+  .responsive-grid {
+    grid-template-columns: 1fr;
+    gap: 12px 0;
+  }
+}
+
+.label {
+  color: #7a869a;
+  font-size: 0.98rem;
+  font-weight: 500;
+  margin-right: 6px;
+}
+.value {
+  color: #222b45;
+  font-size: 1.08rem;
+  font-weight: 500;
+}
+.highlight {
+  color: #1976d2;
+  font-weight: 700;
+}
+.warn {
+  color: #d32f2f;
+  font-weight: 700;
+}
+.badge, .status-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  background: #e3f2fd;
+  color: #1976d2;
+  margin-left: 6px;
+}
+.status-completed {
+  background: #e8f5e9;
+  color: #388e3c;
+}
+.status-pending {
+  background: #fffde7;
+  color: #fbc02d;
+}
+.status-cancelled, .status-refused {
+  background: #ffebee;
+  color: #d32f2f;
+}
+.status-in_progress {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.mat-card {
+  transition: box-shadow 0.2s;
+}
+
+.mat-card:hover {
+  box-shadow: 0 6px 24px rgba(0,0,0,0.10);
+}
+
+.mat-icon {
+  vertical-align: middle;
+}
+
+@media (max-width: 600px) {
+  .enhanced-details-card, .section-card {
+    padding: 8px 4px;
+  }
+  .section-header {
+    margin-bottom: 10px;
+  }
+  .responsive-grid {
+    gap: 8px 0;
+  }
+}
+
 // Responsive Design
 @media (max-width: 768px) {
   .view-oil-transaction-container {

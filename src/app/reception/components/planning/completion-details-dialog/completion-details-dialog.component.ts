@@ -3,11 +3,18 @@ import { MAT_DIALOG_DATA, MatDialogActions, MatDialogModule, MatDialogRef } from
 import { MatFormField } from '@angular/material/form-field';
 import { MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from '@angular/material/datepicker';
 import { SharedModule } from '../../../../demo/shared/shared.module';
-import { GlobalLot, PlanItemType, PlanningItem } from '../planning.component';
 import { CommonModule, DatePipe } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
+import {
+  BoardItem,
+  GlobalLot, GlobalLotDTO,
+  GlobalLotGroup, LotDTO,
+  Mill, MillPlanDTO,
+  PlanItemType,
+  PlanningItem, PlanningSaveRequest
+} from '../../../../shared/models/planningDTOS';
 
 interface ChildLotWithRendement extends PlanningItem {
   calculatedRendement?: number;
@@ -55,7 +62,7 @@ export class CompletionDetailsDialogComponent implements OnInit {
   ) {
     this.item = data.item;
     this.itemType = data.itemType;
-    if (this.itemType === PlanItemType.GLOBAL_LOT) {
+    if (this.itemType === this.PlanItemType.GLOBAL_LOT) {
       this.initializeChildLots();
     }
   }
