@@ -92,10 +92,20 @@ export const DashboardStore = signalStore(
       },
       export(exportType: string) {
         exportType=='pdf'?this.setExportPdfLoading(true):this.setExportExcelLoading(true);
-        const fieldsToExport = store.checkedExportFields().map((field) =>{
+        const fieldsToExport:{
+                 name: string;
+                 label: string;
+                 enumValue: boolean;
+                 enumValues: { [key: string]: string }; 
+               } = store.checkedExportFields().map((field:any) =>{
             return {
                 name: field.field.fieldType==FieldType.autocomplete? field.field.name+"."+field.field.valuePath : field.field.name,
                 label: field.field.exportLabel??field.field.label,
+                enumValue : field.field.attributeType== 'enum' ?true : false,
+                enumValues:  field.field.options?.reduce((acc:any, option:any) => {
+                    acc[option.value] = option.label;
+                    return acc;
+                }, {}) || {}
             }
         });
         if(!fieldsToExport || fieldsToExport?.length<=0){
