@@ -1,32 +1,30 @@
-import { Component, OnDestroy, OnInit, ViewChild, TemplateRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule } from '@angular/material/table';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatCardModule } from '@angular/material/card';
-import { MatSortModule } from '@angular/material/sort';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatPaginator } from '@angular/material/paginator';
-import { Router } from '@angular/router';
-import { Subscription, tap } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
+import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {MatButtonModule} from '@angular/material/button';
+import {MatTableModule} from '@angular/material/table';
+import {MatIconModule} from '@angular/material/icon';
+import {MatDialog, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
+import {MatCardModule} from '@angular/material/card';
+import {MatSortModule} from '@angular/material/sort';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {MatPaginator} from '@angular/material/paginator';
+import {Router} from '@angular/router';
+import {Subscription, tap} from 'rxjs';
+import {TranslateService} from '@ngx-translate/core';
 
-import { SharedModule } from '../../../demo/shared/shared.module';
-import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
-import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
-import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
+import {SharedModule} from '../../../demo/shared/shared.module';
+import {OsmDashboard} from '../../../shared/modules/osm-dashboard/osm-dashboard';
+import {DashboardConfig} from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import {UnifiedDelivery} from '../../../shared/models/UnifiedDelivery';
+import {UnifiedDeliveryService} from '../../../shared/services/delivery.service';
 
-import { OLIVE_DELIVERY_DASHBOARD } from './OLIVE_DELIVERY_DASHBOARD';
-import { PdfGeneratorService } from '../../../shared/services/pdf-generator.service';
-import { ApiResponse } from '../../../shared/models/api-response';
-import { OliveLotStatus } from '../../../shared/models/OliveLotStatus';
-import jsPDF from 'jspdf';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { OperationType } from '../../../shared/models/operation-type.enum';
-import { ExchangePricingDto } from '../../../shared/models/ExchangePricingDto';
+import {OLIVE_DELIVERY_DASHBOARD} from './OLIVE_DELIVERY_DASHBOARD';
+import {PdfGeneratorService} from '../../../shared/services/pdf-generator.service';
+import {ApiResponse} from '../../../shared/models/api-response';
+import {OliveLotStatus} from '../../../shared/models/OliveLotStatus';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {OperationType} from '../../../shared/models/operation-type.enum';
+import {ExchangePricingDto} from '../../../shared/models/ExchangePricingDto';
 
 @Component({
   selector: 'app-olive-reception',
@@ -145,113 +143,9 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
     }
   }
 
-  genererBonReception(delivery: UnifiedDelivery) {
-    const doc = new jsPDF();
 
-    // Header: Logo placeholder (left)
-    doc.setFontSize(10);
-    doc.rect(10, 10, 30, 20); // Placeholder for logo
-    doc.text('Logo', 15, 20); // Text indicating logo position
-
-    // Header: Create a table for the title and details
-    const headerTableTop = 10;
-    const headerTableLeft = 45; // Starting position of the table
-    const headerTableWidth = 160; // Width of the table
-    const headerCellHeight = 8; // Height of each cell
-    const headerColWidth = headerTableWidth / 2; // Width of each column
-
-    // Draw the header table
-    let currentY = headerTableTop;
-
-    // First row: Formulaire
-    doc.setFillColor(200, 200, 200); // Light gray background for the first row
-    doc.rect(headerTableLeft, currentY, headerTableWidth, headerCellHeight, 'F');
-    doc.text('Formulaire', headerTableLeft + headerColWidth, currentY + 5, { align: 'center' });
-    currentY += headerCellHeight;
-
-    // Second row: Bon De Réception and Référence
-    doc.rect(headerTableLeft, currentY, headerColWidth, headerCellHeight); // Left cell
-    doc.rect(headerTableLeft + headerColWidth, currentY, headerColWidth, headerCellHeight); // Right cell
-    doc.text(`Bon De Réception Olive`, headerTableLeft + 5, currentY + 5);
-    doc.text(`Référence : ${delivery.lotNumber || ''}`, headerTableLeft + headerColWidth + 5, currentY + 5);
-    currentY += headerCellHeight;
-
-    // Third row: N° and Date
-    doc.rect(headerTableLeft, currentY, headerColWidth, headerCellHeight); // Left cell
-    doc.rect(headerTableLeft + headerColWidth, currentY, headerColWidth, headerCellHeight); // Right cell
-    doc.text(`N° : ${delivery.deliveryNumber || ''}`, headerTableLeft + 5, currentY + 5);
-    doc.text(
-      `Date : ${new Date(delivery.deliveryDate || Date.now()).toLocaleDateString()}`,
-      headerTableLeft + headerColWidth + 5,
-      currentY + 5
-    );
-    currentY += headerCellHeight;
-
-    // Fourth row: Page and Révision
-    doc.rect(headerTableLeft, currentY, headerColWidth, headerCellHeight); // Left cell
-    doc.rect(headerTableLeft + headerColWidth, currentY, headerColWidth, headerCellHeight); // Right cell
-    doc.text('Page : 1/1', headerTableLeft + 5, currentY + 5);
-    doc.text('Révision : 01', headerTableLeft + headerColWidth + 5, currentY + 5);
-
-    // Separator line
-    doc.line(10, currentY + 10, 200, currentY + 10);
-
-    // Body: Standalone values
-    doc.setFontSize(11);
-    let y = currentY + 20;
-    doc.text(`Type : ${delivery.deliveryType || ''}`, 10, y);
-    y += 7;
-    doc.text(
-      `Fournisseur : ${(delivery.supplier?.supplierInfo?.name || '') + ' ' + (delivery.supplier?.supplierInfo?.lastname || '')}`,
-      10,
-      y
-    );
-    y += 7;
-    doc.text(`Téléphone : ${delivery.supplier?.supplierInfo?.phone || ''}`, 10, y);
-    y += 7;
-    doc.text(`Adresse : ${delivery.supplier?.supplierInfo?.address || ''}`, 10, y);
-    y += 14; // Extra space before table
-
-    // Manual Table: Remaining values
-    const tableData = [
-      ['Lot', delivery.lotNumber || ''],
-      ['Lot Global', delivery.globalLotNumber || ''],
-      ["Quantité d'huile", `${delivery.oilQuantity || ''} L`],
-      ['Poids Net', `${delivery.poidsNet || ''} kg`],
-      ['Poids Brut', `${delivery.poidsBrute || ''} kg`],
-      ['Prix total', `${delivery.price || ''} TND`],
-      ['Montant payé', `${delivery.paidAmount || ''} TND`],
-      ['Montant impayé', `${delivery.unpaidAmount || ''} TND`],
-      ['Matricule camion', delivery.matriculeCamion || ''],
-      ['État camion', delivery.etatCamion || ''],
-      ['Région', delivery.region?.name || '']
-    ];
-
-    const tableTop = y;
-    const tableLeft = 10;
-    const tableWidth = 180;
-    const cellHeight = 7;
-    const colWidth = tableWidth / 2;
-
-    // Draw table header
-    doc.setFillColor(200, 200, 200);
-    doc.rect(tableLeft, tableTop, colWidth, cellHeight, 'F');
-    doc.rect(tableLeft + colWidth, tableTop, colWidth, cellHeight, 'F');
-    doc.text('Champ', tableLeft + 2, tableTop + 5);
-    doc.text('Valeur', tableLeft + colWidth + 2, tableTop + 5);
-
-    // Draw table rows
-    let rowY = tableTop + cellHeight;
-    tableData.forEach((row) => {
-      doc.rect(tableLeft, rowY, colWidth, cellHeight);
-      doc.rect(tableLeft + colWidth, rowY, colWidth, cellHeight);
-      doc.text(row[0], tableLeft + 2, rowY + 5);
-      doc.text(row[1] || '', tableLeft + colWidth + 2, rowY + 5); // Fallback to empty string
-      rowY += cellHeight;
-    });
-
-    // Open in a new tab
-    window.open(doc.output('bloburl'), '_blank');
+  genererBonReception(delivery: UnifiedDelivery): void {
+    this.pdfService.generateReceptionPdf(delivery, 'OLIVE');
   }
 
   onRowAction(e: { row: UnifiedDelivery; action: string }): void {

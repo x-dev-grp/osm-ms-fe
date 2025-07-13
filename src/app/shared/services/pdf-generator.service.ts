@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import jsPDF from 'jspdf';
+import {UnifiedDelivery} from "../models/UnifiedDelivery";
 
 
 @Injectable({
@@ -203,6 +204,66 @@ export class PdfGeneratorService {
       img.onerror = error => {
         reject(error);
       };
+    });
+  }
+
+
+  // pdf-generator.service.ts
+
+  generateReceptionPdf(
+    delivery: UnifiedDelivery,
+    type: 'OIL' | 'OLIVE'
+  ): void {
+    const isHuile = type === 'OIL';
+
+    const commonData = {
+      reference: delivery.lotNumber || '',
+      date: '',
+      generalInfo: [
+        {label: 'Type', value: delivery.deliveryType || ''},
+        {
+          label: 'Fournisseur',
+          value: `${delivery.supplier?.supplierInfo?.name || ''} ${delivery.supplier?.supplierInfo?.lastname || ''}`
+        },
+        {label: 'Téléphone', value: delivery.supplier?.supplierInfo?.phone || ''},
+        {label: 'Adresse', value: delivery.supplier?.supplierInfo?.address || ''}
+      ],
+      footerInfo: [
+        {label: 'Signature Agent (bascule)', placeholder: ''},
+        {label: 'Signature Responsable CQ', placeholder: ''}
+      ]
+    };
+
+    const fields = isHuile
+      ? [
+        {label: 'Lot', value: delivery.lotNumber || ''},
+        {label: 'Lot Global', value: delivery.globalLotNumber || ''},
+        {label: 'Poids Brut', value: `${delivery.poidsBrute || ''} kg`},
+        {label: "Quantité d'huile", value: `${delivery.oilQuantity || ''} kg`},
+        {label: 'Variété Huile', value: delivery.oilVariety?.name || ''},
+        {label: 'Type Huile', value: delivery.oilType?.name || ''},
+        {label: 'Région', value: delivery.region?.name || ''}
+      ]
+      : [
+        {label: 'Lot', value: delivery.lotNumber || ''},
+        {label: 'Lot Global', value: delivery.globalLotNumber || ''},
+        {label: 'Poids Brut', value: `${delivery.poidsBrute || ''} kg`},
+        {label: "Quantité Olive", value: `${delivery.oilQuantity || ''} kg`},
+        {label: 'Variété Olive', value: delivery.oliveVariety?.name || ''},
+        {label: 'Type Olive', value: delivery.oliveType?.name || ''},
+        {label: 'Région', value: delivery.region?.name || ''}
+      ];
+
+    const title = isHuile ? 'Bon De Réception Huile' : 'Bon De Réception Olive';
+    const fileName = isHuile
+      ? `Bon_Reception_Huile_${delivery.deliveryNumber || 'inconnu'}.pdf`
+      : `Bon_Reception_Olive_${delivery.deliveryNumber || 'inconnu'}.pdf`;
+
+    this.generatePdfDocument({
+      ...commonData,
+      title,
+      fields,
+      fileName
     });
   }
 

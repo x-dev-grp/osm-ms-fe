@@ -203,53 +203,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
   /* ——— UI actions ——— */
 
   genererBonReception(delivery: UnifiedDelivery): void {
-    const bonReceptionData = {
-      title: 'Bon De Réception Huile',
-      reference: delivery.lotNumber || '',
-      date: '',
-      revision: '01',
-      page: '1/1',
-      generalInfo: [
-        { label: 'Type', value: delivery.deliveryType || '' },
-        {
-          label: 'Fournisseur',
-          value: `${delivery.supplier?.supplierInfo?.name || ''} ${delivery.supplier?.supplierInfo?.lastname || ''}`
-        },
-        { label: 'Téléphone', value: delivery.supplier?.supplierInfo?.phone || '' },
-        {
-          label: 'Adresse',
-          value: delivery.supplier?.supplierInfo?.address || ''
-        }
-      ],
-      fields: [
-        { label: 'Lot', value: delivery.lotNumber || '' },
-        {
-          label: 'Lot Global',
-          value: delivery.globalLotNumber || ''
-        },
-        { label: 'Poids Brut', value: `${delivery.poidsBrute || ''} kg` },
-        {
-          label: "Quantité d'huile",
-          value: `${delivery.oilQuantity || ''} kg`
-        },
-        { label: 'Variéte Huile', value: `${delivery.oilVariety?.name || ''} ` },
-        {
-          label: 'Type Huile',
-          value: `${delivery.oilType?.name || ''} `
-        },
-        { label: 'Région', value: delivery.region?.name || '' }
-      ],
-      footerInfo: [
-        { label: 'Signature Agent (bascule) ', placeholder: '' },
-        {
-          label: 'Signature Réspensable CQ',
-          placeholder: ''
-        }
-      ],
-      fileName: `Bon_Reception_Huile_${delivery.deliveryNumber || 'inconnu'}.pdf`
-    };
-
-    this.pdfService.generatePdfDocument(bonReceptionData);
+    this.pdfService.generateReceptionPdf(delivery, 'OIL');
   }
 
   /* ——— data loading & table helpers ——— */
