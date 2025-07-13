@@ -40,7 +40,6 @@ import {ExchangePricingDto} from '../../../shared/models/ExchangePricingDto';
     SharedModule,
     OsmDashboard],
   templateUrl: './olive-reception.component.html',
-  styleUrls: ['./olive-reception.component.scss']
 })
 export class OliveReceptionComponent implements OnInit, OnDestroy {
   @ViewChild('dashboard') dashboard!: OsmDashboard;

@@ -268,4 +268,54 @@ export class PdfGeneratorService {
   }
 
 
+  generateProductionPDF(dataEntry: any): void {
+    const dateLivraison = new Date(dataEntry.deliveryDate).toLocaleDateString();
+    const dateTrituration = new Date(dataEntry.trtDate).toLocaleDateString();
+
+    const poidsNetOlives = `${dataEntry.poidsNet} kg`;
+    const qteHuile = `${dataEntry.oilQuantity || 0} L`;
+    const rendement = `${(dataEntry.rendement || 0).toFixed(2)} %`;
+
+    // À adapter selon ton modèle métier ou API
+    const prixTriturationParKg = '0.15 DNT/kg';
+    const prixTotalTrituration = `${(dataEntry.poidsNet * 0.15).toFixed(2)} DNT`;
+
+    // Infos générales
+    const generalInfo = [
+      {label: 'Numéro de Lot', value: dataEntry.lotNumber || '-'},
+      {label: 'Numéro de Réception', value: dataEntry.deliveryNumber || '-'},
+      {label: 'Date de Livraison', value: dateLivraison},
+      {label: 'Poids Net d\'Olives', value: poidsNetOlives},
+      {label: 'Fournisseur', value: dataEntry.supplier?.supplierInfo?.name || '-'},
+      {label: 'Région', value: dataEntry.region?.name || '-'},
+      {label: 'Variété d\'Olive', value: dataEntry.oliveVariety?.name || '-'},
+      {label: 'Type d\'Olive', value: dataEntry.oliveType?.name || '-'},
+    ];
+
+    // Données à afficher dans un tableau (si nécessaire)
+    const fields = [
+      {label: 'Quantité d\'Huile', value: qteHuile},
+      {label: 'Rendement', value: rendement},
+      {label: 'Prix Trituration par kg', value: prixTriturationParKg},
+      {label: 'Prix Total Trituration', value: prixTotalTrituration},
+      {label: 'Date de Trituration', value: dateTrituration},
+    ];
+
+    const config = {
+      title: 'BON DE PRODUCTION',
+      reference: dataEntry.deliveryNumber || 'N/A',
+      date: new Date().toLocaleDateString(),
+      generalInfo: generalInfo,   // <-- Ces données seront affichées en texte brut (haut du PDF)
+      fields: fields,             // <-- Ces données seront affichées sous forme de tableau
+      footerInfo: [
+        {label: 'Responsable Qualité'},
+        {label: 'Chef de Production'},
+        {label: 'Signature'},
+        {label: 'Date'}
+      ],
+      fileName: `BonProduction_${dataEntry.lotNumber || 'LOT'}`
+    };
+
+    this.generatePdfDocument(config);
+  }
 }
