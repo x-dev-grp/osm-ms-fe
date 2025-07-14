@@ -167,7 +167,7 @@
     "CATEGORIES": {
       "LAMPANTE": "Lampante",
       "VIERGE": "Vierge",
-      "VIERGE_EXTRA": "Vierge Extra"
+      "VIERGE_EXTRA": "Extra Vierge"
     },
     "FINANCIAL": {
       "PAID_AMOUNT": "Montant payé (TND)",
@@ -983,6 +983,14 @@
         "CREATE": "Créer",
         "UPDATE": "Mettre à jour"
       },
+      "CONFIRMATION": {
+        "APPROVE": {
+          "CANCEL": "Annuler",
+          "CONFIRM": "Approuver",
+          "MESSAGE": "Êtes-vous sûr de vouloir approuver cette transaction ? Cette action ne peut pas être annulée.",
+          "TITLE": "Approuver la Transaction"
+        }
+      },
       "FIELDS": {
         "QUALITY_GRADE": "Grade de qualité",
         "QUANTITY_KG": "Quantité (kg)",
@@ -1005,8 +1013,8 @@
           "LOAD_STORAGE_UNITS": "Erreur lors du chargement des unités de stockage",
           "UPDATE": "Erreur lors de la sauvegarde"
         },
-        "LOADING": "Chargement...",
         "INCOMPLETE_FORM": "Veuillez remplir tous les champs requis avant de soumettre.",
+        "LOADING": "Chargement...",
         "SUCCESS": {
           "APPROVE": "Transaction approuvée avec succès",
           "CREATE": "Transaction créée avec succès",
@@ -1031,14 +1039,6 @@
       "VALIDATION": {
         "MIN_VALUE": "La valeur doit être supérieure à 0",
         "REQUIRED": "Ce champ est requis"
-      },
-      "CONFIRMATION": {
-        "APPROVE": {
-          "TITLE": "Approuver la Transaction",
-          "MESSAGE": "Êtes-vous sûr de vouloir approuver cette transaction ? Cette action ne peut pas être annulée.",
-          "CONFIRM": "Approuver",
-          "CANCEL": "Annuler"
-        }
       }
     },
     "QUALITY_GRADES": {
@@ -1363,17 +1363,17 @@
         "MESSAGE": "Vous avez des modifications non sauvegardées. Êtes-vous sûr de vouloir partir sans sauvegarder ?",
         "TITLE": "Modifications non sauvegardées"
       },
+      "UPDATE": {
+        "CANCEL": "Annuler",
+        "CONFIRM": "Oui, mettre à jour",
+        "MESSAGE": "Êtes-vous sûr de vouloir mettre à jour cette transaction d'huile ? Cette action est irréversible.",
+        "TITLE": "Confirmer la mise à jour"
+      },
       "WARNING": {
         "CANCEL": "Annuler",
         "CONFIRM": "Continuer",
         "MESSAGE": "Veuillez confirmer cette action.",
         "TITLE": "Avertissement"
-      },
-      "UPDATE": {
-        "TITLE": "Confirmer la mise à jour",
-        "MESSAGE": "Êtes-vous sûr de vouloir mettre à jour cette transaction d'huile ? Cette action est irréversible.",
-        "CONFIRM": "Oui, mettre à jour",
-        "CANCEL": "Annuler"
       }
     },
     "TOAST": {

@@ -455,7 +455,7 @@ export class ControleQualiteComponent implements OnInit {
     }
 
     if (acidite < 0.8 && k270 < 0.22 && k232 < 2.5) {
-      return 'Vierge Extra';
+      return 'Extra Vierge';
     } else if (acidite < 2 && k270 < 0.25 && k232 < 2.6) {
       return 'Vierge';
     } else {
@@ -485,7 +485,7 @@ export class ControleQualiteComponent implements OnInit {
     const allLessThanOrEqual60 = infestees <= 60 && fermentees <= 60 && endommagees <= 60;
 
     if (allLessThanOrEqual30) {
-      return 'Vierge Extra';
+      return 'Extra Vierge';
     } else if (allLessThanOrEqual60) {
       return 'Vierge';
     } else {

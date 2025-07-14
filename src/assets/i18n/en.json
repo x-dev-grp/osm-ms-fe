@@ -930,6 +930,14 @@
         "CREATE": "Create",
         "UPDATE": "Update"
       },
+      "CONFIRMATION": {
+        "APPROVE": {
+          "CANCEL": "Cancel",
+          "CONFIRM": "Approve",
+          "MESSAGE": "Are you sure you want to approve this transaction? This action cannot be undone.",
+          "TITLE": "Approve Transaction"
+        }
+      },
       "FIELDS": {
         "QUALITY_GRADE": "Quality grade",
         "QUANTITY_KG": "Quantity (kg)",
@@ -952,8 +960,8 @@
           "LOAD_STORAGE_UNITS": "Error loading storage units",
           "UPDATE": "Error saving data"
         },
-        "LOADING": "Loading...",
         "INCOMPLETE_FORM": "Please complete all required fields before submitting.",
+        "LOADING": "Loading...",
         "SUCCESS": {
           "APPROVE": "Transaction approved successfully",
           "CREATE": "Transaction created successfully",
@@ -978,14 +986,6 @@
       "VALIDATION": {
         "MIN_VALUE": "Value must be greater than 0",
         "REQUIRED": "This field is required"
-      },
-      "CONFIRMATION": {
-        "APPROVE": {
-          "TITLE": "Approve Transaction",
-          "MESSAGE": "Are you sure you want to approve this transaction? This action cannot be undone.",
-          "CONFIRM": "Approve",
-          "CANCEL": "Cancel"
-        }
       }
     },
     "QUALITY_GRADES": {
@@ -1306,17 +1306,17 @@
         "MESSAGE": "You have unsaved changes. Are you sure you want to leave without saving?",
         "TITLE": "Unsaved Changes"
       },
+      "UPDATE": {
+        "CANCEL": "Cancel",
+        "CONFIRM": "Yes, update",
+        "MESSAGE": "Are you sure you want to update this oil transaction? This action cannot be undone.",
+        "TITLE": "Confirm Update"
+      },
       "WARNING": {
         "CANCEL": "Cancel",
         "CONFIRM": "Continue",
         "MESSAGE": "Please confirm this action.",
         "TITLE": "Warning"
-      },
-      "UPDATE": {
-        "TITLE": "Confirm Update",
-        "MESSAGE": "Are you sure you want to update this oil transaction? This action cannot be undone.",
-        "CONFIRM": "Yes, update",
-        "CANCEL": "Cancel"
       }
     },
     "TOAST": {

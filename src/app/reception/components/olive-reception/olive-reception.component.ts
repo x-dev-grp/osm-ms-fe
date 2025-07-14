@@ -60,7 +60,7 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
   private subs = new Subscription();
   isLoading: boolean = false;
   qualityGrade: { id: string; name: string }[] = [
-    { id: 'vierge_extra', name: 'Vierge Extra' },
+    { id: 'vierge_extra', name: 'Extra Vierge' },
     { id: 'vierge', name: 'Vierge' },
     { id: 'lampante', name: 'Lampante' }
   ];

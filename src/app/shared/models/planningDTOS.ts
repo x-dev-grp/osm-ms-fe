@@ -19,6 +19,7 @@ export interface PlanningItem {
   region?: string;
   oliveVariety?: string;
   oliveType?: string;
+  operationType?: string;
   poidsBrute?: number;
   poidsNet?: number;
   sackCount?: number | null | undefined;

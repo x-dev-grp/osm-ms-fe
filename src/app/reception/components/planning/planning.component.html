@@ -97,6 +97,9 @@
                               @if (data.supplier) {
                                 <span class="supplier">Fournisseur : {{ data.supplier }}</span>
                               }
+                              @if (data.operationType) {
+                                <span class="operationType">Type d'operation : {{ ('OPERATION_TYPE.'+data.operationType)|translate }}</span>
+                              }
 
                               @if (data.oliveVariety) {
                                 <span class="variety">Variété : {{ data.oliveVariety }}</span>
@@ -114,9 +117,9 @@
                             <small class="block text-xs text-gray-600">{{ data.deliveryDate | date: 'shortDate' }}</small>
                           </div>
                           <div>
-                            <button mat-icon-button (click)="markAsCompleted(item)" >
-                              <mat-icon class="text-green-500">check_circle</mat-icon>
-                            </button>
+<!--                            <button mat-icon-button (click)="markAsCompleted(item)" >-->
+<!--                              <mat-icon class="text-green-500">check_circle</mat-icon>-->
+<!--                            </button>-->
                           </div>
 
                         </div>
@@ -248,7 +251,9 @@
                             @if (data.supplier) {
                               <span class="supplier">Fournisseur : {{ data.supplier }}</span>
                             }
-
+                            @if (data.operationType) {
+                              <span class="operationType">Type d'operation : {{ ('OPERATION_TYPE.'+data.operationType)|translate }}</span>
+                            }
                             @if (data.oliveVariety) {
                               <span class="variety">Variété : {{ data.oliveVariety }}</span>
                             }

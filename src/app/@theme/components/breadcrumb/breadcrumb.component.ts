@@ -8,6 +8,7 @@ import { Title } from '@angular/platform-browser';
 import { NavigationItem } from '../../types/navigation';
 import { SharedModule } from 'src/app/demo/shared/shared.module';
  import { osm_menus } from '../../../shared/osm_menu';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 interface titleType {
   // eslint-disable-next-line
@@ -20,7 +21,7 @@ interface titleType {
 
 @Component({
   selector: 'app-breadcrumb',
-  imports: [CommonModule, RouterModule, SharedModule],
+  imports: [CommonModule, RouterModule, SharedModule,TranslateModule],
   templateUrl: './breadcrumb.component.html',
   standalone: true,
   styleUrls: ['./breadcrumb.component.scss']
@@ -41,7 +42,7 @@ export class BreadcrumbComponent {
   componentList: titleType[];
 
   // constructor
-  constructor() {
+  constructor(private translateservice: TranslateService,) {
     this.navigations = osm_menus;
     this.ComponentNavigations = [];
     this.type = 'theme1';
@@ -57,7 +58,9 @@ export class BreadcrumbComponent {
         this.navigationList = breadcrumbList;
         this.componentList = this.filterNavigation(this.ComponentNavigations, activeLink);
         const title = breadcrumbList[breadcrumbList.length - 1]?.title || 'Welcome';
-        this.titleService.setTitle(title);
+        console.log(title)
+        console.log(this.translateservice.instant(title))
+        this.titleService.setTitle(this.translateservice.instant(title)+ ' | OSM');
       }
     });
   }

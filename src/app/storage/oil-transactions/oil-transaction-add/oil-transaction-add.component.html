@@ -155,7 +155,7 @@
             </button>
 
             <!-- Submit button -->
-            <button type="submit" mat-raised-button color="primary" [disabled]="submitting">
+            <button type="submit" mat-raised-button color="primary" [disabled]="submitting || isValidationMode">
               <mat-spinner *ngIf="submitting" diameter="20"></mat-spinner>
               <mat-icon *ngIf="!submitting">{{ isEditMode ? 'save' : 'add' }}</mat-icon>
               {{ (isEditMode ? 'OIL_TRANSACTIONS.FORM.ACTIONS.UPDATE' : 'OIL_TRANSACTIONS.FORM.ACTIONS.CREATE') | translate }}

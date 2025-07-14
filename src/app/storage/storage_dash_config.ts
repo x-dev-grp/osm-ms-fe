@@ -34,10 +34,20 @@ export const dashboardConfig: DashboardConfig = {
         defaultFilter: true,
         dataTable: true,
         exportable: true
+      },{
+        name: 'description',
+        label: 'Description',
+        attributeType: AttributeType.string,
+        fieldType: FieldType.text,
+        sortable: false,
+        filterable: false,
+        defaultFilter: false,
+        dataTable: false,
+        exportable: true
       },
       {
         name: 'maxCapacity',
-        label: 'Capacité (l)',
+        label: 'Capacité (KG)',
         attributeType: AttributeType.number,
         fieldType: FieldType.number,
         sortable: true,
@@ -67,7 +77,7 @@ export const dashboardConfig: DashboardConfig = {
       },
       {
         name: 'currentVolume',
-        label: 'Volume (l)',
+        label: 'Volume (KG)',
         attributeType: AttributeType.number,
         fieldType: FieldType.number,
         sortable: true,
@@ -97,8 +107,8 @@ export const dashboardConfig: DashboardConfig = {
         exportable: true
       },
       {
-        name: 'oilVariety.name',
-        label: 'Variété d\'huile',
+        name: 'oilType.name',
+        label: 'Oil TYPE',
         valuePath: 'oilVariety.name',
         attributeType: AttributeType.string,
         fieldType: FieldType.autocomplete,

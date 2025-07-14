@@ -692,6 +692,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
       oliveVariety: d.oliveVariety?.name ?? undefined,
       oliveType: d.oliveType?.name ?? undefined,
       poidsBrute: d.poidsBrute ?? undefined,
+      operationType: d.operationType ?? undefined,
       poidsNet: d.poidsNet ?? undefined,
       sackCount: d.sackCount ?? undefined,
       oilQuantity: d.oilQuantity ?? null,
@@ -862,6 +863,8 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
       region: rich?.region ?? undefined,
       oliveVariety: rich?.oliveVariety ?? undefined,
       oliveType: rich?.oliveType ?? undefined,
+      operationType: rich?.operationType ?? undefined,
+
       poidsBrute: rich?.poidsBrute ?? undefined,
       poidsNet: rich?.poidsNet ?? undefined,
       sackCount: rich?.sackCount ?? undefined,

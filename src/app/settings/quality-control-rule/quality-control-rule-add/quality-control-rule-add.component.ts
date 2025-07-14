@@ -6,16 +6,14 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {finalize, takeUntil} from "rxjs/operators";
 import {Subject} from "rxjs";
 import {QualityControlRule} from "../../../shared/models/quality-control-rule";
-import {MatExpansionPanelHeader} from "@angular/material/expansion";
-import {MatError, MatFormField, MatLabel, MatSuffix} from "@angular/material/form-field";
+import {MatFormField, MatLabel} from "@angular/material/form-field";
 import {MatCheckbox} from "@angular/material/checkbox";
 import {MatOption, MatSelect} from "@angular/material/select";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
-import {NgForOf, NgIf} from "@angular/common";
+import {NgIf} from "@angular/common";
 import {CardComponent} from "../../../@theme/components/card/card.component";
 import {MatIcon} from "@angular/material/icon";
 import {MatButton, MatIconButton} from "@angular/material/button";
-import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from "@angular/material/datepicker";
 import {MatInput} from "@angular/material/input";
 
 @Component({
@@ -89,8 +87,8 @@ export class QualityControlRuleAddComponent implements OnInit {
       oilQc: [false],
       ruleType: ['numeric', Validators.required],
       booleanValue: [false],
-      minValue: [0, Validators.required],
-      maxValue: [0, Validators.required],
+      minValue: [0, [Validators.required, Validators.min(0)]],
+      maxValue: [0, [Validators.required, Validators.min(0)]],
       ruleName: ['', Validators.required],
       description: [''],
       textInput: [[], []] // Initialisé sans validateur ici, géré dynamiquement
@@ -159,7 +157,7 @@ export class QualityControlRuleAddComponent implements OnInit {
     const v = this.ruleForm.value;
     const ruleType = v.ruleType;
 
-    const payload: any = {
+    const payload = {
       id: v.id,
       ruleKey: v.ruleKey,
       oilQc: v.oilQc,

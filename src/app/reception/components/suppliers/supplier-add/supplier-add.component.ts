@@ -58,11 +58,11 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
         id: [''],
         name: ['', Validators.required],
         lastname: ['', Validators.required],
-        phone: ['', Validators.required],
+        phone: ['', [Validators.required, Validators.pattern(/^[0-9]{8}$/), Validators.min(0)]],
         email: ['', [Validators.email]], // <-- only email format, not required
         address: ['', Validators.required],
         region: [null, Validators.required],
-        rib: [''],
+        rib: ['', [Validators.pattern(/^[0-9]{15}$/), Validators.min(0)]],
         bankName: ['']
       }),
       genericSupplierType: [null, Validators.required]

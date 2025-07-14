@@ -144,13 +144,13 @@ export class CompletionDetailsDialogComponent implements OnInit {
 
   onConfirm(): void {
     // Enhanced validation
-    if (this.inputOilQuantity === null || this.inputOilQuantity === undefined) {
-      console.error('[DIALOG] Oil quantity is null or undefined');
+    if (this.inputOilQuantity === null || this.inputOilQuantity === undefined || this.inputOilQuantity < 0) {
+      console.error('[DIALOG] Oil quantity is null, undefined, or negative:', this.inputOilQuantity);
       return;
     }
 
-    if (this.inputOilQuantity < 0) {
-      console.error('[DIALOG] Oil quantity is negative:', this.inputOilQuantity);
+    if (this.triturationPricePerKg !== null && this.triturationPricePerKg < 0) {
+      console.error('[DIALOG] Trituration price per kg is negative:', this.triturationPricePerKg);
       return;
     }
 

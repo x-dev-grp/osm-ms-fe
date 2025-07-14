@@ -45,6 +45,7 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
   loading = false;
   submitting = false;
   isEditMode = false;
+  isValidationMode = false; // <-- Add this line
   transactionId: string | null = null;
 
   // Data
@@ -65,7 +66,7 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
   ];
 
   qualityGrades = [
-    { value: 'vierge_extra', label: 'Vierge Extra' },
+    { value: 'vierge_extra', label: 'Extra Vierge' },
     { value: 'vierge', label: 'Vierge' },
     { value: 'lampante', label: 'Lampante' }
   ];
@@ -102,8 +103,8 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
       storageUnitDestinationId: [null],
       qualityGrade: [null, Validators.required],
       quantityKg: [null, [Validators.required, Validators.min(0.01)]],
-      unitPrice: [null],
-      totalPrice: [{ value: null, disabled: true }]
+      unitPrice: [0, [Validators.min(0)]], // Default to 0
+      totalPrice: [{ value: null, disabled: true }, [Validators.min(0)]]
     });
   }
 
@@ -208,6 +209,8 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
 
   private checkEditMode(): void {
     this.transactionId = this.route.snapshot.paramMap.get('id');
+    const url = this.route.snapshot.url.map(segment => segment.path).join('/');
+    this.isValidationMode = url.endsWith('validate'); // <-- Add this line
     if (this.transactionId) {
       this.isEditMode = true;
       this.loadTransactionForEdit();
@@ -250,6 +253,7 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
     // Determine quality grade value
     let qualityGradeValue = '';
     const possibleGrade = transaction.qualityGrade || (transaction.reception?.categoryOliveOil || '');
+    console.log('Reception categoryOliveOil:', transaction.reception?.categoryOliveOil); // Debug log
     if (possibleGrade) {
       const match = this.qualityGrades.find(q =>
         (q.value && q.value.toLowerCase() === possibleGrade.toLowerCase()) ||
@@ -267,7 +271,7 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
       storageUnitSourceId: transaction.storageUnitSource?.id || null,
       qualityGrade: qualityGradeValue,
       quantityKg: transaction.quantityKg || null,
-      unitPrice: transaction.unitPrice || null,
+      unitPrice: transaction.unitPrice != null ? transaction.unitPrice : 0, // Default to 0 if null
       totalPrice: transaction.totalPrice || null
     };
 
@@ -285,7 +289,41 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
       this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.INCOMPLETE_FORM');
       return;
     }
-
+    // Extra check for negative values
+    const quantity = this.form.get('quantityKg')?.value;
+    const unitPrice = this.form.get('unitPrice')?.value;
+    const totalPrice = this.form.get('totalPrice')?.value;
+    if ((quantity !== null && quantity < 0) || (unitPrice !== null && unitPrice < 0) || (totalPrice !== null && totalPrice < 0)) {
+      this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.NEGATIVE_VALUES');
+      return;
+    }
+    // Compatibility check: quantity vs storage unit
+    const transactionType = this.form.get('transactionType')?.value;
+    const sourceId = this.form.get('storageUnitSourceId')?.value;
+    const destId = this.form.get('storageUnitDestinationId')?.value;
+    if (transactionType === TransactionType.TRANSFER_IN || transactionType === TransactionType.SALE || transactionType === TransactionType.LOAN || transactionType === TransactionType.EXCHANGE) {
+      if (sourceId) {
+        const sourceUnit = this.storageUnits.find(u => u.id === sourceId);
+        if (sourceUnit && quantity > sourceUnit.currentVolume) {
+          this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.QUANTITY_EXCEEDS_SOURCE');
+          return;
+        }
+      }
+    }
+    if (transactionType === TransactionType.TRANSFER_IN || transactionType === TransactionType.RECEPTION_IN || transactionType === TransactionType.SALE || transactionType === TransactionType.LOAN) {
+      if (destId) {
+        const destUnit = this.storageUnits.find(u => u.id === destId);
+        if (!destUnit) {
+          this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.DEST_UNIT_NOT_FOUND');
+          return;
+        }
+        const availableCapacity = destUnit.maxCapacity - destUnit.currentVolume;
+        if (quantity > availableCapacity) {
+          this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.QUANTITY_EXCEEDS_DEST');
+          return;
+        }
+      }
+    }
     if (this.isEditMode) {
       this.showUpdateConfirmation();
     } else {
@@ -338,7 +376,7 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
       storageUnitSource: formValue.storageUnitSourceId ? { id: formValue.storageUnitSourceId } : undefined,
       qualityGrade: formValue.qualityGrade,
       quantityKg: formValue.quantityKg,
-      unitPrice: formValue.unitPrice,
+      unitPrice: formValue.unitPrice != null ? formValue.unitPrice : 0, // Default to 0 if null
       totalPrice: formValue.totalPrice
     } as OilTransaction;
 
@@ -388,7 +426,7 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
       storageUnitSource: formValue.storageUnitSourceId ? { id: formValue.storageUnitSourceId } : undefined,
       qualityGrade: formValue.qualityGrade,
       quantityKg: formValue.quantityKg,
-      unitPrice: formValue.unitPrice,
+      unitPrice: formValue.unitPrice != null ? formValue.unitPrice : 0, // Default to 0 if null
       totalPrice: formValue.totalPrice
     } as OilTransaction;
 
