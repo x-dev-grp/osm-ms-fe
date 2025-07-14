@@ -90,11 +90,6 @@ const routes: Routes = [
       },
 
       {
-        path: 'forms',
-        loadChildren: () => import('./demo/pages/forms/forms.module').then((m) => m.FormsModule),
-        data: { roles: [Role.Admin, Role.User] }
-      },
-      {
         path: 'price',
         loadChildren: () => import('./demo/pages/price/price-routing.module').then((m) => m.PriceRoutingModule),
         data: { roles: [Role.Admin, Role.User] }
