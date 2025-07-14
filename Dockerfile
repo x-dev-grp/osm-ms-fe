@@ -7,7 +7,7 @@ WORKDIR /app
 
 # ① copy dependency manifests first → better cache reuse
 COPY package.json package-lock.json* ./
-RUN npm ci --omit=dev    # or just `npm ci` if you keep devDeps
+RUN npm ci --legacy-peer-deps --omit=dev    # or just `npm ci` if you keep devDeps
 
 # ② copy the rest of the source and compile
 COPY . .
