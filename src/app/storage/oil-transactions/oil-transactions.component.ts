@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
- import { MatIconModule } from '@angular/material/icon';
- import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { CommonModule } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
- import { OIL_TRANSACTIONS_DASHBOARD_CONFIG } from './oil-transactions-dashboard.config';
- import { Router } from '@angular/router';
+import { OIL_TRANSACTIONS_DASHBOARD_CONFIG } from './oil-transactions-dashboard.config';
+import { Router } from '@angular/router';
 import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
 import { SharedModule } from '../../demo/shared/shared.module';
 import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
@@ -16,13 +16,7 @@ import { OilTransactionService } from '../../shared/services/OilTransactionServi
   standalone: true,
   templateUrl: './oil-transactions.component.html',
   styleUrls: ['./oil-transactions.component.scss'],
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatIconModule,
-    SharedModule,
-    OsmDashboard
-  ]
+  imports: [CommonModule, MatTableModule, MatIconModule, SharedModule, OsmDashboard]
 })
 export class OilTransactionsComponent implements OnInit {
   dashboardConfig: DashboardConfig = OIL_TRANSACTIONS_DASHBOARD_CONFIG;
@@ -49,6 +43,9 @@ export class OilTransactionsComponent implements OnInit {
       case 'UPDATE':
         this.router.navigate(['/storage/oil-transactions', event.row.id, 'edit']);
         break;
+      case 'VALIDATE':
+        this.router.navigate(['/storage/oil-transactions', event.row.id, 'validate']);
+        break;
 
       case 'DELETE':
         this.deleteTransaction(event.row);
@@ -57,20 +54,20 @@ export class OilTransactionsComponent implements OnInit {
   }
 
   private deleteTransaction(transaction: OilTransaction): void {
-    if (confirm('Êtes-vous sûr de vouloir supprimer cette transaction d\'huile ?')) {
+    if (confirm("Êtes-vous sûr de vouloir supprimer cette transaction d'huile ?")) {
       this.oilTransactionService.deleteOilTransaction(transaction.id).subscribe({
         next: (response) => {
           if (response.success) {
-            this.snackBar.open('Transaction d\'huile supprimée avec succès', 'Fermer', { duration: 3000 });
+            this.snackBar.open("Transaction d'huile supprimée avec succès", 'Fermer', { duration: 3000 });
             // Refresh the list
             this.loadOilTransactions();
           } else {
-            this.snackBar.open(response.message || 'Échec de la suppression de la transaction d\'huile', 'Fermer', { duration: 3000 });
+            this.snackBar.open(response.message || "Échec de la suppression de la transaction d'huile", 'Fermer', { duration: 3000 });
           }
         },
         error: (error) => {
           console.error('Error deleting oil transaction:', error);
-          this.snackBar.open('Erreur lors de la suppression de la transaction d\'huile', 'Fermer', { duration: 3000 });
+          this.snackBar.open("Erreur lors de la suppression de la transaction d'huile", 'Fermer', { duration: 3000 });
         }
       });
     }
@@ -86,7 +83,7 @@ export class OilTransactionsComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading oil transactions:', error);
-        this.snackBar.open('Erreur lors du chargement des transactions d\'huile', 'Fermer', { duration: 3000 });
+        this.snackBar.open("Erreur lors du chargement des transactions d'huile", 'Fermer', { duration: 3000 });
       }
     });
   }

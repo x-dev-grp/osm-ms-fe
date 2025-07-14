@@ -978,6 +978,7 @@
     },
     "FORM": {
       "ACTIONS": {
+        "APPROVE": "Approuver",
         "CANCEL": "Annuler",
         "CREATE": "Créer",
         "UPDATE": "Mettre à jour"
@@ -998,12 +999,16 @@
       },
       "MESSAGES": {
         "ERROR": {
+          "APPROVAL_NOT_AVAILABLE": "L'approbation n'est pas disponible pour cette transaction",
+          "APPROVE": "Erreur lors de l'approbation de la transaction",
           "LOAD": "Erreur lors du chargement",
           "LOAD_STORAGE_UNITS": "Erreur lors du chargement des unités de stockage",
           "UPDATE": "Erreur lors de la sauvegarde"
         },
         "LOADING": "Chargement...",
+        "INCOMPLETE_FORM": "Veuillez remplir tous les champs requis avant de soumettre.",
         "SUCCESS": {
+          "APPROVE": "Transaction approuvée avec succès",
           "CREATE": "Transaction créée avec succès",
           "UPDATE": "Transaction mise à jour avec succès"
         }
@@ -1026,6 +1031,14 @@
       "VALIDATION": {
         "MIN_VALUE": "La valeur doit être supérieure à 0",
         "REQUIRED": "Ce champ est requis"
+      },
+      "CONFIRMATION": {
+        "APPROVE": {
+          "TITLE": "Approuver la Transaction",
+          "MESSAGE": "Êtes-vous sûr de vouloir approuver cette transaction ? Cette action ne peut pas être annulée.",
+          "CONFIRM": "Approuver",
+          "CANCEL": "Annuler"
+        }
       }
     },
     "QUALITY_GRADES": {
@@ -1355,6 +1368,12 @@
         "CONFIRM": "Continuer",
         "MESSAGE": "Veuillez confirmer cette action.",
         "TITLE": "Avertissement"
+      },
+      "UPDATE": {
+        "TITLE": "Confirmer la mise à jour",
+        "MESSAGE": "Êtes-vous sûr de vouloir mettre à jour cette transaction d'huile ? Cette action est irréversible.",
+        "CONFIRM": "Oui, mettre à jour",
+        "CANCEL": "Annuler"
       }
     },
     "TOAST": {

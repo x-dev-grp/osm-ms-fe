@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -18,7 +18,6 @@ import { OilTransactionService } from '../../../shared/services/OilTransactionSe
 import { StorageUnitDtoService } from '../../../shared/services/storage.service';
 import { ApiResponse } from '../../../shared/models/api-response';
 import { ConfirmationDialogService, ConfirmationType } from '../../../shared/services/confirmation-dialog.service';
-
 
 @Component({
   selector: 'app-oil-transaction-add',
@@ -40,14 +39,18 @@ import { ConfirmationDialogService, ConfirmationType } from '../../../shared/ser
 })
 export class OilTransactionAddComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
-  oilTransactionForm!: FormGroup;
-  isEditMode = false;
-  transactionId: string | null = null;
+
+  // Form and state
+  form!: FormGroup;
   loading = false;
   submitting = false;
+  isEditMode = false;
+  transactionId: string | null = null;
+
+  // Data
   storageUnits: StorageUnitDto[] = [];
 
-  // Form options - Using enum values
+  // Options
   transactionTypes = [
     { value: TransactionType.TRANSFER_IN, label: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.TRANSFER_IN' },
     { value: TransactionType.RECEPTION_IN, label: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.RECEPTION_IN' },
@@ -82,21 +85,7 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
     this.initializeForm();
     this.loadStorageUnits();
     this.checkEditMode();
-    if (!this.isEditMode) {
-      // Only allow TRANSFER_IN in add mode
-      this.transactionTypes = [
-        { value: TransactionType.TRANSFER_IN, label: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.TRANSFER_IN' }
-      ];
-      this.oilTransactionForm.get('transactionType')?.setValue(TransactionType.TRANSFER_IN);
-    }
-    // Watch transactionType to update pricing field validators
-    this.oilTransactionForm.get('transactionType')?.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((type) => {
-        this.updatePricingValidators(type);
-      });
-    // Initial validator setup
-    this.updatePricingValidators(this.oilTransactionForm.get('transactionType')?.value);
+    this.setupFormSubscriptions();
   }
 
   ngOnDestroy(): void {
@@ -104,32 +93,105 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  // Form initialization
   private initializeForm(): void {
-    this.oilTransactionForm = this.fb.group({
-      transactionType: ['', Validators.required],
+    this.form = this.fb.group({
+      transactionType: [TransactionType.TRANSFER_IN, Validators.required],
       transactionState: [TransactionState.PENDING, Validators.required],
-      storageUnitDestinationId: ['', Validators.required],
-      storageUnitSourceId: [''],
-      qualityGrade: ['', Validators.required],
-      quantityKg: ['', [Validators.required, Validators.min(0.01)]],
-      unitPrice: ['', [Validators.required, Validators.min(0)]],
-      totalPrice: [{ value: '', disabled: true }]
+      storageUnitSourceId: [null],
+      storageUnitDestinationId: [null],
+      qualityGrade: [null, Validators.required],
+      quantityKg: [null, [Validators.required, Validators.min(0.01)]],
+      unitPrice: [null],
+      totalPrice: [{ value: null, disabled: true }]
     });
-
-    // Auto-calculate total price
-    this.oilTransactionForm.get('quantityKg')?.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.calculateTotalPrice();
-      });
-
-    this.oilTransactionForm.get('unitPrice')?.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.calculateTotalPrice();
-      });
   }
 
+  private setupFormSubscriptions(): void {
+    // Watch transaction type changes
+    this.form.get('transactionType')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(type => {
+        this.updateFieldRequirements(type);
+        this.updatePricingFields(type);
+      });
+
+    // Auto-calculate total price
+    this.form.get('quantityKg')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.calculateTotalPrice());
+
+    this.form.get('unitPrice')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.calculateTotalPrice());
+  }
+
+  // Field requirement management
+  private updateFieldRequirements(transactionType: TransactionType): void {
+    const controls = this.form.controls;
+
+    // Reset all storage unit requirements
+    controls['storageUnitSourceId'].clearValidators();
+    controls['storageUnitDestinationId'].clearValidators();
+
+    // Set requirements based on transaction type
+    switch (transactionType) {
+      case TransactionType.TRANSFER_IN:
+        controls['storageUnitSourceId'].setValidators(Validators.required);
+        controls['storageUnitDestinationId'].setValidators(Validators.required);
+        break;
+      case TransactionType.RECEPTION_IN:
+        controls['storageUnitDestinationId'].setValidators(Validators.required);
+        break;
+      case TransactionType.EXCHANGE:
+        controls['storageUnitSourceId'].setValidators(Validators.required);
+        break;
+      case TransactionType.SALE:
+      case TransactionType.LOAN:
+        controls['storageUnitSourceId'].setValidators(Validators.required);
+        controls['storageUnitDestinationId'].setValidators(Validators.required);
+        break;
+    }
+
+    controls['storageUnitSourceId'].updateValueAndValidity();
+    controls['storageUnitDestinationId'].updateValueAndValidity();
+  }
+
+  private updatePricingFields(transactionType: TransactionType): void {
+    const unitPriceControl = this.form.get('unitPrice');
+    const totalPriceControl = this.form.get('totalPrice');
+
+    if (transactionType === TransactionType.TRANSFER_IN || transactionType === TransactionType.EXCHANGE) {
+      // No pricing for internal transfers
+      unitPriceControl?.clearValidators();
+      unitPriceControl?.disable();
+      totalPriceControl?.disable();
+      unitPriceControl?.setValue(null);
+      totalPriceControl?.setValue(null);
+    } else {
+      // Pricing required for external transactions
+      unitPriceControl?.setValidators([Validators.required, Validators.min(0)]);
+      unitPriceControl?.enable();
+      totalPriceControl?.enable();
+    }
+
+    unitPriceControl?.updateValueAndValidity();
+    totalPriceControl?.updateValueAndValidity();
+  }
+
+  private calculateTotalPrice(): void {
+    const quantity = this.form.get('quantityKg')?.value;
+    const unitPrice = this.form.get('unitPrice')?.value;
+
+    if (quantity && unitPrice) {
+      const total = quantity * unitPrice;
+      this.form.get('totalPrice')?.setValue(total.toFixed(2));
+    } else {
+      this.form.get('totalPrice')?.setValue(null);
+    }
+  }
+
+  // Data loading
   private loadStorageUnits(): void {
     this.storageUnitService.getAllStorageUnit()
       .pipe(takeUntil(this.destroy$))
@@ -139,21 +201,9 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
         },
         error: (error: unknown) => {
           console.error('Error loading storage units:', error);
-          this.snackBar.open(
-            this.translate.instant('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.LOAD_STORAGE_UNITS'),
-            this.translate.instant('STANDARD.BTNS.CANCEL'),
-            { duration: 3000 }
-          );
+          this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.LOAD_STORAGE_UNITS');
         }
       });
-  }
-
-  getVolumeClass(currentVolume: number, maxCapacity: number): string {
-    if (!maxCapacity || maxCapacity <= 0) return 'volume-low';
-    const percentage = (currentVolume / maxCapacity) * 100;
-    if (percentage >= 75) return 'volume-high';
-    if (percentage >= 25) return 'volume-medium';
-    return 'volume-low';
   }
 
   private checkEditMode(): void {
@@ -161,6 +211,11 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
     if (this.transactionId) {
       this.isEditMode = true;
       this.loadTransactionForEdit();
+    } else {
+      // In add mode, only allow TRANSFER_IN
+      this.transactionTypes = [
+        { value: TransactionType.TRANSFER_IN, label: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.TRANSFER_IN' }
+      ];
     }
   }
 
@@ -172,206 +227,204 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
-          console.log('API Response:', response); // Debug log
           if (response.success && response.data) {
             const transaction = Array.isArray(response.data) ? response.data[0] : response.data;
             if (transaction && transaction.id) {
-              console.log('Transaction to populate:', transaction); // Debug log
-              // Wait for storage units to be loaded before populating form
-              if (this.storageUnits.length > 0) {
-                this.populateForm(transaction);
-              } else {
-                // If storage units not loaded yet, wait a bit and try again
-                setTimeout(() => {
-                  if (this.storageUnits.length > 0) {
-                    this.populateForm(transaction);
-                  } else {
-                    console.error('Storage units not loaded, cannot populate form');
-                    this.handleLoadError();
-                  }
-                }, 1000);
-              }
+              this.populateForm(transaction);
             } else {
-              console.error('Invalid transaction data received:', response.data);
-              this.handleLoadError();
+              this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.LOAD');
             }
           } else {
-            console.error('No transaction data found in response:', response);
-            this.handleLoadError();
+            this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.LOAD');
           }
           this.loading = false;
         },
         error: () => {
-          this.handleLoadError();
+          this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.LOAD');
           this.loading = false;
         }
       });
   }
 
-  private handleLoadError(): void {
-    this.snackBar.open(
-      this.translate.instant('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.LOAD'),
-      this.translate.instant('STANDARD.BTNS.CANCEL'),
-      { duration: 3000 }
-    );
-    this.router.navigate(['/storage/oil-transactions']);
-  }
-
   private populateForm(transaction: OilTransaction): void {
-    if (!transaction) {
-      console.error('Transaction data is undefined or null');
-      return;
+    // Determine quality grade value
+    let qualityGradeValue = '';
+    const possibleGrade = transaction.qualityGrade || (transaction.reception?.categoryOliveOil || '');
+    if (possibleGrade) {
+      const match = this.qualityGrades.find(q =>
+        (q.value && q.value.toLowerCase() === possibleGrade.toLowerCase()) ||
+        (q.label && q.label.toLowerCase() === possibleGrade.toLowerCase())
+      );
+      if (match) {
+        qualityGradeValue = match.value;
+      }
     }
-
-    console.log('Populating form with transaction:', transaction); // Debug log
-    console.log('Transaction ID:', transaction.id); // Debug log
-    console.log('Storage unit destination object:', transaction.storageUnitDestination); // Debug log
-    console.log('Storage unit source object:', transaction.storageUnitSource); // Debug log
-
-    // Temporarily enable all controls for population
-    this.oilTransactionForm.get('unitPrice')?.enable();
-    this.oilTransactionForm.get('totalPrice')?.enable();
 
     const formValues = {
-      transactionType: transaction.transactionType || '',
+      transactionType: transaction.transactionType || TransactionType.TRANSFER_IN,
       transactionState: transaction.transactionState || TransactionState.PENDING,
-      storageUnitDestinationId: transaction.storageUnitDestination?.id || '',
-      storageUnitSourceId: transaction.storageUnitSource?.id || '',
-      qualityGrade: transaction.qualityGrade || '',
-      quantityKg: transaction.quantityKg || 0,
-      unitPrice: transaction.unitPrice || 0,
-      totalPrice: transaction.totalPrice || 0
+      storageUnitDestinationId: transaction.storageUnitDestination?.id || null,
+      storageUnitSourceId: transaction.storageUnitSource?.id || null,
+      qualityGrade: qualityGradeValue,
+      quantityKg: transaction.quantityKg || null,
+      unitPrice: transaction.unitPrice || null,
+      totalPrice: transaction.totalPrice || null
     };
 
-    console.log('Form values to patch:', formValues); // Debug log
-    console.log('Storage unit destination ID:', formValues.storageUnitDestinationId); // Debug log
-    console.log('Storage units loaded:', this.storageUnits.length); // Debug log
-    console.log('Storage unit destination exists:', this.isStorageUnitLoaded(formValues.storageUnitDestinationId)); // Debug log
+    this.form.patchValue(formValues);
 
-    // Check if storage units exist before patching
-    if (formValues.storageUnitDestinationId && !this.isStorageUnitLoaded(formValues.storageUnitDestinationId)) {
-      console.error('Storage unit destination not found in loaded units:', formValues.storageUnitDestinationId);
-      console.log('Available storage units:', this.storageUnits.map(u => ({ id: u.id, name: u.name })));
-    }
-
-    this.oilTransactionForm.patchValue(formValues);
-
-    // Update pricing validators after populating form
-    this.updatePricingValidators(transaction.transactionType);
-
-    console.log('Form values after population:', this.oilTransactionForm.value); // Debug log
-    console.log('Form validity after population:', this.oilTransactionForm.valid); // Debug log
+    // Update field requirements after populating
+    this.updateFieldRequirements(transaction.transactionType);
+    this.updatePricingFields(transaction.transactionType);
   }
 
-  private calculateTotalPrice(): void {
-    const quantity = this.oilTransactionForm.get('quantityKg')?.value;
-    const unitPrice = this.oilTransactionForm.get('unitPrice')?.value;
-
-    if (quantity && unitPrice) {
-      const total = quantity * unitPrice;
-      this.oilTransactionForm.get('totalPrice')?.setValue(total.toFixed(2));
-    } else {
-      this.oilTransactionForm.get('totalPrice')?.setValue('');
-    }
-  }
-
+  // Form submission
   onSubmit(): void {
-    console.log('Form validity:', this.oilTransactionForm.valid); // Debug log
-    console.log('Form errors:', this.oilTransactionForm.errors); // Debug log
-    console.log('Form value:', this.oilTransactionForm.value); // Debug log
-
-    // Check if form is valid, excluding disabled controls
-    if (!this.isFormValidForSubmission()) {
-      this.markFormGroupTouched();
-      this.snackBar.open(this.translate.instant('OIL_TRANSACTIONS.FORM.MESSAGES.INCOMPLETE_FORM'), undefined, { duration: 3000 });
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.INCOMPLETE_FORM');
       return;
     }
 
-    const doUpdate = () => {
-      this.submitting = true;
-      const formValue = this.oilTransactionForm.getRawValue();
-      // Create OilTransaction object with minimal data for API
-      // Using partial objects since the backend will handle the relationships by ID
-      const transactionRequest = {
-        id: this.transactionId || '',
-        transactionType: formValue.transactionType,
-        transactionState: formValue.transactionState,
-        storageUnitDestination: formValue.storageUnitDestinationId ? { id: formValue.storageUnitDestinationId } : undefined,
-        storageUnitSource: formValue.storageUnitSourceId ? { id: formValue.storageUnitSourceId } : undefined,
-        qualityGrade: formValue.qualityGrade,
-        quantityKg: formValue.quantityKg,
-        unitPrice: formValue.unitPrice,
-        totalPrice: formValue.totalPrice
-      } as OilTransaction;
-      const operation = this.isEditMode
-        ? this.oilTransactionService.updateOilTransaction(transactionRequest)
-        : this.oilTransactionService.createOilTransaction(transactionRequest);
-      operation
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: (response) => {
-            this.submitting = false;
-            if (response.success) {
-              this.snackBar.open(
-                this.translate.instant(
-                  this.isEditMode
-                    ? 'OIL_TRANSACTIONS.FORM.MESSAGES.SUCCESS.UPDATE'
-                    : 'OIL_TRANSACTIONS.FORM.MESSAGES.SUCCESS.CREATE'
-                ),
-                undefined,
-                { duration: 3000 }
-              );
-              this.router.navigate(['/storage/oil-transactions']);
-            } else {
-              this.snackBar.open(
-                this.translate.instant('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.UPDATE'),
-                undefined,
-                { duration: 3000 }
-              );
-            }
-          },
-          error: () => {
-            this.submitting = false;
-            this.snackBar.open(
-              this.translate.instant('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.UPDATE'),
-              undefined,
-              { duration: 3000 }
-            );
-          }
-        });
-    };
-
     if (this.isEditMode) {
-      this.confirmationDialog.confirm({
-        title: this.translate.instant('STANDARD.CONFIRMATION.UPDATE.TITLE'),
-        message: this.translate.instant('STANDARD.CONFIRMATION.UPDATE.MESSAGE'),
-        type: ConfirmationType.WARNING,
-        confirmText: this.translate.instant('STANDARD.CONFIRMATION.UPDATE.CONFIRM'),
-        cancelText: this.translate.instant('STANDARD.CONFIRMATION.UPDATE.CANCEL'),
-        showIcon: true
-      }).subscribe(result => {
-        if (result && result.confirmed) {
-          doUpdate();
-        }
-      });
+      this.showUpdateConfirmation();
     } else {
-      doUpdate();
+      this.saveTransaction();
     }
   }
 
+  // Approval submission
+  onApprove(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.INCOMPLETE_FORM');
+      return;
+    }
+
+    if (!this.isEditMode || !this.transactionId) {
+      this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.APPROVAL_NOT_AVAILABLE');
+      return;
+    }
+
+    this.showApprovalConfirmation();
+  }
+
+  private showApprovalConfirmation(): void {
+    this.confirmationDialog.confirm({
+      title: this.translate.instant('OIL_TRANSACTIONS.FORM.CONFIRMATION.APPROVE.TITLE'),
+      message: this.translate.instant('OIL_TRANSACTIONS.FORM.CONFIRMATION.APPROVE.MESSAGE'),
+      type: ConfirmationType.WARNING,
+      confirmText: this.translate.instant('OIL_TRANSACTIONS.FORM.CONFIRMATION.APPROVE.CONFIRM'),
+      cancelText: this.translate.instant('OIL_TRANSACTIONS.FORM.CONFIRMATION.APPROVE.CANCEL'),
+      showIcon: true
+    }).subscribe(result => {
+      if (result?.confirmed) {
+        this.approveTransaction();
+      }
+    });
+  }
+
+  private approveTransaction(): void {
+    if (!this.transactionId) return;
+
+    this.submitting = true;
+    const formValue = this.form.getRawValue();
+
+    const transactionRequest = {
+      id: this.transactionId,
+      transactionType: formValue.transactionType,
+      transactionState: formValue.transactionState,
+      storageUnitDestination: formValue.storageUnitDestinationId ? { id: formValue.storageUnitDestinationId } : undefined,
+      storageUnitSource: formValue.storageUnitSourceId ? { id: formValue.storageUnitSourceId } : undefined,
+      qualityGrade: formValue.qualityGrade,
+      quantityKg: formValue.quantityKg,
+      unitPrice: formValue.unitPrice,
+      totalPrice: formValue.totalPrice
+    } as OilTransaction;
+
+    this.oilTransactionService.approveOilTransaction(transactionRequest)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.submitting = false;
+          if (response.success) {
+            this.showSuccess('OIL_TRANSACTIONS.FORM.MESSAGES.SUCCESS.APPROVE');
+            this.router.navigate(['/storage/oil-transactions']);
+          } else {
+            this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.APPROVE');
+          }
+        },
+        error: () => {
+          this.submitting = false;
+          this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.APPROVE');
+        }
+      });
+  }
+
+  private showUpdateConfirmation(): void {
+    this.confirmationDialog.confirm({
+      title: this.translate.instant('STANDARD.CONFIRMATION.UPDATE.TITLE'),
+      message: this.translate.instant('STANDARD.CONFIRMATION.UPDATE.MESSAGE'),
+      type: ConfirmationType.WARNING,
+      confirmText: this.translate.instant('STANDARD.CONFIRMATION.UPDATE.CONFIRM'),
+      cancelText: this.translate.instant('STANDARD.CONFIRMATION.UPDATE.CANCEL'),
+      showIcon: true
+    }).subscribe(result => {
+      if (result?.confirmed) {
+        this.saveTransaction();
+      }
+    });
+  }
+
+  private saveTransaction(): void {
+    this.submitting = true;
+    const formValue = this.form.getRawValue();
+
+    const transactionRequest = {
+      id: this.transactionId || '',
+      transactionType: formValue.transactionType,
+      transactionState: formValue.transactionState,
+      storageUnitDestination: formValue.storageUnitDestinationId ? { id: formValue.storageUnitDestinationId } : undefined,
+      storageUnitSource: formValue.storageUnitSourceId ? { id: formValue.storageUnitSourceId } : undefined,
+      qualityGrade: formValue.qualityGrade,
+      quantityKg: formValue.quantityKg,
+      unitPrice: formValue.unitPrice,
+      totalPrice: formValue.totalPrice
+    } as OilTransaction;
+
+    const operation = this.isEditMode
+      ? this.oilTransactionService.updateOilTransaction(transactionRequest)
+      : this.oilTransactionService.createOilTransaction(transactionRequest);
+
+    operation.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (response) => {
+        this.submitting = false;
+        if (response.success) {
+          this.showSuccess(
+            this.isEditMode
+              ? 'OIL_TRANSACTIONS.FORM.MESSAGES.SUCCESS.UPDATE'
+              : 'OIL_TRANSACTIONS.FORM.MESSAGES.SUCCESS.CREATE'
+          );
+          this.router.navigate(['/storage/oil-transactions']);
+        } else {
+          this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.UPDATE');
+        }
+      },
+      error: () => {
+        this.submitting = false;
+        this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.UPDATE');
+      }
+    });
+  }
+
+  // Navigation
   onCancel(): void {
     this.router.navigate(['/storage/oil-transactions']);
   }
 
-  private markFormGroupTouched(): void {
-    Object.keys(this.oilTransactionForm.controls).forEach(key => {
-      const control = this.oilTransactionForm.get(key);
-      control?.markAsTouched();
-    });
-  }
-
+  // Utility methods
   getErrorMessage(controlName: string): string {
-    const control = this.oilTransactionForm.get(controlName);
+    const control = this.form.get(controlName);
     if (control?.hasError('required')) {
       return this.translate.instant('OIL_TRANSACTIONS.FORM.VALIDATION.REQUIRED');
     }
@@ -381,87 +434,47 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
     return '';
   }
 
-  isSourceStorageUnitRequired(): boolean {
-    const transactionType = this.oilTransactionForm.get('transactionType')?.value;
-    return transactionType === TransactionType.TRANSFER_IN ||
-           transactionType === TransactionType.LOAN ||
-           transactionType === TransactionType.SALE;
-  }
-
-  isExchangeTransaction(): boolean {
-    return this.oilTransactionForm.get('transactionType')?.value === TransactionType.EXCHANGE;
-  }
-
-  shouldShowPricingFields(): boolean {
-    const transactionType = this.oilTransactionForm.get('transactionType')?.value;
-    return transactionType !== TransactionType.TRANSFER_IN && transactionType !== TransactionType.EXCHANGE;
-  }
-
   getStorageUnitInfo(unit: StorageUnitDto): string {
     const availableCapacity = unit.maxCapacity - unit.currentVolume;
     return `${unit.name} (${availableCapacity.toFixed(2)}L available)`;
   }
 
-  isStorageUnitLoaded(storageUnitId: string): boolean {
-    return this.storageUnits.some(unit => unit.id === storageUnitId);
+  // Field visibility helpers
+  shouldShowSourceUnit(): boolean {
+    const type = this.form.get('transactionType')?.value;
+    return type === TransactionType.TRANSFER_IN ||
+           type === TransactionType.SALE ||
+           type === TransactionType.LOAN ||
+           type === TransactionType.EXCHANGE;
   }
 
-  private updatePricingValidators(type: TransactionType) {
-    const unitPriceCtrl = this.oilTransactionForm.get('unitPrice');
-    const totalPriceCtrl = this.oilTransactionForm.get('totalPrice');
-    if (type === TransactionType.TRANSFER_IN || type === TransactionType.EXCHANGE) {
-      unitPriceCtrl?.clearValidators();
-      totalPriceCtrl?.clearValidators();
-      unitPriceCtrl?.setValue('');
-      totalPriceCtrl?.setValue('');
-      unitPriceCtrl?.disable();
-      totalPriceCtrl?.disable();
-    } else {
-      unitPriceCtrl?.setValidators([Validators.required, Validators.min(0)]);
-      totalPriceCtrl?.setValidators([]);
-      unitPriceCtrl?.enable();
-      totalPriceCtrl?.enable();
-    }
-    unitPriceCtrl?.updateValueAndValidity();
-    totalPriceCtrl?.updateValueAndValidity();
+  shouldShowDestinationUnit(): boolean {
+    const type = this.form.get('transactionType')?.value;
+    return type === TransactionType.TRANSFER_IN ||
+           type === TransactionType.RECEPTION_IN ||
+           type === TransactionType.SALE ||
+           type === TransactionType.LOAN;
   }
 
-  isTransferIn(): boolean {
-    return this.oilTransactionForm.get('transactionType')?.value === TransactionType.TRANSFER_IN;
+  shouldShowPricingFields(): boolean {
+    const type = this.form.get('transactionType')?.value;
+    return type !== TransactionType.TRANSFER_IN && type !== TransactionType.EXCHANGE;
   }
 
-    private isFormValidForSubmission(): boolean {
-    console.log('Checking form validity for submission...'); // Debug log
+  // Notification helpers
+  private showSuccess(messageKey: string): void {
+    this.snackBar.open(
+      this.translate.instant(messageKey),
+      undefined,
+      { duration: 3000 }
+    );
+  }
 
-    const transactionType = this.oilTransactionForm.get('transactionType')?.value;
-    console.log('Transaction type:', transactionType); // Debug log
-
-    // Define required fields based on transaction type
-    const baseFields = ['transactionType', 'transactionState', 'qualityGrade', 'quantityKg'];
-
-    // For EXCHANGE, require source; for others, require destination
-    const storageFields = transactionType === TransactionType.EXCHANGE
-      ? ['storageUnitSourceId']
-      : ['storageUnitDestinationId'];
-
-    // Add pricing fields for non-TRANSFER_IN and non-EXCHANGE transactions
-    const pricingFields = (transactionType !== TransactionType.TRANSFER_IN && transactionType !== TransactionType.EXCHANGE) ? ['unitPrice'] : [];
-
-    // Add source storage unit if required (but not for EXCHANGE, since already handled)
-    const sourceFields = this.isSourceStorageUnitRequired() && transactionType !== TransactionType.EXCHANGE ? ['storageUnitSourceId'] : [];
-
-    const requiredFields = [...baseFields, ...storageFields, ...pricingFields, ...sourceFields];
-
-    console.log('Required fields for validation:', requiredFields); // Debug log
-
-    const isValid = requiredFields.every(field => {
-      const control = this.oilTransactionForm.get(field);
-      const isFieldValid = control && control.valid;
-      console.log(`Field ${field}: valid = ${isFieldValid}, value = ${control?.value}, errors =`, control?.errors); // Debug log
-      return isFieldValid;
-    });
-
-    console.log('Validation result:', isValid); // Debug log
-    return isValid;
+  private showError(messageKey: string): void {
+    this.snackBar.open(
+      this.translate.instant(messageKey),
+      this.translate.instant('STANDARD.BTNS.CANCEL'),
+      { duration: 3000 }
+    );
   }
 }

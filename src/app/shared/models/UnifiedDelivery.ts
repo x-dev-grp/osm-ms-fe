@@ -36,6 +36,8 @@ export class UnifiedDelivery {
   parcel?: string | null;
   storageUnit?: StorageUnitDto | null;
   qualityControlResults?: QualityControlResultDto[] | null;
+  categoryOliveOil?: string;
+
 }
 
 

@@ -66,29 +66,13 @@ export class OilTransactionService {
   }
 
   // Create a new oil transaction
-  createOilTransaction(oilTransaction: OilTransaction): Observable<{
-    success: boolean;
-    message: string;
-    data: OilTransaction;
-  }> {
-    return this.http.post<{
-      success: boolean;
-      message: string;
-      data: OilTransaction;
-    }>(`${this.baseUrl}`, oilTransaction);
+  createOilTransaction(oilTransaction: OilTransaction): Observable<ApiResponse<OilTransaction>> {
+    return this.http.post<ApiResponse<OilTransaction>>(`${this.baseUrl}`, oilTransaction);
   }
 
   // Update an existing oil transaction
-  updateOilTransaction(oilTransaction: OilTransaction): Observable<{
-    success: boolean;
-    message: string;
-    data: OilTransaction;
-  }> {
-    return this.http.put<{
-      success: boolean;
-      message: string;
-      data: OilTransaction;
-    }>(`${this.baseUrl}/${oilTransaction.id}`, oilTransaction);
+  updateOilTransaction(oilTransaction: OilTransaction): Observable<ApiResponse<OilTransaction>> {
+    return this.http.put<ApiResponse<OilTransaction>>(`${this.baseUrl}/${oilTransaction.id}`, oilTransaction);
   }
 
   // Delete an oil transaction by ID
@@ -99,5 +83,10 @@ export class OilTransactionService {
   // Complete an exchange transaction
   completeExchange(payload: ExchangeCompletionPayload): Observable<ApiResponse<OilTransaction>> {
     return this.http.post<ApiResponse<OilTransaction>>(`${this.baseUrl}/complete-exchange`, payload);
+  }
+
+  // Approve an oil transaction
+  approveOilTransaction(oilTransaction: OilTransaction): Observable<ApiResponse<OilTransaction>> {
+    return this.http.put<ApiResponse<OilTransaction>>(`${this.baseUrl}/approve`, oilTransaction);
   }
 }

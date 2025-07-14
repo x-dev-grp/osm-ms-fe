@@ -80,6 +80,7 @@ export const netNotGreaterThanGross: ValidatorFn = (g: AbstractControl): Validat
 })
 export class OilReceptionComponent implements OnInit, OnDestroy {
   @ViewChild('setPriceDialog') setPriceDialogTemplate!: TemplateRef<any>;
+  @ViewChild('dashboard') dashboard!: OsmDashboard;
 
   /* ——— state ——— */
   loading = false;
@@ -378,6 +379,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
       next: () => {
          dialogRef.close(); // Ferme le dialog après succès
         this.isLoading = false;
+        this.dashboard.refrechData();
         this.snackBar.open('Prix mis à jour avec succès.', 'Fermer', {
           duration: 3000,
           panelClass: ['mat-snack-bar-container-success']

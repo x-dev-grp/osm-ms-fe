@@ -66,7 +66,7 @@ export class OilCreditAddComponent implements OnInit {
       unit: [UnitType.L, Validators.required],
       oil_type: [null, Validators.required],
       destinataire: [null, Validators.required],
-      citerne_pile: [null, Validators.required],
+      // citerne_pile: [null, Validators.required], // [DISABLED: will be set in oil transaction]
       creditState: [CreditState.PENDING, Validators.required]
     });
 
@@ -103,32 +103,31 @@ export class OilCreditAddComponent implements OnInit {
         );
       }
     });
-    this.storageUnitService.getAllStorageUnit().subscribe({
-      next: (response) => {
-        this.storageUnits = response.data.sort((a, b) => b.currentVolume - a.currentVolume);
-        this.setupAutocompleteFilters();
-      },
-      error: () => {
-        this.snackBar.open(
-          this.translate.instant('OIL_CREDIT.FORM.MESSAGES.LOAD_ERROR'),
-          this.translate.instant('OIL_CREDIT.FORM.BUTTONS.CANCEL'),
-          { duration: 3000 }
-        );
-      }
-    });
+    // this.storageUnitService.getAllStorageUnit().subscribe({
+    //   next: (response) => {
+    //     this.storageUnits = response.data.sort((a, b) => b.currentVolume - a.currentVolume);
+    //     this.setupAutocompleteFilters();
+    //   },
+    //   error: () => {
+    //     this.snackBar.open(
+    //       this.translate.instant('OIL_CREDIT.FORM.MESSAGES.LOAD_ERROR'),
+    //       this.translate.instant('OIL_CREDIT.FORM.BUTTONS.CANCEL'),
+    //       { duration: 3000 }
+    //     );
+    //   }
+    // });
     const id = this.route.snapshot.params['id'];
     if (id) {
       this.loadOilCredit(id);
     }
-    this.form.get('quantity')?.valueChanges.subscribe((quantity) => this.validateQuantity(quantity));
-    this.form.get('unit')?.valueChanges.subscribe(() => this.validateQuantity(this.form.get('quantity')?.value));
-
-    // Subscribe to storage unit changes for validation
-    this.form.get('citerne_pile')?.valueChanges.subscribe((unit) => {
-      if (unit) {
-        this.onStorageUnitSelected(unit);
-      }
-    });
+    // this.form.get('quantity')?.valueChanges.subscribe((quantity) => this.validateQuantity(quantity)); // [DISABLED: validateQuantity is commented out]
+    // this.form.get('unit')?.valueChanges.subscribe(() => this.validateQuantity(this.form.get('quantity')?.value)); // [DISABLED: validateQuantity is commented out]
+    // Remove citerne_pile valueChanges subscription
+    // this.form.get('citerne_pile')?.valueChanges.subscribe((unit) => {
+    //   if (unit) {
+    //     this.onStorageUnitSelected(unit);
+    //   }
+    // });
   }
 
   private setupAutocompleteFilters(): void {
@@ -144,11 +143,11 @@ export class OilCreditAddComponent implements OnInit {
       map(value => this._filter(this.suppliers, value, 'supplierInfo.name'))
     );
 
-    // Storage unit filter
-    this.filteredStorageUnits = this.form.get('citerne_pile')!.valueChanges.pipe(
-      startWith(''),
-      map(value => this._filter(this.storageUnits, value, 'name'))
-    );
+    // Storage unit filter [DISABLED: will be set in oil transaction]
+    // this.filteredStorageUnits = this.form.get('citerne_pile')!.valueChanges.pipe(
+    //   startWith(''),
+    //   map(value => this._filter(this.storageUnits, value, 'name'))
+    // );
   }
 
   private _filter<T extends { name?: string; supplierInfo?: { name: string } }>(
@@ -183,41 +182,42 @@ export class OilCreditAddComponent implements OnInit {
     return item.name || '';
   }
 
-  onStorageUnitSelected(unit: StorageUnitDto): void {
-    if (unit) {
-      this.selectedStorageUnit = unit;
-      this.validateQuantity(this.form.get('quantity')?.value);
-    }
-  }
-
-  validateQuantity(quantity: number): void {
-    if (!this.selectedStorageUnit || !quantity) {
-      return;
-    }
-    const unit = this.form.get('unit')?.value;
-    const availableVolume = this.selectedStorageUnit.currentVolume;
-    const quantityControl = this.form.get('quantity');
-    if (quantityControl?.hasError('insufficientVolume') || quantityControl?.hasError('unitMismatch')) {
-      quantityControl.setErrors(null);
-    }
-    if (unit === 'KG') {
-      quantityControl?.setErrors({ unitMismatch: true });
-      this.snackBar.open(
-        this.translate.instant('OIL_CREDIT.FORM.MESSAGES.QUANTITY_UNIT_MISMATCH_SNACK'),
-        this.translate.instant('OIL_CREDIT.FORM.BUTTONS.CANCEL'),
-        { duration: 3000 }
-      );
-      return;
-    }
-    if (quantity > availableVolume) {
-      quantityControl?.setErrors({ insufficientVolume: true });
-      this.snackBar.open(
-        this.translate.instant('OIL_CREDIT.FORM.MESSAGES.QUANTITY_INSUFFICIENT_SNACK', { quantity, available: availableVolume }),
-        this.translate.instant('OIL_CREDIT.FORM.BUTTONS.CANCEL'),
-        { duration: 3000 }
-      );
-    }
-  }
+  // onStorageUnitSelected and validateQuantity methods [DISABLED: will be set in oil transaction]
+  // onStorageUnitSelected(unit: StorageUnitDto): void {
+  //   if (unit) {
+  //     this.selectedStorageUnit = unit;
+  //     this.validateQuantity(this.form.get('quantity')?.value);
+  //   }
+  // }
+  //
+  // validateQuantity(quantity: number): void {
+  //   if (!this.selectedStorageUnit || !quantity) {
+  //     return;
+  //   }
+  //   const unit = this.form.get('unit')?.value;
+  //   const availableVolume = this.selectedStorageUnit.currentVolume;
+  //   const quantityControl = this.form.get('quantity');
+  //   if (quantityControl?.hasError('insufficientVolume') || quantityControl?.hasError('unitMismatch')) {
+  //     quantityControl.setErrors(null);
+  //   }
+  //   if (unit === 'KG') {
+  //     quantityControl?.setErrors({ unitMismatch: true });
+  //     this.snackBar.open(
+  //       this.translate.instant('OIL_CREDIT.FORM.MESSAGES.QUANTITY_UNIT_MISMATCH_SNACK'),
+  //       this.translate.instant('OIL_CREDIT.FORM.BUTTONS.CANCEL'),
+  //       { duration: 3000 }
+  //     );
+  //     return;
+  //   }
+  //   if (quantity > availableVolume) {
+  //     quantityControl?.setErrors({ insufficientVolume: true });
+  //     this.snackBar.open(
+  //       this.translate.instant('OIL_CREDIT.FORM.MESSAGES.QUANTITY_INSUFFICIENT_SNACK', { quantity, available: availableVolume }),
+  //       this.translate.instant('OIL_CREDIT.FORM.BUTTONS.CANCEL'),
+  //       { duration: 3000 }
+  //     );
+  //   }
+  // }
 
   getVolumeClass(currentVolume: number, maxCapacity: number): string {
     if (!maxCapacity || maxCapacity <= 0) return 'volume-low';
@@ -243,8 +243,8 @@ export class OilCreditAddComponent implements OnInit {
     const dto = {
       ...formValue,
       oil_type: formValue.oil_type?.id || formValue.oil_type,
-      destinataire: formValue.destinataire?.id || formValue.destinataire,
-      citerne_pile: formValue.citerne_pile?.id || formValue.citerne_pile
+      destinataire: formValue.destinataire?.id || formValue.destinataire
+      // citerne_pile: formValue.citerne_pile?.id || formValue.citerne_pile // [DISABLED: will be set in oil transaction]
     };
 
     if (!dto.creditState) {
@@ -283,12 +283,12 @@ export class OilCreditAddComponent implements OnInit {
           const credit = response.data[0];
           const oilType = this.oilTypes.find(type => type.id === credit.oil_type);
           const supplier = this.suppliers.find(sup => sup.id === credit.destinataire.id);
-          const storageUnit = this.storageUnits.find(unit => unit.id === credit.transaction_id_in);
+          // const storageUnit = this.storageUnits.find(unit => unit.id === credit.transaction_id_in); // [DISABLED]
           this.form.patchValue({
             ...credit,
             oil_type: oilType || credit.oil_type,
-            destinataire: supplier || credit.destinataire,
-            citerne_pile: storageUnit || credit.transaction_id_in
+            destinataire: supplier || credit.destinataire
+            // citerne_pile: storageUnit || credit.transaction_id_in // [DISABLED]
           });
           this.editing = true;
         }

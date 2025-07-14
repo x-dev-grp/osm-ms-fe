@@ -51,6 +51,11 @@ const routes: Routes = [
         loadComponent: () => import('./oil-transactions/oil-transaction-add/oil-transaction-add.component').then(m => m.OilTransactionAddComponent),
         canActivate: [AuthGuardChild]
       }
+      ,{
+        path: 'oil-transactions/:id/validate',
+        loadComponent: () => import('./oil-transactions/oil-transaction-add/oil-transaction-add.component').then(m => m.OilTransactionAddComponent),
+        canActivate: [AuthGuardChild]
+      }
     ]
   }
 ];

@@ -46,7 +46,6 @@ export interface OilTransaction {
 
   /** Reference to the reception lot (optional) */
   reception?: UnifiedDelivery;
-
   /** Audit fields (from BaseEntity) */
   createdDate?: string;
   lastModifiedDate?: string;

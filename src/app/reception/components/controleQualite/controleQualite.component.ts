@@ -433,6 +433,7 @@ export class ControleQualiteComponent implements OnInit {
       console.log('Mise à jour automatique de la catégorie en :', calculated);
       categorieControl.setValue(calculated, {emitEvent: false});
       categorieControl.updateValueAndValidity();
+
     }
   }
 

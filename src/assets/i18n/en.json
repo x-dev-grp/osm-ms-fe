@@ -925,6 +925,7 @@
     },
     "FORM": {
       "ACTIONS": {
+        "APPROVE": "Approve",
         "CANCEL": "Cancel",
         "CREATE": "Create",
         "UPDATE": "Update"
@@ -945,12 +946,16 @@
       },
       "MESSAGES": {
         "ERROR": {
+          "APPROVAL_NOT_AVAILABLE": "Approval is not available for this transaction",
+          "APPROVE": "Error approving transaction",
           "LOAD": "Error loading data",
           "LOAD_STORAGE_UNITS": "Error loading storage units",
           "UPDATE": "Error saving data"
         },
         "LOADING": "Loading...",
+        "INCOMPLETE_FORM": "Please complete all required fields before submitting.",
         "SUCCESS": {
+          "APPROVE": "Transaction approved successfully",
           "CREATE": "Transaction created successfully",
           "UPDATE": "Transaction updated successfully"
         }
@@ -973,6 +978,14 @@
       "VALIDATION": {
         "MIN_VALUE": "Value must be greater than 0",
         "REQUIRED": "This field is required"
+      },
+      "CONFIRMATION": {
+        "APPROVE": {
+          "TITLE": "Approve Transaction",
+          "MESSAGE": "Are you sure you want to approve this transaction? This action cannot be undone.",
+          "CONFIRM": "Approve",
+          "CANCEL": "Cancel"
+        }
       }
     },
     "QUALITY_GRADES": {
@@ -1298,6 +1311,12 @@
         "CONFIRM": "Continue",
         "MESSAGE": "Please confirm this action.",
         "TITLE": "Warning"
+      },
+      "UPDATE": {
+        "TITLE": "Confirm Update",
+        "MESSAGE": "Are you sure you want to update this oil transaction? This action cannot be undone.",
+        "CONFIRM": "Yes, update",
+        "CANCEL": "Cancel"
       }
     },
     "TOAST": {

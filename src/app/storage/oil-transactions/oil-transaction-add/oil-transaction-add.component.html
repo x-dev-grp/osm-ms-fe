@@ -20,7 +20,7 @@
     <!-- Form Card -->
     <mat-card class="form-card">
       <mat-card-content>
-        <form [formGroup]="oilTransactionForm" (ngSubmit)="onSubmit()" class="transaction-form">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="transaction-form">
 
           <!-- Transaction Type and State -->
           <div class="form-section">
@@ -33,7 +33,7 @@
                     {{ type.label | translate }}
                   </mat-option>
                 </mat-select>
-                <mat-error *ngIf="oilTransactionForm.get('transactionType')?.hasError('required')">
+                <mat-error *ngIf="form.get('transactionType')?.hasError('required')">
                   {{ getErrorMessage('transactionType') }}
                 </mat-error>
               </mat-form-field>
@@ -45,7 +45,7 @@
                     {{ state.label | translate }}
                   </mat-option>
                 </mat-select>
-                <mat-error *ngIf="oilTransactionForm.get('transactionState')?.hasError('required')">
+                <mat-error *ngIf="form.get('transactionState')?.hasError('required')">
                   {{ getErrorMessage('transactionState') }}
                 </mat-error>
               </mat-form-field>
@@ -56,28 +56,28 @@
           <div class="form-section">
             <h3>{{ 'OIL_TRANSACTIONS.FORM.SECTIONS.STORAGE_UNITS' | translate }}</h3>
             <div class="form-row">
-              <!-- Source Unit: Only for EXCHANGE or if required -->
-              <mat-form-field appearance="outline" class="form-field" *ngIf="isExchangeTransaction() || (isSourceStorageUnitRequired() && !isExchangeTransaction())">
+              <!-- Source Unit -->
+              <mat-form-field *ngIf="shouldShowSourceUnit()" appearance="outline" class="form-field">
                 <mat-label>{{ 'OIL_TRANSACTIONS.FORM.FIELDS.STORAGE_UNIT_SOURCE' | translate }}</mat-label>
                 <mat-select formControlName="storageUnitSourceId" required>
                   <mat-option *ngFor="let unit of storageUnits" [value]="unit.id">
                     {{ getStorageUnitInfo(unit) }}
                   </mat-option>
                 </mat-select>
-                <mat-error *ngIf="oilTransactionForm.get('storageUnitSourceId')?.hasError('required')">
+                <mat-error *ngIf="form.get('storageUnitSourceId')?.hasError('required')">
                   {{ getErrorMessage('storageUnitSourceId') }}
                 </mat-error>
               </mat-form-field>
 
-              <!-- Destination Unit: Only for non-EXCHANGE types -->
-              <mat-form-field appearance="outline" class="form-field" *ngIf="!isExchangeTransaction()">
+              <!-- Destination Unit -->
+              <mat-form-field *ngIf="shouldShowDestinationUnit()" appearance="outline" class="form-field">
                 <mat-label>{{ 'OIL_TRANSACTIONS.FORM.FIELDS.STORAGE_UNIT_DESTINATION' | translate }}</mat-label>
                 <mat-select formControlName="storageUnitDestinationId" required>
                   <mat-option *ngFor="let unit of storageUnits" [value]="unit.id">
                     {{ getStorageUnitInfo(unit) }}
                   </mat-option>
                 </mat-select>
-                <mat-error *ngIf="oilTransactionForm.get('storageUnitDestinationId')?.hasError('required')">
+                <mat-error *ngIf="form.get('storageUnitDestinationId')?.hasError('required')">
                   {{ getErrorMessage('storageUnitDestinationId') }}
                 </mat-error>
               </mat-form-field>
@@ -95,7 +95,7 @@
                     {{ grade.label | translate }}
                   </mat-option>
                 </mat-select>
-                <mat-error *ngIf="oilTransactionForm.get('qualityGrade')?.hasError('required')">
+                <mat-error *ngIf="form.get('qualityGrade')?.hasError('required')">
                   {{ getErrorMessage('qualityGrade') }}
                 </mat-error>
               </mat-form-field>
@@ -104,10 +104,10 @@
                 <mat-label>{{ 'OIL_TRANSACTIONS.FORM.FIELDS.QUANTITY_KG' | translate }}</mat-label>
                 <input matInput type="number" formControlName="quantityKg" required placeholder="{{ 'OIL_TRANSACTIONS.FORM.PLACEHOLDERS.QUANTITY_KG' | translate }}" step="0.01" min="0.01">
                 <span matSuffix>kg</span>
-                <mat-error *ngIf="oilTransactionForm.get('quantityKg')?.hasError('required')">
+                <mat-error *ngIf="form.get('quantityKg')?.hasError('required')">
                   {{ getErrorMessage('quantityKg') }}
                 </mat-error>
-                <mat-error *ngIf="oilTransactionForm.get('quantityKg')?.hasError('min')">
+                <mat-error *ngIf="form.get('quantityKg')?.hasError('min')">
                   {{ getErrorMessage('quantityKg') }}
                 </mat-error>
               </mat-form-field>
@@ -122,10 +122,10 @@
                 <mat-label>{{ 'OIL_TRANSACTIONS.FORM.FIELDS.UNIT_PRICE' | translate }}</mat-label>
                 <input matInput type="number" formControlName="unitPrice" required placeholder="{{ 'OIL_TRANSACTIONS.FORM.PLACEHOLDERS.UNIT_PRICE' | translate }}" step="0.01" min="0">
                 <span matSuffix>TND/kg</span>
-                <mat-error *ngIf="oilTransactionForm.get('unitPrice')?.hasError('required')">
+                <mat-error *ngIf="form.get('unitPrice')?.hasError('required')">
                   {{ getErrorMessage('unitPrice') }}
                 </mat-error>
-                <mat-error *ngIf="oilTransactionForm.get('unitPrice')?.hasError('min')">
+                <mat-error *ngIf="form.get('unitPrice')?.hasError('min')">
                   {{ getErrorMessage('unitPrice') }}
                 </mat-error>
               </mat-form-field>
@@ -140,14 +140,21 @@
             </div>
           </div>
 
-
-
           <!-- Form Actions -->
           <div class="form-actions">
             <button type="button" mat-button (click)="onCancel()" [disabled]="submitting">
               <mat-icon>cancel</mat-icon>
               {{ 'OIL_TRANSACTIONS.FORM.ACTIONS.CANCEL' | translate }}
             </button>
+
+            <!-- Approval button (only in edit mode) -->
+            <button *ngIf="isEditMode" type="button" mat-raised-button color="accent" (click)="onApprove()" [disabled]="submitting">
+              <mat-spinner *ngIf="submitting" diameter="20"></mat-spinner>
+              <mat-icon *ngIf="!submitting">check_circle</mat-icon>
+              {{ 'OIL_TRANSACTIONS.FORM.ACTIONS.APPROVE' | translate }}
+            </button>
+
+            <!-- Submit button -->
             <button type="submit" mat-raised-button color="primary" [disabled]="submitting">
               <mat-spinner *ngIf="submitting" diameter="20"></mat-spinner>
               <mat-icon *ngIf="!submitting">{{ isEditMode ? 'save' : 'add' }}</mat-icon>
