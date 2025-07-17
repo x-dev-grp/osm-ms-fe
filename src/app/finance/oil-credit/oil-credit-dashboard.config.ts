@@ -2,6 +2,7 @@ import { DashboardConfig, AttributeType, FieldType } from '../../shared/modules/
 import { CreditState, UnitType } from '../models/OilCredit';
 
 export const OIL_CREDIT_DASHBOARD: DashboardConfig = {
+  icon: 'credit_score',
   title: 'Gestion des crédits d\'huile',
   baseURL: 'finance/oil-credit',
   searchEndpoint: 'finance/oil-credit',

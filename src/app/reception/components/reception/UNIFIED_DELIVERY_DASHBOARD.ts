@@ -4,6 +4,7 @@ import { SearchOperation } from '../../../shared/models/advanced-search/searchOp
 import { TypeCategory } from '../../../shared/models/type-category.enum';
 
 export const UNIFIED_DELIVERY_DASHBOARD: DashboardConfig = {
+  icon: 'local_shipping',
   title: 'Livraisons',
   titleTranslatePath: 'DELIVERIES.TITLE',
   baseURL: 'deliveries',

@@ -2,6 +2,7 @@ import { AttributeType, DashboardConfig, FieldType } from '../../../shared/modul
 import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
 
 export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
+  icon: 'people',
   /* ─────────── basic info ─────────── */
   title: 'Fournisseurs',
   titleTranslatePath: 'SUPPLIERS.TITLE',

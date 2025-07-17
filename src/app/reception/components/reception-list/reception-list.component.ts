@@ -36,7 +36,8 @@ export class ReceptionListComponent {
 
       case 'OIL_QUALITY':
         if (event.row.id) {
-          this.createOilReception(event.row);
+           this._router.navigate(['/reception/quality/oilFromOlive', event.row.id]);
+
         }
         break;
     }

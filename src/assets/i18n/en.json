@@ -852,7 +852,13 @@
         "REFUSED": "Refused"
       },
       "TITLE": "Oil Deliveries"
-    }
+    },
+    "PAYMENT_DETAILS": "Payment Details",
+    "PAYMENT_DIALOG_DESCRIPTION": "Enter the unit price and quantity for this oil payment. The total cannot exceed the unpaid amount from the original olive reception.",
+    "QUANTITY": "Quantity (kg)",
+    "REQUIRED": "This field is required",
+    "TOTAL": "Total (TND)",
+    "UNIT_PRICE": "Unit Price (TND)"
   },
   "OIL_TRANSACTION": {
     "DELIVERY": {
@@ -1109,6 +1115,7 @@
     "ACTIONS": {
       "CANCEL": "Cancel",
       "COMPLETE": "Complete",
+      "COMPLETE_PAYMENT_DETAILS": "To be completed for payment ",
       "CONFIRM": "Confirm",
       "CONFIRM_DELETE": "Are you sure you want to delete this item?",
       "CREATE": "Create",
@@ -1239,13 +1246,13 @@
       "TRUCK_PLATE": "Truck Plate"
     },
     "STATUS": {
-      "CANCELLED": "Cancelled",
       "COMPLETED": "Completed",
       "IN_PROGRESS": "In Progress",
       "NEW": "New",
       "PROD_READY": "Ready for production",
       "REFUSED": "Refused",
-      "STOCK_READY": "Ready to be stocekd"
+      "STOCK_READY": "Ready to be stocekd",
+      "WAITING_FOR_PRICING": "waiting for pricing & Quantiy"
     },
     "TITLE": "Oil Receptions and Milling"
   },
@@ -1432,8 +1439,10 @@
     "BANK_ACCOUNT": "Bank Account",
     "BANK_TRANSFER": "Bank Transfer",
     "BATCH_PAYMENT": "Batch Payment",
+    "BOTH_PAYMENT": "Mixed Payment",
     "CANCEL": "Cancel",
     "CASH": "Cash",
+    "CASH_AMOUNT": "Cash Amount",
     "CASH_PAYMENT": "Cash Payment",
     "CHECK": "Check",
     "CHECK_NUMBER": "Check Number",
@@ -1451,6 +1460,7 @@
       "NO_DATA_FOUND": "No data found",
       "OIL_PRICE_MIN": "Oil price must be greater than 0",
       "OIL_PRICE_REQUIRED": "Oil price is required",
+      "OIL_QUANTITY_EXCEEDS_REMAINING": "Oil quantity exceeds remaining amount",
       "OIL_QUANTITY_MIN": "Oil quantity must be greater than 0",
       "OIL_QUANTITY_REQUIRED": "Oil quantity is required",
       "SUPPLIER_ID_NOT_FOUND": "Supplier ID not found"
@@ -1458,6 +1468,7 @@
     "LOT": "Lot",
     "LOT_DETAILS": "Lot {{lotNumber}} details",
     "LOT_NUMBER": "Lot No.",
+    "MIXED_PAYMENT": "Mixed Payment",
     "MONEY_PAYMENT": "Money Payment",
     "MONEY_PAYMENT_DESC": "Pay with cash, check, or bank transfer",
     "NEGOTIATED_PRICE": "Negotiated Price",
@@ -1476,13 +1487,17 @@
     "OIL_CREDIT_TYPE": "Oil Type",
     "OIL_CREDIT_UNIT": "Unit",
     "OIL_EQUIVALENT": "Oil Equivalent",
+    "OIL_LOT_NUMBER": "Oil Lot Number",
     "OIL_PAYMENT": "Oil Payment",
     "OIL_PAYMENT_DESC": "Pay with olive oil equivalent",
+    "OIL_PRICE": "Oil Price",
     "OIL_PRICE_PER_KG": "Oil Price per kg (TND)",
     "OIL_QUALITY_CONTROL": "Oil Quality Control",
     "OIL_QUALITY_CONTROL_DESC": "Quality control is required for oil payments. Please complete the quality assessment below.",
-    "OIL_QUANTITY": "Oil Quantity (L)",
+    "OIL_QUANTITY": "Oil Quantity",
+    "OIL_QUANTITY_EXCEEDS_REMAINING": "Oil quantity exceeds remaining amount",
     "OIL_QUANTITY_HINT": "Maximum quantity:",
+    "OIL_STATUS": "Oil Status",
     "OIL_VALUE": "Oil Value",
     "OLIVE_WEIGHT": "Olive Weight (kg)",
     "PAID": "Paid",
@@ -1500,8 +1515,11 @@
     "RECEPTION_TYPE_OIL": "Oil",
     "RECEPTION_TYPE_OLIVE": "Olive",
     "REFERENCE_PRICE": "Reference Price",
+    "RELATED_OIL_DELIVERY": "Related Oil Delivery",
+    "REMAINING_AFTER_CASH": "Remaining After Cash",
     "REMAINING_AMOUNT": "Remaining Amount",
     "SELECT_LOTS_FOR_OIL_PAYMENT": "Select lots for oil payment",
+    "SELECT_PAYMENT_METHOD": "Select Payment Method",
     "STATUS": "Status",
     "STATUS_PAID": "Paid",
     "STATUS_PARTIAL": "Partial",
@@ -1510,6 +1528,7 @@
     "TOTAL_DELIVERIES": "Total Deliveries",
     "TOTAL_OLIVE_WEIGHT": "Total Olive Weight",
     "TOTAL_PAID": "Total Paid",
+    "TOTAL_PAYMENT": "Total Payment",
     "TOTAL_PRICE": "Total Price",
     "TOTAL_UNPAID": "Total Unpaid",
     "UNPAID": "Unpaid",

@@ -16,13 +16,14 @@ import { TranslateModule } from '@ngx-translate/core';
 import { deliveryType } from '../../../../shared/models/deleveryType';
 import { OilCreditService } from '../../../../finance/service/oil-credit.service';
 import { OilCredit } from '../../../../finance/models/OilCredit';
+import { CardComponent } from '../../../../@theme/components/card/card.component';
 
 @Component({
   selector: 'app-supplier-details',
   templateUrl: './supplier-details.component.html',
   styleUrls: ['./supplier-details.component.scss'],
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatCardModule, MatIconModule, MatProgressSpinnerModule, OsmDashboard, TranslateModule]
+  imports: [CommonModule, MatButtonModule, MatCardModule, MatIconModule, MatProgressSpinnerModule, OsmDashboard, TranslateModule, CardComponent]
 })
 export class SupplierDetailsComponent implements OnInit, OnDestroy {
   supplierData: SupplierType | null = null;

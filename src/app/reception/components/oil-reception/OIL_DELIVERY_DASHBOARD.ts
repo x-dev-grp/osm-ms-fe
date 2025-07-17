@@ -3,6 +3,7 @@ import {deliveryType} from '../../../shared/models/deleveryType';
 import {SearchOperation} from '../../../shared/models/advanced-search/searchOperation';
 
 export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
+  icon: 'water_drop',
   title: "Livraisons d'Huile",
   titleTranslatePath: 'OIL_RECEPTION.DASHBOARD.TITLE',
   baseURL: 'deliveries',
@@ -18,7 +19,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       operation: SearchOperation.AND,
       search: {
         status: {
-          inValues: ['NEW', 'IN_PROGRESS', 'OIL_CONTROLLED', 'WAITING_FOR_PRICING', 'REFUSED','STOCK_READY', 'CANCELLED']
+          inValues: ['NEW', 'IN_PROGRESS', 'OIL_CONTROLLED', 'WAITING_FOR_PRICING', 'REFUSED','STOCK_READY', 'CANCELLED','WAITING_FOR_PAYMENT_DETAILS']
         },
         deliveryType: {
           equalValue: deliveryType.OIL
@@ -181,6 +182,11 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
           label: 'Annulé',
           value: 'CANCELLED',
           labelTranslatePath: 'RECEPTION_LIST.STATUS.CANCELLED'
+        },
+        {
+          label: 'à definire le prix ',
+          value: 'WAITING_FOR_PRICING',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.WAITING_FOR_PRICING'
         },
         { label: 'En stock', value: 'IN_STOCK', labelTranslatePath: 'RECEPTION_LIST.STATUS.IN_STOCK' }
       ]

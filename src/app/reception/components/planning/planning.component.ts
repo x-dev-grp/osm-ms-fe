@@ -23,7 +23,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CardComponent } from '../../../@theme/components/card/card.component';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { debounceTime, filter, map, Observable, Subject, forkJoin, catchError, of } from 'rxjs';
+import { catchError, debounceTime, filter, forkJoin, map, Observable, of, Subject } from 'rxjs';
 import { MillMachineService } from '../../../shared/services/mill-machine.service';
 import { MillMachine } from '../../../shared/models/millMachine';
 import { MatDialog } from '@angular/material/dialog';
@@ -31,19 +31,22 @@ import { MatCheckbox } from '@angular/material/checkbox';
 import { MatExpansionPanel, MatExpansionPanelDescription, MatExpansionPanelHeader } from '@angular/material/expansion';
 import { SharedModule } from '../../../demo/shared/shared.module';
 import { DialogModule } from '@angular/cdk/dialog';
-import { PlanningService, ChildLotCompletionDto } from '../../../shared/services/planning.service';
+import { ChildLotCompletionDto, PlanningService } from '../../../shared/services/planning.service';
 import { ConfirmDialogComponent } from '../../../shared/component/confirm-dialog/confirm-dialog/confirm-dialog.component';
 import { CompletionDetailsDialogComponent } from './completion-details-dialog/completion-details-dialog.component';
 import { SumPipe } from '../../../shared/pipes/sum.pipe';
 import {
   BoardItem,
-  GlobalLot, GlobalLotDTO,
-  GlobalLotGroup, LotDTO,
-  Mill, MillPlanDTO,
+  GlobalLot,
+  GlobalLotDTO,
+  GlobalLotGroup,
+  LotDTO,
+  Mill,
+  MillPlanDTO,
   PlanItemType,
-  PlanningItem, PlanningSaveRequest
+  PlanningItem,
+  PlanningSaveRequest
 } from '../../../shared/models/planningDTOS';
-
 
 @Component({
   selector: 'app-planning',
@@ -448,14 +451,14 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
         deliveryDate: lot.deliveryDate || originalLot.deliveryDate, // Prioritize potentially updated date
         completed: lot.completed || originalLot.completed, // Prioritize potentially updated completion status
         oilQuantity: lot.oilQuantity || originalLot.oilQuantity, // Prioritize potentially updated oil quantity
-        rendement: lot.rendement || originalLot.rendement,// Prioritize potentially updated rendement
+        rendement: lot.rendement || originalLot.rendement, // Prioritize potentially updated rendement
         supplier: lot.supplier || undefined,
         region: lot.region || undefined,
         oliveVariety: lot.oliveVariety || undefined,
         oliveType: lot.oliveType || undefined,
         poidsBrute: lot.poidsBrute || 0,
         poidsNet: lot.poidsNet || 0,
-        sackCount: lot.sackCount || 0,
+        sackCount: lot.sackCount || 0
       };
 
       console.log('[UNGROUP] Processed child lot data:', ungroupedLotData);
@@ -697,8 +700,8 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
       sackCount: d.sackCount ?? undefined,
       oilQuantity: d.oilQuantity ?? null,
       rendement: d.rendement ?? null,
-      completionDate: (typeof extra.completionDate !== 'undefined' && extra.completionDate ? new Date(extra.completionDate) : undefined),
-      finalObservation: (typeof extra.finalObservation !== 'undefined' ? extra.finalObservation : undefined)
+      completionDate: typeof extra.completionDate !== 'undefined' && extra.completionDate ? new Date(extra.completionDate) : undefined,
+      finalObservation: typeof extra.finalObservation !== 'undefined' ? extra.finalObservation : undefined
     };
     return result;
   }
@@ -779,60 +782,65 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
         });
 
         // Call the backend (now sending oilQuantity, rendement, and unpaidAmount)
-        const req$ = itemToComplete.type === PlanItemType.LOT
-          ? this.planningService.completeLotWithDetails(label, oilQuantity, rendement, totalTriturationPrice)
-          : this.planningService.completeGlobalLotWithDetails(
-              label,
-              childLotsRendement && Array.isArray(childLotsRendement)
-                ? childLotsRendement.map((child: { lotNumber: string; oilQuantity: number; rendement: number; triturationPrice: number }) => ({
-                    lotNumber: child.lotNumber,
-                    oilQuantity: child.oilQuantity ?? 0,
-                    rendement: child.rendement ?? 0,
-                    unpaidPrice: child.triturationPrice ?? 0
-                  })) as ChildLotCompletionDto[]
-                : []
-            );
+        const req$ = this.completeIt(itemToComplete, label, oilQuantity, rendement, totalTriturationPrice, childLotsRendement);
 
-        req$.subscribe({
-          next: (response) => {
-            // If backend returns { success: boolean, message: string } and success is false, treat as error
-            if (response && typeof response === 'object' && response.success === false) {
-              this.snackBar.open(response.message || 'Erreur lors de la finalisation.', 'Fermer', { duration: 5000 });
-              // Optionally revert UI changes here
-              return;
-            }
-            // Otherwise, treat as success
-            this.removeFromBoard(itemToComplete);
-            this.snackBar.open('Marked as completed!', undefined, { duration: 3000 });
-            this.dirty = true;
-          },
-          error: (error) => {
-            console.error('[COMPLETE] Error completing item:', {
-              item: itemToComplete,
-              error: error,
-              errorMessage: error?.message || error?.error || 'Unknown error',
-              status: error?.status,
-              statusText: error?.statusText
-            });
-
-
-
-
-
-            this.snackBar.open('Erreur lors de la finalisation. Veuillez réessayer.', 'Fermer', { duration: 5000 });
-
-            // Revert changes if server call fails
-            if (targetItemData) {
-              targetItemData.oilQuantity = null;
-              targetItemData.rendement = null;
-              if ('completed' in targetItemData) {
-                targetItemData.completed = false;
-              }
-              this.cdr.markForCheck();
-            }
-          }
-        });
+        this.handleResponse(req$, itemToComplete, targetItemData);
       });
+  }
+
+  // Add trackBy functions for better performance
+  trackByMill(index: number, mill: Mill): string {
+    return mill.id || index.toString();
+  }
+
+  trackByReception(index: number, item: BoardItem): string {
+    return item.type === PlanItemType.LOT ? (item.data as PlanningItem).lotNumber : (item.data as GlobalLot).globalLotNumber;
+  }
+
+  private handleResponse(req$: Observable<string>, itemToComplete: BoardItem, targetItemData?: PlanningItem | GlobalLot): void {
+    req$.subscribe({
+      next: (msg) => {                          // msg = "Lot completed successfully"
+        this.snackBar.open(msg, undefined, { duration: 3000 });
+        this.removeFromBoard(itemToComplete);
+        this.dirty = true;
+      },
+      error: (err) => {                         // only runs on real 4xx/5xx/network errors
+        console.error('[COMPLETE] lot error', err);
+        this.snackBar.open(
+          err?.error?.message || 'Erreur lors de la finalisation.',
+          'Fermer',
+          { duration: 5000 }
+        );
+        if (targetItemData) {
+          targetItemData.oilQuantity = null;
+          targetItemData.rendement = null;
+          if ('completed' in targetItemData) {
+            targetItemData.completed = false;
+          }
+          this.cdr.markForCheck();
+        }
+      }
+    });
+  }
+
+  private completeIt(itemToComplete: BoardItem, label: string, oilQuantity: any, rendement: any, totalTriturationPrice: any, childLotsRendement: any) {
+    if (itemToComplete.type === PlanItemType.LOT) {
+      return this.planningService.completeLotWithDetails(label, oilQuantity, rendement, totalTriturationPrice);
+    } else {
+      if (childLotsRendement && Array.isArray(childLotsRendement)) {
+        return this.planningService.completeGlobalLotWithDetails(
+          label,
+          childLotsRendement.map((child: { lotNumber: string; oilQuantity: number; rendement: number; triturationPrice: number }) => ({
+            lotNumber: child.lotNumber,
+            oilQuantity: child.oilQuantity ?? 0,
+            rendement: child.rendement ?? 0,
+            unpaidPrice: child.triturationPrice ?? 0
+          })) as ChildLotCompletionDto[]
+        );
+      } else {
+        return this.planningService.completeGlobalLotWithDetails(label, []);
+      }
+    }
   }
 
   private confirm(message: string): Observable<boolean> {
@@ -917,19 +925,19 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
   private loadPlanning(): void {
     forkJoin({
       planning: this.planningService.getPlanning().pipe(
-        catchError(err => {
+        catchError((err) => {
           console.error('Error loading planning:', err);
           return of({ mills: [], globalLots: [] } as PlanningSaveRequest);
         })
       ),
       mills: this.millService.getAllMillMachines().pipe(
-        catchError(err => {
+        catchError((err) => {
           console.error('Error loading mills:', err);
           return of([]);
         })
       ),
       deliveries: this.deliveryService.getAllDeliveriesListForPlanning().pipe(
-        catchError(err => {
+        catchError((err) => {
           console.error('Error loading deliveries:', err);
           return of({ data: [] });
         })
@@ -962,9 +970,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private populateReceptionMap(deliveryResponse: { data: UnifiedDelivery[] | UnifiedDelivery }): void {
-    const deliveries: UnifiedDelivery[] = Array.isArray(deliveryResponse.data)
-      ? deliveryResponse.data
-      : [deliveryResponse.data];
+    const deliveries: UnifiedDelivery[] = Array.isArray(deliveryResponse.data) ? deliveryResponse.data : [deliveryResponse.data];
 
     this.fullReceptionMap.clear();
     deliveries.forEach((d) => {
@@ -980,7 +986,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     console.log('[PROCESS] Starting planning data processing...');
 
     // Step 1: Process global lots first
-    this.globalLots = planning.globalLots.map(gl => this.createGlobalLot(gl));
+    this.globalLots = planning.globalLots.map((gl) => this.createGlobalLot(gl));
     console.log('[PROCESS] Global lots created:', this.globalLots.length);
 
     // Step 2: Create a map of assigned lot numbers and track assignments
@@ -990,7 +996,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
 
     // Step 3: Process mill assignments with validation
     if (planning.mills && planning.mills.length > 0) {
-      planning.mills.forEach(millPlan => {
+      planning.mills.forEach((millPlan) => {
         const mill = this.mills.find((m) => m.id === millPlan.millMachineId);
         if (!mill) {
           console.warn(`[MILL] Mill not found for ID: ${millPlan.millMachineId}`);
@@ -1102,16 +1108,15 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     let hasErrors = false;
 
     // Validate global lots
-    this.globalLots.forEach(globalLot => {
+    this.globalLots.forEach((globalLot) => {
       if (globalLot.millMachineId) {
-        const mill = this.mills.find(m => m.id === globalLot.millMachineId);
+        const mill = this.mills.find((m) => m.id === globalLot.millMachineId);
         if (!mill) {
           console.error(`[VALIDATE] Global lot ${globalLot.globalLotNumber} assigned to non-existent mill ${globalLot.millMachineId}`);
           hasErrors = true;
         } else {
-          const millHasGlobalLot = mill.receptions.some(r =>
-            r.type === PlanItemType.GLOBAL_LOT &&
-            (r.data as GlobalLot).globalLotNumber === globalLot.globalLotNumber
+          const millHasGlobalLot = mill.receptions.some(
+            (r) => r.type === PlanItemType.GLOBAL_LOT && (r.data as GlobalLot).globalLotNumber === globalLot.globalLotNumber
           );
 
           if (!millHasGlobalLot) {
@@ -1128,15 +1133,12 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
 
     // Validate individual lot assignments
     individualLotAssignments.forEach((millId, lotNumber) => {
-      const mill = this.mills.find(m => m.id === millId);
+      const mill = this.mills.find((m) => m.id === millId);
       if (!mill) {
         console.error(`[VALIDATE] Individual lot ${lotNumber} assigned to non-existent mill ${millId}`);
         hasErrors = true;
       } else {
-        const millHasLot = mill.receptions.some(r =>
-          r.type === PlanItemType.LOT &&
-          (r.data as PlanningItem).lotNumber === lotNumber
-        );
+        const millHasLot = mill.receptions.some((r) => r.type === PlanItemType.LOT && (r.data as PlanningItem).lotNumber === lotNumber);
 
         if (!millHasLot) {
           console.error(`[VALIDATE] Individual lot ${lotNumber} not found in assigned mill ${mill.name}`);
@@ -1148,8 +1150,8 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     // Check for orphaned lots (lots in global lots but not assigned)
-    this.globalLots.forEach(globalLot => {
-      globalLot.childLotNumbers.forEach(lotNumber => {
+    this.globalLots.forEach((globalLot) => {
+      globalLot.childLotNumbers.forEach((lotNumber) => {
         if (!assignedLotNumbers.has(lotNumber)) {
           console.error(`[VALIDATE] Orphaned lot ${lotNumber} in global lot ${globalLot.globalLotNumber} - not assigned to any mill`);
           hasErrors = true;
@@ -1170,11 +1172,11 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     console.log('[CLEANUP] Starting cleanup of corrupted assignments...');
 
     // Clean up mills with non-existent global lots
-    this.mills.forEach(mill => {
-      mill.receptions = mill.receptions.filter(reception => {
+    this.mills.forEach((mill) => {
+      mill.receptions = mill.receptions.filter((reception) => {
         if (reception.type === PlanItemType.GLOBAL_LOT) {
           const globalLot = reception.data as GlobalLot;
-          const existsInGlobalLots = this.globalLots.some(gl => gl.globalLotNumber === globalLot.globalLotNumber);
+          const existsInGlobalLots = this.globalLots.some((gl) => gl.globalLotNumber === globalLot.globalLotNumber);
 
           if (!existsInGlobalLots) {
             console.warn(`[CLEANUP] Removing orphaned global lot ${globalLot.globalLotNumber} from mill ${mill.name}`);
@@ -1186,13 +1188,13 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     // Clean up global lots with invalid mill assignments
-    this.globalLots.forEach(globalLot => {
+    this.globalLots.forEach((globalLot) => {
       if (globalLot.millMachineId) {
-        const millExists = this.mills.some(m => m.id === globalLot.millMachineId);
+        const millExists = this.mills.some((m) => m.id === globalLot.millMachineId);
         if (!millExists) {
           console.warn(`[CLEANUP] Removing invalid mill assignment from global lot ${globalLot.globalLotNumber}`);
           globalLot.millMachineId = undefined;
-          globalLot.items.forEach(childItem => {
+          globalLot.items.forEach((childItem) => {
             (childItem.data as PlanningItem).millMachineId = undefined;
           });
         }
@@ -1200,11 +1202,11 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     // Remove duplicate assignments
-    this.mills.forEach(mill => {
+    this.mills.forEach((mill) => {
       const seenLotNumbers = new Set<string>();
       const seenGlobalLotNumbers = new Set<string>();
 
-      mill.receptions = mill.receptions.filter(reception => {
+      mill.receptions = mill.receptions.filter((reception) => {
         if (reception.type === PlanItemType.LOT) {
           const lotNumber = (reception.data as PlanningItem).lotNumber;
           if (seenLotNumbers.has(lotNumber)) {
@@ -1226,6 +1228,9 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
 
     console.log('[CLEANUP] Cleanup completed');
   }
+
+  // --- Fallback method if delivery details loading fails ---
+  // Remove the old loadPlanningWithoutDetails method as it's no longer needed
 
   private createGlobalLot(gl: GlobalLotDTO): GlobalLot {
     return {
@@ -1254,20 +1259,6 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.filteredReceptions = [...this.unassignedReceptions];
     console.log('[LOAD] Unassigned receptions created:', this.unassignedReceptions.length);
-  }
-
-  // --- Fallback method if delivery details loading fails ---
-  // Remove the old loadPlanningWithoutDetails method as it's no longer needed
-
-  // Add trackBy functions for better performance
-  trackByMill(index: number, mill: Mill): string {
-    return mill.id || index.toString();
-  }
-
-  trackByReception(index: number, item: BoardItem): string {
-    return item.type === PlanItemType.LOT
-      ? (item.data as PlanningItem).lotNumber
-      : (item.data as GlobalLot).globalLotNumber;
   }
 
   // Remove the old loadPlanning method and related fallback methods
@@ -1358,29 +1349,27 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     console.log('\n=== ASSIGNMENT SUMMARY ===');
 
     // Summary by mill
-    this.mills.forEach(mill => {
-      const individualLots = mill.receptions.filter(r => r.type === PlanItemType.LOT);
-      const globalLots = mill.receptions.filter(r => r.type === PlanItemType.GLOBAL_LOT);
+    this.mills.forEach((mill) => {
+      const individualLots = mill.receptions.filter((r) => r.type === PlanItemType.LOT);
+      const globalLots = mill.receptions.filter((r) => r.type === PlanItemType.GLOBAL_LOT);
 
       console.log(`\n${mill.name} (${mill.id}):`);
       console.log(`  - Individual lots: ${individualLots.length}`);
       console.log(`  - Global lots: ${globalLots.length}`);
 
       if (individualLots.length > 0) {
-        console.log(`  - Individual lot numbers: ${individualLots.map(r => (r.data as PlanningItem).lotNumber).join(', ')}`);
+        console.log(`  - Individual lot numbers: ${individualLots.map((r) => (r.data as PlanningItem).lotNumber).join(', ')}`);
       }
 
       if (globalLots.length > 0) {
-        console.log(`  - Global lot numbers: ${globalLots.map(r => (r.data as GlobalLot).globalLotNumber).join(', ')}`);
+        console.log(`  - Global lot numbers: ${globalLots.map((r) => (r.data as GlobalLot).globalLotNumber).join(', ')}`);
       }
     });
 
     // Unassigned summary
     console.log(`\nUnassigned receptions: ${this.unassignedReceptions.length}`);
     if (this.unassignedReceptions.length > 0) {
-      const unassignedLotNumbers = this.unassignedReceptions
-        .map(r => (r.data as PlanningItem).lotNumber)
-        .slice(0, 10); // Show first 10
+      const unassignedLotNumbers = this.unassignedReceptions.map((r) => (r.data as PlanningItem).lotNumber).slice(0, 10); // Show first 10
       console.log(`  - Sample unassigned lots: ${unassignedLotNumbers.join(', ')}`);
       if (this.unassignedReceptions.length > 10) {
         console.log(`  - ... and ${this.unassignedReceptions.length - 10} more`);
@@ -1389,9 +1378,8 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
 
     // Global lots summary
     console.log(`\nGlobal lots: ${this.globalLots.length}`);
-    this.globalLots.forEach(gl => {
-      const assignedTo = gl.millMachineId ?
-        this.mills.find(m => m.id === gl.millMachineId)?.name : 'Unassigned';
+    this.globalLots.forEach((gl) => {
+      const assignedTo = gl.millMachineId ? this.mills.find((m) => m.id === gl.millMachineId)?.name : 'Unassigned';
       console.log(`  - ${gl.globalLotNumber}: ${gl.childLotNumbers.length} child lots → ${assignedTo}`);
     });
 

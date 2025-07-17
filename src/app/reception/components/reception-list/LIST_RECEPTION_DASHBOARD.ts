@@ -2,6 +2,7 @@ import { DashboardConfig, AttributeType, FieldType } from '../../../shared/modul
 import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
 
 export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
+  icon: 'list_alt',
   addNewItem: false,
   title: "Réceptions d'Huile et Triturations",
   titleTranslatePath: 'DELIVERIES.OIL_TITLE',

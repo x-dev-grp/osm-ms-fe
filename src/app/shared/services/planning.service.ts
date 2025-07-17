@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { PlanningSaveRequest } from '../models/planningDTOS';
+import { s } from '@angular/cdk/scrolling-module.d-ud2XrbF8';
 
 /**
  * DTO for completing a child lot in a global lot
@@ -37,16 +38,20 @@ export class PlanningService {
 
 
   /** POST one single LOT's status → COMPLETED, with oilQuantity and rendement */
-  completeLotWithDetails(lotNumber: string, oilQuantity: number, rendement: number, unpaidPrice: number): Observable<any> {
-    const payload = { oilQuantity, rendement, unpaidPrice };
-    console.log('[SERVICE] Completing lot with details:', { lotNumber, payload });
-
-    return this.http.post<any>(`${this.API_BASE_URL}/lots/${lotNumber}/completed`, payload);
+  completeLotWithDetails(lotNumber: string, oilQuantity: number, rendement: number, unpaidPrice: number): Observable<string> {                       // return plain text
+     const payload = { oilQuantity, rendement, unpaidPrice };
+    return this.http.post(
+      `${this.API_BASE_URL}/lots/${lotNumber}/completed`,
+      payload,
+      { responseType: 'text' }                  // 👈 expect text, not JSON
+    );
   }
   /** POST all lots in a global lot → COMPLETED, with oilQuantity and rendement */
-  completeGlobalLotWithDetails(globalLotNumber: string, childLots: ChildLotCompletionDto[]): Observable<void> {
+  completeGlobalLotWithDetails(globalLotNumber: string, childLots: ChildLotCompletionDto[]): Observable<string> {
     console.log('[SERVICE] Completing global lot with details:', { globalLotNumber, childLots });
 
-    return this.http.post<any>(`${this.API_BASE_URL}/globalLots/${globalLotNumber}/completed`, childLots);
+    return this.http.post(`${this.API_BASE_URL}/globalLots/${globalLotNumber}/completed`, childLots,
+      { responseType: 'text' }                  // 👈 expect text, not JSON
+    );
   }
 }

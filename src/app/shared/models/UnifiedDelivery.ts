@@ -37,6 +37,7 @@ export class UnifiedDelivery {
   storageUnit?: StorageUnitDto | null;
   qualityControlResults?: QualityControlResultDto[] | null;
   categoryOliveOil?: string;
+  lotOliveNumber?: string| null;
 
 }
 

@@ -1,44 +1,35 @@
-import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {MatButtonModule} from '@angular/material/button';
-import {MatTableModule} from '@angular/material/table';
-import {MatIconModule} from '@angular/material/icon';
-import {MatDialog, MatDialogModule} from '@angular/material/dialog';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatExpansionModule} from '@angular/material/expansion';
-import {MatInputModule} from '@angular/material/input';
-import {MatSelectModule} from '@angular/material/select';
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatCardModule} from '@angular/material/card';
-import {
-  AbstractControl,
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  ValidationErrors,
-  ValidatorFn,
-  Validators
-} from '@angular/forms';
-import {MatSortModule} from '@angular/material/sort';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {MatPaginator} from '@angular/material/paginator';
-import {Router} from '@angular/router';
-import {combineLatest, forkJoin, Subscription} from 'rxjs';
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatCardModule } from '@angular/material/card';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { MatSortModule } from '@angular/material/sort';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatPaginator } from '@angular/material/paginator';
+import { Router } from '@angular/router';
+import { combineLatest, forkJoin, Subscription } from 'rxjs';
 
-import {SharedModule} from '../../../demo/shared/shared.module';
-import {OsmDashboard} from '../../../shared/modules/osm-dashboard/osm-dashboard';
-import {DashboardConfig} from '../../../shared/modules/osm-dashboard/models/dashboard-config';
-import {UnifiedDelivery} from '../../../shared/models/UnifiedDelivery';
-import {BaseType} from '../../../shared/models/base-type';
-import {UnifiedDeliveryService} from '../../../shared/services/delivery.service';
-import {GenericTypeService} from '../../../shared/services/generic-type.service';
-import {TypeCategory} from '../../../shared/models/type-category.enum';
-import {SupplierType} from '../../../shared/models/supplier-type';
-import {SupplierTypeService} from '../../../shared/services/supplier.service';
+import { SharedModule } from '../../../demo/shared/shared.module';
+import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
+import { DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
+import { BaseType } from '../../../shared/models/base-type';
+import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
+import { GenericTypeService } from '../../../shared/services/generic-type.service';
+import { TypeCategory } from '../../../shared/models/type-category.enum';
+import { SupplierType } from '../../../shared/models/supplier-type';
+import { SupplierTypeService } from '../../../shared/services/supplier.service';
 
-import {PdfGeneratorService} from '../../../shared/services/pdf-generator.service';
-import {OIL_DELIVERY_DASHBOARD} from './OIL_DELIVERY_DASHBOARD';
-
+import { PdfGeneratorService } from '../../../shared/services/pdf-generator.service';
+import { OIL_DELIVERY_DASHBOARD } from './OIL_DELIVERY_DASHBOARD';
 
 /* ──────────────────────────────────────────────────────────── */
 /* validators                                                   */
@@ -79,8 +70,10 @@ export const netNotGreaterThanGross: ValidatorFn = (g: AbstractControl): Validat
   styleUrl: './oil-reception.component.scss'
 })
 export class OilReceptionComponent implements OnInit, OnDestroy {
-  @ViewChild('setPriceDialog') setPriceDialogTemplate!: TemplateRef<any>;
+  @ViewChild('setPriceDialog') setPriceDialogTemplate!: TemplateRef<unknown>;
   @ViewChild('dashboard') dashboard!: OsmDashboard;
+  @ViewChild('paymentDetailsDialog') paymentDetailsDialogTemplate!: TemplateRef<unknown>;
+  paymentDetailsForm!: FormGroup;
 
   /* ——— state ——— */
   loading = false;
@@ -99,9 +92,10 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
   dashboardConfig: DashboardConfig = OIL_DELIVERY_DASHBOARD;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  selectedRow: any;
-
+  selectedRow: UnifiedDelivery | null = null;
+  OilDelevery: UnifiedDelivery | null = null;
   private subs = new Subscription();
+  protected originalOliveReception: UnifiedDelivery;
 
   constructor(
     private fb: FormBuilder,
@@ -222,20 +216,35 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
           value: `${delivery.supplier?.supplierInfo?.name || ''} ${delivery.supplier?.supplierInfo?.lastname || ''}`
         },
         { label: 'Téléphone', value: delivery.supplier?.supplierInfo?.phone || '' },
-        { label: 'Adresse', value: delivery.supplier?.supplierInfo?.address || '' }
+        {
+          label: 'Adresse',
+          value: delivery.supplier?.supplierInfo?.address || ''
+        }
       ],
       fields: [
         { label: 'Lot', value: delivery.lotNumber || '' },
-        { label: 'Lot Global', value: delivery.globalLotNumber || '' },
+        {
+          label: 'Lot Global',
+          value: delivery.globalLotNumber || ''
+        },
         { label: 'Poids Brut', value: `${delivery.poidsBrute || ''} kg` },
-        { label: "Quantité d'huile", value: `${delivery.oilQuantity || ''} kg` },
+        {
+          label: "Quantité d'huile",
+          value: `${delivery.oilQuantity || ''} kg`
+        },
         { label: 'Variéte Huile', value: `${delivery.oilVariety?.name || ''} ` },
-        { label: 'Type Huile', value: `${delivery.oilType?.name || ''} ` },
+        {
+          label: 'Type Huile',
+          value: `${delivery.oilType?.name || ''} `
+        },
         { label: 'Région', value: delivery.region?.name || '' }
       ],
       footerInfo: [
         { label: 'Signature Agent (bascule) ', placeholder: '' },
-        { label: 'Signature Réspensable CQ', placeholder: '' }
+        {
+          label: 'Signature Réspensable CQ',
+          placeholder: ''
+        }
       ],
       fileName: `Bon_Reception_Huile_${delivery.deliveryNumber || 'inconnu'}.pdf`
     };
@@ -243,40 +252,288 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
     this.pdfService.generatePdfDocument(bonReceptionData);
   }
 
-
   /* ——— data loading & table helpers ——— */
 
+  /**
+   * Handles row actions triggered from the dashboard.
+   * This method processes different actions based on the delivery status and available operations.
+   *
+   * @param e Object containing the row data and action to perform
+   */
   onRowAction(e: { row: UnifiedDelivery; action: string }): void {
-    switch (e.action) {
-      case 'READ':
-        this.viewDelivery(e.row);
-        break;
+    console.log(`[OilReception] Processing action: ${e.action} for delivery: ${e.row.lotNumber}`);
 
-      case 'UPDATE':
-        this.selectReception(e.row);
-        break;
+    if (!e.row || !e.action) {
+      console.error('[OilReception] Invalid action data:', e);
+      this.toast("Données d'action invalides");
+      return;
+    }
 
-      case 'QUALITY':
-      case 'OIL_QUALITY':
-      case 'UPDATE_OIL_QUALITY':
-        this.QualityControl(e.row);
-        break;
+    try {
+      switch (e.action) {
+        case 'READ':
+          console.log(`[OilReception] Viewing delivery: ${e.row.lotNumber}`);
+          this.viewDelivery(e.row);
+          break;
 
-      case 'DELETE':
-        if (e.row.id) this.deleteDelivery(e.row);
-        break;
+        case 'UPDATE':
+          console.log(`[OilReception] Editing delivery: ${e.row.lotNumber}`);
+          this.selectReception(e.row);
+          break;
 
-      case 'SET_PRICE':
-        this.setPrice(e.row);
-        break;
+        case 'QUALITY':
+        case 'OIL_QUALITY':
+        case 'UPDATE_OIL_QUALITY':
+          console.log(`[OilReception] Opening quality control for delivery: ${e.row.lotNumber}`);
+          this.QualityControl(e.row);
+          break;
 
-      case 'GEN_PDF':
-        if (e.row) {
-          this.genererBonReception(e.row);
-        }
-        break;
+        case 'DELETE':
+          if (e.row.id) {
+            console.log(`[OilReception] Deleting delivery: ${e.row.lotNumber}`);
+            this.deleteDelivery(e.row);
+          } else {
+            console.error('[OilReception] Cannot delete delivery without ID:', e.row);
+            this.toast('Impossible de supprimer: ID manquant');
+          }
+          break;
+
+        case 'SET_PRICE':
+          console.log(`[OilReception] Setting price for delivery: ${e.row.lotNumber}`);
+          this.setPrice(e.row);
+          break;
+
+        case 'COMPLETE_PAYMENT_DETAILS':
+          console.log(`[OilReception] Opening payment details dialog for delivery: ${e.row.lotNumber}`);
+          this.openPaymentDetailsDialog(e.row);
+          break;
+
+        case 'GEN_PDF':
+          if (e.row) {
+            console.log(`[OilReception] Generating PDF for delivery: ${e.row.lotNumber}`);
+            this.genererBonReception(e.row);
+          }
+          break;
+
+        default:
+          console.warn(`[OilReception] Unknown action: ${e.action} for delivery: ${e.row.lotNumber}`);
+          this.toast(`Action non reconnue: ${e.action}`);
+          break;
+      }
+    } catch (error) {
+      console.error(`[OilReception] Error processing action ${e.action} for delivery ${e.row.lotNumber}:`, error);
+      this.toast(`Erreur lors du traitement de l'action: ${e.action}`);
     }
   }
+
+  confirmPrice(dialogRef: MatDialogRef<unknown>): void {
+    if (!this.setPriceForm.valid || !this.selectedRow) return;
+
+    // Met à jour les champs
+    this.selectedRow.unitPrice = this.setPriceForm.get('unitPrice')?.value;
+    this.selectedRow.price = this.setPriceForm.get('price')?.value;
+
+    this.isLoading = true;
+
+    this.deliveryService.updatePricing(this.selectedRow.id, this.selectedRow.unitPrice!).subscribe({
+      next: () => {
+        dialogRef.close(); // Ferme le dialog après succès
+        this.isLoading = false;
+        this.dashboard.refrechData();
+        this.snackBar.open('Prix mis à jour avec succès.', 'Fermer', {
+          duration: 3000,
+          panelClass: ['mat-snack-bar-container-success']
+        });
+      },
+      error: () => {
+        this.snackBar.open("Erreur lors de l'enregistrement du prix.", 'Fermer', {
+          duration: 4000,
+          panelClass: ['mat-snack-bar-container-error']
+        });
+        this.isLoading = false;
+      }
+    });
+  }
+
+  /**
+   * Opens the payment details dialog for oil reception.
+   * This method is called when the COMPLETE_PAYMENT_DETAILS action is triggered.
+   * Includes comprehensive validation, error handling, and loading states.
+   *
+   * @param row The oil delivery row that needs payment details completion
+   */
+  openPaymentDetailsDialog(row: UnifiedDelivery): void {
+    this.deliveryService.getDeliveryByLotNumber(row.lotOliveNumber!) .subscribe({
+      next: (res) => {
+         if (res.success && res.data  ) {
+          this.originalOliveReception = res.data;
+          console.log("this.originalOliveReception")
+          console.log(this.originalOliveReception)
+          // Move dialog open logic here
+          this.selectedRow = row;
+          this.isLoading = true;
+          const unitPrice = this.validateAndGetNumber(row.unitPrice, 0, 'unitPrice');
+          const quantity = this.validateAndGetNumber(row.oilQuantity, 0, 'oilQuantity');
+          const total = unitPrice * quantity;
+          this.paymentDetailsForm = this.fb.group({
+            unitPrice: [unitPrice, [Validators.required, Validators.min(0.01)]],
+            quantity: [quantity, [Validators.required, Validators.min(0.01)]],
+            total: [{ value: total, disabled: true }],
+            unpaidAmount: [this.validateAndGetNumber(this.originalOliveReception.unpaidAmount, 0, 'unpaidAmount')]
+          });
+          this.setupPaymentFormSubscriptions();
+          this.openPaymentDialog();
+        } else {
+          console.log('Impossible de charger les détails de la réception.');
+        }
+      },
+      error: (err) => {
+         console.error('Erreur de chargement :', err);
+      }
+    });
+    // Remove dialog open logic from here
+  }
+
+  /**
+   * Updates the total amount in the payment details form based on unit price and quantity.
+   * Includes validation and error handling for calculation accuracy.
+   */
+  updatePaymentDetailsTotal(): void {
+    if (!this.paymentDetailsForm) {
+      console.warn('[OilReception] Payment details form is not initialized');
+      return;
+    }
+
+
+    try {
+      const unitPriceControl = this.paymentDetailsForm.get('unitPrice');
+      const quantityControl = this.paymentDetailsForm.get('quantity');
+      const totalControl = this.paymentDetailsForm.get('total');
+
+      if (!unitPriceControl || !quantityControl || !totalControl) {
+        console.error('[OilReception] Required form controls are missing');
+        return;
+      }
+
+      const unitPrice = this.validateAndGetNumber(unitPriceControl.value, 0, 'unitPrice');
+      const quantity = this.validateAndGetNumber(quantityControl.value, 0, 'quantity');
+
+      // Calculate total with precision handling
+      const total = this.calculateTotalWithPrecision(unitPrice, quantity);
+      // Update total without triggering valueChanges to avoid infinite loop
+      totalControl.setValue(total, { emitEvent: false });
+    } catch (error) {
+      console.error('[OilReception] Error updating payment details total:', error);
+      // Set total to 0 if calculation fails
+      this.paymentDetailsForm.get('total')?.setValue(0, { emitEvent: false });
+    }
+  }
+
+  /**
+   * Confirms and processes the payment details from the dialog.
+   * This method updates the oil reception with payment information and calls the backend service.
+   * Includes comprehensive validation, error handling, and loading states.
+   *
+   * @param dialogRef Reference to the dialog to close after processing
+   */
+  confirmPaymentDetails(dialogRef: MatDialogRef<unknown>): void {
+    console.log(`[OilReception] Confirming payment details for delivery: ${this.selectedRow?.lotNumber}`);
+
+    // Comprehensive form validation
+    if (!this.paymentDetailsForm) {
+      console.error('[OilReception] Payment details form is not initialized');
+      this.toast('Formulaire de paiement non initialisé');
+      return;
+    }
+
+    if (!this.paymentDetailsForm.valid) {
+      console.error('[OilReception] Payment details form is invalid:', this.paymentDetailsForm.errors);
+      this.logFormValidationErrors();
+      this.toast('Formulaire de paiement invalide. Veuillez vérifier les champs.');
+      return;
+    }
+
+    if (!this.selectedRow) {
+      console.error('[OilReception] No selected row for payment confirmation');
+      this.toast('Aucune livraison sélectionnée');
+      return;
+    }
+
+    if (!this.selectedRow.id) {
+      console.error('[OilReception] Selected row has no ID');
+      this.toast('ID de livraison manquant');
+      return;
+    }
+
+    try {
+      this.isLoading = true;
+      const formValue = this.paymentDetailsForm.getRawValue();
+      const { unitPrice, quantity, total, unpaidAmount } = formValue;
+
+      console.log(
+        `[OilReception] Payment details - unitPrice: ${unitPrice}, quantity: ${quantity}, total: ${total}, unpaidAmount: ${unpaidAmount}`
+      );
+
+      // Comprehensive payment data validation
+      const validationResult = this.validatePaymentData(unitPrice, quantity, total, unpaidAmount);
+      if (!validationResult.isValid) {
+        console.error('[OilReception] Payment validation failed:', validationResult.error);
+        this.toast(validationResult.error || 'Erreur de validation');
+        return;
+      }
+
+      // Update the selected row with payment details
+      this.selectedRow.unitPrice = unitPrice;
+      this.selectedRow.oilQuantity = quantity;
+      this.selectedRow.price = total;
+      this.selectedRow.unpaidAmount = unpaidAmount;
+
+      console.log(`[OilReception] Updated selected row with payment details`);
+
+      // Build ExchangePricingDto for backend processing
+      const dto = {
+        deliveryId: this.selectedRow.id,
+        unitPrice: unitPrice,
+        price: total,
+        qualityGrade: this.selectedRow.categoryOliveOil || '', // Use quality grade if available
+        oilUnitPrice: unitPrice,
+        oilQuantity: quantity,
+        oilTotalValue: total
+      };
+
+      console.log(`[OilReception] Sending payment data to backend:`, dto);
+
+      // Call backend service to process payment with comprehensive error handling
+      this.deliveryService.updatePrincingForPaymentreception(dto).subscribe({
+        next: (response) => {
+          console.log(`[OilReception] Payment processing successful for delivery: ${this.selectedRow?.lotNumber}`, response);
+          dialogRef.close();
+          this.dashboard.refrechData();
+          this.snackBar.open('Paiement traité avec succès.', 'Fermer', {
+            duration: 3000,
+            panelClass: ['mat-snack-bar-container-success']
+          });
+        },
+        error: (error) => {
+          console.error(`[OilReception] Error processing payment:`, error);
+          const errorMessage = this.getErrorMessageFromError(error);
+          this.snackBar.open(`Erreur lors du traitement du paiement: ${errorMessage}`, 'Fermer', {
+            duration: 5000,
+            panelClass: ['mat-snack-bar-container-error']
+          });
+        },
+        complete: () => {
+          this.isLoading = false;
+        }
+      });
+    } catch (error) {
+      console.error(`[OilReception] Unexpected error during payment confirmation:`, error);
+      this.toast('Erreur inattendue lors de la confirmation du paiement');
+      this.isLoading = false;
+    }
+  }
+
+  /* ——— form patch & subscriptions ——— */
 
   private toast(message: string, duration = 3000): void {
     this.snackBar.open(message, 'Fermer', {
@@ -314,10 +571,8 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
     );
   }
 
-  /* ——— form patch & subscriptions ——— */
-
   private patchForm(d: UnifiedDelivery): void {
-    const parseDate = (v: any): Date | null => (!v ? null : v instanceof Date ? v : new Date(v));
+    const parseDate = (v: string | Date | null): Date | null => (!v ? null : v instanceof Date ? v : new Date(v));
 
     this.receptionForm.patchValue({
       ...d,
@@ -366,45 +621,16 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
     return `${nStr}${ol.name.toUpperCase()}${year}`;
   }
 
-  confirmPrice(dialogRef: any): void {
-    if (!this.setPriceForm.valid || !this.selectedRow) return;
-
-    // Met à jour les champs
-    this.selectedRow.unitPrice = this.setPriceForm.get('unitPrice')?.value;
-    this.selectedRow.price = this.setPriceForm.get('price')?.value;
-
-    this.isLoading = true;
-
-    this.deliveryService.updatePricing(this.selectedRow.id,this.selectedRow.unitPrice).subscribe({
-      next: () => {
-         dialogRef.close(); // Ferme le dialog après succès
-        this.isLoading = false;
-        this.dashboard.refrechData();
-        this.snackBar.open('Prix mis à jour avec succès.', 'Fermer', {
-          duration: 3000,
-          panelClass: ['mat-snack-bar-container-success']
-        });
-      },
-      error: () => {
-        this.snackBar.open('Erreur lors de l\'enregistrement du prix.', 'Fermer', {
-          duration: 4000,
-          panelClass: ['mat-snack-bar-container-error']
-        });
-        this.isLoading = false;
-      }
-    });
-  }
-
-  private setPrice(row: any): void {
+  private setPrice(row: UnifiedDelivery): void {
     this.selectedRow = row;
 
     this.setPriceForm = this.fb.group({
       unitPrice: [row.unitPrice || null, Validators.required],
-      price: [{value: row.price || null, disabled: true}, Validators.required]
+      price: [{ value: row.price || null, disabled: true }, Validators.required]
     });
 
     // Mettre à jour automatiquement le prix
-    this.setPriceForm.get('unitPrice')?.valueChanges.subscribe(unitPrice => {
+    this.setPriceForm.get('unitPrice')?.valueChanges.subscribe((unitPrice) => {
       const quantity = row.oilQuantity || 0; // adapte selon ton modèle
       const price = parseFloat(unitPrice) * quantity;
       this.setPriceForm.get('price')?.setValue(+price.toFixed(3));
@@ -418,4 +644,194 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Validates and converts a value to a number with fallback
+   * @param value The value to validate
+   * @param fallback The fallback value if validation fails
+   * @param fieldName The field name for logging
+   * @returns The validated number
+   */
+  private validateAndGetNumber(value: number | string | null | undefined, fallback: number, fieldName: string): number {
+    const num = Number(value);
+    if (isNaN(num) || num < 0) {
+      console.warn(`[OilReception] Invalid ${fieldName}: ${value}, using fallback: ${fallback}`);
+      return fallback;
+    }
+    return num;
+  }
+
+  /**
+   * Sets up form subscriptions for payment details
+   */
+  private setupPaymentFormSubscriptions(): void {
+    if (!this.paymentDetailsForm) {
+      console.error('[OilReception] Payment details form is not initialized');
+      return;
+    }
+
+    // Auto-recompute total on form changes
+    this.paymentDetailsForm.valueChanges.subscribe(() => {
+      this.updatePaymentDetailsTotal();
+    });
+
+    // Validate form on changes
+    this.paymentDetailsForm.statusChanges.subscribe(() => {});
+  }
+
+  /**
+   * Opens the payment dialog with proper error handling
+   */
+  private openPaymentDialog(): void {
+    try {
+      console.log(`[OilReception] Opening payment details dialog`);
+      this.dialog.open(this.paymentDetailsDialogTemplate, {
+        width: '500px',
+        data: this.selectedRow,
+        disableClose: true,
+        panelClass: 'payment-details-dialog'
+      });
+    } catch (error) {
+      console.error(`[OilReception] Error opening dialog:`, error);
+      this.toast("Erreur lors de l'ouverture du dialogue");
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  /**
+   * Calculates total with proper precision handling to avoid floating point errors
+   * @param unitPrice The unit price
+   * @param quantity The quantity
+   * @returns The calculated total with 2 decimal places
+   */
+  private calculateTotalWithPrecision(unitPrice: number, quantity: number): number {
+    // Use multiplication and rounding to avoid floating point precision issues
+    const total = Math.round(unitPrice * quantity * 100) / 100;
+    return total;
+  }
+
+  /**
+   * Validates payment data with comprehensive checks
+   * @param unitPrice The unit price
+   * @param quantity The quantity
+   * @param total The total amount
+   * @param unpaidAmount The unpaid amount
+   * @returns Validation result with error message if invalid
+   */
+  private validatePaymentData(
+    unitPrice: number,
+    quantity: number,
+    total: number,
+    unpaidAmount: number
+  ): {
+    isValid: boolean;
+    error?: string;
+  } {
+    // Validate unit price
+    if (!unitPrice || unitPrice <= 0) {
+      return { isValid: false, error: 'Prix unitaire doit être supérieur à 0' };
+    }
+
+    if (unitPrice > 10000) {
+      // Reasonable upper limit
+      return { isValid: false, error: 'Prix unitaire trop élevé' };
+    }
+
+    // Validate quantity
+    if (!quantity || quantity <= 0) {
+      return { isValid: false, error: 'Quantité doit être supérieure à 0' };
+    }
+
+    if (quantity > 100000) {
+      // Reasonable upper limit
+      return { isValid: false, error: 'Quantité trop élevée' };
+    }
+
+    // Validate total
+    if (!total || total <= 0) {
+      return { isValid: false, error: 'Montant total doit être supérieur à 0' };
+    }
+
+    // Validate calculation consistency
+    const calculatedTotal = unitPrice * quantity;
+    const tolerance = 0.01; // Allow for floating point precision
+    if (Math.abs(calculatedTotal - total) > tolerance) {
+      return { isValid: false, error: 'Incohérence dans le calcul du montant total' };
+    }
+
+    // Validate unpaid amount
+    if (unpaidAmount < 0) {
+      return { isValid: false, error: 'Montant impayé ne peut pas être négatif' };
+    }
+
+    if (unpaidAmount > total) {
+      return { isValid: false, error: 'Montant impayé ne peut pas dépasser le montant total' };
+    }
+
+    return { isValid: true };
+  }
+
+  /**
+   * Logs form validation errors for debugging
+   */
+  private logFormValidationErrors(): void {
+    if (!this.paymentDetailsForm) return;
+
+    Object.keys(this.paymentDetailsForm.controls).forEach((key) => {
+      const control = this.paymentDetailsForm.get(key);
+      if (control && control.errors) {
+        console.error(`[OilReception] Form control '${key}' has errors:`, control.errors);
+      }
+    });
+  }
+
+  /**
+   * Extracts user-friendly error message from error object
+   * @param error The error object
+   * @returns User-friendly error message
+   */
+  private getErrorMessageFromError(error: unknown): string {
+    const errorObj = error as { error?: { message?: string }; message?: string; status?: number };
+
+    if (errorObj?.error?.message) {
+      return errorObj.error.message;
+    }
+    if (errorObj?.message) {
+      return errorObj.message;
+    }
+    if (errorObj?.status === 404) {
+      return 'Livraison non trouvée';
+    }
+    if (errorObj?.status === 400) {
+      return 'Données de paiement invalides';
+    }
+    if (errorObj?.status === 500) {
+      return 'Erreur serveur';
+    }
+    return 'Erreur inconnue';
+  }
+
+  /**
+   * Returns the maximum allowed unit price so that unitPrice * quantity <= unpaidAmount
+   */
+  maxUnitPrice(): number {
+    const unpaid = this.paymentDetailsForm?.get('unpaidAmount')?.value || 0;
+    const quantity = this.paymentDetailsForm?.get('quantity')?.value || 1;
+    if (quantity > 0) {
+      return unpaid / quantity;
+    }
+    return unpaid;
+  }
+
+  /**
+   * Returns the maximum allowed quantity so that unitPrice * quantity <= unpaidAmount
+   */
+  maxQuantity(): number {
+    const unpaid = this.paymentDetailsForm?.get('unpaidAmount')?.value || 0;
+    const unitPrice = this.paymentDetailsForm?.get('unitPrice')?.value || 1;
+    if (unitPrice > 0) {
+      return unpaid / unitPrice;
+    }
+    return unpaid;
+  }
 }

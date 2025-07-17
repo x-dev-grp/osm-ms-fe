@@ -3,6 +3,7 @@ import { deliveryType } from '../../../shared/models/deleveryType';
 import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
 
 export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
+  icon: 'fact_check',
   title: 'Contrôle Qualité',
   titleTranslatePath: 'QUALITY_CONTROL.TITLE',
   baseURL: 'production/deliveries',

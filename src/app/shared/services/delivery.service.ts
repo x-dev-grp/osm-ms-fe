@@ -6,6 +6,7 @@ import { UnifiedDelivery } from '../models/UnifiedDelivery';
 import { environment } from '../../../environments/environment';
 import { OliveLotStatus } from '../models/OliveLotStatus';
 import { ExchangePricingDto } from '../models/ExchangePricingDto';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -29,8 +30,8 @@ export class UnifiedDeliveryService {
   }
 
   // Retrieve a single UnifiedDeliverycc by ID.
-  getUnifiedDelivery(id: string): Observable<ApiResponse<UnifiedDelivery>> {
-    return this.http.get<ApiResponse<UnifiedDelivery>>(`${this.baseUrl}/fetch/${id}`);
+  getUnifiedDelivery(id: string): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/fetch/${id}`);
   }
 
   // Create a new UnifiedDeliverycc. The UnifiedDeliverycc payload may include qualityControlResults.
@@ -65,6 +66,12 @@ export class UnifiedDeliveryService {
   getDeliveriesBySupplier(supplierId: string): Observable<ApiResponse<UnifiedDelivery>> {
     return this.http.get<ApiResponse<UnifiedDelivery>>(`${this.baseUrl}/supplier/${supplierId}`);
   }
+  getDeliveryByOliveLotNumber(id: string): Observable<ApiResponse<UnifiedDelivery>> {
+    return this.http.get<ApiResponse<UnifiedDelivery>>(`${this.baseUrl}/getDeliveryByOliveLotNumber/${id}`);
+  }
+  getDeliveryByLotNumber(lotNumber: string): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/getDeliveryByLotNumber/${lotNumber}`);
+  }
 
   // Get paid deliveries by supplier ID
   getPaidDeliveriesBySupplier(supplierId: string): Observable<ApiResponse<UnifiedDelivery>> {
@@ -89,5 +96,30 @@ export class UnifiedDeliveryService {
    */
   updatePricingAndCreatOilTransactionOut(exchangePricingDto: ExchangePricingDto): Observable<ApiResponse<void>> {
     return this.http.post<ApiResponse<void>>(`${this.baseUrl}/update-exchange-pricing`, exchangePricingDto);
+  }
+
+  updatePrincingForPaymentreception(dto: ExchangePricingDto): Observable<ApiResponse<void>> {
+    return this.http.post<ApiResponse<void>>(`${this.baseUrl}/update-payment-pricing`, dto);
+  }
+
+  /**
+   * Get the related oil delivery for a given olive lot number (for payment)
+   * Looks for oil deliveries with operationType 'PAYMENT' and matching lotOliveNumber
+   */
+  getRelatedOilDelivery(oliveLotNumber: string, supplierId: string): Observable<UnifiedDelivery | null> {
+    return this.getDeliveriesBySupplier(supplierId).pipe(
+      map((response) => {
+        if (response.success && response.data) {
+          const deliveries = Array.isArray(response.data) ? response.data : [response.data];
+          const match = deliveries.find((delivery: UnifiedDelivery) =>
+            delivery.deliveryType === 'OIL' &&
+            delivery.operationType === 'PAYMENT' &&
+            delivery.lotOliveNumber === oliveLotNumber
+          );
+          return match || null;
+        }
+        return null;
+      })
+    );
   }
 }

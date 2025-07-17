@@ -11,7 +11,7 @@ import {QualityControlResultDto} from '../../../shared/models/QualityControlResu
 import {forkJoin, Observable, of} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {MatFormField, MatFormFieldModule} from '@angular/material/form-field';
-import {MatOption, MatSelect, MatSelectChange, MatSelectModule} from '@angular/material/select';
+import {MatOption, MatSelect, MatSelectModule} from '@angular/material/select';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {TranslateModule, TranslateService} from '@ngx-translate/core';
 import {StorageUnitDtoService} from "../../../shared/services/storage.service";
@@ -46,6 +46,7 @@ export class ControleQualiteComponent implements OnInit {
   qualityControlResults: QualityControlResultDto[] = [];
   isQualityControlDone: boolean = false;
   storageUnits: StorageUnitDto[] = [];
+  private xxx: string | null;
 
   constructor(
     private fb: FormBuilder,
@@ -67,7 +68,14 @@ export class ControleQualiteComponent implements OnInit {
 
   ngOnInit(): void {
     this.receptionId = this.deliveryId || this.route.snapshot.paramMap.get('id');
-    this.loadReception();
+    this.xxx = this.route.snapshot.paramMap.get('idx');
+    console.log(this.xxx)
+    if (this.xxx) {
+      // If idx is present, fetch rules directly and skip delivery
+      this.loadRulesDirect();
+    } else {
+      this.loadReception();
+    }
   }
 
   loadReception(): void {
@@ -213,10 +221,43 @@ export class ControleQualiteComponent implements OnInit {
       return;
     }
 
+    // If idx is present, send results to a new endpoint with idx as path param
+    if (this.xxx) {
+      const results: QualityControlResultDto[] = Object.keys(this.dynamicForm.controls).map((ruleKey) => {
+        const rule = this.rules.find((r) => r.ruleKey === ruleKey);
+        if (!rule) return null;
+        const rawValue = this.mainForm.get(ruleKey)?.value;
+        return {
+          rule: rule,
+          measuredValue: String(rawValue),
+          deliveryId: '' // Use empty string to satisfy type
+        } as QualityControlResultDto;
+      }).filter(Boolean) as QualityControlResultDto[];
+      this.isLoading = true;
+       this.qcResService.saveResultsWithIdx(this.xxx, results).subscribe({
+        next: (res: any) => {
+          this.snackBar.open(res.message || 'Résultats enregistrés avec succès.', 'Fermer', {
+            duration: 4000,
+            panelClass: ['mat-snack-bar-container-success']
+          });
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        },
+        error: () => {
+          this.snackBar.open('Erreur lors de l\'enregistrement des résultats.', 'Fermer', {
+            duration: 4000,
+            panelClass: ['mat-snack-bar-container-error']
+          });
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        }
+      });
+      return;
+    }
+
     if (!this.deliveryData?.id) {
       this.message = 'Données de livraison non disponibles.';
       this.cdr.detectChanges();
-
       this.snackBar.open('Données de livraison manquantes.', 'Fermer', {
         duration: 4000,
         panelClass: ['mat-snack-bar-container-warning']
@@ -387,10 +428,13 @@ export class ControleQualiteComponent implements OnInit {
   }
 
   private filterRules(allRules: QualityControlRule[]): QualityControlRule[] {
+    // If idx is present, always return oil QC rules
+    if (this.xxx) {
+      return allRules.filter((rule) => rule.oilQc === true);
+    }
     if (!this.deliveryData?.deliveryType) {
       return [];
     }
-
     switch (this.deliveryData.deliveryType) {
       case 'OIL':
         return allRules.filter((rule) => rule.oilQc === true);
@@ -491,5 +535,38 @@ export class ControleQualiteComponent implements OnInit {
     } else {
       return 'Lampante';
     }
+  }
+
+  // New method: fetch all rules and show form, skip delivery
+  private loadRulesDirect(): void {
+    this.isLoading = true;
+    this.qcService.getAllRules().subscribe({      next: (res) => {
+        if (res?.success) {
+          let allRules: QualityControlRule[] = [];
+          if (Array.isArray(res.data)) {
+            allRules = Array.isArray(res.data[0]) ? res.data[0] : res.data;
+          } else {
+            allRules = res.data ? [res.data] : [];
+          }
+          this.rules = this.filterRules(allRules);
+          this.qualityControlResults = [];
+          this.isQualityControlDone = false;
+          this.createDynamicForm();
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        } else {
+          this.rules = [];
+          this.message = res.message || 'Aucune règle trouvée';
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        }
+      },
+      error: () => {
+        this.rules = [];
+        this.message = 'Erreur lors du chargement des règles';
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      }
+    });
   }
 }

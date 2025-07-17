@@ -3,6 +3,7 @@ import { SearchOperation } from '../shared/models/advanced-search/searchOperatio
 import { TypeCategory } from '../shared/models/type-category.enum';
 
 export const dashboardConfig: DashboardConfig = {
+  icon: 'warehouse',
     title: 'Gestion des réservoirs',
     baseURL: 'production/storage-units',
     searchEndpoint: 'production/storage-units',

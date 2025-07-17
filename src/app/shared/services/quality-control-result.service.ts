@@ -31,4 +31,14 @@ export class QualityControlResultService {
   deleteResults(id: string): Observable<ApiResponse<void>> {
     return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/${id}`);
   }
+
+  // Save results with idx as path param (for direct QC entry)
+  saveResultsWithIdx(idx: string, results: QualityControlResultDto[]): Observable<ApiResponse<QualityControlResultDto>> {
+    return this.http.post<ApiResponse<QualityControlResultDto>>(`${this.baseUrl}/save-batch-direct/${idx}`, results);
+  }
+
+  // Fetch only oil QC results for a given oil reception (deliveryId)
+  getOilResultsByOliveLotNumber(oliveLotNUmber: string): Observable<ApiResponse<QualityControlResultDto>> {
+    return this.http.get<ApiResponse<QualityControlResultDto>>(`${this.baseUrl}/fetchByOilDeliveryOfOliveDelivery/${oliveLotNUmber}`);
+  }
 }

@@ -26,7 +26,7 @@
         <div class="financial-card">
           <mat-form-field appearance="outline" class="financial-field">
             <mat-label>{{ 'CONTROLE_QUALITE.FINANCIAL.PRICE' | translate }}</mat-label>
-            <input formControlName="price" matInput readonly step="0.01" type="number">
+            <input formControlName="price" matInput readonly step="0.01" type="number" [max]="this.originalOliveReception?.unpaidAmount">
             <mat-icon matSuffix>account_balance_wallet</mat-icon>
           </mat-form-field>
         </div>
@@ -38,6 +38,58 @@
           Valider
         </button>
       </div>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #paymentDetailsDialog let-dialogRef="dialogRef">
+  <form [formGroup]="paymentDetailsForm" class="form-section">
+    <div class="section-header">
+      <mat-icon>payment</mat-icon>
+      <h3>{{ 'OIL_RECEPTION.PAYMENT_DETAILS' | translate }}</h3>
+    </div>
+    <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="primary"></mat-progress-bar>
+    <p class="dialog-description">{{ 'OIL_RECEPTION.PAYMENT_DIALOG_DESCRIPTION' | translate }}</p>
+    <div class="financial-grid">
+      <!-- Unit Price -->
+      <div class="financial-card">
+        <mat-form-field appearance="outline" class="financial-field">
+          <mat-label>{{ 'OIL_RECEPTION.UNIT_PRICE' | translate }}</mat-label>
+          <input formControlName="unitPrice" matInput step="0.01" type="number">
+          <mat-icon matSuffix>attach_money</mat-icon>
+          <mat-error *ngIf="paymentDetailsForm.get('unitPrice')?.hasError('required')">
+            {{ 'OIL_RECEPTION.REQUIRED' | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <!-- Quantity -->
+      <div class="financial-card">
+        <mat-form-field appearance="outline" class="financial-field">
+          <mat-label>{{ 'OIL_RECEPTION.QUANTITY' | translate }}</mat-label>
+          <input formControlName="quantity" matInput step="0.01" type="number" [max]="maxQuantity()">
+          <mat-icon matSuffix>scale</mat-icon>
+          <mat-error *ngIf="paymentDetailsForm.get('quantity')?.hasError('required')">
+            {{ 'OIL_RECEPTION.REQUIRED' | translate }}
+          </mat-error>
+          <mat-error *ngIf="paymentDetailsForm.get('quantity')?.hasError('max')">
+            {{ 'OIL_RECEPTION.QUANTITY_MAX' | translate:{max: maxQuantity()} }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <!-- Total (disabled) -->
+      <div class="financial-card">
+        <mat-form-field appearance="outline" class="financial-field">
+          <mat-label>{{ 'OIL_RECEPTION.TOTAL' | translate }}</mat-label>
+          <input formControlName="total" matInput readonly step="0.01" type="number">
+          <mat-icon matSuffix>account_balance_wallet</mat-icon>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="dialog-actions">
+      <button (click)="dialogRef.close()" mat-button>{{ 'OSM_DASHBOARD.ACTIONS.CANCEL' | translate }}</button>
+      <button (click)="confirmPaymentDetails(dialogRef)" [disabled]="paymentDetailsForm.invalid || paymentDetailsForm.get('total')?.value > paymentDetailsForm.get('unpaidAmount')?.value" color="primary" mat-flat-button>
+        {{ 'OSM_DASHBOARD.ACTIONS.CONFIRM' | translate }}
+      </button>
     </div>
   </form>
 </ng-template>

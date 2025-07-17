@@ -1,12 +1,12 @@
 import { SearchOperation } from 'src/app/shared/models/advanced-search/searchOperation';
 import {
-  Action,
   AttributeType,
   DashboardConfig,
   FieldType,
 } from '../../shared/modules/osm-dashboard/models/dashboard-config';
 
 export const EXPENSES_DASHBOARD_CONFIG: DashboardConfig = {
+  icon: 'payments',
   /* ───────────────────────────── méta ───────────────────────────── */
   title: 'Dépenses',
   titleTranslatePath: 'EXPENSES.TITLE',

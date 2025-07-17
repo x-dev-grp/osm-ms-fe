@@ -38,6 +38,7 @@ export const receptionRoutes: Routes = [
 
   { path: 'quality', component: QualityControlListComponent },
   { path: 'quality/:id', component: ControleQualiteComponent },
+  { path: 'quality/oilFromOlive/:idx', component: ControleQualiteComponent },
   { path: 'reception-details/:id', component: DetailsReceptionComponent },
 
   { path: 'mill-schedules', component: PlanningComponent },

@@ -1,5 +1,4 @@
 import {
-  Action,
   AttributeType,
   DashboardConfig,
   FieldType
@@ -7,6 +6,7 @@ import {
 import { TransactionType, TransactionState } from '../../shared/models/OilTransaction';
 
 export const OIL_TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
+  icon: 'swap_horiz',
   title: 'Transactions d\'huile',
   titleTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TITLE',
   baseURL: 'production/oil_transaction',

@@ -3,6 +3,7 @@ import {deliveryType} from '../../../shared/models/deleveryType';
 import {SearchOperation} from '../../../shared/models/advanced-search/searchOperation';
 
 export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
+  icon: 'eco',
   title: "Livraisons d'Olives", // afficehr titre fi dashboard
   titleTranslatePath: 'DELIVERIES.OLIVE_TITLE', //tradusction
   baseURL: 'production/deliveries',

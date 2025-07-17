@@ -5,9 +5,9 @@ import { MatIcon } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatRadioModule } from '@angular/material/radio';
@@ -24,17 +24,20 @@ import { BankAccount } from '../../../../finance/models/BankAccount';
 import { ApiResponse } from '../../../../shared/models/api-response';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastService } from '../../../../shared/services/toast.service';
-import { ControleQualiteComponent } from '../../controleQualite/controleQualite.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 import { OilCredit } from '../../../../finance/models/OilCredit';
 import { OilCreditService } from '../../../../finance/service/oil-credit.service';
+import { QualityControlResultService } from '../../../../shared/services/quality-control-result.service';
+import { QualityControlResultDto } from '../../../../shared/models/QualityControlResultDto';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
-interface PaymentHistoryItem {
+export interface PaymentHistoryItem {
   id: string;
   lotNumber: string;
   deliveryDate: Date;
   deliveryNumber: string;
+  lotOliveNumber: string |null;
   poidsNet: number;
   price: number;
   oilQuantity: number;
@@ -71,7 +74,28 @@ interface PaymentHistoryItem {
     MatCheckbox
   ],
   templateUrl: './supplier-payment-history.component.html',
-  styleUrls: ['./supplier-payment-history.component.scss']
+  styleUrls: ['./supplier-payment-history.component.scss'],
+  animations: [
+    trigger('slideInOut', [
+      state('void', style({
+        transform: 'translateX(100%)',
+        opacity: 0
+      })),
+      state('*', style({
+        transform: 'translateX(0)',
+        opacity: 1
+      })),
+      transition(':enter', [
+        animate('350ms cubic-bezier(0.4,0,0.2,1)')
+      ]),
+      transition(':leave', [
+        animate('250ms cubic-bezier(0.4,0,0.2,1)', style({
+          transform: 'translateX(100%)',
+          opacity: 0
+        }))
+      ])
+    ])
+  ]
 })
 export class SupplierPaymentHistoryComponent implements OnInit {
   supplierId: string = '';
@@ -82,10 +106,8 @@ export class SupplierPaymentHistoryComponent implements OnInit {
   payments: PaymentHistoryItem[] = [];
   displayedColumns: string[] = [
     'deliveryNumber',
-    'deliveryType',
     'lotNumber',
     'deliveryDate',
-    'poidsNet',
     'price',
     'paidAmount',
     'unpaidAmount',
@@ -181,34 +203,122 @@ export class SupplierPaymentHistoryComponent implements OnInit {
   bankAccounts: BankAccount[] = [];
   loadingBankAccounts = false;
 
-  // Payment form
-  paymentMethod: 'money' | 'oil' = 'money';
+  // Payment method dropdown state
+  selectedPaymentMethod: 'cash' | 'oil' | 'both' = 'cash';
   moneyPaymentMethod: 'cash' | 'check' | 'bank_transfer' = 'cash';
+
+  /**
+   * Handles payment method changes.
+   * This method manages the UI state and data fetching based on the selected payment method.
+   */
+  onPaymentMethodChange(): void {
+    console.log(`[SupplierPayment] Payment method changed to: ${this.selectedPaymentMethod}`);
+
+    // Reset form based on new payment method
+    this.resetPaymentFormForMethod(this.selectedPaymentMethod);
+
+    // Show/hide forms and fetch QC results as needed
+    if ((this.selectedPaymentMethod === 'oil' || this.selectedPaymentMethod === 'both') && this.selectedPayment) {
+      console.log(`[SupplierPayment] Oil payment selected for delivery: ${this.selectedPayment.lotNumber}`);
+      console.log(`[SupplierPayment] Selected payment details:`, {
+        lotNumber: this.selectedPayment.lotNumber,
+        lotOliveNumber: this.selectedPayment.lotOliveNumber,
+        unpaidAmount: this.selectedPayment.unpaidAmount,
+        deliveryType: this.selectedPayment.deliveryType
+      });
+
+      // Fetch related oil delivery for payment processing
+      if (this.selectedPayment.lotNumber) {
+        this.fetchRelatedOilDeliveryForPayment(this.selectedPayment.lotNumber);
+      }
+
+      // Fetch quality control results for oil payment
+      this.getDeliveryByOliveLotNumber(this.selectedPayment.id);
+    } else {
+      console.log(`[SupplierPayment] Clearing quality control results for non-oil payment`);
+      this.oilQcResults = [];
+      this.relatedOilDelivery = null;
+    }
+
+    console.log(`[SupplierPayment] Payment method change completed: ${this.selectedPaymentMethod}`);
+  }
+
+  /**
+   * Resets the payment form based on the selected payment method
+   * @param method The selected payment method
+   */
+  private resetPaymentFormForMethod(method: 'cash' | 'oil' | 'both'): void {
+    if (!this.paymentForm) return;
+
+    if (method === 'cash') {
+      this.paymentForm.patchValue({
+        amount: this.selectedPayment?.unpaidAmount || 0,
+        oilQuantity: 0,
+        oilPricePerKg: this.oilPricePerLiter,
+        checkNumber: '',
+        bankAccountId: ''
+      });
+      this.calculatePayment();
+    } else if (method === 'oil') {
+      this.paymentForm.patchValue({
+        amount: 0,
+        oilQuantity: 0,
+        oilPricePerKg: this.oilPricePerLiter,
+        checkNumber: '',
+        bankAccountId: ''
+      });
+      this.calculateOilEquivalent();
+    } else if (method === 'both') {
+      this.paymentForm.patchValue({
+        amount: 0,
+        oilQuantity: 0,
+        oilPricePerKg: this.oilPricePerLiter,
+        checkNumber: '',
+        bankAccountId: ''
+      });
+      this.calculateOilEquivalent();
+    }
+  }
+
+  // Remove old paymentMethodMoney/paymentMethodOil logic from UI control (keep for form logic if needed)
 
   // Mock properties for batch payment UI demo
   mockBatchPaymentMethod: 'money' | 'oil' = 'money';
   mockBatchMoneyMethod: 'cash' | 'check' | 'bank_transfer' = 'cash';
 
-  onBatchPaymentMethodChange(event: any) {
+  onBatchPaymentMethodChange(event: { value: string }) {
     console.log('Batch payment method changed:', event.value);
     console.log('mockBatchPaymentMethod:', this.mockBatchPaymentMethod);
   }
 
-  onBatchMoneyMethodChange(event: any) {
+  onBatchMoneyMethodChange(event: { value: string }) {
     console.log('Batch money method changed:', event.value);
     console.log('mockBatchMoneyMethod:', this.mockBatchMoneyMethod);
   }
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild('paymentPaginator') paymentPaginator!: MatPaginator;
+  @ViewChild('paymentSort') paymentSort!: MatSort;
+  @ViewChild('oilCreditPaginator') oilCreditPaginator!: MatPaginator;
+  @ViewChild('oilCreditSort') oilCreditSort!: MatSort;
 
-  oilCredits: OilCredit[] = [];
-  oilCreditColumns: string[] = ['id', 'emballage', 'quantity', 'unit', 'oil_type', 'creditState', 'createdDate'];
+  paymentsDataSource = new MatTableDataSource<PaymentHistoryItem>([]);
+  oilCreditsDataSource = new MatTableDataSource<OilCredit>([]);
 
   // Oil credit statistics
   totalOilCredits = 0;
   totalOilCreditQuantityL = 0;
   totalOilCreditQuantityKG = 0;
   oilCreditStateCounts: { [key: string]: number } = {};
+
+  oilCreditColumns: string[] = [
+    'quantity',
+    'unit',
+    'oil_type',
+    'creditState',
+    'createdDate'
+  ];
+
+  oilQcResults: QualityControlResultDto[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -219,21 +329,29 @@ export class SupplierPaymentHistoryComponent implements OnInit {
     private translateService: TranslateService,
     private toastService: ToastService,
     private dialog: MatDialog,
-    private oilCreditService: OilCreditService
+    private oilCreditService: OilCreditService,
+    private qcResultService: QualityControlResultService
   ) {
     this.paymentForm = this.fb.group({
       amount: [0, [Validators.required, Validators.min(0.01)]],
       checkNumber: [''],
       bankAccountId: [''],
       oilQuantity: [0, [Validators.required, Validators.min(0.01)]],
-      oilPricePerKg: [this.oilPricePerLiter, [Validators.required, Validators.min(0.01)]]
+      oilPricePerKg: [this.oilPricePerLiter, [Validators.required, Validators.min(0.01)]],
+      moneyPaymentMethod: ['cash']
     });
   }
 
   ngOnInit(): void {
     this.supplierId = this.route.snapshot.paramMap.get('id') || '';
     this.supplierName = this.route.snapshot.paramMap.get('name') || '';
-    this.historyType = 'oil_credit';
+    // Read the 'type' query param to set the default tab
+    const typeParam = this.route.snapshot.queryParamMap.get('type');
+    if (typeParam === 'paid' || typeParam === 'unpaid' || typeParam === 'oil_credit' || typeParam === 'all') {
+      this.historyType = typeParam;
+    } else {
+      this.historyType = 'oil_credit';
+    }
 
     if (!this.supplierId) {
       this.error = this.translateService.instant('SUPPLIER_PAYMENT.ERRORS.SUPPLIER_ID_NOT_FOUND');
@@ -241,7 +359,11 @@ export class SupplierPaymentHistoryComponent implements OnInit {
       return;
     }
 
-    this.loadOilCredits();
+    if (this.historyType === 'oil_credit') {
+      this.loadOilCredits();
+    } else {
+      this.loadPaymentHistory();
+    }
     this.loadBankAccounts();
   }
 
@@ -265,14 +387,19 @@ export class SupplierPaymentHistoryComponent implements OnInit {
   loadOilCredits(): void {
     this.loading = true;
     this.error = null;
-    this.oilCredits = [];
+    this.oilCreditsDataSource.data = [];
     this.oilCreditService.getAllOilCreditList().subscribe({
       next: (response) => {
         if (response.success && response.data) {
-          this.oilCredits = response.data.filter((credit: OilCredit) => credit.destinataire && credit.destinataire.id === this.supplierId);
+          const filtered = response.data.filter((credit: OilCredit) => credit.destinataire && credit.destinataire.id === this.supplierId);
+          this.oilCreditsDataSource.data = filtered;
+          setTimeout(() => {
+            this.oilCreditsDataSource.paginator = this.oilCreditPaginator;
+            this.oilCreditsDataSource.sort = this.oilCreditSort;
+          });
           this.calculateOilCreditStatistics();
         } else {
-          this.oilCredits = [];
+          this.oilCreditsDataSource.data = [];
           this.error = response.message || this.translateService.instant('SUPPLIER_PAYMENT.ERRORS.NO_DATA_FOUND');
           this.calculateOilCreditStatistics();
         }
@@ -281,7 +408,7 @@ export class SupplierPaymentHistoryComponent implements OnInit {
       error: (error: unknown) => {
         console.error('Error loading oil credits:', error);
         this.error = this.translateService.instant('SUPPLIER_PAYMENT.ERRORS.LOAD_ERROR');
-        this.oilCredits = [];
+        this.oilCreditsDataSource.data = [];
         this.calculateOilCreditStatistics();
         this.loading = false;
       }
@@ -289,15 +416,12 @@ export class SupplierPaymentHistoryComponent implements OnInit {
   }
 
   calculateOilCreditStatistics(): void {
-    this.totalOilCredits = this.oilCredits.length;
-    this.totalOilCreditQuantityL = this.oilCredits
-      .filter(c => c.unit === 'L')
-      .reduce((sum, c) => sum + (c.quantity || 0), 0);
-    this.totalOilCreditQuantityKG = this.oilCredits
-      .filter(c => c.unit === 'KG')
-      .reduce((sum, c) => sum + (c.quantity || 0), 0);
+    const data = this.oilCreditsDataSource.data;
+    this.totalOilCredits = data.length;
+    this.totalOilCreditQuantityL = data.filter(c => c.unit === 'L').reduce((sum, c) => sum + (c.quantity || 0), 0);
+    this.totalOilCreditQuantityKG = data.filter(c => c.unit === 'KG').reduce((sum, c) => sum + (c.quantity || 0), 0);
     this.oilCreditStateCounts = {};
-    for (const c of this.oilCredits) {
+    for (const c of data) {
       const state = c.creditState || 'UNKNOWN';
       this.oilCreditStateCounts[state] = (this.oilCreditStateCounts[state] || 0) + 1;
     }
@@ -317,16 +441,20 @@ export class SupplierPaymentHistoryComponent implements OnInit {
   loadPaymentHistory(): void {
     this.loading = true;
     this.error = null;
-
-    // Always load all deliveries and filter client-side for better control
+    this.paymentsDataSource.data = [];
     this.deliveryService.getDeliveriesBySupplier(this.supplierId).subscribe({
       next: (response) => {
         if (response.success && response.data) {
           const allPayments = this.convertDeliveriesToPaymentHistory(response.data);
-          this.payments = this.filterPaymentsByType(allPayments);
+          const filtered = this.filterPaymentsByType(allPayments);
+          this.paymentsDataSource.data = filtered;
+          setTimeout(() => {
+            this.paymentsDataSource.paginator = this.paymentPaginator;
+            this.paymentsDataSource.sort = this.paymentSort;
+          });
           this.calculateSummaryStatistics();
         } else {
-          this.payments = [];
+          this.paymentsDataSource.data = [];
           this.error = response.message || this.translateService.instant('SUPPLIER_PAYMENT.ERRORS.NO_DATA_FOUND');
         }
         this.loading = false;
@@ -344,6 +472,7 @@ export class SupplierPaymentHistoryComponent implements OnInit {
       const paidAmount = delivery.paidAmount || 0;
       const price = delivery.price || 0;
       const oilQuantity = delivery.oilQuantity || 0;
+      const lotOliveNumber = delivery.lotOliveNumber ||null;
       const unpaidAmount = delivery.unpaidAmount || price - paidAmount;
       const type = (delivery as UnifiedDelivery & { deliveryType?: string }).deliveryType || undefined;
       let status: 'paid' | 'unpaid' | 'partial' = 'unpaid';
@@ -367,6 +496,7 @@ export class SupplierPaymentHistoryComponent implements OnInit {
         paidAmount: paidAmount,
         unpaidAmount: unpaidAmount,
         status: status,
+        lotOliveNumber: lotOliveNumber,
         reference: `LOT-${delivery.lotNumber}`,
         deliveryType: type
       };
@@ -389,10 +519,11 @@ export class SupplierPaymentHistoryComponent implements OnInit {
   }
 
   private calculateSummaryStatistics(): void {
-    this.totalDeliveries = this.payments.length;
-    this.totalPaid = this.payments.reduce((sum, payment) => sum + payment.paidAmount, 0);
-    this.totalUnpaid = this.payments.reduce((sum, payment) => sum + payment.unpaidAmount, 0);
-    this.totalOliveWeight = this.payments.reduce((sum, payment) => sum + payment.poidsNet, 0);
+    const data = this.paymentsDataSource.data;
+    this.totalDeliveries = data.length;
+    this.totalPaid = data.reduce((sum, payment) => sum + payment.paidAmount, 0);
+    this.totalUnpaid = data.reduce((sum, payment) => sum + payment.unpaidAmount, 0);
+    this.totalOliveWeight = data.reduce((sum, payment) => sum + payment.poidsNet, 0);
   }
 
   // Get summary statistics for all deliveries (not just filtered ones)
@@ -436,8 +567,28 @@ export class SupplierPaymentHistoryComponent implements OnInit {
   // Payment functionality methods
   initiatePayment(payment: PaymentHistoryItem): void {
     this.selectedPayment = payment;
+    this.showPaymentForm = true;
     this.resetPaymentForm();
     this.calculateOilEquivalent();
+
+    console.log(`[SupplierPayment] Initiating payment for delivery:`, {
+      lotNumber: payment.lotNumber,
+      deliveryType: payment.deliveryType,
+      lotOliveNumber: payment.lotOliveNumber,
+      unpaidAmount: payment.unpaidAmount
+    });
+
+    // If this is an olive delivery, fetch related oil delivery for payment
+    if (payment.deliveryType === 'OLIVE' && payment.lotNumber) {
+      console.log(`[SupplierPayment] Olive delivery detected, fetching related oil delivery`);
+      this.fetchRelatedOilDeliveryForPayment(payment.lotNumber);
+    }
+
+    if (this.selectedPaymentMethod === 'oil' || this.selectedPaymentMethod === 'both') {
+      this.getDeliveryByOliveLotNumber(payment.id);
+    } else {
+      this.oilQcResults = [];
+    }
   }
 
   closePaymentForm(): void {
@@ -446,27 +597,23 @@ export class SupplierPaymentHistoryComponent implements OnInit {
   }
 
   resetPaymentForm(): void {
-    this.paymentForm!.reset();
+    if (this.paymentForm) {
+      this.paymentForm.reset({
+        amount: 0,
+        checkNumber: '',
+        bankAccountId: '',
+        oilQuantity: 0,
+        oilPricePerKg: this.oilPricePerLiter,
+        moneyPaymentMethod: 'cash'
+      });
+    }
     this.oilEquivalent = 0;
     this.remainingAmount = 0;
+    this.selectedPaymentMethod = 'cash';
+    this.moneyPaymentMethod = 'cash';
   }
 
-  onPaymentMethodChange(): void {
-    if (this.paymentMethod === 'oil') {
-      this.calculateOilEquivalent();
-      this.paymentForm!.patchValue({
-        oilQuantity: 0,
-        amount: 0,
-        oilPricePerKg: this.oilPricePerLiter
-      });
-    } else if (this.paymentMethod === 'money') {
-      this.paymentForm!.patchValue({
-        amount: this.selectedPayment?.unpaidAmount || 0,
-        oilQuantity: 0
-      });
-      this.calculatePayment();
-    }
-  }
+
 
   onMoneyPaymentMethodChange(): void {
     // Reset form controls based on payment method
@@ -475,18 +622,7 @@ export class SupplierPaymentHistoryComponent implements OnInit {
         checkNumber: '',
         bankAccountId: ''
       });
-    } else if (this.moneyPaymentMethod === 'check') {
-      this.paymentForm!.patchValue({
-        bankAccountId: ''
-      });
-      this.paymentForm!.get('checkNumber')?.setValidators([Validators.required]);
-    } else if (this.moneyPaymentMethod === 'bank_transfer') {
-      this.paymentForm!.patchValue({
-        checkNumber: ''
-      });
-      this.paymentForm!.get('bankAccountId')?.setValidators([Validators.required]);
     }
-
     this.paymentForm!.get('checkNumber')?.updateValueAndValidity();
     this.paymentForm!.get('bankAccountId')?.updateValueAndValidity();
   }
@@ -511,6 +647,11 @@ export class SupplierPaymentHistoryComponent implements OnInit {
     if (this.selectedPayment) {
       const paymentAmount = this.paymentForm!.get('amount')?.value || 0;
       this.remainingAmount = Math.max(0, this.selectedPayment.unpaidAmount - paymentAmount);
+
+      // Recalculate oil equivalent for mixed payments
+      if (this.selectedPaymentMethod === 'both') {
+        this.calculateOilEquivalent();
+      }
     }
   }
 
@@ -519,98 +660,429 @@ export class SupplierPaymentHistoryComponent implements OnInit {
       const oilQuantity = this.paymentForm!.get('oilQuantity')?.value || 0;
       const oilPricePerKg = this.paymentForm!.get('oilPricePerKg')?.value || this.oilPricePerLiter;
       const oilValue = oilQuantity * oilPricePerKg;
-      this.remainingAmount = Math.max(0, this.selectedPayment.unpaidAmount - oilValue);
+
+      if (this.selectedPaymentMethod === 'both') {
+        // For mixed payment, calculate remaining after both cash and oil
+        const cashAmount = this.paymentForm!.get('amount')?.value || 0;
+        this.remainingAmount = Math.max(0, this.selectedPayment.unpaidAmount - cashAmount - oilValue);
+      } else {
+        // For oil-only payment
+        this.remainingAmount = Math.max(0, this.selectedPayment.unpaidAmount - oilValue);
+      }
     }
   }
 
+  /**
+   * Calculates the total payment value for mixed payments
+   * @returns Total payment value
+   */
+  calculateTotalPaymentValue(): number {
+    if (!this.selectedPayment || !this.paymentForm) return 0;
+
+    const cashAmount = this.paymentForm.get('amount')?.value || 0;
+    const oilQuantity = this.paymentForm.get('oilQuantity')?.value || 0;
+    const oilPricePerKg = this.paymentForm.get('oilPricePerKg')?.value || 0;
+    const oilValue = oilQuantity * oilPricePerKg;
+
+    return cashAmount + oilValue;
+  }
+
+  /**
+   * Gets the remaining amount after cash payment for mixed payments
+   * @returns Remaining amount after cash
+   */
+  getRemainingAfterCash(): number {
+    if (!this.selectedPayment || !this.paymentForm) return 0;
+
+    const cashAmount = this.paymentForm.get('amount')?.value || 0;
+    return Math.max(0, this.selectedPayment.unpaidAmount - cashAmount);
+  }
+
+  /**
+   * Validates if the oil quantity is within the remaining amount after cash
+   * @returns True if valid
+   */
+  isOilQuantityValid(): boolean {
+    if (this.selectedPaymentMethod !== 'both') return true;
+
+    const oilQuantity = this.paymentForm!.get('oilQuantity')?.value || 0;
+    const oilPricePerKg = this.paymentForm!.get('oilPricePerKg')?.value || 0;
+    const oilValue = oilQuantity * oilPricePerKg;
+    const remainingAfterCash = this.getRemainingAfterCash();
+
+    return oilValue <= remainingAfterCash;
+  }
+
+  /**
+   * Handles input changes for mixed payment calculations
+   */
+  onMixedPaymentInputChange(): void {
+    if (this.selectedPaymentMethod === 'both') {
+      this.calculatePayment();
+      this.calculateOilPayment();
+    }
+  }
+
+  // Update isPaymentFormValid and related logic to use 'cash', 'oil', or 'both'
   isPaymentFormValid(): boolean {
-    if (!this.paymentMethod || !this.selectedPayment) {
+    if (!this.selectedPaymentMethod || !this.selectedPayment || !this.paymentForm) {
       return false;
     }
 
-    if (this.paymentMethod === 'money') {
-      const amount = this.paymentForm!.get('amount')?.value || 0;
+    if (this.selectedPaymentMethod === 'cash') {
+      const amount = this.paymentForm.get('amount')?.value || 0;
       if (amount <= 0 || amount > this.selectedPayment.unpaidAmount) {
         return false;
       }
 
-      // Check specific payment method requirements
+      // Validate check/bank transfer specific fields
       if (this.moneyPaymentMethod === 'check') {
-        const checkNumber = this.paymentForm!.get('checkNumber')?.value;
-        return !!checkNumber && checkNumber.trim() !== '';
-      } else if (this.moneyPaymentMethod === 'bank_transfer') {
-        const bankAccountId = this.paymentForm!.get('bankAccountId')?.value;
-        return !!bankAccountId;
+        const checkNumber = this.paymentForm.get('checkNumber')?.value;
+        if (!checkNumber || checkNumber.trim() === '') {
+          return false;
+        }
       }
 
-      return true; // Cash payment only needs amount
-    } else if (this.paymentMethod === 'oil') {
-      const oilQuantity = this.paymentForm!.get('oilQuantity')?.value || 0;
-      const oilPricePerKg = this.paymentForm!.get('oilPricePerKg')?.value || 0;
-      return oilQuantity > 0 && oilQuantity <= this.oilEquivalent && oilPricePerKg > 0;
-    }
+      if (this.moneyPaymentMethod === 'bank_transfer') {
+        const bankAccountId = this.paymentForm.get('bankAccountId')?.value;
+        if (!bankAccountId) {
+          return false;
+        }
+      }
 
+      return true;
+    } else if (this.selectedPaymentMethod === 'oil') {
+      const oilQuantity = this.paymentForm.get('oilQuantity')?.value || 0;
+      const oilPricePerKg = this.paymentForm.get('oilPricePerKg')?.value || 0;
+      if (oilQuantity <= 0 || oilPricePerKg <= 0) {
+        return false;
+      }
+
+      const oilValue = oilQuantity * oilPricePerKg;
+      if (oilValue > this.selectedPayment.unpaidAmount) {
+        return false;
+      }
+
+      return true;
+    } else if (this.selectedPaymentMethod === 'both') {
+      const cashAmount = this.paymentForm.get('amount')?.value || 0;
+      const oilQuantity = this.paymentForm.get('oilQuantity')?.value || 0;
+      const oilPricePerKg = this.paymentForm.get('oilPricePerKg')?.value || 0;
+
+      if (cashAmount <= 0 && oilQuantity <= 0) {
+        return false;
+      }
+
+      const oilValue = oilQuantity * oilPricePerKg;
+      const totalValue = cashAmount + oilValue;
+
+      if (totalValue > this.selectedPayment.unpaidAmount) {
+        return false;
+      }
+
+      // Validate cash payment method if cash amount > 0
+      if (cashAmount > 0) {
+        if (this.moneyPaymentMethod === 'check') {
+          const checkNumber = this.paymentForm.get('checkNumber')?.value;
+          if (!checkNumber || checkNumber.trim() === '') {
+            return false;
+          }
+        }
+
+        if (this.moneyPaymentMethod === 'bank_transfer') {
+          const bankAccountId = this.paymentForm.get('bankAccountId')?.value;
+          if (!bankAccountId) {
+            return false;
+          }
+        }
+      }
+
+      return true;
+    }
     return false;
   }
 
+  /**
+   * Processes the payment with comprehensive validation and error handling.
+   * This method handles different payment methods (cash, oil, both) and validates all data before processing.
+   */
   processPayment(): void {
-    if (!this.isPaymentFormValid() || !this.selectedPayment) {
+    console.log(`[SupplierPayment] Processing payment for delivery: ${this.selectedPayment?.lotNumber}`);
+
+    // Comprehensive validation
+    if (!this.selectedPayment) {
+      console.error('[SupplierPayment] No payment selected for processing');
+      this.toastService.error('Aucun paiement sélectionné');
       return;
     }
 
-    const paymentData = {
+    if (!this.paymentForm) {
+      console.error('[SupplierPayment] Payment form is not initialized');
+      this.toastService.error('Formulaire de paiement non initialisé');
+      return;
+    }
+
+    if (!this.isPaymentFormValid()) {
+      console.error('[SupplierPayment] Payment form validation failed');
+      this.toastService.error('Formulaire de paiement invalide. Veuillez vérifier les champs.');
+      return;
+    }
+
+    if (!this.selectedPaymentMethod) {
+      console.error('[SupplierPayment] No payment method selected');
+      this.toastService.error('Méthode de paiement non sélectionnée');
+      return;
+    }
+
+    try {
+      // Validate payment data based on method
+      const validationResult = this.validatePaymentData();
+      if (!validationResult.isValid) {
+        console.error('[SupplierPayment] Payment validation failed:', validationResult.error);
+        this.toastService.error(validationResult.error || 'Erreur de validation');
+        return;
+      }
+
+      // Build payment data object
+      const paymentData = this.buildPaymentData();
+      console.log('[SupplierPayment] Payment data:', paymentData);
+
+      // Process payment based on method
+      this.processPaymentByMethod(paymentData);
+
+    } catch (error) {
+      console.error('[SupplierPayment] Unexpected error during payment processing:', error);
+      this.toastService.error('Erreur inattendue lors du traitement du paiement');
+    }
+  }
+
+  /**
+   * Validates payment data based on the selected payment method
+   * @returns Validation result with error message if invalid
+   */
+  private validatePaymentData(): { isValid: boolean; error?: string } {
+    if (!this.selectedPayment || !this.paymentForm) {
+      return { isValid: false, error: 'Données de paiement manquantes' };
+    }
+
+    const unpaidAmount = this.selectedPayment.unpaidAmount;
+
+    if (this.selectedPaymentMethod === 'cash') {
+      const amount = this.paymentForm.get('amount')?.value || 0;
+
+      if (amount <= 0) {
+        return { isValid: false, error: 'Montant doit être supérieur à 0' };
+      }
+
+      if (amount > unpaidAmount) {
+        return { isValid: false, error: 'Montant ne peut pas dépasser le montant impayé' };
+      }
+
+      // Validate check/bank transfer specific fields
+      if (this.moneyPaymentMethod === 'check') {
+        const checkNumber = this.paymentForm.get('checkNumber')?.value;
+        if (!checkNumber || checkNumber.trim() === '') {
+          return { isValid: false, error: 'Numéro de chèque requis' };
+        }
+      }
+
+      if (this.moneyPaymentMethod === 'bank_transfer') {
+        const bankAccountId = this.paymentForm.get('bankAccountId')?.value;
+        if (!bankAccountId) {
+          return { isValid: false, error: 'Compte bancaire requis' };
+        }
+      }
+
+    } else if (this.selectedPaymentMethod === 'oil') {
+      const oilQuantity = this.paymentForm.get('oilQuantity')?.value || 0;
+      const oilPricePerKg = this.paymentForm.get('oilPricePerKg')?.value || 0;
+
+      if (oilQuantity <= 0) {
+        return { isValid: false, error: 'Quantité d\'huile doit être supérieure à 0' };
+      }
+
+      if (oilPricePerKg <= 0) {
+        return { isValid: false, error: 'Prix de l\'huile doit être supérieur à 0' };
+      }
+
+      const oilValue = oilQuantity * oilPricePerKg;
+      if (oilValue > unpaidAmount) {
+        return { isValid: false, error: 'Valeur de l\'huile ne peut pas dépasser le montant impayé' };
+      }
+
+    } else if (this.selectedPaymentMethod === 'both') {
+      // Validate both cash and oil components
+      const cashAmount = this.paymentForm.get('amount')?.value || 0;
+      const oilQuantity = this.paymentForm.get('oilQuantity')?.value || 0;
+      const oilPricePerKg = this.paymentForm.get('oilPricePerKg')?.value || 0;
+
+      if (cashAmount <= 0 && oilQuantity <= 0) {
+        return { isValid: false, error: 'Au moins un montant en espèces ou une quantité d\'huile doit être fourni' };
+      }
+
+      const oilValue = oilQuantity * oilPricePerKg;
+      const totalValue = cashAmount + oilValue;
+
+      if (totalValue > unpaidAmount) {
+        return { isValid: false, error: 'Valeur totale ne peut pas dépasser le montant impayé' };
+      }
+
+      // Validate cash payment method if cash amount > 0
+      if (cashAmount > 0) {
+        if (this.moneyPaymentMethod === 'check') {
+          const checkNumber = this.paymentForm.get('checkNumber')?.value;
+          if (!checkNumber || checkNumber.trim() === '') {
+            return { isValid: false, error: 'Numéro de chèque requis' };
+          }
+        }
+
+        if (this.moneyPaymentMethod === 'bank_transfer') {
+          const bankAccountId = this.paymentForm.get('bankAccountId')?.value;
+          if (!bankAccountId) {
+            return { isValid: false, error: 'Compte bancaire requis' };
+          }
+        }
+      }
+    }
+
+    return { isValid: true };
+  }
+
+  /**
+   * Builds the payment data object based on the selected payment method
+   * @returns Payment data object
+   */
+  private buildPaymentData(): Record<string, unknown> {
+    if (!this.paymentForm || !this.selectedPayment) {
+      throw new Error('Payment form or selected payment is not available');
+    }
+
+    const baseData = {
       deliveryId: this.selectedPayment.id,
-      paymentMethod: this.paymentMethod,
-      moneyPaymentMethod: this.moneyPaymentMethod,
-      amount: this.paymentForm!.get('amount')?.value || 0,
-      oilQuantity: this.paymentForm!.get('oilQuantity')?.value || 0,
-      oilPricePerKg: this.paymentForm!.get('oilPricePerKg')?.value || this.oilPricePerLiter,
-      checkNumber: this.paymentForm!.get('checkNumber')?.value || '',
-      bankAccountId: this.paymentForm!.get('bankAccountId')?.value || '',
-      remainingAmount: this.remainingAmount
+      paymentMethod: this.selectedPaymentMethod,
+      remainingAmount: this.remainingAmount,
+      lotNumber: this.selectedPayment.lotNumber,
+      supplierId: this.supplierId
     };
 
-    console.log('Processing payment:', paymentData);
+    if (this.selectedPaymentMethod === 'cash') {
+      return {
+        ...baseData,
+        amount: this.paymentForm.get('amount')?.value || 0,
+        moneyPaymentMethod: this.moneyPaymentMethod,
+        checkNumber: this.paymentForm.get('checkNumber')?.value || '',
+        bankAccountId: this.paymentForm.get('bankAccountId')?.value || '',
+        oilQuantity: 0,
+        oilPricePerKg: 0
+      };
+    } else if (this.selectedPaymentMethod === 'oil') {
+      return {
+        ...baseData,
+        amount: 0,
+        oilQuantity: this.paymentForm.get('oilQuantity')?.value || 0,
+        oilPricePerKg: this.paymentForm.get('oilPricePerKg')?.value || this.oilPricePerLiter,
+        checkNumber: '',
+        bankAccountId: ''
+      };
+    } else { // both
+      return {
+        ...baseData,
+        amount: this.paymentForm.get('amount')?.value || 0,
+        oilQuantity: this.paymentForm.get('oilQuantity')?.value || 0,
+        oilPricePerKg: this.paymentForm.get('oilPricePerKg')?.value || this.oilPricePerLiter,
+        moneyPaymentMethod: this.moneyPaymentMethod,
+        checkNumber: this.paymentForm.get('checkNumber')?.value || '',
+        bankAccountId: this.paymentForm.get('bankAccountId')?.value || ''
+      };
+    }
+  }
 
-    // TODO: Call payment service to process the payment
-    this.toastService.success(this.translateService.instant('SUPPLIER_PAYMENT.PAYMENT_SUCCESS'));
+  /**
+   * Processes payment based on the selected method
+   * @param paymentData The payment data to process
+   */
+  private processPaymentByMethod(paymentData: Record<string, unknown>): void {
+    console.log(`[SupplierPayment] Processing payment with method: ${this.selectedPaymentMethod}`);
 
-    this.closePaymentForm();
-    this.loadPaymentHistory(); // Refresh the data
+    // TODO: Call appropriate payment service based on method
+    // For now, simulate successful payment processing
+    this.simulatePaymentProcessing(paymentData);
+  }
+
+  /**
+   * Simulates payment processing (replace with actual service calls)
+   * @param paymentData The payment data
+   */
+  private simulatePaymentProcessing(paymentData: Record<string, unknown>): void {
+    console.log('[SupplierPayment] Simulating payment processing:', paymentData);
+
+    // Simulate API call delay
+    setTimeout(() => {
+      console.log('[SupplierPayment] Payment processed successfully');
+      this.toastService.success(this.translateService.instant('SUPPLIER_PAYMENT.PAYMENT_SUCCESS'));
+      this.closePaymentForm();
+      this.loadPaymentHistory(); // Refresh the data
+    }, 1000);
   }
 
   viewPaymentDetails(payment: PaymentHistoryItem): void {
     this.toastService.info(this.translateService.instant('SUPPLIER_PAYMENT.LOT_DETAILS', { lotNumber: payment.lotNumber }));
   }
 
+  /**
+   * Loads bank accounts with comprehensive error handling and validation.
+   * This method fetches bank accounts for payment processing.
+   */
   loadBankAccounts(): void {
+    console.log('[SupplierPayment] Loading bank accounts');
+
     this.loadingBankAccounts = true;
+    this.error = null;
+
     this.bankAccountService.getAllBanksList().subscribe({
       next: (response: ApiResponse<BankAccount>) => {
+        console.log('[SupplierPayment] Bank accounts response:', response);
+
         if (response.success && response.data) {
           this.bankAccounts = Array.isArray(response.data) ? response.data : [response.data];
+          console.log(`[SupplierPayment] Loaded ${this.bankAccounts.length} bank accounts`);
         } else {
           this.bankAccounts = [];
           this.error = response.message || 'Aucun compte bancaire trouvé';
+          console.warn('[SupplierPayment] No bank accounts found:', response.message);
         }
         this.loadingBankAccounts = false;
       },
       error: (error: unknown) => {
-        console.error('Error loading bank accounts:', error);
-        this.error = 'Erreur lors du chargement des comptes bancaires';
+        console.error('[SupplierPayment] Error loading bank accounts:', error);
+        this.error = this.getErrorMessageFromError(error);
+        this.bankAccounts = [];
         this.loadingBankAccounts = false;
       }
     });
   }
 
-  openQualityControlDialog(deliveryId: string | null): void {
-    if (!deliveryId) return;
-    this.dialog.open(ControleQualiteComponent, {
-      width: '900px',
-      data: { deliveryId },
-      autoFocus: false,
-      disableClose: false
-    });
+  /**
+   * Extracts user-friendly error message from error object
+   * @param error The error object
+   * @returns User-friendly error message
+   */
+  private getErrorMessageFromError(error: unknown): string {
+    const errorObj = error as { error?: { message?: string }; message?: string; status?: number };
+
+    if (errorObj?.error?.message) {
+      return errorObj.error.message;
+    }
+    if (errorObj?.message) {
+      return errorObj.message;
+    }
+    if (errorObj?.status === 404) {
+      return 'Comptes bancaires non trouvés';
+    }
+    if (errorObj?.status === 500) {
+      return 'Erreur serveur lors du chargement des comptes bancaires';
+    }
+    return 'Erreur lors du chargement des comptes bancaires';
   }
 
   getSelectedDeliveryType(): string | null {
@@ -619,4 +1091,87 @@ export class SupplierPaymentHistoryComponent implements OnInit {
     // For now, try to get it from the selectedPayment if available
     return (this.selectedPayment as unknown as { deliveryType?: string }).deliveryType || null;
   }
+
+  /**
+   * Fetches delivery information by olive lot number for quality control results.
+   * This method is called when payment method is 'oil' or 'both' to get related delivery data.
+   *
+   * @param id The olive lot number to fetch delivery information for
+   */
+  getDeliveryByOliveLotNumber(id: string | null): void {
+    console.log(`[SupplierPayment] Fetching delivery by olive lot number: ${id}`);
+
+    if (!id) {
+      console.warn(`[SupplierPayment] No olive lot number provided for delivery fetch`);
+      this.oilQcResults = [];
+      return;
+    }
+
+    try {
+      this.deliveryService.getDeliveryByOliveLotNumber(id).subscribe({
+        next: (res) => {
+          console.log(`[SupplierPayment] Delivery fetch response:`, res);
+
+          if (res.success && Array.isArray(res.data)) {
+            console.log(`[SupplierPayment] Found ${res.data.length} delivery records for olive lot: ${id}`);
+
+            // Process the delivery data
+            res.data.forEach((delivery, index) => {
+              console.log(`[SupplierPayment] Delivery ${index + 1}:`, {
+                lotNumber: delivery.lotNumber,
+                deliveryType: delivery.deliveryType,
+                status: delivery.status,
+                oilQuantity: delivery.oilQuantity,
+                unitPrice: delivery.unitPrice
+              });
+            });
+
+            // TODO: Process quality control results from delivery data
+            // For now, just log the data
+            console.log(`[SupplierPayment] Quality control results processing not yet implemented`);
+
+          } else {
+            console.warn(`[SupplierPayment] No delivery data found for olive lot: ${id}`);
+            this.oilQcResults = [];
+          }
+        },
+        error: (error) => {
+          console.error(`[SupplierPayment] Error fetching delivery for olive lot ${id}:`, error);
+          this.oilQcResults = [];
+          // Optionally show user-friendly error message
+          this.toastService.error('Erreur lors de la récupération des données de livraison');
+        }
+      });
+
+    } catch (error) {
+      console.error(`[SupplierPayment] Unexpected error in getDeliveryByOliveLotNumber:`, error);
+      this.oilQcResults = [];
+    }
+  }
+
+  /**
+   * Fetch related oil delivery for payment processing
+   */
+  fetchRelatedOilDeliveryForPayment(oliveLotNumber: string): void {
+    this.oilPaymentAvailable = true;
+    this.deliveryService.getRelatedOilDelivery(oliveLotNumber, this.supplierId).subscribe({
+      next: (delivery) => {
+        this.relatedOilDelivery = delivery;
+        this.oilPaymentAvailable = !!delivery;
+      },
+      error: () => {
+        this.relatedOilDelivery = null;
+        this.oilPaymentAvailable = false;
+        this.toastService.info("Aucune huile de paiement trouvée pour cette livraison d'olives");
+        // Optionally reset payment method to 'cash' if oil is not available
+        if (this.selectedPaymentMethod !== 'cash') {
+          this.selectedPaymentMethod = 'cash';
+        }
+      }
+    });
+  }
+
+  // Add property to store related oil delivery
+  relatedOilDelivery: UnifiedDelivery | null = null;
+  oilPaymentAvailable = true;
 }

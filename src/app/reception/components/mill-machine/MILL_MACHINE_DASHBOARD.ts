@@ -2,6 +2,7 @@ import { AttributeType, DashboardConfig, FieldType } from '../../../shared/modul
 import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
 
 export const MILL_MACHINE_DASHBOARD: DashboardConfig = {
+  icon: 'precision_manufacturing',
   title: 'Machines de Moulin',
   titleTranslatePath: 'MILL.MACHINE_TITLE',
   baseURL: 'production/millers',

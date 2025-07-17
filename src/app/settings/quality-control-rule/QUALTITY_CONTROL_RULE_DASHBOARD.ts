@@ -3,6 +3,7 @@ import {SearchOperation} from "../../shared/models/advanced-search/searchOperati
 
 
 export const QUALTITY_CONTROL_RULE_DASHBOARD: DashboardConfig = {
+  icon: 'rule',
   title: "Quality Control Rule",
   titleTranslatePath: 'QUALTITY.CONTROL_RULE',
   baseURL: 'quality-control',

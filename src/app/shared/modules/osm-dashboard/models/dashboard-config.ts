@@ -2,6 +2,7 @@ import { booleanAttribute } from "@angular/core";
 import { SearchData } from "src/app/shared/models/advanced-search/searchData";
 
 export interface DashboardConfig {
+  icon?: string | null;
     title:string;
     titleTranslatePath?:string;
     baseURL: string;

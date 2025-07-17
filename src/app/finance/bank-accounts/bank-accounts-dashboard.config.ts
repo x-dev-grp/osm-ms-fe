@@ -1,11 +1,11 @@
 import {
-  Action,
   AttributeType,
   DashboardConfig,
   FieldType
 } from '../../shared/modules/osm-dashboard/models/dashboard-config';
 
 export const BANK_ACCOUNTS_DASHBOARD_CONFIG: DashboardConfig = {
+  icon: 'account_balance',
   title: 'Comptes bancaires',
   titleTranslatePath: 'BANK_ACCOUNTS.TITLE',
   baseURL: 'finance/banks',
