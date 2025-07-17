@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import jsPDF from 'jspdf';
+import {UnifiedDelivery} from "../models/UnifiedDelivery";
 
 
 @Injectable({
@@ -207,4 +208,114 @@ export class PdfGeneratorService {
   }
 
 
+  // pdf-generator.service.ts
+
+  generateReceptionPdf(
+    delivery: UnifiedDelivery,
+    type: 'OIL' | 'OLIVE'
+  ): void {
+    const isHuile = type === 'OIL';
+
+    const commonData = {
+      reference: delivery.lotNumber || '',
+      date: '',
+      generalInfo: [
+        {label: 'Type', value: delivery.deliveryType || ''},
+        {
+          label: 'Fournisseur',
+          value: `${delivery.supplier?.supplierInfo?.name || ''} ${delivery.supplier?.supplierInfo?.lastname || ''}`
+        },
+        {label: 'Téléphone', value: delivery.supplier?.supplierInfo?.phone || ''},
+        {label: 'Adresse', value: delivery.supplier?.supplierInfo?.address || ''}
+      ],
+      footerInfo: [
+        {label: 'Signature Agent (bascule)', placeholder: ''},
+        {label: 'Signature Responsable CQ', placeholder: ''}
+      ]
+    };
+
+    const fields = isHuile
+      ? [
+        {label: 'Lot', value: delivery.lotNumber || ''},
+        {label: 'Lot Global', value: delivery.globalLotNumber || ''},
+        {label: 'Poids Brut', value: `${delivery.poidsBrute || ''} kg`},
+        {label: "Quantité d'huile", value: `${delivery.oilQuantity || ''} kg`},
+        {label: 'Variété Huile', value: delivery.oilVariety?.name || ''},
+        {label: 'Type Huile', value: delivery.oilType?.name || ''},
+        {label: 'Région', value: delivery.region?.name || ''}
+      ]
+      : [
+        {label: 'Lot', value: delivery.lotNumber || ''},
+        {label: 'Lot Global', value: delivery.globalLotNumber || ''},
+        {label: 'Poids Brut', value: `${delivery.poidsBrute || ''} kg`},
+        {label: "Quantité Olive", value: `${delivery.oilQuantity || ''} kg`},
+        {label: 'Variété Olive', value: delivery.oliveVariety?.name || ''},
+        {label: 'Type Olive', value: delivery.oliveType?.name || ''},
+        {label: 'Région', value: delivery.region?.name || ''}
+      ];
+
+    const title = isHuile ? 'Bon De Réception Huile' : 'Bon De Réception Olive';
+    const fileName = isHuile
+      ? `Bon_Reception_Huile_${delivery.deliveryNumber || 'inconnu'}.pdf`
+      : `Bon_Reception_Olive_${delivery.deliveryNumber || 'inconnu'}.pdf`;
+
+    this.generatePdfDocument({
+      ...commonData,
+      title,
+      fields,
+      fileName
+    });
+  }
+
+
+  generateProductionPDF(dataEntry: any): void {
+    const dateLivraison = new Date(dataEntry.deliveryDate).toLocaleDateString();
+    const dateTrituration = new Date(dataEntry.trtDate).toLocaleDateString();
+
+    const poidsNetOlives = `${dataEntry.poidsNet} kg`;
+    const qteHuile = `${dataEntry.oilQuantity || 0} L`;
+    const rendement = `${(dataEntry.rendement || 0).toFixed(2)} %`;
+
+    // À adapter selon ton modèle métier ou API
+    const prixTriturationParKg = '0.15 DNT/kg';
+    const prixTotalTrituration = `${(dataEntry.poidsNet * 0.15).toFixed(2)} DNT`;
+
+    // Infos générales
+    const generalInfo = [
+      {label: 'Numéro de Lot', value: dataEntry.lotNumber || '-'},
+      {label: 'Numéro de Réception', value: dataEntry.deliveryNumber || '-'},
+      {label: 'Date de Livraison', value: dateLivraison},
+      {label: 'Poids Net d\'Olives', value: poidsNetOlives},
+      {label: 'Fournisseur', value: dataEntry.supplier?.supplierInfo?.name || '-'},
+      {label: 'Région', value: dataEntry.region?.name || '-'},
+      {label: 'Variété d\'Olive', value: dataEntry.oliveVariety?.name || '-'},
+      {label: 'Type d\'Olive', value: dataEntry.oliveType?.name || '-'},
+    ];
+
+    // Données à afficher dans un tableau (si nécessaire)
+    const fields = [
+      {label: 'Quantité d\'Huile', value: qteHuile},
+      {label: 'Rendement', value: rendement},
+      {label: 'Prix Trituration par kg', value: prixTriturationParKg},
+      {label: 'Prix Total Trituration', value: prixTotalTrituration},
+      {label: 'Date de Trituration', value: dateTrituration},
+    ];
+
+    const config = {
+      title: 'BON DE PRODUCTION',
+      reference: dataEntry.deliveryNumber || 'N/A',
+      date: new Date().toLocaleDateString(),
+      generalInfo: generalInfo,   // <-- Ces données seront affichées en texte brut (haut du PDF)
+      fields: fields,             // <-- Ces données seront affichées sous forme de tableau
+      footerInfo: [
+        {label: 'Responsable Qualité'},
+        {label: 'Chef de Production'},
+        {label: 'Signature'},
+        {label: 'Date'}
+      ],
+      fileName: `BonProduction_${dataEntry.lotNumber || 'LOT'}`
+    };
+
+    this.generatePdfDocument(config);
+  }
 }

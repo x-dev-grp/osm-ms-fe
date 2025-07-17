@@ -427,7 +427,11 @@
         "OIL_DETAILS": "Détails de l'huile",
         "SUPPLIER_REGION": "Fournisseur et région",
         "VEHICLE_INFO": "Informations du véhicule",
-        "WEIGHT_QUANTITY": "Poids et quantité"
+        "WEIGHT_QUANTITY": "Poids et quantité",
+        "QUALITY_CONTROL_INFO": "Informations sur le contrôle qualité",
+        "RECEPTION_PRICE_INFO": "Informations sur le prix de la réception"
+
+
       },
       "TITLE": {
         "ADD": "Ajouter une livraison d'huile",
@@ -1036,7 +1040,9 @@
         "FINANCIAL_INFORMATION": "Informations Financières",
         "QUALITY_AND_QUANTITY": "Qualité et Quantité",
         "STORAGE_UNITS": "Unités de Stockage",
-        "TRANSACTION_TYPE_AND_STATE": "Type et État de la Transaction"
+        "TRANSACTION_TYPE_AND_STATE": "Type et État de la Transaction",
+        "QUALITY_CONTROL_INFO": "Quality Control Information",
+        "RECEPTION_PRICE_INFO": "Reception Price Information"
       },
       "TITLE": {
         "CREATE": "Nouvelle Transaction d'Huile",
@@ -1140,7 +1146,10 @@
         "OLIVE_INFO": "Informations sur les olives",
         "SUPPLIER_REGION": "Fournisseur et région",
         "VEHICLE_INFO": "Informations du véhicule",
-        "WEIGHT_QUANTITY": "Poids et quantité"
+        "WEIGHT_QUANTITY": "Poids et quantité",
+        "QUALITY_CONTROL_INFO": "Quality Control Information",
+        "RECEPTION_PRICE_INFO": "Reception Price Information"
+
       },
       "TITLE": {
         "ADD": "Ajouter une réception d'olives",

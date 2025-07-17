@@ -128,5 +128,81 @@
         </div>
       </div>
     </div>
+
+    <mat-divider class="divider"></mat-divider>
+
+    <!-- Information Contrôle Qualité Section (if status is OIL_CONTROLLED) -->
+    <div *ngIf="deliveryData.status === 'OIL_CONTROLLED' || deliveryData.status ==='COMPLETED' " class="section">
+      <h3 class="section-title">{{ translate.instant('DELIVERIES.DETAILS.SECTIONS.INFO_CONTROL_QUALITE') }}</h3>
+      <div *ngIf="deliveryData.qualityControlResults?.length; else noQc">
+        <div *ngFor="let qc of deliveryData.qualityControlResults" class="grid-row">
+          <div class="grid-item">
+            <strong>{{ qc.rule?.ruleName || qc.rule?.ruleKey }} :</strong> {{ qc.measuredValue }}
+          </div>
+        </div>
+      </div>
+      <ng-template #noQc>
+        <div>{{ translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED') }}</div>
+      </ng-template>
+    </div>
+
+    <!-- Information Prix Réception Section (if unitPrice and price are not null) -->
+    <div *ngIf="deliveryData.unitPrice != null && deliveryData.price != null" class="section">
+      <h3 class="section-title">{{ translate.instant('DELIVERIES.DETAILS.SECTIONS.INFO_PRIX') }} </h3>
+      <div class="grid-row">
+        <div class="grid-item">
+          <strong>{{ translate.instant('CONTROLE_QUALITE.FINANCIAL.UNIT_PRICE') }}
+            :</strong> {{ deliveryData.unitPrice | number: '1.2-2' }} TND/kg
+        </div>
+        <div class="grid-item">
+          <strong>{{ translate.instant('CONTROLE_QUALITE.FINANCIAL.PRICE') }}
+            :</strong> {{ deliveryData.price | number: '1.2-2' }} TND
+        </div>
+      </div>
+
+
+      <mat-divider class="divider"></mat-divider>
+
+      <!-- Info Production Section (if status is COMPLETED) -->
+      <div *ngIf="deliveryData.deliveryType === 'OLIVE' && deliveryData.status === 'COMPLETED'" class="section">
+        <h3 class="section-title">{{ translate.instant('DELIVERIES.DETAILS.SECTIONS.INFO_PRODUCTION') }}</h3>
+        <div class="grid-row">
+          <div class="grid-item">
+            <strong>Quantité d'Huile :</strong> {{ deliveryData.oilQuantity || 0 }} kg
+          </div>
+          <div class="grid-item">
+            <strong>Rendement :</strong> {{ deliveryData.rendement || 0 }} %
+          </div>
+        </div>
+        <div class="grid-row">
+          <div class="grid-item">
+            <strong>Prix total Trituration :</strong> {{ deliveryData.price || 0 }} TND
+          </div>
+          <div class="grid-item">
+            <strong>Date trituration :</strong> {{ deliveryData.trtDate | date: 'short' }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="deliveryData.deliveryType === 'OLIVE' && deliveryData.status === 'COMPLETED'" class="section">
+      <h3 class="section-title">Info Production</h3>
+      <div class="grid-row">
+        <div class="grid-item">
+          <strong>Quantité d'Huile :</strong> {{ deliveryData.oilQuantity || 0 }} kg
+        </div>
+        <div class="grid-item">
+          <strong>Rendement :</strong> {{ deliveryData.rendement || 0 }} %
+        </div>
+      </div>
+      <div class="grid-row">
+        <div class="grid-item">
+          <strong>Prix total Trituration :</strong> {{ deliveryData.price || 0 }} TND
+        </div>
+        <div class="grid-item">
+          <strong>Date trituration :</strong> {{ deliveryData.trtDate | date: 'short' }}
+        </div>
+      </div>
+    </div> <!-- FIN de la section Info Production -->
+
   </mat-card-content>
 </mat-card>

@@ -413,7 +413,9 @@
         "OIL_DETAILS": "Oil Details",
         "SUPPLIER_REGION": "Supplier and Region",
         "VEHICLE_INFO": "Vehicle Information",
-        "WEIGHT_QUANTITY": "Weight and Quantity"
+        "WEIGHT_QUANTITY": "Weight and Quantity",
+        "QUALITY_CONTROL_INFO": "Quality Control Information",
+        "RECEPTION_PRICE_INFO": "Reception Price Information"
       },
       "TITLE": {
         "ADD": "Add Oil Delivery",
