@@ -22,8 +22,8 @@ export class ReceptionListComponent {
 
   handleDashboardAction(event: { row: UnifiedDelivery; action: string }): void {
     switch (event.action) {
-      case 'Consulter':
-        // this.viewDelivery(event.row);
+      case 'READ':
+        this.viewDelivery(event.row);
         break;
 
       case 'Modifier':
@@ -46,6 +46,13 @@ export class ReceptionListComponent {
 
         }
         break;
+    }
+  }
+
+  viewDelivery(row: UnifiedDelivery): void {
+    if (row && row.id) {
+      this._router.navigate(['/reception/reception-details', row.id]);
+      console.log(row)
     }
   }
 

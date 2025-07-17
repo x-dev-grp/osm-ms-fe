@@ -101,3 +101,12 @@
   max-width: 1200px;
   text-align: center;
 }
+
+/* Ensure h3.section-title is styled correctly */
+h3.section-title, .section-title {
+  font-size: 20px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 16px;
+  display: block;
+}
