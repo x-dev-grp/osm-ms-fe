@@ -1,6 +1,6 @@
-import {AttributeType, DashboardConfig, FieldType} from '../../../shared/modules/osm-dashboard/models/dashboard-config';
-import {deliveryType} from '../../../shared/models/deleveryType';
-import {SearchOperation} from '../../../shared/models/advanced-search/searchOperation';
+import { AttributeType, DashboardConfig, FieldType } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { deliveryType } from '../../../shared/models/deleveryType';
+import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
 
 export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
   icon: 'water_drop',
@@ -19,15 +19,22 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       operation: SearchOperation.AND,
       search: {
         status: {
-          inValues: ['NEW', 'IN_PROGRESS', 'OIL_CONTROLLED', 'WAITING_FOR_PRICING', 'REFUSED','STOCK_READY', 'CANCELLED','WAITING_FOR_PAYMENT_DETAILS']
+          inValues: [
+            'NEW',
+            'IN_PROGRESS',
+            'OIL_CONTROLLED',
+            'WAITING_FOR_PRICING',
+            'REFUSED',
+            'STOCK_READY',
+            'CANCELLED',
+            'WAITING_FOR_PAYMENT_DETAILS'
+          ]
         },
         deliveryType: {
           equalValue: deliveryType.OIL
         }
       },
-      searchs: [
-
-      ]
+      searchs: []
     }
   } /* ────────────────────────────────────────────────────────────── */ /*         Champs pour les livraisons d'huile                    */,
   /* ────────────────────────────────────────────────────────────── */

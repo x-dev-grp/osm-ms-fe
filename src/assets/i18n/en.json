@@ -509,11 +509,16 @@
       "RESET": "Reset",
       "RESET_TOOLTIP": "Reset all fields",
       "SAVE": "Save Changes",
-      "SAVE_TOOLTIP": "Save company profile"
+      "SAVE_TOOLTIP": "Save company profile",
+      "EDIT": "Edit",
+      "UPDATE": "Update"
     },
     "ADDRESS_INFO": {
       "ADDRESS": "Address",
-      "TITLE": "Address Information"
+      "TITLE": "Address Information",
+      "CITY_REQUIRED": "City is required.",
+      "POSTAL_CODE_REQUIRED": "Postal code is required.",
+      "GOVERNORATE_REQUIRED": "Governorate is required."
     },
     "COMPANY_INFO": {
       "CAPITAL": "Capital (TND)",
@@ -530,13 +535,21 @@
       "LEGAL_NAME": "Legal Name",
       "REG_NUMBER": "Reg. Commerce (RC)",
       "TAX_ID": "Matricule Fiscale",
-      "TITLE": "Company Information"
+      "TITLE": "Company Information",
+      "LEGAL_NAME_REQUIRED": "Legal name is required.",
+      "REG_NUMBER_REQUIRED": "Registration number is required.",
+      "TAX_ID_REQUIRED": "Tax ID is required.",
+      "CNSS_NUMBER_REQUIRED": "CNSS number is required.",
+      "LEGAL_FORM_REQUIRED": "Legal form is required.",
+      "CAPITAL_REQUIRED": "Capital is required.",
+      "CREATION_DATE_REQUIRED": "Creation date is required."
     },
     "CONTACT_INFO": {
       "EMAIL": "Email",
       "PHONE": "Phone",
       "TITLE": "Contact Information",
-      "WEBSITE": "Website"
+      "WEBSITE": "Website",
+      "WEBSITE_REQUIRED": "Website is required."
     },
     "EXPANDABLE": {
       "CONFIGURATIONS": "Configurations",
@@ -552,10 +565,13 @@
       "TITLE": "Company Logo"
     },
     "MESSAGES": {
-      "LOAD_ERROR": "Error loading profile",
-      "LOGO_TOO_LARGE": "Logo too large (max 200 KB)",
-      "SAVE_ERROR": "Failed to save profile",
-      "SAVE_SUCCESS": "Profile saved successfully"
+      "LOAD_ERROR": "Error loading company profile.",
+      "SAVE_SUCCESS": "Company profile saved successfully!",
+      "SAVE_ERROR": "Error saving company profile.",
+      "RESET": "Form reset.",
+      "LOGO_TOO_LARGE": "Logo file is too large (max 200KB).",
+      "LOGO_REQUIRED": "A company logo is required.",
+      "UPDATE_ID_REQUIRED": "Cannot update: missing profile ID."
     },
     "TITLE": "Company Profile"
   },
@@ -1336,6 +1352,44 @@
       "VALIDATION_ERROR": "Please check your input and try again",
       "WARNING": "Please check your input"
     }
+  },
+  "PDF": {
+    "FORM": "FORM",
+    "REFERENCE": "Reference",
+    "REVISION": "Revision",
+    "DATE": "Date",
+    "PAGE": "Page",
+    "NUMBER_PLACEHOLDER": "No: ......./........",
+    "TYPE": "Type",
+    "SUPPLIER": "Supplier",
+    "PHONE": "Phone",
+    "ADDRESS": "Address",
+    "SIGNATURE_AGENT": "Agent Signature (scale)",
+    "SIGNATURE_RESPONSIBLE": "Quality Manager Signature",
+    "LOT": "Lot",
+    "LOT_GLOBAL": "Global Lot",
+    "GROSS_WEIGHT": "Gross Weight",
+    "OIL_QUANTITY": "Oil Quantity",
+    "OIL_VARIETY": "Oil Variety",
+    "OIL_TYPE": "Oil Type",
+    "REGION": "Region",
+    "OLIVE_QUANTITY": "Olive Quantity",
+    "OLIVE_VARIETY": "Olive Variety",
+    "OLIVE_TYPE": "Olive Type",
+    "RECEPTION_OIL": "Oil Reception Receipt",
+    "RECEPTION_OLIVE": "Olive Reception Receipt",
+    "LOT_NUMBER": "Lot Number",
+    "RECEPTION_NUMBER": "Reception Number",
+    "DELIVERY_DATE": "Delivery Date",
+    "OLIVE_NET_WEIGHT": "Net Weight of Olives",
+    "YIELD": "Yield",
+    "CRUSHING_PRICE_PER_KG": "Crushing Price per kg",
+    "CRUSHING_TOTAL_PRICE": "Total Crushing Price",
+    "CRUSHING_DATE": "Crushing Date",
+    "PRODUCTION_RECEIPT": "Production Receipt",
+    "QUALITY_MANAGER": "Quality Manager",
+    "PRODUCTION_MANAGER": "Production Manager",
+    "SIGNATURE": "Signature"
   },
   "STORAGE": {
     "ERROR": {

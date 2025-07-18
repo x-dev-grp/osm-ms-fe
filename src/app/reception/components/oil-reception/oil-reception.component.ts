@@ -94,8 +94,8 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   selectedRow: UnifiedDelivery | null = null;
   OilDelevery: UnifiedDelivery | null = null;
-  private subs = new Subscription();
   protected originalOliveReception: UnifiedDelivery;
+  private subs = new Subscription();
 
   constructor(
     private fb: FormBuilder,
@@ -317,12 +317,12 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
    * @param row The oil delivery row that needs payment details completion
    */
   openPaymentDetailsDialog(row: UnifiedDelivery): void {
-    this.deliveryService.getDeliveryByLotNumber(row.lotOliveNumber!) .subscribe({
+    this.deliveryService.getDeliveryByLotNumber(row.lotOliveNumber!).subscribe({
       next: (res) => {
-         if (res.success && res.data  ) {
+        if (res.success && res.data) {
           this.originalOliveReception = res.data;
-          console.log("this.originalOliveReception")
-          console.log(this.originalOliveReception)
+          console.log('this.originalOliveReception');
+          console.log(this.originalOliveReception);
           // Move dialog open logic here
           this.selectedRow = row;
           this.isLoading = true;
@@ -342,7 +342,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
         }
       },
       error: (err) => {
-         console.error('Erreur de chargement :', err);
+        console.error('Erreur de chargement :', err);
       }
     });
     // Remove dialog open logic from here
@@ -357,7 +357,6 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
       console.warn('[OilReception] Payment details form is not initialized');
       return;
     }
-
 
     try {
       const unitPriceControl = this.paymentDetailsForm.get('unitPrice');
@@ -488,6 +487,30 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
   }
 
   /* ——— form patch & subscriptions ——— */
+
+  /**
+   * Returns the maximum allowed unit price so that unitPrice * quantity <= unpaidAmount
+   */
+  maxUnitPrice(): number {
+    const unpaid = this.paymentDetailsForm?.get('unpaidAmount')?.value || 0;
+    const quantity = this.paymentDetailsForm?.get('quantity')?.value || 1;
+    if (quantity > 0) {
+      return unpaid / quantity;
+    }
+    return unpaid;
+  }
+
+  /**
+   * Returns the maximum allowed quantity so that unitPrice * quantity <= unpaidAmount
+   */
+  maxQuantity(): number {
+    const unpaid = this.paymentDetailsForm?.get('unpaidAmount')?.value || 0;
+    const unitPrice = this.paymentDetailsForm?.get('unitPrice')?.value || 1;
+    if (unitPrice > 0) {
+      return unpaid / unitPrice;
+    }
+    return unpaid;
+  }
 
   private toast(message: string, duration = 3000): void {
     this.snackBar.open(message, 'Fermer', {
@@ -763,29 +786,5 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
       return 'Erreur serveur';
     }
     return 'Erreur inconnue';
-  }
-
-  /**
-   * Returns the maximum allowed unit price so that unitPrice * quantity <= unpaidAmount
-   */
-  maxUnitPrice(): number {
-    const unpaid = this.paymentDetailsForm?.get('unpaidAmount')?.value || 0;
-    const quantity = this.paymentDetailsForm?.get('quantity')?.value || 1;
-    if (quantity > 0) {
-      return unpaid / quantity;
-    }
-    return unpaid;
-  }
-
-  /**
-   * Returns the maximum allowed quantity so that unitPrice * quantity <= unpaidAmount
-   */
-  maxQuantity(): number {
-    const unpaid = this.paymentDetailsForm?.get('unpaidAmount')?.value || 0;
-    const unitPrice = this.paymentDetailsForm?.get('unitPrice')?.value || 1;
-    if (unitPrice > 0) {
-      return unpaid / unitPrice;
-    }
-    return unpaid;
   }
 }

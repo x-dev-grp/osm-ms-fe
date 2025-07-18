@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { CompanyProfile } from '../models/CompanyProfile';
 import { Observable, of } from 'rxjs';
 import { ApiResponse } from '../models/api-response';
-import { map, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -20,13 +20,19 @@ export class CompanyProfileService {
     // Try to get from localStorage first
     const cachedProfile = localStorage.getItem(this.STORAGE_KEY);
     if (cachedProfile) {
-      return of(JSON.parse(cachedProfile));
+      try {
+        const parsed = JSON.parse(cachedProfile);
+        if (parsed && parsed.success && Array.isArray(parsed.data[0])) {
+          return of(parsed);
+        }
+      } catch {
+        // Ignore malformed cache
+      }
     }
-
-    // If not in localStorage, fetch from API and cache it
+    // If not in localStorage or cache is invalid, fetch from API and cache it
     return this.http.get<ApiResponse<CompanyProfile>>(`${this.baseUrl}/fetchAll`).pipe(
       tap(response => {
-        if (response && response.success) {
+        if (response && response.success && Array.isArray(response.data) && response.data.length > 0) {
           localStorage.setItem(this.STORAGE_KEY, JSON.stringify(response));
         }
       })
@@ -36,18 +42,13 @@ export class CompanyProfileService {
   /** Creates or updates based on presence of `id` */
   saveProfile(profile: CompanyProfile): Observable<CompanyProfile> {
     const request$ = profile.id
-      ? this.http.put<CompanyProfile>(`${this.baseUrl}/${profile.id}`, profile)
+      ? this.http.put<CompanyProfile>(`${this.baseUrl}`, profile)
       : this.http.post<CompanyProfile>(this.baseUrl, profile);
 
     return request$.pipe(
-      tap(savedProfile => {
-        // Update the cached profile after successful save
-        const cachedResponse = localStorage.getItem(this.STORAGE_KEY);
-        if (cachedResponse) {
-          const response = JSON.parse(cachedResponse);
-          response.data[0] = savedProfile;
-          localStorage.setItem(this.STORAGE_KEY, JSON.stringify(response));
-        }
+      tap(() => {
+        // After save, clear the cached profile to force fresh fetch next time
+        this.clearCache();
       })
     );
   }

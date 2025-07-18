@@ -7,6 +7,8 @@ import {UnifiedDeliveryService} from '../../../shared/services/delivery.service'
 import {tap} from 'rxjs';
 import {Router} from '@angular/router';
 import {PdfGeneratorService} from "../../../shared/services/pdf-generator.service";
+import { Action } from 'rxjs/internal/scheduler/Action';
+import { ACTION_ICONS } from '../../../shared/modules/osm-dashboard/models/actions';
 
 @Component({
   selector: 'app-reception-list',
@@ -22,7 +24,7 @@ export class ReceptionListComponent {
 
   handleDashboardAction(event: { row: UnifiedDelivery; action: string }): void {
     switch (event.action) {
-      case 'READ':
+      case ACTION_ICONS.get('READ'):
         this.viewDelivery(event.row);
         break;
 

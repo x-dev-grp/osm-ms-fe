@@ -548,13 +548,21 @@
       "LEGAL_NAME": "Nom Légal",
       "REG_NUMBER": "Registre du Commerce (RC)",
       "TAX_ID": "Matricule Fiscale",
-      "TITLE": "Informations de l'Entreprise"
+      "TITLE": "Informations de l'Entreprise",
+      "LEGAL_NAME_REQUIRED": "Le nom légal est requis.",
+      "REG_NUMBER_REQUIRED": "Le numéro d'enregistrement est requis.",
+      "TAX_ID_REQUIRED": "Le matricule fiscal est requis.",
+      "CNSS_NUMBER_REQUIRED": "Le numéro CNSS est requis.",
+      "LEGAL_FORM_REQUIRED": "La forme juridique est requise.",
+      "CAPITAL_REQUIRED": "Le capital est requis.",
+      "CREATION_DATE_REQUIRED": "La date de création est requise."
     },
     "CONTACT_INFO": {
       "EMAIL": "Email",
       "PHONE": "Téléphone",
       "TITLE": "Informations de Contact",
-      "WEBSITE": "Site Web"
+      "WEBSITE": "Site Web",
+      "WEBSITE_REQUIRED": "Le site web est requis."
     },
     "EXPANDABLE": {
       "CONFIGURATIONS": "Configurations",
@@ -570,10 +578,13 @@
       "TITLE": "Logo de l'Entreprise"
     },
     "MESSAGES": {
-      "LOAD_ERROR": "Erreur lors du chargement du profil",
-      "LOGO_TOO_LARGE": "Logo trop volumineux (max 200 KB)",
-      "SAVE_ERROR": "Échec de l'enregistrement du profil",
-      "SAVE_SUCCESS": "Profil enregistré avec succès"
+      "LOAD_ERROR": "Erreur lors du chargement du profil de l'entreprise.",
+      "SAVE_SUCCESS": "Profil de l'entreprise enregistré avec succès !",
+      "SAVE_ERROR": "Erreur lors de l'enregistrement du profil de l'entreprise.",
+      "RESET": "Formulaire réinitialisé.",
+      "LOGO_TOO_LARGE": "Le fichier du logo est trop volumineux (max 200 Ko).",
+      "LOGO_REQUIRED": "Un logo d'entreprise est requis.",
+      "UPDATE_ID_REQUIRED": "Impossible de mettre à jour : identifiant du profil manquant."
     },
     "TITLE": "Profil de l'Entreprise"
   },
@@ -1614,5 +1625,43 @@
   "User Profile": "Profil de l'utilisateur",
   "View": "Voir",
   "Widget": "Widget",
-  "reCaptcha": "reCaptcha"
+  "reCaptcha": "reCaptcha",
+  "PDF": {
+    "FORM": "FORMULAIRE",
+    "REFERENCE": "Référence",
+    "REVISION": "Révision",
+    "DATE": "Date",
+    "PAGE": "Page",
+    "NUMBER_PLACEHOLDER": "N° : ......./........",
+    "TYPE": "Type",
+    "SUPPLIER": "Fournisseur",
+    "PHONE": "Téléphone",
+    "ADDRESS": "Adresse",
+    "SIGNATURE_AGENT": "Signature Agent (bascule)",
+    "SIGNATURE_RESPONSIBLE": "Signature Responsable CQ",
+    "LOT": "Lot",
+    "LOT_GLOBAL": "Lot Global",
+    "GROSS_WEIGHT": "Poids Brut",
+    "OIL_QUANTITY": "Quantité d'huile",
+    "OIL_VARIETY": "Variété Huile",
+    "OIL_TYPE": "Type Huile",
+    "REGION": "Région",
+    "OLIVE_QUANTITY": "Quantité Olive",
+    "OLIVE_VARIETY": "Variété Olive",
+    "OLIVE_TYPE": "Type Olive",
+    "RECEPTION_OIL": "Bon De Réception Huile",
+    "RECEPTION_OLIVE": "Bon De Réception Olive",
+    "LOT_NUMBER": "Numéro de Lot",
+    "RECEPTION_NUMBER": "Numéro de Réception",
+    "DELIVERY_DATE": "Date de Livraison",
+    "OLIVE_NET_WEIGHT": "Poids Net d'Olives",
+    "YIELD": "Rendement",
+    "CRUSHING_PRICE_PER_KG": "Prix Trituration par kg",
+    "CRUSHING_TOTAL_PRICE": "Prix Total Trituration",
+    "CRUSHING_DATE": "Date de Trituration",
+    "PRODUCTION_RECEIPT": "BON DE PRODUCTION",
+    "QUALITY_MANAGER": "Responsable Qualité",
+    "PRODUCTION_MANAGER": "Chef de Production",
+    "SIGNATURE": "Signature"
+  }
 }

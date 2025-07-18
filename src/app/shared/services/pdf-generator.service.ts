@@ -1,12 +1,32 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import jsPDF from 'jspdf';
-import {UnifiedDelivery} from "../models/UnifiedDelivery";
+import { UnifiedDelivery } from '../models/UnifiedDelivery';
+import { TranslateService } from '@ngx-translate/core';
+import { CompanyProfileService } from './company-profile.service';
+import { CompanyProfile } from '../models/CompanyProfile';
 
+const center = 'center';
+
+const fontStyle = 'normal';
+
+const fontStyle1 = 'bold';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PdfGeneratorService {
+  logoPreview: string | null = null;
+  private profile: CompanyProfile | undefined;
+  private readonly _fontName = 'helvetica';
+  private readonly _format = 'JPEG';
+  private readonly _fontStyleItalic = 'italic';
+
+  constructor(
+    private translationServiec: TranslateService,
+    private _companyProfileService: CompanyProfileService
+  ) {
+    this.loadProfile();
+  }
 
   generatePdfDocument(config: {
     title: string;
@@ -17,9 +37,10 @@ export class PdfGeneratorService {
     footerInfo?: { label: string; placeholder?: string }[];
     fileName?: string;
   }): void {
-    const logoPath = 'assets/logo.jpg';
+    // Use company logo if available, otherwise fallback to default
+    const getLogoPromise = this.logoPreview ? Promise.resolve(this.logoPreview) : this.getBase64ImageFromUrl('assets/logo.jpg');
 
-    this.getBase64ImageFromUrl(logoPath).then(base64Logo => {
+    getLogoPromise.then((base64Logo) => {
       const doc = new jsPDF();
       let currentY = 10;
 
@@ -34,52 +55,58 @@ export class PdfGeneratorService {
 
       // Logo
       doc.rect(marginLeft, currentY, logoWidth, logoHeight);
-      doc.addImage(base64Logo, 'JPEG', marginLeft + 1, currentY + 1, logoWidth - 2, logoHeight - 2);
+      doc.addImage(base64Logo, this._format, marginLeft + 1, currentY + 1, logoWidth - 2, logoHeight - 2);
 
       // Centre
       const centerX = marginLeft + logoWidth;
       const centerWidth = 100;
       doc.rect(centerX, currentY, centerWidth, headerHeight);
       doc.setFontSize(12);
-      doc.setFont('helvetica', 'bold');
-      doc.text('FORMULAIRE', centerX + centerWidth / 2, currentY + 7, {align: 'center'});
+      doc.setFont(this._fontName, fontStyle1);
+      doc.text(this.translationServiec.instant('PDF.FORM'), centerX + centerWidth / 2, currentY + 7, { align: center });
       doc.setFontSize(10);
-      doc.setFont('helvetica', 'italic');
-      doc.text(config.title, centerX + centerWidth / 2, currentY + 14, {align: 'center'});
+      doc.setFont(this._fontName, this._fontStyleItalic);
+      doc.text(this.translationServiec.instant(config.title), centerX + centerWidth / 2, currentY + 14, { align: center });
 
       // Droite
       const rightX = centerX + centerWidth;
       const rowHeight = 5;
       const infoWidth = pageWidth - rightX - marginLeft;
       const infoRows = [
-        {label: 'Référence', value: config.reference},
-        {label: 'Révision', value: '00'},
-        {label: 'Date', value: documentDate},
-        {label: 'Page', value: '1/1'},
+        { label: this.translationServiec.instant('PDF.REFERENCE'), value: config.reference },
+        {
+          label: this.translationServiec.instant('PDF.REVISION'),
+          value: '00'
+        },
+        {
+          label: this.translationServiec.instant('PDF.DATE'),
+          value: documentDate
+        },
+        { label: this.translationServiec.instant('PDF.PAGE'), value: '1/1' }
       ];
 
       infoRows.forEach((row, index) => {
         const y = currentY + index * rowHeight;
         doc.rect(rightX, y, infoWidth, rowHeight);
         doc.setFontSize(9);
-        doc.setFont('helvetica', 'normal');
+        doc.setFont(this._fontName, fontStyle);
         doc.text(`${row.label} : ${row.value}`, rightX + 2, y + 4);
       });
 
       currentY += headerHeight + 10;
 
       // Numéro
-      doc.setFont('helvetica', 'bold');
+      doc.setFont(this._fontName, fontStyle1);
       doc.setFontSize(10);
-      doc.text('N° : ......./........', pageWidth / 2, currentY, {align: 'center'});
+      doc.text(this.translationServiec.instant('PDF.NUMBER_PLACEHOLDER'), pageWidth / 2, currentY, { align: center });
       currentY += 15;
 
       // Infos générales
       if (config.generalInfo && config.generalInfo.length > 0) {
         doc.setFontSize(12);
-        doc.setFont('helvetica', 'normal');
-        config.generalInfo.forEach(info => {
-          doc.text(`${info.label} : ${info.value}`, marginLeft, currentY);
+        doc.setFont(this._fontName, fontStyle);
+        config.generalInfo.forEach((info) => {
+          doc.text(`${this.translationServiec.instant(info.label)} : ${info.value}`, marginLeft, currentY);
           currentY += 10;
         });
         currentY += 15;
@@ -94,15 +121,15 @@ export class PdfGeneratorService {
         const baseFontSize = 9;
 
         // Split & calcul des lignes pour les labels
-        const splitLabels: string[][] = config.fields.map(field =>
-          doc.splitTextToSize(field.label, colWidth - 4)
+        const splitLabels: string[][] = config.fields.map((field) =>
+          doc.splitTextToSize(this.translationServiec.instant(field.label), colWidth - 4)
         );
-        const lineHeights = splitLabels.map(lines => lines.length);
+        const lineHeights = splitLabels.map((lines) => lines.length);
         const maxLines = Math.max(...lineHeights);
         const labelRowHeight = maxLines * 5 + 2;
 
         // TH (labels)
-        doc.setFont('helvetica', 'bold');
+        doc.setFont(this._fontName, fontStyle1);
         doc.setFontSize(baseFontSize);
         for (let i = 0; i < colCount; i++) {
           const x = tableLeft + i * colWidth;
@@ -118,18 +145,16 @@ export class PdfGeneratorService {
 
         // TD (données)
         currentY += labelRowHeight;
-        doc.setFont('helvetica', 'normal');
+        doc.setFont(this._fontName, fontStyle);
         doc.setFontSize(baseFontSize);
         // Split & calcul des lignes pour les valeurs (données)
-        const splitValues: string[][] = config.fields.map(field =>
-          doc.splitTextToSize(field.value || '', colWidth - 4)
-        );
-        const valueLineHeights = splitValues.map(lines => lines.length);
+        const splitValues: string[][] = config.fields.map((field) => doc.splitTextToSize(field.value || '', colWidth - 4));
+        const valueLineHeights = splitValues.map((lines) => lines.length);
         const maxValueLines = Math.max(...valueLineHeights);
         const dataRowHeight = maxValueLines * 5 + 2;
 
-// TD (données)
-        doc.setFont('helvetica', 'normal');
+        // TD (données)
+        doc.setFont(this._fontName, fontStyle);
         doc.setFontSize(baseFontSize);
 
         for (let i = 0; i < colCount; i++) {
@@ -161,12 +186,12 @@ export class PdfGeneratorService {
         const spacing = usableWidth / itemCount;
         const footerLabelWidth = 40;
 
-        doc.setFont('helvetica', 'normal');
+        doc.setFont(this._fontName, fontStyle);
         doc.setFontSize(10);
 
         config.footerInfo.slice(0, maxItemsPerRow).forEach((footerItem, index) => {
           const x = marginLeft + index * spacing;
-          doc.text(`${footerItem.label} :`, x, footerY);
+          doc.text(`${this.translationServiec.instant(footerItem.label)} :`, x, footerY);
           if (footerItem.placeholder) {
             doc.setFontSize(8);
             doc.setTextColor(150);
@@ -181,7 +206,6 @@ export class PdfGeneratorService {
       window.open(doc.output('bloburl'), '_blank');
     });
   }
-
 
   getBase64ImageFromUrl(url: string): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -201,60 +225,83 @@ export class PdfGeneratorService {
         resolve(dataURL);
       };
 
-      img.onerror = error => {
+      img.onerror = (error) => {
         reject(error);
       };
     });
   }
 
-
   // pdf-generator.service.ts
 
-  generateReceptionPdf(
-    delivery: UnifiedDelivery,
-    type: 'OIL' | 'OLIVE'
-  ): void {
+  generateReceptionPdf(delivery: UnifiedDelivery, type: 'OIL' | 'OLIVE'): void {
     const isHuile = type === 'OIL';
 
     const commonData = {
       reference: delivery.lotNumber || '',
       date: '',
       generalInfo: [
-        {label: 'Type', value: delivery.deliveryType || ''},
+        { label: 'PDF.TYPE', value: delivery.deliveryType || '' },
         {
-          label: 'Fournisseur',
+          label: 'PDF.SUPPLIER',
           value: `${delivery.supplier?.supplierInfo?.name || ''} ${delivery.supplier?.supplierInfo?.lastname || ''}`
         },
-        {label: 'Téléphone', value: delivery.supplier?.supplierInfo?.phone || ''},
-        {label: 'Adresse', value: delivery.supplier?.supplierInfo?.address || ''}
+        { label: 'PDF.PHONE', value: delivery.supplier?.supplierInfo?.phone || '' },
+        {
+          label: 'PDF.ADDRESS',
+          value: delivery.supplier?.supplierInfo?.address || ''
+        }
       ],
       footerInfo: [
-        {label: 'Signature Agent (bascule)', placeholder: ''},
-        {label: 'Signature Responsable CQ', placeholder: ''}
+        { label: 'PDF.SIGNATURE_AGENT', placeholder: '' },
+        {
+          label: 'PDF.SIGNATURE_RESPONSIBLE',
+          placeholder: ''
+        }
       ]
     };
 
     const fields = isHuile
       ? [
-        {label: 'Lot', value: delivery.lotNumber || ''},
-        {label: 'Lot Global', value: delivery.globalLotNumber || ''},
-        {label: 'Poids Brut', value: `${delivery.poidsBrute || ''} kg`},
-        {label: "Quantité d'huile", value: `${delivery.oilQuantity || ''} kg`},
-        {label: 'Variété Huile', value: delivery.oilVariety?.name || ''},
-        {label: 'Type Huile', value: delivery.oilType?.name || ''},
-        {label: 'Région', value: delivery.region?.name || ''}
-      ]
+          { label: 'PDF.LOT', value: delivery.lotNumber || '' },
+          {
+            label: 'PDF.LOT_GLOBAL',
+            value: delivery.globalLotNumber || ''
+          },
+          { label: 'PDF.GROSS_WEIGHT', value: `${delivery.poidsBrute || ''} kg` },
+          {
+            label: 'PDF.OIL_QUANTITY',
+            value: `${delivery.oilQuantity || ''} kg`
+          },
+          { label: 'PDF.OIL_VARIETY', value: delivery.oilVariety?.name || '' },
+          {
+            label: 'PDF.OIL_TYPE',
+            value: delivery.oilType?.name || ''
+          },
+          { label: 'PDF.REGION', value: delivery.region?.name || '' }
+        ]
       : [
-        {label: 'Lot', value: delivery.lotNumber || ''},
-        {label: 'Lot Global', value: delivery.globalLotNumber || ''},
-        {label: 'Poids Brut', value: `${delivery.poidsBrute || ''} kg`},
-        {label: "Quantité Olive", value: `${delivery.oilQuantity || ''} kg`},
-        {label: 'Variété Olive', value: delivery.oliveVariety?.name || ''},
-        {label: 'Type Olive', value: delivery.oliveType?.name || ''},
-        {label: 'Région', value: delivery.region?.name || ''}
-      ];
+          {
+            label: 'PDF.LOT',
+            value: delivery.lotNumber || ''
+          },
+          { label: 'PDF.LOT_GLOBAL', value: delivery.globalLotNumber || '' },
+          {
+            label: 'PDF.GROSS_WEIGHT',
+            value: `${delivery.poidsBrute || ''} kg`
+          },
+          { label: 'PDF.OLIVE_QUANTITY', value: `${delivery.oilQuantity || ''} kg` },
+          {
+            label: 'PDF.OLIVE_VARIETY',
+            value: delivery.oliveVariety?.name || ''
+          },
+          { label: 'PDF.OLIVE_TYPE', value: delivery.oliveType?.name || '' },
+          {
+            label: 'PDF.REGION',
+            value: delivery.region?.name || ''
+          }
+        ];
 
-    const title = isHuile ? 'Bon De Réception Huile' : 'Bon De Réception Olive';
+    const title = isHuile ? 'PDF.RECEPTION_OIL' : 'PDF.RECEPTION_OLIVE';
     const fileName = isHuile
       ? `Bon_Reception_Huile_${delivery.deliveryNumber || 'inconnu'}.pdf`
       : `Bon_Reception_Olive_${delivery.deliveryNumber || 'inconnu'}.pdf`;
@@ -267,6 +314,7 @@ export class PdfGeneratorService {
     });
   }
 
+  // pdf-generator.service.ts
 
   generateProductionPDF(dataEntry: any): void {
     const dateLivraison = new Date(dataEntry.deliveryDate).toLocaleDateString();
@@ -282,40 +330,73 @@ export class PdfGeneratorService {
 
     // Infos générales
     const generalInfo = [
-      {label: 'Numéro de Lot', value: dataEntry.lotNumber || '-'},
-      {label: 'Numéro de Réception', value: dataEntry.deliveryNumber || '-'},
-      {label: 'Date de Livraison', value: dateLivraison},
-      {label: 'Poids Net d\'Olives', value: poidsNetOlives},
-      {label: 'Fournisseur', value: dataEntry.supplier?.supplierInfo?.name || '-'},
-      {label: 'Région', value: dataEntry.region?.name || '-'},
-      {label: 'Variété d\'Olive', value: dataEntry.oliveVariety?.name || '-'},
-      {label: 'Type d\'Olive', value: dataEntry.oliveType?.name || '-'},
+      { label: 'PDF.LOT_NUMBER', value: dataEntry.lotNumber || '-' },
+      {
+        label: 'PDF.RECEPTION_NUMBER',
+        value: dataEntry.deliveryNumber || '-'
+      },
+      { label: 'PDF.DELIVERY_DATE', value: dateLivraison },
+      {
+        label: 'PDF.OLIVE_NET_WEIGHT',
+        value: poidsNetOlives
+      },
+      { label: 'PDF.SUPPLIER', value: dataEntry.supplier?.supplierInfo?.name || '-' },
+      {
+        label: 'PDF.REGION',
+        value: dataEntry.region?.name || '-'
+      },
+      { label: 'PDF.OLIVE_VARIETY', value: dataEntry.oliveVariety?.name || '-' },
+      {
+        label: 'PDF.OLIVE_TYPE',
+        value: dataEntry.oliveType?.name || '-'
+      }
     ];
 
     // Données à afficher dans un tableau (si nécessaire)
     const fields = [
-      {label: 'Quantité d\'Huile', value: qteHuile},
-      {label: 'Rendement', value: rendement},
-      {label: 'Prix Trituration par kg', value: prixTriturationParKg},
-      {label: 'Prix Total Trituration', value: prixTotalTrituration},
-      {label: 'Date de Trituration', value: dateTrituration},
+      { label: 'PDF.OIL_QUANTITY', value: qteHuile },
+      {
+        label: 'PDF.YIELD',
+        value: rendement
+      },
+      { label: 'PDF.CRUSHING_PRICE_PER_KG', value: prixTriturationParKg },
+      {
+        label: 'PDF.CRUSHING_TOTAL_PRICE',
+        value: prixTotalTrituration
+      },
+      { label: 'PDF.CRUSHING_DATE', value: dateTrituration }
     ];
 
     const config = {
-      title: 'BON DE PRODUCTION',
+      title: 'PDF.PRODUCTION_RECEIPT',
       reference: dataEntry.deliveryNumber || 'N/A',
       date: new Date().toLocaleDateString(),
-      generalInfo: generalInfo,   // <-- Ces données seront affichées en texte brut (haut du PDF)
-      fields: fields,             // <-- Ces données seront affichées sous forme de tableau
+      generalInfo: generalInfo, // <-- Ces données seront affichées en texte brut (haut du PDF)
+      fields: fields, // <-- Ces données seront affichées sous forme de tableau
       footerInfo: [
-        {label: 'Responsable Qualité'},
-        {label: 'Chef de Production'},
-        {label: 'Signature'},
-        {label: 'Date'}
+        { label: 'PDF.QUALITY_MANAGER' },
+        { label: 'PDF.PRODUCTION_MANAGER' },
+        { label: 'PDF.SIGNATURE' },
+        { label: 'PDF.DATE' }
       ],
       fileName: `BonProduction_${dataEntry.lotNumber || 'LOT'}`
     };
 
     this.generatePdfDocument(config);
+  }
+
+  private loadProfile(): void {
+    this._companyProfileService.getProfile().subscribe(
+      (res) => {
+        if (res && res.success) {
+          this.profile = res?.data[0];
+
+          if (this.profile?.logoData && this.profile?.logoContentType) {
+            this.logoPreview = `data:${this.profile?.logoContentType};base64,${this.profile?.logoData}`;
+          }
+        }
+      },
+      (err) => console.error('Error loading deliveries', err)
+    );
   }
 }

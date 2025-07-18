@@ -69,7 +69,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
   oilTypes: BaseType[] = [];
   oilVariety: BaseType[] = [];
   deliveries: UnifiedDelivery[] = [];
-   operationTypes: { value: OperationType; label: string }[] = [];
+  operationTypes: { value: OperationType; label: string }[] = [];
 
   private subscriptions: Subscription[] = [];
   private deliveryId: string | null;
@@ -101,7 +101,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
         oilVariety: [null, Validators.required],
         oilType: [null, Validators.required],
         parcel: [null, Validators.required],
-         globalLotNumber: [''],
+        globalLotNumber: [''],
         operationType: [OperationType.OIL_PURCHASE, Validators.required]
       },
       { validators: [netNotGreaterThanGross] }
@@ -126,7 +126,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
         this.regions = regions?.success ? regions.data : [];
         this.suppliers = suppliers?.success ? suppliers.data : [];
         this.deliveries = deliveries?.success ? deliveries.data : [];
-         this.oilTypes = oilTypes?.success ? oilTypes.data : [];
+        this.oilTypes = oilTypes?.success ? oilTypes.data : [];
         // Initialize operation types
         this.operationTypes = [
           { value: OperationType.OIL_PURCHASE, label: 'OIL_RECEPTION.ADD.FIELDS.OPERATION_TYPE_PURCHASE' },
@@ -177,15 +177,6 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 
-  private setNextNumbers(): void {
-    const deliveryCount = this.deliveries.length;
-    const maxLot = Math.max(0, ...this.deliveries.map((d) => +d.lotNumber || 0));
-    this.receptionForm.patchValue({
-      deliveryNumber: deliveryCount + 1,
-      lotNumber: maxLot + 1
-    });
-  }
-
   save(): void {
     if (this.receptionForm.invalid) {
       if (this.receptionForm.hasError('exceedsCapacity')) {
@@ -213,7 +204,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       matriculeCamion: formValue.matriculeCamion || '',
       etatCamion: formValue.etatCamion || '',
       supplier: formValue.supplier || null,
-       globalLotNumber: formValue.globalLotNumber || null,
+      globalLotNumber: formValue.globalLotNumber || null,
       oilVariety: formValue.oilVariety || null,
       oilQuantity: Number(formValue.oilQuantity) || 0,
       unitPrice: Number(formValue.unitPrice) || 0,
@@ -260,57 +251,12 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       .finally(() => (this.loading = false));
   }
 
-  private patchForm(d: UnifiedDelivery): void {
-    const parse = (v: string | Date | null): Date | null => (v ? new Date(v) : null);
-    this.receptionForm.patchValue({
-      id: this.isEditing ? this.deliveryId : null,
-      deliveryType: d.deliveryType,
-      deliveryNumber: d.deliveryNumber,
-      lotNumber: d.lotNumber,
-      parcel: d.parcel,
-      deliveryDate: parse(d.deliveryDate),
-      region: this.regions.find((r) => r.id === d.region?.id) || null,
-      supplier: this.suppliers.find((s) => s.id === d.supplier?.id) || null,
-      matriculeCamion: d.matriculeCamion,
-      etatCamion: d.etatCamion,
-      poidsBrute: d.poidsBrute,
-      oilQuantity: d.oilQuantity,
-      oilVariety: this.oilCategories.find((c) => c.id === d.oilVariety?.id) || null,
-      oilType: this.oilTypes.find((t) => t.id === d.oilType?.id) || null,
-       globalLotNumber: d.globalLotNumber || '',
-      operationType: OperationType.OIL_PURCHASE
-    });
-
-    // Mark all controls as touched and update validity to ensure UI updates
-    Object.values(this.receptionForm.controls).forEach((control) => {
-      control.markAsTouched();
-      control.updateValueAndValidity();
-    });
-  }
-
-  private showToast(message: string, duration = 3000): void {
-    this.snack.open(message, 'Fermer', {
-      duration,
-      horizontalPosition: 'right',
-      verticalPosition: 'top',
-      panelClass: ['custom-snackbar']
-    });
-  }
-
-
   resetForm(): void {
     this.router.navigate(['/reception-huile']);
   }
 
   onBack(): void {
     window.history.back();
-  }
-
-  private generateLotNumber(oilTye: BaseType | null, deliveryNumber: number): string {
-    if (!oilTye?.name) return '';
-    const year = new Date().getFullYear().toString().slice(-2);
-    const paddedNumber = deliveryNumber.toString().padStart(4, '0');
-    return `${paddedNumber}${oilTye.name.toUpperCase()}${year}`;
   }
 
   validateSupplier() {
@@ -341,8 +287,6 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     }
   }
 
-
-
   displayFn<T extends { name?: string; supplierInfo?: { name: string } }>(item: T): string {
     if (!item) return '';
     if (item.supplierInfo) {
@@ -351,6 +295,58 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     return item.name || '';
   }
 
+  private setNextNumbers(): void {
+    const deliveryCount = this.deliveries.length;
+    const maxLot = Math.max(0, ...this.deliveries.map((d) => +d.lotNumber || 0));
+    this.receptionForm.patchValue({
+      deliveryNumber: deliveryCount + 1,
+      lotNumber: maxLot + 1
+    });
+  }
+
+  private patchForm(d: UnifiedDelivery): void {
+    const parse = (v: string | Date | null): Date | null => (v ? new Date(v) : null);
+    this.receptionForm.patchValue({
+      id: this.isEditing ? this.deliveryId : null,
+      deliveryType: d.deliveryType,
+      deliveryNumber: d.deliveryNumber,
+      lotNumber: d.lotNumber,
+      parcel: d.parcel,
+      deliveryDate: parse(d.deliveryDate),
+      region: this.regions.find((r) => r.id === d.region?.id) || null,
+      supplier: this.suppliers.find((s) => s.id === d.supplier?.id) || null,
+      matriculeCamion: d.matriculeCamion,
+      etatCamion: d.etatCamion,
+      poidsBrute: d.poidsBrute,
+      oilQuantity: d.oilQuantity,
+      oilVariety: this.oilCategories.find((c) => c.id === d.oilVariety?.id) || null,
+      oilType: this.oilTypes.find((t) => t.id === d.oilType?.id) || null,
+      globalLotNumber: d.globalLotNumber || '',
+      operationType: OperationType.OIL_PURCHASE
+    });
+
+    // Mark all controls as touched and update validity to ensure UI updates
+    Object.values(this.receptionForm.controls).forEach((control) => {
+      control.markAsTouched();
+      control.updateValueAndValidity();
+    });
+  }
+
+  private showToast(message: string, duration = 3000): void {
+    this.snack.open(message, 'Fermer', {
+      duration,
+      horizontalPosition: 'right',
+      verticalPosition: 'top',
+      panelClass: ['custom-snackbar']
+    });
+  }
+
+  private generateLotNumber(oilTye: BaseType | null, deliveryNumber: number): string {
+    if (!oilTye?.name) return '';
+    const year = new Date().getFullYear().toString().slice(-2);
+    const paddedNumber = deliveryNumber.toString().padStart(4, '0');
+    return `${paddedNumber}${oilTye.name.toUpperCase()}${year}`;
+  }
 
   private setupFormSubscriptions(): void {
     this.subscriptions.push(
