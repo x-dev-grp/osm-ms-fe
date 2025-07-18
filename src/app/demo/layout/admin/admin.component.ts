@@ -14,7 +14,6 @@ import { VerticalMenuComponent } from 'src/app/@theme/layouts/menu/vertical-menu
 import { HorizontalMenuComponent } from 'src/app/@theme/layouts/menu/horizontal-menu';
 import { CompactMenuComponent } from 'src/app/@theme/layouts/menu/compact-menu';
 import { BreadcrumbComponent } from 'src/app/@theme/components/breadcrumb/breadcrumb.component';
-import { ConfigurationComponent } from 'src/app/@theme/layouts/configuration/configuration.component';
 import { FooterComponent } from 'src/app/@theme/layouts/footer/footer.component';
 
 // service
@@ -30,6 +29,8 @@ import { environment } from 'src/environments/environment';
 import { Navigation } from 'src/app/@theme/types/navigation';
 import { Role } from 'src/app/@theme/types/role';
 import { osm_menus } from '../../../shared/osm_menu';
+import { admin_menus } from '../../../shared/admin_menu';
+import { Router } from '@angular/router';
 import { CompanyProfileService } from '../../../shared/services/company-profile.service';
 import { CompanyProfile } from '../../../shared/models/CompanyProfile';
 import { ThemeConfig, ThemeConfigService } from '../../../shared/services/theme-config.service';
@@ -55,9 +56,10 @@ export class AdminComponent implements OnInit, AfterViewInit {
    authenticationService = inject(AuthenticationService);
   companyProfileService = inject(CompanyProfileService);
   private themeConfig = inject(ThemeConfigService);
+  private router = inject(Router);
 // public props
   readonly sidebar = viewChild<MatDrawer>('sidebar');
-  menus: Navigation[] = structuredClone( osm_menus);
+  menus: Navigation[] = [];
   modeValue: MatDrawerMode = 'side';
   direction: string = 'ltr';
   currentApplicationVersion = environment.appVersion;
@@ -105,12 +107,20 @@ export class AdminComponent implements OnInit, AfterViewInit {
       this.sidebar()!.toggle();
     });
     this.loadProfile();
+
+
     /**
      * current login user role
      */
     const currentUser = this.authenticationService.currentUserValue;
     const userRole = currentUser?.role? currentUser.role : Role.Admin;
     const userPermissions = currentUser?.permissions || [];
+    // Use admin_menus if in administration section, else osm_menus
+   //todo enable it after back end imple
+   //  const isAdminSection = currentUser?.role===Role.OsmAdmin;
+    const isAdminSection = this.router.url.startsWith('/administration');
+    this.menus = structuredClone(isAdminSection ? admin_menus : osm_menus);
+
     // const permissionModules:string[] = Array.from(new Set(userPermissions?.map((p:string) => p.split(':')[0])));
     // const permissionRessources:string[] = Array.from(new Set(userPermissions?.map((p:string)=> p.split(':')[1])));
 
@@ -223,7 +233,7 @@ filterMenuByPermissions(
     document.body.classList.toggle('boxed', AbleProConfig.isBox_container);
 
     // 7) Menu layout
-    this.currentLayout = AbleProConfig.layout as any;
+    this.currentLayout = AbleProConfig.layout as string;
   }
 
   // ────────────────────────────────────
@@ -259,7 +269,7 @@ filterMenuByPermissions(
    * Listen to theme layout changes
    */
   private updateThemeLayout(layout: string) {
-    this.currentLayout = layout as any;
+    this.currentLayout = layout as string;
     this.manageLayout(layout);
   }
 

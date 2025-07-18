@@ -515,6 +515,8 @@
     },
     "ADDRESS_INFO": {
       "ADDRESS": "Address",
+      "CITY": "City",
+      "GOVERNORATE": "Governorate",
       "TITLE": "Address Information",
       "CITY_REQUIRED": "City is required.",
       "POSTAL_CODE_REQUIRED": "Postal code is required.",
@@ -633,6 +635,12 @@
       "DASHBOARD": "Supplier Dashboard",
       "HISTORY": "Supplier History",
       "TITLE": "Suppliers"
+    },
+    "ADMINISTRATION": {
+      "TITLE": "Administration",
+      "DASHBOARD": "Admin Dashboard",
+      "COMPANY_PROFILES": "Company Profiles",
+      "ADD_COMPANY_USER": "Add Company & User"
     }
   },
   "MILL_MACHINE": {

@@ -21,6 +21,14 @@ export const osm_menus: Navigation[] = [
         ressourcePermission: 'RECEPTION',
         children: [
           {
+            id: 'adminDashboard',
+            title: 'MENU.ADMINISTRATION.DASHBOARD',
+            type: 'item',
+            url: '/administration/dashboard',
+            icon: 'admin_panel_settings',
+            breadcrumbs: false
+          },
+          {
             id: 'default',
             title: 'MENU.HOME.DASHBOARD.DEFAULT',
             type: 'item',

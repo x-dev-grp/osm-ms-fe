@@ -71,6 +71,9 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
     { value: 'lampante', label: 'Lampante' }
   ];
 
+  // Add a new property to hold the warning state
+  sourceUnitWarning: string | null = null;
+
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
@@ -125,6 +128,36 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
     this.form.get('unitPrice')?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.calculateTotalPrice());
+
+    // Add subscription to show warning if selected source unit does not have enough oil
+    this.form.get('storageUnitSourceId')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.checkSourceUnitVolumeWarning();
+      });
+    this.form.get('quantityKg')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.checkSourceUnitVolumeWarning();
+      });
+  }
+
+  private checkSourceUnitVolumeWarning(): void {
+    const transactionType = this.form.get('transactionType')?.value;
+    if (transactionType !== TransactionType.SALE && transactionType !== TransactionType.LOAN && transactionType !== TransactionType.EXCHANGE) {
+      this.sourceUnitWarning = null;
+      return;
+    }
+    const sourceId = this.form.get('storageUnitSourceId')?.value;
+    const quantity = this.form.get('quantityKg')?.value;
+    if (sourceId && quantity) {
+      const sourceUnit = this.storageUnits.find(u => u.id === sourceId);
+      if (sourceUnit && quantity > sourceUnit.currentVolume) {
+        this.sourceUnitWarning = this.translate.instant('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.QUANTITY_EXCEEDS_SOURCE');
+        return;
+      }
+    }
+    this.sourceUnitWarning = null;
   }
 
   // Field requirement management
@@ -301,7 +334,7 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
     const transactionType = this.form.get('transactionType')?.value;
     const sourceId = this.form.get('storageUnitSourceId')?.value;
     const destId = this.form.get('storageUnitDestinationId')?.value;
-    if (transactionType === TransactionType.TRANSFER_IN || transactionType === TransactionType.SALE || transactionType === TransactionType.LOAN || transactionType === TransactionType.EXCHANGE) {
+    if (transactionType === TransactionType.SALE || transactionType === TransactionType.LOAN || transactionType === TransactionType.EXCHANGE) {
       if (sourceId) {
         const sourceUnit = this.storageUnits.find(u => u.id === sourceId);
         if (sourceUnit && quantity > sourceUnit.currentVolume) {
@@ -473,8 +506,7 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
   }
 
   getStorageUnitInfo(unit: StorageUnitDto): string {
-    const availableCapacity = unit.maxCapacity - unit.currentVolume;
-    return `${unit.name} (${availableCapacity.toFixed(2)}L available)`;
+     return `${unit.name} (${unit.currentVolume.toFixed(2)} / ${unit.maxCapacity.toFixed(2)}  KG)`;
   }
 
   // Field visibility helpers

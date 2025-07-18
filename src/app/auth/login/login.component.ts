@@ -97,14 +97,32 @@ export class LoginComponent implements OnInit {
             // Add logging for debugging
             console.log('[Login] User set for navigation:', user);
             console.log('[Login] Token:', this.tokenService.getToken());
+            // Multi-tenant redirect logic
+            this.router.navigate(['/dashboard'])
+              .then(success => {
+                console.log('[Login] Navigation to /dashboard success:', success);
+              })
+              .catch(err => {
+                console.error('[Login] Navigation error:', err);
+              });
+          } else if (decodedToken && decodedToken['sosmUser']) {
+            const role = decodedToken['role'] as string;
+            const permissions = decodedToken['authorities'];
+            const user: User = decodedToken['sosmUser'] as User;
+            user.role=role;
+            user.permissions=permissions;
+            this.authenticationService.setCurrentUserValue=user;
+            // Add logging for debugging
+            console.log('[Login] SOSM User set for navigation:', user);
+            console.log('[Login] Token:', this.tokenService.getToken());
+            this.router.navigate(['/administration/dashboard'])
+              .then(success => {
+                console.log('[Login] Navigation to /administration/dashboard success:', success);
+              })
+              .catch(err => {
+                console.error('[Login] Navigation error:', err);
+              });
           }
-          this.router.navigate(['/dashboard'])
-            .then(success => {
-              console.log('[Login] Navigation to /dashboard success:', success);
-            })
-            .catch(err => {
-              console.error('[Login] Navigation error:', err);
-            });
         }
         },
         error: (error: unknown) => {

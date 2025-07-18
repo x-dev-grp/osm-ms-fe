@@ -531,7 +531,9 @@
     },
     "ADDRESS_INFO": {
       "ADDRESS": "Adresse",
-      "TITLE": "Informations d'Adresse"
+      "TITLE": "Informations d'Adresse",
+      "CITY": "Ville",
+      "GOVERNORATE": "Gouvernorat"
     },
     "COMPANY_INFO": {
       "CAPITAL": "Capital (TND)",
@@ -649,6 +651,12 @@
       "DASHBOARD": "Tableau de bord fournisseurs",
       "HISTORY": "Historique fournisseurs",
       "TITLE": "Fournisseurs"
+    },
+    "ADMINISTRATION": {
+      "TITLE": "Administration",
+      "DASHBOARD": "Tableau de bord admin",
+      "COMPANY_PROFILES": "Profils de société",
+      "ADD_COMPANY_USER": "Ajouter société & utilisateur"
     }
   },
   "MILL_MACHINE": {
@@ -1663,5 +1671,14 @@
     "QUALITY_MANAGER": "Responsable Qualité",
     "PRODUCTION_MANAGER": "Chef de Production",
     "SIGNATURE": "Signature"
+  },
+  "ADMIN": {
+    "ADD_COMPANY_USER_TITLE": "Créer une société et son premier utilisateur",
+    "COMPANY_SECTION": "Informations sur la société",
+    "USER_SECTION": "Informations sur l'utilisateur",
+    "COMPANY_NAME": "Nom de la société",
+    "COMPANY_NAME_REQUIRED": "Le nom de la société est requis.",
+    "SAVE": "Sauvegarder",
+    "CANCEL": "Annuler"
   }
 }

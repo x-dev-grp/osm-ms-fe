@@ -111,6 +111,10 @@ const routes: Routes = [
       }, {
         path: 'finance',
         loadChildren: () => import('./finance/finance-routing.module').then(m => m.FinanceRoutingModule)
+      },
+      {
+        path: 'administration',
+        loadChildren: () => import('./administration/administration-routing.module').then(m => m.AdministrationRoutingModule)
       }
 
     ]
