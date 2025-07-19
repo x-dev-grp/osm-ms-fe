@@ -24,76 +24,64 @@
           <div class="row">
             <div class="col-md-6 col-lg-4 col-12">
               <mat-form-field appearance="outline" class="w-100">
-                <mat-label>{{ 'GENERAL_CONFIG.COMPANY_INFO.LEGAL_NAME' | translate }}</mat-label>
-                <input matInput formControlName="firstName" [placeholder]="'GENERAL_CONFIG.COMPANY_INFO.LEGAL_NAME' | translate" />
+                <mat-label>{{ 'USER_FORM.FIRST_NAME' | translate }}</mat-label>
+                <input matInput formControlName="firstName" [placeholder]="'USER_FORM.FIRST_NAME' | translate" />
               </mat-form-field>
             </div>
             <div class="col-md-6 col-lg-4 col-12">
               <mat-form-field appearance="outline" class="w-100">
-                <mat-label>{{ 'GENERAL_CONFIG.COMPANY_INFO.CNSS_NUMBER' | translate }}</mat-label>
-                <input matInput formControlName="lastName" [placeholder]="'GENERAL_CONFIG.COMPANY_INFO.CNSS_NUMBER' | translate" />
+                <mat-label>{{ 'USER_FORM.LAST_NAME' | translate }}</mat-label>
+                <input matInput formControlName="lastName" [placeholder]="'USER_FORM.LAST_NAME' | translate" />
               </mat-form-field>
             </div>
             <div class="col-md-6 col-lg-4 col-12">
               <mat-form-field appearance="outline" class="w-100">
-                <mat-label>{{ 'GENERAL_CONFIG.COMPANY_INFO.REG_NUMBER' | translate }} <span class="text-warn-500">*</span></mat-label>
-                <input matInput formControlName="username" [placeholder]="'GENERAL_CONFIG.COMPANY_INFO.REG_NUMBER' | translate" />
+                <mat-label>{{ 'USER_FORM.USERNAME' | translate }} <span class="text-warn-500">*</span></mat-label>
+                <input matInput formControlName="username" [placeholder]="'USER_FORM.USERNAME' | translate" />
                 <mat-error *ngIf="userForm.get('username')?.hasError('required')">
-                  {{ 'GENERAL_CONFIG.COMPANY_INFO.REG_NUMBER_REQUIRED' | translate }}
+                  {{ 'USER_FORM.USERNAME_REQUIRED' | translate }}
                 </mat-error>
               </mat-form-field>
             </div>
             <div class="col-md-6 col-lg-4 col-12">
               <mat-form-field appearance="outline" class="w-100">
-                <mat-label>{{ 'GENERAL_CONFIG.CONTACT_INFO.EMAIL' | translate }}</mat-label>
-                <input matInput formControlName="email" [placeholder]="'GENERAL_CONFIG.CONTACT_INFO.EMAIL' | translate" />
+                <mat-label>{{ 'USER_FORM.EMAIL' | translate }}</mat-label>
+                <input matInput formControlName="email" [placeholder]="'USER_FORM.EMAIL' | translate" />
                 <mat-error *ngIf="userForm.get('email')?.hasError('emailRequired')">
-                  {{ 'GENERAL_CONFIG.CONTACT_INFO.EMAIL_REQUIRED' | translate }}
+                  {{ 'USER_FORM.EMAIL_REQUIRED' | translate }}
                 </mat-error>
                 <mat-error *ngIf="userForm.get('email')?.hasError('email')">
-                  {{ 'GENERAL_CONFIG.CONTACT_INFO.EMAIL' | translate }} format is invalid.
+                  {{ 'USER_FORM.EMAIL' | translate }} format is invalid.
                 </mat-error>
               </mat-form-field>
             </div>
             <div class="col-md-6 col-lg-4 col-12">
               <mat-form-field appearance="outline" class="w-100">
-                <mat-label>{{ 'GENERAL_CONFIG.CONTACT_INFO.PHONE' | translate }}</mat-label>
-                <input matInput formControlName="phoneNumber" [placeholder]="'GENERAL_CONFIG.CONTACT_INFO.PHONE' | translate" />
+                <mat-label>{{ 'USER_FORM.PHONE' | translate }}</mat-label>
+                <input matInput formControlName="phoneNumber" [placeholder]="'USER_FORM.PHONE' | translate" />
                 <mat-error *ngIf="userForm.get('phoneNumber')?.hasError('phoneRequired')">
-                  {{ 'GENERAL_CONFIG.CONTACT_INFO.PHONE_REQUIRED' | translate }}
+                  {{ 'USER_FORM.PHONE_REQUIRED' | translate }}
                 </mat-error>
                 <mat-error *ngIf="userForm.get('phoneNumber')?.hasError('pattern')">
-                  {{ 'GENERAL_CONFIG.CONTACT_INFO.PHONE' | translate }} format is invalid.
+                  {{ 'USER_FORM.PHONE' | translate }} format is invalid.
                 </mat-error>
               </mat-form-field>
             </div>
             <div class="col-md-6 col-lg-4 col-12">
               <mat-form-field appearance="outline" class="w-100">
-                <mat-label>{{ 'GENERAL_CONFIG.CONTACT_INFO.EMAIL' | translate }} <span class="text-warn-500">*</span></mat-label>
+                <mat-label>{{ 'USER_FORM.CONFIRMATION_METHOD' | translate }} <span class="text-warn-500">*</span></mat-label>
                 <mat-select formControlName="confirmationMethod">
-                  <mat-option value="EMAIL">{{ 'GENERAL_CONFIG.CONTACT_INFO.EMAIL' | translate }}</mat-option>
-                  <mat-option value="PHONE">{{ 'GENERAL_CONFIG.CONTACT_INFO.PHONE' | translate }}</mat-option>
+                  <mat-option value="EMAIL">{{ 'USER_FORM.EMAIL' | translate }}</mat-option>
+                  <mat-option value="PHONE">{{ 'USER_FORM.PHONE' | translate }}</mat-option>
                 </mat-select>
                 <mat-error *ngIf="userForm.get('confirmationMethod')?.hasError('required')">
-                  {{ 'GENERAL_CONFIG.CONTACT_INFO.EMAIL_REQUIRED' | translate }}
+                  {{ 'USER_FORM.CONFIRMATION_METHOD_REQUIRED' | translate }}
                 </mat-error>
               </mat-form-field>
             </div>
-            <div class="col-md-6 col-lg-4 col-12">
-              <mat-form-field appearance="outline" class="w-100">
-                <mat-label>{{ 'GENERAL_CONFIG.COMPANY_INFO.LEGAL_FORM' | translate }} <span class="text-warn-500">*</span></mat-label>
-                <input matInput [placeholder]="'GENERAL_CONFIG.COMPANY_INFO.LEGAL_FORM' | translate" formControlName="role" [matAutocomplete]="auto" />
-                <mat-autocomplete [displayWith]="displayWith" (optionsScroll)="scroll($event)" #auto="matAutocomplete">
-                  @for (role of roles ; track role?.id) {
-                    <mat-option [value]="role">
-                      {{role?.roleName}}
-                    </mat-option>
-                  }
-                </mat-autocomplete>
-              </mat-form-field>
-            </div>
+
             <div class="col-md-6 col-lg-4 col-12 mt-3">
-              <mat-slide-toggle id="locked" formControlName="locked" color="primary"> {{ 'GENERAL_CONFIG.ACTIONS.RESET' | translate }} </mat-slide-toggle>
+              <mat-slide-toggle id="locked" formControlName="locked" color="primary"> {{ 'USER_FORM.LOCKED' | translate }} </mat-slide-toggle>
             </div>
           </div>
         </div>

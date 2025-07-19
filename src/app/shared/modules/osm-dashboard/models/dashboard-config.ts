@@ -8,6 +8,7 @@ export interface DashboardConfig {
     baseURL: string;
     searchEndpoint: string;
     defaultSearchData?:SearchData;
+    filterTenant?:boolean;
     addNewItem:boolean;
     addNewItemUrl?:string;
     fields:Field[];

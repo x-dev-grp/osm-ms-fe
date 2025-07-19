@@ -106,7 +106,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
     this.themeService.dashBoardMenuState.subscribe(() => {
       this.sidebar()!.toggle();
     });
-    this.loadProfile();
+    this.loadCompanyLogo();
 
 
     /**
@@ -117,8 +117,8 @@ export class AdminComponent implements OnInit, AfterViewInit {
     const userPermissions = currentUser?.permissions || [];
     // Use admin_menus if in administration section, else osm_menus
    //todo enable it after back end imple
-   //  const isAdminSection = currentUser?.role===Role.OsmAdmin;
-    const isAdminSection = this.router.url.startsWith('/administration');
+    const isAdminSection = currentUser?.role===Role.OsmAdmin;
+   //  const isAdminSection = this.router.url.startsWith('/administration');
     this.menus = structuredClone(isAdminSection ? admin_menus : osm_menus);
 
     // const permissionModules:string[] = Array.from(new Set(userPermissions?.map((p:string) => p.split(':')[0])));
@@ -240,21 +240,23 @@ filterMenuByPermissions(
   // EXISTING METHODS (UNCHANGED)
   // ────────────────────────────────────
 
-
-
-  private loadProfile(): void {
-    this.companyProfileService.getProfile().subscribe(
-      (res) => {
-        if (res && res.success) {
-          this.profile = res?.data[0];
-
-          if (this.profile?.logoData && this.profile?.logoContentType) {
-            this.logoPreview = `data:${this.profile?.logoContentType};base64,${this.profile?.logoData}`;
+  private loadCompanyLogo(): void {
+    // Try to get company profile from localStorage
+    const cachedProfile = localStorage.getItem('company_profile');
+    if (cachedProfile) {
+      try {
+        const parsed = JSON.parse(cachedProfile);
+        if (parsed && parsed.success && Array.isArray(parsed.data) && parsed.data.length > 0) {
+          this.profile = parsed.data[0];
+          if (this.profile.logoData && this.profile.logoContentType) {
+            this.logoPreview = `data:${this.profile.logoContentType};base64,${this.profile.logoData}`;
           }
         }
-      },
-      (err) => console.error('Error loading deliveries', err)
-    );
+      } catch {
+        // Ignore malformed cache
+        console.warn('Failed to parse cached company profile');
+      }
+    }
   }
 
   /**

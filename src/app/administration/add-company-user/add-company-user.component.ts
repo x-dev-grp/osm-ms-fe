@@ -52,10 +52,8 @@ export class AddCompanyUserComponent {
   _router = inject(Router);
   _activatedRoute = inject(ActivatedRoute);
   _addCompanyUserService = inject(AddCompanyUserService);
-  roles: any[];
   updateMode: boolean = false;
   viewMode: boolean = false;
-  roleCriteria: SearchData = new SearchData();
   loading: boolean = false;
   errorMessage: string = '';
   user: User;
@@ -63,30 +61,10 @@ export class AddCompanyUserComponent {
   constructor() {}
 
   ngAfterViewInit(): void {
-    this.userForm.controls['role'].valueChanges
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        filter((value: any) => typeof value === 'string'),
-        switchMap((value: string) => {
-          this.roleCriteria = {
-            ...this.roleCriteria,
-            searchData: {
-              ...this.roleCriteria.searchData,
-              search: {
-                roleName: {
-                  likeValue: value
-                }
-              }
-            }
-          };
-          return this.fetchRoles(false);
-        })
-      )
-      .subscribe();
+
   }
 
   ngOnInit() {
-    this.fetchRoles(false).subscribe();
     this.userForm = this._fb.group(
       {
         companyName: [null, Validators.required],
@@ -96,7 +74,6 @@ export class AddCompanyUserComponent {
         email: [null, [Validators.email]],
         phoneNumber: [null, [Validators.pattern(/^ ?\d{8,12}$/)]],
         confirmationMethod: ['EMAIL', Validators.required],
-        role: [null, Validators.required],
         locked: [false]
       },
       {
@@ -122,23 +99,7 @@ export class AddCompanyUserComponent {
     });
   }
 
-  fetchRoles(scroll: boolean): Observable<SearchResponse> {
-    const url = 'security/role';
 
-    if (!scroll) {
-      this.roleCriteria.page = 0;
-    }
-    return this._searchService.search(this.roleCriteria, url).pipe(
-      takeUntilDestroyed(this.destroyRef),
-      tap((response: SearchResponse) => {
-        this.roles = scroll ? [...this.roles, ...response.data] : response.data;
-      }),
-      catchError((err) => {
-        console.error('Autocomplete fetch failed:', err);
-        return EMPTY;
-      })
-    );
-  }
 
   onSubmit(): void {
     if (!this.userForm.valid) {
@@ -148,7 +109,7 @@ export class AddCompanyUserComponent {
     this.loading = true;
     const dto: CompanyUserDto = {
       legalName: this.userForm.value.companyName,
-      user: {...this.userForm.value}
+      companyUser: {...this.userForm.value}
     };
     this._addCompanyUserService
       .addCompanyWithUser(dto)
@@ -173,18 +134,12 @@ export class AddCompanyUserComponent {
       .subscribe();
   }
 
-  scroll(event: any) {
-    this.roleCriteria.page = this.roleCriteria.page! + 1;
-    this.fetchRoles(true).subscribe();
-  }
+
 
   resetForm(): void {
     this.userForm.reset();
   }
 
-  displayWith = (option: any): string => {
-    return option?.roleName;
-  };
 
   cancel() {
     this._router.navigate(['/administration/dashboard/']);

@@ -5,15 +5,19 @@ import { Observable, of } from 'rxjs';
 import { ApiResponse } from '../models/api-response';
 import { tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { AuthenticationService } from '../../auth/services/authentication.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CompanyProfileService {
-  private readonly baseUrl = environment.apiUrl + '/api/production/company-profile';
+  private readonly baseUrl = environment.apiUrl + '/api/security/company-profile';
   private readonly STORAGE_KEY = 'company_profile';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private _authService: AuthenticationService
+  ) {}
 
   /** Fetches the existing profile (or an empty one if none) */
   getProfile(): Observable<ApiResponse<CompanyProfile>> {
@@ -29,9 +33,11 @@ export class CompanyProfileService {
         // Ignore malformed cache
       }
     }
+    const cuurenTUser = this._authService.currentUserValue;
+
     // If not in localStorage or cache is invalid, fetch from API and cache it
-    return this.http.get<ApiResponse<CompanyProfile>>(`${this.baseUrl}/fetchAll`).pipe(
-      tap(response => {
+    return this.http.get<ApiResponse<CompanyProfile>>(`${this.baseUrl}/fetch/${cuurenTUser?.tenantId}`).pipe(
+      tap((response) => {
         if (response && response.success && Array.isArray(response.data) && response.data.length > 0) {
           localStorage.setItem(this.STORAGE_KEY, JSON.stringify(response));
         }

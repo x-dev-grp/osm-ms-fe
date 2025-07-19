@@ -77,7 +77,7 @@ export const DashboardStore = signalStore(
   })),
   withMethods((store, _searchService = inject(AdvancedSearchService),_http=inject(HttpClient),_baseService=inject(BaseService)) => {
     return {
-      initialize(endpoint: string, allFields: Field[], searchData?: SearchData,fileName?:string): void {
+      initialize(endpoint: string, allFields: Field[], searchData?: SearchData,fileName?:string,filterTenant?:boolean): void {
         patchState(store, {
           endpoint: endpoint,
           allFields: allFields,
@@ -89,6 +89,14 @@ export const DashboardStore = signalStore(
         if (searchData) {
           patchState(store, { searchData });
         }
+        else if(filterTenant != null){
+           let searchData:SearchData = store.searchData();
+           searchData={...searchData,filterTenant:filterTenant}
+           patchState(store, { searchData });
+
+        }
+
+
       },
       export(exportType: string) {
         exportType=='pdf'?this.setExportPdfLoading(true):this.setExportExcelLoading(true);

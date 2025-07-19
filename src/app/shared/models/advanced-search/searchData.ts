@@ -5,5 +5,6 @@ export class SearchData {
     size? = 10;
     sort? = 'createdDate';
     order? = 'DESC';
-    searchData?: SearchModel;
+    filterTenant?:boolean=true;
+    searchData?: SearchModel=new  SearchModel();
   }

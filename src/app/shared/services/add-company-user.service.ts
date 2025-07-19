@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CompanyUserDto } from '../models/company-user-dto';
@@ -9,9 +9,9 @@ import { environment } from '../../../environments/environment';
 })
 export class AddCompanyUserService {
   private http = inject(HttpClient);
-  private baseUrl = environment.apiUrl + '/api/security/company-profile/add-with-user';
+  private baseUrl = environment.apiUrl + '/api/security/company-profile';
 
   addCompanyWithUser(dto: CompanyUserDto): Observable<any> {
-    return this.http.post<any>(this.baseUrl, dto);
+    return this.http.post<any>(`${this.baseUrl}/save`, dto);
   }
 }

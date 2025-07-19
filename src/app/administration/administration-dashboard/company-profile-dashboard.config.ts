@@ -5,9 +5,10 @@ export const companyProfileDashboardConfig: DashboardConfig = {
   title: 'Company Profiles',
   titleTranslatePath: 'MENU.ADMINISTRATION.COMPANY_PROFILES',
   baseURL: 'company-profile',
-  searchEndpoint: 'production/company-profile',
+  searchEndpoint: 'security/company-profile',
   addNewItem: true,
   addNewItemUrl: '/administration/add-company-user',
+  filterTenant:false,
   fields: [
     {
       name: 'legalName',

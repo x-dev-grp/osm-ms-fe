@@ -94,11 +94,16 @@ export class ErrorInterceptor implements HttpInterceptor {
     }
   }
   addToken(req: HttpRequest<any>, token: string): HttpRequest<any> {
-    const httpHeaders = new HttpHeaders({
-      Authorization: 'Bearer ' + token,
-    });
-    return req.clone({
-      headers: httpHeaders,
+    const currentUser=this._authService.currentUserValue;
+    let headers = req.headers.set('Authorization', `Bearer ${token}`);
+
+// 2️⃣ include X‑Tenant‑Id **only** if it exists
+    if (currentUser?.tenantId) {
+      headers = headers.set('X-Tenant-Id', currentUser?.tenantId);
+    }
+
+   return req.clone({
+      headers: headers,
     });
   }
   private isUrlExcluded(url: string): boolean {

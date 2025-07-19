@@ -4,6 +4,7 @@ import { UnifiedDelivery } from '../models/UnifiedDelivery';
 import { TranslateService } from '@ngx-translate/core';
 import { CompanyProfileService } from './company-profile.service';
 import { CompanyProfile } from '../models/CompanyProfile';
+import { AuthenticationService } from '../../auth/services/authentication.service';
 
 const center = 'center';
 
@@ -23,7 +24,7 @@ export class PdfGeneratorService {
 
   constructor(
     private translationServiec: TranslateService,
-    private _companyProfileService: CompanyProfileService
+    private _companyProfileService: CompanyProfileService,
   ) {
     this.loadProfile();
   }

@@ -11,6 +11,8 @@ import { AuthenticationService } from '../services/authentication.service';
 import { catchError, first, of } from 'rxjs';
 import { User } from 'src/app/@theme/types/user';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Role } from '../../@theme/types/role';
+import { CompanyProfileService } from '../../shared/services/company-profile.service';
 
 @Component({
   selector: 'app-login',
@@ -25,10 +27,11 @@ export class LoginComponent implements OnInit {
   form: FormGroup;
   // public props
   hide = true;
-  errorMessage: string | null = null;
+  errorMessage: any ;
   private _fb = inject(FormBuilder);
   private router = inject(Router);
   private tokenService = inject(TokenService);
+  private companyProfileService = inject(CompanyProfileService);
 
   // public method
 
@@ -63,16 +66,21 @@ export class LoginComponent implements OnInit {
       .login(this.form.value)
       .pipe(
         first(),
-        catchError((err: unknown) => {
+        catchError((err: any) => {
           this.loading = false;
-          if (typeof err === 'object' && err !== null && 'status' in err && [504, 503].includes((err as any).status)) {
-            this.errorMessage = 'Service unavailable please try again later';
-          } else if (typeof err === 'object' && err !== null && 'error' in err && 'error_uri' in (err as any) && 'error_description' in (err as any)) {
-            this.router.navigate(['/auth/user/update-password', { username: (err as any).error_description, id: (err as any).error_uri }]);
-          } else if (typeof err === 'object' && err !== null && 'error' in err) {
-            this.errorMessage = (err as any).error;
+          console.log(err);
+          if ([504, 503].includes(err?.status)) {
+            this.errorMessage = { message: 'Service unavailable please try again later' };
+          } else if (err?.error?.error_uri && err?.error?.error_description) {
+            this.router.navigate([
+              '/auth/user/update-password',
+              {
+                username: err.error.error_description,
+                id: err.error.error_uri
+              }
+            ]);
           } else {
-            this.errorMessage = 'An unexpected error occurred';
+            this.errorMessage = err?.error;
           }
           //this.authenticationService.logout();
 
@@ -80,54 +88,64 @@ export class LoginComponent implements OnInit {
         })
       )
       .subscribe({
-        next:(response: unknown) => {
-          if(response){
-          this.errorMessage=null
-          this.loading = false;
-          this.tokenService.setToken((response as Record<string, unknown>)['access_token'] as string);
-          this.tokenService.setRefreshToken((response as Record<string, unknown>)['refresh_token'] as string);
-          const decodedToken = this.tokenService.decodeToken() as Record<string, unknown>;
-          if( decodedToken && decodedToken['osmUser']){
-            const role = decodedToken['role'] as string;
-            const permissions = decodedToken['authorities'];
-            const user: User = decodedToken['osmUser'] as User;
-            user.role=role;
-            user.permissions=permissions;
-            this.authenticationService.setCurrentUserValue=user;
-            // Add logging for debugging
-            console.log('[Login] User set for navigation:', user);
-            console.log('[Login] Token:', this.tokenService.getToken());
-            // Multi-tenant redirect logic
-            this.router.navigate(['/dashboard'])
-              .then(success => {
-                console.log('[Login] Navigation to /dashboard success:', success);
-              })
-              .catch(err => {
-                console.error('[Login] Navigation error:', err);
-              });
-          } else if (decodedToken && decodedToken['sosmUser']) {
-            const role = decodedToken['role'] as string;
-            const permissions = decodedToken['authorities'];
-            const user: User = decodedToken['sosmUser'] as User;
-            user.role=role;
-            user.permissions=permissions;
-            this.authenticationService.setCurrentUserValue=user;
-            // Add logging for debugging
-            console.log('[Login] SOSM User set for navigation:', user);
-            console.log('[Login] Token:', this.tokenService.getToken());
-            this.router.navigate(['/administration/dashboard'])
-              .then(success => {
-                console.log('[Login] Navigation to /administration/dashboard success:', success);
-              })
-              .catch(err => {
-                console.error('[Login] Navigation error:', err);
-              });
+        next: (response: unknown) => {
+          if (response) {
+            this.errorMessage = null;
+            this.loading = false;
+            this.tokenService.setToken((response as Record<string, unknown>)['access_token'] as string);
+            this.tokenService.setRefreshToken((response as Record<string, unknown>)['refresh_token'] as string);
+            const decodedToken = this.tokenService.decodeToken() as Record<string, unknown>;
+            if (decodedToken && decodedToken['osmUser']) {
+              const role = decodedToken['role'] as string;
+              const permissions = decodedToken['authorities'];
+              const user: User = decodedToken['osmUser'] as User;
+              user.role = role;
+              user.permissions = permissions;
+              this.authenticationService.setCurrentUserValue = user;
+              // Add logging for debugging
+              console.log('[Login] User set for navigation:', user);
+              console.log('[Login] Token:', this.tokenService.getToken());
+              // Multi-tenant redirect logic
+              if (user.role !== Role.OsmAdmin) {
+                // Fetch company profile for non-OsmAdmin users
+                this.companyProfileService
+                  .getProfile()
+                  .pipe(first())
+                  .subscribe({
+                    next: () => {
+                      // Profile is saved to localStorage by the service
+                      this.router
+                        .navigate(['/dashboard'])
+                        .then((success) => {
+                          console.log('[Login] Navigation to /dashboard success:', success);
+                        })
+                        .catch((err) => {
+                          console.error('[Login] Navigation error:', err);
+                        });
+                    },
+                    error: (err: unknown) => {
+                      // Handle error, maybe show a message
+                      console.error('[Login] Company profile fetch error:', err);
+                      this.router.navigate(['/dashboard']);
+                    }
+                  });
+              } else {
+                // For OsmAdmin, skip company profile fetch
+                this.router
+                  .navigate(['/administration/dashboard'])
+                  .then((success) => {
+                    console.log('[Login] Navigation to /administration/dashboard success:', success);
+                  })
+                  .catch((err) => {
+                    console.error('[Login] Navigation error:', err);
+                  });
+              }
+            }
           }
-        }
         },
         error: (error: unknown) => {
           if (typeof error === 'object' && error !== null && 'error' in error) {
-            this.errorMessage = (error as any).error;
+            this.errorMessage = (error as { error?: string }).error ?? null;
           } else {
             this.errorMessage = 'An unexpected error occurred';
           }
@@ -135,4 +153,8 @@ export class LoginComponent implements OnInit {
         }
       });
   }
+}
+
+function toNullString(val: string | null | undefined): string | null {
+  return val ?? null;
 }

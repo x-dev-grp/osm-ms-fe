@@ -31,7 +31,7 @@ export interface Permission {
   imports: [
     CommonModule,
     SharedModule,
-  
+
   ]
 })
 export class PermissionComponent implements OnInit,OnChanges {
@@ -44,7 +44,7 @@ export class PermissionComponent implements OnInit,OnChanges {
  viewMode = input<boolean>();
 
  dataSource = new MatTreeNestedDataSource<PermissionNode>();
-  
+
  // Selection model for checkboxes
  checklistSelection = new SelectionModel<PermissionNode>(true);
  treeControl = new NestedTreeControl<PermissionNode>((node) => node.children);
@@ -145,17 +145,17 @@ private formatName(name: string): string {
  todoItemSelectionToggle(node: PermissionNode): void {
    this.checklistSelection.toggle(node);
    const descendants = this.treeControl.getDescendants(node);
-   
+
    if (this.checklistSelection.isSelected(node)) {
      this.checklistSelection.select(...descendants);
    } else {
      this.checklistSelection.deselect(...descendants);
    }
-   
+
    descendants.forEach(child => {
      this.checklistSelection.isSelected(child);
    });
-   
+
    this.checkAllParentsSelection(node);
    this.emitPermissionsChange();
  }
@@ -180,7 +180,7 @@ private formatName(name: string): string {
    const descAllSelected = descendants.length > 0 && descendants.every(child => {
      return this.checklistSelection.isSelected(child);
    });
-   
+
    if (nodeSelected && !descAllSelected) {
      this.checklistSelection.deselect(node);
    } else if (!nodeSelected && descAllSelected) {
@@ -190,9 +190,9 @@ private formatName(name: string): string {
 
  getParentNode(node: PermissionNode): PermissionNode | null {
    const flatNodes = this.flattenNodes(this.dataSource.data);
-   
+
    const currentNodeIndex = flatNodes.indexOf(node);
-   
+
    for (let i = currentNodeIndex - 1; i >= 0; i--) {
      if (this.getLevel(flatNodes[i]) < this.getLevel(node)) {
        return flatNodes[i];
@@ -202,15 +202,15 @@ private formatName(name: string): string {
  }
 
  private flattenNodes(nodes: PermissionNode[]): PermissionNode[] {
-   const result: PermissionNode[] = [];
-   
+   let result: PermissionNode[] = [];
+
    const addToResult = (node: PermissionNode) => {
      result.push(node);
      if (node.children) {
        node.children.forEach(addToResult);
      }
    };
-   
+
    nodes.forEach(addToResult);
    return result;
  }
@@ -218,7 +218,7 @@ private formatName(name: string): string {
  getLevel(node: PermissionNode): number {
    if (node.type === 'entity') return 2;
    if (node.type === 'module') return 1;
-   return 3; 
+   return 3;
  }
  hasChild(_: number, node: PermissionNode): boolean {
    return !!node.children && node.children.length > 0;
@@ -226,9 +226,9 @@ private formatName(name: string): string {
 
  applyInitialPermissions(): void {
    if (!this.initialPermissions()?.length) return;
-   
+
    const allNodes = this.flattenNodes(this.dataSource.data);
-   
+
    allNodes.forEach(node => {
      if (node.type === 'permission' && this.initialPermissions().includes(node.id)) {
        this.checklistSelection.select(node);
@@ -255,7 +255,7 @@ private formatName(name: string): string {
        selectedPermissions.push(node);
      }
    });
-   
+
    return selectedPermissions;
  }
 }

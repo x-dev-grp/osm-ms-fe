@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpHeaders } from '@angular/common/http';
 import { TokenService } from '../auth/services/tokenService.service';
 import { AuthenticationService } from '../auth/services/authentication.service';
 import { Observable } from 'rxjs';
@@ -29,9 +29,16 @@ export class AuthInterceptor implements HttpInterceptor {
     if (!token) {
       return next.handle(request);
     }
+    const currentUser=this._authService.currentUserValue;
+    let headers = request.headers.set('Authorization', `Bearer ${token}`);
+
+// 2️⃣ include X‑Tenant‑Id **only** if it exists
+    if (currentUser?.tenantId) {
+      headers = headers.set('X-Tenant-Id', currentUser?.tenantId);
+    }
 
     const authReq = request.clone({
-      headers: request.headers.set('Authorization', `Bearer ${token}`),
+      headers: headers,
     });
 
     return next.handle(authReq);

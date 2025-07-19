@@ -12,9 +12,8 @@ import { MenuGroupVerticalComponent } from './menu-group/menu-group.component';
 import { MenuItemVerticalComponent } from './menu-item/menu-item.component';
 import { AuthenticationService } from 'src/app/auth/services/authentication.service';
 import { MenuCollapseComponent } from './menu-collapse/menu-collapse.component';
-import { CompanyProfileService } from '../../../../shared/services/company-profile.service';
-import { CompanyProfile } from '../../../../shared/models/CompanyProfile';
 import { environment } from '../../../../../environments/environment';
+import { CompanyProfile } from '../../../../shared/models/CompanyProfile';
 
 @Component({
   selector: 'app-vertical-menu',
@@ -23,12 +22,11 @@ import { environment } from '../../../../../environments/environment';
   standalone: true,
   styleUrls: ['./vertical-menu.component.scss']
 })
-export class VerticalMenuComponent  implements OnInit{
+export class VerticalMenuComponent implements OnInit {
   private location = inject(Location);
   private locationStrategy = inject(LocationStrategy);
   private themeService = inject(ThemeLayoutService);
   authenticationService = inject(AuthenticationService);
-  companyProfileService = inject(CompanyProfileService);
   currentApplicationVersion = environment.appVersion;
 
   // public props
@@ -39,7 +37,6 @@ export class VerticalMenuComponent  implements OnInit{
   logoPreview: string | null = null;
 
   // Constructor
-  private profile: CompanyProfile;
   constructor() {
     effect(() => {
       this.updateThemeLayout(this.themeService.layout());
@@ -50,21 +47,26 @@ export class VerticalMenuComponent  implements OnInit{
   }
 
   ngOnInit(): void {
-    this.loadProfile();
-    }
-  private loadProfile(): void {
-    this.companyProfileService.getProfile().subscribe(
-      (res) => {
-        if (res && res?.success) {
-          this.profile = res?.data[0];
+    this.loadCompanyLogo();
+  }
 
-          if (this.profile?.logoData && this.profile?.logoContentType) {
-            this.logoPreview = `data:${this.profile?.logoContentType};base64,${this.profile?.logoData}`;
+  private loadCompanyLogo(): void {
+    // Try to get company profile from localStorage
+    const cachedProfile = localStorage.getItem('company_profile');
+    if (cachedProfile) {
+      try {
+        const parsed = JSON.parse(cachedProfile);
+        if (parsed && parsed.success && Array.isArray(parsed.data) && parsed.data.length > 0) {
+          const profile: CompanyProfile = parsed.data[0];
+          if (profile.logoData && profile.logoContentType) {
+            this.logoPreview = `data:${profile.logoContentType};base64,${profile.logoData}`;
           }
         }
-      },
-      (err) => console.error('Error loading deliveries', err)
-    );
+      } catch {
+        // Ignore malformed cache
+        console.warn('Failed to parse cached company profile');
+      }
+    }
   }
 
   // public method

@@ -411,11 +411,11 @@
         "FINANCIAL_INFO": "Financial Information",
         "GENERAL_INFO": "General Information",
         "OIL_DETAILS": "Oil Details",
+        "QUALITY_CONTROL_INFO": "Quality Control Information",
+        "RECEPTION_PRICE_INFO": "Reception Price Information",
         "SUPPLIER_REGION": "Supplier and Region",
         "VEHICLE_INFO": "Vehicle Information",
-        "WEIGHT_QUANTITY": "Weight and Quantity",
-        "QUALITY_CONTROL_INFO": "Quality Control Information",
-        "RECEPTION_PRICE_INFO": "Reception Price Information"
+        "WEIGHT_QUANTITY": "Weight and Quantity"
       },
       "TITLE": {
         "ADD": "Add Oil Delivery",
@@ -505,77 +505,21 @@
   "Form Wizard": "Form Wizard",
   "Forms": "Forms",
   "GENERAL_CONFIG": {
-    "ACTIONS": {
-      "RESET": "Reset",
-      "RESET_TOOLTIP": "Reset all fields",
-      "SAVE": "Save Changes",
-      "SAVE_TOOLTIP": "Save company profile",
-      "EDIT": "Edit",
-      "UPDATE": "Update"
-    },
-    "ADDRESS_INFO": {
-      "ADDRESS": "Address",
-      "CITY": "City",
-      "GOVERNORATE": "Governorate",
-      "TITLE": "Address Information",
-      "CITY_REQUIRED": "City is required.",
-      "POSTAL_CODE_REQUIRED": "Postal code is required.",
-      "GOVERNORATE_REQUIRED": "Governorate is required."
-    },
     "COMPANY_INFO": {
-      "CAPITAL": "Capital (TND)",
-      "CNSS_NUMBER": "Matricule CNSS",
-      "CREATION_DATE": "Creation Date",
-      "LEGAL_FORM": "Legal Form",
-      "LEGAL_FORMS": {
-        "OTHER": "Other",
-        "SA": "SA",
-        "SARL": "SARL",
-        "SNC": "SNC",
-        "SUARL": "SUARL"
-      },
       "LEGAL_NAME": "Legal Name",
-      "REG_NUMBER": "Reg. Commerce (RC)",
-      "TAX_ID": "Matricule Fiscale",
-      "TITLE": "Company Information",
-      "LEGAL_NAME_REQUIRED": "Legal name is required.",
-      "REG_NUMBER_REQUIRED": "Registration number is required.",
-      "TAX_ID_REQUIRED": "Tax ID is required.",
-      "CNSS_NUMBER_REQUIRED": "CNSS number is required.",
-      "LEGAL_FORM_REQUIRED": "Legal form is required.",
-      "CAPITAL_REQUIRED": "Capital is required.",
-      "CREATION_DATE_REQUIRED": "Creation date is required."
+      "REG_NUMBER": "Registration Number",
+      "TAX_ID": "Tax ID",
+      "LEGAL_FORM": "Legal Form",
+      "CAPITAL": "Capital"
     },
     "CONTACT_INFO": {
       "EMAIL": "Email",
-      "PHONE": "Phone",
-      "TITLE": "Contact Information",
-      "WEBSITE": "Website",
-      "WEBSITE_REQUIRED": "Website is required."
+      "PHONE": "Phone"
     },
-    "EXPANDABLE": {
-      "CONFIGURATIONS": "Configurations",
-      "FINANCE_CONFIG": "Finance Config",
-      "HR_CONFIG": "HR Config",
-      "OTHER_CONFIG": "Other Config",
-      "PRODUCTION_CONFIG": "Production Config"
-    },
-    "LOGO": {
-      "CLICK_BROWSE": "or click to browse",
-      "DRAG_DROP": "Drag & drop logo here",
-      "FILE_TYPES": "(PNG or JPEG, max 200KB)",
-      "TITLE": "Company Logo"
-    },
-    "MESSAGES": {
-      "LOAD_ERROR": "Error loading company profile.",
-      "SAVE_SUCCESS": "Company profile saved successfully!",
-      "SAVE_ERROR": "Error saving company profile.",
-      "RESET": "Form reset.",
-      "LOGO_TOO_LARGE": "Logo file is too large (max 200KB).",
-      "LOGO_REQUIRED": "A company logo is required.",
-      "UPDATE_ID_REQUIRED": "Cannot update: missing profile ID."
-    },
-    "TITLE": "Company Profile"
+    "ADDRESS_INFO": {
+      "CITY": "City",
+      "GOVERNORATE": "Governorate"
+    }
   },
   "Home": "Home",
   "Kanban": "Kanban",
@@ -584,6 +528,12 @@
   "Level 2.1": "Level 2.1",
   "Login": "Login",
   "MENU": {
+    "ADMINISTRATION": {
+      "ADD_COMPANY_USER": "Add Company & User",
+      "COMPANY_PROFILES": "Company Profiles",
+      "DASHBOARD": "Admin Dashboard",
+      "TITLE": "Administration"
+    },
     "FINANCE": {
       "BANK_MANAGEMENT": "Bank Account Management",
       "EXPENSES": "Expenses",
@@ -635,12 +585,6 @@
       "DASHBOARD": "Supplier Dashboard",
       "HISTORY": "Supplier History",
       "TITLE": "Suppliers"
-    },
-    "ADMINISTRATION": {
-      "TITLE": "Administration",
-      "DASHBOARD": "Admin Dashboard",
-      "COMPANY_PROFILES": "Company Profiles",
-      "ADD_COMPANY_USER": "Add Company & User"
     }
   },
   "MILL_MACHINE": {
@@ -1214,6 +1158,44 @@
     "TITLE": "Actions"
   },
   "Other": "Other",
+  "PDF": {
+    "ADDRESS": "Address",
+    "CRUSHING_DATE": "Crushing Date",
+    "CRUSHING_PRICE_PER_KG": "Crushing Price per kg",
+    "CRUSHING_TOTAL_PRICE": "Total Crushing Price",
+    "DATE": "Date",
+    "DELIVERY_DATE": "Delivery Date",
+    "FORM": "FORM",
+    "GROSS_WEIGHT": "Gross Weight",
+    "LOT": "Lot",
+    "LOT_GLOBAL": "Global Lot",
+    "LOT_NUMBER": "Lot Number",
+    "NUMBER_PLACEHOLDER": "No: ......./........",
+    "OIL_QUANTITY": "Oil Quantity",
+    "OIL_TYPE": "Oil Type",
+    "OIL_VARIETY": "Oil Variety",
+    "OLIVE_NET_WEIGHT": "Net Weight of Olives",
+    "OLIVE_QUANTITY": "Olive Quantity",
+    "OLIVE_TYPE": "Olive Type",
+    "OLIVE_VARIETY": "Olive Variety",
+    "PAGE": "Page",
+    "PHONE": "Phone",
+    "PRODUCTION_MANAGER": "Production Manager",
+    "PRODUCTION_RECEIPT": "Production Receipt",
+    "QUALITY_MANAGER": "Quality Manager",
+    "RECEPTION_NUMBER": "Reception Number",
+    "RECEPTION_OIL": "Oil Reception Receipt",
+    "RECEPTION_OLIVE": "Olive Reception Receipt",
+    "REFERENCE": "Reference",
+    "REGION": "Region",
+    "REVISION": "Revision",
+    "SIGNATURE": "Signature",
+    "SIGNATURE_AGENT": "Agent Signature (scale)",
+    "SIGNATURE_RESPONSIBLE": "Quality Manager Signature",
+    "SUPPLIER": "Supplier",
+    "TYPE": "Type",
+    "YIELD": "Yield"
+  },
   "Pages": "Pages",
   "Plugins": "Plugins",
   "Price": "Price",
@@ -1360,44 +1342,6 @@
       "VALIDATION_ERROR": "Please check your input and try again",
       "WARNING": "Please check your input"
     }
-  },
-  "PDF": {
-    "FORM": "FORM",
-    "REFERENCE": "Reference",
-    "REVISION": "Revision",
-    "DATE": "Date",
-    "PAGE": "Page",
-    "NUMBER_PLACEHOLDER": "No: ......./........",
-    "TYPE": "Type",
-    "SUPPLIER": "Supplier",
-    "PHONE": "Phone",
-    "ADDRESS": "Address",
-    "SIGNATURE_AGENT": "Agent Signature (scale)",
-    "SIGNATURE_RESPONSIBLE": "Quality Manager Signature",
-    "LOT": "Lot",
-    "LOT_GLOBAL": "Global Lot",
-    "GROSS_WEIGHT": "Gross Weight",
-    "OIL_QUANTITY": "Oil Quantity",
-    "OIL_VARIETY": "Oil Variety",
-    "OIL_TYPE": "Oil Type",
-    "REGION": "Region",
-    "OLIVE_QUANTITY": "Olive Quantity",
-    "OLIVE_VARIETY": "Olive Variety",
-    "OLIVE_TYPE": "Olive Type",
-    "RECEPTION_OIL": "Oil Reception Receipt",
-    "RECEPTION_OLIVE": "Olive Reception Receipt",
-    "LOT_NUMBER": "Lot Number",
-    "RECEPTION_NUMBER": "Reception Number",
-    "DELIVERY_DATE": "Delivery Date",
-    "OLIVE_NET_WEIGHT": "Net Weight of Olives",
-    "YIELD": "Yield",
-    "CRUSHING_PRICE_PER_KG": "Crushing Price per kg",
-    "CRUSHING_TOTAL_PRICE": "Total Crushing Price",
-    "CRUSHING_DATE": "Crushing Date",
-    "PRODUCTION_RECEIPT": "Production Receipt",
-    "QUALITY_MANAGER": "Quality Manager",
-    "PRODUCTION_MANAGER": "Production Manager",
-    "SIGNATURE": "Signature"
   },
   "STORAGE": {
     "ERROR": {
@@ -1610,5 +1554,20 @@
   "User Profile": "User Profile",
   "View": "View",
   "Widget": "Widget",
-  "reCaptcha": "reCaptcha"
+  "reCaptcha": "reCaptcha",
+  "USER_FORM": {
+    "FIRST_NAME": "First Name",
+    "LAST_NAME": "Last Name",
+    "USERNAME": "Username",
+    "USERNAME_REQUIRED": "Username is required.",
+    "EMAIL": "Email",
+    "EMAIL_REQUIRED": "Email is required.",
+    "PHONE": "Phone",
+    "PHONE_REQUIRED": "Phone is required.",
+    "CONFIRMATION_METHOD": "Confirmation Method",
+    "CONFIRMATION_METHOD_REQUIRED": "Confirmation method is required.",
+    "ROLE": "Role",
+    "ROLE_REQUIRED": "Role is required.",
+    "LOCKED": "Locked"
+  }
 }

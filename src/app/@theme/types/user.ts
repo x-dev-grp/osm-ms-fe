@@ -12,4 +12,5 @@ export interface User {
     role: any;
     permissions:any;
     isNewUser?:boolean;
+    tenantId:string;
 }

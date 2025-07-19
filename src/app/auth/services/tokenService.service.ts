@@ -13,28 +13,33 @@ export class TokenService {
   private _cookieService = inject(CookieService);
   // Set token in the cookie
   setToken(token: string): void {
-    this._cookieService.set(this.tokenKey, token, {
-      expires: 3,
-      path: '/',
-      secure: true,
-      sameSite: 'Strict'
-    });
+    // this._cookieService.set(this.tokenKey, token, {
+    //   expires: 3,
+    //   path: '/',
+    //   secure: true,
+    //   sameSite: 'Strict'
+    // });
+    sessionStorage.setItem(this.tokenKey, token);
   }
   // Set refresh token in the cookie
   setRefreshToken(refreshToken: string): void {
-    this._cookieService.set(this.refreshTokenKey, refreshToken, {
-      expires: 3,
-      path: '/',
-      secure: true,
-      sameSite: 'Strict'
-    });
+    // this._cookieService.set(this.refreshTokenKey, refreshToken, {
+    //   expires: 3,
+    //   path: '/',
+    //   secure: true,
+    //   sameSite: 'Strict'
+    // });
+    sessionStorage.setItem(this.refreshTokenKey, refreshToken);
+
   }
   // Get token from the cookie
-  getToken(): string {
-    return this._cookieService.get(this.tokenKey);
+  getToken(): string | null {
+   // return this._cookieService.get(this.tokenKey);
+    return sessionStorage.getItem(this.tokenKey);
   }
-  getRefreshToken(): string {
-    return this._cookieService.get(this.refreshTokenKey);
+  getRefreshToken(): string | null{
+    //return this._cookieService.get(this.refreshTokenKey);
+    return  sessionStorage.getItem(this.refreshTokenKey);
   }
   // Delete token from the cookie
   // deleteToken(): void {
@@ -42,12 +47,14 @@ export class TokenService {
   //   this._cookieService.delete(this.refreshTokenKey);
   // }
   clearTokens(): void {
-    this._cookieService.delete(this.tokenKey, '/');
-    this._cookieService.delete(this.refreshTokenKey, '/');
+    // this._cookieService.delete(this.tokenKey, '/');
+    // this._cookieService.delete(this.refreshTokenKey, '/');
+     sessionStorage.removeItem(this.tokenKey);
+     sessionStorage.removeItem(this.refreshTokenKey);
   }
   decodeToken() {
-    const token = this._cookieService.get(this.tokenKey);
-
+    //const token = this._cookieService.get(this.tokenKey);
+    const token = sessionStorage.getItem(this.tokenKey);
     if (token && token.split('.').length === 3) {
       try {
         return jwtDecode(token);

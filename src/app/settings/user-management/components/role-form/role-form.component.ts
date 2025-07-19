@@ -46,22 +46,23 @@ export class RoleFormComponent implements OnInit {
       this._activatedRoute.data.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((data:any) => {
         this.viewMode=!!data?.viewMode
         this.updateMode=!!data?.updateMode
-        if(this.viewMode)  
+        if(this.viewMode)
           this.roleForm.disable()
-        if(data?.role?.data?.length){
-           this.role = data?.role?.data[0];
+        if(data?.role?.data){
+           this.role = data?.role?.data;
            this.roleForm.patchValue(this.role);
            this.selectedPermissions=this.role?.permissions?.map(
             permission=>permission?.id
            )
+          console.log(this.selectedPermissions);
         }
       })
     }
-  
+
   onPermissionsChange(permissions: string[]) {
     this.selectedPermissions = permissions;
   }
-  
+
   saveRole(updateMode:boolean) {
     if (this.roleForm.valid) {
       let roleData = {
@@ -73,7 +74,7 @@ export class RoleFormComponent implements OnInit {
                 permissionName:p?.permissionName,
                 entity:p?.entity,
                 module:p?.module
-           } 
+           }
 
           }
         )
@@ -98,7 +99,7 @@ export class RoleFormComponent implements OnInit {
         return EMPTY;
         })
       ).subscribe()
-            
+
     }
   }
   cancel(){

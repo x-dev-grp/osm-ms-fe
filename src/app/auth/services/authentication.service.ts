@@ -19,7 +19,7 @@ export class AuthenticationService {
   private router = inject(Router);
   private http = inject(HttpClient);
   private _tokenService = inject(TokenService);
-  private _companyProfileService = inject(CompanyProfileService);
+  private readonly STORAGE_KEY = 'company_profile';
   private currentUserSignal = signal<User | null>(null);
 
   constructor() {
@@ -117,7 +117,8 @@ isAdmin(): boolean {
 
   logout(queryParams?:string) {
      this._tokenService.clearTokens()
-     this._companyProfileService.clearCache();
+     // this._companyProfileService.clearCache();
+    localStorage.removeItem(this.STORAGE_KEY);
      this.setCurrentUserValue=null;
      if(!queryParams){
       this.router.navigate(["/auth/login"])

@@ -69,7 +69,7 @@ export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
       this._actions
     ];
     console.log(this.displayedColumns);
-    this._store.initialize(this.config()?.searchEndpoint, this.config().fields, this.config()?.defaultSearchData, this.config().fileName);
+    this._store.initialize(this.config()?.searchEndpoint, this.config().fields, this.config()?.defaultSearchData, this.config().fileName,this.config().filterTenant);
 
     this.cdr.detectChanges(); // Force change detection
   }

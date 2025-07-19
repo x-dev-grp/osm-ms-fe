@@ -1,4 +1,13 @@
 {
+  "ADMIN": {
+    "ADD_COMPANY_USER_TITLE": "Créer une société et son premier utilisateur",
+    "CANCEL": "Annuler",
+    "COMPANY_NAME": "Nom de la société",
+    "COMPANY_NAME_REQUIRED": "Le nom de la société est requis.",
+    "COMPANY_SECTION": "Informations sur la société",
+    "SAVE": "Sauvegarder",
+    "USER_SECTION": "Informations sur l'utilisateur"
+  },
   "APPLICATION_CONFIG": {
     "CUSTOM_THEME": {
       "BLUE": "Thème Bleu",
@@ -425,13 +434,11 @@
         "FINANCIAL_INFO": "Informations financières",
         "GENERAL_INFO": "Informations générales",
         "OIL_DETAILS": "Détails de l'huile",
+        "QUALITY_CONTROL_INFO": "Informations sur le contrôle qualité",
+        "RECEPTION_PRICE_INFO": "Informations sur le prix de la réception",
         "SUPPLIER_REGION": "Fournisseur et région",
         "VEHICLE_INFO": "Informations du véhicule",
-        "WEIGHT_QUANTITY": "Poids et quantité",
-        "QUALITY_CONTROL_INFO": "Informations sur le contrôle qualité",
-        "RECEPTION_PRICE_INFO": "Informations sur le prix de la réception"
-
-
+        "WEIGHT_QUANTITY": "Poids et quantité"
       },
       "TITLE": {
         "ADD": "Ajouter une livraison d'huile",
@@ -523,72 +530,21 @@
   "Form Wizard": "Assistant Formulaire",
   "Forms": "Formes",
   "GENERAL_CONFIG": {
-    "ACTIONS": {
-      "RESET": "Réinitialiser",
-      "RESET_TOOLTIP": "Réinitialiser tous les champs",
-      "SAVE": "Enregistrer les Modifications",
-      "SAVE_TOOLTIP": "Enregistrer le profil de l'entreprise"
-    },
-    "ADDRESS_INFO": {
-      "ADDRESS": "Adresse",
-      "TITLE": "Informations d'Adresse",
-      "CITY": "Ville",
-      "GOVERNORATE": "Gouvernorat"
-    },
     "COMPANY_INFO": {
-      "CAPITAL": "Capital (TND)",
-      "CNSS_NUMBER": "Matricule CNSS",
-      "CREATION_DATE": "Date de Création",
-      "LEGAL_FORM": "Forme Juridique",
-      "LEGAL_FORMS": {
-        "OTHER": "Autre",
-        "SA": "SA",
-        "SARL": "SARL",
-        "SNC": "SNC",
-        "SUARL": "SUARL"
-      },
-      "LEGAL_NAME": "Nom Légal",
-      "REG_NUMBER": "Registre du Commerce (RC)",
-      "TAX_ID": "Matricule Fiscale",
-      "TITLE": "Informations de l'Entreprise",
-      "LEGAL_NAME_REQUIRED": "Le nom légal est requis.",
-      "REG_NUMBER_REQUIRED": "Le numéro d'enregistrement est requis.",
-      "TAX_ID_REQUIRED": "Le matricule fiscal est requis.",
-      "CNSS_NUMBER_REQUIRED": "Le numéro CNSS est requis.",
-      "LEGAL_FORM_REQUIRED": "La forme juridique est requise.",
-      "CAPITAL_REQUIRED": "Le capital est requis.",
-      "CREATION_DATE_REQUIRED": "La date de création est requise."
+      "LEGAL_NAME": "Raison sociale",
+      "REG_NUMBER": "Numéro d'enregistrement",
+      "TAX_ID": "Identifiant fiscal",
+      "LEGAL_FORM": "Forme juridique",
+      "CAPITAL": "Capital"
     },
     "CONTACT_INFO": {
       "EMAIL": "Email",
-      "PHONE": "Téléphone",
-      "TITLE": "Informations de Contact",
-      "WEBSITE": "Site Web",
-      "WEBSITE_REQUIRED": "Le site web est requis."
+      "PHONE": "Téléphone"
     },
-    "EXPANDABLE": {
-      "CONFIGURATIONS": "Configurations",
-      "FINANCE_CONFIG": "Configuration financière",
-      "HR_CONFIG": "Configuration RH",
-      "OTHER_CONFIG": "Autre configuration",
-      "PRODUCTION_CONFIG": "Configuration de production"
-    },
-    "LOGO": {
-      "CLICK_BROWSE": "ou cliquez pour parcourir",
-      "DRAG_DROP": "Glissez et déposez le logo ici",
-      "FILE_TYPES": "(PNG ou JPEG, max 200KB)",
-      "TITLE": "Logo de l'Entreprise"
-    },
-    "MESSAGES": {
-      "LOAD_ERROR": "Erreur lors du chargement du profil de l'entreprise.",
-      "SAVE_SUCCESS": "Profil de l'entreprise enregistré avec succès !",
-      "SAVE_ERROR": "Erreur lors de l'enregistrement du profil de l'entreprise.",
-      "RESET": "Formulaire réinitialisé.",
-      "LOGO_TOO_LARGE": "Le fichier du logo est trop volumineux (max 200 Ko).",
-      "LOGO_REQUIRED": "Un logo d'entreprise est requis.",
-      "UPDATE_ID_REQUIRED": "Impossible de mettre à jour : identifiant du profil manquant."
-    },
-    "TITLE": "Profil de l'Entreprise"
+    "ADDRESS_INFO": {
+      "CITY": "Ville",
+      "GOVERNORATE": "Gouvernorat"
+    }
   },
   "Helpdesk": "Service d'assistance",
   "Home": "Accueil",
@@ -600,6 +556,12 @@
   "List": "Liste",
   "Login": "Connexion",
   "MENU": {
+    "ADMINISTRATION": {
+      "ADD_COMPANY_USER": "Ajouter société & utilisateur",
+      "COMPANY_PROFILES": "Profils de société",
+      "DASHBOARD": "Tableau de bord admin",
+      "TITLE": "Administration"
+    },
     "FINANCE": {
       "BANK_MANAGEMENT": "Gestion des Comptes Bancaires",
       "EXPENSES": "Dépenses",
@@ -651,12 +613,6 @@
       "DASHBOARD": "Tableau de bord fournisseurs",
       "HISTORY": "Historique fournisseurs",
       "TITLE": "Fournisseurs"
-    },
-    "ADMINISTRATION": {
-      "TITLE": "Administration",
-      "DASHBOARD": "Tableau de bord admin",
-      "COMPANY_PROFILES": "Profils de société",
-      "ADD_COMPANY_USER": "Ajouter société & utilisateur"
     }
   },
   "MILL_MACHINE": {
@@ -1058,10 +1014,10 @@
       "SECTIONS": {
         "FINANCIAL_INFORMATION": "Informations Financières",
         "QUALITY_AND_QUANTITY": "Qualité et Quantité",
-        "STORAGE_UNITS": "Unités de Stockage",
-        "TRANSACTION_TYPE_AND_STATE": "Type et État de la Transaction",
         "QUALITY_CONTROL_INFO": "Quality Control Information",
-        "RECEPTION_PRICE_INFO": "Reception Price Information"
+        "RECEPTION_PRICE_INFO": "Reception Price Information",
+        "STORAGE_UNITS": "Unités de Stockage",
+        "TRANSACTION_TYPE_AND_STATE": "Type et État de la Transaction"
       },
       "TITLE": {
         "CREATE": "Nouvelle Transaction d'Huile",
@@ -1163,12 +1119,11 @@
         "DELIVERY_INFO": "Informations de livraison",
         "GENERAL_INFO": "Informations générales",
         "OLIVE_INFO": "Informations sur les olives",
+        "QUALITY_CONTROL_INFO": "Quality Control Information",
+        "RECEPTION_PRICE_INFO": "Reception Price Information",
         "SUPPLIER_REGION": "Fournisseur et région",
         "VEHICLE_INFO": "Informations du véhicule",
-        "WEIGHT_QUANTITY": "Poids et quantité",
-        "QUALITY_CONTROL_INFO": "Quality Control Information",
-        "RECEPTION_PRICE_INFO": "Reception Price Information"
-
+        "WEIGHT_QUANTITY": "Poids et quantité"
       },
       "TITLE": {
         "ADD": "Ajouter une réception d'olives",
@@ -1270,6 +1225,44 @@
   },
   "Online Courses": "Cours en ligne",
   "Other": "Autre",
+  "PDF": {
+    "ADDRESS": "Adresse",
+    "CRUSHING_DATE": "Date de Trituration",
+    "CRUSHING_PRICE_PER_KG": "Prix Trituration par kg",
+    "CRUSHING_TOTAL_PRICE": "Prix Total Trituration",
+    "DATE": "Date",
+    "DELIVERY_DATE": "Date de Livraison",
+    "FORM": "FORMULAIRE",
+    "GROSS_WEIGHT": "Poids Brut",
+    "LOT": "Lot",
+    "LOT_GLOBAL": "Lot Global",
+    "LOT_NUMBER": "Numéro de Lot",
+    "NUMBER_PLACEHOLDER": "N° : ......./........",
+    "OIL_QUANTITY": "Quantité d'huile",
+    "OIL_TYPE": "Type Huile",
+    "OIL_VARIETY": "Variété Huile",
+    "OLIVE_NET_WEIGHT": "Poids Net d'Olives",
+    "OLIVE_QUANTITY": "Quantité Olive",
+    "OLIVE_TYPE": "Type Olive",
+    "OLIVE_VARIETY": "Variété Olive",
+    "PAGE": "Page",
+    "PHONE": "Téléphone",
+    "PRODUCTION_MANAGER": "Chef de Production",
+    "PRODUCTION_RECEIPT": "BON DE PRODUCTION",
+    "QUALITY_MANAGER": "Responsable Qualité",
+    "RECEPTION_NUMBER": "Numéro de Réception",
+    "RECEPTION_OIL": "Bon De Réception Huile",
+    "RECEPTION_OLIVE": "Bon De Réception Olive",
+    "REFERENCE": "Référence",
+    "REGION": "Région",
+    "REVISION": "Révision",
+    "SIGNATURE": "Signature",
+    "SIGNATURE_AGENT": "Signature Agent (bascule)",
+    "SIGNATURE_RESPONSIBLE": "Signature Responsable CQ",
+    "SUPPLIER": "Fournisseur",
+    "TYPE": "Type",
+    "YIELD": "Rendement"
+  },
   "Pages": "pages",
   "Payment": "Paiement",
   "Plugins": "Plugins",
@@ -1634,51 +1627,19 @@
   "View": "Voir",
   "Widget": "Widget",
   "reCaptcha": "reCaptcha",
-  "PDF": {
-    "FORM": "FORMULAIRE",
-    "REFERENCE": "Référence",
-    "REVISION": "Révision",
-    "DATE": "Date",
-    "PAGE": "Page",
-    "NUMBER_PLACEHOLDER": "N° : ......./........",
-    "TYPE": "Type",
-    "SUPPLIER": "Fournisseur",
+  "USER_FORM": {
+    "FIRST_NAME": "Prénom",
+    "LAST_NAME": "Nom",
+    "USERNAME": "Nom d'utilisateur",
+    "USERNAME_REQUIRED": "Le nom d'utilisateur est requis.",
+    "EMAIL": "Email",
+    "EMAIL_REQUIRED": "L'email est requis.",
     "PHONE": "Téléphone",
-    "ADDRESS": "Adresse",
-    "SIGNATURE_AGENT": "Signature Agent (bascule)",
-    "SIGNATURE_RESPONSIBLE": "Signature Responsable CQ",
-    "LOT": "Lot",
-    "LOT_GLOBAL": "Lot Global",
-    "GROSS_WEIGHT": "Poids Brut",
-    "OIL_QUANTITY": "Quantité d'huile",
-    "OIL_VARIETY": "Variété Huile",
-    "OIL_TYPE": "Type Huile",
-    "REGION": "Région",
-    "OLIVE_QUANTITY": "Quantité Olive",
-    "OLIVE_VARIETY": "Variété Olive",
-    "OLIVE_TYPE": "Type Olive",
-    "RECEPTION_OIL": "Bon De Réception Huile",
-    "RECEPTION_OLIVE": "Bon De Réception Olive",
-    "LOT_NUMBER": "Numéro de Lot",
-    "RECEPTION_NUMBER": "Numéro de Réception",
-    "DELIVERY_DATE": "Date de Livraison",
-    "OLIVE_NET_WEIGHT": "Poids Net d'Olives",
-    "YIELD": "Rendement",
-    "CRUSHING_PRICE_PER_KG": "Prix Trituration par kg",
-    "CRUSHING_TOTAL_PRICE": "Prix Total Trituration",
-    "CRUSHING_DATE": "Date de Trituration",
-    "PRODUCTION_RECEIPT": "BON DE PRODUCTION",
-    "QUALITY_MANAGER": "Responsable Qualité",
-    "PRODUCTION_MANAGER": "Chef de Production",
-    "SIGNATURE": "Signature"
-  },
-  "ADMIN": {
-    "ADD_COMPANY_USER_TITLE": "Créer une société et son premier utilisateur",
-    "COMPANY_SECTION": "Informations sur la société",
-    "USER_SECTION": "Informations sur l'utilisateur",
-    "COMPANY_NAME": "Nom de la société",
-    "COMPANY_NAME_REQUIRED": "Le nom de la société est requis.",
-    "SAVE": "Sauvegarder",
-    "CANCEL": "Annuler"
+    "PHONE_REQUIRED": "Le téléphone est requis.",
+    "CONFIRMATION_METHOD": "Méthode de confirmation",
+    "CONFIRMATION_METHOD_REQUIRED": "La méthode de confirmation est requise.",
+    "ROLE": "Rôle",
+    "ROLE_REQUIRED": "Le rôle est requis.",
+    "LOCKED": "Verrouillé"
   }
 }
