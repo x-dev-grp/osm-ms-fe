@@ -7,7 +7,7 @@ import jsPDF from 'jspdf';
 
 import { TranslateService }      from '@ngx-translate/core';
 import { CompanyProfileService } from './company-profile.service';
-import { CompanyProfile }        from '../models/CompanyProfile';
+import { CompanyProfile } from '../models/CompanyProfile';
 
 import { UnifiedDelivery } from '../models/UnifiedDelivery';
 import { Expense }         from '../../finance/models/expense.model';
