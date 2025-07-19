@@ -505,22 +505,31 @@
   "Form Wizard": "Form Wizard",
   "Forms": "Forms",
   "GENERAL_CONFIG": {
-    "COMPANY_INFO": {
-      "LEGAL_NAME": "Legal Name",
-      "REG_NUMBER": "Registration Number",
-      "TAX_ID": "Tax ID",
-      "LEGAL_FORM": "Legal Form",
-      "CAPITAL": "Capital"
+    "EXPANDABLE": {
+      "CONFIGURATIONS": "Configurations",
+      "PRODUCTION_CONFIG": "Production Config",
+      "FINANCE_CONFIG": "Finance Config",
+      "HR_CONFIG": "HR Config",
+      "OTHER_CONFIG": "Other Config"
     },
-    "CONTACT_INFO": {
-      "EMAIL": "Email",
-      "PHONE": "Phone"
-    },
-    "ADDRESS_INFO": {
-      "CITY": "City",
-      "GOVERNORATE": "Governorate"
+    "TITLE": "General Configuration",
+    "ACTIONS": {
+      "SAVE": "Save",
+      "RESET": "Reset",
+      "EDIT": "Edit",
+      "UPDATE": "Update",
+      "CANCEL": "Cancel"
     }
   },
+  "GENERAL_CONFIG.LEGAL_NAME": "Legal Name",
+  "GENERAL_CONFIG.REG_NUMBER": "Registration Number",
+  "GENERAL_CONFIG.TAX_ID": "Tax ID",
+  "GENERAL_CONFIG.LEGAL_FORM": "Legal Form",
+  "GENERAL_CONFIG.CAPITAL": "Capital",
+  "GENERAL_CONFIG.EMAIL": "Email",
+  "GENERAL_CONFIG.PHONE": "Phone",
+  "GENERAL_CONFIG.CITY": "City",
+  "GENERAL_CONFIG.GOVERNORATE": "Governorate",
   "Home": "Home",
   "Kanban": "Kanban",
   "Landing": "Landing",
@@ -1569,5 +1578,154 @@
     "ROLE": "Role",
     "ROLE_REQUIRED": "Role is required.",
     "LOCKED": "Locked"
+  },
+  "ADMIN_COMPANY_PROFILE": {
+    "LEGAL_NAME": "Legal Name",
+    "REG_NUMBER": "Registration Number",
+    "TAX_ID": "Tax ID",
+    "LEGAL_FORM": "Legal Form",
+    "CAPITAL": "Capital",
+    "EMAIL": "Email",
+    "PHONE": "Phone",
+    "CITY": "City",
+    "GOVERNORATE": "Governorate"
+  },
+  "COMPANY_PROFILE_UI": {
+    "LOGO": {
+      "TITLE": "Company Logo",
+      "REMOVE": "Remove logo",
+      "DRAG_DROP": "Drag & drop your logo here",
+      "CLICK_BROWSE": "or click to browse",
+      "FILE_TYPES": "PNG or JPEG, max 200KB",
+      "REQUIRED": "Logo is required."
+    },
+    "COMPANY_INFO": {
+      "TITLE": "Company Information",
+      "LEGAL_NAME": "Legal Name",
+      "LEGAL_NAME_REQUIRED": "Legal name is required.",
+      "REG_NUMBER": "Registration Number",
+      "REG_NUMBER_REQUIRED": "Registration number is required.",
+      "TAX_ID": "Tax ID",
+      "TAX_ID_REQUIRED": "Tax ID is required.",
+      "CNSS_NUMBER": "CNSS Number",
+      "CNSS_NUMBER_REQUIRED": "CNSS number is required.",
+      "LEGAL_FORM": "Legal Form",
+      "LEGAL_FORM_REQUIRED": "Legal form is required.",
+      "LEGAL_FORMS": {
+        "SARL": "SARL",
+        "SUARL": "SUARL",
+        "SA": "SA",
+        "SNC": "SNC",
+        "OTHER": "Other"
+      },
+      "CAPITAL": "Capital",
+      "CAPITAL_REQUIRED": "Capital is required.",
+      "CREATION_DATE": "Creation Date",
+      "CREATION_DATE_REQUIRED": "Creation date is required."
+    },
+    "CONTACT_INFO": {
+      "TITLE": "Contact Information",
+      "EMAIL": "Email",
+      "EMAIL_REQUIRED": "Email is required.",
+      "PHONE": "Phone",
+      "PHONE_REQUIRED": "Phone is required.",
+      "WEBSITE": "Website",
+      "WEBSITE_REQUIRED": "Website is required."
+    },
+    "ADDRESS_INFO": {
+      "TITLE": "Address Information",
+      "ADDRESS": "Address",
+      "ADDRESS_REQUIRED": "Address is required.",
+      "CITY_REQUIRED": "City is required.",
+      "POSTAL_CODE_REQUIRED": "Postal code is required.",
+      "GOVERNORATE_REQUIRED": "Governorate is required."
+    },
+    "ACTIONS": {
+      "SAVE": "Save",
+      "RESET": "Reset",
+      "EDIT": "Edit",
+      "UPDATE": "Update",
+      "CANCEL": "Cancel"
+    },
+    "MESSAGES": {
+      "CONFIRM_RESET": "Are you sure you want to reset the form? All unsaved changes will be lost."
+    }
+  },
+  "COMPANY_PROFILE_FORM": {
+    "LEGAL_NAME": "Legal Name",
+    "LEGAL_NAME_REQUIRED": "Legal name is required.",
+    "REG_NUMBER": "Registration Number",
+    "REG_NUMBER_REQUIRED": "Registration number is required.",
+    "TAX_ID": "Tax ID",
+    "TAX_ID_REQUIRED": "Tax ID is required.",
+    "CNSS_NUMBER": "CNSS Number",
+    "CNSS_NUMBER_REQUIRED": "CNSS number is required."
+  },
+  "GENERAL_CONFIG_UI": {
+    "LOGO": {
+      "TITLE": "Company Logo",
+      "REMOVE": "Remove logo",
+      "DRAG_DROP": "Drag & drop your logo here",
+      "CLICK_BROWSE": "or click to browse",
+      "FILE_TYPES": "PNG or JPEG, max 200KB",
+      "REQUIRED": "Logo is required."
+    },
+    "COMPANY_INFO": {
+      "TITLE": "Company Information",
+      "LEGAL_NAME": "Legal Name",
+      "LEGAL_NAME_REQUIRED": "Legal name is required.",
+      "REG_NUMBER": "Registration Number",
+      "REG_NUMBER_REQUIRED": "Registration number is required.",
+      "TAX_ID": "Tax ID",
+      "TAX_ID_REQUIRED": "Tax ID is required.",
+      "CNSS_NUMBER": "CNSS Number",
+      "CNSS_NUMBER_REQUIRED": "CNSS number is required.",
+      "LEGAL_FORM": "Legal Form",
+      "LEGAL_FORM_REQUIRED": "Legal form is required.",
+      "LEGAL_FORMS": {
+        "SARL": "SARL",
+        "SUARL": "SUARL",
+        "SA": "SA",
+        "SNC": "SNC",
+        "OTHER": "Other"
+      },
+      "CAPITAL": "Capital",
+      "CAPITAL_REQUIRED": "Capital is required.",
+      "CREATION_DATE": "Creation Date",
+      "CREATION_DATE_REQUIRED": "Creation date is required."
+    },
+    "CONTACT_INFO": {
+      "TITLE": "Contact Information",
+      "EMAIL": "Email",
+      "EMAIL_REQUIRED": "Email is required.",
+      "PHONE": "Phone",
+      "PHONE_REQUIRED": "Phone is required.",
+      "WEBSITE": "Website",
+      "WEBSITE_REQUIRED": "Website is required."
+    },
+    "ADDRESS_INFO": {
+      "TITLE": "Address Information",
+      "ADDRESS": "Address",
+      "ADDRESS_REQUIRED": "Address is required.",
+      "CITY_REQUIRED": "City is required.",
+      "POSTAL_CODE_REQUIRED": "Postal code is required.",
+      "GOVERNORATE_REQUIRED": "Governorate is required."
+    },
+    "ACTIONS": {
+      "SAVE": "Save",
+      "RESET": "Reset",
+      "EDIT": "Edit",
+      "UPDATE": "Update",
+      "CANCEL": "Cancel"
+    },
+    "MESSAGES": {
+      "CONFIRM_RESET": "Are you sure you want to reset the form? All unsaved changes will be lost."
+    },
+    "CONFIGURATIONS": "Configurations",
+    "TAB_TITLE": "General Configuration",
+    "PRODUCTION_TAB": "Production Config",
+    "FINANCE_TAB": "Finance Config",
+    "HR_TAB": "HR Config",
+    "OTHER_TAB": "Other Config"
   }
 }

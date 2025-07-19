@@ -13,7 +13,7 @@ export const companyProfileDashboardConfig: DashboardConfig = {
     {
       name: 'legalName',
       label: 'Legal Name',
-      labelTranslatePath: 'GENERAL_CONFIG.COMPANY_INFO.LEGAL_NAME',
+      labelTranslatePath: 'ADMIN_COMPANY_PROFILE.LEGAL_NAME',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       sortable: true,
@@ -23,31 +23,28 @@ export const companyProfileDashboardConfig: DashboardConfig = {
     {
       name: 'registrationNumber',
       label: 'Registration Number',
-      labelTranslatePath: 'GENERAL_CONFIG.COMPANY_INFO.REG_NUMBER',
+      labelTranslatePath: 'ADMIN_COMPANY_PROFILE.REG_NUMBER',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       sortable: true,
       dataTable: true,
-
       filterable: true
     },
     {
       name: 'taxId',
       label: 'Tax ID',
-      labelTranslatePath: 'GENERAL_CONFIG.COMPANY_INFO.TAX_ID',
+      labelTranslatePath: 'ADMIN_COMPANY_PROFILE.TAX_ID',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       sortable: true,
       dataTable: true,
-
       filterable: true
     },
     {
       name: 'legalForm',
       label: 'Legal Form',
-      labelTranslatePath: 'GENERAL_CONFIG.COMPANY_INFO.LEGAL_FORM',
+      labelTranslatePath: 'ADMIN_COMPANY_PROFILE.LEGAL_FORM',
       dataTable: true,
-
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       sortable: true,
@@ -56,10 +53,9 @@ export const companyProfileDashboardConfig: DashboardConfig = {
     {
       name: 'capital',
       label: 'Capital',
-      labelTranslatePath: 'GENERAL_CONFIG.COMPANY_INFO.CAPITAL',
+      labelTranslatePath: 'ADMIN_COMPANY_PROFILE.CAPITAL',
       attributeType: AttributeType.number,
       dataTable: true,
-
       fieldType: FieldType.number,
       sortable: true,
       filterable: true
@@ -67,9 +63,8 @@ export const companyProfileDashboardConfig: DashboardConfig = {
     {
       name: 'email',
       label: 'Email',
-      labelTranslatePath: 'GENERAL_CONFIG.CONTACT_INFO.EMAIL',
+      labelTranslatePath: 'ADMIN_COMPANY_PROFILE.EMAIL',
       dataTable: true,
-
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       sortable: true,
@@ -78,9 +73,8 @@ export const companyProfileDashboardConfig: DashboardConfig = {
     {
       name: 'phone',
       label: 'Phone',
-      labelTranslatePath: 'GENERAL_CONFIG.CONTACT_INFO.PHONE',
+      labelTranslatePath: 'ADMIN_COMPANY_PROFILE.PHONE',
       dataTable: true,
-
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       sortable: true,
@@ -89,21 +83,19 @@ export const companyProfileDashboardConfig: DashboardConfig = {
     {
       name: 'city',
       label: 'City',
-      labelTranslatePath: 'GENERAL_CONFIG.ADDRESS_INFO.CITY',
+      labelTranslatePath: 'ADMIN_COMPANY_PROFILE.CITY',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       dataTable: true,
-
       sortable: true,
       filterable: true
     },
     {
       name: 'governorate',
       label: 'Governorate',
-      labelTranslatePath: 'GENERAL_CONFIG.ADDRESS_INFO.GOVERNORATE',
+      labelTranslatePath: 'ADMIN_COMPANY_PROFILE.GOVERNORATE',
       attributeType: AttributeType.string,
       dataTable: true,
-
       fieldType: FieldType.text,
       sortable: true,
       filterable: true
