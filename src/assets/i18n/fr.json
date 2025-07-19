@@ -19,6 +19,7 @@
     "REG_NUMBER": "Numéro d'enregistrement",
     "TAX_ID": "Identifiant fiscal"
   },
+
   "APPLICATION_CONFIG": {
     "CUSTOM_THEME": {
       "BLUE": "Thème Bleu",
@@ -689,13 +690,16 @@
       "TITLE": "Informations d'adresse"
     },
     "COMPANY_INFO": {
+      "LEGAL_NAME": "Raison sociale",
+      "REG_NUMBER": "Numéro d'enregistrement",
+      "TAX_ID": "Identifiant fiscal",
+      "LEGAL_FORM": "Forme juridique",
       "CAPITAL": "Capital",
       "CAPITAL_REQUIRED": "Le capital est requis.",
       "CNSS_NUMBER": "Numéro CNSS",
       "CNSS_NUMBER_REQUIRED": "Le numéro CNSS est requis.",
       "CREATION_DATE": "Date de création",
       "CREATION_DATE_REQUIRED": "La date de création est requise.",
-      "LEGAL_FORM": "Forme juridique",
       "LEGAL_FORMS": {
         "OTHER": "Autre",
         "SA": "SA",
@@ -704,17 +708,16 @@
         "SUARL": "SUARL"
       },
       "LEGAL_FORM_REQUIRED": "La forme juridique est requise.",
-      "LEGAL_NAME": "Raison sociale",
       "LEGAL_NAME_REQUIRED": "La raison sociale est requise.",
-      "REG_NUMBER": "Numéro d'enregistrement",
       "REG_NUMBER_REQUIRED": "Le numéro d'enregistrement est requis.",
-      "TAX_ID": "Identifiant fiscal",
       "TAX_ID_REQUIRED": "L'identifiant fiscal est requis.",
       "TITLE": "Informations sur la société"
     },
     "CONFIGURATIONS": "Configurations",
     "CONTACT_INFO": {
       "EMAIL": "Email",
+      "PHONE": "Téléphone"
+    },
       "EMAIL_REQUIRED": "L'email est requis.",
       "PHONE": "Téléphone",
       "PHONE_REQUIRED": "Le téléphone est requis.",
@@ -737,8 +740,8 @@
     },
     "OTHER_TAB": "Autre Config",
     "PRODUCTION_TAB": "Config Production",
-    "TAB_TITLE": "Configuration Générale"
-  },
+    "TAB_TITLE": "Configuration Générale",
+
   "GENERAL_CONFIG_UI_GENERAL_CONFIG": {
     "CONFIGURATIONS": "Configurations",
     "FINANCE_TAB": "Config Finance",
@@ -829,6 +832,7 @@
       "HISTORY": "Historique fournisseurs",
       "TITLE": "Fournisseurs"
     }
+
   },
   "MILL_MACHINE": {
     "ACTIONS": {
@@ -1234,10 +1238,10 @@
       "SECTIONS": {
         "FINANCIAL_INFORMATION": "Informations Financières",
         "QUALITY_AND_QUANTITY": "Qualité et Quantité",
-        "QUALITY_CONTROL_INFO": "Quality Control Information",
-        "RECEPTION_PRICE_INFO": "Reception Price Information",
         "STORAGE_UNITS": "Unités de Stockage",
-        "TRANSACTION_TYPE_AND_STATE": "Type et État de la Transaction"
+        "TRANSACTION_TYPE_AND_STATE": "Type et État de la Transaction",
+        "QUALITY_CONTROL_INFO": "Quality Control Information",
+        "RECEPTION_PRICE_INFO": "Reception Price Information"
       },
       "TITLE": {
         "CREATE": "Nouvelle Transaction d'Huile",
@@ -1339,8 +1343,6 @@
         "DELIVERY_INFO": "Informations de livraison",
         "GENERAL_INFO": "Informations générales",
         "OLIVE_INFO": "Informations sur les olives",
-        "QUALITY_CONTROL_INFO": "Quality Control Information",
-        "RECEPTION_PRICE_INFO": "Reception Price Information",
         "SUPPLIER_REGION": "Fournisseur et région",
         "VEHICLE_INFO": "Informations du véhicule",
         "WEIGHT_QUANTITY": "Poids et quantité"
@@ -1920,4 +1922,5 @@
   "View": "Voir",
   "Widget": "Widget",
   "reCaptcha": "reCaptcha"
+
 }
