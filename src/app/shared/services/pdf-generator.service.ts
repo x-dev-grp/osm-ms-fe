@@ -1,8 +1,13 @@
+import {Injectable} from '@angular/core';
 // src/app/services/pdf-generator.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import jsPDF from 'jspdf';
+import {TranslateService} from '@ngx-translate/core';
+import {CompanyProfileService} from './company-profile.service';
+import {CompanyProfile} from '../models/CompanyProfile';
+import {PdfConfig} from "../models/pdf-config.model";
 
 
 import { TranslateService }      from '@ngx-translate/core';
@@ -283,55 +288,92 @@ export class PdfGeneratorService {
     });
   }
 
-  /**
-   * Generate a reception receipt (olive or oil)
-   */
-  generateReceptionPdf(delivery: UnifiedDelivery, type: 'OIL'|'OLIVE'): void {
-    const isOil = type === 'OIL';
-    const common = {
-      reference: delivery.lotNumber || '',
-      date:      '',
-      generalInfo: [
-        { label: 'PDF.TYPE',    value: delivery.deliveryType || '' },
-        { label: 'PDF.SUPPLIER',value: `${delivery.supplier?.supplierInfo?.name||''} ${delivery.supplier?.supplierInfo?.lastname||''}` },
-        { label: 'PDF.PHONE',   value: delivery.supplier?.supplierInfo?.phone || '' },
-        { label: 'PDF.ADDRESS', value: delivery.supplier?.supplierInfo?.address || '' }
-      ],
-      footerInfo: [
-        { label: 'PDF.SIGNATURE_AGENT',     placeholder: '' },
-        { label: 'PDF.SIGNATURE_RESPONSIBLE',placeholder: '' }
-      ]
-    };
-    const fields = isOil ? [
-      { label: 'PDF.LOT',           value: delivery.lotNumber || '' },
-      { label: 'PDF.LOT_GLOBAL',    value: delivery.globalLotNumber || '' },
-      { label: 'PDF.GROSS_WEIGHT',  value: `${delivery.poidsBrute||0} kg` },
-      { label: 'PDF.OIL_QUANTITY',  value: `${delivery.oilQuantity||0} kg` },
-      { label: 'PDF.OIL_VARIETY',   value: delivery.oilVariety?.name || '' },
-      { label: 'PDF.OIL_TYPE',      value: delivery.oilType?.name    || '' },
-      { label: 'PDF.REGION',        value: delivery.region?.name     || '' }
-    ] : [
-      { label: 'PDF.LOT',           value: delivery.lotNumber || '' },
-      { label: 'PDF.LOT_GLOBAL',    value: delivery.globalLotNumber || '' },
-      { label: 'PDF.GROSS_WEIGHT',  value: `${delivery.poidsBrute||0} kg` },
-      { label: 'PDF.OLIVE_QUANTITY',value: `${delivery.oilQuantity||0} kg` },
-      { label: 'PDF.OLIVE_VARIETY', value: delivery.oliveVariety?.name||'' },
-      { label: 'PDF.OLIVE_TYPE',    value: delivery.oliveType?.name   || '' },
-      { label: 'PDF.REGION',        value: delivery.region?.name     || '' }
-    ];
+  // pdf-generator.service.ts
 
-    const title    = isOil ? 'PDF.RECEPTION_OIL' : 'PDF.RECEPTION_OLIVE';
-    const fileName = isOil
-      ? `Bon_Reception_Huile_${delivery.deliveryNumber||'inconnu'}.pdf`
-      : `Bon_Reception_Olive_${delivery.deliveryNumber||'inconnu'}.pdf`;
-
-    this.generatePdfDocument({
-      ...common,
-      title,
-      fields,
-      fileName
-    });
+  generateReceptionPdf(config: PdfConfig): void {
+    this.generatePdfDocument(config);
   }
+
+  // generateReceptionPdf(delivery: UnifiedDelivery, type: 'OIL' | 'OLIVE'): void {
+  //   const isHuile = type === 'OIL';
+  //
+  //   const commonData = {
+  //     reference: delivery.lotNumber || '',
+  //     date: '',
+  //     generalInfo: [
+  //       { label: 'PDF.TYPE', value: delivery.deliveryType || '' },
+  //       {
+  //         label: 'PDF.SUPPLIER',
+  //         value: `${delivery.supplier?.supplierInfo?.name || ''} ${delivery.supplier?.supplierInfo?.lastname || ''}`
+  //       },
+  //       { label: 'PDF.PHONE', value: delivery.supplier?.supplierInfo?.phone || '' },
+  //       {
+  //         label: 'PDF.ADDRESS',
+  //         value: delivery.supplier?.supplierInfo?.address || ''
+  //       }
+  //     ],
+  //     footerInfo: [
+  //       { label: 'PDF.SIGNATURE_AGENT', placeholder: '' },
+  //       {
+  //         label: 'PDF.SIGNATURE_RESPONSIBLE',
+  //         placeholder: ''
+  //       }
+  //     ]
+  //   };
+  //
+  //   const fields = isHuile
+  //     ? [
+  //         { label: 'PDF.LOT', value: delivery.lotNumber || '' },
+  //         {
+  //           label: 'PDF.LOT_GLOBAL',
+  //           value: delivery.globalLotNumber || ''
+  //         },
+  //         { label: 'PDF.GROSS_WEIGHT', value: `${delivery.poidsBrute || ''} kg` },
+  //         {
+  //           label: 'PDF.OIL_QUANTITY',
+  //           value: `${delivery.oilQuantity || ''} kg`
+  //         },
+  //         { label: 'PDF.OIL_VARIETY', value: delivery.oilVariety?.name || '' },
+  //         {
+  //           label: 'PDF.OIL_TYPE',
+  //           value: delivery.oilType?.name || ''
+  //         },
+  //         { label: 'PDF.REGION', value: delivery.region?.name || '' }
+  //       ]
+  //     : [
+  //         {
+  //           label: 'PDF.LOT',
+  //           value: delivery.lotNumber || ''
+  //         },
+  //         { label: 'PDF.LOT_GLOBAL', value: delivery.globalLotNumber || '' },
+  //         {
+  //           label: 'PDF.GROSS_WEIGHT',
+  //           value: `${delivery.poidsBrute || ''} kg`
+  //         },
+  //         { label: 'PDF.OLIVE_QUANTITY', value: `${delivery.oilQuantity || ''} kg` },
+  //         {
+  //           label: 'PDF.OLIVE_VARIETY',
+  //           value: delivery.oliveVariety?.name || ''
+  //         },
+  //         { label: 'PDF.OLIVE_TYPE', value: delivery.oliveType?.name || '' },
+  //         {
+  //           label: 'PDF.REGION',
+  //           value: delivery.region?.name || ''
+  //         }
+  //       ];
+  //
+  //   const title = isHuile ? 'PDF.RECEPTION_OIL' : 'PDF.RECEPTION_OLIVE';
+  //   const fileName = isHuile
+  //     ? `Bon_Reception_Huile_${delivery.deliveryNumber || 'inconnu'}.pdf`
+  //     : `Bon_Reception_Olive_${delivery.deliveryNumber || 'inconnu'}.pdf`;
+  //
+  //   this.generatePdfDocument({
+  //     ...commonData,
+  //     title,
+  //     fields,
+  //     fileName
+  //   });
+  // }
 
   /**
    * Generate a production receipt
