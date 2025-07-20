@@ -15,18 +15,20 @@
         <div
           class="logo-drop-zone"
           [class.file-over]="fileOver"
-          (dragover)="onDragOver($event)"
-          (dragleave)="onDragLeave($event)"
-          (drop)="onFileDropped($event)"
-          (click)="fileInput.click()"
-          tabindex="0"
+          (dragover)="formEnabled && onDragOver($event)"
+          (dragleave)="formEnabled && onDragLeave($event)"
+          (drop)="formEnabled && onFileDropped($event)"
+          (click)="formEnabled && fileInput.click()"
+          [tabindex]="formEnabled ? 0 : -1"
+          [attr.aria-disabled]="!formEnabled"
           aria-label="Upload company logo">
           <input
             #fileInput
             type="file"
             accept="image/png, image/jpeg"
             hidden
-            (change)="onFilePicked($event)" />
+            (change)="onFilePicked($event)"
+            [disabled]="!formEnabled" />
 
           <ng-container *ngIf="logoPreview; else placeholder">
             <img [src]="logoPreview" class="logo-preview" alt="Company logo preview" />
@@ -34,7 +36,8 @@
               mat-icon-button
               color="warn"
               class="remove-btn"
-              (click)="removeLogo(); $event.stopPropagation()"
+              (click)="formEnabled && removeLogo(); $event.stopPropagation()"
+              [disabled]="!formEnabled"
               aria-label="Remove logo"
               matTooltip="{{ 'GENERAL_CONFIG_UI.LOGO.REMOVE' | translate }}">
               <mat-icon>close</mat-icon>
@@ -270,8 +273,8 @@
     </div>
     <!-- Place the action buttons at the bottom of the form -->
     <div class="actions">
-      <button mat-flat-button color="primary" type="submit" [disabled]="profileForm.invalid || !formEnabled || !hasProfileChanged()"
-        matTooltip="{{ 'GENERAL_CONFIG_UI.ACTIONS.SAVE' | translate }}" aria-label="Save">
+      <button mat-raised-button color="primary"
+        [disabled]="!formEnabled || !profileForm.valid || !profileForm.dirty">
         <mat-icon>save</mat-icon>
         <span>{{ 'GENERAL_CONFIG_UI.ACTIONS.SAVE' | translate }}</span>
       </button>

@@ -51,21 +51,36 @@ export class VerticalMenuComponent implements OnInit {
   }
 
   private loadCompanyLogo(): void {
-    // Try to get company profile from localStorage
+    console.log('[VerticalMenu] Attempting to load company logo from localStorage');
     const cachedProfile = localStorage.getItem('company_profile');
+    let foundLogo = false;
     if (cachedProfile) {
       try {
         const parsed = JSON.parse(cachedProfile);
-        if (parsed && parsed.success && Array.isArray(parsed.data) && parsed.data.length > 0) {
-          const profile: CompanyProfile = parsed.data[0];
-          if (profile.logoData && profile.logoContentType) {
-            this.logoPreview = `data:${profile.logoContentType};base64,${profile.logoData}`;
-          }
+        let profile: CompanyProfile | null = null;
+        // Support both API response and direct object
+        if (parsed) {
+          profile = parsed ;
+          console.log('[VerticalMenu] Parsed company profile from API response format', profile);
         }
-      } catch {
+        if (profile && profile.logoData && profile.logoContentType) {
+          this.logoPreview = `data:${profile.logoContentType};base64,${profile.logoData}`;
+          foundLogo = true;
+          console.log('[VerticalMenu] Loaded logo from localStorage');
+        } else {
+          console.log('[VerticalMenu] No logo found in profile');
+        }
+      } catch (e) {
         // Ignore malformed cache
-        console.warn('Failed to parse cached company profile');
+        console.warn('[VerticalMenu] Failed to parse cached company profile', e);
       }
+    } else {
+      console.log('[VerticalMenu] No company_profile found in localStorage');
+    }
+    // Fallback: use default asset if not found
+    if (!foundLogo) {
+      this.logoPreview = 'assets/logo.jpg';
+      console.log('[VerticalMenu] Falling back to default logo asset');
     }
   }
 

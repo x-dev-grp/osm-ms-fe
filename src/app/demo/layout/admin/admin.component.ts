@@ -11,8 +11,7 @@ import { ThemeLayoutService } from 'src/app/@theme/services/theme-layout.service
 import { SharedModule } from 'src/app/demo/shared/shared.module';
 import { NavBarComponent } from 'src/app/@theme/layouts/toolbar/toolbar.component';
 import { VerticalMenuComponent } from 'src/app/@theme/layouts/menu/vertical-menu';
-import { HorizontalMenuComponent } from 'src/app/@theme/layouts/menu/horizontal-menu';
-import { CompactMenuComponent } from 'src/app/@theme/layouts/menu/compact-menu';
+
 import { BreadcrumbComponent } from 'src/app/@theme/components/breadcrumb/breadcrumb.component';
 import { FooterComponent } from 'src/app/@theme/layouts/footer/footer.component';
 
@@ -44,8 +43,7 @@ import { ThemeConfig, ThemeConfigService } from '../../../shared/services/theme-
     CommonModule,
     NavBarComponent,
     VerticalMenuComponent,
-    HorizontalMenuComponent,
-    CompactMenuComponent,
+
     BreadcrumbComponent,
      FooterComponent
   ],
@@ -246,8 +244,8 @@ filterMenuByPermissions(
     if (cachedProfile) {
       try {
         const parsed = JSON.parse(cachedProfile);
-        if (parsed && parsed.success && Array.isArray(parsed.data) && parsed.data.length > 0) {
-          this.profile = parsed.data[0];
+        if (parsed) {
+          this.profile = parsed;
           if (this.profile.logoData && this.profile.logoContentType) {
             this.logoPreview = `data:${this.profile.logoContentType};base64,${this.profile.logoData}`;
           }

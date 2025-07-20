@@ -17,6 +17,7 @@ import { SearchFilterPipe } from '../../services/search-filter.pipe';
   selector: 'app-component-navigation',
   imports: [SharedModule, BreadcrumbComponent, RouterModule, ComponentGroupComponent, SearchFilterPipe],
   templateUrl: './navigation.component.html',
+  standalone: true,
   styleUrls: ['./navigation.component.scss']
 })
 export class ComponentNavigationComponent implements OnInit {

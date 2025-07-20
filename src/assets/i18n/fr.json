@@ -8,6 +8,17 @@
     "SAVE": "Sauvegarder",
     "USER_SECTION": "Informations sur l'utilisateur"
   },
+  "ADMIN_COMPANY_PROFILE": {
+    "CAPITAL": "Capital",
+    "CITY": "Ville",
+    "EMAIL": "Email",
+    "GOVERNORATE": "Gouvernorat",
+    "LEGAL_FORM": "Forme juridique",
+    "LEGAL_NAME": "Raison sociale",
+    "PHONE": "Téléphone",
+    "REG_NUMBER": "Numéro d'enregistrement",
+    "TAX_ID": "Identifiant fiscal"
+  },
   "APPLICATION_CONFIG": {
     "CUSTOM_THEME": {
       "BLUE": "Thème Bleu",
@@ -115,6 +126,57 @@
     "TITLE": "Comptes bancaires"
   },
   "Basic": "Basique",
+  "COMPANY_PROFILE_FORM": {
+    "CNSS_NUMBER": "Numéro CNSS",
+    "CNSS_NUMBER_REQUIRED": "Le numéro CNSS est requis.",
+    "LEGAL_NAME": "Raison sociale",
+    "LEGAL_NAME_REQUIRED": "La raison sociale est requise.",
+    "REG_NUMBER": "Numéro d'enregistrement",
+    "REG_NUMBER_REQUIRED": "Le numéro d'enregistrement est requis.",
+    "TAX_ID": "Identifiant fiscal",
+    "TAX_ID_REQUIRED": "L'identifiant fiscal est requis."
+  },
+  "COMPANY_PROFILE_FORM_UI": {
+    "CNSS_NUMBER": "Numéro CNSS",
+    "CNSS_NUMBER_REQUIRED": "Le numéro CNSS est requis.",
+    "LEGAL_NAME": "Raison sociale",
+    "LEGAL_NAME_REQUIRED": "La raison sociale est requise.",
+    "REG_NUMBER": "Numéro d'enregistrement",
+    "REG_NUMBER_REQUIRED": "Le numéro d'enregistrement est requis.",
+    "TAX_ID": "Identifiant fiscal",
+    "TAX_ID_REQUIRED": "L'identifiant fiscal est requis."
+  },
+  "COMPANY_PROFILE_UI": {
+    "ACTIONS": {
+      "CANCEL": "Annuler",
+      "EDIT": "Modifier",
+      "RESET": "Réinitialiser",
+      "SAVE": "Enregistrer",
+      "UPDATE": "Mettre à jour"
+    },
+    "ADDRESS": "Adresse",
+    "BANK_ACCOUNTS": "Comptes bancaires",
+    "CAPITAL": "Capital",
+    "CITY": "Ville",
+    "CNSS_NUMBER": "Numéro CNSS",
+    "COMPANY_INFO_TITLE": "Informations sur la société",
+    "CREATION_DATE": "Date de création",
+    "EMAIL": "Email",
+    "GOVERNORATE": "Gouvernorat",
+    "LEGAL_FORM": "Forme juridique",
+    "LEGAL_NAME": "Raison sociale",
+    "LOGO_CLICK_BROWSE": "ou cliquez pour parcourir",
+    "LOGO_DRAG_DROP": "Glissez-déposez votre logo ici",
+    "LOGO_FILE_TYPES": "PNG ou JPEG, max 200Ko",
+    "LOGO_REMOVE": "Supprimer le logo",
+    "LOGO_REQUIRED": "Le logo est requis.",
+    "LOGO_TITLE": "Logo de la société",
+    "PHONE": "Téléphone",
+    "POSTAL_CODE": "Code postal",
+    "REG_NUMBER": "Numéro d'enregistrement",
+    "TAX_ID": "Identifiant fiscal",
+    "WEBSITE": "Site web"
+  },
   "CONFIGURATION": {
     "PRODUCTION": {
       "TITLE": "Configuration Production"
@@ -530,21 +592,96 @@
   "Form Wizard": "Assistant Formulaire",
   "Forms": "Formes",
   "GENERAL_CONFIG": {
+    "ACTIONS": {
+      "CANCEL": "Annuler",
+      "EDIT": "Modifier",
+      "RESET": "Réinitialiser",
+      "SAVE": "Enregistrer",
+      "UPDATE": "Mettre à jour"
+    },
     "EXPANDABLE": {
       "CONFIGURATIONS": "Configurations",
-      "PRODUCTION_CONFIG": "Config Production",
       "FINANCE_CONFIG": "Config Finance",
       "HR_CONFIG": "Config RH",
-      "OTHER_CONFIG": "Autre config"
+      "OTHER_CONFIG": "Autre config",
+      "PRODUCTION_CONFIG": "Config Production"
     },
-    "TITLE": "Configuration générale",
+    "TITLE": "Configuration générale"
+  },
+  "GENERAL_CONFIG_UI": {
     "ACTIONS": {
-      "SAVE": "Enregistrer",
-      "RESET": "Réinitialiser",
+      "CANCEL": "Annuler",
       "EDIT": "Modifier",
-      "UPDATE": "Mettre à jour",
-      "CANCEL": "Annuler"
-    }
+      "RESET": "Réinitialiser",
+      "SAVE": "Enregistrer",
+      "UPDATE": "Mettre à jour"
+    },
+    "ADDRESS_INFO": {
+      "ADDRESS": "Adresse",
+      "ADDRESS_REQUIRED": "L'adresse est requise.",
+      "CITY_REQUIRED": "La ville est requise.",
+      "GOVERNORATE_REQUIRED": "Le gouvernorat est requis.",
+      "POSTAL_CODE_REQUIRED": "Le code postal est requis.",
+      "TITLE": "Informations d'adresse"
+    },
+    "COMPANY_INFO": {
+      "CAPITAL": "Capital",
+      "CAPITAL_REQUIRED": "Le capital est requis.",
+      "CNSS_NUMBER": "Numéro CNSS",
+      "CNSS_NUMBER_REQUIRED": "Le numéro CNSS est requis.",
+      "CREATION_DATE": "Date de création",
+      "CREATION_DATE_REQUIRED": "La date de création est requise.",
+      "LEGAL_FORM": "Forme juridique",
+      "LEGAL_FORMS": {
+        "OTHER": "Autre",
+        "SA": "SA",
+        "SARL": "SARL",
+        "SNC": "SNC",
+        "SUARL": "SUARL"
+      },
+      "LEGAL_FORM_REQUIRED": "La forme juridique est requise.",
+      "LEGAL_NAME": "Raison sociale",
+      "LEGAL_NAME_REQUIRED": "La raison sociale est requise.",
+      "REG_NUMBER": "Numéro d'enregistrement",
+      "REG_NUMBER_REQUIRED": "Le numéro d'enregistrement est requis.",
+      "TAX_ID": "Identifiant fiscal",
+      "TAX_ID_REQUIRED": "L'identifiant fiscal est requis.",
+      "TITLE": "Informations sur la société"
+    },
+    "CONFIGURATIONS": "Configurations",
+    "CONTACT_INFO": {
+      "EMAIL": "Email",
+      "EMAIL_REQUIRED": "L'email est requis.",
+      "PHONE": "Téléphone",
+      "PHONE_REQUIRED": "Le téléphone est requis.",
+      "TITLE": "Informations de contact",
+      "WEBSITE": "Site web",
+      "WEBSITE_REQUIRED": "Le site web est requis."
+    },
+    "FINANCE_TAB": "Config Finance",
+    "HR_TAB": "Config RH",
+    "LOGO": {
+      "CLICK_BROWSE": "ou cliquez pour parcourir",
+      "DRAG_DROP": "Glissez-déposez votre logo ici",
+      "FILE_TYPES": "PNG ou JPEG, max 200Ko",
+      "REMOVE": "Supprimer le logo",
+      "REQUIRED": "Le logo est requis.",
+      "TITLE": "Logo de la société"
+    },
+    "MESSAGES": {
+      "CONFIRM_RESET": "Êtes-vous sûr de vouloir réinitialiser le formulaire ? Toutes les modifications non enregistrées seront perdues."
+    },
+    "OTHER_TAB": "Autre Config",
+    "PRODUCTION_TAB": "Config Production",
+    "TAB_TITLE": "Configuration Générale"
+  },
+  "GENERAL_CONFIG_UI_GENERAL_CONFIG": {
+    "CONFIGURATIONS": "Configurations",
+    "FINANCE_TAB": "Config Finance",
+    "HR_TAB": "Config RH",
+    "OTHER_TAB": "Autre Config",
+    "PRODUCTION_TAB": "Config Production",
+    "TAB_TITLE": "Configuration Générale"
   },
   "Helpdesk": "Service d'assistance",
   "Home": "Accueil",
@@ -597,6 +734,7 @@
       "TITLE": "Réception"
     },
     "SETTINGS": {
+      "APP_UI": "Paramèters d'application",
       "GENERAL_CONFIG": "Configuration générale",
       "GENERIC_TYPES": "Types génériques",
       "MILLING_MACHINES": "Machines de trituration",
@@ -1621,162 +1759,25 @@
   "Table": "Tableau",
   "Teacher": "Enseignant",
   "Ticket": "Ticket",
+  "USER_FORM": {
+    "CONFIRMATION_METHOD": "Méthode de confirmation",
+    "CONFIRMATION_METHOD_REQUIRED": "La méthode de confirmation est requise.",
+    "EMAIL": "Email",
+    "EMAIL_REQUIRED": "L'email est requis.",
+    "FIRST_NAME": "Prénom",
+    "LAST_NAME": "Nom",
+    "LOCKED": "Verrouillé",
+    "PHONE": "Téléphone",
+    "PHONE_REQUIRED": "Le téléphone est requis.",
+    "ROLE": "Rôle",
+    "ROLE_REQUIRED": "Le rôle est requis.",
+    "USERNAME": "Nom d'utilisateur",
+    "USERNAME_REQUIRED": "Le nom d'utilisateur est requis."
+  },
   "Ui-Components": "Composants Ui",
   "Under Construction": "En cours de construction",
   "User Profile": "Profil de l'utilisateur",
   "View": "Voir",
   "Widget": "Widget",
-  "reCaptcha": "reCaptcha",
-  "USER_FORM": {
-    "FIRST_NAME": "Prénom",
-    "LAST_NAME": "Nom",
-    "USERNAME": "Nom d'utilisateur",
-    "USERNAME_REQUIRED": "Le nom d'utilisateur est requis.",
-    "EMAIL": "Email",
-    "EMAIL_REQUIRED": "L'email est requis.",
-    "PHONE": "Téléphone",
-    "PHONE_REQUIRED": "Le téléphone est requis.",
-    "CONFIRMATION_METHOD": "Méthode de confirmation",
-    "CONFIRMATION_METHOD_REQUIRED": "La méthode de confirmation est requise.",
-    "ROLE": "Rôle",
-    "ROLE_REQUIRED": "Le rôle est requis.",
-    "LOCKED": "Verrouillé"
-  },
-  "ADMIN_COMPANY_PROFILE": {
-    "LEGAL_NAME": "Raison sociale",
-    "REG_NUMBER": "Numéro d'enregistrement",
-    "TAX_ID": "Identifiant fiscal",
-    "LEGAL_FORM": "Forme juridique",
-    "CAPITAL": "Capital",
-    "EMAIL": "Email",
-    "PHONE": "Téléphone",
-    "CITY": "Ville",
-    "GOVERNORATE": "Gouvernorat"
-  },
-  "COMPANY_PROFILE_UI": {
-    "LOGO_TITLE": "Logo de la société",
-    "LOGO_REMOVE": "Supprimer le logo",
-    "LOGO_DRAG_DROP": "Glissez-déposez votre logo ici",
-    "LOGO_CLICK_BROWSE": "ou cliquez pour parcourir",
-    "LOGO_FILE_TYPES": "PNG ou JPEG, max 200Ko",
-    "LOGO_REQUIRED": "Le logo est requis.",
-    "COMPANY_INFO_TITLE": "Informations sur la société",
-    "LEGAL_NAME": "Raison sociale",
-    "REG_NUMBER": "Numéro d'enregistrement",
-    "TAX_ID": "Identifiant fiscal",
-    "CNSS_NUMBER": "Numéro CNSS",
-    "LEGAL_FORM": "Forme juridique",
-    "CAPITAL": "Capital",
-    "CREATION_DATE": "Date de création",
-    "EMAIL": "Email",
-    "PHONE": "Téléphone",
-    "WEBSITE": "Site web",
-    "ADDRESS": "Adresse",
-    "CITY": "Ville",
-    "POSTAL_CODE": "Code postal",
-    "GOVERNORATE": "Gouvernorat",
-    "BANK_ACCOUNTS": "Comptes bancaires",
-    "ACTIONS": {
-      "SAVE": "Enregistrer",
-      "RESET": "Réinitialiser",
-      "EDIT": "Modifier",
-      "UPDATE": "Mettre à jour",
-      "CANCEL": "Annuler"
-    }
-  },
-  "GENERAL_CONFIG_UI": {
-    "LOGO": {
-      "TITLE": "Logo de la société",
-      "REMOVE": "Supprimer le logo",
-      "DRAG_DROP": "Glissez-déposez votre logo ici",
-      "CLICK_BROWSE": "ou cliquez pour parcourir",
-      "FILE_TYPES": "PNG ou JPEG, max 200Ko",
-      "REQUIRED": "Le logo est requis."
-    },
-    "COMPANY_INFO": {
-      "TITLE": "Informations sur la société",
-      "LEGAL_NAME": "Raison sociale",
-      "LEGAL_NAME_REQUIRED": "La raison sociale est requise.",
-      "REG_NUMBER": "Numéro d'enregistrement",
-      "REG_NUMBER_REQUIRED": "Le numéro d'enregistrement est requis.",
-      "TAX_ID": "Identifiant fiscal",
-      "TAX_ID_REQUIRED": "L'identifiant fiscal est requis.",
-      "CNSS_NUMBER": "Numéro CNSS",
-      "CNSS_NUMBER_REQUIRED": "Le numéro CNSS est requis.",
-      "LEGAL_FORM": "Forme juridique",
-      "LEGAL_FORM_REQUIRED": "La forme juridique est requise.",
-      "LEGAL_FORMS": {
-        "SARL": "SARL",
-        "SUARL": "SUARL",
-        "SA": "SA",
-        "SNC": "SNC",
-        "OTHER": "Autre"
-      },
-      "CAPITAL": "Capital",
-      "CAPITAL_REQUIRED": "Le capital est requis.",
-      "CREATION_DATE": "Date de création",
-      "CREATION_DATE_REQUIRED": "La date de création est requise."
-    },
-    "CONTACT_INFO": {
-      "TITLE": "Informations de contact",
-      "EMAIL": "Email",
-      "EMAIL_REQUIRED": "L'email est requis.",
-      "PHONE": "Téléphone",
-      "PHONE_REQUIRED": "Le téléphone est requis.",
-      "WEBSITE": "Site web",
-      "WEBSITE_REQUIRED": "Le site web est requis."
-    },
-    "ADDRESS_INFO": {
-      "TITLE": "Informations d'adresse",
-      "ADDRESS": "Adresse",
-      "ADDRESS_REQUIRED": "L'adresse est requise.",
-      "CITY_REQUIRED": "La ville est requise.",
-      "POSTAL_CODE_REQUIRED": "Le code postal est requis.",
-      "GOVERNORATE_REQUIRED": "Le gouvernorat est requis."
-    },
-    "ACTIONS": {
-      "SAVE": "Enregistrer",
-      "RESET": "Réinitialiser",
-      "EDIT": "Modifier",
-      "UPDATE": "Mettre à jour",
-      "CANCEL": "Annuler"
-    },
-    "MESSAGES": {
-      "CONFIRM_RESET": "Êtes-vous sûr de vouloir réinitialiser le formulaire ? Toutes les modifications non enregistrées seront perdues."
-    },
-    "CONFIGURATIONS": "Configurations",
-    "TAB_TITLE": "Configuration Générale",
-    "PRODUCTION_TAB": "Config Production",
-    "FINANCE_TAB": "Config Finance",
-    "HR_TAB": "Config RH",
-    "OTHER_TAB": "Autre Config"
-  },
-  "COMPANY_PROFILE_FORM": {
-    "LEGAL_NAME": "Raison sociale",
-    "LEGAL_NAME_REQUIRED": "La raison sociale est requise.",
-    "REG_NUMBER": "Numéro d'enregistrement",
-    "REG_NUMBER_REQUIRED": "Le numéro d'enregistrement est requis.",
-    "TAX_ID": "Identifiant fiscal",
-    "TAX_ID_REQUIRED": "L'identifiant fiscal est requis.",
-    "CNSS_NUMBER": "Numéro CNSS",
-    "CNSS_NUMBER_REQUIRED": "Le numéro CNSS est requis."
-  },
-  "COMPANY_PROFILE_FORM_UI": {
-    "LEGAL_NAME": "Raison sociale",
-    "LEGAL_NAME_REQUIRED": "La raison sociale est requise.",
-    "REG_NUMBER": "Numéro d'enregistrement",
-    "REG_NUMBER_REQUIRED": "Le numéro d'enregistrement est requis.",
-    "TAX_ID": "Identifiant fiscal",
-    "TAX_ID_REQUIRED": "L'identifiant fiscal est requis.",
-    "CNSS_NUMBER": "Numéro CNSS",
-    "CNSS_NUMBER_REQUIRED": "Le numéro CNSS est requis."
-  },
-  "GENERAL_CONFIG_UI_GENERAL_CONFIG": {
-    "CONFIGURATIONS": "Configurations",
-    "TAB_TITLE": "Configuration Générale",
-    "PRODUCTION_TAB": "Config Production",
-    "FINANCE_TAB": "Config Finance",
-    "HR_TAB": "Config RH",
-    "OTHER_TAB": "Autre Config"
-  }
+  "reCaptcha": "reCaptcha"
 }

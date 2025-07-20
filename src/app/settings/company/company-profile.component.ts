@@ -108,7 +108,7 @@ export class CompanyProfileComponent implements OnInit {
       logoContentType: [null, Validators.required]
     });
     this.loadProfile();
-    this.profileForm.disable();
+    // this.profileForm.disable(); // Remove this line from ngOnInit
     this.profileForm.valueChanges.subscribe(val => {
       console.log('Form value changed:', val);
       console.log('Form valid:', this.profileForm.valid);
@@ -117,12 +117,53 @@ export class CompanyProfileComponent implements OnInit {
 
   loadProfile() {
     this.loading = true;
+    // Try to load from localStorage first
+    const cached = localStorage.getItem('company_profile');
+    let parsed: CompanyProfile | null = null;
+    if (cached) {
+      try {
+        parsed = JSON.parse(cached);
+      } catch {
+        parsed = null;
+      }
+    }
+    if (parsed && typeof parsed === 'object' && parsed.legalName) {
+      // Use cached profile
+      this.loading = false;
+      this.profile = parsed;
+      this.originalProfile = JSON.parse(JSON.stringify(this.profile));
+      this.profileForm.patchValue({
+        legalName: this.profile.legalName,
+        registrationNumber: this.profile.registrationNumber,
+        taxId: this.profile.taxId,
+        cnssNumber: this.profile.cnssNumber,
+        legalForm: this.profile.legalForm,
+        capital: this.profile.capital,
+        email: this.profile.email,
+        phone: this.profile.phone,
+        website: this.profile.website,
+        addressLine1: this.profile.addressLine1,
+        city: this.profile.city,
+        postalCode: this.profile.postalCode,
+        governorate: this.profile.governorate,
+        logoData: this.profile.logoData,
+        logoContentType: this.profile.logoContentType
+      });
+      this.bankAccounts = this.profile.bankAccounts || [];
+      if (this.profile.logoData && this.profile.logoContentType) {
+        this.logoPreview = `data:${this.profile.logoContentType};base64,${this.profile.logoData}`;
+      }
+      this.profileForm.disable();
+      return;
+    }
+    // If not in cache, fetch from backend
     this.companyProfileService.getProfile().subscribe(
       (res) => {
         this.loading = false;
         if (res && res.success && res.data && res.data.length > 0) {
           this.profile = res.data[0];
           this.originalProfile = JSON.parse(JSON.stringify(this.profile));
+          localStorage.setItem('company_profile', JSON.stringify(this.profile));
           this.profileForm.patchValue({
             legalName: this.profile.legalName,
             registrationNumber: this.profile.registrationNumber,
@@ -144,6 +185,7 @@ export class CompanyProfileComponent implements OnInit {
           if (this.profile.logoData && this.profile.logoContentType) {
             this.logoPreview = `data:${this.profile.logoContentType};base64,${this.profile.logoData}`;
           }
+          this.profileForm.disable();
         } else {
           this.profile = null;
           this.originalProfile = null;
@@ -162,6 +204,7 @@ export class CompanyProfileComponent implements OnInit {
   enableForm() {
     this.formEnabled = true;
     this.profileForm.enable();
+    this.profileForm.markAsPristine(); // Reset dirty state when entering edit mode
   }
 
   onSave(): void {
@@ -260,6 +303,8 @@ export class CompanyProfileComponent implements OnInit {
   onFilePicked(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) this.handleFile(file);
+    this.profileForm.get('logoData')?.markAsDirty();
+    this.profileForm.markAsDirty();
   }
   removeLogo() {
     this.logoPreview = null;
@@ -293,5 +338,16 @@ export class CompanyProfileComponent implements OnInit {
     const changed = JSON.stringify(current) !== JSON.stringify(this.originalProfile);
     console.log('hasProfileChanged:', changed, 'Current:', current, 'Original:', this.originalProfile);
     return changed;
+  }
+
+  get invalidControls(): string[] {
+    const invalid = [];
+    const controls = this.profileForm.controls;
+    for (const name in controls) {
+      if (controls[name].invalid) {
+        invalid.push(name);
+      }
+    }
+    return invalid;
   }
 }

@@ -21,22 +21,21 @@ export class CompanyProfileService {
 
   /** Fetches the existing profile (or an empty one if none) */
   getProfile(): Observable<ApiResponse<CompanyProfile>> {
-    // Try to get from localStorage first
+    const tenantId = this._authService.currentUserValue?.tenantId;
     const cachedProfile = localStorage.getItem(this.STORAGE_KEY);
     if (cachedProfile) {
       try {
         const parsed = JSON.parse(cachedProfile);
-        if (parsed && parsed.success && Array.isArray(parsed.data[0])) {
+        // Check if the cached profile matches the current tenantId
+        if (parsed && parsed.success && parsed.data && parsed.data[0]?.id === tenantId) {
           return of(parsed);
         }
       } catch {
         // Ignore malformed cache
       }
     }
-    const cuurenTUser = this._authService.currentUserValue;
-
-    // If not in localStorage or cache is invalid, fetch from API and cache it
-    return this.http.get<ApiResponse<CompanyProfile>>(`${this.baseUrl}/fetch/${cuurenTUser?.tenantId}`).pipe(
+    // Fetch from API if not in cache or ID mismatch
+    return this.http.get<ApiResponse<CompanyProfile>>(`${this.baseUrl}/fetch/${tenantId}`).pipe(
       tap((response) => {
         if (response && response.success && Array.isArray(response.data) && response.data.length > 0) {
           localStorage.setItem(this.STORAGE_KEY, JSON.stringify(response));
@@ -45,16 +44,27 @@ export class CompanyProfileService {
     );
   }
 
+  /** Fetches the company profile by tenantId using the new backend endpoint */
+  getProfileByTenantId(tenantId: string): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/fetch/${tenantId}`);
+  }
+
   /** Creates or updates based on presence of `id` */
   saveProfile(profile: CompanyProfile): Observable<CompanyProfile> {
-    const request$ = profile.id
-      ? this.http.put<CompanyProfile>(`${this.baseUrl}`, profile)
+    const tenantId = this._authService.currentUserValue?.tenantId;
+    profile.id = tenantId;
+    const request$ = tenantId
+      ? this.http.put<CompanyProfile>(`${this.baseUrl}/update`, profile)
       : this.http.post<CompanyProfile>(this.baseUrl, profile);
 
     return request$.pipe(
-      tap(() => {
-        // After save, clear the cached profile to force fresh fetch next time
-        this.clearCache();
+      tap((savedProfile) => {
+        // After save, update the cached profile in localStorage
+        const responseToCache = {
+          success: true,
+          data: [savedProfile]
+        };
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(responseToCache));
       })
     );
   }
