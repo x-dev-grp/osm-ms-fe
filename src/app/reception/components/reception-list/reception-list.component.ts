@@ -1,12 +1,13 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
-import { LIST_RECEPTION_DASHBOARD } from './LIST_RECEPTION_DASHBOARD';
-import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
-import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
-import { tap } from 'rxjs';
-import { Router } from '@angular/router';
-import { PdfGeneratorService } from '../../../shared/services/pdf-generator.service';
+import {Component} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {OsmDashboard} from '../../../shared/modules/osm-dashboard/osm-dashboard';
+import {LIST_RECEPTION_DASHBOARD} from './LIST_RECEPTION_DASHBOARD';
+import {UnifiedDelivery} from '../../../shared/models/UnifiedDelivery';
+import {UnifiedDeliveryService} from '../../../shared/services/delivery.service';
+import {tap} from 'rxjs';
+import {Router} from '@angular/router';
+import {PdfGeneratorService} from '../../../shared/services/pdf-generator.service';
+import {ACTION_ICONS} from '../../../shared/modules/osm-dashboard/models/actions';
 
 @Component({
   selector: 'app-reception-list',
