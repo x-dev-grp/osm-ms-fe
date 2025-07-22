@@ -4,29 +4,29 @@ import {UnifiedDelivery} from 'src/app/shared/models/UnifiedDelivery';
 
 export function getOlivePdfConfig(delivery: UnifiedDelivery): PdfConfig {
   return {
-    title: 'Bon De Réception Olive',
+    title: 'PDF.RECEPTION_OLIVE',
     reference: delivery.lotNumber || '',
     generalInfo: [
-      {label: 'Type', value: delivery.deliveryType || ''},
+      {label: 'PDF.TYPE', value: delivery.deliveryType || ''},
       {
-        label: 'Fournisseur',
+        label: 'PDF.SUPPLIER',
         value: `${delivery.supplier?.supplierInfo?.name || ''} ${delivery.supplier?.supplierInfo?.lastname || ''}`
       },
-      {label: 'Téléphone', value: delivery.supplier?.supplierInfo?.phone || ''},
-      {label: 'Adresse', value: delivery.supplier?.supplierInfo?.address || ''}
+      {label: 'PDF.PHONE', value: delivery.supplier?.supplierInfo?.phone || ''},
+      {label: 'PDF.ADDRESS', value: delivery.supplier?.supplierInfo?.address || ''}
     ],
     fields: [
-      {label: 'Lot', value: delivery.lotNumber || ''},
-      {label: 'Lot Global', value: delivery.globalLotNumber || ''},
-      {label: 'Poids Brut', value: `${delivery.poidsBrute || ''} kg`},
-      {label: "Quantité Olive", value: `${delivery.oilQuantity || ''} kg`},
-      {label: 'Variété Olive', value: delivery.oliveVariety?.name || ''},
-      {label: 'Type Olive', value: delivery.oliveType?.name || ''},
-      {label: 'Région', value: delivery.region?.name || ''}
+      {label: 'PDF.LOT', value: delivery.lotNumber || ''},
+      {label: 'PDF.LOT_GLOBAL', value: delivery.globalLotNumber || ''},
+      {label: 'PDF.GROSS_WEIGHT', value: `${delivery.poidsBrute || ''} kg`},
+      {label: 'PDF.OLIVE_QUANTITY', value: `${delivery.oilQuantity || ''} kg`},
+      {label: 'PDF.OLIVE_VARIETY', value: delivery.oliveVariety?.name || ''},
+      {label: 'PDF.OLIVE_TYPE', value: delivery.oliveType?.name || ''},
+      {label: 'PDF.REGION', value: delivery.region?.name || ''}
     ],
     footerInfo: [
-      {label: 'Signature Agent (bascule)'},
-      {label: 'Signature Responsable CQ'}
+      {label: 'PDF.SIGNATURE_AGENT'},
+      {label: 'PDF.SIGNATURE_RESPONSIBLE'}
     ],
     fileName: `Bon_Reception_Olive_${delivery.deliveryNumber || 'inconnu'}.pdf`
   };

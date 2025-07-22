@@ -1,5 +1,5 @@
-import { Navigation } from 'src/app/@theme/types/navigation';
-import { Role } from 'src/app/@theme/types/role';
+import {Navigation} from 'src/app/@theme/types/navigation';
+import {Role} from 'src/app/@theme/types/role';
 
 export const osm_menus: Navigation[] = [
   // ────────────────────────
@@ -291,22 +291,6 @@ export const osm_menus: Navigation[] = [
         type: 'item',
         url: '/reception/mill-machines',
         icon: 'precision_manufacturing',
-        breadcrumbs: false
-      },
-      {
-        id: 'qualityControlRules',
-        title: 'MENU.SETTINGS.QUALITY_CONTROL_RULES',
-        type: 'item',
-        url: '/settings/quality-control',
-        icon: 'rule',
-        breadcrumbs: false
-      },
-      {
-        id: 'genericTypes',
-        title: 'MENU.SETTINGS.GENERIC_TYPES',
-        type: 'item',
-        url: '/settings/generic',
-        icon: 'category',
         breadcrumbs: false
       },
       {

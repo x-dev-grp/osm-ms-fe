@@ -1,32 +1,31 @@
-// oil-pdf.config.ts
-import {PdfConfig} from 'src/app/shared/models/pdf-config.model';
-import {UnifiedDelivery} from 'src/app/shared/models/UnifiedDelivery';
+import {UnifiedDelivery} from "../../../shared/models/UnifiedDelivery";
+import {PdfConfig} from "../../../shared/models/pdf-config.model";
 
 export function getOilPdfConfig(delivery: UnifiedDelivery): PdfConfig {
   return {
-    title: 'Bon De Réception Huile',
+    title: 'PDF.RECEPTION_OIL',
     reference: delivery.lotNumber || '',
     generalInfo: [
-      {label: 'Type', value: delivery.deliveryType || ''},
+      {label: 'PDF.TYPE', value: delivery.deliveryType || ''},
       {
-        label: 'Fournisseur',
+        label: 'PDF.SUPPLIER',
         value: `${delivery.supplier?.supplierInfo?.name || ''} ${delivery.supplier?.supplierInfo?.lastname || ''}`
       },
-      {label: 'Téléphone', value: delivery.supplier?.supplierInfo?.phone || ''},
-      {label: 'Adresse', value: delivery.supplier?.supplierInfo?.address || ''}
+      {label: 'PDF.PHONE', value: delivery.supplier?.supplierInfo?.phone || ''},
+      {label: 'PDF.ADDRESS', value: delivery.supplier?.supplierInfo?.address || ''}
     ],
     fields: [
-      {label: 'Lot', value: delivery.lotNumber || ''},
-      {label: 'Lot Global', value: delivery.globalLotNumber || ''},
-      {label: 'Poids Brut', value: `${delivery.poidsBrute || ''} kg`},
-      {label: "Quantité d'huile", value: `${delivery.oilQuantity || ''} kg`},
-      {label: 'Variété Huile', value: delivery.oilVariety?.name || ''},
-      {label: 'Type Huile', value: delivery.oilType?.name || ''},
-      {label: 'Région', value: delivery.region?.name || ''}
+      {label: 'PDF.LOT', value: delivery.lotNumber || ''},
+      {label: 'PDF.LOT_GLOBAL', value: delivery.globalLotNumber || ''},
+      {label: 'PDF.GROSS_WEIGHT', value: `${delivery.poidsBrute || ''} kg`},
+      {label: 'PDF.OIL_QUANTITY', value: `${delivery.oilQuantity || ''} kg`},
+      {label: 'PDF.OIL_VARIETY', value: delivery.oilVariety?.name || ''},
+      {label: 'PDF.OIL_TYPE', value: delivery.oilType?.name || ''},
+      {label: 'PDF.REGION', value: delivery.region?.name || ''}
     ],
     footerInfo: [
-      {label: 'Signature Agent (bascule)'},
-      {label: 'Signature Responsable CQ'}
+      {label: 'PDF.SIGNATURE_AGENT'},
+      {label: 'PDF.SIGNATURE_RESPONSIBLE'}
     ],
     fileName: `Bon_Reception_Huile_${delivery.deliveryNumber || 'inconnu'}.pdf`
   };
