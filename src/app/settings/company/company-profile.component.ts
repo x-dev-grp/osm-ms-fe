@@ -1,6 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { CompanyProfileService } from '../../shared/services/company-profile.service';
 import { CompanyProfile } from '../../shared/models/CompanyProfile';
 import { BankAccount } from '../../finance/models/BankAccount';
@@ -18,6 +17,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { NgIf } from '@angular/common';
 import { CommonModule } from '@angular/common';
+import { ToastService } from '../../shared/services/toast.service';
 
 @Component({
   selector: 'app-company-profile',
@@ -84,7 +84,7 @@ export class CompanyProfileComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private snackBar: MatSnackBar,
+    private toastService: ToastService,
     private companyProfileService: CompanyProfileService
   ) {}
 
@@ -196,7 +196,7 @@ export class CompanyProfileComponent implements OnInit {
       },
       () => {
         this.loading = false;
-        this.snackBar.open(this.translate.instant('GENERAL_CONFIG.MESSAGES.LOAD_ERROR'), 'Close', { duration: 3000 });
+        this.toastService.error('GENERAL_CONFIG.MESSAGES.LOAD_ERROR');
       }
     );
   }
@@ -217,7 +217,7 @@ export class CompanyProfileComponent implements OnInit {
       return;
     }
     if (!this.profileForm.get('logoData')?.value) {
-      this.snackBar.open(this.translate.instant('GENERAL_CONFIG.MESSAGES.LOGO_REQUIRED'), 'Close', { duration: 3000 });
+      this.toastService.error('GENERAL_CONFIG.MESSAGES.LOGO_REQUIRED');
       console.log('Logo is missing, aborting save.');
       return;
     }
@@ -231,7 +231,7 @@ export class CompanyProfileComponent implements OnInit {
     console.log('Saving profile:', profileToSave);
     this.companyProfileService.saveProfile(profileToSave).subscribe({
       next: () => {
-        this.snackBar.open(this.translate.instant('GENERAL_CONFIG.MESSAGES.SAVE_SUCCESS'), 'Close', { duration: 3000 });
+        this.toastService.success('GENERAL_CONFIG.MESSAGES.SAVE_SUCCESS');
         this.loadProfile();
         this.profileForm.disable();
         this.formEnabled = false;
@@ -239,7 +239,7 @@ export class CompanyProfileComponent implements OnInit {
         console.log('Profile saved successfully.');
       },
       error: (err) => {
-        this.snackBar.open(this.translate.instant('GENERAL_CONFIG.MESSAGES.SAVE_ERROR'), 'Close', { duration: 3000 });
+        this.toastService.error('GENERAL_CONFIG.MESSAGES.SAVE_ERROR');
         this.loading = false;
         console.error('Error saving profile:', err);
       }
@@ -259,7 +259,7 @@ export class CompanyProfileComponent implements OnInit {
     this.profileForm.disable();
     this.formEnabled = false;
     this.showResetConfirm = false;
-    this.snackBar.open(this.translate.instant('GENERAL_CONFIG.MESSAGES.RESET'), 'Close', { duration: 2000 });
+    this.toastService.info('GENERAL_CONFIG.MESSAGES.RESET');
   }
 
   cancelReset(): void {
@@ -271,7 +271,7 @@ export class CompanyProfileComponent implements OnInit {
     if (!file) return;
     const maxKb = 200 * 1024;
     if (file.size > maxKb) {
-      this.snackBar.open(this.translate.instant('GENERAL_CONFIG.MESSAGES.LOGO_TOO_LARGE'), 'Close', { duration: 3000 });
+      this.toastService.error('GENERAL_CONFIG.MESSAGES.LOGO_TOO_LARGE');
       return;
     }
     const reader = new FileReader();
@@ -313,11 +313,11 @@ export class CompanyProfileComponent implements OnInit {
   private handleFile(file: File) {
     const maxBytes = 200 * 1024;
     if (!['image/png', 'image/jpeg'].includes(file.type)) {
-      this.snackBar.open('Only PNG/JPEG allowed', 'Close', { duration: 3000 });
+      this.toastService.error('Only PNG/JPEG allowed');
       return;
     }
     if (file.size > maxBytes) {
-      this.snackBar.open(this.translate.instant('GENERAL_CONFIG.MESSAGES.LOGO_TOO_LARGE'), 'Close', { duration: 3000 });
+      this.toastService.error('GENERAL_CONFIG.MESSAGES.LOGO_TOO_LARGE');
       return;
     }
     const reader = new FileReader();

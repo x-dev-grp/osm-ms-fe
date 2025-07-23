@@ -109,7 +109,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
     } /* Quantités & Prix */,
     {
       name: 'oilQuantity',
-      label: 'Qté huile (L)',
+      label: 'Qté huile (KG)',
       labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.OIL_QUANTITY',
       attributeType: AttributeType.number,
       fieldType: FieldType.number,

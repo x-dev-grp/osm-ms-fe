@@ -1,61 +1,72 @@
-<form [formGroup]="recordForm" (ngSubmit)="onSubmit()">
-    <div class="row align-items-center">
-      <!-- Inline Fields: Shown when details are toggled -->
-      <div class="col-md-3"  >
-        <mat-form-field appearance="fill" class="w-100">
-          <mat-label>Name</mat-label>
-          <input matInput formControlName="name" placeholder="Enter name" />
-        </mat-form-field>
-      </div>
-      <div class="col-md-3">
-        <mat-form-field appearance="fill" class="w-100">
-          <mat-label>Description</mat-label>
-          <input
-            matInput
-            formControlName="description"
-            placeholder="Enter description"
-          />
-        </mat-form-field>
-      </div>
-      <!-- Dropdown: Always visible; pushed to the right -->
-      <div class="col-md-3 ml-auto">
-        <mat-form-field appearance="fill" class="w-100">
-          <mat-label>Select Type</mat-label>
-          <mat-select (selectionChange)="onTypeChange($event.value)">
-            <mat-option *ngFor="let type of typeOptions" [value]="type.value">
-              {{ type.name }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
+<ng-template #genericTypeDialog>
+  <h1 mat-dialog-title>
+    {{
+      currentRecord
+        ? ('STANDARD.BTNS.EDIT' | translate)
+        : ('STANDARD.BTNS.ADD' | translate)
+    }}
+  </h1>
 
-      <!-- Action Buttons: Inline on the right -->
-      <div class="col-auto d-flex align-items-center">
-        <!-- Submit Icon Button: Displayed only when details are visible -->
-        <button
-           mat-icon-button
-          color="primary"
-          type="submit"
-          [disabled]="recordForm.invalid"
-          matTooltip="{{ editingRecordIndex >= 0 ? 'Update Record' : 'Create Record' }}"
-        >
-          <mat-icon>check_circle</mat-icon>
-        </button>
+  <div mat-dialog-content>
+    <div class="col-12 align-items-center">
+      <!-- bind your FormGroup here -->
+      <form [formGroup]="dialogForm" mat-dialog-content>
+        <div class="col-12 align-items-center">
+          <div>
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label>Name</mat-label>
+              <input formControlName="name" matInput placeholder="Enter name" />
+            </mat-form-field>
+          </div>
+          <div>
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label>Description</mat-label>
+              <input
+                formControlName="description"
+                matInput
+                placeholder="Enter description"
+              />
+            </mat-form-field>
+          </div>
+          <!-- Dropdown: Always visible; pushed to the right -->
+          <div>
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label>Select Type</mat-label>
+              <mat-select (selectionChange)="onTypeChange($event.value)">
+                <mat-option *ngFor="let type of typeOptions" [value]="type.value">
+                  {{ type.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
 
-        <!-- Cancel Icon Button: Only visible when editing -->
-        <button
-          *ngIf="showDetails && editingRecordIndex >= 0"
-          mat-icon-button
-          color="warn"
-          type="button"
-          (click)="cancelEdit()"
-          matTooltip="Cancel Edit"
-        >
-          <mat-icon>cancel</mat-icon>
-        </button>
-      </div>
+        <div align="end" mat-dialog-actions>
+          <button (click)="onCancel()" mat-button>
+            {{ 'STANDARD.BTNS.CANCEL' | translate }}
+          </button>
+          <button (click)="onSave()" [disabled]="dialogForm.invalid" color="primary" mat-flat-button>
+            {{
+              currentRecord
+                ? ('STANDARD.BTNS.EDIT' | translate)
+                : ('STANDARD.BTNS.ADD' | translate)
+            }}
+          </button>
+        </div>
+      </form>
     </div>
-  </form>
+  </div>
+</ng-template>
 
+<div class="fab-container">
+  <button
+    (click)="openDialog()"
+    aria-label="Add Generic Type"
+    color="accent"
+    mat-fab
+  >
+    <mat-icon>add</mat-icon>
+  </button>
+</div>
 
-<osm-dashboard (applyAction)="applyAction($event)" [config]="config"></osm-dashboard>
+<osm-dashboard (applyAction)="applyAction($event)" [config]="dashboardConfig"></osm-dashboard>

@@ -24,7 +24,7 @@ import { SUPPLIERS_DASHBOARD_CONFIG } from './suppliers-dashboard.config';
 import { Action, DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
 import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
 import { MatCardModule } from '@angular/material/card';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { ToastService } from '../../../shared/services/toast.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -70,7 +70,7 @@ export class SupplierComponent implements OnInit, OnDestroy {
     private genericTypeService: GenericTypeService,
     private fb: FormBuilder,
     private router: Router,
-    private snackBar: MatSnackBar
+    private toastService: ToastService,
   ) {
     this.initializeForm();
   }
@@ -110,13 +110,13 @@ export class SupplierComponent implements OnInit, OnDestroy {
             this.suppliers = res.data;
           } else {
             this.suppliers = [];
-            this.toast(res.message || 'Erreur lors du chargement des fournisseurs');
+            this.toastService.error(res.message || 'Erreur lors du chargement des fournisseurs');
           }
         },
         (err) => {
           console.error('Error loading suppliers:', err);
           this.suppliers = [];
-          this.toast('Erreur lors du chargement des fournisseurs');
+          this.toastService.error('Erreur lors du chargement des fournisseurs');
         }
       )
     );
@@ -265,13 +265,13 @@ export class SupplierComponent implements OnInit, OnDestroy {
           next: (res) => {
             if (res.success) {
               this.suppliers = this.suppliers.filter(s => s.id !== id);
-              this.toast('Fournisseur supprimé avec succès');
+              this.toastService.success('Fournisseur supprimé avec succès');
             } else {
-              this.toast(res.message || 'Erreur lors de la suppression');
+              this.toastService.error(res.message || 'Erreur lors de la suppression');
             }
           },
           error: () => {
-            this.toast('Erreur lors de la suppression');
+            this.toastService.error('Erreur lors de la suppression');
           }
         })
       );
@@ -320,10 +320,6 @@ export class SupplierComponent implements OnInit, OnDestroy {
   }
 
   toast(message: string): void {
-    this.snackBar.open(message, 'Fermer', {
-      duration: 3000,
-      horizontalPosition: 'right',
-      verticalPosition: 'top'
-    });
+    this.toastService.info(message);
   }
 }

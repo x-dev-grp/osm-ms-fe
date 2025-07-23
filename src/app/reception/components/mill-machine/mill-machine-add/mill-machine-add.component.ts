@@ -7,12 +7,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { SharedModule } from '../../../../demo/shared/shared.module';
 import { MillMachine } from '../../../../shared/models/millMachine';
 import { MillMachineService } from '../../../../shared/services/mill-machine.service';
+import { ToastService } from '../../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-mill-machine-add',
@@ -40,7 +40,7 @@ export class MillMachineAddComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private service: MillMachineService,
-    private snackBar: MatSnackBar,
+    private toastService: ToastService,
     private router: Router,
     private route: ActivatedRoute
   ) {
@@ -97,7 +97,7 @@ export class MillMachineAddComponent implements OnInit {
         } else {
           const errorMessage = response.message || 'Failed to load machine';
           this.error = errorMessage;
-          this.toast(errorMessage);
+          this.toastService.error(errorMessage);
         }
         this.loading = false;
       },
@@ -105,7 +105,7 @@ export class MillMachineAddComponent implements OnInit {
         console.error('Erreur lors du chargement de la machine :', err);
         this.error = 'Erreur lors du chargement de la machine';
         this.loading = false;
-        this.toast('Erreur lors du chargement de la machine');
+        this.toastService.error('Erreur lors du chargement de la machine');
       }
     });
   }
@@ -125,14 +125,14 @@ export class MillMachineAddComponent implements OnInit {
     request$.subscribe({
       next: () => {
         this.loading = false;
-        this.toast(this.isEditing ? 'Machine mise à jour avec succès' : 'Machine ajoutée avec succès');
+        this.toastService.success(this.isEditing ? 'Machine mise à jour avec succès' : 'Machine ajoutée avec succès');
         this.router.navigate(['/reception/mill-machines']);
       },
       error: (err) => {
         console.error("Erreur lors de l'enregistrement de la machine :", err);
         this.error = "Erreur lors de l'enregistrement de la machine";
         this.loading = false;
-        this.toast("Erreur lors de l'enregistrement de la machine");
+        this.toastService.error("Erreur lors de l'enregistrement de la machine");
       }
     });
   }
@@ -141,11 +141,7 @@ export class MillMachineAddComponent implements OnInit {
     this.router.navigate(['/reception/mill-machines']);
   }
 
-  private toast(message: string, duration = 3000): void {
-    this.snackBar.open(message, 'Fermer', {
-      duration,
-      horizontalPosition: 'right',
-      verticalPosition: 'top'
-    });
+  private toast(message: string): void {
+    this.toastService.info(message);
   }
 }

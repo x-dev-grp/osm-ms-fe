@@ -64,7 +64,7 @@
         <!-- Oil Quantity -->
         <div class="financial-card">
           <mat-form-field appearance="outline" class="financial-field">
-            <mat-label>Quantité d'huile (L)</mat-label>
+            <mat-label>Quantité d'huile (KG)</mat-label>
             <input formControlName="oilQuantity" matInput step="0.01" type="number">
             <mat-icon matSuffix>water_drop</mat-icon>
             <mat-error *ngIf="setPriceForm.get('oilQuantity')?.hasError('required')">

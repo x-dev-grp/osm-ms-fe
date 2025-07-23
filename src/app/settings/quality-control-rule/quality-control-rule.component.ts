@@ -14,7 +14,7 @@ import {finalize, takeUntil} from 'rxjs/operators';
 import {SharedModule} from '../../demo/shared/shared.module';
 import {QualityControlRule} from '../../shared/models/quality-control-rule';
 import {QualityControlRuleService} from '../../shared/services/quality-control-rule.service';
-import {MatSnackBar} from "@angular/material/snack-bar";
+import { ToastService } from '../../shared/services/toast.service';
 import {OsmDashboard} from "../../shared/modules/osm-dashboard/osm-dashboard";
 import {Action, DashboardConfig} from "../../shared/modules/osm-dashboard/models/dashboard-config";
 import {Router} from "@angular/router";
@@ -57,7 +57,7 @@ export class QualityControlRuleComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private service: QualityControlRuleService,
-    private snackBar: MatSnackBar,
+    private toastService: ToastService,
     private router: Router
   ) {
     this.ruleForm = this.fb.group({
@@ -141,27 +141,15 @@ export class QualityControlRuleComponent implements OnInit, OnDestroy {
     ).subscribe({
       next: (res) => {
         if (res?.success) {
-          this.snackBar.open('Règle enregistrée avec succès ✅', 'Fermer', {
-            duration: 3000,
-            verticalPosition: 'top',
-            panelClass: ['snackbar-success']
-          });
+          this.toastService.success('Règle enregistrée avec succès ✅');
           // this.loadRules();
           this.cancel();
         } else {
-          this.snackBar.open('Échec de l\'enregistrement ❌', 'Fermer', {
-            duration: 3000,
-            verticalPosition: 'top',
-            panelClass: ['snackbar-error']
-          });
+          this.toastService.error("Échec de l'enregistrement ❌");
         }
       },
       error: () => {
-        this.snackBar.open('Erreur de communication avec le serveur ⚠️', 'Fermer', {
-          duration: 3000,
-          verticalPosition: 'top',
-          panelClass: ['snackbar-error']
-        });
+        this.toastService.error('Erreur de communication avec le serveur ⚠️');
       }
     });
   }

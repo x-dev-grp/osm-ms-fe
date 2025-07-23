@@ -11,7 +11,6 @@ import { UnifiedDelivery } from '../../../../shared/models/UnifiedDelivery';
 import { GenericTypeService } from '../../../../shared/services/generic-type.service';
 import { SupplierTypeService } from '../../../../shared/services/supplier.service';
 import { UnifiedDeliveryService } from '../../../../shared/services/delivery.service';
-import { TypeCategory } from '../../../../shared/models/type-category.enum';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -24,6 +23,7 @@ import { OliveLotStatus } from '../../../../shared/models/OliveLotStatus';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { OperationType } from '../../../../shared/models/operation-type.enum';
+import { BaseTypeComponent } from '../../../../shared/modules/base-type/base-type.component';
 
 // Validator for net weight not exceeding gross weight
 const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | null => {
@@ -52,7 +52,8 @@ function isValidSelection<T extends { id?: string }>(value: unknown, list: T[]):
     CardComponent,
     MatIcon,
     MatAutocompleteModule,
-    TranslateModule
+    TranslateModule,
+    BaseTypeComponent
   ],
   templateUrl: './oil-reception-add.component.html',
   styleUrls: ['./oil-reception-add.component.scss']
@@ -62,7 +63,6 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
   isEditing = false;
   errorMessage: string | null = null;
   receptionForm: FormGroup;
-
   regions: BaseType[] = [];
   suppliers: SupplierType[] = [];
   oilCategories: BaseType[] = [];
@@ -70,7 +70,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
   oilVariety: BaseType[] = [];
   deliveries: UnifiedDelivery[] = [];
   operationTypes: { value: OperationType; label: string }[] = [];
-
+  private pendingCalls = 0; // Compteur de requêtes HTTP en cours
   private subscriptions: Subscription[] = [];
   private deliveryId: string | null;
 
@@ -113,64 +113,77 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     this.deliveryId = this.route.snapshot.paramMap.get('id');
     this.isEditing = this.deliveryId !== null && this.deliveryId !== 'new';
 
-    Promise.all([
-      this.genericSrv.getAllTypes(TypeCategory.OIL_VARIETY).toPromise(),
-      this.genericSrv.getAllTypes(TypeCategory.REGION).toPromise(),
-      this.supplierSrv.getAllSuppliers().toPromise(),
-      this.deliverySrv.getAllDeliveriesList().toPromise(),
-      this.genericSrv.getAllTypes(TypeCategory.OIL_TYPE).toPromise(),
-      this.isEditing && this.deliveryId ? this.deliverySrv.getUnifiedDelivery(this.deliveryId).toPromise() : Promise.resolve(null)
-    ])
-      .then(([cats, regions, suppliers, deliveries, oilTypes, delivery]) => {
-        this.oilCategories = cats?.success ? cats.data : [];
-        this.regions = regions?.success ? regions.data : [];
-        this.suppliers = suppliers?.success ? suppliers.data : [];
-        this.deliveries = deliveries?.success ? deliveries.data : [];
-        this.oilTypes = oilTypes?.success ? oilTypes.data : [];
-        // Initialize operation types
-        this.operationTypes = [
-          { value: OperationType.OIL_PURCHASE, label: 'OIL_RECEPTION.ADD.FIELDS.OPERATION_TYPE_PURCHASE' },
-          { value: OperationType.SIMPLE_RECEPTION, label: 'OIL_RECEPTION.ADD.FIELDS.OPERATION_TYPE_RECEPTION' }
-        ];
-        this.setupFormSubscriptions();
+    // ===== 1️⃣  Charger les fournisseurs =====
+    this.pendingCalls++;
+    const suppliersSub = this.supplierSrv.getAllSuppliers().subscribe({
+      next: (res) => {
+        this.suppliers = res.success ? res.data : [];
+      },
+      error: () => {
+        this.showToast('Erreur chargement fournisseurs');
+      },
+      complete: () => this.markCallDone()
+    });
+    this.subscriptions.push(suppliersSub);
 
-        // Set default operation type for oil reception
+    // ===== 2️⃣  Charger la liste des réceptions =====
+    this.pendingCalls++;
+
+    /*************** 2.  Dans le flux de chargement des réceptions ****************/
+    const deliveriesSub = this.deliverySrv.getAllDeliveriesList().subscribe({
+      next: (res) => {
+        this.deliveries = res.success ? res.data : [];
         if (!this.isEditing) {
-          // If there's only one operation type, automatically select it
-          if (this.operationTypes.length === 1) {
-            this.receptionForm.patchValue({ operationType: this.operationTypes[0].value });
+          this.setNextNumbers();            // 👉 applique automatiquement le prochain deliveryNumber/lotNumber
+        }
+      },
+      error: () => this.showToast(
+        this.translate.instant('DELIVERIES.FORM.MESSAGES.LOAD_ERROR'),
+      ),
+      complete: () => this.markCallDone()
+    });
+    this.subscriptions.push(deliveriesSub);
+    // ===== 3️⃣  Si édition, charger la réception à modifier =====
+    if (this.isEditing && this.deliveryId) {
+      this.pendingCalls++;
+      const editSub = this.deliverySrv.getUnifiedDelivery(this.deliveryId).subscribe({
+        next: (res) => {
+          if (res.success && res.data) {
+            const deliveryObj = Array.isArray(res.data) ? res.data[0] : res.data;
+            this.patchForm(deliveryObj);
           } else {
-            // Default to OIL_PURCHASE if multiple options
-            this.receptionForm.patchValue({ operationType: OperationType.OIL_PURCHASE });
+            this.errorMessage = 'Erreur lors du chargement de la réception.';
+            this.router.navigate(['/reception-huile']);
           }
-        }
-
-        if (this.isEditing && delivery?.success && delivery.data) {
-          const deliveryObj = Array.isArray(delivery.data) ? delivery.data[0] : delivery.data;
-          this.patchForm(deliveryObj);
-        } else if (this.isEditing) {
+        },
+        error: () => {
           this.errorMessage = 'Erreur lors du chargement de la réception.';
-          this.showToast(this.errorMessage);
           this.router.navigate(['/reception-huile']);
-          return;
-        }
-        // When region changes, set parcel to region name
-        this.receptionForm.get('region')?.valueChanges.subscribe((region: BaseType | null) => {
-          if (region?.name) {
-            this.receptionForm.patchValue({ parcel: region.name });
-          }
-        });
-        this.setNextNumbers();
-        // this.setupFormSubscriptions();
-
-        this.loading = false;
-      })
-      .catch((error) => {
-        this.errorMessage = 'Erreur lors du chargement des données.';
-        console.log(this.errorMessage + '    ' + error);
-        this.showToast(this.errorMessage);
-        this.loading = false;
+        },
+        complete: () => this.markCallDone()
       });
+      this.subscriptions.push(editSub);
+    }
+
+    // ===== 4️⃣  Initialiser les types d’opération & abonnements =====
+    this.operationTypes = [
+      {
+        value: OperationType.OIL_PURCHASE,
+        label: 'OIL_RECEPTION.ADD.FIELDS.OPERATION_TYPE_PURCHASE'
+      },
+      { value: OperationType.SIMPLE_RECEPTION, label: 'OIL_RECEPTION.ADD.FIELDS.OPERATION_TYPE_RECEPTION' }
+    ];
+    this.setupFormSubscriptions();
+
+    // Par défaut (création) on pré‑sélectionne l’opération OIL_PURCHASE
+    if (!this.isEditing) {
+      this.receptionForm.patchValue({ operationType: OperationType.OIL_PURCHASE });
+    }
+
+    // Si aucune requête n’était nécessaire (cas création sans édition)
+    if (this.pendingCalls === 0) {
+      this.loading = false;
+    }
   }
 
   ngOnDestroy(): void {
@@ -266,42 +279,32 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  validateRegion() {
-    const value = this.receptionForm.get('region')!.value;
-    if (!isValidSelection(value, this.regions)) {
-      this.receptionForm.get('region')!.setValue(null);
-    }
-  }
-
-  validateOilVariety() {
-    const value = this.receptionForm.get('oilVariety')!.value;
-    if (!isValidSelection(value, this.oilCategories)) {
-      this.receptionForm.get('oilVariety')!.setValue(null);
-    }
-  }
-
-  validateOilType() {
-    const value = this.receptionForm.get('oilType')!.value;
-    if (!isValidSelection(value, this.oilTypes)) {
-      this.receptionForm.get('oilType')!.setValue(null);
-    }
-  }
-
-  displayFn<T extends { name?: string; supplierInfo?: { name: string } }>(item: T): string {
+  displayFn<T extends { name?: string; supplierInfo?: { name: string; lastname: string } }>(item: T): string {
     if (!item) return '';
     if (item.supplierInfo) {
-      return item.supplierInfo.name;
+      return item.supplierInfo.name + ' ' + item.supplierInfo.lastname;
     }
     return item.name || '';
   }
 
+  private markCallDone(): void {
+    // Décrément‑le quand une requête se termine
+    this.pendingCalls--;
+    if (this.pendingCalls === 0) {
+      this.loading = false; // Désactive le spinner quand tout est fini
+    }
+  }
+
+  /*************** 1.  Méthode utilitaire ****************/
   private setNextNumbers(): void {
-    const deliveryCount = this.deliveries.length;
-    const maxLot = Math.max(0, ...this.deliveries.map((d) => +d.lotNumber || 0));
+    const deliveryCount = this.deliveries.length;                       // nb. total de réceptions déjà saisies
+    const maxLot = Math.max(0, ...this.deliveries
+      .map(d => Number(d.lotNumber) || 0));    // plus grand n° de lot existant
+
     this.receptionForm.patchValue({
-      deliveryNumber: deliveryCount + 1,
-      lotNumber: maxLot + 1
-    });
+      deliveryNumber: deliveryCount + 1,   // prochain n° de réception
+      lotNumber:      maxLot + 1           // prochain n° de lot
+    }, { emitEvent: false });
   }
 
   private patchForm(d: UnifiedDelivery): void {
@@ -313,14 +316,14 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       lotNumber: d.lotNumber,
       parcel: d.parcel,
       deliveryDate: parse(d.deliveryDate),
-      region: this.regions.find((r) => r.id === d.region?.id) || null,
+      region: d.region || null,
       supplier: this.suppliers.find((s) => s.id === d.supplier?.id) || null,
       matriculeCamion: d.matriculeCamion,
       etatCamion: d.etatCamion,
       poidsBrute: d.poidsBrute,
       oilQuantity: d.oilQuantity,
-      oilVariety: this.oilCategories.find((c) => c.id === d.oilVariety?.id) || null,
-      oilType: this.oilTypes.find((t) => t.id === d.oilType?.id) || null,
+      oilVariety: d.oilVariety || null,
+      oilType: d.oilType|| null,
       globalLotNumber: d.globalLotNumber || '',
       operationType: OperationType.OIL_PURCHASE
     });

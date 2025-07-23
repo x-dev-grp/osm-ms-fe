@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import jsPDF from 'jspdf';
 import { UnifiedDelivery } from '../models/UnifiedDelivery';
+import { Expense } from '../../finance/models/expense.model';
 import { TranslateService } from '@ngx-translate/core';
 import { CompanyProfileService } from './company-profile.service';
 import { CompanyProfile } from '../models/CompanyProfile';
-import { AuthenticationService } from '../../auth/services/authentication.service';
+// import { AuthenticationService } from '../../auth/services/authentication.service';
 
 const center = 'center';
 
@@ -322,7 +323,7 @@ export class PdfGeneratorService {
     const dateTrituration = new Date(dataEntry.trtDate).toLocaleDateString();
 
     const poidsNetOlives = `${dataEntry.poidsNet} kg`;
-    const qteHuile = `${dataEntry.oilQuantity || 0} L`;
+    const qteHuile = `${dataEntry.oilQuantity || 0} KG`;
     const rendement = `${(dataEntry.rendement || 0).toFixed(2)} %`;
 
     // À adapter selon ton modèle métier ou API
@@ -384,6 +385,35 @@ export class PdfGeneratorService {
     };
 
     this.generatePdfDocument(config);
+  }
+
+  generateExpensePdf(expense: Expense): void {
+    this.generatePdfDocument({
+      title: 'PDF.EXPENSE_BILL',
+      reference: expense.invoiceRef || '',
+      date: new Date().toLocaleDateString(),
+      generalInfo: [
+        { label: this.translationServiec.instant('PDF.EXPENSE_VENDOR'), value: expense.vendor || '-' },
+        { label: this.translationServiec.instant('PDF.EXPENSE_CATEGORY'), value: expense.category || '-' },
+        { label: this.translationServiec.instant('PDF.EXPENSE_PURCHASE_NATURE'), value: expense.purchaseNature || '-' },
+        { label: this.translationServiec.instant('PDF.EXPENSE_OBJECT'), value: expense.object || '-' }
+      ],
+      fields: [
+        { label: this.translationServiec.instant('PDF.EXPENSE_AMOUNT'), value: `${expense.amount} €` },
+        { label: this.translationServiec.instant('PDF.EXPENSE_PAYMENT_METHOD'), value: expense.paymentMethod || '-' },
+        { label: this.translationServiec.instant('PDF.EXPENSE_STATUS'), value: expense.status || '-' },
+        { label: this.translationServiec.instant('PDF.EXPENSE_RECEIPT_NUMBER'), value: expense.receiptNumber || '-' },
+        { label: this.translationServiec.instant('PDF.EXPENSE_NOTES'), value: expense.notes || '-' },
+        { label: this.translationServiec.instant('PDF.EXPENSE_APPROVED'), value: expense.approved ? 'Oui' : 'Non' },
+        { label: this.translationServiec.instant('PDF.EXPENSE_APPROVAL_DATE'), value: expense.approvalDate ? (expense.approvalDate as any).toLocaleDateString?.() || expense.approvalDate : '-' },
+        { label:this.translationServiec.instant( 'PDF.EXPENSE_CREATED_BY'), value: expense.createdBy || '-' }
+      ],
+      footerInfo: [
+        { label: 'PDF.EXPENSE_SIGNATURE_AGENT', placeholder: '' },
+        { label: 'PDF.EXPENSE_SIGNATURE_RESPONSIBLE', placeholder: '' }
+      ],
+      fileName: `Depense_${expense.invoiceRef || 'N/A'}.pdf`
+    });
   }
 
   private loadProfile(): void {

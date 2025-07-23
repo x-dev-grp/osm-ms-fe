@@ -6,7 +6,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
 import { MatSortModule } from '@angular/material/sort';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
@@ -15,6 +14,7 @@ import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboar
 import { Action, DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
 import { MillMachine } from '../../../shared/models/millMachine';
 import { MillMachineService } from '../../../shared/services/mill-machine.service';
+import { ToastService } from '../../../shared/services/toast.service';
 import { MILL_MACHINE_DASHBOARD } from './MILL_MACHINE_DASHBOARD';
 
 @Component({
@@ -43,47 +43,22 @@ export class MillMachineComponent implements OnInit, OnDestroy {
 
   constructor(
     private millMachineService: MillMachineService,
-    private snackBar: MatSnackBar,
+    private toastService: ToastService,
     private router: Router
   ) {}
 
-  ngOnInit(): void {
-    this.loadMachines();
-  }
+  ngOnInit(): void {}
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
   }
 
-  loadMachines(): void {
-    this.loading = true;
-    this.error = null;
-
-    this.millMachineService.getAllMillMachines().subscribe({
-      next: (response: any) => {
-        if (response && response.success) {
-          this.machines = response.data;
-        } else {
-          this.error = response.message || 'Failed to load machines';
-          this.showToast(this.error || 'Failed to load machines');
-        }
-        this.loading = false;
-      },
-      error: (err: any) => {
-        this.error = 'An error occurred while loading machines';
-        this.showToast(this.error);
-        this.loading = false;
-      }
-    });
-  }
-
-  showToast(message: string, duration: number = 3000): void {
-    this.snackBar.open(message, 'Close', {
-      duration,
-      horizontalPosition: 'right',
-      verticalPosition: 'top',
-      panelClass: ['custom-snackbar']
-    });
+  showToast(message: string, type: 'success' | 'error' = 'error'): void {
+    if (type === 'success') {
+      this.toastService.success(message);
+    } else {
+      this.toastService.error(message);
+    }
   }
 
   onRowAction(event: { row: MillMachine; action: Action }): void {
@@ -127,14 +102,13 @@ export class MillMachineComponent implements OnInit, OnDestroy {
     this.millMachineService.deleteMillMachine(machine.id).subscribe({
       next: (response: any) => {
         if (response && response.success) {
-          this.showToast('Machine deleted successfully');
-          this.loadMachines();
+          this.showToast('Machine deleted successfully', 'success');
         } else {
-          this.showToast(response.message || 'Failed to delete machine');
+          this.showToast(response.message || 'Failed to delete machine', 'error');
         }
       },
       error: (err: any) => {
-        this.showToast('An error occurred while deleting the machine');
+        this.showToast('An error occurred while deleting the machine', 'error');
       }
     });
   }

@@ -11,6 +11,7 @@ import { EXPENSES_DASHBOARD_CONFIG } from './expenses-dashboard.config';
 import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
 import { SharedModule } from '../../demo/shared/shared.module';
 import { Action, DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { ACTION_ICONS } from 'src/app/shared/modules/osm-dashboard/models/actions';
 
 @Component({
   selector: 'app-expenses',
@@ -39,12 +40,11 @@ export class ExpensesComponent implements OnInit {
   }
 
   /** Gère les actions depuis le tableau */
-  handleAction(event: {  row: Expense;action: Action }): void {
-    const actionLabel = event.action.value?.toUpperCase();
+  handleAction(event: {  row: Expense;action: string }): void {
+    const actionLabel = event.action?.toUpperCase();
 
     switch (actionLabel) {
-      case 'VIEW':
-      case 'CONSULTER':
+      case 'READ':
         this.router.navigate(['/finance/expenses', event.row.id, 'view']);
         break;
 
@@ -52,7 +52,7 @@ export class ExpensesComponent implements OnInit {
         this.print(event.row.id!);
         break;
 
-      case 'EDIT':
+      case 'UPDATE':
         this.router.navigate(['/finance/expenses', event.row.id, 'edit']);
         break;
 

@@ -32,7 +32,7 @@
       <div class="form-row">
         <!-- Max Capacity -->
         <mat-form-field appearance="outline" class="w-100">
-          <mat-label>Max Capacity (L)</mat-label>
+          <mat-label>Max Capacity (KG)</mat-label>
           <input matInput type="number" formControlName="maxCapacity" required />
           <mat-error *ngIf="storageForm.get('maxCapacity')?.hasError('required')">
             Max capacity is required
@@ -44,7 +44,7 @@
 
         <!-- Current Volume -->
         <mat-form-field appearance="outline" class="w-100">
-          <mat-label>Current Volume (L)</mat-label>
+          <mat-label>Current Volume (KG)</mat-label>
           <input matInput type="number" formControlName="currentVolume" required />
           <mat-error *ngIf="storageForm.get('currentVolume')?.hasError('required')">
             Current volume is required
@@ -115,4 +115,4 @@
       </div>
     </form>
   </div>
-</app-card> 
+</app-card>

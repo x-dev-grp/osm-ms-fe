@@ -65,7 +65,6 @@ export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
       sortable: true,
       dataTable: true,
       filterable: true,
-      defaultFilter:true,
       options: [
         { label: 'Olive', value: deliveryType.OLIVE },
         { label: 'Huile', value: deliveryType.OIL }

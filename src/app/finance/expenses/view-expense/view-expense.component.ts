@@ -8,11 +8,13 @@ import { Expense } from '../../models/expense.model';
 import { ExpenseService } from '../../service/expense.service';
 import { CardComponent } from '../../../@theme/components/card/card.component';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { PdfGeneratorService } from 'src/app/shared/services/pdf-generator.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-view-expense',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatDividerModule, CardComponent, MatProgressSpinner],
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatDividerModule, CardComponent, MatProgressSpinner,TranslateModule],
   templateUrl: './view-expense.component.html',
   styleUrls: ['./view-expense.component.scss']
 })
@@ -23,7 +25,8 @@ export class ViewExpenseComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private expenseService: ExpenseService
+    private expenseService: ExpenseService,
+    private pdfGenerator: PdfGeneratorService
   ) {}
 
   ngOnInit(): void {
@@ -38,10 +41,8 @@ export class ViewExpenseComponent implements OnInit {
     this.expenseService.getExpense(id).subscribe({
       next: (response) => {
         if (response.success && response.data) {
-          this.expense = response.data[0];
-          if (this.route.snapshot.queryParamMap.get('print') === 'true') {
-            setTimeout(() => window.print(), 0);
-          }
+          this.expense =  Array.isArray(response.data) ? response.data[0] : response.data;
+
         }
         this.loading = false;
       },
@@ -53,7 +54,9 @@ export class ViewExpenseComponent implements OnInit {
   }
 
   onPrint(): void {
-    window.print();
+    if (this.expense) {
+      this.pdfGenerator.generateExpensePdf(this.expense);
+    }
   }
 
   onBack(): void {

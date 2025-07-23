@@ -225,13 +225,20 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
         {
           name: 'operationType',
           label: 'Type de trituration',
-          attributeType: AttributeType.object,
-          fieldType: FieldType.text,
+          labelTranslatePath: 'DELIVERIES.FIELDS.OPERATION_TYPE',
+          attributeType: AttributeType.string,
+          fieldType: FieldType.select,
           exportable: true,
           dataTable: true,
           filterable: true,
-          valuePath: 'name',
-          valueAttributeType: AttributeType.string
+          options: [
+            { label: 'Trituration particulier', value: 'SIMPLE_RECEPTION', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.SIMPLE_RECEPTION' },
+            { label: 'Base', value: 'BASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.BASE' },
+            { label: 'Achat Olive', value: 'OLIVE_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OLIVE_PURCHASE' },
+            { label: 'Achat Huile', value: 'OIL_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OIL_PURCHASE' },
+            { label: 'Echange', value: 'EXCHANGE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.EXCHANGE' },
+            { label: 'Paiement', value: 'PAYMENT', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.PAYMENT' }
+          ]
         },
         {
           name: 'matriculeCamion',
@@ -304,7 +311,7 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
           const credits = response.data.filter((credit: OilCredit) => credit.destinataire && credit.destinataire.id === supplierId);
           this.oilCreditStats.total = credits.length;
           this.oilCreditStats.totalL = credits
-            .filter((c: OilCredit) => c.unit === 'L')
+            .filter((c: OilCredit) => c.unit === 'KG')
             .reduce((sum: number, c: OilCredit) => sum + (c.quantity || 0), 0);
           this.oilCreditStats.totalKG = credits
             .filter((c: OilCredit) => c.unit === 'KG')

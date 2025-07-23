@@ -1,66 +1,123 @@
-<app-card [title]="editing ? 'Modifier la dépense' : 'Nouvelle dépense'">
-  <button mat-button type="button" (click)="onBack()">
-    <mat-icon>arrow_back</mat-icon>
-    Retour
-  </button>
-  <div class="form-container" *ngIf="!loading; else loadingTemplate">
-    <form [formGroup]="form" (ngSubmit)="save()">
-      <div class="form-row">
-        <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Référence facture</mat-label>
-          <input matInput formControlName="invoiceRef" required>
-          <mat-error *ngIf="form.get('invoiceRef')?.hasError('required')">
-            La référence de la facture est requise
-          </mat-error>
-        </mat-form-field>
+<app-card [title]="editing ? ('EXPENSES.EDIT_TITLE' | translate) : ('EXPENSES.ADD_TITLE' | translate)">
+  <form [formGroup]="form" (ngSubmit)="save()" class="expense-form">
+    <!-- General Information -->
+    <h3>{{ 'EXPENSES.SECTION.GENERAL_INFO' | translate }}</h3>
+    <mat-divider></mat-divider>
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>{{ 'EXPENSES.FIELDS.INVOICE_REF' | translate }}</mat-label>
+        <input matInput formControlName="invoiceRef" required [placeholder]="'EXPENSES.PLACEHOLDER.INVOICE_REF' | translate">
+        <mat-icon matPrefix>receipt_long</mat-icon>
+        <mat-error *ngIf="form.get('invoiceRef')?.touched && form.get('invoiceRef')?.hasError('required')">
+          {{ 'EXPENSES.ERRORS.INVOICE_REF_REQUIRED' | translate }}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>{{ 'EXPENSES.FIELDS.PURCHASE_NATURE' | translate }}</mat-label>
+        <input matInput formControlName="purchaseNature" required [placeholder]="'EXPENSES.PLACEHOLDER.PURCHASE_NATURE' | translate">
+        <mat-icon matPrefix>category</mat-icon>
+        <mat-error *ngIf="form.get('purchaseNature')?.touched && form.get('purchaseNature')?.hasError('required')">
+          {{ 'EXPENSES.ERRORS.PURCHASE_NATURE_REQUIRED' | translate }}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>{{ 'EXPENSES.FIELDS.OBJECT' | translate }}</mat-label>
+        <input matInput formControlName="object" [placeholder]="'EXPENSES.PLACEHOLDER.OBJECT' | translate">
+        <mat-icon matPrefix>description</mat-icon>
+      </mat-form-field>
+    </div>
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>{{ 'EXPENSES.FIELDS.AMOUNT' | translate }}</mat-label>
+        <input matInput type="number" formControlName="amount" required [placeholder]="'EXPENSES.PLACEHOLDER.AMOUNT' | translate">
+        <mat-icon matPrefix>euro</mat-icon>
+        <mat-error *ngIf="form.get('amount')?.touched && form.get('amount')?.hasError('required')">
+          {{ 'EXPENSES.ERRORS.AMOUNT_REQUIRED' | translate }}
+        </mat-error>
+        <mat-error *ngIf="form.get('amount')?.touched && form.get('amount')?.hasError('min')">
+          {{ 'EXPENSES.ERRORS.AMOUNT_MIN' | translate }}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>{{ 'EXPENSES.FIELDS.CATEGORY' | translate }}</mat-label>
+        <input matInput formControlName="category" [placeholder]="'EXPENSES.PLACEHOLDER.CATEGORY' | translate">
+        <mat-icon matPrefix>label</mat-icon>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>{{ 'EXPENSES.FIELDS.VENDOR' | translate }}</mat-label>
+        <input matInput formControlName="vendor" [placeholder]="'EXPENSES.PLACEHOLDER.VENDOR' | translate">
+        <mat-icon matPrefix>store</mat-icon>
+      </mat-form-field>
+    </div>
 
-        <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Nature de l'achat</mat-label>
-          <input matInput formControlName="purchaseNature" required>
-          <mat-error *ngIf="form.get('purchaseNature')?.hasError('required')">
-            La nature de l'achat est requise
-          </mat-error>
+    <!-- Payment Details -->
+    <h3>{{ 'EXPENSES.SECTION.PAYMENT_DETAILS' | translate }}</h3>
+    <mat-divider></mat-divider>
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>{{ 'EXPENSES.FIELDS.PAYMENT_METHOD' | translate }}</mat-label>
+        <mat-select formControlName="paymentMethod" required>
+          <mat-option *ngFor="let method of paymentMethods" [value]="method">
+            {{ method }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matPrefix>payment</mat-icon>
+        <mat-error *ngIf="form.get('paymentMethod')?.touched && form.get('paymentMethod')?.hasError('required')">
+          {{ 'EXPENSES.ERRORS.PAYMENT_METHOD_REQUIRED' | translate }}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>{{ 'EXPENSES.FIELDS.STATUS' | translate }}</mat-label>
+        <mat-select formControlName="status" required>
+          <mat-option *ngFor="let status of statusOptions" [value]="status">
+            {{ status.toUpperCase() }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matPrefix>flag</mat-icon>
+        <mat-error *ngIf="form.get('status')?.touched && form.get('status')?.hasError('required')">
+          {{ 'EXPENSES.ERRORS.STATUS_REQUIRED' | translate }}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>{{ 'EXPENSES.FIELDS.RECEIPT_NUMBER' | translate }}</mat-label>
+        <input matInput formControlName="receiptNumber" [placeholder]="'EXPENSES.PLACEHOLDER.RECEIPT_NUMBER' | translate">
+        <mat-icon matPrefix>confirmation_number</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <!-- Notes and Approval Section in one row -->
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="notes-third">
+        <mat-label>{{ 'EXPENSES.FIELDS.NOTES' | translate }}</mat-label>
+        <textarea matInput formControlName="notes" rows="2" [placeholder]="'EXPENSES.PLACEHOLDER.NOTES' | translate"></textarea>
+        <mat-icon matPrefix>notes</mat-icon>
+        <mat-hint>{{ 'EXPENSES.HINT.NOTES_OPTIONAL' | translate }}</mat-hint>
+      </mat-form-field>
+      <div class="approval-two-thirds approval-row">
+        <mat-checkbox formControlName="approved" class="approval-checkbox">{{ 'EXPENSES.FIELDS.APPROVED' | translate }}</mat-checkbox>
+        <mat-form-field appearance="outline" *ngIf="form.get('approved')!.value" class="approval-field">
+          <mat-label>{{ 'EXPENSES.FIELDS.APPROVAL_DATE' | translate }}</mat-label>
+          <input matInput [matDatepicker]="approvalDatePicker" formControlName="approvalDate">
+          <mat-datepicker-toggle matSuffix [for]="approvalDatePicker"></mat-datepicker-toggle>
+          <mat-datepicker #approvalDatePicker></mat-datepicker>
+          <mat-icon matPrefix>event_available</mat-icon>
+        </mat-form-field>
+        <mat-form-field appearance="outline" *ngIf="form.get('approved')!.value" class="approval-field">
+          <mat-label>{{ 'EXPENSES.FIELDS.CREATED_BY' | translate }}</mat-label>
+          <input matInput formControlName="createdBy" [placeholder]="'EXPENSES.PLACEHOLDER.CREATED_BY' | translate">
+          <mat-icon matPrefix>person</mat-icon>
         </mat-form-field>
       </div>
+    </div>
 
-      <div class="form-row">
-        <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Objet</mat-label>
-          <input matInput formControlName="object">
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Date</mat-label>
-          <input matInput [matDatepicker]="datePicker" formControlName="date" required>
-          <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
-          <mat-datepicker #datePicker></mat-datepicker>
-          <mat-error *ngIf="form.get('date')?.hasError('required')">
-            La date est requise
-          </mat-error>
-        </mat-form-field>
-      </div>
-
-      <div class="form-row">
-        <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Montant</mat-label>
-          <input matInput type="number" formControlName="amount" required>
-          <mat-error *ngIf="form.get('amount')?.hasError('required')">
-            Le montant est requis
-          </mat-error>
-          <mat-error *ngIf="form.get('amount')?.hasError('min')">
-            Le montant doit être positif
-          </mat-error>
-        </mat-form-field>
-      </div>
-
-      <div class="form-actions">
-        <button mat-button type="button" (click)="onBack()">Annuler</button>
-        <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
-          {{ editing ? 'Mettre à jour' : 'Enregistrer' }}
-        </button>
-      </div>
-    </form>
-  </div>
+    <!-- Action Buttons -->
+    <div class="form-actions">
+      <button mat-button type="button" (click)="onBack()">{{ 'COMMON.CANCEL' | translate }}</button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
+        {{ editing ? ('COMMON.UPDATE' | translate) : ('COMMON.SAVE' | translate) }}
+      </button>
+    </div>
+  </form>
   <ng-template #loadingTemplate>
     <div class="loading-container">
       <mat-spinner diameter="40"></mat-spinner>

@@ -128,7 +128,7 @@ export const UNIFIED_DELIVERY_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'oilQuantity',
-      label: 'Qté huile (L)',
+      label: 'Qté huile (KG)',
       attributeType: AttributeType.number,
       fieldType: FieldType.number
     },

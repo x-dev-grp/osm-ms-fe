@@ -148,7 +148,7 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
     /* type operation */
     {
       name: 'operationType',
-      label: 'Type opération',
+      label: 'Type de trituration',
       labelTranslatePath: 'DELIVERIES.FIELDS.OPERATION_TYPE',
       attributeType: AttributeType.string,
       fieldType: FieldType.select,
@@ -156,7 +156,7 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
       dataTable: true,
       filterable: true,
       options: [
-        { label: 'Réception simple', value: 'SIMPLE_RECEPTION', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.SIMPLE_RECEPTION' },
+        { label: 'Trituration particulier', value: 'SIMPLE_RECEPTION', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.SIMPLE_RECEPTION' },
         { label: 'Base', value: 'BASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.BASE' },
         { label: 'Achat Olive', value: 'OLIVE_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OLIVE_PURCHASE' },
         { label: 'Achat Huile', value: 'OIL_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OIL_PURCHASE' },

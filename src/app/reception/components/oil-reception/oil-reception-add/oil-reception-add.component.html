@@ -67,22 +67,16 @@
                        required />
                 <mat-autocomplete #supplierAuto="matAutocomplete" [displayWith]="displayFn">
                   <mat-option *ngFor="let supplier of suppliers" [value]="supplier">
-                    {{ supplier.supplierInfo.name }}
+                    {{ supplier.supplierInfo.name + " " + supplier.supplierInfo.lastname }}
                   </mat-option>
                 </mat-autocomplete>
               </mat-form-field>
             </div>
-            <div class="col-md-4">
-              <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.REGION' | translate }}</mat-label>
-                <input (blur)="validateRegion()" [matAutocomplete]="regionAuto" formControlName="region" matInput
-                       required />
-                <mat-autocomplete #regionAuto="matAutocomplete" [displayWith]="displayFn">
-                  <mat-option *ngFor="let region of regions" [value]="region">
-                    {{ region.name }}
-                  </mat-option>
-                </mat-autocomplete>
-              </mat-form-field>
+            <div class="col-md-4 w-100 m-b-10 ">
+                <base-type
+                  [formControl]="receptionForm?.controls?.region"
+                  [type]="'REGION'"
+                ></base-type>
             </div>
             <div class="col-md-4">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
@@ -122,29 +116,21 @@
         <div class="section">
           <h4>{{ 'OIL_RECEPTION.ADD.OIL_DETAILS' | translate }}</h4>
           <div class="row">
-            <div class="col-md-6">
-              <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.OIL_VARIETY' | translate }}</mat-label>
-                <input (blur)="validateOilVariety()" [matAutocomplete]="oilVarietyAuto" formControlName="oilVariety" matInput
-                       required />
-                <mat-autocomplete #oilVarietyAuto="matAutocomplete" [displayWith]="displayFn">
-                  <mat-option *ngFor="let variety of oilCategories" [value]="variety">
-                    {{ variety.name }}
-                  </mat-option>
-                </mat-autocomplete>
-              </mat-form-field>
+            <div class="col-md-6 w-100 m-b-10 ">
+              <base-type
+                [formControl]="receptionForm?.controls?.oilVariety"
+                [type]="'OIL_VARIETY'"
+              ></base-type>
+
+
             </div>
-            <div class="col-md-6">
-              <mat-form-field appearance="outline" class="w-100 m-b-10">
-                <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.OIL_TYPE' | translate }}</mat-label>
-                <input (blur)="validateOilType()" [matAutocomplete]="oilTypeAuto" formControlName="oilType" matInput
-                       required />
-                <mat-autocomplete #oilTypeAuto="matAutocomplete" [displayWith]="displayFn">
-                  <mat-option *ngFor="let type of oilTypes" [value]="type">
-                    {{ type.name }}
-                  </mat-option>
-                </mat-autocomplete>
-              </mat-form-field>
+            <div class="col-md-6 w-100 m-b-10 ">
+              <base-type
+                [formControl]="receptionForm?.controls?.oilType"
+                [type]="'OIL_TYPE'"
+              ></base-type>
+
+
             </div>
 
           </div>

@@ -134,13 +134,19 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
       name: 'operationType',
       label: 'Type de trituration',
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.OPERATION_TYPE',
-      attributeType: AttributeType.object,
-      fieldType: FieldType.text,
+      attributeType: AttributeType.string,
+      fieldType: FieldType.select,
       exportable: true,
       dataTable: true,
       filterable: true,
-      valuePath: 'name',
-      valueAttributeType: AttributeType.string
+      options: [
+        { label: 'Trituration particulier', value: 'SIMPLE_RECEPTION', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.SIMPLE_RECEPTION' },
+        { label: 'Base', value: 'BASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.BASE' },
+        { label: 'Achat Olive', value: 'OLIVE_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OLIVE_PURCHASE' },
+        { label: 'Achat Huile', value: 'OIL_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OIL_PURCHASE' },
+        { label: 'Echange', value: 'EXCHANGE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.EXCHANGE' },
+        { label: 'Paiement', value: 'PAYMENT', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.PAYMENT' }
+      ]
     },
     {
       name: 'matriculeCamion',

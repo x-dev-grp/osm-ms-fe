@@ -71,17 +71,12 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'SUPPLIER.FIELDS.REGION' | translate }}</mat-label>
-          <mat-select formControlName="region" required [compareWith]="objectComparisonFunction">
-            <mat-option *ngFor="let region of regions" [value]="region">
-              {{region.name}}
-            </mat-option>
-          </mat-select>
-          <mat-error *ngIf="supplierForm.get('supplierInfo.region')?.hasError('required')">
-            {{ 'SUPPLIER.ERRORS.REGION_REQUIRED' | translate }}
-          </mat-error>
-        </mat-form-field>
+        <div class="col-md-4 w-100 m-b-10 ">
+          <base-type
+            [formControl]="supplierForm?.get('supplierInfo').controls?.region"
+            [type]="'REGION'"
+          ></base-type>
+        </div>
       </div>
 
       <div class="form-row">
@@ -101,17 +96,14 @@
     </div>
 
     <div class="form-row">
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'SUPPLIER.FIELDS.SUPPLIER_TYPE' | translate }}</mat-label>
-        <mat-select formControlName="genericSupplierType" required [compareWith]="objectComparisonFunction">
-          <mat-option *ngFor="let type of supplierTypes" [value]="type">
-            {{type.name}}
-          </mat-option>
-        </mat-select>
-        <mat-error *ngIf="supplierForm.get('genericSupplierType')?.hasError('required')">
-          {{ 'SUPPLIER.ERRORS.SUPPLIER_TYPE_REQUIRED' | translate }}
-        </mat-error>
-      </mat-form-field>
+
+      <div class="col-md-4 w-100 m-b-10 ">
+        <base-type
+          [formControl]="supplierForm?.controls?.genericSupplierType"
+          [type]="'SUPPLIER_TYPE'"
+        ></base-type>
+
+      </div>
     </div>
 
     <div class="form-actions">

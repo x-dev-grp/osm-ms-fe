@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { SharedModule } from '../../../../demo/shared/shared.module';
 import { MillMachine } from '../../../../shared/models/millMachine';
 import { MillMachineService } from '../../../../shared/services/mill-machine.service';
+import { ToastService } from '../../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-mill-machine-view',
@@ -23,7 +23,7 @@ export class MillMachineViewComponent implements OnInit {
 
   constructor(
     private service: MillMachineService,
-    private snackBar: MatSnackBar,
+    private toastService: ToastService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -48,7 +48,7 @@ export class MillMachineViewComponent implements OnInit {
         console.error('Erreur lors du chargement de la machine :', err);
         this.error = 'Erreur lors du chargement de la machine';
         this.loading = false;
-        this.toast('Erreur lors du chargement de la machine');
+        this.toastService.error('Failed to load machine details');
       }
     });
   }
@@ -63,11 +63,7 @@ export class MillMachineViewComponent implements OnInit {
     this.router.navigate(['/reception/mill-machines']);
   }
 
-  private toast(message: string, duration = 3000): void {
-    this.snackBar.open(message, 'Fermer', {
-      duration,
-      horizontalPosition: 'right',
-      verticalPosition: 'top'
-    });
+  private toast(message: string): void {
+    this.toastService.info(message);
   }
 }

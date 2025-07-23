@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
@@ -25,6 +24,7 @@ import { Router } from '@angular/router';
 import { UnifiedDelivery } from '../shared/models/UnifiedDelivery';
 import { dashboardConfig } from './storage_dash_config';
 import { OIL_TRANSACTIONS_DASHBOARD_CONFIG } from './oil-transactions/oil-transactions-dashboard.config';
+import { ToastService } from '../shared/services/toast.service';
 
 @Component({
   selector: 'app-storage',
@@ -56,7 +56,7 @@ export class StorageUnitsComponent implements OnInit {
   constructor(
     private storageUnitService: StorageUnitDtoService,
     private oilTypeService: GenericTypeService,
-    private snackBar: MatSnackBar,
+    private toastService: ToastService,
     private router: Router
   ) {}
 
@@ -72,13 +72,13 @@ export class StorageUnitsComponent implements OnInit {
         if (response.success) {
           this.storageUnits = response.data;
         } else {
-          this.snackBar.open(response.message || 'Error loading storage units', 'Close', { duration: 3000 });
+          this.toastService.error(response.message || 'Error loading storage units');
         }
         this.loading = false;
       },
       error: (error) => {
         console.error('Error loading storage units:', error);
-        this.snackBar.open('Error loading storage units', 'Close', { duration: 3000 });
+        this.toastService.error('Error loading storage units');
         this.loading = false;
       }
     });
@@ -93,7 +93,7 @@ export class StorageUnitsComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading oil types:', error);
-        this.snackBar.open('Error loading oil types', 'Close', { duration: 3000 });
+        this.toastService.error('Error loading oil types');
       }
     });
   }
@@ -119,15 +119,15 @@ export class StorageUnitsComponent implements OnInit {
       this.storageUnitService.deleteStorageUnit(unit.id!).subscribe({
         next: (response) => {
           if (response.success) {
-            this.snackBar.open('Storage unit deleted successfully', 'Close', { duration: 3000 });
+            this.toastService.success('Storage unit deleted successfully');
             this.loadStorageUnits();
           } else {
-            this.snackBar.open(response.message || 'Failed to delete storage unit', 'Close', { duration: 3000 });
+            this.toastService.error(response.message || 'Failed to delete storage unit');
           }
         },
         error: (error) => {
           console.error('Error deleting storage unit:', error);
-          this.snackBar.open('Error deleting storage unit', 'Close', { duration: 3000 });
+          this.toastService.error('Error deleting storage unit');
         }
       });
     }

@@ -695,73 +695,65 @@
   }
 }
 
+/* Make the table section scrollable when payment form is open */
+.scrollable-table-container {
+  max-height: 420px; /* Adjust as needed for your layout */
+  overflow-y: auto;
+  overflow-x: visible;
+  width: 100%;
+  background: #fff;
+  border-radius: 8px;
+  box-sizing: border-box;
+  margin-bottom: 1rem;
+}
+
+/* Ensure the table always fits horizontally */
 .scrollable-table {
   width: 100%;
   overflow-x: auto;
-  border-radius: 8px;
+  min-width: 0;
 }
 
 .payment-table {
   width: 100%;
-  margin-bottom: 1rem;
-  min-width: 800px;
+  min-width: 600px;
   border-radius: 8px;
   overflow: hidden;
+  margin-bottom: 1rem;
+  table-layout: auto;
+}
 
-  .mat-column-actions {
-    width: 140px;
-    text-align: center;
+@media (max-width: 900px) {
+  .scrollable-table {
+    min-width: 0;
+    padding: 0;
+    overflow-x: auto;
+    border-radius: 8px;
+    background: #fff;
   }
-
-  .mat-column-deliveryNumber,
-  .mat-column-lotNumber,
-  .mat-column-deliveryDate,
-  .mat-column-price,
-  .mat-column-paidAmount,
-  .mat-column-unpaidAmount {
-    width: 120px;
-    text-align: right;
+  .payment-table {
+    min-width: 400px;
+    font-size: 0.92em;
+    width: 100%;
+    overflow-x: auto;
+    display: block;
   }
-
-  .mat-column-status {
-    width: 120px;
-    text-align: center;
+  .payment-table th, .payment-table td {
+    padding: 6px 4px;
+    min-width: 60px;
+    text-align: left;
+    white-space: nowrap;
   }
+}
 
-  .mat-header-cell {
-    font-weight: 700;
-    color: rgba(0, 0, 0, 0.87);
-    padding: 1rem 1.5rem;
-    font-size: 1rem;
-    background-color: #f5f5f5;
-    border-bottom: 2px solid #e0e0e0;
+@media (max-width: 600px) {
+  .scrollable-table {
+    padding: 0;
+    border-radius: 0;
   }
-
-  .mat-cell {
-    padding: 1rem 1.5rem;
-    font-size: 1rem;
-    border-bottom: 1px solid #f0f0f0;
-  }
-
-  .mat-row {
-    transition: all 0.2s ease;
-
-    &:hover {
-      background-color: rgba(25, 118, 210, 0.04);
-    }
-
-    &:nth-child(even) {
-      background-color: rgba(0, 0, 0, 0.02);
-    }
-  }
-
-  .mat-chip-list {
-    .mat-chip {
-      font-size: 0.9rem;
-      font-weight: 600;
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-    }
+  .payment-table {
+    min-width: 350px;
+    font-size: 0.88em;
   }
 }
 
@@ -910,5 +902,17 @@ mat-paginator {
   }
   .right-pane {
     margin-top: 2rem;
+  }
+}
+
+/* Responsive: reduce max-height on small screens */
+@media (max-width: 900px) {
+  .scrollable-table-container {
+    max-height: 260px;
+  }
+}
+@media (max-width: 600px) {
+  .scrollable-table-container {
+    max-height: 180px;
   }
 }

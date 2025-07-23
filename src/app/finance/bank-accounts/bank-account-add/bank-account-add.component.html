@@ -66,7 +66,7 @@
           <mat-select formControlName="currency" required>
             <mat-option value="EUR">EUR</mat-option>
             <mat-option value="USD">USD</mat-option>
-            <mat-option value="GBP">GBP</mat-option>
+            <mat-option value="TND">TND</mat-option>
           </mat-select>
           <mat-error *ngIf="bankAccountForm.get('currency')?.hasError('required')">
             {{ 'BANK_ACCOUNTS.ERRORS.CURRENCY_REQUIRED' | translate }}

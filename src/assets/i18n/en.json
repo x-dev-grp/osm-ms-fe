@@ -1,4 +1,19 @@
-{
+{ "BASE_TYPE": {
+  "WASTE_TYPE":       "Waste type",
+  "REGION":           "Region",
+  "SUPPLIER_TYPE":    "Supplier type",
+  "OLIVE_VARIETY":    "Olive variety",
+  "PRODUCTION_METHOD":"Production method",
+  "OPERATION_TYPE":   "Operation type",
+  "OIL_VARIETY":      "Oil variety",
+  "OLIVE_TYPE":       "Olive type",
+  "OIL_TYPE":         "Oil type"
+},
+  "GENERIC_TYPE": {
+    "ACTION": { "ADD_NEW": "Add New" },
+    "FIELDS": { "CATEGORY": "Category", "NAME": "Name", "DESCRIPTION": "Description" },
+    "ERRORS": { "NAME_REQUIRED": "Name is required" }
+  },
   "ADMIN_COMPANY_PROFILE": {
     "CAPITAL": "Capital",
     "CITY": "City",
@@ -455,7 +470,7 @@
         "DELIVERY_TYPE": "Delivery Type",
         "GROSS_WEIGHT": "Gross Weight (kg)",
         "LOT_NUMBER": "Lot Number",
-        "OIL_QUANTITY": "Oil Quantity (L)",
+        "OIL_QUANTITY": "Oil Quantity (KG)",
         "OIL_TYPE": "Oil Type",
         "OIL_VARIETY": "Oil Variety",
         "OLIVE_TYPE": "Olive Type",
@@ -559,22 +574,52 @@
     "ADD_TITLE": "Add Expense",
     "DETAILS_TITLE": "Expense Details",
     "EDIT_TITLE": "Edit Expense",
-    "ERRORS": {
-      "AMOUNT_MIN": "Amount must be greater than 0",
-      "AMOUNT_REQUIRED": "Amount is required",
-      "DATE_REQUIRED": "Date is required",
-      "INVOICE_REF_REQUIRED": "Invoice reference is required",
-      "OBJECT_REQUIRED": "Object is required",
-      "PURCHASE_NATURE_REQUIRED": "Purchase nature is required"
+    "TITLE": "Expenses",
+    "SECTION": {
+      "GENERAL_INFO": "General Information",
+      "PAYMENT_DETAILS": "Payment Details",
+      "NOTES": "Notes",
+      "APPROVAL": "Approval"
     },
     "FIELDS": {
-      "AMOUNT": "Amount",
-      "DATE": "Date",
       "INVOICE_REF": "Invoice Reference",
+      "PURCHASE_NATURE": "Purchase Nature",
       "OBJECT": "Object",
-      "PURCHASE_NATURE": "Purchase Nature"
+      "AMOUNT": "Amount",
+      "CATEGORY": "Category",
+      "VENDOR": "Vendor",
+      "PAYMENT_METHOD": "Payment Method",
+      "STATUS": "Status",
+      "RECEIPT_NUMBER": "Receipt Number",
+      "NOTES": "Notes",
+      "APPROVED": "Approved",
+      "APPROVAL_DATE": "Approval Date",
+      "CREATED_BY": "Created By"
     },
-    "TITLE": "Expenses"
+    "PLACEHOLDER": {
+      "INVOICE_REF": "e.g. FAC-2024-001",
+      "PURCHASE_NATURE": "e.g. Office Supplies",
+      "OBJECT": "e.g. Paper purchase",
+      "AMOUNT": "0.00",
+      "CATEGORY": "e.g. Operational Expenses",
+      "VENDOR": "e.g. Stationery SARL",
+      "RECEIPT_NUMBER": "e.g. 123456",
+      "NOTES": "Add additional notes...",
+      "CREATED_BY": "e.g. admin"
+    },
+    "ERRORS": {
+      "INVOICE_REF_REQUIRED": "Invoice reference is required",
+      "PURCHASE_NATURE_REQUIRED": "Purchase nature is required",
+      "AMOUNT_REQUIRED": "Amount is required",
+      "AMOUNT_MIN": "Amount must be positive",
+      "PAYMENT_METHOD_REQUIRED": "Payment method is required",
+      "STATUS_REQUIRED": "Status is required",
+      "DATE_REQUIRED": "Date is required",
+      "OBJECT_REQUIRED": "Object is required"
+    },
+    "HINT": {
+      "NOTES_OPTIONAL": "Optional"
+    }
   },
   "Edit": "Edit",
   "Editor": "Editor",
@@ -902,7 +947,7 @@
         "DELIVERY_TYPE": "Delivery Type",
         "GROSS_WEIGHT": "Gross Weight (kg)",
         "LOT_NUMBER": "Lot Number",
-        "OIL_QUANTITY": "Oil Quantity (L)",
+        "OIL_QUANTITY": "Oil Quantity (KG)",
         "OIL_TYPE": "Oil Type",
         "OIL_VARIETY": "Oil Variety",
         "OLIVE_TYPE": "Olive Type",
@@ -958,7 +1003,7 @@
         "DELIVERY_NUMBER": "Reception Number",
         "GLOBAL_LOT_NUMBER": "Global Lot Number",
         "LOT_NUMBER": "Lot Number",
-        "OIL_QUANTITY": "Oil Quantity (L)",
+        "OIL_QUANTITY": "Oil Quantity (KG)",
         "OIL_TYPE": "Oil Type",
         "OIL_VARIETY": "Oil Variety",
         "REGION": "Region",
@@ -1353,7 +1398,22 @@
     "SIGNATURE_RESPONSIBLE": "Quality Manager Signature",
     "SUPPLIER": "Supplier",
     "TYPE": "Type",
-    "YIELD": "Yield"
+    "YIELD": "Yield",
+    "EXPENSE_BILL": "Expense Bill",
+    "EXPENSE_VENDOR": "Vendor",
+    "EXPENSE_CATEGORY": "Category",
+    "EXPENSE_PURCHASE_NATURE": "Purchase Nature",
+    "EXPENSE_OBJECT": "Object",
+    "EXPENSE_AMOUNT": "Amount",
+    "EXPENSE_PAYMENT_METHOD": "Payment Method",
+    "EXPENSE_STATUS": "Status",
+    "EXPENSE_RECEIPT_NUMBER": "Receipt Number",
+    "EXPENSE_NOTES": "Notes",
+    "EXPENSE_APPROVED": "Approved",
+    "EXPENSE_APPROVAL_DATE": "Approval Date",
+    "EXPENSE_CREATED_BY": "Created By",
+    "EXPENSE_SIGNATURE_AGENT": "Agent Signature",
+    "EXPENSE_SIGNATURE_RESPONSIBLE": "Responsible Signature"
   },
   "Pages": "Pages",
   "Plugins": "Plugins",
@@ -1645,7 +1705,7 @@
     "OIL_CREDITS_LIST": "Oil Credits List",
     "OIL_CREDITS_TOTAL": "Total Oil Credits",
     "OIL_CREDITS_TOTAL_KG": "Total Quantity (KG)",
-    "OIL_CREDITS_TOTAL_L": "Total Quantity (L)",
+    "OIL_CREDITS_TOTAL_L": "Total Quantity (KG)",
     "OIL_CREDIT_CREATED_DATE": "Created Date",
     "OIL_CREDIT_ID": "ID",
     "OIL_CREDIT_PACKAGING": "Packaging",
@@ -1728,5 +1788,15 @@
   "User Profile": "User Profile",
   "View": "View",
   "Widget": "Widget",
-  "reCaptcha": "reCaptcha"
+  "reCaptcha": "reCaptcha",
+  "COMMON": {
+    "PRINT": "Print",
+    "EDIT": "Edit",
+    "CANCEL": "Cancel",
+    "SAVE": "Save",
+    "UPDATE": "Update",
+    "BACK": "Back",
+    "YES": "Yes",
+    "NO": "No"
+  }
 }

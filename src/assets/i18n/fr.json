@@ -1,4 +1,28 @@
 {
+  "BASE_TYPE": {
+    "WASTE_TYPE": "Type de déchets",
+    "REGION": "Région",
+    "SUPPLIER_TYPE": "Type de fournisseur",
+    "OLIVE_VARIETY": "Variété d'olive",
+    "PRODUCTION_METHOD": "Méthode de production",
+    "OPERATION_TYPE": "Type d'opération",
+    "OIL_VARIETY": "Variété d'huile",
+    "OLIVE_TYPE": "Type olive",
+    "OIL_TYPE": "Type d'huile"
+  },
+  "GENERIC_TYPE": {
+    "ACTION": {
+      "ADD_NEW": "Ajouter"
+    },
+    "FIELDS": {
+      "CATEGORY": "Catégorie",
+      "NAME": "Nom",
+      "DESCRIPTION": "Description"
+    },
+    "ERRORS": {
+      "NAME_REQUIRED": "Le nom est requis"
+    }
+  },
   "ADMIN": {
     "ADD_COMPANY_USER_TITLE": "Créer une société et son premier utilisateur",
     "CANCEL": "Annuler",
@@ -448,7 +472,7 @@
         "DELIVERY_TYPE": "Type de livraison",
         "GROSS_WEIGHT": "Poids brut (kg)",
         "LOT_NUMBER": "Numéro de lot",
-        "OIL_QUANTITY": "Quantité d'huile (L)",
+        "OIL_QUANTITY": "Quantité d'huile (KG)",
         "OIL_TYPE": "Type d'huile",
         "OIL_VARIETY": "Variété d'huile",
         "OLIVE_TYPE": "Type d'olive",
@@ -535,7 +559,7 @@
       "OIL_PURCHASE": "Achat d'huile",
       "OLIVE_PURCHASE": "Achat d'olive",
       "PAYMENT": "Paiement",
-      "SIMPLE_RECEPTION": "Réception simple"
+      "SIMPLE_RECEPTION": "Trituration particulier"
     },
     "STATUS": {
       "CANCELLED": "Annulé",
@@ -564,22 +588,52 @@
     "ADD_TITLE": "Ajouter une dépense",
     "DETAILS_TITLE": "Détails de la dépense",
     "EDIT_TITLE": "Modifier la dépense",
-    "ERRORS": {
-      "AMOUNT_MIN": "Le montant doit être supérieur à 0",
-      "AMOUNT_REQUIRED": "Le montant est requis",
-      "DATE_REQUIRED": "La date est requise",
-      "INVOICE_REF_REQUIRED": "La référence de facture est requise",
-      "OBJECT_REQUIRED": "L'objet est requis",
-      "PURCHASE_NATURE_REQUIRED": "La nature de l'achat est requise"
+    "TITLE": "Dépenses",
+    "SECTION": {
+      "GENERAL_INFO": "Informations Générales",
+      "PAYMENT_DETAILS": "Détails de Paiement",
+      "NOTES": "Notes",
+      "APPROVAL": "Approbation"
     },
     "FIELDS": {
-      "AMOUNT": "Montant",
-      "DATE": "Date",
       "INVOICE_REF": "Référence facture",
+      "PURCHASE_NATURE": "Nature de l'achat",
       "OBJECT": "Objet",
-      "PURCHASE_NATURE": "Nature de l'achat"
+      "AMOUNT": "Montant",
+      "CATEGORY": "Catégorie",
+      "VENDOR": "Fournisseur",
+      "PAYMENT_METHOD": "Méthode de paiement",
+      "STATUS": "Statut",
+      "RECEIPT_NUMBER": "Numéro de reçu",
+      "NOTES": "Notes",
+      "APPROVED": "Approuvé",
+      "APPROVAL_DATE": "Date d'approbation",
+      "CREATED_BY": "Créé par"
     },
-    "TITLE": "Dépenses"
+    "PLACEHOLDER": {
+      "INVOICE_REF": "Ex: FAC-2024-001",
+      "PURCHASE_NATURE": "Ex: Fournitures de bureau",
+      "OBJECT": "Ex: Achat de papier",
+      "AMOUNT": "0.00",
+      "CATEGORY": "Ex: Dépenses opérationnelles",
+      "VENDOR": "Ex: Stationery SARL",
+      "RECEIPT_NUMBER": "Ex: 123456",
+      "NOTES": "Ajouter des notes supplémentaires...",
+      "CREATED_BY": "Ex: admin"
+    },
+    "ERRORS": {
+      "INVOICE_REF_REQUIRED": "La référence de la facture est requise",
+      "PURCHASE_NATURE_REQUIRED": "La nature de l'achat est requise",
+      "AMOUNT_REQUIRED": "Le montant est requis",
+      "AMOUNT_MIN": "Le montant doit être positif",
+      "PAYMENT_METHOD_REQUIRED": "La méthode de paiement est requise",
+      "STATUS_REQUIRED": "Le statut est requis",
+      "DATE_REQUIRED": "La date est requise",
+      "OBJECT_REQUIRED": "L'objet est requis"
+    },
+    "HINT": {
+      "NOTES_OPTIONAL": "Facultatif"
+    }
   },
   "Edit": "Modifier",
   "Editor": "Éditrice",
@@ -942,14 +996,14 @@
         "DELIVERY_TYPE": "Type de livraison",
         "GROSS_WEIGHT": "Poids brut (kg)",
         "LOT_NUMBER": "Numéro de lot",
-        "OIL_QUANTITY": "Quantité d'huile (L)",
+        "OIL_QUANTITY": "Quantité d'huile (KG)",
         "OIL_TYPE": "Type d'huile",
         "OIL_VARIETY": "Variété d'huile",
         "OLIVE_TYPE": "Type d'olive",
         "OPERATION_TYPE": "Type d'opération",
         "OPERATION_TYPE_HINT": "L'achat d'huile est le type d'opération par défaut pour la réception d'huile",
         "OPERATION_TYPE_PURCHASE": "Achat d'huile (Par défaut)",
-        "OPERATION_TYPE_RECEPTION": "Réception simple",
+        "OPERATION_TYPE_RECEPTION": "Trituration particulier",
         "PAID_AMOUNT": "Montant payé (DH)",
         "PARCEL": "Parcelle",
         "REGION": "Région",
@@ -1004,7 +1058,7 @@
         "DELIVERY_NUMBER": "N° Bon de réception",
         "GLOBAL_LOT_NUMBER": "N° Lot Global",
         "LOT_NUMBER": "N° Lot",
-        "OIL_QUANTITY": "Qté huile (L)",
+        "OIL_QUANTITY": "Qté huile (KG)",
         "OIL_TYPE": "Type d'huile",
         "OIL_VARIETY": "Variété d'huile",
         "REGION": "Région",
@@ -1395,11 +1449,26 @@
     "REGION": "Région",
     "REVISION": "Révision",
     "SIGNATURE": "Signature",
-    "SIGNATURE_AGENT": "Signature Agent (bascule)",
+    "SIGNATURE_AGENT": "Signature Agent)",
     "SIGNATURE_RESPONSIBLE": "Signature Responsable CQ",
     "SUPPLIER": "Fournisseur",
     "TYPE": "Type",
-    "YIELD": "Rendement"
+    "YIELD": "Rendement",
+    "EXPENSE_BILL": "Note de Dépense",
+    "EXPENSE_VENDOR": "Fournisseur",
+    "EXPENSE_CATEGORY": "Catégorie",
+    "EXPENSE_PURCHASE_NATURE": "Nature d'achat",
+    "EXPENSE_OBJECT": "Objet",
+    "EXPENSE_AMOUNT": "Montant",
+    "EXPENSE_PAYMENT_METHOD": "Méthode de paiement",
+    "EXPENSE_STATUS": "Statut",
+    "EXPENSE_RECEIPT_NUMBER": "Numéro de reçu",
+    "EXPENSE_NOTES": "Notes",
+    "EXPENSE_APPROVED": "Approuvé",
+    "EXPENSE_APPROVAL_DATE": "Date d'approbation",
+    "EXPENSE_CREATED_BY": "Créé par",
+    "EXPENSE_SIGNATURE_AGENT": "Signature de l'agent",
+    "EXPENSE_SIGNATURE_RESPONSIBLE": "Signature du responsable"
   },
   "Pages": "pages",
   "Payment": "Paiement",
@@ -1691,7 +1760,7 @@
     "OIL_CREDITS_LIST": "Liste des crédits d'huile",
     "OIL_CREDITS_TOTAL": "Total crédits d'huile",
     "OIL_CREDITS_TOTAL_KG": "Quantité totale (KG)",
-    "OIL_CREDITS_TOTAL_L": "Quantité totale (L)",
+    "OIL_CREDITS_TOTAL_L": "Quantité totale (KG)",
     "OIL_CREDIT_CREATED_DATE": "Date de création",
     "OIL_CREDIT_ID": "ID",
     "OIL_CREDIT_PACKAGING": "Emballage",
@@ -1779,5 +1848,15 @@
   "User Profile": "Profil de l'utilisateur",
   "View": "Voir",
   "Widget": "Widget",
-  "reCaptcha": "reCaptcha"
+  "reCaptcha": "reCaptcha",
+  "COMMON": {
+    "PRINT": "Imprimer",
+    "EDIT": "Modifier",
+    "CANCEL": "Annuler",
+    "SAVE": "Enregistrer",
+    "UPDATE": "Mettre à jour",
+    "BACK": "Retour",
+    "YES": "Oui",
+    "NO": "Non"
+  }
 }

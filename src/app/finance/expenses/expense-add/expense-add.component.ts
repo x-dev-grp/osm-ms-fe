@@ -12,6 +12,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SharedModule } from '../../../demo/shared/shared.module';
 import { ExpenseService } from '../../service/expense.service';
 import { Expense } from '../../models/expense.model';
+import { PaymentMethod } from '../../models/financial-transaction';
 
 @Component({
   selector: 'app-expense-add',
@@ -35,6 +36,8 @@ export class ExpenseAddComponent implements OnInit {
   loading = false;
   editing = false;
   expenseId: string | null = null;
+  paymentMethods = Object.values(PaymentMethod);
+  statusOptions = ['Pending', 'Paid', 'Reimbursed'] as const;
 
   constructor(
     private fb: FormBuilder,
@@ -55,8 +58,16 @@ export class ExpenseAddComponent implements OnInit {
       invoiceRef: ['', Validators.required],
       purchaseNature: ['', Validators.required],
       object: [''],
-      date: [new Date(), Validators.required],
-      amount: [0, [Validators.required, Validators.min(0)]]
+      amount: [0, [Validators.required, Validators.min(0)]],
+      vendor: [''],
+      category: [''],
+      paymentMethod: [this.paymentMethods[0], Validators.required],
+      status: [this.statusOptions[0].toUpperCase(), Validators.required],
+      notes: [''],
+      receiptNumber: [''],
+      createdBy: [''],
+      approved: [false],
+      approvalDate: [null]
     });
   }
 
@@ -76,10 +87,21 @@ export class ExpenseAddComponent implements OnInit {
     this.expenseService.getExpense(id).subscribe({
       next: (response) => {
         if (response.success && response.data) {
-          const expense = response.data[0];
+          const expense = Array.isArray(response.data) ? response.data[0] : response.data;
           this.form.patchValue({
-            ...expense,
-            date: expense.date ? new Date(expense.date) : new Date()
+            invoiceRef: expense.invoiceRef || '',
+            purchaseNature: expense.purchaseNature || '',
+            object: expense.object || '',
+            amount: expense.amount ?? 0,
+            vendor: expense.vendor || '',
+            category: expense.category || '',
+            paymentMethod: expense.paymentMethod || this.paymentMethods[0],
+            status: (expense.status || this.statusOptions[0]).toUpperCase(),
+            notes: expense.notes || '',
+            receiptNumber: expense.receiptNumber || '',
+            createdBy: expense.createdBy || '',
+            approved: !!expense.approved,
+            approvalDate: expense.approvalDate ? new Date(expense.approvalDate) : null
           });
         }
         this.loading = false;
