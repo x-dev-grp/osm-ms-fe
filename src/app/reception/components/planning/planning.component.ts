@@ -690,7 +690,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
       oliveQuantity: d.poidsNet ?? 0, // Use poidsNet instead of oliveQuantity
       globalLotNumber: d.globalLotNumber ?? null,
       completed: d.status === 'COMPLETED',
-      supplier: d.supplier?.supplierInfo?.name ?? undefined,
+      supplier: d.supplier ?? undefined,
       region: d.region?.name ?? undefined,
       oliveVariety: d.oliveVariety?.name ?? undefined,
       oliveType: d.oliveType?.name ?? undefined,
@@ -719,13 +719,14 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
         map((result) => ({
           oilQuantity: result.oilQuantity,
           rendement: result.rendement,
-          unpai: result.rendement,
+          unpaidPrice: result.unpaidPrice,
           triturationPricePerKg: result.triturationPricePerKg,
           totalTriturationPrice: result.totalTriturationPrice,
-          childLotsRendement: result.childLotsRendement
+          childLotsRendement: result.childLotsRendement,
+          autoSetStorage: result.autoSetStorage
         }))
       )
-      .subscribe(({ oilQuantity, rendement, totalTriturationPrice, childLotsRendement }) => {
+      .subscribe(({ oilQuantity, rendement, totalTriturationPrice, childLotsRendement ,autoSetStorage}) => {
         const itemToComplete = item;
         let targetItemData: PlanningItem | GlobalLot | undefined;
 
@@ -761,6 +762,9 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
           // Update with new data
           targetItemData.oilQuantity = oilQuantity;
           targetItemData.rendement = rendement;
+          if ('autoSetStorage' in targetItemData) {
+            targetItemData.autoSetStorage = autoSetStorage;
+          }
           if ('completed' in targetItemData) {
             targetItemData.completed = true; // Set as completed
           }
@@ -777,12 +781,13 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
           label,
           oilQuantity,
           rendement,
+          autoSetStorage,
           totalTriturationPrice,
           childLotsRendement
         });
 
         // Call the backend (now sending oilQuantity, rendement, and unpaidAmount)
-        const req$ = this.completeIt(itemToComplete, label, oilQuantity, rendement, totalTriturationPrice, childLotsRendement);
+        const req$ = this.completeIt(itemToComplete, label, oilQuantity, rendement, totalTriturationPrice, childLotsRendement,autoSetStorage);
 
         this.handleResponse(req$, itemToComplete, targetItemData);
       });
@@ -823,17 +828,18 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  private completeIt(itemToComplete: BoardItem, label: string, oilQuantity: any, rendement: any, totalTriturationPrice: any, childLotsRendement: any) {
+  private completeIt(itemToComplete: BoardItem, label: string, oilQuantity: any, rendement: any, totalTriturationPrice: any, childLotsRendement: any,autoSetStorage:any) {
     if (itemToComplete.type === PlanItemType.LOT) {
-      return this.planningService.completeLotWithDetails(label, oilQuantity, rendement, totalTriturationPrice);
+      return this.planningService.completeLotWithDetails(label, oilQuantity, rendement, totalTriturationPrice,autoSetStorage);
     } else {
       if (childLotsRendement && Array.isArray(childLotsRendement)) {
         return this.planningService.completeGlobalLotWithDetails(
           label,
-          childLotsRendement.map((child: { lotNumber: string; oilQuantity: number; rendement: number; triturationPrice: number }) => ({
+          childLotsRendement.map((child: { lotNumber: string; oilQuantity: number; rendement: number; triturationPrice: number ;autoSetStorage:boolean}) => ({
             lotNumber: child.lotNumber,
             oilQuantity: child.oilQuantity ?? 0,
             rendement: child.rendement ?? 0,
+            autoSetStorage: child.autoSetStorage ?? false,
             unpaidPrice: child.triturationPrice ?? 0
           })) as ChildLotCompletionDto[]
         );

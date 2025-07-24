@@ -31,7 +31,7 @@
             @if ((item).supplier) {
               <div class="info-row">
                 <span class="label">Fournisseur:</span>
-                <span class="value">{{ (item).supplier }}</span>
+                <span class="value">{{ (item).supplier.supplierInfo.name + " " + (item).supplier.supplierInfo.lastname }}</span>
               </div>
             }
             @if ((item).region) {

@@ -1344,6 +1344,7 @@
       "CANCEL": "Annuler",
       "COMPLETE": "Terminer",
       "COMPLETE_PAYMENT_DETAILS": "à completer pour paiment",
+      "ASSIGN_SUPPLIER": "Assigner un fournisseur",
       "CONFIRM": "Confirmer",
       "CONFIRM_DELETE": "Êtes-vous sûr de vouloir supprimer cet élément ?",
       "CREATE": "Créer",
@@ -1568,6 +1569,16 @@
         "CONFIRM": "Tout supprimer",
         "MESSAGE": "Êtes-vous sûr de vouloir supprimer les éléments sélectionnés ? Cette action ne peut pas être annulée.",
         "TITLE": "Confirmer la suppression en masse"
+      },
+      "SAVE_QC": {
+        "TITLE":   "Confirmer l’enregistrement",
+        "MESSAGE": "Êtes‑vous sûr de vouloir enregistrer les résultats du contrôle qualité ?"
+      },
+      "OIL_TRANSACTION": {
+        "TITLE":   "Confirmer la transaction d’huile",
+        "MESSAGE": "Ce fournisseur dispose d’un stockage. Voulez‑vous également confirmer la transaction d’huile ?",
+        "CONFIRM": "Oui, confirmer",
+        "CANCEL":  "Non, ignorer"
       },
       "DATA_LOSS": {
         "CANCEL": "Annuler",

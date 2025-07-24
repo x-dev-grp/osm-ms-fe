@@ -1,4 +1,5 @@
 import { BaseType } from './base-type';
+import { SupplierType } from './supplier-type';
 
 export interface StorageUnitDto {
   id?: string;
@@ -19,4 +20,5 @@ export interface StorageUnitDto {
 
   lastFillDate?: Date;
   lastEmptyDate?: Date;
+  supplier:SupplierType;
 }

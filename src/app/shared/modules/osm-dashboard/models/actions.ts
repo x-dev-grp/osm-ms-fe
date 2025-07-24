@@ -17,6 +17,7 @@ export const ACTION_ICONS: Map<string, string> = new Map<string, string>([
   ['SET_PRICE', 'attach_money '],
   ['GEN_PDF', 'print'],
   ['VALIDATE', 'done'],
-  ['COMPLETE_PAYMENT_DETAILS', 'attach_money']
+  ['COMPLETE_PAYMENT_DETAILS', 'attach_money'],
+  ['ASSIGN_SUPPLIER', 'assignment_ind']
 
 ]);

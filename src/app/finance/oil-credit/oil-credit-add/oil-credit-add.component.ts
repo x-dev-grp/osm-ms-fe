@@ -242,7 +242,7 @@ export class OilCreditAddComponent implements OnInit {
     const formValue = this.form.value;
     const dto = {
       ...formValue,
-      oil_type: formValue.oil_type?.id || formValue.oil_type,
+      oil_type: formValue.oil_type||null,
       destinataire: formValue.destinataire?.id || formValue.destinataire
       // citerne_pile: formValue.citerne_pile?.id || formValue.citerne_pile // [DISABLED: will be set in oil transaction]
     };

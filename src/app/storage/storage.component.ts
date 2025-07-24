@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } from '@angular/material/expansion';
 import { MatInputModule } from '@angular/material/input';
@@ -25,6 +25,7 @@ import { UnifiedDelivery } from '../shared/models/UnifiedDelivery';
 import { dashboardConfig } from './storage_dash_config';
 import { OIL_TRANSACTIONS_DASHBOARD_CONFIG } from './oil-transactions/oil-transactions-dashboard.config';
 import { ToastService } from '../shared/services/toast.service';
+import { AssignSupplierComponent } from './assign-supplier/assign-supplier.component';
 
 @Component({
   selector: 'app-storage',
@@ -47,6 +48,7 @@ import { ToastService } from '../shared/services/toast.service';
   styleUrls: ['./storage.component.scss']
 })
 export class StorageUnitsComponent implements OnInit {
+  @ViewChild('dashboard') dashboard!: OsmDashboard;
   storageUnits: StorageUnitDto[] = [];
   oilTypes: BaseType[] = [];
   loading = false;
@@ -57,7 +59,8 @@ export class StorageUnitsComponent implements OnInit {
     private storageUnitService: StorageUnitDtoService,
     private oilTypeService: GenericTypeService,
     private toastService: ToastService,
-    private router: Router
+    private dialog: MatDialog,
+  private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -111,6 +114,11 @@ export class StorageUnitsComponent implements OnInit {
       case 'DELETE':
         this.deleteStorageUnit(event.row);
         break;
+      case 'ASSIGN_SUPPLIER':
+        if (event.row.id) {
+          this.openAssignSupplierDialog(event.row);
+        }
+        break;
     }
   }
 
@@ -131,5 +139,20 @@ export class StorageUnitsComponent implements OnInit {
         }
       });
     }
+  }
+
+  private openAssignSupplierDialog(unit: StorageUnitDto) {
+    const ref = this.dialog.open(AssignSupplierComponent, {
+      width: '400px',
+      data: { storageUnit: unit }
+    });
+
+    ref.afterClosed().subscribe(result => {
+      // assume the dialog returns true if assignment was made
+      if (result === true) {
+        this.toastService.success('Supplier assigned successfully');
+        this.dashboard.refrechData();
+       }
+    });
   }
 }

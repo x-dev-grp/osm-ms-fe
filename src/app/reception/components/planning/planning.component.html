@@ -8,28 +8,28 @@
       Assignées: {{ totalAssigned }}
     </span>
 
-        <button *ngIf="hasSelection()"
+        <button (click)="groupSelected()"
+                *ngIf="hasSelection()"
                 class="action-btn accent"
-                mat-raised-button
-                (click)="groupSelected()">
+                mat-raised-button>
           Grouper&nbsp;({{ selectedIds().length }})
         </button>
 
-        <button class="action-btn primary"
-                mat-raised-button
-                (click)="savePlan()">
+        <button (click)="savePlan()"
+                class="action-btn primary"
+                mat-raised-button>
           Enregistrer
         </button>
 
-        <button class="action-btn"
-                mat-raised-button
-                (click)="cancelPlan()">
+        <button (click)="cancelPlan()"
+                class="action-btn"
+                mat-raised-button>
           Annuler
         </button>
-        <button mat-icon-button
+        <button (click)="toggleFullScreen()"
+                [matTooltip]="isFullScreen ? 'Quitter le plein écran' : 'Plein écran'"
                 class="fs-btn"
-                (click)="toggleFullScreen()"
-                [matTooltip]="isFullScreen ? 'Quitter le plein écran' : 'Plein écran'">
+                mat-icon-button>
           <mat-icon>{{ isFullScreen ? 'fullscreen_exit' : 'fullscreen' }}</mat-icon>
         </button>
       </div>
@@ -91,14 +91,17 @@
                             <div class="quantity-info">
 
                               @if (data.poidsNet) {
-                                <span class="quantity">Net : {{ data.poidsNet }} kg</span>                            }
+                                <span class="quantity">Net : {{ data.poidsNet }} kg</span>
+                              }
                             </div>
                             <div class="details-info">
                               @if (data.supplier) {
-                                <span class="supplier">Fournisseur : {{ data.supplier }}</span>
+                                <span
+                                  class="supplier">Fournisseur : {{ data.supplier.supplierInfo.name + " " + data.supplier.supplierInfo.lastname }}</span>
                               }
                               @if (data.operationType) {
-                                <span class="operationType">Type d'operation : {{ ('OPERATION_TYPE.'+data.operationType)|translate }}</span>
+                                <span
+                                  class="operationType">Type d'operation : {{ ('OPERATION_TYPE.' + data.operationType)|translate }}</span>
                               }
 
                               @if (data.oliveVariety) {
@@ -114,12 +117,13 @@
                             @if (data.globalLotNumber) {
                               <span class="gl-badge">{{ data.globalLotNumber }}</span>
                             }
-                            <small class="block text-xs text-gray-600">{{ data.deliveryDate | date: 'shortDate' }}</small>
+                            <small
+                              class="block text-xs text-gray-600">{{ data.deliveryDate | date: 'shortDate' }}</small>
                           </div>
                           <div>
-<!--                            <button mat-icon-button (click)="markAsCompleted(item)" >-->
-<!--                              <mat-icon class="text-green-500">check_circle</mat-icon>-->
-<!--                            </button>-->
+                            <!--                            <button mat-icon-button (click)="markAsCompleted(item)" >-->
+                            <!--                              <mat-icon class="text-green-500">check_circle</mat-icon>-->
+                            <!--                            </button>-->
                           </div>
 
                         </div>
@@ -144,7 +148,7 @@
                     <div class="drag-handle" cdkDragHandle>
                       <mat-icon fontIcon="drag_indicator"></mat-icon>
                     </div>
-                     <mat-checkbox
+                    <mat-checkbox
                       class="select-box"
                       [(ngModel)]="selection[data.id]"
                       (change)="onSelectChange(item)"
@@ -158,10 +162,10 @@
                           <div class="lot-info">
                             <strong>{{ data.globalLotNumber }}</strong>
                           </div>
-                            <div class="quantity-info">
-                              <span class="quantity">Net : {{ data.items | sum:'data.poidsNet' }} kg</span>
+                          <div class="quantity-info">
+                            <span class="quantity">Net : {{ data.items | sum:'data.poidsNet' }} kg</span>
                           </div>
-                           @if (data.completed) {
+                          @if (data.completed) {
                             <mat-icon class="text-green-500">check_circle</mat-icon>
                           }
                         </div>
@@ -170,15 +174,17 @@
                         <div class="child-lot-details">
                           <div class="details-header">Liste des Lots :</div>
                           <div class="child-lot-numbers">
-                             @for (childItem of data.items; track trackByReception($index, childItem)) {
-                                @let childData = childItem.data;
-                                <span class="child-lot-number">#{{ childData.lotNumber }}</span>@if (!$last){, }
-                             }
+                            @for (childItem of data.items; track trackByReception($index, childItem)) {
+                              @let childData = childItem.data ;
+                              <span class="child-lot-number">#{{ childData.lotNumber }}</span>@if (!$last) {
+                                ,
+                              }
+                            }
                           </div>
                         </div>
                       </div>
                       <div>
-                        <button  mat-icon-button  (click)="ungroupLot(data)">
+                        <button mat-icon-button (click)="ungroupLot(data)">
                           <mat-icon>call_split</mat-icon>
                         </button>
 
@@ -245,14 +251,17 @@
                           <div class="quantity-info">
 
                             @if (data.poidsNet) {
-                              <span class="quantity">Net : {{ data.poidsNet }} kg</span>                            }
+                              <span class="quantity">Net : {{ data.poidsNet }} kg</span>
+                            }
                           </div>
                           <div class="details-info">
                             @if (data.supplier) {
-                              <span class="supplier">Fournisseur : {{ data.supplier }}</span>
+                              <span
+                                class="supplier">Fournisseur : {{ data.supplier.supplierInfo.name + " " + data.supplier.supplierInfo.lastname }}</span>
                             }
                             @if (data.operationType) {
-                              <span class="operationType">Type d'operation : {{ ('OPERATION_TYPE.'+data.operationType)|translate }}</span>
+                              <span
+                                class="operationType">Type d'operation : {{ ('OPERATION_TYPE.' + data.operationType)|translate }}</span>
                             }
                             @if (data.oliveVariety) {
                               <span class="variety">Variété : {{ data.oliveVariety }}</span>
@@ -270,7 +279,7 @@
                           <small class="block text-xs text-gray-600">{{ data.deliveryDate | date: 'shortDate' }}</small>
                         </div>
                         <div>
-                          <button mat-icon-button (click)="markAsCompleted(item)" >
+                          <button mat-icon-button (click)="markAsCompleted(item)">
                             <mat-icon class="text-green-500">check_circle</mat-icon>
                           </button>
                         </div>
@@ -308,27 +317,29 @@
                             <strong>{{ data.globalLotNumber }}</strong>
                           </div>
 
-                               <div class="quantity-info">
-                                <span class="quantity">Net : {{ data.items | sum:'data.poidsNet' }} kg</span>
-                              </div>
-
+                          <div class="quantity-info">
+                            <span class="quantity">Net : {{ data.items | sum:'data.poidsNet' }} kg</span>
+                          </div>
 
 
                           <div class="child-lot-details">
                             <div class="details-header">Liste des Lots :</div>
                             <div class="child-lot-numbers">
                               @for (childItem of data.items; track trackByReception($index, childItem)) {
-                                @let childData = childItem.data;
-                                <span class="child-lot-number">#{{ childData.lotNumber }}</span>@if (!$last){, }
+                                @let childData = childItem.data ;
+                                <span class="child-lot-number">#{{ childData.lotNumber }}</span>@if (!$last) {
+                                  ,
+                                }
                               }
                             </div>
-                          </div> <small class="block text-xs text-gray-600">{{ data.deliveryDate | date: 'shortDate' }}</small>
+                          </div>
+                          <small class="block text-xs text-gray-600">{{ data.deliveryDate | date: 'shortDate' }}</small>
                         </div>
                         <div>
-                          <button mat-icon-button (click)="markAsCompleted(item)" >
+                          <button mat-icon-button (click)="markAsCompleted(item)">
                             <mat-icon class="text-green-500">check_circle</mat-icon>
                           </button>
-                          <button  mat-icon-button  (click)="ungroupLot(data)">
+                          <button mat-icon-button (click)="ungroupLot(data)">
                             <mat-icon>call_split</mat-icon>
                           </button>
                         </div>

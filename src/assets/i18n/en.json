@@ -1290,6 +1290,8 @@
       "CANCEL": "Cancel",
       "COMPLETE": "Complete",
       "COMPLETE_PAYMENT_DETAILS": "To be completed for payment ",
+      "ASSIGN_SUPPLIER": "Assign Supplier",
+
       "CONFIRM": "Confirm",
       "CONFIRM_DELETE": "Are you sure you want to delete this item?",
       "CREATE": "Create",
@@ -1511,6 +1513,18 @@
         "MESSAGE": "Are you sure you want to delete the selected items? This action cannot be undone.",
         "TITLE": "Confirm Bulk Deletion"
       },
+      "OIL_TRANSACTION": {
+        "TITLE":   "Confirm Oil Transaction",
+        "MESSAGE": "This supplier has storage. Do you also want to confirm the oil transaction?",
+        "CONFIRM": "Yes, confirm",
+        "CANCEL":  "No, skip"
+      },
+      "SAVE_QC": {
+        "TITLE":   "Confirm Save",
+        "MESSAGE": "Are you sure you want to save the quality‑control results?"
+      },
+      "SAVE":   "Save",
+      "CANCEL": "Cancel",
       "DATA_LOSS": {
         "CANCEL": "Cancel",
         "CONFIRM": "Continue",

@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogActions, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogActions, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormField } from '@angular/material/form-field';
 import { MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from '@angular/material/datepicker';
 import { SharedModule } from '../../../../demo/shared/shared.module';
@@ -7,14 +7,15 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
+import { GlobalLot, PlanItemType, PlanningItem } from '../../../../shared/models/planningDTOS';
+import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { result } from 'lodash';
 import {
-  BoardItem,
-  GlobalLot, GlobalLotDTO,
-  GlobalLotGroup, LotDTO,
-  Mill, MillPlanDTO,
-  PlanItemType,
-  PlanningItem, PlanningSaveRequest
-} from '../../../../shared/models/planningDTOS';
+  ConfirmationDialogData,
+  ConfirmationDialogResult,
+  ConfirmationType
+} from '../../../../shared/services/confirmation-dialog.service';
+import { TranslateService } from '@ngx-translate/core';
 
 interface ChildLotWithRendement extends PlanningItem {
   calculatedRendement?: number;
@@ -47,13 +48,17 @@ export class CompletionDetailsDialogComponent implements OnInit {
   finalObservation: string = '';
   completionDate: Date = new Date();
   childLotsWithRendement: ChildLotWithRendement[] = [];
+  autoSetStorage = false;     // ← new flag
 
   triturationPricePerKg: number | null = null; // Only used for single lots
   item: PlanningItem | GlobalLot;
   itemType: PlanItemType;
+  protected readonly PlanItemType = PlanItemType;
 
   constructor(
     public dialogRef: MatDialogRef<CompletionDetailsDialogComponent>,
+    private dialog: MatDialog, // ← here
+    private translate: TranslateService,
     @Inject(MAT_DIALOG_DATA)
     public data: {
       item: PlanningItem | GlobalLot;
@@ -68,7 +73,12 @@ export class CompletionDetailsDialogComponent implements OnInit {
   }
 
   get totalTriturationPrice(): number {
-    if (this.itemType === PlanItemType.LOT && this.oliveWeight != null && this.triturationPricePerKg != null && this.triturationPricePerKg >= 0) {
+    if (
+      this.itemType === PlanItemType.LOT &&
+      this.oliveWeight != null &&
+      this.triturationPricePerKg != null &&
+      this.triturationPricePerKg >= 0
+    ) {
       return this.oliveWeight * this.triturationPricePerKg;
     } else if (this.itemType === PlanItemType.GLOBAL_LOT) {
       return this.childLotsWithRendement.reduce((sum, lot) => sum + (lot.calculatedTriturationPrice || 0), 0);
@@ -76,42 +86,7 @@ export class CompletionDetailsDialogComponent implements OnInit {
     return 0;
   }
 
-  // Calculate trituration price for each child lot in a global lot
-  private calculateChildLotsPrice(): void {
-    if (this.itemType === PlanItemType.GLOBAL_LOT && this.triturationPricePerKg != null && this.triturationPricePerKg >= 0) {
-      this.childLotsWithRendement = this.childLotsWithRendement.map(lot => ({
-        ...lot,
-        calculatedTriturationPrice: (lot.oilQuantity ?? 0) * this.triturationPricePerKg!
-      }));
-    } else if (this.itemType === PlanItemType.GLOBAL_LOT) {
-      this.childLotsWithRendement = this.childLotsWithRendement.map(lot => ({
-        ...lot,
-        calculatedTriturationPrice: 0
-      }));
-    }
-  }
-
   // Remove setChildOilQuantity and oilQuantity input for child lots
-
-  // When global rendement or oliveQuantity changes, recalculate oilQuantity for each child lot
-  private calculateChildLotsOilQuantityFromGlobalRendement(globalRendement: number): void {
-    if (this.itemType === PlanItemType.GLOBAL_LOT) {
-      this.childLotsWithRendement = this.childLotsWithRendement.map(lot => {
-        const oilQuantity = lot.oliveQuantity * (globalRendement / 100);
-        return {
-          ...lot,
-          oilQuantity,
-          calculatedRendement: globalRendement // for display, but can be per-lot if needed
-        };
-      });
-      this.calculateChildLotsPrice(); // Also update trituration price for all lots
-    }
-  }
-
-  // Call price calculation when child lots or oliveWeight changes
-  ngOnInit(): void {
-    this.calculateChildLotsPrice();
-  }
 
   get oliveWeight(): number | null {
     if (this.itemType === PlanItemType.LOT) {
@@ -136,6 +111,11 @@ export class CompletionDetailsDialogComponent implements OnInit {
       return calculatedRendement;
     }
     return null;
+  }
+
+  // Call price calculation when child lots or oliveWeight changes
+  ngOnInit(): void {
+    this.calculateChildLotsPrice();
   }
 
   onCancel(): void {
@@ -182,24 +162,93 @@ export class CompletionDetailsDialogComponent implements OnInit {
     }
 
     this.calculateChildLotsPrice(); // Ensure prices are up to date
+    if (this.itemType === PlanItemType.LOT && (this.item as PlanningItem).supplier!.hasStorage) {
+      const dialogData: ConfirmationDialogData = {
+        title: this.translate.instant('STANDARD.CONFIRMATION.OIL_TRANSACTION.TITLE'),
+        message: this.translate.instant('STANDARD.CONFIRMATION.OIL_TRANSACTION.MESSAGE'),
+        confirmText: this.translate.instant('STANDARD.CONFIRMATION.OIL_TRANSACTION.CONFIRM'),
+        cancelText: this.translate.instant('STANDARD.CONFIRMATION.OIL_TRANSACTION.CANCEL'),
+        type: ConfirmationType.WARNING,
+        destructive: false,
+        showIcon: true
+      };
 
+      const ref = this.dialog.open(ConfirmationDialogComponent, { data: dialogData });
+      ref.afterClosed().subscribe((res: ConfirmationDialogResult) => {
+        if (res?.confirmed) {
+          this.autoSetStorage = !!res?.confirmed;
+          this.finalizeConfirmation();
+        }
+        // if they canceled, do nothing (dialog stays open)
+      });
+      return; // wait for second dialog before closing
+    }
+
+    this.autoSetStorage = false;
+    this.finalizeConfirmation();
+
+    console.log('[DIALOG] Confirming completion with data:', result);
+    this.dialogRef.close(result);
+  }
+
+  // For *ngFor trackBy
+  trackByLotNumber(index: number, lot: ChildLotWithRendement) {
+    return lot.lotNumber;
+  }
+
+  // Call price calculation when price per kg changes
+  setTriturationPricePerKg(value: number | null) {
+    this.triturationPricePerKg = value;
+    this.calculateChildLotsPrice();
+  }
+
+  // Calculate trituration price for each child lot in a global lot
+  private calculateChildLotsPrice(): void {
+    if (this.itemType === PlanItemType.GLOBAL_LOT && this.triturationPricePerKg != null && this.triturationPricePerKg >= 0) {
+      this.childLotsWithRendement = this.childLotsWithRendement.map((lot) => ({
+        ...lot,
+        calculatedTriturationPrice: (lot.oilQuantity ?? 0) * this.triturationPricePerKg!
+      }));
+    } else if (this.itemType === PlanItemType.GLOBAL_LOT) {
+      this.childLotsWithRendement = this.childLotsWithRendement.map((lot) => ({
+        ...lot,
+        calculatedTriturationPrice: 0
+      }));
+    }
+  }
+
+  // When global rendement or oliveQuantity changes, recalculate oilQuantity for each child lot
+  private calculateChildLotsOilQuantityFromGlobalRendement(globalRendement: number): void {
+    if (this.itemType === PlanItemType.GLOBAL_LOT) {
+      this.childLotsWithRendement = this.childLotsWithRendement.map((lot) => {
+        const oilQuantity = lot.oliveQuantity * (globalRendement / 100);
+        return {
+          ...lot,
+          oilQuantity,
+          calculatedRendement: globalRendement // for display, but can be per-lot if needed
+        };
+      });
+      this.calculateChildLotsPrice(); // Also update trituration price for all lots
+    }
+  }
+
+  private finalizeConfirmation(): void {
     const result = {
+      autoSetStorage: this.autoSetStorage,   // ← include here
       confirmed: true,
-      oilQuantity: this.inputOilQuantity,
-      rendement: calculatedRendement,
+      oilQuantity: this.inputOilQuantity!,
+      rendement: this.rendement!,
       completionDate: this.completionDate,
       finalObservation: this.finalObservation.trim() || undefined,
       triturationPricePerKg: this.triturationPricePerKg,
       totalTriturationPrice: this.totalTriturationPrice,
       childLotsRendement: this.childLotsWithRendement.map((lot) => ({
         lotNumber: lot.lotNumber,
-        oilQuantity: lot.oilQuantity ?? 0,
-        rendement: lot.calculatedRendement ?? 0,
-        triturationPrice: lot.calculatedTriturationPrice ?? 0 // This is the unpaid amount
+        oilQuantity: lot.oilQuantity!,
+        rendement: lot.calculatedRendement!,
+        triturationPrice: lot.calculatedTriturationPrice!
       }))
     };
-
-    console.log('[DIALOG] Confirming completion with data:', result);
     this.dialogRef.close(result);
   }
 
@@ -240,7 +289,7 @@ export class CompletionDetailsDialogComponent implements OnInit {
   // Recalculate rendement for each child lot in a global lot
   private calculateChildLotsRendementForGlobal(): void {
     if (this.itemType === PlanItemType.GLOBAL_LOT) {
-      this.childLotsWithRendement = this.childLotsWithRendement.map(lot => {
+      this.childLotsWithRendement = this.childLotsWithRendement.map((lot) => {
         const rendement = lot.oliveQuantity > 0 && lot.oilQuantity != null ? (lot.oilQuantity / lot.oliveQuantity) * 100 : 0;
         return {
           ...lot,
@@ -248,18 +297,5 @@ export class CompletionDetailsDialogComponent implements OnInit {
         };
       });
     }
-  }
-
-  protected readonly PlanItemType = PlanItemType;
-
-  // For *ngFor trackBy
-  trackByLotNumber(index: number, lot: ChildLotWithRendement) {
-    return lot.lotNumber;
-  }
-
-  // Call price calculation when price per kg changes
-  setTriturationPricePerKg(value: number | null) {
-    this.triturationPricePerKg = value;
-    this.calculateChildLotsPrice();
   }
 }

@@ -5,6 +5,7 @@ export interface SupplierType {
   id?: string;
   supplierInfo: SupplierInfo ;
   genericSupplierType:BaseType;
+  hasStorage?:boolean
 }
 
 

@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { PlanningSaveRequest } from '../models/planningDTOS';
-import { s } from '@angular/cdk/scrolling-module.d-ud2XrbF8';
 
 /**
  * DTO for completing a child lot in a global lot
@@ -38,8 +37,8 @@ export class PlanningService {
 
 
   /** POST one single LOT's status → COMPLETED, with oilQuantity and rendement */
-  completeLotWithDetails(lotNumber: string, oilQuantity: number, rendement: number, unpaidPrice: number): Observable<string> {                       // return plain text
-     const payload = { oilQuantity, rendement, unpaidPrice };
+  completeLotWithDetails(lotNumber: string, oilQuantity: number, rendement: number, unpaidPrice: number,autoSetStorage:boolean): Observable<string> {                       // return plain text
+     const payload = { oilQuantity, rendement, unpaidPrice,autoSetStorage };
     return this.http.post(
       `${this.API_BASE_URL}/lots/${lotNumber}/completed`,
       payload,

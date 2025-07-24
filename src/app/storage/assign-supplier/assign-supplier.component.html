@@ -1,0 +1,20 @@
+<h2 mat-dialog-title>Assign Supplier</h2>
+<mat-dialog-content [formGroup]="form">
+  <mat-checkbox formControlName="hasSupplier">
+    Currently assigned
+  </mat-checkbox>
+  <supplierList
+    [formControl]="form?.controls?.supplierId"
+     (selected)="onSupplierSelected($event)">
+  </supplierList>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button
+    mat-flat-button
+    color="primary"
+    (click)="save()"
+    >
+    Save
+  </button>
+</mat-dialog-actions>

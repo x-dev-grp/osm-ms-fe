@@ -55,6 +55,19 @@ export const dashboardConfig: DashboardConfig = {
         filterable: false,
         dataTable: true,
         exportable: true
+      },     {
+        name: 'supplier',
+        label: 'Fournisseur',
+        labelTranslatePath: 'DELIVERIES.FIELDS.SUPPLIER',
+        attributeType: AttributeType.object,
+        fieldType: FieldType.autocomplete,
+        exportable: true,
+        dataTable: true,
+        filterable: true,
+        valuePath: 'supplierInfo.name',
+        valueAttributeType: AttributeType.string,
+        filterAttribute: 'supplier.supplierInfo.name',
+        getOptionsUrl:'production/suppliers_type'
       },
       {
         name: 'avgCost',

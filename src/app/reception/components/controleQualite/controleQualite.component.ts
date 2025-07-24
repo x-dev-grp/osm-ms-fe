@@ -21,8 +21,16 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {MatChipsModule} from '@angular/material/chips';
-import {MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import {
+  ConfirmationDialogData,
+  ConfirmationDialogResult,
+  ConfirmationType
+} from '../../../shared/services/confirmation-dialog.service';
+import {
+  ConfirmationDialogComponent
+} from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 
 
 @Component({
@@ -59,7 +67,8 @@ export class ControleQualiteComponent implements OnInit {
     private storageUnitService: StorageUnitDtoService,
     private translate: TranslateService,
     private router: Router,
-    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: Record<string, unknown> | null = null
+    private dialog: MatDialog,
+  @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: Record<string, unknown> | null = null
   ) {
     if (dialogData && dialogData['deliveryId']) {
       this.deliveryId = dialogData['deliveryId'] as string;
@@ -214,8 +223,36 @@ export class ControleQualiteComponent implements OnInit {
   getRuleType(ruleKey: string): 'NUMERIC' | 'BOOLEAN' | 'STRING' {
     return this.rules.find((r) => r.ruleKey === ruleKey)?.ruleType || 'NUMERIC';
   }
-
   onSave(): void {
+    this.submitted = true;
+    if (!this.mainForm.valid || this.isLoading) {
+      return;
+    }
+
+    // 1) build dialog parameters
+    const dialogData: ConfirmationDialogData = {
+      title:       this.translate.instant('STANDARD.CONFIRMATION.SAVE_QC.TITLE'),
+      message:     this.translate.instant('STANDARD.CONFIRMATION.SAVE_QC.MESSAGE'),
+      confirmText: this.translate.instant('STANDARD.CONFIRMATION.SAVE'),
+      cancelText:  this.translate.instant('STANDARD.CONFIRMATION.CANCEL'),
+      type:        ConfirmationType.WARNING,
+      destructive: false,
+      showIcon:    true
+    };
+
+    // 2) open the confirmation dialog
+    const ref = this.dialog.open(ConfirmationDialogComponent, {
+      data: dialogData
+    });
+
+    // 3) only if the user clicked “Save” do we run performSave()
+    ref.afterClosed().subscribe((res: ConfirmationDialogResult) => {
+      if (res?.confirmed) {
+        this.performSave();
+      }
+    });
+  }
+  performSave(): void {
     this.submitted = true;
     if (!this.mainForm.valid || this.isLoading ) {
       return;

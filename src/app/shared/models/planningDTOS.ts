@@ -1,5 +1,6 @@
 // Interfaces
 import { MillMachine } from './millMachine';
+import { SupplierType } from './supplier-type';
 
 export interface BoardItem {
   type: PlanItemType;
@@ -15,7 +16,7 @@ export interface PlanningItem {
   deliveryNumber?: string;
   oliveQuantity: number; // original olive weight
   globalLotNumber?: string | null | undefined;
-  supplier?: string;
+  supplier?: SupplierType;
   region?: string;
   oliveVariety?: string;
   oliveType?: string;
@@ -23,7 +24,7 @@ export interface PlanningItem {
   poidsBrute?: number;
   poidsNet?: number;
   sackCount?: number | null | undefined;
-
+  autoSetStorage?:false;
   // ← NEW FIELDS BEGIN ↓
   oilQuantity?: number | null; // how much oil (kg) was produced
   rendement?: number | null; // yield percentage
