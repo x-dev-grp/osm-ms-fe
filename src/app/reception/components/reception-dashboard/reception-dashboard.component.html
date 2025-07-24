@@ -1,96 +1,154 @@
 <!-- DASHBOARD KPI CARDS -->
-<div class="dashboard-kpis row">
-  <div class="col-md-6 col-xxl-4">
-    <app-earning-chart iconImage="#wallet-2" [headerTitle]="'DASHBOARD.KPIS.TOTAL_RECEPTIONS' | translate" [earningValue]="totalReceptions.toString()" background="bg-primary-50" textColor="text-primary-500" [color]="primaryColor" percentageValue="" [data]="receptionsPerDay"></app-earning-chart>
-  </div>
-  <div class="col-md-6 col-xxl-4">
-    <app-earning-chart iconImage="#calendar" [headerTitle]="'DASHBOARD.KPIS.PENDING_RECEPTIONS' | translate" [earningValue]="pendingReceptions.toString()" background="bg-warning-50" textColor="text-warning-500" [color]="warningColor" percentageValue="" [data]="pendingReceptionsPerDay"></app-earning-chart>
-  </div>
-  <div class="col-md-6 col-xxl-4">
-    <app-earning-chart iconImage="#book" [headerTitle]="'DASHBOARD.KPIS.COMPLETED_RECEPTIONS' | translate" [earningValue]="completedReceptions.toString()" background="bg-success-50" textColor="text-success-500" [color]="successColor" percentageValue="" [data]="completedReceptionsPerDay"></app-earning-chart>
-  </div>
-  <!-- Lower KPI cards: show only the value, not a chart -->
+<div *ngIf="isLoading" class="d-flex justify-content-center align-items-center" style="min-height: 300px;">
+  <mat-spinner></mat-spinner>
+</div>
+<div *ngIf="error && !isLoading" class="alert alert-danger text-center f-18 my-4">
+  {{ error }}
+</div>
+<div *ngIf="!isLoading && !error">
   <div class="dashboard-kpis row">
-    <div class="col-md-4 col-xxl-4">
-      <app-card [cardTitle]="'DASHBOARD.KPIS.TOTAL_VOLUME' | translate">
-        <div class="f-w-600 f-20 m-t-15">{{ totalVolume.toFixed(2) }}</div>
+    <!-- Top KPI Cards: Total, Pending, Completed -->
+         <app-earning-chart iconImage="#wallet-2" [headerTitle]="'DASHBOARD.KPIS.TOTAL_RECEPTIONS' | translate" [earningValue]="totalReceptions.toString()" background="bg-primary-50" textColor="text-primary-500" [color]="[primaryColor]" percentageValue="" [data]="receptionsPerDay && receptionsPerDay.length ? receptionsPerDay : [0]"></app-earning-chart>
+
+         <app-earning-chart iconImage="#calendar" [headerTitle]="'DASHBOARD.KPIS.PENDING_RECEPTIONS' | translate" [earningValue]="pendingReceptions.toString()" background="bg-warning-50" textColor="text-warning-500" [color]="[warningColor]" percentageValue="" [data]="pendingReceptionsPerDay && pendingReceptionsPerDay.length ? pendingReceptionsPerDay : [0]"></app-earning-chart>
+
+      <app-card [showHeader]="false" class="col-md-4 col-xxl-4 mb-4" >
+        <app-earning-chart iconImage="#book" [headerTitle]="'DASHBOARD.KPIS.COMPLETED_RECEPTIONS' | translate" [earningValue]="completedReceptions.toString()" background="bg-success-50" textColor="text-success-500" [color]="[successColor]" percentageValue="" [data]="completedReceptionsPerDay && completedReceptionsPerDay.length ? completedReceptionsPerDay : [0]"></app-earning-chart>
+      </app-card>
+     <!-- Second Row: Other KPIs, styled the same -->
+    <div class="col-md-4 col-xxl-4 mb-4">
+      <app-card [showHeader]="false" cardClass="kpi-card bg-info-50 text-info-500">
+        <div class="f-w-600 f-24 m-t-15">{{ totalVolume.toFixed(2) }}</div>
+        <div class="mat-caption">{{ 'DASHBOARD.KPIS.TOTAL_VOLUME' | translate }}</div>
       </app-card>
     </div>
-    <div class="col-md-4 col-xxl-4">
-      <app-card [cardTitle]="'DASHBOARD.KPIS.AVG_VOLUME' | translate">
-        <div class="f-w-600 f-20 m-t-15">{{ avgVolumePerReception.toFixed(2) }}</div>
+    <div class="col-md-4 col-xxl-4 mb-4">
+      <app-card [showHeader]="false" cardClass="kpi-card bg-accent-50 text-accent-500">
+        <div class="f-w-600 f-24 m-t-15">{{ avgVolumePerReception.toFixed(2) }}</div>
+        <div class="mat-caption">{{ 'DASHBOARD.KPIS.AVG_VOLUME' | translate }}</div>
       </app-card>
     </div>
-    <div class="col-md-4 col-xxl-4">
-      <app-card [cardTitle]="'DASHBOARD.KPIS.AVG_UNIT_PRICE' | translate">
-        <div class="f-w-600 f-20 m-t-15">{{ avgUnitPrice }}</div>
+    <div class="col-md-4 col-xxl-4 mb-4">
+      <app-card [showHeader]="false" cardClass="kpi-card bg-purple-50 text-purple-500">
+        <div class="f-w-600 f-24 m-t-15">{{ avgUnitPrice }}</div>
+        <div class="mat-caption">{{ 'DASHBOARD.KPIS.AVG_UNIT_PRICE' | translate }}</div>
       </app-card>
     </div>
-    <div class="col-md-4 col-xxl-4">
-      <app-card [cardTitle]="'DASHBOARD.KPIS.TOTAL_PAID' | translate">
-        <div class="f-w-600 f-20 m-t-15">{{ totalPaidAmount }}</div>
+    <div class="col-md-4 col-xxl-4 mb-4">
+      <app-card [showHeader]="false" cardClass="kpi-card bg-success-50 text-success-500">
+        <div class="f-w-600 f-24 m-t-15">{{ totalPaidAmount }}</div>
+        <div class="mat-caption">{{ 'DASHBOARD.KPIS.TOTAL_PAID' | translate }}</div>
       </app-card>
     </div>
-    <div class="col-md-4 col-xxl-4">
-      <app-card [cardTitle]="'DASHBOARD.KPIS.TOTAL_UNPAID' | translate">
-        <div class="f-w-600 f-20 m-t-15">{{ totalUnpaidAmount }}</div>
+    <div class="col-md-4 col-xxl-4 mb-4">
+      <app-card [showHeader]="false" cardClass="kpi-card bg-warn-50 text-warn-500">
+        <div class="f-w-600 f-24 m-t-15">{{ totalUnpaidAmount }}</div>
+        <div class="mat-caption">{{ 'DASHBOARD.KPIS.TOTAL_UNPAID' | translate }}</div>
       </app-card>
     </div>
-    <div class="col-md-4 col-xxl-4">
-      <app-card [cardTitle]="'DASHBOARD.KPIS.UNIQUE_SUPPLIERS' | translate">
-        <div class="f-w-600 f-20 m-t-15">{{ uniqueSuppliers.toString() }}</div>
+    <div class="col-md-4 col-xxl-4 mb-4">
+      <app-card [showHeader]="false" cardClass="kpi-card bg-primary-50 text-primary-500">
+        <div class="f-w-600 f-24 m-t-15">{{ uniqueSuppliers.toString() }}</div>
+        <div class="mat-caption">{{ 'DASHBOARD.KPIS.UNIQUE_SUPPLIERS' | translate }}</div>
       </app-card>
     </div>
   </div>
-</div>
-<!-- DASHBOARD ANALYTICS SECTION -->
-<div class="dashboard-analytics row">
-  <!-- Left Column: Main Analytics -->
-  <div class="col-lg-8">
-    <app-card [cardTitle]="'DASHBOARD.ANALYTICS.RECEPTION_TREND.TITLE' | translate">
-      <div class="d-flex justify-content-between mb-3">
-        <div class="btn-group">
-          <button mat-button [class.active]="currentReceptionTrendView === 'monthly'"  >{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.MONTHLY' | translate }}</button>
-          <button mat-button [class.active]="currentReceptionTrendView === 'weekly'"  >{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.WEEKLY' | translate }}</button>
-          <button mat-button [class.active]="currentReceptionTrendView === 'daily'"  >{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.DAILY' | translate }}</button>
+  <!-- Remove period selector from trend graph, show as a simple area chart -->
+  <div class="dashboard-analytics row">
+    <div class="col-lg-12 col-12 mb-4">
+      <app-card [cardTitle]="'DASHBOARD.ANALYTICS.RECEPTION_TREND.TITLE' | translate">
+        <ng-container *ngIf="receptionsTrendChartOptions.series && receptionsTrendChartOptions.series[0]?.data?.length; else noTrendData">
+          <apx-chart [series]="receptionsTrendChartOptions.series" [chart]="receptionsTrendChartOptions.chart" [xaxis]="receptionsTrendChartOptions.xaxis" [colors]="receptionsTrendChartOptions.colors"></apx-chart>
+        </ng-container>
+        <ng-template #noTrendData>
+          <div class="text-center text-muted py-4">{{ 'DASHBOARD.NO_DATA' | translate }}</div>
+        </ng-template>
+      </app-card>
+    </div>
+    <!-- Status and Type: Small Graphs -->
+    <div class="col-lg-4 col-12 mb-4">
+      <div class="row">
+        <div class="col-12 mb-4">
+          <app-card [cardTitle]="'DASHBOARD.ANALYTICS.RECEPTION_STATUS' | translate">
+            <ng-container *ngIf="receptionsByStatusChartOptions.series && receptionsByStatusChartOptions.series.length; else noStatusData">
+              <apx-chart [series]="receptionsByStatusChartOptions.series" [chart]="receptionsByStatusChartOptions.chart" [labels]="receptionsByStatusChartOptions.labels" [colors]="receptionsByStatusChartOptions.colors"></apx-chart>
+            </ng-container>
+            <ng-template #noStatusData>
+              <div class="text-center text-muted py-4">{{ 'DASHBOARD.NO_DATA' | translate }}</div>
+            </ng-template>
+          </app-card>
         </div>
-
+        <div class="col-12">
+          <app-card [cardTitle]="'DASHBOARD.ANALYTICS.RECEPTION_TYPE' | translate">
+            <ng-container *ngIf="receptionsByTypeChartOptions.series && receptionsByTypeChartOptions.series.length; else noTypeData">
+              <apx-chart [series]="receptionsByTypeChartOptions.series" [chart]="receptionsByTypeChartOptions.chart" [xaxis]="receptionsByTypeChartOptions.xaxis" [colors]="receptionsByTypeChartOptions.colors"></apx-chart>
+            </ng-container>
+            <ng-template #noTypeData>
+              <div class="text-center text-muted py-4">{{ 'DASHBOARD.NO_DATA' | translate }}</div>
+            </ng-template>
+          </app-card>
+        </div>
       </div>
-      <apx-chart [series]="receptionsTrendChartOptions.series" [chart]="receptionsTrendChartOptions.chart" [xaxis]="receptionsTrendChartOptions.xaxis" [colors]="receptionsTrendChartOptions.colors"></apx-chart>
-    </app-card>
-    <app-card [cardTitle]="'DASHBOARD.ANALYTICS.RECEPTION_STATUS' | translate">
-      <apx-chart [series]="receptionsByStatusChartOptions.series" [chart]="receptionsByStatusChartOptions.chart" [labels]="receptionsByStatusChartOptions.labels" [colors]="receptionsByStatusChartOptions.colors"></apx-chart>
-    </app-card>
-    <app-card [cardTitle]="'DASHBOARD.ANALYTICS.RECEPTION_TYPE' | translate">
-      <apx-chart [series]="receptionsByTypeChartOptions.series" [chart]="receptionsByTypeChartOptions.chart" [xaxis]="receptionsByTypeChartOptions.xaxis" [colors]="receptionsByTypeChartOptions.colors"></apx-chart>
-    </app-card>
-  </div>
-  <!-- Right Column: Supplier, Storage, Quality -->
-  <div class="col-lg-4">
-    <app-card [cardTitle]="'DASHBOARD.ANALYTICS.VOLUME_BY_SUPPLIER' | translate">
-      <apx-chart [series]="volumeBySupplierChartOptions.series" [chart]="volumeBySupplierChartOptions.chart" [xaxis]="volumeBySupplierChartOptions.xaxis" [colors]="volumeBySupplierChartOptions.colors"></apx-chart>
-    </app-card>
-    <app-card [cardTitle]="'DASHBOARD.ANALYTICS.VOLUME_BY_STORAGE' | translate">
-      <apx-chart [series]="volumeByStorageChartOptions.series" [chart]="volumeByStorageChartOptions.chart" [xaxis]="volumeByStorageChartOptions.xaxis" [colors]="volumeByStorageChartOptions.colors"></apx-chart>
-    </app-card>
-    <app-card [cardTitle]="'DASHBOARD.ANALYTICS.QUALITY_CONTROL' | translate">
-      <apx-chart [series]="qualityControlChartOptions.series" [chart]="qualityControlChartOptions.chart" [labels]="qualityControlChartOptions.labels" [colors]="qualityControlChartOptions.colors"></apx-chart>
-    </app-card>
+    </div>
+    <!-- Volume by Supplier and Storage: Small Graphs -->
+    <div class="col-lg-4 col-12 mb-4">
+      <div class="row">
+        <div class="col-12 mb-4">
+          <app-card [cardTitle]="'DASHBOARD.ANALYTICS.VOLUME_BY_SUPPLIER' | translate">
+            <ng-container *ngIf="volumeBySupplierChartOptions.series && volumeBySupplierChartOptions.series[0]?.data?.length; else noSupplierData">
+              <apx-chart [series]="volumeBySupplierChartOptions.series" [chart]="volumeBySupplierChartOptions.chart" [xaxis]="volumeBySupplierChartOptions.xaxis" [colors]="volumeBySupplierChartOptions.colors"></apx-chart>
+            </ng-container>
+            <ng-template #noSupplierData>
+              <div class="text-center text-muted py-4">{{ 'DASHBOARD.NO_DATA' | translate }}</div>
+            </ng-template>
+          </app-card>
+        </div>
+        <div class="col-12 mb-4">
+          <app-card [cardTitle]="'DASHBOARD.ANALYTICS.VOLUME_BY_STORAGE' | translate">
+            <ng-container *ngIf="volumeByStorageChartOptions.series && volumeByStorageChartOptions.series[0]?.data?.length; else noStorageData">
+              <apx-chart [series]="volumeByStorageChartOptions.series" [chart]="volumeByStorageChartOptions.chart" [xaxis]="volumeByStorageChartOptions.xaxis" [colors]="volumeByStorageChartOptions.colors"></apx-chart>
+            </ng-container>
+            <ng-template #noStorageData>
+              <div class="text-center text-muted py-4">{{ 'DASHBOARD.NO_DATA' | translate }}</div>
+            </ng-template>
+          </app-card>
+        </div>
+        <div class="col-12">
+          <app-card [cardTitle]="'DASHBOARD.ANALYTICS.QUALITY_CONTROL' | translate">
+            <ng-container *ngIf="qualityControlChartOptions.series && qualityControlChartOptions.series.length; else noQualityData">
+              <apx-chart [series]="qualityControlChartOptions.series" [chart]="qualityControlChartOptions.chart" [labels]="qualityControlChartOptions.labels" [colors]="qualityControlChartOptions.colors"></apx-chart>
+            </ng-container>
+            <ng-template #noQualityData>
+              <div class="text-center text-muted py-4">{{ 'DASHBOARD.NO_DATA' | translate }}</div>
+            </ng-template>
+          </app-card>
+        </div>
+      </div>
+    </div>
+    <!-- Recent Receptions: Large Graph -->
+    <div class="col-lg-8 col-12 mb-4">
+      <app-card [cardTitle]="'DASHBOARD.ANALYTICS.RECENT_RECEPTIONS' | translate">
+        <ng-container *ngIf="recentReceptionsChartOptions.series && recentReceptionsChartOptions.series[0]?.data?.length; else noRecentData">
+          <apx-chart
+            [series]="recentReceptionsChartOptions.series"
+            [chart]="recentReceptionsChartOptions.chart"
+            [xaxis]="recentReceptionsChartOptions.xaxis"
+            [yaxis]="recentReceptionsChartOptions.yaxis"
+            [tooltip]="recentReceptionsChartOptions.tooltip"
+            [colors]="recentReceptionsChartOptions.colors"
+          ></apx-chart>
+        </ng-container>
+        <ng-template #noRecentData>
+          <div class="text-center text-muted py-4">{{ 'DASHBOARD.NO_DATA' | translate }}</div>
+        </ng-template>
+      </app-card>
+    </div>
   </div>
 </div>
 
-<!-- RECENT RECEPTIONS CHART -->
-<div class="dashboard-recent row">
-  <div class="col-lg-12">
-    <app-card [cardTitle]="'DASHBOARD.ANALYTICS.RECENT_RECEPTIONS' | translate">
-      <apx-chart
-        [series]="recentReceptionsChartOptions.series"
-        [chart]="recentReceptionsChartOptions.chart"
-        [xaxis]="recentReceptionsChartOptions.xaxis"
-        [yaxis]="recentReceptionsChartOptions.yaxis"
-        [tooltip]="recentReceptionsChartOptions.tooltip"
-        [colors]="recentReceptionsChartOptions.colors"
-      ></apx-chart>
-    </app-card>
-  </div>
-</div>
+<style>
+.active-period {
+  font-weight: bold;
+  border-bottom: 2px solid var(--primary-500);
+}
+</style>

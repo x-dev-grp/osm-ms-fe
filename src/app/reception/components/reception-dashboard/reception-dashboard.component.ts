@@ -13,7 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { Subject, of } from 'rxjs';
+import { Subject, of, combineLatest } from 'rxjs';
 import { catchError, takeUntil } from 'rxjs/operators';
 import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
 import { SupplierType } from '../../../shared/models/supplier-type';
@@ -125,7 +125,7 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.onResize();
-    this.loadData();
+    this.loadAllData();
   }
 
   ngOnDestroy(): void {
@@ -134,90 +134,46 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
   }
 
   // -------------------------------------------------------
-  // Data loading & error handling
+  // Refactored Data loading & error handling
   // -------------------------------------------------------
-  private loadData(): void {
+  private loadAllData(): void {
     this.isLoading = true;
     this.error = null;
-    let deliveriesLoaded = false;
-    let suppliersLoaded = false;
-    let storageLoaded = false;
-    let deliveriesError = false;
-    let suppliersError = false;
-    let storageError = false;
-
-    // Helper to check if all done
-    const checkAllLoaded = () => {
-      if ((deliveriesLoaded || deliveriesError) && (suppliersLoaded || suppliersError) && (storageLoaded || storageError)) {
+    combineLatest([
+      this.deliveryService.getAllDeliveriesList().pipe(catchError(() => { this.error = 'Failed to load deliveries.'; return of({ data: [] }); })),
+      this.supplierService.getAllSuppliers().pipe(catchError(() => { this.error = 'Failed to load suppliers.'; return of({ data: [] }); })),
+      this.storageService.getAllStorageUnit().pipe(catchError(() => { this.error = 'Failed to load storage units.'; return of({ data: [] }); }))
+    ]).pipe(takeUntil(this.destroy$)).subscribe({
+      next: ([deliveries, suppliers, storage]) => {
+        this.receptions = Array.isArray(deliveries.data) ? deliveries.data.filter(Boolean) : (deliveries.data ? [deliveries.data] : []);
+        this.suppliers = Array.isArray(suppliers.data) ? suppliers.data.filter(Boolean) : (suppliers.data ? [suppliers.data] : []);
+        this.storageUnits = Array.isArray(storage.data) ? storage.data.filter(Boolean) : (storage.data ? [storage.data] : []);
+        if (this.error) {
+          this.isLoading = false;
+          this.cdr.markForCheck();
+          return;
+        }
+        // Prepare sparkline data (last 7 days)
+        this.receptionsPerDay = this.getReceptionsPerDay(this.receptions, 7);
+        this.pendingReceptionsPerDay = this.getReceptionsPerDay(
+          this.receptions.filter((r) => r.status === OliveLotStatus.IN_PROGRESS),
+          7
+        );
+        this.completedReceptionsPerDay = this.getReceptionsPerDay(
+          this.receptions.filter((r) => r.status === OliveLotStatus.COMPLETED),
+          7
+        );
+        this.volumePerDay = this.getVolumePerDay(this.receptions, 7);
+        // Compute stats & build all charts
+        this.prepareStatsAndCharts();
         this.isLoading = false;
         this.cdr.markForCheck();
-        if (!deliveriesError && !suppliersError && !storageError) {
-          // Prepare sparkline data (last 7 days)
-          this.receptionsPerDay = this.getReceptionsPerDay(this.receptions, 7);
-          this.pendingReceptionsPerDay = this.getReceptionsPerDay(
-            this.receptions.filter((r) => r.status === OliveLotStatus.IN_PROGRESS),
-            7
-          );
-          this.completedReceptionsPerDay = this.getReceptionsPerDay(
-            this.receptions.filter((r) => r.status === OliveLotStatus.COMPLETED),
-            7
-          );
-          this.volumePerDay = this.getVolumePerDay(this.receptions, 7);
-          // Compute stats & build all charts
-          this.prepareStatsAndCharts();
-        }
+      },
+      error: () => {
+        this.error = 'Failed to load dashboard data.';
+        this.isLoading = false;
+        this.cdr.markForCheck();
       }
-    };
-
-    // Deliveries
-    this.deliveryService.getAllDeliveriesList().pipe(
-      catchError(() => {
-        deliveriesError = true;
-        this.error = 'Failed to load deliveries.';
-        this.receptions = [];
-        checkAllLoaded();
-        return of({ data: [] });
-      }),
-      takeUntil(this.destroy$)
-    ).subscribe((deliveries) => {
-      this.receptions = Array.isArray(deliveries.data) ? deliveries.data.filter(Boolean) : (deliveries.data ? [deliveries.data] : []);
-      deliveriesLoaded = true;
-      console.log('Loaded receptions:', this.receptions);
-      checkAllLoaded();
-    });
-
-    // Suppliers
-    this.supplierService.getAllSuppliers().pipe(
-      catchError(() => {
-        suppliersError = true;
-        this.error = 'Failed to load suppliers.';
-        this.suppliers = [];
-        checkAllLoaded();
-        return of({ data: [] });
-      }),
-      takeUntil(this.destroy$)
-    ).subscribe((suppliers) => {
-      this.suppliers = Array.isArray(suppliers.data) ? suppliers.data.filter(Boolean) : (suppliers.data ? [suppliers.data] : []);
-      suppliersLoaded = true;
-      console.log('Loaded suppliers:', this.suppliers);
-      checkAllLoaded();
-    });
-
-    // Storage Units
-    this.storageService.getAllStorageUnit().pipe(
-      catchError(() => {
-        storageError = true;
-        this.error = 'Failed to load storage units.';
-        this.storageUnits = [];
-        checkAllLoaded();
-        return of({ data: [] });
-      }),
-      takeUntil(this.destroy$)
-    ).subscribe((storage) => {
-      this.storageUnits = Array.isArray(storage.data) ? storage.data.filter(Boolean) : (storage.data ? [storage.data] : []);
-      storageLoaded = true;
-      console.log('Loaded storageUnits:', this.storageUnits);
-      checkAllLoaded();
     });
   }
 
@@ -274,9 +230,24 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
   }
 
   // -------------------------------------------------------
-  // Chart‐building helpers
+  // Trend View Switch Handler
+  // -------------------------------------------------------
+  setReceptionTrendView(view: 'monthly' | 'weekly' | 'daily') {
+    if (this.currentReceptionTrendView !== view) {
+      this.currentReceptionTrendView = view;
+      this.buildTrendChart();
+      this.cdr.markForCheck();
+    }
+  }
+
+  // -------------------------------------------------------
+  // Chart‐building helpers (add guards for empty/missing data)
   // -------------------------------------------------------
   private buildStatusChart(): void {
+    if (!this.receptions || this.receptions.length === 0) {
+      this.receptionsByStatusChartOptions = { series: [], labels: [], chart: { type: 'pie' } };
+      return;
+    }
     const statuses = Array.from(new Set(this.receptions.map((r) => r.status)));
     const counts = statuses.map((s) => this.receptions.filter((r) => r.status === s).length);
     const labels = statuses.map((s) => this.translate.instant(`DASHBOARD.ANALYTICS.STATUS.${s}`));
@@ -295,6 +266,10 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
   }
 
   private buildTrendChart(): void {
+    if (!this.receptions || this.receptions.length === 0) {
+      this.receptionsTrendChartOptions = { series: [{ name: this.translate.instant('DASHBOARD.ANALYTICS.TREND'), data: [] }], xaxis: { categories: [] }, chart: { type: 'area' } };
+      return;
+    }
     // Choose granularity
     let categories: string[];
     let data: number[];
@@ -323,6 +298,10 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
   }
 
   private buildTypeChart(): void {
+    if (!this.receptions || this.receptions.length === 0) {
+      this.receptionsByTypeChartOptions = { series: [], labels: [], chart: { type: 'pie' } };
+      return;
+    }
     // Use correct type extraction and string conversion
     const types = Array.from(new Set(this.receptions.map((r) => r.operationType)));
     const counts = types.map((t) => this.receptions.filter((r) => r.operationType === t).length);
@@ -341,6 +320,10 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
   }
 
   private buildVolumeBySupplierChart(): void {
+    if (!this.suppliers || this.suppliers.length === 0) {
+      this.volumeBySupplierChartOptions = { series: [{ name: this.translate.instant('DASHBOARD.ANALYTICS.VOLUME'), data: [] }], xaxis: { categories: [] }, chart: { type: 'bar' } };
+      return;
+    }
     // Use supplier.id for matching
     const names = this.suppliers.map((s) => s.supplierInfo.name);
     const volumes = this.suppliers.map((s) =>
@@ -359,6 +342,10 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
   }
 
   private buildVolumeByStorageChart(): void {
+    if (!this.storageUnits || this.storageUnits.length === 0) {
+      this.volumeByStorageChartOptions = { series: [{ name: this.translate.instant('DASHBOARD.ANALYTICS.VOLUME'), data: [] }], xaxis: { categories: [] }, chart: { type: 'bar' } };
+      return;
+    }
     // Use storageUnit?.id for matching
     const names = this.storageUnits.map((s) => s.name);
     const volumes = this.storageUnits.map((s) =>
@@ -377,6 +364,10 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
   }
 
   private buildQualityControlChart(): void {
+    if (!this.receptions || this.receptions.length === 0) {
+      this.qualityControlChartOptions = { series: [], labels: [], chart: { type: 'pie' } };
+      return;
+    }
     // Count passed/failed based on ruleType and measuredValue
     let passed = 0;
     let failed = 0;
@@ -416,6 +407,10 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
   }
 
   private buildRecentReceptionsChart(): void {
+    if (!this.receptions || this.receptions.length === 0) {
+      this.recentReceptionsChartOptions = { series: [{ name: this.translate.instant('DASHBOARD.ANALYTICS.RECENT_RECEPTIONS'), data: [] }], xaxis: { categories: [] }, chart: { type: 'line' } };
+      return;
+    }
     const categories = this.getLastNDates(7);
     const data = this.getReceptionsPerDay(this.receptions, 7);
 

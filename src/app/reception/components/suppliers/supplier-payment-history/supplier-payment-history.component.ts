@@ -32,6 +32,12 @@ import { QualityControlResultService } from '../../../../shared/services/quality
 import { QualityControlResultDto } from '../../../../shared/models/QualityControlResultDto';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { FinancialTransaction, PaymentMethod, TransactionStatus } from '../../../../finance/models/financial-transaction';
+import { OsmDashboard } from '../../../../shared/modules/osm-dashboard/osm-dashboard';
+import { OIL_CREDIT_DASHBOARD } from './oil-credit-dashboard.config';
+import { AttributeType, DashboardConfig, FieldType } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { SearchOperation } from '../../../../shared/models/advanced-search/searchOperation';
+import { deliveryType } from '../../../../shared/models/deleveryType';
+import { PAIMENT_DASHBOARD } from './paiment-dashboard.config';
 
 export interface PaymentHistoryItem {
   id: string;
@@ -72,7 +78,8 @@ export interface PaymentHistoryItem {
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    MatCheckbox
+    MatCheckbox,
+    OsmDashboard
   ],
   templateUrl: './supplier-payment-history.component.html',
   styleUrls: ['./supplier-payment-history.component.scss'],
@@ -106,21 +113,14 @@ export interface PaymentHistoryItem {
   ]
 })
 export class SupplierPaymentHistoryComponent implements OnInit {
-  supplierId: string = '';
+  supplierId: string;
   supplierName: string = '';
-  historyType: 'oil_credit' | 'paid' | 'unpaid' | 'all' = 'oil_credit';
-  loading = true;
+  historyType: 'oil_credit' | 'paid' | 'unpaid' = 'oil_credit';
+  loading = false;
   error: string | null = null;
   payments: PaymentHistoryItem[] = [];
   displayedColumns: string[] = ['deliveryNumber', 'lotNumber', 'deliveryDate', 'price', 'paidAmount', 'unpaidAmount', 'status', 'actions'];
-  displayedColumnsWithSelect: string[] = ['select', ...this.displayedColumns];
 
-  // Selection logic for batch operations
-  selectedPayments: PaymentHistoryItem[] = [];
-  batchPaymentMode = false;
-  batchPaymentForm: FormGroup;
-  selectedBatchOilLots: string[] = [];
-  // Summary statistics
   totalDeliveries = 0;
   totalPaid = 0;
   totalUnpaid = 0;
@@ -135,27 +135,23 @@ export class SupplierPaymentHistoryComponent implements OnInit {
   selectedDelivery: PaymentHistoryItem | null = null;
   bankAccounts: BankAccount[] = [];
   loadingBankAccounts = false;
-  // Payment method dropdown state
   selectedPaymentMethod: 'cash' | 'oil' | 'both' = 'cash';
   moneyPaymentMethod: 'cash' | 'check' | 'bank_transfer' = 'cash';
-  // Mock properties for batch payment UI demo
-  mockBatchPaymentMethod: 'money' | 'oil' = 'money';
-  mockBatchMoneyMethod: 'cash' | 'check' | 'bank_transfer' = 'cash';
+
   @ViewChild('paymentPaginator') paymentPaginator!: MatPaginator;
   @ViewChild('paymentSort') paymentSort!: MatSort;
   @ViewChild('oilCreditPaginator') oilCreditPaginator!: MatPaginator;
   @ViewChild('oilCreditSort') oilCreditSort!: MatSort;
   paymentsDataSource = new MatTableDataSource<PaymentHistoryItem>([]);
-  oilCreditsDataSource = new MatTableDataSource<OilCredit>([]);
-  // Oil credit statistics
-  totalOilCredits = 0;
-  totalOilCreditQuantityL = 0;
-  totalOilCreditQuantityKG = 0;
-  oilCreditStateCounts: { [key: string]: number } = {};
+
+  OIL_CREDIT_DASHBOARD: DashboardConfig = OIL_CREDIT_DASHBOARD;
+  PAIMENT_DASHBOARD: DashboardConfig = PAIMENT_DASHBOARD;
 
   // Remove old paymentMethodMoney/paymentMethodOil logic from UI control (keep for form logic if needed)
-  oilCreditColumns: string[] = ['quantity', 'unit', 'oil_type', 'creditState', 'createdDate'];
   oilQcResults: QualityControlResultDto[] = [];
+  // Add property to store related oil delivery
+  relatedOilDelivery: UnifiedDelivery | null = null;
+  oilPaymentAvailable = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -165,9 +161,7 @@ export class SupplierPaymentHistoryComponent implements OnInit {
     private fb: FormBuilder,
     private translateService: TranslateService,
     private toastService: ToastService,
-    private dialog: MatDialog,
-    private oilCreditService: OilCreditService,
-    private qcResultService: QualityControlResultService
+
   ) {
     this.paymentForm = this.fb.group({
       amount: [0, [Validators.required, Validators.min(0.01)]],
@@ -177,68 +171,6 @@ export class SupplierPaymentHistoryComponent implements OnInit {
       oilPricePerKg: [this.oilPricePerLiter, [Validators.required, Validators.min(0.01)]],
       moneyPaymentMethod: ['cash']
     });
-  }
-
-  get batchLots(): string {
-    return this.selectedPayments.map((p) => p.lotNumber).join(', ');
-  }
-
-  get batchOilLots() {
-    return this.selectedPayments.map((p) => ({
-      lotNumber: p.lotNumber,
-      oilQuantity: p.oilQuantity || 0
-    }));
-  }
-
-  isSelected(payment: PaymentHistoryItem): boolean {
-    return this.selectedPayments.includes(payment);
-  }
-
-  toggleSelection(payment: PaymentHistoryItem): void {
-    if (this.isSelected(payment)) {
-      this.selectedPayments = this.selectedPayments.filter((p) => p !== payment);
-    } else {
-      this.selectedPayments.push(payment);
-    }
-  }
-
-  toggleSelectAll(event: MatCheckboxChange): void {
-    if (event.checked) {
-      this.selectedPayments = [...this.payments];
-    } else {
-      this.selectedPayments = [];
-    }
-  }
-
-  isAllSelected(): boolean {
-    return this.selectedPayments.length === this.payments.length && this.payments.length > 0;
-  }
-
-  isSomeSelected(): boolean {
-    return this.selectedPayments.length > 0 && this.selectedPayments.length < this.payments.length;
-  }
-
-  openBatchPayment(): void {
-    this.batchPaymentMode = true;
-    const totalUnpaid = this.selectedPayments.reduce((sum, p) => sum + p.unpaidAmount, 0);
-    this.batchPaymentForm = this.fb.group({
-      amount: [totalUnpaid, [Validators.required, Validators.min(0.01)]]
-      // Add more fields as needed (e.g., payment method)
-    });
-  }
-
-  closeBatchPaymentForm(): void {
-    this.batchPaymentMode = false;
-  }
-
-  processBatchPayment(): void {
-    if (this.batchPaymentForm.valid) {
-      // TODO: Send batchPaymentForm.value and selectedPayments to backend/service
-      // After success:
-      this.batchPaymentMode = false;
-      this.selectedPayments = [];
-      // Optionally reload data
-    }
   }
 
   /**
@@ -277,22 +209,10 @@ export class SupplierPaymentHistoryComponent implements OnInit {
     console.log(`[SupplierPayment] Payment method change completed: ${this.selectedPaymentMethod}`);
   }
 
-  onBatchPaymentMethodChange(event: { value: string }) {
-    console.log('Batch payment method changed:', event.value);
-    console.log('mockBatchPaymentMethod:', this.mockBatchPaymentMethod);
-  }
-
-  onBatchMoneyMethodChange(event: { value: string }) {
-    console.log('Batch money method changed:', event.value);
-    console.log('mockBatchMoneyMethod:', this.mockBatchMoneyMethod);
-  }
-
   ngOnInit(): void {
-    this.supplierId = this.route.snapshot.paramMap.get('id') || '';
-    this.supplierName = this.route.snapshot.paramMap.get('name') || '';
-    // Read the 'type' query param to set the default tab
+    this.supplierId = <string>this.route.snapshot.paramMap.get('id');
     const typeParam = this.route.snapshot.queryParamMap.get('type');
-    if (typeParam === 'paid' || typeParam === 'unpaid' || typeParam === 'oil_credit' || typeParam === 'all') {
+    if (typeParam === 'paid' || typeParam === 'unpaid' || typeParam === 'oil_credit') {
       this.historyType = typeParam;
     } else {
       this.historyType = 'oil_credit';
@@ -306,140 +226,60 @@ export class SupplierPaymentHistoryComponent implements OnInit {
 
     if (this.historyType === 'oil_credit') {
       this.loadOilCredits();
-    } else {
-      this.loadPaymentHistory();
+    } else  {
+      this.loadPaymentHistory(typeParam!);
     }
     this.loadBankAccounts();
   }
 
-  onBack(): void {
-    if (this.supplierId) {
-      this.router.navigate(['/reception/fournisseur/details', this.supplierId]);
-    } else {
-      this.router.navigate(['/reception/fournisseur']);
-    }
-  }
-
-  setHistoryType(type: 'oil_credit' | 'paid' | 'unpaid' | 'all'): void {
+  setHistoryType(type: 'oil_credit' | 'paid' | 'unpaid'): void {
     this.historyType = type;
     if (type === 'oil_credit') {
       this.loadOilCredits();
     } else {
-      this.loadPaymentHistory();
+      this.loadPaymentHistory(type!);
     }
   }
 
-  loadOilCredits(): void {
-    this.loading = true;
-    this.error = null;
-    this.oilCreditsDataSource.data = [];
-    this.oilCreditService.getAllOilCreditList().subscribe({
-      next: (response) => {
-        if (response.success && response.data) {
-          const filtered = response.data.filter((credit: OilCredit) => credit.destinataire && credit.destinataire.id === this.supplierId);
-          this.oilCreditsDataSource.data = filtered;
-          setTimeout(() => {
-            this.oilCreditsDataSource.paginator = this.oilCreditPaginator;
-            this.oilCreditsDataSource.sort = this.oilCreditSort;
-          });
-          this.calculateOilCreditStatistics();
-        } else {
-          this.oilCreditsDataSource.data = [];
-          this.error = response.message || this.translateService.instant('SUPPLIER_PAYMENT.ERRORS.NO_DATA_FOUND');
-          this.calculateOilCreditStatistics();
+  loadOilCredits( ): void {
+    this.OIL_CREDIT_DASHBOARD = {
+      ...this.OIL_CREDIT_DASHBOARD,
+      defaultSearchData: {
+        ...this.OIL_CREDIT_DASHBOARD.defaultSearchData,
+        searchData: {
+          ...this.OIL_CREDIT_DASHBOARD.defaultSearchData?.searchData,
+          search: {
+            ...this.OIL_CREDIT_DASHBOARD.defaultSearchData?.searchData?.search,
+            destinataire: {
+              equalValue: this.supplierId
+            }
+          }
         }
-        this.loading = false;
-      },
-      error: (error: unknown) => {
-        console.error('Error loading oil credits:', error);
-        this.error = this.translateService.instant('SUPPLIER_PAYMENT.ERRORS.LOAD_ERROR');
-        this.oilCreditsDataSource.data = [];
-        this.calculateOilCreditStatistics();
-        this.loading = false;
       }
-    });
+    };
   }
 
-  calculateOilCreditStatistics(): void {
-    const data = this.oilCreditsDataSource.data;
-    this.totalOilCredits = data.length;
-    this.totalOilCreditQuantityL = data.filter((c) => c.unit === 'KG').reduce((sum, c) => sum + (c.quantity || 0), 0);
-    this.totalOilCreditQuantityKG = data.filter((c) => c.unit === 'KG').reduce((sum, c) => sum + (c.quantity || 0), 0);
-    this.oilCreditStateCounts = {};
-    for (const c of data) {
-      const state = c.creditState || 'UNKNOWN';
-      this.oilCreditStateCounts[state] = (this.oilCreditStateCounts[state] || 0) + 1;
-    }
-  }
-
-  getHistoryTypeTitle(): string {
-    switch (this.historyType) {
-      case 'paid':
-        return 'SUPPLIER_PAYMENT.PAID_DELIVERIES';
-      case 'unpaid':
-        return 'SUPPLIER_PAYMENT.UNPAID_DELIVERIES';
-      default:
-        return 'SUPPLIER_PAYMENT.ALL_DELIVERIES';
-    }
-  }
-
-  loadPaymentHistory(): void {
-    this.loading = true;
-    this.error = null;
-    this.paymentsDataSource.data = [];
-    this.deliveryService.getDeliveriesBySupplier(this.supplierId).subscribe({
-      next: (response) => {
-        if (response.success && response.data) {
-          const allPayments = this.convertDeliveriesToPaymentHistory(response.data);
-          const filtered = this.filterPaymentsByType(allPayments);
-          this.paymentsDataSource.data = filtered;
-          setTimeout(() => {
-            this.paymentsDataSource.paginator = this.paymentPaginator;
-            this.paymentsDataSource.sort = this.paymentSort;
-          });
-          this.calculateSummaryStatistics();
-        } else {
-          this.paymentsDataSource.data = [];
-          this.error = response.message || this.translateService.instant('SUPPLIER_PAYMENT.ERRORS.NO_DATA_FOUND');
+  loadPaymentHistory(isPaid:string): void {
+    this.PAIMENT_DASHBOARD = {
+      ...this.PAIMENT_DASHBOARD,
+      defaultSearchData: {
+        ...this.PAIMENT_DASHBOARD.defaultSearchData,
+        searchData: {
+          ...this.PAIMENT_DASHBOARD.defaultSearchData?.searchData,
+          search: {
+            ...this.PAIMENT_DASHBOARD.defaultSearchData?.searchData?.search,
+            'supplier.id': {
+              equalValue: this.supplierId!
+            },
+            'paid':{
+              equalValue: isPaid=='paid'? true : false
+            }
+          }
         }
-        this.loading = false;
-      },
-      error: (error) => {
-        console.error('Error loading payment history:', error);
-        this.error = this.translateService.instant('SUPPLIER_PAYMENT.ERRORS.LOAD_ERROR');
-        this.loading = false;
       }
-    });
+    };
   }
-
-  getStatusColor(status: string): string {
-    switch (status) {
-      case 'paid':
-        return 'success';
-      case 'partial':
-        return 'warning';
-      case 'unpaid':
-        return 'error';
-      default:
-        return 'default';
-    }
-  }
-
-  getStatusLabel(status: string): string {
-    switch (status) {
-      case 'paid':
-        return this.translateService.instant('SUPPLIER_PAYMENT.STATUS_PAID');
-      case 'partial':
-        return this.translateService.instant('SUPPLIER_PAYMENT.STATUS_PARTIAL');
-      case 'unpaid':
-        return this.translateService.instant('SUPPLIER_PAYMENT.STATUS_UNPAID');
-      default:
-        return this.translateService.instant('SUPPLIER_PAYMENT.STATUS_UNKNOWN');
-    }
-  }
-
-  // Payment functionality methods
-  initiatePayment(payment: PaymentHistoryItem): void {
+  initiatePayment(payment: any): void {
     this.selectedPayment = payment;
     this.showPaymentForm = true;
     this.resetPaymentForm();
@@ -462,9 +302,7 @@ export class SupplierPaymentHistoryComponent implements OnInit {
       this.getDeliveryByOliveLotNumber(payment.id);
     } else {
       this.oilQcResults = [];
-    }
-  }
-
+    }}
   closePaymentForm(): void {
     this.selectedPayment = null;
     this.resetPaymentForm();
@@ -499,14 +337,6 @@ export class SupplierPaymentHistoryComponent implements OnInit {
     this.paymentForm!.get('bankAccountId')?.updateValueAndValidity();
   }
 
-  onOilPriceChange(): void {
-    // Recalculate oil equivalent when price changes
-    this.calculateOilEquivalent();
-    // Recalculate payment if oil quantity is already set
-    if (this.paymentForm!.get('oilQuantity')?.value > 0) {
-      this.calculateOilPayment();
-    }
-  }
 
   calculateOilEquivalent(): void {
     if (this.selectedPayment) {
@@ -729,7 +559,6 @@ export class SupplierPaymentHistoryComponent implements OnInit {
             amount: cashAmount,
             currency: 'TND',
             paymentMethod: PaymentMethod.CASH,
-            date: new Date().toISOString(),
             status: TransactionStatus.VALIDATED,
             relatedEntityId: isNaN(relatedEntityId) ? undefined : relatedEntityId
           };
@@ -744,7 +573,6 @@ export class SupplierPaymentHistoryComponent implements OnInit {
               amount: oilQuantity * oilPricePerKg,
               currency: 'TND',
               paymentMethod: PaymentMethod.TRANSFER, // or a custom enum for oil?
-              date: new Date().toISOString(),
               status: TransactionStatus.VALIDATED,
               relatedEntityId: isNaN(relatedEntityId) ? undefined : relatedEntityId,
               reference: 'OIL_PAYMENT'
@@ -756,8 +584,7 @@ export class SupplierPaymentHistoryComponent implements OnInit {
       }
       // --- End Custom ---
 
-      // Process payment based on method
-      this.processPaymentByMethod(paymentData);
+
     } catch (error) {
       console.error('[SupplierPayment] Unexpected error during payment processing:', error);
       this.toastService.error('Erreur inattendue lors du traitement du paiement');
@@ -868,7 +695,7 @@ export class SupplierPaymentHistoryComponent implements OnInit {
    */
   fetchRelatedOilDeliveryForPayment(oliveLotNumber: string): void {
     this.oilPaymentAvailable = true;
-    this.deliveryService.getRelatedOilDelivery(oliveLotNumber, this.supplierId).subscribe({
+    this.deliveryService.getRelatedOilDelivery(oliveLotNumber, this.supplierId!).subscribe({
       next: (delivery) => {
         this.relatedOilDelivery = delivery;
         this.oilPaymentAvailable = !!delivery;
@@ -1138,33 +965,7 @@ export class SupplierPaymentHistoryComponent implements OnInit {
     }
   }
 
-  /**
-   * Processes payment based on the selected method
-   * @param paymentData The payment data to process
-   */
-  private processPaymentByMethod(paymentData: Record<string, unknown>): void {
-    console.log(`[SupplierPayment] Processing payment with method: ${this.selectedPaymentMethod}`);
 
-    // TODO: Call appropriate payment service based on method
-    // For now, simulate successful payment processing
-    this.simulatePaymentProcessing(paymentData);
-  }
-
-  /**
-   * Simulates payment processing (replace with actual service calls)
-   * @param paymentData The payment data
-   */
-  private simulatePaymentProcessing(paymentData: Record<string, unknown>): void {
-    console.log('[SupplierPayment] Simulating payment processing:', paymentData);
-
-    // Simulate API call delay
-    setTimeout(() => {
-      console.log('[SupplierPayment] Payment processed successfully');
-      this.toastService.success(this.translateService.instant('SUPPLIER_PAYMENT.PAYMENT_SUCCESS'));
-      this.closePaymentForm();
-      this.loadPaymentHistory(); // Refresh the data
-    }, 1000);
-  }
 
   /**
    * Extracts user-friendly error message from error object
@@ -1189,7 +990,47 @@ export class SupplierPaymentHistoryComponent implements OnInit {
     return 'Erreur lors du chargement des comptes bancaires';
   }
 
-  // Add property to store related oil delivery
-  relatedOilDelivery: UnifiedDelivery | null = null;
-  oilPaymentAvailable = true;
+  handleCreditAction(e: { row: OilCredit; action: string }) {
+       const actionLabel = e.action?.toUpperCase();
+
+      switch (actionLabel) {
+      case 'READ':
+        this.router.navigate(['/finance/expenses', e.row.id, 'view']);
+        break;
+
+      case 'PRINT':
+         break;
+
+      case 'UPDATE':
+        this.router.navigate(['/finance/expenses', e.row.id, 'edit']);
+        break;
+
+      case 'DELETE':
+         break;
+      }
+
+
+  }
+  handlePaymentAction(e: { row: UnifiedDelivery; action: string }) {
+       const actionLabel = e.action ;
+
+      switch (actionLabel) {
+      case 'READ':
+        this.router.navigate(['/finance/expenses', e.row.id, 'view']);
+        break;
+
+      case 'PRINT':
+         break;
+
+      case 'UPDATE':
+        this.router.navigate(['/finance/expenses', e.row.id, 'edit']);
+        break;
+
+      case 'PAY':
+        this.initiatePayment(e.row)
+         break;
+      }
+
+
+  }
 }

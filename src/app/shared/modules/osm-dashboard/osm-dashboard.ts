@@ -59,9 +59,6 @@ export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     console.log(changes);
-  }
-
-  ngOnInit(): void {
     this.displayedColumns = [
       ...this.config()
         .fields.filter((field) => field.dataTable)
@@ -72,6 +69,10 @@ export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
     this._store.initialize(this.config()?.searchEndpoint, this.config().fields, this.config()?.defaultSearchData, this.config().fileName,this.config().filterTenant);
 
     this.cdr.detectChanges(); // Force change detection
+  }
+
+  ngOnInit(): void {
+
   }
 
   ngAfterViewInit(): void {}

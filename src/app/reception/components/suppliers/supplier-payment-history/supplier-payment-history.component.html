@@ -1,22 +1,6 @@
 <div class="container">
-
-
-  <!-- Loading spinner -->
-  <div *ngIf="loading" class="loading-container">
-    <mat-spinner></mat-spinner>
-  </div>
-
-  <!-- Error message -->
-  <div *ngIf="!loading && error" class="error-container">
-    <mat-icon>error_outline</mat-icon>
-    <p>{{ error }}</p>
-    <button (click)="loadPaymentHistory()" color="primary" mat-raised-button>
-      {{ 'ACTIONS.RETRY' | translate }}
-    </button>
-  </div>
-
   <!-- Payment history content -->
-  <div *ngIf="!loading && !error" class="content">
+  <div *ngIf="!error" class="content">
 
     <div [class.payment-active]="selectedPayment" class="split-layout">
       <!-- Left Side: Summary Stats + Table -->
@@ -34,11 +18,7 @@
           </div>
 
           <div class="filter-buttons">
-            <button (click)="setHistoryType('all')"
-                    [class.active]="historyType === 'all'"
-                    mat-stroked-button>
-              {{ 'SUPPLIER_PAYMENT.ALL' | translate }}
-            </button>
+
             <button (click)="setHistoryType('paid')"
                     [class.active]="historyType === 'paid'"
                     mat-stroked-button>
@@ -59,159 +39,14 @@
 
         <!-- Table Section -->
         <div class="table-section">
-          <mat-card *ngIf="historyType === 'oil_credit'">
-            <mat-card-title>{{ 'SUPPLIER_PAYMENT.OIL_CREDITS_LIST' | translate }}</mat-card-title>
-            <mat-divider></mat-divider>
-            <mat-card-content>
-              <div class="scrollable-table-container">
-                <div class="scrollable-table">
-                  <table #oilCreditSort="matSort" [dataSource]="oilCreditsDataSource" class="payment-table" mat-table
-                       matSort>
-                  <ng-container matColumnDef="quantity">
-                    <th *matHeaderCellDef mat-header-cell
-                        mat-sort-header>{{ 'SUPPLIER_PAYMENT.OIL_CREDIT_QUANTITY' | translate }}
-                    </th>
-                    <td *matCellDef="let credit" mat-cell>{{ credit.quantity }}</td>
-                  </ng-container>
-                  <ng-container matColumnDef="unit">
-                    <th *matHeaderCellDef mat-header-cell
-                        mat-sort-header>{{ 'SUPPLIER_PAYMENT.OIL_CREDIT_UNIT' | translate }}
-                    </th>
-                    <td *matCellDef="let credit" mat-cell>{{ credit.unit }}</td>
-                  </ng-container>
-                  <ng-container matColumnDef="oil_type">
-                    <th *matHeaderCellDef mat-header-cell
-                        mat-sort-header>{{ 'SUPPLIER_PAYMENT.OIL_CREDIT_TYPE' | translate }}
-                    </th>
-                    <td *matCellDef="let credit" mat-cell>{{ credit.oil_type?.name || credit.oil_type }}</td>
-                  </ng-container>
-                  <ng-container matColumnDef="creditState">
-                    <th *matHeaderCellDef mat-header-cell
-                        mat-sort-header>{{ 'SUPPLIER_PAYMENT.OIL_CREDIT_STATE' | translate }}
-                    </th>
-                    <td *matCellDef="let credit" mat-cell>{{ credit.creditState }}</td>
-                  </ng-container>
-                  <ng-container matColumnDef="createdDate">
-                    <th *matHeaderCellDef mat-header-cell
-                        mat-sort-header>{{ 'SUPPLIER_PAYMENT.OIL_CREDIT_CREATED_DATE' | translate }}
-                    </th>
-                    <td *matCellDef="let credit" mat-cell>{{ credit.createdDate | date:'dd/MM/yyyy' }}</td>
-                  </ng-container>
-                  <tr *matHeaderRowDef="oilCreditColumns" mat-header-row></tr>
-                  <tr *matRowDef="let row; columns: oilCreditColumns;" mat-row></tr>
-                </table>
-                </div>
-                <mat-paginator #oilCreditPaginator
-                               [pageSizeOptions]="[5, 10, 25, 100]"
-                               [pageSize]="10"
-                               aria-label="Select page of payments">
-                </mat-paginator>
-              </div>
-            </mat-card-content>
-          </mat-card>
+          <div *ngIf="historyType === 'oil_credit'">
 
-          <mat-card *ngIf="historyType !== 'oil_credit'">
-            <mat-card-title>
-              {{ getHistoryTypeTitle() | translate }}
-            </mat-card-title>
-            <mat-divider></mat-divider>
-            <mat-card-content>
-              <div class="scrollable-table-container">
-                <div class="scrollable-table">
-                  <table #paymentSort="matSort" [dataSource]="paymentsDataSource" class="payment-table" mat-table matSort>
-                <!-- Delivery Number Column -->
-                <ng-container matColumnDef="deliveryNumber">
-                  <th *matHeaderCellDef mat-header-cell
-                      mat-sort-header>{{ 'SUPPLIER_PAYMENT.DELIVERY_NUMBER' | translate }}
-                  </th>
-                  <td *matCellDef="let payment" mat-cell>{{ payment.deliveryNumber }}</td>
-                </ng-container>
+            <osm-dashboard [config]="OIL_CREDIT_DASHBOARD" (applyAction)="handleCreditAction($event)"></osm-dashboard>
+          </div>
 
-                <!-- Lot Number Column -->
-                <ng-container matColumnDef="lotNumber">
-                  <th *matHeaderCellDef mat-header-cell
-                      mat-sort-header>{{ 'SUPPLIER_PAYMENT.LOT_NUMBER' | translate }}
-                  </th>
-                  <td *matCellDef="let payment" mat-cell>{{ payment.lotNumber }}</td>
-                </ng-container>
-
-                <!-- Delivery Date Column -->
-                <ng-container matColumnDef="deliveryDate">
-                  <th *matHeaderCellDef mat-header-cell
-                      mat-sort-header>{{ 'SUPPLIER_PAYMENT.DELIVERY_DATE' | translate }}
-                  </th>
-                  <td *matCellDef="let payment" mat-cell>{{ payment.deliveryDate | date:'dd/MM/yyyy' }}</td>
-                </ng-container>
-
-                <!-- Price Column -->
-                <ng-container matColumnDef="price">
-                  <th *matHeaderCellDef mat-header-cell
-                      mat-sort-header>{{ 'SUPPLIER_PAYMENT.TOTAL_PRICE' | translate }}
-                  </th>
-                  <td *matCellDef="let payment" mat-cell>{{ payment.price | currency:'TND':'symbol-narrow':'1.2-2' }}
-                  </td>
-                </ng-container>
-
-                <!-- Paid Amount Column -->
-                <ng-container matColumnDef="paidAmount">
-                  <th *matHeaderCellDef mat-header-cell
-                      mat-sort-header>{{ 'SUPPLIER_PAYMENT.PAID_AMOUNT' | translate }}
-                  </th>
-                  <td *matCellDef="let payment"
-                      mat-cell>{{ payment.paidAmount | currency:'TND':'symbol-narrow':'1.2-2' }}
-                  </td>
-                </ng-container>
-
-                <!-- Unpaid Amount Column -->
-                <ng-container matColumnDef="unpaidAmount">
-                  <th *matHeaderCellDef mat-header-cell
-                      mat-sort-header>{{ 'SUPPLIER_PAYMENT.UNPAID_AMOUNT' | translate }}
-                  </th>
-                  <td *matCellDef="let payment"
-                      mat-cell>{{ payment.unpaidAmount | currency:'TND':'symbol-narrow':'1.2-2' }}
-                  </td>
-                </ng-container>
-
-                <!-- Status Column -->
-                <ng-container matColumnDef="status">
-                  <th *matHeaderCellDef mat-header-cell mat-sort-header>{{ 'SUPPLIER_PAYMENT.STATUS' | translate }}</th>
-                  <td *matCellDef="let payment" mat-cell>
-                    <mat-chip-list>
-                      <mat-chip [color]="getStatusColor(payment.status)" selected>
-                        {{ getStatusLabel(payment.status) }}
-                      </mat-chip>
-                    </mat-chip-list>
-                  </td>
-                </ng-container>
-
-                <!-- Actions Column -->
-                <ng-container matColumnDef="actions">
-                  <th *matHeaderCellDef mat-header-cell>{{ 'SUPPLIER_PAYMENT.ACTIONS' | translate }}</th>
-                  <td *matCellDef="let payment" mat-cell>
-                    <button
-                      (click)="initiatePayment(payment)"
-                      [disabled]="payment.status === 'paid'"
-                      color="primary"
-                      mat-raised-button
-                      size="small">
-                      <mat-icon>payment</mat-icon>
-                      {{ 'SUPPLIER_PAYMENT.PAY' | translate }}
-                    </button>
-                  </td>
-                </ng-container>
-
-                <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
-                <tr *matRowDef="let row; columns: displayedColumns;" mat-row></tr>
-              </table>
-                </div>
-                <mat-paginator #paymentPaginator
-                               [pageSizeOptions]="[5, 10, 25, 100]"
-                               [pageSize]="10"
-                               aria-label="Select page of payments">
-                </mat-paginator>
-              </div>
-            </mat-card-content>
-          </mat-card>
+          <div *ngIf="historyType !== 'oil_credit'">
+            <osm-dashboard [config]="PAIMENT_DASHBOARD" (applyAction)="handlePaymentAction($event)"></osm-dashboard>
+          </div>
         </div>
       </div>
 

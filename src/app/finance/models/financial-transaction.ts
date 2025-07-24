@@ -15,10 +15,8 @@ export interface FinancialTransaction {
   amount: number;
   currency: string;
   paymentMethod: PaymentMethod;
-  date: string; // ISO string
   status: TransactionStatus;
   reference?: string;
-  createdBy?: string;
-  createdAt?: string;
+
   relatedEntityId?: number;
 }

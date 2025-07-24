@@ -181,9 +181,11 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
         controls['storageUnitSourceId'].setValidators(Validators.required);
         break;
       case TransactionType.SALE:
-      case TransactionType.LOAN:
         controls['storageUnitSourceId'].setValidators(Validators.required);
         controls['storageUnitDestinationId'].setValidators(Validators.required);
+        break;
+        case TransactionType.LOAN:
+        controls['storageUnitSourceId'].setValidators(Validators.required);
         break;
     }
 
@@ -522,8 +524,7 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
     const type = this.form.get('transactionType')?.value;
     return type === TransactionType.TRANSFER_IN ||
            type === TransactionType.RECEPTION_IN ||
-           type === TransactionType.SALE ||
-           type === TransactionType.LOAN;
+           type === TransactionType.SALE
   }
 
   shouldShowPricingFields(): boolean {

@@ -10,13 +10,14 @@ import { TranslateService, TranslateModule } from '@ngx-translate/core';
 
 import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
 import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-details-reception-olive',
   standalone: true,
   templateUrl: './details-reception.component.html',
   styleUrl: './details-reception.component.scss',
-  imports: [CommonModule, DatePipe, MatCardModule, MatDividerModule, MatIconModule, MatButtonModule, TranslateModule]
+  imports: [CommonModule, DatePipe, MatCardModule, MatDividerModule, MatIconModule, MatButtonModule, TranslateModule, MatProgressSpinner]
 })
 export class DetailsReceptionComponent implements OnInit {
   receptionId!: string | null;
@@ -28,7 +29,7 @@ export class DetailsReceptionComponent implements OnInit {
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private deliveryService: UnifiedDeliveryService,
-    private translate: TranslateService
+    protected translate: TranslateService
   ) {}
 
   ngOnInit(): void {

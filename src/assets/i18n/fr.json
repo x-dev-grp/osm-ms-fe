@@ -1,28 +1,4 @@
 {
-  "BASE_TYPE": {
-    "WASTE_TYPE": "Type de déchets",
-    "REGION": "Région",
-    "SUPPLIER_TYPE": "Type de fournisseur",
-    "OLIVE_VARIETY": "Variété d'olive",
-    "PRODUCTION_METHOD": "Méthode de production",
-    "OPERATION_TYPE": "Type d'opération",
-    "OIL_VARIETY": "Variété d'huile",
-    "OLIVE_TYPE": "Type olive",
-    "OIL_TYPE": "Type d'huile"
-  },
-  "GENERIC_TYPE": {
-    "ACTION": {
-      "ADD_NEW": "Ajouter"
-    },
-    "FIELDS": {
-      "CATEGORY": "Catégorie",
-      "NAME": "Nom",
-      "DESCRIPTION": "Description"
-    },
-    "ERRORS": {
-      "NAME_REQUIRED": "Le nom est requis"
-    }
-  },
   "ADMIN": {
     "ADD_COMPANY_USER_TITLE": "Créer une société et son premier utilisateur",
     "CANCEL": "Annuler",
@@ -149,7 +125,28 @@
     },
     "TITLE": "Comptes bancaires"
   },
+  "BASE_TYPE": {
+    "OIL_TYPE": "Type d'huile",
+    "OIL_VARIETY": "Variété d'huile",
+    "OLIVE_TYPE": "Type olive",
+    "OLIVE_VARIETY": "Variété d'olive",
+    "OPERATION_TYPE": "Type d'opération",
+    "PRODUCTION_METHOD": "Méthode de production",
+    "REGION": "Région",
+    "SUPPLIER_TYPE": "Type de fournisseur",
+    "WASTE_TYPE": "Type de déchets"
+  },
   "Basic": "Basique",
+  "COMMON": {
+    "BACK": "Retour",
+    "CANCEL": "Annuler",
+    "EDIT": "Modifier",
+    "NO": "Non",
+    "PRINT": "Imprimer",
+    "SAVE": "Enregistrer",
+    "UPDATE": "Mettre à jour",
+    "YES": "Oui"
+  },
   "COMPANY_PROFILE_FORM": {
     "CNSS_NUMBER": "Numéro CNSS",
     "CNSS_NUMBER_REQUIRED": "Le numéro CNSS est requis.",
@@ -265,10 +262,14 @@
       "VIERGE_EXTRA": "Extra Vierge"
     },
     "FINANCIAL": {
+      "OIL_QUANTITY": "Quantité d'huile (KG)",
+      "OIL_TOTAL_VALUE": "Valeur totale d'huile (TND)",
+      "OIL_TYPE": "Type d'huile",
+      "OIL_UNIT_PRICE": "Prix unitaire d'huile (TND/KG)",
       "PAID_AMOUNT": "Montant payé (TND)",
       "PRICE": "Prix total (TND)",
       "TITLE": "Informations financières",
-      "UNIT_PRICE": "Prix unitaire (TND/L)",
+      "UNIT_PRICE": "Prix unitaire (TND/KG)",
       "UNPAID_AMOUNT": "Montant impayé (TND)"
     },
     "FORM": {
@@ -340,6 +341,7 @@
     },
     "SECTIONS": {
       "FINANCIAL": "Informations Financières",
+      "OLIVE_PRICING": "Prix d'achat olive",
       "PARAMETERS": "Paramètres de Qualité"
     },
     "STATUS": {
@@ -477,16 +479,16 @@
         "OIL_VARIETY": "Variété d'huile",
         "OLIVE_TYPE": "Type d'olive",
         "OPERATION_TYPE": "Type d'opération",
-        "PAID_AMOUNT": "Montant payé (DH)",
+        "PAID_AMOUNT": "Montant payé (TND)",
         "PARCEL": "Parcelle",
         "REGION": "Région",
         "STORAGE_UNIT": "Cuve de stockage",
         "SUPPLIER": "Fournisseur",
-        "TOTAL_PRICE": "Prix total (DH)",
+        "TOTAL_PRICE": "Prix total (TND)",
         "TRUCK_PLATE": "Matricule du camion",
         "TRUCK_STATE": "État du camion",
-        "UNIT_PRICE": "Prix unitaire (DH/L)",
-        "UNPAID_AMOUNT": "Montant restant (DH)"
+        "UNIT_PRICE": "Prix unitaire (TND/KG)",
+        "UNPAID_AMOUNT": "Montant restant (TND)"
       },
       "MESSAGES": {
         "ERROR": {
@@ -588,52 +590,52 @@
     "ADD_TITLE": "Ajouter une dépense",
     "DETAILS_TITLE": "Détails de la dépense",
     "EDIT_TITLE": "Modifier la dépense",
-    "TITLE": "Dépenses",
-    "SECTION": {
-      "GENERAL_INFO": "Informations Générales",
-      "PAYMENT_DETAILS": "Détails de Paiement",
-      "NOTES": "Notes",
-      "APPROVAL": "Approbation"
+    "ERRORS": {
+      "AMOUNT_MIN": "Le montant doit être positif",
+      "AMOUNT_REQUIRED": "Le montant est requis",
+      "DATE_REQUIRED": "La date est requise",
+      "INVOICE_REF_REQUIRED": "La référence de la facture est requise",
+      "OBJECT_REQUIRED": "L'objet est requis",
+      "PAYMENT_METHOD_REQUIRED": "La méthode de paiement est requise",
+      "PURCHASE_NATURE_REQUIRED": "La nature de l'achat est requise",
+      "STATUS_REQUIRED": "Le statut est requis"
     },
     "FIELDS": {
-      "INVOICE_REF": "Référence facture",
-      "PURCHASE_NATURE": "Nature de l'achat",
-      "OBJECT": "Objet",
       "AMOUNT": "Montant",
-      "CATEGORY": "Catégorie",
-      "VENDOR": "Fournisseur",
-      "PAYMENT_METHOD": "Méthode de paiement",
-      "STATUS": "Statut",
-      "RECEIPT_NUMBER": "Numéro de reçu",
-      "NOTES": "Notes",
-      "APPROVED": "Approuvé",
       "APPROVAL_DATE": "Date d'approbation",
-      "CREATED_BY": "Créé par"
-    },
-    "PLACEHOLDER": {
-      "INVOICE_REF": "Ex: FAC-2024-001",
-      "PURCHASE_NATURE": "Ex: Fournitures de bureau",
-      "OBJECT": "Ex: Achat de papier",
-      "AMOUNT": "0.00",
-      "CATEGORY": "Ex: Dépenses opérationnelles",
-      "VENDOR": "Ex: Stationery SARL",
-      "RECEIPT_NUMBER": "Ex: 123456",
-      "NOTES": "Ajouter des notes supplémentaires...",
-      "CREATED_BY": "Ex: admin"
-    },
-    "ERRORS": {
-      "INVOICE_REF_REQUIRED": "La référence de la facture est requise",
-      "PURCHASE_NATURE_REQUIRED": "La nature de l'achat est requise",
-      "AMOUNT_REQUIRED": "Le montant est requis",
-      "AMOUNT_MIN": "Le montant doit être positif",
-      "PAYMENT_METHOD_REQUIRED": "La méthode de paiement est requise",
-      "STATUS_REQUIRED": "Le statut est requis",
-      "DATE_REQUIRED": "La date est requise",
-      "OBJECT_REQUIRED": "L'objet est requis"
+      "APPROVED": "Approuvé",
+      "CATEGORY": "Catégorie",
+      "CREATED_BY": "Créé par",
+      "INVOICE_REF": "Référence facture",
+      "NOTES": "Notes",
+      "OBJECT": "Objet",
+      "PAYMENT_METHOD": "Méthode de paiement",
+      "PURCHASE_NATURE": "Nature de l'achat",
+      "RECEIPT_NUMBER": "Numéro de reçu",
+      "STATUS": "Statut",
+      "VENDOR": "Fournisseur"
     },
     "HINT": {
       "NOTES_OPTIONAL": "Facultatif"
-    }
+    },
+    "PLACEHOLDER": {
+      "AMOUNT": 0.0,
+      "CATEGORY": "Ex: Dépenses opérationnelles",
+      "CREATED_BY": "Ex: admin",
+      "INVOICE_REF": "Ex: FAC-2024-001",
+      "NOTES": "Ajouter des notes supplémentaires...",
+      "OBJECT": "Ex: Achat de papier",
+      "PURCHASE_NATURE": "Ex: Fournitures de bureau",
+      "RECEIPT_NUMBER": "Ex: 123456",
+      "VENDOR": "Ex: Stationery SARL"
+    },
+    "SECTION": {
+      "APPROVAL": "Approbation",
+      "GENERAL_INFO": "Informations Générales",
+      "NOTES": "Notes",
+      "PAYMENT_DETAILS": "Détails de Paiement"
+    },
+    "TITLE": "Dépenses"
   },
   "Edit": "Modifier",
   "Editor": "Éditrice",
@@ -736,6 +738,19 @@
     "OTHER_TAB": "Autre Config",
     "PRODUCTION_TAB": "Config Production",
     "TAB_TITLE": "Configuration Générale"
+  },
+  "GENERIC_TYPE": {
+    "ACTION": {
+      "ADD_NEW": "Ajouter"
+    },
+    "ERRORS": {
+      "NAME_REQUIRED": "Le nom est requis"
+    },
+    "FIELDS": {
+      "CATEGORY": "Catégorie",
+      "DESCRIPTION": "Description",
+      "NAME": "Nom"
+    }
   },
   "Helpdesk": "Service d'assistance",
   "Home": "Accueil",
@@ -1004,18 +1019,18 @@
         "OPERATION_TYPE_HINT": "L'achat d'huile est le type d'opération par défaut pour la réception d'huile",
         "OPERATION_TYPE_PURCHASE": "Achat d'huile (Par défaut)",
         "OPERATION_TYPE_RECEPTION": "Trituration particulier",
-        "PAID_AMOUNT": "Montant payé (DH)",
+        "PAID_AMOUNT": "Montant payé (TND)",
         "PARCEL": "Parcelle",
         "REGION": "Région",
         "STORAGE_UNIT": "Cuve de stockage",
         "SUPPLIER": "Fournisseur",
-        "TOTAL_PRICE": "Prix total (DH)",
+        "TOTAL_PRICE": "Prix total (TND)",
         "TRUCK_PLATE": "Matricule du camion",
         "TRUCK_STATE": "État du camion",
         "TRUCK_STATE_CONFORM": "Conforme",
         "TRUCK_STATE_NON_CONFORM": "Non conforme",
-        "UNIT_PRICE": "Prix unitaire (DH/L)",
-        "UNPAID_AMOUNT": "Montant restant (DH)"
+        "UNIT_PRICE": "Prix unitaire (TND/KG)",
+        "UNPAID_AMOUNT": "Montant restant (TND)"
       },
       "FINANCIAL_INFO": "Informations financières",
       "GENERAL_INFO": "Informations générales",
@@ -1066,7 +1081,7 @@
         "SUPPLIER": "Fournisseur",
         "TOTAL_PRICE": "Prix total (€)",
         "TRUCK_PLATE": "Matricule camion",
-        "UNIT_PRICE": "Prix unitaire (€/L)"
+        "UNIT_PRICE": "Prix unitaire (€/KG)"
       },
       "MESSAGES": {
         "DELETE_ERROR": "Erreur lors de la suppression",
@@ -1330,6 +1345,9 @@
         "NET_GREATER": "Le poids net ne peut pas être supérieur au poids brut",
         "REQUIRED": "Ce champ est obligatoire"
       }
+    },
+    "SECTIONS": {
+      "OIL_EXCHANGE": "Echange"
     }
   },
   "OPERATION_TYPE": {
@@ -1341,10 +1359,10 @@
   },
   "OSM_DASHBOARD": {
     "ACTIONS": {
+      "ASSIGN_SUPPLIER": "Assigner un fournisseur",
       "CANCEL": "Annuler",
       "COMPLETE": "Terminer",
       "COMPLETE_PAYMENT_DETAILS": "à completer pour paiment",
-      "ASSIGN_SUPPLIER": "Assigner un fournisseur",
       "CONFIRM": "Confirmer",
       "CONFIRM_DELETE": "Êtes-vous sûr de vouloir supprimer cet élément ?",
       "CREATE": "Créer",
@@ -1358,6 +1376,7 @@
       "OIL_QUALITY": "Contrôle Qualité Huile",
       "OIL_RECEPTION": "Réception Huile",
       "OLIVE_QUALITY": "Contrôle Qualité Olives",
+      "PAY": "Paier",
       "QUALITY": "Qualité",
       "READ": "Voir",
       "SET_PRICE": "Définir Le Prix",
@@ -1425,6 +1444,21 @@
     "CRUSHING_TOTAL_PRICE": "Prix Total Trituration",
     "DATE": "Date",
     "DELIVERY_DATE": "Date de Livraison",
+    "EXPENSE_AMOUNT": "Montant",
+    "EXPENSE_APPROVAL_DATE": "Date d'approbation",
+    "EXPENSE_APPROVED": "Approuvé",
+    "EXPENSE_BILL": "Note de Dépense",
+    "EXPENSE_CATEGORY": "Catégorie",
+    "EXPENSE_CREATED_BY": "Créé par",
+    "EXPENSE_NOTES": "Notes",
+    "EXPENSE_OBJECT": "Objet",
+    "EXPENSE_PAYMENT_METHOD": "Méthode de paiement",
+    "EXPENSE_PURCHASE_NATURE": "Nature d'achat",
+    "EXPENSE_RECEIPT_NUMBER": "Numéro de reçu",
+    "EXPENSE_SIGNATURE_AGENT": "Signature de l'agent",
+    "EXPENSE_SIGNATURE_RESPONSIBLE": "Signature du responsable",
+    "EXPENSE_STATUS": "Statut",
+    "EXPENSE_VENDOR": "Fournisseur",
     "FORM": "FORMULAIRE",
     "GROSS_WEIGHT": "Poids Brut",
     "LOT": "Lot",
@@ -1454,22 +1488,7 @@
     "SIGNATURE_RESPONSIBLE": "Signature Responsable CQ",
     "SUPPLIER": "Fournisseur",
     "TYPE": "Type",
-    "YIELD": "Rendement",
-    "EXPENSE_BILL": "Note de Dépense",
-    "EXPENSE_VENDOR": "Fournisseur",
-    "EXPENSE_CATEGORY": "Catégorie",
-    "EXPENSE_PURCHASE_NATURE": "Nature d'achat",
-    "EXPENSE_OBJECT": "Objet",
-    "EXPENSE_AMOUNT": "Montant",
-    "EXPENSE_PAYMENT_METHOD": "Méthode de paiement",
-    "EXPENSE_STATUS": "Statut",
-    "EXPENSE_RECEIPT_NUMBER": "Numéro de reçu",
-    "EXPENSE_NOTES": "Notes",
-    "EXPENSE_APPROVED": "Approuvé",
-    "EXPENSE_APPROVAL_DATE": "Date d'approbation",
-    "EXPENSE_CREATED_BY": "Créé par",
-    "EXPENSE_SIGNATURE_AGENT": "Signature de l'agent",
-    "EXPENSE_SIGNATURE_RESPONSIBLE": "Signature du responsable"
+    "YIELD": "Rendement"
   },
   "Pages": "pages",
   "Payment": "Paiement",
@@ -1570,16 +1589,6 @@
         "MESSAGE": "Êtes-vous sûr de vouloir supprimer les éléments sélectionnés ? Cette action ne peut pas être annulée.",
         "TITLE": "Confirmer la suppression en masse"
       },
-      "SAVE_QC": {
-        "TITLE":   "Confirmer l’enregistrement",
-        "MESSAGE": "Êtes‑vous sûr de vouloir enregistrer les résultats du contrôle qualité ?"
-      },
-      "OIL_TRANSACTION": {
-        "TITLE":   "Confirmer la transaction d’huile",
-        "MESSAGE": "Ce fournisseur dispose d’un stockage. Voulez‑vous également confirmer la transaction d’huile ?",
-        "CONFIRM": "Oui, confirmer",
-        "CANCEL":  "Non, ignorer"
-      },
       "DATA_LOSS": {
         "CANCEL": "Annuler",
         "CONFIRM": "Continuer",
@@ -1597,6 +1606,16 @@
         "TITLE": "Confirmer la suppression"
       },
       "DESTRUCTIVE_WARNING": "Cette action est irréversible et supprimera définitivement les données.",
+      "OIL_TRANSACTION": {
+        "CANCEL": "Non, ignorer",
+        "CONFIRM": "Oui, confirmer",
+        "MESSAGE": "Ce fournisseur dispose d'un stockage. Voulez‑vous également confirmer la transaction d'huile ?",
+        "TITLE": "Confirmer la transaction d'huile"
+      },
+      "SAVE_QC": {
+        "MESSAGE": "Êtes‑vous sûr de vouloir enregistrer les résultats du contrôle qualité ?",
+        "TITLE": "Confirmer l'enregistrement"
+      },
       "SIMPLE": {
         "CANCEL": "Non",
         "CONFIRM": "Oui",
@@ -1859,15 +1878,5 @@
   "User Profile": "Profil de l'utilisateur",
   "View": "Voir",
   "Widget": "Widget",
-  "reCaptcha": "reCaptcha",
-  "COMMON": {
-    "PRINT": "Imprimer",
-    "EDIT": "Modifier",
-    "CANCEL": "Annuler",
-    "SAVE": "Enregistrer",
-    "UPDATE": "Mettre à jour",
-    "BACK": "Retour",
-    "YES": "Oui",
-    "NO": "Non"
-  }
+  "reCaptcha": "reCaptcha"
 }

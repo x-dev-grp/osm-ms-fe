@@ -24,7 +24,7 @@ export class ReceptionListComponent {
 
   handleDashboardAction(event: { row: UnifiedDelivery; action: string }): void {
     switch (event.action) {
-      case ACTION_ICONS.get('READ'):
+      case  'READ':
         this.viewDelivery(event.row);
         break;
 

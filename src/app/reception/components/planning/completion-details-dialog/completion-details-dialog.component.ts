@@ -9,7 +9,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { GlobalLot, PlanItemType, PlanningItem } from '../../../../shared/models/planningDTOS';
 import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
-import { result } from 'lodash';
 import {
   ConfirmationDialogData,
   ConfirmationDialogResult,
@@ -48,7 +47,7 @@ export class CompletionDetailsDialogComponent implements OnInit {
   finalObservation: string = '';
   completionDate: Date = new Date();
   childLotsWithRendement: ChildLotWithRendement[] = [];
-  autoSetStorage = false;     // ← new flag
+  autoSetStorage = false; // ← new flag
 
   triturationPricePerKg: number | null = null; // Only used for single lots
   item: PlanningItem | GlobalLot;
@@ -123,46 +122,42 @@ export class CompletionDetailsDialogComponent implements OnInit {
   }
 
   onConfirm(): void {
-    // Enhanced validation
-    if (this.inputOilQuantity === null || this.inputOilQuantity === undefined || this.inputOilQuantity < 0) {
-      console.error('[DIALOG] Oil quantity is null, undefined, or negative:', this.inputOilQuantity);
+    if (this.inputOilQuantity == null || this.inputOilQuantity < 0) {
+      console.error('[DIALOG] Invalid oil quantity:', this.inputOilQuantity);
       return;
     }
-
-    if (this.triturationPricePerKg !== null && this.triturationPricePerKg < 0) {
-      console.error('[DIALOG] Trituration price per kg is negative:', this.triturationPricePerKg);
+    if (this.triturationPricePerKg != null && this.triturationPricePerKg < 0) {
+      console.error('[DIALOG] Invalid trituration price:', this.triturationPricePerKg);
       return;
     }
-
-    if (this.oliveWeight === null || this.oliveWeight <= 0) {
+    if (this.oliveWeight == null || this.oliveWeight <= 0) {
       console.error('[DIALOG] Invalid olive weight:', this.oliveWeight);
       return;
     }
-
-    const calculatedRendement = this.rendement;
-    if (calculatedRendement === null || calculatedRendement < 0) {
-      console.error('[DIALOG] Invalid rendement calculated:', calculatedRendement);
+    const calcRend = this.rendement;
+    if (calcRend == null || calcRend < 0) {
+      console.error('[DIALOG] Invalid rendement:', calcRend);
       return;
     }
 
-    // Validate global lot child data if applicable
+    // Global-lot child checks
     if (this.itemType === PlanItemType.GLOBAL_LOT) {
-      if (!this.childLotsWithRendement || this.childLotsWithRendement.length === 0) {
-        console.error('[DIALOG] No child lots found for global lot');
+      if (!this.childLotsWithRendement.length) {
+        console.error('[DIALOG] No child lots found');
         return;
       }
-
-      // Validate each child lot
-      for (const childLot of this.childLotsWithRendement) {
-        if (childLot.oilQuantity === null || childLot.oilQuantity === undefined || childLot.oilQuantity < 0) {
-          console.error('[DIALOG] Invalid child lot oil quantity:', childLot.lotNumber, childLot.oilQuantity);
+      for (const lot of this.childLotsWithRendement) {
+        if (lot.oilQuantity == null || lot.oilQuantity < 0) {
+          console.error('[DIALOG] Invalid child lot oilQuantity:', lot.lotNumber, lot.oilQuantity);
           return;
         }
       }
     }
 
-    this.calculateChildLotsPrice(); // Ensure prices are up to date
-    if (this.itemType === PlanItemType.LOT && (this.item as PlanningItem).supplier!.hasStorage) {
+    this.calculateChildLotsPrice();
+
+    // If single lot with storage, confirm first
+    if (this.itemType === PlanItemType.LOT && (this.item as PlanningItem).operationType ===  "SIMPLE_RECEPTION"&& (this.item as PlanningItem).supplier!.hasStorage) {
       const dialogData: ConfirmationDialogData = {
         title: this.translate.instant('STANDARD.CONFIRMATION.OIL_TRANSACTION.TITLE'),
         message: this.translate.instant('STANDARD.CONFIRMATION.OIL_TRANSACTION.MESSAGE'),
@@ -173,22 +168,22 @@ export class CompletionDetailsDialogComponent implements OnInit {
         showIcon: true
       };
 
-      const ref = this.dialog.open(ConfirmationDialogComponent, { data: dialogData });
-      ref.afterClosed().subscribe((res: ConfirmationDialogResult) => {
-        if (res?.confirmed) {
-          this.autoSetStorage = !!res?.confirmed;
-          this.finalizeConfirmation();
-        }
-        // if they canceled, do nothing (dialog stays open)
-      });
-      return; // wait for second dialog before closing
+      this.dialog
+        .open(ConfirmationDialogComponent, { data: dialogData })
+        .afterClosed()
+        .subscribe((res: ConfirmationDialogResult) => {
+          if (res?.confirmed) {
+            this.autoSetStorage = true;
+            this.finalizeConfirmation();
+          }
+          // otherwise do nothing, keeping dialog open
+        });
+      return;
     }
 
+    // straight‑through
     this.autoSetStorage = false;
     this.finalizeConfirmation();
-
-    console.log('[DIALOG] Confirming completion with data:', result);
-    this.dialogRef.close(result);
   }
 
   // For *ngFor trackBy
@@ -200,6 +195,28 @@ export class CompletionDetailsDialogComponent implements OnInit {
   setTriturationPricePerKg(value: number | null) {
     this.triturationPricePerKg = value;
     this.calculateChildLotsPrice();
+  }
+
+  private finalizeConfirmation(): void {
+    const completionData = {
+      autoSetStorage: this.autoSetStorage,
+      confirmed: true,
+      oilQuantity: this.inputOilQuantity!,
+      rendement: this.rendement!,
+      completionDate: this.completionDate,
+      finalObservation: this.finalObservation.trim() || undefined,
+      triturationPricePerKg: this.triturationPricePerKg,
+      totalTriturationPrice: this.totalTriturationPrice,
+      childLotsRendement: this.childLotsWithRendement.map((lot) => ({
+        lotNumber: lot.lotNumber,
+        oilQuantity: lot.oilQuantity!,
+        rendement: lot.calculatedRendement!,
+        triturationPrice: lot.calculatedTriturationPrice!
+      }))
+    };
+
+    console.log('[DIALOG] Confirming completion with data:', completionData);
+    this.dialogRef.close(completionData);
   }
 
   // Calculate trituration price for each child lot in a global lot
@@ -230,26 +247,6 @@ export class CompletionDetailsDialogComponent implements OnInit {
       });
       this.calculateChildLotsPrice(); // Also update trituration price for all lots
     }
-  }
-
-  private finalizeConfirmation(): void {
-    const result = {
-      autoSetStorage: this.autoSetStorage,   // ← include here
-      confirmed: true,
-      oilQuantity: this.inputOilQuantity!,
-      rendement: this.rendement!,
-      completionDate: this.completionDate,
-      finalObservation: this.finalObservation.trim() || undefined,
-      triturationPricePerKg: this.triturationPricePerKg,
-      totalTriturationPrice: this.totalTriturationPrice,
-      childLotsRendement: this.childLotsWithRendement.map((lot) => ({
-        lotNumber: lot.lotNumber,
-        oilQuantity: lot.oilQuantity!,
-        rendement: lot.calculatedRendement!,
-        triturationPrice: lot.calculatedTriturationPrice!
-      }))
-    };
-    this.dialogRef.close(result);
   }
 
   private initializeChildLots(): void {
