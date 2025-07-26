@@ -28,7 +28,7 @@ import { BaseTypeComponent } from '../../../../shared/modules/base-type/base-typ
 // Validator for net weight not exceeding gross weight
 const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | null => {
   const brut = control.get('poidsBrut')?.value;
-  const net = control.get('oilQuantity')?.value; // Changed from poidsNet to oilQuantity
+  const net = control.get('poidsNet')?.value; // Changed from poidsNet to oilQuantity
   return brut != null && net != null && net > brut ? { netGreater: true } : null;
 };
 
@@ -97,6 +97,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
         matriculeCamion: ['', Validators.required],
         etatCamion: ['', Validators.required],
         poidsBrute: [0, [Validators.min(0)]],
+        poidsNet: [0, [Validators.min(0)]],
         oilQuantity: [0, [Validators.min(0)]],
         oilVariety: [null, Validators.required],
         oilType: [null, Validators.required],
@@ -219,7 +220,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       supplier: formValue.supplier || null,
       globalLotNumber: formValue.globalLotNumber || null,
       oilVariety: formValue.oilVariety || null,
-      oilQuantity: Number(formValue.oilQuantity) || 0,
+      oilQuantity: Number(formValue.poidsNet) || 0,
       unitPrice: Number(formValue.unitPrice) || 0,
       price: Number(formValue.price) || 0,
       paidAmount: Number(formValue.paidAmount) || 0,
@@ -321,7 +322,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       matriculeCamion: d.matriculeCamion,
       etatCamion: d.etatCamion,
       poidsBrute: d.poidsBrute,
-      oilQuantity: d.oilQuantity,
+      oilQuantity: d.poidsNet,
       oilVariety: d.oilVariety || null,
       oilType: d.oilType|| null,
       globalLotNumber: d.globalLotNumber || '',

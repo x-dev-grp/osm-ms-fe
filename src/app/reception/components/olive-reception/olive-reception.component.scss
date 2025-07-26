@@ -1,60 +1,64 @@
-/* Container around the whole form */
+/* ─────────────────────────────────────────────── */
+/* Dialog container form section */
 .form-section {
-  padding: 1.5rem;
-  margin: 1.5rem;
-   width: 100%;
+  padding: 10px;
+  width: 100%;
   box-sizing: border-box;
 }
 
-/* Section header with icon + title */
+/* Section headers: title with icon */
 .section-header {
   display: flex;
   align-items: center;
-  margin-bottom: 1rem;
-
-  mat-icon {
-    margin-right: 0.5rem;
-    font-size: 1.75rem;
-    color: rgba(0, 0, 0, 0.6);
-  }
-
+  gap: 12px;
+  margin: 10px;
   h3 {
     margin: 0;
-    font-weight: 500;
-    font-size: 1.25rem;
+    font-weight: 600;
+    font-size: 1.3rem;
+    color: #333;
   }
 }
 
-/* Grid of financial fields */
+/* Grid layout for pricing inputs */
 .financial-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  grid-gap: 1rem;
-  margin-bottom: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
-/* Individual card wrapper around each field */
+/* Card appearance around each input */
 .financial-card {
-  padding: 0.75rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  background: #fafafa;
-  box-shadow: none; /* remove default Material elevation if needed */
+  padding: 10px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  }
 }
 
-/* Make the mat-form-field stretch to fill its card */
+/* Full-width form fields */
 .financial-field {
   width: 100%;
+
+  mat-label {
+    font-weight: 500;
+  }
 }
 
-/* Dialog action buttons aligned to the right */
+/* Dialog action buttons */
 .dialog-actions {
   display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  margin-top: 1rem;
+  justify-content: space-evenly;
+  gap: 1rem;
+  margin: 10px;
 
   button {
-    min-width: 96px;
+    min-width: 100px;
+    font-weight: 500;
   }
 }

@@ -1,76 +1,83 @@
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  ChangeDetectionStrategy,
-  HostListener,
-  ChangeDetectorRef
-} from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { Subject, of, combineLatest } from 'rxjs';
-import { catchError, takeUntil } from 'rxjs/operators';
+import { RouterModule } from '@angular/router';
+import { Subject, forkJoin, of } from 'rxjs';
+import { catchError, finalize, takeUntil } from 'rxjs/operators';
 import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
-import { SupplierType } from '../../../shared/models/supplier-type';
 import { StorageUnitDto } from '../../../shared/models/StorageUnitDto';
-import { SupplierTypeService } from '../../../shared/services/supplier.service';
-import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
-import { StorageUnitDtoService } from '../../../shared/services/storage.service';
+import { SupplierType } from '../../../shared/models/supplier-type';
 import { OliveLotStatus } from '../../../shared/models/OliveLotStatus';
+import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
+import { SupplierTypeService } from '../../../shared/services/supplier.service';
+import { StorageUnitDtoService } from '../../../shared/services/storage.service';
 import { EarningChartComponent } from '../../../demo/pages/apex-chart/earning-chart/earning-chart.component';
 import { CardComponent } from '../../../@theme/components/card/card.component';
-import { MatAccordion, MatExpansionPanel, MatExpansionPanelTitle } from '@angular/material/expansion';
-import { MatTab, MatTabGroup } from '@angular/material/tabs';
-import { MatGridList, MatGridTile } from '@angular/material/grid-list';
-
-
+import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
+import { SharedModule } from 'src/app/demo/shared/shared.module';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-reception-dashboard',
+  templateUrl: './reception-dashboard.component.html',
+  styleUrls: ['./reception-dashboard.component.scss'],
   standalone: true,
   imports: [
     CommonModule,
     MatCardModule,
+    MatProgressBarModule,
+    MatTabsModule,
+    MatMenuModule,
     MatButtonModule,
     MatIconModule,
+    MatTooltipModule,
     MatProgressSpinnerModule,
-    NgApexchartsModule,
-    TranslateModule,
+    RouterModule,
     EarningChartComponent,
     CardComponent,
-    MatAccordion,
-    MatExpansionPanel,
-    MatExpansionPanelTitle,
-    MatTab,
-    MatTabGroup,
-    MatGridTile,
-    MatGridList
-  ],
-  templateUrl: './reception-dashboard.component.html',
-  styleUrls: ['./reception-dashboard.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    NgApexchartsModule,
+    SharedModule,
+    TranslateModule
+  ]
 })
 export class ReceptionDashboardComponent implements OnInit, OnDestroy {
-  // UI state
   isLoading = true;
   error: string | null = null;
-  private destroy$ = new Subject<void>();
+  destroy$ = new Subject<void>();
 
-  // Raw data
   receptions: UnifiedDelivery[] = [];
   suppliers: SupplierType[] = [];
   storageUnits: StorageUnitDto[] = [];
 
-  // Summary statistics
+  // Summary stats
   totalReceptions = 0;
   pendingReceptions = 0;
   completedReceptions = 0;
   totalVolume = 0;
+
+  // Chart data (for earning charts that take array of numbers)
+  receptionsPerDay: number[] = [];
+  pendingReceptionsPerDay: number[] = [];
+  completedReceptionsPerDay: number[] = [];
+  volumePerDay: number[] = [];
+
+  // Chart data (for apx-charts)
+  supplierNames: string[] = [];
+  supplierVolumes: number[] = [];
+  storageNames: string[] = [];
+  storageUtilization: number[] = [];
+
+  // Recent receptions
+  recentReceptions: UnifiedDelivery[] = [];
+
+  // New KPIs
   avgVolumePerReception = 0;
   avgUnitPrice = 0;
   totalPaidAmount = 0;
@@ -79,53 +86,39 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
   storageUnitsUsed = 0;
   avgProcessingTime = 0;
 
-  // Sparklines
-  receptionsPerDay: number[] = [];
-  pendingReceptionsPerDay: number[] = [];
-  completedReceptionsPerDay: number[] = [];
-  volumePerDay: number[] = [];
-
-  // Chart configurations
+  // Chart options
   receptionsByStatusChartOptions: Partial<ApexOptions> = {};
-  receptionsTrendChartOptions: Partial<ApexOptions> = {};
-  receptionsByTypeChartOptions: Partial<ApexOptions> = {};
   volumeBySupplierChartOptions: Partial<ApexOptions> = {};
   volumeByStorageChartOptions: Partial<ApexOptions> = {};
+  receptionsByTypeChartOptions: Partial<ApexOptions> = {};
+  receptionsTrendChartOptions: Partial<ApexOptions> = {};
   qualityControlChartOptions: Partial<ApexOptions> = {};
   recentReceptionsChartOptions: Partial<ApexOptions> = {};
 
-  // View controls
   currentReceptionTrendView: 'monthly' | 'weekly' | 'daily' = 'monthly';
   currentChartSize: 'small' | 'medium' | 'large' = 'medium';
-  private chartDimensions = {
+  chartDimensions = {
     small: { width: '100%', height: 200 },
     medium: { width: '100%', height: 400 },
     large: { width: '100%', height: 600 }
   };
 
-  // Responsive grid columns
-  gridCols = 3;
+  private deliveryService = inject(UnifiedDeliveryService);
+  private supplierService = inject(SupplierTypeService);
+  private storageService = inject(StorageUnitDtoService);
+  private translate = inject(TranslateService);
 
-  constructor(
-    private deliveryService: UnifiedDeliveryService,
-    private supplierService: SupplierTypeService,
-    private storageService: StorageUnitDtoService,
-    private translate: TranslateService,
-    private cdr: ChangeDetectorRef
-  ) {
-    // Re-label charts on language switch
-    this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => this.updateChartLabels());
-  }
-
-  @HostListener('window:resize', ['$event'])
-  onResize() {
-    const width = window.innerWidth;
-    this.gridCols = width < 600 ? 1 : width < 900 ? 2 : 3;
+  constructor() {
+    console.log('ReceptionDashboardComponent constructor called');
+    // Subscribe to language changes
+    this.translate.onLangChange.subscribe(() => {
+      this.updateChartLabels();
+    });
   }
 
   ngOnInit(): void {
-    this.onResize();
-    this.loadAllData();
+    console.log('ReceptionDashboardComponent ngOnInit called');
+    this.loadData();
   }
 
   ngOnDestroy(): void {
@@ -133,418 +126,401 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  // -------------------------------------------------------
-  // Refactored Data loading & error handling
-  // -------------------------------------------------------
-  private loadAllData(): void {
-    this.isLoading = true;
-    this.error = null;
-    combineLatest([
-      this.deliveryService.getAllDeliveriesList().pipe(catchError(() => { this.error = 'Failed to load deliveries.'; return of({ data: [] }); })),
-      this.supplierService.getAllSuppliers().pipe(catchError(() => { this.error = 'Failed to load suppliers.'; return of({ data: [] }); })),
-      this.storageService.getAllStorageUnit().pipe(catchError(() => { this.error = 'Failed to load storage units.'; return of({ data: [] }); }))
-    ]).pipe(takeUntil(this.destroy$)).subscribe({
-      next: ([deliveries, suppliers, storage]) => {
-        this.receptions = Array.isArray(deliveries.data) ? deliveries.data.filter(Boolean) : (deliveries.data ? [deliveries.data] : []);
-        this.suppliers = Array.isArray(suppliers.data) ? suppliers.data.filter(Boolean) : (suppliers.data ? [suppliers.data] : []);
-        this.storageUnits = Array.isArray(storage.data) ? storage.data.filter(Boolean) : (storage.data ? [storage.data] : []);
-        if (this.error) {
-          this.isLoading = false;
-          this.cdr.markForCheck();
-          return;
-        }
-        // Prepare sparkline data (last 7 days)
-        this.receptionsPerDay = this.getReceptionsPerDay(this.receptions, 7);
-        this.pendingReceptionsPerDay = this.getReceptionsPerDay(
-          this.receptions.filter((r) => r.status === OliveLotStatus.IN_PROGRESS),
-          7
-        );
-        this.completedReceptionsPerDay = this.getReceptionsPerDay(
-          this.receptions.filter((r) => r.status === OliveLotStatus.COMPLETED),
-          7
-        );
-        this.volumePerDay = this.getVolumePerDay(this.receptions, 7);
-        // Compute stats & build all charts
-        this.prepareStatsAndCharts();
-        this.isLoading = false;
-        this.cdr.markForCheck();
-      },
-      error: () => {
-        this.error = 'Failed to load dashboard data.';
-        this.isLoading = false;
-        this.cdr.markForCheck();
+  private updateChartLabels() {
+    // Update chart labels when language changes
+    this.translate.get([
+      'DASHBOARD.ANALYTICS.RECEPTION_STATUS',
+      'DASHBOARD.ANALYTICS.RECEPTION_TYPE',
+      'DASHBOARD.ANALYTICS.VOLUME_BY_SUPPLIER',
+      'DASHBOARD.ANALYTICS.VOLUME_BY_STORAGE',
+      'DASHBOARD.ANALYTICS.QUALITY_CONTROL',
+      'DASHBOARD.ANALYTICS.RECENT_RECEPTIONS',
+      'DASHBOARD.ANALYTICS.RECEPTION_TREND.TITLE'
+    ]).subscribe(translations => {
+      // Update reception status chart
+      if (this.receptionsByStatusChartOptions) {
+        this.receptionsByStatusChartOptions = {
+          ...this.receptionsByStatusChartOptions,
+          title: { text: translations['DASHBOARD.ANALYTICS.RECEPTION_STATUS'] }
+        };
+      }
+
+      // Update reception type chart
+      if (this.receptionsByTypeChartOptions) {
+        this.receptionsByTypeChartOptions = {
+          ...this.receptionsByTypeChartOptions,
+          title: { text: translations['DASHBOARD.ANALYTICS.RECEPTION_TYPE'] }
+        };
+      }
+
+      // Update volume by supplier chart
+      if (this.volumeBySupplierChartOptions) {
+        this.volumeBySupplierChartOptions = {
+          ...this.volumeBySupplierChartOptions,
+          title: { text: translations['DASHBOARD.ANALYTICS.VOLUME_BY_SUPPLIER'] }
+        };
+      }
+
+      // Update volume by storage chart
+      if (this.volumeByStorageChartOptions) {
+        this.volumeByStorageChartOptions = {
+          ...this.volumeByStorageChartOptions,
+          title: { text: translations['DASHBOARD.ANALYTICS.VOLUME_BY_STORAGE'] }
+        };
+      }
+
+      // Update quality control chart
+      if (this.qualityControlChartOptions) {
+        this.qualityControlChartOptions = {
+          ...this.qualityControlChartOptions,
+          title: { text: translations['DASHBOARD.ANALYTICS.QUALITY_CONTROL'] }
+        };
+      }
+
+      // Update recent receptions chart
+      if (this.recentReceptionsChartOptions) {
+        this.recentReceptionsChartOptions = {
+          ...this.recentReceptionsChartOptions,
+          title: { text: translations['DASHBOARD.ANALYTICS.RECENT_RECEPTIONS'] }
+        };
+      }
+
+      // Update reception trend chart
+      if (this.receptionsTrendChartOptions) {
+        this.receptionsTrendChartOptions = {
+          ...this.receptionsTrendChartOptions,
+          title: { text: translations['DASHBOARD.ANALYTICS.RECEPTION_TREND.TITLE'] }
+        };
       }
     });
   }
 
-  // -------------------------------------------------------
-  // Compute KPIs and invoke chart‐builders
-  // -------------------------------------------------------
-  private prepareStatsAndCharts(): void {
-    // Defensive: If no data, set all KPIs to 0
-    if (!this.receptions || this.receptions.length === 0) {
-      this.totalReceptions = 0;
-      this.pendingReceptions = 0;
-      this.completedReceptions = 0;
-      this.totalVolume = 0;
-      this.avgVolumePerReception = 0;
-      this.avgUnitPrice = 0;
-      this.totalPaidAmount = 0;
-      this.totalUnpaidAmount = 0;
-      this.uniqueSuppliers = 0;
-      this.storageUnitsUsed = 0;
-      this.avgProcessingTime = 0;
-      return;
+  loadData() {
+    console.log('loadData called');
+    this.isLoading = true;
+    this.error = null;
+    forkJoin({
+      deliveries: this.deliveryService.getAllDeliveriesList().pipe(catchError(() => of({ data: [] }))),
+      suppliers: this.supplierService.getAllSuppliers().pipe(catchError(() => of({ data: [] }))),
+      storage: this.storageService.getAllStorageUnit().pipe(catchError(() => of({ data: [] })))
+    })
+      .pipe(finalize(() => (this.isLoading = false)), takeUntil(this.destroy$))
+      .subscribe({
+        next: ({ deliveries, suppliers, storage }) => {
+          this.receptions = Array.isArray(deliveries.data) ? deliveries.data : [deliveries.data];
+          this.suppliers = Array.isArray(suppliers.data) ? suppliers.data : [suppliers.data];
+          this.storageUnits = Array.isArray(storage.data) ? storage.data : [storage.data];
+          // Compute per-day arrays for sparklines
+          this.receptionsPerDay = this.getReceptionsPerDay(this.receptions, 7);
+          this.pendingReceptionsPerDay = this.getReceptionsPerDay(this.receptions.filter(r => r.status === OliveLotStatus.IN_PROGRESS), 7);
+          this.completedReceptionsPerDay = this.getReceptionsPerDay(this.receptions.filter(r => r.status === 'COMPLETED'), 7);
+          this.volumePerDay = this.getVolumePerDay(this.receptions, 7);
+          console.log('Receptions:', this.receptions);
+          console.log('Suppliers:', this.suppliers);
+          console.log('Storage Units:', this.storageUnits);
+          this.prepareStatsAndCharts();
+        },
+        error: () => {
+          this.error = 'Erreur lors du chargement des données';
+        }
+      });
+  }
+
+  getReceptionsPerDay(receptions: UnifiedDelivery[], days: number = 7): number[] {
+    const counts = Array(days).fill(0);
+    const today = new Date();
+    for (let i = 0; i < days; i++) {
+      const day = new Date(today);
+      day.setDate(today.getDate() - i);
+      const dayStr = day.toISOString().split('T')[0];
+      counts[days - i - 1] = receptions.filter(r => r.deliveryDate && new Date(r.deliveryDate).toISOString().split('T')[0] === dayStr).length;
     }
-    // Basic counts
+    return counts;
+  }
+
+  getVolumePerDay(receptions: UnifiedDelivery[], days: number = 7): number[] {
+    const volumes = Array(days).fill(0);
+    const today = new Date();
+    for (let i = 0; i < days; i++) {
+      const day = new Date(today);
+      day.setDate(today.getDate() - i);
+      const dayStr = day.toISOString().split('T')[0];
+      volumes[days - i - 1] = receptions
+        .filter(r => r.deliveryDate && new Date(r.deliveryDate).toISOString().split('T')[0] === dayStr)
+        .reduce((sum, r) => sum + (r.oilQuantity || 0), 0);
+    }
+    return volumes;
+  }
+
+  prepareStatsAndCharts() {
+    console.log('prepareStatsAndCharts called');
+    // Summary stats
     this.totalReceptions = this.receptions.length;
-    this.pendingReceptions = this.receptions.filter((r) => r.status === OliveLotStatus.IN_PROGRESS).length;
-    this.completedReceptions = this.receptions.filter((r) => r.status === OliveLotStatus.COMPLETED).length;
+    this.pendingReceptions = this.receptions.filter(r => r.status === OliveLotStatus.IN_PROGRESS).length;
+    this.completedReceptions = this.receptions.filter(r => r.status === 'COMPLETED').length;
     this.totalVolume = this.receptions.reduce((sum, r) => sum + (r.oilQuantity || 0), 0);
 
-    // Derived metrics
-    // Unique suppliers by supplier.id
-    this.uniqueSuppliers = new Set(this.receptions.map((r) => r.supplier?.id)).size;
+    // Recent receptions (last 5)
+    this.recentReceptions = [...this.receptions]
+      .sort((a, b) => new Date(b.deliveryDate).getTime() - new Date(a.deliveryDate).getTime())
+      .slice(0, 5);
 
-    // Avg processing time (days) for completed items
-    const done = this.receptions.filter((r) => r.status === OliveLotStatus.COMPLETED && r.deliveryDate && r.trtDate);
-    this.avgProcessingTime = done.length
-      ? done.reduce((sum, r) => sum + (new Date(r.trtDate!).getTime() - new Date(r.deliveryDate).getTime()) / 86400000, 0) / done.length
-      : 0;
-
-    // Calculate avgUnitPrice, totalPaidAmount, totalUnpaidAmount
-    this.avgUnitPrice = this.receptions.length
-      ? this.receptions.reduce((sum, r) => sum + (r.unitPrice || 0), 0) / this.receptions.length
-      : 0;
+    // KPIs
+    this.avgVolumePerReception = this.receptions.length ? this.totalVolume / this.receptions.length : 0;
+    this.avgUnitPrice = this.receptions.length ? (this.receptions.reduce((sum, r) => sum + (r.unitPrice || 0), 0) / this.receptions.length) : 0;
     this.totalPaidAmount = this.receptions.reduce((sum, r) => sum + (r.paidAmount || 0), 0);
     this.totalUnpaidAmount = this.receptions.reduce((sum, r) => sum + (r.unpaidAmount || 0), 0);
+    this.uniqueSuppliers = new Set(this.receptions.map(r => r.supplier?.id)).size;
+    this.storageUnitsUsed = new Set(this.receptions.map(r => r.storageUnit?.id)).size;
+    // Average processing time (in days)
+    const completed = this.receptions.filter(r => r.status === 'COMPLETED' && r.deliveryDate && r.trtDate);
+    this.avgProcessingTime = completed.length ? (completed.reduce((sum, r) => sum + ((new Date(r.trtDate!).getTime() - new Date(r.deliveryDate).getTime()) / (1000 * 60 * 60 * 24)), 0) / completed.length) : 0;
 
-    // Build each chart
-    this.buildStatusChart();
-    this.buildTrendChart();
-    this.buildTypeChart();
-    this.buildVolumeBySupplierChart();
-    this.buildVolumeByStorageChart();
-    this.buildQualityControlChart();
-    this.buildRecentReceptionsChart();
-  }
+    // Initial setup for Receptions Trend chart (Monthly view)
+    this.updateReceptionTrendView('monthly');
 
-  // -------------------------------------------------------
-  // Trend View Switch Handler
-  // -------------------------------------------------------
-  setReceptionTrendView(view: 'monthly' | 'weekly' | 'daily') {
-    if (this.currentReceptionTrendView !== view) {
-      this.currentReceptionTrendView = view;
-      this.buildTrendChart();
-      this.cdr.markForCheck();
-    }
-  }
-
-  // -------------------------------------------------------
-  // Chart‐building helpers (add guards for empty/missing data)
-  // -------------------------------------------------------
-  private buildStatusChart(): void {
-    if (!this.receptions || this.receptions.length === 0) {
-      this.receptionsByStatusChartOptions = { series: [], labels: [], chart: { type: 'pie' } };
-      return;
-    }
-    const statuses = Array.from(new Set(this.receptions.map((r) => r.status)));
-    const counts = statuses.map((s) => this.receptions.filter((r) => r.status === s).length);
-    const labels = statuses.map((s) => this.translate.instant(`DASHBOARD.ANALYTICS.STATUS.${s}`));
-    // Dynamic color array for statuses
-    const statusColors = [this.successColor, this.warningColor, this.primaryColor, this.dangerColor, '#607d8b', '#ff9800'];
+    // Receptions by status (Pie)
+    const statusCounts: Record<string, number> = {};
+    this.receptions.forEach(r => {
+      const status = this.translate.instant('RECEPTION_LIST.STATUS.'+r.status) || 'INCONNU';
+      statusCounts[status] = (statusCounts[status] || 0) + 1;
+    });
     this.receptionsByStatusChartOptions = {
-      chart: {
-        type: 'pie',
-        ...this.chartDimensions[this.currentChartSize]
-      },
-      series: counts,
-      labels,
-      colors: statusColors.slice(0, statuses.length),
-      title: { text: this.translate.instant('DASHBOARD.ANALYTICS.RECEPTION_STATUS') }
+      series: Object.values(statusCounts),
+      chart: { type: 'pie', height: 200 },
+      labels: Object.keys(statusCounts),
+      colors: ['#4CAF50', '#FFC107', '#F44336', '#2196F3', '#9C27B0']
     };
-  }
 
-  private buildTrendChart(): void {
-    if (!this.receptions || this.receptions.length === 0) {
-      this.receptionsTrendChartOptions = { series: [{ name: this.translate.instant('DASHBOARD.ANALYTICS.TREND'), data: [] }], xaxis: { categories: [] }, chart: { type: 'area' } };
-      return;
-    }
-    // Choose granularity
-    let categories: string[];
-    let data: number[];
-
-    if (this.currentReceptionTrendView === 'daily') {
-      categories = this.getLastNDates(30);
-      data = this.getReceptionsPerDay(this.receptions, 30);
-    } else if (this.currentReceptionTrendView === 'weekly') {
-      categories = this.getLastNWeeks(12);
-      data = this.getReceptionsPerWeek(this.receptions, 12);
-    } else {
-      categories = this.getLastNMonths(6);
-      data = this.getReceptionsPerMonth(this.receptions, 6);
-    }
-
-    this.receptionsTrendChartOptions = {
-      chart: {
-        type: 'area',
-        ...this.chartDimensions[this.currentChartSize]
-      },
-      series: [{ name: this.translate.instant('DASHBOARD.ANALYTICS.TREND'), data }],
-      xaxis: { categories },
-      colors: [this.primaryColor],
-      title: { text: this.translate.instant('DASHBOARD.ANALYTICS.RECEPTION_TREND.TITLE') }
-    };
-  }
-
-  private buildTypeChart(): void {
-    if (!this.receptions || this.receptions.length === 0) {
-      this.receptionsByTypeChartOptions = { series: [], labels: [], chart: { type: 'pie' } };
-      return;
-    }
-    // Use correct type extraction and string conversion
-    const types = Array.from(new Set(this.receptions.map((r) => r.operationType)));
-    const counts = types.map((t) => this.receptions.filter((r) => r.operationType === t).length);
-    // Dynamic color array for types
-    const typeColors = [this.primaryColor, this.warningColor, this.successColor, this.dangerColor, '#607d8b', '#ff9800'];
-    this.receptionsByTypeChartOptions = {
-      chart: {
-        type: 'pie',
-        ...this.chartDimensions[this.currentChartSize]
-      },
-      series: counts,
-      labels: types.map(t => t ? t.toString() : ''),
-      colors: typeColors.slice(0, types.length),
-      title: { text: this.translate.instant('DASHBOARD.ANALYTICS.RECEPTION_TYPE') }
-    };
-  }
-
-  private buildVolumeBySupplierChart(): void {
-    if (!this.suppliers || this.suppliers.length === 0) {
-      this.volumeBySupplierChartOptions = { series: [{ name: this.translate.instant('DASHBOARD.ANALYTICS.VOLUME'), data: [] }], xaxis: { categories: [] }, chart: { type: 'bar' } };
-      return;
-    }
-    // Use supplier.id for matching
-    const names = this.suppliers.map((s) => s.supplierInfo.name);
-    const volumes = this.suppliers.map((s) =>
-      this.receptions.filter((r) => r.supplier && r.supplier.id === s.id).reduce((sum, r) => sum + (r.oilQuantity || 0), 0)
-    );
+    // Supplier performance
+    const supplierMap = new Map<string, number>();
+    this.receptions.forEach(r => {
+      const name = r.supplier?.supplierInfo?.name || 'Inconnu';
+      supplierMap.set(name, (supplierMap.get(name) || 0) + (r.oilQuantity || 0));
+    });
+    this.supplierNames = Array.from(supplierMap.keys());
+    this.supplierVolumes = Array.from(supplierMap.values());
     this.volumeBySupplierChartOptions = {
-      chart: {
-        type: 'bar',
-        ...this.chartDimensions[this.currentChartSize]
-      },
-      series: [{ name: this.translate.instant('DASHBOARD.ANALYTICS.VOLUME'), data: volumes }],
-      xaxis: { categories: names },
-      colors: [this.accentColor],
-      title: { text: this.translate.instant('DASHBOARD.ANALYTICS.VOLUME_BY_SUPPLIER') }
+      series: [{ name: 'Volume', data: this.supplierVolumes }],
+      chart: { type: 'bar', height: 200 },
+      xaxis: { categories: this.supplierNames },
+      colors: ['var(--primary-500)']
     };
-  }
 
-  private buildVolumeByStorageChart(): void {
-    if (!this.storageUnits || this.storageUnits.length === 0) {
-      this.volumeByStorageChartOptions = { series: [{ name: this.translate.instant('DASHBOARD.ANALYTICS.VOLUME'), data: [] }], xaxis: { categories: [] }, chart: { type: 'bar' } };
-      return;
-    }
-    // Use storageUnit?.id for matching
-    const names = this.storageUnits.map((s) => s.name);
-    const volumes = this.storageUnits.map((s) =>
-      this.receptions.filter((r) => r.storageUnit && r.storageUnit.id === s.id).reduce((sum, r) => sum + (r.oilQuantity || 0), 0)
+    // Storage utilization
+    this.storageNames = this.storageUnits.map(s => s.name);
+    this.storageUtilization = this.storageUnits.map(s =>
+      s.maxCapacity ? Math.round((s.currentVolume / s.maxCapacity) * 100) : 0
     );
     this.volumeByStorageChartOptions = {
-      chart: {
-        type: 'bar',
-        ...this.chartDimensions[this.currentChartSize]
-      },
-      series: [{ name: this.translate.instant('DASHBOARD.ANALYTICS.VOLUME'), data: volumes }],
-      xaxis: { categories: names },
-      colors: [this.accentColor],
-      title: { text: this.translate.instant('DASHBOARD.ANALYTICS.VOLUME_BY_STORAGE') }
+      series: [{ name: 'Utilisation', data: this.storageUtilization }],
+      chart: { type: 'bar', height: 200 },
+      xaxis: { categories: this.storageNames },
+      colors: ['var(--info-500)']
     };
-  }
 
-  private buildQualityControlChart(): void {
-    if (!this.receptions || this.receptions.length === 0) {
-      this.qualityControlChartOptions = { series: [], labels: [], chart: { type: 'pie' } };
-      return;
-    }
-    // Count passed/failed based on ruleType and measuredValue
-    let passed = 0;
-    let failed = 0;
+    // Receptions by type (Bar)
+    const typeMap = new Map<string, number>();
     this.receptions.forEach(r => {
-      if (Array.isArray(r.qualityControlResults) && r.qualityControlResults.length > 0) {
+      const type = r.deliveryType || 'INCONNU';
+      typeMap.set(type, (typeMap.get(type) || 0) + 1);
+    });
+    this.receptionsByTypeChartOptions = {
+      series: [{ name: 'Réceptions', data: Array.from(typeMap.values()) }],
+      chart: { type: 'bar', height: 200 },
+      xaxis: { categories: Array.from(typeMap.keys()) },
+      colors: ['var(--success-500)']
+    };
+
+    // Quality control results distribution (Pie)
+    const qcMap: Record<string, number> = {};
+    this.receptions.forEach(r => {
+      if (r.qualityControlResults && r.qualityControlResults.length > 0) {
         r.qualityControlResults.forEach(qc => {
-          const rule = qc.rule;
-          if (rule.ruleType === 'BOOLEAN' && rule.booleanValue !== undefined) {
-            if (qc.measuredValue === 'true' && rule.booleanValue === true) passed++;
-            else failed++;
-          } else if (rule.ruleType === 'NUMERIC' && rule.minValue !== undefined && rule.maxValue !== undefined) {
-            const val = parseFloat(qc.measuredValue);
-            if (!isNaN(val) && val >= rule.minValue && val <= rule.maxValue) passed++;
-            else failed++;
-          } else {
-            // For other types, count as failed for now
-            failed++;
-          }
+          const rule = qc.rule?.ruleName?.toString() || 'INCONNU';
+          qcMap[rule] = (qcMap[rule] || 0) + 1;
         });
-      } else {
-        failed++;
       }
     });
     this.qualityControlChartOptions = {
-      chart: {
-        type: 'pie',
-        ...this.chartDimensions[this.currentChartSize]
-      },
-      series: [passed, failed],
-      labels: [
-        this.translate.instant('DASHBOARD.ANALYTICS.QUALITY_CONTROL.PASSED'),
-        this.translate.instant('DASHBOARD.ANALYTICS.QUALITY_CONTROL.FAILED')
-      ],
-      colors: [this.successColor, this.dangerColor],
-      title: { text: this.translate.instant('DASHBOARD.ANALYTICS.QUALITY_CONTROL') }
+      series: Object.values(qcMap),
+      chart: { type: 'pie', height: 200 },
+      labels: Object.keys(qcMap),
+      colors: ['#4CAF50', '#FFC107', '#F44336', '#2196F3', '#9C27B0']
     };
-  }
 
-  private buildRecentReceptionsChart(): void {
-    if (!this.receptions || this.receptions.length === 0) {
-      this.recentReceptionsChartOptions = { series: [{ name: this.translate.instant('DASHBOARD.ANALYTICS.RECENT_RECEPTIONS'), data: [] }], xaxis: { categories: [] }, chart: { type: 'line' } };
-      return;
-    }
-    const categories = this.getLastNDates(7);
-    const data = this.getReceptionsPerDay(this.receptions, 7);
-
+    // Populate recentReceptionsChartOptions
     this.recentReceptionsChartOptions = {
+      series: [{
+        name: 'Quantité d\'huile',
+        data: this.recentReceptions.map(r => r.oilQuantity || 0)
+      }],
       chart: {
-        type: 'line',
-        ...this.chartDimensions[this.currentChartSize]
+        type: 'bar',
+        height: 250,
+        toolbar: { show: false }
       },
-      series: [{ name: this.translate.instant('DASHBOARD.ANALYTICS.RECENT_RECEPTIONS'), data }],
-      xaxis: { categories },
-      colors: [this.accentColor],
-      tooltip: { enabled: true }
+      xaxis: {
+        categories: this.recentReceptions.map(r => `Lot ${r.lotNumber} (${r.supplier?.supplierInfo?.name || 'Inconnu'})`),
+        labels: { rotate: -45, trim: true, hideOverlappingLabels: true }
+      },
+      yaxis: { title: { text: 'Quantité (T)' } },
+      tooltip: {
+        y: { formatter: (val: number) => val.toFixed(2) + ' T' }
+      },
+      colors: ['var(--secondary-500)']
+    };
+
+    // Log chart data for debugging
+    console.log('receptionsPerDay', this.receptionsPerDay);
+    console.log('volumePerDay', this.volumePerDay);
+    console.log('supplierVolumes', this.supplierVolumes);
+    console.log('storageUtilization', this.storageUtilization);
+  }
+
+  updateReceptionTrendView(view: 'monthly' | 'weekly' | 'daily') {
+    this.currentReceptionTrendView = view;
+    const data = this.getReceptionsTrendData(this.receptions, view);
+    this.receptionsTrendChartOptions = {
+      series: [{ name: 'Réceptions', data: data.data }],
+      chart: { type: 'line', height: this.chartDimensions[this.currentChartSize].height, toolbar: { show: false } },
+      xaxis: { categories: data.categories },
+      colors: ['var(--primary-500)']
     };
   }
 
-  // -------------------------------------------------------
-  // Update chart titles on language change
-  // -------------------------------------------------------
-  private updateChartLabels(): void {
-    if (this.receptionsByStatusChartOptions.title) {
-      this.receptionsByStatusChartOptions.title.text = this.translate.instant('DASHBOARD.ANALYTICS.RECEPTION_STATUS');
-    }
-    if (this.receptionsTrendChartOptions.title) {
-      this.receptionsTrendChartOptions.title.text = this.translate.instant('DASHBOARD.ANALYTICS.RECEPTION_TREND.TITLE');
-    }
-    if (this.receptionsByTypeChartOptions.title) {
-      this.receptionsByTypeChartOptions.title.text = this.translate.instant('DASHBOARD.ANALYTICS.RECEPTION_TYPE');
-    }
-    if (this.volumeBySupplierChartOptions.title) {
-      this.volumeBySupplierChartOptions.title.text = this.translate.instant('DASHBOARD.ANALYTICS.VOLUME_BY_SUPPLIER');
-    }
-    if (this.volumeByStorageChartOptions.title) {
-      this.volumeByStorageChartOptions.title.text = this.translate.instant('DASHBOARD.ANALYTICS.VOLUME_BY_STORAGE');
-    }
-    if (this.qualityControlChartOptions.title) {
-      this.qualityControlChartOptions.title.text = this.translate.instant('DASHBOARD.ANALYTICS.QUALITY_CONTROL');
+  private getReceptionsTrendData(receptions: UnifiedDelivery[], view: 'monthly' | 'weekly' | 'daily') {
+    if (view === 'monthly') {
+      return this.generateMonthlyReceptionsTrend(receptions);
+    } else if (view === 'weekly') {
+      return this.generateWeeklyReceptionsTrend(receptions);
+    } else {
+      return this.generateDailyReceptionsTrend(receptions);
     }
   }
 
-  // -------------------------------------------------------
-  // Date‐based helpers
-  // -------------------------------------------------------
-  private getLastNDates(n: number): string[] {
-    const dates: string[] = [];
-    for (let i = n - 1; i >= 0; i--) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      dates.push(d.toISOString().split('T')[0]);
-    }
-    return dates;
+  private generateMonthlyReceptionsTrend(receptions: UnifiedDelivery[]): { categories: string[], data: number[] } {
+    const monthlyCounts: Record<string, number> = {};
+    const last12Months = this.getLastNMonths(12);
+
+    last12Months.forEach(month => monthlyCounts[month] = 0);
+
+    receptions.forEach(r => {
+      const month = new Date(r.deliveryDate).toLocaleString('fr-FR', { year: 'numeric', month: 'short' });
+      monthlyCounts[month]++;
+    });
+
+    return { categories: last12Months, data: last12Months.map(month => monthlyCounts[month]) };
   }
 
-  private getLastNWeeks(n: number): string[] {
-    const weeks: string[] = [];
-    const now = new Date();
-    for (let i = n - 1; i >= 0; i--) {
-      const wStart = new Date(now);
-      wStart.setDate(now.getDate() - i * 7);
-      weeks.push(`W${this.getWeekNumber(wStart)}`);
-    }
-    return weeks;
+  private generateWeeklyReceptionsTrend(receptions: UnifiedDelivery[]): { categories: string[], data: number[] } {
+    const weeklyCounts: Record<string, number> = {};
+    const last14Days = this.getLastNDates(14);
+
+    last14Days.forEach(date => {
+      const week = this.getWeekNumber(date);
+      weeklyCounts[week] = 0;
+    });
+
+    receptions.forEach(r => {
+      const date = new Date(r.deliveryDate);
+      const week = this.getWeekNumber(date);
+      weeklyCounts[week]++;
+    });
+
+    const categories = last14Days.map(date => {
+      const week = this.getWeekNumber(date);
+      return `Sem. ${week} (${date.getDate()}/${date.getMonth() + 1})`;
+    });
+
+    return { categories, data: last14Days.map(date => weeklyCounts[this.getWeekNumber(date)]) };
+  }
+
+  private getWeekNumber(date: Date): string {
+    date = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    // Set to nearest Thursday: current date + 4 - current day number
+    // (Sunday is 0)
+    date.setUTCDate(date.getUTCDate() + 4 - (date.getUTCDay() || 7));
+    // Get full year number in ISO-8601 year numbering.
+    const yearStart = new Date(Date.UTC(date.getFullYear(), 0, 1));
+    // Calculate full weeks to the nearest Thursday
+    const weekNo = Math.ceil((((date.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
+    return `${date.getFullYear()}-${weekNo}`;
+  }
+
+  private generateDailyReceptionsTrend(receptions: UnifiedDelivery[]): { categories: string[], data: number[] } {
+    const dailyCounts: Record<string, number> = {};
+    const last14Days = this.getLastNDates(14);
+
+    last14Days.forEach(date => dailyCounts[date.toISOString().split('T')[0]] = 0);
+
+    receptions.forEach(r => {
+      const date = new Date(r.deliveryDate).toISOString().split('T')[0];
+      dailyCounts[date]++;
+    });
+
+    return { categories: last14Days.map(d => d.toLocaleDateString('fr-FR')), data: last14Days.map(d => dailyCounts[d.toISOString().split('T')[0]]) };
   }
 
   private getLastNMonths(n: number): string[] {
     const months: string[] = [];
-    const now = new Date();
-    for (let i = n - 1; i >= 0; i--) {
-      const m = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      months.push(`${m.getFullYear()}-${String(m.getMonth() + 1).padStart(2, '0')}`);
+    for (let i = 0; i < n; i++) {
+      const date = new Date();
+      date.setMonth(date.getMonth() - i);
+      months.unshift(date.toLocaleString('fr-FR', { year: 'numeric', month: 'short' }));
     }
     return months;
   }
 
-  private getReceptionsPerDay(receptions: UnifiedDelivery[], days: number): number[] {
-    const labels = this.getLastNDates(days);
-    return labels.map((dateStr) => receptions.filter((r) => new Date(r.deliveryDate).toISOString().split('T')[0] === dateStr).length);
+  private getLastNDates(n: number): Date[] {
+    const dates: Date[] = [];
+    for (let i = 0; i < n; i++) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      dates.unshift(date);
+    }
+    return dates;
   }
 
-  private getReceptionsPerWeek(receptions: UnifiedDelivery[], weeks: number): number[] {
-    const labels = this.getLastNWeeks(weeks);
-    return labels.map((w) => {
-      const weekNum = parseInt(w.slice(1), 10);
-      return receptions.filter((r) => {
-        const d = new Date(r.deliveryDate);
-        return this.getWeekNumber(d) === weekNum;
-      }).length;
-    });
+  private isSameDay(a: Date, b: Date): boolean {
+    return a.getFullYear() === b.getFullYear() &&
+      a.getMonth() === b.getMonth() &&
+      a.getDate() === b.getDate();
   }
 
-  private getReceptionsPerMonth(receptions: UnifiedDelivery[], months: number): number[] {
-    const labels = this.getLastNMonths(months);
-    return labels.map((mStr) => {
-      const [year, month] = mStr.split('-').map((x) => +x);
-      return receptions.filter((r) => {
-        const d = new Date(r.deliveryDate);
-        return d.getFullYear() === year && d.getMonth() + 1 === month;
-      }).length;
-    });
+  get primaryColor() {
+    return ['var(--primary-500)'];
   }
 
-  private getVolumePerDay(receptions: UnifiedDelivery[], days: number): number[] {
-    const labels = this.getLastNDates(days);
-    return labels.map((dateStr) =>
-      receptions
-        .filter((r) => new Date(r.deliveryDate).toISOString().split('T')[0] === dateStr)
-        .reduce((sum, r) => sum + (r.oilQuantity || 0), 0)
-    );
+  get warningColor() {
+    return ['var(--warning-500)'];
   }
 
-  private getWeekNumber(d: Date): number {
-    // ISO week number
-    const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-    const dayNum = date.getUTCDay() || 7;
-    date.setUTCDate(date.getUTCDate() + 4 - dayNum);
-    const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
-    return Math.ceil(((date.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
+  get successColor() {
+    return ['var(--success-500)'];
   }
 
-  // -------------------------------------------------------
-  // Color getters in sync with SCSS variables
-  // -------------------------------------------------------
-  protected get primaryColor(): string {
-    return '#3f51b5';
+  get infoColor() {
+    return ['var(--info-500)'];
   }
-  protected get warningColor(): string {
-    return '#ffa000';
+
+  // Currency formatting getters for dashboard display
+  get formattedAvgUnitPrice(): string {
+    return this.avgUnitPrice.toFixed(2) + ' TND';
   }
-  protected get successColor(): string {
-    return '#4caf50';
+
+  get formattedTotalPaidAmount(): string {
+    return this.totalPaidAmount.toFixed(2) + ' TND';
   }
-  protected get dangerColor(): string {
-    return '#d32f2f';
+
+  get formattedTotalUnpaidAmount(): string {
+    return this.totalUnpaidAmount.toFixed(2) + ' TND';
   }
-  protected get accentColor(): string {
-    return '#3f51b5';
+
+  updateChartSize(size: 'small' | 'medium' | 'large') {
+    this.currentChartSize = size;
+    // Re-render charts to apply new size
+    this.updateReceptionTrendView(this.currentReceptionTrendView);
+    this.prepareStatsAndCharts();
   }
 }

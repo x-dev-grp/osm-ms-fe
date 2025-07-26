@@ -1,33 +1,37 @@
 <div class="w-full">
-  <app-card cardTitle="Planification des Réceptions d'Olives" id="planning-card">
+  <app-card [cardTitle]="'PLANNING_CARD_TITLE' | translate" id="planning-card">
     <ng-template #headerOptionsTemplate>
-      <div class="header-actions">
+      <div class="header-actions-container">
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-label>{{ "PLANNING_SEARCH"|translate }}</mat-label>
+          <input
+            [(ngModel)]="searchTerm"
+            matInput
+            placeholder="{{ 'PLANNING_SEARCH_PLACEHOLDER' | translate }}"
+            type="search">
 
-    <span class="stats">
-      Non Assignées: {{ filteredReceptions.length }} |
-      Assignées: {{ totalAssigned }}
-    </span>
+        </mat-form-field>
 
-        <button (click)="groupSelected()"
-                *ngIf="hasSelection()"
-                class="action-btn accent"
-                mat-raised-button>
-          Grouper&nbsp;({{ selectedIds().length }})
+        <div class="stats">
+          <span class="stat-item">{{ 'PLANNING_UNASSIGNED' | translate }} {{ filteredReceptions.length }}</span>
+
+          <span class="stat-item">
+            {{ 'PLANNING_ASSIGNED' | translate }} {{ totalAssigned }}
+          </span>
+        </div>
+
+        <!-- vos boutons existants restent inchangés -->
+        <button (click)="groupSelected()" *ngIf="hasSelection()" class="action-btn accent" mat-raised-button>
+          Grouper ({{ selectedIds().length }})
         </button>
-
-        <button (click)="savePlan()"
-                class="action-btn primary"
-                mat-raised-button>
-          Enregistrer
+        <button (click)="savePlan()" class="action-btn primary" mat-raised-button>
+          {{ 'PLANNING_SAVE' | translate }}
         </button>
-
-        <button (click)="cancelPlan()"
-                class="action-btn"
-                mat-raised-button>
-          Annuler
+        <button (click)="cancelPlan()" class="action-btn" mat-raised-button>
+          {{ 'PLANNING_CANCEL' | translate }}
         </button>
         <button (click)="toggleFullScreen()"
-                [matTooltip]="isFullScreen ? 'Quitter le plein écran' : 'Plein écran'"
+                [matTooltip]="isFullScreen ? ('PLANNING_EXIT_FULLSCREEN' | translate) : ('PLANNING_FULLSCREEN' | translate)"
                 class="fs-btn"
                 mat-icon-button>
           <mat-icon>{{ isFullScreen ? 'fullscreen_exit' : 'fullscreen' }}</mat-icon>
@@ -42,7 +46,7 @@
         <mat-expansion-panel expanded>
           <mat-expansion-panel-header class="sticky-header">
             <mat-tab-nav-panel>
-              Réceptions Non Assignées ({{ unassignedReceptions.length }})
+              {{'PLANNING_RECEPTIONS_UNASSIGNED_HEADER'|translate }} ({{ unassignedReceptions.length }})
             </mat-tab-nav-panel>
           </mat-expansion-panel-header>
 
@@ -56,7 +60,7 @@
             id="unassigned-list"
             role="list"
           >
-            @for (item of filteredReceptions; track trackByReception($index, item)) {
+            @for (item of filteredReceptions| filterLot:searchTerm; track trackByReception($index, item)) {
               @if (item.type === LOT) {
                 @let data = item.data ;
                 <div
@@ -97,21 +101,21 @@
                             <div class="details-info">
                               @if (data.supplier) {
                                 <span
-                                  class="supplier">Fournisseur : {{ data.supplier.supplierInfo.name + " " + data.supplier.supplierInfo.lastname }}</span>
+                                  class="supplier">{{'PLANNING_SUPPLIER'|translate}} {{ data.supplier.supplierInfo.name + " " + data.supplier.supplierInfo.lastname }}</span>
                               }
                               @if (data.operationType) {
                                 <span
-                                  class="operationType">Type d'operation : {{ ('OPERATION_TYPE.' + data.operationType)|translate }}</span>
+                                  class="operationType">{{'PLANNING_OPERATION_TYPE'|translate}} {{ ('OPERATION_TYPE.' + data.operationType)|translate }}</span>
                               }
 
                               @if (data.oliveVariety) {
-                                <span class="variety">Variété : {{ data.oliveVariety }}</span>
+                                <span class="variety">{{'PLANNING_VARIETY'|translate}} {{ data.oliveVariety }}</span>
                               }
                               @if (data.oliveType) {
-                                <span class="type">Type : {{ data.oliveType }}</span>
+                                <span class="type">{{'PLANNING_TYPE'|translate}} {{ data.oliveType }}</span>
                               }
                               @if (data.sackCount) {
-                                <span class="sacks">Sacs : {{ data.sackCount }}</span>
+                                <span class="sacks">{{'PLANNING_SACKS'|translate}} {{ data.sackCount }}</span>
                               }
                             </div>
                             @if (data.globalLotNumber) {
@@ -121,9 +125,6 @@
                               class="block text-xs text-gray-600">{{ data.deliveryDate | date: 'shortDate' }}</small>
                           </div>
                           <div>
-                            <!--                            <button mat-icon-button (click)="markAsCompleted(item)" >-->
-                            <!--                              <mat-icon class="text-green-500">check_circle</mat-icon>-->
-                            <!--                            </button>-->
                           </div>
 
                         </div>
@@ -163,7 +164,7 @@
                             <strong>{{ data.globalLotNumber }}</strong>
                           </div>
                           <div class="quantity-info">
-                            <span class="quantity">Net : {{ data.items | sum:'data.poidsNet' }} kg</span>
+                            <span class="quantity">{{ 'PLANNING_NET'|translate }} {{ data.items | sum:'data.poidsNet' }} kg</span>
                           </div>
                           @if (data.completed) {
                             <mat-icon class="text-green-500">check_circle</mat-icon>
@@ -218,7 +219,7 @@
               (cdkDropListEntered)="onDropListEntered($event)"
               role="list"
             >
-              @for (item of mill.receptions; track trackByReception($index, item)) {
+              @for (item of mill.receptions | filterLot:searchTerm; track trackByReception($index, item)) {
                 @if (item.type === LOT) {
                   @let data = item.data ;
                   <div
@@ -257,26 +258,26 @@
                           <div class="details-info">
                             @if (data.supplier) {
                               <span
-                                class="supplier">Fournisseur : {{ data.supplier.supplierInfo.name + " " + data.supplier.supplierInfo.lastname }}</span>
+                                class="supplier">{{'PLANNING_SUPPLIER'|translate}} {{ data.supplier.supplierInfo.name + " " + data.supplier.supplierInfo.lastname }}</span>
                             }
                             @if (data.operationType) {
                               <span
-                                class="operationType">Type d'operation : {{ ('OPERATION_TYPE.' + data.operationType)|translate }}</span>
+                                class="operationType">{{'PLANNING_OPERATION_TYPE'|translate}} {{ ('OPERATION_TYPE.' + data.operationType)|translate }}</span>
                             }
                             @if (data.oliveVariety) {
-                              <span class="variety">Variété : {{ data.oliveVariety }}</span>
+                              <span class="variety">{{'PLANNING_VARIETY'|translate}} {{ data.oliveVariety }}</span>
                             }
                             @if (data.oliveType) {
-                              <span class="type">Type : {{ data.oliveType }}</span>
+                              <span class="type">{{'PLANNING_TYPE'|translate}} {{ data.oliveType }}</span>
                             }
                             @if (data.sackCount) {
-                              <span class="sacks">Sacs : {{ data.sackCount }}</span>
+                              <span class="sacks">{{'PLANNING_SACKS'|translate}} {{ data.sackCount }}</span>
                             }
                           </div>
                           @if (data.globalLotNumber) {
                             <span class="gl-badge">{{ data.globalLotNumber }}</span>
                           }
-                          <small class="block text-xs text-gray-600">{{ data.deliveryDate | date: 'shortDate' }}</small>
+                          <small class="block text-xs text-gray-600 gl-badge">{{ data.deliveryDate | date: 'shortDate' }}</small>
                         </div>
                         <div>
                           <button mat-icon-button (click)="markAsCompleted(item)">

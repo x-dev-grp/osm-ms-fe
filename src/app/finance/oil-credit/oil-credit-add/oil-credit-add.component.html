@@ -93,19 +93,7 @@
       </div>
 
       <div class="col-lg-6">
-        <mat-form-field appearance="outline" class="col">
-          <mat-label>{{ 'OIL_CREDIT.FORM.FIELDS.CREDIT_STATE' | translate }}</mat-label>
-          <mat-select formControlName="creditState">
-            <mat-option value="PENDING">{{ 'OIL_CREDIT.FORM.CREDIT_STATES.PENDING' | translate }}</mat-option>
-            <mat-option value="APPROVED">{{ 'OIL_CREDIT.FORM.CREDIT_STATES.APPROVED' | translate }}</mat-option>
-            <mat-option value="REJECTED">{{ 'OIL_CREDIT.FORM.CREDIT_STATES.REJECTED' | translate }}</mat-option>
-            <mat-option value="COMPLETED">{{ 'OIL_CREDIT.FORM.CREDIT_STATES.COMPLETED' | translate }}</mat-option>
-            <mat-option value="CANCELLED">{{ 'OIL_CREDIT.FORM.CREDIT_STATES.CANCELLED' | translate }}</mat-option>
-          </mat-select>
-          <mat-error *ngIf="submitted && form.get('creditState')?.hasError('required')">
-            {{ 'OIL_CREDIT.FORM.ERRORS.CREDIT_STATE_REQUIRED' | translate }}
-          </mat-error>
-        </mat-form-field>
+
       </div>
     </div>
 

@@ -5,6 +5,7 @@ import { SearchOperation } from '../../../../shared/models/advanced-search/searc
 export const OIL_CREDIT_DASHBOARD: DashboardConfig = {
   icon: 'credit_score',
   title: "Gestion des crédits d'huile",
+  titleTranslatePath: 'SUPPLIER.DETAILS.OIL_CREDIT_TOTAL',
   baseURL: 'finance/oil-credit',
   searchEndpoint: 'finance/oil-credit',
   addNewItem: false,
@@ -18,7 +19,11 @@ export const OIL_CREDIT_DASHBOARD: DashboardConfig = {
     order: 'DESC',
     searchData: {
       operation: SearchOperation.AND,
-      search: {},
+      search: {
+        isDeleted: {
+          equalValue: false
+        }
+      },
       searchs: []
     }
   },
@@ -83,12 +88,11 @@ export const OIL_CREDIT_DASHBOARD: DashboardConfig = {
     {
       name: 'supplier.supplierInfo',
       label: 'Destinataire',
-      labelTranslatePath: 'OIL_CREDIT.FIELDS.SUPPLIER',
       attributeType: AttributeType.object,
       fieldType: FieldType.autocomplete,
       exportable: true,
       dataTable: true,
-      filterable: true,
+      filterable: false,
       valuePath: 'name',
       valueAttributeType: AttributeType.string
     },

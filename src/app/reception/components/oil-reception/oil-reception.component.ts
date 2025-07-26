@@ -242,16 +242,6 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
           this.QualityControl(e.row);
           break;
 
-        case 'DELETE':
-          if (e.row.id) {
-            console.log(`[OilReception] Deleting delivery: ${e.row.lotNumber}`);
-            this.deleteDelivery(e.row);
-          } else {
-            console.error('[OilReception] Cannot delete delivery without ID:', e.row);
-            this.toast('Impossible de supprimer: ID manquant');
-          }
-          break;
-
         case 'SET_PRICE':
           console.log(`[OilReception] Setting price for delivery: ${e.row.lotNumber}`);
           this.setPrice(e.row);
@@ -608,7 +598,8 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
 
     // Mettre à jour automatiquement le prix
     this.setPriceForm.get('unitPrice')?.valueChanges.subscribe((unitPrice) => {
-      const quantity = row.oilQuantity || 0; // adapte selon ton modèle
+
+      const quantity = row?.poidsNet || row?.oilQuantity||0; // adapte selon ton modèle
       const price = parseFloat(unitPrice) * quantity;
       this.setPriceForm.get('price')?.setValue(+price.toFixed(3));
     });

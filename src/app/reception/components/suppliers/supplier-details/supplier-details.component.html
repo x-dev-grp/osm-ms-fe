@@ -1,8 +1,16 @@
 
 <!-- History Cards -->
+
+@if (!supplierId){
+  <!-- Error message -->
+  <div class="error-container">
+    <mat-icon color="warn">error</mat-icon>
+    <p>Fournisseur non trouvé avec ce id ! </p>
+  </div>
+} @else {
 <div class="history-cards-container" >
   <div class="history-cards">
-    <mat-card class="history-card" (click)="navigateToHistory('paid')">
+    <mat-card class="history-card" (click)="loadPaymentHistory(true)">
       <mat-card-content>
         <div class="card-content">
           <mat-icon class="card-icon" color="primary">payments</mat-icon>
@@ -14,7 +22,7 @@
       </mat-card-content>
     </mat-card>
 
-    <mat-card class="history-card" (click)="navigateToHistory('unpaid')">
+    <mat-card class="history-card" (click)="loadPaymentHistory(false)">
       <mat-card-content>
         <div class="card-content">
           <mat-icon class="card-icon" color="warn">pending_actions</mat-icon>
@@ -26,13 +34,13 @@
       </mat-card-content>
     </mat-card>
 
-    <mat-card class="history-card oil-credit-card" (click)="navigateToHistory('oil_credit')">
+    <mat-card class="history-card oil-credit-card" (click)="loadOilCredits()">
       <mat-card-content>
         <div class="card-content">
           <mat-icon class="card-icon" color="accent">water_drop</mat-icon>
           <div class="card-info">
             <h3>{{ 'SUPPLIER.DETAILS.OIL_CREDIT_STATS_TITLE' | translate }}</h3>
-            <p>{{ oilCreditStats.total }} {{ 'SUPPLIER.DETAILS.OIL_CREDIT_TOTAL' | translate }}</p>
+            <p>{{creditsCount}} {{ 'SUPPLIER.DETAILS.OIL_CREDIT_TOTAL' | translate }}</p>
           </div>
         </div>
       </mat-card-content>
@@ -40,8 +48,13 @@
   </div>
 </div>
 
-<!-- Supplier details dashboard -->
-<osm-dashboard
-  [config]="dashboardConfig"
-  (applyAction)="handleAction($event)">
-</osm-dashboard>
+<div class="table-section">
+  @if (isOilCredit){
+     <osm-dashboard #dashboard [config]="OIL_CREDIT_DASHBOARD" (applyAction)="handleCreditAction($event)"></osm-dashboard>
+  } @else {
+     <osm-dashboard #dashboard [config]="PAIMENT_DASHBOARD" (applyAction)="handlePaymentAction($event)"></osm-dashboard>
+  }
+
+</div>
+
+}

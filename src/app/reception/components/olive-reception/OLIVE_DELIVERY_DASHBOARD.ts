@@ -18,6 +18,9 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
     searchData: {
       operation: SearchOperation.AND,
       search:{
+        isDeleted:{
+          equalValue:false
+        },
         status: {
           inValues: ['NEW', 'IN_PROGRESS', 'OLIVE_CONTROLLED','WAITING_FOR_PRICING','PROD_READY', 'REFUSED', 'CANCELLED']
         },
@@ -35,13 +38,13 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
     /* Identifiants */
     {
       name: 'deliveryNumber',
-      label: 'N° Bon de réception',
+      label: 'N° Livraison',
       labelTranslatePath: 'DELIVERIES.FIELDS.DELIVERY_NUMBER',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
-      sortable: true,
-      dataTable: true,
+      sortable: false,
+      dataTable: false,
       filterable: true
     },
     {
@@ -107,6 +110,17 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
       filterAttribute: 'region.name'
     },
     /* Poids */
+    {
+      name: 'poidsBrute',
+      label: 'Poids brut (kg)',
+      labelTranslatePath: 'DELIVERIES.FIELDS.GROSS_WEIGHT',
+      attributeType: AttributeType.number,
+      fieldType: FieldType.number,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },
     {
       name: 'poidsNet',
       label: 'Poids net (kg)',

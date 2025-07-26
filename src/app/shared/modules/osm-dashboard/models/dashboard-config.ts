@@ -1,8 +1,21 @@
 import { booleanAttribute } from "@angular/core";
 import { SearchData } from "src/app/shared/models/advanced-search/searchData";
+import { SearchOperation } from '../../../models/advanced-search/searchOperation';
+import { SearchDetails } from '../../../models/advanced-search/searchDetails';
 
 export interface DashboardConfig {
   icon?: string | null;
+  groupedActions?:boolean;
+  specificAction?:{
+    action:string;
+    color:string;
+    icon:string;
+    disabled?:{
+        field:string;
+        value:any
+    }
+    }
+  filteredActions?:string[]
     title:string;
     titleTranslatePath?:string;
     baseURL: string;

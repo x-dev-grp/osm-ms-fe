@@ -87,36 +87,6 @@ export class OilCreditComponent implements OnInit {
     this.loadCredits();
   }
 
-  save(): void {
-    this.submitted = true;
-
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      this.toastService.error('OIL_CREDIT.MESSAGES.FORM_ERROR');
-      return;
-    }
-
-    const dto: OilCredit = this.form.value;
-
-    // Set default credit state if not provided
-    if (!dto.creditState) {
-      dto.creditState = CreditState.PENDING;
-    }
-
-    const creditObs = this.editing ? this.svc.updateOilCredit(dto) : this.svc.createOilCredit(dto);
-
-    creditObs.subscribe({
-      next: () => {
-        this.toastService.success(this.editing ? 'OIL_CREDIT.MESSAGES.UPDATE_SUCCESS' : 'OIL_CREDIT.MESSAGES.CREATE_SUCCESS');
-        this.cancel();
-        this.loadCredits();
-      },
-      error: (error) => {
-        console.error('Error saving oil credit:', error);
-        this.toastService.error(this.editing ? 'OIL_CREDIT.MESSAGES.UPDATE_ERROR' : 'OIL_CREDIT.MESSAGES.CREATE_ERROR');
-      }
-    });
-  }
 
   cancel(): void {
     this.editing = false;
@@ -147,18 +117,31 @@ export class OilCreditComponent implements OnInit {
     this.confirmDelete(id);
   }
 
-  handleAction(event: { action: Action; row: OilCredit }): void {
+  /**
+   * Handles various actions on an OilCredit row.
+   *
+   * @param {Object} event - The event object containing the action and the row data.
+   * @param {string} event.action - The action to be performed ('READ', 'UPDATE', 'DELETE').
+   * @param {OilCredit} event.row - The OilCredit object associated with the action.
+   *
+   * //t - This function is triggered when an action is performed on an OilCredit row.
+   * //r - The function extracts the action and row from the event object.
+   * //n - It then performs the corresponding action based on the extracted action type.
+   * 
+   * @returns {void}
+   */
+  handleAction(event: { action: string; row: OilCredit }): void {
     const { action, row } = event;
     const id = row.id;
 
-    switch (action.value) {
-      case 'view':
+    switch (action) {
+      case 'READ':
         this.view(id!);
         break;
-      case 'edit':
+      case 'UPDATE':
         this.openForm(row);
         break;
-      case 'delete':
+      case 'DELETE':
         this.confirmDelete(id);
         break;
     }

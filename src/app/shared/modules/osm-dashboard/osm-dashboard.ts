@@ -19,6 +19,7 @@ import { DynamicInput } from './components/dynamic-input/dynamic-input.component
 
 import { ConfirmationDialogService } from '../../services/confirmation-dialog.service';
 import { ACTION_ICONS } from './models/actions';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -40,7 +41,8 @@ import { ACTION_ICONS } from './models/actions';
     ReactiveFormsModule,
     MatSortModule,
     SharedModule,
-    DynamicInput
+    DynamicInput,
+    MatCheckboxModule
   ]
 })
 export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
@@ -65,6 +67,8 @@ export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
         .map((field) => field.label),
       this._actions
     ];
+    if(this.config()?.groupedActions)
+        this.displayedColumns.unshift("ALL")
     console.log(this.displayedColumns);
     this._store.initialize(this.config()?.searchEndpoint, this.config().fields, this.config()?.defaultSearchData, this.config().fileName,this.config().filterTenant);
 

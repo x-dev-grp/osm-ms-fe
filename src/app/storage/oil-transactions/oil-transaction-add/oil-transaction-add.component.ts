@@ -73,7 +73,16 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
 
   // Add a new property to hold the warning state
   sourceUnitWarning: string | null = null;
-
+  protected transaction: OilTransaction;
+  private readonly formControlNames = [
+    'transactionType',
+    'storageUnitSourceId',
+    'storageUnitDestinationId',
+    'qualityGrade',
+    'quantityKg',
+    'unitPrice',
+    'totalPrice'
+  ];
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
@@ -266,9 +275,9 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (response) => {
           if (response.success && response.data) {
-            const transaction = Array.isArray(response.data) ? response.data[0] : response.data;
-            if (transaction && transaction.id) {
-              this.populateForm(transaction);
+            this.transaction = Array.isArray(response.data) ? response.data[0] : response.data;
+            if (this.transaction && this.transaction.id) {
+              this.populateForm(this.transaction);
             } else {
               this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.LOAD');
             }

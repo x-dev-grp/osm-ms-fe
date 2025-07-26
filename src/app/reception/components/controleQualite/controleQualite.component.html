@@ -40,6 +40,32 @@
           <h3>{{ 'CONTROLE_QUALITE.SECTIONS.PARAMETERS' | translate }}</h3>
         </div>
         <div class="parameters-grid">
+
+          <!-- FIRST: classificationHuile shown statically -->
+          <div *ngIf="dynamicForm.controls['classificationHuile']"
+               class="parameter-card string-control">
+            <div class="parameter-header">
+              <label for="classificationHuile" class="parameter-label">
+                {{ getRuleName('classificationHuile') }}
+              </label>
+            </div>
+            <mat-form-field appearance="outline" class="parameter-field">
+              <mat-label>{{ getRuleName('classificationHuile') }}</mat-label>
+              <mat-select [disabled]="isQualityControlDone"
+                          formControlName="classificationHuile"
+                          id="classificationHuile">
+                <mat-option *ngFor="let option of getTextOptions('classificationHuile')" [value]="option">
+                  {{ option }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matSuffix>list</mat-icon>
+              <mat-error *ngIf="mainForm.get('classificationHuile')?.hasError('required')">
+                {{ 'CONTROLE_QUALITE.FORM.VALIDATION.REQUIRED' | translate }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- REST: All other fields except classificationHuile and testSensoriel -->
           <div *ngFor="let control of dynamicForm.controls | keyvalue"
                [hidden]="control.key === 'testSensoriel' || control.key === 'classificationHuile'"
                class="parameter-card">
@@ -65,10 +91,10 @@
                 </mat-error>
               </mat-form-field>
             </ng-container>
-            <!-- STRING & BOOLEAN Inputs -->
+            <!-- STRING & BOOLEAN -->
             <ng-template #nonNumericInput>
               <ng-container [ngSwitch]="getRuleType(control.key)">
-                <!-- STRING Select -->
+                <!-- STRING -->
                 <mat-form-field *ngSwitchCase="'STRING'" appearance="outline" class="parameter-field">
                   <mat-label>{{ getRuleName(control.key) }}</mat-label>
                   <mat-select [disabled]="isQualityControlDone" [formControlName]="control.key" [id]="control.key">
@@ -81,7 +107,7 @@
                     {{ 'CONTROLE_QUALITE.FORM.VALIDATION.REQUIRED' | translate }}
                   </mat-error>
                 </mat-form-field>
-                <!-- BOOLEAN Select -->
+                <!-- BOOLEAN -->
                 <mat-form-field *ngSwitchCase="'BOOLEAN'" appearance="outline" class="parameter-field">
                   <mat-label>{{ getRuleName(control.key) }}</mat-label>
                   <mat-select [disabled]="isQualityControlDone" [formControlName]="control.key" [id]="control.key">

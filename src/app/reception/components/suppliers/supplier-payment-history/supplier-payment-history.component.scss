@@ -135,7 +135,7 @@
   flex-direction: column;
 
   .split-layout {
-    display: flex;
+   // display: flex;
     gap: 1.5rem;
     transition: all 0.3s ease-in-out;
     flex: 1;
@@ -305,7 +305,7 @@
       transition: all 0.3s ease-in-out;
       display: flex;
       flex-direction: column;
-
+      height: 100%;
       &.active {
         flex: 0.4;
         opacity: 1;
@@ -319,7 +319,7 @@
         background-color: white;
         border-radius: 16px;
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-
+        height: 100%;
         .payment-header {
           display: flex;
           justify-content: space-between;

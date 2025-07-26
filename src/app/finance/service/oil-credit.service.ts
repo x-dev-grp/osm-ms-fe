@@ -23,8 +23,8 @@ export class OilCreditService {
   }
 
   // Retrieve a single OilCreditcc by ID.
-  getOilCredit(id: string): Observable<ApiResponse<OilCredit>> {
-    return this.http.get<ApiResponse<OilCredit>>(`${this.baseUrl}/fetch/${id}`);
+  getOilCredit(id: string): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/fetch/${id}`);
   }
 
 

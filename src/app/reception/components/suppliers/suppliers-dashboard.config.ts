@@ -22,7 +22,9 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
     searchData: {
       operation: SearchOperation.AND,
       searchs: [],
-      search: {}
+      search: {isDeleted:{
+          equalValue:false
+        },}
     }
   },
   fields: [

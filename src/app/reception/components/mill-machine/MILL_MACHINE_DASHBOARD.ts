@@ -17,7 +17,9 @@ export const MILL_MACHINE_DASHBOARD: DashboardConfig = {
     searchData: {
       operation: SearchOperation.AND,
       searchs: [],
-      search: {}
+      search: {isDeleted:{
+          equalValue:false
+        },}
     }
   },
   fields: [

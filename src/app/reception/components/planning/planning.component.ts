@@ -20,10 +20,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule } from '@angular/forms';
 import { CardComponent } from '../../../@theme/components/card/card.component';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { catchError, debounceTime, filter, forkJoin, map, Observable, of, Subject } from 'rxjs';
+import { catchError, debounceTime, filter, forkJoin, map, Observable, of, Subject, Subscription } from 'rxjs';
 import { MillMachineService } from '../../../shared/services/mill-machine.service';
 import { MillMachine } from '../../../shared/models/millMachine';
 import { MatDialog } from '@angular/material/dialog';
@@ -47,6 +47,7 @@ import {
   PlanningItem,
   PlanningSaveRequest
 } from '../../../shared/models/planningDTOS';
+import { FilterLotPipe } from '../../../shared/pipes/FilterLotPipe';
 
 @Component({
   selector: 'app-planning',
@@ -57,6 +58,7 @@ import {
     MatToolbarModule,
     MatCardModule,
     MatButtonModule,
+    FilterLotPipe,
     MatFormFieldModule,
     MatInputModule,
     DragDropModule,
@@ -93,6 +95,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
   private destroy$ = new Subject<void>();
   /* ───────────────────────── New field ───────────────────────── */
   private fullReceptionMap: Map<string, PlanningItem> = new Map();
+  searchTerm = '';
 
   constructor(
     private deliveryService: UnifiedDeliveryService,
@@ -152,6 +155,11 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
         this.dirty = true;
       });
   }
+  // pour gérer la saisie et filtrer en temps réel
+  searchControl = new FormControl('');
+
+// gardez aussi ces tableaux pour restaurer l’état initial
+  private allUnassigned: any[] = [];
 
   ungroupLot(gl: GlobalLot): void {
     // called from the menu
@@ -199,6 +207,8 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     this.filterSubject.pipe(debounceTime(300)).subscribe((value) => {
       this.applyFilter(value);
     });
+    this.allUnassigned = [...this.unassignedReceptions];
+    this.mills.forEach(m => m.receptions = [...m.receptions]);
 
     this.loadPlanning(); // Fetch planning from backend
   }
@@ -726,7 +736,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
           autoSetStorage: result.autoSetStorage
         }))
       )
-      .subscribe(({ oilQuantity, rendement, totalTriturationPrice, childLotsRendement ,autoSetStorage}) => {
+      .subscribe(({ oilQuantity, rendement, totalTriturationPrice, childLotsRendement, autoSetStorage }) => {
         const itemToComplete = item;
         let targetItemData: PlanningItem | GlobalLot | undefined;
 
@@ -787,7 +797,15 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
         });
 
         // Call the backend (now sending oilQuantity, rendement, and unpaidAmount)
-        const req$ = this.completeIt(itemToComplete, label, oilQuantity, rendement, totalTriturationPrice, childLotsRendement,autoSetStorage);
+        const req$ = this.completeIt(
+          itemToComplete,
+          label,
+          oilQuantity,
+          rendement,
+          totalTriturationPrice,
+          childLotsRendement,
+          autoSetStorage
+        );
 
         this.handleResponse(req$, itemToComplete, targetItemData);
       });
@@ -804,18 +822,16 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private handleResponse(req$: Observable<string>, itemToComplete: BoardItem, targetItemData?: PlanningItem | GlobalLot): void {
     req$.subscribe({
-      next: (msg) => {                          // msg = "Lot completed successfully"
+      next: (msg) => {
+        // msg = "Lot completed successfully"
         this.snackBar.open(msg, undefined, { duration: 3000 });
         this.removeFromBoard(itemToComplete);
         this.dirty = true;
       },
-      error: (err) => {                         // only runs on real 4xx/5xx/network errors
+      error: (err) => {
+        // only runs on real 4xx/5xx/network errors
         console.error('[COMPLETE] lot error', err);
-        this.snackBar.open(
-          err?.error?.message || 'Erreur lors de la finalisation.',
-          'Fermer',
-          { duration: 5000 }
-        );
+        this.snackBar.open(err?.error?.message || 'Erreur lors de la finalisation.', 'Fermer', { duration: 5000 });
         if (targetItemData) {
           targetItemData.oilQuantity = null;
           targetItemData.rendement = null;
@@ -828,20 +844,30 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  private completeIt(itemToComplete: BoardItem, label: string, oilQuantity: any, rendement: any, totalTriturationPrice: any, childLotsRendement: any,autoSetStorage:any) {
+  private completeIt(
+    itemToComplete: BoardItem,
+    label: string,
+    oilQuantity: any,
+    rendement: any,
+    totalTriturationPrice: any,
+    childLotsRendement: any,
+    autoSetStorage: any
+  ) {
     if (itemToComplete.type === PlanItemType.LOT) {
-      return this.planningService.completeLotWithDetails(label, oilQuantity, rendement, totalTriturationPrice,autoSetStorage);
+      return this.planningService.completeLotWithDetails(label, oilQuantity, rendement, totalTriturationPrice, autoSetStorage);
     } else {
       if (childLotsRendement && Array.isArray(childLotsRendement)) {
         return this.planningService.completeGlobalLotWithDetails(
           label,
-          childLotsRendement.map((child: { lotNumber: string; oilQuantity: number; rendement: number; triturationPrice: number ;autoSetStorage:boolean}) => ({
-            lotNumber: child.lotNumber,
-            oilQuantity: child.oilQuantity ?? 0,
-            rendement: child.rendement ?? 0,
-            autoSetStorage: child.autoSetStorage ?? false,
-            unpaidPrice: child.triturationPrice ?? 0
-          })) as ChildLotCompletionDto[]
+          childLotsRendement.map(
+            (child: { lotNumber: string; oilQuantity: number; rendement: number; triturationPrice: number; autoSetStorage: boolean }) => ({
+              lotNumber: child.lotNumber,
+              oilQuantity: child.oilQuantity ?? 0,
+              rendement: child.rendement ?? 0,
+              autoSetStorage: child.autoSetStorage ?? false,
+              unpaidPrice: child.triturationPrice ?? 0
+            })
+          ) as ChildLotCompletionDto[]
         );
       } else {
         return this.planningService.completeGlobalLotWithDetails(label, []);
@@ -964,6 +990,10 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
         this.loadReceptions(); // Fallback to basic loading
       }
     });
+         // ← Nouvel ajout : met à jour les copies et applique le filtre courant
+         this.allUnassigned = [...this.unassignedReceptions];
+        this.mills.forEach(m => m.receptions = [...m.receptions]);
+       this.applyFilter(this.searchControl.value!);
   }
 
   private initializeMills(machines: MillMachine[]): void {
@@ -1391,4 +1421,29 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
 
     console.log('=== END ASSIGNMENT SUMMARY ===\n');
   }
+  private applyFilterSearch(term: string): void {
+    const filterValue = (term || '').trim().toLowerCase();
+
+    // colonne non assignée
+    this.filteredReceptions = filterValue
+      ? this.allUnassigned.filter(item => this.matches(item, filterValue))
+      : [...this.allUnassigned];
+
+    // chaque colonne de moulin
+    this.mills.forEach(mill => {
+      mill.receptions = filterValue
+        ? mill.receptions!.filter(item => this.matches(item, filterValue))
+        : [...mill.receptions!];
+    });
+  }
+
+  private matches(item: BoardItem, filterValue: string): boolean {
+    const lot = ((item.data as PlanningItem).lotNumber || '').toString().toLowerCase();
+    return lot.includes(filterValue);
+  }
+  clearSearch(): void {
+    this.searchControl.setValue('');
+    this.applyFilter('');
+  }
+
 }

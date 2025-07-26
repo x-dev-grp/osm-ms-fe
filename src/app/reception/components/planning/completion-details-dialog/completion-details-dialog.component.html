@@ -91,7 +91,7 @@
                       <tbody>
                         <tr *ngFor="let child of childLotsWithRendement; let i = index; trackBy: trackByLotNumber">
                           <td class="lot-number">{{ child.lotNumber }}</td>
-                          <td class="supplier">{{ child.supplier || '-' }}</td>
+                          <td class="supplier">{{ child.supplier.supplierInfo.name + " " + child.supplier.supplierInfo.lastname   || '-' }} </td>
                           <td class="quantity">{{ child.oliveQuantity }} kg</td>
                           <td>{{ child.oilQuantity | number: '1.2-2' }} kg</td>
                           <td class="rendement">{{ (child.calculatedRendement ?? 0) | number: '1.2-2' }}%</td>

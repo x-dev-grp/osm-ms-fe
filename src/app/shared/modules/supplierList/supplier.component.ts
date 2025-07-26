@@ -58,7 +58,9 @@ export class SupplierComponent implements OnInit, AfterViewInit, OnChanges {
     order: 'DESC',
     searchData: {
       operation: SearchOperation.AND,
-      search: {},
+      search: {isDeleted:{
+          equalValue:false
+        },},
       searchs: []
     }
   };

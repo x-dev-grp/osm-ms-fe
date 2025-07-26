@@ -17,11 +17,14 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
       operation: SearchOperation.AND,
       searchs: [],
       search: {
-        status: {
+        isDeleted:{
+          equalValue:false
+        },status: {
           inValues: [
             'COMPLETED',
             'REFUSED',
             'CANCELLED',
+            'IN_STOCK'
            ]
         }
       }
@@ -30,13 +33,13 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
   fields: [
     {
       name: 'deliveryNumber',
-      label: 'N° Bon de réception',
+      label: 'N° Livraison',
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.DELIVERY_NUMBER',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
-      sortable: true,
-      dataTable: true,
+      sortable: false,
+      dataTable: false,
       filterable: true
     },
     {

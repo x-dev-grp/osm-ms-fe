@@ -439,32 +439,39 @@
         "INFO_CONTROL_QUALITE": "🧪 Quality Control Info",
         "INFO_PRIX": "💰 Pricing Info",
         "INFO_PRODUCTION": "🏭 Production Info",
+        "OIL_INFO": "Oil Information",
         "OLIVE_INFO": "🌿 Olive Variety",
         "OLIVE_OIL_INFO": "🫒 Olive & Oil Information",
+        "STORAGE": "Storage unit",
         "STORAGE_UNIT": "🏭 Storage Unit",
-        "SUPPLIER": "👤 Supplier"
+        "SUPPLIER": "👤 Supplier",
+        "TRUCK": "Truck informmation",
+        "WEIGHT_CONTAINER ": "weight Informations"
       },
       "TITLE": "Reception Details"
     },
     "FIELDS": {
       "CATEGORY_OLIVE_OIL": "Olive Oil Category",
       "DELIVERY_DATE": "Delivery Date",
-      "DELIVERY_NUMBER": "Reception Number",
+      "DELIVERY_NUMBER": "N° Livraison",
       "DELIVERY_TYPE": "Delivery Type",
       "GLOBAL_LOT_NUMBER": "Global Lot Number",
-      "GROSS_WEIGHT": "Gross Weight",
+      "GROSS_WEIGHT": "Gross Weight (KG)",
       "LOT_NUMBER": "Lot Number",
-      "LOT_OLIVE_NUMBER": "Olive Lot Number",
-      "NET_WEIGHT": "Net Weight",
+      "LOT_OLIVE_NUMBER": "N° lot de référence",
+      "NET_WEIGHT": "Net Weight (KG)",
       "OIL_QUANTITY": "Oil Quantity",
+      "OIL_TYPE": "Oil type",
       "OLIVE_QUANTITY": "Olive Quantity",
       "OLIVE_TYPE": "Olive Type",
       "OLIVE_VARIETY": "Olive Variety",
       "OPERATION_TYPE": "Operation Type",
       "PARCEL": "Parcel",
       "REGION": "Region",
+      "RENDEMENT": "Yeild",
       "SACK_COUNT": "Sack Count",
       "STATUS": "Status",
+      "STORAGE_UNIT": "Storage unit",
       "SUPPLIER": "Supplier",
       "SUPPLIER_ADDRESS": "Address",
       "SUPPLIER_BANK": "Bank",
@@ -569,7 +576,8 @@
       "OIL_PURCHASE": "Oil Purchase",
       "OLIVE_PURCHASE": "Olive Purchase",
       "PAYMENT": "Payment",
-      "SIMPLE_RECEPTION": "Simple Reception"
+      "SIMPLE_RECEPTION": "Simple Reception",
+      "INTERNAL_RECEPTION": "Internal reception"
     },
     "STATUS": {
       "CANCELLED": "Cancelled",
@@ -1035,7 +1043,7 @@
       },
       "FIELDS": {
         "DELIVERY_DATE": "Delivery Date",
-        "DELIVERY_NUMBER": "Reception Number",
+        "DELIVERY_NUMBER": "N° Livraison",
         "GLOBAL_LOT_NUMBER": "Global Lot Number",
         "LOT_NUMBER": "Lot Number",
         "OIL_QUANTITY": "Oil Quantity (KG)",
@@ -1138,6 +1146,11 @@
         "TRANSFER_IN": "Transfer In"
       }
     },
+    "DIALOG": {
+      "EXCHANGE": {
+        "TITLE_DESTINATION": "chose the Source storage unit to validate the transaction"
+      }
+    },
     "FORM": {
       "ACTIONS": {
         "APPROVE": "Approve",
@@ -1191,6 +1204,8 @@
       "SECTIONS": {
         "FINANCIAL_INFORMATION": "Financial Information",
         "QUALITY_AND_QUANTITY": "Quality and Quantity",
+        "QUALITY_CONTROL_INFO": "Quality Control Information",
+        "RECEPTION_PRICE_INFO": "Reception Price Information",
         "STORAGE_UNITS": "Storage Units",
         "TRANSACTION_TYPE_AND_STATE": "Transaction Type and State"
       },
@@ -1442,7 +1457,7 @@
     "PRODUCTION_MANAGER": "Production Manager",
     "PRODUCTION_RECEIPT": "Production Receipt",
     "QUALITY_MANAGER": "Quality Manager",
-    "RECEPTION_NUMBER": "Reception Number",
+    "RECEPTION_NUMBER": "N° Livraison",
     "RECEPTION_OIL": "Oil Reception Receipt",
     "RECEPTION_OLIVE": "Olive Reception Receipt",
     "REFERENCE": "Reference",
@@ -1455,6 +1470,25 @@
     "TYPE": "Type",
     "YIELD": "Yield"
   },
+  "PLANNING_ASSIGNED": "Assigned",
+  "PLANNING_CANCEL": "Cancel",
+  "PLANNING_CARD_TITLE": "Olive Reception Planning",
+  "PLANNING_EXIT_FULLSCREEN": "Exit fullscreen",
+  "PLANNING_FULLSCREEN": "Fullscreen",
+  "PLANNING_GROUP": "Group",
+  "PLANNING_KG": "kg",
+  "PLANNING_LOTS_LIST": "List of Lots:",
+  "PLANNING_NET": "Net:",
+  "PLANNING_OPERATION_TYPE": "Operation type:",
+  "PLANNING_RECEPTIONS_UNASSIGNED_HEADER": "Unassigned Receptions",
+  "PLANNING_SACKS": "Sacks:",
+  "PLANNING_SAVE": "Save",
+  "PLANNING_SEARCH": "Search lot",
+  "PLANNING_SEARCH_PLACEHOLDER": "Lot number",
+  "PLANNING_SUPPLIER": "Supplier:",
+  "PLANNING_TYPE": "Type:",
+  "PLANNING_UNASSIGNED": "Unassigned",
+  "PLANNING_VARIETY": "Variety:",
   "Pages": "Pages",
   "Plugins": "Plugins",
   "Price": "Price",
@@ -1500,7 +1534,7 @@
     },
     "FIELDS": {
       "DELIVERY_DATE": "Reception Date",
-      "DELIVERY_NUMBER": "Reception Number",
+      "DELIVERY_NUMBER": "N° Livraison",
       "GLOBAL_LOT_NUMBER": "Global Lot Number",
       "LOT_NUMBER": "Lot Number",
       "NET_WEIGHT": "Net Weight (kg)",
@@ -1513,13 +1547,18 @@
       "TRUCK_PLATE": "Truck Plate"
     },
     "STATUS": {
+      "CANCELLED": "Cancelled",
       "COMPLETED": "Completed",
       "IN_PROGRESS": "In Progress",
+      "IN_STOCK": "In stock",
       "NEW": "New",
+      "OIL_CONTROLLED": "Oil controlled",
+      "OLIVE_CONTROLLED": "Olives controlled",
       "PROD_READY": "Ready for production",
       "REFUSED": "Refused",
       "STOCK_READY": "Ready to be stocekd",
-      "WAITING_FOR_PRICING": "waiting for pricing & Quantiy"
+      "WAITING_FOR_PAYMENT_DETAILS": "Waiting for price details",
+      "WAITING_FOR_PRICING": "waiting for pricing & Quantity"
     },
     "TITLE": "Oil Receptions and Milling"
   },

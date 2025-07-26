@@ -50,7 +50,7 @@
       <!-- Transaction List (below storage card) -->
          <div class="transaction-header-bar">
           <div class="transaction-title">
-            <osm-dashboard [config]="this.dashboardConfig" (applyAction)="handleAction($event)"></osm-dashboard>
+             <osm-dashboard #dashboard [config]="this.dashboardConfig" (applyAction)="handleAction($event)"></osm-dashboard>
           </div>
         </div>
 

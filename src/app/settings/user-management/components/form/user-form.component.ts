@@ -21,7 +21,7 @@ import { User } from 'src/app/@theme/types/user';
   imports: [
     CommonModule,
     SharedModule,
-  
+
   ]
 })
 export class UserFormComponent implements OnInit,AfterViewInit {
@@ -52,6 +52,9 @@ export class UserFormComponent implements OnInit,AfterViewInit {
                 searchData:{
                   ...this.roleCriteria.searchData,
                   search:{
+                    isDeleted:{
+                      equalValue:false
+                    },
                     roleName:{
                       likeValue:value
                     }
@@ -81,7 +84,7 @@ export class UserFormComponent implements OnInit,AfterViewInit {
     });
     this.userForm.get("confirmationMethod")?.valueChanges.pipe(
       tap(value=>{
-   
+
       })
     ).subscribe();
     this.getRoutingData();
@@ -90,7 +93,7 @@ export class UserFormComponent implements OnInit,AfterViewInit {
     this._activatedRoute.data.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((data:any) => {
       this.viewMode=!!data?.viewMode
       this.updateMode=!!data?.updateMode
-      if(this.viewMode)  
+      if(this.viewMode)
         this.userForm.disable()
       if(data?.user?.data?.length){
          this.user = data?.user?.data[0];
@@ -103,11 +106,11 @@ export class UserFormComponent implements OnInit,AfterViewInit {
       const methodCtrl = group.get('confirmationMethod')!;
       const emailCtrl  = group.get('email')!;
       const phoneCtrl  = group.get('phoneNumber')!;
-  
+
       const method = methodCtrl.value;
       const email  = emailCtrl.value;
       const phone  = phoneCtrl.value;
-  
+
       [emailCtrl, phoneCtrl].forEach(ctrl => {
         if (ctrl.errors?.['emailRequired']) {
           delete ctrl.errors!['emailRequired'];
@@ -119,37 +122,37 @@ export class UserFormComponent implements OnInit,AfterViewInit {
           ctrl.setErrors(null);
         }
       });
-  
+
       if (!method) {
         return null;
       }
-  
+
       if (method === 'EMAIL') {
         if (!email) {
-          emailCtrl.setErrors({ ...emailCtrl.errors, emailRequired: true });       
+          emailCtrl.setErrors({ ...emailCtrl.errors, emailRequired: true });
         }
       } else {
         if (!phone) {
-          phoneCtrl.setErrors({ ...phoneCtrl.errors, phoneRequired: true });     
+          phoneCtrl.setErrors({ ...phoneCtrl.errors, phoneRequired: true });
         }
       }
-  
+
       return null;
     };
   }
     fetchRoles(scroll: boolean): Observable<SearchResponse> {
       const url = "security/role";
-      
+
       if (!scroll) {
         this.roleCriteria.page = 0;
       }
       return this._searchService.search(this.roleCriteria, url).pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((response: SearchResponse) => {
-          this.roles = 
+          this.roles =
              scroll ? [...this.roles, ...response.data] : response.data
-        
-  
+
+
         }),
         catchError((err) => {
           console.error('Autocomplete fetch failed:', err);
@@ -161,7 +164,7 @@ export class UserFormComponent implements OnInit,AfterViewInit {
     if (!this.userForm.valid) {
       this.userForm.markAllAsTouched()
       return;
-    } 
+    }
     this.loading=true;
     const user = this.userForm.value;
    (!this.updateMode? this._userService.addUser(user):this._userService.updateUser(user,this.user?.id)).pipe(
@@ -179,14 +182,14 @@ export class UserFormComponent implements OnInit,AfterViewInit {
                       this.errorMessage=err?.error;
                     }
                     this.loading=false;
-                    return of(null); 
+                    return of(null);
                    })
     ).subscribe();
   }
  scroll(event:any){
     this.roleCriteria.page = this.roleCriteria.page! + 1;
     this.fetchRoles(true).subscribe();
-  
+
  }
   resetForm(): void {
     this.userForm.reset();

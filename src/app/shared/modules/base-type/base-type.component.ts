@@ -71,7 +71,9 @@ export class BaseTypeComponent implements OnInit, AfterViewInit, OnChanges {
     order: 'DESC',
     searchData: {
       operation: SearchOperation.AND,
-      search:{
+      search:{isDeleted:{
+          equalValue:false
+        },
       },
       searchs:[]
     }
@@ -94,7 +96,9 @@ export class BaseTypeComponent implements OnInit, AfterViewInit, OnChanges {
               ...this.searchData.searchData,
               search:{
                 ...this.searchData.searchData?.search,
-                name:{
+                isDeleted:{
+                  equalValue:false
+                },name:{
                   likeValue:value
                 }
               }
@@ -113,7 +117,9 @@ export class BaseTypeComponent implements OnInit, AfterViewInit, OnChanges {
           ...this.searchData.searchData,
           search:{
             ...this.searchData.searchData?.search,
-            type:{
+            isDeleted:{
+              equalValue:false
+            }, type:{
               equalValue:this.type()
             }
           }

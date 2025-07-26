@@ -58,7 +58,12 @@
       }
     }
   }
-
+  .string-control {
+    border: 2px solid #1976d2; // blue highlight
+    background-color: #e3f2fd; // light blue
+    border-radius: 8px;
+    padding: 16px;
+  }
   // Loading State
   .loading-state {
     display: flex;

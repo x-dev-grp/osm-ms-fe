@@ -5,7 +5,7 @@ import { SearchOperation } from '../../../shared/models/advanced-search/searchOp
 export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
   icon: 'fact_check',
   title: 'Contrôle Qualité',
-  titleTranslatePath: 'QUALITY_CONTROL.TITLE',
+  titleTranslatePath: 'OSM_DASHBOARD.QUALITY_CONTROL.TITLE',
   baseURL: 'production/deliveries',
   searchEndpoint: 'production/deliveries',
   addNewItem: false,
@@ -17,8 +17,13 @@ export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
     searchData: {
       operation: SearchOperation.AND,
       search: {
-        hasQualityControl: {
+        isDeleted:{
+          equalValue:false
+        },hasQualityControl: {
           equalValue: "false"
+        },
+        status:{
+          equalValue:"NEW"
         }
       }
     }
@@ -26,11 +31,11 @@ export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
   fields: [
     {
       name: 'deliveryNumber',
-      label: 'N° Bon de réception',
+      label: 'N° Livraison',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
-      sortable: true,
+      sortable: false,
       dataTable: false,
       filterable: true
     },

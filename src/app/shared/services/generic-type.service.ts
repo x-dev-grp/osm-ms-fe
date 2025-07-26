@@ -16,7 +16,7 @@ export class GenericTypeService {
   constructor(private http: HttpClient) {}
 
   // Get all records for a specific type category
-  getAllTypes(type: TypeCategory): Observable<ApiResponse<BaseType>> {
+  getAllTypes(type: TypeCategory|string): Observable<ApiResponse<BaseType>> {
     return this.http.get<ApiResponse<BaseType>>(`${this.baseUrl}/${type}`);
   }
 

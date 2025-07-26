@@ -9,6 +9,7 @@ import { OilCredit, CreditState, UnitType } from '../../models/OilCredit';
 import { OilCreditService } from '../../service/oil-credit.service';
 import { MatCard, MatCardActions, MatCardContent, MatCardHeader } from '@angular/material/card';
 import { MatTooltip } from '@angular/material/tooltip';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-view-oil-credit',
@@ -23,24 +24,26 @@ import { MatTooltip } from '@angular/material/tooltip';
     MatCardContent,
     MatCardHeader,
     MatCard,
-    MatTooltip
+    MatTooltip,TranslateModule
   ],
   templateUrl: './view-oil-credit.component.html',
   styleUrls: ['./view-oil-credit.component.scss']
 })
 export class ViewOilCreditComponent implements OnInit {
-  credit?: OilCredit;
+  credit: OilCredit;
   loading = true;
   error = false;
 
   private svc = inject(OilCreditService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  protected creditStateLabel: string;
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.loadOilCredit(id);
+
     }
   }
 
@@ -48,8 +51,10 @@ export class ViewOilCreditComponent implements OnInit {
     this.loading = true;
     this.svc.getOilCredit(id).subscribe({
       next: (res) => {
-        if (res.data && res.data.length > 0) {
-          this.credit = res.data[0];
+        if (res.data) {
+          this.credit = res.data;
+          this.creditStateLabel = this.getCreditStateLabel(this.credit);
+
         } else {
           this.error = true;
         }
@@ -72,7 +77,7 @@ export class ViewOilCreditComponent implements OnInit {
   }
 
   // Helper methods for display
-  getCreditStateLabel(state: CreditState): string {
+  getCreditStateLabel(credit: OilCredit): string {
     const labels = {
       [CreditState.PENDING]: 'En attente',
       [CreditState.APPROVED]: 'Approuvé',
@@ -80,7 +85,7 @@ export class ViewOilCreditComponent implements OnInit {
       [CreditState.COMPLETED]: 'Terminé',
       [CreditState.CANCELLED]: 'Annulé'
     };
-    return labels[state] || state;
+    return labels[credit.creditState] || credit.creditState;
   }
 
   getUnitLabel(unit: UnitType): string {

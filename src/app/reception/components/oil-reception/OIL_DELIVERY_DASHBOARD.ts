@@ -6,7 +6,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
   icon: 'water_drop',
   title: "Livraisons d'Huile",
   titleTranslatePath: 'OIL_RECEPTION.DASHBOARD.TITLE',
-  baseURL: 'deliveries',
+  baseURL: 'production/deliveries',
   searchEndpoint: 'production/deliveries',
   addNewItem: true,
   addNewItemUrl: 'reception/reception-huile/new',
@@ -18,6 +18,9 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
     searchData: {
       operation: SearchOperation.AND,
       search: {
+        isDeleted:{
+          equalValue:false
+        },
         status: {
           inValues: [
             'NEW',
@@ -42,13 +45,13 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
     /* Identifiants */
     {
       name: 'deliveryNumber',
-      label: 'N° Bon de réception',
+      label: 'N° Livraison',
       labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.DELIVERY_NUMBER',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
-      sortable: true,
-      dataTable: true,
+      sortable: false,
+      dataTable: false,
       filterable: true
     },
     {
@@ -104,9 +107,32 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       exportable: true,
       dataTable: true,
       filterable: true,
-      valuePath: 'name',
+      valuePath: 'region.name',
       valueAttributeType: AttributeType.string
-    } /* Quantités & Prix */,
+    } ,
+    {
+      name: 'poidsBrute',
+      label: 'Poids brut (kg)',
+      labelTranslatePath: 'DELIVERIES.FIELDS.GROSS_WEIGHT',
+      attributeType: AttributeType.number,
+      fieldType: FieldType.number,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },
+    /* Quantités & Prix */
+    {
+      name: 'poidsNet',
+      label: 'Poids net (kg)',
+      labelTranslatePath: 'DELIVERIES.FIELDS.NET_WEIGHT',
+      attributeType: AttributeType.number,
+      fieldType: FieldType.number,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },
     {
       name: 'oilQuantity',
       label: 'Qté huile (KG)',
@@ -118,7 +144,6 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       dataTable: true,
       filterable: true
     },
-
     /* Type d'huile */
     {
       name: 'oilType',
@@ -129,7 +154,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       exportable: true,
       dataTable: true,
       filterable: true,
-      valuePath: 'name',
+      valuePath: 'oilType.name',
       valueAttributeType: AttributeType.string
     },
     {

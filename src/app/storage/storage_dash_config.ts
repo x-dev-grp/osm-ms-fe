@@ -140,7 +140,9 @@ export const dashboardConfig: DashboardConfig = {
             operation: SearchOperation.AND,
             searchs: [],
             search: {
-              type: {
+              isDeleted:{
+                equalValue:false
+              },type: {
                 equalValue: TypeCategory.OIL_VARIETY
               }
             }

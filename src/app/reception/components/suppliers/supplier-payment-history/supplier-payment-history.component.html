@@ -1,54 +1,9 @@
-<div class="container">
+
   <!-- Payment history content -->
-  <div *ngIf="!error" class="content">
+  <form [formGroup]="paymentForm">
+  <div  class="content">
 
     <div [class.payment-active]="selectedPayment" class="split-layout">
-      <!-- Left Side: Summary Stats + Table -->
-      <div [class.minimized]="selectedPayment" class="left-section">
-        <!-- Summary Statistics -->
-        <!-- Header with navigation and filters -->
-        <!-- HEADER ----------------------------------------------------------------- -->
-        <div class="header-section">
-          <!-- ❶ back arrow + title -------------------------------------------------- -->
-          <div class="header-left">
-
-            <h2>
-              {{ 'SUPPLIER_PAYMENT.PAYMENT_HISTORY' | translate }}
-            </h2>
-          </div>
-
-          <div class="filter-buttons">
-
-            <button (click)="setHistoryType('paid')"
-                    [class.active]="historyType === 'paid'"
-                    mat-stroked-button>
-              {{ 'SUPPLIER_PAYMENT.PAID' | translate }}
-            </button>
-            <button (click)="setHistoryType('unpaid')"
-                    [class.active]="historyType === 'unpaid'"
-                    mat-stroked-button>
-              {{ 'SUPPLIER_PAYMENT.UNPAID' | translate }}
-            </button>
-            <button (click)="setHistoryType('oil_credit')"
-                    [class.active]="historyType === 'oil_credit'"
-                    mat-stroked-button>
-              {{ 'SUPPLIER_PAYMENT.OIL_CREDITS' | translate }}
-            </button>
-          </div>
-        </div>
-
-        <!-- Table Section -->
-        <div class="table-section">
-          <div *ngIf="historyType === 'oil_credit'">
-
-            <osm-dashboard [config]="OIL_CREDIT_DASHBOARD" (applyAction)="handleCreditAction($event)"></osm-dashboard>
-          </div>
-
-          <div *ngIf="historyType !== 'oil_credit'">
-            <osm-dashboard [config]="PAIMENT_DASHBOARD" (applyAction)="handlePaymentAction($event)"></osm-dashboard>
-          </div>
-        </div>
-      </div>
 
       <!-- Right Side: Payment Form -->
       <div [class.active]="selectedPayment" class="payment-section">
@@ -57,9 +12,7 @@
             <div class="payment-header">
               <span>{{ 'SUPPLIER_PAYMENT.PAYMENT' | translate }}
                 - {{ 'SUPPLIER_PAYMENT.LOT' | translate }} {{ selectedPayment.lotNumber }}</span>
-              <button (click)="closePaymentForm()" aria-label="{{ 'ACTIONS.CLOSE' | translate }}" mat-icon-button>
-                <mat-icon>close</mat-icon>
-              </button>
+
             </div>
           </mat-card-title>
           <mat-divider></mat-divider>
@@ -68,7 +21,7 @@
             <!-- Payment Method Selection -->
             <div class="payment-method-section">
               <h4>{{ 'SUPPLIER_PAYMENT.PAYMENT_METHOD' | translate }}</h4>
-              <mat-radio-group (change)="onPaymentMethodChange()" [(ngModel)]="selectedPaymentMethod">
+              <mat-radio-group formControlName="paymentMethod" (change)="onPaymentMethodChange()" >
                 <mat-radio-button class="payment-option" value="cash">
                   <div class="payment-option-content">
                     <mat-icon>account_balance_wallet</mat-icon>
@@ -101,12 +54,12 @@
             </div>
 
             <!-- Cash Payment Form (shown for cash or both) -->
-            <div *ngIf="selectedPaymentMethod === 'cash' || selectedPaymentMethod === 'both'"
+            <div *ngIf="paymentForm.value?.paymentMethod === 'cash' || paymentForm.value?.paymentMethod  === 'both'"
                  class="money-payment-form">
               <h4>{{ 'SUPPLIER_PAYMENT.CASH_PAYMENT' | translate }}</h4>
               <!-- Money Payment Method Selection -->
               <div class="form-row">
-                <mat-radio-group (change)="onMoneyPaymentMethodChange()" [(ngModel)]="moneyPaymentMethod"
+                <mat-radio-group  formControlName="moneyPaymentMethod"  (change)="onMoneyPaymentMethodChange()"
                                  class="money-method-group">
                   <mat-radio-button class="money-option" value="cash">
                     <div class="money-option-content">
@@ -135,65 +88,56 @@
                 </mat-radio-group>
               </div>
               <!-- Cash Payment Fields -->
-              <div *ngIf="moneyPaymentMethod === 'cash'" class="form-row">
-                <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>{{ 'SUPPLIER_PAYMENT.AMOUNT' | translate }}</mat-label>
-                  <input (input)="calculatePayment()" [formControl]="paymentForm.get('amount')"
-                         [max]="selectedPayment?.unpaidAmount"
-                         matInput step="0.01" type="number">
-                  <mat-error *ngIf="paymentForm.get('amount')?.hasError('required')">
-                    {{ 'SUPPLIER_PAYMENT.ERRORS.AMOUNT_REQUIRED' | translate }}
-                  </mat-error>
-                  <mat-error *ngIf="paymentForm.get('amount')?.hasError('min')">
-                    {{ 'SUPPLIER_PAYMENT.ERRORS.AMOUNT_MIN' | translate }}
-                  </mat-error>
-                </mat-form-field>
-              </div>
+
               <!-- Check Payment Fields -->
-              <div *ngIf="moneyPaymentMethod === 'check'" class="form-row">
+              <div *ngIf="paymentForm.value?.moneyPaymentMethod  === 'check'" class="form-row">
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>{{ 'SUPPLIER_PAYMENT.CHECK_NUMBER' | translate }}</mat-label>
-                  <input [formControl]="paymentForm.get('checkNumber')" matInput type="text">
+                  <input formControlName="checkNumber" matInput type="text">
                 </mat-form-field>
-                <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>{{ 'SUPPLIER_PAYMENT.AMOUNT' | translate }}</mat-label>
-                  <input (input)="calculatePayment()" [formControl]="paymentForm.get('amount')"
-                         [max]="selectedPayment?.unpaidAmount"
-                         matInput step="0.01" type="number">
-                </mat-form-field>
+
               </div>
               <!-- Bank Transfer Payment Fields -->
-              <div *ngIf="moneyPaymentMethod === 'bank_transfer'" class="form-row">
+              <div *ngIf="paymentForm.value?.moneyPaymentMethod  === 'bank_transfer'" class="form-row">
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>{{ 'SUPPLIER_PAYMENT.BANK_ACCOUNT' | translate }}</mat-label>
-                  <mat-select [formControl]="paymentForm.get('bankAccount')">
-                    <mat-option *ngFor="let account of bankAccounts" [value]="account.id">
-                      {{ account.bankName }} - {{ account.rib }}
+                  <mat-select formControlName="bankAccount">
+                    <mat-option *ngFor="let account of bankAccounts" [value]="account">
+                      {{ account?.bankName }} - {{ account?.rib }}
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
-                <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>{{ 'SUPPLIER_PAYMENT.AMOUNT' | translate }}</mat-label>
-                  <input (input)="calculatePayment()" [formControl]="paymentForm.get('amount')"
-                         [max]="selectedPayment?.unpaidAmount"
-                         matInput step="0.01" type="number">
-                </mat-form-field>
               </div>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>{{ 'SUPPLIER_PAYMENT.AMOUNT' | translate }}</mat-label>
+                <input formControlName="amount"
+                       [max]="data?.row?.unpaidAmount"
+                       matInput step="0.01" type="number">
+                <mat-error *ngIf="paymentForm.get('amount')?.hasError('required')">
+                  {{ 'SUPPLIER_PAYMENT.ERRORS.AMOUNT_REQUIRED' | translate }}
+                </mat-error>
+                <mat-error *ngIf="paymentForm.get('amount')?.hasError('min')">
+                  {{ 'SUPPLIER_PAYMENT.ERRORS.AMOUNT_MIN' | translate }}
+                </mat-error>
+                <mat-error *ngIf="paymentForm.get('amount')?.hasError('max')">
+                  {{ 'SUPPLIER_PAYMENT.ERRORS.AMOUNT_MAX' | translate }}
+                </mat-error>
+              </mat-form-field>
             </div>
 
             <!-- Oil Payment Form (shown for oil or both) -->
-            <div *ngIf="selectedPaymentMethod === 'oil' || selectedPaymentMethod === 'both'" class="oil-payment-form">
+            <div *ngIf="paymentForm.value?.paymentMethod  === 'oil' || paymentForm.value?.paymentMethod  === 'both'" class="oil-payment-form">
               <h4>{{ 'SUPPLIER_PAYMENT.OIL_PAYMENT' | translate }}</h4>
               <!-- Oil Payment Fields (add your oil payment fields here) -->
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>{{ 'SUPPLIER_PAYMENT.OIL_QUANTITY' | translate }}</mat-label>
-                <input (input)="calculateOilPayment()" [formControl]="paymentForm.get('oilQuantity')" matInput
+                <input (input)="calculateOilPayment()" formControlName="oilQuantity" matInput
                        step="0.01"
                        type="number">
               </mat-form-field>
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>{{ 'SUPPLIER_PAYMENT.OIL_PRICE' | translate }}</mat-label>
-                <input (input)="calculateOilPayment()" [formControl]="paymentForm.get('oilPrice')" matInput step="0.01"
+                <input (input)="calculateOilPayment()" formControlName="oilPrice" matInput step="0.01"
                        type="number">
               </mat-form-field>
               <!-- Add more oil payment fields as needed -->
@@ -204,12 +148,12 @@
               <h4>{{ 'SUPPLIER_PAYMENT.PAYMENT_SUMMARY' | translate }}</h4>
               <div class="summary-item">
                 <span>{{ 'SUPPLIER_PAYMENT.UNPAID_AMOUNT' | translate }}:</span>
-                <span>{{ selectedPayment?.unpaidAmount | currency:'TND' }}</span>
+                <span>{{ data?.row?.unpaidAmount | currency:'TND' }}</span>
               </div>
-              <div *ngIf="selectedPaymentMethod === 'cash' || selectedPaymentMethod === 'both'" class="summary-item">
-                <span>{{ 'SUPPLIER_PAYMENT.CASH_AMOUNT' | translate }}:</span>
-                <span>{{ paymentForm.get('amount')?.value | currency:'TND' }}</span>
-              </div>
+<!--              <div *ngIf="selectedPaymentMethod === 'cash' || selectedPaymentMethod === 'both'" class="summary-item">-->
+<!--                <span>{{ 'SUPPLIER_PAYMENT.CASH_AMOUNT' | translate }}:</span>-->
+<!--                <span>{{ paymentForm.get('amount')?.value | currency:'TND' }}</span>-->
+<!--              </div>-->
               <div class="summary-item">
                 <span>{{ 'SUPPLIER_PAYMENT.REMAINING_AMOUNT' | translate }}:</span>
                 <span>{{ remainingAmount | currency:'TND' }}</span>
@@ -237,4 +181,4 @@
       </div>
     </div>
   </div>
-</div>
+  </form>

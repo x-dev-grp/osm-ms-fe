@@ -14,14 +14,6 @@
 
 <!-- Actual credit detail card -->
 <mat-card *ngIf="credit && !loading" class="oil-credit-detail-card">
-  <mat-card-header>
-    <button mat-icon-button (click)="onBack()" aria-label="{{ 'OIL_CREDIT.VIEW.BACK' | translate }}">
-      <mat-icon>arrow_back</mat-icon>
-    </button>
-    <mat-card-title class="card-title">{{ 'OIL_CREDIT.VIEW.TITLE' | translate }} #{{ credit.id }}</mat-card-title>
-  </mat-card-header>
-  <mat-divider></mat-divider>
-
   <mat-card-content class="detail-content">
     <div class="detail-grid">
       <div class="detail-row">
@@ -53,7 +45,7 @@
         <div class="detail-label">{{ 'OIL_CREDIT.FORM.FIELDS.CREDIT_STATE' | translate }}</div>
         <div class="detail-value">
           <span class="state-badge" [ngClass]="getCreditStateClass(credit.creditState)">
-            {{ getCreditStateLabel(credit.creditState) }}
+            {{  this.creditStateLabel }}
           </span>
         </div>
       </div>

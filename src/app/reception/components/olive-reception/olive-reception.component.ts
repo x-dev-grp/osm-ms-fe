@@ -157,9 +157,7 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
       case 'UPDATE':
         this.selectReception(e.row);
         break;
-      case 'DELETE':
-        if (e.row.id) this.deleteDelivery(e.row);
-        break;
+
       case 'GEN_PDF':
         if (e.row) {
           this.genererBonReception(e.row);

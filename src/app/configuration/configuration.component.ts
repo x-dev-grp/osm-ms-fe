@@ -79,8 +79,7 @@ export class ConfigurationComponent implements OnInit {
   typeOptions = [
     { name: 'Waste Type', value: TypeCategory.WASTE_TYPE },
     { name: 'Region', value: TypeCategory.REGION },
-    { name: 'Supplier Type', value: TypeCategory.SUPPLIER_TYPE },
-    { name: 'Olive Variety', value: TypeCategory.OLIVE_VARIETY },
+     { name: 'Olive Variety', value: TypeCategory.OLIVE_VARIETY },
     { name: 'Production Method', value: TypeCategory.PRODUCTION_METHOD }, // e.g. Organic, Conventional
     { name: 'Oil Variety', value: TypeCategory.OIL_VARIETY }
   ];

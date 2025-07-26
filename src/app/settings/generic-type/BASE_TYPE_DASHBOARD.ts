@@ -53,7 +53,6 @@ export const BASE_TYPE: DashboardConfig = {
           label: 'Région',
           value: TypeCategory.REGION
         },
-        { label: 'Type de fournisseur', value: TypeCategory.SUPPLIER_TYPE },
         {
           label: "Variété d'olive",
           value: TypeCategory.OLIVE_VARIETY
@@ -63,7 +62,6 @@ export const BASE_TYPE: DashboardConfig = {
           label: "Type d'huile",
           value: TypeCategory.OIL_TYPE
         },
-        { label: "Type d'opération", value: TypeCategory.OPERATION_TYPE },
         {
           label: 'Méthode de production',
           value: TypeCategory.PRODUCTION_METHOD

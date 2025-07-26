@@ -8,10 +8,21 @@ import { SearchOperation } from '../../../../shared/models/advanced-search/searc
 export const PAIMENT_DASHBOARD: DashboardConfig = {
   icon: 'list_alt',
   addNewItem: false,
-  title: "Réceptions d'Huile et Triturations",
-  titleTranslatePath: 'DELIVERIES.OIL_TITLE',
+  title: "Paiements en ddddd",
+  titleTranslatePath:"",
   baseURL: 'deliveries',
   searchEndpoint: 'production/deliveries',
+  groupedActions: false,
+  specificAction: {
+    action: 'PAY',
+    color: 'primary',
+    icon: 'payment',
+    disabled: {
+      field: 'paid',
+      value: true
+    }
+  },
+  filteredActions: [],
   defaultSearchData: {
     page: 0,
     size: 10,
@@ -19,18 +30,87 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
     order: 'DESC',
     searchData: {
       operation: SearchOperation.AND,
-      searchs: [],
-      search: {
-          status:{
-            equalValue:"COMPLETED"
-          }
-      }
+      searchs: [
+        {
+          operation: SearchOperation.OR,
+          searchs: [
+            {
+              operation: SearchOperation.AND,
+              search: {
+                isDeleted:{
+                  equalValue:false
+                }, operationType: {
+                  equalValue: 'SIMPLE_RECEPTION'
+                },
+                status: {
+                  equalValue: 'COMPLETED'
+                }
+              }
+            },
+            {
+              operation: SearchOperation.AND,
+              search: {
+                isDeleted:{
+                  equalValue:false
+                }, operationType: {
+                  equalValue: 'EXCHANGE'
+                },
+                status: {
+                  inValues: ['PROD_READY', 'COMPLETED']
+                }
+              }
+            },
+            {
+              operation: SearchOperation.AND,
+              search: {
+                isDeleted:{
+                  equalValue:false
+                }, operationType: {
+                  equalValue: 'OLIVE_PURCHASE'
+                },
+                status: {
+                  inValues: ['PROD_READY', 'COMPLETED']
+                }
+              }
+            },
+            {
+              operation: SearchOperation.AND,
+              search: {
+                isDeleted:{
+                  equalValue:false
+                }, operationType: {
+                  equalValue: 'OIL_PURCHASE'
+                },
+                status: {
+                  inValues: ['STOCK_READY', 'IN_STOCK']
+                }
+              }
+            },
+            {
+              operation: SearchOperation.AND,
+              search: {
+                isDeleted:{
+                  equalValue:false
+                },operationType: {
+                  equalValue: 'BASE'
+                },
+                status: {
+                  inValues: ['COMPLETED']
+                }
+              }
+            }
+          ]
+        }
+      ],
+      search: {isDeleted:{
+          equalValue:false
+        },}
     }
   },
   fields: [
     {
       name: 'deliveryNumber',
-      label: 'N° Bon de réception',
+      label: 'N°',
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.DELIVERY_NUMBER',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
@@ -62,6 +142,20 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       filterable: true
     },
     {
+      name: 'deliveryType',
+      label: 'Type réception',
+      labelTranslatePath: 'SUPPLIER_PAYMENT.RECEPTION_TYPE',
+      attributeType: AttributeType.string,
+      fieldType: FieldType.select,
+      valueAttributeType: AttributeType.enum,
+      options: [{ label: 'Huile', labelTranslatePath: 'STANDARD.DELIVERY_TYPE', value: 'OIL' },{ label: "Olive", labelTranslatePath: 'STANDARD.DELIVERY_TYPE',value: "OLIVE"}],
+      valuePath: 'name',
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },
+    {
       name: 'deliveryDate',
       label: 'Date de réception',
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.DELIVERY_DATE',
@@ -80,7 +174,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.text,
       exportable: true,
       dataTable: true,
-      filterable: true,
+      filterable: false,
       valuePath: 'name',
       valueAttributeType: AttributeType.string
     },
@@ -111,14 +205,26 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       name: 'oilType',
       label: "Type d'huile",
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.OIL_TYPE',
-      attributeType: AttributeType.object,
-      fieldType: FieldType.text,
+      attributeType: AttributeType.string,
+      fieldType: FieldType.select,
       exportable: true,
       dataTable: true,
       filterable: true,
       valuePath: 'name',
-      valueAttributeType: AttributeType.string
-    },{
+      valueAttributeType: AttributeType.enum
+    },
+    {
+      name: 'oilQuantity',
+      label: 'Qté huile (KG)',
+      labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.OIL_QUANTITY',
+      attributeType: AttributeType.number,
+      fieldType: FieldType.number,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },
+    {
       name: 'oliveType',
       label: "Type d'olive",
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.OLIVE_TYPE',
@@ -144,19 +250,20 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
         { label: 'Base', value: 'BASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.BASE' },
         { label: 'Achat Olive', value: 'OLIVE_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OLIVE_PURCHASE' },
         { label: 'Achat Huile', value: 'OIL_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OIL_PURCHASE' },
-        { label: 'Echange', value: 'EXCHANGE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.EXCHANGE' },
-        { label: 'Paiement', value: 'PAYMENT', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.PAYMENT' }
+        { label: 'Echange', value: 'EXCHANGE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.EXCHANGE' }
       ]
     },
     {
-      name: 'matriculeCamion',
-      label: 'Matricule camion',
-      labelTranslatePath: 'RECEPTION_LIST.FIELDS.TRUCK_PLATE',
-      attributeType: AttributeType.string,
-      fieldType: FieldType.text,
-      exportable: true,
+      name: 'paid',
+      label: 'Payé',
+      labelTranslatePath: 'Payé',
+      attributeType: AttributeType.boolean,
+       exportable: true,
       dataTable: true,
-      filterable: true
+      fieldType: FieldType.checkbox,
+      filterable: false,
+      valuePath: 'paid',
+      valueAttributeType: AttributeType.boolean
     },
     {
       name: 'status',
@@ -167,7 +274,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       exportable: true,
       sortable: true,
       dataTable: true,
-      filterable: true,
+      filterable: false,
       options: [
         { label: 'Nouveau', value: 'NEW', labelTranslatePath: 'RECEPTION_LIST.STATUS.NEW' },
         { label: 'En cours', value: 'IN_PROGRESS', labelTranslatePath: 'RECEPTION_LIST.STATUS.IN_PROGRESS' },
@@ -176,7 +283,9 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
         { label: 'Terminé', value: 'COMPLETED', labelTranslatePath: 'RECEPTION_LIST.STATUS.COMPLETED' },
         { label: 'Refusé', value: 'REFUSED', labelTranslatePath: 'RECEPTION_LIST.STATUS.REFUSED' },
         { label: 'Annulé', value: 'CANCELLED', labelTranslatePath: 'RECEPTION_LIST.STATUS.CANCELLED' },
-        { label: 'En stock', value: 'IN_STOCK', labelTranslatePath: 'RECEPTION_LIST.STATUS.IN_STOCK' }
+        { label: 'En stock', value: 'IN_STOCK', labelTranslatePath: 'RECEPTION_LIST.STATUS.IN_STOCK' },
+        { label: 'Pre a stocker', value: 'STOCK_READY', labelTranslatePath: 'RECEPTION_LIST.STATUS.STOCK_READY' },
+        { label: 'Pre pour production', value: 'PROD_READY', labelTranslatePath: 'RECEPTION_LIST.STATUS.PROD_READY' }
       ]
     }
   ],
