@@ -15,6 +15,7 @@ import {
   ConfirmationType
 } from '../../../../shared/services/confirmation-dialog.service';
 import { TranslateService } from '@ngx-translate/core';
+import { AppParameterService } from '../../../../shared/services/AppParameterService';
 
 interface ChildLotWithRendement extends PlanningItem {
   calculatedRendement?: number;
@@ -54,10 +55,12 @@ export class CompletionDetailsDialogComponent implements OnInit {
   itemType: PlanItemType;
   protected readonly PlanItemType = PlanItemType;
 
+
   constructor(
     public dialogRef: MatDialogRef<CompletionDetailsDialogComponent>,
     private dialog: MatDialog, // ← here
     private translate: TranslateService,
+    private parameterService: AppParameterService,
     @Inject(MAT_DIALOG_DATA)
     public data: {
       item: PlanningItem | GlobalLot;
@@ -114,9 +117,25 @@ export class CompletionDetailsDialogComponent implements OnInit {
 
   // Call price calculation when child lots or oliveWeight changes
   ngOnInit(): void {
+    this.loadTriturationPriceFromParam();
     this.calculateChildLotsPrice();
   }
 
+  private readonly prixtriturationkg = 'PRIX_TRITURATION_KG';
+
+  loadTriturationPriceFromParam(): void {
+    this.parameterService.getByCode(this.prixtriturationkg).subscribe({
+      next: (param) => {
+        const value = parseFloat(param.value);
+        if (!isNaN(value)) {
+          this.triturationPricePerKg = value;
+        }
+      },
+      error: () => {
+        console.warn('Prix de trituration introuvable');
+      }
+    });
+  }
   onCancel(): void {
     this.dialogRef.close();
   }

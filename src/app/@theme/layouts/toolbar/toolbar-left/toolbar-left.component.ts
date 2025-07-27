@@ -13,6 +13,7 @@ import { MIN_WIDTH_768PX, MAX_WIDTH_767PX, VERTICAL, HORIZONTAL, COMPACT } from 
   selector: 'app-nav-left',
   imports: [SharedModule],
   templateUrl: './toolbar-left.component.html',
+  standalone: true,
   styleUrls: ['./toolbar-left.component.scss']
 })
 export class NavLeftComponent implements OnInit {

@@ -1366,10 +1366,10 @@
   "OPERATION_TYPE": {
     "BASE": "Trituration sur base",
     "EXCHANGE": "Échange",
+    "INTERNAL_RECEPTION": "Réception interne",
     "OIL_PURCHASE": "Achat d'huile",
     "OLIVE_PURCHASE": "Achat d'olives",
-    "SIMPLE_RECEPTION": "Trituration particulier",
-    "INTERNAL_RECEPTION": "Réception interne"
+    "SIMPLE_RECEPTION": "Trituration particulier"
   },
   "OSM_DASHBOARD": {
     "ACTIONS": {
@@ -1383,6 +1383,7 @@
       "DELETE": "Supprimer",
       "ERROR": "Une erreur s'est produite",
       "GEN_PDF": "Générer Bon Réception",
+      "MAINTENANCE": "Maintenance",
       "MORE": "Plus",
       "OIL_IN_TRANSACTION": "Transaction Entrée Huile",
       "OIL_OUT_TRANSACTION": "Transaction Sortie Huile",
@@ -1769,7 +1770,8 @@
       "REGION": "Région",
       "RIB": "RIB",
       "SUPPLIER_TYPE": "Type de fournisseur"
-    }
+    },
+    "OIL_CREDIT_STATS_TITLE": "Statistique du credit huile"
   },
   "SUPPLIERS": {
     "ACTIONS": "Actions",

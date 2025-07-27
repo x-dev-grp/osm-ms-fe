@@ -1,19 +1,9 @@
- 
 
- 
+
+
 <!-- Main content -->
 <div *ngIf="!loading && !error && machine" class="view-container">
-  <app-card cardTitle="Détails de la machine">
-    <div class="actions">
-      <button mat-raised-button color="primary" (click)="editMachine()">
-        <mat-icon>edit</mat-icon>
-        Modifier
-      </button>
-      <button mat-stroked-button (click)="goBack()">
-        <mat-icon>arrow_back</mat-icon>
-        Retour
-      </button>
-    </div>
+  <app-card cardTitle="Détails de la machine" icon="handyman">
 
     <div class="details-grid">
       <div class="detail-item">
@@ -74,4 +64,4 @@
       </div>
     </div>
   </app-card>
-</div> 
+</div>

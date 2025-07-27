@@ -5,22 +5,7 @@
     </mat-tab>
     <mat-tab label="{{ 'GENERAL_CONFIG_UI.PRODUCTION_TAB' | translate }}">
       <!-- Production Config Section -->
-      <form [formGroup]="productionConfigForm" (ngSubmit)="onSaveProductionConfig()" class="form-section">
-        <div class="actions">
-          <button mat-flat-button color="primary" type="submit" [disabled]="productionConfigForm.invalid || !productionConfigFormEnabled">
-            <mat-icon>save</mat-icon>
-            <span>{{ 'GENERAL_CONFIG_UI.ACTIONS.SAVE' | translate }}</span>
-          </button>
-          <button mat-stroked-button color="warn" type="button" (click)="onResetProductionConfig()" [disabled]="!productionConfigFormEnabled">
-            <mat-icon>undo</mat-icon>
-            <span>{{ 'GENERAL_CONFIG_UI.ACTIONS.RESET' | translate }}</span>
-          </button>
-          <button mat-stroked-button color="accent" type="button" (click)="enableProductionConfigForm()" *ngIf="!productionConfigFormEnabled">
-            <mat-icon>edit</mat-icon>
-            <span>{{ 'GENERAL_CONFIG_UI.ACTIONS.EDIT' | translate }}</span>
-          </button>
-        </div>
-      </form>
+      <app-parameter [categoryFilter]="'PRODUCTION'"> ></app-parameter>
      </mat-tab>
     <mat-tab label="{{ 'GENERAL_CONFIG_UI.FINANCE_TAB' | translate }}">
       <!-- Finance Config Section -->

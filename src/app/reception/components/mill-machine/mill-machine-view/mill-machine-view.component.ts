@@ -17,7 +17,7 @@ import { ToastService } from '../../../../shared/services/toast.service';
   imports: [CommonModule, MatButtonModule, MatIconModule, SharedModule]
 })
 export class MillMachineViewComponent implements OnInit {
-  machine: MillMachine | null = null;
+  machine: MillMachine ;
   loading = false;
   error: string | null = null;
 
@@ -41,7 +41,7 @@ export class MillMachineViewComponent implements OnInit {
 
     this.service.getMillMachine(id).subscribe({
       next: (machine) => {
-        this.machine = machine.data[0];
+        this.machine = Array.isArray(machine.data) ? machine.data[0] : machine.data;
         this.loading = false;
       },
       error: (err) => {

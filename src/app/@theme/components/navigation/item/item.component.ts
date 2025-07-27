@@ -12,6 +12,7 @@ import { SharedModule } from 'src/app/demo/shared/shared.module';
   selector: 'app-component-item',
   imports: [SharedModule, CommonModule, RouterModule],
   templateUrl: './item.component.html',
+  standalone: true,
   styleUrls: ['./item.component.scss']
 })
 export class ComponentItemComponent {

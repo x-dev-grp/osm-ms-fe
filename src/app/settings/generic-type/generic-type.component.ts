@@ -93,11 +93,11 @@ export class GenericTypeComponent implements OnInit, OnDestroy {
 
   applyAction(event: { row: any; action: string }): void {
     switch (event.action) {
-      case 'CONSULTER':
-      case 'MODIFIER':
+      case 'READ':
+      case 'UPDATE':
         this.openDialog(event.row as BaseType);
         break;
-      case 'SUPPRIMER':
+      case 'DELETE':
         this.service.deleteType(event.row.type, event.row.id).subscribe(() => {
           // Optionally trigger dashboard refresh
         });

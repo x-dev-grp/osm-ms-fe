@@ -176,14 +176,14 @@ export class QualityControlRuleComponent implements OnInit, OnDestroy {
   onRowAction(e: { row: QualityControlRule; action: Action }): void {
 
     switch (e.action.value) {
-      case 'CONSULTER':
+      case 'READ':
         this.viewRule(e.row);
         break;
-      case 'MODIFIER':
+      case 'UPDATE':
         this.selectRule(e.row);
         break;
 
-      case 'Supprimer':
+      case 'DELETE':
         if (e.row.id) this.deleteRule(e.row);
         break;
 

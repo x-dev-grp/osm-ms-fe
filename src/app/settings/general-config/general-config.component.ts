@@ -20,6 +20,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TypeCategory } from '../../shared/models/type-category.enum';
 import { CompanyProfileComponent } from '../company/company-profile.component';
 import { MatTabChangeEvent } from '@angular/material/tabs';
+import { ParameterComponent } from '../parameter/parameter.component';
 
 
 @Component({
@@ -40,7 +41,8 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
     MatListModule,
     SharedModule,
     TranslateModule,
-    CompanyProfileComponent
+    CompanyProfileComponent,
+    ParameterComponent
   ],
   templateUrl: './general-config.component.html',
   styleUrl: './general-config.component.scss'
@@ -50,6 +52,7 @@ export class GeneralConfigComponent implements OnInit {
   financeConfigForm!: FormGroup;
   hrConfigForm!: FormGroup;
   otherConfigForm!: FormGroup;
+  activeTab: string = 'company'; // default tab
 
   productionConfigFormEnabled = false;
   financeConfigFormEnabled = false;
@@ -121,7 +124,21 @@ export class GeneralConfigComponent implements OnInit {
     this.otherConfigForm.enable();
   }
 
+// This function is called when a tab is changed
   onTabChange(event: MatTabChangeEvent) {
-    console.log(event)
+    // Log the event to the console
+    console.log(event);
+       const tabLabel = event.tab.textLabel.toLowerCase();
+
+      if (tabLabel.includes('production')) {
+        this.activeTab = 'parameter';
+      } else if (tabLabel.includes('general')) {
+        this.activeTab = 'company';
+      } else if (tabLabel.includes('finance')) {
+        this.activeTab = 'finance';
+      } else {
+        this.activeTab = 'other';
+      }
+
   }
 }

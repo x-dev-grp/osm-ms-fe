@@ -1,4 +1,13 @@
 {
+  "ADMIN": {
+    "ADD_COMPANY_USER_TITLE": "Create a company and its admin user ",
+    "CANCEL": "Cancel",
+    "COMPANY_NAME": "Company name",
+    "COMPANY_NAME_REQUIRED": "Company name is requeird",
+    "COMPANY_SECTION": "Company informations",
+    "SAVE": "Save",
+    "USER_SECTION": "User informations"
+  },
   "ADMIN_COMPANY_PROFILE": {
     "CAPITAL": "Capital",
     "CITY": "City",
@@ -573,11 +582,11 @@
     "OPERATION_TYPE": {
       "BASE": "Base",
       "EXCHANGE": "Exchange",
+      "INTERNAL_RECEPTION": "Internal reception",
       "OIL_PURCHASE": "Oil Purchase",
       "OLIVE_PURCHASE": "Olive Purchase",
       "PAYMENT": "Payment",
-      "SIMPLE_RECEPTION": "Simple Reception",
-      "INTERNAL_RECEPTION": "Internal reception"
+      "SIMPLE_RECEPTION": "Simple Reception"
     },
     "STATUS": {
       "CANCELLED": "Cancelled",
@@ -1350,6 +1359,7 @@
       "DELETE": "Delete",
       "ERROR": "An error occurred",
       "GEN_PDF": "Generate Receipt",
+      "MAINTENANCE": "Maintenance",
       "MORE": "More",
       "OIL_IN_TRANSACTION": "Oil In Transaction",
       "OIL_OUT_TRANSACTION": "Oil Out Transaction",
@@ -1802,6 +1812,8 @@
     "OIL_CREDIT_PACKAGING": "Packaging",
     "OIL_CREDIT_QUANTITY": "Quantity",
     "OIL_CREDIT_STATE": "Credit State",
+    "OIL_CREDIT_STATS_TITLE": "Oil credit statistiques",
+    "OIL_CREDIT_TOTAL": "Oil credit ",
     "OIL_CREDIT_TYPE": "Oil Type",
     "OIL_CREDIT_UNIT": "Unit",
     "OIL_EQUIVALENT": "Oil Equivalent",

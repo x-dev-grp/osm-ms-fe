@@ -3,8 +3,8 @@ import { SearchOperation } from '../../../shared/models/advanced-search/searchOp
 
 export const MILL_MACHINE_DASHBOARD: DashboardConfig = {
   icon: 'precision_manufacturing',
-  title: 'Machines de Moulin',
-  titleTranslatePath: 'MILL.MACHINE_TITLE',
+  title: '',
+  titleTranslatePath: 'MENU.SETTINGS.MILLING_MACHINES',
   baseURL: 'production/millers',
   searchEndpoint: 'production/millers',
   addNewItem: true,
@@ -17,7 +17,8 @@ export const MILL_MACHINE_DASHBOARD: DashboardConfig = {
     searchData: {
       operation: SearchOperation.AND,
       searchs: [],
-      search: {isDeleted:{
+      search: {
+        isDeleted:{
           equalValue:false
         },}
     }

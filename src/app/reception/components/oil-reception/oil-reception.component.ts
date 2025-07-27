@@ -127,8 +127,8 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
         supplier: [null, Validators.required],
 
         /* oil-specific details */
-        oilVariety: [null],
-        oliveType: [null], // still used to stamp the lot code
+        oilVariety: [null,[Validators.required]],
+        oliveType: [null,[Validators.required]], // still used to stamp the lot code
         oilQuantity: [null, Validators.min(0)],
         unitPrice: [null, Validators.min(0)],
         price: [null, Validators.min(0)],

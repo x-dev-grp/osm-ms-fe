@@ -1,0 +1,81 @@
+<form [formGroup]="paramForm">
+  <mat-form-field appearance="outline" class="category-filter">
+    <mat-label>Category</mat-label>
+    <mat-select (ngModelChange)="filtered" [(ngModel)]="selectedCategory" formControlName="category">
+      <mat-option value="">All</mat-option>
+      <mat-option *ngFor="let cat of categories" [value]="cat">{{ cat }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <table [dataSource]="filtered" class="mat-elevation-z2" mat-table>
+    <!-- Code Column -->
+    <ng-container matColumnDef="code">
+      <th *matHeaderCellDef mat-header-cell>Code</th>
+      <td *matCellDef="let param" mat-cell>{{ param.code }}</td>
+    </ng-container>
+
+    <!-- Value Column -->
+    <ng-container matColumnDef="value">
+      <th *matHeaderCellDef mat-header-cell>Value</th>
+      <td *matCellDef="let param" class="value-cell" mat-cell>
+        <ng-container [ngSwitch]="param.type">
+          <mat-form-field *ngSwitchCase="'DOUBLE'" appearance="outline" class="value-field">
+            <input step="0.01" [(ngModel)]="param.value" formControlName="param_{{param.code}}" matInput required type="number">
+            <mat-error *ngIf="paramForm.get('param_' + param.code)?.hasError('required')">
+              Value is required
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field *ngSwitchCase="'INTEGER'" appearance="outline" class="value-field">
+            <input  step="0.01"  [(ngModel)]="param.value" formControlName="param_{{param.code}}" matInput required type="number">
+            <mat-error *ngIf="paramForm.get('param_' + param.code)?.hasError('required')">
+              Value is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field *ngSwitchCase="'text'" appearance="outline" class="value-field">
+            <input [(ngModel)]="param.value" formControlName="param_{{param.code}}" matInput required
+                   type="text">
+            <mat-error *ngIf="paramForm.get('param_' + param.code)?.hasError('required')">
+              Value is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field *ngSwitchCase="'select'" appearance="outline" class="value-field">
+            <mat-select [(ngModel)]="param.value" formControlName="param_{{param.code}}"
+                        required>
+              <mat-option *ngFor="let option of param.options" [value]="option">{{ option }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="paramForm.get('param_' + param.code)?.hasError('required')">
+              Value is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-slide-toggle *ngSwitchCase="'boolean'" [(ngModel)]="param.value"
+                            formControlName="param_{{param.code}}"
+          >
+          </mat-slide-toggle>
+        </ng-container>
+      </td>
+    </ng-container>
+
+    <!-- Description Column -->
+    <ng-container matColumnDef="description">
+      <th *matHeaderCellDef mat-header-cell>Description</th>
+      <td *matCellDef="let param" mat-cell>{{ param.description }}</td>
+    </ng-container>
+
+    <!-- Actions Column -->
+    <ng-container matColumnDef="action">
+      <th *matHeaderCellDef mat-header-cell></th>
+      <td *matCellDef="let param" mat-cell>
+        <button (click)="save(param)" [disabled]="param.dirty || param.invalid" aria-label="Save parameter"
+                class="save-button" mat-icon-button>
+          <mat-icon>save</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr *matHeaderRowDef="displayedColumns" class="header-row" mat-header-row></tr>
+    <tr *matRowDef="let row; columns: displayedColumns;" mat-row></tr>
+  </table>
+</form>

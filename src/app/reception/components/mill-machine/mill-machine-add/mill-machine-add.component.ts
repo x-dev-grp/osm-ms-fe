@@ -36,6 +36,7 @@ export class MillMachineAddComponent implements OnInit {
   isEditing = false;
   loading = false;
   error: string | null = null;
+  protected machine: MillMachine;
 
   constructor(
     private fb: FormBuilder,
@@ -57,7 +58,6 @@ export class MillMachineAddComponent implements OnInit {
 
   private initializeForm(): void {
     this.form = this.fb.group({
-      id: [null],
       name: ['', [Validators.required, Validators.minLength(2)]],
       machineType: ['', [Validators.required, Validators.minLength(2)]],
       manufacturer: [''],
@@ -79,20 +79,20 @@ export class MillMachineAddComponent implements OnInit {
     this.service.getMillMachine(id).subscribe({
       next: (response: any) => {
         if (response && response.success) {
-          const machine = response.data[0];
+          this.machine = response.data;
           this.form.patchValue({
-            id: machine.id,
-            name: machine.name,
-            machineType: machine.machineType,
-            manufacturer: machine.manufacturer,
-            model: machine.model,
-            serialNumber: machine.serialNumber,
-            capacity: machine.capacity,
-            operatingStatus: machine.operatingStatus,
-            hoursOperated: machine.hoursOperated,
-            lastMaintenanceDate: machine.lastMaintenanceDate ? new Date(machine.lastMaintenanceDate) : null,
-            nextMaintenanceDate: machine.nextMaintenanceDate ? new Date(machine.nextMaintenanceDate) : null,
-            description: machine.description
+            id: this.machine.id,
+            name: this.machine.name,
+            machineType: this.machine.machineType,
+            manufacturer: this.machine.manufacturer,
+            model: this.machine.model,
+            serialNumber: this.machine.serialNumber,
+            capacity: this.machine.capacity,
+            operatingStatus: this.machine.operatingStatus,
+            hoursOperated: this.machine.hoursOperated,
+            lastMaintenanceDate: this.machine.lastMaintenanceDate ? new Date(this.machine.lastMaintenanceDate) : null,
+            nextMaintenanceDate: this.machine.nextMaintenanceDate ? new Date(this.machine.nextMaintenanceDate) : null,
+            description: this.machine.description
           });
         } else {
           const errorMessage = response.message || 'Failed to load machine';
@@ -119,8 +119,10 @@ export class MillMachineAddComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    const payload: MillMachine = this.form.value;
-    const request$ = this.isEditing ? this.service.updateMillMachine(payload) : this.service.addMillMachine(payload);
+    const payload: MillMachine = {
+      ...this.form.value,
+      id: this.machine.id,
+    };    const request$ = this.isEditing ? this.service.updateMillMachine(payload) : this.service.addMillMachine(payload);
 
     request$.subscribe({
       next: () => {

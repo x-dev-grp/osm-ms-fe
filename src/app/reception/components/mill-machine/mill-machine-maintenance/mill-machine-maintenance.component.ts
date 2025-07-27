@@ -101,7 +101,7 @@ export class MillMachineMaintenanceComponent implements OnInit {
     this.service.getMillMachine(id).subscribe({
       next: (response: any) => {
         if (response && response.success) {
-          this.machine = response.data[0];
+          this.machine = response.data;
           // Pre-fill form with machine's maintenance schedule if available
           if (this.machine?.nextMaintenanceDate) {
             this.form.patchValue({

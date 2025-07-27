@@ -2,12 +2,12 @@
 <project version="4">
   <component name="ProjectSettingsService">
     <option name="localesDirectory" value="F:\osm-ms-fe\src\assets\i18n" />
-    <option name="folderStrategy" value="MODULARIZED_NAMESPACE" />
     <option name="includeSubDirs" value="true" />
     <option name="namespaceDelimiter" value="." />
     <option name="contextDelimiter" value="." />
     <option name="pluralDelimiter" value="." />
     <option name="defaultNamespace" value="" />
     <option name="alwaysFold" value="true" />
+    <option name="flavorTemplate" value="" />
   </component>
 </project>

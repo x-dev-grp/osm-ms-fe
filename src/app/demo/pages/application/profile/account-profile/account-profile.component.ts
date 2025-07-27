@@ -57,7 +57,7 @@ export class AccountProfileComponent implements OnInit {
       },
       {
         label: 'Settings',
-        link: '/application/profile/account/settings',
+        link: '/settings/general-config',
         icon: 'ti ti-settings',
         index: 5
       }

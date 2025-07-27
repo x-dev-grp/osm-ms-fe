@@ -16,6 +16,8 @@ import { MillMachine } from '../../../shared/models/millMachine';
 import { MillMachineService } from '../../../shared/services/mill-machine.service';
 import { ToastService } from '../../../shared/services/toast.service';
 import { MILL_MACHINE_DASHBOARD } from './MILL_MACHINE_DASHBOARD';
+import { TranslateModule } from '@ngx-translate/core';
+import { event } from '@ngrx/signals/events';
 
 @Component({
   selector: 'app-mill-machine',
@@ -31,7 +33,8 @@ import { MILL_MACHINE_DASHBOARD } from './MILL_MACHINE_DASHBOARD';
     MatCardModule,
     MatSortModule,
     SharedModule,
-    OsmDashboard
+    OsmDashboard,
+    TranslateModule
   ]
 })
 export class MillMachineComponent implements OnInit, OnDestroy {
@@ -47,30 +50,18 @@ export class MillMachineComponent implements OnInit, OnDestroy {
     private router: Router
   ) {}
 
-  ngOnInit(): void {}
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
   }
 
-  showToast(message: string, type: 'success' | 'error' = 'error'): void {
-    if (type === 'success') {
-      this.toastService.success(message);
-    } else {
-      this.toastService.error(message);
-    }
-  }
-
-  onRowAction(event: { row: MillMachine; action: Action }): void {
-    switch (event.action.value) {
-      case 'CONSULTER':
+  onRowAction(event: { row: MillMachine; action: string }): void {
+    switch (event.action) {
+      case 'READ':
         this.viewMachine(event.row);
         break;
-      case 'MODIFIER':
+      case 'UPDATE':
         this.editMachine(event.row);
-        break;
-      case 'SUPPRIMER':
-        this.deleteMachine(event.row);
         break;
       case 'MAINTENANCE':
         this.maintenanceMachine(event.row);
@@ -96,20 +87,6 @@ export class MillMachineComponent implements OnInit, OnDestroy {
     }
   }
 
-  deleteMachine(machine: MillMachine): void {
-    if (!machine.id) return;
-
-    this.millMachineService.deleteMillMachine(machine.id).subscribe({
-      next: (response: any) => {
-        if (response && response.success) {
-          this.showToast('Machine deleted successfully', 'success');
-        } else {
-          this.showToast(response.message || 'Failed to delete machine', 'error');
-        }
-      },
-      error: (err: any) => {
-        this.showToast('An error occurred while deleting the machine', 'error');
-      }
-    });
+  ngOnInit(): void {
   }
 }

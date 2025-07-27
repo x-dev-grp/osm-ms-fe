@@ -11,6 +11,7 @@ import { ComponentItemComponent } from '../item/item.component';
   selector: 'app-component-group',
   imports: [SharedModule, ComponentItemComponent],
   templateUrl: './group.component.html',
+  standalone: true,
   styleUrls: ['./group.component.scss']
 })
 export class ComponentGroupComponent implements OnInit {

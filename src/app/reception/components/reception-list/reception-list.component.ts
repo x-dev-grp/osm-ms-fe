@@ -29,7 +29,7 @@ export class ReceptionListComponent {
         this.viewDelivery(event.row);
         break;
 
-      case 'Modifier':
+      case 'UPDATE':
         // this.selectReception(event.row);
         break;
 

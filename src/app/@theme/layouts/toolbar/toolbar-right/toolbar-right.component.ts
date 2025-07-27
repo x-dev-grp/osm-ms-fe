@@ -16,6 +16,7 @@ import { SharedModule } from 'src/app/demo/shared/shared.module';
   selector: 'app-nav-right',
   imports: [SharedModule, CommonModule, RouterModule],
   templateUrl: './toolbar-right.component.html',
+  standalone: true,
   styleUrls: ['./toolbar-right.component.scss']
 })
 export class NavRightComponent {
