@@ -916,3 +916,11 @@ mat-paginator {
     max-height: 180px;
   }
 }
+
+
+.flex{
+  display: flex;
+ // flex-direction: row;
+  gap: 1rem;
+  justify-content: space-between;
+}

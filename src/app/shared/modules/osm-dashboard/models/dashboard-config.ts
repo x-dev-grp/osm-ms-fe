@@ -6,7 +6,7 @@ import { SearchDetails } from '../../../models/advanced-search/searchDetails';
 export interface DashboardConfig {
   icon?: string | null;
   groupedActions?:boolean;
-  specificAction?:{
+  specificActions?:{
     action:string;
     color:string;
     icon:string;
@@ -14,7 +14,7 @@ export interface DashboardConfig {
         field:string;
         value:any
     }
-    }
+    }[]
   filteredActions?:string[]
     title:string;
     titleTranslatePath?:string;
