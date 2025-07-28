@@ -97,18 +97,20 @@
           <th *matHeaderCellDef mat-header-cell>{{ 'OSM_DASHBOARD.ACTIONS.TITLE' | translate }}</th>
           <td *matCellDef="let record" mat-cell>
             <div class="table-cell-value">
-              @if (config().specificAction) {
-                <button
+              @if (config().specificActions) {
+                  @for (item of config().specificActions; track item; ) {      
+                     <button 
                   style="cursor: pointer"
                   mat-raised-button
-                  (click)="actionApply(config().specificAction.action, record)"
-                  [color]="config().specificAction.color"
-                  [disabled]="record[config().specificAction.disabled.field]==config().specificAction.disabled.value"
+                  (click)="actionApply(item?.action, record)"
+                  [color]="item?.color || 'primary'"
+                  [disabled]="record[item?.disabled?.field]==item?.disabled?.value"
                   size="small"
                 >
-                  <mat-icon>{{ config().specificAction.icon }}</mat-icon>
-                  {{ 'OSM_DASHBOARD.ACTIONS.' + config().specificAction.action| translate }}
+                  <mat-icon>{{ item?.icon }}</mat-icon>
+                  {{ 'OSM_DASHBOARD.ACTIONS.' + item?.action| translate }}
                 </button>
+              }
               } @else {
                 @if (_store.actionLoading()) {
                   <mat-spinner diameter="25" color="warn"></mat-spinner>

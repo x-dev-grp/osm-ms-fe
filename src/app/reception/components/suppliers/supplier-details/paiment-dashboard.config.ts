@@ -13,7 +13,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
   baseURL: 'deliveries',
   searchEndpoint: 'production/deliveries',
   groupedActions: false,
-  specificAction: {
+  specificActions: [{
     action: 'PAY',
     color: 'primary',
     icon: 'payment',
@@ -22,6 +22,15 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       value: true
     }
   },
+{
+    action: 'GEN_INVOICE',
+    color: 'secondary',
+    icon: 'payment',
+    disabled: {
+      field: 'paid',
+      value: false
+    }
+  }],
   filteredActions: [],
   defaultSearchData: {
     page: 0,
