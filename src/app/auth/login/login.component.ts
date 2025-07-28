@@ -8,7 +8,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SharedModule } from 'src/app/demo/shared/shared.module';
 import { TokenService } from '../services/tokenService.service';
 import { AuthenticationService } from '../services/authentication.service';
-import { catchError, first, of, switchMap, from } from 'rxjs';
+import { catchError, first, of } from 'rxjs';
 import { User } from 'src/app/@theme/types/user';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Role } from '../../@theme/types/role';
@@ -66,64 +66,71 @@ export class LoginComponent implements OnInit {
       .login(this.form.value)
       .pipe(
         first(),
-        switchMap((response: unknown) => {
-          if (!response) {
-            this.loading = false;
-            return of(null);
-          }
-          this.errorMessage = null;
-          this.tokenService.setToken((response as Record<string, unknown>)['access_token'] as string);
-          this.tokenService.setRefreshToken((response as Record<string, unknown>)['refresh_token'] as string);
-          const decodedToken = this.tokenService.decodeToken() as Record<string, unknown>;
-          if (decodedToken && decodedToken['osmUser']) {
-            const role = decodedToken['role'] as string;
-            const permissions = decodedToken['authorities'];
-            const user: User = decodedToken['osmUser'] as User;
-            user.role = role;
-            user.permissions = permissions;
-            this.authenticationService.setCurrentUserValue = user;
-            const tenantId = user.tenantId || decodedToken['tenantId'];
-            if (role !== Role.OsmAdmin && tenantId) {
-              // Fetch company profile by tenantId for non-admins
-              return this.companyProfileService.getProfileByTenantId(String(tenantId)).pipe(
-                first(),
-                switchMap((profile) => {
-                  // Optionally store profile in localStorage or service
-                  localStorage.setItem('company_profile', JSON.stringify(profile.data));
-                  return from(this.router.navigate(['/dashboard']));
-                })
-              );
-            } else {
-              // For OsmAdmin, skip company profile fetch
-              return from(this.router.navigate(['/administration/dashboard']));
-            }
-          }
+        catchError((err: any) => {
           this.loading = false;
-          return of(null);
-        }),
-        catchError((err: unknown) => {
-          this.loading = false;
-          if (isHttpError(err) && 'status' in err && [504, 503].includes((err.status as number))) {
-            this.errorMessage = 'Service unavailable please try again later';
-          } else if (isHttpError(err) && err.error && err.error.error_uri && err.error.error_description) {
-            this.router.navigate(['/auth/user/update-password'], { queryParams: { username: err.error.error_description, id: err.error.error_uri } });
+          console.log(err);
+          if ([504, 503].includes(err?.status)) {
+            this.errorMessage = { message: 'Service unavailable please try again later' };
+          } else if (err?.error?.error_uri && err?.error?.error_description) {
+            this.router.navigate([
+              '/auth/user/update-password',
+              {
+                username: err.error.error_description,
+                id: err.error.error_uri
+              }
+            ]);
           } else {
-            this.errorMessage = isHttpError(err) && 'error' in err ? (err.error as string) : 'An error occurred during login.';
+            this.errorMessage = err?.error;
           }
+          //this.authenticationService.logout();
+
           return of(null);
         })
       )
       .subscribe({
-        next: (result) => {
+        next: (response: unknown) => {
+          if (response) {
+            this.errorMessage = null;
+            this.loading = false;
+            this.tokenService.setToken((response as Record<string, unknown>)['access_token'] as string);
+            this.tokenService.setRefreshToken((response as Record<string, unknown>)['refresh_token'] as string);
+            const decodedToken = this.tokenService.decodeToken() as Record<string, unknown>;
+              if (decodedToken && decodedToken['osmUser']) {
+              const role = decodedToken['role'] as string;
+              const permissions = decodedToken['authorities'];
+              const user: User = decodedToken['osmUser'] as User;
+              user.role = role;
+              user.permissions = permissions;
+              this.authenticationService.setCurrentUserValue = user;
+              // Add logging for debugging
+              console.log('[Login] User set for navigation:', user);
+              console.log('[Login] Token:', this.tokenService.getToken());
+                const tenantId = user.tenantId || decodedToken['tenantId'];
+                if (role !== Role.OsmAdmin && tenantId) {
+                // Fetch company profile for non-OsmAdmin users
+                  this.router.navigate(['/dashboard']);
+              } else {
+                // For OsmAdmin, skip company profile fetch
+                this.router
+                  .navigate(['/administration/dashboard'])
+                  .then((success) => {
+                    console.log('[Login] Navigation to /administration/dashboard success:', success);
+                  })
+                  .catch((err) => {
+                    console.error('[Login] Navigation error:', err);
+                  });
+              }
+            }
+          }
+        },
+        error: (error: unknown) => {
+          if (typeof error === 'object' && error !== null && 'error' in error) {
+            this.errorMessage = (error as { error?: string }).error ?? null;
+          } else {
+            this.errorMessage = 'An unexpected error occurred';
+          }
           this.loading = false;
-          if (result === null) return;
-          // Navigation is already handled in switchMap
         }
       });
   }
-}
-
-// Add a type guard for error objects
-function isHttpError(obj: unknown): obj is { status?: number; error?: { error_uri?: string; error_description?: string } } {
-  return typeof obj === 'object' && obj !== null;
 }
