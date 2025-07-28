@@ -25,6 +25,7 @@ import {OliveLotStatus} from '../../../shared/models/OliveLotStatus';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {OperationType} from '../../../shared/models/operation-type.enum';
 import {ExchangePricingDto} from '../../../shared/models/ExchangePricingDto';
+import {getOlivePdfConfig} from "./olive-pdf.config";
 
 @Component({
   selector: 'app-olive-reception',
@@ -145,8 +146,9 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
   }
 
 
-  genererBonReception(delivery: UnifiedDelivery): void {
-    this.pdfService.generateReceptionPdf(delivery, 'OLIVE');
+  generateBonReception(delivery: UnifiedDelivery): void {
+    const config = getOlivePdfConfig(delivery);
+    this.pdfService.generateReceptionPdf(config);
   }
 
   onRowAction(e: { row: UnifiedDelivery; action: string }): void {
@@ -160,7 +162,7 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
 
       case 'GEN_PDF':
         if (e.row) {
-          this.genererBonReception(e.row);
+          this.generateBonReception(e.row);
         }
         break;
       case 'SET_PRICE':

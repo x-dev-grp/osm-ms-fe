@@ -412,4 +412,23 @@ mat-card-content {
       font-weight: 500;
     }
   }
+
+
 }
+
+::ng-deep .vertical-tabs.mat-tab-group {
+  flex-direction: row-reverse; /* Tabs à droite */
+}
+
+::ng-deep .vertical-tabs .mat-tab-labels {
+  flex-direction: column; /* Afficher les tabs l’un au-dessous de l’autre */
+  align-items: flex-start;
+  min-width: 180px;
+}
+
+::ng-deep .vertical-tabs .mat-tab-body-wrapper {
+  flex: 1;
+  padding: 1rem;
+}
+
+
