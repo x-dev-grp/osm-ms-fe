@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
@@ -30,6 +30,7 @@ import { SupplierTypeService } from '../../../shared/services/supplier.service';
 
 import { PdfGeneratorService } from '../../../shared/services/pdf-generator.service';
 import { OIL_DELIVERY_DASHBOARD } from './OIL_DELIVERY_DASHBOARD';
+import { AppParameterService } from '../../../shared/services/AppParameterService';
 
 /* ──────────────────────────────────────────────────────────── */
 /* validators                                                   */
@@ -69,7 +70,7 @@ export const netNotGreaterThanGross: ValidatorFn = (g: AbstractControl): Validat
   templateUrl: './oil-reception.component.html',
   styleUrl: './oil-reception.component.scss'
 })
-export class OilReceptionComponent implements OnInit, OnDestroy {
+export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
   @ViewChild('setPriceDialog') setPriceDialogTemplate!: TemplateRef<unknown>;
   @ViewChild('dashboard') dashboard!: OsmDashboard;
   @ViewChild('paymentDetailsDialog') paymentDetailsDialogTemplate!: TemplateRef<unknown>;
@@ -96,9 +97,12 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
   OilDelevery: UnifiedDelivery | null = null;
   protected originalOliveReception: UnifiedDelivery;
   private subs = new Subscription();
+  private readonly prixbase = 'PRIX_BASE';
+  private prix_base: number;
 
   constructor(
     private fb: FormBuilder,
+    private parameterService: AppParameterService,
     private deliveryService: UnifiedDeliveryService,
     private genericTypeService: GenericTypeService,
     private supplierService: SupplierTypeService,
@@ -127,8 +131,8 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
         supplier: [null, Validators.required],
 
         /* oil-specific details */
-        oilVariety: [null,[Validators.required]],
-        oliveType: [null,[Validators.required]], // still used to stamp the lot code
+        oilVariety: [null, [Validators.required]],
+        oliveType: [null, [Validators.required]], // still used to stamp the lot code
         oilQuantity: [null, Validators.min(0)],
         unitPrice: [null, Validators.min(0)],
         price: [null, Validators.min(0)],
@@ -143,6 +147,21 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loading = true;
+    this.parameterService.getByCode(this.prixbase).subscribe({
+      next: (param) => {
+        const value = parseFloat(param.value);
+        if (!isNaN(value)) {
+          this.prix_base = value;
+        }
+      },
+      error: () => {
+        console.warn('Prix de trituration introuvable');
+      }
+    });
+    this.setPriceForm = this.fb.group({
+      unitPrice: [0, Validators.required],
+      price: [{ value: 0, disabled: true }, Validators.required]
+    });
 
     forkJoin([
       this.genericTypeService.getAllTypes(TypeCategory.OIL_VARIETY),
@@ -538,19 +557,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
     );
   }
 
-  private patchForm(d: UnifiedDelivery): void {
-    const parseDate = (v: string | Date | null): Date | null => (!v ? null : v instanceof Date ? v : new Date(v));
 
-    this.receptionForm.patchValue({
-      ...d,
-      deliveryType: 'OIL',
-      deliveryDate: parseDate(d.deliveryDate),
-      region: this.regions.find((r) => r.id === d.region?.id) || null,
-      supplier: this.suppliers.find((s) => s.id === d.supplier?.id) || null,
-      oilVariety: this.oilVarieties.find((v) => v.id === d.oilVariety?.id) || null,
-      oliveType: this.oliveTypes.find((t) => t.id === d.oliveType?.id) || null
-    });
-  }
 
   private setupOliveTypeSubscription(): void {
     const sub = this.receptionForm.get('oliveType')!.valueChanges.subscribe((ol: BaseType | null) => {
@@ -591,19 +598,14 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
   private setPrice(row: UnifiedDelivery): void {
     this.selectedRow = row;
 
-    this.setPriceForm = this.fb.group({
-      unitPrice: [row.unitPrice || null, Validators.required],
-      price: [{ value: row.price || null, disabled: true }, Validators.required]
-    });
+    // Use prix_base if available, fallback to row.unitPrice
+    const initialUnitPrice = this.prix_base || row.unitPrice || null;
 
-    // Mettre à jour automatiquement le prix
-    this.setPriceForm.get('unitPrice')?.valueChanges.subscribe((unitPrice) => {
+    console.log('initialUnitPrice(): ' + initialUnitPrice);
 
-      const quantity = row?.poidsNet || row?.oilQuantity||0; // adapte selon ton modèle
-      const price = parseFloat(unitPrice) * quantity;
-      this.setPriceForm.get('price')?.setValue(+price.toFixed(3));
-    });
+    console.log('loadTriturationPriceFromParam(): ' + this.prix_base);
 
+this.setPriceForm.get('unitPrice')?.setValue(initialUnitPrice);
     this.dialog.open(this.setPriceDialogTemplate, {
       width: '500px',
       data: row,
@@ -611,6 +613,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
       panelClass: 'set-price-dialog'
     });
   }
+
 
   /**
    * Validates and converts a value to a number with fallback
@@ -777,5 +780,13 @@ export class OilReceptionComponent implements OnInit, OnDestroy {
       return 'Erreur serveur';
     }
     return 'Erreur inconnue';
+  }
+
+  ngAfterViewInit(): void {
+    this.setPriceForm.get('unitPrice')?.valueChanges.subscribe((unitPrice) => {
+      const quantity = this.selectedRow ?.poidsNet || this.selectedRow ?.oilQuantity || 0;
+      const price = parseFloat(unitPrice) * quantity;
+      this.setPriceForm.get('price')?.setValue(+price.toFixed(3));
+    });
   }
 }
