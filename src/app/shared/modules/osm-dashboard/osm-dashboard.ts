@@ -20,6 +20,7 @@ import { DynamicInput } from './components/dynamic-input/dynamic-input.component
 import { ConfirmationDialogService } from '../../services/confirmation-dialog.service';
 import { ACTION_ICONS } from './models/actions';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -42,7 +43,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatSortModule,
     SharedModule,
     DynamicInput,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatTooltipModule
   ]
 })
 export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {

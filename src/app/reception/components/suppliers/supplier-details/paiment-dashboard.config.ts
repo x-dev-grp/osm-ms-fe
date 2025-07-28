@@ -25,7 +25,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
 {
     action: 'GEN_INVOICE',
     color: 'secondary',
-    icon: 'payment',
+    icon: 'file_copy',
     disabled: {
       field: 'paid',
       value: false

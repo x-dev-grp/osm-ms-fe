@@ -98,19 +98,23 @@
           <td *matCellDef="let record" mat-cell>
             <div class="table-cell-value">
               @if (config().specificActions) {
-                  @for (item of config().specificActions; track item; ) {      
-                     <button 
+               <div  class="flex" >
+                  @for (item of config().specificActions; track item; ) {
+                     <button
                   style="cursor: pointer"
                   mat-raised-button
                   (click)="actionApply(item?.action, record)"
                   [color]="item?.color || 'primary'"
                   [disabled]="record[item?.disabled?.field]==item?.disabled?.value"
                   size="small"
+                  [matTooltip]=" ('OSM_DASHBOARD.ACTIONS.' + item?.action| translate )"
+                  matTooltipPosition="above"
                 >
                   <mat-icon>{{ item?.icon }}</mat-icon>
-                  {{ 'OSM_DASHBOARD.ACTIONS.' + item?.action| translate }}
+
                 </button>
               }
+               </div>
               } @else {
                 @if (_store.actionLoading()) {
                   <mat-spinner diameter="25" color="warn"></mat-spinner>

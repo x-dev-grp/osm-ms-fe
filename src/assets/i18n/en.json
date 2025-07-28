@@ -1358,6 +1358,7 @@
       "CREATE": "Create",
       "DELETE": "Delete",
       "ERROR": "An error occurred",
+      "GEN_INVOICE": "Generate Invoice",
       "GEN_PDF": "Generate Receipt",
       "MAINTENANCE": "Maintenance",
       "MORE": "More",
@@ -1834,7 +1835,9 @@
     "PAID_AMOUNT": "Paid Amount",
     "PAID_DELIVERIES": "Paid Deliveries",
     "PAY": "Pay",
-    "PAYMENT": "Payment",
+    "PAYMENT": {
+      "NEEDTTRANSACTION": "Oil transaaction needs to be validated"
+    },
     "PAYMENT_HISTORY": "Payment History",
     "PAYMENT_METHOD": "Payment Method",
     "PAYMENT_SUCCESS": "Payment processed successfully",

@@ -55,7 +55,7 @@ export class ViewExpenseComponent implements OnInit {
 
   onPrint(): void {
     if (this.expense) {
-      this.pdfGenerator.generateExpensePdf(this.expense);
+      // this.pdfGenerator.generateExpensePdf(this.expense);
     }
   }
 
