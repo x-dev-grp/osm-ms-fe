@@ -1,18 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatNativeDateModule} from '@angular/material/core';
+import {ActivatedRoute, Router} from '@angular/router';
 
-import { SharedModule } from '../../../../demo/shared/shared.module';
-import { MillMachine } from '../../../../shared/models/millMachine';
-import { MillMachineService } from '../../../../shared/services/mill-machine.service';
-import { ToastService } from '../../../../shared/services/toast.service';
+import {SharedModule} from '../../../../demo/shared/shared.module';
+import {MillMachine} from '../../../../shared/models/millMachine';
+import {MillMachineService} from '../../../../shared/services/mill-machine.service';
+import {ToastService} from '../../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-mill-machine-add',
@@ -121,7 +121,7 @@ export class MillMachineAddComponent implements OnInit {
 
     const payload: MillMachine = {
       ...this.form.value,
-      id: this.machine.id,
+      id: this.isEditing ? this.machine?.id : undefined,
     };    const request$ = this.isEditing ? this.service.updateMillMachine(payload) : this.service.addMillMachine(payload);
 
     request$.subscribe({
