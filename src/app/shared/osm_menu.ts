@@ -226,30 +226,30 @@ export const osm_menus: Navigation[] = [
   // ────────────────────────
   // Ressources humaines
   // ────────────────────────
-  {
-    id: 'hrGroup',
-    title: 'MENU.HR.TITLE',
-    type: 'group',
-    role: [Role.Admin],
-    children: [
-      {
-        id: 'employees',
-        title: 'MENU.HR.EMPLOYEES',
-        type: 'item',
-        url: '/hr/employees',
-        icon: 'badge',
-        breadcrumbs: false
-      },
-      {
-        id: 'rolesPermissions',
-        title: 'MENU.HR.ROLES_PERMISSIONS',
-        type: 'item',
-        url: '/hr/roles',
-        icon: 'admin_panel_settings',
-        breadcrumbs: false
-      }
-    ]
-  },
+  // {
+  //   id: 'hrGroup',
+  //   title: 'MENU.HR.TITLE',
+  //   type: 'group',
+  //   role: [Role.Admin],
+  //   children: [
+  //     {
+  //       id: 'employees',
+  //       title: 'MENU.HR.EMPLOYEES',
+  //       type: 'item',
+  //       url: '/hr/employees',
+  //       icon: 'badge',
+  //       breadcrumbs: false
+  //     },
+  //     {
+  //       id: 'rolesPermissions',
+  //       title: 'MENU.HR.ROLES_PERMISSIONS',
+  //       type: 'item',
+  //       url: '/hr/roles',
+  //       icon: 'admin_panel_settings',
+  //       breadcrumbs: false
+  //     }
+  //   ]
+  // },
 
   // ────────────────────────
   // Paramètres système
@@ -258,7 +258,7 @@ export const osm_menus: Navigation[] = [
     id: 'settingsGroup',
     title: 'MENU.SETTINGS.TITLE',
     type: 'group',
-    role: [Role.Admin, Role.User],
+    role: [Role.Admin, Role.User,Role.OsmAdmin],
     children: [
       {
         id: 'settingsGroup',
@@ -284,6 +284,22 @@ export const osm_menus: Navigation[] = [
             breadcrumbs: false
           }
         ]
+      },
+      {
+        id: 'genericTypes',
+        title: 'Generic Types',
+        type: 'item',
+        url: '/settings/generic',
+        icon: 'category',
+        breadcrumbs: false
+      },
+      {
+        id: 'qualityControlRules',
+        title: 'Quality Control Rules',
+        type: 'item',
+        url: '/settings/quality-control',
+        icon: 'rule',
+        breadcrumbs: false
       },
       {
         id: 'machineStatus',
@@ -312,54 +328,54 @@ export const osm_menus: Navigation[] = [
     ]
   },
 
-  // ────────────────────────
-  // Reports (stand-alone)
-  // ────────────────────────
-  {
-    id: 'reportsGroup',
-    title: 'Reports',
-    type: 'group',
-    role: [Role.Admin, Role.User],
-    children: [
-      {
-        id: 'productionReports',
-        title: 'Production Reports',
-        type: 'item',
-        url: '/reports/production',
-        icon: 'factory',
-        breadcrumbs: false
-      },
-      {
-        id: 'deliveryReports',
-        title: 'Delivery Reports',
-        type: 'item',
-        url: '/reports/deliveries',
-        icon: 'local_shipping',
-        breadcrumbs: false
-      },
-      {
-        id: 'financeReports',
-        title: 'Finance Reports',
-        type: 'item',
-        url: '/reports/finance',
-        icon: 'account_balance', // Kept: Matches "Finance"
-      },
-      {
-        id: 'storageReports',
-        title: 'Storage Reports',
-        type: 'item',
-        url: '/reports/storage',
-        icon: 'warehouse', // Changed: Matches "Storage"
-      },
-      {
-        id: 'hrReports',
-        title: 'HR Reports',
-        type: 'item',
-        url: '/reports/hr',
-        icon: 'people', // Kept: Matches "HR"
-      }
-    ]
-  },
+  // // ────────────────────────
+  // // Reports (stand-alone)
+  // // ────────────────────────
+  // {
+  //   id: 'reportsGroup',
+  //   title: 'Reports',
+  //   type: 'group',
+  //   role: [Role.Admin, Role.User],
+  //   children: [
+  //     {
+  //       id: 'productionReports',
+  //       title: 'Production Reports',
+  //       type: 'item',
+  //       url: '/reports/production',
+  //       icon: 'factory',
+  //       breadcrumbs: false
+  //     },
+  //     {
+  //       id: 'deliveryReports',
+  //       title: 'Delivery Reports',
+  //       type: 'item',
+  //       url: '/reports/deliveries',
+  //       icon: 'local_shipping',
+  //       breadcrumbs: false
+  //     },
+  //     {
+  //       id: 'financeReports',
+  //       title: 'Finance Reports',
+  //       type: 'item',
+  //       url: '/reports/finance',
+  //       icon: 'account_balance', // Kept: Matches "Finance"
+  //     },
+  //     {
+  //       id: 'storageReports',
+  //       title: 'Storage Reports',
+  //       type: 'item',
+  //       url: '/reports/storage',
+  //       icon: 'warehouse', // Changed: Matches "Storage"
+  //     },
+  //     {
+  //       id: 'hrReports',
+  //       title: 'HR Reports',
+  //       type: 'item',
+  //       url: '/reports/hr',
+  //       icon: 'people', // Kept: Matches "HR"
+  //     }
+  //   ]
+  // },
 
 
 ];
