@@ -29,6 +29,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { debounceTime, EMPTY, of, tap } from 'rxjs';
 import { SearchOperation } from 'src/app/shared/models/advanced-search/searchOperation';
 import { catchError } from 'rxjs/operators';
+import { OperationType } from '../../../../shared/models/operation-type.enum';
+import { deliveryType } from '../../../../shared/models/deleveryType';
+import { PaymentMethod } from '../../../../finance/models/financial-transaction';
+import { TransactionState } from '../../../../shared/models/OilTransaction';
 
 @Component({
   selector: 'app-supplier-payment-history',
@@ -88,7 +92,7 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
         tap((value) => {
           const { paymentMethod, oilPrice, oilQuantity } = this.paymentForm.value;
 
-          if (paymentMethod === 'oil' || paymentMethod === 'both') {
+          if (paymentMethod === PaymentMethod.oil || paymentMethod === PaymentMethod.both) {
             this.remainingAmount = this.unpaidAmount - (Number(oilPrice) * Number(oilQuantity || 0) + Number(value || 0));
           } else {
             this.remainingAmount = this.unpaidAmount - Number(value || 0);
@@ -160,20 +164,20 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
         tap((res: any) => {
           if (res?.data && res?.data?.length) {
             const oilTransaction = res?.data[0];
-            if (oilTransaction?.transactionState != 'COMPLETED') {
+            if (oilTransaction?.transactionState != TransactionState.COMPLETED) {
               this.transactionNotCompletedError = true;
               return;
             }
             if (Number(oilTransaction?.totalPrice) == Number(this.unpaidAmount)) {
               this.paymentForm.patchValue({
-                paymentMethod: 'oil',
+                paymentMethod: PaymentMethod.oil,
                 oilQuantity: oilTransaction?.quantityKg,
                 oilPrice: oilTransaction?.unitPrice
               });
               return;
             } else if (oilTransaction?.totalPrice < Number(this?.unpaidAmount)) {
               this.paymentForm.patchValue({
-                paymentMethod: 'both',
+                paymentMethod: PaymentMethod.both,
                 oilQuantity: oilTransaction?.quantityKg,
                 oilPrice: oilTransaction?.unitPrice,
                 amount: Number(this?.unpaidAmount) - Number(oilTransaction?.totalPrice)
@@ -205,14 +209,14 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
             const oilReception = res?.data;
             if (oilReception?.price == this?.unpaidAmount) {
               this.paymentForm.patchValue({
-                paymentMethod: 'oil',
+                paymentMethod: PaymentMethod.oil,
                 oilQuantity: oilReception?.oilQuantity,
                 oilPrice: oilReception?.unitPrice
               });
               return;
             } else {
               this.paymentForm.patchValue({
-                paymentMethod: 'both',
+                paymentMethod: PaymentMethod.both,
                 oilQuantity: oilReception?.oilQuantity,
                 oilPrice: oilReception?.unitPrice,
                 amount: Number(this?.unpaidAmount) - Number(oilReception?.price)
@@ -260,25 +264,25 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
 
   private processData() {
     // Check if the selected delivery type is OLIVE
-    if (this.selectedDelivery?.deliveryType == 'OLIVE') {
+    if (this.selectedDelivery?.deliveryType == deliveryType.OLIVE) {
       // Switch statement to handle different operation types
       switch (this.selectedDelivery?.operationType) {
         // If the operation type is SIMPLE_RECEPTION, call the processSimpleReception method
-        case 'SIMPLE_RECEPTION': {
+        case OperationType.SIMPLE_RECEPTION: {
           this.processSimpleReception();
           break;
         }
         // If the operation type is OLIVE_PURCHASE, call the purshase method
-        case 'OLIVE_PURCHASE': {
+        case OperationType.OLIVE_PURCHASE: {
           this.purshase();
           break;
         }
         // If the operation type is EXCHANGE, call the processExchange method
-        case 'EXCHANGE': {
+        case OperationType.EXCHANGE: {
           this.processExchange();
           break;
         }
-        case 'BASE': {
+        case OperationType.BASE: {
           this.processBase();
           break;
         }

@@ -1157,7 +1157,8 @@
     },
     "DIALOG": {
       "EXCHANGE": {
-        "TITLE_DESTINATION": "chose the Source storage unit to validate the transaction"
+        "TITLE_DESTINATION": "chose the destination storage unit to validate the transaction",
+        "TITLE_SOURCE": "Choisir une unité de stockage source pour valider le transaction"
       }
     },
     "FORM": {
@@ -1835,9 +1836,7 @@
     "PAID_AMOUNT": "Paid Amount",
     "PAID_DELIVERIES": "Paid Deliveries",
     "PAY": "Pay",
-    "PAYMENT": {
-      "NEEDTTRANSACTION": "Oil transaaction needs to be validated"
-    },
+    "PAYMENT": "Payment",
     "PAYMENT_HISTORY": "Payment History",
     "PAYMENT_METHOD": "Payment Method",
     "PAYMENT_SUCCESS": "Payment processed successfully",

@@ -121,9 +121,9 @@ export const dashboardConfig: DashboardConfig = {
         exportable: true
       },
       {
-        name: 'oilType.name',
+        name: 'oilType',
         label: 'Oil TYPE',
-        valuePath: 'oilVariety.name',
+        valuePath: 'name',
         attributeType: AttributeType.string,
         fieldType: FieldType.autocomplete,
         sortable: true,
@@ -149,6 +149,7 @@ export const dashboardConfig: DashboardConfig = {
           }
         },
         autoCompleteFilterAttributes: ['name']
+
       },
       {
         name: 'nextMaintenanceDate',

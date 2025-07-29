@@ -1,7 +1,9 @@
 export enum PaymentMethod {
   CASH = 'CASH',
   CHEQUE = 'CHEQUE',
-  TRANSFER = 'TRANSFER'
+  TRANSFER = 'TRANSFER',
+  oil='oil',
+  both='both',
 }
 
 export enum TransactionStatus {

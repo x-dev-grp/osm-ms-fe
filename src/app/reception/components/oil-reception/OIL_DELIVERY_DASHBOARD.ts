@@ -87,29 +87,33 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       filterable: true
     } /* Fournisseur & Localisation */,
     {
-      name: 'supplier.supplierInfo',
+      name: 'supplier',
       label: 'Fournisseur',
-      labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.SUPPLIER',
+      labelTranslatePath: 'RECEPTION_LIST.FIELDS.SUPPLIER',
       attributeType: AttributeType.object,
       fieldType: FieldType.autocomplete,
       exportable: true,
       dataTable: true,
       filterable: true,
-      valuePath: 'name',
-      valueAttributeType: AttributeType.string
+      valuePath: 'supplierInfo.name',
+      valueAttributeType: AttributeType.string,
+      filterAttribute: 'supplier.supplierInfo.name',
+      getOptionsUrl:'production/suppliers_type'
     },
     {
       name: 'region',
       label: 'Région',
-      labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.REGION',
+      labelTranslatePath: 'RECEPTION_LIST.FIELDS.REGION',
       attributeType: AttributeType.object,
-      fieldType: FieldType.text,
       exportable: true,
       dataTable: true,
       filterable: true,
-      valuePath: 'region.name',
-      valueAttributeType: AttributeType.string
-    } ,
+      fieldType: FieldType.autocomplete,
+      valuePath: 'name',
+      valueAttributeType: AttributeType.string,
+      filterAttribute: 'region.name',
+
+    },
     {
       name: 'poidsBrute',
       label: 'Poids brut (kg)',
@@ -148,26 +152,26 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
     {
       name: 'oilType',
       label: "Type d'huile",
-      labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.OIL_TYPE',
+      labelTranslatePath: 'RECEPTION_LIST.FIELDS.OIL_TYPE',
       attributeType: AttributeType.object,
-      fieldType: FieldType.text,
       exportable: true,
       dataTable: true,
       filterable: true,
-      valuePath: 'oilType.name',
-      valueAttributeType: AttributeType.string
+      valuePath: 'name',
+      valueAttributeType: AttributeType.string,
+      fieldType: FieldType.autocomplete,
     },
     {
       name: 'oilVariety',
       label: "Variété d'huile",
       labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.OIL_VARIETY',
       attributeType: AttributeType.object,
-      fieldType: FieldType.text,
       exportable: true,
       dataTable: true,
       filterable: true,
       valuePath: 'name',
-      valueAttributeType: AttributeType.string
+      valueAttributeType: AttributeType.string,
+      fieldType: FieldType.autocomplete,
     },
 
     /* Statut */

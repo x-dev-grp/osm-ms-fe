@@ -85,7 +85,7 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
       label: 'Type de fournisseur',
       labelTranslatePath: 'SUPPLIERS.TYPE',
       attributeType: AttributeType.object,
-      fieldType: FieldType.text,
+      fieldType: FieldType.autocomplete,
       exportable: true,
       dataTable: true,
       filterable: true,
@@ -97,12 +97,14 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
       label: 'Région',
       labelTranslatePath: 'SUPPLIERS.REGION',
       attributeType: AttributeType.object,
-      fieldType: FieldType.text,
+      fieldType: FieldType.autocomplete,
       exportable: true,
       dataTable: true,
       filterable: true,
       valuePath: 'name',
-      valueAttributeType: AttributeType.string
+      valueAttributeType: AttributeType.string,
+      filterAttribute: 'supplierInfo.region.name',
+
     }
   ],
 

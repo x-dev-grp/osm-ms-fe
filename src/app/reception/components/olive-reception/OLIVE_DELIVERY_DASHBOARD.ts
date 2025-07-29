@@ -99,15 +99,15 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
     {
       name: 'region',
       label: 'Région',
-      labelTranslatePath: 'DELIVERIES.FIELDS.REGION',
+      labelTranslatePath: 'RECEPTION_LIST.FIELDS.REGION',
       attributeType: AttributeType.object,
-      fieldType: FieldType.text,
       exportable: true,
       dataTable: true,
       filterable: true,
+      fieldType: FieldType.autocomplete,
       valuePath: 'name',
       valueAttributeType: AttributeType.string,
-      filterAttribute: 'region.name'
+      filterAttribute: 'region.name',
     },
     /* Poids */
     {
@@ -136,22 +136,21 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
     {
       name: 'oliveType',
       label: "Type d'olive",
-      labelTranslatePath: 'DELIVERIES.FIELDS.OLIVE_TYPE',
+      labelTranslatePath: 'RECEPTION_LIST.FIELDS.OLIVE_TYPE',
       attributeType: AttributeType.object,
-      fieldType: FieldType.text,
       exportable: true,
       dataTable: true,
       filterable: true,
       valuePath: 'name',
       valueAttributeType: AttributeType.string,
-      filterAttribute: 'oliveType.name'
+      fieldType: FieldType.autocomplete,
     },
     {
       name: 'oliveVariety',
       label: "Variété d'olive",
       labelTranslatePath: 'DELIVERIES.FIELDS.OLIVE_VARIETY',
       attributeType: AttributeType.object,
-      fieldType: FieldType.text,
+      fieldType: FieldType.autocomplete,
       exportable: true,
       dataTable: true,
       filterable: true,
@@ -164,7 +163,7 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
       name: 'operationType',
       label: 'Type de trituration',
       labelTranslatePath: 'DELIVERIES.FIELDS.OPERATION_TYPE',
-      attributeType: AttributeType.string,
+      attributeType: AttributeType.enum,
       fieldType: FieldType.select,
       exportable: true,
       dataTable: true,

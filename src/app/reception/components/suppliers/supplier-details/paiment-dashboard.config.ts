@@ -176,28 +176,31 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       filterable: true
     },
     {
-      name: 'supplier.supplierInfo',
+      name: 'supplier',
       label: 'Fournisseur',
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.SUPPLIER',
       attributeType: AttributeType.object,
-      fieldType: FieldType.text,
+      fieldType: FieldType.autocomplete,
       exportable: true,
       dataTable: true,
-      filterable: false,
-      valuePath: 'name',
-      valueAttributeType: AttributeType.string
+      filterable: true,
+      valuePath: 'supplierInfo.name',
+      valueAttributeType: AttributeType.string,
+      filterAttribute: 'supplier.supplierInfo.name',
+      getOptionsUrl:'production/suppliers_type'
     },
     {
       name: 'region',
       label: 'Région',
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.REGION',
       attributeType: AttributeType.object,
-      fieldType: FieldType.text,
       exportable: true,
       dataTable: true,
       filterable: true,
+      fieldType: FieldType.autocomplete,
       valuePath: 'name',
-      valueAttributeType: AttributeType.string
+      valueAttributeType: AttributeType.string,
+      filterAttribute: 'region.name',
     },
     {
       name: 'poidsNet',
@@ -214,13 +217,13 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       name: 'oilType',
       label: "Type d'huile",
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.OIL_TYPE',
-      attributeType: AttributeType.string,
-      fieldType: FieldType.select,
+      attributeType: AttributeType.object,
       exportable: true,
       dataTable: true,
       filterable: true,
       valuePath: 'name',
-      valueAttributeType: AttributeType.enum
+      valueAttributeType: AttributeType.string,
+      fieldType: FieldType.autocomplete,
     },
     {
       name: 'oilQuantity',
@@ -238,12 +241,12 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       label: "Type d'olive",
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.OLIVE_TYPE',
       attributeType: AttributeType.object,
-      fieldType: FieldType.text,
       exportable: true,
       dataTable: true,
       filterable: true,
       valuePath: 'name',
-      valueAttributeType: AttributeType.string
+      valueAttributeType: AttributeType.string,
+      fieldType: FieldType.autocomplete,
     },
     {
       name: 'operationType',

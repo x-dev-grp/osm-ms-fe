@@ -13,6 +13,7 @@ import { saveAs } from 'file-saver';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { environment } from '../../../../../environments/environment';
+import { TranslateService } from '@ngx-translate/core';
 export interface DashboardState {
   endpoint: string;
   data: SearchResponse;
@@ -75,7 +76,7 @@ export const DashboardStore = signalStore(
     searchTrigger$: store.searchTrigger$,
     fileName:store.fileName
   })),
-  withMethods((store, _searchService = inject(AdvancedSearchService),_http=inject(HttpClient),_baseService=inject(BaseService)) => {
+  withMethods((store, _searchService = inject(AdvancedSearchService),_http=inject(HttpClient),_baseService=inject(BaseService),translate=inject(TranslateService)) => {
     return {
       initialize(endpoint: string, allFields: Field[], searchData?: SearchData,fileName?:string,filterTenant?:boolean): void {
         patchState(store, {
@@ -108,10 +109,10 @@ export const DashboardStore = signalStore(
                } []= store.checkedExportFields().map((field:any) =>{
             return {
                 name: field.field.fieldType==FieldType.autocomplete? field.field.name+"."+field.field.valuePath : field.field.name,
-                label: field.field.exportLabel??field.field.label,
-                enumValue : field.field.attributeType== 'enum' ?true : false,
+                label: field.field.exportLabel??translate.instant(field.field.labelTranslatePath),
+                enumValue : field.field.attributeType== 'enum' ? true : false,
                 enumValues:  field.field.options?.reduce((acc:any, option:any) => {
-                    acc[option.value] = option.label;
+                    acc[option.value] = translate.instant(option.labelTranslatePath);
                     return acc;
                 }, {}) || null
             }
