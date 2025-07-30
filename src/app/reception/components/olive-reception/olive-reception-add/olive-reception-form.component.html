@@ -72,23 +72,23 @@
         <div class="row">
           <div class="col-md-4">
             <mat-form-field appearance="outline" class="w-100 m-b-10">
-              <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.SUPPLIER') }}</mat-label>
+              <mat-label>{{ 'OLIVE_RECEPTION.FORM.FIELDS.SUPPLIER' | translate }}</mat-label>
+
               <input
                 (blur)="validateSupplier()"
                 [matAutocomplete]="supplierAuto"
-                [placeholder]="translate.instant('OLIVE_RECEPTION.FORM.PLACEHOLDERS.SEARCH_SUPPLIER')"
                 formControlName="supplier"
+                [value]="displayFn(receptionForm.get('supplier')?.value)"
                 matInput
                 required
               />
+
               <mat-autocomplete #supplierAuto="matAutocomplete" [displayWith]="displayFn">
-                <mat-option *ngFor="let supplier of filteredSuppliers | async" [value]="supplier">
-                  {{ supplier.supplierInfo.name + " " + supplier.supplierInfo.lastname }}
+                <mat-option *ngFor="let supplier of suppliers" [value]="supplier">
+                  {{ supplier.supplierInfo.name + ' ' + supplier.supplierInfo.lastname }}
                 </mat-option>
               </mat-autocomplete>
-              <mat-error *ngIf="receptionForm.get('supplier')?.hasError('required')">
-                {{ translate.instant('OLIVE_RECEPTION.FORM.VALIDATION.REQUIRED') }}
-              </mat-error>
+
             </mat-form-field>
           </div>
              <div class="col-md-4 w-100 m-b-10 ">

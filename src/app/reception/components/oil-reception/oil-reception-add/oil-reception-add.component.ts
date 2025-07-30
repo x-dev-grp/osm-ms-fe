@@ -1,29 +1,36 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { BaseType } from '../../../../shared/models/base-type';
-import { SupplierType } from '../../../../shared/models/supplier-type';
-import { UnifiedDelivery } from '../../../../shared/models/UnifiedDelivery';
-import { GenericTypeService } from '../../../../shared/services/generic-type.service';
-import { SupplierTypeService } from '../../../../shared/services/supplier.service';
-import { UnifiedDeliveryService } from '../../../../shared/services/delivery.service';
-import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { CardComponent } from '../../../../@theme/components/card/card.component';
-import { MatIcon } from '@angular/material/icon';
-import { StorageUnitDtoService } from '../../../../shared/services/storage.service';
-import { OliveLotStatus } from '../../../../shared/models/OliveLotStatus';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { OperationType } from '../../../../shared/models/operation-type.enum';
-import { BaseTypeComponent } from '../../../../shared/modules/base-type/base-type.component';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {MatButtonModule} from '@angular/material/button';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {BaseType} from '../../../../shared/models/base-type';
+import {SupplierType} from '../../../../shared/models/supplier-type';
+import {UnifiedDelivery} from '../../../../shared/models/UnifiedDelivery';
+import {GenericTypeService} from '../../../../shared/services/generic-type.service';
+import {SupplierTypeService} from '../../../../shared/services/supplier.service';
+import {UnifiedDeliveryService} from '../../../../shared/services/delivery.service';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators
+} from '@angular/forms';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {CardComponent} from '../../../../@theme/components/card/card.component';
+import {MatIcon} from '@angular/material/icon';
+import {StorageUnitDtoService} from '../../../../shared/services/storage.service';
+import {OliveLotStatus} from '../../../../shared/models/OliveLotStatus';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
+import {OperationType} from '../../../../shared/models/operation-type.enum';
+import {BaseTypeComponent} from '../../../../shared/modules/base-type/base-type.component';
 
 // Validator for net weight not exceeding gross weight
 const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | null => {
@@ -63,16 +70,14 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
   isEditing = false;
   errorMessage: string | null = null;
   receptionForm: FormGroup;
-  regions: BaseType[] = [];
   suppliers: SupplierType[] = [];
-  oilCategories: BaseType[] = [];
-  oilTypes: BaseType[] = [];
   oilVariety: BaseType[] = [];
   deliveries: UnifiedDelivery[] = [];
   operationTypes: { value: OperationType; label: string }[] = [];
   private pendingCalls = 0; // Compteur de requêtes HTTP en cours
   private subscriptions: Subscription[] = [];
   private deliveryId: string | null;
+  private pendingEditReception: UnifiedDelivery | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -119,6 +124,11 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     const suppliersSub = this.supplierSrv.getAllSuppliers().subscribe({
       next: (res) => {
         this.suppliers = res.success ? res.data : [];
+        // Si on a une édition en attente, patcher le formulaire maintenant
+        if (this.pendingEditReception) {
+          this.patchForm(this.pendingEditReception);
+          this.pendingEditReception = null;
+        }
       },
       error: () => {
         this.showToast('Erreur chargement fournisseurs');
@@ -151,7 +161,12 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
         next: (res) => {
           if (res.success && res.data) {
             const deliveryObj = Array.isArray(res.data) ? res.data[0] : res.data;
-            this.patchForm(deliveryObj);
+            // Si les suppliers ne sont pas encore chargés, stocke temporairement
+            if (!this.suppliers.length) {
+              this.pendingEditReception = deliveryObj;
+            } else {
+              this.patchForm(deliveryObj);
+            }
           } else {
             this.errorMessage = 'Erreur lors du chargement de la réception.';
             this.router.navigate(['/reception-huile']);
@@ -310,6 +325,10 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
 
   private patchForm(d: UnifiedDelivery): void {
     const parse = (v: string | Date | null): Date | null => (v ? new Date(v) : null);
+    const matchedSupplier = this.suppliers.find(s => s.id?.toString() === d.supplier?.id?.toString());
+
+    console.log('patchForm supplier:', d.supplier);
+    console.log('matched:', this.suppliers.find(s => s.id === d.supplier?.id));
     this.receptionForm.patchValue({
       id: this.isEditing ? this.deliveryId : null,
       deliveryType: d.deliveryType,
@@ -318,7 +337,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       parcel: d.parcel,
       deliveryDate: parse(d.deliveryDate),
       region: d.region || null,
-      supplier: this.suppliers.find((s) => s.id === d.supplier?.id) || null,
+      supplier: matchedSupplier || null,
       matriculeCamion: d.matriculeCamion,
       etatCamion: d.etatCamion,
       poidsBrute: d.poidsBrute,

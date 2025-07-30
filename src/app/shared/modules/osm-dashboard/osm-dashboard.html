@@ -128,7 +128,10 @@
                 <mat-menu #menu="matMenu">
 
                   <ng-container *ngFor="let action of record?.actions">
-                    <button (click)="actionApply(action, record)" mat-menu-item>
+                    <button
+                      *ngIf="!config()?.filteredActions?.includes(action)"
+                      (click)="actionApply(action, record)"
+                      mat-menu-item>
                       <span>{{ 'OSM_DASHBOARD.ACTIONS.' + action | translate }}</span>
                       <mat-icon>{{ actions.get(action) }}</mat-icon>
                     </button>

@@ -63,15 +63,25 @@
             <div class="col-md-4">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
                 <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.SUPPLIER' | translate }}</mat-label>
-                <input (blur)="validateSupplier()" [matAutocomplete]="supplierAuto" formControlName="supplier" matInput
-                       required />
+
+                <input
+                  (blur)="validateSupplier()"
+                  [matAutocomplete]="supplierAuto"
+                  [value]="displayFn(receptionForm.get('supplier')?.value)"
+                  formControlName="supplier"
+                  matInput
+                  required
+                />
+
                 <mat-autocomplete #supplierAuto="matAutocomplete" [displayWith]="displayFn">
                   <mat-option *ngFor="let supplier of suppliers" [value]="supplier">
-                    {{ supplier.supplierInfo.name + " " + supplier.supplierInfo.lastname }}
+                    {{ supplier.supplierInfo.name + ' ' + supplier.supplierInfo.lastname }}
                   </mat-option>
                 </mat-autocomplete>
+
               </mat-form-field>
             </div>
+
             <div class="col-md-4 w-100 m-b-10 ">
                 <base-type
                   [formControl]="receptionForm?.controls?.region"
