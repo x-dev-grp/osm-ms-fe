@@ -22,7 +22,7 @@ export class PdfGeneratorService {
   private readonly _fontStyleItalic = 'italic';
 
   constructor(
-    private translationServiec: TranslateService,
+    private translationService: TranslateService,
     private _companyProfileService: CompanyProfileService,
   ) {
     this.loadProfile();
@@ -63,26 +63,26 @@ export class PdfGeneratorService {
       doc.rect(centerX, currentY, centerWidth, headerHeight);
       doc.setFontSize(12);
       doc.setFont(this._fontName, fontStyle1);
-      doc.text(this.translationServiec.instant('PDF.FORM'), centerX + centerWidth / 2, currentY + 7, { align: center });
+      doc.text(this.translationService.instant('PDF.FORM'), centerX + centerWidth / 2, currentY + 7, {align: center});
       doc.setFontSize(10);
       doc.setFont(this._fontName, this._fontStyleItalic);
-      doc.text(this.translationServiec.instant(config.title), centerX + centerWidth / 2, currentY + 14, { align: center });
+      doc.text(this.translationService.instant(config.title), centerX + centerWidth / 2, currentY + 14, {align: center});
 
       // Droite
       const rightX = centerX + centerWidth;
       const rowHeight = 5;
       const infoWidth = pageWidth - rightX - marginLeft;
       const infoRows = [
-        { label: this.translationServiec.instant('PDF.REFERENCE'), value: config.reference },
+        {label: this.translationService.instant('PDF.REFERENCE'), value: config.reference},
         {
-          label: this.translationServiec.instant('PDF.REVISION'),
+          label: this.translationService.instant('PDF.REVISION'),
           value: '00'
         },
         {
-          label: this.translationServiec.instant('PDF.DATE'),
+          label: this.translationService.instant('PDF.DATE'),
           value: documentDate
         },
-        { label: this.translationServiec.instant('PDF.PAGE'), value: '1/1' }
+        {label: this.translationService.instant('PDF.PAGE'), value: '1/1'}
       ];
 
       infoRows.forEach((row, index) => {
@@ -98,7 +98,7 @@ export class PdfGeneratorService {
       // Numéro
       doc.setFont(this._fontName, fontStyle1);
       doc.setFontSize(10);
-      doc.text(this.translationServiec.instant('PDF.NUMBER_PLACEHOLDER'), pageWidth / 2, currentY, { align: center });
+      doc.text(this.translationService.instant('PDF.NUMBER_PLACEHOLDER'), pageWidth / 2, currentY, {align: center});
       currentY += 15;
 
       // Infos générales
@@ -106,7 +106,12 @@ export class PdfGeneratorService {
         doc.setFontSize(12);
         doc.setFont(this._fontName, fontStyle);
         config.generalInfo.forEach((info) => {
-          doc.text(`${this.translationServiec.instant(info.label)} : ${info.value}`, marginLeft, currentY);
+          let translatedValue = info.value;
+          // Si la valeur commence par 'PDF.', c'est une clé de traduction
+          if (info.value.startsWith('PDF.')) {
+            translatedValue = this.translationService.instant(info.value);
+          }
+          doc.text(`${this.translationService.instant(info.label)} : ${translatedValue}`, marginLeft, currentY);
           currentY += 10;
         });
         currentY += 15;
@@ -122,7 +127,7 @@ export class PdfGeneratorService {
 
         // Split & calcul des lignes pour les labels
         const splitLabels: string[][] = config.fields.map((field) =>
-          doc.splitTextToSize(this.translationServiec.instant(field.label), colWidth - 4)
+          doc.splitTextToSize(this.translationService.instant(field.label), colWidth - 4)
         );
         const lineHeights = splitLabels.map((lines) => lines.length);
         const maxLines = Math.max(...lineHeights);
@@ -191,7 +196,7 @@ export class PdfGeneratorService {
 
         config.footerInfo.slice(0, maxItemsPerRow).forEach((footerItem, index) => {
           const x = marginLeft + index * spacing;
-          doc.text(`${this.translationServiec.instant(footerItem.label)} :`, x, footerY);
+          doc.text(`${this.translationService.instant(footerItem.label)} :`, x, footerY);
           if (footerItem.placeholder) {
             doc.setFontSize(8);
             doc.setTextColor(150);
@@ -232,9 +237,10 @@ export class PdfGeneratorService {
   }
 
   // pdf-generator.service.ts
-  generateReceptionPdf(config: PdfConfig): void {
+  generatePdf(config: PdfConfig): void {
     this.generatePdfDocument(config);
   }
+
 
   private loadProfile(): void {
     this._companyProfileService.getProfile().subscribe(

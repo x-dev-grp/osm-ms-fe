@@ -1,9 +1,5 @@
-import {
-  AttributeType,
-  DashboardConfig,
-  FieldType
-} from '../../shared/modules/osm-dashboard/models/dashboard-config';
-import { TransactionType, TransactionState } from '../../shared/models/OilTransaction';
+import {AttributeType, DashboardConfig, FieldType} from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import {TransactionState, TransactionType} from '../../shared/models/OilTransaction';
 
 export const OIL_TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
   icon: 'swap_horiz',
@@ -45,21 +41,7 @@ export const OIL_TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
         { value: TransactionType.SALE, label: 'Vente', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.SALE' }
       ]
     },
-    {
-      name: 'transactionState',
-      label: 'État de la transaction',
-      labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.FIELDS.TRANSACTION_STATE',
-      attributeType: AttributeType.enum,
-      fieldType: FieldType.select,
-      exportable: true,
-      sortable: true,
-      dataTable: true,
-      filterable: true,
-      options: [
-        { value: TransactionState.PENDING, label: 'En attente', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.STATUS.PENDING' },
-        { value: TransactionState.COMPLETED, label: 'Terminé', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.STATUS.COMPLETED' }
-      ]
-    },
+
     {
       name: 'storageUnitSource.name',
       label: 'Unité source',
@@ -125,6 +107,29 @@ export const OIL_TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
       sortable: true,
       dataTable: true,
       filterable: true
+    },
+    {
+      name: 'transactionState',
+      label: 'État de la transaction',
+      labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.FIELDS.TRANSACTION_STATE',
+      attributeType: AttributeType.enum,
+      fieldType: FieldType.select,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true,
+      options: [
+        {
+          value: TransactionState.PENDING,
+          label: 'En attente',
+          labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.STATUS.PENDING'
+        },
+        {
+          value: TransactionState.COMPLETED,
+          label: 'Terminé',
+          labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.STATUS.COMPLETED'
+        }
+      ]
     },
 
   ],

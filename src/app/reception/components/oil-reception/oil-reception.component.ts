@@ -1,4 +1,4 @@
-import {AfterViewInit,Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {MatButtonModule} from '@angular/material/button';
 import {MatTableModule} from '@angular/material/table';
@@ -36,9 +36,9 @@ import {TypeCategory} from '../../../shared/models/type-category.enum';
 import {SupplierType} from '../../../shared/models/supplier-type';
 import {SupplierTypeService} from '../../../shared/services/supplier.service';
 
-import { PdfGeneratorService } from '../../../shared/services/pdf-generator.service';
-import { OIL_DELIVERY_DASHBOARD } from './OIL_DELIVERY_DASHBOARD';
-import { AppParameterService } from '../../../shared/services/AppParameterService';
+import {PdfGeneratorService} from '../../../shared/services/pdf-generator.service';
+import {OIL_DELIVERY_DASHBOARD} from './OIL_DELIVERY_DASHBOARD';
+import {AppParameterService} from '../../../shared/services/AppParameterService';
 import {getOilPdfConfig} from "./oil-pdf.config";
 
 /* ──────────────────────────────────────────────────────────── */
@@ -232,7 +232,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
 
   generateBonReception(delivery: UnifiedDelivery): void {
     const config = getOilPdfConfig(delivery);
-    this.pdfService.generateReceptionPdf(config);
+    this.pdfService.generatePdf(config);
   }
 
   /* ——— data loading & table helpers ——— */

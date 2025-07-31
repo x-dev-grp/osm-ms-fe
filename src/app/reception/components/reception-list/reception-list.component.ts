@@ -55,7 +55,7 @@ export class ReceptionListComponent {
 
   generateBonProduction(delivery: UnifiedDelivery): void {
     const config = getProductionPdfConfig(delivery);
-    this.pdfGeneratorService.generateReceptionPdf(config);
+    this.pdfGeneratorService.generatePdf(config);
   }
 
   viewDelivery(row: UnifiedDelivery): void {
