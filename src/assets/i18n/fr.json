@@ -443,10 +443,10 @@
       "DELIVERY_TYPE": "Type de livraison",
       "GLOBAL_LOT_NUMBER": "N° Lot Global",
       "GROSS_WEIGHT": "Poids brut (KG)",
-      "LOT_NUMBER": "N° Lot",
       "LOT_OLIVE_NUMBER": "Referance lot number",
       "NET_WEIGHT": "Poids net (KG)",
       "OIL_TYPE": "Type d'huile",
+      "OLIVE_LOT_NUMBER": "N° Lot d'olive",
       "OLIVE_QUANTITY": "Quantité d'olives",
       "OLIVE_TYPE": "Type d'olive",
       "OLIVE_VARIETY": "Variété d'olive",
@@ -565,7 +565,7 @@
     "OLIVE_TITLE": "Livraisons d'Olives",
     "OPERATION_TYPE": {
       "BASE": "Base",
-      "EXCHANGE": "Échange",
+      "INTERNAL_RECEPTION": "réception interne",
       "OIL_PURCHASE": "Achat d'huile",
       "OLIVE_PURCHASE": "Achat d'olive",
       "PAYMENT": "Paiement",
@@ -771,12 +771,86 @@
       "DASHBOARD": "Tableau de bord admin",
       "TITLE": "Administration"
     },
+    "CUSTOMERS": {
+      "ACTIONS": {
+        "BACK": "Retour aux clients",
+        "CANCEL": "Annuler",
+        "CREATE": "Créer un client",
+        "EDIT": "Modifier",
+        "SAVE": "Enregistrer",
+        "UPDATE": "Mettre à jour"
+      },
+      "ADD_TITLE": "Ajouter un nouveau client",
+      "CATEGORIES": {
+        "BUSINESS": "Entreprise",
+        "INDIVIDUAL": "Individuel"
+      },
+      "DETAILS_TITLE": "Détails du client",
+      "EDIT_TITLE": "Modifier le client",
+      "FIELDS": {
+        "ACTIVE": "Actif",
+        "ADDRESS": "Adresse",
+        "CATEGORY": "Catégorie",
+        "CONTACT_PERSON": "Personne de contact",
+        "COUNTRY": "Pays",
+        "CUSTOMER_LAST_NAME": "Prénom",
+        "CUSTOMER_NAME": "Nom",
+        "EMAIL": "Email",
+        "FAX": "Fax",
+        "MATRICULE_FISCAL": "Matricule Fiscal",
+        "MOBILE": "Mobile",
+        "NOTES": "Notes",
+        "NUM_CIN": "Numéro CIN",
+        "PHONE": "Téléphone",
+        "POSTAL_CODE": "Code Postal"
+      },
+      "MESSAGES": {
+        "DELETE_SUCCESS": "Client supprimé avec succès",
+        "ERROR_DELETING": "Erreur lors de la suppression du client",
+        "ERROR_LOADING": "Erreur lors du chargement des détails du client",
+        "ERROR_SAVING": "Erreur lors de l'enregistrement du client",
+        "ERROR_UPDATING": "Erreur lors de la mise à jour du client",
+        "LOADING": "Chargement des détails du client...",
+        "NOT_FOUND": "Client introuvable",
+        "NOT_FOUND_DESC": "Le client demandé n'a pas pu être trouvé.",
+        "SAVE_SUCCESS": "Client enregistré avec succès",
+        "UPDATE_SUCCESS": "Client mis à jour avec succès"
+      },
+      "PLACEHOLDERS": {
+        "ADDRESS": "Entrez l'adresse",
+        "CONTACT_PERSON": "Entrez la personne de contact",
+        "COUNTRY": "Entrez le pays",
+        "CUSTOMER_LAST_NAME": "Entrez le prénom du client",
+        "CUSTOMER_NAME": "Entrez le nom du client",
+        "EMAIL": "Entrez l'adresse email",
+        "FAX": "Entrez le numéro de fax",
+        "MATRICULE_FISCAL": "Entrez le matricule fiscal",
+        "MOBILE": "Entrez le numéro mobile",
+        "NOTES": "Entrez des notes supplémentaires",
+        "NUM_CIN": "Entrez le numéro CIN",
+        "PHONE": "Entrez le numéro de téléphone",
+        "POSTAL_CODE": "Entrez le code postal"
+      },
+      "SECTIONS": {
+        "ADDITIONAL_INFO": "Informations supplémentaires",
+        "ADDRESS_INFO": "Informations d'adresse",
+        "BASIC_INFO": "Informations de base",
+        "CONTACT_INFO": "Informations de contact"
+      },
+      "STATUS": {
+        "ACTIVE": "Actif",
+        "INACTIVE": "Inactif"
+      },
+      "TITLE": "Clients"
+    },
     "FINANCE": {
       "BANK_MANAGEMENT": "Gestion des Comptes Bancaires",
+      "CUSTOMERS": "Clients",
       "EXPENSES": "Dépenses",
       "OIL_CREDIT": "Crédit d'Huile",
       "OIL_TRANSACTIONS": "Transactions d'Huile",
-      "TITLE": "Finance & Comptabilité"
+      "TITLE": "Finance & Comptabilité",
+      "TRANSACTIONS": "Transactions Financières"
     },
     "HOME": {
       "DASHBOARD": {
@@ -1171,7 +1245,7 @@
         "LOAN": "Prêt",
         "RECEPTION_IN": "Réception Entrée",
         "SALE": "Vente",
-        "TRANSFER_IN": "Transfert Entrée"
+        "TRANSFER_IN": "Transfert interne"
       }
     },
     "DIALOG": {
@@ -1897,6 +1971,104 @@
   "Sticky Action Bar": "Barre d'action collante",
   "Student": "Étudiant",
   "TAB_TITLE": "Configuration Générale",
+  "TRANSACTIONS": {
+    "ACTIONS": {
+      "APPROVE": "Approuver",
+      "DELETE": "Supprimer",
+      "DUPLICATE": "Dupliquer",
+      "EDIT": "Modifier",
+      "EXPORT": "Exporter",
+      "PRINT": "Imprimer",
+      "REJECT": "Rejeter",
+      "VIEW": "Voir"
+    },
+    "CURRENCIES": {
+      "EUR": "Euro",
+      "TND": "Dinar Tunisien",
+      "USD": "Dollar US"
+    },
+    "DIRECTIONS": {
+      "INBOUND": "Entrée",
+      "INTERNAL": "Interne",
+      "OUTBOUND": "Sortie"
+    },
+    "FIELDS": {
+      "AMOUNT": "Montant",
+      "APPROVAL_DATE": "Date d'Approbation",
+      "APPROVED": "Approuvé",
+      "APPROVED_BY": "Approuvé par",
+      "BANK_ACCOUNT": "Compte Bancaire",
+      "CHECK_NUMBER": "Numéro de Chèque",
+      "CREATED_BY": "Créé par",
+      "CREATED_DATE": "Date de Création",
+      "CURRENCY": "Devise",
+      "CUSTOMER": "Client",
+      "DESCRIPTION": "Description",
+      "DIRECTION": "Direction",
+      "INVOICE_REFERENCE": "Référence Facture",
+      "LOT_NUMBER": "Numéro de Lot",
+      "PAYMENT_METHOD": "Méthode de Paiement",
+      "RECEIPT_REFERENCE": "Référence Reçu",
+      "SUPPLIER": "Fournisseur",
+      "TRANSACTION_DATE": "Date de Transaction",
+      "TRANSACTION_TYPE": "Type de Transaction"
+    },
+    "MESSAGES": {
+      "APPROVE_ERROR": "Erreur lors de l'approbation",
+      "APPROVE_SUCCESS": "Transaction approuvée avec succès",
+      "CREATE_ERROR": "Erreur lors de la création",
+      "CREATE_SUCCESS": "Transaction créée avec succès",
+      "DELETE_ERROR": "Erreur lors de la suppression",
+      "DELETE_SUCCESS": "Transaction supprimée avec succès",
+      "DUPLICATE_SUCCESS": "Transaction dupliquée avec succès",
+      "LOAD_ERROR": "Erreur lors du chargement des transactions",
+      "REJECT_ERROR": "Erreur lors du rejet",
+      "REJECT_SUCCESS": "Transaction rejetée avec succès",
+      "UPDATE_ERROR": "Erreur lors de la mise à jour",
+      "UPDATE_SUCCESS": "Transaction mise à jour avec succès"
+    },
+    "PAYMENT_METHODS": {
+      "BANK_TRANSFER": "Virement Bancaire",
+      "CASH": "Espèces",
+      "CHECK": "Chèque",
+      "CREDIT_CARD": "Carte de Crédit",
+      "DEBIT_CARD": "Carte de Débit",
+      "MOBILE_PAYMENT": "Paiement Mobile",
+      "OIL_CREDIT": "Crédit Huile"
+    },
+    "STATUS": {
+      "APPROVED": "Approuvé",
+      "PENDING": "En attente",
+      "REJECTED": "Rejeté"
+    },
+    "SUMMARY": {
+      "APPROVED_TRANSACTIONS": "Transactions Approuvées",
+      "BALANCE": "Solde",
+      "PENDING_TRANSACTIONS": "Transactions en Attente",
+      "TOTAL_AMOUNT": "Montant Total",
+      "TOTAL_INBOUND": "Total Entrées",
+      "TOTAL_OUTBOUND": "Total Sorties",
+      "TOTAL_TRANSACTIONS": "Total Transactions"
+    },
+    "TITLE": "Transactions Financières",
+    "TYPES": {
+      "CHECK_DEPOSIT": "Dépôt de Chèque",
+      "CHECK_PAYMENT": "Paiement par Chèque",
+      "CREDIT": "Crédit",
+      "DEBIT": "Débit",
+      "DEPOSIT": "Dépôt",
+      "EXPENSE": "Dépense",
+      "INTERNAL_TRANSFER": "Transfert Interne",
+      "LOAN": "Prêt",
+      "OIL_PURCHASE": "Achat d'Huile",
+      "OIL_SALE": "Vente d'Huile",
+      "PAYMENT": "Paiement",
+      "PURCHASE": "Achat",
+      "SUPPLIER_CREDIT": "Crédit Fournisseur",
+      "SUPPLIER_PAYMENT": "Paiement Fournisseur",
+      "WITHDRAWAL": "Retrait"
+    }
+  },
   "Table": "Tableau",
   "Teacher": "Enseignant",
   "Ticket": "Ticket",

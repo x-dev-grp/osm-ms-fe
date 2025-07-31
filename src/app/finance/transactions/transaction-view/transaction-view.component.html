@@ -1,0 +1,85 @@
+<div class="transaction-view-container">
+  <div *ngIf="loading" class="loading">
+    Chargement...
+  </div>
+  
+  <div *ngIf="!loading && transaction" class="transaction-details">
+    <h2>Détails de la Transaction</h2>
+    
+    <div class="transaction-info">
+      <div class="info-row">
+        <span class="label">Type:</span>
+        <span class="value">{{ transaction.transactionType }}</span>
+      </div>
+      
+      <div class="info-row">
+        <span class="label">Direction:</span>
+        <span class="value">{{ transaction.direction }}</span>
+      </div>
+      
+      <div class="info-row">
+        <span class="label">Montant:</span>
+        <span class="value">{{ transaction.amount }} {{ transaction.currency }}</span>
+      </div>
+      
+      <div class="info-row">
+        <span class="label">Méthode de Paiement:</span>
+        <span class="value">{{ transaction.paymentMethod }}</span>
+      </div>
+      
+      <div class="info-row" *ngIf="transaction.description">
+        <span class="label">Description:</span>
+        <span class="value">{{ transaction.description }}</span>
+      </div>
+      
+      <div class="info-row" *ngIf="transaction.customer">
+        <span class="label">Client:</span>
+        <span class="value">{{ transaction.customer.customerName }} {{ transaction.customer.customerLastName }}</span>
+      </div>
+      
+      <div class="info-row" *ngIf="transaction.supplierId">
+        <span class="label">Fournisseur:</span>
+        <span class="value">{{ transaction.supplierId.id }}</span>
+      </div>
+      
+      <div class="info-row" *ngIf="transaction.lotNumber">
+        <span class="label">Numéro de Lot:</span>
+        <span class="value">{{ transaction.lotNumber }}</span>
+      </div>
+      
+      <div class="info-row" *ngIf="transaction.invoiceReference">
+        <span class="label">Référence Facture:</span>
+        <span class="value">{{ transaction.invoiceReference }}</span>
+      </div>
+      
+      <div class="info-row" *ngIf="transaction.receiptReference">
+        <span class="label">Référence Reçu:</span>
+        <span class="value">{{ transaction.receiptReference }}</span>
+      </div>
+      
+      <div class="info-row">
+        <span class="label">Date de Transaction:</span>
+        <span class="value">{{ transaction.transactionDate | date:'dd/MM/yyyy HH:mm' }}</span>
+      </div>
+      
+      <div class="info-row">
+        <span class="label">Approuvé:</span>
+        <span class="value">{{ transaction.approved ? 'Oui' : 'Non' }}</span>
+      </div>
+      
+      <div class="info-row" *ngIf="transaction.approvedBy">
+        <span class="label">Approuvé par:</span>
+        <span class="value">{{ transaction.approvedBy }}</span>
+      </div>
+      
+      <div class="info-row" *ngIf="transaction.approvalDate">
+        <span class="label">Date d'Approbation:</span>
+        <span class="value">{{ transaction.approvalDate | date:'dd/MM/yyyy HH:mm' }}</span>
+      </div>
+    </div>
+  </div>
+  
+  <div *ngIf="!loading && !transaction" class="not-found">
+    Transaction non trouvée
+  </div>
+</div> 

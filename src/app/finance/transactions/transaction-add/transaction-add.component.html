@@ -1,0 +1,104 @@
+<div class="transaction-add-container">
+  <div class="form-header">
+    <h2>{{ isEditMode ? 'Modifier la Transaction' : 'Nouvelle Transaction' }}</h2>
+  </div>
+
+  <form [formGroup]="transactionForm" (ngSubmit)="onSubmit()" class="transaction-form">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="transactionType">Type de Transaction *</label>
+        <select id="transactionType" formControlName="transactionType" class="form-control">
+          <option value="">Sélectionner un type</option>
+          <option *ngFor="let type of transactionTypes" [value]="type">{{ type }}</option>
+        </select>
+        <div *ngIf="transactionForm.get('transactionType')?.invalid && transactionForm.get('transactionType')?.touched" class="error-message">
+          Le type de transaction est requis
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="direction">Direction *</label>
+        <select id="direction" formControlName="direction" class="form-control">
+          <option value="">Sélectionner une direction</option>
+          <option *ngFor="let direction of transactionDirections" [value]="direction">{{ direction }}</option>
+        </select>
+        <div *ngIf="transactionForm.get('direction')?.invalid && transactionForm.get('direction')?.touched" class="error-message">
+          La direction est requise
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="amount">Montant *</label>
+        <input type="number" id="amount" formControlName="amount" class="form-control" step="0.01" min="0">
+        <div *ngIf="transactionForm.get('amount')?.invalid && transactionForm.get('amount')?.touched" class="error-message">
+          Le montant est requis et doit être positif
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="currency">Devise</label>
+        <select id="currency" formControlName="currency" class="form-control">
+          <option *ngFor="let currency of currencies" [value]="currency">{{ currency }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="paymentMethod">Méthode de Paiement *</label>
+        <select id="paymentMethod" formControlName="paymentMethod" class="form-control">
+          <option value="">Sélectionner une méthode</option>
+          <option *ngFor="let method of paymentMethods" [value]="method">{{ method }}</option>
+        </select>
+        <div *ngIf="transactionForm.get('paymentMethod')?.invalid && transactionForm.get('paymentMethod')?.touched" class="error-message">
+          La méthode de paiement est requise
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="transactionDate">Date de Transaction *</label>
+        <input type="date" id="transactionDate" formControlName="transactionDate" class="form-control">
+        <div *ngIf="transactionForm.get('transactionDate')?.invalid && transactionForm.get('transactionDate')?.touched" class="error-message">
+          La date de transaction est requise
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" formControlName="description" class="form-control" rows="3"></textarea>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="lotNumber">Numéro de Lot</label>
+        <input type="text" id="lotNumber" formControlName="lotNumber" class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label for="invoiceReference">Référence Facture</label>
+        <input type="text" id="invoiceReference" formControlName="invoiceReference" class="form-control">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="receiptReference">Référence Reçu</label>
+        <input type="text" id="receiptReference" formControlName="receiptReference" class="form-control">
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary"  >
+        Annuler
+      </button>
+      <button type="submit" class="btn btn-primary" [disabled]="transactionForm.invalid || loading">
+        {{ loading ? 'Enregistrement...' : (isEditMode ? 'Mettre à jour' : 'Créer') }}
+      </button>
+    </div>
+  </form>
+</div>

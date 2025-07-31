@@ -1,0 +1,310 @@
+.transactions-container {
+  padding: 20px;
+  height: 100%;
+  position: relative;
+  
+  .osm-dashboard {
+    height: 100%;
+  }
+}
+
+// Loading Overlay
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  
+  p {
+    margin-top: 16px;
+    color: #666;
+    font-size: 14px;
+  }
+}
+
+// Summary Cards
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+  
+  .summary-card {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-icon {
+      margin-right: 16px;
+      
+      mat-icon {
+        font-size: 32px;
+        width: 32px;
+        height: 32px;
+      }
+    }
+    
+    .card-content {
+      flex: 1;
+      
+      h3 {
+        margin: 0 0 8px 0;
+        font-size: 14px;
+        color: #666;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      
+      .amount {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 700;
+        
+        &.positive {
+          color: #4caf50;
+        }
+        
+        &.negative {
+          color: #f44336;
+        }
+      }
+    }
+    
+    &.total {
+      .card-icon mat-icon {
+        color: #2196f3;
+      }
+    }
+    
+    &.inbound {
+      .card-icon mat-icon {
+        color: #4caf50;
+      }
+    }
+    
+    &.outbound {
+      .card-icon mat-icon {
+        color: #f44336;
+      }
+    }
+    
+    &.balance {
+      .card-icon mat-icon {
+        color: #ff9800;
+      }
+    }
+  }
+}
+
+// Action Buttons
+.action-buttons {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  
+  button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+}
+
+// Custom styles for transaction-specific elements
+.transaction-amount {
+  font-weight: bold;
+  
+  &.positive {
+    color: #4caf50;
+  }
+  
+  &.negative {
+    color: #f44336;
+  }
+}
+
+.transaction-status {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  
+  &.approved {
+    background-color: #e8f5e8;
+    color: #2e7d32;
+  }
+  
+  &.pending {
+    background-color: #fff3e0;
+    color: #f57c00;
+  }
+  
+  &.rejected {
+    background-color: #ffebee;
+    color: #c62828;
+  }
+}
+
+.transaction-type {
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  
+  &.payment {
+    background-color: #e3f2fd;
+    color: #1976d2;
+  }
+  
+  &.expense {
+    background-color: #ffebee;
+    color: #c62828;
+  }
+  
+  &.credit {
+    background-color: #e8f5e8;
+    color: #2e7d32;
+  }
+  
+  &.debit {
+    background-color: #fff3e0;
+    color: #f57c00;
+  }
+  
+  &.oil_sale {
+    background-color: #e8f5e8;
+    color: #2e7d32;
+  }
+  
+  &.oil_purchase {
+    background-color: #fff3e0;
+    color: #f57c00;
+  }
+  
+  &.supplier_payment {
+    background-color: #e3f2fd;
+    color: #1976d2;
+  }
+  
+  &.supplier_credit {
+    background-color: #f3e5f5;
+    color: #7b1fa2;
+  }
+}
+
+.transaction-direction {
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 500;
+  
+  &.inbound {
+    background-color: #e8f5e8;
+    color: #2e7d32;
+  }
+  
+  &.outbound {
+    background-color: #ffebee;
+    color: #c62828;
+  }
+  
+  &.internal {
+    background-color: #f3e5f5;
+    color: #7b1fa2;
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .transactions-container {
+    padding: 12px;
+  }
+  
+  .summary-cards {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+    
+    .summary-card {
+      padding: 16px;
+      
+      .card-content {
+        h3 {
+          font-size: 12px;
+        }
+        
+        .amount {
+          font-size: 20px;
+        }
+      }
+    }
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+    
+    button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}
+
+// Animation for loading states
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.summary-cards {
+  animation: fadeIn 0.3s ease-out;
+}
+
+// Success and Error snackbar styles
+::ng-deep {
+  .success-snackbar {
+    background: #4caf50 !important;
+    color: white !important;
+  }
+  
+  .error-snackbar {
+    background: #f44336 !important;
+    color: white !important;
+  }
+} 

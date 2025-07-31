@@ -175,6 +175,14 @@ export const osm_menus: Navigation[] = [
         breadcrumbs: false
       },
       {
+        id: 'transactions',
+        title: 'MENU.FINANCE.TRANSACTIONS',
+        type: 'item',
+        url: '/finance/transactions',
+        icon: 'account_balance_wallet',
+        breadcrumbs: false
+      },
+      {
         id: 'banksManagement',
         title: 'MENU.FINANCE.BANK_MANAGEMENT',
         type: 'item',
@@ -189,6 +197,14 @@ export const osm_menus: Navigation[] = [
         url: '/finance/oil-credit',
         icon: 'credit_score',
         role: [Role.Admin],
+        breadcrumbs: false
+      },
+      {
+        id: 'customers',
+        title: 'MENU.FINANCE.CUSTOMERS',
+        type: 'item',
+        url: '/finance/customers',
+        icon: 'people',
         breadcrumbs: false
       }
     ]

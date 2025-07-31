@@ -40,7 +40,7 @@ export const OIL_TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
       options: [
         { value: TransactionType.RECEPTION_IN, label: 'Réception Entrée', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.RECEPTION_IN' },
         { value: TransactionType.EXCHANGE, label: 'Echange', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.EXCHANGE' },
-        { value: TransactionType.TRANSFER_IN, label: 'Transfert Entrée', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.TRANSFER_IN' },
+        { value: TransactionType.TRANSFER_IN, label: 'Transfert Interne', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.TRANSFER_IN' },
         { value: TransactionType.LOAN, label: 'Prêt', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.LOAN' },
         { value: TransactionType.SALE, label: 'Vente', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.SALE' }
       ]
@@ -61,6 +61,16 @@ export const OIL_TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
       ]
     },
     {
+      name: 'storageUnitSource.name',
+      label: 'Unité source',
+      labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.FIELDS.STORAGE_UNIT_SOURCE',
+      attributeType: AttributeType.string,
+      fieldType: FieldType.text,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },{
       name: 'storageUnitDestination.name',
       label: 'Unité de destination',
       labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.FIELDS.STORAGE_UNIT_DESTINATION',
@@ -72,9 +82,9 @@ export const OIL_TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
       filterable: true
     },
     {
-      name: 'storageUnitSource.name',
-      label: 'Unité source',
-      labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.FIELDS.STORAGE_UNIT_SOURCE',
+      name: 'reception.lotNumber',
+      label: 'N° Lot',
+      labelTranslatePath: 'DELIVERIES.FIELDS.LOT_NUMBER',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -82,6 +92,7 @@ export const OIL_TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
       dataTable: true,
       filterable: true
     },
+
     {
       name: 'quantityKg',
       label: 'Quantité (kg)',

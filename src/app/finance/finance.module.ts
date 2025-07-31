@@ -7,6 +7,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { FinanceRoutingModule } from './finance-routing.module';
 import { PricingComponent } from './pricing/pricing.component';
 import { OilCreditComponent } from './oil-credit/oil-credit.component';
+import { TransactionsComponent } from './transactions/transactions.component';
+import { CustomersComponent } from './customers/customers.component';
 
 @NgModule({
   declarations: [],
@@ -18,7 +20,9 @@ import { OilCreditComponent } from './oil-credit/oil-credit.component';
     RouterModule,
     FinanceRoutingModule,
     OilCreditComponent,
-    PricingComponent
+    PricingComponent,
+    TransactionsComponent,
+    CustomersComponent
   ]
 })
 export class FinanceModule {}

@@ -1,0 +1,71 @@
+<div class="transactions-container">
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" *ngIf="loading">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Chargement en cours...</p>
+  </div>
+
+  <!-- Transaction Summary Cards -->
+<!--  <div class="summary-cards" *ngIf="transactionSummary">-->
+<!--    <div class="summary-card total">-->
+<!--      <div class="card-icon">-->
+<!--        <mat-icon>account_balance_wallet</mat-icon>-->
+<!--      </div>-->
+<!--      <div class="card-content">-->
+<!--        <h3>Total Transactions</h3>-->
+<!--        <p class="amount">{{ transactionSummary.totalTransactions }}</p>-->
+<!--      </div>-->
+<!--    </div>-->
+
+<!--    <div class="summary-card inbound">-->
+<!--      <div class="card-icon">-->
+<!--        <mat-icon>trending_up</mat-icon>-->
+<!--      </div>-->
+<!--      <div class="card-content">-->
+<!--        <h3>Entrées</h3>-->
+<!--        <p class="amount positive">{{ transactionSummary.totalInbound | currency:'TND' }}</p>-->
+<!--      </div>-->
+<!--    </div>-->
+
+<!--    <div class="summary-card outbound">-->
+<!--      <div class="card-icon">-->
+<!--        <mat-icon>trending_down</mat-icon>-->
+<!--      </div>-->
+<!--      <div class="card-content">-->
+<!--        <h3>Sorties</h3>-->
+<!--        <p class="amount negative">{{ transactionSummary.totalOutbound | currency:'TND' }}</p>-->
+<!--      </div>-->
+<!--    </div>-->
+
+<!--    <div class="summary-card balance">-->
+<!--      <div class="card-icon">-->
+<!--        <mat-icon>account_balance</mat-icon>-->
+<!--      </div>-->
+<!--      <div class="card-content">-->
+<!--        <h3>Solde</h3>-->
+<!--        <p class="amount" [class]="(transactionSummary.totalInbound - transactionSummary.totalOutbound) >= 0 ? 'positive' : 'negative'">-->
+<!--          {{ (transactionSummary.totalInbound - transactionSummary.totalOutbound) | currency:'TND' }}-->
+<!--        </p>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+
+<!--  &lt;!&ndash; Action Buttons &ndash;&gt;-->
+<!--  <div class="action-buttons">-->
+<!--    <button mat-raised-button color="primary" (click)="refreshData()" [disabled]="loading">-->
+<!--      <mat-icon>refresh</mat-icon>-->
+<!--      Actualiser-->
+<!--    </button>-->
+<!--    -->
+<!--    <button mat-raised-button color="accent" routerLink="/finance/transactions/new">-->
+<!--      <mat-icon>add</mat-icon>-->
+<!--      Nouvelle Transaction-->
+<!--    </button>-->
+<!--  </div>-->
+
+  <!-- Main Dashboard -->
+  <osm-dashboard
+    [config]="dashboardConfig"
+    (applyAction)="handleAction($event)">
+  </osm-dashboard>
+</div>

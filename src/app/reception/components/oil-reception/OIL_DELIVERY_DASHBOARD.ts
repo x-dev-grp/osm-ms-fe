@@ -115,6 +115,36 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
 
     },
     {
+      name: 'operationType',
+      label: 'Type d\'operation',
+      labelTranslatePath: 'RECEPTION_LIST.FIELDS.OPERATION_TYPE',
+      attributeType: AttributeType.string,
+      fieldType: FieldType.select,
+      exportable: true,
+      dataTable: true,
+      filterable: true,
+      options: [
+        { label: 'Trituration particulier', value: 'SIMPLE_RECEPTION', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.SIMPLE_RECEPTION' },
+        { label: 'Base', value: 'BASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.BASE' },
+        { label: 'Achat Olive', value: 'OLIVE_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OLIVE_PURCHASE' },
+        { label: 'Achat Huile', value: 'OIL_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OIL_PURCHASE' },
+        { label: 'Echange', value: 'EXCHANGE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.EXCHANGE' },
+        { label: 'reception intern', value: 'INTERNAL_RECEPTION', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.INTERNAL_RECEPTION' },
+        { label: 'Paiement', value: 'PAYMENT', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.PAYMENT' }
+      ]
+    },
+    {
+      name: 'lotOliveNumber',
+      label: 'N° Lot olive',
+      labelTranslatePath: 'DELIVERIES.FIELDS.OLIVE_LOT_NUMBER',
+      attributeType: AttributeType.string,
+      fieldType: FieldType.text,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },
+    {
       name: 'poidsBrute',
       label: 'Poids brut (kg)',
       labelTranslatePath: 'DELIVERIES.FIELDS.GROSS_WEIGHT',
