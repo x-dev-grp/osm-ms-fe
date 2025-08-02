@@ -19,6 +19,7 @@ import { OilCredit } from '../../../../finance/models/OilCredit';
 import { UnifiedDelivery } from '../../../../shared/models/UnifiedDelivery';
 import { MatDialog } from '@angular/material/dialog';
 import { SupplierPaymentHistoryComponent } from '../supplier-payment-history/supplier-payment-history.component';
+import { OIL_SALES_DASHBOARD_CONFIG } from './oil-sales-dashboard.config';
 
 @Component({
   selector: 'app-supplier-details',
@@ -44,8 +45,14 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
   creditsCount: number = 0;
   supplierId: string | null = null;
   isOilCredit: boolean = false;
+  isOilSale: boolean = false;
+  isPayment: boolean = false;
   OIL_CREDIT_DASHBOARD: DashboardConfig = OIL_CREDIT_DASHBOARD;
   PAIMENT_DASHBOARD: DashboardConfig = PAIMENT_DASHBOARD;
+  // Function to load payment history based on whether the payment is paid or not
+  protected paidOilSalesCount: any;
+  protected unpaidOilSalesCount: any;
+  protected OIL_SALES_DASHBOARD_CONFIG = OIL_SALES_DASHBOARD_CONFIG;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -58,6 +65,7 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.supplierId = this.route.snapshot.paramMap.get('id');
     this.loadPaymentHistory(false);
+    this.countData();
   }
 
   handleCreditAction(e: { row: OilCredit; action: string }) {
@@ -131,6 +139,9 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
         searchData: {
           ...this.OIL_CREDIT_DASHBOARD.defaultSearchData?.searchData,
           search: {
+            isDeleted: {
+              equalValue: false
+            },
             ...this.OIL_CREDIT_DASHBOARD.defaultSearchData?.searchData?.search,
             destinataire: {
               equalValue: this.supplierId
@@ -140,20 +151,49 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
       }
     };
     this.isOilCredit = true;
+    this.isOilSale = false;
+    this.isPayment = false;
   }
 
   loadPaymentHistory(isPaid: boolean): void {
+    this.isPayment = true;
     this.isOilCredit = false;
+    this.isOilSale = false;
+    // Set PAIMENT_DASHBOARD object with title and titleTranslatePath based on whether the payment is paid or not
     this.PAIMENT_DASHBOARD = {
       ...this.PAIMENT_DASHBOARD,
-      title:isPaid? "Historique paiements":"Paiements en attente",
-      titleTranslatePath: isPaid?"SUPPLIER.DETAILS.PAYMENT_HISTORY_TITLE":"SUPPLIER.DETAILS.UNPAID_TITLE",
+      title: isPaid ? 'Historique paiements' : 'Paiements en attente',
+      titleTranslatePath: isPaid ? 'SUPPLIER.DETAILS.PAYMENT_HISTORY_TITLE' : 'SUPPLIER.DETAILS.UNPAID_TITLE', // Set defaultSearchData object with searchData object based on whether the payment is paid or not
       defaultSearchData: {
         ...this.PAIMENT_DASHBOARD.defaultSearchData,
         searchData: {
           ...this.PAIMENT_DASHBOARD.defaultSearchData?.searchData,
           search: {
-            ...this.PAIMENT_DASHBOARD.defaultSearchData?.searchData?.search,
+            ...this.PAIMENT_DASHBOARD.defaultSearchData?.searchData?.search, // Set supplier.id and paid equalValue based on whether the payment is paid or not
+            'supplier.id': {
+              equalValue: this.supplierId!
+            },
+            paid: {
+              equalValue: isPaid
+            }
+          }
+        }
+      }
+    };
+    // Call countData function
+    this.countData();
+  }
+
+  loadOilSalesHistory(isPaid: boolean): void {
+    this.OIL_SALES_DASHBOARD_CONFIG = {
+      ...this.OIL_SALES_DASHBOARD_CONFIG,
+      title: isPaid ? 'Historique paiements Des ventes huile' : 'Paiements ventes huile en attente',
+       defaultSearchData: {
+        ...this.OIL_SALES_DASHBOARD_CONFIG.defaultSearchData,
+        searchData: {
+          ...this.OIL_SALES_DASHBOARD_CONFIG.defaultSearchData?.searchData,
+          search: {
+            ...this.OIL_SALES_DASHBOARD_CONFIG.defaultSearchData?.searchData?.search,
             'supplier.id': {
               equalValue: this.supplierId!
             },
@@ -165,26 +205,114 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
       }
     };
     this.countData();
+    this.isOilCredit = false;
+    this.isOilSale = true;
+    this.isPayment = false;
   }
 
   countData(): void {
-    const paidCountSearchDta: SearchData = {
-      ...this.PAIMENT_DASHBOARD.defaultSearchData,
+    this.paidCountSearchData();
+    this.unpaidCountSearchDta();
+    this.creditCountSearchDta();
+    this.paidOilSales();
+    this.unpaidOilSales();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  protected paidOilSales() {
+    const paidOilSalesData: SearchData = {
+      ...this.OIL_SALES_DASHBOARD_CONFIG.defaultSearchData,
       searchData: {
-        ...this.PAIMENT_DASHBOARD.defaultSearchData?.searchData,
+        ...this.OIL_SALES_DASHBOARD_CONFIG.defaultSearchData?.searchData,
         search: {
-          ...this.PAIMENT_DASHBOARD.defaultSearchData?.searchData?.search,
+          isDeleted: {
+            equalValue: false
+          },
+          ...this.OIL_SALES_DASHBOARD_CONFIG.defaultSearchData?.searchData?.search,
           paid: {
             equalValue: true
           }
         }
       }
     };
-    const unpaidCountSearchDta: SearchData ={
+    this.searchService
+      .search(paidOilSalesData, 'finance/oil_sale')
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap((res) => {
+          this.paidOilSalesCount = res?.total || 0;
+        })
+      )
+      .subscribe();
+  }
+
+  protected unpaidOilSales() {
+    const paidOilSalesData: SearchData = {
+      ...this.OIL_SALES_DASHBOARD_CONFIG.defaultSearchData,
+      searchData: {
+        ...this.OIL_SALES_DASHBOARD_CONFIG.defaultSearchData?.searchData,
+        search: {
+          isDeleted: {
+            equalValue: false
+          },
+          ...this.OIL_SALES_DASHBOARD_CONFIG.defaultSearchData?.searchData?.search,
+          paid: {
+            equalValue: false
+          }
+        }
+      }
+    };
+    this.searchService
+      .search(paidOilSalesData, 'finance/oil_sale')
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap((res) => {
+          this.unpaidOilSalesCount = res?.total || 0;
+        })
+      )
+      .subscribe();
+  }
+
+  private creditCountSearchDta() {
+    const creditCountSearchDta: SearchData = {
+      page: 0,
+      size: 1,
+      searchData: {
+        search: {
+          isDeleted: {
+            equalValue: false
+          },
+          destinataire: {
+            equalValue: this.supplierId!
+          }
+        }
+      }
+    };
+
+    this.searchService
+      .search(creditCountSearchDta, 'finance/oil-credit')
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap((res) => {
+          this.creditsCount = res?.total || 0;
+        })
+      )
+      .subscribe();
+  }
+
+  private unpaidCountSearchDta() {
+    const unpaidCountSearchDta: SearchData = {
       ...this.PAIMENT_DASHBOARD.defaultSearchData,
       searchData: {
         ...this.PAIMENT_DASHBOARD.defaultSearchData?.searchData,
         search: {
+          isDeleted: {
+            equalValue: false
+          },
           ...this.PAIMENT_DASHBOARD.defaultSearchData?.searchData?.search,
           paid: {
             equalValue: false
@@ -192,13 +320,30 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
         }
       }
     };
-    const creditCountSearchDta: SearchData = {
-      page: 0,
-      size: 1,
+
+    this.searchService
+      .search(unpaidCountSearchDta, 'production/deliveries')
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap((res) => {
+          this.unpaidCount = res?.total || 0;
+        })
+      )
+      .subscribe();
+  }
+
+  private paidCountSearchData() {
+    const paidCountSearchDta: SearchData = {
+      ...this.PAIMENT_DASHBOARD.defaultSearchData,
       searchData: {
+        ...this.PAIMENT_DASHBOARD.defaultSearchData?.searchData,
         search: {
-          destinataire: {
-            equalValue: this.supplierId!
+          isDeleted: {
+            equalValue: false
+          },
+          ...this.PAIMENT_DASHBOARD.defaultSearchData?.searchData?.search,
+          paid: {
+            equalValue: true
           }
         }
       }
@@ -212,32 +357,5 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe();
-    this.searchService
-      .search(unpaidCountSearchDta, 'production/deliveries')
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        tap((res) => {
-          this.unpaidCount = res?.total || 0;
-        })
-      )
-      .subscribe();
-    this.searchService
-      .search(creditCountSearchDta, 'finance/oil-credit')
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        tap((res) => {
-          this.creditsCount = res?.total || 0;
-        })
-      )
-      .subscribe();
-  }
-
-  onBack(): void {
-    this.router.navigate(['/reception/fournisseur']);
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

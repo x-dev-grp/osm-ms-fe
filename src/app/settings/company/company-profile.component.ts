@@ -1,6 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { CompanyProfileService } from '../../shared/services/company-profile.service';
+import { ToastService } from '../../shared/services/toast.service';
 import { CompanyProfile } from '../../shared/models/CompanyProfile';
 import { BankAccount } from '../../finance/models/BankAccount';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -14,10 +16,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { NgIf } from '@angular/common';
-import { CommonModule } from '@angular/common';
-import { ToastService } from '../../shared/services/toast.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-company-profile',
@@ -36,10 +35,9 @@ import { ToastService } from '../../shared/services/toast.service';
     MatButtonModule,
     MatCardModule,
     MatListModule,
-    TranslateModule,
     MatTooltipModule,
-    MatProgressSpinner,
-    NgIf
+    MatProgressSpinnerModule,
+    TranslateModule
   ]
 })
 export class CompanyProfileComponent implements OnInit {
@@ -53,30 +51,10 @@ export class CompanyProfileComponent implements OnInit {
   private translate = inject(TranslateService);
 
   governorates: string[] = [
-    'Ariana',
-    'Beja',
-    'Ben Arous',
-    'Bizerte',
-    'Gabes',
-    'Gafsa',
-    'Jendouba',
-    'Kairouan',
-    'Kasserine',
-    'Kebili',
-    'Kef',
-    'Mahdia',
-    'Manouba',
-    'Medenine',
-    'Monastir',
-    'Nabeul',
-    'Sfax',
-    'Sidi Bouzid',
-    'Siliana',
-    'Sousse',
-    'Tataouine',
-    'Tozeur',
-    'Tunis',
-    'Zaghouan'
+    'Ariana', 'Beja', 'Ben Arous', 'Bizerte', 'Gabes', 'Gafsa', 'Jendouba',
+    'Kairouan', 'Kasserine', 'Kebili', 'Kef', 'Mahdia', 'Manouba',
+    'Medenine', 'Monastir', 'Nabeul', 'Sfax', 'Sidi Bouzid', 'Siliana',
+    'Sousse', 'Tataouine', 'Tozeur', 'Tunis', 'Zaghouan'
   ];
 
   formEnabled = false;
@@ -107,19 +85,19 @@ export class CompanyProfileComponent implements OnInit {
       logoData: [null, Validators.required],
       logoContentType: [null, Validators.required]
     });
-    this.loadProfile();
-    // this.profileForm.disable(); // Remove this line from ngOnInit
+
     this.profileForm.valueChanges.subscribe(val => {
       console.log('Form value changed:', val);
       console.log('Form valid:', this.profileForm.valid);
     });
+
+    this.loadProfile();
   }
 
   loadProfile() {
     this.loading = true;
-    // Try to load from localStorage first
     const cached = localStorage.getItem('company_profile');
-    let parsed: CompanyProfile | null = null;
+    let parsed: any = null;
     if (cached) {
       try {
         parsed = JSON.parse(cached);
@@ -127,71 +105,26 @@ export class CompanyProfileComponent implements OnInit {
         parsed = null;
       }
     }
-    if (parsed && typeof parsed === 'object' && parsed.legalName) {
-      // Use cached profile
-      this.loading = false;
-      this.profile = parsed;
-      this.originalProfile = JSON.parse(JSON.stringify(this.profile));
-      this.profileForm.patchValue({
-        legalName: this.profile.legalName,
-        registrationNumber: this.profile.registrationNumber,
-        taxId: this.profile.taxId,
-        cnssNumber: this.profile.cnssNumber,
-        legalForm: this.profile.legalForm,
-        capital: this.profile.capital,
-        email: this.profile.email,
-        phone: this.profile.phone,
-        website: this.profile.website,
-        addressLine1: this.profile.addressLine1,
-        city: this.profile.city,
-        postalCode: this.profile.postalCode,
-        governorate: this.profile.governorate,
-        logoData: this.profile.logoData,
-        logoContentType: this.profile.logoContentType
-      });
-      this.bankAccounts = this.profile.bankAccounts || [];
-      if (this.profile.logoData && this.profile.logoContentType) {
-        this.logoPreview = `data:${this.profile.logoContentType};base64,${this.profile.logoData}`;
-      }
+    let profileObj: CompanyProfile | null = null;
+    if (parsed && typeof parsed === 'object') {
+      profileObj = Array.isArray(parsed) ? parsed[0] : parsed;
+    }
+    if (profileObj && profileObj.legalName) {
+      this.applyProfile(profileObj);
       this.profileForm.disable();
+      this.loading = false;
       return;
     }
-    // If not in cache, fetch from backend
     this.companyProfileService.getProfile().subscribe(
-      (res) => {
+      res => {
         this.loading = false;
-        if (res && res.success && res.data && res.data.length > 0) {
-          this.profile = res.data[0];
-          this.originalProfile = JSON.parse(JSON.stringify(this.profile));
-          localStorage.setItem('company_profile', JSON.stringify(this.profile));
-          this.profileForm.patchValue({
-            legalName: this.profile.legalName,
-            registrationNumber: this.profile.registrationNumber,
-            taxId: this.profile.taxId,
-            cnssNumber: this.profile.cnssNumber,
-            legalForm: this.profile.legalForm,
-            capital: this.profile.capital,
-            email: this.profile.email,
-            phone: this.profile.phone,
-            website: this.profile.website,
-            addressLine1: this.profile.addressLine1,
-            city: this.profile.city,
-            postalCode: this.profile.postalCode,
-            governorate: this.profile.governorate,
-            logoData: this.profile.logoData,
-            logoContentType: this.profile.logoContentType
-          });
-          this.bankAccounts = this.profile.bankAccounts || [];
-          if (this.profile.logoData && this.profile.logoContentType) {
-            this.logoPreview = `data:${this.profile.logoContentType};base64,${this.profile.logoData}`;
-          }
+        const data: any = res.data;
+        const profileData: CompanyProfile | null = Array.isArray(data) ? data[0] : data;
+        if (profileData && profileData.legalName) {
+          this.applyProfile(profileData);
           this.profileForm.disable();
         } else {
-          this.profile = null;
-          this.originalProfile = null;
-          this.profileForm.reset();
-          this.bankAccounts = [];
-          this.logoPreview = null;
+          this.resetForm();
         }
       },
       () => {
@@ -201,24 +134,56 @@ export class CompanyProfileComponent implements OnInit {
     );
   }
 
+  private applyProfile(profileData: CompanyProfile) {
+    this.profile = profileData;
+    this.originalProfile = JSON.parse(JSON.stringify(profileData));
+    localStorage.setItem('company_profile', JSON.stringify(profileData));
+
+    this.profileForm.patchValue({
+      legalName: profileData.legalName,
+      registrationNumber: profileData.registrationNumber,
+      taxId: profileData.taxId,
+      cnssNumber: profileData.cnssNumber,
+      legalForm: profileData.legalForm,
+      capital: profileData.capital,
+      email: profileData.email,
+      phone: profileData.phone,
+      website: profileData.website,
+      addressLine1: profileData.addressLine1,
+      city: profileData.city,
+      postalCode: profileData.postalCode,
+      governorate: profileData.governorate,
+      logoData: profileData.logoData,
+      logoContentType: profileData.logoContentType
+    });
+
+    this.bankAccounts = profileData.bankAccounts || [];
+    if (profileData.logoData && profileData.logoContentType) {
+      this.logoPreview = `data:${profileData.logoContentType};base64,${profileData.logoData}`;
+    }
+  }
+
+  private resetForm() {
+    this.profile = null;
+    this.originalProfile = null;
+    this.profileForm.reset();
+    this.bankAccounts = [];
+    this.logoPreview = null;
+  }
+
   enableForm() {
     this.formEnabled = true;
     this.profileForm.enable();
-    this.profileForm.markAsPristine(); // Reset dirty state when entering edit mode
+    this.profileForm.markAsPristine();
   }
 
   onSave(): void {
-    console.log('onSave called');
-    console.log('Form value:', this.profileForm.value);
-    console.log('Form valid:', this.profileForm.valid);
     if (this.profileForm.invalid) {
       this.profileForm.markAllAsTouched();
-      console.log('Form is invalid, aborting save.');
       return;
     }
     if (!this.profileForm.get('logoData')?.value) {
       this.toastService.error('GENERAL_CONFIG.MESSAGES.LOGO_REQUIRED');
-      console.log('Logo is missing, aborting save.');
       return;
     }
     this.loading = true;
@@ -228,20 +193,14 @@ export class CompanyProfileComponent implements OnInit {
       id: this.profile?.id,
       bankAccounts: this.profile?.bankAccounts || []
     };
-    console.log('Saving profile:', profileToSave);
     this.companyProfileService.saveProfile(profileToSave).subscribe({
       next: () => {
         this.toastService.success('GENERAL_CONFIG.MESSAGES.SAVE_SUCCESS');
         this.loadProfile();
-        this.profileForm.disable();
-        this.formEnabled = false;
-        this.loading = false;
-        console.log('Profile saved successfully.');
       },
-      error: (err) => {
-        this.toastService.error('GENERAL_CONFIG.MESSAGES.SAVE_ERROR');
+      error: () => {
         this.loading = false;
-        console.error('Error saving profile:', err);
+        this.toastService.error('GENERAL_CONFIG.MESSAGES.SAVE_ERROR');
       }
     });
   }
@@ -249,13 +208,13 @@ export class CompanyProfileComponent implements OnInit {
   onReset(): void {
     if (this.hasProfileChanged()) {
       this.showResetConfirm = true;
-      return;
+    } else {
+      this.doReset();
     }
-    this.doReset();
   }
 
   doReset(): void {
-    this.profileForm.reset();
+    this.resetForm();
     this.profileForm.disable();
     this.formEnabled = false;
     this.showResetConfirm = false;
@@ -268,32 +227,23 @@ export class CompanyProfileComponent implements OnInit {
 
   onLogoPicked(event: Event): void {
     const file = (event.target as HTMLInputElement).files?.[0];
-    if (!file) return;
-    const maxKb = 200 * 1024;
-    if (file.size > maxKb) {
-      this.toastService.error('GENERAL_CONFIG.MESSAGES.LOGO_TOO_LARGE');
-      return;
+    if (file) {
+      this.handleFile(file);
+      this.profileForm.get('logoData')?.markAsDirty();
+      this.profileForm.markAsDirty();
     }
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.logoPreview = reader.result as string;
-      const base64 = this.logoPreview.split(',')[1];
-      this.profileForm.patchValue({
-        logoData: base64,
-        logoContentType: file.type
-      });
-    };
-    reader.readAsDataURL(file);
   }
 
   onDragOver(event: DragEvent) {
     event.preventDefault();
     this.fileOver = true;
   }
+
   onDragLeave(event: DragEvent) {
     event.preventDefault();
     this.fileOver = false;
   }
+
   onFileDropped(event: DragEvent) {
     event.preventDefault();
     this.fileOver = false;
@@ -310,10 +260,11 @@ export class CompanyProfileComponent implements OnInit {
     this.logoPreview = null;
     this.profileForm.patchValue({ logoData: null, logoContentType: null });
   }
+
   private handleFile(file: File) {
     const maxBytes = 200 * 1024;
     if (!['image/png', 'image/jpeg'].includes(file.type)) {
-      this.toastService.error('Only PNG/JPEG allowed');
+      this.toastService.error('GENERAL_CONFIG.MESSAGES.LOGO_FORMAT');
       return;
     }
     if (file.size > maxBytes) {
@@ -331,20 +282,17 @@ export class CompanyProfileComponent implements OnInit {
     };
     reader.readAsDataURL(file);
   }
+
   hasProfileChanged(): boolean {
-    // If there is no original profile (first creation), allow saving
     if (!this.originalProfile) return true;
     const current = { ...this.profileForm.getRawValue(), id: this.profile?.id };
-    const changed = JSON.stringify(current) !== JSON.stringify(this.originalProfile);
-    console.log('hasProfileChanged:', changed, 'Current:', current, 'Original:', this.originalProfile);
-    return changed;
+    return JSON.stringify(current) !== JSON.stringify(this.originalProfile);
   }
 
   get invalidControls(): string[] {
     const invalid = [];
-    const controls = this.profileForm.controls;
-    for (const name in controls) {
-      if (controls[name].invalid) {
+    for (const name in this.profileForm.controls) {
+      if (this.profileForm.controls[name].invalid) {
         invalid.push(name);
       }
     }

@@ -15,7 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UnifiedDeliveryService } from '../../../../shared/services/delivery.service';
 import { UnifiedDelivery } from '../../../../shared/models/UnifiedDelivery';
 import { BankAccount } from '../../../../finance/models/BankAccount';
@@ -31,8 +31,8 @@ import { SearchOperation } from 'src/app/shared/models/advanced-search/searchOpe
 import { catchError } from 'rxjs/operators';
 import { OperationType } from '../../../../shared/models/operation-type.enum';
 import { deliveryType } from '../../../../shared/models/deleveryType';
-import { PaymentMethod } from '../../../../finance/models/financial-transaction';
-import { TransactionState } from '../../../../shared/models/OilTransaction';
+ import { TransactionState } from '../../../../shared/models/OilTransaction';
+import { PaymentMethod } from '../../../../finance/models/financial-transaction.model';
 
 @Component({
   selector: 'app-supplier-payment-history',
@@ -84,6 +84,59 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngAfterViewInit() {
+    this.paymentForm
+      .get('moneyPaymentMethod')
+      ?.valueChanges.pipe(
+      takeUntilDestroyed(this.destroyRef),
+      debounceTime(100),
+      tap((value) => {
+         if(value === 'check'){
+           this.paymentForm.get('checkNumber')?.setValidators([Validators.required]);
+           this.paymentForm.get('bankAccount')?.clearValidators();
+         }else if( value === 'bank_transfer'){
+           this.paymentForm.get('checkNumber')?.clearValidators();
+            this.paymentForm.get('bankAccount')?.setValidators([Validators.required]);
+         }else{
+           this.paymentForm.get('checkNumber')?.clearValidators();
+           this.paymentForm.get('bankAccount')?.clearValidators();
+         }
+         this.paymentForm.get('checkNumber')?.updateValueAndValidity();
+         this.paymentForm.get('bankAccount')?.updateValueAndValidity();
+      })
+    )
+      .subscribe();
+    this.paymentForm
+      .get('paymentMethod')
+      ?.valueChanges.pipe(
+      takeUntilDestroyed(this.destroyRef),
+      debounceTime(100),
+      tap((value) => {
+         if(value === 'oil' || value === 'both'){
+           this.paymentForm.get('oilQuantity')?.setValidators([Validators.required]);
+           this.paymentForm.get('oilPrice')?.setValidators([Validators.required]);
+           this.paymentForm.get('checkNumber')?.clearValidators();
+           this.paymentForm.get('bankAccount')?.clearValidators();
+         }else{
+            this.paymentForm.get('oilQuantity')?.clearValidators();
+            this.paymentForm.get('oilPrice')?.clearValidators();
+            const moneyPaymentMethod = this.paymentForm.get('moneyPaymentMethod')?.value;
+           if(moneyPaymentMethod === 'check'){
+             this.paymentForm.get('checkNumber')?.setValidators([Validators.required]);
+             this.paymentForm.get('bankAccount')?.clearValidators();
+           }else if( value === 'bank_transfer'){
+             this.paymentForm.get('checkNumber')?.clearValidators();
+             this.paymentForm.get('bankAccount')?.setValidators([Validators.required]);
+           }else{
+             this.paymentForm.get('checkNumber')?.clearValidators();
+             this.paymentForm.get('bankAccount')?.clearValidators();
+           }
+         }
+        this.paymentForm.get('oilQuantity')?.updateValueAndValidity();
+        this.paymentForm.get('oilPrice')?.updateValueAndValidity();
+        this.paymentForm.get('checkNumber')?.updateValueAndValidity();
+        this.paymentForm.get('bankAccount')?.updateValueAndValidity();
+  })
+    ).subscribe();
     this.paymentForm
       .get('amount')
       ?.valueChanges.pipe(
@@ -166,6 +219,8 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
             const oilTransaction = res?.data[0];
             if (oilTransaction?.transactionState != TransactionState.COMPLETED) {
               this.transactionNotCompletedError = true;
+              this.paymentForm.disable()
+
               return;
             }
             if (Number(oilTransaction?.totalPrice) == Number(this.unpaidAmount)) {
@@ -244,11 +299,15 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((res: any) => {
-          if (res?.data) {
-            const oilReception = res?.data;
+          if (res?.data&&res?.data.price) {
+             const oilReception = res?.data;
             this.unpaidAmount = oilReception?.price;
             this.paymentForm.get('amount')?.setValue(this.unpaidAmount);
+          }else{
+            this.transactionNotCompletedError = true;
+            this.paymentForm.disable()
           }
+          //todo chnage the msgs based on the operation use html anf variable
         }),
         catchError((err, cauth) => {
           this._dialogRef.close();

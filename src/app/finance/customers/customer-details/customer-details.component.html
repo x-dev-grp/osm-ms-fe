@@ -1,0 +1,46 @@
+<!-- History Cards -->
+
+@if (!customerId) {
+  <!-- Error message -->
+  <div class="error-container">
+    <mat-icon color="warn">error</mat-icon>
+    <p>Client non trouvé avec ce id ! </p>
+  </div>
+} @else {
+  <div class="history-cards-container">
+    <div class="history-cards">
+      <mat-card class="history-card" (click)="loadPaymentHistory(true)">
+        <mat-card-content>
+          <div class="card-content">
+            <mat-icon class="card-icon" color="primary">payments</mat-icon>
+            <div class="card-info">
+              <h3>{{ 'SUPPLIER.DETAILS.PAYMENT_HISTORY_TITLE' | translate }}</h3>
+              <p>{{ paidCount }} {{ 'SUPPLIER.DETAILS.PAYMENT_HISTORY_COUNT' | translate }}</p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="history-card" (click)="loadPaymentHistory(false)">
+        <mat-card-content>
+          <div class="card-content">
+            <mat-icon class="card-icon" color="warn">pending_actions</mat-icon>
+            <div class="card-info">
+              <h3>{{ 'SUPPLIER.DETAILS.UNPAID_TITLE' | translate }}</h3>
+              <p>{{ unpaidCount }} {{ 'SUPPLIER.DETAILS.UNPAID_COUNT' | translate }}</p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+    </div>
+  </div>
+
+  <div class="table-section">
+
+    <osm-dashboard #dashboard [config]="OIL_TRANSACTIONS_DASHBOARD"
+                   (applyAction)="handlePaymentAction($event)"></osm-dashboard>
+
+  </div>
+
+}

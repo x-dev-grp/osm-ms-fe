@@ -104,7 +104,9 @@ export class AdminComponent implements OnInit, AfterViewInit {
     this.themeService.dashBoardMenuState.subscribe(() => {
       this.sidebar()!.toggle();
     });
-    this.loadCompanyLogo();
+
+    // Load company profile and logo
+    this.loadCompanyLogoFromCache();
 
 
     /**
@@ -238,11 +240,30 @@ filterMenuByPermissions(
   // EXISTING METHODS (UNCHANGED)
   // ────────────────────────────────────
 
-  private loadCompanyLogo(): void {
+  /**
+   * Loads company profile and logo from API or cache
+   */
+  private loadCompanyProfileAndLogo(): void {
+    const currentUser = this.authenticationService.currentUserValue;
+
+    // Only fetch company profile for non-OsmAdmin users who have a tenantId
+    if (currentUser && currentUser.role !== Role.OsmAdmin && currentUser.tenantId) {
+      console.log('[AdminComponent] Fetching company profile for tenantId:', currentUser.tenantId);
+      this.loadCompanyLogoFromCache();
+
+    } else {
+      console.log('[AdminComponent] Skipping company profile fetch - user is OsmAdmin or has no tenantId');
+    }
+  }
+
+  /**
+   * Loads company logo from localStorage cache (fallback method)
+   */
+  private loadCompanyLogoFromCache(): void {
     // Try to get company profile from localStorage
     const cachedProfile = localStorage.getItem('company_profile');
     if (cachedProfile) {
-      try {
+
         const parsed = JSON.parse(cachedProfile);
         if (parsed) {
           this.profile = parsed;
@@ -250,10 +271,9 @@ filterMenuByPermissions(
             this.logoPreview = `data:${this.profile.logoContentType};base64,${this.profile.logoData}`;
           }
         }
-      } catch {
-        // Ignore malformed cache
-        console.warn('Failed to parse cached company profile');
-      }
+
+    }else {
+      this.companyProfileService.getProfile;
     }
   }
 

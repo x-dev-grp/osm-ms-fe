@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ExpensesComponent } from './expenses/expenses.component';
-import { PricingComponent } from './pricing/pricing.component';
 import { BankAccountsComponent } from './bank-accounts/bank-accounts.component';
 import { ViewExpenseComponent } from './expenses/view-expense/view-expense.component';
 import { OilCreditComponent } from './oil-credit/oil-credit.component';
 import { ViewOilCreditComponent } from './oil-credit/view-oil-credit/view-oil-credit.component';
 import { TransactionsComponent } from './transactions/transactions.component';
 import { CustomersComponent } from './customers/customers.component';
+import { OilSalesComponent } from './oil-sales/oil-sales.component';
 import { AuthGuardChild } from '../interceptors/guards/auth.guard';
 
 
@@ -16,7 +16,6 @@ const routes: Routes = [
   { path: 'expenses/:id/view', component: ViewExpenseComponent, canActivate: [AuthGuardChild] },
   { path: 'expenses/new', loadComponent: () => import('./expenses/expense-add/expense-add.component').then(m => m.ExpenseAddComponent), canActivate: [AuthGuardChild] },
   { path: 'expenses/:id/edit', loadComponent: () => import('./expenses/expense-add/expense-add.component').then(m => m.ExpenseAddComponent), canActivate: [AuthGuardChild] },
-  { path: 'pricing', component: PricingComponent, canActivate: [AuthGuardChild] },
   { path: 'banks', component: BankAccountsComponent, canActivate: [AuthGuardChild] },
   { path: 'banks/:id/view', loadComponent: () => import('./bank-accounts/view-bank-account/view-bank-account.component').then(m => m.ViewBankAccountComponent), canActivate: [AuthGuardChild] },
   { path: 'banks/new', loadComponent: () => import('./bank-accounts/bank-account-add/bank-account-add.component').then(m => m.BankAccountAddComponent), canActivate: [AuthGuardChild] },
@@ -33,6 +32,12 @@ const routes: Routes = [
   { path: 'customers/:id/view', loadComponent: () => import('./customers/customer-view/customer-view.component').then(m => m.CustomerViewComponent), canActivate: [AuthGuardChild] },
   { path: 'customers/new', loadComponent: () => import('./customers/customer-add/customer-add.component').then(m => m.CustomerAddComponent), canActivate: [AuthGuardChild] },
   { path: 'customers/:id/edit', loadComponent: () => import('./customers/customer-add/customer-add.component').then(m => m.CustomerAddComponent), canActivate: [AuthGuardChild] },
+  { path: 'customers/:id/details', loadComponent: () => import('./customers/customer-details/customer-details.component').then(m => m.CustomerDetailsComponent), canActivate: [AuthGuardChild] },
+
+  { path: 'oil-sales', component: OilSalesComponent, canActivate: [AuthGuardChild] },
+  { path: 'oil-sales/new', loadComponent: () => import('./oil-sales/oil-sale-add/oil-sale-add.component').then(m => m.OilSaleAddComponent), canActivate: [AuthGuardChild] },
+  { path: 'oil-sales/:id/edit', loadComponent: () => import('./oil-sales/oil-sale-add/oil-sale-add.component').then(m => m.OilSaleAddComponent), canActivate: [AuthGuardChild] },
+  { path: 'oil-sales/:id/view', loadComponent: () => import('./oil-sales/oil-sale-view/oil-sale-view.component').then(m => m.OilSaleViewComponent), canActivate: [AuthGuardChild] },
 ];
 
 @NgModule({

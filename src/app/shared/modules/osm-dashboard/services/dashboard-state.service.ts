@@ -122,7 +122,7 @@ export const DashboardStore = signalStore(
         }
         const exportDetails={
             fieldDetails:fieldsToExport,
-            fileName:store.fileName(),
+            fileName:translate.instant(store.fileName()),
             searchData:store.searchData()
         }
         return _http.post(`${environment.apiUrl}/api/${store.endpoint()}/export/${exportType}`,exportDetails,{

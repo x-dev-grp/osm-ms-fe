@@ -74,10 +74,13 @@
   },
   "Account Profile": "Account Profile",
   "Action Bar": "Action Bar",
+  "Add": "Add",
   "Add New Product": "Add New Product",
+  "Admin Panel": "Admin Panel",
   "Analytics": "Analytics",
   "Apex Chart": "Apex Chart",
   "Application": "Application",
+  "Apply": "Apply",
   "Authentication": "Authentication",
   "Authentication 1": "Authentication 1",
   "Authentication 2": "Authentication 2",
@@ -137,14 +140,30 @@
   "COMMON": {
     "BACK": "Back",
     "CANCEL": "Cancel",
+    "CLOSE": "Close",
     "EDIT": "Edit",
     "NO": "No",
     "PRINT": "Print",
     "SAVE": "Save",
     "UPDATE": "Update",
+    "VALIDATION": {
+      "EMAIL": "Please enter a valid email address",
+      "MAX_LENGTH": "Maximum length is {{maxLength}} characters",
+      "REQUIRED": "This field is required"
+    },
     "YES": "Yes"
   },
   "COMPANY_PROFILE_FORM": {
+    "CNSS_NUMBER": "CNSS Number",
+    "CNSS_NUMBER_REQUIRED": "CNSS number is required.",
+    "LEGAL_NAME": "Legal Name",
+    "LEGAL_NAME_REQUIRED": "Legal name is required.",
+    "REG_NUMBER": "Registration Number",
+    "REG_NUMBER_REQUIRED": "Registration number is required.",
+    "TAX_ID": "Tax ID",
+    "TAX_ID_REQUIRED": "Tax ID is required."
+  },
+  "COMPANY_PROFILE_FORM_UI": {
     "CNSS_NUMBER": "CNSS Number",
     "CNSS_NUMBER_REQUIRED": "CNSS number is required.",
     "LEGAL_NAME": "Legal Name",
@@ -379,6 +398,75 @@
     "SUBTITLE": "Complete the quality assessment for this delivery",
     "TITLE": "Quality Control"
   },
+  "CUSTOMERS": {
+    "ACTIONS": {
+      "BACK": "Back",
+      "CANCEL": "Cancel",
+      "CREATE": "Create Customer",
+      "EDIT": "Edit",
+      "UPDATE": "Update Customer"
+    },
+    "ADD_TITLE": "Add New Customer",
+    "CATEGORIES": {
+      "BUSINESS": "Business",
+      "INDIVIDUAL": "Individual"
+    },
+    "EDIT_TITLE": "Edit Customer",
+    "FIELDS": {
+      "ACTIVE": "Active",
+      "ADDRESS": "Address",
+      "CATEGORY": "Category",
+      "CONTACT_PERSON": "Contact Person",
+      "COUNTRY": "Country",
+      "CREATED_DATE": "Created Date",
+      "CUSTOMER_LAST_NAME": "Last Name",
+      "CUSTOMER_NAME": "First Name",
+      "EMAIL": "Email",
+      "FAX": "Fax",
+      "MATRICULE_FISCAL": "Tax ID",
+      "MOBILE": "Mobile",
+      "NOTES": "Notes",
+      "NUM_CIN": "ID Number",
+      "PHONE": "Phone",
+      "POSTAL_CODE": "Postal Code"
+    },
+    "MESSAGES": {
+      "ERROR_LOADING": "Error loading customer",
+      "ERROR_SAVING": "Error creating customer",
+      "ERROR_UPDATING": "Error updating customer",
+      "LOADING": "Loading customer...",
+      "NOT_FOUND": "Customer not found",
+      "NOT_FOUND_DESC": "The customer you're looking for doesn't exist or has been removed.",
+      "SAVE_SUCCESS": "Customer created successfully",
+      "UPDATE_SUCCESS": "Customer updated successfully"
+    },
+    "PLACEHOLDERS": {
+      "ADDRESS": "Enter address",
+      "CONTACT_PERSON": "Enter contact person",
+      "COUNTRY": "Enter country",
+      "CUSTOMER_LAST_NAME": "Enter customer last name",
+      "CUSTOMER_NAME": "Enter customer name",
+      "EMAIL": "Enter email address",
+      "FAX": "Enter fax number",
+      "MATRICULE_FISCAL": "Enter matricule fiscal",
+      "MOBILE": "Enter mobile number",
+      "NOTES": "Enter additional notes",
+      "NUM_CIN": "Enter CIN number",
+      "PHONE": "Enter phone number",
+      "POSTAL_CODE": "Enter postal code"
+    },
+    "SECTIONS": {
+      "ADDITIONAL_INFO": "Additional Information",
+      "ADDRESS_INFO": "Address Information",
+      "BASIC_INFO": "Basic Information",
+      "CONTACT_INFO": "Contact Information"
+    },
+    "STATUS": {
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive"
+    },
+    "TITLE": "Customers"
+  },
   "Calender": "Calendar",
   "Chart": "Chart",
   "Charts": "Charts",
@@ -389,6 +477,8 @@
   "Coming Soon": "Coming Soon",
   "Components": "Components",
   "Contact Us": "Contact Us",
+  "Courses": "Courses",
+  "Create": "Create",
   "Customer": "Customer",
   "DASHBOARD": {
     "ANALYTICS": {
@@ -466,6 +556,7 @@
       "DELIVERY_TYPE": "Delivery Type",
       "GLOBAL_LOT_NUMBER": "Global Lot Number",
       "GROSS_WEIGHT": "Gross Weight (KG)",
+      "LOT_NUMBER ": "Lot N°",
       "LOT_OLIVE_NUMBER": "N° lot de référence",
       "NET_WEIGHT": "Net Weight (KG)",
       "OIL_QUANTITY": "Oil Quantity",
@@ -524,12 +615,31 @@
         "UNIT_PRICE": "Unit Price (DH/L)",
         "UNPAID_AMOUNT": "Remaining Amount (DH)"
       },
+      "HINTS": {
+        "DELIVERY_NUMBER": "Auto-generated delivery number",
+        "LOT_NUMBER": "Unique lot identifier",
+        "OIL_QUANTITY": "Quantity in kilograms",
+        "UNIT_PRICE": "Price per liter"
+      },
       "MESSAGES": {
+        "CREATE_ERROR": "Error creating delivery",
+        "CREATE_SUCCESS": "Delivery created successfully",
+        "ERROR": {
+          "ADD": "Error adding oil reception",
+          "LOAD": "Error loading oil reception data",
+          "UPDATE": "Error updating oil reception"
+        },
         "INCOMPLETE_FORM": "Incomplete form or validation failed",
-        "LOAD_ERROR": "Error loading data",
+        "LOAD_ERROR": "Error loading delivery data",
         "SAVE_ERROR": "Error saving oil delivery",
         "SAVE_SUCCESS": "Oil delivery saved successfully",
+        "STORAGE_CAPACITY": "Storage unit {{name}} has {{available}} L available out of {{max}} L capacity",
         "STORAGE_UNIT_FORMAT": "{{name}} ({{currentVolume}}/{{maxCapacity}} L)",
+        "SUCCESS": {
+          "ADD": "Oil reception added successfully",
+          "UPDATE": "Oil reception updated successfully"
+        },
+        "UPDATE_ERROR": "Error updating delivery",
         "UPDATE_SUCCESS": "Oil delivery updated successfully"
       },
       "PLACEHOLDERS": {
@@ -581,7 +691,7 @@
     "OLIVE_TITLE": "Olive Deliveries",
     "OPERATION_TYPE": {
       "BASE": "Base",
-      "INTERNAL_RECEPTION": "Iinternal recaption",
+      "INTERNAL_RECEPTION": "Internal Reception",
       "OIL_PURCHASE": "Oil Purchase",
       "OLIVE_PURCHASE": "Olive Purchase",
       "PAYMENT": "Payment",
@@ -598,6 +708,8 @@
   "Dashboard": "Dashboard",
   "Data": "Data",
   "Default": "Default",
+  "Delivery": "Delivery",
+  "Details": "Details",
   "Document": "Document",
   "Drop Zone": "Drop Zone",
   "E-commerce": "E-commerce",
@@ -663,6 +775,7 @@
   "Editor": "Editor",
   "Error 404": "Error 404",
   "Error 500": "Error 500",
+  "FINANCE_TAB": "Finance Config",
   "File Manager": "File Manager",
   "Finance": "Finance",
   "Forgot Password": "Forgot Password",
@@ -762,6 +875,14 @@
     "PRODUCTION_TAB": "Production Config",
     "TAB_TITLE": "General Configuration"
   },
+  "GENERAL_CONFIG_UI_GENERAL_CONFIG": {
+    "CONFIGURATIONS": "Configurations",
+    "FINANCE_TAB": "Finance Config",
+    "HR_TAB": "HR Config",
+    "OTHER_TAB": "Other Config",
+    "PRODUCTION_TAB": "Production Config",
+    "TAB_TITLE": "General Configuration"
+  },
   "GENERIC_TYPE": {
     "ACTION": {
       "ADD_NEW": "Add New"
@@ -775,11 +896,23 @@
       "NAME": "Name"
     }
   },
+  "HR_TAB": "HR Config",
+  "Helpdesk": "Helpdesk",
   "Home": "Home",
+  "Invoice": "Invoice",
   "Kanban": "Kanban",
+  "LOGO": {
+    "CLICK_BROWSE": "or click to browse",
+    "DRAG_DROP": "Drag & drop your logo here",
+    "FILE_TYPES": "PNG or JPEG, max 200KB",
+    "REMOVE": "Remove logo",
+    "REQUIRED": "Logo is required.",
+    "TITLE": "Company Logo"
+  },
   "Landing": "Landing",
   "Layouts": "Layouts",
   "Level 2.1": "Level 2.1",
+  "List": "List",
   "Login": "Login",
   "MENU": {
     "ADMINISTRATION": {
@@ -865,6 +998,7 @@
       "CUSTOMERS": "Customers",
       "EXPENSES": "Expenses",
       "OIL_CREDIT": "Oil Credit",
+      "OIL_SALES": "Oil Sales",
       "OIL_TRANSACTIONS": "Oil Transactions",
       "TITLE": "Finance & Accounting",
       "TRANSACTIONS": "Financial Transactions"
@@ -916,6 +1050,9 @@
       "TITLE": "Suppliers"
     }
   },
+  "MESSAGES": {
+    "CONFIRM_RESET": "Are you sure you want to reset the form? All unsaved changes will be lost."
+  },
   "MILL_MACHINE": {
     "ACTIONS": {
       "CANCEL": "Cancel",
@@ -951,6 +1088,7 @@
   "Maintenance": "Maintenance",
   "Mask": "Mask",
   "Material Table": "Material Table",
+  "Membership": "Membership",
   "Menu Level 2.2": "Menu Level 2.2",
   "Menu Level 2.3": "Menu Level 2.3",
   "Menu Level 3.1": "Menu Level 3.1",
@@ -961,6 +1099,53 @@
   "Menu levels": "Menu levels",
   "Multi Column": "Multi Column",
   "Navigation": "Navigation",
+  "Notification": "Notification",
+  "OIL_CONTAINER": {
+    "FORM": {
+      "ACTIVE": "Active",
+      "BARCODE": "Barcode",
+      "BUY_PRICE": "Buy Price",
+      "CANCEL": "Cancel",
+      "CAPACITY": "Capacity (L)",
+      "CERTIFICATION": "Certification",
+      "DESCRIPTION": "Description",
+      "ERRORS": {
+        "NAME_REQUIRED": "Name is required"
+      },
+      "MATERIAL": "Material",
+      "NAME": "Name",
+      "REORDER_QUANTITY": "Reorder Quantity",
+      "REORDER_THRESHOLD": "Reorder Threshold",
+      "SAVE": "Save",
+      "SELLING_PRICE": "Selling Price",
+      "STOCK_QUANTITY": "Stock Quantity",
+      "STORAGE_LOCATION": "Storage Location",
+      "UPDATE": "Update"
+    },
+    "TITLE_ADD": "Add Oil Container",
+    "TITLE_EDIT": "Edit Oil Container",
+    "DASHBOARD": {
+      "FIELDS": {
+        "NAME": "Container",
+        "DESCRIPTION": "Description",
+        "CAPACITY_IN_LITERS": "Capacity (L)",
+        "STOCK_QUANTITY": "Stock Quantity",
+        "MATERIAL": "Material",
+        "BUY_PRICE": "Buy Price",
+        "SELLING_PRICE": "Selling Price",
+        "REORDER_THRESHOLD": "Reorder Threshold",
+        "REORDER_QUANTITY": "Reorder Quantity",
+        "SKU": "SKU",
+        "BARCODE": "Barcode",
+        "STORAGE_LOCATION_CODE": "Storage Location",
+        "IMAGE_URL": "Image",
+        "ACTIVE": "Active",
+        "CERTIFICATION": "Certification"
+      }
+    } },
+  "OIL_CONTAINER_LIST": "Oil containers list",
+  "OIL_CONTAINER_MANAGEMENT": "Oil containers managment",
+  "OIL_CONTAINER_MANAGEMENT_ADD": "Add a new container",
   "OIL_CREDIT": {
     "ACTIONS": {
       "CANCEL": "Cancel",
@@ -1008,13 +1193,50 @@
         "PENDING": "Pending",
         "REJECTED": "Rejected"
       },
+      "ERRORS": {
+        "CITERNE_PILE_REQUIRED": "Storage tank is required.",
+        "CREDIT_STATE_REQUIRED": "Credit state is required.",
+        "DESTINATAIRE_REQUIRED": "Recipient is required.",
+        "EMBALLAGE_REQUIRED": "Packaging is required.",
+        "OIL_TYPE_REQUIRED": "Oil type is required.",
+        "QUANTITY_INSUFFICIENT": "Insufficient quantity in storage.",
+        "QUANTITY_MIN": "Quantity must be greater than 0.",
+        "QUANTITY_REQUIRED": "Quantity is required.",
+        "QUANTITY_UNIT_MISMATCH": "Unit mismatch for selected storage.",
+        "UNIT_REQUIRED": "Unit is required."
+      },
+      "FIELDS": {
+        "CITERNE_PILE": "Storage Tank",
+        "CREATED_DATE": "Created Date",
+        "CREDIT_STATE": "Credit State",
+        "DESTINATAIRE": "Recipient",
+        "EMBALLAGE": "Packaging",
+        "OIL_TYPE": "Oil Type",
+        "QUANTITY": "Quantity",
+        "UNIT": "Unit"
+      },
+      "MESSAGES": {
+        "FORM_INVALID": "Please correct the errors in the form.",
+        "LOAD_ERROR": "Error loading data.",
+        "QUANTITY_INSUFFICIENT_SNACK": "Insufficient quantity in storage.",
+        "QUANTITY_UNIT_MISMATCH_SNACK": "Unit mismatch for selected storage.",
+        "SAVE_ERROR": "Error saving oil credit.",
+        "SAVE_SUCCESS": "Oil credit saved successfully.",
+        "UPDATE_SUCCESS": "Oil credit updated successfully."
+      },
       "PLACEHOLDERS": {
+        "SEARCH_CITERNE_PILE": "Search storage tank...",
+        "SEARCH_DESTINATAIRE": "Search recipient...",
         "SEARCH_OIL_TYPE": "Search oil type...",
         "SEARCH_RECIPIENT": "Search recipient...",
         "SEARCH_STORAGE_TANK": "Search storage tank..."
       },
       "TITLE_EDIT": "Edit Oil Credit",
-      "TITLE_NEW": "Add Oil Credit"
+      "TITLE_NEW": "Add Oil Credit",
+      "UNITS": {
+        "KILOGRAM": "Kilogram",
+        "LITRE": "Liter"
+      }
     },
     "MESSAGES": {
       "FORM_INVALID": "Please correct the errors in the form.",
@@ -1096,22 +1318,34 @@
       "FINANCIAL_INFO": "Financial Information",
       "GENERAL_INFO": "General Information",
       "MESSAGES": {
+        "CREATE_ERROR": "Error creating delivery",
+        "CREATE_SUCCESS": "Delivery created successfully",
         "ERROR": {
           "ADD": "Error adding oil reception",
           "INCOMPLETE_FORM": "Please fill in all required fields",
           "LOAD": "Error loading oil reception data",
           "UPDATE": "Error updating oil reception"
         },
+        "LOAD_ERROR": "Error loading delivery data",
         "STORAGE_CAPACITY": "Storage unit {{name}} has {{available}} L available out of {{max}} L capacity",
         "SUCCESS": {
           "ADD": "Oil reception added successfully",
           "UPDATE": "Oil reception updated successfully"
-        }
+        },
+        "UPDATE_ERROR": "Error updating delivery",
+        "UPDATE_SUCCESS": "Delivery updated successfully"
       },
       "OIL_DETAILS": "Oil Details",
       "OPERATION_TYPE": "Operation Type",
+      "PAYMENT_DETAILS": "Payment Details",
+      "PAYMENT_DIALOG_DESCRIPTION": "Enter the unit price and quantity for this oil payment. The total cannot exceed the unpaid amount of the original olive reception.",
+      "QUANTITY": "Quantity (kg)",
+      "REQUIRED": "This field is required",
+      "SUBMIT": "Submit",
       "SUPPLIER_REGION": "Supplier and Region",
       "TITLE": "Add Oil Reception",
+      "TOTAL": "Total (DH)",
+      "UNIT_PRICE": "Unit Price (DH)",
       "VEHICLE_INFO": "Vehicle Information",
       "WEIGHT_QUANTITY": "Weight and Quantity"
     },
@@ -1156,8 +1390,96 @@
     "PAYMENT_DIALOG_DESCRIPTION": "Enter the unit price and quantity for this oil payment. The total cannot exceed the unpaid amount from the original olive reception.",
     "QUANTITY": "Quantity (kg)",
     "REQUIRED": "This field is required",
+    "SUBMIT": "Submit",
     "TOTAL": "Total (TND)",
     "UNIT_PRICE": "Unit Price (TND)"
+  },
+  "OIL_SALES": {
+    "ADD_TITLE": "Add Oil Sale",
+    "CANCEL": "Cancel",
+    "CONFIRM": "Confirm",
+    "CREATED_BY": "Created By",
+    "CREATED_DATE": "Created Date",
+    "CURRENCIES": {
+      "EUR": "EUR",
+      "TND": "TND",
+      "USD": "USD"
+    },
+    "CURRENCY": "Currency",
+    "CUSTOMER": "Customer",
+    "CUSTOMER_ADDRESS": "Customer Address",
+    "CUSTOMER_EMAIL": "Customer Email",
+    "CUSTOMER_INFO": "Customer Information",
+    "CUSTOMER_NAME": "Customer Name",
+    "CUSTOMER_PHONE": "Customer Phone",
+    "DELIVER": "Deliver",
+    "DESCRIPTION": "Description",
+    "DETAILS": "Oil Sale Details",
+    "EDIT_TITLE": "Edit Oil Sale",
+    "FIELDS": {
+      "CREATED_DATE": "Created date ",
+      "CURRENCY": "Currency",
+      "CUSTOMER": "Customer",
+      "DELIVERY_NOTES": "Notes",
+      "INVOICE_NUMBER": "Invoice Number",
+      "PAYMENT_METHOD": "Payment Method",
+      "QUANTITY": "Quantity (L)",
+      "SALE_DATE": "Sale Date",
+      "STATUS": "Status",
+      "STORAGE_UNIT": "Storage Unit",
+      "SUPPLIER": "Supplier",
+      "TOTAL_AMOUNT": "Total Amount",
+      "UNIT_PRICE": "Unit Price"
+    },
+    "FORM": {
+      "VALIDATION": {
+        "BOTH_CUSTOMER_AND_SUPPLIER_SELECTED": "Please select either customer or supplier, not both",
+        "CUSTOMER_OR_SUPPLIER_REQUIRED": "Either customer or supplier must be selected"
+      }
+    },
+    "FORM_SUBTITLE": "Create or update oil sale information",
+    "INVOICE": "Invoice",
+    "INVOICE_NUMBER": "Invoice Number",
+    "LAST_MODIFIED_BY": "Last Modified By",
+    "LAST_MODIFIED_DATE": "Last Modified Date",
+    "OIL_TYPE": "Oil Type",
+    "PAYMENT_METHOD": "Payment Method",
+    "PAYMENT_METHODS": {
+      "BANK_TRANSFER": "Bank Transfer",
+      "CASH": "Cash",
+      "CHECK": "Check",
+      "CREDIT_CARD": "Credit Card",
+      "DEBIT_CARD": "Debit Card",
+      "MOBILE_PAYMENT": "Mobile Payment",
+      "OIL_CREDIT": "Oil Credit"
+    },
+    "QUANTITY": "Quantity",
+    "SALE_DATE": "Sale Date",
+    "SALE_DETAILS": "Sale Details",
+    "SEARCH_SUPPLIER": "Search supplier...",
+    "STATUS": {
+      "CANCELLED": "Cancelled",
+      "CONFIRMED": "Confirmed",
+      "DELIVERED": "Delivered",
+      "PENDING": "Pending"
+    },
+    "STORAGE_UNIT": "Storage Unit",
+    "STORAGE_UNIT_CAPACITY": "Storage Unit Capacity",
+    "STORAGE_UNIT_INFO": "Storage Unit Information",
+    "STORAGE_UNIT_LOCATION": "Storage Unit Location",
+    "STORAGE_UNIT_NAME": "Storage Unit Name",
+    "SUMMARY": "Sale Summary",
+    "SUPPLIER": "Supplier",
+    "TIMESTAMPS": "Timestamps",
+    "TITLE": "Oil Sales",
+    "TOTAL_AMOUNT": "Total Amount",
+    "UNIT_PRICE": "Unit Price",
+    "VALIDATION": {
+      "CONFIRM": "Confirm",
+      "INSUFFICIENT_QUANTITY": "Insufficient quantity",
+      "SOURCE_STORAGE_UNIT": "Source Storage Unit",
+      "TITLE": "Validate Oil Sale"
+    }
   },
   "OIL_TRANSACTION": {
     "DELIVERY": {
@@ -1189,7 +1511,8 @@
       "TOTAL_PRICE": "Total Price",
       "TYPE": "Type",
       "UNIT_PRICE": "Unit Price"
-    }
+    },
+    "LIST": "Oil transactions list "
   },
   "OIL_TRANSACTIONS": {
     "DASHBOARD": {
@@ -1417,6 +1740,7 @@
   "OPERATION_TYPE": {
     "BASE": "Base milling",
     "EXCHANGE": "Exchange",
+    "INTERNAL_RECEPTION": "Internal reception",
     "OIL_PURCHASE": "Oil purchase",
     "OLIVE_PURCHASE": "Olive purchase",
     "SIMPLE_RECEPTION": "Private milling"
@@ -1501,6 +1825,8 @@
     },
     "TITLE": "Actions"
   },
+  "OTHER_TAB": "Other Config",
+  "Online Courses": "Online Courses",
   "Other": "Other",
   "PDF": {
     "ADDRESS": "Address",
@@ -1574,11 +1900,14 @@
   "PLANNING_TYPE": "Type:",
   "PLANNING_UNASSIGNED": "Unassigned",
   "PLANNING_VARIETY": "Variety:",
+  "PRODUCTION_TAB": "Production Config",
   "Pages": "Pages",
+  "Payment": "Payment",
   "Plugins": "Plugins",
   "Price": "Price",
   "Price 1": "Price 1",
   "Price 2": "Price 2",
+  "Pricing": "Pricing",
   "Product": "Product",
   "Product Details": "Product Details",
   "Product List": "Product List",
@@ -1664,6 +1993,7 @@
       "EDIT": "Edit",
       "NEXT": "Next",
       "PREVIOUS": "Previous",
+      "RETRY": "Retry",
       "SAVE": "Save",
       "SEARCH": "Search",
       "SUBMIT": "Submit"
@@ -1756,7 +2086,8 @@
           "TOTAL_PRICE": "Total Price",
           "TRANSACTION_TYPE": "Transaction Type",
           "UNIT_PRICE": "Unit Price"
-        }
+        },
+        "TITLE": "Storage Dashboard"
       },
       "MAX_CAPACITY": "Max Capacity",
       "NA": "N/A",
@@ -1788,9 +2119,11 @@
     "DETAILS": {
       "OIL_CREDIT_STATS_TITLE": "Oil Credit Stats",
       "OIL_CREDIT_TOTAL": "Oil Credits",
+      "PAID_OILSALES_TITLE": "Paid Oil sales",
       "PAYMENT_HISTORY_COUNT": "payments made",
       "PAYMENT_HISTORY_TITLE": "Payment History",
       "UNPAID_COUNT": "payments pending",
+      "UNPAID_OILSALES_TITLE ": "Unpaid oil sales",
       "UNPAID_TITLE": "Unpaid Payments"
     },
     "ERRORS": {
@@ -1942,9 +2275,12 @@
   },
   "Sample Page": "Sample Page",
   "Setting": "Settings",
+  "Site": "Site",
   "Social Profile": "Social Profile",
   "Statistics": "Statistics",
   "Sticky Action Bar": "Sticky Action Bar",
+  "Student": "Student",
+  "TAB_TITLE": "General Configuration",
   "TRANSACTIONS": {
     "ACTIONS": {
       "APPROVE": "Approve",
@@ -2044,6 +2380,8 @@
     }
   },
   "Table": "Table",
+  "Teacher": "Teacher",
+  "Ticket": "Ticket",
   "USER_FORM": {
     "CONFIRMATION_METHOD": "Confirmation Method",
     "CONFIRMATION_METHOD_REQUIRED": "Confirmation method is required.",

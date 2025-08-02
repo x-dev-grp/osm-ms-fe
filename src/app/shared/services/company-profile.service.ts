@@ -37,8 +37,8 @@ export class CompanyProfileService {
     // Fetch from API if not in cache or ID mismatch
     return this.http.get<ApiResponse<CompanyProfile>>(`${this.baseUrl}/fetch/${tenantId}`).pipe(
       tap((response) => {
-        if (response && response.success && Array.isArray(response.data) && response.data.length > 0) {
-          localStorage.setItem(this.STORAGE_KEY, JSON.stringify(response));
+        if (response && response.success ) {
+          localStorage.setItem(this.STORAGE_KEY, JSON.stringify(response.data));
         }
       })
     );

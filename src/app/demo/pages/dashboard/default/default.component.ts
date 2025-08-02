@@ -1,5 +1,5 @@
 // angular import
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 // project import
@@ -8,6 +8,9 @@ import { EarningChartComponent } from '../../apex-chart/earning-chart/earning-ch
 import { RevenueChartComponent } from '../../apex-chart/revenue-chart/revenue-chart.component';
 import { ProjectOverviewChartComponent } from '../../apex-chart/project-overview-chart/project-overview-chart.component';
 import { TotalIncomeChartComponent } from '../../apex-chart/total-income-chart/total-income-chart.component';
+import { CompanyProfileService } from 'src/app/shared/services/company-profile.service';
+import { AuthenticationService } from 'src/app/auth/services/authentication.service';
+import { Role } from 'src/app/@theme/types/role';
 
 @Component({
   selector: 'app-default',
@@ -22,7 +25,7 @@ import { TotalIncomeChartComponent } from '../../apex-chart/total-income-chart/t
   templateUrl: './default.component.html',
   styleUrls: ['../dashboard.scss', './default.component.scss']
 })
-export class DefaultComponent {
+export class DefaultComponent implements OnInit {
   // public method
   project = [
     {
@@ -92,4 +95,38 @@ export class DefaultComponent {
       amount_type: 'text-success-500'
     }
   ];
+
+  constructor(
+    private companyProfileService: CompanyProfileService,
+    private authService: AuthenticationService
+  ) {}
+
+  ngOnInit(): void {
+    this.fetchCompanyProfile();
+  }
+
+  private fetchCompanyProfile(): void {
+    const currentUser = this.authService.currentUserValue;
+    
+    // Only fetch company profile for non-OsmAdmin users who have a tenantId
+    if (currentUser && currentUser.role !== Role.OsmAdmin && currentUser.tenantId) {
+      console.log('[DefaultComponent] Fetching company profile for tenantId:', currentUser.tenantId);
+      
+      this.companyProfileService.getProfile().subscribe({
+        next: (response) => {
+          if (response && response.success) {
+            console.log('[DefaultComponent] Company profile fetched successfully:', response.data);
+            // You can store the profile data or use it as needed
+          } else {
+            console.warn('[DefaultComponent] Company profile fetch returned no data or error');
+          }
+        },
+        error: (error) => {
+          console.error('[DefaultComponent] Error fetching company profile:', error);
+        }
+      });
+    } else {
+      console.log('[DefaultComponent] Skipping company profile fetch - user is OsmAdmin or has no tenantId');
+    }
+  }
 }

@@ -5,7 +5,6 @@ import { SettingsRoutingModule } from './settings-routing.module';
 import { SharedModule } from '../demo/shared/shared.module';
 
 import { GeneralConfigComponent } from './general-config/general-config.component';
-import { PricingComponent } from '../finance/pricing/pricing.component';
  import { GenericTypeComponent } from './generic-type/generic-type.component';
 import { QualityControlRuleComponent } from './quality-control-rule/quality-control-rule.component';
 import { ApplicationConfigComponent } from './application-config/application-config.component';
@@ -20,7 +19,7 @@ import { ApplicationConfigComponent } from './application-config/application-con
     SharedModule,
      GeneralConfigComponent,
     QualityControlRuleComponent,
-    PricingComponent,
+
     GenericTypeComponent,
     ApplicationConfigComponent
   ]

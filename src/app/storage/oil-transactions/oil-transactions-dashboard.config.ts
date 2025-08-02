@@ -84,7 +84,7 @@ export const OIL_TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
     {
       name: 'reception.lotNumber',
       label: 'N° Lot',
-      labelTranslatePath: 'DELIVERIES.FIELDS.LOT_NUMBER',
+      labelTranslatePath: 'OIL_TRANSACTION.DELIVERY.LOT_NUMBER',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -131,5 +131,5 @@ export const OIL_TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
 
   /* ── Menu actions (no status mapping) ───────────────────────── */
 
-  fileName: 'transactions-huile'
+  fileName: 'OIL_TRANSACTION.LIST'
 };

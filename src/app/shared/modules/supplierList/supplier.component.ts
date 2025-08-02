@@ -82,7 +82,9 @@ export class SupplierComponent implements OnInit, AfterViewInit, OnChanges {
             ...this.searchData,
             searchData: {
               ...this.searchData.searchData,
-              search: {
+              search: { isDeleted:{
+                  equalValue:false
+                },
                 ...this.searchData.searchData?.search,
                 'supplierInfo.name': {
                   likeValue: value

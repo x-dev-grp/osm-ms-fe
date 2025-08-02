@@ -259,7 +259,7 @@ src/app/
 - Oil type assignment
 - Maintenance scheduling
 
-#### Oil Transactions (`src/app/storage/oil-transactions/oil-transactions.component.ts`)
+#### Oil Transactions (`src/app/storage/oil_transaction/oil_transaction.component.ts`)
 **Purpose**: Oil movement tracking
 
 **Features**:

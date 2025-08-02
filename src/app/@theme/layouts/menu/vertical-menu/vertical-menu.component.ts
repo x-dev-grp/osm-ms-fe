@@ -2,6 +2,7 @@
 import { Component, effect, inject, input, OnInit } from '@angular/core';
 import { Location, LocationStrategy } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 // project import
 import { NavigationItem } from 'src/app/@theme/types/navigation';
@@ -14,6 +15,8 @@ import { AuthenticationService } from 'src/app/auth/services/authentication.serv
 import { MenuCollapseComponent } from './menu-collapse/menu-collapse.component';
 import { environment } from '../../../../../environments/environment';
 import { CompanyProfile } from '../../../../shared/models/CompanyProfile';
+import { Role } from '../../../../@theme/types/role';
+import { CompanyProfileService } from '../../../../shared/services/company-profile.service';
 
 @Component({
   selector: 'app-vertical-menu',
@@ -27,6 +30,7 @@ export class VerticalMenuComponent implements OnInit {
   private locationStrategy = inject(LocationStrategy);
   private themeService = inject(ThemeLayoutService);
   authenticationService = inject(AuthenticationService);
+  private companyProfileService = inject(CompanyProfileService);
   currentApplicationVersion = environment.appVersion;
 
   // public props
@@ -47,10 +51,29 @@ export class VerticalMenuComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadCompanyLogo();
+    this.loadCompanyProfileAndLogo();
   }
 
-  private loadCompanyLogo(): void {
+  /**
+   * Loads company profile and logo from API or cache
+   */
+  private loadCompanyProfileAndLogo(): void {
+    const currentUser = this.authenticationService.currentUserValue;
+
+    // Only fetch company profile for non-OsmAdmin users who have a tenantId
+    if (currentUser && currentUser.role !== Role.OsmAdmin && currentUser.tenantId) {
+      console.log('[VerticalMenu] Fetching company profile for tenantId:', currentUser.tenantId);
+      this.loadCompanyLogoFromCache();
+
+    } else {
+      this.companyProfileService.getProfile()
+    }
+  }
+
+  /**
+   * Loads company logo from localStorage cache (fallback method)
+   */
+  private loadCompanyLogoFromCache(): void {
     console.log('[VerticalMenu] Attempting to load company logo from localStorage');
     const cachedProfile = localStorage.getItem('company_profile');
     let foundLogo = false;
@@ -82,6 +105,13 @@ export class VerticalMenuComponent implements OnInit {
       this.logoPreview = 'assets/logo.jpg';
       console.log('[VerticalMenu] Falling back to default logo asset');
     }
+  }
+
+  /**
+   * Legacy method - kept for backward compatibility
+   */
+  private loadCompanyLogo(): void {
+    this.loadCompanyLogoFromCache();
   }
 
   // public method

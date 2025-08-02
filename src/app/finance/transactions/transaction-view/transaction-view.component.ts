@@ -40,7 +40,7 @@ export class TransactionViewComponent implements OnInit {
   ngOnInit(): void {
     // Check if this is print mode
     this.isPrintMode = this.route.snapshot.queryParamMap.get('print') === 'true';
-    
+
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.loadTransaction(id);
@@ -53,7 +53,7 @@ export class TransactionViewComponent implements OnInit {
   private loadTransaction(id: string): void {
     this.loading = true;
     this.error = false;
-    
+
     this.transactionService.getTransactionById(id).subscribe({
       next: (response) => {
         if (response.success && response.data) {
@@ -133,18 +133,7 @@ export class TransactionViewComponent implements OnInit {
     return directionLabels[direction] || direction;
   }
 
-  getPaymentMethodLabel(method: PaymentMethod): string {
-    const methodLabels: { [key in PaymentMethod]: string } = {
-      [PaymentMethod.CASH]: 'Espèces',
-      [PaymentMethod.BANK_TRANSFER]: 'Virement Bancaire',
-      [PaymentMethod.CHECK]: 'Chèque',
-      [PaymentMethod.CREDIT_CARD]: 'Carte de Crédit',
-      [PaymentMethod.DEBIT_CARD]: 'Carte de Débit',
-      [PaymentMethod.MOBILE_PAYMENT]: 'Paiement Mobile',
-      [PaymentMethod.OIL_CREDIT]: 'Crédit Huile'
-    };
-    return methodLabels[method] || method;
-  }
+
 
   getCurrencyLabel(currency: Currency): string {
     const currencyLabels: { [key in Currency]: string } = {
@@ -157,7 +146,7 @@ export class TransactionViewComponent implements OnInit {
 
   getStatusClass(): string {
     if (!this.transaction) return '';
-    
+
     if (this.transaction.approved) {
       return 'status-approved';
     } else {
@@ -167,7 +156,7 @@ export class TransactionViewComponent implements OnInit {
 
   getStatusLabel(): string {
     if (!this.transaction) return '';
-    
+
     if (this.transaction.approved) {
       return 'Approuvée';
     } else {
@@ -177,7 +166,7 @@ export class TransactionViewComponent implements OnInit {
 
   getAmountClass(): string {
     if (!this.transaction) return '';
-    
+
     if (this.transaction.direction === TransactionDirection.INBOUND) {
       return 'amount-positive';
     } else {
@@ -191,4 +180,4 @@ export class TransactionViewComponent implements OnInit {
       panelClass: ['error-snackbar']
     });
   }
-} 
+}

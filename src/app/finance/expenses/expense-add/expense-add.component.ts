@@ -12,7 +12,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SharedModule } from '../../../demo/shared/shared.module';
 import { ExpenseService } from '../../service/expense.service';
 import { Expense } from '../../models/expense.model';
-import { PaymentMethod } from '../../models/financial-transaction';
+import { PaymentMethod } from '../../models/financial-transaction.model';
 
 @Component({
   selector: 'app-expense-add',

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { ApiResponse } from '../../shared/models/api-response';
 import { Customer } from '../models/Customer';
 import { environment } from '../../../environments/environment';
+import { BankAccount } from '../models/BankAccount';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +22,9 @@ export class CustomerService {
   // Create a new customer.
   createCustomer(customer: Customer): Observable<ApiResponse<Customer>> {
     return this.http.post<ApiResponse<Customer>>(`${this.baseUrl}`, customer);
+  }
+  getAllCustomers(): Observable<ApiResponse<Customer>> {
+    return this.http.get<ApiResponse<Customer>>(`${this.baseUrl}/fetchAll`);
   }
 
   // Update an existing customer.

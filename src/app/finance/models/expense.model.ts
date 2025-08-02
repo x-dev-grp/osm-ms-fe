@@ -1,4 +1,4 @@
-import { PaymentMethod } from './financial-transaction';
+import { PaymentMethod } from './financial-transaction.model';
 
 export interface Expense {
   id?: string;

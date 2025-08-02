@@ -10,14 +10,14 @@ import { Customer } from '../../models/Customer';
 import { CustomerService } from '../../service/customer.service';
 import { getCustomerCategoryLabel } from '../../models/CustomerCategory';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-customer-view',
   standalone: true,
   templateUrl: './customer-view.component.html',
   styleUrls: ['./customer-view.component.scss'],
-  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatDividerModule, TranslateModule, MatProgressSpinner]
+  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatDividerModule, TranslateModule, MatProgressSpinnerModule]
 })
 export class CustomerViewComponent implements OnInit {
   customer?: Customer;
@@ -33,18 +33,28 @@ export class CustomerViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.customerId = this.route.snapshot.paramMap.get('id') || undefined;
+    console.log('Customer view initialized with ID:', this.customerId);
     if (this.customerId) {
       this.loadCustomer(this.customerId);
+    } else {
+      console.error('No customer ID provided');
+      this.snackBar.open('No customer ID provided', 'Close', { duration: 3000 });
+      this.router.navigate(['/finance/customers']);
     }
   }
 
   private loadCustomer(id: string): void {
     this.loading = true;
+    console.log('Loading customer with ID:', id);
     this.customerService.getCustomer(id).subscribe({
       next: (response) => {
+        console.log('Customer service response:', response);
         if (response.success && response.data) {
-          this.customer = response.data[0];
+          const customerData = Array.isArray(response.data) ? response.data[0] : response.data;
+          this.customer = customerData;
+          console.log('Customer data loaded:', this.customer);
         } else {
+          console.log('No customer data found');
           this.snackBar.open('Customer not found', 'Close', { duration: 3000 });
           this.router.navigate(['/finance/customers']);
         }
@@ -70,7 +80,7 @@ export class CustomerViewComponent implements OnInit {
   }
 
   getCategoryLabel(category?: string): string {
-    if (!category) return 'N/A';
+    if (!category) return 'CUSTOMERS.CATEGORIES.INDIVIDUAL';
     return getCustomerCategoryLabel(category as any);
   }
 }

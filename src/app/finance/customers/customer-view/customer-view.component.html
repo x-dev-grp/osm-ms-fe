@@ -15,14 +15,14 @@
     <p>{{ 'CUSTOMERS.MESSAGES.LOADING' | translate }}</p>
   </div>
 
-  <div *ngIf="!loading && customer" class="customer-details">
+  <div *ngIf="!loading && customer && customer.id" class="customer-details">
     <!-- Customer Header -->
     <mat-card class="customer-header">
       <mat-card-content>
         <div class="customer-name">
           <mat-icon class="customer-icon">person</mat-icon>
           <div class="name-info">
-            <h1>{{ customer.customerName }} {{ customer.customerLastName }}</h1>
+            <h1>{{ customer.customerName || 'Unnamed Customer' }}{{ customer.customerLastName ? ' ' + customer.customerLastName : '' }}</h1>
             <p class="customer-id">ID: {{ customer.id }}</p>
           </div>
           <div class="customer-status">
@@ -46,11 +46,11 @@
         </mat-card-header>
         <mat-card-content>
           <div class="info-grid">
-            <div class="info-item">
+            <div class="info-item" *ngIf="customer.matriculeFiscal">
               <label>{{ 'CUSTOMERS.FIELDS.MATRICULE_FISCAL' | translate }}:</label>
               <span>{{ customer.matriculeFiscal }}</span>
             </div>
-            <div class="info-item">
+            <div class="info-item" *ngIf="customer.numCIN">
               <label>{{ 'CUSTOMERS.FIELDS.NUM_CIN' | translate }}:</label>
               <span>{{ customer.numCIN }}</span>
             </div>
@@ -58,7 +58,7 @@
               <label>{{ 'CUSTOMERS.FIELDS.CATEGORY' | translate }}:</label>
               <span class="category-badge">{{ getCategoryLabel(customer.category) | translate }}</span>
             </div>
-            <div class="info-item" *ngIf="(customer.contactPerson)">
+            <div class="info-item" *ngIf="customer.contactPerson">
               <label>{{ 'CUSTOMERS.FIELDS.CONTACT_PERSON' | translate }}:</label>
               <span>{{ customer.contactPerson }}</span>
             </div>
@@ -76,25 +76,25 @@
         </mat-card-header>
         <mat-card-content>
           <div class="info-grid">
-            <div class="info-item" *ngIf="(customer.email)">
+            <div class="info-item" *ngIf="customer.email">
               <label>{{ 'CUSTOMERS.FIELDS.EMAIL' | translate }}:</label>
               <span>
                 <a [href]="'mailto:' + customer.email">{{ customer.email }}</a>
               </span>
             </div>
-            <div class="info-item" *ngIf="(customer.phone)">
+            <div class="info-item" *ngIf="customer.phone">
               <label>{{ 'CUSTOMERS.FIELDS.PHONE' | translate }}:</label>
               <span>
                 <a [href]="'tel:' + customer.phone">{{ customer.phone }}</a>
               </span>
             </div>
-            <div class="info-item" *ngIf="(customer.mobile)">
+            <div class="info-item" *ngIf="customer.mobile">
               <label>{{ 'CUSTOMERS.FIELDS.MOBILE' | translate }}:</label>
               <span>
                 <a [href]="'tel:' + customer.mobile">{{ customer.mobile }}</a>
               </span>
             </div>
-            <div class="info-item" *ngIf="(customer.fax)">
+            <div class="info-item" *ngIf="customer.fax">
               <label>{{ 'CUSTOMERS.FIELDS.FAX' | translate }}:</label>
               <span>{{ customer.fax }}</span>
             </div>
@@ -103,7 +103,7 @@
       </mat-card>
 
       <!-- Address Information -->
-      <mat-card class="info-card" *ngIf="(customer.address) || (customer.country)">
+      <mat-card class="info-card" *ngIf="customer.address || customer.country">
         <mat-card-header>
           <mat-card-title>
             <mat-icon>location_on</mat-icon>
@@ -112,15 +112,15 @@
         </mat-card-header>
         <mat-card-content>
           <div class="info-grid">
-            <div class="info-item" *ngIf="(customer.address)">
+            <div class="info-item" *ngIf="customer.address">
               <label>{{ 'CUSTOMERS.FIELDS.ADDRESS' | translate }}:</label>
               <span>{{ customer.address }}</span>
             </div>
-            <div class="info-item" *ngIf="(customer.postalCode)">
+            <div class="info-item" *ngIf="customer.postalCode">
               <label>{{ 'CUSTOMERS.FIELDS.POSTAL_CODE' | translate }}:</label>
               <span>{{ customer.postalCode }}</span>
             </div>
-            <div class="info-item" *ngIf="(customer.country)">
+            <div class="info-item" *ngIf="customer.country">
               <label>{{ 'CUSTOMERS.FIELDS.COUNTRY' | translate }}:</label>
               <span>{{ customer.country }}</span>
             </div>
@@ -129,7 +129,7 @@
       </mat-card>
 
       <!-- Additional Information -->
-      <mat-card class="info-card" *ngIf="(customer.notes)">
+      <mat-card class="info-card" *ngIf="customer.notes">
         <mat-card-header>
           <mat-card-title>
             <mat-icon>note</mat-icon>

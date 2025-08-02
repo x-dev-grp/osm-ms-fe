@@ -99,14 +99,14 @@
               <div *ngIf="paymentForm.value?.moneyPaymentMethod  === 'check'" class="form-row">
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>{{ 'SUPPLIER_PAYMENT.CHECK_NUMBER' | translate }}</mat-label>
-                  <input formControlName="checkNumber" matInput required type="text">
+                  <input formControlName="checkNumber" matInput  type="text">
                 </mat-form-field>
               </div>
               <!-- Bank Transfer Payment Fields -->
               <div *ngIf="paymentForm.value?.moneyPaymentMethod  === 'bank_transfer'" class="form-row">
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>{{ 'SUPPLIER_PAYMENT.BANK_ACCOUNT' | translate }}</mat-label>
-                  <mat-select formControlName="bankAccount" required>
+                  <mat-select formControlName="bankAccount" >
                     <mat-option *ngFor="let account of bankAccounts" [value]="account">
                       {{ account?.bankName }} - {{ account?.rib }}
                     </mat-option>
@@ -138,13 +138,13 @@
               <!-- Oil Payment Fields (add your oil payment fields here) -->
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>{{ 'SUPPLIER_PAYMENT.OIL_QUANTITY' | translate }}</mat-label>
-                <input [min]="0.01" formControlName="oilQuantity" matInput required
+                <input [min]="0.01" formControlName="oilQuantity" matInput
                        step="0.01"
                        type="number">
               </mat-form-field>
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>{{ 'SUPPLIER_PAYMENT.OIL_PRICE' | translate }}</mat-label>
-                <input [min]="0.01" formControlName="oilPrice" matInput required step="0.01"
+                <input [min]="0.01" formControlName="oilPrice" matInput  step="0.01"
                        type="number">
               </mat-form-field>
               <!-- Add more oil payment fields as needed -->

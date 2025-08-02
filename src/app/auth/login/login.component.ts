@@ -12,7 +12,7 @@ import { catchError, first, of } from 'rxjs';
 import { User } from 'src/app/@theme/types/user';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Role } from '../../@theme/types/role';
-import { CompanyProfileService } from '../../shared/services/company-profile.service';
+
 
 @Component({
   selector: 'app-login',
@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit {
   private _fb = inject(FormBuilder);
   private router = inject(Router);
   private tokenService = inject(TokenService);
-  private companyProfileService = inject(CompanyProfileService);
+
 
   // public method
 

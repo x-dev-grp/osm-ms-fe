@@ -20,11 +20,19 @@ import { SharedModule } from '../../demo/shared/shared.module';
 export class CustomersComponent implements OnInit {
   dashboardConfig: DashboardConfig = CUSTOMERS_DASHBOARD_CONFIG;
 
+/*******************    💫 Codegeex Suggestion    *******************/
+  /**
+   * Constructor for the class.
+   * @param snackBar - Instance of MatSnackBar for displaying snack bar messages.
+   * @param customerService - Instance of CustomerService for handling customer-related operations.
+   * @param router - Instance of Router for navigation purposes.
+   */
   constructor(
     private snackBar: MatSnackBar,
     private customerService: CustomerService,
     private router: Router
   ) {}
+/****************  1344f9c59c534f0b9de0563c492a38e3  ****************/
 
   ngOnInit(): void {
     // Component initialization
@@ -33,7 +41,8 @@ export class CustomersComponent implements OnInit {
   handleAction(event: { action: string; row: Customer }): void {
     switch (event.action.toUpperCase()) {
       case 'READ':
-        this.router.navigate(['/finance/customers', event.row.id, 'view']);
+       // this.router.navigate(['/finance/customers', event.row.id, 'view']);
+        this.router.navigate([`/finance/customers/${event.row.id}/details`]);
         break;
 
       case 'EDIT':

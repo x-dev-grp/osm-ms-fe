@@ -1,7 +1,6 @@
-
 <!-- History Cards -->
 
-@if (!supplierId){
+@if (!supplierId) {
   <!-- Error message -->
   <div class="error-container">
     <mat-icon color="warn">error</mat-icon>
@@ -33,6 +32,29 @@
         </div>
       </mat-card-content>
     </mat-card>
+    <mat-card class="history-card" (click)="loadOilSalesHistory(true)">
+      <mat-card-content>
+        <div class="card-content">
+          <mat-icon class="card-icon" color="primary">payments</mat-icon>
+          <div class="card-info">
+            <h3>{{ 'SUPPLIER.DETAILS.PAID_OILSALES_TITLE' | translate }}</h3>
+            <p>{{ paidOilSalesCount }} {{ 'SUPPLIER.DETAILS.PAYMENT_HISTORY_COUNT' | translate }}</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="history-card" (click)="loadOilSalesHistory(false)">
+      <mat-card-content>
+        <div class="card-content">
+          <mat-icon class="card-icon" color="warn">pending_actions</mat-icon>
+          <div class="card-info">
+            <h3>{{ 'SUPPLIER.DETAILS.UNPAID_OILSALES_TITLE ' | translate }}</h3>
+            <p>{{ unpaidOilSalesCount }} {{ 'SUPPLIER.DETAILS.UNPAID_COUNT' | translate }}</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
 
     <mat-card class="history-card oil-credit-card" (click)="loadOilCredits()">
       <mat-card-content>
@@ -51,8 +73,11 @@
 <div class="table-section">
   @if (isOilCredit){
      <osm-dashboard #dashboard [config]="OIL_CREDIT_DASHBOARD" (applyAction)="handleCreditAction($event)"></osm-dashboard>
-  } @else {
+  } @else if(isPayment){
      <osm-dashboard #dashboard [config]="PAIMENT_DASHBOARD" (applyAction)="handlePaymentAction($event)"></osm-dashboard>
+  }@else if (isOilSale){
+    <osm-dashboard #dashboard [config]="OIL_SALES_DASHBOARD_CONFIG" (applyAction)="handlePaymentAction($event)"></osm-dashboard>
+
   }
 
 </div>

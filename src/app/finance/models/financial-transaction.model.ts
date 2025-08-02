@@ -1,5 +1,17 @@
 // ==================== ENUMS ====================
 
+import { BankAccount } from './BankAccount';
+import { Expense } from './expense.model';
+import { SupplierType } from '../../shared/models/supplier-type';
+import { Customer } from './Customer';
+ export enum PaymentMethod {
+  CASH = 'CASH',
+  CHEQUE = 'CHEQUE',
+  TRANSFER = 'TRANSFER',
+  oil='oil',
+  both='both',
+}
+
 export enum TransactionType {
   PAYMENT = 'PAYMENT',
   EXPENSE = 'EXPENSE',
@@ -30,82 +42,7 @@ export enum Currency {
   USD = 'USD'
 }
 
-export enum PaymentMethod {
-  CASH = 'CASH',
-  BANK_TRANSFER = 'BANK_TRANSFER',
-  CHECK = 'CHECK',
-  CREDIT_CARD = 'CREDIT_CARD',
-  DEBIT_CARD = 'DEBIT_CARD',
-  MOBILE_PAYMENT = 'MOBILE_PAYMENT',
-  OIL_CREDIT = 'OIL_CREDIT'
-}
-
-export enum CustomerCategory {
-  INDIVIDUAL = 'INDIVIDUAL',
-  BUSINESS = 'BUSINESS'
-}
-
 // ==================== INTERFACES ====================
-
-export interface BankAccount {
-  id?: string;
-  accountNumber: string;
-  bankName: string;
-  accountType: string;
-  currency: Currency;
-  balance?: number;
-  customer?: Customer;
-  createdDate?: string;
-  lastModifiedDate?: string;
-}
-
-export interface Customer {
-  id?: string;
-  matriculeFiscal: string;
-  numCIN: string;
-  customerName: string;
-  customerLastName: string;
-  contactPerson?: string;
-  email?: string;
-  phone?: string;
-  mobile?: string;
-  fax?: string;
-  address?: string;
-  postalCode?: string;
-  country?: string;
-  category?: CustomerCategory;
-  notes?: string;
-  createdDate?: string;
-  lastModifiedDate?: string;
-}
-
-export interface Supplier {
-  id?: string;
-  supplierInfo?: any;
-  genericSupplierType?: any;
-  hasStorage?: boolean;
-  createdDate?: string;
-  lastModifiedDate?: string;
-}
-
-export interface Expense {
-  id?: string;
-  invoiceRef?: string;
-  purchaseNature?: string;
-  object?: string;
-  date?: string;
-  amount?: number;
-  vendor?: string;
-  category?: string;
-  paymentMethod?: PaymentMethod;
-  status?: string;
-  notes?: string;
-  receiptNumber?: string;
-  approved?: boolean;
-  approvalDate?: string;
-  createdDate?: string;
-  lastModifiedDate?: string;
-}
 
 export interface FinancialTransaction {
   id?: string;
@@ -118,7 +55,7 @@ export interface FinancialTransaction {
   checkNumber?: string;
   externalTransactionId?: string;
   lotNumber?: string;
-  supplierId?: Supplier;
+  supplierId?: SupplierType;
   customer?: Customer;
   expense?: Expense;
   description?: string;
@@ -215,4 +152,4 @@ export interface FinancialTransactionSummary {
   currencyBreakdown: { [key in Currency]?: number };
   typeBreakdown: { [key in TransactionType]?: number };
   directionBreakdown: { [key in TransactionDirection]?: number };
-} 
+}

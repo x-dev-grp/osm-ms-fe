@@ -1,0 +1,23 @@
+:host {
+  .form-container {
+    padding: 1rem;
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    /* Anything marked full-col takes the entire row */
+    .full-col {
+      grid-column: 1 / -1;
+    }
+
+    /* Collapse to single column on small screens */
+    @media (max-width: 600px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  }
+}

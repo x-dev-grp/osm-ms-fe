@@ -206,6 +206,14 @@ export const osm_menus: Navigation[] = [
         url: '/finance/customers',
         icon: 'people',
         breadcrumbs: false
+      },
+      {
+        id: 'oilSales',
+        title: 'MENU.FINANCE.OIL_SALES',
+        type: 'item',
+        url: '/finance/oil-sales',
+        icon: 'sell',
+        breadcrumbs: false
       }
     ]
   },
@@ -233,6 +241,15 @@ export const osm_menus: Navigation[] = [
         type: 'item',
         url: '/storage/oil-transactions',
         icon: 'swap_horiz',
+        role: [Role.Admin],
+        breadcrumbs: false
+      },
+      {
+        id: 'oilContainer',
+        title: 'OIL_CONTAINER_MANAGEMENT',
+        type: 'item',
+        url: '/storage/oil-container',
+        icon: 'home_repair_service',
         role: [Role.Admin],
         breadcrumbs: false
       }

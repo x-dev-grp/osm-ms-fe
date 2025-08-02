@@ -17,6 +17,7 @@ import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
 import { StorageUnitDtoService } from '../../shared/services/storage.service';
 import { ExchangeValidationDialogComponent } from './exchange-validation-dialog/exchange-validation-dialog.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { OilSaleValidationDialogComponent } from './oil-sale-validation/oil-sale-validation.component';
 
 @Component({
   selector: 'app-oil-transactions',
@@ -31,7 +32,9 @@ export class OilTransactionsComponent implements OnInit {
   storageUnits: StorageUnitDto[] = [];
   dataSource: MatTableDataSource<OilTransaction> = new MatTableDataSource(this.oilTransactions);
   @ViewChild('dashboard') dashboard!: OsmDashboard;
+  transactionRequest: OilTransaction;
   private destroy$ = new Subject<void>();
+  private oilSaleForm: any;
 
   constructor(
     private snackBar: MatSnackBar,
@@ -43,7 +46,6 @@ export class OilTransactionsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadOilTransactions();
     this.loadStorageUnits();
   }
 
@@ -64,16 +66,57 @@ export class OilTransactionsComponent implements OnInit {
           case TransactionType.RECEPTION_IN:
             this.openExchangeValidationDialog(event.row, true);
             break;
+          case TransactionType.SALE:
+            this.openOilSaleValidationDialog(event.row);
+            break;
           default:
             this.router.navigate(['/storage/oil-transactions', event.row.id, 'validate']);
         }
-
-        break;
-
-      case 'DELETE':
-        this.deleteTransaction(event.row);
         break;
     }
+  }
+
+  private openOilSaleValidationDialog(row: OilTransaction): void {
+    const dialogRef = this.dialog.open(OilSaleValidationDialogComponent, {
+      width: '500px',
+      data: {
+        storageUnits: this.storageUnits,
+        quantityKg: row.quantityKg
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((tx) => {
+      if (tx) {
+        // Create oil transaction with validation data
+        const validationData = {
+          storageUnitSourceId: tx.storageUnitSourceId
+        };
+        this.transactionRequest = {
+          id: row.id!,
+          transactionType: row.transactionType,
+          transactionState: row.transactionState,
+          storageUnitDestination: row.storageUnitDestination, // selected as destination
+          storageUnitSource: validationData.storageUnitSourceId, // existing as source
+          qualityGrade: row.qualityGrade,
+          quantityKg: row.quantityKg,
+          unitPrice: row.unitPrice ?? 0,
+          totalPrice: row.totalPrice
+        };
+        this.oilTransactionService.approveOilTransaction(this.transactionRequest).subscribe({
+          next: (response) => {
+            if (response.success) {
+              this.snackBar.open('Oil sale validated successfully', 'Close', { duration: 3000 });
+            } else {
+              this.snackBar.open('Error validating oil sale: ' + response.message, 'Close', { duration: 3000 });
+            }
+          },
+          error: (error) => {
+            console.error('Error validating oil sale:', error);
+            this.snackBar.open('Error validating oil sale', 'Close', { duration: 3000 });
+          }
+        });
+      }
+    });
   }
 
   private openExchangeValidationDialog(tx: OilTransaction, isIn: boolean): void {
@@ -95,11 +138,9 @@ export class OilTransactionsComponent implements OnInit {
           return;
         }
 
-        let transactionRequest: OilTransaction;
-
         if (isIn) {
           //if the transaction addes oil to the storaeg unit we do
-          transactionRequest = {
+          this.transactionRequest = {
             id: tx.id!,
             transactionType: tx.transactionType,
             transactionState: tx.transactionState,
@@ -112,7 +153,7 @@ export class OilTransactionsComponent implements OnInit {
           };
         } else {
           // if the transaction  is out we use this
-          transactionRequest = {
+          this.transactionRequest = {
             id: tx.id!,
             transactionType: tx.transactionType,
             transactionState: tx.transactionState,
@@ -126,7 +167,7 @@ export class OilTransactionsComponent implements OnInit {
         }
 
         this.oilTransactionService
-          .approveOilTransaction(transactionRequest)
+          .approveOilTransaction(this.transactionRequest)
           .pipe(takeUntil(this.destroy$))
           .subscribe({
             next: (response) => {

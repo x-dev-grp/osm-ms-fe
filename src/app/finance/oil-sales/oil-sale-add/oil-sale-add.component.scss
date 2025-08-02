@@ -1,0 +1,121 @@
+.oil-sale-form-container {
+  padding: 24px;
+  display: flex;
+  justify-content: center;
+
+  .form-card {
+    width: 100%;
+    max-width: 1200px;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  mat-card-header {
+    border-bottom: 1px solid #eee;
+    margin-bottom: 16px;
+
+    mat-card-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.4rem;
+    }
+
+    mat-card-subtitle {
+      font-size: 0.9rem;
+      color: #666;
+    }
+  }
+
+  .oil-sale-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .form-layout {
+    display: flex;
+    gap: 32px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+
+    .form-fields {
+      flex: 1 1 60%;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .form-summary {
+      flex: 1 1 35%;
+
+      .summary-card {
+        border: 1px solid #ddd;
+        background-color: #fafafa;
+        border-radius: 8px;
+        padding: 16px;
+
+        .summary-row {
+          display: flex;
+          justify-content: space-between;
+          padding: 8px 0;
+          font-size: 0.95rem;
+          border-bottom: 1px solid #eee;
+
+          &:last-child {
+            border-bottom: none;
+          }
+
+          &.total {
+            font-weight: bold;
+
+            .total-amount {
+              color: #2e7d32;
+              font-size: 1.1rem;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .form-row {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  .full-width {
+    grid-column: 1 / -1;
+  }
+
+  mat-form-field {
+    width: 100%;
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    margin-top: 32px;
+
+    button mat-icon {
+      margin-right: 4px;
+    }
+
+    button[mat-raised-button] {
+      font-weight: 600;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .form-layout {
+      flex-direction: column;
+
+      .form-fields,
+      .form-summary {
+        flex: 1 1 100%;
+      }
+    }
+  }
+}

@@ -50,7 +50,7 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
     {
       name: 'lotNumber',
       label: 'N° Lot',
-      labelTranslatePath: 'DELIVERIES.FIELDS.LOT_NUMBER',
+      labelTranslatePath: 'DELIVERIES.FIELDS.LOT_NUMBER ',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,

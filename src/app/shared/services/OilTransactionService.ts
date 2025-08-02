@@ -69,6 +69,9 @@ export class OilTransactionService {
   createOilTransaction(oilTransaction: OilTransaction): Observable<ApiResponse<OilTransaction>> {
     return this.http.post<ApiResponse<OilTransaction>>(`${this.baseUrl}`, oilTransaction);
   }
+  createOilTransactionForSale(oilTransaction: OilTransaction): Observable<ApiResponse<OilTransaction>> {
+    return this.http.post<ApiResponse<OilTransaction>>(`${this.baseUrl}/create-for-sale`, oilTransaction);
+  }
 
   // Update an existing oil transaction
   updateOilTransaction(oilTransaction: OilTransaction): Observable<ApiResponse<OilTransaction>> {

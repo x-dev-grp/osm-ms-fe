@@ -1,0 +1,158 @@
+<div class="oil-sale-form-container">
+  <mat-card class="form-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>local_gas_station</mat-icon>
+        {{ isEditing ? ('OIL_SALES.EDIT_TITLE' | translate) : ('OIL_SALES.ADD_TITLE' | translate) }}
+      </mat-card-title>
+      <mat-card-subtitle>
+        {{ 'OIL_SALES.FORM_SUBTITLE' | translate }}
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="oilSaleForm" (ngSubmit)="onSubmit()" class="oil-sale-form">
+
+        <!-- Side-by-side layout -->
+        <div class="form-layout">
+          <!-- Left: Form fields -->
+          <div class="form-fields">
+            <!-- Customer / Supplier -->
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'OIL_SALES.CUSTOMER' | translate }}</mat-label>
+                <mat-select formControlName="customerId">
+                  <mat-option *ngFor="let customer of customers" [value]="customer">
+                    {{ customer.customerName }} {{ customer.customerLastName }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="oilSaleForm.hasError('customerOrSupplierRequired')">
+                  {{ 'OIL_SALES.FORM.VALIDATION.CUSTOMER_OR_SUPPLIER_REQUIRED' | translate }}
+                </mat-error>
+                <mat-error *ngIf="oilSaleForm.hasError('bothCustomerAndSupplierSelected')">
+                  {{ 'OIL_SALES.FORM.VALIDATION.BOTH_CUSTOMER_AND_SUPPLIER_SELECTED' | translate }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'OIL_SALES.SUPPLIER' | translate }}</mat-label>
+                <input
+                  matInput
+                  formControlName="supplierId"
+                  [matAutocomplete]="supplierAuto"
+                  [placeholder]="'OIL_SALES.SEARCH_SUPPLIER' | translate"
+                />
+                <mat-autocomplete #supplierAuto="matAutocomplete" [displayWith]="displaySupplierFn" [requireSelection]="true">
+                  <mat-option *ngFor="let supplier of filteredSuppliers | async" [value]="supplier">
+                    {{ displaySupplierFn(supplier) }}
+                  </mat-option>
+                </mat-autocomplete>
+                <mat-error *ngIf="oilSaleForm.hasError('customerOrSupplierRequired')">
+                  {{ 'OIL_SALES.FORM.VALIDATION.CUSTOMER_OR_SUPPLIER_REQUIRED' | translate }}
+                </mat-error>
+                <mat-error *ngIf="oilSaleForm.hasError('bothCustomerAndSupplierSelected')">
+                  {{ 'OIL_SALES.FORM.VALIDATION.BOTH_CUSTOMER_AND_SUPPLIER_SELECTED' | translate }}
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <!-- Quantity & Unit Price -->
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'OIL_SALES.QUANTITY' | translate }} (L)</mat-label>
+                <input matInput type="number" formControlName="quantity" required min="0.01" step="0.01">
+                <mat-error *ngIf="oilSaleForm.get('quantity')?.hasError('required')">
+                  {{ 'OLIVE_RECEPTION.FORM.VALIDATION.REQUIRED' | translate }}
+                </mat-error>
+                <mat-error *ngIf="oilSaleForm.get('quantity')?.hasError('min')">
+                  {{ 'OLIVE_RECEPTION.FORM.VALIDATION.MIN_VALUE' | translate: { value: 0.01 } }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'OIL_SALES.UNIT_PRICE' | translate }}</mat-label>
+                <input matInput type="number" formControlName="unitPrice" required min="0.01" step="0.01">
+                <mat-error *ngIf="oilSaleForm.get('unitPrice')?.hasError('required')">
+                  {{ 'OLIVE_RECEPTION.FORM.VALIDATION.REQUIRED' | translate }}
+                </mat-error>
+                <mat-error *ngIf="oilSaleForm.get('unitPrice')?.hasError('min')">
+                  {{ 'OLIVE_RECEPTION.FORM.VALIDATION.MIN_VALUE' | translate: { value: 0.01 } }}
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <!-- Sale Date -->
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'OIL_SALES.SALE_DATE' | translate }}</mat-label>
+                <input matInput [matDatepicker]="saleDatePicker" formControlName="saleDate" required>
+                <mat-datepicker-toggle matSuffix [for]="saleDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #saleDatePicker></mat-datepicker>
+                <mat-error *ngIf="oilSaleForm.get('saleDate')?.hasError('required')">
+                  {{ 'OLIVE_RECEPTION.FORM.VALIDATION.REQUIRED' | translate }}
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <!-- Description -->
+            <div class="form-row">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>{{ 'OIL_SALES.DESCRIPTION' | translate }}</mat-label>
+                <textarea matInput formControlName="description" rows="3"></textarea>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Right: Summary -->
+          <div class="form-summary">
+            <mat-card class="summary-card">
+              <mat-card-header>
+                <mat-card-title>{{ 'OIL_SALES.SUMMARY' | translate }}</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="summary-row" *ngIf="getSelectedCustomer()">
+                  <span>{{ 'OIL_SALES.CUSTOMER' | translate }}:</span>
+                  <span>{{ getSelectedCustomer()?.customerName }} {{ getSelectedCustomer()?.customerLastName }}</span>
+                </div>
+                <div class="summary-row" *ngIf="getSelectedSupplier()">
+                  <span>{{ 'OIL_SALES.SUPPLIER' | translate }}:</span>
+                  <span>{{ getSelectedSupplier()?.supplierInfo.name }} {{ getSelectedSupplier()?.supplierInfo.lastname }}</span>
+                </div>
+                <div class="summary-row">
+                  <span>{{ 'OIL_SALES.STORAGE_UNIT' | translate }}:</span>
+                  <span>{{ getSelectedStorageUnit()?.name }}</span>
+                </div>
+                <div class="summary-row">
+                  <span>{{ 'OIL_SALES.QUANTITY' | translate }}:</span>
+                  <span>{{ oilSaleForm.get('quantity')?.value | number:'1.2-2' }} L</span>
+                </div>
+                <div class="summary-row">
+                  <span>{{ 'OIL_SALES.UNIT_PRICE' | translate }}:</span>
+                  <span>{{ oilSaleForm.get('unitPrice')?.value | number:'1.2-2' }} {{ oilSaleForm.get('currency')?.value }}/L</span>
+                </div>
+                <div class="summary-row total">
+                  <span>{{ 'OIL_SALES.TOTAL_AMOUNT' | translate }}:</span>
+                  <span class="total-amount">{{ getTotalAmount() | number:'1.2-2' }} {{ oilSaleForm.get('currency')?.value }}</span>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="form-actions">
+          <button type="button" mat-stroked-button (click)="onCancel()" [disabled]="loading">
+            <mat-icon>cancel</mat-icon>
+            {{ 'COMMON.CANCEL' | translate }}
+          </button>
+          <button type="submit" mat-raised-button color="primary" [disabled]="oilSaleForm.invalid || loading">
+            <mat-icon *ngIf="loading">hourglass_empty</mat-icon>
+            <mat-icon *ngIf="!loading">{{ isEditing ? 'save' : 'add' }}</mat-icon>
+            {{ isEditing ? ('COMMON.UPDATE' | translate) : ('OSM_DASHBOARD.ACTIONS.CREATE' | translate) }}
+          </button>
+        </div>
+
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
