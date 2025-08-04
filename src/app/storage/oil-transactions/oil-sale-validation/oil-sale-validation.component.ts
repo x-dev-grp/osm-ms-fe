@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { transactionsHistoryList } from '../../../fake-data/transactions_history_list';
 
 @Component({
   selector: 'app-oil-sale-validation-dialog',
@@ -110,4 +111,6 @@ console.log(validationData)
   @HostListener('document:keydown.escape', ['$event']) onEscapeKey(event: KeyboardEvent): void {
     this.dialogRef.close();
   }
+
+  protected readonly transactionsHistoryList = transactionsHistoryList;
 }

@@ -1,4 +1,4 @@
-<app-card [title]="'STORAGE.VIEW.TRANSACTION_HISTORY' | translate">
+<app-card [cardTitle]="'STORAGE.VIEW.TRANSACTION_HISTORY' | translate">
   <div class="view-container">
 
     <div *ngIf="loading" class="loading-container">
@@ -11,17 +11,28 @@
         <div class="storage-card-header optimized-header">
           <div class="storage-title-status">
             <div class="storage-title">
-              <mat-icon class="storage-icon" [ngClass]="getStatusIconClass()">{{ getStatusIcon() }}</mat-icon>
+              <mat-icon [ngClass]="getStatusIconClass()" class="storage-icon">{{ getStatusIcon() }}</mat-icon>
               <h2>{{ storageUnit.name }}</h2>
             </div>
-            <div class="storage-status" [ngClass]="getStatusClass()">
+            <div [ngClass]="getStatusClass()" class="storage-status">
               {{ 'STORAGE.VIEW.STATUS.' + storageUnit.status | translate }}
             </div>
           </div>
           <div class="storage-header-metrics">
             <div class="metric">
+              <span class="metric-label">{{ 'STORAGE.VIEW.AVGCOST' | translate }}</span>
+              <span class="metric-value">{{ storageUnit.avgCost | number:'1.2-2' }}&nbsp;TND</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">{{ 'STORAGE.VIEW.TOTALCOST' | translate }}</span>
+              <span class="metric-value">{{ storageUnit.totalCost | number:'1.2-2' }}&nbsp;TND</span>
+            </div>
+            <div class="metric">
               <span class="metric-label">{{ 'STORAGE.VIEW.CURRENT_VOLUME' | translate }}</span>
               <span class="metric-value">{{ storageUnit.currentVolume }} KG</span>
+            </div> <div class="metric">
+              <span class="metric-label">{{ 'STORAGE.VIEW.AVAILABLECAPACITY' | translate }}</span>
+              <span class="metric-value">{{ storageUnit.maxCapacity-storageUnit.currentVolume }} KG</span>
             </div>
             <div class="metric">
               <span class="metric-label">{{ 'STORAGE.VIEW.MAX_CAPACITY' | translate }}</span>
@@ -37,7 +48,7 @@
         <div class="storage-visualization">
           <div class="storage-unit">
             <div class="storage-unit-body">
-              <div class="fill-level-indicator" [style.width.%]="getFillPercentage()" [ngClass]="getFillLevelClass()">
+              <div [ngClass]="getFillLevelClass()" [style.width.%]="getFillPercentage()" class="fill-level-indicator">
                 <div class="fill-pattern"></div>
                 <span class="fill-level-text">{{ getFillPercentage() | number:'1.0-0' }}%</span>
               </div>
@@ -48,12 +59,13 @@
       </div>
 
       <!-- Transaction List (below storage card) -->
-         <div class="transaction-header-bar">
-          <div class="transaction-title">
-             <osm-dashboard #dashboard [config]="this.dashboardConfig" (applyAction)="handleAction($event)"></osm-dashboard>
-          </div>
+      <div class="transaction-header-bar">
+        <div class="transaction-title">
+          <osm-dashboard #dashboard (applyAction)="handleAction($event)"
+                         [config]="this.dashboardConfig"></osm-dashboard>
         </div>
+      </div>
 
-     </div>
+    </div>
   </div>
 </app-card>

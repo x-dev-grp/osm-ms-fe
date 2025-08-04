@@ -199,6 +199,8 @@ export class ViewStorageComponent implements OnInit {
           name: 'unitPrice',
           label: 'Unit Price',
           labelTranslatePath: 'STORAGE.VIEW.DASHBOARD.FIELDS.UNIT_PRICE',
+          isCurrency:true,
+          currency:'TND',
           attributeType: AttributeType.number,
           fieldType: FieldType.number,
           sortable: true,
