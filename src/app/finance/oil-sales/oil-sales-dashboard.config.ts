@@ -53,7 +53,25 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
       dataTable: true,
       filterable: true
     },
+    {
+      name: 'qualityGrade',
+      label: 'qualityGrade',
+      labelTranslatePath: 'OIL_TRANSACTION.DETAILS.QUALITY_GRADE',
+      attributeType: AttributeType.enum,
+      fieldType: FieldType.autocomplete,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true,
 
+      options: [
+        { value: 'VIRGIN', label: 'VIRGIN', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.VIRGIN' },
+        { value: 'EXTRA_VIRGIN', label: 'OIL_TRANSACTIONS.QUALITY_GRADES.EXTRA_VIRGIN', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.EXTRA_VIRGIN' },
+        { value: 'LAMPANTE', label: 'LAMPANTE', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.LAMPANTE' },
+        { value: 'REFINED', label: 'REFINED', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.REFINED' },
+        { value: 'OTHER', label: 'OTHER', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.OTHER' }
+      ]
+    },
     // ==================== CUSTOMER INFORMATION ====================
     {
       name: 'customer.customerName',

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -11,13 +11,18 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, tap } from 'rxjs';
 import { OilTransaction, TransactionState, TransactionType } from '../../../shared/models/OilTransaction';
 import { StorageUnitDto } from '../../../shared/models/StorageUnitDto';
 import { OilTransactionService } from '../../../shared/services/OilTransactionService';
 import { StorageUnitDtoService } from '../../../shared/services/storage.service';
 import { ApiResponse } from '../../../shared/models/api-response';
 import { ConfirmationDialogService, ConfirmationType } from '../../../shared/services/confirmation-dialog.service';
+import { AdvancedSearchService } from '../../../shared/services/advanced-serach.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { SearchData } from '../../../shared/models/advanced-search/searchData';
+import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
+import { OilContainer } from '../../../shared/models/oil-container';
 
 @Component({
   selector: 'app-oil-transaction-add',
@@ -70,6 +75,7 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
     { value: 'vierge', label: 'Vierge' },
     { value: 'lampante', label: 'Lampante' }
   ];
+  readonly destroyRef = inject(DestroyRef);
 
   // Add a new property to hold the warning state
   sourceUnitWarning: string | null = null;
@@ -83,6 +89,7 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
     'unitPrice',
     'totalPrice'
   ];
+  protected containerList: OilContainer[];
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
@@ -90,6 +97,8 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
     private oilTransactionService: OilTransactionService,
     private storageUnitService: StorageUnitDtoService,
     private snackBar: MatSnackBar,
+    private _searchService: AdvancedSearchService,
+
     private translate: TranslateService,
     private confirmationDialog: ConfirmationDialogService
   ) {}
@@ -99,7 +108,27 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
     this.loadStorageUnits();
     this.checkEditMode();
     this.setupFormSubscriptions();
-  }
+    const searchData: SearchData = {
+      page: 0,
+      searchData: {
+        operation: SearchOperation.AND,
+        search: {
+          isDeleted: {
+            equalValue: false
+          }
+        }
+      }
+    };
+    this._searchService
+      .search(searchData, 'production/oil_container')
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap((res) => {
+          this.containerList = res?.data;
+          console.log(this.containerList)
+        })
+      )
+      .subscribe();}
 
   ngOnDestroy(): void {
     this.destroy$.next();

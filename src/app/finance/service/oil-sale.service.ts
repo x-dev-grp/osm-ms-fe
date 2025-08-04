@@ -4,11 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
   OilSale,
-  CreateOilSaleDto,
-  UpdateOilSaleDto,
-  OilSaleSearchDto,
-  OilSaleStatistics,
-  StorageUnit
+
 } from '../models/oil-sale.model';
 import { ApiResponse } from '../models/financial-transaction.model';
 
@@ -32,34 +28,11 @@ export class OilSaleService {
   }
 
   // Update oil sale
-  updateOilSale(id: string, oilSale: UpdateOilSaleDto): Observable<ApiResponse<OilSale>> {
+  updateOilSale(id: string, oilSale: OilSale): Observable<ApiResponse<OilSale>> {
     return this.http.put<ApiResponse<OilSale>>(`${this.baseUrl}/${id}`, oilSale);
   }
 
 
-  // Get oil sale statistics
-  getOilSaleStatistics(search?: OilSaleSearchDto): Observable<ApiResponse<OilSaleStatistics>> {
-    let params = new HttpParams();
-    if (search) {
-      Object.keys(search).forEach(key => {
-        const value = (search as any)[key];
-        if (value !== undefined && value !== null && value !== '') {
-          params = params.set(key, value.toString());
-        }
-      });
-    }
-    return this.http.get<ApiResponse<OilSaleStatistics>>(`${this.baseUrl}/statistics`, { params });
-  }
-
-  // Get available storage units
-  getAvailableStorageUnits(): Observable<ApiResponse<StorageUnit[]>> {
-    return this.http.get<ApiResponse<StorageUnit[]>>(`${environment.apiUrl}/production/storage-units/available`);
-  }
-
-  // Get storage unit by ID
-  getStorageUnit(id: string): Observable<ApiResponse<StorageUnit>> {
-    return this.http.get<ApiResponse<StorageUnit>>(`${environment.apiUrl}/production/storage-units/${id}`);
-  }
 
   // Confirm oil sale (update status to CONFIRMED)
   confirmOilSale(id: string): Observable<ApiResponse<OilSale>> {

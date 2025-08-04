@@ -3,6 +3,7 @@ import {
   DashboardConfig,
   FieldType
 } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
 
 export const CUSTOMERS_DASHBOARD_CONFIG: DashboardConfig = {
   icon: 'people',
@@ -13,6 +14,21 @@ export const CUSTOMERS_DASHBOARD_CONFIG: DashboardConfig = {
   addNewItem: true,
   addNewItemUrl: 'finance/customers/new',
   /* ── Data-table columns & filter metadata ───────────────────── */
+  defaultSearchData: {
+    page: 0,
+    size: 10,
+    sort: 'createdDate',
+    order: 'DESC',
+    searchData: {
+      operation: SearchOperation.AND,
+      searchs: [],
+      search: {
+        isDeleted: {
+          equalValue: false
+        }
+      }
+    }
+  },
   fields: [
     // ==================== CORE CUSTOMER FIELDS ====================
     {

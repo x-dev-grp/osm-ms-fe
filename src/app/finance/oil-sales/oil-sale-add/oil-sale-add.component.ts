@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { Component, DestroyRef, inject, OnInit, output } from '@angular/core';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatCardModule } from '@angular/material/card';
@@ -7,7 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -15,18 +15,25 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { OilSaleService } from '../../service/oil-sale.service';
 import { CustomerService } from '../../service/customer.service';
-import { OilSale, OilSaleStatus, UpdateOilSaleDto } from '../../models/oil-sale.model';
+import { OilSale, OilSaleStatus, QualityGrades } from '../../models/oil-sale.model';
 import { Customer } from '../../models/Customer';
-import { Currency, PaymentMethod } from '../../models/financial-transaction.model';
 import { StorageUnitDtoService } from '../../../shared/services/storage.service';
 import { StorageUnitDto } from '../../../shared/models/StorageUnitDto';
 import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { SupplierTypeService } from '../../../shared/services/supplier.service';
 import { SupplierType } from '../../../shared/models/supplier-type';
-import { map, startWith } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { map, Observable, startWith, tap } from 'rxjs';
 import { TransactionState, TransactionType } from '../../../shared/models/OilTransaction';
 import { OilTransactionService } from '../../../shared/services/OilTransactionService';
+import { CardComponent } from '../../../@theme/components/card/card.component';
+import { SearchData } from '../../../shared/models/advanced-search/searchData';
+import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AdvancedSearchService } from '../../../shared/services/advanced-serach.service';
+import { OilContainer } from '../../../shared/models/oil-container';
+import { OptionsScrollDirective } from '../../../shared/directives/options-scroll.directive';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-oil-sale-add',
@@ -47,10 +54,15 @@ import { OilTransactionService } from '../../../shared/services/OilTransactionSe
     MatProgressSpinnerModule,
     TranslateModule,
     MatAutocomplete,
-    MatAutocompleteTrigger
+    MatAutocompleteTrigger,
+    CardComponent,
+    OptionsScrollDirective,
+    MatCheckbox,
+    MatSlideToggle
   ]
 })
 export class OilSaleAddComponent implements OnInit {
+  readonly destroyRef = inject(DestroyRef);
   oilSaleForm!: FormGroup;
   loading = false;
   isEditing = false;
@@ -58,12 +70,11 @@ export class OilSaleAddComponent implements OnInit {
   customers: Customer[] = [];
   storageUnits: StorageUnitDto[] = [];
   suppliers: SupplierType[] = [];
-
-  currencies = Object.values(Currency);
-  paymentMethods = Object.values(PaymentMethod);
-
+  grades = Object.values(QualityGrades);
   // Autocomplete filtered options
   filteredSuppliers: Observable<SupplierType[]>;
+  selected = output<any>();
+  protected containerList: OilContainer[];
   private oilTransactionDTO: any;
 
   constructor(
@@ -74,10 +85,15 @@ export class OilSaleAddComponent implements OnInit {
     private storageUnitsService: StorageUnitDtoService,
     private supplierService: SupplierTypeService,
     private oiltransactionService: OilTransactionService,
+    private _searchService: AdvancedSearchService,
     private router: Router,
     private snackBar: MatSnackBar
   ) {
     this.filteredSuppliers = new Observable<SupplierType[]>();
+  }
+
+  get containerSelections(): FormArray {
+    return this.oilSaleForm.get('containerSelections') as FormArray;
   }
 
   ngOnInit(): void {
@@ -86,7 +102,55 @@ export class OilSaleAddComponent implements OnInit {
     this.loadStorageUnits();
     this.loadSuppliers();
     this.checkEditMode();
+    const searchData: SearchData = {
+      page: 0,
+      searchData: {
+        operation: SearchOperation.AND,
+        search: {
+          isDeleted: {
+            equalValue: false
+          }
+        }
+      }
+    };
+    this._searchService
+      .search(searchData, 'production/oil_container')
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap((res) => {
+          this.containerList = res?.data;
+          console.log(this.containerList);
+        })
+      )
+      .subscribe();
+    // Re-run the containerCount validator whenever quantity or container changes
+    this.oilSaleForm.get('quantity')!.valueChanges.subscribe(() => this.oilSaleForm.get('containerCount')!.updateValueAndValidity());
+    this.oilSaleForm.get('container')!.valueChanges.subscribe(() => this.oilSaleForm.get('containerCount')!.updateValueAndValidity());
+    this.oilSaleForm.get('quantity')!.valueChanges.subscribe(() => this.distributeCounts());
   }
+
+  /** how many containers of the selected capacity you need to hold the quantity */
+  neededContainers(): number {
+    const qty = +this.oilSaleForm.get('quantity')!.value;
+    const c = this.oilSaleForm.get('container')!.value;
+    if (!qty || !c?.capacityInLiters) return 0;
+    return Math.ceil(qty / c.capacityInLiters);
+  }
+
+  /** validator: containerCount >= neededContainers() */
+  minContainerCountValidator(control: AbstractControl) {
+    if (!this.oilSaleForm) return null;
+    const val = +control.value;
+    const min = this.neededContainers();
+    return val >= min ? null : { minContainers: { required: min, actual: val } };
+  }
+
+  displayWith = (option: any): string | null => {
+    if (option) {
+      return option?.capacityInLiters + 'L ' + option?.name;
+    }
+    return null;
+  };
 
   displaySupplierFn(supplier: SupplierType): string {
     if (!supplier) return '';
@@ -102,19 +166,20 @@ export class OilSaleAddComponent implements OnInit {
       const totalAmount = formValue.quantity * formValue.unitPrice;
 
       if (this.isEditing && this.oilSaleId) {
-        const updateDto: UpdateOilSaleDto = {
+        const updateDto: any = {
           id: this.oilSaleId,
-          customerId: formValue.customerId||null,
-          supplierId: formValue.supplierId?.id || formValue.supplierId||null,
-          storageUnitId: formValue.storageUnitId||null,
-          quantity: formValue.quantity||null,
-          unitPrice: formValue.unitPrice||null,
-          currency: formValue.currency||null,
-          paymentMethod: formValue.paymentMethod||null,
-          saleDate: formValue.saleDate.toISOString()||null,
-          invoiceNumber: formValue.invoiceNumber||null,
-          status: OilSaleStatus.PENDING||null,
-          description: formValue.description||null
+          customerId: formValue.customerId || null,
+          supplierId: formValue.supplierId?.id || formValue.supplierId || null,
+          storageUnitId: formValue.storageUnitId || null,
+          quantity: formValue.quantity || null,
+          qualityGrade: formValue.qualityGrade || null,
+          unitPrice: formValue.unitPrice || null,
+          currency: formValue.currency || null,
+          paymentMethod: formValue.paymentMethod || null,
+          saleDate: formValue.saleDate.toISOString() || null,
+          invoiceNumber: formValue.invoiceNumber || null,
+          status: OilSaleStatus.PENDING || null,
+          description: formValue.description || null
         };
 
         this.oilSaleService.updateOilSale(this.oilSaleId, updateDto).subscribe({
@@ -135,18 +200,19 @@ export class OilSaleAddComponent implements OnInit {
         });
       } else {
         const createDto: OilSale = {
-          customer: formValue.customerId||null,
-          supplier: formValue.supplierId  ||null,
-          storageUnit: formValue.storageUnitId||null,
-          quantity: formValue.quantity||null,
-          unitPrice: formValue.unitPrice||null,
-          currency: formValue.currency||null,
-          paymentMethod: formValue.paymentMethod||null,
-          saleDate: formValue.saleDate.toISOString()||null,
-          invoiceNumber: formValue.invoiceNumber||null,
-          description: formValue.description||null,
-          totalAmount: formValue?.unitPrice * formValue?.quantity ,
-          status: OilSaleStatus.PENDING||null
+          customer: formValue.customerId || null,
+          supplier: formValue.supplierId || null,
+          storageUnit: formValue.storageUnitId || null,
+          quantity: formValue.quantity || null,
+          unitPrice: formValue.unitPrice || null,
+          currency: formValue.currency || null,
+          paymentMethod: formValue.paymentMethod || null,
+          saleDate: formValue.saleDate.toISOString() || null,
+          invoiceNumber: formValue.invoiceNumber || null,
+          qualityGrade: formValue.qualityGrade || null,
+          description: formValue.description || null,
+          totalAmount: formValue?.unitPrice * formValue?.quantity,
+          status: OilSaleStatus.PENDING || null
         };
 
         this.oilSaleService.createOilSale(createDto).subscribe({
@@ -191,13 +257,24 @@ export class OilSaleAddComponent implements OnInit {
   }
 
   onCancel(): void {
-    this.router.navigate(['/finance/oil-sales']);
+    this.router.navigate(['/finance/oil-sale']);
   }
 
   getTotalAmount(): number {
-    const quantity = this.oilSaleForm.get('quantity')?.value;
-    const unitPrice = this.oilSaleForm.get('unitPrice')?.value;
-    return quantity && unitPrice ? quantity * unitPrice : 0;
+    const quantity = this.oilSaleForm.get('quantity')?.value || 0;
+    const unitPrice = this.oilSaleForm.get('unitPrice')?.value || 0;
+    // base sale amount
+    const baseAmount = quantity * unitPrice;
+
+    // sum container costs
+    const containersAmount = this.containerSelections.controls.reduce((sum, ctrl) => {
+      const container = ctrl.get('container')!.value as OilContainer;
+      const count     = ctrl.get('count')!.value || 0;
+      const price     = (container.sellingPrice ) as number;
+      return sum + price * count;
+    }, 0);
+
+    return baseAmount + containersAmount;
   }
 
   getSelectedStorageUnit(): StorageUnitDto | undefined {
@@ -207,6 +284,9 @@ export class OilSaleAddComponent implements OnInit {
 
   getSelectedCustomer(): Customer | undefined {
     const customerId = this.oilSaleForm.get('customerId')?.value;
+    if (typeof customerId === 'object' && customerId !== null) {
+      return customerId;
+    }
     return this.customers.find((customer) => customer.id === customerId);
   }
 
@@ -228,6 +308,22 @@ export class OilSaleAddComponent implements OnInit {
     return null;
   }
 
+  totalCapacity(): number {
+    return this.containerSelections.controls.reduce((sum, grp) => {
+      const c = grp.get('container')!.value;
+      const count = grp.get('count')!.value || 0;
+      return sum + (c.capacityInLiters ?? c.capacity) * count;
+    }, 0);
+  }
+
+  /**
+   * Quantity minus what's already allocated in containers
+   */
+  leftoverQuantity(): number {
+    // qty minus what we've allocated—clamped to zero
+    const rem = (this.oilSaleForm.get('quantity')!.value || 0) - this.totalCapacity();
+    return rem > 0 ? rem : 0;
+  }
   private buildForm(): void {
     this.oilSaleForm = this.fb.group(
       {
@@ -236,25 +332,77 @@ export class OilSaleAddComponent implements OnInit {
         quantity: ['', [Validators.required, Validators.min(0.01)]],
         unitPrice: ['', [Validators.required, Validators.min(0.01)]],
         saleDate: [new Date(), Validators.required],
-        description: ['']
+        qualityGrade: ['', Validators.required],
+        description: [''],
+        showContainers: [false],
+        container: [null],
+        containerCount: [null, [this.minContainerCountValidator.bind(this)]]
+
       },
       { validators: this.customerOrSupplierRequired }
     );
 
     // Calculate total amount when quantity or unit price changes
-    this.oilSaleForm.get('quantity')?.valueChanges.subscribe(() => {
-      this.calculateTotalAmount();
-    });
 
-    this.oilSaleForm.get('unitPrice')?.valueChanges.subscribe(() => {
-      this.calculateTotalAmount();
-    });
+    this.oilSaleForm.get('quantity')?.valueChanges.subscribe(() => {this.calculateTotalAmount();});
 
+    this.oilSaleForm.get('unitPrice')?.valueChanges.subscribe(() => {this.calculateTotalAmount();});
+    this.oilSaleForm.addControl('selectedContainers', this.fb.control([]));
+    this.oilSaleForm.addControl('containerSelections', this.fb.array([]));
     // Setup supplier autocomplete filter
     this.setupSupplierAutocomplete();
 
     // Clear other field when one is selected
     this.setupFieldClearing();
+    this.oilSaleForm.get('selectedContainers')!
+      .valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((selected: OilContainer[]) =>
+        this.onContainerSelectionChange({ value: selected } as MatSelectChange)
+      ); }
+  onContainerSelectionChange(event: MatSelectChange): void {
+    const selected: OilContainer[] = event.value;
+    const fa = this.containerSelections;
+
+    selected.forEach(c => {
+      if (!fa.controls.find(g => g.value.container.id === c.id)) {
+        fa.push(this.fb.group({
+          container: [c],
+          count:     [0]
+        }));
+      }
+    });
+
+    // ➖ Remove unselected
+    fa.controls
+      .filter(g => !selected.some(c => c.id === g.value.container.id))
+      .forEach(g => fa.removeAt(fa.controls.indexOf(g)));
+
+    // 🔢 Recompute counts
+    this.distributeCounts();
+  }
+
+  private distributeCounts(): void {
+    const qty = this.oilSaleForm.get('quantity')!.value || 0;
+    let remaining = qty;
+    const ctrls = this.containerSelections.controls;
+
+    ctrls.forEach((ctrl, i) => {
+      const cap = ctrl.get('container')!.value.capacityInLiters as number;
+      let count = 0;
+
+      if (i < ctrls.length - 1) {
+        // for all but the last, fill as many full containers as you can
+        count = Math.floor(remaining / cap);
+      } else {
+        // for the last container type: if anything remains, use exactly one
+        count = remaining > 0 ? 1 : 0;
+      }
+
+      // set without retriggering valueChanges
+      ctrl.get('count')!.setValue(count, { emitEvent: false });
+      remaining -= count * cap;
+    });
   }
 
   /**
@@ -416,5 +564,13 @@ export class OilSaleAddComponent implements OnInit {
         totalPrice: formValue.quantity * formValue.unitPrice
       });
     }
+  }
+
+  protected readonly scroll = scroll;
+
+  // This function is called when an autocomplete option is selected
+  autoCompleteSelect(event: any) {
+    // Emit the selected event
+    this.selected.emit(event);
   }
 }

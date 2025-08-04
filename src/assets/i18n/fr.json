@@ -687,7 +687,7 @@
       "SENT_TO_PRODUCTION_ERROR": "Erreur lors de l'envoi en production",
       "SENT_TO_PRODUCTION_SUCCESS": "Réception envoyée en production avec succès"
     },
-    "OIL_TITLE": "Livraisons d'Huile",
+    "OIL_TITLE": "Historique des livraisons d'Huile & olive ",
     "OLIVE_TITLE": "Livraisons d'Olives",
     "OPERATION_TYPE": {
       "BASE": "Base",
@@ -1103,23 +1103,24 @@
   "OIL_CONTAINER": {
     "DASHBOARD": {
       "FIELDS": {
-        "NAME": "Contenant",
-        "DESCRIPTION": "Description",
-        "CAPACITY_IN_LITERS": "Capacité (L)",
-        "STOCK_QUANTITY": "Quantité en stock",
-        "MATERIAL": "Matériau",
-        "BUY_PRICE": "Prix d'achat",
-        "SELLING_PRICE": "Prix de vente",
-        "REORDER_THRESHOLD": "Seuil de réapprovisionnement",
-        "REORDER_QUANTITY": "Quantité de réappro.",
-        "SKU": "SKU",
-        "BARCODE": "Code-barres",
-        "STORAGE_LOCATION_CODE": "Emplacement",
-        "IMAGE_URL": "Image",
         "ACTIVE": "Actif",
-        "CERTIFICATION": "Certification"
+        "BARCODE": "Code-barres",
+        "BUY_PRICE": "Prix d'achat",
+        "CAPACITY_IN_LITERS": "Capacité (L)",
+        "CERTIFICATION": "Certification",
+        "DESCRIPTION": "Description",
+        "IMAGE_URL": "Image",
+        "MATERIAL": "Matériau",
+        "NAME": "Contenant",
+        "REORDER_QUANTITY": "Quantité de réappro.",
+        "REORDER_THRESHOLD": "Seuil de réapprovisionnement",
+        "SELLING_PRICE": "Prix de vente",
+        "SKU": "SKU",
+        "STOCK_QUANTITY": "Quantité en stock",
+        "STORAGE_LOCATION_CODE": "Emplacement"
       }
-    },  "FORM": {
+    },
+    "FORM": {
       "ACTIVE": "Actif",
       "BARCODE": "Code-barres",
       "BUY_PRICE": "Prix d'achat",
@@ -1398,6 +1399,11 @@
     "ADD_TITLE": "Ajouter une vente d'huile",
     "CANCEL": "Annuler",
     "CONFIRM": "Confirmer",
+    "CONTAINERS": {
+      "COUNT": "Nombre des conteneur ",
+      "SHOW": "Afficher la liste des conteneur ",
+      "TITLE": "Choisire les conteneur(s)"
+    },
     "CREATED_BY": "Créé par",
     "CREATED_DATE": "Date de création",
     "CURRENCIES": {
@@ -1442,6 +1448,7 @@
     "INVOICE_NUMBER": "Numéro de facture",
     "LAST_MODIFIED_BY": "Dernière modification par",
     "LAST_MODIFIED_DATE": "Dernière date de modification",
+    "LEFTOVER": "Quantité huile pas encore régler",
     "OIL_TYPE": "Type d'huile",
     "PAYMENT_METHOD": "Méthode de paiement",
     "PAYMENT_METHODS": {
@@ -1473,6 +1480,7 @@
     "TIMESTAMPS": "Horodatages",
     "TITLE": "Ventes d'huile",
     "TOTAL_AMOUNT": "Montant total",
+    "TOTAL_IN_CONTAINERS": "Quantité huile régler",
     "UNIT_PRICE": "Prix unitaire",
     "VALIDATION": {
       "CONFIRM": "Confirmer",
@@ -1627,6 +1635,7 @@
     "QUALITY_GRADES": {
       "EXTRA_VIRGIN": "Extra Vierge",
       "LAMPANTE": "Lampante",
+      "OTHER": "Autre",
       "REFINED": "Raffiné",
       "VIRGIN": "Vierge"
     },

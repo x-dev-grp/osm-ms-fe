@@ -45,32 +45,9 @@ export class CustomersComponent implements OnInit {
         this.router.navigate([`/finance/customers/${event.row.id}/details`]);
         break;
 
-      case 'EDIT':
+      case 'UPDATE':
         this.router.navigate(['/finance/customers', event.row.id, 'edit']);
         break;
-
-      case 'DELETE':
-        this.deleteCustomer(event.row);
-        break;
-    }
-  }
-
-  private deleteCustomer(customer: Customer): void {
-    if (confirm('Are you sure you want to delete this customer?')) {
-      this.customerService.deleteCustomer(customer.id!).subscribe({
-        next: (response) => {
-          if (response.success) {
-            this.snackBar.open('Customer deleted successfully', 'Close', { duration: 3000 });
-            // The dashboard will automatically refresh
-          } else {
-            this.snackBar.open(response.message || 'Failed to delete customer', 'Close', { duration: 3000 });
-          }
-        },
-        error: (error) => {
-          console.error('Error deleting customer:', error);
-          this.snackBar.open('Error deleting customer', 'Close', { duration: 3000 });
-        }
-      });
     }
   }
 }
