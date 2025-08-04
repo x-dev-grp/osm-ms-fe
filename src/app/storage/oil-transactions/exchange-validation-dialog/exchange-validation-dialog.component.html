@@ -10,12 +10,24 @@
       </mat-label>
       <mat-select formControlName="storageUnitDestinationId"
                   placeholder="{{'CONTROLE_QUALITE.STORAGE_UNIT.PLACEHOLDER'|translate}}">
-        <mat-option *ngFor="let u of data.storageUnits" [value]="u">
+        <mat-option *ngFor="let u of data.storageUnits" [value]="u"
+                    [disabled]="u.maxCapacity-u.currentVolume<data.oilQ">
           @if (u.supplier) {
-            {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg) [{{ u.supplier?.supplierInfo.name + " " + u.supplier?.supplierInfo.lastname }}]
+            @if (u.maxCapacity - u.currentVolume < this.data.oilQ) {
+              {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg) [{{ u.supplier?.supplierInfo.name + " " + u.supplier?.supplierInfo.lastname }}]
+
+              <span style="color: red !important;">{{ "OIL_TRANSACTIONS.FORM.OVERFILLING"|translate }}</span>
+            } @else {
+              {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg) [{{ u.supplier?.supplierInfo.name + " " + u.supplier?.supplierInfo.lastname }}]
+            }
+
 
           } @else {
-            {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)
+            @if (u.maxCapacity - u.currentVolume < this.data.oilQ) {
+              {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)   hhhhhh
+            } @else {
+              {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg) hohohohoho
+            }
           }
         </mat-option>
       </mat-select>
@@ -39,13 +51,28 @@
       </mat-label>
       <mat-select formControlName="storageUnitSourceId"
                   placeholder="{{'CONTROLE_QUALITE.STORAGE_UNIT.PLACEHOLDER'|translate}}">
-        <mat-option *ngFor="let u of data.storageUnits" [value]="u">
+        <mat-option *ngFor="let u of data.storageUnits" [value]="u" [disabled]=" u.currentVolume<data.oilQ">
+
           @if (u.supplier) {
-            {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg) [{{ u.supplier?.supplierInfo.name + " " + u.supplier?.supplierInfo.lastname }}]
+            @if (u.currentVolume<data.oilQ) {
+              {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg) [{{ u.supplier?.supplierInfo.name + " " + u.supplier?.supplierInfo.lastname }}]
+
+              <span style="color: red !important;">{{ "OIL_TRANSACTIONS.FORM.OVERFILLING"|translate }}</span>
+            } @else {
+              {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg) [{{ u.supplier?.supplierInfo.name + " " + u.supplier?.supplierInfo.lastname }}]
+            }
+
 
           } @else {
-            {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)
+            @if (u.currentVolume<data.oilQ) {
+              {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)     <span style="color: red !important;">{{ "OIL_TRANSACTIONS.FORM.OVERFILLING"|translate }}</span>
+            } @else {
+              {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)
+            }
           }
+
+
+
         </mat-option>
       </mat-select>
       <mat-error *ngIf="form.get('storageUnitSourceId')?.hasError('required')">

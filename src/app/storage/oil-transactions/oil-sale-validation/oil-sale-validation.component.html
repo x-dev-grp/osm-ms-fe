@@ -7,7 +7,7 @@
 
   <!-- Sale Information Summary -->
   <div class="sale-summary">
-     <div class="summary-row">
+    <div class="summary-row">
       <span>{{ 'OIL_SALES.QUANTITY' | translate }}:</span>
       <span>{{ this.data?.quantityKg | number:'1.2-2' }} kg</span>
     </div>
@@ -21,8 +21,13 @@
     </mat-label>
     <mat-select formControlName="storageUnitSourceId"
                 placeholder="{{'OIL_TRANSACTIONS.FORM.FIELDS.STORAGE_UNIT_SOURCE'|translate}}">
-      <mat-option *ngFor="let u of this.data.storageUnits" [value]="u">
-        {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)
+      <mat-option *ngFor="let u of this.data.storageUnits" [disabled]="u.maxCapacity-u.currentVolume<this.data.quantityKg"
+                  [value]="u">
+        @if (u.maxCapacity - u.currentVolume < this.data.quantityKg) {
+          <span style="background-color: red;" >  {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg) {{ "OIL_TRANSACTIONS.FORM.OVERFILLING"|translate }}</span>
+        } @else {
+          {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)
+        }
       </mat-option>
     </mat-select>
     <mat-error *ngIf="form.get('storageUnitSourceId')?.hasError('required')">

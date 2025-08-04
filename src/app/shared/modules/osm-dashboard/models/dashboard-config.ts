@@ -68,6 +68,8 @@ export interface Field {
     labelTranslatePath?:string;
     attributeType: AttributeType;
     fieldType:FieldType;
+    isCurrency?:boolean;
+    currency?:string;
     sortable?: boolean;
     dataTable?:boolean;
     filterable?: boolean;

@@ -107,7 +107,8 @@ export const OIL_TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
     {
       name: 'unitPrice',
       label: 'Prix unitaire',
-      labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.FIELDS.UNIT_PRICE',
+      isCurrency:true,
+      currency:'TND',labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.FIELDS.UNIT_PRICE',
       attributeType: AttributeType.number,
       fieldType: FieldType.number,
       exportable: true,

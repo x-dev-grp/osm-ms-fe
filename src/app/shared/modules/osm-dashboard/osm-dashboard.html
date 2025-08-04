@@ -88,7 +88,20 @@
               } @else if (item?.fieldType === "date") {
                 {{ (item?.valuePath ? getValue(item?.valuePath, record) : getValue(item?.name, record)) | date:'dd-MM-yyyy HH:mm' }}
               } @else {
-                {{ item?.valuePath ? getValue((item?.name + '.' + item?.valuePath), record) : getValue(item?.name, record) }}
+                @if(item?.isCurrency){
+                   <span class="metric-value">
+  {{
+                      (item?.valuePath
+                          ? getValue(item.name + '.' + item.valuePath, record)
+                          : getValue(item.name, record)
+                      )
+                        | number:'1.2-2'
+                    }}&nbsp;{{ item.currency }}
+</span>
+                } @else {
+                  {{ item?.valuePath ? getValue((item?.name + '.' + item?.valuePath), record) : getValue(item?.name, record) }}
+
+                }
               }
             </td>
           </ng-container>

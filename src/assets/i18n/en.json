@@ -566,7 +566,10 @@
       "OLIVE_TYPE": "Olive Type",
       "OLIVE_VARIETY": "Olive Variety",
       "OPERATION_TYPE": "Operation Type",
+      "PAID_AMOUNT": "Paid amount",
       "PARCEL": "Parcel",
+      "PAYMENT_MODE": "Payment method",
+      "PAYMENT_STATUS": "Payment",
       "REGION": "Region",
       "RENDEMENT": "Yeild",
       "SACK_COUNT": "Sack Count",
@@ -583,6 +586,7 @@
       "TRT_DATE": "Trituration Date",
       "TRUCK_PLATE": "Truck Plate",
       "TRUCK_STATE": "Truck State",
+      "UNPAID_AMOUNT": "Unpaid amount",
       "YIELD": "Yield"
     },
     "FORM": {
@@ -1610,6 +1614,7 @@
           "UPDATE": "Transaction updated successfully"
         }
       },
+      "OVERFILLING": "Volume insuffisant",
       "PLACEHOLDERS": {
         "QUANTITY_KG": 0.0,
         "SELECT_STORAGE_UNIT": "Select a unit",
@@ -1911,7 +1916,6 @@
   "PLANNING_VARIETY": "Variety:",
   "PRODUCTION_TAB": "Production Config",
   "Pages": "Pages",
-  "Payment": "Payment",
   "Plugins": "Plugins",
   "Price": "Price",
   "Price 1": "Price 1",
@@ -2086,6 +2090,8 @@
     "OIL_TRANSACTIONS": "Oil Transactions",
     "TITLE": "Storage & Inventory",
     "VIEW": {
+      "AVAILABLECAPACITY": "Available capacity",
+      "AVGCOST": "Average cost",
       "CURRENT_VOLUME": "Current Volume",
       "DASHBOARD": {
         "FIELDS": {
@@ -2112,6 +2118,7 @@
         "RESERVED": "Reserved"
       },
       "TITLE": "View Storage",
+      "TOTALCOST": "Total cost",
       "TRANSACTION_HISTORY": "Transaction History"
     }
   },

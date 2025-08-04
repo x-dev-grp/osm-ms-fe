@@ -88,7 +88,7 @@
                   <div class="flex-grow-1">
                     <p class="m-b-5 f-w-500">{{ task.payment_name }}</p>
                     <div class="m-b-0 f-w-600">
-                      {{ task.amount }}
+                      {{ task.amount | number:'1.2-2' }}&nbsp;TND
                       <span class="mat-caption f-w-500" class="{{ task.color }}">{{ task.percentage }}</span>
                     </div>
                   </div>

@@ -566,7 +566,10 @@
       "OLIVE_TYPE": "Type d'olive",
       "OLIVE_VARIETY": "Variété d'olive",
       "OPERATION_TYPE": "Type d'opération",
+      "PAID_AMOUNT": "Montant paié",
       "PARCEL": "Parcelle",
+      "PAYMENT_MODE": "Methode de paiment",
+      "PAYMENT_STATUS": "Paiement",
       "REGION": "Région",
       "RENDEMENT": "Redement",
       "SACK_COUNT": "Nombre de sacs",
@@ -583,6 +586,7 @@
       "TRT_DATE": "Date trituration",
       "TRUCK_PLATE": "Matricule du camion",
       "TRUCK_STATE": "État du camion",
+      "UNPAID_AMOUNT": "Montant umpaié",
       "YIELD": "Rendement"
     },
     "FORM": {
@@ -1610,6 +1614,7 @@
           "UPDATE": "Transaction mise à jour avec succès"
         }
       },
+      "OVERFILLING": "Volum insuffisant",
       "PLACEHOLDERS": {
         "QUANTITY_KG": 0.0,
         "SELECT_STORAGE_UNIT": "Sélectionner une unité",
@@ -1911,7 +1916,6 @@
   "PLANNING_VARIETY": "Variété :",
   "PRODUCTION_TAB": "Config Production",
   "Pages": "pages",
-  "Payment": "Paiement",
   "Plugins": "Plugins",
   "Price": "Prix",
   "Price 1": "Prix ​​1",
@@ -2086,6 +2090,8 @@
     "OIL_TRANSACTIONS": "Transactions d'Huile",
     "TITLE": "Configuration Stock",
     "VIEW": {
+      "AVAILABLECAPACITY": "Capacity disponible",
+      "AVGCOST": "Coût moyenne",
       "CURRENT_VOLUME": "Volume actuel",
       "DASHBOARD": {
         "FIELDS": {
@@ -2112,6 +2118,7 @@
         "RESERVED": "Réservé"
       },
       "TITLE": "Voir le stockage",
+      "TOTALCOST": "Cout total",
       "TRANSACTION_HISTORY": "Historique des transactions"
     }
   },
