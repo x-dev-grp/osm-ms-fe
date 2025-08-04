@@ -9,7 +9,7 @@ export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
   baseURL: 'production/deliveries',
   searchEndpoint: 'production/deliveries',
   addNewItem: false,
-  filteredActions: ['UPDATE', 'DELETE', 'CANCEL'],
+  filteredActions: ['UPDATE', 'DELETE', 'CANCEL', 'GEN_PDF'],
   defaultSearchData: {
     page: 0,
     size: 10,
