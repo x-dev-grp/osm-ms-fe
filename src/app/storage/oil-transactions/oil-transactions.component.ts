@@ -125,6 +125,7 @@ export class OilTransactionsComponent implements OnInit {
           next: (response) => {
             if (response.success) {
               this.snackBar.open('Oil sale validated successfully', 'Close', { duration: 3000 });
+
             } else {
               this.snackBar.open('Error validating oil sale: ' + response.message, 'Close', { duration: 3000 });
             }

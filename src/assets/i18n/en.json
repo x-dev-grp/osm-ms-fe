@@ -687,7 +687,7 @@
       "SENT_TO_PRODUCTION_ERROR": "Error sending reception to production",
       "SENT_TO_PRODUCTION_SUCCESS": "Reception sent to production successfully"
     },
-    "OIL_TITLE": "Oil Deliveries",
+    "OIL_TITLE": "Oil & olive Deliveries History",
     "OLIVE_TITLE": "Olive Deliveries",
     "OPERATION_TYPE": {
       "BASE": "Base",
@@ -1101,6 +1101,25 @@
   "Navigation": "Navigation",
   "Notification": "Notification",
   "OIL_CONTAINER": {
+    "DASHBOARD": {
+      "FIELDS": {
+        "ACTIVE": "Active",
+        "BARCODE": "Barcode",
+        "BUY_PRICE": "Buy Price",
+        "CAPACITY_IN_LITERS": "Capacity (L)",
+        "CERTIFICATION": "Certification",
+        "DESCRIPTION": "Description",
+        "IMAGE_URL": "Image",
+        "MATERIAL": "Material",
+        "NAME": "Container",
+        "REORDER_QUANTITY": "Reorder Quantity",
+        "REORDER_THRESHOLD": "Reorder Threshold",
+        "SELLING_PRICE": "Selling Price",
+        "SKU": "SKU",
+        "STOCK_QUANTITY": "Stock Quantity",
+        "STORAGE_LOCATION_CODE": "Storage Location"
+      }
+    },
     "FORM": {
       "ACTIVE": "Active",
       "BARCODE": "Barcode",
@@ -1123,26 +1142,8 @@
       "UPDATE": "Update"
     },
     "TITLE_ADD": "Add Oil Container",
-    "TITLE_EDIT": "Edit Oil Container",
-    "DASHBOARD": {
-      "FIELDS": {
-        "NAME": "Container",
-        "DESCRIPTION": "Description",
-        "CAPACITY_IN_LITERS": "Capacity (L)",
-        "STOCK_QUANTITY": "Stock Quantity",
-        "MATERIAL": "Material",
-        "BUY_PRICE": "Buy Price",
-        "SELLING_PRICE": "Selling Price",
-        "REORDER_THRESHOLD": "Reorder Threshold",
-        "REORDER_QUANTITY": "Reorder Quantity",
-        "SKU": "SKU",
-        "BARCODE": "Barcode",
-        "STORAGE_LOCATION_CODE": "Storage Location",
-        "IMAGE_URL": "Image",
-        "ACTIVE": "Active",
-        "CERTIFICATION": "Certification"
-      }
-    } },
+    "TITLE_EDIT": "Edit Oil Container"
+  },
   "OIL_CONTAINER_LIST": "Oil containers list",
   "OIL_CONTAINER_MANAGEMENT": "Oil containers managment",
   "OIL_CONTAINER_MANAGEMENT_ADD": "Add a new container",
@@ -1398,6 +1399,11 @@
     "ADD_TITLE": "Add Oil Sale",
     "CANCEL": "Cancel",
     "CONFIRM": "Confirm",
+    "CONTAINERS": {
+      "COUNT": "Number of containers needed",
+      "SHOW": "Show the list of containers",
+      "TITLE": "Choose conatiner(s)"
+    },
     "CREATED_BY": "Created By",
     "CREATED_DATE": "Created Date",
     "CURRENCIES": {
@@ -1442,6 +1448,7 @@
     "INVOICE_NUMBER": "Invoice Number",
     "LAST_MODIFIED_BY": "Last Modified By",
     "LAST_MODIFIED_DATE": "Last Modified Date",
+    "LEFTOVER": "Oil quantity not yet in containers",
     "OIL_TYPE": "Oil Type",
     "PAYMENT_METHOD": "Payment Method",
     "PAYMENT_METHODS": {
@@ -1473,6 +1480,7 @@
     "TIMESTAMPS": "Timestamps",
     "TITLE": "Oil Sales",
     "TOTAL_AMOUNT": "Total Amount",
+    "TOTAL_IN_CONTAINERS": "Oil quantity in containers",
     "UNIT_PRICE": "Unit Price",
     "VALIDATION": {
       "CONFIRM": "Confirm",
@@ -1627,6 +1635,7 @@
     "QUALITY_GRADES": {
       "EXTRA_VIRGIN": "Extra Virgin",
       "LAMPANTE": "Lampante",
+      "OTHER": "Other",
       "REFINED": "Refined",
       "VIRGIN": "Virgin"
     },
