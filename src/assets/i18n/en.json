@@ -1927,9 +1927,22 @@
     "QUANTITY": "Quantity",
     "RECEPTION_ID": "Reception ID",
     "RECEPTION_SUPPLIER": "Reception Supplier",
-    "RECEPTION_REGION": "Reception Region"
-
-
+    "RECEPTION_REGION": "Reception Region",
+    "FICH_CONTROL_QUALITE_HUIL": "Oil Quality Control Sheet",
+    "FICH_CONTROL_QUALITE_OLIVE": "Olive Quality Control Sheet",
+    "NO_QUALITY_DATA": "No quality control data available",
+    "ACIDITY": "Acidity",
+    "DELTA_K": "Delta K",
+    "INDICE_PEROXYDE": "Peroxide Index",
+    "K232": "K232",
+    "K270": "K270",
+    "CATEGORY_OIL": "Oil Category",
+    "DAMAGED_PERCENT": "Damaged %",
+    "FERMENTED_PERCENT": "Fermented %",
+    "INFESTED_PERCENT": "Infested %",
+    "CATEGORY_OLIVE": "Olive Category",
+    "VEHICLE_REGISTRATION": " matricule véhicule",
+    "TRUCK_STATE": "État du camion"
   },
   "PLANNING_ASSIGNED": "Assigned",
   "PLANNING_CANCEL": "Cancel",
@@ -2462,5 +2475,27 @@
     }
   },
   "Widget": "Widget",
-  "reCaptcha": "reCaptcha"
+  "reCaptcha": "reCaptcha",
+  "WASTE": {
+    "TITLE": "Waste Management",
+    "FIELDS": {
+      "TYPE": "Waste Type",
+      "QUANTITY": "Quantity (kg)",
+      "UNIT_PRICE": "Unit Price (TND/kg)",
+      "TOTAL_PRICE": "Total Price (TND)",
+      "SALE_DATE": "Sale Date",
+      "INVOICE_NUMBER": "Invoice Number",
+      "PAID": "Paid?",
+      "PAYMENT_DATE": "Payment Date",
+      "STORAGE_LOCATION": "Storage Code",
+      "CUSTOMER": "Customer",
+      "SUPPLIER": "Supplier",
+      "NOTES": "Notes"
+    },
+    "TYPES": {
+      "GRIGNON": "Grignon",
+      "MARGINE": "Margine",
+      "OTHER": "Other"
+    }
+  }
 }
