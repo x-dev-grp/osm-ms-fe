@@ -75,7 +75,9 @@ export class OilSaleAddComponent implements OnInit {
   filteredSuppliers: Observable<SupplierType[]>;
   selected = output<any>();
   protected containerList: OilContainer[];
+  protected readonly scroll = scroll;
   private oilTransactionDTO: any;
+  filteredCustomers!: Observable<Customer[]>;
 
   constructor(
     private fb: FormBuilder,
@@ -128,7 +130,6 @@ export class OilSaleAddComponent implements OnInit {
     this.oilSaleForm.get('container')!.valueChanges.subscribe(() => this.oilSaleForm.get('containerCount')!.updateValueAndValidity());
     this.oilSaleForm.get('quantity')!.valueChanges.subscribe(() => this.distributeCounts());
   }
-
   /** how many containers of the selected capacity you need to hold the quantity */
   neededContainers(): number {
     const qty = +this.oilSaleForm.get('quantity')!.value;
@@ -154,9 +155,21 @@ export class OilSaleAddComponent implements OnInit {
 
   displaySupplierFn(supplier: SupplierType): string {
     if (!supplier) return '';
-    return `${supplier.supplierInfo.name} ${supplier.supplierInfo.lastname}`;
+    const parts = [
+      supplier.supplierInfo?.name?.trim(),
+      supplier.supplierInfo?.lastname?.trim(),
+    ].filter(part => !!part);
+    return parts.join(' ');
   }
-
+  /** how to display a Customer in the input */
+  displayCustomerFn(customer: Customer | null): string {
+    if (!customer) return '';
+    const parts = [
+      customer.customerName?.trim(),
+      customer.customerLastName?.trim(),
+    ].filter(part => !!part);
+    return parts.join(' ');
+  }
   onSubmit(): void {
     if (this.oilSaleForm.valid) {
       this.loading = true;
@@ -260,26 +273,17 @@ export class OilSaleAddComponent implements OnInit {
     this.router.navigate(['/finance/oil-sale']);
   }
 
-  getTotalAmount(): number {
+  getTotalOilAmount(): number {
     const quantity = this.oilSaleForm.get('quantity')?.value || 0;
     const unitPrice = this.oilSaleForm.get('unitPrice')?.value || 0;
     // base sale amount
-    const baseAmount = quantity * unitPrice;
-
-    // sum container costs
-    const containersAmount = this.containerSelections.controls.reduce((sum, ctrl) => {
-      const container = ctrl.get('container')!.value as OilContainer;
-      const count     = ctrl.get('count')!.value || 0;
-      const price     = (container.sellingPrice ) as number;
-      return sum + price * count;
-    }, 0);
-
-    return baseAmount + containersAmount;
+    return quantity * unitPrice;
   }
 
-  getSelectedStorageUnit(): StorageUnitDto | undefined {
-    const storageUnitId = this.oilSaleForm.get('storageUnitId')?.value;
-    return this.storageUnits.find((unit) => unit.id === storageUnitId);
+  public getTotalAmount(): number {
+    let totalOIl = this.getTotalOilAmount();
+    const containerCost = this.totalContainerCost();
+    return totalOIl + containerCost;
   }
 
   getSelectedCustomer(): Customer | undefined {
@@ -298,15 +302,7 @@ export class OilSaleAddComponent implements OnInit {
     return this.suppliers.find((supplier) => supplier.id === supplierId);
   }
 
-  // Helper method to get the selected entity type
-  getSelectedEntityType(): 'customer' | 'supplier' | null {
-    const customerId = this.oilSaleForm.get('customerId')?.value;
-    const supplierId = this.oilSaleForm.get('supplierId')?.value;
 
-    if (customerId) return 'customer';
-    if (supplierId) return 'supplier';
-    return null;
-  }
 
   totalCapacity(): number {
     return this.containerSelections.controls.reduce((sum, grp) => {
@@ -324,6 +320,38 @@ export class OilSaleAddComponent implements OnInit {
     const rem = (this.oilSaleForm.get('quantity')!.value || 0) - this.totalCapacity();
     return rem > 0 ? rem : 0;
   }
+
+  onContainerSelectionChange(event: MatSelectChange): void {
+    const selected: OilContainer[] = event.value;
+    const fa = this.containerSelections;
+
+    selected.forEach((c) => {
+      if (!fa.controls.find((g) => g.value.container.id === c.id)) {
+        fa.push(
+          this.fb.group({
+            container: [c],
+            count: [0]
+          })
+        );
+      }
+    });
+
+    // ➖ Remove unselected
+    fa.controls.filter((g) => !selected.some((c) => c.id === g.value.container.id)).forEach((g) => fa.removeAt(fa.controls.indexOf(g)));
+
+    // 🔢 Recompute counts
+    this.distributeCounts();
+  }
+
+  public totalContainerCost(): number {
+    return this.containerSelections.controls.reduce((sum, ctrl) => {
+      const container = ctrl.get('container')!.value as OilContainer;
+      const count = (ctrl.get('count')!.value as number) || 0;
+      const price = (container.sellingPrice as number) || 0;
+      return sum + price * count;
+    }, 0);
+  }
+
   private buildForm(): void {
     this.oilSaleForm = this.fb.group(
       {
@@ -337,49 +365,31 @@ export class OilSaleAddComponent implements OnInit {
         showContainers: [false],
         container: [null],
         containerCount: [null, [this.minContainerCountValidator.bind(this)]]
-
       },
       { validators: this.customerOrSupplierRequired }
     );
 
     // Calculate total amount when quantity or unit price changes
 
-    this.oilSaleForm.get('quantity')?.valueChanges.subscribe(() => {this.calculateTotalAmount();});
+    this.oilSaleForm.get('quantity')?.valueChanges.subscribe(() => {
+      this.calculateTotalAmount();
+    });
 
-    this.oilSaleForm.get('unitPrice')?.valueChanges.subscribe(() => {this.calculateTotalAmount();});
+    this.oilSaleForm.get('unitPrice')?.valueChanges.subscribe(() => {
+      this.calculateTotalAmount();
+    });
     this.oilSaleForm.addControl('selectedContainers', this.fb.control([]));
     this.oilSaleForm.addControl('containerSelections', this.fb.array([]));
     // Setup supplier autocomplete filter
     this.setupSupplierAutocomplete();
+    this.setupCustomerAutocomplete();
 
     // Clear other field when one is selected
     this.setupFieldClearing();
-    this.oilSaleForm.get('selectedContainers')!
-      .valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((selected: OilContainer[]) =>
-        this.onContainerSelectionChange({ value: selected } as MatSelectChange)
-      ); }
-  onContainerSelectionChange(event: MatSelectChange): void {
-    const selected: OilContainer[] = event.value;
-    const fa = this.containerSelections;
-
-    selected.forEach(c => {
-      if (!fa.controls.find(g => g.value.container.id === c.id)) {
-        fa.push(this.fb.group({
-          container: [c],
-          count:     [0]
-        }));
-      }
-    });
-
-    // ➖ Remove unselected
-    fa.controls
-      .filter(g => !selected.some(c => c.id === g.value.container.id))
-      .forEach(g => fa.removeAt(fa.controls.indexOf(g)));
-
-    // 🔢 Recompute counts
-    this.distributeCounts();
+    this.oilSaleForm
+      .get('selectedContainers')!
+      .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((selected: OilContainer[]) => this.onContainerSelectionChange({ value: selected } as MatSelectChange));
   }
 
   private distributeCounts(): void {
@@ -387,19 +397,23 @@ export class OilSaleAddComponent implements OnInit {
     let remaining = qty;
     const ctrls = this.containerSelections.controls;
 
-    ctrls.forEach((ctrl, i) => {
-      const cap = ctrl.get('container')!.value.capacityInLiters as number;
-      let count = 0;
+    // Sort by capacity descending so big containers get used first
+    const sorted = [...ctrls].sort((a, b) => {
+      const capA = a.get('container')!.value.capacityInLiters as number;
+      const capB = b.get('container')!.value.capacityInLiters as number;
+      return capB - capA;
+    });
 
-      if (i < ctrls.length - 1) {
-        // for all but the last, fill as many full containers as you can
+    sorted.forEach((ctrl, i) => {
+      const cap = ctrl.get('container')!.value.capacityInLiters as number;
+      let count: number;
+
+      if (i < sorted.length - 1) {
         count = Math.floor(remaining / cap);
       } else {
-        // for the last container type: if anything remains, use exactly one
-        count = remaining > 0 ? 1 : 0;
+        count = cap > 0 ? Math.ceil(remaining / cap) : 0;
       }
 
-      // set without retriggering valueChanges
       ctrl.get('count')!.setValue(count, { emitEvent: false });
       remaining -= count * cap;
     });
@@ -453,6 +467,12 @@ export class OilSaleAddComponent implements OnInit {
       map((value) => this._filterSuppliers(this.suppliers, value))
     );
   }
+  private setupCustomerAutocomplete(): void {
+    this.filteredCustomers = this.oilSaleForm.get('customerId')!.valueChanges.pipe(
+      startWith(''),
+      map((value) => this._filterCustomers(this.customers, value))
+    );
+  }
 
   private _filterSuppliers(suppliers: SupplierType[], value: string | SupplierType): SupplierType[] {
     if (!value || typeof value === 'object') {
@@ -462,6 +482,16 @@ export class OilSaleAddComponent implements OnInit {
     return suppliers.filter(
       (supplier) =>
         supplier.supplierInfo.name.toLowerCase().includes(filterValue) || supplier.supplierInfo.lastname.toLowerCase().includes(filterValue)
+    );
+  } private _filterCustomers(customers1: Customer[], value: string | Customer): Customer[] {
+    if (!value || typeof value === 'object') {
+      return customers1;
+    }
+    const filterValue = value.toLowerCase();
+    return this.customers.filter(c =>
+      (`${c.customerName} ${c.customerLastName}`)
+        .toLowerCase()
+        .includes(filterValue)
     );
   }
 
@@ -507,7 +537,7 @@ export class OilSaleAddComponent implements OnInit {
       next: (response) => {
         if (response.success && response.data) {
           this.customers = Array.isArray(response.data) ? response.data : [response.data];
-        }
+        this.setupCustomerAutocomplete()}
       },
       error: (error) => {
         console.error('Error loading customers:', error);
@@ -564,13 +594,5 @@ export class OilSaleAddComponent implements OnInit {
         totalPrice: formValue.quantity * formValue.unitPrice
       });
     }
-  }
-
-  protected readonly scroll = scroll;
-
-  // This function is called when an autocomplete option is selected
-  autoCompleteSelect(event: any) {
-    // Emit the selected event
-    this.selected.emit(event);
   }
 }
