@@ -9,8 +9,7 @@
         <mat-card *ngIf="selectedDelivery" class="payment-form-card">
           <mat-card-title>
             <div class="payment-header">
-              <span>{{ 'SUPPLIER_PAYMENT.PAYMENT' | translate }}
-                - {{ 'SUPPLIER_PAYMENT.LOT' | translate }} {{ selectedDelivery?.lotNumber }}</span>
+              <span>{{ 'SUPPLIER_PAYMENT.PAYMENT' | translate }}  {{ 'SUPPLIER_PAYMENT.LOT' | translate }} {{ selectedDelivery?.lotNumber }}</span>
 
             </div>
           </mat-card-title>
@@ -19,7 +18,7 @@
             <!-- Error message -->
             <div class="error-container">
               <mat-icon color="warn">error</mat-icon>
-              <p>{{ "SUPPLIER_PAYMENT.PAYMENT.NEEDTTRANSACTION"|translate }} </p>
+              <span>{{ 'SUPPLIER_PAYMENT.PAYMENT_TRANSACTION' |translate }} </span>
             </div>
           }
           <mat-card-content>

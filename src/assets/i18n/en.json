@@ -1409,6 +1409,7 @@
       "SHOW": "Show the list of containers",
       "TITLE": "Choose conatiner(s)"
     },
+    "CONTAINERS_TOTAL_PRICE": "Total containers price",
     "CREATED_BY": "Created By",
     "CREATED_DATE": "Created Date",
     "CURRENCIES": {
@@ -1468,6 +1469,7 @@
     "QUANTITY": "Quantity",
     "SALE_DATE": "Sale Date",
     "SALE_DETAILS": "Sale Details",
+    "SEARCH_CUSTOMER": "Search customer...",
     "SEARCH_SUPPLIER": "Search supplier...",
     "STATUS": {
       "CANCELLED": "Cancelled",
@@ -1484,8 +1486,9 @@
     "SUPPLIER": "Supplier",
     "TIMESTAMPS": "Timestamps",
     "TITLE": "Oil Sales",
-    "TOTAL_AMOUNT": "Total Amount",
+    "TOTAL_AMOUNT": "Total amount",
     "TOTAL_IN_CONTAINERS": "Oil quantity in containers",
+    "TOTAL_OILAMOUNT": "Total oil amount",
     "UNIT_PRICE": "Unit Price",
     "VALIDATION": {
       "CONFIRM": "Confirm",
@@ -2296,6 +2299,7 @@
     "PAYMENT_METHOD": "Payment Method",
     "PAYMENT_SUCCESS": "Payment processed successfully",
     "PAYMENT_SUMMARY": "Payment Summary",
+    "PAYMENT_TRANSACTION": "Validate the related transaction  ",
     "PRICE_NEGOTIATION": "Price Negotiation",
     "PROCESS_PAYMENT": "Process Payment",
     "RECEPTION_TYPE": "Reception Type",
@@ -2450,6 +2454,13 @@
   "Under Construction": "Under Construction",
   "User Profile": "User Profile",
   "View": "View",
+  "WASTE": {
+    "FORM": {
+      "ERRORS": {
+        "QUALITY_GRADE_REQUIRED": "OIl quality is requeird"
+      }
+    }
+  },
   "Widget": "Widget",
   "reCaptcha": "reCaptcha"
 }

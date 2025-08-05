@@ -1409,6 +1409,7 @@
       "SHOW": "Afficher la liste des conteneur ",
       "TITLE": "Choisire les conteneur(s)"
     },
+    "CONTAINERS_TOTAL_PRICE": "Montant des conteneuer total ",
     "CREATED_BY": "Créé par",
     "CREATED_DATE": "Date de création",
     "CURRENCIES": {
@@ -1468,6 +1469,7 @@
     "QUANTITY": "Quantité",
     "SALE_DATE": "Date de vente",
     "SALE_DETAILS": "Détails de la vente",
+    "SEARCH_CUSTOMER": "Rechercher clients...",
     "SEARCH_SUPPLIER": "Rechercher un fournisseur...",
     "STATUS": {
       "CANCELLED": "Annulé",
@@ -1486,6 +1488,7 @@
     "TITLE": "Ventes d'huile",
     "TOTAL_AMOUNT": "Montant total",
     "TOTAL_IN_CONTAINERS": "Quantité huile régler",
+    "TOTAL_OILAMOUNT": "Montant total d'huile",
     "UNIT_PRICE": "Prix unitaire",
     "VALIDATION": {
       "CONFIRM": "Confirmer",
@@ -2292,11 +2295,11 @@
     "PAID_AMOUNT": "Montant Payé",
     "PAID_DELIVERIES": "Livraisons Payées",
     "PAY": "Payer",
-    "PAYMENT": "Paiment",
     "PAYMENT_HISTORY": "Historique des Paiements",
     "PAYMENT_METHOD": "Méthode de Paiement",
     "PAYMENT_SUCCESS": "Paiement traité avec succès",
     "PAYMENT_SUMMARY": "Résumé du Paiement",
+    "PAYMENT_TRANSACTION": "Veuillez valider le transaction",
     "PRICE_NEGOTIATION": "Négociation du Prix",
     "PROCESS_PAYMENT": "Traiter le Paiement",
     "RECEPTION_TYPE": "Type de réception",
@@ -2451,6 +2454,13 @@
   "Under Construction": "En cours de construction",
   "User Profile": "Profil de l'utilisateur",
   "View": "Voir",
+  "WASTE": {
+    "FORM": {
+      "ERRORS": {
+        "QUALITY_GRADE_REQUIRED": "La quality d'huile est obligatoir"
+      }
+    }
+  },
   "Widget": "Widget",
   "reCaptcha": "reCaptcha"
 }

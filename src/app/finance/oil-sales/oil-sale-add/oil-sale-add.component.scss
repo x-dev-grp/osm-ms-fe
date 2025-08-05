@@ -1,7 +1,5 @@
 .oil-sale-form-container {
-  padding: 24px;
-  display: flex;
-  justify-content: center;
+
 
   .form-card {
     width: 100%;
@@ -42,7 +40,6 @@
     display: flex;
     gap: 36px;
     align-items: flex-start;
-    flex-wrap: wrap;
   }
 
   .form-fields {
@@ -85,6 +82,15 @@
 
           .total-amount {
             color: #2e7d32;
+            font-size: 1.15rem;
+          }
+        }
+        &.totalFinal {
+          font-weight: 600;
+          color: #490202;
+
+          .total-amount {
+            color: #ff0031;
             font-size: 1.15rem;
           }
         }

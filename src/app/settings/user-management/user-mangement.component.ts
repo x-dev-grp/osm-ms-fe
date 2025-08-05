@@ -121,13 +121,13 @@ export class UserManagementComponent implements OnInit {
     ],
   }
 
-  applyAction(event:{row:any,action:Action}){
+  applyAction(event:{row:any,action:string}){
     console.log(event);
-    switch (event?.action?.label.toUpperCase()) {
-      case "CONSULTER":
+    switch (event?.action?.toUpperCase()) {
+      case "READ":
         this._router.navigate(['/settings/users/view',event.row?.id]);
         break;
-      case "MODIFIER":
+      case "UPDATE":
         this._router.navigate(['/settings/users/update',event.row?.id]);
 
         break;
