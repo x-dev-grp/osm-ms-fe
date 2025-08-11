@@ -1,9 +1,10 @@
 import {SupplierInfo} from '../../shared/models/supplier';
+import {Customer} from "./Customer";
 
-export interface Waste {
+export interface WasteSale {
   id?: string; // optionnel si c’est une entité persistée
   type: WasteType;
-  quantityInKg: number;
+  quantity: number;
   unitPrice: number;
   totalPrice: number;
   saleDate: Date;
@@ -11,9 +12,10 @@ export interface Waste {
   paid: boolean;
   paymentDate?: Date;
   storageLocationCode: string;
-  customer: string; // UUID sous forme de string
+  customer: Customer; // UUID sous forme de string
   supplier: SupplierInfo;
   notes?: string;
+  description: string;
 }
 
 export enum WasteType {

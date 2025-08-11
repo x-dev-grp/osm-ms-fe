@@ -5,9 +5,10 @@ export const WASTE_DASHBOARD: DashboardConfig = {
   icon: 'delete_sweep',
   title: 'Gestion des déchets',
   titleTranslatePath: 'WASTE.TITLE',
-  baseURL: '/finance/waste',
-  searchEndpoint: 'production/waste',
+  baseURL: '/finance/waste-sales',
+  searchEndpoint: 'finance/waste-sales',
   addNewItem: true,
+  addNewItemUrl: '/finance/waste-sales/new',
 
   defaultSearchData: {
     page: 0,
@@ -34,13 +35,14 @@ export const WASTE_DASHBOARD: DashboardConfig = {
       dataTable: true,
       filterable: true,
       options: [
-        {label: 'Grignon', value: 'GRIGNON', labelTranslatePath: 'WASTE.TYPES.GRIGNON'},
         {label: 'Margine', value: 'MARGINE', labelTranslatePath: 'WASTE.TYPES.MARGINE'},
+        {label: 'Grignon', value: 'POMACE', labelTranslatePath: 'WASTE.TYPES.POMACE'},
+        {label: 'Solides végétaux', value: 'VEGETAL_SOLIDS', labelTranslatePath: 'WASTE.TYPES.VEGETAL_SOLIDS'},
         {label: 'Autre', value: 'OTHER', labelTranslatePath: 'WASTE.TYPES.OTHER'}
       ]
     },
     {
-      name: 'quantityInKg',
+      name: 'quantity',
       label: 'Quantité (kg)',
       labelTranslatePath: 'WASTE.FIELDS.QUANTITY',
       attributeType: AttributeType.number,

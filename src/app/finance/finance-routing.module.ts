@@ -40,7 +40,22 @@ const routes: Routes = [
   { path: 'oil-sales/:id/edit', loadComponent: () => import('./oil-sales/oil-sale-add/oil-sale-add.component').then(m => m.OilSaleAddComponent), canActivate: [AuthGuardChild] },
   { path: 'oil-sales/:id/view', loadComponent: () => import('./oil-sales/oil-sale-view/oil-sale-view.component').then(m => m.OilSaleViewComponent), canActivate: [AuthGuardChild] },
 
-  {path: 'waste', component: WasteComponent, canActivate: [AuthGuardChild]},
+  {path: 'waste-sales', component: WasteComponent, canActivate: [AuthGuardChild]},
+  {
+    path: 'waste-sales/new',
+    loadComponent: () => import('./waste/waste-add/waste-add.component').then(m => m.WasteAddComponent),
+    canActivate: [AuthGuardChild]
+  },
+  {
+    path: 'waste-sales/:id/edit',
+    loadComponent: () => import('./waste/waste-add/waste-add.component').then(m => m.WasteAddComponent),
+    canActivate: [AuthGuardChild]
+  },
+  {
+    path: 'waste-sales/:id/view',
+    loadComponent: () => import('./waste/waste-view/waste-view.component').then(m => m.WasteViewComponent),
+    canActivate: [AuthGuardChild]
+  },
 
 ];
 

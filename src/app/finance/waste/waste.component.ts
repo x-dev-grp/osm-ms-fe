@@ -2,7 +2,6 @@ import {Component} from '@angular/core';
 import {OsmDashboard} from "../../shared/modules/osm-dashboard/osm-dashboard";
 import {DashboardConfig} from "../../shared/modules/osm-dashboard/models/dashboard-config";
 import {WASTE_DASHBOARD} from "./WASTE_DASHBOARD";
-import {OilSale} from "../models/oil-sale.model";
 import {OilSaleService} from "../service/oil-sale.service";
 import {CustomerService} from "../service/customer.service";
 import {Router} from "@angular/router";
@@ -11,6 +10,9 @@ import {SupplierTypeService} from "../../shared/services/supplier.service";
 import {SupplierType} from "../../shared/models/supplier-type";
 import {map, Observable, startWith} from "rxjs";
 import {FormArray, FormGroup} from "@angular/forms";
+import {WasteSale} from "../models/Waste.model";
+import {Customer} from "../models/Customer";
+import {WasteSaleService} from "../service/wasteSale.service";
 
 @Component({
     selector: 'app-waste',
@@ -25,6 +27,7 @@ export class WasteComponent {
     suppliers: SupplierType[];
     filteredSuppliers: Observable<SupplierType[]>;
     wasteForm!: FormGroup;
+  customers: Customer[] = [];
 
     dashboardConfig: DashboardConfig = WASTE_DASHBOARD;
 
@@ -33,7 +36,8 @@ export class WasteComponent {
         private customerService: CustomerService,
         private router: Router,
         private snackBar: MatSnackBar,
-        private supplierService: SupplierTypeService
+        private supplierService: SupplierTypeService,
+        private wasteSaleService: WasteSaleService
     ) {
     }
 
@@ -45,24 +49,28 @@ export class WasteComponent {
         this.loadSuppliers();
     }
 
-
     // load suppliers
 
-    handleAction(event: { action: string; row: OilSale }): void {
+  handleAction(event: { action: string; row: WasteSale }): void {
         switch (event.action.toUpperCase()) {
             case 'READ':
-                break;
+              this.router.navigate(['/finance/waste-sales', event.row.id, 'view']);
+              break;
 
             case 'UPDATE':
-                break;
+              this.router.navigate(['/finance/waste-sales', event.row.id, 'edit']);
+              break;
 
             case 'CONFIRM':
+              this.confirmWasteSale(event.row);
                 break;
 
             case 'CANCEL':
-                break;
+              this.cancelWasteSale(event.row);
+              break;
 
             case 'DELIVER':
+              this.deliverWasteSale(event.row);
                 break;
         }
     }
@@ -99,7 +107,63 @@ export class WasteComponent {
         );
     }
 
-    //load customers
+  confirmWasteSale(waste: WasteSale): void {
+    if (waste.id) {
+      this.wasteSaleService.confirmWasteSale(waste.id).subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.snackBar.open('Vente de déchet confirmée avec succès', 'Fermer', {duration: 3000});
+            // Recharger les données du dashboard
+            // this.loadDashboardData();
+          } else {
+            this.snackBar.open('Erreur lors de la confirmation', 'Fermer', {duration: 3000});
+          }
+        },
+        error: (error) => {
+          console.error('Error confirming waste sale:', error);
+          this.snackBar.open('Erreur lors de la confirmation', 'Fermer', {duration: 3000});
+        }
+      });
+    }
+  }
 
+  cancelWasteSale(waste: WasteSale): void {
+    if (waste.id) {
+      this.wasteSaleService.cancelWasteSale(waste.id).subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.snackBar.open('Vente de déchet annulée avec succès', 'Fermer', {duration: 3000});
+            // Recharger les données du dashboard
+            // this.loadDashboardData();
+          } else {
+            this.snackBar.open('Erreur lors de l\'annulation', 'Fermer', {duration: 3000});
+          }
+        },
+        error: (error) => {
+          console.error('Error cancelling waste sale:', error);
+          this.snackBar.open('Erreur lors de l\'annulation', 'Fermer', {duration: 3000});
+        }
+      });
+    }
+  }
 
+  deliverWasteSale(waste: WasteSale): void {
+    if (waste.id) {
+      this.wasteSaleService.deliverWasteSale(waste.id).subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.snackBar.open('Vente de déchet livrée avec succès', 'Fermer', {duration: 3000});
+            // Recharger les données du dashboard
+            // this.loadDashboardData();
+          } else {
+            this.snackBar.open('Erreur lors de la livraison', 'Fermer', {duration: 3000});
+          }
+        },
+        error: (error) => {
+          console.error('Error delivering waste sale:', error);
+          this.snackBar.open('Erreur lors de la livraison', 'Fermer', {duration: 3000});
+        }
+      });
+    }
+  }
 }
