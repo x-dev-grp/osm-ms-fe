@@ -1,5 +1,6 @@
 import {SupplierInfo} from '../../shared/models/supplier';
 import {Customer} from "./Customer";
+import { SupplierType } from '../../shared/models/supplier-type';
 
 export interface WasteSale {
   id?: string; // optionnel si c’est une entité persistée
@@ -13,7 +14,7 @@ export interface WasteSale {
   paymentDate?: Date;
   storageLocationCode: string;
   customer: Customer; // UUID sous forme de string
-  supplier: SupplierInfo;
+  supplier: SupplierType;
   notes?: string;
   description: string;
 }

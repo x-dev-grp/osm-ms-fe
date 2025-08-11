@@ -16,8 +16,7 @@ import {SupplierTypeService} from "../../../shared/services/supplier.service";
 import {WasteSaleService} from "../../service/wasteSale.service";
 import {MatSelectModule} from "@angular/material/select";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {WasteSale} from "../../models/Waste.model";
-import {CommonModule} from "@angular/common";
+ import {CommonModule} from "@angular/common";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {MatDatepickerModule} from "@angular/material/datepicker";
@@ -28,6 +27,8 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {MatIconModule} from "@angular/material/icon";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {CardComponent} from "../../../@theme/components/card/card.component";
+import { Waste } from '../../../shared/models/Waste';
+import { WasteSale } from '../../models/Waste.model';
 
 @Component({
     selector: 'app-waste-add',
@@ -326,7 +327,7 @@ export class WasteAddComponent {
     this.wasteSaleService.getWasteSale(id).subscribe({
       next: (response) => {
         if (response.success && response.data) {
-          const wasteSale = response.data;
+          const wasteSale = response.data[0];
           this.wasteSaleForm.patchValue({
             type: wasteSale.type,
             customerId: wasteSale.customer?.id ? this.customers.find(c => c.id === wasteSale.customer.id) : null,
