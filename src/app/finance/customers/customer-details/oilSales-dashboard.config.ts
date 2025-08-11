@@ -168,23 +168,44 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
       sortable: true,
       dataTable: true,
       filterable: true
-    },
-    {
-      name: 'currency',
-      label: 'Devise',
-      labelTranslatePath: 'OIL_SALES.FIELDS.CURRENCY',
-      attributeType: AttributeType.string,
-      fieldType: FieldType.select,
+    },  {
+      name: 'unpaiedAmount',
+      label: 'Montant umpaié',
+      labelTranslatePath: 'OIL_SALES.FIELDS.UNPAIDAMOUNT',
+      attributeType: AttributeType.number,
+      fieldType: FieldType.number,
       exportable: true,
       sortable: true,
       dataTable: true,
-      filterable: true,
-      options: [
-        { value: 'TND', label: 'TND' },
-        { value: 'EUR', label: 'EUR' },
-        { value: 'USD', label: 'USD' }
-      ]
+      filterable: true
     },
+    {
+      name: 'paiedAmount',
+      label: 'Montant partiallment',
+      labelTranslatePath: 'OIL_SALES.FIELDS.PARTIALLYPAID',
+      attributeType: AttributeType.number,
+      fieldType: FieldType.number,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },
+    // {
+    //   name: 'currency',
+    //   label: 'Devise',
+    //   labelTranslatePath: 'OIL_SALES.FIELDS.CURRENCY',
+    //   attributeType: AttributeType.string,
+    //   fieldType: FieldType.select,
+    //   exportable: true,
+    //   sortable: true,
+    //   dataTable: true,
+    //   filterable: true,
+    //   options: [
+    //     { value: 'TND', label: 'TND' },
+    //     { value: 'EUR', label: 'EUR' },
+    //     { value: 'USD', label: 'USD' }
+    //   ]
+    // },
 
     // ==================== PAYMENT INFORMATION ====================
     {

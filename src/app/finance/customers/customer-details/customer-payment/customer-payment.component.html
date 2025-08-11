@@ -114,8 +114,12 @@
             <div class="payment-summary">
               <h4>{{ 'SUPPLIER_PAYMENT.PAYMENT_SUMMARY' | translate }}</h4>
               <div class="summary-item">
-                <span>{{ 'SUPPLIER_PAYMENT.UNPAID_AMOUNT' | translate }}:</span>
+                <span>Montant total</span>
                 <span>{{ totalAmount || 0 | currency:'TND' }}</span>
+              </div>
+              <div class="summary-item">
+                <span>{{ 'SUPPLIER_PAYMENT.UNPAID_AMOUNT' | translate }}:</span>
+                <span>{{ data.row.unpaiedAmount || 0 | currency:'TND' }}</span>
               </div>
               <div class="summary-item">
                 <span>{{ 'SUPPLIER_PAYMENT.REMAINING_AMOUNT' | translate }}:</span>

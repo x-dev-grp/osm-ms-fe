@@ -20,8 +20,8 @@ export interface OilSale {
   unitPrice: number;
   totalAmount: number;
   currency: Currency;
-  paidAmount: number;
-  unpaidAmount: number;
+  paiedAmount: number;
+  unpaiedAmount: number;
   paymentMethod: PaymentMethod;
   saleDate: string;
   qualityGrade: QualityGrades;
