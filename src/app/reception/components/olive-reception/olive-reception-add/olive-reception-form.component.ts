@@ -1,29 +1,37 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
-import { Observable, Subscription } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { ToastService } from '../../../../shared/services/toast.service';
-import { UnifiedDelivery } from '../../../../shared/models/UnifiedDelivery';
-import { BaseType } from '../../../../shared/models/base-type';
-import { SupplierType } from '../../../../shared/models/supplier-type';
-import { GenericTypeService } from '../../../../shared/services/generic-type.service';
-import { UnifiedDeliveryService } from '../../../../shared/services/delivery.service';
-import { SupplierTypeService } from '../../../../shared/services/supplier.service';
-import { TypeCategory } from '../../../../shared/models/type-category.enum';
-import { CardComponent } from '../../../../@theme/components/card/card.component';
-import { MatIcon } from '@angular/material/icon';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { map, startWith } from 'rxjs/operators';
-import { OperationType } from '../../../../shared/models/operation-type.enum';
-import { BaseTypeComponent } from '../../../../shared/modules/base-type/base-type.component';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {MatButtonModule} from '@angular/material/button';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators
+} from '@angular/forms';
+import {Observable, Subscription} from 'rxjs';
+import {ActivatedRoute, Router} from '@angular/router';
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
+import {ToastService} from '../../../../shared/services/toast.service';
+import {UnifiedDelivery} from '../../../../shared/models/UnifiedDelivery';
+import {BaseType} from '../../../../shared/models/base-type';
+import {SupplierType} from '../../../../shared/models/supplier-type';
+import {GenericTypeService} from '../../../../shared/services/generic-type.service';
+import {UnifiedDeliveryService} from '../../../../shared/services/delivery.service';
+import {SupplierTypeService} from '../../../../shared/services/supplier.service';
+import {TypeCategory} from '../../../../shared/models/type-category.enum';
+import {CardComponent} from '../../../../@theme/components/card/card.component';
+import {MatIcon} from '@angular/material/icon';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {map, startWith} from 'rxjs/operators';
+import {OperationType} from '../../../../shared/models/operation-type.enum';
+import {BaseTypeComponent} from '../../../../shared/modules/base-type/base-type.component';
 
 // Validator to ensure net weight does not exceed gross weight
 const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | null => {
@@ -387,7 +395,10 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
 
   // Patch form with delivery data
   private patchForm(d: UnifiedDelivery): void {
+    const matchedSupplier = this.suppliers.find(s => s.id?.toString() === d.supplier?.id?.toString());
+
     const parseDate = (value: string | Date | null | undefined): Date | null => {
+
       if (!value) return null;
       return value instanceof Date ? value : new Date(value);
     };
@@ -401,7 +412,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       poidsNet: d.poidsNet,
       matriculeCamion: d.matriculeCamion,
       etatCamion: d.etatCamion,
-      supplier: this.suppliers.find((s) => s.id === d.supplier?.id) || null,
+      supplier: matchedSupplier || null,
       oliveVariety:  d.oliveVariety || null,
       sackCount: d.sackCount,
       oliveType:d.oliveType || null,

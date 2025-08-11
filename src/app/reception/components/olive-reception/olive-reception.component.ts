@@ -148,7 +148,7 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
 
   generateBonReception(delivery: UnifiedDelivery): void {
     const config = getOlivePdfConfig(delivery);
-    this.pdfService.generateReceptionPdf(config);
+    this.pdfService.generatePdf(config);
   }
 
   onRowAction(e: { row: UnifiedDelivery; action: string }): void {

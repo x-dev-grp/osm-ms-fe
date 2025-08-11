@@ -1,6 +1,6 @@
-import { AttributeType, DashboardConfig, FieldType } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
-import { deliveryType } from '../../../shared/models/deleveryType';
-import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
+import {AttributeType, DashboardConfig, FieldType} from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import {deliveryType} from '../../../shared/models/deleveryType';
+import {SearchOperation} from '../../../shared/models/advanced-search/searchOperation';
 
 export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
   icon: 'fact_check',
@@ -9,6 +9,7 @@ export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
   baseURL: 'production/deliveries',
   searchEndpoint: 'production/deliveries',
   addNewItem: false,
+  filteredActions: ['UPDATE', 'DELETE', 'CANCEL'],
   defaultSearchData: {
     page: 0,
     size: 10,

@@ -1003,6 +1003,7 @@
       "EXPENSES": "Dépenses",
       "OIL_CREDIT": "Crédit d'Huile",
       "OIL_SALES": "Ventes d'Huile",
+      "WASTE_MANAGEMENT": "Gestion des déchets",
       "OIL_TRANSACTIONS": "Transactions d'Huile",
       "TITLE": "Finance & Comptabilité",
       "TRANSACTIONS": "Transactions Financières"
@@ -1493,7 +1494,7 @@
       "CONFIRM": "Confirmer",
       "INSUFFICIENT_QUANTITY": "Quantité insuffisante",
       "SOURCE_STORAGE_UNIT": "Unité de stockage source",
-      "TITLE": "Valider la vente d’huile"
+      "TITLE": "Valider la vente d'huile"
     }
   },
   "OIL_TRANSACTION": {
@@ -1896,7 +1897,52 @@
     "SIGNATURE_RESPONSIBLE": "Signature Responsable CQ",
     "SUPPLIER": "Fournisseur",
     "TYPE": "Type",
-    "YIELD": "Rendement"
+    "YIELD": "Rendement",
+    "TRANSACTION_OIL": "Bon de Transaction Huile",
+    "TRANSACTION_TYPE": "Type de transaction",
+    "STATUS": "Statut",
+    "GLOBAL_LOT": "Lot global",
+    "QUALITY_GRADE": "Qualité",
+    "QUANTITY_KG": "Quantité (kg)",
+    "UNIT_PRICE": "Prix unitaire",
+    "TOTAL_PRICE": "Prix total",
+    "TRUCK_MAT": "Matricule camion",
+    "PARCEL": "Parcelle",
+    "STORAGE_UNIT_DEST": "Unité de stockage (destination)",
+    "STORAGE_UNIT_DESTINATION": "Unité de stockage (destination)",
+    "STORAGE_UNIT_SOURCE": "Unité de stockage (source)",
+    "RECEPTION_IN": "Réception",
+    "TRANSFER_IN": "Transfert entrant",
+    "LOAN": "Prêt",
+    "SALE": "Vente",
+    "EXCHANGE": "Échange",
+    "PENDING": "En attente",
+    "COMPLETED": "Terminé",
+    "TRANSACTION_IN": "Type de transaction",
+    "ERROR": "Erreur",
+    "DESTINATION_UNIT": "Unité de destination",
+    "TRANSACTION_STATE": "État de la transaction",
+    "CREATED_DATE": "Date de création",
+    "RECEPTION_DATE": "Date de réception",
+    "QUANTITY": "Quantité",
+    "RECEPTION_ID": "ID de réception",
+    "RECEPTION_SUPPLIER": "Fournisseur de la réception",
+    "RECEPTION_REGION": "Région de la réception",
+    "FICH_CONTROL_QUALITE_HUIL": "Fiche de Contrôle Qualité Huile",
+    "FICH_CONTROL_QUALITE_OLIVE": "Fiche de Contrôle Qualité Olive",
+    "NO_QUALITY_DATA": "Aucune donnée de contrôle qualité disponible",
+    "ACIDITY": "Acidité",
+    "DELTA_K": "Delta K",
+    "INDICE_PEROXYDE": "Indice Péroxyde",
+    "K232": "K232",
+    "K270": "K270",
+    "CATEGORY_OIL": "Catégorie Huile",
+    "DAMAGED_PERCENT": "Endommagées %",
+    "FERMENTED_PERCENT": "Fermentées %",
+    "INFESTED_PERCENT": "Infestées %",
+    "CATEGORY_OLIVE": "Catégorie Olive",
+    "VEHICLE_REGISTRATION": " matricule véhicule",
+    "TRUCK_STATE": "État du camion"
   },
   "PLANNING_ASSIGNED": "Assignées",
   "PLANNING_CANCEL": "Annuler",
@@ -2428,5 +2474,27 @@
     }
   },
   "Widget": "Widget",
-  "reCaptcha": "reCaptcha"
+  "reCaptcha": "reCaptcha",
+  "WASTE": {
+    "TITLE": "Gestion des déchets",
+    "FIELDS": {
+      "TYPE": "Type de déchet",
+      "QUANTITY": "Quantité (kg)",
+      "UNIT_PRICE": "Prix unitaire (TND/kg)",
+      "TOTAL_PRICE": "Prix total (TND)",
+      "SALE_DATE": "Date de vente",
+      "INVOICE_NUMBER": "N° Facture",
+      "PAID": "Payé ?",
+      "PAYMENT_DATE": "Date de paiement",
+      "STORAGE_LOCATION": "Code stockage",
+      "CUSTOMER": "Client",
+      "SUPPLIER": "Fournisseur",
+      "NOTES": "Remarques"
+    },
+    "TYPES": {
+      "GRIGNON": "Grignon",
+      "MARGINE": "Margine",
+      "OTHER": "Autre"
+    }
+  }
 }

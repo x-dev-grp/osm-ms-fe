@@ -1,23 +1,25 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatIconModule } from '@angular/material/icon';
-import { CommonModule } from '@angular/common';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { OIL_TRANSACTIONS_DASHBOARD_CONFIG } from './oil-transactions-dashboard.config';
-import { Router } from '@angular/router';
-import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
-import { SharedModule } from '../../demo/shared/shared.module';
-import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
-import { OilTransaction, TransactionType } from '../../shared/models/OilTransaction';
-import { OilTransactionService } from '../../shared/services/OilTransactionService';
-import { MatDialog } from '@angular/material/dialog';
-import { Subject, takeUntil } from 'rxjs';
-import { ApiResponse } from '../../shared/models/api-response';
-import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
-import { StorageUnitDtoService } from '../../shared/services/storage.service';
-import { ExchangeValidationDialogComponent } from './exchange-validation-dialog/exchange-validation-dialog.component';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { OilSaleValidationDialogComponent } from './oil-sale-validation/oil-sale-validation.component';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {MatTableDataSource, MatTableModule} from '@angular/material/table';
+import {MatIconModule} from '@angular/material/icon';
+import {CommonModule} from '@angular/common';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {OIL_TRANSACTIONS_DASHBOARD_CONFIG} from './oil-transactions-dashboard.config';
+import {Router} from '@angular/router';
+import {OsmDashboard} from '../../shared/modules/osm-dashboard/osm-dashboard';
+import {SharedModule} from '../../demo/shared/shared.module';
+import {DashboardConfig} from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import {OilTransaction, TransactionType} from '../../shared/models/OilTransaction';
+import {OilTransactionService} from '../../shared/services/OilTransactionService';
+import {MatDialog} from '@angular/material/dialog';
+import {Subject, takeUntil} from 'rxjs';
+import {ApiResponse} from '../../shared/models/api-response';
+import {StorageUnitDto} from '../../shared/models/StorageUnitDto';
+import {StorageUnitDtoService} from '../../shared/services/storage.service';
+import {ExchangeValidationDialogComponent} from './exchange-validation-dialog/exchange-validation-dialog.component';
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
+import {getOilTransactionPdfConfig} from "./transaction-pdf.config";
+import {PdfGeneratorService} from "../../shared/services/pdf-generator.service";
+import {OilSaleValidationDialogComponent} from './oil-sale-validation/oil-sale-validation.component';
 
 @Component({
   selector: 'app-oil-transactions',
@@ -42,17 +44,34 @@ export class OilTransactionsComponent implements OnInit {
     private storageUnitService: StorageUnitDtoService,
     private translate: TranslateService,
     private dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private pdfService: PdfGeneratorService,
+
   ) {}
 
   ngOnInit(): void {
     this.loadStorageUnits();
   }
 
+  /**
+   * Génère un PDF pour une transaction d'huile
+   * Les traductions sont maintenant correctement appliquées grâce aux clés PDF.*
+   */
+  generateOilTransactionPdf(data: OilTransaction): void {
+    const config = getOilTransactionPdfConfig(data);
+    this.pdfService.generatePdf(config);
+  }
+
   handleAction(event: { action: string; row: OilTransaction }): void {
     switch (event.action.toUpperCase()) {
       case 'READ':
         this.router.navigate(['/storage/oil-transactions', event.row.id, 'view']);
+        break;
+
+      case 'GEN_PDF':
+        if (event.row) {
+          this.generateOilTransactionPdf(event.row);
+        }
         break;
 
       case 'UPDATE':

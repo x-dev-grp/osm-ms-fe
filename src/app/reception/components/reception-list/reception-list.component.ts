@@ -7,7 +7,7 @@ import {UnifiedDeliveryService} from '../../../shared/services/delivery.service'
 import {tap} from 'rxjs';
 import {Router} from '@angular/router';
 import {PdfGeneratorService} from '../../../shared/services/pdf-generator.service';
-import {ACTION_ICONS} from '../../../shared/modules/osm-dashboard/models/actions';
+import {getProductionPdfConfig} from "./production-pdf.config";
 
 @Component({
   selector: 'app-reception-list',
@@ -21,7 +21,8 @@ export class ReceptionListComponent {
   constructor(
     private deliveryService: UnifiedDeliveryService,
     private _router: Router,
-    private pdfGeneratorService: PdfGeneratorService
+    private pdfGeneratorService: PdfGeneratorService,
+
   ) {}
 
   handleDashboardAction(event: { row: UnifiedDelivery; action: string }): void {
@@ -35,7 +36,7 @@ export class ReceptionListComponent {
         break;
 
       case 'GEN_PDF':
-        this.pdfGeneratorService.generateProductionPDF(event.row);
+        this.generateBonProduction(event.row);
         break;
       case 'QUALITY':
         break;
@@ -50,6 +51,11 @@ export class ReceptionListComponent {
         }
         break;
     }
+  }
+
+  generateBonProduction(delivery: UnifiedDelivery): void {
+    const config = getProductionPdfConfig(delivery);
+    this.pdfGeneratorService.generatePdf(config);
   }
 
   viewDelivery(row: UnifiedDelivery): void {

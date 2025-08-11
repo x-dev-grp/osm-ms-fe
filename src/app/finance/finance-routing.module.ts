@@ -1,14 +1,15 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { ExpensesComponent } from './expenses/expenses.component';
-import { BankAccountsComponent } from './bank-accounts/bank-accounts.component';
-import { ViewExpenseComponent } from './expenses/view-expense/view-expense.component';
-import { OilCreditComponent } from './oil-credit/oil-credit.component';
-import { ViewOilCreditComponent } from './oil-credit/view-oil-credit/view-oil-credit.component';
-import { TransactionsComponent } from './transactions/transactions.component';
-import { CustomersComponent } from './customers/customers.component';
-import { OilSalesComponent } from './oil-sales/oil-sales.component';
-import { AuthGuardChild } from '../interceptors/guards/auth.guard';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {ExpensesComponent} from './expenses/expenses.component';
+import {BankAccountsComponent} from './bank-accounts/bank-accounts.component';
+import {ViewExpenseComponent} from './expenses/view-expense/view-expense.component';
+import {OilCreditComponent} from './oil-credit/oil-credit.component';
+import {ViewOilCreditComponent} from './oil-credit/view-oil-credit/view-oil-credit.component';
+import {TransactionsComponent} from './transactions/transactions.component';
+import {CustomersComponent} from './customers/customers.component';
+import {OilSalesComponent} from './oil-sales/oil-sales.component';
+import {AuthGuardChild} from '../interceptors/guards/auth.guard';
+import {WasteComponent} from "./waste/waste.component";
 
 
 const routes: Routes = [
@@ -38,6 +39,24 @@ const routes: Routes = [
   { path: 'oil-sales/new', loadComponent: () => import('./oil-sales/oil-sale-add/oil-sale-add.component').then(m => m.OilSaleAddComponent), canActivate: [AuthGuardChild] },
   { path: 'oil-sales/:id/edit', loadComponent: () => import('./oil-sales/oil-sale-add/oil-sale-add.component').then(m => m.OilSaleAddComponent), canActivate: [AuthGuardChild] },
   { path: 'oil-sales/:id/view', loadComponent: () => import('./oil-sales/oil-sale-view/oil-sale-view.component').then(m => m.OilSaleViewComponent), canActivate: [AuthGuardChild] },
+
+  {path: 'waste-sales', component: WasteComponent, canActivate: [AuthGuardChild]},
+  {
+    path: 'waste-sales/new',
+    loadComponent: () => import('./waste/waste-add/waste-add.component').then(m => m.WasteAddComponent),
+    canActivate: [AuthGuardChild]
+  },
+  {
+    path: 'waste-sales/:id/edit',
+    loadComponent: () => import('./waste/waste-add/waste-add.component').then(m => m.WasteAddComponent),
+    canActivate: [AuthGuardChild]
+  },
+  {
+    path: 'waste-sales/:id/view',
+    loadComponent: () => import('./waste/waste-view/waste-view.component').then(m => m.WasteViewComponent),
+    canActivate: [AuthGuardChild]
+  },
+
 ];
 
 @NgModule({

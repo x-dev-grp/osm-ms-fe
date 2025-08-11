@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDividerModule } from '@angular/material/divider';
-import { Expense } from '../../models/expense.model';
-import { ExpenseService } from '../../service/expense.service';
-import { CardComponent } from '../../../@theme/components/card/card.component';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { PdfGeneratorService } from 'src/app/shared/services/pdf-generator.service';
-import { TranslateModule } from '@ngx-translate/core';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {CommonModule} from '@angular/common';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
+import {MatDividerModule} from '@angular/material/divider';
+import {Expense} from '../../models/expense.model';
+import {ExpenseService} from '../../service/expense.service';
+import {CardComponent} from '../../../@theme/components/card/card.component';
+import {MatProgressSpinner} from '@angular/material/progress-spinner';
+import {PdfGeneratorService} from 'src/app/shared/services/pdf-generator.service';
+import {TranslateModule} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-view-expense',
@@ -55,7 +55,7 @@ export class ViewExpenseComponent implements OnInit {
 
   onPrint(): void {
     if (this.expense) {
-      // this.pdfGenerator.generateExpensePdf(this.expense);
+      console.log(" this.pdfGenerator.generateExpensePdf(this.expense);")
     }
   }
 

@@ -17,7 +17,7 @@ export function getOlivePdfConfig(delivery: UnifiedDelivery): PdfConfig {
     ],
     fields: [
       {label: 'PDF.LOT', value: delivery.lotNumber || ''},
-      {label: 'PDF.LOT_GLOBAL', value: delivery.globalLotNumber || ''},
+      {label: 'PDF.LOT_GLOBAL', value: delivery.globalLotNumber || 'N/A'},
       {label: 'PDF.GROSS_WEIGHT', value: `${delivery.poidsBrute || ''} kg`},
       {label: 'PDF.OLIVE_QUANTITY', value: `${delivery.oilQuantity || ''} kg`},
       {label: 'PDF.OLIVE_VARIETY', value: delivery.oliveVariety?.name || ''},

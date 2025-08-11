@@ -214,7 +214,16 @@ export const osm_menus: Navigation[] = [
         url: '/finance/oil-sales',
         icon: 'sell',
         breadcrumbs: false
+      },
+      {
+        id: 'wasteManagement',
+        title: 'MENU.FINANCE.WASTE_MANAGEMENT',
+        type: 'item',
+        url: '/finance/waste',
+        icon: 'cleaning_services',
+        breadcrumbs: false
       }
+
     ]
   },
 

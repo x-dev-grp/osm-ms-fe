@@ -1,17 +1,19 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule } from '@angular/material/table';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatCardModule } from '@angular/material/card';
-import { MatSortModule } from '@angular/material/sort';
-import { Router } from '@angular/router';
-import { SharedModule } from '../../../demo/shared/shared.module';
-import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
-import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
-import { QUALITY_CONTROL_DASHBOARD } from './QUALITY_CONTROL_DASHBOARD';
+import {Component, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {MatButtonModule} from '@angular/material/button';
+import {MatTableModule} from '@angular/material/table';
+import {MatIconModule} from '@angular/material/icon';
+import {MatDialogModule} from '@angular/material/dialog';
+import {MatCardModule} from '@angular/material/card';
+import {MatSortModule} from '@angular/material/sort';
+import {Router} from '@angular/router';
+import {SharedModule} from '../../../demo/shared/shared.module';
+import {OsmDashboard} from '../../../shared/modules/osm-dashboard/osm-dashboard';
+import {DashboardConfig} from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import {UnifiedDelivery} from '../../../shared/models/UnifiedDelivery';
+import {QUALITY_CONTROL_DASHBOARD} from './QUALITY_CONTROL_DASHBOARD';
+import {PdfGeneratorService} from "../../../shared/services/pdf-generator.service";
+import {getControlQualitePdfConfig} from "./PDF-controlQualite.config";
 
 @Component({
   selector: 'app-quality-control-list',
@@ -32,7 +34,8 @@ import { QUALITY_CONTROL_DASHBOARD } from './QUALITY_CONTROL_DASHBOARD';
 export class QualityControlListComponent implements OnInit {
   dashboardConfig: DashboardConfig = QUALITY_CONTROL_DASHBOARD;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private pdfService: PdfGeneratorService,) {
+  }
 
   ngOnInit(): void {}
 
@@ -45,8 +48,21 @@ export class QualityControlListComponent implements OnInit {
       case 'READ':
         this.viewDelivery(event.row);
         break;
+      case 'GEN_PDF':
+        if (event.row) {
+          this.generateBonControleQualite(event.row);
+        }
+        break;
     }
   }
+
+  generateBonControleQualite(delivery: UnifiedDelivery): void {
+    const deliveryType = delivery.deliveryType?.toUpperCase() || '';
+    const config = getControlQualitePdfConfig(delivery, deliveryType);
+    this.pdfService.generatePdf(config);
+  }
+
+
 
   private startQualityControl(delivery: UnifiedDelivery): void {
     this.router.navigate(['/reception/quality', delivery.id]);

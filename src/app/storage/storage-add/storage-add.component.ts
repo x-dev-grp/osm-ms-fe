@@ -1,22 +1,22 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatButtonModule } from '@angular/material/button';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatButtonModule} from '@angular/material/button';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Subscription} from 'rxjs';
 
-import { SharedModule } from '../../demo/shared/shared.module';
-import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
-import { BaseType } from '../../shared/models/base-type';
-import { StorageUnitDtoService } from '../../shared/services/storage.service';
-import { GenericTypeService } from '../../shared/services/generic-type.service';
-import { TypeCategory } from '../../shared/models/type-category.enum';
+import {SharedModule} from '../../demo/shared/shared.module';
+import {StorageUnitDto} from '../../shared/models/StorageUnitDto';
+import {BaseType} from '../../shared/models/base-type';
+import {StorageUnitDtoService} from '../../shared/services/storage.service';
+import {GenericTypeService} from '../../shared/services/generic-type.service';
+import {TypeCategory} from '../../shared/models/type-category.enum';
 
 @Component({
   selector: 'app-storage-add',
@@ -78,8 +78,11 @@ export class StorageAddComponent implements OnInit, OnDestroy {
       .then(([oilTypes, storage]) => {
         this.oilTypes = oilTypes?.success ? oilTypes.data : [];
 
-        if (this.isEditing && storage?.success && storage.data) {
-          this.patchForm(storage.data[0]);
+        const unit = Array.isArray(storage?.data) ? storage?.data[0] : storage?.data;
+
+        if (this.isEditing && storage?.success && unit) {
+          this.patchForm(unit as StorageUnitDto);
+
         } else if (this.isEditing) {
           this.errorMessage = 'Error loading storage unit.';
           this.showToast(this.errorMessage);
@@ -132,11 +135,17 @@ export class StorageAddComponent implements OnInit, OnDestroy {
   }
 
   private patchForm(storage: StorageUnitDto): void {
+    console.log('Patch storage:', storage);
+    console.log('OilTypes:', this.oilTypes);
+
     this.storageForm.patchValue({
       ...storage,
-      oilType: this.oilTypes.find(t => t.id === storage.oilType?.id) || null
+      oilType: this.oilTypes.find(t => t.id === storage.oilType?.id) || null,
+      nextMaintenanceDate: storage.nextMaintenanceDate ? new Date(storage.nextMaintenanceDate) : null,
+      lastInspectionDate: storage.lastInspectionDate ? new Date(storage.lastInspectionDate) : null
     });
   }
+
 
   private showToast(message: string): void {
     this.snackBar.open(message, 'Close', { duration: 3000 });
