@@ -19,6 +19,7 @@ import { SearchData } from '../../../shared/models/advanced-search/searchData';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { OilTransaction } from '../../../shared/models/OilTransaction';
 import { CustomerPaymentComponent } from './customer-payment/customer-payment.component';
+import { FinancialTransactionService } from '../../service/financial-transaction.service';
 
 @Component({
   selector: 'app-supplier-details',
@@ -48,6 +49,7 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
+    private financialService: FinancialTransactionService,
     private searchService: AdvancedSearchService,
     private _dialog: MatDialog
   ) {}
@@ -153,7 +155,7 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
     };
 
     this.searchService
-      .search(paidCountSearchDta, 'finance/oil_sale')
+      .search(paidCountSearchDta, 'production/oil_sale')
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((res) => {
@@ -162,7 +164,7 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
       )
       .subscribe();
     this.searchService
-      .search(unpaidCountSearchDta, 'finance/oil_sale')
+      .search(unpaidCountSearchDta, 'production/oil_sale')
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((res) => {

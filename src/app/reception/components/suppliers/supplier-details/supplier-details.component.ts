@@ -240,7 +240,7 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
       }
     };
     this.searchService
-      .search(paidOilSalesData, 'finance/oil_sale')
+      .search(paidOilSalesData, 'production/oil_sale')
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((res) => {
@@ -267,7 +267,7 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
       }
     };
     this.searchService
-      .search(paidOilSalesData, 'finance/oil_sale')
+      .search(paidOilSalesData, 'production/oil_sale')
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((res) => {

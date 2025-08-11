@@ -273,11 +273,16 @@ export const TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
   defaultSearchData: {
     page: 0,
     size: 10,
-    sort: 'transactionDate',
+    sort: 'createdDate',
     order: 'DESC',
     searchData: {
       operation: SearchOperation.AND,
+      search: {
+        isDeleted: {
+          equalValue: false
+        }
+      },
       searchs: []
     }
-  }
+  },
 };

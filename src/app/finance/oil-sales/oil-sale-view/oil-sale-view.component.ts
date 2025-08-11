@@ -55,7 +55,7 @@ export class OilSaleViewComponent implements OnInit {
     this.oilSaleService.getOilSale(id).subscribe({
       next: (response) => {
         if (response.success && response.data) {
-          this.oilSale = response.data;
+          this.oilSale = response.data[0];
         } else {
           this.snackBar.open('Oil sale not found', 'Close', { duration: 3000 });
           this.router.navigate(['/finance/oil-sales']);
@@ -71,15 +71,7 @@ export class OilSaleViewComponent implements OnInit {
     });
   }
 
-  onEdit(): void {
-    if (this.oilSaleId) {
-      this.router.navigate(['/finance/oil-sales', this.oilSaleId, 'edit']);
-    }
-  }
 
-  onBack(): void {
-    this.router.navigate(['/finance/oil-sales']);
-  }
 
   onConfirm(): void {
     if (this.oilSaleId && this.oilSale?.status === OilSaleStatus.PENDING) {
@@ -168,4 +160,4 @@ export class OilSaleViewComponent implements OnInit {
   canDeliver(): boolean {
     return this.oilSale?.status === OilSaleStatus.CONFIRMED;
   }
-} 
+}

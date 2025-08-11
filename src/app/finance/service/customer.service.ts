@@ -10,7 +10,7 @@ import { BankAccount } from '../models/BankAccount';
   providedIn: 'root'
 })
 export class CustomerService {
-  private baseUrl = environment.apiUrl + '/api/finance/customers';
+  private baseUrl = environment.apiUrl + '/api/production/customers';
 
   constructor(private http: HttpClient) {}
 

@@ -157,8 +157,7 @@ export class CompanyProfileComponent implements OnInit {
       logoContentType: profileData.logoContentType
     });
 
-    this.bankAccounts = profileData.bankAccounts || [];
-    if (profileData.logoData && profileData.logoContentType) {
+     if (profileData.logoData && profileData.logoContentType) {
       this.logoPreview = `data:${profileData.logoContentType};base64,${profileData.logoData}`;
     }
   }
@@ -191,8 +190,7 @@ export class CompanyProfileComponent implements OnInit {
     const profileToSave: CompanyProfile = {
       ...formValue,
       id: this.profile?.id,
-      bankAccounts: this.profile?.bankAccounts || []
-    };
+     };
     this.companyProfileService.saveProfile(profileToSave).subscribe({
       next: () => {
         this.toastService.success('GENERAL_CONFIG.MESSAGES.SAVE_SUCCESS');

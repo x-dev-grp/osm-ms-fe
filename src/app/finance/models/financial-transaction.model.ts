@@ -46,8 +46,8 @@ export enum Currency {
 
 export interface FinancialTransaction {
   id?: string;
-  transactionType: TransactionType;
-  direction: TransactionDirection;
+  transactionType?: TransactionType;
+  direction?: TransactionDirection;
   amount: number;
   currency?: Currency;
   paymentMethod: PaymentMethod;
@@ -69,87 +69,4 @@ export interface FinancialTransaction {
   lastModifiedDate?: string;
   createdBy?: string;
   lastModifiedBy?: string;
-}
-
-// ==================== DTOs ====================
-
-export interface CreateFinancialTransactionDto {
-  transactionType: TransactionType;
-  direction: TransactionDirection;
-  amount: number;
-  currency?: Currency;
-  paymentMethod: PaymentMethod;
-  bankAccountId?: string;
-  checkNumber?: string;
-  externalTransactionId?: string;
-  lotNumber?: string;
-  supplierId?: string;
-  customerId?: string;
-  expenseId?: string;
-  description?: string;
-  invoiceReference?: string;
-  receiptReference?: string;
-  transactionDate: string;
-}
-
-export interface UpdateFinancialTransactionDto {
-  id: string;
-  transactionType?: TransactionType;
-  direction?: TransactionDirection;
-  amount?: number;
-  currency?: Currency;
-  paymentMethod?: PaymentMethod;
-  bankAccountId?: string;
-  checkNumber?: string;
-  externalTransactionId?: string;
-  lotNumber?: string;
-  supplierId?: string;
-  customerId?: string;
-  expenseId?: string;
-  description?: string;
-  invoiceReference?: string;
-  receiptReference?: string;
-  transactionDate?: string;
-  approved?: boolean;
-  approvedBy?: string;
-}
-
-export interface FinancialTransactionSearchDto {
-  transactionType?: TransactionType;
-  direction?: TransactionDirection;
-  currency?: Currency;
-  paymentMethod?: PaymentMethod;
-  supplierId?: string;
-  customerId?: string;
-  approved?: boolean;
-  startDate?: string;
-  endDate?: string;
-  minAmount?: number;
-  maxAmount?: number;
-  description?: string;
-  lotNumber?: string;
-}
-
-// ==================== API RESPONSE ====================
-
-export interface ApiResponse<T> {
-  success: boolean;
-  data?: T;
-  message?: string;
-  errors?: string[];
-  totalElements?: number;
-  totalPages?: number;
-  currentPage?: number;
-  pageSize?: number;
-}
-
-export interface FinancialTransactionSummary {
-  totalTransactions: number;
-  totalAmount: number;
-  totalInbound: number;
-  totalOutbound: number;
-  totalInternal: number;
-  currencyBreakdown: { [key in Currency]?: number };
-  typeBreakdown: { [key in TransactionType]?: number };
-  directionBreakdown: { [key in TransactionDirection]?: number };
 }

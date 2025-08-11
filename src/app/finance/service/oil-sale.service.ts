@@ -6,13 +6,14 @@ import {
   OilSale,
 
 } from '../models/oil-sale.model';
-import { ApiResponse } from '../models/financial-transaction.model';
+import { ApiResponse } from '../../shared/models/api-response';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class OilSaleService {
-  private baseUrl = `${environment.apiUrl}/api/finance/oil_sale`;
+  private baseUrl = `${environment.apiUrl}/api/production/oil_sale`;
 
   constructor(private http: HttpClient) {}
 
@@ -47,5 +48,9 @@ export class OilSaleService {
   // Deliver oil sale (update status to DELIVERED)
   deliverOilSale(id: string): Observable<ApiResponse<OilSale>> {
     return this.http.patch<ApiResponse<OilSale>>(`${this.baseUrl}/${id}/deliver`, {});
+  }
+
+  processPayment(payload:any): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<void>>(`${this.baseUrl}/payment`, payload);
   }
 }

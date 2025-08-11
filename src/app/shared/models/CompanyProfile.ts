@@ -25,5 +25,4 @@ export interface CompanyProfile {
   logoContentType?: string;
 
   // read‑only list of bank accounts
-  bankAccounts: BankAccount[];
-}
+ }

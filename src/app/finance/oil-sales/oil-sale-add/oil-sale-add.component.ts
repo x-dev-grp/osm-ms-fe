@@ -184,6 +184,9 @@ export class OilSaleAddComponent implements OnInit {
           customerId: formValue.customerId || null,
           supplierId: formValue.supplierId?.id || formValue.supplierId || null,
           storageUnitId: formValue.storageUnitId || null,
+          oilTransactionUUID: '',
+          paidAmount: 0,
+          unpaidAmount: totalAmount,
           quantity: formValue.quantity || null,
           qualityGrade: formValue.qualityGrade || null,
           unitPrice: formValue.unitPrice || null,
@@ -218,6 +221,9 @@ export class OilSaleAddComponent implements OnInit {
           storageUnit: formValue.storageUnitId || null,
           quantity: formValue.quantity || null,
           unitPrice: formValue.unitPrice || null,
+          oilTransactionUUID: '',
+          paidAmount: 0,
+          unpaidAmount: totalAmount,
           currency: formValue.currency || null,
           paymentMethod: formValue.paymentMethod || null,
           saleDate: formValue.saleDate.toISOString() || null,
@@ -231,19 +237,7 @@ export class OilSaleAddComponent implements OnInit {
         this.oilSaleService.createOilSale(createDto).subscribe({
           next: (response) => {
             if (response.success) {
-              this.oilTransactionDTO = this.createOilTransactionDTOFromForm();
-              this.oiltransactionService.createOilTransactionForSale(this.oilTransactionDTO).subscribe({
-                next: (response) => {
-                  if (response.success) {
-                    console.log('Oil transaction created successfully');
-                  } else {
-                    console.error('Error creating oil transaction:', response.message);
-                  }
-                },
-                error: (error) => {
-                  console.error('Error creating oil transaction:', error);
-                }
-              });
+
               this.snackBar.open('Oil sale created successfully', 'Close', { duration: 3000 });
 
               this.router.navigate(['/finance/oil-sales']);
@@ -508,7 +502,7 @@ export class OilSaleAddComponent implements OnInit {
     this.oilSaleService.getOilSale(id).subscribe({
       next: (response) => {
         if (response.success && response.data) {
-          const oilSale = response.data;
+          const oilSale = response.data[0];
           this.oilSaleForm.patchValue({
             customerId: oilSale.customer?.id,
             supplierId: oilSale.supplier?.id,

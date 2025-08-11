@@ -3,13 +3,9 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
-  FinancialTransaction,
-  CreateFinancialTransactionDto,
-  UpdateFinancialTransactionDto,
-  FinancialTransactionSearchDto,
-  ApiResponse,
-  FinancialTransactionSummary
+  FinancialTransaction
 } from '../models/financial-transaction.model';
+import { ApiResponse } from '../../shared/models/api-response';
 
 @Injectable({
   providedIn: 'root'
@@ -32,14 +28,14 @@ export class FinancialTransactionService {
   /**
    * Create new transaction
    */
-  createTransaction(dto: CreateFinancialTransactionDto): Observable<ApiResponse<FinancialTransaction>> {
+  createTransaction(dto: FinancialTransaction): Observable<ApiResponse<FinancialTransaction>> {
     return this.http.post<ApiResponse<FinancialTransaction>>(`${this.baseUrl}`, dto);
   }
 
   /**
    * Update transaction
    */
-  updateTransaction(dto: UpdateFinancialTransactionDto): Observable<ApiResponse<FinancialTransaction>> {
+  updateTransaction(dto: FinancialTransaction): Observable<ApiResponse<FinancialTransaction>> {
     return this.http.put<ApiResponse<FinancialTransaction>>(`${this.baseUrl}/${dto.id}`, dto);
   }
 
@@ -78,16 +74,7 @@ export class FinancialTransactionService {
   /**
    * Export transactions to Excel
    */
-  exportToExcel(searchDto?: FinancialTransactionSearchDto): Observable<Blob> {
-    return this.http.post(`${this.baseUrl}/export/excel`, searchDto || {}, { responseType: 'blob' });
-  }
 
-  /**
-   * Export transactions to PDF
-   */
-  exportToPdf(searchDto?: FinancialTransactionSearchDto): Observable<Blob> {
-    return this.http.post(`${this.baseUrl}/export/pdf`, searchDto || {}, { responseType: 'blob' });
-  }
 
   // ==================== UTILITY METHODS ====================
 

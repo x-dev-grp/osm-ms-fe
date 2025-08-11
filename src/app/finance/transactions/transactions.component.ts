@@ -7,7 +7,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
-import { FinancialTransaction, FinancialTransactionSummary } from '../models/financial-transaction.model';
+import { FinancialTransaction } from '../models/financial-transaction.model';
 import { FinancialTransactionService } from '../service/financial-transaction.service';
 import { TRANSACTIONS_DASHBOARD_CONFIG } from './transactions-dashboard.config';
 import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
@@ -33,7 +33,6 @@ import { ACTION_ICONS } from 'src/app/shared/modules/osm-dashboard/models/action
 export class TransactionsComponent implements OnInit, OnDestroy {
   dashboardConfig: DashboardConfig = TRANSACTIONS_DASHBOARD_CONFIG;
   loading = false;
-  transactionSummary?: FinancialTransactionSummary;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -171,7 +170,7 @@ export class TransactionsComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (response) => {
           if (response.success && response.data) {
-            const transaction = response.data;
+            const transaction = response.data[0];
             // Navigate to add form with pre-filled data
             this.router.navigate(['/finance/transactions/new'], {
               queryParams: {
@@ -196,29 +195,7 @@ export class TransactionsComponent implements OnInit, OnDestroy {
   }
 
   /** Export single transaction */
-  exportTransaction(id: string): void {
-    this.loading = true;
-    // For single transaction export, we'll use a different approach
-    // since the search DTO doesn't support single ID export
-    this.transactionService.exportToExcel()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (blob) => {
-          const url = window.URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = `transaction_${id}.xlsx`;
-          link.click();
-          window.URL.revokeObjectURL(url);
-          this.showSuccess('Transaction exportée avec succès');
-          this.loading = false;
-        },
-        error: () => {
-          this.showError('Erreur lors de l\'export');
-          this.loading = false;
-        }
-      });
-  }
+
 
   /** Bulk operations */
   bulkApprove(ids: string[]): void {

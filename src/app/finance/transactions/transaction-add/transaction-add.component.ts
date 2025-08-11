@@ -20,7 +20,7 @@ import { FinancialTransactionService } from '../../service/financial-transaction
   templateUrl: './transaction-add.component.html',
   standalone: true,
   imports: [
-    CommonModule, 
+    CommonModule,
     ReactiveFormsModule,
     MatButtonModule,
     MatIconModule,
@@ -56,14 +56,14 @@ export class TransactionAddComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
-    
+
     // Check if this is a duplicate operation
     const isDuplicate = this.route.snapshot.queryParamMap.get('duplicate');
     if (isDuplicate === 'true') {
       this.isDuplicateMode = true;
       this.loadDuplicateData();
     }
-    
+
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEditMode = true;
@@ -90,7 +90,7 @@ export class TransactionAddComponent implements OnInit {
   private loadDuplicateData(): void {
     // Load data from query parameters for duplication
     const queryParams = this.route.snapshot.queryParamMap;
-    
+
     this.transactionForm.patchValue({
       transactionType: queryParams.get('transactionType') || '',
       direction: queryParams.get('direction') || '',
@@ -108,17 +108,18 @@ export class TransactionAddComponent implements OnInit {
     this.transactionService.getTransactionById(id).subscribe({
       next: (response) => {
         if (response.success && response.data) {
+        let  res=response.data[0]
           this.transactionForm.patchValue({
-            transactionType: response.data.transactionType,
-            direction: response.data.direction,
-            amount: response.data.amount,
-            currency: response.data.currency,
-            paymentMethod: response.data.paymentMethod,
-            description: response.data.description,
-            lotNumber: response.data.lotNumber,
-            invoiceReference: response.data.invoiceReference,
-            receiptReference: response.data.receiptReference,
-            transactionDate: response.data.transactionDate?.split('T')[0]
+            transactionType: res.transactionType,
+            direction: res.direction,
+            amount: res.amount,
+            currency: res.currency,
+            paymentMethod: res.paymentMethod,
+            description: res.description,
+            lotNumber: res.lotNumber,
+            invoiceReference: res.invoiceReference,
+            receiptReference: res.receiptReference,
+            transactionDate: res.transactionDate?.split('T')[0]
           });
         }
         this.loading = false;
@@ -134,7 +135,7 @@ export class TransactionAddComponent implements OnInit {
     if (this.transactionForm.valid) {
       this.loading = true;
       const formValue = this.transactionForm.value;
-      
+
       if (this.isEditMode && this.transactionId) {
         // Update existing transaction
         this.transactionService.updateTransaction({
@@ -160,8 +161,8 @@ export class TransactionAddComponent implements OnInit {
         this.transactionService.createTransaction(formValue).subscribe({
           next: (response) => {
             if (response.success) {
-              const message = this.isDuplicateMode ? 
-                'Transaction dupliquée avec succès' : 
+              const message = this.isDuplicateMode ?
+                'Transaction dupliquée avec succès' :
                 'Transaction créée avec succès';
               this.showSuccess(message);
               this.router.navigate(['/finance/transactions']);
@@ -219,4 +220,4 @@ export class TransactionAddComponent implements OnInit {
     }
     return this.isEditMode ? 'Mettre à jour' : 'Créer';
   }
-} 
+}

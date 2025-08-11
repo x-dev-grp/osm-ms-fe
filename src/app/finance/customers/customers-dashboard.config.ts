@@ -9,8 +9,8 @@ export const CUSTOMERS_DASHBOARD_CONFIG: DashboardConfig = {
   icon: 'people',
   title: 'Clients',
   titleTranslatePath: 'CUSTOMERS.TITLE',
-  baseURL: 'finance/customers',
-  searchEndpoint: 'finance/customers',
+  baseURL: 'production/customers',
+  searchEndpoint: 'production/customers',
   addNewItem: true,
   addNewItemUrl: 'finance/customers/new',
   /* ── Data-table columns & filter metadata ───────────────────── */

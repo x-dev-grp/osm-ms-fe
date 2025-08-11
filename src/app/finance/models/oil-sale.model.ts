@@ -8,7 +8,7 @@ export enum QualityGrades {
   EXTRA_VIRGIN = 'EXTRA_VIRGIN',
   LAMPANTE = 'LAMPANTE',
   OTHER = 'OTHER',
-  REFINED="REFINED"
+  REFINED = 'REFINED'
 }
 
 export interface OilSale {
@@ -20,12 +20,15 @@ export interface OilSale {
   unitPrice: number;
   totalAmount: number;
   currency: Currency;
+  paidAmount: number;
+  unpaidAmount: number;
   paymentMethod: PaymentMethod;
   saleDate: string;
   qualityGrade: QualityGrades;
   invoiceNumber?: string;
   description?: string;
   status: OilSaleStatus;
+  oilTransactionUUID?: string;
   createdDate?: string;
   lastModifiedDate?: string;
   createdBy?: string;
@@ -52,8 +55,3 @@ export interface CreateOilSaleDto {
   invoiceNumber?: string;
   description?: string;
 }
-
-
-
-
-

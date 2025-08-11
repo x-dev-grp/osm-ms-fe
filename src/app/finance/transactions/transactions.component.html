@@ -1,11 +1,2 @@
-   <!-- Loading Overlay -->
-  <div class="loading-overlay" *ngIf="loading">
-    <mat-spinner diameter="50"></mat-spinner>
-    <p>Chargement en cours...</p>
-  </div>
-
-  <osm-dashboard
-    [config]="dashboardConfig"
-    (applyAction)="handleAction($event)">
-  </osm-dashboard>
+<osm-dashboard [config]="dashboardConfig" (applyAction)="handleAction($event)"></osm-dashboard>
 

@@ -57,7 +57,7 @@ export class TransactionViewComponent implements OnInit {
     this.transactionService.getTransactionById(id).subscribe({
       next: (response) => {
         if (response.success && response.data) {
-          this.transaction = response.data;
+          this.transaction = response.data[0];
         } else {
           this.error = true;
           this.showError('Transaction non trouvée');
