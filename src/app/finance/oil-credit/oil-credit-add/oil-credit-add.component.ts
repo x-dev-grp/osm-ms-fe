@@ -10,7 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SharedModule } from '../../../demo/shared/shared.module';
+import { SharedModule } from '../../../shared/shared.module';
 import { ApiResponse } from '../../../shared/models/api-response';
 import { OilCredit, CreditState, UnitType } from '../../models/OilCredit';
 import { OilCreditService } from '../../service/oil-credit.service';

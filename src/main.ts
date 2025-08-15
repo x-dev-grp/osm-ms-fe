@@ -4,7 +4,7 @@ import { environment } from './environments/environment';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ErrorInterceptor } from 'src/app/interceptors/error.interceptor';
 import { AppRoutingModule } from './app/app-routing.module';
-import { SharedModule } from './app/demo/shared/shared.module';
+import { SharedModule } from './app/shared/shared.module';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
  import { AppComponent } from './app/app.component';
@@ -14,7 +14,7 @@ import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { AuthenticationService } from './app/auth/services/authentication.service';
 import { CookieService } from 'ngx-cookie-service';
 import { TranslateService, TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { CustomTranslateLoader } from './app/demo/shared/custom-translate-loader';
+import { CustomTranslateLoader } from './app/shared/custom-translate-loader';
 
 if (environment.production) {
   enableProdMode();

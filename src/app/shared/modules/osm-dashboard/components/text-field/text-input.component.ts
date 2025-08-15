@@ -11,7 +11,7 @@ import { MatSortModule } from '@angular/material/sort';
 
 import { AdvancedSearchService } from 'src/app/shared/services/advanced-serach.service';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { SharedModule } from 'src/app/demo/shared/shared.module';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { Field, FieldType } from '../../models/dashboard-config';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, debounceTime, EMPTY, filter, Observable, switchMap, tap } from 'rxjs';
@@ -45,8 +45,8 @@ export class InputTextComponent implements OnInit, AfterViewInit, OnChanges, OnD
   formControl: AbstractControl;
 
   ngOnDestroy(): void {}
- 
-  
+
+
   ngAfterViewInit(): void {
     this._store.resetFields$()
     .pipe(takeUntilDestroyed(this.destroyRef))
@@ -74,7 +74,7 @@ export class InputTextComponent implements OnInit, AfterViewInit, OnChanges, OnD
 
   ngOnChanges(changes: SimpleChanges): void {}
   ngOnInit(): void {
-   
+
     this.formControl = new FormControl("");
     console.log('field', this.field());
   }

@@ -11,7 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { SharedModule } from 'src/app/demo/shared/shared.module';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { DashboardStore } from './services/dashboard-state.service';
 import { DashboardConfig, Field } from './models/dashboard-config';
 import { Router } from '@angular/router';

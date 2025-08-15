@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatOption } from '@angular/material/core';
-import { CardComponent } from '../@theme/components/card/card.component';
+import { CardComponent } from '../theme/components/card/card.component';
 import { MatTab, MatTabGroup, MatTabLabel, MatTabLink, MatTabNav, MatTabNavPanel } from '@angular/material/tabs';
 import { MatIcon } from '@angular/material/icon';
 import { MatButtonToggle, MatButtonToggleGroup } from '@angular/material/button-toggle';

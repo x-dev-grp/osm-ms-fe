@@ -12,7 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
-import { SharedModule } from '../../demo/shared/shared.module';
+import { SharedModule } from '../../shared/shared.module';
 import { BankAccount } from '../../finance/models/BankAccount';
 import { CompanyProfileService } from '../../shared/services/company-profile.service';
 import { CompanyProfile } from '../../shared/models/CompanyProfile';

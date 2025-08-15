@@ -23,7 +23,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import {MatDatepickerModule} from '@angular/material/datepicker';
-import {CardComponent} from '../../../../@theme/components/card/card.component';
+import {CardComponent} from '../../../../theme/components/card/card.component';
 import {MatIcon} from '@angular/material/icon';
 import {StorageUnitDtoService} from '../../../../shared/services/storage.service';
 import {OliveLotStatus} from '../../../../shared/models/OliveLotStatus';

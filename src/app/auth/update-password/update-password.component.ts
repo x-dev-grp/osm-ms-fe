@@ -2,14 +2,14 @@ import { Component, OnInit, TemplateRef, ViewChild, inject } from '@angular/core
 
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { SharedModule } from 'src/app/demo/shared/shared.module';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { catchError, first, of, tap } from 'rxjs';
 import { UserService } from '../../settings/user-management/services/user.service';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
 import { AuthenticationService } from 'src/app/auth/services/authentication.service';
 import { MatDialog } from '@angular/material/dialog';
-import { User } from 'src/app/@theme/types/user';
+import { User } from 'src/app/theme/types/user';
 import { TokenService } from '../services/tokenService.service';
 
 @Component({

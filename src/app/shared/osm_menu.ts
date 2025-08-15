@@ -1,12 +1,12 @@
-import {Navigation} from 'src/app/@theme/types/navigation';
-import {Role} from 'src/app/@theme/types/role';
+import {Navigation} from 'src/app/theme/types/navigation';
+import {Role} from 'src/app/theme/types/role';
 
 export const osm_menus: Navigation[] = [
   // ────────────────────────
   // Accueil / Tableau de bord
   // ────────────────────────
   {
-    id: 'navigation',
+    id: 'group-dashboard',
     title: 'MENU.HOME.TITLE',
     type: 'group',
     role: [Role.Admin, Role.User],
@@ -21,7 +21,7 @@ export const osm_menus: Navigation[] = [
         ressourcePermission: 'RECEPTION',
         children: [
           {
-            id: 'default',
+            id: 'item-dashboard-home',
             title: 'MENU.HOME.DASHBOARD.DEFAULT',
             type: 'item',
             url: '/dashboard',
@@ -30,83 +30,94 @@ export const osm_menus: Navigation[] = [
             permissions: ['RECEPTION:RECEPTION:DELETE']
           },
           {
-            id: 'analytics',
+            id: 'item-dashboard-analytics',
             title: 'MENU.HOME.DASHBOARD.ANALYTICS',
             type: 'item',
             url: '/dashboard/analytics',
-            icon: 'insights',
-            role: [Role.Admin]
+            icon: 'bar_chart',
+            role: [Role.Admin],
+            breadcrumbs: false
           },
           {
-            id: 'finance',
+            id: 'item-dashboard-finance',
             title: 'MENU.HOME.DASHBOARD.FINANCE',
             type: 'item',
             url: '/dashboard/finance',
-            icon: 'account_balance_wallet',
-            role: [Role.Admin]
+            icon: 'show_chart',
+            role: [Role.Admin],
+            breadcrumbs: false
           },
           {
-            id: 'reception',
+            id: 'item-dashboard-reception-overview',
             title: 'MENU.HOME.DASHBOARD.RECEPTION',
             type: 'item',
             url: '/reception',
-            icon: 'eco',
-            role: [Role.Admin]
+            icon: 'assignment',
+            role: [Role.Admin],
+            breadcrumbs: false
           }
         ]
       }
     ]
   },
 
-  // ────────────────────────
-  // Réception
-  // ────────────────────────
+  // =========================
+  // RECEPTION (>3 items → wrapped)
+  // =========================
   {
-    id: 'receptionGroup',
+    id: 'group-reception',
     title: 'MENU.RECEPTION.TITLE',
     type: 'group',
     role: [Role.Admin, Role.User],
     children: [
       {
-        id: 'oliveReception',
-        title: 'MENU.RECEPTION.OLIVE',
-        type: 'item',
-        url: '/reception/reception-olive',
-        icon: 'eco',
-        breadcrumbs: false
-      },
-      {
-        id: 'oilReception',
-        title: 'MENU.RECEPTION.OIL',
-        type: 'item',
-        url: '/reception/reception-huile',
-        icon: 'water_drop',
-        breadcrumbs: false
-      },
-      {
-        id: 'qualityControlReception',
-        title: 'MENU.RECEPTION.QUALITY_CONTROL',
-        type: 'item',
-        url: '/reception/quality',
-        icon: 'verified',
-        breadcrumbs: false
-      },
-      {
-        id: 'receptionFournisseurs',
-        title: 'MENU.RECEPTION.SUPPLIERS',
-        type: 'item',
-        url: '/reception/fournisseur',
-        icon: 'business',
-        breadcrumbs: false
+        id: 'collapse-group-reception',
+        title: 'MENU.RECEPTION.TITLE', // unchanged key
+        type: 'collapse',
+        icon: 'local_mall',
+        children: [
+          {
+            id: 'item-reception-olive',
+            title: 'MENU.RECEPTION.OLIVE',
+            type: 'item',
+            url: '/reception/reception-olive',
+            icon: 'shopping_basket',
+            breadcrumbs: false
+          },
+          {
+            id: 'item-reception-oil',
+            title: 'MENU.RECEPTION.OIL',
+            type: 'item',
+            url: '/reception/reception-huile',
+            icon: 'local_shipping',
+            breadcrumbs: false
+          },
+          {
+            id: 'item-reception-quality',
+            title: 'MENU.RECEPTION.QUALITY_CONTROL',
+            type: 'item',
+            url: '/reception/quality',
+            icon: 'rule',
+            breadcrumbs: false
+          },
+          {
+            id: 'item-reception-supplier-manage',
+            title: 'MENU.RECEPTION.SUPPLIERS',
+            type: 'item',
+            url: '/reception/fournisseur',
+            icon: 'contact_page',
+            breadcrumbs: false
+          }
+        ]
       }
     ]
   },
 
-  // ────────────────────────
-  // Production
-  // ────────────────────────
+  // =========================
+  // PRODUCTION (≤3 items → keep flat)
+  // =========================
   {
-    id: 'productionGroup',
+    id: 'group-production',
     title: 'MENU.PRODUCTION.TITLE',
     type: 'group',
     role: [Role.Admin, Role.User],
@@ -120,34 +131,131 @@ export const osm_menus: Navigation[] = [
         breadcrumbs: false
       },
       {
-        id: 'millingSchedule',
+        id: 'item-production-mill-schedules',
         title: 'MENU.PRODUCTION.MILLING_SCHEDULE',
         type: 'item',
         url: '/reception/mill-schedules',
-        icon: 'calendar_month',
+        icon: 'schedule',
+        breadcrumbs: false
+      }
+      // (If your original file also duplicated supplier routes here, add them back below unchanged)
+      // {
+      //   id: 'item-production-supplier-dashboard',
+      //   title: 'MENU.SUPPLIER.DASHBOARD',
+      //   type: 'item',
+      //   url: '/supplier/dashboard',
+      //   icon: 'grid_view',
+      //   breadcrumbs: false
+      // },
+      // {
+      //   id: 'item-production-supplier-history',
+      //   title: 'MENU.SUPPLIER.HISTORY',
+      //   type: 'item',
+      //   url: '/supplier/history',
+      //   icon: 'history',
+      //   breadcrumbs: false
+      // }
+    ]
+  },
+
+  // =========================
+  // SUPPLIER (≤3 items → keep flat)
+  // =========================
+  {
+    id: 'group-supplier',
+    title: 'MENU.SUPPLIER.TITLE',
+    type: 'group',
+    modulePermission: 'SUPPLIER',
+    children: [
+      {
+        id: 'item-supplier-dashboard',
+        title: 'MENU.SUPPLIER.DASHBOARD',
+        type: 'item',
+        url: '/supplier/dashboard',
+        icon: 'grid_view',
         breadcrumbs: false
       },
       {
-        id: 'supplierGroup',
-        title: 'MENU.SUPPLIER.TITLE',
-        type: 'group',
-        icon: 'business',
-        role: [Role.Admin, Role.User],
+        id: 'item-supplier-history',
+        title: 'MENU.SUPPLIER.HISTORY',
+        type: 'item',
+        url: '/supplier/history',
+        icon: 'history',
+        breadcrumbs: false
+      }
+    ]
+  },
+
+  // =========================
+  // FINANCE (>3 items → wrapped)
+  // =========================
+  {
+    id: 'group-finance',
+    title: 'MENU.FINANCE.TITLE',
+    type: 'group',
+    modulePermission: 'FINANCE',
+    children: [
+      {
+        id: 'collapse-group-finance',
+        title: 'MENU.FINANCE.TITLE', // unchanged key
+        type: 'collapse',
+        icon: 'account_balance',
         children: [
           {
-            id: 'supplierDashboard',
-            title: 'MENU.SUPPLIER.DASHBOARD',
+            id: 'item-finance-expenses',
+            title: 'MENU.FINANCE.EXPENSES',
             type: 'item',
-            url: '/supplier/dashboard',
-            icon: 'dashboard',
+            url: '/finance/expenses',
+            icon: 'receipt_long',
             breadcrumbs: false
           },
           {
-            id: 'supplierHistory',
-            title: 'MENU.SUPPLIER.HISTORY',
+            id: 'item-finance-transactions',
+            title: 'MENU.FINANCE.TRANSACTIONS',
             type: 'item',
-            url: '/supplier/history',
-            icon: 'history',
+            url: '/finance/transactions',
+            icon: 'sync_alt',
+            breadcrumbs: false
+          },
+          {
+            id: 'item-finance-banks',
+            title: 'MENU.FINANCE.BANK_MANAGEMENT',
+            type: 'item',
+            url: '/finance/banks',
+            icon: 'account_balance',
+            breadcrumbs: false
+          },
+          {
+            id: 'item-finance-oil-credit',
+            title: 'MENU.FINANCE.OIL_CREDIT',
+            type: 'item',
+            url: '/finance/oil-credit',
+            icon: 'credit_score',
+            role: [Role.Admin],
+            breadcrumbs: false
+          },
+          {
+            id: 'item-finance-customers',
+            title: 'MENU.FINANCE.CUSTOMERS',
+            type: 'item',
+            url: '/finance/customers',
+            icon: 'people',
+            breadcrumbs: false
+          },
+          {
+            id: 'item-finance-oil-sales',
+            title: 'MENU.FINANCE.OIL_SALES',
+            type: 'item',
+            url: '/finance/oil-sales',
+            icon: 'sell',
+            breadcrumbs: false
+          },
+          {
+            id: 'item-finance-waste-sales',
+            title: 'MENU.FINANCE.WASTE_MANAGEMENT',
+            type: 'item',
+            url: '/finance/waste-sales',
+            icon: 'recycling',
             breadcrumbs: false
           }
         ]
@@ -155,269 +263,135 @@ export const osm_menus: Navigation[] = [
     ]
   },
 
-
-
-  // ────────────────────────
-  // Finance & Comptabilité
-  // ────────────────────────
+  // =========================
+  // STORAGE (==3 items → keep flat)
+  // =========================
   {
-    id: 'financeGroup',
-    title: 'MENU.FINANCE.TITLE',
-    type: 'group',
-    role: [Role.Admin, Role.User],
-    children: [
-      {
-        id: 'Expenses',
-        title: 'MENU.FINANCE.EXPENSES',
-        type: 'item',
-        url: '/finance/expenses',
-        icon: 'payments',
-        breadcrumbs: false
-      },
-      {
-        id: 'transactions',
-        title: 'MENU.FINANCE.TRANSACTIONS',
-        type: 'item',
-        url: '/finance/transactions',
-        icon: 'account_balance_wallet',
-        breadcrumbs: false
-      },
-      {
-        id: 'banksManagement',
-        title: 'MENU.FINANCE.BANK_MANAGEMENT',
-        type: 'item',
-        url: '/finance/banks',
-        icon: 'account_balance',
-        breadcrumbs: false
-      },
-      {
-        id: 'oilCredit',
-        title: 'MENU.FINANCE.OIL_CREDIT',
-        type: 'item',
-        url: '/finance/oil-credit',
-        icon: 'credit_score',
-        role: [Role.Admin],
-        breadcrumbs: false
-      },
-      {
-        id: 'customers',
-        title: 'MENU.FINANCE.CUSTOMERS',
-        type: 'item',
-        url: '/finance/customers',
-        icon: 'people',
-        breadcrumbs: false
-      },
-      {
-        id: 'oilSales',
-        title: 'MENU.FINANCE.OIL_SALES',
-        type: 'item',
-        url: '/finance/oil-sales',
-        icon: 'sell',
-        breadcrumbs: false
-      },
-      {
-        id: 'wasteManagement',
-        title: 'MENU.FINANCE.WASTE_MANAGEMENT',
-        type: 'item',
-        url: '/finance/waste-sales',
-        icon: 'cleaning_services',
-        breadcrumbs: false
-      }
-
-    ]
-  },
-
-  // ────────────────────────
-  // Stockage & Inventaire
-  // ────────────────────────
-  {
-    id: 'storageGroup',
+    id: 'group-storage',
     title: 'MENU.STORAGE.TITLE',
     type: 'group',
-    role: [Role.Admin, Role.User],
+    modulePermission: 'STORAGE',
     children: [
       {
-        id: 'storageSettings',
+        id: 'item-storage-units',
         title: 'MENU.STORAGE.OIL_STORAGE_UNITS',
         type: 'item',
         url: '/storage',
-        icon: 'inventory_2',
+        icon: 'warehouse',
         breadcrumbs: false
       },
       {
-        id: 'oilTransactionsStorage',
+        id: 'item-storage-oil-transactions',
         title: 'MENU.FINANCE.OIL_TRANSACTIONS',
         type: 'item',
         url: '/storage/oil-transactions',
-        icon: 'swap_horiz',
+        icon: 'water_drop',
         role: [Role.Admin],
         breadcrumbs: false
       },
       {
-        id: 'oilContainer',
+        id: 'item-storage-containers',
         title: 'OIL_CONTAINER_MANAGEMENT',
         type: 'item',
         url: '/storage/oil-container',
-        icon: 'home_repair_service',
+        icon: 'inbox',
         role: [Role.Admin],
         breadcrumbs: false
       }
     ]
   },
 
-  // ────────────────────────
-  // Ressources humaines
-  // ────────────────────────
-  // {
-  //   id: 'hrGroup',
-  //   title: 'MENU.HR.TITLE',
-  //   type: 'group',
-  //   role: [Role.Admin],
-  //   children: [
-  //     {
-  //       id: 'employees',
-  //       title: 'MENU.HR.EMPLOYEES',
-  //       type: 'item',
-  //       url: '/hr/employees',
-  //       icon: 'badge',
-  //       breadcrumbs: false
-  //     },
-  //     {
-  //       id: 'rolesPermissions',
-  //       title: 'MENU.HR.ROLES_PERMISSIONS',
-  //       type: 'item',
-  //       url: '/hr/roles',
-  //       icon: 'admin_panel_settings',
-  //       breadcrumbs: false
-  //     }
-  //   ]
-  // },
-
-  // ────────────────────────
-  // Paramètres système
-  // ────────────────────────
+  // =========================
+  // SETTINGS (>3 items → wrapped)
+  // =========================
   {
-    id: 'settingsGroup',
+    id: 'group-settings',
     title: 'MENU.SETTINGS.TITLE',
     type: 'group',
-    role: [Role.Admin, Role.User,Role.OsmAdmin],
+    modulePermission: 'SETTINGS',
     children: [
       {
-        id: 'settingsGroup',
-        title: 'MENU.SETTINGS.TITLE',
+        id: 'collapse-group-settings',
+        title: 'MENU.SETTINGS.TITLE', // unchanged key
         type: 'collapse',
         icon: 'settings',
-        role: [Role.Admin, Role.User],
         children: [
           {
-            id: 'generalConfig',
+            id: 'item-settings-general-config',
             title: 'MENU.SETTINGS.GENERAL_CONFIG',
             type: 'item',
             url: '/settings/general-config',
-            icon: 'tune',
+            icon: 'settings_suggest',
             breadcrumbs: false
           },
           {
-            id: 'genericTypesConfig',
+            id: 'item-settings-configuration',
             title: 'MENU.SETTINGS.APP_UI',
             type: 'item',
             url: '/settings/configuration',
-            icon: 'build',
+            icon: 'widgets',
+            breadcrumbs: false
+          },
+          {
+            id: 'item-settings-generic',
+            title: 'Generic Types',
+            type: 'item',
+            url: '/settings/generic',
+            icon: 'category',
+            breadcrumbs: false
+          },
+          {
+            id: 'item-settings-quality-rules',
+            title: 'Quality Control Rules',
+            type: 'item',
+            url: '/settings/quality-control',
+            icon: 'rule',
+            breadcrumbs: false
+          },
+          {
+            id: 'item-settings-mill-machines',
+            title: 'MENU.SETTINGS.MILLING_MACHINES',
+            type: 'item',
+            url: '/reception/mill-machines',
+            icon: 'precision_manufacturing',
+            breadcrumbs: false
+          },
+          {
+            id: 'item-settings-users',
+            title: 'MENU.SETTINGS.USERS',
+            type: 'item',
+            url: '/settings/users',
+            icon: 'people',
+            breadcrumbs: false
+          },
+          {
+            id: 'item-settings-roles',
+            title: 'MENU.SETTINGS.ROLES',
+            type: 'item',
+            url: '/settings/roles',
+            icon: 'admin_panel_settings',
             breadcrumbs: false
           }
         ]
-      },
-      {
-        id: 'genericTypes',
-        title: 'Generic Types',
-        type: 'item',
-        url: '/settings/generic',
-        icon: 'category',
-        breadcrumbs: false
-      },
-      {
-        id: 'qualityControlRules',
-        title: 'Quality Control Rules',
-        type: 'item',
-        url: '/settings/quality-control',
-        icon: 'rule',
-        breadcrumbs: false
-      },
-      {
-        id: 'machineStatus',
-        title: 'MENU.SETTINGS.MILLING_MACHINES',
-        type: 'item',
-        url: '/reception/mill-machines',
-        icon: 'precision_manufacturing',
-        breadcrumbs: false
-      },
-      {
-        id: 'users',
-        title: 'MENU.SETTINGS.USERS',
-        type: 'item',
-        url: '/settings/users',
-        icon: 'manage_accounts',
-        breadcrumbs: false
-      },
-      {
-        id: 'roles',
-        title: 'MENU.SETTINGS.ROLES',
-        type: 'item',
-        url: '/settings/roles',
-        icon: 'security',
-        breadcrumbs: false
       }
     ]
-  },
+  }
 
-  // // ────────────────────────
-  // // Reports (stand-alone)
-  // // ────────────────────────
+  // =========================
+  // (Optional future sections; keep commented if not used)
+  // =========================
   // {
-  //   id: 'reportsGroup',
-  //   title: 'Reports',
+  //   id: 'group-hr',
+  //   title: 'MENU.HR.TITLE',
   //   type: 'group',
-  //   role: [Role.Admin, Role.User],
-  //   children: [
-  //     {
-  //       id: 'productionReports',
-  //       title: 'Production Reports',
-  //       type: 'item',
-  //       url: '/reports/production',
-  //       icon: 'factory',
-  //       breadcrumbs: false
-  //     },
-  //     {
-  //       id: 'deliveryReports',
-  //       title: 'Delivery Reports',
-  //       type: 'item',
-  //       url: '/reports/deliveries',
-  //       icon: 'local_shipping',
-  //       breadcrumbs: false
-  //     },
-  //     {
-  //       id: 'financeReports',
-  //       title: 'Finance Reports',
-  //       type: 'item',
-  //       url: '/reports/finance',
-  //       icon: 'account_balance', // Kept: Matches "Finance"
-  //     },
-  //     {
-  //       id: 'storageReports',
-  //       title: 'Storage Reports',
-  //       type: 'item',
-  //       url: '/reports/storage',
-  //       icon: 'warehouse', // Changed: Matches "Storage"
-  //     },
-  //     {
-  //       id: 'hrReports',
-  //       title: 'HR Reports',
-  //       type: 'item',
-  //       url: '/reports/hr',
-  //       icon: 'people', // Kept: Matches "HR"
-  //     }
-  //   ]
+  //   modulePermission: 'HR',
+  //   children: [ /* ... */ ]
   // },
-
-
+  // {
+  //   id: 'group-reports',
+  //   title: 'MENU.REPORTS.TITLE',
+  //   type: 'group',
+  //   modulePermission: 'REPORTS',
+  //   children: [ /* ... */ ]
+  // }
 ];

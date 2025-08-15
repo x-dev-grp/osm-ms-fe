@@ -5,7 +5,7 @@ import { StorageUnitDtoService } from '../../shared/services/storage.service';
 import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
 import { MatFormField } from '@angular/material/form-field';
 import { SupplierComponent } from '../../shared/modules/supplierList/supplier.component';
-import { SharedModule } from '../../demo/shared/shared.module';
+import { SharedModule } from '../../shared/shared.module';
 export interface ChangeSupplierDto {
   /** Path param */
   storageId: string;

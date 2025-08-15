@@ -1,7 +1,7 @@
 import {  Component, DestroyRef, inject, input, OnChanges, OnInit, output, SimpleChanges } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
-import { SharedModule } from 'src/app/demo/shared/shared.module';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NestedTreeControl } from '@angular/cdk/tree';

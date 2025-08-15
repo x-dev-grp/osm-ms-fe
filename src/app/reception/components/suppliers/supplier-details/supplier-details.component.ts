@@ -9,7 +9,7 @@ import { Subject, tap } from 'rxjs';
 import { OsmDashboard } from '../../../../shared/modules/osm-dashboard/osm-dashboard';
 import { DashboardConfig } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
 import { TranslateModule } from '@ngx-translate/core';
-import { CardComponent } from '../../../../@theme/components/card/card.component';
+import { CardComponent } from '../../../../theme/components/card/card.component';
 import { OIL_CREDIT_DASHBOARD } from './oil-credit-dashboard.config';
 import { PAIMENT_DASHBOARD } from './paiment-dashboard.config';
 import { AdvancedSearchService } from '../../../../shared/services/advanced-serach.service';
@@ -52,7 +52,7 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
   // Function to load payment history based on whether the payment is paid or not
   protected paidOilSalesCount: any;
   protected unpaidOilSalesCount: any;
-  protected OIL_SALES_DASHBOARD_CONFIG = OIL_SALES_DASHBOARD_CONFIG;
+  OIL_SALES_DASHBOARD_CONFIG = OIL_SALES_DASHBOARD_CONFIG;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -90,7 +90,6 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
 
   handlePaymentAction(e: { row: UnifiedDelivery; action: string }) {
     const actionLabel = e.action;
-
     switch (actionLabel) {
       case 'READ':
         this.router.navigate(['/finance/expenses', e.row.id, 'view']);
@@ -170,18 +169,18 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
           ...this.PAIMENT_DASHBOARD.defaultSearchData?.searchData,
           search: {
             ...this.PAIMENT_DASHBOARD.defaultSearchData?.searchData?.search, // Set supplier.id and paid equalValue based on whether the payment is paid or not
-            'supplier.id': {
-              equalValue: this.supplierId!
-            },
             paid: {
               equalValue: isPaid
+            },
+            'supplier.id': {
+              equalValue: this.supplierId!
             }
           }
         }
       }
     };
     // Call countData function
-    this.countData();
+    // this.countData();
   }
 
   loadOilSalesHistory(isPaid: boolean): void {
@@ -204,18 +203,19 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
         }
       }
     };
-    this.countData();
+
     this.isOilCredit = false;
     this.isOilSale = true;
     this.isPayment = false;
   }
 
   countData(): void {
+    this.paidOilSales();
+    this.unpaidOilSales();
     this.paidCountSearchData();
     this.unpaidCountSearchDta();
     this.creditCountSearchDta();
-    this.paidOilSales();
-    this.unpaidOilSales();
+
   }
 
   ngOnDestroy(): void {
@@ -232,9 +232,11 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
           isDeleted: {
             equalValue: false
           },
-          ...this.OIL_SALES_DASHBOARD_CONFIG.defaultSearchData?.searchData?.search,
           paid: {
             equalValue: true
+          },
+          'supplier.id': {
+            equalValue: this.supplierId!
           }
         }
       }
@@ -259,9 +261,11 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
           isDeleted: {
             equalValue: false
           },
-          ...this.OIL_SALES_DASHBOARD_CONFIG.defaultSearchData?.searchData?.search,
           paid: {
             equalValue: false
+          },
+          'supplier.id': {
+            equalValue: this.supplierId!
           }
         }
       }
@@ -313,9 +317,11 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
           isDeleted: {
             equalValue: false
           },
-          ...this.PAIMENT_DASHBOARD.defaultSearchData?.searchData?.search,
           paid: {
             equalValue: false
+          },
+          'supplier.id': {
+            equalValue: this.supplierId!
           }
         }
       }
@@ -341,9 +347,11 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
           isDeleted: {
             equalValue: false
           },
-          ...this.PAIMENT_DASHBOARD.defaultSearchData?.searchData?.search,
           paid: {
             equalValue: true
+          },
+          'supplier.id': {
+            equalValue: this.supplierId!
           }
         }
       }

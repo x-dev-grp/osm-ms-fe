@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { SharedModule } from '../../demo/shared/shared.module';
+import { SharedModule } from '../../shared/shared.module';
 import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
 import { StorageUnitDtoService } from '../../shared/services/storage.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -147,11 +147,14 @@ export class ViewStorageComponent implements OnInit {
         sort: 'createdDate',
         order: 'DESC',
         searchData: {
-          operation: SearchOperation.AND,
+          operation: SearchOperation.OR,
           searchs: [
             {
               search: {
                 'storageUnitDestination.id': {
+                  equalValue: storageUnitId
+                },
+                'storageUnitSource.id': {
                   equalValue: storageUnitId
                 }
               }
@@ -199,8 +202,8 @@ export class ViewStorageComponent implements OnInit {
           name: 'unitPrice',
           label: 'Unit Price',
           labelTranslatePath: 'STORAGE.VIEW.DASHBOARD.FIELDS.UNIT_PRICE',
-          isCurrency:true,
-          currency:'TND',
+          isCurrency: true,
+          currency: 'TND',
           attributeType: AttributeType.number,
           fieldType: FieldType.number,
           sortable: true,

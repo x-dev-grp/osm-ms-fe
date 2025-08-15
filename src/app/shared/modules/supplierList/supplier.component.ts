@@ -10,7 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSortModule } from '@angular/material/sort';
-import { SharedModule } from '../../../demo/shared/shared.module';
+import { SharedModule } from '../../shared.module';
 import { DynamicInput } from '../osm-dashboard/components/dynamic-input/dynamic-input.component';
 import { OptionsScrollDirective } from '../../directives/options-scroll.directive';
 import { SearchOperation } from '../../models/advanced-search/searchOperation';

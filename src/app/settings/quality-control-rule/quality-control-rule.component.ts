@@ -11,7 +11,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {Subject} from 'rxjs';
 import {finalize, takeUntil} from 'rxjs/operators';
-import {SharedModule} from '../../demo/shared/shared.module';
+import {SharedModule} from '../../shared/shared.module';
 import {QualityControlRule} from '../../shared/models/quality-control-rule';
 import {QualityControlRuleService} from '../../shared/services/quality-control-rule.service';
 import { ToastService } from '../../shared/services/toast.service';

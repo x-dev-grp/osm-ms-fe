@@ -9,7 +9,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SharedModule } from '../../../demo/shared/shared.module';
+import { SharedModule } from '../../../shared/shared.module';
 import { ExpenseService } from '../../service/expense.service';
 import { Expense } from '../../models/expense.model';
 import { PaymentMethod } from '../../models/financial-transaction.model';

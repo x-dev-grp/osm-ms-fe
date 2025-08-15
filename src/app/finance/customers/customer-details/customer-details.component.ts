@@ -12,7 +12,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { OIL_SALES_DASHBOARD_CONFIG } from './oilSales-dashboard.config';
 import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
 import { TranslateModule } from '@ngx-translate/core';
-import { CardComponent } from '../../../@theme/components/card/card.component';
+import { CardComponent } from '../../../theme/components/card/card.component';
 import { DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
 import { AdvancedSearchService } from '../../../shared/services/advanced-serach.service';
 import { SearchData } from '../../../shared/models/advanced-search/searchData';

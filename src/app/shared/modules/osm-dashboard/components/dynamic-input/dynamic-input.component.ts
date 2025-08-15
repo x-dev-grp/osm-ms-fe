@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSortModule } from '@angular/material/sort';
 
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { SharedModule } from 'src/app/demo/shared/shared.module';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { Field } from '../../models/dashboard-config';
 
 import { provideNativeDateAdapter } from '@angular/material/core';
@@ -46,10 +46,10 @@ export class DynamicInput implements OnInit, AfterViewInit, OnChanges, OnDestroy
   _store=inject(DashboardStore)
   formControl: AbstractControl;
   ngOnDestroy(): void {}
- 
- 
+
+
   ngAfterViewInit(): void {
-  
+
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -57,5 +57,5 @@ export class DynamicInput implements OnInit, AfterViewInit, OnChanges, OnDestroy
   ngOnInit(): void {
     this.formControl = new FormControl(null);
     }
- 
+
 }

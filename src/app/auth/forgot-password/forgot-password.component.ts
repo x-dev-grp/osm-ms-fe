@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 import { FormControl, Validators } from '@angular/forms';
 
 // project import
-import { SharedModule } from 'src/app/demo/shared/shared.module';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 @Component({
   selector: 'app-forgot-password',

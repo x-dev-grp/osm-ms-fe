@@ -6,7 +6,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {OIL_TRANSACTIONS_DASHBOARD_CONFIG} from './oil-transactions-dashboard.config';
 import {Router} from '@angular/router';
 import {OsmDashboard} from '../../shared/modules/osm-dashboard/osm-dashboard';
-import {SharedModule} from '../../demo/shared/shared.module';
+import {SharedModule} from '../../shared/shared.module';
 import {DashboardConfig} from '../../shared/modules/osm-dashboard/models/dashboard-config';
 import {OilTransaction, TransactionType} from '../../shared/models/OilTransaction';
 import {OilTransactionService} from '../../shared/services/OilTransactionService';

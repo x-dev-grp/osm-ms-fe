@@ -122,4 +122,8 @@ export class UnifiedDeliveryService {
       })
     );
   }
+
+  processPayment(payload:any): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<void>>(`${this.baseUrl}/payment`, payload);
+  }
 }

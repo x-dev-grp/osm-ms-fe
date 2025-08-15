@@ -25,7 +25,7 @@ import {MatPaginator} from '@angular/material/paginator';
 import {Router} from '@angular/router';
 import {combineLatest, forkJoin, Subscription} from 'rxjs';
 
-import {SharedModule} from '../../../demo/shared/shared.module';
+import {SharedModule} from '../../../shared/shared.module';
 import {OsmDashboard} from '../../../shared/modules/osm-dashboard/osm-dashboard';
 import {DashboardConfig} from '../../../shared/modules/osm-dashboard/models/dashboard-config';
 import {UnifiedDelivery} from '../../../shared/models/UnifiedDelivery';
@@ -617,7 +617,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
 
 this.setPriceForm.get('unitPrice')?.setValue(initialUnitPrice);
     this.dialog.open(this.setPriceDialogTemplate, {
-      width: '500px',
+      width: 'auto',
       data: row,
       disableClose: true,
       panelClass: 'set-price-dialog'
@@ -645,18 +645,77 @@ this.setPriceForm.get('unitPrice')?.setValue(initialUnitPrice);
    * Sets up form subscriptions for payment details
    */
   private setupPaymentFormSubscriptions(): void {
-    if (!this.paymentDetailsForm) {
-      console.error('[OilReception] Payment details form is not initialized');
-      return;
+    if (!this.paymentDetailsForm) return;
+
+    // guard flag to avoid loops
+    (this as any)._syncingPayment ??= false;
+
+    const up = this.paymentDetailsForm.get('unitPrice')!;
+    const qty = this.paymentDetailsForm.get('quantity')!;
+    const tot = this.paymentDetailsForm.get('total')!;
+
+    // subscribe: unitPrice -> quantity
+    this.subs.add(up.valueChanges.subscribe(() => {
+      if ((this as any)._syncingPayment) return;
+      this.onUnitPriceChanged();
+    }));
+
+    // subscribe: quantity -> total
+    this.subs.add(qty.valueChanges.subscribe(() => {
+      if ((this as any)._syncingPayment) return;
+      this.onQuantityChanged();
+    }));
+
+    // initial sync (compute total from current unitPrice*quantity)
+    this.onQuantityChanged();
+  }
+  private onUnitPriceChanged(): void {
+    if (!this.paymentDetailsForm) return;
+    (this as any)._syncingPayment = true;
+    try {
+      const f = this.paymentDetailsForm;
+      const unitPrice = Number(f.get('unitPrice')?.value) || 0;
+      const total     = Number(f.get('total')?.value)     || 0;
+
+      // quantity = total / unitPrice (with simple guards)
+      let quantity = unitPrice > 0 ? (total / unitPrice) : 0;
+
+      // respect your existing maxQuantity() cap if present
+      if (typeof (this as any).maxQuantity === 'function') {
+        const maxQ = (this as any).maxQuantity();
+        if (quantity > maxQ) quantity = maxQ;
+      }
+
+      f.get('quantity')?.setValue(this.round3(Math.max(0, quantity)), { emitEvent: false });
+    } finally {
+      (this as any)._syncingPayment = false;
     }
+  }
+  private onQuantityChanged(): void {
+    if (!this.paymentDetailsForm) return;
+    (this as any)._syncingPayment = true;
+    try {
+      const f = this.paymentDetailsForm;
+      const unitPrice = Number(f.get('unitPrice')?.value) || 0;
+      let quantity    = Number(f.get('quantity') ?.value) || 0;
 
-    // Auto-recompute total on form changes
-    this.paymentDetailsForm.valueChanges.subscribe(() => {
-      this.updatePaymentDetailsTotal();
-    });
+      // respect your existing maxQuantity() cap if present
+      if (typeof (this as any).maxQuantity === 'function') {
+        const maxQ = (this as any).maxQuantity();
+        if (quantity > maxQ) {
+          quantity = maxQ;
+          f.get('quantity')?.setValue(this.round3(quantity), { emitEvent: false });
+        }
+      }
 
-    // Validate form on changes
-    this.paymentDetailsForm.statusChanges.subscribe(() => {});
+      const total = this.round3(unitPrice * quantity);
+      f.get('total')?.setValue(total, { emitEvent: false });
+    } finally {
+      (this as any)._syncingPayment = false;
+    }
+  }
+  private round3(n: number): number {
+    return Math.round((n + Number.EPSILON) * 1000) / 1000;
   }
 
   /**
@@ -744,8 +803,8 @@ this.setPriceForm.get('unitPrice')?.setValue(initialUnitPrice);
     if (unpaidAmount < 0) {
       return { isValid: false, error: 'Montant impayé ne peut pas être négatif' };
     }
-
-    if (unpaidAmount > total) {
+//todo check it again in paiment  mixed
+    if (unpaidAmount < total) {
       return { isValid: false, error: 'Montant impayé ne peut pas dépasser le montant total' };
     }
 

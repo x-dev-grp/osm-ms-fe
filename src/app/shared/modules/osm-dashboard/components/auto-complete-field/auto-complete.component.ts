@@ -11,7 +11,7 @@ import { MatSortModule } from '@angular/material/sort';
 
 import { AdvancedSearchService } from 'src/app/shared/services/advanced-serach.service';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { SharedModule } from 'src/app/demo/shared/shared.module';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { Field, FieldType } from '../../models/dashboard-config';
 import { SearchData } from 'src/app/shared/models/advanced-search/searchData';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -87,7 +87,7 @@ export class AutoCompleteComponent implements OnInit, AfterViewInit, OnChanges, 
   }
   ngAfterViewInit(): void {
       this.setupAutocompleteListener();
-    
+
     this._store.resetFields$()
     .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe(() => {
@@ -97,11 +97,11 @@ export class AutoCompleteComponent implements OnInit, AfterViewInit, OnChanges, 
 
   ngOnChanges(changes: SimpleChanges): void {}
   ngOnInit(): void {
-  
+
       console.log('auto-complete field');
       if (this.field().autoCompleteDefaultCriteria) this.autoCompleteDefaultCriteria = this.field().autoCompleteDefaultCriteria!;
       this.fetchAutocompleteOptions(false).subscribe();
-    
+
     this.formControl = new FormControl(null);
   }
   autoCompleteSelect(event: any) {
@@ -113,7 +113,7 @@ export class AutoCompleteComponent implements OnInit, AfterViewInit, OnChanges, 
       };
       this._store.setSearchDataAttribute(search);
   }
- 
+
   getValue(path: string, object: any): any {
     return path?.split('.')?.reduce((acc, key) => acc && acc[key], object);
   }

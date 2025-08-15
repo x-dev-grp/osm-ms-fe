@@ -6,7 +6,7 @@ import { Action, DashboardConfig } from '../../shared/modules/osm-dashboard/mode
 import { CUSTOMERS_DASHBOARD_CONFIG } from './customers-dashboard.config';
 import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
 import { Router } from '@angular/router';
-import { SharedModule } from '../../demo/shared/shared.module';
+import { SharedModule } from '../../shared/shared.module';
 
 @Component({
   selector: 'app-customers',

@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 // type
-import { Role } from 'src/app/@theme/types/role';
+import { Role } from 'src/app/theme/types/role';
 import { AuthGuardLogin } from '../interceptors/guards/auth-login.guard';
 import { AuthGuardPassword } from '../interceptors/guards/auth-update-password.guard';
 
@@ -55,7 +55,7 @@ const authroutes: Routes = [
         canActivate:[AuthGuardLogin],
         loadComponent: () => import('./update-password/update-password.component').then((c) => c.UpdatePasswordComponent),
       },
-    
+
     ]
   }
 

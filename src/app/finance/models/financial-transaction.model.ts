@@ -8,8 +8,8 @@ import { Customer } from './Customer';
   CASH = 'CASH',
   CHEQUE = 'CHEQUE',
   TRANSFER = 'TRANSFER',
-  oil='oil',
-  both='both',
+  OIL='OIL',
+  BOTH='BOTH',
 }
 
 export enum TransactionType {

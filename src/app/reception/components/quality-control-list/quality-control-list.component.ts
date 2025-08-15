@@ -7,7 +7,7 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {MatCardModule} from '@angular/material/card';
 import {MatSortModule} from '@angular/material/sort';
 import {Router} from '@angular/router';
-import {SharedModule} from '../../../demo/shared/shared.module';
+import {SharedModule} from '../../../shared/shared.module';
 import {OsmDashboard} from '../../../shared/modules/osm-dashboard/osm-dashboard';
 import {DashboardConfig} from '../../../shared/modules/osm-dashboard/models/dashboard-config';
 import {UnifiedDelivery} from '../../../shared/models/UnifiedDelivery';

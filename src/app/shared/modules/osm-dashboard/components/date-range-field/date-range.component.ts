@@ -11,7 +11,7 @@ import { MatSortModule } from '@angular/material/sort';
 
 import { AdvancedSearchService } from 'src/app/shared/services/advanced-serach.service';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { SharedModule } from 'src/app/demo/shared/shared.module';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { Field } from '../../models/dashboard-config';
 import { DashboardStore } from '../../services/dashboard-state.service';
 import { provideNativeDateAdapter } from '@angular/material/core';
@@ -44,8 +44,8 @@ export class DateRangeComponent implements OnInit, AfterViewInit, OnChanges, OnD
   field = input.required<Field>();
   range: FormGroup;
   ngOnDestroy(): void {}
- 
-  
+
+
 
   ngAfterViewInit(): void {
     this._store.resetFields$()
@@ -86,7 +86,7 @@ export class DateRangeComponent implements OnInit, AfterViewInit, OnChanges, OnD
       start: new FormControl<Date | null>(null),
       end: new FormControl<Date | null>(null)
     });
-   
+
   }
 
 }

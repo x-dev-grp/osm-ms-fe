@@ -2,7 +2,7 @@ import { data } from './series-data';
 import { candlestick_data } from './candlestick-data';
 
 // const
-import { LIGHT } from '../@theme/const';
+import { LIGHT } from '../theme/const';
 
 export class ChartDB {
   static customerRateChart = {

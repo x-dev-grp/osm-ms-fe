@@ -9,7 +9,7 @@ import { Expense } from '../models/expense.model';
 import { ExpenseService } from '../service/expense.service';
 import { EXPENSES_DASHBOARD_CONFIG } from './expenses-dashboard.config';
 import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
-import { SharedModule } from '../../demo/shared/shared.module';
+import { SharedModule } from '../../shared/shared.module';
 import { Action, DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
 import { ACTION_ICONS } from 'src/app/shared/modules/osm-dashboard/models/actions';
 

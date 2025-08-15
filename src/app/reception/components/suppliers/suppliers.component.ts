@@ -2,7 +2,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { SharedModule } from '../../../demo/shared/shared.module';
+import { SharedModule } from '../../../shared/shared.module';
 import { MatTableModule } from '@angular/material/table';
 import { BaseType } from '../../../shared/models/base-type';
 

@@ -12,7 +12,7 @@ import {Router} from '@angular/router';
 import {Subscription, tap} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 
-import {SharedModule} from '../../../demo/shared/shared.module';
+import {SharedModule} from '../../../shared/shared.module';
 import {OsmDashboard} from '../../../shared/modules/osm-dashboard/osm-dashboard';
 import {DashboardConfig} from '../../../shared/modules/osm-dashboard/models/dashboard-config';
 import {UnifiedDelivery} from '../../../shared/models/UnifiedDelivery';

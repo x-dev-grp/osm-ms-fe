@@ -6,7 +6,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatDividerModule} from '@angular/material/divider';
 import {Expense} from '../../models/expense.model';
 import {ExpenseService} from '../../service/expense.service';
-import {CardComponent} from '../../../@theme/components/card/card.component';
+import {CardComponent} from '../../../theme/components/card/card.component';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
 import {PdfGeneratorService} from 'src/app/shared/services/pdf-generator.service';
 import {TranslateModule} from '@ngx-translate/core';

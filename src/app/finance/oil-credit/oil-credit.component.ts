@@ -15,7 +15,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { SharedModule } from '../../demo/shared/shared.module';
+import { SharedModule } from '../../shared/shared.module';
 import { OilCredit, CreditState, UnitType } from '../models/OilCredit';
 import { OilCreditService } from '../service/oil-credit.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -127,7 +127,7 @@ export class OilCreditComponent implements OnInit {
    * //t - This function is triggered when an action is performed on an OilCredit row.
    * //r - The function extracts the action and row from the event object.
    * //n - It then performs the corresponding action based on the extracted action type.
-   * 
+   *
    * @returns {void}
    */
   handleAction(event: { action: string; row: OilCredit }): void {

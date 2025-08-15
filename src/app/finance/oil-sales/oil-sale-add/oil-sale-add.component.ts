@@ -25,7 +25,7 @@ import { SupplierType } from '../../../shared/models/supplier-type';
 import { map, Observable, startWith, tap } from 'rxjs';
 import { TransactionState, TransactionType } from '../../../shared/models/OilTransaction';
 import { OilTransactionService } from '../../../shared/services/OilTransactionService';
-import { CardComponent } from '../../../@theme/components/card/card.component';
+import { CardComponent } from '../../../theme/components/card/card.component';
 import { SearchData } from '../../../shared/models/advanced-search/searchData';
 import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -222,8 +222,8 @@ export class OilSaleAddComponent implements OnInit {
           quantity: formValue.quantity || null,
           unitPrice: formValue.unitPrice || null,
           oilTransactionUUID: '',
-          paiedAmount: 0,
-          unpaiedAmount: totalAmount,
+          paidAmount: 0,
+          unpaidAmount: totalAmount,
           currency: formValue.currency || null,
           paymentMethod: formValue.paymentMethod || null,
           saleDate: formValue.saleDate.toISOString() || null,

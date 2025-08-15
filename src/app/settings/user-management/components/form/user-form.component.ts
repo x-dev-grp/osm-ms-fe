@@ -2,7 +2,7 @@ import { AfterViewInit, Component, DestroyRef, inject, OnInit } from '@angular/c
 
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { SharedModule } from 'src/app/demo/shared/shared.module';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { catchError, EMPTY, filter, Observable, of, switchMap, tap } from 'rxjs';
 import { UserService } from '../../services/user.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -11,7 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AdvancedSearchService } from 'src/app/shared/services/advanced-serach.service';
 import { SearchResponse } from 'src/app/shared/models/advanced-search/searchResponse';
 import { SearchData } from 'src/app/shared/models/advanced-search/searchData';
-import { User } from 'src/app/@theme/types/user';
+import { User } from 'src/app/theme/types/user';
 
 @Component({
   selector: 'user-form',

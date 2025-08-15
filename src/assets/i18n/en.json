@@ -2253,6 +2253,7 @@
     "CONFIRM_PAYMENT": "Confirm Payment",
     "DELIVERY_DATE": "Delivery Date",
     "DELIVERY_NUMBER": "Delivery No.",
+    "DIRECTION": "Payment direction",
     "ENTER_NEGOTIATED_PRICE": "Enter negotiated price",
     "ERRORS": {
       "AMOUNT_MIN": "Amount must be greater than 0",
@@ -2268,6 +2269,7 @@
       "OIL_QUANTITY_REQUIRED": "Oil quantity is required",
       "SUPPLIER_ID_NOT_FOUND": "Supplier ID not found"
     },
+    "INBOUND": "Payment in",
     "LOT": "Lot",
     "LOT_DETAILS": "Lot {{lotNumber}} details",
     "LOT_NUMBER": "Lot No.",
@@ -2305,6 +2307,7 @@
     "OIL_STATUS": "Oil Status",
     "OIL_VALUE": "Oil Value",
     "OLIVE_WEIGHT": "Olive Weight (kg)",
+    "OUTBOUND": "Payment out",
     "PAID": "Paid",
     "PAID_AMOUNT": "Paid Amount",
     "PAID_DELIVERIES": "Paid Deliveries",

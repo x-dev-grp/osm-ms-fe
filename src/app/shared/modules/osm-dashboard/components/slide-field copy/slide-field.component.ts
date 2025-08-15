@@ -11,7 +11,7 @@ import { MatSortModule } from '@angular/material/sort';
 
 import { AdvancedSearchService } from 'src/app/shared/services/advanced-serach.service';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { SharedModule } from 'src/app/demo/shared/shared.module';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { Field, FieldType } from '../../models/dashboard-config';
 import { SearchData } from 'src/app/shared/models/advanced-search/searchData';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -30,7 +30,7 @@ import { SearchDetails } from 'src/app/shared/models/advanced-search/searchDetai
   standalone: true,
   imports: [
     CommonModule,
-  
+
     SharedModule,
   ]
 })
@@ -61,7 +61,7 @@ export class SlideComponent implements OnInit,AfterViewInit{
   _store = inject(DashboardStore);
   field = input.required<Field>();
   toggleControl: AbstractControl;
-  
+
   ngOnInit(): void {
     this.toggleControl = new FormControl();
   }

@@ -18,11 +18,12 @@ import { OliveLotStatus } from '../../../shared/models/OliveLotStatus';
 import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
 import { SupplierTypeService } from '../../../shared/services/supplier.service';
 import { StorageUnitDtoService } from '../../../shared/services/storage.service';
-import { EarningChartComponent } from '../../../demo/pages/apex-chart/earning-chart/earning-chart.component';
-import { CardComponent } from '../../../@theme/components/card/card.component';
+ import { CardComponent } from '../../../theme/components/card/card.component';
 import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
-import { SharedModule } from 'src/app/demo/shared/shared.module';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { EarningChartComponent } from '../../../theme/pages/apex-chart/earning-chart/earning-chart.component';
+// import { EarningChartComponent } from '../../../theme/pages/apex-chart/earning-chart/earning-chart.component';
 
 @Component({
   selector: 'app-reception-dashboard',

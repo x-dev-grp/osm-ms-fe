@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, inject, Renderer2 } from '@angular/core';
 
 import { CommonModule }       from '@angular/common';
-import { SharedModule } from '../../demo/shared/shared.module';
+import { SharedModule } from '../../shared/shared.module';
 
 import { OsmDashboard } from 'src/app/shared/modules/osm-dashboard/osm-dashboard';
 import { Action, AttributeType, DashboardConfig, FieldType } from 'src/app/shared/modules/osm-dashboard/models/dashboard-config';

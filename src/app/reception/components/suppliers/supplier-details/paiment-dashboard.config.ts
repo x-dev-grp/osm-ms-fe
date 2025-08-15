@@ -125,7 +125,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.text,
       exportable: true,
       sortable: true,
-      dataTable: true,
+      dataTable: false,
       filterable: true
     },
     {
@@ -172,6 +172,38 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.date,
       exportable: true,
       sortable: true,
+      dataTable: false,
+      filterable: true
+    },
+    {
+      name: 'price',
+      label: 'Montant total',
+      labelTranslatePath: 'OIL_SALES.FIELDS.TOTAL_AMOUNT',
+      attributeType: AttributeType.number,
+      fieldType: FieldType.number,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },  {
+      name: 'unpaidAmount',
+      label: 'Montant umpaié',
+      labelTranslatePath: 'OIL_SALES.FIELDS.UNPAIDAMOUNT',
+      attributeType: AttributeType.number,
+      fieldType: FieldType.number,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },
+    {
+      name: 'paidAmount',
+      label: 'Montant partiallment',
+      labelTranslatePath: 'OIL_SALES.FIELDS.PARTIALLYPAID',
+      attributeType: AttributeType.number,
+      fieldType: FieldType.number,
+      exportable: true,
+      sortable: true,
       dataTable: true,
       filterable: true
     },
@@ -195,7 +227,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.REGION',
       attributeType: AttributeType.object,
       exportable: true,
-      dataTable: true,
+      dataTable: false,
       filterable: true,
       fieldType: FieldType.autocomplete,
       valuePath: 'name',
@@ -242,7 +274,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.OLIVE_TYPE',
       attributeType: AttributeType.object,
       exportable: true,
-      dataTable: true,
+      dataTable: false,
       filterable: true,
       valuePath: 'name',
       valueAttributeType: AttributeType.string,

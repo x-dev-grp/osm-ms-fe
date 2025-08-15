@@ -26,7 +26,7 @@ This is an Angular-based frontend application for an Olive Oil Mill Management S
 ### Project Structure
 ```
 src/app/
-├── @theme/           # Theme and layout components
+├── /theme//           # Theme and layout components
 ├── auth/            # Authentication module
 ├── demo/            # Demo pages and components
 ├── finance/         # Financial management

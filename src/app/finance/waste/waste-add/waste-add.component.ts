@@ -26,7 +26,7 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {MatIconModule} from "@angular/material/icon";
 import {MatTooltipModule} from "@angular/material/tooltip";
-import {CardComponent} from "../../../@theme/components/card/card.component";
+import {CardComponent} from "../../../theme/components/card/card.component";
 import { Waste } from '../../../shared/models/Waste';
 import { WasteSale } from '../../models/Waste.model';
 

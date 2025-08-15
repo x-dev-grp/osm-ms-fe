@@ -15,7 +15,7 @@ import { Customer } from '../../models/Customer';
 import { CustomerService } from '../../service/customer.service';
 import { CustomerCategory, getCustomerCategories } from '../../models/CustomerCategory';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { CardComponent } from '../../../@theme/components/card/card.component';
+import { CardComponent } from '../../../theme/components/card/card.component';
 
 @Component({
   selector: 'app-customer-add',
@@ -141,8 +141,8 @@ export class CustomerAddComponent implements OnInit {
       error: (error) => {
         console.error('Error loading customer:', error);
         this.snackBar.open(
-          this.translateService.instant('CUSTOMERS.MESSAGES.ERROR_LOADING'), 
-          this.translateService.instant('COMMON.CLOSE'), 
+          this.translateService.instant('CUSTOMERS.MESSAGES.ERROR_LOADING'),
+          this.translateService.instant('COMMON.CLOSE'),
           { duration: 3000 }
         );
         this.loading = false;
@@ -154,7 +154,7 @@ export class CustomerAddComponent implements OnInit {
     if (this.customerForm.valid) {
       this.loading = true;
       const formValue = this.customerForm.value;
-      
+
       // Clean up the data - convert empty strings to null for optional fields
       const customerData: Customer = {
         ...formValue,
@@ -178,15 +178,15 @@ export class CustomerAddComponent implements OnInit {
           next: (response) => {
             if (response.success) {
               this.snackBar.open(
-                this.translateService.instant('CUSTOMERS.MESSAGES.UPDATE_SUCCESS'), 
-                this.translateService.instant('COMMON.CLOSE'), 
+                this.translateService.instant('CUSTOMERS.MESSAGES.UPDATE_SUCCESS'),
+                this.translateService.instant('COMMON.CLOSE'),
                 { duration: 3000 }
               );
               this.router.navigate(['/finance/customers']);
             } else {
               this.snackBar.open(
-                response.message || this.translateService.instant('CUSTOMERS.MESSAGES.ERROR_UPDATING'), 
-                this.translateService.instant('COMMON.CLOSE'), 
+                response.message || this.translateService.instant('CUSTOMERS.MESSAGES.ERROR_UPDATING'),
+                this.translateService.instant('COMMON.CLOSE'),
                 { duration: 3000 }
               );
             }
@@ -195,8 +195,8 @@ export class CustomerAddComponent implements OnInit {
           error: (error) => {
             console.error('Error updating customer:', error);
             this.snackBar.open(
-              this.translateService.instant('CUSTOMERS.MESSAGES.ERROR_UPDATING'), 
-              this.translateService.instant('COMMON.CLOSE'), 
+              this.translateService.instant('CUSTOMERS.MESSAGES.ERROR_UPDATING'),
+              this.translateService.instant('COMMON.CLOSE'),
               { duration: 3000 }
             );
             this.loading = false;
@@ -207,15 +207,15 @@ export class CustomerAddComponent implements OnInit {
           next: (response) => {
             if (response.success) {
               this.snackBar.open(
-                this.translateService.instant('CUSTOMERS.MESSAGES.SAVE_SUCCESS'), 
-                this.translateService.instant('COMMON.CLOSE'), 
+                this.translateService.instant('CUSTOMERS.MESSAGES.SAVE_SUCCESS'),
+                this.translateService.instant('COMMON.CLOSE'),
                 { duration: 3000 }
               );
               this.router.navigate(['/finance/customers']);
             } else {
               this.snackBar.open(
-                response.message || this.translateService.instant('CUSTOMERS.MESSAGES.ERROR_SAVING'), 
-                this.translateService.instant('COMMON.CLOSE'), 
+                response.message || this.translateService.instant('CUSTOMERS.MESSAGES.ERROR_SAVING'),
+                this.translateService.instant('COMMON.CLOSE'),
                 { duration: 3000 }
               );
             }
@@ -224,8 +224,8 @@ export class CustomerAddComponent implements OnInit {
           error: (error) => {
             console.error('Error creating customer:', error);
             this.snackBar.open(
-              this.translateService.instant('CUSTOMERS.MESSAGES.ERROR_SAVING'), 
-              this.translateService.instant('COMMON.CLOSE'), 
+              this.translateService.instant('CUSTOMERS.MESSAGES.ERROR_SAVING'),
+              this.translateService.instant('COMMON.CLOSE'),
               { duration: 3000 }
             );
             this.loading = false;

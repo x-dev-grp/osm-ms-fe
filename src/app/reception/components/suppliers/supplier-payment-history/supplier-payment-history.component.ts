@@ -31,8 +31,9 @@ import { SearchOperation } from 'src/app/shared/models/advanced-search/searchOpe
 import { catchError } from 'rxjs/operators';
 import { OperationType } from '../../../../shared/models/operation-type.enum';
 import { deliveryType } from '../../../../shared/models/deleveryType';
- import { TransactionState } from '../../../../shared/models/OilTransaction';
-import { PaymentMethod } from '../../../../finance/models/financial-transaction.model';
+import { TransactionState } from '../../../../shared/models/OilTransaction';
+import { Currency, PaymentMethod, TransactionDirection } from '../../../../finance/models/financial-transaction.model';
+import { OilSaleService } from '../../../../finance/service/oil-sale.service';
 
 @Component({
   selector: 'app-supplier-payment-history',
@@ -74,11 +75,13 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
   relatedOilTransaction: any;
   transactionNotCompletedError: boolean = false;
   unpaidAmount: number = 0;
+  protected derivedDirection: TransactionDirection;
 
   constructor(
     private deliveryService: UnifiedDeliveryService,
     private fb: FormBuilder,
     private _searchService: AdvancedSearchService,
+    private oilSaleService: OilSaleService,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private _dialogRef: MatDialogRef<SupplierPaymentHistoryComponent>
   ) {}
@@ -87,77 +90,107 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
     this.paymentForm
       .get('moneyPaymentMethod')
       ?.valueChanges.pipe(
-      takeUntilDestroyed(this.destroyRef),
-      debounceTime(100),
-      tap((value) => {
-         if(value === 'check'){
-           this.paymentForm.get('checkNumber')?.setValidators([Validators.required]);
-           this.paymentForm.get('bankAccount')?.clearValidators();
-         }else if( value === 'bank_transfer'){
-           this.paymentForm.get('checkNumber')?.clearValidators();
+        takeUntilDestroyed(this.destroyRef),
+        debounceTime(100),
+        tap((value) => {
+          if (value === 'check') {
+            this.paymentForm.get('checkNumber')?.setValidators([Validators.required]);
+            this.paymentForm.get('bankAccount')?.clearValidators();
+          } else if (value === 'bank_transfer') {
+            this.paymentForm.get('checkNumber')?.clearValidators();
             this.paymentForm.get('bankAccount')?.setValidators([Validators.required]);
-         }else{
-           this.paymentForm.get('checkNumber')?.clearValidators();
-           this.paymentForm.get('bankAccount')?.clearValidators();
-         }
-         this.paymentForm.get('checkNumber')?.updateValueAndValidity();
-         this.paymentForm.get('bankAccount')?.updateValueAndValidity();
-      })
-    )
+          } else {
+            this.paymentForm.get('checkNumber')?.clearValidators();
+            this.paymentForm.get('bankAccount')?.clearValidators();
+          }
+          this.paymentForm.get('checkNumber')?.updateValueAndValidity();
+          this.paymentForm.get('bankAccount')?.updateValueAndValidity();
+        })
+      )
       .subscribe();
     this.paymentForm
       .get('paymentMethod')
       ?.valueChanges.pipe(
-      takeUntilDestroyed(this.destroyRef),
-      debounceTime(100),
-      tap((value) => {
-         if(value === 'oil' || value === 'both'){
-           this.paymentForm.get('oilQuantity')?.setValidators([Validators.required]);
-           this.paymentForm.get('oilPrice')?.setValidators([Validators.required]);
-           this.paymentForm.get('checkNumber')?.clearValidators();
-           this.paymentForm.get('bankAccount')?.clearValidators();
-         }else{
+        takeUntilDestroyed(this.destroyRef),
+        debounceTime(100),
+        tap((value) => {
+          if (value === 'oil' || value === 'both') {
+            this.paymentForm.get('oilQuantity')?.setValidators([Validators.required]);
+            this.paymentForm.get('oilPrice')?.setValidators([Validators.required]);
+            this.paymentForm.get('checkNumber')?.clearValidators();
+            this.paymentForm.get('bankAccount')?.clearValidators();
+          } else {
             this.paymentForm.get('oilQuantity')?.clearValidators();
             this.paymentForm.get('oilPrice')?.clearValidators();
             const moneyPaymentMethod = this.paymentForm.get('moneyPaymentMethod')?.value;
-           if(moneyPaymentMethod === 'check'){
-             this.paymentForm.get('checkNumber')?.setValidators([Validators.required]);
-             this.paymentForm.get('bankAccount')?.clearValidators();
-           }else if( value === 'bank_transfer'){
-             this.paymentForm.get('checkNumber')?.clearValidators();
-             this.paymentForm.get('bankAccount')?.setValidators([Validators.required]);
-           }else{
-             this.paymentForm.get('checkNumber')?.clearValidators();
-             this.paymentForm.get('bankAccount')?.clearValidators();
-           }
-         }
-        this.paymentForm.get('oilQuantity')?.updateValueAndValidity();
-        this.paymentForm.get('oilPrice')?.updateValueAndValidity();
-        this.paymentForm.get('checkNumber')?.updateValueAndValidity();
-        this.paymentForm.get('bankAccount')?.updateValueAndValidity();
-  })
-    ).subscribe();
+            if (moneyPaymentMethod === 'check') {
+              this.paymentForm.get('checkNumber')?.setValidators([Validators.required]);
+              this.paymentForm.get('bankAccount')?.clearValidators();
+            } else if (value === 'bank_transfer') {
+              this.paymentForm.get('checkNumber')?.clearValidators();
+              this.paymentForm.get('bankAccount')?.setValidators([Validators.required]);
+            } else {
+              this.paymentForm.get('checkNumber')?.clearValidators();
+              this.paymentForm.get('bankAccount')?.clearValidators();
+            }
+          }
+          this.paymentForm.get('oilQuantity')?.updateValueAndValidity();
+          this.paymentForm.get('oilPrice')?.updateValueAndValidity();
+          this.paymentForm.get('checkNumber')?.updateValueAndValidity();
+          this.paymentForm.get('bankAccount')?.updateValueAndValidity();
+        })
+      )
+      .subscribe();
     this.paymentForm
       .get('amount')
       ?.valueChanges.pipe(
         takeUntilDestroyed(this.destroyRef),
         debounceTime(300),
         tap((value) => {
-          const { paymentMethod, oilPrice, oilQuantity } = this.paymentForm.value;
 
-          if (paymentMethod === PaymentMethod.oil || paymentMethod === PaymentMethod.both) {
-            this.remainingAmount = this.unpaidAmount - (Number(oilPrice) * Number(oilQuantity || 0) + Number(value || 0));
-          } else {
             this.remainingAmount = this.unpaidAmount - Number(value || 0);
-          }
+
         })
       )
       .subscribe();
+    // this.paymentForm
+    //   .get('oilQuantity')
+    //   ?.valueChanges.pipe(
+    //     takeUntilDestroyed(this.destroyRef),
+    //     debounceTime(300),
+    //     tap((value) => {
+    //       const { paymentMethod, oilPrice, oilQuantity } = this.paymentForm.value;
+    //
+    //       if (paymentMethod === PaymentMethod.OIL || paymentMethod === PaymentMethod.BOTH) {
+    //         this.remainingAmount = this.unpaidAmount - (Number(oilPrice) * Number(oilQuantity || 0) + Number(value || 0));
+    //       } else {
+    //         this.remainingAmount = this.unpaidAmount - Number(value || 0);
+    //       }
+    //     })
+    //   )
+    //   .subscribe();
+    // this.paymentForm
+    //   .get('oilPrice')
+    //   ?.valueChanges.pipe(
+    //     takeUntilDestroyed(this.destroyRef),
+    //     debounceTime(300),
+    //     tap((value) => {
+    //       const { paymentMethod, oilPrice, oilQuantity } = this.paymentForm.value;
+    //
+    //       if (paymentMethod === PaymentMethod.OIL || paymentMethod === PaymentMethod.BOTH) {
+    //         this.remainingAmount = this.unpaidAmount - (Number(oilPrice) * Number(oilQuantity || 0) + Number(value || 0));
+    //       } else {
+    //         this.remainingAmount = this.unpaidAmount - Number(value || 0);
+    //       }
+    //     })
+    //   )
+    //   .subscribe();
   }
 
   ngOnInit(): void {
     this.selectedDelivery = this.data?.row;
     this.unpaidAmount = this.data?.row?.unpaidAmount;
+    this.totalPrice = this.data?.row?.price;
     this.paymentForm = this.fb.group({
       paymentMethod: ['cash'],
       moneyPaymentMethod: ['cash'],
@@ -170,6 +203,7 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
     this.loadBankAccounts();
     console.log(this.data.row);
     this.processData();
+
   }
 
   loadBankAccounts(): void {
@@ -219,20 +253,20 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
             const oilTransaction = res?.data[0];
             if (oilTransaction?.transactionState != TransactionState.COMPLETED) {
               this.transactionNotCompletedError = true;
-              this.paymentForm.disable()
+              this.paymentForm.disable();
 
               return;
             }
             if (Number(oilTransaction?.totalPrice) == Number(this.unpaidAmount)) {
               this.paymentForm.patchValue({
-                paymentMethod: PaymentMethod.oil,
+                paymentMethod: PaymentMethod.OIL,
                 oilQuantity: oilTransaction?.quantityKg,
                 oilPrice: oilTransaction?.unitPrice
               });
               return;
             } else if (oilTransaction?.totalPrice < Number(this?.unpaidAmount)) {
               this.paymentForm.patchValue({
-                paymentMethod: PaymentMethod.both,
+                paymentMethod: PaymentMethod.BOTH,
                 oilQuantity: oilTransaction?.quantityKg,
                 oilPrice: oilTransaction?.unitPrice,
                 amount: Number(this?.unpaidAmount) - Number(oilTransaction?.totalPrice)
@@ -249,8 +283,9 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
   }
 
   purshase() {
+    this.derivedDirection = TransactionDirection.OUTBOUND;
     this.paymentForm.patchValue({
-      amount: Number(this?.unpaidAmount)
+      amount: Number(this.data?.row?.unpaidAmount)
     });
   }
 
@@ -262,19 +297,19 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
         tap((res: any) => {
           if (res?.data) {
             const oilReception = res?.data;
-            if (oilReception?.price == this?.unpaidAmount) {
+            if (oilReception?.price == this.data.row?.price) {
               this.paymentForm.patchValue({
-                paymentMethod: PaymentMethod.oil,
+                paymentMethod: 'oil',
                 oilQuantity: oilReception?.oilQuantity,
                 oilPrice: oilReception?.unitPrice
               });
               return;
             } else {
               this.paymentForm.patchValue({
-                paymentMethod: PaymentMethod.both,
+                paymentMethod: 'both',
                 oilQuantity: oilReception?.oilQuantity,
                 oilPrice: oilReception?.unitPrice,
-                amount: Number(this?.unpaidAmount) - Number(oilReception?.price)
+                amount: Number(this?.unpaidAmount)
               });
               return;
             }
@@ -299,13 +334,13 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((res: any) => {
-          if (res?.data&&res?.data.price) {
-             const oilReception = res?.data;
+          if (res?.data && res?.data.price) {
+            const oilReception = res?.data;
             this.unpaidAmount = oilReception?.price;
             this.paymentForm.get('amount')?.setValue(this.unpaidAmount);
-          }else{
+          } else {
             this.transactionNotCompletedError = true;
-            this.paymentForm.disable()
+            this.paymentForm.disable();
           }
           //todo chnage the msgs based on the operation use html anf variable
         }),
@@ -319,6 +354,52 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
 
   processPayment() {
     console.log(this.paymentForm.value);
+    if (this.selectedDelivery?.deliveryType) {
+      this.processDeliveryPaiment();
+    } else {
+      this.processOilSalePayment();
+    }
+  }
+
+  async processOilSalePayment(): Promise<void> {
+    if (this.paymentForm.invalid || this.transactionNotCompletedError || !this.selectedDelivery?.id) {
+      this.paymentForm.markAllAsTouched();
+      return;
+    }
+
+    const v = this.paymentForm.value as {
+      moneyPaymentMethod: 'cash' | 'check' | 'bank_transfer';
+      amount?: number;
+      checkNumber?: string;
+      bankAccount?: any;
+    };
+
+    // Map to enum values like in customer flow
+    const mappedMethod =
+      v.moneyPaymentMethod === 'cash'
+        ? PaymentMethod.CASH
+        : v.moneyPaymentMethod === 'check'
+          ? PaymentMethod.CHEQUE
+          : PaymentMethod.TRANSFER;
+
+    // Build payload identical in shape to customer flow, but for supplier
+    const payload = {
+      idOperation: this.selectedDelivery.id, // delivery ID or oil sale ID for supplier
+      amount: Number(v.amount || 0),
+      currency: Currency.TND,
+      paymentMethod: mappedMethod,
+      checkNumber: mappedMethod === PaymentMethod.CHEQUE ? v.checkNumber || null : null,
+      bankAccount: mappedMethod === PaymentMethod.TRANSFER ? v.bankAccount || null : null,
+      supplier: this.selectedDelivery.supplier, // supplier instead of customer
+      customer: null
+    };
+
+    try {
+      await this.oilSaleService.processPayment(payload).toPromise();
+      this.closePaymentForm();
+    } catch (err) {
+      this.transactionNotCompletedError = true;
+    }
   }
 
   private processData() {
@@ -329,19 +410,24 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
         // If the operation type is SIMPLE_RECEPTION, call the processSimpleReception method
         case OperationType.SIMPLE_RECEPTION: {
           this.processSimpleReception();
+          this.derivedDirection = TransactionDirection.INBOUND;
           break;
         }
         // If the operation type is OLIVE_PURCHASE, call the purshase method
         case OperationType.OLIVE_PURCHASE: {
           this.purshase();
+          this.derivedDirection = TransactionDirection.OUTBOUND;
+
           break;
         }
         // If the operation type is EXCHANGE, call the processExchange method
         case OperationType.EXCHANGE: {
+          this.derivedDirection = TransactionDirection.INBOUND;
           this.processExchange();
           break;
         }
         case OperationType.BASE: {
+          this.derivedDirection = TransactionDirection.OUTBOUND;
           this.processBase();
           break;
         }
@@ -351,4 +437,60 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
       this.purshase();
     }
   }
+
+  private async processDeliveryPaiment() {
+    if (this.paymentForm.invalid || this.transactionNotCompletedError || !this.selectedDelivery?.id) {
+      this.paymentForm.markAllAsTouched();
+      return;
+    }
+
+    const v = this.paymentForm.value as {
+      moneyPaymentMethod: 'cash' | 'check' | 'bank_transfer';
+      amount?: number;
+      checkNumber?: string;
+      bankAccount?: any;
+    };
+
+    // Map to enum values like in customer flow
+    const mappedMethod =
+      v.moneyPaymentMethod === 'cash'
+        ? PaymentMethod.CASH
+        : v.moneyPaymentMethod === 'check'
+          ? PaymentMethod.CHEQUE
+          : PaymentMethod.TRANSFER;
+
+    // Build payload identical in shape to customer flow, but for supplier
+    const payload = {
+      idOperation: this.selectedDelivery.id, // delivery ID or oil sale ID for supplier
+      amount: Number(v.amount || 0),
+      currency: Currency.TND,
+      paymentMethod: mappedMethod,
+      checkNumber: mappedMethod === PaymentMethod.CHEQUE ? v.checkNumber || null : null,
+      bankAccount: mappedMethod === PaymentMethod.TRANSFER ? v.bankAccount || null : null,
+      supplier: this.selectedDelivery.supplier, // supplier instead of customer
+      customer: null
+    };
+
+    try {
+       this.deliveryService.processPayment(payload).pipe().subscribe(
+         {
+           next:(response)=>{
+             console.log(response)
+           },
+           error:(err)=>{
+             console.log(err);
+             this.transactionNotCompletedError = true;
+
+           }
+         }
+       )
+      this.closePaymentForm();
+    } catch (err) {
+      this.transactionNotCompletedError = true;
+    }
+  }
+
+  //protected readonly TransactionDirection = TransactionDirection;
+  protected readonly TransactionDirection = TransactionDirection;
+  totalPrice: number;
 }

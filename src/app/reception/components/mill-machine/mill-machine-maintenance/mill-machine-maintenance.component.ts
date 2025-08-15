@@ -10,7 +10,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { SharedModule } from '../../../../demo/shared/shared.module';
+import { SharedModule } from '../../../../shared/shared.module';
 import { MillMachine } from '../../../../shared/models/millMachine';
 import { MillMachineService } from '../../../../shared/services/mill-machine.service';
 

@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AppParameterService } from '../../shared/services/AppParameterService';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Parameter } from '../../shared/models/Parameter';
-import { SharedModule } from '../../demo/shared/shared.module';
+import { SharedModule } from '../../shared/shared.module';
 import { NgIf, NgSwitch, NgSwitchCase, NgSwitchDefault } from '@angular/common';
 
 @Component({

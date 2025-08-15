@@ -5,9 +5,9 @@ import { MatButtonModule }    from '@angular/material/button';
 import { MatIconModule }      from '@angular/material/icon';
 import { MatTooltipModule }   from '@angular/material/tooltip';
 import { CommonModule }       from '@angular/common';
-import { SharedModule } from '../../demo/shared/shared.module';
+import { SharedModule } from '../../shared/shared.module';
 import { AbleProConfig } from '../../app-config';
-import { ThemeLayoutService } from '../../@theme/services/theme-layout.service';
+import { ThemeLayoutService } from '../../theme/services/theme-layout.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 type ThemeMode = 'light' | 'dark' | 'auto';

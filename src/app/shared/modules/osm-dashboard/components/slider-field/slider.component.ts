@@ -11,7 +11,7 @@ import { MatSortModule } from '@angular/material/sort';
 
 import { AdvancedSearchService } from 'src/app/shared/services/advanced-serach.service';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { SharedModule } from 'src/app/demo/shared/shared.module';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { Field } from '../../models/dashboard-config';
 
 import { DashboardStore } from '../../services/dashboard-state.service';
@@ -79,13 +79,13 @@ export class SliderComponent implements OnInit, AfterViewInit, OnChanges, OnDest
 
   ngOnChanges(changes: SimpleChanges): void {}
   ngOnInit(): void {
-  
+
     this.rangeNumber = new FormGroup({
       start: new FormControl<number | null>(this.field()?.sliderMinValue || 0),
       end: new FormControl<number | null>(this.field()?.sliderMaxValue || 1000000)
     });
-   
+
     console.log('field', this.field());
   }
- 
+
 }

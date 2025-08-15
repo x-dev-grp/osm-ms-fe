@@ -169,7 +169,7 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
       dataTable: true,
       filterable: true
     },  {
-      name: 'unpaiedAmount',
+      name: 'unpaidAmount',
       label: 'Montant umpaié',
       labelTranslatePath: 'OIL_SALES.FIELDS.UNPAIDAMOUNT',
       attributeType: AttributeType.number,
@@ -180,7 +180,7 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
       filterable: true
     },
     {
-      name: 'paiedAmount',
+      name: 'paidAmount',
       label: 'Montant partiallment',
       labelTranslatePath: 'OIL_SALES.FIELDS.PARTIALLYPAID',
       attributeType: AttributeType.number,

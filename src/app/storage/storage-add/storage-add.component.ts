@@ -11,7 +11,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 
-import {SharedModule} from '../../demo/shared/shared.module';
+import {SharedModule} from '../../shared/shared.module';
 import {StorageUnitDto} from '../../shared/models/StorageUnitDto';
 import {BaseType} from '../../shared/models/base-type';
 import {StorageUnitDtoService} from '../../shared/services/storage.service';

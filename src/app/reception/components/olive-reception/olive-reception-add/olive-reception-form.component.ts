@@ -26,7 +26,7 @@ import {GenericTypeService} from '../../../../shared/services/generic-type.servi
 import {UnifiedDeliveryService} from '../../../../shared/services/delivery.service';
 import {SupplierTypeService} from '../../../../shared/services/supplier.service';
 import {TypeCategory} from '../../../../shared/models/type-category.enum';
-import {CardComponent} from '../../../../@theme/components/card/card.component';
+import {CardComponent} from '../../../../theme/components/card/card.component';
 import {MatIcon} from '@angular/material/icon';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {map, startWith} from 'rxjs/operators';
@@ -273,6 +273,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       oliveVariety: formValue.oliveVariety || null,
       sackCount: formValue.sackCount ? Number(formValue.sackCount) : 0,
       oliveType: formValue.oliveType || null,
+      oilType: formValue.oliveType || null,
       operationType: formValue.operationType || null,
       parcel: formValue.parcel || '',
       price: Number(formValue.price) || 0,

@@ -9,7 +9,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
-import { SharedModule } from '../../../demo/shared/shared.module';
+import { SharedModule } from '../../../shared/shared.module';
 import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
 import { Action, DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
 import { MillMachine } from '../../../shared/models/millMachine';

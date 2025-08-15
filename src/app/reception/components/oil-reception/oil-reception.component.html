@@ -26,7 +26,7 @@
         <div class="financial-card">
           <mat-form-field appearance="outline" class="financial-field">
             <mat-label>{{ 'CONTROLE_QUALITE.FINANCIAL.PRICE' | translate }}</mat-label>
-            <input [max]="this.originalOliveReception?.unpaidAmount" formControlName="price" matInput readonly step="0.01"
+            <input [max]="this.originalOliveReception?.unpaidAmount" formControlName="price" matInput step="0.01"
                    type="number">
             <mat-icon matSuffix>account_balance_wallet</mat-icon>
           </mat-form-field>

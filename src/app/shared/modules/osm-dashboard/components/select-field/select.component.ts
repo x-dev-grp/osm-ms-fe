@@ -11,7 +11,7 @@ import { MatSortModule } from '@angular/material/sort';
 
 import { AdvancedSearchService } from 'src/app/shared/services/advanced-serach.service';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { SharedModule } from 'src/app/demo/shared/shared.module';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { Field } from '../../models/dashboard-config';
 
 import { DashboardStore } from '../../services/dashboard-state.service';
@@ -43,7 +43,7 @@ export class SelectComponent implements OnInit, AfterViewInit, OnChanges, OnDest
   field = input.required<Field>();
   formControl: AbstractControl;
   ngOnDestroy(): void {}
- 
+
 
   ngAfterViewInit(): void {
     this._store.resetFields$()
@@ -64,7 +64,7 @@ export class SelectComponent implements OnInit, AfterViewInit, OnChanges, OnDest
     [ this.field()?.name!]: {
        equalValue: option?.value,
           }
-     }            
+     }
    this._store.setSearchDataAttribute(search);
     console.log(option?.value);
   }

@@ -43,7 +43,7 @@
             ],
             "styles": [
               "src/styles.scss",
-              "src/app/@theme/styles/material-overrides.scss",
+              "src/app/theme//styles/material-overrides.scss",
                "src/styles.scss"
             ],
             "stylePreprocessorOptions": {

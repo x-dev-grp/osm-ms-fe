@@ -7,9 +7,9 @@ import { tap, catchError } from 'rxjs/operators';
 
 // project import
 import { AppConfig } from 'src/environments/environment';
-import { User } from '../../@theme/types/user';
+import { User } from '../../theme/types/user';
 import { TokenService } from 'src/app/auth/services/tokenService.service';
-import { Role } from 'src/app/@theme/types/role';
+import { Role } from 'src/app/theme/types/role';
 import { CompanyProfileService } from '../../shared/services/company-profile.service';
 
 // Import the 'map' operator from 'rxjs/operators'

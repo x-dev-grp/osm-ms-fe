@@ -9,9 +9,19 @@
         <mat-card *ngIf="selectedDelivery" class="payment-form-card">
           <mat-card-title>
             <div class="payment-header">
-              <span>{{ 'SUPPLIER_PAYMENT.PAYMENT' | translate }}  {{ 'SUPPLIER_PAYMENT.LOT' | translate }} {{ selectedDelivery?.lotNumber }}</span>
-
+              <span>{{ 'SUPPLIER_PAYMENT.PAYMENT' | translate }} - {{ 'SUPPLIER_PAYMENT.LOT' | translate }} {{ selectedDelivery?.lotNumber }}</span>
+              <!-- New: Direction chip (read-only) -->
+              <mat-chip color="primary" selected>
+                <mat-icon aria-hidden="true">
+                  {{ derivedDirection === TransactionDirection.INBOUND ? 'call_received' : 'call_made' }}
+                </mat-icon>
+                {{ 'SUPPLIER_PAYMENT.DIRECTION' | translate }}:
+                {{ derivedDirection === TransactionDirection.INBOUND
+                ? ('SUPPLIER_PAYMENT.INBOUND' | translate)
+                : ('SUPPLIER_PAYMENT.OUTBOUND' | translate) }}
+              </mat-chip>
             </div>
+
           </mat-card-title>
           <mat-divider></mat-divider>
           @if (transactionNotCompletedError) {
@@ -27,7 +37,7 @@
             <div class="payment-method-section">
               <h4>{{ 'SUPPLIER_PAYMENT.PAYMENT_METHOD' | translate }}</h4>
               <mat-radio-group formControlName="paymentMethod">
-                <mat-radio-button class="payment-option" disabled value="cash">
+                <mat-radio-button disabled class="payment-option"  value="cash">
                   <div class="payment-option-content">
                     <mat-icon>account_balance_wallet</mat-icon>
                     <div>
@@ -36,8 +46,9 @@
                   </div>
                 </mat-radio-button>
                 <mat-radio-button
-                  class="payment-option"
                   disabled
+                  class="payment-option"
+
                   value="oil">
                   <div class="payment-option-content">
                     <mat-icon>local_gas_station</mat-icon>
@@ -48,7 +59,7 @@
                 </mat-radio-button>
                 <mat-radio-button
                   class="payment-option"
-                  disabled
+
                   value="both">
                   <div class="payment-option-content">
                     <mat-icon>sync_alt</mat-icon>
@@ -114,7 +125,7 @@
               </div>
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>{{ 'SUPPLIER_PAYMENT.AMOUNT' | translate }}</mat-label>
-                <input [max]="data?.row?.unpaidAmount" [min]="0.01"
+                <input [max]="data?.row?.unpaidAmount" [min]="0"
                        formControlName="amount"
                        matInput
                        required step="0.01" type="number">
@@ -137,13 +148,13 @@
               <!-- Oil Payment Fields (add your oil payment fields here) -->
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>{{ 'SUPPLIER_PAYMENT.OIL_QUANTITY' | translate }}</mat-label>
-                <input [min]="0.01" formControlName="oilQuantity" matInput
+                <input readonly disabled [min]="0" formControlName="oilQuantity" matInput
                        step="0.01"
                        type="number">
               </mat-form-field>
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>{{ 'SUPPLIER_PAYMENT.OIL_PRICE' | translate }}</mat-label>
-                <input [min]="0.01" formControlName="oilPrice" matInput  step="0.01"
+                <input readonly disabled [min]="0" formControlName="oilPrice" matInput  step="0.01"
                        type="number">
               </mat-form-field>
               <!-- Add more oil payment fields as needed -->
@@ -155,6 +166,10 @@
               <div class="summary-item">
                 <span>{{ 'SUPPLIER_PAYMENT.UNPAID_AMOUNT' | translate }}:</span>
                 <span>{{ unpaidAmount || 0 | currency:'TND' }}</span>
+              </div>
+              <div class="summary-item">
+                <span>{{ 'SUPPLIER_PAYMENT.TOTAL_PRICE' | translate }}:</span>
+                <span>{{ totalPrice || 0 | currency:'TND' }}</span>
               </div>
               <div class="summary-item">
                 <span>{{ 'SUPPLIER_PAYMENT.REMAINING_AMOUNT' | translate }}:</span>

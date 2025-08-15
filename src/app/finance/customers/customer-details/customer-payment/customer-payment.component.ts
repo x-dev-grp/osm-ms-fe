@@ -120,7 +120,7 @@ export class CustomerPaymentComponent implements OnInit, AfterViewInit {
         takeUntilDestroyed(this.destroyRef),
         debounceTime(200),
         tap((amt: number) => {
-          this.remainingAmount = this.data.row.unpaiedAmount - Number(amt || 0);
+          this.remainingAmount = this.data.row.unpaidAmount - Number(amt || 0);
         })
       )
       .subscribe();
@@ -132,13 +132,13 @@ export class CustomerPaymentComponent implements OnInit, AfterViewInit {
     this.paymentForm = this.fb.group({
       paymentMethod: ['cash', Validators.required],
       moneyPaymentMethod: ['cash', Validators.required],
-      amount: [null, [Validators.required, Validators.min(0.01), Validators.max(this.data.row.unpaiedAmount)]],
+      amount: [null, [Validators.required, Validators.min(0.01), Validators.max(this.data.row.unpaidAmount)]],
       checkNumber: [''],
       bankAccount: [null]
     });
     this.loadBankAccounts();
     console.log(this.data.row);
-    this.paymentForm.patchValue({ amount: Number(this?.data.row.unpaiedAmount) });
+    this.paymentForm.patchValue({ amount: Number(this?.data.row.unpaidAmount) });
     this.fetchRelatedOiltransaction();
   }
   async fetchRelatedOiltransaction() {

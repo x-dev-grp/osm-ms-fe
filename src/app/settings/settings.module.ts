@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SettingsRoutingModule } from './settings-routing.module';
-import { SharedModule } from '../demo/shared/shared.module';
+import { SharedModule } from '../shared/shared.module';
 
 import { GeneralConfigComponent } from './general-config/general-config.component';
  import { GenericTypeComponent } from './generic-type/generic-type.component';

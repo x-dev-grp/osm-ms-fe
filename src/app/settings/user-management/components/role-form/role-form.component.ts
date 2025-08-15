@@ -2,7 +2,7 @@ import {  Component, DestroyRef, inject, OnInit } from '@angular/core';
 
 import {FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { SharedModule } from 'src/app/demo/shared/shared.module';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 import { PermissionComponent } from '../permission-component/permission.component';
 import { ActivatedRoute, Router } from '@angular/router';

@@ -5,13 +5,13 @@ import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 // project import
-import { SharedModule } from 'src/app/demo/shared/shared.module';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { TokenService } from '../services/tokenService.service';
 import { AuthenticationService } from '../services/authentication.service';
 import { catchError, first, of } from 'rxjs';
-import { User } from 'src/app/@theme/types/user';
+import { User } from 'src/app/theme/types/user';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Role } from '../../@theme/types/role';
+import { Role } from '../../theme/types/role';
 
 
 @Component({

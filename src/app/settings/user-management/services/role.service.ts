@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { User } from "src/app/@theme/types/user";
+import { User } from "src/app/theme/types/user";
 import { Role } from "src/app/shared/models/security/role.model";
 import { environment } from '../../../../environments/environment';
 

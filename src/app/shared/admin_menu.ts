@@ -1,5 +1,5 @@
-import { Navigation } from 'src/app/@theme/types/navigation';
-import { Role } from 'src/app/@theme/types/role';
+import { Navigation } from 'src/app/theme/types/navigation';
+import { Role } from 'src/app/theme/types/role';
 
 export const admin_menus: Navigation[] = [
   {

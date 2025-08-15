@@ -2253,6 +2253,7 @@
     "CONFIRM_PAYMENT": "Confirmer le Paiement",
     "DELIVERY_DATE": "Date Livraison",
     "DELIVERY_NUMBER": "N° Livraison",
+    "DIRECTION": "Direction de paiment",
     "ENTER_NEGOTIATED_PRICE": "Entrez le prix négocié",
     "ERRORS": {
       "AMOUNT_MIN": "Le montant doit être supérieur à 0",
@@ -2268,6 +2269,7 @@
       "OIL_QUANTITY_REQUIRED": "La quantité d'huile est requise",
       "SUPPLIER_ID_NOT_FOUND": "ID du fournisseur non trouvé"
     },
+    "INBOUND": "Paiment entré",
     "LOT": "Lot",
     "LOT_DETAILS": "Détails du lot {{lotNumber}}",
     "LOT_NUMBER": "N° Lot",
@@ -2305,6 +2307,7 @@
     "OIL_STATUS": "Statut de l'Huile",
     "OIL_VALUE": "Valeur de l'Huile",
     "OLIVE_WEIGHT": "Poids Olives (kg)",
+    "OUTBOUND": "Paiment sortie",
     "PAID": "Payé",
     "PAID_AMOUNT": "Montant Payé",
     "PAID_DELIVERIES": "Livraisons Payées",
