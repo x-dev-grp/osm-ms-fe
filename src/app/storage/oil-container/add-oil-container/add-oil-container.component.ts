@@ -9,7 +9,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
 import { OilContainer } from '../../../shared/models/oil-container';
 import { OilContainerService } from '../../../shared/services/oil-Container.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { ToastService } from '../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-add-oil-container',
@@ -29,7 +29,7 @@ export class AddOilContainerComponent implements OnInit {
     private service: OilContainerService,
     private router: Router,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar
+    private toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -84,7 +84,7 @@ export class AddOilContainerComponent implements OnInit {
        },
       error: (error) => {
         console.error('Error loading bank account:', error);
-        this.snackBar.open('Error loading bank account details', 'Close', { duration: 3000 });
+        this.toast.error('Error loading bank account details');
        }
     });
   }

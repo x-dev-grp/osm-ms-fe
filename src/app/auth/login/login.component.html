@@ -15,19 +15,17 @@
           </a>
         </div>
         <h2 class="text-center">Connexion avec votre nom d'étulisateur</h2>
-        <div *ngIf="errorMessage" class="mat-alert mat-error" role="alert">
-          {{ errorMessage?.message }}
-        </div>
+        <div *ngIf="errorMessage" class="mat-alert mat-error" role="alert">{{ errorMessage?.message }}</div>
         <form [formGroup]="form" class="form-container">
           <div class="form-group">
-            <label for="username" class="form-label">Entrez votre non d'utilisateur</label>
+            <label for="username" class="form-label">{{ 'LOGIN.USERNAME' | translate }}</label>
             <mat-form-field appearance="outline" class="w-full">
               <input matInput formControlName="username" id="username" />
               <mat-error *ngIf="form.controls['username'].invalid">{{ getUserNameErrorMessage() }}</mat-error>
             </mat-form-field>
           </div>
           <div class="form-group">
-            <label for="password" class="form-label">Entrez votre mot de passe</label>
+            <label for="password" class="form-label">{{ 'LOGIN.PASSWORD' | translate }}</label>
             <mat-form-field appearance="outline" class="w-full">
               <input matInput formControlName="password" [type]="hide ? 'password' : 'text'" id="password" />
               <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Basculer la visibilité du mot de passe'" [attr.aria-pressed]="hide">
@@ -37,8 +35,8 @@
             </mat-form-field>
           </div>
           <div class="form-options">
-            <mat-checkbox checked color="primary">Se souvenir de moi ?</mat-checkbox>
-            <a [routerLink]="['/auth/forgot-password']" class="forgot-password">Mot de passe oublié ?</a>
+            <mat-checkbox checked color="primary">{{ 'LOGIN.REMEMBERME' | translate }}</mat-checkbox>
+            <a [routerLink]="['/auth/forgot-password']" class="forgot-password">{{ 'Mot de passe oublié ?' | translate }}</a>
           </div>
           <div class="button-container">
             <button [disabled]="loading || form.invalid" (click)="submit()" mat-flat-button color="primary" class="login-button">

@@ -6,9 +6,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { FinancialTransaction, TransactionType, TransactionDirection, Currency, PaymentMethod } from '../../models/financial-transaction.model';
+ import { FinancialTransaction, TransactionType, TransactionDirection, Currency, PaymentMethod } from '../../models/financial-transaction.model';
 import { FinancialTransactionService } from '../../service/financial-transaction.service';
+import { ToastService } from '../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-transaction-view',
@@ -34,7 +34,7 @@ export class TransactionViewComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private transactionService: FinancialTransactionService,
-    private snackBar: MatSnackBar
+    private toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -175,9 +175,6 @@ export class TransactionViewComponent implements OnInit {
   }
 
   private showError(message: string): void {
-    this.snackBar.open(message, 'Fermer', {
-      duration: 5000,
-      panelClass: ['error-snackbar']
-    });
+    this.toast.error(message );
   }
 }

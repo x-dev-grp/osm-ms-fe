@@ -17,6 +17,7 @@ import {BaseType} from '../../shared/models/base-type';
 import {StorageUnitDtoService} from '../../shared/services/storage.service';
 import {GenericTypeService} from '../../shared/services/generic-type.service';
 import {TypeCategory} from '../../shared/models/type-category.enum';
+import { ToastService } from '../../shared/services/toast.service';
 
 @Component({
   selector: 'app-storage-add',
@@ -49,7 +50,7 @@ export class StorageAddComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private storageService: StorageUnitDtoService,
     private oilTypeService: GenericTypeService,
-    private snackBar: MatSnackBar,
+    private toast: ToastService,
     private route: ActivatedRoute,
     private router: Router
   ) {
@@ -85,7 +86,7 @@ export class StorageAddComponent implements OnInit, OnDestroy {
 
         } else if (this.isEditing) {
           this.errorMessage = 'Error loading storage unit.';
-          this.showToast(this.errorMessage);
+          this.toast.error(this.errorMessage);
           this.router.navigate(['/storage']);
           return;
         }
@@ -95,7 +96,7 @@ export class StorageAddComponent implements OnInit, OnDestroy {
       .catch(error => {
         console.error('Error loading data:', error);
         this.errorMessage = 'Error loading data.';
-        this.showToast(this.errorMessage);
+        this.toast.error(this.errorMessage);
         this.loading = false;
       });
   }
@@ -106,7 +107,7 @@ export class StorageAddComponent implements OnInit, OnDestroy {
 
   save(): void {
     if (this.storageForm.invalid) {
-      this.showToast('Please fill in all required fields.');
+      this.toast.warning('Please fill in all required fields.');
       return;
     }
 
@@ -120,13 +121,13 @@ export class StorageAddComponent implements OnInit, OnDestroy {
     op
       .then((res) => {
         if (res?.success) {
-          this.showToast(this.isEditing ? 'Storage unit updated successfully' : 'Storage unit created successfully');
+          this.toast.success(this.isEditing ? 'Storage unit updated successfully' : 'Storage unit created successfully');
           this.router.navigate(['/storage']);
         } else {
-          this.showToast(res?.message || 'Operation failed');
+          this.toast.error(res?.message || 'Operation failed');
         }
       })
-      .catch(() => this.showToast('Server error'))
+      .catch(() => this.toast.error('Server error'))
       .finally(() => (this.loading = false));
   }
 
@@ -147,7 +148,4 @@ export class StorageAddComponent implements OnInit, OnDestroy {
   }
 
 
-  private showToast(message: string): void {
-    this.snackBar.open(message, 'Close', { duration: 3000 });
-  }
 }

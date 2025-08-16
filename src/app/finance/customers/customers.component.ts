@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { ToastService } from '../../shared/services/toast.service';
 import { Customer } from '../models/Customer';
 import { CustomerService } from '../service/customer.service';
 import { Action, DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
@@ -28,7 +28,7 @@ export class CustomersComponent implements OnInit {
    * @param router - Instance of Router for navigation purposes.
    */
   constructor(
-    private snackBar: MatSnackBar,
+    private toast: ToastService,
     private customerService: CustomerService,
     private router: Router
   ) {}

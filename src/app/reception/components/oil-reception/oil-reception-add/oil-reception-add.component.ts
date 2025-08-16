@@ -31,6 +31,7 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {TranslateModule, TranslateService} from '@ngx-translate/core';
 import {OperationType} from '../../../../shared/models/operation-type.enum';
 import {BaseTypeComponent} from '../../../../shared/modules/base-type/base-type.component';
+import { ToastService } from '../../../../shared/services/toast.service';
 
 // Validator for net weight not exceeding gross weight
 const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | null => {
@@ -84,7 +85,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     private genericSrv: GenericTypeService,
     private supplierSrv: SupplierTypeService,
     private deliverySrv: UnifiedDeliveryService,
-    private snack: MatSnackBar,
+    private toast: ToastService,
     private route: ActivatedRoute,
     private storageService: StorageUnitDtoService,
     private router: Router,
@@ -131,7 +132,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
         }
       },
       error: () => {
-        this.showToast('Erreur chargement fournisseurs');
+        this.toast.error('Erreur chargement fournisseurs');
       },
       complete: () => this.markCallDone()
     });
@@ -148,7 +149,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
           this.setNextNumbers();            // 👉 applique automatiquement le prochain deliveryNumber/lotNumber
         }
       },
-      error: () => this.showToast(
+      error: () => this.toast.error(
         this.translate.instant('DELIVERIES.FORM.MESSAGES.LOAD_ERROR'),
       ),
       complete: () => this.markCallDone()
@@ -210,11 +211,11 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     if (this.receptionForm.invalid) {
       if (this.receptionForm.hasError('exceedsCapacity')) {
         this.translate.get('OIL_RECEPTION.ADD.ERRORS.EXCEEDS_CAPACITY').subscribe((message) => {
-          this.showToast(message, 4000);
+          this.toast.warning(message);
         });
       } else {
         this.translate.get('OIL_RECEPTION.ADD.MESSAGES.ERROR.INCOMPLETE_FORM').subscribe((message) => {
-          this.showToast(message, 4000);
+          this.toast.warning(message);
         });
       }
       return;
@@ -263,18 +264,18 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
         this.translate
           .get(this.isEditing ? 'OIL_RECEPTION.ADD.MESSAGES.SUCCESS.UPDATE' : 'OIL_RECEPTION.ADD.MESSAGES.SUCCESS.ADD')
           .subscribe((message) => {
-            this.showToast(message);
+            this.toast.success(message);
             this.router.navigate(['/reception/reception-huile']);
           });
       } else {
         this.translate.get('OIL_RECEPTION.ADD.MESSAGES.ERROR.' + (this.isEditing ? 'UPDATE' : 'ADD')).subscribe((message) => {
-          this.showToast(message);
+          this.toast.error(message);
         });
       }
     })
       .catch(() => {
         this.translate.get('OIL_RECEPTION.ADD.MESSAGES.ERROR.SERVER').subscribe((message) => {
-          this.showToast(message);
+          this.toast.error(message);
         });
       })
       .finally(() => (this.loading = false));
@@ -355,14 +356,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  private showToast(message: string, duration = 3000): void {
-    this.snack.open(message, 'Fermer', {
-      duration,
-      horizontalPosition: 'right',
-      verticalPosition: 'top',
-      panelClass: ['custom-snackbar']
-    });
-  }
+
 
   private generateLotNumber(oilTye: BaseType | null, deliveryNumber: number): string {
     if (!oilTye?.name) return '';

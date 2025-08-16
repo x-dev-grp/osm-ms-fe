@@ -545,7 +545,7 @@
         "STORAGE_UNIT": "🏭 Storage Unit",
         "SUPPLIER": "👤 Supplier",
         "TRUCK": "🚚 Truck Information",
-        "WEIGHT_CONTAINER": "⚖️ Weight Information"
+        "WEIGHT_CONTAINER ": "⚖️ Weight Information"
       },
       "TITLE": "Reception Details"
     },
@@ -777,6 +777,7 @@
   },
   "Edit": "Edit",
   "Editor": "Editor",
+  "Enter your password": "Enter your password",
   "Error 404": "Error 404",
   "Error 500": "Error 500",
   "FINANCE_TAB": "Finance Config",
@@ -794,6 +795,9 @@
       "SAVE": "Save",
       "UPDATE": "Update"
     },
+    "CAPITAL": "Capital",
+    "CITY": "City",
+    "EMAIL": "E-mail",
     "EXPANDABLE": {
       "CONFIGURATIONS": "Configurations",
       "FINANCE_CONFIG": "Finance Config",
@@ -803,7 +807,6 @@
     },
     "TITLE": "General Configuration"
   },
-  "GENERAL_CONFIG.CAPITAL": "Capital",
   "GENERAL_CONFIG.CITY": "City",
   "GENERAL_CONFIG.EMAIL": "Email",
   "GENERAL_CONFIG.GOVERNORATE": "Governorate",
@@ -905,6 +908,14 @@
   "Home": "Home",
   "Invoice": "Invoice",
   "Kanban": "Kanban",
+  "LOGIN": {
+    "PASSWORD": "Password",
+    "PASSWORDCONFIRM": "Confirm your new password",
+    "PASSWORDNEW": "New password",
+    "REMEMBERME": "Rememeber me ?",
+    "UPDATEPASSWORD": "Update your password",
+    "USERNAME": "Username"
+  },
   "LOGO": {
     "CLICK_BROWSE": "or click to browse",
     "DRAG_DROP": "Drag & drop your logo here",
@@ -2487,6 +2498,11 @@
       "TYPE": "Waste Type",
       "UNIT_PRICE": "Unit Price (TND/kg)"
     },
+    "FORM": {
+      "ERRORS": {
+        "QUALITY_GRADE_REQUIRED": "Oil quality is required"
+      }
+    },
     "TITLE": "Waste Management",
     "TYPES": {
       "GRIGNON": "Grignon",
@@ -2495,5 +2511,9 @@
     }
   },
   "Widget": "Widget",
+  "auth": {
+    "change_password_title": "Change Password",
+    "password_changed_success": "Your password has been successfully changed. Do you want to access the application?"
+  },
   "reCaptcha": "reCaptcha"
 }

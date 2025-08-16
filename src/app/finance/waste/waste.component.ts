@@ -13,6 +13,7 @@ import {FormArray, FormGroup} from "@angular/forms";
 import {WasteSale} from "../models/Waste.model";
 import {Customer} from "../models/Customer";
 import {WasteSaleService} from "../service/wasteSale.service";
+import { ToastService } from '../../shared/services/toast.service';
 
 @Component({
     selector: 'app-waste',
@@ -35,7 +36,7 @@ export class WasteComponent {
         private oilSaleService: OilSaleService,
         private customerService: CustomerService,
         private router: Router,
-        private snackBar: MatSnackBar,
+        private toast: ToastService,
         private supplierService: SupplierTypeService,
         private wasteSaleService: WasteSaleService
     ) {
@@ -112,16 +113,16 @@ export class WasteComponent {
       this.wasteSaleService.confirmWasteSale(waste.id).subscribe({
         next: (response) => {
           if (response.success) {
-            this.snackBar.open('Vente de déchet confirmée avec succès', 'Fermer', {duration: 3000});
+           this.toast.success('Vente de déchet confirmée avec succès');
             // Recharger les données du dashboard
             // this.loadDashboardData();
           } else {
-            this.snackBar.open('Erreur lors de la confirmation', 'Fermer', {duration: 3000});
+           this.toast.error('Erreur lors de la confirmation');
           }
         },
         error: (error) => {
           console.error('Error confirming waste sale:', error);
-          this.snackBar.open('Erreur lors de la confirmation', 'Fermer', {duration: 3000});
+         this.toast.error('Erreur lors de la confirmation');
         }
       });
     }
@@ -132,16 +133,16 @@ export class WasteComponent {
       this.wasteSaleService.cancelWasteSale(waste.id).subscribe({
         next: (response) => {
           if (response.success) {
-            this.snackBar.open('Vente de déchet annulée avec succès', 'Fermer', {duration: 3000});
+           this.toast.success('Vente de déchet annulée avec succès');
             // Recharger les données du dashboard
             // this.loadDashboardData();
           } else {
-            this.snackBar.open('Erreur lors de l\'annulation', 'Fermer', {duration: 3000});
+           this.toast.error('Erreur lors de l\'annulation');
           }
         },
         error: (error) => {
           console.error('Error cancelling waste sale:', error);
-          this.snackBar.open('Erreur lors de l\'annulation', 'Fermer', {duration: 3000});
+         this.toast.error('Erreur lors de l\'annulation');
         }
       });
     }
@@ -152,16 +153,16 @@ export class WasteComponent {
       this.wasteSaleService.deliverWasteSale(waste.id).subscribe({
         next: (response) => {
           if (response.success) {
-            this.snackBar.open('Vente de déchet livrée avec succès', 'Fermer', {duration: 3000});
+           this.toast.success('Vente de déchet livrée avec succès');
             // Recharger les données du dashboard
             // this.loadDashboardData();
           } else {
-            this.snackBar.open('Erreur lors de la livraison', 'Fermer', {duration: 3000});
+           this.toast.error('Erreur lors de la livraison');
           }
         },
         error: (error) => {
           console.error('Error delivering waste sale:', error);
-          this.snackBar.open('Erreur lors de la livraison', 'Fermer', {duration: 3000});
+         this.toast.error('Erreur lors de la livraison');
         }
       });
     }

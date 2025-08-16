@@ -26,6 +26,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {OperationType} from '../../../shared/models/operation-type.enum';
 import {ExchangePricingDto} from '../../../shared/models/ExchangePricingDto';
 import {getOlivePdfConfig} from "./olive-pdf.config";
+import { ToastService } from '../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-olive-reception',
@@ -67,7 +68,7 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
 
   constructor(
     private deliveryService: UnifiedDeliveryService,
-    private snackBar: MatSnackBar,
+    private toast: ToastService,
     private router: Router,
     private pdfService: PdfGeneratorService,
     private translate: TranslateService,
@@ -96,8 +97,8 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
     this.subs.add(
       this.deliveryService.getAllDeliveriesList().subscribe((res) => {
         this.deliveries = res.success ? res.data.filter((d) => d.deliveryType === 'OLIVE') : [];
-        if (!res.success) this.toast(this.translate.instant('DELIVERIES.MESSAGES.LOAD_ERROR'));
-      })
+        if (!res.success) this.toast.error(this.translate.instant('DELIVERIES.MESSAGES.LOAD_ERROR'));
+        if (res.success) this.toast.success(res.message );      })
     );
   }
 
@@ -117,10 +118,10 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
             if (res.success) {
               this.dashboard.refrechData();
             } else {
-              this.toast(this.translate.instant('DELIVERIES.MESSAGES.SENT_TO_PRODUCTION_ERROR'));
+              this.toast.error(this.translate.instant('DELIVERIES.MESSAGES.SENT_TO_PRODUCTION_ERROR'));
             }
           },
-          () => this.toast(this.translate.instant('DELIVERIES.MESSAGES.SENT_TO_PRODUCTION_ERROR'))
+          () => this.toast.warning(this.translate.instant('DELIVERIES.MESSAGES.SENT_TO_PRODUCTION_ERROR'))
         )
       );
     }
@@ -134,12 +135,12 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
           (res: ApiResponse<UnifiedDelivery>) => {
             if (res.success) {
               this.fetchDeliveries();
-              this.toast(this.translate.instant('DELIVERIES.MESSAGES.CANCELLED_SUCCESS'));
+              this.toast.success(this.translate.instant('DELIVERIES.MESSAGES.CANCELLED_SUCCESS'));
             } else {
-              this.toast(this.translate.instant('DELIVERIES.MESSAGES.CANCELLED_ERROR'));
+              this.toast.error(this.translate.instant('DELIVERIES.MESSAGES.CANCELLED_ERROR'));
             }
           },
-          () => this.toast(this.translate.instant('DELIVERIES.MESSAGES.CANCELLED_ERROR'))
+          () => this.toast.warning(this.translate.instant('DELIVERIES.MESSAGES.CANCELLED_ERROR'))
         )
       );
     }
@@ -191,22 +192,14 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
         (res) => {
           if (res.success) {
             this.fetchDeliveries();
-            this.toast(this.translate.instant('DELIVERIES.MESSAGES.DELETE_SUCCESS'));
+            this.toast.success(this.translate.instant('DELIVERIES.MESSAGES.DELETE_SUCCESS'));
           }
         },
-        () => this.toast(this.translate.instant('DELIVERIES.MESSAGES.DELETE_ERROR'))
+        () => this.toast.error(this.translate.instant('DELIVERIES.MESSAGES.DELETE_ERROR'))
       )
     );
   }
 
-  private toast(message: string, duration = 3000): void {
-    this.snackBar.open(message, this.translate.instant('STANDARD.BTNS.CANCEL'), {
-      duration,
-      horizontalPosition: 'right',
-      verticalPosition: 'top',
-      panelClass: ['']
-    });
-  }
 
   private setPrice(row: UnifiedDelivery): void {
     this.selectedRow = row;
@@ -335,16 +328,13 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
           dialogRef.close();
           this.dashboard.refrechData();
           this.isLoading = false;
-          this.snackBar.open('Prix d\'échange mis à jour avec succès.', 'Fermer', {
+          this.toast.open('Prix d\'échange mis à jour avec succès.', 'Fermer', {
             duration: 3000,
             panelClass: ['mat-snack-bar-container-success']
           });
         },
         error: () => {
-          this.snackBar.open('Erreur lors de l\'enregistrement du prix d\'échange.', 'Fermer', {
-            duration: 4000,
-            panelClass: ['mat-snack-bar-container-error']
-          });
+          this.toast.error('Erreur lors de l\'enregistrement du prix d\'échange.' );
           this.isLoading = false;
         }
       });
@@ -355,13 +345,13 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
           dialogRef.close();
           this.dashboard.refrechData();
           this.isLoading = false;
-          this.snackBar.open('Prix mis à jour avec succès.', 'Fermer', {
+          this.toast.open('Prix mis à jour avec succès.', 'Fermer', {
             duration: 3000,
             panelClass: ['mat-snack-bar-container-success']
           });
         },
         error: () => {
-          this.snackBar.open('Erreur lors de l\'enregistrement du prix.', 'Fermer', {
+          this.toast.open('Erreur lors de l\'enregistrement du prix.', 'Fermer', {
             duration: 4000,
             panelClass: ['mat-snack-bar-container-error']
           });

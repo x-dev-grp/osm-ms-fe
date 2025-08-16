@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { ToastService } from '../../shared/services/toast.service';
 import { CommonModule } from '@angular/common';
 import { OilSaleService } from '../service/oil-sale.service';
 import { CustomerService } from '../service/customer.service';
@@ -27,7 +27,7 @@ export class OilSalesComponent implements OnInit {
     private oilSaleService: OilSaleService,
     private customerService: CustomerService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -64,14 +64,14 @@ export class OilSalesComponent implements OnInit {
       this.oilSaleService.confirmOilSale(oilSale.id).subscribe({
         next: (response) => {
           if (response.success) {
-            this.snackBar.open('Oil sale confirmed successfully', 'Close', { duration: 3000 });
+            this.toast.success('Oil sale confirmed successfully');
           } else {
-            this.snackBar.open(response.message || 'Error confirming oil sale', 'Close', { duration: 3000 });
+            this.toast.error(response.message || 'Error confirming oil sale');
           }
         },
         error: (error) => {
           console.error('Error confirming oil sale:', error);
-          this.snackBar.open('Error confirming oil sale', 'Close', { duration: 3000 });
+          this.toast.error('Error confirming oil sale');
         }
       });
     }
@@ -82,14 +82,14 @@ export class OilSalesComponent implements OnInit {
       this.oilSaleService.cancelOilSale(oilSale.id).subscribe({
         next: (response) => {
           if (response.success) {
-            this.snackBar.open('Oil sale cancelled successfully', 'Close', { duration: 3000 });
+            this.toast.success('Oil sale cancelled successfully');
           } else {
-            this.snackBar.open(response.message || 'Error cancelling oil sale', 'Close', { duration: 3000 });
+            this.toast.error(response.message || 'Error cancelling oil sale');
           }
         },
         error: (error) => {
           console.error('Error cancelling oil sale:', error);
-          this.snackBar.open('Error cancelling oil sale', 'Close', { duration: 3000 });
+          this.toast.error('Error cancelling oil sale');
         }
       });
     }
@@ -100,14 +100,14 @@ export class OilSalesComponent implements OnInit {
       this.oilSaleService.deliverOilSale(oilSale.id).subscribe({
         next: (response) => {
           if (response.success) {
-            this.snackBar.open('Oil sale delivered successfully', 'Close', { duration: 3000 });
+            this.toast.success('Oil sale delivered successfully');
           } else {
-            this.snackBar.open(response.message || 'Error delivering oil sale', 'Close', { duration: 3000 });
+            this.toast.error(response.message || 'Error delivering oil sale');
           }
         },
         error: (error) => {
           console.error('Error delivering oil sale:', error);
-          this.snackBar.open('Error delivering oil sale', 'Close', { duration: 3000 });
+          this.toast.error('Error delivering oil sale');
         }
       });
     }

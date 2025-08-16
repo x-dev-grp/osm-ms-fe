@@ -21,9 +21,9 @@
 @import 'scss/spacing-utils.scss';
 
 // theme setup
-@import './app/theme//styles/theme-palette-colors.scss';
-@import './app/theme//styles/theme-dark-palette-colors.scss';
-@import './app/theme//styles/theme.scss';
+@import './app/theme/styles/theme-palette-colors.scss';
+@import './app/theme/styles/theme-dark-palette-colors.scss';
+@import './app/theme/styles/theme.scss';
 @include mat.all-component-typographies(theme-typography("'Inter var', sans-serif")); // theme typography
 
 // default theme
@@ -135,18 +135,17 @@
 @import './scss/variables';
 
 // theme layouts
-@import './app/theme//styles/layouts/menu';
-@import './app/theme//styles/layouts/compact-menu.scss';
-@import './app/theme//styles/layouts/horizontal-menu.scss';
-@import './app/theme//styles/pages/file-manager.scss';
-@import './app/theme//styles/pages/dashboard.scss';
-@import './app/theme//styles/theme-mode/rtl';
+@import './app/theme/styles/layouts/menu';
+@import './app/theme/styles/layouts/compact-menu.scss';
+@import './app/theme/styles/layouts/horizontal-menu.scss';
+@import './app/theme/styles/pages/file-manager.scss';
+@import './app/theme/styles/pages/dashboard.scss';
+@import './app/theme/styles/theme-mode/rtl';
 
 // grid
-@import './app/theme//styles/grid';
+@import './app/theme/styles/grid';
 
 // Enhanced toast styles
-@import './app/shared/styles/toast.scss';
 a.flex {
   display: flex;
   align-items: center;
@@ -168,4 +167,32 @@ a.flex {
   .version:hover {
     color: var(--primary-700); // Slightly darker color on hover
   }
+}
+/* Base style */
+.app-toast {
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 8px;
+  box-shadow: 0 6px 12px rgba(0,0,0,.15);
+}
+
+/* Variantes simples */
+.app-toast-success {
+  background: #0f5132;
+  color: #e8fff3;
+}
+
+.app-toast-error {
+  background: #842029;
+  color: #ffeaea;
+}
+
+.app-toast-info {
+  background: #063970;
+  color: #e6f0ff;
+}
+
+.app-toast-warning {
+  background: #664d03;
+  color: #fff5db;
 }

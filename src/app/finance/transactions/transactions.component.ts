@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { ToastService } from '../../shared/services/toast.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router } from '@angular/router';
@@ -38,7 +38,7 @@ export class TransactionsComponent implements OnInit, OnDestroy {
   constructor(
     private transactionService: FinancialTransactionService,
     private router: Router,
-    private snackBar: MatSnackBar,
+    private toast: ToastService,
     private dialog: MatDialog
   ) {}
 
@@ -244,16 +244,10 @@ export class TransactionsComponent implements OnInit, OnDestroy {
 
 
   private showSuccess(message: string): void {
-    this.snackBar.open(message, 'Fermer', {
-      duration: 3000,
-      panelClass: ['success-snackbar']
-    });
+    this.toast.success(message );
   }
 
   private showError(message: string): void {
-    this.snackBar.open(message, 'Fermer', {
-      duration: 5000,
-      panelClass: ['error-snackbar']
-    });
+    this.toast.error(message );
   }
 }

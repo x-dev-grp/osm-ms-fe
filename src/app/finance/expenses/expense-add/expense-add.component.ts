@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatButtonModule } from '@angular/material/button';
+ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -13,6 +12,7 @@ import { SharedModule } from '../../../shared/shared.module';
 import { ExpenseService } from '../../service/expense.service';
 import { Expense } from '../../models/expense.model';
 import { PaymentMethod } from '../../models/financial-transaction.model';
+import { ToastService } from '../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-expense-add',
@@ -42,7 +42,7 @@ export class ExpenseAddComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private expenseService: ExpenseService,
-    private snackBar: MatSnackBar,
+    private toast: ToastService,
     private router: Router,
     private route: ActivatedRoute
   ) {
@@ -107,7 +107,7 @@ export class ExpenseAddComponent implements OnInit {
         this.loading = false;
       },
       error: () => {
-        this.snackBar.open('Erreur lors du chargement de la dépense', 'Fermer', { duration: 3000 });
+        this.toast.error('Erreur lors du chargement de la dépense' );
         this.loading = false;
         this.router.navigate(['/finance/expenses']);
       }
@@ -116,7 +116,7 @@ export class ExpenseAddComponent implements OnInit {
 
   save(): void {
     if (this.form.invalid) {
-      this.snackBar.open('Veuillez remplir tous les champs obligatoires', 'Fermer', { duration: 3000 });
+      this.toast.error('Veuillez remplir tous les champs obligatoires' );
       return;
     }
 
@@ -133,19 +133,17 @@ export class ExpenseAddComponent implements OnInit {
     request$.subscribe({
       next: (response) => {
         if (response.success) {
-          this.snackBar.open(
-            this.editing ? 'Dépense mise à jour avec succès' : 'Dépense créée avec succès',
-            'Fermer',
-            { duration: 3000 }
+          this.toast.success(
+            this.editing ? 'Dépense mise à jour avec succès' : 'Dépense créée avec succès'
           );
           this.router.navigate(['/finance/expenses']);
         } else {
-          this.snackBar.open(response.message || 'Une erreur est survenue', 'Fermer', { duration: 3000 });
+          this.toast.error(response.message || 'Une erreur est survenue' );
         }
         this.loading = false;
       },
       error: () => {
-        this.snackBar.open('Une erreur est survenue', 'Fermer', { duration: 3000 });
+        this.toast.error('Une erreur est survenue');
         this.loading = false;
       }
     });

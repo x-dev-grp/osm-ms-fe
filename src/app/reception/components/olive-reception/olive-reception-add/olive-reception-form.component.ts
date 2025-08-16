@@ -228,7 +228,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
   // Save or update the reception
   async saveReception(): Promise<void> {
     if (this.receptionForm.invalid) {
-      this.showToast(this.translate.instant('DELIVERIES.FORM.VALIDATION.FILL_REQUIRED'), 'warning', 4000);
+      this.showToast(this.translate.instant('DELIVERIES.FORM.VALIDATION.FILL_REQUIRED'), 'warning');
       return;
     }
 
@@ -236,23 +236,23 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
 
     // Validate required references
     if (!formValue.region?.id) {
-      this.showToast(this.translate.instant('DELIVERIES.FORM.VALIDATION.INVALID_REGION'), 'warning', 4000);
+      this.showToast(this.translate.instant('DELIVERIES.FORM.VALIDATION.INVALID_REGION'), 'warning');
       return;
     }
     if (!formValue.supplier?.id) {
-      this.showToast(this.translate.instant('DELIVERIES.FORM.VALIDATION.INVALID_SUPPLIER'), 'warning', 4000);
+      this.showToast(this.translate.instant('DELIVERIES.FORM.VALIDATION.INVALID_SUPPLIER'), 'warning');
       return;
     }
 
     // Validate numeric values
     if (formValue.poidsBrute < 0 || formValue.poidsNet < 0) {
-      this.showToast(this.translate.instant('DELIVERIES.FORM.VALIDATION.POSITIVE_VALUE'), 'warning', 4000);
+      this.showToast(this.translate.instant('DELIVERIES.FORM.VALIDATION.POSITIVE_VALUE'), 'warning');
       return;
     }
 
     // Validate dates
     if (!formValue.deliveryDate) {
-      this.showToast(this.translate.instant('DELIVERIES.FORM.VALIDATION.REQUIRED_DATE'), 'warning', 4000);
+      this.showToast(this.translate.instant('DELIVERIES.FORM.VALIDATION.REQUIRED_DATE'), 'warning');
       return;
     }
 
@@ -326,20 +326,20 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
   }
 
   // Display toast notification
-  private showToast(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info', duration?: number): void {
+  private showToast(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info' ): void {
     switch (type) {
       case 'success':
-        this.toastService.success(message, duration);
+        this.toastService.success(message);
         break;
       case 'error':
-        this.toastService.error(message, duration);
+        this.toastService.error(message);
         break;
       case 'warning':
-        this.toastService.warning(message, duration);
+        this.toastService.warning(message);
         break;
       case 'info':
       default:
-        this.toastService.info(message, duration);
+        this.toastService.info(message);
         break;
     }
   }

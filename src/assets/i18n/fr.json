@@ -777,6 +777,7 @@
   },
   "Edit": "Modifier",
   "Editor": "Éditrice",
+  "Enter your password": "Tapper votre mot de pass",
   "Error 404": "Erreur 404",
   "Error 500": "Erreur 500",
   "FINANCE_TAB": "Config Finance",
@@ -794,7 +795,6 @@
       "SAVE": "Enregistrer",
       "UPDATE": "Mettre à jour"
     },
-    "CAPITAL": "Capital",
     "CITY": "Ville",
     "EMAIL": "Email",
     "EXPANDABLE": {
@@ -905,6 +905,14 @@
   "Home": "Accueil",
   "Invoice": "Facture",
   "Kanban": "Kanban",
+  "LOGIN": {
+    "PASSWORD": "Mot de pass",
+    "PASSWORDCONFIRM": "Confirmer mot de passe",
+    "PASSWORDNEW": "Nouveau mot de passe",
+    "REMEMBERME": "Se souvenir de moi ?",
+    "UPDATEPASSWORD": "Changer le mot de passe",
+    "USERNAME": "Nom d'utilisateur"
+  },
   "LOGO": {
     "CLICK_BROWSE": "ou cliquez pour parcourir",
     "DRAG_DROP": "Glissez-déposez votre logo ici",
@@ -2312,6 +2320,7 @@
     "PAID_AMOUNT": "Montant Payé",
     "PAID_DELIVERIES": "Livraisons Payées",
     "PAY": "Payer",
+    "PAYMENT": "Paiment",
     "PAYMENT_HISTORY": "Historique des Paiements",
     "PAYMENT_METHOD": "Méthode de Paiement",
     "PAYMENT_SUCCESS": "Paiement traité avec succès",
@@ -2486,6 +2495,11 @@
       "TYPE": "Type de déchet",
       "UNIT_PRICE": "Prix unitaire (TND/kg)"
     },
+    "FORM": {
+      "ERRORS": {
+        "QUALITY_GRADE_REQUIRED": "La quality d'huile est requis"
+      }
+    },
     "TITLE": "Gestion des déchets",
     "TYPES": {
       "GRIGNON": "Grignon",
@@ -2494,5 +2508,9 @@
     }
   },
   "Widget": "Widget",
+  "auth": {
+    "change_password_title": "Changer mot de passe",
+    "password_changed_success": "Votre mot de passe a été modifié avec succès. Voulez-vous accéder à l'application ?"
+  },
   "reCaptcha": "reCaptcha"
 }

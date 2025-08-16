@@ -34,7 +34,11 @@ import { deliveryType } from '../../../../shared/models/deleveryType';
 import { TransactionState } from '../../../../shared/models/OilTransaction';
 import { Currency, PaymentMethod, TransactionDirection } from '../../../../finance/models/financial-transaction.model';
 import { OilSaleService } from '../../../../finance/service/oil-sale.service';
-
+export interface PaymentDialogResult {
+  ok: boolean;                 // true si succès
+  message: string;             // message à afficher
+  payload?: any;               // (optionnel) données renvoyées
+}
 @Component({
   selector: 'app-supplier-payment-history',
   standalone: true,
@@ -325,7 +329,7 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
   }
 
   closePaymentForm() {
-    this._dialogRef.close();
+    this._dialogRef.close({ ok: false, message: 'Opération annulée.' } as PaymentDialogResult);
   }
 
   processBase() {
@@ -395,7 +399,27 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
     };
 
     try {
-      await this.oilSaleService.processPayment(payload).toPromise();
+      this.oilSaleService
+        .processPayment(payload)
+        .pipe()
+        .subscribe({
+          next: (response) => {
+            console.log(response);
+            const result: PaymentDialogResult = {
+              ok: true,
+              message: 'Paiement enregistré avec succès.',
+              payload: response
+            };
+            this._dialogRef.close(result);
+          },
+          error: (err) => {
+            const result: PaymentDialogResult = {
+              ok: false,
+              message: this.formatError(err) // formate un message lisible
+            };
+            this._dialogRef.close(result);
+          }
+        });
       this.closePaymentForm();
     } catch (err) {
       this.transactionNotCompletedError = true;
@@ -476,11 +500,19 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
          {
            next:(response)=>{
              console.log(response)
+             const result: PaymentDialogResult = {
+               ok: true,
+               message: 'Paiement enregistré avec succès.',
+               payload: response
+             };
+             this._dialogRef.close(result);
            },
-           error:(err)=>{
-             console.log(err);
-             this.transactionNotCompletedError = true;
-
+           error: (err) => {
+             const result: PaymentDialogResult = {
+               ok: false,
+               message: this.formatError(err) // formate un message lisible
+             };
+             this._dialogRef.close(result);
            }
          }
        )
@@ -489,7 +521,10 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
       this.transactionNotCompletedError = true;
     }
   }
-
+  private formatError(err: any): string {
+    if (err?.error?.message) return err.error.message;
+    return 'Une erreur est survenue lors de l’enregistrement du paiement.';
+  }
   //protected readonly TransactionDirection = TransactionDirection;
   protected readonly TransactionDirection = TransactionDirection;
   totalPrice: number;

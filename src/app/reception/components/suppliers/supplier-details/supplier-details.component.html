@@ -77,11 +77,11 @@
 
 <div class="table-section">
   @if (isOilCredit){
-     <osm-dashboard #dashboard [config]="OIL_CREDIT_DASHBOARD" (applyAction)="handleCreditAction($event)"></osm-dashboard>
+     <osm-dashboard #dashboardOilCredit [config]="OIL_CREDIT_DASHBOARD" (applyAction)="handleCreditAction($event)"></osm-dashboard>
   } @else if(isPayment){
-     <osm-dashboard #dashboard [config]="PAIMENT_DASHBOARD" (applyAction)="handlePaymentAction($event)"></osm-dashboard>
+     <osm-dashboard #dashboardPaiments [config]="PAIMENT_DASHBOARD" (applyAction)="handlePaymentAction($event)"></osm-dashboard>
   }@else if (isOilSale){
-    <osm-dashboard #dashboard [config]="OIL_SALES_DASHBOARD_CONFIG" (applyAction)="handlePaymentAction($event)"></osm-dashboard>
+    <osm-dashboard #dashboardOilSale [config]="OIL_SALES_DASHBOARD_CONFIG" (applyAction)="handlePaymentAction($event)"></osm-dashboard>
 
   }
 

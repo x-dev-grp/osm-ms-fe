@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { BankAccountService } from '../../service/bankAccount.service';
+ import { BankAccountService } from '../../service/bankAccount.service';
 import { BankAccount } from '../../models/BankAccount';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,6 +17,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSortModule } from '@angular/material/sort';
 import { SharedModule } from '../../../shared/shared.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { ToastService } from '../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-bank-account-add',
@@ -53,7 +53,7 @@ export class BankAccountAddComponent implements OnInit {
     private bankAccountService: BankAccountService,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: MatSnackBar
+    private toast: ToastService
   ) {
     this.initForm();
   }
@@ -94,7 +94,7 @@ export class BankAccountAddComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading bank account:', error);
-        this.snackBar.open('Error loading bank account details', 'Close', { duration: 3000 });
+        this.toast.error('Error loading bank account details');
         this.loading = false;
       }
     });
@@ -112,16 +112,16 @@ export class BankAccountAddComponent implements OnInit {
       request.subscribe({
         next: (response) => {
           if (response.success) {
-            this.snackBar.open(`Bank account ${this.isEditMode ? 'updated' : 'created'} successfully`, 'Close', { duration: 3000 });
+            this.toast.success(`Bank account ${this.isEditMode ? 'updated' : 'created'} successfully`);
             this.router.navigate(['/finance/banks']);
           } else {
-            this.snackBar.open(response.message || 'Operation failed', 'Close', { duration: 3000 });
+            this.toast.error(response.message || 'Operation failed');
           }
           this.loading = false;
         },
         error: (error) => {
           console.error('Error saving bank account:', error);
-          this.snackBar.open('Error saving bank account', 'Close', { duration: 3000 });
+          this.toast.error('Error saving bank account');
           this.loading = false;
         }
       });

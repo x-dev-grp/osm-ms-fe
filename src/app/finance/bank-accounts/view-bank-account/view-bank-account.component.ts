@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { BankAccountService } from '../../service/bankAccount.service';
+ import { BankAccountService } from '../../service/bankAccount.service';
 import { BankAccount } from '../../models/BankAccount';
 import { ApiResponse } from '../../../shared/models/api-response';
 import { CommonModule } from '@angular/common';
@@ -19,6 +18,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatSortModule } from '@angular/material/sort';
 import { SharedModule } from '../../../shared/shared.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { ToastService } from '../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-view-bank-account',
@@ -51,7 +51,7 @@ export class ViewBankAccountComponent implements OnInit {
     private bankAccountService: BankAccountService,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: MatSnackBar
+    private toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -61,7 +61,7 @@ export class ViewBankAccountComponent implements OnInit {
   private loadBankAccount(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) {
-      this.snackBar.open('Invalid bank account ID', 'Close', { duration: 3000 });
+      this.toast.error('Invalid bank account ID');
       this.router.navigate(['/finance/bank']);
       return;
     }
@@ -72,14 +72,14 @@ export class ViewBankAccountComponent implements OnInit {
         if (response.success && response.data && response.data.length > 0) {
           this.bankAccount = response.data[0];
         } else {
-          this.snackBar.open('Bank account not found', 'Close', { duration: 3000 });
+          this.toast.error('Bank account not found');
           this.router.navigate(['/finance/banks']);
         }
         this.loading = false;
       },
       error: (error) => {
         console.error('Error loading bank account:', error);
-        this.snackBar.open('Error loading bank account details', 'Close', { duration: 3000 });
+        this.toast.error('Error loading bank account details');
         this.router.navigate(['/finance/banks']);
         this.loading = false;
       }

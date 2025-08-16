@@ -31,6 +31,7 @@ import {
 import {
   ConfirmationDialogComponent
 } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { ToastService } from '../../../shared/services/toast.service';
 
 
 @Component({
@@ -63,7 +64,7 @@ export class ControleQualiteComponent implements OnInit {
     private route: ActivatedRoute,
     private deliveryService: UnifiedDeliveryService,
     private cdr: ChangeDetectorRef,
-    private snackBar: MatSnackBar,
+    private toast: ToastService,
     private storageUnitService: StorageUnitDtoService,
     private translate: TranslateService,
     private router: Router,
@@ -273,18 +274,12 @@ export class ControleQualiteComponent implements OnInit {
       this.isLoading = true;
        this.qcResService.saveResultsWithIdx(this.xxx, results).subscribe({
         next: (res: any) => {
-          this.snackBar.open(res.message || 'Résultats enregistrés avec succès.', 'Fermer', {
-            duration: 4000,
-            panelClass: ['mat-snack-bar-container-success']
-          });
+          this.toast.success(res.message || 'Résultats enregistrés avec succès.' );
           this.isLoading = false;
           this.cdr.detectChanges();
         },
         error: () => {
-          this.snackBar.open('Erreur lors de l\'enregistrement des résultats.', 'Fermer', {
-            duration: 4000,
-            panelClass: ['mat-snack-bar-container-error']
-          });
+          this.toast.error('Erreur lors de l\'enregistrement des résultats.' );
           this.isLoading = false;
           this.cdr.detectChanges();
         }
@@ -295,10 +290,7 @@ export class ControleQualiteComponent implements OnInit {
     if (!this.deliveryData?.id) {
       this.message = 'Données de livraison non disponibles.';
       this.cdr.detectChanges();
-      this.snackBar.open('Données de livraison manquantes.', 'Fermer', {
-        duration: 4000,
-        panelClass: ['mat-snack-bar-container-warning']
-      });
+      this.toast.error('Données de livraison manquantes.' );
       return;
     }
 
@@ -322,10 +314,7 @@ export class ControleQualiteComponent implements OnInit {
           this.saveQualityControlResults();
         },
         error: () => {
-          this.snackBar.open('Erreur lors de l\'enregistrement des données financières.', 'Fermer', {
-            duration: 4000,
-            panelClass: ['mat-snack-bar-container-error']
-          });
+          this.toast.error('Erreur lors de l\'enregistrement des données financières.' );
           this.isLoading = false;
           this.cdr.detectChanges();
         }
@@ -387,10 +376,7 @@ export class ControleQualiteComponent implements OnInit {
       );
     }
     if (requests.length === 0) {
-      this.snackBar.open('Aucun changement à enregistrer.', 'Fermer', {
-        duration: 3000,
-        panelClass: ['mat-snack-bar-container-info']
-      });
+      this.toast.warning('Aucun changement à enregistrer.' );
       this.isLoading = false;
       this.cdr.detectChanges();
       return;
@@ -413,10 +399,7 @@ export class ControleQualiteComponent implements OnInit {
         } else {
           message = 'Aucun résultat n\'a pu être enregistré.';
         }
-        this.snackBar.open(message, 'Fermer', {
-          duration: 4000,
-          panelClass: allSuccessful ? ['mat-snack-bar-container-success'] : ['mat-snack-bar-container-warning']
-        });
+        this.toast.success(message );
         this.isLoading = false;
         this.cdr.detectChanges();
         this.loadQualityControlResults();
@@ -431,10 +414,7 @@ export class ControleQualiteComponent implements OnInit {
         }
       },
       error: () => {
-        this.snackBar.open('Erreur lors de l\'enregistrement des résultats de contrôle qualité.', 'Fermer', {
-          duration: 4000,
-          panelClass: ['mat-snack-bar-container-error']
-        });
+        this.toast.error('Erreur lors de l\'enregistrement des résultats de contrôle qualité.' );
         this.isLoading = false;
         this.cdr.detectChanges();
       }

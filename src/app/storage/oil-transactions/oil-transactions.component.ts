@@ -20,6 +20,7 @@ import {TranslateModule, TranslateService} from '@ngx-translate/core';
 import {getOilTransactionPdfConfig} from "./transaction-pdf.config";
 import {PdfGeneratorService} from "../../shared/services/pdf-generator.service";
 import {OilSaleValidationDialogComponent} from './oil-sale-validation/oil-sale-validation.component';
+import { ToastService } from '../../shared/services/toast.service';
 
 @Component({
   selector: 'app-oil-transactions',
@@ -39,7 +40,7 @@ export class OilTransactionsComponent implements OnInit {
   private oilSaleForm: any;
 
   constructor(
-    private snackBar: MatSnackBar,
+    private toast: ToastService,
     private oilTransactionService: OilTransactionService,
     private storageUnitService: StorageUnitDtoService,
     private translate: TranslateService,
@@ -124,15 +125,15 @@ export class OilTransactionsComponent implements OnInit {
         this.oilTransactionService.approveOilTransaction(this.transactionRequest).subscribe({
           next: (response) => {
             if (response.success) {
-              this.snackBar.open('Oil sale validated successfully', 'Close', { duration: 3000 });
+              this.toast.success('Oil sale validated successfully');
 
             } else {
-              this.snackBar.open('Error validating oil sale: ' + response.message, 'Close', { duration: 3000 });
+              this.toast.error('Error validating oil sale: ' + response.message);
             }
           },
           error: (error) => {
             console.error('Error validating oil sale:', error);
-            this.snackBar.open('Error validating oil sale', 'Close', { duration: 3000 });
+            this.toast.error('Error validating oil sale');
           }
         });
       }
@@ -192,15 +193,15 @@ export class OilTransactionsComponent implements OnInit {
           .subscribe({
             next: (response) => {
               if (response.success) {
-                this.showSuccess('OIL_TRANSACTIONS.FORM.MESSAGES.SUCCESS.APPROVE');
+                this.toast.success('OIL_TRANSACTIONS.FORM.MESSAGES.SUCCESS.APPROVE');
                 this.dashboard.refrechData();
                 this.router.navigate(['/storage/oil-transactions']);
               } else {
-                this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.APPROVE');
+                this.toast.error('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.APPROVE');
               }
             },
             error: () => {
-              this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.APPROVE');
+              this.toast.error('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.APPROVE');
             }
           });
       });
@@ -211,24 +212,22 @@ export class OilTransactionsComponent implements OnInit {
       this.oilTransactionService.deleteOilTransaction(transaction.id).subscribe({
         next: (response) => {
           if (response.success) {
-            this.snackBar.open("Transaction d'huile supprimée avec succès", 'Fermer', { duration: 3000 });
+            this.toast.success("Transaction d'huile supprimée avec succès" );
             // Refresh the list
             this.loadOilTransactions();
           } else {
-            this.snackBar.open(response.message || "Échec de la suppression de la transaction d'huile", 'Fermer', { duration: 3000 });
+            this.toast.error(response.message || "Échec de la suppression de la transaction d'huile");
           }
         },
         error: (error) => {
           console.error('Error deleting oil transaction:', error);
-          this.snackBar.open("Erreur lors de la suppression de la transaction d'huile", 'Fermer', { duration: 3000 });
+          this.toast.error("Erreur lors de la suppression de la transaction d'huile");
         }
       });
     }
   }
 
-  private showSuccess(messageKey: string): void {
-    this.snackBar.open(this.translate.instant(messageKey), undefined, { duration: 3000 });
-  }
+
 
   private loadOilTransactions(): void {
     this.oilTransactionService.getAllOilTransactionsList().subscribe({
@@ -240,7 +239,7 @@ export class OilTransactionsComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading oil transactions:', error);
-        this.snackBar.open("Erreur lors du chargement des transactions d'huile", 'Fermer', { duration: 3000 });
+        this.toast.error("Erreur lors du chargement des transactions d'huile" );
       }
     });
   }
@@ -255,12 +254,10 @@ export class OilTransactionsComponent implements OnInit {
         },
         error: (error: unknown) => {
           console.error('Error loading storage units:', error);
-          this.snackBar.open('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.LOAD_STORAGE_UNITS');
+          this.toast.error('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.LOAD_STORAGE_UNITS');
         }
       });
   }
 
-  private showError(messageKey: string): void {
-    this.snackBar.open(this.translate.instant(messageKey), this.translate.instant('STANDARD.BTNS.CANCEL'), { duration: 3000 });
-  }
+
 }

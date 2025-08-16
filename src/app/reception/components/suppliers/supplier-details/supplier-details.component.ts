@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -20,6 +20,7 @@ import { UnifiedDelivery } from '../../../../shared/models/UnifiedDelivery';
 import { MatDialog } from '@angular/material/dialog';
 import { SupplierPaymentHistoryComponent } from '../supplier-payment-history/supplier-payment-history.component';
 import { OIL_SALES_DASHBOARD_CONFIG } from './oil-sales-dashboard.config';
+import { ToastService } from '../../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-supplier-details',
@@ -49,15 +50,19 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
   isPayment: boolean = false;
   OIL_CREDIT_DASHBOARD: DashboardConfig = OIL_CREDIT_DASHBOARD;
   PAIMENT_DASHBOARD: DashboardConfig = PAIMENT_DASHBOARD;
-  // Function to load payment history based on whether the payment is paid or not
-  protected paidOilSalesCount: any;
-  protected unpaidOilSalesCount: any;
   OIL_SALES_DASHBOARD_CONFIG = OIL_SALES_DASHBOARD_CONFIG;
-  private destroy$ = new Subject<void>();
   unpaidSUM: string;
   paidSum: string;
   paidOilSalesSUM: string;
   unpaidOilSalesSum: string;
+  @ViewChild('dashboardOilCredit') dashboardOilCredit!: OsmDashboard;
+  @ViewChild('dashboardPaiments') dashboardPaiments!: OsmDashboard;
+  @ViewChild('dashboardOilSale') dashboardOilSale!: OsmDashboard;
+  // Function to load payment history based on whether the payment is paid or not
+  protected paidOilSalesCount: any;
+  protected unpaidOilSalesCount: any;
+  private destroy$ = new Subject<void>();
+  private toast: ToastService;
 
   constructor(
     private router: Router,
@@ -128,7 +133,18 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((result) => {
-          console.log(result);
+          if (!result) {
+            // cas annulation si tu fermes sans résultat
+            return;
+          }
+
+          if (result.ok) {
+            this.toast.success(result.message || 'Paiement réussi.');
+            this.refreshPaymentList(); // recharge la liste / total / soldes
+          } else {
+            this.toast.error(result.message || 'Échec du paiement.' );
+            // Optionnel: logger l’erreur ou afficher un détail
+          }
         })
       )
       .subscribe();
@@ -191,7 +207,7 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
     this.OIL_SALES_DASHBOARD_CONFIG = {
       ...this.OIL_SALES_DASHBOARD_CONFIG,
       title: isPaid ? 'Historique paiements Des ventes huile' : 'Paiements ventes huile en attente',
-       defaultSearchData: {
+      defaultSearchData: {
         ...this.OIL_SALES_DASHBOARD_CONFIG.defaultSearchData,
         searchData: {
           ...this.OIL_SALES_DASHBOARD_CONFIG.defaultSearchData?.searchData,
@@ -219,7 +235,6 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
     this.paidCountSearchData();
     this.unpaidCountSearchDta();
     this.creditCountSearchDta();
-
   }
 
   ngOnDestroy(): void {
@@ -254,14 +269,13 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
 
           const items = res?.data ?? [];
           // Adapte le nom du champ si besoin : unpaidAmount / remainingAmount / resteAPayer / unpaid
-          this.paidOilSalesSUM = items.reduce((sum:number, it:any) => {
-            const v =
-              Number(it?.paiedAmount   ?? 0);
+          this.paidOilSalesSUM = items.reduce((sum: number, it: any) => {
+            const v = Number(it?.paiedAmount ?? 0);
             return sum + (Number.isFinite(v) ? v : 0);
           }, 0);
 
-          console.log('[Supplier] Somme impayée (page courante):',  this.paidOilSalesSUM); })
-
+          console.log('[Supplier] Somme impayée (page courante):', this.paidOilSalesSUM);
+        })
       )
       .subscribe();
   }
@@ -293,14 +307,13 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
 
           const items = res?.data ?? [];
           // Adapte le nom du champ si besoin : unpaidAmount / remainingAmount / resteAPayer / unpaid
-          this.unpaidOilSalesSum = items.reduce((sum:number, it:any) => {
-            const v =
-              Number(it?.unpaidAmount ??  it?.unpaid ?? 0);
+          this.unpaidOilSalesSum = items.reduce((sum: number, it: any) => {
+            const v = Number(it?.unpaidAmount ?? it?.unpaid ?? 0);
             return sum + (Number.isFinite(v) ? v : 0);
           }, 0);
 
-          console.log('[Supplier] Somme impayée (page courante):',  this.unpaidOilSalesSum); })
-
+          console.log('[Supplier] Somme impayée (page courante):', this.unpaidOilSalesSum);
+        })
       )
       .subscribe();
   }
@@ -359,13 +372,13 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
           this.unpaidCount = res?.total || 0;
           const items = res?.data ?? [];
           // Adapte le nom du champ si besoin : unpaidAmount / remainingAmount / resteAPayer / unpaid
-          this.unpaidSUM = items.reduce((sum:number, it:any) => {
-            const v =
-              Number(it?.unpaidAmount ?? it?.unpaid ?? 0);
+          this.unpaidSUM = items.reduce((sum: number, it: any) => {
+            const v = Number(it?.unpaidAmount ?? it?.unpaid ?? 0);
             return sum + (Number.isFinite(v) ? v : 0);
           }, 0);
 
-          console.log('[Supplier] Somme impayée (page courante):', this.unpaidSUM ); })
+          console.log('[Supplier] Somme impayée (page courante):', this.unpaidSUM);
+        })
       )
       .subscribe();
   }
@@ -396,15 +409,20 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
           this.paidCount = res?.total || 0;
           const items = res?.data ?? [];
           // Adapte le nom du champ si besoin : unpaidAmount / remainingAmount / resteAPayer / unpaid
-          this.paidSum = items.reduce((sum:number, it:any) => {
-            const v =
-              Number( it?.paidAmount  ?? 0);
+          this.paidSum = items.reduce((sum: number, it: any) => {
+            const v = Number(it?.paidAmount ?? 0);
             return sum + (Number.isFinite(v) ? v : 0);
           }, 0);
 
-          console.log('[Supplier]  this.paidSum ):',  this.paidSum);
+          console.log('[Supplier]  this.paidSum ):', this.paidSum);
         })
       )
       .subscribe();
+  }
+
+  private refreshPaymentList() {
+    this.dashboardOilCredit.refrechData();
+    this.dashboardPaiments.refrechData();
+    this.dashboardOilSale.refrechData();
   }
 }

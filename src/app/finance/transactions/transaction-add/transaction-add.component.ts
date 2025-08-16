@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatButtonModule } from '@angular/material/button';
+ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -14,6 +13,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FinancialTransaction, TransactionType, TransactionDirection, Currency, PaymentMethod } from '../../models/financial-transaction.model';
 import { FinancialTransactionService } from '../../service/financial-transaction.service';
+import { ToastService } from '../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-transaction-add',
@@ -51,7 +51,7 @@ export class TransactionAddComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private transactionService: FinancialTransactionService,
-    private snackBar: MatSnackBar
+    private toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -194,17 +194,11 @@ export class TransactionAddComponent implements OnInit {
   }
 
   private showSuccess(message: string): void {
-    this.snackBar.open(message, 'Fermer', {
-      duration: 3000,
-      panelClass: ['success-snackbar']
-    });
+    this.toast.success(message );
   }
 
   private showError(message: string): void {
-    this.snackBar.open(message, 'Fermer', {
-      duration: 5000,
-      panelClass: ['error-snackbar']
-    });
+    this.toast.error(message );
   }
 
   getTitle(): string {

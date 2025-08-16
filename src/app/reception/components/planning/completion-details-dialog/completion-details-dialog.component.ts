@@ -194,13 +194,13 @@ export class CompletionDetailsDialogComponent implements OnInit {
           if (res?.confirmed) {
             this.autoSetStorage = true;
             this.finalizeConfirmation();
+          }else {
+            this.autoSetStorage=false
+            this.finalizeConfirmation()
           }
-          // otherwise do nothing, keeping dialog open
         });
       return;
     }
-
-    // straight‑through
     this.autoSetStorage = false;
     this.finalizeConfirmation();
   }

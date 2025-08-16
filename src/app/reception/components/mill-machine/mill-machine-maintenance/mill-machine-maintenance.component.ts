@@ -7,12 +7,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+ import { ActivatedRoute, Router } from '@angular/router';
 
 import { SharedModule } from '../../../../shared/shared.module';
 import { MillMachine } from '../../../../shared/models/millMachine';
 import { MillMachineService } from '../../../../shared/services/mill-machine.service';
+import { ToastService } from '../../../../shared/services/toast.service';
+import { ApiResponse } from '../../../../shared/models/api-response';
+import { Mill } from '../../../../shared/models/planningDTOS';
 
 interface MaintenanceData {
   maintenanceType: string;
@@ -66,7 +68,7 @@ export class MillMachineMaintenanceComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private service: MillMachineService,
-    private snackBar: MatSnackBar,
+    private toast: ToastService,
     private router: Router,
     private route: ActivatedRoute
   ) {
@@ -108,17 +110,17 @@ export class MillMachineMaintenanceComponent implements OnInit {
               startDate: this.machine.nextMaintenanceDate
             });
           }
+          this.toast.success(response.message);
+
         } else {
-          const errorMessage = response.message || 'Failed to load machine';
-          this.error = errorMessage;
-          this.showToast(errorMessage);
+          this.toast.error(response.message || 'Failed to load machine');
         }
         this.loading = false;
       },
       error: (err: any) => {
         const errorMessage = 'An error occurred while loading the machine';
         this.error = errorMessage;
-        this.showToast(errorMessage);
+        this.toast.error(errorMessage!);
         this.loading = false;
       }
     });
@@ -149,19 +151,19 @@ export class MillMachineMaintenanceComponent implements OnInit {
     this.service.updateMillMachine(updatedMachine).subscribe({
       next: (response: any) => {
         if (response && response.success) {
-          this.showToast('Maintenance scheduled successfully');
+          this.toast.success('Maintenance scheduled successfully');
           this.router.navigate(['/reception/mill-machines']);
         } else {
           const errorMessage = response.message || 'Failed to schedule maintenance';
           this.error = errorMessage;
-          this.showToast(errorMessage);
+          this.toast.error(errorMessage!);
         }
         this.loading = false;
       },
       error: (err: any) => {
         const errorMessage = 'An error occurred while scheduling maintenance';
         this.error = errorMessage;
-        this.showToast(errorMessage);
+        this.toast.error(errorMessage!);
         this.loading = false;
       }
     });
@@ -171,12 +173,5 @@ export class MillMachineMaintenanceComponent implements OnInit {
     this.router.navigate(['/reception/mill-machines']);
   }
 
-  private showToast(message: string, duration = 3000): void {
-    this.snackBar.open(message, 'Close', {
-      duration,
-      horizontalPosition: 'right',
-      verticalPosition: 'top',
-      panelClass: ['custom-snackbar']
-    });
-  }
+
 }

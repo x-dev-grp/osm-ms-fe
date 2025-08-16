@@ -12,12 +12,12 @@ import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { BankAccountService } from '../service/bankAccount.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { CompanyProfile } from '../../shared/models/CompanyProfile';
 import { Action, DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
 import { BANK_ACCOUNTS_DASHBOARD_CONFIG } from './bank-accounts-dashboard.config';
 import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
 import { Router } from '@angular/router';
+import { ToastService } from '../../shared/services/toast.service';
 
 @Component({
   selector: 'app-bank-accounts',
@@ -53,7 +53,7 @@ export class BankAccountsComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private snackBar: MatSnackBar,
+    private toast: ToastService,
     private bankAccountService: BankAccountService,
     private router: Router
   ) {}
@@ -96,16 +96,16 @@ export class BankAccountsComponent implements OnInit {
       this.bankAccountService.deleteBankAccount(account.id!).subscribe({
         next: (response) => {
           if (response.success) {
-            this.snackBar.open('Bank account deleted successfully', 'Close', { duration: 3000 });
+            this.toast.success('Bank account deleted successfully' );
             // Refresh the list
             this.loadBanks();
           } else {
-            this.snackBar.open(response.message || 'Failed to delete bank account', 'Close', { duration: 3000 });
+            this.toast.error(response.message || 'Failed to delete bank account');
           }
         },
         error: (error) => {
           console.error('Error deleting bank account:', error);
-          this.snackBar.open('Error deleting bank account', 'Close', { duration: 3000 });
+          this.toast.error('Error deleting bank account');
         }
       });
     }
@@ -121,7 +121,7 @@ export class BankAccountsComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading bank accounts:', error);
-        this.snackBar.open('Error loading bank accounts', 'Close', { duration: 3000 });
+        this.toast.error('Error loading bank accounts');
       }
     });
   }

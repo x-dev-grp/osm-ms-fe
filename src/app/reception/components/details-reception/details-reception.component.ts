@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatCardModule } from '@angular/material/card';
+ import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,6 +10,7 @@ import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
 import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { ToastService } from '../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-details-reception-olive',
@@ -27,7 +27,7 @@ export class DetailsReceptionComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar,
+    private toast: ToastService,
     private deliveryService: UnifiedDeliveryService,
     protected translate: TranslateService
   ) {}
@@ -44,15 +44,16 @@ export class DetailsReceptionComponent implements OnInit {
         next: (response) => {
           if (response.success && response.data) {
             this.deliveryData = Array.isArray(response.data) ? response.data[0] : response.data;
+            this.toast.success(response.message);
           } else {
             this.errorMessage = this.translate.instant('DELIVERIES.DETAILS.MESSAGES.LOAD_ERROR');
-            this.snackBar.open(this.errorMessage!, this.translate.instant('STANDARD.BTNS.CLOSE'), { duration: 3000 });
+            this.toast.error(this.errorMessage!);
           }
           this.loading = false;
         },
         error: () => {
           this.errorMessage = this.translate.instant('DELIVERIES.DETAILS.MESSAGES.DATA_ERROR');
-          this.snackBar.open(this.errorMessage!, this.translate.instant('STANDARD.BTNS.CLOSE'), { duration: 3000 });
+          this.toast.error(this.errorMessage!);
           this.loading = false;
         }
       });

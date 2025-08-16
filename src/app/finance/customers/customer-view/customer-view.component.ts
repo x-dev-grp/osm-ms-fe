@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatCardModule } from '@angular/material/card';
+ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
@@ -11,6 +10,7 @@ import { CustomerService } from '../../service/customer.service';
 import { getCustomerCategoryLabel } from '../../models/CustomerCategory';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ToastService } from '../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-customer-view',
@@ -28,7 +28,7 @@ export class CustomerViewComponent implements OnInit {
     private customerService: CustomerService,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: MatSnackBar
+    private toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -38,7 +38,7 @@ export class CustomerViewComponent implements OnInit {
       this.loadCustomer(this.customerId);
     } else {
       console.error('No customer ID provided');
-      this.snackBar.open('No customer ID provided', 'Close', { duration: 3000 });
+      this.toast.error('No customer ID provided');
       this.router.navigate(['/finance/customers']);
     }
   }
@@ -55,14 +55,14 @@ export class CustomerViewComponent implements OnInit {
           console.log('Customer data loaded:', this.customer);
         } else {
           console.log('No customer data found');
-          this.snackBar.open('Customer not found', 'Close', { duration: 3000 });
+          this.toast.error('Customer not found');
           this.router.navigate(['/finance/customers']);
         }
         this.loading = false;
       },
       error: (error) => {
         console.error('Error loading customer:', error);
-        this.snackBar.open('Error loading customer', 'Close', { duration: 3000 });
+        this.toast.error('Error loading customer');
         this.router.navigate(['/finance/customers']);
         this.loading = false;
       }

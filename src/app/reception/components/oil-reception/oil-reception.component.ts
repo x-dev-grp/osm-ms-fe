@@ -40,6 +40,7 @@ import {PdfGeneratorService} from '../../../shared/services/pdf-generator.servic
 import {OIL_DELIVERY_DASHBOARD} from './OIL_DELIVERY_DASHBOARD';
 import {AppParameterService} from '../../../shared/services/AppParameterService';
 import {getOilPdfConfig} from "./oil-pdf.config";
+import { ToastService } from '../../../shared/services/toast.service';
 
 /* ──────────────────────────────────────────────────────────── */
 /* validators                                                   */
@@ -115,7 +116,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
     private deliveryService: UnifiedDeliveryService,
     private genericTypeService: GenericTypeService,
     private supplierService: SupplierTypeService,
-    private snackBar: MatSnackBar,
+    private toast: ToastService,
     private router: Router,
     private pdfService: PdfGeneratorService,
     private dialog: MatDialog
@@ -200,7 +201,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
         this.loading = false;
       },
       error: () => {
-        this.toast('Erreur lors du chargement des données initiales.');
+        this.toast.error('Erreur lors du chargement des données initiales.');
         this.loading = false;
       }
     });
@@ -248,7 +249,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
 
     if (!e.row || !e.action) {
       console.error('[OilReception] Invalid action data:', e);
-      this.toast("Données d'action invalides");
+      this.toast.warning("Données d'action invalides");
       return;
     }
 
@@ -290,12 +291,12 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
 
         default:
           console.warn(`[OilReception] Unknown action: ${e.action} for delivery: ${e.row.lotNumber}`);
-          this.toast(`Action non reconnue: ${e.action}`);
+          this.toast.info(`Action non reconnue: ${e.action}`);
           break;
       }
     } catch (error) {
       console.error(`[OilReception] Error processing action ${e.action} for delivery ${e.row.lotNumber}:`, error);
-      this.toast(`Erreur lors du traitement de l'action: ${e.action}`);
+      this.toast.error(`Erreur lors du traitement de l'action: ${e.action}`);
     }
   }
 
@@ -313,16 +314,10 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
         dialogRef.close(); // Ferme le dialog après succès
         this.isLoading = false;
         this.dashboard.refrechData();
-        this.snackBar.open('Prix mis à jour avec succès.', 'Fermer', {
-          duration: 3000,
-          panelClass: ['mat-snack-bar-container-success']
-        });
+        this.toast.success('Prix mis à jour avec succès.' );
       },
       error: () => {
-        this.snackBar.open("Erreur lors de l'enregistrement du prix.", 'Fermer', {
-          duration: 4000,
-          panelClass: ['mat-snack-bar-container-error']
-        });
+        this.toast.error("Erreur lors de l'enregistrement du prix." );
         this.isLoading = false;
       }
     });
@@ -414,26 +409,26 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
     // Comprehensive form validation
     if (!this.paymentDetailsForm) {
       console.error('[OilReception] Payment details form is not initialized');
-      this.toast('Formulaire de paiement non initialisé');
+      this.toast.warning('Formulaire de paiement non initialisé');
       return;
     }
 
     if (!this.paymentDetailsForm.valid) {
       console.error('[OilReception] Payment details form is invalid:', this.paymentDetailsForm.errors);
       this.logFormValidationErrors();
-      this.toast('Formulaire de paiement invalide. Veuillez vérifier les champs.');
+      this.toast.warning('Formulaire de paiement invalide. Veuillez vérifier les champs.');
       return;
     }
 
     if (!this.selectedRow) {
       console.error('[OilReception] No selected row for payment confirmation');
-      this.toast('Aucune livraison sélectionnée');
+      this.toast.warning('Aucune livraison sélectionnée');
       return;
     }
 
     if (!this.selectedRow.id) {
       console.error('[OilReception] Selected row has no ID');
-      this.toast('ID de livraison manquant');
+      this.toast.warning('ID de livraison manquant');
       return;
     }
 
@@ -450,7 +445,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
       const validationResult = this.validatePaymentData(unitPrice, quantity, total, unpaidAmount);
       if (!validationResult.isValid) {
         console.error('[OilReception] Payment validation failed:', validationResult.error);
-        this.toast(validationResult.error || 'Erreur de validation');
+        this.toast.error(validationResult.error || 'Erreur de validation');
         return;
       }
 
@@ -481,18 +476,12 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
           console.log(`[OilReception] Payment processing successful for delivery: ${this.selectedRow?.lotNumber}`, response);
           dialogRef.close();
           this.dashboard.refrechData();
-          this.snackBar.open('Paiement traité avec succès.', 'Fermer', {
-            duration: 3000,
-            panelClass: ['mat-snack-bar-container-success']
-          });
+          this.toast.success('Paiement traité avec succès.' );
         },
         error: (error) => {
           console.error(`[OilReception] Error processing payment:`, error);
           const errorMessage = this.getErrorMessageFromError(error);
-          this.snackBar.open(`Erreur lors du traitement du paiement: ${errorMessage}`, 'Fermer', {
-            duration: 5000,
-            panelClass: ['mat-snack-bar-container-error']
-          });
+          this.toast.error(`Erreur lors du traitement du paiement: ${errorMessage}` );
         },
         complete: () => {
           this.isLoading = false;
@@ -500,7 +489,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
       });
     } catch (error) {
       console.error(`[OilReception] Unexpected error during payment confirmation:`, error);
-      this.toast('Erreur inattendue lors de la confirmation du paiement');
+      this.toast.error('Erreur inattendue lors de la confirmation du paiement');
       this.isLoading = false;
     }
   }
@@ -531,14 +520,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
     return unpaid;
   }
 
-  private toast(message: string, duration = 3000): void {
-    this.snackBar.open(message, 'Fermer', {
-      duration,
-      horizontalPosition: 'right',
-      verticalPosition: 'top',
-      panelClass: ['custom-snackbar']
-    });
-  }
+
 
   private maxLotNumber(): number {
     const nums = this.deliveries
@@ -551,7 +533,8 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
   private fetchDeliveries(): void {
     this.deliveryService.getAllDeliveriesList().subscribe((res) => {
       this.deliveries = res.success ? res.data.filter((d) => d.deliveryType === 'OIL') : [];
-      if (!res.success) this.toast(res.message || 'Erreur lors du chargement des réceptions.');
+      if (!res.success) this.toast.error(res.message || 'Erreur lors du chargement des réceptions.');
+      if (res.success) this.toast.success(res.message );
     });
   }
 
@@ -560,10 +543,10 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
       (res) => {
         if (res.success) {
           this.fetchDeliveries();
-          this.toast('Réception supprimée avec succès.');
+          this.toast.success('Réception supprimée avec succès.');
         }
       },
-      () => this.toast('Erreur lors de la suppression.')
+      () => this.toast.error('Erreur lors de la suppression.')
     );
   }
 
@@ -732,7 +715,7 @@ this.setPriceForm.get('unitPrice')?.setValue(initialUnitPrice);
       });
     } catch (error) {
       console.error(`[OilReception] Error opening dialog:`, error);
-      this.toast("Erreur lors de l'ouverture du dialogue");
+      this.toast.error("Erreur lors de l'ouverture du dialogue");
     } finally {
       this.isLoading = false;
     }

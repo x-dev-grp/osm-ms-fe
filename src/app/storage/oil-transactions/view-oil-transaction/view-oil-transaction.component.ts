@@ -22,6 +22,7 @@ import {
   TransactionViewData
 } from '../../../shared/services/oil-transaction-view.service';
 import {OilTransactionFormService} from '../../../shared/services/oil-transaction-form.service';
+import { ToastService } from '../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-view-oil-transaction',
@@ -68,7 +69,7 @@ export class ViewOilTransactionComponent implements OnInit, OnDestroy {
     private router: Router,
     private viewService: OilTransactionViewService,
     private formService: OilTransactionFormService,
-    private snackBar: MatSnackBar,
+    private toast: ToastService,
     private translate: TranslateService
   ) {}
 
@@ -190,22 +191,16 @@ export class ViewOilTransactionComponent implements OnInit, OnDestroy {
     this.error = true;
     this.errorMessage = message;
     this.loading = false;
-    this.snackBar.open(
-      this.translate.instant('OIL_TRANSACTIONS.VIEW.MESSAGES.ERROR'),
-      this.translate.instant('STANDARD.BTNS.CANCEL'),
-      { duration: 3000 }
-    );
+    this.toast.error(
+      this.translate.instant('OIL_TRANSACTIONS.VIEW.MESSAGES.ERROR') );
   }
 
   /**
    * Handle successful operations
    */
   private handleSuccess(message: string): void {
-    this.snackBar.open(
-      this.translate.instant(message),
-      this.translate.instant('STANDARD.BTNS.CANCEL'),
-      { duration: 3000 }
-    );
+    this.toast.success(
+      this.translate.instant(message)  );
   }
 
   // Public methods for template
@@ -266,11 +261,8 @@ export class ViewOilTransactionComponent implements OnInit, OnDestroy {
     // Validate form
     const validation = this.formService.validateForm();
     if (!validation.isValid) {
-      this.snackBar.open(
-        validation.errors.join(', '),
-        this.translate.instant('STANDARD.BTNS.CANCEL'),
-        { duration: 3000 }
-      );
+      this.toast.warning(
+        validation.errors.join(', ') );
       return;
     }
 
@@ -288,11 +280,8 @@ export class ViewOilTransactionComponent implements OnInit, OnDestroy {
     );
 
     if (!businessValidation.isValid) {
-      this.snackBar.open(
-        businessValidation.errors.join(', '),
-        this.translate.instant('STANDARD.BTNS.CANCEL'),
-        { duration: 3000 }
-      );
+      this.toast.warning(
+        businessValidation.errors.join(', ') );
       return;
     }
 

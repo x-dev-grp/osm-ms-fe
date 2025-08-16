@@ -24,6 +24,7 @@ import { StorageUnitDto } from '../../../shared/models/StorageUnitDto';
 import { map, startWith } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { ToastService } from '../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-oil-credit-add',
@@ -54,7 +55,7 @@ export class OilCreditAddComponent implements OnInit {
     private genericTypeService: GenericTypeService,
     private supplierService: SupplierTypeService,
     private storageUnitService: StorageUnitDtoService,
-    private snackBar: MatSnackBar,
+    private toast: ToastService,
     private route: ActivatedRoute,
     private router: Router,
     private translate: TranslateService
@@ -83,10 +84,8 @@ export class OilCreditAddComponent implements OnInit {
         this.setupAutocompleteFilters();
       },
       error: () => {
-        this.snackBar.open(
-          this.translate.instant('OIL_CREDIT.FORM.MESSAGES.LOAD_ERROR'),
-          this.translate.instant('OIL_CREDIT.FORM.BUTTONS.CANCEL'),
-          { duration: 3000 }
+        this.toast.error(
+          this.translate.instant('OIL_CREDIT.FORM.MESSAGES.LOAD_ERROR')
         );
       }
     });
@@ -96,38 +95,16 @@ export class OilCreditAddComponent implements OnInit {
         this.setupAutocompleteFilters();
       },
       error: () => {
-        this.snackBar.open(
-          this.translate.instant('OIL_CREDIT.FORM.MESSAGES.LOAD_ERROR'),
-          this.translate.instant('OIL_CREDIT.FORM.BUTTONS.CANCEL'),
-          { duration: 3000 }
+        this.toast.error(
+          this.translate.instant('OIL_CREDIT.FORM.MESSAGES.LOAD_ERROR')
         );
       }
     });
-    // this.storageUnitService.getAllStorageUnit().subscribe({
-    //   next: (response) => {
-    //     this.storageUnits = response.data.sort((a, b) => b.currentVolume - a.currentVolume);
-    //     this.setupAutocompleteFilters();
-    //   },
-    //   error: () => {
-    //     this.snackBar.open(
-    //       this.translate.instant('OIL_CREDIT.FORM.MESSAGES.LOAD_ERROR'),
-    //       this.translate.instant('OIL_CREDIT.FORM.BUTTONS.CANCEL'),
-    //       { duration: 3000 }
-    //     );
-    //   }
-    // });
     const id = this.route.snapshot.params['id'];
     if (id) {
       this.loadOilCredit(id);
     }
-    // this.form.get('quantity')?.valueChanges.subscribe((quantity) => this.validateQuantity(quantity)); // [DISABLED: validateQuantity is commented out]
-    // this.form.get('unit')?.valueChanges.subscribe(() => this.validateQuantity(this.form.get('quantity')?.value)); // [DISABLED: validateQuantity is commented out]
-    // Remove citerne_pile valueChanges subscription
-    // this.form.get('citerne_pile')?.valueChanges.subscribe((unit) => {
-    //   if (unit) {
-    //     this.onStorageUnitSelected(unit);
-    //   }
-    // });
+
   }
 
   private setupAutocompleteFilters(): void {
@@ -231,10 +208,8 @@ export class OilCreditAddComponent implements OnInit {
     this.submitted = true;
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.snackBar.open(
-        this.translate.instant('OIL_CREDIT.FORM.MESSAGES.FORM_INVALID'),
-        this.translate.instant('OIL_CREDIT.FORM.BUTTONS.CANCEL'),
-        { duration: 3000 }
+      this.toast.error(
+        this.translate.instant('OIL_CREDIT.FORM.MESSAGES.FORM_INVALID')
       );
       return;
     }
@@ -254,18 +229,14 @@ export class OilCreditAddComponent implements OnInit {
     const creditObs = this.editing ? this.oilCreditService.updateOilCredit(dto) : this.oilCreditService.createOilCredit(dto);
     creditObs.subscribe({
       next: () => {
-        this.snackBar.open(
-          this.translate.instant(this.editing ? 'OIL_CREDIT.FORM.MESSAGES.UPDATE_SUCCESS' : 'OIL_CREDIT.FORM.MESSAGES.SAVE_SUCCESS'),
-          this.translate.instant('OIL_CREDIT.FORM.BUTTONS.CANCEL'),
-          { duration: 3000 }
+        this.toast.success(
+          this.translate.instant(this.editing ? 'OIL_CREDIT.FORM.MESSAGES.UPDATE_SUCCESS' : 'OIL_CREDIT.FORM.MESSAGES.SAVE_SUCCESS')
         );
         this.router.navigate(['/finance/oil-credit']);
       }, error: (error: unknown) => {
         console.error('Error saving oil credit:', error);
-        this.snackBar.open(
-          this.translate.instant('OIL_CREDIT.FORM.MESSAGES.SAVE_ERROR'),
-          this.translate.instant('OIL_CREDIT.FORM.BUTTONS.CANCEL'),
-          { duration: 3000 }
+        this.toast.error(
+          this.translate.instant('OIL_CREDIT.FORM.MESSAGES.SAVE_ERROR')
         );
       }
     });
@@ -296,11 +267,8 @@ export class OilCreditAddComponent implements OnInit {
       },
       error: (error: unknown) => {
         console.error('Error loading oil credit:', error);
-        this.snackBar.open(
-          this.translate.instant('OIL_CREDIT.FORM.MESSAGES.LOAD_ERROR'),
-          this.translate.instant('OIL_CREDIT.FORM.BUTTONS.CANCEL'),
-          { duration: 3000 }
-        );
+        this.toast.error(
+          this.translate.instant('OIL_CREDIT.FORM.MESSAGES.LOAD_ERROR') );
         this.loading = false;
       }
     });

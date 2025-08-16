@@ -1,7 +1,7 @@
 import { Component, DestroyRef, inject, OnInit, output } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
+
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -34,6 +34,7 @@ import { OilContainer } from '../../../shared/models/oil-container';
 import { OptionsScrollDirective } from '../../../shared/directives/options-scroll.directive';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
+import { ToastService } from '../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-oil-sale-add',
@@ -89,7 +90,7 @@ export class OilSaleAddComponent implements OnInit {
     private oiltransactionService: OilTransactionService,
     private _searchService: AdvancedSearchService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private toast: ToastService
   ) {
     this.filteredSuppliers = new Observable<SupplierType[]>();
   }
@@ -201,16 +202,16 @@ export class OilSaleAddComponent implements OnInit {
         this.oilSaleService.updateOilSale(this.oilSaleId, updateDto).subscribe({
           next: (response) => {
             if (response.success) {
-              this.snackBar.open('Oil sale updated successfully', 'Close', { duration: 3000 });
+              this.toast.success('Oil sale updated successfully');
               this.router.navigate(['/finance/oil-sales']);
             } else {
-              this.snackBar.open(response.message || 'Error updating oil sale', 'Close', { duration: 3000 });
+              this.toast.error(response.message || 'Error updating oil sale');
             }
             this.loading = false;
           },
           error: (error) => {
             console.error('Error updating oil sale:', error);
-            this.snackBar.open('Error updating oil sale', 'Close', { duration: 3000 });
+            this.toast.error('Error updating oil sale');
             this.loading = false;
           }
         });
@@ -238,17 +239,17 @@ export class OilSaleAddComponent implements OnInit {
           next: (response) => {
             if (response.success) {
 
-              this.snackBar.open('Oil sale created successfully', 'Close', { duration: 3000 });
+              this.toast.success('Oil sale created successfully');
 
               this.router.navigate(['/finance/oil-sales']);
             } else {
-              this.snackBar.open(response.message || 'Error creating oil sale', 'Close', { duration: 3000 });
+              this.toast.error(response.message || 'Error creating oil sale');
             }
             this.loading = false;
           },
           error: (error) => {
             console.error('Error creating oil sale:', error);
-            this.snackBar.open('Error creating oil sale', 'Close', { duration: 3000 });
+            this.toast.error('Error creating oil sale');
             this.loading = false;
           }
         });
@@ -520,7 +521,7 @@ export class OilSaleAddComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading oil sale:', error);
-        this.snackBar.open('Error loading oil sale', 'Close', { duration: 3000 });
+        this.toast.error('Error loading oil sale');
         this.loading = false;
       }
     });

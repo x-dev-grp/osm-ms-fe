@@ -29,6 +29,7 @@ import {MatTooltipModule} from "@angular/material/tooltip";
 import {CardComponent} from "../../../theme/components/card/card.component";
 import { Waste } from '../../../shared/models/Waste';
 import { WasteSale } from '../../models/Waste.model';
+import { ToastService } from '../../../shared/services/toast.service';
 
 @Component({
     selector: 'app-waste-add',
@@ -69,7 +70,7 @@ export class WasteAddComponent {
         private supplierService: SupplierTypeService,
         private wasteSaleService: WasteSaleService,
         private fb: FormBuilder,
-        private snackBar: MatSnackBar
+        private toast: ToastService
     ) {
     }
 
@@ -129,16 +130,16 @@ export class WasteAddComponent {
         this.wasteSaleService.updateWasteSale(this.wasteId!, wasteSale).subscribe({
           next: (response) => {
             if (response.success) {
-              this.snackBar.open('Vente de déchet modifiée avec succès', 'Fermer', {duration: 3000});
+              this.toast.success('Vente de déchet modifiée avec succès');
               this.router.navigate(['/finance/waste-sales']);
             } else {
-              this.snackBar.open('Erreur lors de la modification', 'Fermer', {duration: 3000});
+              this.toast.error('Erreur lors de la modification');
             }
             this.loading = false;
           },
           error: (error) => {
             console.error('Error updating waste sale:', error);
-            this.snackBar.open('Erreur lors de la modification', 'Fermer', {duration: 3000});
+            this.toast.error('Erreur lors de la modification');
             this.loading = false;
           }
         });
@@ -146,16 +147,16 @@ export class WasteAddComponent {
         this.wasteSaleService.createWasteSale(wasteSale).subscribe({
           next: (response) => {
             if (response.success) {
-              this.snackBar.open('Vente de déchet créée avec succès', 'Fermer', {duration: 3000});
+              this.toast.success('Vente de déchet créée avec succès');
               this.router.navigate(['/finance/waste-sales']);
             } else {
-              this.snackBar.open('Erreur lors de la création', 'Fermer', {duration: 3000});
+              this.toast.error('Erreur lors de la création');
             }
             this.loading = false;
           },
           error: (error) => {
             console.error('Error creating waste sale:', error);
-            this.snackBar.open('Erreur lors de la création', 'Fermer', {duration: 3000});
+            this.toast.error('Erreur lors de la création');
             this.loading = false;
           }
         });
@@ -265,7 +266,7 @@ export class WasteAddComponent {
       },
       error: (error) => {
         console.error('Error loading customers:', error);
-        this.snackBar.open('Erreur lors du chargement des clients', 'Fermer', {duration: 3000});
+        this.toast.error('Erreur lors du chargement des clients');
       }
     });
   }
@@ -310,7 +311,7 @@ export class WasteAddComponent {
       },
       error: (error) => {
         console.error('Error loading suppliers:', error);
-        this.snackBar.open('Erreur lors du chargement des fournisseurs', 'Fermer', {duration: 3000});
+        this.toast.error('Erreur lors du chargement des fournisseurs');
       }
     });
   }
@@ -347,7 +348,7 @@ export class WasteAddComponent {
       },
       error: (error) => {
         console.error('Error loading waste sale:', error);
-        this.snackBar.open('Erreur lors du chargement de la vente de déchet', 'Fermer', {duration: 3000});
+        this.toast.error('Erreur lors du chargement de la vente de déchet');
         this.loading = false;
       }
     });

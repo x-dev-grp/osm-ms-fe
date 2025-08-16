@@ -6,13 +6,13 @@ import { catchError, filter, switchMap, take } from 'rxjs/operators';
 import { AuthenticationService } from '../auth/services/authentication.service';
 import { TokenService } from '../auth/services/tokenService.service';
 import { AppConfig } from 'src/environments/environment';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { ToastService } from '../shared/services/toast.service';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
   private refreshTokenInProgress = false;
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-  private _snackBar=inject(MatSnackBar)
+  private _snackBar=inject(ToastService)
   constructor(
   ) {}
   private _authService=inject(AuthenticationService);
@@ -80,14 +80,7 @@ export class ErrorInterceptor implements HttpInterceptor {
           if(![500,501,502,503,504].includes(e.status))
             this._authService.logout();
           else
-          this._snackBar.open("Server error", 'Fermer', {
-            duration:3000,
-            horizontalPosition: 'right',
-            verticalPosition: 'top',
-            panelClass: ['errorPanelClass'],
-
-
-          });
+          this._snackBar.error("Server error" );
           return EMPTY;
         })
       );

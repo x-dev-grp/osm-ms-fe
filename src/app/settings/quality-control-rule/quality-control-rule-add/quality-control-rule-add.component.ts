@@ -15,6 +15,7 @@ import {CardComponent} from "../../../theme/components/card/card.component";
 import {MatIcon} from "@angular/material/icon";
 import {MatButton, MatIconButton} from "@angular/material/button";
 import {MatInput} from "@angular/material/input";
+import { ToastService } from '../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-quality-control-rule-add',
@@ -51,7 +52,7 @@ export class QualityControlRuleAddComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private service: QualityControlRuleService,
-    private snackBar: MatSnackBar,
+    private toast: ToastService,
     private route: ActivatedRoute,
     private router: Router,
   ) {
@@ -71,7 +72,7 @@ export class QualityControlRuleAddComponent implements OnInit {
       }).catch((error) => {
         this.errorMessage = 'Erreur lors du chargement de la règle.';
         console.error(this.errorMessage, error);
-        this.showToast(this.errorMessage);
+        this.toast.error(this.errorMessage);
         this.loading = false;
       });
     } else {
@@ -142,7 +143,7 @@ export class QualityControlRuleAddComponent implements OnInit {
     } catch (error) {
       this.errorMessage = 'Erreur lors du chargement de la règle.';
       console.error(this.errorMessage, error);
-      this.showToast(this.errorMessage);
+      this.toast.error(this.errorMessage);
       this.router.navigate(['/settings/quality-control']); // Rediriger si erreur
       throw error;
     }
@@ -185,40 +186,21 @@ export class QualityControlRuleAddComponent implements OnInit {
     ).subscribe({
       next: (res) => {
         if (res?.success) {
-          this.snackBar.open('Règle enregistrée avec succès ✅', 'Fermer', {
-            duration: 3000,
-            verticalPosition: 'top',
-            panelClass: ['snackbar-success']
-          });
+          this.toast.success('Règle enregistrée avec succès ✅' );
           this.router.navigate(['/settings/quality-control']);
           // this.loadRules();
           this.cancel();
         } else {
-          this.snackBar.open('Échec de l\'enregistrement ❌', 'Fermer', {
-            duration: 3000,
-            verticalPosition: 'top',
-            panelClass: ['snackbar-error']
-          });
+          this.toast.error('Échec de l\'enregistrement ❌' );
         }
       },
       error: () => {
-        this.snackBar.open('Erreur de communication avec le serveur ⚠️', 'Fermer', {
-          duration: 3000,
-          verticalPosition: 'top',
-          panelClass: ['snackbar-error']
-        });
+        this.toast.error('Erreur de communication avec le serveur ⚠️' );
       }
     });
   }
 
-  private showToast(message: string, duration = 3000): void {
-    this.snackBar.open(message, 'Fermer', {
-      duration,
-      horizontalPosition: 'right',
-      verticalPosition: 'top',
-      panelClass: ['custom-snackbar']
-    });
-  }
+
 
   private patchForm(data: QualityControlRule): void {
     this.ruleForm.patchValue({

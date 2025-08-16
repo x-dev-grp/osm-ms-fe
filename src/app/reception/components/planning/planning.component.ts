@@ -48,6 +48,7 @@ import {
   PlanningSaveRequest
 } from '../../../shared/models/planningDTOS';
 import { FilterLotPipe } from '../../../shared/pipes/FilterLotPipe';
+import { ToastService } from '../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-planning',
@@ -102,7 +103,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     private millService: MillMachineService,
     private bp: BreakpointObserver,
     private cdr: ChangeDetectorRef,
-    private snackBar: MatSnackBar,
+    private toast: ToastService,
     private dialog: MatDialog,
     private planningService: PlanningService
   ) {}
@@ -305,7 +306,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
   _groupSelected(): void {
     const ids = this.selectedIds();
     if (!ids.length) {
-      this.snackBar.open('Please select at least one reception to group.', 'Close', { duration: 4000 });
+      this.toast.warning('Please select at least one reception to group.' );
       return;
     }
 
@@ -327,7 +328,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     // 2) Ensure all in same column
     const millsInvolved = new Set(itemsToGroup.map((o) => (o.item.data as PlanningItem).millMachineId ?? 'UNASSIGNED'));
     if (millsInvolved.size > 1) {
-      this.snackBar.open('All selected receptions must be in the same column.', 'Close', { duration: 4000 });
+      this.toast.warning('All selected receptions must be in the same column.');
       return;
     }
     const millMachineId = [...millsInvolved][0] === 'UNASSIGNED' ? undefined : [...millsInvolved][0];
@@ -379,7 +380,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     this.selection = {};
     this.filteredReceptions = [...this.unassignedReceptions];
     this.cdr.markForCheck();
-    this.snackBar.open(`Global lot ${globalLotNumber} created successfully!`, 'Close', { duration: 4000 });
+    this.toast.error(`Global lot ${globalLotNumber} created successfully!`);
   }
 
   _ungroupLot(globalLot: GlobalLot): void {
@@ -412,7 +413,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     if (foundIndex === -1) {
-      this.snackBar.open('Global lot not found.', 'Close', { duration: 4000 });
+      this.toast.warning('Global lot not found.');
       return;
     }
 
@@ -483,7 +484,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     this.selection = {};
     this.refreshConnectedDropLists();
     this.cdr.markForCheck();
-    this.snackBar.open(`Global lot ${globalLot.globalLotNumber} ungrouped successfully!`, 'Close', { duration: 4000 });
+     this.toast.error(`Global lot ${globalLot.globalLotNumber} ungrouped successfully!`);
   }
 
   cancelPlan(): void {
@@ -649,7 +650,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.planningService.savePlanning(request).subscribe({
       next: () => {
-        this.snackBar.open('Planning saved successfully!', 'Close', { duration: 4000 });
+        this.toast.error('Planning saved successfully!');
         this.dirty = false;
         this.cdr.markForCheck();
       },
@@ -657,7 +658,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
         console.error('[SavePlan] Error saving planning:', err);
         // Log the full error object to understand the cause
         console.error('[SavePlan] Full error details:', JSON.stringify(err, null, 2));
-        this.snackBar.open('Failed to save planning. Please try again.', 'Close', { duration: 5000 });
+        this.toast.error('Failed to save planning. Please try again.');
       }
     });
   }
@@ -824,14 +825,14 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     req$.subscribe({
       next: (msg) => {
         // msg = "Lot completed successfully"
-        this.snackBar.open(msg, undefined, { duration: 3000 });
+        this.toast.success(msg);
         this.removeFromBoard(itemToComplete);
         this.dirty = true;
       },
       error: (err) => {
         // only runs on real 4xx/5xx/network errors
         console.error('[COMPLETE] lot error', err);
-        this.snackBar.open(err?.error?.message || 'Erreur lors de la finalisation.', 'Fermer', { duration: 5000 });
+        this.toast.error(err?.error?.message || 'Erreur lors de la finalisation.');
         if (targetItemData) {
           targetItemData.oilQuantity = null;
           targetItemData.rendement = null;
@@ -986,7 +987,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
       },
       error: (err) => {
         console.error('Error in loadPlanning:', err);
-        this.snackBar.open('Failed to load planning data. Please try again.', 'Close', { duration: 3000 });
+        this.toast.error('Failed to load planning data. Please try again.');
         this.loadReceptions(); // Fallback to basic loading
       }
     });
@@ -1312,9 +1313,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
       },
       error: (err) => {
         console.error('Error loading deliveries:', err);
-        this.snackBar.open('Failed to load receptions. Please try again.', 'Close', {
-          duration: 3000
-        });
+        this.toast.error('Failed to load receptions. Please try again.' );
       }
     });
   }

@@ -9,8 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subject, takeUntil, tap } from 'rxjs';
 import { OilTransaction, TransactionState, TransactionType } from '../../../shared/models/OilTransaction';
 import { StorageUnitDto } from '../../../shared/models/StorageUnitDto';
@@ -23,6 +22,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SearchData } from '../../../shared/models/advanced-search/searchData';
 import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
 import { OilContainer } from '../../../shared/models/oil-container';
+import { ToastService } from '../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-oil-transaction-add',
@@ -96,7 +96,7 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
     private router: Router,
     private oilTransactionService: OilTransactionService,
     private storageUnitService: StorageUnitDtoService,
-    private snackBar: MatSnackBar,
+    private toast: ToastService,
     private _searchService: AdvancedSearchService,
 
     private translate: TranslateService,
@@ -275,7 +275,7 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
         },
         error: (error: unknown) => {
           console.error('Error loading storage units:', error);
-          this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.LOAD_STORAGE_UNITS');
+          this.toast.error('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.LOAD_STORAGE_UNITS');
         }
       });
   }
@@ -308,15 +308,15 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
             if (this.transaction && this.transaction.id) {
               this.populateForm(this.transaction);
             } else {
-              this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.LOAD');
+              this.toast.error('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.LOAD');
             }
           } else {
-            this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.LOAD');
+            this.toast.error('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.LOAD');
           }
           this.loading = false;
         },
         error: () => {
-          this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.LOAD');
+          this.toast.error('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.LOAD');
           this.loading = false;
         }
       });
@@ -359,7 +359,7 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
   onSubmit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.INCOMPLETE_FORM');
+      this.toast.warning('OIL_TRANSACTIONS.FORM.MESSAGES.INCOMPLETE_FORM');
       return;
     }
     // Extra check for negative values
@@ -367,7 +367,7 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
     const unitPrice = this.form.get('unitPrice')?.value;
     const totalPrice = this.form.get('totalPrice')?.value;
     if ((quantity !== null && quantity < 0) || (unitPrice !== null && unitPrice < 0) || (totalPrice !== null && totalPrice < 0)) {
-      this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.NEGATIVE_VALUES');
+      this.toast.warning('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.NEGATIVE_VALUES');
       return;
     }
     // Compatibility check: quantity vs storage unit
@@ -378,7 +378,7 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
       if (sourceId) {
         const sourceUnit = this.storageUnits.find(u => u.id === sourceId);
         if (sourceUnit && quantity > sourceUnit.currentVolume) {
-          this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.QUANTITY_EXCEEDS_SOURCE');
+          this.toast.warning('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.QUANTITY_EXCEEDS_SOURCE');
           return;
         }
       }
@@ -387,12 +387,12 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
       if (destId) {
         const destUnit = this.storageUnits.find(u => u.id === destId);
         if (!destUnit) {
-          this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.DEST_UNIT_NOT_FOUND');
+          this.toast.warning('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.DEST_UNIT_NOT_FOUND');
           return;
         }
         const availableCapacity = destUnit.maxCapacity - destUnit.currentVolume;
         if (quantity > availableCapacity) {
-          this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.QUANTITY_EXCEEDS_DEST');
+          this.toast.warning('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.QUANTITY_EXCEEDS_DEST');
           return;
         }
       }
@@ -408,12 +408,12 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
   onApprove(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.INCOMPLETE_FORM');
+      this.toast.warning('OIL_TRANSACTIONS.FORM.MESSAGES.INCOMPLETE_FORM');
       return;
     }
 
     if (!this.isEditMode || !this.transactionId) {
-      this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.APPROVAL_NOT_AVAILABLE');
+      this.toast.warning('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.APPROVAL_NOT_AVAILABLE');
       return;
     }
 
@@ -459,15 +459,15 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
         next: (response) => {
           this.submitting = false;
           if (response.success) {
-            this.showSuccess('OIL_TRANSACTIONS.FORM.MESSAGES.SUCCESS.APPROVE');
+            this.toast.success('OIL_TRANSACTIONS.FORM.MESSAGES.SUCCESS.APPROVE');
             this.router.navigate(['/storage/oil_transaction']);
           } else {
-            this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.APPROVE');
+            this.toast.error('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.APPROVE');
           }
         },
         error: () => {
           this.submitting = false;
-          this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.APPROVE');
+          this.toast.error('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.APPROVE');
         }
       });
   }
@@ -511,19 +511,19 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
       next: (response) => {
         this.submitting = false;
         if (response.success) {
-          this.showSuccess(
+          this.toast.success(
             this.isEditMode
               ? 'OIL_TRANSACTIONS.FORM.MESSAGES.SUCCESS.UPDATE'
               : 'OIL_TRANSACTIONS.FORM.MESSAGES.SUCCESS.CREATE'
           );
           this.router.navigate(['/storage/oil-transactions']);
         } else {
-          this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.UPDATE');
+          this.toast.error('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.UPDATE');
         }
       },
       error: () => {
         this.submitting = false;
-        this.showError('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.UPDATE');
+        this.toast.error('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.UPDATE');
       }
     });
   }
@@ -571,19 +571,7 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
   }
 
   // Notification helpers
-  private showSuccess(messageKey: string): void {
-    this.snackBar.open(
-      this.translate.instant(messageKey),
-      undefined,
-      { duration: 3000 }
-    );
-  }
 
-  private showError(messageKey: string): void {
-    this.snackBar.open(
-      this.translate.instant(messageKey),
-      this.translate.instant('STANDARD.BTNS.CANCEL'),
-      { duration: 3000 }
-    );
-  }
+
+
 }

@@ -43,8 +43,9 @@
             ],
             "styles": [
               "src/styles.scss",
-              "src/app/theme//styles/material-overrides.scss",
-               "src/styles.scss"
+              "src/app/theme/styles/material-overrides.scss",
+               "src/toast-theme.scss"
+
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
@@ -125,7 +126,8 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "src/toast-theme.scss"
             ],
             "scripts": []
           }

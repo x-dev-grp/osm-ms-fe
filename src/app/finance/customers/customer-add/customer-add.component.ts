@@ -8,14 +8,14 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Customer } from '../../models/Customer';
 import { CustomerService } from '../../service/customer.service';
 import { CustomerCategory, getCustomerCategories } from '../../models/CustomerCategory';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CardComponent } from '../../../theme/components/card/card.component';
+import { ToastService } from '../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-customer-add',
@@ -48,7 +48,7 @@ export class CustomerAddComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private customerService: CustomerService,
-    private snackBar: MatSnackBar,
+    private toast: ToastService,
     private router: Router,
     private route: ActivatedRoute,
     private translateService: TranslateService,
@@ -140,11 +140,8 @@ export class CustomerAddComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading customer:', error);
-        this.snackBar.open(
-          this.translateService.instant('CUSTOMERS.MESSAGES.ERROR_LOADING'),
-          this.translateService.instant('COMMON.CLOSE'),
-          { duration: 3000 }
-        );
+        this.toast.error(
+          this.translateService.instant('CUSTOMERS.MESSAGES.ERROR_LOADING') );
         this.loading = false;
       }
     });
@@ -177,28 +174,20 @@ export class CustomerAddComponent implements OnInit {
         this.customerService.updateCustomer(customerData).subscribe({
           next: (response) => {
             if (response.success) {
-              this.snackBar.open(
-                this.translateService.instant('CUSTOMERS.MESSAGES.UPDATE_SUCCESS'),
-                this.translateService.instant('COMMON.CLOSE'),
-                { duration: 3000 }
-              );
+              this.toast.success(
+                this.translateService.instant('CUSTOMERS.MESSAGES.UPDATE_SUCCESS')   );
               this.router.navigate(['/finance/customers']);
             } else {
-              this.snackBar.open(
+              this.toast.error(
                 response.message || this.translateService.instant('CUSTOMERS.MESSAGES.ERROR_UPDATING'),
-                this.translateService.instant('COMMON.CLOSE'),
-                { duration: 3000 }
-              );
+               );
             }
             this.loading = false;
           },
           error: (error) => {
             console.error('Error updating customer:', error);
-            this.snackBar.open(
-              this.translateService.instant('CUSTOMERS.MESSAGES.ERROR_UPDATING'),
-              this.translateService.instant('COMMON.CLOSE'),
-              { duration: 3000 }
-            );
+            this.toast.error(
+              this.translateService.instant('CUSTOMERS.MESSAGES.ERROR_UPDATING'));
             this.loading = false;
           }
         });
@@ -206,27 +195,21 @@ export class CustomerAddComponent implements OnInit {
         this.customerService.createCustomer(customerData).subscribe({
           next: (response) => {
             if (response.success) {
-              this.snackBar.open(
-                this.translateService.instant('CUSTOMERS.MESSAGES.SAVE_SUCCESS'),
-                this.translateService.instant('COMMON.CLOSE'),
-                { duration: 3000 }
+              this.toast.success(
+                this.translateService.instant('CUSTOMERS.MESSAGES.SAVE_SUCCESS')
               );
               this.router.navigate(['/finance/customers']);
             } else {
-              this.snackBar.open(
-                response.message || this.translateService.instant('CUSTOMERS.MESSAGES.ERROR_SAVING'),
-                this.translateService.instant('COMMON.CLOSE'),
-                { duration: 3000 }
+              this.toast.error(
+                response.message || this.translateService.instant('CUSTOMERS.MESSAGES.ERROR_SAVING')
               );
             }
             this.loading = false;
           },
           error: (error) => {
             console.error('Error creating customer:', error);
-            this.snackBar.open(
-              this.translateService.instant('CUSTOMERS.MESSAGES.ERROR_SAVING'),
-              this.translateService.instant('COMMON.CLOSE'),
-              { duration: 3000 }
+            this.toast.error(
+              this.translateService.instant('CUSTOMERS.MESSAGES.ERROR_SAVING')
             );
             this.loading = false;
           }
