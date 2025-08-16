@@ -7,7 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { SupplierTypeService } from '../../../../shared/services/supplier.service';
 import { GenericTypeService } from '../../../../shared/services/generic-type.service';
@@ -16,6 +16,7 @@ import { TypeCategory } from '../../../../shared/models/type-category.enum';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { BaseType } from '../../../../shared/models/base-type';
+import { getCustomerCategories, PartnerCategory } from '../../../../finance/models/PartnerCategory';
 
 @Component({
   selector: 'app-supplier-add',
@@ -37,6 +38,8 @@ import { BaseType } from '../../../../shared/models/base-type';
 })
 export class SupplierAddComponent implements OnInit, OnDestroy {
   public TypeCategory = TypeCategory;
+  category: PartnerCategory = PartnerCategory.INDIVIDUAL;
+  customerCategories = getCustomerCategories();
   supplierForm: FormGroup;
   isEditMode = false;
   supplierId: string | null = null;
@@ -49,6 +52,7 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
     private supplierService: SupplierTypeService,
     private genericTypeService: GenericTypeService,
     private toastService: ToastService,
+    private translateService: TranslateService,
     private router: Router,
     private route: ActivatedRoute
   ) {
@@ -61,6 +65,8 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
         email: ['', [Validators.email]],
         address: ['', [Validators.required, Validators.minLength(5)]],
         region: [null, Validators.required],
+        category: [PartnerCategory.INDIVIDUAL, Validators.required],
+        matriculeFiscal: [''],
         rib: ['', [Validators.pattern(/^[0-9]{15}$/)]],
         bankName: ['']
       }),
@@ -168,5 +174,19 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
+  }
+  getErrorMessage(controlName: string): string {
+    const control = this.supplierForm.get(controlName);
+    if (control?.hasError('required')) {
+      return this.translateService.instant('COMMON.VALIDATION.REQUIRED');
+    }
+    if (control?.hasError('email')) {
+      return this.translateService.instant('COMMON.VALIDATION.EMAIL');
+    }
+    if (control?.hasError('maxlength')) {
+      const maxLength = control.getError('maxlength').requiredLength;
+      return this.translateService.instant('COMMON.VALIDATION.MAX_LENGTH', { maxLength });
+    }
+    return '';
   }
 }

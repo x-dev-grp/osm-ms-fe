@@ -3,8 +3,7 @@
 import { BankAccount } from './BankAccount';
 import { Expense } from './expense.model';
 import { SupplierType } from '../../shared/models/supplier-type';
-import { Customer } from './Customer';
- export enum PaymentMethod {
+  export enum PaymentMethod {
   CASH = 'CASH',
   CHEQUE = 'CHEQUE',
   TRANSFER = 'TRANSFER',
@@ -56,8 +55,7 @@ export interface FinancialTransaction {
   externalTransactionId?: string;
   lotNumber?: string;
   supplierId?: SupplierType;
-  customer?: Customer;
-  expense?: Expense;
+   expense?: Expense;
   description?: string;
   invoiceReference?: string;
   receiptReference?: string;

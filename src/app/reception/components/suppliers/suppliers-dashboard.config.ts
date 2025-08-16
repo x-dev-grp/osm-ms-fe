@@ -80,6 +80,33 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
       dataTable: true,
       filterable: true
     },
+    // ==================== CORE CUSTOMER FIELDS ====================
+    {
+      name: 'supplierInfo.matriculeFiscal',
+      label: 'Matricule Fiscal',
+      labelTranslatePath: 'CUSTOMERS.FIELDS.MATRICULE_FISCAL',
+      attributeType: AttributeType.string,
+      fieldType: FieldType.text,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },
+    {
+      name: 'supplierInfo.category',
+      label: 'Catégorie',
+      labelTranslatePath: 'CUSTOMERS.FIELDS.CATEGORY',
+      attributeType: AttributeType.enum,
+      fieldType: FieldType.autocomplete,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true,
+      options: [
+        { value: 'INDIVIDUAL', label: 'Individuel', labelTranslatePath: 'CUSTOMERS.CATEGORIES.INDIVIDUAL' },
+        { value: 'BUSINESS', label: 'Entreprise', labelTranslatePath: 'CUSTOMERS.CATEGORIES.BUSINESS' }
+      ]
+    },
     {
       name: 'genericSupplierType',
       label: 'Type de fournisseur',

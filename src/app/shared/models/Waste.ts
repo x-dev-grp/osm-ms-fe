@@ -1,6 +1,5 @@
 
-import { Customer } from '../../finance/models/Customer';
-import { SupplierType } from './supplier-type';
+ import { SupplierType } from './supplier-type';
 
    export enum WasteType {
   POMACE         = 'POMACE',
@@ -42,7 +41,7 @@ export interface Waste {
   storageLocationCode?: string;
 
   /** customer’s UUID */
-  customer: Customer;
+  customer: SupplierType;
 
   /** supplier details (nested object) */
   supplier?: SupplierType;

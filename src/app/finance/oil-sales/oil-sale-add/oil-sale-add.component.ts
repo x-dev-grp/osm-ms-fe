@@ -14,10 +14,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { OilSaleService } from '../../service/oil-sale.service';
-import { CustomerService } from '../../service/customer.service';
-import { OilSale, OilSaleStatus, QualityGrades } from '../../models/oil-sale.model';
-import { Customer } from '../../models/Customer';
-import { StorageUnitDtoService } from '../../../shared/services/storage.service';
+ import { OilSale, OilSaleStatus, QualityGrades } from '../../models/oil-sale.model';
+ import { StorageUnitDtoService } from '../../../shared/services/storage.service';
 import { StorageUnitDto } from '../../../shared/models/StorageUnitDto';
 import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { SupplierTypeService } from '../../../shared/services/supplier.service';
@@ -68,8 +66,7 @@ export class OilSaleAddComponent implements OnInit {
   loading = false;
   isEditing = false;
   oilSaleId?: string;
-  customers: Customer[] = [];
-  storageUnits: StorageUnitDto[] = [];
+   storageUnits: StorageUnitDto[] = [];
   suppliers: SupplierType[] = [];
   grades = Object.values(QualityGrades);
   // Autocomplete filtered options
@@ -78,13 +75,11 @@ export class OilSaleAddComponent implements OnInit {
   protected containerList: OilContainer[];
   protected readonly scroll = scroll;
   private oilTransactionDTO: any;
-  filteredCustomers!: Observable<Customer[]>;
 
   constructor(
     private fb: FormBuilder,
     private oilSaleService: OilSaleService,
-    private customerService: CustomerService,
-    private route: ActivatedRoute,
+     private route: ActivatedRoute,
     private storageUnitsService: StorageUnitDtoService,
     private supplierService: SupplierTypeService,
     private oiltransactionService: OilTransactionService,
@@ -101,7 +96,6 @@ export class OilSaleAddComponent implements OnInit {
 
   ngOnInit(): void {
     this.buildForm();
-    this.loadCustomers();
     this.loadStorageUnits();
     this.loadSuppliers();
     this.checkEditMode();
@@ -162,15 +156,7 @@ export class OilSaleAddComponent implements OnInit {
     ].filter(part => !!part);
     return parts.join(' ');
   }
-  /** how to display a Customer in the input */
-  displayCustomerFn(customer: Customer | null): string {
-    if (!customer) return '';
-    const parts = [
-      customer.customerName?.trim(),
-      customer.customerLastName?.trim(),
-    ].filter(part => !!part);
-    return parts.join(' ');
-  }
+
   onSubmit(): void {
     if (this.oilSaleForm.valid) {
       this.loading = true;
@@ -217,7 +203,6 @@ export class OilSaleAddComponent implements OnInit {
         });
       } else {
         const createDto: OilSale = {
-          customer: formValue.customerId || null,
           supplier: formValue.supplierId || null,
           storageUnit: formValue.storageUnitId || null,
           quantity: formValue.quantity || null,
@@ -279,14 +264,6 @@ export class OilSaleAddComponent implements OnInit {
     let totalOIl = this.getTotalOilAmount();
     const containerCost = this.totalContainerCost();
     return totalOIl + containerCost;
-  }
-
-  getSelectedCustomer(): Customer | undefined {
-    const customerId = this.oilSaleForm.get('customerId')?.value;
-    if (typeof customerId === 'object' && customerId !== null) {
-      return customerId;
-    }
-    return this.customers.find((customer) => customer.id === customerId);
   }
 
   getSelectedSupplier(): SupplierType | undefined {
@@ -377,7 +354,6 @@ export class OilSaleAddComponent implements OnInit {
     this.oilSaleForm.addControl('containerSelections', this.fb.array([]));
     // Setup supplier autocomplete filter
     this.setupSupplierAutocomplete();
-    this.setupCustomerAutocomplete();
 
     // Clear other field when one is selected
     this.setupFieldClearing();
@@ -462,12 +438,7 @@ export class OilSaleAddComponent implements OnInit {
       map((value) => this._filterSuppliers(this.suppliers, value))
     );
   }
-  private setupCustomerAutocomplete(): void {
-    this.filteredCustomers = this.oilSaleForm.get('customerId')!.valueChanges.pipe(
-      startWith(''),
-      map((value) => this._filterCustomers(this.customers, value))
-    );
-  }
+
 
   private _filterSuppliers(suppliers: SupplierType[], value: string | SupplierType): SupplierType[] {
     if (!value || typeof value === 'object') {
@@ -477,16 +448,6 @@ export class OilSaleAddComponent implements OnInit {
     return suppliers.filter(
       (supplier) =>
         supplier.supplierInfo.name.toLowerCase().includes(filterValue) || supplier.supplierInfo.lastname.toLowerCase().includes(filterValue)
-    );
-  } private _filterCustomers(customers1: Customer[], value: string | Customer): Customer[] {
-    if (!value || typeof value === 'object') {
-      return customers1;
-    }
-    const filterValue = value.toLowerCase();
-    return this.customers.filter(c =>
-      (`${c.customerName} ${c.customerLastName}`)
-        .toLowerCase()
-        .includes(filterValue)
     );
   }
 
@@ -505,8 +466,7 @@ export class OilSaleAddComponent implements OnInit {
         if (response.success && response.data) {
           const oilSale = response.data[0];
           this.oilSaleForm.patchValue({
-            customerId: oilSale.customer?.id,
-            supplierId: oilSale.supplier?.id,
+             supplierId: oilSale.supplier?.id,
             storageUnitId: oilSale.storageUnit?.id,
             quantity: oilSale.quantity,
             unitPrice: oilSale.unitPrice,
@@ -527,18 +487,7 @@ export class OilSaleAddComponent implements OnInit {
     });
   }
 
-  private loadCustomers(): void {
-    this.customerService.getAllCustomers().subscribe({
-      next: (response) => {
-        if (response.success && response.data) {
-          this.customers = Array.isArray(response.data) ? response.data : [response.data];
-        this.setupCustomerAutocomplete()}
-      },
-      error: (error) => {
-        console.error('Error loading customers:', error);
-      }
-    });
-  }
+
 
   private loadStorageUnits(): void {
     this.storageUnitsService.getAllStorageUnit().subscribe({

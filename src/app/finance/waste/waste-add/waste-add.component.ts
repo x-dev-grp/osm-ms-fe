@@ -1,8 +1,7 @@
 import {Component} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {map, Observable, startWith} from "rxjs";
-import {CustomerService} from "../../service/customer.service";
-import {SupplierType} from "../../../shared/models/supplier-type";
+ import {SupplierType} from "../../../shared/models/supplier-type";
 import {
   AbstractControl,
   FormBuilder,
@@ -11,8 +10,7 @@ import {
   ValidationErrors,
   Validators
 } from "@angular/forms";
-import {Customer} from "../../models/Customer";
-import {SupplierTypeService} from "../../../shared/services/supplier.service";
+ import {SupplierTypeService} from "../../../shared/services/supplier.service";
 import {WasteSaleService} from "../../service/wasteSale.service";
 import {MatSelectModule} from "@angular/material/select";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -57,8 +55,7 @@ export class WasteAddComponent {
   isEditing: boolean = true;
   suppliers: SupplierType[];
   filteredSuppliers: Observable<SupplierType[]>;
-  customers: Customer[] = [];
-  filteredCustomers!: Observable<Customer[]>;
+
   wasteSaleForm: FormGroup;
   loading: boolean = false;
   totalPrice: number = 0;
@@ -66,8 +63,7 @@ export class WasteAddComponent {
     constructor(
         private router: Router,
         private route: ActivatedRoute,
-        private customerService: CustomerService,
-        private supplierService: SupplierTypeService,
+         private supplierService: SupplierTypeService,
         private wasteSaleService: WasteSaleService,
         private fb: FormBuilder,
         private toast: ToastService
@@ -79,16 +75,10 @@ export class WasteAddComponent {
       this.wasteId = this.route.snapshot.paramMap.get('id') ?? undefined;
       this.isEditing = this.wasteId !== null && this.wasteId !== 'new';
       this.loadSuppliers();
-      this.loadCustomers();
-      this.checkEditMode();
+       this.checkEditMode();
       this.buildForm();
       this.setupFormListeners();
     }
-
-  // Fonctions d'affichage pour les autocomplete
-  displayCustomerFn = (customer: Customer): string => {
-    return customer ? `${customer.customerName} ${customer.customerLastName}` : '';
-  };
 
   displaySupplierFn = (supplier: SupplierType): string => {
     return supplier ? `${supplier.supplierInfo.name} ${supplier.supplierInfo.lastname}` : '';
@@ -120,8 +110,7 @@ export class WasteAddComponent {
         paid: formValue.paid,
         paymentDate: formValue.paymentDate,
         storageLocationCode: formValue.storageLocationCode,
-        customer: formValue.customerId,
-        supplier: formValue.supplierId,
+         supplier: formValue.supplierId,
         description: formValue.description,
         notes: formValue.notes
       };
@@ -168,10 +157,6 @@ export class WasteAddComponent {
     this.router.navigate(['/finance/waste-sales']);
   }
 
-  // Méthodes pour le Sale Summary
-  getSelectedCustomer(): Customer | null {
-    return this.wasteSaleForm.get('customerId')?.value || null;
-  }
 
   getSelectedSupplier(): SupplierType | null {
     return this.wasteSaleForm.get('supplierId')?.value || null;
@@ -256,39 +241,8 @@ export class WasteAddComponent {
     }
   }
 
-  private loadCustomers(): void {
-    this.customerService.getAllCustomers().subscribe({
-      next: (response) => {
-        if (response.success && response.data) {
-          this.customers = Array.isArray(response.data) ? response.data : [response.data];
-          this.setupCustomerAutocomplete();
-        }
-      },
-      error: (error) => {
-        console.error('Error loading customers:', error);
-        this.toast.error('Erreur lors du chargement des clients');
-      }
-    });
-  }
 
-  private setupCustomerAutocomplete(): void {
-    this.filteredCustomers = this.wasteSaleForm.get('customerId')!.valueChanges.pipe(
-      startWith(''),
-      map((value) => this._filterCustomers(this.customers, value))
-    );
-  }
 
-  private _filterCustomers(customers: Customer[], value: string | Customer): Customer[] {
-    if (!value || typeof value === 'object') {
-      return customers;
-    }
-    const filterValue = value.toLowerCase();
-    return this.customers.filter(c =>
-      (`${c.customerName} ${c.customerLastName}`)
-        .toLowerCase()
-        .includes(filterValue)
-    );
-  }
 
   private _filterSuppliers(suppliers: SupplierType[], value: string | SupplierType): SupplierType[] {
     if (!value || typeof value === 'object') {
@@ -331,7 +285,6 @@ export class WasteAddComponent {
           const wasteSale = response.data[0];
           this.wasteSaleForm.patchValue({
             type: wasteSale.type,
-            customerId: wasteSale.customer?.id ? this.customers.find(c => c.id === wasteSale.customer.id) : null,
             supplierId: wasteSale.supplier?.id ? this.suppliers.find(s => s.id === wasteSale.supplier.id) : null,
             quantity: wasteSale.quantity,
             unitPrice: wasteSale.unitPrice,

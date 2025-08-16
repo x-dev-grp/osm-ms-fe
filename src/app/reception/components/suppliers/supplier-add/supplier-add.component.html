@@ -61,6 +61,24 @@
 
       <div class="form-row">
         <mat-form-field appearance="outline">
+          <mat-label>{{ 'CUSTOMERS.FIELDS.MATRICULE_FISCAL' | translate }}</mat-label>
+          <input matInput formControlName="matriculeFiscal">
+          <mat-error *ngIf="supplierForm.get('matriculeFiscal')?.invalid">
+            {{ getErrorMessage('matriculeFiscal') }}
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'CUSTOMERS.FIELDS.CATEGORY' | translate }}</mat-label>
+          <mat-select formControlName="category">
+            <mat-option *ngFor="let category of customerCategories" [value]="category.value">
+              {{ category.label | translate }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="supplierForm.get('category')?.invalid">
+            {{ getErrorMessage('category') }}
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
           <mat-label>{{ 'SUPPLIER.FIELDS.ADDRESS' | translate }}</mat-label>
           <input matInput formControlName="address" required>
           <mat-error *ngIf="supplierForm.get('supplierInfo.address')?.hasError('required')">

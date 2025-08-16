@@ -3,16 +3,14 @@ import {OsmDashboard} from "../../shared/modules/osm-dashboard/osm-dashboard";
 import {DashboardConfig} from "../../shared/modules/osm-dashboard/models/dashboard-config";
 import {WASTE_DASHBOARD} from "./WASTE_DASHBOARD";
 import {OilSaleService} from "../service/oil-sale.service";
-import {CustomerService} from "../service/customer.service";
-import {Router} from "@angular/router";
+ import {Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {SupplierTypeService} from "../../shared/services/supplier.service";
 import {SupplierType} from "../../shared/models/supplier-type";
 import {map, Observable, startWith} from "rxjs";
 import {FormArray, FormGroup} from "@angular/forms";
 import {WasteSale} from "../models/Waste.model";
-import {Customer} from "../models/Customer";
-import {WasteSaleService} from "../service/wasteSale.service";
+ import {WasteSaleService} from "../service/wasteSale.service";
 import { ToastService } from '../../shared/services/toast.service';
 
 @Component({
@@ -28,14 +26,12 @@ export class WasteComponent {
     suppliers: SupplierType[];
     filteredSuppliers: Observable<SupplierType[]>;
     wasteForm!: FormGroup;
-  customers: Customer[] = [];
 
     dashboardConfig: DashboardConfig = WASTE_DASHBOARD;
 
     constructor(
         private oilSaleService: OilSaleService,
-        private customerService: CustomerService,
-        private router: Router,
+         private router: Router,
         private toast: ToastService,
         private supplierService: SupplierTypeService,
         private wasteSaleService: WasteSaleService

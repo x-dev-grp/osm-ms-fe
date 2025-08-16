@@ -3,11 +3,8 @@ import { Router } from '@angular/router';
 import { ToastService } from '../../shared/services/toast.service';
 import { CommonModule } from '@angular/common';
 import { OilSaleService } from '../service/oil-sale.service';
-import { CustomerService } from '../service/customer.service';
-import { OilSale, OilSaleStatus } from '../models/oil-sale.model';
-import { Customer } from '../models/Customer';
-import { Currency, PaymentMethod } from '../models/financial-transaction.model';
-import { Action, DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+ import { OilSale } from '../models/oil-sale.model';
+import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
 import { OIL_SALES_DASHBOARD_CONFIG } from './oil-sales-dashboard.config';
 import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
 
@@ -15,18 +12,14 @@ import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
   selector: 'app-oil-sales',
   standalone: true,
   templateUrl: './oil-sales.component.html',
-  imports: [
-    CommonModule,
-    OsmDashboard
-  ]
+  imports: [CommonModule, OsmDashboard]
 })
 export class OilSalesComponent implements OnInit {
   dashboardConfig: DashboardConfig = OIL_SALES_DASHBOARD_CONFIG;
 
   constructor(
     private oilSaleService: OilSaleService,
-    private customerService: CustomerService,
-    private router: Router,
+     private router: Router,
     private toast: ToastService
   ) {}
 
@@ -57,7 +50,6 @@ export class OilSalesComponent implements OnInit {
         break;
     }
   }
-
 
   private confirmOilSale(oilSale: OilSale): void {
     if (oilSale.id) {

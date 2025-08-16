@@ -80,21 +80,7 @@
 
         <div class="form-row">
           <!-- Client -->
-          <mat-form-field appearance="outline" class="form-field">
-            <mat-label>Client</mat-label>
-            <input [matAutocomplete]="customerAuto"
-                   formControlName="customerId"
-                   matInput
-                   placeholder="Rechercher un client..."
-                   type="text">
-            <mat-autocomplete #customerAuto="matAutocomplete"
-                              (optionSelected)="onCustomerSelected($event)"
-                              [displayWith]="displayCustomerFn">
-              <mat-option *ngFor="let customer of filteredCustomers | async" [value]="customer">
-                {{ customer.customerName }} {{ customer.customerLastName }}
-              </mat-option>
-            </mat-autocomplete>
-          </mat-form-field>
+
 
           <!-- Fournisseur -->
           <mat-form-field appearance="outline" class="form-field">
@@ -143,14 +129,7 @@
 
 
         <!-- Messages d'erreur de validation -->
-        <div *ngIf="wasteSaleForm.errors" class="error-messages">
-          <mat-error *ngIf="wasteSaleForm.errors['customerOrSupplierRequired']">
-            Veuillez sélectionner soit un client soit un fournisseur
-          </mat-error>
-          <mat-error *ngIf="wasteSaleForm.errors['bothCustomerAndSupplierSelected']">
-            Vous ne pouvez pas sélectionner à la fois un client et un fournisseur
-          </mat-error>
-        </div>
+
       </form>
     </div>
 
@@ -159,19 +138,10 @@
       <app-card [cardTitle]="'Résumé de la vente'" class="summary-card" icon="receipt">
         <div class="summary-row">
           <span>
-            {{
-              getSelectedCustomer()
-                ? 'Client'
-                : getSelectedSupplier()
-                  ? 'Fournisseur'
-                  : 'Client / Fournisseur'
-            }}
+            Fournisseur
+
           </span>
-          <ng-container *ngIf="getSelectedCustomer()">
-            <span class="summary-value">
-              {{ getSelectedCustomer()?.customerName }} {{ getSelectedCustomer()?.customerLastName }}
-            </span>
-          </ng-container>
+
           <ng-container *ngIf="getSelectedSupplier()">
             <span class="summary-value">
               {{ getSelectedSupplier()?.supplierInfo.name }} {{ getSelectedSupplier()?.supplierInfo.lastname }}

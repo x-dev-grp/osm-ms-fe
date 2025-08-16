@@ -6,8 +6,7 @@ import {ViewExpenseComponent} from './expenses/view-expense/view-expense.compone
 import {OilCreditComponent} from './oil-credit/oil-credit.component';
 import {ViewOilCreditComponent} from './oil-credit/view-oil-credit/view-oil-credit.component';
 import {TransactionsComponent} from './transactions/transactions.component';
-import {CustomersComponent} from './customers/customers.component';
-import {OilSalesComponent} from './oil-sales/oil-sales.component';
+ import {OilSalesComponent} from './oil-sales/oil-sales.component';
 import {AuthGuardChild} from '../interceptors/guards/auth.guard';
 import {WasteComponent} from "./waste/waste.component";
 
@@ -29,11 +28,6 @@ const routes: Routes = [
   { path: 'transactions/:id/view', loadComponent: () => import('./transactions/transaction-view/transaction-view.component').then(m => m.TransactionViewComponent), canActivate: [AuthGuardChild] },
   { path: 'transactions/new', loadComponent: () => import('./transactions/transaction-add/transaction-add.component').then(m => m.TransactionAddComponent), canActivate: [AuthGuardChild] },
   { path: 'transactions/:id/edit', loadComponent: () => import('./transactions/transaction-add/transaction-add.component').then(m => m.TransactionAddComponent), canActivate: [AuthGuardChild] },
-  { path: 'customers', component: CustomersComponent, canActivate: [AuthGuardChild] },
-  { path: 'customers/:id/view', loadComponent: () => import('./customers/customer-view/customer-view.component').then(m => m.CustomerViewComponent), canActivate: [AuthGuardChild] },
-  { path: 'customers/new', loadComponent: () => import('./customers/customer-add/customer-add.component').then(m => m.CustomerAddComponent), canActivate: [AuthGuardChild] },
-  { path: 'customers/:id/edit', loadComponent: () => import('./customers/customer-add/customer-add.component').then(m => m.CustomerAddComponent), canActivate: [AuthGuardChild] },
-  { path: 'customers/:id/details', loadComponent: () => import('./customers/customer-details/customer-details.component').then(m => m.CustomerDetailsComponent), canActivate: [AuthGuardChild] },
 
   { path: 'oil-sales', component: OilSalesComponent, canActivate: [AuthGuardChild] },
   { path: 'oil-sales/new', loadComponent: () => import('./oil-sales/oil-sale-add/oil-sale-add.component').then(m => m.OilSaleAddComponent), canActivate: [AuthGuardChild] },

@@ -119,8 +119,8 @@ export const dashboardConfig: DashboardConfig = {
     {
       name: 'status',
       label: 'Statut',
-      attributeType: AttributeType.string,
-      fieldType: FieldType.select,
+      attributeType: AttributeType.enum,
+      fieldType: FieldType.text,
       sortable: true,
       filterable: true,
       defaultFilter: true,

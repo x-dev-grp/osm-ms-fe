@@ -1,5 +1,4 @@
-import { Customer } from './Customer';
-import { Currency, PaymentMethod } from './financial-transaction.model';
+ import { Currency, PaymentMethod } from './financial-transaction.model';
 import { SupplierType } from '../../shared/models/supplier-type';
 import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
 
@@ -13,8 +12,7 @@ export enum QualityGrades {
 
 export interface OilSale {
   id?: string;
-  customer?: Customer;
-  supplier?: SupplierType;
+   supplier?: SupplierType;
   storageUnit: StorageUnitDto;
   quantity: number;
   unitPrice: number;

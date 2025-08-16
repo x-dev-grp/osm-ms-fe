@@ -7,34 +7,7 @@
 
             <!-- Customer / Supplier -->
             <div id="oilSaleForm-row-customerSupplier" class="form-row">
-              <mat-form-field
-                id="oilSaleForm-field-customerId"
-                appearance="outline"
-                class="full-width">
-                <mat-label id="oilSaleForm-label-customer">
-                  {{ 'OIL_SALES.CUSTOMER' | translate }}
-                </mat-label>
-
-                <input id="oilSaleForm-customerId" matInput [matAutocomplete]="customerAuto" formControlName="customerId" placeholder="{{ 'OIL_SALES.SEARCH_CUSTOMER' | translate }}" />
-
-                <mat-autocomplete id="oilSaleForm-autocomplete-customer" #customerAuto="matAutocomplete" [displayWith]="displayCustomerFn">
-                  <mat-option *ngFor="let customer of filteredCustomers | async; let i = index" [id]="'oilSaleForm-customer-option-' + i" [value]="customer">
-                    {{ displayCustomerFn(customer) }}
-                  </mat-option>
-                </mat-autocomplete>
-
-                <mat-error
-                  id="oilSaleForm-error-customer-required"
-                  *ngIf="oilSaleForm.hasError('customerOrSupplierRequired')">
-                  {{ 'OIL_SALES.FORM.VALIDATION.CUSTOMER_OR_SUPPLIER_REQUIRED' | translate }}
-                </mat-error>
-                <mat-error
-                  id="oilSaleForm-error-customer-both"
-                  *ngIf="oilSaleForm.hasError('bothCustomerAndSupplierSelected')">
-                  {{ 'OIL_SALES.FORM.VALIDATION.BOTH_CUSTOMER_AND_SUPPLIER_SELECTED' | translate }}
-                </mat-error>
-              </mat-form-field>
-              <mat-form-field id="oilSaleForm-field-supplierId" appearance="outline" class="full-width">
+               <mat-form-field id="oilSaleForm-field-supplierId" appearance="outline" class="full-width">
                 <mat-label id="oilSaleForm-label-supplier">{{ 'OIL_SALES.SUPPLIER' | translate }}</mat-label>
                 <input
                   id="oilSaleForm-supplierId"
@@ -197,19 +170,13 @@
             <div id="oilSaleForm-summary-customer" class="summary-row">
               <span>
                 {{
-                  getSelectedCustomer()
-                    ? ('OIL_SALES.CUSTOMER' | translate)
-                    : getSelectedSupplier()
+                       getSelectedSupplier()
                       ? ('OIL_SALES.SUPPLIER' | translate)
                       : (('OIL_SALES.CUSTOMER'|translate) + ' / ' + ('OIL_SALES.SUPPLIER'|translate))
                 }}
               </span>
-              <ng-container *ngIf="getSelectedCustomer()">
-                <span id="oilSaleForm-summary-customer-value">
-                  {{ getSelectedCustomer()?.customerName }} {{ getSelectedCustomer()?.customerLastName }}
-                </span>
-              </ng-container>
-              <ng-container *ngIf="getSelectedSupplier()">
+
+               <ng-container *ngIf="getSelectedSupplier()">
                 <span id="oilSaleForm-summary-supplier-value">
                   {{ getSelectedSupplier()?.supplierInfo.name }} {{ getSelectedSupplier()?.supplierInfo.lastname }}
                 </span>

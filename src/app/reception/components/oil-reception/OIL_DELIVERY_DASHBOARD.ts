@@ -118,7 +118,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       name: 'operationType',
       label: 'Type d\'operation',
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.OPERATION_TYPE',
-      attributeType: AttributeType.string,
+      attributeType: AttributeType.enum,
       fieldType: FieldType.select,
       exportable: true,
       dataTable: true,

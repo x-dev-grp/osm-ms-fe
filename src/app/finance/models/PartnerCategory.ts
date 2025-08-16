@@ -2,7 +2,7 @@
  * Customer categories for business classification
  * Mirrors the backend CustomerCategory enum
  */
-export enum CustomerCategory {
+export enum PartnerCategory {
   INDIVIDUAL = 'INDIVIDUAL',
   BUSINESS = 'BUSINESS'
 }
@@ -12,11 +12,11 @@ export enum CustomerCategory {
  * Note: This function should be used with translation keys in templates
  * For translated labels, use the translation service directly in templates
  */
-export function getCustomerCategoryLabel(category: CustomerCategory): string {
+export function getCustomerCategoryLabel(category: PartnerCategory): string {
   switch (category) {
-    case CustomerCategory.INDIVIDUAL:
+    case PartnerCategory.INDIVIDUAL:
       return 'CUSTOMERS.CATEGORIES.INDIVIDUAL';
-    case CustomerCategory.BUSINESS:
+    case PartnerCategory.BUSINESS:
       return 'CUSTOMERS.CATEGORIES.BUSINESS';
     default:
       return 'Unknown';
@@ -26,9 +26,9 @@ export function getCustomerCategoryLabel(category: CustomerCategory): string {
 /**
  * Helper function to get all customer categories with their translation keys
  */
-export function getCustomerCategories(): Array<{value: CustomerCategory, label: string}> {
+export function getCustomerCategories(): Array<{value: PartnerCategory, label: string}> {
   return [
-    { value: CustomerCategory.INDIVIDUAL, label: 'CUSTOMERS.CATEGORIES.INDIVIDUAL' },
-    { value: CustomerCategory.BUSINESS, label: 'CUSTOMERS.CATEGORIES.BUSINESS' }
+    { value: PartnerCategory.INDIVIDUAL, label: 'CUSTOMERS.CATEGORIES.INDIVIDUAL' },
+    { value: PartnerCategory.BUSINESS, label: 'CUSTOMERS.CATEGORIES.BUSINESS' }
   ];
-} 
+}
