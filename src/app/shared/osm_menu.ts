@@ -1,5 +1,5 @@
-import {Navigation} from 'src/app/theme/types/navigation';
-import {Role} from 'src/app/theme/types/role';
+import { Navigation } from 'src/app/theme/types/navigation';
+import { Role } from 'src/app/theme/types/role';
 
 export const osm_menus: Navigation[] = [
   // ────────────────────────
@@ -158,33 +158,33 @@ export const osm_menus: Navigation[] = [
     ]
   },
 
-  // =========================
-  // SUPPLIER (≤3 items → keep flat)
-  // =========================
-  {
-    id: 'group-supplier',
-    title: 'MENU.SUPPLIER.TITLE',
-    type: 'group',
-    modulePermission: 'SUPPLIER',
-    children: [
-      {
-        id: 'item-supplier-dashboard',
-        title: 'MENU.SUPPLIER.DASHBOARD',
-        type: 'item',
-        url: '/supplier/dashboard',
-        icon: 'grid_view',
-        breadcrumbs: false
-      },
-      {
-        id: 'item-supplier-history',
-        title: 'MENU.SUPPLIER.HISTORY',
-        type: 'item',
-        url: '/supplier/history',
-        icon: 'history',
-        breadcrumbs: false
-      }
-    ]
-  },
+  // // =========================
+  // // SUPPLIER (≤3 items → keep flat)
+  // // =========================
+  // {
+  //   id: 'group-supplier',
+  //   title: 'MENU.SUPPLIER.TITLE',
+  //   type: 'group',
+  //   modulePermission: 'SUPPLIER',
+  //   children: [
+  //     {
+  //       id: 'item-supplier-dashboard',
+  //       title: 'MENU.SUPPLIER.DASHBOARD',
+  //       type: 'item',
+  //       url: '/supplier/dashboard',
+  //       icon: 'grid_view',
+  //       breadcrumbs: false
+  //     },
+  //     {
+  //       id: 'item-supplier-history',
+  //       title: 'MENU.SUPPLIER.HISTORY',
+  //       type: 'item',
+  //       url: '/supplier/history',
+  //       icon: 'history',
+  //       breadcrumbs: false
+  //     }
+  //   ]
+  // },
 
   // =========================
   // FINANCE (>3 items → wrapped)
@@ -375,23 +375,25 @@ export const osm_menus: Navigation[] = [
         ]
       }
     ]
-  }
+  },
 
   // =========================
   // (Optional future sections; keep commented if not used)
   // =========================
-  // {
-  //   id: 'group-hr',
-  //   title: 'MENU.HR.TITLE',
-  //   type: 'group',
-  //   modulePermission: 'HR',
-  //   children: [ /* ... */ ]
-  // },
-  // {
-  //   id: 'group-reports',
-  //   title: 'MENU.REPORTS.TITLE',
-  //   type: 'group',
-  //   modulePermission: 'REPORTS',
-  //   children: [ /* ... */ ]
-  // }
+  {
+    id: 'group-settings',
+    title: 'MENU.HR.TITLE',
+    type: 'group',
+     children: [
+
+       {
+         id: 'item-settings-roles',
+         title: 'MENU.HR.EMPLOYEES',
+         type: 'item',
+         url: '/hr/employee',
+         icon: 'admin_panel_settings',
+         breadcrumbs: false
+       }
+    ]
+  }
 ];

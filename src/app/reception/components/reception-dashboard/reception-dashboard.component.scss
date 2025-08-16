@@ -1,13 +1,78 @@
-.dashboard-kpis .col-md-2, .dashboard-kpis .col-xxl-2 {
-  min-width: 180px;
-  min-height: 110px;
-  display: flex;
-  align-items: stretch;
+
+/* Reception Dashboard — UI polish while keeping data bindings intact */
+:host {
+  display: block;
 }
 
-app-card .card-title, [cardTitle] {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.row.g-3 {
+  --gap: 1rem;
+  margin-left: calc(-1 * var(--gap) / 2);
+  margin-right: calc(-1 * var(--gap) / 2);
+}
+.row.g-3 > [class^="col-"], .row.g-3 > [class*=" col-"] {
+  padding-left: calc(var(--gap) / 2);
+  padding-right: calc(var(--gap) / 2);
+}
+
+.dashboard-header .header-icon {
+  font-size: 28px;
+}
+.dashboard-header .last-sync .inline-icon {
+  font-size: 16px;
+  vertical-align: -3px;
+  margin-right: 4px;
+}
+
+.actions .hide-xs {
+  display: none;
+}
+@media (min-width: 576px) {
+  .actions .hide-xs { display: inline; }
+}
+
+.btn-group button.active {
+  border-color: var(--bs-primary);
+  color: var(--bs-primary);
+  background: rgba(var(--bs-primary-rgb, 13,110,253), .06);
+}
+
+app-card {
   display: block;
+
+}
+
+.kpi-compact {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding-top: .25rem;
+  padding-bottom: .25rem;
+}
+.kpi-compact mat-icon {
+  opacity: .85;
+}
+.kpi-compact .value {
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
+apx-chart {
+  width: 100%;
+}
+
+.filters-menu .mat-mdc-menu-content {
+  min-width: 220px;
+}
+
+/* Subtle hover elevation for cards */
+app-card:hover {
+  transition: box-shadow .2s ease, transform .2s ease;
+  box-shadow: 0 6px 24px rgba(0,0,0,.06);
+}
+
+/* Tighten spacing between stacked cards on small screens */
+@media (max-width: 991.98px) {
+  .dashboard-analytics app-card + app-card {
+    margin-top: .5rem;
+  }
 }

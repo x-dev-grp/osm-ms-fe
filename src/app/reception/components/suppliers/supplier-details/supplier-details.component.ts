@@ -54,6 +54,10 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
   protected unpaidOilSalesCount: any;
   OIL_SALES_DASHBOARD_CONFIG = OIL_SALES_DASHBOARD_CONFIG;
   private destroy$ = new Subject<void>();
+  unpaidSUM: string;
+  paidSum: string;
+  paidOilSalesSUM: string;
+  unpaidOilSalesSum: string;
 
   constructor(
     private router: Router,
@@ -247,7 +251,17 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
         takeUntilDestroyed(this.destroyRef),
         tap((res) => {
           this.paidOilSalesCount = res?.total || 0;
-        })
+
+          const items = res?.data ?? [];
+          // Adapte le nom du champ si besoin : unpaidAmount / remainingAmount / resteAPayer / unpaid
+          this.paidOilSalesSUM = items.reduce((sum:number, it:any) => {
+            const v =
+              Number(it?.paiedAmount   ?? 0);
+            return sum + (Number.isFinite(v) ? v : 0);
+          }, 0);
+
+          console.log('[Supplier] Somme impayée (page courante):',  this.paidOilSalesSUM); })
+
       )
       .subscribe();
   }
@@ -276,7 +290,17 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
         takeUntilDestroyed(this.destroyRef),
         tap((res) => {
           this.unpaidOilSalesCount = res?.total || 0;
-        })
+
+          const items = res?.data ?? [];
+          // Adapte le nom du champ si besoin : unpaidAmount / remainingAmount / resteAPayer / unpaid
+          this.unpaidOilSalesSum = items.reduce((sum:number, it:any) => {
+            const v =
+              Number(it?.unpaidAmount ??  it?.unpaid ?? 0);
+            return sum + (Number.isFinite(v) ? v : 0);
+          }, 0);
+
+          console.log('[Supplier] Somme impayée (page courante):',  this.unpaidOilSalesSum); })
+
       )
       .subscribe();
   }
@@ -333,7 +357,15 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
         takeUntilDestroyed(this.destroyRef),
         tap((res) => {
           this.unpaidCount = res?.total || 0;
-        })
+          const items = res?.data ?? [];
+          // Adapte le nom du champ si besoin : unpaidAmount / remainingAmount / resteAPayer / unpaid
+          this.unpaidSUM = items.reduce((sum:number, it:any) => {
+            const v =
+              Number(it?.unpaidAmount ?? it?.unpaid ?? 0);
+            return sum + (Number.isFinite(v) ? v : 0);
+          }, 0);
+
+          console.log('[Supplier] Somme impayée (page courante):', this.unpaidSUM ); })
       )
       .subscribe();
   }
@@ -362,6 +394,15 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
         takeUntilDestroyed(this.destroyRef),
         tap((res) => {
           this.paidCount = res?.total || 0;
+          const items = res?.data ?? [];
+          // Adapte le nom du champ si besoin : unpaidAmount / remainingAmount / resteAPayer / unpaid
+          this.paidSum = items.reduce((sum:number, it:any) => {
+            const v =
+              Number( it?.paidAmount  ?? 0);
+            return sum + (Number.isFinite(v) ? v : 0);
+          }, 0);
+
+          console.log('[Supplier]  this.paidSum ):',  this.paidSum);
         })
       )
       .subscribe();
