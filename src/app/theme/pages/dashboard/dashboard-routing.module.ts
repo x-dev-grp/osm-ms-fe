@@ -5,7 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 //type
 import { Role } from 'src/app/theme/types/role';
 import { AuthGuardChild } from 'src/app/interceptors/guards/auth.guard';
-import { permissionGuard } from 'src/app/interceptors/guards/permission.guard';
+import { allPermissionGuard } from 'src/app/interceptors/guards/permission.guard';
 
 const routes: Routes = [
   {
@@ -26,7 +26,7 @@ const routes: Routes = [
         path: 'analytics',
         loadComponent: () => import('./analytics/analytics.component').then((c) => c.AnalyticsComponent),
         data: { roles: [Role.Admin] },
-        canActivate: [permissionGuard(['RECEPTION:RECEPTION:DELETE'])]
+        canActivate: [allPermissionGuard(['RECEPTION:RECEPTION:DELETE'])]
       },
       {
         path: 'finance',

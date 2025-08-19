@@ -9,16 +9,12 @@ export const osm_menus: Navigation[] = [
     id: 'group-dashboard',
     title: 'MENU.HOME.TITLE',
     type: 'group',
-    role: [Role.Admin, Role.User],
-    modulePermission: 'RECEPTION',
     children: [
       {
         id: 'Dashboard',
         title: 'MENU.HOME.DASHBOARD.TITLE',
         type: 'collapse',
         icon: 'dashboard',
-        role: [Role.Admin, Role.User],
-        ressourcePermission: 'RECEPTION',
         children: [
           {
             id: 'item-dashboard-home',
@@ -27,7 +23,7 @@ export const osm_menus: Navigation[] = [
             url: '/dashboard',
             icon: 'space_dashboard',
             breadcrumbs: false,
-            permissions: ['RECEPTION:RECEPTION:DELETE']
+            modulePermission: 'RECEPTION'
           },
           {
             id: 'item-dashboard-analytics',
@@ -35,7 +31,6 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/dashboard/analytics',
             icon: 'bar_chart',
-            role: [Role.Admin],
             breadcrumbs: false
           },
           {
@@ -44,7 +39,6 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/dashboard/finance',
             icon: 'show_chart',
-            role: [Role.Admin],
             breadcrumbs: false
           },
           {
@@ -53,7 +47,6 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/reception',
             icon: 'assignment',
-            role: [Role.Admin],
             breadcrumbs: false
           }
         ]
@@ -68,7 +61,7 @@ export const osm_menus: Navigation[] = [
     id: 'group-reception',
     title: 'MENU.RECEPTION.TITLE',
     type: 'group',
-    role: [Role.Admin, Role.User],
+
     children: [
       {
         id: 'collapse-group-reception',
@@ -82,7 +75,8 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/reception/reception-olive',
             icon: 'shopping_basket',
-            breadcrumbs: false
+            breadcrumbs: false,
+            ressourcePermission: 'UNIFIEDDELIVERY'
           },
           {
             id: 'item-reception-oil',
@@ -90,7 +84,8 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/reception/reception-huile',
             icon: 'local_shipping',
-            breadcrumbs: false
+            breadcrumbs: false,
+            ressourcePermission: 'UNIFIEDDELIVERY'
           },
           {
             id: 'item-reception-quality',
@@ -98,7 +93,8 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/reception/quality',
             icon: 'rule',
-            breadcrumbs: false
+            breadcrumbs: false,
+            ressourcePermission: 'QUALITYCONTROLRESULT'
           },
           {
             id: 'item-reception-supplier-manage',
@@ -106,7 +102,8 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/reception/fournisseur',
             icon: 'contact_page',
-            breadcrumbs: false
+            breadcrumbs: false,
+            ressourcePermission: 'SUPPLIER'
           }
         ]
       }
@@ -120,7 +117,7 @@ export const osm_menus: Navigation[] = [
     id: 'group-production',
     title: 'MENU.PRODUCTION.TITLE',
     type: 'group',
-    role: [Role.Admin, Role.User],
+
     children: [
       {
         id: 'triturationHistory',
@@ -128,7 +125,8 @@ export const osm_menus: Navigation[] = [
         type: 'item',
         url: '/reception/reception-list',
         icon: 'fact_check',
-        breadcrumbs: false
+        breadcrumbs: false,
+        permissions: ['RECEPTION:UNIFIEDDELIVERY:DELIVERYHISTORY']
       },
       {
         id: 'item-production-mill-schedules',
@@ -136,7 +134,8 @@ export const osm_menus: Navigation[] = [
         type: 'item',
         url: '/reception/mill-schedules',
         icon: 'schedule',
-        breadcrumbs: false
+        breadcrumbs: false,
+        permissions: ['RECEPTION:UNIFIEDDELIVERY:PLANNING']
       }
       // (If your original file also duplicated supplier routes here, add them back below unchanged)
       // {
@@ -231,7 +230,6 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/finance/oil-credit',
             icon: 'credit_score',
-            role: [Role.Admin],
             breadcrumbs: false
           },
           {
@@ -384,16 +382,16 @@ export const osm_menus: Navigation[] = [
     id: 'group-settings',
     title: 'MENU.HR.TITLE',
     type: 'group',
-     children: [
-
-       {
-         id: 'item-settings-roles',
-         title: 'MENU.HR.EMPLOYEES',
-         type: 'item',
-         url: '/hr/employee',
-         icon: 'admin_panel_settings',
-         breadcrumbs: false
-       }
+    modulePermission: 'HR',
+    children: [
+      {
+        id: 'item-settings-roles',
+        title: 'MENU.HR.EMPLOYEES',
+        type: 'item',
+        url: '/hr/employee',
+        icon: 'admin_panel_settings',
+        breadcrumbs: false
+      }
     ]
   }
 ];

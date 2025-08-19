@@ -19,6 +19,7 @@ import { ReceptionDashboardComponent } from './components/reception-dashboard/re
 import {
   SupplierPaymentHistoryComponent
 } from './components/suppliers/supplier-payment-history/supplier-payment-history.component';
+import { allPermissionGuard } from '../interceptors/guards/permission.guard';
 
 export const receptionRoutes: Routes = [
   { path: '', component: ReceptionDashboardComponent },
@@ -36,7 +37,8 @@ export const receptionRoutes: Routes = [
   { path: 'fournisseur/edit/:id', component: SupplierAddComponent },
   { path: 'fournisseur/payments/:id', component: SupplierPaymentHistoryComponent },
 
-  { path: 'quality', component: QualityControlListComponent },
+  { path: 'quality', component: QualityControlListComponent ,   canActivate: [allPermissionGuard(['RECEPTION:RECEPTION:QUALITYCONTROLRESULT'])]
+  },
   { path: 'quality/:id', component: ControleQualiteComponent },
   { path: 'quality/oilFromOlive/:idx', component: ControleQualiteComponent },
   { path: 'reception-details/:id', component: DetailsReceptionComponent },

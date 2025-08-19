@@ -14,6 +14,9 @@ export class RoleService {
     addRole(role: Role): Observable<any> {
       return this._http.post<User>(`${this.baseUrl}`,role);
     }
+  updateRole(role: Role): Observable<any> {
+    return this._http.put<User>(`${this.baseUrl}`,role);
+  }
     fetchAll(): Observable<any> {
       return this._http.get<User>(`${this.baseUrl}/all-with-user-count`);
     }

@@ -1,11 +1,9 @@
 // Angular import
-import { AfterViewInit, Component, effect, inject, OnInit, viewChild, ChangeDetectorRef } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, effect, inject, OnInit, viewChild } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { MatDrawer, MatDrawerMode } from '@angular/material/sidenav';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-
-// Project import
 import { AbleProConfig } from 'src/app/app-config';
 import { ThemeLayoutService } from 'src/app/theme/services/theme-layout.service';
 import { SharedModule } from 'src/app/shared/shared.module';
@@ -16,7 +14,7 @@ import { BreadcrumbComponent } from 'src/app/theme/components/breadcrumb/breadcr
 import { FooterComponent } from 'src/app/theme/layouts/footer/footer.component';
 
 // service
- import { AuthenticationService } from 'src/app/auth/services/authentication.service';
+import { AuthenticationService } from 'src/app/auth/services/authentication.service';
 
 // const import
 import { COMPACT, HORIZONTAL, LTR, MAX_WIDTH_1024PX, MIN_WIDTH_1025PX, RTL, VERTICAL } from 'src/app/theme/const';
@@ -29,7 +27,6 @@ import { Navigation } from 'src/app/theme/types/navigation';
 import { Role } from 'src/app/theme/types/role';
 import { osm_menus } from '../../../shared/osm_menu';
 import { admin_menus } from '../../../shared/admin_menu';
-import { Router } from '@angular/router';
 import { CompanyProfileService } from '../../../shared/services/company-profile.service';
 import { CompanyProfile } from '../../../shared/models/CompanyProfile';
 import { ThemeConfig, ThemeConfigService } from '../../../shared/services/theme-config.service';
@@ -137,10 +134,6 @@ filterMenuByPermissions(
   const permissionSet = new Set(userPermissions);
 
   const hasAccess = (item: Navigation): boolean => {
-    if (item.permissions) {
-      return item.permissions?.some((p:string) => permissionSet.has(p.toUpperCase()));
-    }
-
     if (item.modulePermission || item.ressourcePermission) {
       return Array.from(permissionSet)?.some((p:string) => {
         const [module, resource] = p.split(':');
@@ -149,6 +142,10 @@ filterMenuByPermissions(
           (!item.ressourcePermission || item.ressourcePermission?.toUpperCase() === resource)
         );
       });
+    }
+
+    if (item.permissions) {
+      return item.permissions?.some((p:string) => permissionSet.has(p.toUpperCase()));
     }
 
     return true;

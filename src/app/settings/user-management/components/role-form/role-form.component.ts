@@ -86,7 +86,19 @@ export class RoleFormComponent implements OnInit {
         }
       }
       this.loading=true;
-      this._service.addRole(roleData).pipe(
+      updateMode?  this._service.updateRole(roleData).pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap((response:any)=>{
+          this._router.navigate(['/settings/roles']);
+          this.loading = false;
+
+        }),
+        catchError((err: any) => {
+          this.loading = false;
+          console.log(err)
+          return EMPTY;
+        })
+      ).subscribe()  :  this._service.addRole(roleData).pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((response:any)=>{
           this._router.navigate(['/settings/roles']);
