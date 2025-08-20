@@ -1,37 +1,41 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {MatButtonModule} from '@angular/material/button';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
-import {MatSelectModule} from '@angular/material/select';
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import {
   AbstractControl,
   FormBuilder,
+  FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
   ValidationErrors,
   Validators
 } from '@angular/forms';
-import {Observable, Subscription} from 'rxjs';
-import {ActivatedRoute, Router} from '@angular/router';
-import {TranslateModule, TranslateService} from '@ngx-translate/core';
-import {ToastService} from '../../../../shared/services/toast.service';
-import {UnifiedDelivery} from '../../../../shared/models/UnifiedDelivery';
-import {BaseType} from '../../../../shared/models/base-type';
-import {SupplierType} from '../../../../shared/models/supplier-type';
-import {GenericTypeService} from '../../../../shared/services/generic-type.service';
-import {UnifiedDeliveryService} from '../../../../shared/services/delivery.service';
-import {SupplierTypeService} from '../../../../shared/services/supplier.service';
-import {TypeCategory} from '../../../../shared/models/type-category.enum';
-import {CardComponent} from '../../../../theme/components/card/card.component';
-import {MatIcon} from '@angular/material/icon';
-import {MatAutocompleteModule} from '@angular/material/autocomplete';
-import {map, startWith} from 'rxjs/operators';
-import {OperationType} from '../../../../shared/models/operation-type.enum';
-import {BaseTypeComponent} from '../../../../shared/modules/base-type/base-type.component';
+import { Observable, Subscription } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { ToastService } from '../../../../shared/services/toast.service';
+import { UnifiedDelivery } from '../../../../shared/models/UnifiedDelivery';
+import { BaseType } from '../../../../shared/models/base-type';
+import { SupplierType } from '../../../../shared/models/supplier-type';
+import { GenericTypeService } from '../../../../shared/services/generic-type.service';
+import { UnifiedDeliveryService } from '../../../../shared/services/delivery.service';
+import { SupplierTypeService } from '../../../../shared/services/supplier.service';
+import { TypeCategory } from '../../../../shared/models/type-category.enum';
+import { CardComponent } from '../../../../theme/components/card/card.component';
+import { MatIcon } from '@angular/material/icon';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { map, startWith } from 'rxjs/operators';
+import { OperationType } from '../../../../shared/models/operation-type.enum';
+import { BaseTypeComponent } from '../../../../shared/modules/base-type/base-type.component';
+import { OilType } from '../../../../shared/models/oil-type.enum';
+import { OliveType } from '../../../../shared/models/olive-type.enum';
+import { mapOilFromOlive, mapOliveFromOil } from '../../../../shared/models/olive-oil-type.util';
 
 // Validator to ensure net weight does not exceed gross weight
 const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | null => {
@@ -72,39 +76,33 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
   isEditing = false;
   errorMessage: string | null = null;
   receptionForm: FormGroup;
-
-  private pendingCalls = 0;
-
-  /** Décrémente le compteur et cache le spinner quand tout est terminé */
-  private markCallDone(): void {
-    this.pendingCalls--;
-    if (this.pendingCalls === 0) {
-      this.loading = false;
-      // Les filtres autocomplete dépendent des listes chargées :
-      this.setupAutocompleteFilters();
-    }
-  }
+  oliveOptions = Object.values(OliveType);
+  oilOptions = Object.values(OilType);
   regions: BaseType[] = [];
   suppliers: SupplierType[] = [];
   oliveVarieties: BaseType[] = [];
   operationTypes: { name: string; value: OperationType }[] = [
-    { name: 'EXCHANGE', value: OperationType.EXCHANGE },
+    {
+      name: 'EXCHANGE',
+      value: OperationType.EXCHANGE
+    },
     { name: 'SIMPLE_RECEPTION', value: OperationType.SIMPLE_RECEPTION },
-    { name: 'BASE', value: OperationType.BASE },
+    {
+      name: 'BASE',
+      value: OperationType.BASE
+    },
     { name: 'OLIVE_PURCHASE', value: OperationType.OLIVE_PURCHASE }
   ];
   deliveries: UnifiedDelivery[] = [];
-
   // Autocomplete filtered options
   filteredRegions: Observable<BaseType[]>;
   filteredSuppliers: Observable<SupplierType[]>;
   filteredOliveVarieties: Observable<BaseType[]>;
   filteredOperationTypes: Observable<BaseType[]>;
-
+  private typeSubs: Subscription[] = [];
+  private pendingCalls = 0;
   private subscriptions: Subscription[] = [];
-  oliveTypeSelected(value:any){
-    console.log(value);
-  }
+
   constructor(
     private fb: FormBuilder,
     private deliveryService: UnifiedDeliveryService,
@@ -127,100 +125,117 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
         matriculeCamion: ['', [Validators.required]],
         etatCamion: ['', Validators.required],
         supplier: [null, Validators.required],
-        trtDate: [new Date(),[Validators.required]],
-        oliveVariety: [null,[Validators.required]],
+        trtDate: [new Date(), [Validators.required]],
+        oliveVariety: [null, [Validators.required]],
         sackCount: [null, [Validators.required]],
-        oliveType: [null,[Validators.required]],
-        operationType: [null,[Validators.required]],
+        oliveType: [null, [Validators.required]],
+        operationType: [null, [Validators.required]],
         parcel: ['']
       },
       { validators: netNotGreaterThanGross }
     );
+    this.receptionForm.addControl('oliveType', new FormControl<OliveType | null>(null));
+    this.receptionForm.addControl('oilType', new FormControl<OilType | null>(null));
+  }
+
+  oliveTypeSelected(value: any) {
+    console.log(value);
   }
 
   ngOnInit(): void {
     /** 1. Init mode édition / création */
     const deliveryId = this.route.snapshot.paramMap.get('id');
     this.isEditing = deliveryId !== null && deliveryId !== 'new';
+    // Sync olive -> oil
+    this.typeSubs.push(
+      this.receptionForm.get('oliveType')!.valueChanges.subscribe((val: OliveType | null) => {
+        // 1) mirror oilType
+        this.receptionForm.get('oilType')!.setValue(mapOilFromOlive(val), { emitEvent: false });
 
-    this.loading = true;              // Affiche le spinner
-    this.pendingCalls = 0;            // Réinitialise le compteur
+        // 2) keep your lot number logic (adapted to enum)
+        const deliveryNumber = this.receptionForm.get('deliveryNumber')?.value || this.deliveries.length + 1;
+        const lotNumber = this.generateLotNumber(val, deliveryNumber);
+        this.receptionForm.patchValue({ lotNumber }, { emitEvent: false });
+      })
+    );
+
+    // Sync oil -> olive (in case user chooses oil first)
+    this.typeSubs.push(
+      this.receptionForm.get('oilType')!.valueChanges.subscribe((val: OilType | null) => {
+        this.receptionForm.get('oliveType')!.setValue(mapOliveFromOil(val), { emitEvent: false });
+      })
+    );
+
+    this.loading = true; // Affiche le spinner
+    this.pendingCalls = 0; // Réinitialise le compteur
 
     /** 2. Charger les régions */
     this.pendingCalls++;
-    const regionSub = this.genericTypeService
-      .getAllTypes(TypeCategory.REGION)
-      .subscribe({
-        next: (res) => {
-          this.regions = res.success ? res.data : [];
-        },
-        error: () => this.showToast(this.translate.instant('DELIVERIES.FORM.MESSAGES.LOAD_ERROR'), 'error'),
-        complete: () => this.markCallDone()
-      });
+    const regionSub = this.genericTypeService.getAllTypes(TypeCategory.REGION).subscribe({
+      next: (res) => {
+        this.regions = res.success ? res.data : [];
+      },
+      error: () => this.showToast(this.translate.instant('DELIVERIES.FORM.MESSAGES.LOAD_ERROR'), 'error'),
+      complete: () => this.markCallDone()
+    });
     this.subscriptions.push(regionSub);
 
     /** 3. Charger les fournisseurs */
     this.pendingCalls++;
-    const supplierSub = this.supplierService
-      .getAllSuppliers()
-      .subscribe({
-        next: (res) => {
-          this.suppliers = res.success ? res.data : [];
-        },
-        error: () => this.showToast(this.translate.instant('DELIVERIES.FORM.MESSAGES.LOAD_ERROR'), 'error'),
-        complete: () => this.markCallDone()
-      });
+    const supplierSub = this.supplierService.getAllSuppliers().subscribe({
+      next: (res) => {
+        this.suppliers = res.success ? res.data : [];
+      },
+      error: () => this.showToast(this.translate.instant('DELIVERIES.FORM.MESSAGES.LOAD_ERROR'), 'error'),
+      complete: () => this.markCallDone()
+    });
     this.subscriptions.push(supplierSub);
 
     /** 4. Charger les réceptions existantes (pour générer les n°) */
     this.pendingCalls++;
-    const deliveriesSub = this.deliveryService
-      .getAllDeliveriesList()
-      .subscribe({
-        next: (res) => {
-          this.deliveries = res.success ? res.data : [];
-          // ⚠️ NE PAS toucher à la fonction qui calcule les n° :
-          if (!this.isEditing) {
-            const deliveryCount = this.deliveries.length;
-            const maxLot = this.getMaxLotNumber();
-            this.receptionForm.patchValue({
-              deliveryNumber: deliveryCount + 1,
-              lotNumber: maxLot + 1
-            });
-          }
-        },
-        error: () => this.showToast(this.translate.instant('DELIVERIES.FORM.MESSAGES.LOAD_ERROR'), 'error'),
-        complete: () => this.markCallDone()
-      });
+    const deliveriesSub = this.deliveryService.getAllDeliveriesList().subscribe({
+      next: (res) => {
+        this.deliveries = res.success ? res.data : [];
+        if (!this.isEditing) {
+          const deliveryCount = this.deliveries.length;
+          const maxLot = this.getMaxLotNumber();
+          this.receptionForm.patchValue({
+            deliveryNumber: deliveryCount + 1,
+            lotNumber: maxLot + 1
+          });
+        }
+      },
+      error: () => this.showToast(this.translate.instant('DELIVERIES.FORM.MESSAGES.LOAD_ERROR'), 'error'),
+      complete: () => this.markCallDone()
+    });
     this.subscriptions.push(deliveriesSub);
 
     /** 5. Si édition, charger la réception à modifier */
     if (this.isEditing && deliveryId) {
       this.pendingCalls++;
-      const editSub = this.deliveryService
-        .getUnifiedDelivery(deliveryId)
-        .subscribe({
-          next: (res) => {
-            if (res.success && res.data) {
-              const delivery = Array.isArray(res.data) ? res.data[0] : res.data;
-              this.patchForm(delivery);
-            } else {
-              this.errorMessage = this.translate.instant('DELIVERIES.FORM.MESSAGES.RECEPTION_LOAD_ERROR');
-              this.router.navigate(['/reception-olive']);
-            }
-          },
-          error: () => {
+      const editSub = this.deliveryService.getUnifiedDelivery(deliveryId).subscribe({
+        next: (res) => {
+          if (res.success && res.data) {
+            const delivery = Array.isArray(res.data) ? res.data[0] : res.data;
+            this.patchForm(delivery);
+          } else {
             this.errorMessage = this.translate.instant('DELIVERIES.FORM.MESSAGES.RECEPTION_LOAD_ERROR');
             this.router.navigate(['/reception-olive']);
-          },
-          complete: () => this.markCallDone()
-        });
+          }
+        },
+        error: () => {
+          this.errorMessage = this.translate.instant('DELIVERIES.FORM.MESSAGES.RECEPTION_LOAD_ERROR');
+          this.router.navigate(['/reception-olive']);
+        },
+        complete: () => this.markCallDone()
+      });
       this.subscriptions.push(editSub);
     }
 
     /** 6. Souscriptions internes (lotNumber auto, etc.) */
     this.setupFormSubscriptions();
   }
+
   ngOnDestroy(): void {
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
@@ -273,7 +288,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       oliveVariety: formValue.oliveVariety || null,
       sackCount: formValue.sackCount ? Number(formValue.sackCount) : 0,
       oliveType: formValue.oliveType || null,
-      oilType: formValue.oliveType || null,
+      oilType: formValue.oilType || null,
       operationType: formValue.operationType || null,
       parcel: formValue.parcel || '',
       price: Number(formValue.price) || 0,
@@ -325,8 +340,37 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     this.router.navigate(['/reception/reception-olive']);
   }
 
+  displayFn<T extends { name?: string; supplierInfo?: { name: string; lastname: string } }>(item: T): string {
+    if (!item) return '';
+    if (item.supplierInfo) {
+      return item.supplierInfo.name + ' ' + item.supplierInfo.lastname;
+    }
+    return item.name || '';
+  }
+
+  validateSupplier() {
+    const value = this.receptionForm.get('supplier')!.value;
+    if (!isValidSelection(value, this.suppliers)) {
+      this.receptionForm.get('supplier')!.setValue(null);
+    }
+  }
+
+  onBack(): void {
+    window.history.back();
+  }
+
+  /** Décrémente le compteur et cache le spinner quand tout est terminé */
+  private markCallDone(): void {
+    this.pendingCalls--;
+    if (this.pendingCalls === 0) {
+      this.loading = false;
+      // Les filtres autocomplete dépendent des listes chargées :
+      this.setupAutocompleteFilters();
+    }
+  }
+
   // Display toast notification
-  private showToast(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info' ): void {
+  private showToast(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info'): void {
     switch (type) {
       case 'success':
         this.toastService.success(message);
@@ -355,34 +399,13 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     return date ? new Date(date).toISOString() : null;
   }
 
-  displayFn<T extends { name?: string; supplierInfo?: { name: string, lastname: string} }>(item: T): string {
-    if (!item) return '';
-    if (item.supplierInfo) {
-      return (item.supplierInfo.name+" "+item.supplierInfo.lastname);
-    }
-    return item.name || '';
-  }
-
-  validateSupplier() {
-    const value = this.receptionForm.get('supplier')!.value;
-    if (!isValidSelection(value, this.suppliers)) {
-      this.receptionForm.get('supplier')!.setValue(null);
-    }
-  }
-
   // Generate lot number based on olive type and delivery number
-  private generateLotNumber(oliveType: BaseType | null, deliveryNumber: number): string {
-    if (!oliveType?.name) return '';
+  private generateLotNumber(oliveType: OliveType | null, deliveryNumber: number): string {
+    if (!oliveType) return '';
     const year = new Date().getFullYear().toString().slice(-2);
     const paddedNumber = deliveryNumber.toString().padStart(4, '0');
-    return `${paddedNumber}${oliveType.name.toUpperCase()}${year}`;
+    return `${paddedNumber}${oliveType}${year}`;
   }
-
-  onBack(): void {
-    window.history.back();
-  }
-
-
 
   private _getNestedValue<T extends Record<string, unknown>>(obj: T, path: string): string {
     return path.split('.').reduce((acc, part) => {
@@ -393,13 +416,11 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     }, obj as unknown) as string;
   }
 
-
   // Patch form with delivery data
   private patchForm(d: UnifiedDelivery): void {
-    const matchedSupplier = this.suppliers.find(s => s.id?.toString() === d.supplier?.id?.toString());
+    const matchedSupplier = this.suppliers.find((s) => s.id?.toString() === d.supplier?.id?.toString());
 
     const parseDate = (value: string | Date | null | undefined): Date | null => {
-
       if (!value) return null;
       return value instanceof Date ? value : new Date(value);
     };
@@ -414,9 +435,9 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       matriculeCamion: d.matriculeCamion,
       etatCamion: d.etatCamion,
       supplier: matchedSupplier || null,
-      oliveVariety:  d.oliveVariety || null,
+      oliveVariety: d.oliveVariety || null,
       sackCount: d.sackCount,
-      oliveType:d.oliveType || null,
+      oliveType: d.oliveType || null,
       operationType: d.operationType || null,
       parcel: d.parcel || ''
     });
@@ -425,7 +446,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
   // Setup form subscriptions
   private setupFormSubscriptions(): void {
     this.subscriptions.push(
-      this.receptionForm.get('oliveType')!.valueChanges.subscribe((oliveType: BaseType | null) => {
+      this.receptionForm.get('oliveType')!.valueChanges.subscribe((oliveType: OliveType | null) => {
         const deliveryNumber = this.receptionForm.get('deliveryNumber')?.value || this.deliveries.length + 1;
         const lotNumber = this.generateLotNumber(oliveType, deliveryNumber);
         this.receptionForm.patchValue({ lotNumber }, { emitEvent: false });
@@ -466,7 +487,6 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       startWith(''),
       map((value) => this._filter(this.suppliers, value, 'supplierInfo.name'))
     );
-
 
     // Operation type filter
     this.filteredOperationTypes = this.receptionForm.get('operationType')!.valueChanges.pipe(

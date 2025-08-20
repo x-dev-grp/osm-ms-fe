@@ -1,4 +1,15 @@
 {
+  "ACCESS_DENIED": {
+    "GO_HOME": "Back to home",
+    "GO_HOME_TITLE": "Back to home",
+    "HELP": "Help",
+    "HELP_TITLE": "Open help",
+    "ICON_TITLE": "Access denied",
+    "LOGOUT": "Log out",
+    "LOGOUT_TITLE": "Log out",
+    "MESSAGE": "You don't have the required permissions to view this page.",
+    "TITLE": "Access denied"
+  },
   "ADMIN": {
     "ADD_COMPANY_USER_TITLE": "Create a company and its admin user ",
     "CANCEL": "Cancel",
@@ -142,8 +153,10 @@
     "CANCEL": "Cancel",
     "CLOSE": "Close",
     "EDIT": "Edit",
+    "LAST_UPDATED": "Last update at ",
     "NO": "No",
     "PRINT": "Print",
+    "REFRESH": "Refresh",
     "SAVE": "Save",
     "UPDATE": "Update",
     "VALIDATION": {
@@ -512,6 +525,9 @@
       "TOTAL_UNPAID": "Total Unpaid",
       "TOTAL_VOLUME": "Total Volume (T)",
       "UNIQUE_SUPPLIERS": "Unique Suppliers"
+    },
+    "TITLE": {
+      "RECEPTION": "Receptions statistiques"
     }
   },
   "DELIVERIES": {

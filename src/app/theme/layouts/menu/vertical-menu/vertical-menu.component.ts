@@ -1,5 +1,5 @@
 // Angular import
-import { Component, effect, inject, input, OnInit } from '@angular/core';
+import { Component, effect, ElementRef, HostListener, inject, input, OnInit } from '@angular/core';
 import { Location, LocationStrategy } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -41,8 +41,9 @@ export class VerticalMenuComponent implements OnInit {
   logoPreview: string | null = null;
 
   // Constructor
-  constructor() {
-    effect(() => {
+  constructor(  private elRef: ElementRef/*, other deps */) {
+
+effect(() => {
       this.updateThemeLayout(this.themeService.layout());
     });
     effect(() => {
@@ -113,7 +114,15 @@ export class VerticalMenuComponent implements OnInit {
   private loadCompanyLogo(): void {
     this.loadCompanyLogoFromCache();
   }
-
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(ev: MouseEvent) {
+    const menuRoot: HTMLElement = this.elRef.nativeElement;
+    const clickedInside = menuRoot.contains(ev.target as Node);
+    if (!clickedInside) {
+      // Only collapse when clicking OUTSIDE the menu
+      this.fireOutClick?.();
+    }
+  }
   // public method
   fireOutClick() {
     let current_url = this.location.path();

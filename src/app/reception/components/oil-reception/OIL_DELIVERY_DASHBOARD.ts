@@ -183,13 +183,22 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       name: 'oilType',
       label: "Type d'huile",
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.OIL_TYPE',
-      attributeType: AttributeType.object,
+      attributeType: AttributeType.enum,
       exportable: true,
       dataTable: true,
       filterable: true,
-      valuePath: 'name',
-      valueAttributeType: AttributeType.string,
-      fieldType: FieldType.autocomplete,
+       fieldType: FieldType.text,
+      options: [
+        {
+          label: 'HC',
+          value: 'HC',
+         },
+        {
+          label: 'HB',
+          value: 'HB',
+         }
+      ]
+
     },
     {
       name: 'oilVariety',

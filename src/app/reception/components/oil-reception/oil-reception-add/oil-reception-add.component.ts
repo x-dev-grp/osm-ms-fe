@@ -13,7 +13,7 @@ import {SupplierTypeService} from '../../../../shared/services/supplier.service'
 import {UnifiedDeliveryService} from '../../../../shared/services/delivery.service';
 import {
   AbstractControl,
-  FormBuilder,
+  FormBuilder, FormControl,
   FormGroup,
   ReactiveFormsModule,
   ValidationErrors,
@@ -32,6 +32,9 @@ import {TranslateModule, TranslateService} from '@ngx-translate/core';
 import {OperationType} from '../../../../shared/models/operation-type.enum';
 import {BaseTypeComponent} from '../../../../shared/modules/base-type/base-type.component';
 import { ToastService } from '../../../../shared/services/toast.service';
+import { OliveType } from '../../../../shared/models/olive-type.enum';
+import { OilType } from '../../../../shared/models/oil-type.enum';
+import { mapOilFromOlive, mapOliveFromOil } from '../../../../shared/models/olive-oil-type.util';
 
 // Validator for net weight not exceeding gross weight
 const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | null => {
@@ -79,7 +82,9 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   private deliveryId: string | null;
   private pendingEditReception: UnifiedDelivery | null = null;
-
+  private _typeSubs: Subscription[] = [];
+  oliveOptions = Object.values(OliveType);
+  oilOptions = Object.values(OilType);
   constructor(
     private fb: FormBuilder,
     private genericSrv: GenericTypeService,
@@ -119,7 +124,39 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.deliveryId = this.route.snapshot.paramMap.get('id');
     this.isEditing = this.deliveryId !== null && this.deliveryId !== 'new';
+// 1) S’assurer que les contrôles existent
+    if (!this.receptionForm.get('oliveType')) {
+      this.receptionForm.addControl('oliveType', new FormControl<OliveType | null>(null, Validators.required));
+    }
+    if (!this.receptionForm.get('oilType')) {
+      this.receptionForm.addControl('oilType', new FormControl<OilType | null>(null, Validators.required));
+    }
 
+// 2) Synchro olive -> oil
+    this._typeSubs.push(
+      this.receptionForm.get('oliveType')!.valueChanges.subscribe((val: OliveType | null) => {
+        const mapped = mapOilFromOlive(val);
+        this.receptionForm.get('oilType')!.setValue(mapped, { emitEvent: false });
+      })
+    );
+
+// 3) Synchro oil -> olive
+    this._typeSubs.push(
+      this.receptionForm.get('oilType')!.valueChanges.subscribe((val: OilType | null) => {
+        const mapped = mapOliveFromOil(val);
+        this.receptionForm.get('oliveType')!.setValue(mapped, { emitEvent: false });
+      })
+    );
+
+// 4) Initialisation: si l’un des deux est déjà rempli (édition), déduire l’autre
+    const oliveInit = this.receptionForm.get('oliveType')!.value as OliveType | null;
+    const oilInit   = this.receptionForm.get('oilType')!.value as OilType   | null;
+
+    if (oliveInit && !oilInit) {
+      this.receptionForm.get('oilType')!.setValue(mapOilFromOlive(oliveInit), { emitEvent: false });
+    } else if (oilInit && !oliveInit) {
+      this.receptionForm.get('oliveType')!.setValue(mapOliveFromOil(oilInit), { emitEvent: false });
+    }
     // ===== 1️⃣  Charger les fournisseurs =====
     this.pendingCalls++;
     const suppliersSub = this.supplierSrv.getAllSuppliers().subscribe({
@@ -241,7 +278,8 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       price: Number(formValue.price) || 0,
       paidAmount: Number(formValue.paidAmount) || 0,
       unpaidAmount: Number(formValue.unpaidAmount) || 0,
-      oilType: formValue.oilType || null,
+      oilType: this.receptionForm.value.oilType,     // 'HB' | 'HC'
+      oliveType: this.receptionForm.value.oliveType,     // 'HB' | 'HC'
       trtDate: formValue.trtDate ? new Date(formValue.trtDate) : null,
       operationType: formValue.operationType || OperationType.OIL_PURCHASE,
       oliveVariety: formValue.oliveVariety || null,

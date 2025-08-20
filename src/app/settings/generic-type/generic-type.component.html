@@ -57,6 +57,69 @@
     </div>
   </div>
 </ng-template>
+<div class="history-cards-container">
+  <div class="history-cards">
+    <!-- Régions -->
+    <mat-card class="history-card"
+              tabindex="0"
+              (click)="loadRegion()"
+              [ngClass]="{ active: activeKey === TypeCategory.REGION }">
+      <mat-card-content>
+        <div class="card-content">
+          <mat-icon class="card-icon" color="primary">public</mat-icon>
+          <div class="card-info">
+            <h3>{{"BASE_TYPE.REGION"|translate}}</h3>
+           </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Variété d’olive -->
+    <mat-card class="history-card"
+              tabindex="0"
+              (click)="loadOliveVariety()"
+              [ngClass]="{ active: activeKey === TypeCategory. OLIVE_VARIETY  }">
+      <mat-card-content>
+        <div class="card-content">
+          <mat-icon class="card-icon" color="accent">spa</mat-icon>
+          <div class="card-info">
+            <h3>{{"OLIVE_RECEPTION.FORM.FIELDS.OLIVE_VARIETY"|translate}}</h3>
+           </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Variété d’huile -->
+    <mat-card class="history-card"
+              tabindex="0"
+              (click)="loadOilVariety()"
+              [ngClass]="{ active: activeKey ===TypeCategory.OIL_VARIETY }">
+      <mat-card-content>
+        <div class="card-content">
+          <mat-icon class="card-icon" color="primary">water_drop</mat-icon>
+          <div class="card-info">
+            <h3>{{"OIL_TRANSACTION.DELIVERY.OIL_VARIETY"|translate}}</h3>
+           </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Type de déchet -->
+    <mat-card class="history-card"
+              tabindex="0"
+              (click)="loadWasteType()"
+              [ngClass]="{ active: activeKey === TypeCategory.WASTE_TYPE }">
+      <mat-card-content>
+        <div class="card-content">
+          <mat-icon class="card-icon" color="warn">delete_outline</mat-icon>
+          <div class="card-info">
+            <h3>{{"WASTE.FIELDS.TYPE"|translate}}</h3>
+           </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
 
 <div class="fab-container">
   <button

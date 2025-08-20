@@ -3,6 +3,54 @@
   margin-bottom: 10px;
 }
 
+.history-cards-container {
+  margin: 20px 0;
+  padding: 0 20px;
+}
+
+.history-cards {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 10px 0;
+}
+
+.history-card {
+  min-width: 250px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover , &:focus {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 8px var(--accent-900) !important;
+
+  }
+
+  .card-content {
+    display: flex;
+    align-items: center;
+  }
+
+  .card-icon {
+    font-size: 32px;
+    height: 32px;
+    width: 32px;
+    margin-right: 16px;
+  }
+
+  .card-info {
+    h3 {
+      margin: 0 0 8px 0;
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    p {
+      margin: 0;
+      color: rgba(0, 0, 0, 0.6);
+    }
+  }
+}
 .table-responsive {
   margin-top: 20px;
 }

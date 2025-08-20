@@ -137,13 +137,20 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
       name: 'oliveType',
       label: "Type d'olive",
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.OLIVE_TYPE',
-      attributeType: AttributeType.object,
+      attributeType: AttributeType.enum,
       exportable: true,
       dataTable: true,
       filterable: true,
-      valuePath: 'name',
-      valueAttributeType: AttributeType.string,
-      fieldType: FieldType.autocomplete,
+       options: [
+        {
+          label: 'OC',
+          value: 'OC',
+        },
+        {
+          label: 'OB',
+          value: 'OB',
+        }
+      ],      fieldType: FieldType.text,
     },
     {
       name: 'oliveVariety',

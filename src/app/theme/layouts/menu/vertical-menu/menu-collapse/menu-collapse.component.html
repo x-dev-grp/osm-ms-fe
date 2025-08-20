@@ -4,9 +4,8 @@
     class="nav-item coded-hasmenu"
     [routerLinkActive]="['active']"
     [ngClass]="{ disabled: !isEnabled }"
-    matTooltip="{{ !isEnabled ? ('STANDARD.ACCESS_RESSOURCE_ERROR'|translate) : '' }}"
-  >
-    <a [routerLinkActive]="['active']" class="nav-link" (click)="navCollapse($event)">
+   >
+    <a [routerLinkActive]="['active']" class="nav-link" (click)="navCollapse($event); $event.stopPropagation()">
       <mat-icon *ngIf="item()!.icon" class="coded-micon">{{ item()!.icon }}</mat-icon>
       <span class="coded-mtext">{{ item()!.title | translate }}</span>
     </a>

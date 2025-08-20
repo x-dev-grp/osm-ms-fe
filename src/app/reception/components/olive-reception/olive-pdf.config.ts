@@ -21,7 +21,7 @@ export function getOlivePdfConfig(delivery: UnifiedDelivery): PdfConfig {
       {label: 'PDF.GROSS_WEIGHT', value: `${delivery.poidsBrute || ''} kg`},
       {label: 'PDF.OLIVE_QUANTITY', value: `${delivery.oilQuantity || ''} kg`},
       {label: 'PDF.OLIVE_VARIETY', value: delivery.oliveVariety?.name || ''},
-      {label: 'PDF.OLIVE_TYPE', value: delivery.oliveType?.name || ''},
+      {label: 'PDF.OLIVE_TYPE', value: delivery.oliveType || ''},
       {label: 'PDF.REGION', value: delivery.region?.name || ''}
     ],
     footerInfo: [

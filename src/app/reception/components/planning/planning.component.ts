@@ -704,7 +704,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
       supplier: d.supplier ?? undefined,
       region: d.region?.name ?? undefined,
       oliveVariety: d.oliveVariety?.name ?? undefined,
-      oliveType: d.oliveType?.name ?? undefined,
+      oliveType: d.oliveType ?? undefined,
       poidsBrute: d.poidsBrute ?? undefined,
       operationType: d.operationType ?? undefined,
       poidsNet: d.poidsNet ?? undefined,

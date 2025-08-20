@@ -26,8 +26,8 @@ export class GenericTypeService {
   }
 
   // Get a single record by type and ID
-  getType(type: string, id: number): Observable<ApiResponse<BaseType>> {
-    return this.http.get<ApiResponse<BaseType>>(`${this.baseUrl}/${type}/${id}`);
+  getType(type: string|TypeCategory ): Observable<ApiResponse<BaseType>> {
+    return this.http.get<ApiResponse<BaseType>>(`${this.baseUrl}/${type}`);
   }
 
 

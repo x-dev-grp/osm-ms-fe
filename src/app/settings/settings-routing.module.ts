@@ -7,6 +7,7 @@ import {AuthGuardChild} from '../interceptors/guards/auth.guard';
 import {UserResolver} from './user-management/services/user.resolver';
 import {RoleResolver} from './user-management/services/role.resolver';
 import {qualityControlRoutes} from "./quality-control-rule/qualityControlQualityRule.routes";
+import { AddBasetypeComponent } from './generic-type/add-basetype/add-basetype.component';
 
 const routes: Routes = [
   { path: 'general-config', component: GeneralConfigComponent, canActivate: [AuthGuardChild] },
@@ -17,6 +18,14 @@ const routes: Routes = [
   },
   { path: 'configuration', component: ApplicationConfigComponent, canActivate: [AuthGuardChild] },
   { path: 'generic', component: GenericTypeComponent, canActivate: [AuthGuardChild] },
+  {
+    path: 'generic',
+     children: [
+      { path: 'new', component: AddBasetypeComponent,  },
+      { path: ':id/edit', component: AddBasetypeComponent,   }
+    ]
+  },
+
   {
     path: 'users',
     children:[

@@ -20,7 +20,7 @@ export function getOilPdfConfig(delivery: UnifiedDelivery): PdfConfig {
       {label: 'PDF.GROSS_WEIGHT', value: `${delivery.poidsBrute || ''} kg`},
       {label: 'PDF.OIL_QUANTITY', value: `${delivery.oilQuantity || ''} kg`},
       {label: 'PDF.OIL_VARIETY', value: delivery.oilVariety?.name || ''},
-      {label: 'PDF.OIL_TYPE', value: delivery.oilType?.name || ''},
+      {label: 'PDF.OIL_TYPE', value: delivery.oilType || ''},
       {label: 'PDF.REGION', value: delivery.region?.name || ''}
     ],
     footerInfo: [

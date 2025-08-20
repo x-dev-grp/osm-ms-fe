@@ -6,8 +6,8 @@ export const BASE_TYPE: DashboardConfig = {
   title: 'Generic Type Management',
   baseURL: 'generic-type',
   searchEndpoint: 'production/types',
-  addNewItem: false,
-  addNewItemUrl: '/dashboard',
+  addNewItem: true,
+  addNewItemUrl: '/settings/generic/new',
   fileName: 'generic-type',
   fields: [
     {
@@ -17,7 +17,7 @@ export const BASE_TYPE: DashboardConfig = {
       fieldType: FieldType.text,
       sortable: true,
       filterable: true,
-      defaultFilter: true,
+      defaultFilter: false,
       dataTable: true,
       exportable: true,
       exportLabel: 'Name',
@@ -32,7 +32,7 @@ export const BASE_TYPE: DashboardConfig = {
       fieldType: FieldType.text,
       sortable: true,
       filterable: true,
-      defaultFilter: true,
+      defaultFilter: false,
       dataTable: true,
       exportable: true
     },
@@ -43,7 +43,7 @@ export const BASE_TYPE: DashboardConfig = {
       fieldType: FieldType.select,
       sortable: true,
       filterable: true,
-      defaultFilter: true,
+      defaultFilter: false,
       dataTable: true,
       options: [
         /** Liste d’options – étiquettes en français, valeurs = énum */

@@ -1,4 +1,15 @@
 {
+  "ACCESS_DENIED": {
+    "GO_HOME": "Retour à l'accueil",
+    "GO_HOME_TITLE": "Retour à l'accueil",
+    "HELP": "Aide",
+    "HELP_TITLE": "Consulter l'aide",
+    "ICON_TITLE": "Accès refusé",
+    "LOGOUT": "Se déconnecter",
+    "LOGOUT_TITLE": "Se déconnecter",
+    "MESSAGE": "Vous n'avez pas les permissions nécessaires pour consulter cette page.",
+    "TITLE": "Accès refusé"
+  },
   "ADMIN": {
     "ADD_COMPANY_USER_TITLE": "Créer une société et son premier utilisateur",
     "CANCEL": "Annuler",
@@ -142,8 +153,10 @@
     "CANCEL": "Annuler",
     "CLOSE": "Fermer",
     "EDIT": "Modifier",
+    "LAST_UPDATED": "Dernier mis à jour",
     "NO": "Non",
     "PRINT": "Imprimer",
+    "REFRESH": "Refraichire",
     "SAVE": "Enregistrer",
     "UPDATE": "Mettre à jour",
     "VALIDATION": {
@@ -512,6 +525,9 @@
       "TOTAL_UNPAID": "Total non payé",
       "TOTAL_VOLUME": "Volume total (T)",
       "UNIQUE_SUPPLIERS": "N° Fournisseurs"
+    },
+    "TITLE": {
+      "RECEPTION": "Statitstique des receptions éffectuer"
     }
   },
   "DELIVERIES": {

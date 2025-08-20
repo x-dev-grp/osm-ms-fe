@@ -10,7 +10,7 @@
         [routerLink]="[item().url]"
         [target]="item().target ? '_blank' : '_self'"
         [ngClass]="{ disabled: !isEnabled }"
-        (click)="toggleMenu($event)"
+        (click)="toggleMenu($event); $event.stopPropagation()"
       >
         <mat-icon *ngIf="!isEnabled" class="coded-micon">lock</mat-icon>
         <mat-icon *ngIf="isEnabled && item().icon" class="coded-micon">{{ item().icon }}</mat-icon>

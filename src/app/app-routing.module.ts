@@ -25,6 +25,12 @@ const routes: Routes = [
       },
 
 
+      {
+        path: 'access-denied',
+        loadComponent: () =>
+          import('./theme/layouts/access-denied/access-denied.component')
+            .then(m => m.AccessDeniedComponent)
+      },
 
 
       {

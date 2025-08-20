@@ -1,0 +1,41 @@
+<!-- Backdrop (cliquable pour fermer) -->
+<div class="backdrop" (click)="close()"></div>
+
+<!-- Surface du “dialog” -->
+<div class="dialog-surface" role="dialog" aria-modal="true" aria-labelledby="add-title">
+  <div class="dialog-header">
+    <h2 id="add-title">{{ title }}</h2>
+    <button mat-icon-button (click)="close()" aria-label="Fermer">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <form class="dialog-body" [formGroup]="form" (ngSubmit)="onSave()">
+    <!-- Select type (si pas fixé par la catégorie) -->
+    <mat-form-field appearance="fill" class="w-100">
+      <mat-label>Type</mat-label>
+      <mat-select formControlName="type">
+        <mat-option *ngFor="let t of typeOptions" [value]="t.value">
+          {{ t.label }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="w-100">
+      <mat-label>Nom</mat-label>
+      <input matInput formControlName="name" placeholder="Ex: Sfax / Chemlali / Vierge Extra…" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="w-100">
+      <mat-label>Description</mat-label>
+      <input matInput formControlName="description" placeholder="Description optionnelle" />
+    </mat-form-field>
+
+    <div class="dialog-actions">
+      <button mat-button type="button" (click)="close()">Annuler</button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
+        {{ editing ? 'Enregistrer' : 'Ajouter' }}
+      </button>
+    </div>
+  </form>
+</div>

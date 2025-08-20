@@ -6,33 +6,33 @@ export const osm_menus: Navigation[] = [
   // Accueil / Tableau de bord
   // ────────────────────────
   {
-    id: 'group-dashboard',
-    title: 'MENU.HOME.TITLE',
-    type: 'group',
-    children: [
-      {
+    // id: 'group-dashboard',
+    // title: 'MENU.HOME.TITLE',
+    // type: 'group',
+    // children: [
+    //   {
         id: 'Dashboard',
         title: 'MENU.HOME.DASHBOARD.TITLE',
-        type: 'collapse',
-        icon: 'dashboard',
+        type: 'group',
+        // icon: 'dashboard',
         children: [
-          {
-            id: 'item-dashboard-home',
-            title: 'MENU.HOME.DASHBOARD.DEFAULT',
-            type: 'item',
-            url: '/dashboard',
-            icon: 'space_dashboard',
-            breadcrumbs: false,
-            modulePermission: 'RECEPTION'
-          },
-          {
-            id: 'item-dashboard-analytics',
-            title: 'MENU.HOME.DASHBOARD.ANALYTICS',
-            type: 'item',
-            url: '/dashboard/analytics',
-            icon: 'bar_chart',
-            breadcrumbs: false
-          },
+          // {
+          //   id: 'item-dashboard-home',
+          //   title: 'MENU.HOME.DASHBOARD.DEFAULT',
+          //   type: 'item',
+          //   url: '/dashboard',
+          //   icon: 'space_dashboard',
+          //   breadcrumbs: false,
+          //   modulePermission: 'RECEPTION'
+          // },
+          // {
+          //   id: 'item-dashboard-analytics',
+          //   title: 'MENU.HOME.DASHBOARD.ANALYTICS',
+          //   type: 'item',
+          //   url: '/dashboard/analytics',
+          //   icon: 'bar_chart',
+          //   breadcrumbs: false
+          // },
           {
             id: 'item-dashboard-finance',
             title: 'MENU.HOME.DASHBOARD.FINANCE',
@@ -49,8 +49,8 @@ export const osm_menus: Navigation[] = [
             icon: 'assignment',
             breadcrumbs: false
           }
-        ]
-      }
+      //   ]
+      // }
     ]
   },
 
@@ -96,15 +96,7 @@ export const osm_menus: Navigation[] = [
             breadcrumbs: false,
             ressourcePermission: 'QUALITYCONTROLRESULT'
           },
-          {
-            id: 'item-reception-supplier-manage',
-            title: 'MENU.RECEPTION.SUPPLIERS',
-            type: 'item',
-            url: '/reception/fournisseur',
-            icon: 'contact_page',
-            breadcrumbs: false,
-            ressourcePermission: 'SUPPLIER'
-          }
+
         ]
       }
     ]
@@ -136,6 +128,15 @@ export const osm_menus: Navigation[] = [
         icon: 'schedule',
         breadcrumbs: false,
         permissions: ['RECEPTION:UNIFIEDDELIVERY:PLANNING']
+      },
+      {
+        id: 'item-reception-supplier-manage',
+        title: 'MENU.RECEPTION.SUPPLIERS',
+        type: 'item',
+        url: '/reception/fournisseur',
+        icon: 'contact_page',
+        breadcrumbs: false,
+        ressourcePermission: 'SUPPLIER'
       }
       // (If your original file also duplicated supplier routes here, add them back below unchanged)
       // {
@@ -232,14 +233,7 @@ export const osm_menus: Navigation[] = [
             icon: 'credit_score',
             breadcrumbs: false
           },
-          {
-            id: 'item-finance-customers',
-            title: 'MENU.FINANCE.CUSTOMERS',
-            type: 'item',
-            url: '/finance/customers',
-            icon: 'people',
-            breadcrumbs: false
-          },
+
           {
             id: 'item-finance-oil-sales',
             title: 'MENU.FINANCE.OIL_SALES',
@@ -268,7 +262,7 @@ export const osm_menus: Navigation[] = [
     id: 'group-storage',
     title: 'MENU.STORAGE.TITLE',
     type: 'group',
-    modulePermission: 'STORAGE',
+    modulePermission: 'STORAGEUNIT',
     children: [
       {
         id: 'item-storage-units',
@@ -332,7 +326,7 @@ export const osm_menus: Navigation[] = [
           },
           {
             id: 'item-settings-generic',
-            title: 'Generic Types',
+            title: 'MENU.SETTINGS.GENERIC_TYPES',
             type: 'item',
             url: '/settings/generic',
             icon: 'category',
@@ -340,7 +334,7 @@ export const osm_menus: Navigation[] = [
           },
           {
             id: 'item-settings-quality-rules',
-            title: 'Quality Control Rules',
+            title: 'MENU.SETTINGS.QUALITY_CONTROL_RULES',
             type: 'item',
             url: '/settings/quality-control',
             icon: 'rule',

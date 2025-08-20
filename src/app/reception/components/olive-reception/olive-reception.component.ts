@@ -218,7 +218,7 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
       // For exchange, oil total value should equal olive total price
       const initialOilTotalValue = initialPrice; // Equal to olive total price
       const initialOilUnitPrice = initialOilQuantity > 0 ? initialOilTotalValue / initialOilQuantity : 0;
-      const initialQualityGrade = row.oilType?.id || this.qualityGrade[0]?.id || '';
+      const initialQualityGrade = row.oilType || this.qualityGrade[0]?.id || '';
 
       this.setPriceForm = this.fb.group({
         // Standard fields
