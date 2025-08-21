@@ -203,7 +203,7 @@ export const dashboardConfig: DashboardConfig = {
       ]
     },
     {
-      name: 'isActive',
+      name: 'active',
       label: 'Actif',
       labelTranslatePath: 'EMPLOYEE.DASHBOARD.FIELDS.IS_ACTIVE',
       attributeType: AttributeType.boolean,

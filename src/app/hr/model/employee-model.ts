@@ -27,11 +27,12 @@ export interface Employee {
   postalCode: string;
   city: string;
   country: string;
-  isActive: boolean;
+  active: boolean;
   gender: Gender;
   maritalStatus: MaritalStatus;
   contrats?: Contract[];
   department?: Department;
+  externalId?: string;
   payRolls?: PayRolls[];
   pointages?: Pointage[];
 }

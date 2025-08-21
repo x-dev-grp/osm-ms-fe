@@ -80,7 +80,8 @@ export class EmployeeAddComponent implements OnInit {
       postalCode: [''],
       city: [''],
       country: [''],
-      isActive: [true]
+      externalId: [''],
+      active: [true]
     });
   }
 
@@ -104,7 +105,8 @@ export class EmployeeAddComponent implements OnInit {
             postalCode: employee.postalCode,
             city: employee.city,
             country: employee.country,
-            isActive: employee.isActive
+            externalId: employee.externalId,
+            active: employee.active
           });
         }
         this.loading = false;
@@ -136,7 +138,8 @@ export class EmployeeAddComponent implements OnInit {
         postalCode: formValue.postalCode || '',
         city: formValue.city || '',
         country: formValue.country || '',
-        isActive:formValue.isActive
+        externalId: formValue.externalId || '',
+        active:formValue.active
       };
 
       console.log('Payload envoyé :', employeeData);
