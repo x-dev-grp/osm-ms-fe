@@ -11,6 +11,26 @@ const routes: Routes = [
         loadComponent: () => import('./components/employee/employee.component').then((m) => m.EmployeeComponent),
         canActivate: [AuthGuardChild]
       },
+      {
+        path: 'department',
+        loadComponent: () => import('./components/department/department.component').then((m) => m.DepartmentComponent),
+        canActivate: [AuthGuardChild]
+      },
+      {
+        path: 'employee/new',
+        loadComponent: () => import('./components/employee-add/employee-add.component').then((m) => m.EmployeeAddComponent),
+        canActivate: [AuthGuardChild]
+      },
+      {
+        path: 'employee/:id',
+        loadComponent: () => import('./components/employee-add/employee-add.component').then((m) => m.EmployeeAddComponent),
+        canActivate: [AuthGuardChild]
+      },
+      {
+        path: 'employee/fetch/:id',
+        loadComponent: () => import('./components/employee-detail/employee-detail.component').then((m) => m.EmployeeDetailComponent),
+        canActivate: [AuthGuardChild]
+      }
     ]
   }
 ];
