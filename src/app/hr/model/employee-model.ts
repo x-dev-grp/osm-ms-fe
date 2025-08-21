@@ -15,23 +15,24 @@ export enum MaritalStatus {
 }
 
 export interface Employee {
-  id?: number;
+  id?: string;
   firstName: string;
   lastName: string;
-  hire_date: string;
+  hireDate: string;
   birthDate: string;
   cin: string;
   email: string;
   phone: string;
   address: string;
-  postal_code: string;
+  postalCode: string;
   city: string;
   country: string;
-  is_active: boolean;
+  active: boolean;
   gender: Gender;
   maritalStatus: MaritalStatus;
   contrats?: Contract[];
   department?: Department;
-  payrolls?: PayRolls[];
+  externalId?: string;
+  payRolls?: PayRolls[];
   pointages?: Pointage[];
 }

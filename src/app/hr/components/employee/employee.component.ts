@@ -20,11 +20,10 @@ export class EmployeeComponent implements OnInit{
   handleAction(event: { row: Employee; action: string }): void {
     switch (event.action) {
       case 'READ':
-        console.log(JSON.stringify(event.row))
-         break;
-
+        this.router.navigate([`hr/employee/fetch/${event.row.id}`]);
+            break;
       case 'UPDATE':
-        console.log(JSON.stringify(event.row))
+        this.router.navigate([`hr/employee/${event.row.id}`]);
         break;
     }
   }}

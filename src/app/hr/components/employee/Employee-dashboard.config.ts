@@ -116,7 +116,7 @@ export const dashboardConfig: DashboardConfig = {
       exportable: true
     },
     {
-      name: 'postal_code',
+      name: 'postalCode',
       label: 'Code postal',
       labelTranslatePath: 'EMPLOYEE.DASHBOARD.FIELDS.POSTAL_CODE',
       attributeType: AttributeType.string,
@@ -142,7 +142,7 @@ export const dashboardConfig: DashboardConfig = {
 
     // Dates
     {
-      name: 'hire_date',
+      name: 'hireDate',
       label: "Date d'embauche",
       labelTranslatePath: 'EMPLOYEE.DASHBOARD.FIELDS.HIRE_DATE',
       attributeType: AttributeType.date, // si non supporté: AttributeType.string
@@ -203,7 +203,7 @@ export const dashboardConfig: DashboardConfig = {
       ]
     },
     {
-      name: 'is_active',
+      name: 'active',
       label: 'Actif',
       labelTranslatePath: 'EMPLOYEE.DASHBOARD.FIELDS.IS_ACTIVE',
       attributeType: AttributeType.boolean,
