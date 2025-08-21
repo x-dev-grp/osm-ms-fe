@@ -6,11 +6,11 @@ export function getProductionPdfConfig(dataEntry: any): PdfConfig {
   const dateLivraison = new Date(dataEntry.deliveryDate).toLocaleDateString();
   const dateTrituration = new Date(dataEntry.trtDate).toLocaleDateString();
 
-  const poidsNetOlives = `${dataEntry.poidsNet} kg`;
-  const qteHuile = `${dataEntry.oilQuantity || 0} L`;
+  const poidsNetOlives = `${(dataEntry.poidsNet).toFixed(2)} kg`;
+  const qteHuile = `${(dataEntry.oilQuantity).toFixed(2) || 0} L`;
   const rendement = `${(dataEntry.rendement || 0).toFixed(2)} %`;
-  const prixTriturationParKg = '0.15 DNT/kg';
-  const prixTotalTrituration = `${(dataEntry.poidsNet * 0.15).toFixed(2)} DNT`;
+  const prixTriturationParKg = '0.15 TND/kg';
+  const prixTotalTrituration = `${(dataEntry.poidsNet * 0.15).toFixed(2)} TND`;
 
   return {
     title: 'PDF.PRODUCTION_RECEIPT',
@@ -24,7 +24,7 @@ export function getProductionPdfConfig(dataEntry: any): PdfConfig {
       {label: 'PDF.SUPPLIER', value: dataEntry.supplier?.supplierInfo?.name || '-'},
       {label: 'PDF.REGION', value: dataEntry.region?.name || '-'},
       {label: 'PDF.OLIVE_VARIETY', value: dataEntry.oliveVariety?.name || '-'},
-      {label: 'PDF.OLIVE_TYPE', value: dataEntry.oliveType?.name || '-'}
+      {label: 'PDF.OLIVE_TYPE', value: dataEntry.oliveType || '-'}
     ],
     fields: [
       {label: 'PDF.OIL_QUANTITY', value: qteHuile},

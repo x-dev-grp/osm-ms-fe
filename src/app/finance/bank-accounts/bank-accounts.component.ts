@@ -96,7 +96,7 @@ export class BankAccountsComponent implements OnInit {
       this.bankAccountService.deleteBankAccount(account.id!).subscribe({
         next: (response) => {
           if (response.success) {
-            this.toast.success('Bank account deleted successfully' );
+            this.toast.success();
             // Refresh the list
             this.loadBanks();
           } else {

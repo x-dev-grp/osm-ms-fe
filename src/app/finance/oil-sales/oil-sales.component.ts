@@ -56,7 +56,7 @@ export class OilSalesComponent implements OnInit {
       this.oilSaleService.confirmOilSale(oilSale.id).subscribe({
         next: (response) => {
           if (response.success) {
-            this.toast.success('Oil sale confirmed successfully');
+            this.toast.success();
           } else {
             this.toast.error(response.message || 'Error confirming oil sale');
           }
@@ -74,7 +74,7 @@ export class OilSalesComponent implements OnInit {
       this.oilSaleService.cancelOilSale(oilSale.id).subscribe({
         next: (response) => {
           if (response.success) {
-            this.toast.success('Oil sale cancelled successfully');
+            this.toast.success();
           } else {
             this.toast.error(response.message || 'Error cancelling oil sale');
           }
@@ -92,7 +92,7 @@ export class OilSalesComponent implements OnInit {
       this.oilSaleService.deliverOilSale(oilSale.id).subscribe({
         next: (response) => {
           if (response.success) {
-            this.toast.success('Oil sale delivered successfully');
+            this.toast.success();
           } else {
             this.toast.error(response.message || 'Error delivering oil sale');
           }

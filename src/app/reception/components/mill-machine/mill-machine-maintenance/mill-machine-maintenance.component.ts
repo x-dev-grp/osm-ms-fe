@@ -151,7 +151,7 @@ export class MillMachineMaintenanceComponent implements OnInit {
     this.service.updateMillMachine(updatedMachine).subscribe({
       next: (response: any) => {
         if (response && response.success) {
-          this.toast.success('Maintenance scheduled successfully');
+          this.toast.success();
           this.router.navigate(['/reception/mill-machines']);
         } else {
           const errorMessage = response.message || 'Failed to schedule maintenance';

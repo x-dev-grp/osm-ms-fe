@@ -20,11 +20,6 @@ export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
       search: {
         isDeleted:{
           equalValue:false
-        },hasQualityControl: {
-          equalValue: "false"
-        },
-        status:{
-          equalValue:"NEW"
         }
       }
     }

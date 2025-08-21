@@ -134,8 +134,7 @@ export class ExpenseAddComponent implements OnInit {
       next: (response) => {
         if (response.success) {
           this.toast.success(
-            this.editing ? 'Dépense mise à jour avec succès' : 'Dépense créée avec succès'
-          );
+           );
           this.router.navigate(['/finance/expenses']);
         } else {
           this.toast.error(response.message || 'Une erreur est survenue' );

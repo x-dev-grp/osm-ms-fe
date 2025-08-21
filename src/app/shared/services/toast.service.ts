@@ -12,6 +12,7 @@ export class ToastService {
     verticalPosition: 'top',    // toujours en haut
     panelClass: ['app-toast'],  // classe CSS globale
   };
+  private translate=inject(TranslateService);
 
   open(message: string, action?: string  , config?: MatSnackBarConfig) {
     return this.snackBar.open(message, action, {
@@ -20,8 +21,8 @@ export class ToastService {
     });
   }
 
-  success(message: string) {
-    return this.open(message,  "", { panelClass: ['app-toast', 'app-toast-success'] });
+  success(message?: string) {
+    return this.open(message||this.translate.instant('OSM_DASHBOARD.ACTIONS.SUCCESS'),  "", { panelClass: ['app-toast', 'app-toast-success'] });
   }
 
   error(message: string) {

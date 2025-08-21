@@ -188,7 +188,7 @@ export class OilSaleAddComponent implements OnInit {
         this.oilSaleService.updateOilSale(this.oilSaleId, updateDto).subscribe({
           next: (response) => {
             if (response.success) {
-              this.toast.success('Oil sale updated successfully');
+              this.toast.success();
               this.router.navigate(['/finance/oil-sales']);
             } else {
               this.toast.error(response.message || 'Error updating oil sale');
@@ -224,7 +224,7 @@ export class OilSaleAddComponent implements OnInit {
           next: (response) => {
             if (response.success) {
 
-              this.toast.success('Oil sale created successfully');
+              this.toast.success();
 
               this.router.navigate(['/finance/oil-sales']);
             } else {

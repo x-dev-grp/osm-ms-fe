@@ -152,13 +152,13 @@
               <input
                 [(ngModel)]="triturationPricePerKg"
                 matInput
-                disabled
                 min="0"
                 step="0.01"
                 type="number"
               />
             </mat-form-field>
-            <mat-form-field appearance="outline" class="col-6" style="flex: 1;">
+            @if (itemType === PlanItemType.LOT && item) {
+              <mat-form-field appearance="outline" class="col-6" style="flex: 1;">
               <mat-label>Prix total de trituration</mat-label>
               <input
                 [value]="totalTriturationPrice | number: '1.2-2'"
@@ -167,6 +167,7 @@
                 disabled
               />
             </mat-form-field>
+            }
           </div>
         </ng-container>
 

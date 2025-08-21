@@ -8,6 +8,7 @@ import {tap} from 'rxjs';
 import {Router} from '@angular/router';
 import {PdfGeneratorService} from '../../../shared/services/pdf-generator.service';
 import {getProductionPdfConfig} from "./production-pdf.config";
+import { ToastService } from '../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-reception-list',
@@ -18,9 +19,11 @@ import {getProductionPdfConfig} from "./production-pdf.config";
 export class ReceptionListComponent {
   dashboardConfig = LIST_RECEPTION_DASHBOARD;
 
+
   constructor(
     private deliveryService: UnifiedDeliveryService,
     private _router: Router,
+    private toast: ToastService,
     private pdfGeneratorService: PdfGeneratorService,
 
   ) {}
@@ -41,8 +44,19 @@ export class ReceptionListComponent {
       case 'QUALITY':
         break;
 
-      case 'Contrôle Qualité':
-        // this.QualityControl(event.row);
+      case 'GEN_PDF_QC_OIL':
+        if (event.row.qualityControlResults) {
+          this.toast.success(`[OilReception] Generating GEN_PDF_QC_OIL PDF for delivery: ${event.row.lotNumber}`);
+         }else{
+          this.toast.error('no quality control for oil')
+        }
+        break;
+      case 'GEN_PDF_QC_OLIVE':
+        if (event.row.qualityControlResults) {
+          this.toast.success(`[OilReception] Generating quality controll PDF for delivery: ${event.row.lotNumber}`);
+         }else{
+          this.toast.error('no quality control for olive')
+        }
         break;
 
       case 'OIL_QUALITY':

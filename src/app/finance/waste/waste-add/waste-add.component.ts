@@ -119,7 +119,7 @@ export class WasteAddComponent {
         this.wasteSaleService.updateWasteSale(this.wasteId!, wasteSale).subscribe({
           next: (response) => {
             if (response.success) {
-              this.toast.success('Vente de déchet modifiée avec succès');
+              this.toast.success();
               this.router.navigate(['/finance/waste-sales']);
             } else {
               this.toast.error('Erreur lors de la modification');
@@ -136,7 +136,7 @@ export class WasteAddComponent {
         this.wasteSaleService.createWasteSale(wasteSale).subscribe({
           next: (response) => {
             if (response.success) {
-              this.toast.success('Vente de déchet créée avec succès');
+              this.toast.success();
               this.router.navigate(['/finance/waste-sales']);
             } else {
               this.toast.error('Erreur lors de la création');

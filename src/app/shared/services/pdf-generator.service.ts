@@ -246,14 +246,13 @@ export class PdfGeneratorService {
     this._companyProfileService.getProfile().subscribe(
       (res) => {
         if (res && res.success) {
-          this.profile = res?.data[0];
-
+           this.profile = Array.isArray(res?.data) ? res?.data[0] : res?.data;
           if (this.profile?.logoData && this.profile?.logoContentType) {
             this.logoPreview = `data:${this.profile?.logoContentType};base64,${this.profile?.logoData}`;
           }
         }
       },
-      (err) => console.error('Error loading deliveries', err)
+      (err) => console.error('Error loading logo', err)
     );
   }
 }

@@ -109,7 +109,7 @@ export class WasteComponent {
       this.wasteSaleService.confirmWasteSale(waste.id).subscribe({
         next: (response) => {
           if (response.success) {
-           this.toast.success('Vente de déchet confirmée avec succès');
+           this.toast.success();
             // Recharger les données du dashboard
             // this.loadDashboardData();
           } else {
@@ -129,7 +129,7 @@ export class WasteComponent {
       this.wasteSaleService.cancelWasteSale(waste.id).subscribe({
         next: (response) => {
           if (response.success) {
-           this.toast.success('Vente de déchet annulée avec succès');
+           this.toast.success();
             // Recharger les données du dashboard
             // this.loadDashboardData();
           } else {
@@ -149,7 +149,7 @@ export class WasteComponent {
       this.wasteSaleService.deliverWasteSale(waste.id).subscribe({
         next: (response) => {
           if (response.success) {
-           this.toast.success('Vente de déchet livrée avec succès');
+           this.toast.success();
             // Recharger les données du dashboard
             // this.loadDashboardData();
           } else {

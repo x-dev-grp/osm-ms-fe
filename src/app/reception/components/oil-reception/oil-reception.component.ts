@@ -41,6 +41,7 @@ import {OIL_DELIVERY_DASHBOARD} from './OIL_DELIVERY_DASHBOARD';
 import {AppParameterService} from '../../../shared/services/AppParameterService';
 import {getOilPdfConfig} from "./oil-pdf.config";
 import { ToastService } from '../../../shared/services/toast.service';
+import { getControlQualitePdfConfig } from '../quality-control-list/PDF-controlQualite.config';
 
 /* ──────────────────────────────────────────────────────────── */
 /* validators                                                   */
@@ -288,6 +289,14 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
             this.generateBonReception(e.row);
           }
           break;
+          case 'GEN_PDF_QC_OIL':
+          if (e.row.qualityControlResults) {
+            console.log(`[OilReception] Generating PDF for delivery: ${e.row.lotNumber}`);
+               const deliveryType = e.row.deliveryType?.toUpperCase() || '';
+              const config = getControlQualitePdfConfig(e.row, deliveryType);
+              this.pdfService.generatePdf(config);
+          }
+          break;
 
         default:
           console.warn(`[OilReception] Unknown action: ${e.action} for delivery: ${e.row.lotNumber}`);
@@ -314,7 +323,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
         dialogRef.close(); // Ferme le dialog après succès
         this.isLoading = false;
         this.dashboard.refrechData();
-        this.toast.success('Prix mis à jour avec succès.' );
+        this.toast.success();
       },
       error: () => {
         this.toast.error("Erreur lors de l'enregistrement du prix." );
@@ -476,7 +485,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
           console.log(`[OilReception] Payment processing successful for delivery: ${this.selectedRow?.lotNumber}`, response);
           dialogRef.close();
           this.dashboard.refrechData();
-          this.toast.success('Paiement traité avec succès.' );
+          this.toast.success();
         },
         error: (error) => {
           console.error(`[OilReception] Error processing payment:`, error);
@@ -543,7 +552,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
       (res) => {
         if (res.success) {
           this.fetchDeliveries();
-          this.toast.success('Réception supprimée avec succès.');
+          this.toast.success();
         }
       },
       () => this.toast.error('Erreur lors de la suppression.')

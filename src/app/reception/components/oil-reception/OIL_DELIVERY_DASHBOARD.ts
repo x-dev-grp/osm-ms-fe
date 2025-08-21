@@ -198,7 +198,6 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
           value: 'HB',
          }
       ]
-
     },
     {
       name: 'oilVariety',

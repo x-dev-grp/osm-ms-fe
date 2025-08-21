@@ -459,7 +459,7 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
         next: (response) => {
           this.submitting = false;
           if (response.success) {
-            this.toast.success('OIL_TRANSACTIONS.FORM.MESSAGES.SUCCESS.APPROVE');
+            this.toast.success();
             this.router.navigate(['/storage/oil_transaction']);
           } else {
             this.toast.error('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.APPROVE');

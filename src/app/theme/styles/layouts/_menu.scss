@@ -88,7 +88,6 @@
     li {
       position: relative;
       padding-bottom: 2px;
-      margin: 0px 10px;
 
       > a {
         padding: 14px 20px;
@@ -130,7 +129,6 @@
 
       &.coded-hasmenu {
         position: relative;
-        margin: 0px 10px;
 
         > a {
           &:after {
@@ -212,7 +210,7 @@
             li {
               > a {
                 text-align: left;
-                padding: 12px 30px 12px 63px;
+                padding: 9px 0 9px 40px;
                 margin: 0;
                 display: flex;
                 color: var(--accent-600);
@@ -344,7 +342,6 @@
         font-size: 0.688rem;
         font-weight: 600;
         line-height: 1.5;
-        margin: 0px 10px;
         padding: 24px 23px 8px;
         text-transform: uppercase;
         position: relative;

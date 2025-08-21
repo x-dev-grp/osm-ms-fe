@@ -112,7 +112,7 @@ export class BankAccountAddComponent implements OnInit {
       request.subscribe({
         next: (response) => {
           if (response.success) {
-            this.toast.success(`Bank account ${this.isEditMode ? 'updated' : 'created'} successfully`);
+            this.toast.success();
             this.router.navigate(['/finance/banks']);
           } else {
             this.toast.error(response.message || 'Operation failed');

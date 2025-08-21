@@ -1,32 +1,32 @@
-import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {MatButtonModule} from '@angular/material/button';
-import {MatTableModule} from '@angular/material/table';
-import {MatIconModule} from '@angular/material/icon';
-import {MatDialog, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
-import {MatCardModule} from '@angular/material/card';
-import {MatSortModule} from '@angular/material/sort';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {MatPaginator} from '@angular/material/paginator';
-import {Router} from '@angular/router';
-import {Subscription, tap} from 'rxjs';
-import {TranslateService} from '@ngx-translate/core';
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatCardModule } from '@angular/material/card';
+import { MatSortModule } from '@angular/material/sort';
+import { MatPaginator } from '@angular/material/paginator';
+import { Router } from '@angular/router';
+import { Subscription, tap } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
-import {SharedModule} from '../../../shared/shared.module';
-import {OsmDashboard} from '../../../shared/modules/osm-dashboard/osm-dashboard';
-import {DashboardConfig} from '../../../shared/modules/osm-dashboard/models/dashboard-config';
-import {UnifiedDelivery} from '../../../shared/models/UnifiedDelivery';
-import {UnifiedDeliveryService} from '../../../shared/services/delivery.service';
+import { SharedModule } from '../../../shared/shared.module';
+import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
+import { DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
+import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
 
-import {OLIVE_DELIVERY_DASHBOARD} from './OLIVE_DELIVERY_DASHBOARD';
-import {PdfGeneratorService} from '../../../shared/services/pdf-generator.service';
-import {ApiResponse} from '../../../shared/models/api-response';
-import {OliveLotStatus} from '../../../shared/models/OliveLotStatus';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {OperationType} from '../../../shared/models/operation-type.enum';
-import {ExchangePricingDto} from '../../../shared/models/ExchangePricingDto';
-import {getOlivePdfConfig} from "./olive-pdf.config";
+import { OLIVE_DELIVERY_DASHBOARD } from './OLIVE_DELIVERY_DASHBOARD';
+import { PdfGeneratorService } from '../../../shared/services/pdf-generator.service';
+import { ApiResponse } from '../../../shared/models/api-response';
+import { OliveLotStatus } from '../../../shared/models/OliveLotStatus';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { OperationType } from '../../../shared/models/operation-type.enum';
+import { ExchangePricingDto } from '../../../shared/models/ExchangePricingDto';
+import { getOlivePdfConfig } from './olive-pdf.config';
 import { ToastService } from '../../../shared/services/toast.service';
+import { getControlQualitePdfConfig } from '../quality-control-list/PDF-controlQualite.config';
 
 @Component({
   selector: 'app-olive-reception',
@@ -40,10 +40,10 @@ import { ToastService } from '../../../shared/services/toast.service';
     MatCardModule,
     MatSortModule,
     SharedModule,
-    OsmDashboard],
+    OsmDashboard
+  ],
   templateUrl: './olive-reception.component.html',
-  styleUrls: ['./olive-reception.component.scss'],
-
+  styleUrls: ['./olive-reception.component.scss']
 })
 export class OliveReceptionComponent implements OnInit, OnDestroy {
   @ViewChild('dashboard') dashboard!: OsmDashboard;
@@ -57,14 +57,14 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   selectedRow?: UnifiedDelivery;
   setPriceForm!: FormGroup;
-
-  private subs = new Subscription();
   isLoading: boolean = false;
   qualityGrade: { id: string; name: string }[] = [
     { id: 'vierge_extra', name: 'Extra Vierge' },
     { id: 'vierge', name: 'Vierge' },
     { id: 'lampante', name: 'Lampante' }
   ];
+  protected readonly OperationType = OperationType;
+  private subs = new Subscription();
 
   constructor(
     private deliveryService: UnifiedDeliveryService,
@@ -72,7 +72,6 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
     private router: Router,
     private pdfService: PdfGeneratorService,
     private translate: TranslateService,
-
     private fb: FormBuilder,
     private dialog: MatDialog
   ) {}
@@ -93,15 +92,6 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
     }
   }
 
-  private fetchDeliveries(): void {
-    this.subs.add(
-      this.deliveryService.getAllDeliveriesList().subscribe((res) => {
-        this.deliveries = res.success ? res.data.filter((d) => d.deliveryType === 'OLIVE') : [];
-        if (!res.success) this.toast.error(this.translate.instant('DELIVERIES.MESSAGES.LOAD_ERROR'));
-        if (res.success) this.toast.success(res.message );      })
-    );
-  }
-
   viewDelivery(d: UnifiedDelivery): void {
     this.router.navigate(['reception/reception-details', d.id]);
   }
@@ -112,8 +102,8 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
 
   sendToProduction(d: UnifiedDelivery): void {
     if (d.id) {
-       this.subs.add(
-        this.deliveryService.updateStatus(d.id,OliveLotStatus.IN_PROGRESS).subscribe(
+      this.subs.add(
+        this.deliveryService.updateStatus(d.id, OliveLotStatus.IN_PROGRESS).subscribe(
           (res: ApiResponse<void>) => {
             if (res.success) {
               this.dashboard.refrechData();
@@ -146,7 +136,6 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
     }
   }
 
-
   generateBonReception(delivery: UnifiedDelivery): void {
     const config = getOlivePdfConfig(delivery);
     this.pdfService.generatePdf(config);
@@ -170,7 +159,7 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
         this.setPrice(e.row);
         break;
 
-        case 'OIL_OUT_TRANSACTION':
+      case 'OIL_OUT_TRANSACTION':
         this.createOilTransactionFromExchange(e.row);
         break;
       case 'TO_PROD':
@@ -180,30 +169,113 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
       case 'QUALITY':
         this.QualityControl(e.row);
         break;
+      case 'GEN_PDF_QC_OIL':
+        if (e.row.qualityControlResults) {
+          console.log(`[OilReception] Generating PDF for delivery: ${e.row.lotNumber}`);
+          const deliveryType = e.row.deliveryType?.toUpperCase() || '';
+          const config = getControlQualitePdfConfig(e.row, deliveryType);
+          this.pdfService.generatePdf(config);        }else{
+          this.toast.error('no quality control for oil')
+        }
+        break;
+        case 'GEN_PDF_QC_OLIVE':
+        if (e.row.qualityControlResults) {
+          console.log(`[OilReception] Generating PDF for delivery: ${e.row.lotNumber}`);
+          const deliveryType = e.row.deliveryType?.toUpperCase() || '';
+          const config = getControlQualitePdfConfig(e.row, deliveryType);
+          this.pdfService.generatePdf(config);
+        }else{
+          this.toast.error('no quality control for olive')
+        }
+        break;
       case 'CANCEL':
         this.cancelDelivery(e.row);
         break;
     }
   }
 
-  private deleteDelivery(d: UnifiedDelivery): void {
-    this.subs.add(
-      this.deliveryService.deleteUnifiedDelivery(d.id!).subscribe(
-        (res) => {
-          if (res.success) {
-            this.fetchDeliveries();
-            this.toast.success(this.translate.instant('DELIVERIES.MESSAGES.DELETE_SUCCESS'));
-          }
+  confirmPrice(dialogRef: MatDialogRef<unknown>): void {
+    if (!this.setPriceForm.valid || !this.selectedRow) return;
+
+    this.isLoading = true;
+
+    // Always update standard fields
+    this.selectedRow.unitPrice = this.setPriceForm.get('unitPrice')?.value;
+    this.selectedRow.price = this.setPriceForm.get('price')?.value;
+
+    if (this.selectedRow.operationType === OperationType.EXCHANGE) {
+      // Handle exchange delivery pricing - also update oil fields
+      const oilQuantity = this.setPriceForm.get('oilQuantity')?.value;
+      const oilUnitPrice = this.setPriceForm.get('oilUnitPrice')?.value;
+      const oilTotalValue = this.setPriceForm.get('oilTotalValue')?.value;
+      const qualityGrade = this.setPriceForm.get('qualityGrade')?.value;
+
+      // Update the selected row with exchange values
+      this.selectedRow.oilQuantity = oilQuantity;
+      // Note: oilType assignment removed due to type mismatch - qualityGrade is string but BaseType expects number id
+
+      // Create DTO with all exchange pricing data
+      const exchangePricingDto: ExchangePricingDto = {
+        deliveryId: this.selectedRow.id!,
+        unitPrice: this.selectedRow.unitPrice || 0,
+        price: this.selectedRow.price || 0,
+        qualityGrade: qualityGrade,
+        oilUnitPrice: oilUnitPrice || 0,
+        oilQuantity: oilQuantity || 0,
+        oilTotalValue: oilTotalValue || 0
+      };
+
+      // Call the service to update exchange pricing
+      this.deliveryService.updatePricingAndCreatOilTransactionOut(exchangePricingDto).subscribe({
+        next: () => {
+          dialogRef.close();
+          this.dashboard.refrechData();
+          this.isLoading = false;
+          this.toast.open("Prix d'échange mis à jour avec succès.", 'Fermer', {
+            duration: 3000,
+            panelClass: ['mat-snack-bar-container-success']
+          });
         },
-        () => this.toast.error(this.translate.instant('DELIVERIES.MESSAGES.DELETE_ERROR'))
-      )
+        error: () => {
+          this.toast.error("Erreur lors de l'enregistrement du prix d'échange.");
+          this.isLoading = false;
+        }
+      });
+    } else {
+      // Handle standard delivery pricing
+      this.deliveryService.updatePricing(this.selectedRow.id!, this.selectedRow.unitPrice || 0).subscribe({
+        next: () => {
+          dialogRef.close();
+          this.dashboard.refrechData();
+          this.isLoading = false;
+          this.toast.open('Prix mis à jour avec succès.', 'Fermer', {
+            duration: 3000,
+            panelClass: ['mat-snack-bar-container-success']
+          });
+        },
+        error: () => {
+          this.toast.open("Erreur lors de l'enregistrement du prix.", 'Fermer', {
+            duration: 4000,
+            panelClass: ['mat-snack-bar-container-error']
+          });
+          this.isLoading = false;
+        }
+      });
+    }
+  }
+
+  private fetchDeliveries(): void {
+    this.subs.add(
+      this.deliveryService.getAllDeliveriesList().subscribe((res) => {
+        this.deliveries = res.success ? res.data.filter((d) => d.deliveryType === 'OLIVE') : [];
+        if (!res.success) this.toast.error(this.translate.instant('DELIVERIES.MESSAGES.LOAD_ERROR'));
+        if (res.success) this.toast.success();
+      })
     );
   }
 
-
   private setPrice(row: UnifiedDelivery): void {
     this.selectedRow = row;
-
     // Always start with standard pricing fields
     const poidsNet = row.poidsNet || 0;
     const initialUnitPrice = row.unitPrice || 0;
@@ -268,7 +340,6 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
           this.setPriceForm.get('oilQuantity')?.setValue(+newOilQuantity.toFixed(3), { emitEvent: false });
         }
       });
-
     } else {
       // Handle standard delivery type - only standard fields
       this.setPriceForm = this.fb.group({
@@ -291,76 +362,6 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
     });
   }
 
-  confirmPrice(dialogRef: MatDialogRef<unknown>): void {
-    if (!this.setPriceForm.valid || !this.selectedRow) return;
-
-    this.isLoading = true;
-
-    // Always update standard fields
-    this.selectedRow.unitPrice = this.setPriceForm.get('unitPrice')?.value;
-    this.selectedRow.price = this.setPriceForm.get('price')?.value;
-
-    if (this.selectedRow.operationType === OperationType.EXCHANGE) {
-      // Handle exchange delivery pricing - also update oil fields
-      const oilQuantity = this.setPriceForm.get('oilQuantity')?.value;
-      const oilUnitPrice = this.setPriceForm.get('oilUnitPrice')?.value;
-      const oilTotalValue = this.setPriceForm.get('oilTotalValue')?.value;
-      const qualityGrade = this.setPriceForm.get('qualityGrade')?.value;
-
-                  // Update the selected row with exchange values
-      this.selectedRow.oilQuantity = oilQuantity;
-      // Note: oilType assignment removed due to type mismatch - qualityGrade is string but BaseType expects number id
-
-      // Create DTO with all exchange pricing data
-      const exchangePricingDto: ExchangePricingDto = {
-        deliveryId: this.selectedRow.id!,
-        unitPrice: this.selectedRow.unitPrice || 0,
-        price: this.selectedRow.price || 0,
-        qualityGrade: qualityGrade,
-        oilUnitPrice: oilUnitPrice || 0,
-        oilQuantity: oilQuantity || 0,
-        oilTotalValue: oilTotalValue || 0
-      };
-
-      // Call the service to update exchange pricing
-      this.deliveryService.updatePricingAndCreatOilTransactionOut(exchangePricingDto).subscribe({
-        next: () => {
-          dialogRef.close();
-          this.dashboard.refrechData();
-          this.isLoading = false;
-          this.toast.open('Prix d\'échange mis à jour avec succès.', 'Fermer', {
-            duration: 3000,
-            panelClass: ['mat-snack-bar-container-success']
-          });
-        },
-        error: () => {
-          this.toast.error('Erreur lors de l\'enregistrement du prix d\'échange.' );
-          this.isLoading = false;
-        }
-      });
-    } else {
-      // Handle standard delivery pricing
-      this.deliveryService.updatePricing(this.selectedRow.id!, this.selectedRow.unitPrice || 0).subscribe({
-        next: () => {
-          dialogRef.close();
-          this.dashboard.refrechData();
-          this.isLoading = false;
-          this.toast.open('Prix mis à jour avec succès.', 'Fermer', {
-            duration: 3000,
-            panelClass: ['mat-snack-bar-container-success']
-          });
-        },
-        error: () => {
-          this.toast.open('Erreur lors de l\'enregistrement du prix.', 'Fermer', {
-            duration: 4000,
-            panelClass: ['mat-snack-bar-container-error']
-          });
-          this.isLoading = false;
-        }
-      });
-    }
-  }
-
   private getOilTypes(): void {
     // This method is no longer needed as oilTypes is now static
   }
@@ -371,10 +372,8 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
       .pipe(
         tap((response: ApiResponse<unknown>) => {
           console.log(response);
-         })
+        })
       )
       .subscribe();
   };
-
-  protected readonly OperationType = OperationType;
 }

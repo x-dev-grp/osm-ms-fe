@@ -77,7 +77,7 @@ export class ExpensesComponent implements OnInit {
     this.expenseService.deleteExpense(id).subscribe({
       next: (response: any) => {
         if (response.success) {
-          this.showSuccess('Dépense supprimée avec succès');
+          this.toast.success();
           // Refresh the dashboard
           window.location.reload();
         } else {
@@ -88,9 +88,8 @@ export class ExpensesComponent implements OnInit {
     });
   }
 
-  private showSuccess(message: string): void {
-    this.toast.success(message);
-  }
+     ;
+
 
   private showError(message: string): void {
     this.toast.error(message);

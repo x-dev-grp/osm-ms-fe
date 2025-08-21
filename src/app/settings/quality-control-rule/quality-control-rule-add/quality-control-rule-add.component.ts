@@ -186,7 +186,7 @@ export class QualityControlRuleAddComponent implements OnInit {
     ).subscribe({
       next: (res) => {
         if (res?.success) {
-          this.toast.success('Règle enregistrée avec succès ✅' );
+          this.toast.success();
           this.router.navigate(['/settings/quality-control']);
           // this.loadRules();
           this.cancel();

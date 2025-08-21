@@ -125,7 +125,7 @@ export class OilTransactionsComponent implements OnInit {
         this.oilTransactionService.approveOilTransaction(this.transactionRequest).subscribe({
           next: (response) => {
             if (response.success) {
-              this.toast.success('Oil sale validated successfully');
+              this.toast.success();
 
             } else {
               this.toast.error('Error validating oil sale: ' + response.message);
@@ -193,7 +193,7 @@ export class OilTransactionsComponent implements OnInit {
           .subscribe({
             next: (response) => {
               if (response.success) {
-                this.toast.success('OIL_TRANSACTIONS.FORM.MESSAGES.SUCCESS.APPROVE');
+                this.toast.success();
                 this.dashboard.refrechData();
                 this.router.navigate(['/storage/oil-transactions']);
               } else {
@@ -212,7 +212,7 @@ export class OilTransactionsComponent implements OnInit {
       this.oilTransactionService.deleteOilTransaction(transaction.id).subscribe({
         next: (response) => {
           if (response.success) {
-            this.toast.success("Transaction d'huile supprimée avec succès" );
+            this.toast.success();
             // Refresh the list
             this.loadOilTransactions();
           } else {
