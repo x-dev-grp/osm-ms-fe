@@ -501,7 +501,7 @@
       "RECEPTION_TREND": {
         "DAILY": "Daily",
         "MONTHLY": "Monthly",
-        "TITLE": "Reception Trend (14 days)",
+        "TITLE": "Reception Trend",
         "WEEKLY": "Weekly"
       },
       "RECEPTION_TYPE": "Receptions by Type",
@@ -725,6 +725,7 @@
       "REFUSED": "Refused"
     }
   },
+  "DIVORCED": "Divorced",
   "Dashboard": "Dashboard",
   "Data": "Data",
   "Default": "Default",
@@ -733,6 +734,54 @@
   "Document": "Document",
   "Drop Zone": "Drop Zone",
   "E-commerce": "E-commerce",
+  "EMPLOYEE": {
+    "ADDRESS": "Address",
+    "ADD_TITLE": "Add Employee",
+    "BIRTH_DATE": "Birth Date",
+    "CANCEL": "Cancel",
+    "CIN": "CIN",
+    "CITY": "City",
+    "COUNTRY": "Country",
+    "DEPARTMENT": "Departement",
+    "DETAIL": {
+      "CONTACT_INFO": "Contact Information",
+      "PERSONAL_INFO": "Personal Information",
+      "PROFESSIONAL_INFO": "Professional Information",
+      "TITLE": "Employee Details"
+    },
+    "EDIT_TITLE": "Edit Employee",
+    "EMAIL": "Email",
+    "FIRST_NAME": "First Name",
+    "FORM": {
+      "ADDRESS": "Address",
+      "BIRTH_DATE": "Birth Date",
+      "CIN": "CIN",
+      "CITY": "City",
+      "COUNTRY": "Country",
+      "EMAIL": "Email",
+      "GENDER": "Gender",
+      "HIRE_DATE": "Hire Date",
+      "MARITAL_STATUS": "Marital Status",
+      "PHONE": "Phone",
+      "POSTAL_CODE": "Postal Code"
+    },
+    "GENDER": "Gender",
+    "HIRE_DATE": "Hire Date",
+    "IS_ACTIVE": "Active",
+    "LAST_NAME": "Last Name",
+    "MARITAL_STATUS": "Marital Status",
+    "MESSAGES": {
+      "NOT_FOUND": "Employee not found"
+    },
+    "PHONE": "Phone",
+    "POSTAL_CODE": "Postal Code",
+    "SAVE": "Save",
+    "STATUS": {
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive"
+    },
+    "UPDATE": "Update"
+  },
   "EXPENSES": {
     "ACTIONS": {
       "CANCEL": "Cancel",
@@ -796,6 +845,7 @@
   "Enter your password": "Enter your password",
   "Error 404": "Error 404",
   "Error 500": "Error 500",
+  "FEMALE": "Female",
   "FINANCE_TAB": "Finance Config",
   "File Manager": "File Manager",
   "Finance": "Finance",
@@ -945,6 +995,8 @@
   "Level 2.1": "Level 2.1",
   "List": "List",
   "Login": "Login",
+  "MALE": "Male",
+  "MARRIED": "Married",
   "MENU": {
     "ADMINISTRATION": {
       "ADD_COMPANY_USER": "Add Company & User",
@@ -1878,18 +1930,6 @@
   "Online Courses": "Online Courses",
   "Other": "Other",
   "PDF": {
-    "QUALITY_FIELDS": {
-      "ACIDITE": "Acidity",
-      "DELTA_K": "Delta K",
-      "INDICE_PEROXYDE": "Peroxide index",
-      "K232": "K232",
-      "K270": "K270",
-      "CATEGORIE_HUILE": "Oil category",
-      "ENDOMMAGEES_PCT": "Damaged %",
-      "FERMENTEES_PCT": "Fermented %",
-      "INFESTEES_PCT": "Infested %",
-      "CATEGORIE_OLIVE": "Olive category"
-    },
     "ACIDITY": "Acidity",
     "ADDRESS": "Address",
     "CATEGORY_OIL": "Oil Category",
@@ -1951,6 +1991,18 @@
     "PHONE": "Phone",
     "PRODUCTION_MANAGER": "Production Manager",
     "PRODUCTION_RECEIPT": "Production Receipt",
+    "QUALITY_FIELDS": {
+      "ACIDITE": "Acidity",
+      "CATEGORIE_HUILE": "Oil category",
+      "CATEGORIE_OLIVE": "Olive category",
+      "DELTA_K": "Delta K",
+      "ENDOMMAGEES_PCT": "Damaged %",
+      "FERMENTEES_PCT": "Fermented %",
+      "INDICE_PEROXYDE": "Peroxide index",
+      "INFESTEES_PCT": "Infested %",
+      "K232": "K232",
+      "K270": "K270"
+    },
     "QUALITY_GRADE": "Quality Grade",
     "QUALITY_MANAGER": "Quality Manager",
     "QUANTITY": "Quantity",
@@ -2084,6 +2136,7 @@
   },
   "Register": "Register",
   "Reset Password": "Reset Password",
+  "SINGLE": "Single",
   "STANDARD": {
     "ACCESS_RESSOURCE_ERROR": "You don't have access to this resource.",
     "BOOLEAN": {
@@ -2541,6 +2594,7 @@
       "OTHER": "Other"
     }
   },
+  "WIDOWED": "Widowed",
   "Widget": "Widget",
   "auth": {
     "change_password_title": "Change Password",

@@ -4,7 +4,7 @@
             <div class="form-grid">
                 <div class="form-grid-item">
                     <mat-form-field appearance="outline">
-                        <mat-label>{{ 'FIRST_NAME' | translate }}</mat-label>
+                        <mat-label>{{ 'EMPLOYEE.FIRST_NAME' | translate }}</mat-label>
                         <input matInput formControlName="firstName" required>
                         <mat-error>{{ getErrorMessage('firstName') }}</mat-error>
                     </mat-form-field>
@@ -12,7 +12,7 @@
 
                 <div class="form-grid-item">
                     <mat-form-field appearance="outline">
-                        <mat-label>{{ 'LAST_NAME' | translate }}</mat-label>
+                        <mat-label>{{ 'EMPLOYEE.LAST_NAME' | translate }}</mat-label>
                         <input matInput formControlName="lastName" required>
                         <mat-error>{{ getErrorMessage('lastName') }}</mat-error>
                     </mat-form-field>
@@ -23,7 +23,7 @@
             <div class="form-grid">
                 <div class="form-grid-item">
                     <mat-form-field appearance="outline">
-                        <mat-label>{{ 'CIN' | translate }}</mat-label>
+                        <mat-label>{{ 'EMPLOYEE.CIN' | translate }}</mat-label>
                         <input matInput formControlName="cin" required>
                         <mat-error>{{ getErrorMessage('cin') }}</mat-error>
                     </mat-form-field>
@@ -31,7 +31,7 @@
 
                 <div class="form-grid-item">
                     <mat-form-field appearance="outline">
-                        <mat-label>{{ 'GENDER' | translate }}</mat-label>
+                        <mat-label>{{ 'EMPLOYEE.GENDER' | translate }}</mat-label>
                         <mat-select formControlName="gender" required>
                             <mat-option *ngFor="let g of ['MALE', 'FEMALE']" [value]="g">
                                 {{ g | translate }}
@@ -46,7 +46,7 @@
             <div class="form-grid">
                 <div class="form-grid-item">
                     <mat-form-field appearance="outline">
-                        <mat-label>{{ 'BIRTH_DATE' | translate }}</mat-label>
+                        <mat-label>{{ 'EMPLOYEE.BIRTH_DATE' | translate }}</mat-label>
                         <input matInput [matDatepicker]="birthPicker" formControlName="birthDate" required>
                         <mat-datepicker-toggle matSuffix [for]="birthPicker"></mat-datepicker-toggle>
                         <mat-datepicker #birthPicker></mat-datepicker>
@@ -56,7 +56,7 @@
 
                 <div class="form-grid-item">
                     <mat-form-field appearance="outline">
-                        <mat-label>{{ 'HIRE_DATE' | translate }}</mat-label>
+                        <mat-label>{{ 'EMPLOYEE.HIRE_DATE' | translate }}</mat-label>
                         <input matInput [matDatepicker]="hirePicker" formControlName="hireDate" required>
                         <mat-datepicker-toggle matSuffix [for]="hirePicker"></mat-datepicker-toggle>
                         <mat-datepicker #hirePicker></mat-datepicker>
@@ -69,7 +69,7 @@
             <div class="form-grid">
                 <div class="form-grid-item">
                     <mat-form-field appearance="outline">
-                        <mat-label>{{ 'EMAIL' | translate }}</mat-label>
+                        <mat-label>{{ 'EMPLOYEE.EMAIL' | translate }}</mat-label>
                         <input matInput formControlName="email" type="email">
                         <mat-error>{{ getErrorMessage('email') }}</mat-error>
                     </mat-form-field>
@@ -77,7 +77,7 @@
 
                 <div class="form-grid-item">
                     <mat-form-field appearance="outline">
-                        <mat-label>{{ 'PHONE' | translate }}</mat-label>
+                        <mat-label>{{ 'EMPLOYEE.PHONE' | translate }}</mat-label>
                         <input matInput formControlName="phone">
                     </mat-form-field>
                 </div>
@@ -87,7 +87,7 @@
             <div class="form-grid">
                 <div class="form-grid-item">
                     <mat-form-field appearance="outline">
-                        <mat-label>{{ 'MARITAL_STATUS' | translate }}</mat-label>
+                        <mat-label>{{ 'EMPLOYEE.MARITAL_STATUS' | translate }}</mat-label>
                         <mat-select formControlName="maritalStatus">
                             <mat-option *ngFor="let status of ['SINGLE', 'MARRIED', 'DIVORCED', 'WIDOWED']" [value]="status">
                                 {{ status | translate }}
@@ -100,7 +100,7 @@
 
             <div class="form-grid full-width">
                 <mat-form-field appearance="outline" class="full-width">
-                    <mat-label>{{ 'ADDRESS' | translate }}</mat-label>
+                    <mat-label>{{ 'EMPLOYEE.ADDRESS' | translate }}</mat-label>
                     <textarea matInput formControlName="address" rows="2"></textarea>
                 </mat-form-field>
             </div>
@@ -109,21 +109,21 @@
             <div class="form-grid">
                 <div class="form-grid-item">
                     <mat-form-field appearance="outline">
-                        <mat-label>{{ 'POSTAL_CODE' | translate }}</mat-label>
+                        <mat-label>{{ 'EMPLOYEE.POSTAL_CODE' | translate }}</mat-label>
                         <input matInput formControlName="postalCode">
                     </mat-form-field>
                 </div>
 
                 <div class="form-grid-item">
                     <mat-form-field appearance="outline">
-                        <mat-label>{{ 'CITY' | translate }}</mat-label>
+                        <mat-label>{{ 'EMPLOYEE.CITY' | translate }}</mat-label>
                         <input matInput formControlName="city">
                     </mat-form-field>
                 </div>
 
                 <div class="form-grid-item">
                     <mat-form-field appearance="outline">
-                        <mat-label>{{ 'COUNTRY' | translate }}</mat-label>
+                        <mat-label>{{ 'EMPLOYEE.COUNTRY' | translate }}</mat-label>
                         <input matInput formControlName="country">
                     </mat-form-field>
                 </div>
@@ -132,18 +132,18 @@
 
           <div class="form-grid full-width">
             <mat-checkbox formControlName="active" color="primary">
-              {{ 'IS_ACTIVE' | translate }}
+              {{ 'EMPLOYEE.IS_ACTIVE' | translate }}
             </mat-checkbox>
           </div>
 
             <div class="form-actions">
                 <button mat-button type="button" (click)="onCancel()">
-                    {{ 'CANCEL' | translate }}
+                    {{ 'EMPLOYEE.CANCEL' | translate }}
                 </button>
                 <button mat-raised-button color="primary" type="submit" [disabled]="employeeForm.invalid || loading">
                     <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
                     <span *ngIf="!loading">
-            {{ isEditing ? ('UPDATE' | translate) : ('SAVE' | translate) }}
+            {{ isEditing ? ('EMPLOYEE.UPDATE' | translate) : ('EMPLOYEE.SAVE' | translate) }}
           </span>
                 </button>
             </div>

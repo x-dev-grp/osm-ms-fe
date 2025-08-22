@@ -501,7 +501,7 @@
       "RECEPTION_TREND": {
         "DAILY": "Journalier",
         "MONTHLY": "Mensuel",
-        "TITLE": "Tendance des réceptions (14 jours)",
+        "TITLE": "Tendance des réceptions",
         "WEEKLY": "Hebdomadaire"
       },
       "RECEPTION_TYPE": "Réceptions par type",
@@ -725,6 +725,7 @@
       "REFUSED": "Refusé"
     }
   },
+  "DIVORCED": "Divorcé(e)",
   "Dashboard": "Tableau de bord",
   "Data": "Données",
   "Default": "Défaut",
@@ -733,6 +734,54 @@
   "Document": "Document",
   "Drop Zone": "Zone de largage",
   "E-commerce": "Commerce électronique",
+  "EMPLOYEE": {
+    "ADDRESS": "Adresse",
+    "ADD_TITLE": "Ajouter un employé",
+    "BIRTH_DATE": "Date de naissance",
+    "CANCEL": "Annuler",
+    "CIN": "CIN",
+    "CITY": "Ville",
+    "COUNTRY": "Pays",
+    "DEPARTMENT": "Departement",
+    "DETAIL": {
+      "CONTACT_INFO": "Informations de contact",
+      "PERSONAL_INFO": "Informations personnelles",
+      "PROFESSIONAL_INFO": "Informations professionnelles",
+      "TITLE": "Détails de l'employé"
+    },
+    "EDIT_TITLE": "Modifier un employé",
+    "EMAIL": "Email",
+    "FIRST_NAME": "Prénom",
+    "FORM": {
+      "ADDRESS": "Adresse",
+      "BIRTH_DATE": "Date de naissance",
+      "CIN": "CIN",
+      "CITY": "Ville",
+      "COUNTRY": "Pays",
+      "EMAIL": "Email",
+      "GENDER": "Sexe",
+      "HIRE_DATE": "Date d'embauche",
+      "MARITAL_STATUS": "État civil",
+      "PHONE": "Téléphone",
+      "POSTAL_CODE": "Code postal"
+    },
+    "GENDER": "Sexe",
+    "HIRE_DATE": "Date d'embauche",
+    "IS_ACTIVE": "Actif",
+    "LAST_NAME": "Nom",
+    "MARITAL_STATUS": "État civil",
+    "MESSAGES": {
+      "NOT_FOUND": "Employé introuvable"
+    },
+    "PHONE": "Téléphone",
+    "POSTAL_CODE": "Code postal",
+    "SAVE": "Enregistrer",
+    "STATUS": {
+      "ACTIVE": "Actif",
+      "INACTIVE": "Inactif"
+    },
+    "UPDATE": "Mettre à jour"
+  },
   "EXPENSES": {
     "ACTIONS": {
       "CANCEL": "Annuler",
@@ -796,6 +845,7 @@
   "Enter your password": "Tapper votre mot de pass",
   "Error 404": "Erreur 404",
   "Error 500": "Erreur 500",
+  "FEMALE": "Femme",
   "FINANCE_TAB": "Config Finance",
   "File Manager": "Gestionnaire de fichiers",
   "Finance": "finance",
@@ -942,6 +992,8 @@
   "Level 2.1": "Niveau 2.1",
   "List": "Liste",
   "Login": "Connexion",
+  "MALE": "Homme",
+  "MARRIED": "Marié(e)",
   "MENU": {
     "ADMINISTRATION": {
       "ADD_COMPANY_USER": "Ajouter société & utilisateur",
@@ -1875,18 +1927,6 @@
   "Online Courses": "Cours en ligne",
   "Other": "Autre",
   "PDF": {
-    "QUALITY_FIELDS": {
-      "ACIDITE": "Acidité",
-      "DELTA_K": "Delta K",
-      "INDICE_PEROXYDE": "Indice peroxyde",
-      "K232": "K232",
-      "K270": "K270",
-      "CATEGORIE_HUILE": "Catégorie huile",
-      "ENDOMMAGEES_PCT": "Endommagées %",
-      "FERMENTEES_PCT": "Fermentées %",
-      "INFESTEES_PCT": "Infestées %",
-      "CATEGORIE_OLIVE": "Catégorie olive"
-    },
     "ACIDITY": "Acidité",
     "ADDRESS": "Adresse",
     "CATEGORY_OIL": "Catégorie Huile",
@@ -1948,6 +1988,18 @@
     "PHONE": "Téléphone",
     "PRODUCTION_MANAGER": "Chef de Production",
     "PRODUCTION_RECEIPT": "BON DE PRODUCTION",
+    "QUALITY_FIELDS": {
+      "ACIDITE": "Acidité",
+      "CATEGORIE_HUILE": "Catégorie huile",
+      "CATEGORIE_OLIVE": "Catégorie olive",
+      "DELTA_K": "Delta K",
+      "ENDOMMAGEES_PCT": "Endommagées %",
+      "FERMENTEES_PCT": "Fermentées %",
+      "INDICE_PEROXYDE": "Indice peroxyde",
+      "INFESTEES_PCT": "Infestées %",
+      "K232": "K232",
+      "K270": "K270"
+    },
     "QUALITY_GRADE": "Qualité",
     "QUALITY_MANAGER": "Responsable Qualité",
     "QUANTITY": "Quantité",
@@ -2081,6 +2133,7 @@
   },
   "Register": "Enregistrer",
   "Reset Password": "réinitialiser le mot de passe",
+  "SINGLE": "Célibataire",
   "STANDARD": {
     "ACCESS_RESSOURCE_ERROR": "Vous n'avez pas accès à cette ressource.",
     "BOOLEAN": {
@@ -2538,6 +2591,7 @@
       "OTHER": "Autre"
     }
   },
+  "WIDOWED": "Veuf/Veuve",
   "Widget": "Widget",
   "auth": {
     "change_password_title": "Changer mot de passe",

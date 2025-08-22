@@ -29,7 +29,7 @@ export const dashboardConfig: DashboardConfig = {
     {
       name: 'firstName',
       label: 'Prénom',
-      labelTranslatePath: 'EMPLOYEE.DASHBOARD.FIELDS.FIRST_NAME',
+      labelTranslatePath: 'EMPLOYEE.FIRST_NAME',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       sortable: true,
@@ -42,7 +42,7 @@ export const dashboardConfig: DashboardConfig = {
     {
       name: 'lastName',
       label: 'Nom',
-      labelTranslatePath: 'EMPLOYEE.DASHBOARD.FIELDS.LAST_NAME',
+      labelTranslatePath: 'EMPLOYEE.LAST_NAME',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       sortable: true,
@@ -54,7 +54,7 @@ export const dashboardConfig: DashboardConfig = {
     {
       name: 'cin',
       label: 'CIN',
-      labelTranslatePath: 'EMPLOYEE.DASHBOARD.FIELDS.CIN',
+      labelTranslatePath: 'EMPLOYEE.CIN',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       sortable: true,
@@ -68,7 +68,7 @@ export const dashboardConfig: DashboardConfig = {
     {
       name: 'email',
       label: 'Email',
-      labelTranslatePath: 'EMPLOYEE.DASHBOARD.FIELDS.EMAIL',
+      labelTranslatePath: 'EMPLOYEE.EMAIL',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       sortable: true,
@@ -80,7 +80,7 @@ export const dashboardConfig: DashboardConfig = {
     {
       name: 'phone',
       label: 'Téléphone',
-      labelTranslatePath: 'EMPLOYEE.DASHBOARD.FIELDS.PHONE',
+      labelTranslatePath: 'EMPLOYEE.PHONE',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       sortable: false,
@@ -94,7 +94,7 @@ export const dashboardConfig: DashboardConfig = {
     {
       name: 'country',
       label: 'Pays',
-      labelTranslatePath: 'EMPLOYEE.DASHBOARD.FIELDS.COUNTRY',
+      labelTranslatePath: 'EMPLOYEE.COUNTRY',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       sortable: true,
@@ -106,7 +106,7 @@ export const dashboardConfig: DashboardConfig = {
     {
       name: 'city',
       label: 'Ville',
-      labelTranslatePath: 'EMPLOYEE.DASHBOARD.FIELDS.CITY',
+      labelTranslatePath: 'EMPLOYEE.CITY',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       sortable: true,
@@ -118,7 +118,7 @@ export const dashboardConfig: DashboardConfig = {
     {
       name: 'postalCode',
       label: 'Code postal',
-      labelTranslatePath: 'EMPLOYEE.DASHBOARD.FIELDS.POSTAL_CODE',
+      labelTranslatePath: 'EMPLOYEE.POSTAL_CODE',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       sortable: false,
@@ -130,7 +130,7 @@ export const dashboardConfig: DashboardConfig = {
     {
       name: 'address',
       label: 'Adresse',
-      labelTranslatePath: 'EMPLOYEE.DASHBOARD.FIELDS.ADDRESS',
+      labelTranslatePath: 'EMPLOYEE.ADDRESS',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       sortable: false,
@@ -144,9 +144,9 @@ export const dashboardConfig: DashboardConfig = {
     {
       name: 'hireDate',
       label: "Date d'embauche",
-      labelTranslatePath: 'EMPLOYEE.DASHBOARD.FIELDS.HIRE_DATE',
-      attributeType: AttributeType.date, // si non supporté: AttributeType.string
-      fieldType: FieldType.date, // si non supporté: FieldType.text
+      labelTranslatePath: 'EMPLOYEE.HIRE_DATE',
+      attributeType: AttributeType.date,
+      fieldType: FieldType.date,
       sortable: true,
       filterable: true,
       defaultFilter: false,
@@ -156,13 +156,13 @@ export const dashboardConfig: DashboardConfig = {
     {
       name: 'birthDate',
       label: 'Date de naissance',
-      labelTranslatePath: 'EMPLOYEE.DASHBOARD.FIELDS.BIRTH_DATE',
+      labelTranslatePath: 'EMPLOYEE.BIRTH_DATE',
       attributeType: AttributeType.date,
       fieldType: FieldType.date,
       sortable: true,
       filterable: true,
       defaultFilter: false,
-      dataTable: false, // évite de surcharger la grille
+      dataTable: false,
       exportable: true
     },
 
@@ -170,7 +170,7 @@ export const dashboardConfig: DashboardConfig = {
     {
       name: 'gender',
       label: 'Genre',
-      labelTranslatePath: 'EMPLOYEE.DASHBOARD.FIELDS.GENDER',
+      labelTranslatePath: 'EMPLOYEE.GENDER',
       attributeType: AttributeType.enum, // ou AttributeType.enum si dispo
       fieldType: FieldType.select, // select si ton module le gère
       sortable: true,
@@ -187,7 +187,7 @@ export const dashboardConfig: DashboardConfig = {
     {
       name: 'maritalStatus',
       label: 'Situation familiale',
-      labelTranslatePath: 'EMPLOYEE.DASHBOARD.FIELDS.MARITAL_STATUS',
+      labelTranslatePath: 'EMPLOYEE.MARITAL_STATUS',
       attributeType: AttributeType.enum,
       fieldType: FieldType.select,
       sortable: true,
@@ -205,7 +205,7 @@ export const dashboardConfig: DashboardConfig = {
     {
       name: 'active',
       label: 'Actif',
-      labelTranslatePath: 'EMPLOYEE.DASHBOARD.FIELDS.IS_ACTIVE',
+      labelTranslatePath: 'EMPLOYEE.IS_ACTIVE',
       attributeType: AttributeType.boolean,
       fieldType: FieldType.checkbox,
       sortable: true,
@@ -219,7 +219,7 @@ export const dashboardConfig: DashboardConfig = {
     {
       name: 'department.name',
       label: 'Département',
-      labelTranslatePath: 'EMPLOYEE.DASHBOARD.FIELDS.DEPARTMENT',
+      labelTranslatePath: 'EMPLOYEE.DEPARTMENT',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       sortable: true,
