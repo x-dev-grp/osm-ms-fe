@@ -1,0 +1,65 @@
+.add-company-user-wrapper {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 8px;
+}
+
+.main-card {
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  background: #fff;
+}
+
+mat-card-header {
+  background: #f5f7fa;
+  border-bottom: 1px solid #e0e0e0;
+  border-radius: 14px 14px 0 0;
+}
+
+.section-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #1976d2;
+  margin-bottom: 16px;
+  margin-top: 8px;
+}
+
+.form-section {
+  margin-bottom: 28px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #eee;
+}
+.form-section:last-child {
+  border-bottom: none;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.col-12, .col-md-6, .col-lg-4 {
+  flex: 1 1 280px;
+  min-width: 280px;
+  max-width: 100%;
+}
+.mt-3 {
+  margin-top: 20px;
+}
+.form-actions {
+  margin-top: 28px;
+}
+
+@media (max-width: 1000px) {
+  .add-company-user-wrapper {
+    max-width: 100%;
+    padding: 0 2px;
+  }
+  .row {
+    gap: 10px;
+  }
+  .col-12, .col-md-6, .col-lg-4 {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+}

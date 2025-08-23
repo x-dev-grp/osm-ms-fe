@@ -1,0 +1,118 @@
+Index: src/app/components/delivery/delivery.component.ts
+===================================================================
+diff --git a/src/app/components/delivery/delivery.component.ts b/src/app/delivery/delivery.component.ts
+rename from src/app/components/delivery/delivery.component.ts
+rename to src/app/delivery/delivery.component.ts
+--- a/src/app/components/delivery/delivery.component.ts	(revision 5ae347b95316d6b75cce7d822193be4cea483849)
++++ b/src/app/delivery/delivery.component.ts	(date 1742555598128)
+@@ -1,17 +1,17 @@
+ import { Component, OnInit } from '@angular/core';
+-import { DeliveryService } from '../../services/delivery.service';
+-import { SupplierService } from '../../services/supplier.service';
+-import { GenericTypeService } from '../../services/generic-type.service';
+-import { QualityControlRuleService } from '../../services/quality-control-rule.service';
++import { DeliveryService } from '../services/delivery.service';
++import { SupplierService } from '../services/supplier.service';
++import { GenericTypeService } from '../services/generic-type.service';
++import { QualityControlRuleService } from '../services/quality-control-rule.service';
+ 
+-import { Delivery } from '../../models/Delivery';
+-import { VarietyDto } from '../../models/VarietyDto';
+-import { QualityControlRule } from '../../models/quality-control-rule';
++import { Delivery } from '../models/Delivery';
++import { VarietyDto } from '../models/VarietyDto';
++import { QualityControlRule } from '../models/quality-control-rule';
+  import {T} from "@angular/cdk/keycodes";
+-import {BaseType} from "../../models/base-type";
+-import {Supplier} from "../../models/supplier";
+-import {Region} from "../../models/region";
+-import {QualityControlResultDto} from "../../models/QualityControlResultDto";
++import {BaseType} from "../models/base-type";
++import {Supplier} from "../models/supplier";
++import {Region} from "../models/region";
++import {QualityControlResultDto} from "../models/QualityControlResultDto";
+ type KeyedObject<T> = { [key: string]: T };
+ 
+ @Component({
+Index: src/app/components/supplier/supplier.component.ts
+===================================================================
+diff --git a/src/app/components/supplier/supplier.component.ts b/src/app/supplier/supplier.component.ts
+rename from src/app/components/supplier/supplier.component.ts
+rename to src/app/supplier/supplier.component.ts
+--- a/src/app/components/supplier/supplier.component.ts	(revision 5ae347b95316d6b75cce7d822193be4cea483849)
++++ b/src/app/supplier/supplier.component.ts	(date 1742555598167)
+@@ -1,6 +1,6 @@
+ import { Component, OnInit } from '@angular/core';
+-import { SupplierService } from '../../services/supplier.service';
+-import { Supplier } from '../../models/supplier';
++import { SupplierService } from '../services/supplier.service';
++import { Supplier } from '../models/supplier';
+ 
+ @Component({
+   selector: 'app-supplier',
+Index: src/app/components/quality-control-rule/quality-control-rule.component.ts
+===================================================================
+diff --git a/src/app/components/quality-control-rule/quality-control-rule.component.ts b/src/app/quality-control-rule/quality-control-rule.component.ts
+rename from src/app/components/quality-control-rule/quality-control-rule.component.ts
+rename to src/app/quality-control-rule/quality-control-rule.component.ts
+--- a/src/app/components/quality-control-rule/quality-control-rule.component.ts	(revision 5ae347b95316d6b75cce7d822193be4cea483849)
++++ b/src/app/quality-control-rule/quality-control-rule.component.ts	(date 1742555598093)
+@@ -1,6 +1,6 @@
+ import { Component, OnInit } from '@angular/core';
+-import { QualityControlRuleService } from '../../services/quality-control-rule.service';
+-import { QualityControlRule } from '../../models/quality-control-rule';
++import { QualityControlRuleService } from '../services/quality-control-rule.service';
++import { QualityControlRule } from '../models/quality-control-rule';
+ 
+ @Component({
+   selector: 'app-quality-control-rule',
+Index: src/app/components/delivery/delivery.component.html
+===================================================================
+diff --git a/src/app/components/delivery/delivery.component.html b/src/app/delivery/delivery.component.html
+rename from src/app/components/delivery/delivery.component.html
+rename to src/app/delivery/delivery.component.html
+--- a/src/app/components/delivery/delivery.component.html	(revision 5ae347b95316d6b75cce7d822193be4cea483849)
++++ b/src/app/delivery/delivery.component.html	(date 1742555598118)
+@@ -169,17 +169,20 @@
+         <thead>
+         <tr style="background-color: #f5f5f5;">
+           <th style="border: 1px solid #ccc; padding: 8px;">Rule ID</th>
++          <th style="border: 1px solid #ccc; padding: 8px;">Rule Name</th>
+           <th style="border: 1px solid #ccc; padding: 8px;">Measured Value</th>
+-        </tr>
++         </tr>
+         </thead>
+         <tbody>
+-        <tr *ngFor="let ruleKey of Object.keys(qualityControlResult)">
+-          <td style="border: 1px solid #ccc; padding: 8px;">{{ ruleKey }}</td>
++        <tr *ngFor="let rule of qualityControlRules">
++          <td style="border: 1px solid #ccc; padding: 8px;">{{ rule.ruleKey }}</td>
++          <td style="border: 1px solid #ccc; padding: 8px;">{{ rule.ruleName }}</td>
+           <td style="border: 1px solid #ccc; padding: 8px;">
+-            <input type="number"
+-                   [(ngModel)]="qualityControlResult[ruleKey].measuredValue"
+-                   [min]="0">
+-          </td>
++            <input type="range"
++                    [min]="rule.minValue"
++                   [max]="rule.maxValue">
++           </td>
++
+         </tr>
+         </tbody>
+       </table>
+diff --git a/src/app/components/supplier/supplier.component.scss b/src/app/supplier/supplier.component.scss
+rename from src/app/components/supplier/supplier.component.scss
+rename to src/app/supplier/supplier.component.scss
+diff --git a/src/app/components/supplier/supplier.component.html b/src/app/supplier/supplier.component.html
+rename from src/app/components/supplier/supplier.component.html
+rename to src/app/supplier/supplier.component.html
+diff --git a/src/app/components/quality-control-rule/quality-control-rule.component.html b/src/app/quality-control-rule/quality-control-rule.component.html
+rename from src/app/components/quality-control-rule/quality-control-rule.component.html
+rename to src/app/quality-control-rule/quality-control-rule.component.html
+diff --git a/src/app/components/quality-control-rule/quality-control-rule.component.scss b/src/app/quality-control-rule/quality-control-rule.component.scss
+rename from src/app/components/quality-control-rule/quality-control-rule.component.scss
+rename to src/app/quality-control-rule/quality-control-rule.component.scss
+diff --git a/src/app/components/delivery/delivery.component.scss b/src/app/delivery/delivery.component.scss
+rename from src/app/components/delivery/delivery.component.scss
+rename to src/app/delivery/delivery.component.scss

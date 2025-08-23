@@ -1,0 +1,135 @@
+<ng-template #genericTypeDialog>
+  <h1 mat-dialog-title>
+    {{
+      currentRecord
+        ? ('STANDARD.BTNS.EDIT' | translate)
+        : ('STANDARD.BTNS.ADD' | translate)
+    }}
+  </h1>
+
+  <div mat-dialog-content>
+    <div class="col-12 align-items-center">
+      <!-- bind your FormGroup here -->
+      <form [formGroup]="dialogForm" mat-dialog-content>
+        <div class="col-12 align-items-center">
+          <div>
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label>Name</mat-label>
+              <input formControlName="name" matInput placeholder="Enter name" />
+            </mat-form-field>
+          </div>
+          <div>
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label>Description</mat-label>
+              <input
+                formControlName="description"
+                matInput
+                placeholder="Enter description"
+              />
+            </mat-form-field>
+          </div>
+          <!-- Dropdown: Always visible; pushed to the right -->
+          <div>
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label>Select Type</mat-label>
+              <mat-select (selectionChange)="onTypeChange($event.value)">
+                <mat-option *ngFor="let type of typeOptions" [value]="type.value">
+                  {{ type.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div align="end" mat-dialog-actions>
+          <button (click)="onCancel()" mat-button>
+            {{ 'STANDARD.BTNS.CANCEL' | translate }}
+          </button>
+          <button (click)="onSave()" [disabled]="dialogForm.invalid" color="primary" mat-flat-button>
+            {{
+              currentRecord
+                ? ('STANDARD.BTNS.EDIT' | translate)
+                : ('STANDARD.BTNS.ADD' | translate)
+            }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+<div class="history-cards-container">
+  <div class="history-cards">
+    <!-- Régions -->
+    <mat-card class="history-card"
+              tabindex="0"
+              (click)="loadRegion()"
+              [ngClass]="{ active: activeKey === TypeCategory.REGION }">
+      <mat-card-content>
+        <div class="card-content">
+          <mat-icon class="card-icon" color="primary">public</mat-icon>
+          <div class="card-info">
+            <h3>{{"BASE_TYPE.REGION"|translate}}</h3>
+           </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Variété d’olive -->
+    <mat-card class="history-card"
+              tabindex="0"
+              (click)="loadOliveVariety()"
+              [ngClass]="{ active: activeKey === TypeCategory. OLIVE_VARIETY  }">
+      <mat-card-content>
+        <div class="card-content">
+          <mat-icon class="card-icon" color="accent">spa</mat-icon>
+          <div class="card-info">
+            <h3>{{"OLIVE_RECEPTION.FORM.FIELDS.OLIVE_VARIETY"|translate}}</h3>
+           </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Variété d’huile -->
+    <mat-card class="history-card"
+              tabindex="0"
+              (click)="loadOilVariety()"
+              [ngClass]="{ active: activeKey ===TypeCategory.OIL_VARIETY }">
+      <mat-card-content>
+        <div class="card-content">
+          <mat-icon class="card-icon" color="primary">water_drop</mat-icon>
+          <div class="card-info">
+            <h3>{{"OIL_TRANSACTION.DELIVERY.OIL_VARIETY"|translate}}</h3>
+           </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Type de déchet -->
+    <mat-card class="history-card"
+              tabindex="0"
+              (click)="loadWasteType()"
+              [ngClass]="{ active: activeKey === TypeCategory.WASTE_TYPE }">
+      <mat-card-content>
+        <div class="card-content">
+          <mat-icon class="card-icon" color="warn">delete_outline</mat-icon>
+          <div class="card-info">
+            <h3>{{"WASTE.FIELDS.TYPE"|translate}}</h3>
+           </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+<div class="fab-container">
+  <button
+    (click)="openDialog()"
+    aria-label="Add Generic Type"
+    color="accent"
+    mat-fab
+  >
+    <mat-icon>add</mat-icon>
+  </button>
+</div>
+
+ <osm-dashboard #dashboard (applyAction)="applyAction($event)" [config]="dashboardConfig"></osm-dashboard>

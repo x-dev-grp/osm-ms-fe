@@ -1,0 +1,216 @@
+<div class="waste-add-container">
+  <div class="header">
+    <div class="header-content">
+      <button (click)="onCancel()" class="back-button" mat-icon-button matTooltip="Retour">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h2>{{ !isEditing ? 'Modifier la vente de déchet' : 'Nouvelle vente de déchet' }}</h2>
+    </div>
+  </div>
+
+  <div class="waste-form-layout">
+    <div class="form-fields">
+      <form (ngSubmit)="onSubmit()" [formGroup]="wasteSaleForm" class="waste-form">
+        <div class="form-row">
+          <!-- Type de déchet -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Type de déchet *</mat-label>
+            <mat-select formControlName="type" required>
+              <mat-option value="MARGINE">Margine</mat-option>
+              <mat-option value="POMACE">Grignon</mat-option>
+              <mat-option value="VEGETAL_SOLIDS">Solides végétaux</mat-option>
+              <mat-option value="OTHER">Autre</mat-option>
+            </mat-select>
+            <mat-error *ngIf="wasteSaleForm.get('type')?.hasError('required')">
+              Le type de déchet est requis
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Quantité -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Quantité (kg) *</mat-label>
+            <input formControlName="quantity" matInput min="0.01" required step="0.01" type="number">
+            <mat-error *ngIf="wasteSaleForm.get('quantity')?.hasError('required')">
+              La quantité est requise
+            </mat-error>
+            <mat-error *ngIf="wasteSaleForm.get('quantity')?.hasError('min')">
+              La quantité doit être supérieure à 0
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <!-- Prix unitaire -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Prix unitaire (TND/kg) *</mat-label>
+            <input formControlName="unitPrice" matInput min="0.01" required step="0.01" type="number">
+            <mat-error *ngIf="wasteSaleForm.get('unitPrice')?.hasError('required')">
+              Le prix unitaire est requis
+            </mat-error>
+            <mat-error *ngIf="wasteSaleForm.get('unitPrice')?.hasError('min')">
+              Le prix unitaire doit être supérieur à 0
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Date de vente -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Date de vente *</mat-label>
+            <input [matDatepicker]="saleDatePicker" formControlName="saleDate" matInput required>
+            <mat-datepicker-toggle [for]="saleDatePicker" matSuffix></mat-datepicker-toggle>
+            <mat-datepicker #saleDatePicker></mat-datepicker>
+            <mat-error *ngIf="wasteSaleForm.get('saleDate')?.hasError('required')">
+              La date de vente est requise
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <!-- Numéro de facture -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Numéro de facture</mat-label>
+            <input formControlName="invoiceNumber" matInput>
+          </mat-form-field>
+
+          <!-- Code de stockage -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Code de stockage</mat-label>
+            <input formControlName="storageLocationCode" matInput>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <!-- Client -->
+
+
+          <!-- Fournisseur -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Fournisseur</mat-label>
+            <input [matAutocomplete]="supplierAuto"
+                   formControlName="supplierId"
+                   matInput
+                   placeholder="Rechercher un fournisseur..."
+                   type="text">
+            <mat-autocomplete #supplierAuto="matAutocomplete"
+                              (optionSelected)="onSupplierSelected($event)"
+                              [displayWith]="displaySupplierFn">
+              <mat-option *ngFor="let supplier of filteredSuppliers | async" [value]="supplier">
+                {{ supplier.supplierInfo.name }} {{ supplier.supplierInfo.lastname }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <!-- Payé -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Statut de paiement</mat-label>
+            <mat-select formControlName="paid">
+              <mat-option [value]="true">Payé</mat-option>
+              <mat-option [value]="false">Non payé</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <!-- Date de paiement -->
+          <mat-form-field *ngIf="wasteSaleForm.get('paid')?.value" appearance="outline" class="form-field">
+            <mat-label>Date de paiement</mat-label>
+            <input [matDatepicker]="paymentDatePicker" formControlName="paymentDate" matInput>
+            <mat-datepicker-toggle [for]="paymentDatePicker" matSuffix></mat-datepicker-toggle>
+            <mat-datepicker #paymentDatePicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <!-- Description -->
+          <mat-form-field appearance="outline" class="form-field full-width">
+            <mat-label>Description</mat-label>
+            <textarea formControlName="description" matInput rows="3"></textarea>
+          </mat-form-field>
+        </div>
+
+
+        <!-- Messages d'erreur de validation -->
+
+      </form>
+    </div>
+
+    <!-- Summary -->
+    <div class="form-summary">
+      <app-card [cardTitle]="'Résumé de la vente'" class="summary-card" icon="receipt">
+        <div class="summary-row">
+          <span>
+            Fournisseur
+
+          </span>
+
+          <ng-container *ngIf="getSelectedSupplier()">
+            <span class="summary-value">
+              {{ getSelectedSupplier()?.supplierInfo.name }} {{ getSelectedSupplier()?.supplierInfo.lastname }}
+            </span>
+          </ng-container>
+        </div>
+
+        <div class="summary-row">
+          <span>Type de déchet:</span>
+          <span class="summary-value">{{ getWasteTypeLabel() }}</span>
+        </div>
+
+        <div class="summary-row">
+          <span>Quantité:</span>
+          <span class="summary-value">{{ wasteSaleForm.get('quantity')?.value | number:'1.2-2' }} kg</span>
+        </div>
+
+        <div class="summary-row">
+          <span>Prix unitaire:</span>
+          <span class="summary-value">{{ wasteSaleForm.get('unitPrice')?.value | number:'1.2-2' }} TND/kg</span>
+        </div>
+
+        <div class="summary-row total">
+          <span>Prix total:</span>
+          <span class="total-amount">
+            {{ totalPrice | number:'1.2-2' }} TND
+          </span>
+        </div>
+
+        <div class="summary-row">
+          <span>Date de vente:</span>
+          <span class="summary-value">{{ wasteSaleForm.get('saleDate')?.value | date:'shortDate' }}</span>
+        </div>
+
+        <div *ngIf="wasteSaleForm.get('invoiceNumber')?.value" class="summary-row">
+          <span>N° Facture:</span>
+          <span class="summary-value">{{ wasteSaleForm.get('invoiceNumber')?.value }}</span>
+        </div>
+
+        <div *ngIf="wasteSaleForm.get('storageLocationCode')?.value" class="summary-row">
+          <span>Code stockage:</span>
+          <span class="summary-value">{{ wasteSaleForm.get('storageLocationCode')?.value }}</span>
+        </div>
+
+        <div class="summary-row">
+          <span>Statut paiement:</span>
+          <span class="summary-value">{{ wasteSaleForm.get('paid')?.value ? 'Payé' : 'Non payé' }}</span>
+        </div>
+
+        <div *ngIf="wasteSaleForm.get('paid')?.value && wasteSaleForm.get('paymentDate')?.value" class="summary-row">
+          <span>Date de paiement:</span>
+          <span class="summary-value">{{ wasteSaleForm.get('paymentDate')?.value | date:'shortDate' }}</span>
+        </div>
+
+        <!-- Actions -->
+        <div class="form-actions">
+          <button (click)="onCancel()" [disabled]="loading" mat-button type="button">
+            Annuler
+          </button>
+          <button (click)="onSubmit()"
+                  [disabled]="wasteSaleForm.invalid || loading"
+                  color="primary"
+                  mat-raised-button
+                  type="submit">
+            <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+            <span *ngIf="!loading">{{ isEditing ? 'Modifier' : 'Valider' }}</span>
+          </button>
+        </div>
+      </app-card>
+    </div>
+  </div>
+</div>

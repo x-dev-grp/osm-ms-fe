@@ -1,0 +1,46 @@
+<div class="confirmation-dialog-container" [class]="'type-' + data.type">
+  <!-- Header -->
+  <div class="dialog-header">
+    <div class="header-content">
+      <div class="icon-container" *ngIf="data.showIcon">
+        <mat-icon [class]="getIconClass()">{{ getIcon() }}</mat-icon>
+      </div>
+      <div class="title-container">
+        <h2 mat-dialog-title>{{ resolvedTitle }}</h2>
+        <div class="subtitle" *ngIf="data.itemName">
+          {{ data.itemName }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="dialog-content">
+    <div class="message-container">
+      <p class="message">{{ resolvedMessage }}</p>
+      <div class="warning-text" *ngIf="data.destructive">
+        {{ resolvedDestructiveWarning }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="dialog-actions">
+    <button
+      mat-button
+      class="cancel-button"
+      (click)="onCancel()"
+      [attr.aria-label]="'Cancel'">
+      {{ resolvedCancelText }}
+    </button>
+    <button
+      mat-raised-button
+      [class]="getConfirmButtonClass()"
+      (click)="onConfirm()"
+      [attr.aria-label]="'Confirm'"
+      cdkFocusInitial>
+      <mat-icon *ngIf="data.destructive">warning</mat-icon>
+      {{ resolvedConfirmText }}
+    </button>
+  </div>
+</div>

@@ -1,0 +1,117 @@
+<mat-dialog-content [formGroup]="form" class="dialog-content">
+  @if (this.data.isIn) {
+    <div class="dialog-header">
+      <mat-icon>swap_horiz</mat-icon>
+      <h2 mat-dialog-title>{{ 'OIL_TRANSACTIONS.DIALOG.EXCHANGE.TITLE_DESTINATION' | translate }}</h2>
+    </div>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>
+        {{ 'OIL_TRANSACTIONS.FORM.FIELDS.STORAGE_UNIT_DESTINATION' | translate }}
+      </mat-label>
+      <mat-select formControlName="storageUnitDestinationId"
+                  placeholder="{{'CONTROLE_QUALITE.STORAGE_UNIT.PLACEHOLDER'|translate}}">
+        <mat-option *ngFor="let u of data.storageUnits" [value]="u"
+                    [disabled]="u.maxCapacity-u.currentVolume<data.oilQ">
+          @if (u.supplier) {
+            @if (u.maxCapacity - u.currentVolume < this.data.oilQ) {
+              {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg) [{{ u.supplier?.supplierInfo.name + " " + u.supplier?.supplierInfo.lastname }}]
+
+              <span style="color: red !important;">{{ "OIL_TRANSACTIONS.FORM.OVERFILLING"|translate }}</span>
+            } @else {
+              {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg) [{{ u.supplier?.supplierInfo.name + " " + u.supplier?.supplierInfo.lastname }}]
+            }
+
+
+          } @else {
+            @if (u.maxCapacity - u.currentVolume < this.data.oilQ) {
+              {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)
+            } @else {
+              {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)
+            }
+          }
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.get('storageUnitDestinationId')?.hasError('required')">
+        {{ 'OIL_TRANSACTIONS.FORM.VALIDATION.REQUIRED' | translate }}
+      </mat-error>
+      <mat-error *ngIf="capacityError">
+        {{ 'OIL_TRANSACTIONS.FORM.VALIDATION.CAPACITY' | translate }}
+        ({{ availableCapacity | number:'1.2-2' }} &lt; {{ data.oilQ | number:'1.2-2' }} kg)
+      </mat-error>
+    </mat-form-field>
+
+  } @else {
+    <div class="dialog-header">
+      <mat-icon>swap_horiz</mat-icon>
+      <h2 mat-dialog-title>{{ 'OIL_TRANSACTIONS.DIALOG.EXCHANGE.TITLE_SOURCE' | translate }}</h2>
+    </div>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>
+        {{ 'OIL_TRANSACTIONS.FORM.FIELDS.STORAGE_UNIT_SOURCE' | translate }}
+      </mat-label>
+      <mat-select formControlName="storageUnitSourceId"
+                  placeholder="{{'CONTROLE_QUALITE.STORAGE_UNIT.PLACEHOLDER'|translate}}">
+        <mat-option *ngFor="let u of data.storageUnits" [value]="u" [disabled]=" u.currentVolume<data.oilQ">
+
+          @if (u.supplier) {
+            @if (u.currentVolume<data.oilQ) {
+              {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg) [{{ u.supplier?.supplierInfo.name + " " + u.supplier?.supplierInfo.lastname }}]
+
+              <span style="color: red !important;">{{ "OIL_TRANSACTIONS.FORM.OVERFILLING"|translate }}</span>
+            } @else {
+              {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg) [{{ u.supplier?.supplierInfo.name + " " + u.supplier?.supplierInfo.lastname }}]
+            }
+
+
+          } @else {
+            @if (u.currentVolume<data.oilQ) {
+              {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)     <span style="color: red !important;">{{ "OIL_TRANSACTIONS.FORM.OVERFILLING"|translate }}</span>
+            } @else {
+              {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)
+            }
+          }
+
+
+
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.get('storageUnitSourceId')?.hasError('required')">
+        {{ 'OIL_TRANSACTIONS.FORM.VALIDATION.REQUIRED' | translate }}
+      </mat-error>
+      <mat-error *ngIf="capacityError">
+        {{ 'OIL_TRANSACTIONS.FORM.VALIDATION.CAPACITY' | translate }}
+        ({{ availableCapacity | number:'1.2-2' }} &lt; {{ data.oilQ | number:'1.2-2' }} kg)
+      </mat-error>
+    </mat-form-field>
+  }
+
+
+  <div *ngIf="isLoading" class="loading-spinner">
+    <mat-spinner diameter="24"></mat-spinner>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="dialog-actions">
+  <button class="cancel-button" mat-button mat-dialog-close>
+    {{ 'OSM_DASHBOARD.ACTIONS.CANCEL' | translate }}
+  </button>
+  @if (this.data.isIn) {
+    <button
+      (click)="dialogRef.close(form.value.storageUnitDestinationId)"
+      [disabled]="form.invalid || isLoading "
+      color="primary"
+      mat-flat-button>
+      {{ 'OSM_DASHBOARD.ACTIONS.CONFIRM' | translate }}
+    </button>
+  } @else {
+    <button
+      (click)="dialogRef.close(form.value.storageUnitSourceId)"
+      [disabled]="form.invalid || isLoading "
+      color="primary"
+      mat-flat-button>
+      {{ 'OSM_DASHBOARD.ACTIONS.CONFIRM' | translate }}
+    </button>
+  }
+</mat-dialog-actions>
+
+

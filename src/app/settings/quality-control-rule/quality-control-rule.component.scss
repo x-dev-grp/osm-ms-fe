@@ -1,0 +1,91 @@
+.rule-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+
+  /* Default: two columns ----------------------------------------------- */
+  mat-form-field,
+  mat-checkbox {
+    flex: 1 1 calc(50% - 16px);
+  }
+
+  /* Elements that must span the full width ----------------------------- */
+  .full-width {
+    flex: 1 1 100%;
+  }
+
+  /* Fine‑tune checkbox alignment --------------------------------------- */
+  .oil-qc,
+  .boolean-expected {
+    align-self: center;      // keeps checkboxes vertically centred
+    margin-top: 4px;
+  }
+
+  /* Action buttons container ------------------------------------------- */
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  /* Mobile: stack everything in one column ----------------------------- */
+  @media (max-width: 600px) {
+    mat-form-field,
+    mat-checkbox {
+      flex: 1 1 100%;
+    }
+  }
+}
+.rule-card {
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.rule-description {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.mat-snack-bar-container-success {
+  background-color: #2e7d32;
+}
+
+.mat-snack-bar-container-error {
+  background-color: #c62828;
+}
+
+.mat-snack-bar-container-warning {
+  background-color: #fb8c00;
+}
+
+.mat-snack-bar-container-info {
+  background-color: #1976d2;
+}
+
+.mat-snack-bar-container-critical {
+  background-color: #b71c1c;
+  font-weight: bold;
+}
+
+.mat-snack-bar-container-success {
+  background-color: #2e7d32;
+}
+
+.mat-snack-bar-container-error {
+  background-color: #c62828;
+}
+
+.mat-snack-bar-container-warning {
+  background-color: #fb8c00;
+}
+
+.mat-snack-bar-container-info {
+  background-color: #1976d2;
+}
+
+.mat-snack-bar-container-critical {
+  background-color: #b71c1c;
+  font-weight: bold;
+}

@@ -1,0 +1,137 @@
+:host {
+  display: block;
+  padding: 24px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin: 0 auto;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+mat-form-field.category-filter {
+  width: 300px;
+  margin-bottom: 16px;
+}
+
+table {
+  width: 100%;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-collapse: separate;
+  border-spacing: 0;
+
+  th.mat-header-cell {
+    background: #f5f7f9;
+    color: #333;
+    font-weight: 600;
+    padding: 16px 12px;
+    font-size: 14px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  td.mat-cell {
+    vertical-align: middle;
+    padding: 12px;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 13px;
+    color: #444;
+  }
+
+  td.mat-cell input,
+  td.mat-cell mat-slide-toggle {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  button[mat-icon-button] {
+    margin-left: 12px;
+    color: #666;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #1976d2;
+    }
+
+    &.save-button {
+      color: #2e7d32;
+    }
+
+    &.delete-button {
+      color: #d32f2f;
+    }
+  }
+}
+
+.header-row {
+  background-color: #eceff1;
+}
+
+.value-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  &.error {
+    border-left: 3px solid #d32f2f;
+    background-color: #fff5f5;
+  }
+}
+
+.value-field {
+  width: 100%;
+  min-width: 200px;
+  max-width: 300px;
+
+  &.error mat-form-field {
+    .mat-form-field-wrapper {
+      border: 1px solid #d32f2f;
+      border-radius: 4px;
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  :host {
+    padding: 16px;
+  }
+
+  mat-form-field.category-filter {
+    width: 100%;
+  }
+
+  .value-cell {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .value-field {
+    width: 100%;
+    max-width: none;
+  }
+
+  button[mat-icon-button] {
+    align-self: flex-end;
+  }
+
+  th.mat-header-cell,
+  td.mat-cell {
+    padding: 8px;
+    font-size: 12px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}

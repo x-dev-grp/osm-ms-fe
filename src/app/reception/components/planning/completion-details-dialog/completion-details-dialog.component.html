@@ -1,0 +1,215 @@
+<!-- completion-details-dialog.component.html -->
+
+<h2 mat-dialog-title>Détails de Finalisation</h2>
+
+<mat-dialog-content>
+  <div class="completed-dialog-content">
+    <div>
+      <div class="section-header">
+        <h3>Informations du Lot</h3>
+      </div>
+      <div class="info-content">
+        <!-- Display Lot specific details -->
+        @if (itemType === PlanItemType.LOT && item) {
+          <div class="info-group">
+            <div class="info-row">
+              <span class="label">Numéro de Lot:</span>
+              <span class="value">{{ (item).lotNumber }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Numéro de Réception:</span>
+              <span class="value">{{ (item).deliveryNumber }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Date de Livraison:</span>
+              <span class="value">{{ (item).deliveryDate | date: 'shortDate' }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Poids Net d'Olives:</span>
+              <span class="value">{{ (item).oliveQuantity }} kg</span>
+            </div>
+            @if ((item).supplier) {
+              <div class="info-row">
+                <span class="label">Fournisseur:</span>
+                <span class="value">{{ (item).supplier.supplierInfo.name + " " + (item).supplier.supplierInfo.lastname }}</span>
+              </div>
+            }
+            @if ((item).region) {
+              <div class="info-row">
+                <span class="label">Région:</span>
+                <span class="value">{{ (item).region }}</span>
+              </div>
+            }
+            @if ((item).oliveVariety) {
+              <div class="info-row">
+                <span class="label">Variété d'Olive:</span>
+                <span class="value">{{ (item).oliveVariety }}</span>
+              </div>
+            }
+            @if ((item).oliveType) {
+              <div class="info-row">
+                <span class="label">Type d'Olive:</span>
+                <span class="value">{{ (item).oliveType }}</span>
+              </div>
+            }
+            @if ((item).observation) {
+              <div class="info-row observation">
+                <span class="label">Observation:</span>
+                <span class="value">{{ (item).observation }}</span>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Display Global Lot specific details -->
+        @if (itemType === PlanItemType.GLOBAL_LOT && item) {
+          <div class="info-group">
+            <div class="info-row">
+              <span class="label">Numéro de Lot Global:</span>
+              <span class="value">{{ (item).globalLotNumber }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Poids Total d'Olives:</span>
+              <span class="value">{{ (item).totalKg }} kg</span>
+            </div>
+            @if ((item).childLotNumbers?.length) {
+              <div class="info-row child-lots">
+                <span class="label">Liste des Lots :</span>
+                <div class="child-lots-container">
+                  <div class="child-lots-scroll">
+                    <table class="child-lots-table">
+                      <thead>
+                        <tr>
+                          <th>N°</th>
+                          <th>Fournisseur</th>
+                          <th>QT (kg)</th>
+                          <th>Huile (kg)</th>
+                          <th class="rendement">Rendement (%)</th>
+                          <th class="rendement">Prix de trituration</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let child of childLotsWithRendement; let i = index; trackBy: trackByLotNumber">
+                          <td class="lot-number">{{ child.lotNumber }}</td>
+                          <td class="supplier">{{ child.supplier.supplierInfo.name + " " + child.supplier.supplierInfo.lastname   || '-' }} </td>
+                          <td class="quantity">{{ child.oliveQuantity }} kg</td>
+                          <td>{{ child.oilQuantity | number: '1.2-2' }} kg</td>
+                          <td class="rendement">{{ (child.calculatedRendement ?? 0) | number: '1.2-2' }}%</td>
+                          <td class="rendement">{{ child.calculatedTriturationPrice | number: '1.2-2' }} DTN </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            }
+            @if ((item).observation) {
+              <div class="info-row observation">
+                <span class="label">Observation:</span>
+                <span class="value">{{ (item).observation }}</span>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="input-section">
+      <div class="section-header">
+        <h3>Détails de Finalisation</h3>
+      </div>
+      <div class="input-content">
+        <!-- Oil quantity input and rendement for both types -->
+        <div class="w-full" style="display: flex; gap: 1rem;">
+          <mat-form-field appearance="outline" class="col-6" style="flex: 1;">
+            <mat-label>Quantité d'Huile (kg)</mat-label>
+            <input
+              [(ngModel)]="inputOilQuantity"
+              matInput
+              min="0"
+              step="0.01"
+              type="number"
+            />
+          </mat-form-field>
+
+          <!-- Rendement Display as a disabled input -->
+          <mat-form-field appearance="outline" class="col-6" style="flex: 1;">
+            <mat-label>Rendement (%)</mat-label>
+            <input
+              [value]="rendement | number: '1.2-2'"
+              matInput
+              type="text"
+              disabled
+            />
+          </mat-form-field>
+        </div>
+
+        <!-- Price per kg input and total price display -->
+        <ng-container >
+          <div class="w-full" style="display: flex; gap: 1rem;">
+            <mat-form-field appearance="outline" class="col-6" style="flex: 1;">
+              <mat-label>Prix de trituration (par kg)</mat-label>
+              <input
+                [(ngModel)]="triturationPricePerKg"
+                matInput
+                min="0"
+                step="0.01"
+                type="number"
+              />
+            </mat-form-field>
+            @if (itemType === PlanItemType.LOT && item) {
+              <mat-form-field appearance="outline" class="col-6" style="flex: 1;">
+              <mat-label>Prix total de trituration</mat-label>
+              <input
+                [value]="totalTriturationPrice | number: '1.2-2'"
+                matInput
+                type="text"
+                disabled
+              />
+            </mat-form-field>
+            }
+          </div>
+        </ng-container>
+
+        <!-- Completion Date Picker -->
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Date de Finalisation</mat-label>
+          <input
+            [(ngModel)]="completionDate"
+            [matDatepicker]="picker"
+            matInput
+          />
+          <mat-datepicker-toggle
+            [for]="picker"
+            matSuffix
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <!-- Final Observation Input -->
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Observation Finale (Optionnel)</mat-label>
+          <textarea
+            [(ngModel)]="finalObservation"
+            matInput
+            rows="3"
+          ></textarea>
+        </mat-form-field>
+
+        <p class="confirmation-text">Êtes-vous sûr de vouloir marquer ceci comme terminé ?</p>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="mt-2">
+  <button (click)="onCancel()" mat-raised-button>Annuler</button>
+  <button
+    (click)="onConfirm()"
+    [disabled]="inputOilQuantity === null || inputOilQuantity < 0"
+    cdkFocusInitial
+    color="primary"
+    mat-raised-button  >
+    Terminer
+  </button>
+</mat-dialog-actions>

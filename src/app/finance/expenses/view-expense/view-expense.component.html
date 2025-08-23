@@ -1,0 +1,113 @@
+<app-card [title]="'EXPENSES.DETAILS_TITLE' | translate">
+  <ng-template #headerTitleTemplate>
+    <span class="expense-ref-header" *ngIf="expense">{{ expense.invoiceRef }}</span>
+  </ng-template>
+  <ng-template #headerOptionsTemplate>
+    <div class="header-actions">
+      <button mat-flat-button color="primary" (click)="onPrint()">
+        <mat-icon>print</mat-icon>
+        {{ 'COMMON.PRINT' | translate }}
+      </button>
+      <button mat-flat-button color="accent" (click)="onEdit()">
+        <mat-icon>edit</mat-icon>
+        {{ 'COMMON.EDIT' | translate }}
+      </button>
+    </div>
+  </ng-template>
+  <div *ngIf="!loading && expense; else loadingTemplate" class="expense-details enhanced-details">
+    <!-- General Information -->
+    <h3 class="section-title">{{ 'EXPENSES.SECTION.GENERAL_INFO' | translate }}</h3>
+    <mat-divider></mat-divider>
+    <div class="details-grid">
+      <div class="detail-item">
+        <mat-icon color="primary">receipt_long</mat-icon>
+        <span class="detail-label">{{ 'EXPENSES.FIELDS.INVOICE_REF' | translate }}</span>
+        <span class="detail-value">{{ expense.invoiceRef }}</span>
+      </div>
+      <div class="detail-item">
+        <mat-icon color="primary">category</mat-icon>
+        <span class="detail-label">{{ 'EXPENSES.FIELDS.PURCHASE_NATURE' | translate }}</span>
+        <span class="detail-value">{{ expense.purchaseNature }}</span>
+      </div>
+      <div class="detail-item">
+        <mat-icon color="primary">description</mat-icon>
+        <span class="detail-label">{{ 'EXPENSES.FIELDS.OBJECT' | translate }}</span>
+        <span class="detail-value">{{ expense.object || '-' }}</span>
+      </div>
+      <div class="detail-item">
+        <mat-icon color="accent">euro</mat-icon>
+        <span class="detail-label">{{ 'EXPENSES.FIELDS.AMOUNT' | translate }}</span>
+        <span class="detail-value">{{ expense.amount | number:'1.2-2' }} €</span>
+      </div>
+      <div class="detail-item">
+        <mat-icon color="accent">label</mat-icon>
+        <span class="detail-label">{{ 'EXPENSES.FIELDS.CATEGORY' | translate }}</span>
+        <span class="detail-value">{{ expense.category || '-' }}</span>
+      </div>
+      <div class="detail-item">
+        <mat-icon color="accent">store</mat-icon>
+        <span class="detail-label">{{ 'EXPENSES.FIELDS.VENDOR' | translate }}</span>
+        <span class="detail-value">{{ expense.vendor || '-' }}</span>
+      </div>
+    </div>
+
+    <!-- Payment Details -->
+    <h3 class="section-title">{{ 'EXPENSES.SECTION.PAYMENT_DETAILS' | translate }}</h3>
+    <mat-divider></mat-divider>
+    <div class="details-grid">
+      <div class="detail-item">
+        <mat-icon color="primary">payment</mat-icon>
+        <span class="detail-label">{{ 'EXPENSES.FIELDS.PAYMENT_METHOD' | translate }}</span>
+        <span class="detail-value">{{ expense.paymentMethod || '-' }}</span>
+      </div>
+      <div class="detail-item">
+        <mat-icon color="primary">flag</mat-icon>
+        <span class="detail-label">{{ 'EXPENSES.FIELDS.STATUS' | translate }}</span>
+        <span class="detail-value">{{ expense.status || '-' }}</span>
+      </div>
+      <div class="detail-item">
+        <mat-icon color="primary">confirmation_number</mat-icon>
+        <span class="detail-label">{{ 'EXPENSES.FIELDS.RECEIPT_NUMBER' | translate }}</span>
+        <span class="detail-value">{{ expense.receiptNumber || '-' }}</span>
+      </div>
+    </div>
+
+    <!-- Notes -->
+    <h3 class="section-title">{{ 'EXPENSES.SECTION.NOTES' | translate }}</h3>
+    <mat-divider></mat-divider>
+    <div class="details-grid">
+      <div class="detail-item">
+        <mat-icon color="warn">notes</mat-icon>
+        <span class="detail-label">{{ 'EXPENSES.FIELDS.NOTES' | translate }}</span>
+        <span class="detail-value">{{ expense.notes || '-' }}</span>
+      </div>
+    </div>
+
+    <!-- Approval Section -->
+    <h3 class="section-title">{{ 'EXPENSES.SECTION.APPROVAL' | translate }}</h3>
+    <mat-divider></mat-divider>
+    <div class="details-grid">
+      <div class="detail-item">
+        <mat-icon color="primary">check_circle</mat-icon>
+        <span class="detail-label">{{ 'EXPENSES.FIELDS.APPROVED' | translate }}</span>
+        <span class="detail-value">{{ expense.approved ? ('COMMON.YES' | translate) : ('COMMON.NO' | translate) }}</span>
+      </div>
+      <div class="detail-item">
+        <mat-icon color="primary">event_available</mat-icon>
+        <span class="detail-label">{{ 'EXPENSES.FIELDS.APPROVAL_DATE' | translate }}</span>
+        <span class="detail-value">{{ expense.approvalDate ? (expense.approvalDate | date:'shortDate') : '-' }}</span>
+      </div>
+      <div class="detail-item">
+        <mat-icon color="primary">person</mat-icon>
+        <span class="detail-label">{{ 'EXPENSES.FIELDS.CREATED_BY' | translate }}</span>
+        <span class="detail-value">{{ expense.createdBy || '-' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #loadingTemplate>
+    <div class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  </ng-template>
+</app-card>

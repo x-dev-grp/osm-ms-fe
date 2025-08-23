@@ -1,0 +1,213 @@
+/* Reception Dashboard — UI polish while keeping data bindings intact */
+:host {
+  display: block;
+}
+
+/* ---------------------------------------
+ * Grid / spacing
+ * ------------------------------------- */
+.row.g-3 {
+  --gap: 1rem;
+  margin-left: calc(-1 * var(--gap) / 2);
+  margin-right: calc(-1 * var(--gap) / 2);
+}
+.row.g-3 > [class^="col-"], .row.g-3 > [class*=" col-"] {
+  padding-left: calc(var(--gap) / 2);
+  padding-right: calc(var(--gap) / 2);
+}
+
+/* Sticky page actions under header */
+.sticky-actions {
+  position: sticky;
+  top: var(--ap-header-height, 64px);
+  z-index: 10;
+  background: var(--bs-body-bg, #fff);
+  padding-top: .25rem;
+}
+
+/* ---------------------------------------
+ * Header
+ * ------------------------------------- */
+.dashboard-header .header-icon {
+  font-size: 28px;
+}
+.dashboard-header .last-sync .inline-icon {
+  font-size: 16px;
+  vertical-align: -3px;
+  margin-right: 4px;
+}
+
+/* ---------------------------------------
+ * Action visibility helpers
+ * ------------------------------------- */
+.actions .hide-xs {
+  display: none;
+}
+@media (min-width: 576px) {
+  .actions .hide-xs { display: inline; }
+}
+
+/* ---------------------------------------
+ * Buttons (legacy .btn-group support)
+ * ------------------------------------- */
+.btn-group button.active {
+  border-color: var(--bs-primary);
+  color: var(--bs-primary);
+  background: rgba(var(--bs-primary-rgb, 13,110,253), .06);
+}
+
+/* Material toggle groups used for Period/Size */
+.mat-button-toggle-group {
+  background: var(--bs-gray-100, #f1f3f5);
+  border-radius: .5rem;
+}
+.mat-button-toggle-checked {
+  background: var(--bs-primary, #0d6efd);
+  color: #fff !important;
+}
+
+/* ---------------------------------------
+ * Cards
+ * ------------------------------------- */
+app-card {
+  display: block;
+}
+.with-shadow {
+  box-shadow: var(--bs-box-shadow-sm, 0 2px 10px rgba(0,0,0,.06));
+  border-radius: 0.75rem;
+}
+
+/* Subtle hover elevation for cards */
+app-card:hover {
+  transition: box-shadow .2s ease, transform .2s ease;
+  box-shadow: 0 6px 24px rgba(0,0,0,.06);
+}
+
+/* Tighten spacing between stacked cards on small screens */
+@media (max-width: 991.98px) {
+  .dashboard-analytics app-card + app-card {
+    margin-top: .5rem;
+  }
+}
+
+/* KPI compacts */
+.kpi-compact {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding-top: .25rem;
+  padding-bottom: .25rem;
+}
+.kpi-compact mat-icon {
+  opacity: .85;
+}
+.kpi-compact .value {
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
+/* Optional larger KPI cards */
+.kpi-card {
+  min-height: 170px;
+  display: block;
+}
+
+/* ---------------------------------------
+ * Filters menu
+ * ------------------------------------- */
+.filters-menu .mat-mdc-menu-content {
+  min-width: 220px;
+}
+
+/* ---------------------------------------
+ * Charts
+ * ------------------------------------- */
+apx-chart {
+  width: 100%;
+}
+
+/* Unified chart containers (used in all chart cards) */
+.card--chart .chart-container {
+  display: block;
+}
+
+/* Size presets controlled by classes */
+.card--chart .chart-container.small  { --chart-h: 220px; }
+.card--chart .chart-container.medium { --chart-h: 280px; }
+.card--chart .chart-container.large  { --chart-h: 360px; }
+
+/* Full-width trend can be a bit taller on large */
+.card--chart .chart-container.wide.large { --chart-h: 420px; }
+
+/* Fallback if a chart ignores [height] binding */
+.card--chart .chart-container .apexcharts-canvas,
+.card--chart .chart-container .apexcharts-svg {
+  min-height: var(--chart-h);
+  width: 100% !important;
+}
+
+/* Right column charts slightly tighter on small laptops */
+.card--chart .chart-container.right {
+  /* tweak only around lg/desktop cutoffs */
+}
+@media (max-width: 1199.98px) {
+  .card--chart .chart-container.right {
+    --chart-h: 260px;
+  }
+}
+
+/* ---------------------------------------
+ * Trend toolbar: period left, size right
+ * ------------------------------------- */
+.card--chart .toolbar {
+  display: flex;
+  gap: .75rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: .5rem;
+}
+.card--chart .toolbar--split {
+  justify-content: space-between;
+}
+.card--chart .toolbar__left,
+.card--chart .toolbar__right {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+/* ---------------------------------------
+ * Minor polish
+ * ------------------------------------- */
+:host ::ng-deep .mat-mdc-button .mdc-button__label mat-icon {
+  vertical-align: middle;
+}
+/* Inline right-side mini dashboard (above the graphs) */
+.aside-inline-row .aside-inline {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;   /* push to right side */
+  gap: 1rem;
+}
+
+/* Two small cards, inline, responsive */
+.aside-inline .card--chart {
+  flex: 0 1 380px;             /* preferred width on desktop */
+  min-width: 260px;            /* don't get too small */
+}
+
+/* Respect the same size presets as other charts */
+.aside-inline .chart-container.small  { --chart-h: 220px; }
+.aside-inline .chart-container.medium { --chart-h: 280px; }
+.aside-inline .chart-container.large  { --chart-h: 320px; } /* slightly shorter than wide graphs */
+
+/* Make each card full-width on phones */
+@media (max-width: 575.98px) {
+  .aside-inline {
+    justify-content: stretch;
+  }
+  .aside-inline .card--chart {
+    flex: 1 1 100%;
+    min-width: auto;
+  }
+}

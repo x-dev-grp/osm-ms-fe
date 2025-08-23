@@ -1,0 +1,64 @@
+/* ─────────────────────────────────────────────── */
+/* Dialog container form section */
+.form-section {
+  padding: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Section headers: title with icon */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 10px;
+  h3 {
+    margin: 0;
+    font-weight: 600;
+    font-size: 1.3rem;
+    color: #333;
+  }
+}
+
+/* Grid layout for pricing inputs */
+.financial-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+/* Card appearance around each input */
+.financial-card {
+  padding: 10px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Full-width form fields */
+.financial-field {
+  width: 100%;
+
+  mat-label {
+    font-weight: 500;
+  }
+}
+
+/* Dialog action buttons */
+.dialog-actions {
+  display: flex;
+  justify-content: space-evenly;
+  gap: 1rem;
+  margin: 10px;
+
+  button {
+    min-width: 100px;
+    font-weight: 500;
+  }
+}

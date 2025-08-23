@@ -1,0 +1,11 @@
+<mat-form-field appearance="outline">
+  <mat-label>{{ field().labelTranslatePath ? (field().labelTranslatePath | translate) : field().label }}</mat-label>
+
+  <input
+    class="w-100"
+    [formControl]="formControl"
+    matInput
+    type="text"
+    [placeholder]="field().labelTranslatePath ? (field().labelTranslatePath | translate) : field().label"
+  />
+</mat-form-field>

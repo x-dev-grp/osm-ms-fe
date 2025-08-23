@@ -1,0 +1,2601 @@
+{
+  "ACCESS_DENIED": {
+    "GO_HOME": "Retour à l'accueil",
+    "GO_HOME_TITLE": "Retour à l'accueil",
+    "HELP": "Aide",
+    "HELP_TITLE": "Consulter l'aide",
+    "ICON_TITLE": "Accès refusé",
+    "LOGOUT": "Se déconnecter",
+    "LOGOUT_TITLE": "Se déconnecter",
+    "MESSAGE": "Vous n'avez pas les permissions nécessaires pour consulter cette page.",
+    "TITLE": "Accès refusé"
+  },
+  "ADMIN": {
+    "ADD_COMPANY_USER_TITLE": "Créer une société et son premier utilisateur",
+    "CANCEL": "Annuler",
+    "COMPANY_NAME": "Nom de la société",
+    "COMPANY_NAME_REQUIRED": "Le nom de la société est requis.",
+    "COMPANY_SECTION": "Informations sur la société",
+    "SAVE": "Sauvegarder",
+    "USER_SECTION": "Informations sur l'utilisateur"
+  },
+  "ADMIN_COMPANY_PROFILE": {
+    "CAPITAL": "Capital",
+    "CITY": "Ville",
+    "EMAIL": "Email",
+    "GOVERNORATE": "Gouvernorat",
+    "LEGAL_FORM": "Forme juridique",
+    "LEGAL_NAME": "Raison sociale",
+    "PHONE": "Téléphone",
+    "REG_NUMBER": "Numéro d'enregistrement",
+    "TAX_ID": "Identifiant fiscal"
+  },
+  "APPLICATION_CONFIG": {
+    "CUSTOM_THEME": {
+      "BLUE": "Thème Bleu",
+      "DESCRIPTION": "Choisissez votre Couleur Principale",
+      "GREEN": "Thème Vert",
+      "INDIGO": "Thème Indigo",
+      "ORANGE": "Thème Orange",
+      "PINK": "Thème Rose",
+      "PURPLE": "Thème Violet",
+      "RED": "Thème Rouge",
+      "TEAL": "Thème Turquoise",
+      "TITLE": "Thème Personnalisé",
+      "YELLOW": "Thème Jaune"
+    },
+    "LAYOUT_WIDTH": {
+      "BOXED": "Encadré",
+      "DESCRIPTION": "Choisissez la Largeur de la Disposition",
+      "FULL": "Pleine Largeur",
+      "TITLE": "Largeur de la Disposition"
+    },
+    "MENU_ORIENTATION": {
+      "DESCRIPTION": "Choisissez l'Orientation du Menu",
+      "HORIZONTAL": "Horizontal",
+      "TITLE": "Orientation du Menu",
+      "VERTICAL": "Vertical"
+    },
+    "SIDEBAR_CAPTION": {
+      "DESCRIPTION": "Afficher/Masquer la Légende de la Barre Latérale",
+      "HIDE": "Masquer",
+      "SHOW": "Afficher",
+      "TITLE": "Légende de la Barre Latérale"
+    },
+    "THEME_CONTRAST": {
+      "DESCRIPTION": "Choisissez le Contraste du Thème",
+      "GRAY": "Gris",
+      "LIGHT": "Clair",
+      "TITLE": "Contraste du Thème"
+    },
+    "THEME_LAYOUT": {
+      "DESCRIPTION": "LTR/RTL",
+      "LTR": "LTR",
+      "RTL": "RTL",
+      "TITLE": "Disposition du Thème"
+    },
+    "THEME_MODE": {
+      "AUTO": "Auto",
+      "DARK": "Sombre",
+      "DESCRIPTION": "Choisissez le Mode Clair, Sombre ou Auto",
+      "LIGHT": "Clair",
+      "TITLE": "Mode du Thème"
+    },
+    "TITLE": "Configuration du Thème"
+  },
+  "Account Profile": "Profil du compte",
+  "Action Bar": "Barre d'action",
+  "Add": "Ajouter",
+  "Add New Product": "Ajouter un nouveau produit",
+  "Admin Panel": "Panneau d'administration",
+  "Analytics": "Analytique",
+  "Apex Chart": "Apexchart",
+  "Application": "Application",
+  "Apply": "Appliquer",
+  "Authentication": "Authentification",
+  "Authentication 1": "Authentification 1",
+  "Authentication 2": "Authentification 2",
+  "Authentication 3": "Authentification 3",
+  "BANK_ACCOUNTS": {
+    "ACTIONS": {
+      "CANCEL": "Annuler",
+      "EDIT": "Modifier",
+      "PRINT": "Imprimer",
+      "SAVE": "Enregistrer",
+      "UPDATE": "Mettre à jour"
+    },
+    "ADD_TITLE": "Ajouter un compte bancaire",
+    "DETAILS_TITLE": "Détails du compte bancaire",
+    "EDIT_TITLE": "Modifier le compte bancaire",
+    "ERRORS": {
+      "ACCOUNT_TYPE_REQUIRED": "Le type de compte est requis",
+      "BANK_BRANCH_REQUIRED": "L'agence est requise",
+      "BANK_NAME_REQUIRED": "Le nom de la banque est requis",
+      "BIC_LENGTH": "Le BIC/SWIFT doit comporter entre 8 et 11 caractères",
+      "BIC_REQUIRED": "Le BIC/SWIFT est requis",
+      "CURRENCY_REQUIRED": "La devise est requise",
+      "IBAN_LENGTH": "L'IBAN doit comporter 24 caractères",
+      "IBAN_REQUIRED": "L'IBAN est requis",
+      "RIB_LENGTH": "Le RIB doit comporter 24 caractères",
+      "RIB_REQUIRED": "Le RIB est requis"
+    },
+    "FIELDS": {
+      "ACCOUNT_TYPE": "Type de compte",
+      "ACTIVE": "Actif",
+      "BANK_BRANCH": "Agence",
+      "BANK_NAME": "Nom de la banque",
+      "BIC_SWIFT": "BIC/SWIFT",
+      "BUSINESS": "Professionnel",
+      "CHECKING": "Courant",
+      "CURRENCY": "Devise",
+      "IBAN": "IBAN",
+      "INACTIVE": "Inactif",
+      "RIB": "RIB",
+      "SAVINGS": "Épargne",
+      "STATUS": "Statut"
+    },
+    "TITLE": "Comptes bancaires"
+  },
+  "BASE_TYPE": {
+    "OIL_TYPE": "Type d'huile",
+    "OIL_VARIETY": "Variété d'huile",
+    "OLIVE_TYPE": "Type olive",
+    "OLIVE_VARIETY": "Variété d'olive",
+    "OPERATION_TYPE": "Type d'opération",
+    "PRODUCTION_METHOD": "Méthode de production",
+    "REGION": "Région",
+    "SUPPLIER_TYPE": "Type de fournisseur",
+    "WASTE_TYPE": "Type de déchets"
+  },
+  "Basic": "Basique",
+  "COMMON": {
+    "BACK": "Retour",
+    "CANCEL": "Annuler",
+    "CLOSE": "Fermer",
+    "EDIT": "Modifier",
+    "LAST_UPDATED": "Dernier mis à jour",
+    "NO": "Non",
+    "PRINT": "Imprimer",
+    "REFRESH": "Refraichire",
+    "SAVE": "Enregistrer",
+    "UPDATE": "Mettre à jour",
+    "VALIDATION": {
+      "EMAIL": "Veuillez entrer une adresse email valide",
+      "MAX_LENGTH": "La longueur maximale est de {{maxLength}} caractères",
+      "REQUIRED": "Ce champ est requis"
+    },
+    "YES": "Oui"
+  },
+  "COMPANY_PROFILE_FORM": {
+    "CNSS_NUMBER": "Numéro CNSS",
+    "CNSS_NUMBER_REQUIRED": "Le numéro CNSS est requis.",
+    "LEGAL_NAME": "Raison sociale",
+    "LEGAL_NAME_REQUIRED": "La raison sociale est requise.",
+    "REG_NUMBER": "Numéro d'enregistrement",
+    "REG_NUMBER_REQUIRED": "Le numéro d'enregistrement est requis.",
+    "TAX_ID": "Identifiant fiscal",
+    "TAX_ID_REQUIRED": "L'identifiant fiscal est requis."
+  },
+  "COMPANY_PROFILE_FORM_UI": {
+    "CNSS_NUMBER": "Numéro CNSS",
+    "CNSS_NUMBER_REQUIRED": "Le numéro CNSS est requis.",
+    "LEGAL_NAME": "Raison sociale",
+    "LEGAL_NAME_REQUIRED": "La raison sociale est requise.",
+    "REG_NUMBER": "Numéro d'enregistrement",
+    "REG_NUMBER_REQUIRED": "Le numéro d'enregistrement est requis.",
+    "TAX_ID": "Identifiant fiscal",
+    "TAX_ID_REQUIRED": "L'identifiant fiscal est requis."
+  },
+  "COMPANY_PROFILE_UI": {
+    "ACTIONS": {
+      "CANCEL": "Annuler",
+      "EDIT": "Modifier",
+      "RESET": "Réinitialiser",
+      "SAVE": "Enregistrer",
+      "UPDATE": "Mettre à jour"
+    },
+    "ADDRESS_INFO": {
+      "ADDRESS": "Adresse",
+      "ADDRESS_REQUIRED": "L'adresse est requise.",
+      "CITY_REQUIRED": "La ville est requise.",
+      "GOVERNORATE_REQUIRED": "Le gouvernorat est requis.",
+      "POSTAL_CODE_REQUIRED": "Le code postal est requis.",
+      "TITLE": "Informations d'adresse"
+    },
+    "COMPANY_INFO": {
+      "CAPITAL": "Capital",
+      "CAPITAL_REQUIRED": "Le capital est requis.",
+      "CNSS_NUMBER": "Numéro CNSS",
+      "CNSS_NUMBER_REQUIRED": "Le numéro CNSS est requis.",
+      "CREATION_DATE": "Date de création",
+      "CREATION_DATE_REQUIRED": "La date de création est requise.",
+      "LEGAL_FORM": "Forme juridique",
+      "LEGAL_FORMS": {
+        "OTHER": "Autre",
+        "SA": "SA",
+        "SARL": "SARL",
+        "SNC": "SNC",
+        "SUARL": "SUARL"
+      },
+      "LEGAL_FORM_REQUIRED": "La forme juridique est requise.",
+      "LEGAL_NAME": "Raison sociale",
+      "LEGAL_NAME_REQUIRED": "La raison sociale est requise.",
+      "REG_NUMBER": "Numéro d'enregistrement",
+      "REG_NUMBER_REQUIRED": "Le numéro d'enregistrement est requis.",
+      "TAX_ID": "Identifiant fiscal",
+      "TAX_ID_REQUIRED": "L'identifiant fiscal est requis.",
+      "TITLE": "Informations sur la société"
+    },
+    "CONTACT_INFO": {
+      "EMAIL": "Email",
+      "EMAIL_REQUIRED": "L'email est requis.",
+      "PHONE": "Téléphone",
+      "PHONE_REQUIRED": "Le téléphone est requis.",
+      "TITLE": "Informations de contact",
+      "WEBSITE": "Site web",
+      "WEBSITE_REQUIRED": "Le site web est requis."
+    },
+    "LOGO": {
+      "CLICK_BROWSE": "ou cliquez pour parcourir",
+      "DRAG_DROP": "Glissez-déposez votre logo ici",
+      "FILE_TYPES": "PNG ou JPEG, max 200Ko",
+      "REMOVE": "Supprimer le logo",
+      "REQUIRED": "Le logo est requis.",
+      "TITLE": "Logo de la société"
+    },
+    "MESSAGES": {
+      "CONFIRM_RESET": "Êtes-vous sûr de vouloir réinitialiser le formulaire ? Toutes les modifications non enregistrées seront perdues."
+    }
+  },
+  "CONFIGURATION": {
+    "PRODUCTION": {
+      "TITLE": "Configuration Production"
+    },
+    "RECEPTION": {
+      "BTNS": {
+        "CANCEL": "Annuler",
+        "CREATE": "Créer l'enregistrement",
+        "UPDATE": "Mettre à jour l'enregistrement"
+      },
+      "FIELDS": {
+        "DESCRIPTION": "Description",
+        "FILTER": "Filtrer",
+        "NAME": "Nom",
+        "TYPE": "Sélectionner le type"
+      },
+      "TABLE": {
+        "ACTIONS": "Actions",
+        "DESCRIPTION": "Description",
+        "NAME": "Nom",
+        "TYPE": "Type"
+      },
+      "TITLE": "Configuration Réception"
+    },
+    "SITE": {
+      "BTNS": {
+        "SAVE": "Enregistrer"
+      },
+      "FIELDS": {
+        "ADDRESS": "Adresse",
+        "BANK": "Banque",
+        "COMPANY": "Société",
+        "LOGO": "Logo",
+        "PATENT_NUMBER": "Numéro de patente",
+        "PHONE1": "Téléphone 1",
+        "PHONE2": "Téléphone 2",
+        "RIB": "RIB",
+        "WEBSITE": "Site Web"
+      },
+      "TITLE": "Config Générale"
+    },
+    "STOCK": {
+      "TITLE": "Configuration Stock"
+    },
+    "TABS": {
+      "PRODUCTION": "Config Production",
+      "RECEPTION": "Config Réception",
+      "SITE": "Config Ste",
+      "STOCK": "Config Stock"
+    }
+  },
+  "CONTROLE_QUALITE": {
+    "BUTTONS": {
+      "BACK": "Retour",
+      "CANCEL": "Annuler",
+      "SUBMIT": "Soumettre",
+      "VALIDATE": "Valider"
+    },
+    "CATEGORIES": {
+      "LAMPANTE": "Lampante",
+      "VIERGE": "Vierge",
+      "VIERGE_EXTRA": "Extra Vierge"
+    },
+    "FINANCIAL": {
+      "OIL_QUANTITY": "Quantité d'huile (KG)",
+      "OIL_TOTAL_VALUE": "Valeur totale d'huile (TND)",
+      "OIL_TYPE": "Type d'huile",
+      "OIL_UNIT_PRICE": "Prix unitaire d'huile (TND/KG)",
+      "PAID_AMOUNT": "Montant payé (TND)",
+      "PRICE": "Prix total (TND)",
+      "TITLE": "Informations financières",
+      "UNIT_PRICE": "Prix unitaire (TND/KG)",
+      "UNPAID_AMOUNT": "Montant impayé (TND)"
+    },
+    "FORM": {
+      "FIELDS": {
+        "CATEGORY": "Catégorie",
+        "DELIVERY_DATE": "Date de livraison",
+        "DELIVERY_NUMBER": "N° Livraison",
+        "DELIVERY_TYPE": "Type de livraison",
+        "LOT_NUMBER": "Numéro de lot",
+        "REGION": "Région",
+        "SUPPLIER": "Fournisseur"
+      },
+      "SECTIONS": {
+        "DELIVERY_INFO": "Informations de livraison",
+        "FINANCIAL_INFO": "Informations financières",
+        "QUALITY_CONTROL": "Contrôle qualité"
+      },
+      "TITLE": "Formulaire de Contrôle Qualité",
+      "VALIDATION": {
+        "MAX_VALUE": "La valeur doit être inférieure à {{max}}",
+        "MIN_VALUE": "La valeur doit être supérieure à 0",
+        "REQUIRED": "Ce champ est obligatoire"
+      }
+    },
+    "LOADING": "Chargement des paramètres de contrôle qualité...",
+    "MESSAGES": {
+      "ERROR": {
+        "INVALID_FORM": "Formulaire invalide ou données de livraison manquantes",
+        "LOAD": "Erreur lors du chargement",
+        "SAVE": "Erreur lors de la sauvegarde",
+        "STORAGE_UNIT_NOT_FOUND": "Erreur : Cuve de stockage non trouvée"
+      },
+      "INFO": {
+        "LOADING": "Chargement...",
+        "NO_STORAGE_UNIT": "Aucune cuve sélectionnée"
+      },
+      "SUCCESS": {
+        "SAVE": "Données mises à jour avec succès",
+        "STORAGE_UNIT_SAVED": "Données mises à jour avec succès - Cuve : {{name}}"
+      }
+    },
+    "OIL_DETAILS": {
+      "OIL_TYPE": "Type d'huile",
+      "OIL_VARIETY": "Variété d'huile",
+      "OLIVE_TYPE": "Type d'olive",
+      "OPERATION_TYPE": "Type d'opération",
+      "TITLE": "Détails de l'huile"
+    },
+    "OLIVE_DETAILS": {
+      "OLIVE_TYPE": "Type d'olive",
+      "OLIVE_VARIETY": "Variété d'olive",
+      "OPERATION_TYPE": "Type d'opération",
+      "PARCEL": "Parcelle",
+      "SACK_COUNT": "Nombre de sacs",
+      "TITLE": "Détails des olives",
+      "TREATMENT_DATE": "Date de traitement"
+    },
+    "PLACEHOLDER": {
+      "ENTER_VALUE": "Entrez une valeur"
+    },
+    "QUALITY_PARAMETERS": {
+      "ACIDITY": "Acidité",
+      "DAMAGED": "Endommagées",
+      "FERMENTED": "Fermentées",
+      "INFESTED": "Infestées",
+      "K232": "K232",
+      "K270": "K270",
+      "TITLE": "Paramètres de qualité"
+    },
+    "SECTIONS": {
+      "FINANCIAL": "Informations Financières",
+      "OLIVE_PRICING": "Prix d'achat olive",
+      "PARAMETERS": "Paramètres de Qualité"
+    },
+    "STATUS": {
+      "COMPLETED": "Contrôle Qualité Terminé"
+    },
+    "STORAGE_UNIT": {
+      "ERRORS": {
+        "NOT_FOUND": "Cuve de stockage non trouvée",
+        "REQUIRED": "La cuve de stockage est requise"
+      },
+      "LABEL": "Cuve de stockage",
+      "MESSAGES": {
+        "SELECTED": "Cuve sélectionnée : {{name}} (à valider)",
+        "SELECTION_ERROR": "Erreur : Cuve de stockage non trouvée"
+      },
+      "PLACEHOLDER": "Sélectionner une cuve"
+    },
+    "SUBTITLE": "Complétez l'évaluation de qualité pour cette livraison",
+    "TITLE": "Contrôle Qualité"
+  },
+  "CUSTOMERS": {
+    "ACTIONS": {
+      "BACK": "Retour",
+      "CANCEL": "Annuler",
+      "CREATE": "Créer le client",
+      "EDIT": "Modifier",
+      "UPDATE": "Mettre à jour le client"
+    },
+    "ADD_TITLE": "Ajouter un nouveau client",
+    "CATEGORIES": {
+      "BUSINESS": "Entreprise",
+      "INDIVIDUAL": "Individuel"
+    },
+    "EDIT_TITLE": "Modifier le client",
+    "FIELDS": {
+      "ACTIVE": "Actif",
+      "ADDRESS": "Adresse",
+      "CATEGORY": "Catégorie",
+      "CONTACT_PERSON": "Personne de contact",
+      "COUNTRY": "Pays",
+      "CREATED_DATE": "Date de création",
+      "CUSTOMER_LAST_NAME": "Prénom",
+      "CUSTOMER_NAME": "Nom",
+      "EMAIL": "Email",
+      "FAX": "Fax",
+      "MATRICULE_FISCAL": "Matricule fiscal",
+      "MOBILE": "Mobile",
+      "NOTES": "Notes",
+      "NUM_CIN": "Numéro CIN",
+      "PHONE": "Téléphone",
+      "POSTAL_CODE": "Code postal"
+    },
+    "MESSAGES": {
+      "ERROR_LOADING": "Erreur lors du chargement du client",
+      "ERROR_SAVING": "Erreur lors de la création du client",
+      "ERROR_UPDATING": "Erreur lors de la mise à jour du client",
+      "LOADING": "Chargement du client...",
+      "NOT_FOUND": "Client introuvable",
+      "NOT_FOUND_DESC": "Le client que vous recherchez n'existe pas ou a été supprimé.",
+      "SAVE_SUCCESS": "Client créé avec succès",
+      "UPDATE_SUCCESS": "Client mis à jour avec succès"
+    },
+    "PLACEHOLDERS": {
+      "ADDRESS": "Entrez l'adresse",
+      "CONTACT_PERSON": "Entrez la personne de contact",
+      "COUNTRY": "Entrez le pays",
+      "CUSTOMER_LAST_NAME": "Entrez le prénom du client",
+      "CUSTOMER_NAME": "Entrez le nom du client",
+      "EMAIL": "Entrez l'adresse email",
+      "FAX": "Entrez le numéro de fax",
+      "MATRICULE_FISCAL": "Entrez le matricule fiscal",
+      "MOBILE": "Entrez le numéro mobile",
+      "NOTES": "Entrez des notes supplémentaires",
+      "NUM_CIN": "Entrez le numéro CIN",
+      "PHONE": "Entrez le numéro de téléphone",
+      "POSTAL_CODE": "Entrez le code postal"
+    },
+    "SECTIONS": {
+      "ADDITIONAL_INFO": "Informations supplémentaires",
+      "ADDRESS_INFO": "Informations d'adresse",
+      "BASIC_INFO": "Informations de base",
+      "CONTACT_INFO": "Informations de contact"
+    },
+    "STATUS": {
+      "ACTIVE": "Actif",
+      "INACTIVE": "Inactif"
+    },
+    "TITLE": "Clients"
+  },
+  "Calender": "Calendrier",
+  "Chart": "Graphique",
+  "Charts": "Graphiques",
+  "Check Mail": "Vérifier le courrier",
+  "Checkout": "Vérifier",
+  "Clipboard": "Presse-papiers",
+  "Code Verification": "Vérification des codes",
+  "Coming Soon": "À venir",
+  "Components": "Composantes",
+  "Contact Us": "Contactez-nous",
+  "Courses": "Cours",
+  "Create": "Créer",
+  "Customer": "Cliente",
+  "DASHBOARD": {
+    "ANALYTICS": {
+      "QUALITY_CONTROL": "Distribution du contrôle qualité",
+      "RECENT_RECEPTIONS": "Volume des réceptions récentes",
+      "RECEPTION_STATUS": "Réceptions par statut",
+      "RECEPTION_TREND": {
+        "DAILY": "Journalier",
+        "MONTHLY": "Mensuel",
+        "TITLE": "Tendance des réceptions",
+        "WEEKLY": "Hebdomadaire"
+      },
+      "RECEPTION_TYPE": "Réceptions par type",
+      "VOLUME_BY_STORAGE": "Volume par stockage",
+      "VOLUME_BY_SUPPLIER": "Volume par fournisseur"
+    },
+    "CHART": {
+      "SIZE": {
+        "LARGE": "Grand",
+        "MEDIUM": "Moyen",
+        "SMALL": "Petit"
+      }
+    },
+    "KPIS": {
+      "AVG_UNIT_PRICE": "Prix unitaire moyen",
+      "AVG_VOLUME": "Volume ⌀",
+      "COMPLETED_RECEPTIONS": "Réceptions terminées",
+      "PENDING_RECEPTIONS": "Réceptions en attente",
+      "TOTAL_PAID": "Total payé",
+      "TOTAL_RECEPTIONS": "Total Réceptions",
+      "TOTAL_UNPAID": "Total non payé",
+      "TOTAL_VOLUME": "Volume total (T)",
+      "UNIQUE_SUPPLIERS": "N° Fournisseurs"
+    },
+    "TITLE": {
+      "RECEPTION": "Statitstique des receptions éffectuer"
+    }
+  },
+  "DELIVERIES": {
+    "ACTIONS": {
+      "DELETE": "Supprimer",
+      "EDIT": "Modifier",
+      "GENERATE_RECEIPT": "Générer bon de réception",
+      "QUALITY_CONTROL": "Contrôle Qualité",
+      "VIEW": "Consulter"
+    },
+    "DETAILS": {
+      "BUTTONS": {
+        "BACK": "Retour à la liste"
+      },
+      "MESSAGES": {
+        "DATA_ERROR": "Erreur lors du chargement des données.",
+        "INVALID_ID": "ID de réception invalide.",
+        "LOAD_ERROR": "Erreur lors du chargement des détails."
+      },
+      "NOT_PROVIDED": "Non renseigné",
+      "SECTIONS": {
+        "ADDITIONAL_INFO": "ℹ️ Informations supplémentaires",
+        "GENERAL_INFO": "📦 Informations générales",
+        "INFO_CONTROL_QUALITE": "🧪 Informations contrôle qualité",
+        "INFO_PRIX": "💰 Informations prix",
+        "INFO_PRODUCTION": "🏭 Informations production",
+        "OIL_INFO": "Information huile",
+        "OLIVE_INFO": "🌿 Variété d'olive",
+        "OLIVE_OIL_INFO": "🫒 Informations olives et huile",
+        "STORAGE": "Unité de stockage",
+        "STORAGE_UNIT": "🏭 Unité de stockage",
+        "SUPPLIER": "👤 Fournisseur",
+        "TRUCK": "Information du camion",
+        "WEIGHT_CONTAINER ": "Information du poid"
+      },
+      "TITLE": "Détails de la réception"
+    },
+    "FIELDS": {
+      "CATEGORY_OLIVE_OIL": "Catégorie huile d'olive",
+      "DELIVERY_DATE": "Date de livraison",
+      "DELIVERY_NUMBER": "N° Livraison",
+      "DELIVERY_TYPE": "Type de livraison",
+      "GLOBAL_LOT_NUMBER": "N° Lot Global",
+      "GROSS_WEIGHT": "Poids brut (KG)",
+      "LOT_NUMBER ": "N° lot",
+      "LOT_OLIVE_NUMBER": "Referance lot number",
+      "NET_WEIGHT": "Poids net (KG)",
+      "OIL_QUANTITY": "Quantité d'huile",
+      "OIL_TYPE": "Type d'huile",
+      "OLIVE_LOT_NUMBER": "N° Lot d'olive",
+      "OLIVE_QUANTITY": "Quantité d'olives",
+      "OLIVE_TYPE": "Type d'olive",
+      "OLIVE_VARIETY": "Variété d'olive",
+      "OPERATION_TYPE": "Type d'opération",
+      "PAID_AMOUNT": "Montant paié",
+      "PARCEL": "Parcelle",
+      "PAYMENT_MODE": "Methode de paiment",
+      "PAYMENT_STATUS": "Paiement",
+      "REGION": "Région",
+      "RENDEMENT": "Redement",
+      "SACK_COUNT": "Nombre de sacs",
+      "STATUS": "Statut",
+      "STORAGE_UNIT": "Unité de stockage",
+      "SUPPLIER": "Fournisseur",
+      "SUPPLIER_ADDRESS": "Adresse",
+      "SUPPLIER_BANK": "Banque",
+      "SUPPLIER_EMAIL": "Email",
+      "SUPPLIER_NAME": "Nom",
+      "SUPPLIER_PHONE": "Téléphone",
+      "SUPPLIER_RIB": "RIB",
+      "TRITURATION_PRICE": "Prix trituration",
+      "TRT_DATE": "Date trituration",
+      "TRUCK_PLATE": "Matricule du camion",
+      "TRUCK_STATE": "État du camion",
+      "UNPAID_AMOUNT": "Montant umpaié",
+      "YIELD": "Rendement"
+    },
+    "FORM": {
+      "BUTTONS": {
+        "ADD": "Ajouter",
+        "BACK": "Retour",
+        "CANCEL": "Annuler",
+        "SAVE": "Enregistrer",
+        "UPDATE": "Mettre à jour"
+      },
+      "FIELDS": {
+        "DELIVERY_DATE": "Date de livraison",
+        "DELIVERY_NUMBER": "N° Livraison",
+        "DELIVERY_TYPE": "Type de livraison",
+        "GROSS_WEIGHT": "Poids brut (kg)",
+        "LOT_NUMBER": "Numéro de lot",
+        "OIL_QUANTITY": "Quantité d'huile (KG)",
+        "OIL_TYPE": "Type d'huile",
+        "OIL_VARIETY": "Variété d'huile",
+        "OLIVE_TYPE": "Type d'olive",
+        "OPERATION_TYPE": "Type d'opération",
+        "PAID_AMOUNT": "Montant payé (TND)",
+        "PARCEL": "Parcelle",
+        "REGION": "Région",
+        "STORAGE_UNIT": "Cuve de stockage",
+        "SUPPLIER": "Fournisseur",
+        "TOTAL_PRICE": "Prix total (TND)",
+        "TRUCK_PLATE": "Matricule du camion",
+        "TRUCK_STATE": "État du camion",
+        "UNIT_PRICE": "Prix unitaire (TND/KG)",
+        "UNPAID_AMOUNT": "Montant restant (TND)"
+      },
+      "HINTS": {
+        "DELIVERY_NUMBER": "Numéro de livraison généré automatiquement",
+        "LOT_NUMBER": "Identifiant unique du lot",
+        "OIL_QUANTITY": "Quantité en kilogrammes",
+        "UNIT_PRICE": "Prix par litre"
+      },
+      "MESSAGES": {
+        "CREATE_ERROR": "Erreur lors de la création de la livraison",
+        "CREATE_SUCCESS": "Livraison créée avec succès",
+        "ERROR": {
+          "ADD": "Erreur lors de l'ajout de la réception d'huile",
+          "LOAD": "Erreur lors du chargement des données de réception d'huile",
+          "UPDATE": "Erreur lors de la mise à jour de la réception d'huile"
+        },
+        "INCOMPLETE_FORM": "Formulaire incomplet ou validation échouée",
+        "LOAD_ERROR": "Erreur lors du chargement des données",
+        "SAVE_ERROR": "Erreur lors de l'enregistrement de la livraison d'huile",
+        "SAVE_SUCCESS": "Livraison d'huile enregistrée avec succès",
+        "STORAGE_CAPACITY": "La cuve {{name}} a une capacité disponible de {{available}} L sur {{max}} L",
+        "STORAGE_UNIT_FORMAT": "{{name}} ({{currentVolume}}/{{maxCapacity}} L)",
+        "SUCCESS": {
+          "ADD": "Réception d'huile ajoutée avec succès",
+          "UPDATE": "Réception d'huile mise à jour avec succès"
+        },
+        "UPDATE_ERROR": "Erreur lors de la mise à jour de la livraison",
+        "UPDATE_SUCCESS": "Livraison d'huile mise à jour avec succès"
+      },
+      "PLACEHOLDERS": {
+        "SEARCH_OIL_TYPE": "Rechercher un type...",
+        "SEARCH_OIL_VARIETY": "Rechercher une variété...",
+        "SEARCH_OLIVE_TYPE": "Rechercher un type...",
+        "SEARCH_OPERATION_TYPE": "Rechercher un type d'opération...",
+        "SEARCH_REGION": "Rechercher une région...",
+        "SEARCH_STORAGE_UNIT": "Rechercher une unité de stockage...",
+        "SEARCH_SUPPLIER": "Rechercher un fournisseur..."
+      },
+      "SECTIONS": {
+        "DELIVERY_INFO": "Informations de livraison",
+        "FINANCIAL_INFO": "Informations financières",
+        "GENERAL_INFO": "Informations générales",
+        "OIL_DETAILS": "Détails de l'huile",
+        "QUALITY_CONTROL_INFO": "Informations sur le contrôle qualité",
+        "RECEPTION_PRICE_INFO": "Informations sur le prix de la réception",
+        "SUPPLIER_REGION": "Fournisseur et région",
+        "VEHICLE_INFO": "Informations du véhicule",
+        "WEIGHT_QUANTITY": "Poids et quantité"
+      },
+      "TITLE": {
+        "ADD": "Ajouter une livraison d'huile",
+        "EDIT": "Modifier la livraison d'huile"
+      },
+      "TRUCK_STATES": {
+        "COMPLIANT": "Conforme",
+        "NON_COMPLIANT": "Non conforme"
+      },
+      "VALIDATION": {
+        "EXCEEDS_CAPACITY": "La quantité dépasse la capacité disponible de la cuve",
+        "MIN_VALUE": "La valeur doit être supérieure ou égale à 0",
+        "NET_GREATER": "La quantité ne peut pas être supérieure au poids brut",
+        "REMAINING_CAPACITY": "{{available}} L restants",
+        "REQUIRED": "Ce champ est obligatoire"
+      }
+    },
+    "MESSAGES": {
+      "CANCELLED_ERROR": "Erreur lors de l'annulation",
+      "CANCELLED_SUCCESS": "Réception annulée avec succès",
+      "DELETE_ERROR": "Erreur lors de la suppression",
+      "DELETE_SUCCESS": "Réception supprimée avec succès",
+      "LOAD_ERROR": "Erreur lors du chargement des réceptions",
+      "SENT_TO_PRODUCTION_ERROR": "Erreur lors de l'envoi en production",
+      "SENT_TO_PRODUCTION_SUCCESS": "Réception envoyée en production avec succès"
+    },
+    "OIL_TITLE": "Historique des livraisons d'Huile & olive ",
+    "OLIVE_TITLE": "Livraisons d'Olives",
+    "OPERATION_TYPE": {
+      "BASE": "Base",
+      "INTERNAL_RECEPTION": "réception interne",
+      "OIL_PURCHASE": "Achat d'huile",
+      "OLIVE_PURCHASE": "Achat d'olive",
+      "PAYMENT": "Paiement",
+      "SIMPLE_RECEPTION": "Trituration particulier"
+    },
+    "STATUS": {
+      "CANCELLED": "Annulé",
+      "COMPLETED": "Terminé",
+      "IN_PROGRESS": "En cours",
+      "NEW": "Nouveau",
+      "REFUSED": "Refusé"
+    }
+  },
+  "DIVORCED": "Divorcé(e)",
+  "Dashboard": "Tableau de bord",
+  "Data": "Données",
+  "Default": "Défaut",
+  "Delivery": "Reception",
+  "Details": "Détails",
+  "Document": "Document",
+  "Drop Zone": "Zone de largage",
+  "E-commerce": "Commerce électronique",
+  "EMPLOYEE": {
+    "ADDRESS": "Adresse",
+    "ADD_TITLE": "Ajouter un employé",
+    "BIRTH_DATE": "Date de naissance",
+    "CANCEL": "Annuler",
+    "CIN": "CIN",
+    "CITY": "Ville",
+    "COUNTRY": "Pays",
+    "DEPARTMENT": "Departement",
+    "DETAIL": {
+      "CONTACT_INFO": "Informations de contact",
+      "PERSONAL_INFO": "Informations personnelles",
+      "PROFESSIONAL_INFO": "Informations professionnelles",
+      "TITLE": "Détails de l'employé"
+    },
+    "EDIT_TITLE": "Modifier un employé",
+    "EMAIL": "Email",
+    "FIRST_NAME": "Prénom",
+    "FORM": {
+      "ADDRESS": "Adresse",
+      "BIRTH_DATE": "Date de naissance",
+      "CIN": "CIN",
+      "CITY": "Ville",
+      "COUNTRY": "Pays",
+      "EMAIL": "Email",
+      "GENDER": "Sexe",
+      "HIRE_DATE": "Date d'embauche",
+      "MARITAL_STATUS": "État civil",
+      "PHONE": "Téléphone",
+      "POSTAL_CODE": "Code postal"
+    },
+    "GENDER": "Sexe",
+    "HIRE_DATE": "Date d'embauche",
+    "IS_ACTIVE": "Actif",
+    "LAST_NAME": "Nom",
+    "MARITAL_STATUS": "État civil",
+    "MESSAGES": {
+      "NOT_FOUND": "Employé introuvable"
+    },
+    "PHONE": "Téléphone",
+    "POSTAL_CODE": "Code postal",
+    "SAVE": "Enregistrer",
+    "STATUS": {
+      "ACTIVE": "Actif",
+      "INACTIVE": "Inactif"
+    },
+    "UPDATE": "Mettre à jour"
+  },
+  "EXPENSES": {
+    "ACTIONS": {
+      "CANCEL": "Annuler",
+      "EDIT": "Modifier",
+      "PRINT": "Imprimer",
+      "SAVE": "Enregistrer",
+      "UPDATE": "Mettre à jour"
+    },
+    "ADD_TITLE": "Ajouter une dépense",
+    "DETAILS_TITLE": "Détails de la dépense",
+    "EDIT_TITLE": "Modifier la dépense",
+    "ERRORS": {
+      "AMOUNT_MIN": "Le montant doit être positif",
+      "AMOUNT_REQUIRED": "Le montant est requis",
+      "DATE_REQUIRED": "La date est requise",
+      "INVOICE_REF_REQUIRED": "La référence de la facture est requise",
+      "OBJECT_REQUIRED": "L'objet est requis",
+      "PAYMENT_METHOD_REQUIRED": "La méthode de paiement est requise",
+      "PURCHASE_NATURE_REQUIRED": "La nature de l'achat est requise",
+      "STATUS_REQUIRED": "Le statut est requis"
+    },
+    "FIELDS": {
+      "AMOUNT": "Montant",
+      "APPROVAL_DATE": "Date d'approbation",
+      "APPROVED": "Approuvé",
+      "CATEGORY": "Catégorie",
+      "CREATED_BY": "Créé par",
+      "INVOICE_REF": "Référence facture",
+      "NOTES": "Notes",
+      "OBJECT": "Objet",
+      "PAYMENT_METHOD": "Méthode de paiement",
+      "PURCHASE_NATURE": "Nature de l'achat",
+      "RECEIPT_NUMBER": "Numéro de reçu",
+      "STATUS": "Statut",
+      "VENDOR": "Fournisseur"
+    },
+    "HINT": {
+      "NOTES_OPTIONAL": "Facultatif"
+    },
+    "PLACEHOLDER": {
+      "AMOUNT": 0.0,
+      "CATEGORY": "Ex: Dépenses opérationnelles",
+      "CREATED_BY": "Ex: admin",
+      "INVOICE_REF": "Ex: FAC-2024-001",
+      "NOTES": "Ajouter des notes supplémentaires...",
+      "OBJECT": "Ex: Achat de papier",
+      "PURCHASE_NATURE": "Ex: Fournitures de bureau",
+      "RECEIPT_NUMBER": "Ex: 123456",
+      "VENDOR": "Ex: Stationery SARL"
+    },
+    "SECTION": {
+      "APPROVAL": "Approbation",
+      "GENERAL_INFO": "Informations Générales",
+      "NOTES": "Notes",
+      "PAYMENT_DETAILS": "Détails de Paiement"
+    },
+    "TITLE": "Dépenses"
+  },
+  "Edit": "Modifier",
+  "Editor": "Éditrice",
+  "Enter your password": "Tapper votre mot de pass",
+  "Error 404": "Erreur 404",
+  "Error 500": "Erreur 500",
+  "FEMALE": "Femme",
+  "FINANCE_TAB": "Config Finance",
+  "File Manager": "Gestionnaire de fichiers",
+  "Finance": "finance",
+  "Forgot Password": "Mot de passe oublié",
+  "Form Validation": "Validation du formulaire",
+  "Form Wizard": "Assistant Formulaire",
+  "Forms": "Formes",
+  "GENERAL_CONFIG": {
+    "ACTIONS": {
+      "CANCEL": "Annuler",
+      "EDIT": "Modifier",
+      "RESET": "Réinitialiser",
+      "SAVE": "Enregistrer",
+      "UPDATE": "Mettre à jour"
+    },
+    "CITY": "Ville",
+    "EMAIL": "Email",
+    "EXPANDABLE": {
+      "CONFIGURATIONS": "Configurations",
+      "FINANCE_CONFIG": "Config Finance",
+      "HR_CONFIG": "Config RH",
+      "OTHER_CONFIG": "Autre config",
+      "PRODUCTION_CONFIG": "Config Production"
+    },
+    "GOVERNORATE": "Gouvernorat",
+    "LEGAL_FORM": "Forme juridique",
+    "LEGAL_NAME": "Raison sociale",
+    "PHONE": "Téléphone",
+    "REG_NUMBER": "Numéro d'enregistrement",
+    "TAX_ID": "Identifiant fiscal",
+    "TITLE": "Configuration générale"
+  },
+  "GENERAL_CONFIG_UI": {
+    "ACTIONS": {
+      "CANCEL": "Annuler",
+      "EDIT": "Modifier",
+      "RESET": "Réinitialiser",
+      "SAVE": "Enregistrer",
+      "UPDATE": "Mettre à jour"
+    },
+    "ADDRESS_INFO": {
+      "ADDRESS": "Adresse",
+      "ADDRESS_REQUIRED": "L'adresse est requise.",
+      "CITY_REQUIRED": "La ville est requise.",
+      "GOVERNORATE_REQUIRED": "Le gouvernorat est requis.",
+      "POSTAL_CODE_REQUIRED": "Le code postal est requis.",
+      "TITLE": "Informations d'adresse"
+    },
+    "COMPANY_INFO": {
+      "CAPITAL": "Capital",
+      "CAPITAL_REQUIRED": "Le capital est requis.",
+      "CNSS_NUMBER": "Numéro CNSS",
+      "CNSS_NUMBER_REQUIRED": "Le numéro CNSS est requis.",
+      "CREATION_DATE": "Date de création",
+      "CREATION_DATE_REQUIRED": "La date de création est requise.",
+      "LEGAL_FORM": "Forme juridique",
+      "LEGAL_FORMS": {
+        "OTHER": "Autre",
+        "SA": "SA",
+        "SARL": "SARL",
+        "SNC": "SNC",
+        "SUARL": "SUARL"
+      },
+      "LEGAL_FORM_REQUIRED": "La forme juridique est requise.",
+      "LEGAL_NAME": "Raison sociale",
+      "LEGAL_NAME_REQUIRED": "La raison sociale est requise.",
+      "REG_NUMBER": "Numéro d'enregistrement",
+      "REG_NUMBER_REQUIRED": "Le numéro d'enregistrement est requis.",
+      "TAX_ID": "Identifiant fiscal",
+      "TAX_ID_REQUIRED": "L'identifiant fiscal est requis.",
+      "TITLE": "Informations sur la société"
+    },
+    "CONFIGURATIONS": "Configurations",
+    "CONTACT_INFO": {
+      "EMAIL": "Email",
+      "EMAIL_REQUIRED": "L'email est requis.",
+      "PHONE": "Téléphone",
+      "PHONE_REQUIRED": "Le téléphone est requis.",
+      "TITLE": "Informations de contact",
+      "WEBSITE": "Site web",
+      "WEBSITE_REQUIRED": "Le site web est requis."
+    },
+    "FINANCE_TAB": "Config Finance",
+    "HR_TAB": "Config RH",
+    "LOGO": {
+      "CLICK_BROWSE": "ou cliquez pour parcourir",
+      "DRAG_DROP": "Glissez-déposez votre logo ici",
+      "FILE_TYPES": "PNG ou JPEG, max 200Ko",
+      "REMOVE": "Supprimer le logo",
+      "REQUIRED": "Le logo est requis.",
+      "TITLE": "Logo de la société"
+    },
+    "MESSAGES": {
+      "CONFIRM_RESET": "Êtes-vous sûr de vouloir réinitialiser le formulaire ? Toutes les modifications non enregistrées seront perdues."
+    },
+    "OTHER_TAB": "Autre Config",
+    "PRODUCTION_TAB": "Config Production",
+    "TAB_TITLE": "Configuration Générale"
+  },
+  "GENERAL_CONFIG_UI_GENERAL_CONFIG": {
+    "CONFIGURATIONS": "Configurations",
+    "FINANCE_TAB": "Config Finance",
+    "HR_TAB": "Config RH",
+    "OTHER_TAB": "Autre Config",
+    "PRODUCTION_TAB": "Config Production",
+    "TAB_TITLE": "Configuration Générale"
+  },
+  "GENERIC_TYPE": {
+    "ACTION": {
+      "ADD_NEW": "Ajouter"
+    },
+    "ERRORS": {
+      "NAME_REQUIRED": "Le nom est requis"
+    },
+    "FIELDS": {
+      "CATEGORY": "Catégorie",
+      "DESCRIPTION": "Description",
+      "NAME": "Nom"
+    }
+  },
+  "HR_TAB": "Config RH",
+  "Helpdesk": "Service d'assistance",
+  "Home": "Accueil",
+  "Invoice": "Facture",
+  "Kanban": "Kanban",
+  "LOGIN": {
+    "PASSWORD": "Mot de pass",
+    "PASSWORDCONFIRM": "Confirmer mot de passe",
+    "PASSWORDNEW": "Nouveau mot de passe",
+    "REMEMBERME": "Se souvenir de moi ?",
+    "UPDATEPASSWORD": "Changer le mot de passe",
+    "USERNAME": "Nom d'utilisateur"
+  },
+  "LOGO": {
+    "CLICK_BROWSE": "ou cliquez pour parcourir",
+    "DRAG_DROP": "Glissez-déposez votre logo ici",
+    "FILE_TYPES": "PNG ou JPEG, max 200Ko",
+    "REMOVE": "Supprimer le logo",
+    "REQUIRED": "Le logo est requis.",
+    "TITLE": "Logo de la société"
+  },
+  "Landing": "Atterrissage",
+  "Layouts": "Dispositions",
+  "Level 2.1": "Niveau 2.1",
+  "List": "Liste",
+  "Login": "Connexion",
+  "MALE": "Homme",
+  "MARRIED": "Marié(e)",
+  "MENU": {
+    "ADMINISTRATION": {
+      "ADD_COMPANY_USER": "Ajouter société & utilisateur",
+      "COMPANY_PROFILES": "Profils de société",
+      "DASHBOARD": "Tableau de bord admin",
+      "TITLE": "Administration"
+    },
+    "CUSTOMERS": {
+      "ACTIONS": {
+        "BACK": "Retour aux clients",
+        "CANCEL": "Annuler",
+        "CREATE": "Créer un client",
+        "EDIT": "Modifier",
+        "SAVE": "Enregistrer",
+        "UPDATE": "Mettre à jour"
+      },
+      "ADD_TITLE": "Ajouter un nouveau client",
+      "CATEGORIES": {
+        "BUSINESS": "Entreprise",
+        "INDIVIDUAL": "Individuel"
+      },
+      "DETAILS_TITLE": "Détails du client",
+      "EDIT_TITLE": "Modifier le client",
+      "FIELDS": {
+        "ACTIVE": "Actif",
+        "ADDRESS": "Adresse",
+        "CATEGORY": "Catégorie",
+        "CONTACT_PERSON": "Personne de contact",
+        "COUNTRY": "Pays",
+        "CUSTOMER_LAST_NAME": "Prénom",
+        "CUSTOMER_NAME": "Nom",
+        "EMAIL": "Email",
+        "FAX": "Fax",
+        "MATRICULE_FISCAL": "Matricule Fiscal",
+        "MOBILE": "Mobile",
+        "NOTES": "Notes",
+        "NUM_CIN": "Numéro CIN",
+        "PHONE": "Téléphone",
+        "POSTAL_CODE": "Code Postal"
+      },
+      "MESSAGES": {
+        "DELETE_SUCCESS": "Client supprimé avec succès",
+        "ERROR_DELETING": "Erreur lors de la suppression du client",
+        "ERROR_LOADING": "Erreur lors du chargement des détails du client",
+        "ERROR_SAVING": "Erreur lors de l'enregistrement du client",
+        "ERROR_UPDATING": "Erreur lors de la mise à jour du client",
+        "LOADING": "Chargement des détails du client...",
+        "NOT_FOUND": "Client introuvable",
+        "NOT_FOUND_DESC": "Le client demandé n'a pas pu être trouvé.",
+        "SAVE_SUCCESS": "Client enregistré avec succès",
+        "UPDATE_SUCCESS": "Client mis à jour avec succès"
+      },
+      "PLACEHOLDERS": {
+        "ADDRESS": "Entrez l'adresse",
+        "CONTACT_PERSON": "Entrez la personne de contact",
+        "COUNTRY": "Entrez le pays",
+        "CUSTOMER_LAST_NAME": "Entrez le prénom du client",
+        "CUSTOMER_NAME": "Entrez le nom du client",
+        "EMAIL": "Entrez l'adresse email",
+        "FAX": "Entrez le numéro de fax",
+        "MATRICULE_FISCAL": "Entrez le matricule fiscal",
+        "MOBILE": "Entrez le numéro mobile",
+        "NOTES": "Entrez des notes supplémentaires",
+        "NUM_CIN": "Entrez le numéro CIN",
+        "PHONE": "Entrez le numéro de téléphone",
+        "POSTAL_CODE": "Entrez le code postal"
+      },
+      "SECTIONS": {
+        "ADDITIONAL_INFO": "Informations supplémentaires",
+        "ADDRESS_INFO": "Informations d'adresse",
+        "BASIC_INFO": "Informations de base",
+        "CONTACT_INFO": "Informations de contact"
+      },
+      "STATUS": {
+        "ACTIVE": "Actif",
+        "INACTIVE": "Inactif"
+      },
+      "TITLE": "Clients"
+    },
+    "FINANCE": {
+      "BANK_MANAGEMENT": "Gestion des Comptes Bancaires",
+      "CUSTOMERS": "Clients",
+      "EXPENSES": "Dépenses",
+      "OIL_CREDIT": "Crédit d'Huile",
+      "OIL_SALES": "Ventes d'Huile",
+      "OIL_TRANSACTIONS": "Transactions d'Huile",
+      "TITLE": "Finance & Comptabilité",
+      "TRANSACTIONS": "Transactions Financières",
+      "WASTE_MANAGEMENT": "Gestion des déchets"
+    },
+    "HOME": {
+      "DASHBOARD": {
+        "ANALYTICS": "Analytique",
+        "DEFAULT": "Par défaut",
+        "FINANCE": "Finance",
+        "RECEPTION": "Réception",
+        "TITLE": "Tableau de bord"
+      },
+      "TITLE": "Accueil"
+    },
+    "HR": {
+      "EMPLOYEES": "Employés",
+      "ROLES_PERMISSIONS": "Rôles & permissions",
+      "TITLE": "Ressources Humaines"
+    },
+    "PRODUCTION": {
+      "MILLING_HISTORY": "Historique de trituration",
+      "MILLING_SCHEDULE": "Plannings de trituration",
+      "TITLE": "Production"
+    },
+    "RECEPTION": {
+      "OIL": "Réception d'huile",
+      "OLIVE": "Réception d'olives",
+      "QUALITY_CONTROL": "Contrôle qualité",
+      "SUPPLIERS": "Fournisseurs",
+      "TITLE": "Réception"
+    },
+    "SETTINGS": {
+      "APP_UI": "Paramèters d'application",
+      "GENERAL_CONFIG": "Configuration générale",
+      "GENERIC_TYPES": "Types génériques",
+      "MILLING_MACHINES": "Machines de trituration",
+      "QUALITY_CONTROL_RULES": "Règles de contrôle qualité",
+      "ROLES": "Gestion des rôles",
+      "TITLE": "Paramètres système",
+      "USERS": "Gestion des utilisateurs"
+    },
+    "STORAGE": {
+      "OIL_STORAGE_UNITS": "Unités de stockage d'huile",
+      "TITLE": "Stockage & Inventaire"
+    },
+    "SUPPLIER": {
+      "DASHBOARD": "Tableau de bord fournisseurs",
+      "HISTORY": "Historique fournisseurs",
+      "TITLE": "Fournisseurs"
+    }
+  },
+  "MESSAGES": {
+    "CONFIRM_RESET": "Êtes-vous sûr de vouloir réinitialiser le formulaire ? Toutes les modifications non enregistrées seront perdues."
+  },
+  "MILL_MACHINE": {
+    "ACTIONS": {
+      "CANCEL": "Annuler",
+      "EDIT": "Modifier",
+      "MAINTENANCE": "Maintenance",
+      "SAVE": "Enregistrer",
+      "UPDATE": "Mettre à jour"
+    },
+    "ADD_TITLE": "Ajouter une machine de moulin",
+    "DETAILS_TITLE": "Détails de la machine de moulin",
+    "EDIT_TITLE": "Modifier la machine de moulin",
+    "ERRORS": {
+      "CAPACITY_MIN": "La capacité doit être supérieure à 0",
+      "CAPACITY_REQUIRED": "La capacité est requise",
+      "MACHINE_TYPE_REQUIRED": "Le type de machine est requis",
+      "MANUFACTURER_REQUIRED": "Le fabricant est requis",
+      "MODEL_REQUIRED": "Le modèle est requis",
+      "NAME_REQUIRED": "Le nom est requis"
+    },
+    "FIELDS": {
+      "CAPACITY": "Capacité",
+      "HOURS_OPERATED": "Heures d'opération",
+      "LAST_MAINTENANCE_DATE": "Dernière maintenance",
+      "MACHINE_TYPE": "Type de machine",
+      "MANUFACTURER": "Fabricant",
+      "MODEL": "Modèle",
+      "NAME": "Nom",
+      "NEXT_MAINTENANCE_DATE": "Prochaine maintenance"
+    },
+    "TITLE": "Machines de moulin"
+  },
+  "Mail": "Mail",
+  "Maintenance": "Entretien",
+  "Mask": "Masque",
+  "Material Table": "Tableau des matériaux",
+  "Membership": "Adhésion",
+  "Menu Level 2.2": "Niveau menus 2.2",
+  "Menu Level 2.3": "Niveau menus 2.3",
+  "Menu Level 3.1": "Niveau menus 3.1",
+  "Menu Level 3.2": "Niveau menus 3.2",
+  "Menu Level 3.3": "Niveau menus 3.3",
+  "Menu Level 4.1": "Niveau menus 4.1",
+  "Menu Level 4.2": "Niveau menus 4.2",
+  "Menu levels": "Niveaux de menu",
+  "Multi Column": "Multi-colonne",
+  "Navigation": "La navigation",
+  "Notification": "Notification",
+  "OIL_CONTAINER": {
+    "DASHBOARD": {
+      "FIELDS": {
+        "ACTIVE": "Actif",
+        "BARCODE": "Code-barres",
+        "BUY_PRICE": "Prix d'achat",
+        "CAPACITY_IN_LITERS": "Capacité (L)",
+        "CERTIFICATION": "Certification",
+        "DESCRIPTION": "Description",
+        "IMAGE_URL": "Image",
+        "MATERIAL": "Matériau",
+        "NAME": "Contenant",
+        "REORDER_QUANTITY": "Quantité de réappro.",
+        "REORDER_THRESHOLD": "Seuil de réapprovisionnement",
+        "SELLING_PRICE": "Prix de vente",
+        "SKU": "SKU",
+        "STOCK_QUANTITY": "Quantité en stock",
+        "STORAGE_LOCATION_CODE": "Emplacement"
+      }
+    },
+    "FORM": {
+      "ACTIVE": "Actif",
+      "BARCODE": "Code-barres",
+      "BUY_PRICE": "Prix d'achat",
+      "CANCEL": "Annuler",
+      "CAPACITY": "Capacité (L)",
+      "CERTIFICATION": "Certification",
+      "DESCRIPTION": "Description",
+      "ERRORS": {
+        "NAME_REQUIRED": "Le nom est requis"
+      },
+      "MATERIAL": "Matériau",
+      "NAME": "Nom",
+      "REORDER_QUANTITY": "Quantité de réapprovisionnement",
+      "REORDER_THRESHOLD": "Seuil de réapprovisionnement",
+      "SAVE": "Enregistrer",
+      "SELLING_PRICE": "Prix de vente",
+      "STOCK_QUANTITY": "Quantité en stock",
+      "STORAGE_LOCATION": "Emplacement de stockage",
+      "UPDATE": "Mettre à jour"
+    },
+    "TITLE_ADD": "Ajouter un conteneur d'huile",
+    "TITLE_EDIT": "Modifier un conteneur d'huile"
+  },
+  "OIL_CONTAINER_LIST": "List des conteneur d'huile",
+  "OIL_CONTAINER_MANAGEMENT": "Gestion des conteneur huile",
+  "OIL_CONTAINER_MANAGEMENT_ADD": "Ajouter un nouveau conteneur",
+  "OIL_CREDIT": {
+    "ACTIONS": {
+      "CANCEL": "Annuler",
+      "EDIT": "Modifier",
+      "SAVE": "Enregistrer",
+      "UPDATE": "Mettre à jour"
+    },
+    "ADD_TITLE": "Ajouter un crédit d'huile",
+    "DETAILS_TITLE": "Détails du crédit d'huile",
+    "EDIT_TITLE": "Modifier le crédit d'huile",
+    "ERRORS": {
+      "CREDIT_STATE_REQUIRED": "L'état du crédit est requis",
+      "OIL_TYPE_REQUIRED": "Le type d'huile est requis",
+      "PACKAGING_REQUIRED": "L'emballage est requis",
+      "QUANTITY_INSUFFICIENT": "Quantité insuffisante en stock",
+      "QUANTITY_MIN": "La quantité doit être supérieure à 0",
+      "QUANTITY_REQUIRED": "La quantité est requise",
+      "QUANTITY_UNIT_MISMATCH": "Unité incompatible avec la citerne sélectionnée",
+      "RECIPIENT_REQUIRED": "Le destinataire est requis",
+      "STORAGE_TANK_REQUIRED": "La cuve de stockage est requise",
+      "SUPPLIER_REQUIRED": "Le fournisseur est requis",
+      "UNIT_REQUIRED": "L'unité est requise"
+    },
+    "FIELDS": {
+      "CREATED_DATE": "Date de création",
+      "CREDIT_STATE": "État du crédit",
+      "OIL_TYPE": "Type d'huile",
+      "PACKAGING": "Emballage",
+      "QUANTITY": "Quantité",
+      "RECIPIENT": "Destinataire",
+      "STORAGE_TANK": "Cuve de stockage",
+      "SUPPLIER": "Fournisseur",
+      "UNIT": "Unité"
+    },
+    "FORM": {
+      "BUTTONS": {
+        "CANCEL": "Annuler",
+        "CREATE": "Créer",
+        "UPDATE": "Mettre à jour"
+      },
+      "CREDIT_STATES": {
+        "APPROVED": "Approuvé",
+        "CANCELLED": "Annulé",
+        "COMPLETED": "Terminé",
+        "PENDING": "En attente",
+        "REJECTED": "Rejeté"
+      },
+      "ERRORS": {
+        "CITERNE_PILE_REQUIRED": "La citerne/pile est requise.",
+        "CREDIT_STATE_REQUIRED": "L'état du crédit est requis.",
+        "DESTINATAIRE_REQUIRED": "Le destinataire est requis.",
+        "EMBALLAGE_REQUIRED": "L'emballage est requis.",
+        "OIL_TYPE_REQUIRED": "Le type d'huile est requis.",
+        "QUANTITY_INSUFFICIENT": "Quantité insuffisante en stock.",
+        "QUANTITY_MIN": "La quantité doit être supérieure à 0.",
+        "QUANTITY_REQUIRED": "La quantité est requise.",
+        "QUANTITY_UNIT_MISMATCH": "Unité incompatible avec la citerne sélectionnée.",
+        "UNIT_REQUIRED": "L'unité est requise."
+      },
+      "FIELDS": {
+        "CITERNE_PILE": "Citerne/Pile",
+        "CREATED_DATE": "Date de création",
+        "CREDIT_STATE": "État du crédit",
+        "DESTINATAIRE": "Destinataire",
+        "EMBALLAGE": "Emballage",
+        "OIL_TYPE": "Type d'huile",
+        "QUANTITY": "Quantité",
+        "UNIT": "Unité"
+      },
+      "MESSAGES": {
+        "FORM_INVALID": "Veuillez corriger les erreurs dans le formulaire.",
+        "LOAD_ERROR": "Erreur lors du chargement des données.",
+        "QUANTITY_INSUFFICIENT_SNACK": "Quantité insuffisante en stock.",
+        "QUANTITY_UNIT_MISMATCH_SNACK": "Unité incompatible avec la citerne sélectionnée.",
+        "SAVE_ERROR": "Erreur lors de l'enregistrement du crédit d'huile.",
+        "SAVE_SUCCESS": "Crédit d'huile enregistré avec succès.",
+        "UPDATE_SUCCESS": "Crédit d'huile mis à jour avec succès."
+      },
+      "PLACEHOLDERS": {
+        "SEARCH_CITERNE_PILE": "Rechercher une citerne/pile...",
+        "SEARCH_DESTINATAIRE": "Rechercher un destinataire...",
+        "SEARCH_OIL_TYPE": "Rechercher un type d'huile...",
+        "SEARCH_RECIPIENT": "Rechercher un destinataire...",
+        "SEARCH_STORAGE_TANK": "Rechercher une cuve de stockage..."
+      },
+      "TITLE_EDIT": "Modifier le crédit d'huile",
+      "TITLE_NEW": "Ajouter un crédit d'huile",
+      "UNITS": {
+        "KILOGRAM": "Kilogramme",
+        "LITRE": "Litre"
+      }
+    },
+    "MESSAGES": {
+      "FORM_INVALID": "Veuillez corriger les erreurs dans le formulaire.",
+      "LOAD_ERROR": "Erreur lors du chargement des données.",
+      "QUANTITY_INSUFFICIENT_SNACK": "Quantité insuffisante en stock.",
+      "QUANTITY_UNIT_MISMATCH_SNACK": "Unité incompatible avec la citerne sélectionnée.",
+      "SAVE_ERROR": "Erreur lors de l'enregistrement du crédit d'huile.",
+      "SAVE_SUCCESS": "Crédit d'huile enregistré avec succès.",
+      "UPDATE_SUCCESS": "Crédit d'huile mis à jour avec succès."
+    },
+    "STATES": {
+      "APPROVED": "Approuvé",
+      "CANCELLED": "Annulé",
+      "COMPLETED": "Terminé",
+      "PENDING": "En attente",
+      "REJECTED": "Rejeté"
+    },
+    "TITLE": "Gestion des crédits d'huile",
+    "UNITS": {
+      "KILOGRAM": "Kilogramme",
+      "LITER": "Litre"
+    },
+    "VIEW": {
+      "BACK": "Retour",
+      "ERROR_MESSAGE": "Impossible de charger le crédit d'huile.",
+      "ERROR_TITLE": "Erreur",
+      "LAST_MODIFIED": "Dernière modification",
+      "LOADING": "Chargement du crédit d'huile...",
+      "PRINT": "Imprimer",
+      "PRINT_TOOLTIP": "Imprimer le crédit d'huile",
+      "TITLE": "Crédit d'huile",
+      "TRANSACTION_ID_IN": "ID Transaction Entrée",
+      "TRANSACTION_ID_OUT": "ID Transaction Sortie"
+    }
+  },
+  "OIL_RECEPTION": {
+    "ADD": {
+      "BUTTONS": {
+        "ADD": "Ajouter",
+        "CANCEL": "Annuler",
+        "UPDATE": "Mettre à jour"
+      },
+      "DELIVERY_INFO": "Informations de livraison",
+      "EDIT_TITLE": "Modifier la réception d'huile",
+      "ERRORS": {
+        "AVAILABLE_CAPACITY": "La quantité dépasse la capacité disponible ({{available}} L restants)",
+        "EXCEEDS_CAPACITY": "La quantité dépasse la capacité disponible de la cuve",
+        "NET_GREATER": "La quantité ne peut pas être supérieure au poids brut",
+        "OPERATION_TYPE_REQUIRED": "Le type d'opération est requis",
+        "STORAGE_UNIT_REQUIRED": "La cuve de stockage est requise"
+      },
+      "FIELDS": {
+        "DELIVERY_DATE": "Date de livraison",
+        "DELIVERY_NUMBER": "N° Livraison",
+        "DELIVERY_TYPE": "Type de livraison",
+        "GROSS_WEIGHT": "Poids brut (kg)",
+        "LOT_NUMBER": "Numéro de lot",
+        "OIL_QUANTITY": "Quantité d'huile (KG)",
+        "OIL_TYPE": "Type d'huile",
+        "OIL_VARIETY": "Variété d'huile",
+        "OLIVE_TYPE": "Type d'olive",
+        "OPERATION_TYPE": "Type d'opération",
+        "OPERATION_TYPE_HINT": "L'achat d'huile est le type d'opération par défaut pour la réception d'huile",
+        "OPERATION_TYPE_PURCHASE": "Achat d'huile (Par défaut)",
+        "OPERATION_TYPE_RECEPTION": "Trituration particulier",
+        "PAID_AMOUNT": "Montant payé (TND)",
+        "PARCEL": "Parcelle",
+        "REGION": "Région",
+        "STORAGE_UNIT": "Cuve de stockage",
+        "SUPPLIER": "Fournisseur",
+        "TOTAL_PRICE": "Prix total (TND)",
+        "TRUCK_PLATE": "Matricule du camion",
+        "TRUCK_STATE": "État du camion",
+        "TRUCK_STATE_CONFORM": "Conforme",
+        "TRUCK_STATE_NON_CONFORM": "Non conforme",
+        "UNIT_PRICE": "Prix unitaire (TND/KG)",
+        "UNPAID_AMOUNT": "Montant restant (TND)"
+      },
+      "FINANCIAL_INFO": "Informations financières",
+      "GENERAL_INFO": "Informations générales",
+      "MESSAGES": {
+        "CREATE_ERROR": "Erreur lors de la création de la livraison",
+        "CREATE_SUCCESS": "Livraison créée avec succès",
+        "ERROR": {
+          "ADD": "Erreur lors de l'ajout de la réception d'huile",
+          "INCOMPLETE_FORM": "Veuillez remplir tous les champs obligatoires",
+          "LOAD": "Erreur lors du chargement des données de réception d'huile",
+          "UPDATE": "Erreur lors de la mise à jour de la réception d'huile"
+        },
+        "LOAD_ERROR": "Erreur lors du chargement des données de livraison",
+        "STORAGE_CAPACITY": "La cuve {{name}} a une capacité disponible de {{available}} L sur {{max}} L",
+        "SUCCESS": {
+          "ADD": "Réception d'huile ajoutée avec succès",
+          "UPDATE": "Réception d'huile mise à jour avec succès"
+        },
+        "UPDATE_ERROR": "Erreur lors de la mise à jour de la livraison",
+        "UPDATE_SUCCESS": "Livraison mise à jour avec succès"
+      },
+      "OIL_DETAILS": "Détails de l'huile",
+      "OPERATION_TYPE": "Type d'opération",
+      "PAYMENT_DETAILS": "Détails du Paiement",
+      "PAYMENT_DIALOG_DESCRIPTION": "Saisissez le prix unitaire et la quantité pour ce paiement d'huile. Le total ne peut pas dépasser le montant impayé de la réception d'olives d'origine.",
+      "QUANTITY": "Quantité (kg)",
+      "REQUIRED": "Ce champ est obligatoire",
+      "SUBMIT": "Soumettre",
+      "SUPPLIER_REGION": "Fournisseur et région",
+      "TITLE": "Ajouter une réception d'huile",
+      "TOTAL": "Total (TND)",
+      "UNIT_PRICE": "Prix unitaire (TND)",
+      "VEHICLE_INFO": "Informations du véhicule",
+      "WEIGHT_QUANTITY": "Poids et quantité"
+    },
+    "DASHBOARD": {
+      "ACTIONS": {
+        "DELETE": "Supprimer",
+        "EDIT": "Modifier",
+        "GENERATE_RECEIPT": "Génerer Bon Réception",
+        "QUALITY": "Contrôle Qualité",
+        "VIEW": "Consulter"
+      },
+      "FIELDS": {
+        "DELIVERY_DATE": "Date de livraison",
+        "DELIVERY_NUMBER": "N° Livraison",
+        "GLOBAL_LOT_NUMBER": "N° Lot Global",
+        "LOT_NUMBER": "N° Lot",
+        "OIL_QUANTITY": "Qté huile (KG)",
+        "OIL_TYPE": "Type d'huile",
+        "OIL_VARIETY": "Variété d'huile",
+        "REGION": "Région",
+        "STATUS": "Statut",
+        "SUPPLIER": "Fournisseur",
+        "TOTAL_PRICE": "Prix total (€)",
+        "TRUCK_PLATE": "Matricule camion",
+        "UNIT_PRICE": "Prix unitaire (€/KG)"
+      },
+      "MESSAGES": {
+        "DELETE_ERROR": "Erreur lors de la suppression",
+        "DELETE_SUCCESS": "Réception supprimée avec succès",
+        "LOAD_ERROR": "Erreur lors du chargement des réceptions"
+      },
+      "STATUS": {
+        "CANCELLED": "Annulé",
+        "COMPLETED": "Terminé",
+        "IN_PROGRESS": "En cours",
+        "NEW": "Nouveau",
+        "REFUSED": "Refusé"
+      },
+      "TITLE": "Livraisons d'Huile"
+    },
+    "PAYMENT_DETAILS": "Détails du paiement",
+    "PAYMENT_DIALOG_DESCRIPTION": "Saisissez le prix unitaire et la quantité pour ce paiement d'huile. Le total ne peut pas dépasser le montant impayé de la réception d'olives d'origine.",
+    "QUANTITY": "Quantité (kg)",
+    "REQUIRED": "Ce champ est obligatoire",
+    "SUBMIT": "Enregistrer les informations",
+    "TOTAL": "Total (TND)",
+    "UNIT_PRICE": "Prix unitaire (TND)"
+  },
+  "OIL_SALES": {
+    "ADD_TITLE": "Ajouter une vente d'huile",
+    "CANCEL": "Annuler",
+    "CONFIRM": "Confirmer",
+    "CONTAINERS": {
+      "COUNT": "Nombre des conteneur ",
+      "SHOW": "Afficher la liste des conteneur ",
+      "TITLE": "Choisire les conteneur(s)"
+    },
+    "CONTAINERS_TOTAL_PRICE": "Montant des conteneuer total ",
+    "CREATED_BY": "Créé par",
+    "CREATED_DATE": "Date de création",
+    "CURRENCIES": {
+      "EUR": "EUR",
+      "TND": "TND",
+      "USD": "USD"
+    },
+    "CURRENCY": "Devise",
+    "CUSTOMER": "Client",
+    "CUSTOMER_ADDRESS": "Adresse du client",
+    "CUSTOMER_EMAIL": "Email du client",
+    "CUSTOMER_INFO": "Informations client",
+    "CUSTOMER_NAME": "Nom du client",
+    "CUSTOMER_PHONE": "Téléphone du client",
+    "DELIVER": "Livrer",
+    "DESCRIPTION": "Description",
+    "DETAILS": "Détails de la vente d'huile",
+    "EDIT_TITLE": "Modifier la vente d'huile",
+    "FIELDS": {
+      "CREATED_DATE": "Date de création",
+      "CURRENCY": "Devise",
+      "CUSTOMER": "Client",
+      "DELIVERY_NOTES": "Notes",
+      "INVOICE_NUMBER": "Numéro de facture",
+      "PARTIALLYPAID": "Montant paié partiellment",
+      "PAYMENT_METHOD": "Méthode de paiement",
+      "QUANTITY": "Quantité (L)",
+      "SALE_DATE": "Date de vente",
+      "STATUS": "Statut",
+      "STORAGE_UNIT": "Unité de stockage",
+      "SUPPLIER": "Fournisseur",
+      "TOTAL_AMOUNT": "Montant total",
+      "UNIT_PRICE": "Prix unitaire",
+      "UNPAIDAMOUNT": "Montant non paié"
+    },
+    "FORM": {
+      "VALIDATION": {
+        "BOTH_CUSTOMER_AND_SUPPLIER_SELECTED": "Veuillez sélectionner soit le client soit le fournisseur, pas les deux",
+        "CUSTOMER_OR_SUPPLIER_REQUIRED": "Le client ou le fournisseur doit être sélectionné"
+      }
+    },
+    "FORM_SUBTITLE": "Créer ou mettre à jour les informations de vente d'huile",
+    "INVOICE": "Facture",
+    "INVOICE_NUMBER": "Numéro de facture",
+    "LAST_MODIFIED_BY": "Dernière modification par",
+    "LAST_MODIFIED_DATE": "Dernière date de modification",
+    "LEFTOVER": "Quantité huile pas encore régler",
+    "OIL_TYPE": "Type d'huile",
+    "PAYMENT_METHOD": "Méthode de paiement",
+    "PAYMENT_METHODS": {
+      "BANK_TRANSFER": "Virement bancaire",
+      "CASH": "Espèces",
+      "CHECK": "Chèque",
+      "CREDIT_CARD": "Carte de crédit",
+      "DEBIT_CARD": "Carte de débit",
+      "MOBILE_PAYMENT": "Paiement mobile",
+      "OIL_CREDIT": "Crédit huile"
+    },
+    "QUANTITY": "Quantité",
+    "SALE_DATE": "Date de vente",
+    "SALE_DETAILS": "Détails de la vente",
+    "SEARCH_CUSTOMER": "Rechercher clients...",
+    "SEARCH_SUPPLIER": "Rechercher un fournisseur...",
+    "STATUS": {
+      "CANCELLED": "Annulé",
+      "CONFIRMED": "Confirmé",
+      "DELIVERED": "Livré",
+      "PENDING": "En attente"
+    },
+    "STORAGE_UNIT": "Unité de stockage",
+    "STORAGE_UNIT_CAPACITY": "Capacité de l'unité de stockage",
+    "STORAGE_UNIT_INFO": "Informations sur l'unité de stockage",
+    "STORAGE_UNIT_LOCATION": "Emplacement de l'unité de stockage",
+    "STORAGE_UNIT_NAME": "Nom de l'unité de stockage",
+    "SUMMARY": "Résumé de la vente",
+    "SUPPLIER": "Fournisseur",
+    "TIMESTAMPS": "Horodatages",
+    "TITLE": "Ventes d'huile",
+    "TOTAL_AMOUNT": "Montant total",
+    "TOTAL_IN_CONTAINERS": "Quantité huile régler",
+    "TOTAL_OILAMOUNT": "Montant total d'huile",
+    "UNIT_PRICE": "Prix unitaire",
+    "VALIDATION": {
+      "CONFIRM": "Confirmer",
+      "INSUFFICIENT_QUANTITY": "Quantité insuffisante",
+      "SOURCE_STORAGE_UNIT": "Unité de stockage source",
+      "TITLE": "Valider la vente d'huile"
+    }
+  },
+  "OIL_TRANSACTION": {
+    "DELIVERY": {
+      "DATE": "Date de livraison",
+      "LOT_NUMBER": "Numéro de lot",
+      "NUMBER": "N° Livraison",
+      "OIL_QUANTITY": "Quantité d'huile",
+      "OIL_VARIETY": "Variété d'huile",
+      "PARCEL": "Parcelle",
+      "REGION": "Région",
+      "SECTION": "Détails de la livraison associée",
+      "STATUS": "Statut",
+      "STORAGE_UNIT": "Unité de stockage",
+      "SUPPLIER": "Fournisseur",
+      "TOTAL_PRICE": "Prix total",
+      "TYPE": "Type",
+      "UNIT_PRICE": "Prix unitaire"
+    },
+    "DETAILS": {
+      "CREATED_DATE": "Date de création",
+      "DEST_UNIT_ID": "ID unité de stockage destination",
+      "ID": "ID",
+      "QUALITY_GRADE": "Qualité",
+      "QUANTITY_KG": "Quantité (kg)",
+      "RECEPTION_ID": "ID de réception",
+      "SECTION": "Détails de la transaction",
+      "SRC_UNIT_ID": "ID unité de stockage source",
+      "TITLE": "Détails de la transaction d'huile et de la livraison",
+      "TOTAL_PRICE": "Prix total",
+      "TYPE": "Type",
+      "UNIT_PRICE": "Prix unitaire"
+    },
+    "LIST": "List des transactions huile"
+  },
+  "OIL_TRANSACTIONS": {
+    "DASHBOARD": {
+      "ACTIONS": {
+        "DELETE": "Supprimer",
+        "EDIT": "Modifier",
+        "VIEW": "Voir"
+      },
+      "FIELDS": {
+        "CREATED_DATE": "Date de création",
+        "QUALITY_GRADE": "Grade de qualité",
+        "QUANTITY_KG": "Quantité (kg)",
+        "RECEPTION": "Réception",
+        "STORAGE_UNIT_DESTINATION": "Unité de destination",
+        "STORAGE_UNIT_SOURCE": "Unité source",
+        "TOTAL_PRICE": "Prix total",
+        "TRANSACTION_STATE": "État de la transaction",
+        "TRANSACTION_TYPE": "Type de transaction",
+        "UNIT_PRICE": "Prix unitaire"
+      },
+      "MESSAGES": {
+        "DELETE_ERROR": "Erreur lors de la suppression",
+        "DELETE_SUCCESS": "Transaction supprimée avec succès",
+        "LOAD_ERROR": "Erreur lors du chargement des transactions"
+      },
+      "STATUS": {
+        "COMPLETED": "Terminé",
+        "PENDING": "En attente"
+      },
+      "TITLE": "Transactions d'huile",
+      "TYPES": {
+        "EXCHANGE": "Echange",
+        "LOAN": "Prêt",
+        "RECEPTION_IN": "Réception Entrée",
+        "SALE": "Vente",
+        "TRANSFER_IN": "Transfert interne"
+      }
+    },
+    "DIALOG": {
+      "EXCHANGE": {
+        "TITLE_DESTINATION": "Choisir une unité de stockage destination pour valider le transaction",
+        "TITLE_SOURCE": "chose the source storage unit to validate the transaction"
+      }
+    },
+    "FORM": {
+      "ACTIONS": {
+        "APPROVE": "Approuver",
+        "CANCEL": "Annuler",
+        "CREATE": "Créer",
+        "UPDATE": "Mettre à jour"
+      },
+      "CONFIRMATION": {
+        "APPROVE": {
+          "CANCEL": "Annuler",
+          "CONFIRM": "Approuver",
+          "MESSAGE": "Êtes-vous sûr de vouloir approuver cette transaction ? Cette action ne peut pas être annulée.",
+          "TITLE": "Approuver la Transaction"
+        }
+      },
+      "FIELDS": {
+        "QUALITY_GRADE": "Grade de qualité",
+        "QUANTITY_KG": "Quantité (kg)",
+        "STORAGE_UNIT_DESTINATION": "Unité destiantion",
+        "STORAGE_UNIT_SOURCE": "Unité source",
+        "TOTAL_PRICE": "Prix total",
+        "TRANSACTION_STATE": "État de la transaction",
+        "TRANSACTION_TYPE": "Type de transaction",
+        "UNIT_PRICE": "Prix unitaire"
+      },
+      "HINTS": {
+        "STORAGE_UNIT_SOURCE": "Optionnel - pour les transferts entre unités",
+        "TOTAL_PRICE": "Calculé automatiquement"
+      },
+      "MESSAGES": {
+        "ERROR": {
+          "APPROVAL_NOT_AVAILABLE": "L'approbation n'est pas disponible pour cette transaction",
+          "APPROVE": "Erreur lors de l'approbation de la transaction",
+          "LOAD": "Erreur lors du chargement",
+          "LOAD_STORAGE_UNITS": "Erreur lors du chargement des unités de stockage",
+          "UPDATE": "Erreur lors de la sauvegarde"
+        },
+        "INCOMPLETE_FORM": "Veuillez remplir tous les champs requis avant de soumettre.",
+        "LOADING": "Chargement...",
+        "SUCCESS": {
+          "APPROVE": "Transaction approuvée avec succès",
+          "CREATE": "Transaction créée avec succès",
+          "UPDATE": "Transaction mise à jour avec succès"
+        }
+      },
+      "OVERFILLING": "Volum insuffisant",
+      "PLACEHOLDERS": {
+        "QUANTITY_KG": 0.0,
+        "SELECT_STORAGE_UNIT": "Sélectionner une unité",
+        "UNIT_PRICE": 0.0
+      },
+      "SECTIONS": {
+        "FINANCIAL_INFORMATION": "Informations Financières",
+        "QUALITY_AND_QUANTITY": "Qualité et Quantité",
+        "QUALITY_CONTROL_INFO": "Quality Control Information",
+        "RECEPTION_PRICE_INFO": "Reception Price Information",
+        "STORAGE_UNITS": "Unités de Stockage",
+        "TRANSACTION_TYPE_AND_STATE": "Type et État de la Transaction"
+      },
+      "TITLE": {
+        "CREATE": "Nouvelle Transaction d'Huile",
+        "EDIT": "Modifier la Transaction d'Huile"
+      },
+      "VALIDATION": {
+        "MIN_VALUE": "La valeur doit être supérieure à 0",
+        "REQUIRED": "Ce champ est requis"
+      }
+    },
+    "QUALITY_GRADES": {
+      "EXTRA_VIRGIN": "Extra Vierge",
+      "LAMPANTE": "Lampante",
+      "OTHER": "Autre",
+      "REFINED": "Raffiné",
+      "VIRGIN": "Vierge"
+    },
+    "TITLE": "Transactions d'huile",
+    "VIEW": {
+      "ACTIONS": {
+        "BACK": "Retour à la liste",
+        "DELETE": "Supprimer",
+        "EDIT": "Modifier"
+      },
+      "FIELDS": {
+        "CREATED_DATE": "Date de création",
+        "ID": "ID",
+        "LAST_MODIFIED_DATE": "Date de modification",
+        "NOTES": "Notes",
+        "OLIVE_QUANTITY": "Quantité d'olives",
+        "OLIVE_UNIT_PRICE": "Prix unitaire des olives",
+        "PAID_AMOUNT": "Montant payé",
+        "QUALITY_GRADE": "Grade de qualité",
+        "QUANTITY_KG": "Quantité (kg)",
+        "RECEPTION_DATE": "Date de réception",
+        "RECEPTION_ID": "ID de réception",
+        "RECEPTION_REGION": "Région de la réception",
+        "RECEPTION_SUPPLIER": "Fournisseur de la réception",
+        "STORAGE_UNIT_DESTINATION": "Unité de destination",
+        "STORAGE_UNIT_SOURCE": "Unité source",
+        "TOTAL_PRICE": "Prix total",
+        "TRANSACTION_STATE": "État de la transaction",
+        "TRANSACTION_TYPE": "Type de transaction",
+        "UNIT_PRICE": "Prix unitaire",
+        "UNPAID_AMOUNT": "Montant impayé"
+      },
+      "SECTIONS": {
+        "AUDIT_INFO": "Informations d'audit",
+        "FINANCIAL_INFO": "Informations financières",
+        "GENERAL_INFO": "Informations générales",
+        "QUALITY_AND_QUANTITY": "Qualité et quantité",
+        "RECEPTION_INFO": "Réception",
+        "STORAGE_UNITS": "Unités de stockage"
+      },
+      "TITLE": "Détails de la transaction d'huile"
+    }
+  },
+  "OLIVE_RECEPTION": {
+    "FORM": {
+      "BUTTONS": {
+        "ADD": "Ajouter",
+        "BACK": "Retour",
+        "CANCEL": "Annuler",
+        "SAVE": "Enregistrer",
+        "UPDATE": "Mettre à jour"
+      },
+      "FIELDS": {
+        "DELIVERY_DATE": "Date de livraison",
+        "DELIVERY_NUMBER": "N° Livraison",
+        "DELIVERY_TYPE": "Type de livraison",
+        "GROSS_WEIGHT": "Poids brut (kg)",
+        "LOT_NUMBER": "Numéro de lot",
+        "NET_WEIGHT": "Poids net (kg)",
+        "OLIVE_QUANTITY": "Quantité d'olives (kg)",
+        "OLIVE_TYPE": "Type d'olive",
+        "OLIVE_VARIETY": "Variété d'olive",
+        "OPERATION_TYPE": "Type d'opération",
+        "PARCEL": "Parcelle",
+        "REGION": "Région",
+        "SACK_COUNT": "Nombre de sacs",
+        "SUPPLIER": "Fournisseur",
+        "TREATMENT_DATE": "Date de traitement",
+        "TRUCK_PLATE": "Matricule du camion",
+        "TRUCK_STATE": "État du camion",
+        "YIELD": "Rendement (%)"
+      },
+      "MESSAGES": {
+        "LOAD_ERROR": "Erreur lors du chargement des données de réception d'olives",
+        "SAVE_ERROR": "Erreur lors de l'enregistrement de la réception d'olives",
+        "SAVE_SUCCESS": "Réception d'olives enregistrée avec succès"
+      },
+      "PLACEHOLDERS": {
+        "SEARCH_OPERATION": "Rechercher un type d'opération...",
+        "SEARCH_REGION": "Rechercher une région...",
+        "SEARCH_SUPPLIER": "Rechercher un fournisseur...",
+        "SEARCH_TYPE": "Rechercher un type...",
+        "SEARCH_VARIETY": "Rechercher une variété..."
+      },
+      "SECTIONS": {
+        "DELIVERY_INFO": "Informations de livraison",
+        "GENERAL_INFO": "Informations générales",
+        "OLIVE_INFO": "Informations sur les olives",
+        "SUPPLIER_REGION": "Fournisseur et région",
+        "VEHICLE_INFO": "Informations du véhicule",
+        "WEIGHT_QUANTITY": "Poids et quantité"
+      },
+      "TITLE": {
+        "ADD": "Ajouter une réception d'olives",
+        "EDIT": "Modifier la réception d'olives"
+      },
+      "TRUCK_STATES": {
+        "COMPLIANT": "Conforme",
+        "NON_COMPLIANT": "Non conforme"
+      },
+      "VALIDATION": {
+        "MIN_VALUE": "La valeur doit être supérieure à 0",
+        "NET_GREATER": "Le poids net ne peut pas être supérieur au poids brut",
+        "REQUIRED": "Ce champ est obligatoire"
+      }
+    },
+    "SECTIONS": {
+      "OIL_EXCHANGE": "Echange"
+    }
+  },
+  "OPERATION_TYPE": {
+    "BASE": "Trituration sur base",
+    "EXCHANGE": "Échange",
+    "INTERNAL_RECEPTION": "Réception interne",
+    "OIL_PURCHASE": "Achat d'huile",
+    "OLIVE_PURCHASE": "Achat d'olives",
+    "SIMPLE_RECEPTION": "Trituration particulier"
+  },
+  "OSM_DASHBOARD": {
+    "ACTIONS": {
+      "ASSIGN_SUPPLIER": "Assigner un fournisseur",
+      "CANCEL": "Annuler",
+      "COMPLETE": "Terminer",
+      "COMPLETE_PAYMENT_DETAILS": "à completer pour paiment",
+      "CONFIRM": "Confirmer",
+      "CONFIRM_DELETE": "Êtes-vous sûr de vouloir supprimer cet élément ?",
+      "CREATE": "Créer",
+      "DELETE": "Supprimer",
+      "ERROR": "Une erreur s'est produite",
+      "GEN_INVOICE": "Générer Facture",
+      "GEN_PDF": "Générer Bon Réception",
+      "GEN_PDF_QC_OIL": "Bon control quality huile",
+      "GEN_PDF_QC_OLIVE": "Bon control quality olive",
+      "MAINTENANCE": "Maintenance",
+      "MORE": "Plus",
+      "OIL_IN_TRANSACTION": "Transaction Entrée Huile",
+      "OIL_OUT_TRANSACTION": "Transaction Sortie Huile",
+      "OIL_PAYMENT": "Paiement Huile",
+      "OIL_QUALITY": "Contrôle Qualité Huile",
+      "OIL_RECEPTION": "Réception Huile",
+      "OLIVE_QUALITY": "Contrôle Qualité Olives",
+      "PAY": "Paier",
+      "QUALITY": "Qualité",
+      "READ": "Voir",
+      "SET_PRICE": "Définir Le Prix",
+      "SUCCESS": "Opération terminée avec succès",
+      "TITLE": "Actions",
+      "TO_PROD": "Envoyer en Production",
+      "UPDATE": "Modifier",
+      "UPDATE_OIL_QUALITY": "Modifier Qualité Huile",
+      "UPDATE_OLIVE_QUALITY": "Modifier Qualité Olives",
+      "VALIDATE": "Valider"
+    },
+    "COLUMNS": {
+      "HIDE": "Masquer les colonnes",
+      "RESET": "Réinitialiser les colonnes",
+      "SHOW": "Afficher les colonnes",
+      "TITLE": "Colonnes"
+    },
+    "EXPORT": {
+      "ALL": "Tout exporter",
+      "BUTTON": "Exporter",
+      "CSV": "Exporter CSV",
+      "PDF": "Exporter PDF",
+      "SELECTED": "Exporter la sélection"
+    },
+    "FILTER": {
+      "ALL": "Tout sélectionner",
+      "APPLY": "Appliquer les filtres",
+      "CLEAR": "Effacer les filtres",
+      "PLACEHOLDER": "Rechercher...",
+      "RESET": "Réinitialiser",
+      "SEARCH": "Rechercher",
+      "TITLE": "Filtrer"
+    },
+    "NEW": "Nouveau",
+    "QUALITY_CONTROL": {
+      "TITLE": "Contrôle Qualité"
+    },
+    "SORT": {
+      "ASC": "Trier par ordre croissant",
+      "CLEAR": "Effacer le tri",
+      "DESC": "Trier par ordre décroissant"
+    },
+    "TABLE": {
+      "ERROR": "Erreur de chargement des données",
+      "FIRST_PAGE": "Première page",
+      "ITEMS_PER_PAGE": "Éléments par page",
+      "LAST_PAGE": "Dernière page",
+      "LOADING": "Chargement...",
+      "NEXT_PAGE": "Page suivante",
+      "NO_DATA": "Aucune donnée disponible",
+      "OF": "sur",
+      "PAGE_SIZE": "Éléments par page",
+      "PREVIOUS_PAGE": "Page précédente",
+      "SELECTED_ITEMS": "Éléments sélectionnés",
+      "TOTAL_ITEMS": "Total des éléments"
+    },
+    "TITLE": "Actions"
+  },
+  "OTHER_TAB": "Autre Config",
+  "Online Courses": "Cours en ligne",
+  "Other": "Autre",
+  "PDF": {
+    "ACIDITY": "Acidité",
+    "ADDRESS": "Adresse",
+    "CATEGORY_OIL": "Catégorie Huile",
+    "CATEGORY_OLIVE": "Catégorie Olive",
+    "COMPLETED": "Terminé",
+    "CREATED_DATE": "Date de création",
+    "CRUSHING_DATE": "Date de Trituration",
+    "CRUSHING_PRICE_PER_KG": "Prix Trituration par kg",
+    "CRUSHING_TOTAL_PRICE": "Prix Total Trituration",
+    "DAMAGED_PERCENT": "Endommagées %",
+    "DATE": "Date",
+    "DELIVERY_DATE": "Date de Livraison",
+    "DELTA_K": "Delta K",
+    "DESTINATION_UNIT": "Unité de destination",
+    "ERROR": "Erreur",
+    "EXCHANGE": "Échange",
+    "EXPENSE_AMOUNT": "Montant",
+    "EXPENSE_APPROVAL_DATE": "Date d'approbation",
+    "EXPENSE_APPROVED": "Approuvé",
+    "EXPENSE_BILL": "Note de Dépense",
+    "EXPENSE_CATEGORY": "Catégorie",
+    "EXPENSE_CREATED_BY": "Créé par",
+    "EXPENSE_NOTES": "Notes",
+    "EXPENSE_OBJECT": "Objet",
+    "EXPENSE_PAYMENT_METHOD": "Méthode de paiement",
+    "EXPENSE_PURCHASE_NATURE": "Nature d'achat",
+    "EXPENSE_RECEIPT_NUMBER": "Numéro de reçu",
+    "EXPENSE_SIGNATURE_AGENT": "Signature de l'agent",
+    "EXPENSE_SIGNATURE_RESPONSIBLE": "Signature du responsable",
+    "EXPENSE_STATUS": "Statut",
+    "EXPENSE_VENDOR": "Fournisseur",
+    "FERMENTED_PERCENT": "Fermentées %",
+    "FICH_CONTROL_QUALITE": "Fiche de contole de quality",
+    "FICH_CONTROL_QUALITE_HUIL": "Fiche de Contrôle Qualité Huile",
+    "FICH_CONTROL_QUALITE_OLIVE": "Fiche de Contrôle Qualité Olive",
+    "FORM": "FORMULAIRE",
+    "GLOBAL_LOT": "Lot global",
+    "GROSS_WEIGHT": "Poids Brut",
+    "INDICE_PEROXYDE": "Indice Péroxyde",
+    "INFESTED_PERCENT": "Infestées %",
+    "K232": "K232",
+    "K270": "K270",
+    "LOAN": "Prêt",
+    "LOT": "Lot",
+    "LOT_GLOBAL": "Lot Global",
+    "LOT_NUMBER": "Numéro de Lot",
+    "NO_QUALITY_DATA": "Aucune donnée de contrôle qualité disponible",
+    "NUMBER_PLACEHOLDER": "N° : ......./........",
+    "OIL_QUANTITY": "Quantité d'huile",
+    "OIL_TYPE": "Type Huile",
+    "OIL_VARIETY": "Variété Huile",
+    "OLIVE_NET_WEIGHT": "Poids Net d'Olives",
+    "OLIVE_QUANTITY": "Quantité Olive",
+    "OLIVE_TYPE": "Type Olive",
+    "OLIVE_VARIETY": "Variété Olive",
+    "PAGE": "Page",
+    "PARCEL": "Parcelle",
+    "PENDING": "En attente",
+    "PHONE": "Téléphone",
+    "PRODUCTION_MANAGER": "Chef de Production",
+    "PRODUCTION_RECEIPT": "BON DE PRODUCTION",
+    "QUALITY_FIELDS": {
+      "ACIDITE": "Acidité",
+      "CATEGORIE_HUILE": "Catégorie huile",
+      "CATEGORIE_OLIVE": "Catégorie olive",
+      "DELTA_K": "Delta K",
+      "ENDOMMAGEES_PCT": "Endommagées %",
+      "FERMENTEES_PCT": "Fermentées %",
+      "INDICE_PEROXYDE": "Indice peroxyde",
+      "INFESTEES_PCT": "Infestées %",
+      "K232": "K232",
+      "K270": "K270"
+    },
+    "QUALITY_GRADE": "Qualité",
+    "QUALITY_MANAGER": "Responsable Qualité",
+    "QUANTITY": "Quantité",
+    "QUANTITY_KG": "Quantité (kg)",
+    "RECEPTION_DATE": "Date de réception",
+    "RECEPTION_ID": "ID de réception",
+    "RECEPTION_IN": "Réception",
+    "RECEPTION_NUMBER": "Numéro de Réception",
+    "RECEPTION_OIL": "Bon De Réception Huile",
+    "RECEPTION_OLIVE": "Bon De Réception Olive",
+    "RECEPTION_REGION": "Région de la réception",
+    "RECEPTION_SUPPLIER": "Fournisseur de la réception",
+    "REFERENCE": "Référence",
+    "REGION": "Région",
+    "REVISION": "Révision",
+    "SALE": "Vente",
+    "SIGNATURE": "Signature",
+    "SIGNATURE_AGENT": "Signature Agent)",
+    "SIGNATURE_RESPONSIBLE": "Signature Responsable CQ",
+    "STATUS": "Statut",
+    "STORAGE_UNIT_DEST": "Unité de stockage (destination)",
+    "STORAGE_UNIT_DESTINATION": "Unité de stockage (destination)",
+    "STORAGE_UNIT_SOURCE": "Unité de stockage (source)",
+    "SUPPLIER": "Fournisseur",
+    "TOTAL_PRICE": "Prix total",
+    "TRANSACTION_IN": "Type de transaction",
+    "TRANSACTION_OIL": "Bon de Transaction Huile",
+    "TRANSACTION_STATE": "État de la transaction",
+    "TRANSACTION_TYPE": "Type de transaction",
+    "TRANSFER_IN": "Transfert entrant",
+    "TRUCK_MAT": "Matricule camion",
+    "TRUCK_STATE": "État du camion",
+    "TYPE": "Type",
+    "UNIT_PRICE": "Prix unitaire",
+    "VEHICLE_REGISTRATION": " matricule véhicule",
+    "YIELD": "Rendement"
+  },
+  "PLANNING_ASSIGNED": "Assignées",
+  "PLANNING_CANCEL": "Annuler",
+  "PLANNING_CARD_TITLE": "Planification des Réceptions d'Olives",
+  "PLANNING_EXIT_FULLSCREEN": "Quitter le plein écran",
+  "PLANNING_FULLSCREEN": "Plein écran",
+  "PLANNING_GROUP": "Grouper",
+  "PLANNING_KG": "kg",
+  "PLANNING_LOTS_LIST": "Liste des Lots :",
+  "PLANNING_NET": "Net :",
+  "PLANNING_OPERATION_TYPE": "Type d'opération :",
+  "PLANNING_RECEPTIONS_UNASSIGNED_HEADER": "Réceptions Non Assignées",
+  "PLANNING_SACKS": "Sacs :",
+  "PLANNING_SAVE": "Enregistrer",
+  "PLANNING_SEARCH": "Recherche lot",
+  "PLANNING_SEARCH_PLACEHOLDER": "Numéro de lot",
+  "PLANNING_SUPPLIER": "Fournisseur :",
+  "PLANNING_TYPE": "Type :",
+  "PLANNING_UNASSIGNED": "Non Assignées",
+  "PLANNING_VARIETY": "Variété :",
+  "PRODUCTION_TAB": "Config Production",
+  "Pages": "pages",
+  "Plugins": "Plugins",
+  "Price": "Prix",
+  "Price 1": "Prix ​​1",
+  "Price 2": "Prix 2",
+  "Pricing": "Tarification",
+  "Product": "Produit",
+  "Product Details": "détails du produit",
+  "Product List": "Liste de produits",
+  "Profile": "Profil",
+  "QUALITY_CONTROL_RULE": {
+    "ACTIONS": {
+      "CANCEL": "Annuler",
+      "EDIT": "Modifier",
+      "SAVE": "Enregistrer",
+      "UPDATE": "Mettre à jour"
+    },
+    "ADD_TITLE": "Ajouter une règle de contrôle qualité",
+    "DETAILS_TITLE": "Détails de la règle de contrôle qualité",
+    "EDIT_TITLE": "Modifier la règle de contrôle qualité",
+    "ERRORS": {
+      "OIL_QC_REQUIRED": "Le contrôle qualité huile est requis",
+      "RULE_NAME_REQUIRED": "Le nom de la règle est requis",
+      "RULE_TYPE_REQUIRED": "Le type de règle est requis"
+    },
+    "FIELDS": {
+      "OIL_QC": "Contrôle qualité huile",
+      "RULE_NAME": "Nom de la règle",
+      "RULE_TYPE": "Type de règle"
+    },
+    "RULE_TYPES": {
+      "BOOLEAN": "Booléen",
+      "NUMERIC": "Numérique",
+      "STRING": "Texte"
+    },
+    "TITLE": "Règles de contrôle qualité"
+  },
+  "RECEPTION_LIST": {
+    "ACTIONS": {
+      "DELETE": "Supprimer",
+      "EDIT": "Modifier",
+      "GENERATE_PDF": "Générer bon de réception",
+      "VIEW": "Consulter"
+    },
+    "FIELDS": {
+      "DELIVERY_DATE": "Date de réception",
+      "DELIVERY_NUMBER": "N° Livraison",
+      "GLOBAL_LOT_NUMBER": "N° Lot Global",
+      "LOT_NUMBER": "N° Lot",
+      "NET_WEIGHT": "Poids net (kg)",
+      "OIL_TYPE": "Type d'huile",
+      "OLIVE_TYPE": "Type d'olive",
+      "OPERATION_TYPE": "Type de trituration",
+      "REGION": "Région",
+      "STATUS": "Statut",
+      "SUPPLIER": "Fournisseur",
+      "TRUCK_PLATE": "Matricule camion"
+    },
+    "STATUS": {
+      "CANCELLED": "Annulé",
+      "COMPLETED": "Terminé",
+      "IN_PROGRESS": "En cours",
+      "IN_STOCK": "En stock",
+      "NEW": "Nouveau",
+      "OIL_CONTROLLED": "Huile contrôlée",
+      "OLIVE_CONTROLLED": "Olives contrôlées",
+      "PROD_READY": "Prêt pour production",
+      "REFUSED": "Refusé",
+      "STOCK_READY": "Prêt à stocker",
+      "WAITING_FOR_PAYMENT_DETAILS": "En attente des détails de paiement",
+      "WAITING_FOR_PRICING": "À définir le prix et la quantité"
+    },
+    "TITLE": "Réceptions d'huile et triturations"
+  },
+  "Register": "Enregistrer",
+  "Reset Password": "réinitialiser le mot de passe",
+  "SINGLE": "Célibataire",
+  "STANDARD": {
+    "ACCESS_RESSOURCE_ERROR": "Vous n'avez pas accès à cette ressource.",
+    "BOOLEAN": {
+      "FALSE": "Faux",
+      "TRUE": "Vrai"
+    },
+    "BTNS": {
+      "ADD": "Ajouter",
+      "BACK": "Retour",
+      "CANCEL": "Annuler",
+      "CLOSE": "Fermer",
+      "DELETE": "Supprimer",
+      "EDIT": "Modifier",
+      "NEXT": "Suivant",
+      "PREVIOUS": "Précédent",
+      "RETRY": "Réessayer",
+      "SAVE": "Enregistrer",
+      "SEARCH": "Rechercher",
+      "SUBMIT": "Soumettre"
+    },
+    "CONFIRMATION": {
+      "BULK_DELETE": {
+        "CANCEL": "Annuler",
+        "CONFIRM": "Tout supprimer",
+        "MESSAGE": "Êtes-vous sûr de vouloir supprimer les éléments sélectionnés ? Cette action ne peut pas être annulée.",
+        "TITLE": "Confirmer la suppression en masse"
+      },
+      "CANCEL": "Annuler",
+      "DATA_LOSS": {
+        "CANCEL": "Annuler",
+        "CONFIRM": "Continuer",
+        "MESSAGE": "Cette action entraînera une perte permanente de données. Êtes-vous sûr de vouloir continuer ?",
+        "TITLE": "Avertissement de perte de données"
+      },
+      "DEFAULT": {
+        "CANCEL": "Annuler",
+        "CONFIRM": "Confirmer"
+      },
+      "DELETE": {
+        "CANCEL": "Annuler",
+        "CONFIRM": "Supprimer",
+        "MESSAGE": "Êtes-vous sûr de vouloir supprimer cet élément ? Cette action ne peut pas être annulée.",
+        "TITLE": "Confirmer la suppression"
+      },
+      "DESTRUCTIVE_WARNING": "Cette action est irréversible et supprimera définitivement les données.",
+      "OIL_TRANSACTION": {
+        "CANCEL": "Non, ignorer",
+        "CONFIRM": "Oui, confirmer",
+        "MESSAGE": "Ce fournisseur dispose d'un stockage. Voulez‑vous également confirmer la transaction d'huile ?",
+        "TITLE": "Confirmer la transaction d'huile"
+      },
+      "SAVE": "Enregistrer",
+      "SAVE_QC": {
+        "MESSAGE": "Êtes‑vous sûr de vouloir enregistrer les résultats du contrôle qualité ?",
+        "TITLE": "Confirmer l'enregistrement"
+      },
+      "SIMPLE": {
+        "CANCEL": "Non",
+        "CONFIRM": "Oui",
+        "MESSAGE": "Êtes-vous sûr ?",
+        "TITLE": "Confirmation"
+      },
+      "UNSAVED_CHANGES": {
+        "CANCEL": "Rester",
+        "CONFIRM": "Partir",
+        "MESSAGE": "Vous avez des modifications non sauvegardées. Êtes-vous sûr de vouloir partir sans sauvegarder ?",
+        "TITLE": "Modifications non sauvegardées"
+      },
+      "UPDATE": {
+        "CANCEL": "Annuler",
+        "CONFIRM": "Oui, mettre à jour",
+        "MESSAGE": "Êtes-vous sûr de vouloir mettre à jour cette transaction d'huile ? Cette action est irréversible.",
+        "TITLE": "Confirmer la mise à jour"
+      },
+      "WARNING": {
+        "CANCEL": "Annuler",
+        "CONFIRM": "Continuer",
+        "MESSAGE": "Veuillez confirmer cette action.",
+        "TITLE": "Avertissement"
+      }
+    },
+    "TOAST": {
+      "ERROR": "Une erreur s'est produite",
+      "INFO": "Information",
+      "NETWORK_ERROR": "Erreur de connexion réseau",
+      "SUCCESS": "Opération terminée avec succès",
+      "VALIDATION_ERROR": "Vérifiez votre saisie et réessayez",
+      "WARNING": "Vérifiez votre saisie"
+    }
+  },
+  "STORAGE": {
+    "ERROR": {
+      "INVALID_ID": "Identifiant d'unité de stockage invalide",
+      "LOAD": "Erreur lors du chargement de l'unité de stockage"
+    },
+    "OIL_STORAGE_UNITS": "Unités de Stockage d'Huile",
+    "OIL_TRANSACTIONS": "Transactions d'Huile",
+    "TITLE": "Configuration Stock",
+    "VIEW": {
+      "AVAILABLECAPACITY": "Capacity disponible",
+      "AVGCOST": "Coût moyenne",
+      "CURRENT_VOLUME": "Volume actuel",
+      "DASHBOARD": {
+        "FIELDS": {
+          "CREATED_DATE": "Date de création",
+          "QUALITY_GRADE": "Qualité",
+          "QUANTITY_KG": "Quantité (kg)",
+          "TOTAL_PRICE": "Prix total",
+          "TRANSACTION_TYPE": "Type de transaction",
+          "UNIT_PRICE": "Prix unitaire"
+        },
+        "TITLE": "Tableau de bord de stockage"
+      },
+      "MAX_CAPACITY": "Capacité maximale",
+      "NA": "N/A",
+      "OIL_TYPE": "Type d'huile",
+      "STATUS": {
+        "AVAILABLE": "Disponible",
+        "CLEANING": "Nettoyage",
+        "FILLING": "Remplissage",
+        "FULL": "Plein",
+        "IN_USE": "En cours d'utilisation",
+        "MAINTENANCE": "Maintenance",
+        "OUT_OF_SERVICE": "Hors service",
+        "RESERVED": "Réservé"
+      },
+      "TITLE": "Voir le stockage",
+      "TOTALCOST": "Cout total",
+      "TRANSACTION_HISTORY": "Historique des transactions"
+    }
+  },
+  "SUPPLIER": {
+    "ACTIONS": {
+      "ADD": "Ajouter",
+      "CANCEL": "Annuler",
+      "EDIT": "Modifier"
+    },
+    "ADD": {
+      "TITLE_ADD": "Ajouter un fournisseur",
+      "TITLE_EDIT": "Modifier le fournisseur"
+    },
+    "DETAILS": {
+      "OIL_CREDIT_STATS_TITLE": "Statistiques crédits d'huile",
+      "OIL_CREDIT_TOTAL": "Crédits d'huile",
+      "PAID_OILSALES_TITLE": "Vente huile paiés",
+      "PAYMENT_HISTORY_COUNT": "paiements effectués",
+      "PAYMENT_HISTORY_TITLE": "Historique des Paiements",
+      "UNPAID_COUNT": "paiements en attente",
+      "UNPAID_OILSALES_TITLE ": "Vente huiles unpaiés",
+      "UNPAID_TITLE": "Paiements en Attente"
+    },
+    "ERRORS": {
+      "ADDRESS_MIN": "L'adresse doit contenir au moins 5 caractères",
+      "ADDRESS_REQUIRED": "L'adresse est requise",
+      "EMAIL_INVALID": "Format d'email invalide",
+      "EMAIL_REQUIRED": "L'email est requis",
+      "LASTNAME_MIN": "Le prénom doit contenir au moins 2 caractères",
+      "LASTNAME_REQUIRED": "Le prénom est requis",
+      "NAME_MIN": "Le nom doit contenir au moins 2 caractères",
+      "NAME_REQUIRED": "Le nom est requis",
+      "PHONE_PATTERN": "Le téléphone doit contenir 8 chiffres",
+      "PHONE_REQUIRED": "Le téléphone est requis",
+      "REGION_REQUIRED": "La région est requise",
+      "RIB_PATTERN": "Le RIB doit contenir 24 chiffres",
+      "SUPPLIER_TYPE_REQUIRED": "Le type de fournisseur est requis"
+    },
+    "FIELDS": {
+      "ADDRESS": "Adresse",
+      "BANK_NAME": "Nom de la banque",
+      "EMAIL": "Email",
+      "LASTNAME": "Prénom",
+      "NAME": "Nom",
+      "PARCEL": "Parcelle",
+      "PHONE": "Téléphone",
+      "REGION": "Région",
+      "RIB": "RIB",
+      "SUPPLIER_TYPE": "Type de fournisseur"
+    },
+    "OIL_CREDIT_STATS_TITLE": "Statistique du credit huile",
+    "OIL_CREDIT_TOTAL": "Crédits d'huile"
+  },
+  "SUPPLIERS": {
+    "ACTIONS": "Actions",
+    "ADDRESS": "Adresse",
+    "EMAIL": "Email",
+    "FIRST_NAME": "Prénom",
+    "LAST_NAME": "Nom",
+    "PHONE": "Téléphone",
+    "REGION": "Région",
+    "TITLE": "Fournisseurs",
+    "TYPE": "Type"
+  },
+  "SUPPLIER_PAYMENT": {
+    "ACTIONS": "Actions",
+    "ALL": "Tous",
+    "ALL_DELIVERIES": "Toutes les Livraisons",
+    "AMOUNT": "Montant",
+    "BANK_ACCOUNT": "Compte Bancaire",
+    "BANK_TRANSFER": "Virement Bancaire",
+    "BATCH_PAYMENT": "Paiement par lot",
+    "BOTH_PAYMENT": "Paiement Mixte",
+    "CANCEL": "Annuler",
+    "CASH": "Espèces",
+    "CASH_AMOUNT": "Montant en Espèces",
+    "CASH_PAYMENT": "Paiement en Espèces",
+    "CHECK": "Chèque",
+    "CHECK_NUMBER": "Numéro de Chèque",
+    "CHECK_NUMBER_PLACEHOLDER": "Ex: CHK-2024-001",
+    "CONFIRM_PAYMENT": "Confirmer le Paiement",
+    "DELIVERY_DATE": "Date Livraison",
+    "DELIVERY_NUMBER": "N° Livraison",
+    "DIRECTION": "Direction de paiment",
+    "ENTER_NEGOTIATED_PRICE": "Entrez le prix négocié",
+    "ERRORS": {
+      "AMOUNT_MIN": "Le montant doit être supérieur à 0",
+      "AMOUNT_REQUIRED": "Le montant est requis",
+      "BANK_ACCOUNT_REQUIRED": "Le compte bancaire est requis",
+      "CHECK_NUMBER_REQUIRED": "Le numéro de chèque est requis",
+      "LOAD_ERROR": "Erreur lors du chargement de l'historique des paiements",
+      "NO_DATA_FOUND": "Aucune donnée trouvée",
+      "OIL_PRICE_MIN": "Le prix de l'huile doit être supérieur à 0",
+      "OIL_PRICE_REQUIRED": "Le prix de l'huile est requis",
+      "OIL_QUANTITY_EXCEEDS_REMAINING": "La quantité d'huile dépasse le montant restant",
+      "OIL_QUANTITY_MIN": "La quantité d'huile doit être supérieure à 0",
+      "OIL_QUANTITY_REQUIRED": "La quantité d'huile est requise",
+      "SUPPLIER_ID_NOT_FOUND": "ID du fournisseur non trouvé"
+    },
+    "INBOUND": "Paiment entré",
+    "LOT": "Lot",
+    "LOT_DETAILS": "Détails du lot {{lotNumber}}",
+    "LOT_NUMBER": "N° Lot",
+    "MIXED_PAYMENT": "Paiement Mixte",
+    "MONEY_PAYMENT": "Paiement en Argent",
+    "MONEY_PAYMENT_DESC": "Payer en espèces, chèque ou virement bancaire",
+    "NEGOTIATED_PRICE": "Prix Négocié",
+    "NEGOTIATED_PRICE_HINT": "Prix négocié pour ce paiement spécifique",
+    "NEGOTIATED_PRICE_PER_KG": "Prix négocié par kg (TND)",
+    "OIL_CREDITS": "Crédits d'huile",
+    "OIL_CREDITS_LIST": "Liste des crédits d'huile",
+    "OIL_CREDITS_TOTAL": "Total crédits d'huile",
+    "OIL_CREDITS_TOTAL_KG": "Quantité totale (KG)",
+    "OIL_CREDITS_TOTAL_L": "Quantité totale (KG)",
+    "OIL_CREDIT_CREATED_DATE": "Date de création",
+    "OIL_CREDIT_ID": "ID",
+    "OIL_CREDIT_PACKAGING": "Emballage",
+    "OIL_CREDIT_QUANTITY": "Quantité",
+    "OIL_CREDIT_STATE": "État du crédit",
+    "OIL_CREDIT_STATS_TITLE": "Statistiques crédits d'huile",
+    "OIL_CREDIT_TOTAL": "Crédits d'huile",
+    "OIL_CREDIT_TYPE": "Type d'huile",
+    "OIL_CREDIT_UNIT": "Unité",
+    "OIL_EQUIVALENT": "Équivalent en huile",
+    "OIL_LOT_NUMBER": "N° Lot d'Huile",
+    "OIL_PAYMENT": "Paiement en Huile",
+    "OIL_PAYMENT_DESC": "Payer avec l'équivalent en huile d'olive",
+    "OIL_PRICE": "Prix de l'Huile",
+    "OIL_PRICE_PER_KG": "Prix de l'Huile par kg (TND)",
+    "OIL_QUALITY_CONTROL": "Contrôle Qualité Huile",
+    "OIL_QUALITY_CONTROL_DESC": "Le contrôle qualité est requis pour les paiements en huile. Veuillez compléter l'évaluation de qualité ci-dessous.",
+    "OIL_QUANTITY": "Quantité d'Huile",
+    "OIL_QUANTITY_EXCEEDS_REMAINING": "La quantité d'huile dépasse le montant restant",
+    "OIL_QUANTITY_HINT": "Quantité maximum :",
+    "OIL_STATUS": "Statut de l'Huile",
+    "OIL_VALUE": "Valeur de l'Huile",
+    "OLIVE_WEIGHT": "Poids Olives (kg)",
+    "OUTBOUND": "Paiment sortie",
+    "PAID": "Payé",
+    "PAID_AMOUNT": "Montant Payé",
+    "PAID_DELIVERIES": "Livraisons Payées",
+    "PAY": "Payer",
+    "PAYMENT": "Paiment",
+    "PAYMENT_HISTORY": "Historique des Paiements",
+    "PAYMENT_METHOD": "Méthode de Paiement",
+    "PAYMENT_SUCCESS": "Paiement traité avec succès",
+    "PAYMENT_SUMMARY": "Résumé du Paiement",
+    "PAYMENT_TRANSACTION": "Veuillez valider le transaction",
+    "PRICE_NEGOTIATION": "Négociation du Prix",
+    "PROCESS_PAYMENT": "Traiter le Paiement",
+    "RECEPTION_TYPE": "Type de réception",
+    "RECEPTION_TYPE_OIL": "Huile",
+    "RECEPTION_TYPE_OLIVE": "Olive",
+    "REFERENCE_PRICE": "Prix de référence",
+    "RELATED_OIL_DELIVERY": "Livraison d'Huile Associée",
+    "REMAINING_AFTER_CASH": "Reste après Espèces",
+    "REMAINING_AMOUNT": "Montant Restant",
+    "SELECT_LOTS_FOR_OIL_PAYMENT": "Select lots for oil payment",
+    "SELECT_PAYMENT_METHOD": "Sélectionner la Méthode de Paiement",
+    "STATUS": "Statut",
+    "STATUS_PAID": "Payé",
+    "STATUS_PARTIAL": "Partiel",
+    "STATUS_UNKNOWN": "Inconnu",
+    "STATUS_UNPAID": "Non Payé",
+    "TOTAL_DELIVERIES": "Total Livraisons",
+    "TOTAL_OLIVE_WEIGHT": "Total Poids Olives",
+    "TOTAL_PAID": "Total Payé",
+    "TOTAL_PAYMENT": "Paiement Total",
+    "TOTAL_PRICE": "Prix Total",
+    "TOTAL_UNPAID": "Total Non Payé",
+    "UNPAID": "Non Payé",
+    "UNPAID_AMOUNT": "Montant à Payé",
+    "UNPAID_DELIVERIES": "Livraisons Non Payées"
+  },
+  "Sample Page": "Page d'exemple",
+  "Setting": "Paramètre",
+  "Site": "Site",
+  "Social Profile": "Profil social",
+  "Statistics": "Statistiques",
+  "Sticky Action Bar": "Barre d'action collante",
+  "Student": "Étudiant",
+  "TAB_TITLE": "Configuration Générale",
+  "TRANSACTIONS": {
+    "ACTIONS": {
+      "APPROVE": "Approuver",
+      "DELETE": "Supprimer",
+      "DUPLICATE": "Dupliquer",
+      "EDIT": "Modifier",
+      "EXPORT": "Exporter",
+      "PRINT": "Imprimer",
+      "REJECT": "Rejeter",
+      "VIEW": "Voir"
+    },
+    "CURRENCIES": {
+      "EUR": "Euro",
+      "TND": "Dinar Tunisien",
+      "USD": "Dollar US"
+    },
+    "DIRECTIONS": {
+      "INBOUND": "Entrée",
+      "INTERNAL": "Interne",
+      "OUTBOUND": "Sortie"
+    },
+    "FIELDS": {
+      "AMOUNT": "Montant",
+      "APPROVAL_DATE": "Date d'Approbation",
+      "APPROVED": "Approuvé",
+      "APPROVED_BY": "Approuvé par",
+      "BANK_ACCOUNT": "Compte Bancaire",
+      "CHECK_NUMBER": "Numéro de Chèque",
+      "CREATED_BY": "Créé par",
+      "CREATED_DATE": "Date de Création",
+      "CURRENCY": "Devise",
+      "CUSTOMER": "Client",
+      "DESCRIPTION": "Description",
+      "DIRECTION": "Direction",
+      "INVOICE_REFERENCE": "Référence Facture",
+      "LOT_NUMBER": "Numéro de Lot",
+      "PAYMENT_METHOD": "Méthode de Paiement",
+      "RECEIPT_REFERENCE": "Référence Reçu",
+      "SUPPLIER": "Fournisseur",
+      "TRANSACTION_DATE": "Date de Transaction",
+      "TRANSACTION_TYPE": "Type de Transaction"
+    },
+    "MESSAGES": {
+      "APPROVE_ERROR": "Erreur lors de l'approbation",
+      "APPROVE_SUCCESS": "Transaction approuvée avec succès",
+      "CREATE_ERROR": "Erreur lors de la création",
+      "CREATE_SUCCESS": "Transaction créée avec succès",
+      "DELETE_ERROR": "Erreur lors de la suppression",
+      "DELETE_SUCCESS": "Transaction supprimée avec succès",
+      "DUPLICATE_SUCCESS": "Transaction dupliquée avec succès",
+      "LOAD_ERROR": "Erreur lors du chargement des transactions",
+      "REJECT_ERROR": "Erreur lors du rejet",
+      "REJECT_SUCCESS": "Transaction rejetée avec succès",
+      "UPDATE_ERROR": "Erreur lors de la mise à jour",
+      "UPDATE_SUCCESS": "Transaction mise à jour avec succès"
+    },
+    "PAYMENT_METHODS": {
+      "BANK_TRANSFER": "Virement Bancaire",
+      "CASH": "Espèces",
+      "CHECK": "Chèque",
+      "CREDIT_CARD": "Carte de Crédit",
+      "DEBIT_CARD": "Carte de Débit",
+      "MOBILE_PAYMENT": "Paiement Mobile",
+      "OIL_CREDIT": "Crédit Huile"
+    },
+    "STATUS": {
+      "APPROVED": "Approuvé",
+      "PENDING": "En attente",
+      "REJECTED": "Rejeté"
+    },
+    "SUMMARY": {
+      "APPROVED_TRANSACTIONS": "Transactions Approuvées",
+      "BALANCE": "Solde",
+      "PENDING_TRANSACTIONS": "Transactions en Attente",
+      "TOTAL_AMOUNT": "Montant Total",
+      "TOTAL_INBOUND": "Total Entrées",
+      "TOTAL_OUTBOUND": "Total Sorties",
+      "TOTAL_TRANSACTIONS": "Total Transactions"
+    },
+    "TITLE": "Transactions Financières",
+    "TYPES": {
+      "CHECK_DEPOSIT": "Dépôt de Chèque",
+      "CHECK_PAYMENT": "Paiement par Chèque",
+      "CREDIT": "Crédit",
+      "DEBIT": "Débit",
+      "DEPOSIT": "Dépôt",
+      "EXPENSE": "Dépense",
+      "INTERNAL_TRANSFER": "Transfert Interne",
+      "LOAN": "Prêt",
+      "OIL_PURCHASE": "Achat d'Huile",
+      "OIL_SALE": "Vente d'Huile",
+      "PAYMENT": "Paiement",
+      "PURCHASE": "Achat",
+      "SUPPLIER_CREDIT": "Crédit Fournisseur",
+      "SUPPLIER_PAYMENT": "Paiement Fournisseur",
+      "WITHDRAWAL": "Retrait"
+    }
+  },
+  "Table": "Tableau",
+  "Teacher": "Enseignant",
+  "Ticket": "Ticket",
+  "USER_FORM": {
+    "CONFIRMATION_METHOD": "Méthode de confirmation",
+    "CONFIRMATION_METHOD_REQUIRED": "La méthode de confirmation est requise.",
+    "EMAIL": "Email",
+    "EMAIL_REQUIRED": "L'email est requis.",
+    "FIRST_NAME": "Prénom",
+    "LAST_NAME": "Nom",
+    "LOCKED": "Verrouillé",
+    "PHONE": "Téléphone",
+    "PHONE_REQUIRED": "Le téléphone est requis.",
+    "ROLE": "Rôle",
+    "ROLE_REQUIRED": "Le rôle est requis.",
+    "USERNAME": "Nom d'utilisateur",
+    "USERNAME_REQUIRED": "Le nom d'utilisateur est requis."
+  },
+  "Ui-Components": "Composants Ui",
+  "Under Construction": "En cours de construction",
+  "User Profile": "Profil de l'utilisateur",
+  "View": "Voir",
+  "WASTE": {
+    "FIELDS": {
+      "CUSTOMER": "Client",
+      "INVOICE_NUMBER": "N° Facture",
+      "NOTES": "Remarques",
+      "PAID": "Payé ?",
+      "PAYMENT_DATE": "Date de paiement",
+      "QUANTITY": "Quantité (kg)",
+      "SALE_DATE": "Date de vente",
+      "STORAGE_LOCATION": "Code stockage",
+      "SUPPLIER": "Fournisseur",
+      "TOTAL_PRICE": "Prix total (TND)",
+      "TYPE": "Type de déchet",
+      "UNIT_PRICE": "Prix unitaire (TND/kg)"
+    },
+    "FORM": {
+      "ERRORS": {
+        "QUALITY_GRADE_REQUIRED": "La quality d'huile est requis"
+      }
+    },
+    "TITLE": "Gestion des déchets",
+    "TYPES": {
+      "GRIGNON": "Grignon",
+      "MARGINE": "Margine",
+      "OTHER": "Autre"
+    }
+  },
+  "WIDOWED": "Veuf/Veuve",
+  "Widget": "Widget",
+  "auth": {
+    "change_password_title": "Changer mot de passe",
+    "password_changed_success": "Votre mot de passe a été modifié avec succès. Voulez-vous accéder à l'application ?"
+  },
+  "reCaptcha": "reCaptcha"
+}

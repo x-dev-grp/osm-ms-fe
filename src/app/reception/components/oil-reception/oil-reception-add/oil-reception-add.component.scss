@@ -1,0 +1,183 @@
+/* Form-specific styles within mat-card-content */
+mat-card-content {
+  padding: 20px;
+}
+
+.form-content {
+  display: flex;
+  flex-direction: column;
+}
+
+h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+/* Header row for back button and h3 */
+.header-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 8px;
+}
+
+.header-row button[mat-icon-button] {
+  margin-right: 10px;
+}
+
+/* Divider */
+hr {
+  border: none;
+  border-top: 1px solid #ccc;
+  margin: 10px 0;
+}
+
+/* Form body */
+.form-body {
+  padding: 16px 0;
+}
+
+/* Form grid */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+}
+
+.col-md-3 {
+  flex: 0 0 25%;
+  max-width: 25%;
+  padding: 0 4px;
+  margin-bottom: 6px;
+}
+
+.col-md-4 {
+  flex: 0 0 33.333333%;
+  max-width: 33.333333%;
+}
+
+.col-md-6 {
+  flex: 0 0 50%;
+  max-width: 50%;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.m-b-10 {
+  margin-bottom: 10px;
+}
+
+/* Action buttons */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 32px;
+  padding: 16px 0;
+  border-top: 1px solid #e0e0e0;
+}
+
+/* Loading overlay */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Error message */
+.error-message {
+  color: #f44336;
+  padding: 16px;
+  margin: 16px;
+  background: #ffebee;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.scrollable-form {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.section {
+  margin-bottom: 14px;
+  padding: 8px 0 4px 0;
+  border-bottom: 1px solid #e0e0e0;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.section:last-child {
+  border-bottom: none;
+}
+
+.section h4 {
+  margin: 0 0 10px 0;
+  color: #1976d2;
+  font-size: 1rem;
+  font-weight: 500;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #e3f2fd;
+}
+
+/* Custom styles for form fields */
+::ng-deep {
+  .mat-form-field {
+    .mat-form-field-wrapper {
+      margin: 0;
+      padding-bottom: 0;
+    }
+
+    .mat-form-field-flex {
+      background-color: #fafafa;
+    }
+
+    &.mat-focused .mat-form-field-flex {
+      background-color: #fff;
+    }
+  }
+
+  .mat-form-field-appearance-outline {
+    .mat-form-field-outline {
+      color: rgba(0, 0, 0, 0.12);
+    }
+
+    &.mat-focused .mat-form-field-outline {
+      color: #1976d2;
+    }
+  }
+}
+
+mat-form-field {
+  width: 100%;
+  margin-bottom: 2px !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .col-md-3 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+
+@media (max-width: 768px) {
+  .col-md-3 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  .section {
+    padding: 8px 0;
+  }
+}

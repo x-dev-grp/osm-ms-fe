@@ -1,0 +1,101 @@
+<app-card [title]="isEditMode ? ('BANK_ACCOUNTS.EDIT_TITLE' | translate) : ('BANK_ACCOUNTS.ADD_TITLE' | translate)">
+  <div header-action>
+    <button mat-icon-button (click)="onBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+  </div>
+
+  <div class="form-container">
+    <form [formGroup]="bankAccountForm" (ngSubmit)="save()">
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'BANK_ACCOUNTS.FIELDS.RIB' | translate }}</mat-label>
+          <input matInput formControlName="rib" required>
+          <mat-error *ngIf="bankAccountForm.get('rib')?.hasError('required')">
+            {{ 'BANK_ACCOUNTS.ERRORS.RIB_REQUIRED' | translate }}
+          </mat-error>
+          <mat-error *ngIf="bankAccountForm.get('rib')?.hasError('minlength') || bankAccountForm.get('rib')?.hasError('maxlength')">
+            {{ 'BANK_ACCOUNTS.ERRORS.RIB_LENGTH' | translate }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'BANK_ACCOUNTS.FIELDS.IBAN' | translate }}</mat-label>
+          <input matInput formControlName="iban" required>
+          <mat-error *ngIf="bankAccountForm.get('iban')?.hasError('required')">
+            {{ 'BANK_ACCOUNTS.ERRORS.IBAN_REQUIRED' | translate }}
+          </mat-error>
+          <mat-error *ngIf="bankAccountForm.get('iban')?.hasError('minlength') || bankAccountForm.get('iban')?.hasError('maxlength')">
+            {{ 'BANK_ACCOUNTS.ERRORS.IBAN_LENGTH' | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'BANK_ACCOUNTS.FIELDS.BIC_SWIFT' | translate }}</mat-label>
+          <input matInput formControlName="bicSwift" required>
+          <mat-error *ngIf="bankAccountForm.get('bicSwift')?.hasError('required')">
+            {{ 'BANK_ACCOUNTS.ERRORS.BIC_REQUIRED' | translate }}
+          </mat-error>
+          <mat-error *ngIf="bankAccountForm.get('bicSwift')?.hasError('minlength') || bankAccountForm.get('bicSwift')?.hasError('maxlength')">
+            {{ 'BANK_ACCOUNTS.ERRORS.BIC_LENGTH' | translate }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'BANK_ACCOUNTS.FIELDS.BANK_NAME' | translate }}</mat-label>
+          <input matInput formControlName="bankName" required>
+          <mat-error *ngIf="bankAccountForm.get('bankName')?.hasError('required')">
+            {{ 'BANK_ACCOUNTS.ERRORS.BANK_NAME_REQUIRED' | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'BANK_ACCOUNTS.FIELDS.BANK_BRANCH' | translate }}</mat-label>
+          <input matInput formControlName="bankBranch" required>
+          <mat-error *ngIf="bankAccountForm.get('bankBranch')?.hasError('required')">
+            {{ 'BANK_ACCOUNTS.ERRORS.BANK_BRANCH_REQUIRED' | translate }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'BANK_ACCOUNTS.FIELDS.CURRENCY' | translate }}</mat-label>
+          <mat-select formControlName="currency" required>
+            <mat-option value="EUR">EUR</mat-option>
+            <mat-option value="USD">USD</mat-option>
+            <mat-option value="TND">TND</mat-option>
+          </mat-select>
+          <mat-error *ngIf="bankAccountForm.get('currency')?.hasError('required')">
+            {{ 'BANK_ACCOUNTS.ERRORS.CURRENCY_REQUIRED' | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'BANK_ACCOUNTS.FIELDS.ACCOUNT_TYPE' | translate }}</mat-label>
+          <mat-select formControlName="accountType" required>
+            <mat-option value="CHECKING">{{ 'BANK_ACCOUNTS.FIELDS.CHECKING' | translate }}</mat-option>
+            <mat-option value="SAVINGS">{{ 'BANK_ACCOUNTS.FIELDS.SAVINGS' | translate }}</mat-option>
+            <mat-option value="BUSINESS">{{ 'BANK_ACCOUNTS.FIELDS.BUSINESS' | translate }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="bankAccountForm.get('accountType')?.hasError('required')">
+            {{ 'BANK_ACCOUNTS.ERRORS.ACCOUNT_TYPE_REQUIRED' | translate }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-checkbox formControlName="active">{{ 'BANK_ACCOUNTS.FIELDS.ACTIVE' | translate }}</mat-checkbox>
+      </div>
+
+      <div class="form-actions">
+        <button mat-button type="button" (click)="onBack()">{{ 'BANK_ACCOUNTS.ACTIONS.CANCEL' | translate }}</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="loading">
+          {{ isEditMode ? ('BANK_ACCOUNTS.ACTIONS.UPDATE' | translate) : ('BANK_ACCOUNTS.ACTIONS.SAVE' | translate) }}
+        </button>
+      </div>
+    </form>
+  </div>
+</app-card>

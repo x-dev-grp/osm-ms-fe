@@ -1,0 +1,258 @@
+<app-card [cardTitle]="isEditing ? ('OIL_SALES.EDIT_TITLE' | translate) : ('OIL_SALES.ADD_TITLE' | translate)" [icon]="'local_gas_station'" id="planning-card">
+  <div id="oilSaleForm-container" class="oil-sale-form-container">
+    <div id="oilSaleForm-layout" class="form-layout">
+        <!-- Left: form fields -->
+        <div id="oilSaleForm-fields" class="form-fields">
+          <form id="oilSaleForm-form"   [formGroup]="oilSaleForm" class="oil-sale-form">
+
+            <!-- Customer / Supplier -->
+            <div id="oilSaleForm-row-customerSupplier" class="form-row">
+               <mat-form-field id="oilSaleForm-field-supplierId" appearance="outline" class="full-width">
+                <mat-label id="oilSaleForm-label-supplier">{{ 'OIL_SALES.SUPPLIER' | translate }}</mat-label>
+                <input
+                  id="oilSaleForm-supplierId"
+                  [matAutocomplete]="supplierAuto"
+                  formControlName="supplierId"
+                  matInput
+                  placeholder="{{ 'OIL_SALES.SEARCH_SUPPLIER' | translate }}">
+                <mat-autocomplete id="oilSaleForm-autocomplete-supplier" #supplierAuto="matAutocomplete" [displayWith]="displaySupplierFn">
+                  <mat-option
+                    *ngFor="let supplier of filteredSuppliers | async; let i = index"
+                    [id]="'oilSaleForm-supplier-option-' + i"
+                    [value]="supplier">
+                    {{ displaySupplierFn(supplier) }}
+                  </mat-option>
+                </mat-autocomplete>
+                <mat-error id="oilSaleForm-error-supplier-required" *ngIf="oilSaleForm.hasError('customerOrSupplierRequired')">
+                  {{ 'OIL_SALES.FORM.VALIDATION.CUSTOMER_OR_SUPPLIER_REQUIRED' | translate }}
+                </mat-error>
+                <mat-error id="oilSaleForm-error-supplier-both" *ngIf="oilSaleForm.hasError('bothCustomerAndSupplierSelected')">
+                  {{ 'OIL_SALES.FORM.VALIDATION.BOTH_CUSTOMER_AND_SUPPLIER_SELECTED' | translate }}
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <!-- Quantity / Grade / Price / Date -->
+            <div id="oilSaleForm-row-qtyGradePriceDate" class="form-row">
+              <mat-form-field id="oilSaleForm-field-quantity" appearance="outline" class="fixed-width">
+                <mat-label id="oilSaleForm-label-quantity">{{ 'OIL_SALES.QUANTITY' | translate }} (L)</mat-label>
+                <input
+                  id="oilSaleForm-quantity"
+                  formControlName="quantity"
+                  matInput
+                  min="0.01"
+                  required
+                  step="0.01"
+                  type="number">
+                <mat-error id="oilSaleForm-error-quantity-required" *ngIf="oilSaleForm.get('quantity')?.hasError('required')">
+                  {{ 'OLIVE_RECEPTION.FORM.VALIDATION.REQUIRED' | translate }}
+                </mat-error>
+                <mat-error id="oilSaleForm-error-quantity-min" *ngIf="oilSaleForm.get('quantity')?.hasError('min')">
+                  {{ 'OLIVE_RECEPTION.FORM.VALIDATION.MIN_VALUE' | translate:{ value: 0.01 } }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field id="oilSaleForm-field-qualityGrade" appearance="outline" class="fixed-width">
+                <mat-label id="oilSaleForm-label-qualityGrade">{{ 'OIL_TRANSACTION.DETAILS.QUALITY_GRADE' | translate }}</mat-label>
+                <mat-select id="oilSaleForm-qualityGrade" formControlName="qualityGrade">
+                  <mat-option
+                    *ngFor="let g of grades; let i = index"
+                    [id]="'oilSaleForm-qualityGrade-option-' + i"
+                    [value]="g">
+                    {{ ('OIL_TRANSACTIONS.QUALITY_GRADES.' + g) | translate }}
+                  </mat-option>
+                </mat-select>
+                <mat-error id="oilSaleForm-error-qualityGrade-required" *ngIf="oilSaleForm.get('qualityGrade')?.hasError('required')">
+                  {{ 'WASTE.FORM.ERRORS.QUALITY_GRADE_REQUIRED' | translate }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field id="oilSaleForm-field-unitPrice" appearance="outline" class="fixed-width">
+                <mat-label id="oilSaleForm-label-unitPrice">{{ 'OIL_SALES.UNIT_PRICE' | translate }}</mat-label>
+                <input
+                  id="oilSaleForm-unitPrice"
+                  formControlName="unitPrice"
+                  matInput
+                  min="0.01"
+                  required
+                  step="0.01"
+                  type="number">
+                <mat-error id="oilSaleForm-error-unitPrice-required" *ngIf="oilSaleForm.get('unitPrice')?.hasError('required')">
+                  {{ 'OLIVE_RECEPTION.FORM.VALIDATION.REQUIRED' | translate }}
+                </mat-error>
+                <mat-error id="oilSaleForm-error-unitPrice-min" *ngIf="oilSaleForm.get('unitPrice')?.hasError('min')">
+                  {{ 'OLIVE_RECEPTION.FORM.VALIDATION.MIN_VALUE' | translate:{ value: 0.01 } }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field id="oilSaleForm-field-saleDate" appearance="outline" class="fixed-width">
+                <mat-label id="oilSaleForm-label-saleDate">{{ 'OIL_SALES.SALE_DATE' | translate }}</mat-label>
+                <input
+                  id="oilSaleForm-saleDate"
+                  [matDatepicker]="'oilSaleForm-saleDatePicker'"
+                  formControlName="saleDate"
+                  matInput
+                  required>
+                <mat-datepicker-toggle id="oilSaleForm-toggle-saleDate" [for]="'oilSaleForm-saleDatePicker'" matSuffix></mat-datepicker-toggle>
+                <mat-datepicker id="oilSaleForm-saleDatePicker"></mat-datepicker>
+                <mat-error id="oilSaleForm-error-saleDate-required" *ngIf="oilSaleForm.get('saleDate')?.hasError('required')">
+                  {{ 'OLIVE_RECEPTION.FORM.VALIDATION.REQUIRED' | translate }}
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <!-- Containers Toggle -->
+            <div id="oilSaleForm-row-containersToggle" class="form-row">
+              <mat-slide-toggle id="oilSaleForm-showContainersToggle" formControlName="showContainers">
+                {{ 'OIL_SALES.CONTAINERS.SHOW' | translate }}
+              </mat-slide-toggle>
+            </div>
+
+            <!-- Containers Selection -->
+            <div
+              *ngIf="oilSaleForm.get('showContainers')?.value"
+              id="oilSaleForm-row-containersSelect"
+              class="form-row">
+              <mat-form-field id="oilSaleForm-field-selectedContainers" appearance="outline" class="full-width">
+                <mat-label id="oilSaleForm-label-selectedContainers">{{ 'OIL_SALES.CONTAINERS.TITLE' | translate }}</mat-label>
+                <mat-select id="oilSaleForm-selectedContainers" formControlName="selectedContainers" multiple>
+                  <mat-option
+                    *ngFor="let c of containerList; let i = index"
+                    [id]="'oilSaleForm-container-option-' + i"
+                    [value]="c">
+                    {{ c.capacityInLiters }}L – {{ c.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <div id="oilSaleForm-container-list" class="form-row" formArrayName="containerSelections">
+                <div
+                  *ngFor="let grp of containerSelections.controls; let i = index"
+                  [formGroupName]="i"
+                  [id]="'oilSaleForm-container-selection-' + i"
+                  style="display: flex; flex-direction: row; ">
+                  <span [id]="'oilSaleForm-container-label-' + i" style="width: -webkit-fill-available;">
+                    {{ grp.get('container')!.value.name }}
+                    ({{ grp.get('container')!.value?.capacityInLiters }} L)
+                    ({{ grp.get('container')!.value?.sellingPrice | number:'1.2-2' }} TND)
+                  </span>
+                  <mat-form-field [id]="'oilSaleForm-field-container-count-' + i" appearance="outline" class="count-field">
+                    <mat-label [id]="'oilSaleForm-label-container-count-' + i">{{ 'OIL_SALES.CONTAINERS.COUNT' | translate }}</mat-label>
+                    <input
+                      [id]="'oilSaleForm-container-count-' + i"
+                      formControlName="count"
+                      matInput
+                      readonly
+                      type="number">
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div id="oilSaleForm-row-description" class="form-row">
+              <mat-form-field id="oilSaleForm-field-description" appearance="outline" class="full-width">
+                <mat-label id="oilSaleForm-label-description">{{ 'OIL_SALES.DESCRIPTION' | translate }}</mat-label>
+                <textarea
+                  id="oilSaleForm-description"
+                  formControlName="description"
+                  matInput
+                  rows="3"></textarea>
+              </mat-form-field>
+            </div>
+
+          </form>
+        </div>
+
+        <!-- Summary -->
+        <div id="oilSaleForm-summary" class="form-summary">
+          <app-card id="oilSaleForm-summaryCard" [cardTitle]="'OIL_SALES.SUMMARY' | translate" class="summary-card" icon="calendar_today">
+            <div id="oilSaleForm-summary-customer" class="summary-row">
+              <span>
+                {{
+                       getSelectedSupplier()
+                      ? ('OIL_SALES.SUPPLIER' | translate)
+                      : (('OIL_SALES.CUSTOMER'|translate) + ' / ' + ('OIL_SALES.SUPPLIER'|translate))
+                }}
+              </span>
+
+               <ng-container *ngIf="getSelectedSupplier()">
+                <span id="oilSaleForm-summary-supplier-value">
+                  {{ getSelectedSupplier()?.supplierInfo.name }} {{ getSelectedSupplier()?.supplierInfo.lastname }}
+                </span>
+              </ng-container>
+            </div>
+
+            <div id="oilSaleForm-summary-quantity" class="summary-row">
+              <span>{{ 'OIL_SALES.QUANTITY' | translate }}:</span>
+              <span>{{ oilSaleForm.get('quantity')?.value | number:'1.2-2' }} L</span>
+            </div>
+
+            <div
+              *ngIf="oilSaleForm.get('grades')?.value"
+              id="oilSaleForm-summary-qualityGrade"
+              class="summary-row">
+              <span>{{ 'OIL_TRANSACTION.DETAILS.QUALITY_GRADE'|translate }}:</span>
+              <span>{{ ('OIL_TRANSACTIONS.QUALITY_GRADES.' + oilSaleForm.get('grades')?.value) | translate }}</span>
+            </div>
+
+            <div id="oilSaleForm-summary-unitPrice" class="summary-row">
+              <span>{{ 'OIL_SALES.UNIT_PRICE' | translate }}:</span>
+              <span>{{ oilSaleForm.get('unitPrice')?.value | number:'1.2-2' }} TND /L</span>
+            </div>
+
+            <div *ngIf="oilSaleForm.get('showContainers')?.value" id="oilSaleForm-summary-totalCapacity" class="summary-row">
+              <span>{{ 'OIL_SALES.TOTAL_IN_CONTAINERS' | translate }}:</span>
+              <strong>{{ totalCapacity() }} L</strong>
+            </div>
+
+            <div *ngIf="oilSaleForm.get('showContainers')?.value" id="oilSaleForm-summary-leftover" class="summary-row">
+              <span>{{ 'OIL_SALES.LEFTOVER' | translate }}:</span>
+              <strong>{{ leftoverQuantity() }} L</strong>
+            </div>
+            <div *ngIf="oilSaleForm.get('showContainers')?.value" id="oilSaleForm-summary-totalContainersAmount" class="summary-row total" >
+              <span>{{ 'OIL_SALES.CONTAINERS_TOTAL_PRICE' | translate }}:</span>
+              <span>{{ totalContainerCost() | number:'1.2-2' }}TND</span>
+            </div>
+            <div id="oilSaleForm-summary-totalOilAmount" class="summary-row total">
+              <span>{{ 'OIL_SALES.TOTAL_OILAMOUNT' | translate }}:</span>
+              <span class="total-amount">
+                {{ getTotalOilAmount() | number:'1.2-2' }} TND
+              </span>
+            </div> <div id="oilSaleForm-summary-totalAmount" class="summary-row totalFinal">
+              <span>{{ 'OIL_SALES.TOTAL_AMOUNT' | translate }}:</span>
+              <span class="total-amount">
+                {{ getTotalAmount() | number:'1.2-2' }} TND
+              </span>
+            </div>
+
+            <div id="oilSaleForm-form-actions" class="form-actions">
+              <button
+                id="oilSaleForm-cancelBtn"
+                (click)="onCancel()"
+                [disabled]="loading"
+                mat-stroked-button
+                type="button">
+                <mat-icon>cancel</mat-icon>
+                {{ 'COMMON.CANCEL' | translate }}
+              </button>
+              <button
+                id="oilSaleForm-submitBtn"
+                [disabled]="oilSaleForm.invalid || loading"
+                color="primary"
+                mat-raised-button
+                (click)="onSubmit()"
+                type="submit">
+                <mat-icon *ngIf="loading">hourglass_empty</mat-icon>
+                <mat-icon *ngIf="!loading">{{ isEditing ? 'save' : 'add' }}</mat-icon>
+                {{ isEditing ? ('COMMON.UPDATE'|translate) : ('OSM_DASHBOARD.ACTIONS.CREATE'|translate) }}
+              </button>
+            </div>
+
+          </app-card>
+        </div>
+        <!-- End Summary -->
+
+      </div>
+  </div>
+</app-card>

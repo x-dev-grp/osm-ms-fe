@@ -1,0 +1,67 @@
+
+
+
+<!-- Main content -->
+<div *ngIf="!loading && !error && machine" class="view-container">
+  <app-card cardTitle="Détails de la machine" icon="handyman">
+
+    <div class="details-grid">
+      <div class="detail-item">
+        <span class="label">Nom:</span>
+        <span class="value">{{ machine.name }}</span>
+      </div>
+
+      <div class="detail-item">
+        <span class="label">Type:</span>
+        <span class="value">{{ machine.machineType }}</span>
+      </div>
+
+      <div class="detail-item">
+        <span class="label">Fabricant:</span>
+        <span class="value">{{ machine.manufacturer }}</span>
+      </div>
+
+      <div class="detail-item">
+        <span class="label">Modèle:</span>
+        <span class="value">{{ machine.model }}</span>
+      </div>
+
+      <div class="detail-item">
+        <span class="label">Numéro de série:</span>
+        <span class="value">{{ machine.serialNumber }}</span>
+      </div>
+
+      <div class="detail-item">
+        <span class="label">Capacité:</span>
+        <span class="value">{{ machine.capacity }}</span>
+      </div>
+
+      <div class="detail-item">
+        <span class="label">Statut:</span>
+        <span class="value" [ngClass]="'status-' + machine.operatingStatus?.toLowerCase()">
+          {{ machine.operatingStatus }}
+        </span>
+      </div>
+
+      <div class="detail-item">
+        <span class="label">Heures d'opération:</span>
+        <span class="value">{{ machine.hoursOperated }}</span>
+      </div>
+
+      <div class="detail-item">
+        <span class="label">Dernière maintenance:</span>
+        <span class="value">{{ machine.lastMaintenanceDate | date:'shortDate' }}</span>
+      </div>
+
+      <div class="detail-item">
+        <span class="label">Prochaine maintenance:</span>
+        <span class="value">{{ machine.nextMaintenanceDate | date:'shortDate' }}</span>
+      </div>
+
+      <div class="detail-item full-width">
+        <span class="label">Description:</span>
+        <span class="value">{{ machine.description }}</span>
+      </div>
+    </div>
+  </app-card>
+</div>

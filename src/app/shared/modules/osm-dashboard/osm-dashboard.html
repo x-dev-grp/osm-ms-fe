@@ -1,0 +1,325 @@
+<div class="col-md-12">
+  <app-card [cardTitle]="config().titleTranslatePath ? (config()?.titleTranslatePath! |translate) :config().title"
+            [icon]="config()?.icon" [showContent]="true"
+            [showHeader]="true">
+    <!-- <div class="filter-actions">
+
+
+      <button [matMenuTriggerFor]="filterMenu" mat-mini-fab color="accent"  matTooltipPosition="above" matTooltip="filter">
+        <span class="material-icons">filter_alt</span>
+      </button>
+      <button (click)="resetFilter()" mat-stroked-button color="link" class="m-2">
+        <mat-icon>rotate_right</mat-icon>
+        Reset
+      </button>
+    </div> -->
+    @if (_store.checkedFilterFields()?.length) {
+
+      <div class="row ">
+        @for (field of _store.checkedFilterFields(); track field.field.name; ) {
+          <div class="col-lg-4">
+            <dynamic-input [field]="field.field"></dynamic-input>
+          </div>
+        }
+      </div>
+
+    }
+    <div class="table-responsive mt-3">
+      <table
+        (matSortChange)="sortChange($event)"
+        [class.loading]="true"
+        [dataSource]="_store.data().data"
+        aria-label="Example table with sorting"
+        class="mat-elevation-z8 w-100"
+        mat-table
+        matSort
+      >
+        <!-- Name Column -->
+        <tr *matNoDataRow class="mat-row">
+          <td [attr.colspan]="displayedColumns.length"
+              class="mat-cell">{{ 'OSM_DASHBOARD.TABLE.NO_DATA' | translate }}
+          </td>
+        </tr>
+        @if (config().groupedActions) {
+          <ng-container matColumnDef="ALL">
+
+            <th mat-header-cell *matHeaderCellDef>
+              <mat-checkbox
+                class="checklist-leaf-node"
+                [checked]="true"
+              >
+              </mat-checkbox>
+            </th>
+            <td mat-cell *matCellDef="let record">
+              <mat-checkbox
+                class="checklist-leaf-node"
+                [checked]="true"
+              >
+              </mat-checkbox>
+            </td>
+
+          </ng-container>
+        }
+
+        @let dataTableFields = _store.dataTableFields() ;
+        @for (item of dataTableFields; track item.name; ) {
+
+          <ng-container matColumnDef="{{item.label}}">
+
+            @if (item?.sortable) {
+              <th mat-header-cell *matHeaderCellDef [mat-sort-header]="item?.valuePath?item?.valuePath:item?.name">
+                {{ item?.labelTranslatePath ? (item?.labelTranslatePath|translate) : item.label }}
+              </th>
+            } @else {
+              <th mat-header-cell *matHeaderCellDef>
+                {{ item?.labelTranslatePath ? (item?.labelTranslatePath|translate) : item.label }}
+              </th>
+            }
+            <td mat-cell *matCellDef="let record">
+              @if (item?.fieldType === "checkbox") {
+                <input
+                  type="checkbox"
+                  class="checkbox-cell"
+                  [checked]="record[item.name]"
+                  disabled
+                />
+              } @else if (item?.fieldType === "select") {
+                {{ getSelectDataTableValue(record[item?.name], item?.name) }}
+              } @else if (item?.fieldType === "date") {
+                {{ (item?.valuePath ? getValue(item?.valuePath, record) : getValue(item?.name, record)) | date:'dd-MM-yyyy HH:mm' }}
+              } @else {
+                @if(item?.isCurrency){
+                   <span class="metric-value">
+  {{
+                      (item?.valuePath
+                          ? getValue(item.name + '.' + item.valuePath, record)
+                          : getValue(item.name, record)
+                      )
+                        | number:'1.2-2'
+                    }}&nbsp;{{ item.currency }}
+</span>
+                } @else {
+                  {{ item?.valuePath ? getValue((item?.name + '.' + item?.valuePath), record) : getValue(item?.name, record) }}
+
+                }
+              }
+            </td>
+          </ng-container>
+        }
+        <ng-container matColumnDef="actions">
+          <th *matHeaderCellDef mat-header-cell>{{ 'OSM_DASHBOARD.ACTIONS.TITLE' | translate }}</th>
+          <td *matCellDef="let record" mat-cell>
+            <div class="table-cell-value">
+              @if (config().specificActions) {
+               <div  class="flex" >
+                  @for (item of config().specificActions; track item; ) {
+                     <button
+                  style="cursor: pointer"
+                  mat-raised-button
+                  (click)="actionApply(item?.action, record)"
+                  [color]="item?.color || 'primary'"
+                  [disabled]="record[item?.disabled?.field]==item?.disabled?.value"
+                  size="small"
+                  [matTooltip]=" ('OSM_DASHBOARD.ACTIONS.' + item?.action| translate )"
+                  matTooltipPosition="above"
+                >
+                  <mat-icon>{{ item?.icon }}</mat-icon>
+
+                </button>
+              }
+               </div>
+              } @else {
+                @if (_store.actionLoading()) {
+                  <mat-spinner diameter="25" color="warn"></mat-spinner>
+                } @else {
+                  <button mat-icon-button [matMenuTriggerFor]="menu"
+                          aria-label="{{ 'OSM_DASHBOARD.ACTIONS.MORE' | translate }}">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                }
+
+                <mat-menu #menu="matMenu">
+
+                  <ng-container *ngFor="let action of record?.actions">
+                    <button
+                      *ngIf="!config()?.filteredActions?.includes(action)"
+                      (click)="actionApply(action, record)"
+                      mat-menu-item>
+                      <span>{{ 'OSM_DASHBOARD.ACTIONS.' + action | translate }}</span>
+                      <mat-icon>{{ actions.get(action) }}</mat-icon>
+                    </button>
+                  </ng-container>
+
+
+                </mat-menu>
+              }
+
+            </div>
+          </td>
+        </ng-container>
+
+        <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
+        <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
+      </table>
+      <mat-paginator
+        (page)="onPageChange($event)"
+        [attr.aria-label]="'OSM_DASHBOARD.TABLE.PAGE_SIZE' | translate"
+        [length]="_store.data().total"
+        [pageSizeOptions]="[5, 10, 25, 50, 100]"
+        [pageSize]="_store.searchData().size"
+        showFirstLastButtons>
+      </mat-paginator>
+    </div>
+    <!-- <ng-template #actionTemplate>
+        <button mat-button>CANCEL</button>
+      </ng-template> -->
+    <ng-template #headerOptionsTemplate>
+      <div class="button-container">
+        <button [disabled]="!_store?.exportFields()?.length" [matMenuTriggerFor]="exportCsvMenu"
+                [matTooltip]="'OSM_DASHBOARD.EXPORT.CSV' | translate"
+                class="success-button m-2" mat-stroked-button
+                matTooltipPosition="above">
+          @if (_store.exportExcelLoading()) {
+            <mat-spinner diameter="25" color="warn"></mat-spinner>
+          } @else {
+            <ng-container>
+              <mat-icon>file_copy</mat-icon>
+              <span>{{ 'OSM_DASHBOARD.EXPORT.CSV' | translate }}</span>
+            </ng-container>
+          }
+        </button>
+        <button [disabled]="!_store?.exportFields()?.length" [matMenuTriggerFor]="exportPdfMenu"
+                [matTooltip]="'OSM_DASHBOARD.EXPORT.PDF' | translate" class="m-2" color="accent" mat-stroked-button
+                matTooltipPosition="above">
+          @if (_store.exportPdfLoading()) {
+            <mat-spinner diameter="25" color="warn"></mat-spinner>
+          } @else {
+            <ng-container>
+              <mat-icon>picture_as_pdf</mat-icon>
+              <span>{{ 'OSM_DASHBOARD.EXPORT.PDF' | translate }}</span>
+            </ng-container>
+          }
+        </button>
+        <button [matMenuTriggerFor]="filterMenu" [matTooltip]="'OSM_DASHBOARD.FILTER.TITLE' | translate" class="m-2"
+                color="link" mat-stroked-button
+                matTooltipPosition="above">
+          <mat-icon>filter_list</mat-icon>
+          {{ 'OSM_DASHBOARD.FILTER.TITLE' | translate }}
+        </button>
+        <button (click)="resetFilter()" class="m-2" color="link" mat-stroked-button>
+          <mat-icon>rotate_right</mat-icon>
+          {{ 'OSM_DASHBOARD.FILTER.RESET' | translate }}
+        </button>
+        @if (config()?.addNewItem) {
+          <button (click)="redirectToFormPage()" mat-raised-button color="primary" class="m-2">
+            <mat-icon>add</mat-icon>
+            {{ 'OSM_DASHBOARD.NEW' | translate }}
+          </button>
+        }
+      </div>
+
+      <mat-menu #exportCsvMenu="matMenu">
+
+        <div (click)="$event.stopPropagation()" class="field-checkbox-container" mat-menu-item>
+          <input
+            (change)="selectAllExportFields($event)"
+            [checked]="_store.isAllExportFieldsChecked()"
+            class="field-checkbox"
+            id="all-export"
+            type="checkbox"
+          />
+          <label for="all-export">{{ 'OSM_DASHBOARD.EXPORT.ALL' | translate }}</label>
+        </div>
+        <div class="menu-container">
+          @for (item of _store.exportFields(); track item; ) {
+            <div mat-menu-item class="field-checkbox-container" (click)="$event.stopPropagation()">
+              <input
+                type="checkbox"
+                id="{{item?.field?.name}}"
+                class="field-checkbox"
+                [checked]="item?.checked"
+                (change)="onExportFieldChange($event,item.field)"
+              />
+              <label for="{{item?.field?.name}}">{{ item?.field?.label }}</label>
+            </div>
+          }
+        </div>
+        <div class="w-100 action-button">
+          <button (click)="exportCsv()" [disabled]="!_store?.checkedExportFields()?.length"
+                  class="success-button success_button m-2"
+                  mat-stroked-button>
+            Exporter
+          </button>
+        </div>
+
+      </mat-menu>
+      <mat-menu #exportPdfMenu="matMenu">
+
+        <div (click)="$event.stopPropagation()" class="field-checkbox-container" mat-menu-item>
+          <input
+            (change)="selectAllExportFields($event)"
+            [checked]="_store.isAllExportFieldsChecked()"
+            class="field-checkbox"
+            id="all"
+            type="checkbox"
+          />
+          <label for="all">{{ 'OSM_DASHBOARD.EXPORT.ALL' | translate }}</label>
+        </div>
+        <div class="menu-container">
+          @for (item of _store.exportFields(); track item; ) {
+            <div mat-menu-item class="field-checkbox-container" (click)="$event.stopPropagation()">
+              <input
+                type="checkbox"
+                id="{{item?.field?.name}}"
+                class="field-checkbox"
+                [checked]="item?.checked"
+                (change)="onExportFieldChange($event,item.field)"
+              />
+              <label for="{{item?.field?.name}}">{{ item?.field?.label }}</label>
+            </div>
+          }
+        </div>
+        <div class="w-100 action-button">
+          <button (click)="exportPdf()" [disabled]="!_store?.checkedExportFields()?.length" class="accent-button"
+                  color="accent" mat-stroked-button>
+            Exporter
+          </button>
+        </div>
+
+      </mat-menu>
+      <mat-menu #filterMenu="matMenu">
+        <div (click)="$event.stopPropagation()" class="field-checkbox-container" mat-menu-item>
+          <input
+            (change)="selectAllFilterFields($event)"
+            [checked]="_store.isAllFilterFieldsChecked()"
+            class="field-checkbox"
+            id="all-filter"
+            type="checkbox"
+          />
+          <label for="all-filter">{{ 'OSM_DASHBOARD.FILTER.ALL' | translate }}</label>
+        </div>
+        <div class="menu-container">
+          @for (item of _store.filterFields(); track item; ) {
+            <div mat-menu-item class="field-checkbox-container" (click)="$event.stopPropagation()">
+              <input
+                type="checkbox"
+                id="{{item?.field?.name}}"
+                class="field-checkbox"
+                [checked]="item?.checked"
+                (change)="onFilterFieldChange($event,item.field)"
+              />
+              <label for="{{item?.field?.name}}">{{ item?.field?.label }}</label>
+            </div>
+          }
+        </div>
+      </mat-menu>
+    </ng-template>
+
+    <!-- Custom header options (appears on the right side of header) -->
+    <!-- <ng-template #headerOptionsTemplate>
+        <button mat-icon-button>
+          <mat-icon>more_vert</mat-icon>
+        </button>
+      </ng-template> -->
+  </app-card>
+</div>

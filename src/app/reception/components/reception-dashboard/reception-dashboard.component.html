@@ -1,0 +1,279 @@
+<!-- ===================== Reception Dashboard (Able Pro + Angular 19) ===================== -->
+
+<!-- Header / Actions -->
+<div class="row align-items-center mb-3 g-2 sticky-actions">
+  <div class="col d-flex align-items-center gap-2">
+    <mat-icon class="text-primary">dashboard</mat-icon>
+    <h2 class="m-0 f-w-600">{{ 'DASHBOARD.TITLE.RECEPTION' | translate }}</h2>
+    <span *ngIf="lastUpdated" class="text-muted d-none d-sm-inline ms-2">
+      <mat-icon class="me-1" inline>update</mat-icon>
+      {{ 'COMMON.LAST_UPDATED' | translate }}: {{ lastUpdated | date:'short' }}
+    </span>
+  </div>
+
+  <div class="col-auto d-flex align-items-center gap-2">
+
+    <!-- Quick refresh -->
+    <button mat-stroked-button color="primary"
+            (click)="refresh()"
+            matTooltip="{{ 'COMMON.REFRESH' | translate }}">
+      <mat-icon>refresh</mat-icon>
+      <span class="d-none d-sm-inline ms-1">{{ 'COMMON.REFRESH' | translate }}</span>
+    </button>
+  </div>
+</div>
+<!-- ===================== KPI Row ===================== -->
+<div class="dashboard-kpis row g-3">
+  <div class="col-md-6 col-xxl-4">
+    <app-earning-chart
+      [color]="primaryColor"
+      [data]="receptionsPerDay"
+      [earningValue]="totalReceptions?.toString() || '0'"
+      [headerTitle]="'DASHBOARD.KPIS.TOTAL_RECEPTIONS' | translate"
+      background="bg-primary-50"
+      class="kpi-card with-shadow"
+      iconImage="#wallet-2"
+      percentageValue=""
+      textColor="text-primary-500">
+    </app-earning-chart>
+  </div>
+
+  <div class="col-md-6 col-xxl-4">
+    <app-earning-chart
+      [color]="warningColor"
+      [data]="pendingReceptionsPerDay"
+      [earningValue]="pendingReceptions?.toString() || '0'"
+      [headerTitle]="'DASHBOARD.KPIS.PENDING_RECEPTIONS' | translate"
+      background="bg-warning-50"
+      class="kpi-card with-shadow"
+      iconImage="#calendar"
+      percentageValue=""
+      textColor="text-warning-500">
+    </app-earning-chart>
+  </div>
+
+  <div class="col-md-6 col-xxl-4">
+    <app-earning-chart
+      [color]="successColor"
+      [data]="completedReceptionsPerDay"
+      [earningValue]="completedReceptions?.toString() || '0'"
+      [headerTitle]="'DASHBOARD.KPIS.COMPLETED_RECEPTIONS' | translate"
+      background="bg-success-50"
+      class="kpi-card with-shadow"
+      iconImage="#book"
+      percentageValue=""
+      textColor="text-success-500">
+    </app-earning-chart>
+  </div>
+
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'DASHBOARD.KPIS.TOTAL_VOLUME' | translate" [icon]="'stacked_bar_chart'"
+              class="mini-kpi with-shadow">
+      <div class="mini-kpi__body">
+        <mat-icon>stacked_bar_chart</mat-icon>
+        <span class="value">{{ totalVolume?.toFixed(2) || '0.00' }}</span>
+      </div>
+    </app-card>
+  </div>
+
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'DASHBOARD.KPIS.AVG_VOLUME' | translate" [icon]="'speed'" class="mini-kpi with-shadow">
+      <div class="mini-kpi__body">
+        <mat-icon>speed</mat-icon>
+        <span class="value">{{ avgVolumePerReception?.toFixed(2) || '0.00' }}</span>
+      </div>
+    </app-card>
+  </div>
+
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'DASHBOARD.KPIS.AVG_UNIT_PRICE' | translate" [icon]="'attach_money'"
+              class="mini-kpi with-shadow">
+      <div class="mini-kpi__body">
+        <mat-icon>attach_money</mat-icon>
+        <span class="value">{{ formattedAvgUnitPrice || '0' }}</span>
+      </div>
+    </app-card>
+  </div>
+
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'DASHBOARD.KPIS.TOTAL_PAID' | translate" [icon]="'paid'" class="mini-kpi with-shadow">
+      <div class="mini-kpi__body">
+        <mat-icon>paid</mat-icon>
+        <span class="value">{{ formattedTotalPaidAmount || '0' }}</span>
+      </div>
+    </app-card>
+  </div>
+
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'DASHBOARD.KPIS.TOTAL_UNPAID' | translate" [icon]="'hourglass_bottom'"
+              class="mini-kpi with-shadow">
+      <div class="mini-kpi__body">
+        <mat-icon>hourglass_bottom</mat-icon>
+        <span class="value">{{ formattedTotalUnpaidAmount || '0' }}</span>
+      </div>
+    </app-card>
+  </div>
+
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'DASHBOARD.KPIS.UNIQUE_SUPPLIERS' | translate" [icon]="'groups'"
+              class="mini-kpi with-shadow">
+      <div class="mini-kpi__body">
+        <mat-icon>groups</mat-icon>
+        <span class="value">{{ uniqueSuppliers?.toString() || '0' }}</span>
+      </div>
+    </app-card>
+  </div>
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'DASHBOARD.ANALYTICS.RECEPTION_STATUS' | translate" [icon]="'pie_chart'"
+              class="card--chart with-shadow">
+      <div class="chart-container small">
+        <apx-chart
+          [chart]="receptionsByStatusChartOptions.chart"
+          [colors]="receptionsByStatusChartOptions.colors"
+          [labels]="receptionsByStatusChartOptions.labels"
+          [series]="receptionsByStatusChartOptions.series"
+        >
+        </apx-chart>
+      </div>
+    </app-card>
+  </div>
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'DASHBOARD.ANALYTICS.QUALITY_CONTROL' | translate" [icon]="'rule'"
+              class="card--chart with-shadow">
+      <div class="chart-container small">
+        <apx-chart
+          [chart]="qualityControlChartOptions.chart"
+          [colors]="qualityControlChartOptions.colors"
+          [labels]="qualityControlChartOptions.labels"
+          [series]="qualityControlChartOptions.series"
+        >
+        </apx-chart>
+      </div>
+    </app-card>
+
+  </div>
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'DASHBOARD.ANALYTICS.RECEPTION_TYPE' | translate" [icon]="'category'"
+              class="card--chart with-shadow">
+      <div class="chart-container right">
+        <apx-chart
+          [chart]="receptionsByTypeChartOptions.chart"
+          [colors]="receptionsByTypeChartOptions.colors"
+          [series]="receptionsByTypeChartOptions.series"
+          [xaxis]="receptionsByTypeChartOptions.xaxis"
+        >
+        </apx-chart>
+      </div>
+    </app-card>
+
+  </div>
+</div>
+
+
+<div class="row g-3 mt-1">
+  <app-card>
+    <div class="toolbar toolbar--split" style="
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: baseline;
+">
+      <!-- Left: Period -->
+      <div class="toolbar__left">
+        <mat-button-toggle-group
+          (change)="updateReceptionTrendView($event.value)"
+          [value]="currentReceptionTrendView"
+          aria-label="Trend period"
+          class="toolbar__toggle">
+          <mat-button-toggle value="monthly">{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.MONTHLY' | translate }}
+          </mat-button-toggle>
+          <mat-button-toggle value="weekly">{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.WEEKLY' | translate }}
+          </mat-button-toggle>
+          <mat-button-toggle value="daily">{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.DAILY' | translate }}
+          </mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+
+      <!-- Right: Size -->
+      <div class="toolbar__right">
+        <mat-button-toggle-group
+          (change)="updateChartSize($event.value)"
+          [value]="currentChartSize"
+          aria-label="Chart size"
+          class="toolbar__toggle">
+          <mat-button-toggle value="small">
+            <mat-icon>crop_square</mat-icon>
+          </mat-button-toggle>
+          <mat-button-toggle value="medium">
+            <mat-icon>crop_landscape</mat-icon>
+          </mat-button-toggle>
+          <mat-button-toggle value="large">
+            <mat-icon>crop_169</mat-icon>
+          </mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+    </div>
+    <div class="col-12">
+      <app-card [cardTitle]="'DASHBOARD.ANALYTICS.RECEPTION_TREND.TITLE' | translate" [icon]="'timeline'"
+                class="card--chart with-shadow">
+
+        <div [ngClass]="currentChartSize" class="chart-container wide">
+          <apx-chart
+            [chart]="receptionsTrendChartOptions.chart"
+            [colors]="receptionsTrendChartOptions.colors"
+            [series]="receptionsTrendChartOptions.series"
+            [xaxis]="receptionsTrendChartOptions.xaxis"
+          >
+          </apx-chart>
+        </div>
+      </app-card>
+    </div>
+    <div class="col-12">
+
+
+      <app-card [cardTitle]="'DASHBOARD.ANALYTICS.VOLUME_BY_SUPPLIER' | translate" [icon]="'storefront'"
+                class="card--chart with-shadow">
+        <div [ngClass]="currentChartSize" class="chart-container">
+          <apx-chart
+            [chart]="volumeBySupplierChartOptions.chart"
+            [colors]="volumeBySupplierChartOptions.colors"
+            [series]="volumeBySupplierChartOptions.series"
+            [xaxis]="volumeBySupplierChartOptions.xaxis">
+          </apx-chart>
+        </div>
+      </app-card>
+    </div>
+
+    <div class="col-12">
+      <app-card [cardTitle]="'DASHBOARD.ANALYTICS.RECENT_RECEPTIONS' | translate" [icon]="'insights'"
+                class="card--chart with-shadow">
+        <div [ngClass]="currentChartSize" class="chart-container">
+          <apx-chart
+            [chart]="recentReceptionsChartOptions.chart"
+            [colors]="recentReceptionsChartOptions.colors"
+            [series]="recentReceptionsChartOptions.series"
+            [tooltip]="recentReceptionsChartOptions.tooltip"
+            [xaxis]="recentReceptionsChartOptions.xaxis"
+            [yaxis]="recentReceptionsChartOptions.yaxis">
+          </apx-chart>
+        </div>
+      </app-card>
+    </div>
+
+    <div class="col-12">
+      <app-card [cardTitle]="'DASHBOARD.ANALYTICS.VOLUME_BY_STORAGE' | translate" [icon]="'inventory_2'"
+                class="card--chart with-shadow">
+        <div [ngClass]="currentChartSize" class="chart-container">
+          <apx-chart
+            [chart]="volumeByStorageChartOptions.chart"
+            [colors]="volumeByStorageChartOptions.colors"
+            [series]="volumeByStorageChartOptions.series"
+            [xaxis]="volumeByStorageChartOptions.xaxis">
+          </apx-chart>
+        </div>
+      </app-card>
+    </div>
+
+  </app-card>
+
+</div>

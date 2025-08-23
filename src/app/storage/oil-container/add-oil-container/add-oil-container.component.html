@@ -1,0 +1,139 @@
+<app-card
+  [cardTitle]="isEditMode
+    ? ('OIL_CONTAINER.TITLE_EDIT' | translate)
+    : ('OIL_CONTAINER.TITLE_ADD' | translate)"
+  [icon]="isEditMode ? 'edit' : 'add'"
+>
+  <div class="form-container">
+    <form [formGroup]="containerForm" (ngSubmit)="onSubmit()">
+      <div class="grid">
+        <!-- Name -->
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'OIL_CONTAINER.FORM.NAME' | translate }}</mat-label>
+          <input matInput formControlName="name" />
+          <mat-error *ngIf="containerForm.get('name')?.hasError('required')">
+            {{ 'OIL_CONTAINER.FORM.ERRORS.NAME_REQUIRED' | translate }}
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Description spans both columns -->
+        <mat-form-field appearance="outline" class="full-col">
+          <mat-label>{{ 'OIL_CONTAINER.FORM.DESCRIPTION' | translate }}</mat-label>
+          <textarea
+            matInput
+            formControlName="description"
+            rows="2"
+          ></textarea>
+        </mat-form-field>
+
+        <!-- Capacity -->
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'OIL_CONTAINER.FORM.CAPACITY' | translate }}</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="capacityInLiters"
+          />
+        </mat-form-field>
+
+        <!-- Stock Quantity -->
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'OIL_CONTAINER.FORM.STOCK_QUANTITY' | translate }}</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="stockQuantity"
+          />
+        </mat-form-field>
+
+        <!-- Material -->
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'OIL_CONTAINER.FORM.MATERIAL' | translate }}</mat-label>
+          <input matInput formControlName="material" />
+        </mat-form-field>
+
+        <!-- Buy Price -->
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'OIL_CONTAINER.FORM.BUY_PRICE' | translate }}</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="buyPrice"
+          />
+        </mat-form-field>
+
+        <!-- Selling Price -->
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'OIL_CONTAINER.FORM.SELLING_PRICE' | translate }}</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="sellingPrice"
+          />
+        </mat-form-field>
+
+        <!-- Reorder Threshold -->
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'OIL_CONTAINER.FORM.REORDER_THRESHOLD' | translate }}</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="reorderThreshold"
+          />
+        </mat-form-field>
+
+        <!-- Reorder Quantity -->
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'OIL_CONTAINER.FORM.REORDER_QUANTITY' | translate }}</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="reorderQuantity"
+          />
+        </mat-form-field>
+
+        <!-- Barcode -->
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'OIL_CONTAINER.FORM.BARCODE' | translate }}</mat-label>
+          <input matInput formControlName="barcode" />
+        </mat-form-field>
+
+        <!-- Storage Location -->
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'OIL_CONTAINER.FORM.STORAGE_LOCATION' | translate }}</mat-label>
+          <input
+            matInput
+            formControlName="storageLocationCode"
+          />
+        </mat-form-field>
+
+        <!-- Certification -->
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'OIL_CONTAINER.FORM.CERTIFICATION' | translate }}</mat-label>
+          <input matInput formControlName="certification" />
+        </mat-form-field>
+
+        <!-- Active checkbox spans both columns -->
+        <mat-checkbox formControlName="active" class="full-col">
+          {{ 'OIL_CONTAINER.FORM.ACTIVE' | translate }}
+        </mat-checkbox>
+      </div>
+
+      <mat-card-actions align="end">
+        <button mat-button type="button" (click)="cancel()">
+          {{ 'OIL_CONTAINER.FORM.CANCEL' | translate }}
+        </button>
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          [disabled]="isSaving"
+        >
+          {{ isEditMode
+          ? ('OIL_CONTAINER.FORM.UPDATE' | translate)
+          : ('OIL_CONTAINER.FORM.SAVE' | translate) }}
+        </button>
+      </mat-card-actions>
+    </form>
+  </div>
+</app-card>

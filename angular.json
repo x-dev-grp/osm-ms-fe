@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "osm-ms-fe": {
+    "osm": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,18 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/osm-ms-fe",
+            "allowedCommonJsDependencies": [
+              "quill",
+              "uploader",
+              "moment",
+              "apexcharts",
+              "bezier-easing",
+              "lodash",
+              "quill-delta"
+            ],
+            "outputPath": "dist/ui",
+            "baseHref": "/",
+            "deployUrl": "/",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
@@ -27,29 +38,47 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              "src/manifest.webmanifest"
             ],
             "styles": [
-              "@angular/material/prebuilt-themes/purple-green.css",
-              "src/styles.scss"
+              "src/styles.scss",
+              "src/app/theme/styles/material-overrides.scss",
+               "src/toast-theme.scss"
+
             ],
-            "scripts": []
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "node_modules/"
+              ]
+            },
+            "scripts": [
+              "node_modules/apexcharts/dist/apexcharts.min.js"
+             ],
+            "serviceWorker": true
           },
           "configurations": {
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "5mb",
+                  "maximumError": "10mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "20kb",
+                  "maximumError": "30kb"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "serviceWorker": true
             },
             "development": {
               "buildOptimizer": false,
@@ -57,7 +86,8 @@
               "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
-              "namedChunks": true
+              "namedChunks": true,
+              "serviceWorker": true
             }
           },
           "defaultConfiguration": "production"
@@ -66,22 +96,20 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "osm-ms-fe:build:production"
+              "buildTarget": "osm:build:production"
             },
             "development": {
-              "browserTarget": "osm-ms-fe:build:development"
+              "buildTarget": "osm:build:development"
             }
           },
           "options": {
-            "browserTarget": "osm-frontend:build",
-            "proxyConfig": "proxy.conf.json"
           },
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "osm-ms-fe:build"
+            "buildTarget": "osm:build"
           }
         },
         "test": {
@@ -98,16 +126,28 @@
               "src/assets"
             ],
             "styles": [
-              "@angular/material/prebuilt-themes/purple-green.css",
-              "src/styles.scss"
+              "src/styles.scss",
+              "src/toast-theme.scss"
             ],
             "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
           }
         }
       }
     }
   },
   "cli": {
-    "analytics": "51e49fb4-e02f-46e6-9ff8-dc2d0a639954"
+    "analytics": "e4078614-89b8-4d86-9b17-b24daca14c75",
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
   }
 }

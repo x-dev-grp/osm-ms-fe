@@ -1,0 +1,90 @@
+<!-- History Cards -->
+
+@if (!supplierId) {
+  <!-- Error message -->
+  <div class="error-container">
+    <mat-icon color="warn">error</mat-icon>
+    <p>Fournisseur non trouvé avec ce id ! </p>
+  </div>
+} @else {
+<div class="history-cards-container" >
+  <div class="history-cards">
+    <mat-card class="history-card" tabindex="0" (click)="loadPaymentHistory(true)">
+      <mat-card-content>
+        <div class="card-content">
+          <mat-icon class="card-icon" color="primary">payments</mat-icon>
+          <div class="card-info">
+            <h3>{{ 'SUPPLIER.DETAILS.PAYMENT_HISTORY_TITLE' | translate }}</h3>
+            <p> {{ 'SUPPLIER.DETAILS.PAYMENT_HISTORY_COUNT' | translate }}:{{ paidCount }}</p>
+            <p>{{ 'DASHBOARD.KPIS.TOTAL_PAID' | translate }} {{ paidSum | currency:'TND'  }} </p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="history-card" tabindex="0" (click)="loadPaymentHistory(false)">
+      <mat-card-content>
+        <div class="card-content">
+          <mat-icon class="card-icon" color="warn">pending_actions</mat-icon>
+          <div class="card-info">
+            <h3>{{ 'SUPPLIER.DETAILS.UNPAID_TITLE' | translate }}</h3>
+            <p>{{ 'SUPPLIER.DETAILS.UNPAID_COUNT' | translate }}:{{ unpaidCount }} </p>
+            <p>{{ 'SUPPLIER_PAYMENT.TOTAL_UNPAID' | translate }}:{{ unpaidSUM | currency:'TND' }} </p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="history-card" tabindex="0" (click)="loadOilSalesHistory(true)">
+      <mat-card-content>
+        <div class="card-content">
+          <mat-icon class="card-icon" color="primary">payments</mat-icon>
+          <div class="card-info">
+            <h3>{{ 'SUPPLIER.DETAILS.PAID_OILSALES_TITLE' | translate }}</h3>
+            <p> {{ 'SUPPLIER.DETAILS.PAYMENT_HISTORY_COUNT' | translate }}:{{ paidOilSalesCount }}</p>
+            <p>{{ 'DASHBOARD.KPIS.TOTAL_PAID' | translate }}:{{ paidOilSalesSUM | currency:'TND'}}   </p>
+
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="history-card" tabindex="0" (click)="loadOilSalesHistory(false)">
+      <mat-card-content>
+        <div class="card-content">
+          <mat-icon class="card-icon" color="warn">pending_actions</mat-icon>
+          <div class="card-info">
+            <h3>{{ 'SUPPLIER.DETAILS.UNPAID_OILSALES_TITLE ' | translate }}</h3>
+            <p>{{ 'SUPPLIER.DETAILS.UNPAID_COUNT' | translate }}:{{ unpaidOilSalesCount }} </p>
+            <p>{{ 'SUPPLIER_PAYMENT.TOTAL_UNPAID' | translate }}:{{ unpaidOilSalesSum| currency:'TND' }} </p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="history-card oil-credit-card" tabindex="0"  (click)="loadOilCredits()">
+      <mat-card-content>
+        <div class="card-content">
+          <mat-icon class="card-icon" color="accent">water_drop</mat-icon>
+          <div class="card-info">
+            <h3>{{ 'SUPPLIER.DETAILS.OIL_CREDIT_STATS_TITLE' | translate }}</h3>
+            <p>{{creditsCount}} {{ 'SUPPLIER.DETAILS.OIL_CREDIT_TOTAL' | translate }}</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+<div class="table-section">
+  @if (isOilCredit){
+     <osm-dashboard #dashboardOilCredit [config]="OIL_CREDIT_DASHBOARD" (applyAction)="handleCreditAction($event)"></osm-dashboard>
+  } @else if(isPayment){
+     <osm-dashboard #dashboardPaiments [config]="PAIMENT_DASHBOARD" (applyAction)="handlePaymentAction($event)"></osm-dashboard>
+  }@else if (isOilSale){
+    <osm-dashboard #dashboardOilSale [config]="OIL_SALES_DASHBOARD_CONFIG" (applyAction)="handlePaymentAction($event)"></osm-dashboard>
+
+  }
+
+</div>
+
+}
