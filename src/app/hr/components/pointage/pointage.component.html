@@ -1,0 +1,114 @@
+<div class="toolbar">
+  <!-- Recherche employé -->
+  <mat-form-field appearance="outline" class="filter-field">
+    <mat-label>Rechercher employé</mat-label>
+    <input
+      matInput
+      (keyup)="applyFilter($event)"
+      placeholder="Nom employé" />
+  </mat-form-field>
+
+  <!-- Sélecteur de date -->
+  <mat-form-field appearance="outline" class="date-field">
+    <mat-label>Date</mat-label>
+    <input
+      matInput
+      [matDatepicker]="picker"
+      [value]="selectedDate"
+      (dateChange)="onDateChange($event.value)" />
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+</div>
+
+<!-- Tableau des pointages -->
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8 full-width-table">
+
+  <!-- Colonne Employé -->
+  <ng-container matColumnDef="employee">
+    <th mat-header-cell *matHeaderCellDef> Employé </th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.firstName }} {{ element.lastName }}
+    </td>
+  </ng-container>
+
+  <!-- Colonne Heure début -->
+  <ng-container matColumnDef="checkIn">
+    <th mat-header-cell *matHeaderCellDef> Entrée </th>
+    <td mat-cell *matCellDef="let element">
+      <span [ngClass]="{'time-marked': getCheckInTime(element), 'time-empty': !getCheckInTime(element)}">
+        {{ getCheckInTime(element) || '--:--' }}
+      </span>
+    </td>
+  </ng-container>
+
+  <!-- Colonne Heure fin -->
+  <ng-container matColumnDef="checkOut">
+    <th mat-header-cell *matHeaderCellDef> Sortie </th>
+    <td mat-cell *matCellDef="let element">
+      <span [ngClass]="{'time-marked': getCheckOutTime(element), 'time-empty': !getCheckOutTime(element)}">
+        {{ getCheckOutTime(element) || '--:--' }}
+      </span>
+    </td>
+  </ng-container>
+
+  <!-- Colonne Durée -->
+  <ng-container matColumnDef="pointageDuree">
+    <th mat-header-cell *matHeaderCellDef> Durée </th>
+    <td mat-cell *matCellDef="let element">
+      <span [ngClass]="{'duration-calculated': getDuration(element), 'duration-empty': !getDuration(element)}">
+        {{ getDuration(element) || '--h--' }}
+      </span>
+    </td>
+  </ng-container>
+
+  <!-- Colonne Statut -->
+  <ng-container matColumnDef="status">
+    <th mat-header-cell *matHeaderCellDef> Statut </th>
+    <td mat-cell *matCellDef="let element">
+      <span [ngClass]="getStatus(element)" class="status-chip">
+        {{ getStatus(element) }}
+      </span>
+    </td>
+  </ng-container>
+
+  <!-- Colonne Actions -->
+  <ng-container matColumnDef="action">
+    <th mat-header-cell *matHeaderCellDef> Actions </th>
+    <td mat-cell *matCellDef="let element">
+      <!-- Bouton Entrée -->
+      <button
+        mat-icon-button
+        color="primary"
+        (click)="marqueeEntree(element)"
+        [disabled]="canMarkEnter(element)"
+        [matTooltip]="getCheckInTime(element) ? 'Entrée déjà marquée' : 'Marquer l\'entrée'">
+        <mat-icon>{{ getCheckInTime(element) ? 'check_circle' : 'play_circle_filled' }}</mat-icon>
+      </button>
+
+      <!-- Bouton Sortie -->
+      <button
+        mat-icon-button
+        color="warn"
+        (click)="marqueesortie(element)"
+        [disabled]="!canMarkExit(element) || hasMarkedExit(element)"
+        [matTooltip]="
+          !getCheckInTime(element) ? 'Marquez d\'abord l\'entrée' :
+          getCheckOutTime(element) ? 'Sortie déjà marquée' : 'Marquer la sortie'
+        ">
+        <mat-icon>{{ getCheckOutTime(element) ? 'check_circle' : 'stop_circle' }}</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+
+  <!-- Lignes -->
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+<!-- Pagination -->
+<mat-paginator
+  [pageSizeOptions]="[5, 10, 20]"
+  showFirstLastButtons>
+</mat-paginator>
