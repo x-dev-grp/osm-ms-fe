@@ -12,6 +12,11 @@ const routes: Routes = [
         canActivate: [AuthGuardChild]
       },
       {
+        path: 'pointage',
+        loadComponent: () => import('./components/pointage/pointage.component').then((m) => m.PointageComponent),
+        canActivate: [AuthGuardChild]
+      },
+      {
         path: 'department',
         loadComponent: () => import('./components/department/department.component').then((m) => m.DepartmentComponent),
         canActivate: [AuthGuardChild]

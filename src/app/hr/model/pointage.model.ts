@@ -12,5 +12,4 @@ export interface Pointage {
   checkOut: string;
   pointageDuree?: string; // Time
   status: PointageStatus;
-  employee: Employee;
 }
