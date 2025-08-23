@@ -393,7 +393,23 @@ export const osm_menus: Navigation[] = [
         url: '/hr/employee',
         icon: 'admin_panel_settings',
         breadcrumbs: false
-      }
+      },
+      {
+        id: 'item-settings-departments',
+        title: 'departments',
+        type: 'item',
+        url: '/hr/department',
+        icon: 'business',
+        breadcrumbs: false
+      },
+      {
+        id: 'item-settings-contracts',
+        title: 'contracts',
+        type: 'item',
+        url: '/hr/contract',
+        icon: 'assignment',
+        breadcrumbs: false}
+
     ]
   }
 ];
