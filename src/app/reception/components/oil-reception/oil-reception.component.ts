@@ -651,7 +651,13 @@ this.setPriceForm.get('unitPrice')?.setValue(initialUnitPrice);
       if ((this as any)._syncingPayment) return;
       this.onUnitPriceChanged();
     }));
-
+    this.subs.add(
+      this.receptionForm.get('region')!.valueChanges.subscribe((region: BaseType | null) => {
+        if (region?.name) {
+          this.receptionForm.patchValue({ parcel: region.name }, { emitEvent: false });
+        }
+      })
+    );
     // subscribe: quantity -> total
     this.subs.add(qty.valueChanges.subscribe(() => {
       if ((this as any)._syncingPayment) return;

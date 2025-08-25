@@ -129,31 +129,47 @@ export class GenericTypeComponent implements OnInit , OnDestroy {
 
   // ========= Dialog =========
   openDialog(record?: BaseType): void {
-    // this.currentRecord = record ?? null;
-    //
-    // if (record) {
-    //   // Edition
-    //   this.dialogForm.patchValue({
-    //     type: record.type,
-    //     name: record.name,
-    //     description: record.description
-    //   });
-    // } else {
-    //   // Ajout — valeur par défaut = carte active
-    //   this.dialogForm.reset();
-    //   this.dialogForm.get('type')!.setValue(this.activeKey);
-    // }
-    this.router.navigate(['/settings/generic/new'], {
-      queryParams: { category: this.activeKey }
-    });
-    // this.dialogRef = this.dialog.open(this.genericTypeDialog, { width: '600px' });
-  }
+    this.currentRecord = record ?? null;
+    if (record) {
+      // Edition
+      this.dialogForm.patchValue({
+        type: record.type,
+        name: record.name,
+        description: record.description
+      });
+    } else {
+      // Ajout — valeur par défaut = carte active
+      this.dialogForm.reset();
+      this.dialogForm.get('type')!.setValue(this.activeKey);
+    }
+
+    this.dialogRef = this.dialog.open(this.genericTypeDialog, { width: '600px' });
+    // this.router.navigate(['/settings/generic/new'], {
+    //   queryParams: { category: this.activeKey }
+    // });
+    }
 
   onCancel(): void {
     this.dialogRef?.close();
     this.currentRecord = null;
   }
+  onTypeChange(value: TypeCategory): void {
+    this.dialogForm.get('type')!.setValue(value);
+  }
 
+  private initForm(): void {
+    this.dialogForm = this.fb.group({
+      type: ['', Validators.required],
+      name: ['', Validators.required],
+      description: ['']
+    });
+  }
+
+  private buildTypeOptions(): void {
+    this.typeOptions = Object.keys(TypeCategory)
+      .filter((k) => isNaN(Number(k)))
+      .map((key) => ({ name: key, value: TypeCategory[key as keyof typeof TypeCategory] }));
+  }
   onSave(): void {
     // === TA LOGIQUE ===
     const payload: BaseType = { ...this.dialogForm.value };
@@ -167,17 +183,16 @@ export class GenericTypeComponent implements OnInit , OnDestroy {
     });
   }
 
-  // Le select du template appelle ceci
-  onTypeChange(val: TypeCategory): void {
-    this.dialogForm.get('type')?.setValue(val);
-  }
+
   applyAction(event: { row: any; action: string }): void {
     switch (event.action) {
       case 'READ':
       case 'UPDATE':
-        this.router.navigate(['/settings/generic', event.row.id, 'edit'], {
-          queryParams: { category: this.activeKey }
-        });        break;
+        // this.router.navigate(['/settings/generic', event.row.id, 'edit'], {
+        //   queryParams: { category: this.activeKey }
+        // });
+        this.openDialog(event.row as BaseType);
+        break;
     }
   }
   // ========= Utils =========

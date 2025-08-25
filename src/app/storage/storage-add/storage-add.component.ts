@@ -42,7 +42,7 @@ export class StorageAddComponent implements OnInit, OnDestroy {
   errorMessage: string | null = null;
   storageForm: FormGroup;
 
-  oilTypes: BaseType[] = [];
+  oilVarietys: BaseType[] = [];
 
   private subscriptions = new Subscription();
 
@@ -61,7 +61,7 @@ export class StorageAddComponent implements OnInit, OnDestroy {
       maxCapacity: [0, [Validators.required, Validators.min(0)]],
       currentVolume: [0, [Validators.required, Validators.min(0)]],
       status: ['AVAILABLE', Validators.required],
-      oilType: [null, Validators.required],
+      oilVariety: [null, Validators.required],
       nextMaintenanceDate: [null],
       lastInspectionDate: [null]
     });
@@ -76,8 +76,8 @@ export class StorageAddComponent implements OnInit, OnDestroy {
       this.oilTypeService.getAllTypes(TypeCategory.OIL_VARIETY).toPromise(),
       this.isEditing && storageId ? this.storageService.getStorageUnit(storageId).toPromise() : Promise.resolve(null)
     ])
-      .then(([oilTypes, storage]) => {
-        this.oilTypes = oilTypes?.success ? oilTypes.data : [];
+      .then(([oilVarietys, storage]) => {
+        this.oilVarietys = oilVarietys?.success ? oilVarietys.data : [];
 
         const unit = Array.isArray(storage?.data) ? storage?.data[0] : storage?.data;
 
@@ -137,11 +137,11 @@ export class StorageAddComponent implements OnInit, OnDestroy {
 
   private patchForm(storage: StorageUnitDto): void {
     console.log('Patch storage:', storage);
-    console.log('OilTypes:', this.oilTypes);
+    console.log('oilVarietys:', this.oilVarietys);
 
     this.storageForm.patchValue({
       ...storage,
-      oilType: this.oilTypes.find(t => t.id === storage.oilType?.id) || null,
+      oilVariety: this.oilVarietys.find(t => t.id === storage.oilVariety?.id) || null,
       nextMaintenanceDate: storage.nextMaintenanceDate ? new Date(storage.nextMaintenanceDate) : null,
       lastInspectionDate: storage.lastInspectionDate ? new Date(storage.lastInspectionDate) : null
     });

@@ -48,7 +48,15 @@ export const osm_menus: Navigation[] = [
             url: '/reception',
             icon: 'assignment',
             breadcrumbs: false
-          }
+          },{
+            id: 'item-storage-storage_recap',
+            title: 'storage_recap',
+            type: 'item',
+            url: '/storage/storage_recap',
+            icon: 'water_drop',
+            role: [Role.Admin],
+            breadcrumbs: false
+          },
       //   ]
       // }
     ]

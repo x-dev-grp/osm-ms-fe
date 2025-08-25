@@ -1718,6 +1718,7 @@
         "EDIT": "Edit Oil Transaction"
       },
       "VALIDATION": {
+        "CAPACITY": "Validation error check capacity or oil quantity",
         "MIN_VALUE": "Value must be greater than 0",
         "REQUIRED": "This field is required"
       }
@@ -2020,7 +2021,7 @@
     "REVISION": "Revision",
     "SALE": "Sale",
     "SIGNATURE": "Signature",
-    "SIGNATURE_AGENT": "Agent Signature (scale)",
+    "SIGNATURE_AGENT": "Agent Signature  ",
     "SIGNATURE_RESPONSIBLE": "Quality Manager Signature",
     "STATUS": "Status",
     "STORAGE_UNIT_DEST": "Storage Unit (Destination)",

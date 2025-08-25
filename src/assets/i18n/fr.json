@@ -1715,6 +1715,7 @@
         "EDIT": "Modifier la Transaction d'Huile"
       },
       "VALIDATION": {
+        "CAPACITY": "Erreur de validation ",
         "MIN_VALUE": "La valeur doit être supérieure à 0",
         "REQUIRED": "Ce champ est requis"
       }
@@ -2017,7 +2018,7 @@
     "REVISION": "Révision",
     "SALE": "Vente",
     "SIGNATURE": "Signature",
-    "SIGNATURE_AGENT": "Signature Agent)",
+    "SIGNATURE_AGENT": "Signature Agent",
     "SIGNATURE_RESPONSIBLE": "Signature Responsable CQ",
     "STATUS": "Statut",
     "STORAGE_UNIT_DEST": "Unité de stockage (destination)",

@@ -1,10 +1,14 @@
-import { DashboardConfig, AttributeType, FieldType } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
-import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
+ import { SearchOperation } from '../../../../shared/models/advanced-search/searchOperation';
+ import {
+  AttributeType,
+  DashboardConfig,
+   FieldType
+} from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
 
-export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
+export const MACHIN_RECEPTION_DASHBOARD: DashboardConfig = {
   icon: 'list_alt',
   addNewItem: false,
-  title: "Réceptions d'Huile et Triturations",
+  title: "List de trutiration",
   titleTranslatePath: 'DELIVERIES.OIL_TITLE',
   baseURL: 'deliveries',
   searchEndpoint: 'production/deliveries',
@@ -17,16 +21,7 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
       operation: SearchOperation.AND,
       searchs: [],
       search: {
-        isDeleted:{
-          equalValue:false
-        },status: {
-          inValues: [
-            'COMPLETED',
-            'REFUSED',
-            'CANCELLED',
-            'IN_STOCK'
-           ]
-        }
+
       }
     }
   },
@@ -118,32 +113,24 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
       name: 'oilType',
       label: "Type d'huile",
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.OIL_TYPE',
-      attributeType: AttributeType.string,
+      attributeType: AttributeType.object,
       exportable: true,
       dataTable: true,
       filterable: true,
       valuePath: 'name',
       valueAttributeType: AttributeType.string,
-      fieldType: FieldType.select,
-      options: [
-        { label: 'HB', value: 'HB' },
-        { label: 'HC', value: 'HC'  },
-      ]
+      fieldType: FieldType.autocomplete,
     },{
       name: 'oliveType',
       label: "Type d'olive",
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.OLIVE_TYPE',
-      attributeType: AttributeType.string,
+      attributeType: AttributeType.object,
       exportable: true,
       dataTable: true,
       filterable: true,
       valuePath: 'name',
       valueAttributeType: AttributeType.string,
-      fieldType: FieldType.select,
-      options: [
-        { label: 'OB', value: 'OB' },
-        { label: 'OC', value: 'OC'  },
-      ]
+      fieldType: FieldType.autocomplete,
     },
     {
       name: 'operationType',

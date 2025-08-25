@@ -33,7 +33,7 @@ export class PointageService {
   }
 
   // Marquer la sortie d'un employé
-  markExit(employeeId: string, date: string, checkOutTime: string): Observable<ApiResponse<Pointage>> {
+  markExit(employeeId: string, date: string, checkOutTime: Date): Observable<ApiResponse<Pointage>> {
     const request: PointageRequest = {
       employeeId,
       date,

@@ -59,12 +59,12 @@
         <!-- Oil Type -->
         <mat-form-field appearance="outline" class="w-100">
           <mat-label>Oil Type</mat-label>
-          <mat-select formControlName="oilType" required>
-            <mat-option *ngFor="let type of oilTypes" [value]="type">
+          <mat-select formControlName="oilVariety" required>
+            <mat-option *ngFor="let type of oilVarietys" [value]="type">
               {{ type.name }}
             </mat-option>
           </mat-select>
-          <mat-error *ngIf="storageForm.get('oilType')?.hasError('required')">
+          <mat-error *ngIf="storageForm.get('oilVariety')?.hasError('required')">
             Oil type is required
           </mat-error>
         </mat-form-field>

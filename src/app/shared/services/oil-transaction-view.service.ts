@@ -201,9 +201,9 @@ export class OilTransactionViewService {
       const targetQualityGrade = transaction.qualityGrade;
       filteredUnits = filteredUnits.filter(unit => {
         // If storage unit has a specific oil type, it must match the quality grade
-        if (unit.oilType) {
-          return unit.oilType.name.toLowerCase().includes(targetQualityGrade.toLowerCase()) ||
-                 (unit.oilType.id && unit.oilType.id.toString() === targetQualityGrade);
+        if (unit.oilVariety) {
+          return unit.oilVariety.name.toLowerCase().includes(targetQualityGrade.toLowerCase()) ||
+                 (unit.oilVariety.id && unit.oilVariety.id.toString() === targetQualityGrade);
         }
         // If no specific oil type, allow any storage unit (general purpose)
         return true;

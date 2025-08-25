@@ -7,7 +7,7 @@ export const MILL_MACHINE_DASHBOARD: DashboardConfig = {
   titleTranslatePath: 'MENU.SETTINGS.MILLING_MACHINES',
   baseURL: 'production/millers',
   searchEndpoint: 'production/millers',
-  addNewItem: true,
+  addNewItem: false,
   addNewItemUrl: 'reception/mill-machines/new',
   defaultSearchData: {
     page: 0,

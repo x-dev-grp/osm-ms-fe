@@ -1,11 +1,11 @@
 <form [formGroup]="paramForm">
-  <mat-form-field appearance="outline" class="category-filter">
-    <mat-label>Category</mat-label>
-    <mat-select (ngModelChange)="filtered" [(ngModel)]="selectedCategory" formControlName="category">
-      <mat-option value="">All</mat-option>
-      <mat-option *ngFor="let cat of categories" [value]="cat">{{ cat }}</mat-option>
-    </mat-select>
-  </mat-form-field>
+<!--  <mat-form-field appearance="outline" class="category-filter">-->
+<!--    <mat-label>Category</mat-label>-->
+<!--    <mat-select (ngModelChange)="filtered" [(ngModel)]="selectedCategory" formControlName="category">-->
+<!--      <mat-option value="">All</mat-option>-->
+<!--      <mat-option *ngFor="let cat of categories" [value]="cat">{{ cat }}</mat-option>-->
+<!--    </mat-select>-->
+<!--  </mat-form-field>-->
 
   <table [dataSource]="filtered" class="mat-elevation-z2" mat-table>
     <!-- Code Column -->

@@ -131,20 +131,29 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     if (!this.receptionForm.get('oilType')) {
       this.receptionForm.addControl('oilType', new FormControl<OilType | null>(null, Validators.required));
     }
-
+    this.subscriptions.push(
+      this.receptionForm.get('region')!.valueChanges.subscribe((region: BaseType | null) => {
+        if (region?.name) {
+          this.receptionForm.patchValue({ parcel: region.name }, { emitEvent: false });
+        }
+      })
+    );
 // 2) Synchro olive -> oil
     this._typeSubs.push(
       this.receptionForm.get('oliveType')!.valueChanges.subscribe((val: OliveType | null) => {
         const mapped = mapOilFromOlive(val);
-        this.receptionForm.get('oilType')!.setValue(mapped, { emitEvent: false });
-      })
+        this.receptionForm.get('oilType')!.setValue(mapped, { emitEvent: true });
+           const deliveryNumber = this.receptionForm.get('deliveryNumber')?.value || this.deliveries.length + 1;
+          const lotNumber = this.generateLotNumber(mapped, deliveryNumber);
+          this.receptionForm.patchValue({ lotNumber }, { emitEvent: false });
+           })
     );
 
 // 3) Synchro oil -> olive
     this._typeSubs.push(
       this.receptionForm.get('oilType')!.valueChanges.subscribe((val: OilType | null) => {
         const mapped = mapOliveFromOil(val);
-        this.receptionForm.get('oliveType')!.setValue(mapped, { emitEvent: false });
+        this.receptionForm.get('oliveType')!.setValue(mapped, { emitEvent: true });
       })
     );
 
@@ -396,18 +405,18 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
 
 
 
-  private generateLotNumber(oilTye: BaseType | null, deliveryNumber: number): string {
-    if (!oilTye?.name) return '';
+  private generateLotNumber(oilType: OilType | null, deliveryNumber: number): string {
+    if (!oilType) return '';
     const year = new Date().getFullYear().toString().slice(-2);
     const paddedNumber = deliveryNumber.toString().padStart(4, '0');
-    return `${paddedNumber}${oilTye.name.toUpperCase()}${year}`;
+    return `${paddedNumber}${oilType.toUpperCase()}${year}`;
   }
 
   private setupFormSubscriptions(): void {
     this.subscriptions.push(
-      this.receptionForm.get('oilType')!.valueChanges.subscribe((oilTye: BaseType | null) => {
+      this.receptionForm.get('oilType')!.valueChanges.subscribe((oilType: OilType | null) => {
         const deliveryNumber = this.receptionForm.get('deliveryNumber')?.value || this.deliveries.length + 1;
-        const lotNumber = this.generateLotNumber(oilTye, deliveryNumber);
+        const lotNumber = this.generateLotNumber(oilType, deliveryNumber);
         this.receptionForm.patchValue({ lotNumber }, { emitEvent: false });
       })
     );

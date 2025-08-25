@@ -36,6 +36,10 @@ const routes: Routes = [
         path: 'oil-transactions',
         loadComponent: () => import('./oil-transactions/oil-transactions.component').then((m) => m.OilTransactionsComponent),
         canActivate: [AuthGuardChild]
+      },{
+        path: 'storage_recap',
+        loadComponent: () => import('./storage-units-board/storage-units-board.component').then((m) => m.StorageUnitsBoardComponent),
+        canActivate: [AuthGuardChild]
       },
 
       {

@@ -15,7 +15,7 @@ export interface StorageUnitDto {
   nextMaintenanceDate?: Date;
   lastInspectionDate?: Date;
 
-  oilType?: BaseType;
+  oilVariety?: BaseType;
   status: 'AVAILABLE' | 'FULL' | 'FILLING' | 'MAINTENANCE' | 'IN_USE' | 'CLEANING' | 'RESERVED' | 'OUT_OF_SERVICE';
 
   lastFillDate?: Date;

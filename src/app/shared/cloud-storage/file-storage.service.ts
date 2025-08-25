@@ -1,41 +1,71 @@
-// libs/osm-attachment/file-storage.service.ts
-import { Injectable, inject } from '@angular/core';
+// libs/cloud-storage/file-storage.service.ts
+import { Injectable } from '@angular/core';
 import { HttpClient, HttpEvent, HttpRequest } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, firstValueFrom, map } from 'rxjs';
 
-export interface AttachmentMeta {
-  hasAttachment: boolean;
-  fileName?: string;
-  mimeType?: string;
+export type BackendMeta = {
+  id:string;
+  fileId: string;
+  name?: string;
   size?: number;
-}
+  mimeType?: string;
+  webViewLink?: string;
+};
 
 @Injectable({ providedIn: 'root' })
 export class FileStorageService {
-  private http = inject(HttpClient);
-  private baseUrl = (window as any)?.env?.API_URL || '/api'; // or from environments
+  private base = '/api/unified-deliveries'; // backend routes
 
-  uploadAttachment(tenantId: string, entity: string, objectId: string, file: File): Observable<HttpEvent<any>> {
-    const formData = new FormData();
-    formData.append('file', file, file.name);
+  constructor(private http: HttpClient) {}
 
-    const req = new HttpRequest(
-      'POST',
-      `${this.baseUrl}/attachments/${tenantId}/${entity}/${objectId}`,
-      formData,
-      { reportProgress: true }
+  /** GET /{deliveryId}/file -> map to view Meta */
+  async getMeta(deliveryId: string) {
+    const res = await firstValueFrom(
+      this.http.get<BackendMeta>(`${this.base}/${encodeURIComponent(deliveryId)}/file`, { observe: 'response' })
     );
-    return this.http.request(req);
+    if (res.status === 200 && res.body) {
+      return {
+        hasAttachment: true,
+        fileName: res.body.name,
+        mimeType: res.body.mimeType,
+        size: res.body.size,
+        fileId: res.body.fileId ?? res.body['id'],
+      };
+    }
+    return { hasAttachment: false };
   }
 
-  getAttachmentMeta(tenantId: string, entity: string, objectId: string) {
-    return this.http.get<AttachmentMeta>(`${this.baseUrl}/attachments/${tenantId}/${entity}/${objectId}/meta`);
-  }
-
-  downloadAttachment(tenantId: string, entity: string, objectId: string) {
-    return this.http.get(`${this.baseUrl}/attachments/${tenantId}/${entity}/${objectId}/download`, {
-      responseType: 'blob',
-      observe: 'response',
+  /** POST multipart /{deliveryId}/file (progress callbacks supported) */
+  async upload(
+    deliveryId: string,
+    file: File,
+    onProgress?: (p: number) => void,
+    onEvent?: (evt: HttpEvent<any>) => void
+  ) {
+    const fd = new FormData();
+    fd.append('file', file);
+    const req = new HttpRequest('POST', `${this.base}/${encodeURIComponent(deliveryId)}/file`, fd, {
+      reportProgress: true,
     });
+    const stream$ = this.http.request(req);
+    return firstValueFrom(
+      stream$.pipe(
+        map((evt) => {
+          onEvent?.(evt);
+          // best-effort numeric progress callback
+          return evt;
+        })
+      )
+    ).catch((e) => {
+      // rethrow to let component map status -> message
+      throw e;
+    });
+  }
+
+  /** GET blob /{deliveryId}/file/download */
+  download(deliveryId: string): Observable<Blob> {
+    return this.http.get(`${this.base}/${encodeURIComponent(deliveryId)}/file/download`, {
+      responseType: 'blob',
+    }) as Observable<Blob>;
   }
 }
