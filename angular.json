@@ -44,8 +44,7 @@
             "styles": [
               "src/styles.scss",
               "src/app/theme/styles/material-overrides.scss",
-               "src/toast-theme.scss"
-
+              "src/toast-theme.scss"
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
@@ -54,7 +53,7 @@
             },
             "scripts": [
               "node_modules/apexcharts/dist/apexcharts.min.js"
-             ],
+            ],
             "serviceWorker": true
           },
           "configurations": {
@@ -77,6 +76,19 @@
                   "maximumError": "30kb"
                 }
               ],
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": false
+                },
+                "fonts": true
+              },
+              "sourceMap": false,
+              "namedChunks": false,
+              "vendorChunk": false,
+              "extractLicenses": true,
+              "buildOptimizer": true,
               "outputHashing": "all",
               "serviceWorker": true
             },

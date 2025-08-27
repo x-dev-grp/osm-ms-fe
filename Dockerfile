@@ -7,6 +7,7 @@ WORKDIR /app
 
 # ① copy dependency manifests first → better cache reuse
 COPY package.json package-lock.json* ./
+ENV NODE_OPTIONS="--max_old_space_size=2048"
 RUN npm ci --legacy-peer-deps --omit=dev    # or just `npm ci` if you keep devDeps
 
 # ② copy the rest of the source and compile
