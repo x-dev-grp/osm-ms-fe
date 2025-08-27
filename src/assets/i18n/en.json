@@ -2235,7 +2235,9 @@
     },
     "OIL_STORAGE_UNITS": "Oil Storage Units",
     "OIL_TRANSACTIONS": "Oil Transactions",
-    "TITLE": "Storage & Inventory",
+    "TITLE": {
+      "DASHBOARD": "Storage dashbaord"
+    },
     "VIEW": {
       "AVAILABLECAPACITY": "Available capacity",
       "AVGCOST": "Average cost",
@@ -2253,6 +2255,7 @@
       },
       "MAX_CAPACITY": "Max Capacity",
       "NA": "N/A",
+      "NO_UNITS": "No storage units",
       "OIL_TYPE": "Oil Type",
       "STATUS": {
         "AVAILABLE": "Available",

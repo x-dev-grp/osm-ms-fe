@@ -13,6 +13,7 @@ import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import { StorageUnitDtoService } from '../../shared/services/storage.service';
 import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
 import { CardComponent } from '../../theme/components/card/card.component';
+import { Router } from '@angular/router';
 
 // Adjust import path to your actual service/model locations
 
@@ -43,6 +44,7 @@ export class StorageUnitsBoardComponent implements OnInit {
   private readonly storageUnitService = inject(StorageUnitDtoService);
   private readonly fb = inject(FormBuilder);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly router = inject(Router);
 
   loading = signal<boolean>(true);
   error = signal<string | null>(null);
@@ -135,13 +137,27 @@ export class StorageUnitsBoardComponent implements OnInit {
     if (pct > 0) return 'fill-low';
     return 'fill-empty';
   }
-
+  viewUnit(u: StorageUnitDto): void {
+    this.router.navigate(['/storage', u.id, 'view']);
+  }
   getStatusClass(u: StorageUnitDto): string {
     switch (u.status) {
-      case 'FULL':
-        return 'status-full';
       case 'AVAILABLE':
         return 'status-available';
+      case 'FULL':
+        return 'status-full';
+      case 'FILLING':
+        return 'status-filling';
+      case 'MAINTENANCE':
+        return 'status-maintenance';
+      case 'IN_USE':
+        return 'status-inuse';
+      case 'CLEANING':
+        return 'status-cleaning';
+      case 'RESERVED':
+        return 'status-reserved';
+      case 'OUT_OF_SERVICE':
+        return 'status-outofservice';
       default:
         return 'status-available';
     }
@@ -149,10 +165,22 @@ export class StorageUnitsBoardComponent implements OnInit {
 
   getStatusIcon(u: StorageUnitDto): string {
     switch (u.status) {
-      case 'FULL':
-        return 'inventory';
       case 'AVAILABLE':
         return 'check_circle';
+      case 'FULL':
+        return 'inventory';
+      case 'FILLING':
+        return 'autorenew';
+      case 'MAINTENANCE':
+        return 'build';
+      case 'IN_USE':
+        return 'play_circle';
+      case 'CLEANING':
+        return 'cleaning_services';
+      case 'RESERVED':
+        return 'event_busy';
+      case 'OUT_OF_SERVICE':
+        return 'power_off';
       default:
         return 'check_circle';
     }

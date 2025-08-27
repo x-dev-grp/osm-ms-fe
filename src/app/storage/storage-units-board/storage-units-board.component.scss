@@ -37,8 +37,14 @@
 
 .units-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  grid-template-columns: repeat(2, minmax(420px, 1fr)); /* two columns, each with a min width */
   gap: 1rem;
+}
+
+@media (max-width: 920px) {
+  .units-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Card */
@@ -75,7 +81,7 @@
 /* Metrics */
 .storage-header-metrics {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: .5rem;
   @media (min-width: 1200px) { grid-template-columns: repeat(6, minmax(0, 1fr)); }
 
@@ -110,15 +116,33 @@
 .fill-mid { background: #64b5f6; }
 .fill-high { background: #42a5f5; }
 
-/* Status colors */
-.status-empty { background: #eef2ff; color: #3b82f6; }
-.status-available { background: #ecfdf5; color: #059669; }
-.status-partial { background: #fff7ed; color: #ea580c; }
-.status-full { background: #fef2f2; color: #dc2626; }
-.status-blocked { background: #f3e8ff; color: #7c3aed; }
+/* ── Status colors (new set) ─────────────────────────── */
+/* Badge background + text color */
+.status-available { background: #ecfdf5; color: #059669; }       /* green */
+.status-full       { background: #fef2f2; color: #dc2626; }       /* red */
+.status-filling    { background: #eff6ff; color: #3b82f6; }       /* blue */
+.status-maintenance{ background: #fff7ed; color: #ea580c; }       /* orange */
+.status-inuse      { background: #f0fdf4; color: #16a34a; }       /* brighter green */
+.status-cleaning   { background: #ecfeff; color: #0ea5e9; }       /* cyan */
+.status-reserved   { background: #fdf2f8; color: #db2777; }       /* pink */
+.status-outofservice{ background: #f3f4f6; color: #6b7280; }      /* gray */
 
+/* Icon color overrides to match badges */
+.status-icon.status-available   { color: #059669; }
+.status-icon.status-full        { color: #dc2626; }
+.status-icon.status-filling     { color: #3b82f6; }
+.status-icon.status-maintenance { color: #ea580c; }
+.status-icon.status-inuse       { color: #16a34a; }
+.status-icon.status-cleaning    { color: #0ea5e9; }
+.status-icon.status-reserved    { color: #db2777; }
+.status-icon.status-outofservice{ color: #6b7280; }
+
+/* (optional) legacy classes kept for backward compatibility */
+.status-empty { background: #eef2ff; color: #3b82f6; }
+.status-partial { background: #fff7ed; color: #ea580c; }
+.status-blocked { background: #f3e8ff; color: #7c3aed; }
 .status-icon.status-empty { color: #3b82f6; }
-.status-icon.status-available { color: #059669; }
+.status-icon.status-available { color: #059669; } /* already covered above */
 .status-icon.status-partial { color: #ea580c; }
-.status-icon.status-full { color: #dc2626; }
+.status-icon.status-full { color: #dc2626; } /* already covered above */
 .status-icon.status-blocked { color: #7c3aed; }

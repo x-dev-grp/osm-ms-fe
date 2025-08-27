@@ -2232,7 +2232,9 @@
     },
     "OIL_STORAGE_UNITS": "Unités de Stockage d'Huile",
     "OIL_TRANSACTIONS": "Transactions d'Huile",
-    "TITLE": "Configuration Stock",
+    "TITLE": {
+      "DASHBOARD": "Tableau de bord de stockage"
+    },
     "VIEW": {
       "AVAILABLECAPACITY": "Capacity disponible",
       "AVGCOST": "Coût moyenne",
@@ -2250,6 +2252,7 @@
       },
       "MAX_CAPACITY": "Capacité maximale",
       "NA": "N/A",
+      "NO_UNITS": "Pad des unité de stockage",
       "OIL_TYPE": "Type d'huile",
       "STATUS": {
         "AVAILABLE": "Disponible",
