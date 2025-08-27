@@ -16,12 +16,14 @@ export enum ContractType {
 }
 
 export interface Contract {
-  id?: number;
+  id?: string;
   startDate: string; // LocalDate → string (ISO)
   endDate: string;
   salary: number;
-  poste: Poste;
+  poste?: Poste;
   contractType: ContractType;
   contractStatus: ContractStatus;
   employee: Employee;
+  externalId: string;
+
 }

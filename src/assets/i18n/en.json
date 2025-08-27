@@ -298,6 +298,13 @@
       "STOCK": "Stock Config"
     }
   },
+  "CONTRAT": {
+    "STATUS": {
+      "ACTIVE": "Active",
+      "EXPIRED": "Expired",
+      "SUSPENDED": "SUSPENDED"
+    }
+  },
   "CONTROLE_QUALITE": {
     "BUTTONS": {
       "BACK": "Back",

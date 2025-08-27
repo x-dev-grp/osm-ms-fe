@@ -408,7 +408,15 @@ export const osm_menus: Navigation[] = [
         type: 'item',
         url: '/hr/contract',
         icon: 'assignment',
-        breadcrumbs: false}
+        breadcrumbs: false},
+      {
+        id: 'item-settings-poste',
+        title: 'postes',
+        type: 'item',
+        url: '/hr/poste',
+        icon: 'work',
+        breadcrumbs: false
+      }
 
     ]
   }

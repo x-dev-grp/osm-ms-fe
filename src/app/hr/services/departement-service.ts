@@ -3,14 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../../shared/models/api-response';
+import {Department} from "../model/department.model";
 
-// Modèle Department
-export interface Department {
-  id?: number;
-  name: string;
-  description?: string;
-  managerId?: number;
-}
 
 @Injectable({
   providedIn: 'root'
@@ -21,8 +15,8 @@ export class DepartmentService {
   constructor(private http: HttpClient) {}
 
   // Récupérer tous les départements
-  getAllDepartments(): Observable<ApiResponse<Department>> {
-    return this.http.get<ApiResponse<Department>>(`${this.baseUrl}/fetchAll`);
+  getAllDepartments(): Observable<ApiResponse<Department[]>> {
+    return this.http.get<ApiResponse<Department[]>>(`${this.baseUrl}/fetchAll`);
   }
 
   // Récupérer un département par ID

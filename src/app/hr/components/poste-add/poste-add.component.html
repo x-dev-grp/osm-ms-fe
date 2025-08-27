@@ -1,0 +1,34 @@
+<app-card [icon]="'add'" [cardTitle]="isEditing ? ('POSTE.EDIT_TITLE' | translate) : ('POSTE.ADD_TITLE' | translate)">
+  <div class="form-container">
+    <form [formGroup]="posteForm" (ngSubmit)="onSubmit()">
+      <div class="form-grid">
+        <div class="form-grid-item">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'POSTE.NAME' | translate }}</mat-label>
+            <input matInput formControlName="name" required>
+            <mat-error>{{ getErrorMessage('name') }}</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-grid full-width">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>{{ 'POSTE.DESCRIPTION' | translate }}</mat-label>
+          <textarea matInput formControlName="description" rows="4"></textarea>
+        </mat-form-field>
+      </div>
+
+      <div class="form-actions">
+        <button mat-button type="button" (click)="onCancel()">
+          {{ 'POSTE.CANCEL' | translate }}
+        </button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="posteForm.invalid || loading">
+          <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+          <span *ngIf="!loading">
+            {{ isEditing ? ('POSTE.UPDATE' | translate) : ('POSTE.SAVE' | translate) }}
+          </span>
+        </button>
+      </div>
+    </form>
+  </div>
+</app-card>

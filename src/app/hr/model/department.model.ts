@@ -1,9 +1,10 @@
 import { Employee } from './employee-model';
 
 export interface Department {
-  id?: number;
+  id?: string;
   name: string;
   description: string;
-  managerId: number;
+  managerId: string;
   employees?: Employee[];
+  externalId: string;
 }
