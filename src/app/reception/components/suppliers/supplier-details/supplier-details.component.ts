@@ -31,6 +31,14 @@ export enum PaymentSourceType {
   WASTE_SALE_prc = 'waste_sale',
 }
 
+import { factureTriturationConfig } from "../../../../finance/facture-config/facture-Trituration-Config";
+import {PdfGeneratorFactureService} from "../../../../shared/services/pdf-generator-facture.service";
+import {PdfFactureConfig} from "../../../../shared/models/pdf-config.model";
+import {factureDechetConfig} from "../../../../finance/facture-config/facture-Dechet-Config";
+import {CompanyProfile} from "../../../../shared/models/CompanyProfile";
+import {CompanyProfileService} from "../../../../shared/services/company-profile.service";
+import {factureVenteHuileConfig} from "../../../../finance/facture-config/facture-VenteHuile-Config";
+
 @Component({
   selector: 'app-supplier-details',
   templateUrl: './supplier-details.component.html',
@@ -59,13 +67,18 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
   isWasteSale: boolean = false;
   isOilSale: boolean = false;
   isPayment: boolean = false;
+  companyProfile?: CompanyProfile;
+
   OIL_CREDIT_DASHBOARD: DashboardConfig = OIL_CREDIT_DASHBOARD;
   WASTE_DASHBOARD: DashboardConfig = WASTE_DASHBOARD;
   PAIMENT_DASHBOARD: DashboardConfig = PAIMENT_DASHBOARD;
   OIL_SALES_DASHBOARD_CONFIG = OIL_SALES_DASHBOARD_CONFIG;
   unpaidSUM: number;
   paidSum: number;
-
+  unpaidSUM: string;
+  paidSum: string;
+  paidOilSalesSUM: string;
+  unpaidOilSalesSum: string;
   // Oil sales metrics
   protected paidOilSalesCount: number = 0;
   protected unpaidOilSalesCount: number = 0;
@@ -93,12 +106,14 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
     // private invoiceService: InvoiceService,
     private toast: ToastService,
     private pdfFactureService: PdfGeneratorFactureService,
+    private companyService: CompanyProfileService,
   ) {}
 
   ngOnInit(): void {
     this.supplierId = this.route.snapshot.paramMap.get('id');
     this.loadPaymentHistory(false);
     this.countData();
+    this.getProfileInfo();
   }
 
   handleCreditAction(e: { row: OilCredit; action: string }) {
@@ -157,10 +172,32 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
   }
 
 
-  generateInvoice(delivery: UnifiedDelivery): void {
-    const config = getInvoicePdfConfig(delivery);
-    this.pdfFactureService.generatePdfDocument(config);
+  getInvoicePdfConfig(delivery: UnifiedDelivery, company: CompanyProfile): PdfFactureConfig {
+    switch (delivery.operationType) {
+      case 'SIMPLE_RECEPTION': // Trituration particulier
+        return factureTriturationConfig(delivery, company);
+
+      case 'EXCHANGE':
+      case 'BASE':
+        return factureVenteHuileConfig(delivery, company);
+
+      default: // Tous les autres => déchets
+        return factureDechetConfig(delivery, company);
+    }
   }
+
+  getProfileInfo(){
+    this.companyService.getProfile().subscribe({
+      next: (response:any) => {
+        this.companyProfile = response;
+        console.log('[CompanyProfile] Loaded company profile:', this.companyProfile);
+      },
+      error: (err) => {
+        console.error('[CompanyProfile] Error fetching company info:', err);
+      }
+    });
+  }
+
 
    initiatePayment(row: any,sourceType:string) {
     let dialogRef = this._dialog.open(SupplierPaymentHistoryComponent, {
