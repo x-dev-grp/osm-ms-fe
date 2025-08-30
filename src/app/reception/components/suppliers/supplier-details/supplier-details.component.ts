@@ -1,34 +1,36 @@
-import { Component, DestroyRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, tap } from 'rxjs';
-import { OsmDashboard } from '../../../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
-import { TranslateModule } from '@ngx-translate/core';
-import { CardComponent } from '../../../../theme/components/card/card.component';
-import { OIL_CREDIT_DASHBOARD } from './oil-credit-dashboard.config';
-import { PAIMENT_DASHBOARD } from './paiment-dashboard.config';
-import { AdvancedSearchService } from '../../../../shared/services/advanced-serach.service';
-import { SearchData } from '../../../../shared/models/advanced-search/searchData';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { OilCredit } from '../../../../finance/models/OilCredit';
-import { UnifiedDelivery } from '../../../../shared/models/UnifiedDelivery';
-import { MatDialog } from '@angular/material/dialog';
-import { SupplierPaymentHistoryComponent } from '../supplier-payment-history/supplier-payment-history.component';
-import { OIL_SALES_DASHBOARD_CONFIG } from './oil-sales-dashboard.config';
-import { ToastService } from '../../../../shared/services/toast.service';
+import {Component, DestroyRef, inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {MatButtonModule} from '@angular/material/button';
+import {MatCardModule} from '@angular/material/card';
+import {MatIconModule} from '@angular/material/icon';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Subject, tap} from 'rxjs';
+import {OsmDashboard} from '../../../../shared/modules/osm-dashboard/osm-dashboard';
+import {DashboardConfig} from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
+import {TranslateModule} from '@ngx-translate/core';
+import {CardComponent} from '../../../../theme/components/card/card.component';
+import {OIL_CREDIT_DASHBOARD} from './oil-credit-dashboard.config';
+import {PAIMENT_DASHBOARD} from './paiment-dashboard.config';
+import {AdvancedSearchService} from '../../../../shared/services/advanced-serach.service';
+import {SearchData} from '../../../../shared/models/advanced-search/searchData';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {OilCredit} from '../../../../finance/models/OilCredit';
+import {UnifiedDelivery} from '../../../../shared/models/UnifiedDelivery';
+import {MatDialog} from '@angular/material/dialog';
+import {SupplierPaymentHistoryComponent} from '../supplier-payment-history/supplier-payment-history.component';
+import {OIL_SALES_DASHBOARD_CONFIG} from './oil-sales-dashboard.config';
+import {ToastService} from '../../../../shared/services/toast.service';
 import {getInvoicePdfConfig} from "../../../../finance/facture-config/oil-sale-invoice.config";
 import {PdfGeneratorFactureService} from "../../../../shared/services/pdf-generator-facture.service";
-import { WASTE_DASHBOARD } from './waste-sale-dashboard.config';
+import {WASTE_DASHBOARD} from './waste-sale-dashboard.config';
+
 export enum PaymentSourceType {
   DELIVERY_prc= 'delivery',
   OIL_SALE_prc = 'oil_sale',
   WASTE_SALE_prc = 'waste_sale',
 }
+
 @Component({
   selector: 'app-supplier-details',
   templateUrl: './supplier-details.component.html',
