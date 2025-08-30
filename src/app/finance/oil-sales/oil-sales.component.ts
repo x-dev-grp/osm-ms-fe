@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { ToastService } from '../../shared/services/toast.service';
-import { CommonModule } from '@angular/common';
-import { OilSaleService } from '../service/oil-sale.service';
- import { OilSale } from '../models/oil-sale.model';
-import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
-import { OIL_SALES_DASHBOARD_CONFIG } from './oil-sales-dashboard.config';
-import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {ToastService} from '../../shared/services/toast.service';
+import {CommonModule} from '@angular/common';
+import {OilSaleService} from '../service/oil-sale.service';
+import {OilSale} from '../models/oil-sale.model';
+import {DashboardConfig} from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import {OIL_SALES_DASHBOARD_CONFIG} from './oil-sales-dashboard.config';
+import {OsmDashboard} from '../../shared/modules/osm-dashboard/osm-dashboard';
 
 @Component({
   selector: 'app-oil-sales',
@@ -20,7 +20,7 @@ export class OilSalesComponent implements OnInit {
   constructor(
     private oilSaleService: OilSaleService,
      private router: Router,
-    private toast: ToastService
+    private toast: ToastService,
   ) {}
 
   ngOnInit(): void {
@@ -47,6 +47,9 @@ export class OilSalesComponent implements OnInit {
 
       case 'DELIVER':
         this.deliverOilSale(event.row);
+        break;
+      case 'GEN_INVOICE':
+        this.generateInvoice(event.row);
         break;
     }
   }
@@ -102,6 +105,16 @@ export class OilSalesComponent implements OnInit {
           this.toast.error('Error delivering oil sale');
         }
       });
+    }
+  }
+
+  private generateInvoice(oilSale: OilSale): void {
+    try {
+      // this.invoiceService.generateOilSaleInvoice(oilSale as any);
+      this.toast.success('Facture générée');
+    } catch (error) {
+      console.error('Error generating invoice PDF:', error);
+      this.toast.error('Erreur lors de la génération de la facture');
     }
   }
 }

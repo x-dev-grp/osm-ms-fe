@@ -1,4 +1,8 @@
-import { AttributeType, DashboardConfig, FieldType } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
+import {
+  AttributeType,
+  DashboardConfig,
+  FieldType
+} from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
 
 export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
   icon: 'local_gas_station',
@@ -22,7 +26,7 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
       icon: 'file_copy',
       disabled: {
         field: 'paid',
-        value: false
+        value: true
       }
     }
   ],

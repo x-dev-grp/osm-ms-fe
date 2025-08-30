@@ -21,6 +21,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { SupplierPaymentHistoryComponent } from '../supplier-payment-history/supplier-payment-history.component';
 import { OIL_SALES_DASHBOARD_CONFIG } from './oil-sales-dashboard.config';
 import { ToastService } from '../../../../shared/services/toast.service';
+import {getInvoicePdfConfig} from "../../../../finance/facture-config/oil-sale-invoice.config";
+import {PdfGeneratorFactureService} from "../../../../shared/services/pdf-generator-facture.service";
 import { WASTE_DASHBOARD } from './waste-sale-dashboard.config';
 export enum PaymentSourceType {
   DELIVERY_prc= 'delivery',
@@ -80,13 +82,15 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
   @ViewChild('dashboardWasteSale') dashboardWasteSale!: OsmDashboard; // NEW
 
   private destroy$ = new Subject<void>();
-  private toast: ToastService;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private searchService: AdvancedSearchService,
-    private _dialog: MatDialog
+    private _dialog: MatDialog,
+    // private invoiceService: InvoiceService,
+    private toast: ToastService,
+    private pdfFactureService: PdfGeneratorFactureService,
   ) {}
 
   ngOnInit(): void {
@@ -112,6 +116,12 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
 
       case 'DELETE':
         break;
+
+      case 'GEN_INVOICE':
+        if (e.row?.id) {
+          this.generateOilCreditInvoice(e.row);
+        }
+        break;
     }
   }
 
@@ -129,6 +139,13 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
         this.router.navigate(['/finance/expenses', e.row.id, 'edit']);
         break;
 
+      case 'GEN_INVOICE':
+        if (e.row) {
+          console.log(`[OilReception] Generating invoice for delivery: ${e.row.lotNumber}`);
+          this.generateInvoice(e.row);
+        }
+        break;
+
       case 'PAY':
         const sourceType = this.getCurrentPaymentSourceType();
 
@@ -137,7 +154,13 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  initiatePayment(row: any,sourceType:string) {
+
+  generateInvoice(delivery: UnifiedDelivery): void {
+    const config = getInvoicePdfConfig(delivery);
+    this.pdfFactureService.generatePdfDocument(config);
+  }
+
+   initiatePayment(row: any,sourceType:string) {
     let dialogRef = this._dialog.open(SupplierPaymentHistoryComponent, {
       width: '41vw',
       height: '100vw',
@@ -169,6 +192,15 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe();
+  }
+
+  private generateOilCreditInvoice(creditData: any) {
+    if (!creditData) {
+      console.error('generateOilCreditInvoice: creditData is undefined');
+      return;
+    }
+    console.log('generateOilCreditInvoice - creditData:', creditData);
+    // this.invoiceService.generateOilCreditInvoice(creditData);
   }
 
   /* =========================

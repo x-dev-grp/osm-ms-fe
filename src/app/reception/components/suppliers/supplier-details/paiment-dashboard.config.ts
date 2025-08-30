@@ -3,7 +3,7 @@ import {
   DashboardConfig,
   FieldType
 } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
-import { SearchOperation } from '../../../../shared/models/advanced-search/searchOperation';
+import {SearchOperation} from '../../../../shared/models/advanced-search/searchOperation';
 
 export const PAIMENT_DASHBOARD: DashboardConfig = {
   icon: 'list_alt',
@@ -28,7 +28,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
     icon: 'file_copy',
     disabled: {
       field: 'paid',
-      value: false
+      value: true
     }
   }],
   filteredActions: [],

@@ -1,8 +1,4 @@
-import {
-  AttributeType,
-  DashboardConfig,
-  FieldType
-} from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import {AttributeType, DashboardConfig, FieldType} from '../../shared/modules/osm-dashboard/models/dashboard-config';
 
 export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
   icon: 'local_gas_station',
@@ -12,6 +8,13 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
   searchEndpoint: 'production/oil_sale',
   addNewItem: true,
   addNewItemUrl: 'finance/oil-sales/new',
+  specificActions: [
+    {
+      action: 'GEN_INVOICE',
+      color: 'primary',
+      icon: 'request_quote'
+    }
+  ],
   fields: [
     // ==================== CORE SALE FIELDS ====================
     {

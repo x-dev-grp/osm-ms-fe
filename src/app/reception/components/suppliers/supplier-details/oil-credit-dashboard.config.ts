@@ -1,6 +1,10 @@
-import { CreditState, UnitType } from '../../../../finance/models/OilCredit';
-import { AttributeType, DashboardConfig, FieldType } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
-import { SearchOperation } from '../../../../shared/models/advanced-search/searchOperation';
+import {CreditState, UnitType} from '../../../../finance/models/OilCredit';
+import {
+  AttributeType,
+  DashboardConfig,
+  FieldType
+} from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
+import {SearchOperation} from '../../../../shared/models/advanced-search/searchOperation';
 
 export const OIL_CREDIT_DASHBOARD: DashboardConfig = {
   icon: 'credit_score',
@@ -10,6 +14,17 @@ export const OIL_CREDIT_DASHBOARD: DashboardConfig = {
   searchEndpoint: 'finance/oil-credit',
   addNewItem: false,
   addNewItemUrl: '/finance/oil-credit/new',
+  specificActions: [
+    {
+      action: 'GEN_INVOICE',
+      color: 'secondary',
+      icon: 'file_copy',
+      disabled: {
+        field: 'creditState',
+        value: 'CANCELLED'
+      }
+    }
+  ],
   fileName: 'oil-credits',
 
   defaultSearchData: {

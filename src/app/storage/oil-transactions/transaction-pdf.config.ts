@@ -1,5 +1,3 @@
-// src/app/shared/pdf-configs/oil-transaction-pdf.config.ts
-
 import {PdfConfig} from 'src/app/shared/models/pdf-config.model';
 import {OilTransaction} from 'src/app/shared/models/OilTransaction';
 
