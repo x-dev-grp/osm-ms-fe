@@ -20,6 +20,12 @@ const routes: Routes = [
 
       {
         path: '',
+        redirectTo: '/reception',
+        pathMatch: 'full'
+      },
+
+      {
+        path: 'dashboard',
         loadChildren: () => import('./theme/pages/dashboard/dashboard.module').then((m) => m.DashboardModule),
         data: { roles: [Role.Admin, Role.User] }
       },

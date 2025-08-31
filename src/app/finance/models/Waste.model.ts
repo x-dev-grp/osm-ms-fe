@@ -1,18 +1,22 @@
-import {SupplierInfo} from '../../shared/models/supplier';
- import { SupplierType } from '../../shared/models/supplier-type';
+import { SupplierType } from '../../shared/models/supplier-type';
+import { Currency, PaymentMethod } from './financial-transaction.model';
 
 export interface WasteSale {
   id?: string; // optionnel si c’est une entité persistée
   type: WasteType;
-  quantity: number;
+  quantityInKg: number;
   unitPrice: number;
   totalPrice: number;
+  paidAmount: number;
+  unpaidAmount: number;
+  paymentMethod: PaymentMethod;
+  currency: Currency;
   saleDate: Date;
   invoiceNumber: string;
   paid: boolean;
   paymentDate?: Date;
   storageLocationCode: string;
-   supplier: SupplierType;
+  supplier: SupplierType;
   notes?: string;
   description: string;
 }
@@ -23,5 +27,3 @@ export enum WasteType {
   VEGETAL_SOLIDS = 'VEGETAL_SOLIDS',
   OTHER = 'OTHER'
 }
-
-

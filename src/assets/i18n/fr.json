@@ -782,6 +782,35 @@
     },
     "UPDATE": "Mettre à jour"
   },
+  "EXPENSE": {
+    "CATEGORY": {
+      "FUEL": "Carburant",
+      "LUBRICANTS": "Lubrifiants",
+      "VEHICLE_PARTS_SERVICE": "Pièces et Service Véhicules",
+      "HEAVY_EQUIPMENT_WORKS": "Travaux d'Équipement Lourd",
+      "ELECTRICAL_MATERIALS_WORKS": "Matériaux et Travaux Électriques",
+      "PLUMBING_MATERIALS": "Matériaux de Plomberie",
+      "CONSTRUCTION_MATERIALS": "Matériaux de Construction",
+      "CLEANING_SUPPLIES": "Produits de Nettoyage",
+      "PACKAGING_CONTAINERS": "Emballage et Contenants",
+      "OFFICE_SUPPLIES_PRINTING": "Fournitures de Bureau et Impression",
+      "LAB_ANALYSIS_FEES": "Frais d'Analyse de Laboratoire",
+      "GOVERNMENT_TAXES_FEES": "Taxes et Frais Gouvernementaux",
+      "COURIER_POST_SHIPPING": "Courrier, Poste et Expédition",
+      "TOOLS_HARDWARE_SERVICES": "Outils, Quincaillerie et Services",
+      "SAFETY_INSURANCE": "Sécurité et Assurance",
+      "MEALS_CATERING": "Repas et Restauration",
+      "MACHINE_MAINTENANCE_REPAIR": "Maintenance et Réparation de Machines",
+      "AGRICULTURE_SUPPLIES": "Fournitures Agricoles",
+      "TRANSPORT_LOGISTICS": "Transport et Logistique",
+      "DONATIONS_SOCIAL": "Donations et Social",
+      "UTILITIES_WATER": "Services Publics et Eau",
+      "FACTORY_CONSUMABLES": "Consommables d'Usine",
+      "TOLLS_AND_ROAD_FEES": "Péages et Frais de Route",
+      "NON_OPERATING_PERSONAL": "Non-Opérationnel et Personnel",
+      "OTHER": "Autre"
+    }
+  },
   "EXPENSES": {
     "ACTIONS": {
       "CANCEL": "Annuler",
@@ -1076,6 +1105,56 @@
     "FINANCE": {
       "BANK_MANAGEMENT": "Gestion des Comptes Bancaires",
       "CUSTOMERS": "Clients",
+      "DASHBOARD": {
+        "TITLE": "Tableau de Bord Financier",
+        "KPIS": {
+          "TOTAL_TRANSACTIONS": "Total Transactions",
+          "PENDING_EXPENSES": "Dépenses en Attente",
+          "COMPLETED_SALES": "Ventes Terminées",
+          "TOTAL_REVENUE": "Revenu Total",
+          "AVG_TRANSACTION": "Transaction Moyenne",
+          "NET_FLOW": "Flux Net",
+          "TOTAL_PAID": "Total Payé",
+          "TOTAL_UNPAID": "Total Impayé",
+          "ACTIVE_ACCOUNTS": "Comptes Actifs"
+        },
+        "ANALYTICS": {
+          "EXPENSE_STATUS": "Statut des Dépenses",
+          "TRANSACTION_FLOW": "Flux de Transactions",
+          "SALES_BY_TYPE": "Ventes par Type",
+          "FINANCE_TREND": {
+            "TITLE": "Tendance Financière",
+            "MONTHLY": "Mensuel",
+            "WEEKLY": "Hebdomadaire",
+            "DAILY": "Quotidien"
+          },
+          "REVENUE_BY_SOURCE": "Revenu par Source",
+          "RECENT_TRANSACTIONS": "Transactions Récentes",
+          "EXPENSE_BY_CATEGORY": "Dépenses par Catégorie",
+          "EXPENSE_CATEGORIES_LIST": "Liste des Catégories de Dépenses"
+        },
+        "EXPENSES": "Dépenses",
+        "OIL_CREDITS": "Crédits d'Huile",
+        "OIL_SALES": "Ventes d'Huile",
+        "WASTE_SALES": "Ventes de Déchets",
+        "TRANSACTIONS": "Transactions",
+        "BANK_BALANCES": "Soldes des Comptes Bancaires",
+        "CHART_LABELS": {
+          "AMOUNT_TND": "Montant (TND)",
+          "AMOUNT": "Montant",
+          "OIL_SALES": "Ventes Huile",
+          "WASTE_SALES": "Ventes Déchets",
+          "CREDITS": "Crédits",
+          "BANK_BALANCES": "Soldes Bancaires",
+          "PAID": "Payées",
+          "PENDING": "En Attente",
+          "REVENUE": "Revenus",
+          "EXPENSES_LABEL": "Dépenses"
+        },
+        "LOADING": {
+          "TEXT": "Chargement des données financières..."
+        }
+      },
       "EXPENSES": "Dépenses",
       "OIL_CREDIT": "Crédit d'Huile",
       "OIL_SALES": "Ventes d'Huile",
@@ -1090,6 +1169,7 @@
         "DEFAULT": "Par défaut",
         "FINANCE": "Finance",
         "RECEPTION": "Réception",
+        "STORAGE_RECAP": "Statue du stockage",
         "TITLE": "Tableau de bord"
       },
       "TITLE": "Accueil"
@@ -2283,11 +2363,13 @@
       "OIL_CREDIT_STATS_TITLE": "Statistiques crédits d'huile",
       "OIL_CREDIT_TOTAL": "Crédits d'huile",
       "PAID_OILSALES_TITLE": "Vente huile paiés",
+      "PAID_WASTE_SALES_TITLE": "Vente déchet paié",
       "PAYMENT_HISTORY_COUNT": "paiements effectués",
       "PAYMENT_HISTORY_TITLE": "Historique des Paiements",
       "UNPAID_COUNT": "paiements en attente",
       "UNPAID_OILSALES_TITLE ": "Vente huiles unpaiés",
-      "UNPAID_TITLE": "Paiements en Attente"
+      "UNPAID_TITLE": "Paiements en Attente",
+      "UNPAID_WASTE_SALES_TITLE": "Vente déchet non paié"
     },
     "ERRORS": {
       "ADDRESS_MIN": "L'adresse doit contenir au moins 5 caractères",

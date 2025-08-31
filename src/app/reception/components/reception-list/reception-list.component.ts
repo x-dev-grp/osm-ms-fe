@@ -9,6 +9,7 @@ import {Router} from '@angular/router';
 import {PdfGeneratorService} from '../../../shared/services/pdf-generator.service';
 import {getProductionPdfConfig} from "./production-pdf.config";
 import { ToastService } from '../../../shared/services/toast.service';
+import { getOlivePdfConfig } from '../olive-reception/olive-pdf.config';
 
 @Component({
   selector: 'app-reception-list',
@@ -39,7 +40,7 @@ export class ReceptionListComponent {
         break;
 
       case 'GEN_PDF':
-        this.generateBonProduction(event.row);
+        this.generateBonReception(event.row);
         break;
       case 'QUALITY':
         break;
@@ -66,7 +67,10 @@ export class ReceptionListComponent {
         break;
     }
   }
-
+  generateBonReception(delivery: UnifiedDelivery): void {
+    const config = getOlivePdfConfig(delivery);
+    this.pdfGeneratorService.generatePdf(config);
+  }
   generateBonProduction(delivery: UnifiedDelivery): void {
     const config = getProductionPdfConfig(delivery);
     this.pdfGeneratorService.generatePdf(config);

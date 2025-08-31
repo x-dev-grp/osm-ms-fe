@@ -37,7 +37,7 @@ export const osm_menus: Navigation[] = [
             id: 'item-dashboard-finance',
             title: 'MENU.HOME.DASHBOARD.FINANCE',
             type: 'item',
-            url: '/dashboard/finance',
+            url: '/finance/dashboard',
             icon: 'show_chart',
             breadcrumbs: false
           },
@@ -50,7 +50,7 @@ export const osm_menus: Navigation[] = [
             breadcrumbs: false
           },{
             id: 'item-storage-storage_recap',
-            title: 'storage_recap',
+            title: 'MENU.HOME.DASHBOARD.STORAGE_RECAP',
             type: 'item',
             url: '/storage/storage_recap',
             icon: 'water_drop',

@@ -56,9 +56,7 @@ export class ExpensesComponent implements OnInit {
         this.router.navigate(['/finance/expenses', event.row.id, 'edit']);
         break;
 
-      case 'DELETE':
-        this.delete(event.row.id!);
-        break;
+
     }
   }
 
@@ -69,26 +67,7 @@ export class ExpensesComponent implements OnInit {
     window.open(url, '_blank');
   }
 
-  /** Supprime une dépense avec confirmation */
-  delete(id: string): void {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer cette dépense ?')) {
-      return;
-    }
-    this.expenseService.deleteExpense(id).subscribe({
-      next: (response: any) => {
-        if (response.success) {
-          this.toast.success();
-          // Refresh the dashboard
-          window.location.reload();
-        } else {
-          this.showError(response.message || 'Erreur lors de la suppression');
-        }
-      },
-      error: () => this.showError('Erreur lors de la suppression')
-    });
-  }
 
-     ;
 
 
   private showError(message: string): void {

@@ -1,0 +1,439 @@
+// ===================== Finance Dashboard (Matching Reception Dashboard Style) =====================
+
+// Sticky actions header
+.sticky-actions {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: var(--body-bg);
+  margin-bottom: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-color);
+  
+  h2 {
+    color: var(--text-primary);
+  }
+  
+  .text-muted {
+    font-size: 0.875rem;
+  }
+}
+
+// Dashboard KPIs section
+.dashboard-kpis {
+  margin-bottom: 2rem;
+  
+  .kpi-card {
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    &.with-shadow {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+  }
+  
+  .mini-kpi {
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+    height: 100%;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    &.with-shadow {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+    
+    &__body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1.5rem;
+      text-align: center;
+      
+      mat-icon {
+        font-size: 2rem;
+        height: 2rem;
+        width: 2rem;
+        color: var(--primary-500);
+      }
+      
+      .value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        line-height: 1;
+      }
+    }
+  }
+  
+  .card--chart {
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+    height: 100%;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    &.with-shadow {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+  }
+}
+
+// Chart containers
+.chart-container {
+  position: relative;
+  width: 100%;
+  
+  &.small {
+    height: 220px;
+  }
+  
+  &.medium {
+    height: 400px;
+  }
+  
+  &.large {
+    height: 600px;
+  }
+  
+  &.wide {
+    min-height: 300px;
+  }
+  
+  &.right {
+    // Specific styling for right-aligned charts if needed
+  }
+  
+  ::ng-deep {
+    .apexcharts-canvas {
+      max-width: 100%;
+    }
+    
+    // Specific styling for donut charts in small containers
+    &.small .apexcharts-canvas {
+      max-height: 200px;
+    }
+    
+    .apexcharts-tooltip {
+      background: var(--surface) !important;
+      border: 1px solid var(--border-color) !important;
+      border-radius: 8px !important;
+      box-shadow: var(--shadow-lg) !important;
+      color: var(--text-primary) !important;
+    }
+    
+    .apexcharts-tooltip-text {
+      color: var(--text-primary) !important;
+      font-size: 12px !important;
+    }
+    
+    .apexcharts-datalabels-group {
+      .apexcharts-text {
+        font-size: 11px !important;
+        font-weight: 600 !important;
+        fill: var(--text-primary) !important;
+      }
+    }
+    
+    // Donut and pie chart specific styling
+    .apexcharts-pie-label {
+      font-size: 11px !important;
+      font-weight: 600 !important;
+    }
+    
+    .apexcharts-legend {
+      justify-content: center !important;
+      
+      .apexcharts-legend-text {
+        font-size: 12px !important;
+        font-weight: 500 !important;
+      }
+    }
+  }
+}
+
+// Toolbar styling
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: var(--surface);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  
+  &.toolbar--split {
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  
+  &__left,
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  &__toggle {
+    .mat-button-toggle {
+      border: 1px solid var(--border-color);
+      
+      &.mat-button-toggle-checked {
+        background-color: var(--primary-500);
+        color: white;
+      }
+    }
+  }
+}
+
+// Loading state
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  gap: 1rem;
+  
+  p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    margin: 0;
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .sticky-actions {
+    .col {
+      margin-bottom: 0.5rem;
+    }
+    
+    h2 {
+      font-size: 1.25rem;
+    }
+  }
+  
+  .dashboard-kpis {
+    .mini-kpi__body {
+      padding: 1rem;
+      
+      mat-icon {
+        font-size: 1.5rem;
+        height: 1.5rem;
+        width: 1.5rem;
+      }
+      
+      .value {
+        font-size: 1.25rem;
+      }
+    }
+  }
+  
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    
+    &__left,
+    &__right {
+      justify-content: center;
+    }
+  }
+  
+  .chart-container {
+    &.small {
+      height: 180px;
+    }
+    
+    &.medium {
+      height: 300px;
+    }
+    
+    &.large {
+      height: 400px;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .dashboard-kpis {
+    .col-md-4,
+    .col-md-6,
+    .col-xxl-4 {
+      margin-bottom: 1rem;
+    }
+  }
+  
+  .toolbar {
+    padding: 0.75rem;
+    
+    &__toggle {
+      width: 100%;
+      
+      .mat-button-toggle-group {
+        width: 100%;
+        
+        .mat-button-toggle {
+          flex: 1;
+        }
+      }
+    }
+  }
+}
+
+// Color variables compatibility
+:host {
+  --primary-50: #e3f2fd;
+  --primary-500: #2196f3;
+  --primary-600: #1976d2;
+  --warning-50: #fff3e0;
+  --warning-500: #ff9800;
+  --warning-600: #f57c00;
+  --success-50: #e8f5e8;
+  --success-500: #4caf50;
+  --success-600: #43a047;
+  --info-500: #2196f3;
+  --secondary-500: #9c27b0;
+}
+
+// Expense categories list styling
+.expense-categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  padding: 1rem 0;
+  
+  .category-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    background: var(--surface);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    transition: all 0.2s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary-500);
+    }
+    
+    .category-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex: 1;
+      
+      .category-icon {
+        color: var(--primary-500);
+        font-size: 1.5rem;
+        height: 1.5rem;
+        width: 1.5rem;
+      }
+      
+      .category-details {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        
+        .category-name {
+          font-weight: 600;
+          color: var(--text-primary);
+          font-size: 0.9rem;
+          line-height: 1.2;
+        }
+        
+        .category-value {
+          font-size: 0.75rem;
+          color: var(--text-secondary);
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+      }
+    }
+    
+    .category-amount {
+      text-align: right;
+      
+      .amount {
+        font-weight: 700;
+        color: var(--success-600);
+        font-size: 0.9rem;
+        font-family: 'Roboto Mono', monospace;
+      }
+    }
+  }
+}
+
+// Responsive design for expense categories
+@media (max-width: 768px) {
+  .expense-categories-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    
+    .category-item {
+      padding: 0.75rem;
+      
+      .category-info {
+        gap: 0.5rem;
+        
+        .category-icon {
+          font-size: 1.25rem;
+          height: 1.25rem;
+          width: 1.25rem;
+        }
+        
+        .category-details {
+          .category-name {
+            font-size: 0.85rem;
+          }
+          
+          .category-value {
+            font-size: 0.7rem;
+          }
+        }
+      }
+      
+      .category-amount .amount {
+        font-size: 0.85rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .expense-categories-grid {
+    .category-item {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.5rem;
+      
+      .category-info {
+        justify-content: flex-start;
+      }
+      
+      .category-amount {
+        text-align: center;
+        padding-top: 0.5rem;
+        border-top: 1px solid var(--border-color);
+      }
+    }
+  }
+}

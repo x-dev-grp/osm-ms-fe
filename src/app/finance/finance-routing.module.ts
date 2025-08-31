@@ -6,12 +6,14 @@ import {ViewExpenseComponent} from './expenses/view-expense/view-expense.compone
 import {OilCreditComponent} from './oil-credit/oil-credit.component';
 import {ViewOilCreditComponent} from './oil-credit/view-oil-credit/view-oil-credit.component';
 import {TransactionsComponent} from './transactions/transactions.component';
- import {OilSalesComponent} from './oil-sales/oil-sales.component';
+import {OilSalesComponent} from './oil-sales/oil-sales.component';
 import {AuthGuardChild} from '../interceptors/guards/auth.guard';
 import {WasteComponent} from "./waste/waste.component";
 
 
 const routes: Routes = [
+  { path: '', loadComponent: () => import('./finance-dashboard/finance-dashboard.component').then(m => m.FinanceDashboardComponent), canActivate: [AuthGuardChild] },
+  { path: 'dashboard', loadComponent: () => import('./finance-dashboard/finance-dashboard.component').then(m => m.FinanceDashboardComponent), canActivate: [AuthGuardChild] },
   { path: 'expenses', component: ExpensesComponent, canActivate: [AuthGuardChild] },
   { path: 'expenses/:id/view', component: ViewExpenseComponent, canActivate: [AuthGuardChild] },
   { path: 'expenses/new', loadComponent: () => import('./expenses/expense-add/expense-add.component').then(m => m.ExpenseAddComponent), canActivate: [AuthGuardChild] },

@@ -1,5 +1,6 @@
-import {SearchOperation} from "../../shared/models/advanced-search/searchOperation";
-import {AttributeType, DashboardConfig, FieldType} from "../../shared/modules/osm-dashboard/models/dashboard-config";
+import { CreditState, UnitType } from '../../../../finance/models/OilCredit';
+import { AttributeType, DashboardConfig, FieldType } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { SearchOperation } from '../../../../shared/models/advanced-search/searchOperation';
 
 export const WASTE_DASHBOARD: DashboardConfig = {
   icon: 'delete_sweep',
@@ -9,7 +10,15 @@ export const WASTE_DASHBOARD: DashboardConfig = {
   searchEndpoint: 'production/waste',
   addNewItem: true,
   addNewItemUrl: '/finance/waste-sales/new',
-
+  specificActions: [{
+    action: 'PAY',
+    color: 'primary',
+    icon: 'payment',
+    disabled: {
+      field: 'paid',
+      value: true
+    }
+  }],
   defaultSearchData: {
     page: 0,
     size: 10,
@@ -51,26 +60,6 @@ export const WASTE_DASHBOARD: DashboardConfig = {
       sortable: true,
       dataTable: true,
       filterable: true
-    },
-    {
-      name: 'paymentMethod',
-      label: 'Méthode de Paiement',
-      labelTranslatePath: 'TRANSACTIONS.FIELDS.PAYMENT_METHOD',
-      attributeType: AttributeType.enum,
-      fieldType: FieldType.autocomplete,
-      exportable: true,
-      sortable: true,
-      dataTable: true,
-      filterable: true,
-      options: [
-        { value: 'CASH', label: 'Espèces', labelTranslatePath: 'TRANSACTIONS.PAYMENT_METHODS.CASH' },
-        { value: 'BANK_TRANSFER', label: 'Virement Bancaire', labelTranslatePath: 'TRANSACTIONS.PAYMENT_METHODS.BANK_TRANSFER' },
-        { value: 'CHECK', label: 'Chèque', labelTranslatePath: 'TRANSACTIONS.PAYMENT_METHODS.CHECK' },
-        { value: 'CREDIT_CARD', label: 'Carte de Crédit', labelTranslatePath: 'TRANSACTIONS.PAYMENT_METHODS.CREDIT_CARD' },
-        { value: 'DEBIT_CARD', label: 'Carte de Débit', labelTranslatePath: 'TRANSACTIONS.PAYMENT_METHODS.DEBIT_CARD' },
-        { value: 'MOBILE_PAYMENT', label: 'Paiement Mobile', labelTranslatePath: 'TRANSACTIONS.PAYMENT_METHODS.MOBILE_PAYMENT' },
-        { value: 'OIL_CREDIT', label: 'Crédit Huile', labelTranslatePath: 'TRANSACTIONS.PAYMENT_METHODS.OIL_CREDIT' }
-      ]
     },
     {
       name: 'unitPrice',
@@ -171,26 +160,6 @@ export const WASTE_DASHBOARD: DashboardConfig = {
       filterAttribute: 'supplier.supplierInfo.name',
       getOptionsUrl: 'production/suppliers_type',
       exportable: true,
-      dataTable: true,
-      filterable: true
-    },{
-      name: 'unpaidAmount',
-      label: 'Montant umpaié',
-      labelTranslatePath: 'OIL_SALES.FIELDS.UNPAIDAMOUNT',
-      attributeType: AttributeType.number,
-      fieldType: FieldType.number,
-      exportable: true,
-      sortable: true,
-      dataTable: true,
-      filterable: true
-    },{
-      name: 'paidAmount',
-      label: 'Montant partiallment',
-      labelTranslatePath: 'OIL_SALES.FIELDS.PARTIALLYPAID',
-      attributeType: AttributeType.number,
-      fieldType: FieldType.number,
-      exportable: true,
-      sortable: true,
       dataTable: true,
       filterable: true
     },

@@ -40,8 +40,38 @@
       </mat-form-field>
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>{{ 'EXPENSES.FIELDS.CATEGORY' | translate }}</mat-label>
-        <input matInput formControlName="category" [placeholder]="'EXPENSES.PLACEHOLDER.CATEGORY' | translate">
+
+        <mat-select
+          formControlName="category"
+          required
+          (openedChange)="onCategoryOpened($event)"
+          #categorySelect>
+          <!-- Inline search input pinned at the top of the panel -->
+          <mat-option class="!pointer-events-none !opacity-100" disabled>
+            <div class="d-flex align-items-center gap-2 w-100" (click)="$event.stopPropagation()">
+              <mat-icon inline>search</mat-icon>
+              <input
+                matInput
+                #categorySearchInput
+                [formControl]="categoryFilterCtrl"
+                (keydown)="$event.stopPropagation()"
+                (click)="$event.stopPropagation()"
+                [placeholder]="'COMMON.SEARCH' | translate" />
+            </div>
+          </mat-option>
+
+          <!-- Filtered categories -->
+          <mat-option
+            *ngFor="let cat of (filteredCategories$ | async)"
+            [value]="cat">
+            {{ ('EXPENSE.CATEGORY.' + cat) | translate }}
+          </mat-option>
+        </mat-select>
+
         <mat-icon matPrefix>label</mat-icon>
+        <mat-error *ngIf="form.get('category')?.touched && form.get('category')?.hasError('required')">
+          {{ 'EXPENSES.ERRORS.CATEGORY_REQUIRED' | translate }}
+        </mat-error>
       </mat-form-field>
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>{{ 'EXPENSES.FIELDS.VENDOR' | translate }}</mat-label>

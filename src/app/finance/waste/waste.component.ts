@@ -30,8 +30,7 @@ export class WasteComponent {
     dashboardConfig: DashboardConfig = WASTE_DASHBOARD;
 
     constructor(
-        private oilSaleService: OilSaleService,
-         private router: Router,
+          private router: Router,
         private toast: ToastService,
         private supplierService: SupplierTypeService,
         private wasteSaleService: WasteSaleService

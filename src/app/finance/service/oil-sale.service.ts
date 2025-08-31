@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
   OilSale,
-
 } from '../models/oil-sale.model';
 import { ApiResponse } from '../../shared/models/api-response';
 
@@ -17,6 +16,10 @@ export class OilSaleService {
 
   constructor(private http: HttpClient) {}
 
+  // Get all oil sales
+  getAllOilSales(): Observable<ApiResponse<OilSale>> {
+    return this.http.get<ApiResponse<OilSale>>(`${this.baseUrl}/fetchAll`);
+  }
 
   // Get oil sale by ID
   getOilSale(id: string): Observable<ApiResponse<OilSale>> {

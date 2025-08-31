@@ -782,6 +782,35 @@
     },
     "UPDATE": "Update"
   },
+  "EXPENSE": {
+    "CATEGORY": {
+      "FUEL": "Fuel",
+      "LUBRICANTS": "Lubricants",
+      "VEHICLE_PARTS_SERVICE": "Vehicle Parts & Service",
+      "HEAVY_EQUIPMENT_WORKS": "Heavy Equipment Works",
+      "ELECTRICAL_MATERIALS_WORKS": "Electrical Materials & Works",
+      "PLUMBING_MATERIALS": "Plumbing Materials",
+      "CONSTRUCTION_MATERIALS": "Construction Materials",
+      "CLEANING_SUPPLIES": "Cleaning Supplies",
+      "PACKAGING_CONTAINERS": "Packaging & Containers",
+      "OFFICE_SUPPLIES_PRINTING": "Office Supplies & Printing",
+      "LAB_ANALYSIS_FEES": "Lab Analysis Fees",
+      "GOVERNMENT_TAXES_FEES": "Government Taxes & Fees",
+      "COURIER_POST_SHIPPING": "Courier, Post & Shipping",
+      "TOOLS_HARDWARE_SERVICES": "Tools, Hardware & Services",
+      "SAFETY_INSURANCE": "Safety & Insurance",
+      "MEALS_CATERING": "Meals & Catering",
+      "MACHINE_MAINTENANCE_REPAIR": "Machine Maintenance & Repair",
+      "AGRICULTURE_SUPPLIES": "Agriculture Supplies",
+      "TRANSPORT_LOGISTICS": "Transport & Logistics",
+      "DONATIONS_SOCIAL": "Donations & Social",
+      "UTILITIES_WATER": "Utilities & Water",
+      "FACTORY_CONSUMABLES": "Factory Consumables",
+      "TOLLS_AND_ROAD_FEES": "Tolls & Road Fees",
+      "NON_OPERATING_PERSONAL": "Non-Operating & Personal",
+      "OTHER": "Other"
+    }
+  },
   "EXPENSES": {
     "ACTIONS": {
       "CANCEL": "Cancel",
@@ -1079,6 +1108,56 @@
     "FINANCE": {
       "BANK_MANAGEMENT": "Bank Account Management",
       "CUSTOMERS": "Customers",
+      "DASHBOARD": {
+        "TITLE": "Finance Dashboard",
+        "KPIS": {
+          "TOTAL_TRANSACTIONS": "Total Transactions",
+          "PENDING_EXPENSES": "Pending Expenses",
+          "COMPLETED_SALES": "Completed Sales",
+          "TOTAL_REVENUE": "Total Revenue",
+          "AVG_TRANSACTION": "Average Transaction",
+          "NET_FLOW": "Net Flow",
+          "TOTAL_PAID": "Total Paid",
+          "TOTAL_UNPAID": "Total Unpaid",
+          "ACTIVE_ACCOUNTS": "Active Accounts"
+        },
+        "ANALYTICS": {
+          "EXPENSE_STATUS": "Expense Status",
+          "TRANSACTION_FLOW": "Transaction Flow",
+          "SALES_BY_TYPE": "Sales by Type",
+          "FINANCE_TREND": {
+            "TITLE": "Finance Trend",
+            "MONTHLY": "Monthly",
+            "WEEKLY": "Weekly",
+            "DAILY": "Daily"
+          },
+          "REVENUE_BY_SOURCE": "Revenue by Source",
+          "RECENT_TRANSACTIONS": "Recent Transactions",
+          "EXPENSE_BY_CATEGORY": "Expense by Category",
+          "EXPENSE_CATEGORIES_LIST": "Expense Categories List"
+        },
+        "EXPENSES": "Expenses",
+        "OIL_CREDITS": "Oil Credits",
+        "OIL_SALES": "Oil Sales",
+        "WASTE_SALES": "Waste Sales",
+        "TRANSACTIONS": "Transactions",
+        "BANK_BALANCES": "Bank Account Balances",
+        "CHART_LABELS": {
+          "AMOUNT_TND": "Amount (TND)",
+          "AMOUNT": "Amount",
+          "OIL_SALES": "Oil Sales",
+          "WASTE_SALES": "Waste Sales",
+          "CREDITS": "Credits",
+          "BANK_BALANCES": "Bank Balances",
+          "PAID": "Paid",
+          "PENDING": "Pending",
+          "REVENUE": "Revenue",
+          "EXPENSES_LABEL": "Expenses"
+        },
+        "LOADING": {
+          "TEXT": "Loading financial data..."
+        }
+      },
       "EXPENSES": "Expenses",
       "OIL_CREDIT": "Oil Credit",
       "OIL_SALES": "Oil Sales",
@@ -1093,6 +1172,7 @@
         "DEFAULT": "Default",
         "FINANCE": "Finance",
         "RECEPTION": "Reception",
+        "STORAGE_RECAP": "Storage state",
         "TITLE": "Dashboard"
       },
       "TITLE": "Home"
@@ -2286,11 +2366,13 @@
       "OIL_CREDIT_STATS_TITLE": "Oil Credit Stats",
       "OIL_CREDIT_TOTAL": "Oil Credits",
       "PAID_OILSALES_TITLE": "Paid Oil sales",
+      "PAID_WASTE_SALES_TITLE": "Paid waste sales",
       "PAYMENT_HISTORY_COUNT": "payments made",
       "PAYMENT_HISTORY_TITLE": "Payment History",
       "UNPAID_COUNT": "payments pending",
       "UNPAID_OILSALES_TITLE ": "Unpaid oil sales",
-      "UNPAID_TITLE": "Unpaid Payments"
+      "UNPAID_TITLE": "Unpaid Payments",
+      "UNPAID_WASTE_SALES_TITLE": "Unpaid waste sales "
     },
     "ERRORS": {
       "ADDRESS_MIN": "Address must be at least 5 characters",

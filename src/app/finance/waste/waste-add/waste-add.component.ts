@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {map, Observable, startWith} from "rxjs";
  import {SupplierType} from "../../../shared/models/supplier-type";
@@ -28,6 +28,7 @@ import {CardComponent} from "../../../theme/components/card/card.component";
 import { Waste } from '../../../shared/models/Waste';
 import { WasteSale } from '../../models/Waste.model';
 import { ToastService } from '../../../shared/services/toast.service';
+import { Currency } from '../../models/financial-transaction.model';
 
 @Component({
     selector: 'app-waste-add',
@@ -50,9 +51,9 @@ import { ToastService } from '../../../shared/services/toast.service';
     templateUrl: './waste-add.component.html',
     styleUrl: './waste-add.component.scss'
 })
-export class WasteAddComponent {
-  wasteId: string | undefined;
-  isEditing: boolean = true;
+export class WasteAddComponent implements OnInit{
+  wasteId: string | null;
+  isEditing: boolean = false;
   suppliers: SupplierType[];
   filteredSuppliers: Observable<SupplierType[]>;
 
@@ -68,31 +69,45 @@ export class WasteAddComponent {
         private fb: FormBuilder,
         private toast: ToastService
     ) {
+        console.log('WasteAddComponent constructor called');
+        console.log('Route params:', this.route.snapshot.paramMap.get('id'));
     }
 
     ngOnInit() {
-      this.loading = true;
-      this.wasteId = this.route.snapshot.paramMap.get('id') ?? undefined;
-      this.isEditing = this.wasteId !== null && this.wasteId !== 'new';
-      this.loadSuppliers();
-       this.checkEditMode();
+      console.log('ngOnInit called');
+      this.wasteId = this.route.snapshot.paramMap.get('id') ?? null;
+      this.isEditing = this.wasteId !== null;
+      console.log('wasteId:', this.wasteId, 'isEditing:', this.isEditing);
+
       this.buildForm();
       this.setupFormListeners();
+
+      this.loading = true;
+
+      // Load suppliers first, then load waste sale data if editing
+      this.loadSuppliers().then(() => {
+        console.log('Suppliers loaded successfully, count:', this.suppliers?.length);
+        if (this.isEditing) {
+          console.log('Loading waste sale for editing...');
+          this.loadWasteSale(this.wasteId!);
+        } else {
+          console.log('New waste sale mode');
+          this.loading = false;
+        }
+      }).catch((error) => {
+        console.error('Error loading suppliers:', error);
+        this.loading = false;
+      });
     }
 
   displaySupplierFn = (supplier: SupplierType): string => {
     return supplier ? `${supplier.supplierInfo.name} ${supplier.supplierInfo.lastname}` : '';
   };
 
-  // Gestionnaires d'événements pour les autocomplete
-  onCustomerSelected(event: any): void {
-    // Réinitialiser le fournisseur si un client est sélectionné
-    this.wasteSaleForm.patchValue({supplierId: ''});
-  }
-
+  // Gestionnaire d'événement pour l'autocomplete
   onSupplierSelected(event: any): void {
-    // Réinitialiser le client si un fournisseur est sélectionné
-    this.wasteSaleForm.patchValue({customerId: ''});
+    // Optionnel : ajouter une logique si nécessaire
+    console.log('Fournisseur sélectionné:', event.option.value);
   }
 
   onSubmit(): void {
@@ -101,8 +116,12 @@ export class WasteAddComponent {
       const formValue = this.wasteSaleForm.value;
 
       const wasteSale: WasteSale = {
+        currency: formValue.currency || null,
+        paidAmount: 0,
+        unpaidAmount:  this.totalPrice,
         type: formValue.type,
-        quantity: formValue.quantity,
+        paymentMethod: formValue.paymentMethod || null,
+        quantityInKg: formValue.quantity,
         unitPrice: formValue.unitPrice,
         totalPrice: this.totalPrice,
         saleDate: formValue.saleDate,
@@ -174,28 +193,40 @@ export class WasteAddComponent {
       case 'OTHER':
         return 'Autre';
       default:
-        return '';
+        return 'Non spécifié';
+    }
+  }
+
+  getWasteTypeIcon(): string {
+    const type = this.wasteSaleForm.get('type')?.value;
+    switch (type) {
+      case 'MARGINE':
+        return 'eco';
+      case 'POMACE':
+        return 'grain';
+      case 'VEGETAL_SOLIDS':
+        return 'grass';
+      case 'OTHER':
+        return 'help_outline';
+      default:
+        return 'category';
     }
   }
 
   private buildForm(): void {
-    this.wasteSaleForm = this.fb.group(
-      {
-        type: ['', Validators.required],
-        customerId: [''],
-        supplierId: [''],
-        quantity: ['', [Validators.required, Validators.min(0.01)]],
-        unitPrice: ['', [Validators.required, Validators.min(0.01)]],
-        saleDate: [new Date(), Validators.required],
-        invoiceNumber: [''],
-        paid: [false],
-        paymentDate: [null],
-        storageLocationCode: [''],
-        description: [''],
-        notes: ['']
-      },
-      {validators: this.customerOrSupplierRequired}
-    );
+    this.wasteSaleForm = this.fb.group({
+      type: ['', Validators.required],
+      supplierId: ['', Validators.required],
+      quantity: ['', [Validators.required, Validators.min(0.01)]],
+      unitPrice: ['', [Validators.required, Validators.min(0.01)]],
+      saleDate: [new Date(), Validators.required],
+      invoiceNumber: [''],
+      paid: [false],
+      paymentDate: [null],
+      storageLocationCode: [''],
+      description: [''],
+      notes: ['']
+    });
   }
 
   private setupFormListeners(): void {
@@ -206,44 +237,18 @@ export class WasteAddComponent {
       this.totalPrice = quantity * unitPrice;
     });
 
-    // Réinitialiser la date de paiement si non payé
+    // Gérer la validation de la date de paiement
     this.wasteSaleForm.get('paid')?.valueChanges.subscribe((paid) => {
-      if (!paid) {
-        this.wasteSaleForm.patchValue({paymentDate: null});
+      const paymentDateControl = this.wasteSaleForm.get('paymentDate');
+      if (paid) {
+        paymentDateControl?.setValidators([Validators.required]);
+      } else {
+        paymentDateControl?.clearValidators();
+        paymentDateControl?.setValue(null);
       }
+      paymentDateControl?.updateValueAndValidity();
     });
   }
-
-  private customerOrSupplierRequired(control: AbstractControl): ValidationErrors | null {
-    const customerId = control.get('customerId')?.value;
-    const supplierId = control.get('supplierId')?.value;
-
-    // Check if at least one is selected
-    if (!customerId && !supplierId) {
-      return {customerOrSupplierRequired: true};
-    }
-
-    // Check if both are selected (mutually exclusive)
-    if (customerId && supplierId) {
-      return {bothCustomerAndSupplierSelected: true};
-    }
-
-    return null;
-  }
-
-  private checkEditMode(): void {
-    this.wasteId = this.route.snapshot.paramMap.get('id') || undefined;
-    if (this.wasteId && this.wasteId !== 'new') {
-      this.isEditing = true;
-      this.loadWasteSale(this.wasteId);
-    } else {
-      this.loading = false;
-    }
-  }
-
-
-
-
   private _filterSuppliers(suppliers: SupplierType[], value: string | SupplierType): SupplierType[] {
     if (!value || typeof value === 'object') {
       return suppliers;
@@ -255,18 +260,25 @@ export class WasteAddComponent {
     );
   }
 
-  private loadSuppliers(): void {
-    this.supplierService.getAllSuppliers().subscribe({
-      next: (response) => {
-        if (response.success && response.data) {
-          this.suppliers = Array.isArray(response.data) ? response.data : [response.data];
-          this.setupSupplierAutocomplete();
+  private loadSuppliers(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.supplierService.getAllSuppliers().subscribe({
+        next: (response) => {
+          if (response.success && response.data) {
+            this.suppliers = Array.isArray(response.data) ? response.data : [response.data];
+            this.setupSupplierAutocomplete();
+            resolve();
+          } else {
+            this.toast.error('Aucun fournisseur trouvé');
+            reject(new Error('No suppliers found'));
+          }
+        },
+        error: (error) => {
+          console.error('Error loading suppliers:', error);
+          this.toast.error('Erreur lors du chargement des fournisseurs');
+          reject(error);
         }
-      },
-      error: (error) => {
-        console.error('Error loading suppliers:', error);
-        this.toast.error('Erreur lors du chargement des fournisseurs');
-      }
+      });
     });
   }
 
@@ -282,20 +294,43 @@ export class WasteAddComponent {
     this.wasteSaleService.getWasteSale(id).subscribe({
       next: (response) => {
         if (response.success && response.data) {
-          const wasteSale = response.data[0];
+          const wasteSale = Array.isArray(response.data) ? response.data[0] : response.data;
+          console.log('Loaded waste sale:', wasteSale);
+
+          // Find the supplier in the loaded suppliers list
+          let selectedSupplier = null;
+          if (wasteSale.supplier) {
+            let supplierId: string | undefined;
+
+            if (typeof wasteSale.supplier === 'object' && wasteSale.supplier && 'id' in wasteSale.supplier) {
+              supplierId = wasteSale.supplier.id;
+            } else if (typeof wasteSale.supplier === 'string') {
+              supplierId = wasteSale.supplier;
+            }
+
+            if (supplierId) {
+              selectedSupplier = this.suppliers.find(s => s.id === supplierId);
+            }
+          }
+
           this.wasteSaleForm.patchValue({
             type: wasteSale.type,
-            supplierId: wasteSale.supplier?.id ? this.suppliers.find(s => s.id === wasteSale.supplier.id) : null,
-            quantity: wasteSale.quantity,
+            supplierId: selectedSupplier,
+            quantity: wasteSale.quantityInKg,
             unitPrice: wasteSale.unitPrice,
             saleDate: new Date(wasteSale.saleDate),
-            invoiceNumber: wasteSale.invoiceNumber,
-            paid: wasteSale.paid,
+            invoiceNumber: wasteSale.invoiceNumber || '',
+            paid: wasteSale.paid || false,
             paymentDate: wasteSale.paymentDate ? new Date(wasteSale.paymentDate) : null,
-            storageLocationCode: wasteSale.storageLocationCode,
-            description: wasteSale.description,
-            notes: wasteSale.notes
+            storageLocationCode: wasteSale.storageLocationCode || '',
+            description: wasteSale.description || '',
+            notes: wasteSale.notes || ''
           });
+
+          console.log('Form patched with values:', this.wasteSaleForm.value);
+        } else {
+          this.toast.error('Vente de déchet introuvable');
+          this.router.navigate(['/finance/waste-sales']);
         }
         this.loading = false;
       },
@@ -303,6 +338,7 @@ export class WasteAddComponent {
         console.error('Error loading waste sale:', error);
         this.toast.error('Erreur lors du chargement de la vente de déchet');
         this.loading = false;
+        this.router.navigate(['/finance/waste-sales']);
       }
     });
   }

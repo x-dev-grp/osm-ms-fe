@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
  import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -10,9 +10,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SharedModule } from '../../../shared/shared.module';
 import { ExpenseService } from '../../service/expense.service';
-import { Expense } from '../../models/expense.model';
+import { Expense, ExpenseCategory } from '../../models/expense.model';
 import { PaymentMethod } from '../../models/financial-transaction.model';
 import { ToastService } from '../../../shared/services/toast.service';
+import { map, Observable } from 'rxjs';
+import { startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'app-expense-add',
@@ -38,7 +40,11 @@ export class ExpenseAddComponent implements OnInit {
   expenseId: string | null = null;
   paymentMethods = Object.values(PaymentMethod);
   statusOptions = ['Pending', 'Paid', 'Reimbursed'] as const;
+  @ViewChild('categorySearchInput') categorySearchInput?: ElementRef<HTMLInputElement>;
 
+  categoryOptions: ExpenseCategory[] = Object.values(ExpenseCategory) as ExpenseCategory[];
+  categoryFilterCtrl = new FormControl<string>('', { nonNullable: true });
+  filteredCategories$!: Observable<ExpenseCategory[]>;
   constructor(
     private fb: FormBuilder,
     private expenseService: ExpenseService,
@@ -51,8 +57,23 @@ export class ExpenseAddComponent implements OnInit {
 
   ngOnInit(): void {
     this.checkEditMode();
+    this.filteredCategories$ = this.categoryFilterCtrl.valueChanges.pipe(
+      startWith(''),
+      map(value => {
+        const v = (value ?? '').toLowerCase().trim();
+        return this.categoryOptions.filter(c =>
+          c.toLowerCase().includes(v) // match by enum code
+        );
+      })
+    );}
+  onCategoryOpened(opened: boolean) {
+    if (opened) {
+      // Delay to ensure the panel has rendered before focusing
+      setTimeout(() => this.categorySearchInput?.nativeElement?.focus(), 50);
+    } else {
+      this.categoryFilterCtrl.setValue(''); // clear search when closed
+    }
   }
-
   private initForm(): void {
     this.form = this.fb.group({
       invoiceRef: ['', Validators.required],

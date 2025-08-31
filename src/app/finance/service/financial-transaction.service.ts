@@ -17,6 +17,12 @@ export class FinancialTransactionService {
 
   // ==================== CRUD OPERATIONS ====================
 
+  /**
+   * Get all transactions
+   */
+  getAllTransactions(): Observable<ApiResponse<FinancialTransaction>> {
+    return this.http.get<ApiResponse<FinancialTransaction>>(`${this.baseUrl}/fetchAll`);
+  }
 
   /**
    * Get transaction by ID

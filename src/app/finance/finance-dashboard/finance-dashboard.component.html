@@ -1,0 +1,243 @@
+<!-- ===================== Finance Dashboard (Able Pro + Angular 19) ===================== -->
+
+<!-- Header / Actions -->
+<div class="row align-items-center mb-3 g-2 sticky-actions">
+  <div class="col d-flex align-items-center gap-2">
+    <mat-icon class="text-primary">dashboard</mat-icon>
+    <h2 class="m-0 f-w-600">{{ 'MENU.FINANCE.DASHBOARD.TITLE' | translate }}</h2>
+    <span *ngIf="lastUpdated" class="text-muted d-none d-sm-inline ms-2">
+      <mat-icon class="me-1" inline>update</mat-icon>
+      {{ 'COMMON.LAST_UPDATED' | translate }}: {{ lastUpdated | date:'short' }}
+    </span>
+  </div>
+
+  <div class="col-auto d-flex align-items-center gap-2">
+    <!-- Quick refresh -->
+    <button mat-stroked-button color="primary"
+            (click)="refresh()"
+            [disabled]="loading"
+            matTooltip="{{ 'COMMON.REFRESH' | translate }}">
+      <mat-icon>refresh</mat-icon>
+      <span class="d-none d-sm-inline ms-1">{{ 'COMMON.REFRESH' | translate }}</span>
+    </button>
+  </div>
+</div>
+
+<!-- Loading State -->
+<div *ngIf="loading" class="loading-container">
+  <mat-spinner diameter="60"></mat-spinner>
+  <p>{{ 'MENU.FINANCE.DASHBOARD.LOADING.TEXT' | translate }}</p>
+</div>
+
+<!-- ===================== KPI Row ===================== -->
+<div *ngIf="!loading && financeSummary" class="dashboard-kpis row g-3">
+  <!-- Total Transactions -->
+  <div class="col-md-6 col-xxl-4">
+    <app-earning-chart
+      [color]="primaryColor"
+      [data]="transactionsPerDay"
+      [earningValue]="financeSummary.transactions.totalTransactions?.toString() || '0'"
+      [headerTitle]="'MENU.FINANCE.DASHBOARD.KPIS.TOTAL_TRANSACTIONS' | translate"
+      background="bg-primary-50"
+      class="kpi-card "
+      iconImage="#wallet-2"
+      percentageValue=""
+      textColor="text-primary-500">
+    </app-earning-chart>
+  </div>
+
+  <!-- Pending Expenses -->
+  <div class="col-md-6 col-xxl-4">
+    <app-earning-chart
+      [color]="warningColor"
+      [data]="pendingExpensesPerDay"
+      [earningValue]="financeSummary.expenses.pending?.toString() || '0'"
+      [headerTitle]="'MENU.FINANCE.DASHBOARD.KPIS.PENDING_EXPENSES' | translate"
+      background="bg-warning-50"
+      class="kpi-card "
+      iconImage="#calendar"
+      percentageValue=""
+      textColor="text-warning-500">
+    </app-earning-chart>
+  </div>
+
+  <!-- Completed Sales -->
+  <div class="col-md-6 col-xxl-4">
+    <app-earning-chart
+      [color]="successColor"
+      [data]="completedSalesPerDay"
+      [earningValue]="financeSummary.oilSales.deliveredSales?.toString() || '0'"
+      [headerTitle]="'MENU.FINANCE.DASHBOARD.KPIS.COMPLETED_SALES' | translate"
+      background="bg-success-50"
+      class="kpi-card "
+      iconImage="#book"
+      percentageValue=""
+      textColor="text-success-500">
+    </app-earning-chart>
+  </div>
+
+  <!-- Total Revenue -->
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.KPIS.TOTAL_REVENUE' | translate" [icon]="'stacked_bar_chart'"
+              class="mini-kpi ">
+      <div class="mini-kpi__body">
+        <mat-icon>stacked_bar_chart</mat-icon>
+        <span class="value">{{ totalRevenue?.toFixed(2) || '0.00' }}</span>
+      </div>
+    </app-card>
+  </div>
+
+  <!-- Average Transaction -->
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.KPIS.AVG_TRANSACTION' | translate" [icon]="'speed'" class="mini-kpi ">
+      <div class="mini-kpi__body">
+        <mat-icon>speed</mat-icon>
+        <span class="value">{{ avgTransactionAmount?.toFixed(2) || '0.00' }}</span>
+      </div>
+    </app-card>
+  </div>
+
+  <!-- Net Flow -->
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.KPIS.NET_FLOW' | translate" [icon]="'attach_money'"
+              class="mini-kpi ">
+      <div class="mini-kpi__body">
+        <mat-icon>attach_money</mat-icon>
+        <span class="value">{{ formattedNetFlow || '0' }}</span>
+      </div>
+    </app-card>
+  </div>
+
+  <!-- Total Paid -->
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.KPIS.TOTAL_PAID' | translate" [icon]="'paid'" class="mini-kpi ">
+      <div class="mini-kpi__body">
+        <mat-icon>paid</mat-icon>
+        <span class="value">{{ formattedTotalPaid || '0' }}</span>
+      </div>
+    </app-card>
+  </div>
+
+  <!-- Total Unpaid -->
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.KPIS.TOTAL_UNPAID' | translate" [icon]="'hourglass_bottom'"
+              class="mini-kpi ">
+      <div class="mini-kpi__body">
+        <mat-icon>hourglass_bottom</mat-icon>
+        <span class="value">{{ formattedTotalUnpaid || '0' }}</span>
+      </div>
+    </app-card>
+  </div>
+
+  <!-- Active Bank Accounts -->
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.KPIS.ACTIVE_ACCOUNTS' | translate" [icon]="'groups'"
+              class="mini-kpi ">
+      <div class="mini-kpi__body">
+        <mat-icon>groups</mat-icon>
+        <span class="value">{{ activeBankAccounts?.toString() || '0' }}</span>
+      </div>
+    </app-card>
+  </div>
+
+  <!-- Expense Status Chart -->
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.ANALYTICS.EXPENSE_STATUS' | translate" [icon]="'pie_chart'"
+              class="card--chart ">
+      <div class="chart-container small">
+        <apx-chart
+          [chart]="expenseStatusChartOptions.chart"
+          [colors]="expenseStatusChartOptions.colors"
+          [labels]="expenseStatusChartOptions.labels"
+          [series]="expenseStatusChartOptions.series">
+        </apx-chart>
+      </div>
+    </app-card>
+  </div>
+
+  <!-- Transaction Flow Chart -->
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.ANALYTICS.TRANSACTION_FLOW' | translate" [icon]="'rule'"
+              class="card--chart ">
+      <div class="chart-container small">
+        <apx-chart
+          [chart]="transactionFlowChartOptions.chart"
+          [colors]="transactionFlowChartOptions.colors"
+          [labels]="transactionFlowChartOptions.labels"
+          [series]="transactionFlowChartOptions.series">
+        </apx-chart>
+      </div>
+    </app-card>
+  </div>
+
+  <!-- Sales by Type Chart -->
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.ANALYTICS.SALES_BY_TYPE' | translate" [icon]="'category'"
+              class="card--chart ">
+      <div class="chart-container right">
+        <apx-chart
+          [chart]="salesByTypeChartOptions.chart"
+          [colors]="salesByTypeChartOptions.colors"
+          [series]="salesByTypeChartOptions.series"
+          [xaxis]="salesByTypeChartOptions.xaxis">
+        </apx-chart>
+      </div>
+    </app-card>
+  </div>
+</div>
+
+<!-- ===================== Main Charts Section ===================== -->
+<div *ngIf="!loading && financeSummary" class="row g-3 mt-1">
+
+
+
+    <!-- Revenue by Source Chart -->
+    <div class="col-12">
+      <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.ANALYTICS.REVENUE_BY_SOURCE' | translate" [icon]="'storefront'"
+                class="card--chart ">
+        <div [ngClass]="currentChartSize" class="chart-container">
+          <apx-chart
+            [chart]="revenueBySourceChartOptions.chart"
+            [colors]="revenueBySourceChartOptions.colors"
+            [series]="revenueBySourceChartOptions.series"
+            [xaxis]="revenueBySourceChartOptions.xaxis">
+          </apx-chart>
+        </div>
+      </app-card>
+    </div>
+
+    <!-- Recent Transactions Chart -->
+    <div class="col-12">
+      <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.ANALYTICS.RECENT_TRANSACTIONS' | translate" [icon]="'insights'"
+                class="card--chart ">
+        <div [ngClass]="currentChartSize" class="chart-container">
+          <apx-chart
+            [chart]="recentTransactionsChartOptions.chart"
+            [colors]="recentTransactionsChartOptions.colors"
+            [series]="recentTransactionsChartOptions.series"
+            [tooltip]="recentTransactionsChartOptions.tooltip"
+            [xaxis]="recentTransactionsChartOptions.xaxis"
+            [yaxis]="recentTransactionsChartOptions.yaxis">
+          </apx-chart>
+        </div>
+      </app-card>
+    </div>
+
+    <!-- Expense by Category Chart -->
+    <div class="col-12">
+      <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.ANALYTICS.EXPENSE_BY_CATEGORY' | translate" [icon]="'inventory_2'"
+                class="card--chart ">
+        <div [ngClass]="currentChartSize" class="chart-container">
+          <apx-chart
+            [chart]="expenseByCategoryChartOptions.chart"
+            [colors]="expenseByCategoryChartOptions.colors"
+            [series]="expenseByCategoryChartOptions.series"
+            [xaxis]="expenseByCategoryChartOptions.xaxis">
+          </apx-chart>
+        </div>
+      </app-card>
+    </div>
+
+
+
+</div>

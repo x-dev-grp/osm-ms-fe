@@ -34,6 +34,8 @@ import { deliveryType } from '../../../../shared/models/deleveryType';
 import { TransactionState } from '../../../../shared/models/OilTransaction';
 import { Currency, PaymentMethod, TransactionDirection } from '../../../../finance/models/financial-transaction.model';
 import { OilSaleService } from '../../../../finance/service/oil-sale.service';
+import { PaymentSourceType } from '../supplier-details/supplier-details.component';
+import { WasteSaleService } from '../../../../finance/service/wasteSale.service';
 export interface PaymentDialogResult {
   ok: boolean;                 // true si succès
   message: string;             // message à afficher
@@ -80,11 +82,14 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
   transactionNotCompletedError: boolean = false;
   unpaidAmount: number = 0;
   protected derivedDirection: TransactionDirection;
+  public sourceType: string;
+
 
   constructor(
     private deliveryService: UnifiedDeliveryService,
     private fb: FormBuilder,
     private _searchService: AdvancedSearchService,
+    private wasteSaleService: WasteSaleService,
     private oilSaleService: OilSaleService,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private _dialogRef: MatDialogRef<SupplierPaymentHistoryComponent>
@@ -193,6 +198,8 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.selectedDelivery = this.data?.row;
+    this.sourceType = (this.data?.sourceType as PaymentSourceType) || 'delivery';
+
     this.unpaidAmount = this.data?.row?.unpaidAmount;
     this.totalPrice = this.data?.row?.price;
     this.paymentForm = this.fb.group({
@@ -357,10 +364,14 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
   }
 
   processPayment() {
-    console.log(this.paymentForm.value);
-    if (this.selectedDelivery?.deliveryType) {
+    if (this.sourceType === PaymentSourceType.DELIVERY_prc) {
       this.processDeliveryPaiment();
+    } else if (this.sourceType === PaymentSourceType.DELIVERY_prc ) {
+      this.processOilSalePayment();
+    } else if (this.sourceType === PaymentSourceType.WASTE_SALE_prc) {
+      this.processWasteSalePayment();
     } else {
+      // fallback to monetary payment
       this.processOilSalePayment();
     }
   }
@@ -426,25 +437,20 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /** Delivery-only pre-fill logic */
   private processData() {
-    // Check if the selected delivery type is OLIVE
     if (this.selectedDelivery?.deliveryType == deliveryType.OLIVE) {
-      // Switch statement to handle different operation types
       switch (this.selectedDelivery?.operationType) {
-        // If the operation type is SIMPLE_RECEPTION, call the processSimpleReception method
         case OperationType.SIMPLE_RECEPTION: {
           this.processSimpleReception();
           this.derivedDirection = TransactionDirection.INBOUND;
           break;
         }
-        // If the operation type is OLIVE_PURCHASE, call the purshase method
         case OperationType.OLIVE_PURCHASE: {
           this.purshase();
           this.derivedDirection = TransactionDirection.OUTBOUND;
-
           break;
         }
-        // If the operation type is EXCHANGE, call the processExchange method
         case OperationType.EXCHANGE: {
           this.derivedDirection = TransactionDirection.INBOUND;
           this.processExchange();
@@ -457,11 +463,9 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
         }
       }
     } else {
-      // If the delivery type is not OLIVE, call the purshase method
       this.purshase();
     }
   }
-
   private async processDeliveryPaiment() {
     if (this.paymentForm.invalid || this.transactionNotCompletedError || !this.selectedDelivery?.id) {
       this.paymentForm.markAllAsTouched();
@@ -528,4 +532,61 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
   //protected readonly TransactionDirection = TransactionDirection;
   protected readonly TransactionDirection = TransactionDirection;
   totalPrice: number;
+
+  async processWasteSalePayment(): Promise<void> {
+    if (this.paymentForm.invalid || this.transactionNotCompletedError || !this.data?.row?.id) {
+      this.paymentForm.markAllAsTouched();
+      return;
+    }
+
+    const v = this.paymentForm.value as {
+      moneyPaymentMethod: 'cash' | 'check' | 'bank_transfer';
+      amount?: number;
+      checkNumber?: string;
+      bankAccount?: any;
+    };
+
+    const mappedMethod =
+      v.moneyPaymentMethod === 'cash'
+        ? PaymentMethod.CASH
+        : v.moneyPaymentMethod === 'check'
+          ? PaymentMethod.CHEQUE
+          : PaymentMethod.TRANSFER;
+
+    const payload = {
+      idOperation: this.data.row.id,                 // Waste sale ID
+      amount: Number(v.amount || 0),
+      currency: Currency.TND,
+      paymentMethod: mappedMethod,
+      checkNumber: mappedMethod === PaymentMethod.CHEQUE ? v.checkNumber || null : null,
+      bankAccount: mappedMethod === PaymentMethod.TRANSFER ? v.bankAccount || null : null,
+      supplier: this.data.row?.supplier || null,     // supplier side
+      customer: null
+    };
+
+    try {
+      this.wasteSaleService
+        .processPayment(payload)
+        .pipe()
+        .subscribe({
+          next: (response) => {
+            const result: PaymentDialogResult = {
+              ok: true,
+              message: 'Paiement enregistré avec succès.',
+              payload: response
+            };
+            this._dialogRef.close(result);
+          },
+          error: (err) => {
+            const result: PaymentDialogResult = {
+              ok: false,
+              message: this.formatError(err)
+            };
+            this._dialogRef.close(result);
+          }
+        });
+    } catch {
+      this.transactionNotCompletedError = true;
+    }
+  }
 }
