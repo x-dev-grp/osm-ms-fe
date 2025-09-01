@@ -154,10 +154,13 @@
     "CLOSE": "Fermer",
     "EDIT": "Modifier",
     "LAST_UPDATED": "Dernier mis à jour",
+    "LOADING": "Chargement...",
     "NO": "Non",
     "PRINT": "Imprimer",
     "REFRESH": "Refraichire",
     "SAVE": "Enregistrer",
+    "SAVING": "Sauvegarde...",
+    "SELECT_OPTION": "Sélectionnez une option",
     "UPDATE": "Mettre à jour",
     "VALIDATION": {
       "EMAIL": "Veuillez entrer une adresse email valide",
@@ -2532,10 +2535,11 @@
   "TAB_TITLE": "Configuration Générale",
   "TRANSACTIONS": {
     "ACTIONS": {
+      "ADD": "Ajouter Transaction",
       "APPROVE": "Approuver",
       "DELETE": "Supprimer",
       "DUPLICATE": "Dupliquer",
-      "EDIT": "Modifier",
+      "EDIT": "Modifier Transaction",
       "EXPORT": "Exporter",
       "PRINT": "Imprimer",
       "REJECT": "Rejeter",
@@ -2550,6 +2554,18 @@
       "INBOUND": "Entrée",
       "INTERNAL": "Interne",
       "OUTBOUND": "Sortie"
+    },
+    "ERRORS": {
+      "AMOUNT_MIN": "Le montant doit être positif",
+      "AMOUNT_REQUIRED": "Le montant est requis",
+      "CREATE_ERROR": "Erreur lors de la création",
+      "DIRECTION_REQUIRED": "La direction est requise",
+      "LOAD_ERROR": "Erreur lors du chargement de la transaction",
+      "NOT_FOUND": "Transaction introuvable",
+      "PAYMENT_METHOD_REQUIRED": "La méthode de paiement est requise",
+      "TRANSACTION_DATE_REQUIRED": "La date de transaction est requise",
+      "TRANSACTION_TYPE_REQUIRED": "Le type de transaction est requis",
+      "UPDATE_ERROR": "Erreur lors de la mise à jour"
     },
     "FIELDS": {
       "AMOUNT": "Montant",
@@ -2588,12 +2604,28 @@
     },
     "PAYMENT_METHODS": {
       "BANK_TRANSFER": "Virement Bancaire",
+      "BOTH": "Les deux",
       "CASH": "Espèces",
       "CHECK": "Chèque",
+      "CHEQUE": "Chèque",
       "CREDIT_CARD": "Carte de Crédit",
       "DEBIT_CARD": "Carte de Débit",
       "MOBILE_PAYMENT": "Paiement Mobile",
-      "OIL_CREDIT": "Crédit Huile"
+      "OIL": "Huile",
+      "OIL_CREDIT": "Crédit Huile",
+      "TRANSFER": "Virement"
+    },
+    "PLACEHOLDERS": {
+      "DESCRIPTION": "Entrez la description de la transaction...",
+      "INVOICE_REFERENCE": "Entrez la référence de facture...",
+      "LOT_NUMBER": "Entrez le numéro de lot...",
+      "RECEIPT_REFERENCE": "Entrez la référence de reçu..."
+    },
+    "SECTIONS": {
+      "APPROVAL": "Informations d'Approbation",
+      "BASIC_INFO": "Informations de Base",
+      "PARTIES": "Parties Associées",
+      "REFERENCES": "Références"
     },
     "STATUS": {
       "APPROVED": "Approuvé",
@@ -2626,6 +2658,9 @@
       "SUPPLIER_CREDIT": "Crédit Fournisseur",
       "SUPPLIER_PAYMENT": "Paiement Fournisseur",
       "WITHDRAWAL": "Retrait"
+    },
+    "VIEW": {
+      "TITLE": "Détails de la Transaction"
     }
   },
   "Table": "Tableau",

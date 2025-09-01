@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
- import { MatButtonModule } from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -11,6 +11,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { TranslateModule } from '@ngx-translate/core';
+import { CardComponent } from '../../../theme/components/card/card.component';
 import { FinancialTransaction, TransactionType, TransactionDirection, Currency, PaymentMethod } from '../../models/financial-transaction.model';
 import { FinancialTransactionService } from '../../service/financial-transaction.service';
 import { ToastService } from '../../../shared/services/toast.service';
@@ -30,7 +32,9 @@ import { ToastService } from '../../../shared/services/toast.service';
     MatDatepickerModule,
     MatNativeDateModule,
     MatCardModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    TranslateModule,
+    CardComponent
   ],
   styleUrls: ['./transaction-add.component.scss']
 })
@@ -83,7 +87,7 @@ export class TransactionAddComponent implements OnInit {
       lotNumber: [''],
       invoiceReference: [''],
       receiptReference: [''],
-      transactionDate: [new Date().toISOString().split('T')[0], Validators.required]
+      transactionDate: [new Date(), Validators.required]
     });
   }
 
@@ -99,7 +103,7 @@ export class TransactionAddComponent implements OnInit {
       paymentMethod: queryParams.get('paymentMethod') || '',
       description: queryParams.get('description') || '',
       lotNumber: queryParams.get('lotNumber') || '',
-      transactionDate: new Date().toISOString().split('T')[0] // Always use current date for duplicates
+      transactionDate: queryParams.get('transactionDate') || new Date() // Use Date object for datepicker
     });
   }
 
@@ -119,14 +123,14 @@ export class TransactionAddComponent implements OnInit {
             lotNumber: res.lotNumber,
             invoiceReference: res.invoiceReference,
             receiptReference: res.receiptReference,
-            transactionDate: res.transactionDate?.split('T')[0]
+            transactionDate: res.transactionDate ? new Date(res.transactionDate) : new Date()
           });
         }
         this.loading = false;
       },
       error: () => {
         this.loading = false;
-        this.showError('Erreur lors du chargement de la transaction');
+        this.showError('TRANSACTIONS.ERRORS.LOAD_ERROR');
       }
     });
   }
@@ -144,15 +148,15 @@ export class TransactionAddComponent implements OnInit {
         }).subscribe({
           next: (response) => {
             if (response.success) {
-              this.showSuccess('Transaction mise à jour avec succès');
+              this.showSuccess('TRANSACTIONS.MESSAGES.UPDATE_SUCCESS');
               this.router.navigate(['/finance/transactions']);
             } else {
-              this.showError(response.message || 'Erreur lors de la mise à jour');
+              this.showError(response.message || 'TRANSACTIONS.ERRORS.UPDATE_ERROR');
             }
             this.loading = false;
           },
           error: () => {
-            this.showError('Erreur lors de la mise à jour');
+            this.showError('TRANSACTIONS.ERRORS.UPDATE_ERROR');
             this.loading = false;
           }
         });
@@ -162,17 +166,17 @@ export class TransactionAddComponent implements OnInit {
           next: (response) => {
             if (response.success) {
               const message = this.isDuplicateMode ?
-                'Transaction dupliquée avec succès' :
-                'Transaction créée avec succès';
+                'TRANSACTIONS.MESSAGES.DUPLICATE_SUCCESS' :
+                'TRANSACTIONS.MESSAGES.CREATE_SUCCESS';
               this.showSuccess(message);
               this.router.navigate(['/finance/transactions']);
             } else {
-              this.showError(response.message || 'Erreur lors de la création');
+              this.showError(response.message || 'TRANSACTIONS.ERRORS.CREATE_ERROR');
             }
             this.loading = false;
           },
           error: () => {
-            this.showError('Erreur lors de la création');
+            this.showError('TRANSACTIONS.ERRORS.CREATE_ERROR');
             this.loading = false;
           }
         });
@@ -203,15 +207,15 @@ export class TransactionAddComponent implements OnInit {
 
   getTitle(): string {
     if (this.isDuplicateMode) {
-      return 'Dupliquer une Transaction';
+      return 'TRANSACTIONS.ACTIONS.DUPLICATE';
     }
-    return this.isEditMode ? 'Modifier une Transaction' : 'Nouvelle Transaction';
+    return this.isEditMode ? 'TRANSACTIONS.ACTIONS.EDIT' : 'TRANSACTIONS.ACTIONS.ADD';
   }
 
   getSubmitButtonText(): string {
     if (this.isDuplicateMode) {
-      return 'Dupliquer';
+      return 'TRANSACTIONS.ACTIONS.DUPLICATE';
     }
-    return this.isEditMode ? 'Mettre à jour' : 'Créer';
+    return this.isEditMode ? 'COMMON.UPDATE' : 'COMMON.SAVE';
   }
 }

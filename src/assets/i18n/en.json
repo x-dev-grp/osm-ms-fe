@@ -154,10 +154,13 @@
     "CLOSE": "Close",
     "EDIT": "Edit",
     "LAST_UPDATED": "Last update at ",
+    "LOADING": "Loading...",
     "NO": "No",
     "PRINT": "Print",
     "REFRESH": "Refresh",
     "SAVE": "Save",
+    "SAVING": "Saving...",
+    "SELECT_OPTION": "Select an option",
     "UPDATE": "Update",
     "VALIDATION": {
       "EMAIL": "Please enter a valid email address",
@@ -2535,10 +2538,11 @@
   "TAB_TITLE": "General Configuration",
   "TRANSACTIONS": {
     "ACTIONS": {
+      "ADD": "Add Transaction",
       "APPROVE": "Approve",
       "DELETE": "Delete",
       "DUPLICATE": "Duplicate",
-      "EDIT": "Edit",
+      "EDIT": "Edit Transaction",
       "EXPORT": "Export",
       "PRINT": "Print",
       "REJECT": "Reject",
@@ -2553,6 +2557,18 @@
       "INBOUND": "Inbound",
       "INTERNAL": "Internal",
       "OUTBOUND": "Outbound"
+    },
+    "ERRORS": {
+      "AMOUNT_MIN": "Amount must be positive",
+      "AMOUNT_REQUIRED": "Amount is required",
+      "CREATE_ERROR": "Error creating transaction",
+      "DIRECTION_REQUIRED": "Direction is required",
+      "LOAD_ERROR": "Error loading transaction",
+      "NOT_FOUND": "Transaction not found",
+      "PAYMENT_METHOD_REQUIRED": "Payment method is required",
+      "TRANSACTION_DATE_REQUIRED": "Transaction date is required",
+      "TRANSACTION_TYPE_REQUIRED": "Transaction type is required",
+      "UPDATE_ERROR": "Error updating transaction"
     },
     "FIELDS": {
       "AMOUNT": "Amount",
@@ -2591,12 +2607,28 @@
     },
     "PAYMENT_METHODS": {
       "BANK_TRANSFER": "Bank Transfer",
+      "BOTH": "Both",
       "CASH": "Cash",
       "CHECK": "Check",
+      "CHEQUE": "Cheque",
       "CREDIT_CARD": "Credit Card",
       "DEBIT_CARD": "Debit Card",
       "MOBILE_PAYMENT": "Mobile Payment",
-      "OIL_CREDIT": "Oil Credit"
+      "OIL": "Oil",
+      "OIL_CREDIT": "Oil Credit",
+      "TRANSFER": "Transfer"
+    },
+    "PLACEHOLDERS": {
+      "DESCRIPTION": "Enter transaction description...",
+      "INVOICE_REFERENCE": "Enter invoice reference...",
+      "LOT_NUMBER": "Enter lot number...",
+      "RECEIPT_REFERENCE": "Enter receipt reference..."
+    },
+    "SECTIONS": {
+      "APPROVAL": "Approval Information",
+      "BASIC_INFO": "Basic Information",
+      "PARTIES": "Related Parties",
+      "REFERENCES": "References"
     },
     "STATUS": {
       "APPROVED": "Approved",
@@ -2629,6 +2661,9 @@
       "SUPPLIER_CREDIT": "Supplier Credit",
       "SUPPLIER_PAYMENT": "Supplier Payment",
       "WITHDRAWAL": "Withdrawal"
+    },
+    "VIEW": {
+      "TITLE": "Transaction Details"
     }
   },
   "Table": "Table",
@@ -2688,3 +2723,4 @@
   },
   "reCaptcha": "reCaptcha"
 }
+

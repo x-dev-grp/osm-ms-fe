@@ -6,7 +6,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
- import { FinancialTransaction, TransactionType, TransactionDirection, Currency, PaymentMethod } from '../../models/financial-transaction.model';
+import { TranslateModule } from '@ngx-translate/core';
+import { CardComponent } from '../../../theme/components/card/card.component';
+import { FinancialTransaction, TransactionType, TransactionDirection, Currency, PaymentMethod } from '../../models/financial-transaction.model';
 import { FinancialTransactionService } from '../../service/financial-transaction.service';
 import { ToastService } from '../../../shared/services/toast.service';
 
@@ -20,7 +22,9 @@ import { ToastService } from '../../../shared/services/toast.service';
     MatIconModule,
     MatCardModule,
     MatChipsModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    TranslateModule,
+    CardComponent
   ],
   styleUrls: ['./transaction-view.component.scss']
 })
@@ -60,14 +64,14 @@ export class TransactionViewComponent implements OnInit {
           this.transaction = response.data[0];
         } else {
           this.error = true;
-          this.showError('Transaction non trouvée');
+          this.showError('TRANSACTIONS.ERRORS.NOT_FOUND');
         }
         this.loading = false;
       },
       error: () => {
         this.error = true;
         this.loading = false;
-        this.showError('Erreur lors du chargement de la transaction');
+        this.showError('TRANSACTIONS.ERRORS.LOAD_ERROR');
       }
     });
   }
@@ -103,75 +107,33 @@ export class TransactionViewComponent implements OnInit {
     }
   }
 
-  getTransactionTypeLabel(type: TransactionType): string {
-    const typeLabels: { [key in TransactionType]: string } = {
-      [TransactionType.PAYMENT]: 'Paiement',
-      [TransactionType.EXPENSE]: 'Dépense',
-      [TransactionType.PURCHASE]: 'Achat',
-      [TransactionType.CREDIT]: 'Crédit',
-      [TransactionType.DEBIT]: 'Débit',
-      [TransactionType.LOAN]: 'Prêt',
-      [TransactionType.INTERNAL_TRANSFER]: 'Transfert Interne',
-      [TransactionType.OIL_SALE]: 'Vente d\'Huile',
-      [TransactionType.OIL_PURCHASE]: 'Achat d\'Huile',
-      [TransactionType.SUPPLIER_PAYMENT]: 'Paiement Fournisseur',
-      [TransactionType.SUPPLIER_CREDIT]: 'Crédit Fournisseur',
-      [TransactionType.DEPOSIT]: 'Dépôt',
-      [TransactionType.WITHDRAWAL]: 'Retrait',
-      [TransactionType.CHECK_DEPOSIT]: 'Dépôt de Chèque',
-      [TransactionType.CHECK_PAYMENT]: 'Paiement par Chèque'
-    };
-    return typeLabels[type] || type;
-  }
-
-  getDirectionLabel(direction: TransactionDirection): string {
-    const directionLabels: { [key in TransactionDirection]: string } = {
-      [TransactionDirection.INBOUND]: 'Entrée',
-      [TransactionDirection.OUTBOUND]: 'Sortie',
-      [TransactionDirection.INTERNAL]: 'Interne'
-    };
-    return directionLabels[direction] || direction;
-  }
-
-
-
-  getCurrencyLabel(currency: Currency): string {
-    const currencyLabels: { [key in Currency]: string } = {
-      [Currency.TND]: 'Dinar Tunisien',
-      [Currency.EUR]: 'Euro',
-      [Currency.USD]: 'Dollar US'
-    };
-    return currencyLabels[currency] || currency;
-  }
-
   getStatusClass(): string {
     if (!this.transaction) return '';
-
-    if (this.transaction.approved) {
-      return 'status-approved';
-    } else {
-      return 'status-pending';
-    }
+    return this.transaction.approved ? 'status-approved' : 'status-pending';
   }
 
   getStatusLabel(): string {
     if (!this.transaction) return '';
-
-    if (this.transaction.approved) {
-      return 'Approuvée';
-    } else {
-      return 'En attente';
-    }
+    return this.transaction.approved ? 'TRANSACTIONS.STATUS.APPROVED' : 'TRANSACTIONS.STATUS.PENDING';
   }
 
   getAmountClass(): string {
     if (!this.transaction) return '';
+    return this.transaction.direction === TransactionDirection.INBOUND ? 'amount-positive' : 'amount-negative';
+  }
 
-    if (this.transaction.direction === TransactionDirection.INBOUND) {
-      return 'amount-positive';
-    } else {
-      return 'amount-negative';
-    }
+  hasReferences(): boolean {
+    return !!(this.transaction?.lotNumber ||
+             this.transaction?.invoiceReference ||
+             this.transaction?.receiptReference);
+  }
+
+  hasParties(): boolean {
+    return !!( this.transaction?.supplierId);
+  }
+
+  hasApprovalInfo(): boolean {
+    return !!(this.transaction?.approvedBy || this.transaction?.approvalDate);
   }
 
   private showError(message: string): void {

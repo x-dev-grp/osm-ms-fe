@@ -1,85 +1,160 @@
-<div class="transaction-view-container">
-  <div *ngIf="loading" class="loading">
-    Chargement...
+<app-card [title]="'TRANSACTIONS.VIEW.TITLE' | translate">
+  <div header-action>
+    <button mat-icon-button (click)="onBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
   </div>
-  
-  <div *ngIf="!loading && transaction" class="transaction-details">
-    <h2>Détails de la Transaction</h2>
+
+  <div class="details-container">
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>{{ 'COMMON.LOADING' | translate }}</p>
+    </div>
     
-    <div class="transaction-info">
-      <div class="info-row">
-        <span class="label">Type:</span>
-        <span class="value">{{ transaction.transactionType }}</span>
+    <!-- Error State -->
+    <div *ngIf="!loading && error" class="error-container">
+      <mat-icon class="error-icon">error_outline</mat-icon>
+      <p>{{ 'TRANSACTIONS.ERRORS.NOT_FOUND' | translate }}</p>
+    </div>
+    
+    <!-- Transaction Details -->
+    <div *ngIf="!loading && !error && transaction" class="transaction-details">
+      <!-- Status Header -->
+      <div class="status-header">
+        <mat-chip [ngClass]="getStatusClass()" selected>
+          <mat-icon>{{ transaction.approved ? 'check_circle' : 'schedule' }}</mat-icon>
+          {{ getStatusLabel() | translate }}
+        </mat-chip>
+        <div class="transaction-amount" [ngClass]="getAmountClass()">
+          {{ transaction.amount | currency:transaction.currency:'symbol':'1.2-2' }}
+        </div>
       </div>
-      
-      <div class="info-row">
-        <span class="label">Direction:</span>
-        <span class="value">{{ transaction.direction }}</span>
+
+      <!-- Transaction Information Grid -->
+      <div class="info-grid">
+        <!-- Basic Information Section -->
+        <div class="info-section">
+          <h3 class="section-title">
+            <mat-icon>info</mat-icon>
+            {{ 'TRANSACTIONS.SECTIONS.BASIC_INFO' | translate }}
+          </h3>
+          
+          <div class="info-row">
+            <span class="label">{{ 'TRANSACTIONS.FIELDS.TRANSACTION_TYPE' | translate }}:</span>
+            <span class="value">
+              <mat-chip class="type-chip" [ngClass]="'type-' + transaction.transactionType?.toLowerCase()">
+                {{ 'TRANSACTIONS.TYPES.' + transaction.transactionType | translate }}
+              </mat-chip>
+            </span>
+          </div>
+          
+          <div class="info-row">
+            <span class="label">{{ 'TRANSACTIONS.FIELDS.DIRECTION' | translate }}:</span>
+            <span class="value">
+              <mat-chip class="direction-chip" [ngClass]="'direction-' + transaction.direction?.toLowerCase()">
+                <mat-icon>{{ transaction.direction === 'INBOUND' ? 'arrow_downward' : 
+                            transaction.direction === 'OUTBOUND' ? 'arrow_upward' : 'swap_horiz' }}</mat-icon>
+                {{ 'TRANSACTIONS.DIRECTIONS.' + transaction.direction | translate }}
+              </mat-chip>
+            </span>
+          </div>
+          
+          <div class="info-row">
+            <span class="label">{{ 'TRANSACTIONS.FIELDS.PAYMENT_METHOD' | translate }}:</span>
+            <span class="value">{{ 'TRANSACTIONS.PAYMENT_METHODS.' + transaction.paymentMethod | translate }}</span>
+          </div>
+          
+          <div class="info-row">
+            <span class="label">{{ 'TRANSACTIONS.FIELDS.TRANSACTION_DATE' | translate }}:</span>
+            <span class="value">{{ transaction.transactionDate | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+        </div>
+
+        <!-- References Section -->
+        <div class="info-section" *ngIf="hasReferences()">
+          <h3 class="section-title">
+            <mat-icon>receipt</mat-icon>
+            {{ 'TRANSACTIONS.SECTIONS.REFERENCES' | translate }}
+          </h3>
+          
+          <div class="info-row" *ngIf="transaction.lotNumber">
+            <span class="label">{{ 'TRANSACTIONS.FIELDS.LOT_NUMBER' | translate }}:</span>
+            <span class="value">{{ transaction.lotNumber }}</span>
+          </div>
+          
+          <div class="info-row" *ngIf="transaction.invoiceReference">
+            <span class="label">{{ 'TRANSACTIONS.FIELDS.INVOICE_REFERENCE' | translate }}:</span>
+            <span class="value">{{ transaction.invoiceReference }}</span>
+          </div>
+          
+          <div class="info-row" *ngIf="transaction.receiptReference">
+            <span class="label">{{ 'TRANSACTIONS.FIELDS.RECEIPT_REFERENCE' | translate }}:</span>
+            <span class="value">{{ transaction.receiptReference }}</span>
+          </div>
+        </div>
+
+        <!-- Parties Section -->
+        <div class="info-section" *ngIf="hasParties()">
+          <h3 class="section-title">
+            <mat-icon>people</mat-icon>
+            {{ 'TRANSACTIONS.SECTIONS.PARTIES' | translate }}
+          </h3>
+          
+          <div class="info-row" *ngIf="transaction.supplierId">
+            <span class="label">{{ 'TRANSACTIONS.FIELDS.SUPPLIER' | translate }}:</span>
+            <span class="value">{{ transaction.supplierId.name || transaction.supplierId.id }}</span>
+          </div>
+        </div>
+
+        <!-- Approval Section -->
+        <div class="info-section" *ngIf="hasApprovalInfo()">
+          <h3 class="section-title">
+            <mat-icon>verified</mat-icon>
+            {{ 'TRANSACTIONS.SECTIONS.APPROVAL' | translate }}
+          </h3>
+          
+          <div class="info-row" *ngIf="transaction.approvedBy">
+            <span class="label">{{ 'TRANSACTIONS.FIELDS.APPROVED_BY' | translate }}:</span>
+            <span class="value">{{ transaction.approvedBy }}</span>
+          </div>
+          
+          <div class="info-row" *ngIf="transaction.approvalDate">
+            <span class="label">{{ 'TRANSACTIONS.FIELDS.APPROVAL_DATE' | translate }}:</span>
+            <span class="value">{{ transaction.approvalDate | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+        </div>
+
+        <!-- Description Section -->
+        <div class="info-section full-width" *ngIf="transaction.description">
+          <h3 class="section-title">
+            <mat-icon>description</mat-icon>
+            {{ 'TRANSACTIONS.FIELDS.DESCRIPTION' | translate }}
+          </h3>
+          
+          <div class="description-content">
+            {{ transaction.description }}
+          </div>
+        </div>
       </div>
-      
-      <div class="info-row">
-        <span class="label">Montant:</span>
-        <span class="value">{{ transaction.amount }} {{ transaction.currency }}</span>
-      </div>
-      
-      <div class="info-row">
-        <span class="label">Méthode de Paiement:</span>
-        <span class="value">{{ transaction.paymentMethod }}</span>
-      </div>
-      
-      <div class="info-row" *ngIf="transaction.description">
-        <span class="label">Description:</span>
-        <span class="value">{{ transaction.description }}</span>
-      </div>
-      
-      <div class="info-row" *ngIf="transaction.customer">
-        <span class="label">Client:</span>
-        <span class="value">{{ transaction.customer.customerName }} {{ transaction.customer.customerLastName }}</span>
-      </div>
-      
-      <div class="info-row" *ngIf="transaction.supplierId">
-        <span class="label">Fournisseur:</span>
-        <span class="value">{{ transaction.supplierId.id }}</span>
-      </div>
-      
-      <div class="info-row" *ngIf="transaction.lotNumber">
-        <span class="label">Numéro de Lot:</span>
-        <span class="value">{{ transaction.lotNumber }}</span>
-      </div>
-      
-      <div class="info-row" *ngIf="transaction.invoiceReference">
-        <span class="label">Référence Facture:</span>
-        <span class="value">{{ transaction.invoiceReference }}</span>
-      </div>
-      
-      <div class="info-row" *ngIf="transaction.receiptReference">
-        <span class="label">Référence Reçu:</span>
-        <span class="value">{{ transaction.receiptReference }}</span>
-      </div>
-      
-      <div class="info-row">
-        <span class="label">Date de Transaction:</span>
-        <span class="value">{{ transaction.transactionDate | date:'dd/MM/yyyy HH:mm' }}</span>
-      </div>
-      
-      <div class="info-row">
-        <span class="label">Approuvé:</span>
-        <span class="value">{{ transaction.approved ? 'Oui' : 'Non' }}</span>
-      </div>
-      
-      <div class="info-row" *ngIf="transaction.approvedBy">
-        <span class="label">Approuvé par:</span>
-        <span class="value">{{ transaction.approvedBy }}</span>
-      </div>
-      
-      <div class="info-row" *ngIf="transaction.approvalDate">
-        <span class="label">Date d'Approbation:</span>
-        <span class="value">{{ transaction.approvalDate | date:'dd/MM/yyyy HH:mm' }}</span>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button mat-button (click)="onPrint()">
+          <mat-icon>print</mat-icon>
+          {{ 'COMMON.PRINT' | translate }}
+        </button>
+        
+        <button mat-button (click)="onDuplicate()">
+          <mat-icon>content_copy</mat-icon>
+          {{ 'TRANSACTIONS.ACTIONS.DUPLICATE' | translate }}
+        </button>
+        
+        <button mat-raised-button color="primary" (click)="onEdit()">
+          <mat-icon>edit</mat-icon>
+          {{ 'COMMON.EDIT' | translate }}
+        </button>
       </div>
     </div>
   </div>
-  
-  <div *ngIf="!loading && !transaction" class="not-found">
-    Transaction non trouvée
-  </div>
-</div> 
+</app-card> 
