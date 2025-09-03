@@ -1,34 +1,43 @@
-import { Component, DestroyRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, tap } from 'rxjs';
-import { OsmDashboard } from '../../../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
-import { TranslateModule } from '@ngx-translate/core';
-import { CardComponent } from '../../../../theme/components/card/card.component';
-import { OIL_CREDIT_DASHBOARD } from './oil-credit-dashboard.config';
-import { PAIMENT_DASHBOARD } from './paiment-dashboard.config';
-import { AdvancedSearchService } from '../../../../shared/services/advanced-serach.service';
-import { SearchData } from '../../../../shared/models/advanced-search/searchData';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { OilCredit } from '../../../../finance/models/OilCredit';
-import { UnifiedDelivery } from '../../../../shared/models/UnifiedDelivery';
-import { MatDialog } from '@angular/material/dialog';
-import { SupplierPaymentHistoryComponent } from '../supplier-payment-history/supplier-payment-history.component';
-import { OIL_SALES_DASHBOARD_CONFIG } from './oil-sales-dashboard.config';
-import { ToastService } from '../../../../shared/services/toast.service';
+import {Component, DestroyRef, inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {MatButtonModule} from '@angular/material/button';
+import {MatCardModule} from '@angular/material/card';
+import {MatIconModule} from '@angular/material/icon';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Subject, tap} from 'rxjs';
+import {OsmDashboard} from '../../../../shared/modules/osm-dashboard/osm-dashboard';
+import {DashboardConfig} from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
+import {TranslateModule} from '@ngx-translate/core';
+import {CardComponent} from '../../../../theme/components/card/card.component';
+import {OIL_CREDIT_DASHBOARD} from './oil-credit-dashboard.config';
+import {PAIMENT_DASHBOARD} from './paiment-dashboard.config';
+import {AdvancedSearchService} from '../../../../shared/services/advanced-serach.service';
+import {SearchData} from '../../../../shared/models/advanced-search/searchData';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {OilCredit} from '../../../../finance/models/OilCredit';
+import {UnifiedDelivery} from '../../../../shared/models/UnifiedDelivery';
+import {MatDialog} from '@angular/material/dialog';
+import {SupplierPaymentHistoryComponent} from '../supplier-payment-history/supplier-payment-history.component';
+import {OIL_SALES_DASHBOARD_CONFIG} from './oil-sales-dashboard.config';
+import {ToastService} from '../../../../shared/services/toast.service';
 import {getInvoicePdfConfig} from "../../../../finance/facture-config/oil-sale-invoice.config";
 import {PdfGeneratorFactureService} from "../../../../shared/services/pdf-generator-facture.service";
-import { WASTE_DASHBOARD } from './waste-sale-dashboard.config';
+import {WASTE_DASHBOARD} from './waste-sale-dashboard.config';
+
 export enum PaymentSourceType {
   DELIVERY_prc= 'delivery',
   OIL_SALE_prc = 'oil_sale',
   WASTE_SALE_prc = 'waste_sale',
 }
+
+import { factureTriturationConfig } from "../../../../finance/facture-config/facture-Trituration-Config";
+ import {PdfFactureConfig} from "../../../../shared/models/pdf-config.model";
+import {factureDechetConfig} from "../../../../finance/facture-config/facture-Dechet-Config";
+import {CompanyProfile} from "../../../../shared/models/CompanyProfile";
+import {CompanyProfileService} from "../../../../shared/services/company-profile.service";
+import {factureVenteHuileConfig} from "../../../../finance/facture-config/facture-VenteHuile-Config";
+
 @Component({
   selector: 'app-supplier-details',
   templateUrl: './supplier-details.component.html',
@@ -57,13 +66,18 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
   isWasteSale: boolean = false;
   isOilSale: boolean = false;
   isPayment: boolean = false;
+  companyProfile?: CompanyProfile;
+
   OIL_CREDIT_DASHBOARD: DashboardConfig = OIL_CREDIT_DASHBOARD;
   WASTE_DASHBOARD: DashboardConfig = WASTE_DASHBOARD;
   PAIMENT_DASHBOARD: DashboardConfig = PAIMENT_DASHBOARD;
   OIL_SALES_DASHBOARD_CONFIG = OIL_SALES_DASHBOARD_CONFIG;
   unpaidSUM: number;
   paidSum: number;
-
+  unpaidSUM: string;
+  paidSum: string;
+  paidOilSalesSUM: string;
+  unpaidOilSalesSum: string;
   // Oil sales metrics
   protected paidOilSalesCount: number = 0;
   protected unpaidOilSalesCount: number = 0;
@@ -91,12 +105,14 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
     // private invoiceService: InvoiceService,
     private toast: ToastService,
     private pdfFactureService: PdfGeneratorFactureService,
+    private companyService: CompanyProfileService,
   ) {}
 
   ngOnInit(): void {
     this.supplierId = this.route.snapshot.paramMap.get('id');
     this.loadPaymentHistory(false);
     this.countData();
+    this.getProfileInfo();
   }
 
   handleCreditAction(e: { row: OilCredit; action: string }) {
@@ -155,10 +171,39 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
   }
 
 
-  generateInvoice(delivery: UnifiedDelivery): void {
-    const config = getInvoicePdfConfig(delivery);
-    this.pdfFactureService.generatePdfDocument(config);
+  getInvoicePdfConfig(delivery: UnifiedDelivery, company: CompanyProfile
+  ): PdfFactureConfig {
+    switch (delivery.operationType) {
+      case 'SIMPLE_RECEPTION':
+        return factureTriturationConfig(delivery, company);
+
+      case 'EXCHANGE':
+      case 'BASE':
+        return factureVenteHuileConfig(delivery, company);
+
+      case 'DECHET':
+        return factureDechetConfig(delivery, company);
+
+      default:
+        throw new Error(
+          `[Invoice] Unsupported operationType: ${delivery.operationType}`
+        );
+    }
   }
+
+
+  getProfileInfo(){
+    this.companyService.getProfile().subscribe({
+      next: (response:any) => {
+        this.companyProfile = response;
+        console.log('[CompanyProfile] Loaded company profile:', this.companyProfile);
+      },
+      error: (err) => {
+        console.error('[CompanyProfile] Error fetching company info:', err);
+      }
+    });
+  }
+
 
    initiatePayment(row: any,sourceType:string) {
     let dialogRef = this._dialog.open(SupplierPaymentHistoryComponent, {

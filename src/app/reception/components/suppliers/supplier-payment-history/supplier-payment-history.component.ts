@@ -1,41 +1,42 @@
-import { AfterViewInit, Component, DestroyRef, Inject, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatIcon } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatCardModule } from '@angular/material/card';
-import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatRadioModule } from '@angular/material/radio';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { UnifiedDeliveryService } from '../../../../shared/services/delivery.service';
-import { UnifiedDelivery } from '../../../../shared/models/UnifiedDelivery';
-import { BankAccount } from '../../../../finance/models/BankAccount';
-import { TranslateModule } from '@ngx-translate/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatCheckbox } from '@angular/material/checkbox';
-import { OsmDashboard } from '../../../../shared/modules/osm-dashboard/osm-dashboard';
-import { AdvancedSearchService } from '../../../../shared/services/advanced-serach.service';
-import { SearchData } from '../../../../shared/models/advanced-search/searchData';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { debounceTime, EMPTY, of, tap } from 'rxjs';
-import { SearchOperation } from 'src/app/shared/models/advanced-search/searchOperation';
-import { catchError } from 'rxjs/operators';
-import { OperationType } from '../../../../shared/models/operation-type.enum';
-import { deliveryType } from '../../../../shared/models/deleveryType';
-import { TransactionState } from '../../../../shared/models/OilTransaction';
-import { Currency, PaymentMethod, TransactionDirection } from '../../../../finance/models/financial-transaction.model';
-import { OilSaleService } from '../../../../finance/service/oil-sale.service';
-import { PaymentSourceType } from '../supplier-details/supplier-details.component';
-import { WasteSaleService } from '../../../../finance/service/wasteSale.service';
+import {AfterViewInit, Component, DestroyRef, Inject, inject, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {MatIcon} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatCardModule} from '@angular/material/card';
+import {MatTableModule} from '@angular/material/table';
+import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatSortModule} from '@angular/material/sort';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatChipsModule} from '@angular/material/chips';
+import {MatRadioModule} from '@angular/material/radio';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatNativeDateModule} from '@angular/material/core';
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {UnifiedDeliveryService} from '../../../../shared/services/delivery.service';
+import {UnifiedDelivery} from '../../../../shared/models/UnifiedDelivery';
+import {BankAccount} from '../../../../finance/models/BankAccount';
+import {TranslateModule} from '@ngx-translate/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {MatCheckbox} from '@angular/material/checkbox';
+import {OsmDashboard} from '../../../../shared/modules/osm-dashboard/osm-dashboard';
+import {AdvancedSearchService} from '../../../../shared/services/advanced-serach.service';
+import {SearchData} from '../../../../shared/models/advanced-search/searchData';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {debounceTime, EMPTY, of, tap} from 'rxjs';
+import {SearchOperation} from 'src/app/shared/models/advanced-search/searchOperation';
+import {catchError} from 'rxjs/operators';
+import {OperationType} from '../../../../shared/models/operation-type.enum';
+import {deliveryType} from '../../../../shared/models/deleveryType';
+import {TransactionState} from '../../../../shared/models/OilTransaction';
+import {Currency, PaymentMethod, TransactionDirection} from '../../../../finance/models/financial-transaction.model';
+import {OilSaleService} from '../../../../finance/service/oil-sale.service';
+// import { PaymentSourceType } from '../supplier-details/supplier-details.component';
+import {WasteSaleService} from '../../../../finance/service/wasteSale.service';
+
 export interface PaymentDialogResult {
   ok: boolean;                 // true si succès
   message: string;             // message à afficher
@@ -198,7 +199,7 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.selectedDelivery = this.data?.row;
-    this.sourceType = (this.data?.sourceType as PaymentSourceType) || 'delivery';
+    // this.sourceType = (this.data?.sourceType as PaymentSourceType) || 'delivery';
 
     this.unpaidAmount = this.data?.row?.unpaidAmount;
     this.totalPrice = this.data?.row?.price;
@@ -363,18 +364,18 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
       .subscribe();
   }
 
-  processPayment() {
-    if (this.sourceType === PaymentSourceType.DELIVERY_prc) {
-      this.processDeliveryPaiment();
-    } else if (this.sourceType === PaymentSourceType.DELIVERY_prc ) {
-      this.processOilSalePayment();
-    } else if (this.sourceType === PaymentSourceType.WASTE_SALE_prc) {
-      this.processWasteSalePayment();
-    } else {
-      // fallback to monetary payment
-      this.processOilSalePayment();
-    }
-  }
+  // processPayment() {
+  //   if (this.sourceType === PaymentSourceType.DELIVERY_prc) {
+  //     this.processDeliveryPaiment();
+  //   } else if (this.sourceType === PaymentSourceType.DELIVERY_prc ) {
+  //     this.processOilSalePayment();
+  //   } else if (this.sourceType === PaymentSourceType.WASTE_SALE_prc) {
+  //     this.processWasteSalePayment();
+  //   } else {
+  //     // fallback to monetary payment
+  //     this.processOilSalePayment();
+  //   }
+  // }
 
   async processOilSalePayment(): Promise<void> {
     if (this.paymentForm.invalid || this.transactionNotCompletedError || !this.selectedDelivery?.id) {

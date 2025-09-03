@@ -2138,6 +2138,7 @@
     "PRICE_UNIT": "Unit Price",
     "QUANTITY": "Quantity",
     "TOTAL": "Total Amount",
+    "VENTE_DECHET": "Waste Sale",
     "QUALITY_FIELDS": {
       "ACIDITE": "Acidity",
       "CATEGORIE_HUILE": "Oil category",
