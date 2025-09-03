@@ -15,15 +15,18 @@ import {PAIMENT_DASHBOARD} from './paiment-dashboard.config';
 import {AdvancedSearchService} from '../../../../shared/services/advanced-serach.service';
 import {SearchData} from '../../../../shared/models/advanced-search/searchData';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {OilCredit} from '../../../../finance/models/OilCredit';
 import {UnifiedDelivery} from '../../../../shared/models/UnifiedDelivery';
 import {MatDialog} from '@angular/material/dialog';
 import {SupplierPaymentHistoryComponent} from '../supplier-payment-history/supplier-payment-history.component';
 import {OIL_SALES_DASHBOARD_CONFIG} from './oil-sales-dashboard.config';
 import {ToastService} from '../../../../shared/services/toast.service';
-import {getInvoicePdfConfig} from "../../../../finance/facture-config/oil-sale-invoice.config";
 import {PdfGeneratorFactureService} from "../../../../shared/services/pdf-generator-facture.service";
-import {WASTE_DASHBOARD} from './waste-sale-dashboard.config';
+import {factureTriturationConfig} from "../../../../finance/facture-config/facture-Trituration-Config";
+import {PdfFactureConfig} from "../../../../shared/models/pdf-config.model";
+import {factureDechetConfig} from "../../../../finance/facture-config/facture-Dechet-Config";
+import {CompanyProfile} from "../../../../shared/models/CompanyProfile";
+import {CompanyProfileService} from "../../../../shared/services/company-profile.service";
+import {factureVenteHuileConfig} from "../../../../finance/facture-config/facture-VenteHuile-Config";
 
 export enum PaymentSourceType {
   DELIVERY_prc= 'delivery',
@@ -31,13 +34,6 @@ export enum PaymentSourceType {
   WASTE_SALE_prc = 'waste_sale',
 }
 
-import { factureTriturationConfig } from "../../../../finance/facture-config/facture-Trituration-Config";
-import {PdfGeneratorFactureService} from "../../../../shared/services/pdf-generator-facture.service";
-import {PdfFactureConfig} from "../../../../shared/models/pdf-config.model";
-import {factureDechetConfig} from "../../../../finance/facture-config/facture-Dechet-Config";
-import {CompanyProfile} from "../../../../shared/models/CompanyProfile";
-import {CompanyProfileService} from "../../../../shared/services/company-profile.service";
-import {factureVenteHuileConfig} from "../../../../finance/facture-config/facture-VenteHuile-Config";
 
 @Component({
   selector: 'app-supplier-details',
@@ -172,19 +168,26 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
   }
 
 
-  getInvoicePdfConfig(delivery: UnifiedDelivery, company: CompanyProfile): PdfFactureConfig {
+  getInvoicePdfConfig(delivery: UnifiedDelivery, company: CompanyProfile
+  ): PdfFactureConfig {
     switch (delivery.operationType) {
-      case 'SIMPLE_RECEPTION': // Trituration particulier
+      case 'SIMPLE_RECEPTION':
         return factureTriturationConfig(delivery, company);
 
       case 'EXCHANGE':
       case 'BASE':
         return factureVenteHuileConfig(delivery, company);
 
-      default: // Tous les autres => déchets
+      case 'DECHET':
         return factureDechetConfig(delivery, company);
+
+      default:
+        throw new Error(
+          `[Invoice] Unsupported operationType: ${delivery.operationType}`
+        );
     }
   }
+
 
   getProfileInfo(){
     this.companyService.getProfile().subscribe({

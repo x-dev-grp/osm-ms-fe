@@ -38,8 +38,9 @@ export class PdfGeneratorFactureService {
       const fontSizeMedium = 10;
       const fontSizeLarge = 12;
       const rowHeight = 8;
+      const lineHeight = 7;
 
-      // --- Fonction sécurisée pour éviter les erreurs jsPDF.text ---
+      // --- Fonction sécurisée ---
       const safeText = (text: any, x: number, y: number) => {
         const str = text == null || text === 'undefined' ? '' : String(text).trim();
         if (str) {
@@ -50,14 +51,11 @@ export class PdfGeneratorFactureService {
       // --- LOGO ---
       doc.addImage(base64Logo, this._format, marginLeft, currentY, logoWidth, logoHeight);
 
-      // --- INFOS SOCIÉTÉ
-      const companyInfoX = marginLeft + 10; // Décalage de 10 unités vers la droite
+      // --- INFO SOCIÉTÉ (à gauche) ---
+      const companyInfoX = marginLeft + 10;
       const companyInfoYStart = currentY + 25;
-      const lineHeight = 7;
-
       doc.setFont(this._fontName, fontStyle);
       doc.setFontSize(fontSizeSmall);
-
       safeText(config.companyInfo?.companyName || this.translationService.instant('PDF.COMPANY_NAME'), companyInfoX, companyInfoYStart);
       safeText(config.companyInfo?.address || this.translationService.instant('PDF.ADDRESS'), companyInfoX, companyInfoYStart + lineHeight);
       safeText(`VAT ${config.companyInfo?.vatNumber || this.translationService.instant('PDF.VAT')}`, companyInfoX, companyInfoYStart + 2 * lineHeight);
@@ -68,24 +66,55 @@ export class PdfGeneratorFactureService {
       doc.setFontSize(fontSizeLarge);
       doc.setFont(this._fontName, fontStyleBold);
       safeText(config.title || 'FACTURE', rightX, currentY + 25);
-
       doc.setFontSize(fontSizeMedium);
       doc.setFont(this._fontName, fontStyle);
       safeText(`Réf : ${config.reference}`, rightX, currentY + 32);
       safeText(`Date : ${config.date || new Date().toLocaleDateString()}`, rightX, currentY + 39);
 
-      currentY += 70;
+      // --- INFOS CLIENT - Bloc encadré à droite ---
+      const clientBlockX = rightX;
+      const clientBlockYStart = currentY + 45;
+      const clientBlockWidth = pageWidth - clientBlockX - marginRight;
+      const clientPadding = 4;
 
-      // --- DIMENSIONS DU TABLEAU ---
+      // Hauteur dynamique
+      const clientInfoCount = config.generalInfo?.length || 0;
+      const clientBlockHeight = 6 + (clientInfoCount * lineHeight);
+
+      // Fond + cadre
+      doc.setFillColor(245, 245, 245);
+      doc.rect(clientBlockX, clientBlockYStart, clientBlockWidth, clientBlockHeight, 'FD');
+      doc.setDrawColor(0);
+      doc.setLineWidth(0.5);
+      doc.rect(clientBlockX, clientBlockYStart, clientBlockWidth, clientBlockHeight);
+
+      // Titre
+      doc.setFont(this._fontName, fontStyleBold);
+      doc.setFontSize(fontSizeSmall);
+      safeText(this.translationService.instant('PDF.CLIENT_INFO'), clientBlockX + clientPadding, clientBlockYStart + 6);
+
+      // Données
+      doc.setFont(this._fontName, fontStyle);
+      config.generalInfo?.forEach((info, index) => {
+        const label = this.translationService.instant(info.label);
+        const value = info.value || '';
+        const y = clientBlockYStart + 12 + index * lineHeight;
+        safeText(`${label} : ${value}`, clientBlockX + clientPadding, y);
+      });
+
+      // Mise à jour de currentY
+      currentY = clientBlockYStart + clientBlockHeight + 15;
+
+      // --- TABLEAU ---
       const tableLeft = marginLeft;
       const col1Width = 100; // Description
       const col2Width = 30;  // Prix unitaire
       const col3Width = 30;  // Quantité
-      const col4Width = 30;  // Montant total
+      const col4Width = 30;  // Total
 
-      // --- EN-TÊTE DU TABLEAU ---
+      // En-tête
       doc.setFillColor(200, 200, 200);
-      doc.rect(tableLeft, currentY, col1Width, 10, 'FD'); // fond gris
+      doc.rect(tableLeft, currentY, col1Width, 10, 'FD');
       doc.rect(tableLeft + col1Width, currentY, col2Width, 10, 'FD');
       doc.rect(tableLeft + col1Width + col2Width, currentY, col3Width, 10, 'FD');
       doc.rect(tableLeft + col1Width + col2Width + col3Width, currentY, col4Width, 10, 'FD');
@@ -99,46 +128,47 @@ export class PdfGeneratorFactureService {
 
       currentY += 10;
 
-      // --- LIGNES DE DONNÉES ---
+      // --- LIGNE UNIQUE ---
       let totalValue = 0;
 
       if (config.fields && config.fields.length > 0) {
+        // Récupérer les valeurs
+        const description = config.fields.find(f => f.label === 'PDF.DESCRIPTION')?.value || '';
+        const priceStr = config.fields.find(f => f.label === 'PDF.PRICE_UNIT')?.value || '0';
+        const quantityStr = config.fields.find(f => f.label === 'PDF.QUANTITY')?.value || '0';
+        const totalStr = config.fields.find(f => f.label === 'PDF.TOTAL')?.value || '0';
+
+        // Extraire les nombres
+        const unitPrice = parseFloat(priceStr.replace('TND/kg', '').trim()) || 0;
+        const quantity = parseFloat(quantityStr.replace('kg', '').trim()) || 0;
+        const amount = unitPrice * quantity;
+        totalValue = amount;
+
+        // Dessiner la ligne
+        doc.rect(tableLeft, currentY, col1Width, rowHeight);
+        doc.rect(tableLeft + col1Width, currentY, col2Width, rowHeight);
+        doc.rect(tableLeft + col1Width + col2Width, currentY, col3Width, rowHeight);
+        doc.rect(tableLeft + col1Width + col2Width + col3Width, currentY, col4Width, rowHeight);
+
+        // Texte
         doc.setFont(this._fontName, fontStyle);
         doc.setFontSize(fontSizeSmall);
+        safeText(description, tableLeft + 2, currentY + 5);
+        safeText(`${unitPrice.toFixed(2)} TND/kg`, tableLeft + col1Width + 2, currentY + 5);
+        safeText(`${quantity.toFixed(2)} kg`, tableLeft + col1Width + col2Width + 2, currentY + 5);
+        safeText(`${amount.toFixed(2)} TND`, tableLeft + col1Width + col2Width + col3Width + 2, currentY + 5);
 
-        config.fields.forEach((field) => {
-          const parts = String(field.value).split(' ');
-          const price = parts[0] || '';
-          const quantity = parts[1] || '';
-          const amountStr = parts[2] || '0';
-          const amount = parseFloat(amountStr.replace(',', '.')) || 0;
-          totalValue += amount;
-
-          // Dessiner les cellules
-          doc.rect(tableLeft, currentY, col1Width, rowHeight);
-          doc.rect(tableLeft + col1Width, currentY, col2Width, rowHeight);
-          doc.rect(tableLeft + col1Width + col2Width, currentY, col3Width, rowHeight);
-          doc.rect(tableLeft + col1Width + col2Width + col3Width, currentY, col4Width, rowHeight);
-
-          // Texte
-          safeText(field.label, tableLeft + 2, currentY + 5);
-          safeText(price, tableLeft + col1Width + 2, currentY + 5);
-          safeText(quantity, tableLeft + col1Width + col2Width + 2, currentY + 5);
-          safeText(`${amount.toFixed(2)}`, tableLeft + col1Width + col2Width + col3Width + 2, currentY + 5);
-
-          currentY += rowHeight;
-        });
+        currentY += rowHeight;
       }
 
-      // --- CELLULE DU TOTAL (collée au tableau, sans espace) ---
-      const totalX = tableLeft + col1Width + col2Width + col3Width; // Aligné avec colonne "Total"
-      const totalY = currentY; // ✅ Juste après la dernière ligne
+      // --- TOTAL FINAL ---
+      const totalX = tableLeft + col1Width + col2Width + col3Width;
+      const totalY = currentY;
       const totalWidth = col4Width;
       const totalHeight = rowHeight;
 
       doc.setLineWidth(0.5);
       doc.rect(totalX, totalY, totalWidth, totalHeight);
-
       doc.setFont(this._fontName, fontStyleBold);
       doc.setFontSize(fontSizeMedium);
       safeText(`${totalValue.toFixed(2)} TND`, totalX + 2, totalY + 5);

@@ -2093,7 +2093,13 @@
     "COMPANY_WEBSITE": "Site web",
     "HUILE_TYPE": "Type d'huile",
     "PRICE_UNIT": "Prix unitaire",
-
+    "COMPANY_NAME": "Nom de l'entreprise",
+    "VAT": "Numéro TVA",
+    "MOBILE": "Téléphone",
+    "WEBSITE": "Site web",
+    "DESCRIPTION": "Description",
+    "CLIENT_INFO": "Client",
+    "VENTE_DECHET": "Vente Déchet",
     "QUALITY_FIELDS": {
       "ACIDITE": "Acidité",
       "CATEGORIE_HUILE": "Catégorie huile",
