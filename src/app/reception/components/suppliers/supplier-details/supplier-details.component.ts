@@ -20,19 +20,11 @@ import {MatDialog} from '@angular/material/dialog';
 import {SupplierPaymentHistoryComponent} from '../supplier-payment-history/supplier-payment-history.component';
 import {OIL_SALES_DASHBOARD_CONFIG} from './oil-sales-dashboard.config';
 import {ToastService} from '../../../../shared/services/toast.service';
-import {PdfGeneratorFactureService} from "../../../../shared/services/pdf-generator-facture.service";
 import {factureTriturationConfig} from "../../../../finance/facture-config/facture-Trituration-Config";
+import {PdfGeneratorFactureService} from "../../../../shared/services/pdf-generator-facture.service";
 import {PdfFactureConfig} from "../../../../shared/models/pdf-config.model";
-import {factureDechetConfig} from "../../../../finance/facture-config/facture-Dechet-Config";
 import {CompanyProfile} from "../../../../shared/models/CompanyProfile";
 import {CompanyProfileService} from "../../../../shared/services/company-profile.service";
-import {factureVenteHuileConfig} from "../../../../finance/facture-config/facture-VenteHuile-Config";
-
-export enum PaymentSourceType {
-  DELIVERY_prc= 'delivery',
-  OIL_SALE_prc = 'oil_sale',
-  WASTE_SALE_prc = 'waste_sale',
-}
 
 
 @Component({
@@ -51,7 +43,6 @@ export enum PaymentSourceType {
     CardComponent
   ]
 })
-
 export class SupplierDetailsComponent implements OnInit, OnDestroy {
   destroyRef = inject(DestroyRef);
   loading: boolean = false;
@@ -60,38 +51,23 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
   creditsCount: number = 0;
   supplierId: string | null = null;
   isOilCredit: boolean = false;
-  isWasteSale: boolean = false;
   isOilSale: boolean = false;
   isPayment: boolean = false;
   companyProfile?: CompanyProfile;
 
   OIL_CREDIT_DASHBOARD: DashboardConfig = OIL_CREDIT_DASHBOARD;
-  WASTE_DASHBOARD: DashboardConfig = WASTE_DASHBOARD;
   PAIMENT_DASHBOARD: DashboardConfig = PAIMENT_DASHBOARD;
   OIL_SALES_DASHBOARD_CONFIG = OIL_SALES_DASHBOARD_CONFIG;
-  unpaidSUM: number;
-  paidSum: number;
   unpaidSUM: string;
   paidSum: string;
   paidOilSalesSUM: string;
   unpaidOilSalesSum: string;
-  // Oil sales metrics
-  protected paidOilSalesCount: number = 0;
-  protected unpaidOilSalesCount: number = 0;
-  protected paidOilSalesSUM: number;
-  protected unpaidOilSalesSum: number;
-
-  // Waste sales metrics (NEW)
-  protected paidWasteSalesCount: number = 0;
-  protected unpaidWasteSalesCount: number = 0;
-  protected paidWasteSalesSUM: number;
-  protected unpaidWasteSalesSum: number;
-
   @ViewChild('dashboardOilCredit') dashboardOilCredit!: OsmDashboard;
   @ViewChild('dashboardPaiments') dashboardPaiments!: OsmDashboard;
   @ViewChild('dashboardOilSale') dashboardOilSale!: OsmDashboard;
-  @ViewChild('dashboardWasteSale') dashboardWasteSale!: OsmDashboard; // NEW
-
+  // Function to load payment history based on whether the payment is paid or not
+  protected paidOilSalesCount: any;
+  protected unpaidOilSalesCount: any;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -112,32 +88,6 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
     this.getProfileInfo();
   }
 
-  handleCreditAction(e: { row: OilCredit; action: string }) {
-    const actionLabel = e.action?.toUpperCase();
-
-    switch (actionLabel) {
-      case 'READ':
-        this.router.navigate(['/finance/expenses', e.row.id, 'view']);
-        break;
-
-      case 'PRINT':
-        break;
-
-      case 'UPDATE':
-        this.router.navigate(['/finance/expenses', e.row.id, 'edit']);
-        break;
-
-      case 'DELETE':
-        break;
-
-      case 'GEN_INVOICE':
-        if (e.row?.id) {
-          this.generateOilCreditInvoice(e.row);
-        }
-        break;
-    }
-  }
-
   handlePaymentAction(e: { row: UnifiedDelivery; action: string }) {
     const actionLabel = e.action;
     switch (actionLabel) {
@@ -155,14 +105,18 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
       case 'GEN_INVOICE':
         if (e.row) {
           console.log(`[OilReception] Generating invoice for delivery: ${e.row.lotNumber}`);
-          this.generateInvoice(e.row);
+
+          if (!this.companyProfile) {
+            console.error('[CompanyProfile] Company profile not loaded yet!');
+            return;
+          }
+          const config = this.getInvoicePdfConfig(e.row, this.companyProfile);
+          this.pdfFactureService.generatePdfDocument(config);
         }
         break;
 
       case 'PAY':
-        const sourceType = this.getCurrentPaymentSourceType();
-
-        this.initiatePayment(e.row, sourceType);
+        this.initiatePayment(e.row);
         break;
     }
   }
@@ -174,12 +128,12 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
       case 'SIMPLE_RECEPTION':
         return factureTriturationConfig(delivery, company);
 
-      case 'EXCHANGE':
-      case 'BASE':
-        return factureVenteHuileConfig(delivery, company);
-
-      case 'DECHET':
-        return factureDechetConfig(delivery, company);
+      // case 'EXCHANGE':
+      // case 'BASE':
+      //   return factureVenteHuileConfig(delivery, company);
+      //
+      // case 'DECHET':
+      //   return factureDechetConfig(delivery, company);
 
       default:
         throw new Error(
@@ -202,14 +156,13 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
   }
 
 
-   initiatePayment(row: any,sourceType:string) {
+  initiatePayment(row: any) {
     let dialogRef = this._dialog.open(SupplierPaymentHistoryComponent, {
       width: '41vw',
       height: '100vw',
       data: {
-        row: row,
-        sourceType : sourceType
-       },
+        row: row
+      },
       autoFocus: false,
       disableClose: true
     });
@@ -236,18 +189,6 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
       .subscribe();
   }
 
-  private generateOilCreditInvoice(creditData: any) {
-    if (!creditData) {
-      console.error('generateOilCreditInvoice: creditData is undefined');
-      return;
-    }
-    console.log('generateOilCreditInvoice - creditData:', creditData);
-    // this.invoiceService.generateOilCreditInvoice(creditData);
-  }
-
-  /* =========================
-   * LOADERS (sections)
-   * ========================= */
 
   loadOilCredits(): void {
     this.OIL_CREDIT_DASHBOARD = {
@@ -271,100 +212,53 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
     this.isOilCredit = true;
     this.isOilSale = false;
     this.isPayment = false;
-    this.isWasteSale = false;
   }
 
-  // Existing "all waste sale" view kept as-is
-  loadWasteSale(): void {
-    this.WASTE_DASHBOARD = {
-      ...this.WASTE_DASHBOARD,
-      defaultSearchData: {
-        ...this.WASTE_DASHBOARD.defaultSearchData,
-        searchData: {
-          ...this.WASTE_DASHBOARD.defaultSearchData?.searchData,
-          search: {
-            isDeleted: { equalValue: false },
-            ...this.WASTE_DASHBOARD.defaultSearchData?.searchData?.search,
-            'supplier.id': { equalValue: this.supplierId }
-          }
-        }
-      }
-    };
-    this.isOilCredit = false;
-    this.isOilSale = false;
-    this.isPayment = false;
-    this.isWasteSale = true;
-  }
-
-  // NEW: paid/unpaid waste-sale history (mirrors oil sales)
-  loadWasteSalesHistory(isPaid: boolean): void {
-    this.WASTE_DASHBOARD = {
-      ...this.WASTE_DASHBOARD,
-      title: isPaid
-        ? 'Historique paiements Déchets'
-        : 'Paiements Déchets en attente',
-      defaultSearchData: {
-        ...this.WASTE_DASHBOARD.defaultSearchData,
-        searchData: {
-          ...this.WASTE_DASHBOARD.defaultSearchData?.searchData,
-          search: {
-            ...this.WASTE_DASHBOARD.defaultSearchData?.searchData?.search,
-            'supplier.id': { equalValue: this.supplierId! },
-            paid: { equalValue: isPaid }
-          }
-        }
-      }
-    };
-    this.isOilCredit = false;
-    this.isOilSale = false;
-    this.isPayment = false;
-    this.isWasteSale = true;
-  }
-  private getCurrentPaymentSourceType(): PaymentSourceType {
-    if (this.isOilSale) return PaymentSourceType.OIL_SALE_prc;
-    if (this.isWasteSale) return PaymentSourceType.WASTE_SALE_prc;
-    return PaymentSourceType.DELIVERY_prc;
-  }
   loadPaymentHistory(isPaid: boolean): void {
     this.isPayment = true;
     this.isOilCredit = false;
     this.isOilSale = false;
-    this.isWasteSale = false;
-
+    // Set PAIMENT_DASHBOARD object with title and titleTranslatePath based on whether the payment is paid or not
     this.PAIMENT_DASHBOARD = {
       ...this.PAIMENT_DASHBOARD,
       title: isPaid ? 'Historique paiements' : 'Paiements en attente',
-      titleTranslatePath: isPaid
-        ? 'SUPPLIER.DETAILS.PAYMENT_HISTORY_TITLE'
-        : 'SUPPLIER.DETAILS.UNPAID_TITLE',
+      titleTranslatePath: isPaid ? 'SUPPLIER.DETAILS.PAYMENT_HISTORY_TITLE' : 'SUPPLIER.DETAILS.UNPAID_TITLE', // Set defaultSearchData object with searchData object based on whether the payment is paid or not
       defaultSearchData: {
         ...this.PAIMENT_DASHBOARD.defaultSearchData,
         searchData: {
           ...this.PAIMENT_DASHBOARD.defaultSearchData?.searchData,
           search: {
-            ...this.PAIMENT_DASHBOARD.defaultSearchData?.searchData?.search,
-            paid: { equalValue: isPaid },
-            'supplier.id': { equalValue: this.supplierId! }
+            ...this.PAIMENT_DASHBOARD.defaultSearchData?.searchData?.search, // Set supplier.id and paid equalValue based on whether the payment is paid or not
+            paid: {
+              equalValue: isPaid
+            },
+            'supplier.id': {
+              equalValue: this.supplierId!
+            }
           }
         }
       }
     };
+    // Call countData function
+    // this.countData();
   }
 
   loadOilSalesHistory(isPaid: boolean): void {
     this.OIL_SALES_DASHBOARD_CONFIG = {
       ...this.OIL_SALES_DASHBOARD_CONFIG,
-      title: isPaid
-        ? 'Historique paiements Des ventes huile'
-        : 'Paiements ventes huile en attente',
+      title: isPaid ? 'Historique paiements Des ventes huile' : 'Paiements ventes huile en attente',
       defaultSearchData: {
         ...this.OIL_SALES_DASHBOARD_CONFIG.defaultSearchData,
         searchData: {
           ...this.OIL_SALES_DASHBOARD_CONFIG.defaultSearchData?.searchData,
           search: {
             ...this.OIL_SALES_DASHBOARD_CONFIG.defaultSearchData?.searchData?.search,
-            'supplier.id': { equalValue: this.supplierId! },
-            paid: { equalValue: isPaid }
+            'supplier.id': {
+              equalValue: this.supplierId!
+            },
+            paid: {
+              equalValue: isPaid
+            }
           }
         }
       }
@@ -373,23 +267,11 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
     this.isOilCredit = false;
     this.isOilSale = true;
     this.isPayment = false;
-    this.isWasteSale = false;
   }
 
-  /* =========================
-   * COUNTS / SUMS
-   * ========================= */
-
   countData(): void {
-    // Oil sales metrics
     this.paidOilSales();
     this.unpaidOilSales();
-
-    // Waste sales metrics (NEW)
-    this.paidWasteSales();
-    this.unpaidWasteSales();
-
-    // Payments & credits
     this.paidCountSearchData();
     this.unpaidCountSearchDta();
     this.creditCountSearchDta();
@@ -400,140 +282,100 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  /* ---------- Oil Sales ---------- */
-
   protected paidOilSales() {
-    const search: SearchData = {
+    const paidOilSalesData: SearchData = {
       ...this.OIL_SALES_DASHBOARD_CONFIG.defaultSearchData,
       searchData: {
         ...this.OIL_SALES_DASHBOARD_CONFIG.defaultSearchData?.searchData,
         search: {
-          isDeleted: { equalValue: false },
-          paid: { equalValue: true },
-          'supplier.id': { equalValue: this.supplierId! }
+          isDeleted: {
+            equalValue: false
+          },
+          paid: {
+            equalValue: true
+          },
+          'supplier.id': {
+            equalValue: this.supplierId!
+          }
         }
       }
     };
     this.searchService
-      .search(search, 'production/oil_sale')
+      .search(paidOilSalesData, 'production/oil_sale')
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((res) => {
           this.paidOilSalesCount = res?.total || 0;
+
           const items = res?.data ?? [];
+          // Adapte le nom du champ si besoin : unpaidAmount / remainingAmount / resteAPayer / unpaid
           this.paidOilSalesSUM = items.reduce((sum: number, it: any) => {
-            const v = Number(it?.paiedAmount ?? it?.paidAmount ?? 0);
+            const v = Number(it?.paiedAmount ?? 0);
             return sum + (Number.isFinite(v) ? v : 0);
           }, 0);
+
+          console.log('[Supplier] Somme impayée (page courante):', this.paidOilSalesSUM);
         })
       )
       .subscribe();
   }
 
   protected unpaidOilSales() {
-    const search: SearchData = {
+    const paidOilSalesData: SearchData = {
       ...this.OIL_SALES_DASHBOARD_CONFIG.defaultSearchData,
       searchData: {
         ...this.OIL_SALES_DASHBOARD_CONFIG.defaultSearchData?.searchData,
         search: {
-          isDeleted: { equalValue: false },
-          paid: { equalValue: false },
-          'supplier.id': { equalValue: this.supplierId! }
+          isDeleted: {
+            equalValue: false
+          },
+          paid: {
+            equalValue: false
+          },
+          'supplier.id': {
+            equalValue: this.supplierId!
+          }
         }
       }
     };
     this.searchService
-      .search(search, 'production/oil_sale')
+      .search(paidOilSalesData, 'production/oil_sale')
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((res) => {
           this.unpaidOilSalesCount = res?.total || 0;
+
           const items = res?.data ?? [];
+          // Adapte le nom du champ si besoin : unpaidAmount / remainingAmount / resteAPayer / unpaid
           this.unpaidOilSalesSum = items.reduce((sum: number, it: any) => {
             const v = Number(it?.unpaidAmount ?? it?.unpaid ?? 0);
             return sum + (Number.isFinite(v) ? v : 0);
           }, 0);
+
+          console.log('[Supplier] Somme impayée (page courante):', this.unpaidOilSalesSum);
         })
       )
       .subscribe();
   }
-
-  /* ---------- Waste Sales (NEW) ---------- */
-
-  protected paidWasteSales() {
-    const search: SearchData = {
-      ...this.WASTE_DASHBOARD.defaultSearchData,
-      searchData: {
-        ...this.WASTE_DASHBOARD.defaultSearchData?.searchData,
-        search: {
-          isDeleted: { equalValue: false },
-          paid: { equalValue: true },
-          'supplier.id': { equalValue: this.supplierId! }
-        }
-      }
-    };
-    this.searchService
-      // If your backend path differs, adjust here (e.g., 'production/waste_sale')
-      .search(search, 'production/waste')
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        tap((res) => {
-          this.paidWasteSalesCount = res?.total || 0;
-          const items = res?.data ?? [];
-          this.paidWasteSalesSUM = items.reduce((sum: number, it: any) => {
-            const v = Number(it?.totalPrice ?? it?.totalPrice ?? 0);
-            return sum + (Number.isFinite(v) ? v : 0);
-          }, 0);
-        })
-      )
-      .subscribe();
-  }
-
-  protected unpaidWasteSales() {
-    const search: SearchData = {
-      ...this.WASTE_DASHBOARD.defaultSearchData,
-      searchData: {
-        ...this.WASTE_DASHBOARD.defaultSearchData?.searchData,
-        search: {
-          isDeleted: { equalValue: false },
-          paid: { equalValue: false },
-          'supplier.id': { equalValue: this.supplierId! }
-        }
-      }
-    };
-    this.searchService
-      // If your backend path differs, adjust here (e.g., 'production/waste_sale')
-      .search(search, 'production/waste')
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        tap((res) => {
-          this.unpaidWasteSalesCount = res?.total || 0;
-          const items = res?.data ?? [];
-          this.unpaidWasteSalesSum = items.reduce((sum: number, it: any) => {
-            const v = Number(it?.unpaidAmount ?? it?.unpaid ?? 0);
-            return sum + (Number.isFinite(v) ? v : 0);
-          }, 0);
-        })
-      )
-      .subscribe();
-  }
-
-  /* ---------- Credits / Payments ---------- */
 
   private creditCountSearchDta() {
-    const search: SearchData = {
+    const creditCountSearchDta: SearchData = {
       page: 0,
       size: 1,
       searchData: {
         search: {
-          isDeleted: { equalValue: false },
-          destinataire: { equalValue: this.supplierId! }
+          isDeleted: {
+            equalValue: false
+          },
+          destinataire: {
+            equalValue: this.supplierId!
+          }
         }
       }
     };
 
     this.searchService
-      .search(search, 'finance/oil-credit')
+      .search(creditCountSearchDta, 'finance/oil-credit')
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((res) => {
@@ -544,70 +386,83 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
   }
 
   private unpaidCountSearchDta() {
-    const search: SearchData = {
+    const unpaidCountSearchDta: SearchData = {
       ...this.PAIMENT_DASHBOARD.defaultSearchData,
       searchData: {
         ...this.PAIMENT_DASHBOARD.defaultSearchData?.searchData,
         search: {
-          isDeleted: { equalValue: false },
-          paid: { equalValue: false },
-          'supplier.id': { equalValue: this.supplierId! }
+          isDeleted: {
+            equalValue: false
+          },
+          paid: {
+            equalValue: false
+          },
+          'supplier.id': {
+            equalValue: this.supplierId!
+          }
         }
       }
     };
 
     this.searchService
-      .search(search, 'production/deliveries')
+      .search(unpaidCountSearchDta, 'production/deliveries')
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((res) => {
           this.unpaidCount = res?.total || 0;
           const items = res?.data ?? [];
+          // Adapte le nom du champ si besoin : unpaidAmount / remainingAmount / resteAPayer / unpaid
           this.unpaidSUM = items.reduce((sum: number, it: any) => {
             const v = Number(it?.unpaidAmount ?? it?.unpaid ?? 0);
             return sum + (Number.isFinite(v) ? v : 0);
           }, 0);
+
+          console.log('[Supplier] Somme impayée (page courante):', this.unpaidSUM);
         })
       )
       .subscribe();
   }
 
   private paidCountSearchData() {
-    const search: SearchData = {
+    const paidCountSearchDta: SearchData = {
       ...this.PAIMENT_DASHBOARD.defaultSearchData,
       searchData: {
         ...this.PAIMENT_DASHBOARD.defaultSearchData?.searchData,
         search: {
-          isDeleted: { equalValue: false },
-          paid: { equalValue: true },
-          'supplier.id': { equalValue: this.supplierId! }
+          isDeleted: {
+            equalValue: false
+          },
+          paid: {
+            equalValue: true
+          },
+          'supplier.id': {
+            equalValue: this.supplierId!
+          }
         }
       }
     };
     this.searchService
-      .search(search, 'production/deliveries')
+      .search(paidCountSearchDta, 'production/deliveries')
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((res) => {
           this.paidCount = res?.total || 0;
           const items = res?.data ?? [];
+          // Adapte le nom du champ si besoin : unpaidAmount / remainingAmount / resteAPayer / unpaid
           this.paidSum = items.reduce((sum: number, it: any) => {
             const v = Number(it?.paidAmount ?? 0);
             return sum + (Number.isFinite(v) ? v : 0);
           }, 0);
+
+          console.log('[Supplier]  this.paidSum ):', this.paidSum);
         })
       )
       .subscribe();
   }
 
-  /* =========================
-   * REFRESH
-   * ========================= */
-
   private refreshPaymentList() {
-    if (this.dashboardOilCredit) this.dashboardOilCredit.refrechData();
-    if (this.dashboardPaiments) this.dashboardPaiments.refrechData();
-    if (this.dashboardOilSale) this.dashboardOilSale.refrechData();
-    if (this.dashboardWasteSale) this.dashboardWasteSale.refrechData();   this.countData();
+    this.dashboardOilCredit.refrechData();
+    this.dashboardPaiments.refrechData();
+    this.dashboardOilSale.refrechData();
   }
 }
