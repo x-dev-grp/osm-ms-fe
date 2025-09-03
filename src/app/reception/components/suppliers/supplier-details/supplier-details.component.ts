@@ -21,6 +21,9 @@ import {MatDialog} from '@angular/material/dialog';
 import {SupplierPaymentHistoryComponent} from '../supplier-payment-history/supplier-payment-history.component';
 import {OIL_SALES_DASHBOARD_CONFIG} from './oil-sales-dashboard.config';
 import {ToastService} from '../../../../shared/services/toast.service';
+import {factureTriturationConfig} from "../../../../finance/facture-config/facture-Trituration-Config";
+import {PdfGeneratorFactureService} from "../../../../shared/services/pdf-generator-facture.service";
+import {PdfFactureConfig} from "../../../../shared/models/pdf-config.model";
 import {getInvoicePdfConfig} from "../../../../finance/facture-config/oil-sale-invoice.config";
 import {PdfGeneratorFactureService} from "../../../../shared/services/pdf-generator-facture.service";
 import {WASTE_DASHBOARD} from './waste-sale-dashboard.config';
@@ -37,6 +40,13 @@ import {factureDechetConfig} from "../../../../finance/facture-config/facture-De
 import {CompanyProfile} from "../../../../shared/models/CompanyProfile";
 import {CompanyProfileService} from "../../../../shared/services/company-profile.service";
 import {factureVenteHuileConfig} from "../../../../finance/facture-config/facture-VenteHuile-Config";
+
+export enum PaymentSourceType {
+  DELIVERY_prc= 'delivery',
+  OIL_SALE_prc = 'oil_sale',
+  WASTE_SALE_prc = 'waste_sale',
+}
+
 
 @Component({
   selector: 'app-supplier-details',
@@ -158,14 +168,18 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
       case 'GEN_INVOICE':
         if (e.row) {
           console.log(`[OilReception] Generating invoice for delivery: ${e.row.lotNumber}`);
-          this.generateInvoice(e.row);
+
+          if (!this.companyProfile) {
+            console.error('[CompanyProfile] Company profile not loaded yet!');
+            return;
+          }
+          const config = this.getInvoicePdfConfig(e.row, this.companyProfile);
+          this.pdfFactureService.generatePdfDocument(config);
         }
         break;
 
       case 'PAY':
-        const sourceType = this.getCurrentPaymentSourceType();
-
-        this.initiatePayment(e.row, sourceType);
+        this.initiatePayment(e.row);
         break;
     }
   }
@@ -177,12 +191,12 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
       case 'SIMPLE_RECEPTION':
         return factureTriturationConfig(delivery, company);
 
-      case 'EXCHANGE':
-      case 'BASE':
-        return factureVenteHuileConfig(delivery, company);
-
-      case 'DECHET':
-        return factureDechetConfig(delivery, company);
+      // case 'EXCHANGE':
+      // case 'BASE':
+      //   return factureVenteHuileConfig(delivery, company);
+      //
+      // case 'DECHET':
+      //   return factureDechetConfig(delivery, company);
 
       default:
         throw new Error(
