@@ -17,6 +17,8 @@ import { CardComponent } from '../../../theme/components/card/card.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { format } from 'date-fns';
+import {DepartmentService} from "../../services/departement-service";
+import{Department} from "../../model/department.model";
 
 @Component({
   selector: 'app-employee-add',
@@ -44,6 +46,7 @@ export class EmployeeAddComponent implements OnInit {
   isEditing = false;
   employeeId?: string;
   loading = false;
+  departments: Department[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -51,18 +54,45 @@ export class EmployeeAddComponent implements OnInit {
     private toast: ToastService,
     private router: Router,
     private route: ActivatedRoute,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private departmentService: DepartmentService
   ) {
     this.employeeForm = this.createForm();
   }
 
   ngOnInit(): void {
+    this.loadDepartments();
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEditing = true;
       this.employeeId = id;
       this.loadEmployee(this.employeeId);
+
     }
+  }
+  private loadDepartments(): void {
+    this.departmentService.getAllDepartments().subscribe({
+      next: (response) => {
+        console.log('Réponse départements:', response);
+
+        if (response.success && response.data) {
+          if (Array.isArray(response.data)) {
+            this.departments = response.data.flat();
+          } else {
+            this.departments = [response.data];
+          }
+          console.log(`${this.departments.length} départements chargés`);
+        } else {
+          this.departments = [];
+          console.warn('Aucun département trouvé');
+        }
+      },
+      error: (error) => {
+        console.error('Erreur chargement départements:', error);
+        this.toast.error(this.translate.instant('DEPARTMENT.MESSAGES.ERROR_LOADING'));
+        this.departments = [];
+      }
+    });
   }
 
   private createForm(): FormGroup {
@@ -81,7 +111,10 @@ export class EmployeeAddComponent implements OnInit {
       city: [''],
       country: [''],
       externalId: [''],
-      active: [true]
+      active: [true],
+      departmentId: [''],
+
+
     });
   }
 
@@ -106,7 +139,8 @@ export class EmployeeAddComponent implements OnInit {
             city: employee.city,
             country: employee.country,
             externalId: employee.externalId,
-            active: employee.active
+            active: employee.active,
+            departmentId: employee.department ? employee.department.id : null,
           });
         }
         this.loading = false;
@@ -122,6 +156,22 @@ export class EmployeeAddComponent implements OnInit {
     if (this.employeeForm.valid) {
       this.loading = true;
       const formValue = this.employeeForm.value;
+
+      // Debug: afficher tous les départements et l'ID recherché
+      console.log('Tous les départements:', this.departments);
+      console.log('ID département recherché:', formValue.departmentId);
+
+      const selectedDepartment = this.departments.find(dept =>
+        String(dept.id) === String(formValue.departmentId)
+      );
+
+      console.log('Département sélectionné:', selectedDepartment); // Debug
+
+      if (!selectedDepartment) {
+        this.toast.error(this.translate.instant('DEPARTMENT.MESSAGES.NOT_FOUND'));
+        this.loading = false;
+        return;
+      }
 
       const employeeData: Employee = {
         id: this.employeeId,
@@ -139,7 +189,10 @@ export class EmployeeAddComponent implements OnInit {
         city: formValue.city || '',
         country: formValue.country || '',
         externalId: formValue.externalId || '',
-        active:formValue.active
+        active: formValue.active,
+        department:selectedDepartment
+
+
       };
 
       console.log('Payload envoyé :', employeeData);

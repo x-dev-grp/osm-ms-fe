@@ -1,5 +1,6 @@
 export interface Poste {
-  id?: number;
+  id?: string;
   name: string;
   description: string;
+  externalId: string;
 }

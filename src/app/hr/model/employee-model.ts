@@ -32,6 +32,7 @@ export interface Employee {
   maritalStatus: MaritalStatus;
   contrats?: Contract[];
   department?: Department;
+  departmentId?: string;
   externalId?: string;
   payRolls?: PayRolls[];
   pointages?: Pointage[];

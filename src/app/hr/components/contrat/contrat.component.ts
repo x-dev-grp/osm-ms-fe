@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
-import { dashboardConfig } from './department-dashboard.config';
+import { dashboardConfig } from './contrat-dashboard.config';
 import { Router } from '@angular/router';
 import { Department } from '../../model/department.model';
 
@@ -8,10 +8,10 @@ import { Department } from '../../model/department.model';
   selector: 'app-department',
   standalone: true,
   imports: [OsmDashboard],
-  templateUrl: './department.component.html',
-  styleUrls: ['./department.component.scss']
+  templateUrl: './contrat.component.html',
+  styleUrls: ['./contrat.component.scss']
 })
-export class DepartmentComponent implements OnInit {
+export class ContratComponent implements OnInit {
   protected readonly dashboardConfig = dashboardConfig;
 
   constructor(private router: Router) {}
@@ -21,10 +21,10 @@ export class DepartmentComponent implements OnInit {
   handleAction(event: { row: Department; action: string }): void {
     switch (event.action) {
       case 'READ':
-        this.router.navigate([`hr/department/fetch/${event.row.id}`]);
+        this.router.navigate([`hr/contract/fetch/${event.row.id}`]);
         break;
       case 'UPDATE':
-        this.router.navigate([`hr/department/${event.row.id}`]);
+        this.router.navigate([`hr/contract/${event.row.id}`]);
         break;
     }
   }

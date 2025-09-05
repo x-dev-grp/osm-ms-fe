@@ -1,4 +1,5 @@
 {
+  "": "Contract Type",
   "ACCESS_DENIED": {
     "GO_HOME": "Back to home",
     "GO_HOME_TITLE": "Back to home",
@@ -152,6 +153,7 @@
     "BACK": "Back",
     "CANCEL": "Cancel",
     "CLOSE": "Close",
+    "DELETE": "Delete",
     "EDIT": "Edit",
     "LAST_UPDATED": "Last update at ",
     "LOADING": "Loading...",
@@ -299,6 +301,29 @@
       "RECEPTION": "Reception Config",
       "SITE": "Site Config",
       "STOCK": "Stock Config"
+    }
+  },
+  "CONTRACT": {
+    "ADD": "Add Contract",
+    "ADD_TITLE": "Add contract",
+    "CANCEL": "Cancel",
+    "EDIT_TITLE": "Edit contract",
+    "END_DATE": "End date",
+    "POSITION": "Position",
+    "POSTE": "Contract position",
+    "SALARY": "Salary",
+    "SAVE": "Save contract",
+    "START_DATE": "Start Date",
+    "STATUS": "Contract status",
+    "TITLE": "Contracts",
+    "TYPE": "Type",
+    "UPDATE": "Update contract"
+  },
+  "CONTRAT": {
+    "STATUS": {
+      "ACTIVE": "Active",
+      "EXPIRED": "Expired",
+      "SUSPENDED": "SUSPENDED"
     }
   },
   "CONTROLE_QUALITE": {
@@ -728,6 +753,23 @@
       "REFUSED": "Refused"
     }
   },
+  "DEPARTMENT": {
+    "DETAIL": {
+      "EMPLOYEES": "Employees",
+      "GENERAL_INFO": "General Information",
+      "MANAGER_INFO": "Manager Information",
+      "MANAGER_NOT_FOUND": "Manager not found",
+      "NO_EMPLOYEES": "No employees found",
+      "TITLE": "Department Details"
+    },
+    "FORM": {
+      "DESCRIPTION": "Description",
+      "NAME": "Name"
+    },
+    "MESSAGES": {
+      "NOT_FOUND": "Department not found"
+    }
+  },
   "DIVORCED": "Divorced",
   "Dashboard": "Dashboard",
   "Data": "Data",
@@ -761,6 +803,7 @@
       "CIN": "CIN",
       "CITY": "City",
       "COUNTRY": "Country",
+      "DEPARTMENT": "Department",
       "EMAIL": "Email",
       "GENDER": "Gender",
       "HIRE_DATE": "Hire Date",
@@ -768,11 +811,16 @@
       "PHONE": "Phone",
       "POSTAL_CODE": "Postal Code"
     },
-    "GENDER": "Gender",
+    "GENDER": {
+      "FEMALE": "Female"
+    },
     "HIRE_DATE": "Hire Date",
     "IS_ACTIVE": "Active",
     "LAST_NAME": "Last Name",
-    "MARITAL_STATUS": "Marital Status",
+    "MARITAL_STATUS": {
+      "MARRIED": "Married",
+      "SINGLE": "Single"
+    },
     "MESSAGES": {
       "NOT_FOUND": "Employee not found"
     },
@@ -2157,6 +2205,15 @@
   "PLANNING_TYPE": "Type:",
   "PLANNING_UNASSIGNED": "Unassigned",
   "PLANNING_VARIETY": "Variety:",
+  "POSTE": {
+    "ADD_TITLE": "Add position",
+    "CANCEL": "Cancel",
+    "DESCRIPTION": "Poste description",
+    "EDIT_TITLE": "Edit position",
+    "NAME": "Position",
+    "SAVE": "Save position",
+    "UPDATE": "Update position"
+  },
   "PRODUCTION_TAB": "Production Config",
   "Pages": "Pages",
   "Plugins": "Plugins",
@@ -2734,6 +2791,9 @@
   "auth": {
     "change_password_title": "Change Password",
     "password_changed_success": "Your password has been successfully changed. Do you want to access the application?"
+  },
+  "department": {
+    "description": "Description"
   },
   "reCaptcha": "reCaptcha"
 }
