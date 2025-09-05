@@ -23,7 +23,6 @@ export interface Contract {
   poste?: Poste;
   contractType: ContractType;
   contractStatus: ContractStatus;
-  employee: Employee;
   externalId: string;
 
 }

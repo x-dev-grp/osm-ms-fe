@@ -8,7 +8,7 @@ export const WASTE_DASHBOARD: DashboardConfig = {
   titleTranslatePath: 'WASTE.TITLE',
   baseURL: 'production/waste',
   searchEndpoint: 'production/waste',
-  addNewItem: true,
+  addNewItem: false,
   addNewItemUrl: '/finance/waste-sales/new',
   specificActions: [{
     action: 'PAY',
@@ -17,6 +17,14 @@ export const WASTE_DASHBOARD: DashboardConfig = {
     disabled: {
       field: 'paid',
       value: true
+    }
+  },{
+    action: 'GEN_INVOICE',
+    color: 'secondary',
+    icon: 'file_copy',
+    disabled: {
+      field: 'paid',
+      value: false
     }
   }],
   defaultSearchData: {
@@ -45,8 +53,8 @@ export const WASTE_DASHBOARD: DashboardConfig = {
       filterable: true,
       options: [
         {label: 'Margine', value: 'MARGINE', labelTranslatePath: 'WASTE.TYPES.MARGINE'},
-        {label: 'Grignon', value: 'POMACE', labelTranslatePath: 'WASTE.TYPES.POMACE'},
-        {label: 'Solides végétaux', value: 'VEGETAL_SOLIDS', labelTranslatePath: 'WASTE.TYPES.VEGETAL_SOLIDS'},
+        {label: 'Grignon', value: 'POMACE', labelTranslatePath: 'WASTE.TYPES.GRIGNON'},
+        {label: 'Solides végétaux', value: 'VEGETAL_SOLIDS', labelTranslatePath: 'WASTE.TYPES.SOLID'},
         {label: 'Autre', value: 'OTHER', labelTranslatePath: 'WASTE.TYPES.OTHER'}
       ]
     },
@@ -94,56 +102,13 @@ export const WASTE_DASHBOARD: DashboardConfig = {
       dataTable: true,
       filterable: true
     },
-    {
-      name: 'invoiceNumber',
-      label: 'N° Facture',
-      labelTranslatePath: 'WASTE.FIELDS.INVOICE_NUMBER',
-      attributeType: AttributeType.string,
-      fieldType: FieldType.text,
-      exportable: true,
-      sortable: true,
-      dataTable: true,
-      filterable: true
-    },
+
     {
       name: 'paid',
       label: 'Payé ?',
       labelTranslatePath: 'WASTE.FIELDS.PAID',
       attributeType: AttributeType.boolean,
       fieldType: FieldType.checkbox,
-      exportable: true,
-      sortable: false,
-      dataTable: true,
-      filterable: true
-    },
-    {
-      name: 'paymentDate',
-      label: 'Date de paiement',
-      labelTranslatePath: 'WASTE.FIELDS.PAYMENT_DATE',
-      attributeType: AttributeType.date,
-      fieldType: FieldType.date,
-      exportable: true,
-      sortable: true,
-      dataTable: true,
-      filterable: true
-    },
-    {
-      name: 'storageLocationCode',
-      label: 'Code stockage',
-      labelTranslatePath: 'WASTE.FIELDS.STORAGE_LOCATION',
-      attributeType: AttributeType.string,
-      fieldType: FieldType.text,
-      exportable: true,
-      sortable: false,
-      dataTable: true,
-      filterable: true
-    },
-    {
-      name: 'customer',
-      label: 'Client',
-      labelTranslatePath: 'WASTE.FIELDS.CUSTOMER',
-      attributeType: AttributeType.string,
-      fieldType: FieldType.text,
       exportable: true,
       sortable: false,
       dataTable: true,

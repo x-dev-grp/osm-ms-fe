@@ -1,3 +1,5 @@
+import { FinancialTransaction } from './financial-transaction.model';
+
 export interface BankAccount {
   id?: string;
   rib: string;
@@ -8,4 +10,14 @@ export interface BankAccount {
   currency: string;
   accountType: string;
   active: boolean;
+  balance?: number;
+  lastTransactionDate?: string;
+  transactionCount?: number;
+}
+
+export interface BankAccountWithTransactions extends BankAccount {
+  transactions?: FinancialTransaction[];
+  totalInbound?: number;
+  totalOutbound?: number;
+  pendingTransactions?: number;
 }

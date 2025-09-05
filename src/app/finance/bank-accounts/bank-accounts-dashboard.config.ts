@@ -103,6 +103,28 @@ export const BANK_ACCOUNTS_DASHBOARD_CONFIG: DashboardConfig = {
       dataTable: true,
       filterable: true
     },
+    {
+      name: 'balance',
+      label: 'Solde',
+      labelTranslatePath: 'BANK_ACCOUNTS.FIELDS.BALANCE',
+      attributeType: AttributeType.number,
+      fieldType: FieldType.number,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },
+    {
+      name: 'lastTransactionDate',
+      label: 'Dernière transaction',
+      labelTranslatePath: 'BANK_ACCOUNTS.FIELDS.LAST_TRANSACTION_DATE',
+      attributeType: AttributeType.date,
+      fieldType: FieldType.date,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },
      ],
 
   /* ── Menu actions (no status mapping) ───────────────────────── */

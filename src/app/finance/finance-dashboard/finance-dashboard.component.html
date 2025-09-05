@@ -1,32 +1,217 @@
 <!-- ===================== Finance Dashboard (Able Pro + Angular 19) ===================== -->
 
-<!-- Header / Actions -->
-<div class="row align-items-center mb-3 g-2 sticky-actions">
-  <div class="col d-flex align-items-center gap-2">
+<!-- ========= Sticky Page Header (separate from filters) ========= -->
+<div class="page-header sticky-actions">
+  <div class="page-header__left">
     <mat-icon class="text-primary">dashboard</mat-icon>
     <h2 class="m-0 f-w-600">{{ 'MENU.FINANCE.DASHBOARD.TITLE' | translate }}</h2>
-    <span *ngIf="lastUpdated" class="text-muted d-none d-sm-inline ms-2">
+
+    <span *ngIf="lastUpdated" class="text-muted d-none d-sm-inline ms-2 page-header__updated">
       <mat-icon class="me-1" inline>update</mat-icon>
       {{ 'COMMON.LAST_UPDATED' | translate }}: {{ lastUpdated | date:'short' }}
     </span>
   </div>
 
-  <div class="col-auto d-flex align-items-center gap-2">
-    <!-- Quick refresh -->
-    <button mat-stroked-button color="primary"
-            (click)="refresh()"
-            [disabled]="loading"
-            matTooltip="{{ 'COMMON.REFRESH' | translate }}">
+  <div class="page-header__right">
+    <button
+      mat-stroked-button
+      color="primary"
+      (click)="refresh()"
+      [disabled]="loading"
+      matTooltip="{{ 'COMMON.REFRESH' | translate }}"
+    >
       <mat-icon>refresh</mat-icon>
       <span class="d-none d-sm-inline ms-1">{{ 'COMMON.REFRESH' | translate }}</span>
     </button>
   </div>
 </div>
 
+<!-- ========= Filters Card (independent from header) ========= -->
+<div class="row mb-4">
+  <div class="col-12">
+    <app-card
+      [cardTitle]="'DASHBOARD.DATE_FILTER.TITLE' | translate"
+      [icon]="'date_range'"
+      class="date-filter-card"
+    >
+      <div
+        class="date-filter-grid"
+        [attr.aria-busy]="loading ? 'true' : null"
+        [class.loading]="loading"
+      >
+        <!-- LEFT: Preset Periods -->
+        <section class="preset-column" aria-labelledby="presetPeriodsTitle">
+          <h6 id="presetPeriodsTitle" class="mb-2">
+            {{ 'DASHBOARD.DATE_FILTER.PRESET_PERIODS' | translate }}
+          </h6>
+
+          <div class="preset-buttons-grid">
+            <button
+              mat-stroked-button
+              [class.active]="selectedPreset === 'today'"
+              (click)="selectPresetPeriod('today')"
+              [disabled]="loading"
+            >
+              {{ 'DASHBOARD.DATE_FILTER.TODAY' | translate }}
+            </button>
+
+            <button
+              mat-stroked-button
+              [class.active]="selectedPreset === 'yesterday'"
+              (click)="selectPresetPeriod('yesterday')"
+              [disabled]="loading"
+            >
+              {{ 'DASHBOARD.DATE_FILTER.YESTERDAY' | translate }}
+            </button>
+
+            <button
+              mat-stroked-button
+              [class.active]="selectedPreset === 'thisWeek'"
+              (click)="selectPresetPeriod('thisWeek')"
+              [disabled]="loading"
+            >
+              {{ 'DASHBOARD.DATE_FILTER.THIS_WEEK' | translate }}
+            </button>
+
+            <button
+              mat-stroked-button
+              [class.active]="selectedPreset === 'lastWeek'"
+              (click)="selectPresetPeriod('lastWeek')"
+              [disabled]="loading"
+            >
+              {{ 'DASHBOARD.DATE_FILTER.LAST_WEEK' | translate }}
+            </button>
+
+            <button
+              mat-stroked-button
+              [class.active]="selectedPreset === 'thisMonth'"
+              (click)="selectPresetPeriod('thisMonth')"
+              [disabled]="loading"
+            >
+              {{ 'DASHBOARD.DATE_FILTER.THIS_MONTH' | translate }}
+            </button>
+
+            <button
+              mat-stroked-button
+              [class.active]="selectedPreset === 'lastMonth'"
+              (click)="selectPresetPeriod('lastMonth')"
+              [disabled]="loading"
+            >
+              {{ 'DASHBOARD.DATE_FILTER.LAST_MONTH' | translate }}
+            </button>
+
+            <button
+              mat-stroked-button
+              [class.active]="selectedPreset === 'thisYear'"
+              (click)="selectPresetPeriod('thisYear')"
+              [disabled]="loading"
+            >
+              {{ 'DASHBOARD.DATE_FILTER.THIS_YEAR' | translate }}
+            </button>
+
+            <button
+              mat-stroked-button
+              [class.active]="selectedPreset === 'lastYear'"
+              (click)="selectPresetPeriod('lastYear')"
+              [disabled]="loading"
+            >
+              {{ 'DASHBOARD.DATE_FILTER.LAST_YEAR' | translate }}
+            </button>
+          </div>
+        </section>
+
+        <!-- RIGHT: Custom Date Range -->
+        <section class="custom-column" aria-labelledby="customRangeTitle">
+          <h6 id="customRangeTitle" class="mb-2">
+            {{ 'DASHBOARD.DATE_FILTER.CUSTOM_RANGE' | translate }}
+          </h6>
+
+          <div class="custom-form-row">
+            <!-- Start Date -->
+            <mat-form-field appearance="outline" class="flex-1">
+              <mat-label>{{ 'DASHBOARD.DATE_FILTER.FROM_DATE' | translate }}</mat-label>
+              <input
+                matInput
+                [matDatepicker]="startPicker"
+                [(ngModel)]="customStartDate"
+                [max]="customEndDate || maxDate"
+                [disabled]="loading"
+                [placeholder]="'DASHBOARD.DATE_FILTER.SELECT_START_DATE' | translate"
+              />
+              <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+              <mat-datepicker #startPicker></mat-datepicker>
+            </mat-form-field>
+
+            <!-- Arrow -->
+            <div class="date-arrow" aria-hidden="true">
+              <mat-icon>arrow_forward</mat-icon>
+            </div>
+
+            <!-- End Date -->
+            <mat-form-field appearance="outline" class="flex-1">
+              <mat-label>{{ 'DASHBOARD.DATE_FILTER.TO_DATE' | translate }}</mat-label>
+              <input
+                matInput
+                [matDatepicker]="endPicker"
+                [(ngModel)]="customEndDate"
+                [min]="customStartDate"
+                [max]="maxDate"
+                [disabled]="loading"
+                [placeholder]="'DASHBOARD.DATE_FILTER.SELECT_END_DATE' | translate"
+              />
+              <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+              <mat-datepicker #endPicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+          <div class="date-actions-row">
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="applyCustomDateRange()"
+              [disabled]="!customStartDate || !customEndDate || loading"
+              class="apply-button"
+            >
+              <mat-icon>check</mat-icon>
+              <span class="ms-1">{{ 'DASHBOARD.DATE_FILTER.APPLY' | translate }}</span>
+            </button>
+
+            <button
+              mat-stroked-button
+              (click)="clearDateRange()"
+              [disabled]="loading"
+              class="clear-button"
+            >
+              <mat-icon>clear</mat-icon>
+              <span class="ms-1">{{ 'DASHBOARD.DATE_FILTER.CLEAR' | translate }}</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Selected Period Display (spans both columns) -->
+        <div class="selected-period-display" *ngIf="selectedPeriodDisplay">
+          <div class="period-info">
+            <mat-icon>event</mat-icon>
+            <span class="period-text">{{ selectedPeriodDisplay }}</span>
+            <button
+              mat-icon-button
+              (click)="clearDateRange()"
+              [disabled]="loading"
+              matTooltip="{{ 'DASHBOARD.DATE_FILTER.CLEAR_FILTER' | translate }}"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </app-card>
+  </div>
+</div>
+
 <!-- Loading State -->
 <div *ngIf="loading" class="loading-container">
   <mat-spinner diameter="60"></mat-spinner>
-  <p>{{ 'MENU.FINANCE.DASHBOARD.LOADING.TEXT' | translate }}</p>
+  <p>{{ 'DASHBOARD.LOADING.TEXT' | translate }}</p>
 </div>
 
 <!-- ===================== KPI Row ===================== -->
@@ -140,6 +325,28 @@
     </app-card>
   </div>
 
+  <!-- Total Debited -->
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.KPIS.TOTAL_DEBITED' | translate" [icon]="'trending_down'"
+              class="mini-kpi ">
+      <div class="mini-kpi__body">
+        <mat-icon>trending_down</mat-icon>
+        <span class="value">{{ totalDebited?.toFixed(2) || '0.00' }}</span>
+      </div>
+    </app-card>
+  </div>
+
+  <!-- Total Credited -->
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.KPIS.TOTAL_CREDITED' | translate" [icon]="'trending_up'"
+              class="mini-kpi ">
+      <div class="mini-kpi__body">
+        <mat-icon>trending_up</mat-icon>
+        <span class="value">{{ totalCredited?.toFixed(2) || '0.00' }}</span>
+      </div>
+    </app-card>
+  </div>
+
   <!-- Expense Status Chart -->
   <div class="col-md-4 col-xxl-4">
     <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.ANALYTICS.EXPENSE_STATUS' | translate" [icon]="'pie_chart'"
@@ -184,12 +391,25 @@
       </div>
     </app-card>
   </div>
+
+  <!-- Debited vs Credited Payments Chart -->
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.ANALYTICS.DEBITED_CREDITED' | translate" [icon]="'swap_horiz'"
+              class="card--chart ">
+      <div class="chart-container small">
+        <apx-chart
+          [chart]="debitedCreditedChartOptions.chart"
+          [colors]="debitedCreditedChartOptions.colors"
+          [labels]="debitedCreditedChartOptions.labels"
+          [series]="debitedCreditedChartOptions.series">
+        </apx-chart>
+      </div>
+    </app-card>
+  </div>
 </div>
 
 <!-- ===================== Main Charts Section ===================== -->
 <div *ngIf="!loading && financeSummary" class="row g-3 mt-1">
-
-
 
     <!-- Revenue by Source Chart -->
     <div class="col-12">

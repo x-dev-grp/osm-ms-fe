@@ -4,18 +4,18 @@ import { MatPaginator } from "@angular/material/paginator";
 import { MatTableModule } from "@angular/material/table";
 import { MatPaginatorModule } from "@angular/material/paginator";
 import { MatButtonModule } from "@angular/material/button";
-import { Pointage, PointageStatus } from "../../model/pointage.model";
+import { Pointage, PointageStatus } from "../../../model/pointage.model";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
 import { NgClass, CommonModule } from "@angular/common";
 import { MatIconModule } from "@angular/material/icon";
-import {Employee, Gender, MaritalStatus} from "../../model/employee-model";
+import {Employee, Gender, MaritalStatus} from "../../../model/employee-model";
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import {MatTooltip} from "@angular/material/tooltip";
-import {EmployeeService} from "../../services/employee-service";
-import {PointageService} from "../../services/pointage-service";
+import {EmployeeService} from "../../../services/employee-service";
+import {PointageService} from "../../../services/pointage-service";
 
 @Component({
   selector: 'app-pointage',

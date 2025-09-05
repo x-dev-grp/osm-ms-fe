@@ -8,6 +8,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatButtonModule} from '@angular/material/button';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 
@@ -31,6 +32,7 @@ import { ToastService } from '../../shared/services/toast.service';
     MatDatepickerModule,
     MatButtonModule,
     MatProgressSpinnerModule,
+    MatCheckboxModule,
     SharedModule
   ],
   templateUrl: './storage-add.component.html',
@@ -45,6 +47,7 @@ export class StorageAddComponent implements OnInit, OnDestroy {
   oilVarietys: BaseType[] = [];
 
   private subscriptions = new Subscription();
+  private unit: StorageUnitDto  | undefined;
 
   constructor(
     private fb: FormBuilder,
@@ -63,7 +66,9 @@ export class StorageAddComponent implements OnInit, OnDestroy {
       status: ['AVAILABLE', Validators.required],
       oilVariety: [null, Validators.required],
       nextMaintenanceDate: [null],
-      lastInspectionDate: [null]
+      lastInspectionDate: [null],
+      paidStorage: [false],
+      monthlyRentalPrice: [0, [Validators.min(0)]]
     });
   }
 
@@ -72,6 +77,17 @@ export class StorageAddComponent implements OnInit, OnDestroy {
     const storageId = this.route.snapshot.paramMap.get('id');
     this.isEditing = storageId !== null && storageId !== 'new';
 
+    // Subscribe to changes in the paidStorage checkbox to conditionally add/remove validators
+    this.storageForm.get('paidStorage')?.valueChanges.subscribe(isPaid => {
+      const monthlyRentalPriceControl = this.storageForm.get('monthlyRentalPrice');
+      if (isPaid && monthlyRentalPriceControl) {
+        monthlyRentalPriceControl.setValidators([Validators.required, Validators.min(0)]);
+      } else if (monthlyRentalPriceControl) {
+        monthlyRentalPriceControl.clearValidators();
+      }
+      monthlyRentalPriceControl?.updateValueAndValidity();
+    });
+
     Promise.all([
       this.oilTypeService.getAllTypes(TypeCategory.OIL_VARIETY).toPromise(),
       this.isEditing && storageId ? this.storageService.getStorageUnit(storageId).toPromise() : Promise.resolve(null)
@@ -79,10 +95,10 @@ export class StorageAddComponent implements OnInit, OnDestroy {
       .then(([oilVarietys, storage]) => {
         this.oilVarietys = oilVarietys?.success ? oilVarietys.data : [];
 
-        const unit = Array.isArray(storage?.data) ? storage?.data[0] : storage?.data;
+          this.unit = Array.isArray(storage?.data) ? storage?.data[0] : storage?.data;
 
-        if (this.isEditing && storage?.success && unit) {
-          this.patchForm(unit as StorageUnitDto);
+        if (this.isEditing && storage?.success && this.unit) {
+          this.patchForm(this.unit as StorageUnitDto);
 
         } else if (this.isEditing) {
           this.errorMessage = 'Error loading storage unit.';
@@ -111,7 +127,12 @@ export class StorageAddComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const payload = this.storageForm.value as StorageUnitDto;
+     const payload = {
+      ...this.storageForm.value,
+      id: this.unit?.id||null,
+externalId:this.unit?.externalId,
+
+  };
 
     const op = this.isEditing
       ? this.storageService.updateStorageUnit(payload).toPromise()
@@ -143,9 +164,9 @@ export class StorageAddComponent implements OnInit, OnDestroy {
       ...storage,
       oilVariety: this.oilVarietys.find(t => t.id === storage.oilVariety?.id) || null,
       nextMaintenanceDate: storage.nextMaintenanceDate ? new Date(storage.nextMaintenanceDate) : null,
-      lastInspectionDate: storage.lastInspectionDate ? new Date(storage.lastInspectionDate) : null
+      lastInspectionDate: storage.lastInspectionDate ? new Date(storage.lastInspectionDate) : null,
+      paidStorage: storage.paidStorage || false,
+      monthlyRentalPrice: storage.monthlyRentalPrice || 0
     });
   }
-
-
 }

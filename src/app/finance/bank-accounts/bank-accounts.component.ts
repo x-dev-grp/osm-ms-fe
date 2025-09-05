@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { BankAccount } from '../models/BankAccount';
+import { BankAccount, BankAccountWithTransactions } from '../models/BankAccount';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -48,8 +48,8 @@ export class BankAccountsComponent implements OnInit {
   currencies = ['TND', 'EUR', 'USD'];
   accountTypes = ['Courant', 'Épargne', 'Salaire'];
 
-  banks: BankAccount[] = [];
-  dataSource: MatTableDataSource<BankAccount> = new MatTableDataSource(this.banks);
+  banks: BankAccountWithTransactions[] = [];
+  dataSource: MatTableDataSource<BankAccountWithTransactions> = new MatTableDataSource(this.banks);
 
   constructor(
     private fb: FormBuilder,
@@ -75,23 +75,26 @@ export class BankAccountsComponent implements OnInit {
     });
   }
 
-  handleAction(event: { action: Action; row: BankAccount }): void {
-    switch (event.action.value?.toUpperCase()) {
+  handleAction(event: { action: string; row: BankAccount }): void {
+    switch (event.action?.toUpperCase()) {
       case 'VIEW':
+      case 'READ':
         this.router.navigate(['/finance/banks', event.row.id, 'view']);
         break;
 
       case 'EDIT':
+      case 'UPDATE':
         this.router.navigate(['/finance/banks', event.row.id, 'edit']);
         break;
 
-      case 'DELETE':
-        this.deleteAccount(event.row);
+
+      default:
+        console.log('Unhandled action:', event.action, 'for row:', event.row);
         break;
     }
   }
 
-  private deleteAccount(account: BankAccount): void {
+  private deleteAccount(account: BankAccountWithTransactions): void {
     if (confirm('Are you sure you want to delete this bank account?')) {
       this.bankAccountService.deleteBankAccount(account.id!).subscribe({
         next: (response) => {
@@ -112,7 +115,8 @@ export class BankAccountsComponent implements OnInit {
   }
 
   private loadBanks(): void {
-    this.bankAccountService.getAllBanksList().subscribe({
+    // Try to get banks with balances first, fallback to regular if not available
+    this.bankAccountService.getAllBanksWithBalances().subscribe({
       next: (response) => {
         if (response.success && response.data) {
           this.banks = response.data;
@@ -120,9 +124,24 @@ export class BankAccountsComponent implements OnInit {
         }
       },
       error: (error) => {
-        console.error('Error loading bank accounts:', error);
-        this.toast.error('Error loading bank accounts');
+        console.warn('Enhanced banks load failed, falling back to regular:', error);
+        // Fallback to regular bank accounts
+        this.bankAccountService.getAllBanksList().subscribe({
+          next: (response) => {
+            if (response.success && response.data) {
+              this.banks = response.data;
+              this.dataSource.data = this.banks;
+            }
+          },
+          error: (error) => {
+            console.error('Error loading bank accounts:', error);
+            this.toast.error('Error loading bank accounts');
+          }
+        });
       }
     });
   }
-}
+
+
+
+ }

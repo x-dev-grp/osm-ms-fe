@@ -10,6 +10,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatInputModule } from '@angular/material/input';
+import { MatNativeDateModule } from '@angular/material/core';
+import { FormsModule } from '@angular/forms';
 import { forkJoin, of, Subject, Observable, map, catchError } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { CardComponent } from '../../theme/components/card/card.component';
@@ -34,6 +38,7 @@ import { FinancialTransaction, TransactionDirection } from '../models/financial-
 import { ToastService } from '../../shared/services/toast.service';
 
 type TrendGranularity = 'daily' | 'weekly' | 'monthly' | 'yearly';
+type PresetPeriod = 'today' | 'yesterday' | 'thisWeek' | 'lastWeek' | 'thisMonth' | 'lastMonth' | 'thisYear' | 'lastYear' | 'custom';
 
 interface FinanceSummary {
   bankAccounts: BankAccountSummary[];
@@ -93,6 +98,8 @@ interface TransactionsSummary {
   expenses: number;
   netFlow: number;
   currency: string;
+  debited: number;
+  credited: number;
 }
 
 @Component({
@@ -111,6 +118,10 @@ interface TransactionsSummary {
     MatTooltipModule,
     MatProgressSpinnerModule,
     MatButtonToggleModule,
+    MatDatepickerModule,
+    MatInputModule,
+    MatNativeDateModule,
+    FormsModule,
     EarningChartComponent,
     CardComponent,
     NgApexchartsModule,
@@ -150,6 +161,13 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
   rangeEnd!: Date;
   trendGranularity: TrendGranularity = 'monthly';
 
+  // Calendar/Date picker properties
+  selectedPreset: PresetPeriod = 'thisMonth';
+  customStartDate: Date | null = null;
+  customEndDate: Date | null = null;
+  maxDate = new Date();
+  selectedPeriodDisplay: string | null = null;
+
   // Summary stats
   totalTransactions = 0;
   pendingExpenses = 0;
@@ -171,6 +189,8 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
   totalUnpaid = 0;
   activeBankAccounts = 0;
   netFlow = 0;
+  totalDebited = 0;
+  totalCredited = 0;
 
   // Apex chart options
   expenseStatusChartOptions: Partial<ApexOptions> = {};
@@ -180,6 +200,7 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
   revenueBySourceChartOptions: Partial<ApexOptions> = {};
   recentTransactionsChartOptions: Partial<ApexOptions> = {};
   expenseByCategoryChartOptions: Partial<ApexOptions> = {};
+  debitedCreditedChartOptions: Partial<ApexOptions> = {};
 
   // UI
   lastUpdated: Date | null = new Date();
@@ -198,13 +219,8 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
   private toast = inject(ToastService);
 
   constructor() {
-    // Default: last 30 days
-    const end = this.stripTime(new Date());
-    const start = this.stripTime(new Date());
-    start.setDate(end.getDate() - 29);
-    this.rangeStart = start;
-    this.rangeEnd = end;
-
+    // Initialize with current month as default
+    this.initializeDefaultDateRange();
     this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => this.updateChartLabels());
   }
 
@@ -222,11 +238,136 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
   ngOnInit(): void { this.loadData(); }
   ngOnDestroy(): void { this.destroy$.next(); this.destroy$.complete(); }
 
+  // === Date Range Management ===
+  private initializeDefaultDateRange(): void {
+    // Default to current month
+    const now = new Date();
+    this.rangeStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    this.rangeEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    this.updateSelectedPeriodDisplay();
+  }
+
+  selectPresetPeriod(preset: PresetPeriod): void {
+    this.selectedPreset = preset;
+    this.customStartDate = null;
+    this.customEndDate = null;
+
+    const dates = this.getPresetDateRange(preset);
+    this.rangeStart = dates.start;
+    this.rangeEnd = dates.end;
+
+    this.updateSelectedPeriodDisplay();
+    this.loadData();
+  }
+
+  private getPresetDateRange(preset: PresetPeriod): { start: Date; end: Date } {
+    const now = new Date();
+    const today = this.stripTime(now);
+
+    switch (preset) {
+      case 'today':
+        return { start: new Date(today), end: new Date(today) };
+
+      case 'yesterday':
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+        return { start: yesterday, end: yesterday };
+
+      case 'thisWeek':
+        const startOfWeek = new Date(today);
+        const dayOfWeek = startOfWeek.getDay();
+        const diff = startOfWeek.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); // Monday
+        startOfWeek.setDate(diff);
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+        return { start: startOfWeek, end: endOfWeek };
+
+      case 'lastWeek':
+        const lastWeekStart = new Date(today);
+        const lastWeekDay = lastWeekStart.getDay();
+        const lastWeekDiff = lastWeekStart.getDate() - lastWeekDay + (lastWeekDay === 0 ? -6 : 1) - 7;
+        lastWeekStart.setDate(lastWeekDiff);
+        const lastWeekEnd = new Date(lastWeekStart);
+        lastWeekEnd.setDate(lastWeekStart.getDate() + 6);
+        return { start: lastWeekStart, end: lastWeekEnd };
+
+      case 'thisMonth':
+        return {
+          start: new Date(now.getFullYear(), now.getMonth(), 1),
+          end: new Date(now.getFullYear(), now.getMonth() + 1, 0)
+        };
+
+      case 'lastMonth':
+        return {
+          start: new Date(now.getFullYear(), now.getMonth() - 1, 1),
+          end: new Date(now.getFullYear(), now.getMonth(), 0)
+        };
+
+      case 'thisYear':
+        return {
+          start: new Date(now.getFullYear(), 0, 1),
+          end: new Date(now.getFullYear(), 11, 31)
+        };
+
+      case 'lastYear':
+        return {
+          start: new Date(now.getFullYear() - 1, 0, 1),
+          end: new Date(now.getFullYear() - 1, 11, 31)
+        };
+
+      default:
+        return { start: this.rangeStart, end: this.rangeEnd };
+    }
+  }
+
+  applyCustomDateRange(): void {
+    if (!this.customStartDate || !this.customEndDate) return;
+
+    this.selectedPreset = 'custom';
+    this.rangeStart = this.stripTime(this.customStartDate);
+    this.rangeEnd = this.stripTime(this.customEndDate);
+
+    this.updateSelectedPeriodDisplay();
+    this.loadData();
+  }
+
+  clearDateRange(): void {
+    this.selectedPreset = 'thisMonth';
+    this.customStartDate = null;
+    this.customEndDate = null;
+    this.selectedPeriodDisplay = null;
+    this.initializeDefaultDateRange();
+    this.loadData();
+  }
+
+  private updateSelectedPeriodDisplay(): void {
+    if (this.selectedPreset === 'custom' && this.customStartDate && this.customEndDate) {
+      this.selectedPeriodDisplay = `${this.customStartDate.toLocaleDateString()} - ${this.customEndDate.toLocaleDateString()}`;
+    } else {
+      const presetLabels: Record<PresetPeriod, string> = {
+        'today': 'Aujourd\'hui',
+        'yesterday': 'Hier',
+        'thisWeek': 'Cette semaine',
+        'lastWeek': 'Semaine dernière',
+        'thisMonth': 'Ce mois',
+        'lastMonth': 'Mois dernier',
+        'thisYear': 'Cette année',
+        'lastYear': 'Année dernière',
+        'custom': 'Période personnalisée'
+      };
+      this.selectedPeriodDisplay = presetLabels[this.selectedPreset] || '';
+    }
+  }
+
   // === Range + Granularity API ===
   setDateRange(start: Date | null, end: Date | null): void {
     if (!start || !end) return;
     this.rangeStart = this.stripTime(start);
     this.rangeEnd = this.stripTime(end);
+    this.selectedPreset = 'custom';
+    this.customStartDate = start;
+    this.customEndDate = end;
+    this.updateSelectedPeriodDisplay();
     this.applyFiltersAndRebuild();
   }
 
@@ -273,11 +414,6 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
         }
       });
   }
-
-  private getFinanceTrendData(transactions: FinancialTransaction[], view: 'monthly' | 'weekly' | 'daily') {
-    return this.generateRealFinanceTrend(view);
-  }
-
   // === Filtering + rebuilding stats/charts ===
   private applyFiltersAndRebuild(): void {
     if (!this.financeSummary) return;
@@ -316,12 +452,14 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
     this.totalUnpaid = this.financeSummary.oilSales.unpaidAmount + this.financeSummary.wasteSales.unpaidAmount;
     this.activeBankAccounts = this.financeSummary.bankAccounts.filter(acc => acc.active).length;
     this.netFlow = this.financeSummary.transactions.netFlow;
+    this.totalDebited = this.financeSummary.transactions.debited;
+    this.totalCredited = this.financeSummary.transactions.credited;
 
     this.updateFinanceTrendView(this.currentFinanceTrendView);
 
     // --- Expense Status (Pie) ---
-    const expensePaid = this.financeSummary.expenses.paid;
-    const expensePending = this.financeSummary.expenses.pending;
+    const expensePaid = Math.round(this.financeSummary.expenses.paid);
+    const expensePending = Math.round(this.financeSummary.expenses.pending);
     this.expenseStatusChartOptions = {
       series: [expensePaid, expensePending],
       chart: {
@@ -361,21 +499,21 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
       tooltip: {
         y: {
           formatter: function (val: number) {
-            return val.toFixed(2) + ' TND';
+            return Math.round(val).toLocaleString() + ' TND';
           }
         }
       }
     };
 
     // --- Transaction Flow (Donut) ---
-    const transactionIncome = this.financeSummary.transactions.income;
-    const transactionExpenses = this.financeSummary.transactions.expenses;
+    const transactionIncome = Math.round(this.financeSummary.transactions.income);
+    const transactionExpenses = Math.round(this.financeSummary.transactions.expenses);
     this.transactionFlowChartOptions = {
       series: [transactionIncome, transactionExpenses],
       chart: {
         type: 'donut',
         toolbar: { show: false },
-        height: 200,
+        height: 240,
         width: '100%'
       },
       plotOptions: {
@@ -409,15 +547,15 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
       tooltip: {
         y: {
           formatter: function (val: number) {
-            return val.toFixed(2) + ' TND';
+            return Math.round(val).toLocaleString() + ' TND';
           }
         }
       }
     };
 
     // --- Sales by Type (Bar) ---
-    const oilSalesRevenue = this.financeSummary.oilSales.totalRevenue;
-    const wasteSalesRevenue = this.financeSummary.wasteSales.totalRevenue;
+    const oilSalesRevenue = Math.round(this.financeSummary.oilSales.totalRevenue);
+    const wasteSalesRevenue = Math.round(this.financeSummary.wasteSales.totalRevenue);
     this.salesByTypeChartOptions = {
       series: [{
         name: this.translate.instant('MENU.FINANCE.DASHBOARD.CHART_LABELS.AMOUNT'),
@@ -433,12 +571,60 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
       colors: ['var(--primary-500)']
     };
 
+    // --- Debited vs Credited Payments (Donut) ---
+    const debitedAmount = Math.round(this.financeSummary.transactions.debited);
+    const creditedAmount = Math.round(this.financeSummary.transactions.credited);
+    this.debitedCreditedChartOptions = {
+      series: [debitedAmount, creditedAmount],
+      chart: {
+        type: 'donut',
+        toolbar: { show: false },
+        height: 240,
+        width: '100%'
+      },
+      plotOptions: {
+        pie: {
+          donut: {
+            size: '65%'
+          }
+        }
+      },
+      labels: [
+        this.translate.instant('MENU.FINANCE.DASHBOARD.CHART_LABELS.DEBITED'),
+        this.translate.instant('MENU.FINANCE.DASHBOARD.CHART_LABELS.CREDITED')
+      ],
+      colors: ['#F44336', '#4CAF50'],
+      legend: {
+        position: 'bottom',
+        horizontalAlign: 'center',
+        fontSize: '12px',
+        offsetY: 0
+      },
+      dataLabels: {
+        enabled: true,
+        formatter: function (val: number) {
+          return val.toFixed(1) + '%';
+        },
+        style: {
+          fontSize: '11px',
+          fontWeight: 600
+        }
+      },
+      tooltip: {
+        y: {
+          formatter: function (val: number) {
+            return Math.round(val).toLocaleString() + ' TND';
+          }
+        }
+      }
+    };
+
     // === Main Charts ===
     // --- Revenue by Source (Bar) ---
-    const oilRevenue = this.financeSummary.oilSales.totalRevenue;
-    const wasteRevenue = this.financeSummary.wasteSales.totalRevenue;
-    const bankAccountsBalance = this.financeSummary.bankAccounts.reduce((sum, acc) => sum + (acc.balance || 0), 0);
-    const creditValue = this.financeSummary.oilCredits.totalValue;
+    const oilRevenue = Math.round(this.financeSummary.oilSales.totalRevenue);
+    const wasteRevenue = Math.round(this.financeSummary.wasteSales.totalRevenue);
+    const bankAccountsBalance = Math.round(this.financeSummary.bankAccounts.reduce((sum, acc) => sum + (acc.balance || 0), 0));
+    const creditValue = Math.round(this.financeSummary.oilCredits.totalValue);
 
     this.revenueBySourceChartOptions = {
       series: [{
@@ -454,12 +640,35 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
           this.translate.instant('MENU.FINANCE.DASHBOARD.CHART_LABELS.BANK_BALANCES')
         ]
       },
+      yaxis: {
+        title: {
+          text: this.translate.instant('MENU.FINANCE.DASHBOARD.CHART_LABELS.AMOUNT_TND'),
+          style: {
+            fontSize: '12px',
+            fontWeight: 500
+          }
+        }
+      },
       colors: ['var(--primary-500)'],
-      tooltip: { y: { formatter: (val: number) => val.toFixed(2) + ' TND' } }
+      tooltip: {
+        y: {
+          formatter: (val: number) => Math.round(val).toLocaleString() + ' TND'
+        }
+      },
+      dataLabels: {
+        enabled: true,
+        formatter: function (val: number) {
+          return Math.round(val).toLocaleString();
+        },
+        style: {
+          fontSize: '11px',
+          fontWeight: 600
+        }
+      }
     };
 
     // --- Recent Transactions (Bar) - Using real transaction data ---
-    const recentTransactionAmounts = this.allTransactions.slice(-5).map(t => t.amount || 0);
+    const recentTransactionAmounts = this.allTransactions.slice(-5).map(t => Math.round(t.amount || 0));
     const recentTransactionLabels = this.allTransactions.slice(-5).map((t, index) => `T${(index + 1).toString().padStart(3, '0')}`);
 
     this.recentTransactionsChartOptions = {
@@ -477,7 +686,7 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
           text: this.translate.instant('MENU.FINANCE.DASHBOARD.CHART_LABELS.AMOUNT_TND')
         }
       },
-      tooltip: { y: { formatter: (val: number) => val.toFixed(2) + ' TND' } },
+      tooltip: { y: { formatter: (val: number) => Math.round(val).toLocaleString() + ' TND' } },
       colors: ['var(--secondary-500)']
     };
 
@@ -507,8 +716,17 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
           hideOverlappingLabels: true
         }
       },
+      yaxis: {
+        title: {
+          text: this.translate.instant('MENU.FINANCE.DASHBOARD.CHART_LABELS.AMOUNT_TND'),
+          style: {
+            fontSize: '12px',
+            fontWeight: 500
+          }
+        }
+      },
       colors: ['var(--info-500)'],
-      tooltip: { y: { formatter: (val: number) => val.toFixed(2) + ' TND' } }
+      tooltip: { y: { formatter: (val: number) => Math.round(val).toLocaleString() + ' TND' } }
     };
 
     // Apply heights to charts
@@ -531,8 +749,17 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
       }],
       chart: { type: 'line', toolbar: { show: false } },
       xaxis: { categories: data.categories },
+      yaxis: {
+        title: {
+          text: this.translate.instant('MENU.FINANCE.DASHBOARD.CHART_LABELS.AMOUNT_TND'),
+          style: {
+            fontSize: '12px',
+            fontWeight: 500
+          }
+        }
+      },
       colors: ['var(--primary-500)'],
-      tooltip: { y: { formatter: (val: number) => val.toFixed(2) + ' TND' } }
+      tooltip: { y: { formatter: (val: number) => Math.round(val).toLocaleString() + ' TND' } }
     });
   }
 
@@ -738,7 +965,7 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
 
     // Update Recent Transactions chart with real data
     if (this.allTransactions.length > 0) {
-      const recentTransactionAmounts = this.allTransactions.slice(-5).map(t => t.amount || 0);
+      const recentTransactionAmounts = this.allTransactions.slice(-5).map(t => Math.round(t.amount || 0));
       const recentTransactionLabels = this.allTransactions.slice(-5).map((t, index) => `T${(index + 1).toString().padStart(3, '0')}`);
 
       this.recentTransactionsChartOptions = {
@@ -762,12 +989,16 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
       const nonZeroCategories = Object.entries(expensesByCategory)
         .filter(([key, value]) => value > 0)
         .reduce((acc, [key, value]) => {
-          acc[key] = value;
+          acc[key] = Math.round(value);
           return acc;
         }, {} as Record<string, number>);
 
       // Use non-zero categories if available, otherwise show all categories
-      const categoriesToShow = Object.keys(nonZeroCategories).length > 0 ? nonZeroCategories : expensesByCategory;
+      const categoriesToShow = Object.keys(nonZeroCategories).length > 0 ? nonZeroCategories :
+        Object.entries(expensesByCategory).reduce((acc, [key, value]) => {
+          acc[key] = Math.round(value);
+          return acc;
+        }, {} as Record<string, number>);
 
       this.expenseByCategoryChartOptions = {
         ...this.expenseByCategoryChartOptions,
@@ -839,11 +1070,15 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
           const nonZeroCategories = Object.entries(expensesByCategory)
             .filter(([key, value]) => value > 0)
             .reduce((acc, [key, value]) => {
-              acc[key] = value;
+              acc[key] = Math.round(value);
               return acc;
             }, {} as Record<string, number>);
 
-          const categoriesToShow = Object.keys(nonZeroCategories).length > 0 ? nonZeroCategories : expensesByCategory;
+          const categoriesToShow = Object.keys(nonZeroCategories).length > 0 ? nonZeroCategories :
+            Object.entries(expensesByCategory).reduce((acc, [key, value]) => {
+              acc[key] = Math.round(value);
+              return acc;
+            }, {} as Record<string, number>);
 
           this.expenseByCategoryChartOptions = {
             ...this.expenseByCategoryChartOptions,
@@ -889,7 +1124,11 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
     return this.expenseService.getAllExpenses().pipe(
       map(response => {
         if (response.success && response.data) {
-          const expenses = response.data;
+          let expenses = response.data;
+
+          // Filter expenses by date range
+          expenses = this.filterDataByDateRange(expenses, 'expenseDate');
+
           const total = expenses.reduce((sum, exp) => sum + (exp.amount || 0), 0);
           const paid = expenses.filter(exp => exp.status === 'Paid').reduce((sum, exp) => sum + (exp.amount || 0), 0);
           const pending = expenses.filter(exp => exp.status === 'Pending').reduce((sum, exp) => sum + (exp.amount || 0), 0);
@@ -929,7 +1168,11 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
     return this.oilSaleService.getAllOilSales().pipe(
       map(response => {
         if (response.success && response.data) {
-          const sales = response.data;
+          let sales = response.data;
+
+          // Filter sales by date range
+          sales = this.filterDataByDateRange(sales, 'saleDate');
+
           const totalRevenue = sales.reduce((sum, sale) => sum + (sale.totalAmount || 0), 0);
           const unpaidAmount = sales.reduce((sum, sale) => sum + (sale.unpaidAmount || 0), 0);
           const pendingSales = sales.filter(sale => sale.status === 'PENDING').length;
@@ -950,7 +1193,11 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
     return this.wasteSaleService.getAllWasteSales().pipe(
       map(response => {
         if (response.success && response.data) {
-          const sales = response.data;
+          let sales = response.data;
+
+          // Filter sales by date range
+          sales = this.filterDataByDateRange(sales, 'saleDate');
+
           const totalRevenue = sales.reduce((sum, sale) => sum + (sale.totalPrice || 0), 0);
           const unpaidAmount = sales.reduce((sum, sale) => sum + (sale.unpaidAmount || 0), 0);
 
@@ -969,7 +1216,11 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
     return this.transactionService.getAllTransactions().pipe(
       map(response => {
         if (response.success && response.data) {
-          const transactions = response.data;
+          let transactions = response.data;
+
+          // Filter transactions by date range
+          transactions = this.filterDataByDateRange(transactions, 'transactionDate');
+
           const income = transactions
             .filter(t => t.direction === TransactionDirection.INBOUND)
             .reduce((sum, t) => sum + (t.amount || 0), 0);
@@ -977,13 +1228,43 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
             .filter(t => t.direction === TransactionDirection.OUTBOUND)
             .reduce((sum, t) => sum + (t.amount || 0), 0);
 
-          return { totalTransactions: transactions.length, income, expenses, netFlow: income - expenses, currency: 'TND' };
+          // Calculate debited and credited payments
+          // Debited payments are outbound transactions (money going out)
+          // Credited payments are inbound transactions (money coming in)
+          const debited = expenses;
+          const credited = income;
+
+          return {
+            totalTransactions: transactions.length,
+            income,
+            expenses,
+            netFlow: income - expenses,
+            currency: 'TND',
+            debited,
+            credited
+          };
         }
-        return { totalTransactions: 0, income: 0, expenses: 0, netFlow: 0, currency: 'TND' };
+        return {
+          totalTransactions: 0,
+          income: 0,
+          expenses: 0,
+          netFlow: 0,
+          currency: 'TND',
+          debited: 0,
+          credited: 0
+        };
       }),
       catchError(error => {
         console.error('Error loading transactions:', error);
-        return of({ totalTransactions: 0, income: 0, expenses: 0, netFlow: 0, currency: 'TND' });
+        return of({
+          totalTransactions: 0,
+          income: 0,
+          expenses: 0,
+          netFlow: 0,
+          currency: 'TND',
+          debited: 0,
+          credited: 0
+        });
       })
     );
   }
@@ -995,7 +1276,7 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
     ).subscribe({
       next: (response) => {
         if (response.success && response.data) {
-          this.allTransactions = response.data;
+          this.allTransactions = this.filterDataByDateRange(response.data, 'transactionDate');
           console.log('Loaded actual transactions:', this.allTransactions.length);
           // Re-render charts with real transaction data
           this.updateChartsWithRealData();
@@ -1014,7 +1295,7 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
     ).subscribe({
       next: (response) => {
         if (response.success && response.data) {
-          this.expenses = response.data;
+          this.expenses = this.filterDataByDateRange(response.data, 'expenseDate');
           console.log('Loaded actual expenses:', this.expenses.length);
           // Re-render charts with real expense data
           this.updateChartsWithRealData();
@@ -1026,6 +1307,40 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
         this.expenses = [];
       }
     });
+  }
+
+  // === Date Filtering Utility ===
+  private filterDataByDateRange<T>(data: T[], dateField: string): T[] {
+    if (!data || data.length === 0) return data;
+
+    return data.filter(item => {
+      const itemDate = this.getDateFromItem(item, dateField);
+      if (!itemDate) return false;
+
+      const itemDateOnly = this.stripTime(itemDate);
+      return itemDateOnly >= this.rangeStart && itemDateOnly <= this.rangeEnd;
+    });
+  }
+
+  private getDateFromItem(item: any, dateField: string): Date | null {
+    const dateValue = item[dateField];
+    if (!dateValue) return null;
+
+    // Handle different date formats
+    if (dateValue instanceof Date) {
+      return dateValue;
+    }
+
+    if (typeof dateValue === 'string') {
+      const parsed = new Date(dateValue);
+      return isNaN(parsed.getTime()) ? null : parsed;
+    }
+
+    if (typeof dateValue === 'number') {
+      return new Date(dateValue);
+    }
+
+    return null;
   }
 
   // Navigation methods

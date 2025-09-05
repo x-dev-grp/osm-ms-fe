@@ -3,6 +3,9 @@
   display: block;
 }
 
+/* Import shared dashboard styles */
+@import '../../../shared/styles/dashboard-common.scss';
+
 /* ---------------------------------------
  * Grid / spacing
  * ------------------------------------- */
@@ -14,15 +17,6 @@
 .row.g-3 > [class^="col-"], .row.g-3 > [class*=" col-"] {
   padding-left: calc(var(--gap) / 2);
   padding-right: calc(var(--gap) / 2);
-}
-
-/* Sticky page actions under header */
-.sticky-actions {
-  position: sticky;
-  top: var(--ap-header-height, 64px);
-  z-index: 10;
-  background: var(--bs-body-bg, #fff);
-  padding-top: .25rem;
 }
 
 /* ---------------------------------------
@@ -71,10 +65,6 @@
  * ------------------------------------- */
 app-card {
   display: block;
-}
-.with-shadow {
-  box-shadow: var(--bs-box-shadow-sm, 0 2px 10px rgba(0,0,0,.06));
-  border-radius: 0.75rem;
 }
 
 /* Subtle hover elevation for cards */
@@ -147,9 +137,6 @@ apx-chart {
 }
 
 /* Right column charts slightly tighter on small laptops */
-.card--chart .chart-container.right {
-  /* tweak only around lg/desktop cutoffs */
-}
 @media (max-width: 1199.98px) {
   .card--chart .chart-container.right {
     --chart-h: 260px;
@@ -209,5 +196,107 @@ apx-chart {
   .aside-inline .card--chart {
     flex: 1 1 100%;
     min-width: auto;
+  }
+}
+
+/* Add Finance Dashboard styling for consistency */
+.dashboard-kpis {
+  margin-bottom: 2rem;
+
+  // Ensure all cards in the first 4 rows have the same height
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+
+    > [class*="col-"] {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 1rem;
+    }
+  }
+
+  // Specific height for the first 4 rows of cards
+  .row:first-child,
+  .row:nth-child(2),
+  .row:nth-child(3),
+  .row:nth-child(4) {
+    > [class*="col-"] {
+      min-height: 280px;
+    }
+  }
+
+  .kpi-card {
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+  }
+
+  .mini-kpi {
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    &__body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      padding: 1.5rem;
+      text-align: center;
+      flex: 1;
+
+      mat-icon {
+        font-size: 2rem;
+        height: 2rem;
+        width: 2rem;
+        color: var(--primary-500);
+      }
+
+      .value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        line-height: 1;
+      }
+    }
+  }
+
+  .card--chart {
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    // Ensure chart container fills the card
+    .chart-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
   }
 }

@@ -15,7 +15,15 @@
     display: flex;
     gap: 0.75rem;
     flex-wrap: wrap;
-    .filter { min-width: 220px; }
+    align-items: center;
+
+    .filter {
+      min-width: 220px;
+    }
+
+    mat-slide-toggle {
+      margin-left: 10px;
+    }
   }
 }
 
@@ -56,6 +64,12 @@
   overflow: hidden;
 }
 
+/* Paid Storage Unit Card */
+.storage-card.paid-storage {
+  border: 2px solid #2196f3;
+  box-shadow: 0 2px 10px rgba(33, 150, 243, 0.2);
+}
+
 .storage-card-header {
   padding: 1rem 1rem .5rem 1rem;
   display: flex; flex-direction: column; gap: .75rem;
@@ -75,6 +89,47 @@
 
   .storage-status {
     padding: .25rem .5rem; border-radius: 999px; font-size: .78rem; font-weight: 600;
+  }
+}
+
+/* Paid Storage Information */
+.paid-storage-info {
+  .metric-label {
+    color: #2196f3; /* Blue color to highlight paid storage */
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .metric-value {
+    color: #1976d2; /* Darker blue for the value */
+    font-weight: 700;
+  }
+}
+
+.paid-icon-small {
+  font-size: 16px;
+  height: 16px;
+  width: 16px;
+}
+
+/* Paid Storage Badge */
+.paid-storage-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background-color: #e3f2fd;
+  color: #1976d2;
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  .paid-icon {
+    font-size: 16px;
+    height: 16px;
+    width: 16px;
   }
 }
 
@@ -98,6 +153,7 @@
   .storage-unit {
     height: 120px; border-radius: 12px; border: 1px dashed #d7d7d7;
     display: flex; align-items: center; padding: .5rem;
+    position: relative;
     .storage-unit-body {
       position: relative; flex: 1; height: 60px; border-radius: 12px; background: #f5f6f8; overflow: hidden;
       .fill-level-indicator {
@@ -107,6 +163,26 @@
         .fill-level-text { position: relative; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,.2); color: #fff; }
       }
     }
+  }
+}
+
+/* Paid Storage Visualization Indicator */
+.paid-visualization-indicator {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: #e3f2fd;
+  border-radius: 50%;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .paid-icon-visual {
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
+    color: #1976d2;
   }
 }
 

@@ -49,18 +49,18 @@ export const dashboardConfig: DashboardConfig = {
       dataTable: false, // Description est souvent longue -> pas en table
       exportable: true
     },
-    {
-      name: 'managerId',
-      label: 'Manager ID',
-      labelTranslatePath: 'DEPARTMENT.DASHBOARD.FIELDS.MANAGER_ID',
-      attributeType: AttributeType.number,
-      fieldType: FieldType.number,
-      sortable: true,
-      filterable: true,
-      defaultFilter: false,
-      dataTable: true,
-      exportable: true
-    },
+    // {
+    //   name: 'managerId',
+    //   label: 'Manager ID',
+    //   labelTranslatePath: 'DEPARTMENT.DASHBOARD.FIELDS.MANAGER_ID',
+    //   attributeType: AttributeType.number,
+    //   fieldType: FieldType.number,
+    //   sortable: true,
+    //   filterable: true,
+    //   defaultFilter: false,
+    //   dataTable: true,
+    //   exportable: true
+    // },
     {
       name: 'employees',
       label: 'Nombre d\'employés',

@@ -13,7 +13,7 @@ const routes: Routes = [
       },
       {
         path: 'pointage',
-        loadComponent: () => import('./components/pointage/pointage.component').then((m) => m.PointageComponent),
+        loadComponent: () => import('./components/employee/pointage/pointage.component').then((m) => m.PointageComponent),
         canActivate: [AuthGuardChild]
       },
       {
@@ -35,52 +35,52 @@ const routes: Routes = [
 
       {
         path: 'contract/employee/:employeeId',
-        loadComponent: () => import('./components/contract-add/contract-add.component').then((m) => m.ContractAddComponent),
+        loadComponent: () => import('./components/contrat/contract-add/contract-add.component').then((m) => m.ContractAddComponent),
         canActivate: [AuthGuardChild]
       },
       {
         path: 'contract/employee/:employeeId/:id',
-        loadComponent: () => import('./components/contract-add/contract-add.component').then((m) => m.ContractAddComponent),
+        loadComponent: () => import('./components/contrat/contract-add/contract-add.component').then((m) => m.ContractAddComponent),
         canActivate: [AuthGuardChild]
       },
       {
         path: 'department/new',
-        loadComponent: () => import('./components/department-add/department-add.component').then((m) => m.DepartmentAddComponent),
+        loadComponent: () => import('./components/department/department-add/department-add.component').then((m) => m.DepartmentAddComponent),
         canActivate: [AuthGuardChild]
       },
       {
         path: 'poste/new',
-        loadComponent: () => import('./components/poste-add/poste-add.component').then((m) => m.PosteAddComponent),
+        loadComponent: () => import('./components/poste/poste-add/poste-add.component').then((m) => m.PosteAddComponent),
         canActivate: [AuthGuardChild]
       },
       {
         path: 'poste/:id',
-        loadComponent: () => import('./components/poste-add/poste-add.component').then((m) => m.PosteAddComponent),
+        loadComponent: () => import('./components/poste/poste-add/poste-add.component').then((m) => m.PosteAddComponent),
         canActivate: [AuthGuardChild]
       },
       {
         path: 'department/:id',
-        loadComponent: () => import('./components/department-add/department-add.component').then((m) => m.DepartmentAddComponent),
+        loadComponent: () => import('./components/department/department-add/department-add.component').then((m) => m.DepartmentAddComponent),
         canActivate: [AuthGuardChild]
       },
 
       { path: 'department/fetch/:id',
-        loadComponent: () => import('./components/department-detail/department-detail.component').then((m) => m.DepartmentDetailComponent),
+        loadComponent: () => import('./components/department/department-detail/department-detail.component').then((m) => m.DepartmentDetailComponent),
         canActivate: [AuthGuardChild]
       },
       {
         path: 'employee/new',
-        loadComponent: () => import('./components/employee-add/employee-add.component').then((m) => m.EmployeeAddComponent),
+        loadComponent: () => import('./components/employee/employee-add/employee-add.component').then((m) => m.EmployeeAddComponent),
         canActivate: [AuthGuardChild]
       },
       {
         path: 'employee/:id',
-        loadComponent: () => import('./components/employee-add/employee-add.component').then((m) => m.EmployeeAddComponent),
+        loadComponent: () => import('./components/employee/employee-add/employee-add.component').then((m) => m.EmployeeAddComponent),
         canActivate: [AuthGuardChild]
       },
       {
         path: 'employee/fetch/:id',
-        loadComponent: () => import('./components/employee-detail/employee-detail.component').then((m) => m.EmployeeDetailComponent),
+        loadComponent: () => import('./components/employee/employee-detail/employee-detail.component').then((m) => m.EmployeeDetailComponent),
         canActivate: [AuthGuardChild]
       }
     ]

@@ -1,29 +1,219 @@
-<!-- ===================== Reception Dashboard (Able Pro + Angular 19) ===================== -->
-
-<!-- Header / Actions -->
-<div class="row align-items-center mb-3 g-2 sticky-actions">
-  <div class="col d-flex align-items-center gap-2">
+<!-- ========= Sticky Page Header (separate from filters) ========= -->
+<div class="page-header sticky-actions">
+  <div class="page-header__left">
     <mat-icon class="text-primary">dashboard</mat-icon>
     <h2 class="m-0 f-w-600">{{ 'DASHBOARD.TITLE.RECEPTION' | translate }}</h2>
-    <span *ngIf="lastUpdated" class="text-muted d-none d-sm-inline ms-2">
+
+    <span *ngIf="lastUpdated" class="text-muted d-none d-sm-inline ms-2 page-header__updated">
       <mat-icon class="me-1" inline>update</mat-icon>
       {{ 'COMMON.LAST_UPDATED' | translate }}: {{ lastUpdated | date:'short' }}
     </span>
   </div>
 
-  <div class="col-auto d-flex align-items-center gap-2">
-
-    <!-- Quick refresh -->
-    <button mat-stroked-button color="primary"
-            (click)="refresh()"
-            matTooltip="{{ 'COMMON.REFRESH' | translate }}">
+  <div class="page-header__right">
+    <button
+      mat-stroked-button
+      color="primary"
+      (click)="refresh()"
+      [disabled]="isLoading"
+      matTooltip="{{ 'COMMON.REFRESH' | translate }}"
+     >
       <mat-icon>refresh</mat-icon>
       <span class="d-none d-sm-inline ms-1">{{ 'COMMON.REFRESH' | translate }}</span>
     </button>
   </div>
 </div>
+
+<!-- ========= Filters Card (independent from header) ========= -->
+<div class="row mb-4">
+  <div class="col-12">
+    <app-card
+      [cardTitle]="'DASHBOARD.DATE_FILTER.TITLE' | translate"
+      [icon]="'date_range'"
+      class="date-filter-card"
+    >
+      <div
+        class="date-filter-grid"
+        [attr.aria-busy]="isLoading ? 'true' : null"
+        [class.loading]="isLoading"
+      >
+        <!-- LEFT: Preset Periods -->
+        <section class="preset-column" aria-labelledby="presetPeriodsTitle">
+          <h6 id="presetPeriodsTitle" class="mb-2">
+            {{ 'DASHBOARD.DATE_FILTER.PRESET_PERIODS' | translate }}
+          </h6>
+
+          <div class="preset-buttons-grid">
+            <button
+              mat-stroked-button
+              [class.active]="selectedPreset === 'today'"
+              (click)="selectPresetPeriod('today')"
+              [disabled]="isLoading"
+            >
+              {{ 'DASHBOARD.DATE_FILTER.TODAY' | translate }}
+            </button>
+
+            <button
+              mat-stroked-button
+              [class.active]="selectedPreset === 'yesterday'"
+              (click)="selectPresetPeriod('yesterday')"
+              [disabled]="isLoading"
+            >
+              {{ 'DASHBOARD.DATE_FILTER.YESTERDAY' | translate }}
+            </button>
+
+            <button
+              mat-stroked-button
+              [class.active]="selectedPreset === 'thisWeek'"
+              (click)="selectPresetPeriod('thisWeek')"
+              [disabled]="isLoading"
+            >
+              {{ 'DASHBOARD.DATE_FILTER.THIS_WEEK' | translate }}
+            </button>
+
+            <button
+              mat-stroked-button
+              [class.active]="selectedPreset === 'lastWeek'"
+              (click)="selectPresetPeriod('lastWeek')"
+              [disabled]="isLoading"
+            >
+              {{ 'DASHBOARD.DATE_FILTER.LAST_WEEK' | translate }}
+            </button>
+
+            <button
+              mat-stroked-button
+              [class.active]="selectedPreset === 'thisMonth'"
+              (click)="selectPresetPeriod('thisMonth')"
+              [disabled]="isLoading"
+            >
+              {{ 'DASHBOARD.DATE_FILTER.THIS_MONTH' | translate }}
+            </button>
+
+            <button
+              mat-stroked-button
+              [class.active]="selectedPreset === 'lastMonth'"
+              (click)="selectPresetPeriod('lastMonth')"
+              [disabled]="isLoading"
+            >
+              {{ 'DASHBOARD.DATE_FILTER.LAST_MONTH' | translate }}
+            </button>
+
+            <button
+              mat-stroked-button
+              [class.active]="selectedPreset === 'thisYear'"
+              (click)="selectPresetPeriod('thisYear')"
+              [disabled]="isLoading"
+            >
+              {{ 'DASHBOARD.DATE_FILTER.THIS_YEAR' | translate }}
+            </button>
+
+            <button
+              mat-stroked-button
+              [class.active]="selectedPreset === 'lastYear'"
+              (click)="selectPresetPeriod('lastYear')"
+              [disabled]="isLoading"
+            >
+              {{ 'DASHBOARD.DATE_FILTER.LAST_YEAR' | translate }}
+            </button>
+          </div>
+        </section>
+
+        <!-- RIGHT: Custom Date Range -->
+        <section class="custom-column" aria-labelledby="customRangeTitle">
+          <h6 id="customRangeTitle" class="mb-2">
+            {{ 'DASHBOARD.DATE_FILTER.CUSTOM_RANGE' | translate }}
+          </h6>
+
+          <div class="custom-form-row">
+            <!-- Start Date -->
+            <mat-form-field appearance="outline" class="flex-1">
+              <mat-label>{{ 'DASHBOARD.DATE_FILTER.FROM_DATE' | translate }}</mat-label>
+              <input
+                matInput
+                [matDatepicker]="startPicker"
+                [(ngModel)]="customStartDate"
+                [max]="customEndDate || maxDate"
+                [disabled]="isLoading"
+                [placeholder]="'DASHBOARD.DATE_FILTER.SELECT_START_DATE' | translate"
+              />
+              <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+              <mat-datepicker #startPicker></mat-datepicker>
+            </mat-form-field>
+
+            <!-- Arrow -->
+            <div class="date-arrow" aria-hidden="true">
+              <mat-icon>arrow_forward</mat-icon>
+            </div>
+
+            <!-- End Date -->
+            <mat-form-field appearance="outline" class="flex-1">
+              <mat-label>{{ 'DASHBOARD.DATE_FILTER.TO_DATE' | translate }}</mat-label>
+              <input
+                matInput
+                [matDatepicker]="endPicker"
+                [(ngModel)]="customEndDate"
+                [min]="customStartDate"
+                [max]="maxDate"
+                [disabled]="isLoading"
+                [placeholder]="'DASHBOARD.DATE_FILTER.SELECT_END_DATE' | translate"
+              />
+              <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+              <mat-datepicker #endPicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+          <div class="date-actions-row">
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="applyCustomDateRange()"
+              [disabled]="!customStartDate || !customEndDate || isLoading"
+              class="apply-button"
+            >
+              <mat-icon>check</mat-icon>
+              <span class="ms-1">{{ 'DASHBOARD.DATE_FILTER.APPLY' | translate }}</span>
+            </button>
+
+            <button
+              mat-stroked-button
+              (click)="clearDateRange()"
+              [disabled]="isLoading"
+              class="clear-button"
+            >
+              <mat-icon>clear</mat-icon>
+              <span class="ms-1">{{ 'DASHBOARD.DATE_FILTER.CLEAR' | translate }}</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Selected Period Display (spans both columns) -->
+        <div class="selected-period-display" *ngIf="selectedPeriodDisplay">
+          <div class="period-info">
+            <mat-icon>event</mat-icon>
+            <span class="period-text">{{ selectedPeriodDisplay }}</span>
+            <button
+              mat-icon-button
+              (click)="clearDateRange()"
+              [disabled]="isLoading"
+              matTooltip="{{ 'DASHBOARD.DATE_FILTER.CLEAR_FILTER' | translate }}"
+             >
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </app-card>
+  </div>
+</div>
+
+<!-- ========= Loading State ========= -->
+<div *ngIf="isLoading" class="loading-container">
+  <mat-spinner diameter="60"></mat-spinner>
+  <p>{{ 'DASHBOARD.LOADING.TEXT' | translate }}</p>
+</div>
 <!-- ===================== KPI Row ===================== -->
-<div class="dashboard-kpis row g-3">
+<div *ngIf="!isLoading" class="dashboard-kpis row g-3">
+  <!-- First Row: Earning Charts (matching finance dashboard) -->
   <div class="col-md-6 col-xxl-4">
     <app-earning-chart
       [color]="primaryColor"
@@ -31,7 +221,7 @@
       [earningValue]="totalReceptions?.toString() || '0'"
       [headerTitle]="'DASHBOARD.KPIS.TOTAL_RECEPTIONS' | translate"
       background="bg-primary-50"
-      class="kpi-card with-shadow"
+      class="kpi-card "
       iconImage="#wallet-2"
       percentageValue=""
       textColor="text-primary-500">
@@ -45,7 +235,7 @@
       [earningValue]="pendingReceptions?.toString() || '0'"
       [headerTitle]="'DASHBOARD.KPIS.PENDING_RECEPTIONS' | translate"
       background="bg-warning-50"
-      class="kpi-card with-shadow"
+      class="kpi-card "
       iconImage="#calendar"
       percentageValue=""
       textColor="text-warning-500">
@@ -59,16 +249,17 @@
       [earningValue]="completedReceptions?.toString() || '0'"
       [headerTitle]="'DASHBOARD.KPIS.COMPLETED_RECEPTIONS' | translate"
       background="bg-success-50"
-      class="kpi-card with-shadow"
+      class="kpi-card "
       iconImage="#book"
       percentageValue=""
       textColor="text-success-500">
     </app-earning-chart>
   </div>
 
+  <!-- Second Row: Mini KPI Cards (matching finance dashboard) -->
   <div class="col-md-4 col-xxl-4">
     <app-card [cardTitle]="'DASHBOARD.KPIS.TOTAL_VOLUME' | translate" [icon]="'stacked_bar_chart'"
-              class="mini-kpi with-shadow">
+              class="mini-kpi ">
       <div class="mini-kpi__body">
         <mat-icon>stacked_bar_chart</mat-icon>
         <span class="value">{{ totalVolume?.toFixed(2) || '0.00' }}</span>
@@ -77,7 +268,7 @@
   </div>
 
   <div class="col-md-4 col-xxl-4">
-    <app-card [cardTitle]="'DASHBOARD.KPIS.AVG_VOLUME' | translate" [icon]="'speed'" class="mini-kpi with-shadow">
+    <app-card [cardTitle]="'DASHBOARD.KPIS.AVG_VOLUME' | translate" [icon]="'speed'" class="mini-kpi ">
       <div class="mini-kpi__body">
         <mat-icon>speed</mat-icon>
         <span class="value">{{ avgVolumePerReception?.toFixed(2) || '0.00' }}</span>
@@ -87,7 +278,7 @@
 
   <div class="col-md-4 col-xxl-4">
     <app-card [cardTitle]="'DASHBOARD.KPIS.AVG_UNIT_PRICE' | translate" [icon]="'attach_money'"
-              class="mini-kpi with-shadow">
+              class="mini-kpi ">
       <div class="mini-kpi__body">
         <mat-icon>attach_money</mat-icon>
         <span class="value">{{ formattedAvgUnitPrice || '0' }}</span>
@@ -95,8 +286,9 @@
     </app-card>
   </div>
 
+  <!-- Third Row: More Mini KPI Cards (matching finance dashboard) -->
   <div class="col-md-4 col-xxl-4">
-    <app-card [cardTitle]="'DASHBOARD.KPIS.TOTAL_PAID' | translate" [icon]="'paid'" class="mini-kpi with-shadow">
+    <app-card [cardTitle]="'DASHBOARD.KPIS.TOTAL_PAID' | translate" [icon]="'paid'" class="mini-kpi ">
       <div class="mini-kpi__body">
         <mat-icon>paid</mat-icon>
         <span class="value">{{ formattedTotalPaidAmount || '0' }}</span>
@@ -106,7 +298,7 @@
 
   <div class="col-md-4 col-xxl-4">
     <app-card [cardTitle]="'DASHBOARD.KPIS.TOTAL_UNPAID' | translate" [icon]="'hourglass_bottom'"
-              class="mini-kpi with-shadow">
+              class="mini-kpi ">
       <div class="mini-kpi__body">
         <mat-icon>hourglass_bottom</mat-icon>
         <span class="value">{{ formattedTotalUnpaidAmount || '0' }}</span>
@@ -116,7 +308,7 @@
 
   <div class="col-md-4 col-xxl-4">
     <app-card [cardTitle]="'DASHBOARD.KPIS.UNIQUE_SUPPLIERS' | translate" [icon]="'groups'"
-              class="mini-kpi with-shadow">
+              class="mini-kpi ">
       <div class="mini-kpi__body">
         <mat-icon>groups</mat-icon>
         <span class="value">{{ uniqueSuppliers?.toString() || '0' }}</span>
@@ -125,13 +317,15 @@
   </div>
   <div class="col-md-4 col-xxl-4">
     <app-card [cardTitle]="'DASHBOARD.ANALYTICS.RECEPTION_STATUS' | translate" [icon]="'pie_chart'"
-              class="card--chart with-shadow">
+              class="card--chart ">
       <div class="chart-container small">
         <apx-chart
           [chart]="receptionsByStatusChartOptions.chart"
           [colors]="receptionsByStatusChartOptions.colors"
           [labels]="receptionsByStatusChartOptions.labels"
           [series]="receptionsByStatusChartOptions.series"
+          [plotOptions]="receptionsByStatusChartOptions.plotOptions"
+          [legend]="receptionsByStatusChartOptions.legend"
         >
         </apx-chart>
       </div>
@@ -139,68 +333,68 @@
   </div>
   <div class="col-md-4 col-xxl-4">
     <app-card [cardTitle]="'DASHBOARD.ANALYTICS.QUALITY_CONTROL' | translate" [icon]="'rule'"
-              class="card--chart with-shadow">
+              class="card--chart ">
       <div class="chart-container small">
         <apx-chart
           [chart]="qualityControlChartOptions.chart"
           [colors]="qualityControlChartOptions.colors"
           [labels]="qualityControlChartOptions.labels"
           [series]="qualityControlChartOptions.series"
+          [plotOptions]="qualityControlChartOptions.plotOptions"
+          [legend]="qualityControlChartOptions.legend"
         >
         </apx-chart>
       </div>
     </app-card>
-
   </div>
   <div class="col-md-4 col-xxl-4">
     <app-card [cardTitle]="'DASHBOARD.ANALYTICS.RECEPTION_TYPE' | translate" [icon]="'category'"
-              class="card--chart with-shadow">
-      <div class="chart-container right">
+              class="card--chart ">
+      <div class="chart-container small">
         <apx-chart
           [chart]="receptionsByTypeChartOptions.chart"
           [colors]="receptionsByTypeChartOptions.colors"
           [series]="receptionsByTypeChartOptions.series"
           [xaxis]="receptionsByTypeChartOptions.xaxis"
+          [plotOptions]="receptionsByTypeChartOptions.plotOptions"
         >
         </apx-chart>
       </div>
     </app-card>
-
   </div>
 </div>
 
 
-<div class="row g-3 mt-1">
-  <app-card>
-    <div class="toolbar toolbar--split" style="
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    align-items: baseline;
-">
-      <!-- Left: Period -->
-      <div class="toolbar__left">
-        <mat-button-toggle-group
-          (change)="updateReceptionTrendView($event.value)"
-          [value]="currentReceptionTrendView"
-          aria-label="Trend period"
-          class="toolbar__toggle">
-          <mat-button-toggle value="monthly">{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.MONTHLY' | translate }}
-          </mat-button-toggle>
-          <mat-button-toggle value="weekly">{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.WEEKLY' | translate }}
-          </mat-button-toggle>
-          <mat-button-toggle value="daily">{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.DAILY' | translate }}
-          </mat-button-toggle>
-        </mat-button-toggle-group>
-      </div>
+<div *ngIf="!isLoading" class="row g-3 mt-1">
+<!--  <app-card>-->
+<!--    <div class="toolbar toolbar&#45;&#45;split" style="-->
+<!--    display: flex;-->
+<!--    flex-wrap: nowrap;-->
+<!--    justify-content: space-between;-->
+<!--    align-items: baseline;-->
+<!--">-->
+<!--      &lt;!&ndash; Left: Period &ndash;&gt;-->
+<!--      <div class="toolbar__left">-->
+<!--        <mat-button-toggle-group-->
+<!--          (change)="updateReceptionTrendView($event.value)"-->
+<!--          [value]="currentReceptionTrendView"-->
+<!--          aria-label="Trend period"-->
+<!--          class="toolbar__toggle">-->
+<!--          <mat-button-toggle value="monthly">{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.MONTHLY' | translate }}-->
+<!--          </mat-button-toggle>-->
+<!--          <mat-button-toggle value="weekly">{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.WEEKLY' | translate }}-->
+<!--          </mat-button-toggle>-->
+<!--          <mat-button-toggle value="daily">{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.DAILY' | translate }}-->
+<!--          </mat-button-toggle>-->
+<!--        </mat-button-toggle-group>-->
+<!--      </div>-->
 
       <!-- Right: Size -->
       <div class="toolbar__right">
         <mat-button-toggle-group
           (change)="updateChartSize($event.value)"
           [value]="currentChartSize"
-          aria-label="Chart size"
-          class="toolbar__toggle">
+           class="toolbar__toggle">
           <mat-button-toggle value="small">
             <mat-icon>crop_square</mat-icon>
           </mat-button-toggle>
@@ -215,7 +409,7 @@
     </div>
     <div class="col-12">
       <app-card [cardTitle]="'DASHBOARD.ANALYTICS.RECEPTION_TREND.TITLE' | translate" [icon]="'timeline'"
-                class="card--chart with-shadow">
+                class="card--chart ">
 
         <div [ngClass]="currentChartSize" class="chart-container wide">
           <apx-chart
@@ -232,7 +426,7 @@
 
 
       <app-card [cardTitle]="'DASHBOARD.ANALYTICS.VOLUME_BY_SUPPLIER' | translate" [icon]="'storefront'"
-                class="card--chart with-shadow">
+                class="card--chart ">
         <div [ngClass]="currentChartSize" class="chart-container">
           <apx-chart
             [chart]="volumeBySupplierChartOptions.chart"
@@ -246,7 +440,7 @@
 
     <div class="col-12">
       <app-card [cardTitle]="'DASHBOARD.ANALYTICS.RECENT_RECEPTIONS' | translate" [icon]="'insights'"
-                class="card--chart with-shadow">
+                class="card--chart ">
         <div [ngClass]="currentChartSize" class="chart-container">
           <apx-chart
             [chart]="recentReceptionsChartOptions.chart"
@@ -262,7 +456,7 @@
 
     <div class="col-12">
       <app-card [cardTitle]="'DASHBOARD.ANALYTICS.VOLUME_BY_STORAGE' | translate" [icon]="'inventory_2'"
-                class="card--chart with-shadow">
+                class="card--chart ">
         <div [ngClass]="currentChartSize" class="chart-container">
           <apx-chart
             [chart]="volumeByStorageChartOptions.chart"
@@ -274,6 +468,6 @@
       </app-card>
     </div>
 
-  </app-card>
+<!--  </app-card>-->
 
-</div>
+<!--</div>-->

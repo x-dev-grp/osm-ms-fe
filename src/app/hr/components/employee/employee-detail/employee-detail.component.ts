@@ -1,19 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
-import { EmployeeService } from '../../services/employee-service';
-import { ContractService } from '../../services/contract-service';
-import { Employee, Gender, MaritalStatus } from '../../model/employee-model';
-import { Contract } from '../../model/contract.model';
-import { ToastService } from '../../../shared/services/toast.service';
+import { EmployeeService } from '../../../services/employee-service';
+import { ContractService } from '../../../services/contract-service';
+import { Employee, Gender, MaritalStatus } from '../../../model/employee-model';
+import { Contract } from '../../../model/contract.model';
+import { ToastService } from '../../../../shared/services/toast.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialogComponent } from '../../../shared/component/confirm-dialog/confirm-dialog.component';
-import { CardComponent } from "../../../theme/components/card/card.component";
+import { ConfirmDialogComponent } from '../../../../shared/component/confirm-dialog/confirm-dialog.component';
+import { CardComponent } from "../../../../theme/components/card/card.component";
 
 
 @Component({

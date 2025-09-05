@@ -36,44 +36,44 @@
         </div>
       </div>
 
-      <div class="detail-section" *ngIf="department.managerId">
-        <div class="section-header">
-          <mat-icon>supervisor_account</mat-icon>
-          <h3>{{ 'DEPARTMENT.DETAIL.MANAGER_INFO' | translate }}</h3>
-        </div>
+<!--      <div class="detail-section" *ngIf="department.managerId">-->
+<!--        <div class="section-header">-->
+<!--          <mat-icon>supervisor_account</mat-icon>-->
+<!--          <h3>{{ 'DEPARTMENT.DETAIL.MANAGER_INFO' | translate }}</h3>-->
+<!--        </div>-->
 
-        <div *ngIf="loadingManager" class="loading-spinner">
-          <mat-spinner diameter="30"></mat-spinner>
-        </div>
+<!--        <div *ngIf="loadingManager" class="loading-spinner">-->
+<!--          <mat-spinner diameter="30"></mat-spinner>-->
+<!--        </div>-->
 
-        <div *ngIf="!loadingManager && manager" class="detail-grid manager-details">
-          <div class="detail-item">
-            <div class="detail-label">{{ 'EMPLOYEE.FIRST_NAME' | translate }}:</div>
-            <div class="detail-value">{{ manager.firstName }}</div>
-          </div>
-          <div class="detail-item">
-            <div class="detail-label">{{ 'EMPLOYEE.LAST_NAME' | translate }}:</div>
-            <div class="detail-value">{{ manager.lastName }}</div>
-          </div>
-          <div class="detail-item">
-            <div class="detail-label">{{ 'EMPLOYEE.EMAIL' | translate }}:</div>
-            <div class="detail-value">{{ manager.email || 'N/A' }}</div>
-          </div>
-          <div class="detail-item">
-            <div class="detail-label">{{ 'EMPLOYEE.PHONE' | translate }}:</div>
-            <div class="detail-value">{{ manager.phone || 'N/A' }}</div>
-          </div>
-          <div class="detail-item">
-            <div class="detail-label">{{ 'EMPLOYEE.CIN' | translate }}:</div>
-            <div class="detail-value">{{ manager.cin }}</div>
-          </div>
-        </div>
+<!--        <div *ngIf="!loadingManager && manager" class="detail-grid manager-details">-->
+<!--          <div class="detail-item">-->
+<!--            <div class="detail-label">{{ 'EMPLOYEE.FIRST_NAME' | translate }}:</div>-->
+<!--            <div class="detail-value">{{ manager.firstName }}</div>-->
+<!--          </div>-->
+<!--          <div class="detail-item">-->
+<!--            <div class="detail-label">{{ 'EMPLOYEE.LAST_NAME' | translate }}:</div>-->
+<!--            <div class="detail-value">{{ manager.lastName }}</div>-->
+<!--          </div>-->
+<!--          <div class="detail-item">-->
+<!--            <div class="detail-label">{{ 'EMPLOYEE.EMAIL' | translate }}:</div>-->
+<!--            <div class="detail-value">{{ manager.email || 'N/A' }}</div>-->
+<!--          </div>-->
+<!--          <div class="detail-item">-->
+<!--            <div class="detail-label">{{ 'EMPLOYEE.PHONE' | translate }}:</div>-->
+<!--            <div class="detail-value">{{ manager.phone || 'N/A' }}</div>-->
+<!--          </div>-->
+<!--          <div class="detail-item">-->
+<!--            <div class="detail-label">{{ 'EMPLOYEE.CIN' | translate }}:</div>-->
+<!--            <div class="detail-value">{{ manager.cin }}</div>-->
+<!--          </div>-->
+<!--        </div>-->
 
-        <div *ngIf="!loadingManager && !manager" class="no-data">
-          <mat-icon>person_off</mat-icon>
-          <p>{{ 'DEPARTMENT.DETAIL.MANAGER_NOT_FOUND' | translate }}</p>
-        </div>
-      </div>
+<!--        <div *ngIf="!loadingManager && !manager" class="no-data">-->
+<!--          <mat-icon>person_off</mat-icon>-->
+<!--          <p>{{ 'DEPARTMENT.DETAIL.MANAGER_NOT_FOUND' | translate }}</p>-->
+<!--        </div>-->
+<!--      </div>-->
 
       <div class="detail-section">
         <div class="section-header">

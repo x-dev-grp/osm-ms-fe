@@ -6,6 +6,7 @@ import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
 import { MatFormField } from '@angular/material/form-field';
 import { SupplierComponent } from '../../shared/modules/supplierList/supplier.component';
 import { SharedModule } from '../../shared/shared.module';
+import { DecimalPipe, NgIf } from '@angular/common';
 export interface ChangeSupplierDto {
   /** Path param */
   storageId: string;
@@ -16,7 +17,7 @@ export interface ChangeSupplierDto {
   selector: 'app-assign-supplier',
   templateUrl: './assign-supplier.component.html',
   standalone: true,
-  imports: [MatDialogContent, MatFormField, SupplierComponent, SharedModule],
+  imports: [MatDialogContent, MatFormField, SupplierComponent, SharedModule, DecimalPipe, NgIf],
   styleUrls: ['./assign-supplier.component.scss']
 })
 export class AssignSupplierComponent implements OnInit {
@@ -72,9 +73,7 @@ export class AssignSupplierComponent implements OnInit {
     }
     const dto: ChangeSupplierDto = {
       storageId: this.data.storageUnit.id!,
-       supplierId: this.form.value.hasSupplier
-        ? supplierId?.id
-        : null
+      supplierId: this.form.value.hasSupplier ? supplierId?.id : null
     };
     this.storageService.assignSupplier(dto).subscribe({
       next: () => this.dialogRef.close(true),

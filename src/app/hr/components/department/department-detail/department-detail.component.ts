@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DepartmentService } from '../../services/departement-service';
-import { Department } from '../../model/department.model';
-import { ToastService } from '../../../shared/services/toast.service';
+import { DepartmentService } from '../../../services/departement-service';
+import { Department } from '../../../model/department.model';
+import { ToastService } from '../../../../shared/services/toast.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { CardComponent } from '../../../theme/components/card/card.component';
-import { Employee } from "../../model/employee-model";
-import { EmployeeService } from "../../services/employee-service";
+import { CardComponent } from '../../../../theme/components/card/card.component';
+import { Employee } from "../../../model/employee-model";
+import { EmployeeService } from "../../../services/employee-service";
 
 @Component({
   selector: 'app-department-detail',

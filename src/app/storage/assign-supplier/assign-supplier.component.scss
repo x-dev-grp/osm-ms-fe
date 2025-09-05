@@ -38,3 +38,35 @@
     margin-left: 12px;
   }
 }
+
+/* Paid storage message styling */
+.paid-storage-message {
+  background-color: #e3f2fd;
+  border: 1px solid #2196f3;
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+
+  .info-icon {
+    color: #2196f3;
+    flex-shrink: 0;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: #333;
+
+    &:first-of-type {
+      font-weight: 500;
+    }
+
+    &:last-of-type {
+      margin-top: 4px;
+      font-style: italic;
+    }
+  }
+}

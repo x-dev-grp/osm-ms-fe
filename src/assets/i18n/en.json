@@ -164,6 +164,7 @@
     "SAVING": "Saving...",
     "SELECT_OPTION": "Select an option",
     "UPDATE": "Update",
+    "VIEW": "View",
     "VALIDATION": {
       "EMAIL": "Please enter a valid email address",
       "MAX_LENGTH": "Maximum length is {{maxLength}} characters",
@@ -317,7 +318,13 @@
     "STATUS": "Contract status",
     "TITLE": "Contracts",
     "TYPE": "Type",
-    "UPDATE": "Update contract"
+    "UPDATE": "Update contract",
+    "MESSAGES": {
+      "ERROR_LOADING": "Error loading contract",
+      "ERROR_UPDATING": "Error updating contract",
+      "UPDATE_SUCCESS": "Contract updated successfully",
+      "EMPLOYEE_REQUIRED": "Employee is required"
+    }
   },
   "CONTRAT": {
     "STATUS": {
@@ -543,6 +550,26 @@
         "SMALL": "Small"
       }
     },
+    "DATE_FILTER": {
+      "APPLY": "Apply",
+      "CLEAR": "Clear",
+      "CLEAR_FILTER": "Clear Filter",
+      "CUSTOM_RANGE": "Custom Range",
+      "FROM_DATE": "From Date",
+      "LAST_MONTH": "Last Month",
+      "LAST_WEEK": "Last Week",
+      "LAST_YEAR": "Last Year",
+      "PRESET_PERIODS": "Preset Periods",
+      "SELECT_END_DATE": "Select End Date",
+      "SELECT_START_DATE": "Select Start Date",
+      "THIS_MONTH": "This Month",
+      "THIS_WEEK": "This Week",
+      "THIS_YEAR": "This Year",
+      "TITLE": "Date Filter",
+      "TODAY": "Today",
+      "TO_DATE": "To Date",
+      "YESTERDAY": "Yesterday"
+    },
     "KPIS": {
       "AVG_UNIT_PRICE": "Average Unit Price",
       "AVG_VOLUME": "Avg Volume",
@@ -553,6 +580,9 @@
       "TOTAL_UNPAID": "Total Unpaid",
       "TOTAL_VOLUME": "Total Volume (T)",
       "UNIQUE_SUPPLIERS": "Unique Suppliers"
+    },
+    "LOADING": {
+      "TEXT": "Loading..."
     },
     "TITLE": {
       "RECEPTION": "Receptions statistiques"
@@ -812,7 +842,8 @@
       "POSTAL_CODE": "Postal Code"
     },
     "GENDER": {
-      "FEMALE": "Female"
+      "FEMALE": "Female",
+      "MALE": "male"
     },
     "HIRE_DATE": "Hire Date",
     "IS_ACTIVE": "Active",
@@ -835,31 +866,31 @@
   },
   "EXPENSE": {
     "CATEGORY": {
-      "FUEL": "Fuel",
-      "LUBRICANTS": "Lubricants",
-      "VEHICLE_PARTS_SERVICE": "Vehicle Parts & Service",
-      "HEAVY_EQUIPMENT_WORKS": "Heavy Equipment Works",
-      "ELECTRICAL_MATERIALS_WORKS": "Electrical Materials & Works",
-      "PLUMBING_MATERIALS": "Plumbing Materials",
-      "CONSTRUCTION_MATERIALS": "Construction Materials",
-      "CLEANING_SUPPLIES": "Cleaning Supplies",
-      "PACKAGING_CONTAINERS": "Packaging & Containers",
-      "OFFICE_SUPPLIES_PRINTING": "Office Supplies & Printing",
-      "LAB_ANALYSIS_FEES": "Lab Analysis Fees",
-      "GOVERNMENT_TAXES_FEES": "Government Taxes & Fees",
-      "COURIER_POST_SHIPPING": "Courier, Post & Shipping",
-      "TOOLS_HARDWARE_SERVICES": "Tools, Hardware & Services",
-      "SAFETY_INSURANCE": "Safety & Insurance",
-      "MEALS_CATERING": "Meals & Catering",
-      "MACHINE_MAINTENANCE_REPAIR": "Machine Maintenance & Repair",
       "AGRICULTURE_SUPPLIES": "Agriculture Supplies",
-      "TRANSPORT_LOGISTICS": "Transport & Logistics",
+      "CLEANING_SUPPLIES": "Cleaning Supplies",
+      "CONSTRUCTION_MATERIALS": "Construction Materials",
+      "COURIER_POST_SHIPPING": "Courier, Post & Shipping",
       "DONATIONS_SOCIAL": "Donations & Social",
-      "UTILITIES_WATER": "Utilities & Water",
+      "ELECTRICAL_MATERIALS_WORKS": "Electrical Materials & Works",
       "FACTORY_CONSUMABLES": "Factory Consumables",
-      "TOLLS_AND_ROAD_FEES": "Tolls & Road Fees",
+      "FUEL": "Fuel",
+      "GOVERNMENT_TAXES_FEES": "Government Taxes & Fees",
+      "HEAVY_EQUIPMENT_WORKS": "Heavy Equipment Works",
+      "LAB_ANALYSIS_FEES": "Lab Analysis Fees",
+      "LUBRICANTS": "Lubricants",
+      "MACHINE_MAINTENANCE_REPAIR": "Machine Maintenance & Repair",
+      "MEALS_CATERING": "Meals & Catering",
       "NON_OPERATING_PERSONAL": "Non-Operating & Personal",
-      "OTHER": "Other"
+      "OFFICE_SUPPLIES_PRINTING": "Office Supplies & Printing",
+      "OTHER": "Other",
+      "PACKAGING_CONTAINERS": "Packaging & Containers",
+      "PLUMBING_MATERIALS": "Plumbing Materials",
+      "SAFETY_INSURANCE": "Safety & Insurance",
+      "TOLLS_AND_ROAD_FEES": "Tolls & Road Fees",
+      "TOOLS_HARDWARE_SERVICES": "Tools, Hardware & Services",
+      "TRANSPORT_LOGISTICS": "Transport & Logistics",
+      "UTILITIES_WATER": "Utilities & Water",
+      "VEHICLE_PARTS_SERVICE": "Vehicle Parts & Service"
     }
   },
   "EXPENSES": {
@@ -1157,57 +1188,57 @@
       "TITLE": "Customers"
     },
     "FINANCE": {
-      "BANK_MANAGEMENT": "Bank Account Management",
-      "CUSTOMERS": "Customers",
+      "BANK_MANAGEMENT": "Banks management",
       "DASHBOARD": {
-        "TITLE": "Finance Dashboard",
-        "KPIS": {
-          "TOTAL_TRANSACTIONS": "Total Transactions",
-          "PENDING_EXPENSES": "Pending Expenses",
-          "COMPLETED_SALES": "Completed Sales",
-          "TOTAL_REVENUE": "Total Revenue",
-          "AVG_TRANSACTION": "Average Transaction",
-          "NET_FLOW": "Net Flow",
-          "TOTAL_PAID": "Total Paid",
-          "TOTAL_UNPAID": "Total Unpaid",
-          "ACTIVE_ACCOUNTS": "Active Accounts"
-        },
         "ANALYTICS": {
+          "DEBITED_CREDITED": "Debited vs Credited Payments",
+          "EXPENSE_BY_CATEGORY": "Expenses by Category",
           "EXPENSE_STATUS": "Expense Status",
-          "TRANSACTION_FLOW": "Transaction Flow",
-          "SALES_BY_TYPE": "Sales by Type",
           "FINANCE_TREND": {
-            "TITLE": "Finance Trend",
-            "MONTHLY": "Monthly",
-            "WEEKLY": "Weekly",
-            "DAILY": "Daily"
+            "TITLE": "Finance Trend"
           },
-          "REVENUE_BY_SOURCE": "Revenue by Source",
           "RECENT_TRANSACTIONS": "Recent Transactions",
-          "EXPENSE_BY_CATEGORY": "Expense by Category",
-          "EXPENSE_CATEGORIES_LIST": "Expense Categories List"
+          "REVENUE_BY_SOURCE": "Revenue by Source",
+          "SALES_BY_TYPE": "Sales by Type",
+          "TRANSACTION_FLOW": "Transaction Flow"
         },
-        "EXPENSES": "Expenses",
-        "OIL_CREDITS": "Oil Credits",
-        "OIL_SALES": "Oil Sales",
-        "WASTE_SALES": "Waste Sales",
-        "TRANSACTIONS": "Transactions",
         "BANK_BALANCES": "Bank Account Balances",
         "CHART_LABELS": {
-          "AMOUNT_TND": "Amount (TND)",
           "AMOUNT": "Amount",
-          "OIL_SALES": "Oil Sales",
-          "WASTE_SALES": "Waste Sales",
-          "CREDITS": "Credits",
+          "AMOUNT_TND": "Amount (TND)",
           "BANK_BALANCES": "Bank Balances",
+          "CREDITED": "Credited",
+          "CREDITS": "Credits",
+          "DEBITED": "Debited",
+          "EXPENSES_LABEL": "Expenses",
+          "OIL_SALES": "Oil Sales",
           "PAID": "Paid",
           "PENDING": "Pending",
           "REVENUE": "Revenue",
-          "EXPENSES_LABEL": "Expenses"
+          "WASTE_SALES": "Waste Sales"
+        },
+        "EXPENSES": "Expenses",
+        "KPIS": {
+          "ACTIVE_ACCOUNTS": "Active Accounts",
+          "AVG_TRANSACTION": "Average Transaction",
+          "COMPLETED_SALES": "Completed Sales",
+          "NET_FLOW": "Net Flow",
+          "PENDING_EXPENSES": "Pending Expenses",
+          "TOTAL_CREDITED": "Total Credited",
+          "TOTAL_DEBITED": "Total Debited",
+          "TOTAL_PAID": "Total Paid",
+          "TOTAL_REVENUE": "Total Revenue",
+          "TOTAL_TRANSACTIONS": "Total Transactions",
+          "TOTAL_UNPAID": "Total Unpaid"
         },
         "LOADING": {
           "TEXT": "Loading financial data..."
-        }
+        },
+        "OIL_CREDITS": "Oil Credits",
+        "OIL_SALES": "Oil Sales",
+        "TITLE": "Finance Dashboard",
+        "TRANSACTIONS": "Transactions",
+        "WASTE_SALES": "Waste Sales"
       },
       "EXPENSES": "Expenses",
       "OIL_CREDIT": "Oil Credit",
@@ -1257,7 +1288,22 @@
     },
     "STORAGE": {
       "OIL_STORAGE_UNITS": "Oil Storage Units",
-      "TITLE": "Storage & Inventory"
+      "TITLE": "Storage & Inventory",
+      "VIEW": {
+        "DASHBOARD": {
+          "TITLE": "Storage Dashboard"
+        },
+        "PAID_STORAGE": "Paid Storage",
+        "PER_MONTH": "per month",
+        "SHOW_ONLY_PAID": "Show only paid storage"
+      },
+      "FORM": {
+        "PAID_STORAGE_INFO": "Paid Storage Information",
+        "IS_PAID_STORAGE": "This is a paid storage unit",
+        "MONTHLY_RENTAL_PRICE": "Monthly Rental Price (TND)",
+        "RENTAL_PRICE_MIN_ERROR": "Rental price must be greater than or equal to 0",
+        "RENTAL_PRICE_REQUIRED": "Rental price is required for paid storage units"
+      }
     },
     "SUPPLIER": {
       "DASHBOARD": "Supplier Dashboard",
@@ -2063,17 +2109,28 @@
   "Other": "Other",
   "PDF": {
     "ACIDITY": "Acidity",
+    "ADDRESS": "Majel Belabbes 1214 KASSERINE",
     "CATEGORY_OIL": "Oil Category",
     "CATEGORY_OLIVE": "Olive Category",
+    "COMPANY_ADDRESS": "Address",
+    "COMPANY_EMAIL": "Email",
+    "COMPANY_FAX": "Fax",
+    "COMPANY_NAME": "ABIOOC",
+    "COMPANY_PHONE": "Phone",
+    "COMPANY_RIB": "(RIB)",
+    "COMPANY_TAX_NUMBER": "Tax ID",
+    "COMPANY_WEBSITE": "Website",
     "COMPLETED": "Completed",
     "CREATED_DATE": "Creation Date",
     "CRUSHING_DATE": "Crushing Date",
     "CRUSHING_PRICE_PER_KG": "Crushing Price per kg",
     "CRUSHING_TOTAL_PRICE": "Total Crushing Price",
+    "CUSTOMER": "Customer",
     "DAMAGED_PERCENT": "Damaged %",
     "DATE": "Date",
     "DELIVERY_DATE": "Delivery Date",
     "DELTA_K": "Delta K",
+    "DESCRIPTION": "Description",
     "DESTINATION_UNIT": "Destination Unit",
     "ERROR": "Error",
     "EXCHANGE": "Exchange",
@@ -2092,6 +2149,7 @@
     "EXPENSE_SIGNATURE_RESPONSIBLE": "Responsible Signature",
     "EXPENSE_STATUS": "Status",
     "EXPENSE_VENDOR": "Vendor",
+    "EXTRA_VIRGIN_OLIVE_OIL": "Extra Virgin Olive Oil",
     "FERMENTED_PERCENT": "Fermented %",
     "FICH_CONTROL_QUALITE": "Quality controle sheet",
     "FICH_CONTROL_QUALITE_HUIL": "Oil Quality Control Sheet",
@@ -2101,12 +2159,14 @@
     "GROSS_WEIGHT": "Gross Weight",
     "INDICE_PEROXYDE": "Peroxide Index",
     "INFESTED_PERCENT": "Infested %",
+    "INVOICE_DATE": "Invoice Date",
     "K232": "K232",
     "K270": "K270",
     "LOAN": "Loan",
     "LOT": "Lot",
     "LOT_GLOBAL": "Global Lot",
     "LOT_NUMBER": "Lot Number",
+    "MOBILE": "+216 29 910 458",
     "NO_QUALITY_DATA": "No quality control data available",
     "NUMBER_PLACEHOLDER": "No: ......./........",
     "OIL_QUANTITY": "Oil Quantity",
@@ -2117,28 +2177,16 @@
     "OLIVE_TYPE": "Olive Type",
     "OLIVE_VARIETY": "Olive Variety",
     "PAGE": "Page",
+    "PAID": "Paid",
+    "PAID_AMOUNT": "Paid Amount",
     "PARCEL": "Parcel",
+    "PARTIALLY_PAID": "Partially Paid",
+    "PAYMENT_STATUS": "Payment Status",
     "PENDING": "Pending",
     "PHONE": "Phone",
+    "PRICE_UNIT": "Unit Price",
     "PRODUCTION_MANAGER": "Production Manager",
     "PRODUCTION_RECEIPT": "Production Receipt",
-    "COMPANY_ADDRESS": "Address",
-    "COMPANY_EMAIL": "Email",
-    "COMPANY_PHONE": "Phone",
-    "COMPANY_FAX": "Fax",
-    "COMPANY_RIB": "(RIB)",
-    "COMPANY_TAX_NUMBER": "Tax ID",
-    "COMPANY_WEBSITE": "Website",
-    "COMPANY_NAME": "ABIOOC",
-    "ADDRESS": "Majel Belabbes 1214 KASSERINE",
-    "VAT": "1778521 Y N M 000",
-    "MOBILE": "+216 29 910 458",
-    "WEBSITE": "contact@abiooc.com",
-    "DESCRIPTION": "Description",
-    "PRICE_UNIT": "Unit Price",
-    "QUANTITY": "Quantity",
-    "TOTAL": "Total Amount",
-    "VENTE_DECHET": "Waste Sale",
     "QUALITY_FIELDS": {
       "ACIDITE": "Acidity",
       "CATEGORIE_HUILE": "Oil category",
@@ -2153,6 +2201,7 @@
     },
     "QUALITY_GRADE": "Quality Grade",
     "QUALITY_MANAGER": "Quality Manager",
+    "QUANTITY": "Quantity",
     "QUANTITY_KG": "Quantity (kg)",
     "RECEPTION_DATE": "Reception Date",
     "RECEPTION_ID": "Reception ID",
@@ -2166,6 +2215,8 @@
     "REGION": "Region",
     "REVISION": "Revision",
     "SALE": "Sale",
+    "SALE_DATE": "Sale Date",
+    "SERVICE_DESCRIPTION": "Service Description",
     "SIGNATURE": "Signature",
     "SIGNATURE_AGENT": "Agent Signature  ",
     "SIGNATURE_RESPONSIBLE": "Quality Manager Signature",
@@ -2174,17 +2225,29 @@
     "STORAGE_UNIT_DESTINATION": "Storage Unit (Destination)",
     "STORAGE_UNIT_SOURCE": "Storage Unit (Source)",
     "SUPPLIER": "Supplier",
+    "TOTAL": "Total Amount",
+    "TOTAL_AMOUNT": "Total Amount",
     "TOTAL_PRICE": "Total Price",
+    "TOTAL_SERVICE_AMOUNT": "Total Service Amount",
     "TRANSACTION_IN": "Transaction Type",
     "TRANSACTION_OIL": "Oil Transaction Receipt",
     "TRANSACTION_STATE": "Transaction State",
     "TRANSACTION_TYPE": "Transaction Type",
     "TRANSFER_IN": "Transfer In",
+    "TRITURATION": "Trituration",
+    "TRITURATION_SERVICE": "Olive Oil Trituration Service",
     "TRUCK_MAT": "Truck Mat",
     "TRUCK_STATE": "État du camion",
     "TYPE": "Type",
     "UNIT_PRICE": "Unit Price",
+    "UNPAID": "Unpaid",
+    "UNPAID_AMOUNT": "Unpaid Amount",
+    "VAT": "1778521 Y N M 000",
     "VEHICLE_REGISTRATION": " matricule véhicule",
+    "VENTE_DECHET": "Waste Sale",
+    "VENTE_HUILE": "Oil Sale",
+    "WASTE_PROCESSING": "Olive Waste Processing",
+    "WEBSITE": "contact@abiooc.com",
     "YIELD": "Yield"
   },
   "PLANNING_ASSIGNED": "Assigned",
@@ -2213,7 +2276,10 @@
     "EDIT_TITLE": "Edit position",
     "NAME": "Position",
     "SAVE": "Save position",
-    "UPDATE": "Update position"
+    "UPDATE": "Update position",
+    "MESSAGES": {
+      "ERROR_LOADING": "Error loading positions"
+    }
   },
   "PRODUCTION_TAB": "Production Config",
   "Pages": "Pages",
@@ -2386,12 +2452,20 @@
   "STORAGE": {
     "ERROR": {
       "INVALID_ID": "Invalid storage unit ID",
-      "LOAD": "Error loading storage unit"
+      "LOAD": "Error loading storage unit",
+      "FAILED_TO_LOAD_UNITS": "Failed to load storage units"
+    },
+    "FORM": {
+      "IS_PAID_STORAGE": "Is Paid Storage",
+      "MONTHLY_RENTAL_PRICE": "Monthly Rental Price",
+      "PAID_STORAGE_INFO": "Paid Storage Information",
+      "RENTAL_PRICE_MIN_ERROR": "Rental price must be greater than or equal to 0",
+      "RENTAL_PRICE_REQUIRED": "Rental price is required for paid storage"
     },
     "OIL_STORAGE_UNITS": "Oil Storage Units",
     "OIL_TRANSACTIONS": "Oil Transactions",
     "TITLE": {
-      "DASHBOARD": "Storage dashbaord"
+      "DASHBOARD": "Storage dashboard"
     },
     "VIEW": {
       "AVAILABLECAPACITY": "Available capacity",
@@ -2408,10 +2482,16 @@
         },
         "TITLE": "Storage Dashboard"
       },
+      "DASHBOARD": {
+        "TITLE": "Storage Dashboard"
+      },
       "MAX_CAPACITY": "Max Capacity",
       "NA": "N/A",
       "NO_UNITS": "No storage units",
       "OIL_TYPE": "Oil Type",
+      "PAID_STORAGE": "Paid Storage",
+      "PER_MONTH": "per month",
+      "SHOW_ONLY_PAID": "Show only paid storage",
       "STATUS": {
         "AVAILABLE": "Available",
         "CLEANING": "Cleaning",
@@ -2798,4 +2878,3 @@
   },
   "reCaptcha": "reCaptcha"
 }
-

@@ -8,6 +8,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatInputModule } from '@angular/material/input';
+import { MatNativeDateModule } from '@angular/material/core';
+import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { forkJoin, of, Subject } from 'rxjs';
 import { catchError, finalize, takeUntil } from 'rxjs/operators';
@@ -27,6 +31,7 @@ import { EarningChartComponent } from '../../../theme/pages/apex-chart/earning-c
 // import { EarningChartComponent } from '../../../theme/pages/apex-chart/earning-chart/earning-chart.component';
 
  type TrendGranularity = 'daily' | 'weekly' | 'monthly' | 'yearly';
+ type PresetPeriod = 'today' | 'yesterday' | 'thisWeek' | 'lastWeek' | 'thisMonth' | 'lastMonth' | 'thisYear' | 'lastYear' | 'custom';
  @Component({
   selector: 'app-reception-dashboard',
   templateUrl: './reception-dashboard.component.html',
@@ -42,6 +47,10 @@ import { EarningChartComponent } from '../../../theme/pages/apex-chart/earning-c
     MatIconModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
+    MatDatepickerModule,
+    MatInputModule,
+    MatNativeDateModule,
+    FormsModule,
     RouterModule,
     EarningChartComponent,
     CardComponent,
@@ -76,6 +85,13 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
   rangeStart!: Date;
   rangeEnd!: Date;
   trendGranularity: TrendGranularity = 'monthly';
+
+  // Calendar/Date picker properties
+  selectedPreset: PresetPeriod = 'thisMonth';
+  customStartDate: Date | null = null;
+  customEndDate: Date | null = null;
+  maxDate = new Date();
+  selectedPeriodDisplay: string | null = null;
 
   // Summary stats
   totalReceptions = 0;
@@ -128,13 +144,8 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
   private translate = inject(TranslateService);
 
   constructor() {
-    // default: last 30 days
-    const end = this.stripTime(new Date());
-    const start = this.stripTime(new Date());
-    start.setDate(end.getDate() - 29);
-    this.rangeStart = start;
-    this.rangeEnd = end;
-
+    // Initialize with current month as default
+    this.initializeDefaultDateRange();
     this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => this.updateChartLabels());
   }
 
@@ -152,16 +163,138 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
   ngOnInit(): void { this.loadData(); }
   ngOnDestroy(): void { this.destroy$.next(); this.destroy$.complete(); }
 
+  // === Date Range Management ===
+  private initializeDefaultDateRange(): void {
+    // Default to current month
+    const now = new Date();
+    this.rangeStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    this.rangeEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    this.updateSelectedPeriodDisplay();
+  }
+
+  selectPresetPeriod(preset: PresetPeriod): void {
+    this.selectedPreset = preset;
+    this.customStartDate = null;
+    this.customEndDate = null;
+
+    const dates = this.getPresetDateRange(preset);
+    this.rangeStart = dates.start;
+    this.rangeEnd = dates.end;
+
+    this.updateSelectedPeriodDisplay();
+    this.applyFiltersAndRebuild();
+  }
+
+  private getPresetDateRange(preset: PresetPeriod): { start: Date; end: Date } {
+    const now = new Date();
+    const today = this.stripTime(now);
+
+    switch (preset) {
+      case 'today':
+        return { start: new Date(today), end: new Date(today) };
+
+      case 'yesterday':
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+        return { start: yesterday, end: yesterday };
+
+      case 'thisWeek':
+        const startOfWeek = new Date(today);
+        const dayOfWeek = startOfWeek.getDay();
+        const diff = startOfWeek.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); // Monday
+        startOfWeek.setDate(diff);
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+        return { start: startOfWeek, end: endOfWeek };
+
+      case 'lastWeek':
+        const lastWeekStart = new Date(today);
+        const lastWeekDay = lastWeekStart.getDay();
+        const lastWeekDiff = lastWeekStart.getDate() - lastWeekDay + (lastWeekDay === 0 ? -6 : 1) - 7;
+        lastWeekStart.setDate(lastWeekDiff);
+        const lastWeekEnd = new Date(lastWeekStart);
+        lastWeekEnd.setDate(lastWeekStart.getDate() + 6);
+        return { start: lastWeekStart, end: lastWeekEnd };
+
+      case 'thisMonth':
+        return {
+          start: new Date(now.getFullYear(), now.getMonth(), 1),
+          end: new Date(now.getFullYear(), now.getMonth() + 1, 0)
+        };
+
+      case 'lastMonth':
+        return {
+          start: new Date(now.getFullYear(), now.getMonth() - 1, 1),
+          end: new Date(now.getFullYear(), now.getMonth(), 0)
+        };
+
+      case 'thisYear':
+        return {
+          start: new Date(now.getFullYear(), 0, 1),
+          end: new Date(now.getFullYear(), 11, 31)
+        };
+
+      case 'lastYear':
+        return {
+          start: new Date(now.getFullYear() - 1, 0, 1),
+          end: new Date(now.getFullYear() - 1, 11, 31)
+        };
+
+      default:
+        return { start: this.rangeStart, end: this.rangeEnd };
+    }
+  }
+
+  applyCustomDateRange(): void {
+    if (!this.customStartDate || !this.customEndDate) return;
+
+    this.selectedPreset = 'custom';
+    this.rangeStart = this.stripTime(this.customStartDate);
+    this.rangeEnd = this.stripTime(this.customEndDate);
+
+    this.updateSelectedPeriodDisplay();
+    this.applyFiltersAndRebuild();
+  }
+
+  clearDateRange(): void {
+    this.selectedPreset = 'thisMonth';
+    this.customStartDate = null;
+    this.customEndDate = null;
+    this.selectedPeriodDisplay = null;
+    this.initializeDefaultDateRange();
+    this.applyFiltersAndRebuild();
+  }
+
+  private updateSelectedPeriodDisplay(): void {
+    if (this.selectedPreset === 'custom' && this.customStartDate && this.customEndDate) {
+      this.selectedPeriodDisplay = `${this.customStartDate.toLocaleDateString()} - ${this.customEndDate.toLocaleDateString()}`;
+    } else {
+      const presetLabels: Record<PresetPeriod, string> = {
+        'today': 'Aujourd\'hui',
+        'yesterday': 'Hier',
+        'thisWeek': 'Cette semaine',
+        'lastWeek': 'Semaine dernière',
+        'thisMonth': 'Ce mois',
+        'lastMonth': 'Mois dernier',
+        'thisYear': 'Cette année',
+        'lastYear': 'Année dernière',
+        'custom': 'Période personnalisée'
+      };
+      this.selectedPeriodDisplay = presetLabels[this.selectedPreset] || '';
+    }
+  }
+
   // === Range + Granularity API (call these from UI) ===
   setDateRange(start: Date | null, end: Date | null): void {
     if (!start || !end) return;
     this.rangeStart = this.stripTime(start);
     this.rangeEnd = this.stripTime(end);
+    this.selectedPreset = 'custom';
+    this.customStartDate = start;
+    this.customEndDate = end;
+    this.updateSelectedPeriodDisplay();
     this.applyFiltersAndRebuild();
   }
-
-
-
 
   refresh(): void {
     try { this.loadData(); }
@@ -278,9 +411,25 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
     });
     this.receptionsByStatusChartOptions = {
       series: Object.values(statusCounts),
-      chart: { type: 'pie', toolbar: { show: false } },
+      chart: {
+        type: 'pie',
+        toolbar: { show: false },
+        height: 240,
+        width: '100%'
+      },
       labels: Object.keys(statusCounts),
-      colors: ['#4CAF50', '#FFC107', '#F44336', '#2196F3', '#9C27B0']
+      colors: ['#4CAF50', '#FFC107', '#F44336', '#2196F3', '#9C27B0'],
+      plotOptions: {
+        pie: {
+          expandOnClick: false
+        }
+      },
+      legend: {
+        position: 'bottom',
+        horizontalAlign: 'center',
+        fontSize: '12px',
+        fontFamily: 'inherit'
+      }
     };
 
     // --- Supplier volumes (Bar) ---
@@ -320,9 +469,20 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
     });
     this.receptionsByTypeChartOptions = {
       series: [{ name: 'Réceptions', data: [...typeMap.values()] }],
-      chart: { type: 'bar', toolbar: { show: false } },
+      chart: {
+        type: 'bar',
+        toolbar: { show: false },
+        height: 240,
+        width: '100%'
+      },
       xaxis: { categories: [...typeMap.keys()] },
-      colors: ['var(--success-500)']
+      colors: ['var(--success-500)'],
+      plotOptions: {
+        bar: {
+          horizontal: false,
+          columnWidth: '60%'
+        }
+      }
     };
 
     // --- QC distribution (Pie) ---
@@ -337,9 +497,25 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
     });
     this.qualityControlChartOptions = {
       series: Object.values(qcMap),
-      chart: { type: 'pie', toolbar: { show: false } },
+      chart: {
+        type: 'pie',
+        toolbar: { show: false },
+        height: 240,
+        width: '100%'
+      },
       labels: Object.keys(qcMap),
-      colors: ['#4CAF50', '#FFC107', '#F44336', '#2196F3', '#9C27B0']
+      colors: ['#4CAF50', '#FFC107', '#F44336', '#2196F3', '#9C27B0'],
+      plotOptions: {
+        pie: {
+          expandOnClick: false
+        }
+      },
+      legend: {
+        position: 'bottom',
+        horizontalAlign: 'center',
+        fontSize: '12px',
+        fontFamily: 'inherit'
+      }
     };
 
     // --- Recent receptions (Bar) ---

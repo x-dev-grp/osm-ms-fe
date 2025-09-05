@@ -71,6 +71,7 @@ export class BankAccountAddComponent implements OnInit {
       bankBranch: ['', Validators.required],
       currency: ['', Validators.required],
       accountType: ['', Validators.required],
+      balance: [0, [Validators.min(0)]],
       active: [true]
     });
   }

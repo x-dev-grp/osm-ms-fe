@@ -170,7 +170,7 @@ export const dashboardConfig: DashboardConfig = {
     {
       name: 'gender',
       label: 'Genre',
-      labelTranslatePath: 'EMPLOYEE.GENDER',
+      labelTranslatePath: 'EMPLOYEE.FORM.GENDER',
       attributeType: AttributeType.enum, // ou AttributeType.enum si dispo
       fieldType: FieldType.select, // select si ton module le gère
       sortable: true,
@@ -187,7 +187,7 @@ export const dashboardConfig: DashboardConfig = {
     {
       name: 'maritalStatus',
       label: 'Situation familiale',
-      labelTranslatePath: 'EMPLOYEE.MARITAL_STATUS',
+      labelTranslatePath: 'EMPLOYEE.FORM.MARITAL_STATUS',
       attributeType: AttributeType.enum,
       fieldType: FieldType.select,
       sortable: true,

@@ -28,7 +28,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
     icon: 'file_copy',
     disabled: {
       field: 'paid',
-      value: true
+      value: false
     }
   }],
   filteredActions: [],

@@ -19,10 +19,10 @@ export const OIL_CREDIT_DASHBOARD: DashboardConfig = {
       action: 'GEN_INVOICE',
       color: 'secondary',
       icon: 'file_copy',
-      disabled: {
-        field: 'creditState',
-        value: 'CANCELLED'
-      }
+      // disabled: {
+      //   field: 'creditState',
+      //   value: 'CANCELLED'
+      // }
     }
   ],
   fileName: 'oil-credits',

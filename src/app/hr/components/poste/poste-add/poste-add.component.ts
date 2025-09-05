@@ -6,11 +6,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { PosteService } from '../../services/poste-service';
-import { Poste } from '../../model/poste.model';
-import { ToastService } from '../../../shared/services/toast.service';
+import { PosteService } from '../../../services/poste-service';
+import { Poste } from '../../../model/poste.model';
+import { ToastService } from '../../../../shared/services/toast.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { CardComponent } from '../../../theme/components/card/card.component';
+import { CardComponent } from '../../../../theme/components/card/card.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -37,6 +37,7 @@ export class PosteAddComponent implements OnInit {
   isEditing = false;
   posteId?: string;
   loading = false;
+  selectedPoste: any;
 
   constructor(
     private fb: FormBuilder,
@@ -61,8 +62,7 @@ export class PosteAddComponent implements OnInit {
   private createForm(): FormGroup {
     return this.fb.group({
       name: ['', Validators.required],
-      description: [''],
-      externalId: [''],
+      description: ['']
     });
   }
 
@@ -71,11 +71,10 @@ export class PosteAddComponent implements OnInit {
     this.posteService.getPoste(id).subscribe({
       next: (response) => {
         if (response.success && response.data) {
-          const poste = Array.isArray(response.data) ? response.data[0] : response.data;
+          this.selectedPoste = Array.isArray(response.data) ? response.data[0] : response.data;
           this.posteForm.patchValue({
-            name: poste.name,
-            description: poste.description || '',
-            externalId: poste.externalId,
+            name: this.selectedPoste.name,
+            description: this.selectedPoste.description || ''
           });
         }
         this.loading = false;
@@ -96,7 +95,7 @@ export class PosteAddComponent implements OnInit {
         id: this.posteId,
         name: formValue.name,
         description: formValue.description || '',
-        externalId: formValue.externalId,
+        externalId: this.selectedPoste.externalId
       };
 
       if (this.isEditing && this.posteId) {

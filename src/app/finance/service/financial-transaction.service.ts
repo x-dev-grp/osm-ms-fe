@@ -75,14 +75,15 @@ export class FinancialTransactionService {
     return this.http.get<ApiResponse<FinancialTransaction[]>>(`${this.baseUrl}/pending`, { params });
   }
 
-  // ==================== EXPORT OPERATIONS ====================
+  getTransactionsByBankId(
+    bankId: string,
+  ): Observable<ApiResponse<FinancialTransaction>> {
 
-  /**
-   * Export transactions to Excel
-   */
-
-
-  // ==================== UTILITY METHODS ====================
+    // Example endpoint: /api/finance/transactions/bank/{bankId}?page=&size=
+    return this.http.get<ApiResponse<FinancialTransaction>>(
+      `${this.baseUrl}/bank/${bankId}`,
+     );
+  }
 
   /**
    * Get transaction types for dropdown

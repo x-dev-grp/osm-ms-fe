@@ -30,7 +30,7 @@
 
         <div class="form-grid-item">
           <mat-form-field appearance="outline">
-            <mat-label>{{ 'EMPLOYEE.GENDER' | translate }}</mat-label>
+            <mat-label>{{ 'EMPLOYEE.FORM.GENDER' | translate }}</mat-label>
             <mat-select formControlName="gender" required>
               <mat-option *ngFor="let g of ['MALE', 'FEMALE']" [value]="g">
                 {{ g | translate }}
@@ -83,7 +83,7 @@
       <div class="form-grid">
         <div class="form-grid-item">
           <mat-form-field appearance="outline">
-            <mat-label>{{ 'EMPLOYEE.MARITAL_STATUS' | translate }}</mat-label>
+            <mat-label>{{ 'EMPLOYEE.FORM.MARITAL_STATUS' | translate }}</mat-label>
             <mat-select formControlName="maritalStatus">
               <mat-option *ngFor="let status of ['SINGLE', 'MARRIED', 'DIVORCED', 'WIDOWED']" [value]="status">
                 {{ status | translate }}
@@ -97,7 +97,7 @@
           <mat-form-field appearance="outline">
             <mat-label>{{ 'EMPLOYEE.DEPARTMENT' | translate }}</mat-label>
             <mat-select formControlName="departmentId">
-              <mat-option *ngFor="let department of departments" [value]="department.id">
+              <mat-option *ngFor="let department of departments" [value]="department">
                 {{ department.name }}
               </mat-option>
             </mat-select>

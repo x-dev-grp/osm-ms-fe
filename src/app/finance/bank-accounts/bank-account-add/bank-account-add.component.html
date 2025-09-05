@@ -87,6 +87,17 @@
           </mat-error>
         </mat-form-field>
 
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'BANK_ACCOUNTS.FIELDS.BALANCE' | translate }}</mat-label>
+          <input matInput formControlName="balance" type="number" min="0" step="0.01">
+          <span matSuffix>{{ bankAccountForm.get('currency')?.value || 'TND' }}</span>
+          <mat-error *ngIf="bankAccountForm.get('balance')?.hasError('min')">
+            {{ 'BANK_ACCOUNTS.ERRORS.BALANCE_MIN' | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
         <mat-checkbox formControlName="active">{{ 'BANK_ACCOUNTS.FIELDS.ACTIVE' | translate }}</mat-checkbox>
       </div>
 

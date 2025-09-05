@@ -61,8 +61,8 @@
         <div class="form-grid-item">
           <mat-form-field appearance="outline">
             <mat-label>{{ 'CONTRACT.POSTE' | translate }}</mat-label>
-            <mat-select formControlName="posteId">
-              <mat-option *ngFor="let poste of postes" [value]="poste.id">
+            <mat-select formControlName="poste">
+              <mat-option *ngFor="let poste of postes" [value]="poste">
                 {{ poste.name }}
               </mat-option>
             </mat-select>

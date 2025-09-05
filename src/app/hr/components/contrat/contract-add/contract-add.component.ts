@@ -1,26 +1,24 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { ContractService } from '../../services/contract-service';
-import { Contract, ContractStatus, ContractType } from '../../model/contract.model';
-import { ToastService } from '../../../shared/services/toast.service';
+import { ContractService } from '../../../services/contract-service';
+import { Contract, ContractStatus, ContractType } from '../../../model/contract.model';
+import { ToastService } from '../../../../shared/services/toast.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { CardComponent } from '../../../theme/components/card/card.component';
+import { CardComponent } from '../../../../theme/components/card/card.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { format } from 'date-fns';
-import { PosteService } from '../../services/poste-service';
-import { Poste } from '../../model/poste.model';
-import { EmployeeService } from '../../services/employee-service';
-import {catchError} from "rxjs/operators";
-import {of} from "rxjs";
+import { PosteService } from '../../../services/poste-service';
+import { Poste } from '../../../model/poste.model';
+import { EmployeeService } from '../../../services/employee-service';
 
 @Component({
   selector: 'app-contract-add',
@@ -48,7 +46,8 @@ export class ContractAddComponent implements OnInit {
   contractId?: string;
   employeeId?: string;
   loading = false;
-  postes: Poste[] = [];
+  postes: Poste[] ;
+  selectedPoste: Poste | undefined;
   contractTypes = Object.values(ContractType);
   contractStatuses = Object.values(ContractStatus);
 
@@ -63,6 +62,14 @@ export class ContractAddComponent implements OnInit {
     private translate: TranslateService
   ) {
     this.contractForm = this.createForm();
+    // Subscribe to poste changes to update externalId
+    this.contractForm.get('poste')?.valueChanges.subscribe(poste => {
+      if (poste && poste.externalId) {
+        this.contractForm.get('externalId')?.setValue(poste.externalId);
+      } else {
+        this.contractForm.get('externalId')?.setValue('');
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -80,15 +87,9 @@ export class ContractAddComponent implements OnInit {
     this.posteService.getAllPostes().subscribe({
       next: (response) => {
         if (response.success && response.data) {
-          if (Array.isArray(response.data) && response.data.length > 0) {
-            if (Array.isArray(response.data[0])) {
-              this.postes = (response.data as Poste[][]).flat();
-            } else {
-              this.postes = response.data as unknown as Poste[];
-            }
-          } else {
-            this.postes = [];
-          }
+          // Fix the type issue - use the same pattern as other components
+          this.postes = Array.isArray(response.data) ? response.data[0] : response.data;
+          console.info('  chargement postes:', this.postes);
         } else {
           this.postes = [];
         }
@@ -100,6 +101,7 @@ export class ContractAddComponent implements OnInit {
       }
     });
   }
+
   private createForm(): FormGroup {
     return this.fb.group({
       contractType: ['', Validators.required],
@@ -107,8 +109,8 @@ export class ContractAddComponent implements OnInit {
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
       salary: ['', [Validators.required, Validators.min(0)]],
-      posteId: [''],
-      externalId: [this.contractId]
+      poste: [null], // Initialize with null instead of empty string
+      externalId: [''] // Initialize with empty string instead of this.contractId which may be undefined
     });
   }
 
@@ -124,8 +126,8 @@ export class ContractAddComponent implements OnInit {
             startDate: new Date(contract.startDate),
             endDate: new Date(contract.endDate),
             salary: contract.salary,
-            posteId: contract.poste?.id || '',
-            externalId: contract.externalId,
+            poste:   contract.poste!,
+            externalId: contract.externalId
           });
         }
         this.loading = false;
@@ -141,9 +143,6 @@ export class ContractAddComponent implements OnInit {
     if (this.contractForm.valid) {
       this.loading = true;
       const formValue = this.contractForm.value;
-      const selectedPoste = this.postes.find(poste =>
-        String(poste.id) === String(formValue.posteId)
-      );
 
       const contractData: Contract = {
         contractType: formValue.contractType,
@@ -151,9 +150,8 @@ export class ContractAddComponent implements OnInit {
         startDate: this.formatDate(formValue.startDate),
         endDate: this.formatDate(formValue.endDate),
         salary: formValue.salary,
-        poste: selectedPoste ? { id: selectedPoste.id } as any : undefined,
-        employee: { id: this.employeeId } as any ,
-        externalId:formValue.externalId,
+        poste: formValue.poste ? formValue.poste : null, // Fix: Handle poste correctly
+        externalId: formValue.poste ? formValue.poste.externalId : null // Fix: Get externalId from selected poste
       };
 
       if (this.isEditing && this.contractId) {
@@ -163,52 +161,6 @@ export class ContractAddComponent implements OnInit {
         this.addContract(contractData);
       }
     }
-  }
-
-  private addContract(contract: Contract): void {
-    if (!this.employeeId) {
-      this.toast.error(this.translate.instant('CONTRACT.MESSAGES.EMPLOYEE_REQUIRED'));
-      this.loading = false;
-      return;
-    }
-
-
-    this.contractService.addContractEmployee(this.employeeId, contract).subscribe({
-      next: (res: any) => {
-        this.toast.success(res.message || ' enregistrés avec succès.' );
-        this.router.navigate(['/hr/employee/fetch', this.employeeId]);
-        },
-      error: (err) => {
-        console.log(err);
-        this.toast.error('Erreur lors de l\'enregistrement ' );
-       }
-    });
-    return;
-  }
-
-  private updateContract(contract: Contract): void {
-    this.contractService.updateContract(contract).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.toast.success(this.translate.instant('CONTRACT.MESSAGES.UPDATE_SUCCESS'));
-          this.router.navigate(['/hr/employee/fetch', this.employeeId]);
-        } else {
-          this.toast.error(response.message || this.translate.instant('CONTRACT.MESSAGES.ERROR_UPDATING'));
-        }
-        this.loading = false;
-      },
-      error: () => {
-        this.toast.error(this.translate.instant('CONTRACT.MESSAGES.ERROR_UPDATING'));
-        this.loading = false;
-      }
-    });
-  }
-
-  private formatDate(date: any): string {
-    if (!date) return '';
-    if (typeof date === 'string' && date.match(/^\d{4}-\d{2}-\d{2}$/)) return date;
-    const d = new Date(date);
-    return format(d, 'yyyy-MM-dd');
   }
 
   onCancel(): void {
@@ -226,5 +178,51 @@ export class ContractAddComponent implements OnInit {
       return this.translate.instant('COMMON.VALIDATION.MIN_VALUE');
     }
     return '';
+  }
+
+  private addContract(contract: Contract): void {
+    if (!this.employeeId) {
+      this.toast.error(this.translate.instant('CONTRACT.MESSAGES.EMPLOYEE_REQUIRED'));
+      this.loading = false;
+      return;
+    }
+
+    this.contractService.addContractEmployee(this.employeeId, contract).subscribe({
+      next: (res: any) => {
+        this.toast.success(res.message || ' enregistrés avec succès.');
+        this.loading = false; // Fix: Reset loading state on success
+        this.router.navigate(['/hr/employee/fetch', this.employeeId]);
+      },
+      error: (err) => {
+        console.log(err);
+        this.toast.error("Erreur lors de l'enregistrement ");
+        this.loading = false; // Fix: Reset loading state on error
+      }
+    });
+  }
+
+  private updateContract(contract: Contract): void {
+    this.contractService.updateContract(contract).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.toast.success(this.translate.instant('CONTRACT.MESSAGES.UPDATE_SUCCESS'));
+          this.router.navigate(['/hr/employee/fetch', this.employeeId]);
+        } else {
+          this.toast.error(response.message || this.translate.instant('CONTRACT.MESSAGES.ERROR_UPDATING'));
+        }
+        this.loading = false; // Move this outside the if statement to ensure it's always reset
+      },
+      error: () => {
+        this.toast.error(this.translate.instant('CONTRACT.MESSAGES.ERROR_UPDATING'));
+        this.loading = false; // Ensure loading is reset even on error
+      }
+    });
+  }
+
+  private formatDate(date: any): string {
+    if (!date) return '';
+    if (typeof date === 'string' && date.match(/^\d{4}-\d{2}-\d{2}$/)) return date;
+    const d = new Date(date);
+    return format(d, 'yyyy-MM-dd');
   }
 }

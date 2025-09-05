@@ -1,9 +1,9 @@
-<app-card [cardTitle]="'STORAGE.TITLE.DASHBOARD' | translate">
+<app-card [cardTitle]="'STORAGE.VIEW.DASHBOARD.TITLE' | translate">
   <div class="board-container">
 
     <!-- Top actions / filters -->
     <div class="toolbar">
-<!--      <div class="filters">-->
+      <div class="filters">
 <!--        <mat-form-field appearance="outline" class="filter">-->
 <!--          <mat-label>{{ 'COMMON.SEARCH' | translate }}</mat-label>-->
 <!--          <input matInput [placeholder]="'STORAGE.VIEW.SEARCH_PLACEHOLDER' | translate" [formControl]="filters.controls.search">-->
@@ -26,7 +26,14 @@
 <!--            <mat-option *ngFor="let o of oilVarietys()" [value]="o">{{ o }}</mat-option>-->
 <!--          </mat-select>-->
 <!--        </mat-form-field>-->
-<!--      </div>-->
+
+        <!-- Show only paid storage units toggle -->
+        <mat-slide-toggle
+          [formControl]="filters.controls.showOnlyPaid"
+          color="primary">
+          {{ 'STORAGE.VIEW.SHOW_ONLY_PAID' | translate }}
+        </mat-slide-toggle>
+      </div>
 
       <button mat-stroked-button color="primary" (click)="refresh()">
         <mat-icon>refresh</mat-icon>
@@ -52,7 +59,9 @@
 
     <!-- Grid -->
     <div *ngIf="!loading() && !error() && filteredUnits().length" class="units-grid">
-      <div class="storage-card" *ngFor="let storageUnit of filteredUnits(); trackBy: trackById">
+      <div class="storage-card"
+           *ngFor="let storageUnit of filteredUnits(); trackBy: trackById"
+           [class.paid-storage]="paidStorage(storageUnit)">
         <div class="storage-card-header optimized-header">
           <div class="storage-title-status">
             <div class="storage-title">
@@ -60,13 +69,18 @@
                 {{ getStatusIcon(storageUnit) }}
               </mat-icon>
               <h2>{{ storageUnit.name }}</h2>
+              <!-- Paid Storage Badge -->
+              <div *ngIf="storageUnit.paidStorage" class="paid-storage-badge">
+                <mat-icon class="paid-icon">paid</mat-icon>
+                <span class="paid-label">{{ 'STORAGE.VIEW.PAID_STORAGE' | translate }}</span>
+              </div>
             </div>
             <div [ngClass]="getStatusClass(storageUnit)" class="storage-status">
               {{ 'STORAGE.VIEW.STATUS.' + storageUnit.status | translate }}
             </div>
             <button mat-stroked-button color="primary" (click)="viewUnit(storageUnit)">
               <mat-icon>open_in_new</mat-icon>
-              {{ 'View' | translate }}
+              {{ 'COMMON.VIEW' | translate }}
             </button>
           </div>
           <div class="storage-header-metrics">
@@ -94,6 +108,14 @@
               <span class="metric-label">{{ 'STORAGE.VIEW.OIL_TYPE' | translate }}</span>
               <span class="metric-value">{{ storageUnit.oilVariety?.name || ('STORAGE.VIEW.NA' | translate) }}</span>
             </div>
+            <!-- Paid Storage Information -->
+            <div *ngIf="storageUnit.paidStorage" class="metric paid-storage-info">
+              <span class="metric-label">
+                <mat-icon class="paid-icon-small">paid</mat-icon>
+                {{ 'STORAGE.VIEW.PAID_STORAGE' | translate }}
+              </span>
+              <span class="metric-value">{{ storageUnit.monthlyRentalPrice | number:'1.2-2' }} TND/{{ 'STORAGE.VIEW.PER_MONTH' | translate }}</span>
+            </div>
           </div>
         </div>
 
@@ -107,6 +129,10 @@
               >
                 <div class="fill-pattern"></div>
                 <span class="fill-level-text">{{ getFillPercentage(storageUnit) | number:'1.0-0' }}%</span>
+              </div>
+              <!-- Paid Storage Indicator on Visualization -->
+              <div *ngIf="storageUnit.paidStorage" class="paid-visualization-indicator">
+                <mat-icon class="paid-icon-visual">paid</mat-icon>
               </div>
             </div>
           </div>

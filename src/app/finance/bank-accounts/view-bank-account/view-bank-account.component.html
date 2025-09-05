@@ -7,7 +7,7 @@
 
   <div class="details-container">
     <div *ngIf="loading" class="loading-container">
-      <mat-spinner diameter="40"></mat-spinner>
+      <mat-progress-spinner diameter="40"></mat-progress-spinner>
     </div>
 
     <div *ngIf="!loading && bankAccount" class="details-content">
@@ -16,35 +16,35 @@
         <div class="details-value">{{ bankAccount.rib }}</div>
       </div>
 
-      <div class="details-row">
-        <div class="details-label">{{ 'BANK_ACCOUNTS.FIELDS.IBAN' | translate }}:</div>
-        <div class="details-value">{{ bankAccount.iban }}</div>
-      </div>
+            <div class="details-row">
+              <div class="details-label">{{ 'BANK_ACCOUNTS.FIELDS.IBAN' | translate }}:</div>
+              <div class="details-value">{{ bankAccount.iban }}</div>
+            </div>
 
-      <div class="details-row">
-        <div class="details-label">{{ 'BANK_ACCOUNTS.FIELDS.BIC_SWIFT' | translate }}:</div>
-        <div class="details-value">{{ bankAccount.bicSwift }}</div>
-      </div>
+            <div class="details-row">
+              <div class="details-label">{{ 'BANK_ACCOUNTS.FIELDS.BIC_SWIFT' | translate }}:</div>
+              <div class="details-value">{{ bankAccount.bicSwift }}</div>
+            </div>
 
-      <div class="details-row">
-        <div class="details-label">{{ 'BANK_ACCOUNTS.FIELDS.BANK_NAME' | translate }}:</div>
-        <div class="details-value">{{ bankAccount.bankName }}</div>
-      </div>
+            <div class="details-row">
+              <div class="details-label">{{ 'BANK_ACCOUNTS.FIELDS.BANK_NAME' | translate }}:</div>
+              <div class="details-value">{{ bankAccount.bankName }}</div>
+            </div>
 
-      <div class="details-row">
-        <div class="details-label">{{ 'BANK_ACCOUNTS.FIELDS.BANK_BRANCH' | translate }}:</div>
-        <div class="details-value">{{ bankAccount.bankBranch }}</div>
-      </div>
+            <div class="details-row">
+              <div class="details-label">{{ 'BANK_ACCOUNTS.FIELDS.BANK_BRANCH' | translate }}:</div>
+              <div class="details-value">{{ bankAccount.bankBranch }}</div>
+            </div>
 
-      <div class="details-row">
-        <div class="details-label">{{ 'BANK_ACCOUNTS.FIELDS.CURRENCY' | translate }}:</div>
-        <div class="details-value">{{ bankAccount.currency }}</div>
-      </div>
+            <div class="details-row">
+              <div class="details-label">{{ 'BANK_ACCOUNTS.FIELDS.CURRENCY' | translate }}:</div>
+              <div class="details-value">{{ bankAccount.currency }}</div>
+            </div>
 
-      <div class="details-row">
-        <div class="details-label">{{ 'BANK_ACCOUNTS.FIELDS.ACCOUNT_TYPE' | translate }}:</div>
-        <div class="details-value">{{ bankAccount.accountType }}</div>
-      </div>
+            <div class="details-row">
+              <div class="details-label">{{ 'BANK_ACCOUNTS.FIELDS.ACCOUNT_TYPE' | translate }}:</div>
+              <div class="details-value">{{ bankAccount.accountType }}</div>
+            </div>
 
       <div class="details-row">
         <div class="details-label">{{ 'BANK_ACCOUNTS.FIELDS.STATUS' | translate }}:</div>

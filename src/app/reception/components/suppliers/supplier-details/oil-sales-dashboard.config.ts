@@ -26,7 +26,7 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
       icon: 'file_copy',
       disabled: {
         field: 'paid',
-        value: true
+        value: false
       }
     }
   ],

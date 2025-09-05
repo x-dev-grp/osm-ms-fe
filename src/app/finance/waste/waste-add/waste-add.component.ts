@@ -25,8 +25,7 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {MatIconModule} from "@angular/material/icon";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {CardComponent} from "../../../theme/components/card/card.component";
-import { Waste } from '../../../shared/models/Waste';
-import { WasteSale } from '../../models/Waste.model';
+ import { WasteSale } from '../../models/Waste.model';
 import { ToastService } from '../../../shared/services/toast.service';
 import { Currency } from '../../models/financial-transaction.model';
 

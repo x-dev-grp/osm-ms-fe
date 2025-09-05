@@ -6,6 +6,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateModule } from '@ngx-translate/core';
 import { debounceTime, map, startWith, switchMap } from 'rxjs/operators';
@@ -14,6 +15,7 @@ import { StorageUnitDtoService } from '../../shared/services/storage.service';
 import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
 import { CardComponent } from '../../theme/components/card/card.component';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 
 // Adjust import path to your actual service/model locations
 
@@ -33,6 +35,7 @@ export type   status= 'AVAILABLE' | 'FULL' | 'FILLING' | 'MAINTENANCE' | 'IN_USE
     MatButtonModule,
     MatSelectModule,
     MatInputModule,
+    MatSlideToggleModule,
     TranslateModule,
     CardComponent
   ],
@@ -45,6 +48,7 @@ export class StorageUnitsBoardComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
 
   loading = signal<boolean>(true);
   error = signal<string | null>(null);
@@ -58,7 +62,8 @@ export class StorageUnitsBoardComponent implements OnInit {
   readonly filters = this.fb.group({
     search: [''],
     status: [''],
-    oilVariety: ['']
+    oilVariety: [''],
+    showOnlyPaid: [false]
   });
 
   /** Distinct status list (derived from data) */
@@ -89,7 +94,8 @@ export class StorageUnitsBoardComponent implements OnInit {
           this.loading.set(false);
         },
         error: (err) => {
-          this.error.set(err?.message || 'Failed to load storage units');
+          const errorMessage = err?.message || this.translate.instant('STORAGE.ERROR.FAILED_TO_LOAD_UNITS');
+          this.error.set(errorMessage);
           this.data$.next([]);
           this.filteredUnits.set([]);
           this.loading.set(false);
@@ -107,17 +113,22 @@ export class StorageUnitsBoardComponent implements OnInit {
   }
 
   private applyFilters(): void {
-    const { search, status, oilVariety } = this.filters.value;
+    const { search, status, oilVariety, showOnlyPaid } = this.filters.value;
     const s = (search ?? '').toString().trim().toLowerCase();
     const st = (status ?? '').toString().trim();
     const ot = (oilVariety ?? '').toString().trim().toLowerCase();
+    const paidFilter = showOnlyPaid ?? false;
 
     const filtered = (this.data$.value || []).filter((u) => {
       const matchesSearch = !s || u.name.toLowerCase().includes(s) || u.oilVariety?.name?.toLowerCase().includes(s);
 
       const matchesStatus = !st || u.status === st;
       const matchesOilType = !ot || u.oilVariety?.name?.toLowerCase() === ot;
-      return matchesSearch && matchesStatus && matchesOilType;
+
+      // Apply paid storage filter
+      const matchesPaidFilter = !paidFilter || u.paidStorage === true;
+
+      return matchesSearch && matchesStatus && matchesOilType && matchesPaidFilter;
     });
 
     this.filteredUnits.set(filtered);
@@ -137,6 +148,11 @@ export class StorageUnitsBoardComponent implements OnInit {
     if (pct > 0) return 'fill-low';
     return 'fill-empty';
   }
+
+  paidStorage(u: StorageUnitDto): boolean {
+    return u.paidStorage === true;
+  }
+
   viewUnit(u: StorageUnitDto): void {
     this.router.navigate(['/storage', u.id, 'view']);
   }

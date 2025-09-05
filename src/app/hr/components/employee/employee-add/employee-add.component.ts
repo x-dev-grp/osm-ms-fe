@@ -9,16 +9,16 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { EmployeeService } from '../../services/employee-service';
-import { Employee, Gender, MaritalStatus } from '../../model/employee-model';
-import { ToastService } from '../../../shared/services/toast.service';
+import { EmployeeService } from '../../../services/employee-service';
+import { Employee, Gender, MaritalStatus } from '../../../model/employee-model';
+import { ToastService } from '../../../../shared/services/toast.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { CardComponent } from '../../../theme/components/card/card.component';
+import { CardComponent } from '../../../../theme/components/card/card.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { format } from 'date-fns';
-import {DepartmentService} from "../../services/departement-service";
-import{Department} from "../../model/department.model";
+import {DepartmentService} from "../../../services/departement-service";
+import{Department} from "../../../model/department.model";
 
 @Component({
   selector: 'app-employee-add',
@@ -47,7 +47,10 @@ export class EmployeeAddComponent implements OnInit {
   employeeId?: string;
   loading = false;
   departments: Department[] = [];
-
+  genders = [
+    { key: 'MALE', value: 'COMMON.GENDER.MALE' },
+    { key: 'FEMALE', value: 'COMMON.GENDER.FEMALE' }
+  ];
   constructor(
     private fb: FormBuilder,
     private employeeService: EmployeeService,

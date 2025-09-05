@@ -17,8 +17,12 @@ export interface StorageUnitDto {
 
   oilVariety?: BaseType;
   status: 'AVAILABLE' | 'FULL' | 'FILLING' | 'MAINTENANCE' | 'IN_USE' | 'CLEANING' | 'RESERVED' | 'OUT_OF_SERVICE';
-
+  externalId:string;
   lastFillDate?: Date;
   lastEmptyDate?: Date;
-  supplier:SupplierType;
+  supplier: SupplierType;
+
+  // Pricing information for storage unit rental
+  monthlyRentalPrice?: number; // Price per month for renting this storage unit
+  paidStorage?: boolean; // Indicates if this is a paid storage unit
 }
