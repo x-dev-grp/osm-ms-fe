@@ -9,18 +9,24 @@
             <mat-error>{{ getErrorMessage('name') }}</mat-error>
           </mat-form-field>
         </div>
+
+        <div class="form-grid-item">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'DEPARTMENT.MANAGER' | translate }}</mat-label>
+            <mat-select formControlName="managerId">
+              <mat-option value="">{{ 'COMMON.SELECT' | translate }}</mat-option>
+              <mat-option *ngFor="let employee of employees" [value]="employee.id">
+                {{ employee.firstName }} {{ employee.lastName }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
       </div>
 
       <div class="form-grid full-width">
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>{{ 'DEPARTMENT.DESCRIPTION' | translate }}</mat-label>
           <textarea matInput formControlName="description" rows="3"></textarea>
-        </mat-form-field>
-      </div>
-      <div class="form-grid full-width">
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>{{ 'DEPARTMENT.MANAGERID' | translate }}</mat-label>
-          <textarea matInput formControlName="managerId" rows="3"></textarea>
         </mat-form-field>
       </div>
 
@@ -31,8 +37,8 @@
         <button mat-raised-button color="primary" type="submit" [disabled]="departmentForm.invalid || loading">
           <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
           <span *ngIf="!loading">
-                        {{ isEditing ? ('UPDATE' | translate) : ('SAVE' | translate) }}
-                    </span>
+            {{ isEditing ? ('UPDATE' | translate) : ('SAVE' | translate) }}
+          </span>
         </button>
       </div>
     </form>

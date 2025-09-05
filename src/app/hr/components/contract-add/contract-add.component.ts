@@ -172,29 +172,15 @@ export class ContractAddComponent implements OnInit {
       return;
     }
 
-    // this.contractService.addContractEmployee(this.employeeId, contract).subscribe({
-    //   next: (response) => {
-    //     if (response.success) {
-    //       this.toast.success(this.translate.instant('CONTRACT.MESSAGES.SAVE_SUCCESS'));
-    //       this.router.navigate(['/hr/employee', this.employeeId, 'contracts']);
-    //     } else {
-    //       this.toast.error(response.message || this.translate.instant('CONTRACT.MESSAGES.ERROR_SAVING'));
-    //     }
-    //     this.loading = false;
-    //   },
-    //   error: () => {
-    //     this.toast.error(this.translate.instant('CONTRACT.MESSAGES.ERROR_SAVING'));
-    //     this.loading = false;
-    //   }
-    // });
 
     this.contractService.addContractEmployee(this.employeeId, contract).subscribe({
       next: (res: any) => {
-        this.toast.success(res.message || 'Résultats enregistrés avec succès.' );
+        this.toast.success(res.message || ' enregistrés avec succès.' );
+        this.router.navigate(['/hr/employee/fetch', this.employeeId]);
         },
       error: (err) => {
         console.log(err);
-        this.toast.error('Erreur lors de l\'enregistrement des résultats.' );
+        this.toast.error('Erreur lors de l\'enregistrement ' );
        }
     });
     return;
@@ -205,7 +191,7 @@ export class ContractAddComponent implements OnInit {
       next: (response) => {
         if (response.success) {
           this.toast.success(this.translate.instant('CONTRACT.MESSAGES.UPDATE_SUCCESS'));
-          this.router.navigate(['/hr/employee', this.employeeId]);
+          this.router.navigate(['/hr/employee/fetch', this.employeeId]);
         } else {
           this.toast.error(response.message || this.translate.instant('CONTRACT.MESSAGES.ERROR_UPDATING'));
         }
@@ -227,7 +213,7 @@ export class ContractAddComponent implements OnInit {
 
   onCancel(): void {
     if (this.employeeId) {
-      this.router.navigate(['/hr/employee', this.employeeId]);
+      this.router.navigate(['/hr/employee/fetch', this.employeeId]);
     }
   }
 

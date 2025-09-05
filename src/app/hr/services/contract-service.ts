@@ -51,6 +51,10 @@ export class ContractService {
       contract
     );
   }
+  //suprimer un contract d un employee
+  deleteEmployeeContract(employeeId: string, contractId: string): Observable<ApiResponse<void>> {
+    return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/employee/${employeeId}/${contractId}`);
+  }
 
 
 

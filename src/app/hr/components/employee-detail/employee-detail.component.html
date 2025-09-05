@@ -116,7 +116,7 @@
               <div class="contract-details">
                 <div class="contract-detail">
                   <label>{{ 'CONTRACT.SALARY' | translate }}:</label>
-                  <span>{{ contract.salary | currency:'MAD':'symbol':'1.2-2' }}</span>
+                  <span>{{ contract.salary | currency:'TND':'symbol':'1.2-2' }}</span>
                 </div>
                 <div class="contract-detail">
                   <label>{{ 'CONTRACT.POSITION' | translate }}:</label>
@@ -137,10 +137,11 @@
                 <mat-icon>edit</mat-icon>
                 {{ 'COMMON.EDIT' | translate }}
               </button>
-              <button mat-button color="warn" >
+              <button mat-button color="warn" (click)="deleteContract(contract.id!)">
                 <mat-icon>delete</mat-icon>
                 {{ 'COMMON.DELETE' | translate }}
               </button>
+
             </mat-card-actions>
           </mat-card>
         </div>

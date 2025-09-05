@@ -403,13 +403,6 @@ export const osm_menus: Navigation[] = [
         breadcrumbs: false
       },
       {
-        id: 'item-settings-contracts',
-        title: 'contracts',
-        type: 'item',
-        url: '/hr/contract',
-        icon: 'assignment',
-        breadcrumbs: false},
-      {
         id: 'item-settings-poste',
         title: 'postes',
         type: 'item',

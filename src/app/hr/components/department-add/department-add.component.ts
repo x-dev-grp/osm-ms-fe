@@ -13,6 +13,10 @@ import { CardComponent } from '../../../theme/components/card/card.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import {Department} from "../../model/department.model";
+import {Employee} from "../../model/employee-model";
+import {EmployeeService} from "../../services/employee-service";
+import {MatOption} from "@angular/material/core";
+import {MatSelect} from "@angular/material/select";
 
 @Component({
   selector: 'app-department-add',
@@ -29,7 +33,9 @@ import {Department} from "../../model/department.model";
     MatCardModule,
     MatIconModule,
     TranslatePipe,
-    CardComponent
+    CardComponent,
+    MatOption,
+    MatSelect
   ]
 })
 export class DepartmentAddComponent implements OnInit {
@@ -37,6 +43,7 @@ export class DepartmentAddComponent implements OnInit {
   isEditing = false;
   departmentId?: string;
   loading = false;
+  employees: Employee[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -44,12 +51,14 @@ export class DepartmentAddComponent implements OnInit {
     private toast: ToastService,
     private router: Router,
     private route: ActivatedRoute,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private employeeService: EmployeeService,
   ) {
     this.departmentForm = this.createForm();
   }
 
   ngOnInit(): void {
+    this.loadEmployees();
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEditing = true;
@@ -57,13 +66,26 @@ export class DepartmentAddComponent implements OnInit {
       this.loadDepartment(this.departmentId);
     }
   }
+  private loadEmployees(): void {
+    this.employeeService.getAllEmployees().subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          const flatData = response.data.flat();
+          this.employees = flatData;
+        }
+      },
+      error: () => {
+        this.toast.error(this.translate.instant('EMPLOYEE.MESSAGES.ERROR_LOADING'));
+      }
+    });
+  }
 
   private createForm(): FormGroup {
     return this.fb.group({
       name: ['', Validators.required],
       description: [''],
       externalId: [''],
-      managerId: [''],
+      managerId: ['']
     });
   }
 
@@ -77,7 +99,7 @@ export class DepartmentAddComponent implements OnInit {
             name: department.name,
             description: department.description || '',
             externalId: department.externalId,
-            managerId: department.managerId,
+            managerId: department.manager?.id || '' // Gardez managerId pour le select
           });
         }
         this.loading = false;
@@ -89,19 +111,26 @@ export class DepartmentAddComponent implements OnInit {
     });
   }
 
+
   onSubmit(): void {
     if (this.departmentForm.valid) {
       this.loading = true;
       const formValue = this.departmentForm.value;
+
+      // Trouver l'employé sélectionné pour être manager
+      const selectedManager = this.employees.find(emp => emp.id === formValue.managerId);
 
       const departmentData: any = {
         id: this.departmentId,
         name: formValue.name,
         description: formValue.description || '',
         externalId: formValue.externalId,
-        managerId: formValue.managerId,
+        managerId: formValue.managerId || null,
+
+
 
       };
+      console.log('Données envoyées:', departmentData);
 
       if (this.isEditing && this.departmentId) {
         this.updateDepartment(departmentData);
@@ -110,7 +139,6 @@ export class DepartmentAddComponent implements OnInit {
       }
     }
   }
-
   private addDepartment(department: any): void {
     this.departmentService.addDepartment(department).subscribe({
       next: (response) => {
@@ -151,11 +179,13 @@ export class DepartmentAddComponent implements OnInit {
     this.router.navigate(['/hr/department']);
   }
 
+
   getErrorMessage(controlName: string): string {
     const control = this.departmentForm.get(controlName);
     if (control?.hasError('required')) {
       return this.translate.instant('COMMON.VALIDATION.REQUIRED');
     }
     return '';
+
   }
 }

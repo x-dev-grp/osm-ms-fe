@@ -1,4 +1,5 @@
 {
+  "": "Type de contrat",
   "ACCESS_DENIED": {
     "GO_HOME": "Retour à l'accueil",
     "GO_HOME_TITLE": "Retour à l'accueil",
@@ -152,6 +153,7 @@
     "BACK": "Retour",
     "CANCEL": "Annuler",
     "CLOSE": "Fermer",
+    "DELETE": "Supprimer",
     "EDIT": "Modifier",
     "LAST_UPDATED": "Dernier mis à jour",
     "NO": "Non",
@@ -297,6 +299,22 @@
       "SITE": "Config Ste",
       "STOCK": "Config Stock"
     }
+  },
+  "CONTRACT": {
+    "ADD": "Ajouter un contrat",
+    "ADD_TITLE": "Ajouter un contrat",
+    "CANCEL": "Annuler",
+    "EDIT_TITLE": "Modifier un contrat",
+    "END_DATE": "Date de fin",
+    "POSITION": "Poste",
+    "POSTE": "Poste du contrat",
+    "SALARY": "Salaire",
+    "SAVE": "Enregistrer le contrat",
+    "START_DATE": "Date de début",
+    "STATUS": "Statut du contrat",
+    "TITLE": "Contracts",
+    "TYPE": "Type",
+    "UPDATE": "Modifier le contrat"
   },
   "CONTRAT": {
     "STATUS": {
@@ -732,6 +750,23 @@
       "REFUSED": "Refusé"
     }
   },
+  "DEPARTMENT": {
+    "DETAIL": {
+      "EMPLOYEES": "Employés",
+      "GENERAL_INFO": "Informations générales",
+      "MANAGER_INFO": "Informations sur le responsable",
+      "MANAGER_NOT_FOUND": "Responsable non trouvé",
+      "NO_EMPLOYEES": "Aucun employé trouvé",
+      "TITLE": "Détails du département"
+    },
+    "FORM": {
+      "DESCRIPTION": "Description",
+      "NAME": "Nom"
+    },
+    "MESSAGES": {
+      "NOT_FOUND": "Département non trouvé"
+    }
+  },
   "DIVORCED": "Divorcé(e)",
   "Dashboard": "Tableau de bord",
   "Data": "Données",
@@ -765,6 +800,7 @@
       "CIN": "CIN",
       "CITY": "Ville",
       "COUNTRY": "Pays",
+      "DEPARTMENT": "Département",
       "EMAIL": "Email",
       "GENDER": "Sexe",
       "HIRE_DATE": "Date d'embauche",
@@ -772,11 +808,16 @@
       "PHONE": "Téléphone",
       "POSTAL_CODE": "Code postal"
     },
-    "GENDER": "Sexe",
+    "GENDER": {
+      "FEMALE": "Femme"
+    },
     "HIRE_DATE": "Date d'embauche",
     "IS_ACTIVE": "Actif",
     "LAST_NAME": "Nom",
-    "MARITAL_STATUS": "État civil",
+    "MARITAL_STATUS": {
+      "MARRIED": "marié(e)",
+      "SINGLE": "Célibataire"
+    },
     "MESSAGES": {
       "NOT_FOUND": "Employé introuvable"
     },
@@ -2064,6 +2105,15 @@
   "PLANNING_TYPE": "Type :",
   "PLANNING_UNASSIGNED": "Non Assignées",
   "PLANNING_VARIETY": "Variété :",
+  "POSTE": {
+    "ADD_TITLE": "Ajouter un poste",
+    "CANCEL": "Annuler",
+    "DESCRIPTION": "Description du poste",
+    "EDIT_TITLE": "Modifier un poste",
+    "NAME": "Poste",
+    "SAVE": "Enregistrer le poste",
+    "UPDATE": "Modifier le poste"
+  },
   "PRODUCTION_TAB": "Config Production",
   "Pages": "pages",
   "Plugins": "Plugins",
@@ -2607,6 +2657,9 @@
   "auth": {
     "change_password_title": "Changer mot de passe",
     "password_changed_success": "Votre mot de passe a été modifié avec succès. Voulez-vous accéder à l'application ?"
+  },
+  "department": {
+    "description": "Description"
   },
   "reCaptcha": "reCaptcha"
 }

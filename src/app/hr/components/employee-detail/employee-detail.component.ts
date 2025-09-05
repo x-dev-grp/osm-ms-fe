@@ -15,6 +15,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../../shared/component/confirm-dialog/confirm-dialog.component';
 import { CardComponent } from "../../../theme/components/card/card.component";
 
+
 @Component({
   selector: 'app-employee-detail',
   standalone: true,
@@ -79,6 +80,33 @@ export class EmployeeDetailComponent implements OnInit {
       }
     });
   }
+  deleteContract(contractId: string): void {
+    if (!this.employee?.id) {
+      this.toast.error(this.translate.instant('EMPLOYEE.MESSAGES.NOT_FOUND'));
+      return;
+    }
+
+    if (confirm(this.translate.instant('CONTRACT.MESSAGES.CONFIRM_DELETE'))) {
+      this.loading = true;
+      this.contractService.deleteEmployeeContract(this.employee?.id, contractId).subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.toast.success(this.translate.instant('CONTRACT.MESSAGES.DELETE_SUCCESS'));
+            this.contracts = this.contracts.filter(c => c.id !== contractId); // ✅ Supprimer de la liste sans recharger toute la page
+          } else {
+            this.toast.error(response.message || this.translate.instant('CONTRACT.MESSAGES.ERROR_DELETING'));
+          }
+          this.loading = false;
+        },
+        error: () => {
+          this.toast.error(this.translate.instant('CONTRACT.MESSAGES.ERROR_DELETING'));
+          this.loading = false;
+        }
+      });
+    }
+  }
+
+
 
 
 

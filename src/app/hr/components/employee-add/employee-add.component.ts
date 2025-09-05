@@ -114,6 +114,7 @@ export class EmployeeAddComponent implements OnInit {
       active: [true],
       departmentId: [''],
 
+
     });
   }
 
@@ -139,7 +140,7 @@ export class EmployeeAddComponent implements OnInit {
             country: employee.country,
             externalId: employee.externalId,
             active: employee.active,
-            departmentId: employee.departmentId,
+            departmentId: employee.department ? employee.department.id : null,
           });
         }
         this.loading = false;
@@ -189,8 +190,9 @@ export class EmployeeAddComponent implements OnInit {
         country: formValue.country || '',
         externalId: formValue.externalId || '',
         active: formValue.active,
-        departmentId: formValue.departmentId || '',
-        department: selectedDepartment
+        department:selectedDepartment
+
+
       };
 
       console.log('Payload envoyé :', employeeData);
