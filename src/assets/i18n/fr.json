@@ -163,13 +163,14 @@
     "SAVE": "Enregistrer",
     "SAVING": "Sauvegarde...",
     "SELECT_OPTION": "Sélectionnez une option",
+    "TRANSACTIONS": "transactions",
     "UPDATE": "Mettre à jour",
-    "VIEW": "Voir",
     "VALIDATION": {
       "EMAIL": "Veuillez entrer une adresse email valide",
       "MAX_LENGTH": "La longueur maximale est de {{maxLength}} caractères",
       "REQUIRED": "Ce champ est requis"
     },
+    "VIEW": "Voir",
     "YES": "Oui"
   },
   "COMPANY_PROFILE_FORM": {
@@ -310,6 +311,12 @@
     "CANCEL": "Annuler",
     "EDIT_TITLE": "Modifier un contrat",
     "END_DATE": "Date de fin",
+    "MESSAGES": {
+      "EMPLOYEE_REQUIRED": "L'employé est requis",
+      "ERROR_LOADING": "Erreur lors du chargement du contrat",
+      "ERROR_UPDATING": "Erreur lors de la mise à jour du contrat",
+      "UPDATE_SUCCESS": "Contrat mis à jour avec succès"
+    },
     "POSITION": "Poste",
     "POSTE": "Poste du contrat",
     "SALARY": "Salaire",
@@ -318,13 +325,7 @@
     "STATUS": "Statut du contrat",
     "TITLE": "Contracts",
     "TYPE": "Type",
-    "UPDATE": "Modifier le contrat",
-    "MESSAGES": {
-      "ERROR_LOADING": "Erreur lors du chargement du contrat",
-      "ERROR_UPDATING": "Erreur lors de la mise à jour du contrat",
-      "UPDATE_SUCCESS": "Contrat mis à jour avec succès",
-      "EMPLOYEE_REQUIRED": "L'employé est requis"
-    }
+    "UPDATE": "Modifier le contrat"
   },
   "CONTRAT": {
     "STATUS": {
@@ -1220,7 +1221,11 @@
           "ACTIVE_ACCOUNTS": "Comptes Actifs",
           "AVG_TRANSACTION": "Transaction Moyenne",
           "COMPLETED_SALES": "Ventes Terminées",
+          "INBOUND_PAID": "Transactions Entrantes Payées",
+          "INBOUND_UNPAID": "Transactions Entrantes Impayées",
           "NET_FLOW": "Flux Net",
+          "OUTBOUND_PAID": "Transactions Sortantes Payées",
+          "OUTBOUND_UNPAID": "Transactions Sortantes Impayées",
           "PENDING_EXPENSES": "Dépenses en Attente",
           "TOTAL_CREDITED": "Total Crédité",
           "TOTAL_DEBITED": "Total Débité",
@@ -1285,6 +1290,13 @@
       "USERS": "Gestion des utilisateurs"
     },
     "STORAGE": {
+      "FORM": {
+        "IS_PAID_STORAGE": "Ceci est une unité de stockage payante",
+        "MONTHLY_RENTAL_PRICE": "Prix de location mensuel (TND)",
+        "PAID_STORAGE_INFO": "Informations sur le stockage payant",
+        "RENTAL_PRICE_MIN_ERROR": "Le prix de location doit être supérieur ou égal à 0",
+        "RENTAL_PRICE_REQUIRED": "Le prix de location est requis pour les unités de stockage payantes"
+      },
       "OIL_STORAGE_UNITS": "Unités de stockage d'huile",
       "TITLE": "Stockage & Inventaire",
       "VIEW": {
@@ -1294,13 +1306,6 @@
         "PAID_STORAGE": "Stockage payant",
         "PER_MONTH": "par mois",
         "SHOW_ONLY_PAID": "Afficher uniquement le stockage payant"
-      },
-      "FORM": {
-        "PAID_STORAGE_INFO": "Informations sur le stockage payant",
-        "IS_PAID_STORAGE": "Ceci est une unité de stockage payante",
-        "MONTHLY_RENTAL_PRICE": "Prix de location mensuel (TND)",
-        "RENTAL_PRICE_MIN_ERROR": "Le prix de location doit être supérieur ou égal à 0",
-        "RENTAL_PRICE_REQUIRED": "Le prix de location est requis pour les unités de stockage payantes"
       }
     },
     "SUPPLIER": {
@@ -2283,12 +2288,12 @@
     "CANCEL": "Annuler",
     "DESCRIPTION": "Description du poste",
     "EDIT_TITLE": "Modifier un poste",
-    "NAME": "Poste",
-    "SAVE": "Enregistrer le poste",
-    "UPDATE": "Modifier le poste",
     "MESSAGES": {
       "ERROR_LOADING": "Erreur lors du chargement des postes"
-    }
+    },
+    "NAME": "Poste",
+    "SAVE": "Enregistrer le poste",
+    "UPDATE": "Modifier le poste"
   },
   "PRODUCTION_TAB": "Config Production",
   "Pages": "pages",
@@ -2460,9 +2465,9 @@
   },
   "STORAGE": {
     "ERROR": {
+      "FAILED_TO_LOAD_UNITS": "Échec du chargement des unités de stockage",
       "INVALID_ID": "Identifiant d'unité de stockage invalide",
-      "LOAD": "Erreur lors du chargement de l'unité de stockage",
-      "FAILED_TO_LOAD_UNITS": "Échec du chargement des unités de stockage"
+      "LOAD": "Erreur lors du chargement de l'unité de stockage"
     },
     "FORM": {
       "IS_PAID_STORAGE": "Est un stockage payant",
@@ -2481,26 +2486,12 @@
       "AVGCOST": "Coût moyenne",
       "CURRENT_VOLUME": "Volume actuel",
       "DASHBOARD": {
-        "FIELDS": {
-          "CREATED_DATE": "Date de création",
-          "QUALITY_GRADE": "Qualité",
-          "QUANTITY_KG": "Quantité (kg)",
-          "TOTAL_PRICE": "Prix total",
-          "TRANSACTION_TYPE": "Type de transaction",
-          "UNIT_PRICE": "Prix unitaire"
-        },
-        "TITLE": "Tableau de bord de stockage"
-      },
-      "DASHBOARD": {
         "TITLE": "Tableau de bord de stockage"
       },
       "MAX_CAPACITY": "Capacité maximale",
       "NA": "N/A",
       "NO_UNITS": "Pad des unité de stockage",
       "OIL_TYPE": "Type d'huile",
-      "PAID_STORAGE": "Stockage payant",
-      "PER_MONTH": "par mois",
-      "SHOW_ONLY_PAID": "Afficher uniquement le stockage payant",
       "PAID_STORAGE": "Stockage payant",
       "PER_MONTH": "par mois",
       "SHOW_ONLY_PAID": "Afficher uniquement le stockage payant",

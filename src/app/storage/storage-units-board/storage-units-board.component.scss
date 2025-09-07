@@ -135,9 +135,15 @@
 
 /* Metrics */
 .storage-header-metrics {
-  display: grid;
+  display: flex
+;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: .5rem;
+  gap: 0.5rem;
+  align-items: stretch;
+  align-content: center;
+  justify-content: space-evenly;
+  flex-direction: row;
+  flex-wrap: nowrap;
   @media (min-width: 1200px) { grid-template-columns: repeat(6, minmax(0, 1fr)); }
 
   .metric {

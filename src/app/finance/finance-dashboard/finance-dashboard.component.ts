@@ -100,6 +100,15 @@ interface TransactionsSummary {
   currency: string;
   debited: number;
   credited: number;
+  // New properties for inbound/outbound paid/unpaid transactions
+  inboundPaid: number;
+  inboundUnpaid: number;
+  outboundPaid: number;
+  outboundUnpaid: number;
+  inboundPaidCount: number;
+  inboundUnpaidCount: number;
+  outboundPaidCount: number;
+  outboundUnpaidCount: number;
 }
 
 @Component({
@@ -191,6 +200,16 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
   netFlow = 0;
   totalDebited = 0;
   totalCredited = 0;
+
+  // New KPIs for inbound/outbound paid/unpaid transactions
+  inboundPaidAmount = 0;
+  inboundUnpaidAmount = 0;
+  outboundPaidAmount = 0;
+  outboundUnpaidAmount = 0;
+  inboundPaidCount = 0;
+  inboundUnpaidCount = 0;
+  outboundPaidCount = 0;
+  outboundUnpaidCount = 0;
 
   // Apex chart options
   expenseStatusChartOptions: Partial<ApexOptions> = {};
@@ -454,6 +473,16 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
     this.netFlow = this.financeSummary.transactions.netFlow;
     this.totalDebited = this.financeSummary.transactions.debited;
     this.totalCredited = this.financeSummary.transactions.credited;
+
+    // New KPIs for inbound/outbound paid/unpaid transactions
+    this.inboundPaidAmount = this.financeSummary.transactions.inboundPaid;
+    this.inboundUnpaidAmount = this.financeSummary.transactions.inboundUnpaid;
+    this.outboundPaidAmount = this.financeSummary.transactions.outboundPaid;
+    this.outboundUnpaidAmount = this.financeSummary.transactions.outboundUnpaid;
+    this.inboundPaidCount = this.financeSummary.transactions.inboundPaidCount;
+    this.inboundUnpaidCount = this.financeSummary.transactions.inboundUnpaidCount;
+    this.outboundPaidCount = this.financeSummary.transactions.outboundPaidCount;
+    this.outboundUnpaidCount = this.financeSummary.transactions.outboundUnpaidCount;
 
     this.updateFinanceTrendView(this.currentFinanceTrendView);
 
@@ -1234,6 +1263,30 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
           const debited = expenses;
           const credited = income;
 
+          // New calculations for inbound/outbound paid/unpaid transactions
+          // For this implementation, we'll consider a transaction as "paid" if it's approved
+          // and "unpaid" if it's not approved
+          const inboundTransactions = transactions.filter(t => t.direction === TransactionDirection.INBOUND);
+          const outboundTransactions = transactions.filter(t => t.direction === TransactionDirection.OUTBOUND);
+
+          const inboundPaid = inboundTransactions
+            .filter(t => t.approved)
+            .reduce((sum, t) => sum + (t.amount || 0), 0);
+          const inboundUnpaid = inboundTransactions
+            .filter(t => !t.approved)
+            .reduce((sum, t) => sum + (t.amount || 0), 0);
+          const outboundPaid = outboundTransactions
+            .filter(t => t.approved)
+            .reduce((sum, t) => sum + (t.amount || 0), 0);
+          const outboundUnpaid = outboundTransactions
+            .filter(t => !t.approved)
+            .reduce((sum, t) => sum + (t.amount || 0), 0);
+
+          const inboundPaidCount = inboundTransactions.filter(t => t.approved).length;
+          const inboundUnpaidCount = inboundTransactions.filter(t => !t.approved).length;
+          const outboundPaidCount = outboundTransactions.filter(t => t.approved).length;
+          const outboundUnpaidCount = outboundTransactions.filter(t => !t.approved).length;
+
           return {
             totalTransactions: transactions.length,
             income,
@@ -1241,7 +1294,15 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
             netFlow: income - expenses,
             currency: 'TND',
             debited,
-            credited
+            credited,
+            inboundPaid,
+            inboundUnpaid,
+            outboundPaid,
+            outboundUnpaid,
+            inboundPaidCount,
+            inboundUnpaidCount,
+            outboundPaidCount,
+            outboundUnpaidCount
           };
         }
         return {
@@ -1251,7 +1312,15 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
           netFlow: 0,
           currency: 'TND',
           debited: 0,
-          credited: 0
+          credited: 0,
+          inboundPaid: 0,
+          inboundUnpaid: 0,
+          outboundPaid: 0,
+          outboundUnpaid: 0,
+          inboundPaidCount: 0,
+          inboundUnpaidCount: 0,
+          outboundPaidCount: 0,
+          outboundUnpaidCount: 0
         };
       }),
       catchError(error => {
@@ -1263,7 +1332,15 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
           netFlow: 0,
           currency: 'TND',
           debited: 0,
-          credited: 0
+          credited: 0,
+          inboundPaid: 0,
+          inboundUnpaid: 0,
+          outboundPaid: 0,
+          outboundUnpaid: 0,
+          inboundPaidCount: 0,
+          inboundUnpaidCount: 0,
+          outboundPaidCount: 0,
+          outboundUnpaidCount: 0
         });
       })
     );

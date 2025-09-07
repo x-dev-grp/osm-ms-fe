@@ -347,6 +347,54 @@
     </app-card>
   </div>
 
+  <!-- Inbound Paid Transactions -->
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.KPIS.INBOUND_PAID' | translate" [icon]="'arrow_downward'"
+              class="mini-kpi ">
+      <div class="mini-kpi__body">
+        <mat-icon>arrow_downward</mat-icon>
+        <span class="value">{{ inboundPaidAmount?.toFixed(2) || '0.00' }}</span>
+        <span class="count">({{ inboundPaidCount }} {{ 'COMMON.TRANSACTIONS' | translate }})</span>
+      </div>
+    </app-card>
+  </div>
+
+  <!-- Inbound Unpaid Transactions -->
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.KPIS.INBOUND_UNPAID' | translate" [icon]="'arrow_downward'"
+              class="mini-kpi ">
+      <div class="mini-kpi__body">
+        <mat-icon>arrow_downward</mat-icon>
+        <span class="value">{{ inboundUnpaidAmount?.toFixed(2) || '0.00' }}</span>
+        <span class="count">({{ inboundUnpaidCount }} {{ 'COMMON.TRANSACTIONS' | translate }})</span>
+      </div>
+    </app-card>
+  </div>
+
+  <!-- Outbound Paid Transactions -->
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.KPIS.OUTBOUND_PAID' | translate" [icon]="'arrow_upward'"
+              class="mini-kpi ">
+      <div class="mini-kpi__body">
+        <mat-icon>arrow_upward</mat-icon>
+        <span class="value">{{ outboundPaidAmount?.toFixed(2) || '0.00' }}</span>
+        <span class="count">({{ outboundPaidCount }} {{ 'COMMON.TRANSACTIONS' | translate }})</span>
+      </div>
+    </app-card>
+  </div>
+
+  <!-- Outbound Unpaid Transactions -->
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.KPIS.OUTBOUND_UNPAID' | translate" [icon]="'arrow_upward'"
+              class="mini-kpi ">
+      <div class="mini-kpi__body">
+        <mat-icon>arrow_upward</mat-icon>
+        <span class="value">{{ outboundUnpaidAmount?.toFixed(2) || '0.00' }}</span>
+        <span class="count">({{ outboundUnpaidCount }} {{ 'COMMON.TRANSACTIONS' | translate }})</span>
+      </div>
+    </app-card>
+  </div>
+
   <!-- Expense Status Chart -->
   <div class="col-md-4 col-xxl-4">
     <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.ANALYTICS.EXPENSE_STATUS' | translate" [icon]="'pie_chart'"

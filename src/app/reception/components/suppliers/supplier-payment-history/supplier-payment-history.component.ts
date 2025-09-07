@@ -36,6 +36,7 @@ import {Currency, PaymentMethod, TransactionDirection} from '../../../../finance
 import {OilSaleService} from '../../../../finance/service/oil-sale.service';
 // import { PaymentSourceType } from '../supplier-details/supplier-details.component';
 import {WasteSaleService} from '../../../../finance/service/wasteSale.service';
+import { PaymentSourceType } from '../supplier-details/supplier-details.component';
 
 export interface PaymentDialogResult {
   ok: boolean;                 // true si succès
@@ -199,7 +200,7 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.selectedDelivery = this.data?.row;
-    // this.sourceType = (this.data?.sourceType as PaymentSourceType) || 'delivery';
+     this.sourceType = (this.data?.sourceType as PaymentSourceType) || 'delivery';
 
     this.unpaidAmount = this.data?.row?.unpaidAmount;
     this.totalPrice = this.data?.row?.price;
@@ -364,18 +365,18 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
       .subscribe();
   }
 
-  // processPayment() {
-  //   if (this.sourceType === PaymentSourceType.DELIVERY_prc) {
-  //     this.processDeliveryPaiment();
-  //   } else if (this.sourceType === PaymentSourceType.DELIVERY_prc ) {
-  //     this.processOilSalePayment();
-  //   } else if (this.sourceType === PaymentSourceType.WASTE_SALE_prc) {
-  //     this.processWasteSalePayment();
-  //   } else {
-  //     // fallback to monetary payment
-  //     this.processOilSalePayment();
-  //   }
-  // }
+  processPayment() {
+    if (this.sourceType === PaymentSourceType.DELIVERY_prc) {
+      this.processDeliveryPaiment();
+    } else if (this.sourceType === PaymentSourceType.OIL_SALE_prc ) {
+      this.processOilSalePayment();
+    } else if (this.sourceType === PaymentSourceType.WASTE_SALE_prc) {
+      this.processWasteSalePayment();
+    } else {
+      // fallback to monetary payment
+      this.purshase();
+    }
+  }
 
   async processOilSalePayment(): Promise<void> {
     if (this.paymentForm.invalid || this.transactionNotCompletedError || !this.selectedDelivery?.id) {

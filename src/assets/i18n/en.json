@@ -163,13 +163,14 @@
     "SAVE": "Save",
     "SAVING": "Saving...",
     "SELECT_OPTION": "Select an option",
+    "TRANSACTIONS": "transactions",
     "UPDATE": "Update",
-    "VIEW": "View",
     "VALIDATION": {
       "EMAIL": "Please enter a valid email address",
       "MAX_LENGTH": "Maximum length is {{maxLength}} characters",
       "REQUIRED": "This field is required"
     },
+    "VIEW": "View",
     "YES": "Yes"
   },
   "COMPANY_PROFILE_FORM": {
@@ -310,6 +311,12 @@
     "CANCEL": "Cancel",
     "EDIT_TITLE": "Edit contract",
     "END_DATE": "End date",
+    "MESSAGES": {
+      "EMPLOYEE_REQUIRED": "Employee is required",
+      "ERROR_LOADING": "Error loading contract",
+      "ERROR_UPDATING": "Error updating contract",
+      "UPDATE_SUCCESS": "Contract updated successfully"
+    },
     "POSITION": "Position",
     "POSTE": "Contract position",
     "SALARY": "Salary",
@@ -318,13 +325,7 @@
     "STATUS": "Contract status",
     "TITLE": "Contracts",
     "TYPE": "Type",
-    "UPDATE": "Update contract",
-    "MESSAGES": {
-      "ERROR_LOADING": "Error loading contract",
-      "ERROR_UPDATING": "Error updating contract",
-      "UPDATE_SUCCESS": "Contract updated successfully",
-      "EMPLOYEE_REQUIRED": "Employee is required"
-    }
+    "UPDATE": "Update contract"
   },
   "CONTRAT": {
     "STATUS": {
@@ -1222,7 +1223,11 @@
           "ACTIVE_ACCOUNTS": "Active Accounts",
           "AVG_TRANSACTION": "Average Transaction",
           "COMPLETED_SALES": "Completed Sales",
+          "INBOUND_PAID": "Inbound Paid Transactions",
+          "INBOUND_UNPAID": "Inbound Unpaid Transactions",
           "NET_FLOW": "Net Flow",
+          "OUTBOUND_PAID": "Outbound Paid Transactions",
+          "OUTBOUND_UNPAID": "Outbound Unpaid Transactions",
           "PENDING_EXPENSES": "Pending Expenses",
           "TOTAL_CREDITED": "Total Credited",
           "TOTAL_DEBITED": "Total Debited",
@@ -1287,6 +1292,13 @@
       "USERS": "User Management"
     },
     "STORAGE": {
+      "FORM": {
+        "IS_PAID_STORAGE": "This is a paid storage unit",
+        "MONTHLY_RENTAL_PRICE": "Monthly Rental Price (TND)",
+        "PAID_STORAGE_INFO": "Paid Storage Information",
+        "RENTAL_PRICE_MIN_ERROR": "Rental price must be greater than or equal to 0",
+        "RENTAL_PRICE_REQUIRED": "Rental price is required for paid storage units"
+      },
       "OIL_STORAGE_UNITS": "Oil Storage Units",
       "TITLE": "Storage & Inventory",
       "VIEW": {
@@ -1296,13 +1308,6 @@
         "PAID_STORAGE": "Paid Storage",
         "PER_MONTH": "per month",
         "SHOW_ONLY_PAID": "Show only paid storage"
-      },
-      "FORM": {
-        "PAID_STORAGE_INFO": "Paid Storage Information",
-        "IS_PAID_STORAGE": "This is a paid storage unit",
-        "MONTHLY_RENTAL_PRICE": "Monthly Rental Price (TND)",
-        "RENTAL_PRICE_MIN_ERROR": "Rental price must be greater than or equal to 0",
-        "RENTAL_PRICE_REQUIRED": "Rental price is required for paid storage units"
       }
     },
     "SUPPLIER": {
@@ -2274,12 +2279,12 @@
     "CANCEL": "Cancel",
     "DESCRIPTION": "Poste description",
     "EDIT_TITLE": "Edit position",
-    "NAME": "Position",
-    "SAVE": "Save position",
-    "UPDATE": "Update position",
     "MESSAGES": {
       "ERROR_LOADING": "Error loading positions"
-    }
+    },
+    "NAME": "Position",
+    "SAVE": "Save position",
+    "UPDATE": "Update position"
   },
   "PRODUCTION_TAB": "Production Config",
   "Pages": "Pages",
@@ -2451,9 +2456,9 @@
   },
   "STORAGE": {
     "ERROR": {
+      "FAILED_TO_LOAD_UNITS": "Failed to load storage units",
       "INVALID_ID": "Invalid storage unit ID",
-      "LOAD": "Error loading storage unit",
-      "FAILED_TO_LOAD_UNITS": "Failed to load storage units"
+      "LOAD": "Error loading storage unit"
     },
     "FORM": {
       "IS_PAID_STORAGE": "Is Paid Storage",
@@ -2471,17 +2476,6 @@
       "AVAILABLECAPACITY": "Available capacity",
       "AVGCOST": "Average cost",
       "CURRENT_VOLUME": "Current Volume",
-      "DASHBOARD": {
-        "FIELDS": {
-          "CREATED_DATE": "Created Date",
-          "QUALITY_GRADE": "Quality Grade",
-          "QUANTITY_KG": "Quantity (kg)",
-          "TOTAL_PRICE": "Total Price",
-          "TRANSACTION_TYPE": "Transaction Type",
-          "UNIT_PRICE": "Unit Price"
-        },
-        "TITLE": "Storage Dashboard"
-      },
       "DASHBOARD": {
         "TITLE": "Storage Dashboard"
       },

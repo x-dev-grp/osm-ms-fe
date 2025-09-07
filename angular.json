@@ -90,7 +90,9 @@
               "extractLicenses": true,
               "buildOptimizer": true,
               "outputHashing": "all",
-              "serviceWorker": true
+              "serviceWorker": true,
+              "baseHref": "/osm/",
+              "deployUrl": "/osm/"
             },
             "development": {
               "buildOptimizer": false,

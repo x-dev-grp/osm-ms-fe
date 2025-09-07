@@ -91,6 +91,24 @@ export const TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
       ]
     },
     {
+      name: 'operationType',
+      label: 'Type de trituration',
+      labelTranslatePath: 'OPERATION_TYPE',
+      attributeType: AttributeType.enum,
+      fieldType: FieldType.text,
+      exportable: true,
+      dataTable: true,
+      filterable: true,
+      options: [
+        { label: 'Trituration particulier', value: 'SIMPLE_RECEPTION', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.SIMPLE_RECEPTION' },
+        { label: 'Base', value: 'BASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.BASE' },
+        { label: 'Achat Olive', value: 'OLIVE_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OLIVE_PURCHASE' },
+        { label: 'Achat Huile', value: 'OIL_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OIL_PURCHASE' },
+        { label: 'Echange', value: 'EXCHANGE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.EXCHANGE' },
+        { label: 'Paiement', value: 'PAYMENT', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.PAYMENT' }
+      ]
+    },
+    {
       name: 'paymentMethod',
       label: 'Méthode de Paiement',
       labelTranslatePath: 'TRANSACTIONS.FIELDS.PAYMENT_METHOD',
@@ -110,19 +128,9 @@ export const TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
         { value: 'OIL_CREDIT', label: 'Crédit Huile', labelTranslatePath: 'TRANSACTIONS.PAYMENT_METHODS.OIL_CREDIT' }
       ]
     },
+
     {
-      name: 'customer.customerName',
-      label: 'Client',
-      labelTranslatePath: 'TRANSACTIONS.FIELDS.CUSTOMER',
-      attributeType: AttributeType.string,
-      fieldType: FieldType.text,
-      exportable: true,
-      sortable: true,
-      dataTable: true,
-      filterable: true
-    },
-    {
-      name: 'supplierId.supplierInfo.name',
+      name: 'supplier.supplierInfo.name',
       label: 'Fournisseur',
       labelTranslatePath: 'TRANSACTIONS.FIELDS.SUPPLIER',
       attributeType: AttributeType.string,
