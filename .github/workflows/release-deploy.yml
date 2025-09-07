@@ -21,17 +21,24 @@ jobs:
           node-version: 20
           cache: npm
 
-      - name: Install deps
-        run: npm ci --legacy-peer-deps
+      - name: Install deps (force)
+        run: npm ci --force
 
       - name: Build for /osm
         run: npx ng build -c=production --base-href=/osm/ --deploy-url=/osm/
+
+      # Discover the real outputPath from angular.json (e.g., "dist/ui" or "dist/<proj>/browser")
+      - name: Detect Angular output directory
+        id: outdir
+        run: |
+          OUT_DIR=$(node -e "const a=require('./angular.json'); const p=Object.keys(a.projects)[0]; process.stdout.write(a.projects[p].architect.build.options.outputPath)")
+          echo "out_dir=$OUT_DIR" >> "$GITHUB_OUTPUT"
+          echo "Detected output dir: $OUT_DIR"
+          echo "Tree:" && ls -la "$OUT_DIR" || true
 
       - name: Upload dist
         uses: actions/upload-artifact@v4
         with:
           name: dist
-          # Angular 16+: output is dist/<project>/browser/
-          path: |
-            dist/**/browser/**
+          path: ${{ steps.outdir.outputs.out_dir }}/**
           if-no-files-found: error
