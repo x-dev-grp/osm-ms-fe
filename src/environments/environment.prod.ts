@@ -3,9 +3,8 @@ import packageInfo from '../../package.json';
 export const environment = {
   appVersion: packageInfo.version,
   production: true,
-  apiUrl: 'https://osm-gateway-q93o.onrender.com',
-  // apiUrl: 'http://localhost:8084'
-
+  // same-origin (proxied by Caddy to the gateway container)
+  apiUrl: '/api'
 };
 export const AppConfig={
 
