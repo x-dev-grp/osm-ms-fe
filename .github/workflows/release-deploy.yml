@@ -22,7 +22,7 @@ jobs:
           cache: npm
 
       - name: Install deps
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Build for /osm
         run: npx ng build -c=production --base-href=/osm/ --deploy-url=/osm/
