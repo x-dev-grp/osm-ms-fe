@@ -4,7 +4,7 @@ export const environment = {
   appVersion: packageInfo.version,
   production: true,
   // same-origin (proxied by Caddy to the gateway container)
-  apiUrl: '/'
+  apiUrl: '/api'
 };
 export const AppConfig={
 
