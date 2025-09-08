@@ -11,8 +11,8 @@ ENV NODE_OPTIONS="--max-old-space-size=2048"
 
 # Build-time knobs (override with --build-arg)
 ARG NG_CONFIG=production
-ARG BASE_HREF=/osm/
-ARG DEPLOY_URL=/osm/
+ARG BASE_HREF=/
+ARG DEPLOY_URL=/
 # npm install flags (default to --force to bypass peer-dep conflicts)
 ARG NPM_CI_FLAGS="--force"
 # (optional) npm token for private packages
@@ -44,13 +44,13 @@ RUN rm -rf /usr/share/nginx/html/*
 ARG DIST_PATH="/app/dist/*/browser/"
 
 # Copy compiled Angular app to /osm
-COPY --from=build ${DIST_PATH} /usr/share/nginx/html/osm/
+COPY --from=build ${DIST_PATH} /usr/share/nginx/html/
 
 # Custom site config (serves app under /osm and handles SPA routing)
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Healthcheck (hits the app path)
-HEALTHCHECK CMD wget -qO- http://localhost/osm/ >/dev/null 2>&1 || exit 1
+HEALTHCHECK CMD wget -qO- http://localhost/ >/dev/null 2>&1 || exit 1
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

@@ -25,7 +25,7 @@ jobs:
         run: npm ci --force
 
       - name: Build for /osm
-        run: npx ng build -c=production --base-href=/osm/ --deploy-url=/osm/
+        run: npx ng build -c=production --base-href=/ --deploy-url=/
 
       # Discover the real outputPath from angular.json (e.g., "dist/ui" or "dist/<proj>/browser")
       - name: Detect Angular output directory
