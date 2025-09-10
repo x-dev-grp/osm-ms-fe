@@ -2192,6 +2192,7 @@
     "PRICE_UNIT": "Unit Price",
     "PRODUCTION_MANAGER": "Production Manager",
     "PRODUCTION_RECEIPT": "Production Receipt",
+    "N°COLIS": "Package #",
     "QUALITY_FIELDS": {
       "ACIDITE": "Acidity",
       "CATEGORIE_HUILE": "Oil category",

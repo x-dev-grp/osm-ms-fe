@@ -2,28 +2,42 @@ import {UnifiedDelivery} from "../../../shared/models/UnifiedDelivery";
 import {PdfConfig} from "../../../shared/models/pdf-config.model";
 
 export function getOilPdfConfig(delivery: UnifiedDelivery): PdfConfig {
+  const unitPrice = delivery.unitPrice || 0;
+  const oilQuantity = delivery.oilQuantity || 0;
+  const totalPrice = unitPrice * oilQuantity;
+
   return {
     title: 'PDF.RECEPTION_OIL',
     reference: delivery.lotNumber || '',
     generalInfo: [
-      {label: 'PDF.TYPE', value: delivery.deliveryType || ''},
+      {
+        label: 'PDF.DATE',
+        value: delivery.deliveryDate
+          ? new Date(delivery.deliveryDate).toLocaleDateString()
+          : ''
+      },
+
       {
         label: 'PDF.SUPPLIER',
-        value: `${delivery.supplier?.supplierInfo?.name || ''} ${delivery.supplier?.supplierInfo?.lastname || ''}`
+        value: [
+          delivery.supplier?.supplierInfo?.name || '',
+          delivery.supplier?.supplierInfo?.lastname || ''
+        ].filter(Boolean).join(' ')
       },
-      {label: 'PDF.PHONE', value: delivery.supplier?.supplierInfo?.phone || ''},
-      {label: 'PDF.ADDRESS', value: delivery.supplier?.supplierInfo?.address || ''}
+
+      {label: 'PDF.LOT', value: String(delivery.lotNumber || '')},
+      {label: 'PDF.LOT_GLOBAL', value: String(delivery.globalLotNumber || 'N/A')},
+
+      {label: 'PDF.QUALITY_FIELDS.CATEGORIE_HUILE', value: String(delivery.categoryOliveOil || 'N/A')},
+
+
+      {label: 'PDF.OIL_QUANTITY', value: `${(delivery.oilQuantity ?? .0).toFixed(2)} kg`},
+      {label: 'PDF.TOTAL_PRICE', value: `${(delivery.price ?? .0).toFixed(2)} TND`},
+      {label: 'PDF.UNIT_PRICE', value: `${(delivery.unitPrice ?? .0).toFixed(2)} TND/kg`},
+
     ],
-    fields: [
-      {label: 'PDF.LOT', value: delivery.lotNumber || ''},
-      {label: 'OLIVE_RECEPTION.FORM.FIELDS.TRUCK_PLATE', value: delivery.matriculeCamion || ''},
-      {label: 'PDF.LOT_GLOBAL', value: delivery.globalLotNumber || 'N/A'},
-      {label: 'PDF.GROSS_WEIGHT', value: `${delivery.poidsBrute || ''} kg`},
-      {label: 'PDF.OIL_QUANTITY', value: `${delivery.oilQuantity || ''} kg`},
-      {label: 'PDF.OIL_VARIETY', value: delivery.oilVariety?.name || ''},
-      {label: 'PDF.OIL_TYPE', value: delivery.oilType || ''},
-      {label: 'PDF.REGION', value: delivery.region?.name || ''}
-    ],
+    fields: [],
+
     footerInfo: [
       {label: 'PDF.SIGNATURE_AGENT'},
       {label: 'PDF.SIGNATURE_RESPONSIBLE'}
