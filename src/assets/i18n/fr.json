@@ -2201,6 +2201,11 @@
     "PRODUCT": "Produit",
     "PRODUCTION_MANAGER": "Chef de Production",
     "PRODUCTION_RECEIPT": "BON DE PRODUCTION",
+    "OIL_DISPATCH": "Bon de Sortie d’Huile",
+    "DRIVER": "Chauffeur",
+    "RECIPIENT": "Destinataire",
+    "TANK_NUMBER": "N° Citerne",
+    "DESIGNATION": "Désignation",
     "QUALITY_FIELDS": {
       "ACIDITE": "Acidité",
       "CATEGORIE_HUILE": "Catégorie huile",

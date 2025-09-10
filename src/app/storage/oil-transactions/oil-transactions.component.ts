@@ -2,7 +2,6 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {MatIconModule} from '@angular/material/icon';
 import {CommonModule} from '@angular/common';
-import {MatSnackBar} from '@angular/material/snack-bar';
 import {OIL_TRANSACTIONS_DASHBOARD_CONFIG} from './oil-transactions-dashboard.config';
 import {Router} from '@angular/router';
 import {OsmDashboard} from '../../shared/modules/osm-dashboard/osm-dashboard';
@@ -20,7 +19,8 @@ import {TranslateModule, TranslateService} from '@ngx-translate/core';
 import {getOilTransactionPdfConfig} from "./transaction-pdf.config";
 import {PdfGeneratorService} from "../../shared/services/pdf-generator.service";
 import {OilSaleValidationDialogComponent} from './oil-sale-validation/oil-sale-validation.component';
-import { ToastService } from '../../shared/services/toast.service';
+import {ToastService} from '../../shared/services/toast.service';
+import {getOilSortiePdfConfig} from "./Oil-sortie-pdf-config";
 
 @Component({
   selector: 'app-oil-transactions',
@@ -75,6 +75,12 @@ export class OilTransactionsComponent implements OnInit {
         }
         break;
 
+      case 'GEN_PDF_SORTIE':
+        if (event.row) {
+          this.generateOilSortiePdf(event.row);
+        }
+        break;
+
       case 'UPDATE':
         this.router.navigate(['/storage/oil-transactions', event.row.id, 'edit']);
         break;
@@ -94,6 +100,12 @@ export class OilTransactionsComponent implements OnInit {
         }
         break;
     }
+  }
+
+  generateOilSortiePdf(data: OilTransaction) {
+    const config = getOilSortiePdfConfig(data);
+    this.pdfService.generatePdf(config);
+
   }
 
   private openOilSaleValidationDialog(row: OilTransaction): void {

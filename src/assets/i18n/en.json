@@ -2193,6 +2193,11 @@
     "PRODUCTION_MANAGER": "Production Manager",
     "PRODUCTION_RECEIPT": "Production Receipt",
     "N°COLIS": "Package #",
+    "OIL_DISPATCH": "Oil Dispatch Note",
+    "DRIVER": "Driver",
+    "RECIPIENT": "Recipient",
+    "TANK_NUMBER": "Tank #",
+    "DESIGNATION": "Description",
     "QUALITY_FIELDS": {
       "ACIDITE": "Acidity",
       "CATEGORIE_HUILE": "Oil category",
