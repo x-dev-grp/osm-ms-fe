@@ -11,7 +11,7 @@ import { AuthenticationService } from '../../auth/services/authentication.servic
   providedIn: 'root'
 })
 export class CompanyProfileService {
-  private readonly baseUrl = environment.apiUrl + '/api/security/company-profile';
+  private readonly baseUrl = environment.apiUrl + '/security/company-profile';
   private readonly STORAGE_KEY = 'company_profile';
 
   constructor(
