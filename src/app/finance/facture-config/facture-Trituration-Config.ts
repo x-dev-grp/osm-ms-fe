@@ -9,7 +9,7 @@ export function factureTriturationConfig(
 ): PdfFactureConfig {
   const unitPrice = delivery.unitPrice || 0;
   const quantity = delivery.poidsNet || 0;
-  const total = unitPrice * quantity;
+  const total = (delivery?.price! / quantity);
 
   return {
     title: 'FACTURE ' + (delivery.lotNumber ?? "Sans titre"),
@@ -34,7 +34,7 @@ export function factureTriturationConfig(
       {label: 'PDF.DESCRIPTION', value: delivery.deliveryType || 'Huile d\'olive'},
       {label: 'PDF.PRICE_UNIT', value: `${unitPrice} TND/kg`},
       {label: 'PDF.QUANTITY', value: `${quantity} kg`},
-      {label: 'PDF.TOTAL', value: `${total.toFixed(2)} TND`}
+      {label: 'PDF.TOTAL', value: `${total?.toFixed(2)} TND`}
     ],
     fileName: `Facture_${delivery.deliveryNumber || 'inconnu'}.pdf`
   };
