@@ -13,7 +13,7 @@ export function factureTriturationConfig(
 
   return {
     title: 'FACTURE ' + (delivery.lotNumber ?? "Sans titre"),
-    reference: `${delivery.lotNumber || 'XXXX'} PDF.TRITURATION`,
+    reference: `${delivery.lotNumber || 'XXXX'} ` + ' ' + delivery.operationType,
     date: new Date().toLocaleDateString(),
     companyInfo: {
       companyName: company.legalName,

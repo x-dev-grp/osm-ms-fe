@@ -5,7 +5,7 @@ export function getOilSortiePdfConfig(data: OilTransaction): PdfConfig {
 
   return {
     title: 'PDF.OIL_DISPATCH', // ← New key: Bon de Sortie
-    reference: data.reception?.lotNumber || '',
+    reference: data.id || '',
     generalInfo: [
       {
         label: 'PDF.DATE',
@@ -16,41 +16,45 @@ export function getOilSortiePdfConfig(data: OilTransaction): PdfConfig {
       {
         label: 'PDF.SUPPLIER',
         value: [
-          data.reception?.supplier?.supplierInfo?.name || '',
+          data?.reception?.supplier?.supplierInfo.name || '',
+
           data?.reception?.supplier?.supplierInfo?.lastname || ''
         ].filter(Boolean).join(' ')
       },
 
-      {
-        label: 'OLIVE_RECEPTION.FORM.FIELDS.TRUCK_PLATE', // ← matricule
-        value: String(data.reception?.matriculeCamion || 'N/A')
-      },
+      // {
+      //   label: 'OLIVE_RECEPTION.FORM.FIELDS.TRUCK_PLATE', // ← matricule
+      //   value: String(data?. || 'N/A')
+      // },
       {
         label: 'PDF.LOT',
         value: String(data.reception?.lotNumber || '')
       },
       {
         label: 'PDF.OIL_TYPE',
-        value: String(data.reception?.oilType || 'N/A')
+        value: String(data?.qualityGrade || 'N/A')
       },
       {
         label: 'PDF.RECIPIENT', // ← destinataire
-        value: String(data.reception?.supplier?.supplierInfo.name + ' ' + data.reception?.supplier.supplierInfo.lastname || 'N/A')
+        value: [
+          data.reception?.supplier?.supplierInfo.name || '',
+          data.reception?.supplier?.supplierInfo?.lastname || ''
+        ].filter(Boolean).join(' ')
       }
     ],
 
     fields: [
       {
         label: 'PDF.TANK_NUMBER',     // ← num citerne
-        value: String(data.reception?.matriculeCamion || 'N/A')
+        value: String(data.storageUnitSource || 'N/A')
       },
       {
         label: 'PDF.DESIGNATION',
-        value: '??????'
+        value: String(data.storageUnitDestination)
       },
       {
         label: 'PDF.QUANTITY',
-        value: `${data?.quantityKg.toFixed(2)} kg`
+        value: `${data.quantityKg.toFixed(2)} kg`
       },
       {
         label: 'PDF.UNIT_PRICE',

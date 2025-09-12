@@ -1,32 +1,32 @@
-import { Component, DestroyRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, tap } from 'rxjs';
-import { OsmDashboard } from '../../../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
-import { TranslateModule } from '@ngx-translate/core';
-import { CardComponent } from '../../../../theme/components/card/card.component';
-import { OIL_CREDIT_DASHBOARD } from './oil-credit-dashboard.config';
-import { PAIMENT_DASHBOARD } from './paiment-dashboard.config';
-import { AdvancedSearchService } from '../../../../shared/services/advanced-serach.service';
-import { SearchData } from '../../../../shared/models/advanced-search/searchData';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { OilCredit } from '../../../../finance/models/OilCredit';
-import { UnifiedDelivery } from '../../../../shared/models/UnifiedDelivery';
-import { MatDialog } from '@angular/material/dialog';
-import { SupplierPaymentHistoryComponent } from '../supplier-payment-history/supplier-payment-history.component';
-import { OIL_SALES_DASHBOARD_CONFIG } from './oil-sales-dashboard.config';
-import { ToastService } from '../../../../shared/services/toast.service';
-import { factureTriturationConfig } from '../../../../finance/facture-config/facture-Trituration-Config';
-import { PdfGeneratorFactureService } from '../../../../shared/services/pdf-generator-facture.service';
-import { PdfFactureConfig } from '../../../../shared/models/pdf-config.model';
-import { WASTE_DASHBOARD } from './waste-sale-dashboard.config';
-import { CompanyProfile } from '../../../../shared/models/CompanyProfile';
-import { CompanyProfileService } from '../../../../shared/services/company-profile.service';
+import {Component, DestroyRef, inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {MatButtonModule} from '@angular/material/button';
+import {MatCardModule} from '@angular/material/card';
+import {MatIconModule} from '@angular/material/icon';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Subject, tap} from 'rxjs';
+import {OsmDashboard} from '../../../../shared/modules/osm-dashboard/osm-dashboard';
+import {DashboardConfig} from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
+import {TranslateModule} from '@ngx-translate/core';
+import {CardComponent} from '../../../../theme/components/card/card.component';
+import {OIL_CREDIT_DASHBOARD} from './oil-credit-dashboard.config';
+import {PAIMENT_DASHBOARD} from './paiment-dashboard.config';
+import {AdvancedSearchService} from '../../../../shared/services/advanced-serach.service';
+import {SearchData} from '../../../../shared/models/advanced-search/searchData';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {OilCredit} from '../../../../finance/models/OilCredit';
+import {UnifiedDelivery} from '../../../../shared/models/UnifiedDelivery';
+import {MatDialog} from '@angular/material/dialog';
+import {SupplierPaymentHistoryComponent} from '../supplier-payment-history/supplier-payment-history.component';
+import {OIL_SALES_DASHBOARD_CONFIG} from './oil-sales-dashboard.config';
+import {ToastService} from '../../../../shared/services/toast.service';
+import {factureTriturationConfig} from '../../../../finance/facture-config/facture-Trituration-Config';
+import {PdfGeneratorFactureService} from '../../../../shared/services/pdf-generator-facture.service';
+import {PdfFactureConfig} from '../../../../shared/models/pdf-config.model';
+import {WASTE_DASHBOARD} from './waste-sale-dashboard.config';
+import {CompanyProfile} from '../../../../shared/models/CompanyProfile';
+import {CompanyProfileService} from '../../../../shared/services/company-profile.service';
 
 export enum PaymentSourceType {
   DELIVERY_prc = 'delivery',
@@ -168,16 +168,10 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
 
   getInvoicePdfConfig(delivery: UnifiedDelivery, company: CompanyProfile): PdfFactureConfig {
     switch (delivery.operationType) {
-      case 'SIMPLE_RECEPTION':
+      case 'SIMPLE_RECEPTION' :
+      case 'EXCHANGE':
+      case 'BASE':
         return factureTriturationConfig(delivery, company);
-
-      // case 'EXCHANGE':
-      // case 'BASE':
-      //   return factureVenteHuileConfig(delivery, company);
-      //
-      // case 'DECHET':
-      //   return factureDechetConfig(delivery, company);
-
       default:
         throw new Error(`[Invoice] Unsupported operationType: ${delivery.operationType}`);
     }
