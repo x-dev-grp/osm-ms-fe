@@ -2060,7 +2060,9 @@
       "UPDATE": "Edit",
       "UPDATE_OIL_QUALITY": "Update Oil Quality",
       "UPDATE_OLIVE_QUALITY": "Update Olive Quality",
-      "VALIDATE": "Validate"
+      "VALIDATE": "Validate",
+      "GEN_PDF_PRODUCTION": "Generate Production voucher"
+
     },
     "COLUMNS": {
       "HIDE": "Hide Columns",

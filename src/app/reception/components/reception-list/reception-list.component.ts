@@ -82,7 +82,8 @@ export class ReceptionListComponent {
     this.pdfGeneratorService.generatePdf(config);
   }
   generateBonProduction(delivery: UnifiedDelivery): void {
-    const config = getProductionPdfConfig(delivery);
+    const parameters = JSON.parse(localStorage.getItem('osm_app_parameters') || '{}');
+    const config = getProductionPdfConfig(delivery, parameters);
     this.pdfGeneratorService.generatePdf(config);
   }
 

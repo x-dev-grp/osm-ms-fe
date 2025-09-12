@@ -20,7 +20,6 @@ import {
   Validators
 } from '@angular/forms';
 import {MatSortModule} from '@angular/material/sort';
-import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatPaginator} from '@angular/material/paginator';
 import {Router} from '@angular/router';
 import {combineLatest, forkJoin, Subscription} from 'rxjs';
@@ -40,8 +39,9 @@ import {PdfGeneratorService} from '../../../shared/services/pdf-generator.servic
 import {OIL_DELIVERY_DASHBOARD} from './OIL_DELIVERY_DASHBOARD';
 import {AppParameterService} from '../../../shared/services/AppParameterService';
 import {getOilPdfConfig} from "./oil-pdf.config";
-import { ToastService } from '../../../shared/services/toast.service';
-import { getControlQualitePdfConfig } from '../quality-control-list/PDF-controlQualite.config';
+import {ToastService} from '../../../shared/services/toast.service';
+import {getControlQualitePdfConfig} from '../quality-control-list/PDF-controlQualite.config';
+import {getProductionPdfConfig} from "../reception-list/production-pdf.config";
 
 /* ──────────────────────────────────────────────────────────── */
 /* validators                                                   */
@@ -120,7 +120,9 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
     private toast: ToastService,
     private router: Router,
     private pdfService: PdfGeneratorService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private pdfGeneratorService: PdfGeneratorService,
+
   ) {
     this.receptionForm = this.fb.group(
       {
@@ -237,6 +239,13 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
     this.pdfService.generatePdf(config);
   }
 
+  generateBonProduction(delivery: UnifiedDelivery): void {
+    const parameters = JSON.parse(localStorage.getItem('osm_app_parameters') || '{}');
+    const config = getProductionPdfConfig(delivery, parameters);
+    this.pdfGeneratorService.generatePdf(config);
+  }
+
+
   /* ——— data loading & table helpers ——— */
 
   /**
@@ -276,6 +285,12 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
         case 'SET_PRICE':
           console.log(`[OilReception] Setting price for delivery: ${e.row.lotNumber}`);
           this.setPrice(e.row);
+          break;
+
+        case 'GEN_PDF_PRODUCTION':
+          if (e.row) {
+            this.generateBonProduction(e.row);
+          }
           break;
 
         case 'COMPLETE_PAYMENT_DETAILS':
