@@ -2058,7 +2058,9 @@
       "UPDATE": "Modifier",
       "UPDATE_OIL_QUALITY": "Modifier Qualité Huile",
       "UPDATE_OLIVE_QUALITY": "Modifier Qualité Olives",
-      "VALIDATE": "Valider"
+      "VALIDATE": "Valider",
+      "GEN_PDF_PRODUCTION": "Générer Bon de Production"
+
     },
     "COLUMNS": {
       "HIDE": "Masquer les colonnes",

@@ -8,8 +8,9 @@ import {tap} from 'rxjs';
 import {Router} from '@angular/router';
 import {PdfGeneratorService} from '../../../shared/services/pdf-generator.service';
 import {getProductionPdfConfig} from "./production-pdf.config";
-import { ToastService } from '../../../shared/services/toast.service';
-import { getOlivePdfConfig } from '../olive-reception/olive-pdf.config';
+import {ToastService} from '../../../shared/services/toast.service';
+import {getOlivePdfConfig} from '../olive-reception/olive-pdf.config';
+import {getControlQualitePdfConfig} from "../quality-control-list/PDF-controlQualite.config";
 
 @Component({
   selector: 'app-reception-list',
@@ -46,18 +47,27 @@ export class ReceptionListComponent {
         break;
 
       case 'GEN_PDF_QC_OIL':
-        if (event.row.qualityControlResults) {
+        if (event.row.qualityControlResults && event.row.qualityControlResults.length > 0) {
+          const config = getControlQualitePdfConfig(event.row, 'OIL');
+          this.pdfGeneratorService.generatePdf(config);
           this.toast.success(`[OilReception] Generating GEN_PDF_QC_OIL PDF for delivery: ${event.row.lotNumber}`);
-         }else{
-          this.toast.error('no quality control for oil')
+        } else {
+          this.toast.error('no quality control for oil');
         }
         break;
+
       case 'GEN_PDF_QC_OLIVE':
-        if (event.row.qualityControlResults) {
-          this.toast.success(`[OilReception] Generating quality controll PDF for delivery: ${event.row.lotNumber}`);
-         }else{
-          this.toast.error('no quality control for olive')
+        if (event.row.qualityControlResults && event.row.qualityControlResults.length > 0) {
+          const config = getControlQualitePdfConfig(event.row, 'OLIVE');
+          this.pdfGeneratorService.generatePdf(config);
+          this.toast.success(`[OilReception] Generating quality control PDF for delivery: ${event.row.lotNumber}`);
+        } else {
+          this.toast.error('no quality control for olive');
         }
+        break;
+
+      case 'GEN_PDF_PRODUCTION':
+        this.generateBonProduction(event.row);
         break;
 
       case 'OIL_QUALITY':
@@ -72,7 +82,8 @@ export class ReceptionListComponent {
     this.pdfGeneratorService.generatePdf(config);
   }
   generateBonProduction(delivery: UnifiedDelivery): void {
-    const config = getProductionPdfConfig(delivery);
+    const parameters = JSON.parse(localStorage.getItem('osm_app_parameters') || '{}');
+    const config = getProductionPdfConfig(delivery, parameters);
     this.pdfGeneratorService.generatePdf(config);
   }
 

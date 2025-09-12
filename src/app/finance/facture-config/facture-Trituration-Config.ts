@@ -7,13 +7,11 @@ export function factureTriturationConfig(
   delivery: UnifiedDelivery,
   company: CompanyProfile
 ): PdfFactureConfig {
-  const unitPrice = delivery.unitPrice || 0;
-  const quantity = delivery.poidsNet || 0;
-  const total = (delivery?.price! / quantity);
+  const unitPrice = delivery.unitPrice || 9.500;
 
   return {
     title: 'FACTURE ' + (delivery.lotNumber ?? "Sans titre"),
-    reference: `${delivery.lotNumber || 'XXXX'} PDF.TRITURATION`,
+    reference: `${delivery.lotNumber || 'XXXX'} ` + ' ' + delivery.operationType,
     date: new Date().toLocaleDateString(),
     companyInfo: {
       companyName: company.legalName,
@@ -33,8 +31,8 @@ export function factureTriturationConfig(
     fields: [
       {label: 'PDF.DESCRIPTION', value: delivery.deliveryType || 'Huile d\'olive'},
       {label: 'PDF.PRICE_UNIT', value: `${unitPrice} TND/kg`},
-      {label: 'PDF.QUANTITY', value: `${quantity} kg`},
-      {label: 'PDF.TOTAL', value: `${total?.toFixed(2)} TND`}
+      {label: 'PDF.QUANTITY', value: `${delivery.oilQuantity} kg`},
+      {label: 'PDF.TOTAL', value: `${delivery.paidAmount?.toFixed(2)} TND`}
     ],
     fileName: `Facture_${delivery.deliveryNumber || 'inconnu'}.pdf`
   };
