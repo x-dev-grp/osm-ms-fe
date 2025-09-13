@@ -7,23 +7,41 @@ export function getOlivePdfConfig(delivery: UnifiedDelivery): PdfConfig {
     title: 'PDF.RECEPTION_OLIVE',
     reference: delivery.lotNumber || '',
     generalInfo: [
-      {label: 'PDF.TYPE', value: delivery.deliveryType || ''},
+      {
+        label: 'PDF.DATE',
+        value: delivery.deliveryDate
+          ? new Date(delivery.deliveryDate).toLocaleDateString() // Convert Date to string
+          : ''
+      },
       {
         label: 'PDF.SUPPLIER',
-        value: `${delivery.supplier?.supplierInfo?.name || ''} ${delivery.supplier?.supplierInfo?.lastname || ''}`
+        value: [
+          delivery.supplier?.supplierInfo?.name || '',
+          delivery.supplier?.supplierInfo?.lastname || ''
+        ].filter(Boolean).join(' ') // Safely join name + lastname
       },
-      {label: 'PDF.PHONE', value: delivery.supplier?.supplierInfo?.phone || ''},
-      {label: 'PDF.ADDRESS', value: delivery.supplier?.supplierInfo?.address || ''}
+      {label: 'PDF.PARCEL', value: String(delivery.parcel || '')},
+      {label: 'PDF.LOT', value: String(delivery.lotNumber || '')},
+      {label: 'PDF.TYPE', value: String(delivery.deliveryType || '')},
     ],
     fields: [
-      {label: 'PDF.LOT', value: delivery.lotNumber || ''},
-      {label: 'OLIVE_RECEPTION.FORM.FIELDS.TRUCK_PLATE', value: delivery.matriculeCamion || ''},
-      {label: 'PDF.LOT_GLOBAL', value: delivery.globalLotNumber || 'N/A'},
-      {label: 'PDF.GROSS_WEIGHT', value: `${delivery.poidsBrute || ''} kg`},
-      {label: 'PDF.OLIVE_QUANTITY', value: `${delivery.oilQuantity || ''} kg`},
-      {label: 'PDF.OLIVE_VARIETY', value: delivery.oliveVariety?.name || ''},
-      {label: 'PDF.OLIVE_TYPE', value: delivery.oliveType || ''},
-      {label: 'PDF.REGION', value: delivery.region?.name || ''}
+      {label: 'PDF.PARCEL', value: String(delivery.parcel || '')},
+      {
+        label: 'PDF.OLIVE_VARIETY',
+        value: String(delivery.oliveVariety?.name || '') // Coerce to string
+      },
+      {
+        label: 'PDF.N°COLIS',
+        value: delivery.sackCount != null ? String(delivery.sackCount) : 'N/A' // Handle number | string
+      },
+      {
+        label: 'PDF.GROSS_WEIGHT',
+        value: delivery.poidsBrute != null ? `${delivery.poidsBrute} kg` : 'N/A'
+      },
+      {
+        label: 'PDF.OLIVE_QUANTITY',
+        value: delivery.poidsNet != null ? `${delivery.poidsNet} kg` : 'N/A'
+      }
     ],
     footerInfo: [
       {label: 'PDF.SIGNATURE_AGENT'},

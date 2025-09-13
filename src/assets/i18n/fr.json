@@ -138,6 +138,7 @@
     "TITLE": "Comptes bancaires"
   },
   "BASE_TYPE": {
+    "ADD": "Ajouter Type",
     "OIL_TYPE": "Type d'huile",
     "OIL_VARIETY": "Variété d'huile",
     "OLIVE_TYPE": "Type olive",
@@ -631,7 +632,7 @@
       "DELIVERY_TYPE": "Type de livraison",
       "GLOBAL_LOT_NUMBER": "N° Lot Global",
       "GROSS_WEIGHT": "Poids brut (KG)",
-      "LOT_NUMBER ": "N° lot",
+      "LOT_NUMBER": "N° lot",
       "LOT_OLIVE_NUMBER": "Referance lot number",
       "NET_WEIGHT": "Poids net (KG)",
       "OIL_QUANTITY": "Quantité d'huile",
@@ -731,6 +732,7 @@
         "SEARCH_SUPPLIER": "Rechercher un fournisseur..."
       },
       "SECTIONS": {
+        "CLIENT_REGION": "Client et région",
         "DELIVERY_INFO": "Informations de livraison",
         "FINANCIAL_INFO": "Informations financières",
         "GENERAL_INFO": "Informations générales",
@@ -770,6 +772,7 @@
     "OLIVE_TITLE": "Livraisons d'Olives",
     "OPERATION_TYPE": {
       "BASE": "Base",
+      "EXCHANGE": "Echange",
       "INTERNAL_RECEPTION": "réception interne",
       "OIL_PURCHASE": "Achat d'huile",
       "OLIVE_PURCHASE": "Achat d'olive",
@@ -961,6 +964,17 @@
   "FINANCE_TAB": "Config Finance",
   "File Manager": "Gestionnaire de fichiers",
   "Finance": "finance",
+  "FORGOT_PASSWORD": {
+    "BACK_TO_LOGIN": "Retour à la connexion",
+    "EMAIL": "Email",
+    "EMAIL_INVALID": "Veuillez entrer une adresse email valide",
+    "EMAIL_REQUIRED": "L'email est requis",
+    "ERROR_MESSAGE": "Une erreur s'est produite lors du traitement de votre demande. Veuillez réessayer plus tard.",
+    "SERVICE_UNAVAILABLE": "Service indisponible. Veuillez réessayer plus tard.",
+    "SUBMIT": "Envoyer le lien de réinitialisation",
+    "SUCCESS_MESSAGE": "Si un compte existe avec cet email, vous recevrez prochainement un lien de réinitialisation de mot de passe.",
+    "TITLE": "Mot de passe oublié"
+  },
   "Forgot Password": "Mot de passe oublié",
   "Form Validation": "Validation du formulaire",
   "Form Wizard": "Assistant Formulaire",
@@ -1078,6 +1092,8 @@
       "NAME": "Nom"
     }
   },
+  "HB": "HB",
+  "HC": "HC",
   "HR_TAB": "Config RH",
   "Helpdesk": "Service d'assistance",
   "Home": "Accueil",
@@ -1087,9 +1103,21 @@
     "PASSWORD": "Mot de pass",
     "PASSWORDCONFIRM": "Confirmer mot de passe",
     "PASSWORDNEW": "Nouveau mot de passe",
-    "REMEMBERME": "Se souvenir de moi ?",
+    "PASSWORD_STRENGTH_ERROR": "Le mot de passe doit contenir au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial",
+    "PASSWORD_MIN_LENGTH_ERROR": "Le mot de passe doit contenir au moins 8 caractères",
+    "PASSWORD_MISMATCH_ERROR": "Les mots de passe ne correspondent pas",
+    "PASSWORD_REQUIRED": "Vous devez entrer un mot de passe",
+    "REMEMBERME": "Se souvenir de moi",
+    "REMEMBERME_EXPIRY_ERROR": "Le jeton de mémorisation a expiré",
+    "SERVICE_UNAVAILABLE": "Service indisponible, veuillez réessayer plus tard",
+    "TITLE": "Connexion avec votre nom d'utilisateur",
+    "UNEXPECTED_ERROR": "Une erreur inattendue s'est produite",
     "UPDATEPASSWORD": "Changer le mot de passe",
-    "USERNAME": "Nom d'utilisateur"
+    "USERNAME": "Nom d'utilisateur",
+    "USERNAME_MISSING": "Nom d'utilisateur manquant pour la connexion",
+    "USERNAME_REQUIRED": "Vous devez entrer un email",
+    "USERNAME_INVALID": "Email non valide",
+    "FORGOT_PASSWORD": "Mot de passe oublié ?"
   },
   "LOGO": {
     "CLICK_BROWSE": "ou cliquez pour parcourir",
@@ -1364,6 +1392,8 @@
   "Multi Column": "Multi-colonne",
   "Navigation": "La navigation",
   "Notification": "Notification",
+  "OB": "OB",
+  "OC": "OC",
   "OIL_CONTAINER": {
     "DASHBOARD": {
       "FIELDS": {
@@ -1544,6 +1574,7 @@
         "CANCEL": "Annuler",
         "UPDATE": "Mettre à jour"
       },
+      "CLIENT_REGION": "Client et région",
       "DELIVERY_INFO": "Informations de livraison",
       "EDIT_TITLE": "Modifier la réception d'huile",
       "ERRORS": {
@@ -1960,10 +1991,12 @@
         "UPDATE": "Mettre à jour"
       },
       "FIELDS": {
+        "CLIENT": "Client",
         "DELIVERY_DATE": "Date de livraison",
         "DELIVERY_NUMBER": "N° Livraison",
         "DELIVERY_TYPE": "Type de livraison",
-        "GROSS_WEIGHT": "Poids brut (kg)",
+        "EMPTY_TRUCK_WEIGHT": "Poids camion vide",
+        "GROSS_WEIGHT": "Poid camion chargé (kg)",
         "LOT_NUMBER": "Numéro de lot",
         "NET_WEIGHT": "Poids net (kg)",
         "OLIVE_QUANTITY": "Quantité d'olives (kg)",
@@ -1992,6 +2025,7 @@
         "SEARCH_VARIETY": "Rechercher une variété..."
       },
       "SECTIONS": {
+        "CLIENT_REGION": "Client et région",
         "DELIVERY_INFO": "Informations de livraison",
         "GENERAL_INFO": "Informations générales",
         "OLIVE_INFO": "Informations sur les olives",
@@ -2038,6 +2072,7 @@
       "ERROR": "Une erreur s'est produite",
       "GEN_INVOICE": "Générer Facture",
       "GEN_PDF": "Générer Bon Réception",
+      "GEN_PDF_PRODUCTION": "Générer Bon de Production",
       "GEN_PDF_QC_OIL": "Bon control quality huile",
       "GEN_PDF_QC_OLIVE": "Bon control quality olive",
       "MAINTENANCE": "Maintenance",
@@ -2136,7 +2171,9 @@
     "DELIVERY_DATE": "Date de Livraison",
     "DELTA_K": "Delta K",
     "DESCRIPTION": "Description",
+    "DESIGNATION": "Désignation",
     "DESTINATION_UNIT": "Unité de destination",
+    "DRIVER": "Chauffeur",
     "DUE_DATE": "Date d'échéance",
     "ERROR": "Erreur",
     "EXCHANGE": "Échange",
@@ -2179,7 +2216,9 @@
     "MOBILE": "Téléphone",
     "NO_QUALITY_DATA": "Aucune donnée de contrôle qualité disponible",
     "NUMBER_PLACEHOLDER": "N° : ......./........",
+    "N°COLIS": "N° Colis",
     "OIL_CUSTOMER": "Cooperative Agricole",
+    "OIL_DISPATCH": "Bon de Sortie d’Huile",
     "OIL_QUANTITY": "Quantité d'huile",
     "OIL_TYPE": "Type Huile",
     "OIL_VARIETY": "Variété Huile",
@@ -2224,6 +2263,7 @@
     "RECEPTION_OLIVE": "Bon De Réception Olive",
     "RECEPTION_REGION": "Région de la réception",
     "RECEPTION_SUPPLIER": "Fournisseur de la réception",
+    "RECIPIENT": "Destinataire",
     "REFERENCE": "Référence",
     "REGION": "Région",
     "REVISION": "Révision",
@@ -2239,6 +2279,7 @@
     "STORAGE_UNIT_SOURCE": "Unité de stockage (source)",
     "SUBTOTAL": "Sous-total",
     "SUPPLIER": "Fournisseur",
+    "TANK_NUMBER": "N° Citerne",
     "TOTAL": "Total",
     "TOTAL_AMOUNT": "Montant total",
     "TOTAL_PRICE": "Prix total",
@@ -2327,11 +2368,48 @@
       "RULE_TYPE": "Type de règle"
     },
     "RULE_TYPES": {
-      "BOOLEAN": "Booléen",
+      "BOOLEAN": "Booléen (vrai/faux)",
       "NUMERIC": "Numérique",
       "STRING": "Texte"
     },
     "TITLE": "Règles de contrôle qualité"
+  },
+  "RECEPTION": {
+    "PLANNING": {
+      "COMPLETION": {
+        "COMPLETION_DATE_LABEL": "Date de Finalisation",
+        "COMPLETION_DETAILS_TITLE": "Détails de Finalisation",
+        "CONFIRMATION_TEXT": "Êtes-vous sûr de vouloir marquer ceci comme terminé ?",
+        "DELIVERY_DATE": "Date de Livraison",
+        "DELIVERY_NUMBER": "Numéro de Réception",
+        "DETAILS_TITLE": "Détails de Finalisation",
+        "FINAL_OBSERVATION_LABEL": "Observation Finale (Optionnel)",
+        "FINISH_BUTTON": "Terminer",
+        "GLOBAL_LOT_NUMBER": "Numéro de Lot Global",
+        "LOT_INFO_TITLE": "Informations du Lot",
+        "LOT_LIST": "Liste des Lots",
+        "LOT_LIST_NUMBER": "N°",
+        "LOT_LIST_OIL_QUANTITY": "Huile (kg)",
+        "LOT_LIST_QUANTITY": "QT (kg)",
+        "LOT_LIST_SUPPLIER": "Fournisseur",
+        "LOT_LIST_TRITURATION_PRICE": "Prix de trituration",
+        "LOT_LIST_YIELD": "Rendement (%)",
+        "LOT_NUMBER": "Numéro de Lot",
+        "OBSERVATION": "Observation",
+        "OIL_QUANTITY_LABEL": "Quantité d'Huile (kg)",
+        "OLIVE_QUANTITY": "Poids Net d'Olives",
+        "OLIVE_TYPE": "Type d'Olive",
+        "OLIVE_VARIETY": "Variété d'Olive",
+        "REGION": "Région",
+        "SUPPLIER": "Fournisseur",
+        "TOTAL_OLIVE_WEIGHT": "Poids Total d'Olives",
+        "TOTAL_TRITURATION_PRICE_LABEL": "Prix total de trituration",
+        "TRITURATION_DURATION_HOURS": "Durée (Heures)",
+        "TRITURATION_DURATION_MINUTES": "Trituration (Minutes)",
+        "TRITURATION_PRICE_PER_KG_LABEL": "Prix de trituration (par kg)",
+        "YIELD_LABEL": "Rendement (%)"
+      }
+    }
   },
   "RECEPTION_LIST": {
     "ACTIONS": {
@@ -2372,6 +2450,20 @@
   },
   "Register": "Enregistrer",
   "Reset Password": "réinitialiser le mot de passe",
+  "RESET_PASSWORD": {
+    "ENTER_CODE_TITLE": "Entrez le code de confirmation",
+    "NEW_PASSWORD_TITLE": "Définir un nouveau mot de passe",
+    "CONFIRMATION_CODE": "Code de confirmation",
+    "CODE_PLACEHOLDER": "Entrez votre code",
+    "VALIDATE_CODE": "Valider le code",
+    "NEW_PASSWORD": "Nouveau mot de passe",
+    "NEW_PASSWORD_PLACEHOLDER": "Entrez votre nouveau mot de passe",
+    "CONFIRM_PASSWORD": "Confirmer le mot de passe",
+    "CONFIRM_PASSWORD_PLACEHOLDER": "Confirmez votre nouveau mot de passe",
+    "MISMATCH": "Les mots de passe ne correspondent pas",
+    "SUBMIT_NEW_PASSWORD": "Mettre à jour le mot de passe",
+    "MISSING_USER_ID": "Identifiant utilisateur manquant."
+  },
   "SINGLE": "Célibataire",
   "STANDARD": {
     "ACCESS_RESSOURCE_ERROR": "Vous n'avez pas accès à cette ressource.",

@@ -103,7 +103,7 @@ export const MACHIN_RECEPTION_DASHBOARD: DashboardConfig = {
       label: 'Poids net (kg)',
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.NET_WEIGHT',
       attributeType: AttributeType.number,
-      fieldType: FieldType.number,
+      fieldType: FieldType.text,
       exportable: true,
       sortable: true,
       dataTable: true,

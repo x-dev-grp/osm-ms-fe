@@ -1,0 +1,178 @@
+<form [formGroup]="paymentForm" class="spm-mobile-root" (ngSubmit)="processPayment()">
+  <!-- HEADER (Sticky) -->
+  <header class="spm-mobile-header" role="banner">
+    <button type="button" class="icon-btn" mat-icon-button (click)="closePaymentForm()" aria-label="Fermer">
+      <mat-icon>close</mat-icon>
+    </button>
+
+    <div class="title">
+      <span>{{ 'SUPPLIER_PAYMENT.PAYMENT' | translate }}</span>
+      <small>• {{ 'SUPPLIER_PAYMENT.LOT' | translate }} {{ selectedDelivery?.lotNumber }}</small>
+    </div>
+
+    <button type="button"
+            class="icon-chip small-label"
+            mat-stroked-button
+            disableRipple
+            aria-label="Direction de paiement">
+      <mat-icon>
+        {{ derivedDirection === TransactionDirection.INBOUND ? 'call_received' : 'call_made' }}
+      </mat-icon>
+      <span>
+    {{ derivedDirection === TransactionDirection.INBOUND
+        ? ('SUPPLIER_PAYMENT.INBOUND' | translate)
+        : ('SUPPLIER_PAYMENT.OUTBOUND' | translate) }}
+  </span>
+    </button>
+  </header>
+
+  <!-- CONTENT (Scrollable only this area) -->
+  <main class="spm-mobile-content" role="main">
+    <!-- Compact error -->
+    <div *ngIf="transactionNotCompletedError" class="alert-warn">
+      <mat-icon>error</mat-icon>
+      <span>{{ 'SUPPLIER_PAYMENT.PAYMENT_TRANSACTION' | translate }}</span>
+    </div>
+
+    <!-- 1) METHOD (short labels, icon tiles) -->
+    <section class="section">
+      <h4 class="section-title">{{ 'SUPPLIER_PAYMENT.PAYMENT_METHOD' | translate }}</h4>
+
+      <mat-radio-group formControlName="paymentMethod" class="tiles-3 with-text">
+        <mat-radio-button value="cash" disabled class="tile">
+          <mat-icon>account_balance_wallet</mat-icon>
+          <span>{{ 'SUPPLIER_PAYMENT.MONEY_PAYMENT' | translate }}</span>
+        </mat-radio-button>
+
+        <mat-radio-button value="oil" disabled class="tile">
+          <mat-icon>local_gas_station</mat-icon>
+          <span>{{ 'SUPPLIER_PAYMENT.OIL_PAYMENT' | translate }}</span>
+        </mat-radio-button>
+
+        <mat-radio-button value="both" class="tile">
+          <mat-icon>sync_alt</mat-icon>
+          <span>{{ 'SUPPLIER_PAYMENT.BOTH_PAYMENT' | translate }}</span>
+        </mat-radio-button>
+      </mat-radio-group>
+    </section>
+
+    <!-- 2) MONEY (when method is cash or both) -->
+    <section class="section" *ngIf="showMoney">
+      <h4 class="section-title">{{ 'SUPPLIER_PAYMENT.CASH_PAYMENT' | translate }}</h4>
+
+      <!-- money method as compact buttons (still a radio group for same logic) -->
+      <mat-radio-group formControlName="moneyPaymentMethod" class="segmented with-text">
+        <mat-radio-button class="seg" value="cash" aria-label="{{ 'SUPPLIER_PAYMENT.CASH' | translate }}">
+          <mat-icon>payments</mat-icon><span>{{ 'SUPPLIER_PAYMENT.CASH' | translate }}</span>
+        </mat-radio-button>
+        <mat-radio-button class="seg" value="check" aria-label="{{ 'SUPPLIER_PAYMENT.CHECK' | translate }}">
+          <mat-icon>receipt_long</mat-icon><span>{{ 'SUPPLIER_PAYMENT.CHECK' | translate }}</span>
+        </mat-radio-button>
+        <mat-radio-button class="seg" value="bank_transfer" aria-label="{{ 'SUPPLIER_PAYMENT.BANK_TRANSFER' | translate }}">
+          <mat-icon>account_balance</mat-icon><span>{{ 'SUPPLIER_PAYMENT.BANK_TRANSFER' | translate }}</span>
+        </mat-radio-button>
+      </mat-radio-group>
+<br>
+      <mat-form-field appearance="outline" class="field mt-2">
+        <mat-label>{{ 'SUPPLIER_PAYMENT.AMOUNT' | translate }}</mat-label>
+        <input matInput type="number"
+               formControlName="amount"
+               [min]="0"
+               [max]="data?.row?.unpaidAmount"
+               step="0.001"
+               required>
+        <span matSuffix class="suffix">TND</span>
+
+        <mat-error *ngIf="paymentForm.get('amount')?.hasError('required')">
+          {{ 'SUPPLIER_PAYMENT.ERRORS.AMOUNT_REQUIRED' | translate }}
+        </mat-error>
+        <mat-error *ngIf="paymentForm.get('amount')?.hasError('min')">
+          {{ 'SUPPLIER_PAYMENT.ERRORS.AMOUNT_MIN' | translate }}
+        </mat-error>
+        <mat-error *ngIf="paymentForm.get('amount')?.hasError('max')">
+          {{ 'SUPPLIER_PAYMENT.ERRORS.AMOUNT_MAX' | translate }}
+        </mat-error>
+      </mat-form-field>
+    </section>
+
+    <!-- 3) OIL (when method is oil or both) -->
+    <section class="section" *ngIf="showOil">
+      <h4 class="section-title">{{ 'SUPPLIER_PAYMENT.OIL_PAYMENT' | translate }}</h4>
+
+      <div class="grid-2">
+        <mat-form-field appearance="outline" class="field">
+          <mat-label>{{ 'SUPPLIER_PAYMENT.OIL_QUANTITY' | translate }}</mat-label>
+          <input matInput type="number" formControlName="oilQuantity" readonly disabled>
+          <span matSuffix class="suffix">L</span>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="field">
+          <mat-label>{{ 'SUPPLIER_PAYMENT.OIL_PRICE' | translate }}</mat-label>
+          <input matInput type="number" formControlName="oilPrice" readonly disabled>
+          <span matSuffix class="suffix">TND</span>
+        </mat-form-field>
+      </div>
+    </section>
+
+    <!-- 4) SUMMARY (compact) -->
+    <section class="section summary-card summary-col">
+      <div class="summary-header">
+        <div class="status-chip" [class.ok]="summaryStatus.cls === 'ok'"
+             [class.warn]="summaryStatus.cls === 'warn'"
+             [class.bad]="summaryStatus.cls === 'bad'">
+          <mat-icon class="s-icon">{{ summaryStatus.icon }}</mat-icon>
+          <span>{{ summaryStatus.label }}</span>
+        </div>
+
+        <div class="progress-wrap" *ngIf="total > 0">
+          <div class="progress-line"><div class="progress-fill" [style.width.%]="progressPct"></div></div>
+          <small>{{ progressPct }}%</small>
+        </div>
+      </div>
+
+      <ul class="summary-list">
+        <li class="row">
+          <div class="label">
+            <mat-icon>payments</mat-icon>
+            <span>{{ 'SUPPLIER_PAYMENT.TOTAL_PRICE' | translate }}</span>
+          </div>
+          <div class="value">{{ total | currency:'TND' }}</div>
+        </li>
+        <li class="row">
+          <div class="label">
+            <mat-icon>task_alt</mat-icon>
+            <span>{{ 'SUPPLIER_PAYMENT.PAID_AMOUNT' | translate }}</span>
+          </div>
+          <div class="value">{{ paidSoFar | currency:'TND' }}</div>
+        </li>
+        <li class="row">
+          <div class="label">
+            <mat-icon>hourglass_empty</mat-icon>
+            <span>{{ 'SUPPLIER_PAYMENT.REMAINING_AMOUNT' | translate }}</span>
+          </div>
+          <div class="value" [class.crit]="remaining > 0">{{ remaining | currency:'TND' }}</div>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <!-- FOOTER (Sticky) -->
+  <footer class="spm-mobile-footer">
+    <button type="button"
+            class="small-label"
+            mat-stroked-button
+            (click)="closePaymentForm()">
+      <mat-icon>close</mat-icon>
+      <span>{{ 'SUPPLIER_PAYMENT.CANCEL' | translate }}</span>
+    </button>
+
+    <button type="submit"
+            class="small-label"
+            color="primary"
+            mat-raised-button
+            [disabled]="paymentForm.invalid || transactionNotCompletedError">
+      <mat-icon>check</mat-icon>
+      <span>{{ 'SUPPLIER_PAYMENT.CONFIRM_PAYMENT' | translate }}</span>
+    </button>
+  </footer>
+</form>

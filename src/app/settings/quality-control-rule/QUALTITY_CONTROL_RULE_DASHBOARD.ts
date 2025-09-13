@@ -5,7 +5,7 @@ import {SearchOperation} from "../../shared/models/advanced-search/searchOperati
 export const QUALTITY_CONTROL_RULE_DASHBOARD: DashboardConfig = {
   icon: 'rule',
   title: "Quality Control Rule",
-  titleTranslatePath: 'QUALTITY.CONTROL_RULE',
+  titleTranslatePath: 'QUALITY_CONTROL_RULE.TITLE',
   baseURL: 'quality-control',
   searchEndpoint: 'production/qualitycontrolrules',
   addNewItem: true,
@@ -47,11 +47,10 @@ export const QUALTITY_CONTROL_RULE_DASHBOARD: DashboardConfig = {
         {label: 'STRING', value: 'STRING', labelTranslatePath: 'QUALITY_CONTROL_RULE.RULE_TYPES.STRING'},
         {label: 'BOOLEAN', value: 'BOOLEAN', labelTranslatePath: 'QUALITY_CONTROL_RULE.RULE_TYPES.BOOLEAN'}
       ],
-      defaultFilter: true
     },
     {
       name: 'oilQc',
-      label: 'Controle Qualtiy Oil ',
+      label: 'Controle Qualtiy Oil',
       labelTranslatePath: 'QUALITY_CONTROL_RULE.FIELDS.OIL_QC',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,

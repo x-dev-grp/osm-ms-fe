@@ -68,7 +68,7 @@ export const TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
       label: 'Montant',
       labelTranslatePath: 'TRANSACTIONS.FIELDS.AMOUNT',
       attributeType: AttributeType.number,
-      fieldType: FieldType.number,
+      fieldType: FieldType.text,
       exportable: true,
       sortable: true,
       dataTable: true,

@@ -1,32 +1,36 @@
-import { Component, DestroyRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, tap } from 'rxjs';
-import { OsmDashboard } from '../../../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
-import { TranslateModule } from '@ngx-translate/core';
-import { CardComponent } from '../../../../theme/components/card/card.component';
-import { OIL_CREDIT_DASHBOARD } from './oil-credit-dashboard.config';
-import { PAIMENT_DASHBOARD } from './paiment-dashboard.config';
-import { AdvancedSearchService } from '../../../../shared/services/advanced-serach.service';
-import { SearchData } from '../../../../shared/models/advanced-search/searchData';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { OilCredit } from '../../../../finance/models/OilCredit';
-import { UnifiedDelivery } from '../../../../shared/models/UnifiedDelivery';
-import { MatDialog } from '@angular/material/dialog';
-import { SupplierPaymentHistoryComponent } from '../supplier-payment-history/supplier-payment-history.component';
-import { OIL_SALES_DASHBOARD_CONFIG } from './oil-sales-dashboard.config';
-import { ToastService } from '../../../../shared/services/toast.service';
-import { factureTriturationConfig } from '../../../../finance/facture-config/facture-Trituration-Config';
-import { PdfGeneratorFactureService } from '../../../../shared/services/pdf-generator-facture.service';
-import { PdfFactureConfig } from '../../../../shared/models/pdf-config.model';
-import { WASTE_DASHBOARD } from './waste-sale-dashboard.config';
-import { CompanyProfile } from '../../../../shared/models/CompanyProfile';
-import { CompanyProfileService } from '../../../../shared/services/company-profile.service';
+import {Component, DestroyRef, inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {MatButtonModule} from '@angular/material/button';
+import {MatCardModule} from '@angular/material/card';
+import {MatIconModule} from '@angular/material/icon';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Subject, tap} from 'rxjs';
+import {OsmDashboard} from '../../../../shared/modules/osm-dashboard/osm-dashboard';
+import {DashboardConfig} from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
+import {TranslateModule} from '@ngx-translate/core';
+import {CardComponent} from '../../../../theme/components/card/card.component';
+import {OIL_CREDIT_DASHBOARD} from './oil-credit-dashboard.config';
+import {PAIMENT_DASHBOARD} from './paiment-dashboard.config';
+import {AdvancedSearchService} from '../../../../shared/services/advanced-serach.service';
+import {SearchData} from '../../../../shared/models/advanced-search/searchData';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {OilCredit} from '../../../../finance/models/OilCredit';
+import {UnifiedDelivery} from '../../../../shared/models/UnifiedDelivery';
+import {MatDialog} from '@angular/material/dialog';
+import {SupplierPaymentHistoryComponent} from '../supplier-payment-history/supplier-payment-history.component';
+import {OIL_SALES_DASHBOARD_CONFIG} from './oil-sales-dashboard.config';
+import {ToastService} from '../../../../shared/services/toast.service';
+import {factureTriturationConfig} from '../../../../finance/facture-config/facture-Trituration-Config';
+import {PdfGeneratorFactureService} from '../../../../shared/services/pdf-generator-facture.service';
+import {PdfFactureConfig} from '../../../../shared/models/pdf-config.model';
+import {WASTE_DASHBOARD} from './waste-sale-dashboard.config';
+import {CompanyProfile} from '../../../../shared/models/CompanyProfile';
+import {CompanyProfileService} from '../../../../shared/services/company-profile.service';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import {
+  SupplierPaymentHistoryMobileComponent
+} from '../supplier-payment-history-mobile/supplier-payment-history-mobile.component';
 
 export enum PaymentSourceType {
   DELIVERY_prc = 'delivery',
@@ -94,7 +98,8 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
     private searchService: AdvancedSearchService,
     private _dialog: MatDialog,
     // private invoiceService: InvoiceService,
-    private toast: ToastService,
+    private breakpointObserver: BreakpointObserver,
+  private toast: ToastService,
     private pdfFactureService: PdfGeneratorFactureService,
     private companyService: CompanyProfileService
   ) {}
@@ -121,8 +126,7 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
         this.router.navigate(['/finance/expenses', e.row.id, 'edit']);
         break;
 
-      case 'DELETE':
-        break;
+
 
       case 'GEN_INVOICE':
         if (e.row?.id) {
@@ -132,7 +136,7 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  handlePaymentAction(e: { row: UnifiedDelivery; action: string }) {
+  handlePaymentAction(e: { row: any; action: string }) {
     const actionLabel = e.action;
     switch (actionLabel) {
       case 'READ':
@@ -168,16 +172,10 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
 
   getInvoicePdfConfig(delivery: UnifiedDelivery, company: CompanyProfile): PdfFactureConfig {
     switch (delivery.operationType) {
-      case 'SIMPLE_RECEPTION':
+      case 'SIMPLE_RECEPTION' :
+      case 'EXCHANGE':
+      case 'BASE':
         return factureTriturationConfig(delivery, company);
-
-      // case 'EXCHANGE':
-      // case 'BASE':
-      //   return factureVenteHuileConfig(delivery, company);
-      //
-      // case 'DECHET':
-      //   return factureDechetConfig(delivery, company);
-
       default:
         throw new Error(`[Invoice] Unsupported operationType: ${delivery.operationType}`);
     }
@@ -196,39 +194,44 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
   }
 
   initiatePayment(row: any, sourceType: string) {
-    let dialogRef = this._dialog.open(SupplierPaymentHistoryComponent, {
-      width: '41vw',
-      height: '100vw',
-      data: {
-        row: row,
-        sourceType: sourceType
-      },
+    const isMobile = this.breakpointObserver.isMatched(
+      Breakpoints.Handset || Breakpoints.TabletPortrait
+    );
+
+    const Comp = isMobile
+      ? SupplierPaymentHistoryMobileComponent
+      : SupplierPaymentHistoryComponent;
+
+    const dialogRef = this._dialog.open(Comp, {
+      width: isMobile ? '100vw' : '41vw',
+      height: isMobile ? '70vh' : '100vh',
+      data: { row, sourceType },
       autoFocus: false,
-      disableClose: true
+      disableClose: true,
+      panelClass: isMobile ? 'mobile-bottom-sheet' : 'desktop-payment-dialog',
+      // keep backdrop for sheet style
+      hasBackdrop: true
     });
-    dialogRef.updatePosition({ right: '0px', top: '0px' });
-    dialogRef
-      .afterClosed()
+
+    if (!isMobile) {
+      dialogRef.updatePosition({ right: '0px', top: '0px' });
+    }
+
+    dialogRef.afterClosed()
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((result) => {
-          if (!result) {
-            // cas annulation si tu fermes sans résultat
-            return;
-          }
-
+          if (!result) return;
           if (result.ok) {
             this.toast.success(result.message || 'Paiement réussi.');
-            this.refreshPaymentList(); // recharge la liste / total / soldes
+            this.refreshPaymentList();
           } else {
             this.toast.error(result.message || 'Échec du paiement.');
-            // Optionnel: logger l’erreur ou afficher un détail
           }
         })
       )
       .subscribe();
   }
-
   private generateOilCreditInvoice(creditData: any) {
     if (!creditData) {
       console.error('generateOilCreditInvoice: creditData is undefined');

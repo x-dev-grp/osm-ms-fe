@@ -6,6 +6,8 @@ import { SharedModule } from '../../shared/shared.module';
 import { OsmDashboard } from 'src/app/shared/modules/osm-dashboard/osm-dashboard';
 import { Action, AttributeType, DashboardConfig, FieldType } from 'src/app/shared/modules/osm-dashboard/models/dashboard-config';
 import { Router } from '@angular/router';
+import { dashboardConfig } from '../../storage/storage_dash_config';
+import { userDashboardConfig } from './userDashboardConfig';
 
 
 @Component({
@@ -20,105 +22,11 @@ import { Router } from '@angular/router';
   styleUrls: ['./user-mangement.component.scss']
 })
 export class UserManagementComponent implements OnInit {
+  @ViewChild('dashboard') dashboard!: OsmDashboard;
   _router=inject(Router);
+  dashboardConfig: DashboardConfig = userDashboardConfig;
   ngOnInit(): void {
 
-  }
-  config:DashboardConfig = {
-    title: 'Gestion des utilisateurs',
-    baseURL: 'security/user',
-    searchEndpoint: 'security/user',
-    addNewItem: true,
-    addNewItemUrl: 'settings/users/add',
-    fileName: 'utilisateur',
-
-    fields: [
-      {
-        name: 'username',
-        label: "Nom d'utilisateur",
-        attributeType: AttributeType.string,
-        fieldType: FieldType.text,
-        sortable: true,
-        filterable: true,
-        defaultFilter: false,
-        dataTable:true,
-        exportable:true,
-
-      },
-      {
-        name: 'email',
-        label: "Email",
-        attributeType: AttributeType.string,
-        fieldType: FieldType.text,
-        sortable: true,
-        filterable: true,
-        defaultFilter: false,
-        dataTable:true,
-        exportable:true,
-
-      },
-      {
-        name: 'phoneNumber',
-        label: "Numéro de téléphone",
-        attributeType: AttributeType.string,
-        fieldType: FieldType.text,
-        sortable: true,
-        filterable: true,
-        defaultFilter: false,
-        dataTable:true,
-        exportable:true,
-
-      },
-      {
-        name: 'confirmationMethod',
-        label: "Méthode de confirmation",
-        attributeType: AttributeType.enum,
-        fieldType: FieldType.select,
-        sortable: true,
-        filterable: true,
-        defaultFilter: false,
-        dataTable:true,
-        exportable:true,
-        options:[
-          {
-            label:"Email",
-            value:"EMAIL"
-          },
-          {
-            label:"Téléphone",
-            value:"PHONE"
-          },
-
-        ]
-
-
-      },
-      {
-        name: 'locked',
-        booleanAttributeName:'isLocked',
-        label: "Désactiver",
-        attributeType: AttributeType.boolean,
-        fieldType: FieldType.checkbox,
-        sortable: true,
-        filterable: true,
-        defaultFilter: false,
-        dataTable:true,
-        exportable:true,
-      },
-      {
-        name: 'role',
-        label: "Role",
-        attributeType: AttributeType.object,
-        fieldType: FieldType.autocomplete,
-        sortable: true,
-        filterable: true,
-        defaultFilter: false,
-        dataTable:true,
-        exportable:true,
-        getOptionsUrl:"security/role",
-        valuePath:"roleName"
-      }
-    ],
   }
 
   applyAction(event:{row:any,action:string}){

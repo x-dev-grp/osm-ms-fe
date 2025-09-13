@@ -108,7 +108,7 @@ export const BANK_ACCOUNTS_DASHBOARD_CONFIG: DashboardConfig = {
       label: 'Solde',
       labelTranslatePath: 'BANK_ACCOUNTS.FIELDS.BALANCE',
       attributeType: AttributeType.number,
-      fieldType: FieldType.number,
+      fieldType: FieldType.text,
       exportable: true,
       sortable: true,
       dataTable: true,

@@ -196,3 +196,47 @@ a.flex {
   background: #664d03;
   color: #fff5db;
 }
+.app-toast-mobile.mat-snack-bar-container {
+  margin-bottom: max(env(safe-area-inset-bottom, 0px), 12px); /* iOS safe area */
+  width: calc(100% - 24px);
+  max-width: 480px; /* keep a pleasant width */
+  border-radius: 10px;
+}
+/* Backdrop for the mobile sheet */
+.mobile-sheet-backdrop {
+  background: rgba(0, 0, 0, 0.35) !important;
+}
+
+/* Make the pane attach to the bottom on mobile */
+.mobile-bottom-sheet-dialog.cdk-overlay-pane {
+  display: flex !important;
+  align-items: flex-end !important; /* bottom */
+  justify-content: center;
+}
+
+/* Rounded top like a bottom sheet */
+.mobile-bottom-sheet-dialog .mat-mdc-dialog-container {
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* Simple slide-up animation */
+.mobile-bottom-sheet-dialog .mdc-dialog__container {
+  transform: translateY(100%);
+  transition: transform .25s ease;
+}
+.mobile-bottom-sheet-dialog .mdc-dialog--open .mdc-dialog__container {
+  transform: translateY(0);
+}
+
+/* Desktop side panel polish (optional) */
+.side-panel-dialog.cdk-overlay-pane {
+  display: flex !important;
+  align-items: stretch !important;
+  justify-content: flex-end !important;
+}
+.side-panel-dialog .mat-mdc-dialog-container {
+  border-radius: 0;
+}

@@ -54,22 +54,17 @@ export function getControlQualitePdfConfig(delivery: UnifiedDelivery, deliveryTy
 
   const fields: { label: string; value: string }[] = [];
 
-  if (isOil) {
-    fields.push(
-      { label: pickLabel('ACIDITÉ', 'Acidité'), value: getValue(by('ACIDITÉ')) },
-      { label: pickLabel('DELTA K', 'Delta K'), value: getValue(by('DELTA K')) },
-      { label: pickLabel('INDICE PEROXYDE', 'Indice Peroxyde'), value: getValue(by('INDICE PEROXYDE')) },
-      { label: pickLabel('K232', 'K232'), value: getValue(by('K232')) },
-      { label: pickLabel('K270', 'K270'), value: getValue(by('K270')) },
-      { label: pickLabel('CATÉGORIE HUIL', 'Catégorie Huile'), value: getValue(by('CATÉGORIE HUIL')) },
-    );
-  } else if (isOlive) {
-    fields.push(
-      { label: pickLabel('ENDOMMAGÉES %', 'Endommagées %'), value: getValue(by('ENDOMMAGÉES %')) },
-      { label: pickLabel('FERMENTÉES %', 'Fermentées %'), value: getValue(by('FERMENTÉES %')) },
-      { label: pickLabel('INFESTÉES %', 'Infestées %'), value: getValue(by('INFESTÉES %')) },
-      { label: pickLabel('CATÉGORIE OLIVE', 'Catégorie Olive'), value: getValue(by('CATÉGORIE OLIVE')) },
-    );
+// Parcourir TOUS les résultats de contrôle qualité
+  if (delivery.qualityControlResults && delivery.qualityControlResults.length > 0) {
+    delivery.qualityControlResults.forEach(result => {
+      if (!result.rule) return; // Ignorer si pas de règle associée
+
+      const ruleName = result.rule.ruleName || 'Règle sans nom';
+      const label = pickLabel(ruleName, ruleName); // Utilise le mécanisme existant pour traduire/normaliser
+      const value = getValue(result);
+
+      fields.push({label, value});
+    });
   } else {
     fields.push({ label: 'PDF.NO_QUALITY_DATA', value: 'N/A' });
   }

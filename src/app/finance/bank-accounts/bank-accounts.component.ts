@@ -94,25 +94,7 @@ export class BankAccountsComponent implements OnInit {
     }
   }
 
-  private deleteAccount(account: BankAccountWithTransactions): void {
-    if (confirm('Are you sure you want to delete this bank account?')) {
-      this.bankAccountService.deleteBankAccount(account.id!).subscribe({
-        next: (response) => {
-          if (response.success) {
-            this.toast.success();
-            // Refresh the list
-            this.loadBanks();
-          } else {
-            this.toast.error(response.message || 'Failed to delete bank account');
-          }
-        },
-        error: (error) => {
-          console.error('Error deleting bank account:', error);
-          this.toast.error('Error deleting bank account');
-        }
-      });
-    }
-  }
+
 
   private loadBanks(): void {
     // Try to get banks with balances first, fallback to regular if not available

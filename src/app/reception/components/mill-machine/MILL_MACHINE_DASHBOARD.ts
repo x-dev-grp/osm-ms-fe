@@ -1,5 +1,5 @@
-import { AttributeType, DashboardConfig, FieldType } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
-import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
+import {AttributeType, DashboardConfig, FieldType} from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import {SearchOperation} from '../../../shared/models/advanced-search/searchOperation';
 
 export const MILL_MACHINE_DASHBOARD: DashboardConfig = {
   icon: 'precision_manufacturing',
@@ -7,7 +7,7 @@ export const MILL_MACHINE_DASHBOARD: DashboardConfig = {
   titleTranslatePath: 'MENU.SETTINGS.MILLING_MACHINES',
   baseURL: 'production/millers',
   searchEndpoint: 'production/millers',
-  addNewItem: false,
+  addNewItem: true,
   addNewItemUrl: 'reception/mill-machines/new',
   defaultSearchData: {
     page: 0,
@@ -73,7 +73,7 @@ export const MILL_MACHINE_DASHBOARD: DashboardConfig = {
       label: 'Capacité',
       labelTranslatePath: 'MILL_MACHINE.FIELDS.CAPACITY',
       attributeType: AttributeType.number,
-      fieldType: FieldType.number,
+      fieldType: FieldType.text,
       exportable: true,
       sortable: true,
       dataTable: true,
@@ -85,7 +85,7 @@ export const MILL_MACHINE_DASHBOARD: DashboardConfig = {
       label: "Heures d'opération",
       labelTranslatePath: 'MILL_MACHINE.FIELDS.HOURS_OPERATED',
       attributeType: AttributeType.number,
-      fieldType: FieldType.number,
+      fieldType: FieldType.text,
       exportable: true,
       sortable: true,
       dataTable: true,

@@ -100,6 +100,7 @@ effect(() => {
       }
     } else {
       console.log('[VerticalMenu] No company_profile found in localStorage');
+      this.companyProfileService.getProfile();
     }
     // Fallback: use default asset if not found
     if (!foundLogo) {

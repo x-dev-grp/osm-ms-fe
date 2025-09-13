@@ -113,9 +113,7 @@ export class OilCreditComponent implements OnInit {
     this.router.navigate(['/finance/oil-credit', id, 'view']);
   }
 
-  delete(id: string): void {
-    this.confirmDelete(id);
-  }
+
 
   /**
    * Handles various actions on an OilCredit row.
@@ -141,27 +139,11 @@ export class OilCreditComponent implements OnInit {
       case 'UPDATE':
         this.openForm(row);
         break;
-      case 'DELETE':
-        this.confirmDelete(id);
-        break;
+
     }
   }
 
-  private confirmDelete(id?: string): void {
-    const confirmMsg = this.translate.instant('OIL_CREDIT.CONFIRM_DELETE');
-    if (confirm(confirmMsg)) {
-      this.svc.deleteOilCredit(id!).subscribe({
-        next: () => {
-          this.toastService.success('OIL_CREDIT.MESSAGES.DELETE_SUCCESS');
-          this.loadCredits();
-        },
-        error: (error) => {
-          console.error('Error deleting oil credit:', error);
-          this.toastService.error('OIL_CREDIT.MESSAGES.DELETE_ERROR');
-        }
-      });
-    }
-  }
+
 
   private loadCredits(): void {
     this.isLoading = true;
@@ -178,15 +160,6 @@ export class OilCreditComponent implements OnInit {
     });
   }
 
-  // Helper methods for display
-  getCreditStateLabel(state: CreditState): string {
-    const key = `OIL_CREDIT.STATES.${state}`;
-    return this.translate.instant(key);
-  }
 
-  getUnitLabel(unit: UnitType): string {
-    const key = unit === UnitType.L ? 'OIL_CREDIT.UNITS.LITER' : 'OIL_CREDIT.UNITS.KILOGRAM';
-    return this.translate.instant(key);
-  }
 }
 

@@ -27,7 +27,5 @@ export class ExpenseService {
     return this.http.put<ApiResponse<Expense>>(`${this.baseUrl}`, expense);
   }
 
-  deleteExpense(id: string): Observable<ApiResponse<void>> {
-    return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/${id}`);
-  }
+
 }

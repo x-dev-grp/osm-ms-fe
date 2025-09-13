@@ -56,7 +56,7 @@ export const companyProfileDashboardConfig: DashboardConfig = {
       labelTranslatePath: 'ADMIN_COMPANY_PROFILE.CAPITAL',
       attributeType: AttributeType.number,
       dataTable: true,
-      fieldType: FieldType.number,
+      fieldType: FieldType.text,
       sortable: true,
       filterable: true
     },

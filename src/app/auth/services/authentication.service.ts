@@ -37,6 +37,8 @@ export class AuthenticationService {
       this.setCurrentUserValue = user;
     }
    }
+   // Check for remembered login
+   this.checkRememberedLogin();
   }
 
   public set setCurrentUserValue(user:User | null){
@@ -51,6 +53,32 @@ export class AuthenticationService {
   public get currentUserName(): string | null {
     return this.currentUserValue?.username || null;
   }
+  
+  // Check for remembered login
+  private checkRememberedLogin(): void {
+    const rememberMe = localStorage.getItem('rememberMe');
+    const expiry = localStorage.getItem('rememberMeExpiry');
+    
+    if (rememberMe === 'true' && expiry) {
+      const expiryDate = new Date(expiry);
+      const now = new Date();
+      
+      // Check if the remember me token is still valid
+      if (expiryDate > now) {
+        const rememberedUsername = localStorage.getItem('rememberedUsername');
+        if (rememberedUsername) {
+          // We have a remembered username, but we still need the user to enter password
+          // The username field can be pre-filled in the login form
+        }
+      } else {
+        // Clear expired remember me data
+        localStorage.removeItem('rememberMe');
+        localStorage.removeItem('rememberMeExpiry');
+        localStorage.removeItem('rememberedUsername');
+      }
+    }
+  }
+
   hasPermission(permission: string): boolean {
     const user = this.currentUserValue
     if (!user) return false;

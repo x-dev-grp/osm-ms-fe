@@ -143,7 +143,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     this.confirm('Save this planning ?')
       .pipe(filter((ok) => ok))
       .subscribe(() => {
-        this._savePlan(); // the old body moved to a private method
+        this._savePlan(false); // the old body moved to a private method
         this.dirty = false;
       });
   }
@@ -379,8 +379,9 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     this.globalLots.push(globalLot);
     this.selection = {};
     this.filteredReceptions = [...this.unassignedReceptions];
+    this._savePlan(true)
     this.cdr.markForCheck();
-    this.toast.error(`Global lot ${globalLotNumber} created successfully!`);
+    this.toast.success(`Global lot ${globalLotNumber} created successfully!`,);
   }
 
   _ungroupLot(globalLot: GlobalLot): void {
@@ -485,6 +486,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     this.refreshConnectedDropLists();
     this.cdr.markForCheck();
      this.toast.error(`Global lot ${globalLot.globalLotNumber} ungrouped successfully!`);
+    this._savePlan(true)
   }
 
   cancelPlan(): void {
@@ -503,6 +505,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
       this.isDesktop = r.matches;
       this.cdr.markForCheck();
     });
+    this._savePlan(true);
   }
 
   toggleFullScreen(): void {
@@ -559,7 +562,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     return item.type === PlanItemType.LOT ? (item.data as PlanningItem).id : (item.data as GlobalLot).globalLotNumber;
   }
 
-  _savePlan(): void {
+  _savePlan(isSilent:boolean): void {
     console.log(
       '[SavePlan] Mills before saving:',
       this.mills.map((m) => ({
@@ -650,7 +653,9 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.planningService.savePlanning(request).subscribe({
       next: () => {
-        this.toast.error('Planning saved successfully!');
+        if(!isSilent) {
+          this.toast.success('Planning saved successfully!');
+        }
         this.dirty = false;
         this.cdr.markForCheck();
       },
@@ -658,7 +663,9 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
         console.error('[SavePlan] Error saving planning:', err);
         // Log the full error object to understand the cause
         console.error('[SavePlan] Full error details:', JSON.stringify(err, null, 2));
-        this.toast.error('Failed to save planning. Please try again.');
+        if(!isSilent) {
+          this.toast.error('Failed to save planning. Please try again.');
+        }
       }
     });
   }
@@ -734,10 +741,11 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
           triturationPricePerKg: result.triturationPricePerKg,
           totalTriturationPrice: result.totalTriturationPrice,
           childLotsRendement: result.childLotsRendement,
-          autoSetStorage: result.autoSetStorage
+          autoSetStorage: result.autoSetStorage,
+          triturationDurationInMinutes: result.triturationDurationInMinutes
         }))
       )
-      .subscribe(({ oilQuantity, rendement, totalTriturationPrice, childLotsRendement, autoSetStorage }) => {
+      .subscribe(({ oilQuantity, rendement, totalTriturationPrice, childLotsRendement, autoSetStorage,triturationDurationInMinutes }) => {
         const itemToComplete = item;
         let targetItemData: PlanningItem | GlobalLot | undefined;
 
@@ -794,7 +802,8 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
           rendement,
           autoSetStorage,
           totalTriturationPrice,
-          childLotsRendement
+          childLotsRendement,
+          triturationDurationInMinutes
         });
 
         // Call the backend (now sending oilQuantity, rendement, and unpaidAmount)
@@ -805,7 +814,9 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
           rendement,
           totalTriturationPrice,
           childLotsRendement,
-          autoSetStorage
+          autoSetStorage,
+          triturationDurationInMinutes
+
         );
 
         this.handleResponse(req$, itemToComplete, targetItemData);
@@ -852,10 +863,11 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     rendement: any,
     totalTriturationPrice: any,
     childLotsRendement: any,
-    autoSetStorage: any
+    autoSetStorage: any,
+    triturationDurationInMinutes: any
   ) {
     if (itemToComplete.type === PlanItemType.LOT) {
-      return this.planningService.completeLotWithDetails(label, oilQuantity, rendement, totalTriturationPrice, autoSetStorage);
+      return this.planningService.completeLotWithDetails(label, oilQuantity, rendement, totalTriturationPrice, autoSetStorage, triturationDurationInMinutes);
     } else {
       if (childLotsRendement && Array.isArray(childLotsRendement)) {
         return this.planningService.completeGlobalLotWithDetails(

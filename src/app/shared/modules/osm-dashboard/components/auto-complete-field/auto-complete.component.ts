@@ -6,7 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
 
 import { AdvancedSearchService } from 'src/app/shared/services/advanced-serach.service';
@@ -22,6 +22,7 @@ import { OptionsScrollDirective } from 'src/app/shared/directives/options-scroll
 import { DashboardStore } from '../../services/dashboard-state.service';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { SearchDetails } from 'src/app/shared/models/advanced-search/searchDetails';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 
 @Component({
   selector: 'auto-complete',
@@ -155,4 +156,19 @@ export class AutoCompleteComponent implements OnInit, AfterViewInit, OnChanges, 
   displayWith = (option: any): string => {
     return this.getValue(this.field()?.valuePath!, option);
   };
+  clearAutocomplete(ev: MouseEvent, trigger?: MatAutocompleteTrigger): void {
+    ev.stopPropagation(); // don't open the panel
+    ev.preventDefault();
+
+    // Reset control
+    this.formControl.setValue(null, { emitEvent: true });
+    this.formControl.markAsDirty();
+    this.formControl.updateValueAndValidity({ emitEvent: true });
+
+    // Close the panel if open
+    trigger?.closePanel?.();
+
+    // If your flow needs to react like a selection, you can notify:
+    this.autoCompleteSelect?.(null);
+  }
 }

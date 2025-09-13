@@ -200,20 +200,33 @@
             </ng-container>
           }
         </button>
-        <button [matMenuTriggerFor]="filterMenu" [matTooltip]="'OSM_DASHBOARD.FILTER.TITLE' | translate" class="m-2"
-                color="link" mat-stroked-button
-                matTooltipPosition="above">
-          <mat-icon>filter_list</mat-icon>
-          {{ 'OSM_DASHBOARD.FILTER.TITLE' | translate }}
+        <button [matMenuTriggerFor]="filterMenu"
+                [matTooltip]="'OSM_DASHBOARD.FILTER.TITLE' | translate"
+                class="m-2"
+                color="link"
+                mat-stroked-button
+                matTooltipPosition="above"
+                aria-label="{{ 'OSM_DASHBOARD.FILTER.TITLE' | translate }}">
+          <ng-container><mat-icon aria-hidden="true">filter_list</mat-icon>
+            <span >{{ 'OSM_DASHBOARD.FILTER.TITLE' | translate }}</span> </ng-container>
         </button>
-        <button (click)="resetFilter()" class="m-2" color="link" mat-stroked-button>
-          <mat-icon>rotate_right</mat-icon>
-          {{ 'OSM_DASHBOARD.FILTER.RESET' | translate }}
+
+        <button (click)="resetFilter()"
+                class="m-2"
+                color="link"
+                mat-stroked-button
+                aria-label="{{ 'OSM_DASHBOARD.FILTER.RESET' | translate }}">
+          <ng-container>  <mat-icon aria-hidden="true">rotate_right</mat-icon>
+          <span >{{ 'OSM_DASHBOARD.FILTER.RESET' | translate }}</span></ng-container>
         </button>
+
         @if (config()?.addNewItem) {
-          <button (click)="redirectToFormPage()" mat-raised-button color="primary" class="m-2">
-            <mat-icon>add</mat-icon>
-            {{ 'OSM_DASHBOARD.NEW' | translate }}
+          <button (click)="redirectToFormPage()"
+                  mat-raised-button
+                  color="primary"
+                  class="m-2">
+            <ng-container> <mat-icon aria-hidden="true">add</mat-icon>
+            <span >{{ 'OSM_DASHBOARD.NEW' | translate }}</span></ng-container>
           </button>
         }
       </div>

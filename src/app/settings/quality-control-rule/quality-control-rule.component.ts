@@ -183,9 +183,6 @@ export class QualityControlRuleComponent implements OnInit, OnDestroy {
         this.selectRule(e.row);
         break;
 
-      case 'DELETE':
-        if (e.row.id) this.deleteRule(e.row);
-        break;
 
     }
   }

@@ -16,7 +16,7 @@
 }
 
 .history-card {
-  min-width: 250px;
+  min-width: 260px;
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
 
@@ -134,4 +134,8 @@ button {
     background-color: #035f17;
     color: #fff;
   }
+}
+.vl {
+  border-left: 4px solid black;
+  height: 90px;
 }

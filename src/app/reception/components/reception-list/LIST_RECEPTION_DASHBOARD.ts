@@ -1,5 +1,6 @@
 import { DashboardConfig, AttributeType, FieldType } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
 import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
+import { TypeCategory } from '../../../shared/models/type-category.enum';
 
 export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
   icon: 'list_alt',
@@ -100,15 +101,35 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.autocomplete,
       valuePath: 'name',
       valueAttributeType: AttributeType.string,
+      getOptionsUrl:"production/types",
       filterAttribute: 'region.name',
-
+      autoCompleteDefaultCriteria: {
+        page: 0,
+        size: 10,
+        sort: 'createdDate',
+        order: 'DESC',
+        searchData: {
+          operation: SearchOperation.AND,
+          searchs: [],
+          search: {
+            isDeleted: {
+              equalValue: false
+            },
+            type: {
+              equalValue: TypeCategory.REGION
+            }
+          }
+        }
+      },
+      autoCompleteFilterAttributes: ['name']
     },
+
     {
       name: 'poidsNet',
       label: 'Poids net (kg)',
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.NET_WEIGHT',
       attributeType: AttributeType.number,
-      fieldType: FieldType.number,
+      fieldType: FieldType.text,
       exportable: true,
       sortable: true,
       dataTable: true,
@@ -118,7 +139,7 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
       name: 'oilType',
       label: "Type d'huile",
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.OIL_TYPE',
-      attributeType: AttributeType.string,
+      attributeType: AttributeType.enum,
       exportable: true,
       dataTable: true,
       filterable: true,
@@ -126,14 +147,14 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
       valueAttributeType: AttributeType.string,
       fieldType: FieldType.select,
       options: [
-        { label: 'HB', value: 'HB' },
-        { label: 'HC', value: 'HC'  },
+        { label: 'HB', value: 'HB',labelTranslatePath: 'HB' },
+        { label: 'HC', value: 'HC' ,labelTranslatePath:'HC' },
       ]
     },{
       name: 'oliveType',
       label: "Type d'olive",
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.OLIVE_TYPE',
-      attributeType: AttributeType.string,
+      attributeType: AttributeType.enum,
       exportable: true,
       dataTable: true,
       filterable: true,
@@ -141,15 +162,15 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
       valueAttributeType: AttributeType.string,
       fieldType: FieldType.select,
       options: [
-        { label: 'OB', value: 'OB' },
-        { label: 'OC', value: 'OC'  },
+        { label: 'OB', value: 'OB',labelTranslatePath: 'OB' },
+        { label: 'OC', value: 'OC' ,labelTranslatePath: 'OC' },
       ]
     },
     {
       name: 'operationType',
       label: 'Type de trituration',
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.OPERATION_TYPE',
-      attributeType: AttributeType.string,
+      attributeType: AttributeType.enum,
       fieldType: FieldType.select,
       exportable: true,
       dataTable: true,
@@ -177,7 +198,7 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
       name: 'status',
       label: 'Statut',
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.STATUS',
-      attributeType: AttributeType.string,
+      attributeType: AttributeType.enum,
       fieldType: FieldType.select,
       exportable: true,
       sortable: true,

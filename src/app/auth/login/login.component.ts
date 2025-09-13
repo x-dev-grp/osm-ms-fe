@@ -12,7 +12,7 @@ import { catchError, first, of } from 'rxjs';
 import { User } from 'src/app/theme/types/user';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Role } from '../../theme/types/role';
-
+import { TranslateService } from '@ngx-translate/core'; // Added import
 
 @Component({
   selector: 'app-login',
@@ -31,30 +31,83 @@ export class LoginComponent implements OnInit {
   private _fb = inject(FormBuilder);
   private router = inject(Router);
   private tokenService = inject(TokenService);
-
+  private translateService = inject(TranslateService); // Added injection
 
   // public method
 
   getUserNameErrorMessage() {
     if (this.form.controls['username'].hasError('required')) {
-      return 'You must enter an email';
+      return this.translateService.instant('LOGIN.USERNAME_REQUIRED');
     }
-    return this.form.controls['username'].hasError('email') ? 'Not a valid email' : '';
+    return this.form.controls['username'].hasError('email') ? this.translateService.instant('LOGIN.USERNAME_INVALID') : '';
   }
 
   getPasswordErrorMessage() {
     if (this.form.controls['password'].hasError('required')) {
-      return 'You must enter a password';
+      return this.translateService.instant('LOGIN.PASSWORD_REQUIRED');
     }
-    return this.form.controls['password'].hasError('minLength') ? 'Password length must be greater than 8' : '';
+    if (this.form.controls['password'].hasError('minlength')) {
+      return this.translateService.instant('LOGIN.PASSWORD_MIN_LENGTH_ERROR');
+    }
+    if (this.form.controls['password'].hasError('passwordStrength')) {
+      return this.translateService.instant('LOGIN.PASSWORD_STRENGTH_ERROR');
+    }
+    return '';
   }
 
   ngOnInit(): void {
     this.errorMessage = null;
     this.form = this._fb.group({
       username: ['', [Validators.required]],
-      password: ['', [Validators.required]]
+      password: ['', [Validators.required]],
+      // password: ['', [Validators.required, Validators.minLength(8), this.passwordStrengthValidator]],
+      rememberMe: [false]
     });
+
+    // Pre-fill username if remembered
+    this.prefillRememberedUsername();
+  }
+
+  // Pre-fill username if there's a remembered login
+  private prefillRememberedUsername(): void {
+    const rememberMe = localStorage.getItem('rememberMe');
+    const expiry = localStorage.getItem('rememberMeExpiry');
+
+    if (rememberMe === 'true' && expiry) {
+      const expiryDate = new Date(expiry);
+      const now = new Date();
+
+      // Check if the remember me token is still valid
+      if (expiryDate > now) {
+        const rememberedUsername = localStorage.getItem('rememberedUsername');
+        if (rememberedUsername) {
+          this.form.patchValue({
+            username: rememberedUsername,
+            rememberMe: true
+          });
+        }
+      } else {
+        // Clear expired remember me data
+        localStorage.removeItem('rememberMe');
+        localStorage.removeItem('rememberMeExpiry');
+        localStorage.removeItem('rememberedUsername');
+      }
+    }
+  }
+
+  // Custom validator for password strength
+  private passwordStrengthValidator(control: any) {
+    const value = control.value;
+    if (!value) return null;
+
+    const hasUpperCase = /[A-Z]/.test(value);
+    const hasLowerCase = /[a-z]/.test(value);
+    const hasNumber = /[0-9]/.test(value);
+    const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(value);
+
+    const passwordValid = hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar;
+
+    return passwordValid ? null : { passwordStrength: true };
   }
 
   submit() {
@@ -62,6 +115,22 @@ export class LoginComponent implements OnInit {
       return;
     }
     this.loading = true;
+
+    // Handle "Remember Me" functionality
+    if (this.form.get('rememberMe')?.value) {
+      // Store in localStorage for 30 days
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + 30);
+      localStorage.setItem('rememberMe', 'true');
+      localStorage.setItem('rememberMeExpiry', expiryDate.toISOString());
+      localStorage.setItem('rememberedUsername', this.form.get('username')?.value);
+    } else {
+      // Clear any existing remember me data
+      localStorage.removeItem('rememberMe');
+      localStorage.removeItem('rememberMeExpiry');
+      localStorage.removeItem('rememberedUsername');
+    }
+
     this.authenticationService
       .login(this.form.value)
       .pipe(
@@ -70,7 +139,7 @@ export class LoginComponent implements OnInit {
           this.loading = false;
           console.log(err);
           if ([504, 503].includes(err?.status)) {
-            this.errorMessage = { message: 'Service unavailable please try again later' };
+            this.errorMessage = { message: this.translateService.instant('LOGIN.SERVICE_UNAVAILABLE') };
           } else if (err?.error?.error_uri && err?.error?.error_description) {
             this.router.navigate([
               '/auth/user/update-password',
@@ -127,7 +196,7 @@ export class LoginComponent implements OnInit {
           if (typeof error === 'object' && error !== null && 'error' in error) {
             this.errorMessage = (error as { error?: string }).error ?? null;
           } else {
-            this.errorMessage = 'An unexpected error occurred';
+            this.errorMessage = this.translateService.instant('LOGIN.UNEXPECTED_ERROR');
           }
           this.loading = false;
         }

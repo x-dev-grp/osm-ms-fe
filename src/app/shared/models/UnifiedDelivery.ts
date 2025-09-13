@@ -35,6 +35,7 @@ export class UnifiedDelivery {
   status?: OliveLotStatus | null;
   rendement?: number | null;
   oliveQuantity?: number | null;
+  poidsCamionVide?: number | null;
   parcel?: string | null;
   storageUnit?: StorageUnitDto | null;
   qualityControlResults?: QualityControlResultDto[] | null;

@@ -20,10 +20,79 @@ $color-background: #f8fafc;
 }
 .header-actions-container {
   display: flex;
-  flex-wrap: nowrap;
-  justify-content: space-between;
   align-items: center;
-  gap: 16px;
+  gap: .5rem;
+  flex-wrap: wrap;
+
+  .search-field {
+    min-width: 260px;
+    flex: 1 1 320px;
+  }
+
+  .stats {
+    display: flex;
+    gap: .75rem;
+    align-items: center;
+    flex: 0 0 auto;
+
+    .stat-item {
+      font-weight: 500;
+      white-space: nowrap;
+    }
+  }
+
+  .action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      line-height: 20px;
+    }
+  }
+}
+
+/* Icons-only on small screens */
+@media (max-width: 576px) {
+  .header-actions-container {
+    gap: .4rem;
+
+    .search-field {
+      flex: 1 1 100%;
+      min-width: 0;
+    }
+
+    .action-btn {
+      min-width: 40px;
+      padding: 0 8px;
+      justify-content: center;
+
+      /* hide text labels on phones */
+      .btn-text {
+        display: none;
+      }
+
+      /* tighten icon spacing when text is hidden */
+      mat-icon {
+        margin: 0;
+      }
+    }
+
+    /* keep the fullscreen button as-is (already icon-only) */
+    .fs-btn {
+      min-width: 40px;
+    }
+
+    /* Optional: if stats crowd the row on very small screens, stack them */
+    .stats {
+      width: 100%;
+      justify-content: space-between;
+      margin-top: .25rem;
+    }
+  }
 }
 
 .search-field {

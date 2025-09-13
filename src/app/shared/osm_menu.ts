@@ -380,37 +380,37 @@ export const osm_menus: Navigation[] = [
   // =========================
   // (Optional future sections; keep commented if not used)
   // =========================
-  {
-    id: 'group-settings',
-    title: 'MENU.HR.TITLE',
-    type: 'group',
-    modulePermission: 'HR',
-    children: [
-      {
-        id: 'item-settings-roles',
-        title: 'MENU.HR.EMPLOYEES',
-        type: 'item',
-        url: '/hr/employee',
-        icon: 'admin_panel_settings',
-        breadcrumbs: false
-      },
-      {
-        id: 'item-settings-departments',
-        title: 'departments',
-        type: 'item',
-        url: '/hr/department',
-        icon: 'business',
-        breadcrumbs: false
-      },
-      {
-        id: 'item-settings-poste',
-        title: 'postes',
-        type: 'item',
-        url: '/hr/poste',
-        icon: 'work',
-        breadcrumbs: false
-      }
-
-    ]
-  }
+  // {
+  //   id: 'group-settings',
+  //   title: 'MENU.HR.TITLE',
+  //   type: 'group',
+  //   modulePermission: 'HR',
+  //   children: [
+  //     {
+  //       id: 'item-settings-roles',
+  //       title: 'MENU.HR.EMPLOYEES',
+  //       type: 'item',
+  //       url: '/hr/employee',
+  //       icon: 'admin_panel_settings',
+  //       breadcrumbs: false
+  //     },
+  //     {
+  //       id: 'item-settings-departments',
+  //       title: 'departments',
+  //       type: 'item',
+  //       url: '/hr/department',
+  //       icon: 'business',
+  //       breadcrumbs: false
+  //     },
+  //     {
+  //       id: 'item-settings-poste',
+  //       title: 'postes',
+  //       type: 'item',
+  //       url: '/hr/poste',
+  //       icon: 'work',
+  //       breadcrumbs: false
+  //     }
+  //
+  //   ]
+  // }
 ];

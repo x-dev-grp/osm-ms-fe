@@ -193,7 +193,7 @@ export class ViewStorageComponent implements OnInit {
           label: 'Quantity (kg)',
           labelTranslatePath: 'STORAGE.VIEW.DASHBOARD.FIELDS.QUANTITY_KG',
           attributeType: AttributeType.number,
-          fieldType: FieldType.number,
+          fieldType: FieldType.text,
           sortable: true,
           exportable: true,
           dataTable: true
@@ -205,7 +205,7 @@ export class ViewStorageComponent implements OnInit {
           isCurrency: true,
           currency: 'TND',
           attributeType: AttributeType.number,
-          fieldType: FieldType.number,
+          fieldType: FieldType.text,
           sortable: true,
           exportable: true,
           dataTable: true
@@ -215,7 +215,7 @@ export class ViewStorageComponent implements OnInit {
           label: 'Total Price',
           labelTranslatePath: 'STORAGE.VIEW.DASHBOARD.FIELDS.TOTAL_PRICE',
           attributeType: AttributeType.number,
-          fieldType: FieldType.number,
+          fieldType: FieldType.text,
           sortable: true,
           exportable: true,
           dataTable: true

@@ -6,7 +6,7 @@ export const BASE_TYPE: DashboardConfig = {
   title: 'Generic Type Management',
   baseURL: 'generic-type',
   searchEndpoint: 'production/types',
-  addNewItem: true,
+  addNewItem: false,
   addNewItemUrl: '/settings/generic/new',
   fileName: 'generic-type',
   fields: [

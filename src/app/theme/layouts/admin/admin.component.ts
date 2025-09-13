@@ -270,7 +270,7 @@ filterMenuByPermissions(
         }
 
     }else {
-      this.companyProfileService.getProfile;
+      this.companyProfileService.getProfile();
     }
   }
 

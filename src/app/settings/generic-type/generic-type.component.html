@@ -61,6 +61,21 @@
   <div class="history-cards">
     <!-- Régions -->
     <mat-card class="history-card"
+               (click)="openDialog()"
+               >
+      <mat-card-content>
+        <div class="card-content">
+          <mat-icon class="card-icon" color="primary"><span class="material-symbols-outlined">
+add
+</span></mat-icon>
+          <div class="card-info">
+            <h3>{{"BASE_TYPE.ADD"|translate}}</h3>
+           </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <div class="vl"></div>
+    <mat-card class="history-card"
               tabindex="0"
               (click)="loadRegion()"
               [ngClass]="{ active: activeKey === TypeCategory.REGION }">
@@ -69,6 +84,21 @@
           <mat-icon class="card-icon" color="primary">public</mat-icon>
           <div class="card-info">
             <h3>{{"BASE_TYPE.REGION"|translate}}</h3>
+           </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="history-card"
+              tabindex="0"
+              (click)="loadSypplierTYpe()"
+              [ngClass]="{ active: activeKey === TypeCategory.SUPPLIER_TYPE }">
+      <mat-card-content>
+        <div class="card-content">
+          <mat-icon class="card-icon" color="primary"><span class="material-symbols-outlined">
+forklift
+</span></mat-icon>
+          <div class="card-info">
+            <h3>{{"BASE_TYPE.SUPPLIER_TYPE"|translate}}</h3>
            </div>
         </div>
       </mat-card-content>
@@ -121,14 +151,6 @@
   </div>
 </div>
 
-<div class="fab-container" (click)="openDialog()">
-  <button
-     aria-label="Add Generic Type"
-    color="accent"
-    mat-fab
-  >
-    <mat-icon>add</mat-icon>
-  </button>
-</div>
+
 
  <osm-dashboard #dashboard (applyAction)="applyAction($event)" [config]="dashboardConfig"></osm-dashboard>

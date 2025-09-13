@@ -88,7 +88,7 @@
   justify-content: space-between;
 
   button {
-    display: inline-flex;
+    display:  flex;
     align-items: center;
     gap: 0.5rem;
     min-height: 36px;
@@ -106,6 +106,9 @@
       justify-content: center;
 
       span {
+        display: none;
+      }
+      btn-text {
         display: none;
       }
     }

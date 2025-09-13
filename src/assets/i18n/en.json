@@ -138,6 +138,7 @@
     "TITLE": "Bank Accounts"
   },
   "BASE_TYPE": {
+    "ADD": "Add type",
     "OIL_TYPE": "Oil type",
     "OIL_VARIETY": "Oil variety",
     "OLIVE_TYPE": "Olive type",
@@ -631,7 +632,7 @@
       "DELIVERY_TYPE": "Delivery Type",
       "GLOBAL_LOT_NUMBER": "Global Lot Number",
       "GROSS_WEIGHT": "Gross Weight (KG)",
-      "LOT_NUMBER ": "Lot N°",
+      "LOT_NUMBER": "Lot N°",
       "LOT_OLIVE_NUMBER": "N° lot de référence",
       "NET_WEIGHT": "Net Weight (KG)",
       "OIL_QUANTITY": "Oil Quantity",
@@ -770,6 +771,7 @@
     "OLIVE_TITLE": "Olive Deliveries",
     "OPERATION_TYPE": {
       "BASE": "Base",
+      "EXCHANGE": "Exchange",
       "INTERNAL_RECEPTION": "Internal Reception",
       "OIL_PURCHASE": "Oil Purchase",
       "OLIVE_PURCHASE": "Olive Purchase",
@@ -961,6 +963,17 @@
   "FINANCE_TAB": "Finance Config",
   "File Manager": "File Manager",
   "Finance": "Finance",
+  "FORGOT_PASSWORD": {
+    "BACK_TO_LOGIN": "Back to login",
+    "EMAIL": "Email",
+    "EMAIL_INVALID": "Please enter a valid email address",
+    "EMAIL_REQUIRED": "Email is required",
+    "ERROR_MESSAGE": "An error occurred while processing your request. Please try again later.",
+    "SERVICE_UNAVAILABLE": "Service unavailable. Please try again later.",
+    "SUBMIT": "Send reset link",
+    "SUCCESS_MESSAGE": "If an account exists with this email, you will receive a password reset link shortly.",
+    "TITLE": "Forgot Password"
+  },
   "Forgot Password": "Forgot Password",
   "Form Validation": "Form Validation",
   "Form Wizard": "Form Wizard",
@@ -1081,6 +1094,8 @@
       "NAME": "Name"
     }
   },
+  "HB": "HB",
+  "HC": "HC",
   "HR_TAB": "HR Config",
   "Helpdesk": "Helpdesk",
   "Home": "Home",
@@ -1090,9 +1105,21 @@
     "PASSWORD": "Password",
     "PASSWORDCONFIRM": "Confirm your new password",
     "PASSWORDNEW": "New password",
-    "REMEMBERME": "Rememeber me ?",
+    "PASSWORD_STRENGTH_ERROR": "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+    "PASSWORD_MIN_LENGTH_ERROR": "Password must be at least 8 characters long",
+    "PASSWORD_MISMATCH_ERROR": "Passwords do not match",
+    "PASSWORD_REQUIRED": "You must enter a password",
+    "REMEMBERME": "Remember me",
+    "REMEMBERME_EXPIRY_ERROR": "Remember me token has expired",
+    "SERVICE_UNAVAILABLE": "Service unavailable please try again later",
+    "TITLE": "Login with your username",
+    "UNEXPECTED_ERROR": "An unexpected error occurred",
     "UPDATEPASSWORD": "Update your password",
-    "USERNAME": "Username"
+    "USERNAME": "Username",
+    "USERNAME_MISSING": "Username missing for login",
+    "USERNAME_REQUIRED": "You must enter an email",
+    "USERNAME_INVALID": "Not a valid email",
+    "FORGOT_PASSWORD": "Forgot password?"
   },
   "LOGO": {
     "CLICK_BROWSE": "or click to browse",
@@ -1366,6 +1393,8 @@
   "Multi Column": "Multi Column",
   "Navigation": "Navigation",
   "Notification": "Notification",
+  "OB": "OB",
+  "OC": "OC",
   "OIL_CONTAINER": {
     "DASHBOARD": {
       "FIELDS": {
@@ -1962,10 +1991,12 @@
         "UPDATE": "Update"
       },
       "FIELDS": {
+        "CLIENT": "Client",
         "DELIVERY_DATE": "Delivery Date",
         "DELIVERY_NUMBER": "Delivery Number",
         "DELIVERY_TYPE": "Delivery Type",
-        "GROSS_WEIGHT": "Gross Weight (kg)",
+        "EMPTY_TRUCK_WEIGHT": "EMpty truck weight",
+        "GROSS_WEIGHT": "Loaded truck weight (kg)",
         "LOT_NUMBER": "Lot Number",
         "NET_WEIGHT": "Net Weight (kg)",
         "OLIVE_QUANTITY": "Olive Quantity (kg)",
@@ -2040,6 +2071,7 @@
       "ERROR": "An error occurred",
       "GEN_INVOICE": "Generate Invoice",
       "GEN_PDF": "Generate Receipt",
+      "GEN_PDF_PRODUCTION": "Generate Production voucher",
       "GEN_PDF_QC_OIL": "Generate oil QC receipt ",
       "GEN_PDF_QC_OLIVE": "Generate Olive QC receipt ",
       "MAINTENANCE": "Maintenance",
@@ -2136,7 +2168,9 @@
     "DELIVERY_DATE": "Delivery Date",
     "DELTA_K": "Delta K",
     "DESCRIPTION": "Description",
+    "DESIGNATION": "Description",
     "DESTINATION_UNIT": "Destination Unit",
+    "DRIVER": "Driver",
     "ERROR": "Error",
     "EXCHANGE": "Exchange",
     "EXPENSE_AMOUNT": "Amount",
@@ -2174,6 +2208,8 @@
     "MOBILE": "+216 29 910 458",
     "NO_QUALITY_DATA": "No quality control data available",
     "NUMBER_PLACEHOLDER": "No: ......./........",
+    "N°COLIS": "Package #",
+    "OIL_DISPATCH": "Oil Dispatch Note",
     "OIL_QUANTITY": "Oil Quantity",
     "OIL_TYPE": "Oil Type",
     "OIL_VARIETY": "Oil Variety",
@@ -2216,6 +2252,7 @@
     "RECEPTION_OLIVE": "Olive Reception Receipt",
     "RECEPTION_REGION": "Reception Region",
     "RECEPTION_SUPPLIER": "Reception Supplier",
+    "RECIPIENT": "Recipient",
     "REFERENCE": "Reference",
     "REGION": "Region",
     "REVISION": "Revision",
@@ -2230,6 +2267,7 @@
     "STORAGE_UNIT_DESTINATION": "Storage Unit (Destination)",
     "STORAGE_UNIT_SOURCE": "Storage Unit (Source)",
     "SUPPLIER": "Supplier",
+    "TANK_NUMBER": "Tank #",
     "TOTAL": "Total Amount",
     "TOTAL_AMOUNT": "Total Amount",
     "TOTAL_PRICE": "Total Price",
@@ -2318,11 +2356,48 @@
       "RULE_TYPE": "Rule Type"
     },
     "RULE_TYPES": {
-      "BOOLEAN": "Boolean",
+      "BOOLEAN": "Boolean (true/false)",
       "NUMERIC": "Numeric",
       "STRING": "String"
     },
     "TITLE": "Quality Control Rules"
+  },
+  "RECEPTION": {
+    "PLANNING": {
+      "COMPLETION": {
+        "COMPLETION_DATE_LABEL": "Completion Date",
+        "COMPLETION_DETAILS_TITLE": "Completion Details",
+        "CONFIRMATION_TEXT": "Are you sure you want to mark this as completed?",
+        "DELIVERY_DATE": "Delivery Date",
+        "DELIVERY_NUMBER": "Delivery Number",
+        "DETAILS_TITLE": "Completion Details",
+        "FINAL_OBSERVATION_LABEL": "Final Observation (Optional)",
+        "FINISH_BUTTON": "Finish",
+        "GLOBAL_LOT_NUMBER": "Global Lot Number",
+        "LOT_INFO_TITLE": "Lot Information",
+        "LOT_LIST": "Lot List",
+        "LOT_LIST_NUMBER": "No.",
+        "LOT_LIST_OIL_QUANTITY": "Oil (kg)",
+        "LOT_LIST_QUANTITY": "Qty (kg)",
+        "LOT_LIST_SUPPLIER": "Supplier",
+        "LOT_LIST_TRITURATION_PRICE": "Crushing price",
+        "LOT_LIST_YIELD": "Yield (%)",
+        "LOT_NUMBER": "Lot Number",
+        "OBSERVATION": "Observation",
+        "OIL_QUANTITY_LABEL": "Oil Quantity (kg)",
+        "OLIVE_QUANTITY": "Net Olive Weight",
+        "OLIVE_TYPE": "Olive Type",
+        "OLIVE_VARIETY": "Olive Variety",
+        "REGION": "Region",
+        "SUPPLIER": "Supplier",
+        "TOTAL_OLIVE_WEIGHT": "Total Olive Weight",
+        "TOTAL_TRITURATION_PRICE_LABEL": "Total crushing price",
+        "TRITURATION_DURATION_HOURS": "Duration (Hours)",
+        "TRITURATION_DURATION_MINUTES": "Duration (Minutes)",
+        "TRITURATION_PRICE_PER_KG_LABEL": "Crushing price (per kg)",
+        "YIELD_LABEL": "Yield (%)"
+      }
+    }
   },
   "RECEPTION_LIST": {
     "ACTIONS": {
@@ -2363,6 +2438,20 @@
   },
   "Register": "Register",
   "Reset Password": "Reset Password",
+  "RESET_PASSWORD": {
+    "ENTER_CODE_TITLE": "Enter Confirmation Code",
+    "NEW_PASSWORD_TITLE": "Set New Password",
+    "CONFIRMATION_CODE": "Confirmation Code",
+    "CODE_PLACEHOLDER": "Enter your code",
+    "VALIDATE_CODE": "Validate Code",
+    "NEW_PASSWORD": "New Password",
+    "NEW_PASSWORD_PLACEHOLDER": "Enter your new password",
+    "CONFIRM_PASSWORD": "Confirm Password",
+    "CONFIRM_PASSWORD_PLACEHOLDER": "Confirm your new password",
+    "MISMATCH": "Passwords do not match",
+    "SUBMIT_NEW_PASSWORD": "Update Password",
+    "MISSING_USER_ID": "Missing user identifier."
+  },
   "SINGLE": "Single",
   "STANDARD": {
     "ACCESS_RESSOURCE_ERROR": "You don't have access to this resource.",

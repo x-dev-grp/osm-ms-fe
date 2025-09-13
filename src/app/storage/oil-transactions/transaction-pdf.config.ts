@@ -13,17 +13,39 @@ export function getOilTransactionPdfConfig(data: OilTransaction): PdfConfig {
     reference: reception?.lotNumber || data.id || '',
     date: data.createdDate,
     generalInfo: [
+
+      {
+
+        label: 'PDF.DATE',
+        value: data.createdDate
+          ? new Date(data.createdDate).toLocaleDateString('fr-FR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+          })
+          : 'N/A'
+      },
+      {
+        label: 'PDF.SOURCE_UNIT',
+        value: data.storageUnitSource?.name || '---'
+      },
       {
         label: 'PDF.DESTINATION_UNIT',
         value: data.storageUnitDestination?.name || '---'
       },
+
       {
         label: 'PDF.TRANSACTION_STATE',
         value: data.transactionState ? `PDF.${data.transactionState}` : '---'
       },
       {
         label: 'PDF.CREATED_DATE',
-        value: data.createdDate ? data.createdDate.toString() : '---'
+        value: data.createdDate ? new Date(data.createdDate).toLocaleDateString('fr-FR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+          })
+          : 'N/A'
       },
       {
         label: 'PDF.QUALITY_GRADE',
@@ -31,7 +53,12 @@ export function getOilTransactionPdfConfig(data: OilTransaction): PdfConfig {
       },
       {
         label: 'PDF.RECEPTION_DATE',
-        value: reception?.deliveryDate ? reception.deliveryDate.toString() : '---'
+        value: data.createdDate ? new Date(data.createdDate).toLocaleDateString('fr-FR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+          })
+          : 'N/A'
       },
       {
         label: 'PDF.QUANTITY',
@@ -45,8 +72,19 @@ export function getOilTransactionPdfConfig(data: OilTransaction): PdfConfig {
           ? `${supplier.supplierInfo?.name || ''} ${supplier.supplierInfo?.lastname || ''}`.trim()
           : '---'
       },
-      {label: 'PDF.RECEPTION_DATE', value: reception?.deliveryDate ? reception.deliveryDate.toString() : '---'},
-      {label: 'PDF.RECEPTION_REGION', value: reception?.region?.name || '---'}
+      {
+        label: 'PDF.RECEPTION_DATE',
+        value: reception?.deliveryDate ? new Date(reception.deliveryDate).toLocaleDateString('fr-FR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+          })
+          : 'N/A',
+      },
+
+      {
+        label: 'PDF.RECEPTION_REGION', value: reception?.region?.name || '---'
+      }
     ],
     footerInfo: [
       {label: 'PDF.SIGNATURE_AGENT'},
