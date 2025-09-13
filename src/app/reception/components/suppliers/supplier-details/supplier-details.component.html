@@ -165,13 +165,13 @@
       <osm-dashboard
         #dashboardOilSale
         [config]="OIL_SALES_DASHBOARD_CONFIG"
-        (applyAction)="hadnleOilSaleActions($event)">
+        (applyAction)="handlePaymentAction($event)">
       </osm-dashboard>
     } @else if (isWasteSale) {
       <osm-dashboard
         #dashboardWasteSale
         [config]="WASTE_DASHBOARD"
-        (applyAction)="hadnleWateSaleActions($event)">
+        (applyAction)="handlePaymentAction($event)">
       </osm-dashboard>
     }
   </div>

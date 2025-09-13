@@ -1,8 +1,28 @@
+<mat-form-field appearance="outline" class="w-100">
+  <mat-label>
+    {{ field().labelTranslatePath ? (field().labelTranslatePath | translate) : field().label }}
+  </mat-label>
 
+  <mat-select
+    [formControl]="formControl"
+    class="w-100"
+    [placeholder]="field().labelTranslatePath ? (field().labelTranslatePath | translate) : field().label"
+    (selectionChange)="selectChange($event)">
+    <mat-option *ngFor="let option of field().options" [value]="option.value">
+      {{ option.label }}
+    </mat-option>
+  </mat-select>
 
-<mat-form-field appearance="outline" >
-      <mat-label>{{ field().labelTranslatePath ? (field().labelTranslatePath | translate) : field().label }}</mat-label>
-            <mat-select (selectionChange)="selectChange($event)" [formControl]="formControl" [placeholder]="field().labelTranslatePath?(field().labelTranslatePath|translate):field().label" class="w-100">
-                <mat-option *ngFor="let option of field().options" [value]="option.value">{{option.label}}</mat-option>
-            </mat-select>
+  <!-- Clear button (suffix) -->
+  <button
+    *ngIf="formControl?.value !== null && formControl?.value !== undefined && formControl?.value !== ''"
+    mat-icon-button
+    matSuffix
+    type="button"
+    tabindex="-1"
+    (click)="clearSelect($event)"
+    [matTooltip]="'DASHBOARD.DATE_FILTER.CLEAR_FILTER' | translate"
+    aria-label="{{ 'DASHBOARD.DATE_FILTER.CLEAR_FILTER' | translate }}">
+    <mat-icon>close</mat-icon>
+  </button>
 </mat-form-field>

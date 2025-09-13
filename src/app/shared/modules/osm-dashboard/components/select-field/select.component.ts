@@ -6,7 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
 
 import { AdvancedSearchService } from 'src/app/shared/services/advanced-serach.service';
@@ -68,5 +68,17 @@ export class SelectComponent implements OnInit, AfterViewInit, OnChanges, OnDest
    this._store.setSearchDataAttribute(search);
     console.log(option?.value);
   }
+  clearSelect(ev: MouseEvent): void {
+    ev.stopPropagation(); // prevent opening the panel
+    ev.preventDefault();
 
+    this.formControl.setValue(null, { emitEvent: true });
+    this.formControl.markAsDirty();
+    this.formControl.updateValueAndValidity();
+
+    // If downstream logic depends on (selectionChange), fire a synthetic event:
+    if (typeof this.selectChange === 'function') {
+      this.selectChange({ value: null } as MatSelectChange);
+    }
+  }
 }

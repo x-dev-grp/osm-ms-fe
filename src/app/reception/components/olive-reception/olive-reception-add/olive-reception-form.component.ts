@@ -14,6 +14,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
   ValidationErrors,
+  ValidatorFn,
   Validators
 } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
@@ -81,6 +82,11 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
   regions: BaseType[] = [];
   suppliers: SupplierType[] = [];
   oliveVarieties: BaseType[] = [];
+
+  /** Dynamic labels (party = Supplier|Client) */
+  partyLabelKey = 'OLIVE_RECEPTION.FORM.FIELDS.SUPPLIER';
+  partyRegionSectionKey = 'OLIVE_RECEPTION.FORM.SECTIONS.SUPPLIER_REGION';
+
   operationTypes: { name: string; value: OperationType }[] = [
     {
       name: 'EXCHANGE',
@@ -102,6 +108,16 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
   private typeSubs: Subscription[] = [];
   private pendingCalls = 0;
   private subscriptions: Subscription[] = [];
+  /** Map which op types use Supplier vs Client label */
+  private readonly partyLabelByOp: Record<OperationType, 'OLIVE_RECEPTION.FORM.FIELDS.SUPPLIER' | 'OLIVE_RECEPTION.FORM.FIELDS.CLIENT'> = {
+    OIL_PURCHASE: 'OLIVE_RECEPTION.FORM.FIELDS.SUPPLIER',
+    BASE: 'OLIVE_RECEPTION.FORM.FIELDS.SUPPLIER',
+    OLIVE_PURCHASE: 'OLIVE_RECEPTION.FORM.FIELDS.SUPPLIER',
+    EXCHANGE: 'OLIVE_RECEPTION.FORM.FIELDS.CLIENT',
+    SIMPLE_RECEPTION: 'OLIVE_RECEPTION.FORM.FIELDS.CLIENT',
+    [OperationType.PAYMENT]: 'OLIVE_RECEPTION.FORM.FIELDS.SUPPLIER',
+    [OperationType.DECHET]: 'OLIVE_RECEPTION.FORM.FIELDS.SUPPLIER'
+  };
 
   constructor(
     private fb: FormBuilder,
@@ -121,7 +137,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
         deliveryDate: [new Date(), Validators.required],
         region: [null, Validators.required],
         poidsBrute: [0, [Validators.min(1)]],
-        poidsNet: [0, [Validators.min(1)]],
+        poidsNet: [{ value: 0, disabled: true }],
         matriculeCamion: ['', [Validators.required]],
         etatCamion: ['', Validators.required],
         supplier: [null, Validators.required],
@@ -129,6 +145,8 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
         oliveVariety: [null, [Validators.required]],
         sackCount: [null, [Validators.required]],
         oliveType: [null, [Validators.required]],
+        // NEW: empty truck weight
+        poidsCamionVide: [null, [Validators.min(0)]],
         operationType: [null, [Validators.required]],
         parcel: ['']
       },
@@ -138,38 +156,53 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     this.receptionForm.addControl('oilType', new FormControl<OilType | null>(null));
   }
 
-  oliveTypeSelected(value: any) {
-    console.log(value);
-  }
 
+
+  /**
+   * Cross-field validator:
+   * - empty truck weight must be <= gross (poidsBrute)
+   */
+  private emptyNotGreaterThanGrossValidator() {
+    return (group: AbstractControl): ValidationErrors | null => {
+      const gross = this.num(group.get('poidsBrute')?.value);
+      const empty = this.num(group.get('poidsCamionVide')?.value);
+      if (gross !== null && empty !== null && empty > gross) {
+        return { emptyGreaterThanGross: true };
+      }
+      return null;
+    };
+  }
   ngOnInit(): void {
     /** 1. Init mode édition / création */
+
+
     const deliveryId = this.route.snapshot.paramMap.get('id');
     this.isEditing = deliveryId !== null && deliveryId !== 'new';
+    this.recomputeNet();
     // Sync olive -> oil
     this.typeSubs.push(
       this.receptionForm.get('oliveType')!.valueChanges.subscribe((val: OliveType | null) => {
         // 1) mirror oilType
         this.receptionForm.get('oilType')!.setValue(mapOilFromOlive(val), { emitEvent: false });
 
-        // 2) keep your lot number logic (adapted to enum)
+        // 2) update lot number
         const deliveryNumber = this.receptionForm.get('deliveryNumber')?.value || this.deliveries.length + 1;
         const lotNumber = this.generateLotNumber(val, deliveryNumber);
         this.receptionForm.patchValue({ lotNumber }, { emitEvent: false });
       })
     );
 
-    // Sync oil -> olive (in case user chooses oil first)
+    // Sync oil -> olive
     this.typeSubs.push(
       this.receptionForm.get('oilType')!.valueChanges.subscribe((val: OilType | null) => {
         this.receptionForm.get('oliveType')!.setValue(mapOliveFromOil(val), { emitEvent: false });
       })
     );
 
-    this.loading = true; // Affiche le spinner
-    this.pendingCalls = 0; // Réinitialise le compteur
+    this.loading = true;
+    this.pendingCalls = 0;
 
-    /** 2. Charger les régions */
+    /** 2. Charger les régions */
     this.pendingCalls++;
     const regionSub = this.genericTypeService.getAllTypes(TypeCategory.REGION).subscribe({
       next: (res) => {
@@ -179,8 +212,17 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       complete: () => this.markCallDone()
     });
     this.subscriptions.push(regionSub);
-
-    /** 3. Charger les fournisseurs */
+    this.subscriptions.push(
+      this.receptionForm.get('poidsBrute')!.valueChanges.subscribe(() => {
+        this.recomputeNet();
+      }),
+    );
+    this.subscriptions.push(
+      this.receptionForm.get('poidsCamionVide')!.valueChanges.subscribe(() => {
+        this.recomputeNet();
+      }),
+    );
+    /** 3. Charger les fournisseurs */
     this.pendingCalls++;
     const supplierSub = this.supplierService.getAllSuppliers().subscribe({
       next: (res) => {
@@ -191,7 +233,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     });
     this.subscriptions.push(supplierSub);
 
-    /** 4. Charger les réceptions existantes (pour générer les n°) */
+    /** 4. Charger les réceptions existantes */
     this.pendingCalls++;
     const deliveriesSub = this.deliveryService.getAllDeliveriesList().subscribe({
       next: (res) => {
@@ -210,7 +252,13 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     });
     this.subscriptions.push(deliveriesSub);
 
-    /** 5. Si édition, charger la réception à modifier */
+        /** Init and react to operationType changes (Supplier vs Client) */
+    this.updatePartyLabel(this.receptionForm.get('operationType')?.value as OperationType);
+    this.receptionForm.get('operationType')?.valueChanges.subscribe((op: OperationType) => {
+      this.updatePartyLabel(op);
+    });
+
+    /** 5. Si édition, charger la réception à modifier */
     if (this.isEditing && deliveryId) {
       this.pendingCalls++;
       const editSub = this.deliveryService.getUnifiedDelivery(deliveryId).subscribe({
@@ -239,7 +287,22 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
+  private recomputeNet(): void {
+    const gross = this.num(this.receptionForm.get('poidsBrute')?.value) ?? 0;
+    const empty = this.num(this.receptionForm.get('poidsCamionVide')?.value) ?? 0;
 
+    // Clamp to >= 0
+    const net = Math.max(gross - empty, 0);
+
+    // Update disabled control without re-triggering valueChanges
+    this.receptionForm.get('poidsNet')?.setValue(net, { emitEvent: false });
+  }
+
+  private num(value: any): number | null {
+    if (value === null || value === undefined || value === '') return null;
+    const n = Number(value);
+    return isNaN(n) ? null : n;
+  }
   // Save or update the reception
   async saveReception(): Promise<void> {
     if (this.receptionForm.invalid) {
@@ -299,7 +362,8 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       rendement: Number(formValue.rendement) || 0,
       oliveQuantity: Number(formValue.oliveQuantity) || 0,
       storageUnit: formValue.storageUnit || null,
-      qualityControlResults: formValue.qualityControlResults || null
+      qualityControlResults: formValue.qualityControlResults || null,
+      poidsCamionVide: formValue.poidsCamionVide || null
     };
 
     this.loading = true;
@@ -358,6 +422,20 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
   onBack(): void {
     window.history.back();
   }
+
+  /** Updates both the field label (Supplier|Client) and the section title (Supplier & Region | Client & Region) */
+  updatePartyLabel(opType: OperationType | null | undefined): void {
+    const defaultField = 'OLIVE_RECEPTION.FORM.FIELDS.SUPPLIER';
+    const fieldKey = opType ? (this.partyLabelByOp[opType] ?? defaultField) : defaultField;
+
+    this.partyLabelKey = fieldKey;
+
+    const isClient = fieldKey === 'OLIVE_RECEPTION.FORM.FIELDS.CLIENT';
+    this.partyRegionSectionKey = isClient ? 'OLIVE_RECEPTION.FORM.SECTIONS.CLIENT_REGION' : 'OLIVE_RECEPTION.FORM.SECTIONS.SUPPLIER_REGION';
+  }
+
+
+
 
   /** Décrémente le compteur et cache le spinner quand tout est terminé */
   private markCallDone(): void {

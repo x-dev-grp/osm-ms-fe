@@ -1,6 +1,7 @@
 import {AttributeType, DashboardConfig, FieldType} from '../../../shared/modules/osm-dashboard/models/dashboard-config';
 import {deliveryType} from '../../../shared/models/deleveryType';
 import {SearchOperation} from '../../../shared/models/advanced-search/searchOperation';
+import { TypeCategory } from '../../../shared/models/type-category.enum';
 
 export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
   icon: 'fact_check',
@@ -104,7 +105,7 @@ export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
       name: 'poidsNet',
       label: 'Poids net (kg)',
       attributeType: AttributeType.number,
-      fieldType: FieldType.number,
+      fieldType: FieldType.text,
       exportable: true,
       sortable: true,
       dataTable: true,
@@ -114,14 +115,25 @@ export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
       name: 'oliveType',
       label: "Type d'olive",
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.OLIVE_TYPE',
-      attributeType: AttributeType.object,
+      attributeType: AttributeType.enum,
       exportable: true,
       dataTable: true,
       filterable: true,
-      valuePath: 'name',
-      valueAttributeType: AttributeType.string,
-      fieldType: FieldType.autocomplete,
+      fieldType: FieldType.select,
+      sortable: true,
+      options: [
+        {
+          label: 'OC',
+          value: 'OC',
+        },
+        {
+          label: 'OB',
+          value: 'OB',
+        }
+      ],
+      valueAttributeType:AttributeType.string,
     },
+
     {
       name: 'oliveVariety',
       label: "Variété d'olive",
@@ -133,8 +145,29 @@ export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
       filterable: true,
       valuePath: 'name',
       valueAttributeType: AttributeType.string,
-      filterAttribute: 'oliveVariety.name'
+      getOptionsUrl:"production/types",
+      filterAttribute: 'oliveVariety.name',
+      autoCompleteDefaultCriteria: {
+        page: 0,
+        size: 10,
+        sort: 'createdDate',
+        order: 'DESC',
+        searchData: {
+          operation: SearchOperation.AND,
+          searchs: [],
+          search: {
+            isDeleted: {
+              equalValue: false
+            },
+            type: {
+              equalValue: TypeCategory.OLIVE_VARIETY
+            }
+          }
+        }
+      },
+      autoCompleteFilterAttributes: ['name']
     },
+
     {
       name: 'status',
       label: 'Statut',

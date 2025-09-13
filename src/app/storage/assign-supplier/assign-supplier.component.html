@@ -3,8 +3,8 @@
   <!-- Message for paid storage units -->
   <div *ngIf="data.storageUnit.paidStorage" class="paid-storage-message">
     <mat-icon class="info-icon">info</mat-icon>
-    <p>This is a paid storage unit. Monthly rental price: {{ data.storageUnit.monthlyRentalPrice | number:'1.2-2' }} TND</p>
-    <p>A transaction will be created monthly for this payment.</p>
+    <span>This is a paid storage unit. Monthly rental price: {{ data.storageUnit.monthlyRentalPrice | number:'1.2-2' }} TND</span>
+    <span>A transaction will be created monthly for this payment.</span>
   </div>
 
   <mat-checkbox formControlName="hasSupplier">

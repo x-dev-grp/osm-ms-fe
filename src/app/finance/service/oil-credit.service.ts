@@ -38,8 +38,5 @@ export class OilCreditService {
     return this.http.put<ApiResponse<OilCredit>>(`${this.baseUrl}`, OilCredit);
   }
 
-  // Delete a OilCreditcc by ID.
-  deleteOilCredit(id: string): Observable<ApiResponse<void>> {
-    return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/${id}`);
-  }
+
 }

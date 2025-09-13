@@ -38,10 +38,6 @@ export class BankAccountService {
     return this.http.put<ApiResponse<BankAccount>>(`${this.baseUrl}`, bankAccount);
   }
 
-  // Delete a BankAccountcc by ID.
-  deleteBankAccount(id: string): Observable<ApiResponse<void>> {
-    return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/${id}`);
-  }
 
   // ==================== BALANCE & TRANSACTION METHODS ====================
 

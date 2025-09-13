@@ -26,7 +26,6 @@
       <h3>{{ translate.instant('OLIVE_RECEPTION.FORM.SECTIONS.GENERAL_INFO') }}</h3>
     </div>
 
-
     <!-- Remove scrollable-form wrapper and use form-body directly -->
     <div class="form-body">
       <!-- Delivery Information Section -->
@@ -68,11 +67,12 @@
 
       <!-- Supplier and Region Section -->
       <div class="section">
-        <h4>{{ translate.instant('OLIVE_RECEPTION.FORM.SECTIONS.SUPPLIER_REGION') }}</h4>
+        <h4>{{ translate.instant(partyRegionSectionKey) }}</h4>
+
         <div class="row">
           <div class="col-md-4">
             <mat-form-field appearance="outline" class="w-100 m-b-10">
-              <mat-label>{{ 'OLIVE_RECEPTION.FORM.FIELDS.SUPPLIER' | translate }}</mat-label>
+              <mat-label>{{ partyLabelKey | translate }}</mat-label>
 
               <input
                 (blur)="validateSupplier()"
@@ -91,13 +91,11 @@
 
             </mat-form-field>
           </div>
-             <div class="col-md-4 w-100 m-b-10 ">
-              <base-type
-                [formControl]="receptionForm?.controls?.region"
-                [type]="'REGION'"
-              ></base-type>
-
-
+          <div class="col-md-4 w-100 m-b-10">
+            <base-type
+              [formControl]="receptionForm?.controls?.region"
+              [type]="'REGION'">
+            </base-type>
           </div>
           <div class="col-md-4">
             <mat-form-field appearance="outline" class="w-100 m-b-10">
@@ -115,10 +113,7 @@
           <div class="col-md-6">
             <mat-form-field appearance="outline" class="w-100 m-b-10">
               <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.TRUCK_PLATE') }}</mat-label>
-              <input
-                formControlName="matriculeCamion"
-                matInput
-                required />
+              <input formControlName="matriculeCamion" matInput required />
               <mat-error *ngIf="receptionForm.get('matriculeCamion')?.hasError('pattern')">
                 Le format doit être 3 chiffres + TN + 4 chiffres (ex 258TN1234)
               </mat-error>
@@ -128,11 +123,11 @@
             <mat-form-field appearance="outline" class="w-100 m-b-10">
               <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.TRUCK_STATE') }}</mat-label>
               <mat-select formControlName="etatCamion" required>
-                <mat-option
-                  [value]="'Conforme'">{{ translate.instant('OLIVE_RECEPTION.FORM.TRUCK_STATES.COMPLIANT') }}
+                <mat-option [value]="'Conforme'">
+                  {{ translate.instant('OLIVE_RECEPTION.FORM.TRUCK_STATES.COMPLIANT') }}
                 </mat-option>
-                <mat-option
-                  [value]="'Non conforme'">{{ translate.instant('OLIVE_RECEPTION.FORM.TRUCK_STATES.NON_COMPLIANT') }}
+                <mat-option [value]="'Non conforme'">
+                  {{ translate.instant('OLIVE_RECEPTION.FORM.TRUCK_STATES.NON_COMPLIANT') }}
                 </mat-option>
               </mat-select>
             </mat-form-field>
@@ -159,7 +154,7 @@
             </base-type>
           </div>
 
-          <!-- REPLACED: enum-driven Olive Type & Oil Type (no more BaseType OLIVE_TYPE) -->
+          <!-- Enum-driven Olive Type & Oil Type -->
           <div class="col-md-3 w-100 m-b-10">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>Olive Type</mat-label>
@@ -184,13 +179,25 @@
       <div class="section">
         <h4>{{ translate.instant('OLIVE_RECEPTION.FORM.SECTIONS.WEIGHT_QUANTITY') }}</h4>
         <div class="row">
-          <div class="col-md-4">
+          <!-- Loaded truck (gross) -->
+          <div class="col-md-3">
             <mat-form-field appearance="outline" class="w-100 m-b-10">
               <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.GROSS_WEIGHT') }}</mat-label>
               <input formControlName="poidsBrute" matInput min="0" type="number" />
+
             </mat-form-field>
           </div>
-          <div class="col-md-4">
+
+          <!-- NEW: Empty truck -->
+          <div class="col-md-3">
+            <mat-form-field appearance="outline" class="w-100 m-b-10">
+              <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.EMPTY_TRUCK_WEIGHT') }}</mat-label>
+              <input formControlName="poidsCamionVide" matInput min="0" type="number" />
+             </mat-form-field>
+          </div>
+
+          <!-- Sack count -->
+          <div class="col-md-3">
             <mat-form-field appearance="outline" class="w-100 m-b-10">
               <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.SACK_COUNT') }}</mat-label>
               <input formControlName="sackCount" matInput min="0" type="number" />
@@ -199,17 +206,17 @@
               </mat-error>
             </mat-form-field>
           </div>
-          <div class="col-md-4">
+
+          <!-- Auto-calculated net (readonly/disabled) -->
+          <div class="col-md-3">
             <mat-form-field appearance="outline" class="w-100 m-b-10">
               <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.NET_WEIGHT') }}</mat-label>
-              <input formControlName="poidsNet" matInput min="0" type="number" />
-              <mat-error *ngIf="receptionForm.hasError('netGreater')">
-                {{ translate.instant('OLIVE_RECEPTION.FORM.VALIDATION.NET_GREATER') }}
+              <input formControlName="poidsNet" matInput min="0" type="number" readonly />
+              <mat-error *ngIf="receptionForm.hasError('emptyGreaterThanGross')">
+                {{ translate.instant('OLIVE_RECEPTION.FORM.VALIDATION.EMPTY_GREATER_THAN_GROSS') }}
               </mat-error>
             </mat-form-field>
           </div>
-
-
         </div>
       </div>
 

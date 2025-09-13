@@ -11,6 +11,7 @@ import { AuthenticationService } from 'src/app/auth/services/authentication.serv
 import { MatDialog } from '@angular/material/dialog';
 import { User } from 'src/app/theme/types/user';
 import { TokenService } from '../services/tokenService.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-update-password',
@@ -28,6 +29,7 @@ export class UpdatePasswordComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private dialog = inject(MatDialog);
+  private translateService = inject(TranslateService);
   conHide:boolean=false;
   newHide:boolean=false;
   // Form and UI state
@@ -46,7 +48,7 @@ export class UpdatePasswordComponent implements OnInit {
   private initForm(): void {
     this._form = this.fb.group(
       {
-        newPassword: [null, [Validators.required]],
+        newPassword: [null, [Validators.required, Validators.minLength(8), this.passwordStrengthValidator]],
         newPasswordConfirmation: [null, [Validators.required]]
       },
       {
@@ -64,7 +66,7 @@ export class UpdatePasswordComponent implements OnInit {
     const hasUpperCase = /[A-Z]/.test(value);
     const hasLowerCase = /[a-z]/.test(value);
     const hasNumber = /[0-9]/.test(value);
-    const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]+/.test(value);
+    const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(value);
 
     const passwordValid = hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar;
 
@@ -78,7 +80,6 @@ export class UpdatePasswordComponent implements OnInit {
     };
   }
 
-
   private invalidConfirmPassword() {
     return (group: AbstractControl): ValidationErrors | null => {
       const password = group.get('newPassword')!;
@@ -87,7 +88,7 @@ export class UpdatePasswordComponent implements OnInit {
       const valuePass = password.value;
       const valueConPassword = confirmPassword?.value;
       if (valueConPassword && valuePass !== valueConPassword) {
-        confirmPassword.setErrors({ ...confirmPassword.errors, mismatch: true });
+        confirmPassword?.setErrors({ ...confirmPassword.errors, mismatch: true });
       } else {
         if (confirmPassword?.hasError('mismatch')) {
           if (confirmPassword.hasError('required')) confirmPassword.setErrors({ required: true });
@@ -97,6 +98,7 @@ export class UpdatePasswordComponent implements OnInit {
       return null;
     };
   }
+  
   onSubmit(): void {
     if (this._form.invalid) {
       this._form.markAllAsTouched();
@@ -149,7 +151,7 @@ export class UpdatePasswordComponent implements OnInit {
   private performLogin(): void {
     const username = this.route.snapshot.paramMap?.get('username');
     if (!username) {
-      this.errorMessage = "Nom d'utilisateur manquant pour la connexion.";
+      this.errorMessage = this.translateService.instant('LOGIN.USERNAME_MISSING');
       return;
     }
     const payload: Record<string, string> = {
@@ -201,11 +203,11 @@ export class UpdatePasswordComponent implements OnInit {
 
   private handleError(err: unknown): void {
     if (typeof err === 'object' && err !== null && 'status' in err && [504, 503].includes((err as any).status)) {
-      this.errorMessage = 'Service temporarily unavailable. Please try again later.';
+      this.errorMessage = this.translateService.instant('LOGIN.SERVICE_UNAVAILABLE');
     } else if (typeof err === 'object' && err !== null && 'error' in err) {
-      this.errorMessage = (err as any).error || 'An unexpected error occurred';
+      this.errorMessage = (err as any).error || this.translateService.instant('LOGIN.UNEXPECTED_ERROR');
     } else {
-      this.errorMessage = 'An unexpected error occurred';
+      this.errorMessage = this.translateService.instant('LOGIN.UNEXPECTED_ERROR');
     }
     console.error('Error:', err);
   }

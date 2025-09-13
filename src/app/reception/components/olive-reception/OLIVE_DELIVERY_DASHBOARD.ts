@@ -1,6 +1,11 @@
-import {AttributeType, DashboardConfig, FieldType} from '../../../shared/modules/osm-dashboard/models/dashboard-config';
-import {deliveryType} from '../../../shared/models/deleveryType';
-import {SearchOperation} from '../../../shared/models/advanced-search/searchOperation';
+import {
+  AttributeType,
+  DashboardConfig,
+  FieldType
+} from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { deliveryType } from '../../../shared/models/deleveryType';
+import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
+import { TypeCategory } from '../../../shared/models/type-category.enum';
 
 export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
   icon: 'eco',
@@ -50,7 +55,7 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
     {
       name: 'lotNumber',
       label: 'N° Lot',
-      labelTranslatePath: 'DELIVERIES.FIELDS.LOT_NUMBER ',
+      labelTranslatePath: 'DELIVERIES.FIELDS.LOT_NUMBER',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -107,7 +112,27 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.autocomplete,
       valuePath: 'name',
       valueAttributeType: AttributeType.string,
+      getOptionsUrl:"production/types",
       filterAttribute: 'region.name',
+      autoCompleteDefaultCriteria: {
+        page: 0,
+        size: 10,
+        sort: 'createdDate',
+        order: 'DESC',
+        searchData: {
+          operation: SearchOperation.AND,
+          searchs: [],
+          search: {
+            isDeleted: {
+              equalValue: false
+            },
+            type: {
+              equalValue: TypeCategory.REGION
+            }
+          }
+        }
+      },
+      autoCompleteFilterAttributes: ['name']
     },
     /* Poids */
     {
@@ -115,7 +140,7 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
       label: 'Poids brut (kg)',
       labelTranslatePath: 'DELIVERIES.FIELDS.GROSS_WEIGHT',
       attributeType: AttributeType.number,
-      fieldType: FieldType.number,
+      fieldType: FieldType.text,
       exportable: true,
       sortable: true,
       dataTable: true,
@@ -126,7 +151,7 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
       label: 'Poids net (kg)',
       labelTranslatePath: 'DELIVERIES.FIELDS.NET_WEIGHT',
       attributeType: AttributeType.number,
-      fieldType: FieldType.number,
+      fieldType: FieldType.text,
       exportable: true,
       sortable: true,
       dataTable: true,
@@ -141,7 +166,9 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
       exportable: true,
       dataTable: true,
       filterable: true,
-       options: [
+       fieldType: FieldType.select,
+       sortable: true,
+        options: [
         {
           label: 'OC',
           value: 'OC',
@@ -150,7 +177,8 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
           label: 'OB',
           value: 'OB',
         }
-      ],      fieldType: FieldType.text,
+      ],
+      valueAttributeType:AttributeType.string,
     },
     {
       name: 'oliveVariety',
@@ -163,7 +191,27 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
       filterable: true,
       valuePath: 'name',
       valueAttributeType: AttributeType.string,
-      filterAttribute: 'oliveVariety.name'
+      getOptionsUrl:"production/types",
+      filterAttribute: 'oliveVariety.name',
+      autoCompleteDefaultCriteria: {
+        page: 0,
+        size: 10,
+        sort: 'createdDate',
+        order: 'DESC',
+        searchData: {
+          operation: SearchOperation.AND,
+          searchs: [],
+          search: {
+            isDeleted: {
+              equalValue: false
+            },
+            type: {
+              equalValue: TypeCategory.OLIVE_VARIETY
+            }
+          }
+        }
+      },
+      autoCompleteFilterAttributes: ['name']
     },
     /* type operation */
     {

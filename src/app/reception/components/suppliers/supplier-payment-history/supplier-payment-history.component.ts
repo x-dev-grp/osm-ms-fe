@@ -83,7 +83,7 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
   relatedOilTransaction: any;
   transactionNotCompletedError: boolean = false;
   unpaidAmount: number = 0;
-  protected derivedDirection: TransactionDirection;
+  derivedDirection: TransactionDirection;
   public sourceType: string;
 
 
@@ -379,6 +379,7 @@ export class SupplierPaymentHistoryComponent implements OnInit, AfterViewInit {
   }
 
   async processOilSalePayment(): Promise<void> {
+    this.derivedDirection = TransactionDirection.INBOUND;
     if (this.paymentForm.invalid || this.transactionNotCompletedError || !this.selectedDelivery?.id) {
       this.paymentForm.markAllAsTouched();
       return;

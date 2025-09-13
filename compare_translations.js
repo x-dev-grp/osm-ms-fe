@@ -3,6 +3,7 @@ import fs from 'fs';
 // Read the JSON files
 const en = JSON.parse(fs.readFileSync('src/assets/i18n/en.json', 'utf8'));
 const fr = JSON.parse(fs.readFileSync('src/assets/i18n/fr.json', 'utf8'));
+const ar = JSON.parse(fs.readFileSync('src/assets/i18n/ar.json', 'utf8'));
 
 function getKeys(obj, prefix = '') {
   const keys = [];
@@ -33,4 +34,4 @@ console.log('\n=== SUMMARY ===');
 console.log('English keys:', enKeys.size);
 console.log('French keys:', frKeys.size);
 console.log('Missing in French:', missingInFr.length);
-console.log('Missing in English:', missingInEn.length); 
+console.log('Missing in English:', missingInEn.length);

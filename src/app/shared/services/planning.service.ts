@@ -12,6 +12,9 @@ export interface ChildLotCompletionDto {
   oilQuantity: number;
   rendement: number;
   unpaidPrice: number;
+  triturationHours?: number | null;
+  triturationMinutes?: number | null;
+  triturationDurationInMinutes?: number | null;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -37,12 +40,25 @@ export class PlanningService {
 
 
   /** POST one single LOT's status → COMPLETED, with oilQuantity and rendement */
-  completeLotWithDetails(lotNumber: string, oilQuantity: number, rendement: number, unpaidPrice: number,autoSetStorage:boolean): Observable<string> {                       // return plain text
-     const payload = { oilQuantity, rendement, unpaidPrice,autoSetStorage };
+  completeLotWithDetails(
+    lotNumber: string,
+    oilQuantity: number,
+    rendement: number,
+    unpaidPrice: number,
+    autoSetStorage: boolean,
+    triturationDurationInMinutes?: number | null
+  ): Observable<string> {
+    const payload = {
+      oilQuantity,
+      rendement,
+      unpaidPrice,
+      autoSetStorage,
+      triturationDurationInMinutes
+    };
     return this.http.post(
       `${this.API_BASE_URL}/lots/${lotNumber}/completed`,
       payload,
-      { responseType: 'text' }                  // 👈 expect text, not JSON
+      { responseType: 'text' }
     );
   }
   /** POST all lots in a global lot → COMPLETED, with oilQuantity and rendement */

@@ -14,7 +14,7 @@ import {
   ConfirmationDialogResult,
   ConfirmationType
 } from '../../../../shared/services/confirmation-dialog.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AppParameterService } from '../../../../shared/services/AppParameterService';
 
 interface ChildLotWithRendement extends PlanningItem {
@@ -39,7 +39,8 @@ interface ChildLotWithRendement extends PlanningItem {
     MatButtonModule,
     MatDialogModule,
     CommonModule,
-    FormsModule
+    FormsModule,
+    TranslateModule
   ],
   styleUrls: ['./completion-details-dialog.component.scss']
 })
@@ -50,11 +51,15 @@ export class CompletionDetailsDialogComponent implements OnInit {
   childLotsWithRendement: ChildLotWithRendement[] = [];
   autoSetStorage = false; // ← new flag
 
+  // Trituration duration fields
+  triturationHours: number | null = null;
+  triturationMinutes: number | null = null;
+
   triturationPricePerKg: number | null = null; // Only used for single lots
   item: PlanningItem | GlobalLot;
   itemType: PlanItemType;
   protected readonly PlanItemType = PlanItemType;
-
+  private readonly prixtriturationkg = 'PRIX_TRITURATION_KG';
 
   constructor(
     public dialogRef: MatDialogRef<CompletionDetailsDialogComponent>,
@@ -90,6 +95,14 @@ export class CompletionDetailsDialogComponent implements OnInit {
 
   // Remove setChildOilQuantity and oilQuantity input for child lots
 
+  // Get total trituration duration in minutes
+  get triturationDurationInMinutes(): number | null {
+    if (this.triturationHours !== null && this.triturationMinutes !== null) {
+      return this.triturationHours * 60 + this.triturationMinutes;
+    }
+    return null;
+  }
+
   get oliveWeight(): number | null {
     if (this.itemType === PlanItemType.LOT) {
       const planningItem = this.item as PlanningItem;
@@ -121,8 +134,6 @@ export class CompletionDetailsDialogComponent implements OnInit {
     this.calculateChildLotsPrice();
   }
 
-  private readonly prixtriturationkg = 'PRIX_TRITURATION_KG';
-
   loadTriturationPriceFromParam(): void {
     this.parameterService.getByCode(this.prixtriturationkg).subscribe({
       next: (param) => {
@@ -136,6 +147,7 @@ export class CompletionDetailsDialogComponent implements OnInit {
       }
     });
   }
+
   onCancel(): void {
     this.dialogRef.close();
   }
@@ -145,6 +157,11 @@ export class CompletionDetailsDialogComponent implements OnInit {
       console.error('[DIALOG] Invalid oil quantity:', this.inputOilQuantity);
       return;
     }
+    if (!this.isDurationValid()) {
+      console.error('[DIALOG] Invalid trituration duration (hours/minutes)');
+      return;
+    }
+
     if (this.triturationPricePerKg != null && this.triturationPricePerKg < 0) {
       console.error('[DIALOG] Invalid trituration price:', this.triturationPricePerKg);
       return;
@@ -176,7 +193,11 @@ export class CompletionDetailsDialogComponent implements OnInit {
     this.calculateChildLotsPrice();
 
     // If single lot with storage, confirm first
-    if (this.itemType === PlanItemType.LOT && (this.item as PlanningItem).operationType ===  "SIMPLE_RECEPTION"&& (this.item as PlanningItem).supplier!.hasStorage) {
+    if (
+      this.itemType === PlanItemType.LOT &&
+      (this.item as PlanningItem).operationType === 'SIMPLE_RECEPTION' &&
+      (this.item as PlanningItem).supplier!.hasStorage
+    ) {
       const dialogData: ConfirmationDialogData = {
         title: this.translate.instant('STANDARD.CONFIRMATION.OIL_TRANSACTION.TITLE'),
         message: this.translate.instant('STANDARD.CONFIRMATION.OIL_TRANSACTION.MESSAGE'),
@@ -194,9 +215,9 @@ export class CompletionDetailsDialogComponent implements OnInit {
           if (res?.confirmed) {
             this.autoSetStorage = true;
             this.finalizeConfirmation();
-          }else {
-            this.autoSetStorage=false
-            this.finalizeConfirmation()
+          } else {
+            this.autoSetStorage = false;
+            this.finalizeConfirmation();
           }
         });
       return;
@@ -226,11 +247,18 @@ export class CompletionDetailsDialogComponent implements OnInit {
       finalObservation: this.finalObservation.trim() || undefined,
       triturationPricePerKg: this.triturationPricePerKg,
       totalTriturationPrice: this.totalTriturationPrice,
+      triturationHours: this.triturationHours,
+      triturationMinutes: this.triturationMinutes,
+      triturationDurationInMinutes: this.triturationDurationInMinutes,
       childLotsRendement: this.childLotsWithRendement.map((lot) => ({
         lotNumber: lot.lotNumber,
         oilQuantity: lot.oilQuantity!,
         rendement: lot.calculatedRendement!,
-        triturationPrice: lot.calculatedTriturationPrice!
+        triturationPrice: lot.calculatedTriturationPrice!,
+        // Add trituration duration data for child lots
+        triturationHours: this.triturationHours,
+        triturationMinutes: this.triturationMinutes,
+        triturationDurationInMinutes: this.triturationDurationInMinutes
       }))
     };
 
@@ -255,18 +283,55 @@ export class CompletionDetailsDialogComponent implements OnInit {
 
   // When global rendement or oliveQuantity changes, recalculate oilQuantity for each child lot
   private calculateChildLotsOilQuantityFromGlobalRendement(globalRendement: number): void {
-    if (this.itemType === PlanItemType.GLOBAL_LOT) {
-      this.childLotsWithRendement = this.childLotsWithRendement.map((lot) => {
-        const oilQuantity = lot.oliveQuantity * (globalRendement / 100);
-        return {
-          ...lot,
-          oilQuantity,
-          calculatedRendement: globalRendement // for display, but can be per-lot if needed
-        };
-      });
-      this.calculateChildLotsPrice(); // Also update trituration price for all lots
+    if (this.itemType !== PlanItemType.GLOBAL_LOT) return;
+
+    const globalLot = this.item as GlobalLot;
+    const totalKg = Number(globalLot.totalKg) || 0;
+    if (totalKg <= 0) {
+      // No weight -> zero everything
+      this.childLotsWithRendement = this.childLotsWithRendement.map(lot => ({
+        ...lot,
+        oilQuantity: 0,
+        calculatedRendement: 0
+      }));
+      this.calculateChildLotsPrice();
+      return;
     }
+
+    // Target total oil from the global rendement
+    const targetTotal = +(totalKg * (globalRendement / 100)).toFixed(2);
+
+    // First pass: proportional distribution with 2-decimal rounding
+    let running = 0;
+    const updated = this.childLotsWithRendement.map(lot => {
+      const olive = Number(lot.oliveQuantity) || 0;
+      const rawOil = olive * (globalRendement / 100);
+      const oil = +rawOil.toFixed(2);
+      running += oil;
+      return { ...lot, oilQuantity: oil };
+    });
+
+    // Fix rounding drift on the last nonzero lot so sums match exactly
+    const drift = +(targetTotal - running).toFixed(2);
+    if (drift !== 0) {
+      const idx = [...updated].reverse().findIndex(l => (Number(l.oliveQuantity) || 0) > 0);
+      if (idx !== -1) {
+        const k = updated.length - 1 - idx;
+        updated[k].oilQuantity = +(((updated[k].oilQuantity ?? 0) + drift).toFixed(2));
+      }
+    }
+
+    // Compute per-child rendement from oil/olive (more explicit)
+    this.childLotsWithRendement = updated.map(lot => {
+      const olive = Number(lot.oliveQuantity) || 0;
+      const oil = Number(lot.oilQuantity) || 0;
+      const rend = olive > 0 ? (oil / olive) * 100 : 0;
+      return { ...lot, calculatedRendement: rend };
+    });
+
+    this.calculateChildLotsPrice();
   }
+
 
   private initializeChildLots(): void {
     if (this.itemType === PlanItemType.GLOBAL_LOT) {
@@ -314,4 +379,27 @@ export class CompletionDetailsDialogComponent implements OnInit {
       });
     }
   }
+  isDurationValid(): boolean {
+    const h = this.triturationHours;
+    const m = this.triturationMinutes;
+
+    const hasH = h !== null && h !== undefined && h !== 0;
+    const hasM = m !== null && m !== undefined && m !== 0;
+
+    // must provide at least one (hours or minutes)
+    if (!hasH && !hasM) return false;
+
+    if (hasH) {
+      const hh = Number(h);
+      if (isNaN(hh) || hh < 0) return false;
+    }
+
+    if (hasM) {
+      const mm = Number(m);
+      if (isNaN(mm) || mm < 0 || mm > 59) return false;
+    }
+
+    return true;
+  }
+
 }

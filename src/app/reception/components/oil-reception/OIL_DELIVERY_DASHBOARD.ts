@@ -1,6 +1,7 @@
 import { AttributeType, DashboardConfig, FieldType } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
 import { deliveryType } from '../../../shared/models/deleveryType';
 import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
+import { TypeCategory } from '../../../shared/models/type-category.enum';
 
 export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
   icon: 'water_drop',
@@ -111,9 +112,29 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.autocomplete,
       valuePath: 'name',
       valueAttributeType: AttributeType.string,
+      getOptionsUrl:"production/types",
       filterAttribute: 'region.name',
-
+      autoCompleteDefaultCriteria: {
+        page: 0,
+        size: 10,
+        sort: 'createdDate',
+        order: 'DESC',
+        searchData: {
+          operation: SearchOperation.AND,
+          searchs: [],
+          search: {
+            isDeleted: {
+              equalValue: false
+            },
+            type: {
+              equalValue: TypeCategory.REGION
+            }
+          }
+        }
+      },
+      autoCompleteFilterAttributes: ['name']
     },
+
     {
       name: 'operationType',
       label: 'Type d\'operation',
@@ -149,7 +170,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       label: 'Poids brut (kg)',
       labelTranslatePath: 'DELIVERIES.FIELDS.GROSS_WEIGHT',
       attributeType: AttributeType.number,
-      fieldType: FieldType.number,
+      fieldType: FieldType.text,
       exportable: true,
       sortable: true,
       dataTable: true,
@@ -161,7 +182,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       label: 'Poids net (kg)',
       labelTranslatePath: 'DELIVERIES.FIELDS.NET_WEIGHT',
       attributeType: AttributeType.number,
-      fieldType: FieldType.number,
+      fieldType: FieldType.text,
       exportable: true,
       sortable: true,
       dataTable: true,
@@ -172,7 +193,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       label: 'Qté huile (KG)',
       labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.OIL_QUANTITY',
       attributeType: AttributeType.number,
-      fieldType: FieldType.number,
+      fieldType: FieldType.text,
       exportable: true,
       sortable: true,
       dataTable: true,
@@ -187,7 +208,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       exportable: true,
       dataTable: true,
       filterable: true,
-       fieldType: FieldType.text,
+       fieldType: FieldType.select,
       options: [
         {
           label: 'HC',
@@ -210,7 +231,27 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       valuePath: 'name',
       valueAttributeType: AttributeType.string,
       fieldType: FieldType.autocomplete,
-    },
+      getOptionsUrl:"production/types",
+      filterAttribute: 'oliveVariety.name',
+      autoCompleteDefaultCriteria: {
+        page: 0,
+        size: 10,
+        sort: 'createdDate',
+        order: 'DESC',
+        searchData: {
+          operation: SearchOperation.AND,
+          searchs: [],
+          search: {
+            isDeleted: {
+              equalValue: false
+            },
+            type: {
+              equalValue: TypeCategory.OIL_VARIETY
+            }
+          }
+        }
+      },
+      autoCompleteFilterAttributes: ['name'] },
 
     /* Statut */
     {

@@ -38,8 +38,8 @@ import { mapOilFromOlive, mapOliveFromOil } from '../../../../shared/models/oliv
 
 // Validator for net weight not exceeding gross weight
 const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | null => {
-  const brut = control.get('poidsBrut')?.value;
-  const net = control.get('poidsNet')?.value; // Changed from poidsNet to oilQuantity
+  const brut = control.get('oilQuantity')?.value;
+  const net = control.get('oilQuantity')?.value; // Changed from poidsNet to oilQuantity
   return brut != null && net != null && net > brut ? { netGreater: true } : null;
 };
 
@@ -112,6 +112,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
         oilQuantity: [0, [Validators.min(0)]],
         oilVariety: [null, Validators.required],
         oilType: [null, Validators.required],
+        sackCount: this.fb.control(0, { validators: [Validators.min(0)] }),
         parcel: [null, Validators.required],
         globalLotNumber: [''],
         operationType: [OperationType.OIL_PURCHASE, Validators.required]
@@ -183,7 +184,12 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       complete: () => this.markCallDone()
     });
     this.subscriptions.push(suppliersSub);
-
+    const c = this.receptionForm.get('sackCount');
+    c?.valueChanges.subscribe((v: any) => {
+      if (v === '' || v === null || Number.isNaN(Number(v))) {
+        c.setValue(0, { emitEvent: false });
+      }
+    });
     // ===== 2️⃣  Charger la liste des réceptions =====
     this.pendingCalls++;
 
@@ -268,6 +274,10 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     }
 
     const formValue = this.receptionForm.getRawValue();
+    const v = this.receptionForm.get('sackCount')?.value as any;
+    if (v === '' || v === null || Number.isNaN(Number(v))) {
+      this.receptionForm.get('sackCount')?.setValue(0, { emitEvent: false });
+    }
     const payload = {
       id: this.isEditing && this.deliveryId ? this.deliveryId : '',
       deliveryNumber: formValue.deliveryNumber || '',

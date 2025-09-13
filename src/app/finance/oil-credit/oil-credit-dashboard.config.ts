@@ -30,7 +30,7 @@ export const OIL_CREDIT_DASHBOARD: DashboardConfig = {
       label: 'Quantité',
       labelTranslatePath: 'OIL_CREDIT.FIELDS.QUANTITY',
       attributeType: AttributeType.number,
-      fieldType: FieldType.number,
+      fieldType: FieldType.text,
       sortable: true,
       filterable: true,
       dataTable: true,

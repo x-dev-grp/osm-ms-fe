@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -13,7 +13,17 @@ export interface UserDTO {
   langKey: string;
   activated: boolean;
 }
+export interface OSMUserOUTDTO {
+  id: string;            // UUID from backend
+  // ... other backend fields if needed
+}
+export interface PasswordResetRequest {
+  email: string;
+}
 
+export interface PasswordResetResponse {
+  message: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -29,13 +39,26 @@ export class AuthService {
       { username, password }
     );
   }
-  signup(userDTO: UserDTO): Observable<any> {
-    return this.http.post<any>(
-      `${this.api}/signup`,
-      userDTO
-    );
+
+
+  requestPasswordReset(identifier: string): Observable<any> {
+    const url = `${this.api}/user/auth/resetPassword`; // removed `/user`
+    const params = new HttpParams().set('identifier', identifier);
+
+    return this.http.post<OSMUserOUTDTO>(url, null, { params });
+  }
+  // 2) Validate the code
+  validateResetCode(userId: string, code: string): Observable<void> {
+    const url = `${this.api}/user/auth/validateResetCode/${userId}`;
+    const params = new HttpParams().set('code', code);
+    return this.http.post<void>(url, null, { params });
   }
 
+  // 3) Update password
+  updatePassword(userId: string, dto: any): Observable<void> {
+    const url = `${this.api}/user/auth/updatePassword/${userId}`;
+    return this.http.post<void>(url, dto);
+  }
   resetPassword(token: string, newPassword: string): Observable<any> {
     return this.http.post<any>(
       `${this.api}/set-password?token=${token}`,
@@ -43,17 +66,13 @@ export class AuthService {
     );
   }
 
-  saveToken(token: string): void {
-    localStorage.setItem('jwt_token', token);
-  }
+
 
   getToken(): string | null {
     return localStorage.getItem('jwt_token');
   }
 
-  isAuthenticated(): boolean {
-    return !!this.getToken();
-  }
+
 
   logout(): void {
     localStorage.removeItem('jwt_token');

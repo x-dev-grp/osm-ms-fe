@@ -21,19 +21,52 @@
         </div>
 
         <!-- vos boutons existants restent inchangés -->
-        <button (click)="groupSelected()" *ngIf="hasSelection()" class="action-btn accent" mat-raised-button>
-          Grouper ({{ selectedIds().length }})
+        <button
+          (click)="groupSelected()"
+          *ngIf="hasSelection()"
+          class="action-btn accent"
+          mat-raised-button
+          [matTooltip]="'PLANNING_GROUP' | translate"
+          aria-label="{{ ('PLANNING_GROUP' | translate) + ' ' + selectedIds().length }}"
+          [matBadge]="selectedIds().length"
+          matBadgeColor="accent"
+          matBadgeOverlap="false"
+        >
+          <mat-icon aria-hidden="true">group</mat-icon>
+          <span class="btn-text">
+    {{ 'PLANNING_GROUP' | translate }} ({{ selectedIds().length }})
+  </span>
         </button>
-        <button (click)="savePlan()" class="action-btn primary" mat-raised-button>
-          {{ 'PLANNING_SAVE' | translate }}
+
+        <button
+          (click)="savePlan()"
+          class="action-btn primary"
+          mat-raised-button
+          [matTooltip]="'PLANNING_SAVE' | translate"
+          aria-label="{{ 'PLANNING_SAVE' | translate }}"
+        >
+          <mat-icon aria-hidden="true">save</mat-icon>
+          <span class="btn-text">{{ 'PLANNING_SAVE' | translate }}</span>
         </button>
-        <button (click)="cancelPlan()" class="action-btn" mat-raised-button>
-          {{ 'PLANNING_CANCEL' | translate }}
+
+        <button
+          (click)="cancelPlan()"
+          class="action-btn"
+          mat-raised-button
+          [matTooltip]="'PLANNING_CANCEL' | translate"
+          aria-label="{{ 'PLANNING_CANCEL' | translate }}"
+        >
+          <mat-icon aria-hidden="true">cancel</mat-icon>
+          <span class="btn-text">{{ 'PLANNING_CANCEL' | translate }}</span>
         </button>
-        <button (click)="toggleFullScreen()"
-                [matTooltip]="isFullScreen ? ('PLANNING_EXIT_FULLSCREEN' | translate) : ('PLANNING_FULLSCREEN' | translate)"
-                class="fs-btn"
-                mat-icon-button>
+
+        <button
+          (click)="toggleFullScreen()"
+          [matTooltip]="isFullScreen ? ('PLANNING_EXIT_FULLSCREEN' | translate) : ('PLANNING_FULLSCREEN' | translate)"
+          class="fs-btn"
+          mat-icon-button
+          aria-label="{{ isFullScreen ? ('PLANNING_EXIT_FULLSCREEN' | translate) : ('PLANNING_FULLSCREEN' | translate) }}"
+        >
           <mat-icon>{{ isFullScreen ? 'fullscreen_exit' : 'fullscreen' }}</mat-icon>
         </button>
       </div>

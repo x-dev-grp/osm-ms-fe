@@ -95,23 +95,7 @@ export class SupplierComponent implements OnInit, OnDestroy {
           this.router.navigate(['/reception/fournisseur/edit', row.id]);
         }
         break;
-      case 'DELETE':
-        if (row.id) {
-          this.supplierService.deleteSupplier(row.id).subscribe({
-            next: (res) => {
-              if (res.success) {
-                this.dashboard.refrechData();
-                this.toastService.success('Fournisseur supprimé avec succès');
-              } else {
-                this.toastService.error(res.message || 'Erreur lors de la suppression');
-              }
-            },
-            error: () => {
-              this.toastService.error('Erreur lors de la suppression');
-            }
-          });
-        }
-        break;
+
 
       default:
         console.warn('Unknown action:', action);

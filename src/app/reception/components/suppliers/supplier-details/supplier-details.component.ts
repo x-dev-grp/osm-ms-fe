@@ -27,6 +27,10 @@ import {PdfFactureConfig} from '../../../../shared/models/pdf-config.model';
 import {WASTE_DASHBOARD} from './waste-sale-dashboard.config';
 import {CompanyProfile} from '../../../../shared/models/CompanyProfile';
 import {CompanyProfileService} from '../../../../shared/services/company-profile.service';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import {
+  SupplierPaymentHistoryMobileComponent
+} from '../supplier-payment-history-mobile/supplier-payment-history-mobile.component';
 
 export enum PaymentSourceType {
   DELIVERY_prc = 'delivery',
@@ -94,7 +98,8 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
     private searchService: AdvancedSearchService,
     private _dialog: MatDialog,
     // private invoiceService: InvoiceService,
-    private toast: ToastService,
+    private breakpointObserver: BreakpointObserver,
+  private toast: ToastService,
     private pdfFactureService: PdfGeneratorFactureService,
     private companyService: CompanyProfileService
   ) {}
@@ -121,8 +126,7 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
         this.router.navigate(['/finance/expenses', e.row.id, 'edit']);
         break;
 
-      case 'DELETE':
-        break;
+
 
       case 'GEN_INVOICE':
         if (e.row?.id) {
@@ -132,7 +136,7 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  handlePaymentAction(e: { row: UnifiedDelivery; action: string }) {
+  handlePaymentAction(e: { row: any; action: string }) {
     const actionLabel = e.action;
     switch (actionLabel) {
       case 'READ':
@@ -190,39 +194,44 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
   }
 
   initiatePayment(row: any, sourceType: string) {
-    let dialogRef = this._dialog.open(SupplierPaymentHistoryComponent, {
-      width: '41vw',
-      height: '100vw',
-      data: {
-        row: row,
-        sourceType: sourceType
-      },
+    const isMobile = this.breakpointObserver.isMatched(
+      Breakpoints.Handset || Breakpoints.TabletPortrait
+    );
+
+    const Comp = isMobile
+      ? SupplierPaymentHistoryMobileComponent
+      : SupplierPaymentHistoryComponent;
+
+    const dialogRef = this._dialog.open(Comp, {
+      width: isMobile ? '100vw' : '41vw',
+      height: isMobile ? '70vh' : '100vh',
+      data: { row, sourceType },
       autoFocus: false,
-      disableClose: true
+      disableClose: true,
+      panelClass: isMobile ? 'mobile-bottom-sheet' : 'desktop-payment-dialog',
+      // keep backdrop for sheet style
+      hasBackdrop: true
     });
-    dialogRef.updatePosition({ right: '0px', top: '0px' });
-    dialogRef
-      .afterClosed()
+
+    if (!isMobile) {
+      dialogRef.updatePosition({ right: '0px', top: '0px' });
+    }
+
+    dialogRef.afterClosed()
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((result) => {
-          if (!result) {
-            // cas annulation si tu fermes sans résultat
-            return;
-          }
-
+          if (!result) return;
           if (result.ok) {
             this.toast.success(result.message || 'Paiement réussi.');
-            this.refreshPaymentList(); // recharge la liste / total / soldes
+            this.refreshPaymentList();
           } else {
             this.toast.error(result.message || 'Échec du paiement.');
-            // Optionnel: logger l’erreur ou afficher un détail
           }
         })
       )
       .subscribe();
   }
-
   private generateOilCreditInvoice(creditData: any) {
     if (!creditData) {
       console.error('generateOilCreditInvoice: creditData is undefined');

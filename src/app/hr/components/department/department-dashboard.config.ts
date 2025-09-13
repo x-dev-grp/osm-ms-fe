@@ -54,7 +54,7 @@ export const dashboardConfig: DashboardConfig = {
     //   label: 'Manager ID',
     //   labelTranslatePath: 'DEPARTMENT.DASHBOARD.FIELDS.MANAGER_ID',
     //   attributeType: AttributeType.number,
-    //   fieldType: FieldType.number,
+    //   fieldType: FieldType.text,
     //   sortable: true,
     //   filterable: true,
     //   defaultFilter: false,

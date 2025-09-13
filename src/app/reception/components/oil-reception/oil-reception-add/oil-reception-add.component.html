@@ -175,7 +175,7 @@
             <div class="col-md-6">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
                 <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.OIL_QUANTITY' | translate }}</mat-label>
-                <input formControlName="poidsNet" matInput min="0" type="number" />
+                <input formControlName="oilQuantity" matInput min="0" type="number" />
                 <mat-error *ngIf="receptionForm.hasError('netGreater')">
                   {{ 'OIL_RECEPTION.ADD.ERRORS.NET_GREATER' | translate }}
                 </mat-error>

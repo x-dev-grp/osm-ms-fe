@@ -11,7 +11,6 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TypeCategory } from '../../shared/models/type-category.enum';
 import { BaseType } from '../../shared/models/base-type';
 import { GenericTypeService } from '../../shared/services/generic-type.service';
-import { Subscription } from 'rxjs';
 import { DashboardConfig } from 'src/app/shared/modules/osm-dashboard/models/dashboard-config';
 import { BASE_TYPE } from './BASE_TYPE_DASHBOARD';
 import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
@@ -40,7 +39,7 @@ import { Router } from '@angular/router';
   templateUrl: './generic-type.component.html',
   styleUrls: ['./generic-type.component.scss']
 })
-export class GenericTypeComponent implements OnInit , OnDestroy {
+export class GenericTypeComponent implements OnInit, OnDestroy {
   @ViewChild('genericTypeDialog') genericTypeDialog!: TemplateRef<any>;
   @ViewChild('dashboard') dashboard!: OsmDashboard;
   // Expose l'enum au template (important !)
@@ -48,21 +47,21 @@ export class GenericTypeComponent implements OnInit , OnDestroy {
 
   // ==== UI state ====
   activeKey: TypeCategory = TypeCategory.REGION;
-   dashboardConfig: DashboardConfig = BASE_TYPE;
+  dashboardConfig: DashboardConfig = BASE_TYPE;
 
   // ==== Dialog + Form ====
   dialogForm!: FormGroup;
   dialogRef!: MatDialogRef<unknown>;
   currentRecord: BaseType | null = null;
-  private translated: String;
-
   // Options de type (affichage du select)
   typeOptions = [
     { value: TypeCategory.REGION, name: 'Région' },
     { value: TypeCategory.OLIVE_VARIETY, name: 'Variété d’olive' },
     { value: TypeCategory.OIL_VARIETY, name: 'Variété d’huile' },
-    { value: TypeCategory.WASTE_TYPE, name: 'Type de déchet' }
+    { value: TypeCategory.WASTE_TYPE, name: 'Type de déchet' },
+    { value: TypeCategory.SUPPLIER_TYPE, name: 'Type de Fournisseur' }
   ];
+  private translated: String;
 
   constructor(
     private fb: FormBuilder,
@@ -86,15 +85,75 @@ export class GenericTypeComponent implements OnInit , OnDestroy {
   loadRegion(): void {
     this.applyCategory(TypeCategory.REGION);
   }
+
   loadOliveVariety(): void {
     this.applyCategory(TypeCategory.OLIVE_VARIETY);
   }
+
   loadOilVariety(): void {
     this.applyCategory(TypeCategory.OIL_VARIETY);
   }
+
   loadWasteType(): void {
     this.applyCategory(TypeCategory.WASTE_TYPE);
   }
+
+  loadSypplierTYpe(): void {
+    this.applyCategory(TypeCategory.SUPPLIER_TYPE);
+  }
+
+  // ========= Dialog =========
+  openDialog(record?: BaseType): void {
+    this.currentRecord = record ?? null;
+    if (record) {
+      // Edition
+      this.dialogForm.patchValue({
+        type: record.type,
+        name: record.name,
+        description: record.description
+      });
+    } else {
+      // Ajout — valeur par défaut = carte active
+      this.dialogForm.reset();
+      this.dialogForm.get('type')!.setValue(this.activeKey);
+    }
+
+    this.dialogRef = this.dialog.open(this.genericTypeDialog, { width: '600px' });
+
+  }
+
+  onCancel(): void {
+    this.dialogRef?.close();
+    this.currentRecord = null;
+  }
+
+  onTypeChange(value: TypeCategory): void {
+    this.dialogForm.get('type')!.setValue(value);
+  }
+
+  onSave(): void {
+     const payload: BaseType = { ...this.dialogForm.value };
+    if (this.currentRecord?.id) payload.id = this.currentRecord.id;
+
+    const op = this.currentRecord ? this.service.updateType(payload) : this.service.createType(payload);
+
+    op.subscribe(() => {
+      this.dialogRef.close();
+      this._refreshDashboard(); // respecte refrechData() si dispo
+    });
+  }
+
+  applyAction(event: { row: any; action: string }): void {
+    switch (event.action) {
+      case 'READ':
+      case 'UPDATE':
+
+        this.openDialog(event.row as BaseType);
+        break;
+    }
+  }
+
+  ngOnDestroy(): void {}
 
   private applyCategory(key: TypeCategory): void {
     this.activeKey = key;
@@ -127,36 +186,6 @@ export class GenericTypeComponent implements OnInit , OnDestroy {
     return cfg;
   }
 
-  // ========= Dialog =========
-  openDialog(record?: BaseType): void {
-    this.currentRecord = record ?? null;
-    if (record) {
-      // Edition
-      this.dialogForm.patchValue({
-        type: record.type,
-        name: record.name,
-        description: record.description
-      });
-    } else {
-      // Ajout — valeur par défaut = carte active
-      this.dialogForm.reset();
-      this.dialogForm.get('type')!.setValue(this.activeKey);
-    }
-
-    this.dialogRef = this.dialog.open(this.genericTypeDialog, { width: '600px' });
-    // this.router.navigate(['/settings/generic/new'], {
-    //   queryParams: { category: this.activeKey }
-    // });
-    }
-
-  onCancel(): void {
-    this.dialogRef?.close();
-    this.currentRecord = null;
-  }
-  onTypeChange(value: TypeCategory): void {
-    this.dialogForm.get('type')!.setValue(value);
-  }
-
   private initForm(): void {
     this.dialogForm = this.fb.group({
       type: ['', Validators.required],
@@ -170,40 +199,12 @@ export class GenericTypeComponent implements OnInit , OnDestroy {
       .filter((k) => isNaN(Number(k)))
       .map((key) => ({ name: key, value: TypeCategory[key as keyof typeof TypeCategory] }));
   }
-  onSave(): void {
-    // === TA LOGIQUE ===
-    const payload: BaseType = { ...this.dialogForm.value };
-    if (this.currentRecord?.id) payload.id = this.currentRecord.id;
 
-    const op = this.currentRecord ? this.service.updateType(payload) : this.service.createType(payload);
-
-    op.subscribe(() => {
-      this.dialogRef.close();
-      this._refreshDashboard(); // respecte refrechData() si dispo
-    });
-  }
-
-
-  applyAction(event: { row: any; action: string }): void {
-    switch (event.action) {
-      case 'READ':
-      case 'UPDATE':
-        // this.router.navigate(['/settings/generic', event.row.id, 'edit'], {
-        //   queryParams: { category: this.activeKey }
-        // });
-        this.openDialog(event.row as BaseType);
-        break;
-    }
-  }
   // ========= Utils =========
   private _refreshDashboard(): void {
     if (this.dashboard?.refrechData) {
       this.dashboard.refrechData();
       return;
     }
-
-  }
-
-  ngOnDestroy(): void {
   }
 }

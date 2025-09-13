@@ -54,7 +54,7 @@ export const dashboardConfig: DashboardConfig = {
       label: 'Salaire',
       labelTranslatePath: 'CONTRACT.DASHBOARD.FIELDS.SALARY',
       attributeType: AttributeType.number,
-      fieldType: FieldType.number,
+      fieldType: FieldType.text,
       sortable: true,
       filterable: true,
       defaultFilter: false,
