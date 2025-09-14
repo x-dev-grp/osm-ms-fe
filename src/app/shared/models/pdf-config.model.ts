@@ -66,3 +66,29 @@ export interface PdfFactureConfig {
 
   fileName?: string;
 }
+
+
+// stricture de note de payemnt
+
+export interface PdfPaymentNoteConfig {
+  title: string;
+  reference: string;
+  date: string;
+
+  customerInfo: {
+    name: string;
+    phone?: string;
+    address?: string;
+  };
+
+  paymentInfo: {
+    totalAmount: string;
+    paidAmount: string;
+    unpaidAmount: string;
+    paymentDate: string;
+  };
+
+  footerInfo?: { label: string; value?: string }[];
+  fileName: string;
+}
+
