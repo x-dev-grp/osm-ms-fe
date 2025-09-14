@@ -23,11 +23,12 @@ import {OIL_SALES_DASHBOARD_CONFIG} from './oil-sales-dashboard.config';
 import {ToastService} from '../../../../shared/services/toast.service';
 import {factureTriturationConfig} from '../../../../finance/facture-config/facture-Trituration-Config';
 import {PdfGeneratorFactureService} from '../../../../shared/services/pdf-generator-facture.service';
-import {PdfFactureConfig} from '../../../../shared/models/pdf-config.model';
+import {PdfFactureConfig, PdfPaymentNoteConfig} from '../../../../shared/models/pdf-config.model';
 import {WASTE_DASHBOARD} from './waste-sale-dashboard.config';
 import {CompanyProfile} from '../../../../shared/models/CompanyProfile';
 import {CompanyProfileService} from '../../../../shared/services/company-profile.service';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import {paymentNoteConfig} from "../../../../finance/facture-config/payment-Note-Config";
+import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 import {
   SupplierPaymentHistoryMobileComponent
 } from '../supplier-payment-history-mobile/supplier-payment-history-mobile.component';
@@ -126,7 +127,8 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
         this.router.navigate(['/finance/expenses', e.row.id, 'edit']);
         break;
 
-
+      case 'DELETE':
+        break;
 
       case 'GEN_INVOICE':
         if (e.row?.id) {
@@ -153,7 +155,6 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
       case 'GEN_INVOICE':
         if (e.row) {
           console.log(`[OilReception] Generating invoice for delivery: ${e.row.lotNumber}`);
-
           if (!this.companyProfile) {
             console.error('[CompanyProfile] Company profile not loaded yet!');
             return;
@@ -170,7 +171,12 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  getInvoicePdfConfig(delivery: UnifiedDelivery, company: CompanyProfile): PdfFactureConfig {
+  getInvoicePdfConfig(delivery: UnifiedDelivery, company: CompanyProfile): PdfFactureConfig | PdfPaymentNoteConfig {
+    if (delivery.unpaidAmount && delivery.unpaidAmount > 0) {
+      // Cas paiement partiel → générer une note de paiement
+      return paymentNoteConfig(delivery, company);
+    }
+
     switch (delivery.operationType) {
       case 'SIMPLE_RECEPTION' :
       case 'EXCHANGE':
@@ -227,11 +233,13 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
             this.refreshPaymentList();
           } else {
             this.toast.error(result.message || 'Échec du paiement.');
+            // Optionnel: logger l’erreur ou afficher un détail
           }
         })
       )
       .subscribe();
   }
+
   private generateOilCreditInvoice(creditData: any) {
     if (!creditData) {
       console.error('generateOilCreditInvoice: creditData is undefined');
