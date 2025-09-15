@@ -1,4 +1,3 @@
-// config/facture-vente-huile.config.ts
 import {PdfFactureConfig} from '../../shared/models/pdf-config.model';
 import {UnifiedDelivery} from '../../shared/models/UnifiedDelivery';
 import {CompanyProfile} from '../../shared/models/CompanyProfile';

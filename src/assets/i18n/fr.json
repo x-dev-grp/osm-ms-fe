@@ -2239,6 +2239,13 @@
     "PRODUCT": "Produit",
     "PRODUCTION_MANAGER": "Chef de Production",
     "PRODUCTION_RECEIPT": "BON DE PRODUCTION",
+    "PAYMENT_TYPE": "Type de paiement",
+    "PAYMENT_DATE": "Date de paiement",
+    "REMAINING_AMOUNT": "Reste à payer",
+    "CLIENT_NAME": "Nom du client",
+    "CLIENT_ADDRESS": "Adresse",
+    "CLIENT_PHONE": "Téléphone",
+    "PAYMENT_NOTE_REMINDER": "Veuillez régler le solde restant dans les meilleurs délais.",
     "QUALITY_FIELDS": {
       "ACIDITE": "Acidité",
       "CATEGORIE_HUILE": "Catégorie huile",

@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import jsPDF from 'jspdf';
 import {TranslateService} from '@ngx-translate/core';
 import {CompanyProfileService} from './company-profile.service';
-import {PdfFactureConfig} from '../models/pdf-config.model';
+import {PdfFactureConfig, PdfPaymentNoteConfig} from '../models/pdf-config.model';
 
 const fontStyle = 'normal';
 const fontStyleBold = 'bold';
@@ -207,4 +207,138 @@ export class PdfGeneratorFactureService {
       };
     });
   }
+
+
+  generatePdfNoteDocument(config: PdfPaymentNoteConfig): void {
+    const getLogoPromise = this.logoPreview
+      ? Promise.resolve(this.logoPreview)
+      : this.getBase64ImageFromUrl('assets/logo.jpg');
+
+    getLogoPromise.then((base64Logo) => {
+      const doc = new jsPDF();
+      let currentY = 10;
+
+      const marginLeft = 10;
+      const marginRight = 10;
+      const pageWidth = 210;
+      const logoWidth = 30;
+      const logoHeight = 20;
+      const rightX = pageWidth - 100;
+      const fontSizeSmall = 9;
+      const fontSizeMedium = 10;
+      const fontSizeLarge = 12;
+      const rowHeight = 10; // Augmenté pour plus de lisibilité
+      const lineHeight = 7;
+
+      const safeText = (text: any, x: number, y: number) => {
+        const str = text == null || text === 'undefined' ? '' : String(text).trim();
+        if (str) doc.text(str, x, y);
+      };
+
+      // LOGO
+      doc.addImage(base64Logo, this._format, marginLeft, currentY, logoWidth, logoHeight);
+
+      // COMPANY INFO (left)
+      const companyInfoX = marginLeft + 10;
+      const companyInfoYStart = currentY + 25;
+      doc.setFont(this._fontName, 'normal');
+      doc.setFontSize(fontSizeSmall);
+      safeText(config.companyInfo.companyName || this.translationService.instant('PDF.COMPANY_NAME'), companyInfoX, companyInfoYStart);
+      safeText(config.companyInfo.address || this.translationService.instant('PDF.ADDRESS'), companyInfoX, companyInfoYStart + lineHeight);
+      safeText(`VAT ${config.companyInfo.vatNumber || this.translationService.instant('PDF.VAT')}`, companyInfoX, companyInfoYStart + 2 * lineHeight);
+      safeText(`Mobile ${config.companyInfo.mobile || this.translationService.instant('PDF.MOBILE')}`, companyInfoX, companyInfoYStart + 3 * lineHeight);
+      safeText(`w.${config.companyInfo.website || this.translationService.instant('PDF.WEBSITE')}`, companyInfoX, companyInfoYStart + 4 * lineHeight);
+
+      // TITLE & REF (right)
+      doc.setFontSize(fontSizeLarge);
+      doc.setFont(this._fontName, 'bold');
+      safeText(config.title || 'NOTE DE PAIEMENT', rightX, currentY + 25);
+      doc.setFontSize(fontSizeMedium);
+      doc.setFont(this._fontName, 'normal');
+      safeText(`Réf : ${config.reference}`, rightX, currentY + 32);
+      safeText(`Date : ${config.date || new Date().toLocaleDateString()}`, rightX, currentY + 39);
+
+      // CLIENT BLOCK (encadré à droite)
+      const clientBlockX = rightX;
+      const clientBlockYStart = currentY + 50;
+      const clientBlockWidth = pageWidth - clientBlockX - marginRight;
+      const clientPadding = 4;
+      const clientInfoCount = config.generalInfo?.length || 0;
+      const clientBlockHeight = 6 + (clientInfoCount * lineHeight);
+
+      doc.setFillColor(245, 245, 245);
+      doc.rect(clientBlockX, clientBlockYStart, clientBlockWidth, clientBlockHeight, 'FD');
+      doc.setDrawColor(0);
+      doc.rect(clientBlockX, clientBlockYStart, clientBlockWidth, clientBlockHeight);
+
+      doc.setFont(this._fontName, 'bold');
+      doc.setFontSize(fontSizeSmall);
+      safeText(this.translationService.instant('PDF.CLIENT_INFO'), clientBlockX + clientPadding, clientBlockYStart + 6);
+
+      doc.setFont(this._fontName, 'normal');
+      config.generalInfo?.forEach((info, index) => {
+        const label = this.translationService.instant(info.label);
+        const value = info.value || '';
+        const y = clientBlockYStart + 12 + index * lineHeight;
+        safeText(`${label} : ${value}`, clientBlockX + clientPadding, y);
+      });
+
+      // --- TABLEAU DES PAIEMENTS ---
+      currentY = clientBlockYStart + clientBlockHeight + 20;
+
+      // Largeurs des colonnes
+      const col1Width = 35; // Type de paiement
+      const col2Width = 35; // Total facture
+      const col3Width = 30; // Payé
+      const col4Width = 35; // Date paiement
+      const col5Width = 35; // Reste à payer
+      const tableWidth = col1Width + col2Width + col3Width + col4Width + col5Width;
+      const tableLeft = (pageWidth - tableWidth) / 2; // Centrer le tableau
+
+      // En-têtes
+      doc.setFillColor(200, 200, 200);
+      doc.rect(tableLeft, currentY, col1Width, rowHeight, 'FD');
+      doc.rect(tableLeft + col1Width, currentY, col2Width, rowHeight, 'FD');
+      doc.rect(tableLeft + col1Width + col2Width, currentY, col3Width, rowHeight, 'FD');
+      doc.rect(tableLeft + col1Width + col2Width + col3Width, currentY, col4Width, rowHeight, 'FD');
+      doc.rect(tableLeft + col1Width + col2Width + col3Width + col4Width, currentY, col5Width, rowHeight, 'FD');
+
+      doc.setFont(this._fontName, 'bold');
+      doc.setFontSize(fontSizeSmall);
+      safeText(this.translationService.instant('PDF.PAYMENT_TYPE'), tableLeft + 2, currentY + 6);
+      safeText(this.translationService.instant('PDF.TOTAL_AMOUNT'), tableLeft + col1Width + 2, currentY + 6);
+      safeText(this.translationService.instant('PDF.PAID_AMOUNT'), tableLeft + col1Width + col2Width + 2, currentY + 6);
+      safeText(this.translationService.instant('PDF.PAYMENT_DATE'), tableLeft + col1Width + col2Width + col3Width + 2, currentY + 6);
+      safeText(this.translationService.instant('PDF.REMAINING_AMOUNT'), tableLeft + col1Width + col2Width + col3Width + col4Width + 2, currentY + 6);
+
+      // Lignes de données
+      doc.setFont(this._fontName, 'normal');
+      config.paymentDetails.forEach((item) => {
+        currentY += rowHeight;
+
+        // Dessiner les bordures de la ligne
+        doc.setDrawColor(0);
+        doc.rect(tableLeft, currentY, col1Width, rowHeight);
+        doc.rect(tableLeft + col1Width, currentY, col2Width, rowHeight);
+        doc.rect(tableLeft + col1Width + col2Width, currentY, col3Width, rowHeight);
+        doc.rect(tableLeft + col1Width + col2Width + col3Width, currentY, col4Width, rowHeight);
+        doc.rect(tableLeft + col1Width + col2Width + col3Width + col4Width, currentY, col5Width, rowHeight);
+
+        // Remplir les cellules
+        safeText(item.paymentType, tableLeft + 2, currentY + 6);
+        safeText(item.totalAmount, tableLeft + col1Width + 2, currentY + 6);
+        safeText(item.paidAmount, tableLeft + col1Width + col2Width + 2, currentY + 6);
+        safeText(item.paymentDate, tableLeft + col1Width + col2Width + col3Width + 2, currentY + 6);
+        safeText(item.remainingAmount, tableLeft + col1Width + col2Width + col3Width + col4Width + 2, currentY + 6);
+      });
+
+
+      // OPEN PDF
+      window.open(doc.output('bloburl'), '_blank');
+    }).catch(err => {
+      console.error('Erreur lors du chargement du logo :', err);
+      alert('Impossible de générer la note de paiement. Vérifiez que le logo est accessible.');
+    });
+  }
+
 }
