@@ -25,9 +25,9 @@ import {factureTriturationConfig} from '../../../../finance/facture-config/factu
 import {PdfGeneratorFactureService} from '../../../../shared/services/pdf-generator-facture.service';
 import {PdfFactureConfig, PdfPaymentNoteConfig} from '../../../../shared/models/pdf-config.model';
 import {WASTE_DASHBOARD} from './waste-sale-dashboard.config';
+import {paymentNoteConfig} from '../../../../finance/facture-config/payment-Note-Config'
 import {CompanyProfile} from '../../../../shared/models/CompanyProfile';
 import {CompanyProfileService} from '../../../../shared/services/company-profile.service';
-import {paymentNoteConfig} from "../../../../finance/facture-config/payment-Note-Config";
 import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 import {
   SupplierPaymentHistoryMobileComponent
@@ -159,10 +159,19 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
             console.error('[CompanyProfile] Company profile not loaded yet!');
             return;
           }
+
           const config = this.getInvoicePdfConfig(e.row, this.companyProfile);
-          this.pdfFactureService.generatePdfDocument(config);
+
+          // Vérifier si c'est une note de paiement ou une facture
+          if ('total' in config && 'paid' in config && 'unpaid' in config) {
+            this.pdfFactureService.generatePdfNoteDocument(config);
+          } else {
+            this.pdfFactureService.generatePdfDocument(config);
+          }
         }
         break;
+
+
       case 'PAY':
         const sourceType = this.getCurrentPaymentSourceType();
 
@@ -172,20 +181,24 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
   }
 
   getInvoicePdfConfig(delivery: UnifiedDelivery, company: CompanyProfile): PdfFactureConfig | PdfPaymentNoteConfig {
+    // Vérifier d'abord le cas de paiement partiel
     if (delivery.unpaidAmount && delivery.unpaidAmount > 0) {
-      // Cas paiement partiel → générer une note de paiement
+      console.log(`[Invoice] Génération d'une note de paiement pour la livraison: ${delivery.lotNumber}`);
       return paymentNoteConfig(delivery, company);
     }
-
+    // Sinon, générer une facture normale selon l'opération
     switch (delivery.operationType) {
-      case 'SIMPLE_RECEPTION' :
+      case 'SIMPLE_RECEPTION':
       case 'EXCHANGE':
       case 'BASE':
+
         return factureTriturationConfig(delivery, company);
+
       default:
         throw new Error(`[Invoice] Unsupported operationType: ${delivery.operationType}`);
     }
   }
+
 
   getProfileInfo() {
     this.companyService.getProfile().subscribe({

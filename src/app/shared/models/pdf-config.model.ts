@@ -67,28 +67,41 @@ export interface PdfFactureConfig {
   fileName?: string;
 }
 
-
-// stricture de note de payemnt
-
+// pdf-config.model.ts
 export interface PdfPaymentNoteConfig {
   title: string;
   reference: string;
   date: string;
 
-  customerInfo: {
-    name: string;
-    phone?: string;
+  companyInfo: {
+    companyName: string;
     address?: string;
+    vatNumber?: string;
+    mobile?: string;
+    website?: string;
   };
 
-  paymentInfo: {
+  generalInfo: {
+    label: string;
+    value: string;
+  }[];
+
+  // Nouveau : Tableau des paiements
+  paymentDetails: Array<{
+    paymentType: string;
     totalAmount: string;
     paidAmount: string;
-    unpaidAmount: string;
     paymentDate: string;
-  };
+    remainingAmount: string;
+  }>;
 
-  footerInfo?: { label: string; value?: string }[];
-  fileName: string;
+  // Optionnel : Récapitulatif global (si tu veux le garder en bas)
+  total: string;
+  paid: string;
+  unpaid: string;
 }
+
+
+
+
 
