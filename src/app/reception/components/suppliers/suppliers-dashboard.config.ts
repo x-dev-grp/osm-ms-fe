@@ -1,5 +1,5 @@
-import { AttributeType, DashboardConfig, FieldType } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
-import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
+import {AttributeType, DashboardConfig, FieldType} from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import {SearchOperation} from '../../../shared/models/advanced-search/searchOperation';
 
 export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
   icon: 'people',
@@ -26,6 +26,7 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
           equalValue:false
         },}
     }
+
   },
   fields: [
     {

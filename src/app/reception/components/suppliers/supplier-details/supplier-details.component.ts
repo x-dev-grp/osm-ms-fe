@@ -23,14 +23,18 @@ import {OIL_SALES_DASHBOARD_CONFIG} from './oil-sales-dashboard.config';
 import {ToastService} from '../../../../shared/services/toast.service';
 import {factureTriturationConfig} from '../../../../finance/facture-config/facture-Trituration-Config';
 import {PdfGeneratorFactureService} from '../../../../shared/services/pdf-generator-facture.service';
-import {PdfFactureConfig} from '../../../../shared/models/pdf-config.model';
+import {PdfFactureConfig, PdfPaymentNoteConfig} from '../../../../shared/models/pdf-config.model';
 import {WASTE_DASHBOARD} from './waste-sale-dashboard.config';
+import {paymentNoteConfig} from '../../../../finance/facture-config/payment-Note-Config'
 import {CompanyProfile} from '../../../../shared/models/CompanyProfile';
 import {CompanyProfileService} from '../../../../shared/services/company-profile.service';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 import {
   SupplierPaymentHistoryMobileComponent
 } from '../supplier-payment-history-mobile/supplier-payment-history-mobile.component';
+import {OilSale} from "../../../../finance/models/oil-sale.model";
+import {paymentNoteVenteHuileConfig} from "../../../../finance/facture-config/payment-Note-VenteHuile-Config";
+import {factureVenteHuileConfig} from "../../../../finance/facture-config/facture-Vente-Huile-Config";
 
 export enum PaymentSourceType {
   DELIVERY_prc = 'delivery',
@@ -126,7 +130,8 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
         this.router.navigate(['/finance/expenses', e.row.id, 'edit']);
         break;
 
-
+      case 'DELETE':
+        break;
 
       case 'GEN_INVOICE':
         if (e.row?.id) {
@@ -153,15 +158,23 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
       case 'GEN_INVOICE':
         if (e.row) {
           console.log(`[OilReception] Generating invoice for delivery: ${e.row.lotNumber}`);
-
           if (!this.companyProfile) {
             console.error('[CompanyProfile] Company profile not loaded yet!');
             return;
           }
+
           const config = this.getInvoicePdfConfig(e.row, this.companyProfile);
-          this.pdfFactureService.generatePdfDocument(config);
+
+          // Vérifier si c'est une note de paiement ou une facture
+          if ('total' in config && 'paid' in config && 'unpaid' in config) {
+            this.pdfFactureService.generatePdfNoteDocument(config);
+          } else {
+            this.pdfFactureService.generatePdfDocument(config);
+          }
         }
         break;
+
+
       case 'PAY':
         const sourceType = this.getCurrentPaymentSourceType();
 
@@ -170,16 +183,44 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  getInvoicePdfConfig(delivery: UnifiedDelivery, company: CompanyProfile): PdfFactureConfig {
+  getInvoicePdfConfig(
+    data: UnifiedDelivery | OilSale,
+    company: CompanyProfile
+  ): PdfFactureConfig | PdfPaymentNoteConfig {
+    // Vérifier si c'est une vente d'huile
+    const isOilSale = 'saleDate' in data && 'totalAmount' in data;
+
+    if (isOilSale) {
+      const sale = data as OilSale;
+
+      // Cas de paiement partiel
+      if (sale.unpaidAmount && sale.unpaidAmount > 0) {
+        console.log(`[Invoice] Génération d'une note de paiement pour la vente d'huile: ${sale.id}`);
+        return paymentNoteVenteHuileConfig(sale, company);
+      }
+
+      // Cas facture classique
+      return factureVenteHuileConfig(sale, company);
+    }
+
+    // Sinon, cas réception (UnifiedDelivery)
+    const delivery = data as UnifiedDelivery;
+
+    if (delivery.unpaidAmount && delivery.unpaidAmount > 0) {
+      return paymentNoteConfig(delivery, company);
+    }
+
     switch (delivery.operationType) {
-      case 'SIMPLE_RECEPTION' :
+      case 'SIMPLE_RECEPTION':
       case 'EXCHANGE':
       case 'BASE':
         return factureTriturationConfig(delivery, company);
+
       default:
         throw new Error(`[Invoice] Unsupported operationType: ${delivery.operationType}`);
     }
   }
+
 
   getProfileInfo() {
     this.companyService.getProfile().subscribe({
@@ -227,11 +268,13 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
             this.refreshPaymentList();
           } else {
             this.toast.error(result.message || 'Échec du paiement.');
+            // Optionnel: logger l’erreur ou afficher un détail
           }
         })
       )
       .subscribe();
   }
+
   private generateOilCreditInvoice(creditData: any) {
     if (!creditData) {
       console.error('generateOilCreditInvoice: creditData is undefined');
