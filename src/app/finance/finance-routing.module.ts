@@ -8,34 +8,45 @@ import {ViewOilCreditComponent} from './oil-credit/view-oil-credit/view-oil-cred
 import {TransactionsComponent} from './transactions/transactions.component';
 import {OilSalesComponent} from './oil-sales/oil-sales.component';
 import {AuthGuardChild} from '../interceptors/guards/auth.guard';
+// CHANGE: permissions - import permission guards
+import { allPermissionGuard } from 'src/app/interceptors/guards/permission.guard';
+// CHANGE: permissions - use enums
+import { OSMModule, FinanceEntity, ProductionEntity, Action, permissionKey } from 'src/app/theme/types/permissions';
 import {WasteComponent} from "./waste/waste.component";
 
 
 const routes: Routes = [
-  { path: '', loadComponent: () => import('./finance-dashboard/finance-dashboard.component').then(m => m.FinanceDashboardComponent), canActivate: [AuthGuardChild] },
-  { path: 'dashboard', loadComponent: () => import('./finance-dashboard/finance-dashboard.component').then(m => m.FinanceDashboardComponent), canActivate: [AuthGuardChild] },
-  { path: 'expenses', component: ExpensesComponent, canActivate: [AuthGuardChild] },
-  { path: 'expenses/:id/view', component: ViewExpenseComponent, canActivate: [AuthGuardChild] },
-  { path: 'expenses/new', loadComponent: () => import('./expenses/expense-add/expense-add.component').then(m => m.ExpenseAddComponent), canActivate: [AuthGuardChild] },
-  { path: 'expenses/:id/edit', loadComponent: () => import('./expenses/expense-add/expense-add.component').then(m => m.ExpenseAddComponent), canActivate: [AuthGuardChild] },
-  { path: 'banks', component: BankAccountsComponent, canActivate: [AuthGuardChild] },
-  { path: 'banks/:id/view', loadComponent: () => import('./bank-accounts/view-bank-account/view-bank-account.component').then(m => m.ViewBankAccountComponent), canActivate: [AuthGuardChild] },
-  { path: 'banks/new', loadComponent: () => import('./bank-accounts/bank-account-add/bank-account-add.component').then(m => m.BankAccountAddComponent), canActivate: [AuthGuardChild] },
-  { path: 'banks/:id/edit', loadComponent: () => import('./bank-accounts/bank-account-add/bank-account-add.component').then(m => m.BankAccountAddComponent), canActivate: [AuthGuardChild] },
-  { path: 'oil-credit', component: OilCreditComponent, canActivate: [AuthGuardChild] },
-  { path: 'oil-credit/new', loadComponent: () => import('./oil-credit/oil-credit-add/oil-credit-add.component').then(m => m.OilCreditAddComponent), canActivate: [AuthGuardChild] },
-  { path: 'oil-credit/:id/edit', loadComponent: () => import('./oil-credit/oil-credit-add/oil-credit-add.component').then(m => m.OilCreditAddComponent), canActivate: [AuthGuardChild] },
-  { path: 'oil-credit/:id/view', component: ViewOilCreditComponent, canActivate: [AuthGuardChild] },
-  { path: 'transactions', component: TransactionsComponent, canActivate: [AuthGuardChild] },
-  { path: 'transactions/:id/view', loadComponent: () => import('./transactions/transaction-view/transaction-view.component').then(m => m.TransactionViewComponent), canActivate: [AuthGuardChild] },
-  { path: 'transactions/new', loadComponent: () => import('./transactions/transaction-add/transaction-add.component').then(m => m.TransactionAddComponent), canActivate: [AuthGuardChild] },
-  { path: 'transactions/:id/edit', loadComponent: () => import('./transactions/transaction-add/transaction-add.component').then(m => m.TransactionAddComponent), canActivate: [AuthGuardChild] },
+  // CHANGE: permissions - protect dashboard with FINANCE:FINANCIALTRANSACTION:READ
+  { path: '', loadComponent: () => import('./finance-dashboard/finance-dashboard.component').then(m => m.FinanceDashboardComponent), canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.FINANCE, FinanceEntity.FINANCIALTRANSACTION, Action.READ)])] },
+  { path: 'dashboard', loadComponent: () => import('./finance-dashboard/finance-dashboard.component').then(m => m.FinanceDashboardComponent), canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.FINANCE, FinanceEntity.FINANCIALTRANSACTION, Action.READ)])] },
+  // CHANGE: permissions - Expenses
+  { path: 'expenses', component: ExpensesComponent, canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.FINANCE, FinanceEntity.EXPENSE, Action.READ)])] },
+  { path: 'expenses/:id/view', component: ViewExpenseComponent, canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.FINANCE, FinanceEntity.EXPENSE, Action.READ)])] },
+  { path: 'expenses/new', loadComponent: () => import('./expenses/expense-add/expense-add.component').then(m => m.ExpenseAddComponent), canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.FINANCE, FinanceEntity.EXPENSE, Action.CREATE)])] },
+  { path: 'expenses/:id/edit', loadComponent: () => import('./expenses/expense-add/expense-add.component').then(m => m.ExpenseAddComponent), canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.FINANCE, FinanceEntity.EXPENSE, Action.UPDATE)])] },
+  // CHANGE: permissions - Bank Accounts
+  { path: 'banks', component: BankAccountsComponent, canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.FINANCE, FinanceEntity.BANKACCOUNT, Action.READ)])] },
+  { path: 'banks/:id/view', loadComponent: () => import('./bank-accounts/view-bank-account/view-bank-account.component').then(m => m.ViewBankAccountComponent), canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.FINANCE, FinanceEntity.BANKACCOUNT, Action.READ)])] },
+  { path: 'banks/new', loadComponent: () => import('./bank-accounts/bank-account-add/bank-account-add.component').then(m => m.BankAccountAddComponent), canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.FINANCE, FinanceEntity.BANKACCOUNT, Action.CREATE)])] },
+  { path: 'banks/:id/edit', loadComponent: () => import('./bank-accounts/bank-account-add/bank-account-add.component').then(m => m.BankAccountAddComponent), canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.FINANCE, FinanceEntity.BANKACCOUNT, Action.UPDATE)])] },
+  // CHANGE: permissions - Oil Credit (PRODUCTION:OILCREDIT)
+  { path: 'oil-credit', component: OilCreditComponent, canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.OILCREDIT, Action.READ)])] },
+  { path: 'oil-credit/new', loadComponent: () => import('./oil-credit/oil-credit-add/oil-credit-add.component').then(m => m.OilCreditAddComponent), canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.OILCREDIT, Action.CREATE)])] },
+  { path: 'oil-credit/:id/edit', loadComponent: () => import('./oil-credit/oil-credit-add/oil-credit-add.component').then(m => m.OilCreditAddComponent), canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.OILCREDIT, Action.UPDATE)])] },
+  { path: 'oil-credit/:id/view', component: ViewOilCreditComponent, canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.OILCREDIT, Action.READ)])] },
+  // CHANGE: permissions - Financial Transactions
+  { path: 'transactions', component: TransactionsComponent, canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.FINANCE, FinanceEntity.FINANCIALTRANSACTION, Action.READ)])] },
+  { path: 'transactions/:id/view', loadComponent: () => import('./transactions/transaction-view/transaction-view.component').then(m => m.TransactionViewComponent), canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.FINANCE, FinanceEntity.FINANCIALTRANSACTION, Action.READ)])] },
+  { path: 'transactions/new', loadComponent: () => import('./transactions/transaction-add/transaction-add.component').then(m => m.TransactionAddComponent), canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.FINANCE, FinanceEntity.FINANCIALTRANSACTION, Action.CREATE)])] },
+  { path: 'transactions/:id/edit', loadComponent: () => import('./transactions/transaction-add/transaction-add.component').then(m => m.TransactionAddComponent), canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.FINANCE, FinanceEntity.FINANCIALTRANSACTION, Action.UPDATE)])] },
 
-  { path: 'oil-sales', component: OilSalesComponent, canActivate: [AuthGuardChild] },
-  { path: 'oil-sales/new', loadComponent: () => import('./oil-sales/oil-sale-add/oil-sale-add.component').then(m => m.OilSaleAddComponent), canActivate: [AuthGuardChild] },
-  { path: 'oil-sales/:id/edit', loadComponent: () => import('./oil-sales/oil-sale-add/oil-sale-add.component').then(m => m.OilSaleAddComponent), canActivate: [AuthGuardChild] },
-  { path: 'oil-sales/:id/view', loadComponent: () => import('./oil-sales/oil-sale-view/oil-sale-view.component').then(m => m.OilSaleViewComponent), canActivate: [AuthGuardChild] },
+  // CHANGE: permissions - Oil Sales
+  { path: 'oil-sales', component: OilSalesComponent, canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.FINANCE, FinanceEntity.OILSALE, Action.READ)])] },
+  { path: 'oil-sales/new', loadComponent: () => import('./oil-sales/oil-sale-add/oil-sale-add.component').then(m => m.OilSaleAddComponent), canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.FINANCE, FinanceEntity.OILSALE, Action.CREATE)])] },
+  { path: 'oil-sales/:id/edit', loadComponent: () => import('./oil-sales/oil-sale-add/oil-sale-add.component').then(m => m.OilSaleAddComponent), canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.FINANCE, FinanceEntity.OILSALE, Action.UPDATE)])] },
+  { path: 'oil-sales/:id/view', loadComponent: () => import('./oil-sales/oil-sale-view/oil-sale-view.component').then(m => m.OilSaleViewComponent), canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.FINANCE, FinanceEntity.OILSALE, Action.READ)])] },
 
+  // NOTE: permissions - Waste is not mapped in seed; keeping AuthGuard only
   {path: 'waste-sales', component: WasteComponent, canActivate: [AuthGuardChild]},
   {
     path: 'waste-sales/new',

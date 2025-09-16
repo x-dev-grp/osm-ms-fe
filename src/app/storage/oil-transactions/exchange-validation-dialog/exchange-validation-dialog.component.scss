@@ -1,11 +1,11 @@
 /* Styling for the dialog container */
 :host {
-  display: flex
-;
+  display: flex;
   flex-wrap: nowrap;
   justify-content: flex-end;
   flex-direction: column;
   align-items: stretch;
+  max-width: 100vw;
 }
 
 /* Dialog content styling */
@@ -14,6 +14,7 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  max-width: 100%;
 }
 
 /* Header styling with icon and title */
@@ -26,12 +27,18 @@
 
 .dialog-header mat-icon {
   color: #1976d2;
+  font-size: 1.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
 }
 
 .dialog-header h2 {
   margin: 0;
   font-size: clamp(1.2rem, 4vw, 1.5rem);
   font-weight: 500;
+  word-break: break-word;
+  hyphens: auto;
 }
 
 /* Style for the form field to ensure full width and consistent appearance */
@@ -42,13 +49,38 @@
 /* Enhance the select dropdown appearance */
 mat-form-field {
   margin-bottom: 1rem;
+  width: 100%;
 }
 
-/* Style for the mat-select options */
+/* Style for the mat-select options - improved text wrapping */
 mat-option {
   font-size: clamp(0.875rem, 2vw, 1rem);
   line-height: 1.5;
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1rem;
+  white-space: normal;
+  word-break: break-word;
+  hyphens: auto;
+  min-height: auto;
+}
+
+/* Storage unit info text wrapping */
+.storage-unit-info {
+  display: block;
+  white-space: normal;
+  word-break: break-word;
+  hyphens: auto;
+  line-height: 1.4;
+}
+
+/* Capacity warning styling */
+.capacity-warning {
+  display: block;
+  color: #d32f2f;
+  font-weight: 500;
+  margin-top: 0.25rem;
+  white-space: normal;
+  word-break: break-word;
+  hyphens: auto;
 }
 
 /* Error message styling */
@@ -56,12 +88,18 @@ mat-error {
   font-size: 0.75rem;
   color: #d32f2f;
   margin-top: 0.25rem;
+  white-space: normal;
+  word-break: break-word;
+  hyphens: auto;
 }
 
 /* Hint styling */
 mat-hint {
   font-size: 0.75rem;
   color: #757575;
+  white-space: normal;
+  word-break: break-word;
+  hyphens: auto;
 }
 
 /* Loading spinner styling */
@@ -85,6 +123,9 @@ button[mat-button], button[mat-flat-button] {
   font-weight: 500;
   padding: 0.5rem 1rem;
   min-width: 80px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Primary button styling */
@@ -110,14 +151,38 @@ button[mat-flat-button][disabled] {
 }
 
 /* Responsive adjustments for smaller screens */
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   :host {
     width: 95%;
     min-width: 0;
+    margin: 10px;
   }
 
   .dialog-content {
     padding: 1rem;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+
+  .dialog-header {
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .dialog-header h2 {
+    font-size: 1.25rem;
+    flex: 1 1 100%;
+    margin-top: 0.5rem;
+  }
+
+  mat-form-field {
+    margin-bottom: 0.75rem;
+  }
+
+  mat-option {
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    line-height: 1.4;
   }
 
   .dialog-actions {
@@ -130,5 +195,47 @@ button[mat-flat-button][disabled] {
   button[mat-button], button[mat-flat-button] {
     width: 100%;
     text-align: center;
+    padding: 0.75rem;
+    font-size: 1rem;
+    white-space: normal;
+    word-break: break-word;
+    hyphens: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  :host {
+    width: 95%;
+    min-width: 0;
+    margin: 5px;
+  }
+
+  .dialog-content {
+    padding: 0.75rem;
+  }
+
+  .dialog-header {
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .dialog-header mat-icon {
+    font-size: 1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .dialog-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .dialog-actions {
+    padding: 0.5rem;
+    gap: 0.5rem;
+  }
+
+  button[mat-button], button[mat-flat-button] {
+    padding: 0.6rem;
+    font-size: 0.9rem;
   }
 }

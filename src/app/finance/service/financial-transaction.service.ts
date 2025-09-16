@@ -28,7 +28,7 @@ export class FinancialTransactionService {
    * Get transaction by ID
    */
   getTransactionById(id: string): Observable<ApiResponse<FinancialTransaction>> {
-    return this.http.get<ApiResponse<FinancialTransaction>>(`${this.baseUrl}/${id}`);
+    return this.http.get<ApiResponse<FinancialTransaction>>(`${this.baseUrl}/fetch/${id}`);
   }
 
   /**
@@ -64,16 +64,6 @@ export class FinancialTransactionService {
     return this.http.post<ApiResponse<FinancialTransaction>>(`${this.baseUrl}/${id}/reject`, { approvedBy, reason });
   }
 
-  /**
-   * Get pending transactions
-   */
-  getPendingTransactions(page: number = 0, size: number = 10): Observable<ApiResponse<FinancialTransaction[]>> {
-    const params = new HttpParams()
-      .set('page', page.toString())
-      .set('size', size.toString());
-
-    return this.http.get<ApiResponse<FinancialTransaction[]>>(`${this.baseUrl}/pending`, { params });
-  }
 
   getTransactionsByBankId(
     bankId: string,
@@ -85,24 +75,4 @@ export class FinancialTransactionService {
      );
   }
 
-  /**
-   * Get transaction types for dropdown
-   */
-  getTransactionTypes(): Observable<ApiResponse<string[]>> {
-    return this.http.get<ApiResponse<string[]>>(`${this.baseUrl}/types`);
-  }
-
-  /**
-   * Get currencies for dropdown
-   */
-  getCurrencies(): Observable<ApiResponse<string[]>> {
-    return this.http.get<ApiResponse<string[]>>(`${this.baseUrl}/currencies`);
-  }
-
-  /**
-   * Get payment methods for dropdown
-   */
-  getPaymentMethods(): Observable<ApiResponse<string[]>> {
-    return this.http.get<ApiResponse<string[]>>(`${this.baseUrl}/payment-methods`);
-  }
 }

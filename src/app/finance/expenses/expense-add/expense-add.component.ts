@@ -1,7 +1,7 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
- import { MatButtonModule } from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -45,6 +45,10 @@ export class ExpenseAddComponent implements OnInit {
   categoryOptions: ExpenseCategory[] = Object.values(ExpenseCategory) as ExpenseCategory[];
   categoryFilterCtrl = new FormControl<string>('', { nonNullable: true });
   filteredCategories$!: Observable<ExpenseCategory[]>;
+  
+  // Screen size detection for responsive behavior
+  isMobileView = false;
+  
   constructor(
     private fb: FormBuilder,
     private expenseService: ExpenseService,
@@ -53,6 +57,7 @@ export class ExpenseAddComponent implements OnInit {
     private route: ActivatedRoute
   ) {
     this.initForm();
+    this.checkScreenSize();
   }
 
   ngOnInit(): void {
@@ -65,7 +70,20 @@ export class ExpenseAddComponent implements OnInit {
           c.toLowerCase().includes(v) // match by enum code
         );
       })
-    );}
+    );
+  }
+  
+  // Listen for window resize events to adjust layout
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.checkScreenSize();
+  }
+  
+  // Check screen size to determine mobile view
+  private checkScreenSize() {
+    this.isMobileView = window.innerWidth <= 768;
+  }
+
   onCategoryOpened(opened: boolean) {
     if (opened) {
       // Delay to ensure the panel has rendered before focusing
@@ -74,6 +92,7 @@ export class ExpenseAddComponent implements OnInit {
       this.categoryFilterCtrl.setValue(''); // clear search when closed
     }
   }
+  
   private initForm(): void {
     this.form = this.fb.group({
       invoiceRef: ['', Validators.required],
@@ -128,7 +147,7 @@ export class ExpenseAddComponent implements OnInit {
         this.loading = false;
       },
       error: () => {
-        this.toast.error('Erreur lors du chargement de la dépense' );
+        this.toast.error('Erreur lors du chargement de la dépense');
         this.loading = false;
         this.router.navigate(['/finance/expenses']);
       }
@@ -137,7 +156,7 @@ export class ExpenseAddComponent implements OnInit {
 
   save(): void {
     if (this.form.invalid) {
-      this.toast.error('Veuillez remplir tous les champs obligatoires' );
+      this.toast.error('Veuillez remplir tous les champs obligatoires');
       return;
     }
 
@@ -154,11 +173,10 @@ export class ExpenseAddComponent implements OnInit {
     request$.subscribe({
       next: (response) => {
         if (response.success) {
-          this.toast.success(
-           );
+          this.toast.success(this.editing ? 'Dépense mise à jour avec succès' : 'Dépense créée avec succès');
           this.router.navigate(['/finance/expenses']);
         } else {
-          this.toast.error(response.message || 'Une erreur est survenue' );
+          this.toast.error(response.message || 'Une erreur est survenue');
         }
         this.loading = false;
       },

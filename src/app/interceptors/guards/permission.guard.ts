@@ -9,20 +9,29 @@ export function allPermissionGuard(requiredPermissions: string[]): CanActivateFn
     if (authService.hasAllPermissions(requiredPermissions) || authService.isAdmin()) {
       return true;
     }
-    // authService.logout() ;
-    // return false;
-    // Redirige vers une page 403 dédiée au lieu de déconnecter l'utilisateur
     return router.createUrlTree(
       ['/access-denied']);
   };
 }
 export function anyPermissionGuard(requiredPermissions: string[]): CanActivateFn {
   return () => {
+    // CHANGE: permissions - use hasAnyPermission and standardize deny to 403 redirect
+    const router = inject(Router);
     const authService = inject(AuthenticationService);
-    if (authService.hasAllPermissions(requiredPermissions) || authService.isAdmin()) {
+    if (authService.hasAnyPermission(requiredPermissions) || authService.isAdmin()) {
       return true;
     }
-    authService.logout() ;
-    return false;
+    return router.createUrlTree(['/access-denied']);
+  };
+}
+export function moduleGuard(modules: string[]): CanActivateFn {
+  return () => {
+    // CHANGE: permissions - use hasAnyPermission and standardize deny to 403 redirect
+    const router = inject(Router);
+    const authService = inject(AuthenticationService);
+    if (authService.hasAnyModule(modules) || authService.isAdmin()) {
+      return true;
+    }
+    return router.createUrlTree(['/access-denied']);
   };
 }

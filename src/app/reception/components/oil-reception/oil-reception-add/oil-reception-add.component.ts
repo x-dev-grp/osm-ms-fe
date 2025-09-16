@@ -38,8 +38,8 @@ import { mapOilFromOlive, mapOliveFromOil } from '../../../../shared/models/oliv
 
 // Validator for net weight not exceeding gross weight
 const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | null => {
-  const brut = control.get('oilQuantity')?.value;
-  const net = control.get('oilQuantity')?.value; // Changed from poidsNet to oilQuantity
+  const brut = control.get('poidsBrute')?.value;
+  const net = control.get('poidsNet')?.value; // Changed from poidsNet to oilQuantity
   return brut != null && net != null && net > brut ? { netGreater: true } : null;
 };
 
@@ -400,6 +400,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       etatCamion: d.etatCamion,
       poidsBrute: d.poidsBrute,
       oilQuantity: d.poidsNet,
+      poidsNet: d.poidsNet,
       oilVariety: d.oilVariety || null,
       oilType: d.oilType|| null,
       globalLotNumber: d.globalLotNumber || '',

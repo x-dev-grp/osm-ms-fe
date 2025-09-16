@@ -11,9 +11,7 @@
 <!-- Details Card -->
 <mat-card *ngIf="deliveryData && !loading" class="details-card">
   <div class="card-header">
-    <button (click)="onBack()" [title]="translate.instant('DELIVERIES.DETAILS.BUTTONS.BACK')" mat-icon-button>
-      <mat-icon>arrow_back</mat-icon>
-    </button>
+
     <mat-card-title>{{ translate.instant('DELIVERIES.DETAILS.TITLE') }}</mat-card-title>
   </div>
 

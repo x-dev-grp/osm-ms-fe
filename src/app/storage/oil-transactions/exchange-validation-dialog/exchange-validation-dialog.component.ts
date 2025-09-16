@@ -72,6 +72,10 @@ export class ExchangeValidationDialogComponent implements OnInit {
   }
 
   getStorageUnitInfo(u: StorageUnitDto): string {
+    // Include supplier info if available for better context
+    if (u.supplier) {
+      return `${u.name} (${u.currentVolume.toFixed(2)}/${u.maxCapacity.toFixed(2)} kg) [${u.supplier?.supplierInfo.name + " " + u.supplier?.supplierInfo.lastname}]`;
+    }
     return `${u.name} (${u.currentVolume.toFixed(2)}/${u.maxCapacity.toFixed(2)} kg)`;
   }
 

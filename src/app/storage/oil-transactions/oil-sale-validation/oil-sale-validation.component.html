@@ -11,7 +11,6 @@
       <span>{{ 'OIL_SALES.QUANTITY' | translate }}:</span>
       <span>{{ this.data?.quantityKg | number:'1.2-2' }} kg</span>
     </div>
-
   </div>
 
   <!-- Source Storage Unit Selection -->
@@ -24,9 +23,16 @@
       <mat-option *ngFor="let u of this.data.storageUnits" [disabled]="u.maxCapacity-u.currentVolume<this.data.quantityKg"
                   [value]="u">
         @if (u.maxCapacity - u.currentVolume < this.data.quantityKg) {
-          <span style="background-color: red;" >  {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg) {{ "OIL_TRANSACTIONS.FORM.OVERFILLING"|translate }}</span>
+          <span class="storage-unit-info">
+            {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)
+          </span>
+          <span class="capacity-warning">
+            {{ "OIL_TRANSACTIONS.FORM.OVERFILLING"|translate }}
+          </span>
         } @else {
-          {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)
+          <span class="storage-unit-info">
+            {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)
+          </span>
         }
       </mat-option>
     </mat-select>
@@ -38,7 +44,6 @@
       ({{ availableQuantity | number:'1.2-2' }} < {{ data.quantityKg | number:'1.2-2' }} kg)
     </mat-error>
   </mat-form-field>
-
 
   <div *ngIf="isLoading" class="loading-spinner">
     <mat-spinner diameter="24"></mat-spinner>

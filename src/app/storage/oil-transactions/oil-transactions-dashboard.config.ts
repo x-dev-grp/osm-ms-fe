@@ -80,11 +80,13 @@ export const OIL_TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
       label: 'Quantité (kg)',
       labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.FIELDS.QUANTITY_KG',
       attributeType: AttributeType.number,
-      fieldType: FieldType.text,
+      fieldType: FieldType.slider,
       exportable: true,
       sortable: true,
       dataTable: true,
-      filterable: true
+      filterable: true,
+      sliderMinValue:0,
+      sliderMaxValue:10000
     },
     {
       name: 'unitPrice',

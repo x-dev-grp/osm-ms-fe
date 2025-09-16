@@ -80,12 +80,10 @@
 .button-container {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem;
   flex-wrap: wrap;
   flex-direction: row;
   align-content: stretch;
-  justify-content: space-between;
+  justify-content: inherit;
 
   button {
     display:  flex;

@@ -15,7 +15,7 @@
 
 <!-- Main content -->
 <div *ngIf="!loading && !error && machine" class="maintenance-container">
-  <app-card [cardTitle]="'Maintenance - ' + machine.name">
+  <app-card [icon]="'build'" [cardTitle]="'Maintenance - ' + machine.name">
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
       <div class="form-grid">
         <!-- Type de maintenance -->

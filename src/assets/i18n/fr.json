@@ -1,5 +1,4 @@
 {
-  "": "Type de contrat",
   "ACCESS_DENIED": {
     "GO_HOME": "Retour à l'accueil",
     "GO_HOME_TITLE": "Retour à l'accueil",
@@ -962,8 +961,6 @@
   "Error 500": "Erreur 500",
   "FEMALE": "Femme",
   "FINANCE_TAB": "Config Finance",
-  "File Manager": "Gestionnaire de fichiers",
-  "Finance": "finance",
   "FORGOT_PASSWORD": {
     "BACK_TO_LOGIN": "Retour à la connexion",
     "EMAIL": "Email",
@@ -975,6 +972,8 @@
     "SUCCESS_MESSAGE": "Si un compte existe avec cet email, vous recevrez prochainement un lien de réinitialisation de mot de passe.",
     "TITLE": "Mot de passe oublié"
   },
+  "File Manager": "Gestionnaire de fichiers",
+  "Finance": "finance",
   "Forgot Password": "Mot de passe oublié",
   "Form Validation": "Validation du formulaire",
   "Form Wizard": "Assistant Formulaire",
@@ -987,6 +986,7 @@
       "SAVE": "Enregistrer",
       "UPDATE": "Mettre à jour"
     },
+    "CAPITAL": "Capital",
     "CITY": "Ville",
     "EMAIL": "Email",
     "EXPANDABLE": {
@@ -1100,13 +1100,14 @@
   "Invoice": "Facture",
   "Kanban": "Kanban",
   "LOGIN": {
+    "FORGOT_PASSWORD": "Mot de passe oublié ?",
     "PASSWORD": "Mot de pass",
     "PASSWORDCONFIRM": "Confirmer mot de passe",
     "PASSWORDNEW": "Nouveau mot de passe",
-    "PASSWORD_STRENGTH_ERROR": "Le mot de passe doit contenir au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial",
     "PASSWORD_MIN_LENGTH_ERROR": "Le mot de passe doit contenir au moins 8 caractères",
     "PASSWORD_MISMATCH_ERROR": "Les mots de passe ne correspondent pas",
     "PASSWORD_REQUIRED": "Vous devez entrer un mot de passe",
+    "PASSWORD_STRENGTH_ERROR": "Le mot de passe doit contenir au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial",
     "REMEMBERME": "Se souvenir de moi",
     "REMEMBERME_EXPIRY_ERROR": "Le jeton de mémorisation a expiré",
     "SERVICE_UNAVAILABLE": "Service indisponible, veuillez réessayer plus tard",
@@ -1114,10 +1115,9 @@
     "UNEXPECTED_ERROR": "Une erreur inattendue s'est produite",
     "UPDATEPASSWORD": "Changer le mot de passe",
     "USERNAME": "Nom d'utilisateur",
-    "USERNAME_MISSING": "Nom d'utilisateur manquant pour la connexion",
-    "USERNAME_REQUIRED": "Vous devez entrer un email",
     "USERNAME_INVALID": "Email non valide",
-    "FORGOT_PASSWORD": "Mot de passe oublié ?"
+    "USERNAME_MISSING": "Nom d'utilisateur manquant pour la connexion",
+    "USERNAME_REQUIRED": "Vous devez entrer un email"
   },
   "LOGO": {
     "CLICK_BROWSE": "ou cliquez pour parcourir",
@@ -2402,6 +2402,7 @@
         "OLIVE_VARIETY": "Variété d'Olive",
         "REGION": "Région",
         "SUPPLIER": "Fournisseur",
+        "TITLE": "Finalisation",
         "TOTAL_OLIVE_WEIGHT": "Poids Total d'Olives",
         "TOTAL_TRITURATION_PRICE_LABEL": "Prix total de trituration",
         "TRITURATION_DURATION_HOURS": "Durée (Heures)",
@@ -2448,22 +2449,22 @@
     },
     "TITLE": "Réceptions d'huile et triturations"
   },
-  "Register": "Enregistrer",
-  "Reset Password": "réinitialiser le mot de passe",
   "RESET_PASSWORD": {
-    "ENTER_CODE_TITLE": "Entrez le code de confirmation",
-    "NEW_PASSWORD_TITLE": "Définir un nouveau mot de passe",
-    "CONFIRMATION_CODE": "Code de confirmation",
     "CODE_PLACEHOLDER": "Entrez votre code",
-    "VALIDATE_CODE": "Valider le code",
-    "NEW_PASSWORD": "Nouveau mot de passe",
-    "NEW_PASSWORD_PLACEHOLDER": "Entrez votre nouveau mot de passe",
+    "CONFIRMATION_CODE": "Code de confirmation",
     "CONFIRM_PASSWORD": "Confirmer le mot de passe",
     "CONFIRM_PASSWORD_PLACEHOLDER": "Confirmez votre nouveau mot de passe",
+    "ENTER_CODE_TITLE": "Entrez le code de confirmation",
     "MISMATCH": "Les mots de passe ne correspondent pas",
+    "MISSING_USER_ID": "Identifiant utilisateur manquant.",
+    "NEW_PASSWORD": "Nouveau mot de passe",
+    "NEW_PASSWORD_PLACEHOLDER": "Entrez votre nouveau mot de passe",
+    "NEW_PASSWORD_TITLE": "Définir un nouveau mot de passe",
     "SUBMIT_NEW_PASSWORD": "Mettre à jour le mot de passe",
-    "MISSING_USER_ID": "Identifiant utilisateur manquant."
+    "VALIDATE_CODE": "Valider le code"
   },
+  "Register": "Enregistrer",
+  "Reset Password": "réinitialiser le mot de passe",
   "SINGLE": "Célibataire",
   "STANDARD": {
     "ACCESS_RESSOURCE_ERROR": "Vous n'avez pas accès à cette ressource.",

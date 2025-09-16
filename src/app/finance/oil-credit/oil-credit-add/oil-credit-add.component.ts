@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SharedModule } from '../../../shared/shared.module';
 import { ApiResponse } from '../../../shared/models/api-response';
@@ -21,8 +22,8 @@ import { SupplierTypeService } from '../../../shared/services/supplier.service';
 import { TypeCategory } from '../../../shared/models/type-category.enum';
 import { StorageUnitDtoService } from '../../../shared/services/storage.service';
 import { StorageUnitDto } from '../../../shared/models/StorageUnitDto';
-import { map, startWith } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { map, startWith, takeUntil } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastService } from '../../../shared/services/toast.service';
 
@@ -31,9 +32,23 @@ import { ToastService } from '../../../shared/services/toast.service';
   templateUrl: './oil-credit-add.component.html',
   styleUrls: ['./oil-credit-add.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, TranslateModule,MatDatepickerModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule, MatSnackBarModule, MatAutocompleteModule, SharedModule]
+  imports: [
+    CommonModule, 
+    ReactiveFormsModule, 
+    MatButtonModule, 
+    TranslateModule,
+    MatDatepickerModule, 
+    MatFormFieldModule, 
+    MatIconModule, 
+    MatInputModule, 
+    MatSelectModule, 
+    MatSnackBarModule, 
+    MatAutocompleteModule, 
+    MatProgressSpinnerModule,
+    SharedModule
+  ]
 })
-export class OilCreditAddComponent implements OnInit {
+export class OilCreditAddComponent implements OnInit, OnDestroy {
   form: FormGroup;
   editing = false;
   submitted = false;
@@ -43,6 +58,7 @@ export class OilCreditAddComponent implements OnInit {
   storageUnits: StorageUnitDto[] = [];
   selectedStorageUnit: StorageUnitDto | null = null;
   private data: OilCredit[] = [];
+  private destroy$ = new Subject<void>();
 
   // Autocomplete filtered options
   filteredOilTypes: Observable<BaseType[]>;
@@ -78,7 +94,9 @@ export class OilCreditAddComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.genericTypeService.getAllTypes(TypeCategory.OIL_TYPE).subscribe({
+    this.genericTypeService.getAllTypes(TypeCategory.OIL_TYPE).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
       next: (res) => {
         this.oilTypes = res.data || [];
         this.setupAutocompleteFilters();
@@ -89,7 +107,10 @@ export class OilCreditAddComponent implements OnInit {
         );
       }
     });
-    this.supplierService.getAllSuppliers().subscribe({
+    
+    this.supplierService.getAllSuppliers().pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
       next: (res) => {
         this.suppliers = res.data || [];
         this.setupAutocompleteFilters();
@@ -100,11 +121,16 @@ export class OilCreditAddComponent implements OnInit {
         );
       }
     });
+    
     const id = this.route.snapshot.params['id'];
     if (id) {
       this.loadOilCredit(id);
     }
+  }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private setupAutocompleteFilters(): void {
@@ -214,6 +240,7 @@ export class OilCreditAddComponent implements OnInit {
       return;
     }
 
+    this.loading = true;
     const formValue = this.form.value;
     const dto = {
       ...formValue,
@@ -227,7 +254,9 @@ export class OilCreditAddComponent implements OnInit {
     }
 
     const creditObs = this.editing ? this.oilCreditService.updateOilCredit(dto) : this.oilCreditService.createOilCredit(dto);
-    creditObs.subscribe({
+    creditObs.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
       next: () => {
         this.toast.success(
           this.translate.instant(this.editing ? 'OIL_CREDIT.FORM.MESSAGES.UPDATE_SUCCESS' : 'OIL_CREDIT.FORM.MESSAGES.SAVE_SUCCESS')
@@ -238,6 +267,7 @@ export class OilCreditAddComponent implements OnInit {
         this.toast.error(
           this.translate.instant('OIL_CREDIT.FORM.MESSAGES.SAVE_ERROR')
         );
+        this.loading = false;
       }
     });
   }
@@ -248,7 +278,9 @@ export class OilCreditAddComponent implements OnInit {
 
   private loadOilCredit(id: string): void {
     this.loading = true;
-    this.oilCreditService.getOilCredit(id).subscribe({
+    this.oilCreditService.getOilCredit(id).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
       next: (response: ApiResponse<OilCredit>) => {
         if (response.data && response.data.length > 0) {
           const credit = response.data[0];
