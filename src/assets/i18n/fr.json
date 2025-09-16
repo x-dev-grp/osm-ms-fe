@@ -2245,6 +2245,15 @@
     "CLIENT_NAME": "Nom du client",
     "CLIENT_ADDRESS": "Adresse",
     "CLIENT_PHONE": "Téléphone",
+    "FACTURE_VENTE_HUILE": "Facture Vente Huile",
+    "FACTURE_VENTE_DECHET": "Facture Vente Déchet",
+    "FACTURE_TRITURATION": "Facture Trituration",
+    "FACTURE_RECEPTION": "Facture Réception",
+    "NOTE_PAYEMENT_VENTE_HUILE": "Note de Paiement Vente Huile",
+    "NOTE_PAYEMENT_VENTE_DECHET": "Note de Paiement Vente Déchet",
+    "NOTE_PAYEMENT_TRITURATION": "Note de Paiement Trituration",
+    "NOTE_PAYEMENT_RECEPTION": "Note de Paiement Réception",
+
     "PAYMENT_NOTE_REMINDER": "Veuillez régler le solde restant dans les meilleurs délais.",
     "QUALITY_FIELDS": {
       "ACIDITE": "Acidité",

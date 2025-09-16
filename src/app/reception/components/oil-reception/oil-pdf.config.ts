@@ -2,9 +2,6 @@ import {UnifiedDelivery} from "../../../shared/models/UnifiedDelivery";
 import {PdfConfig} from "../../../shared/models/pdf-config.model";
 
 export function getOilPdfConfig(delivery: UnifiedDelivery): PdfConfig {
-  const unitPrice = delivery.unitPrice || 0;
-  const oilQuantity = delivery.oilQuantity || 0;
-  const totalPrice = unitPrice * oilQuantity;
 
   return {
     title: 'PDF.RECEPTION_OIL',
