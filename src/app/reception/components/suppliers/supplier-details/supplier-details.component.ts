@@ -32,6 +32,9 @@ import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 import {
   SupplierPaymentHistoryMobileComponent
 } from '../supplier-payment-history-mobile/supplier-payment-history-mobile.component';
+import {OilSale} from "../../../../finance/models/oil-sale.model";
+import {paymentNoteVenteHuileConfig} from "../../../../finance/facture-config/payment-Note-VenteHuile-Config";
+import {factureVenteHuileConfig} from "../../../../finance/facture-config/facture-Vente-Huile-Config";
 
 export enum PaymentSourceType {
   DELIVERY_prc = 'delivery',
@@ -180,18 +183,37 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  getInvoicePdfConfig(delivery: UnifiedDelivery, company: CompanyProfile): PdfFactureConfig | PdfPaymentNoteConfig {
-    // Vérifier d'abord le cas de paiement partiel
+  getInvoicePdfConfig(
+    data: UnifiedDelivery | OilSale,
+    company: CompanyProfile
+  ): PdfFactureConfig | PdfPaymentNoteConfig {
+    // Vérifier si c'est une vente d'huile
+    const isOilSale = 'saleDate' in data && 'totalAmount' in data;
+
+    if (isOilSale) {
+      const sale = data as OilSale;
+
+      // Cas de paiement partiel
+      if (sale.unpaidAmount && sale.unpaidAmount > 0) {
+        console.log(`[Invoice] Génération d'une note de paiement pour la vente d'huile: ${sale.id}`);
+        return paymentNoteVenteHuileConfig(sale, company);
+      }
+
+      // Cas facture classique
+      return factureVenteHuileConfig(sale, company);
+    }
+
+    // Sinon, cas réception (UnifiedDelivery)
+    const delivery = data as UnifiedDelivery;
+
     if (delivery.unpaidAmount && delivery.unpaidAmount > 0) {
-      console.log(`[Invoice] Génération d'une note de paiement pour la livraison: ${delivery.lotNumber}`);
       return paymentNoteConfig(delivery, company);
     }
-    // Sinon, générer une facture normale selon l'opération
+
     switch (delivery.operationType) {
       case 'SIMPLE_RECEPTION':
       case 'EXCHANGE':
       case 'BASE':
-
         return factureTriturationConfig(delivery, company);
 
       default:
