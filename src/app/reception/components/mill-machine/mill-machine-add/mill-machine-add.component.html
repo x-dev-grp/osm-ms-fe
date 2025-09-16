@@ -5,7 +5,7 @@
 
 <!-- Main content -->
 <div *ngIf="!loading && !error">
-  <app-card [cardTitle]="isEditing ? 'Modifier la machine' : 'Ajouter une machine'">
+  <app-card [icon]="'construction'" [cardTitle]="isEditing ? 'Modifier la machine' : 'Ajouter une machine'">
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
       <div class="form-grid">
         <!-- Nom -->

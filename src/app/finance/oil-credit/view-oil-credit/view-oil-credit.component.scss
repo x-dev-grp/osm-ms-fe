@@ -2,6 +2,7 @@
   margin: 24px auto;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
+  max-width: 1200px;
 }
 
 .card-title {
@@ -25,14 +26,20 @@
   align-items: center;
   padding: 8px 0;
   transition: background-color 0.2s;
+  border-bottom: 1px solid #eee;
 
   &:hover {
     background-color: rgba(0, 0, 0, 0.02);
+  }
+  
+  &:last-child {
+    border-bottom: none;
   }
 }
 
 .detail-icon {
   color: #666;
+  font-size: 20px;
 }
 
 .detail-label {
@@ -42,6 +49,7 @@
 
 .detail-value {
   color: #333;
+  word-break: break-word;
 }
 
 // Loading and Error states
@@ -179,26 +187,102 @@
   }
 }
 
-@media (max-width: 600px) {
+// Print styles
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .oil-credit-detail-card {
+    box-shadow: none;
+    margin: 0;
+  }
+  
+  .detail-row {
+    page-break-inside: avoid;
+  }
+}
+
+// Responsive improvements
+@media (max-width: 992px) {
   .oil-credit-detail-card {
     margin: 16px;
   }
+}
+
+@media (max-width: 768px) {
+  .detail-content {
+    padding: 12px;
+  }
+  
+  .detail-grid {
+    gap: 12px;
+  }
+  
+  .detail-row {
+    grid-template-columns: 24px 100px 1fr;
+    padding: 6px 0;
+  }
+  
+  .detail-icon {
+    font-size: 18px;
+  }
+  
+  .detail-label {
+    font-size: 0.9rem;
+  }
+  
+  .detail-value {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .oil-credit-detail-card {
+    margin: 12px;
+    border-radius: 4px;
+  }
 
   .detail-row {
-    grid-template-columns: 32px 1fr;
+    grid-template-columns: 20px 1fr;
     gap: 8px;
+    padding: 8px 0;
+  }
+
+  .detail-icon {
+    grid-row: span 2;
+    align-self: start;
+    font-size: 16px;
   }
 
   .detail-label {
     grid-column: 2;
+    font-size: 0.875rem;
+    font-weight: 600;
   }
 
   .detail-value {
     grid-column: 2;
+    font-size: 0.875rem;
   }
 
   .loading-container,
   .error-container {
     padding: 24px;
+  }
+  
+  .state-badge {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+  }
+}
+
+@media (max-width: 400px) {
+  .detail-row {
+    grid-template-columns: 16px 1fr;
+  }
+  
+  .detail-icon {
+    font-size: 14px;
   }
 }

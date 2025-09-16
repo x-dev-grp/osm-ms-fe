@@ -23,7 +23,7 @@ Olive Reception → Quality Control → Processing → Oil Storage → Financial
 ```
 
 ### Key Business Entities
-- **Suppliers**: Olive and oil suppliers
+- **Suppliers / clients **: Olive and oil suppliers
 - **Receptions**: Olive and oil deliveries
 - **Storage Units**: Oil storage tanks
 - **Quality Control**: Quality assessment and rules
@@ -35,8 +35,8 @@ Olive Reception → Quality Control → Processing → Oil Storage → Financial
 ### 1. Reception Process
 
 #### Olive Reception Workflow
-1. **Supplier Registration**
-   - Supplier information capture
+1. **Suppliers / clients Registration**
+   - Suppliers / clients information capture
    - Payment history tracking
    - Quality performance monitoring
 
@@ -144,7 +144,7 @@ Represents a standard or default operation, often used as a fallback or for basi
 
 **Workflow:**
 - Register delivery (olive or oil) with minimal required information.
-- Assign to supplier and region.
+- Assign to Suppliers / clients and region.
 - Record weights/quantities.
 - No special financial or exchange logic.
 - Complete quality control and storage assignment as usual.
@@ -153,10 +153,10 @@ Represents a standard or default operation, often used as a fallback or for basi
 
 #### 2. OLIVE_PURCHASE
 **Description:**
-Represents the purchase of olives from a supplier.
+Represents the purchase of olives from a Suppliers / clients.
 
 **Workflow:**
-1. **Supplier Selection:** Only active suppliers can be selected.
+1. **Suppliers / clients Selection:** Only active suppliers can be selected.
 2. **Delivery Registration:** Enter lot number, gross/net weight, olive variety/type, and delivery date.
 3. **Quality Control:** Perform quality assessment (acidity, defects, etc.). Assign quality grade and calculate yield (rendement).
 4. **Pricing & Payment:** Calculate price based on weight, quality, and agreed unit price. Record paid and unpaid amounts. Generate payment record (PAYMENT operation may follow).
@@ -167,10 +167,10 @@ Represents the purchase of olives from a supplier.
 
 #### 3. OIL_PURCHASE
 **Description:**
-Represents the purchase of oil from a supplier.
+Represents the purchase of oil from a Suppliers / clients.
 
 **Workflow:**
-1. **Supplier Selection:** Only active suppliers can be selected.
+1. **Suppliers / clients Selection:** Only active suppliers can be selected.
 2. **Delivery Registration:** Enter lot number, oil quantity, oil type/variety, and delivery date.
 3. **Quality Control:** Perform oil quality assessment (acidity, peroxide, etc.). Assign quality grade.
 4. **Pricing & Payment:** Calculate price based on quantity, quality, and unit price. Record paid and unpaid amounts. Generate payment record.
@@ -184,7 +184,7 @@ Represents the purchase of oil from a supplier.
 Represents an exchange operation, such as trading olives for oil or vice versa.
 
 **Workflow:**
-1. **Supplier/Partner Selection:** Select the party involved in the exchange.
+1. **Suppliers / clients/Partner Selection:** Select the party involved in the exchange.
 2. **Exchange Registration:** Enter details of both items being exchanged (e.g., olives for oil). Record quantities and types for both sides.
 3. **Valuation:** Calculate equivalent values based on quality and quantity. Ensure fair exchange (may require approval).
 4. **Quality Control:** Assess both items for quality.
@@ -199,7 +199,7 @@ Represents a straightforward reception (olive or oil) without purchase, payment,
 
 **Workflow:**
 - Register delivery with basic details (lot number, type, quantity).
-- Assign to supplier/partner if applicable.
+- Assign to Suppliers / clients/partner if applicable.
 - Perform quality control if required.
 - Assign to storage or processing.
 - No payment or exchange logic.
@@ -245,8 +245,8 @@ class UnifiedDelivery {
   lotNumber: string;
   globalLotNumber?: string;
   
-  // Supplier and location
-  supplier: SupplierType;
+  // Suppliers / clients and location
+  'Suppliers / clie4nts': SupplierType;
   region: BaseType;
   
   // Weight and quantity
@@ -290,7 +290,7 @@ const netNotGreaterThanGross: ValidatorFn = (control: AbstractControl): Validati
 };
 ```
 
-#### 3. Supplier Validation
+#### 3. Suppliers / clients Validation
 - **Active Status**: Only active suppliers can make deliveries
 - **Payment History**: Check for outstanding payments
 - **Quality History**: Consider past quality performance
@@ -410,7 +410,7 @@ const getUtilizationPercentage = (storageUnit: StorageUnitDto): number => {
 #### Transaction Types
 ```typescript
 enum TransactionType {
-  RECEPTION_IN = 'RECEPTION_IN',     // Oil received from supplier
+  RECEPTION_IN = 'RECEPTION_IN',     // Oil received from Suppliers / clients
   TRANSFER_IN = 'TRANSFER_IN',       // Oil transferred from another tank
   TRANSFER_OUT = 'TRANSFER_OUT',     // Oil transferred to another tank
   LOAN = 'LOAN',                     // Oil loaned to customer
@@ -443,7 +443,7 @@ interface PaymentCalculation {
 ```
 
 #### 2. Payment Tracking
-- **Payment History**: Track all payments by supplier
+- **Payment History**: Track all payments by Suppliers / clients
 - **Outstanding Balances**: Monitor unpaid amounts
 - **Payment Scheduling**: Plan future payments
 - **Payment Methods**: Support multiple payment types
@@ -491,7 +491,7 @@ interface PlanningItem {
   type: 'LOT' | 'GLOBAL_LOT';
   lotNumber: string;
   globalLotNumber?: string;
-  supplier: SupplierType;
+  'Suppliers / clients': SupplierType;
   quantity: number;
   status: PlanningStatus;
   assignedMill?: MillMachine;
@@ -594,10 +594,10 @@ const calculatePrice = (basePrice: number, qualityScore: number): number => {
 
 ### Core Entity Relationships
 
-#### 1. Supplier → Reception
-- One supplier can have multiple receptions
-- Reception must have exactly one supplier
-- Supplier history affects reception processing
+#### 1. Suppliers / clients → Reception
+- One Suppliers / clients can have multiple receptions
+- Reception must have exactly one Suppliers / clients
+- Suppliers / clients history affects reception processing
 
 #### 2. Reception → Quality Control
 - One reception can have multiple quality control results
@@ -611,7 +611,7 @@ const calculatePrice = (basePrice: number, qualityScore: number): number => {
 
 #### 4. Reception → Financial
 - Reception generates financial transactions
-- Payment history tracked per supplier
+- Payment history tracked per Suppliers / clients
 - Outstanding balances calculated
 
 ### Data Integrity Rules
@@ -635,7 +635,7 @@ const calculatePrice = (basePrice: number, qualityScore: number): number => {
 
 ### Olive Reception Workflow
 ```
-Supplier Delivery → Weight Measurement → Quality Assessment → Storage Assignment → Payment Processing
+Suppliers / clients Delivery → Weight Measurement → Quality Assessment → Storage Assignment → Payment Processing
 ```
 
 ### Oil Reception Workflow
@@ -665,7 +665,7 @@ Delivery Completion → Price Calculation → Payment Processing → Balance Upd
 #### 1. Reception KPIs
 - Total receptions per period
 - Average reception size
-- Supplier performance metrics
+- Suppliers / clients performance metrics
 - Quality acceptance rates
 
 #### 2. Storage KPIs

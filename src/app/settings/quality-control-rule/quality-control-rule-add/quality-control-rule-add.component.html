@@ -17,9 +17,7 @@
   <form [formGroup]="ruleForm" class="form-content">
     <!-- Header with Back Button -->
     <div class="header-row" style="display: flex; align-items: center; gap: 10px;">
-      <button (click)="onBack()" [disabled]="loading" mat-icon-button title="Retour">
-        <mat-icon>arrow_back</mat-icon>
-      </button>
+
       <h3>{{ isEditing ? 'Modifier Rule' : 'Ajouter Rule' }}</h3>
     </div>
 

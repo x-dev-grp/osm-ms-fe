@@ -1,4 +1,4 @@
-<app-card [title]="'EXPENSES.DETAILS_TITLE' | translate">
+<app-card [icon]="'receipt_long'" [cardTitle]="'EXPENSES.DETAILS_TITLE' | translate">
   <ng-template #headerTitleTemplate>
     <span class="expense-ref-header" *ngIf="expense">{{ expense.invoiceRef }}</span>
   </ng-template>

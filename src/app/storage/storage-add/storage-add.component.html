@@ -1,4 +1,4 @@
-<app-card [title]="isEditing ? 'Edit Storage Unit' : 'Add Storage Unit'">
+<app-card [icon]="'inventory_2'" [cardTitle]="isEditing ? 'Edit Storage Unit' : 'Add Storage Unit'">
   <div class="form-container">
     <form [formGroup]="storageForm" (ngSubmit)="save()" class="storage-form">
       <div class="form-row">

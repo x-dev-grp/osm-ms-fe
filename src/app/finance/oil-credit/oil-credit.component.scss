@@ -1,29 +1,52 @@
-//.panel {
-//  margin-bottom: 2rem;
-//}
-//
-//.expenses-form {
-//  .row {
-//    display: flex;
-//    gap: 1rem;
-//    margin-bottom: 1rem;
-//    .col { flex: 1; min-width: 150px; }
-//  }
-//  .actions { display: flex; gap: 0.5rem; }
-//}
-//
-//
-//
-//.table-container {
-//  overflow-x: auto;
-//  margin-top: 1rem;
-//}
-//
-//.expenses-table {
-//  width: 100%;
-//}
-//
-//.mat-table .mat-header-cell {
-//  background-color: #fff;
-//  font-weight: bold;
-//}
+.oil-credit-container {
+  padding: 1rem;
+}
+
+.dashboard-wrapper {
+  margin: 1rem 0;
+}
+
+// Responsive improvements for the dashboard
+@media (max-width: 768px) {
+  .oil-credit-container {
+    padding: 0.5rem;
+  }
+  
+  .dashboard-wrapper {
+    margin: 0.5rem 0;
+  }
+}
+
+// Fix for any table display issues
+.table-container {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+
+.oil-credits-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.mat-table .mat-header-cell {
+  background-color: #f5f5f5;
+  font-weight: bold;
+}
+
+// Action button improvements
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+@media (max-width: 599px) {
+  .action-buttons {
+    flex-direction: column;
+    
+    button {
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+  }
+}

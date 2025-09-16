@@ -77,7 +77,18 @@ export class OilSaleValidationDialogComponent implements OnInit {
     return unit ? unit.currentVolume : 0;
   }
 
+/**
+ * Retrieves formatted information about a storage unit, including supplier details if available
+ * @param u - The StorageUnitDto object containing storage unit information
+ * @returns A formatted string containing storage unit details and optionally supplier information
+ */
   getStorageUnitInfo(u: StorageUnitDto): string {
+    // Include supplier info if available for better context
+    if (u.supplier) {
+      // Format the string to include name, current volume, max capacity, and supplier's full name
+      return `${u.name} (${u.currentVolume.toFixed(2)}/${u.maxCapacity.toFixed(2)} kg) [${u.supplier?.supplierInfo.name + " " + u.supplier?.supplierInfo.lastname}]`;
+    }
+    // Return basic storage unit info without supplier details
     return `${u.name} (${u.currentVolume.toFixed(2)}/${u.maxCapacity.toFixed(2)} kg)`;
   }
 

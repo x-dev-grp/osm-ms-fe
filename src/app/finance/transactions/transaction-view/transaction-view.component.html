@@ -1,9 +1,5 @@
-<app-card [title]="'TRANSACTIONS.VIEW.TITLE' | translate">
-  <div header-action>
-    <button mat-icon-button (click)="onBack()">
-      <mat-icon>arrow_back</mat-icon>
-    </button>
-  </div>
+<app-card [icon]="'swap_horiz'" [cardTitle]="'TRANSACTIONS.VIEW.TITLE' | translate">
+
 
   <div class="details-container">
     <!-- Loading State -->
@@ -11,13 +7,13 @@
       <mat-spinner diameter="40"></mat-spinner>
       <p>{{ 'COMMON.LOADING' | translate }}</p>
     </div>
-    
+
     <!-- Error State -->
     <div *ngIf="!loading && error" class="error-container">
       <mat-icon class="error-icon">error_outline</mat-icon>
       <p>{{ 'TRANSACTIONS.ERRORS.NOT_FOUND' | translate }}</p>
     </div>
-    
+
     <!-- Transaction Details -->
     <div *ngIf="!loading && !error && transaction" class="transaction-details">
       <!-- Status Header -->
@@ -39,7 +35,7 @@
             <mat-icon>info</mat-icon>
             {{ 'TRANSACTIONS.SECTIONS.BASIC_INFO' | translate }}
           </h3>
-          
+
           <div class="info-row">
             <span class="label">{{ 'TRANSACTIONS.FIELDS.TRANSACTION_TYPE' | translate }}:</span>
             <span class="value">
@@ -48,23 +44,23 @@
               </mat-chip>
             </span>
           </div>
-          
+
           <div class="info-row">
             <span class="label">{{ 'TRANSACTIONS.FIELDS.DIRECTION' | translate }}:</span>
             <span class="value">
               <mat-chip class="direction-chip" [ngClass]="'direction-' + transaction.direction?.toLowerCase()">
-                <mat-icon>{{ transaction.direction === 'INBOUND' ? 'arrow_downward' : 
+                <mat-icon>{{ transaction.direction === 'INBOUND' ? 'arrow_downward' :
                             transaction.direction === 'OUTBOUND' ? 'arrow_upward' : 'swap_horiz' }}</mat-icon>
                 {{ 'TRANSACTIONS.DIRECTIONS.' + transaction.direction | translate }}
               </mat-chip>
             </span>
           </div>
-          
+
           <div class="info-row">
             <span class="label">{{ 'TRANSACTIONS.FIELDS.PAYMENT_METHOD' | translate }}:</span>
             <span class="value">{{ 'TRANSACTIONS.PAYMENT_METHODS.' + transaction.paymentMethod | translate }}</span>
           </div>
-          
+
           <div class="info-row">
             <span class="label">{{ 'TRANSACTIONS.FIELDS.TRANSACTION_DATE' | translate }}:</span>
             <span class="value">{{ transaction.transactionDate | date:'dd/MM/yyyy HH:mm' }}</span>
@@ -77,17 +73,17 @@
             <mat-icon>receipt</mat-icon>
             {{ 'TRANSACTIONS.SECTIONS.REFERENCES' | translate }}
           </h3>
-          
+
           <div class="info-row" *ngIf="transaction.lotNumber">
             <span class="label">{{ 'TRANSACTIONS.FIELDS.LOT_NUMBER' | translate }}:</span>
             <span class="value">{{ transaction.lotNumber }}</span>
           </div>
-          
+
           <div class="info-row" *ngIf="transaction.invoiceReference">
             <span class="label">{{ 'TRANSACTIONS.FIELDS.INVOICE_REFERENCE' | translate }}:</span>
             <span class="value">{{ transaction.invoiceReference }}</span>
           </div>
-          
+
           <div class="info-row" *ngIf="transaction.receiptReference">
             <span class="label">{{ 'TRANSACTIONS.FIELDS.RECEIPT_REFERENCE' | translate }}:</span>
             <span class="value">{{ transaction.receiptReference }}</span>
@@ -100,7 +96,7 @@
             <mat-icon>people</mat-icon>
             {{ 'TRANSACTIONS.SECTIONS.PARTIES' | translate }}
           </h3>
-          
+
           <div class="info-row" *ngIf="transaction.supplierId">
             <span class="label">{{ 'TRANSACTIONS.FIELDS.SUPPLIER' | translate }}:</span>
             <span class="value">{{ transaction.supplierId.name || transaction.supplierId.id }}</span>
@@ -113,12 +109,12 @@
             <mat-icon>verified</mat-icon>
             {{ 'TRANSACTIONS.SECTIONS.APPROVAL' | translate }}
           </h3>
-          
+
           <div class="info-row" *ngIf="transaction.approvedBy">
             <span class="label">{{ 'TRANSACTIONS.FIELDS.APPROVED_BY' | translate }}:</span>
             <span class="value">{{ transaction.approvedBy }}</span>
           </div>
-          
+
           <div class="info-row" *ngIf="transaction.approvalDate">
             <span class="label">{{ 'TRANSACTIONS.FIELDS.APPROVAL_DATE' | translate }}:</span>
             <span class="value">{{ transaction.approvalDate | date:'dd/MM/yyyy HH:mm' }}</span>
@@ -131,7 +127,7 @@
             <mat-icon>description</mat-icon>
             {{ 'TRANSACTIONS.FIELDS.DESCRIPTION' | translate }}
           </h3>
-          
+
           <div class="description-content">
             {{ transaction.description }}
           </div>
@@ -144,12 +140,12 @@
           <mat-icon>print</mat-icon>
           {{ 'COMMON.PRINT' | translate }}
         </button>
-        
+
         <button mat-button (click)="onDuplicate()">
           <mat-icon>content_copy</mat-icon>
           {{ 'TRANSACTIONS.ACTIONS.DUPLICATE' | translate }}
         </button>
-        
+
         <button mat-raised-button color="primary" (click)="onEdit()">
           <mat-icon>edit</mat-icon>
           {{ 'COMMON.EDIT' | translate }}
@@ -157,4 +153,4 @@
       </div>
     </div>
   </div>
-</app-card> 
+</app-card>

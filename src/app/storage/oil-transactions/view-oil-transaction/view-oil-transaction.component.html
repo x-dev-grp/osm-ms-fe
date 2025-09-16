@@ -9,18 +9,13 @@
     <mat-icon class="error-icon">error</mat-icon>
     <h2>{{ 'STANDARD.BTNS.CANCEL' | translate }}</h2>
     <p>{{ 'OIL_TRANSACTIONS.VIEW.MESSAGES.ERROR' | translate }}</p>
-    <button (click)="onBack()" color="primary" mat-raised-button>
-      <mat-icon>arrow_back</mat-icon>
-      {{ 'OIL_TRANSACTIONS.VIEW.ACTIONS.BACK' | translate }}
-    </button>
+
   </div>
 
   <!-- Details Card -->
   <mat-card *ngIf="oilTransaction && !loading" class="details-card enhanced-details-card">
     <div class="card-header sticky-header">
-      <button (click)="onBack()" [matTooltip]="'OIL_TRANSACTIONS.VIEW.ACTIONS.BACK' | translate" mat-icon-button>
-        <mat-icon>arrow_back</mat-icon>
-      </button>
+
       <mat-card-title>{{ 'OIL_TRANSACTIONS.VIEW.TITLE' | translate }}</mat-card-title>
       <div class="header-actions">
         <button (click)="onEdit()" [matTooltip]="'OIL_TRANSACTIONS.VIEW.ACTIONS.EDIT' | translate" color="primary"
