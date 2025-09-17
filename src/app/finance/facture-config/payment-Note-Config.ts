@@ -41,7 +41,11 @@ export function paymentNoteConfig(delivery: UnifiedDelivery, company: CompanyPro
         paymentType: paymentType,
         totalAmount: fmt(totalNum),
         paidAmount: fmt(paidNum),
-        paymentDate: new Date().toLocaleDateString(),
+        paymentDate: new Date().toLocaleDateString('fr-FR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        }),
         remainingAmount: fmt(unpaidNum)
       }
     ],
