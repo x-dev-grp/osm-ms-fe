@@ -35,6 +35,7 @@ import {
 import {OilSale} from "../../../../finance/models/oil-sale.model";
 import {paymentNoteVenteHuileConfig} from "../../../../finance/facture-config/payment-Note-VenteHuile-Config";
 import {factureVenteHuileConfig} from "../../../../finance/facture-config/facture-Vente-Huile-Config";
+import { WasteSale } from '../../../../finance/models/Waste.model';
 
 export enum PaymentSourceType {
   DELIVERY_prc = 'delivery',
@@ -183,10 +184,7 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  getInvoicePdfConfig(
-    data: UnifiedDelivery | OilSale,
-    company: CompanyProfile
-  ): PdfFactureConfig | PdfPaymentNoteConfig {
+  getInvoicePdfConfig(data: UnifiedDelivery | OilSale|WasteSale, company: CompanyProfile): PdfFactureConfig | PdfPaymentNoteConfig {
     // Vérifier si c'est une vente d'huile
     const isOilSale = 'saleDate' in data && 'totalAmount' in data;
 
