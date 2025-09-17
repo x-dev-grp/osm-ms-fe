@@ -1,6 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuardChild } from '../interceptors/guards/auth.guard';
+// CHANGE: permissions - import permission guards
+import { allPermissionGuard } from 'src/app/interceptors/guards/permission.guard';
+// CHANGE: permissions - use enums
+import { OSMModule, ProductionEntity, Action, permissionKey } from 'src/app/theme/types/permissions';
 
 const routes: Routes = [
   {
@@ -9,86 +13,101 @@ const routes: Routes = [
       {
         path: '',
         loadComponent: () => import('./storage.component').then((m) => m.StorageUnitsComponent),
-        canActivate: [AuthGuardChild]
+        // CHANGE: permissions - require PRODUCTION:STORAGEUNIT:READ
+        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.READ)])]
       },
       {
         path: 'new',
         loadComponent: () => import('./storage-add/storage-add.component').then((m) => m.StorageAddComponent),
-        canActivate: [AuthGuardChild]
+        // CHANGE: permissions - require PRODUCTION:STORAGEUNIT:CREATE
+        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.CREATE)])]
       },
       {
         path: ':id/edit',
         loadComponent: () => import('./storage-add/storage-add.component').then((m) => m.StorageAddComponent),
-        canActivate: [AuthGuardChild]
+        // CHANGE: permissions - require PRODUCTION:STORAGEUNIT:UPDATE
+        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.UPDATE)])]
       },
       {
         path: ':id/view',
         loadComponent: () => import('./view-storage/view-storage.component').then((m) => m.ViewStorageComponent),
-        canActivate: [AuthGuardChild]
+        // CHANGE: permissions - require PRODUCTION:STORAGEUNIT:READ
+        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.READ)])]
       },
       {
         path: 'oil-transaction/:id',
-        canActivate: [AuthGuardChild],
+        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.OILTRANSACTION, Action.READ)])],
         loadComponent: () =>
           import('./oil-transactions/view-oil-transaction/view-oil-transaction.component').then((m) => m.ViewOilTransactionComponent)
+
       },
       {
         path: 'oil-transactions',
         loadComponent: () => import('./oil-transactions/oil-transactions.component').then((m) => m.OilTransactionsComponent),
-        canActivate: [AuthGuardChild]
-      },{
+        // CHANGE: permissions - require PRODUCTION:OILTRANSACTION:READ
+        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.OILTRANSACTION, Action.READ)])]
+      }, {
         path: 'storage_recap',
         loadComponent: () => import('./storage-units-board/storage-units-board.component').then((m) => m.StorageUnitsBoardComponent),
-        canActivate: [AuthGuardChild]
+        // CHANGE: permissions - require PRODUCTION:STORAGEUNIT:READ
+        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.READ)])]
       },
 
       {
         path: 'oil-transactions/:id/view',
         loadComponent: () =>
           import('./oil-transactions/view-oil-transaction/view-oil-transaction.component').then((m) => m.ViewOilTransactionComponent),
-        canActivate: [AuthGuardChild]
+        // CHANGE: permissions - require PRODUCTION:OILTRANSACTION:READ
+        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.OILTRANSACTION, Action.READ)])]
       },
       {
         path: 'oil-transactions/new',
         loadComponent: () =>
           import('./oil-transactions/oil-transaction-add/oil-transaction-add.component').then((m) => m.OilTransactionAddComponent),
-        canActivate: [AuthGuardChild]
+        // CHANGE: permissions - require PRODUCTION:OILTRANSACTION:CREATE
+        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.OILTRANSACTION, Action.CREATE)])]
       },
       {
         path: 'oil-transactions/:id/edit',
         loadComponent: () =>
           import('./oil-transactions/oil-transaction-add/oil-transaction-add.component').then((m) => m.OilTransactionAddComponent),
-        canActivate: [AuthGuardChild]
+        // CHANGE: permissions - require PRODUCTION:OILTRANSACTION:UPDATE
+        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.OILTRANSACTION, Action.UPDATE)])]
       },
       {
         path: 'oil-transactions/:id/validate',
         loadComponent: () =>
           import('./oil-transactions/oil-transaction-add/oil-transaction-add.component').then((m) => m.OilTransactionAddComponent),
-        canActivate: [AuthGuardChild]
+        // CHANGE: permissions - require PRODUCTION:OILTRANSACTION:VALIDATE
+        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.OILTRANSACTION, Action.VALIDATE)])]
       },
       {
         path: 'oil-container',
         loadComponent: () => import('./oil-container/oil-container.component').then((m) => m.OilContainerComponent),
-        canActivate: [AuthGuardChild]
+        // CHANGE: permissions - require PRODUCTION:STORAGEUNIT:READ (container listing bound to storage perms)
+        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.READ)])]
       },
 
       {
         path: 'oil-container/:id/view',
         loadComponent: () =>
           import('./oil-container/view-oil-container/view-oil-container.component').then((m) => m.ViewOilContainerComponent),
-        canActivate: [AuthGuardChild]
+        // CHANGE: permissions - require PRODUCTION:STORAGEUNIT:READ
+        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.READ)])]
       },
       {
         path: 'oil-container/new',
         loadComponent: () =>
           import('./oil-container/add-oil-container/add-oil-container.component').then((m) => m.AddOilContainerComponent),
-        canActivate: [AuthGuardChild]
+        // CHANGE: permissions - require PRODUCTION:STORAGEUNIT:CREATE
+        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.CREATE)])]
       },
       {
         path: 'oil-container/:id/edit',
         loadComponent: () =>
           import('./oil-container/add-oil-container/add-oil-container.component').then((m) => m.AddOilContainerComponent),
-        canActivate: [AuthGuardChild]
+        // CHANGE: permissions - require PRODUCTION:STORAGEUNIT:UPDATE
+        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.UPDATE)])]
       }
     ]
   }
@@ -98,4 +117,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class StorageRoutingModule {}
+export class StorageRoutingModule { }

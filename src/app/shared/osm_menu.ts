@@ -1,5 +1,15 @@
 import { Navigation } from 'src/app/theme/types/navigation';
 import { Role } from 'src/app/theme/types/role';
+// CHANGE: permissions - use enums
+import {
+  Action,
+  FinanceEntity,
+  HabilitationEntity,
+  OSMModule,
+  permissionKey,
+  ProductionEntity,
+  ReceptionEntity
+} from 'src/app/theme/types/permissions';
 
 export const osm_menus: Navigation[] = [
   // ────────────────────────
@@ -11,52 +21,55 @@ export const osm_menus: Navigation[] = [
     // type: 'group',
     // children: [
     //   {
-        id: 'Dashboard',
-        title: 'MENU.HOME.DASHBOARD.TITLE',
-        type: 'group',
-        // icon: 'dashboard',
-        children: [
-          // {
-          //   id: 'item-dashboard-home',
-          //   title: 'MENU.HOME.DASHBOARD.DEFAULT',
-          //   type: 'item',
-          //   url: '/dashboard',
-          //   icon: 'space_dashboard',
-          //   breadcrumbs: false,
-          //   modulePermission: 'RECEPTION'
-          // },
-          // {
-          //   id: 'item-dashboard-analytics',
-          //   title: 'MENU.HOME.DASHBOARD.ANALYTICS',
-          //   type: 'item',
-          //   url: '/dashboard/analytics',
-          //   icon: 'bar_chart',
-          //   breadcrumbs: false
-          // },
-          {
-            id: 'item-dashboard-finance',
-            title: 'MENU.HOME.DASHBOARD.FINANCE',
-            type: 'item',
-            url: '/finance/dashboard',
-            icon: 'show_chart',
-            breadcrumbs: false
-          },
-          {
-            id: 'item-dashboard-reception-overview',
-            title: 'MENU.HOME.DASHBOARD.RECEPTION',
-            type: 'item',
-            url: '/reception',
-            icon: 'assignment',
-            breadcrumbs: false
-          },{
-            id: 'item-storage-storage_recap',
-            title: 'MENU.HOME.DASHBOARD.STORAGE_RECAP',
-            type: 'item',
-            url: '/storage/storage_recap',
-            icon: 'water_drop',
-            role: [Role.Admin],
-            breadcrumbs: false
-          },
+    id: 'Dashboard',
+    title: 'MENU.HOME.DASHBOARD.TITLE',
+    type: 'group', // icon: 'dashboard',
+    children: [
+      // {
+      //   id: 'item-dashboard-home',
+      //   title: 'MENU.HOME.DASHBOARD.DEFAULT',
+      //   type: 'item',
+      //   url: '/dashboard',
+      //   icon: 'space_dashboard',
+      //   breadcrumbs: false,
+      //   modulePermission: 'RECEPTION'
+      // },
+      // {
+      //   id: 'item-dashboard-analytics',
+      //   title: 'MENU.HOME.DASHBOARD.ANALYTICS',
+      //   type: 'item',
+      //   url: '/dashboard/analytics',
+      //   icon: 'bar_chart',
+      //   breadcrumbs: false
+      // },
+      {
+        id: 'item-dashboard-finance',
+        title: 'MENU.HOME.DASHBOARD.FINANCE',
+        type: 'item',
+        url: '/finance/dashboard',
+        icon: 'show_chart',
+        breadcrumbs: false, // CHANGE: permissions - require FINANCE:FINANCIALTRANSACTION:READ
+        permissions: [permissionKey(OSMModule.FINANCE, FinanceEntity.FINANCIALTRANSACTION, Action.READ)]
+      },
+      {
+        id: 'item-dashboard-reception-overview',
+        title: 'MENU.HOME.DASHBOARD.RECEPTION',
+        type: 'item',
+        url: '/reception',
+        icon: 'assignment',
+        breadcrumbs: false, // CHANGE: permissions - require RECEPTION:UNIFIEDDELIVERY:READ
+        permissions: [permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)]
+      },
+      {
+        id: 'item-storage-storage_recap',
+        title: 'MENU.HOME.DASHBOARD.STORAGE_RECAP',
+        type: 'item',
+        url: '/storage/storage_recap',
+        icon: 'water_drop',
+
+        breadcrumbs: false, // CHANGE: permissions - require PRODUCTION:STORAGEUNIT:READ
+        permissions: [permissionKey(OSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.READ)]
+      }
       //   ]
       // }
     ]
@@ -68,8 +81,8 @@ export const osm_menus: Navigation[] = [
   {
     id: 'group-reception',
     title: 'MENU.RECEPTION.TITLE',
-    type: 'group',
-
+    type: 'group', // CHANGE: permissions - group requires RECEPTION:UNIFIEDDELIVERY:READ
+    modulePermission: 'RECEPTION',
     children: [
       {
         id: 'collapse-group-reception',
@@ -84,7 +97,7 @@ export const osm_menus: Navigation[] = [
             url: '/reception/reception-olive',
             icon: 'shopping_basket',
             breadcrumbs: false,
-            ressourcePermission: 'UNIFIEDDELIVERY'
+            ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
           },
           {
             id: 'item-reception-oil',
@@ -92,8 +105,8 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/reception/reception-huile',
             icon: 'local_shipping',
-            breadcrumbs: false,
-            ressourcePermission: 'UNIFIEDDELIVERY'
+            breadcrumbs: false, // CHANGE: permissions - require RECEPTION:UNIFIEDDELIVERY:CREATE
+            ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
           },
           {
             id: 'item-reception-quality',
@@ -101,10 +114,9 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/reception/quality',
             icon: 'rule',
-            breadcrumbs: false,
-            ressourcePermission: 'QUALITYCONTROLRESULT'
-          },
-
+            breadcrumbs: false, // CHANGE: permissions - require PRODUCTION:QUALITYCONTROLRESULT:READ
+            ressourcePermission: ProductionEntity.QUALITYCONTROLRESULT
+          }
         ]
       }
     ]
@@ -116,8 +128,8 @@ export const osm_menus: Navigation[] = [
   {
     id: 'group-production',
     title: 'MENU.PRODUCTION.TITLE',
-    type: 'group',
-
+    type: 'group', // CHANGE: permissions - group requires PRODUCTION permissions
+    modulePermission: 'PRODUCTION',
     children: [
       {
         id: 'triturationHistory',
@@ -125,8 +137,8 @@ export const osm_menus: Navigation[] = [
         type: 'item',
         url: '/reception/reception-list',
         icon: 'fact_check',
-        breadcrumbs: false,
-        permissions: ['RECEPTION:UNIFIEDDELIVERY:DELIVERYHISTORY']
+        breadcrumbs: false, // CHANGE: permissions - require RECEPTION:UNIFIEDDELIVERY:READ (for history)
+        permissions: [permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)]
       },
       {
         id: 'item-production-mill-schedules',
@@ -134,8 +146,8 @@ export const osm_menus: Navigation[] = [
         type: 'item',
         url: '/reception/mill-schedules',
         icon: 'schedule',
-        breadcrumbs: false,
-        permissions: ['RECEPTION:UNIFIEDDELIVERY:PLANNING']
+        breadcrumbs: false, // CHANGE: permissions - require RECEPTION:UNIFIEDDELIVERY:PLANNING
+        permissions: [permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.PLANNING)]
       },
       {
         id: 'item-reception-supplier-manage',
@@ -143,8 +155,8 @@ export const osm_menus: Navigation[] = [
         type: 'item',
         url: '/reception/fournisseur',
         icon: 'contact_page',
-        breadcrumbs: false,
-        ressourcePermission: 'SUPPLIER'
+        breadcrumbs: false, // CHANGE: permissions - require RECEPTION:SUPPLIER:READ
+        ressourcePermission: ReceptionEntity.SUPPLIER
       }
       // (If your original file also duplicated supplier routes here, add them back below unchanged)
       // {
@@ -215,7 +227,8 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/finance/expenses',
             icon: 'receipt_long',
-            breadcrumbs: false
+            breadcrumbs: false, // CHANGE: permissions - require FINANCE:EXPENSE:READ
+            ressourcePermission: FinanceEntity.EXPENSE
           },
           {
             id: 'item-finance-transactions',
@@ -223,7 +236,8 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/finance/transactions',
             icon: 'sync_alt',
-            breadcrumbs: false
+            breadcrumbs: false, // CHANGE: permissions - require FINANCE:FINANCIALTRANSACTION:READ
+            ressourcePermission: FinanceEntity.FINANCIALTRANSACTION
           },
           {
             id: 'item-finance-banks',
@@ -231,7 +245,9 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/finance/banks',
             icon: 'account_balance',
-            breadcrumbs: false
+            breadcrumbs: false, // CHANGE: permissions - require FINANCE:BANKACCOUNT:READ
+
+            ressourcePermission: FinanceEntity.BANKACCOUNT
           },
           {
             id: 'item-finance-oil-credit',
@@ -239,7 +255,8 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/finance/oil-credit',
             icon: 'credit_score',
-            breadcrumbs: false
+            breadcrumbs: false, // CHANGE: permissions - require PRODUCTION:OILCREDIT:READ
+            ressourcePermission: ProductionEntity.OILCREDIT
           },
 
           {
@@ -248,7 +265,8 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/finance/oil-sales',
             icon: 'sell',
-            breadcrumbs: false
+            breadcrumbs: false, // CHANGE: permissions - require FINANCE:OILSALE:READ
+            ressourcePermission: FinanceEntity.OILSALE
           },
           {
             id: 'item-finance-waste-sales',
@@ -256,7 +274,8 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/finance/waste-sales',
             icon: 'recycling',
-            breadcrumbs: false
+            breadcrumbs: false,
+            ressourcePermission: FinanceEntity.WASTESALE
           }
         ]
       }
@@ -278,7 +297,9 @@ export const osm_menus: Navigation[] = [
         type: 'item',
         url: '/storage',
         icon: 'warehouse',
-        breadcrumbs: false
+        breadcrumbs: false, // CHANGE: permissions - require PRODUCTION:STORAGEUNIT:READ
+         ressourcePermission:    ProductionEntity.STORAGEUNIT
+
       },
       {
         id: 'item-storage-oil-transactions',
@@ -286,8 +307,9 @@ export const osm_menus: Navigation[] = [
         type: 'item',
         url: '/storage/oil-transactions',
         icon: 'water_drop',
-        role: [Role.Admin],
-        breadcrumbs: false
+
+        breadcrumbs: false, // CHANGE: permissions - require PRODUCTION:OILTRANSACTION:READ
+        ressourcePermission:    ProductionEntity.OILTRANSACTION
       },
       {
         id: 'item-storage-containers',
@@ -295,8 +317,9 @@ export const osm_menus: Navigation[] = [
         type: 'item',
         url: '/storage/oil-container',
         icon: 'inbox',
-        role: [Role.Admin],
-        breadcrumbs: false
+
+        breadcrumbs: false, // CHANGE: permissions - require PRODUCTION:STORAGEUNIT:READ
+        ressourcePermission:  ProductionEntity.STORAGEUNIT
       }
     ]
   },
@@ -322,7 +345,8 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/settings/general-config',
             icon: 'settings_suggest',
-            breadcrumbs: false
+            breadcrumbs: false,
+            ressourcePermission:HabilitationEntity.COMPANYPROFILE
           },
           {
             id: 'item-settings-configuration',
@@ -330,7 +354,7 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/settings/configuration',
             icon: 'widgets',
-            breadcrumbs: false
+            breadcrumbs: false,
           },
           {
             id: 'item-settings-generic',
@@ -338,7 +362,8 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/settings/generic',
             icon: 'category',
-            breadcrumbs: false
+            breadcrumbs: false, // CHANGE: permissions - require PRODUCTION:base_type:READ
+            ressourcePermission:ProductionEntity.base_type
           },
           {
             id: 'item-settings-quality-rules',
@@ -346,7 +371,8 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/settings/quality-control',
             icon: 'rule',
-            breadcrumbs: false
+            breadcrumbs: false, // CHANGE: permissions - require PRODUCTION:QUALITYCONTROLRULE:READ
+            ressourcePermission:   ProductionEntity.QUALITYCONTROLRULE
           },
           {
             id: 'item-settings-mill-machines',
@@ -354,7 +380,8 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/reception/mill-machines',
             icon: 'precision_manufacturing',
-            breadcrumbs: false
+            breadcrumbs: false, // CHANGE: permissions - require PRODUCTION:MILLMACHINE:READ
+            ressourcePermission:  ProductionEntity.MILLMACHINE
           },
           {
             id: 'item-settings-users',
@@ -362,7 +389,8 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/settings/users',
             icon: 'people',
-            breadcrumbs: false
+            breadcrumbs: false, // CHANGE: permissions - require HABILITATION:OSMUSER:READ
+            ressourcePermission:  HabilitationEntity.OSMUSER
           },
           {
             id: 'item-settings-roles',
@@ -370,12 +398,13 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/settings/roles',
             icon: 'admin_panel_settings',
-            breadcrumbs: false
+            breadcrumbs: false, // CHANGE: permissions - require HABILITATION:ROLE:READ
+            ressourcePermission:  HabilitationEntity.ROLE
           }
         ]
       }
     ]
-  },
+  }
 
   // =========================
   // (Optional future sections; keep commented if not used)

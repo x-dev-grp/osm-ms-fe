@@ -98,6 +98,10 @@ export class OilTransactionsComponent implements OnInit {
             this.openOilSaleValidationDialog(event.row);
             this.dashboard.refrechData();
             break;
+            case TransactionType.LOAN:
+              this.openExchangeValidationDialog(event.row, false);
+            this.dashboard.refrechData();
+            break;
           default:
             this.router.navigate(['/storage/oil-transactions', event.row.id, 'validate']);
         }
@@ -141,7 +145,7 @@ export class OilTransactionsComponent implements OnInit {
           next: (response) => {
             if (response.success) {
               this.toast.success();
-
+              this.dashboard.refrechData();
             } else {
               this.toast.error('Error validating oil sale: ' + response.message);
             }
@@ -210,7 +214,6 @@ export class OilTransactionsComponent implements OnInit {
               if (response.success) {
                 this.toast.success();
                 this.dashboard.refrechData();
-                this.router.navigate(['/storage/oil-transactions']);
               } else {
                 this.toast.error('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.APPROVE');
               }

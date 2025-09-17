@@ -3,7 +3,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 // project import
- import { AuthGuardChild } from './interceptors/guards/auth.guard';
+import { AuthGuardChild } from './interceptors/guards/auth.guard';
+// CHANGE: permissions - import permission guards and enums
+import { allPermissionGuard, anyPermissionGuard } from './interceptors/guards/permission.guard';
+import { OSMModule, ProductionEntity, ReceptionEntity, Action, permissionKey } from './theme/types/permissions';
 
 //Type
 import { Role } from './theme/types/role';
@@ -42,12 +45,16 @@ const routes: Routes = [
       {
         path: 'generic',
         loadComponent: () => import('./settings/generic-type/generic-type.component').then((c) => c.GenericTypeComponent),
+        // CHANGE: permissions - require PRODUCTION:base_type:READ
+        canActivate: [anyPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.base_type, Action.READ)])],
         data: { roles: [Role.Admin, Role.User] }
       },
 
       {
         path: 'qcr',
         loadComponent: () => import('./settings/quality-control-rule/quality-control-rule.component').then((c) => c.QualityControlRuleComponent),
+        // CHANGE: permissions - require PRODUCTION:QUALITYCONTROLRULE:READ
+        canActivate: [anyPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.QUALITYCONTROLRULE, Action.READ)])],
         data: { roles: [Role.Admin, Role.User] }
       },
 
@@ -58,9 +65,10 @@ const routes: Routes = [
       },
 
       {
-
-      path: 'fournisseur',
+        path: 'fournisseur',
         loadComponent: () => import('./reception/components/suppliers/supplier-details/supplier-details.component').then((c) => c.SupplierDetailsComponent),
+        // CHANGE: permissions - require RECEPTION:SUPPLIER:READ
+        canActivate: [anyPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.SUPPLIER, Action.READ)])],
         data: { roles: [Role.Admin, Role.User] }
       },
 
@@ -103,4 +111,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

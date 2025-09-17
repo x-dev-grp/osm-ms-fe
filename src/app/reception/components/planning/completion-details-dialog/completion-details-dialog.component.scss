@@ -92,6 +92,8 @@ mat-dialog-title {
     flex: 1;
     ////font-weight: 500;
     color: var(--text-color);
+    word-break: break-word;
+    hyphens: auto;
   }
 
   &.observation {
@@ -112,6 +114,8 @@ mat-dialog-title {
   border-radius: 8px;
   text-align: center;
   border: 1px solid var(--primary-color-alpha-20);
+  word-break: break-word;
+  hyphens: auto;
 }
 
 /* ------------------------------- */
@@ -187,13 +191,15 @@ mat-dialog-title {
 /* ------------------------------- */
 /* 7) Dialog Actions               */
 /* ------------------------------- */
-mat-dialog-actions {
+.dialog-actions {
   padding: 1rem;
   border-top: 1px solid var(--surface-border);
+  display: flex;
   justify-content: center;
   background: var(--surface-ground);
   gap: 1rem;
   margin: 0;
+  flex-shrink: 0; // Prevent actions from shrinking
 
   button {
     min-width: 8rem;
@@ -277,11 +283,47 @@ mat-dialog-actions {
 }
 
 /* ------------------------------- */
-/* 8) Responsive Design            */
+/* 8) Form Layout                  */
+/* ------------------------------- */
+.dialog-scroll-container {
+  display: flex;
+  gap: 1.5rem;
+  flex: 1;
+  overflow: hidden; // Contain scrolling within this container
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.form-field {
+  flex: 1;
+}
+
+.duration-container {
+  display: flex;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.duration-field {
+  flex: 1;
+}
+
+.observation-field {
+  margin-bottom: 1.5rem;
+}
+
+/* ------------------------------- */
+/* 9) Responsive Design            */
 /* ------------------------------- */
 @media (max-width: 1200px) {
   .completed-dialog-content {
     min-width: 700px;
+    max-height: 90vh;
+    overflow-y: hidden;
   }
 
   .info-section {
@@ -291,6 +333,32 @@ mat-dialog-actions {
   .input-section {
     min-width: 350px;
   }
+  
+  .dialog-scroll-container {
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 0.5rem;
+    max-height: calc(90vh - 120px);
+    
+    // Custom scrollbar styling for better mobile experience
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: var(--surface-ground);
+      border-radius: 3px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: var(--surface-border);
+      border-radius: 3px;
+      
+      &:hover {
+        background: var(--primary-color-alpha-30);
+      }
+    }
+  }
 }
 
 @media (max-width: 768px) {
@@ -299,6 +367,36 @@ mat-dialog-actions {
     flex-direction: column;
     gap: 1rem;
     padding: 1rem;
+    max-height: 90vh;
+    overflow-y: hidden;
+  }
+  
+  .dialog-scroll-container {
+    flex-direction: column;
+    gap: 1rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 0.5rem;
+    max-height: calc(90vh - 120px);
+    
+    // Custom scrollbar styling for better mobile experience
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: var(--surface-ground);
+      border-radius: 3px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: var(--surface-border);
+      border-radius: 3px;
+      
+      &:hover {
+        background: var(--primary-color-alpha-30);
+      }
+    }
   }
 
   .info-section, .input-section {
@@ -314,9 +412,21 @@ mat-dialog-actions {
     min-width: auto;
   }
 
-  mat-dialog-actions {
+  .form-row {
     flex-direction: column;
     gap: 0.75rem;
+  }
+
+  .duration-container {
+    flex-direction: column;
+  }
+
+  .dialog-actions {
+    position: sticky;
+    bottom: 0;
+    flex-direction: column;
+    gap: 0.75rem;
+    z-index: 10; // Ensure it stays above other content
 
     button {
       width: 100%;
@@ -325,7 +435,81 @@ mat-dialog-actions {
 }
 
 /* ------------------------------- */
-/* 9) Animations                   */
+/* 10) Extra Small Devices         */
+/* ------------------------------- */
+@media (max-width: 480px) {
+  .completed-dialog-content {
+    padding: 0.75rem;
+    gap: 0.75rem;
+    max-height: 85vh;
+    overflow-y: hidden;
+  }
+  
+  .dialog-scroll-container {
+    gap: 0.75rem;
+    max-height: calc(85vh - 100px);
+    padding-right: 0.25rem;
+  }
+
+  .info-section, .input-section {
+    padding: 0.5rem;
+  }
+
+  .info-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    padding: 0.5rem;
+  }
+
+  .info-row .label {
+    min-width: auto;
+    font-weight: 600;
+  }
+
+  .info-row .value {
+    width: 100%;
+  }
+
+  .dialog-actions {
+    padding: 0.75rem 0.5rem;
+    gap: 0.5rem;
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+
+    button {
+      padding: 0.6rem 1rem;
+      min-width: auto;
+    }
+  }
+
+  mat-dialog-title {
+    padding: 0.75rem 0;
+    margin-bottom: 1rem;
+  }
+
+  .completed-dialog-content h3 {
+    margin: 0 0 0.5rem 0;
+  }
+
+  .confirmation-text {
+    margin-top: 1rem;
+    padding: 0.75rem;
+  }
+
+  .child-lots-table {
+    font-size: 0.85rem;
+  }
+
+  .child-lots-table th,
+  .child-lots-table td {
+    padding: 0.25rem 0.5rem;
+  }
+}
+
+/* ------------------------------- */
+/* 11) Animations                   */
 /* ------------------------------- */
 .completed-dialog-content {
   animation: dialogSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -343,7 +527,7 @@ mat-dialog-actions {
 }
 
 /* ------------------------------- */
-/* 10) Dark Mode                   */
+/* 12) Dark Mode                   */
 /* ------------------------------- */
 @media (prefers-color-scheme: dark) {
   .completed-dialog-content {
@@ -376,7 +560,7 @@ mat-dialog-actions {
 }
 
 /* ------------------------------- */
-/* 11) Child Lots Container        */
+/* 13) Child Lots Container        */
 /* ------------------------------- */
 .child-lots {
   display: flex;
@@ -442,6 +626,8 @@ mat-dialog-actions {
 
   .supplier {
     color: var(--text-color-secondary);
+    word-break: break-word;
+    hyphens: auto;
   }
 
   .quantity {

@@ -93,9 +93,9 @@ export const TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
     {
       name: 'operationType',
       label: 'Type de trituration',
-      labelTranslatePath: 'OPERATION_TYPE',
+      labelTranslatePath: 'BASE_TYPE.OPERATION_TYPE',
       attributeType: AttributeType.enum,
-      fieldType: FieldType.text,
+      fieldType: FieldType.select,
       exportable: true,
       dataTable: true,
       filterable: true,
@@ -105,7 +105,8 @@ export const TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
         { label: 'Achat Olive', value: 'OLIVE_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OLIVE_PURCHASE' },
         { label: 'Achat Huile', value: 'OIL_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OIL_PURCHASE' },
         { label: 'Echange', value: 'EXCHANGE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.EXCHANGE' },
-        { label: 'Paiement', value: 'PAYMENT', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.PAYMENT' }
+        { label: 'Paiement', value: 'PAYMENT', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.PAYMENT' },
+        { label: 'Vente Huile', value: 'OIL_SALE', labelTranslatePath: 'TRANSACTIONS.TYPES.OIL_SALE' }
       ]
     },
     {
@@ -218,17 +219,6 @@ export const TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
       filterable: true
     },
     {
-      name: 'approvedBy',
-      label: 'Approuvé par',
-      labelTranslatePath: 'TRANSACTIONS.FIELDS.APPROVED_BY',
-      attributeType: AttributeType.string,
-      fieldType: FieldType.text,
-      exportable: true,
-      sortable: true,
-      dataTable: true,
-      filterable: true
-    },
-    {
       name: 'bankAccount.accountNumber',
       label: 'Compte Bancaire',
       labelTranslatePath: 'TRANSACTIONS.FIELDS.BANK_ACCOUNT',
@@ -243,17 +233,6 @@ export const TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
       name: 'checkNumber',
       label: 'Numéro de Chèque',
       labelTranslatePath: 'TRANSACTIONS.FIELDS.CHECK_NUMBER',
-      attributeType: AttributeType.string,
-      fieldType: FieldType.text,
-      exportable: true,
-      sortable: true,
-      dataTable: true,
-      filterable: true
-    },
-    {
-      name: 'createdBy',
-      label: 'Créé par',
-      labelTranslatePath: 'TRANSACTIONS.FIELDS.CREATED_BY',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,

@@ -19,9 +19,7 @@
   <form [formGroup]="receptionForm" class="form-content">
     <!-- En-tête -->
     <div class="header-row">
-      <button (click)="onBack()" [disabled]="loading" [title]="'STANDARD.BTNS.BACK' | translate" mat-icon-button>
-        <mat-icon>arrow_back</mat-icon>
-      </button>
+
       <h3>{{ 'OIL_RECEPTION.ADD.GENERAL_INFO' | translate }}</h3>
     </div>
     <hr />
@@ -175,7 +173,7 @@
             <div class="col-md-6">
               <mat-form-field appearance="outline" class="w-100 m-b-10">
                 <mat-label>{{ 'OIL_RECEPTION.ADD.FIELDS.OIL_QUANTITY' | translate }}</mat-label>
-                <input formControlName="oilQuantity" matInput min="0" type="number" />
+                <input formControlName="poidsNet" matInput min="0" type="number" />
                 <mat-error *ngIf="receptionForm.hasError('netGreater')">
                   {{ 'OIL_RECEPTION.ADD.ERRORS.NET_GREATER' | translate }}
                 </mat-error>

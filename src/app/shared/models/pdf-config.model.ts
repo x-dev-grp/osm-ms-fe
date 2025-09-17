@@ -66,3 +66,42 @@ export interface PdfFactureConfig {
 
   fileName?: string;
 }
+
+// pdf-config.model.ts
+export interface PdfPaymentNoteConfig {
+  title: string;
+  reference: string;
+  date: string;
+
+  companyInfo: {
+    companyName: string;
+    address?: string;
+    vatNumber?: string;
+    mobile?: string;
+    website?: string;
+  };
+
+  generalInfo: {
+    label: string;
+    value: string;
+  }[];
+
+  // Nouveau : Tableau des paiements
+  paymentDetails: Array<{
+    paymentType: string;
+    totalAmount: string;
+    paidAmount: string;
+    paymentDate: string;
+    remainingAmount: string;
+  }>;
+
+  // Optionnel : Récapitulatif global (si tu veux le garder en bas)
+  total: string;
+  paid: string;
+  unpaid: string;
+}
+
+
+
+
+

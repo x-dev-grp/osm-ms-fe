@@ -31,7 +31,7 @@ export function getOlivePdfConfig(delivery: UnifiedDelivery): PdfConfig {
         value: String(delivery.oliveVariety?.name || '') // Coerce to string
       },
       {
-        label: 'PDF.N°COLIS',
+        label: 'PDF.NCOLIS',
         value: delivery.sackCount != null ? String(delivery.sackCount) : 'N/A' // Handle number | string
       },
       {

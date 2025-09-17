@@ -1,8 +1,6 @@
-<app-card [title]="editing ? ('EXPENSES.EDIT_TITLE' | translate) : ('EXPENSES.ADD_TITLE' | translate)">
+<app-card [icon]="'receipt_long'" [showHeader]="true" [cardTitle]="editing ? ('EXPENSES.EDIT_TITLE' | translate) : ('EXPENSES.ADD_TITLE' | translate)">
   <form [formGroup]="form" (ngSubmit)="save()" class="expense-form">
     <!-- General Information -->
-    <h3>{{ 'EXPENSES.SECTION.GENERAL_INFO' | translate }}</h3>
-    <mat-divider></mat-divider>
     <div class="form-row">
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>{{ 'EXPENSES.FIELDS.INVOICE_REF' | translate }}</mat-label>
@@ -115,11 +113,13 @@
       </mat-form-field>
     </div>
 
-    <!-- Notes and Approval Section in one row -->
+    <!-- Notes and Approval Section -->
+    <h3>{{ 'EXPENSES.SECTION.NOTES' | translate }}</h3>
+    <mat-divider></mat-divider>
     <div class="form-row">
       <mat-form-field appearance="outline" class="notes-third">
         <mat-label>{{ 'EXPENSES.FIELDS.NOTES' | translate }}</mat-label>
-        <textarea matInput formControlName="notes" rows="2" [placeholder]="'EXPENSES.PLACEHOLDER.NOTES' | translate"></textarea>
+        <textarea matInput formControlName="notes" rows="3" [placeholder]="'EXPENSES.PLACEHOLDER.NOTES' | translate"></textarea>
         <mat-icon matPrefix>notes</mat-icon>
         <mat-hint>{{ 'EXPENSES.HINT.NOTES_OPTIONAL' | translate }}</mat-hint>
       </mat-form-field>
@@ -142,8 +142,8 @@
 
     <!-- Action Buttons -->
     <div class="form-actions">
-      <button mat-button type="button" (click)="onBack()">{{ 'COMMON.CANCEL' | translate }}</button>
-      <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
+      <button mat-button type="button" (click)="onBack()" class="cancel-button">{{ 'COMMON.CANCEL' | translate }}</button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid" class="submit-button">
         {{ editing ? ('COMMON.UPDATE' | translate) : ('COMMON.SAVE' | translate) }}
       </button>
     </div>

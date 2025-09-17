@@ -14,19 +14,25 @@
                     [disabled]="u.maxCapacity-u.currentVolume<data.oilQ">
           @if (u.supplier) {
             @if (u.maxCapacity - u.currentVolume < this.data.oilQ) {
-              {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg) [{{ u.supplier?.supplierInfo.name + " " + u.supplier?.supplierInfo.lastname }}]
-
-              <span style="color: red !important;">{{ "OIL_TRANSACTIONS.FORM.OVERFILLING"|translate }}</span>
+              <span class="storage-unit-info">
+                {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg) [{{ u.supplier?.supplierInfo.name + " " + u.supplier?.supplierInfo.lastname }}]
+              </span>
+              <span class="capacity-warning">{{ "OIL_TRANSACTIONS.FORM.OVERFILLING"|translate }}</span>
             } @else {
-              {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg) [{{ u.supplier?.supplierInfo.name + " " + u.supplier?.supplierInfo.lastname }}]
+              <span class="storage-unit-info">
+                {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg) [{{ u.supplier?.supplierInfo.name + " " + u.supplier?.supplierInfo.lastname }}]
+              </span>
             }
-
-
           } @else {
             @if (u.maxCapacity - u.currentVolume < this.data.oilQ) {
-              {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)
+              <span class="storage-unit-info">
+                {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)
+              </span>
+              <span class="capacity-warning">{{ "OIL_TRANSACTIONS.FORM.OVERFILLING"|translate }}</span>
             } @else {
-              {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)
+              <span class="storage-unit-info">
+                {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)
+              </span>
             }
           }
         </mat-option>
@@ -52,27 +58,29 @@
       <mat-select formControlName="storageUnitSourceId"
                   placeholder="{{'CONTROLE_QUALITE.STORAGE_UNIT.PLACEHOLDER'|translate}}">
         <mat-option *ngFor="let u of data.storageUnits" [value]="u" [disabled]=" u.currentVolume<data.oilQ">
-
           @if (u.supplier) {
             @if (u.currentVolume<data.oilQ) {
-              {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg) [{{ u.supplier?.supplierInfo.name + " " + u.supplier?.supplierInfo.lastname }}]
-
-              <span style="color: red !important;">{{ "OIL_TRANSACTIONS.FORM.OVERFILLING"|translate }}</span>
+              <span class="storage-unit-info">
+                {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg) [{{ u.supplier?.supplierInfo.name + " " + u.supplier?.supplierInfo.lastname }}]
+              </span>
+              <span class="capacity-warning">{{ "OIL_TRANSACTIONS.FORM.OVERFILLING"|translate }}</span>
             } @else {
-              {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg) [{{ u.supplier?.supplierInfo.name + " " + u.supplier?.supplierInfo.lastname }}]
+              <span class="storage-unit-info">
+                {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg) [{{ u.supplier?.supplierInfo.name + " " + u.supplier?.supplierInfo.lastname }}]
+              </span>
             }
-
-
           } @else {
             @if (u.currentVolume<data.oilQ) {
-              {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)     <span style="color: red !important;">{{ "OIL_TRANSACTIONS.FORM.OVERFILLING"|translate }}</span>
+              <span class="storage-unit-info">
+                {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)
+              </span>
+              <span class="capacity-warning">{{ "OIL_TRANSACTIONS.FORM.OVERFILLING"|translate }}</span>
             } @else {
-              {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)
+              <span class="storage-unit-info">
+                {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)
+              </span>
             }
           }
-
-
-
         </mat-option>
       </mat-select>
       <mat-error *ngIf="form.get('storageUnitSourceId')?.hasError('required')">
@@ -84,7 +92,6 @@
       </mat-error>
     </mat-form-field>
   }
-
 
   <div *ngIf="isLoading" class="loading-spinner">
     <mat-spinner diameter="24"></mat-spinner>
@@ -113,5 +120,3 @@
     </button>
   }
 </mat-dialog-actions>
-
-

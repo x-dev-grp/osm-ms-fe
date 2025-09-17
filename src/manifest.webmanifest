@@ -6,7 +6,7 @@
   "display": "standalone",
   "scope": "/",
   "start_url": "/",
-  "orientation": "portrait",
+  "orientation": "any",
   "description": "OSM Management System - Oil and Olive Management",
   "dir": "ltr",
   "lang": "fr",

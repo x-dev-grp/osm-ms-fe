@@ -1,5 +1,6 @@
 import { DashboardConfig, AttributeType, FieldType } from '../../shared/modules/osm-dashboard/models/dashboard-config';
 import { CreditState, UnitType } from '../models/OilCredit';
+import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
 
 export const OIL_CREDIT_DASHBOARD: DashboardConfig = {
   icon: 'credit_score',
@@ -9,9 +10,20 @@ export const OIL_CREDIT_DASHBOARD: DashboardConfig = {
   addNewItem: true,
   addNewItemUrl: '/finance/oil-credit/new',
   fileName: 'oil-credits',
-
-
-
+  defaultSearchData: {
+    page: 0,
+    size: 10,
+    sort: 'createdDate',
+    order: 'DESC',
+    searchData: {
+      operation: SearchOperation.AND,
+      search: {
+        isDeleted: {
+          equalValue: false
+        }
+      }
+    }
+  },
   fields: [
     {
       name: 'emballage',

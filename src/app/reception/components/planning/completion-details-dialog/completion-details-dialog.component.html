@@ -1,196 +1,196 @@
 <!-- Make the card the dialog content -->
-<app-card [showHeader]="false">
+<app-card [icon]="'check_circle'" [showHeader]="true" [cardTitle]="'RECEPTION.PLANNING.COMPLETION.TITLE' | translate">
   <div class="completed-dialog-content">
-    <div>
-      <div class="section-header">
-        <h3>{{ 'RECEPTION.PLANNING.COMPLETION.LOT_INFO_TITLE' | translate }}</h3>
-      </div>
-      <div class="info-content">
-        <!-- Display Lot specific details -->
-        @if (itemType === PlanItemType.LOT && item) {
-          <div class="info-group">
-            <div class="info-row">
-              <span class="label">{{ 'RECEPTION.PLANNING.COMPLETION.LOT_NUMBER' | translate }}:</span>
-              <span class="value">{{ (item).lotNumber }}</span>
-            </div>
-            <div class="info-row">
-              <span class="label">{{ 'RECEPTION.PLANNING.COMPLETION.DELIVERY_NUMBER' | translate }}:</span>
-              <span class="value">{{ (item).deliveryNumber }}</span>
-            </div>
-            <div class="info-row">
-              <span class="label">{{ 'RECEPTION.PLANNING.COMPLETION.DELIVERY_DATE' | translate }}:</span>
-              <span class="value">{{ (item).deliveryDate | date: 'shortDate' }}</span>
-            </div>
-            <div class="info-row">
-              <span class="label">{{ 'RECEPTION.PLANNING.COMPLETION.OLIVE_QUANTITY' | translate }}:</span>
-              <span class="value">{{ (item).oliveQuantity }} kg</span>
-            </div>
-            @if ((item).supplier) {
+    <div class="dialog-scroll-container">
+      <div class="info-section">
+        <div class="section-header">
+          <h3>{{ 'RECEPTION.PLANNING.COMPLETION.LOT_INFO_TITLE' | translate }}</h3>
+        </div>
+        <div class="info-content">
+          <!-- Display Lot specific details -->
+          @if (itemType === PlanItemType.LOT && item) {
+            <div class="info-group">
               <div class="info-row">
-                <span class="label">{{ 'RECEPTION.PLANNING.COMPLETION.SUPPLIER' | translate }}:</span>
-                <span class="value">{{ (item).supplier.supplierInfo.name + " " + (item).supplier.supplierInfo.lastname }}</span>
+                <span class="label">{{ 'RECEPTION.PLANNING.COMPLETION.LOT_NUMBER' | translate }}:</span>
+                <span class="value">{{ (item).lotNumber }}</span>
               </div>
-            }
-            @if ((item).region) {
               <div class="info-row">
-                <span class="label">{{ 'RECEPTION.PLANNING.COMPLETION.REGION' | translate }}:</span>
-                <span class="value">{{ (item).region }}</span>
+                <span class="label">{{ 'RECEPTION.PLANNING.COMPLETION.DELIVERY_NUMBER' | translate }}:</span>
+                <span class="value">{{ (item).deliveryNumber }}</span>
               </div>
-            }
-            @if ((item).oliveVariety) {
               <div class="info-row">
-                <span class="label">{{ 'RECEPTION.PLANNING.COMPLETION.OLIVE_VARIETY' | translate }}:</span>
-                <span class="value">{{ (item).oliveVariety }}</span>
+                <span class="label">{{ 'RECEPTION.PLANNING.COMPLETION.DELIVERY_DATE' | translate }}:</span>
+                <span class="value">{{ (item).deliveryDate | date: 'shortDate' }}</span>
               </div>
-            }
-            @if ((item).oliveType) {
               <div class="info-row">
-                <span class="label">{{ 'RECEPTION.PLANNING.COMPLETION.OLIVE_TYPE' | translate }}:</span>
-                <span class="value">{{ (item).oliveType }}</span>
+                <span class="label">{{ 'RECEPTION.PLANNING.COMPLETION.OLIVE_QUANTITY' | translate }}:</span>
+                <span class="value">{{ (item).oliveQuantity }} kg</span>
               </div>
-            }
-            @if ((item).observation) {
-              <div class="info-row observation">
-                <span class="label">{{ 'RECEPTION.PLANNING.COMPLETION.OBSERVATION' | translate }}:</span>
-                <span class="value">{{ (item).observation }}</span>
-              </div>
-            }
-          </div>
-        }
+              @if ((item).supplier) {
+                <div class="info-row">
+                  <span class="label">{{ 'RECEPTION.PLANNING.COMPLETION.SUPPLIER' | translate }}:</span>
+                  <span class="value">{{ (item).supplier.supplierInfo.name + " " + (item).supplier.supplierInfo.lastname }}</span>
+                </div>
+              }
+              @if ((item).region) {
+                <div class="info-row">
+                  <span class="label">{{ 'RECEPTION.PLANNING.COMPLETION.REGION' | translate }}:</span>
+                  <span class="value">{{ (item).region }}</span>
+                </div>
+              }
+              @if ((item).oliveVariety) {
+                <div class="info-row">
+                  <span class="label">{{ 'RECEPTION.PLANNING.COMPLETION.OLIVE_VARIETY' | translate }}:</span>
+                  <span class="value">{{ (item).oliveVariety }}</span>
+                </div>
+              }
+              @if ((item).oliveType) {
+                <div class="info-row">
+                  <span class="label">{{ 'RECEPTION.PLANNING.COMPLETION.OLIVE_TYPE' | translate }}:</span>
+                  <span class="value">{{ (item).oliveType }}</span>
+                </div>
+              }
+              @if ((item).observation) {
+                <div class="info-row observation">
+                  <span class="label">{{ 'RECEPTION.PLANNING.COMPLETION.OBSERVATION' | translate }}:</span>
+                  <span class="value">{{ (item).observation }}</span>
+                </div>
+              }
+            </div>
+          }
 
-        <!-- Display Global Lot specific details -->
-        @if (itemType === PlanItemType.GLOBAL_LOT && item) {
-          <div class="info-group">
-            <div class="info-row">
-              <span class="label">{{ 'RECEPTION.PLANNING.COMPLETION.GLOBAL_LOT_NUMBER' | translate }}:</span>
-              <span class="value">{{ (item).globalLotNumber }}</span>
-            </div>
-            <div class="info-row">
-              <span class="label">{{ 'RECEPTION.PLANNING.COMPLETION.TOTAL_OLIVE_WEIGHT' | translate }}:</span>
-              <span class="value">{{ (item).totalKg }} kg</span>
-            </div>
-            @if ((item).childLotNumbers?.length) {
-              <div class="info-row child-lots">
-                <span class="label">{{ 'RECEPTION.PLANNING.COMPLETION.LOT_LIST' | translate }} :</span>
-                <div class="child-lots-container">
-                  <div class="child-lots-scroll">
-                    <table class="child-lots-table">
-                      <thead>
-                      <tr>
-                        <th>{{ 'RECEPTION.PLANNING.COMPLETION.LOT_LIST_NUMBER' | translate }}</th>
-                        <th>{{ 'RECEPTION.PLANNING.COMPLETION.LOT_LIST_SUPPLIER' | translate }}</th>
-                        <th>{{ 'RECEPTION.PLANNING.COMPLETION.LOT_LIST_QUANTITY' | translate }}</th>
-                        <th>{{ 'RECEPTION.PLANNING.COMPLETION.LOT_LIST_OIL_QUANTITY' | translate }}</th>
-                        <th class="rendement">{{ 'RECEPTION.PLANNING.COMPLETION.LOT_LIST_YIELD' | translate }}</th>
-                        <th class="rendement">{{ 'RECEPTION.PLANNING.COMPLETION.LOT_LIST_TRITURATION_PRICE' | translate }}</th>
-                      </tr>
-                      </thead>
-                      <tbody>
-                      <tr *ngFor="let child of childLotsWithRendement; let i = index; trackBy: trackByLotNumber">
-                        <td class="lot-number">{{ child.lotNumber }}</td>
-                        <td class="supplier">{{ child.supplier.supplierInfo.name + " " + child.supplier.supplierInfo.lastname   || '-' }} </td>
-                        <td class="quantity">{{ child.oliveQuantity }} kg</td>
-                        <td>{{ child.oilQuantity | number: '1.2-2' }} kg</td>
-                        <td class="rendement">{{ (child.calculatedRendement ?? 0) | number: '1.2-2' }}%</td>
-                        <td class="rendement">{{ child.calculatedTriturationPrice | number: '1.2-2' }} DTN </td>
-                      </tr>
-                      </tbody>
-                    </table>
+          <!-- Display Global Lot specific details -->
+          @if (itemType === PlanItemType.GLOBAL_LOT && item) {
+            <div class="info-group">
+              <div class="info-row">
+                <span class="label">{{ 'RECEPTION.PLANNING.COMPLETION.GLOBAL_LOT_NUMBER' | translate }}:</span>
+                <span class="value">{{ (item).globalLotNumber }}</span>
+              </div>
+              <div class="info-row">
+                <span class="label">{{ 'RECEPTION.PLANNING.COMPLETION.TOTAL_OLIVE_WEIGHT' | translate }}:</span>
+                <span class="value">{{ (item).totalKg }} kg</span>
+              </div>
+              @if ((item).childLotNumbers?.length) {
+                <div class="info-row child-lots">
+                  <span class="label">{{ 'RECEPTION.PLANNING.COMPLETION.LOT_LIST' | translate }} :</span>
+                  <div class="child-lots-container">
+                    <div class="child-lots-scroll">
+                      <table class="child-lots-table">
+                        <thead>
+                        <tr>
+                          <th>{{ 'RECEPTION.PLANNING.COMPLETION.LOT_LIST_NUMBER' | translate }}</th>
+                          <th>{{ 'RECEPTION.PLANNING.COMPLETION.LOT_LIST_SUPPLIER' | translate }}</th>
+                          <th>{{ 'RECEPTION.PLANNING.COMPLETION.LOT_LIST_QUANTITY' | translate }}</th>
+                          <th>{{ 'RECEPTION.PLANNING.COMPLETION.LOT_LIST_OIL_QUANTITY' | translate }}</th>
+                          <th class="rendement">{{ 'RECEPTION.PLANNING.COMPLETION.LOT_LIST_YIELD' | translate }}</th>
+                          <th class="rendement">{{ 'RECEPTION.PLANNING.COMPLETION.LOT_LIST_TRITURATION_PRICE' | translate }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let child of childLotsWithRendement; let i = index; trackBy: trackByLotNumber">
+                          <td class="lot-number">{{ child.lotNumber }}</td>
+                          <td class="supplier">{{ child.supplier.supplierInfo.name + " " + child.supplier.supplierInfo.lastname   || '-' }} </td>
+                          <td class="quantity">{{ child.oliveQuantity }} kg</td>
+                          <td>{{ child.oilQuantity | number: '1.2-2' }} kg</td>
+                          <td class="rendement">{{ (child.calculatedRendement ?? 0) | number: '1.2-2' }}%</td>
+                          <td class="rendement">{{ child.calculatedTriturationPrice | number: '1.2-2' }} DTN </td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
-              </div>
-            }
-            @if ((item).observation) {
-              <div class="info-row observation">
-                <span class="label">{{ 'RECEPTION.PLANNING.COMPLETION.OBSERVATION' | translate }}:</span>
-                <span class="value">{{ (item).observation }}</span>
-              </div>
-            }
-          </div>
-        }
-      </div>
-    </div>
-
-    <div class="input-section">
-      <div class="section-header">
-        <h3>{{ 'RECEPTION.PLANNING.COMPLETION.COMPLETION_DETAILS_TITLE' | translate }}</h3>
-      </div>
-      <div class="input-content">
-        <!-- Oil quantity input and rendement for both types -->
-        <div class="w-full" style="display: flex; gap: 1rem;">
-          <mat-form-field appearance="outline" class="col-6" style="flex: 1;">
-            <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.OIL_QUANTITY_LABEL' | translate }}</mat-label>
-            <input [(ngModel)]="inputOilQuantity" matInput min="0" step="0.01" type="number" />
-          </mat-form-field>
-
-          <!-- Rendement Display as a disabled input -->
-          <mat-form-field appearance="outline" class="col-6" style="flex: 1;">
-            <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.YIELD_LABEL' | translate }}</mat-label>
-            <input [value]="rendement | number: '1.2-2'" matInput type="text" disabled />
-          </mat-form-field>
+              }
+              @if ((item).observation) {
+                <div class="info-row observation">
+                  <span class="label">{{ 'RECEPTION.PLANNING.COMPLETION.OBSERVATION' | translate }}:</span>
+                  <span class="value">{{ (item).observation }}</span>
+                </div>
+              }
+            </div>
+          }
         </div>
+      </div>
 
-        <!-- Price per kg input and total price display -->
-        <ng-container>
-          <div class="w-full" style="display: flex; gap: 1rem;">
-            <mat-form-field appearance="outline" class="col-6" style="flex: 1;">
-              <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.TRITURATION_PRICE_PER_KG_LABEL' | translate }}</mat-label>
-              <input [(ngModel)]="triturationPricePerKg" matInput min="0" step="0.01" type="number" />
+      <div class="input-section">
+        <div class="section-header">
+          <h3>{{ 'RECEPTION.PLANNING.COMPLETION.COMPLETION_DETAILS_TITLE' | translate }}</h3>
+        </div>
+        <div class="input-content">
+          <!-- Oil quantity input and rendement for both types -->
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.OIL_QUANTITY_LABEL' | translate }}</mat-label>
+              <input [(ngModel)]="inputOilQuantity" matInput min="0" step="0.01" type="number" />
             </mat-form-field>
-            @if (itemType === PlanItemType.LOT && item) {
-              <mat-form-field appearance="outline" class="col-6" style="flex: 1;">
-                <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.TOTAL_TRITURATION_PRICE_LABEL' | translate }}</mat-label>
-                <input [value]="totalTriturationPrice | number: '1.2-2'" matInput type="text" disabled />
+
+            <!-- Rendement Display as a disabled input -->
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.YIELD_LABEL' | translate }}</mat-label>
+              <input [value]="rendement | number: '1.2-2'" matInput type="text" disabled />
+            </mat-form-field>
+          </div>
+
+          <!-- Price per kg input and total price display -->
+          <ng-container>
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="form-field">
+                <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.TRITURATION_PRICE_PER_KG_LABEL' | translate }}</mat-label>
+                <input [(ngModel)]="triturationPricePerKg" matInput min="0" step="0.01" type="number" />
               </mat-form-field>
-            }
-          </div>
-        </ng-container>
+              @if (itemType === PlanItemType.LOT && item) {
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.TOTAL_TRITURATION_PRICE_LABEL' | translate }}</mat-label>
+                  <input [value]="totalTriturationPrice | number: '1.2-2'" matInput type="text" disabled />
+                </mat-form-field>
+              }
+            </div>
+          </ng-container>
 
-        <!-- Completion Date + Trituration Duration (side-by-side) -->
-        <div class="w-full" style="display: flex; gap: 1rem;">
-          <!-- Completion Date -->
-          <mat-form-field appearance="outline" class="col-6" style="flex: 1;">
-            <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.COMPLETION_DATE_LABEL' | translate }}</mat-label>
-            <input [(ngModel)]="completionDate" [matDatepicker]="picker" matInput />
-            <mat-datepicker-toggle [for]="picker" matSuffix></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
+          <!-- Completion Date + Trituration Duration -->
+          <div class="form-row">
+            <!-- Completion Date -->
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.COMPLETION_DATE_LABEL' | translate }}</mat-label>
+              <input [(ngModel)]="completionDate" [matDatepicker]="picker" matInput />
+              <mat-datepicker-toggle [for]="picker" matSuffix></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+
+            <!-- Trituration Duration (Hours and Minutes) -->
+            <div class="duration-container">
+              <mat-form-field appearance="outline" class="duration-field">
+                <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.TRITURATION_DURATION_HOURS' | translate }}</mat-label>
+                <input [(ngModel)]="triturationHours" matInput min="0" type="number" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="duration-field">
+                <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.TRITURATION_DURATION_MINUTES' | translate }}</mat-label>
+                <input [(ngModel)]="triturationMinutes" matInput min="0" max="59" type="number" />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Final Observation Input -->
+          <mat-form-field appearance="outline" class="form-field observation-field">
+            <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.FINAL_OBSERVATION_LABEL' | translate }}</mat-label>
+            <textarea [(ngModel)]="finalObservation" matInput rows="3"></textarea>
           </mat-form-field>
 
-          <!-- Trituration Duration (Hours and Minutes) -->
-          <div class="col-3" style="flex: 1; display: flex; gap: 0.5rem;">
-            <mat-form-field appearance="outline" style="flex: 1;">
-              <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.TRITURATION_DURATION_HOURS' | translate }}</mat-label>
-              <input [(ngModel)]="triturationHours" matInput min="0" type="number" />
-            </mat-form-field>
-            <mat-form-field appearance="outline" style="flex: 1;">
-              <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.TRITURATION_DURATION_MINUTES' | translate }}</mat-label>
-              <input [(ngModel)]="triturationMinutes" matInput min="0" max="59" type="number" />
-            </mat-form-field>
-          </div>
+          <p class="confirmation-text">{{ 'RECEPTION.PLANNING.COMPLETION.CONFIRMATION_TEXT' | translate }}</p>
         </div>
-
-        <!-- Final Observation Input -->
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.FINAL_OBSERVATION_LABEL' | translate }}</mat-label>
-          <textarea [(ngModel)]="finalObservation" matInput rows="3"></textarea>
-        </mat-form-field>
-
-        <p class="confirmation-text">{{ 'RECEPTION.PLANNING.COMPLETION.CONFIRMATION_TEXT' | translate }}</p>
       </div>
     </div>
   </div>
 
-    <div>
-      <button (click)="onCancel()" mat-raised-button>{{ 'COMMON.CANCEL' | translate }}</button>
-      <button
-        (click)="onConfirm()"
-        [disabled]="inputOilQuantity == null || inputOilQuantity < 0 || !isDurationValid()"
-        cdkFocusInitial
-        color="primary"
-        mat-raised-button>
-        {{ 'RECEPTION.PLANNING.COMPLETION.FINISH_BUTTON' | translate }}
-      </button>
-    </div>
- </app-card>
-
-
+  <div class="dialog-actions">
+    <button (click)="onCancel()" mat-raised-button>{{ 'COMMON.CANCEL' | translate }}</button>
+    <button
+      (click)="onConfirm()"
+      [disabled]="inputOilQuantity == null || inputOilQuantity < 0 || !isDurationValid()"
+      cdkFocusInitial
+      color="primary"
+      mat-raised-button>
+      {{ 'RECEPTION.PLANNING.COMPLETION.FINISH_BUTTON' | translate }}
+    </button>
+  </div>
+</app-card>

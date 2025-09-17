@@ -5,6 +5,7 @@
     display: flex;
     flex-wrap: wrap;
     margin: 0 -0.5rem;
+    gap: 1rem 0;
   }
 
   .col-lg-6 {
@@ -22,6 +23,17 @@
     justify-content: flex-end;
     gap: 1rem;
     margin-top: 1rem;
+    padding: 1rem 0.5rem;
+  }
+}
+
+// Enhanced responsive design
+@media (max-width: 1199.98px) {
+  .credit-form {
+    .col-lg-6 {
+      flex: 0 0 50%;
+      max-width: 50%;
+    }
   }
 }
 
@@ -34,14 +46,68 @@
   }
 }
 
-.volume-high {
-  color: #f44336;
+@media (max-width: 768px) {
+  .credit-form {
+    padding: 0.5rem;
+    
+    .form-actions {
+      flex-direction: column;
+      
+      button {
+        width: 100%;
+      }
+    }
+  }
 }
 
-.volume-medium {
-  color: #ff9800;
+@media (max-width: 480px) {
+  .credit-form {
+    .row {
+      margin: 0;
+    }
+    
+    .col-lg-6 {
+      padding: 0;
+    }
+  }
 }
 
-.volume-low {
-  color: #4caf50;
-} 
+// Form field improvements
+mat-form-field {
+  width: 100%;
+}
+
+// Autocomplete option styling
+.mat-autocomplete-panel {
+  .mat-option {
+    &.volume-high {
+      color: #f44336;
+    }
+    
+    &.volume-medium {
+      color: #ff9800;
+    }
+    
+    &.volume-low {
+      color: #4caf50;
+    }
+  }
+}
+
+// Error message improvements
+mat-error {
+  font-size: 0.875rem;
+}
+
+// Button enhancements
+button[type="submit"] {
+  min-width: 120px;
+}
+
+// Loading spinner
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}

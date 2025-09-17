@@ -1,5 +1,4 @@
 {
-  "": "نوع العقد",
   "ACCESS_DENIED": {
     "GO_HOME": "العودة إلى الصفحة الرئيسية",
     "GO_HOME_TITLE": "العودة إلى الصفحة الرئيسية",
@@ -732,6 +731,7 @@
         "SEARCH_SUPPLIER": "ابحث عن مورد..."
       },
       "SECTIONS": {
+        "CLIENT_REGION": "العميل والمنطقة",
         "DELIVERY_INFO": "معلومات التسليم",
         "FINANCIAL_INFO": "المعلومات المالية",
         "GENERAL_INFO": "المعلومات العامة",
@@ -961,8 +961,6 @@
   "Error 500": "خطأ 500",
   "FEMALE": "أنثى",
   "FINANCE_TAB": "تكوين المالية",
-  "File Manager": "مدير الملفات",
-  "Finance": "التمويل",
   "FORGOT_PASSWORD": {
     "BACK_TO_LOGIN": "العودة إلى تسجيل الدخول",
     "EMAIL": "البريد الإلكتروني",
@@ -974,6 +972,8 @@
     "SUCCESS_MESSAGE": "إذا كان هناك حساب موجود بهذا البريد الإلكتروني، فستتلقى رابط إعادة تعيين كلمة المرور قريبًا.",
     "TITLE": "نسيت كلمة المرور"
   },
+  "File Manager": "مدير الملفات",
+  "Finance": "التمويل",
   "Forgot Password": "نسيت كلمة المرور",
   "Form Validation": "التحقق من النموذج",
   "Form Wizard": "معالج النماذج",
@@ -1102,13 +1102,14 @@
   "Invoice": "فاتورة",
   "Kanban": "كانبان",
   "LOGIN": {
+    "FORGOT_PASSWORD": "نسيت كلمة المرور؟",
     "PASSWORD": "كلمة المرور",
     "PASSWORDCONFIRM": "تأكيد كلمة المرور الجديدة",
     "PASSWORDNEW": "كلمة المرور الجديدة",
-    "PASSWORD_STRENGTH_ERROR": "يجب أن تحتوي كلمة المرور على حرف كبير واحد على الأقل، وحرف صغير واحد، ورقم واحد، وحرف خاص واحد",
     "PASSWORD_MIN_LENGTH_ERROR": "يجب أن تكون كلمة المرور على الأقل 8 أحرف",
     "PASSWORD_MISMATCH_ERROR": "كلمات المرور غير متطابقة",
     "PASSWORD_REQUIRED": "يجب إدخال كلمة مرور",
+    "PASSWORD_STRENGTH_ERROR": "يجب أن تحتوي كلمة المرور على حرف كبير واحد على الأقل، وحرف صغير واحد، ورقم واحد، وحرف خاص واحد",
     "REMEMBERME": "تذكرني",
     "REMEMBERME_EXPIRY_ERROR": "لقد انتهت صلاحية رمز 'تذكرني'",
     "SERVICE_UNAVAILABLE": "الخدمة غير متاحة، يرجى المحاولة لاحقًا",
@@ -1116,10 +1117,9 @@
     "UNEXPECTED_ERROR": "حدث خطأ غير متوقع",
     "UPDATEPASSWORD": "قم بتحديث كلمة المرور الخاصة بك",
     "USERNAME": "اسم المستخدم",
-    "USERNAME_MISSING": "اسم المستخدم مفقود للدخول",
-    "USERNAME_REQUIRED": "يجب إدخال بريد إلكتروني",
     "USERNAME_INVALID": "ليس بريدًا إلكترونيًا صالحًا",
-    "FORGOT_PASSWORD": "نسيت كلمة المرور؟"
+    "USERNAME_MISSING": "اسم المستخدم مفقود للدخول",
+    "USERNAME_REQUIRED": "يجب إدخال بريد إلكتروني"
   },
   "LOGO": {
     "CLICK_BROWSE": "أو انقر للتصفح",
@@ -1217,6 +1217,7 @@
     },
     "FINANCE": {
       "BANK_MANAGEMENT": "إدارة البنوك",
+      "CUSTOMERS": "العملاء",
       "DASHBOARD": {
         "ANALYTICS": {
           "DEBITED_CREDITED": "المدفوع مقابل المكتسب",
@@ -2025,6 +2026,7 @@
         "SEARCH_VARIETY": "ابحث عن تنوع..."
       },
       "SECTIONS": {
+        "CLIENT_REGION": "الزبون والمنطقة ",
         "DELIVERY_INFO": "معلومات التسليم",
         "GENERAL_INFO": "المعلومات العامة",
         "OLIVE_INFO": "معلومات الزيتون",
@@ -2208,7 +2210,8 @@
     "MOBILE": "+216 29 910 458",
     "NO_QUALITY_DATA": "لا توجد بيانات مراقبة جودة متاحة",
     "NUMBER_PLACEHOLDER": "رقم: ......./........",
-    "NÂ°COLIS": "رقم الحزمة",
+    "N°COLIS": "رقم الحزمة",
+    "NCOLIS": "رقم الحزمة",
     "OIL_DISPATCH": "إشعار توزيع الزيت",
     "OIL_QUANTITY": "كمية الزيت",
     "OIL_TYPE": "نوع الزيت",
@@ -2436,22 +2439,22 @@
     },
     "TITLE": "استقبالات الزيت والطحن"
   },
-  "Register": "التسجيل",
-  "Reset Password": "إعادة تعيين كلمة المرور",
   "RESET_PASSWORD": {
-    "ENTER_CODE_TITLE": "أدخل رمز التأكيد",
-    "NEW_PASSWORD_TITLE": "تعيين كلمة مرور جديدة",
-    "CONFIRMATION_CODE": "رمز التأكيد",
     "CODE_PLACEHOLDER": "أدخل رمزك",
-    "VALIDATE_CODE": "التحقق من الرمز",
-    "NEW_PASSWORD": "كلمة المرور الجديدة",
-    "NEW_PASSWORD_PLACEHOLDER": "أدخل كلمة المرور الجديدة",
+    "CONFIRMATION_CODE": "رمز التأكيد",
     "CONFIRM_PASSWORD": "تأكيد كلمة المرور",
     "CONFIRM_PASSWORD_PLACEHOLDER": "تأكيد كلمة المرور الجديدة",
+    "ENTER_CODE_TITLE": "أدخل رمز التأكيد",
     "MISMATCH": "كلمات المرور غير متطابقة",
+    "MISSING_USER_ID": "معرف المستخدم مفقود.",
+    "NEW_PASSWORD": "كلمة المرور الجديدة",
+    "NEW_PASSWORD_PLACEHOLDER": "أدخل كلمة المرور الجديدة",
+    "NEW_PASSWORD_TITLE": "تعيين كلمة مرور جديدة",
     "SUBMIT_NEW_PASSWORD": "تحديث كلمة المرور",
-    "MISSING_USER_ID": "معرف المستخدم مفقود."
+    "VALIDATE_CODE": "التحقق من الرمز"
   },
+  "Register": "التسجيل",
+  "Reset Password": "إعادة تعيين كلمة المرور",
   "SINGLE": "أعزب",
   "STANDARD": {
     "ACCESS_RESSOURCE_ERROR": "ليس لديك حق الوصول إلى هذا المورد.",

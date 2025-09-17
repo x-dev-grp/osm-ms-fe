@@ -546,7 +546,11 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
   }
 
   getStorageUnitInfo(unit: StorageUnitDto): string {
-     return `${unit.name} (${unit.currentVolume.toFixed(2)} / ${unit.maxCapacity.toFixed(2)}  KG)`;
+    // Include supplier info if available for better context
+    if (unit.supplier) {
+      return `${unit.name} (${unit.currentVolume.toFixed(2)} / ${unit.maxCapacity.toFixed(2)} KG) [${unit.supplier?.supplierInfo.name + " " + unit.supplier?.supplierInfo.lastname}]`;
+    }
+    return `${unit.name} (${unit.currentVolume.toFixed(2)} / ${unit.maxCapacity.toFixed(2)} KG)`;
   }
 
   // Field visibility helpers
@@ -575,3 +579,5 @@ export class OilTransactionAddComponent implements OnInit, OnDestroy {
 
 
 }
+
+
