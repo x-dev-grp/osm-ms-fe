@@ -1,4 +1,5 @@
 import { AttributeType, DashboardConfig, FieldType } from 'src/app/shared/modules/osm-dashboard/models/dashboard-config';
+import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
 
 export const companyProfileDashboardConfig: DashboardConfig = {
   icon: 'business',
@@ -9,7 +10,19 @@ export const companyProfileDashboardConfig: DashboardConfig = {
   addNewItem: true,
   addNewItemUrl: '/administration/add-company-user',
   filterTenant:false,
-  fields: [
+  defaultSearchData: {
+    page: 0,
+    size: 10,
+    sort: 'saleDate',
+    order: 'DESC',
+    searchData: {
+      operation: SearchOperation.AND,
+      search: {
+        isDeleted: {equalValue: false}
+      },
+      searchs: []
+    }
+  }, fields: [
     {
       name: 'legalName',
       label: 'Legal Name',
