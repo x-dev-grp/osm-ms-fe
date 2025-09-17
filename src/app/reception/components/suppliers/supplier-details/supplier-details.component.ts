@@ -35,7 +35,7 @@ import {
 import {OilSale} from "../../../../finance/models/oil-sale.model";
 import {paymentNoteVenteHuileConfig} from "../../../../finance/facture-config/payment-Note-VenteHuile-Config";
 import {factureVenteHuileConfig} from "../../../../finance/facture-config/facture-Vente-Huile-Config";
-import { WasteSale } from '../../../../finance/models/Waste.model';
+import {WasteSale} from '../../../../finance/models/Waste.model';
 
 export enum PaymentSourceType {
   DELIVERY_prc = 'delivery',
@@ -212,6 +212,8 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
       case 'SIMPLE_RECEPTION':
       case 'EXCHANGE':
       case 'BASE':
+      case 'OLIVE_PURCHASE':
+      case 'OIL_PURCHASE':
         return factureTriturationConfig(delivery, company);
 
       default:

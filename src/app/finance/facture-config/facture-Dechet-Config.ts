@@ -12,6 +12,7 @@ export function factureVenteDechetConfig(
 
   return {
     title: 'PDF.FACTURE_VENTE_DECHET',
+    operation_Type: sale.type,
     reference: `VENTE-DECHET-${sale.invoiceNumber || sale.id || 'XXXX'}`,
     date: sale.saleDate ? new Date(sale.saleDate).toLocaleDateString() : new Date().toLocaleDateString(),
 
