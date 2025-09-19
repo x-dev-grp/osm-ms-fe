@@ -184,12 +184,7 @@
           :</strong> {{ deliveryData.millMachine?.name }}
         </div>
         <div class="grid-item"><strong>{{ 'DELIVERIES.FIELDS.MILL_START' | translate }}
-          :</strong> {{ deliveryData.millStartDate | date: 'short' }}
-        </div>
-      </div>
-      <div class="grid-row">
-        <div class="grid-item"><strong>{{ 'DELIVERIES.FIELDS.MILL_END' | translate }}
-          :</strong> {{ deliveryData.millEndDate | date: 'short' }}
+          :</strong> {{ deliveryData?.trtDate | date: 'short' }}
         </div>
       </div>
     </div>

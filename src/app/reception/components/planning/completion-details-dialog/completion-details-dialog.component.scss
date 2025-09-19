@@ -1,667 +1,283 @@
-/* completion-details-dialog.component.scss */
+/* completion-details-dialog.component.scss
+   Mobile-first refresh. Same layout/markup, only CSS.
+   - Better small-screen spacing & typography
+   - Sticky action bar on mobile
+   - Safer scroll areas & touch sizes
+   - Logical props for RTL/LTR
+*/
 
-/* ------------------------------- */
-/* 1) Root container styling       */
-/* ------------------------------- */
+/* ---------- Base / host ---------- */
+:host {
+  display: block;
+  //--card-radius: 16px;
+  //--section-gap: 1rem;
+  //--row-gap: .65rem;
+  //--label-color: var(--mat-sys-on-surface-variant, #6b7280);
+  //--value-color: var(--mat-sys-on-surface, #111827);
+  //--border-color: color-mix(in oklab, currentColor 12%, transparent);
+  //--muted-bg: color-mix(in oklab, Canvas 92%, currentColor 8%);
+  //--safe-top: env(safe-area-inset-top, 0px);
+  //--safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* container inside the dialog */
 .completed-dialog-content {
-  display: flex;
-  gap: 1.5rem;
-  padding: 1.25rem;
-  height: auto;
-  background: var(--surface-ground);
-  border-radius: 16px;
-  box-shadow: var(--card-shadow);
-  width: auto;
-  min-width: 800px;
-  max-width: 1200px;
+  padding: clamp(.75rem, 2vw, 1rem);
+  padding-block-start: calc(.75rem + var(--safe-top));
+  padding-block-end: calc(.75rem + var(--safe-bottom));
 }
 
-/* ------------------------------- */
-/* 2) Section Layout               */
-/* ------------------------------- */
-
-.info-section, .input-section {
-  display: flex;
-  flex-direction: column;
-  background: var(--surface-card);
-  border-radius: 12px;
-  border: 1px solid var(--surface-border);
+/* ---------- Layout: mobile-first (1 column) ---------- */
+.dialog-scroll-container {
+  display: grid;
+  grid-template-columns: 1fr; /* mobile: stacked */
+  gap: var(--section-gap);
+  align-items: start;
+  max-block-size: 70vh; /* keep header visible on small phones */
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
 }
 
-.info-section {
-  flex: 1;
-  min-width: 300px;
-  max-width: 400px;
+/* >= 960px: use two columns (info | inputs) like desktop */
+@media (min-width: 960px) {
+  .dialog-scroll-container {
+    grid-template-columns: 1fr minmax(380px, 480px);
+    max-block-size: none;
+    overflow: visible;
+  }
 }
 
+/* ---------- Cards / sections ---------- */
+.info-section,
 .input-section {
-  flex: 1.5;
-  min-width: 400px;
+  background: var(--muted-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--card-radius);
+  padding: clamp(.75rem, 2.5vw, 1rem);
 }
 
-/* ------------------------------- */
-/* 3) Headings                     */
-/* ------------------------------- */
-/* Style for the main dialog title */
-mat-dialog-title {
-  text-align: center;
-  //font-size: 1.5rem;
-  ////font-weight: 700;
-  color: var(--primary-color);
-  padding: 1rem 0;
-  margin-bottom: 1.5rem;
-  border-bottom: 2px solid var(--primary-color-alpha-20);
+.section-header {
+  margin-block-end: .6rem;
+
+  h3 {
+    margin: 0;
+    font-size: clamp(.98rem, 2.8vw, 1.05rem);
+    line-height: 1.35;
+    font-weight: 600;
+    letter-spacing: .2px;
+    color: var(--value-color);
+  }
 }
 
-/* Style for section headings */
-.completed-dialog-content h3 {
-  //font-size: 1.2rem;
-  ////font-weight: 600;
-  color: var(--text-color);
-  margin: 0 0 0.75rem 0;
-  border-bottom: 1px solid var(--surface-border);
-  transition: color 0.2s ease;
+/* ---------- Info side ---------- */
+.info-content {
+  display: grid;
+  gap: .6rem;
 }
 
-/* ------------------------------- */
-/* 4) Content sections             */
-/* ------------------------------- */
 .info-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  display: grid;
+  gap: var(--row-gap);
 }
 
 .info-row {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.75rem;
-  border-radius: 8px;
-  background: var(--surface-ground);
-  transition: all 0.2s ease;
-  border: 1px solid var(--surface-border);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: .4rem .75rem;
+  align-items: start;
+  padding: .45rem .6rem;
+  border-radius: .5rem;
+
+  &:nth-child(odd) {
+    background: color-mix(in oklab, var(--muted-bg) 85%, transparent);
+  }
 
   .label {
-    min-width: 150px;
-    ////font-weight: 600;
-    color: var(--text-color-secondary);
+    font-size: .85rem;
+    color: var(--label-color);
+    white-space: nowrap;
   }
 
   .value {
-    flex: 1;
-    ////font-weight: 500;
-    color: var(--text-color);
+    color: var(--value-color);
+    font-weight: 500;
     word-break: break-word;
-    hyphens: auto;
-  }
-
-  &.observation {
-    background: var(--primary-color-alpha-5);
-
-    .label {
-      color: var(--primary-color);
-    }
   }
 }
 
-.confirmation-text {
-  margin-top: 2rem;
-  padding: 1rem;
-  ////font-weight: 500;
-  color: var(--text-color);
-  background: var(--primary-color-alpha-5);
-  border-radius: 8px;
-  text-align: center;
-  border: 1px solid var(--primary-color-alpha-20);
-  word-break: break-word;
-  hyphens: auto;
-}
-
-/* ------------------------------- */
-/* 5) Form Fields                  */
-/* ------------------------------- */
-.completed-dialog-content mat-form-field {
-  width: 100%;
-  margin-bottom: 0.75rem;
-
-  .mat-form-field-flex {
-    background: var(--surface-ground);
-    padding: 0.75rem;
-    border-radius: 8px;
-    border: 1px solid var(--surface-border);
-    transition: all 0.2s ease;
-  }
-
-  .mat-form-field-label {
-    //font-size: 0.9rem;
-    color: var(--text-color-secondary);
-    ////font-weight: 500;
-  }
-
-  .mat-input-element,
-  .mat-form-field textarea {
-    //font-size: 1rem;
-    color: var(--text-color);
-  }
-
-  .mat-datepicker-toggle-default-icon {
-    color: var(--text-color-secondary);
-    transition: color 0.2s ease;
-    &:hover {
-      color: var(--primary-color);
-    }
-  }
-
-  /* Focus state */
-  &:focus-within .mat-form-field-flex {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px var(--primary-color-alpha-20);
-  }
-
-  /* Error state */
-  &.mat-form-field-invalid .mat-form-field-flex {
-    border-color: var(--error-color);
-    box-shadow: 0 0 0 3px var(--error-color-alpha-20);
-  }
-}
-
-/* ------------------------------- */
-/* 6) Rendement Display            */
-/* ------------------------------- */
-.rendement-display {
-  //font-size: 1.2rem;
-  ////font-weight: 700;
-  color: var(--primary-color);
-  margin: 1rem 0;
-  padding: 1rem;
-  background: var(--primary-color-alpha-10);
-  border-radius: 12px;
-  border: 1px solid var(--primary-color-alpha-20);
-  transition: all 0.2s ease;
-  text-align: center;
-
-  .label {
-    //font-size: 1rem;
-    color: var(--text-color-secondary);
-    margin-right: 0.5rem;
-  }
-}
-
-/* ------------------------------- */
-/* 7) Dialog Actions               */
-/* ------------------------------- */
-.dialog-actions {
-  padding: 1rem;
-  border-top: 1px solid var(--surface-border);
-  display: flex;
-  justify-content: center;
-  background: var(--surface-ground);
-  gap: 1rem;
-  margin: 0;
-  flex-shrink: 0; // Prevent actions from shrinking
-
-  button {
-    min-width: 8rem;
-    padding: 0.75rem 1.5rem;
-    border-radius: 24px;
-    transition: all 0.3s ease;
-    //font-size: 1rem;
-    ////font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-
-    &:focus {
-      outline: none;
-      box-shadow: 0 0 0 3px var(--primary-color-alpha-30);
-    }
-  }
-
-  button[color="primary"] {
-    background-color: var(--primary-color);
-    color: var(--primary-color-text);
-    border: none;
-
-    &:hover {
-      background-color: var(--primary-color-dark);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
-
-    &:active {
-      background-color: var(--primary-color-darker);
-      transform: translateY(0);
-      box-shadow: none;
-    }
-
-    &:disabled {
-      background-color: var(--surface-disabled);
-      color: var(--text-color-disabled);
-      box-shadow: none;
-      cursor: not-allowed;
-      transform: none;
-      opacity: 0.8;
-    }
-  }
-
-  button:not([color="primary"]) {
-    color: var(--text-color);
-    border: 1px solid var(--surface-border);
-    background: var(--surface-card);
-
-    &:hover {
-      background: var(--surface-hover);
-      border-color: var(--primary-color);
-      color: var(--primary-color);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    &:active {
-      background: var(--surface-active);
-      border-color: var(--primary-color-dark);
-      color: var(--primary-color-dark);
-      transform: translateY(0);
-      box-shadow: none;
-    }
-
-    &:focus {
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px var(--primary-color-alpha-30);
-    }
-
-    &:disabled {
-      color: var(--text-color-disabled);
-      border-color: var(--surface-border);
-      background: var(--surface-card);
-      box-shadow: none;
-      cursor: not-allowed;
-      transform: none;
-      opacity: 0.8;
-    }
-  }
-}
-
-/* ------------------------------- */
-/* 8) Form Layout                  */
-/* ------------------------------- */
-.dialog-scroll-container {
-  display: flex;
-  gap: 1.5rem;
-  flex: 1;
-  overflow: hidden; // Contain scrolling within this container
-}
-
-.form-row {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 0.75rem;
-}
-
-.form-field {
-  flex: 1;
-}
-
-.duration-container {
-  display: flex;
-  gap: 0.5rem;
-  flex: 1;
-}
-
-.duration-field {
-  flex: 1;
-}
-
-.observation-field {
-  margin-bottom: 1.5rem;
-}
-
-/* ------------------------------- */
-/* 9) Responsive Design            */
-/* ------------------------------- */
-@media (max-width: 1200px) {
-  .completed-dialog-content {
-    min-width: 700px;
-    max-height: 90vh;
-    overflow-y: hidden;
-  }
-
-  .info-section {
-    min-width: 280px;
-  }
-
-  .input-section {
-    min-width: 350px;
-  }
-  
-  .dialog-scroll-container {
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding-right: 0.5rem;
-    max-height: calc(90vh - 120px);
-    
-    // Custom scrollbar styling for better mobile experience
-    &::-webkit-scrollbar {
-      width: 6px;
-    }
-    
-    &::-webkit-scrollbar-track {
-      background: var(--surface-ground);
-      border-radius: 3px;
-    }
-    
-    &::-webkit-scrollbar-thumb {
-      background: var(--surface-border);
-      border-radius: 3px;
-      
-      &:hover {
-        background: var(--primary-color-alpha-30);
-      }
-    }
-  }
-}
-
-@media (max-width: 768px) {
-  .completed-dialog-content {
-    min-width: auto;
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
-    max-height: 90vh;
-    overflow-y: hidden;
-  }
-  
-  .dialog-scroll-container {
-    flex-direction: column;
-    gap: 1rem;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding-right: 0.5rem;
-    max-height: calc(90vh - 120px);
-    
-    // Custom scrollbar styling for better mobile experience
-    &::-webkit-scrollbar {
-      width: 6px;
-    }
-    
-    &::-webkit-scrollbar-track {
-      background: var(--surface-ground);
-      border-radius: 3px;
-    }
-    
-    &::-webkit-scrollbar-thumb {
-      background: var(--surface-border);
-      border-radius: 3px;
-      
-      &:hover {
-        background: var(--primary-color-alpha-30);
-      }
-    }
-  }
-
-  .info-section, .input-section {
-    padding: 0.75rem;
-    gap: 0.75rem;
-  }
-
-  .info-section {
-    max-width: none;
-  }
-
-  .input-section {
-    min-width: auto;
-  }
-
-  .form-row {
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .duration-container {
-    flex-direction: column;
-  }
-
-  .dialog-actions {
-    position: sticky;
-    bottom: 0;
-    flex-direction: column;
-    gap: 0.75rem;
-    z-index: 10; // Ensure it stays above other content
-
-    button {
-      width: 100%;
-    }
-  }
-}
-
-/* ------------------------------- */
-/* 10) Extra Small Devices         */
-/* ------------------------------- */
-@media (max-width: 480px) {
-  .completed-dialog-content {
-    padding: 0.75rem;
-    gap: 0.75rem;
-    max-height: 85vh;
-    overflow-y: hidden;
-  }
-  
-  .dialog-scroll-container {
-    gap: 0.75rem;
-    max-height: calc(85vh - 100px);
-    padding-right: 0.25rem;
-  }
-
-  .info-section, .input-section {
-    padding: 0.5rem;
-  }
-
-  .info-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.25rem;
-    padding: 0.5rem;
-  }
-
-  .info-row .label {
-    min-width: auto;
-    font-weight: 600;
-  }
-
-  .info-row .value {
-    width: 100%;
-  }
-
-  .dialog-actions {
-    padding: 0.75rem 0.5rem;
-    gap: 0.5rem;
-    position: sticky;
-    bottom: 0;
-    z-index: 10;
-
-    button {
-      padding: 0.6rem 1rem;
-      min-width: auto;
-    }
-  }
-
-  mat-dialog-title {
-    padding: 0.75rem 0;
-    margin-bottom: 1rem;
-  }
-
-  .completed-dialog-content h3 {
-    margin: 0 0 0.5rem 0;
-  }
-
-  .confirmation-text {
-    margin-top: 1rem;
-    padding: 0.75rem;
-  }
-
-  .child-lots-table {
-    font-size: 0.85rem;
-  }
-
-  .child-lots-table th,
-  .child-lots-table td {
-    padding: 0.25rem 0.5rem;
-  }
-}
-
-/* ------------------------------- */
-/* 11) Animations                   */
-/* ------------------------------- */
-.completed-dialog-content {
-  animation: dialogSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-@keyframes dialogSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ------------------------------- */
-/* 12) Dark Mode                   */
-/* ------------------------------- */
-@media (prefers-color-scheme: dark) {
-  .completed-dialog-content {
-    background: var(--surface-ground-dark);
-  }
-
-  .info-section,
-  .input-section {
-    background: var(--surface-card-dark);
-  }
-
-  .info-row {
-    background: var(--surface-ground-dark);
-
-    &:hover {
-      background: var(--surface-hover-dark);
-    }
-  }
-
-  .mat-form-field-flex {
-    background: var(--surface-ground-dark);
-    border-color: var(--surface-border-dark);
-  }
-
-  .mat-form-field-label,
-  .mat-input-element,
-  .mat-form-field textarea {
-    color: var(--text-color-dark);
-  }
-}
-
-/* ------------------------------- */
-/* 13) Child Lots Container        */
-/* ------------------------------- */
+/* ---------- Child lots table ---------- */
 .child-lots {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  grid-column: 1 / -1;
+}
 
-  .label {
-    margin-bottom: 0.25rem;
-  }
+.child-lots-container {
+  border: 1px dashed var(--border-color);
+  border-radius: .75rem;
+  background: color-mix(in oklab, var(--muted-bg) 80%, transparent);
+  padding: .5rem;
+}
 
-  .child-lots-container {
-    margin-top: 0.75rem;
-    border: 1px solid var(--surface-border);
-    border-radius: 12px;
-    background: var(--surface-ground);
-    overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    width: 100%;
-  }
+/* mobile: allow both vertical and horizontal scroll */
+.child-lots-scroll {
+  max-block-size: 240px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
 }
 
 .child-lots-table {
-  width: 100%;
+  inline-size: 100%;
   border-collapse: collapse;
-  table-layout: auto;
+  font-size: .92rem;
+  min-inline-size: 520px; /* enable horizontal scroll on very small screens */
 
-  th, td {
-    padding: 0.5rem;
-    text-align: left;
-    border-bottom: 1px solid var(--surface-border);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  thead th {
+    position: sticky;
+    inset-block-start: 0;
+    background: color-mix(in oklab, var(--muted-bg) 70%, white);
+    text-align: start;
+    font-weight: 600;
+    padding: .55rem .65rem;
+    border-block-end: 1px solid var(--border-color);
+    z-index: 1;
   }
 
-  th {
-    background: var(--surface-card);
-    //////font-weight: 500;
-    color: var(--text-color);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    white-space: nowrap;
-    border-bottom: 2px solid var(--primary-color-alpha-20);
-  }
-
-  td {
-    color: var(--text-color);
+  tbody td {
+    padding: .5rem .65rem;
+    border-block-end: 1px solid color-mix(in oklab, var(--border-color) 70%, transparent);
     vertical-align: middle;
+    white-space: nowrap;
   }
 
-  tr:last-child td {
-    border-bottom: none;
-  }
-
-  tr:hover td {
-    background: var(--surface-hover);
-  }
-
-  .lot-number {
-    //////font-weight: 500;
-    color: var(--primary-color);
-  }
-
-  .supplier {
-    color: var(--text-color-secondary);
-    word-break: break-word;
-    hyphens: auto;
-  }
-
-  .quantity {
-    text-align: right;
-    ////font-weight: 500;
-    color: var(--text-color);
-  }
-
-  .rendement {
-    text-align: right;
-    ////font-weight: 500;
-    color: var(--primary-color);
+  tbody tr:hover {
+    background: color-mix(in oklab, var(--muted-bg) 75%, transparent);
   }
 }
 
-.child-lots-scroll {
-  max-height: 200px;
-  overflow-y: auto;
-  width: 100%;
+/* ---------- Form side ---------- */
+.input-content {
+  display: grid;
+  gap: .85rem;
+}
 
-  &::-webkit-scrollbar {
-    width: 6px;
+.form-section {
+  display: grid;
+  gap: .65rem;
+  padding: .5rem;
+  border: 1px solid var(--border-color);
+  border-radius: .75rem;
+  background: color-mix(in oklab, var(--muted-bg) 85%, transparent);
+}
+
+/* mobile: single column fields */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: .6rem;
+
+  /* >= 640px we can show two columns comfortably */
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.form-field {
+  inline-size: 100%;
+}
+
+/* Angular Material density tweaks */
+::ng-deep .mat-mdc-form-field {
+  --mdc-outlined-text-field-outline-color: var(--border-color);
+  --mdc-outlined-text-field-hover-outline-color: color-mix(in oklab, currentColor 22%, transparent);
+  --mdc-outlined-text-field-focus-outline-color: var(--mat-sys-primary, #3b82f6);
+  inline-size: 100%;
+}
+
+::ng-deep .mat-mdc-form-field-infix {
+  padding-block: .38rem !important; /* tighter fields on mobile */
+}
+
+/* Larger touch target for selects/date icons on phones */
+::ng-deep .mat-mdc-form-field-icon-suffix,
+::ng-deep .mat-datepicker-toggle {
+  inline-size: 40px;
+  block-size: 40px;
+}
+
+/* Observations textarea spans full row */
+.observation-field {
+  grid-column: 1 / -1;
+
+  textarea {
+    min-block-size: 96px;
+    resize: vertical;
+  }
+}
+
+/* helper / confirmation block */
+.confirmation-text-container {
+  margin-block-start: .15rem;
+  padding: .65rem .8rem;
+  background: color-mix(in oklab, var(--muted-bg) 75%, transparent);
+  border: 1px solid var(--border-color);
+  border-radius: .65rem;
+
+  .confirmation-text {
+    margin: 0;
+    font-size: .9rem;
+    color: color-mix(in oklab, var(--value-color) 70%, #000);
+  }
+}
+
+/* ---------- Actions: sticky on mobile ---------- */
+.dialog-actions {
+  position: sticky;
+  inset-block-end: 0;
+  display: flex;
+  justify-content: center;
+  gap: .6rem;
+  padding: .65rem clamp(.75rem, 2vw, 1rem) calc(.65rem + var(--safe-bottom));
+  background: color-mix(in oklab, var(--muted-bg) 70%, white);
+  border-block-start: 1px solid var(--border-color);
+  backdrop-filter: saturate(120%) blur(6px);
+  z-index: 2;
+
+  button[mat-raised-button] {
+    text-transform: none;
+    letter-spacing: .2px;
+    border-radius: .65rem;
+    padding-inline: .9rem;
+    min-inline-size: 44px;   /* tap minimums */
+    min-block-size: 40px;
   }
 
-  &::-webkit-scrollbar-track {
-    background: var(--surface-ground);
+  /* desktop: non-sticky, restore spacing */
+  @media (min-width: 960px) {
+    position: static;
+    backdrop-filter: none;
+    border-block-start: 0;
+    padding: .75rem 0 0;
   }
+}
 
-  &::-webkit-scrollbar-thumb {
-    background: var(--surface-border);
-    border-radius: 4px;
+/* ---------- Icon sizing polish ---------- */
+::ng-deep .mat-datepicker-toggle-default-icon {
+  block-size: 20px;
+  inline-size: 20px;
+  opacity: .8;
+}
 
-    &:hover {
-      background: var(--surface-hover-border);
-    }
+/* ---------- Dark/contrast friendliness ---------- */
+@media (prefers-contrast: more) {
+  .child-lots-container { border-style: solid; }
+}
+
+/* ---------- Container queries (very narrow sheets) ---------- */
+@container (inline-size < 420px) {
+  .info-row {
+    grid-template-columns: 1fr; /* stack label/value on tiny screens */
+    .label { white-space: normal; }
   }
 }

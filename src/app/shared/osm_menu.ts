@@ -151,7 +151,7 @@ export const osm_menus: Navigation[] = [
       },
       {
         id: 'item-reception-supplier-manage',
-        title: 'MENU.RECEPTION.SUPPLIERS',
+        title: 'MENU.RECEPTION.AGRICULTURE',
         type: 'item',
         url: '/reception/fournisseur',
         icon: 'contact_page',

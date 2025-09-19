@@ -16,6 +16,7 @@ import {MatIcon} from "@angular/material/icon";
 import {MatButton, MatIconButton} from "@angular/material/button";
 import {MatInput} from "@angular/material/input";
 import { ToastService } from '../../../shared/services/toast.service';
+import { SharedModule } from '../../../shared/shared.module';
 
 @Component({
   selector: 'app-quality-control-rule-add',
@@ -34,7 +35,8 @@ import { ToastService } from '../../../shared/services/toast.service';
     MatIconButton,
     MatButton,
      MatInput,
-    MatLabel ],
+    MatLabel,
+    SharedModule ],
   templateUrl: './quality-control-rule-add.component.html',
   styleUrl: './quality-control-rule-add.component.scss'
 })

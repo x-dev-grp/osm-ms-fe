@@ -1,49 +1,57 @@
-import {CommonModule} from '@angular/common';
-import {ChangeDetectorRef, Component, Inject, Input, OnInit, Optional} from '@angular/core';
-import {QualityControlRuleService} from '../../../shared/services/quality-control-rule.service';
-import {QualityControlRule} from '../../../shared/models/quality-control-rule';
-import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
-import {UnifiedDeliveryService} from '../../../shared/services/delivery.service';
-import {UnifiedDelivery} from '../../../shared/models/UnifiedDelivery';
-import {QualityControlResultService} from '../../../shared/services/quality-control-result.service';
-import {QualityControlResultDto} from '../../../shared/models/QualityControlResultDto';
-import {forkJoin, Observable, of} from 'rxjs';
-import {catchError} from 'rxjs/operators';
-import {MatFormField, MatFormFieldModule} from '@angular/material/form-field';
-import {MatOption, MatSelect, MatSelectModule} from '@angular/material/select';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {TranslateModule, TranslateService} from '@ngx-translate/core';
-import {StorageUnitDtoService} from "../../../shared/services/storage.service";
-import {StorageUnitDto} from "../../../shared/models/StorageUnitDto";
-import {MatInputModule} from '@angular/material/input';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {MatIconModule} from '@angular/material/icon';
-import {MatButtonModule} from '@angular/material/button';
-import {MatChipsModule} from '@angular/material/chips';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, Component, Inject, Input, OnInit, Optional } from '@angular/core';
+import { QualityControlRuleService } from '../../../shared/services/quality-control-rule.service';
+import { QualityControlRule } from '../../../shared/models/quality-control-rule';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
+import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
+import { QualityControlResultService } from '../../../shared/services/quality-control-result.service';
+import { QualityControlResultDto } from '../../../shared/models/QualityControlResultDto';
+import { forkJoin, Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
+import { MatOption, MatSelect, MatSelectModule } from '@angular/material/select';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { StorageUnitDtoService } from '../../../shared/services/storage.service';
+import { StorageUnitDto } from '../../../shared/models/StorageUnitDto';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatChipsModule } from '@angular/material/chips';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
-import {
-  ConfirmationDialogData,
-  ConfirmationDialogResult,
-  ConfirmationType
-} from '../../../shared/services/confirmation-dialog.service';
-import {
-  ConfirmationDialogComponent
-} from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { ConfirmationDialogData, ConfirmationDialogResult, ConfirmationType } from '../../../shared/services/confirmation-dialog.service';
+import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ToastService } from '../../../shared/services/toast.service';
-
+import { BaseTypeComponent } from '../../../shared/modules/base-type/base-type.component';
 
 @Component({
   selector: 'app-controlequalite',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, MatFormField, MatSelect, MatOption,  TranslateModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatProgressSpinnerModule, MatIconModule, MatButtonModule, MatChipsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatFormField,
+    MatSelect,
+    MatOption,
+    TranslateModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatProgressSpinnerModule,
+    MatIconModule,
+    MatButtonModule,
+    MatChipsModule,
+    BaseTypeComponent
+  ],
   templateUrl: './controleQualite.component.html',
   styleUrls: ['./controleQualite.component.scss'],
   standalone: true
 })
 export class ControleQualiteComponent implements OnInit {
   @Input() deliveryId: string | null = null;
-
+  qualityForm!: FormGroup;
   message: string = '';
   rules: QualityControlRule[] = [];
   dynamicForm!: FormGroup;
@@ -55,31 +63,52 @@ export class ControleQualiteComponent implements OnInit {
   qualityControlResults: QualityControlResultDto[] = [];
   isQualityControlDone: boolean = false;
   storageUnits: StorageUnitDto[] = [];
+  deliveryForm: FormGroup;
   private xxx: string | null;
+  private lastQualityPayload: any = null;
+  private payload: any;
 
+  /**
+   * Constructor for the component
+   * @param fb - FormBuilder instance for creating reactive forms
+   * @param qcService - Service for quality control rules
+   * @param qcResService - Service for quality control results
+   * @param route - ActivatedRoute for accessing route parameters
+   * @param deliveryService - Service for delivery operations
+   * @param cdr - ChangeDetectorRef for manual change detection
+   * @param toast - Service for displaying toast notifications
+   * @param storageUnitService - Service for storage unit DTO operations
+   * @param translate - Service for internationalization
+   * @param router - Router for navigation
+   * @param dialog - MatDialog for opening dialogs
+   * @param dialogData - Optional data passed to the dialog, defaults to null
+   */
   constructor(
-    private fb: FormBuilder,
-    private qcService: QualityControlRuleService,
-    private qcResService: QualityControlResultService,
-    private route: ActivatedRoute,
-    private deliveryService: UnifiedDeliveryService,
-    private cdr: ChangeDetectorRef,
-    private toast: ToastService,
-    private storageUnitService: StorageUnitDtoService,
-    private translate: TranslateService,
-    private router: Router,
-    private dialog: MatDialog,
-  @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: Record<string, unknown> | null = null
+    private fb: FormBuilder, // FormBuilder for reactive forms
+    private qcService: QualityControlRuleService, // Service for quality control rules
+    private qcResService: QualityControlResultService, // Service for quality control results
+    private route: ActivatedRoute, // ActivatedRoute for accessing route parameters
+    private deliveryService: UnifiedDeliveryService, // Service for delivery operations
+    private cdr: ChangeDetectorRef, // ChangeDetectorRef for manual change detection
+    private toast: ToastService, // Toast service for notifications
+    private storageUnitService: StorageUnitDtoService, // Service for storage unit DTO operations
+    private translate: TranslateService, // Translate service for i18n
+    private router: Router, // Router for navigation
+    private dialog: MatDialog, // MatDialog for opening dialogs
+    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: Record<string, unknown> | null = null // Optional dialog data with default null
   ) {
     if (dialogData && dialogData['deliveryId']) {
-      this.deliveryId = dialogData['deliveryId'] as string;
+      this.deliveryId = dialogData['deliveryId'] as string; // Extract deliveryId from dialog data if present
     }
   }
 
   ngOnInit(): void {
     this.receptionId = this.deliveryId || this.route.snapshot.paramMap.get('id');
     this.xxx = this.route.snapshot.paramMap.get('idx');
-    console.log(this.xxx)
+    console.log(this.xxx);
+    this.qualityForm = this.fb.group({
+      oliveVariety: new FormControl(null)
+    });
     if (this.xxx) {
       // If idx is present, fetch rules directly and skip delivery
       this.loadRulesDirect();
@@ -190,7 +219,7 @@ export class ControleQualiteComponent implements OnInit {
         initialValue = initialValue || '';
       }
       group[rule.ruleKey] = new FormControl(
-        {value: initialValue, disabled: this.isQualityControlDone},
+        { value: initialValue, disabled: this.isQualityControlDone },
         rule.ruleType === 'STRING' && rule.ruleTextValue ? [] : validators
       );
     });
@@ -200,7 +229,7 @@ export class ControleQualiteComponent implements OnInit {
       const oilQty = this.deliveryData?.oilQuantity || 0;
       const calculatedPrice = (unitPrice || 0) * oilQty;
       const roundedPrice = Math.round((calculatedPrice + Number.EPSILON) * 1000) / 1000;
-      this.mainForm.get('price')?.setValue(roundedPrice, {emitEvent: false});
+      this.mainForm.get('price')?.setValue(roundedPrice, { emitEvent: false });
     });
     this.mainForm.get('storageUnit')?.valueChanges.subscribe(() => {
       // storageUnit change logic if needed
@@ -224,21 +253,26 @@ export class ControleQualiteComponent implements OnInit {
   getRuleType(ruleKey: string): 'NUMERIC' | 'BOOLEAN' | 'STRING' {
     return this.rules.find((r) => r.ruleKey === ruleKey)?.ruleType || 'NUMERIC';
   }
-  onSave(): void {
+
+  async onSave(): Promise<void> {
     this.submitted = true;
-    if (!this.mainForm.valid || this.isLoading) {
+
+    // Check if we have valid forms
+    const isMainFormValid = this.mainForm && this.mainForm.valid;
+    const isQualityFormValid = !this.isOliveDelivery() || (this.qualityForm && this.qualityForm.valid);
+
+    if (!isMainFormValid || !isQualityFormValid || this.isLoading) {
       return;
     }
-
     // 1) build dialog parameters
     const dialogData: ConfirmationDialogData = {
-      title:       this.translate.instant('STANDARD.CONFIRMATION.SAVE_QC.TITLE'),
-      message:     this.translate.instant('STANDARD.CONFIRMATION.SAVE_QC.MESSAGE'),
+      title: this.translate.instant('STANDARD.CONFIRMATION.SAVE_QC.TITLE'),
+      message: this.translate.instant('STANDARD.CONFIRMATION.SAVE_QC.MESSAGE'),
       confirmText: this.translate.instant('STANDARD.CONFIRMATION.SAVE'),
-      cancelText:  this.translate.instant('STANDARD.CONFIRMATION.CANCEL'),
-      type:        ConfirmationType.WARNING,
+      cancelText: this.translate.instant('STANDARD.CONFIRMATION.CANCEL'),
+      type: ConfirmationType.WARNING,
       destructive: false,
-      showIcon:    true
+      showIcon: true
     };
 
     // 2) open the confirmation dialog
@@ -253,33 +287,41 @@ export class ControleQualiteComponent implements OnInit {
       }
     });
   }
-  performSave(): void {
+
+  async performSave(): Promise<void> {
     this.submitted = true;
-    if (!this.mainForm.valid || this.isLoading ) {
+
+    // Check if we have valid forms
+    const isMainFormValid = this.mainForm && this.mainForm.valid;
+    const isQualityFormValid = !this.isOliveDelivery() || (this.qualityForm && this.qualityForm.valid);
+
+    if (!isMainFormValid || !isQualityFormValid || this.isLoading) {
       return;
     }
 
     // If idx is present, send results to a new endpoint with idx as path param
     if (this.xxx) {
-      const results: QualityControlResultDto[] = Object.keys(this.dynamicForm.controls).map((ruleKey) => {
-        const rule = this.rules.find((r) => r.ruleKey === ruleKey);
-        if (!rule) return null;
-        const rawValue = this.mainForm.get(ruleKey)?.value;
-        return {
-          rule: rule,
-          measuredValue: String(rawValue),
-          deliveryId: '' // Use empty string to satisfy type
-        } as QualityControlResultDto;
-      }).filter(Boolean) as QualityControlResultDto[];
+      const results: QualityControlResultDto[] = Object.keys(this.dynamicForm.controls)
+        .map((ruleKey) => {
+          const rule = this.rules.find((r) => r.ruleKey === ruleKey);
+          if (!rule) return null;
+          const rawValue = this.mainForm.get(ruleKey)?.value;
+          return {
+            rule: rule,
+            measuredValue: String(rawValue),
+            deliveryId: '' // Use empty string to satisfy type
+          } as QualityControlResultDto;
+        })
+        .filter(Boolean) as QualityControlResultDto[];
       this.isLoading = true;
-       this.qcResService.saveResultsWithIdx(this.xxx, results).subscribe({
+      this.qcResService.saveResultsWithIdx(this.xxx, results).subscribe({
         next: (res: any) => {
-          this.toast.success(res.message || 'Résultats enregistrés avec succès.' );
+          this.toast.success(res.message || 'Résultats enregistrés avec succès.');
           this.isLoading = false;
           this.cdr.detectChanges();
         },
         error: () => {
-          this.toast.error('Erreur lors de l\'enregistrement des résultats.' );
+          this.toast.error("Erreur lors de l'enregistrement des résultats.");
           this.isLoading = false;
           this.cdr.detectChanges();
         }
@@ -290,43 +332,30 @@ export class ControleQualiteComponent implements OnInit {
     if (!this.deliveryData?.id) {
       this.message = 'Données de livraison non disponibles.';
       this.cdr.detectChanges();
-      this.toast.error('Données de livraison manquantes.' );
+      this.toast.error('Données de livraison manquantes.');
       return;
     }
 
-    // Save static fields (unitPrice, price) first
-    if (this.deliveryData) {
-      this.deliveryData.unitPrice = this.mainForm.get('unitPrice')?.value;
-      this.deliveryData.price = this.mainForm.get('price')?.value;
-      // Find the selected storage unit object by ID
-      const selectedStorageUnitId = this.mainForm.get('storageUnit')?.value;
-      if (selectedStorageUnitId) {
-        const selectedStorageUnit = this.storageUnits.find(unit => unit.id === selectedStorageUnitId);
-        this.deliveryData.storageUnit = selectedStorageUnit || null;
-      } else {
-        this.deliveryData.storageUnit = null;
-      }
-      this.isLoading = true;
-      this.deliveryService.updateDelivery(this.deliveryData).subscribe({
-        next: (updatedDelivery) => {
-          this.deliveryData = Array.isArray(updatedDelivery.data) ? updatedDelivery.data[0] : updatedDelivery.data;
-          // Now save QC results
-          this.saveQualityControlResults();
-        },
-        error: () => {
-          this.toast.error('Erreur lors de l\'enregistrement des données financières.' );
-          this.isLoading = false;
-          this.cdr.detectChanges();
-        }
-      });
+    // Handle olive variety update for olive deliveries
+    if (this.isOliveDelivery() && this.qualityForm.get('oliveVariety')?.value) {
+      // Update delivery with olive variety first, then save QC results
+      this.updateDeliveryWithOliveVariety();
+    } else {
+      // Save other delivery data and QC results
+      this.saveDeliveryAndQCResults();
     }
   }
 
   saveQualityControlResults(): void {
-    // Handle dynamic fields
+    // Handle dynamic fields (excluding oliveVariety which is handled separately)
     const updates: QualityControlResultDto[] = [];
     const creates: QualityControlResultDto[] = [];
     Object.keys(this.dynamicForm.controls).forEach((ruleKey) => {
+      // Skip oliveVariety as it's handled separately
+      if (ruleKey === 'oliveVariety') {
+        return;
+      }
+
       const rule = this.rules.find((r) => r.ruleKey === ruleKey);
       if (!rule) return;
       const rawValue = this.mainForm.get(ruleKey)?.value;
@@ -360,7 +389,7 @@ export class ControleQualiteComponent implements OnInit {
         this.qcResService.updateResults(updates).pipe(
           catchError((err) => {
             console.error('Erreur lors de la mise à jour:', err);
-            return of({success: false, message: 'Erreur lors de la mise à jour des résultats.'});
+            return of({ success: false, message: 'Erreur lors de la mise à jour des résultats.' });
           })
         )
       );
@@ -370,13 +399,13 @@ export class ControleQualiteComponent implements OnInit {
         this.qcResService.createResults(creates).pipe(
           catchError((err) => {
             console.error('Erreur lors de la création:', err);
-            return of({success: false, message: 'Erreur lors de la création des résultats.'});
+            return of({ success: false, message: 'Erreur lors de la création des résultats.' });
           })
         )
       );
     }
     if (requests.length === 0) {
-      this.toast.warning('Aucun changement à enregistrer.' );
+      this.toast.warning('Aucun changement à enregistrer.');
       this.isLoading = false;
       this.cdr.detectChanges();
       return;
@@ -395,11 +424,11 @@ export class ControleQualiteComponent implements OnInit {
             message = 'Résultats créés avec succès.';
           }
         } else if (anySuccessful) {
-          message = 'Certains résultats ont été enregistrés, d\'autres ont échoué.';
+          message = "Certains résultats ont été enregistrés, d'autres ont échoué.";
         } else {
-          message = 'Aucun résultat n\'a pu être enregistré.';
+          message = "Aucun résultat n'a pu être enregistré.";
         }
-        this.toast.success(message );
+        this.toast.success(message);
         this.isLoading = false;
         this.cdr.detectChanges();
         this.loadQualityControlResults();
@@ -414,13 +443,12 @@ export class ControleQualiteComponent implements OnInit {
         }
       },
       error: () => {
-        this.toast.error('Erreur lors de l\'enregistrement des résultats de contrôle qualité.' );
+        this.toast.error("Erreur lors de l'enregistrement des résultats de contrôle qualité.");
         this.isLoading = false;
         this.cdr.detectChanges();
       }
     });
   }
-
 
   getRuleName(key: string): string {
     const r = this.rules.find((rule) => rule.ruleKey === key);
@@ -437,6 +465,121 @@ export class ControleQualiteComponent implements OnInit {
       .filter((val) => val.length > 0);
   }
 
+  isOliveDelivery(): boolean {
+    return this.deliveryData?.deliveryType === 'OLIVE';
+  }
+
+  isFormValid(): boolean {
+    // Check main form validity
+    const isMainFormValid = this.mainForm && this.mainForm.valid;
+
+    // For olive deliveries, also check quality form
+    if (this.isOliveDelivery()) {
+      const isQualityFormValid = this.qualityForm && this.qualityForm.valid;
+      return isMainFormValid && isQualityFormValid;
+    }
+
+    return isMainFormValid;
+  }
+
+  onOliveVarietySelected(value: any): void {
+    this.qualityForm.get('oliveVariety')?.setValue(value);
+    this.qualityForm.get('oliveVariety')?.markAsDirty();
+    this.qualityForm.get('oliveVariety')?.markAsTouched();
+  }
+
+  /**
+   * Updates the delivery with the selected olive variety
+   */
+  private updateDeliveryWithOliveVariety(): void {
+    const oliveVariety = this.qualityForm.get('oliveVariety')?.value;
+
+    // Create a complete payload with all delivery data including olive variety
+    const updatedDelivery: Partial<UnifiedDelivery> = {
+      id: this.deliveryData!.id,
+      deliveryType: this.deliveryData!.deliveryType,
+      deliveryNumber: this.deliveryData!.deliveryNumber,
+      lotNumber: this.deliveryData!.lotNumber,
+      deliveryDate: this.deliveryData!.deliveryDate,
+      region: this.deliveryData!.region,
+      poidsBrute: this.deliveryData!.poidsBrute,
+      poidsNet: this.deliveryData!.poidsNet,
+      matriculeCamion: this.deliveryData!.matriculeCamion,
+      etatCamion: this.deliveryData!.etatCamion,
+      supplier: this.deliveryData!.supplier,
+      trtDate: this.deliveryData!.trtDate,
+      oliveVariety: oliveVariety, // This is the key update
+      sackCount: this.deliveryData!.sackCount,
+      oliveType: this.deliveryData!.oliveType,
+      oilType: this.deliveryData!.oilType,
+      operationType: this.deliveryData!.operationType,
+      parcel: this.deliveryData!.parcel,
+      price: this.deliveryData!.price,
+      globalLotNumber: this.deliveryData!.globalLotNumber,
+      unitPrice: this.deliveryData!.unitPrice,
+      paidAmount: this.deliveryData!.paidAmount,
+      unpaidAmount: this.deliveryData!.unpaidAmount,
+      rendement: this.deliveryData!.rendement,
+      oliveQuantity: this.deliveryData!.oliveQuantity,
+      storageUnit: this.deliveryData!.storageUnit,
+      poidsCamionVide: this.deliveryData!.poidsCamionVide
+    };
+
+    this.isLoading = true;
+    this.deliveryService.updateUnifiedDelivery(updatedDelivery as UnifiedDelivery).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.deliveryData = Array.isArray(response.data) ? response.data[0] : response.data;
+          this.toast.success("Variété d'olive mise à jour avec succès.");
+          // Now save QC results
+          this.saveQualityControlResults();
+        } else {
+          this.toast.error("Erreur lors de la mise à jour de la variété d'olive.");
+          this.isLoading = false;
+        }
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error updating delivery with olive variety:', error);
+        this.toast.error("Erreur lors de la mise à jour de la variété d'olive.");
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  /**
+   * Save delivery data (other than olive variety) and QC results
+   */
+  private saveDeliveryAndQCResults(): void {
+    // Save static fields (unitPrice, price) first
+    if (this.deliveryData) {
+      this.deliveryData.unitPrice = this.mainForm.get('unitPrice')?.value;
+      this.deliveryData.price = this.mainForm.get('price')?.value;
+      // Find the selected storage unit object by ID
+      const selectedStorageUnitId = this.mainForm.get('storageUnit')?.value;
+      if (selectedStorageUnitId) {
+        const selectedStorageUnit = this.storageUnits.find((unit) => unit.id === selectedStorageUnitId);
+        this.deliveryData.storageUnit = selectedStorageUnit || null;
+      } else {
+        this.deliveryData.storageUnit = null;
+      }
+
+      this.isLoading = true;
+      this.deliveryService.updateDelivery(this.deliveryData).subscribe({
+        next: (updatedDelivery) => {
+          this.deliveryData = Array.isArray(updatedDelivery.data) ? updatedDelivery.data[0] : updatedDelivery.data;
+          // Now save QC results
+          this.saveQualityControlResults();
+        },
+        error: () => {
+          this.toast.error("Erreur lors de l'enregistrement des données de livraison.");
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        }
+      });
+    }
+  }
 
   private findRuleKey(displayedName: string): string {
     const normalized = displayedName.toLowerCase();
@@ -462,15 +605,6 @@ export class ControleQualiteComponent implements OnInit {
     }
   }
 
-  isOliveDelivery(): boolean {
-    return this.deliveryData?.deliveryType === 'OLIVE';
-  }
-
-  isFormValid(): boolean {
-    // Only rely on mainForm.valid, which covers visible fields
-    return this.mainForm && this.mainForm.valid;
-  }
-
   private calculateCategorie(): string {
     if (this.isOliveDelivery()) {
       return this.calculateCategorieOlive();
@@ -492,9 +626,8 @@ export class ControleQualiteComponent implements OnInit {
 
     if (currentCategorie !== calculated) {
       console.log('Mise à jour automatique de la catégorie en :', calculated);
-      categorieControl.setValue(calculated, {emitEvent: false});
+      categorieControl.setValue(calculated, { emitEvent: false });
       categorieControl.updateValueAndValidity();
-
     }
   }
 
@@ -503,7 +636,7 @@ export class ControleQualiteComponent implements OnInit {
     const k270 = this.dynamicForm.get('K270')?.value;
     const k232 = this.dynamicForm.get('K232')?.value;
 
-    console.log('Valeurs avant calcul (OIL):', {acidite, k270, k232});
+    console.log('Valeurs avant calcul (OIL):', { acidite, k270, k232 });
     if (
       acidite == null ||
       typeof acidite !== 'number' ||
@@ -524,12 +657,14 @@ export class ControleQualiteComponent implements OnInit {
     }
   }
 
+  // New method: fetch all rules and show form, skip delivery
+
   private calculateCategorieOlive(): string {
     const infestees = this.dynamicForm.get('Infestees')?.value;
     const fermentees = this.dynamicForm.get('Fermentees')?.value;
     const endommagees = this.dynamicForm.get('Endommagees')?.value;
 
-    console.log('Valeurs avant calcul (OLIVE):', {infestees, fermentees, endommagees});
+    console.log('Valeurs avant calcul (OLIVE):', { infestees, fermentees, endommagees });
 
     if (
       infestees == null ||
@@ -554,10 +689,10 @@ export class ControleQualiteComponent implements OnInit {
     }
   }
 
-  // New method: fetch all rules and show form, skip delivery
   private loadRulesDirect(): void {
     this.isLoading = true;
-    this.qcService.getAllRules().subscribe({      next: (res) => {
+    this.qcService.getAllRules().subscribe({
+      next: (res) => {
         if (res?.success) {
           let allRules: QualityControlRule[] = [];
           if (Array.isArray(res.data)) {
@@ -583,6 +718,39 @@ export class ControleQualiteComponent implements OnInit {
         this.message = 'Erreur lors du chargement des règles';
         this.isLoading = false;
         this.cdr.detectChanges();
+      }
+    });
+  }
+
+  /**
+   * Immediately updates the delivery with the selected olive variety
+   */
+  private updateDeliveryWithSelectedOliveVariety(oliveVariety: any): void {
+    console.log('Updating delivery with olive variety:', oliveVariety);
+
+    // Create updated delivery object
+    const updatedDelivery = {
+      ...this.deliveryData,
+      oliveVariety: oliveVariety
+    } as UnifiedDelivery;
+
+    console.log('Updated delivery object:', updatedDelivery);
+
+    // Update the delivery
+    this.deliveryService.updateUnifiedDelivery(updatedDelivery).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.deliveryData = Array.isArray(response.data) ? response.data[0] : response.data;
+          console.log('Delivery updated with olive variety:', oliveVariety);
+          this.toast.success("Variété d'olive mise à jour avec succès.");
+        } else {
+          console.error('Failed to update delivery with olive variety');
+          this.toast.error("Erreur lors de la mise à jour de la variété d'olive.");
+        }
+      },
+      error: (error) => {
+        console.error('Error updating delivery with olive variety:', error);
+        this.toast.error("Erreur lors de la mise à jour de la variété d'olive.");
       }
     });
   }

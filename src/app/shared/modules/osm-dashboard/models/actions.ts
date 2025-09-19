@@ -24,6 +24,7 @@ export const ACTION_ICONS: Map<string, string> = new Map<string, string>([
   ['COMPLETE_PAYMENT_DETAILS', 'attach_money'],
   ['ASSIGN_SUPPLIER', 'assignment_ind'],
   ['PAY', 'payments'],
-  ['MAINTENANCE', 'handyman']
+  ['MAINTENANCE', 'handyman'],
+  ['WAITING', 'hourglass_pause']
 
 ]);

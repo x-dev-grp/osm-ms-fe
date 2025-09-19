@@ -143,6 +143,7 @@
     "OLIVE_TYPE": "نوع الزيتون",
     "OLIVE_VARIETY": "تنوع الزيتون",
     "OPERATION_TYPE": "نوع العملية",
+    "PARCEL": "الحزمة",
     "PRODUCTION_METHOD": "طريقة الإنتاج",
     "REGION": "المنطقة",
     "SUPPLIER_TYPE": "نوع المورد",
@@ -616,6 +617,7 @@
         "OIL_INFO": "معلومات الزيت",
         "OLIVE_INFO": "معلومات الزيتون",
         "OLIVE_OIL_INFO": "معلومات الزيتون والزيت",
+        "PROCESSING": "العصر",
         "STORAGE": "وحدة التخزين",
         "STORAGE_UNIT": "وحدة التخزين",
         "SUPPLIER": "المورد",
@@ -633,6 +635,8 @@
       "GROSS_WEIGHT": "الوزن الإجمالي (كغ)",
       "LOT_NUMBER": "رقم الدفعة",
       "LOT_OLIVE_NUMBER": "رقم دفعة المرجع",
+      "MILL_MACHINE": "آلة العصر",
+      "MILL_START": "بداية العصر",
       "NET_WEIGHT": "الوزن الصافي (كغ)",
       "OIL_QUANTITY": "كمية الزيت",
       "OIL_TYPE": "نوع الزيت",
@@ -1303,6 +1307,7 @@
       "TITLE": "الإنتاج"
     },
     "RECEPTION": {
+      "AGRICULTURE": "الفلاحون",
       "OIL": "استقبال الزيت",
       "OLIVE": "استقبال الزيتون",
       "QUALITY_CONTROL": "مراقبة الجودة",
@@ -2208,10 +2213,10 @@
     "LOT_GLOBAL": "الدفعة العالمية",
     "LOT_NUMBER": "رقم الدفعة",
     "MOBILE": "+216 29 910 458",
+    "NCOLIS": "رقم الحزمة",
     "NO_QUALITY_DATA": "لا توجد بيانات مراقبة جودة متاحة",
     "NUMBER_PLACEHOLDER": "رقم: ......./........",
     "N°COLIS": "رقم الحزمة",
-    "NCOLIS": "رقم الحزمة",
     "OIL_DISPATCH": "إشعار توزيع الزيت",
     "OIL_QUANTITY": "كمية الزيت",
     "OIL_TYPE": "نوع الزيت",
@@ -2365,6 +2370,34 @@
     },
     "TITLE": "قواعد مراقبة الجودة"
   },
+  "QUALITY_CONTROL_RULE_ADD": {
+    "CARD_TITLE": {
+      "ADD": "إضافة قاعدة",
+      "EDIT": "تعديل قاعدة"
+    },
+    "FIELDS": {
+      "RULE_KEY": "مفتاح القاعدة",
+      "OIL_QC": "مراقبة جودة الزيت",
+      "RULE_NAME": "اسم القاعدة",
+      "TYPE": "النوع",
+      "MIN_VALUE": "القيمة الدنيا",
+      "MAX_VALUE": "القيمة القصوى",
+      "EXPECTED_VALUE": "القيمة المتوقعة",
+      "DESCRIPTION": "الوصف",
+      "TEXT_VALUES": "القيم الممكنة (مفصولة بفواصل)",
+      "ACTIONS": {
+        "SAVE": "حفظ",
+        "UPDATE": "تحديث",
+        "ADD": "إضافة",
+        "CANCEL": "إلغاء"
+      }
+    },
+    "RULE_TYPES": {
+      "NUMERIC": "رقمي",
+      "BOOLEAN": "منطقي",
+      "STRING": "نص"
+    }
+  },
   "RECEPTION": {
     "PLANNING": {
       "COMPLETION": {
@@ -2434,6 +2467,7 @@
       "PROD_READY": "جاهز للإنتاج",
       "REFUSED": "مرفوض",
       "STOCK_READY": "جاهز للتخزين",
+      "WAITING": "بانتظار ",
       "WAITING_FOR_PAYMENT_DETAILS": "بانتظار تفاصيل السعر",
       "WAITING_FOR_PRICING": "بانتظار التسعير والكمية"
     },
@@ -2550,38 +2584,50 @@
     "ERROR": {
       "FAILED_TO_LOAD_UNITS": "فشل في تحميل وحدات التخزين",
       "INVALID_ID": "معرف وحدة التخزين غير صالح",
-      "LOAD": "خطأ أثناء تحميل وحدة التخزين"
+      "LOAD": "خطأ في تحميل وحدة التخزين"
     },
     "FORM": {
-      "IS_PAID_STORAGE": "وحدة تخزين مدفوعة",
+      "IS_PAID_STORAGE": "تخزين مدفوع",
       "MONTHLY_RENTAL_PRICE": "سعر الإيجار الشهري",
       "PAID_STORAGE_INFO": "معلومات التخزين المدفوع",
       "RENTAL_PRICE_MIN_ERROR": "يجب أن يكون سعر الإيجار أكبر من أو يساوي 0",
       "RENTAL_PRICE_REQUIRED": "سعر الإيجار مطلوب للتخزين المدفوع"
     },
     "OIL_STORAGE_UNITS": "وحدات تخزين الزيت",
-    "OIL_TRANSACTIONS": "معاملات الزيت",
+    "OIL_TRANSACTIONS": {
+      "DASHBOARD": {
+        "TYPES": {
+          "RECEPTION_IN": "استقبال داخلي",
+          "TRANSFER_IN": "تحويل داخلي",
+          "LOAN": "قرض",
+          "SALE": "بيع"
+        }
+      }
+    },
     "TITLE": {
-      "DASHBOARD": "لوحة التخزين"
+      "DASHBOARD": "لوحة تحكم التخزين"
     },
     "VIEW": {
       "AVAILABLECAPACITY": "السعة المتاحة",
       "AVGCOST": "التكلفة المتوسطة",
+      "CREATED_DATE": "تاريخ الإنشاء",
       "CURRENT_VOLUME": "الحجم الحالي",
       "DASHBOARD": {
-        "TITLE": "لوحة التخزين"
+        "TITLE": "لوحة تحكم التخزين"
       },
       "MAX_CAPACITY": "السعة القصوى",
       "NA": "غير متوفر",
       "NO_UNITS": "لا توجد وحدات تخزين",
       "OIL_TYPE": "نوع الزيت",
-      "PAID_STORAGE": "التخزين المدفوع",
-      "PER_MONTH": "شهريًا",
+      "PAID_STORAGE": "تخزين مدفوع",
+      "PER_MONTH": "شهرياً",
+      "QUALITY_GRADE": "درجة الجودة",
+      "QUANTITY_KG": "الكمية (كغ)",
       "SHOW_ONLY_PAID": "عرض التخزين المدفوع فقط",
       "STATUS": {
-        "AVAILABLE": "متوفر",
+        "AVAILABLE": "متاح",
         "CLEANING": "تنظيف",
-        "FILLING": "تعبئة",
+        "FILLING": "ملء",
         "FULL": "ممتلئ",
         "IN_USE": "قيد الاستخدام",
         "MAINTENANCE": "صيانة",
@@ -2590,7 +2636,9 @@
       },
       "TITLE": "عرض التخزين",
       "TOTALCOST": "التكلفة الإجمالية",
-      "TRANSACTION_HISTORY": "سجل المعاملات"
+      "TOTAL_PRICE": "السعر الكلي",
+      "TRANSACTION_HISTORY": "سجل المعاملات",
+      "UNIT_PRICE": "سعر الوحدة"
     }
   },
   "SUPPLIER": {
@@ -2647,6 +2695,150 @@
   },
   "SUPPLIERS": {
     "ACTIONS": "الإجراءات",
+"TRANSACTIONS": {
+    "FIELDS": {
+      "TRANSACTION_TYPE": "نوع المعاملة"
+    }
+  },
+  "USER": {
+    "EMAIL": "البريد الإلكتروني",
+    "FIRST_NAME": "الاسم الأول",
+    "GROUP": "المجموعة",
+    "LAST_NAME": "اسم العائلة",
+    "PASSWORD": "كلمة المرور",
+    "STATUS": "الحالة",
+    "USERNAME": "اسم المستخدم"
+  },
+  "USERS": {
+    "ACTIONS": {
+      "ADD": "إضافة",
+      "CANCEL": "إلغاء",
+      "EDIT": "تعديل",
+      "DELETE": "حذف",
+      "GENERATE_PDF": "إنشاء إيصال"
+    },
+    "FIELDS": {
+      "EMAIL": "البريد الإلكتروني",
+      "FIRST_NAME": "الاسم الأول",
+      "GROUP": "المجموعة",
+      "LAST_NAME": "اسم العائلة",
+      "PASSWORD": "كلمة المرور",
+      "STATUS": "الحالة",
+      "USERNAME": "اسم المستخدم"
+    },
+    "MESSAGES": {
+      "DELETE": "هل أنت متأكد أنك تريد حذف هذا المستخدم؟ هذا الإجراء لا يمكن التراجع عنه.",
+      "ERROR": {
+        "EMAIL_REQUIRED": "البريد الإلكتروني مطلوب",
+        "PASSWORD_REQUIRED": "كلمة المرور مطلوبة",
+        "USERNAME_REQUIRED": "اسم المستخدم مطلوب"
+      },
+      "LOAD": "خطأ أثناء تحميل المستخدم",
+      "LOADING": "جارٍ التحميل...",
+      "SAVE": "خطأ أثناء حفظ المستخدم",
+      "SUCCESS": {
+        "DELETE": "تم حذف المستخدم بنجاح",
+        "SAVE": "تم حفظ المستخدم بنجاح"
+      }
+    },
+    "TITLE": "المستخدمين"
+  },
+  "WASTE": {
+    "ACTIONS": {
+      "ADD": "إضافة",
+      "CANCEL": "إلغاء",
+      "EDIT": "تعديل"
+    },
+    "ADD": {
+      "TITLE_ADD": "إضافة نفايات",
+      "TITLE_EDIT": "تعديل النفايات"
+    },
+    "FIELDS": {
+      "AMOUNT": "الكمية",
+      "DATE": "التاريخ",
+      "DESCRIPTION": "الوصف",
+      "METHOD": "الطريقة",
+      "OIL_TYPE": "نوع الزيت",
+      "OLIVE_TYPE": "نوع الزيتون",
+      "OPERATION_TYPE": "نوع العملية",
+      "PRICE": "السعر",
+      "REGION": "المنطقة",
+      "SUPPLIER": "المورد",
+      "TREATMENT_DATE": "تاريخ المعالجة",
+      "TYPE": "النوع",
+      "WEIGHT": "الوزن"
+    },
+    "METHODS": {
+      "BURY": "دفن",
+      "DUMP": " выброс",
+      "RECYCLE": "تنقية",
+      "SOLD": "بيع"
+    },
+    "MESSAGES": {
+      "LOAD_ERROR": "خطأ أثناء تحميل بيانات النفايات",
+      "SAVE_ERROR": "خطأ أثناء حفظ بيانات النفايات",
+      "SAVE_SUCCESS": "تم حفظ بيانات النفايات بنجاح"
+    },
+    "TITLE": "النفايات",
+    "TYPES": {
+      "OIL": "زيت",
+      "OLIVE": "زيتون"
+    }
+  },
+  "WASTE_PROCESSING": {
+    "FORM": {
+      "FIELDS": {
+        "METHOD": "الطريقة",
+        "OIL_TYPE": "نوع الزيت",
+        "OLIVE_TYPE": "نوع الزيتون",
+        "PRICE": "السعر",
+        "REGION": "المنطقة",
+        "WEIGHT": "الوزن"
+      },
+      "METHODS": {
+        "BURY": "دفن",
+        "DUMP": " выброс",
+        "RECYCLE": "تنقية",
+        "SOLD": "بيع"
+      },
+      "MESSAGES": {
+        "LOAD_ERROR": "خطأ أثناء تحميل بيانات معالجة النفايات",
+        "SAVE_ERROR": "خطأ أثناء حفظ بيانات معالجة النفايات",
+        "SAVE_SUCCESS": "تم حفظ بيانات معالجة النفايات بنجاح"
+      },
+      "TITLE": "معالجة النفايات"
+    }
+  },
+  "WASTE_PROCESSING_LIST": {
+    "ACTIONS": {
+      "DELETE": "حذف",
+      "EDIT": "تعديل",
+      "GENERATE_PDF": "إنشاء إيصال"
+    },
+    "FIELDS": {
+      "AMOUNT": "الكمية",
+      "DATE": "التاريخ",
+      "DESCRIPTION": "الوصف",
+      "METHOD": "الطريقة",
+      "OIL_TYPE": "نوع الزيت",
+      "OLIVE_TYPE": "نوع الزيتون",
+      "PRICE": "السعر",
+      "REGION": "المنطقة",
+      "TYPE": "النوع",
+      "WEIGHT": "الوزن"
+    },
+    "TITLE": "معالجة النفايات"
+  },
+  "WASTE_PROCESSING_METHODS": {
+    "BURY": "دفن",
+    "DUMP": " выброс",
+    "RECYCLE": "تنقية",
+    "SOLD": "بيع"
+  },
+  "WASTE_PROCESSING_TYPES": {
+    "OIL": "زيت",
+    "OLIVE": "زيتون"
+  },
     "ADDRESS": "العنوان",
     "EMAIL": "البريد الإلكتروني",
     "FIRST_NAME": "الاسم الأول",
