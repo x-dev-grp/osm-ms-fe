@@ -11,7 +11,7 @@ import {
   ViewChild
 } from '@angular/core';
 import { CdkDragDrop, CdkDragEnter, CdkDragMove, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
 import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -23,10 +23,10 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule } from '@angular/forms';
 import { CardComponent } from '../../../theme/components/card/card.component';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { catchError, debounceTime, filter, forkJoin, map, Observable, of, Subject, Subscription } from 'rxjs';
+import { catchError, debounceTime, filter, forkJoin, map, Observable, of, Subject } from 'rxjs';
 import { MillMachineService } from '../../../shared/services/mill-machine.service';
 import { MillMachine } from '../../../shared/models/millMachine';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatExpansionPanel, MatExpansionPanelDescription, MatExpansionPanelHeader } from '@angular/material/expansion';
 import { SharedModule } from '../../../shared/shared.module';
@@ -89,6 +89,9 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
   readonly GLOBAL_LOT = PlanItemType.GLOBAL_LOT;
   isFullScreen = false;
   dirty = false; // tracks unsaved edits
+  searchTerm = '';
+  // pour gérer la saisie et filtrer en temps réel
+  searchControl = new FormControl('');
   private filterSubject = new Subject<string>();
   private readonly autoScrollPadding = 80;
   private readonly autoScrollSpeed = 100;
@@ -96,7 +99,8 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
   private destroy$ = new Subject<void>();
   /* ───────────────────────── New field ───────────────────────── */
   private fullReceptionMap: Map<string, PlanningItem> = new Map();
-  searchTerm = '';
+  // gardez aussi ces tableaux pour restaurer l’état initial
+  private allUnassigned: any[] = [];
 
   constructor(
     private deliveryService: UnifiedDeliveryService,
@@ -156,11 +160,6 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
         this.dirty = true;
       });
   }
-  // pour gérer la saisie et filtrer en temps réel
-  searchControl = new FormControl('');
-
-// gardez aussi ces tableaux pour restaurer l’état initial
-  private allUnassigned: any[] = [];
 
   ungroupLot(gl: GlobalLot): void {
     // called from the menu
@@ -209,7 +208,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
       this.applyFilter(value);
     });
     this.allUnassigned = [...this.unassignedReceptions];
-    this.mills.forEach(m => m.receptions = [...m.receptions]);
+    this.mills.forEach((m) => (m.receptions = [...m.receptions]));
 
     this.loadPlanning(); // Fetch planning from backend
   }
@@ -306,7 +305,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
   _groupSelected(): void {
     const ids = this.selectedIds();
     if (!ids.length) {
-      this.toast.warning('Please select at least one reception to group.' );
+      this.toast.warning('Please select at least one reception to group.');
       return;
     }
 
@@ -379,9 +378,9 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     this.globalLots.push(globalLot);
     this.selection = {};
     this.filteredReceptions = [...this.unassignedReceptions];
-    this._savePlan(true)
+    this._savePlan(true);
     this.cdr.markForCheck();
-    this.toast.success(`Global lot ${globalLotNumber} created successfully!`,);
+    this.toast.success(`Global lot ${globalLotNumber} created successfully!`);
   }
 
   _ungroupLot(globalLot: GlobalLot): void {
@@ -485,8 +484,8 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     this.selection = {};
     this.refreshConnectedDropLists();
     this.cdr.markForCheck();
-     this.toast.error(`Global lot ${globalLot.globalLotNumber} ungrouped successfully!`);
-    this._savePlan(true)
+    this.toast.error(`Global lot ${globalLot.globalLotNumber} ungrouped successfully!`);
+    this._savePlan(true);
   }
 
   cancelPlan(): void {
@@ -562,7 +561,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     return item.type === PlanItemType.LOT ? (item.data as PlanningItem).id : (item.data as GlobalLot).globalLotNumber;
   }
 
-  _savePlan(isSilent:boolean): void {
+  _savePlan(isSilent: boolean): void {
     console.log(
       '[SavePlan] Mills before saving:',
       this.mills.map((m) => ({
@@ -653,7 +652,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.planningService.savePlanning(request).subscribe({
       next: () => {
-        if(!isSilent) {
+        if (!isSilent) {
           this.toast.success('Planning saved successfully!');
         }
         this.dirty = false;
@@ -663,7 +662,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
         console.error('[SavePlan] Error saving planning:', err);
         // Log the full error object to understand the cause
         console.error('[SavePlan] Full error details:', JSON.stringify(err, null, 2));
-        if(!isSilent) {
+        if (!isSilent) {
           this.toast.error('Failed to save planning. Please try again.');
         }
       }
@@ -725,10 +724,28 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   markAsCompleted(item: BoardItem): void {
-    const dialogRef = this.dialog.open(CompletionDetailsDialogComponent, {
-      data: { item: item.data, itemType: item.type },
-      maxWidth: '100%'
-    });
+    const isMobile = window.innerWidth <= 768;
+
+    let dialogRef: MatDialogRef<CompletionDetailsDialogComponent, any>;
+    if (isMobile) {
+      dialogRef = this.dialog.open(CompletionDetailsDialogComponent, {
+        data: { item: item.data, itemType: item.type },
+        width: isMobile ? '100vw' : '80vw',
+        height: '100vh',
+        maxWidth:   '100vw'  ,
+        maxHeight:   '100vh'  ,
+        panelClass:    'mobile-fullscreen-dialog'  ,
+        autoFocus: false
+      });
+    } else {
+      dialogRef = this.dialog.open(CompletionDetailsDialogComponent, {
+        data: { item: item.data, itemType: item.type },
+        width: '80vw',
+        maxHeight: '90vh',
+        panelClass: 'desktop-dialog',
+        autoFocus: false
+      });
+    }
 
     dialogRef
       .afterClosed()
@@ -745,7 +762,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
           triturationDurationInMinutes: result.triturationDurationInMinutes
         }))
       )
-      .subscribe(({ oilQuantity, rendement, totalTriturationPrice, childLotsRendement, autoSetStorage,triturationDurationInMinutes }) => {
+      .subscribe(({ oilQuantity, rendement, totalTriturationPrice, childLotsRendement, autoSetStorage, triturationDurationInMinutes }) => {
         const itemToComplete = item;
         let targetItemData: PlanningItem | GlobalLot | undefined;
 
@@ -816,7 +833,6 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
           childLotsRendement,
           autoSetStorage,
           triturationDurationInMinutes
-
         );
 
         this.handleResponse(req$, itemToComplete, targetItemData);
@@ -830,6 +846,11 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
 
   trackByReception(index: number, item: BoardItem): string {
     return item.type === PlanItemType.LOT ? (item.data as PlanningItem).lotNumber : (item.data as GlobalLot).globalLotNumber;
+  }
+
+  clearSearch(): void {
+    this.searchControl.setValue('');
+    this.applyFilter('');
   }
 
   private handleResponse(req$: Observable<string>, itemToComplete: BoardItem, targetItemData?: PlanningItem | GlobalLot): void {
@@ -867,7 +888,14 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     triturationDurationInMinutes: any
   ) {
     if (itemToComplete.type === PlanItemType.LOT) {
-      return this.planningService.completeLotWithDetails(label, oilQuantity, rendement, totalTriturationPrice, autoSetStorage, triturationDurationInMinutes);
+      return this.planningService.completeLotWithDetails(
+        label,
+        oilQuantity,
+        rendement,
+        totalTriturationPrice,
+        autoSetStorage,
+        triturationDurationInMinutes
+      );
     } else {
       if (childLotsRendement && Array.isArray(childLotsRendement)) {
         return this.planningService.completeGlobalLotWithDetails(
@@ -1003,10 +1031,10 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
         this.loadReceptions(); // Fallback to basic loading
       }
     });
-         // ← Nouvel ajout : met à jour les copies et applique le filtre courant
-         this.allUnassigned = [...this.unassignedReceptions];
-        this.mills.forEach(m => m.receptions = [...m.receptions]);
-       this.applyFilter(this.searchControl.value!);
+    // ← Nouvel ajout : met à jour les copies et applique le filtre courant
+    this.allUnassigned = [...this.unassignedReceptions];
+    this.mills.forEach((m) => (m.receptions = [...m.receptions]));
+    this.applyFilter(this.searchControl.value!);
   }
 
   private initializeMills(machines: MillMachine[]): void {
@@ -1217,6 +1245,9 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  // --- Fallback method if delivery details loading fails ---
+  // Remove the old loadPlanningWithoutDetails method as it's no longer needed
+
   private cleanupCorruptedAssignments(): void {
     console.log('[CLEANUP] Starting cleanup of corrupted assignments...');
 
@@ -1278,9 +1309,6 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     console.log('[CLEANUP] Cleanup completed');
   }
 
-  // --- Fallback method if delivery details loading fails ---
-  // Remove the old loadPlanningWithoutDetails method as it's no longer needed
-
   private createGlobalLot(gl: GlobalLotDTO): GlobalLot {
     return {
       id: gl.globalLotNumber,
@@ -1297,6 +1325,8 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     };
   }
 
+  // Remove the old loadPlanning method and related fallback methods
+
   private createUnassignedReceptions(assignedLotNumbers: Set<string>): void {
     // Use the master copy from fullReceptionMap for each lot
     this.unassignedReceptions = Array.from(this.fullReceptionMap.values())
@@ -1309,8 +1339,6 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     this.filteredReceptions = [...this.unassignedReceptions];
     console.log('[LOAD] Unassigned receptions created:', this.unassignedReceptions.length);
   }
-
-  // Remove the old loadPlanning method and related fallback methods
 
   private loadReceptions(): void {
     this.deliveryService.getAllDeliveriesList().subscribe({
@@ -1325,7 +1353,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
       },
       error: (err) => {
         console.error('Error loading deliveries:', err);
-        this.toast.error('Failed to load receptions. Please try again.' );
+        this.toast.error('Failed to load receptions. Please try again.');
       }
     });
   }
@@ -1432,19 +1460,16 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
 
     console.log('=== END ASSIGNMENT SUMMARY ===\n');
   }
+
   private applyFilterSearch(term: string): void {
     const filterValue = (term || '').trim().toLowerCase();
 
     // colonne non assignée
-    this.filteredReceptions = filterValue
-      ? this.allUnassigned.filter(item => this.matches(item, filterValue))
-      : [...this.allUnassigned];
+    this.filteredReceptions = filterValue ? this.allUnassigned.filter((item) => this.matches(item, filterValue)) : [...this.allUnassigned];
 
     // chaque colonne de moulin
-    this.mills.forEach(mill => {
-      mill.receptions = filterValue
-        ? mill.receptions!.filter(item => this.matches(item, filterValue))
-        : [...mill.receptions!];
+    this.mills.forEach((mill) => {
+      mill.receptions = filterValue ? mill.receptions!.filter((item) => this.matches(item, filterValue)) : [...mill.receptions!];
     });
   }
 
@@ -1452,9 +1477,4 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     const lot = ((item.data as PlanningItem).lotNumber || '').toString().toLowerCase();
     return lot.includes(filterValue);
   }
-  clearSearch(): void {
-    this.searchControl.setValue('');
-    this.applyFilter('');
-  }
-
 }

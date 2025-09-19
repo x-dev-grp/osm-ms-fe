@@ -16,6 +16,7 @@ import { BASE_TYPE } from './BASE_TYPE_DASHBOARD';
 import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { Router } from '@angular/router';
+import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
 
 /** ===== Types & labels ===== */
 
@@ -59,8 +60,9 @@ export class GenericTypeComponent implements OnInit, OnDestroy {
     { value: TypeCategory.OLIVE_VARIETY, name: 'Variété d’olive' },
     { value: TypeCategory.OIL_VARIETY, name: 'Variété d’huile' },
     { value: TypeCategory.WASTE_TYPE, name: 'Type de déchet' },
-    { value: TypeCategory.SUPPLIER_TYPE, name: 'Type de Fournisseur' }
-  ];
+    { value: TypeCategory.SUPPLIER_TYPE, name: 'Type de Fournisseur' },
+    { value: TypeCategory.PARCEL, name: 'Parcel' },
+    ];
   private translated: String;
 
   constructor(
@@ -84,6 +86,9 @@ export class GenericTypeComponent implements OnInit, OnDestroy {
   // ========= Cartes =========
   loadRegion(): void {
     this.applyCategory(TypeCategory.REGION);
+  }
+ loadParcels(): void {
+    this.applyCategory(TypeCategory.PARCEL);
   }
 
   loadOliveVariety(): void {
@@ -178,8 +183,11 @@ export class GenericTypeComponent implements OnInit, OnDestroy {
       ...baseDefault,
       searchData: {
         ...baseSearchData,
+        operation: SearchOperation.AND,
+
         search: {
-          ...baseSearch
+          ...baseSearch,
+          isDeleted: { equalValue: false }
         }
       }
     };

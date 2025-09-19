@@ -18,39 +18,108 @@ $color-background: #f8fafc;
 .w-full {
   width: 100%;
 }
+
 .header-actions-container {
   display: flex;
-  align-items: center;
-  gap: .5rem;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 0.75rem;
 
-  .search-field {
-    min-width: 260px;
-    flex: 1 1 320px;
+  .search-section {
+    width: 100%;
+
+    .search-field {
+      width: 100%;
+      min-width: 200px;
+    }
   }
 
-  .stats {
+  .actions-section {
     display: flex;
-    gap: .75rem;
+    flex-wrap: wrap;
     align-items: center;
-    flex: 0 0 auto;
+    gap: 0.75rem;
+    width: 100%;
 
     .stat-item {
       font-weight: 500;
       white-space: nowrap;
+    }
+
+    .desktop-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .mobile-actions {
+      display: none;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
     }
   }
 
   .action-btn {
     display: inline-flex;
     align-items: center;
-    gap: .5rem;
+    gap: 0.5rem;
 
     mat-icon {
       font-size: 20px;
       width: 20px;
       height: 20px;
       line-height: 20px;
+    }
+  }
+}
+
+/* Mobile layout - show icon buttons only */
+@media (max-width: 768px) {
+  .header-actions-container {
+    .actions-section {
+      .desktop-actions {
+        display: none;
+      }
+
+      .mobile-actions {
+        display: flex;
+      }
+
+      .mobile-actions button {
+        min-width: 40px;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .mobile-actions button mat-icon {
+        font-size: 20px;
+      }
+    }
+  }
+}
+
+/* Desktop layout - show full buttons */
+@media (min-width: 769px) {
+  .header-actions-container {
+    flex-direction: row;
+    align-items: center;
+
+    .search-section {
+      flex: 1 1 320px;
+    }
+
+    .search-section .search-field {
+      min-width: 260px;
+    }
+
+    .actions-section {
+      flex: 0 0 auto;
+      justify-content: flex-end;
     }
   }
 }
@@ -484,4 +553,130 @@ mat-expansion-panel:not(:last-child) {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+.header-actions-container {
+  display: grid;
+  grid-template-columns: 1fr auto; /* search | stats+actions */
+  align-items: center;
+  gap: 0.75rem 1rem;
+  padding: .6rem .8rem;
+  border: 1px solid color-mix(in oklab, currentColor 12%, transparent);
+  border-radius: 14px;
+  background: color-mix(in oklab, Canvas 94%, currentColor 6%);
+}
+
+/* Search field */
+.search-field {
+  inline-size: 100%;
+  max-inline-size: 540px;
+
+  /* compact density without shrinking tap targets */
+  ::ng-deep .mat-mdc-form-field-infix {
+    padding-block: .35rem !important;
+  }
+  ::ng-deep .mat-mdc-form-field {
+    --mdc-outlined-text-field-outline-color: color-mix(in oklab, currentColor 25%, transparent);
+    --mdc-outlined-text-field-hover-outline-color: color-mix(in oklab, currentColor 40%, transparent);
+    --mdc-outlined-text-field-focus-outline-color: var(--mat-sys-primary, #3b82f6);
+  }
+}
+
+/* Right side: stats + actions */
+.actions-section {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* Stats pills */
+.stat-item {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .35rem .6rem;
+  font-size: .88rem;
+  line-height: 1;
+  border-radius: 999px;
+  background: color-mix(in oklab, currentColor 8%, transparent);
+  color: color-mix(in oklab, currentColor 70%, #000);
+  white-space: nowrap;
+}
+
+/* Desktop action buttons (text + icon) */
+.desktop-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+
+  .action-btn[mat-raised-button] {
+    text-transform: none;
+    letter-spacing: .2px;
+    border-radius: .7rem;
+    padding-inline: .9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+
+    &.primary {
+      /* rely on Angular Material color="primary" theme; just subtle shadow */
+      box-shadow: 0 1px 0 color-mix(in oklab, currentColor 12%, transparent);
+    }
+    &.accent {
+      /* optional accent tint without fighting theme */
+      box-shadow: 0 1px 0 color-mix(in oklab, currentColor 12%, transparent);
+    }
+
+    .btn-text { font-weight: 600; }
+  }
+
+  .fs-btn[mat-icon-button] {
+    border-radius: .7rem;
+    inline-size: 40px;
+    block-size: 40px;
+  }
+}
+
+/* Mobile action buttons (icons only) */
+.mobile-actions {
+  display: none;
+  align-items: center;
+  gap: .25rem;
+
+  button[mat-icon-button] {
+    inline-size: 40px;
+    block-size: 40px;
+    border-radius: .7rem;
+
+    /* make badges breathe on small icons */
+    ::ng-deep .mat-badge-content {
+      transform: translate(40%, -40%);
+    }
+  }
+}
+
+/* Responsive: stack nicely on small screens */
+@media (max-width: 900px) {
+  .header-actions-container {
+    grid-template-columns: 1fr; /* search on its own row */
+    gap: .6rem;
+  }
+  .actions-section {
+    justify-content: space-between;
+  }
+  .desktop-actions { display: none; }
+  .mobile-actions { display: inline-flex; }
+}
+
+/* Super-narrow phones: compress spacing a bit */
+@media (max-width: 420px) {
+  .actions-section { gap: .5rem; }
+  .stat-item { padding: .3rem .5rem; font-size: .85rem; }
+}
+
+/* RTL/LTR friendliness via logical properties */
+:host {
+  direction: inherit;
 }

@@ -34,7 +34,7 @@ export const dashboardConfig: DashboardConfig = {
       fieldType: FieldType.text,
       sortable: true,
       filterable: true,
-      defaultFilter: true,
+
       dataTable: true,
       exportable: true,
       exportLabel: 'Nom',
@@ -47,7 +47,7 @@ export const dashboardConfig: DashboardConfig = {
       fieldType: FieldType.text,
       sortable: true,
       filterable: true,
-      defaultFilter: true,
+
       dataTable: true,
       exportable: true
     },
@@ -123,7 +123,7 @@ export const dashboardConfig: DashboardConfig = {
       fieldType: FieldType.text,
       sortable: true,
       filterable: true,
-      defaultFilter: true,
+
       dataTable: true,
       options: [
         { label: 'Disponible', value: 'AVAILABLE' },

@@ -35,6 +35,7 @@ import { ToastService } from '../../../../shared/services/toast.service';
 import { OliveType } from '../../../../shared/models/olive-type.enum';
 import { OilType } from '../../../../shared/models/oil-type.enum';
 import { mapOilFromOlive, mapOliveFromOil } from '../../../../shared/models/olive-oil-type.util';
+import { TypeCategory } from '../../../../shared/models/type-category.enum';
 
 // Validator for net weight not exceeding gross weight
 const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | null => {
@@ -85,6 +86,8 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
   private _typeSubs: Subscription[] = [];
   oliveOptions = Object.values(OliveType);
   oilOptions = Object.values(OilType);
+  regions: BaseType[] = [];
+  parcels: BaseType[] = [];
   constructor(
     private fb: FormBuilder,
     private genericSrv: GenericTypeService,
@@ -113,7 +116,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
         oilVariety: [null, Validators.required],
         oilType: [null, Validators.required],
         sackCount: this.fb.control(0, { validators: [Validators.min(0)] }),
-        parcel: [null, Validators.required],
+        parcel: [null],
         globalLotNumber: [''],
         operationType: [OperationType.OIL_PURCHASE, Validators.required]
       },
@@ -125,20 +128,83 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.deliveryId = this.route.snapshot.paramMap.get('id');
     this.isEditing = this.deliveryId !== null && this.deliveryId !== 'new';
-// 1) S’assurer que les contrôles existent
+// 1) S'assurer que les contrôles existent
     if (!this.receptionForm.get('oliveType')) {
       this.receptionForm.addControl('oliveType', new FormControl<OliveType | null>(null, Validators.required));
     }
     if (!this.receptionForm.get('oilType')) {
       this.receptionForm.addControl('oilType', new FormControl<OilType | null>(null, Validators.required));
     }
+    
+    // Load regions for the BaseTypeComponent
+    this.pendingCalls++;
+    const regionSub = this.genericSrv.getAllTypes(TypeCategory.REGION).subscribe({
+      next: (res) => {
+        this.regions = res.success ? res.data : [];
+      },
+      error: () => {
+        this.toast.error('Erreur chargement régions');
+      },
+      complete: () => this.markCallDone()
+    });
+    this.subscriptions.push(regionSub);
+    
+    // Load parcels for the BaseTypeComponent
+    this.pendingCalls++;
+    const parcelSub = this.genericSrv.getAllTypes(TypeCategory.PARCEL).subscribe({
+      next: (res) => {
+        this.parcels = res.success ? res.data : [];
+      },
+      error: () => {
+        this.toast.error('Erreur chargement parcels');
+      },
+      complete: () => this.markCallDone()
+    });
+    this.subscriptions.push(parcelSub);
+    
+    // When region changes, update the parcel field
     this.subscriptions.push(
       this.receptionForm.get('region')!.valueChanges.subscribe((region: BaseType | null) => {
-        if (region?.name) {
-          this.receptionForm.patchValue({ parcel: region.name }, { emitEvent: false });
+        // If there's no parcel set yet, set it to the same as region
+        const currentParcel = this.receptionForm.get('parcel')!.value;
+        if (region && (!currentParcel || (typeof currentParcel === 'object' && !currentParcel.id))) {
+          this.receptionForm.patchValue({ parcel: region }, { emitEvent: false });
         }
       })
     );
+    
+    // Automatically set region when supplier is selected
+    this.subscriptions.push(
+      this.receptionForm.get('supplier')!.valueChanges.subscribe((supplier: SupplierType | null) => {
+        if (supplier && supplier.supplierInfo && supplier.supplierInfo.region) {
+          // Make sure regions have been loaded before trying to set the region
+          if (this.regions && this.regions.length > 0) {
+            // Since the supplier's region is a full BaseType object, we need to find the matching
+            // region in our regions array by comparing IDs
+            const matchingRegion = this.regions.find((region) => region.id === supplier.supplierInfo.region.id);
+            if (matchingRegion) {
+              // Use patchValue to avoid conflicts with BaseTypeComponent
+              this.receptionForm.patchValue({ region: matchingRegion });
+              // Also set the parcel to the same region if it's not already set
+              const currentParcel = this.receptionForm.get('parcel')!.value;
+              if (!currentParcel || (typeof currentParcel === 'object' && !currentParcel.id)) {
+                this.receptionForm.patchValue({ parcel: matchingRegion }, { emitEvent: false });
+              }
+            }
+          } else {
+            // If regions haven't been loaded yet, set the region directly from the supplier
+            // This might happen during form initialization
+            this.receptionForm.patchValue({ region: supplier.supplierInfo.region });
+            // Also set the parcel to the same region if it's not already set
+            const currentParcel = this.receptionForm.get('parcel')!.value;
+            if (!currentParcel || (typeof currentParcel === 'object' && !currentParcel.id)) {
+              this.receptionForm.patchValue({ parcel: supplier.supplierInfo.region }, { emitEvent: false });
+            }
+          }
+        }
+      })
+    );
+
 // 2) Synchro olive -> oil
     this._typeSubs.push(
       this.receptionForm.get('oliveType')!.valueChanges.subscribe((val: OliveType | null) => {
@@ -158,7 +224,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       })
     );
 
-// 4) Initialisation: si l’un des deux est déjà rempli (édition), déduire l’autre
+// 4) Initialisation: si l'un des deux est déjà rempli (édition), déduire l'autre
     const oliveInit = this.receptionForm.get('oliveType')!.value as OliveType | null;
     const oilInit   = this.receptionForm.get('oilType')!.value as OilType   | null;
 
@@ -167,6 +233,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     } else if (oilInit && !oliveInit) {
       this.receptionForm.get('oliveType')!.setValue(mapOliveFromOil(oilInit), { emitEvent: false });
     }
+    
     // ===== 1️⃣  Charger les fournisseurs =====
     this.pendingCalls++;
     const suppliersSub = this.supplierSrv.getAllSuppliers().subscribe({
@@ -234,7 +301,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       this.subscriptions.push(editSub);
     }
 
-    // ===== 4️⃣  Initialiser les types d’opération & abonnements =====
+    // ===== 4️⃣  Initialiser les types d'opération & abonnements =====
     this.operationTypes = [
       {
         value: OperationType.OIL_PURCHASE,
@@ -244,12 +311,12 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     ];
     this.setupFormSubscriptions();
 
-    // Par défaut (création) on pré‑sélectionne l’opération OIL_PURCHASE
+    // Par défaut (création) on pré‑sélectionne l'opération OIL_PURCHASE
     if (!this.isEditing) {
       this.receptionForm.patchValue({ operationType: OperationType.OIL_PURCHASE });
     }
 
-    // Si aucune requête n’était nécessaire (cas création sans édition)
+    // Si aucune requête n'était nécessaire (cas création sans édition)
     if (this.pendingCalls === 0) {
       this.loading = false;
     }
@@ -274,10 +341,22 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     }
 
     const formValue = this.receptionForm.getRawValue();
+
+    // Validate required references
+    if (!formValue.region?.id) {
+      this.toast.warning(this.translate.instant('DELIVERIES.FORM.VALIDATION.INVALID_REGION'));
+      return;
+    }
+    if (!formValue.supplier?.id) {
+      this.toast.warning(this.translate.instant('DELIVERIES.FORM.VALIDATION.INVALID_SUPPLIER'));
+      return;
+    }
+
     const v = this.receptionForm.get('sackCount')?.value as any;
     if (v === '' || v === null || Number.isNaN(Number(v))) {
       this.receptionForm.get('sackCount')?.setValue(0, { emitEvent: false });
     }
+
     const payload = {
       id: this.isEditing && this.deliveryId ? this.deliveryId : '',
       deliveryNumber: formValue.deliveryNumber || '',
@@ -306,7 +385,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       status: OliveLotStatus.NEW,
       rendement: Number(formValue.rendement) || 0,
       oliveQuantity: Number(formValue.oliveQuantity) || 0,
-      parcel: formValue.parcel || '',
+      parcel: formValue.parcel || null,
       storageUnit: formValue.storageUnit || null,
       qualityControlResults: formValue.qualityControlResults || null
     } as UnifiedDelivery;
@@ -392,9 +471,9 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       deliveryType: d.deliveryType,
       deliveryNumber: d.deliveryNumber,
       lotNumber: d.lotNumber,
-      parcel: d.parcel,
+      parcel: this.parcels.find((r) => r.id === d.parcel?.id) || null,
       deliveryDate: parse(d.deliveryDate),
-      region: d.region || null,
+      region: this.regions.find((r) => r.id === d.region?.id) || null,
       supplier: matchedSupplier || null,
       matriculeCamion: d.matriculeCamion,
       etatCamion: d.etatCamion,
@@ -414,8 +493,6 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     });
   }
 
-
-
   private generateLotNumber(oilType: OilType | null, deliveryNumber: number): string {
     if (!oilType) return '';
     const year = new Date().getFullYear().toString().slice(-2);
@@ -431,5 +508,24 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
         this.receptionForm.patchValue({ lotNumber }, { emitEvent: false });
       })
     );
+    
+    // Enforce autocomplete selection for supplier
+    this.receptionForm.get('supplier')!.valueChanges.subscribe((value) => {
+      if (value && !this.suppliers.some((s) => s.id === value.id)) {
+        this.receptionForm.get('supplier')!.setValue(null);
+      }
+    });
+    // Enforce autocomplete selection for region
+    this.receptionForm.get('region')!.valueChanges.subscribe((value) => {
+      if (value && !this.regions.some((r: BaseType) => r.id === value.id)) {
+        this.receptionForm.get('region')!.setValue(null);
+      }
+    });
+    // Enforce autocomplete selection for parcel
+    this.receptionForm.get('parcel')!.valueChanges.subscribe((value) => {
+      if (value && !this.parcels.some((r: BaseType) => r.id === value.id)) {
+        this.receptionForm.get('parcel')!.setValue(null);
+      }
+    });
   }
 }

@@ -82,18 +82,18 @@
                           <th>{{ 'RECEPTION.PLANNING.COMPLETION.LOT_LIST_SUPPLIER' | translate }}</th>
                           <th>{{ 'RECEPTION.PLANNING.COMPLETION.LOT_LIST_QUANTITY' | translate }}</th>
                           <th>{{ 'RECEPTION.PLANNING.COMPLETION.LOT_LIST_OIL_QUANTITY' | translate }}</th>
-                          <th class="rendement">{{ 'RECEPTION.PLANNING.COMPLETION.LOT_LIST_YIELD' | translate }}</th>
-                          <th class="rendement">{{ 'RECEPTION.PLANNING.COMPLETION.LOT_LIST_TRITURATION_PRICE' | translate }}</th>
+                          <th>{{ 'RECEPTION.PLANNING.COMPLETION.LOT_LIST_YIELD' | translate }}</th>
+                          <th>{{ 'RECEPTION.PLANNING.COMPLETION.LOT_LIST_TRITURATION_PRICE' | translate }}</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr *ngFor="let child of childLotsWithRendement; let i = index; trackBy: trackByLotNumber">
-                          <td class="lot-number">{{ child.lotNumber }}</td>
-                          <td class="supplier">{{ child.supplier.supplierInfo.name + " " + child.supplier.supplierInfo.lastname   || '-' }} </td>
-                          <td class="quantity">{{ child.oliveQuantity }} kg</td>
+                          <td>{{ child.lotNumber }}</td>
+                          <td>{{ child.supplier.supplierInfo.name + " " + child.supplier.supplierInfo.lastname || '-' }}</td>
+                          <td>{{ child.oliveQuantity }} kg</td>
                           <td>{{ child.oilQuantity | number: '1.2-2' }} kg</td>
-                          <td class="rendement">{{ (child.calculatedRendement ?? 0) | number: '1.2-2' }}%</td>
-                          <td class="rendement">{{ child.calculatedTriturationPrice | number: '1.2-2' }} DTN </td>
+                          <td>{{ (child.calculatedRendement ?? 0) | number: '1.2-2' }}%</td>
+                          <td>{{ child.calculatedTriturationPrice | number: '1.2-2' }} TND</td>
                         </tr>
                         </tbody>
                       </table>
@@ -112,6 +112,7 @@
         </div>
       </div>
 
+      <!-- Input Section -->
       <div class="input-section">
         <div class="section-header">
           <h3>{{ 'RECEPTION.PLANNING.COMPLETION.COMPLETION_DETAILS_TITLE' | translate }}</h3>
@@ -129,54 +130,59 @@
               <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.YIELD_LABEL' | translate }}</mat-label>
               <input [value]="rendement | number: '1.2-2'" matInput type="text" disabled />
             </mat-form-field>
+
           </div>
 
-          <!-- Price per kg input and total price display -->
-          <ng-container>
-            <div class="form-row">
-              <mat-form-field appearance="outline" class="form-field">
-                <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.TRITURATION_PRICE_PER_KG_LABEL' | translate }}</mat-label>
-                <input [(ngModel)]="triturationPricePerKg" matInput min="0" step="0.01" type="number" />
-              </mat-form-field>
-              @if (itemType === PlanItemType.LOT && item) {
-                <mat-form-field appearance="outline" class="form-field">
-                  <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.TOTAL_TRITURATION_PRICE_LABEL' | translate }}</mat-label>
-                  <input [value]="totalTriturationPrice | number: '1.2-2'" matInput type="text" disabled />
-                </mat-form-field>
-              }
-            </div>
-          </ng-container>
-
-          <!-- Completion Date + Trituration Duration -->
+          <!-- Trituration Price and Total Price Row -->
           <div class="form-row">
-            <!-- Completion Date -->
             <mat-form-field appearance="outline" class="form-field">
-              <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.COMPLETION_DATE_LABEL' | translate }}</mat-label>
-              <input [(ngModel)]="completionDate" [matDatepicker]="picker" matInput />
-              <mat-datepicker-toggle [for]="picker" matSuffix></mat-datepicker-toggle>
-              <mat-datepicker #picker></mat-datepicker>
+              <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.TRITURATION_PRICE_PER_KG_LABEL' | translate }}</mat-label>
+              <input [(ngModel)]="triturationPricePerKg" matInput min="0" step="0.01" type="number" />
             </mat-form-field>
 
-            <!-- Trituration Duration (Hours and Minutes) -->
-            <div class="duration-container">
-              <mat-form-field appearance="outline" class="duration-field">
-                <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.TRITURATION_DURATION_HOURS' | translate }}</mat-label>
-                <input [(ngModel)]="triturationHours" matInput min="0" type="number" />
+            @if (itemType === PlanItemType.LOT && item) {
+              <mat-form-field appearance="outline" class="form-field">
+                <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.TOTAL_TRITURATION_PRICE_LABEL' | translate }}</mat-label>
+                <input [value]="totalTriturationPrice | number: '1.2-2'" matInput type="text" disabled />
               </mat-form-field>
-              <mat-form-field appearance="outline" class="duration-field">
-                <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.TRITURATION_DURATION_MINUTES' | translate }}</mat-label>
-                <input [(ngModel)]="triturationMinutes" matInput min="0" max="59" type="number" />
-              </mat-form-field>
-            </div>
+            }
           </div>
 
-          <!-- Final Observation Input -->
-          <mat-form-field appearance="outline" class="form-field observation-field">
-            <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.FINAL_OBSERVATION_LABEL' | translate }}</mat-label>
-            <textarea [(ngModel)]="finalObservation" matInput rows="3"></textarea>
-          </mat-form-field>
+          <!-- Date and Duration Section -->
+          <div class="form-section">
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="form-field">
+                <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.COMPLETION_DATE_LABEL' | translate }}</mat-label>
+                <input [(ngModel)]="completionDate" [matDatepicker]="picker" matInput />
+                <mat-datepicker-toggle [for]="picker" matSuffix></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+            </div>
 
-          <p class="confirmation-text">{{ 'RECEPTION.PLANNING.COMPLETION.CONFIRMATION_TEXT' | translate }}</p>
+            <!-- Trituration Duration (Hours and Minutes) -->
+               <div class="form-row">
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.TRITURATION_DURATION_HOURS' | translate }}</mat-label>
+                  <input [(ngModel)]="triturationHours" matInput min="0" type="number" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.TRITURATION_DURATION_MINUTES' | translate }}</mat-label>
+                  <input [(ngModel)]="triturationMinutes" matInput min="0" max="59" type="number" />
+                </mat-form-field>
+              </div>
+           </div>
+
+          <!-- Observation Field -->
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field observation-field">
+              <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.FINAL_OBSERVATION_LABEL' | translate }}</mat-label>
+              <textarea [(ngModel)]="finalObservation" matInput rows="3"></textarea>
+            </mat-form-field>
+          </div>
+
+          <div class="confirmation-text-container">
+            <p class="confirmation-text">{{ 'RECEPTION.PLANNING.COMPLETION.CONFIRMATION_TEXT' | translate }}</p>
+          </div>
         </div>
       </div>
     </div>

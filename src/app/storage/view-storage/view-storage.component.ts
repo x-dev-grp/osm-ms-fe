@@ -147,51 +147,65 @@ export class ViewStorageComponent implements OnInit {
         sort: 'createdDate',
         order: 'DESC',
         searchData: {
-          operation: SearchOperation.OR,
+          operation: SearchOperation.AND,               // Top-level AND
           searchs: [
             {
-              search: {
-                'storageUnitDestination.id': {
-                  equalValue: storageUnitId
-                },
-                'storageUnitSource.id': {
-                  equalValue: storageUnitId
+              // ⬇️ Outer AND group: your UI will append into THIS array.
+              operation: SearchOperation.AND,
+              searchs: [
+                {
+                  // ⬇️ Inner OR keeps the (dest OR src) logic intact
+                  operation: SearchOperation.OR,
+                  searchs: [
+                    {
+                      operation: SearchOperation.AND,
+                      search: {
+                        isDeleted: { equalValue: false },
+                        'storageUnitDestination.id': { equalValue: storageUnitId }
+                      }
+                    },
+                    {
+                      operation: SearchOperation.AND,
+                      search: {
+                        isDeleted: { equalValue: false },
+                        'storageUnitSource.id': { equalValue: storageUnitId }
+                      }
+                    }
+                  ]
                 }
-              }
+                // ⬅️ When your UI "appends a search", it will add another
+                //     { operation: AND, search: { ...new filters... } }
+                //     HERE, resulting in:
+                //     AND( OR(dest, src), AND(new filters) )
+              ]
             }
           ]
+          // (Optional) global must-have filters could also go in top-level `search`
+          // search: { tenantId: { equalValue: ... } }
         }
       },
       fields: [
         {
           name: 'transactionType',
           label: 'Transaction Type',
-          labelTranslatePath: 'STORAGE.VIEW.DASHBOARD.FIELDS.TRANSACTION_TYPE',
-          attributeType: AttributeType.string,
-          fieldType: FieldType.text,
+          labelTranslatePath: 'TRANSACTIONS.FIELDS.TRANSACTION_TYPE',
+          attributeType: AttributeType.enum,
+          fieldType: FieldType.select,
           sortable: true,
           exportable: true,
           dataTable: true,
           filterable: true,
           options: [
-            {
-              value: TransactionType.RECEPTION_IN,
-              label: 'Réception Entrée',
-              labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.RECEPTION_IN'
-            },
-            {
-              value: TransactionType.TRANSFER_IN,
-              label: 'Transfert Entrée',
-              labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.TRANSFER_IN'
-            },
-            { value: TransactionType.LOAN, label: 'Prêt', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.LOAN' },
-            { value: TransactionType.SALE, label: 'Vente', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.SALE' }
+            { value: 'RECEPTION_IN', label: 'Réception Entrée', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.RECEPTION_IN' },
+            { value: 'TRANSFER_IN',  label: 'Transfert Entrée', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.TRANSFER_IN' },
+            { value: 'LOAN',         label: 'Prêt',             labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.LOAN' },
+            { value: 'SALE',         label: 'Vente',            labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.SALE' }
           ]
         },
         {
           name: 'quantityKg',
           label: 'Quantity (kg)',
-          labelTranslatePath: 'STORAGE.VIEW.DASHBOARD.FIELDS.QUANTITY_KG',
+          labelTranslatePath: 'STORAGE.VIEW.QUANTITY_KG',
           attributeType: AttributeType.number,
           fieldType: FieldType.text,
           sortable: true,
@@ -201,19 +215,20 @@ export class ViewStorageComponent implements OnInit {
         {
           name: 'unitPrice',
           label: 'Unit Price',
-          labelTranslatePath: 'STORAGE.VIEW.DASHBOARD.FIELDS.UNIT_PRICE',
+          labelTranslatePath: 'STORAGE.VIEW.UNIT_PRICE',
           isCurrency: true,
           currency: 'TND',
           attributeType: AttributeType.number,
           fieldType: FieldType.text,
           sortable: true,
           exportable: true,
+          filterable: true,
           dataTable: true
         },
         {
           name: 'totalPrice',
           label: 'Total Price',
-          labelTranslatePath: 'STORAGE.VIEW.DASHBOARD.FIELDS.TOTAL_PRICE',
+          labelTranslatePath: 'STORAGE.VIEW.TOTAL_PRICE',
           attributeType: AttributeType.number,
           fieldType: FieldType.text,
           sortable: true,
@@ -223,7 +238,7 @@ export class ViewStorageComponent implements OnInit {
         {
           name: 'qualityGrade',
           label: 'Quality Grade',
-          labelTranslatePath: 'STORAGE.VIEW.DASHBOARD.FIELDS.QUALITY_GRADE',
+          labelTranslatePath: 'STORAGE.VIEW.QUALITY_GRADE',
           attributeType: AttributeType.string,
           fieldType: FieldType.text,
           exportable: true,
@@ -233,7 +248,7 @@ export class ViewStorageComponent implements OnInit {
         {
           name: 'createdDate',
           label: 'Created Date',
-          labelTranslatePath: 'STORAGE.VIEW.DASHBOARD.FIELDS.CREATED_DATE',
+          labelTranslatePath: 'STORAGE.VIEW.CREATED_DATE',
           attributeType: AttributeType.string,
           fieldType: FieldType.date,
           exportable: true,

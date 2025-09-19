@@ -25,7 +25,7 @@ export function getOlivePdfConfig(delivery: UnifiedDelivery): PdfConfig {
       {label: 'PDF.TYPE', value: String(delivery.deliveryType || '')},
     ],
     fields: [
-      {label: 'PDF.PARCEL', value: String(delivery.parcel || '')},
+      {label: 'PDF.PARCEL', value: String(delivery.parcel?.name || '')},
       {
         label: 'PDF.OLIVE_VARIETY',
         value: String(delivery.oliveVariety?.name || '') // Coerce to string

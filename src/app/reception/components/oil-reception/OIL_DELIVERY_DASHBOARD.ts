@@ -28,6 +28,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
             'IN_PROGRESS',
             'OIL_CONTROLLED',
             'WAITING_FOR_PRICING',
+            'WAITING',
             'REFUSED',
             'STOCK_READY',
             'CANCELLED',
