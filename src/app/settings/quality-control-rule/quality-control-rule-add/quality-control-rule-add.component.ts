@@ -122,6 +122,11 @@ export class QualityControlRuleAddComponent implements OnInit {
           minCtrl.clearValidators();
           maxCtrl.clearValidators();
           boolCtrl.clearValidators();
+        } else if (type === 'raw_string') {
+          textInputCtrl.setValidators([Validators.required]);
+          minCtrl.clearValidators();
+          maxCtrl.clearValidators();
+          boolCtrl.clearValidators();
         }
 
         // Mettre à jour les validations
@@ -173,6 +178,11 @@ export class QualityControlRuleAddComponent implements OnInit {
       ruleTextValue: ruleType?.toLowerCase() === 'string'
         ? Array.isArray(v.textInput)
           ? v.textInput.filter((val: string) => val && val.trim()).join(',') // 👈 on convertit en string
+          : String(v.textInput || '').trim()
+        : null,
+      rawStringValue: ruleType?.toLowerCase() === 'raw_string'
+        ? Array.isArray(v.textInput)
+          ? v.textInput.filter((val: string) => val && val.trim()) // 👈 on convertit en string
           : String(v.textInput || '').trim()
         : null
     };

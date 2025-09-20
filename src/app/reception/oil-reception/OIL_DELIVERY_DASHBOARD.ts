@@ -67,20 +67,11 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       dataTable: true,
       filterable: true
     },
-    {
-      name: 'globalLotNumber',
-      label: 'N° Lot Global',
-      labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.GLOBAL_LOT_NUMBER',
-      attributeType: AttributeType.string,
-      fieldType: FieldType.text,
-      exportable: true,
-      dataTable: true,
-      filterable: true
-    } /* Dates */,
+
     {
       name: 'deliveryDate',
       label: 'Date de livraison',
-      labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.DELIVERY_DATE',
+      labelTranslatePath: 'RECEPTION_LIST.FIELDS.DELIVERY_DATE',
       attributeType: AttributeType.date,
       fieldType: FieldType.date,
       exportable: true,
@@ -139,7 +130,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
     {
       name: 'operationType',
       label: 'Type d\'operation',
-      labelTranslatePath: 'RECEPTION_LIST.FIELDS.OPERATION_TYPE',
+      labelTranslatePath: 'SUPPLIER_PAYMENT.RECEPTION_TYPE',
       attributeType: AttributeType.enum,
       fieldType: FieldType.select,
       exportable: true,
@@ -166,18 +157,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       dataTable: true,
       filterable: true
     },
-    {
-      name: 'poidsBrute',
-      label: 'Poids brut (kg)',
-      labelTranslatePath: 'DELIVERIES.FIELDS.GROSS_WEIGHT',
-      attributeType: AttributeType.number,
-      fieldType: FieldType.text,
-      exportable: true,
-      sortable: true,
-      dataTable: true,
-      filterable: true
-    },
-    /* Quantités & Prix */
+
     {
       name: 'poidsNet',
       label: 'Poids net (kg)',
@@ -189,18 +169,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       dataTable: true,
       filterable: true
     },
-    {
-      name: 'oilQuantity',
-      label: 'Qté huile (KG)',
-      labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.OIL_QUANTITY',
-      attributeType: AttributeType.number,
-      fieldType: FieldType.text,
-      exportable: true,
-      sortable: true,
-      dataTable: true,
-      filterable: true
-    },
-    /* Type d'huile */
+
     {
       name: 'oilType',
       label: "Type d'huile",
@@ -221,38 +190,6 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
          }
       ]
     },
-    {
-      name: 'oilVariety',
-      label: "Variété d'huile",
-      labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.OIL_VARIETY',
-      attributeType: AttributeType.object,
-      exportable: true,
-      dataTable: true,
-      filterable: true,
-      valuePath: 'name',
-      valueAttributeType: AttributeType.string,
-      fieldType: FieldType.autocomplete,
-      getOptionsUrl:"production/types",
-      filterAttribute: 'oliveVariety.name',
-      autoCompleteDefaultCriteria: {
-        page: 0,
-        size: 10,
-        sort: 'createdDate',
-        order: 'DESC',
-        searchData: {
-          operation: SearchOperation.AND,
-          searchs: [],
-          search: {
-            isDeleted: {
-              equalValue: false
-            },
-            type: {
-              equalValue: TypeCategory.OIL_VARIETY
-            }
-          }
-        }
-      },
-      autoCompleteFilterAttributes: ['name'] },
 
     /* Statut */
     {

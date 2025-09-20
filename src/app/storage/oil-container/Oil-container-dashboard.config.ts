@@ -31,6 +31,20 @@ export const dashboardConfig: DashboardConfig = {
 
   fields: [
     {
+      name: 'lotNumber',
+      label: 'lotNumber',
+      labelTranslatePath: 'DELIVERIES.FIELDS.LOT_NUMBER',
+      attributeType: AttributeType.string,
+      fieldType: FieldType.text,
+      sortable: true,
+      filterable: true,
+      defaultFilter: false,
+      dataTable: true,
+      exportable: true,
+      exportLabel: 'lotNumber',
+      filterAttribute: 'lotNumber'
+    },
+    {
       name: 'name',
       label: 'Contenant',
       labelTranslatePath: 'OIL_CONTAINER.DASHBOARD.FIELDS.NAME',

@@ -10,6 +10,7 @@ export interface OilContainer {
 
   /** e.g. "1 L Glass Bottle" */
   name: string;
+  lotNumber: string;
   /** Optional longer description */
   description?: string;
 

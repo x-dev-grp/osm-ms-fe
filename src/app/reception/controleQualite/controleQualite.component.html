@@ -40,8 +40,63 @@
         <div class="parameters-grid">
           <div class="parameter-card">
             <base-type (selected)="onOliveVarietySelected($event)" [formControl]="qualityForm.controls['oliveVariety']"
-              [type]="'OLIVE_VARIETY'">
+                       [type]="'OLIVE_VARIETY'">
             </base-type>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div *ngIf="!isOliveDelivery() && !isLoading && !message" class="quality-content">
+    <form [formGroup]="storageunitForm" class="quality-form">
+      <div class="form-section">
+
+        <div class="parameters-grid">
+          <div class="parameter-card">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>
+                {{ 'OIL_TRANSACTIONS.FORM.FIELDS.STORAGE_UNIT_DESTINATION' | translate }}
+              </mat-label>
+              <mat-select formControlName="storageUnitDestinationId"
+                          placeholder="{{'CONTROLE_QUALITE.STORAGE_UNIT.PLACEHOLDER'|translate}}">
+                <mat-option *ngFor="let u of storageUnits" [disabled]="u.maxCapacity-u.currentVolume<deliveryData.poidsNet"
+                            [value]="u">
+                  @if (u.supplier) {
+                    @if (u.maxCapacity - u.currentVolume < deliveryData.poidsNet) {
+                      <span class="storage-unit-info">
+                {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }}
+                        kg) [{{ u.supplier?.supplierInfo.name + " " + u.supplier?.supplierInfo.lastname }}]
+              </span>
+                      <span class="capacity-warning">{{ "OIL_TRANSACTIONS.FORM.OVERFILLING"|translate }}</span>
+                    } @else {
+                      <span class="storage-unit-info">
+                {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }}
+                        kg) [{{ u.supplier?.supplierInfo.name + " " + u.supplier?.supplierInfo.lastname }}]
+              </span>
+                    }
+                  } @else {
+                    @if (u.maxCapacity - u.currentVolume < deliveryData.poidsNet) {
+                      <span class="storage-unit-info">
+                {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)
+              </span>
+                      <span class="capacity-warning">{{ "OIL_TRANSACTIONS.FORM.OVERFILLING"|translate }}</span>
+                    } @else {
+                      <span class="storage-unit-info">
+                {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)
+              </span>
+                    }
+                  }
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="storageunitForm.get('storageUnitDestinationId')?.hasError('required')">
+                {{ 'OIL_TRANSACTIONS.FORM.VALIDATION.REQUIRED' | translate }}
+              </mat-error>
+              <mat-error *ngIf="capacityError">
+                {{ 'OIL_TRANSACTIONS.FORM.VALIDATION.CAPACITY' | translate }}
+                ({{ availableCapacity | number:'1.2-2' }} &lt; {{ deliveryData.poidsNet| number:'1.2-2' }} kg)
+              </mat-error>
+            </mat-form-field>
+
           </div>
         </div>
       </div>
@@ -68,7 +123,7 @@
             <mat-form-field appearance="outline" class="parameter-field">
               <mat-label>{{ getRuleName('classificationHuile') }}</mat-label>
               <mat-select [disabled]="isQualityControlDone" formControlName="classificationHuile"
-                id="classificationHuile">
+                          id="classificationHuile">
                 <mat-option *ngFor="let option of getTextOptions('classificationHuile')" [value]="option">
                   {{ option }}
                 </mat-option>
@@ -82,7 +137,8 @@
 
           <!-- REST: All other fields except classificationHuile and testSensoriel -->
           <div *ngFor="let control of dynamicForm.controls | keyvalue"
-            [hidden]="control.key === 'testSensoriel' || control.key === 'classificationHuile'" class="parameter-card">
+               [hidden]="control.key === 'testSensoriel' || control.key === 'classificationHuile'"
+               class="parameter-card">
             <div class="parameter-header">
               <label [for]="control.key" class="parameter-label">
                 {{ getRuleName(control.key) }}
@@ -93,8 +149,8 @@
               <mat-form-field appearance="outline" class="parameter-field">
                 <mat-label>{{ getRuleName(control.key) }}</mat-label>
                 <input [disabled]="isQualityControlDone" [formControlName]="control.key" [id]="control.key"
-                  [placeholder]="'CONTROLE_QUALITE.PLACEHOLDER.ENTER_VALUE' | translate" matInput step="0.01"
-                  type="number">
+                       [placeholder]="'CONTROLE_QUALITE.PLACEHOLDER.ENTER_VALUE' | translate" matInput step="0.01"
+                       type="number">
                 <mat-icon matSuffix>calculate</mat-icon>
                 <mat-error *ngIf="mainForm.get(control.key)?.hasError('required')">
                   {{ 'CONTROLE_QUALITE.FORM.VALIDATION.REQUIRED' | translate }}
@@ -117,6 +173,18 @@
                     {{ 'CONTROLE_QUALITE.FORM.VALIDATION.REQUIRED' | translate }}
                   </mat-error>
                 </mat-form-field>
+                <!-- RAW_STRING (first-time auto-fill, always disabled) -->
+                <mat-form-field *ngSwitchCase="'RAW_STRING'" appearance="outline" class="parameter-field">
+                  <mat-label>{{ getRuleName(control.key) }}</mat-label>
+                  <input
+                    matInput
+                    [disabled]="true"
+                    [formControlName]="control.key"
+                    [id]="control.key"
+                    type="text" />
+                  <mat-icon matSuffix>lock</mat-icon>
+                </mat-form-field>
+
                 <!-- BOOLEAN -->
                 <mat-form-field *ngSwitchCase="'BOOLEAN'" appearance="outline" class="parameter-field">
                   <mat-label>{{ getRuleName(control.key) }}</mat-label>
@@ -140,7 +208,7 @@
       <!-- Single Save Button -->
       <div class="form-actions">
         <button (click)="onSave()" [disabled]="!isFormValid() || isLoading " class="submit-button" color="primary"
-          mat-raised-button>
+                mat-raised-button>
           <mat-icon>save</mat-icon>
           {{ 'CONFIGURATION.SITE.BTNS.SAVE' | translate }}
         </button>

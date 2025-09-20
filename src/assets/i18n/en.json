@@ -640,7 +640,7 @@
       "NET_WEIGHT": "Net Weight (KG)",
       "OIL_QUANTITY": "Oil Quantity",
       "OIL_TYPE": "Oil type",
-      "OLIVE_LOT_NUMBER": "Olive Lot Number",
+      "OLIVE_LOT_NUMBER": "Olive Lot N°/reception N°",
       "OLIVE_QUANTITY": "Olive Quantity",
       "OLIVE_TYPE": "Olive Type",
       "OLIVE_VARIETY": "Olive Variety",
@@ -2421,6 +2421,7 @@
     "RULE_TYPES": {
       "BOOLEAN": "Boolean",
       "NUMERIC": "Numeric",
+      "RAW_STRING": "Raw string",
       "STRING": "Text"
     }
   },

@@ -640,7 +640,7 @@
       "NET_WEIGHT": "Poids net (KG)",
       "OIL_QUANTITY": "Quantité d'huile",
       "OIL_TYPE": "Type d'huile",
-      "OLIVE_LOT_NUMBER": "N° Lot d'olive",
+      "OLIVE_LOT_NUMBER": "N° Lot d'olive/N°reception",
       "OLIVE_QUANTITY": "Quantité d'olives",
       "OLIVE_TYPE": "Type d'olive",
       "OLIVE_VARIETY": "Variété d'olive",
@@ -2420,6 +2420,7 @@
     "RULE_TYPES": {
       "BOOLEAN": "Boolean",
       "NUMERIC": "Numeric",
+      "RAW_STRING": "chaine de charctere native",
       "STRING": "Text"
     }
   },
