@@ -1,76 +1,118 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { CompanyProfile } from '../models/CompanyProfile';
-import { Observable, of } from 'rxjs';
-import { ApiResponse } from '../models/api-response';
-import { tap } from 'rxjs/operators';
+import { Observable, of, concat, EMPTY } from 'rxjs';
+import { map, tap, catchError, filter, shareReplay } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { CompanyProfile } from '../models/CompanyProfile';
+import { ApiResponse } from '../models/api-response';
 import { AuthenticationService } from '../../auth/services/authentication.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class CompanyProfileService {
-  private readonly baseUrl = environment.apiUrl + '/security/company-profile';
+  private readonly baseUrl = environment.apiUrl + '/api/security/company-profile';
   private readonly STORAGE_KEY = 'company_profile';
 
   constructor(
     private http: HttpClient,
-    private _authService: AuthenticationService
+    private _auth: AuthenticationService
   ) {}
 
-  /** Fetches the existing profile (or an empty one if none) */
-  getProfile(): Observable<ApiResponse<CompanyProfile>> {
-    const tenantId = this._authService.currentUserValue?.tenantId;
-    const cachedProfile = localStorage.getItem(this.STORAGE_KEY);
-    if (cachedProfile) {
-      try {
-        const parsed = JSON.parse(cachedProfile);
-        // Check if the cached profile matches the current tenantId
-        if (parsed && parsed.success && parsed.data && parsed.data[0]?.id === tenantId) {
-          return of(parsed);
-        }
-      } catch {
-        // Ignore malformed cache
-      }
-    }
-    // Fetch from API if not in cache or ID mismatch
-    return this.http.get<ApiResponse<CompanyProfile>>(`${this.baseUrl}/fetch/${tenantId}`).pipe(
-      tap((response) => {
-        if (response && response.success ) {
-          localStorage.setItem(this.STORAGE_KEY, JSON.stringify(response.data));
-        }
-      })
+  getProfile(): Observable<CompanyProfile> {
+    const tenantId = this._auth.currentUserValue?.tenantId;
+    if (!tenantId) return EMPTY;
+
+    const cached = this.readCache(tenantId);
+    const cache$ = cached ? of(cached) : EMPTY;
+
+    const fetch$ = this.fetchProfile(tenantId).pipe(
+      tap(profile => this.writeCache(profile)),
+      // avoid re-emitting identical object back-to-back
+      shareReplay({ bufferSize: 1, refCount: false })
+    );
+
+    return cached
+      ? concat(cache$, fetch$.pipe(catchError(() => EMPTY)))
+      : fetch$;
+  }
+
+  /** Force-refresh from API and update cache (single emission). */
+  refreshProfile(): Observable<CompanyProfile> {
+    const tenantId = this._auth.currentUserValue?.tenantId;
+    if (!tenantId) return EMPTY;
+    return this.fetchProfile(tenantId).pipe(
+      tap(profile => this.writeCache(profile))
     );
   }
 
-  /** Fetches the company profile by tenantId using the new backend endpoint */
-  getProfileByTenantId(tenantId: string): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/fetch/${tenantId}`);
+  /** Synchronous read of the cached profile (for quick access). */
+  getProfileFromCache(): CompanyProfile | null {
+    const tenantId = this._auth.currentUserValue?.tenantId;
+    return tenantId ? this.readCache(tenantId) : null;
   }
 
-  /** Creates or updates based on presence of `id` */
+  /** Create or update profile; updates cache on success. */
   saveProfile(profile: CompanyProfile): Observable<CompanyProfile> {
-    const tenantId = this._authService.currentUserValue?.tenantId;
-    profile.id = tenantId;
-    const request$ = tenantId
-      ? this.http.put<CompanyProfile>(`${this.baseUrl}/update`, profile)
-      : this.http.post<CompanyProfile>(this.baseUrl, profile);
+    const tenantId = this._auth.currentUserValue?.tenantId;
+    if (!tenantId) return of(profile);
 
-    return request$.pipe(
-      tap((savedProfile) => {
-        // After save, update the cached profile in localStorage
-        const responseToCache = {
-          success: true,
-          data: [savedProfile]
-        };
-        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(responseToCache));
-      })
+    // always enforce tenant id on save
+    const payload: CompanyProfile = { ...profile, id: tenantId };
+
+    const req$ = this.http.put<CompanyProfile>(`${this.baseUrl}/update`, payload);
+    return req$.pipe(
+      tap(saved => this.writeCache(saved))
     );
   }
 
-  /** Clear the cached profile (call this on logout) */
+  /** Clear the cached profile (e.g., on logout). */
   clearCache(): void {
     localStorage.removeItem(this.STORAGE_KEY);
+  }
+
+  // ========== Internals ==========
+
+  /** Fetch from API and map to CompanyProfile (handles ApiResponse shapes). */
+  private fetchProfile(tenantId: string): Observable<CompanyProfile> {
+    return this.http
+      .get<ApiResponse<CompanyProfile> | CompanyProfile>(`${this.baseUrl}/by-tenant/${tenantId}`)
+      .pipe(
+        map((res: any) => {
+          // Accept either { success, data } or the raw object
+          if (res && typeof res === 'object' && 'success' in res) {
+            const data = (res as ApiResponse<CompanyProfile>).data;
+            // Some backends put the object directly or inside an array
+            return Array.isArray(data) ? (data[0] as CompanyProfile) : (data as CompanyProfile);
+          }
+          return res as CompanyProfile;
+        }),
+        filter((p): p is CompanyProfile => !!p),
+      );
+  }
+
+  /** Read cache; ensure it matches the current tenant. */
+  private readCache(expectedTenantId: string): CompanyProfile | null {
+    try {
+      const raw = localStorage.getItem(this.STORAGE_KEY);
+      if (!raw) return null;
+      const cached = JSON.parse(raw) as CompanyProfile | { [k: string]: any };
+      // accept either a plain profile or an object with "data":[profile]
+      const profile: CompanyProfile = Array.isArray((cached as any).data)
+        ? (cached as any).data[0]
+        : (cached as CompanyProfile);
+
+      if (!profile || (profile as any).id !== expectedTenantId) return null;
+      return profile;
+    } catch {
+      return null;
+    }
+  }
+
+  /** Write cache as a plain CompanyProfile object. */
+  private writeCache(profile: CompanyProfile): void {
+    try {
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(profile));
+    } catch {
+      // storage might be full/blocked; fail silently
+    }
   }
 }

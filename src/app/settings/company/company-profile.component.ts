@@ -118,7 +118,7 @@ export class CompanyProfileComponent implements OnInit {
     this.companyProfileService.getProfile().subscribe(
       res => {
         this.loading = false;
-        const data: any = res.data;
+        const data: any = res;
         const profileData: CompanyProfile | null = Array.isArray(data) ? data[0] : data;
         if (profileData && profileData.legalName) {
           this.applyProfile(profileData);

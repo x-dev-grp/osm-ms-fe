@@ -38,7 +38,7 @@ export class VerticalMenuComponent implements OnInit {
   showUser: false;
   showContent = true;
   direction: string = 'ltr';
-  logoPreview: string | null = null;
+  logoPreview: any;
 
   // Constructor
   constructor(  private elRef: ElementRef/*, other deps */) {
@@ -64,11 +64,12 @@ effect(() => {
     // Only fetch company profile for non-OsmAdmin users who have a tenantId
     if (currentUser && currentUser.role !== Role.OsmAdmin && currentUser.tenantId) {
       console.log('[VerticalMenu] Fetching company profile for tenantId:', currentUser.tenantId);
-      this.loadCompanyLogoFromCache();
-
+      this.companyProfileService.getProfile().subscribe({
+        next:  p => { this.logoPreview =  p.logoData;   },
+        error: () => { console.log ('Unable to load profile');   }
+      });
     } else {
-      this.companyProfileService.getProfile()
-    }
+      }
   }
 
   /**

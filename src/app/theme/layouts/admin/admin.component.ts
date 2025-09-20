@@ -68,6 +68,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   private cdr: ChangeDetectorRef;
 
   // Constructor
+  private error: string;
   constructor() {
     effect(() => {
       this.updateThemeLayout(this.themeService.layout());
@@ -270,8 +271,10 @@ filterMenuByPermissions(
         }
 
     }else {
-      this.companyProfileService.getProfile();
-    }
+      this.companyProfileService.getProfile().subscribe({
+        next:  p => { this.profile =  p;   },
+        error: () => { this.error = 'Unable to load profile';   }
+      });    }
   }
 
   /**

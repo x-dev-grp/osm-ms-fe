@@ -40,7 +40,7 @@ export class InvoiceConfigService {
   ): Observable<PdfFactureConfig> {
     return this.companyProfileService.getProfile().pipe(
       map((response) => {
-        const company = Array.isArray(response.data) ? response.data[0] : response.data;
+        const company = response;
         if (!company) {
           throw new Error('Company profile not found');
         }

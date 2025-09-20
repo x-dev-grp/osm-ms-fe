@@ -11,6 +11,7 @@ import { TotalIncomeChartComponent } from '../../apex-chart/total-income-chart/t
 import { CompanyProfileService } from 'src/app/shared/services/company-profile.service';
 import { AuthenticationService } from 'src/app/auth/services/authentication.service';
 import { Role } from 'src/app/theme/types/role';
+import { CompanyProfile } from '../../../../shared/models/CompanyProfile';
 
 @Component({
   selector: 'app-default',
@@ -95,6 +96,7 @@ export class DefaultComponent implements OnInit {
       amount_type: 'text-success-500'
     }
   ];
+  private profile: CompanyProfile;
 
   constructor(
     private companyProfileService: CompanyProfileService,
@@ -113,17 +115,8 @@ export class DefaultComponent implements OnInit {
       console.log('[DefaultComponent] Fetching company profile for tenantId:', currentUser.tenantId);
 
       this.companyProfileService.getProfile().subscribe({
-        next: (response) => {
-          if (response && response.success) {
-            console.log('[DefaultComponent] Company profile fetched successfully:', response.data);
-            // You can store the profile data or use it as needed
-          } else {
-            console.warn('[DefaultComponent] Company profile fetch returned no data or error');
-          }
-        },
-        error: (error) => {
-          console.error('[DefaultComponent] Error fetching company profile:', error);
-        }
+        next:  p => { this.profile =  p;   },
+        error: () => { console.log ('Unable to load profile');   }
       });
     } else {
       console.log('[DefaultComponent] Skipping company profile fetch - user is OsmAdmin or has no tenantId');

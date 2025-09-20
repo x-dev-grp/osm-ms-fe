@@ -12,7 +12,9 @@ import { catchError, first, of } from 'rxjs';
 import { User } from 'src/app/theme/types/user';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Role } from '../../theme/types/role';
-import { TranslateService } from '@ngx-translate/core'; // Added import
+import { TranslateService } from '@ngx-translate/core';
+import { CompanyProfileService } from '../../shared/services/company-profile.service';
+import { CompanyProfile } from '../../shared/models/CompanyProfile'; // Added import
 
 @Component({
   selector: 'app-login',
@@ -32,9 +34,8 @@ export class LoginComponent implements OnInit {
   private router = inject(Router);
   private tokenService = inject(TokenService);
   private translateService = inject(TranslateService); // Added injection
-
-  // public method
-
+  private companyService = inject(CompanyProfileService); // Added injection
+  private profile: CompanyProfile;
   getUserNameErrorMessage() {
     if (this.form.controls['username'].hasError('required')) {
       return this.translateService.instant('LOGIN.USERNAME_REQUIRED');
@@ -171,6 +172,12 @@ export class LoginComponent implements OnInit {
               user.role = role;
               user.permissions = permissions;
               this.authenticationService.setCurrentUserValue = user;
+             console.log( "this.companyService.getProfile()")
+                this.companyService.getProfile().subscribe({
+                  next:  p => { this.profile =  p;   },
+                  error: () => { console.log( 'Unable to load profile') }
+                });
+             console.log( "this.companyService.getProfile()")
               // Add logging for debugging
               console.log('[Login] User set for navigation:', user);
               console.log('[Login] Token:', this.tokenService.getToken());

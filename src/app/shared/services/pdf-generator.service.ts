@@ -245,8 +245,8 @@ export class PdfGeneratorService {
   private loadProfile(): void {
     this._companyProfileService.getProfile().subscribe(
       (res) => {
-        if (res && res.success) {
-           this.profile = Array.isArray(res?.data) ? res?.data[0] : res?.data;
+        if (res ) {
+           this.profile = res;
           if (this.profile?.logoData && this.profile?.logoContentType) {
             this.logoPreview = `data:${this.profile?.logoContentType};base64,${this.profile?.logoData}`;
           }

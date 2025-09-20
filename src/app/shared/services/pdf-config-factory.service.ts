@@ -4,6 +4,7 @@ import { PdfFactureConfig, PdfPaymentNoteConfig } from '../models/pdf-config.mod
  import { TranslateService } from '@ngx-translate/core';
 import { UnifiedDelivery } from '../models/UnifiedDelivery';
 import { InvoiceSource } from '../../reception/suppliers/supplier-details/supplier-details.component';
+import { CompanyProfileService } from './company-profile.service';
 
 // Keep config mode separate from "source"
 export type PdfConfigMode = 'auto' | 'invoice' | 'paymentNote';
@@ -46,9 +47,10 @@ function supplierAddressLike(data: any): string {
 
 @Injectable({ providedIn: 'root' })
 export class PdfConfigFactoryService {
-  private company: CompanyProfile | null = null;
+  private profile: CompanyProfile | null = null;
+  private error: any | null = null;
 
-  constructor(private translateService: TranslateService) {}
+  constructor(private translateService: TranslateService,  private companyProfileService: CompanyProfileService ) {}
 
   /**
    * Build a PDF config (Facture or Payment Note).
@@ -59,17 +61,19 @@ export class PdfConfigFactoryService {
   build(data: any, source?: InvoiceSource, configMode: PdfConfigMode = 'auto'): PdfFactureConfig | PdfPaymentNoteConfig {
     // Load company profile from localStorage (safe parse)
     try {
-      const raw = localStorage.getItem('company_profile');
-      this.company = raw ? (JSON.parse(raw) as CompanyProfile) : null;
+      this.companyProfileService.getProfile().subscribe({
+        next:  p => { this.profile =  p;   },
+        error: () => { this.error = 'Unable to load profile';   }
+      });
     } catch {
-      this.company = null;
+      this.profile = null;
     }
 
     const unpaid = this.getUnpaidAmount(data);
     const isPaymentNote = configMode === 'paymentNote' || (configMode === 'auto' && unpaid > 0);
 
     const nowStr = fmtDate();
-    const companyInfo = buildCompanyInfo(this.company!);
+    const companyInfo = buildCompanyInfo(this.profile!);
 
     // Shared general info (allowed on both configs)
     const generalInfo = [
