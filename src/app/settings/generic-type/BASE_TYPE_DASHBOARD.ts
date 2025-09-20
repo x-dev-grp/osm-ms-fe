@@ -4,7 +4,7 @@
 export const BASE_TYPE: DashboardConfig = {
   icon: 'water_drop',
   title: 'Generic Type Management',
-  baseURL: 'generic-type',
+  baseURL: 'production/types',
   searchEndpoint: 'production/types',
   addNewItem: false,
   addNewItemUrl: '/settings/generic/new',

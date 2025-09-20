@@ -143,6 +143,7 @@
     "OLIVE_TYPE": "Olive type",
     "OLIVE_VARIETY": "Olive variety",
     "OPERATION_TYPE": "Operation type",
+    "PARCEL": "Parcel",
     "PRODUCTION_METHOD": "Production method",
     "REGION": "Region",
     "SUPPLIER_TYPE": "Supplier type",
@@ -616,6 +617,7 @@
         "OIL_INFO": "🛢️ Oil Information",
         "OLIVE_INFO": "🌿 Olive Variety",
         "OLIVE_OIL_INFO": "🫒 Olive & Oil Information",
+        "PROCESSING": "Processing",
         "STORAGE": "🏭 Storage Unit",
         "STORAGE_UNIT": "🏭 Storage Unit",
         "SUPPLIER": "👤 Supplier",
@@ -633,6 +635,8 @@
       "GROSS_WEIGHT": "Gross Weight (KG)",
       "LOT_NUMBER": "Lot N°",
       "LOT_OLIVE_NUMBER": "N° lot de référence",
+      "MILL_MACHINE": "Mill machine",
+      "MILL_START": "Processing start",
       "NET_WEIGHT": "Net Weight (KG)",
       "OIL_QUANTITY": "Oil Quantity",
       "OIL_TYPE": "Oil type",
@@ -1303,6 +1307,7 @@
       "TITLE": "Production"
     },
     "RECEPTION": {
+      "AGRICULTURE": "Agriculters",
       "OIL": "Oil Reception",
       "OLIVE": "Olive Reception",
       "QUALITY_CONTROL": "Quality Control",
@@ -1996,7 +2001,7 @@
         "DELIVERY_DATE": "Delivery Date",
         "DELIVERY_NUMBER": "Delivery Number",
         "DELIVERY_TYPE": "Delivery Type",
-        "EMPTY_TRUCK_WEIGHT": "EMpty truck weight",
+        "EMPTY_TRUCK_WEIGHT": "Empty truck weight",
         "GROSS_WEIGHT": "Loaded truck weight (kg)",
         "LOT_NUMBER": "Lot Number",
         "NET_WEIGHT": "Net Weight (kg)",
@@ -2148,15 +2153,18 @@
   "Other": "Other",
   "PDF": {
     "ACIDITY": "Acidity",
-    "ADDRESS": "Majel Belabbes 1214 KASSERINE",
+    "ADDRESS": "Adresse",
     "BANK_DETAILS": "Bank Details",
     "CATEGORY_OIL": "Oil Category",
     "CATEGORY_OLIVE": "Olive Category",
+    "CLIENT_ADDRESS": "Address",
     "CLIENT_INFO": "Client",
+    "CLIENT_NAME": "Client name",
+    "CLIENT_PHONE": "Mobile N°",
     "COMPANY_ADDRESS": "Address",
     "COMPANY_EMAIL": "Email",
     "COMPANY_FAX": "Fax",
-    "COMPANY_NAME": "ABIOOC",
+    "COMPANY_NAME": "Company Name",
     "COMPANY_PHONE": "Phone",
     "COMPANY_RIB": "(RIB)",
     "COMPANY_TAX_NUMBER": "Tax ID",
@@ -2193,16 +2201,11 @@
     "EXPENSE_SIGNATURE_RESPONSIBLE": "Responsible Signature",
     "EXPENSE_STATUS": "Status",
     "EXPENSE_VENDOR": "Vendor",
-    "FACTURE_VENTE_HUILE": "Oil Sale Invoice",
-    "FACTURE_VENTE_DECHET": "Waste Sale Invoice",
-    "FACTURE_TRITURATION": "Crushing Invoice",
-    "FACTURE_RECEPTION": "Reception Invoice",
-    "NOTE_PAYEMENT_VENTE_HUILE": "Oil Sale Payment Note",
-    "NOTE_PAYEMENT_VENTE_DECHET": "Waste Sale Payment Note",
-    "NOTE_PAYEMENT_TRITURATION": "Crushing Payment Note",
-    "NOTE_PAYEMENT_RECEPTION": "Reception Payment Note",
-
     "EXTRA_VIRGIN_OLIVE_OIL": "Extra Virgin Olive Oil",
+    "FACTURE_RECEPTION": "Reception Invoice",
+    "FACTURE_TRITURATION": "Crushing Invoice",
+    "FACTURE_VENTE_DECHET": "Waste Sale Invoice",
+    "FACTURE_VENTE_HUILE": "Oil Sale Invoice",
     "FERMENTED_PERCENT": "Fermented %",
     "FICH_CONTROL_QUALITE": "Quality controle sheet",
     "FICH_CONTROL_QUALITE_HUIL": "Oil Quality Control Sheet",
@@ -2223,7 +2226,12 @@
     "LOT": "Lot",
     "LOT_GLOBAL": "Global Lot",
     "LOT_NUMBER": "Lot Number",
-    "MOBILE": "+216 29 910 458",
+    "MOBILE": "Pone N°",
+    "NCOLIS": "Package N°",
+    "NOTE_PAYEMENT_RECEPTION": "Reception Payment Note",
+    "NOTE_PAYEMENT_TRITURATION": "Crushing Payment Note",
+    "NOTE_PAYEMENT_VENTE_DECHET": "Waste Sale Payment Note",
+    "NOTE_PAYEMENT_VENTE_HUILE": "Oil Sale Payment Note",
     "NO_QUALITY_DATA": "No quality control data available",
     "NUMBER_PLACEHOLDER": "No: ......./........",
     "N°COLIS": "Package #",
@@ -2241,8 +2249,11 @@
     "PAID_AMOUNT": "Paid Amount",
     "PARCEL": "Parcel",
     "PARTIALLY_PAID": "Partially Paid",
+    "PAYMENT_DATE": "Payment Date",
     "PAYMENT_METHOD": "Payment Method",
+    "PAYMENT_NOTE_REMINDER": "Please pay the remaining balance as soon as possible.",
     "PAYMENT_STATUS": "Payment Status",
+    "PAYMENT_TYPE": "Payment Type",
     "PENDING": "Pending",
     "PHONE": "Phone",
     "PRICE_UNIT": "Unit Price",
@@ -2276,6 +2287,7 @@
     "RECIPIENT": "Recipient",
     "REFERENCE": "Reference",
     "REGION": "Region",
+    "REMAINING_AMOUNT": "Remaining Amount",
     "REVISION": "Revision",
     "SALE": "Sale",
     "SALE_DATE": "Sale Date",
@@ -2307,12 +2319,12 @@
     "UNIT_PRICE": "Unit Price",
     "UNPAID": "Unpaid",
     "UNPAID_AMOUNT": "Unpaid Amount",
-    "VAT": "1778521 Y N M 000",
+    "VAT": "Tax number",
     "VEHICLE_REGISTRATION": " matricule véhicule",
     "VENTE_DECHET": "Waste Sale",
     "VENTE_HUILE": "Oil Sale",
     "WASTE_PROCESSING": "Olive Waste Processing",
-    "WEBSITE": "contact@abiooc.com",
+    "WEBSITE": "Website",
     "YIELD": "Yield"
   },
   "PLANNING_ASSIGNED": "Assigned",
@@ -2384,6 +2396,34 @@
     },
     "TITLE": "Quality Control Rules"
   },
+  "QUALITY_CONTROL_RULE_ADD": {
+    "CARD_TITLE": {
+      "ADD": "Add Rule",
+      "EDIT": "Edit Rule"
+    },
+    "FIELDS": {
+      "ACTIONS": {
+        "ADD": "Add",
+        "CANCEL": "Cancel",
+        "SAVE": "Save",
+        "UPDATE": "Update"
+      },
+      "DESCRIPTION": "Description",
+      "EXPECTED_VALUE": "Expected Value",
+      "MAX_VALUE": "Max Value",
+      "MIN_VALUE": "Min Value",
+      "OIL_QC": "Oil QC",
+      "RULE_KEY": "Rule Key",
+      "RULE_NAME": "Rule Name",
+      "TEXT_VALUES": "Possible values (comma separated)",
+      "TYPE": "Type"
+    },
+    "RULE_TYPES": {
+      "BOOLEAN": "Boolean",
+      "NUMERIC": "Numeric",
+      "STRING": "Text"
+    }
+  },
   "RECEPTION": {
     "PLANNING": {
       "COMPLETION": {
@@ -2454,6 +2494,7 @@
       "PROD_READY": "Ready for production",
       "REFUSED": "Refused",
       "STOCK_READY": "Ready to be stocekd",
+      "WAITING": "Waiting",
       "WAITING_FOR_PAYMENT_DETAILS": "Waiting for price details",
       "WAITING_FOR_PRICING": "waiting for pricing & Quantity"
     },
@@ -2580,13 +2621,23 @@
       "RENTAL_PRICE_REQUIRED": "Rental price is required for paid storage"
     },
     "OIL_STORAGE_UNITS": "Oil Storage Units",
-    "OIL_TRANSACTIONS": "Oil Transactions",
+    "OIL_TRANSACTIONS": {
+      "DASHBOARD": {
+        "TYPES": {
+          "LOAN": "Loan",
+          "RECEPTION_IN": "Reception In",
+          "SALE": "Sale",
+          "TRANSFER_IN": "Transfer In"
+        }
+      }
+    },
     "TITLE": {
       "DASHBOARD": "Storage dashboard"
     },
     "VIEW": {
       "AVAILABLECAPACITY": "Available capacity",
       "AVGCOST": "Average cost",
+      "CREATED_DATE": "Created Date",
       "CURRENT_VOLUME": "Current Volume",
       "DASHBOARD": {
         "TITLE": "Storage Dashboard"
@@ -2597,6 +2648,8 @@
       "OIL_TYPE": "Oil Type",
       "PAID_STORAGE": "Paid Storage",
       "PER_MONTH": "per month",
+      "QUALITY_GRADE": "Quality Grade",
+      "QUANTITY_KG": "Quantity (kg)",
       "SHOW_ONLY_PAID": "Show only paid storage",
       "STATUS": {
         "AVAILABLE": "Available",
@@ -2610,7 +2663,9 @@
       },
       "TITLE": "View Storage",
       "TOTALCOST": "Total cost",
-      "TRANSACTION_HISTORY": "Transaction History"
+      "TOTAL_PRICE": "Total Price",
+      "TRANSACTION_HISTORY": "Transaction History",
+      "UNIT_PRICE": "Unit Price"
     }
   },
   "SUPPLIER": {
@@ -2795,133 +2850,8 @@
   "Student": "Student",
   "TAB_TITLE": "General Configuration",
   "TRANSACTIONS": {
-    "ACTIONS": {
-      "ADD": "Add Transaction",
-      "APPROVE": "Approve",
-      "DELETE": "Delete",
-      "DUPLICATE": "Duplicate",
-      "EDIT": "Edit Transaction",
-      "EXPORT": "Export",
-      "PRINT": "Print",
-      "REJECT": "Reject",
-      "VIEW": "View"
-    },
-    "CURRENCIES": {
-      "EUR": "Euro",
-      "TND": "Tunisian Dinar",
-      "USD": "US Dollar"
-    },
-    "DIRECTIONS": {
-      "INBOUND": "Inbound",
-      "INTERNAL": "Internal",
-      "OUTBOUND": "Outbound"
-    },
-    "ERRORS": {
-      "AMOUNT_MIN": "Amount must be positive",
-      "AMOUNT_REQUIRED": "Amount is required",
-      "CREATE_ERROR": "Error creating transaction",
-      "DIRECTION_REQUIRED": "Direction is required",
-      "LOAD_ERROR": "Error loading transaction",
-      "NOT_FOUND": "Transaction not found",
-      "PAYMENT_METHOD_REQUIRED": "Payment method is required",
-      "TRANSACTION_DATE_REQUIRED": "Transaction date is required",
-      "TRANSACTION_TYPE_REQUIRED": "Transaction type is required",
-      "UPDATE_ERROR": "Error updating transaction"
-    },
     "FIELDS": {
-      "AMOUNT": "Amount",
-      "APPROVAL_DATE": "Approval Date",
-      "APPROVED": "Approved",
-      "APPROVED_BY": "Approved By",
-      "BANK_ACCOUNT": "Bank Account",
-      "CHECK_NUMBER": "Check Number",
-      "CREATED_BY": "Created By",
-      "CREATED_DATE": "Created Date",
-      "CURRENCY": "Currency",
-      "CUSTOMER": "Customer",
-      "DESCRIPTION": "Description",
-      "DIRECTION": "Direction",
-      "INVOICE_REFERENCE": "Invoice Reference",
-      "LOT_NUMBER": "Lot Number",
-      "PAYMENT_METHOD": "Payment Method",
-      "RECEIPT_REFERENCE": "Receipt Reference",
-      "SUPPLIER": "Supplier",
-      "TRANSACTION_DATE": "Transaction Date",
       "TRANSACTION_TYPE": "Transaction Type"
-    },
-    "MESSAGES": {
-      "APPROVE_ERROR": "Error approving transaction",
-      "APPROVE_SUCCESS": "Transaction approved successfully",
-      "CREATE_ERROR": "Error creating transaction",
-      "CREATE_SUCCESS": "Transaction created successfully",
-      "DELETE_ERROR": "Error deleting transaction",
-      "DELETE_SUCCESS": "Transaction deleted successfully",
-      "DUPLICATE_SUCCESS": "Transaction duplicated successfully",
-      "LOAD_ERROR": "Error loading transactions",
-      "REJECT_ERROR": "Error rejecting transaction",
-      "REJECT_SUCCESS": "Transaction rejected successfully",
-      "UPDATE_ERROR": "Error updating transaction",
-      "UPDATE_SUCCESS": "Transaction updated successfully"
-    },
-    "PAYMENT_METHODS": {
-      "BANK_TRANSFER": "Bank Transfer",
-      "BOTH": "Both",
-      "CASH": "Cash",
-      "CHECK": "Check",
-      "CHEQUE": "Cheque",
-      "CREDIT_CARD": "Credit Card",
-      "DEBIT_CARD": "Debit Card",
-      "MOBILE_PAYMENT": "Mobile Payment",
-      "OIL": "Oil",
-      "OIL_CREDIT": "Oil Credit",
-      "TRANSFER": "Transfer"
-    },
-    "PLACEHOLDERS": {
-      "DESCRIPTION": "Enter transaction description...",
-      "INVOICE_REFERENCE": "Enter invoice reference...",
-      "LOT_NUMBER": "Enter lot number...",
-      "RECEIPT_REFERENCE": "Enter receipt reference..."
-    },
-    "SECTIONS": {
-      "APPROVAL": "Approval Information",
-      "BASIC_INFO": "Basic Information",
-      "PARTIES": "Related Parties",
-      "REFERENCES": "References"
-    },
-    "STATUS": {
-      "APPROVED": "Approved",
-      "PENDING": "Pending",
-      "REJECTED": "Rejected"
-    },
-    "SUMMARY": {
-      "APPROVED_TRANSACTIONS": "Approved Transactions",
-      "BALANCE": "Balance",
-      "PENDING_TRANSACTIONS": "Pending Transactions",
-      "TOTAL_AMOUNT": "Total Amount",
-      "TOTAL_INBOUND": "Total Inbound",
-      "TOTAL_OUTBOUND": "Total Outbound",
-      "TOTAL_TRANSACTIONS": "Total Transactions"
-    },
-    "TITLE": "Financial Transactions",
-    "TYPES": {
-      "CHECK_DEPOSIT": "Check Deposit",
-      "CHECK_PAYMENT": "Check Payment",
-      "CREDIT": "Credit",
-      "DEBIT": "Debit",
-      "DEPOSIT": "Deposit",
-      "EXPENSE": "Expense",
-      "INTERNAL_TRANSFER": "Internal Transfer",
-      "LOAN": "Loan",
-      "OIL_PURCHASE": "Oil Purchase",
-      "OIL_SALE": "Oil Sale",
-      "PAYMENT": "Payment",
-      "PURCHASE": "Purchase",
-      "SUPPLIER_CREDIT": "Supplier Credit",
-      "SUPPLIER_PAYMENT": "Supplier Payment",
-      "WITHDRAWAL": "Withdrawal"
-    },
-    "VIEW": {
-      "TITLE": "Transaction Details"
     }
   },
   "Table": "Table",

@@ -1,0 +1,150 @@
+<div class="quality-control-container">
+  <!-- Header Section -->
+  <div class="quality-header">
+    <div class="header-content">
+      <div class="header-icon">
+        <mat-icon>science</mat-icon>
+      </div>
+      <div class="header-text">
+        <h2>{{ 'CONTROLE_QUALITE.TITLE' | translate }}</h2>
+        <p>{{ 'CONTROLE_QUALITE.SUBTITLE' | translate }}</p>
+      </div>
+      <div *ngIf="isQualityControlDone" class="header-status">
+        <mat-chip color="accent" selected>
+          <mat-icon>check_circle</mat-icon>
+          {{ 'CONTROLE_QUALITE.STATUS.COMPLETED' | translate }}
+        </mat-chip>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>{{ 'CONTROLE_QUALITE.LOADING' | translate }}</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="message && !isLoading" class="error-state">
+    <mat-icon>error_outline</mat-icon>
+    <p>{{ message }}</p>
+  </div>
+  <!-- Olive Variety Section (Only for Olive Deliveries) -->
+  <div *ngIf="isOliveDelivery() && !isLoading && !message" class="quality-content">
+    <form [formGroup]="qualityForm" class="quality-form">
+      <div class="form-section">
+        <div class="section-header">
+          <mat-icon>local_florist</mat-icon>
+          <h3>{{ 'OLIVE_RECEPTION.FORM.FIELDS.OLIVE_VARIETY' | translate }}</h3>
+        </div>
+        <div class="parameters-grid">
+          <div class="parameter-card">
+            <base-type (selected)="onOliveVarietySelected($event)" [formControl]="qualityForm.controls['oliveVariety']"
+              [type]="'OLIVE_VARIETY'">
+            </base-type>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <!-- Dynamic Quality Control Form -->
+  <div *ngIf="mainForm && !isLoading && !message" class="quality-content">
+    <form [formGroup]="mainForm" class="quality-form">
+      <!-- Quality Parameters Section (Dynamic) -->
+      <div class="form-section">
+        <div class="section-header">
+          <mat-icon>tune</mat-icon>
+          <h3>{{ 'CONTROLE_QUALITE.SECTIONS.PARAMETERS' | translate }}</h3>
+        </div>
+        <div class="parameters-grid">
+
+          <!-- FIRST: classificationHuile shown statically -->
+          <div *ngIf="dynamicForm.controls['classificationHuile']" class="parameter-card string-control">
+            <div class="parameter-header">
+              <label class="parameter-label" for="classificationHuile">
+                {{ getRuleName('classificationHuile') }}
+              </label>
+            </div>
+            <mat-form-field appearance="outline" class="parameter-field">
+              <mat-label>{{ getRuleName('classificationHuile') }}</mat-label>
+              <mat-select [disabled]="isQualityControlDone" formControlName="classificationHuile"
+                id="classificationHuile">
+                <mat-option *ngFor="let option of getTextOptions('classificationHuile')" [value]="option">
+                  {{ option }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matSuffix>list</mat-icon>
+              <mat-error *ngIf="mainForm.get('classificationHuile')?.hasError('required')">
+                {{ 'CONTROLE_QUALITE.FORM.VALIDATION.REQUIRED' | translate }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- REST: All other fields except classificationHuile and testSensoriel -->
+          <div *ngFor="let control of dynamicForm.controls | keyvalue"
+            [hidden]="control.key === 'testSensoriel' || control.key === 'classificationHuile'" class="parameter-card">
+            <div class="parameter-header">
+              <label [for]="control.key" class="parameter-label">
+                {{ getRuleName(control.key) }}
+              </label>
+            </div>
+            <!-- NUMERIC Input -->
+            <ng-container *ngIf="getRuleType(control.key) === 'NUMERIC'; else nonNumericInput">
+              <mat-form-field appearance="outline" class="parameter-field">
+                <mat-label>{{ getRuleName(control.key) }}</mat-label>
+                <input [disabled]="isQualityControlDone" [formControlName]="control.key" [id]="control.key"
+                  [placeholder]="'CONTROLE_QUALITE.PLACEHOLDER.ENTER_VALUE' | translate" matInput step="0.01"
+                  type="number">
+                <mat-icon matSuffix>calculate</mat-icon>
+                <mat-error *ngIf="mainForm.get(control.key)?.hasError('required')">
+                  {{ 'CONTROLE_QUALITE.FORM.VALIDATION.REQUIRED' | translate }}
+                </mat-error>
+              </mat-form-field>
+            </ng-container>
+            <!-- STRING & BOOLEAN -->
+            <ng-template #nonNumericInput>
+              <ng-container [ngSwitch]="getRuleType(control.key)">
+                <!-- STRING -->
+                <mat-form-field *ngSwitchCase="'STRING'" appearance="outline" class="parameter-field">
+                  <mat-label>{{ getRuleName(control.key) }}</mat-label>
+                  <mat-select [disabled]="isQualityControlDone" [formControlName]="control.key" [id]="control.key">
+                    <mat-option *ngFor="let option of getTextOptions(control.key)" [value]="option">
+                      {{ option }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-icon matSuffix>list</mat-icon>
+                  <mat-error *ngIf="mainForm.get(control.key)?.hasError('required')">
+                    {{ 'CONTROLE_QUALITE.FORM.VALIDATION.REQUIRED' | translate }}
+                  </mat-error>
+                </mat-form-field>
+                <!-- BOOLEAN -->
+                <mat-form-field *ngSwitchCase="'BOOLEAN'" appearance="outline" class="parameter-field">
+                  <mat-label>{{ getRuleName(control.key) }}</mat-label>
+                  <mat-select [disabled]="isQualityControlDone" [formControlName]="control.key" [id]="control.key">
+                    <mat-option [value]="false">
+                      <mat-icon>cancel</mat-icon>
+                      {{ 'STANDARD.BOOLEAN.FALSE' | translate }}
+                    </mat-option>
+                    <mat-option [value]="true">
+                      <mat-icon>check_circle</mat-icon>
+                      {{ 'STANDARD.BOOLEAN.TRUE' | translate }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-icon matSuffix>toggle_on</mat-icon>
+                </mat-form-field>
+              </ng-container>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+      <!-- Single Save Button -->
+      <div class="form-actions">
+        <button (click)="onSave()" [disabled]="!isFormValid() || isLoading " class="submit-button" color="primary"
+          mat-raised-button>
+          <mat-icon>save</mat-icon>
+          {{ 'CONFIGURATION.SITE.BTNS.SAVE' | translate }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

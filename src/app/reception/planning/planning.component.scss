@@ -1,0 +1,682 @@
+// Variables
+$border-radius-sm: 0.5rem;
+$border-radius-md: 0.75rem;
+$border-radius-lg: 1rem;
+$shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+$shadow-md: 0 2px 4px rgba(0, 0, 0, 0.12);
+$shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.1);
+$transition-base: all 0.2s ease;
+$color-primary: #1976d2;
+$color-primary-dark: #1565c0;
+$color-accent: #ff4081;
+$color-text-primary: rgba(0, 0, 0, 0.87);
+$color-text-secondary: rgba(0, 0, 0, 0.6);
+$color-border: #e2e8f0;
+$color-background: #f8fafc;
+
+// Layout
+.w-full {
+  width: 100%;
+}
+
+.header-actions-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  .search-section {
+    width: 100%;
+
+    .search-field {
+      width: 100%;
+      min-width: 200px;
+    }
+  }
+
+  .actions-section {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+
+    .stat-item {
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .desktop-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .mobile-actions {
+      display: none;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+    }
+  }
+
+  .action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      line-height: 20px;
+    }
+  }
+}
+
+/* Mobile layout - show icon buttons only */
+@media (max-width: 768px) {
+  .header-actions-container {
+    .actions-section {
+      .desktop-actions {
+        display: none;
+      }
+
+      .mobile-actions {
+        display: flex;
+      }
+
+      .mobile-actions button {
+        min-width: 40px;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .mobile-actions button mat-icon {
+        font-size: 20px;
+      }
+    }
+  }
+}
+
+/* Desktop layout - show full buttons */
+@media (min-width: 769px) {
+  .header-actions-container {
+    flex-direction: row;
+    align-items: center;
+
+    .search-section {
+      flex: 1 1 320px;
+    }
+
+    .search-section .search-field {
+      min-width: 260px;
+    }
+
+    .actions-section {
+      flex: 0 0 auto;
+      justify-content: flex-end;
+    }
+  }
+}
+
+/* Icons-only on small screens */
+@media (max-width: 576px) {
+  .header-actions-container {
+    gap: .4rem;
+
+    .search-field {
+      flex: 1 1 100%;
+      min-width: 0;
+    }
+
+    .action-btn {
+      min-width: 40px;
+      padding: 0 8px;
+      justify-content: center;
+
+      /* hide text labels on phones */
+      .btn-text {
+        display: none;
+      }
+
+      /* tighten icon spacing when text is hidden */
+      mat-icon {
+        margin: 0;
+      }
+    }
+
+    /* keep the fullscreen button as-is (already icon-only) */
+    .fs-btn {
+      min-width: 40px;
+    }
+
+    /* Optional: if stats crowd the row on very small screens, stack them */
+    .stats {
+      width: 100%;
+      justify-content: space-between;
+      margin-top: .25rem;
+    }
+  }
+}
+
+.search-field {
+  flex: 0 0 250px;        /* ← fixed width so it won’t grow and push other items down */
+  min-width: 200px;
+}
+
+.stats {
+  display: flex;
+  gap: 12px;
+}
+
+.stat-item {
+  background-color: #f5f5f5;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+/* Toolbar styling */
+.osm-toolbar {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  background: $color-background;
+  border-radius: $border-radius-md;
+  box-shadow: $shadow-md;
+  min-height: 64px;
+  margin-bottom: 1.5rem;
+
+  .title {
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: #1e293b;
+    letter-spacing: -0.01em;
+  }
+
+  .spacer {
+    flex: 1;
+  }
+
+  #footer-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: #ffffff;
+    padding: 0.75rem;
+    border-radius: $border-radius-md;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+    border: 1px solid $color-border;
+  }
+
+  #footer-actions button {
+    box-shadow: $shadow-sm;
+    border-radius: $border-radius-sm;
+    padding: 0 16px;
+    height: 40px;
+    transition: $transition-base;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+    }
+  }
+}
+
+/* Badge styling */
+.gl-badge {
+  background: #16a34a;
+  color: #ffffff;
+  padding: 0 0.25rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  margin-left: 0.25rem;
+}
+
+.select-box {
+  margin-right: 0.25rem;
+}
+
+/* Drag-and-drop styling */
+.drop-list {
+  min-height: 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  border-radius: $border-radius-sm;
+  transition: background-color $transition-base;
+}
+
+/* Card styling for reception items */
+.reception-card {
+  display: grid;
+  grid-template-columns: 56px 1fr; /* Fixed 56px control strip, rest for content */
+  column-gap: 12px;
+  padding: 12px 16px;
+  border-radius: $border-radius-md;
+  min-height: 92px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  transition: $transition-base;
+  margin-bottom: 0.5rem;
+  background: $color-background;
+
+  &.flex {
+    background: #e3f2fd;
+    border-left: 4px solid $color-primary;
+  }
+
+  &.cdk-drag-preview {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.20);
+    border-radius: $border-radius-md;
+    transition: none !important;
+  }
+
+  &.cdk-drag-moving {
+    transition: none !important;
+  }
+
+  &.dragging {
+    background-color: rgba(0, 0, 0, 0.04);
+    cursor: grabbing;
+  }
+
+  .side-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding-top: 2px;
+
+    .mat-checkbox-layout {
+      margin: 0;
+      min-width: 48px;
+      min-height: 48px;
+    }
+  }
+
+  .drag-handle {
+    cursor: move;
+    color: rgba(0, 0, 0, 0.54);
+    width: 48px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: bold;
+
+    &:hover {
+      color: #334155;
+    }
+  }
+
+  .card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    justify-content: center;
+
+    .lot-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.25rem;
+
+      strong {
+        font-size: 1.1rem;
+        color: $color-text-primary;
+      }
+
+      .delivery-number {
+        color: $color-text-secondary;
+        font-size: 0.9rem;
+      }
+    }
+
+    .quantity-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.25rem;
+
+      .quantity {
+        font-weight: 500;
+        color: $color-primary;
+      }
+
+      .weight-info {
+        color: $color-text-secondary;
+        font-size: 0.85rem;
+      }
+    }
+
+    .details-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: $color-text-secondary;
+
+      span {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.125rem 0.375rem;
+        background: rgba(0, 0, 0, 0.04);
+        border-radius: 0.25rem;
+
+        &::before {
+          font-family: 'Material Icons';
+          font-size: 1rem;
+        }
+
+        &.supplier::before {
+          content: 'business';
+        }
+
+        &.operationType::before {
+          content: 'tune';
+        }
+
+        &.region::before {
+          content: 'place';
+        }
+
+        &.variety::before {
+          content: 'eco';
+        }
+
+        &.type::before {
+          content: 'category';
+        }
+
+        &.sacks::before {
+          content: 'inventory_2';
+        }
+      }
+    }
+  }
+
+  .button-group {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .complete-btn {
+    width: 48px;
+    height: 48px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.20);
+    border-radius: 50%;
+    color: $color-primary;
+
+    &:hover {
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+    }
+  }
+}
+
+/* Layout containers */
+.planning-container {
+  display: flex;
+  gap: 1.25rem;
+  min-height: calc(80vh - 200px);
+  width: 100%;
+}
+
+.fixed-column {
+  padding-top: 30px;
+}
+
+.scrollable-columns {
+  display: flex;
+  gap: 1.25rem;
+  overflow-x: auto;
+  padding: 1.25rem 0;
+  scroll-behavior: smooth;
+  flex: 1;
+  min-width: 0;
+  transform: rotateX(180deg);
+  align-items: flex-end;
+
+  > * {
+    transform: rotateX(180deg);
+  }
+
+  &::-webkit-scrollbar {
+    height: 8px;
+    transform: rotateX(180deg);
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+
+    &:hover {
+      background: #94a3b8;
+    }
+  }
+}
+
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #fff;
+  box-shadow: 0 2px 4px -2px rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid #e0e0e0;
+}
+
+mat-expansion-panel {
+  width: 380px;
+  flex: 0 0 380px;
+  border-radius: $border-radius-md;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06) !important;
+  border: 1px solid $color-border;
+  transition: $transition-base;
+  background: transparent;
+  overflow: hidden;
+
+  ::ng-deep .mat-expansion-panel-body {
+    padding: 0 0 0.5rem 0;
+  }
+}
+
+/* Capacity coloring on expansion headers */
+.at-capacity .mat-expansion-panel-header {
+  background: #fee2e2;
+}
+
+.near-capacity .mat-expansion-panel-header {
+  background: #fef9c3;
+}
+
+mat-expansion-panel:not(:last-child) {
+  margin-right: 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .planning-container {
+    flex-direction: column;
+  }
+
+  .fixed-column {
+    position: relative;
+    width: 100%;
+    flex: 0 0 auto;
+    box-shadow: none;
+  }
+
+  .scrollable-columns {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  mat-expansion-panel {
+    width: 340px;
+    flex: 0 0 340px;
+  }
+}
+
+@media (max-width: 480px) {
+  .osm-toolbar .title {
+    font-size: 1.25rem;
+  }
+
+  mat-expansion-panel {
+    width: 300px;
+    flex: 0 0 300px;
+  }
+}
+
+/* Screen reader only class */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.header-actions-container {
+  display: grid;
+  grid-template-columns: 1fr auto; /* search | stats+actions */
+  align-items: center;
+  gap: 0.75rem 1rem;
+  padding: .6rem .8rem;
+  border: 1px solid color-mix(in oklab, currentColor 12%, transparent);
+  border-radius: 14px;
+  background: color-mix(in oklab, Canvas 94%, currentColor 6%);
+}
+
+/* Search field */
+.search-field {
+  inline-size: 100%;
+  max-inline-size: 540px;
+
+  /* compact density without shrinking tap targets */
+  ::ng-deep .mat-mdc-form-field-infix {
+    padding-block: .35rem !important;
+  }
+  ::ng-deep .mat-mdc-form-field {
+    --mdc-outlined-text-field-outline-color: color-mix(in oklab, currentColor 25%, transparent);
+    --mdc-outlined-text-field-hover-outline-color: color-mix(in oklab, currentColor 40%, transparent);
+    --mdc-outlined-text-field-focus-outline-color: var(--mat-sys-primary, #3b82f6);
+  }
+}
+
+/* Right side: stats + actions */
+.actions-section {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* Stats pills */
+.stat-item {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .35rem .6rem;
+  font-size: .88rem;
+  line-height: 1;
+  border-radius: 999px;
+  background: color-mix(in oklab, currentColor 8%, transparent);
+  color: color-mix(in oklab, currentColor 70%, #000);
+  white-space: nowrap;
+}
+
+/* Desktop action buttons (text + icon) */
+.desktop-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+
+  .action-btn[mat-raised-button] {
+    text-transform: none;
+    letter-spacing: .2px;
+    border-radius: .7rem;
+    padding-inline: .9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+
+    &.primary {
+      /* rely on Angular Material color="primary" theme; just subtle shadow */
+      box-shadow: 0 1px 0 color-mix(in oklab, currentColor 12%, transparent);
+    }
+    &.accent {
+      /* optional accent tint without fighting theme */
+      box-shadow: 0 1px 0 color-mix(in oklab, currentColor 12%, transparent);
+    }
+
+    .btn-text { font-weight: 600; }
+  }
+
+  .fs-btn[mat-icon-button] {
+    border-radius: .7rem;
+    inline-size: 40px;
+    block-size: 40px;
+  }
+}
+
+/* Mobile action buttons (icons only) */
+.mobile-actions {
+  display: none;
+  align-items: center;
+  gap: .25rem;
+
+  button[mat-icon-button] {
+    inline-size: 40px;
+    block-size: 40px;
+    border-radius: .7rem;
+
+    /* make badges breathe on small icons */
+    ::ng-deep .mat-badge-content {
+      transform: translate(40%, -40%);
+    }
+  }
+}
+
+/* Responsive: stack nicely on small screens */
+@media (max-width: 900px) {
+  .header-actions-container {
+    grid-template-columns: 1fr; /* search on its own row */
+    gap: .6rem;
+  }
+  .actions-section {
+    justify-content: space-between;
+  }
+  .desktop-actions { display: none; }
+  .mobile-actions { display: inline-flex; }
+}
+
+/* Super-narrow phones: compress spacing a bit */
+@media (max-width: 420px) {
+  .actions-section { gap: .5rem; }
+  .stat-item { padding: .3rem .5rem; font-size: .85rem; }
+}
+
+/* RTL/LTR friendliness via logical properties */
+:host {
+  direction: inherit;
+}

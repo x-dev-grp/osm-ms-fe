@@ -13,7 +13,7 @@ export const companyProfileDashboardConfig: DashboardConfig = {
   defaultSearchData: {
     page: 0,
     size: 10,
-    sort: 'saleDate',
+    sort: 'legalName',
     order: 'DESC',
     searchData: {
       operation: SearchOperation.AND,

@@ -1,30 +1,24 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import jsPDF from 'jspdf';
-import {TranslateService} from '@ngx-translate/core';
-import {CompanyProfileService} from './company-profile.service';
-import {PdfFactureConfig, PdfPaymentNoteConfig} from '../models/pdf-config.model';
+import { TranslateService } from '@ngx-translate/core';
+import { PdfFactureConfig, PdfPaymentNoteConfig } from '../models/pdf-config.model';
 
-const fontStyle = 'normal';
-const fontStyleBold = 'bold';
-
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class PdfGeneratorFactureService {
+  // Optional in-memory preview override (if you set it elsewhere)
   logoPreview: string | null = null;
-  private readonly _fontName = 'helvetica';
-  private readonly _format = 'JPEG';
 
-  constructor(
-    private translationService: TranslateService,
-    private _companyProfileService: CompanyProfileService
-  ) {
-  }
+  private readonly _fontName: 'helvetica' | 'times' | 'courier' = 'helvetica';
 
-  generatePdfDocument(config: PdfFactureConfig): void {
-    const getLogoPromise = this.logoPreview
-      ? Promise.resolve(this.logoPreview)
-      : this.getBase64ImageFromUrl('assets/logo.jpg');
+  constructor(private translationService: TranslateService) {}
 
-    getLogoPromise.then((base64Logo) => {
+  // ----------------------------
+  // Public API
+  // ----------------------------
+
+  async generatePdfDocument(config: PdfFactureConfig): Promise<void> {
+    try {
+      const base64Logo = await this.pickLogo(config.companyInfo?.logoUrl);
       const doc = new jsPDF();
       let currentY = 10;
 
@@ -40,184 +34,177 @@ export class PdfGeneratorFactureService {
       const rowHeight = 8;
       const lineHeight = 7;
 
-      // --- Fonction sécurisée ---
+      // --- helpers ---
       const safeText = (text: any, x: number, y: number) => {
         const str = text == null || text === 'undefined' ? '' : String(text).trim();
-        if (str) {
-          doc.text(str, x, y);
-        }
+        if (str) doc.text(str, x, y);
       };
 
-      // --- LOGO ---
-      doc.addImage(base64Logo, this._format, marginLeft, currentY, logoWidth, logoHeight);
+      const t = (key: string) => this.translationService.instant(key);
 
-      // --- INFO SOCIÉTÉ (à gauche) ---
+      // --- LOGO ---
+      if (base64Logo) {
+        // Let jsPDF auto-detect format from data URL if possible
+        try {
+          doc.addImage(base64Logo, undefined as any, marginLeft, currentY, logoWidth, logoHeight);
+        } catch {
+          // Fallback to JPEG
+          doc.addImage(base64Logo, 'JPEG', marginLeft, currentY, logoWidth, logoHeight);
+        }
+      }
+
+      // --- COMPANY INFO (left) ---
       const companyInfoX = marginLeft + 10;
       const companyInfoYStart = currentY + 25;
-      doc.setFont(this._fontName, fontStyle);
+      doc.setFont(this._fontName, 'normal');
       doc.setFontSize(fontSizeSmall);
-      safeText(config.companyInfo?.companyName || this.translationService.instant('PDF.COMPANY_NAME'), companyInfoX, companyInfoYStart);
-      safeText(config.companyInfo?.address || this.translationService.instant('PDF.ADDRESS'), companyInfoX, companyInfoYStart + lineHeight);
-      safeText(`VAT ${config.companyInfo?.vatNumber || this.translationService.instant('PDF.VAT')}`, companyInfoX, companyInfoYStart + 2 * lineHeight);
-      safeText(`Mobile ${config.companyInfo?.mobile || this.translationService.instant('PDF.MOBILE')}`, companyInfoX, companyInfoYStart + 3 * lineHeight);
-      safeText(`w.${config.companyInfo?.website || this.translationService.instant('PDF.WEBSITE')}`, companyInfoX, companyInfoYStart + 4 * lineHeight);
 
-      // --- TITRE ET RÉFÉRENCE (à droite) ---
+      safeText(config.companyInfo?.companyName || t('PDF.COMPANY_NAME'), companyInfoX, companyInfoYStart);
+      safeText(config.companyInfo?.address || t('PDF.ADDRESS'), companyInfoX, companyInfoYStart + lineHeight);
+
+      if (config.companyInfo?.vatNumber) {
+        safeText(`VAT: ${config.companyInfo.vatNumber}`, companyInfoX, companyInfoYStart + 2 * lineHeight);
+      }
+      if (config.companyInfo?.mobile) {
+        safeText(`Mobile: ${config.companyInfo.mobile}`, companyInfoX, companyInfoYStart + 3 * lineHeight);
+      }
+      if (config.companyInfo?.website) {
+        safeText(`Website: ${config.companyInfo.website}`, companyInfoX, companyInfoYStart + 4 * lineHeight);
+      }
+
+      // --- TITLE & REF (right) ---
       doc.setFontSize(fontSizeLarge);
-      doc.setFont(this._fontName, fontStyleBold);
+      doc.setFont(this._fontName, 'bold');
       safeText(config.title || 'FACTURE', rightX, currentY + 25);
+
       doc.setFontSize(fontSizeMedium);
-      doc.setFont(this._fontName, fontStyle);
+      doc.setFont(this._fontName, 'normal');
       safeText(`Réf : ${config.reference}`, rightX, currentY + 32);
       safeText(`Date : ${config.date || new Date().toLocaleDateString()}`, rightX, currentY + 39);
 
-      // --- INFOS CLIENT - Bloc encadré à droite ---
+      // --- CLIENT INFO (dynamic block) ---
       const clientBlockX = rightX;
       const clientBlockYStart = currentY + 45;
       const clientBlockWidth = pageWidth - clientBlockX - marginRight;
       const clientPadding = 4;
 
-      // Hauteur dynamique
-      const clientInfoCount = config.generalInfo?.length || 0;
-      const clientBlockHeight = 6 + (clientInfoCount * lineHeight);
+      const clientInfos = (config.generalInfo || []).filter((info) => info && info.value != null && String(info.value).trim() !== '');
 
-      // Fond + cadre
-      doc.setFillColor(245, 245, 245);
-      doc.rect(clientBlockX, clientBlockYStart, clientBlockWidth, clientBlockHeight, 'FD');
-      doc.setDrawColor(0);
-      doc.setLineWidth(0.5);
-      doc.rect(clientBlockX, clientBlockYStart, clientBlockWidth, clientBlockHeight);
+      let dynamicHeight = 6; // includes title margin
+      const processedInfos: { text: string[] }[] = [];
 
-      // Titre
-      doc.setFont(this._fontName, fontStyleBold);
-      doc.setFontSize(fontSizeSmall);
-      safeText(this.translationService.instant('PDF.CLIENT_INFO'), clientBlockX + clientPadding, clientBlockYStart + 6);
-
-      // Données
-      doc.setFont(this._fontName, fontStyle);
-      config.generalInfo?.forEach((info, index) => {
-        const label = this.translationService.instant(info.label);
+      clientInfos.forEach((info) => {
+        const label = t(info.label);
         const value = info.value || '';
-        const y = clientBlockYStart + 12 + index * lineHeight;
-        safeText(`${label} : ${value}`, clientBlockX + clientPadding, y);
+        const fullText = `${label} : ${value}`;
+        const wrappedText = doc.splitTextToSize(fullText, clientBlockWidth - 2 * clientPadding);
+        processedInfos.push({ text: wrappedText });
+        dynamicHeight += wrappedText.length * lineHeight;
       });
 
-      // Mise à jour de currentY
+      const clientBlockHeight = processedInfos.length > 0 ? dynamicHeight + 4 : 0;
+
+      if (processedInfos.length > 0) {
+        doc.setFillColor(245, 245, 245);
+        doc.rect(clientBlockX, clientBlockYStart, clientBlockWidth, clientBlockHeight, 'FD');
+        doc.setDrawColor(0);
+        doc.setLineWidth(0.5);
+        doc.rect(clientBlockX, clientBlockYStart, clientBlockWidth, clientBlockHeight);
+
+        doc.setFont(this._fontName, 'bold');
+        doc.setFontSize(fontSizeSmall);
+        safeText(t('PDF.CLIENT_INFO'), clientBlockX + clientPadding, clientBlockYStart + 6);
+
+        doc.setFont(this._fontName, 'normal');
+        doc.setFontSize(fontSizeSmall);
+
+        let yOffset = clientBlockYStart + 12;
+        processedInfos.forEach((info) => {
+          info.text.forEach((line) => {
+            safeText(line, clientBlockX + clientPadding, yOffset);
+            yOffset += lineHeight;
+          });
+        });
+      }
+
+      // Move Y after block
       currentY = clientBlockYStart + clientBlockHeight + 15;
 
-      // --- TABLEAU ---
+      // --- TABLE HEADER ---
       const tableLeft = marginLeft;
-      const col1Width = 100; // Description
-      const col2Width = 30;  // Prix unitaire
-      const col3Width = 30;  // Quantité
-      const col4Width = 30;  // Total
+      const col1Width = 100; // description
+      const col2Width = 30; // unit price
+      const col3Width = 30; // quantity
+      const col4Width = 30; // total
 
-      // En-tête
       doc.setFillColor(200, 200, 200);
       doc.rect(tableLeft, currentY, col1Width, 10, 'FD');
       doc.rect(tableLeft + col1Width, currentY, col2Width, 10, 'FD');
       doc.rect(tableLeft + col1Width + col2Width, currentY, col3Width, 10, 'FD');
       doc.rect(tableLeft + col1Width + col2Width + col3Width, currentY, col4Width, 10, 'FD');
 
-      doc.setFont(this._fontName, fontStyleBold);
+      doc.setFont(this._fontName, 'bold');
       doc.setFontSize(fontSizeSmall);
-      safeText(this.translationService.instant('PDF.DESCRIPTION'), tableLeft + 2, currentY + 6);
-      safeText(this.translationService.instant('PDF.PRICE_UNIT'), tableLeft + col1Width + 2, currentY + 6);
-      safeText(this.translationService.instant('PDF.QUANTITY'), tableLeft + col1Width + col2Width + 2, currentY + 6);
-      safeText(this.translationService.instant('PDF.TOTAL'), tableLeft + col1Width + col2Width + col3Width + 2, currentY + 6);
+      safeText(t('PDF.DESCRIPTION'), tableLeft + 2, currentY + 6);
+      safeText(t('PDF.PRICE_UNIT'), tableLeft + col1Width + 2, currentY + 6);
+      safeText(t('PDF.QUANTITY'), tableLeft + col1Width + col2Width + 2, currentY + 6);
+      safeText(t('PDF.TOTAL'), tableLeft + col1Width + col2Width + col3Width + 2, currentY + 6);
 
       currentY += 10;
 
-      // --- LIGNE UNIQUE ---
+      // --- TABLE ROW (single consolidated line based on fields) ---
       let totalValue = 0;
 
-      if (config.fields && config.fields.length > 0) {
-        // Récupérer les valeurs
-        const description = config.fields.find(f => f.label === 'PDF.DESCRIPTION')?.value || '';
-        const priceStr = config.fields.find(f => f.label === 'PDF.PRICE_UNIT')?.value || '0';
-        const quantityStr = config.fields.find(f => f.label === 'PDF.QUANTITY')?.value || '0';
-        const totalStr = config.fields.find(f => f.label === 'PDF.TOTAL')?.value || '0';
+      const fields = config.fields || [];
+      const getVal = (key: string) => fields.find((f) => f.label === key)?.value ?? '';
 
-        // Extraire les nombres
-        const unitPrice = parseFloat(priceStr.replace('TND/kg', '').trim()) || 0;
-        const quantity = parseFloat(quantityStr.replace('kg', '').trim()) || 0;
-        const amount = unitPrice * quantity;
-        totalValue = amount;
+      const description = String(getVal('PDF.DESCRIPTION'));
+      const unitPriceNum = this.parseNumberFrom(getVal('PDF.PRICE_UNIT')); // expects like "9.500 TND/kg"
+      const quantityNum = this.parseNumberFrom(getVal('PDF.QUANTITY')); // expects like "100 kg"
+      const amount = unitPriceNum * quantityNum;
+      totalValue = isNaN(amount) ? 0 : amount;
 
-        // Dessiner la ligne
+      // draw one row if content exists
+      if (description || unitPriceNum || quantityNum) {
         doc.rect(tableLeft, currentY, col1Width, rowHeight);
         doc.rect(tableLeft + col1Width, currentY, col2Width, rowHeight);
         doc.rect(tableLeft + col1Width + col2Width, currentY, col3Width, rowHeight);
         doc.rect(tableLeft + col1Width + col2Width + col3Width, currentY, col4Width, rowHeight);
 
-        // Texte
-        doc.setFont(this._fontName, fontStyle);
+        doc.setFont(this._fontName, 'normal');
         doc.setFontSize(fontSizeSmall);
         safeText(description, tableLeft + 2, currentY + 5);
-        safeText(`${unitPrice.toFixed(2)} TND/kg`, tableLeft + col1Width + 2, currentY + 5);
-        safeText(`${quantity.toFixed(2)} kg`, tableLeft + col1Width + col2Width + 2, currentY + 5);
-        safeText(`${amount.toFixed(2)} TND`, tableLeft + col1Width + col2Width + col3Width + 2, currentY + 5);
+        safeText(`${unitPriceNum.toFixed(2)} TND/kg`, tableLeft + col1Width + 2, currentY + 5);
+        safeText(`${quantityNum.toFixed(2)} kg`, tableLeft + col1Width + col2Width + 2, currentY + 5);
+        safeText(`${totalValue.toFixed(2)} TND`, tableLeft + col1Width + col2Width + col3Width + 2, currentY + 5);
 
         currentY += rowHeight;
       }
 
-      // --- TOTAL FINAL ---
+      // --- FINAL TOTAL (box) ---
       const totalX = tableLeft + col1Width + col2Width + col3Width;
       const totalY = currentY;
-      const totalWidth = col4Width;
-      const totalHeight = rowHeight;
+      const col4WidthBox = 30;
 
       doc.setLineWidth(0.5);
-      doc.rect(totalX, totalY, totalWidth, totalHeight);
-      doc.setFont(this._fontName, fontStyleBold);
+      doc.rect(totalX, totalY, col4WidthBox, rowHeight);
+      doc.setFont(this._fontName, 'bold');
       doc.setFontSize(fontSizeMedium);
       safeText(`${totalValue.toFixed(2)} TND`, totalX + 2, totalY + 5);
 
-      // --- OUVERTURE DU PDF ---
+      // --- OPEN PDF ---
       window.open(doc.output('bloburl'), '_blank');
-    }).catch(err => {
-      console.error('Erreur lors du chargement du logo :', err);
-      alert('Impossible de générer la facture. Vérifiez que le logo est accessible.');
-    });
+    } catch (err) {
+      console.error('Erreur lors de la génération de la facture :', err);
+      alert('Impossible de générer la facture.');
+    }
   }
 
-  // --- CHARGEMENT DU LOGO EN BASE64 ---
-  getBase64ImageFromUrl(url: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.crossOrigin = 'Anonymous';
-      img.src = url;
-
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-          ctx.drawImage(img, 0, 0);
-          const dataURL = canvas.toDataURL('image/jpeg');
-          resolve(dataURL);
-        } else {
-          reject('Impossible de créer le contexte 2D du canvas');
-        }
-      };
-
-      img.onerror = (error) => {
-        reject(error);
-      };
-    });
-  }
-
-
-  generatePdfNoteDocument(config: PdfPaymentNoteConfig): void {
-    const getLogoPromise = this.logoPreview
-      ? Promise.resolve(this.logoPreview)
-      : this.getBase64ImageFromUrl('assets/logo.jpg');
-
-    getLogoPromise.then((base64Logo) => {
+  async generatePdfNoteDocument(config: PdfPaymentNoteConfig): Promise<void> {
+    try {
+      const base64Logo = await this.pickLogo(config.companyInfo?.logoUrl); // tolerate absent in interface
       const doc = new jsPDF();
       let currentY = 10;
-
       const marginLeft = 10;
       const marginRight = 10;
       const pageWidth = 210;
@@ -227,44 +214,69 @@ export class PdfGeneratorFactureService {
       const fontSizeSmall = 9;
       const fontSizeMedium = 10;
       const fontSizeLarge = 12;
-      const rowHeight = 10; // Augmenté pour plus de lisibilité
+      const rowHeight = 10;
       const lineHeight = 7;
+      const clientPadding = 4;
 
       const safeText = (text: any, x: number, y: number) => {
         const str = text == null || text === 'undefined' ? '' : String(text).trim();
         if (str) doc.text(str, x, y);
       };
+      const t = (key: string) => this.translationService.instant(key);
 
-      // LOGO
-      doc.addImage(base64Logo, this._format, marginLeft, currentY, logoWidth, logoHeight);
+      // --- LOGO ---
+      if (base64Logo) {
+        try {
+          doc.addImage(base64Logo, undefined as any, marginLeft, currentY, logoWidth, logoHeight);
+        } catch {
+          doc.addImage(base64Logo, 'JPEG', marginLeft, currentY, logoWidth, logoHeight);
+        }
+      }
 
-      // COMPANY INFO (left)
+      // --- COMPANY INFO (left) ---
       const companyInfoX = marginLeft + 10;
       const companyInfoYStart = currentY + 25;
       doc.setFont(this._fontName, 'normal');
       doc.setFontSize(fontSizeSmall);
-      safeText(config.companyInfo.companyName || this.translationService.instant('PDF.COMPANY_NAME'), companyInfoX, companyInfoYStart);
-      safeText(config.companyInfo.address || this.translationService.instant('PDF.ADDRESS'), companyInfoX, companyInfoYStart + lineHeight);
-      safeText(`VAT ${config.companyInfo.vatNumber || this.translationService.instant('PDF.VAT')}`, companyInfoX, companyInfoYStart + 2 * lineHeight);
-      safeText(`Mobile ${config.companyInfo.mobile || this.translationService.instant('PDF.MOBILE')}`, companyInfoX, companyInfoYStart + 3 * lineHeight);
-      safeText(`w.${config.companyInfo.website || this.translationService.instant('PDF.WEBSITE')}`, companyInfoX, companyInfoYStart + 4 * lineHeight);
+      safeText(config.companyInfo.companyName || t('PDF.COMPANY_NAME'), companyInfoX, companyInfoYStart);
+      safeText(config.companyInfo.address || t('PDF.ADDRESS'), companyInfoX, companyInfoYStart + lineHeight);
+      safeText(`VAT ${config.companyInfo.vatNumber || t('PDF.VAT')}`, companyInfoX, companyInfoYStart + 2 * lineHeight);
+      safeText(`Mobile ${config.companyInfo.mobile || t('PDF.MOBILE')}`, companyInfoX, companyInfoYStart + 3 * lineHeight);
+      safeText(`w.${config.companyInfo.website || t('PDF.WEBSITE')}`, companyInfoX, companyInfoYStart + 4 * lineHeight);
 
-      // TITLE & REF (right)
+      // --- TITLE & REF (right) ---
       doc.setFontSize(fontSizeLarge);
       doc.setFont(this._fontName, 'bold');
-      safeText(config.title || 'NOTE DE PAIEMENT', rightX, currentY + 25);
+      const translatedTitle = config.title ? t(config.title) : t('PDF.NOTE_PAYEMENT_RECEPTION');
+      safeText(translatedTitle, rightX, currentY + 25);
+
       doc.setFontSize(fontSizeMedium);
       doc.setFont(this._fontName, 'normal');
       safeText(`Réf : ${config.reference}`, rightX, currentY + 32);
       safeText(`Date : ${config.date || new Date().toLocaleDateString()}`, rightX, currentY + 39);
 
-      // CLIENT BLOCK (encadré à droite)
+      // --- CLIENT BLOCK (dynamic) ---
       const clientBlockX = rightX;
       const clientBlockYStart = currentY + 50;
-      const clientBlockWidth = pageWidth - clientBlockX - marginRight;
-      const clientPadding = 4;
-      const clientInfoCount = config.generalInfo?.length || 0;
-      const clientBlockHeight = 6 + (clientInfoCount * lineHeight);
+      const maxClientWidth = pageWidth - clientBlockX - marginRight - 5;
+
+      let requiredWidth = 0;
+      const processedInfo: { lines: string[] }[] = [];
+
+      (config.generalInfo || []).forEach((info) => {
+        const label = t(info.label);
+        const value = info.value || '';
+        const fullText = `${label} : ${value}`;
+        const lines = doc.splitTextToSize(fullText, maxClientWidth - clientPadding * 2);
+        lines.forEach((line: string) => {
+          const textWidth = doc.getTextWidth(line);
+          if (textWidth > requiredWidth) requiredWidth = textWidth;
+        });
+        processedInfo.push({ lines });
+      });
+
+      const clientBlockWidth = Math.min(requiredWidth + 8, maxClientWidth);
+      const clientBlockHeight = 6 + processedInfo.reduce((acc, cur) => acc + cur.lines.length * lineHeight, 0);
 
       doc.setFillColor(245, 245, 245);
       doc.rect(clientBlockX, clientBlockYStart, clientBlockWidth, clientBlockHeight, 'FD');
@@ -273,72 +285,188 @@ export class PdfGeneratorFactureService {
 
       doc.setFont(this._fontName, 'bold');
       doc.setFontSize(fontSizeSmall);
-      safeText(this.translationService.instant('PDF.CLIENT_INFO'), clientBlockX + clientPadding, clientBlockYStart + 6);
+      safeText(t('PDF.CLIENT_INFO'), clientBlockX + clientPadding, clientBlockYStart + 6);
 
       doc.setFont(this._fontName, 'normal');
-      config.generalInfo?.forEach((info, index) => {
-        const label = this.translationService.instant(info.label);
-        const value = info.value || '';
-        const y = clientBlockYStart + 12 + index * lineHeight;
-        safeText(`${label} : ${value}`, clientBlockX + clientPadding, y);
+      let textY = clientBlockYStart + 12;
+      processedInfo.forEach((info) => {
+        info.lines.forEach((line) => {
+          safeText(line, clientBlockX + clientPadding, textY);
+          textY += lineHeight;
+        });
       });
 
-      // --- TABLEAU DES PAIEMENTS ---
+      // --- PAYMENTS TABLE ---
       currentY = clientBlockYStart + clientBlockHeight + 20;
 
-      // Largeurs des colonnes
-      const col1Width = 35; // Type de paiement
-      const col2Width = 35; // Total facture
-      const col3Width = 30; // Payé
-      const col4Width = 35; // Date paiement
-      const col5Width = 35; // Reste à payer
+      const col1Width = 35; // payment type
+      const col2Width = 35; // total
+      const col3Width = 30; // paid
+      const col4Width = 35; // payment date
+      const col5Width = 35; // remaining
       const tableWidth = col1Width + col2Width + col3Width + col4Width + col5Width;
-      const tableLeft = (pageWidth - tableWidth) / 2; // Centrer le tableau
+      const tableLeft = (pageWidth - tableWidth) / 2;
 
-      // En-têtes
       doc.setFillColor(200, 200, 200);
-      doc.rect(tableLeft, currentY, col1Width, rowHeight, 'FD');
-      doc.rect(tableLeft + col1Width, currentY, col2Width, rowHeight, 'FD');
-      doc.rect(tableLeft + col1Width + col2Width, currentY, col3Width, rowHeight, 'FD');
-      doc.rect(tableLeft + col1Width + col2Width + col3Width, currentY, col4Width, rowHeight, 'FD');
-      doc.rect(tableLeft + col1Width + col2Width + col3Width + col4Width, currentY, col5Width, rowHeight, 'FD');
+      [col1Width, col2Width, col3Width, col4Width, col5Width].reduce((x, w) => {
+        doc.rect(x, currentY, w, rowHeight, 'FD');
+        return x + w;
+      }, tableLeft);
 
       doc.setFont(this._fontName, 'bold');
       doc.setFontSize(fontSizeSmall);
-      safeText(this.translationService.instant('PDF.PAYMENT_TYPE'), tableLeft + 2, currentY + 6);
-      safeText(this.translationService.instant('PDF.TOTAL_AMOUNT'), tableLeft + col1Width + 2, currentY + 6);
-      safeText(this.translationService.instant('PDF.PAID_AMOUNT'), tableLeft + col1Width + col2Width + 2, currentY + 6);
-      safeText(this.translationService.instant('PDF.PAYMENT_DATE'), tableLeft + col1Width + col2Width + col3Width + 2, currentY + 6);
-      safeText(this.translationService.instant('PDF.REMAINING_AMOUNT'), tableLeft + col1Width + col2Width + col3Width + col4Width + 2, currentY + 6);
+      safeText(t('PDF.PAYMENT_TYPE'), tableLeft + 2, currentY + 6);
+      safeText(t('PDF.TOTAL_AMOUNT'), tableLeft + col1Width + 2, currentY + 6);
+      safeText(t('PDF.PAID_AMOUNT'), tableLeft + col1Width + col2Width + 2, currentY + 6);
+      safeText(t('PDF.PAYMENT_DATE'), tableLeft + col1Width + col2Width + col3Width + 2, currentY + 6);
+      safeText(t('PDF.REMAINING_AMOUNT'), tableLeft + col1Width + col2Width + col3Width + col4Width + 2, currentY + 6);
 
-      // Lignes de données
       doc.setFont(this._fontName, 'normal');
-      config.paymentDetails.forEach((item) => {
+      (config.paymentDetails || []).forEach((item) => {
         currentY += rowHeight;
 
-        // Dessiner les bordures de la ligne
-        doc.setDrawColor(0);
-        doc.rect(tableLeft, currentY, col1Width, rowHeight);
-        doc.rect(tableLeft + col1Width, currentY, col2Width, rowHeight);
-        doc.rect(tableLeft + col1Width + col2Width, currentY, col3Width, rowHeight);
-        doc.rect(tableLeft + col1Width + col2Width + col3Width, currentY, col4Width, rowHeight);
-        doc.rect(tableLeft + col1Width + col2Width + col3Width + col4Width, currentY, col5Width, rowHeight);
+        // borders
+        let colX = tableLeft;
+        [col1Width, col2Width, col3Width, col4Width, col5Width].forEach((w) => {
+          doc.rect(colX, currentY, w, rowHeight);
+          colX += w;
+        });
 
-        // Remplir les cellules
-        safeText(item.paymentType, tableLeft + 2, currentY + 6);
-        safeText(item.totalAmount, tableLeft + col1Width + 2, currentY + 6);
-        safeText(item.paidAmount, tableLeft + col1Width + col2Width + 2, currentY + 6);
-        safeText(item.paymentDate, tableLeft + col1Width + col2Width + col3Width + 2, currentY + 6);
-        safeText(item.remainingAmount, tableLeft + col1Width + col2Width + col3Width + col4Width + 2, currentY + 6);
+        // positions
+        const totalX = tableLeft + col1Width;
+        const paidX = totalX + col2Width;
+        const dateX = paidX + col3Width;
+        const remainX = dateX + col4Width;
+
+        // text
+        const paymentTypeLines = doc.splitTextToSize(item.paymentType, col1Width - 4);
+        safeText(paymentTypeLines[0], tableLeft + 2, currentY + 6);
+
+        const totalWidth = doc.getTextWidth(item.totalAmount);
+        const paidWidth = doc.getTextWidth(item.paidAmount);
+        const remainingWidth = doc.getTextWidth(item.remainingAmount);
+
+        safeText(item.totalAmount, totalX + col2Width - totalWidth - 2, currentY + 6);
+        safeText(item.paidAmount, paidX + col3Width - paidWidth - 2, currentY + 6);
+        safeText(item.paymentDate, dateX + 2, currentY + 6); // left-aligned
+        safeText(item.remainingAmount, remainX + col5Width - remainingWidth - 2, currentY + 6); // right-aligned
       });
 
-
-      // OPEN PDF
+      // --- OPEN PDF ---
       window.open(doc.output('bloburl'), '_blank');
-    }).catch(err => {
-      console.error('Erreur lors du chargement du logo :', err);
-      alert('Impossible de générer la note de paiement. Vérifiez que le logo est accessible.');
-    });
+    } catch (err) {
+      console.error('Erreur lors de la génération de la note de paiement :', err);
+      alert('Impossible de générer la note de paiement.');
+    }
   }
 
+  // ----------------------------
+  // Internals
+  // ----------------------------
+
+  /**
+   * Choose the appropriate logo source:
+   * 1) config.companyInfo.logoUrl (if provided)
+   * 2) this.logoPreview (if set)
+   * 3) fallback to 'assets/logo.jpg'
+   * Returns a data URL or null.
+   */
+  // 1) pickLogo: choose source and normalize to a valid data URL when possible
+  private async pickLogo(companyLogoUrl?: string): Promise<string | null> {
+    const candidate = companyLogoUrl || this.logoPreview || 'assets/logo.jpg';
+
+    // If we can normalize it right away to a data URL, do it and return.
+    const normalized = this.normalizeToDataUrl(candidate);
+    if (normalized) return normalized;
+
+    // Otherwise, load via fetch→blob→dataURL (or <img> fallback for same-origin assets)
+    try {
+      return await this.getImageAsDataUrl(candidate);
+    } catch (e) {
+      // Last resort: no logo
+      return null;
+    }
+  }
+
+  // 2) normalizeToDataUrl: handle raw base64 or malformed data URLs (like your "data:ivBORw0..." case)
+  private normalizeToDataUrl(input: string): string | null {
+    if (!input) return null;
+
+    // Already a proper image data URL
+    if (input.startsWith('data:image/')) return input;
+
+    // Malformed data URL (missing mime/type). Convert to PNG data URL.
+    if (input.startsWith('data:')) {
+      // If there's no comma, assume the whole tail is base64 payload
+      if (!input.includes(',')) {
+        const payload = input.slice('data:'.length);
+        return `data:image/png;base64,${payload}`;
+      }
+      // If there is a comma but wrong/unknown header, replace header with image/png
+      const commaIdx = input.indexOf(',');
+      const payload = input.slice(commaIdx + 1);
+      // Heuristic: if header doesn’t specify ";base64", assume it is base64 anyway
+      return `data:image/png;base64,${payload}`;
+    }
+
+    // Pure base64 (no "data:" prefix). Heuristic check.
+    const base64Regex = /^[A-Za-z0-9+/=]+$/;
+    if (base64Regex.test(input)) {
+      return `data:image/png;base64,${input}`;
+    }
+
+    // Not a data URL nor raw base64 → must be a normal URL; let caller handle it.
+    return null;
+  }
+
+  // 3) getImageAsDataUrl: unchanged logic, but now only called for "real" URLs
+  private async getImageAsDataUrl(url: string): Promise<string> {
+    // Try fetch → blob → dataURL first (best for CORS-safe conversion)
+    try {
+      const res = await fetch(url, { mode: 'cors' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const blob = await res.blob();
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result));
+        reader.onerror = (err) => reject(err);
+        reader.readAsDataURL(blob);
+      });
+      return dataUrl;
+    } catch {
+      // Fallback to <img> + canvas (works for same-origin / assets/*)
+      return await new Promise<string>((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.src = url;
+        img.onload = () => {
+          try {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.naturalWidth || img.width;
+            canvas.height = img.naturalHeight || img.height;
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return reject(new Error('2D context not available'));
+            ctx.drawImage(img, 0, 0);
+            resolve(canvas.toDataURL('image/png'));
+          } catch (err) {
+            reject(err);
+          }
+        };
+        img.onerror = (err) => reject(err);
+      });
+    }
+  }
+
+  /**
+   * Parse a number from a string like "9.500 TND/kg" or "100 kg".
+   * Keeps only the first valid numeric token.
+   */
+  private parseNumberFrom(value: string): number {
+    if (!value) return 0;
+    // Replace commas with dots, strip non-number except dot and minus
+    const match = String(value)
+      .replace(',', '.')
+      .match(/-?\d+(\.\d+)?/);
+    return match ? Number(match[0]) : 0;
+  }
 }
