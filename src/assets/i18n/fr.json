@@ -2158,8 +2158,8 @@
     "CATEGORY_OLIVE": "Catégorie Olive",
     "CLIENT_ADDRESS": "Address",
     "CLIENT_INFO": "Client",
-    "CLIENT_NAME": "Client Name",
-    "CLIENT_PHONE": "Phone",
+    "CLIENT_NAME": "Nom",
+    "CLIENT_PHONE": "N° tel",
     "COMPANY_ADDRESS": "Adresse",
     "COMPANY_EMAIL": "Email",
     "COMPANY_FAX": "Fax",
@@ -2401,25 +2401,25 @@
       "EDIT": "Modifier Rule"
     },
     "FIELDS": {
-      "RULE_KEY": "Rule Key",
-      "OIL_QC": "Oil QC",
-      "RULE_NAME": "Rule Name",
-      "TYPE": "Type",
-      "MIN_VALUE": "Min Value",
-      "MAX_VALUE": "Max Value",
-      "EXPECTED_VALUE": "Expected Value",
-      "DESCRIPTION": "Description",
-      "TEXT_VALUES": "Valeurs possibles (séparées par des virgules)",
       "ACTIONS": {
-        "SAVE": "Mettre à jour",
-        "UPDATE": "Mettre à jour",
         "ADD": "Ajouter",
-        "CANCEL": "Annuler"
-      }
+        "CANCEL": "Annuler",
+        "SAVE": "Mettre à jour",
+        "UPDATE": "Mettre à jour"
+      },
+      "DESCRIPTION": "Description",
+      "EXPECTED_VALUE": "Expected Value",
+      "MAX_VALUE": "Max Value",
+      "MIN_VALUE": "Min Value",
+      "OIL_QC": "Oil QC",
+      "RULE_KEY": "Rule Key",
+      "RULE_NAME": "Rule Name",
+      "TEXT_VALUES": "Valeurs possibles (séparées par des virgules)",
+      "TYPE": "Type"
     },
     "RULE_TYPES": {
-      "NUMERIC": "Numeric",
       "BOOLEAN": "Boolean",
+      "NUMERIC": "Numeric",
       "STRING": "Text"
     }
   },
@@ -2493,7 +2493,7 @@
       "PROD_READY": "Prêt pour production",
       "REFUSED": "Refusé",
       "STOCK_READY": "Prêt à stocker",
-      "WAITING": "En attent",
+      "WAITING": "En attente",
       "WAITING_FOR_PAYMENT_DETAILS": "En attente des détails de paiement",
       "WAITING_FOR_PRICING": "À définir le prix et la quantité"
     },
@@ -2623,10 +2623,10 @@
     "OIL_TRANSACTIONS": {
       "DASHBOARD": {
         "TYPES": {
-          "RECEPTION_IN": "Réception Entrée",
-          "TRANSFER_IN": "Transfert Entrée",
           "LOAN": "Prêt",
-          "SALE": "Vente"
+          "RECEPTION_IN": "Réception Entrée",
+          "SALE": "Vente",
+          "TRANSFER_IN": "Transfert Entrée"
         }
       }
     },

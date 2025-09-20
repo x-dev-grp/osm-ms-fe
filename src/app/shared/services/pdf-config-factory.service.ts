@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { CompanyProfile } from '../models/CompanyProfile';
 import { PdfFactureConfig, PdfPaymentNoteConfig } from '../models/pdf-config.model';
-import { InvoiceSource } from '../../reception/components/suppliers/supplier-details/supplier-details.component';
-import { TranslateService } from '@ngx-translate/core';
+ import { TranslateService } from '@ngx-translate/core';
 import { UnifiedDelivery } from '../models/UnifiedDelivery';
+import { InvoiceSource } from '../../reception/suppliers/supplier-details/supplier-details.component';
 
 // Keep config mode separate from "source"
 export type PdfConfigMode = 'auto' | 'invoice' | 'paymentNote';

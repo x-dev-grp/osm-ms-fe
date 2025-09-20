@@ -2230,10 +2230,12 @@
     "PAID_AMOUNT": "المبلغ المدفوع",
     "PARCEL": "الحزمة",
     "PARTIALLY_PAID": "مدفوع جزئيًا",
+    "PAYMENT_NOTE_REMINDER": "يرجى سداد الرصيد المتبقي في أقرب وقت ممكن.",
     "PAYMENT_STATUS": "حالة الدفع",
     "PENDING": "معلق",
     "PHONE": "الهاتف",
     "PRICE_UNIT": "سعر الوحدة",
+    "PRODUCT": "المنتج",
     "PRODUCTION_MANAGER": "مدير الإنتاج",
     "PRODUCTION_RECEIPT": "إيصال الإنتاج",
     "QUALITY_FIELDS": {
@@ -2263,6 +2265,7 @@
     "RECIPIENT": "المستفيد",
     "REFERENCE": "المرجع",
     "REGION": "المنطقة",
+    "REMAINING_AMOUNT": "المبلغ المتبقي",
     "REVISION": "النسخة",
     "SALE": "بيع",
     "SALE_DATE": "تاريخ البيع",
@@ -2274,6 +2277,7 @@
     "STORAGE_UNIT_DEST": "وحدة التخزين (الوجهة)",
     "STORAGE_UNIT_DESTINATION": "وحدة التخزين (الوجهة)",
     "STORAGE_UNIT_SOURCE": "وحدة التخزين (المصدر)",
+    "SUBTOTAL": "المجموع الفرعي",
     "SUPPLIER": "المورد",
     "TANK_NUMBER": "رقم الخزان",
     "TOTAL": "المبلغ الإجمالي",
@@ -2293,12 +2297,12 @@
     "UNIT_PRICE": "سعر الوحدة",
     "UNPAID": "غير مدفوع",
     "UNPAID_AMOUNT": "المبلغ غير المدفوع",
-    "VAT": "1778521 Y N M 000",
+    "VAT": "رقم الضريبة",
     "VEHICLE_REGISTRATION": "رقم تسجيل المركبة",
     "VENTE_DECHET": "بيع النفايات",
     "VENTE_HUILE": "بيع الزيت",
     "WASTE_PROCESSING": "معالجة نفايات الزيتون",
-    "WEBSITE": "contact@abiooc.com",
+    "WEBSITE": "موقع إلكتروني",
     "YIELD": "العائد"
   },
   "PLANNING_ASSIGNED": "مُعين",
@@ -2376,25 +2380,25 @@
       "EDIT": "تعديل قاعدة"
     },
     "FIELDS": {
-      "RULE_KEY": "مفتاح القاعدة",
-      "OIL_QC": "مراقبة جودة الزيت",
-      "RULE_NAME": "اسم القاعدة",
-      "TYPE": "النوع",
-      "MIN_VALUE": "القيمة الدنيا",
-      "MAX_VALUE": "القيمة القصوى",
-      "EXPECTED_VALUE": "القيمة المتوقعة",
-      "DESCRIPTION": "الوصف",
-      "TEXT_VALUES": "القيم الممكنة (مفصولة بفواصل)",
       "ACTIONS": {
-        "SAVE": "حفظ",
-        "UPDATE": "تحديث",
         "ADD": "إضافة",
-        "CANCEL": "إلغاء"
-      }
+        "CANCEL": "إلغاء",
+        "SAVE": "حفظ",
+        "UPDATE": "تحديث"
+      },
+      "DESCRIPTION": "الوصف",
+      "EXPECTED_VALUE": "القيمة المتوقعة",
+      "MAX_VALUE": "القيمة القصوى",
+      "MIN_VALUE": "القيمة الدنيا",
+      "OIL_QC": "مراقبة جودة الزيت",
+      "RULE_KEY": "مفتاح القاعدة",
+      "RULE_NAME": "اسم القاعدة",
+      "TEXT_VALUES": "القيم الممكنة (مفصولة بفواصل)",
+      "TYPE": "النوع"
     },
     "RULE_TYPES": {
-      "NUMERIC": "رقمي",
       "BOOLEAN": "منطقي",
+      "NUMERIC": "رقمي",
       "STRING": "نص"
     }
   },
@@ -2597,10 +2601,10 @@
     "OIL_TRANSACTIONS": {
       "DASHBOARD": {
         "TYPES": {
-          "RECEPTION_IN": "استقبال داخلي",
-          "TRANSFER_IN": "تحويل داخلي",
           "LOAN": "قرض",
-          "SALE": "بيع"
+          "RECEPTION_IN": "استقبال داخلي",
+          "SALE": "بيع",
+          "TRANSFER_IN": "تحويل داخلي"
         }
       }
     },
@@ -2695,29 +2699,20 @@
   },
   "SUPPLIERS": {
     "ACTIONS": "الإجراءات",
-"TRANSACTIONS": {
-    "FIELDS": {
-      "TRANSACTION_TYPE": "نوع المعاملة"
-    }
-  },
-  "USER": {
+    "ADDRESS": "العنوان",
     "EMAIL": "البريد الإلكتروني",
     "FIRST_NAME": "الاسم الأول",
-    "GROUP": "المجموعة",
-    "LAST_NAME": "اسم العائلة",
-    "PASSWORD": "كلمة المرور",
-    "STATUS": "الحالة",
-    "USERNAME": "اسم المستخدم"
-  },
-  "USERS": {
-    "ACTIONS": {
-      "ADD": "إضافة",
-      "CANCEL": "إلغاء",
-      "EDIT": "تعديل",
-      "DELETE": "حذف",
-      "GENERATE_PDF": "إنشاء إيصال"
+    "LAST_NAME": "اللقب",
+    "PHONE": "الهاتف",
+    "REGION": "المنطقة",
+    "TITLE": "الموردون",
+    "TRANSACTIONS": {
+      "FIELDS": {
+        "TRANSACTION_TYPE": "نوع المعاملة"
+      }
     },
-    "FIELDS": {
+    "TYPE": "النوع",
+    "USER": {
       "EMAIL": "البريد الإلكتروني",
       "FIRST_NAME": "الاسم الأول",
       "GROUP": "المجموعة",
@@ -2726,74 +2721,69 @@
       "STATUS": "الحالة",
       "USERNAME": "اسم المستخدم"
     },
-    "MESSAGES": {
-      "DELETE": "هل أنت متأكد أنك تريد حذف هذا المستخدم؟ هذا الإجراء لا يمكن التراجع عنه.",
-      "ERROR": {
-        "EMAIL_REQUIRED": "البريد الإلكتروني مطلوب",
-        "PASSWORD_REQUIRED": "كلمة المرور مطلوبة",
-        "USERNAME_REQUIRED": "اسم المستخدم مطلوب"
+    "USERS": {
+      "ACTIONS": {
+        "ADD": "إضافة",
+        "CANCEL": "إلغاء",
+        "DELETE": "حذف",
+        "EDIT": "تعديل",
+        "GENERATE_PDF": "إنشاء إيصال"
       },
-      "LOAD": "خطأ أثناء تحميل المستخدم",
-      "LOADING": "جارٍ التحميل...",
-      "SAVE": "خطأ أثناء حفظ المستخدم",
-      "SUCCESS": {
-        "DELETE": "تم حذف المستخدم بنجاح",
-        "SAVE": "تم حفظ المستخدم بنجاح"
-      }
-    },
-    "TITLE": "المستخدمين"
-  },
-  "WASTE": {
-    "ACTIONS": {
-      "ADD": "إضافة",
-      "CANCEL": "إلغاء",
-      "EDIT": "تعديل"
-    },
-    "ADD": {
-      "TITLE_ADD": "إضافة نفايات",
-      "TITLE_EDIT": "تعديل النفايات"
-    },
-    "FIELDS": {
-      "AMOUNT": "الكمية",
-      "DATE": "التاريخ",
-      "DESCRIPTION": "الوصف",
-      "METHOD": "الطريقة",
-      "OIL_TYPE": "نوع الزيت",
-      "OLIVE_TYPE": "نوع الزيتون",
-      "OPERATION_TYPE": "نوع العملية",
-      "PRICE": "السعر",
-      "REGION": "المنطقة",
-      "SUPPLIER": "المورد",
-      "TREATMENT_DATE": "تاريخ المعالجة",
-      "TYPE": "النوع",
-      "WEIGHT": "الوزن"
-    },
-    "METHODS": {
-      "BURY": "دفن",
-      "DUMP": " выброс",
-      "RECYCLE": "تنقية",
-      "SOLD": "بيع"
-    },
-    "MESSAGES": {
-      "LOAD_ERROR": "خطأ أثناء تحميل بيانات النفايات",
-      "SAVE_ERROR": "خطأ أثناء حفظ بيانات النفايات",
-      "SAVE_SUCCESS": "تم حفظ بيانات النفايات بنجاح"
-    },
-    "TITLE": "النفايات",
-    "TYPES": {
-      "OIL": "زيت",
-      "OLIVE": "زيتون"
-    }
-  },
-  "WASTE_PROCESSING": {
-    "FORM": {
       "FIELDS": {
+        "EMAIL": "البريد الإلكتروني",
+        "FIRST_NAME": "الاسم الأول",
+        "GROUP": "المجموعة",
+        "LAST_NAME": "اسم العائلة",
+        "PASSWORD": "كلمة المرور",
+        "STATUS": "الحالة",
+        "USERNAME": "اسم المستخدم"
+      },
+      "MESSAGES": {
+        "DELETE": "هل أنت متأكد أنك تريد حذف هذا المستخدم؟ هذا الإجراء لا يمكن التراجع عنه.",
+        "ERROR": {
+          "EMAIL_REQUIRED": "البريد الإلكتروني مطلوب",
+          "PASSWORD_REQUIRED": "كلمة المرور مطلوبة",
+          "USERNAME_REQUIRED": "اسم المستخدم مطلوب"
+        },
+        "LOAD": "خطأ أثناء تحميل المستخدم",
+        "LOADING": "جارٍ التحميل...",
+        "SAVE": "خطأ أثناء حفظ المستخدم",
+        "SUCCESS": {
+          "DELETE": "تم حذف المستخدم بنجاح",
+          "SAVE": "تم حفظ المستخدم بنجاح"
+        }
+      },
+      "TITLE": "المستخدمين"
+    },
+    "WASTE": {
+      "ACTIONS": {
+        "ADD": "إضافة",
+        "CANCEL": "إلغاء",
+        "EDIT": "تعديل"
+      },
+      "ADD": {
+        "TITLE_ADD": "إضافة نفايات",
+        "TITLE_EDIT": "تعديل النفايات"
+      },
+      "FIELDS": {
+        "AMOUNT": "الكمية",
+        "DATE": "التاريخ",
+        "DESCRIPTION": "الوصف",
         "METHOD": "الطريقة",
         "OIL_TYPE": "نوع الزيت",
         "OLIVE_TYPE": "نوع الزيتون",
+        "OPERATION_TYPE": "نوع العملية",
         "PRICE": "السعر",
         "REGION": "المنطقة",
+        "SUPPLIER": "المورد",
+        "TREATMENT_DATE": "تاريخ المعالجة",
+        "TYPE": "النوع",
         "WEIGHT": "الوزن"
+      },
+      "MESSAGES": {
+        "LOAD_ERROR": "خطأ أثناء تحميل بيانات النفايات",
+        "SAVE_ERROR": "خطأ أثناء حفظ بيانات النفايات",
+        "SAVE_SUCCESS": "تم حفظ بيانات النفايات بنجاح"
       },
       "METHODS": {
         "BURY": "دفن",
@@ -2801,52 +2791,66 @@
         "RECYCLE": "تنقية",
         "SOLD": "بيع"
       },
-      "MESSAGES": {
-        "LOAD_ERROR": "خطأ أثناء تحميل بيانات معالجة النفايات",
-        "SAVE_ERROR": "خطأ أثناء حفظ بيانات معالجة النفايات",
-        "SAVE_SUCCESS": "تم حفظ بيانات معالجة النفايات بنجاح"
+      "TITLE": "النفايات",
+      "TYPES": {
+        "OIL": "زيت",
+        "OLIVE": "زيتون"
+      }
+    },
+    "WASTE_PROCESSING": {
+      "FORM": {
+        "FIELDS": {
+          "METHOD": "الطريقة",
+          "OIL_TYPE": "نوع الزيت",
+          "OLIVE_TYPE": "نوع الزيتون",
+          "PRICE": "السعر",
+          "REGION": "المنطقة",
+          "WEIGHT": "الوزن"
+        },
+        "MESSAGES": {
+          "LOAD_ERROR": "خطأ أثناء تحميل بيانات معالجة النفايات",
+          "SAVE_ERROR": "خطأ أثناء حفظ بيانات معالجة النفايات",
+          "SAVE_SUCCESS": "تم حفظ بيانات معالجة النفايات بنجاح"
+        },
+        "METHODS": {
+          "BURY": "دفن",
+          "DUMP": " выброс",
+          "RECYCLE": "تنقية",
+          "SOLD": "بيع"
+        },
+        "TITLE": "معالجة النفايات"
+      }
+    },
+    "WASTE_PROCESSING_LIST": {
+      "ACTIONS": {
+        "DELETE": "حذف",
+        "EDIT": "تعديل",
+        "GENERATE_PDF": "إنشاء إيصال"
+      },
+      "FIELDS": {
+        "AMOUNT": "الكمية",
+        "DATE": "التاريخ",
+        "DESCRIPTION": "الوصف",
+        "METHOD": "الطريقة",
+        "OIL_TYPE": "نوع الزيت",
+        "OLIVE_TYPE": "نوع الزيتون",
+        "PRICE": "السعر",
+        "REGION": "المنطقة",
+        "TYPE": "النوع",
+        "WEIGHT": "الوزن"
       },
       "TITLE": "معالجة النفايات"
+    },
+    "WASTE_PROCESSING_METHODS": {
+      "BURY": "دفن",
+      "DUMP": " выброс",
+      "RECYCLE": "تنقية",
+      "SOLD": "بيع"
+    },
+    "WASTE_PROCESSING_TYPES": {
+      "OIL": "زيت",
+      "OLIVE": "زيتون"
     }
-  },
-  "WASTE_PROCESSING_LIST": {
-    "ACTIONS": {
-      "DELETE": "حذف",
-      "EDIT": "تعديل",
-      "GENERATE_PDF": "إنشاء إيصال"
-    },
-    "FIELDS": {
-      "AMOUNT": "الكمية",
-      "DATE": "التاريخ",
-      "DESCRIPTION": "الوصف",
-      "METHOD": "الطريقة",
-      "OIL_TYPE": "نوع الزيت",
-      "OLIVE_TYPE": "نوع الزيتون",
-      "PRICE": "السعر",
-      "REGION": "المنطقة",
-      "TYPE": "النوع",
-      "WEIGHT": "الوزن"
-    },
-    "TITLE": "معالجة النفايات"
-  },
-  "WASTE_PROCESSING_METHODS": {
-    "BURY": "دفن",
-    "DUMP": " выброс",
-    "RECYCLE": "تنقية",
-    "SOLD": "بيع"
-  },
-  "WASTE_PROCESSING_TYPES": {
-    "OIL": "زيت",
-    "OLIVE": "زيتون"
-  },
-    "ADDRESS": "العنوان",
-    "EMAIL": "البريد الإلكتروني",
-    "FIRST_NAME": "الاسم الأول",
-    "LAST_NAME": "اللقب",
-    "PHONE": "الهاتف",
-    "REGION": "المنطقة",
-    "TITLE": "الموردون",
-    "TYPE": "النوع"
   },
   "SUPPLIER_PAYMENT": {
     "ACTIONS": "الإجراءات",

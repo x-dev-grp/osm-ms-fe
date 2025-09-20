@@ -61,7 +61,7 @@ export class RoleDashboardComponent implements OnInit {
 
   onDeleteRole(role: Role): void {
     this.deleteLoanding=true;
-    this._baseService.removeItem("security/role",role?.id).pipe(
+    this._baseService.deleteItem("security/role",role?.id).pipe(
       takeUntilDestroyed(this.destroyRef),
       tap(res=>{
        this.deleteLoanding=false;

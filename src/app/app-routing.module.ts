@@ -12,7 +12,7 @@ import { OSMModule, ProductionEntity, ReceptionEntity, Action, permissionKey } f
 import { Role } from './theme/types/role';
 import { receptionRoutes } from './reception/reception.routes';
 import { FinanceRoutingModule } from './finance/finance-routing.module';
-import { SupplierDetailsComponent } from './reception/components/suppliers/supplier-details/supplier-details.component';
+import { SupplierDetailsComponent } from './reception/suppliers/supplier-details/supplier-details.component';
 import { AdminComponent } from './theme/layouts/admin/admin.component';
 
 const routes: Routes = [
@@ -66,7 +66,7 @@ const routes: Routes = [
 
       {
         path: 'fournisseur',
-        loadComponent: () => import('./reception/components/suppliers/supplier-details/supplier-details.component').then((c) => c.SupplierDetailsComponent),
+        loadComponent: () => import('./reception/suppliers/supplier-details/supplier-details.component').then((c) => c.SupplierDetailsComponent),
         // CHANGE: permissions - require RECEPTION:SUPPLIER:READ
         canActivate: [anyPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.SUPPLIER, Action.READ)])],
         data: { roles: [Role.Admin, Role.User] }
