@@ -2399,6 +2399,7 @@
     "RULE_TYPES": {
       "BOOLEAN": "منطقي",
       "NUMERIC": "رقمي",
+      "RAW_STRING": "",
       "STRING": "نص"
     }
   },

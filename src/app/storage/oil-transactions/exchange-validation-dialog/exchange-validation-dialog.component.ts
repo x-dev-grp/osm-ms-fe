@@ -47,6 +47,7 @@ export class ExchangeValidationDialogComponent implements OnInit {
 
   ngOnInit(): void {
     if(this.data?.isIn){
+
       this.form.get("storageUnitDestinationId")?.setValidators(Validators.required);
       this.form.get("storageUnitDestinationId")?.updateValueAndValidity()
       this.form.get("storageUnitSourceId")?.clearValidators()

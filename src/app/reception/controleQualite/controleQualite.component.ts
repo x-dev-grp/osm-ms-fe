@@ -8,7 +8,7 @@ import { UnifiedDeliveryService } from '../../shared/services/delivery.service';
 import { UnifiedDelivery } from '../../shared/models/UnifiedDelivery';
 import { QualityControlResultService } from '../../shared/services/quality-control-result.service';
 import { QualityControlResultDto } from '../../shared/models/QualityControlResultDto';
-import { forkJoin, Observable, of } from 'rxjs';
+import { forkJoin, Observable, of, Subscription } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
 import { MatOption, MatSelect, MatSelectModule } from '@angular/material/select';
@@ -52,6 +52,12 @@ import { BaseTypeComponent } from '../../shared/modules/base-type/base-type.comp
 export class ControleQualiteComponent implements OnInit {
   @Input() deliveryId: string | null = null;
   qualityForm!: FormGroup;
+  storageunitForm!: FormGroup; // ✅ new
+
+  // capacity checks
+  capacityError = false; // ✅ show mat-error when true
+  availableCapacity = 0; // ✅ shown in error message
+  // if not already present
   message: string = '';
   rules: QualityControlRule[] = [];
   dynamicForm!: FormGroup;
@@ -64,6 +70,8 @@ export class ControleQualiteComponent implements OnInit {
   isQualityControlDone: boolean = false;
   storageUnits: StorageUnitDto[] = [];
   deliveryForm: FormGroup;
+  // misc
+  private subs: Subscription[] = []; // if you don’t already track subscriptions
   private xxx: string | null;
   private lastQualityPayload: any = null;
   private payload: any;
@@ -115,6 +123,24 @@ export class ControleQualiteComponent implements OnInit {
     } else {
       this.loadReception();
     }
+    this.storageunitForm = this.fb.group({
+      storageUnitDestinationId: [null, Validators.required]
+    });
+
+    // ✅ Load the storage units list
+    this.loadStorageUnits();
+
+    // ✅ React on selection to recompute capacity
+    this.subs.push(
+      this.storageunitForm.get('storageUnitDestinationId')!.valueChanges.subscribe((u: StorageUnitDto | null) => {
+        this.updateCapacityState(u);
+      })
+    );
+  }
+
+  /** Optional: if you allow programmatic set */
+  setStorageUnit(u: StorageUnitDto | null): void {
+    this.storageunitForm.patchValue({ storageUnitDestinationId: u }, { emitEvent: true });
   }
 
   loadReception(): void {
@@ -127,6 +153,7 @@ export class ControleQualiteComponent implements OnInit {
     this.deliveryService.getUnifiedDelivery(this.receptionId).subscribe({
       next: (response) => {
         this.deliveryData = Array.isArray(response.data) ? response.data[0] : response.data;
+        this.ensureRawStringDefaults();
         this.loadRules();
       },
       error: () => {
@@ -181,6 +208,7 @@ export class ControleQualiteComponent implements OnInit {
     this.qcResService.getAllResultsByDeliveryID(this.deliveryData.id).subscribe({
       next: (res) => {
         this.qualityControlResults = res.data || [];
+        this.ensureRawStringDefaults();
         this.isQualityControlDone = this.qualityControlResults.length > 0;
         this.createDynamicForm();
         this.isLoading = false;
@@ -199,30 +227,56 @@ export class ControleQualiteComponent implements OnInit {
   createDynamicForm(): void {
     const group: { [key: string]: FormControl } = {};
     this.rules.forEach((rule) => {
-      const validators = [Validators.required];
+      const existing = this.qualityControlResults.find(r => r.rule?.ruleKey === rule.ruleKey);
       let initialValue: number | boolean | string | null = null;
-      const existingResult = this.qualityControlResults.find((result) => result.rule?.ruleKey === rule.ruleKey);
-      if (existingResult) {
+
+      if (existing) {
+        // keep previously saved value
         switch (rule.ruleType) {
           case 'NUMERIC':
-            initialValue = Number(existingResult.measuredValue);
+            initialValue = Number(existing.measuredValue);
             break;
           case 'BOOLEAN':
-            initialValue = existingResult.measuredValue === 'true';
+            initialValue = existing.measuredValue === 'true';
             break;
           case 'STRING':
-            initialValue = existingResult.measuredValue || '';
+            initialValue = existing.measuredValue || '';
+            break;
+          case 'RAW_STRING':
+            initialValue = existing.measuredValue || '';
             break;
         }
+      } else {
+        // first time in this context → only RAW_STRING gets a generated default
+        if (rule.ruleType === 'RAW_STRING') {
+          initialValue = this.buildRawStringDefault();
+        } else if (rule.ruleType === 'STRING' && rule.ruleTextValue) {
+          initialValue = ''; // dropdown (no default)
+        } else {
+          initialValue = null;
+        }
       }
-      if (rule.ruleType === 'STRING' && rule.ruleTextValue) {
-        initialValue = initialValue || '';
-      }
+
+      const shouldDisable = this.isQualityControlDone || rule.ruleType === 'RAW_STRING';
+
+      const ctrlValidators =
+        rule.ruleType === 'STRING' && rule.ruleTextValue
+          ? []
+          : rule.ruleType === 'RAW_STRING'
+            ? []    // disabled + prefilled → no validators needed
+            : [Validators.required];
+
       group[rule.ruleKey] = new FormControl(
-        { value: initialValue, disabled: this.isQualityControlDone },
-        rule.ruleType === 'STRING' && rule.ruleTextValue ? [] : validators
+        { value: initialValue, disabled: shouldDisable },
+        ctrlValidators
       );
     });
+
+    this.dynamicForm = this.fb.group(group);
+    this.mainForm = this.fb.group({ ...this.dynamicForm.controls });
+
+// handle races (if deliveryData arrived later/earlier)
+    this.ensureRawStringDefaults();
     this.dynamicForm = this.fb.group(group);
     this.mainForm = this.fb.group({ ...this.dynamicForm.controls });
     this.mainForm.get('unitPrice')?.valueChanges.subscribe((unitPrice: number) => {
@@ -250,8 +304,64 @@ export class ControleQualiteComponent implements OnInit {
     });
   }
 
-  getRuleType(ruleKey: string): 'NUMERIC' | 'BOOLEAN' | 'STRING' {
+  getRuleType(ruleKey: string): 'NUMERIC' | 'BOOLEAN' | 'STRING' | 'RAW_STRING' {
     return this.rules.find((r) => r.ruleKey === ruleKey)?.ruleType || 'NUMERIC';
+  }
+
+  saveStorageUnitOnly(): void {
+    // visible only for non-olive deliveries per your template
+    if (this.isOliveDelivery()) {
+      this.toast.warning(this.translate.instant('CONTROLE_QUALITE.STORAGE_UNIT.NOT_APPLICABLE'));
+      return;
+    }
+
+    if (!this.deliveryData?.id) {
+      this.toast.error(this.translate.instant('COMMON.MISSING_DELIVERY'));
+      return;
+    }
+
+    if (this.storageunitForm.invalid) {
+      this.storageunitForm.markAllAsTouched();
+      this.toast.error(this.translate.instant('OIL_TRANSACTIONS.FORM.VALIDATION.REQUIRED'));
+      return;
+    }
+
+    if (this.capacityError) {
+      this.toast.error(this.translate.instant('OIL_TRANSACTIONS.FORM.VALIDATION.CAPACITY'));
+      return;
+    }
+
+    const unit: StorageUnitDto | null = this.storageunitForm.get('storageUnitDestinationId')!.value ?? null;
+    const payload = {
+      ...this.deliveryData,
+      storageUnit: unit
+    } as UnifiedDelivery;
+
+    this.isLoading = true;
+    this.deliveryService.updateUnifiedDelivery(payload as UnifiedDelivery).subscribe({
+      next: (res) => {
+        this.isLoading = false;
+
+        if (!res?.success) {
+          this.toast.error(this.translate.instant('OIL_TRANSACTIONS.SAVE_STORAGE_UNIT.ERROR'));
+          this.cdr.detectChanges();
+          return;
+        }
+
+        // keep the component state in sync with backend response
+        this.deliveryData = Array.isArray(res.data) ? res.data[0] : res.data;
+        this.toast.success(this.translate.instant('OIL_TRANSACTIONS.SAVE_STORAGE_UNIT.SUCCESS'));
+
+        // recompute capacity UI (optional)
+        this.updateCapacityState(unit);
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.isLoading = false;
+        this.toast.error(this.translate.instant('OIL_TRANSACTIONS.SAVE_STORAGE_UNIT.ERROR'));
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   async onSave(): Promise<void> {
@@ -284,6 +394,7 @@ export class ControleQualiteComponent implements OnInit {
     ref.afterClosed().subscribe((res: ConfirmationDialogResult) => {
       if (res?.confirmed) {
         this.performSave();
+        this.saveStorageUnitOnly();
       }
     });
   }
@@ -365,6 +476,8 @@ export class ControleQualiteComponent implements OnInit {
       } else if (rule.ruleType === 'BOOLEAN') {
         isValid = typeof rawValue === 'boolean';
       } else if (rule.ruleType === 'STRING') {
+        isValid = typeof rawValue === 'string' && rawValue.trim() !== '';
+      }else if (rule.ruleType === 'RAW_STRING') {
         isValid = typeof rawValue === 'string' && rawValue.trim() !== '';
       }
       if (!isValid) {
@@ -470,16 +583,12 @@ export class ControleQualiteComponent implements OnInit {
   }
 
   isFormValid(): boolean {
-    // Check main form validity
-    const isMainFormValid = this.mainForm && this.mainForm.valid;
-
-    // For olive deliveries, also check quality form
+    const commonValid = this.mainForm?.valid && this.qualityForm?.valid; // your existing checks
     if (this.isOliveDelivery()) {
-      const isQualityFormValid = this.qualityForm && this.qualityForm.valid;
-      return isMainFormValid && isQualityFormValid;
+      return !!commonValid; // storage form not shown → ignore it
     }
-
-    return isMainFormValid;
+    // storage form is shown → it must be valid and not over capacity
+    return !!commonValid && this.storageunitForm.valid && !this.capacityError;
   }
 
   onOliveVarietySelected(value: any): void {
@@ -488,6 +597,31 @@ export class ControleQualiteComponent implements OnInit {
     this.qualityForm.get('oliveVariety')?.markAsTouched();
   }
 
+  private loadStorageUnits(): void {
+    this.isLoading = true;
+    this.storageUnitService.getAllStorageUnit().subscribe({
+      next: (res) => {
+        this.storageUnits = res?.data ?? res ?? [];
+        this.isLoading = false;
+
+        // If you’re editing and you have a saved unit id:
+        // this.preselectStorageUnit(existingId);
+      },
+      error: () => {
+        this.isLoading = false;
+        this.message = this.translate.instant('COMMON.ERROR_LOADING'); // or your key
+      }
+    });
+  }
+
+  private updateCapacityState(u: StorageUnitDto | null): void {
+    // available = maxCapacity - currentVolume
+    this.availableCapacity = u ? Number(u.maxCapacity) - Number(u.currentVolume ?? 0) : 0;
+
+    // Compare against reception.poidNet (oil weight to add)
+    const incoming = Number(this.deliveryData?.poidsNet ?? 0);
+    this.capacityError = !!u && this.availableCapacity < incoming;
+  }
   /**
    * Updates the delivery with the selected olive variety
    */
@@ -722,36 +856,25 @@ export class ControleQualiteComponent implements OnInit {
     });
   }
 
-  /**
-   * Immediately updates the delivery with the selected olive variety
-   */
-  private updateDeliveryWithSelectedOliveVariety(oliveVariety: any): void {
-    console.log('Updating delivery with olive variety:', oliveVariety);
 
-    // Create updated delivery object
-    const updatedDelivery = {
-      ...this.deliveryData,
-      oliveVariety: oliveVariety
-    } as UnifiedDelivery;
+  /** Build first-time default value: "E + <variable> + YY" */
+  private buildRawStringDefault(): string {
+    return `E${String((this.deliveryData as any)?.deliveryNumber ?? '')
+      .replace(/\D/g,'')
+      .padStart(4,'0')}${new Date().getFullYear().toString().slice(-2)}`;
+  }
 
-    console.log('Updated delivery object:', updatedDelivery);
-
-    // Update the delivery
-    this.deliveryService.updateUnifiedDelivery(updatedDelivery).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.deliveryData = Array.isArray(response.data) ? response.data[0] : response.data;
-          console.log('Delivery updated with olive variety:', oliveVariety);
-          this.toast.success("Variété d'olive mise à jour avec succès.");
-        } else {
-          console.error('Failed to update delivery with olive variety');
-          this.toast.error("Erreur lors de la mise à jour de la variété d'olive.");
+  /** If any RAW_STRING control is empty (first time), fill and keep disabled */
+  private ensureRawStringDefaults(): void {
+    if (!this.mainForm) return;
+    this.rules
+      .filter(r => r.ruleType === 'RAW_STRING')
+      .forEach(r => {
+        const c = this.mainForm.get(r.ruleKey);
+        if (c && (c.value == null || String(c.value).trim() === '')) {
+          c.setValue(this.buildRawStringDefault(), { emitEvent: false });
+          c.disable({ emitEvent: false }); // remains locked
         }
-      },
-      error: (error) => {
-        console.error('Error updating delivery with olive variety:', error);
-        this.toast.error("Erreur lors de la mise à jour de la variété d'olive.");
-      }
-    });
+      });
   }
 }

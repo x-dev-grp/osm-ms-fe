@@ -36,6 +36,7 @@ export class AddOilContainerComponent implements OnInit {
     this.containerForm = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(100)]],
       description: ['', [Validators.maxLength(1000)]],
+      lotNumber: ['', [Validators.maxLength(1000)]],
       capacityInLiters: [null, [Validators.required, Validators.min(0.01)]],
       stockQuantity: [0, [Validators.required, Validators.min(0)]],
       material: ['', [Validators.maxLength(50)]],

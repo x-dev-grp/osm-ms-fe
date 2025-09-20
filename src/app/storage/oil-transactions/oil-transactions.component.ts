@@ -1,26 +1,26 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {MatTableDataSource, MatTableModule} from '@angular/material/table';
-import {MatIconModule} from '@angular/material/icon';
-import {CommonModule} from '@angular/common';
-import {OIL_TRANSACTIONS_DASHBOARD_CONFIG} from './oil-transactions-dashboard.config';
-import {Router} from '@angular/router';
-import {OsmDashboard} from '../../shared/modules/osm-dashboard/osm-dashboard';
-import {SharedModule} from '../../shared/shared.module';
-import {DashboardConfig} from '../../shared/modules/osm-dashboard/models/dashboard-config';
-import {OilTransaction, TransactionType} from '../../shared/models/OilTransaction';
-import {OilTransactionService} from '../../shared/services/OilTransactionService';
-import {MatDialog} from '@angular/material/dialog';
-import {Subject, takeUntil} from 'rxjs';
-import {ApiResponse} from '../../shared/models/api-response';
-import {StorageUnitDto} from '../../shared/models/StorageUnitDto';
-import {StorageUnitDtoService} from '../../shared/services/storage.service';
-import {ExchangeValidationDialogComponent} from './exchange-validation-dialog/exchange-validation-dialog.component';
-import {TranslateModule, TranslateService} from '@ngx-translate/core';
-import {getOilTransactionPdfConfig} from "./transaction-pdf.config";
-import {PdfGeneratorService} from "../../shared/services/pdf-generator.service";
-import {OilSaleValidationDialogComponent} from './oil-sale-validation/oil-sale-validation.component';
-import {ToastService} from '../../shared/services/toast.service';
-import {getOilSortiePdfConfig} from "./Oil-sortie-pdf-config";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+import { CommonModule } from '@angular/common';
+import { OIL_TRANSACTIONS_DASHBOARD_CONFIG } from './oil-transactions-dashboard.config';
+import { Router } from '@angular/router';
+import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
+import { SharedModule } from '../../shared/shared.module';
+import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { OilTransaction, TransactionType } from '../../shared/models/OilTransaction';
+import { OilTransactionService } from '../../shared/services/OilTransactionService';
+import { MatDialog } from '@angular/material/dialog';
+import { Subject, takeUntil } from 'rxjs';
+import { ApiResponse } from '../../shared/models/api-response';
+import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
+import { StorageUnitDtoService } from '../../shared/services/storage.service';
+import { ExchangeValidationDialogComponent } from './exchange-validation-dialog/exchange-validation-dialog.component';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { getOilTransactionPdfConfig } from './transaction-pdf.config';
+import { PdfGeneratorService } from '../../shared/services/pdf-generator.service';
+import { OilSaleValidationDialogComponent } from './oil-sale-validation/oil-sale-validation.component';
+import { ToastService } from '../../shared/services/toast.service';
+import { getOilSortiePdfConfig } from './Oil-sortie-pdf-config';
 
 @Component({
   selector: 'app-oil-transactions',
@@ -46,8 +46,7 @@ export class OilTransactionsComponent implements OnInit {
     private translate: TranslateService,
     private dialog: MatDialog,
     private router: Router,
-    private pdfService: PdfGeneratorService,
-
+    private pdfService: PdfGeneratorService
   ) {}
 
   ngOnInit(): void {
@@ -98,8 +97,8 @@ export class OilTransactionsComponent implements OnInit {
             this.openOilSaleValidationDialog(event.row);
             this.dashboard.refrechData();
             break;
-            case TransactionType.LOAN:
-              this.openExchangeValidationDialog(event.row, false);
+          case TransactionType.LOAN:
+            this.openExchangeValidationDialog(event.row, false);
             this.dashboard.refrechData();
             break;
           default:
@@ -112,7 +111,6 @@ export class OilTransactionsComponent implements OnInit {
   generateOilSortiePdf(data: OilTransaction) {
     const config = getOilSortiePdfConfig(data);
     this.pdfService.generatePdf(config);
-
   }
 
   private openOilSaleValidationDialog(row: OilTransaction): void {
@@ -160,10 +158,22 @@ export class OilTransactionsComponent implements OnInit {
   }
 
   private openExchangeValidationDialog(tx: OilTransaction, isIn: boolean): void {
+    // Prefer the storage unit attached to the reception (as in your code),
+    // otherwise fall back to the destination/source already on the transaction.
+    const selectedStorage =
+      tx.reception?.storageUnit ??
+      null;
+
+    // If it's an IN transaction, the dialog should only see the selected unit.
+    // Otherwise, show the full list.
+    const listForDialog = isIn
+      ? (selectedStorage ? [selectedStorage] : [])
+      : this.storageUnits;
+
     const ref = this.dialog.open(ExchangeValidationDialogComponent, {
       width: 'auto',
       data: {
-        storageUnits: this.storageUnits,
+        storageUnits: listForDialog,   // 👈 filtered when isIn=true
         oilQ: tx.quantityKg,
         isIn: isIn
       }
@@ -245,6 +255,4 @@ export class OilTransactionsComponent implements OnInit {
         }
       });
   }
-
-
 }

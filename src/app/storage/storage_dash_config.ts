@@ -30,6 +30,7 @@ export const dashboardConfig: DashboardConfig = {
     {
       name: 'name',
       label: 'Nom',
+      labelTranslatePath: 'CONFIGURATION.RECEPTION.FIELDS.NAME',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       sortable: true,
@@ -41,8 +42,22 @@ export const dashboardConfig: DashboardConfig = {
       filterAttribute: 'name'
     },
     {
+      name: 'lotNumber',
+      label: 'lotNumber',
+      labelTranslatePath: 'DELIVERIES.FIELDS.LOT_NUMBER',
+      attributeType: AttributeType.string,
+      fieldType: FieldType.text,
+      sortable: true,
+      filterable: true,
+      dataTable: true,
+      exportable: true,
+      exportLabel: 'lotNumber',
+      filterAttribute: 'lotNumber'
+    },
+    {
       name: 'location',
       label: 'Emplacement',
+      labelTranslatePath: 'OIL_CONTAINER.FORM.STORAGE_LOCATION',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       sortable: true,
@@ -54,6 +69,7 @@ export const dashboardConfig: DashboardConfig = {
     {
       name: 'description',
       label: 'Description',
+      labelTranslatePath: 'OIL_SALES.DESCRIPTION',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       sortable: false,
@@ -65,6 +81,7 @@ export const dashboardConfig: DashboardConfig = {
     {
       name: 'maxCapacity',
       label: 'Capacité (KG)',
+      labelTranslatePath: 'STORAGE.VIEW.MAX_CAPACITY',
       attributeType: AttributeType.number,
       fieldType: FieldType.text,
       sortable: true,
@@ -89,6 +106,7 @@ export const dashboardConfig: DashboardConfig = {
     {
       name: 'avgCost',
       label: 'Average cost',
+      labelTranslatePath: 'STORAGE.VIEW.AVGCOST',
       attributeType: AttributeType.number,
       fieldType: FieldType.text,
       sortable: true,
@@ -99,6 +117,7 @@ export const dashboardConfig: DashboardConfig = {
     {
       name: 'totalCost',
       label: 'Total cost',
+      labelTranslatePath: 'STORAGE.VIEW.TOTALCOST',
       attributeType: AttributeType.number,
       fieldType: FieldType.text,
       sortable: true,
@@ -109,6 +128,7 @@ export const dashboardConfig: DashboardConfig = {
     {
       name: 'currentVolume',
       label: 'Volume (KG)',
+      labelTranslatePath: 'STORAGE.VIEW.CURRENT_VOLUME',
       attributeType: AttributeType.number,
       fieldType: FieldType.text,
       sortable: true,
@@ -119,6 +139,7 @@ export const dashboardConfig: DashboardConfig = {
     {
       name: 'status',
       label: 'Statut',
+      labelTranslatePath: 'SUPPLIER_PAYMENT.STATUS',
       attributeType: AttributeType.enum,
       fieldType: FieldType.text,
       sortable: true,
@@ -126,27 +147,60 @@ export const dashboardConfig: DashboardConfig = {
 
       dataTable: true,
       options: [
-        { label: 'Disponible', value: 'AVAILABLE' },
-        { label: 'Pleine', value: 'FULL' },
+        {
+          label: 'Disponible',
+          value: 'AVAILABLE',
+          labelTranslatePath: 'STORAGE.VIEW.STATUS.AVAILABLE'
+        },
+        { label: 'Pleine', value: 'FULL', labelTranslatePath: 'STORAGE.VIEW.STATUS.FULL' },
         {
           label: 'Remplissage',
-          value: 'FILLING'
+          value: 'FILLING',
+          labelTranslatePath: 'STORAGE.VIEW.STATUS.FILLING'
         },
-        { label: 'Maintenance', value: 'MAINTENANCE' },
-        { label: 'En service', value: 'IN_USE' },
+        {
+          label: 'Maintenance',
+          value: 'MAINTENANCE',
+          labelTranslatePath: 'STORAGE.VIEW.STATUS.MAINTENANCE'
+        },
+        { label: 'En service', value: 'IN_USE', labelTranslatePath: 'STORAGE.VIEW.STATUS.IN_USE' },
         {
           label: 'Nettoyage',
-          value: 'CLEANING'
+          value: 'CLEANING',
+          labelTranslatePath: 'STORAGE.VIEW.STATUS.CLEANING'
         },
-        { label: 'Réservée', value: 'RESERVED' },
-        { label: 'Hors service', value: 'OUT_OF_SERVICE' }
+        {
+          label: 'Réservée',
+          value: 'RESERVED',
+          labelTranslatePath: 'STORAGE.VIEW.STATUS.RESERVED'
+        },
+        { label: 'Hors service', value: 'OUT_OF_SERVICE', labelTranslatePath: 'STORAGE.VIEW.STATUS.OUT_OF_SERVICE' }
       ],
       exportable: true
     },
     {
-      name: 'oilType',
-      label: 'Oil TYPE',
+      name: 'qualityGrade',
+      label: 'qualityGrade',
+      labelTranslatePath: 'OIL_TRANSACTION.DETAILS.QUALITY_GRADE',
+      attributeType: AttributeType.enum,
+      fieldType: FieldType.text,
+      sortable: true,
+      filterable: true,
+      dataTable: true,
+      options: [
+        { value: 'VIRGIN', label: 'VIRGIN', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.VIRGIN' },
+        { value: 'EXTRA_VIRGIN', label: 'OIL_TRANSACTIONS.QUALITY_GRADES.EXTRA_VIRGIN', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.EXTRA_VIRGIN' },
+        { value: 'LAMPANTE', label: 'LAMPANTE', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.LAMPANTE' },
+        { value: 'REFINED', label: 'REFINED', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.REFINED' },
+        { value: 'OTHER', label: 'OTHER', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.OTHER' }
+      ],
+      exportable: true
+    },
+    {
+      name: 'oilVariety',
+      label: 'Oil Variety',
       valuePath: 'name',
+      labelTranslatePath: 'OIL_TRANSACTION.DELIVERY.OIL_VARIETY',
       attributeType: AttributeType.string,
       fieldType: FieldType.autocomplete,
       sortable: true,
@@ -177,6 +231,7 @@ export const dashboardConfig: DashboardConfig = {
     {
       name: 'nextMaintenanceDate',
       label: 'Prochaine maintenance',
+      labelTranslatePath: 'MILL_MACHINE.FIELDS.NEXT_MAINTENANCE_DATE',
       attributeType: AttributeType.date,
       fieldType: FieldType.date,
       sortable: true,
@@ -187,6 +242,7 @@ export const dashboardConfig: DashboardConfig = {
     {
       name: 'lastInspectionDate',
       label: 'Dernière inspection',
+      labelTranslatePath: 'MILL_MACHINE.FIELDS.LAST_MAINTENANCE_DATE',
       attributeType: AttributeType.date,
       fieldType: FieldType.date,
       sortable: true,

@@ -16,6 +16,7 @@ import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
 import { CardComponent } from '../../theme/components/card/card.component';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { QualityGrades } from '../../finance/models/oil-sale.model';
 
 // Adjust import path to your actual service/model locations
 
