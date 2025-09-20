@@ -1,6 +1,6 @@
-import { CreditState, UnitType } from '../../../../finance/models/OilCredit';
-import { AttributeType, DashboardConfig, FieldType } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
-import { SearchOperation } from '../../../../shared/models/advanced-search/searchOperation';
+import { CreditState, UnitType } from '../../../../../finance/models/OilCredit';
+import { AttributeType, DashboardConfig, FieldType } from '../../../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { SearchOperation } from '../../../../../shared/models/advanced-search/searchOperation';
 
 export const WASTE_DASHBOARD: DashboardConfig = {
   icon: 'delete_sweep',

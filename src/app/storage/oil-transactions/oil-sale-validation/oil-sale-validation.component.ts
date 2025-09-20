@@ -122,6 +122,4 @@ console.log(validationData)
   @HostListener('document:keydown.escape', ['$event']) onEscapeKey(event: KeyboardEvent): void {
     this.dialogRef.close();
   }
-
-  protected readonly transactionsHistoryList = transactionsHistoryList;
 }

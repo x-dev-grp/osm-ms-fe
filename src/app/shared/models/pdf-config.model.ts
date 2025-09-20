@@ -79,6 +79,7 @@ export interface PdfPaymentNoteConfig {
     vatNumber?: string;
     mobile?: string;
     website?: string;
+    logoUrl?:any;
   };
 
   generalInfo: {

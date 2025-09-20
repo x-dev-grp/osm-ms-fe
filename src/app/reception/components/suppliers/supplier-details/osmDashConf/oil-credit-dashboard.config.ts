@@ -1,10 +1,10 @@
-import {CreditState, UnitType} from '../../../../finance/models/OilCredit';
+import {CreditState, UnitType} from '../../../../../finance/models/OilCredit';
 import {
   AttributeType,
   DashboardConfig,
   FieldType
-} from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
-import {SearchOperation} from '../../../../shared/models/advanced-search/searchOperation';
+} from '../../../../../shared/modules/osm-dashboard/models/dashboard-config';
+import {SearchOperation} from '../../../../../shared/models/advanced-search/searchOperation';
 
 export const OIL_CREDIT_DASHBOARD: DashboardConfig = {
   icon: 'credit_score',

@@ -1,46 +1,42 @@
-import {Component, DestroyRef, inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {MatButtonModule} from '@angular/material/button';
-import {MatCardModule} from '@angular/material/card';
-import {MatIconModule} from '@angular/material/icon';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Subject, tap} from 'rxjs';
-import {OsmDashboard} from '../../../../shared/modules/osm-dashboard/osm-dashboard';
-import {DashboardConfig} from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
-import {TranslateModule} from '@ngx-translate/core';
-import {CardComponent} from '../../../../theme/components/card/card.component';
-import {OIL_CREDIT_DASHBOARD} from './oil-credit-dashboard.config';
-import {PAIMENT_DASHBOARD} from './paiment-dashboard.config';
-import {AdvancedSearchService} from '../../../../shared/services/advanced-serach.service';
-import {SearchData} from '../../../../shared/models/advanced-search/searchData';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {OilCredit} from '../../../../finance/models/OilCredit';
-import {UnifiedDelivery} from '../../../../shared/models/UnifiedDelivery';
-import {MatDialog} from '@angular/material/dialog';
-import {SupplierPaymentHistoryComponent} from '../supplier-payment-history/supplier-payment-history.component';
-import {OIL_SALES_DASHBOARD_CONFIG} from './oil-sales-dashboard.config';
-import {ToastService} from '../../../../shared/services/toast.service';
-import {factureTriturationConfig} from '../../../../finance/facture-config/facture-Trituration-Config';
-import {PdfGeneratorFactureService} from '../../../../shared/services/pdf-generator-facture.service';
-import {PdfFactureConfig, PdfPaymentNoteConfig} from '../../../../shared/models/pdf-config.model';
-import {WASTE_DASHBOARD} from './waste-sale-dashboard.config';
-import {paymentNoteConfig} from '../../../../finance/facture-config/payment-Note-Config'
-import {CompanyProfile} from '../../../../shared/models/CompanyProfile';
-import {CompanyProfileService} from '../../../../shared/services/company-profile.service';
-import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
-import {
-  SupplierPaymentHistoryMobileComponent
-} from '../supplier-payment-history-mobile/supplier-payment-history-mobile.component';
-import {OilSale} from "../../../../finance/models/oil-sale.model";
-import {paymentNoteVenteHuileConfig} from "../../../../finance/facture-config/payment-Note-VenteHuile-Config";
-import {factureVenteHuileConfig} from "../../../../finance/facture-config/facture-Vente-Huile-Config";
-import {WasteSale} from '../../../../finance/models/Waste.model';
+import { Component, DestroyRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subject, tap } from 'rxjs';
+import { OsmDashboard } from '../../../../shared/modules/osm-dashboard/osm-dashboard';
+import { DashboardConfig } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { TranslateModule } from '@ngx-translate/core';
+import { CardComponent } from '../../../../theme/components/card/card.component';
+import { OIL_CREDIT_DASHBOARD } from './osmDashConf/oil-credit-dashboard.config';
+import { PAIMENT_DASHBOARD } from './osmDashConf/paiment-dashboard.config';
+import { AdvancedSearchService } from '../../../../shared/services/advanced-serach.service';
+import { SearchData } from '../../../../shared/models/advanced-search/searchData';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatDialog } from '@angular/material/dialog';
+import { SupplierPaymentHistoryComponent } from '../supplier-payment-history/supplier-payment-history.component';
+import { OIL_SALES_DASHBOARD_CONFIG } from './osmDashConf/oil-sales-dashboard.config';
+import { ToastService } from '../../../../shared/services/toast.service';
+import { PdfGeneratorFactureService } from '../../../../shared/services/pdf-generator-facture.service';
+import { WASTE_DASHBOARD } from './osmDashConf/waste-sale-dashboard.config';
+import { CompanyProfile } from '../../../../shared/models/CompanyProfile';
+import { CompanyProfileService } from '../../../../shared/services/company-profile.service';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { SupplierPaymentHistoryMobileComponent } from '../supplier-payment-history-mobile/supplier-payment-history-mobile.component';
+import { PdfConfigFactoryService } from '../../../../shared/services/pdf-config-factory.service';
 
 export enum PaymentSourceType {
   DELIVERY_prc = 'delivery',
   OIL_SALE_prc = 'oil_sale',
   WASTE_SALE_prc = 'waste_sale'
+}
+
+export enum InvoiceSource {
+  DELIVERY_inv = 'delivery',
+  OIL_SALE_inv = 'oil_sale',
+  WASTE_SALE_inv = 'waste_sale'
 }
 
 @Component({
@@ -78,23 +74,20 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
   OIL_SALES_DASHBOARD_CONFIG = OIL_SALES_DASHBOARD_CONFIG;
   unpaidSUM: number;
   paidSum: string;
+  @ViewChild('dashboardOilCredit') dashboardOilCredit!: OsmDashboard;
+  @ViewChild('dashboardPaiments') dashboardPaiments!: OsmDashboard;
+  @ViewChild('dashboardOilSale') dashboardOilSale!: OsmDashboard;
+  @ViewChild('dashboardWasteSale') dashboardWasteSale!: OsmDashboard; // NEW
   // Oil sales metrics
   protected paidOilSalesCount: number = 0;
   protected unpaidOilSalesCount: number = 0;
   protected paidOilSalesSUM: number;
   protected unpaidOilSalesSum: number;
-
   // Waste sales metrics (NEW)
   protected paidWasteSalesCount: number = 0;
   protected unpaidWasteSalesCount: number = 0;
   protected paidWasteSalesSUM: number;
   protected unpaidWasteSalesSum: number;
-
-  @ViewChild('dashboardOilCredit') dashboardOilCredit!: OsmDashboard;
-  @ViewChild('dashboardPaiments') dashboardPaiments!: OsmDashboard;
-  @ViewChild('dashboardOilSale') dashboardOilSale!: OsmDashboard;
-  @ViewChild('dashboardWasteSale') dashboardWasteSale!: OsmDashboard; // NEW
-
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -104,77 +97,37 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
     private _dialog: MatDialog,
     // private invoiceService: InvoiceService,
     private breakpointObserver: BreakpointObserver,
-  private toast: ToastService,
+    private toast: ToastService,
     private pdfFactureService: PdfGeneratorFactureService,
-    private companyService: CompanyProfileService
+    private companyService: CompanyProfileService,
+    private pdfFactory: PdfConfigFactoryService
   ) {}
 
   ngOnInit(): void {
     this.supplierId = this.route.snapshot.paramMap.get('id');
     this.loadPaymentHistory(false);
     this.countData();
-    this.getProfileInfo();
-  }
-
-  handleCreditAction(e: { row: OilCredit; action: string }) {
-    const actionLabel = e.action?.toUpperCase();
-
-    switch (actionLabel) {
-      case 'READ':
-        this.router.navigate(['/finance/expenses', e.row.id, 'view']);
-        break;
-
-      case 'PRINT':
-        break;
-
-      case 'UPDATE':
-        this.router.navigate(['/finance/expenses', e.row.id, 'edit']);
-        break;
-
-      case 'DELETE':
-        break;
-
-      case 'GEN_INVOICE':
-        if (e.row?.id) {
-          this.generateOilCreditInvoice(e.row);
-        }
-        break;
-    }
   }
 
   handlePaymentAction(e: { row: any; action: string }) {
     const actionLabel = e.action;
     switch (actionLabel) {
-      case 'READ':
-        this.router.navigate(['/finance/expenses', e.row.id, 'view']);
-        break;
-
-      case 'PRINT':
-        break;
-
-      case 'UPDATE':
-        this.router.navigate(['/finance/expenses', e.row.id, 'edit']);
-        break;
-
       case 'GEN_INVOICE':
         if (e.row) {
-          console.log(`[OilReception] Generating invoice for delivery: ${e.row.lotNumber}`);
-          if (!this.companyProfile) {
-            console.error('[CompanyProfile] Company profile not loaded yet!');
-            return;
-          }
+          const sourceType = this.getCurrentInvoceSourceType();
 
-          const config = this.getInvoicePdfConfig(e.row, this.companyProfile);
+          // const config = this.getInvoicePdfConfig(e.row, sourceType);
+
+          const cfg = this.pdfFactory.build(e.row,sourceType);
 
           // Vérifier si c'est une note de paiement ou une facture
-          if ('total' in config && 'paid' in config && 'unpaid' in config) {
-            this.pdfFactureService.generatePdfNoteDocument(config);
+          if ('total' in cfg && 'paid' in cfg && 'unpaid' in cfg) {
+            this.pdfFactureService.generatePdfNoteDocument(cfg);
           } else {
-            this.pdfFactureService.generatePdfDocument(config);
+            this.pdfFactureService.generatePdfDocument(cfg);
           }
         }
         break;
-
 
       case 'PAY':
         const sourceType = this.getCurrentPaymentSourceType();
@@ -184,64 +137,44 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  getInvoicePdfConfig(data: UnifiedDelivery | OilSale|WasteSale, company: CompanyProfile): PdfFactureConfig | PdfPaymentNoteConfig {
-    // Vérifier si c'est une vente d'huile
-    const isOilSale = 'saleDate' in data && 'totalAmount' in data;
-
-    if (isOilSale) {
-      const sale = data as OilSale;
-
-      // Cas de paiement partiel
-      if (sale.unpaidAmount && sale.unpaidAmount > 0) {
-        console.log(`[Invoice] Génération d'une note de paiement pour la vente d'huile: ${sale.id}`);
-        return paymentNoteVenteHuileConfig(sale, company);
-      }
-
-      // Cas facture classique
-      return factureVenteHuileConfig(sale, company);
-    }
-
-    // Sinon, cas réception (UnifiedDelivery)
-    const delivery = data as UnifiedDelivery;
-
-    if (delivery.unpaidAmount && delivery.unpaidAmount > 0) {
-      return paymentNoteConfig(delivery, company);
-    }
-
-    switch (delivery.operationType) {
-      case 'SIMPLE_RECEPTION':
-      case 'EXCHANGE':
-      case 'BASE':
-      case 'OLIVE_PURCHASE':
-      case 'OIL_PURCHASE':
-        return factureTriturationConfig(delivery, company);
-
-      default:
-        throw new Error(`[Invoice] Unsupported operationType: ${delivery.operationType}`);
-    }
-  }
-
-
-  getProfileInfo() {
-    this.companyService.getProfile().subscribe({
-      next: (response: any) => {
-        this.companyProfile = response;
-        console.log('[CompanyProfile] Loaded company profile:', this.companyProfile);
-      },
-      error: (err) => {
-        console.error('[CompanyProfile] Error fetching company info:', err);
-      }
-    });
-  }
+  /*******************    💫 Codegeex Suggestion    *******************/
+  /**
+   * Determines the appropriate PDF configuration for generating an invoice or payment note
+   * based on the type of delivery or sale data provided
+   * @param data - The delivery or sale data object, can be UnifiedDelivery, OilSale or WasteSale
+   * @param company - The company profile information
+   * @returns PdfFactureConfig or PdfPaymentNoteConfig based on the input data
+   * @throws Error when an unsupported operationType is encountered in delivery data
+   */
+  // getInvoicePdfConfig(row: any, sourceType: InvoiceSource): any {
+  //   // Vérifier si c'est une vente d'huile
+  //   const dataSource = row;
+  //
+  //   if (sourceType == InvoiceSource.OIL_SALE_inv) {
+  //     dataSource;
+  //     // Cas de paiement partiel
+  //     if (dataSource.unpaidAmount && dataSource.unpaidAmount > 0) {
+  //       console.log(`[Invoice] Génération d'une note de paiement pour la vente d'huile: ${dataSource.id}`);
+  //       return paymentNoteVenteHuileConfig(dataSource);
+  //     } else {
+  //       return factureVenteHuileConfig(dataSource);
+  //     }
+  //   }
+  //
+  //   // Sinon, cas réception (UnifiedDelivery)
+  //   if (sourceType == InvoiceSource.DELIVERY_inv) {
+  //     if (dataSource.unpaidAmount && dataSource.unpaidAmount > 0) {
+  //       return paymentNoteConfig(dataSource);
+  //     } else {
+  //       return factureTriturationConfig(dataSource);
+  //     }
+  //   }
+  // }
 
   initiatePayment(row: any, sourceType: string) {
-    const isMobile = this.breakpointObserver.isMatched(
-      Breakpoints.Handset || Breakpoints.TabletPortrait
-    );
+    const isMobile = this.breakpointObserver.isMatched(Breakpoints.Handset || Breakpoints.TabletPortrait);
 
-    const Comp = isMobile
-      ? SupplierPaymentHistoryMobileComponent
-      : SupplierPaymentHistoryComponent;
+    const Comp = isMobile ? SupplierPaymentHistoryMobileComponent : SupplierPaymentHistoryComponent;
 
     const dialogRef = this._dialog.open(Comp, {
       width: isMobile ? '100vw' : '41vw',
@@ -258,14 +191,15 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
       dialogRef.updatePosition({ right: '0px', top: '0px' });
     }
 
-    dialogRef.afterClosed()
+    dialogRef
+      .afterClosed()
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((result) => {
-          if (!result) return;
           if (result.ok) {
             this.toast.success(result.message || 'Paiement réussi.');
             this.refreshPaymentList();
+            this.countData();
           } else {
             this.toast.error(result.message || 'Échec du paiement.');
             // Optionnel: logger l’erreur ou afficher un détail
@@ -273,15 +207,6 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe();
-  }
-
-  private generateOilCreditInvoice(creditData: any) {
-    if (!creditData) {
-      console.error('generateOilCreditInvoice: creditData is undefined');
-      return;
-    }
-    console.log('generateOilCreditInvoice - creditData:', creditData);
-    // this.invoiceService.generateOilCreditInvoice(creditData);
   }
 
   /* =========================
@@ -313,28 +238,6 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
     this.isWasteSale = false;
   }
 
-  // Existing "all waste sale" view kept as-is
-  loadWasteSale(): void {
-    this.WASTE_DASHBOARD = {
-      ...this.WASTE_DASHBOARD,
-      defaultSearchData: {
-        ...this.WASTE_DASHBOARD.defaultSearchData,
-        searchData: {
-          ...this.WASTE_DASHBOARD.defaultSearchData?.searchData,
-          search: {
-            isDeleted: { equalValue: false },
-            ...this.WASTE_DASHBOARD.defaultSearchData?.searchData?.search,
-            'supplier.id': { equalValue: this.supplierId }
-          }
-        }
-      }
-    };
-    this.isOilCredit = false;
-    this.isOilSale = false;
-    this.isPayment = false;
-    this.isWasteSale = true;
-  }
-
   // NEW: paid/unpaid waste-sale history (mirrors oil sales)
   loadWasteSalesHistory(isPaid: boolean): void {
     this.WASTE_DASHBOARD = {
@@ -357,11 +260,7 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
     this.isPayment = false;
     this.isWasteSale = true;
   }
-  private getCurrentPaymentSourceType(): PaymentSourceType {
-    if (this.isOilSale) return PaymentSourceType.OIL_SALE_prc;
-    if (this.isWasteSale) return PaymentSourceType.WASTE_SALE_prc;
-    return PaymentSourceType.DELIVERY_prc;
-  }
+
   loadPaymentHistory(isPaid: boolean): void {
     this.isPayment = true;
     this.isOilCredit = false;
@@ -409,10 +308,6 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
     this.isWasteSale = false;
   }
 
-  /* =========================
-   * COUNTS / SUMS
-   * ========================= */
-
   countData(): void {
     // Oil sales metrics
     this.paidOilSales();
@@ -433,7 +328,9 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  /* ---------- Oil Sales ---------- */
+  /* =========================
+   * COUNTS / SUMS
+   * ========================= */
 
   protected paidOilSales() {
     const search: SearchData = {
@@ -491,7 +388,7 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
       .subscribe();
   }
 
-  /* ---------- Waste Sales (NEW) ---------- */
+  /* ---------- Oil Sales ---------- */
 
   protected paidWasteSales() {
     const search: SearchData = {
@@ -549,6 +446,20 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe();
+  }
+
+  /* ---------- Waste Sales (NEW) ---------- */
+
+  private getCurrentPaymentSourceType(): PaymentSourceType {
+    if (this.isOilSale) return PaymentSourceType.OIL_SALE_prc;
+    if (this.isWasteSale) return PaymentSourceType.WASTE_SALE_prc;
+    return PaymentSourceType.DELIVERY_prc;
+  }
+
+  private getCurrentInvoceSourceType(): InvoiceSource {
+    if (this.isOilSale) return InvoiceSource.OIL_SALE_inv;
+    if (this.isWasteSale) return InvoiceSource.WASTE_SALE_inv;
+    return InvoiceSource.DELIVERY_inv;
   }
 
   /* ---------- Credits / Payments ---------- */

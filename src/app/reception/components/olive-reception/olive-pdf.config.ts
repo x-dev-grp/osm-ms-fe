@@ -20,7 +20,7 @@ export function getOlivePdfConfig(delivery: UnifiedDelivery): PdfConfig {
           delivery.supplier?.supplierInfo?.lastname || ''
         ].filter(Boolean).join(' ') // Safely join name + lastname
       },
-      {label: 'PDF.PARCEL', value: String(delivery.parcel || '')},
+      {label: 'PDF.PARCEL', value: String(delivery.parcel?.name || '')},
       {label: 'PDF.LOT', value: String(delivery.lotNumber || '')},
       {label: 'PDF.TYPE', value: String(delivery.deliveryType || '')},
     ],

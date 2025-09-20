@@ -1,36 +1,34 @@
-import {
-  AttributeType,
-  DashboardConfig,
-  FieldType
-} from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
-import {SearchOperation} from '../../../../shared/models/advanced-search/searchOperation';
+import { AttributeType, DashboardConfig, FieldType } from '../../../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { SearchOperation } from '../../../../../shared/models/advanced-search/searchOperation';
 
 export const PAIMENT_DASHBOARD: DashboardConfig = {
   icon: 'list_alt',
   addNewItem: false,
-  title: "Paiements en ddddd",
-  titleTranslatePath:"",
+  title: 'Paiements en ddddd',
+  titleTranslatePath: '',
   baseURL: 'deliveries',
   searchEndpoint: 'production/deliveries',
   groupedActions: false,
-  specificActions: [{
-    action: 'PAY',
-    color: 'primary',
-    icon: 'payment',
-    disabled: {
-      field: 'paid',
-      value: true
+  specificActions: [
+    {
+      action: 'PAY',
+      color: 'primary',
+      icon: 'payment',
+      disabled: {
+        field: 'paid',
+        value: true
+      }
+    },
+    {
+      action: 'GEN_INVOICE',
+      color: 'secondary',
+      icon: 'file_copy',
+      disabled: {
+        field: 'paid',
+        value: false
+      }
     }
-  },
-{
-    action: 'GEN_INVOICE',
-    color: 'secondary',
-    icon: 'file_copy',
-    disabled: {
-      field: 'paid',
-      value: true
-    }
-  }],
+  ],
   filteredActions: [],
   defaultSearchData: {
     page: 0,
@@ -46,9 +44,10 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
             {
               operation: SearchOperation.AND,
               search: {
-                isDeleted:{
-                  equalValue:false
-                }, operationType: {
+                isDeleted: {
+                  equalValue: false
+                },
+                operationType: {
                   equalValue: 'SIMPLE_RECEPTION'
                 },
                 status: {
@@ -59,9 +58,10 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
             {
               operation: SearchOperation.AND,
               search: {
-                isDeleted:{
-                  equalValue:false
-                }, operationType: {
+                isDeleted: {
+                  equalValue: false
+                },
+                operationType: {
                   equalValue: 'EXCHANGE'
                 },
                 status: {
@@ -72,9 +72,10 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
             {
               operation: SearchOperation.AND,
               search: {
-                isDeleted:{
-                  equalValue:false
-                }, operationType: {
+                isDeleted: {
+                  equalValue: false
+                },
+                operationType: {
                   equalValue: 'OLIVE_PURCHASE'
                 },
                 status: {
@@ -85,9 +86,10 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
             {
               operation: SearchOperation.AND,
               search: {
-                isDeleted:{
-                  equalValue:false
-                }, operationType: {
+                isDeleted: {
+                  equalValue: false
+                },
+                operationType: {
                   equalValue: 'OIL_PURCHASE'
                 },
                 status: {
@@ -98,9 +100,10 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
             {
               operation: SearchOperation.AND,
               search: {
-                isDeleted:{
-                  equalValue:false
-                },operationType: {
+                isDeleted: {
+                  equalValue: false
+                },
+                operationType: {
                   equalValue: 'BASE'
                 },
                 status: {
@@ -111,9 +114,11 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
           ]
         }
       ],
-      search: {isDeleted:{
-          equalValue:false
-        },}
+      search: {
+        isDeleted: {
+          equalValue: false
+        }
+      }
     }
   },
   fields: [
@@ -157,7 +162,14 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       attributeType: AttributeType.string,
       fieldType: FieldType.select,
       valueAttributeType: AttributeType.enum,
-      options: [{ label: 'Huile', labelTranslatePath: 'STANDARD.DELIVERY_TYPE', value: 'OIL' },{ label: "Olive", labelTranslatePath: 'STANDARD.DELIVERY_TYPE',value: "OLIVE"}],
+      options: [
+        { label: 'Huile', labelTranslatePath: 'STANDARD.DELIVERY_TYPE', value: 'OIL' },
+        {
+          label: 'Olive',
+          labelTranslatePath: 'STANDARD.DELIVERY_TYPE',
+          value: 'OLIVE'
+        }
+      ],
       valuePath: 'name',
       exportable: true,
       sortable: true,
@@ -185,7 +197,8 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       sortable: true,
       dataTable: true,
       filterable: true
-    },  {
+    },
+    {
       name: 'unpaidAmount',
       label: 'Montant umpaié',
       labelTranslatePath: 'OIL_SALES.FIELDS.UNPAIDAMOUNT',
@@ -219,7 +232,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       valuePath: 'supplierInfo.name',
       valueAttributeType: AttributeType.string,
       filterAttribute: 'supplier.supplierInfo.name',
-      getOptionsUrl:'production/suppliers_type'
+      getOptionsUrl: 'production/suppliers_type'
     },
     {
       name: 'region',
@@ -232,7 +245,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.autocomplete,
       valuePath: 'name',
       valueAttributeType: AttributeType.string,
-      filterAttribute: 'region.name',
+      filterAttribute: 'region.name'
     },
     {
       name: 'poidsNet',
@@ -255,7 +268,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       filterable: true,
       valuePath: 'name',
       valueAttributeType: AttributeType.string,
-      fieldType: FieldType.autocomplete,
+      fieldType: FieldType.autocomplete
     },
     {
       name: 'oilQuantity',
@@ -278,7 +291,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       filterable: true,
       valuePath: 'name',
       valueAttributeType: AttributeType.string,
-      fieldType: FieldType.autocomplete,
+      fieldType: FieldType.autocomplete
     },
     {
       name: 'operationType',
@@ -290,9 +303,17 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       dataTable: true,
       filterable: true,
       options: [
-        { label: 'Trituration particulier', value: 'SIMPLE_RECEPTION', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.SIMPLE_RECEPTION' },
+        {
+          label: 'Trituration particulier',
+          value: 'SIMPLE_RECEPTION',
+          labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.SIMPLE_RECEPTION'
+        },
         { label: 'Base', value: 'BASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.BASE' },
-        { label: 'Achat Olive', value: 'OLIVE_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OLIVE_PURCHASE' },
+        {
+          label: 'Achat Olive',
+          value: 'OLIVE_PURCHASE',
+          labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OLIVE_PURCHASE'
+        },
         { label: 'Achat Huile', value: 'OIL_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OIL_PURCHASE' },
         { label: 'Echange', value: 'EXCHANGE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.EXCHANGE' }
       ]
@@ -302,7 +323,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       label: 'Payé',
       labelTranslatePath: 'Payé',
       attributeType: AttributeType.boolean,
-       exportable: true,
+      exportable: true,
       dataTable: true,
       fieldType: FieldType.checkbox,
       filterable: false,
@@ -322,8 +343,16 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       options: [
         { label: 'Nouveau', value: 'NEW', labelTranslatePath: 'RECEPTION_LIST.STATUS.NEW' },
         { label: 'En cours', value: 'IN_PROGRESS', labelTranslatePath: 'RECEPTION_LIST.STATUS.IN_PROGRESS' },
-        { label: 'Contrôle Olives', value: 'OLIVE_CONTROLLED', labelTranslatePath: 'RECEPTION_LIST.STATUS.OLIVE_CONTROLLED' },
-        { label: 'Contrôle Huile', value: 'OIL_CONTROLLED', labelTranslatePath: 'RECEPTION_LIST.STATUS.OIL_CONTROLLED' },
+        {
+          label: 'Contrôle Olives',
+          value: 'OLIVE_CONTROLLED',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.OLIVE_CONTROLLED'
+        },
+        {
+          label: 'Contrôle Huile',
+          value: 'OIL_CONTROLLED',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.OIL_CONTROLLED'
+        },
         { label: 'Terminé', value: 'COMPLETED', labelTranslatePath: 'RECEPTION_LIST.STATUS.COMPLETED' },
         { label: 'Refusé', value: 'REFUSED', labelTranslatePath: 'RECEPTION_LIST.STATUS.REFUSED' },
         { label: 'Annulé', value: 'CANCELLED', labelTranslatePath: 'RECEPTION_LIST.STATUS.CANCELLED' },
