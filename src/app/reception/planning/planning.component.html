@@ -172,7 +172,7 @@
                             <div class="details-info">
                               @if (data.supplier) {
                                 <span
-                                  class="supplier">{{ 'PLANNING_SUPPLIER'|translate }} {{ data.supplier.supplierInfo.name + " " + data.supplier.supplierInfo.lastname }}</span>
+                                  class="supplier">{{ 'PLANNING_SUPPLIER'|translate }} {{ data.supplier.name + " " + data.supplier.lastname }}</span>
                               }
                               @if (data.operationType) {
                                 <span
@@ -330,7 +330,7 @@
                           <div class="details-info">
                             @if (data.supplier) {
                               <span
-                                class="supplier">{{ 'PLANNING_SUPPLIER'|translate }} {{ data.supplier.supplierInfo.name + " " + data.supplier.supplierInfo.lastname }}</span>
+                                class="supplier">{{ 'PLANNING_SUPPLIER'|translate }} {{ data.supplier.name + " " + data.supplier.lastname }}</span>
                             }
                             @if (data.operationType) {
                               <span

@@ -1,4 +1,4 @@
-import { DashboardConfig, AttributeType, FieldType } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { AttributeType, DashboardConfig, FieldType } from '../../shared/modules/osm-dashboard/models/dashboard-config';
 import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
 import { TypeCategory } from '../../shared/models/type-category.enum';
 
@@ -7,7 +7,7 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
   addNewItem: false,
   title: "Réceptions d'Huile et Triturations",
   titleTranslatePath: 'DELIVERIES.OIL_TITLE',
-  baseURL: 'deliveries',
+  baseURL: 'production/deliveries',
   searchEndpoint: 'production/deliveries',
   defaultSearchData: {
     page: 0,
@@ -18,15 +18,11 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
       operation: SearchOperation.AND,
       searchs: [],
       search: {
-        isDeleted:{
-          equalValue:false
-        },status: {
-          inValues: [
-            'COMPLETED',
-            'REFUSED',
-            'CANCELLED',
-            'IN_STOCK'
-           ]
+        isDeleted: {
+          equalValue: false
+        },
+        status: {
+          inValues: ['COMPLETED', 'REFUSED', 'CANCELLED', 'IN_STOCK']
         }
       }
     }
@@ -85,10 +81,10 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
       exportable: true,
       dataTable: true,
       filterable: true,
-      valuePath: 'supplierInfo.name',
+      valuePath: 'name',
       valueAttributeType: AttributeType.string,
-      filterAttribute: 'supplier.supplierInfo.name',
-      getOptionsUrl:'production/suppliers_type'
+      filterAttribute: 'supplier.name',
+      getOptionsUrl: 'production/suppliers_type'
     },
     {
       name: 'region',
@@ -101,7 +97,7 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.autocomplete,
       valuePath: 'name',
       valueAttributeType: AttributeType.string,
-      getOptionsUrl:"production/types",
+      getOptionsUrl: 'production/types',
       filterAttribute: 'region.name',
       autoCompleteDefaultCriteria: {
         page: 0,
@@ -147,10 +143,11 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
       valueAttributeType: AttributeType.string,
       fieldType: FieldType.select,
       options: [
-        { label: 'HB', value: 'HB',labelTranslatePath: 'HB' },
-        { label: 'HC', value: 'HC' ,labelTranslatePath:'HC' },
+        { label: 'HB', value: 'HB', labelTranslatePath: 'HB' },
+        { label: 'HC', value: 'HC', labelTranslatePath: 'HC' }
       ]
-    },{
+    },
+    {
       name: 'oliveType',
       label: "Type d'olive",
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.OLIVE_TYPE',
@@ -162,8 +159,8 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
       valueAttributeType: AttributeType.string,
       fieldType: FieldType.select,
       options: [
-        { label: 'OB', value: 'OB',labelTranslatePath: 'OB' },
-        { label: 'OC', value: 'OC' ,labelTranslatePath: 'OC' },
+        { label: 'OB', value: 'OB', labelTranslatePath: 'OB' },
+        { label: 'OC', value: 'OC', labelTranslatePath: 'OC' }
       ]
     },
     {

@@ -1,5 +1,5 @@
-import {SearchOperation} from "../../shared/models/advanced-search/searchOperation";
-import {AttributeType, DashboardConfig, FieldType} from "../../shared/modules/osm-dashboard/models/dashboard-config";
+import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
+import { AttributeType, DashboardConfig, FieldType } from '../../shared/modules/osm-dashboard/models/dashboard-config';
 
 export const WASTE_DASHBOARD: DashboardConfig = {
   icon: 'delete_sweep',
@@ -18,7 +18,7 @@ export const WASTE_DASHBOARD: DashboardConfig = {
     searchData: {
       operation: SearchOperation.AND,
       search: {
-        isDeleted: {equalValue: false}
+        isDeleted: { equalValue: false }
       },
       searchs: []
     }
@@ -35,10 +35,10 @@ export const WASTE_DASHBOARD: DashboardConfig = {
       dataTable: true,
       filterable: true,
       options: [
-        {label: 'Margine', value: 'MARGINE', labelTranslatePath: 'WASTE.TYPES.MARGINE'},
-        {label: 'Grignon', value: 'POMACE', labelTranslatePath: 'WASTE.TYPES.POMACE'},
-        {label: 'Solides végétaux', value: 'VEGETAL_SOLIDS', labelTranslatePath: 'WASTE.TYPES.VEGETAL_SOLIDS'},
-        {label: 'Autre', value: 'OTHER', labelTranslatePath: 'WASTE.TYPES.OTHER'}
+        { label: 'Margine', value: 'MARGINE', labelTranslatePath: 'WASTE.TYPES.MARGINE' },
+        { label: 'Grignon', value: 'POMACE', labelTranslatePath: 'WASTE.TYPES.POMACE' },
+        { label: 'Solides végétaux', value: 'VEGETAL_SOLIDS', labelTranslatePath: 'WASTE.TYPES.VEGETAL_SOLIDS' },
+        { label: 'Autre', value: 'OTHER', labelTranslatePath: 'WASTE.TYPES.OTHER' }
       ]
     },
     {
@@ -57,19 +57,27 @@ export const WASTE_DASHBOARD: DashboardConfig = {
       label: 'Méthode de Paiement',
       labelTranslatePath: 'TRANSACTIONS.FIELDS.PAYMENT_METHOD',
       attributeType: AttributeType.enum,
-      fieldType: FieldType.autocomplete,
+      fieldType: FieldType.select,
       exportable: true,
       sortable: true,
       dataTable: true,
       filterable: true,
       options: [
         { value: 'CASH', label: 'Espèces', labelTranslatePath: 'TRANSACTIONS.PAYMENT_METHODS.CASH' },
-        { value: 'BANK_TRANSFER', label: 'Virement Bancaire', labelTranslatePath: 'TRANSACTIONS.PAYMENT_METHODS.BANK_TRANSFER' },
-        { value: 'CHECK', label: 'Chèque', labelTranslatePath: 'TRANSACTIONS.PAYMENT_METHODS.CHECK' },
-        { value: 'CREDIT_CARD', label: 'Carte de Crédit', labelTranslatePath: 'TRANSACTIONS.PAYMENT_METHODS.CREDIT_CARD' },
-        { value: 'DEBIT_CARD', label: 'Carte de Débit', labelTranslatePath: 'TRANSACTIONS.PAYMENT_METHODS.DEBIT_CARD' },
-        { value: 'MOBILE_PAYMENT', label: 'Paiement Mobile', labelTranslatePath: 'TRANSACTIONS.PAYMENT_METHODS.MOBILE_PAYMENT' },
-        { value: 'OIL_CREDIT', label: 'Crédit Huile', labelTranslatePath: 'TRANSACTIONS.PAYMENT_METHODS.OIL_CREDIT' }
+        {
+          value: 'BANK_TRANSFER',
+          label: 'Virement Bancaire',
+          labelTranslatePath: 'OIL_SALES.PAYMENT_METHODS.BANK_TRANSFER'
+        },
+        { value: 'CHECK', label: 'Chèque', labelTranslatePath: 'SUPPLIER_PAYMENT.CHECK' },
+        { value: 'CREDIT_CARD', label: 'Carte de Crédit', labelTranslatePath: 'OIL_SALES.PAYMENT_METHODS.CREDIT_CARD' },
+        { value: 'DEBIT_CARD', label: 'Carte de Débit', labelTranslatePath: 'OIL_SALES.PAYMENT_METHODS.DEBIT_CARD' },
+        {
+          value: 'MOBILE_PAYMENT',
+          label: 'Paiement Mobile',
+          labelTranslatePath: 'OIL_SALES.PAYMENT_METHODS.MOBILE_PAYMENT'
+        },
+        { value: 'OIL_CREDIT', label: 'Crédit Huile', labelTranslatePath: 'MENU.FINANCE.OIL_CREDIT' }
       ]
     },
     {
@@ -166,14 +174,15 @@ export const WASTE_DASHBOARD: DashboardConfig = {
       labelTranslatePath: 'WASTE.FIELDS.SUPPLIER',
       attributeType: AttributeType.object,
       fieldType: FieldType.autocomplete,
-      valuePath: 'supplierInfo.name',
+      valuePath: 'name',
       valueAttributeType: AttributeType.string,
-      filterAttribute: 'supplier.supplierInfo.name',
+      filterAttribute: 'supplier.name',
       getOptionsUrl: 'production/suppliers_type',
       exportable: true,
       dataTable: true,
       filterable: true
-    },{
+    },
+    {
       name: 'unpaidAmount',
       label: 'Montant umpaié',
       labelTranslatePath: 'OIL_SALES.FIELDS.UNPAIDAMOUNT',
@@ -183,7 +192,8 @@ export const WASTE_DASHBOARD: DashboardConfig = {
       sortable: true,
       dataTable: true,
       filterable: true
-    },{
+    },
+    {
       name: 'paidAmount',
       label: 'Montant partiallment',
       labelTranslatePath: 'OIL_SALES.FIELDS.PARTIALLYPAID',

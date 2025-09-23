@@ -16,9 +16,9 @@ export function getOilSortiePdfConfig(data: OilTransaction): PdfConfig {
       {
         label: 'PDF.SUPPLIER',
         value: [
-          data?.reception?.supplier?.supplierInfo.name || '',
+          data?.reception?.supplier?.name || '',
 
-          data?.reception?.supplier?.supplierInfo?.lastname || ''
+          data?.reception?.supplier?.lastname || ''
         ].filter(Boolean).join(' ')
       },
 
@@ -37,8 +37,8 @@ export function getOilSortiePdfConfig(data: OilTransaction): PdfConfig {
       {
         label: 'PDF.RECIPIENT', // ← destinataire
         value: [
-          data.reception?.supplier?.supplierInfo.name || '',
-          data.reception?.supplier?.supplierInfo?.lastname || ''
+          data.reception?.supplier?.name || '',
+          data.reception?.supplier?.lastname || ''
         ].filter(Boolean).join(' ')
       }
     ],

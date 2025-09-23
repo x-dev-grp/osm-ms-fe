@@ -63,33 +63,33 @@
         <div class="grid-item">
           <strong>{{ translate.instant('DELIVERIES.FIELDS.SUPPLIER_NAME') }} :</strong>
           {{
-            (deliveryData.supplier?.supplierInfo?.name || '') + ' ' +
-            (deliveryData.supplier?.supplierInfo?.lastname || '') || translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED')
+            (deliveryData.supplier?.name || '') + ' ' +
+            (deliveryData.supplier?.lastname || '') || translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED')
           }}
         </div>
         <div class="grid-item">
           <strong>{{ translate.instant('DELIVERIES.FIELDS.SUPPLIER_PHONE') }}
-            :</strong> {{ deliveryData.supplier?.supplierInfo?.phone || translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED') }}
+            :</strong> {{ deliveryData.supplier?.phone || translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED') }}
         </div>
       </div>
       <div class="grid-row">
         <div class="grid-item">
           <strong>{{ translate.instant('DELIVERIES.FIELDS.SUPPLIER_EMAIL') }}
-            :</strong> {{ deliveryData.supplier?.supplierInfo?.email || translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED') }}
+            :</strong> {{ deliveryData.supplier?.email || translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED') }}
         </div>
         <div class="grid-item">
           <strong>{{ translate.instant('DELIVERIES.FIELDS.SUPPLIER_ADDRESS') }}
-            :</strong> {{ deliveryData.supplier?.supplierInfo?.address || translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED') }}
+            :</strong> {{ deliveryData.supplier?.address || translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED') }}
         </div>
       </div>
       <div class="grid-row">
         <div class="grid-item">
           <strong>{{ translate.instant('DELIVERIES.FIELDS.SUPPLIER_RIB') }}
-            :</strong> {{ deliveryData.supplier?.supplierInfo?.rib || translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED') }}
+            :</strong> {{ deliveryData.supplier?.rib || translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED') }}
         </div>
         <div class="grid-item">
           <strong>{{ translate.instant('DELIVERIES.FIELDS.SUPPLIER_BANK') }}
-            :</strong> {{ deliveryData.supplier?.supplierInfo?.bankName || translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED') }}
+            :</strong> {{ deliveryData.supplier?.bankName || translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED') }}
         </div>
       </div>
     </div>

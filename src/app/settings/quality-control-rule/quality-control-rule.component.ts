@@ -1,24 +1,24 @@
-import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {MatTableDataSource, MatTableModule} from '@angular/material/table';
-import {MatExpansionModule} from '@angular/material/expansion';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
-import {MatSelectModule} from '@angular/material/select';
-import {MatCheckboxModule} from '@angular/material/checkbox';
-import {MatButtonModule} from '@angular/material/button';
-import {MatIconModule} from '@angular/material/icon';
-import {Subject} from 'rxjs';
-import {finalize, takeUntil} from 'rxjs/operators';
-import {SharedModule} from '../../shared/shared.module';
-import {QualityControlRule} from '../../shared/models/quality-control-rule';
-import {QualityControlRuleService} from '../../shared/services/quality-control-rule.service';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { Subject } from 'rxjs';
+import { finalize, takeUntil } from 'rxjs/operators';
+import { SharedModule } from '../../shared/shared.module';
+import { QualityControlRule } from '../../shared/models/quality-control-rule';
+import { QualityControlRuleService } from '../../shared/services/quality-control-rule.service';
 import { ToastService } from '../../shared/services/toast.service';
-import {OsmDashboard} from "../../shared/modules/osm-dashboard/osm-dashboard";
-import {Action, DashboardConfig} from "../../shared/modules/osm-dashboard/models/dashboard-config";
-import {Router} from "@angular/router";
-import {QUALTITY_CONTROL_RULE_DASHBOARD} from "./QUALTITY_CONTROL_RULE_DASHBOARD";
+import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
+import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { Router } from '@angular/router';
+import { QUALTITY_CONTROL_RULE_DASHBOARD } from './QUALTITY_CONTROL_RULE_DASHBOARD';
 
 @Component({
   selector: 'app-quality-control-rule',
@@ -53,7 +53,6 @@ export class QualityControlRuleComponent implements OnInit, OnDestroy {
 
   dashboardConfig: DashboardConfig = QUALTITY_CONTROL_RULE_DASHBOARD;
 
-
   constructor(
     private fb: FormBuilder,
     private service: QualityControlRuleService,
@@ -63,18 +62,19 @@ export class QualityControlRuleComponent implements OnInit, OnDestroy {
     this.ruleForm = this.fb.group({
       id: [''],
       ruleKey: ['', Validators.required],
-      oilQc:  [false],
+      oilQc: [false],
       ruleType: ['numeric', Validators.required],
       booleanValue: [false],
       minValue: [0, Validators.required],
       maxValue: [0, Validators.required],
       ruleName: ['', Validators.required],
       description: [''],
-      textInput:    [[]] // valeurs séparées par virgule si ruleType === text
+      textInput: [[]] // valeurs séparées par virgule si ruleType === text
     });
-    this.ruleForm.get('ruleType')?.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(type => {
+    this.ruleForm
+      .get('ruleType')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((type) => {
         const boolCtrl = this.ruleForm.get('booleanValue')!;
         const minCtrl = this.ruleForm.get('minValue')!;
         const maxCtrl = this.ruleForm.get('maxValue')!;
@@ -93,11 +93,7 @@ export class QualityControlRuleComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnInit(): void {
-
-
-  }
-
+  ngOnInit(): void {}
 
   cancel(): void {
     this.formOpen = false;
@@ -115,57 +111,47 @@ export class QualityControlRuleComponent implements OnInit, OnDestroy {
     const ruleType = v.ruleType;
 
     const payload: any = {
-      id:           v.id,
-      ruleKey:      v.ruleKey,
-      oilQc:        v.oilQc,
-      ruleType:     ruleType,
-      ruleName:     v.ruleName,
-      description:  v.description,
-      minValue:     ruleType === 'numeric' ? v.minValue : null,
-      maxValue:     ruleType === 'numeric' ? v.maxValue : null,
+      id: v.id,
+      ruleKey: v.ruleKey,
+      oilQc: v.oilQc,
+      ruleType: ruleType,
+      ruleName: v.ruleName,
+      description: v.description,
+      minValue: ruleType === 'numeric' ? v.minValue : null,
+      maxValue: ruleType === 'numeric' ? v.maxValue : null,
       booleanValue: ruleType === 'boolean' ? v.booleanValue : null,
-      textValues: ruleType?.toLowerCase() === 'string'
-        ? (v.textInput?.split(',').map((val: string) => val.trim()).filter((val: string) => val !== ''))
-        : null
+      textValues:
+        ruleType?.toLowerCase() === 'string'
+          ? v.textInput
+              ?.split(',')
+              .map((val: string) => val.trim())
+              .filter((val: string) => val !== '')
+          : null
     };
 
     this.isLoading = true;
 
-    const op$ = this.isEditing
-      ? this.service.updateRule(payload)
-      : this.service.createRule(payload);
+    const op$ = this.isEditing ? this.service.updateRule(payload) : this.service.createRule(payload);
 
-    op$.pipe(
-      takeUntil(this.destroy$),
-      finalize(() => this.isLoading = false)
-    ).subscribe({
-      next: (res) => {
-        if (res?.success) {
-          this.toastService.success('Règle enregistrée avec succès ✅');
-          // this.loadRules();
-          this.cancel();
-        } else {
-          this.toastService.error("Échec de l'enregistrement ❌");
+    op$
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => (this.isLoading = false))
+      )
+      .subscribe({
+        next: (res) => {
+          if (res?.success) {
+            this.toastService.success('Règle enregistrée avec succès ✅');
+            // this.loadRules();
+            this.cancel();
+          } else {
+            this.toastService.error("Échec de l'enregistrement ❌");
+          }
+        },
+        error: () => {
+          this.toastService.error('Erreur de communication avec le serveur ⚠️');
         }
-      },
-      error: () => {
-        this.toastService.error('Erreur de communication avec le serveur ⚠️');
-      }
-    });
-  }
-
-  deleteRule(rule: QualityControlRule): void {
-    if (!rule.id) return;
-    this.isLoading = true;
-    this.service.deleteRule(rule.id).pipe(
-      takeUntil(this.destroy$),
-      finalize(() => this.isLoading = false)
-    ).subscribe(
-      res => {
-        // if (res?.success) this.loadRules();
-      },
-      () => this.message = 'Delete failed.'
-    );
+      });
   }
 
   ngOnDestroy(): void {
@@ -173,17 +159,14 @@ export class QualityControlRuleComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  onRowAction(e: { row: QualityControlRule; action: Action }): void {
-
-    switch (e.action.value) {
+  onRowAction(e: { row: any; action: string }): void {
+    switch (e.action) {
       case 'READ':
         this.viewRule(e.row);
         break;
       case 'UPDATE':
         this.selectRule(e.row);
         break;
-
-
     }
   }
 
@@ -207,9 +190,7 @@ export class QualityControlRuleComponent implements OnInit, OnDestroy {
     }
   }
 
-
   viewRule(r: QualityControlRule): void {
     this.router.navigate(['settings/quality-control-rule-details', r.id]);
   }
-
 }

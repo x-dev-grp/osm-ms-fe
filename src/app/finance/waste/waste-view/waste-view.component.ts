@@ -74,7 +74,7 @@ export class WasteViewComponent implements OnInit {
     if (this.wasteSale?.supplier) {
       const supplier = this.wasteSale.supplier;
       if (typeof supplier === 'object' && 'supplierInfo' in supplier) {
-        return `${supplier.supplierInfo.name} ${supplier.supplierInfo.lastname}`;
+        return `${supplier.name} ${supplier.lastname}`;
       }
     }
     return 'Non spécifié';

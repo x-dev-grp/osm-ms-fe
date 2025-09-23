@@ -96,9 +96,9 @@ export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
       exportable: true,
       dataTable: true,
       filterable: true,
-      valuePath: 'supplierInfo.name',
+      valuePath: 'name',
       valueAttributeType: AttributeType.string,
-      filterAttribute: 'supplier.supplierInfo.name',
+      filterAttribute: 'supplier.name',
       getOptionsUrl:'production/suppliers_type'
     },
     {

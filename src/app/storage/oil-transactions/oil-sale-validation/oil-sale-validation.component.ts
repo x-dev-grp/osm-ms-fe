@@ -86,7 +86,7 @@ export class OilSaleValidationDialogComponent implements OnInit {
     // Include supplier info if available for better context
     if (u.supplier) {
       // Format the string to include name, current volume, max capacity, and supplier's full name
-      return `${u.name} (${u.currentVolume.toFixed(2)}/${u.maxCapacity.toFixed(2)} kg) [${u.supplier?.supplierInfo.name + " " + u.supplier?.supplierInfo.lastname}]`;
+      return `${u.name} (${u.currentVolume.toFixed(2)}/${u.maxCapacity.toFixed(2)} kg) [${u.supplier?.name + " " + u.supplier?.lastname}]`;
     }
     // Return basic storage unit info without supplier details
     return `${u.name} (${u.currentVolume.toFixed(2)}/${u.maxCapacity.toFixed(2)} kg)`;

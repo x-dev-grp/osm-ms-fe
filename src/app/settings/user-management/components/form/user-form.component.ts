@@ -34,7 +34,17 @@ export class UserFormComponent implements OnInit, AfterViewInit {
   roles: any[];
   updateMode: boolean = false;
   viewMode: boolean = false;
-  roleCriteria: SearchData = new SearchData();
+  roleCriteria: SearchData = {
+    searchData: {
+      operation: SearchOperation.AND,
+      searchs: [],
+      search: {
+        isDeleted: {
+          equalValue: false
+        },
+      }
+    }
+  };
   loading: boolean = false;
   errorMessage: string = '';
   user: User;
@@ -49,12 +59,8 @@ export class UserFormComponent implements OnInit, AfterViewInit {
             ...this.roleCriteria,
             searchData: {
               ...this.roleCriteria.searchData,
-              operation: SearchOperation.AND,
-              searchs: [],
               search: {
-                isDeleted: {
-                  equalValue: false
-                },
+                ...this.roleCriteria.searchData?.search,
                 roleName: {
                   likeValue: value
                 }
@@ -94,8 +100,8 @@ export class UserFormComponent implements OnInit, AfterViewInit {
       this.viewMode = !!data?.viewMode;
       this.updateMode = !!data?.updateMode;
       if (this.viewMode) this.userForm.disable();
-      if (data?.user?.data?.length) {
-        this.user = data?.user?.data[0];
+      if (data?.user?.data) {
+        this.user = data?.user?.data;
         this.userForm.patchValue(this.user);
       }
     });
@@ -145,6 +151,7 @@ export class UserFormComponent implements OnInit, AfterViewInit {
     if (!scroll) {
       this.roleCriteria.page = 0;
     }
+
     return this._searchService.search(this.roleCriteria, url).pipe(
       takeUntilDestroyed(this.destroyRef),
       tap((response: SearchResponse) => {
@@ -163,7 +170,9 @@ export class UserFormComponent implements OnInit, AfterViewInit {
     }
     this.loading = true;
     const user = this.userForm.value;
-    (!this.updateMode ? this._userService.addUser(user) : this._userService.updateUser(user, this.user?.id))
+    (!this.updateMode ?
+      this._userService.addUser(user) :
+      this._userService.updateUser(user, this.user?.id))
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((response: any) => {
@@ -175,7 +184,9 @@ export class UserFormComponent implements OnInit, AfterViewInit {
           console.log(err);
           if ([504, 503].includes(err?.status)) {
             this.errorMessage = 'Service unavailable please try again later';
-          } else {
+          } else if(err.status==500){
+            this.errorMessage = "Internal server error";
+          }else{
             this.errorMessage = err?.error;
           }
           this.loading = false;

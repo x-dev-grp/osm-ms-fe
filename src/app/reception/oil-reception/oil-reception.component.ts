@@ -1,47 +1,40 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {MatButtonModule} from '@angular/material/button';
-import {MatTableModule} from '@angular/material/table';
-import {MatIconModule} from '@angular/material/icon';
-import {MatDialog, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatExpansionModule} from '@angular/material/expansion';
-import {MatInputModule} from '@angular/material/input';
-import {MatSelectModule} from '@angular/material/select';
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatCardModule} from '@angular/material/card';
-import {
-  AbstractControl,
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  ValidationErrors,
-  ValidatorFn,
-  Validators
-} from '@angular/forms';
-import {MatSortModule} from '@angular/material/sort';
-import {MatPaginator} from '@angular/material/paginator';
-import {Router} from '@angular/router';
-import {combineLatest, forkJoin, Subscription} from 'rxjs';
+import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatCardModule } from '@angular/material/card';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { MatSortModule } from '@angular/material/sort';
+import { MatPaginator } from '@angular/material/paginator';
+import { Router } from '@angular/router';
+import { combineLatest, forkJoin, Subscription } from 'rxjs';
 
-import {SharedModule} from '../../shared/shared.module';
-import {OsmDashboard} from '../../shared/modules/osm-dashboard/osm-dashboard';
-import {DashboardConfig} from '../../shared/modules/osm-dashboard/models/dashboard-config';
-import {UnifiedDelivery} from '../../shared/models/UnifiedDelivery';
-import {BaseType} from '../../shared/models/base-type';
-import {UnifiedDeliveryService} from '../../shared/services/delivery.service';
-import {GenericTypeService} from '../../shared/services/generic-type.service';
-import {TypeCategory} from '../../shared/models/type-category.enum';
-import {SupplierType} from '../../shared/models/supplier-type';
-import {SupplierTypeService} from '../../shared/services/supplier.service';
+import { SharedModule } from '../../shared/shared.module';
+import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
+import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { UnifiedDelivery } from '../../shared/models/UnifiedDelivery';
+import { BaseType } from '../../shared/models/base-type';
+import { UnifiedDeliveryService } from '../../shared/services/delivery.service';
+import { GenericTypeService } from '../../shared/services/generic-type.service';
+import { TypeCategory } from '../../shared/models/type-category.enum';
+import { SupplierType } from '../../shared/models/supplier-type';
+import { SupplierTypeService } from '../../shared/services/supplier.service';
 
-import {PdfGeneratorService} from '../../shared/services/pdf-generator.service';
-import {OIL_DELIVERY_DASHBOARD} from './OIL_DELIVERY_DASHBOARD';
-import {AppParameterService} from '../../shared/services/AppParameterService';
-import {getOilPdfConfig} from "./oil-pdf.config";
-import {ToastService} from '../../shared/services/toast.service';
-import {getControlQualitePdfConfig} from '../quality-control-list/PDF-controlQualite.config';
-import {getProductionPdfConfig} from "../reception-list/production-pdf.config";
+import { PdfGeneratorService } from '../../shared/services/pdf-generator.service';
+import { OIL_DELIVERY_DASHBOARD } from './OIL_DELIVERY_DASHBOARD';
+import { AppParameterService } from '../../shared/services/AppParameterService';
+import { getOilPdfConfig } from './oil-pdf.config';
+import { ToastService } from '../../shared/services/toast.service';
+import { getControlQualitePdfConfig } from '../quality-control-list/PDF-controlQualite.config';
+import { getProductionPdfConfig } from '../reception-list/production-pdf.config';
+import { PaymentDetailsDialogComponent } from './payment-details-dialog/payment-details-dialog.component';
 
 /* ──────────────────────────────────────────────────────────── */
 /* validators                                                   */
@@ -81,7 +74,7 @@ export const netNotGreaterThanGross: ValidatorFn = (g: AbstractControl): Validat
   templateUrl: './oil-reception.component.html',
   styleUrl: './oil-reception.component.scss'
 })
-export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
+export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('setPriceDialog') setPriceDialogTemplate!: TemplateRef<unknown>;
   @ViewChild('dashboard') dashboard!: OsmDashboard;
   @ViewChild('paymentDetailsDialog') paymentDetailsDialogTemplate!: TemplateRef<unknown>;
@@ -121,8 +114,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
     private router: Router,
     private pdfService: PdfGeneratorService,
     private dialog: MatDialog,
-    private pdfGeneratorService: PdfGeneratorService,
-
+    private pdfGeneratorService: PdfGeneratorService
   ) {
     this.receptionForm = this.fb.group(
       {
@@ -245,7 +237,6 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
     this.pdfGeneratorService.generatePdf(config);
   }
 
-
   /* ——— data loading & table helpers ——— */
 
   /**
@@ -295,7 +286,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
 
         case 'COMPLETE_PAYMENT_DETAILS':
           console.log(`[OilReception] Opening payment details dialog for delivery: ${e.row.lotNumber}`);
-          this.openPaymentDetailsDialog(e.row);
+          this.openPaymentDetailsDialogFromParent(e.row);
           break;
 
         case 'GEN_PDF':
@@ -304,12 +295,12 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
             this.generateBonReception(e.row);
           }
           break;
-          case 'GEN_PDF_QC_OIL':
+        case 'GEN_PDF_QC_OIL':
           if (e.row.qualityControlResults) {
             console.log(`[OilReception] Generating PDF for delivery: ${e.row.lotNumber}`);
-               const deliveryType = e.row.deliveryType?.toUpperCase() || '';
-              const config = getControlQualitePdfConfig(e.row, deliveryType);
-              this.pdfService.generatePdf(config);
+            const deliveryType = e.row.deliveryType?.toUpperCase() || '';
+            const config = getControlQualitePdfConfig(e.row, deliveryType);
+            this.pdfService.generatePdf(config);
           }
           break;
 
@@ -341,7 +332,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
         this.toast.success();
       },
       error: () => {
-        this.toast.error("Erreur lors de l'enregistrement du prix." );
+        this.toast.error("Erreur lors de l'enregistrement du prix.");
         this.isLoading = false;
       }
     });
@@ -354,7 +345,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
    *
    * @param row The oil delivery row that needs payment details completion
    */
-  openPaymentDetailsDialog(row: UnifiedDelivery): void {
+  openPaymentDetailsDialogFromParent(row: any) {
     this.deliveryService.getDeliveryByLotNumber(row.lotOliveNumber!).subscribe({
       next: (res) => {
         if (res.success && res.data) {
@@ -363,18 +354,68 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
           console.log(this.originalOliveReception);
           // Move dialog open logic here
           this.selectedRow = row;
-          this.isLoading = true;
-          const unitPrice = this.validateAndGetNumber(row.unitPrice, 0, 'unitPrice');
-          const quantity = this.validateAndGetNumber(row.oilQuantity, 0, 'oilQuantity');
-          const total = unitPrice * quantity;
-          this.paymentDetailsForm = this.fb.group({
-            unitPrice: [unitPrice, [Validators.required, Validators.min(0.01)]],
-            quantity: [quantity, [Validators.required, Validators.min(0.01)]],
-            total: [{ value: total, disabled: true }],
-            unpaidAmount: [this.validateAndGetNumber(this.originalOliveReception.unpaidAmount, 0, 'unpaidAmount')]
+          const maxQty = Number(this.originalOliveReception?.oilQuantity);
+
+          // Derive maxTotal = “original olive delivery price” / unpaid amount to allocate
+          // Map this to whatever field your backend provides:
+          // e.g., originalOliveReception.price OR (total - paid)
+          const maxTotal = (() => {
+            const total = Number(this.originalOliveReception?.unpaidAmount);
+            const paid = Number(this.originalOliveReception?.paidAmount);
+            return Math.max(0, (total || 0) - (paid || 0));
+          })();
+
+          // Optional seeds from current row
+          const initialUnitPrice = Number(row?.unitPrice) || null;
+          const initialQuantity = Number(row?.quantity) || null;
+
+          const ref = this.dialog.open(PaymentDetailsDialogComponent, {
+            width: '720px',
+            autoFocus: false,
+            restoreFocus: false,
+            data: { maxQty, maxTotal, initialUnitPrice, initialQuantity } // <— key inputs
           });
-          this.setupPaymentFormSubscriptions();
-          this.openPaymentDialog();
+
+          ref.afterClosed().subscribe((result) => {
+            if (!result) return;
+            // result = { unitPrice, quantity, total }
+            // persist these on the row or post to backend as needed
+            row.unitPrice = result.unitPrice;
+            row.oilQuantity = result.quantity;
+            row.paidAmount = result.total;
+            row.unpaidAmount = this.originalOliveReception.unpaidAmount! - row.paidAmount;
+            const validationResult = this.validatePaymentData(row.unitPrice, row.oilQuantity, row.paidAmount, row.unpaidAmount);
+            if (!validationResult.isValid) {
+              console.error('[OilReception] Payment validation failed:', validationResult.error);
+              this.toast.error(validationResult.error || 'Erreur de validation');
+              return;
+            }
+            const dto = {
+              deliveryId: this.selectedRow!.id,
+              unitPrice: result.unitPrice,
+              price: result.total,
+              qualityGrade: this.selectedRow!.categoryOliveOil || '', // Use quality grade if available
+              oilUnitPrice: result.unitPrice,
+              oilQuantity: result.quantity,
+              oilTotalValue: result.total
+            };
+            this.deliveryService.updatePrincingForPaymentreception(dto).subscribe({
+              next: (response) => {
+                console.log(`[OilReception] Payment processing successful for delivery: ${this.selectedRow?.lotNumber}`, response);
+                this.dashboard.refrechData();
+                this.toast.success();
+              },
+              error: (error) => {
+                console.error(`[OilReception] Error processing payment:`, error);
+                const errorMessage = this.getErrorMessageFromError(error);
+                this.toast.error(`Erreur lors du traitement du paiement: ${errorMessage}`);
+              },
+              complete: () => {
+                this.isLoading = false;
+              }
+            });
+          });
+          // Call backend service to process payment with comprehensive error handling
         } else {
           console.log('Impossible de charger les détails de la réception.');
         }
@@ -505,7 +546,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
         error: (error) => {
           console.error(`[OilReception] Error processing payment:`, error);
           const errorMessage = this.getErrorMessageFromError(error);
-          this.toast.error(`Erreur lors du traitement du paiement: ${errorMessage}` );
+          this.toast.error(`Erreur lors du traitement du paiement: ${errorMessage}`);
         },
         complete: () => {
           this.isLoading = false;
@@ -544,7 +585,13 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
     return unpaid;
   }
 
-
+  ngAfterViewInit(): void {
+    this.setPriceForm.get('unitPrice')?.valueChanges.subscribe((unitPrice) => {
+      const quantity = this.selectedRow?.poidsNet || this.selectedRow?.oilQuantity || 0;
+      const price = parseFloat(unitPrice) * quantity;
+      this.setPriceForm.get('price')?.setValue(+price.toFixed(3));
+    });
+  }
 
   private maxLotNumber(): number {
     const nums = this.deliveries
@@ -558,7 +605,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
     this.deliveryService.getAllDeliveriesList().subscribe((res) => {
       this.deliveries = res.success ? res.data.filter((d) => d.deliveryType === 'OIL') : [];
       if (!res.success) this.toast.error(res.message || 'Erreur lors du chargement des réceptions.');
-      if (res.success) this.toast.success(res.message );
+      if (res.success) this.toast.success(res.message);
     });
   }
 
@@ -573,8 +620,6 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
       () => this.toast.error('Erreur lors de la suppression.')
     );
   }
-
-
 
   private setupOliveTypeSubscription(): void {
     const sub = this.receptionForm.get('oliveType')!.valueChanges.subscribe((ol: BaseType | null) => {
@@ -622,7 +667,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy ,AfterViewInit{
 
     console.log('loadTriturationPriceFromParam(): ' + this.prix_base);
 
-this.setPriceForm.get('unitPrice')?.setValue(initialUnitPrice);
+    this.setPriceForm.get('unitPrice')?.setValue(initialUnitPrice);
     this.dialog.open(this.setPriceDialogTemplate, {
       width: 'auto',
       data: row,
@@ -630,7 +675,6 @@ this.setPriceForm.get('unitPrice')?.setValue(initialUnitPrice);
       panelClass: 'set-price-dialog'
     });
   }
-
 
   /**
    * Validates and converts a value to a number with fallback
@@ -662,10 +706,12 @@ this.setPriceForm.get('unitPrice')?.setValue(initialUnitPrice);
     const tot = this.paymentDetailsForm.get('total')!;
 
     // subscribe: unitPrice -> quantity
-    this.subs.add(up.valueChanges.subscribe(() => {
-      if ((this as any)._syncingPayment) return;
-      this.onUnitPriceChanged();
-    }));
+    this.subs.add(
+      up.valueChanges.subscribe(() => {
+        if ((this as any)._syncingPayment) return;
+        this.onUnitPriceChanged();
+      })
+    );
     this.subs.add(
       this.receptionForm.get('region')!.valueChanges.subscribe((region: BaseType | null) => {
         if (region?.name) {
@@ -674,10 +720,12 @@ this.setPriceForm.get('unitPrice')?.setValue(initialUnitPrice);
       })
     );
     // subscribe: quantity -> total
-    this.subs.add(qty.valueChanges.subscribe(() => {
-      if ((this as any)._syncingPayment) return;
-      this.onQuantityChanged();
-    }));
+    this.subs.add(
+      qty.valueChanges.subscribe(() => {
+        if ((this as any)._syncingPayment) return;
+        this.onQuantityChanged();
+      })
+    );
 
     // initial sync (compute total from current unitPrice*quantity)
     this.onQuantityChanged();
@@ -688,10 +736,10 @@ this.setPriceForm.get('unitPrice')?.setValue(initialUnitPrice);
     try {
       const f = this.paymentDetailsForm;
       const unitPrice = Number(f.get('unitPrice')?.value) || 0;
-      const total     = Number(f.get('total')?.value)     || 0;
+      const total = Number(f.get('total')?.value) || 0;
 
       // quantity = total / unitPrice (with simple guards)
-      let quantity = unitPrice > 0 ? (total / unitPrice) : 0;
+      let quantity = unitPrice > 0 ? total / unitPrice : 0;
 
       // respect your existing maxQuantity() cap if present
       if (typeof (this as any).maxQuantity === 'function') {
@@ -710,7 +758,7 @@ this.setPriceForm.get('unitPrice')?.setValue(initialUnitPrice);
     try {
       const f = this.paymentDetailsForm;
       const unitPrice = Number(f.get('unitPrice')?.value) || 0;
-      let quantity    = Number(f.get('quantity') ?.value) || 0;
+      let quantity = Number(f.get('quantity')?.value) || 0;
 
       // respect your existing maxQuantity() cap if present
       if (typeof (this as any).maxQuantity === 'function') {
@@ -727,28 +775,9 @@ this.setPriceForm.get('unitPrice')?.setValue(initialUnitPrice);
       (this as any)._syncingPayment = false;
     }
   }
+
   private round3(n: number): number {
     return Math.round((n + Number.EPSILON) * 1000) / 1000;
-  }
-
-  /**
-   * Opens the payment dialog with proper error handling
-   */
-  private openPaymentDialog(): void {
-    try {
-      console.log(`[OilReception] Opening payment details dialog`);
-      this.dialog.open(this.paymentDetailsDialogTemplate, {
-        width: '500px',
-        data: this.selectedRow,
-        disableClose: true,
-        panelClass: 'payment-details-dialog'
-      });
-    } catch (error) {
-      console.error(`[OilReception] Error opening dialog:`, error);
-      this.toast.error("Erreur lors de l'ouverture du dialogue");
-    } finally {
-      this.isLoading = false;
-    }
   }
 
   /**
@@ -816,10 +845,6 @@ this.setPriceForm.get('unitPrice')?.setValue(initialUnitPrice);
     if (unpaidAmount < 0) {
       return { isValid: false, error: 'Montant impayé ne peut pas être négatif' };
     }
-//todo check it again in paiment  mixed
-    if (unpaidAmount < total) {
-      return { isValid: false, error: 'Montant impayé ne peut pas dépasser le montant total' };
-    }
 
     return { isValid: true };
   }
@@ -862,13 +887,5 @@ this.setPriceForm.get('unitPrice')?.setValue(initialUnitPrice);
       return 'Erreur serveur';
     }
     return 'Erreur inconnue';
-  }
-
-  ngAfterViewInit(): void {
-    this.setPriceForm.get('unitPrice')?.valueChanges.subscribe((unitPrice) => {
-      const quantity = this.selectedRow ?.poidsNet || this.selectedRow ?.oilQuantity || 0;
-      const price = parseFloat(unitPrice) * quantity;
-      this.setPriceForm.get('price')?.setValue(+price.toFixed(3));
-    });
   }
 }

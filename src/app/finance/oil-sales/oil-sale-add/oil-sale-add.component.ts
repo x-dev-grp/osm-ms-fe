@@ -151,8 +151,8 @@ export class OilSaleAddComponent implements OnInit {
   displaySupplierFn(supplier: SupplierType): string {
     if (!supplier) return '';
     const parts = [
-      supplier.supplierInfo?.name?.trim(),
-      supplier.supplierInfo?.lastname?.trim(),
+      supplier?.name?.trim(),
+      supplier?.lastname?.trim(),
     ].filter(part => !!part);
     return parts.join(' ');
   }
@@ -447,7 +447,7 @@ export class OilSaleAddComponent implements OnInit {
     const filterValue = value.toLowerCase();
     return suppliers.filter(
       (supplier) =>
-        supplier.supplierInfo.name.toLowerCase().includes(filterValue) || supplier.supplierInfo.lastname.toLowerCase().includes(filterValue)
+        supplier.name.toLowerCase().includes(filterValue) || supplier.lastname.toLowerCase().includes(filterValue)
     );
   }
 

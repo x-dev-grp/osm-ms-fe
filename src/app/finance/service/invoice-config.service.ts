@@ -153,16 +153,16 @@ export class InvoiceConfigService {
       generalInfo: [
         {
           label: 'PDF.CUSTOMER',
-          value: `${delivery.supplier?.supplierInfo?.name || ''} ${delivery.supplier?.supplierInfo?.lastname || ''}`.trim()
+          value: `${delivery.supplier?.name || ''} ${delivery.supplier?.lastname || ''}`.trim()
         },
-        { label: 'PDF.PHONE', value: delivery.supplier?.supplierInfo?.phone || '' },
+        { label: 'PDF.PHONE', value: delivery.supplier?.phone || '' },
         {
           label: 'PDF.ADDRESS',
-          value: delivery.supplier?.supplierInfo?.address || ''
+          value: delivery.supplier?.address || ''
         },
         {
           label: 'PDF.REGION',
-          value: this.getRegionValue(delivery.supplier?.supplierInfo?.region)
+          value: this.getRegionValue(delivery.supplier?.region)
         },
         { label: 'PDF.INVOICE_DATE', value: new Date().toLocaleDateString() },
         {
@@ -215,16 +215,16 @@ export class InvoiceConfigService {
       generalInfo: [
         {
           label: 'PDF.CUSTOMER',
-          value: `${oilSale.supplier?.supplierInfo?.name || ''} ${oilSale.supplier?.supplierInfo?.lastname || ''}`.trim()
+          value: `${oilSale.supplier?.name || ''} ${oilSale.supplier?.lastname || ''}`.trim()
         },
-        { label: 'PDF.PHONE', value: oilSale.supplier?.supplierInfo?.phone || '' },
+        { label: 'PDF.PHONE', value: oilSale.supplier?.phone || '' },
         {
           label: 'PDF.ADDRESS',
-          value: oilSale.supplier?.supplierInfo?.address || ''
+          value: oilSale.supplier?.address || ''
         },
         {
           label: 'PDF.REGION',
-          value: this.getRegionValue(oilSale.supplier?.supplierInfo?.region)
+          value: this.getRegionValue(oilSale.supplier?.region)
         },
         {
           label: 'PDF.INVOICE_DATE',
@@ -293,16 +293,16 @@ export class InvoiceConfigService {
       generalInfo: [
         {
           label: 'PDF.CUSTOMER',
-          value: `${wasteSale.supplier?.supplierInfo?.name || ''} ${wasteSale.supplier?.supplierInfo?.lastname || ''}`.trim()
+          value: `${wasteSale.supplier?.name || ''} ${wasteSale.supplier?.lastname || ''}`.trim()
         },
-        { label: 'PDF.PHONE', value: wasteSale.supplier?.supplierInfo?.phone || '' },
+        { label: 'PDF.PHONE', value: wasteSale.supplier?.phone || '' },
         {
           label: 'PDF.ADDRESS',
-          value: wasteSale.supplier?.supplierInfo?.address || ''
+          value: wasteSale.supplier?.address || ''
         },
         {
           label: 'PDF.REGION',
-          value: this.getRegionValue(wasteSale.supplier?.supplierInfo?.region)
+          value: this.getRegionValue(wasteSale.supplier?.region)
         },
         { label: 'PDF.INVOICE_DATE', value: new Date().toLocaleDateString() },
         {

@@ -6,7 +6,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
   addNewItem: false,
   title: 'Paiements en ddddd',
   titleTranslatePath: '',
-  baseURL: 'deliveries',
+  baseURL: 'production/deliveries',
   searchEndpoint: 'production/deliveries',
   groupedActions: false,
   specificActions: [
@@ -229,9 +229,9 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       exportable: true,
       dataTable: true,
       filterable: true,
-      valuePath: 'supplierInfo.name',
+      valuePath: 'name',
       valueAttributeType: AttributeType.string,
-      filterAttribute: 'supplier.supplierInfo.name',
+      filterAttribute: 'supplier.name',
       getOptionsUrl: 'production/suppliers_type'
     },
     {

@@ -64,6 +64,7 @@ export class ControleQualiteComponent implements OnInit {
   mainForm!: FormGroup;
   receptionId: string | null = null;
   deliveryData: UnifiedDelivery | undefined;
+  OriginalOliveReception: UnifiedDelivery | undefined;
   submitted = false;
   isLoading = false;
   qualityControlResults: QualityControlResultDto[] = [];
@@ -75,7 +76,9 @@ export class ControleQualiteComponent implements OnInit {
   private xxx: string | null;
   private lastQualityPayload: any = null;
   private payload: any;
-
+  protected oilFromOlive = false;
+  private sourceOliveReceptionId: string | null = null;
+  private oilQuantity: any;
   /**
    * Constructor for the component
    * @param fb - FormBuilder instance for creating reactive forms
@@ -118,7 +121,9 @@ export class ControleQualiteComponent implements OnInit {
       oliveVariety: new FormControl(null)
     });
     if (this.xxx) {
+      this.oilFromOlive = true;
       // If idx is present, fetch rules directly and skip delivery
+      this.loadOliveReceptionData(this.xxx); // <-- your function (below), then force oil UI
       this.loadRulesDirect();
     } else {
       this.loadReception();
@@ -162,6 +167,21 @@ export class ControleQualiteComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  loadOliveReceptionData(receptionId: string | null): UnifiedDelivery {
+    this.isLoading = true;
+    this.deliveryService.getUnifiedDelivery(receptionId!).subscribe({
+      next: (response) => {
+        this.OriginalOliveReception = Array.isArray(response.data) ? response.data[0] : response.data;
+      },
+      error: () => {
+        this.message = 'Erreur lors du chargement des données de réception';
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      }
+    });
+    return this.OriginalOliveReception!;
   }
 
   loadRules(): void {
@@ -227,7 +247,7 @@ export class ControleQualiteComponent implements OnInit {
   createDynamicForm(): void {
     const group: { [key: string]: FormControl } = {};
     this.rules.forEach((rule) => {
-      const existing = this.qualityControlResults.find(r => r.rule?.ruleKey === rule.ruleKey);
+      const existing = this.qualityControlResults.find((r) => r.rule?.ruleKey === rule.ruleKey);
       let initialValue: number | boolean | string | null = null;
 
       if (existing) {
@@ -263,19 +283,16 @@ export class ControleQualiteComponent implements OnInit {
         rule.ruleType === 'STRING' && rule.ruleTextValue
           ? []
           : rule.ruleType === 'RAW_STRING'
-            ? []    // disabled + prefilled → no validators needed
+            ? [] // disabled + prefilled → no validators needed
             : [Validators.required];
 
-      group[rule.ruleKey] = new FormControl(
-        { value: initialValue, disabled: shouldDisable },
-        ctrlValidators
-      );
+      group[rule.ruleKey] = new FormControl({ value: initialValue, disabled: shouldDisable }, ctrlValidators);
     });
 
     this.dynamicForm = this.fb.group(group);
     this.mainForm = this.fb.group({ ...this.dynamicForm.controls });
 
-// handle races (if deliveryData arrived later/earlier)
+    // handle races (if deliveryData arrived later/earlier)
     this.ensureRawStringDefaults();
     this.dynamicForm = this.fb.group(group);
     this.mainForm = this.fb.group({ ...this.dynamicForm.controls });
@@ -477,7 +494,8 @@ export class ControleQualiteComponent implements OnInit {
         isValid = typeof rawValue === 'boolean';
       } else if (rule.ruleType === 'STRING') {
         isValid = typeof rawValue === 'string' && rawValue.trim() !== '';
-      }else if (rule.ruleType === 'RAW_STRING') {
+      }
+      else if (rule.ruleType === 'RAW_STRING') {
         isValid = typeof rawValue === 'string' && rawValue.trim() !== '';
       }
       if (!isValid) {
@@ -579,6 +597,10 @@ export class ControleQualiteComponent implements OnInit {
   }
 
   isOliveDelivery(): boolean {
+    return this.deliveryData?.deliveryType === 'OLIVE';
+  }
+
+  isOilQcForOliveReception(): boolean {
     return this.deliveryData?.deliveryType === 'OLIVE';
   }
 
@@ -691,9 +713,9 @@ export class ControleQualiteComponent implements OnInit {
       this.deliveryData.unitPrice = this.mainForm.get('unitPrice')?.value;
       this.deliveryData.price = this.mainForm.get('price')?.value;
       // Find the selected storage unit object by ID
-      const selectedStorageUnitId = this.mainForm.get('storageUnit')?.value;
+      const selectedStorageUnitId = this.storageunitForm.get('storageUnitDestinationId')?.value;
       if (selectedStorageUnitId) {
-        const selectedStorageUnit = this.storageUnits.find((unit) => unit.id === selectedStorageUnitId);
+        const selectedStorageUnit = this.storageUnits.find((unit) => unit === selectedStorageUnitId);
         this.deliveryData.storageUnit = selectedStorageUnit || null;
       } else {
         this.deliveryData.storageUnit = null;
@@ -856,20 +878,19 @@ export class ControleQualiteComponent implements OnInit {
     });
   }
 
-
   /** Build first-time default value: "E + <variable> + YY" */
-  private buildRawStringDefault(): string {
+  protected buildRawStringDefault(): string {
     return `E${String((this.deliveryData as any)?.deliveryNumber ?? '')
-      .replace(/\D/g,'')
-      .padStart(4,'0')}${new Date().getFullYear().toString().slice(-2)}`;
+      .replace(/\D/g, '')
+      .padStart(4, '0')}${new Date().getFullYear().toString().slice(-2)}`;
   }
 
   /** If any RAW_STRING control is empty (first time), fill and keep disabled */
   private ensureRawStringDefaults(): void {
     if (!this.mainForm) return;
     this.rules
-      .filter(r => r.ruleType === 'RAW_STRING')
-      .forEach(r => {
+      .filter((r) => r.ruleType === 'RAW_STRING')
+      .forEach((r) => {
         const c = this.mainForm.get(r.ruleKey);
         if (c && (c.value == null || String(c.value).trim() === '')) {
           c.setValue(this.buildRawStringDefault(), { emitEvent: false });

@@ -120,7 +120,7 @@
             class="value">{{ oilTransaction.reception.deliveryDate | date:'dd/MM/yyyy HH:mm' }}</span></div>
           <div class="grid-item"><span
             class="label">{{ 'OIL_TRANSACTIONS.VIEW.FIELDS.RECEPTION_SUPPLIER' | translate }}</span> <span
-            class="value">{{ oilTransaction.reception.supplier?.supplierInfo?.name || '-' }}</span></div>
+            class="value">{{ oilTransaction.reception.supplier?.name || '-' }}</span></div>
           <div class="grid-item"><span
             class="label">{{ 'OIL_TRANSACTIONS.VIEW.FIELDS.RECEPTION_REGION' | translate }}</span> <span
             class="value">{{ oilTransaction.reception.region?.name || '-' }}</span></div>

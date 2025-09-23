@@ -15,6 +15,14 @@
           {{ 'CONTROLE_QUALITE.STATUS.COMPLETED' | translate }}
         </mat-chip>
       </div>
+      <div *ngIf="!isOliveDelivery()" class="rawstring-banner">
+        <mat-chip-listbox>
+          <mat-chip color="primary" selected>
+            <mat-icon>label</mat-icon>
+            {{ buildRawStringDefault() }}
+          </mat-chip>
+        </mat-chip-listbox>
+      </div>
     </div>
   </div>
 
@@ -50,53 +58,66 @@
   <div *ngIf="!isOliveDelivery() && !isLoading && !message" class="quality-content">
     <form [formGroup]="storageunitForm" class="quality-form">
       <div class="form-section">
-
         <div class="parameters-grid">
           <div class="parameter-card">
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>
                 {{ 'OIL_TRANSACTIONS.FORM.FIELDS.STORAGE_UNIT_DESTINATION' | translate }}
               </mat-label>
-              <mat-select formControlName="storageUnitDestinationId"
-                          placeholder="{{'CONTROLE_QUALITE.STORAGE_UNIT.PLACEHOLDER'|translate}}">
-                <mat-option *ngFor="let u of storageUnits" [disabled]="u.maxCapacity-u.currentVolume<deliveryData.poidsNet"
-                            [value]="u">
+
+              <mat-select
+                formControlName="storageUnitDestinationId"
+                placeholder="{{ 'CONTROLE_QUALITE.STORAGE_UNIT.PLACEHOLDER' | translate }}">
+
+                <mat-option
+                  *ngFor="let u of storageUnits"
+                  [disabled]="u.maxCapacity - u.currentVolume <(isOliveDelivery() ? (OriginalOliveReception?.oilQuantity ?? 0) : (deliveryData?.poidsNet ?? 0))"
+                  [value]="u">
+
                   @if (u.supplier) {
-                    @if (u.maxCapacity - u.currentVolume < deliveryData.poidsNet) {
+                    @if (u.maxCapacity - u.currentVolume < (oilFromOlive ? (OriginalOliveReception?.oilQuantity ?? 0) : (deliveryData?.poidsNet ?? 0))) {
                       <span class="storage-unit-info">
-                {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }}
-                        kg) [{{ u.supplier?.supplierInfo.name + " " + u.supplier?.supplierInfo.lastname }}]
-              </span>
-                      <span class="capacity-warning">{{ "OIL_TRANSACTIONS.FORM.OVERFILLING"|translate }}</span>
+                        {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)
+                        [{{ u.supplier?.name + ' ' + u.supplier?.lastname }}]
+                      </span>
+                      <span class="capacity-warning">
+                        {{ 'OIL_TRANSACTIONS.FORM.OVERFILLING' | translate }}</span>
                     } @else {
                       <span class="storage-unit-info">
-                {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }}
-                        kg) [{{ u.supplier?.supplierInfo.name + " " + u.supplier?.supplierInfo.lastname }}]
-              </span>
+                        {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)
+                        [{{ u.supplier?.name + ' ' + u.supplier?.lastname }}]
+                      </span>
                     }
                   } @else {
-                    @if (u.maxCapacity - u.currentVolume < deliveryData.poidsNet) {
+                    @if (u.maxCapacity - u.currentVolume < (oilFromOlive ? (OriginalOliveReception?.oilQuantity ?? 0) : (deliveryData?.poidsNet ?? 0))) {
                       <span class="storage-unit-info">
-                {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)
-              </span>
-                      <span class="capacity-warning">{{ "OIL_TRANSACTIONS.FORM.OVERFILLING"|translate }}</span>
+                        {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)
+                      </span>
+                      <span class="capacity-warning">
+                        {{ 'OIL_TRANSACTIONS.FORM.OVERFILLING' | translate }}
+                      </span>
                     } @else {
                       <span class="storage-unit-info">
-                {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)
-              </span>
+                    {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg)
+                      </span>
                     }
                   }
                 </mat-option>
               </mat-select>
+
               <mat-error *ngIf="storageunitForm.get('storageUnitDestinationId')?.hasError('required')">
                 {{ 'OIL_TRANSACTIONS.FORM.VALIDATION.REQUIRED' | translate }}
               </mat-error>
+
               <mat-error *ngIf="capacityError">
                 {{ 'OIL_TRANSACTIONS.FORM.VALIDATION.CAPACITY' | translate }}
-                ({{ availableCapacity | number:'1.2-2' }} &lt; {{ deliveryData.poidsNet| number:'1.2-2' }} kg)
+                ({{ availableCapacity | number:'1.2-2' }} &lt;
+                {{
+                  (isOliveDelivery() ? (OriginalOliveReception?.poidsNet ?? 0) : (deliveryData?.poidsNet ?? 0))
+                    | number:'1.2-2'
+                }} kg)
               </mat-error>
             </mat-form-field>
-
           </div>
         </div>
       </div>
@@ -137,7 +158,7 @@
 
           <!-- REST: All other fields except classificationHuile and testSensoriel -->
           <div *ngFor="let control of dynamicForm.controls | keyvalue"
-               [hidden]="control.key === 'testSensoriel' || control.key === 'classificationHuile'"
+               [hidden]="control.key === 'testSensoriel' || control.key === 'classificationHuile'|| control.key === 'CE'"
                class="parameter-card">
             <div class="parameter-header">
               <label [for]="control.key" class="parameter-label">
@@ -177,10 +198,10 @@
                 <mat-form-field *ngSwitchCase="'RAW_STRING'" appearance="outline" class="parameter-field">
                   <mat-label>{{ getRuleName(control.key) }}</mat-label>
                   <input
-                    matInput
                     [disabled]="true"
                     [formControlName]="control.key"
                     [id]="control.key"
+                    matInput
                     type="text" />
                   <mat-icon matSuffix>lock</mat-icon>
                 </mat-form-field>

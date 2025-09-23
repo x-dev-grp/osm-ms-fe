@@ -15,12 +15,12 @@
           @if (u.supplier) {
             @if (u.maxCapacity - u.currentVolume < this.data.oilQ) {
               <span class="storage-unit-info">
-                {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg) [{{ u.supplier?.supplierInfo.name + " " + u.supplier?.supplierInfo.lastname }}]
+                {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg) [{{ u.supplier?.name + " " + u.supplier?.lastname }}]
               </span>
               <span class="capacity-warning">{{ "OIL_TRANSACTIONS.FORM.OVERFILLING"|translate }}</span>
             } @else {
               <span class="storage-unit-info">
-                {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg) [{{ u.supplier?.supplierInfo.name + " " + u.supplier?.supplierInfo.lastname }}]
+                {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg) [{{ u.supplier?.name + " " + u.supplier?.lastname }}]
               </span>
             }
           } @else {
@@ -61,12 +61,12 @@
           @if (u.supplier) {
             @if (u.currentVolume<data.oilQ) {
               <span class="storage-unit-info">
-                {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg) [{{ u.supplier?.supplierInfo.name + " " + u.supplier?.supplierInfo.lastname }}]
+                {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg) [{{ u.supplier?.name + " " + u.supplier?.lastname }}]
               </span>
               <span class="capacity-warning">{{ "OIL_TRANSACTIONS.FORM.OVERFILLING"|translate }}</span>
             } @else {
               <span class="storage-unit-info">
-                {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg) [{{ u.supplier?.supplierInfo.name + " " + u.supplier?.supplierInfo.lastname }}]
+                {{ u.name }} ({{ u.currentVolume }} / {{ u.maxCapacity }} kg) [{{ u.supplier?.name + " " + u.supplier?.lastname }}]
               </span>
             }
           } @else {

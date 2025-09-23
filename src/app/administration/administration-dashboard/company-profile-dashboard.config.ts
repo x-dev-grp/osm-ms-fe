@@ -5,11 +5,11 @@ export const companyProfileDashboardConfig: DashboardConfig = {
   icon: 'business',
   title: 'Company Profiles',
   titleTranslatePath: 'MENU.ADMINISTRATION.COMPANY_PROFILES',
-  baseURL: 'company-profile',
+  baseURL: 'security/company-profile',
   searchEndpoint: 'security/company-profile',
   addNewItem: true,
   addNewItemUrl: '/administration/add-company-user',
-  filterTenant:false,
+  filterTenant: false,
   defaultSearchData: {
     page: 0,
     size: 10,
@@ -18,11 +18,12 @@ export const companyProfileDashboardConfig: DashboardConfig = {
     searchData: {
       operation: SearchOperation.AND,
       search: {
-        isDeleted: {equalValue: false}
+        isDeleted: { equalValue: false }
       },
       searchs: []
     }
-  }, fields: [
+  },
+  fields: [
     {
       name: 'legalName',
       label: 'Legal Name',

@@ -69,7 +69,7 @@ export function getOilTransactionPdfConfig(data: OilTransaction): PdfConfig {
       {label: 'PDF.RECEPTION_ID', value: reception?.lotNumber || '---'},
       {
         label: 'PDF.RECEPTION_SUPPLIER', value: supplier
-          ? `${supplier.supplierInfo?.name || ''} ${supplier.supplierInfo?.lastname || ''}`.trim()
+          ? `${supplier?.name || ''} ${supplier?.lastname || ''}`.trim()
           : '---'
       },
       {

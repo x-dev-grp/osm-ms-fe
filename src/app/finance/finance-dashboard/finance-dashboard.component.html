@@ -262,7 +262,7 @@
   </div>
 
   <!-- Total Revenue -->
-  <div class="col-md-4 col-xxl-4">
+  <div class="col-md-6 col-xxl-6">
     <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.KPIS.TOTAL_REVENUE' | translate" [icon]="'stacked_bar_chart'"
               class="mini-kpi ">
       <div class="mini-kpi__body">
@@ -272,18 +272,9 @@
     </app-card>
   </div>
 
-  <!-- Average Transaction -->
-  <div class="col-md-4 col-xxl-4">
-    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.KPIS.AVG_TRANSACTION' | translate" [icon]="'speed'" class="mini-kpi ">
-      <div class="mini-kpi__body">
-        <mat-icon>speed</mat-icon>
-        <span class="value">{{ avgTransactionAmount?.toFixed(2) || '0.00' }}</span>
-      </div>
-    </app-card>
-  </div>
 
   <!-- Net Flow -->
-  <div class="col-md-4 col-xxl-4">
+  <div class="col-md-6 col-xxl-6">
     <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.KPIS.NET_FLOW' | translate" [icon]="'attach_money'"
               class="mini-kpi ">
       <div class="mini-kpi__body">

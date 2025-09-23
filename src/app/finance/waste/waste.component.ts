@@ -99,7 +99,7 @@ export class WasteComponent {
         const filterValue = value.toLowerCase();
         return suppliers.filter(
             (supplier) =>
-                supplier.supplierInfo.name.toLowerCase().includes(filterValue) || supplier.supplierInfo.lastname.toLowerCase().includes(filterValue)
+                supplier.name.toLowerCase().includes(filterValue) || supplier.lastname.toLowerCase().includes(filterValue)
         );
     }
 

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -14,7 +14,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
-import { forkJoin, of, Subject, Observable, map, catchError } from 'rxjs';
+import { catchError, forkJoin, map, Observable, of, Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { CardComponent } from '../../theme/components/card/card.component';
 import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
@@ -31,9 +31,6 @@ import { FinancialTransactionService } from '../service/financial-transaction.se
 
 import { BankAccount } from '../models/BankAccount';
 import { Expense, ExpenseCategory } from '../models/expense.model';
-import { OilCredit } from '../models/OilCredit';
-import { OilSale } from '../models/oil-sale.model';
-import { WasteSale } from '../models/Waste.model';
 import { FinancialTransaction, TransactionDirection } from '../models/financial-transaction.model';
 import { ToastService } from '../../shared/services/toast.service';
 
@@ -41,7 +38,7 @@ type TrendGranularity = 'daily' | 'weekly' | 'monthly' | 'yearly';
 type PresetPeriod = 'today' | 'yesterday' | 'thisWeek' | 'lastWeek' | 'thisMonth' | 'lastMonth' | 'thisYear' | 'lastYear' | 'custom';
 
 interface FinanceSummary {
-  bankAccounts: BankAccountSummary[];
+  // bankAccounts: BankAccountSummary[];
   expenses: ExpenseSummary;
   oilCredits: OilCreditSummary;
   oilSales: OilSalesSummary;
@@ -151,7 +148,7 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
   expenses: Expense[] = [];
 
   // Expense categories for display
-  expenseCategories: Array<{value: ExpenseCategory, label: string}> = [];
+  expenseCategories: Array<{ value: ExpenseCategory; label: string }> = [];
   private expenseCategoryAmounts: Record<string, number> = {};
 
   chartHeights: Record<'small' | 'medium' | 'large', number> = { small: 220, medium: 400, large: 600 };
@@ -193,7 +190,6 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
   recentTransactions: FinancialTransaction[] = [];
 
   // KPIs
-  avgTransactionAmount = 0;
   totalPaid = 0;
   totalUnpaid = 0;
   activeBankAccounts = 0;
@@ -244,18 +240,37 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
   }
 
   // Theme colors (as arrays for mini charts)
-  get primaryColor() { return ['var(--primary-500)']; }
-  get warningColor() { return ['var(--warning-500)']; }
-  get successColor() { return ['var(--success-500)']; }
-  get infoColor() { return ['var(--info-500)']; }
+  get primaryColor() {
+    return ['var(--primary-500)'];
+  }
+  get warningColor() {
+    return ['var(--warning-500)'];
+  }
+  get successColor() {
+    return ['var(--success-500)'];
+  }
+  get infoColor() {
+    return ['var(--info-500)'];
+  }
 
   // Currency formatting
-  get formattedNetFlow(): string { return this.netFlow.toFixed(2) + ' TND'; }
-  get formattedTotalPaid(): string { return this.totalPaid.toFixed(2) + ' TND'; }
-  get formattedTotalUnpaid(): string { return this.totalUnpaid.toFixed(2) + ' TND'; }
+  get formattedNetFlow(): string {
+    return this.netFlow.toFixed(2) + ' TND';
+  }
+  get formattedTotalPaid(): string {
+    return this.totalPaid.toFixed(2) + ' TND';
+  }
+  get formattedTotalUnpaid(): string {
+    return this.totalUnpaid.toFixed(2) + ' TND';
+  }
 
-  ngOnInit(): void { this.loadData(); }
-  ngOnDestroy(): void { this.destroy$.next(); this.destroy$.complete(); }
+  ngOnInit(): void {
+    this.loadData();
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
   // === Date Range Management ===
   private initializeDefaultDateRange(): void {
@@ -359,22 +374,11 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
     this.loadData();
   }
 
-  private updateSelectedPeriodDisplay(): void {
-    if (this.selectedPreset === 'custom' && this.customStartDate && this.customEndDate) {
-      this.selectedPeriodDisplay = `${this.customStartDate.toLocaleDateString()} - ${this.customEndDate.toLocaleDateString()}`;
-    } else {
-      const presetLabels: Record<PresetPeriod, string> = {
-        'today': 'Aujourd\'hui',
-        'yesterday': 'Hier',
-        'thisWeek': 'Cette semaine',
-        'lastWeek': 'Semaine dernière',
-        'thisMonth': 'Ce mois',
-        'lastMonth': 'Mois dernier',
-        'thisYear': 'Cette année',
-        'lastYear': 'Année dernière',
-        'custom': 'Période personnalisée'
-      };
-      this.selectedPeriodDisplay = presetLabels[this.selectedPreset] || '';
+  refresh(): void {
+    try {
+      this.loadData();
+    } finally {
+      this.lastUpdated = new Date();
     }
   }
 
@@ -390,11 +394,6 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
     this.applyFiltersAndRebuild();
   }
 
-  refresh(): void {
-    try { this.loadData(); }
-    finally { this.lastUpdated = new Date(); }
-  }
-
   // === Data load ===
   loadData(): void {
     this.isLoading = true;
@@ -402,17 +401,20 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
     this.error = null;
 
     forkJoin({
-      bankAccounts: this.loadBankAccountsSummary(),
+      // bankAccounts: this.loadBankAccountsSummary(),
       expenses: this.loadExpensesSummary(),
       oilCredits: this.loadOilCreditsSummary(),
       oilSales: this.loadOilSalesSummary(),
       wasteSales: this.loadWasteSalesSummary(),
       transactions: this.loadTransactionsSummary()
     })
-      .pipe(finalize(() => {
-        this.isLoading = false;
-        this.loading = false;
-      }), takeUntil(this.destroy$))
+      .pipe(
+        finalize(() => {
+          this.isLoading = false;
+          this.loading = false;
+        }),
+        takeUntil(this.destroy$)
+      )
       .subscribe({
         next: (summary) => {
           console.log('MENU.Finance summary loaded successfully:', summary);
@@ -433,26 +435,91 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
         }
       });
   }
+
+  // Finance trend updater
+  updateFinanceTrendView(view: 'monthly' | 'weekly' | 'daily') {
+    this.currentFinanceTrendView = view;
+
+    // Use real financial data for trends
+    const data = this.generateRealFinanceTrend(view);
+
+    this.financeTrendChartOptions = this.withHeight({
+      series: [
+        {
+          name: this.translate.instant('MENU.FINANCE.DASHBOARD.CHART_LABELS.AMOUNT'),
+          data: data.data
+        }
+      ],
+      chart: { type: 'line', toolbar: { show: false } },
+      xaxis: { categories: data.categories },
+      yaxis: {
+        title: {
+          text: this.translate.instant('MENU.FINANCE.DASHBOARD.CHART_LABELS.AMOUNT_TND'),
+          style: {
+            fontSize: '12px',
+            fontWeight: 500
+          }
+        }
+      },
+      colors: ['var(--primary-500)'],
+      tooltip: { y: { formatter: (val: number) => Math.round(val).toLocaleString() + ' TND' } }
+    });
+  }
+
+  initializeExpenseCategories(): void {
+    // Initialize all expense categories with their translations
+    this.expenseCategories = Object.values(ExpenseCategory).map((category) => ({
+      value: category,
+      label: this.getCategoryDisplayName(category)
+    }));
+
+    // Calculate amounts for each category
+    this.expenseCategoryAmounts = this.calculateExpensesByCategory();
+  }
+
+  private updateSelectedPeriodDisplay(): void {
+    if (this.selectedPreset === 'custom' && this.customStartDate && this.customEndDate) {
+      this.selectedPeriodDisplay = `${this.customStartDate.toLocaleDateString()} - ${this.customEndDate.toLocaleDateString()}`;
+    } else {
+      const presetLabels: Record<PresetPeriod, string> = {
+        today: "Aujourd'hui",
+        yesterday: 'Hier',
+        thisWeek: 'Cette semaine',
+        lastWeek: 'Semaine dernière',
+        thisMonth: 'Ce mois',
+        lastMonth: 'Mois dernier',
+        thisYear: 'Cette année',
+        lastYear: 'Année dernière',
+        custom: 'Période personnalisée'
+      };
+      this.selectedPeriodDisplay = presetLabels[this.selectedPreset] || '';
+    }
+  }
+
   // === Filtering + rebuilding stats/charts ===
   private applyFiltersAndRebuild(): void {
     if (!this.financeSummary) return;
 
     // Build sparklines using real data for the last 7 periods
-    this.transactionsPerDay = this.generateRealSparklineData(
-      this.financeSummary.transactions.totalTransactions, 7
-    );
-    this.pendingExpensesPerDay = this.generateRealSparklineData(
-      this.financeSummary.expenses.pending, 7
-    );
-    this.completedSalesPerDay = this.generateRealSparklineData(
-      this.financeSummary.oilSales.deliveredSales, 7
-    );
+    this.transactionsPerDay = this.generateRealSparklineData(this.financeSummary.transactions.totalTransactions, 7);
+    this.pendingExpensesPerDay = this.generateRealSparklineData(this.financeSummary.expenses.pending, 7);
+    this.completedSalesPerDay = this.generateRealSparklineData(this.financeSummary.oilSales.deliveredSales, 7);
     this.revenuePerDay = this.generateRealSparklineData(
-      this.financeSummary.oilSales.totalRevenue + this.financeSummary.wasteSales.totalRevenue, 7
+      this.financeSummary.oilSales.totalRevenue + this.financeSummary.wasteSales.totalRevenue,
+      7
     );
 
     // KPIs + main charts
     this.prepareStatsAndCharts();
+  }
+
+  // Chart size updater
+  updateChartSize(size: 'small' | 'medium' | 'large') {
+    this.currentChartSize = size;
+    this.revenueBySourceChartOptions = this.withHeight(this.revenueBySourceChartOptions);
+    this.recentTransactionsChartOptions = this.withHeight(this.recentTransactionsChartOptions);
+    this.expenseByCategoryChartOptions = this.withHeight(this.expenseByCategoryChartOptions);
+    this.updateFinanceTrendView(this.currentFinanceTrendView);
   }
 
   // === KPIs + charts ===
@@ -465,11 +532,9 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
     this.completedSales = this.financeSummary.oilSales.deliveredSales;
     this.totalRevenue = this.financeSummary.oilSales.totalRevenue + this.financeSummary.wasteSales.totalRevenue;
 
-    this.avgTransactionAmount = this.totalTransactions > 0 ?
-      (this.financeSummary.transactions.income + this.financeSummary.transactions.expenses) / this.totalTransactions : 0;
     this.totalPaid = this.financeSummary.oilSales.totalRevenue - this.financeSummary.oilSales.unpaidAmount;
     this.totalUnpaid = this.financeSummary.oilSales.unpaidAmount + this.financeSummary.wasteSales.unpaidAmount;
-    this.activeBankAccounts = this.financeSummary.bankAccounts.filter(acc => acc.active).length;
+    // this.activeBankAccounts = this.financeSummary.bankAccounts.filter(acc => acc.active).length;
     this.netFlow = this.financeSummary.transactions.netFlow;
     this.totalDebited = this.financeSummary.transactions.debited;
     this.totalCredited = this.financeSummary.transactions.credited;
@@ -586,10 +651,12 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
     const oilSalesRevenue = Math.round(this.financeSummary.oilSales.totalRevenue);
     const wasteSalesRevenue = Math.round(this.financeSummary.wasteSales.totalRevenue);
     this.salesByTypeChartOptions = {
-      series: [{
-        name: this.translate.instant('MENU.FINANCE.DASHBOARD.CHART_LABELS.AMOUNT'),
-        data: [oilSalesRevenue, wasteSalesRevenue]
-      }],
+      series: [
+        {
+          name: this.translate.instant('MENU.FINANCE.DASHBOARD.CHART_LABELS.AMOUNT'),
+          data: [oilSalesRevenue, wasteSalesRevenue]
+        }
+      ],
       chart: { type: 'bar', toolbar: { show: false } },
       xaxis: {
         categories: [
@@ -652,14 +719,21 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
     // --- Revenue by Source (Bar) ---
     const oilRevenue = Math.round(this.financeSummary.oilSales.totalRevenue);
     const wasteRevenue = Math.round(this.financeSummary.wasteSales.totalRevenue);
-    const bankAccountsBalance = Math.round(this.financeSummary.bankAccounts.reduce((sum, acc) => sum + (acc.balance || 0), 0));
+    // const bankAccountsBalance = Math.round(this.financeSummary.bankAccounts.reduce((sum, acc) => sum + (acc.balance || 0), 0));
     const creditValue = Math.round(this.financeSummary.oilCredits.totalValue);
 
     this.revenueBySourceChartOptions = {
-      series: [{
-        name: this.translate.instant('MENU.FINANCE.DASHBOARD.CHART_LABELS.AMOUNT_TND'),
-        data: [oilRevenue, wasteRevenue, creditValue, bankAccountsBalance]
-      }],
+      series: [
+        {
+          name: this.translate.instant('MENU.FINANCE.DASHBOARD.CHART_LABELS.AMOUNT_TND'),
+          data: [
+            oilRevenue,
+            wasteRevenue,
+            creditValue
+            // ,bankAccountsBalance
+          ]
+        }
+      ],
       chart: { type: 'bar', toolbar: { show: false } },
       xaxis: {
         categories: [
@@ -697,14 +771,16 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
     };
 
     // --- Recent Transactions (Bar) - Using real transaction data ---
-    const recentTransactionAmounts = this.allTransactions.slice(-5).map(t => Math.round(t.amount || 0));
+    const recentTransactionAmounts = this.allTransactions.slice(-5).map((t) => Math.round(t.amount || 0));
     const recentTransactionLabels = this.allTransactions.slice(-5).map((t, index) => `T${(index + 1).toString().padStart(3, '0')}`);
 
     this.recentTransactionsChartOptions = {
-      series: [{
-        name: this.translate.instant('MENU.FINANCE.DASHBOARD.CHART_LABELS.AMOUNT'),
-        data: recentTransactionAmounts
-      }],
+      series: [
+        {
+          name: this.translate.instant('MENU.FINANCE.DASHBOARD.CHART_LABELS.AMOUNT'),
+          data: recentTransactionAmounts
+        }
+      ],
       chart: { type: 'bar', toolbar: { show: false } },
       xaxis: {
         categories: recentTransactionLabels,
@@ -725,10 +801,13 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
     // Filter out categories with zero values for cleaner display
     const nonZeroCategories = Object.entries(expensesByCategory)
       .filter(([key, value]) => value > 0)
-      .reduce((acc, [key, value]) => {
-        acc[key] = value;
-        return acc;
-      }, {} as Record<string, number>);
+      .reduce(
+        (acc, [key, value]) => {
+          acc[key] = value;
+          return acc;
+        },
+        {} as Record<string, number>
+      );
 
     // Use non-zero categories if available, otherwise show all categories
     const categoriesToShow = Object.keys(nonZeroCategories).length > 0 ? nonZeroCategories : expensesByCategory;
@@ -764,41 +843,12 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
     this.expenseByCategoryChartOptions = this.withHeight(this.expenseByCategoryChartOptions);
   }
 
-  // Finance trend updater
-  updateFinanceTrendView(view: 'monthly' | 'weekly' | 'daily') {
-    this.currentFinanceTrendView = view;
-
-    // Use real financial data for trends
-    const data = this.generateRealFinanceTrend(view);
-
-    this.financeTrendChartOptions = this.withHeight({
-      series: [{
-        name: this.translate.instant('MENU.FINANCE.DASHBOARD.CHART_LABELS.AMOUNT'),
-        data: data.data
-      }],
-      chart: { type: 'line', toolbar: { show: false } },
-      xaxis: { categories: data.categories },
-      yaxis: {
-        title: {
-          text: this.translate.instant('MENU.FINANCE.DASHBOARD.CHART_LABELS.AMOUNT_TND'),
-          style: {
-            fontSize: '12px',
-            fontWeight: 500
-          }
-        }
-      },
-      colors: ['var(--primary-500)'],
-      tooltip: { y: { formatter: (val: number) => Math.round(val).toLocaleString() + ' TND' } }
-    });
-  }
-
-  // Chart size updater
-  updateChartSize(size: 'small' | 'medium' | 'large') {
-    this.currentChartSize = size;
-    this.revenueBySourceChartOptions = this.withHeight(this.revenueBySourceChartOptions);
-    this.recentTransactionsChartOptions = this.withHeight(this.recentTransactionsChartOptions);
-    this.expenseByCategoryChartOptions = this.withHeight(this.expenseByCategoryChartOptions);
-    this.updateFinanceTrendView(this.currentFinanceTrendView);
+  private generateMockSparklineData(bins: number): number[] {
+    const data: number[] = [];
+    for (let i = 0; i < bins; i++) {
+      data.push(Math.floor(Math.random() * 100) + 10);
+    }
+    return data;
   }
 
   // === Sparkline helpers ===
@@ -813,7 +863,7 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
 
     for (let i = 0; i < bins; i++) {
       // Add some variation (±20%) to make it look more realistic
-      const variation = 0.8 + (Math.random() * 0.4); // 0.8 to 1.2
+      const variation = 0.8 + Math.random() * 0.4; // 0.8 to 1.2
       const value = Math.round(baseValue * variation);
       data.push(Math.max(0, value));
     }
@@ -823,14 +873,6 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
     const difference = totalValue - currentSum;
     data[data.length - 1] = Math.max(0, data[data.length - 1] + difference);
 
-    return data;
-  }
-
-  private generateMockSparklineData(bins: number): number[] {
-    const data: number[] = [];
-    for (let i = 0; i < bins; i++) {
-      data.push(Math.floor(Math.random() * 100) + 10);
-    }
     return data;
   }
 
@@ -848,8 +890,8 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
       const baseValue = totalRevenue / categories.length;
       const data = categories.map((_, index) => {
         // Simulate growth trend with some variation
-        const growthFactor = 1 + (index * 0.1); // 10% growth per month
-        const variation = 0.8 + (Math.random() * 0.4); // ±20% variation
+        const growthFactor = 1 + index * 0.1; // 10% growth per month
+        const variation = 0.8 + Math.random() * 0.4; // ±20% variation
         return Math.round(baseValue * growthFactor * variation);
       });
       return { categories, data };
@@ -859,7 +901,7 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
       const categories = ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4', 'Sem 5'];
       const baseValue = totalRevenue / categories.length;
       const data = categories.map(() => {
-        const variation = 0.7 + (Math.random() * 0.6); // ±30% variation
+        const variation = 0.7 + Math.random() * 0.6; // ±30% variation
         return Math.round(baseValue * variation);
       });
       return { categories, data };
@@ -872,7 +914,7 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
       // Weekend days typically have lower activity
       const isWeekend = index >= 5;
       const weekendFactor = isWeekend ? 0.3 : 1;
-      const variation = 0.5 + (Math.random() * 1); // ±50% variation
+      const variation = 0.5 + Math.random() * 1; // ±50% variation
       return Math.round(Math.max(0, dailyAverage * weekendFactor * variation));
     });
     return { categories, data };
@@ -888,7 +930,7 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
     const categories: Record<string, number> = this.getDefaultExpenseCategories();
 
     // Group expenses by their actual category
-    this.expenses.forEach(expense => {
+    this.expenses.forEach((expense) => {
       const amount = expense.amount || 0;
       const category = expense.category;
 
@@ -910,6 +952,12 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
     return categories;
   }
 
+  private getCategoryDisplayName(category: ExpenseCategory): string {
+    // Get translated category name
+    const translationKey = `EXPENSE.CATEGORY.${category}`;
+    return this.translate.instant(translationKey) || category.replace(/_/g, ' ');
+  }
+
   private getDefaultExpenseCategories(): Record<string, number> {
     // Get top 10 most commonly used categories for the chart
     const topCategories = [
@@ -926,29 +974,12 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
     ];
 
     const categories: Record<string, number> = {};
-    topCategories.forEach(category => {
+    topCategories.forEach((category) => {
       const displayName = this.getCategoryDisplayName(category);
       categories[displayName] = 0;
     });
 
     return categories;
-  }
-
-  private getCategoryDisplayName(category: ExpenseCategory): string {
-    // Get translated category name
-    const translationKey = `EXPENSE.CATEGORY.${category}`;
-    return this.translate.instant(translationKey) || category.replace(/_/g, ' ');
-  }
-
-  initializeExpenseCategories(): void {
-    // Initialize all expense categories with their translations
-    this.expenseCategories = Object.values(ExpenseCategory).map(category => ({
-      value: category,
-      label: this.getCategoryDisplayName(category)
-    }));
-
-    // Calculate amounts for each category
-    this.expenseCategoryAmounts = this.calculateExpensesByCategory();
   }
 
   getCategoryAmount(category: ExpenseCategory): number {
@@ -994,15 +1025,17 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
 
     // Update Recent Transactions chart with real data
     if (this.allTransactions.length > 0) {
-      const recentTransactionAmounts = this.allTransactions.slice(-5).map(t => Math.round(t.amount || 0));
+      const recentTransactionAmounts = this.allTransactions.slice(-5).map((t) => Math.round(t.amount || 0));
       const recentTransactionLabels = this.allTransactions.slice(-5).map((t, index) => `T${(index + 1).toString().padStart(3, '0')}`);
 
       this.recentTransactionsChartOptions = {
         ...this.recentTransactionsChartOptions,
-        series: [{
-          name: this.translate.instant('MENU.FINANCE.DASHBOARD.CHART_LABELS.AMOUNT'),
-          data: recentTransactionAmounts
-        }],
+        series: [
+          {
+            name: this.translate.instant('MENU.FINANCE.DASHBOARD.CHART_LABELS.AMOUNT'),
+            data: recentTransactionAmounts
+          }
+        ],
         xaxis: {
           ...this.recentTransactionsChartOptions.xaxis,
           categories: recentTransactionLabels
@@ -1017,24 +1050,34 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
       // Filter out categories with zero values for cleaner display
       const nonZeroCategories = Object.entries(expensesByCategory)
         .filter(([key, value]) => value > 0)
-        .reduce((acc, [key, value]) => {
-          acc[key] = Math.round(value);
-          return acc;
-        }, {} as Record<string, number>);
+        .reduce(
+          (acc, [key, value]) => {
+            acc[key] = Math.round(value);
+            return acc;
+          },
+          {} as Record<string, number>
+        );
 
       // Use non-zero categories if available, otherwise show all categories
-      const categoriesToShow = Object.keys(nonZeroCategories).length > 0 ? nonZeroCategories :
-        Object.entries(expensesByCategory).reduce((acc, [key, value]) => {
-          acc[key] = Math.round(value);
-          return acc;
-        }, {} as Record<string, number>);
+      const categoriesToShow =
+        Object.keys(nonZeroCategories).length > 0
+          ? nonZeroCategories
+          : Object.entries(expensesByCategory).reduce(
+              (acc, [key, value]) => {
+                acc[key] = Math.round(value);
+                return acc;
+              },
+              {} as Record<string, number>
+            );
 
       this.expenseByCategoryChartOptions = {
         ...this.expenseByCategoryChartOptions,
-        series: [{
-          name: this.translate.instant('EXPENSES.FIELDS.AMOUNT') || 'Montant',
-          data: Object.values(categoriesToShow)
-        }],
+        series: [
+          {
+            name: this.translate.instant('EXPENSES.FIELDS.AMOUNT') || 'Montant',
+            data: Object.values(categoriesToShow)
+          }
+        ],
         xaxis: {
           ...this.expenseByCategoryChartOptions.xaxis,
           categories: Object.keys(categoriesToShow)
@@ -1054,21 +1097,23 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
 
   private updateChartLabels(): void {
     // Update chart labels when language changes
-    this.translate.get([
-      'FINANCE.DASHBOARD.ANALYTICS.EXPENSE_STATUS',
-      'FINANCE.DASHBOARD.ANALYTICS.TRANSACTION_FLOW',
-      'FINANCE.DASHBOARD.ANALYTICS.SALES_BY_TYPE',
-      'FINANCE.DASHBOARD.ANALYTICS.FINANCE_TREND.TITLE',
-      'FINANCE.DASHBOARD.ANALYTICS.EXPENSE_BY_CATEGORY',
-      'FINANCE.DASHBOARD.CHART_LABELS.PAID',
-      'FINANCE.DASHBOARD.CHART_LABELS.PENDING',
-      'FINANCE.DASHBOARD.CHART_LABELS.REVENUE',
-      'FINANCE.DASHBOARD.CHART_LABELS.EXPENSES_LABEL',
-      'FINANCE.DASHBOARD.CHART_LABELS.AMOUNT',
-      'FINANCE.DASHBOARD.CHART_LABELS.AMOUNT_TND',
-      'EXPENSES.FIELDS.AMOUNT'
-    ]).pipe(takeUntil(this.destroy$))
-      .subscribe(t => {
+    this.translate
+      .get([
+        'FINANCE.DASHBOARD.ANALYTICS.EXPENSE_STATUS',
+        'FINANCE.DASHBOARD.ANALYTICS.TRANSACTION_FLOW',
+        'FINANCE.DASHBOARD.ANALYTICS.SALES_BY_TYPE',
+        'FINANCE.DASHBOARD.ANALYTICS.FINANCE_TREND.TITLE',
+        'FINANCE.DASHBOARD.ANALYTICS.EXPENSE_BY_CATEGORY',
+        'FINANCE.DASHBOARD.CHART_LABELS.PAID',
+        'FINANCE.DASHBOARD.CHART_LABELS.PENDING',
+        'FINANCE.DASHBOARD.CHART_LABELS.REVENUE',
+        'FINANCE.DASHBOARD.CHART_LABELS.EXPENSES_LABEL',
+        'FINANCE.DASHBOARD.CHART_LABELS.AMOUNT',
+        'FINANCE.DASHBOARD.CHART_LABELS.AMOUNT_TND',
+        'EXPENSES.FIELDS.AMOUNT'
+      ])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((t) => {
         // Refresh expense categories with new translations
         this.initializeExpenseCategories();
 
@@ -1098,23 +1143,33 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
           const expensesByCategory = this.calculateExpensesByCategory();
           const nonZeroCategories = Object.entries(expensesByCategory)
             .filter(([key, value]) => value > 0)
-            .reduce((acc, [key, value]) => {
-              acc[key] = Math.round(value);
-              return acc;
-            }, {} as Record<string, number>);
+            .reduce(
+              (acc, [key, value]) => {
+                acc[key] = Math.round(value);
+                return acc;
+              },
+              {} as Record<string, number>
+            );
 
-          const categoriesToShow = Object.keys(nonZeroCategories).length > 0 ? nonZeroCategories :
-            Object.entries(expensesByCategory).reduce((acc, [key, value]) => {
-              acc[key] = Math.round(value);
-              return acc;
-            }, {} as Record<string, number>);
+          const categoriesToShow =
+            Object.keys(nonZeroCategories).length > 0
+              ? nonZeroCategories
+              : Object.entries(expensesByCategory).reduce(
+                  (acc, [key, value]) => {
+                    acc[key] = Math.round(value);
+                    return acc;
+                  },
+                  {} as Record<string, number>
+                );
 
           this.expenseByCategoryChartOptions = {
             ...this.expenseByCategoryChartOptions,
-            series: [{
-              name: this.translate.instant('EXPENSES.FIELDS.AMOUNT') || 'Montant',
-              data: Object.values(categoriesToShow)
-            }],
+            series: [
+              {
+                name: this.translate.instant('EXPENSES.FIELDS.AMOUNT') || 'Montant',
+                data: Object.values(categoriesToShow)
+              }
+            ],
             xaxis: {
               ...this.expenseByCategoryChartOptions.xaxis,
               categories: Object.keys(categoriesToShow)
@@ -1127,10 +1182,10 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
   // === Data loading methods ===
   private loadBankAccountsSummary(): Observable<BankAccountSummary[]> {
     return this.bankAccountService.getAllBanksList().pipe(
-      map(response => {
+      map((response) => {
         if (response.success && response.data) {
           const accounts = response.data;
-          return accounts.map(account => ({
+          return accounts.map((account) => ({
             id: account.id || '',
             bankName: account.bankName,
             accountType: account.accountType,
@@ -1142,7 +1197,7 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
         }
         return [];
       }),
-      catchError(error => {
+      catchError((error) => {
         console.error('Error loading bank accounts:', error);
         return of([]);
       })
@@ -1151,7 +1206,7 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
 
   private loadExpensesSummary(): Observable<ExpenseSummary> {
     return this.expenseService.getAllExpenses().pipe(
-      map(response => {
+      map((response) => {
         if (response.success && response.data) {
           let expenses = response.data;
 
@@ -1159,14 +1214,14 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
           expenses = this.filterDataByDateRange(expenses, 'expenseDate');
 
           const total = expenses.reduce((sum, exp) => sum + (exp.amount || 0), 0);
-          const paid = expenses.filter(exp => exp.status === 'Paid').reduce((sum, exp) => sum + (exp.amount || 0), 0);
-          const pending = expenses.filter(exp => exp.status === 'Pending').reduce((sum, exp) => sum + (exp.amount || 0), 0);
+          const paid = expenses.filter((exp) => exp.status === 'Paid').reduce((sum, exp) => sum + (exp.amount || 0), 0);
+          const pending = expenses.filter((exp) => exp.status === 'Pending').reduce((sum, exp) => sum + (exp.amount || 0), 0);
 
           return { total, pending, paid, count: expenses.length, currency: 'TND' };
         }
         return { total: 0, pending: 0, paid: 0, count: 0, currency: 'TND' };
       }),
-      catchError(error => {
+      catchError((error) => {
         console.error('Error loading expenses:', error);
         return of({ total: 0, pending: 0, paid: 0, count: 0, currency: 'TND' });
       })
@@ -1175,18 +1230,18 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
 
   private loadOilCreditsSummary(): Observable<OilCreditSummary> {
     return this.oilCreditService.getAllOilCreditList().pipe(
-      map(response => {
+      map((response) => {
         if (response.success && response.data) {
           const credits = response.data;
           const totalCredits = credits.length;
-          const pendingCredits = credits.filter(credit => credit.creditState === 'PENDING').length;
-          const approvedCredits = credits.filter(credit => credit.creditState === 'APPROVED').length;
+          const pendingCredits = credits.filter((credit) => credit.creditState === 'PENDING').length;
+          const approvedCredits = credits.filter((credit) => credit.creditState === 'APPROVED').length;
 
           return { totalCredits, pendingCredits, approvedCredits, totalValue: 0, currency: 'TND' };
         }
         return { totalCredits: 0, pendingCredits: 0, approvedCredits: 0, totalValue: 0, currency: 'TND' };
       }),
-      catchError(error => {
+      catchError((error) => {
         console.error('Error loading oil credits:', error);
         return of({ totalCredits: 0, pendingCredits: 0, approvedCredits: 0, totalValue: 0, currency: 'TND' });
       })
@@ -1195,7 +1250,7 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
 
   private loadOilSalesSummary(): Observable<OilSalesSummary> {
     return this.oilSaleService.getAllOilSales().pipe(
-      map(response => {
+      map((response) => {
         if (response.success && response.data) {
           let sales = response.data;
 
@@ -1204,14 +1259,14 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
 
           const totalRevenue = sales.reduce((sum, sale) => sum + (sale.totalAmount || 0), 0);
           const unpaidAmount = sales.reduce((sum, sale) => sum + (sale.unpaidAmount || 0), 0);
-          const pendingSales = sales.filter(sale => sale.status === 'PENDING').length;
-          const deliveredSales = sales.filter(sale => sale.status === 'DELIVERED').length;
+          const pendingSales = sales.filter((sale) => sale.status === 'PENDING').length;
+          const deliveredSales = sales.filter((sale) => sale.status === 'DELIVERED').length;
 
           return { totalSales: sales.length, pendingSales, deliveredSales, totalRevenue, unpaidAmount, currency: 'TND' };
         }
         return { totalSales: 0, pendingSales: 0, deliveredSales: 0, totalRevenue: 0, unpaidAmount: 0, currency: 'TND' };
       }),
-      catchError(error => {
+      catchError((error) => {
         console.error('Error loading oil sales:', error);
         return of({ totalSales: 0, pendingSales: 0, deliveredSales: 0, totalRevenue: 0, unpaidAmount: 0, currency: 'TND' });
       })
@@ -1220,7 +1275,7 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
 
   private loadWasteSalesSummary(): Observable<WasteSalesSummary> {
     return this.wasteSaleService.getAllWasteSales().pipe(
-      map(response => {
+      map((response) => {
         if (response.success && response.data) {
           let sales = response.data;
 
@@ -1234,7 +1289,7 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
         }
         return { totalSales: 0, totalRevenue: 0, unpaidAmount: 0, count: 0, currency: 'TND' };
       }),
-      catchError(error => {
+      catchError((error) => {
         console.error('Error loading waste sales:', error);
         return of({ totalSales: 0, totalRevenue: 0, unpaidAmount: 0, count: 0, currency: 'TND' });
       })
@@ -1243,7 +1298,7 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
 
   private loadTransactionsSummary(): Observable<TransactionsSummary> {
     return this.transactionService.getAllTransactions().pipe(
-      map(response => {
+      map((response) => {
         if (response.success && response.data) {
           let transactions = response.data;
 
@@ -1251,10 +1306,10 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
           transactions = this.filterDataByDateRange(transactions, 'transactionDate');
 
           const income = transactions
-            .filter(t => t.direction === TransactionDirection.INBOUND)
+            .filter((t) => t.direction === TransactionDirection.INBOUND)
             .reduce((sum, t) => sum + (t.amount || 0), 0);
           const expenses = transactions
-            .filter(t => t.direction === TransactionDirection.OUTBOUND)
+            .filter((t) => t.direction === TransactionDirection.OUTBOUND)
             .reduce((sum, t) => sum + (t.amount || 0), 0);
 
           // Calculate debited and credited payments
@@ -1266,26 +1321,18 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
           // New calculations for inbound/outbound paid/unpaid transactions
           // For this implementation, we'll consider a transaction as "paid" if it's approved
           // and "unpaid" if it's not approved
-          const inboundTransactions = transactions.filter(t => t.direction === TransactionDirection.INBOUND);
-          const outboundTransactions = transactions.filter(t => t.direction === TransactionDirection.OUTBOUND);
+          const inboundTransactions = transactions.filter((t) => t.direction === TransactionDirection.INBOUND);
+          const outboundTransactions = transactions.filter((t) => t.direction === TransactionDirection.OUTBOUND);
 
-          const inboundPaid = inboundTransactions
-            .filter(t => t.approved)
-            .reduce((sum, t) => sum + (t.amount || 0), 0);
-          const inboundUnpaid = inboundTransactions
-            .filter(t => !t.approved)
-            .reduce((sum, t) => sum + (t.amount || 0), 0);
-          const outboundPaid = outboundTransactions
-            .filter(t => t.approved)
-            .reduce((sum, t) => sum + (t.amount || 0), 0);
-          const outboundUnpaid = outboundTransactions
-            .filter(t => !t.approved)
-            .reduce((sum, t) => sum + (t.amount || 0), 0);
+          const inboundPaid = inboundTransactions.filter((t) => t.approved).reduce((sum, t) => sum + (t.amount || 0), 0);
+          const inboundUnpaid = inboundTransactions.filter((t) => !t.approved).reduce((sum, t) => sum + (t.amount || 0), 0);
+          const outboundPaid = outboundTransactions.filter((t) => t.approved).reduce((sum, t) => sum + (t.amount || 0), 0);
+          const outboundUnpaid = outboundTransactions.filter((t) => !t.approved).reduce((sum, t) => sum + (t.amount || 0), 0);
 
-          const inboundPaidCount = inboundTransactions.filter(t => t.approved).length;
-          const inboundUnpaidCount = inboundTransactions.filter(t => !t.approved).length;
-          const outboundPaidCount = outboundTransactions.filter(t => t.approved).length;
-          const outboundUnpaidCount = outboundTransactions.filter(t => !t.approved).length;
+          const inboundPaidCount = inboundTransactions.filter((t) => t.approved).length;
+          const inboundUnpaidCount = inboundTransactions.filter((t) => !t.approved).length;
+          const outboundPaidCount = outboundTransactions.filter((t) => t.approved).length;
+          const outboundUnpaidCount = outboundTransactions.filter((t) => !t.approved).length;
 
           return {
             totalTransactions: transactions.length,
@@ -1323,7 +1370,7 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
           outboundUnpaidCount: 0
         };
       }),
-      catchError(error => {
+      catchError((error) => {
         console.error('Error loading transactions:', error);
         return of({
           totalTransactions: 0,
@@ -1348,49 +1395,51 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
 
   private loadActualTransactionData(): void {
     // Load actual financial transactions for detailed charts
-    this.transactionService.getAllTransactions().pipe(
-      takeUntil(this.destroy$)
-    ).subscribe({
-      next: (response) => {
-        if (response.success && response.data) {
-          this.allTransactions = this.filterDataByDateRange(response.data, 'transactionDate');
-          console.log('Loaded actual transactions:', this.allTransactions.length);
-          // Re-render charts with real transaction data
-          this.updateChartsWithRealData();
+    this.transactionService
+      .getAllTransactions()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          if (response.success && response.data) {
+            this.allTransactions = this.filterDataByDateRange(response.data, 'transactionDate');
+            console.log('Loaded actual transactions:', this.allTransactions.length);
+            // Re-render charts with real transaction data
+            this.updateChartsWithRealData();
+          }
+        },
+        error: (error) => {
+          console.error('Error loading actual transactions:', error);
+          // Fallback to empty array
+          this.allTransactions = [];
         }
-      },
-      error: (error) => {
-        console.error('Error loading actual transactions:', error);
-        // Fallback to empty array
-        this.allTransactions = [];
-      }
-    });
+      });
 
     // Load actual expense data for category breakdown
-    this.expenseService.getAllExpenses().pipe(
-      takeUntil(this.destroy$)
-    ).subscribe({
-      next: (response) => {
-        if (response.success && response.data) {
-          this.expenses = this.filterDataByDateRange(response.data, 'expenseDate');
-          console.log('Loaded actual expenses:', this.expenses.length);
-          // Re-render charts with real expense data
-          this.updateChartsWithRealData();
+    this.expenseService
+      .getAllExpenses()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          if (response.success && response.data) {
+            this.expenses = this.filterDataByDateRange(response.data, 'expenseDate');
+            console.log('Loaded actual expenses:', this.expenses.length);
+            // Re-render charts with real expense data
+            this.updateChartsWithRealData();
+          }
+        },
+        error: (error) => {
+          console.error('Error loading actual expenses:', error);
+          // Fallback to empty array
+          this.expenses = [];
         }
-      },
-      error: (error) => {
-        console.error('Error loading actual expenses:', error);
-        // Fallback to empty array
-        this.expenses = [];
-      }
-    });
+      });
   }
 
   // === Date Filtering Utility ===
   private filterDataByDateRange<T>(data: T[], dateField: string): T[] {
     if (!data || data.length === 0) return data;
 
-    return data.filter(item => {
+    return data.filter((item) => {
       const itemDate = this.getDateFromItem(item, dateField);
       if (!itemDate) return false;
 

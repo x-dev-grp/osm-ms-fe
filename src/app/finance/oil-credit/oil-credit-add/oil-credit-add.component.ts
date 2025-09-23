@@ -33,17 +33,17 @@ import { ToastService } from '../../../shared/services/toast.service';
   styleUrls: ['./oil-credit-add.component.scss'],
   standalone: true,
   imports: [
-    CommonModule, 
-    ReactiveFormsModule, 
-    MatButtonModule, 
+    CommonModule,
+    ReactiveFormsModule,
+    MatButtonModule,
     TranslateModule,
-    MatDatepickerModule, 
-    MatFormFieldModule, 
-    MatIconModule, 
-    MatInputModule, 
-    MatSelectModule, 
-    MatSnackBarModule, 
-    MatAutocompleteModule, 
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatSelectModule,
+    MatSnackBarModule,
+    MatAutocompleteModule,
     MatProgressSpinnerModule,
     SharedModule
   ]
@@ -107,7 +107,7 @@ export class OilCreditAddComponent implements OnInit, OnDestroy {
         );
       }
     });
-    
+
     this.supplierService.getAllSuppliers().pipe(
       takeUntil(this.destroy$)
     ).subscribe({
@@ -121,7 +121,7 @@ export class OilCreditAddComponent implements OnInit, OnDestroy {
         );
       }
     });
-    
+
     const id = this.route.snapshot.params['id'];
     if (id) {
       this.loadOilCredit(id);
@@ -143,7 +143,7 @@ export class OilCreditAddComponent implements OnInit, OnDestroy {
     // Supplier filter
     this.filteredSuppliers = this.form.get('destinataire')!.valueChanges.pipe(
       startWith(''),
-      map(value => this._filter(this.suppliers, value, 'supplierInfo.name'))
+      map(value => this._filter(this.suppliers, value, 'name'))
     );
 
     // Storage unit filter [DISABLED: will be set in oil transaction]
@@ -177,12 +177,10 @@ export class OilCreditAddComponent implements OnInit, OnDestroy {
     }, obj as unknown) as string;
   }
 
-  displayFn<T extends { name?: string; supplierInfo?: { name: string } }>(item: T): string {
+  displayFn<T extends {  name: string } >(item: T): string {
     if (!item) return '';
-    if (item.supplierInfo) {
-      return item.supplierInfo.name;
-    }
-    return item.name || '';
+      return item.name;
+
   }
 
   // onStorageUnitSelected and validateQuantity methods [DISABLED: will be set in oil transaction]

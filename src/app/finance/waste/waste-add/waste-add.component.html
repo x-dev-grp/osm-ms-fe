@@ -133,7 +133,7 @@
                                 [displayWith]="displaySupplierFn">
                 <mat-option *ngFor="let supplier of filteredSuppliers | async" [value]="supplier">
                   <div class="supplier-option">
-                    <div class="supplier-name">{{ supplier.supplierInfo.name }} {{ supplier.supplierInfo.lastname }}</div>
+                    <div class="supplier-name">{{ supplier.name }} {{ supplier.lastname }}</div>
                     <div class="supplier-type">{{ supplier.genericSupplierType.name || 'N/A' }}</div>
                   </div>
                 </mat-option>
@@ -207,7 +207,7 @@
           <span>Fournisseur:</span>
           <ng-container *ngIf="getSelectedSupplier()">
             <span class="summary-value">
-              {{ getSelectedSupplier()?.supplierInfo.name }} {{ getSelectedSupplier()?.supplierInfo.lastname }}
+              {{ getSelectedSupplier()?.name }} {{ getSelectedSupplier()?.lastname }}
             </span>
           </ng-container>
           <ng-container *ngIf="!getSelectedSupplier()">

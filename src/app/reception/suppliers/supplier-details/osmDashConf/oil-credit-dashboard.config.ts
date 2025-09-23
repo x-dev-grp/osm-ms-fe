@@ -101,7 +101,7 @@ export const OIL_CREDIT_DASHBOARD: DashboardConfig = {
       valueAttributeType: AttributeType.string
     },
     {
-      name: 'supplier.supplierInfo',
+      name: 'supplier',
       label: 'Destinataire',
       attributeType: AttributeType.object,
       fieldType: FieldType.autocomplete,

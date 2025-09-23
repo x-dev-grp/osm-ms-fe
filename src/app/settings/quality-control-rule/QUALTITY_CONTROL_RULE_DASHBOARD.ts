@@ -1,12 +1,11 @@
-import {AttributeType, DashboardConfig, FieldType} from "../../shared/modules/osm-dashboard/models/dashboard-config";
-import {SearchOperation} from "../../shared/models/advanced-search/searchOperation";
-
+import { AttributeType, DashboardConfig, FieldType } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
 
 export const QUALTITY_CONTROL_RULE_DASHBOARD: DashboardConfig = {
   icon: 'rule',
-  title: "Quality Control Rule",
+  title: 'Quality Control Rule',
   titleTranslatePath: 'QUALITY_CONTROL_RULE.TITLE',
-  baseURL: 'quality-control',
+  baseURL: 'production/qualitycontrolrules',
   searchEndpoint: 'production/qualitycontrolrules',
   addNewItem: true,
   addNewItemUrl: 'settings/quality-control/new',
@@ -17,8 +16,12 @@ export const QUALTITY_CONTROL_RULE_DASHBOARD: DashboardConfig = {
     order: 'DESC',
     searchData: {
       operation: SearchOperation.AND,
-      searchs: [],
-
+      search: {
+        isDeleted: {
+          equalValue: false
+        }
+      },
+      searchs: []
     }
   },
   fields: [
@@ -30,7 +33,7 @@ export const QUALTITY_CONTROL_RULE_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.text,
       exportable: true,
       dataTable: true,
-      sortable: true,
+      sortable: true
     },
     {
       name: 'ruleType',
@@ -43,10 +46,10 @@ export const QUALTITY_CONTROL_RULE_DASHBOARD: DashboardConfig = {
       filterable: true,
       dataTable: true,
       options: [
-        {label: 'NUMERIC', value: 'NUMERIC', labelTranslatePath: 'QUALITY_CONTROL_RULE.RULE_TYPES.NUMERIC'},
-        {label: 'STRING', value: 'STRING', labelTranslatePath: 'QUALITY_CONTROL_RULE.RULE_TYPES.STRING'},
-        {label: 'BOOLEAN', value: 'BOOLEAN', labelTranslatePath: 'QUALITY_CONTROL_RULE.RULE_TYPES.BOOLEAN'}
-      ],
+        { label: 'NUMERIC', value: 'NUMERIC', labelTranslatePath: 'QUALITY_CONTROL_RULE.RULE_TYPES.NUMERIC' },
+        { label: 'STRING', value: 'STRING', labelTranslatePath: 'QUALITY_CONTROL_RULE.RULE_TYPES.STRING' },
+        { label: 'BOOLEAN', value: 'BOOLEAN', labelTranslatePath: 'QUALITY_CONTROL_RULE.RULE_TYPES.BOOLEAN' }
+      ]
     },
     {
       name: 'oilQc',
@@ -57,7 +60,6 @@ export const QUALTITY_CONTROL_RULE_DASHBOARD: DashboardConfig = {
       exportable: true,
       sortable: true,
       dataTable: true
-    },
-  ],
-
-}
+    }
+  ]
+};

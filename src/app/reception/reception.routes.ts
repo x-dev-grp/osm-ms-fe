@@ -67,7 +67,7 @@ export const receptionRoutes: Routes = [
   {
     path: 'fournisseur',
     component: SupplierComponent,
-    canActivate: [allPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.SUPPLIER, Action.READ)])]
+    canActivate: [allPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.SUPPLIER, Action.CREATE)])]
   },
   {
     path: 'fournisseur/new',

@@ -12,4 +12,5 @@ export interface MillMachine {
   lastMaintenanceDate?: Date;  // or string
   nextMaintenanceDate?: Date;  // or string
   description?: string;
+  externalId?: string;
 }

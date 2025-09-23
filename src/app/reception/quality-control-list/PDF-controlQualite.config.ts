@@ -56,7 +56,8 @@ export function getControlQualitePdfConfig(delivery: UnifiedDelivery, deliveryTy
 
 // Parcourir TOUS les résultats de contrôle qualité
   if (delivery.qualityControlResults && delivery.qualityControlResults.length > 0) {
-    delivery.qualityControlResults.forEach(result => {
+
+    delivery.qualityControlResults.filter(value => value.rule.ruleType!= 'STRING').forEach(result => {
       if (!result.rule) return; // Ignorer si pas de règle associée
 
       const ruleName = result.rule.ruleName || 'Règle sans nom';
@@ -79,7 +80,7 @@ export function getControlQualitePdfConfig(delivery: UnifiedDelivery, deliveryTy
       { label: 'PDF.DATE', value: delivery.deliveryDate ? new Date(delivery.deliveryDate).toLocaleDateString() : 'N/A' },
       {
         label: 'PDF.SUPPLIER',
-        value: `${delivery.supplier?.supplierInfo?.name || ''} ${delivery.supplier?.supplierInfo?.lastname || ''}`.trim() || 'N/A',
+        value: `${delivery.supplier?.name || ''} ${delivery.supplier?.lastname || ''}`.trim() || 'N/A',
       },
       { label: 'PDF.EXPENSE_RECEIPT_NUMBER', value: delivery.deliveryNumber || 'N/A' },
       { label: 'PDF.VEHICLE_REGISTRATION', value: delivery.matriculeCamion || 'N/A' },

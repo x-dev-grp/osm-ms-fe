@@ -1,13 +1,9 @@
-import {
-  AttributeType,
-  DashboardConfig,
-  FieldType
-} from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { AttributeType, DashboardConfig, FieldType } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
 
 export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
   icon: 'local_gas_station',
   title: "Ventes d'huile",
-  baseURL: 'production/oil-sales',
+  baseURL: 'production/oil_sale',
   searchEndpoint: 'production/oil_sale',
   addNewItem: false,
   specificActions: [
@@ -98,7 +94,7 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
 
     // ==================== SUPPLIER INFORMATION ====================
     {
-      name: 'supplier.supplierInfo.name',
+      name: 'supplier.name',
       label: 'Fournisseur',
       labelTranslatePath: 'OIL_SALES.FIELDS.SUPPLIER',
       attributeType: AttributeType.object,
@@ -150,8 +146,9 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
     {
       name: 'unitPrice',
       label: 'Prix unitaire',
-      isCurrency:true,
-      currency:'TND',labelTranslatePath: 'OIL_SALES.FIELDS.UNIT_PRICE',
+      isCurrency: true,
+      currency: 'TND',
+      labelTranslatePath: 'OIL_SALES.FIELDS.UNIT_PRICE',
       attributeType: AttributeType.number,
       fieldType: FieldType.text,
       exportable: true,
@@ -175,7 +172,7 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
       label: 'Devise',
       labelTranslatePath: 'OIL_SALES.FIELDS.CURRENCY',
       attributeType: AttributeType.enum,
-      fieldType: FieldType.text,
+      fieldType: FieldType.select,
       exportable: true,
       sortable: true,
       dataTable: true,

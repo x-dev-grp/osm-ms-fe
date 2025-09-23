@@ -79,8 +79,8 @@ export const OIL_CREDIT_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'supplier',
-      label: 'Destinataire',
-      labelTranslatePath: 'OIL_CREDIT.FIELDS.SUPPLIER',
+      label: 'Client',
+      labelTranslatePath: 'RECEPTION_LIST.FIELDS.SUPPLIER',
       attributeType: AttributeType.object,
       fieldType: FieldType.autocomplete,
       exportable: true,
@@ -88,8 +88,8 @@ export const OIL_CREDIT_DASHBOARD: DashboardConfig = {
       filterable: true,
       valuePath: 'name',
       valueAttributeType: AttributeType.string,
-      filterAttribute: 'supplierInfo.name',
-      getOptionsUrl:'production/suppliers_type'
+      filterAttribute: 'supplier.name',
+      getOptionsUrl: 'production/suppliers_type'
     },
     {
       name: 'creditState',

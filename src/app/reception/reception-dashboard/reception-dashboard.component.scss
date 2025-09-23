@@ -300,3 +300,145 @@ apx-chart {
     }
   }
 }
+
+/* If you pass panelClass: 'payment-details-dialog' when opening the dialog,
+   these styles will scope to only this dialog surface. Safe to keep even if not used. */
+.payment-details-dialog .mat-mdc-dialog-container .mdc-dialog__surface {
+  border-radius: 16px;
+  padding: 0; /* we handle spacing inside .form-section */
+}
+
+/* Component-scoped layout */
+:host {
+  display: block;
+}
+
+/* Root section */
+.form-section {
+  padding: 20px clamp(16px, 3vw, 24px);
+  min-width: min(92vw, 760px);
+  max-width: 880px;
+}
+
+/* Header */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 12px;
+
+  mat-icon {
+    font-size: 24px;
+    inline-size: 24px;
+    block-size: 24px;
+    color: rgba(0, 0, 0, 0.54);
+  }
+
+  h3 {
+    margin: 0;
+    font-weight: 600;
+    letter-spacing: .2px;
+  }
+}
+
+/* Helper text */
+.dialog-description {
+  margin: 0 0 16px;
+  color: rgba(0, 0, 0, 0.62);
+  font-size: .95rem;
+  line-height: 1.35rem;
+}
+
+/* Form grid */
+.financial-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-block: 12px 6px;
+}
+
+/* Cards are just grid items; keep them light */
+.financial-card {
+  background: transparent;
+  border-radius: 12px;
+}
+
+/* Make fields reliably full-width */
+.financial-field,
+.financial-card .mat-form-field {
+  inline-size: 100%;
+}
+
+/* Tighten Material form spacing a bit */
+.mat-mdc-form-field {
+  --_field-mb: 2px;
+  margin-bottom: var(--_field-mb);
+
+  .mat-mdc-form-field-subscript-wrapper {
+    margin-top: 2px;
+  }
+}
+
+/* Actions */
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+
+  /* Prevent layout shift on validation errors */
+  min-height: 40px;
+}
+
+/* Buttons: subtle hover/focus affordances */
+.dialog-actions button[mat-flat-button],
+.dialog-actions button[mat-button],
+button[mat-stroked-button] {
+  border-radius: 10px;
+
+  &:focus-visible {
+    outline: 3px solid rgba(25, 118, 210, 0.35); /* accessible focus */
+    outline-offset: 2px;
+  }
+}
+
+/* Inputs: stronger focus ring for accessibility */
+.mat-mdc-text-field-wrapper.mdc-text-field--focused {
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.14);
+  border-radius: 12px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .financial-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .form-section {
+    min-width: auto;
+    padding: 16px;
+  }
+
+  .financial-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .dialog-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+
+    button {
+      inline-size: 100%;
+    }
+  }
+}
+
+/* Optional: if you also use a simple header-only dialog to set a single value
+   (openDailyMetricDialog), you can reuse the same look & feel by scoping here: */
+.daily-metric-card,
+.daily-metric-dialog .mat-mdc-dialog-container .mdc-dialog__surface {
+  border-radius: 16px;
+}

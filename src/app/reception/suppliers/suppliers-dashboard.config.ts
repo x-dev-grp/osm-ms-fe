@@ -1,11 +1,11 @@
-import {AttributeType, DashboardConfig, FieldType} from '../../shared/modules/osm-dashboard/models/dashboard-config';
-import {SearchOperation} from '../../shared/models/advanced-search/searchOperation';
+import { AttributeType, DashboardConfig, FieldType } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
 
 export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
   icon: 'people',
   /* ─────────── basic info ─────────── */
   title: 'Fournisseurs',
-  titleTranslatePath: 'SUPPLIERS.TITLE',
+  titleTranslatePath: 'MENU.RECEPTION.AGRICULTURE',
   baseURL: 'production/suppliers_type',
   searchEndpoint: 'production/suppliers_type',
 
@@ -22,15 +22,16 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
     searchData: {
       operation: SearchOperation.AND,
       searchs: [],
-      search: {isDeleted:{
-          equalValue:false
-        },}
+      search: {
+        isDeleted: {
+          equalValue: false
+        }
+      }
     }
-
   },
   fields: [
     {
-      name: 'supplierInfo.name',
+      name: 'name',
       label: 'Prénom',
       labelTranslatePath: 'SUPPLIERS.FIRST_NAME',
       attributeType: AttributeType.string,
@@ -41,7 +42,7 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
       filterable: true
     },
     {
-      name: 'supplierInfo.lastname',
+      name: 'lastname',
       label: 'Nom',
       labelTranslatePath: 'SUPPLIERS.LAST_NAME',
       attributeType: AttributeType.string,
@@ -52,7 +53,7 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
       filterable: true
     },
     {
-      name: 'supplierInfo.phone',
+      name: 'phone',
       label: 'Téléphone',
       labelTranslatePath: 'SUPPLIERS.PHONE',
       attributeType: AttributeType.string,
@@ -62,7 +63,7 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
       filterable: true
     },
     {
-      name: 'supplierInfo.email',
+      name: 'email',
       label: 'Email',
       labelTranslatePath: 'SUPPLIERS.EMAIL',
       attributeType: AttributeType.string,
@@ -72,7 +73,7 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
       filterable: true
     },
     {
-      name: 'supplierInfo.address',
+      name: 'address',
       label: 'Adresse',
       labelTranslatePath: 'SUPPLIERS.ADDRESS',
       attributeType: AttributeType.string,
@@ -83,7 +84,7 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
     },
     // ==================== CORE CUSTOMER FIELDS ====================
     {
-      name: 'supplierInfo.matriculeFiscal',
+      name: 'matriculeFiscal',
       label: 'Matricule Fiscal',
       labelTranslatePath: 'CUSTOMERS.FIELDS.MATRICULE_FISCAL',
       attributeType: AttributeType.string,
@@ -94,11 +95,11 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
       filterable: true
     },
     {
-      name: 'supplierInfo.category',
+      name: 'category',
       label: 'Catégorie',
       labelTranslatePath: 'CUSTOMERS.FIELDS.CATEGORY',
       attributeType: AttributeType.enum,
-      fieldType: FieldType.autocomplete,
+      fieldType: FieldType.select,
       exportable: true,
       sortable: true,
       dataTable: true,
@@ -121,7 +122,7 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
       valueAttributeType: AttributeType.string
     },
     {
-      name: 'supplierInfo.region',
+      name: 'region',
       label: 'Région',
       labelTranslatePath: 'SUPPLIERS.REGION',
       attributeType: AttributeType.object,
@@ -131,8 +132,7 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
       filterable: true,
       valuePath: 'name',
       valueAttributeType: AttributeType.string,
-      filterAttribute: 'supplierInfo.region.name',
-
+      filterAttribute: 'region.name'
     }
   ],
 

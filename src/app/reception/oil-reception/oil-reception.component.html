@@ -56,7 +56,9 @@
       <div class="financial-card">
         <mat-form-field appearance="outline" class="financial-field">
           <mat-label>{{ 'OIL_RECEPTION.UNIT_PRICE' | translate }}</mat-label>
-          <input formControlName="unitPrice" matInput step="0.01" type="number">
+          <input (input)="onUnitPriceInput()"
+                 formControlName="unitPrice" matInput step="0.01"
+                 type="number">
           <mat-icon matSuffix>attach_money</mat-icon>
           <mat-error *ngIf="paymentDetailsForm.get('unitPrice')?.hasError('required')">
             {{ 'OIL_RECEPTION.REQUIRED' | translate }}
@@ -67,7 +69,9 @@
       <div class="financial-card">
         <mat-form-field appearance="outline" class="financial-field">
           <mat-label>{{ 'OIL_RECEPTION.QUANTITY' | translate }}</mat-label>
-          <input [max]="maxQuantity()" formControlName="quantity" matInput step="0.01" type="number">
+          <input (input)="onQuantityInput()"
+                 [max]="maxQuantity()" formControlName="quantity" matInput step="0.01"
+                 type="number">
           <mat-icon matSuffix>scale</mat-icon>
           <mat-error *ngIf="paymentDetailsForm.get('quantity')?.hasError('required')">
             {{ 'OIL_RECEPTION.REQUIRED' | translate }}

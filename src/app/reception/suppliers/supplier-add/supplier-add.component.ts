@@ -8,15 +8,17 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
- import { SupplierTypeService } from '../../../shared/services/supplier.service';
+import { SupplierTypeService } from '../../../shared/services/supplier.service';
 import { GenericTypeService } from '../../../shared/services/generic-type.service';
 import { BaseTypeComponent } from '../../../shared/modules/base-type/base-type.component';
 import { TypeCategory } from '../../../shared/models/type-category.enum';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { BaseType } from '../../../shared/models/base-type';
 import { getCustomerCategories, PartnerCategory } from '../../../finance/models/PartnerCategory';
 import { ToastService } from '../../../shared/services/toast.service';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { SupplierType } from '../../../shared/models/supplier-type';
+import { BaseType } from '../../../shared/models/base-type';
 
 @Component({
   selector: 'app-supplier-add',
@@ -31,7 +33,8 @@ import { ToastService } from '../../../shared/services/toast.service';
     MatProgressSpinnerModule,
     MatIconModule,
     TranslateModule,
-    BaseTypeComponent
+    BaseTypeComponent,
+    MatCheckbox
   ],
   templateUrl: './supplier-add.component.html',
   styleUrls: ['./supplier-add.component.scss']
@@ -40,6 +43,7 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
   public TypeCategory = TypeCategory;
   category: PartnerCategory = PartnerCategory.INDIVIDUAL;
   customerCategories = getCustomerCategories();
+
   supplierForm: FormGroup;
   isEditMode = false;
   supplierId: string | null = null;
@@ -53,73 +57,35 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
     private genericTypeService: GenericTypeService,
     private toastService: ToastService,
     private translateService: TranslateService,
-    private router: Router,
+    protected router: Router,
     private route: ActivatedRoute
   ) {
     this.supplierForm = this.fb.group({
-      supplierInfo: this.fb.group({
-        id: [''],
-        name: ['', [Validators.required, Validators.minLength(2)]],
-        lastname: ['', [Validators.required, Validators.minLength(2)]],
-        phone: ['', [Validators.required, Validators.pattern(/^[0-9]{8}$/)]],
-        email: ['', [Validators.email]],
-        address: ['', [Validators.required, Validators.minLength(5)]],
-        region: [null, Validators.required],
-        category: [PartnerCategory.INDIVIDUAL, Validators.required],
-        matriculeFiscal: [''],
-        rib: ['', [Validators.pattern(/^[0-9]{15}$/)]],
-        bankName: ['']
-      }),
-      genericSupplierType: [null, Validators.required]
+      id: [null],
+      name: ['', [Validators.required, Validators.minLength(2)]],
+      lastname: ['', [Validators.required, Validators.minLength(2)]],
+      phone: ['', [Validators.required, Validators.pattern(/^[0-9+\-\s()]{6,}$/)]],
+      email: [''],
+      address: ['', [Validators.required]],
+      region: [null as BaseType | null, Validators.required], // BaseType
+      genericSupplierType: [null as BaseType | null, Validators.required], // BaseType
+      hasStorage: [false],
+      matriculeFiscal: [''],
+      rib: [''],
+      bankName: ['']
     });
   }
 
   ngOnInit(): void {
     this.supplierId = this.route.snapshot.paramMap.get('id');
-    // Préchargement des types pour BaseTypeComponent
+
+    // Preload types used by BaseTypeComponent (if it relies on a cache)
     this.genericTypeService.getAllTypes('SUPPLIER_TYPE').subscribe();
 
     if (this.supplierId) {
       this.isEditMode = true;
       this.loadSupplier(this.supplierId);
     }
-  }
-
-  loadSupplier(id: string): void {
-    this.loading = true;
-    this.error = null;
-
-    this.subs.add(
-      this.supplierService.getSupplier(id).subscribe({
-        next: (res) => {
-          if (res?.success && res.data) {
-            const supplier = Array.isArray(res.data) ? res.data[0] : res.data;
-            this.supplierForm.patchValue({
-              supplierInfo: {
-                id: supplier.supplierInfo?.id || '',
-                name: supplier.supplierInfo?.name || '',
-                lastname: supplier.supplierInfo?.lastname || '',
-                phone: supplier.supplierInfo?.phone || '',
-                email: supplier.supplierInfo?.email || '',
-                address: supplier.supplierInfo?.address || '',
-                region: supplier.supplierInfo?.region || null,
-                rib: supplier.supplierInfo?.rib || '',
-                bankName: supplier.supplierInfo?.bankName || ''
-              },
-              genericSupplierType: supplier.genericSupplierType || null
-            });
-          } else {
-            this.error = 'Fournisseur non trouvé';
-          }
-          this.loading = false;
-        },
-        error: (err) => {
-          console.error('Error loading supplier:', err);
-          this.error = 'Erreur lors du chargement du fournisseur';
-          this.loading = false;
-        }
-      })
-    );
   }
 
   onSubmit(): void {
@@ -131,50 +97,54 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.error = null;
 
-    const formValue = this.supplierForm.value;
-    const payload: any = {
-      supplierInfo: { ...formValue.supplierInfo },
-      genericSupplierType: formValue.genericSupplierType
-    };
+    const v = this.supplierForm.value;
 
-    const op = this.isEditMode
-      ? this.supplierService.updateSupplier(payload)
-      : this.supplierService.addSupplier(payload);
+    // Build flat SupplierType payload (no supplierInfo nesting)
+    const payload: SupplierType = {
+      id: v.id ?? undefined,
+      name: v.name,
+      lastname: v.lastname,
+      phone: v.phone,
+      email: v.email,
+      address: v.address,
+      region: v.region, // BaseType object expected by backend
+      genericSupplierType: v.genericSupplierType, // BaseType object expected by backend
+      hasStorage: !!v.hasStorage,
+      matriculeFiscal: v.matriculeFiscal,
+      rib: v.rib,
+      bankName: v.bankName // supplierInfo removed in new model (fields are now flat)
+    } as SupplierType;
+
+    const op = this.isEditMode ? this.supplierService.updateSupplier(payload) : this.supplierService.addSupplier(payload);
 
     this.subs.add(
       op.subscribe({
         next: (res) => {
-          if (res.success) {
+          if (res?.success) {
             this.toastService.success(
-              this.isEditMode ? 'Fournisseur modifié avec succès' : 'Fournisseur créé avec succès'
+              this.isEditMode
+                ? this.translateService.instant('SUPPLIER.MESSAGES.UPDATED') || 'Fournisseur modifié avec succès'
+                : this.translateService.instant('SUPPLIER.MESSAGES.CREATED') || 'Fournisseur créé avec succès'
             );
             this.router.navigate(['/reception/fournisseur']);
           } else {
-            this.error = res.message || 'Erreur lors de l\'opération';
+            this.error = res?.message || this.translateService.instant('SUPPLIER.ERRORS.SAVE') || "Erreur lors de l'opération";
           }
           this.loading = false;
         },
         error: (err) => {
           console.error('Error saving supplier:', err);
-          this.error = 'Erreur lors de l\'opération';
+          this.error = this.translateService.instant('SUPPLIER.ERRORS.SAVE') || "Erreur lors de l'opération";
           this.loading = false;
         }
       })
     );
   }
 
-  markFormGroupTouched(formGroup: FormGroup): void {
-    Object.values(formGroup.controls).forEach((control) => {
-      control.markAsTouched();
-      if ((control as FormGroup).controls) {
-        this.markFormGroupTouched(control as FormGroup);
-      }
-    });
-  }
-
   ngOnDestroy(): void {
     this.subs.unsubscribe();
   }
+
   getErrorMessage(controlName: string): string {
     const control = this.supplierForm.get(controlName);
     if (control?.hasError('required')) {
@@ -187,6 +157,60 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
       const maxLength = control.getError('maxlength').requiredLength;
       return this.translateService.instant('COMMON.VALIDATION.MAX_LENGTH', { maxLength });
     }
+    if (control?.hasError('minlength')) {
+      const minLength = control.getError('minlength').requiredLength;
+      return this.translateService.instant('COMMON.VALIDATION.MIN_LENGTH', { minLength });
+    }
+    if (control?.hasError('pattern')) {
+      return this.translateService.instant('COMMON.VALIDATION.PATTERN');
+    }
     return '';
+  }
+
+  private loadSupplier(id: string): void {
+    this.loading = true;
+    this.error = null;
+
+    this.subs.add(
+      this.supplierService.getSupplier(id).subscribe({
+        next: (res) => {
+          if (res?.success && res.data) {
+            const supplier = (Array.isArray(res.data) ? res.data[0] : res.data) as SupplierType;
+
+            this.supplierForm.patchValue({
+              id: supplier.id ?? '',
+              name: supplier.name ?? '',
+              lastname: supplier.lastname ?? '',
+              phone: supplier.phone ?? '',
+              email: supplier.email ?? '',
+              address: supplier.address ?? '',
+              region: supplier.region ?? null,
+              genericSupplierType: supplier.genericSupplierType ?? null,
+              hasStorage: supplier.hasStorage ?? false,
+              matriculeFiscal: supplier.matriculeFiscal ?? '',
+              rib: supplier.rib ?? '',
+              bankName: supplier.bankName ?? ''
+            });
+          } else {
+            this.error = this.translateService.instant('SUPPLIER.ERRORS.NOT_FOUND') || 'Fournisseur non trouvé';
+          }
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error('Error loading supplier:', err);
+          this.error = this.translateService.instant('SUPPLIER.ERRORS.LOAD') || 'Erreur lors du chargement du fournisseur';
+          this.loading = false;
+        }
+      })
+    );
+  }
+
+  private markFormGroupTouched(formGroup: FormGroup): void {
+    Object.values(formGroup.controls).forEach((control: any) => {
+      control.markAsTouched?.();
+      if (control?.controls) {
+        this.markFormGroupTouched(control as FormGroup);
+      }
+    });
   }
 }

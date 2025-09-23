@@ -14,20 +14,19 @@ import {
   FormsModule,
   ReactiveFormsModule,
   ValidationErrors,
-  ValidatorFn,
   Validators
 } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
- import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
+import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
 import { BaseType } from '../../../shared/models/base-type';
 import { SupplierType } from '../../../shared/models/supplier-type';
 import { GenericTypeService } from '../../../shared/services/generic-type.service';
 import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
 import { SupplierTypeService } from '../../../shared/services/supplier.service';
 import { TypeCategory } from '../../../shared/models/type-category.enum';
- import { MatIcon } from '@angular/material/icon';
+import { MatIcon } from '@angular/material/icon';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { map, startWith } from 'rxjs/operators';
 import { OperationType } from '../../../shared/models/operation-type.enum';
@@ -244,10 +243,10 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.receptionForm.get('supplier')!.valueChanges.subscribe((supplier: SupplierType | null) => {
         if (this.hydrating) return; // prevent overwriting while patching
-        if (!(supplier && supplier.supplierInfo && supplier.supplierInfo.region)) return;
+        if (!(supplier && supplier && supplier.region)) return;
 
         if (this.regions?.length) {
-          const matchingRegion = this.regions.find((r) => r.id === supplier.supplierInfo.region.id);
+          const matchingRegion = this.regions.find((r) => r.id === supplier.region.id);
           if (matchingRegion) {
             this.receptionForm.patchValue({ region: matchingRegion }, { emitEvent: false });
             const currentParcel = this.receptionForm.get('parcel')!.value;
@@ -257,22 +256,18 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
           }
         } else {
           // regions not loaded yet: use raw object from supplier
-          this.receptionForm.patchValue({ region: supplier.supplierInfo.region }, { emitEvent: false });
+          this.receptionForm.patchValue({ region: supplier.region }, { emitEvent: false });
           const currentParcel = this.receptionForm.get('parcel')!.value;
           if (!currentParcel || (typeof currentParcel === 'object' && !currentParcel.id)) {
-            this.receptionForm.patchValue({ parcel: supplier.supplierInfo.region }, { emitEvent: false });
+            this.receptionForm.patchValue({ parcel: supplier.region }, { emitEvent: false });
           }
         }
       })
     );
 
     // --- recompute net on weight changes ---
-    this.subscriptions.push(
-      this.receptionForm.get('poidsBrute')!.valueChanges.subscribe(() => this.recomputeNet()),
-    );
-    this.subscriptions.push(
-      this.receptionForm.get('poidsCamionVide')!.valueChanges.subscribe(() => this.recomputeNet()),
-    );
+    this.subscriptions.push(this.receptionForm.get('poidsBrute')!.valueChanges.subscribe(() => this.recomputeNet()));
+    this.subscriptions.push(this.receptionForm.get('poidsCamionVide')!.valueChanges.subscribe(() => this.recomputeNet()));
 
     // --- load Suppliers ---
     this.pendingCalls++;
@@ -294,7 +289,10 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
           const deliveryCount = this.deliveries.length;
           const maxLot = this.getMaxLotNumber();
           this.receptionForm.patchValue(
-            { deliveryNumber: deliveryCount + 1, lotNumber: maxLot + 1 },
+            {
+              deliveryNumber: deliveryCount + 1,
+              lotNumber: maxLot + 1
+            },
             { emitEvent: false }
           );
         }
@@ -463,12 +461,10 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     this.router.navigate(['/reception/reception-olive']);
   }
 
-  displayFn<T extends { name?: string; supplierInfo?: { name: string; lastname: string } }>(item: T): string {
+  displayFn<T extends { name: string; lastname: string }>(item: T): string {
     if (!item) return '';
-    if (item.supplierInfo) {
-      return item.supplierInfo.name + ' ' + item.supplierInfo.lastname;
-    }
-    return item.name || '';
+
+    return item.name + ' ' + item.lastname;
   }
 
   validateSupplier() {
@@ -492,9 +488,6 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     const isClient = fieldKey === 'OLIVE_RECEPTION.FORM.FIELDS.CLIENT';
     this.partyRegionSectionKey = isClient ? 'OLIVE_RECEPTION.FORM.SECTIONS.CLIENT_REGION' : 'OLIVE_RECEPTION.FORM.SECTIONS.SUPPLIER_REGION';
   }
-
-
-
 
   /** Décrémente le compteur et cache le spinner quand tout est terminé */
   private markCallDone(): void {
@@ -530,7 +523,6 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     const lotNumbers = this.deliveries.map((d) => parseInt(d.lotNumber?.replace(/^\D+/, '') ?? '0', 10)).filter((n) => !isNaN(n));
     return lotNumbers.length ? Math.max(...lotNumbers) : 0;
   }
-
 
   // Generate lot number based on olive type and delivery number
   private generateLotNumber(oliveType: OliveType | null, deliveryNumber: number): string {
@@ -647,7 +639,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     // Supplier filter
     this.filteredSuppliers = this.receptionForm.get('supplier')!.valueChanges.pipe(
       startWith(''),
-      map((value) => this._filter(this.suppliers, value, 'supplierInfo.name'))
+      map((value) => this._filter(this.suppliers, value, 'name'))
     );
 
     // Operation type filter

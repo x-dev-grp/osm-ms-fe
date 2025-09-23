@@ -23,6 +23,7 @@ import {
 } from '../../../shared/services/oil-transaction-view.service';
 import {OilTransactionFormService} from '../../../shared/services/oil-transaction-form.service';
 import { ToastService } from '../../../shared/services/toast.service';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-view-oil-transaction',
@@ -38,7 +39,8 @@ import { ToastService } from '../../../shared/services/toast.service';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule
+    MatSelectModule,
+    MatTooltip
   ],
   templateUrl: './view-oil-transaction.component.html',
   styleUrls: ['./view-oil-transaction.component.scss']
@@ -75,7 +77,6 @@ export class ViewOilTransactionComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.initializeComponent();
-
   }
 
   ngOnDestroy(): void {
@@ -110,20 +111,21 @@ export class ViewOilTransactionComponent implements OnInit, OnDestroy {
     this.error = false;
     console.log('🔄 Envoi de la requête pour charger les données de la transaction:', transactionId);
 
-    this.viewService.loadTransactionViewData(transactionId)
+    this.viewService
+      .loadTransactionViewData(transactionId)
       .pipe(
         takeUntil(this.destroy$),
-        catchError(error => {
+        catchError((error) => {
           console.error('Error loading transaction data:', error);
           this.handleError('Failed to load transaction data');
           return of(null);
         })
       )
-      .subscribe(data => {
+      .subscribe((data) => {
         if (data) {
           console.log('✅ Données chargées avec succès pour la transaction:', transactionId, data);
           this.viewData = data;
-          console.log("transactipn", this.viewData)
+          console.log('transactipn', this.viewData);
           this.showExchangeForm = data.showExchangeForm;
           this.setupExchangeForm();
         }
@@ -136,16 +138,18 @@ export class ViewOilTransactionComponent implements OnInit, OnDestroy {
    */
   private setupFormSubscriptions(): void {
     // Subscribe to exchange form
-    this.formService.getExchangeForm()
+    this.formService
+      .getExchangeForm()
       .pipe(takeUntil(this.destroy$))
-      .subscribe(form => {
+      .subscribe((form) => {
         this.exchangeForm = form;
       });
 
     // Subscribe to exchange calculation
-    this.formService.getExchangeCalculation()
+    this.formService
+      .getExchangeCalculation()
       .pipe(takeUntil(this.destroy$))
-      .subscribe(calculation => {
+      .subscribe((calculation) => {
         this.exchangeCalculation = calculation;
       });
   }
@@ -156,9 +160,10 @@ export class ViewOilTransactionComponent implements OnInit, OnDestroy {
   private setupExchangeForm(): void {
     if (this.showExchangeForm && this.viewData) {
       // Listen to storage unit changes for recalculation
-      this.exchangeForm?.get('storageUnitDestinationId')?.valueChanges
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(storageUnitId => {
+      this.exchangeForm
+        ?.get('storageUnitDestinationId')
+        ?.valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe((storageUnitId) => {
           if (storageUnitId && this.viewData) {
             this.recalculateExchangeValues(storageUnitId);
           }
@@ -191,16 +196,14 @@ export class ViewOilTransactionComponent implements OnInit, OnDestroy {
     this.error = true;
     this.errorMessage = message;
     this.loading = false;
-    this.toast.error(
-      this.translate.instant('OIL_TRANSACTIONS.VIEW.MESSAGES.ERROR') );
+    this.toast.error(this.translate.instant('OIL_TRANSACTIONS.VIEW.MESSAGES.ERROR'));
   }
 
   /**
    * Handle successful operations
    */
   private handleSuccess(message: string): void {
-    this.toast.success(
-      this.translate.instant(message)  );
+    this.toast.success(this.translate.instant(message));
   }
 
   // Public methods for template
@@ -230,10 +233,11 @@ export class ViewOilTransactionComponent implements OnInit, OnDestroy {
     const confirmMessage = this.translate.instant('OIL_TRANSACTIONS.VIEW.MESSAGES.DELETE_CONFIRM');
     if (!confirm(confirmMessage)) return;
 
-         this.viewService.deleteTransaction(this.viewData.transaction.id)
-       .pipe(takeUntil(this.destroy$))
-       .subscribe({
-         next: (response: { success: boolean; message: string; data: void }) => {
+    this.viewService
+      .deleteTransaction(this.viewData.transaction.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response: { success: boolean; message: string; data: void }) => {
           if (response.success) {
             this.handleSuccess('OIL_TRANSACTIONS.VIEW.MESSAGES.DELETE_SUCCESS');
             this.router.navigate(['/storage/oil-transactions']);
@@ -261,8 +265,7 @@ export class ViewOilTransactionComponent implements OnInit, OnDestroy {
     // Validate form
     const validation = this.formService.validateForm();
     if (!validation.isValid) {
-      this.toast.warning(
-        validation.errors.join(', ') );
+      this.toast.warning(validation.errors.join(', '));
       return;
     }
 
@@ -274,14 +277,10 @@ export class ViewOilTransactionComponent implements OnInit, OnDestroy {
     }
 
     // Validate with business rules
-    const businessValidation = this.viewService.validateExchangeCompletion(
-      formData,
-      this.viewData.availableStorageUnits
-    );
+    const businessValidation = this.viewService.validateExchangeCompletion(formData, this.viewData.availableStorageUnits);
 
     if (!businessValidation.isValid) {
-      this.toast.warning(
-        businessValidation.errors.join(', ') );
+      this.toast.warning(businessValidation.errors.join(', '));
       return;
     }
 
@@ -297,7 +296,8 @@ export class ViewOilTransactionComponent implements OnInit, OnDestroy {
       transactionState: TransactionState.COMPLETED
     };
 
-    this.viewService.completeExchange(payload)
+    this.viewService
+      .completeExchange(payload)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response: ApiResponse<OilTransaction>) => {
@@ -347,7 +347,7 @@ export class ViewOilTransactionComponent implements OnInit, OnDestroy {
    * Get storage unit name
    */
   getStorageUnitName(unitId: string): string {
-    const unit = this.viewData?.availableStorageUnits.find(u => u.unit.id === unitId);
+    const unit = this.viewData?.availableStorageUnits.find((u) => u.unit.id === unitId);
     return unit ? unit.unit.name : 'Unknown';
   }
 
@@ -355,7 +355,7 @@ export class ViewOilTransactionComponent implements OnInit, OnDestroy {
    * Get available capacity for storage unit
    */
   getAvailableCapacity(unitId: string): number {
-    const unit = this.viewData?.availableStorageUnits.find(u => u.unit.id === unitId);
+    const unit = this.viewData?.availableStorageUnits.find((u) => u.unit.id === unitId);
     return unit ? unit.availableCapacity : 0;
   }
 
@@ -363,7 +363,7 @@ export class ViewOilTransactionComponent implements OnInit, OnDestroy {
    * Get storage unit display info
    */
   getStorageUnitInfo(unitId: string): string {
-    const unit = this.viewData?.availableStorageUnits.find(u => u.unit.id === unitId);
+    const unit = this.viewData?.availableStorageUnits.find((u) => u.unit.id === unitId);
     return unit ? unit.displayInfo : 'Unknown';
   }
 

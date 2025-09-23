@@ -90,7 +90,7 @@ mat-list-item {
     display: flex;
     align-items: center;
     margin-bottom: 16px;
-    
+
     .card-icon {
       font-size: 28px;
       height: 28px;
@@ -98,7 +98,7 @@ mat-list-item {
       margin-right: 12px;
       flex-shrink: 0;
     }
-    
+
     .card-title {
       margin: 0;
       font-size: 16px;
@@ -112,7 +112,7 @@ mat-list-item {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    
+
     .stat-item {
       display: flex;
       justify-content: space-between;
@@ -121,13 +121,13 @@ mat-list-item {
       background-color: rgba(0, 0, 0, 0.02);
       border-radius: 8px;
       border-left: 3px solid transparent;
-      
+
       &.centered {
         flex-direction: column;
         text-align: center;
         gap: 4px;
       }
-      
+
       .stat-label {
         font-size: 13px;
         color: rgba(0, 0, 0, 0.6);
@@ -135,31 +135,31 @@ mat-list-item {
         text-transform: uppercase;
         letter-spacing: 0.5px;
       }
-      
+
       .stat-value {
         font-size: 16px;
         font-weight: 700;
-        
+
         &.primary {
           color: var(--primary-500, #1976d2);
           border-left-color: var(--primary-500, #1976d2);
         }
-        
+
         &.warning {
           color: var(--warn-500, #f57c00);
           border-left-color: var(--warn-500, #f57c00);
         }
-        
+
         &.accent {
           color: var(--accent-500, #9c27b0);
           border-left-color: var(--accent-500, #9c27b0);
         }
-        
+
         &.amount {
           font-family: 'Courier New', monospace;
           font-size: 15px;
         }
-        
+
         &.large {
           font-size: 24px;
         }

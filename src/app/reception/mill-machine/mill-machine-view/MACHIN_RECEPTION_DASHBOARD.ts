@@ -1,16 +1,12 @@
- import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
- import {
-  AttributeType,
-  DashboardConfig,
-   FieldType
-} from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { SearchOperation } from '../../../shared/models/advanced-search/searchOperation';
+import { AttributeType, DashboardConfig, FieldType } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
 
 export const MACHIN_RECEPTION_DASHBOARD: DashboardConfig = {
   icon: 'list_alt',
   addNewItem: false,
-  title: "List de trutiration",
+  title: 'List de trutiration',
   titleTranslatePath: 'DELIVERIES.OIL_TITLE',
-  baseURL: 'deliveries',
+  baseURL: 'production/deliveries',
   searchEndpoint: 'production/deliveries',
   defaultSearchData: {
     page: 0,
@@ -20,9 +16,7 @@ export const MACHIN_RECEPTION_DASHBOARD: DashboardConfig = {
     searchData: {
       operation: SearchOperation.AND,
       searchs: [],
-      search: {
-
-      }
+      search: {}
     }
   },
   fields: [
@@ -79,10 +73,10 @@ export const MACHIN_RECEPTION_DASHBOARD: DashboardConfig = {
       exportable: true,
       dataTable: true,
       filterable: true,
-      valuePath: 'supplierInfo.name',
+      valuePath: 'name',
       valueAttributeType: AttributeType.string,
-      filterAttribute: 'supplier.supplierInfo.name',
-      getOptionsUrl:'production/suppliers_type'
+      filterAttribute: 'supplier.name',
+      getOptionsUrl: 'production/suppliers_type'
     },
     {
       name: 'region',
@@ -95,8 +89,7 @@ export const MACHIN_RECEPTION_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.autocomplete,
       valuePath: 'name',
       valueAttributeType: AttributeType.string,
-      filterAttribute: 'region.name',
-
+      filterAttribute: 'region.name'
     },
     {
       name: 'poidsNet',
@@ -119,8 +112,9 @@ export const MACHIN_RECEPTION_DASHBOARD: DashboardConfig = {
       filterable: true,
       valuePath: 'name',
       valueAttributeType: AttributeType.string,
-      fieldType: FieldType.autocomplete,
-    },{
+      fieldType: FieldType.autocomplete
+    },
+    {
       name: 'oliveType',
       label: "Type d'olive",
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.OLIVE_TYPE',
@@ -130,7 +124,7 @@ export const MACHIN_RECEPTION_DASHBOARD: DashboardConfig = {
       filterable: true,
       valuePath: 'name',
       valueAttributeType: AttributeType.string,
-      fieldType: FieldType.autocomplete,
+      fieldType: FieldType.autocomplete
     },
     {
       name: 'operationType',

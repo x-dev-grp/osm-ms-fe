@@ -16,8 +16,8 @@ export function getOlivePdfConfig(delivery: UnifiedDelivery): PdfConfig {
       {
         label: 'PDF.SUPPLIER',
         value: [
-          delivery.supplier?.supplierInfo?.name || '',
-          delivery.supplier?.supplierInfo?.lastname || ''
+          delivery.supplier?.name || '',
+          delivery.supplier?.lastname || ''
         ].filter(Boolean).join(' ') // Safely join name + lastname
       },
       {label: 'PDF.PARCEL', value: String(delivery.parcel?.name || '')},

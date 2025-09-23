@@ -22,7 +22,7 @@ export function getProductionPdfConfig(data: UnifiedDelivery, parameters: any): 
       {label: 'PDF.RECEPTION_NUMBER', value: data.deliveryNumber || '-'},
       {
         label: 'PDF.SUPPLIER',
-        value: data.supplier?.supplierInfo?.name + ' ' + data.supplier.supplierInfo.lastname || '-'
+        value: data.supplier?.name + ' ' + data.supplier.lastname || '-'
       },
       {label: 'PDF.REGION', value: data.region?.name || '-'},
       {label: 'PDF.OLIVE_VARIETY', value: data.oliveVariety?.name || '-'},

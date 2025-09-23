@@ -1,8 +1,4 @@
-import {
-  AttributeType,
-  DashboardConfig,
-  FieldType
-} from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { AttributeType, DashboardConfig, FieldType } from '../../shared/modules/osm-dashboard/models/dashboard-config';
 
 export const BANK_ACCOUNTS_DASHBOARD_CONFIG: DashboardConfig = {
   icon: 'account_balance',
@@ -111,7 +107,7 @@ export const BANK_ACCOUNTS_DASHBOARD_CONFIG: DashboardConfig = {
       fieldType: FieldType.text,
       exportable: true,
       sortable: true,
-      dataTable: true,
+      dataTable: false,
       filterable: true
     },
     {
@@ -122,10 +118,10 @@ export const BANK_ACCOUNTS_DASHBOARD_CONFIG: DashboardConfig = {
       fieldType: FieldType.date,
       exportable: true,
       sortable: true,
-      dataTable: true,
+      dataTable: false,
       filterable: true
-    },
-     ],
+    }
+  ],
 
   /* ── Menu actions (no status mapping) ───────────────────────── */
 

@@ -21,6 +21,15 @@
       <mat-icon>refresh</mat-icon>
       <span class="d-none d-sm-inline ms-1">{{ 'COMMON.REFRESH' | translate }}</span>
     </button>
+    <button
+      (click)="openDailyMetricDialog()"
+      [disabled]="isLoading || !(canEditToday$ | async)"
+      color="accent"
+      mat-stroked-button
+      matTooltip="Saisir la valeur d'aujourd'hui">
+      <mat-icon>trending_up</mat-icon>
+      <span class="d-none d-sm-inline ms-1">Valeur du jour</span>
+    </button>
   </div>
 </div>
 
@@ -366,6 +375,25 @@
 
 
 <div *ngIf="!isLoading" class="row g-3 mt-1">
+  <div class="col-12">
+    <app-card
+      [cardTitle]="'DASHBOARD.ANALYTICS.BASE_UNIT_PRICE_TREND.TITLE' | translate"
+      [icon]="'timeline'"
+      class="card--chart ">
+      <div class="chart-container wide">
+        <apx-chart
+          [chart]="baseUnitPriceTrendChartOptions.chart"
+          [colors]="baseUnitPriceTrendChartOptions.colors"
+          [markers]="baseUnitPriceTrendChartOptions.markers"
+          [series]="baseUnitPriceTrendChartOptions.series"
+          [stroke]="baseUnitPriceTrendChartOptions.stroke"
+          [tooltip]="baseUnitPriceTrendChartOptions.tooltip"
+          [xaxis]="baseUnitPriceTrendChartOptions.xaxis"
+          [yaxis]="baseUnitPriceTrendChartOptions.yaxis">
+        </apx-chart>
+      </div>
+    </app-card>
+  </div>
 <!--  <app-card>-->
 <!--    <div class="toolbar toolbar&#45;&#45;split" style="-->
 <!--    display: flex;-->
@@ -390,23 +418,7 @@
 <!--      </div>-->
 
       <!-- Right: Size -->
-      <div class="toolbar__right">
-        <mat-button-toggle-group
-          (change)="updateChartSize($event.value)"
-          [value]="currentChartSize"
-           class="toolbar__toggle">
-          <mat-button-toggle value="small">
-            <mat-icon>crop_square</mat-icon>
-          </mat-button-toggle>
-          <mat-button-toggle value="medium">
-            <mat-icon>crop_landscape</mat-icon>
-          </mat-button-toggle>
-          <mat-button-toggle value="large">
-            <mat-icon>crop_169</mat-icon>
-          </mat-button-toggle>
-        </mat-button-toggle-group>
-      </div>
-    </div>
+
     <div class="col-12">
       <app-card [cardTitle]="'DASHBOARD.ANALYTICS.RECEPTION_TREND.TITLE' | translate" [icon]="'timeline'"
                 class="card--chart ">
@@ -467,7 +479,25 @@
         </div>
       </app-card>
     </div>
+</div>
+<ng-template #dailyMetricDialog>
+  <div class="form-section" style="min-width: 360px">
+    <div class="section-header">
+      <mat-icon>trending_up</mat-icon>
+      <h3 class="m-0">Valeur quotidienne</h3>
+    </div>
 
-<!--  </app-card>-->
+    <p class="dialog-description">Saisissez la valeur du jour, elle sera enregistrée et visible dans les graphiques.</p>
 
-<!--</div>-->
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Valeur</mat-label>
+      <input [(ngModel)]="dailyMetricValue" matInput step="0.01" type="number">
+      <mat-icon matSuffix>edit</mat-icon>
+    </mat-form-field>
+
+    <div class="dialog-actions" style="display:flex; gap:.5rem; justify-content:flex-end">
+      <button (click)="dailyMetricRef?.close()" mat-button>Annuler</button>
+      <button (click)="saveDailyMetric()" color="primary" mat-flat-button>Enregistrer</button>
+    </div>
+  </div>
+</ng-template>

@@ -27,6 +27,11 @@ import { PdfConfigFactoryService } from '../../../shared/services/pdf-config-fac
 import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
 import { CardComponent } from '../../../theme/components/card/card.component';
 import { DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { Linter } from 'eslint';
+import SourceType = Linter.SourceType;
+import { OilSale } from '../../../finance/models/oil-sale.model';
+import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
+import { WasteSale } from '../../../finance/models/Waste.model';
 
 export enum PaymentSourceType {
   DELIVERY_prc = 'delivery',
@@ -115,8 +120,18 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
     switch (actionLabel) {
       case 'GEN_INVOICE':
         if (e.row) {
+          const row: Row = e.row;
           const sourceType = this.getCurrentInvoceSourceType();
           const cfg = this.pdfFactory.build(e.row,sourceType);
+
+          const hasDebt = hasUnpaidAmount(row) && row.unpaidAmount > 0;
+
+          // if (hasDebt) {
+          //   this.pdfFactureService.generatePdfNoteDocument(cfg);
+          // } else {
+          //   this.pdfFactureService.generatePdfDocument(cfg);
+          // }
+
 
           // Vérifier si c'est une note de paiement ou une facture
           if ('total' in cfg && 'paid' in cfg && 'unpaid' in cfg) {
@@ -519,3 +534,10 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
     this.countData();
   }
 }
+type Row = OilSale | UnifiedDelivery | WasteSale;
+
+function hasUnpaidAmount(x: unknown): x is { unpaidAmount: number } {
+  return !!x && typeof (x as any).unpaidAmount === 'number';
+}
+
+

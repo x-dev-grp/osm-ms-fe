@@ -532,6 +532,9 @@
   "Customer": "Customer",
   "DASHBOARD": {
     "ANALYTICS": {
+      "BASE_UNIT_PRICE_TREND": {
+        "TITLE": "Trend of Base purchase"
+      },
       "QUALITY_CONTROL": "Quality Control Distribution",
       "RECENT_RECEPTIONS": "Recent Receptions Volume",
       "RECEPTION_STATUS": "Receptions by Status",
@@ -999,6 +1002,11 @@
       "HR_CONFIG": "HR Config",
       "OTHER_CONFIG": "Other Config",
       "PRODUCTION_CONFIG": "Production Config"
+    },
+    "MESSAGES": {
+      "LOAD_ERROR": "Failed to load general configuration.",
+      "LOGO_FORMAT": "Logo must be a JPEG or PNG file.",
+      "LOGO_TOO_LARGE": "Logo file is too large"
     },
     "TITLE": "General Configuration"
   },
@@ -2067,6 +2075,40 @@
   },
   "OSM_DASHBOARD": {
     "ACTIONS": {
+      "HABILITATION": "Authorization",
+      "USER": "User",
+      "ROLE": "Role",
+      "OSMUSER": "OSM User",
+      "PARAMETER": "Parameter",
+      "PERMISSION": "Permission",
+      "COMPANYPROFILE": "Company Profile",
+      "RECEPTION": "Reception",
+      "SUPPLIER": "Supplier",
+      "TRANSPORTER": "Transporter",
+      "UNIFIEDDELIVERY": "Unified Delivery",
+      "FINANCE": "Finance",
+      "EXPENSE": "Expense",
+      "OILSALE": "Oil Sale",
+      "BANKACCOUNT": "Bank Account",
+      "FINANCIALTRANSACTION": "Financial Transaction",
+      "PRODUCTION": "Production",
+      "OILCREDIT": "Oil Credit",
+      "Base_type": "Base type",
+      "MACHINEPLAN": "Machine Plan",
+      "MILLMACHINE": "Mill Machine",
+      "STORAGEUNIT": "Storage Unit",
+      "OILTRANSACTION": "Oil Transaction",
+      "QUALITYCONTROLRULE": "Quality Control Rule",
+      "QUALITYCONTROLRESULT": "Quality Control Result",
+      "HR": "HR",
+      "POSTE": "Position",
+      "PAYROLL": "Payroll",
+      "CONTRACT": "Contract",
+      "EMPLOYEE": "Employee",
+      "POINTAGE": "Time Tracking",
+      "DEPARTMENT": "Department",
+      "LEAVEREQUEST": "Leave Request",
+      "APPROVE": "Approve",
       "ASSIGN_SUPPLIER": "Assign Supplier",
       "CANCEL": "Cancel",
       "COMPLETE": "Complete",
@@ -2090,8 +2132,10 @@
       "OIL_RECEPTION": "Oil Reception",
       "OLIVE_QUALITY": "Olive Quality Control",
       "PAY": "Pay",
+      "PLANNING": "Production Planning",
       "QUALITY": "Quality",
       "READ": "View",
+      "REJECT ": "Reject",
       "SET_PRICE": "Set price",
       "SUCCESS": "Operation completed successfully",
       "TITLE": "Actions",
@@ -2099,7 +2143,8 @@
       "UPDATE": "Edit",
       "UPDATE_OIL_QUALITY": "Update Oil Quality",
       "UPDATE_OLIVE_QUALITY": "Update Olive Quality",
-      "VALIDATE": "Validate"
+      "VALIDATE": "Validate",
+      "WRITE": "Add"
     },
     "COLUMNS": {
       "HIDE": "Hide Columns",
@@ -2157,6 +2202,7 @@
     "BANK_DETAILS": "Bank Details",
     "CATEGORY_OIL": "Oil Category",
     "CATEGORY_OLIVE": "Olive Category",
+    "CLIENT": "Client",
     "CLIENT_ADDRESS": "Address",
     "CLIENT_INFO": "Client",
     "CLIENT_NAME": "Client name",
@@ -2202,6 +2248,7 @@
     "EXPENSE_STATUS": "Status",
     "EXPENSE_VENDOR": "Vendor",
     "EXTRA_VIRGIN_OLIVE_OIL": "Extra Virgin Olive Oil",
+    "FACTURE": "Invoice",
     "FACTURE_RECEPTION": "Reception Invoice",
     "FACTURE_TRITURATION": "Crushing Invoice",
     "FACTURE_VENTE_DECHET": "Waste Sale Invoice",
@@ -2226,8 +2273,9 @@
     "LOT": "Lot",
     "LOT_GLOBAL": "Global Lot",
     "LOT_NUMBER": "Lot Number",
-    "MOBILE": "Pone N°",
+    "MOBILE": "Phone N°",
     "NCOLIS": "Package N°",
+    "NOTE_DE_PAIEMENT": "Payment note",
     "NOTE_PAYEMENT_RECEPTION": "Reception Payment Note",
     "NOTE_PAYEMENT_TRITURATION": "Crushing Payment Note",
     "NOTE_PAYEMENT_VENTE_DECHET": "Waste Sale Payment Note",
@@ -2244,6 +2292,7 @@
     "OLIVE_QUANTITY": "Olive Quantity",
     "OLIVE_TYPE": "Olive Type",
     "OLIVE_VARIETY": "Olive Variety",
+    "OPERATION_TYPE": "Operation type",
     "PAGE": "Page",
     "PAID": "Paid",
     "PAID_AMOUNT": "Paid Amount",
@@ -2286,6 +2335,7 @@
     "RECEPTION_SUPPLIER": "Reception Supplier",
     "RECIPIENT": "Recipient",
     "REFERENCE": "Reference",
+    "REFERENCE_DATE": "Reference date",
     "REGION": "Region",
     "REMAINING_AMOUNT": "Remaining Amount",
     "REVISION": "Revision",
@@ -2853,6 +2903,9 @@
   "TRANSACTIONS": {
     "FIELDS": {
       "TRANSACTION_TYPE": "Transaction Type"
+    },
+    "PAYMENT_METHODS": {
+      "CASH": "cash"
     }
   },
   "Table": "Table",

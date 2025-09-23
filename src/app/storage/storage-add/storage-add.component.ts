@@ -100,15 +100,15 @@ export class StorageAddComponent implements OnInit, OnDestroy {
         maxCapacity: [null, [Validators.required, Validators.min(1)]],
         currentVolume: [0, [Validators.required, Validators.min(0)]],
 
-        qualityGrade: [null, Validators.required],   // 'vierge_extra' | 'vierge' | ...
-        oilVariety: [null, Validators.required],     // BaseType full object
+        qualityGrade: [null, Validators.required], // 'vierge_extra' | 'vierge' | ...
+        oilVariety: [null, Validators.required], // BaseType full object
         status: ['AVAILABLE', Validators.required],
 
         nextMaintenanceDate: [null],
         lastInspectionDate: [null],
 
         paidStorage: [false],
-        monthlyRentalPrice: [null, [Validators.min(0)]], // OPTIONAL
+        monthlyRentalPrice: [null, [Validators.min(0)]] // OPTIONAL
       },
       { validators: this.capacityNotExceededValidator }
     );
@@ -164,12 +164,12 @@ export class StorageAddComponent implements OnInit, OnDestroy {
       maxCapacity: Number(v.maxCapacity),
       currentVolume: Number(v.currentVolume),
       status: v.status,
-      qualityGrade: v.qualityGrade,                        // string
-      oilVariety: sanitizeBaseType(v.oilVariety),          // full object (sanitized)
+      qualityGrade: v.qualityGrade, // string
+      oilVariety: sanitizeBaseType(v.oilVariety), // full object (sanitized)
       nextMaintenanceDate: toISO(v.nextMaintenanceDate),
       lastInspectionDate: toISO(v.lastInspectionDate),
       paidStorage: !!v.paidStorage,
-      monthlyRentalPrice: v.monthlyRentalPrice != null && v.monthlyRentalPrice !== '' ? Number(v.monthlyRentalPrice) : null,
+      monthlyRentalPrice: v.monthlyRentalPrice != null && v.monthlyRentalPrice !== '' ? Number(v.monthlyRentalPrice) : 0.0
     };
 
     this.loading = true;

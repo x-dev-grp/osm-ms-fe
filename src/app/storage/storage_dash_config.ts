@@ -98,9 +98,9 @@ export const dashboardConfig: DashboardConfig = {
       exportable: true,
       dataTable: true,
       filterable: true,
-      valuePath: 'supplierInfo.name',
+      valuePath: 'name',
       valueAttributeType: AttributeType.string,
-      filterAttribute: 'supplier.supplierInfo.name',
+      filterAttribute: 'supplier.name',
       getOptionsUrl: 'production/suppliers_type'
     },
     {
@@ -141,7 +141,7 @@ export const dashboardConfig: DashboardConfig = {
       label: 'Statut',
       labelTranslatePath: 'SUPPLIER_PAYMENT.STATUS',
       attributeType: AttributeType.enum,
-      fieldType: FieldType.text,
+      fieldType: FieldType.select,
       sortable: true,
       filterable: true,
 
@@ -163,7 +163,7 @@ export const dashboardConfig: DashboardConfig = {
           value: 'MAINTENANCE',
           labelTranslatePath: 'STORAGE.VIEW.STATUS.MAINTENANCE'
         },
-        { label: 'En service', value: 'IN_USE', labelTranslatePath: 'STORAGE.VIEW.STATUS.IN_USE' },
+        { label: 'En service', value: 'STORAGE.VIEW.STATUS.IN_USE', labelTranslatePath: 'STORAGE.VIEW.STATUS.IN_USE' },
         {
           label: 'Nettoyage',
           value: 'CLEANING',
@@ -180,16 +180,20 @@ export const dashboardConfig: DashboardConfig = {
     },
     {
       name: 'qualityGrade',
-      label: 'qualityGrade',
+      label: 'quality Grade',
       labelTranslatePath: 'OIL_TRANSACTION.DETAILS.QUALITY_GRADE',
       attributeType: AttributeType.enum,
-      fieldType: FieldType.text,
+      fieldType: FieldType.select,
       sortable: true,
       filterable: true,
       dataTable: true,
       options: [
         { value: 'VIRGIN', label: 'VIRGIN', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.VIRGIN' },
-        { value: 'EXTRA_VIRGIN', label: 'OIL_TRANSACTIONS.QUALITY_GRADES.EXTRA_VIRGIN', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.EXTRA_VIRGIN' },
+        {
+          value: 'EXTRA_VIRGIN',
+          label: 'EXTRA_VIRGIN',
+          labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.EXTRA_VIRGIN'
+        },
         { value: 'LAMPANTE', label: 'LAMPANTE', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.LAMPANTE' },
         { value: 'REFINED', label: 'REFINED', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.REFINED' },
         { value: 'OTHER', label: 'OTHER', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.OTHER' }

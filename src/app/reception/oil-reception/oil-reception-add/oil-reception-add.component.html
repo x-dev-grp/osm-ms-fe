@@ -73,7 +73,7 @@
 
                 <mat-autocomplete #supplierAuto="matAutocomplete" [displayWith]="displayFn">
                   <mat-option *ngFor="let supplier of suppliers" [value]="supplier">
-                    {{ supplier.supplierInfo.name + ' ' + supplier.supplierInfo.lastname }}
+                    {{ supplier.name + ' ' + supplier.lastname }}
                   </mat-option>
                 </mat-autocomplete>
 

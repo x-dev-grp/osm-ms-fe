@@ -79,8 +79,8 @@ export class PdfGeneratorFactureService {
 
       doc.setFontSize(fontSizeMedium);
       doc.setFont(this._fontName, 'normal');
-      safeText(`Réf : ${config.reference}`, rightX, currentY + 32);
-      safeText(`Date : ${config.date || new Date().toLocaleDateString()}`, rightX, currentY + 39);
+      safeText(`${t('PDF.REFERENCE')} : ${config.reference}`, rightX, currentY + 32);
+      safeText(`${t('PDF.DATE')} : ${config.date || new Date().toLocaleDateString()}`, rightX, currentY + 39);
 
       // --- CLIENT INFO (dynamic block) ---
       const clientBlockX = rightX;
@@ -240,9 +240,9 @@ export class PdfGeneratorFactureService {
       doc.setFontSize(fontSizeSmall);
       safeText(config.companyInfo.companyName || t('PDF.COMPANY_NAME'), companyInfoX, companyInfoYStart);
       safeText(config.companyInfo.address || t('PDF.ADDRESS'), companyInfoX, companyInfoYStart + lineHeight);
-      safeText(`VAT ${config.companyInfo.vatNumber || t('PDF.VAT')}`, companyInfoX, companyInfoYStart + 2 * lineHeight);
-      safeText(`Mobile ${config.companyInfo.mobile || t('PDF.MOBILE')}`, companyInfoX, companyInfoYStart + 3 * lineHeight);
-      safeText(`w.${config.companyInfo.website || t('PDF.WEBSITE')}`, companyInfoX, companyInfoYStart + 4 * lineHeight);
+      safeText(`${t('PDF.VAT')} ${config.companyInfo.vatNumber || t('PDF.VAT')}`, companyInfoX, companyInfoYStart + 2 * lineHeight);
+      safeText(`${t('PDF.MOBILE')} ${config.companyInfo.mobile || t('PDF.MOBILE')}`, companyInfoX, companyInfoYStart + 3 * lineHeight);
+      safeText(`${t('PDF.WEBSITE')} ${config.companyInfo.website || t('PDF.WEBSITE')}`, companyInfoX, companyInfoYStart + 4 * lineHeight);
 
       // --- TITLE & REF (right) ---
       doc.setFontSize(fontSizeLarge);
@@ -252,8 +252,8 @@ export class PdfGeneratorFactureService {
 
       doc.setFontSize(fontSizeMedium);
       doc.setFont(this._fontName, 'normal');
-      safeText(`Réf : ${config.reference}`, rightX, currentY + 32);
-      safeText(`Date : ${config.date || new Date().toLocaleDateString()}`, rightX, currentY + 39);
+      safeText(`${t('PDF.REFERENCE')} : ${config.reference}`, rightX, currentY + 32);
+      safeText(`${t('PDF.DATE')} : ${config.date || new Date().toLocaleDateString()}`, rightX, currentY + 39);
 
       // --- CLIENT BLOCK (dynamic) ---
       const clientBlockX = rightX;

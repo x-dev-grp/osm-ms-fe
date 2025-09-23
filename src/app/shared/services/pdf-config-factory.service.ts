@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CompanyProfile } from '../models/CompanyProfile';
 import { PdfFactureConfig, PdfPaymentNoteConfig } from '../models/pdf-config.model';
- import { TranslateService } from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 import { UnifiedDelivery } from '../models/UnifiedDelivery';
 import { InvoiceSource } from '../../reception/suppliers/supplier-details/supplier-details.component';
 import { CompanyProfileService } from './company-profile.service';
@@ -31,18 +31,18 @@ function buildCompanyInfo(company: CompanyProfile) {
 }
 
 function supplierNameLike(data: any): string {
-  const s = (data as any)?.supplier?.supplierInfo;
+  const s = (data as any)?.supplier;
   const first = s?.name ?? '';
   const last = s?.lastname ?? '';
   return `${first} ${last}`.trim();
 }
 
 function supplierPhoneLike(data: any): string {
-  return (data as any)?.supplier?.supplierInfo?.phone ?? '';
+  return (data as any)?.supplier?.phone ?? '';
 }
 
 function supplierAddressLike(data: any): string {
-  return (data as any)?.supplier?.supplierInfo?.address ?? '';
+  return (data as any)?.supplier?.address ?? '';
 }
 
 @Injectable({ providedIn: 'root' })
@@ -50,7 +50,10 @@ export class PdfConfigFactoryService {
   private profile: CompanyProfile | null = null;
   private error: any | null = null;
 
-  constructor(private translateService: TranslateService,  private companyProfileService: CompanyProfileService ) {}
+  constructor(
+    private translateService: TranslateService,
+    private companyProfileService: CompanyProfileService
+  ) {}
 
   /**
    * Build a PDF config (Facture or Payment Note).
@@ -62,8 +65,12 @@ export class PdfConfigFactoryService {
     // Load company profile from localStorage (safe parse)
     try {
       this.companyProfileService.getProfile().subscribe({
-        next:  p => { this.profile =  p;   },
-        error: () => { this.error = 'Unable to load profile';   }
+        next: (p) => {
+          this.profile = p;
+        },
+        error: () => {
+          this.error = 'Unable to load profile';
+        }
       });
     } catch {
       this.profile = null;
@@ -101,7 +108,7 @@ export class PdfConfigFactoryService {
       const paid = this.getPaidAmount(data);
 
       const cfg: PdfPaymentNoteConfig = {
-        title:'PDF.NOTE_DE_PAIEMENT',
+        title: 'PDF.NOTE_DE_PAIEMENT',
         reference: this.getReferencePrefix(data, source, true),
         date: nowStr,
 
@@ -153,11 +160,11 @@ export class PdfConfigFactoryService {
   private getInvoiceTitle(data: any, source?: InvoiceSource): string {
     switch (source) {
       case InvoiceSource.DELIVERY_inv:
-        return `FACTURE ${data.lotNumber ?? '—'}`;
+        return this.translateService.instant('PDF.FACTURE') + ` ${data.lotNumber ?? '—'}`;
       case InvoiceSource.OIL_SALE_inv:
-        return 'PDF.FACTURE';
+        return this.translateService.instant('PDF.FACTURE');
       case InvoiceSource.WASTE_SALE_inv:
-        return 'PDF.FACTURE_VENTE_DECHET';
+        return this.translateService.instant('PDF.FACTURE_VENTE_DECHET');
       // Add other app-specific sources here if you have them
     }
     // Fallback to inferred type
@@ -179,12 +186,12 @@ export class PdfConfigFactoryService {
     switch (source) {
       case InvoiceSource.DELIVERY_inv:
         return isPaymentNote
-          ? `PAY-${inv}`
+          ? `PAY-${'XXXX'}`
           : `${InvoiceSource.DELIVERY_inv ? data.lotNumber || 'LOT' : 'LOT'} ${this.translateService.instant('OPERATION_TYPE.' + data.operationType) || ''}`.trim();
       case InvoiceSource.OIL_SALE_inv:
-        return isPaymentNote ? `PAY-VENTE-${inv}` : `VENTE-HUILE-${inv}`;
+        return isPaymentNote ? `PAY-VENTE-${'XXXX'}` : `VENTE-HUILE-${'XXXX'}`;
       case InvoiceSource.WASTE_SALE_inv:
-        return isPaymentNote ? `PAY-VENTE-DECHET-${inv}` : `VENTE-DECHET-${inv}`;
+        return isPaymentNote ? `PAY-VENTE-DECHET-${'XXXX'}` : `VENTE-DECHET-${'XXXX'}`;
     }
 
     // Fallback to inferred type
@@ -259,7 +266,8 @@ export class PdfConfigFactoryService {
     fileName: string;
   } {
     if (source === InvoiceSource.DELIVERY_inv) {
-      const unitPrice = Number((data as any)?.unitPrice ?? 0);
+      const { price = 0, poidsNet = 0 } = data as UnifiedDelivery;
+      const unitPrice = poidsNet > 0 ? price! / poidsNet : 0;
       const qty = Number((data as any)?.oilQuantity ?? (data as any)?.oliveQuantity ?? 0);
       const total = this.getTotalAmount(data);
       const desc = (data as any)?.deliveryType || "Huile d'olive";

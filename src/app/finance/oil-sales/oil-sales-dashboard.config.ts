@@ -1,10 +1,10 @@
-import {AttributeType, DashboardConfig, FieldType} from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { AttributeType, DashboardConfig, FieldType } from '../../shared/modules/osm-dashboard/models/dashboard-config';
 
 export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
   icon: 'local_gas_station',
-  title: 'Ventes d\'huile',
+  title: "Ventes d'huile",
   titleTranslatePath: 'OIL_SALES.TITLE',
-  baseURL: 'production/oil-sales',
+  baseURL: 'production/oil_sale',
   searchEndpoint: 'production/oil_sale',
   addNewItem: true,
   addNewItemUrl: 'finance/oil-sales/new',
@@ -61,7 +61,7 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
       label: 'qualityGrade',
       labelTranslatePath: 'OIL_TRANSACTION.DETAILS.QUALITY_GRADE',
       attributeType: AttributeType.enum,
-      fieldType: FieldType.autocomplete,
+      fieldType: FieldType.select,
       exportable: true,
       sortable: true,
       dataTable: true,
@@ -69,7 +69,11 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
 
       options: [
         { value: 'VIRGIN', label: 'VIRGIN', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.VIRGIN' },
-        { value: 'EXTRA_VIRGIN', label: 'OIL_TRANSACTIONS.QUALITY_GRADES.EXTRA_VIRGIN', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.EXTRA_VIRGIN' },
+        {
+          value: 'EXTRA_VIRGIN',
+          label: 'OIL_TRANSACTIONS.QUALITY_GRADES.EXTRA_VIRGIN',
+          labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.EXTRA_VIRGIN'
+        },
         { value: 'LAMPANTE', label: 'LAMPANTE', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.LAMPANTE' },
         { value: 'REFINED', label: 'REFINED', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.REFINED' },
         { value: 'OTHER', label: 'OTHER', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.OTHER' }
@@ -101,7 +105,7 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
 
     // ==================== SUPPLIER INFORMATION ====================
     {
-      name: 'supplier.supplierInfo.name',
+      name: 'supplier.name',
       label: 'Fournisseur',
       labelTranslatePath: 'OIL_SALES.FIELDS.SUPPLIER',
       attributeType: AttributeType.string,
@@ -126,7 +130,7 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
     },
     {
       name: 'oilType.name',
-      label: 'Type d\'huile',
+      label: "Type d'huile",
       labelTranslatePath: 'OIL_SALES.FIELDS.OIL_TYPE',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
@@ -151,8 +155,9 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
     {
       name: 'unitPrice',
       label: 'Prix unitaire',
-      isCurrency:true,
-      currency:'TND',labelTranslatePath: 'OIL_SALES.FIELDS.UNIT_PRICE',
+      isCurrency: true,
+      currency: 'TND',
+      labelTranslatePath: 'OIL_SALES.FIELDS.UNIT_PRICE',
       attributeType: AttributeType.number,
       fieldType: FieldType.text,
       exportable: true,
@@ -328,4 +333,3 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
   /* ── Menu actions ───────────────────────── */
   fileName: 'ventes-huile'
 };
-

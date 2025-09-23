@@ -85,7 +85,7 @@
           />
           <mat-autocomplete #supplierAuto="matAutocomplete" [displayWith]="displayFn" [requireSelection]="true">
             <mat-option *ngFor="let supplier of filteredSuppliers | async" [value]="supplier">
-              {{ supplier.supplierInfo.name }}
+              {{ supplier.name }}
             </mat-option>
           </mat-autocomplete>
           <mat-error *ngIf="submitted && form.get('destinataire')?.hasError('required')">

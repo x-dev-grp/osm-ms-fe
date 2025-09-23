@@ -100,7 +100,7 @@ export class WasteAddComponent implements OnInit{
     }
 
   displaySupplierFn = (supplier: SupplierType): string => {
-    return supplier ? `${supplier.supplierInfo.name} ${supplier.supplierInfo.lastname}` : '';
+    return supplier ? `${supplier.name} ${supplier.lastname}` : '';
   };
 
   // Gestionnaire d'événement pour l'autocomplete
@@ -255,7 +255,7 @@ export class WasteAddComponent implements OnInit{
     const filterValue = value.toLowerCase();
     return suppliers.filter(
       (supplier) =>
-        supplier.supplierInfo.name.toLowerCase().includes(filterValue) || supplier.supplierInfo.lastname.toLowerCase().includes(filterValue)
+        supplier.name.toLowerCase().includes(filterValue) || supplier.lastname.toLowerCase().includes(filterValue)
     );
   }
 

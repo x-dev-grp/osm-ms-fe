@@ -67,19 +67,19 @@
             <div class="info-row">
               <span class="label">{{ 'OIL_SALES.CUSTOMER_NAME' | translate }}:</span>
               <span
-                class="value">{{ oilSale?.supplier?.supplierInfo.name }} {{ oilSale.supplier?.supplierInfo.lastname }}</span>
+                class="value">{{ oilSale?.supplier?.name }} {{ oilSale.supplier?.lastname }}</span>
             </div>
-            <div class="info-row" *ngIf="oilSale.supplier?.supplierInfo?.email">
+            <div class="info-row" *ngIf="oilSale.supplier?.email">
               <span class="label">{{ 'OIL_SALES.CUSTOMER_EMAIL' | translate }}:</span>
-              <span class="value">{{ oilSale.supplier?.supplierInfo.email }}</span>
+              <span class="value">{{ oilSale.supplier?.email }}</span>
             </div>
-            <div class="info-row" *ngIf="oilSale.supplier?.supplierInfo?.phone">
+            <div class="info-row" *ngIf="oilSale.supplier?.phone">
               <span class="label">{{ 'OIL_SALES.CUSTOMER_PHONE' | translate }}:</span>
-              <span class="value">{{ oilSale.supplier?.supplierInfo.phone }}</span>
+              <span class="value">{{ oilSale.supplier?.phone }}</span>
             </div>
-            <div class="info-row" *ngIf="oilSale.supplier?.supplierInfo?.address">
+            <div class="info-row" *ngIf="oilSale.supplier?.address">
               <span class="label">{{ 'OIL_SALES.CUSTOMER_ADDRESS' | translate }}:</span>
-              <span class="value">{{ oilSale.supplier?.supplierInfo.address }}</span>
+              <span class="value">{{ oilSale.supplier?.address }}</span>
             </div>
           </div>
         }

@@ -17,8 +17,8 @@ export function getOilPdfConfig(delivery: UnifiedDelivery): PdfConfig {
       {
         label: 'PDF.SUPPLIER',
         value: [
-          delivery.supplier?.supplierInfo?.name || '',
-          delivery.supplier?.supplierInfo?.lastname || ''
+          delivery.supplier?.name || '',
+          delivery.supplier?.lastname || ''
         ].filter(Boolean).join(' ')
       },
 

@@ -86,7 +86,7 @@ export class SupplierComponent implements OnInit, AfterViewInit, OnChanges {
                   equalValue:false
                 },
                 ...this.searchData.searchData?.search,
-                'supplierInfo.name': {
+                'name': {
                   likeValue: value
                 }
               }
@@ -145,7 +145,7 @@ export class SupplierComponent implements OnInit, AfterViewInit, OnChanges {
 
   displayWith = (option: any): string | null => {
     if (option) {
-      return option?.supplierInfo.name + ' ' + option?.supplierInfo.name;
+      return option?.name + ' ' + option?.name;
     }
     return null;
   };

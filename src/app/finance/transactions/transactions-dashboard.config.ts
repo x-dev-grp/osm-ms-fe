@@ -1,9 +1,5 @@
 import { SearchOperation } from 'src/app/shared/models/advanced-search/searchOperation';
-import {
-  AttributeType,
-  DashboardConfig,
-  FieldType,
-} from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { AttributeType, DashboardConfig, FieldType } from '../../shared/modules/osm-dashboard/models/dashboard-config';
 
 export const TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
   icon: 'account_balance_wallet',
@@ -37,8 +33,8 @@ export const TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
         { value: 'DEBIT', label: 'Débit', labelTranslatePath: 'TRANSACTIONS.TYPES.DEBIT' },
         { value: 'LOAN', label: 'Prêt', labelTranslatePath: 'TRANSACTIONS.TYPES.LOAN' },
         { value: 'INTERNAL_TRANSFER', label: 'Transfert Interne', labelTranslatePath: 'TRANSACTIONS.TYPES.INTERNAL_TRANSFER' },
-        { value: 'OIL_SALE', label: 'Vente d\'Huile', labelTranslatePath: 'TRANSACTIONS.TYPES.OIL_SALE' },
-        { value: 'OIL_PURCHASE', label: 'Achat d\'Huile', labelTranslatePath: 'TRANSACTIONS.TYPES.OIL_PURCHASE' },
+        { value: 'OIL_SALE', label: "Vente d'Huile", labelTranslatePath: 'TRANSACTIONS.TYPES.OIL_SALE' },
+        { value: 'OIL_PURCHASE', label: "Achat d'Huile", labelTranslatePath: 'TRANSACTIONS.TYPES.OIL_PURCHASE' },
         { value: 'SUPPLIER_PAYMENT', label: 'Paiement Fournisseur', labelTranslatePath: 'TRANSACTIONS.TYPES.SUPPLIER_PAYMENT' },
         { value: 'SUPPLIER_CREDIT', label: 'Crédit Fournisseur', labelTranslatePath: 'TRANSACTIONS.TYPES.SUPPLIER_CREDIT' },
         { value: 'DEPOSIT', label: 'Dépôt', labelTranslatePath: 'TRANSACTIONS.TYPES.DEPOSIT' },
@@ -114,7 +110,7 @@ export const TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
       label: 'Méthode de Paiement',
       labelTranslatePath: 'TRANSACTIONS.FIELDS.PAYMENT_METHOD',
       attributeType: AttributeType.enum,
-      fieldType: FieldType.autocomplete,
+      fieldType: FieldType.select,
       exportable: true,
       sortable: true,
       dataTable: true,
@@ -131,7 +127,7 @@ export const TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
     },
 
     {
-      name: 'supplier.supplierInfo.name',
+      name: 'supplier.name',
       label: 'Fournisseur',
       labelTranslatePath: 'TRANSACTIONS.FIELDS.SUPPLIER',
       attributeType: AttributeType.string,
@@ -271,5 +267,5 @@ export const TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
       },
       searchs: []
     }
-  },
+  }
 };

@@ -1,16 +1,16 @@
-import {Component} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {OsmDashboard} from '../../shared/modules/osm-dashboard/osm-dashboard';
-import {LIST_RECEPTION_DASHBOARD} from './LIST_RECEPTION_DASHBOARD';
-import {UnifiedDelivery} from '../../shared/models/UnifiedDelivery';
-import {UnifiedDeliveryService} from '../../shared/services/delivery.service';
-import {tap} from 'rxjs';
-import {Router} from '@angular/router';
-import {PdfGeneratorService} from '../../shared/services/pdf-generator.service';
-import {getProductionPdfConfig} from "./production-pdf.config";
-import {ToastService} from '../../shared/services/toast.service';
-import {getOlivePdfConfig} from '../olive-reception/olive-pdf.config';
-import {getControlQualitePdfConfig} from "../quality-control-list/PDF-controlQualite.config";
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
+import { LIST_RECEPTION_DASHBOARD } from './LIST_RECEPTION_DASHBOARD';
+import { UnifiedDelivery } from '../../shared/models/UnifiedDelivery';
+import { UnifiedDeliveryService } from '../../shared/services/delivery.service';
+import { tap } from 'rxjs';
+import { Router } from '@angular/router';
+import { PdfGeneratorService } from '../../shared/services/pdf-generator.service';
+import { getProductionPdfConfig } from './production-pdf.config';
+import { ToastService } from '../../shared/services/toast.service';
+import { getOlivePdfConfig } from '../olive-reception/olive-pdf.config';
+import { getControlQualitePdfConfig } from '../quality-control-list/PDF-controlQualite.config';
 
 @Component({
   selector: 'app-reception-list',
@@ -21,13 +21,11 @@ import {getControlQualitePdfConfig} from "../quality-control-list/PDF-controlQua
 export class ReceptionListComponent {
   dashboardConfig = LIST_RECEPTION_DASHBOARD;
 
-
   constructor(
     private deliveryService: UnifiedDeliveryService,
     private _router: Router,
     private toast: ToastService,
-    private pdfGeneratorService: PdfGeneratorService,
-
+    private pdfGeneratorService: PdfGeneratorService
   ) {}
 
   handleDashboardAction(event: { row: UnifiedDelivery; action: string }): void {
@@ -71,7 +69,7 @@ export class ReceptionListComponent {
         break;
 
       case 'OIL_QUALITY':
-        if (event.row.id) {
+        if (event.row?.id) {
           this._router.navigate(['/reception/quality/oilFromOlive', event.row.id]);
         }
         break;

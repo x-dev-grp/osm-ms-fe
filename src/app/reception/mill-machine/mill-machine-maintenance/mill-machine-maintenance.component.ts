@@ -137,7 +137,8 @@ export class MillMachineMaintenanceComponent implements OnInit {
 
     const maintenanceData: MaintenanceData = {
       ...this.form.value,
-      machineId: this.machine?.id
+      machineId: this.machine?.id,
+      externalId: this.machine?.externalId
     };
 
     // Use the existing updateMillMachine method with the maintenance data

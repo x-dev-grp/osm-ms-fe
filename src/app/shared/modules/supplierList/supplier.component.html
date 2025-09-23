@@ -11,7 +11,7 @@
                        (optionsScroll)="scroll($event)" #auto="matAutocomplete" (optionSelected)="autoCompleteSelect($event.option.value)">
     @for (item of autoCompleteOptions?.data ; track item?.id) {
       <mat-option [value]="item">
-        {{ item?.supplierInfo?.name +" "+  item?.supplierInfo?.lastname }}
+        {{ item?.name +" "+  item?.lastname }}
       </mat-option>
     }
   </mat-autocomplete>

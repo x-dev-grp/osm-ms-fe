@@ -1,5 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Component, inject, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { CompanyProfileService } from '../../shared/services/company-profile.service';
 import { ToastService } from '../../shared/services/toast.service';
@@ -51,10 +51,30 @@ export class CompanyProfileComponent implements OnInit {
   private translate = inject(TranslateService);
 
   governorates: string[] = [
-    'Ariana', 'Beja', 'Ben Arous', 'Bizerte', 'Gabes', 'Gafsa', 'Jendouba',
-    'Kairouan', 'Kasserine', 'Kebili', 'Kef', 'Mahdia', 'Manouba',
-    'Medenine', 'Monastir', 'Nabeul', 'Sfax', 'Sidi Bouzid', 'Siliana',
-    'Sousse', 'Tataouine', 'Tozeur', 'Tunis', 'Zaghouan'
+    'Ariana',
+    'Beja',
+    'Ben Arous',
+    'Bizerte',
+    'Gabes',
+    'Gafsa',
+    'Jendouba',
+    'Kairouan',
+    'Kasserine',
+    'Kebili',
+    'Kef',
+    'Mahdia',
+    'Manouba',
+    'Medenine',
+    'Monastir',
+    'Nabeul',
+    'Sfax',
+    'Sidi Bouzid',
+    'Siliana',
+    'Sousse',
+    'Tataouine',
+    'Tozeur',
+    'Tunis',
+    'Zaghouan'
   ];
 
   formEnabled = false;
@@ -86,7 +106,7 @@ export class CompanyProfileComponent implements OnInit {
       logoContentType: [null, Validators.required]
     });
 
-    this.profileForm.valueChanges.subscribe(val => {
+    this.profileForm.valueChanges.subscribe((val) => {
       console.log('Form value changed:', val);
       console.log('Form valid:', this.profileForm.valid);
     });
@@ -116,7 +136,7 @@ export class CompanyProfileComponent implements OnInit {
       return;
     }
     this.companyProfileService.getProfile().subscribe(
-      res => {
+      (res) => {
         this.loading = false;
         const data: any = res;
         const profileData: CompanyProfile | null = Array.isArray(data) ? data[0] : data;
@@ -132,6 +152,63 @@ export class CompanyProfileComponent implements OnInit {
         this.toastService.error('GENERAL_CONFIG.MESSAGES.LOAD_ERROR');
       }
     );
+  }
+
+  onSave(): void {
+    if (this.profileForm.invalid) {
+      this.profileForm.markAllAsTouched();
+      return;
+    }
+    if (!this.profileForm.get('logoData')?.value) {
+      this.toastService.error('COMPANY_PROFILE_UI.LOGO.REQUIRED');
+      return;
+    }
+    this.loading = true;
+    const formValue = this.profileForm.getRawValue();
+    const profileToSave: CompanyProfile = {
+      ...formValue,
+      id: this.profile?.id
+    };
+    this.companyProfileService.saveProfile(profileToSave).subscribe({
+      next: () => {
+        this.toastService.success('CONTROLE_QUALITE.MESSAGES.SUCCESS.SAVE');
+        this.loadProfile();
+      },
+      error: () => {
+        this.loading = false;
+        this.toastService.error('CONTROLE_QUALITE.MESSAGES.ERROR.SAVE');
+      }
+    });
+  }
+
+  private resetForm() {
+    this.profile = null;
+    this.originalProfile = null;
+    this.profileForm.reset();
+    this.bankAccounts = [];
+    this.logoPreview = null;
+  }
+
+  enableForm() {
+    this.formEnabled = true;
+    this.profileForm.enable();
+    this.profileForm.markAsPristine();
+  }
+
+  doReset(): void {
+    this.resetForm();
+    this.profileForm.disable();
+    this.formEnabled = false;
+    this.showResetConfirm = false;
+    this.toastService.info('COMPANY_PROFILE_UI.ACTIONS.RESET');
+  }
+
+  onReset(): void {
+    if (this.hasProfileChanged()) {
+      this.showResetConfirm = true;
+    } else {
+      this.doReset();
+    }
   }
 
   private applyProfile(profileData: CompanyProfile) {
@@ -157,66 +234,9 @@ export class CompanyProfileComponent implements OnInit {
       logoContentType: profileData.logoContentType
     });
 
-     if (profileData.logoData && profileData.logoContentType) {
+    if (profileData.logoData && profileData.logoContentType) {
       this.logoPreview = `data:${profileData.logoContentType};base64,${profileData.logoData}`;
     }
-  }
-
-  private resetForm() {
-    this.profile = null;
-    this.originalProfile = null;
-    this.profileForm.reset();
-    this.bankAccounts = [];
-    this.logoPreview = null;
-  }
-
-  enableForm() {
-    this.formEnabled = true;
-    this.profileForm.enable();
-    this.profileForm.markAsPristine();
-  }
-
-  onSave(): void {
-    if (this.profileForm.invalid) {
-      this.profileForm.markAllAsTouched();
-      return;
-    }
-    if (!this.profileForm.get('logoData')?.value) {
-      this.toastService.error('GENERAL_CONFIG.MESSAGES.LOGO_REQUIRED');
-      return;
-    }
-    this.loading = true;
-    const formValue = this.profileForm.getRawValue();
-    const profileToSave: CompanyProfile = {
-      ...formValue,
-      id: this.profile?.id,
-     };
-    this.companyProfileService.saveProfile(profileToSave).subscribe({
-      next: () => {
-        this.toastService.success('GENERAL_CONFIG.MESSAGES.SAVE_SUCCESS');
-        this.loadProfile();
-      },
-      error: () => {
-        this.loading = false;
-        this.toastService.error('GENERAL_CONFIG.MESSAGES.SAVE_ERROR');
-      }
-    });
-  }
-
-  onReset(): void {
-    if (this.hasProfileChanged()) {
-      this.showResetConfirm = true;
-    } else {
-      this.doReset();
-    }
-  }
-
-  doReset(): void {
-    this.resetForm();
-    this.profileForm.disable();
-    this.formEnabled = false;
-    this.showResetConfirm = false;
-    this.toastService.info('GENERAL_CONFIG.MESSAGES.RESET');
   }
 
   cancelReset(): void {

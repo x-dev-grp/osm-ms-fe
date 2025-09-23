@@ -15,7 +15,7 @@ import { ApiResponse } from '../../shared/models/api-response';
 import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
 import { StorageUnitDtoService } from '../../shared/services/storage.service';
 import { ExchangeValidationDialogComponent } from './exchange-validation-dialog/exchange-validation-dialog.component';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { getOilTransactionPdfConfig } from './transaction-pdf.config';
 import { PdfGeneratorService } from '../../shared/services/pdf-generator.service';
 import { OilSaleValidationDialogComponent } from './oil-sale-validation/oil-sale-validation.component';
@@ -43,7 +43,6 @@ export class OilTransactionsComponent implements OnInit {
     private toast: ToastService,
     private oilTransactionService: OilTransactionService,
     private storageUnitService: StorageUnitDtoService,
-    private translate: TranslateService,
     private dialog: MatDialog,
     private router: Router,
     private pdfService: PdfGeneratorService
@@ -160,20 +159,16 @@ export class OilTransactionsComponent implements OnInit {
   private openExchangeValidationDialog(tx: OilTransaction, isIn: boolean): void {
     // Prefer the storage unit attached to the reception (as in your code),
     // otherwise fall back to the destination/source already on the transaction.
-    const selectedStorage =
-      tx.reception?.storageUnit ??
-      null;
+    const selectedStorage = tx.reception?.storageUnit ?? null;
 
     // If it's an IN transaction, the dialog should only see the selected unit.
     // Otherwise, show the full list.
-    const listForDialog = isIn
-      ? (selectedStorage ? [selectedStorage] : [])
-      : this.storageUnits;
+    const listForDialog = isIn ? (selectedStorage ? [selectedStorage] : []) : this.storageUnits;
 
     const ref = this.dialog.open(ExchangeValidationDialogComponent, {
       width: 'auto',
       data: {
-        storageUnits: listForDialog,   // 👈 filtered when isIn=true
+        storageUnits: listForDialog, // 👈 filtered when isIn=true
         oilQ: tx.quantityKg,
         isIn: isIn
       }
@@ -234,12 +229,6 @@ export class OilTransactionsComponent implements OnInit {
           });
       });
   }
-
-
-
-
-
-
 
   private loadStorageUnits(): void {
     this.storageUnitService

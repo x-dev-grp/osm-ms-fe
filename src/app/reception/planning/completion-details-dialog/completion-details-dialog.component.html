@@ -30,7 +30,7 @@
                 <div class="info-row">
                   <span class="label">{{ 'RECEPTION.PLANNING.COMPLETION.SUPPLIER' | translate }}:</span>
                   <span
-                    class="value">{{ (item).supplier.supplierInfo.name + " " + (item).supplier.supplierInfo.lastname }}</span>
+                    class="value">{{ (item).supplier.name + " " + (item).supplier.lastname }}</span>
                 </div>
               }
               @if ((item).region) {
@@ -90,7 +90,7 @@
                         <tbody>
                         <tr *ngFor="let child of childLotsWithRendement; let i = index; trackBy: trackByLotNumber">
                           <td>{{ child.lotNumber }}</td>
-                          <td>{{ child.supplier.supplierInfo.name + " " + child.supplier.supplierInfo.lastname || '-' }}</td>
+                          <td>{{ child.supplier.name + " " + child.supplier.lastname || '-' }}</td>
                           <td>{{ child.oliveQuantity }} kg</td>
                           <td>{{ child.oilQuantity | number: '1.2-2' }} kg</td>
                           <td>{{ (child.calculatedRendement ?? 0) | number: '1.2-2' }}%</td>

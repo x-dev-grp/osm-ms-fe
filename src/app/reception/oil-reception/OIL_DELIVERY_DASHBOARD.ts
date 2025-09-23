@@ -19,8 +19,8 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
     searchData: {
       operation: SearchOperation.AND,
       search: {
-        isDeleted:{
-          equalValue:false
+        isDeleted: {
+          equalValue: false
         },
         status: {
           inValues: [
@@ -88,10 +88,10 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       exportable: true,
       dataTable: true,
       filterable: true,
-      valuePath: 'supplierInfo.name',
+      valuePath: 'name',
       valueAttributeType: AttributeType.string,
-      filterAttribute: 'supplier.supplierInfo.name',
-      getOptionsUrl:'production/suppliers_type'
+      filterAttribute: 'supplier.name',
+      getOptionsUrl: 'production/suppliers_type'
     },
     {
       name: 'region',
@@ -104,7 +104,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.autocomplete,
       valuePath: 'name',
       valueAttributeType: AttributeType.string,
-      getOptionsUrl:"production/types",
+      getOptionsUrl: 'production/types',
       filterAttribute: 'region.name',
       autoCompleteDefaultCriteria: {
         page: 0,
@@ -129,7 +129,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
 
     {
       name: 'operationType',
-      label: 'Type d\'operation',
+      label: "Type d'operation",
       labelTranslatePath: 'SUPPLIER_PAYMENT.RECEPTION_TYPE',
       attributeType: AttributeType.enum,
       fieldType: FieldType.select,
@@ -178,16 +178,16 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       exportable: true,
       dataTable: true,
       filterable: true,
-       fieldType: FieldType.select,
+      fieldType: FieldType.select,
       options: [
         {
           label: 'HC',
-          value: 'HC',
-         },
+          value: 'HC'
+        },
         {
           label: 'HB',
-          value: 'HB',
-         }
+          value: 'HB'
+        }
       ]
     },
 
@@ -196,7 +196,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       name: 'status',
       label: 'Statut',
       labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.STATUS',
-      attributeType: AttributeType.string,
+      attributeType: AttributeType.enum,
       fieldType: FieldType.select,
       exportable: true,
       sortable: true,
@@ -238,7 +238,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
         },
         {
           label: 'à definire le prix ',
-          value: 'WAITING_FOR_PRICING',
+          value: 'WAITING_FOR_PAYMENT_DETAILS',
           labelTranslatePath: 'RECEPTION_LIST.STATUS.WAITING_FOR_PRICING'
         },
         { label: 'En stock', value: 'IN_STOCK', labelTranslatePath: 'RECEPTION_LIST.STATUS.IN_STOCK' }
