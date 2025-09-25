@@ -47,7 +47,7 @@
       </div>
       <div class="grid-row">
         <div class="grid-item"><strong>{{ 'DELIVERIES.FIELDS.STATUS' | translate }}
-          :</strong> {{ deliveryData.status?.statusName || deliveryData.status || 'N/A' }}
+          :</strong> {{ (("RECEPTION_LIST.STATUS."+ deliveryData.status )|translate) ||   'N/A' }}
         </div>
         <div class="grid-item"><strong>{{ 'DELIVERIES.FIELDS.OPERATION_TYPE' | translate }}
           :</strong> {{("OPERATION_TYPE."+(deliveryData.operationType)|translate) || 'N/A' }}

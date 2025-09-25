@@ -141,7 +141,7 @@ export class QualityControlRuleComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (res) => {
           if (res?.success) {
-            this.toastService.success('Règle enregistrée avec succès ✅');
+            this.toastService.success('critère enregistrée avec succès ✅');
             // this.loadRules();
             this.cancel();
           } else {

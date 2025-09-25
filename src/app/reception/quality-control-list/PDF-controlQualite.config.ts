@@ -58,9 +58,9 @@ export function getControlQualitePdfConfig(delivery: UnifiedDelivery, deliveryTy
   if (delivery.qualityControlResults && delivery.qualityControlResults.length > 0) {
 
     delivery.qualityControlResults.filter(value => value.rule.ruleType!= 'STRING').forEach(result => {
-      if (!result.rule) return; // Ignorer si pas de règle associée
+      if (!result.rule) return; // Ignorer si pas de critère associée
 
-      const ruleName = result.rule.ruleName || 'Règle sans nom';
+      const ruleName = result.rule.ruleName || 'critère sans nom';
       const label = pickLabel(ruleName, ruleName); // Utilise le mécanisme existant pour traduire/normaliser
       const value = getValue(result);
 

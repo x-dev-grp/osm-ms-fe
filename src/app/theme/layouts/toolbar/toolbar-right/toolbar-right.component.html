@@ -50,7 +50,7 @@
           </a>
           <a [routerLink]="['/settings/general-config']" class="dropdown-item text-muted" href="javascript:">
             <i class="ti ti-settings"></i>
-            <div class="m-b-0 mat-body">Settings</div>
+            <div class="m-b-0 mat-body">{{ 'MENU.SETTINGS.GENERAL_CONFIG'|translate }}</div>
           </a>
           <!--            <a href="javascript:" class="dropdown-item text-muted" [routerLink]="['/contact-us']">-->
           <!--              <i class="ti ti-headset"></i>-->
@@ -66,13 +66,13 @@
           <!--              </svg>-->
           <!--              <div class="m-b-0 mat-body">Share</div>-->
           <!--            </a>-->
-          <a [routerLink]="['/application/profile/account/password']" class="dropdown-item text-muted"
-             href="javascript:">
-            <svg class="pc-icon m-r-10">
-              <use xlink:href="assets/fonts/custom-icon.svg#custom-lock-outline"></use>
-            </svg>
-            <div class="m-b-0 mat-body">Change Password</div>
-          </a>
+<!--          <a [routerLink]="['/application/profile/account/password']" class="dropdown-item text-muted"-->
+<!--             href="javascript:">-->
+<!--            <svg class="pc-icon m-r-10">-->
+<!--              <use xlink:href="assets/fonts/custom-icon.svg#custom-lock-outline"></use>-->
+<!--            </svg>-->
+<!--            <div class="m-b-0 mat-body">Change Password</div>-->
+<!--          </a>-->
         </app-card>
         <mat-divider class="m-y-15"></mat-divider>
         <app-card [showHeader]="false" padding="16">
@@ -88,6 +88,11 @@
               <use xlink:href="assets/fonts/custom-icon.svg#custom-global"></use>
             </svg>
             <div class="m-b-0 mat-body">français</div>
+          </a> <a (click)="useLanguage('ar')" class="dropdown-item text-muted" href="javascript:">
+            <svg class="pc-icon m-r-10">
+              <use xlink:href="assets/fonts/custom-icon.svg#custom-global"></use>
+            </svg>
+            <div class="m-b-0 mat-body">Arabe</div>
           </a>
         </app-card>
 

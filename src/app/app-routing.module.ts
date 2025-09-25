@@ -27,11 +27,11 @@ const routes: Routes = [
         pathMatch: 'full'
       },
 
-      {
-        path: 'dashboard',
-        loadChildren: () => import('./theme/pages/dashboard/dashboard.module').then((m) => m.DashboardModule),
-        data: { roles: [Role.Admin, Role.User] }
-      },
+      // {
+      //   path: 'dashboard',
+      //   loadChildren: () => import('./theme/pages/dashboard/dashboard.module').then((m) => m.DashboardModule),
+      //   data: { roles: [Role.Admin, Role.User] }
+      // },
 
 
       {

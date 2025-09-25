@@ -15,28 +15,28 @@
             </svg>
           </a>
           <mat-menu #menu="matMenu" [overlapTrigger]="false" yPosition="below" xPosition="after">
-            <button mat-menu-item>
-              <a [routerLink]="['/application/profile/account']" class="text-muted">
-                <i class="ti ti-user f-18 m-r-10"></i>
-                <span>My Account</span>
-              </a>
-            </button>
+<!--            <button mat-menu-item>-->
+<!--              <a [routerLink]="['/application/profile/account']" class="text-muted">-->
+<!--                <i class="ti ti-user f-18 m-r-10"></i>-->
+<!--                <span>My Account</span>-->
+<!--              </a>-->
+<!--            </button>-->
             <button mat-menu-item>
               <a href="javascript:" class="text-muted" [routerLink]="['/settings/general-config']">
                 <i class="ti ti-settings f-18 m-r-10"></i>
-                <span>Settings</span>
+                <span>{{ 'MENU.SETTINGS.GENERAL_CONFIG'|translate }}</span>
               </a>
             </button>
-            <button mat-menu-item>
-              <a href="javascript:" class="text-muted" [routerLink]="['/settings/general-config']">
-                <i class="ti ti-lock f-18 m-r-10"></i>
-                <span>Lock Screen</span>
-              </a>
-            </button>
+<!--            <button mat-menu-item>-->
+<!--              <a href="javascript:" class="text-muted" [routerLink]="['/settings/general-config']">-->
+<!--                <i class="ti ti-lock f-18 m-r-10"></i>-->
+<!--                <span>Lock Screen</span>-->
+<!--              </a>-->
+<!--            </button>-->
             <button mat-menu-item>
               <a href="javascript:" class="text-muted" (click)="logout()">
                 <i class="ti ti-power f-18 m-r-10"></i>
-                <span>Logout</span>
+                <span>{{ 'ACCESS_DENIED.LOGOUT'|translate }}</span>
               </a>
             </button>
           </mat-menu>
