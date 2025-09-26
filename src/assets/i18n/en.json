@@ -632,7 +632,7 @@
     "FIELDS": {
       "CATEGORY_OLIVE_OIL": "Olive Oil Category",
       "DELIVERY_DATE": "Delivery Date",
-      "DELIVERY_NUMBER": "N° Livraison",
+      "DELIVERY_NUMBER": "N° réception",
       "DELIVERY_TYPE": "Delivery Type",
       "GLOBAL_LOT_NUMBER": "Global Lot Number",
       "GROSS_WEIGHT": "Gross Weight (KG)",
@@ -646,7 +646,7 @@
       "OLIVE_LOT_NUMBER": "Olive Lot N°/reception N°",
       "OLIVE_QUANTITY": "Olive Quantity",
       "OLIVE_TYPE": "Olive Type",
-      "OLIVE_VARIETY": "Olive Variety",
+      "OLIVE_VARIETY": "Variety",
       "OPERATION_TYPE": "Operation Type",
       "PAID_AMOUNT": "Paid amount",
       "PARCEL": "Parcel",
@@ -1669,7 +1669,7 @@
       },
       "FIELDS": {
         "DELIVERY_DATE": "Delivery Date",
-        "DELIVERY_NUMBER": "N° Livraison",
+        "DELIVERY_NUMBER": "N° réception",
         "GLOBAL_LOT_NUMBER": "Global Lot Number",
         "LOT_NUMBER": "Lot Number",
         "OIL_QUANTITY": "Oil Quantity (KG)",
@@ -2196,6 +2196,12 @@
   "OTHER_TAB": "Other Config",
   "Online Courses": "Online Courses",
   "Other": "Other",
+  "PAGE_404": {
+    "BACK_HOME": "Back To Home",
+    "DESCRIPTION": "The page you’re looking for doesn’t exist, was moved, or is temporarily unavailable.",
+    "IMAGE_ALT": "404 error illustration",
+    "TITLE": "Page Not Found"
+  },
   "PDF": {
     "ACIDITY": "Acidity",
     "ADDRESS": "Adresse",
@@ -2328,7 +2334,7 @@
     "RECEPTION_DATE": "Reception Date",
     "RECEPTION_ID": "Reception ID",
     "RECEPTION_IN": "Reception",
-    "RECEPTION_NUMBER": "N° Livraison",
+    "RECEPTION_NUMBER": "N° réception",
     "RECEPTION_OIL": "Oil Reception Receipt",
     "RECEPTION_OLIVE": "Olive Reception Receipt",
     "RECEPTION_REGION": "Reception Region",
@@ -2382,7 +2388,7 @@
   "PLANNING_CARD_TITLE": "Olive Reception Planning",
   "PLANNING_EXIT_FULLSCREEN": "Exit fullscreen",
   "PLANNING_FULLSCREEN": "Fullscreen",
-  "PLANNING_GROUP": "Group",
+  "PLANNING_GROUP": "Create a GLobal lot",
   "PLANNING_KG": "kg",
   "PLANNING_LOTS_LIST": "List of Lots:",
   "PLANNING_NET": "Net:",
@@ -2471,7 +2477,6 @@
     "RULE_TYPES": {
       "BOOLEAN": "Check box",
       "NUMERIC": "Number",
-      "RAW_STRING": "Raw string",
       "STRING": "Options list"
     }
   },
@@ -2506,10 +2511,20 @@
         "TITLE": "Completion",
         "TOTAL_OLIVE_WEIGHT": "Total Olive Weight",
         "TOTAL_TRITURATION_PRICE_LABEL": "Total crushing price",
-        "TRITURATION_DURATION_HOURS": "Duration (Hours)",
+        "TRITURATION_DURATION_HOURS": "Duration",
         "TRITURATION_DURATION_MINUTES": "Duration (Minutes)",
         "TRITURATION_PRICE_PER_KG_LABEL": "Crushing price (per kg)",
         "YIELD_LABEL": "Yield (%)"
+      },
+      "CONFIRM_SAVE": "Save the current planning?",
+      "GLOBAL_LOT": {
+        "CONFIRM_CREATE_FROM_SELECTION": "Create a new global lot from the selected lots?",
+        "CONFIRM_UNGROUP": "Ungroup global lot {{globalLotNumber}}?",
+        "CREATED_SUCCESS": "Global lot {{globalLotNumber}} created successfully!",
+        "MUST_BE_SAME_COLUMN": "All selected receptions must be in the same column.",
+        "NOT_FOUND": "Global lot not found.",
+        "SELECT_AT_LEAST_ONE": "Please select at least one reception to group.",
+        "UNGROUPED_SUCCESS": "Global lot {{globalLotNumber}} ungrouped successfully!"
       }
     }
   },
@@ -2522,7 +2537,7 @@
     },
     "FIELDS": {
       "DELIVERY_DATE": "Reception Date",
-      "DELIVERY_NUMBER": "N° Livraison",
+      "DELIVERY_NUMBER": "N° réception",
       "GLOBAL_LOT_NUMBER": "Global Lot Number",
       "LOT_NUMBER": "Lot Number",
       "NET_WEIGHT": "Net Weight (kg)",
@@ -2966,11 +2981,5 @@
   "department": {
     "description": "Description"
   },
-  "reCaptcha": "reCaptcha",
-  "PAGE_404": {
-    "TITLE": "Page Not Found",
-    "DESCRIPTION": "The page you’re looking for doesn’t exist, was moved, or is temporarily unavailable.",
-    "BACK_HOME": "Back To Home",
-    "IMAGE_ALT": "404 error illustration"
-  }
+  "reCaptcha": "reCaptcha"
 }

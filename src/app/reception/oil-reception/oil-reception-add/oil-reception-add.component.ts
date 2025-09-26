@@ -23,9 +23,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { OperationType } from '../../../shared/models/operation-type.enum';
 import { BaseTypeComponent } from '../../../shared/modules/base-type/base-type.component';
 import { ToastService } from '../../../shared/services/toast.service';
-import { OliveType } from '../../../shared/models/olive-type.enum';
-import { OilType } from '../../../shared/models/oil-type.enum';
-import { mapOilFromOlive, mapOliveFromOil } from '../../../shared/models/olive-oil-type.util';
+import { Olive_Oil_Type } from '../../../shared/models/olive-type.enum';
 import { TypeCategory } from '../../../shared/models/type-category.enum';
 import { CardComponent } from '../../../theme/components/card/card.component';
 
@@ -76,8 +74,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
   private deliveryId: string | null;
   private pendingEditReception: UnifiedDelivery | null = null;
   private _typeSubs: Subscription[] = [];
-  oliveOptions = Object.values(OliveType);
-  oilOptions = Object.values(OilType);
+  olive_oil_Options = Object.values(Olive_Oil_Type);
   regions: BaseType[] = [];
   parcels: BaseType[] = [];
   constructor(
@@ -121,11 +118,9 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     this.deliveryId = this.route.snapshot.paramMap.get('id');
     this.isEditing = this.deliveryId !== null && this.deliveryId !== 'new';
     // 1) S'assurer que les contrôles existent
-    if (!this.receptionForm.get('oliveType')) {
-      this.receptionForm.addControl('oliveType', new FormControl<OliveType | null>(null, Validators.required));
-    }
+
     if (!this.receptionForm.get('oilType')) {
-      this.receptionForm.addControl('oilType', new FormControl<OilType | null>(null, Validators.required));
+      this.receptionForm.addControl('oilType', new FormControl<Olive_Oil_Type | null>(null, Validators.required));
     }
 
     // Load regions for the BaseTypeComponent
@@ -153,78 +148,17 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       complete: () => this.markCallDone()
     });
     this.subscriptions.push(parcelSub);
-
-    // When region changes, update the parcel field
-    this.subscriptions.push(
-      this.receptionForm.get('region')!.valueChanges.subscribe((region: BaseType | null) => {
-        // If there's no parcel set yet, set it to the same as region
-        const currentParcel = this.receptionForm.get('parcel')!.value;
-        if (region && (!currentParcel || (typeof currentParcel === 'object' && !currentParcel.id))) {
-          this.receptionForm.patchValue({ parcel: region }, { emitEvent: false });
-        }
-      })
-    );
-
     // Automatically set region when supplier is selected
     this.subscriptions.push(
       this.receptionForm.get('supplier')!.valueChanges.subscribe((supplier: SupplierType | null) => {
         if (supplier && supplier.region) {
-          // Make sure regions have been loaded before trying to set the region
-          if (this.regions && this.regions.length > 0) {
-            // Since the supplier's region is a full BaseType object, we need to find the matching
-            // region in our regions array by comparing IDs
-            const matchingRegion = this.regions.find((region) => region.id === supplier.region.id);
-            if (matchingRegion) {
-              // Use patchValue to avoid conflicts with BaseTypeComponent
-              this.receptionForm.patchValue({ region: matchingRegion });
-              // Also set the parcel to the same region if it's not already set
-              const currentParcel = this.receptionForm.get('parcel')!.value;
-              if (!currentParcel || (typeof currentParcel === 'object' && !currentParcel.id)) {
-                this.receptionForm.patchValue({ parcel: matchingRegion }, { emitEvent: false });
-              }
-            }
-          } else {
-            // If regions haven't been loaded yet, set the region directly from the supplier
-            // This might happen during form initialization
             this.receptionForm.patchValue({ region: supplier.region });
-            // Also set the parcel to the same region if it's not already set
-            const currentParcel = this.receptionForm.get('parcel')!.value;
-            if (!currentParcel || (typeof currentParcel === 'object' && !currentParcel.id)) {
-              this.receptionForm.patchValue({ parcel: supplier.region }, { emitEvent: false });
-            }
-          }
+
         }
       })
     );
 
-    // 2) Synchro olive -> oil
-    this._typeSubs.push(
-      this.receptionForm.get('oliveType')!.valueChanges.subscribe((val: OliveType | null) => {
-        const mapped = mapOilFromOlive(val);
-        this.receptionForm.get('oilType')!.setValue(mapped, { emitEvent: true });
-        const deliveryNumber = this.receptionForm.get('deliveryNumber')?.value || this.deliveries.length + 1;
-        const lotNumber = this.generateLotNumber(mapped, deliveryNumber);
-        this.receptionForm.patchValue({ lotNumber }, { emitEvent: false });
-      })
-    );
 
-    // 3) Synchro oil -> olive
-    this._typeSubs.push(
-      this.receptionForm.get('oilType')!.valueChanges.subscribe((val: OilType | null) => {
-        const mapped = mapOliveFromOil(val);
-        this.receptionForm.get('oliveType')!.setValue(mapped, { emitEvent: true });
-      })
-    );
-
-    // 4) Initialisation: si l'un des deux est déjà rempli (édition), déduire l'autre
-    const oliveInit = this.receptionForm.get('oliveType')!.value as OliveType | null;
-    const oilInit = this.receptionForm.get('oilType')!.value as OilType | null;
-
-    if (oliveInit && !oilInit) {
-      this.receptionForm.get('oilType')!.setValue(mapOilFromOlive(oliveInit), { emitEvent: false });
-    } else if (oilInit && !oliveInit) {
-      this.receptionForm.get('oliveType')!.setValue(mapOliveFromOil(oilInit), { emitEvent: false });
-    }
 
     // ===== 1️⃣  Charger les fournisseurs =====
     this.pendingCalls++;
@@ -367,7 +301,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       paidAmount: Number(formValue.paidAmount) || 0,
       unpaidAmount: Number(formValue.unpaidAmount) || 0,
       oilType: this.receptionForm.value.oilType, // 'HB' | 'HC'
-      oliveType: this.receptionForm.value.oliveType, // 'HB' | 'HC'
+      oliveType: this.receptionForm.value.oilType, // 'HB' | 'HC'
       trtDate: formValue.trtDate ? new Date(formValue.trtDate) : null,
       operationType: formValue.operationType || OperationType.OIL_PURCHASE,
       oliveVariety: formValue.oliveVariety || null,
@@ -487,16 +421,16 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  private generateLotNumber(oilType: OilType | null, deliveryNumber: number): string {
+  private generateLotNumber(oilType: Olive_Oil_Type | null, deliveryNumber: number): string {
     if (!oilType) return '';
     const year = new Date().getFullYear().toString().slice(-2);
-    const paddedNumber = deliveryNumber.toString().padStart(4, '0');
-    return `${paddedNumber}${oilType.toUpperCase()}${year}`;
+    const paddedNumber = deliveryNumber.toString().padStart(3, '0');
+    return `E${paddedNumber}${year}`;
   }
 
   private setupFormSubscriptions(): void {
     this.subscriptions.push(
-      this.receptionForm.get('oilType')!.valueChanges.subscribe((oilType: OilType | null) => {
+      this.receptionForm.get('oilType')!.valueChanges.subscribe((oilType: Olive_Oil_Type | null) => {
         const deliveryNumber = this.receptionForm.get('deliveryNumber')?.value || this.deliveries.length + 1;
         const lotNumber = this.generateLotNumber(oilType, deliveryNumber);
         this.receptionForm.patchValue({ lotNumber }, { emitEvent: false });

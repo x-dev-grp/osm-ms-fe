@@ -116,6 +116,14 @@ export const osm_menus: Navigation[] = [
             icon: 'rule',
             breadcrumbs: false, // CHANGE: permissions - require PRODUCTION:QUALITYCONTROLRESULT:READ
             ressourcePermission: ProductionEntity.QUALITYCONTROLRESULT
+          },{
+            id: 'item-reception-quality',
+            title: 'quality2',
+            type: 'item',
+            url: '/reception/quality2',
+            icon: 'rule',
+            breadcrumbs: false, // CHANGE: permissions - require PRODUCTION:QUALITYCONTROLRESULT:READ
+            ressourcePermission: ProductionEntity.QUALITYCONTROLRESULT
           }
         ]
       }

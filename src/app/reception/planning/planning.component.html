@@ -21,8 +21,6 @@
             <button
               (click)="groupSelected()"
               *ngIf="hasSelection()"
-               [matTooltip]="'PLANNING_GROUP' | translate"
-              aria-label="{{ ('PLANNING_GROUP' | translate) + ' ' + selectedIds().length }}"
               class="action-btn accent"
               mat-raised-button
             >

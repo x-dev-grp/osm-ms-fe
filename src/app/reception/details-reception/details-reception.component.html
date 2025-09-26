@@ -11,166 +11,179 @@
 <!-- Details Card -->
 <mat-card *ngIf="deliveryData && !loading" class="details-card">
   <div class="card-header">
-
-    <mat-card-title>{{ translate.instant('DELIVERIES.DETAILS.TITLE') }}</mat-card-title>
+    <mat-card-title>{{ 'DELIVERIES.DETAILS.TITLE' | translate }}</mat-card-title>
   </div>
 
   <mat-card-content class="scrollable-content">
+
     <!-- General Information Section -->
     <div class="section">
       <h3 class="section-title">{{ 'DELIVERIES.DETAILS.SECTIONS.GENERAL_INFO' | translate }}</h3>
+
       <div class="grid-row">
         <div class="grid-item">
-          <strong>{{ translate.instant('DELIVERIES.FIELDS.DELIVERY_NUMBER') }}
-            :</strong> {{ deliveryData.deliveryNumber }}
+          <strong>{{ 'DELIVERIES.FIELDS.DELIVERY_NUMBER' | translate }}:</strong>
+          {{ deliveryData.deliveryNumber }}
         </div>
         <div class="grid-item">
-          <strong>{{ translate.instant('DELIVERIES.FIELDS.DELIVERY_TYPE') }} :</strong> {{ deliveryData.deliveryType }}
+          <strong>{{ 'DELIVERIES.FIELDS.DELIVERY_TYPE' | translate }}:</strong>
+          {{ deliveryData.deliveryType }}
         </div>
       </div>
+
       <div class="grid-row">
         <div class="grid-item">
-          <strong>{{ translate.instant('DELIVERIES.FIELDS.LOT_NUMBER') }} :</strong> {{ deliveryData.lotNumber }}
+          <strong>{{ 'DELIVERIES.FIELDS.LOT_NUMBER' | translate }}:</strong>
+          {{ deliveryData.lotNumber }}
         </div>
         <div class="grid-item">
-          <strong>{{ translate.instant('DELIVERIES.FIELDS.DELIVERY_DATE') }}
-            :</strong> {{ deliveryData.deliveryDate | date: 'short' }}
+          <strong>{{ 'DELIVERIES.FIELDS.DELIVERY_DATE' | translate }}:</strong>
+          {{ deliveryData.deliveryDate | date: 'short' }}
         </div>
       </div>
+
       <div class="grid-row">
-        <div class="grid-item"><strong>{{ 'DELIVERIES.FIELDS.DELIVERY_DATE' | translate }}
-          :</strong> {{ deliveryData.deliveryDate | date: 'short' }}
+        <div class="grid-item">
+          <strong>{{ 'DELIVERIES.FIELDS.GLOBAL_LOT_NUMBER' | translate }}:</strong>
+          {{ deliveryData.globalLotNumber || 'N/A' }}
         </div>
-        <div class="grid-item"><strong>{{ 'DELIVERIES.FIELDS.GLOBAL_LOT_NUMBER' | translate }}
-          :</strong> {{ deliveryData.globalLotNumber || 'N/A' }}
+        <div class="grid-item">
+          <strong>{{ 'DELIVERIES.FIELDS.STATUS' | translate }}:</strong>
+          {{ deliveryData.status ? (('RECEPTION_LIST.STATUS.' + deliveryData.status) | translate) : 'N/A' }}
         </div>
       </div>
+
       <div class="grid-row">
-        <div class="grid-item"><strong>{{ 'DELIVERIES.FIELDS.STATUS' | translate }}
-          :</strong> {{ (("RECEPTION_LIST.STATUS."+ deliveryData.status )|translate) ||   'N/A' }}
-        </div>
-        <div class="grid-item"><strong>{{ 'DELIVERIES.FIELDS.OPERATION_TYPE' | translate }}
-          :</strong> {{("OPERATION_TYPE."+(deliveryData.operationType)|translate) || 'N/A' }}
+        <div class="grid-item">
+          <strong>{{ 'DELIVERIES.FIELDS.OPERATION_TYPE' | translate }}:</strong>
+          {{ deliveryData.operationType ? (('OPERATION_TYPE.' + deliveryData.operationType) | translate) : 'N/A' }}
         </div>
       </div>
     </div>
-
 
     <!-- Supplier Section -->
     <div class="section">
-      <h3 class="section-title">{{ translate.instant('DELIVERIES.DETAILS.SECTIONS.SUPPLIER') }}</h3>
+      <h3 class="section-title">{{ 'DELIVERIES.DETAILS.SECTIONS.SUPPLIER' | translate }}</h3>
+
       <div class="grid-row">
         <div class="grid-item">
-          <strong>{{ translate.instant('DELIVERIES.FIELDS.SUPPLIER_NAME') }} :</strong>
+          <strong>{{ 'DELIVERIES.FIELDS.SUPPLIER_NAME' | translate }}:</strong>
           {{
-            (deliveryData.supplier?.name || '') + ' ' +
-            (deliveryData.supplier?.lastname || '') || translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED')
+            (deliveryData.supplier?.name || '') + ' ' + (deliveryData.supplier?.lastname || '')
+            || ('DELIVERIES.DETAILS.NOT_PROVIDED' | translate)
           }}
         </div>
         <div class="grid-item">
-          <strong>{{ translate.instant('DELIVERIES.FIELDS.SUPPLIER_PHONE') }}
-            :</strong> {{ deliveryData.supplier?.phone || translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED') }}
+          <strong>{{ 'DELIVERIES.FIELDS.SUPPLIER_PHONE' | translate }}:</strong>
+          {{ deliveryData.supplier?.phone || ('DELIVERIES.DETAILS.NOT_PROVIDED' | translate) }}
         </div>
       </div>
+
       <div class="grid-row">
         <div class="grid-item">
-          <strong>{{ translate.instant('DELIVERIES.FIELDS.SUPPLIER_EMAIL') }}
-            :</strong> {{ deliveryData.supplier?.email || translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED') }}
+          <strong>{{ 'DELIVERIES.FIELDS.SUPPLIER_RIB' | translate }}:</strong>
+          {{ deliveryData.supplier?.rib || ('DELIVERIES.DETAILS.NOT_PROVIDED' | translate) }}
         </div>
         <div class="grid-item">
-          <strong>{{ translate.instant('DELIVERIES.FIELDS.SUPPLIER_ADDRESS') }}
-            :</strong> {{ deliveryData.supplier?.address || translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED') }}
-        </div>
-      </div>
-      <div class="grid-row">
-        <div class="grid-item">
-          <strong>{{ translate.instant('DELIVERIES.FIELDS.SUPPLIER_RIB') }}
-            :</strong> {{ deliveryData.supplier?.rib || translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED') }}
-        </div>
-        <div class="grid-item">
-          <strong>{{ translate.instant('DELIVERIES.FIELDS.SUPPLIER_BANK') }}
-            :</strong> {{ deliveryData.supplier?.bankName || translate.instant('DELIVERIES.DETAILS.NOT_PROVIDED') }}
+          <strong>{{ 'DELIVERIES.FIELDS.SUPPLIER_BANK' | translate }}:</strong>
+          {{ deliveryData.supplier?.bankName || ('DELIVERIES.DETAILS.NOT_PROVIDED' | translate) }}
         </div>
       </div>
     </div>
 
+    <!-- OLIVE Info (only for OLIVE deliveries) -->
+    @if (deliveryData?.deliveryType === 'OLIVE') {
+      <div class="section">
+        <h3 class="section-title">{{ 'DELIVERIES.DETAILS.SECTIONS.OLIVE_INFO' | translate }}</h3>
 
-    <!-- Olive Info Section -->
-    <div class="section"><h3 class="section-title">{{ 'DELIVERIES.DETAILS.SECTIONS.OLIVE_INFO' | translate }}</h3>
-      <div class="grid-row">
-        <div class="grid-item"><strong>{{ 'DELIVERIES.FIELDS.OLIVE_VARIETY' | translate }}
-          :</strong> {{ deliveryData.oliveVariety?.name || 'N/A' }}
+        <div class="grid-row">
+          <div class="grid-item">
+            <strong>{{ 'DELIVERIES.FIELDS.OLIVE_VARIETY' | translate }}:</strong>
+            {{ deliveryData.oliveVariety?.name || 'N/A' }}
+          </div>
+          <div class="grid-item">
+            <strong>{{ 'DELIVERIES.FIELDS.OLIVE_TYPE' | translate }}:</strong>
+            {{ deliveryData.oliveType || 'N/A' }}
+          </div>
         </div>
-        <div class="grid-item"><strong>{{ 'DELIVERIES.FIELDS.OLIVE_TYPE' | translate }}
-          :</strong> {{ deliveryData.oliveType?.name || 'N/A' }}
-        </div>
-      </div>
-      <div class="grid-row">
-        <div class="grid-item"><strong>{{ 'DELIVERIES.FIELDS.SACK_COUNT' | translate }}
-          :</strong> {{ deliveryData.sackCount ?? 'N/A' }}
-        </div>
-        <div class="grid-item"><strong>{{ 'DELIVERIES.FIELDS.OLIVE_QUANTITY' | translate }}
-          :</strong> {{ deliveryData.poidsNet ?? 'N/A' }} kg
-        </div>
-      </div>
-      <div class="grid-row">
-        <div class="grid-item"><strong>{{ 'DELIVERIES.FIELDS.RENDEMENT' | translate }}
-          :</strong> {{ deliveryData.rendement ?? 'N/A' }} %
-        </div>
-        <div class="grid-item"><strong>{{ 'DELIVERIES.FIELDS.LOT_OLIVE_NUMBER' | translate }}
-          :</strong> {{ deliveryData.lotOliveNumber || 'N/A' }}
-        </div>
-      </div>
-    </div>
 
-
-
-
-    <!-- Oil Info Section -->
-    <div class="section"><h3 class="section-title">{{ 'DELIVERIES.DETAILS.SECTIONS.OIL_INFO' | translate }}</h3>
-      <div class="grid-row">
-        <div class="grid-item"><strong>{{ 'DELIVERIES.FIELDS.OLIVE_VARIETY' | translate }}
-          :</strong> {{ deliveryData.oilVariety?.name || 'N/A' }}
+        <div class="grid-row">
+          <div class="grid-item">
+            <strong>{{ 'DELIVERIES.FIELDS.SACK_COUNT' | translate }}:</strong>
+            {{ deliveryData.sackCount ?? 'N/A' }}
+          </div>
+          <div class="grid-item">
+            <strong>{{ 'DELIVERIES.FIELDS.OLIVE_QUANTITY' | translate }}:</strong>
+            {{ deliveryData.poidsNet ?? 'N/A' }} kg
+          </div>
         </div>
-        <div class="grid-item"><strong>{{ 'DELIVERIES.FIELDS.OIL_TYPE' | translate }}
-          :</strong> {{ deliveryData.oilType?.name || 'N/A' }}
+
+        <div class="grid-row">
+          <div class="grid-item">
+            <strong>{{ 'DELIVERIES.FIELDS.RENDEMENT' | translate }}:</strong>
+            {{ deliveryData.rendement ?? 'N/A' }} %
+          </div>
+          <div class="grid-item">
+            <strong>{{ 'DELIVERIES.FIELDS.LOT_OLIVE_NUMBER' | translate }}:</strong>
+            {{ deliveryData.lotOliveNumber || 'N/A' }}
+          </div>
         </div>
       </div>
-      <div class="grid-row">
-        <div class="grid-item"><strong>{{ 'DELIVERIES.FIELDS.OIL_QUANTITY' | translate }}
-          :</strong> {{ deliveryData.oilQuantity ?? 'N/A' }} kg
+    }
+
+    <!-- OIL Info (only for OIL deliveries) -->
+    @if (deliveryData?.deliveryType === 'OIL') {
+      <div class="section">
+        <h3 class="section-title">{{ 'DELIVERIES.DETAILS.SECTIONS.OIL_INFO' | translate }}</h3>
+
+        <div class="grid-row">
+          <div class="grid-item">
+            <strong>{{ 'DELIVERIES.FIELDS.OLIVE_VARIETY' | translate }}:</strong>
+            {{ deliveryData.oilVariety?.name || 'N/A' }}
+          </div>
+          <div class="grid-item">
+            <strong>{{ 'DELIVERIES.FIELDS.OIL_TYPE' | translate }}:</strong>
+            {{ deliveryData.oilType?.name || 'N/A' }}
+          </div>
         </div>
-        <div class="grid-item"><strong>{{ 'DELIVERIES.FIELDS.CATEGORY_OLIVE_OIL' | translate }}
-          :</strong> {{ deliveryData.categoryOliveOil || 'N/A' }}
+
+        <div class="grid-row">
+          <div class="grid-item">
+            <strong>{{ 'DELIVERIES.FIELDS.OIL_QUANTITY' | translate }}:</strong>
+            {{ deliveryData.oilQuantity ?? 'N/A' }} kg
+          </div>
+          <div class="grid-item">
+            <strong>{{ 'DELIVERIES.FIELDS.CATEGORY_OLIVE_OIL' | translate }}:</strong>
+            {{ deliveryData.categoryOliveOil || 'N/A' }}
+          </div>
         </div>
       </div>
-    </div>
-
-
-
-
-
+    }
 
     <!-- Truck Section -->
-    <div class="section"><h3 class="section-title">{{ 'DELIVERIES.DETAILS.SECTIONS.TRUCK' | translate }}</h3>
+    <div class="section">
+      <h3 class="section-title">{{ 'DELIVERIES.DETAILS.SECTIONS.TRUCK' | translate }}</h3>
+
       <div class="grid-row">
-        <div class="grid-item"><strong>{{ 'DELIVERIES.FIELDS.TRUCK_PLATE' | translate }}
-          :</strong> {{ deliveryData.matriculeCamion || 'N/A' }}
+        <div class="grid-item">
+          <strong>{{ 'DELIVERIES.FIELDS.TRUCK_PLATE' | translate }}:</strong>
+          {{ deliveryData.matriculeCamion || 'N/A' }}
         </div>
-        <div class="grid-item"><strong>{{ 'DELIVERIES.FIELDS.TRUCK_STATE' | translate }}
-          :</strong> {{ deliveryData.etatCamion || 'N/A' }}
+        <div class="grid-item">
+          <strong>{{ 'DELIVERIES.FIELDS.TRUCK_STATE' | translate }}:</strong>
+          {{ deliveryData.etatCamion || 'N/A' }}
         </div>
       </div>
     </div>
-
-
 
     <!-- Storage Section -->
     <div class="section">
       <h3 class="section-title">{{ 'DELIVERIES.DETAILS.SECTIONS.STORAGE' | translate }}</h3>
+
       <div class="grid-row">
-        <div class="grid-item"><strong>{{ 'DELIVERIES.FIELDS.STORAGE_UNIT' | translate }}
-          :</strong> {{ deliveryData.storageUnit?.name || 'N/A' }}
+        <div class="grid-item">
+          <strong>{{ 'DELIVERIES.FIELDS.STORAGE_UNIT' | translate }}:</strong>
+          {{ deliveryData.storageUnit?.name || 'N/A' }}
         </div>
       </div>
     </div>
@@ -179,61 +192,74 @@
     <div *ngIf="deliveryData.millMachine || deliveryData.millStartDate" class="section">
 
       <h3 class="section-title">{{ 'DELIVERIES.DETAILS.SECTIONS.PROCESSING' | translate }}</h3>
+
       <div class="grid-row">
-        <div class="grid-item"><strong>{{ 'DELIVERIES.FIELDS.MILL_MACHINE' | translate }}
-          :</strong> {{ deliveryData.millMachine?.name }}
+        <div class="grid-item">
+          <strong>{{ 'DELIVERIES.FIELDS.MILL_MACHINE' | translate }}:</strong>
+          {{ deliveryData.millMachine?.name || 'N/A' }}
         </div>
-        <div class="grid-item"><strong>{{ 'DELIVERIES.FIELDS.MILL_START' | translate }}
-          :</strong> {{ deliveryData?.trtDate | date: 'short' }}
+        <div class="grid-item">
+          <strong>{{ 'DELIVERIES.FIELDS.MILL_START' | translate }}:</strong>
+          {{ (deliveryData.millStartDate || deliveryData.trtDate) | date: 'short' }}
         </div>
       </div>
     </div>
 
     <!-- Price Info -->
-    <div *ngIf="deliveryData.unitPrice != null" class="section">
-
+    <div *ngIf="deliveryData.unitPrice != null || deliveryData.price != null || deliveryData.paidAmount != null || deliveryData.unpaidAmount != null || deliveryData.paymentMode || deliveryData.paymentStatus"
+         class="section">
       <h3 class="section-title">{{ 'DELIVERIES.DETAILS.SECTIONS.INFO_PRIX' | translate }}</h3>
+
       <div class="grid-row">
-        <div class="grid-item"><strong>{{ 'CONTROLE_QUALITE.FINANCIAL.UNIT_PRICE' | translate }}
-          :</strong> {{ deliveryData.unitPrice | number:'1.2-2' }} TND/kg
+        <div class="grid-item" *ngIf="deliveryData.unitPrice != null">
+          <strong>{{ 'CONTROLE_QUALITE.FINANCIAL.UNIT_PRICE' | translate }}:</strong>
+          {{ deliveryData.unitPrice | number:'1.2-2' }} TND/kg
         </div>
-        <div class="grid-item"><strong>{{ 'CONTROLE_QUALITE.FINANCIAL.PRICE' | translate }}
-          :</strong> {{ deliveryData.price | number:'1.2-2' }} TND
+        <div class="grid-item" *ngIf="deliveryData.price != null">
+          <strong>{{ 'CONTROLE_QUALITE.FINANCIAL.PRICE' | translate }}:</strong>
+          {{ deliveryData.price | number:'1.2-2' }} TND
         </div>
       </div>
+
       <div class="grid-row">
-        <div class="grid-item"><strong>{{ 'DELIVERIES.FIELDS.PAID_AMOUNT' | translate }}
-          :</strong> {{ deliveryData.paidAmount ?? 'N/A' }} TND
+        <div class="grid-item">
+          <strong>{{ 'DELIVERIES.FIELDS.PAID_AMOUNT' | translate }}:</strong>
+          {{ (deliveryData.paidAmount ?? 'N/A') }} TND
         </div>
-        <div class="grid-item"><strong>{{ 'DELIVERIES.FIELDS.UNPAID_AMOUNT' | translate }}
-          :</strong> {{ deliveryData.unpaidAmount ?? 'N/A' }} TND
+        <div class="grid-item">
+          <strong>{{ 'DELIVERIES.FIELDS.UNPAID_AMOUNT' | translate }}:</strong>
+          {{ (deliveryData.unpaidAmount ?? 'N/A') }} TND
         </div>
       </div>
+
       <div class="grid-row">
-        <div class="grid-item"><strong>{{ 'DELIVERIES.FIELDS.PAYMENT_MODE' | translate }}
-          :</strong> {{ deliveryData.paymentMode }}
+        <div class="grid-item">
+          <strong>{{ 'DELIVERIES.FIELDS.PAYMENT_MODE' | translate }}:</strong>
+          {{ deliveryData.paymentMode || 'N/A' }}
         </div>
-        <div class="grid-item"><strong>{{ 'DELIVERIES.FIELDS.PAYMENT_STATUS' | translate }}
-          :</strong> {{ deliveryData.paymentStatus }}
+        <div class="grid-item">
+          <strong>{{ 'DELIVERIES.FIELDS.PAYMENT_STATUS' | translate }}:</strong>
+          {{ deliveryData.paymentStatus || 'N/A' }}
         </div>
       </div>
     </div>
 
     <!-- Quality Control -->
     <div *ngIf="deliveryData.qualityControlResults?.length" class="section">
-
       <h3 class="section-title">{{ 'DELIVERIES.DETAILS.SECTIONS.INFO_CONTROL_QUALITE' | translate }}</h3>
+
       <div *ngFor="let qc of deliveryData.qualityControlResults" class="grid-row">
         <div class="grid-item">
-          <strong>{{ qc.rule?.ruleName || qc.rule?.ruleKey }}:</strong> {{ qc.measuredValue }}
+          <strong>{{ qc.rule?.ruleName || qc.rule?.ruleKey }}:</strong>
+          {{ qc.measuredValue }}
         </div>
       </div>
     </div>
 
     <!-- Attachments -->
     <div *ngIf="deliveryData.deliveryDocumentFileName" class="section">
-
       <h3 class="section-title">{{ 'DELIVERIES.DETAILS.SECTIONS.DOCUMENTS' | translate }}</h3>
+
       <div class="grid-item">
         <a [href]="deliveryData.deliveryDocumentFileUrl" download>
           {{ deliveryData.deliveryDocumentFileName }}
@@ -241,15 +267,6 @@
       </div>
     </div>
 
-    <!-- Audit Info (optional) -->
-    <div *ngIf="deliveryData.createdDate" class="section">
-
-      <h3 class="section-title">Audit</h3>
-      <div class="grid-row">
-        <div class="grid-item"><strong>Created By:</strong> {{ deliveryData.createdBy?.username }}</div>
-        <div class="grid-item"><strong>Created At:</strong> {{ deliveryData.createdDate | date: 'short' }}</div>
-      </div>
-    </div>
 
   </mat-card-content>
 </mat-card>

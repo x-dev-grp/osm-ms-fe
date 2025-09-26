@@ -20,6 +20,7 @@ import { SupplierPaymentHistoryComponent } from './suppliers/supplier-payment-hi
 import { allPermissionGuard, anyPermissionGuard, moduleGuard } from '../interceptors/guards/permission.guard';
 // CHANGE: permissions - use enums
 import { Action, OSMModule, permissionKey, ProductionEntity, ReceptionEntity } from 'src/app/theme/types/permissions';
+import { QcDeliveriesTableComponent } from './qc-deliveries-table/qc-deliveries-table.component';
 
 export const receptionRoutes: Routes = [
   // CHANGE: permissions - dashboard requires RECEPTION:UNIFIEDDELIVERY:READ
@@ -94,6 +95,10 @@ export const receptionRoutes: Routes = [
   {
     path: 'quality',
     component: QualityControlListComponent,
+    canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.QUALITYCONTROLRESULT, Action.READ)])]
+  },  {
+    path: 'quality2',
+    component: QcDeliveriesTableComponent,
     canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.QUALITYCONTROLRESULT, Action.READ)])]
   },
   {

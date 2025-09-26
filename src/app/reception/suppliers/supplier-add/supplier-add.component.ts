@@ -66,9 +66,8 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
       lastname: ['', [Validators.required, Validators.minLength(2)]],
       phone: ['', [Validators.required, Validators.pattern(/^[0-9+\-\s()]{6,}$/)]],
       email: [''],
-      address: ['', [Validators.required]],
+      address: [''],
       region: [null as BaseType | null, Validators.required], // BaseType
-      genericSupplierType: [null as BaseType | null, Validators.required], // BaseType
       hasStorage: [false],
       matriculeFiscal: [''],
       rib: [''],
@@ -80,7 +79,7 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
     this.supplierId = this.route.snapshot.paramMap.get('id');
 
     // Preload types used by BaseTypeComponent (if it relies on a cache)
-    this.genericTypeService.getAllTypes('SUPPLIER_TYPE').subscribe();
+    // this.genericTypeService.getAllTypes('SUPPLIER_TYPE').subscribe();
 
     if (this.supplierId) {
       this.isEditMode = true;

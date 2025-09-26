@@ -126,21 +126,21 @@
           <!-- Enum-driven Olive Type & Oil Type -->
           <div class="col-md-4 w-100 m-b-10">
             <mat-form-field appearance="outline" class="w-100">
-              <mat-label>Olive Type</mat-label>
+              <mat-label>{{ 'DELIVERIES.FORM.FIELDS.OLIVE_TYPE'|translate }}</mat-label>
               <mat-select formControlName="oliveType">
-                <mat-option *ngFor="let o of oliveOptions" [value]="o">{{ o }}</mat-option>
+                <mat-option *ngFor="let o of olive_oil_Options" [value]="o">{{ o }}</mat-option>
               </mat-select>
             </mat-form-field>
           </div>
 
-          <div class="col-md-4 w-100 m-b-10">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>Oil Type</mat-label>
-              <mat-select formControlName="oilType">
-                <mat-option *ngFor="let o of oilOptions" [value]="o">{{ o }}</mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
+<!--          <div class="col-md-4 w-100 m-b-10">-->
+<!--            <mat-form-field appearance="outline" class="w-100">-->
+<!--              <mat-label>Oil Type</mat-label>-->
+<!--              <mat-select formControlName="oilType">-->
+<!--                <mat-option *ngFor="let o of oilOptions" [value]="o">{{ o }}</mat-option>-->
+<!--              </mat-select>-->
+<!--            </mat-form-field>-->
+<!--          </div>-->
         </div>
       </div>
       <!-- Vehicle Information Section -->
@@ -154,19 +154,6 @@
               <mat-error *ngIf="receptionForm.get('matriculeCamion')?.hasError('pattern')">
                 Le format doit être 3 chiffres + TN + 4 chiffres (ex 258TN1234)
               </mat-error>
-            </mat-form-field>
-          </div>
-          <div class="col-md-6">
-            <mat-form-field appearance="outline" class="w-100 m-b-10">
-              <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.TRUCK_STATE') }}</mat-label>
-              <mat-select formControlName="etatCamion" required>
-                <mat-option [value]="'Conforme'">
-                  {{ translate.instant('OLIVE_RECEPTION.FORM.TRUCK_STATES.COMPLIANT') }}
-                </mat-option>
-                <mat-option [value]="'Non conforme'">
-                  {{ translate.instant('OLIVE_RECEPTION.FORM.TRUCK_STATES.NON_COMPLIANT') }}
-                </mat-option>
-              </mat-select>
             </mat-form-field>
           </div>
         </div>

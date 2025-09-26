@@ -2195,6 +2195,12 @@
   "OTHER_TAB": "تكوين آخر",
   "Online Courses": "الدورات عبر الإنترنت",
   "Other": "آخر",
+  "PAGE_404": {
+    "BACK_HOME": "العودة إلى الصفحة الرئيسية",
+    "DESCRIPTION": "الصفحة التي تبحث عنها غير موجودة أو تم نقلها أو غير متاحة مؤقتًا.",
+    "IMAGE_ALT": "رسم توضيحي لخطأ 404",
+    "TITLE": "الصفحة غير موجودة"
+  },
   "PDF": {
     "ACIDITY": "الحموضة",
     "ADDRESS": "مجال بلابس 1214 قصر هلال",
@@ -2448,7 +2454,6 @@
     "RULE_TYPES": {
       "BOOLEAN": "منطقي",
       "NUMERIC": "رقمي",
-      "RAW_STRING": "",
       "STRING": "نص"
     }
   },
@@ -2482,10 +2487,20 @@
         "SUPPLIER": "المورد",
         "TOTAL_OLIVE_WEIGHT": "إجمالي وزن الزيتون",
         "TOTAL_TRITURATION_PRICE_LABEL": "إجمالي سعر الطحن",
-        "TRITURATION_DURATION_HOURS": "المدة (ساعات)",
+        "TRITURATION_DURATION_HOURS": "المدة",
         "TRITURATION_DURATION_MINUTES": "المدة (دقائق)",
         "TRITURATION_PRICE_PER_KG_LABEL": "سعر الطحن (لكل كغ)",
         "YIELD_LABEL": "العائد (%)"
+      },
+      "CONFIRM_SAVE": "هل تريد حفظ التخطيط الحالي؟",
+      "GLOBAL_LOT": {
+        "CONFIRM_CREATE_FROM_SELECTION": "هل تريد إنشاء دفعة مُجمّعة جديدة من الدُفعات المحددة؟",
+        "CONFIRM_UNGROUP": "إلغاء تجميع الدفعة المُجمّعة {{globalLotNumber}}؟",
+        "CREATED_SUCCESS": "تم إنشاء الدفعة المُجمّعة {{globalLotNumber}} بنجاح!",
+        "MUST_BE_SAME_COLUMN": "يجب أن تكون جميع عمليات الاستلام المحددة في نفس العمود.",
+        "NOT_FOUND": "الدفعة المُجمّعة غير موجودة.",
+        "SELECT_AT_LEAST_ONE": "يرجى تحديد عملية استلام واحدة على الأقل للتجميع.",
+        "UNGROUPED_SUCCESS": "تم إلغاء تجميع الدفعة المُجمّعة {{globalLotNumber}} بنجاح!"
       }
     }
   },
@@ -3208,11 +3223,5 @@
   "department": {
     "description": "الوصف"
   },
-  "reCaptcha": "reCaptcha",
-  "PAGE_404": {
-    "TITLE": "الصفحة غير موجودة",
-    "DESCRIPTION": "الصفحة التي تبحث عنها غير موجودة أو تم نقلها أو غير متاحة مؤقتًا.",
-    "BACK_HOME": "العودة إلى الصفحة الرئيسية",
-    "IMAGE_ALT": "رسم توضيحي لخطأ 404"
-  }
+  "reCaptcha": "reCaptcha"
 }

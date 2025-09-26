@@ -49,6 +49,7 @@ import {
 import { FilterLotPipe } from '../../shared/pipes/FilterLotPipe';
 import { ToastService } from '../../shared/services/toast.service';
 import { CardComponent } from '../../theme/components/card/card.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-planning',
@@ -105,6 +106,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     private deliveryService: UnifiedDeliveryService,
     private millService: MillMachineService,
+    private translationservice: TranslateService,
     private bp: BreakpointObserver,
     private cdr: ChangeDetectorRef,
     private toast: ToastService,
@@ -144,8 +146,9 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   savePlan(): void {
-    this.confirm('Save this planning ?')
-      .pipe(filter((ok) => ok))
+    this.confirm(
+      this.translationservice.instant('RECEPTION.PLANNING.CONFIRM_SAVE')
+    ).pipe(filter((ok) => ok))
       .subscribe(() => {
         this._savePlan(false); // the old body moved to a private method
         this.dirty = false;
@@ -153,7 +156,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   groupSelected(): void {
-    this.confirm('Group selected lots ?')
+    this.confirm(this.translationservice.instant('RECEPTION.PLANNING.GLOBAL_LOT.CONFIRM_CREATE_FROM_SELECTION'))
       .pipe(filter((ok) => ok))
       .subscribe(() => {
         this._groupSelected(); // old logic here
@@ -163,8 +166,12 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ungroupLot(gl: GlobalLot): void {
     // called from the menu
-    this.confirm(`Ungroup global lot ${gl.globalLotNumber} ?`)
-      .pipe(filter((ok) => ok))
+    this.confirm(
+      this.translationservice.instant(
+        'RECEPTION.PLANNING.GLOBAL_LOT.CONFIRM_UNGROUP',
+        { globalLotNumber: gl.globalLotNumber }
+      )
+    )      .pipe(filter((ok) => ok))
       .subscribe(() => {
         this._ungroupLot(gl); // old logic here
         this.dirty = true;
@@ -305,7 +312,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
   _groupSelected(): void {
     const ids = this.selectedIds();
     if (!ids.length) {
-      this.toast.warning('Please select at least one reception to group.');
+      this.toast.warning(this.translationservice.instant('RECEPTION.PLANNING.GLOBAL_LOT.SELECT_AT_LEAST_ONE'));
       return;
     }
 
@@ -327,7 +334,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     // 2) Ensure all in same column
     const millsInvolved = new Set(itemsToGroup.map((o) => (o.item.data as PlanningItem).millMachineId ?? 'UNASSIGNED'));
     if (millsInvolved.size > 1) {
-      this.toast.warning('All selected receptions must be in the same column.');
+      this.toast.warning(this.translationservice.instant('RECEPTION.PLANNING.GLOBAL_LOT.MUST_BE_SAME_COLUMN'));
       return;
     }
     const millMachineId = [...millsInvolved][0] === 'UNASSIGNED' ? undefined : [...millsInvolved][0];
@@ -378,9 +385,9 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     this.globalLots.push(globalLot);
     this.selection = {};
     this.filteredReceptions = [...this.unassignedReceptions];
-    this._savePlan(true);
     this.cdr.markForCheck();
-    this.toast.success(`Global lot ${globalLotNumber} created successfully!`);
+    this.translationservice.instant('RECEPTION.PLANNING.GLOBAL_LOT.CREATED_SUCCESS', { globalLotNumber })
+    this._savePlan(true);
   }
 
   _ungroupLot(globalLot: GlobalLot): void {
@@ -413,7 +420,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     if (foundIndex === -1) {
-      this.toast.warning('Global lot not found.');
+      this.toast.warning(this.translationservice.instant('RECEPTION.PLANNING.GLOBAL_LOT.NOT_FOUND'));
       return;
     }
 
@@ -484,7 +491,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     this.selection = {};
     this.refreshConnectedDropLists();
     this.cdr.markForCheck();
-    this.toast.error(`Global lot ${globalLot.globalLotNumber} ungrouped successfully!`);
+    this.translationservice.instant('RECEPTION.PLANNING.GLOBAL_LOT.UNGROUPED_SUCCESS', { globalLotNumber: globalLot.globalLotNumber })
     this._savePlan(true);
   }
 

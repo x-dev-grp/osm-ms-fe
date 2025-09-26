@@ -152,12 +152,12 @@ export class WasteComponent {
             // Recharger les données du dashboard
             // this.loadDashboardData();
           } else {
-           this.toast.error('Erreur lors de la livraison');
+           this.toast.error('Erreur lors de la réception');
           }
         },
         error: (error) => {
           console.error('Error delivering waste sale:', error);
-         this.toast.error('Erreur lors de la livraison');
+         this.toast.error('Erreur lors de la réception');
         }
       });
     }

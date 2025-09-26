@@ -68,9 +68,9 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
       labelTranslatePath: 'SUPPLIERS.EMAIL',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
-      exportable: true,
-      dataTable: true,
-      filterable: true
+      exportable: false,
+      dataTable: false,
+      filterable: false
     },
     {
       name: 'address',
@@ -78,9 +78,9 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
       labelTranslatePath: 'SUPPLIERS.ADDRESS',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
-      exportable: true,
-      dataTable: true,
-      filterable: true
+      exportable: false,
+      dataTable: false,
+      filterable: false
     },
     // ==================== CORE CUSTOMER FIELDS ====================
     {
@@ -100,27 +100,16 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
       labelTranslatePath: 'CUSTOMERS.FIELDS.CATEGORY',
       attributeType: AttributeType.enum,
       fieldType: FieldType.select,
-      exportable: true,
-      sortable: true,
-      dataTable: true,
-      filterable: true,
+      exportable: false,
+      sortable: false,
+      dataTable: false,
+      filterable: false,
       options: [
         { value: 'INDIVIDUAL', label: 'Individuel', labelTranslatePath: 'CUSTOMERS.CATEGORIES.INDIVIDUAL' },
         { value: 'BUSINESS', label: 'Entreprise', labelTranslatePath: 'CUSTOMERS.CATEGORIES.BUSINESS' }
       ]
     },
-    {
-      name: 'genericSupplierType',
-      label: 'Type de fournisseur',
-      labelTranslatePath: 'SUPPLIERS.TYPE',
-      attributeType: AttributeType.object,
-      fieldType: FieldType.autocomplete,
-      exportable: true,
-      dataTable: true,
-      filterable: true,
-      valuePath: 'name',
-      valueAttributeType: AttributeType.string
-    },
+
     {
       name: 'region',
       label: 'Région',

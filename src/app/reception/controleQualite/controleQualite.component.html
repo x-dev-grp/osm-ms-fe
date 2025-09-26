@@ -1,4 +1,4 @@
-<div class="quality-control-container">
+<div class="quality-control-container ">
   <!-- Header Section -->
   <div class="quality-header">
     <div class="header-content">
@@ -15,11 +15,11 @@
           {{ 'CONTROLE_QUALITE.STATUS.COMPLETED' | translate }}
         </mat-chip>
       </div>
-      <div *ngIf="!isOliveDelivery()" class="rawstring-banner">
+      <div  class="rawstring-banner">
         <mat-chip-listbox>
           <mat-chip color="primary" selected>
             <mat-icon>label</mat-icon>
-            {{ buildRawStringDefault() }}
+            {{ deliveryData?.lotNumber! }}
           </mat-chip>
         </mat-chip-listbox>
       </div>
@@ -169,15 +169,47 @@
             <ng-container *ngIf="getRuleType(control.key) === 'NUMERIC'; else nonNumericInput">
               <mat-form-field appearance="outline" class="parameter-field">
                 <mat-label>{{ getRuleName(control.key) }}</mat-label>
-                <input [disabled]="isQualityControlDone" [formControlName]="control.key" [id]="control.key"
-                       [placeholder]="'CONTROLE_QUALITE.PLACEHOLDER.ENTER_VALUE' | translate" matInput step="0.01"
-                       type="number">
+
+                <input
+                  matInput
+                  type="number"
+                  step="0.01"
+                  [disabled]="isQualityControlDone"
+                  [formControlName]="control.key"
+                  [id]="control.key"
+                  [placeholder]="'CONTROLE_QUALITE.PLACEHOLDER.ENTER_VALUE' | translate"
+                  [attr.min]="getRuleMIN(control.key) ?? null"
+                  [attr.max]="getRuleMAX(control.key) ?? null">
+
                 <mat-icon matSuffix>calculate</mat-icon>
+
+                <!-- Errors -->
                 <mat-error *ngIf="mainForm.get(control.key)?.hasError('required')">
                   {{ 'CONTROLE_QUALITE.FORM.VALIDATION.REQUIRED' | translate }}
                 </mat-error>
+                <mat-error *ngIf="mainForm.get(control.key)?.hasError('min')">
+                  {{ 'CONTROLE_QUALITE.FORM.VALIDATION.MIN' | translate }}: {{ getRuleMIN(control.key) }}
+                </mat-error>
+                <mat-error *ngIf="mainForm.get(control.key)?.hasError('max')">
+                  {{ 'CONTROLE_QUALITE.FORM.VALIDATION.MAX' | translate }}: {{ getRuleMAX(control.key) }}
+                </mat-error>
+
+                <!-- Footnote hint -->
+                <mat-hint *ngIf="getRuleMIN(control.key) != null || getRuleMAX(control.key) != null"
+                          align="start" class="parameter-footnote">
+                  <ng-container *ngIf="getRuleMIN(control.key) != null">
+                    Min: {{ getRuleMIN(control.key) }}
+                  </ng-container>
+                  <ng-container *ngIf="getRuleMIN(control.key) != null && getRuleMAX(control.key) != null">
+                    &nbsp;•&nbsp;
+                  </ng-container>
+                  <ng-container *ngIf="getRuleMAX(control.key) != null">
+                    Max: {{ getRuleMAX(control.key) }}
+                  </ng-container>
+                </mat-hint>
               </mat-form-field>
             </ng-container>
+
             <!-- STRING & BOOLEAN -->
             <ng-template #nonNumericInput>
               <ng-container [ngSwitch]="getRuleType(control.key)">
@@ -194,18 +226,6 @@
                     {{ 'CONTROLE_QUALITE.FORM.VALIDATION.REQUIRED' | translate }}
                   </mat-error>
                 </mat-form-field>
-                <!-- RAW_STRING (first-time auto-fill, always disabled) -->
-                <mat-form-field *ngSwitchCase="'RAW_STRING'" appearance="outline" class="parameter-field">
-                  <mat-label>{{ getRuleName(control.key) }}</mat-label>
-                  <input
-                    [disabled]="true"
-                    [formControlName]="control.key"
-                    [id]="control.key"
-                    matInput
-                    type="text" />
-                  <mat-icon matSuffix>lock</mat-icon>
-                </mat-form-field>
-
                 <!-- BOOLEAN -->
                 <mat-form-field *ngSwitchCase="'BOOLEAN'" appearance="outline" class="parameter-field">
                   <mat-label>{{ getRuleName(control.key) }}</mat-label>

@@ -104,21 +104,12 @@ export class QualityControlRuleAddComponent implements OnInit {
       if (type === 'string') {
         textCtrl.setValidators([Validators.required, Validators.maxLength(255)]);
         if (textCtrl.value == null) textCtrl.setValue('');
-      } else if (type === 'raw_string') {
-        textCtrl.clearValidators();
-        textCtrl.setValue(''); // <-- make sure it's empty so validation passes
-      } else {
+      }  else {
         textCtrl.clearValidators();
       }
       textCtrl.updateValueAndValidity({ emitEvent: false });
     });
 
-// If editing and existing ruleType is raw_string, normalize once:
-    if (ruleTypeCtrl.value === 'raw_string') {
-      textCtrl.clearValidators();
-      textCtrl.setValue('');
-      textCtrl.updateValueAndValidity({ emitEvent: false });
-    }
     const boolCtrl = this.ruleForm.get('booleanValue')!;
     const minCtrl = this.ruleForm.get('minValue')!;
     const maxCtrl = this.ruleForm.get('maxValue')!;
@@ -140,10 +131,6 @@ export class QualityControlRuleAddComponent implements OnInit {
           textInputCtrl.clearValidators();
         } else if (type === 'string') {
           textInputCtrl.setValidators([Validators.required]);
-          minCtrl.clearValidators();
-          maxCtrl.clearValidators();
-          boolCtrl.clearValidators();
-        } else if (type === 'raw_string') {
           minCtrl.clearValidators();
           maxCtrl.clearValidators();
           boolCtrl.clearValidators();
@@ -198,11 +185,6 @@ export class QualityControlRuleAddComponent implements OnInit {
       ruleTextValue: ruleType?.toLowerCase() === 'string'
         ? Array.isArray(v.textInput)
           ? v.textInput.filter((val: string) => val && val.trim()).join(',') // 👈 on convertit en string
-          : String(v.textInput || '').trim()
-        : null,
-      rawStringValue: ruleType?.toLowerCase() === 'raw_string'
-        ? Array.isArray(v.textInput)
-          ? v.textInput.filter((val: string) => val && val.trim()) // 👈 on convertit en string
           : String(v.textInput || '').trim()
         : null
     };

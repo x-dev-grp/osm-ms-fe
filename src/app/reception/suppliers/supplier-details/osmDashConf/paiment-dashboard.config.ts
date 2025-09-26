@@ -97,20 +97,20 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
                 }
               }
             },
-            {
-              operation: SearchOperation.AND,
-              search: {
-                isDeleted: {
-                  equalValue: false
-                },
-                operationType: {
-                  equalValue: 'BASE'
-                },
-                status: {
-                  inValues: ['COMPLETED']
-                }
-              }
-            }
+            // {
+            //   operation: SearchOperation.AND,
+            //   search: {
+            //     isDeleted: {
+            //       equalValue: false
+            //     },
+            //     operationType: {
+            //       equalValue: 'BASE'
+            //     },
+            //     status: {
+            //       inValues: ['COMPLETED']
+            //     }
+            //   }
+            // }
           ]
         }
       ],
@@ -178,7 +178,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'deliveryDate',
-      label: 'Date de réception',
+      label: 'Date ',
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.DELIVERY_DATE',
       attributeType: AttributeType.date,
       fieldType: FieldType.date,

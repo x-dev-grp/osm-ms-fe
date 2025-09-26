@@ -361,15 +361,15 @@
     "FORM": {
       "FIELDS": {
         "CATEGORY": "Catégorie",
-        "DELIVERY_DATE": "Date de livraison",
-        "DELIVERY_NUMBER": "N° Livraison",
-        "DELIVERY_TYPE": "Type de livraison",
+        "DELIVERY_DATE": "Date",
+        "DELIVERY_NUMBER": "N° réception",
+        "DELIVERY_TYPE": "Type de réception",
         "LOT_NUMBER": "Numéro de lot",
         "REGION": "Région",
         "SUPPLIER": "Fournisseur"
       },
       "SECTIONS": {
-        "DELIVERY_INFO": "Informations de livraison",
+        "DELIVERY_INFO": "Informations de réception",
         "FINANCIAL_INFO": "Informations financières",
         "QUALITY_CONTROL": "Contrôle qualité"
       },
@@ -383,7 +383,7 @@
     "LOADING": "Chargement des paramètres de contrôle qualité...",
     "MESSAGES": {
       "ERROR": {
-        "INVALID_FORM": "Formulaire invalide ou données de livraison manquantes",
+        "INVALID_FORM": "Formulaire invalide ou données de réception manquantes",
         "LOAD": "Erreur lors du chargement",
         "SAVE": "Erreur lors de la sauvegarde",
         "STORAGE_UNIT_NOT_FOUND": "Erreur : Cuve de stockage non trouvée"
@@ -445,7 +445,7 @@
       },
       "PLACEHOLDER": "Sélectionner une cuve"
     },
-    "SUBTITLE": "Complétez l'évaluation de qualité pour cette livraison",
+    "SUBTITLE": "Complétez l'évaluation de qualité pour cette réception",
     "TITLE": "Contrôle Qualité"
   },
   "CUSTOMERS": {
@@ -631,9 +631,9 @@
     },
     "FIELDS": {
       "CATEGORY_OLIVE_OIL": "Catégorie huile d'olive",
-      "DELIVERY_DATE": "Date de livraison",
-      "DELIVERY_NUMBER": "N° Livraison",
-      "DELIVERY_TYPE": "Type de livraison",
+      "DELIVERY_DATE": "Date",
+      "DELIVERY_NUMBER": "N° réception",
+      "DELIVERY_TYPE": "Type de réception",
       "GLOBAL_LOT_NUMBER": "N° Lot Global",
       "GROSS_WEIGHT": "Poids brut (KG)",
       "LOT_NUMBER": "N° lot",
@@ -646,7 +646,7 @@
       "OLIVE_LOT_NUMBER": "N° Lot d'olive/N°reception",
       "OLIVE_QUANTITY": "Quantité d'olives",
       "OLIVE_TYPE": "Type d'olive",
-      "OLIVE_VARIETY": "Variété d'olive",
+      "OLIVE_VARIETY": "Variété",
       "OPERATION_TYPE": "Type d'opération",
       "PAID_AMOUNT": "Montant paié",
       "PARCEL": "Parcelle",
@@ -680,9 +680,9 @@
         "UPDATE": "Mettre à jour"
       },
       "FIELDS": {
-        "DELIVERY_DATE": "Date de livraison",
-        "DELIVERY_NUMBER": "N° Livraison",
-        "DELIVERY_TYPE": "Type de livraison",
+        "DELIVERY_DATE": "Date ",
+        "DELIVERY_NUMBER": "N° réception",
+        "DELIVERY_TYPE": "Type de réception",
         "GROSS_WEIGHT": "Poids brut (kg)",
         "LOT_NUMBER": "Numéro de lot",
         "OIL_QUANTITY": "Quantité d'huile (KG)",
@@ -702,14 +702,14 @@
         "UNPAID_AMOUNT": "Montant restant (TND)"
       },
       "HINTS": {
-        "DELIVERY_NUMBER": "Numéro de livraison généré automatiquement",
+        "DELIVERY_NUMBER": "Numéro de réception généré automatiquement",
         "LOT_NUMBER": "Identifiant unique du lot",
         "OIL_QUANTITY": "Quantité en kilogrammes",
         "UNIT_PRICE": "Prix par litre"
       },
       "MESSAGES": {
-        "CREATE_ERROR": "Erreur lors de la création de la livraison",
-        "CREATE_SUCCESS": "Livraison créée avec succès",
+        "CREATE_ERROR": "Erreur lors de la création de la réception",
+        "CREATE_SUCCESS": "réception créée avec succès",
         "ERROR": {
           "ADD": "Erreur lors de l'ajout de la réception d'huile",
           "LOAD": "Erreur lors du chargement des données de réception d'huile",
@@ -717,16 +717,16 @@
         },
         "INCOMPLETE_FORM": "Formulaire incomplet ou validation échouée",
         "LOAD_ERROR": "Erreur lors du chargement des données",
-        "SAVE_ERROR": "Erreur lors de l'enregistrement de la livraison d'huile",
-        "SAVE_SUCCESS": "Livraison d'huile enregistrée avec succès",
+        "SAVE_ERROR": "Erreur lors de l'enregistrement de la réception d'huile",
+        "SAVE_SUCCESS": "réception d'huile enregistrée avec succès",
         "STORAGE_CAPACITY": "La cuve {{name}} a une capacité disponible de {{available}} L sur {{max}} L",
         "STORAGE_UNIT_FORMAT": "{{name}} ({{currentVolume}}/{{maxCapacity}} L)",
         "SUCCESS": {
           "ADD": "Réception d'huile ajoutée avec succès",
           "UPDATE": "Réception d'huile mise à jour avec succès"
         },
-        "UPDATE_ERROR": "Erreur lors de la mise à jour de la livraison",
-        "UPDATE_SUCCESS": "Livraison d'huile mise à jour avec succès"
+        "UPDATE_ERROR": "Erreur lors de la mise à jour de la réception",
+        "UPDATE_SUCCESS": "réception d'huile mise à jour avec succès"
       },
       "PLACEHOLDERS": {
         "SEARCH_OIL_TYPE": "Rechercher un type...",
@@ -739,7 +739,7 @@
       },
       "SECTIONS": {
         "CLIENT_REGION": "Client et région",
-        "DELIVERY_INFO": "Informations de livraison",
+        "DELIVERY_INFO": "Informations de réception",
         "FINANCIAL_INFO": "Informations financières",
         "GENERAL_INFO": "Informations générales",
         "OIL_DETAILS": "Détails de l'huile",
@@ -750,8 +750,8 @@
         "WEIGHT_QUANTITY": "Poids et quantité"
       },
       "TITLE": {
-        "ADD": "Ajouter une livraison d'huile",
-        "EDIT": "Modifier la livraison d'huile"
+        "ADD": "Ajouter une réception d'huile",
+        "EDIT": "Modifier la réception d'huile"
       },
       "TRUCK_STATES": {
         "COMPLIANT": "Conforme",
@@ -774,8 +774,8 @@
       "SENT_TO_PRODUCTION_ERROR": "Erreur lors de l'envoi en production",
       "SENT_TO_PRODUCTION_SUCCESS": "Réception envoyée en production avec succès"
     },
-    "OIL_TITLE": "Historique des livraisons d'Huile & olive ",
-    "OLIVE_TITLE": "Livraisons d'Olives",
+    "OIL_TITLE": "Historique des réceptions d'Huile & olive ",
+    "OLIVE_TITLE": "Réceptions d'Olives",
     "OPERATION_TYPE": {
       "BASE": "Base",
       "EXCHANGE": "Echange",
@@ -1588,7 +1588,7 @@
         "UPDATE": "Mettre à jour"
       },
       "CLIENT_REGION": "Client et région",
-      "DELIVERY_INFO": "Informations de livraison",
+      "DELIVERY_INFO": "Informations de réception",
       "EDIT_TITLE": "Modifier la réception d'huile",
       "ERRORS": {
         "AVAILABLE_CAPACITY": "La quantité dépasse la capacité disponible ({{available}} L restants)",
@@ -1598,9 +1598,9 @@
         "STORAGE_UNIT_REQUIRED": "La cuve de stockage est requise"
       },
       "FIELDS": {
-        "DELIVERY_DATE": "Date de livraison",
-        "DELIVERY_NUMBER": "N° Livraison",
-        "DELIVERY_TYPE": "Type de livraison",
+        "DELIVERY_DATE": "Date ",
+        "DELIVERY_NUMBER": "N° réception",
+        "DELIVERY_TYPE": "Type de réception",
         "GROSS_WEIGHT": "Poids brut (kg)",
         "LOT_NUMBER": "Numéro de lot",
         "OIL_QUANTITY": "Quantité d'huile (KG)",
@@ -1627,22 +1627,22 @@
       "FINANCIAL_INFO": "Informations financières",
       "GENERAL_INFO": "Informations générales",
       "MESSAGES": {
-        "CREATE_ERROR": "Erreur lors de la création de la livraison",
-        "CREATE_SUCCESS": "Livraison créée avec succès",
+        "CREATE_ERROR": "Erreur lors de la création de la réception",
+        "CREATE_SUCCESS": "réception créée avec succès",
         "ERROR": {
           "ADD": "Erreur lors de l'ajout de la réception d'huile",
           "INCOMPLETE_FORM": "Veuillez remplir tous les champs obligatoires",
           "LOAD": "Erreur lors du chargement des données de réception d'huile",
           "UPDATE": "Erreur lors de la mise à jour de la réception d'huile"
         },
-        "LOAD_ERROR": "Erreur lors du chargement des données de livraison",
+        "LOAD_ERROR": "Erreur lors du chargement des données de réception",
         "STORAGE_CAPACITY": "La cuve {{name}} a une capacité disponible de {{available}} L sur {{max}} L",
         "SUCCESS": {
           "ADD": "Réception d'huile ajoutée avec succès",
           "UPDATE": "Réception d'huile mise à jour avec succès"
         },
-        "UPDATE_ERROR": "Erreur lors de la mise à jour de la livraison",
-        "UPDATE_SUCCESS": "Livraison mise à jour avec succès"
+        "UPDATE_ERROR": "Erreur lors de la mise à jour de la réception",
+        "UPDATE_SUCCESS": "réception mise à jour avec succès"
       },
       "OIL_DETAILS": "Détails de l'huile",
       "OPERATION_TYPE": "Type d'opération",
@@ -1667,8 +1667,8 @@
         "VIEW": "Consulter"
       },
       "FIELDS": {
-        "DELIVERY_DATE": "Date de livraison",
-        "DELIVERY_NUMBER": "N° Livraison",
+        "DELIVERY_DATE": "Date ",
+        "DELIVERY_NUMBER": "N° réception",
         "GLOBAL_LOT_NUMBER": "N° Lot Global",
         "LOT_NUMBER": "N° Lot",
         "OIL_QUANTITY": "Qté huile (KG)",
@@ -1693,7 +1693,7 @@
         "NEW": "Nouveau",
         "REFUSED": "Refusé"
       },
-      "TITLE": "Livraisons d'Huile"
+      "TITLE": "Réceptions d'Huile"
     },
     "PAYMENT_DETAILS": "Détails du paiement",
     "PAYMENT_DIALOG_DESCRIPTION": "Saisissez le prix unitaire et la quantité pour ce paiement d'huile. Le total ne peut pas dépasser le montant impayé de la réception d'olives d'origine.",
@@ -1804,14 +1804,14 @@
   },
   "OIL_TRANSACTION": {
     "DELIVERY": {
-      "DATE": "Date de livraison",
+      "DATE": "Date ",
       "LOT_NUMBER": "Numéro de lot",
-      "NUMBER": "N° Livraison",
+      "NUMBER": "N° réception",
       "OIL_QUANTITY": "Quantité d'huile",
       "OIL_VARIETY": "Variété d'huile",
       "PARCEL": "Parcelle",
       "REGION": "Région",
-      "SECTION": "Détails de la livraison associée",
+      "SECTION": "Détails de la réception associée",
       "STATUS": "Statut",
       "STORAGE_UNIT": "Unité de stockage",
       "SUPPLIER": "Fournisseur",
@@ -1828,7 +1828,7 @@
       "RECEPTION_ID": "ID de réception",
       "SECTION": "Détails de la transaction",
       "SRC_UNIT_ID": "ID unité de stockage source",
-      "TITLE": "Détails de la transaction d'huile et de la livraison",
+      "TITLE": "Détails de la transaction d'huile et de la réception",
       "TOTAL_PRICE": "Prix total",
       "TYPE": "Type",
       "UNIT_PRICE": "Prix unitaire"
@@ -1971,7 +1971,7 @@
         "PAID_AMOUNT": "Montant payé",
         "QUALITY_GRADE": "Grade de qualité",
         "QUANTITY_KG": "Quantité (kg)",
-        "RECEPTION_DATE": "Date de réception",
+        "RECEPTION_DATE": "Date ",
         "RECEPTION_ID": "ID de réception",
         "RECEPTION_REGION": "Région de la réception",
         "RECEPTION_SUPPLIER": "Fournisseur de la réception",
@@ -2005,9 +2005,9 @@
       },
       "FIELDS": {
         "CLIENT": "Client",
-        "DELIVERY_DATE": "Date de livraison",
-        "DELIVERY_NUMBER": "N° Livraison",
-        "DELIVERY_TYPE": "Type de livraison",
+        "DELIVERY_DATE": "Date ",
+        "DELIVERY_NUMBER": "N° réception",
+        "DELIVERY_TYPE": "Type de réception",
         "EMPTY_TRUCK_WEIGHT": "Poids camion vide",
         "GROSS_WEIGHT": "Poid camion chargé (kg)",
         "LOT_NUMBER": "Numéro de lot",
@@ -2039,7 +2039,7 @@
       },
       "SECTIONS": {
         "CLIENT_REGION": "Client et région",
-        "DELIVERY_INFO": "Informations de livraison",
+        "DELIVERY_INFO": "Informations de réception",
         "GENERAL_INFO": "Informations générales",
         "OLIVE_INFO": "Informations sur les olives",
         "SUPPLIER_REGION": "Fournisseur et région",
@@ -2195,6 +2195,12 @@
   "OTHER_TAB": "Autre Config",
   "Online Courses": "Cours en ligne",
   "Other": "Autre",
+  "PAGE_404": {
+    "BACK_HOME": "Retour à l’accueil",
+    "DESCRIPTION": "La page que vous recherchez n’existe pas, a été déplacée ou est temporairement indisponible.",
+    "IMAGE_ALT": "Illustration d’erreur 404",
+    "TITLE": "Page introuvable"
+  },
   "PDF": {
     "ACIDITY": "Acidité",
     "ADDRESS": "Adresse",
@@ -2222,7 +2228,7 @@
     "CUSTOMER": "Client",
     "DAMAGED_PERCENT": "Endommagées %",
     "DATE": "Date",
-    "DELIVERY_DATE": "Date de Livraison",
+    "DELIVERY_DATE": "Date ",
     "DELTA_K": "Delta K",
     "DESCRIPTION": "Description",
     "DESIGNATION": "Désignation",
@@ -2324,7 +2330,7 @@
     "QUALITY_MANAGER": "Responsable Qualité",
     "QUANTITY": "Quantité",
     "QUANTITY_KG": "Quantité (kg)",
-    "RECEPTION_DATE": "Date de réception",
+    "RECEPTION_DATE": "Date ",
     "RECEPTION_ID": "ID de réception",
     "RECEPTION_IN": "Réception",
     "RECEPTION_NUMBER": "Numéro de Réception",
@@ -2381,7 +2387,7 @@
   "PLANNING_CARD_TITLE": "Planification des Réceptions d'Olives",
   "PLANNING_EXIT_FULLSCREEN": "Quitter le plein écran",
   "PLANNING_FULLSCREEN": "Plein écran",
-  "PLANNING_GROUP": "Grouper",
+  "PLANNING_GROUP": "Crée un lot global",
   "PLANNING_KG": "kg",
   "PLANNING_LOTS_LIST": "Liste des Lots :",
   "PLANNING_NET": "Net :",
@@ -2470,7 +2476,6 @@
     "RULE_TYPES": {
       "BOOLEAN": "Case à cocher",
       "NUMERIC": "Numéro",
-      "RAW_STRING": "Chaine de charctere",
       "STRING": "List des option"
     }
   },
@@ -2480,7 +2485,7 @@
         "COMPLETION_DATE_LABEL": "Date de Finalisation",
         "COMPLETION_DETAILS_TITLE": "Détails de Finalisation",
         "CONFIRMATION_TEXT": "Êtes-vous sûr de vouloir marquer ceci comme terminé ?",
-        "DELIVERY_DATE": "Date de Livraison",
+        "DELIVERY_DATE": "Date ",
         "DELIVERY_NUMBER": "Numéro de Réception",
         "DETAILS_TITLE": "Détails de Finalisation",
         "FINAL_OBSERVATION_LABEL": "Observation Finale (Optionnel)",
@@ -2505,10 +2510,20 @@
         "TITLE": "Finalisation",
         "TOTAL_OLIVE_WEIGHT": "Poids Total d'Olives",
         "TOTAL_TRITURATION_PRICE_LABEL": "Prix total de trituration",
-        "TRITURATION_DURATION_HOURS": "Durée (Heures)",
+        "TRITURATION_DURATION_HOURS": "Durée",
         "TRITURATION_DURATION_MINUTES": "Trituration (Minutes)",
         "TRITURATION_PRICE_PER_KG_LABEL": "Prix de trituration (par kg)",
         "YIELD_LABEL": "Rendement (%)"
+      },
+      "CONFIRM_SAVE": "Enregistrer le planning actuel ?",
+      "GLOBAL_LOT": {
+        "CONFIRM_CREATE_FROM_SELECTION": "Créer un lot global à partir des lots sélectionnés ?",
+        "CONFIRM_UNGROUP": "Dissocier le lot global {{globalLotNumber}} ?",
+        "CREATED_SUCCESS": "Lot global {{globalLotNumber}} créé avec succès !",
+        "MUST_BE_SAME_COLUMN": "Toutes les réceptions sélectionnées doivent être dans la même colonne.",
+        "NOT_FOUND": "Lot global introuvable.",
+        "SELECT_AT_LEAST_ONE": "Veuillez sélectionner au moins une réception à regrouper.",
+        "UNGROUPED_SUCCESS": "Lot global {{globalLotNumber}} dissocié avec succès !"
       }
     }
   },
@@ -2520,8 +2535,8 @@
       "VIEW": "Consulter"
     },
     "FIELDS": {
-      "DELIVERY_DATE": "Date de réception",
-      "DELIVERY_NUMBER": "N° Livraison",
+      "DELIVERY_DATE": "Date ",
+      "DELIVERY_NUMBER": "N° réception",
       "GLOBAL_LOT_NUMBER": "N° Lot Global",
       "LOT_NUMBER": "N° Lot",
       "NET_WEIGHT": "Poids net (kg)",
@@ -2784,7 +2799,7 @@
   "SUPPLIER_PAYMENT": {
     "ACTIONS": "Actions",
     "ALL": "Tous",
-    "ALL_DELIVERIES": "Toutes les Livraisons",
+    "ALL_DELIVERIES": "Toutes les Réceptions",
     "AMOUNT": "Montant",
     "BANK_ACCOUNT": "Compte Bancaire",
     "BANK_TRANSFER": "Virement Bancaire",
@@ -2798,8 +2813,8 @@
     "CHECK_NUMBER": "Numéro de Chèque",
     "CHECK_NUMBER_PLACEHOLDER": "Ex: CHK-2024-001",
     "CONFIRM_PAYMENT": "Confirmer le Paiement",
-    "DELIVERY_DATE": "Date Livraison",
-    "DELIVERY_NUMBER": "N° Livraison",
+    "DELIVERY_DATE": "Date réception",
+    "DELIVERY_NUMBER": "N° réception",
     "DIRECTION": "Direction de paiment",
     "ENTER_NEGOTIATED_PRICE": "Entrez le prix négocié",
     "ERRORS": {
@@ -2857,7 +2872,7 @@
     "OUTBOUND": "Paiment sortie",
     "PAID": "Payé",
     "PAID_AMOUNT": "Montant Payé",
-    "PAID_DELIVERIES": "Livraisons Payées",
+    "PAID_DELIVERIES": "Réceptions Payées",
     "PAY": "Payer",
     "PAYMENT": "Paiment",
     "PAYMENT_HISTORY": "Historique des Paiements",
@@ -2871,7 +2886,7 @@
     "RECEPTION_TYPE_OIL": "Huile",
     "RECEPTION_TYPE_OLIVE": "Olive",
     "REFERENCE_PRICE": "Prix de référence",
-    "RELATED_OIL_DELIVERY": "Livraison d'Huile Associée",
+    "RELATED_OIL_DELIVERY": "réception d'Huile Associée",
     "REMAINING_AFTER_CASH": "Reste après Espèces",
     "REMAINING_AMOUNT": "Montant Restant",
     "SELECT_LOTS_FOR_OIL_PAYMENT": "Select lots for oil payment",
@@ -2881,7 +2896,7 @@
     "STATUS_PARTIAL": "Partiel",
     "STATUS_UNKNOWN": "Inconnu",
     "STATUS_UNPAID": "Non Payé",
-    "TOTAL_DELIVERIES": "Total Livraisons",
+    "TOTAL_DELIVERIES": "Total Réceptions",
     "TOTAL_OLIVE_WEIGHT": "Total Poids Olives",
     "TOTAL_PAID": "Total Payé",
     "TOTAL_PAYMENT": "Paiement Total",
@@ -2889,7 +2904,7 @@
     "TOTAL_UNPAID": "Total Non Payé",
     "UNPAID": "Non Payé",
     "UNPAID_AMOUNT": "Montant à Payé",
-    "UNPAID_DELIVERIES": "Livraisons Non Payées"
+    "UNPAID_DELIVERIES": "Réceptions Non Payées"
   },
   "Sample Page": "Page d'exemple",
   "Setting": "Paramètre",
@@ -3087,11 +3102,5 @@
   "department": {
     "description": "Description"
   },
-  "reCaptcha": "reCaptcha",
-  "PAGE_404": {
-    "TITLE": "Page introuvable",
-    "DESCRIPTION": "La page que vous recherchez n’existe pas, a été déplacée ou est temporairement indisponible.",
-    "BACK_HOME": "Retour à l’accueil",
-    "IMAGE_ALT": "Illustration d’erreur 404"
-  }
+  "reCaptcha": "reCaptcha"
 }

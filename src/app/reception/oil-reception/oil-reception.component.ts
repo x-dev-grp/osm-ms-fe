@@ -487,13 +487,13 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
 
     if (!this.selectedRow) {
       console.error('[OilReception] No selected row for payment confirmation');
-      this.toast.warning('Aucune livraison sélectionnée');
+      this.toast.warning('Aucune réception sélectionnée');
       return;
     }
 
     if (!this.selectedRow.id) {
       console.error('[OilReception] Selected row has no ID');
-      this.toast.warning('ID de livraison manquant');
+      this.toast.warning('ID de réception manquant');
       return;
     }
 
@@ -878,7 +878,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
       return errorObj.message;
     }
     if (errorObj?.status === 404) {
-      return 'Livraison non trouvée';
+      return 'réception non trouvée';
     }
     if (errorObj?.status === 400) {
       return 'Données de paiement invalides';

@@ -29,7 +29,7 @@ export interface PdfFactureConfig {
   // Tableau des lignes (produits)
   fields?: { label: string; value: string }[];
 
-  // Informations supplémentaires (poids, colis, livraison, etc.)
+  // Informations supplémentaires (poids, colis, réception, etc.)
   additionalInfo?: {
     grossWeight?: string;
     netWeight?: string;
