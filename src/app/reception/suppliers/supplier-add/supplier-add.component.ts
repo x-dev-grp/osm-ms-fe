@@ -1,24 +1,26 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatIconModule } from '@angular/material/icon';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { SupplierTypeService } from '../../../shared/services/supplier.service';
-import { GenericTypeService } from '../../../shared/services/generic-type.service';
-import { BaseTypeComponent } from '../../../shared/modules/base-type/base-type.component';
-import { TypeCategory } from '../../../shared/models/type-category.enum';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { getCustomerCategories, PartnerCategory } from '../../../finance/models/PartnerCategory';
-import { ToastService } from '../../../shared/services/toast.service';
-import { MatCheckbox } from '@angular/material/checkbox';
-import { SupplierType } from '../../../shared/models/supplier-type';
-import { BaseType } from '../../../shared/models/base-type';
+import {Component, Inject, OnDestroy, OnInit, Optional} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatIconModule} from '@angular/material/icon';
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
+import {SupplierTypeService} from '../../../shared/services/supplier.service';
+import {GenericTypeService} from '../../../shared/services/generic-type.service';
+import {BaseTypeComponent} from '../../../shared/modules/base-type/base-type.component';
+import {TypeCategory} from '../../../shared/models/type-category.enum';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {getCustomerCategories, PartnerCategory} from '../../../finance/models/PartnerCategory';
+import {ToastService} from '../../../shared/services/toast.service';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {SupplierType} from '../../../shared/models/supplier-type';
+import {BaseType} from '../../../shared/models/base-type';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+
 
 @Component({
   selector: 'app-supplier-add',
@@ -34,7 +36,7 @@ import { BaseType } from '../../../shared/models/base-type';
     MatIconModule,
     TranslateModule,
     BaseTypeComponent,
-    MatCheckbox
+    MatCheckboxModule
   ],
   templateUrl: './supplier-add.component.html',
   styleUrls: ['./supplier-add.component.scss']
@@ -58,7 +60,9 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
     private toastService: ToastService,
     private translateService: TranslateService,
     protected router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    @Optional() public dialogRef?: MatDialogRef<SupplierAddComponent>,
+    @Optional() @Inject(MAT_DIALOG_DATA) public data?: any
   ) {
     this.supplierForm = this.fb.group({
       id: [null],
@@ -98,7 +102,6 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
 
     const v = this.supplierForm.value;
 
-    // Build flat SupplierType payload (no supplierInfo nesting)
     const payload: SupplierType = {
       id: v.id ?? undefined,
       name: v.name,
@@ -106,15 +109,17 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
       phone: v.phone,
       email: v.email,
       address: v.address,
-      region: v.region, // BaseType object expected by backend
-      genericSupplierType: v.genericSupplierType, // BaseType object expected by backend
+      region: v.region,
+      genericSupplierType: v.genericSupplierType,
       hasStorage: !!v.hasStorage,
       matriculeFiscal: v.matriculeFiscal,
       rib: v.rib,
-      bankName: v.bankName // supplierInfo removed in new model (fields are now flat)
+      bankName: v.bankName
     } as SupplierType;
 
-    const op = this.isEditMode ? this.supplierService.updateSupplier(payload) : this.supplierService.addSupplier(payload);
+    const op = this.isEditMode
+      ? this.supplierService.updateSupplier(payload)
+      : this.supplierService.addSupplier(payload);
 
     this.subs.add(
       op.subscribe({
@@ -125,7 +130,14 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
                 ? this.translateService.instant('SUPPLIER.MESSAGES.UPDATED') || 'Fournisseur modifié avec succès'
                 : this.translateService.instant('SUPPLIER.MESSAGES.CREATED') || 'Fournisseur créé avec succès'
             );
-            this.router.navigate(['/reception/fournisseur']);
+
+            if (this.data?.fromDialog) {
+              // 🚀 Cas ouverture depuis OliveReceptionFormComponent
+              this.dialogRef?.close(res.data); // renvoie le supplier créé
+            } else {
+              // 🚀 Cas ouverture depuis la page Supplier
+              this.router.navigate(['/reception/fournisseur']);
+            }
           } else {
             this.error = res?.message || this.translateService.instant('SUPPLIER.ERRORS.SAVE') || "Erreur lors de l'opération";
           }
