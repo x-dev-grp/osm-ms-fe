@@ -1,40 +1,48 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule } from '@angular/material/table';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatCardModule } from '@angular/material/card';
-import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { MatSortModule } from '@angular/material/sort';
-import { MatPaginator } from '@angular/material/paginator';
-import { Router } from '@angular/router';
-import { combineLatest, forkJoin, Subscription } from 'rxjs';
+import {AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {MatButtonModule} from '@angular/material/button';
+import {MatTableModule} from '@angular/material/table';
+import {MatIconModule} from '@angular/material/icon';
+import {MatDialog, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatCardModule} from '@angular/material/card';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
+  Validators
+} from '@angular/forms';
+import {MatSortModule} from '@angular/material/sort';
+import {MatPaginator} from '@angular/material/paginator';
+import {Router} from '@angular/router';
+import {combineLatest, forkJoin, Subscription} from 'rxjs';
 
-import { SharedModule } from '../../shared/shared.module';
-import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
-import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
-import { UnifiedDelivery } from '../../shared/models/UnifiedDelivery';
-import { BaseType } from '../../shared/models/base-type';
-import { UnifiedDeliveryService } from '../../shared/services/delivery.service';
-import { GenericTypeService } from '../../shared/services/generic-type.service';
-import { TypeCategory } from '../../shared/models/type-category.enum';
-import { SupplierType } from '../../shared/models/supplier-type';
-import { SupplierTypeService } from '../../shared/services/supplier.service';
+import {SharedModule} from '../../shared/shared.module';
+import {OsmDashboard} from '../../shared/modules/osm-dashboard/osm-dashboard';
+import {DashboardConfig} from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import {UnifiedDelivery} from '../../shared/models/UnifiedDelivery';
+import {BaseType} from '../../shared/models/base-type';
+import {UnifiedDeliveryService} from '../../shared/services/delivery.service';
+import {GenericTypeService} from '../../shared/services/generic-type.service';
+import {TypeCategory} from '../../shared/models/type-category.enum';
+import {SupplierType} from '../../shared/models/supplier-type';
+import {SupplierTypeService} from '../../shared/services/supplier.service';
 
-import { PdfGeneratorService } from '../../shared/services/pdf-generator.service';
-import { OIL_DELIVERY_DASHBOARD } from './OIL_DELIVERY_DASHBOARD';
-import { AppParameterService } from '../../shared/services/AppParameterService';
-import { getOilPdfConfig } from './oil-pdf.config';
-import { ToastService } from '../../shared/services/toast.service';
-import { getControlQualitePdfConfig } from '../quality-control-list/PDF-controlQualite.config';
-import { getProductionPdfConfig } from '../reception-list/production-pdf.config';
-import { PaymentDetailsDialogComponent } from './payment-details-dialog/payment-details-dialog.component';
+import {PdfGeneratorService} from '../../shared/services/pdf-generator.service';
+import {OIL_DELIVERY_DASHBOARD} from './OIL_DELIVERY_DASHBOARD';
+import {AppParameterService} from '../../shared/services/AppParameterService';
+import {getOilPdfConfig} from './oil-pdf.config';
+import {ToastService} from '../../shared/services/toast.service';
+import {getControlQualitePdfConfig} from '../quality-control-list/PDF-controlQualite.config';
+import {getProductionPdfConfig} from '../reception-list/production-pdf.config';
+import {PaymentDetailsDialogComponent} from './payment-details-dialog/payment-details-dialog.component';
 
 /* ──────────────────────────────────────────────────────────── */
 /* validators                                                   */
@@ -131,7 +139,6 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
         poidsNet: [0, Validators.min(0)],
 
         matriculeCamion: ['', Validators.required],
-        etatCamion: ['', Validators.required],
 
         supplier: [null, Validators.required],
 
