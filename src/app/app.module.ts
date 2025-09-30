@@ -27,9 +27,9 @@ import {
   MatTable
 } from '@angular/material/table';
 import { SharedModule } from './shared/shared.module';
-import { SupplierComponent } from './reception/components/suppliers/suppliers.component';
-import { GenericTypeComponent } from './settings/generic-type/generic-type.component';
+ import { GenericTypeComponent } from './settings/generic-type/generic-type.component';
 import { QualityControlRuleComponent } from './settings/quality-control-rule/quality-control-rule.component';
+import { SupplierComponent } from './reception/suppliers/suppliers.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {

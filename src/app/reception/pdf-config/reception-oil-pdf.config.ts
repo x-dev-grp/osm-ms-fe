@@ -5,7 +5,9 @@ export function getOilPdfConfig(delivery: UnifiedDelivery): PdfConfig {
 
   return {
     title: 'PDF.RECEPTION_OIL',
-    reference: delivery.lotNumber || '',
+    reference: 'FOR-ACH-21',
+    date:  '01/12/2024',
+    revision:'0',
     generalInfo: [
       {
         label: 'PDF.DATE',

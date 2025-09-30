@@ -5,7 +5,7 @@ import { TypeCategory } from '../../shared/models/type-category.enum';
 
 export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
   icon: 'water_drop',
-  title: "Livraisons d'Huile",
+  title: "Réceptions d'Huile",
   titleTranslatePath: 'OIL_RECEPTION.DASHBOARD.TITLE',
   baseURL: 'production/deliveries',
   searchEndpoint: 'production/deliveries',
@@ -41,13 +41,12 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       },
       searchs: []
     }
-  } /* ────────────────────────────────────────────────────────────── */ /*         Champs pour les livraisons d'huile                    */,
-  /* ────────────────────────────────────────────────────────────── */
+  } /* ────────────────────────────────────────────────────────────── */ /*         Champs pour les réceptions d'huile                    */ /* ────────────────────────────────────────────────────────────── */,
   fields: [
     /* Identifiants */
     {
       name: 'deliveryNumber',
-      label: 'N° Livraison',
+      label: 'N° réception',
       labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.DELIVERY_NUMBER',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
@@ -70,7 +69,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
 
     {
       name: 'deliveryDate',
-      label: 'Date de livraison',
+      label: 'Date ',
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.DELIVERY_DATE',
       attributeType: AttributeType.date,
       fieldType: FieldType.date,
@@ -137,12 +136,32 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       dataTable: true,
       filterable: true,
       options: [
-        { label: 'Trituration particulier', value: 'SIMPLE_RECEPTION', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.SIMPLE_RECEPTION' },
+        {
+          label: 'Trituration particulier',
+          value: 'SIMPLE_RECEPTION',
+          labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.SIMPLE_RECEPTION'
+        },
         { label: 'Base', value: 'BASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.BASE' },
-        { label: 'Achat Olive', value: 'OLIVE_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OLIVE_PURCHASE' },
-        { label: 'Achat Huile', value: 'OIL_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OIL_PURCHASE' },
-        { label: 'Echange', value: 'EXCHANGE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.EXCHANGE' },
-        { label: 'reception intern', value: 'INTERNAL_RECEPTION', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.INTERNAL_RECEPTION' },
+        {
+          label: 'Achat Olive',
+          value: 'OLIVE_PURCHASE',
+          labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OLIVE_PURCHASE'
+        },
+        {
+          label: 'Achat Huile',
+          value: 'OIL_PURCHASE',
+          labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OIL_PURCHASE'
+        },
+        {
+          label: 'Echange',
+          value: 'EXCHANGE',
+          labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.EXCHANGE'
+        },
+        {
+          label: 'reception intern',
+          value: 'INTERNAL_RECEPTION',
+          labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.INTERNAL_RECEPTION'
+        },
         { label: 'Paiement', value: 'PAYMENT', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.PAYMENT' }
       ]
     },
@@ -181,12 +200,12 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.select,
       options: [
         {
-          label: 'HC',
-          value: 'HC'
+          label: 'OC',
+          value: 'OC'
         },
         {
-          label: 'HB',
-          value: 'HB'
+          label: 'OB',
+          value: 'OB'
         }
       ]
     },
@@ -194,8 +213,8 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
     /* Statut */
     {
       name: 'status',
-      label: 'Statut',
-      labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.STATUS',
+      label: 'status',
+      labelTranslatePath: 'DELIVERIES.FIELDS.STATUS',
       attributeType: AttributeType.enum,
       fieldType: FieldType.select,
       exportable: true,
@@ -207,6 +226,20 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
           label: 'Nouveau',
           value: 'NEW',
           labelTranslatePath: 'RECEPTION_LIST.STATUS.NEW'
+        },
+        {
+          label: 'En attente',
+          value: 'WAITING',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.WAITING'
+        },
+        {
+          label: 'prét pour production',
+          value: 'PROD_READY',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.PROD_READY'
+        },   {
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.STOCK_READY',
+          label: 'prét pour stocker',
+          value: 'STOCK_READY',
         },
         {
           label: 'En cours',
@@ -229,17 +262,10 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
           labelTranslatePath: 'RECEPTION_LIST.STATUS.COMPLETED'
         },
         { label: 'Refusé', value: 'REFUSED', labelTranslatePath: 'RECEPTION_LIST.STATUS.REFUSED' },
-        { label: 'Prét à stocker', value: 'STOCK_READY', labelTranslatePath: 'RECEPTION_LIST.STATUS.REFUSED' },
-
         {
           label: 'Annulé',
           value: 'CANCELLED',
           labelTranslatePath: 'RECEPTION_LIST.STATUS.CANCELLED'
-        },
-        {
-          label: 'à definire le prix ',
-          value: 'WAITING_FOR_PAYMENT_DETAILS',
-          labelTranslatePath: 'RECEPTION_LIST.STATUS.WAITING_FOR_PRICING'
         },
         { label: 'En stock', value: 'IN_STOCK', labelTranslatePath: 'RECEPTION_LIST.STATUS.IN_STOCK' }
       ]

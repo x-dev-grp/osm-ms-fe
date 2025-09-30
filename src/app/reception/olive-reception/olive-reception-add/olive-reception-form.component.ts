@@ -1,12 +1,14 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import {
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {MatButtonModule} from '@angular/material/button';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatDialog} from '@angular/material/dialog';
+import {SupplierAddComponent} from '../../suppliers/supplier-add/supplier-add.component';
+ import {
   AbstractControl,
   FormBuilder,
   FormControl,
@@ -16,26 +18,27 @@ import {
   ValidationErrors,
   Validators
 } from '@angular/forms';
-import { Observable, Subscription } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
-import { BaseType } from '../../../shared/models/base-type';
-import { SupplierType } from '../../../shared/models/supplier-type';
-import { GenericTypeService } from '../../../shared/services/generic-type.service';
-import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
-import { SupplierTypeService } from '../../../shared/services/supplier.service';
-import { TypeCategory } from '../../../shared/models/type-category.enum';
-import { MatIcon } from '@angular/material/icon';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { map, startWith } from 'rxjs/operators';
-import { OperationType } from '../../../shared/models/operation-type.enum';
-import { BaseTypeComponent } from '../../../shared/modules/base-type/base-type.component';
-import { OilType } from '../../../shared/models/oil-type.enum';
-import { OliveType } from '../../../shared/models/olive-type.enum';
-import { mapOilFromOlive, mapOliveFromOil } from '../../../shared/models/olive-oil-type.util';
-import { ToastService } from '../../../shared/services/toast.service';
-import { CardComponent } from '../../../theme/components/card/card.component';
+import {Observable, Subscription} from 'rxjs';
+import {ActivatedRoute, Router} from '@angular/router';
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
+import {UnifiedDelivery} from '../../../shared/models/UnifiedDelivery';
+import {BaseType} from '../../../shared/models/base-type';
+import {SupplierType} from '../../../shared/models/supplier-type';
+import {GenericTypeService} from '../../../shared/services/generic-type.service';
+import {UnifiedDeliveryService} from '../../../shared/services/delivery.service';
+import {SupplierTypeService} from '../../../shared/services/supplier.service';
+import {TypeCategory} from '../../../shared/models/type-category.enum';
+import {MatIcon} from '@angular/material/icon';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {map, startWith} from 'rxjs/operators';
+import {OperationType} from '../../../shared/models/operation-type.enum';
+import {BaseTypeComponent} from '../../../shared/modules/base-type/base-type.component';
+import {ToastService} from '../../../shared/services/toast.service';
+import {CardComponent} from '../../../theme/components/card/card.component';
+import {Olive_Oil_Type} from '../../../shared/models/olive-type.enum';
+import {
+  GenericTypeDialogComponent
+} from '../../../settings/generic-type/generic-type-dialog/generic-type-dialog.component';
 
 // Validator to ensure net weight does not exceed gross weight
 const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | null => {
@@ -72,13 +75,15 @@ function isValidSelection<T extends { id?: string }>(value: unknown, list: T[]):
   styleUrls: ['./olive-reception-form.component.scss']
 })
 export class OliveReceptionFormComponent implements OnInit, OnDestroy {
+  @ViewChild('regionComponent') regionComponent!: BaseTypeComponent;
+  @ViewChild('parcelComponent') parcelComponent!: BaseTypeComponent;
+
   loading = false;
   isEditing = false;
   errorMessage: string | null = null;
   receptionForm: FormGroup;
-  oliveOptions = Object.values(OliveType);
-  oilOptions = Object.values(OilType);
-  regions: BaseType[] = [];
+  olive_oil_Options = Object.values(Olive_Oil_Type);
+   regions: BaseType[] = [];
   parcels: BaseType[] = [];
 
   suppliers: SupplierType[] = [];
@@ -134,6 +139,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     private toastService: ToastService,
     private route: ActivatedRoute,
     private router: Router,
+    private dialog: MatDialog,
     protected translate: TranslateService
   ) {
     this.receptionForm = this.fb.group(
@@ -146,21 +152,19 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
         poidsBrute: [0, [Validators.min(1)]],
         poidsNet: [{ value: 0, disabled: true }],
         matriculeCamion: ['', [Validators.required]],
-        etatCamion: ['', Validators.required],
         supplier: [null, Validators.required],
         trtDate: [new Date(), [Validators.required]],
         oliveVariety: [null],
         sackCount: [null, [Validators.required]],
         oliveType: [null, [Validators.required]],
-        // NEW: empty truck weight
         poidsCamionVide: [0, [Validators.min(0)]],
         operationType: [null, [Validators.required]],
         parcel: [null, Validators.required]
       },
       { validators: netNotGreaterThanGross }
     );
-    this.receptionForm.addControl('oliveType', new FormControl<OliveType | null>(null));
-    this.receptionForm.addControl('oilType', new FormControl<OilType | null>(null));
+    this.receptionForm.addControl('oliveType', new FormControl<Olive_Oil_Type| null>(null));
+    this.receptionForm.addControl('oilType', new FormControl<Olive_Oil_Type | null>(null));
   }
   ngOnInit(): void {
     // --- flags & basics ---
@@ -172,25 +176,25 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.pendingCalls = 0;
 
-    // --- sync oliveType -> oilType (and lot number) ---
-    this.typeSubs.push(
-      this.receptionForm.get('oliveType')!.valueChanges.subscribe((val: OliveType | null) => {
-        // mirror oilType without firing another chain
-        this.receptionForm.get('oilType')!.setValue(mapOilFromOlive(val), { emitEvent: false });
-
-        // update lot number
-        const deliveryNumber = this.receptionForm.get('deliveryNumber')?.value || this.deliveries.length + 1;
-        const lotNumber = this.generateLotNumber(val, deliveryNumber);
-        this.receptionForm.patchValue({ lotNumber }, { emitEvent: false });
-      })
-    );
+    // // --- sync oliveType -> oilType (and lot number) ---
+    // this.typeSubs.push(
+    //   this.receptionForm.get('oliveType')!.valueChanges.subscribe((val: OliveType | null) => {
+    //     // mirror oilType without firing another chain
+    //     this.receptionForm.get('oilType')!.setValue(mapOilFromOlive(val), { emitEvent: false });
+    //
+    //     // update lot number
+    //     const deliveryNumber = this.receptionForm.get('deliveryNumber')?.value || this.deliveries.length + 1;
+    //     const lotNumber = this.generateLotNumber(val, deliveryNumber);
+    //     this.receptionForm.patchValue({ lotNumber }, { emitEvent: false });
+    //   })
+    // );
 
     // --- sync oilType -> oliveType ---
-    this.typeSubs.push(
-      this.receptionForm.get('oilType')!.valueChanges.subscribe((val: OilType | null) => {
-        this.receptionForm.get('oliveType')!.setValue(mapOliveFromOil(val), { emitEvent: false });
-      })
-    );
+    // this.typeSubs.push(
+    //   this.receptionForm.get('oilType')!.valueChanges.subscribe((val: OilType | null) => {
+    //     this.receptionForm.get('oliveType')!.setValue(mapOliveFromOil(val), { emitEvent: false });
+    //   })
+    // );
 
     // --- load Regions ---
     this.pendingCalls++;
@@ -228,42 +232,42 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     });
     this.subscriptions.push(parcelsSub);
 
-    // --- region change -> default parcel (skip during hydrate) ---
-    this.subscriptions.push(
-      this.receptionForm.get('region')!.valueChanges.subscribe((region: BaseType | null) => {
-        if (this.hydrating) return; // prevent overwriting while patching
-        const currentParcel = this.receptionForm.get('parcel')!.value;
-        if (region && (!currentParcel || (typeof currentParcel === 'object' && !currentParcel.id))) {
-          this.receptionForm.patchValue({ parcel: region }, { emitEvent: false });
-        }
-      })
-    );
+    // // --- region change -> default parcel (skip during hydrate) ---
+    // this.subscriptions.push(
+    //   this.receptionForm.get('region')!.valueChanges.subscribe((region: BaseType | null) => {
+    //     if (this.hydrating) return; // prevent overwriting while patching
+    //     const currentParcel = this.receptionForm.get('parcel')!.value;
+    //     if (region && (!currentParcel || (typeof currentParcel === 'object' && !currentParcel.id))) {
+    //       this.receptionForm.patchValue({ parcel: region }, { emitEvent: false });
+    //     }
+    //   })
+    // );
 
     // --- supplier change -> set region (+ parcel) (skip during hydrate) ---
-    this.subscriptions.push(
-      this.receptionForm.get('supplier')!.valueChanges.subscribe((supplier: SupplierType | null) => {
-        if (this.hydrating) return; // prevent overwriting while patching
-        if (!(supplier && supplier && supplier.region)) return;
-
-        if (this.regions?.length) {
-          const matchingRegion = this.regions.find((r) => r.id === supplier.region.id);
-          if (matchingRegion) {
-            this.receptionForm.patchValue({ region: matchingRegion }, { emitEvent: false });
-            const currentParcel = this.receptionForm.get('parcel')!.value;
-            if (!currentParcel || (typeof currentParcel === 'object' && !currentParcel.id)) {
-              this.receptionForm.patchValue({ parcel: matchingRegion }, { emitEvent: false });
-            }
-          }
-        } else {
-          // regions not loaded yet: use raw object from supplier
-          this.receptionForm.patchValue({ region: supplier.region }, { emitEvent: false });
-          const currentParcel = this.receptionForm.get('parcel')!.value;
-          if (!currentParcel || (typeof currentParcel === 'object' && !currentParcel.id)) {
-            this.receptionForm.patchValue({ parcel: supplier.region }, { emitEvent: false });
-          }
-        }
-      })
-    );
+    // this.subscriptions.push(
+    //   this.receptionForm.get('supplier')!.valueChanges.subscribe((supplier: SupplierType | null) => {
+    //     if (this.hydrating) return; // prevent overwriting while patching
+    //     if (!(supplier && supplier && supplier.region)) return;
+    //
+    //     if (this.regions?.length) {
+    //       const matchingRegion = this.regions.find((r) => r.id === supplier.region.id);
+    //       if (matchingRegion) {
+    //         this.receptionForm.patchValue({ region: matchingRegion }, { emitEvent: false });
+    //         const currentParcel = this.receptionForm.get('parcel')!.value;
+    //         if (!currentParcel || (typeof currentParcel === 'object' && !currentParcel.id)) {
+    //           this.receptionForm.patchValue({ parcel: matchingRegion }, { emitEvent: false });
+    //         }
+    //       }
+    //     } else {
+    //       // regions not loaded yet: use raw object from supplier
+    //       this.receptionForm.patchValue({ region: supplier.region }, { emitEvent: false });
+    //       const currentParcel = this.receptionForm.get('parcel')!.value;
+    //       if (!currentParcel || (typeof currentParcel === 'object' && !currentParcel.id)) {
+    //         this.receptionForm.patchValue({ parcel: supplier.region }, { emitEvent: false });
+    //       }
+    //     }
+    //   })
+    // );
 
     // --- recompute net on weight changes ---
     this.subscriptions.push(this.receptionForm.get('poidsBrute')!.valueChanges.subscribe(() => this.recomputeNet()));
@@ -291,7 +295,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
           this.receptionForm.patchValue(
             {
               deliveryNumber: deliveryCount + 1,
-              lotNumber: maxLot + 1
+              lotNumber: deliveryCount + 1
             },
             { emitEvent: false }
           );
@@ -402,13 +406,11 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       poidsBrute: Number(formValue.poidsBrute) || 0,
       poidsNet: Number(formValue.poidsNet) || 0,
       matriculeCamion: formValue.matriculeCamion || '',
-      etatCamion: formValue.etatCamion || '',
-      supplier: formValue.supplier || null,
+       supplier: formValue.supplier || null,
       trtDate: formValue.trtDate ? new Date(formValue.trtDate) : null,
       oliveVariety: formValue.oliveVariety || null,
       sackCount: formValue.sackCount ? Number(formValue.sackCount) : 0,
       oliveType: formValue.oliveType || null,
-      oilType: formValue.oilType || null,
       operationType: formValue.operationType || null,
       parcel: formValue.parcel || '',
       price: Number(formValue.price) || 0,
@@ -524,12 +526,18 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     return lotNumbers.length ? Math.max(...lotNumbers) : 0;
   }
 
-  // Generate lot number based on olive type and delivery number
-  private generateLotNumber(oliveType: OliveType | null, deliveryNumber: number): string {
-    if (!oliveType) return '';
-    const year = new Date().getFullYear().toString().slice(-2);
-    const paddedNumber = deliveryNumber.toString().padStart(4, '0');
-    return `${paddedNumber}${oliveType}${year}`;
+  openAddSupplierDialog(): void {
+    const dialogRef = this.dialog.open(SupplierAddComponent, {
+      width: 'auto',
+      data: {fromDialog: true}
+    });
+
+    dialogRef.afterClosed().subscribe((newSupplier) => {
+      if (newSupplier) {
+        this.suppliers = [...this.suppliers, newSupplier];
+        this.receptionForm.get('supplier')?.setValue(newSupplier);
+      }
+    });
   }
 
   private _getNestedValue<T extends Record<string, unknown>>(obj: T, path: string): string {
@@ -571,7 +579,6 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       poidsBrute: d.poidsBrute,
       poidsNet: d.poidsNet,
       matriculeCamion: d.matriculeCamion,
-      etatCamion: d.etatCamion,
       supplier: matchedSupplier || null,
       oliveVariety: d.oliveVariety || null,
       sackCount: d.sackCount,
@@ -602,7 +609,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
   // Setup form subscriptions
   private setupFormSubscriptions(): void {
     this.subscriptions.push(
-      this.receptionForm.get('oliveType')!.valueChanges.subscribe((oliveType: OliveType | null) => {
+      this.receptionForm.get('oliveType')!.valueChanges.subscribe((oliveType: Olive_Oil_Type | null) => {
         const deliveryNumber = this.receptionForm.get('deliveryNumber')?.value || this.deliveries.length + 1;
         const lotNumber = this.generateLotNumber(oliveType, deliveryNumber);
         this.receptionForm.patchValue({ lotNumber }, { emitEvent: false });
@@ -615,6 +622,14 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
         this.receptionForm.get('supplier')!.setValue(null);
       }
     });
+    this.subscriptions.push(
+      this.receptionForm.get('supplier')!.valueChanges.subscribe((supplier: SupplierType | null) => {
+        if (supplier && supplier.region) {
+          this.receptionForm.patchValue({ region: supplier.region });
+        }
+      })
+    );
+
     // Enforce autocomplete selection for region
     this.receptionForm.get('region')!.valueChanges.subscribe((value) => {
       if (value && !this.regions.some((r) => r.id === value.id)) {
@@ -664,4 +679,53 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       return fieldValue.toLowerCase().includes(filterValue);
     });
   }
+
+  openAddRegionDialog(): void {
+    const dialogRef = this.dialog.open(GenericTypeDialogComponent, {
+      width: '500px',
+      data: {initialType: TypeCategory.REGION, fromDialog: true}
+    });
+
+    dialogRef.afterClosed().subscribe((newRegion: BaseType | undefined) => {
+      if (newRegion) {
+        this.regions = [...this.regions, newRegion];
+        this.receptionForm.get('region')?.setValue(newRegion);
+
+      }
+    });
+  }
+
+  openAddParcelDialog(): void {
+    const dialogRef = this.dialog.open(GenericTypeDialogComponent, {
+      width: '500px',
+      data: {initialType: TypeCategory.PARCEL, fromDialog: true}
+    });
+
+    dialogRef.afterClosed().subscribe((newParcel: BaseType | undefined) => {
+      if (newParcel) {
+        this.parcels = [...this.parcels, newParcel];
+        this.receptionForm.get('parcel')?.setValue(newParcel);
+
+      }
+    });
+  }
+
+  // Generate lot number based on olive type and delivery number
+  private generateLotNumber(oliveType: Olive_Oil_Type | null, deliveryNumber: number): string {
+    if (!oliveType) return '';
+    const year = new Date().getFullYear().toString().slice(-2);
+    const paddedNumber = deliveryNumber.toString().padStart(4, '0');
+    return `${paddedNumber}${oliveType}${year}`;
+  }
+
+  // // Méthode pour forcer la mise à jour du composant BaseTypeComponent
+  // private forceUpdateBaseTypeComponent(type: 'region' | 'parcel'): void {
+  //   if (type === 'region' && this.regionComponent) {
+  //     this.regionComponent.forceUpdate();
+  //   } else if (type === 'parcel' && this.parcelComponent) {
+  //     this.parcelComponent.forceUpdate();
+  //   }
+
+
+  protected readonly TypeCategory = TypeCategory;
 }

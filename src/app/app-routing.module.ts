@@ -13,7 +13,7 @@ import { Role } from './theme/types/role';
 import { receptionRoutes } from './reception/reception.routes';
 import { FinanceRoutingModule } from './finance/finance-routing.module';
 import { SupplierDetailsComponent } from './reception/suppliers/supplier-details/supplier-details.component';
-import { AdminComponent } from './theme/layouts/admin/admin.component';
+import { AdminComponent } from './theme/layouts/admin';
 
 const routes: Routes = [
   {
@@ -28,9 +28,9 @@ const routes: Routes = [
       },
 
       {
-        path: 'dashboard',
-        loadChildren: () => import('./theme/pages/dashboard/dashboard.module').then((m) => m.DashboardModule),
-        data: { roles: [Role.Admin, Role.User] }
+        path: 'welcome',
+        loadComponent: () =>
+          import('./welcome/welcome.component').then(m => m.WelcomeComponent),
       },
 
 

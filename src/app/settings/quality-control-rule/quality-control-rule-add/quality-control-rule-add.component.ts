@@ -72,7 +72,7 @@ export class QualityControlRuleAddComponent implements OnInit {
       this.loadRuleData(ruleID).then(() => {
         this.loading = false;
       }).catch((error) => {
-        this.errorMessage = 'Erreur lors du chargement de la règle.';
+        this.errorMessage = 'Erreur lors du chargement de la critère.';
         console.error(this.errorMessage, error);
         this.toast.error(this.errorMessage);
         this.loading = false;
@@ -88,22 +88,34 @@ export class QualityControlRuleAddComponent implements OnInit {
       id: [''],
       ruleKey: ['', Validators.required],
       oilQc: [false],
-      ruleType: ['numeric', Validators.required],
-      booleanValue: [false],
-      minValue: [0, [Validators.required, Validators.min(0)]],
-      maxValue: [0, [Validators.required, Validators.min(0)]],
       ruleName: ['', Validators.required],
+      ruleType: [''],
+      minValue: [null],
+      maxValue: [null],
+      booleanValue: [false],
       description: [''],
-      textInput: [[], []] // Initialisé sans validateur ici, géré dynamiquement
+      textInput: [''] // no validators by default
+    });
+    // Toggle validators + force empty string when raw_string
+    const ruleTypeCtrl = this.ruleForm.get('ruleType')!;
+    const textCtrl = this.ruleForm.get('textInput')!;
+
+    ruleTypeCtrl.valueChanges.subscribe((type: string) => {
+      if (type === 'string') {
+        textCtrl.setValidators([Validators.required, Validators.maxLength(255)]);
+        if (textCtrl.value == null) textCtrl.setValue('');
+      }  else {
+        textCtrl.clearValidators();
+      }
+      textCtrl.updateValueAndValidity({ emitEvent: false });
     });
 
-    const ruleTypeCtrl = this.ruleForm.get('ruleType');
     const boolCtrl = this.ruleForm.get('booleanValue')!;
     const minCtrl = this.ruleForm.get('minValue')!;
     const maxCtrl = this.ruleForm.get('maxValue')!;
     const textInputCtrl = this.ruleForm.get('textInput')!;
 
-    // Gestion des validateurs selon le type de règle
+    // Gestion des validateurs selon le type de critère
     ruleTypeCtrl?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(type => {
@@ -118,11 +130,6 @@ export class QualityControlRuleAddComponent implements OnInit {
           maxCtrl.clearValidators();
           textInputCtrl.clearValidators();
         } else if (type === 'string') {
-          textInputCtrl.setValidators([Validators.required]);
-          minCtrl.clearValidators();
-          maxCtrl.clearValidators();
-          boolCtrl.clearValidators();
-        } else if (type === 'raw_string') {
           textInputCtrl.setValidators([Validators.required]);
           minCtrl.clearValidators();
           maxCtrl.clearValidators();
@@ -143,12 +150,12 @@ export class QualityControlRuleAddComponent implements OnInit {
     try {
       const res = await this.service.getRule(ruleID).toPromise();
       if (res?.success && res.data) {
-        this.patchForm(res.data[0]);
+        this.patchForm(res.data);
       } else {
         throw new Error('Données introuvables');
       }
     } catch (error) {
-      this.errorMessage = 'Erreur lors du chargement de la règle.';
+      this.errorMessage = 'Erreur lors du chargement de la critère.';
       console.error(this.errorMessage, error);
       this.toast.error(this.errorMessage);
       this.router.navigate(['/settings/quality-control']); // Rediriger si erreur
@@ -178,11 +185,6 @@ export class QualityControlRuleAddComponent implements OnInit {
       ruleTextValue: ruleType?.toLowerCase() === 'string'
         ? Array.isArray(v.textInput)
           ? v.textInput.filter((val: string) => val && val.trim()).join(',') // 👈 on convertit en string
-          : String(v.textInput || '').trim()
-        : null,
-      rawStringValue: ruleType?.toLowerCase() === 'raw_string'
-        ? Array.isArray(v.textInput)
-          ? v.textInput.filter((val: string) => val && val.trim()) // 👈 on convertit en string
           : String(v.textInput || '').trim()
         : null
     };
@@ -214,7 +216,7 @@ export class QualityControlRuleAddComponent implements OnInit {
 
 
 
-  private patchForm(data: QualityControlRule): void {
+  private patchForm(data: any): void {
     this.ruleForm.patchValue({
       id: data.id,
       ruleKey: data.ruleKey,
@@ -227,23 +229,14 @@ export class QualityControlRuleAddComponent implements OnInit {
       minValue: data.minValue ?? 0,
       maxValue: data.maxValue ?? 0,
       measuredValue: data.measuredValue,
-      textInput: data.ruleTextValue ? data.ruleTextValue.split(',').map(v => v.trim()) : []
+      textInput: data.ruleTextValue ? data.ruleTextValue.split(',').map((v: string) => v.trim()) : []
     });
   }
 
 
   cancel(): void {
-    this.formOpen = false;
-    this.isEditing = false;
-    this.message = '';
-  }
-
-
-  onBack(): void {
-    window.history.back();
-  }
-  resetForm(): void {
     this.router.navigate(['/settings/quality-control']);
+
   }
 
 }

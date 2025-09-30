@@ -22,7 +22,7 @@ export const MACHIN_RECEPTION_DASHBOARD: DashboardConfig = {
   fields: [
     {
       name: 'deliveryNumber',
-      label: 'N° Livraison',
+      label: 'N° réception',
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.DELIVERY_NUMBER',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
@@ -55,7 +55,7 @@ export const MACHIN_RECEPTION_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'deliveryDate',
-      label: 'Date de réception',
+      label: 'Date ',
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.DELIVERY_DATE',
       attributeType: AttributeType.date,
       fieldType: FieldType.date,

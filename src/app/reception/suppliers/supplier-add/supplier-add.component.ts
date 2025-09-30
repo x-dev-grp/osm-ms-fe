@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, Optional } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,9 +16,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { getCustomerCategories, PartnerCategory } from '../../../finance/models/PartnerCategory';
 import { ToastService } from '../../../shared/services/toast.service';
-import { MatCheckbox } from '@angular/material/checkbox';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { SupplierType } from '../../../shared/models/supplier-type';
 import { BaseType } from '../../../shared/models/base-type';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-supplier-add',
@@ -34,7 +35,7 @@ import { BaseType } from '../../../shared/models/base-type';
     MatIconModule,
     TranslateModule,
     BaseTypeComponent,
-    MatCheckbox
+    MatCheckboxModule
   ],
   templateUrl: './supplier-add.component.html',
   styleUrls: ['./supplier-add.component.scss']
@@ -43,13 +44,15 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
   public TypeCategory = TypeCategory;
   category: PartnerCategory = PartnerCategory.INDIVIDUAL;
   customerCategories = getCustomerCategories();
-
   supplierForm: FormGroup;
   isEditMode = false;
   supplierId: string | null = null;
   loading = false;
   error: string | null = null;
+  // Are we opened inside a MatDialog?
+  private inDialog = false;
   private subs = new Subscription();
+  private created: SupplierType;
 
   constructor(
     private fb: FormBuilder,
@@ -58,7 +61,9 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
     private toastService: ToastService,
     private translateService: TranslateService,
     protected router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    @Optional() public dialogRef?: MatDialogRef<SupplierAddComponent>,
+    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData?: any
   ) {
     this.supplierForm = this.fb.group({
       id: [null],
@@ -66,21 +71,21 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
       lastname: ['', [Validators.required, Validators.minLength(2)]],
       phone: ['', [Validators.required, Validators.pattern(/^[0-9+\-\s()]{6,}$/)]],
       email: [''],
-      address: ['', [Validators.required]],
+      address: [''],
       region: [null as BaseType | null, Validators.required], // BaseType
-      genericSupplierType: [null as BaseType | null, Validators.required], // BaseType
       hasStorage: [false],
       matriculeFiscal: [''],
       rib: [''],
       bankName: ['']
     });
+    this.inDialog = !!this.dialogRef || !!this.dialogData?.fromDialog;
   }
 
   ngOnInit(): void {
     this.supplierId = this.route.snapshot.paramMap.get('id');
 
     // Preload types used by BaseTypeComponent (if it relies on a cache)
-    this.genericTypeService.getAllTypes('SUPPLIER_TYPE').subscribe();
+    // this.genericTypeService.getAllTypes('SUPPLIER_TYPE').subscribe();
 
     if (this.supplierId) {
       this.isEditMode = true;
@@ -99,7 +104,6 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
 
     const v = this.supplierForm.value;
 
-    // Build flat SupplierType payload (no supplierInfo nesting)
     const payload: SupplierType = {
       id: v.id ?? undefined,
       name: v.name,
@@ -107,12 +111,12 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
       phone: v.phone,
       email: v.email,
       address: v.address,
-      region: v.region, // BaseType object expected by backend
-      genericSupplierType: v.genericSupplierType, // BaseType object expected by backend
+      region: v.region,
+      genericSupplierType: v.genericSupplierType,
       hasStorage: !!v.hasStorage,
       matriculeFiscal: v.matriculeFiscal,
       rib: v.rib,
-      bankName: v.bankName // supplierInfo removed in new model (fields are now flat)
+      bankName: v.bankName
     } as SupplierType;
 
     const op = this.isEditMode ? this.supplierService.updateSupplier(payload) : this.supplierService.addSupplier(payload);
@@ -126,7 +130,7 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
                 ? this.translateService.instant('SUPPLIER.MESSAGES.UPDATED') || 'Fournisseur modifié avec succès'
                 : this.translateService.instant('SUPPLIER.MESSAGES.CREATED') || 'Fournisseur créé avec succès'
             );
-            this.router.navigate(['/reception/fournisseur']);
+            this.close(Array.isArray(res.data) ? res.data[0] : res.data);
           } else {
             this.error = res?.message || this.translateService.instant('SUPPLIER.ERRORS.SAVE') || "Erreur lors de l'opération";
           }
@@ -139,6 +143,11 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
         }
       })
     );
+  }
+
+  onCancel(): void {
+    if (this.loading) return;
+    this.close(null);
   }
 
   ngOnDestroy(): void {
@@ -165,6 +174,15 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
       return this.translateService.instant('COMMON.VALIDATION.PATTERN');
     }
     return '';
+  }
+
+  /** Centralized close: dialog → close(result), page → navigate back */
+  private close(result: SupplierType | null = null): void {
+    if (this.inDialog) {
+      this.dialogRef?.close(result);
+    } else {
+      this.router.navigate(['/reception/fournisseur']);
+    }
   }
 
   private loadSupplier(id: string): void {

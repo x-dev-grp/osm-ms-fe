@@ -1,4 +1,5 @@
 import { AttributeType, DashboardConfig, FieldType } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
 
 export const BANK_ACCOUNTS_DASHBOARD_CONFIG: DashboardConfig = {
   icon: 'account_balance',
@@ -8,7 +9,19 @@ export const BANK_ACCOUNTS_DASHBOARD_CONFIG: DashboardConfig = {
   searchEndpoint: 'finance/banks',
   addNewItem: true,
   addNewItemUrl: 'finance/banks/new',
-
+  defaultSearchData: {
+    page: 0,
+    size: 10,
+    sort: 'createdDate',
+    order: 'DESC',
+    searchData: {
+      operation: SearchOperation.AND,
+      searchs: [],
+      search: {
+        isDeleted: { equalValue: false }
+      }
+    }
+  },
   /* ── Data-table columns & filter metadata ───────────────────── */
   fields: [
     {

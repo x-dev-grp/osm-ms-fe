@@ -11,7 +11,7 @@ import { Action, HabilitationEntity, OSMModule, permissionKey, ProductionEntity 
 import { UserResolver } from './user-management/services/user.resolver';
 import { RoleResolver } from './user-management/services/role.resolver';
 import { qualityControlRoutes } from './quality-control-rule/qualityControlQualityRule.routes';
-import { AddBasetypeComponent } from './generic-type/add-basetype/add-basetype.component';
+import { GenericTypeDialogComponent } from './generic-type/generic-type-dialog/generic-type-dialog.component';
 
 const routes: Routes = [
   { path: 'general-config', component: GeneralConfigComponent, canActivate: [AuthGuardChild] },
@@ -36,12 +36,12 @@ const routes: Routes = [
       // CHANGE: permissions - create/update base types
       {
         path: 'new',
-        component: AddBasetypeComponent,
+        component: GenericTypeDialogComponent,
         canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.base_type, Action.CREATE)])]
       },
       {
         path: ':id/edit',
-        component: AddBasetypeComponent,
+        component: GenericTypeDialogComponent,
         canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.base_type, Action.UPDATE)])]
       }
     ]

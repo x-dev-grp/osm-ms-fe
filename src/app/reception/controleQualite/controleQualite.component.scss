@@ -427,3 +427,10 @@
   }
 }
 
+.parameter-footnote {
+  font-size: 11px;        /* smaller than default subscript */
+  line-height: 1.15;
+  opacity: 0.75;          /* lighter */
+  letter-spacing: 0.1px;
+  margin-top: -2px;       /* tuck closer to the field */
+}

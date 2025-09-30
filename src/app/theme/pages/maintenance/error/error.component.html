@@ -5,16 +5,22 @@
         <div class="error-card">
           <div class="error-card-content">
             <div class="error-image-block">
-              <img src="assets/images/pages/img-error-404.svg" class="img-fluid" alt="img" />
+              <img
+                src="assets/images/pages/img-error-404.svg"
+                class="img-fluid"
+                alt="{{ 'PAGE_404.IMAGE_ALT' | translate }}"
+              />
             </div>
             <div class="error-text">
-              <div class="m-t-50 f-38 f-w-700">Page Not Found</div>
-              <div class="m-t-5 f-16 m-b-25 text-muted">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-                <br />
-                eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              <div class="m-t-50 f-38 f-w-700">
+                {{ 'PAGE_404.TITLE' | translate }}
               </div>
-              <button mat-flat-button color="primary" [routerLink]="['/dashboard']">Back To Home</button>
+              <div class="m-t-5 f-16 m-b-25 text-muted">
+                {{ 'PAGE_404.DESCRIPTION' | translate }}
+              </div>
+              <button mat-flat-button color="primary" [routerLink]="['/']">
+                {{ 'PAGE_404.BACK_HOME' | translate }}
+              </button>
             </div>
           </div>
         </div>

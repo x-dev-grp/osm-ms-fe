@@ -23,10 +23,10 @@ import { OliveLotStatus } from '../../shared/models/OliveLotStatus';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { OperationType } from '../../shared/models/operation-type.enum';
 import { ExchangePricingDto } from '../../shared/models/ExchangePricingDto';
-import { getOlivePdfConfig } from './olive-pdf.config';
-import { ToastService } from '../../shared/services/toast.service';
-import { getControlQualitePdfConfig } from '../quality-control-list/PDF-controlQualite.config';
-import { SharedModule } from '../../shared/shared.module';
+ import { ToastService } from '../../shared/services/toast.service';
+ import { SharedModule } from '../../shared/shared.module';
+import { getControlQualitePdfConfig } from '../pdf-config/controlQualite.config';
+import { getOlivePdfConfig } from '../pdf-config/reception-olive-pdf.config';
 
 @Component({
   selector: 'app-olive-reception',
@@ -138,7 +138,7 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
 
   generateBonReception(delivery: UnifiedDelivery): void {
     const config = getOlivePdfConfig(delivery);
-    this.pdfService.generatePdf(config);
+    this.pdfService.generatePdfDocument(config);
   }
 
   onRowAction(e: { row: UnifiedDelivery; action: string }): void {

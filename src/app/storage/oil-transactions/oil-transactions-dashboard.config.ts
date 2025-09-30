@@ -1,5 +1,6 @@
 import {AttributeType, DashboardConfig, FieldType} from '../../shared/modules/osm-dashboard/models/dashboard-config';
 import {TransactionState, TransactionType} from '../../shared/models/OilTransaction';
+import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
 
 export const OIL_TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
   icon: 'swap_horiz',
@@ -9,7 +10,19 @@ export const OIL_TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
   searchEndpoint: 'production/oil_transaction',
   addNewItem: true,
   addNewItemUrl: 'storage/oil-transactions/new',
-
+  defaultSearchData: {
+    page: 0,
+    size: 10,
+    sort: 'createdDate',
+    order: 'DESC',
+    searchData: {
+      operation: SearchOperation.AND,
+      searchs: [],
+      search: {
+        isDeleted: { equalValue: false }
+      }
+    }
+  },
   /* ── Data-table columns & filter metadata ───────────────────── */
   fields: [
     {

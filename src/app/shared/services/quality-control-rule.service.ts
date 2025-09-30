@@ -28,7 +28,7 @@ export class QualityControlRuleService {
 
   // Get a rule by ID
   getRule(id: string): Observable<ApiResponse<QualityControlRule>> {
-    return this.http.get<ApiResponse<QualityControlRule>>(`${this.baseUrl}/${id}`);
+    return this.http.get<ApiResponse<QualityControlRule>>(`${this.baseUrl}/fetch/${id}`);
   }
 
   // Create a new rule

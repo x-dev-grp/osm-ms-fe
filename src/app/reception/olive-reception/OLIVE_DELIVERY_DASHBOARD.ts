@@ -6,7 +6,7 @@ import { deliveryType } from '../../shared/models/deleveryType';
 
 export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
   icon: 'eco',
-  title: "Livraisons d'Olives", // afficehr titre fi dashboard
+  title: "Réceptions d'Olives", // afficehr titre fi dashboard
   titleTranslatePath: 'DELIVERIES.OLIVE_TITLE', //tradusction
   baseURL: 'production/deliveries',
   searchEndpoint: 'production/deliveries', //endpoint fl backedn
@@ -34,13 +34,13 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
     }
   }, // if youy need ot load the dta initilly based on this
   /* ────────────────────────────────────────────────────────────── */
-  /*         Champs pour les livraisons d'olives                   */
+  /*         Champs pour les réceptions d'olives                   */
   /* ────────────────────────────────────────────────────────────── */
   fields: [
     /* Identifiants */
     {
       name: 'deliveryNumber',
-      label: 'N° Livraison',
+      label: 'N° réception',
       labelTranslatePath: 'DELIVERIES.FIELDS.DELIVERY_NUMBER',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
@@ -74,7 +74,7 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
     /* Dates */
     {
       name: 'deliveryDate',
-      label: 'Date de livraison',
+      label: 'Date ',
       labelTranslatePath: 'DELIVERIES.FIELDS.DELIVERY_DATE',
       attributeType: AttributeType.date,
       fieldType: FieldType.date,

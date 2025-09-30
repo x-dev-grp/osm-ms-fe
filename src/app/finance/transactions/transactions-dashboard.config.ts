@@ -26,8 +26,8 @@ export const TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
       dataTable: true,
       filterable: true,
       options: [
-        { value: 'PAYMENT', label: 'Paiement', labelTranslatePath: 'TRANSACTIONS.TYPES.PAYMENT' },
-        { value: 'EXPENSE', label: 'Dépense', labelTranslatePath: 'TRANSACTIONS.TYPES.EXPENSE' },
+        { value: 'PAYMENT', label: 'Paiement', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.PAYMENT' },
+        { value: 'EXPENSE', label: 'Dépense', labelTranslatePath: 'EXPENSES.TITLE' },
         { value: 'PURCHASE', label: 'Achat', labelTranslatePath: 'TRANSACTIONS.TYPES.PURCHASE' },
         { value: 'CREDIT', label: 'Crédit', labelTranslatePath: 'TRANSACTIONS.TYPES.CREDIT' },
         { value: 'DEBIT', label: 'Débit', labelTranslatePath: 'TRANSACTIONS.TYPES.DEBIT' },
@@ -108,7 +108,7 @@ export const TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
     {
       name: 'paymentMethod',
       label: 'Méthode de Paiement',
-      labelTranslatePath: 'TRANSACTIONS.FIELDS.PAYMENT_METHOD',
+      labelTranslatePath: 'OIL_SALES.PAYMENT_METHOD',
       attributeType: AttributeType.enum,
       fieldType: FieldType.select,
       exportable: true,
@@ -129,7 +129,7 @@ export const TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
     {
       name: 'supplier.name',
       label: 'Fournisseur',
-      labelTranslatePath: 'TRANSACTIONS.FIELDS.SUPPLIER',
+      labelTranslatePath: 'SUPPLIER.FIELDS.NAME',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -140,7 +140,7 @@ export const TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
     {
       name: 'lotNumber',
       label: 'Numéro de Lot',
-      labelTranslatePath: 'TRANSACTIONS.FIELDS.LOT_NUMBER',
+      labelTranslatePath: 'DELIVERIES.FORM.FIELDS.LOT_NUMBER',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -151,7 +151,7 @@ export const TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
     {
       name: 'description',
       label: 'Description',
-      labelTranslatePath: 'TRANSACTIONS.FIELDS.DESCRIPTION',
+      labelTranslatePath: 'OIL_SALES.DESCRIPTION',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,

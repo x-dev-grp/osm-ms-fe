@@ -2,7 +2,7 @@ export interface QualityControlRule {
   id?: string;              // original backend ID
   ruleKey: string;          // used to associate user-entered value
   oilQc?: boolean;
-  ruleType?: 'NUMERIC' | 'BOOLEAN' | 'STRING' |'RAW_STRING';
+  ruleType?: 'NUMERIC' | 'BOOLEAN' | 'STRING';
   booleanValue?: boolean;
   numericValue?: number;
   ruleName?: string;

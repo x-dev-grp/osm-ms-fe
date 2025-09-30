@@ -97,20 +97,20 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
                 }
               }
             },
-            {
-              operation: SearchOperation.AND,
-              search: {
-                isDeleted: {
-                  equalValue: false
-                },
-                operationType: {
-                  equalValue: 'BASE'
-                },
-                status: {
-                  inValues: ['COMPLETED']
-                }
-              }
-            }
+            // {
+            //   operation: SearchOperation.AND,
+            //   search: {
+            //     isDeleted: {
+            //       equalValue: false
+            //     },
+            //     operationType: {
+            //       equalValue: 'BASE'
+            //     },
+            //     status: {
+            //       inValues: ['COMPLETED']
+            //     }
+            //   }
+            // }
           ]
         }
       ],
@@ -163,10 +163,10 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.select,
       valueAttributeType: AttributeType.enum,
       options: [
-        { label: 'Huile', labelTranslatePath: 'STANDARD.DELIVERY_TYPE', value: 'OIL' },
+        { label: 'Huile', labelTranslatePath: 'SUPPLIER_PAYMENT.RECEPTION_TYPE_OIL', value: 'OIL' },
         {
           label: 'Olive',
-          labelTranslatePath: 'STANDARD.DELIVERY_TYPE',
+          labelTranslatePath: 'SUPPLIER_PAYMENT.RECEPTION_TYPE_OLIVE',
           value: 'OLIVE'
         }
       ],
@@ -178,7 +178,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'deliveryDate',
-      label: 'Date de réception',
+      label: 'Date ',
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.DELIVERY_DATE',
       attributeType: AttributeType.date,
       fieldType: FieldType.date,

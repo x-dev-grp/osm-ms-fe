@@ -93,22 +93,20 @@ export class StorageAddComponent implements OnInit, OnDestroy {
     this.storageForm = this.fb.group(
       {
         name: ['', Validators.required],
-        lotNumber: ['', Validators.required],
-        location: ['', Validators.required],
+        lotNumber: [''],
+        location: [''],
         description: [''],
 
         maxCapacity: [null, [Validators.required, Validators.min(1)]],
-        currentVolume: [0, [Validators.required, Validators.min(0)]],
+        currentVolume: [0],
 
-        qualityGrade: [null, Validators.required], // 'vierge_extra' | 'vierge' | ...
-        oilVariety: [null, Validators.required], // BaseType full object
+        oilVariety: [null ], // BaseType full object
         status: ['AVAILABLE', Validators.required],
 
-        nextMaintenanceDate: [null],
-        lastInspectionDate: [null],
+
 
         paidStorage: [false],
-        monthlyRentalPrice: [null, [Validators.min(0)]] // OPTIONAL
+        monthlyRentalPrice: [0] // OPTIONAL
       },
       { validators: this.capacityNotExceededValidator }
     );
@@ -255,7 +253,7 @@ export class StorageAddComponent implements OnInit, OnDestroy {
   /** Patch only when we have unit + both catalogs (for edit mode) */
   private tryPatchWhenReady(): void {
     if (!this.isEditing) return;
-    if (this.unitLoaded && this.qualityGradeLoaded && this.oilVarietysLoaded && this.unit) {
+    if (this.unitLoaded    && this.unit) {
       this.patchForm(this.unit);
       this.loading = false;
     }

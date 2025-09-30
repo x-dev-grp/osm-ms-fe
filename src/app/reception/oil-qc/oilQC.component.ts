@@ -10,10 +10,10 @@ import {Router} from '@angular/router';
 import {SharedModule} from '../../shared/shared.module';
 import {OsmDashboard} from '../../shared/modules/osm-dashboard/osm-dashboard';
 import {DashboardConfig} from '../../shared/modules/osm-dashboard/models/dashboard-config';
- import {QUALITY_CONTROL_DASHBOARD} from './QUALITY_CONTROL_DASHBOARD';
- import {getControlQualitePdfConfig} from "./PDF-controlQualite.config";
-import { PdfGeneratorService } from '../../shared/services/pdf-generator.service';
+ import {OilQCDASHBOARD} from './oilQC.DASHBOARD';
+ import { PdfGeneratorService } from '../../shared/services/pdf-generator.service';
 import { UnifiedDelivery } from '../../shared/models/UnifiedDelivery';
+import { getControlQualitePdfConfig } from '../pdf-config/controlQualite.config';
 
 @Component({
   selector: 'app-quality-control-list',
@@ -29,10 +29,10 @@ import { UnifiedDelivery } from '../../shared/models/UnifiedDelivery';
     SharedModule,
     OsmDashboard
   ],
-  templateUrl: './quality-control-list.component.html'
+  templateUrl: './oilQC.component.html'
 })
-export class QualityControlListComponent implements OnInit {
-  dashboardConfig: DashboardConfig = QUALITY_CONTROL_DASHBOARD;
+export class OilQCComponent implements OnInit {
+  dashboardConfig: DashboardConfig = OilQCDASHBOARD;
 
   constructor(private router: Router, private pdfService: PdfGeneratorService,) {
   }
@@ -52,6 +52,12 @@ export class QualityControlListComponent implements OnInit {
         if (event.row) {
           this.generateBonControleQualite(event.row);
         }
+        break;
+      case 'GEN_PDF_QC_OIL':
+        if (event.row.qualityControlResults) {
+          const deliveryType = event.row.deliveryType?.toUpperCase() || '';
+          const config = getControlQualitePdfConfig(event.row, deliveryType);
+          this.pdfService.generatePdf(config);         }
         break;
     }
   }

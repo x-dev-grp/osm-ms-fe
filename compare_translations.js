@@ -3,7 +3,6 @@ import fs from 'fs';
 // Read the JSON files
 const en = JSON.parse(fs.readFileSync('src/assets/i18n/en.json', 'utf8'));
 const fr = JSON.parse(fs.readFileSync('src/assets/i18n/fr.json', 'utf8'));
-const ar = JSON.parse(fs.readFileSync('src/assets/i18n/ar.json', 'utf8'));
 
 function getKeys(obj, prefix = '') {
   const keys = [];

@@ -1,4 +1,5 @@
 import { AttributeType, DashboardConfig, FieldType } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
 
 export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
   icon: 'local_gas_station',
@@ -260,7 +261,7 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
     // ==================== DELIVERY INFORMATION ====================
     {
       name: 'deliveryDate',
-      label: 'Date de livraison',
+      label: 'Date ',
       labelTranslatePath: 'OIL_SALES.FIELDS.DELIVERY_DATE',
       attributeType: AttributeType.date,
       fieldType: FieldType.date,
@@ -271,7 +272,7 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
     },
     {
       name: 'deliveryAddress',
-      label: 'Adresse de livraison',
+      label: 'Adresse de réception',
       labelTranslatePath: 'OIL_SALES.FIELDS.DELIVERY_ADDRESS',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
@@ -282,7 +283,7 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
     },
     {
       name: 'deliveryNotes',
-      label: 'Notes de livraison',
+      label: 'Notes de réception',
       labelTranslatePath: 'OIL_SALES.FIELDS.DELIVERY_NOTES',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,

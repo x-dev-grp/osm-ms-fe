@@ -469,7 +469,17 @@ $color-background: #f8fafc;
     }
   }
 }
+@media (max-width: 767px) {
+  .scrollable-columns {
+    flex-direction: column;
+    display: flow;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 
+
+}
 .sticky-header {
   position: sticky;
   top: 0;
@@ -520,10 +530,6 @@ mat-expansion-panel:not(:last-child) {
     box-shadow: none;
   }
 
-  .scrollable-columns {
-    width: 100%;
-    overflow-x: auto;
-  }
 
   mat-expansion-panel {
     width: 340px;

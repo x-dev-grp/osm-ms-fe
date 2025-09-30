@@ -33,6 +33,7 @@ export const QUALTITY_CONTROL_RULE_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.text,
       exportable: true,
       dataTable: true,
+      filterable: true,
       sortable: true
     },
     {
@@ -46,9 +47,9 @@ export const QUALTITY_CONTROL_RULE_DASHBOARD: DashboardConfig = {
       filterable: true,
       dataTable: true,
       options: [
-        { label: 'NUMERIC', value: 'NUMERIC', labelTranslatePath: 'QUALITY_CONTROL_RULE.RULE_TYPES.NUMERIC' },
+        { label: 'NUMERIC', value: 'NUMERIC', labelTranslatePath: 'QUALITY_CONTROL_RULE_ADD.RULE_TYPES.NUMERIC' },
         { label: 'STRING', value: 'STRING', labelTranslatePath: 'QUALITY_CONTROL_RULE.RULE_TYPES.STRING' },
-        { label: 'BOOLEAN', value: 'BOOLEAN', labelTranslatePath: 'QUALITY_CONTROL_RULE.RULE_TYPES.BOOLEAN' }
+        { label: 'BOOLEAN', value: 'BOOLEAN', labelTranslatePath: 'QUALITY_CONTROL_RULE_ADD.RULE_TYPES.BOOLEAN' },
       ]
     },
     {

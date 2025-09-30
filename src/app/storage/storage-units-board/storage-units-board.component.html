@@ -87,17 +87,17 @@
               <span class="metric-label">{{ 'STORAGE.VIEW.MAX_CAPACITY' | translate }}</span>
               <span class="metric-value">{{ storageUnit.maxCapacity }} KG</span>
             </div>
-            <div class="metric">
-              <span class="metric-label">Oil Variety</span>
-              <span class="metric-value">{{ storageUnit.oilVariety?.name || ('STORAGE.VIEW.NA' | translate) }}</span>
-            </div>
+<!--            <div class="metric">-->
+<!--              <span class="metric-label">Oil Variety</span>-->
+<!--              <span class="metric-value">{{ storageUnit.oilVariety?.name || ('STORAGE.VIEW.NA' | translate) }}</span>-->
+<!--            </div>-->
 
-            <!-- Quality Grade -->
-            <div class="metric">
-              <span class="metric-label">Quality Grade</span>
-              <span
-                class="metric-value">{{ ('OIL_TRANSACTIONS.QUALITY_GRADES.' + storageUnit.qualityGrade)|translate }}</span>
-            </div>
+<!--            &lt;!&ndash; Quality Grade &ndash;&gt;-->
+<!--            <div class="metric">-->
+<!--              <span class="metric-label">Quality Grade</span>-->
+<!--              <span-->
+<!--                class="metric-value">{{ ('OIL_TRANSACTIONS.QUALITY_GRADES.' + storageUnit.qualityGrade)|translate }}</span>-->
+<!--            </div>-->
 
             <!-- Paid Storage Information -->
             <div *ngIf="storageUnit.paidStorage" class="metric paid-storage-info">

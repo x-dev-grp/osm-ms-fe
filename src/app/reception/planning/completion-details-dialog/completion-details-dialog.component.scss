@@ -108,7 +108,8 @@
 
 /* ---------- Child lots table ---------- */
 .child-lots {
-  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
 }
 
 .child-lots-container {
@@ -162,14 +163,6 @@
   gap: .85rem;
 }
 
-.form-section {
-  display: grid;
-  gap: .65rem;
-  padding: .5rem;
-  border: 1px solid var(--border-color);
-  border-radius: .75rem;
-  background: color-mix(in oklab, var(--muted-bg) 85%, transparent);
-}
 
 /* mobile: single column fields */
 .form-row {
@@ -187,24 +180,7 @@
   inline-size: 100%;
 }
 
-/* Angular Material density tweaks */
-::ng-deep .mat-mdc-form-field {
-  --mdc-outlined-text-field-outline-color: var(--border-color);
-  --mdc-outlined-text-field-hover-outline-color: color-mix(in oklab, currentColor 22%, transparent);
-  --mdc-outlined-text-field-focus-outline-color: var(--mat-sys-primary, #3b82f6);
-  inline-size: 100%;
-}
 
-::ng-deep .mat-mdc-form-field-infix {
-  padding-block: .38rem !important; /* tighter fields on mobile */
-}
-
-/* Larger touch target for selects/date icons on phones */
-::ng-deep .mat-mdc-form-field-icon-suffix,
-::ng-deep .mat-datepicker-toggle {
-  inline-size: 40px;
-  block-size: 40px;
-}
 
 /* Observations textarea spans full row */
 .observation-field {
@@ -258,16 +234,10 @@
     position: static;
     backdrop-filter: none;
     border-block-start: 0;
-    padding: .75rem 0 0;
+    padding: 0.75rem 0  0.75rem;
   }
 }
 
-/* ---------- Icon sizing polish ---------- */
-::ng-deep .mat-datepicker-toggle-default-icon {
-  block-size: 20px;
-  inline-size: 20px;
-  opacity: .8;
-}
 
 /* ---------- Dark/contrast friendliness ---------- */
 @media (prefers-contrast: more) {

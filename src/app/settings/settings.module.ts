@@ -8,7 +8,6 @@ import { GeneralConfigComponent } from './general-config/general-config.componen
  import { GenericTypeComponent } from './generic-type/generic-type.component';
 import { QualityControlRuleComponent } from './quality-control-rule/quality-control-rule.component';
 import { ApplicationConfigComponent } from './application-config/application-config.component';
-import { AddBasetypeComponent } from './generic-type/add-basetype/add-basetype.component';
 
 @NgModule({
   declarations: [],
@@ -20,7 +19,6 @@ import { AddBasetypeComponent } from './generic-type/add-basetype/add-basetype.c
     SharedModule,
      GeneralConfigComponent,
     QualityControlRuleComponent,
-    AddBasetypeComponent,
     GenericTypeComponent,
     ApplicationConfigComponent
   ]

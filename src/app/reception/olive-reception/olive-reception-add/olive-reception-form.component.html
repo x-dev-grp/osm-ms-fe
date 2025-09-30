@@ -72,14 +72,26 @@
               <mat-label>{{ partyLabelKey | translate }}</mat-label>
 
               <input
+                #supplierTrig="matAutocompleteTrigger"
                 (blur)="validateSupplier()"
                 [matAutocomplete]="supplierAuto"
-                formControlName="supplier"
                 [value]="displayFn(receptionForm.get('supplier')?.value)"
+                formControlName="supplier"
                 matInput
                 required
               />
 
+              @if (!isEditing) {
+                <button
+                  (click)="$event.stopPropagation(); supplierTrig.closePanel(); openAddSupplierDialog()"
+                  (mousedown)="$event.preventDefault()"
+                  color="primary"
+                  mat-icon-button
+                  matSuffix
+                  type="button">
+                  <mat-icon>add</mat-icon>
+                </button>
+              }
               <mat-autocomplete #supplierAuto="matAutocomplete" [displayWith]="displayFn">
                 <mat-option *ngFor="let supplier of suppliers" [value]="supplier">
                   {{ supplier.name + ' ' + supplier.lastname }}
@@ -90,15 +102,25 @@
           </div>
           <div class="col-md-4 w-100 m-b-10">
             <base-type
+              #regionBaseType
+              (addAction)="openAddRegionDialog()"
               [formControl]="receptionForm?.controls?.region"
-              [type]="'REGION'">
+              [showAddButton]="!isEditing &&true"
+              [type]="TypeCategory.REGION">
             </base-type>
+
+
           </div>
           <div class="col-md-4 w-100 m-b-10">
             <base-type
+              (addAction)="openAddParcelDialog()"
               [formControl]="receptionForm?.controls?.parcel"
-              [type]="'PARCEL'">
+              [options]="parcels"
+              [showAddButton]="!isEditing &&true"
+              [type]="TypeCategory.PARCEL">
             </base-type>
+
+
           </div>
         </div>
       </div>
@@ -116,31 +138,31 @@
               <mat-datepicker #trtPicker></mat-datepicker>
             </mat-form-field>
           </div>
-<!--          <div class="col-md-3 w-100 m-b-10 ">-->
-<!--            <base-type-->
-<!--              [formControl]="receptionForm?.controls?.oliveVariety"-->
-<!--              [type]="'OLIVE_VARIETY'">-->
-<!--            </base-type>-->
-<!--          </div>-->
+          <!--          <div class="col-md-3 w-100 m-b-10 ">-->
+          <!--            <base-type-->
+          <!--              [formControl]="receptionForm?.controls?.oliveVariety"-->
+          <!--              [type]="'OLIVE_VARIETY'">-->
+          <!--            </base-type>-->
+          <!--          </div>-->
 
           <!-- Enum-driven Olive Type & Oil Type -->
           <div class="col-md-4 w-100 m-b-10">
             <mat-form-field appearance="outline" class="w-100">
-              <mat-label>Olive Type</mat-label>
+              <mat-label>{{ 'DELIVERIES.FORM.FIELDS.OLIVE_TYPE'|translate }}</mat-label>
               <mat-select formControlName="oliveType">
-                <mat-option *ngFor="let o of oliveOptions" [value]="o">{{ o }}</mat-option>
+                <mat-option *ngFor="let o of olive_oil_Options" [value]="o">{{ o }}</mat-option>
               </mat-select>
             </mat-form-field>
           </div>
 
-          <div class="col-md-4 w-100 m-b-10">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>Oil Type</mat-label>
-              <mat-select formControlName="oilType">
-                <mat-option *ngFor="let o of oilOptions" [value]="o">{{ o }}</mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
+          <!--          <div class="col-md-4 w-100 m-b-10">-->
+          <!--            <mat-form-field appearance="outline" class="w-100">-->
+          <!--              <mat-label>Oil Type</mat-label>-->
+          <!--              <mat-select formControlName="oilType">-->
+          <!--                <mat-option *ngFor="let o of oilOptions" [value]="o">{{ o }}</mat-option>-->
+          <!--              </mat-select>-->
+          <!--            </mat-form-field>-->
+          <!--          </div>-->
         </div>
       </div>
       <!-- Vehicle Information Section -->
@@ -154,19 +176,6 @@
               <mat-error *ngIf="receptionForm.get('matriculeCamion')?.hasError('pattern')">
                 Le format doit être 3 chiffres + TN + 4 chiffres (ex 258TN1234)
               </mat-error>
-            </mat-form-field>
-          </div>
-          <div class="col-md-6">
-            <mat-form-field appearance="outline" class="w-100 m-b-10">
-              <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.TRUCK_STATE') }}</mat-label>
-              <mat-select formControlName="etatCamion" required>
-                <mat-option [value]="'Conforme'">
-                  {{ translate.instant('OLIVE_RECEPTION.FORM.TRUCK_STATES.COMPLIANT') }}
-                </mat-option>
-                <mat-option [value]="'Non conforme'">
-                  {{ translate.instant('OLIVE_RECEPTION.FORM.TRUCK_STATES.NON_COMPLIANT') }}
-                </mat-option>
-              </mat-select>
             </mat-form-field>
           </div>
         </div>
@@ -190,7 +199,7 @@
             <mat-form-field appearance="outline" class="w-100 m-b-10">
               <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.EMPTY_TRUCK_WEIGHT') }}</mat-label>
               <input formControlName="poidsCamionVide" matInput min="0" type="number" />
-             </mat-form-field>
+            </mat-form-field>
           </div>
 
           <!-- Sack count -->
@@ -208,7 +217,7 @@
           <div class="col-md-3">
             <mat-form-field appearance="outline" class="w-100 m-b-10">
               <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.NET_WEIGHT') }}</mat-label>
-              <input formControlName="poidsNet" matInput min="0" type="number" readonly />
+              <input formControlName="poidsNet" matInput min="0" readonly type="number" />
               <mat-error *ngIf="receptionForm.hasError('emptyGreaterThanGross')">
                 {{ translate.instant('OLIVE_RECEPTION.FORM.VALIDATION.EMPTY_GREATER_THAN_GROSS') }}
               </mat-error>

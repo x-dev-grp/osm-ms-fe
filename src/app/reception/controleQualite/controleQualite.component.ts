@@ -158,8 +158,7 @@ export class ControleQualiteComponent implements OnInit {
     this.deliveryService.getUnifiedDelivery(this.receptionId).subscribe({
       next: (response) => {
         this.deliveryData = Array.isArray(response.data) ? response.data[0] : response.data;
-        this.ensureRawStringDefaults();
-        this.loadRules();
+         this.loadRules();
       },
       error: () => {
         this.message = 'Erreur lors du chargement des données de réception';
@@ -198,20 +197,20 @@ export class ControleQualiteComponent implements OnInit {
           if (this.rules.length > 0) {
             this.loadQualityControlResults();
           } else {
-            this.message = 'Aucune règle applicable trouvée pour ce type de livraison';
+            this.message = 'Aucune critère applicable trouvée pour ce type de réception';
             this.isLoading = false;
             this.cdr.detectChanges();
           }
         } else {
           this.rules = [];
-          this.message = res.message || 'Aucune règle trouvée';
+          this.message = res.message || 'Aucune critère trouvée';
           this.isLoading = false;
           this.cdr.detectChanges();
         }
       },
       error: () => {
         this.rules = [];
-        this.message = 'Erreur lors du chargement des règles';
+        this.message = 'Erreur lors du chargement des critères';
         this.isLoading = false;
         this.cdr.detectChanges();
       }
@@ -220,7 +219,7 @@ export class ControleQualiteComponent implements OnInit {
 
   loadQualityControlResults(): void {
     if (!this.deliveryData?.id) {
-      this.message = 'ID de livraison non disponible';
+      this.message = 'ID de réception non disponible';
       this.isLoading = false;
       this.cdr.detectChanges();
       return;
@@ -228,7 +227,6 @@ export class ControleQualiteComponent implements OnInit {
     this.qcResService.getAllResultsByDeliveryID(this.deliveryData.id).subscribe({
       next: (res) => {
         this.qualityControlResults = res.data || [];
-        this.ensureRawStringDefaults();
         this.isQualityControlDone = this.qualityControlResults.length > 0;
         this.createDynamicForm();
         this.isLoading = false;
@@ -262,28 +260,17 @@ export class ControleQualiteComponent implements OnInit {
           case 'STRING':
             initialValue = existing.measuredValue || '';
             break;
-          case 'RAW_STRING':
-            initialValue = existing.measuredValue || '';
-            break;
-        }
-      } else {
-        // first time in this context → only RAW_STRING gets a generated default
-        if (rule.ruleType === 'RAW_STRING') {
-          initialValue = this.buildRawStringDefault();
-        } else if (rule.ruleType === 'STRING' && rule.ruleTextValue) {
-          initialValue = ''; // dropdown (no default)
-        } else {
-          initialValue = null;
+
+
+
         }
       }
 
-      const shouldDisable = this.isQualityControlDone || rule.ruleType === 'RAW_STRING';
+      const shouldDisable = this.isQualityControlDone ;
 
       const ctrlValidators =
         rule.ruleType === 'STRING' && rule.ruleTextValue
           ? []
-          : rule.ruleType === 'RAW_STRING'
-            ? [] // disabled + prefilled → no validators needed
             : [Validators.required];
 
       group[rule.ruleKey] = new FormControl({ value: initialValue, disabled: shouldDisable }, ctrlValidators);
@@ -293,8 +280,7 @@ export class ControleQualiteComponent implements OnInit {
     this.mainForm = this.fb.group({ ...this.dynamicForm.controls });
 
     // handle races (if deliveryData arrived later/earlier)
-    this.ensureRawStringDefaults();
-    this.dynamicForm = this.fb.group(group);
+     this.dynamicForm = this.fb.group(group);
     this.mainForm = this.fb.group({ ...this.dynamicForm.controls });
     this.mainForm.get('unitPrice')?.valueChanges.subscribe((unitPrice: number) => {
       const oilQty = this.deliveryData?.oilQuantity || 0;
@@ -305,81 +291,26 @@ export class ControleQualiteComponent implements OnInit {
     this.mainForm.get('storageUnit')?.valueChanges.subscribe(() => {
       // storageUnit change logic if needed
     });
-    let ruleKeysToWatch: string[];
-    if (this.isOliveDelivery()) {
-      ruleKeysToWatch = [this.findRuleKey('Infestees'), this.findRuleKey('Fermentees'), this.findRuleKey('Endommagees')];
-    } else {
-      ruleKeysToWatch = [this.findRuleKey('Acidite'), this.findRuleKey('K270'), this.findRuleKey('K232')];
-    }
-    ruleKeysToWatch.forEach((ruleKey) => {
-      const control = this.mainForm.get(ruleKey);
-      if (control) {
-        control.valueChanges.subscribe(() => {
-          this.updateCategorie();
-        });
-      }
-    });
+    // let ruleKeysToWatch: string[];
+    // if (this.isOliveDelivery()) {
+    //   ruleKeysToWatch = [this.findRuleKey('Infestees'), this.findRuleKey('Fermentees'), this.findRuleKey('Endommagees')];
+    // } else {
+    //   ruleKeysToWatch = [this.findRuleKey('Acidite'), this.findRuleKey('K270'), this.findRuleKey('K232')];
+    // }
+    // ruleKeysToWatch.forEach((ruleKey) => {
+    //   const control = this.mainForm.get(ruleKey);
+    //   if (control) {
+    //     control.valueChanges.subscribe(() => {
+    //       this.updateCategorie();
+    //     });
+    //   }
+    // });
   }
 
-  getRuleType(ruleKey: string): 'NUMERIC' | 'BOOLEAN' | 'STRING' | 'RAW_STRING' {
+  getRuleType(ruleKey: string): 'NUMERIC' | 'BOOLEAN' | 'STRING'  {
     return this.rules.find((r) => r.ruleKey === ruleKey)?.ruleType || 'NUMERIC';
   }
 
-  saveStorageUnitOnly(): void {
-    // visible only for non-olive deliveries per your template
-    if (this.isOliveDelivery()) {
-      this.toast.warning(this.translate.instant('CONTROLE_QUALITE.STORAGE_UNIT.NOT_APPLICABLE'));
-      return;
-    }
-
-    if (!this.deliveryData?.id) {
-      this.toast.error(this.translate.instant('COMMON.MISSING_DELIVERY'));
-      return;
-    }
-
-    if (this.storageunitForm.invalid) {
-      this.storageunitForm.markAllAsTouched();
-      this.toast.error(this.translate.instant('OIL_TRANSACTIONS.FORM.VALIDATION.REQUIRED'));
-      return;
-    }
-
-    if (this.capacityError) {
-      this.toast.error(this.translate.instant('OIL_TRANSACTIONS.FORM.VALIDATION.CAPACITY'));
-      return;
-    }
-
-    const unit: StorageUnitDto | null = this.storageunitForm.get('storageUnitDestinationId')!.value ?? null;
-    const payload = {
-      ...this.deliveryData,
-      storageUnit: unit
-    } as UnifiedDelivery;
-
-    this.isLoading = true;
-    this.deliveryService.updateUnifiedDelivery(payload as UnifiedDelivery).subscribe({
-      next: (res) => {
-        this.isLoading = false;
-
-        if (!res?.success) {
-          this.toast.error(this.translate.instant('OIL_TRANSACTIONS.SAVE_STORAGE_UNIT.ERROR'));
-          this.cdr.detectChanges();
-          return;
-        }
-
-        // keep the component state in sync with backend response
-        this.deliveryData = Array.isArray(res.data) ? res.data[0] : res.data;
-        this.toast.success(this.translate.instant('OIL_TRANSACTIONS.SAVE_STORAGE_UNIT.SUCCESS'));
-
-        // recompute capacity UI (optional)
-        this.updateCapacityState(unit);
-        this.cdr.detectChanges();
-      },
-      error: () => {
-        this.isLoading = false;
-        this.toast.error(this.translate.instant('OIL_TRANSACTIONS.SAVE_STORAGE_UNIT.ERROR'));
-        this.cdr.detectChanges();
-      }
-    });
-  }
 
   async onSave(): Promise<void> {
     this.submitted = true;
@@ -411,10 +342,55 @@ export class ControleQualiteComponent implements OnInit {
     ref.afterClosed().subscribe((res: ConfirmationDialogResult) => {
       if (res?.confirmed) {
         this.performSave();
-        this.saveStorageUnitOnly();
+        // this.saveStorageUnitOnly();
       }
     });
   }
+  // saveStorageUnitOnly(): void {
+  //
+  //   if (this.storageunitForm.invalid) {
+  //     this.storageunitForm.markAllAsTouched();
+  //     this.toast.error(this.translate.instant('OIL_TRANSACTIONS.FORM.VALIDATION.REQUIRED'));
+  //     return;
+  //   }
+  //
+  //   if (this.capacityError) {
+  //     this.toast.error(this.translate.instant('OIL_TRANSACTIONS.FORM.VALIDATION.CAPACITY'));
+  //     return;
+  //   }
+  //
+  //   const unit: StorageUnitDto | null = this.storageunitForm.get('storageUnitDestinationId')!.value ?? null;
+  //   const payload = {
+  //     ...this.deliveryData,
+  //     storageUnit: unit
+  //   } as UnifiedDelivery;
+  //
+  //   this.isLoading = true;
+  //   this.deliveryService.updateUnifiedDelivery(payload as UnifiedDelivery).subscribe({
+  //     next: (res) => {
+  //       this.isLoading = false;
+  //
+  //       if (!res?.success) {
+  //         this.toast.error(this.translate.instant('OIL_TRANSACTIONS.SAVE_STORAGE_UNIT.ERROR'));
+  //         this.cdr.detectChanges();
+  //         return;
+  //       }
+  //
+  //       // keep the component state in sync with backend response
+  //       this.deliveryData = Array.isArray(res.data) ? res.data[0] : res.data;
+  //       this.toast.success(this.translate.instant('OIL_TRANSACTIONS.SAVE_STORAGE_UNIT.SUCCESS'));
+  //
+  //       // recompute capacity UI (optional)
+  //       this.updateCapacityState(unit);
+  //       this.cdr.detectChanges();
+  //     },
+  //     error: () => {
+  //       this.isLoading = false;
+  //       this.toast.error(this.translate.instant('OIL_TRANSACTIONS.SAVE_STORAGE_UNIT.ERROR'));
+  //       this.cdr.detectChanges();
+  //     }
+  //   });
+  // }
 
   async performSave(): Promise<void> {
     this.submitted = true;
@@ -447,7 +423,7 @@ export class ControleQualiteComponent implements OnInit {
           this.toast.success(res.message || 'Résultats enregistrés avec succès.');
           this.isLoading = false;
           this.cdr.detectChanges();
-        },
+          },
         error: () => {
           this.toast.error("Erreur lors de l'enregistrement des résultats.");
           this.isLoading = false;
@@ -458,9 +434,9 @@ export class ControleQualiteComponent implements OnInit {
     }
 
     if (!this.deliveryData?.id) {
-      this.message = 'Données de livraison non disponibles.';
+      this.message = 'Données de réception non disponibles.';
       this.cdr.detectChanges();
-      this.toast.error('Données de livraison manquantes.');
+      this.toast.error('Données de réception manquantes.');
       return;
     }
 
@@ -472,118 +448,105 @@ export class ControleQualiteComponent implements OnInit {
       // Save other delivery data and QC results
       this.saveDeliveryAndQCResults();
     }
+    this.navigate()
   }
 
+  navigate():void{
+    if(this.isOliveDelivery()){
+      this.router.navigate(['/reception/reception-olive']);
+    }else{
+      this.router.navigate(['/reception/reception-huile']);
+
+    }
+  }
   saveQualityControlResults(): void {
-    // Handle dynamic fields (excluding oliveVariety which is handled separately)
-    const updates: QualityControlResultDto[] = [];
-    const creates: QualityControlResultDto[] = [];
-    Object.keys(this.dynamicForm.controls).forEach((ruleKey) => {
-      // Skip oliveVariety as it's handled separately
-      if (ruleKey === 'oliveVariety') {
+    this.isLoading = true;
+
+    try {
+      const creates: QualityControlResultDto[] = [];
+
+      // Build create-only payload (skip oliveVariety)
+      Object.keys(this.dynamicForm.controls).forEach((ruleKey) => {
+        if (ruleKey === 'oliveVariety') return;
+
+        const rule = this.rules.find(r => r.ruleKey === ruleKey);
+        if (!rule) return;
+
+        const rawValue = this.mainForm.get(ruleKey)?.value;
+        let isValid = false;
+
+        switch (rule.ruleType) {
+          case 'NUMERIC':
+            isValid = typeof rawValue === 'number' && !isNaN(rawValue);
+            break;
+          case 'BOOLEAN':
+            isValid = typeof rawValue === 'boolean';
+            break;
+          case 'STRING':
+            isValid = typeof rawValue === 'string' && rawValue.trim() !== '';
+            break;
+          default:
+            isValid = rawValue != null; // fallback
+        }
+
+        if (!isValid) {
+          throw new Error(`Valeur mesurée invalide pour le critère : ${ruleKey}`);
+        }
+
+        // Always CREATE: do not send id
+        const dto: QualityControlResultDto = {
+          rule,
+          measuredValue: String(rawValue ?? ''), // empty string OK for RAW_STRING
+          deliveryId: this.deliveryData!.id
+        };
+
+        creates.push(dto);
+      });
+
+      if (creates.length === 0) {
+        this.toast.warning('Aucun changement à enregistrer.');
+        this.isLoading = false;
+        this.cdr.detectChanges();
         return;
       }
 
-      const rule = this.rules.find((r) => r.ruleKey === ruleKey);
-      if (!rule) return;
-      const rawValue = this.mainForm.get(ruleKey)?.value;
-      let isValid = false;
-      if (rule.ruleType === 'NUMERIC') {
-        isValid = typeof rawValue === 'number' && !isNaN(rawValue);
-      } else if (rule.ruleType === 'BOOLEAN') {
-        isValid = typeof rawValue === 'boolean';
-      } else if (rule.ruleType === 'STRING') {
-        isValid = typeof rawValue === 'string' && rawValue.trim() !== '';
-      }
-      else if (rule.ruleType === 'RAW_STRING') {
-        isValid = typeof rawValue === 'string' && rawValue.trim() !== '';
-      }
-      if (!isValid) {
-        throw new Error(`Valeur mesurée invalide pour la règle : ${ruleKey}`);
-      }
-      const existingResult = this.qualityControlResults.find((result) => result.rule?.ruleKey === ruleKey);
-      const dto: QualityControlResultDto = {
-        id: existingResult?.id,
-        rule: rule,
-        measuredValue: String(rawValue),
-        deliveryId: this.deliveryData!.id
-      };
-      if (existingResult?.id) {
-        updates.push(dto);
-      } else {
-        creates.push(dto);
-      }
-    });
-    const requests: Observable<{ success: boolean; message?: string }>[] = [];
-    if (updates.length > 0) {
-      requests.push(
-        this.qcResService.updateResults(updates).pipe(
-          catchError((err) => {
-            console.error('Erreur lors de la mise à jour:', err);
-            return of({ success: false, message: 'Erreur lors de la mise à jour des résultats.' });
-          })
-        )
-      );
-    }
-    if (creates.length > 0) {
-      requests.push(
-        this.qcResService.createResults(creates).pipe(
-          catchError((err) => {
-            console.error('Erreur lors de la création:', err);
-            return of({ success: false, message: 'Erreur lors de la création des résultats.' });
-          })
-        )
-      );
-    }
-    if (requests.length === 0) {
-      this.toast.warning('Aucun changement à enregistrer.');
-      this.isLoading = false;
-      this.cdr.detectChanges();
-      return;
-    }
-    forkJoin(requests).subscribe({
-      next: (responses) => {
-        const allSuccessful = responses.every((res) => res.success);
-        const anySuccessful = responses.some((res) => res.success);
-        let message = '';
-        if (allSuccessful) {
-          if (updates.length > 0 && creates.length > 0) {
-            message = 'Résultats mis à jour et créés avec succès.';
-          } else if (updates.length > 0) {
-            message = 'Résultats mis à jour avec succès.';
-          } else if (creates.length > 0) {
-            message = 'Résultats créés avec succès.';
-          }
-        } else if (anySuccessful) {
-          message = "Certains résultats ont été enregistrés, d'autres ont échoué.";
+      // Single batch create call — no forkJoin
+      this.qcResService.createResults(creates).pipe(
+        catchError((err) => {
+          console.error('Erreur lors de la création:', err);
+          this.toast.error("Erreur lors de l'enregistrement des résultats de contrôle qualité.");
+          this.isLoading = false;
+          this.cdr.detectChanges();
+          // Swallow error since we already handled it
+          return of({ success: false, message: 'Erreur lors de la création des résultats.' });
+        })
+      ).subscribe((res: { success: boolean; message?: string }) => {
+        if (res?.success) {
+          this.toast.success('Résultats créés avec succès.');
         } else {
-          message = "Aucun résultat n'a pu être enregistré.";
+          this.toast.warning(res?.message || "Aucun résultat n'a pu être enregistré.");
         }
-        this.toast.success(message);
         this.isLoading = false;
         this.cdr.detectChanges();
         this.loadQualityControlResults();
-        if (allSuccessful) {
-          if (this.deliveryData?.deliveryType === 'OIL') {
-            this.router.navigate(['reception/reception-huile']);
-          } else if (this.deliveryData?.deliveryType === 'OLIVE') {
-            this.router.navigate(['reception/reception-olive']);
-          } else {
-            this.router.navigate(['../'], { relativeTo: this.route });
-          }
-        }
-      },
-      error: () => {
-        this.toast.error("Erreur lors de l'enregistrement des résultats de contrôle qualité.");
-        this.isLoading = false;
-        this.cdr.detectChanges();
-      }
-    });
+      });
+
+    } catch (e: any) {
+      this.toast.error(e?.message || "Erreur lors de la préparation des résultats.");
+      this.isLoading = false;
+      this.cdr.detectChanges();
+    }
   }
 
   getRuleName(key: string): string {
     const r = this.rules.find((rule) => rule.ruleKey === key);
     return r ? r.ruleName! : key;
+  } getRuleMAX(key: string): string {
+    const r = this.rules.find((rule) => rule.ruleKey === key);
+    return r ? r.maxValue!.toString() : key;
+  }getRuleMIN(key: string): string {
+    const r = this.rules.find((rule) => rule.ruleKey === key);
+    return r ? r.minValue!.toString() : key;
   }
 
   getTextOptions(ruleKey: string): string[] {
@@ -729,7 +692,7 @@ export class ControleQualiteComponent implements OnInit {
           this.saveQualityControlResults();
         },
         error: () => {
-          this.toast.error("Erreur lors de l'enregistrement des données de livraison.");
+          this.toast.error("Erreur lors de l'enregistrement des données de réception.");
           this.isLoading = false;
           this.cdr.detectChanges();
         }
@@ -761,31 +724,31 @@ export class ControleQualiteComponent implements OnInit {
     }
   }
 
-  private calculateCategorie(): string {
-    if (this.isOliveDelivery()) {
-      return this.calculateCategorieOlive();
-    } else {
-      return this.calculateCategorieOil();
-    }
-  }
+  // private calculateCategorie(): string {
+  //   if (this.isOliveDelivery()) {
+  //     return this.calculateCategorieOlive();
+  //   } else {
+  //     return this.calculateCategorieOil();
+  //   }
+  // }
 
-  private updateCategorie(): void {
-    const calculated = this.calculateCategorie();
-    const categorieControl = this.dynamicForm.get('Categorie');
-
-    if (!categorieControl) {
-      console.warn("Le champ 'Categorie' n'existe pas dans le formulaire.");
-      return;
-    }
-
-    const currentCategorie = categorieControl.value;
-
-    if (currentCategorie !== calculated) {
-      console.log('Mise à jour automatique de la catégorie en :', calculated);
-      categorieControl.setValue(calculated, { emitEvent: false });
-      categorieControl.updateValueAndValidity();
-    }
-  }
+  // private updateCategorie(): void {
+  //   // const calculated = this.calculateCategorie();
+  //   const categorieControl = this.dynamicForm.get('Categorie');
+  //
+  //   if (!categorieControl) {
+  //     console.warn("Le champ 'Categorie' n'existe pas dans le formulaire.");
+  //     return;
+  //   }
+  //
+  //   const currentCategorie = categorieControl.value;
+  //
+  //   if (currentCategorie !== calculated) {
+  //     console.log('Mise à jour automatique de la catégorie en :', calculated);
+  //     // categorieControl.setValue(calculated, { emitEvent: false });
+  //     categorieControl.updateValueAndValidity();
+  //   }
+  // }
 
   private calculateCategorieOil(): string {
     const acidite = this.dynamicForm.get('Acidite')?.value;
@@ -815,35 +778,35 @@ export class ControleQualiteComponent implements OnInit {
 
   // New method: fetch all rules and show form, skip delivery
 
-  private calculateCategorieOlive(): string {
-    const infestees = this.dynamicForm.get('Infestees')?.value;
-    const fermentees = this.dynamicForm.get('Fermentees')?.value;
-    const endommagees = this.dynamicForm.get('Endommagees')?.value;
-
-    console.log('Valeurs avant calcul (OLIVE):', { infestees, fermentees, endommagees });
-
-    if (
-      infestees == null ||
-      typeof infestees !== 'number' ||
-      fermentees == null ||
-      typeof fermentees !== 'number' ||
-      endommagees == null ||
-      typeof endommagees !== 'number'
-    ) {
-      return '';
-    }
-
-    const allLessThanOrEqual30 = infestees <= 30 && fermentees <= 30 && endommagees <= 30;
-    const allLessThanOrEqual60 = infestees <= 60 && fermentees <= 60 && endommagees <= 60;
-
-    if (allLessThanOrEqual30) {
-      return 'Extra Vierge';
-    } else if (allLessThanOrEqual60) {
-      return 'Vierge';
-    } else {
-      return 'Lampante';
-    }
-  }
+  // private calculateCategorieOlive(): string {
+  //   const infestees = this.dynamicForm.get('Infestees')?.value;
+  //   const fermentees = this.dynamicForm.get('Fermentees')?.value;
+  //   const endommagees = this.dynamicForm.get('Endommagees')?.value;
+  //
+  //   console.log('Valeurs avant calcul (OLIVE):', { infestees, fermentees, endommagees });
+  //
+  //   if (
+  //     infestees == null ||
+  //     typeof infestees !== 'number' ||
+  //     fermentees == null ||
+  //     typeof fermentees !== 'number' ||
+  //     endommagees == null ||
+  //     typeof endommagees !== 'number'
+  //   ) {
+  //     return '';
+  //   }
+  //
+  //   const allLessThanOrEqual30 = infestees <= 30 && fermentees <= 30 && endommagees <= 30;
+  //   const allLessThanOrEqual60 = infestees <= 60 && fermentees <= 60 && endommagees <= 60;
+  //
+  //   if (allLessThanOrEqual30) {
+  //     return 'Extra Vierge';
+  //   } else if (allLessThanOrEqual60) {
+  //     return 'Vierge';
+  //   } else {
+  //     return 'Lampante';
+  //   }
+  // }
 
   private loadRulesDirect(): void {
     this.isLoading = true;
@@ -864,38 +827,20 @@ export class ControleQualiteComponent implements OnInit {
           this.cdr.detectChanges();
         } else {
           this.rules = [];
-          this.message = res.message || 'Aucune règle trouvée';
+          this.message = res.message || 'Aucune critère trouvée';
           this.isLoading = false;
           this.cdr.detectChanges();
         }
       },
       error: () => {
         this.rules = [];
-        this.message = 'Erreur lors du chargement des règles';
+        this.message = 'Erreur lors du chargement des critères';
         this.isLoading = false;
         this.cdr.detectChanges();
       }
     });
   }
 
-  /** Build first-time default value: "E + <variable> + YY" */
-  protected buildRawStringDefault(): string {
-    return `E${String((this.deliveryData as any)?.deliveryNumber ?? '')
-      .replace(/\D/g, '')
-      .padStart(4, '0')}${new Date().getFullYear().toString().slice(-2)}`;
-  }
 
-  /** If any RAW_STRING control is empty (first time), fill and keep disabled */
-  private ensureRawStringDefaults(): void {
-    if (!this.mainForm) return;
-    this.rules
-      .filter((r) => r.ruleType === 'RAW_STRING')
-      .forEach((r) => {
-        const c = this.mainForm.get(r.ruleKey);
-        if (c && (c.value == null || String(c.value).trim() === '')) {
-          c.setValue(this.buildRawStringDefault(), { emitEvent: false });
-          c.disable({ emitEvent: false }); // remains locked
-        }
-      });
-  }
+
 }
