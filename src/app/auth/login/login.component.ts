@@ -184,7 +184,7 @@ export class LoginComponent implements OnInit {
                 const tenantId = user.tenantId || decodedToken['tenantId'];
                 if (role !== Role.OsmAdmin && tenantId) {
                 // Fetch company profile for non-OsmAdmin users
-                  this.router.navigate(['reception/welcome']);
+                  this.router.navigate(['welcome']);
               } else {
                 // For OsmAdmin, skip company profile fetch
                 this.router
