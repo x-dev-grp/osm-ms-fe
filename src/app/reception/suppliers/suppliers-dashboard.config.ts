@@ -94,21 +94,21 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
       dataTable: true,
       filterable: true
     },
-    {
-      name: 'category',
-      label: 'Catégorie',
-      labelTranslatePath: 'CUSTOMERS.FIELDS.CATEGORY',
-      attributeType: AttributeType.enum,
-      fieldType: FieldType.select,
-      exportable: false,
-      sortable: false,
-      dataTable: false,
-      filterable: false,
-      options: [
-        { value: 'INDIVIDUAL', label: 'Individuel', labelTranslatePath: 'CUSTOMERS.CATEGORIES.INDIVIDUAL' },
-        { value: 'BUSINESS', label: 'Entreprise', labelTranslatePath: 'CUSTOMERS.CATEGORIES.BUSINESS' }
-      ]
-    },
+    // {
+    //   name: 'category',
+    //   label: 'Catégorie',
+    //   labelTranslatePath: 'CUSTOMERS.FIELDS.CATEGORY',
+    //   attributeType: AttributeType.enum,
+    //   fieldType: FieldType.select,
+    //   exportable: false,
+    //   sortable: false,
+    //   dataTable: false,
+    //   filterable: false,
+    //   options: [
+    //     { value: 'INDIVIDUAL', label: 'Individuel', labelTranslatePath: 'CUSTOMERS.CATEGORIES.INDIVIDUAL' },
+    //     { value: 'BUSINESS', label: 'Entreprise', labelTranslatePath: 'CUSTOMERS.CATEGORIES.BUSINESS' }
+    //   ]
+    // },
 
     {
       name: 'region',

@@ -38,11 +38,11 @@ import {SupplierTypeService} from '../../shared/services/supplier.service';
 import {PdfGeneratorService} from '../../shared/services/pdf-generator.service';
 import {OIL_DELIVERY_DASHBOARD} from './OIL_DELIVERY_DASHBOARD';
 import {AppParameterService} from '../../shared/services/AppParameterService';
-import {getOilPdfConfig} from './oil-pdf.config';
-import {ToastService} from '../../shared/services/toast.service';
-import {getControlQualitePdfConfig} from '../quality-control-list/PDF-controlQualite.config';
-import {getProductionPdfConfig} from '../reception-list/production-pdf.config';
-import {PaymentDetailsDialogComponent} from './payment-details-dialog/payment-details-dialog.component';
+ import {ToastService} from '../../shared/services/toast.service';
+ import {PaymentDetailsDialogComponent} from './payment-details-dialog/payment-details-dialog.component';
+import { getProductionPdfConfig } from '../pdf-config/production-pdf.config';
+import { getOilPdfConfig } from '../pdf-config/reception-oil-pdf.config';
+import { getControlQualitePdfConfig } from '../pdf-config/controlQualite.config';
 
 /* ──────────────────────────────────────────────────────────── */
 /* validators                                                   */
@@ -234,7 +234,8 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
   /* ——— UI actions ——— */
 
   generateBonReception(delivery: UnifiedDelivery): void {
-    const config = getOilPdfConfig(delivery);
+    let config = getOilPdfConfig(delivery);
+    config ={...config,layout:'oilReceptionForm'}
     this.pdfService.generatePdf(config);
   }
 
@@ -307,8 +308,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
             console.log(`[OilReception] Generating PDF for delivery: ${e.row.lotNumber}`);
             const deliveryType = e.row.deliveryType?.toUpperCase() || '';
             const config = getControlQualitePdfConfig(e.row, deliveryType);
-            this.pdfService.generatePdf(config);
-          }
+            this.pdfService.generatePdf(config);         }
           break;
 
         default:

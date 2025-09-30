@@ -1,26 +1,25 @@
-import {Component, Inject, OnDestroy, OnInit, Optional} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {MatButtonModule} from '@angular/material/button';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
-import {MatSelectModule} from '@angular/material/select';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {MatIconModule} from '@angular/material/icon';
-import {TranslateModule, TranslateService} from '@ngx-translate/core';
-import {SupplierTypeService} from '../../../shared/services/supplier.service';
-import {GenericTypeService} from '../../../shared/services/generic-type.service';
-import {BaseTypeComponent} from '../../../shared/modules/base-type/base-type.component';
-import {TypeCategory} from '../../../shared/models/type-category.enum';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Subscription} from 'rxjs';
-import {getCustomerCategories, PartnerCategory} from '../../../finance/models/PartnerCategory';
-import {ToastService} from '../../../shared/services/toast.service';
-import {MatCheckboxModule} from '@angular/material/checkbox';
-import {SupplierType} from '../../../shared/models/supplier-type';
-import {BaseType} from '../../../shared/models/base-type';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-
+import { Component, Inject, OnDestroy, OnInit, Optional } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatIconModule } from '@angular/material/icon';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { SupplierTypeService } from '../../../shared/services/supplier.service';
+import { GenericTypeService } from '../../../shared/services/generic-type.service';
+import { BaseTypeComponent } from '../../../shared/modules/base-type/base-type.component';
+import { TypeCategory } from '../../../shared/models/type-category.enum';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { getCustomerCategories, PartnerCategory } from '../../../finance/models/PartnerCategory';
+import { ToastService } from '../../../shared/services/toast.service';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { SupplierType } from '../../../shared/models/supplier-type';
+import { BaseType } from '../../../shared/models/base-type';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-supplier-add',
@@ -45,13 +44,15 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
   public TypeCategory = TypeCategory;
   category: PartnerCategory = PartnerCategory.INDIVIDUAL;
   customerCategories = getCustomerCategories();
-
   supplierForm: FormGroup;
   isEditMode = false;
   supplierId: string | null = null;
   loading = false;
   error: string | null = null;
+  // Are we opened inside a MatDialog?
+  private inDialog = false;
   private subs = new Subscription();
+  private created: SupplierType;
 
   constructor(
     private fb: FormBuilder,
@@ -62,7 +63,7 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
     protected router: Router,
     private route: ActivatedRoute,
     @Optional() public dialogRef?: MatDialogRef<SupplierAddComponent>,
-    @Optional() @Inject(MAT_DIALOG_DATA) public data?: any
+    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData?: any
   ) {
     this.supplierForm = this.fb.group({
       id: [null],
@@ -77,6 +78,7 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
       rib: [''],
       bankName: ['']
     });
+    this.inDialog = !!this.dialogRef || !!this.dialogData?.fromDialog;
   }
 
   ngOnInit(): void {
@@ -117,9 +119,7 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
       bankName: v.bankName
     } as SupplierType;
 
-    const op = this.isEditMode
-      ? this.supplierService.updateSupplier(payload)
-      : this.supplierService.addSupplier(payload);
+    const op = this.isEditMode ? this.supplierService.updateSupplier(payload) : this.supplierService.addSupplier(payload);
 
     this.subs.add(
       op.subscribe({
@@ -130,14 +130,7 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
                 ? this.translateService.instant('SUPPLIER.MESSAGES.UPDATED') || 'Fournisseur modifié avec succès'
                 : this.translateService.instant('SUPPLIER.MESSAGES.CREATED') || 'Fournisseur créé avec succès'
             );
-
-            if (this.data?.fromDialog) {
-              // 🚀 Cas ouverture depuis OliveReceptionFormComponent
-              this.dialogRef?.close(res.data); // renvoie le supplier créé
-            } else {
-              // 🚀 Cas ouverture depuis la page Supplier
-              this.router.navigate(['/reception/fournisseur']);
-            }
+            this.close(Array.isArray(res.data) ? res.data[0] : res.data);
           } else {
             this.error = res?.message || this.translateService.instant('SUPPLIER.ERRORS.SAVE') || "Erreur lors de l'opération";
           }
@@ -150,6 +143,11 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
         }
       })
     );
+  }
+
+  onCancel(): void {
+    if (this.loading) return;
+    this.close(null);
   }
 
   ngOnDestroy(): void {
@@ -176,6 +174,15 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
       return this.translateService.instant('COMMON.VALIDATION.PATTERN');
     }
     return '';
+  }
+
+  /** Centralized close: dialog → close(result), page → navigate back */
+  private close(result: SupplierType | null = null): void {
+    if (this.inDialog) {
+      this.dialogRef?.close(result);
+    } else {
+      this.router.navigate(['/reception/fournisseur']);
+    }
   }
 
   private loadSupplier(id: string): void {

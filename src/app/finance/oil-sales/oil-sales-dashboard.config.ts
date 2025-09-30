@@ -1,4 +1,5 @@
 import { AttributeType, DashboardConfig, FieldType } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
 
 export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
   icon: 'local_gas_station',

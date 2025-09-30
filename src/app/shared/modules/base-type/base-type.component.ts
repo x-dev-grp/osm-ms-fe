@@ -1,11 +1,11 @@
 import {
   AfterViewInit,
   Component,
-  DestroyRef,
-  inject,
+  DestroyRef, EventEmitter,
+  inject, Input,
   input,
   OnChanges,
-  OnInit,
+  OnInit, Output,
   output,
   SimpleChanges
 } from '@angular/core';
@@ -55,6 +55,8 @@ import {TranslateModule, TranslateService} from '@ngx-translate/core';
   standalone: true
 })
 export class BaseTypeComponent implements OnInit, AfterViewInit, OnChanges {
+ @Output() addAction = new EventEmitter();
+  @Input() showAddButton?: boolean;
   type=input.required<string>();
   formControl=input.required<any> ();
   selected=output<any>();
@@ -207,4 +209,10 @@ export class BaseTypeComponent implements OnInit, AfterViewInit, OnChanges {
   displayWith = (option: any): string => {
     return option?.name
   };
+  protected readonly event = event;
+
+  action($event: MouseEvent) {
+    this.addAction.emit(typeof this.type === 'function' ? this.type() : this.type);
+    // this.addAction.emit($event);
+  }
 }

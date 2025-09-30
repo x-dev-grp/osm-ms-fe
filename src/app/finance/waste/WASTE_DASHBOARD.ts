@@ -55,7 +55,7 @@ export const WASTE_DASHBOARD: DashboardConfig = {
     {
       name: 'paymentMethod',
       label: 'Méthode de Paiement',
-      labelTranslatePath: 'TRANSACTIONS.FIELDS.PAYMENT_METHOD',
+      labelTranslatePath: 'OIL_SALES.PAYMENT_METHOD',
       attributeType: AttributeType.enum,
       fieldType: FieldType.select,
       exportable: true,

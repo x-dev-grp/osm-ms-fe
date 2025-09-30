@@ -70,7 +70,12 @@
               <th mat-header-cell *matHeaderCellDef [mat-sort-header]="item?.valuePath?item?.valuePath:item?.name">
                 {{ item?.labelTranslatePath ? (item?.labelTranslatePath|translate) : item.label }}
               </th>
-            } @else {
+            } @else if (item.flattedList){
+              <th mat-header-cell *matHeaderCellDef="let record">
+<!--                {{ getValue(item?.nameField,record?.[item?.name]?.length() ? record?.[item?.name][item?.flattedItemIndex]:null) }}-->
+              </th>
+            }
+            @else {
               <th mat-header-cell *matHeaderCellDef>
                 {{ item?.labelTranslatePath ? (item?.labelTranslatePath|translate) : item.label }}
               </th>
@@ -87,7 +92,11 @@
                 {{ getSelectDataTableValue(record[item?.name], item?.name) }}
               } @else if (item?.fieldType === "date") {
                 {{ (item?.valuePath ? getValue(item?.valuePath, record) : getValue(item?.name, record)) | date:'dd-MM-yyyy HH:mm' }}
-              } @else {
+              } @else if (item.flattedItemIndex || item.flattedItemIndex ==0){
+<!--                {{ getValue(item?.valueField,record?.[item?.flattedListName]? record?.[item?.flattedListName][item?.flattedItemIndex]:null) }}-->
+                {{ getValue(item?.valueField,getTargetItemFromFlattedList(record,item)) }}
+              }
+              @else {
                 @if(item?.isCurrency){
                    <span class="metric-value">
   {{

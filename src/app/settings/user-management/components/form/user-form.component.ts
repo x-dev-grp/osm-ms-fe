@@ -35,6 +35,7 @@ export class UserFormComponent implements OnInit, AfterViewInit {
   updateMode: boolean = false;
   viewMode: boolean = false;
   roleCriteria: SearchData = {
+    filterTenant: false,
     searchData: {
       operation: SearchOperation.AND,
       searchs: [],
@@ -42,6 +43,7 @@ export class UserFormComponent implements OnInit, AfterViewInit {
         isDeleted: {
           equalValue: false
         },
+
       }
     }
   };
@@ -63,7 +65,8 @@ export class UserFormComponent implements OnInit, AfterViewInit {
                 ...this.roleCriteria.searchData?.search,
                 roleName: {
                   likeValue: value
-                }
+                },
+
               }
             }
           };
@@ -155,7 +158,8 @@ export class UserFormComponent implements OnInit, AfterViewInit {
     return this._searchService.search(this.roleCriteria, url).pipe(
       takeUntilDestroyed(this.destroyRef),
       tap((response: SearchResponse) => {
-        this.roles = scroll ? [...this.roles, ...response.data] : response.data;
+        const filteredData=response.data?.filter(role=>!["OSMADMIN","OSMUSER"].includes( role.roleName));
+        this.roles = scroll ? [...this.roles, ...filteredData] : filteredData;
       }),
       catchError((err) => {
         console.error('Autocomplete fetch failed:', err);

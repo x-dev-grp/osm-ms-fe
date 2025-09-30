@@ -1,4 +1,24 @@
 {
+  "WELCOME": {
+    "TITLE": "مرحبًا",
+    "SUB": "إدارة سلسلة الزيتون",
+    "HEADLINE": "مرحبًا بك في OSM",
+    "DESCRIPTION": "إدارة الاستلام والإنتاج والمخزون والمالية من مكان واحد.",
+    "CTA": {
+      "START": "بدء عملية الاستلام",
+      "DOCS": "فتح الوثائق"
+    },
+    "LINKS": {
+      "RECEPTION": "الاستلام",
+      "RECEPTION_HINT": "استلام الزيتون/الزيت وإدارة الدُفعات",
+      "PRODUCTION": "الإنتاج",
+      "PRODUCTION_HINT": "العصر والتعبئة والعمليات",
+      "FINANCE": "المالية",
+      "FINANCE_HINT": "الفواتير والمدفوعات والتقارير",
+      "SETTINGS": "الإعدادات",
+      "SETTINGS_HINT": "التهيئة والصلاحيات"
+    }
+  },
   "ACCESS_DENIED": {
     "GO_HOME": "العودة إلى الصفحة الرئيسية",
     "GO_HOME_TITLE": "العودة إلى الصفحة الرئيسية",
@@ -138,6 +158,8 @@
   },
   "BASE_TYPE": {
     "ADD": "إضافة نوع",
+    "ADD_TITLE": "",
+    "CATEGORY": "",
     "OIL_TYPE": "نوع الزيت",
     "OIL_VARIETY": "تنوع الزيت",
     "OLIVE_TYPE": "نوع الزيتون",
@@ -661,6 +683,7 @@
       "SUPPLIER_ADDRESS": "العنوان",
       "SUPPLIER_BANK": "البنك",
       "SUPPLIER_EMAIL": "البريد الإلكتروني",
+      "SUPPLIER_LASTNAME": "",
       "SUPPLIER_NAME": "الاسم",
       "SUPPLIER_PHONE": "الهاتف",
       "SUPPLIER_RIB": "RIB",
@@ -1319,6 +1342,8 @@
       "OIL": "استقبال الزيت",
       "OLIVE": "استقبال الزيتون",
       "QUALITY_CONTROL": "مراقبة الجودة",
+      "QUALITY_CONTROL_HUILE": "",
+      "QUALITY_CONTROL_OLIVE": "",
       "SUPPLIERS": "الموردون",
       "TITLE": "الاستقبال"
     },
@@ -2204,6 +2229,7 @@
   "PDF": {
     "ACIDITY": "الحموضة",
     "ADDRESS": "مجال بلابس 1214 قصر هلال",
+    "BASCULE": "",
     "CATEGORY_OIL": "فئة الزيت",
     "CATEGORY_OLIVE": "فئة الزيتون",
     "CLIENT": "",
@@ -2248,6 +2274,7 @@
     "EXPENSE_VENDOR": "المورد",
     "EXTRA_VIRGIN_OLIVE_OIL": "زيت زيتون بكر ممتاز",
     "FACTURE": "",
+    "FERME": "",
     "FERMENTED_PERCENT": "النسبة المئوية للمتخمرة",
     "FICH_CONTROL_QUALITE": "ورقة مراقبة الجودة",
     "FICH_CONTROL_QUALITE_HUIL": "ورقة مراقبة جودة الزيت",
@@ -2289,6 +2316,7 @@
     "PENDING": "معلق",
     "PHONE": "الهاتف",
     "PRICE_UNIT": "سعر الوحدة",
+    "PRODUCER": "",
     "PRODUCT": "المنتج",
     "PRODUCTION_MANAGER": "مدير الإنتاج",
     "PRODUCTION_RECEIPT": "إيصال الإنتاج",
@@ -2344,6 +2372,7 @@
     "TRANSACTION_STATE": "حالة المعاملة",
     "TRANSACTION_TYPE": "نوع المعاملة",
     "TRANSFER_IN": "نقل داخلي",
+    "TRANSPORTER": "",
     "TRITURATION": "الطحن",
     "TRITURATION_SERVICE": "خدمة طحن زيت الزيتون",
     "TRUCK_MAT": "لوحة الشاحنة",
@@ -3211,7 +3240,10 @@
     "TYPES": {
       "GRIGNON": "الغرينون",
       "MARGINE": "المرجين",
-      "OTHER": "آخر"
+      "OTHER": "آخر",
+      "POMACE": "",
+      "SOLID": "",
+      "VEGETAL_SOLIDS": ""
     }
   },
   "WIDOWED": "أرمل",

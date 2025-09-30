@@ -1,0 +1,35 @@
+<h1 mat-dialog-title>
+  {{ 'STANDARD.BTNS.ADD' | translate }}
+  {{ ('BASE_TYPE.' + (form.get('type')?.value || '')) | translate : { defaultValue: (form.get('type')?.value || '') } }}
+</h1>
+<form [formGroup]="form" mat-dialog-content>
+  <mat-form-field appearance="fill" class="w-100">
+    <mat-label>{{ 'CONFIGURATION.RECEPTION.FIELDS.NAME' | translate }}</mat-label>
+    <input matInput formControlName="name" placeholder="{{ 'CONFIGURATION.RECEPTION.FIELDS.NAME' | translate }}" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="w-100">
+    <mat-label>{{ 'DEPARTMENT.FORM.DESCRIPTION' | translate }}</mat-label>
+    <input matInput formControlName="description" placeholder="{{ 'DEPARTMENT.FORM.DESCRIPTION'| translate }}" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="w-100">
+    <mat-label>{{ 'BASE_TYPE.CATEGORY' | translate }}</mat-label>
+    <mat-select formControlName="type">
+      <mat-option *ngFor="let cat of typeCategories" [value]="cat" [disabled]="cat">
+        {{ ('BASE_TYPE.' + cat) | translate : { defaultValue: cat } }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div *ngIf="errorMsg" class="text-warn m-t-5">{{ errorMsg }}</div>
+</form>
+
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="close()">
+    {{ 'STANDARD.BTNS.CANCEL' | translate }}
+  </button>
+  <button mat-flat-button color="primary" [disabled]="form.invalid  " (click)="save()">
+    {{ 'STANDARD.BTNS.ADD' | translate }}
+  </button>
+</div>

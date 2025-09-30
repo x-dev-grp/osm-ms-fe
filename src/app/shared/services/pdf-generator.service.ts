@@ -1,9 +1,9 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import jsPDF from 'jspdf';
-import {TranslateService} from '@ngx-translate/core';
-import {CompanyProfileService} from './company-profile.service';
-import {CompanyProfile} from '../models/CompanyProfile';
-import {PdfConfig} from "../models/pdf-config.model";
+import { TranslateService } from '@ngx-translate/core';
+import { CompanyProfileService } from './company-profile.service';
+import { CompanyProfile } from '../models/CompanyProfile';
+import { PdfConfig } from '../models/pdf-config.model';
 
 const center = 'center';
 
@@ -28,15 +28,7 @@ export class PdfGeneratorService {
     this.loadProfile();
   }
 
-  generatePdfDocument(config: {
-    title: string;
-    reference: string;
-    date?: string;
-    fields?: { label: string; value: string }[];
-    generalInfo?: { label: string; value: string }[];
-    footerInfo?: { label: string; placeholder?: string }[];
-    fileName?: string;
-  }): void {
+  generatePdfDocument(config :PdfConfig): void {
     // Use company logo if available, otherwise fallback to default
     const getLogoPromise = this.logoPreview ? Promise.resolve(this.logoPreview) : this.getBase64ImageFromUrl('assets/logo.jpg');
 
@@ -63,26 +55,29 @@ export class PdfGeneratorService {
       doc.rect(centerX, currentY, centerWidth, headerHeight);
       doc.setFontSize(12);
       doc.setFont(this._fontName, fontStyle1);
-      doc.text(this.translationService.instant('PDF.FORM'), centerX + centerWidth / 2, currentY + 7, {align: center});
+      doc.text(this.translationService.instant('PDF.FORM'), centerX + centerWidth / 2, currentY + 7, { align: center });
       doc.setFontSize(10);
       doc.setFont(this._fontName, this._fontStyleItalic);
-      doc.text(this.translationService.instant(config.title), centerX + centerWidth / 2, currentY + 14, {align: center});
+      doc.text(this.translationService.instant(config.title), centerX + centerWidth / 2, currentY + 14, { align: center });
 
       // Droite
       const rightX = centerX + centerWidth;
       const rowHeight = 5;
       const infoWidth = pageWidth - rightX - marginLeft;
       const infoRows = [
-        {label: this.translationService.instant('PDF.REFERENCE'), value: config.reference},
+        {
+          label: this.translationService.instant('PDF.REFERENCE'),
+          value: config.reference
+        },
         {
           label: this.translationService.instant('PDF.REVISION'),
-          value: '00'
+          value: config.revision || '....'
         },
         {
           label: this.translationService.instant('PDF.DATE'),
-          value: documentDate
+          value: config.date
         },
-        {label: this.translationService.instant('PDF.PAGE'), value: '1/1'}
+        { label: this.translationService.instant('PDF.PAGE'), value: '1/1' }
       ];
 
       infoRows.forEach((row, index) => {
@@ -98,7 +93,7 @@ export class PdfGeneratorService {
       // Numéro
       doc.setFont(this._fontName, fontStyle1);
       doc.setFontSize(10);
-      doc.text(this.translationService.instant('PDF.NUMBER_PLACEHOLDER'), pageWidth / 2, currentY, {align: center});
+      doc.text(this.translationService.instant('PDF.NUMBER_PLACEHOLDER'), pageWidth / 2, currentY, { align: center });
       currentY += 15;
 
       // Infos générales
@@ -241,12 +236,11 @@ export class PdfGeneratorService {
     this.generatePdfDocument(config);
   }
 
-
   private loadProfile(): void {
     this._companyProfileService.getProfile().subscribe(
       (res) => {
-        if (res ) {
-           this.profile = res;
+        if (res) {
+          this.profile = res;
           if (this.profile?.logoData && this.profile?.logoContentType) {
             this.logoPreview = `data:${this.profile?.logoContentType};base64,${this.profile?.logoData}`;
           }

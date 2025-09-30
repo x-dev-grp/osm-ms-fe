@@ -66,14 +66,26 @@
                 <mat-label>{{ partyLabelKey | translate }}</mat-label>
 
                 <input
+                  #supplierTrig="matAutocompleteTrigger"
                   (blur)="validateSupplier()"
                   [matAutocomplete]="supplierAuto"
-                  formControlName="supplier"
                   [value]="displayFn(receptionForm.get('supplier')?.value)"
+                  formControlName="supplier"
                   matInput
                   required
                 />
 
+                @if (!isEditing) {
+                  <button
+                    type="button"
+                    (mousedown)="$event.preventDefault()"
+                    (click)="$event.stopPropagation(); supplierTrig.closePanel(); openAddSupplierDialog()"
+                    color="primary"
+                    mat-icon-button
+                    matSuffix>
+                    <mat-icon>add</mat-icon>
+                  </button>
+                }
                 <mat-autocomplete #supplierAuto="matAutocomplete" [displayWith]="displayFn">
                   <mat-option *ngFor="let supplier of suppliers" [value]="supplier">
                     {{ supplier.name + ' ' + supplier.lastname }}
@@ -81,34 +93,32 @@
                 </mat-autocomplete>
               </mat-form-field>
 
-              <!-- Bouton ajout supplier -->
-              <button (click)="openAddSupplierDialog()" color="primary" mat-icon-button>
-                <mat-icon>add</mat-icon>
-              </button>
+
             </div>
 
             <!-- Region -->
             <div class="col-md-4 d-flex align-items-center">
+
               <base-type
+                (addAction)="openAddRegionDialog()"
                 [formControl]="receptionForm?.controls?.region"
-                [type]="'REGION'">
+                [options]="parcels"
+                [showAddButton]="!isEditing &&true"
+                [type]="TypeCategory.REGION">
               </base-type>
 
-              <button (click)="openAddRegionDialog()" color="primary" mat-icon-button>
-                <mat-icon>add</mat-icon>
-              </button>
             </div>
 
             <!-- Parcel -->
             <div class="col-md-4 d-flex align-items-center">
               <base-type
+                (addAction)="openAddParcelDialog()"
                 [formControl]="receptionForm?.controls?.parcel"
-                [type]="'PARCEL'">
+                [options]="parcels"
+                [showAddButton]="!isEditing &&true"
+                [type]="TypeCategory.PARCEL">
               </base-type>
 
-              <button (click)="openAddParcelDialog()" color="primary" mat-icon-button>
-                <mat-icon>add</mat-icon>
-              </button>
             </div>
 
           </div>

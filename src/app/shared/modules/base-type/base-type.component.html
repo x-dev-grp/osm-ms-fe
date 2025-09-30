@@ -1,15 +1,30 @@
-<mat-form-field appearance="outline" >
-  <mat-label>{{ translate.instant('BASE_TYPE.'+type()) }}</mat-label>
+<mat-form-field appearance="outline">
+  <mat-label>{{ translate.instant('BASE_TYPE.' + type()) }}</mat-label>
   <input
-    matInput
-    [placeholder]="translate.instant('BASE_TYPE.'+type())"
+    #autoTrig="matAutocompleteTrigger"
     [formControl]="formControl()"
     [matAutocomplete]="auto"
+    [placeholder]="translate.instant('BASE_TYPE.'+type())"
+    matInput
 
   />
-  <mat-autocomplete    [displayWith]="displayWith"
-                       (optionsScroll)="scroll($event)" #auto="matAutocomplete" (optionSelected)="autoCompleteSelect($event.option.value)">
-    @for (item of autoCompleteOptions?.data ; track item?.id) {
+
+  @if (showAddButton) {
+    <button
+      type="button"
+      matSuffix
+      (mousedown)="$event.preventDefault()"
+      (click)="$event.stopPropagation(); autoTrig.closePanel(); action($event)"
+      color="primary"
+      mat-icon-button>
+      <mat-icon>add</mat-icon>
+    </button>
+  }
+
+  <mat-autocomplete #auto="matAutocomplete"
+                    (optionSelected)="autoCompleteSelect($event.option.value)" (optionsScroll)="scroll($event)"
+                    [displayWith]="displayWith">
+    @for (item of autoCompleteOptions?.data; track item?.id) {
       <mat-option [value]="item">
         {{ item?.name }}
       </mat-option>

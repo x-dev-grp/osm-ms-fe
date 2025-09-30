@@ -41,31 +41,31 @@ export const dashboardConfig: DashboardConfig = {
       exportLabel: 'Nom',
       filterAttribute: 'name'
     },
-    {
-      name: 'lotNumber',
-      label: 'lotNumber',
-      labelTranslatePath: 'DELIVERIES.FIELDS.LOT_NUMBER',
-      attributeType: AttributeType.string,
-      fieldType: FieldType.text,
-      sortable: true,
-      filterable: true,
-      dataTable: true,
-      exportable: true,
-      exportLabel: 'lotNumber',
-      filterAttribute: 'lotNumber'
-    },
-    {
-      name: 'location',
-      label: 'Emplacement',
-      labelTranslatePath: 'OIL_CONTAINER.FORM.STORAGE_LOCATION',
-      attributeType: AttributeType.string,
-      fieldType: FieldType.text,
-      sortable: true,
-      filterable: true,
-
-      dataTable: true,
-      exportable: true
-    },
+    // {
+    //   name: 'lotNumber',
+    //   label: 'lotNumber',
+    //   labelTranslatePath: 'DELIVERIES.FIELDS.LOT_NUMBER',
+    //   attributeType: AttributeType.string,
+    //   fieldType: FieldType.text,
+    //   sortable: true,
+    //   filterable: true,
+    //   dataTable: true,
+    //   exportable: true,
+    //   exportLabel: 'lotNumber',
+    //   filterAttribute: 'lotNumber'
+    // },
+    // {
+    //   name: 'location',
+    //   label: 'Emplacement',
+    //   labelTranslatePath: 'OIL_CONTAINER.FORM.STORAGE_LOCATION',
+    //   attributeType: AttributeType.string,
+    //   fieldType: FieldType.text,
+    //   sortable: true,
+    //   filterable: true,
+    //
+    //   dataTable: true,
+    //   exportable: true
+    // },
     {
       name: 'description',
       label: 'Description',
@@ -89,20 +89,20 @@ export const dashboardConfig: DashboardConfig = {
       dataTable: true,
       exportable: true
     },
-    {
-      name: 'supplier',
-      label: 'Fournisseur',
-      labelTranslatePath: 'DELIVERIES.FIELDS.SUPPLIER',
-      attributeType: AttributeType.object,
-      fieldType: FieldType.autocomplete,
-      exportable: true,
-      dataTable: true,
-      filterable: true,
-      valuePath: 'name',
-      valueAttributeType: AttributeType.string,
-      filterAttribute: 'supplier.name',
-      getOptionsUrl: 'production/suppliers_type'
-    },
+    // {
+    //   name: 'supplier',
+    //   label: 'Fournisseur',
+    //   labelTranslatePath: 'DELIVERIES.FIELDS.SUPPLIER',
+    //   attributeType: AttributeType.object,
+    //   fieldType: FieldType.autocomplete,
+    //   exportable: true,
+    //   dataTable: true,
+    //   filterable: true,
+    //   valuePath: 'name',
+    //   valueAttributeType: AttributeType.string,
+    //   filterAttribute: 'supplier.name',
+    //   getOptionsUrl: 'production/suppliers_type'
+    // },
     {
       name: 'avgCost',
       label: 'Average cost',
@@ -178,70 +178,70 @@ export const dashboardConfig: DashboardConfig = {
       ],
       exportable: true
     },
-    {
-      name: 'qualityGrade',
-      label: 'quality Grade',
-      labelTranslatePath: 'OIL_TRANSACTION.DETAILS.QUALITY_GRADE',
-      attributeType: AttributeType.enum,
-      fieldType: FieldType.select,
-      sortable: true,
-      filterable: true,
-      dataTable: true,
-      options: [
-        { value: 'VIRGIN', label: 'VIRGIN', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.VIRGIN' },
-        {
-          value: 'EXTRA_VIRGIN',
-          label: 'EXTRA_VIRGIN',
-          labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.EXTRA_VIRGIN'
-        },
-        { value: 'LAMPANTE', label: 'LAMPANTE', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.LAMPANTE' },
-        { value: 'REFINED', label: 'REFINED', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.REFINED' },
-        { value: 'OTHER', label: 'OTHER', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.OTHER' }
-      ],
-      exportable: true
-    },
-    {
-      name: 'oilVariety',
-      label: 'Oil Variety',
-      valuePath: 'name',
-      labelTranslatePath: 'OIL_TRANSACTION.DELIVERY.OIL_VARIETY',
-      attributeType: AttributeType.string,
-      fieldType: FieldType.autocomplete,
-      sortable: true,
-      filterable: true,
-      dataTable: true,
-      exportable: true,
-      getOptionsUrl: 'production/types',
-      autoCompleteDefaultCriteria: {
-        page: 0,
-        size: 10,
-        sort: 'createdDate',
-        order: 'DESC',
-        searchData: {
-          operation: SearchOperation.AND,
-          searchs: [],
-          search: {
-            isDeleted: {
-              equalValue: false
-            },
-            type: {
-              equalValue: TypeCategory.OIL_VARIETY
-            }
-          }
-        }
-      },
-      autoCompleteFilterAttributes: ['name']
-    },
+    // {
+    //   name: 'qualityGrade',
+    //   label: 'quality Grade',
+    //   labelTranslatePath: 'OIL_TRANSACTION.DETAILS.QUALITY_GRADE',
+    //   attributeType: AttributeType.enum,
+    //   fieldType: FieldType.select,
+    //   sortable: true,
+    //   filterable: true,
+    //   dataTable: true,
+    //   options: [
+    //     { value: 'VIRGIN', label: 'VIRGIN', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.VIRGIN' },
+    //     {
+    //       value: 'EXTRA_VIRGIN',
+    //       label: 'EXTRA_VIRGIN',
+    //       labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.EXTRA_VIRGIN'
+    //     },
+    //     { value: 'LAMPANTE', label: 'LAMPANTE', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.LAMPANTE' },
+    //     { value: 'REFINED', label: 'REFINED', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.REFINED' },
+    //     { value: 'OTHER', label: 'OTHER', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.OTHER' }
+    //   ],
+    //   exportable: true
+    // },
+    // {
+    //   name: 'oilVariety',
+    //   label: 'Oil Variety',
+    //   valuePath: 'name',
+    //   labelTranslatePath: 'OIL_TRANSACTION.DELIVERY.OIL_VARIETY',
+    //   attributeType: AttributeType.string,
+    //   fieldType: FieldType.autocomplete,
+    //   sortable: true,
+    //   filterable: true,
+    //   dataTable: true,
+    //   exportable: true,
+    //   getOptionsUrl: 'production/types',
+    //   autoCompleteDefaultCriteria: {
+    //     page: 0,
+    //     size: 10,
+    //     sort: 'createdDate',
+    //     order: 'DESC',
+    //     searchData: {
+    //       operation: SearchOperation.AND,
+    //       searchs: [],
+    //       search: {
+    //         isDeleted: {
+    //           equalValue: false
+    //         },
+    //         type: {
+    //           equalValue: TypeCategory.OIL_VARIETY
+    //         }
+    //       }
+    //     }
+    //   },
+    //   autoCompleteFilterAttributes: ['name']
+    // },
     {
       name: 'nextMaintenanceDate',
       label: 'Prochaine maintenance',
       labelTranslatePath: 'MILL_MACHINE.FIELDS.NEXT_MAINTENANCE_DATE',
       attributeType: AttributeType.date,
       fieldType: FieldType.date,
-      sortable: true,
-      filterable: true,
+      sortable: false,
+      filterable: false,
       dataTable: false,
-      exportable: true
+      exportable: false
     },
     {
       name: 'lastInspectionDate',
@@ -249,10 +249,10 @@ export const dashboardConfig: DashboardConfig = {
       labelTranslatePath: 'MILL_MACHINE.FIELDS.LAST_MAINTENANCE_DATE',
       attributeType: AttributeType.date,
       fieldType: FieldType.date,
-      sortable: true,
-      filterable: true,
+      sortable: false,
+      filterable: false,
       dataTable: false,
-      exportable: true
+      exportable: false
     }
   ]
 };

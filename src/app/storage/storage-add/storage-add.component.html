@@ -1,160 +1,73 @@
-<app-card [cardTitle]="isEditing ? 'Edit Storage Unit' : 'Add Storage Unit'" [icon]="'inventory_2'">
-  <div class="form-container wide">
-    <form (ngSubmit)="save()" [class.loading]="loading" [formGroup]="storageForm" class="storage-form">
+<app-card
+  [cardTitle]="isEditing ? 'Edit Storage Unit' : 'Add Storage Unit'"
+  [icon]="'inventory_2'"
+>
+  <div class="form-container">
+    <form
+      class="storage-form"
+      [formGroup]="storageForm"
+      (ngSubmit)="save()"
+      [class.loading]="loading"
+      autocomplete="off"
+      novalidate
+    >
+      <!-- Row 1 -->
+      <mat-form-field appearance="outline" class="field">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" required />
+        <mat-error *ngIf="storageForm.get('name')?.hasError('required')">
+          Name is required
+        </mat-error>
+      </mat-form-field>
 
-      <!-- Identification -->
-      <div class="form-section">
-        <h3 class="section-title">Identification</h3>
-        <div class="grid g-3">
-          <mat-form-field appearance="outline" class="col">
-            <mat-label>Name</mat-label>
-            <input formControlName="name" matInput required />
-            <mat-error *ngIf="storageForm.get('name')?.hasError('required')">Name is required</mat-error>
-          </mat-form-field>
+      <mat-form-field appearance="outline" class="field">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status" required>
+          <mat-option value="AVAILABLE">Available</mat-option>
+          <mat-option value="FULL">Full</mat-option>
+          <mat-option value="FILLING">Filling</mat-option>
+          <mat-option value="MAINTENANCE">Maintenance</mat-option>
+          <mat-option value="IN_USE">In Use</mat-option>
+          <mat-option value="CLEANING">Cleaning</mat-option>
+          <mat-option value="RESERVED">Reserved</mat-option>
+          <mat-option value="OUT_OF_SERVICE">Out of Service</mat-option>
+        </mat-select>
+        <mat-error *ngIf="storageForm.get('status')?.hasError('required')">
+          Status is required
+        </mat-error>
+      </mat-form-field>
 
-          <mat-form-field appearance="outline" class="col">
-            <mat-label>Lot Number</mat-label>
-            <input formControlName="lotNumber" matInput required />
-            <mat-hint>Ex: LOT-2025-001</mat-hint>
-            <mat-error *ngIf="storageForm.get('lotNumber')?.hasError('required')">Lot number is required</mat-error>
-          </mat-form-field>
+      <!-- Row 2 -->
+      <mat-form-field appearance="outline" class="field">
+        <mat-label>Max Capacity</mat-label>
+        <input matInput type="number" formControlName="maxCapacity" required />
+        <span matSuffix>kg&nbsp;</span>
+        <mat-error *ngIf="storageForm.get('maxCapacity')?.hasError('required')">
+          Max capacity is required
+        </mat-error>
+        <mat-error *ngIf="storageForm.get('maxCapacity')?.hasError('min')">
+          Must be greater than 0
+        </mat-error>
+      </mat-form-field>
 
-          <mat-form-field appearance="outline" class="col">
-            <mat-label>Location</mat-label>
-            <input formControlName="location" matInput required />
-            <mat-error *ngIf="storageForm.get('location')?.hasError('required')">Location is required</mat-error>
-          </mat-form-field>
+      <!-- spacer to keep 2 items per row on desktop -->
+      <div class="field empty"></div>
 
-          <mat-form-field appearance="outline" class="col span-3">
-            <mat-label>Description</mat-label>
-            <textarea formControlName="description" matInput rows="3"></textarea>
-          </mat-form-field>
-        </div>
-      </div>
-
-      <!-- Capacity & Status -->
-      <div class="form-section">
-        <h3 class="section-title">Capacity & Status</h3>
-        <div class="grid g-3">
-          <mat-form-field appearance="outline" class="col">
-            <mat-label>Max Capacity (KG)</mat-label>
-            <input formControlName="maxCapacity" matInput required type="number" />
-            <mat-error *ngIf="storageForm.get('maxCapacity')?.hasError('required')">Max capacity is required</mat-error>
-            <mat-error *ngIf="storageForm.get('maxCapacity')?.hasError('min')">Must be greater than 0</mat-error>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="col">
-            <mat-label>Current Volume (KG)</mat-label>
-            <input formControlName="currentVolume" matInput required type="number" />
-            <mat-error *ngIf="storageForm.get('currentVolume')?.hasError('required')">Current volume is required
-            </mat-error>
-            <mat-error *ngIf="storageForm.get('currentVolume')?.hasError('min')">Must be ≥ 0</mat-error>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="col">
-            <mat-label>Status</mat-label>
-            <mat-select formControlName="status" required>
-              <mat-option value="AVAILABLE">Available</mat-option>
-              <mat-option value="FULL">Full</mat-option>
-              <mat-option value="FILLING">Filling</mat-option>
-              <mat-option value="MAINTENANCE">Maintenance</mat-option>
-              <mat-option value="IN_USE">In Use</mat-option>
-              <mat-option value="CLEANING">Cleaning</mat-option>
-              <mat-option value="RESERVED">Reserved</mat-option>
-              <mat-option value="OUT_OF_SERVICE">Out of Service</mat-option>
-            </mat-select>
-            <mat-error *ngIf="storageForm.get('status')?.hasError('required')">Status is required</mat-error>
-          </mat-form-field>
-
-          <!-- form-level capacity error -->
-          <div *ngIf="storageForm.hasError('capacityExceeded')" class="col span-3">
-            <mat-error class="block">
-              Current volume cannot exceed max capacity.
-            </mat-error>
-          </div>
-        </div>
-      </div>
-
-      <!-- Oil -->
-      <div class="form-section">
-        <h3 class="section-title">Oil</h3>
-        <div class="grid g-3">
-          <!-- Quality Grade (static dropdown) -->
-          <mat-form-field appearance="outline" class="col">
-            <mat-label>Quality Grade</mat-label>
-            <mat-select formControlName="qualityGrade" required>
-              <mat-option *ngFor="let g of qualityGrades"
-                          [value]="g.value">{{ 'OIL_TRANSACTIONS.QUALITY_GRADES.' + g.label|translate }}
-              </mat-option>
-            </mat-select>
-            <mat-error *ngIf="storageForm.get('qualityGrade')?.hasError('required')">
-              Quality grade is required
-            </mat-error>
-          </mat-form-field>
-
-          <!-- Oil Variety (base-type) -->
-          <div class="col">
-            <label>Oil Variety</label>
-            <base-type
-              [formControl]="storageForm.controls['oilVariety']"
-              [type]="'OIL_VARIETY'">
-            </base-type>
-            <mat-error *ngIf="storageForm.get('oilVariety')?.hasError('required')">Oil variety is required</mat-error>
-          </div>
-
-          <div class="col hide-sm"></div>
-        </div>
-      </div>
-
-      <!-- Maintenance -->
-      <div class="form-section">
-        <h3 class="section-title">Maintenance</h3>
-        <div class="grid g-3">
-          <mat-form-field appearance="outline" class="col">
-            <mat-label>Next Maintenance Date</mat-label>
-            <input [matDatepicker]="nextMaint" formControlName="nextMaintenanceDate" matInput>
-            <mat-datepicker-toggle [for]="nextMaint" matSuffix></mat-datepicker-toggle>
-            <mat-datepicker #nextMaint></mat-datepicker>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="col">
-            <mat-label>Last Inspection Date</mat-label>
-            <input [matDatepicker]="lastInspect" formControlName="lastInspectionDate" matInput>
-            <mat-datepicker-toggle [for]="lastInspect" matSuffix></mat-datepicker-toggle>
-            <mat-datepicker #lastInspect></mat-datepicker>
-          </mat-form-field>
-
-          <div class="col hide-sm"></div>
-        </div>
-      </div>
-
-      <!-- Paid Storage -->
-      <div class="form-section">
-        <h3 class="section-title">{{ 'STORAGE.FORM.PAID_STORAGE_INFO' | translate }}</h3>
-        <div class="grid g-3">
-          <mat-checkbox class="col span-3" formControlName="paidStorage">
-            {{ 'STORAGE.FORM.IS_PAID_STORAGE' | translate }}
-          </mat-checkbox>
-
-          <mat-form-field *ngIf="storageForm.get('paidStorage')?.value" appearance="outline" class="col">
-            <mat-label>{{ 'STORAGE.FORM.MONTHLY_RENTAL_PRICE' | translate }}</mat-label>
-            <input formControlName="monthlyRentalPrice" matInput min="0" step="0.01" type="number" />
-            <!-- no required errors (optional) -->
-            <mat-hint>Optional — leave empty if not applicable</mat-hint>
-            <mat-error *ngIf="storageForm.get('monthlyRentalPrice')?.hasError('min')">
-              {{ 'STORAGE.FORM.RENTAL_PRICE_MIN_ERROR' | translate }}
-            </mat-error>
-          </mat-form-field>
-
-          <div *ngIf="storageForm.get('paidStorage')?.value" class="col hide-sm"></div>
-          <div *ngIf="storageForm.get('paidStorage')?.value" class="col hide-sm"></div>
-        </div>
-      </div>
+      <!-- Description (full width) -->
+      <mat-form-field appearance="outline" class="field span-2">
+        <mat-label>Description</mat-label>
+        <textarea matInput rows="3" formControlName="description"></textarea>
+      </mat-form-field>
 
       <!-- Actions -->
-      <div class="form-actions">
-        <button (click)="onBack()" mat-stroked-button type="button">Cancel</button>
-        <button [disabled]="loading || storageForm.invalid" color="primary" mat-flat-button type="submit">
+      <div class="form-actions span-2">
+        <button mat-stroked-button type="button" (click)="onBack()">Cancel</button>
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          [disabled]="loading || storageForm.invalid"
+        >
           {{ isEditing ? 'Update' : 'Create' }}
         </button>
       </div>

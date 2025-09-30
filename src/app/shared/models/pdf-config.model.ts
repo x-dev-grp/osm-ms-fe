@@ -11,6 +11,8 @@ export interface PdfFooterInfo {
 export interface PdfConfig {
   title: string;
   reference: string;
+  revision?: string;
+  layout?: string;
   date?: string;
   fields: PdfField[];
   generalInfo?: PdfField[];

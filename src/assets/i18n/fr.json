@@ -1,4 +1,24 @@
 {
+  "WELCOME": {
+    "TITLE": "Bienvenue",
+    "SUB": "Gestion de la filière olive",
+    "HEADLINE": "Bienvenue sur OSM",
+    "DESCRIPTION": "Gérez réceptions, production, stocks et finances au même endroit.",
+    "CTA": {
+      "START": "Démarrer une réception",
+      "DOCS": "Ouvrir la doc"
+    },
+    "LINKS": {
+      "RECEPTION": "Réception",
+      "RECEPTION_HINT": "Réception d'olives/huile & lots",
+      "PRODUCTION": "Production",
+      "PRODUCTION_HINT": "Trityruration, conditionnement & opérations",
+      "FINANCE": "Finance",
+      "FINANCE_HINT": "Factures, paiements & rapports",
+      "SETTINGS": "Paramètres",
+      "SETTINGS_HINT": "Configuration & permissions"
+    }
+  },
   "ACCESS_DENIED": {
     "GO_HOME": "Retour à l'accueil",
     "GO_HOME_TITLE": "Retour à l'accueil",
@@ -138,6 +158,8 @@
   },
   "BASE_TYPE": {
     "ADD": "Ajouter Type",
+    "ADD_TITLE": "Ajouter un type",
+    "CATEGORY": "Catégorie",
     "OIL_TYPE": "Type d'huile",
     "OIL_VARIETY": "Variété d'huile",
     "OLIVE_TYPE": "Type olive",
@@ -661,6 +683,7 @@
       "SUPPLIER_ADDRESS": "Adresse",
       "SUPPLIER_BANK": "Banque",
       "SUPPLIER_EMAIL": "Email",
+      "SUPPLIER_LASTNAME": "prénom",
       "SUPPLIER_NAME": "Nom",
       "SUPPLIER_PHONE": "Téléphone",
       "SUPPLIER_RIB": "RIB",
@@ -1317,6 +1340,8 @@
       "OIL": "Réception d'huile",
       "OLIVE": "Réception d'olives",
       "QUALITY_CONTROL": "Contrôle qualité",
+      "QUALITY_CONTROL_HUILE": "Quality control d'huile",
+      "QUALITY_CONTROL_OLIVE": "Quality control d'olive",
       "SUPPLIERS": "Fournisseurs",
       "TITLE": "Réception"
     },
@@ -2205,6 +2230,7 @@
     "ACIDITY": "Acidité",
     "ADDRESS": "Adresse",
     "BANK_DETAILS": "Coordonnées bancaires",
+    "BASCULE": "Agent bascule",
     "CATEGORY_OIL": "Catégorie Huile",
     "CATEGORY_OLIVE": "Catégorie Olive",
     "CLIENT": "Client",
@@ -2258,6 +2284,7 @@
     "FACTURE_TRITURATION": "Facture Trituration",
     "FACTURE_VENTE_DECHET": "Facture Vente Déchet",
     "FACTURE_VENTE_HUILE": "Facture Vente Huile",
+    "FERME": "Ferme",
     "FERMENTED_PERCENT": "Fermentées %",
     "FICH_CONTROL_QUALITE": "Fiche de contole de quality",
     "FICH_CONTROL_QUALITE_HUIL": "Fiche de Contrôle Qualité Huile",
@@ -2311,6 +2338,7 @@
     "PENDING": "En attente",
     "PHONE": "Téléphone",
     "PRICE_UNIT": "Prix unitaire",
+    "PRODUCER": "Producteur",
     "PRODUCT": "Produit",
     "PRODUCTION_MANAGER": "Chef de Production",
     "PRODUCTION_RECEIPT": "BON DE PRODUCTION",
@@ -2348,7 +2376,7 @@
     "SALE_DATE": "Date de vente",
     "SERVICE_DESCRIPTION": "Description du service",
     "SIGNATURE": "Signature",
-    "SIGNATURE_AGENT": "Signature Agent",
+    "SIGNATURE_AGENT": "Controle Qualité",
     "SIGNATURE_RESPONSIBLE": "Signature Responsable CQ",
     "STATUS": "Statut",
     "STORAGE_UNIT_DEST": "Unité de stockage (destination)",
@@ -2366,6 +2394,7 @@
     "TRANSACTION_STATE": "État de la transaction",
     "TRANSACTION_TYPE": "Type de transaction",
     "TRANSFER_IN": "Transfert entrant",
+    "TRANSPORTER": "Chauffeur livreur/Véhicule",
     "TRITURATION": "Trituration",
     "TRITURATION_SERVICE": "Service de trituration d'huile d'olive",
     "TRUCK_MAT": "Matricule camion",
@@ -2375,7 +2404,7 @@
     "UNPAID": "Non payé",
     "UNPAID_AMOUNT": "Montant impayé",
     "VAT": "Numéro TVA",
-    "VEHICLE_REGISTRATION": " matricule véhicule",
+    "VEHICLE_REGISTRATION": "Matricule véhicule",
     "VENTE_DECHET": "Vente Déchet",
     "VENTE_HUILE": "Vente d'huile",
     "WASTE_PROCESSING": "Traitement des déchets oléicoles",
@@ -2740,8 +2769,8 @@
       "EDIT": "Modifier"
     },
     "ADD": {
-      "TITLE_ADD": "Ajouter un fournisseur",
-      "TITLE_EDIT": "Modifier le fournisseur"
+      "TITLE_ADD": "Ajouter un agriculteur",
+      "TITLE_EDIT": "Modifier l'agriculteur"
     },
     "DETAILS": {
       "OIL_CREDIT_STATS_TITLE": "Statistiques crédits d'huile",
@@ -3037,7 +3066,7 @@
       "PAYMENT": "Paiement",
       "PURCHASE": "Achat",
       "SUPPLIER_CREDIT": "Crédit Fournisseur",
-      "SUPPLIER_PAYMENT": "Paiement Fournisseur",
+      "SUPPLIER_PAYMENT": "Paiement agriculteur",
       "WITHDRAWAL": "Retrait"
     },
     "VIEW": {
@@ -3090,7 +3119,10 @@
     "TYPES": {
       "GRIGNON": "Grignon",
       "MARGINE": "Margine",
-      "OTHER": "Autre"
+      "OTHER": "Autre",
+      "POMACE": "Pomace",
+      "SOLID": "Solides",
+      "VEGETAL_SOLIDS": "Solides"
     }
   },
   "WIDOWED": "Veuf/Veuve",

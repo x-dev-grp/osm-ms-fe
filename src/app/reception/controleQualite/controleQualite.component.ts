@@ -311,51 +311,6 @@ export class ControleQualiteComponent implements OnInit {
     return this.rules.find((r) => r.ruleKey === ruleKey)?.ruleType || 'NUMERIC';
   }
 
-  saveStorageUnitOnly(): void {
-
-    if (this.storageunitForm.invalid) {
-      this.storageunitForm.markAllAsTouched();
-      this.toast.error(this.translate.instant('OIL_TRANSACTIONS.FORM.VALIDATION.REQUIRED'));
-      return;
-    }
-
-    if (this.capacityError) {
-      this.toast.error(this.translate.instant('OIL_TRANSACTIONS.FORM.VALIDATION.CAPACITY'));
-      return;
-    }
-
-    const unit: StorageUnitDto | null = this.storageunitForm.get('storageUnitDestinationId')!.value ?? null;
-    const payload = {
-      ...this.deliveryData,
-      storageUnit: unit
-    } as UnifiedDelivery;
-
-    this.isLoading = true;
-    this.deliveryService.updateUnifiedDelivery(payload as UnifiedDelivery).subscribe({
-      next: (res) => {
-        this.isLoading = false;
-
-        if (!res?.success) {
-          this.toast.error(this.translate.instant('OIL_TRANSACTIONS.SAVE_STORAGE_UNIT.ERROR'));
-          this.cdr.detectChanges();
-          return;
-        }
-
-        // keep the component state in sync with backend response
-        this.deliveryData = Array.isArray(res.data) ? res.data[0] : res.data;
-        this.toast.success(this.translate.instant('OIL_TRANSACTIONS.SAVE_STORAGE_UNIT.SUCCESS'));
-
-        // recompute capacity UI (optional)
-        this.updateCapacityState(unit);
-        this.cdr.detectChanges();
-      },
-      error: () => {
-        this.isLoading = false;
-        this.toast.error(this.translate.instant('OIL_TRANSACTIONS.SAVE_STORAGE_UNIT.ERROR'));
-        this.cdr.detectChanges();
-      }
-    });
-  }
 
   async onSave(): Promise<void> {
     this.submitted = true;
@@ -387,10 +342,55 @@ export class ControleQualiteComponent implements OnInit {
     ref.afterClosed().subscribe((res: ConfirmationDialogResult) => {
       if (res?.confirmed) {
         this.performSave();
-        this.saveStorageUnitOnly();
+        // this.saveStorageUnitOnly();
       }
     });
   }
+  // saveStorageUnitOnly(): void {
+  //
+  //   if (this.storageunitForm.invalid) {
+  //     this.storageunitForm.markAllAsTouched();
+  //     this.toast.error(this.translate.instant('OIL_TRANSACTIONS.FORM.VALIDATION.REQUIRED'));
+  //     return;
+  //   }
+  //
+  //   if (this.capacityError) {
+  //     this.toast.error(this.translate.instant('OIL_TRANSACTIONS.FORM.VALIDATION.CAPACITY'));
+  //     return;
+  //   }
+  //
+  //   const unit: StorageUnitDto | null = this.storageunitForm.get('storageUnitDestinationId')!.value ?? null;
+  //   const payload = {
+  //     ...this.deliveryData,
+  //     storageUnit: unit
+  //   } as UnifiedDelivery;
+  //
+  //   this.isLoading = true;
+  //   this.deliveryService.updateUnifiedDelivery(payload as UnifiedDelivery).subscribe({
+  //     next: (res) => {
+  //       this.isLoading = false;
+  //
+  //       if (!res?.success) {
+  //         this.toast.error(this.translate.instant('OIL_TRANSACTIONS.SAVE_STORAGE_UNIT.ERROR'));
+  //         this.cdr.detectChanges();
+  //         return;
+  //       }
+  //
+  //       // keep the component state in sync with backend response
+  //       this.deliveryData = Array.isArray(res.data) ? res.data[0] : res.data;
+  //       this.toast.success(this.translate.instant('OIL_TRANSACTIONS.SAVE_STORAGE_UNIT.SUCCESS'));
+  //
+  //       // recompute capacity UI (optional)
+  //       this.updateCapacityState(unit);
+  //       this.cdr.detectChanges();
+  //     },
+  //     error: () => {
+  //       this.isLoading = false;
+  //       this.toast.error(this.translate.instant('OIL_TRANSACTIONS.SAVE_STORAGE_UNIT.ERROR'));
+  //       this.cdr.detectChanges();
+  //     }
+  //   });
+  // }
 
   async performSave(): Promise<void> {
     this.submitted = true;
@@ -423,7 +423,7 @@ export class ControleQualiteComponent implements OnInit {
           this.toast.success(res.message || 'Résultats enregistrés avec succès.');
           this.isLoading = false;
           this.cdr.detectChanges();
-        },
+          },
         error: () => {
           this.toast.error("Erreur lors de l'enregistrement des résultats.");
           this.isLoading = false;
@@ -448,8 +448,17 @@ export class ControleQualiteComponent implements OnInit {
       // Save other delivery data and QC results
       this.saveDeliveryAndQCResults();
     }
+    this.navigate()
   }
 
+  navigate():void{
+    if(this.isOliveDelivery()){
+      this.router.navigate(['/reception/reception-olive']);
+    }else{
+      this.router.navigate(['/reception/reception-huile']);
+
+    }
+  }
   saveQualityControlResults(): void {
     this.isLoading = true;
 

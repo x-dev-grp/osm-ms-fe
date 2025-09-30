@@ -3,10 +3,10 @@ import { deliveryType } from '../../shared/models/deleveryType';
 import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
 import { TypeCategory } from '../../shared/models/type-category.enum';
 
-export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
+export const OliveQCDASHBOARD_olive: DashboardConfig = {
   icon: 'fact_check',
   title: 'Contrôle Qualité',
-  titleTranslatePath: 'OSM_DASHBOARD.QUALITY_CONTROL.TITLE',
+  titleTranslatePath: 'OSM_DASHBOARD.ACTIONS.OLIVE_QUALITY',
   baseURL: 'production/deliveries',
   searchEndpoint: 'production/deliveries',
   addNewItem: false,
@@ -21,21 +21,14 @@ export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
       search: {
         isDeleted: {
           equalValue: false
+        },
+        deliveryType: {
+          equalValue: deliveryType.OLIVE
         }
       }
     }
   },
   fields: [
-    {
-      name: 'deliveryNumber',
-      label: 'N° réception',
-      attributeType: AttributeType.string,
-      fieldType: FieldType.text,
-      exportable: true,
-      sortable: false,
-      dataTable: false,
-      filterable: true
-    },
     {
       name: 'lotNumber',
       label: 'N° Lot',
@@ -44,7 +37,8 @@ export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
       exportable: true,
       sortable: true,
       dataTable: true,
-      filterable: true
+      filterable: true,
+      labelTranslatePath: 'DELIVERIES.FORM.FIELDS.LOT_NUMBER'
     },
     {
       name: 'operationType',
@@ -67,14 +61,23 @@ export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
           value: 'OLIVE_PURCHASE',
           labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OLIVE_PURCHASE'
         },
-        { label: 'Achat Huile', value: 'OIL_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OIL_PURCHASE' },
-        { label: 'Echange', value: 'EXCHANGE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.EXCHANGE' },
+        {
+          label: 'Achat Huile',
+          value: 'OIL_PURCHASE',
+          labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OIL_PURCHASE'
+        },
+        {
+          label: 'Echange',
+          value: 'EXCHANGE',
+          labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.EXCHANGE'
+        },
         { label: 'Paiement', value: 'PAYMENT', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.PAYMENT' }
       ]
     },
     {
       name: 'deliveryType',
       label: 'Type de réception',
+      labelTranslatePath: 'DELIVERIES.FIELDS.DELIVERY_TYPE',
       attributeType: AttributeType.enum,
       fieldType: FieldType.select,
       exportable: true,
@@ -82,13 +85,18 @@ export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
       dataTable: true,
       filterable: true,
       options: [
-        { label: 'Olive', value: deliveryType.OLIVE },
-        { label: 'Huile', value: deliveryType.OIL }
+        {
+          label: 'Olive',
+          value: deliveryType.OLIVE,
+          labelTranslatePath: 'SUPPLIER_PAYMENT.RECEPTION_TYPE_OLIVE'
+        },
+        { label: 'Huile', value: deliveryType.OIL, labelTranslatePath: 'SUPPLIER_PAYMENT.RECEPTION_TYPE_OIL' }
       ]
     },
     {
       name: 'deliveryDate',
       label: 'Date ',
+      labelTranslatePath: 'DELIVERIES.FIELDS.DELIVERY_TYPE',
       attributeType: AttributeType.date,
       fieldType: FieldType.date,
       exportable: true,
@@ -108,12 +116,14 @@ export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
       valuePath: 'name',
       valueAttributeType: AttributeType.string,
       filterAttribute: 'supplier.name',
-      getOptionsUrl:'production/suppliers_type'
+      getOptionsUrl: 'production/suppliers_type'
     },
     {
       name: 'poidsNet',
       label: 'Poids net (kg)',
       attributeType: AttributeType.number,
+      labelTranslatePath: 'DELIVERIES.FIELDS.DELIVERY_TYPE',
+
       fieldType: FieldType.text,
       exportable: true,
       sortable: true,
@@ -133,11 +143,13 @@ export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
       options: [
         {
           label: 'OC',
-          value: 'OC'
+          value: 'OC',
+          labelTranslatePath: 'OC'
         },
         {
           label: 'OB',
-          value: 'OB'
+          value: 'OB',
+          labelTranslatePath: 'OB'
         }
       ],
       valueAttributeType: AttributeType.string
@@ -188,9 +200,21 @@ export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
       dataTable: true,
       filterable: true,
       options: [
-        { label: 'Nouveau', value: 'NEW', labelTranslatePath: 'RECEPTION_LIST.STATUS.NEW' },
-        { label: 'En attente', value: 'WAITING', labelTranslatePath: 'RECEPTION_LIST.STATUS.WAITING' },
-        { label: 'prét pour production', value: 'PROD_READY', labelTranslatePath: 'RECEPTION_LIST.STATUS.PROD_READY' },
+        {
+          label: 'Nouveau',
+          value: 'NEW',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.NEW'
+        },
+        {
+          label: 'En attente',
+          value: 'WAITING',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.WAITING'
+        },
+        {
+          label: 'prét pour production',
+          value: 'PROD_READY',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.PROD_READY'
+        },
         { label: 'En cours', value: 'IN_PROGRESS', labelTranslatePath: 'RECEPTION_LIST.STATUS.IN_PROGRESS' },
         {
           label: 'Contrôle Olives',
@@ -202,13 +226,43 @@ export const QUALITY_CONTROL_DASHBOARD: DashboardConfig = {
           value: 'OIL_CONTROLLED',
           labelTranslatePath: 'RECEPTION_LIST.STATUS.OIL_CONTROLLED'
         },
-        { label: 'Terminé', value: 'COMPLETED', labelTranslatePath: 'RECEPTION_LIST.STATUS.COMPLETED' },
+        {
+          label: 'Terminé',
+          value: 'COMPLETED',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.COMPLETED'
+        },
         { label: 'Refusé', value: 'REFUSED', labelTranslatePath: 'RECEPTION_LIST.STATUS.REFUSED' },
-        { label: 'Annulé', value: 'CANCELLED', labelTranslatePath: 'RECEPTION_LIST.STATUS.CANCELLED' },
+        {
+          label: 'Annulé',
+          value: 'CANCELLED',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.CANCELLED'
+        },
         { label: 'En stock', value: 'IN_STOCK', labelTranslatePath: 'RECEPTION_LIST.STATUS.IN_STOCK' }
       ]
+    },
+    {
+      name: 'qualityControlResults',
+      flattedListName: 'qualityControlResults',
+      label: 'qualityControlResults ',
+      exportLabel: 'Quality results',
+      attributeType: AttributeType.object,
+      fieldType: FieldType.list,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: false,
+      flattedList: true,
+      valueField: 'measuredValue',
+      columnPrefix: '',
+      nameField: 'rule.ruleName'
     }
-  ],
-
-  fileName: 'quality_control_list'
+  ], // "collectionFields": [
+  //   {
+  //     "collectionPath": "qualityControls",
+  //     "nameField": "rule.ruleName",
+  //     "valueField": "value",
+  //     "columnPrefix": "QC_"
+  //   }
+  // ]
+  fileName: 'quality_control_list_olive'
 };

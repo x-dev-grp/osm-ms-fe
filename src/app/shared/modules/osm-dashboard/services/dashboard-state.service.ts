@@ -13,7 +13,7 @@ import { saveAs } from 'file-saver';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { environment } from '../../../../../environments/environment';
-import { TranslateService } from '@ngx-translate/core';
+import {  TranslateService } from '@ngx-translate/core';
 export interface DashboardState {
   endpoint: string;
   data: SearchResponse;
@@ -74,9 +74,12 @@ export const DashboardStore = signalStore(
     endpoint: store.endpoint,
     resetFields$:  store.resetFieldsSubject,
     searchTrigger$: store.searchTrigger$,
-    fileName:store.fileName
+    fileName:store.fileName,
   })),
   withMethods((store, _searchService = inject(AdvancedSearchService),_http=inject(HttpClient),_baseService=inject(BaseService),translate=inject(TranslateService)) => {
+    const getValue= (path: string | undefined, object: any): any => {
+        return path?.split('.')?.reduce((acc, key) => acc && acc[key], object);
+      };
     return {
       initialize(endpoint: string, allFields: Field[], searchData?: SearchData,fileName?:string,filterTenant?:boolean): void {
         patchState(store, {
@@ -104,15 +107,15 @@ export const DashboardStore = signalStore(
         const fieldsToExport:{
                  name: string;
                  label: string;
-                  enumValue: boolean;
+                 enumValue: boolean;
                  enumValues: { [key: string]: string };
-               } []= store.checkedExportFields().map((field:any) =>{
+               } []= store.checkedExportFields().filter(field=>!field.field.flattedList).map((field:any) =>{
             return {
                 name: field.field.fieldType==FieldType.autocomplete? field.field.name+"."+field.field.valuePath : field.field.name,
-                label: field.field.exportLabel??translate.instant(field.field.labelTranslatePath),
+                label: field.field?.exportLabel?? (field.field?.labelTranslatePath ? translate.instant(field.field?.labelTranslatePath):field.field.label),
                 enumValue : field.field.attributeType== 'enum' ? true : false,
                 enumValues:  field.field.options?.reduce((acc:any, option:any) => {
-                    acc[option.value] = translate.instant(option.labelTranslatePath);
+                    acc[option.value] = option?.labelTranslatePath? translate.instant(option?.labelTranslatePath):option?.name;
                     return acc;
                 }, {}) || null
             }
@@ -120,10 +123,24 @@ export const DashboardStore = signalStore(
         if(!fieldsToExport || fieldsToExport?.length<=0){
             return ;
         }
-        const exportDetails={
+        let exportDetails:any={
             fieldDetails:fieldsToExport,
             fileName:translate.instant(store.fileName()),
             searchData:store.searchData()
+        }
+        const flattedAttributes:any [] = store.checkedExportFields().filter(field=>field.field.flattedList==true).map((field:{ field: Field; checked: boolean }) =>{
+          return {
+            collectionPath: field.field?.name,
+            nameField:field.field?.nameField,
+            valueField: field.field?.valueField,
+            columnPrefix:field.field?.columnPrefix,
+          }
+        });
+        if(flattedAttributes.length>0){
+          exportDetails={
+            ...exportDetails,
+            collectionFields:flattedAttributes
+          }
         }
         return _http.post(`${environment.apiUrl}/api/${store.endpoint()}/export/${exportType}`,exportDetails,{
             responseType: 'blob',
@@ -211,6 +228,59 @@ export const DashboardStore = signalStore(
         },
       setData: (data: SearchResponse) => {
         patchState(store, { data });
+        const collator = new Intl.Collator(['fr', 'en'], {
+          sensitivity: 'base',
+          numeric: true,
+          ignorePunctuation: true,
+        });
+
+
+        // 1) Start from the base columns (those marked dataTable but NOT flatted parents)
+        const baseCols = store
+          .allFields()
+          .filter((f: Field) => f.dataTable && !f.flattedList);
+
+        // 2) Build flatted children (new objects) from the first row that has values
+        const flatParents = store.allFields().filter((f: Field) => f.flattedList === true);
+
+        const flatChildren: Field[] = flatParents.flatMap((parent: Field) => {
+          const rowWithValues = data.data.find(
+            (item: any) => item[parent.name] != null && item[parent.name]?.length > 0
+          );
+          if (!rowWithValues) return [];
+
+          // safe getter
+          const safeGet = (path?: string | null, obj?: any) => {
+            if (!path || obj == null) return '';
+            return path.split('.').reduce((acc: any, k: string) => (acc == null ? acc : acc[k]), obj);
+          };
+
+          return (rowWithValues[parent.name] as any[]).map((itemData: any, index: number) => ({
+            ...parent,
+            // override identity & display
+            name: safeGet(parent.nameField, itemData),
+            label: safeGet(parent.nameField, itemData),
+            flattedItemIndex: index,
+            dataTable: true,
+            sortable:true,
+          }));
+        });
+
+        // 3) Optional: de-dupe by label (use Set) to avoid duplicates on repeated calls
+
+        const sorted = [...flatChildren].sort((a, b) =>
+          collator.compare(a?.name ?? '', b?.name ?? '')
+        );
+
+        const seen = new Set<string>();
+        const deduped = [...baseCols, ...sorted].filter(col => {
+          const key = (col.label ?? col.name ?? '').trim();
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+
+        patchState(store, { dataTableFields: deduped });
       },
       setSearchData: (searchData: SearchData) => {
         patchState(store, { searchData });

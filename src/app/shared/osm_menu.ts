@@ -85,47 +85,48 @@ export const osm_menus: Navigation[] = [
     modulePermission: 'RECEPTION',
     children: [
       {
-        id: 'collapse-group-reception',
-        title: 'MENU.RECEPTION.TITLE', // unchanged key
-        type: 'collapse',
-        icon: 'local_mall',
-        children: [
-          {
-            id: 'item-reception-olive',
-            title: 'MENU.RECEPTION.OLIVE',
-            type: 'item',
-            url: '/reception/reception-olive',
-            icon: 'shopping_basket',
-            breadcrumbs: false,
-            ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
-          },
-          {
-            id: 'item-reception-oil',
-            title: 'MENU.RECEPTION.OIL',
-            type: 'item',
-            url: '/reception/reception-huile',
-            icon: 'local_shipping',
-            breadcrumbs: false, // CHANGE: permissions - require RECEPTION:UNIFIEDDELIVERY:CREATE
-            ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
-          },
-          {
-            id: 'item-reception-quality',
-            title: 'MENU.RECEPTION.QUALITY_CONTROL',
-            type: 'item',
-            url: '/reception/quality',
-            icon: 'rule',
-            breadcrumbs: false, // CHANGE: permissions - require PRODUCTION:QUALITYCONTROLRESULT:READ
-            ressourcePermission: ProductionEntity.QUALITYCONTROLRESULT
-          },{
-            id: 'item-reception-quality',
-            title: 'quality2',
-            type: 'item',
-            url: '/reception/quality2',
-            icon: 'rule',
-            breadcrumbs: false, // CHANGE: permissions - require PRODUCTION:QUALITYCONTROLRESULT:READ
-            ressourcePermission: ProductionEntity.QUALITYCONTROLRESULT
-          }
-        ]
+        id: 'item-reception-olive',
+        title: 'MENU.RECEPTION.OLIVE',
+        type: 'item',
+        url: '/reception/reception-olive',
+        icon: 'shopping_basket',
+        breadcrumbs: false,
+        ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
+      },
+      {
+        id: 'item-reception-oil',
+        title: 'MENU.RECEPTION.OIL',
+        type: 'item',
+        url: '/reception/reception-huile',
+        icon: 'local_shipping',
+        breadcrumbs: false, // CHANGE: permissions - require RECEPTION:UNIFIEDDELIVERY:CREATE
+        ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
+      }
+    ]
+  },
+  {
+    id: 'group-reception',
+    title: 'OSM_DASHBOARD.ACTIONS.QUALITYCONTROLRESULT',
+    type: 'group', // CHANGE: permissions - group requires RECEPTION:UNIFIEDDELIVERY:READ
+    modulePermission: 'RECEPTION',
+    children: [
+      {
+        id: 'item-reception-quality',
+        title: 'MENU.RECEPTION.QUALITY_CONTROL_HUILE',
+        type: 'item',
+        url: '/reception/oil_qc',
+        icon: 'rule',
+        breadcrumbs: false, // CHANGE: permissions - require PRODUCTION:QUALITYCONTROLRESULT:READ
+        ressourcePermission: ProductionEntity.QUALITYCONTROLRESULT
+      },
+      {
+        id: 'item-reception-quality',
+        title: 'MENU.RECEPTION.QUALITY_CONTROL_OLIVE',
+        type: 'item',
+        url: '/reception/olive_qc',
+        icon: 'rule',
+        breadcrumbs: false, // CHANGE: permissions - require PRODUCTION:QUALITYCONTROLRESULT:READ
+        ressourcePermission: ProductionEntity.QUALITYCONTROLRESULT
       }
     ]
   },
@@ -140,15 +141,6 @@ export const osm_menus: Navigation[] = [
     modulePermission: 'PRODUCTION',
     children: [
       {
-        id: 'triturationHistory',
-        title: 'MENU.PRODUCTION.MILLING_HISTORY',
-        type: 'item',
-        url: '/reception/reception-list',
-        icon: 'fact_check',
-        breadcrumbs: false, // CHANGE: permissions - require RECEPTION:UNIFIEDDELIVERY:READ (for history)
-        permissions: [permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)]
-      },
-      {
         id: 'item-production-mill-schedules',
         title: 'MENU.PRODUCTION.MILLING_SCHEDULE',
         type: 'item',
@@ -158,6 +150,16 @@ export const osm_menus: Navigation[] = [
         permissions: [permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.PLANNING)]
       },
       {
+        id: 'triturationHistory',
+        title: 'MENU.PRODUCTION.MILLING_HISTORY',
+        type: 'item',
+        url: '/reception/reception-list',
+        icon: 'fact_check',
+        breadcrumbs: false, // CHANGE: permissions - require RECEPTION:UNIFIEDDELIVERY:READ (for history)
+        permissions: [permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)]
+      },
+
+      {
         id: 'item-reception-supplier-manage',
         title: 'MENU.RECEPTION.AGRICULTURE',
         type: 'item',
@@ -166,57 +168,11 @@ export const osm_menus: Navigation[] = [
         breadcrumbs: false, // CHANGE: permissions - require RECEPTION:SUPPLIER:READ
         ressourcePermission: ReceptionEntity.SUPPLIER
       }
-      // (If your original file also duplicated supplier routes here, add them back below unchanged)
-      // {
-      //   id: 'item-production-supplier-dashboard',
-      //   title: 'MENU.SUPPLIER.DASHBOARD',
-      //   type: 'item',
-      //   url: '/supplier/dashboard',
-      //   icon: 'grid_view',
-      //   breadcrumbs: false
-      // },
-      // {
-      //   id: 'item-production-supplier-history',
-      //   title: 'MENU.SUPPLIER.HISTORY',
-      //   type: 'item',
-      //   url: '/supplier/history',
-      //   icon: 'history',
-      //   breadcrumbs: false
-      // }
+
     ]
   },
 
-  // // =========================
-  // // SUPPLIER (≤3 items → keep flat)
-  // // =========================
-  // {
-  //   id: 'group-supplier',
-  //   title: 'MENU.SUPPLIER.TITLE',
-  //   type: 'group',
-  //   modulePermission: 'SUPPLIER',
-  //   children: [
-  //     {
-  //       id: 'item-supplier-dashboard',
-  //       title: 'MENU.SUPPLIER.DASHBOARD',
-  //       type: 'item',
-  //       url: '/supplier/dashboard',
-  //       icon: 'grid_view',
-  //       breadcrumbs: false
-  //     },
-  //     {
-  //       id: 'item-supplier-history',
-  //       title: 'MENU.SUPPLIER.HISTORY',
-  //       type: 'item',
-  //       url: '/supplier/history',
-  //       icon: 'history',
-  //       breadcrumbs: false
-  //     }
-  //   ]
-  // },
 
-  // =========================
-  // FINANCE (>3 items → wrapped)
-  // =========================
   {
     id: 'group-finance',
     title: 'MENU.FINANCE.TITLE',
@@ -297,7 +253,7 @@ export const osm_menus: Navigation[] = [
     id: 'group-storage',
     title: 'MENU.STORAGE.TITLE',
     type: 'group',
-    modulePermission: 'STORAGEUNIT',
+    modulePermission: 'PRODUCTION',
     children: [
       {
         id: 'item-storage-units',
@@ -339,7 +295,6 @@ export const osm_menus: Navigation[] = [
     id: 'group-settings',
     title: 'MENU.SETTINGS.TITLE',
     type: 'group',
-    modulePermission: 'SETTINGS',
     children: [
       {
         id: 'collapse-group-settings',
@@ -363,6 +318,8 @@ export const osm_menus: Navigation[] = [
             url: '/settings/configuration',
             icon: 'widgets',
             breadcrumbs: false,
+            ressourcePermission:HabilitationEntity.COMPANYPROFILE
+
           },
           {
             id: 'item-settings-generic',

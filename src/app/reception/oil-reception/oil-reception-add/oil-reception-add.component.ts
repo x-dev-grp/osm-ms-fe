@@ -1,42 +1,34 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {MatButtonModule} from '@angular/material/button';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Subscription} from 'rxjs';
-import {BaseType} from '../../../shared/models/base-type';
-import {SupplierType} from '../../../shared/models/supplier-type';
-import {UnifiedDelivery} from '../../../shared/models/UnifiedDelivery';
-import {GenericTypeService} from '../../../shared/services/generic-type.service';
-import {SupplierTypeService} from '../../../shared/services/supplier.service';
-import {UnifiedDeliveryService} from '../../../shared/services/delivery.service';
-import {
-  AbstractControl,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validators
-} from '@angular/forms';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
-import {MatSelectModule} from '@angular/material/select';
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatIcon} from '@angular/material/icon';
-import {StorageUnitDtoService} from '../../../shared/services/storage.service';
-import {OliveLotStatus} from '../../../shared/models/OliveLotStatus';
-import {MatAutocompleteModule} from '@angular/material/autocomplete';
-import {TranslateModule, TranslateService} from '@ngx-translate/core';
-import {OperationType} from '../../../shared/models/operation-type.enum';
-import {BaseTypeComponent} from '../../../shared/modules/base-type/base-type.component';
-import {ToastService} from '../../../shared/services/toast.service';
-import {Olive_Oil_Type} from '../../../shared/models/olive-type.enum';
-import {TypeCategory} from '../../../shared/models/type-category.enum';
-import {CardComponent} from '../../../theme/components/card/card.component';
-import {SupplierAddComponent} from "../../suppliers/supplier-add/supplier-add.component";
-import {MatDialog} from "@angular/material/dialog";
-import {AddBasetypeComponent} from "../../../settings/generic-type/add-basetype/add-basetype.component";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { BaseType } from '../../../shared/models/base-type';
+import { SupplierType } from '../../../shared/models/supplier-type';
+import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
+import { GenericTypeService } from '../../../shared/services/generic-type.service';
+import { SupplierTypeService } from '../../../shared/services/supplier.service';
+import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatIcon } from '@angular/material/icon';
+import { StorageUnitDtoService } from '../../../shared/services/storage.service';
+import { OliveLotStatus } from '../../../shared/models/OliveLotStatus';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { OperationType } from '../../../shared/models/operation-type.enum';
+import { BaseTypeComponent } from '../../../shared/modules/base-type/base-type.component';
+import { ToastService } from '../../../shared/services/toast.service';
+import { Olive_Oil_Type } from '../../../shared/models/olive-type.enum';
+import { TypeCategory } from '../../../shared/models/type-category.enum';
+import { CardComponent } from '../../../theme/components/card/card.component';
+import { SupplierAddComponent } from '../../suppliers/supplier-add/supplier-add.component';
+import { MatDialog } from '@angular/material/dialog';
+import { GenericTypeDialogComponent } from '../../../settings/generic-type/generic-type-dialog/generic-type-dialog.component';
 
 // Validator for net weight not exceeding gross weight
 const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | null => {
@@ -80,17 +72,18 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
   oilVariety: BaseType[] = [];
   deliveries: UnifiedDelivery[] = [];
   operationTypes: { value: OperationType; label: string }[] = [];
+  olive_oil_Options = Object.values(Olive_Oil_Type);
+  regions: BaseType[] = [];
+  parcels: BaseType[] = [];
+  partyLabelKey = 'OLIVE_RECEPTION.FORM.FIELDS.SUPPLIER';
+  partyRegionSectionKey = 'OLIVE_RECEPTION.FORM.SECTIONS.SUPPLIER_REGION';
+  protected readonly TypeCategory = TypeCategory;
   private pendingCalls = 0; // Compteur de requêtes HTTP en cours
   private subscriptions: Subscription[] = [];
   private deliveryId: string | null;
   private pendingEditReception: UnifiedDelivery | null = null;
   private _typeSubs: Subscription[] = [];
-  olive_oil_Options = Object.values(Olive_Oil_Type);
-  regions: BaseType[] = [];
-  parcels: BaseType[] = [];
 
-  partyLabelKey = 'OLIVE_RECEPTION.FORM.FIELDS.SUPPLIER';
-  partyRegionSectionKey = 'OLIVE_RECEPTION.FORM.SECTIONS.SUPPLIER_REGION';
   constructor(
     private fb: FormBuilder,
     private genericSrv: GenericTypeService,
@@ -101,8 +94,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     private storageService: StorageUnitDtoService,
     private router: Router,
     public translate: TranslateService,
-    private dialog: MatDialog,
-
+    private dialog: MatDialog
   ) {
     this.receptionForm = this.fb.group(
       {
@@ -167,13 +159,10 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.receptionForm.get('supplier')!.valueChanges.subscribe((supplier: SupplierType | null) => {
         if (supplier && supplier.region) {
-            this.receptionForm.patchValue({ region: supplier.region });
-
+          this.receptionForm.patchValue({ region: supplier.region });
         }
       })
     );
-
-
 
     // ===== 1️⃣  Charger les fournisseurs =====
     this.pendingCalls++;
@@ -219,7 +208,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
               deliveryNumber: 1,
               lotNumber: 1
             },
-            {emitEvent: false}
+            { emitEvent: false }
           );
         }
         this.toast.warning(this.translate.instant('DELIVERIES.FORM.MESSAGES.LOAD_ERROR'));
@@ -373,10 +362,6 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     this.router.navigate(['reception/reception-huile']);
   }
 
-  onBack(): void {
-    window.history.back();
-  }
-
   validateSupplier() {
     const value = this.receptionForm.get('supplier')!.value;
     if (!isValidSelection(value, this.suppliers)) {
@@ -384,12 +369,57 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  displayFn<T extends {   name: string; lastname: string } >(item: T): string {
+  displayFn<T extends { name: string; lastname: string }>(item: T): string {
     if (!item) return '';
 
-      return item.name + ' ' + item.lastname;
-
+    return item.name + ' ' + item.lastname;
   }
+
+  openAddSupplierDialog(): void {
+    const dialogRef = this.dialog.open(SupplierAddComponent, {
+      width: 'auto',
+      data: { fromDialog: true }
+    });
+
+    dialogRef.afterClosed().subscribe((newSupplier) => {
+      if (newSupplier) {
+        this.suppliers = [...this.suppliers, newSupplier];
+        this.receptionForm.get('supplier')?.setValue(newSupplier);
+      }
+    });
+  }
+
+
+  openAddRegionDialog(): void {
+    const dialogRef = this.dialog.open(GenericTypeDialogComponent, {
+      width: '500px',
+      data: {initialType: TypeCategory.REGION, fromDialog: true}
+    });
+
+    dialogRef.afterClosed().subscribe((newRegion: BaseType | undefined) => {
+      if (newRegion) {
+        this.regions = [...this.regions, newRegion];
+        this.receptionForm.get('region')?.setValue(newRegion);
+
+      }
+    });
+  }
+
+  openAddParcelDialog(): void {
+    const dialogRef = this.dialog.open(GenericTypeDialogComponent, {
+      width: '500px',
+      data: {initialType: TypeCategory.PARCEL, fromDialog: true}
+    });
+
+    dialogRef.afterClosed().subscribe((newParcel: BaseType | undefined) => {
+      if (newParcel) {
+        this.parcels = [...this.parcels, newParcel];
+        this.receptionForm.get('parcel')?.setValue(newParcel);
+
+      }
+    });
+  }
+
 
   private markCallDone(): void {
     // Décrément‑le quand une requête se termine
@@ -483,50 +513,4 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       }
     });
   }
-
-  openAddSupplierDialog(): void {
-    const dialogRef = this.dialog.open(SupplierAddComponent, {
-      width: '600px',
-      data: {fromDialog: true}
-    });
-
-    dialogRef.afterClosed().subscribe((newSupplier) => {
-      if (newSupplier) {
-        this.suppliers = [...this.suppliers, newSupplier];
-        this.receptionForm.get('supplier')?.setValue(newSupplier);
-      }
-    });
-  }
-
-  openAddRegionDialog(): void {
-    const dialogRef = this.dialog.open(AddBasetypeComponent, {
-      width: '500px',
-      data: {type: 'REGION', fromDialog: true}
-    });
-
-    dialogRef.afterClosed().subscribe((newRegion: BaseType | undefined) => {
-      if (newRegion) {
-        // Ajouter la nouvelle région à la liste
-        this.regions = [...this.regions, newRegion];
-
-        // Sélectionner directement la nouvelle région dans le formulaire
-        this.receptionForm.get('region')?.setValue(newRegion);
-      }
-    });
-  }
-
-  openAddParcelDialog(): void {
-    const dialogRef = this.dialog.open(AddBasetypeComponent, {
-      width: '500px',
-      data: {type: 'PARCEL', fromDialog: true}
-    });
-
-    dialogRef.afterClosed().subscribe((newParcel: BaseType | undefined) => {
-      if (newParcel) {
-        this.parcels = [...this.parcels, newParcel];
-        this.receptionForm.get('parcel')?.setValue(newParcel);
-      }
-    });
-  }
-
 }

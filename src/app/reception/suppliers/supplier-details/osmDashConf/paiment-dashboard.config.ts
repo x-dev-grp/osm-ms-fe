@@ -163,10 +163,10 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.select,
       valueAttributeType: AttributeType.enum,
       options: [
-        { label: 'Huile', labelTranslatePath: 'STANDARD.DELIVERY_TYPE', value: 'OIL' },
+        { label: 'Huile', labelTranslatePath: 'SUPPLIER_PAYMENT.RECEPTION_TYPE_OIL', value: 'OIL' },
         {
           label: 'Olive',
-          labelTranslatePath: 'STANDARD.DELIVERY_TYPE',
+          labelTranslatePath: 'SUPPLIER_PAYMENT.RECEPTION_TYPE_OLIVE',
           value: 'OLIVE'
         }
       ],

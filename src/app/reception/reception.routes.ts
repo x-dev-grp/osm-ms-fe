@@ -13,14 +13,14 @@ import { OilReceptionComponent } from './oil-reception/oil-reception.component';
 import { MillMachineAddComponent } from './mill-machine/mill-machine-add/mill-machine-add.component';
 import { MillMachineViewComponent } from './mill-machine/mill-machine-view/mill-machine-view.component';
 import { MillMachineMaintenanceComponent } from './mill-machine/mill-machine-maintenance/mill-machine-maintenance.component';
-import { QualityControlListComponent } from './quality-control-list/quality-control-list.component';
+import { OilQCComponent } from './oil-qc/oilQC.component';
 import { ReceptionListComponent } from './reception-list/reception-list.component';
 import { ReceptionDashboardComponent } from './reception-dashboard/reception-dashboard.component';
 import { SupplierPaymentHistoryComponent } from './suppliers/supplier-payment-history/supplier-payment-history.component';
 import { allPermissionGuard, anyPermissionGuard, moduleGuard } from '../interceptors/guards/permission.guard';
 // CHANGE: permissions - use enums
 import { Action, OSMModule, permissionKey, ProductionEntity, ReceptionEntity } from 'src/app/theme/types/permissions';
-import { QcDeliveriesTableComponent } from './qc-deliveries-table/qc-deliveries-table.component';
+import { OliveQCComponent } from './olive-qc/oliveQC.component';
 
 export const receptionRoutes: Routes = [
   // CHANGE: permissions - dashboard requires RECEPTION:UNIFIEDDELIVERY:READ
@@ -93,12 +93,12 @@ export const receptionRoutes: Routes = [
 
   // CHANGE: permissions - quality control requires PRODUCTION:QUALITYCONTROLRESULT:READ
   {
-    path: 'quality',
-    component: QualityControlListComponent,
+    path: 'oil_qc',
+    component: OilQCComponent,
     canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.QUALITYCONTROLRESULT, Action.READ)])]
   },  {
-    path: 'quality2',
-    component: QcDeliveriesTableComponent,
+    path: 'olive_qc',
+    component: OliveQCComponent,
     canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.QUALITYCONTROLRESULT, Action.READ)])]
   },
   {

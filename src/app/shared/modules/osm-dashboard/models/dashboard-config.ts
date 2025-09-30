@@ -52,7 +52,8 @@ export enum FieldType{
     checkbox="checkbox",
     radio="radio",
     autocomplete="autocomplete",
-    slider="slider"
+    slider="slider",
+    list="list"
 }
  interface Option {
     label: string;
@@ -61,7 +62,8 @@ export enum FieldType{
 }
 export interface Field {
     name: string; //name in the backend entety  with nesting
-    booleanAttributeName?:string, //only when we need to display check box
+  flattedListName?:string;
+  booleanAttributeName?:string, //only when we need to display check box
     valuePath?:string;
     valueAttributeType?:AttributeType;
     label: string;// displayed label
@@ -85,4 +87,10 @@ export interface Field {
     exportValuePath?:string;
     sliderMinValue?:number;
     sliderMaxValue?:number;
+    nameField?:string;
+  columnPrefix?:string;
+  valueField?:string;
+  flattedList?:boolean;
+  flattedItemIndex?:number;
 }
+

@@ -41,8 +41,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       },
       searchs: []
     }
-  } /* ────────────────────────────────────────────────────────────── */ /*         Champs pour les réceptions d'huile                    */,
-  /* ────────────────────────────────────────────────────────────── */
+  } /* ────────────────────────────────────────────────────────────── */ /*         Champs pour les réceptions d'huile                    */ /* ────────────────────────────────────────────────────────────── */,
   fields: [
     /* Identifiants */
     {
@@ -137,12 +136,32 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       dataTable: true,
       filterable: true,
       options: [
-        { label: 'Trituration particulier', value: 'SIMPLE_RECEPTION', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.SIMPLE_RECEPTION' },
+        {
+          label: 'Trituration particulier',
+          value: 'SIMPLE_RECEPTION',
+          labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.SIMPLE_RECEPTION'
+        },
         { label: 'Base', value: 'BASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.BASE' },
-        { label: 'Achat Olive', value: 'OLIVE_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OLIVE_PURCHASE' },
-        { label: 'Achat Huile', value: 'OIL_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OIL_PURCHASE' },
-        { label: 'Echange', value: 'EXCHANGE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.EXCHANGE' },
-        { label: 'reception intern', value: 'INTERNAL_RECEPTION', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.INTERNAL_RECEPTION' },
+        {
+          label: 'Achat Olive',
+          value: 'OLIVE_PURCHASE',
+          labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OLIVE_PURCHASE'
+        },
+        {
+          label: 'Achat Huile',
+          value: 'OIL_PURCHASE',
+          labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OIL_PURCHASE'
+        },
+        {
+          label: 'Echange',
+          value: 'EXCHANGE',
+          labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.EXCHANGE'
+        },
+        {
+          label: 'reception intern',
+          value: 'INTERNAL_RECEPTION',
+          labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.INTERNAL_RECEPTION'
+        },
         { label: 'Paiement', value: 'PAYMENT', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.PAYMENT' }
       ]
     },
@@ -194,7 +213,7 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
     /* Statut */
     {
       name: 'status',
-      label: 'Statut',
+      label: 'status',
       labelTranslatePath: 'DELIVERIES.FIELDS.STATUS',
       attributeType: AttributeType.enum,
       fieldType: FieldType.select,
@@ -203,15 +222,51 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
       dataTable: true,
       filterable: true,
       options: [
-        { label: 'Nouveau', value: 'NEW', labelTranslatePath: 'RECEPTION_LIST.STATUS.NEW' },
-        { label: 'En attente', value: 'WAITING', labelTranslatePath: 'RECEPTION_LIST.STATUS.WAITING' },
-        { label: 'prét pour production', value: 'PROD_READY', labelTranslatePath: 'RECEPTION_LIST.STATUS.PROD_READY' },
-        { label: 'En cours', value: 'IN_PROGRESS', labelTranslatePath: 'RECEPTION_LIST.STATUS.IN_PROGRESS' },
-        { label: 'Contrôle Olives', value: 'OLIVE_CONTROLLED', labelTranslatePath: 'RECEPTION_LIST.STATUS.OLIVE_CONTROLLED' },
-        { label: 'Contrôle Huile', value: 'OIL_CONTROLLED', labelTranslatePath: 'RECEPTION_LIST.STATUS.OIL_CONTROLLED' },
-        { label: 'Terminé', value: 'COMPLETED', labelTranslatePath: 'RECEPTION_LIST.STATUS.COMPLETED' },
+        {
+          label: 'Nouveau',
+          value: 'NEW',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.NEW'
+        },
+        {
+          label: 'En attente',
+          value: 'WAITING',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.WAITING'
+        },
+        {
+          label: 'prét pour production',
+          value: 'PROD_READY',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.PROD_READY'
+        },   {
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.STOCK_READY',
+          label: 'prét pour stocker',
+          value: 'STOCK_READY',
+        },
+        {
+          label: 'En cours',
+          value: 'IN_PROGRESS',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.IN_PROGRESS'
+        },
+        {
+          label: 'Contrôle Olives',
+          value: 'OLIVE_CONTROLLED',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.OLIVE_CONTROLLED'
+        },
+        {
+          label: 'Contrôle Huile',
+          value: 'OIL_CONTROLLED',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.OIL_CONTROLLED'
+        },
+        {
+          label: 'Terminé',
+          value: 'COMPLETED',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.COMPLETED'
+        },
         { label: 'Refusé', value: 'REFUSED', labelTranslatePath: 'RECEPTION_LIST.STATUS.REFUSED' },
-        { label: 'Annulé', value: 'CANCELLED', labelTranslatePath: 'RECEPTION_LIST.STATUS.CANCELLED' },
+        {
+          label: 'Annulé',
+          value: 'CANCELLED',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.CANCELLED'
+        },
         { label: 'En stock', value: 'IN_STOCK', labelTranslatePath: 'RECEPTION_LIST.STATUS.IN_STOCK' }
       ]
     }

@@ -18,6 +18,11 @@ import { CustomTranslateLoader } from './app/shared/custom-translate-loader';
 
 if (environment.production) {
   enableProdMode();
+  console.log = () => {};
+  console.debug = () => {};
+  console.info = () => {};
+  // console.warn = () => {};   // uncomment to silence warns too
+  // console.error = () => {};  // usually keep errors visible
 }
 
 bootstrapApplication(AppComponent, {

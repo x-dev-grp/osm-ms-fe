@@ -1,5 +1,24 @@
 {
-  "ACCESS_DENIED": {
+  "WELCOME": {
+    "TITLE": "Welcome",
+    "SUB": "Olive Supply Management",
+    "HEADLINE": "Welcome to OSM",
+    "DESCRIPTION": "Manage receptions, production, inventory and finance from one place.",
+    "CTA": {
+      "START": "Start a Reception",
+      "DOCS": "Open Docs"
+    },
+    "LINKS": {
+      "RECEPTION": "Reception",
+      "RECEPTION_HINT": "Receive olives, oil & manage lots",
+      "PRODUCTION": "Production",
+      "PRODUCTION_HINT": "Milling, packaging & operations",
+      "FINANCE": "Finance",
+      "FINANCE_HINT": "Invoices, payments & reports",
+      "SETTINGS": "Settings",
+      "SETTINGS_HINT": "Configuration & permissions"
+    }
+  },"ACCESS_DENIED": {
     "GO_HOME": "Back to home",
     "GO_HOME_TITLE": "Back to home",
     "HELP": "Help",
@@ -138,6 +157,8 @@
   },
   "BASE_TYPE": {
     "ADD": "Add type",
+    "ADD_TITLE": "Add type",
+    "CATEGORY": "Category",
     "OIL_TYPE": "Oil type",
     "OIL_VARIETY": "Oil variety",
     "OLIVE_TYPE": "Olive type",
@@ -661,6 +682,7 @@
       "SUPPLIER_ADDRESS": "Address",
       "SUPPLIER_BANK": "Bank",
       "SUPPLIER_EMAIL": "Email",
+      "SUPPLIER_LASTNAME": "Last name",
       "SUPPLIER_NAME": "Name",
       "SUPPLIER_PHONE": "Phone",
       "SUPPLIER_RIB": "RIB",
@@ -1319,6 +1341,8 @@
       "OIL": "Oil Reception",
       "OLIVE": "Olive Reception",
       "QUALITY_CONTROL": "Quality Control",
+      "QUALITY_CONTROL_HUILE": "Oil quality controle",
+      "QUALITY_CONTROL_OLIVE": "Olive quality controle",
       "SUPPLIERS": "Suppliers",
       "TITLE": "Reception"
     },
@@ -2206,6 +2230,7 @@
     "ACIDITY": "Acidity",
     "ADDRESS": "Adresse",
     "BANK_DETAILS": "Bank Details",
+    "BASCULE": "Balance agent",
     "CATEGORY_OIL": "Oil Category",
     "CATEGORY_OLIVE": "Olive Category",
     "CLIENT": "Client",
@@ -2259,6 +2284,7 @@
     "FACTURE_TRITURATION": "Crushing Invoice",
     "FACTURE_VENTE_DECHET": "Waste Sale Invoice",
     "FACTURE_VENTE_HUILE": "Oil Sale Invoice",
+    "FERME": "Farme",
     "FERMENTED_PERCENT": "Fermented %",
     "FICH_CONTROL_QUALITE": "Quality controle sheet",
     "FICH_CONTROL_QUALITE_HUIL": "Oil Quality Control Sheet",
@@ -2312,6 +2338,7 @@
     "PENDING": "Pending",
     "PHONE": "Phone",
     "PRICE_UNIT": "Unit Price",
+    "PRODUCER": "Producer",
     "PRODUCT": "Product",
     "PRODUCTION_MANAGER": "Production Manager",
     "PRODUCTION_RECEIPT": "Production Receipt",
@@ -2349,7 +2376,7 @@
     "SALE_DATE": "Sale Date",
     "SERVICE_DESCRIPTION": "Service Description",
     "SIGNATURE": "Signature",
-    "SIGNATURE_AGENT": "Agent Signature  ",
+    "SIGNATURE_AGENT": "Quality control",
     "SIGNATURE_RESPONSIBLE": "Quality Manager Signature",
     "STATUS": "Status",
     "STORAGE_UNIT_DEST": "Storage Unit (Destination)",
@@ -2367,6 +2394,7 @@
     "TRANSACTION_STATE": "Transaction State",
     "TRANSACTION_TYPE": "Transaction Type",
     "TRANSFER_IN": "Transfer In",
+    "TRANSPORTER": "Driver livreur/Véhicule",
     "TRITURATION": "Trituration",
     "TRITURATION_SERVICE": "Olive Oil Trituration Service",
     "TRUCK_MAT": "Truck Mat",
@@ -2376,7 +2404,7 @@
     "UNPAID": "Unpaid",
     "UNPAID_AMOUNT": "Unpaid Amount",
     "VAT": "Tax number",
-    "VEHICLE_REGISTRATION": " matricule véhicule",
+    "VEHICLE_REGISTRATION": "Vhicule plates",
     "VENTE_DECHET": "Waste Sale",
     "VENTE_HUILE": "Oil Sale",
     "WASTE_PROCESSING": "Olive Waste Processing",
@@ -2741,8 +2769,8 @@
       "EDIT": "Edit"
     },
     "ADD": {
-      "TITLE_ADD": "Add Supplier",
-      "TITLE_EDIT": "Edit Supplier"
+      "TITLE_ADD": "Add a  new farmer",
+      "TITLE_EDIT": "Edit Agriculture"
     },
     "DETAILS": {
       "OIL_CREDIT_STATS_TITLE": "Oil Credit Stats",
@@ -2916,11 +2944,53 @@
   "Student": "Student",
   "TAB_TITLE": "General Configuration",
   "TRANSACTIONS": {
+    "CURRENCIES": {
+      "EUR": "€",
+      "TND": "TND",
+      "USD": "$"
+    },
+    "DIRECTIONS": {
+      "INBOUND": "Inbound",
+      "INTERNAL": "Internal",
+      "OUTBOUND": "Outbound"
+    },
     "FIELDS": {
+      "AMOUNT": "Amount",
+      "APPROVAL_DATE": "Approve date",
+      "APPROVED": "Approved",
+      "BANK_ACCOUNT": "Bank account",
+      "CHECK_NUMBER": "Check number",
+      "CREATED_DATE": "Creation date",
+      "CURRENCY": "Currency",
+      "DIRECTION": "Direction",
+      "INVOICE_REFERENCE": "Bill ref",
+      "RECEIPT_REFERENCE": "Recipt ref",
+      "TRANSACTION_DATE": "Transaction date",
       "TRANSACTION_TYPE": "Transaction Type"
     },
     "PAYMENT_METHODS": {
-      "CASH": "cash"
+      "BANK_TRANSFER": "Bank transfert",
+      "CASH": "cash",
+      "CHECK": "Check",
+      "CREDIT_CARD": "Credit card",
+      "DEBIT_CARD": "Debit card",
+      "MOBILE_PAYMENT": "Mobile paiment",
+      "OIL_CREDIT": "Oil credit"
+    },
+    "TITLE": "Financial transactions",
+    "TYPES": {
+      "CHECK_DEPOSIT": "Check eposit",
+      "CHECK_PAYMENT": "Check payment",
+      "CREDIT": "Credit",
+      "DEBIT": "Debit",
+      "DEPOSIT": "Deposit",
+      "INTERNAL_TRANSFER": "Internal transfert",
+      "OIL_PURCHASE": "Oil purchase",
+      "OIL_SALE": "Oil sale",
+      "PURCHASE": "Buying",
+      "SUPPLIER_CREDIT": "Farmer credit",
+      "SUPPLIER_PAYMENT": "Farmer paiment",
+      "WITHDRAWAL": "Withdrawl"
     }
   },
   "Table": "Table",
@@ -2969,7 +3039,10 @@
     "TYPES": {
       "GRIGNON": "Grignon",
       "MARGINE": "Margine",
-      "OTHER": "Other"
+      "OTHER": "Other",
+      "POMACE": "Pomace",
+      "SOLID": "Solide",
+      "VEGETAL_SOLIDS": "Solide"
     }
   },
   "WIDOWED": "Widowed",

@@ -7,10 +7,10 @@ import { UnifiedDeliveryService } from '../../shared/services/delivery.service';
 import { tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { PdfGeneratorService } from '../../shared/services/pdf-generator.service';
-import { getProductionPdfConfig } from './production-pdf.config';
-import { ToastService } from '../../shared/services/toast.service';
-import { getOlivePdfConfig } from '../olive-reception/olive-pdf.config';
-import { getControlQualitePdfConfig } from '../quality-control-list/PDF-controlQualite.config';
+ import { ToastService } from '../../shared/services/toast.service';
+ import { getControlQualitePdfConfig } from '../pdf-config/controlQualite.config';
+import { getOlivePdfConfig } from '../pdf-config/reception-olive-pdf.config';
+import { getProductionPdfConfig } from '../pdf-config/production-pdf.config';
 
 @Component({
   selector: 'app-reception-list',

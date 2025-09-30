@@ -8,8 +8,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatDialog} from '@angular/material/dialog';
 import {SupplierAddComponent} from '../../suppliers/supplier-add/supplier-add.component';
-import {AddBasetypeComponent} from '../../../settings/generic-type/add-basetype/add-basetype.component';
-import {
+ import {
   AbstractControl,
   FormBuilder,
   FormControl,
@@ -37,6 +36,9 @@ import {BaseTypeComponent} from '../../../shared/modules/base-type/base-type.com
 import {ToastService} from '../../../shared/services/toast.service';
 import {CardComponent} from '../../../theme/components/card/card.component';
 import {Olive_Oil_Type} from '../../../shared/models/olive-type.enum';
+import {
+  GenericTypeDialogComponent
+} from '../../../settings/generic-type/generic-type-dialog/generic-type-dialog.component';
 
 // Validator to ensure net weight does not exceed gross weight
 const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | null => {
@@ -526,7 +528,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
 
   openAddSupplierDialog(): void {
     const dialogRef = this.dialog.open(SupplierAddComponent, {
-      width: '600px',
+      width: 'auto',
       data: {fromDialog: true}
     });
 
@@ -620,6 +622,14 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
         this.receptionForm.get('supplier')!.setValue(null);
       }
     });
+    this.subscriptions.push(
+      this.receptionForm.get('supplier')!.valueChanges.subscribe((supplier: SupplierType | null) => {
+        if (supplier && supplier.region) {
+          this.receptionForm.patchValue({ region: supplier.region });
+        }
+      })
+    );
+
     // Enforce autocomplete selection for region
     this.receptionForm.get('region')!.valueChanges.subscribe((value) => {
       if (value && !this.regions.some((r) => r.id === value.id)) {
@@ -671,9 +681,9 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
   }
 
   openAddRegionDialog(): void {
-    const dialogRef = this.dialog.open(AddBasetypeComponent, {
+    const dialogRef = this.dialog.open(GenericTypeDialogComponent, {
       width: '500px',
-      data: {fromDialog: true}
+      data: {initialType: TypeCategory.REGION, fromDialog: true}
     });
 
     dialogRef.afterClosed().subscribe((newRegion: BaseType | undefined) => {
@@ -686,9 +696,9 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
   }
 
   openAddParcelDialog(): void {
-    const dialogRef = this.dialog.open(AddBasetypeComponent, {
+    const dialogRef = this.dialog.open(GenericTypeDialogComponent, {
       width: '500px',
-      data: {type: 'PARCEL', fromDialog: true}
+      data: {initialType: TypeCategory.PARCEL, fromDialog: true}
     });
 
     dialogRef.afterClosed().subscribe((newParcel: BaseType | undefined) => {
@@ -717,4 +727,5 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
   //   }
 
 
+  protected readonly TypeCategory = TypeCategory;
 }

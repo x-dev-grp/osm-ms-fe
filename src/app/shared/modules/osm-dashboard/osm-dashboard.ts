@@ -1,4 +1,15 @@
-import { AfterViewInit, ChangeDetectorRef, Component, inject, input, OnChanges, OnInit, output, SimpleChanges } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  effect,
+  inject,
+  input,
+  OnChanges,
+  OnInit,
+  output,
+  SimpleChanges
+} from '@angular/core';
 
 import { MatTableModule } from '@angular/material/table';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -21,6 +32,8 @@ import { ConfirmationDialogService } from '../../services/confirmation-dialog.se
 import { ACTION_ICONS } from './models/actions';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { getValue } from '@ngx-translate/core';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -60,18 +73,29 @@ export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
   private readonly _checked = 'checked';
   private readonly _delete = 'DELETE';
   private readonly _actions = 'actions';
+  dataTableFields$ = toObservable(this._store.dataTableFields);
+  constructor() {
+    this.dataTableFields$
+      .pipe(takeUntilDestroyed())
+      .subscribe(
 
+        (fields) => {
+          console.log('dataTableFields$', fields)
+          this.displayedColumns = [
+            ...fields.filter((field) => field.dataTable )
+              .map((field) => field.label),
+            this._actions
+          ];
+          this.displayedColumns=[...this.displayedColumns];
+          console.log('displayColumns changed:', this.displayedColumns);
+        }
+
+      );
+  }
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
-    this.displayedColumns = [
-      ...this.config()
-        .fields.filter((field) => field.dataTable)
-        .map((field) => field.label),
-      this._actions
-    ];
+
     if(this.config()?.groupedActions)
         this.displayedColumns.unshift("ALL")
-    console.log(this.displayedColumns);
     this._store.initialize(this.config()?.searchEndpoint, this.config().fields, this.config()?.defaultSearchData, this.config().fileName,this.config().filterTenant);
 
     this.cdr.detectChanges(); // Force change detection
@@ -93,8 +117,23 @@ export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
     this._store.setPage(event?.pageIndex);
   }
 
-  getValue(path: string, object: any): any {
+  getValue(path: string |undefined, object: any): any {
+
     return path?.split('.')?.reduce((acc, key) => acc && acc[key], object);
+  }
+  getTargetItemFromFlattedList(record:any,item:Field):any{
+    if(!item?.flattedListName || !(record?.[item.flattedListName]))
+      return null;
+    console.log({
+      targetList:record?.[item.flattedListName],
+    })
+     const targetItem:any = record?.[item.flattedListName]?.find((f:any)=> this.getValue(item.nameField,f) == item?.name);
+     console.log({
+       item:item,
+       targetItem:targetItem,
+     })
+     return targetItem || null;
+
   }
 
   getSelectDataTableValue(value: string, fieldName: string): string {
