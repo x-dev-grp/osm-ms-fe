@@ -1,24 +1,4 @@
 {
-  "WELCOME": {
-    "TITLE": "Bienvenue",
-    "SUB": "Gestion de la filière olive",
-    "HEADLINE": "Bienvenue sur OSM",
-    "DESCRIPTION": "Gérez réceptions, production, stocks et finances au même endroit.",
-    "CTA": {
-      "START": "Démarrer une réception",
-      "DOCS": "Ouvrir la doc"
-    },
-    "LINKS": {
-      "RECEPTION": "Réception",
-      "RECEPTION_HINT": "Réception d'olives/huile & lots",
-      "PRODUCTION": "Production",
-      "PRODUCTION_HINT": "Trityruration, conditionnement & opérations",
-      "FINANCE": "Finance",
-      "FINANCE_HINT": "Factures, paiements & rapports",
-      "SETTINGS": "Paramètres",
-      "SETTINGS_HINT": "Configuration & permissions"
-    }
-  },
   "ACCESS_DENIED": {
     "GO_HOME": "Retour à l'accueil",
     "GO_HOME_TITLE": "Retour à l'accueil",
@@ -2663,6 +2643,9 @@
         "TITLE": "Confirmer la transaction d'huile"
       },
       "SAVE": "Enregistrer",
+      "SAVE_PAYMENT": {
+        "MESSAGE": "Êtes-vous sûr de vouloir enregistrer ce paiement ?"
+      },
       "SAVE_QC": {
         "MESSAGE": "Êtes‑vous sûr de vouloir enregistrer les résultats du contrôle qualité ?",
         "TITLE": "Confirmer l'enregistrement"
@@ -3124,6 +3107,26 @@
       "SOLID": "Solides",
       "VEGETAL_SOLIDS": "Solides"
     }
+  },
+  "WELCOME": {
+    "CTA": {
+      "DOCS": "Ouvrir la doc",
+      "START": "Démarrer une réception"
+    },
+    "DESCRIPTION": "Gérez réceptions, production, stocks et finances au même endroit.",
+    "HEADLINE": "Bienvenue sur OSM",
+    "LINKS": {
+      "FINANCE": "Finance",
+      "FINANCE_HINT": "Factures, paiements & rapports",
+      "PRODUCTION": "Production",
+      "PRODUCTION_HINT": "Trityruration, conditionnement & opérations",
+      "RECEPTION": "Réception",
+      "RECEPTION_HINT": "Réception d'olives/huile & lots",
+      "SETTINGS": "Paramètres",
+      "SETTINGS_HINT": "Configuration & permissions"
+    },
+    "SUB": "Gestion de la filière olive",
+    "TITLE": "Bienvenue"
   },
   "WIDOWED": "Veuf/Veuve",
   "Widget": "Widget",

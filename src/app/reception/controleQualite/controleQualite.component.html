@@ -38,7 +38,7 @@
     <p>{{ message }}</p>
   </div>
   <!-- Olive Variety Section (Only for Olive Deliveries) -->
-  <div *ngIf="isOliveDelivery() && !isLoading && !message" class="quality-content">
+  <div *ngIf="(isOliveDelivery() && !oilFromOlive)&& !isLoading && !message" class="quality-content">
     <form [formGroup]="qualityForm" class="quality-form">
       <div class="form-section">
         <div class="section-header">
@@ -55,7 +55,7 @@
       </div>
     </form>
   </div>
-  <div *ngIf="!isOliveDelivery() && !isLoading && !message" class="quality-content">
+  <div *ngIf="!isOliveDelivery() || oilFromOlive && !isLoading && !message" class="quality-content">
     <form [formGroup]="storageunitForm" class="quality-form">
       <div class="form-section">
         <div class="parameters-grid">

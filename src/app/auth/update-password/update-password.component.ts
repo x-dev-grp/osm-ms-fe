@@ -98,7 +98,7 @@ export class UpdatePasswordComponent implements OnInit {
       return null;
     };
   }
-  
+
   onSubmit(): void {
     if (this._form.invalid) {
       this._form.markAllAsTouched();
@@ -191,9 +191,9 @@ export class UpdatePasswordComponent implements OnInit {
       this.authService.setCurrentUserValue = user;
       console.log('[UpdatePassword] User set for navigation:', user);
       console.log('[UpdatePassword] Token:', this.tokenService.getToken());
-      this.router.navigate(['/dashboard'])
+      this.router.navigate(['welcome'])
         .then(success => {
-          console.log('[UpdatePassword] Navigation to /dashboard success:', success);
+          console.log('[UpdatePassword] Navigation to /welcome success:', success);
         })
         .catch(err => {
           console.error('[UpdatePassword] Navigation error:', err);

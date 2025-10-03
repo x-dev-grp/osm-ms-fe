@@ -127,18 +127,18 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
           if (res?.success) {
             this.toastService.success(
               this.isEditMode
-                ? this.translateService.instant('SUPPLIER.MESSAGES.UPDATED') || 'Fournisseur modifié avec succès'
-                : this.translateService.instant('SUPPLIER.MESSAGES.CREATED') || 'Fournisseur créé avec succès'
+                ? this.translateService.instant('OSM_DASHBOARD.ACTIONS.SUCCESS') || 'Fournisseur modifié avec succès'
+                : this.translateService.instant('OSM_DASHBOARD.ACTIONS.SUCCESS') || 'Fournisseur créé avec succès'
             );
             this.close(Array.isArray(res.data) ? res.data[0] : res.data);
           } else {
-            this.error = res?.message || this.translateService.instant('SUPPLIER.ERRORS.SAVE') || "Erreur lors de l'opération";
+            this.error = res?.message || this.translateService.instant('LOGIN.UNEXPECTED_ERROR') || "Erreur lors de l'opération";
           }
           this.loading = false;
         },
         error: (err) => {
           console.error('Error saving supplier:', err);
-          this.error = this.translateService.instant('SUPPLIER.ERRORS.SAVE') || "Erreur lors de l'opération";
+          this.error = this.translateService.instant('LOGIN.UNEXPECTED_ERROR') || "Erreur lors de l'opération";
           this.loading = false;
         }
       })

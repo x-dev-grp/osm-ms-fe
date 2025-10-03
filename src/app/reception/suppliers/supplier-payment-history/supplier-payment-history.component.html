@@ -36,8 +36,9 @@
             <!-- Payment Method Selection -->
             <div class="payment-method-section">
               <h4>{{ 'SUPPLIER_PAYMENT.PAYMENT_METHOD' | translate }}</h4>
-              <mat-radio-group formControlName="paymentMethod">
-                <mat-radio-button disabled class="payment-option"  value="cash">
+              <mat-radio-group formControlName="paymentMethod"
+                               (change)="onPaymentMethodChanged($event.value)">
+                <mat-radio-button   class="payment-option"  value="cash">
                   <div class="payment-option-content">
                     <mat-icon>account_balance_wallet</mat-icon>
                     <div>
@@ -46,7 +47,8 @@
                   </div>
                 </mat-radio-button>
                 <mat-radio-button
-                  disabled
+                  [disabled]="!hasOilReceptionData"
+
                   class="payment-option"
 
                   value="oil">
@@ -59,8 +61,9 @@
                 </mat-radio-button>
                 <mat-radio-button
                   class="payment-option"
-
-                  value="both">
+                  value="both"
+                  [disabled]="!hasOilReceptionData"
+                >
                   <div class="payment-option-content">
                     <mat-icon>sync_alt</mat-icon>
                     <div>
@@ -127,6 +130,7 @@
                 <mat-label>{{ 'SUPPLIER_PAYMENT.AMOUNT' | translate }}</mat-label>
                 <input [max]="data?.row?.unpaidAmount" [min]="0"
                        formControlName="amount"
+                       (input)="onAmountInput()"
                        matInput
                        required step="0.01" type="number">
                 <mat-error *ngIf="paymentForm.get('amount')?.hasError('required')">
@@ -135,9 +139,7 @@
                 <mat-error *ngIf="paymentForm.get('amount')?.hasError('min')">
                   {{ 'SUPPLIER_PAYMENT.ERRORS.AMOUNT_MIN' | translate }}
                 </mat-error>
-                <mat-error *ngIf="paymentForm.get('amount')?.hasError('max')">
-                  {{ 'SUPPLIER_PAYMENT.ERRORS.AMOUNT_MAX' | translate }}
-                </mat-error>
+
               </mat-form-field>
             </div>
 
@@ -148,7 +150,9 @@
               <!-- Oil Payment Fields (add your oil payment fields here) -->
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>{{ 'SUPPLIER_PAYMENT.OIL_QUANTITY' | translate }}</mat-label>
-                <input readonly disabled [min]="0" formControlName="oilQuantity" matInput
+                <input [disabled]="!hasOilReceptionData"
+                       [min]="0" formControlName="oilQuantity" matInput
+                       (input)="onOilQuantityInput()"
                        step="0.01"
                        type="number">
               </mat-form-field>

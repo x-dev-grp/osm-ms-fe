@@ -11,7 +11,7 @@ export interface DashboardConfig {
     color:string;
     icon:string;
     disabled?:{
-        field:string;
+        field?:string;
         value:any
     }
     }[]

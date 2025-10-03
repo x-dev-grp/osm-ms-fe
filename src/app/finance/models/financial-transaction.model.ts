@@ -4,11 +4,11 @@ import { BankAccount } from './BankAccount';
 import { Expense } from './expense.model';
 import { SupplierType } from '../../shared/models/supplier-type';
   export enum PaymentMethod {
-  CASH = 'CASH',
+  CASH = 'cash',
   CHEQUE = 'CHEQUE',
   TRANSFER = 'TRANSFER',
-  OIL='OIL',
-  BOTH='BOTH',
+  OIL='oil',
+  BOTH='both',
 }
 
 export enum TransactionType {

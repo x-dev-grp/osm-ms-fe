@@ -2,7 +2,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatExpansionModule } from '@angular/material/expansion';
- import { MatTableModule } from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -53,7 +53,7 @@ export class SupplierComponent implements OnInit, OnDestroy {
   message: string = '';
   supplierForm: FormGroup;
   @ViewChild('dashboard') dashboard!: OsmDashboard;
-   editingRecordIndex: number = -1;
+  editingRecordIndex: number = -1;
   formOpen: boolean = false;
   selectedSupplier: SupplierType | null = null;
   dashboardConfig: DashboardConfig = SUPPLIERS_DASHBOARD_CONFIG;
@@ -76,13 +76,6 @@ export class SupplierComponent implements OnInit, OnDestroy {
     this.subs.unsubscribe();
   }
 
-  deleteRecord(id: string): void {
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce fournisseur ?')) {
-      this.subs.add();
-    }
-  }
-
-
   handleAction(event: { row: SupplierType; action: string }): void {
     const { row, action } = event;
     switch (action) {
@@ -94,8 +87,6 @@ export class SupplierComponent implements OnInit, OnDestroy {
           this.router.navigate(['/reception/fournisseur/edit', row.id]);
         }
         break;
-
-
       default:
         console.warn('Unknown action:', action);
     }

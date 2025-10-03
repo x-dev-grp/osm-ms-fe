@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 import { Subscription, tap } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
- import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
+import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
 import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
 import { UnifiedDelivery } from '../../shared/models/UnifiedDelivery';
 import { UnifiedDeliveryService } from '../../shared/services/delivery.service';
@@ -23,8 +23,8 @@ import { OliveLotStatus } from '../../shared/models/OliveLotStatus';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { OperationType } from '../../shared/models/operation-type.enum';
 import { ExchangePricingDto } from '../../shared/models/ExchangePricingDto';
- import { ToastService } from '../../shared/services/toast.service';
- import { SharedModule } from '../../shared/shared.module';
+import { ToastService } from '../../shared/services/toast.service';
+import { SharedModule } from '../../shared/shared.module';
 import { getControlQualitePdfConfig } from '../pdf-config/controlQualite.config';
 import { getOlivePdfConfig } from '../pdf-config/reception-olive-pdf.config';
 
@@ -60,7 +60,10 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
   isLoading: boolean = false;
   qualityGrade: { id: string; name: string }[] = [
     { id: 'vierge_extra', name: 'Extra Vierge' },
-    { id: 'vierge', name: 'Vierge' },
+    {
+      id: 'vierge',
+      name: 'Vierge'
+    },
     { id: 'lampante', name: 'Lampante' }
   ];
   protected readonly OperationType = OperationType;
@@ -77,7 +80,7 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.fetchDeliveries();
+    // this.fetchDeliveries();
   }
 
   ngOnDestroy(): void {
@@ -124,8 +127,7 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
         this.deliveryService.updateUnifiedDelivery(updatedDelivery).subscribe(
           (res: ApiResponse<UnifiedDelivery>) => {
             if (res.success) {
-              this.fetchDeliveries();
-              this.toast.success(this.translate.instant('DELIVERIES.MESSAGES.CANCELLED_SUCCESS'));
+               this.toast.success(this.translate.instant('DELIVERIES.MESSAGES.CANCELLED_SUCCESS'));
             } else {
               this.toast.error(this.translate.instant('DELIVERIES.MESSAGES.CANCELLED_ERROR'));
             }
@@ -162,9 +164,6 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
       case 'OIL_OUT_TRANSACTION':
         this.createOilTransactionFromExchange(e.row);
         break;
-      case 'TO_PROD':
-        this.sendToProduction(e.row);
-        break;
       case 'OLIVE_QUALITY':
       case 'QUALITY':
         this.QualityControl(e.row);
@@ -174,18 +173,19 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
           console.log(`[OilReception] Generating PDF for delivery: ${e.row.lotNumber}`);
           const deliveryType = e.row.deliveryType?.toUpperCase() || '';
           const config = getControlQualitePdfConfig(e.row, deliveryType);
-          this.pdfService.generatePdf(config);        }else{
-          this.toast.error('no quality control for oil')
+          this.pdfService.generatePdf(config);
+        } else {
+          this.toast.error('no quality control for oil');
         }
         break;
-        case 'GEN_PDF_QC_OLIVE':
+      case 'GEN_PDF_QC_OLIVE':
         if (e.row.qualityControlResults) {
           console.log(`[OilReception] Generating PDF for delivery: ${e.row.lotNumber}`);
           const deliveryType = e.row.deliveryType?.toUpperCase() || '';
           const config = getControlQualitePdfConfig(e.row, deliveryType);
           this.pdfService.generatePdf(config);
-        }else{
-          this.toast.error('no quality control for olive')
+        } else {
+          this.toast.error('no quality control for olive');
         }
         break;
       case 'CANCEL':
@@ -295,8 +295,7 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
       this.setPriceForm = this.fb.group({
         // Standard fields
         unitPrice: [initialUnitPrice, Validators.required],
-        price: [initialPrice, Validators.required],
-        // Exchange fields
+        price: [initialPrice, Validators.required], // Exchange fields
         qualityGrade: [initialQualityGrade, Validators.required],
         oilUnitPrice: [initialOilUnitPrice, Validators.required],
         oilQuantity: [initialOilQuantity, Validators.required],

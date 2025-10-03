@@ -28,7 +28,12 @@ export class OliveQCComponent implements OnInit {
   onRowAction(event: { row: UnifiedDelivery; action: any }): void {
     switch (event.action) {
       case 'READ':
-        this.viewDelivery(event.row);
+        this.router.navigate(['/reception/reception-details', event.row.id]);
+        break;
+      case 'OLIVE_QUALITY':
+      case 'QUALITY':
+        this.router.navigate(['reception/quality', event.row.id]);
+
         break;
       case 'GEN_PDF':
         if (event.row) {
@@ -53,7 +58,5 @@ export class OliveQCComponent implements OnInit {
     this.router.navigate(['/reception/quality', delivery.id]);
   }
 
-  private viewDelivery(delivery: UnifiedDelivery): void {
-    this.router.navigate(['/reception/reception-details', delivery.id]);
-  }
+
 }

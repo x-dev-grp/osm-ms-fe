@@ -108,7 +108,7 @@ export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
   ngAfterViewInit(): void {}
 
   sortChange(event: any) {
-    console.log(event);
+    // console.log(event);
     this._store.setSort(event.active, event.direction);
   }
 
@@ -124,14 +124,14 @@ export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
   getTargetItemFromFlattedList(record:any,item:Field):any{
     if(!item?.flattedListName || !(record?.[item.flattedListName]))
       return null;
-    console.log({
-      targetList:record?.[item.flattedListName],
-    })
+    // console.log({
+    //   targetList:record?.[item.flattedListName],
+    // })
      const targetItem:any = record?.[item.flattedListName]?.find((f:any)=> this.getValue(item.nameField,f) == item?.name);
-     console.log({
-       item:item,
-       targetItem:targetItem,
-     })
+     // console.log({
+     //   item:item,
+     //   targetItem:targetItem,
+     // })
      return targetItem || null;
 
   }

@@ -1,17 +1,17 @@
-import {Component, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {MatButtonModule} from '@angular/material/button';
-import {MatTableModule} from '@angular/material/table';
-import {MatIconModule} from '@angular/material/icon';
-import {MatDialogModule} from '@angular/material/dialog';
-import {MatCardModule} from '@angular/material/card';
-import {MatSortModule} from '@angular/material/sort';
-import {Router} from '@angular/router';
-import {SharedModule} from '../../shared/shared.module';
-import {OsmDashboard} from '../../shared/modules/osm-dashboard/osm-dashboard';
-import {DashboardConfig} from '../../shared/modules/osm-dashboard/models/dashboard-config';
- import {OilQCDASHBOARD} from './oilQC.DASHBOARD';
- import { PdfGeneratorService } from '../../shared/services/pdf-generator.service';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatCardModule } from '@angular/material/card';
+import { MatSortModule } from '@angular/material/sort';
+import { Router } from '@angular/router';
+import { SharedModule } from '../../shared/shared.module';
+import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
+import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { OilQCDASHBOARD } from './oilQC.DASHBOARD';
+import { PdfGeneratorService } from '../../shared/services/pdf-generator.service';
 import { UnifiedDelivery } from '../../shared/models/UnifiedDelivery';
 import { getControlQualitePdfConfig } from '../pdf-config/controlQualite.config';
 
@@ -34,15 +34,18 @@ import { getControlQualitePdfConfig } from '../pdf-config/controlQualite.config'
 export class OilQCComponent implements OnInit {
   dashboardConfig: DashboardConfig = OilQCDASHBOARD;
 
-  constructor(private router: Router, private pdfService: PdfGeneratorService,) {
-  }
+  constructor(
+    private router: Router,
+    private pdfService: PdfGeneratorService
+  ) {}
 
   ngOnInit(): void {}
 
   onRowAction(event: { row: UnifiedDelivery; action: any }): void {
     switch (event.action) {
-      case 'OLIVE_QUALITY':
+      case 'QUALITY':
       case 'OIL_QUALITY':
+      case 'UPDATE_OIL_QUALITY':
         this.startQualityControl(event.row);
         break;
       case 'READ':
@@ -57,7 +60,8 @@ export class OilQCComponent implements OnInit {
         if (event.row.qualityControlResults) {
           const deliveryType = event.row.deliveryType?.toUpperCase() || '';
           const config = getControlQualitePdfConfig(event.row, deliveryType);
-          this.pdfService.generatePdf(config);         }
+          this.pdfService.generatePdf(config);
+        }
         break;
     }
   }
@@ -67,8 +71,6 @@ export class OilQCComponent implements OnInit {
     const config = getControlQualitePdfConfig(delivery, deliveryType);
     this.pdfService.generatePdf(config);
   }
-
-
 
   private startQualityControl(delivery: UnifiedDelivery): void {
     this.router.navigate(['/reception/quality', delivery.id]);

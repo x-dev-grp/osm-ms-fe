@@ -30,7 +30,9 @@ export interface PdfFactureConfig {
 
   // Tableau des lignes (produits)
   fields?: { label: string; value: string }[];
+  PdfPaymentNoteConfig?:{
 
+  }
   // Informations supplémentaires (poids, colis, réception, etc.)
   additionalInfo?: {
     grossWeight?: string;
@@ -69,7 +71,7 @@ export interface PdfFactureConfig {
   fileName?: string;
 }
 
-// pdf-config.model.ts
+// <html>TS2345: Argument of type 'PdfFactureConfig | PdfPaymentNoteConfig' is not assignable to parameter of type 'PdfPaymentNoteConfig'.<br/>Type 'PdfFactureConfig' is missing the following properties from type 'PdfPaymentNoteConfig': paymentDetails, total, paid, unpaid
 export interface PdfPaymentNoteConfig {
   title: string;
   reference: string;

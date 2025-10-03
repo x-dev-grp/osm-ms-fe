@@ -7,6 +7,7 @@ import { environment } from '../../../environments/environment';
 import { OliveLotStatus } from '../models/OliveLotStatus';
 import { ExchangePricingDto } from '../models/ExchangePricingDto';
 import { map } from 'rxjs/operators';
+import { deliveryType } from '../models/deleveryType';
 
 @Injectable({
   providedIn: 'root'
@@ -71,6 +72,9 @@ export class UnifiedDeliveryService {
   }
   getDeliveryByLotNumber(lotNumber: string): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/getDeliveryByLotNumber/${lotNumber}`);
+  }
+  getDeliveryByLotNumberAndType(lotNumber: string,type:deliveryType): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/getDeliveryByLotNumber/${lotNumber}/${type}`);
   }
 
   // Get paid deliveries by supplier ID

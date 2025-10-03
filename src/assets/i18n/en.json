@@ -1,24 +1,5 @@
 {
-  "WELCOME": {
-    "TITLE": "Welcome",
-    "SUB": "Olive Supply Management",
-    "HEADLINE": "Welcome to OSM",
-    "DESCRIPTION": "Manage receptions, production, inventory and finance from one place.",
-    "CTA": {
-      "START": "Start a Reception",
-      "DOCS": "Open Docs"
-    },
-    "LINKS": {
-      "RECEPTION": "Reception",
-      "RECEPTION_HINT": "Receive olives, oil & manage lots",
-      "PRODUCTION": "Production",
-      "PRODUCTION_HINT": "Milling, packaging & operations",
-      "FINANCE": "Finance",
-      "FINANCE_HINT": "Invoices, payments & reports",
-      "SETTINGS": "Settings",
-      "SETTINGS_HINT": "Configuration & permissions"
-    }
-  },"ACCESS_DENIED": {
+  "ACCESS_DENIED": {
     "GO_HOME": "Back to home",
     "GO_HOME_TITLE": "Back to home",
     "HELP": "Help",
@@ -2663,6 +2644,9 @@
         "TITLE": "Confirm Oil Transaction"
       },
       "SAVE": "Save",
+      "SAVE_PAYMENT": {
+        "MESSAGE": "Are you sure you want to save this payment ?"
+      },
       "SAVE_QC": {
         "MESSAGE": "Are you sure you want to save the quality‑control results?",
         "TITLE": "Confirm Save"
@@ -3044,6 +3028,26 @@
       "SOLID": "Solide",
       "VEGETAL_SOLIDS": "Solide"
     }
+  },
+  "WELCOME": {
+    "CTA": {
+      "DOCS": "Open Docs",
+      "START": "Start a Reception"
+    },
+    "DESCRIPTION": "Manage receptions, production, inventory and finance from one place.",
+    "HEADLINE": "Welcome to OSM",
+    "LINKS": {
+      "FINANCE": "Finance",
+      "FINANCE_HINT": "Invoices, payments & reports",
+      "PRODUCTION": "Production",
+      "PRODUCTION_HINT": "Milling, packaging & operations",
+      "RECEPTION": "Reception",
+      "RECEPTION_HINT": "Receive olives, oil & manage lots",
+      "SETTINGS": "Settings",
+      "SETTINGS_HINT": "Configuration & permissions"
+    },
+    "SUB": "Olive Supply Management",
+    "TITLE": "Welcome"
   },
   "WIDOWED": "Widowed",
   "Widget": "Widget",

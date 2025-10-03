@@ -76,7 +76,7 @@ export class PdfConfigFactoryService {
       this.profile = null;
     }
 
-    const unpaid = this.getUnpaidAmount(data);
+    const unpaid = this.getUnpaidAmount(data,source);
     const isPaymentNote = configMode === 'paymentNote' || (configMode === 'auto' && unpaid > 0);
 
     const nowStr = fmtDate();
@@ -104,7 +104,7 @@ export class PdfConfigFactoryService {
 
     if (isPaymentNote) {
       // ---------- Payment Note ----------
-      const total = this.getTotalAmount(data);
+      const total = this.getTotalAmount(data,source);
       const paid = this.getPaidAmount(data);
 
       const cfg: PdfPaymentNoteConfig = {
@@ -248,10 +248,10 @@ export class PdfConfigFactoryService {
     return Number((data as any)?.paidAmount ?? 0);
   }
 
-  private getUnpaidAmount(data: any): number {
+  private getUnpaidAmount(data: any,source  :any): number {
     const explicit = (data as any)?.unpaidAmount;
     if (explicit != null) return Number(explicit);
-    const rest = this.getTotalAmount(data) - this.getPaidAmount(data);
+    const rest = this.getTotalAmount(data,source) - this.getPaidAmount(data);
     return rest > 0 ? rest : 0;
   }
 
@@ -266,10 +266,13 @@ export class PdfConfigFactoryService {
     fileName: string;
   } {
     if (source === InvoiceSource.DELIVERY_inv) {
-      const { price = 0, poidsNet = 0 } = data as UnifiedDelivery;
-      const unitPrice = poidsNet > 0 ? price! / poidsNet : 0;
-      const qty = Number((data as any)?.oilQuantity ?? (data as any)?.oliveQuantity ?? 0);
-      const total = this.getTotalAmount(data);
+      let unitPrice = data.poidsNet > 0 ? data.price! / data.poidsNet : 0;
+    let  qty =
+        (data as UnifiedDelivery).deliveryType.toLowerCase() === 'oil'
+          ? Number((data as UnifiedDelivery)?.oilQuantity ?? 0)
+          : ((data as UnifiedDelivery)?.oliveQuantity ?? 0);
+
+      const total = this.getTotalAmount(data,source);
       const desc = (data as any)?.deliveryType || "Huile d'olive";
       const fileName = `Facture_${(data as any)?.deliveryNumber ?? 'inconnu'}.pdf`;
 
@@ -290,7 +293,7 @@ export class PdfConfigFactoryService {
     if (source === InvoiceSource.OIL_SALE_inv) {
       const unitPrice = Number((data as any)?.unitPrice ?? 0);
       const qty = Number((data as any)?.quantity ?? 0);
-      const total = this.getTotalAmount(data);
+      const total = this.getTotalAmount(data,source);
       const fileName = `Facture_Vente_${(data as any).invoiceNumber || (data as any)?.id || 'inconnu'}.pdf`;
 
       return {
@@ -310,7 +313,7 @@ export class PdfConfigFactoryService {
     if (source === InvoiceSource.WASTE_SALE_inv) {
       const unitPrice = Number((data as any)?.unitPrice ?? 0);
       const qty = Number((data as any)?.quantityInKg ?? 0);
-      const total = this.getTotalAmount(data);
+      const total = this.getTotalAmount(data,source);
       const desc = (data as any)?.description ?? `Vente de déchets (${(data as any)?.type ?? ''})`;
       const fileName = `Facture_Vente_Dechet_${(data as any)?.invoiceNumber || (data as any)?.id || 'inconnu'}.pdf`;
 

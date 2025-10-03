@@ -451,14 +451,16 @@ export class ControleQualiteComponent implements OnInit {
     this.navigate()
   }
 
-  navigate():void{
-    if(this.isOliveDelivery()){
-      this.router.navigate(['/reception/reception-olive']);
-    }else{
-      this.router.navigate(['/reception/reception-huile']);
+  navigate(): void {
+    const target = this.isOliveDelivery()
+      ? '/reception/reception-olive'
+      : '/reception/reception-huile';
 
-    }
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigate([target]);
+    });
   }
+
   saveQualityControlResults(): void {
     this.isLoading = true;
 
