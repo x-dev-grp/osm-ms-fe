@@ -178,9 +178,9 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
     },
 
     {
-      name: 'poidsNet',
+      name: 'oilQuantity',
       label: 'Poids net (kg)',
-      labelTranslatePath: 'DELIVERIES.FIELDS.NET_WEIGHT',
+      labelTranslatePath: 'PDF.OIL_QUANTITY',
       attributeType: AttributeType.number,
       fieldType: FieldType.text,
       exportable: true,

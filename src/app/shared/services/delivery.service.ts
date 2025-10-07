@@ -63,10 +63,7 @@ export class UnifiedDeliveryService {
     return this.http.put<ApiResponse<UnifiedDelivery>>(`${this.baseUrl}`, delivery);
   }
 
-  // Get deliveries by supplier ID for payment history
-  getDeliveriesBySupplier(supplierId: string): Observable<ApiResponse<UnifiedDelivery>> {
-    return this.http.get<ApiResponse<UnifiedDelivery>>(`${this.baseUrl}/supplier/${supplierId}`);
-  }
+
   getDeliveryByOliveLotNumber(id: string): Observable<ApiResponse<UnifiedDelivery>> {
     return this.http.get<ApiResponse<UnifiedDelivery>>(`${this.baseUrl}/getDeliveryByOliveLotNumber/${id}`);
   }
@@ -77,15 +74,6 @@ export class UnifiedDeliveryService {
     return this.http.get<any>(`${this.baseUrl}/getDeliveryByLotNumber/${lotNumber}/${type}`);
   }
 
-  // Get paid deliveries by supplier ID
-  getPaidDeliveriesBySupplier(supplierId: string): Observable<ApiResponse<UnifiedDelivery>> {
-    return this.http.get<ApiResponse<UnifiedDelivery>>(`${this.baseUrl}/supplier/${supplierId}/paid`);
-  }
-
-  // Get unpaid deliveries by supplier ID
-  getUnpaidDeliveriesBySupplier(supplierId: string): Observable<ApiResponse<UnifiedDelivery>> {
-    return this.http.get<ApiResponse<UnifiedDelivery>>(`${this.baseUrl}/supplier/${supplierId}/unpaid`);
-  }
 
   updateStatus(id: string, status: OliveLotStatus): Observable<ApiResponse<void>> {
     return this.http.get<ApiResponse<void>>(`${this.baseUrl}/updateStatue/${id}/${status}`);
@@ -106,28 +94,12 @@ export class UnifiedDeliveryService {
     return this.http.post<ApiResponse<void>>(`${this.baseUrl}/update-payment-pricing`, dto);
   }
 
-  /**
-   * Get the related oil delivery for a given olive lot number (for payment)
-   * Looks for oil deliveries with operationType 'PAYMENT' and matching lotOliveNumber
-   */
-  getRelatedOilDelivery(oliveLotNumber: string, supplierId: string): Observable<UnifiedDelivery | null> {
-    return this.getDeliveriesBySupplier(supplierId).pipe(
-      map((response) => {
-        if (response.success && response.data) {
-          const deliveries = Array.isArray(response.data) ? response.data : [response.data];
-          const match = deliveries.find((delivery: UnifiedDelivery) =>
-            delivery.deliveryType === 'OIL' &&
-            delivery.operationType === 'PAYMENT' &&
-            delivery.lotOliveNumber === oliveLotNumber
-          );
-          return match || null;
-        }
-        return null;
-      })
-    );
-  }
 
   processPayment(payload:any): Observable<ApiResponse<any>> {
     return this.http.post<ApiResponse<void>>(`${this.baseUrl}/payment`, payload);
+  }
+
+  getDeliveriesByGlobalLotNumber (glotNumber: string): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/getDeliveriesByGlobalLotNumber/${glotNumber}`);
   }
 }

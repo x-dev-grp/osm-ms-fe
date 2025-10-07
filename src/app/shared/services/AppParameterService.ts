@@ -31,18 +31,18 @@ export class AppParameterService {
 
     return this.http.get<ApiResponse<Parameter>>(`${this.baseUrl}/code/${code}`).pipe(
       map(res => {
-        this.setCachedParam(code, res.data[0]);
+        // this.setCachedParam(code, res.data[0]);
         return res.data[0];
       })
     );
   }
 
   /** Update a parameter value and sync with localStorage */
-  updateValue(param: Parameter): Observable<ApiResponse<Parameter>> {
-    return this.http.put<ApiResponse<Parameter>>(`${this.baseUrl}`, param).pipe(
+  updateValue(param: Parameter): Observable<any> {
+    return this.http.put<any>(`${this.baseUrl}`, param).pipe(
       tap(res => {
-        const updated = res.data[0];
-        this.setCachedParam(updated.code, updated);
+         let updated = res.data;
+        this.setCachedParam(updated );
       })
     );
   }
@@ -59,13 +59,13 @@ export class AppParameterService {
     }
   }
 
-  private setCachedParam(code: string, param: Parameter): void {
+  private setCachedParam( param: Parameter): void {
     let cache: Record<string, Parameter> = {};
     try {
       const raw = localStorage.getItem(this.localStorageKey);
       if (raw) cache = JSON.parse(raw);
     } catch {}
-    cache[code] = param;
+    cache[param.code] = param;
     localStorage.setItem(this.localStorageKey, JSON.stringify(cache));
   }
 }

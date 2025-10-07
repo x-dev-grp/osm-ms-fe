@@ -1,13 +1,12 @@
 // angular import
-import { OnInit, Component, inject } from '@angular/core';
-import { Router, NavigationStart, NavigationEnd, NavigationCancel, NavigationError, ActivatedRoute, RouterOutlet } from '@angular/router';
+import { Component, inject, OnInit } from '@angular/core';
+import { ActivatedRoute, NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterOutlet } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 
 // project import
-
 // Angular material
 import { MatProgressBar } from '@angular/material/progress-bar';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
@@ -17,18 +16,17 @@ import { TranslateService, TranslateModule } from '@ngx-translate/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  private router = inject(Router);
   activeRoute = inject(ActivatedRoute);
-  private translate = inject(TranslateService);
-  private titleService = inject(Title);
-
   // public props
   isSpinnerVisible = true;
   mainUrl: string;
+  private router = inject(Router);
+  private translate = inject(TranslateService);
+  private titleService = inject(Title);
 
   constructor() {
     // Initialize translations
-    this.translate.addLangs(['en', 'fr','ar']);
+    this.translate.addLangs(['en', 'fr', 'ar']);
     this.translate.setDefaultLang('en');
 
     // Use saved language from localStorage if available
@@ -50,7 +48,7 @@ export class AppComponent implements OnInit {
             this.isSpinnerVisible = true;
           });
         } else if (event instanceof NavigationEnd || event instanceof NavigationCancel || event instanceof NavigationError) {
-           setTimeout(() => {
+          setTimeout(() => {
             this.isSpinnerVisible = false;
           });
         }

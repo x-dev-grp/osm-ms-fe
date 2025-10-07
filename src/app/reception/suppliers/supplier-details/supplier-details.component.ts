@@ -42,7 +42,8 @@ export enum PaymentSourceType {
 export enum InvoiceSource {
   DELIVERY_inv = 'delivery',
   OIL_SALE_inv = 'oil_sale',
-  WASTE_SALE_inv = 'waste_sale'
+  WASTE_SALE_inv = 'waste_sale',
+  OLIVE_PURCHASE_inv = 'OLIVE_PURCHASE'
 }
 
 @Component({

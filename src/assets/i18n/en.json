@@ -1109,8 +1109,8 @@
       "NAME": "Name"
     }
   },
-  "HB": "HB",
-  "HC": "HC",
+  "HB": "OB",
+  "HC": "OC",
   "HR_TAB": "HR Config",
   "Helpdesk": "Helpdesk",
   "Home": "Home",
@@ -1873,9 +1873,9 @@
       "TYPES": {
         "EXCHANGE": "Exchange",
         "LOAN": "Loan",
-        "RECEPTION_IN": "Reception In",
-        "SALE": "Sale",
-        "TRANSFER_IN": "Internal Transfer"
+        "RECEPTION_IN": "In",
+        "SALE": "Out",
+        "TRANSFER_IN": "Transfer"
       }
     },
     "DIALOG": {
@@ -2294,7 +2294,7 @@
     "NOTE_PAYEMENT_VENTE_DECHET": "Waste Sale Payment Note",
     "NOTE_PAYEMENT_VENTE_HUILE": "Oil Sale Payment Note",
     "NO_QUALITY_DATA": "No quality control data available",
-    "NUMBER_PLACEHOLDER": "No: ......./........",
+    "NUMBER_PLACEHOLDER": "No: ",
     "N°COLIS": "Package #",
     "OIL_CUSTOMER": "Oil Customer",
     "OIL_DISPATCH": "Oil Dispatch Note",
@@ -2531,6 +2531,7 @@
         "CONFIRM_UNGROUP": "Ungroup global lot {{globalLotNumber}}?",
         "CREATED_SUCCESS": "Global lot {{globalLotNumber}} created successfully!",
         "MUST_BE_SAME_COLUMN": "All selected receptions must be in the same column.",
+        "MUST_BE_SAME_OPERATION_TYPE": "Selected receptions must have the same operation type.",
         "NOT_FOUND": "Global lot not found.",
         "SELECT_AT_LEAST_ONE": "Please select at least one reception to group.",
         "UNGROUPED_SUCCESS": "Global lot {{globalLotNumber}} ungrouped successfully!"
@@ -2950,7 +2951,7 @@
       "INVOICE_REFERENCE": "Bill ref",
       "RECEIPT_REFERENCE": "Recipt ref",
       "TRANSACTION_DATE": "Transaction date",
-      "TRANSACTION_TYPE": "Transaction Type"
+      "TRANSACTION_TYPE": "Movment Type"
     },
     "PAYMENT_METHODS": {
       "BANK_TRANSFER": "Bank transfert",

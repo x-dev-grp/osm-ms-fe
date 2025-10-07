@@ -96,7 +96,7 @@ export const OliveQCDASHBOARD_olive: DashboardConfig = {
     {
       name: 'deliveryDate',
       label: 'Date ',
-      labelTranslatePath: 'DELIVERIES.FIELDS.DELIVERY_TYPE',
+      labelTranslatePath: 'RECEPTION_LIST.FIELDS.DELIVERY_DATE',
       attributeType: AttributeType.date,
       fieldType: FieldType.date,
       exportable: true,
@@ -122,7 +122,7 @@ export const OliveQCDASHBOARD_olive: DashboardConfig = {
       name: 'poidsNet',
       label: 'Poids net (kg)',
       attributeType: AttributeType.number,
-      labelTranslatePath: 'DELIVERIES.FIELDS.DELIVERY_TYPE',
+      labelTranslatePath: 'DELIVERIES.FIELDS.NET_WEIGHT',
 
       fieldType: FieldType.text,
       exportable: true,
@@ -256,7 +256,8 @@ export const OliveQCDASHBOARD_olive: DashboardConfig = {
       columnPrefix: '',
       nameField: 'rule.ruleName'
     }
-  ], // "collectionFields": [
+  ],
+  // "collectionFields": [
   //   {
   //     "collectionPath": "qualityControls",
   //     "nameField": "rule.ruleName",

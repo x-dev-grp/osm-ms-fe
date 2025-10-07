@@ -25,6 +25,8 @@ export interface PlanningItem {
   poidsNet?: number;
   sackCount?: number | null | undefined;
   autoSetStorage?:false;
+  triturationDurationInMinutes?:number;
+  totalTriturationPrice?:number;
   // ← NEW FIELDS BEGIN ↓
   oilQuantity?: number | null; // how much oil (kg) was produced
   rendement?: number | null; // yield percentage
@@ -42,6 +44,7 @@ export interface GlobalLot {
   receptionIds: string[];
   items: BoardItem[];
   completed?: boolean; // track completion
+  triturationDurationInMinutes?:number;
 
   // ← NEW FIELDS BEGIN ↓
   oilQuantity?: number | null; // aggregated oil across child lots

@@ -1,9 +1,8 @@
 // daily-metric.client.ts
 import { Injectable } from '@angular/core';
-import { catchError, map, of, switchMap, throwError } from 'rxjs';
+import { catchError, map, Observable, of, switchMap, throwError } from 'rxjs';
 import { AppParameterService } from './AppParameterService';
 import { Parameter } from '../models/Parameter';
-import { tap } from 'rxjs/operators';
 
 type HistoryTuple = [string, number];
 
@@ -72,16 +71,27 @@ export class DailyMetricClient {
    * Upsert today's value ONLY IF it hasn't been set today.
    * Pass `force=true` to allow updates on the same day (e.g., admin override).
    */
-  upsertToday(code: string, value: number) {
-    const t = todayISO(); // e.g., "2025-09-22"
+  upsertToday(code: string, value: number): Observable<any> {
+    if (!code) {
+      throw new Error('Code parameter is required.');
+    }
+
+    const t = todayISO(); // e.g., "2025-10-05"
     const v = Number(value) || 0;
 
     return this.params.getByCode(code).pipe(
-      catchError(() => of(null)),
+      catchError((error) => {
+        console.warn(`Failed to get parameter by code ${code}:`, error);
+        return of(null);
+      }),
       switchMap((existing: Parameter | null) => {
-        const payload = parsePayload(existing?.value);
-        const hasToday = payload.history.some(([d]) => d === t);
+        let payload = { current: 0, history: [] as [string, number][] };
+        if (existing?.value) {
+          const parsed = parsePayload(existing.value);
+          payload = { ...payload, ...parsed, history: parsed.history || [] };
+        }
 
+        const hasToday = payload.history.some(([d]) => d === t);
         if (hasToday) {
           return throwError(() => new Error('Déjà saisi pour aujourd’hui.'));
         }
@@ -90,14 +100,27 @@ export class DailyMetricClient {
         payload.current = v;
         payload.history = payload.history.filter(([d]) => d !== t);
         payload.history.push([t, v]);
-        payload.history = payload.history.sort((a, b) => a[0].localeCompare(b[0]));
+        payload.history.sort((a, b) => a[0].localeCompare(b[0]));
 
-        // Create updated parameter
-        const updatedParam = { ...existing, value: JSON.stringify(payload) } as Parameter;
+        // Create updated parameter with default values if existing is null
+        const updatedParam: Parameter = {
+          id: existing?.id!  , // Generate a temporary ID if none
+          tenantId: existing?.tenantId || '', // Default tenantId, adjust as needed
+          code: code, // Use the input code directly
+          category: existing?.category || 'DEFAULT', // Default category, adjust as needed
+          value: JSON.stringify(payload),
+          type: existing?.type || 'DOUBLE', // Default to DOUBLE, adjust based on context
+          description: existing?.description || 'Daily metric value',
+          isActive: existing?.isActive || true,
+          createdBy: existing?.createdBy,
+          updatedBy: existing?.updatedBy
+        };
+        console.log('Sending updatedParam:', updatedParam); // Moved logging here for debugging
 
         return this.params.updateValue(updatedParam).pipe(
-          tap((res) => {
-            const updated = res.data[0]; // Match save method's response structure
+          catchError((error) => {
+            console.error('Update failed with error:', error);
+            return throwError(() => new Error('Échec de la mise à jour: ' + (error.message || 'Unknown reason')));
           })
         );
       })

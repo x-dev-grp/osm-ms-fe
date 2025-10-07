@@ -7,6 +7,8 @@ export enum TransactionType {
   TRANSFER_IN = 'TRANSFER_IN',
   LOAN = 'LOAN',
   SALE = 'SALE',
+  "OIL_SALE" = 'OIL_SALE',
+
 EXCHANGE = 'EXCHANGE'
 }
 

@@ -92,7 +92,7 @@ export class OilTransactionsComponent implements OnInit {
             this.openExchangeValidationDialog(event.row, true);
             this.dashboard.refrechData();
             break;
-          case TransactionType.SALE:
+          case TransactionType.OIL_SALE:
             this.openOilSaleValidationDialog(event.row);
             this.dashboard.refrechData();
             break;

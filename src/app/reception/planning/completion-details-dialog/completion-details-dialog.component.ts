@@ -79,6 +79,38 @@ export class CompletionDetailsDialogComponent implements OnInit {
     }
   }
 
+  /** Try to read the first child's operationType from a Global Lot object */
+  private firstChildOpTypeFromGlobal(gl: any): any {
+    if (!gl) return undefined;
+    const candidates = [gl.childLots, gl.lots, gl.items, gl.receptions, gl.children];
+    for (const arr of candidates) {
+      if (Array.isArray(arr) && arr.length > 0) {
+        return arr[0]?.data.operationType;
+      }
+    }
+    return undefined;
+  }
+
+  shouldShowTriturationPrice(): boolean {
+    const item: any = (this as any)?.item;
+    const itemType: any = (this as any)?.itemType;
+
+    // If GLOBAL_LOT → prefer first child's op; else use item's op
+    const rawOp =
+      (itemType === 'GLOBAL_LOT' || itemType === (window as any)?.PlanItemType?.GLOBAL_LOT)
+        ? (this.firstChildOpTypeFromGlobal(item) ?? item?.operationType) .toUpperCase()
+        : item?.operationType.toUpperCase();
+
+
+    // allow/deny lists
+    const showOps = new Set(['SIMPLE_RECEPTION']);
+    const hideOps = new Set(['OLIVE_PURCHASE', 'OIL_PURCHASE', 'EXCHANGE', 'PAYMENT', 'OIL_SALE']);
+
+    if (showOps.has(rawOp)) return true;
+    if (hideOps.has(rawOp)) return false;
+    return false; // fallback
+  }
+
   get totalTriturationPrice(): number {
     if (
       this.itemType === PlanItemType.LOT &&
@@ -349,22 +381,6 @@ export class CompletionDetailsDialogComponent implements OnInit {
             calculatedTriturationPrice: 0
           };
         });
-    }
-  }
-
-  private calculateChildLotsRendement(globalRendement: number): void {
-    if (this.itemType === PlanItemType.GLOBAL_LOT) {
-      const globalLot = this.item as GlobalLot;
-      const totalWeight = globalLot.totalKg;
-
-      this.childLotsWithRendement = this.childLotsWithRendement.map((lot) => {
-        const weightProportion = lot.oliveQuantity / totalWeight;
-        const calculatedRendement = globalRendement * weightProportion;
-        return {
-          ...lot,
-          calculatedRendement
-        };
-      });
     }
   }
 

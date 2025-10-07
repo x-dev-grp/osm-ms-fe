@@ -39,7 +39,7 @@ export const OIL_TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
     {
       name: 'transactionType',
       label: 'Type de transaction',
-      labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.FIELDS.TRANSACTION_TYPE',
+      labelTranslatePath: 'TRANSACTIONS.FIELDS.TRANSACTION_TYPE',
       attributeType: AttributeType.enum,
       fieldType: FieldType.select,
       exportable: true,
@@ -51,7 +51,7 @@ export const OIL_TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
         { value: TransactionType.EXCHANGE, label: 'Echange', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.EXCHANGE' },
         { value: TransactionType.TRANSFER_IN, label: 'Transfert Interne', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.TRANSFER_IN' },
         { value: TransactionType.LOAN, label: 'Prêt', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.LOAN' },
-        { value: TransactionType.SALE, label: 'Vente', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.SALE' }
+        { value: TransactionType.OIL_SALE, label: 'Vente', labelTranslatePath: 'OIL_TRANSACTIONS.DASHBOARD.TYPES.SALE' }
       ]
     },
 

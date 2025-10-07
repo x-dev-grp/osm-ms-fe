@@ -252,23 +252,24 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // NO override: once per day
-    this.dailyMetric.upsertToday(this.DAILY_METRIC_CODE, val).subscribe({
-      next: () => {
+    const code = 'DAILY_OIL_METRIC';
+    this.dailyMetric.upsertToday(code, val).subscribe((result) => {
+      if (result instanceof Error) {
+        if (result.message === 'Déjà saisi pour aujourd’hui.') {
+          this.toast.warning(result.message);
+        } else {
+          this.toast.error('Erreur lors de la sauvegarde: ' + result.message);
+          console.error('Save error details:', result);
+        }
+      } else {
         this.toast.success('Valeur quotidienne enregistrée');
         this.dailyMetricRef?.close();
-        // TODO: refresh any KPI/chart if needed
-      },
-      error: (e) => {
-        if (String(e?.message || '').includes('Déjà saisi')) {
-          this.toast.info('La valeur du jour a déjà été saisie.');
-        } else {
-          this.toast.error('Erreur lors de la sauvegarde');
-        }
+        window.location.reload()
+        // TODO: Implement KPI/chart refresh logic if needed
+        console.log('Save operation completed');
       }
     });
   }
-
   applyCustomDateRange(): void {
     if (!this.customStartDate || !this.customEndDate) return;
 

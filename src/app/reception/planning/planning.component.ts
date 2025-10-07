@@ -25,7 +25,7 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 import { catchError, debounceTime, filter, forkJoin, map, Observable, of, Subject } from 'rxjs';
 import { MillMachineService } from '../../shared/services/mill-machine.service';
 import { MillMachine } from '../../shared/models/millMachine';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatExpansionPanel, MatExpansionPanelDescription, MatExpansionPanelHeader } from '@angular/material/expansion';
 import { SharedModule } from '../../shared/shared.module';
@@ -51,6 +51,19 @@ import { ToastService } from '../../shared/services/toast.service';
 import { CardComponent } from '../../theme/components/card/card.component';
 import { TranslateService } from '@ngx-translate/core';
 import { PdfGeneratorService } from '../../shared/services/pdf-generator.service';
+
+type CompletionResult = {
+  confirmed: boolean;
+  oilQuantity: number;
+  rendement: number;
+  unpaidPrice?: number;
+  triturationPricePerKg?: number;
+  totalTriturationPrice?: number;
+  childLotsRendement?: any[];
+  autoSetStorage?: boolean;
+  operationType?: boolean;
+  triturationDurationInMinutes?: number | null | '';
+};
 
 @Component({
   selector: 'app-planning',
@@ -343,11 +356,23 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     const millMachineId = [...millsInvolved][0] === 'UNASSIGNED' ? undefined : [...millsInvolved][0];
 
+    // ★ 2b) Ensure all selected lots share the SAME operationType
+    const opTypes = new Set(
+      itemsToGroup.map((o) => (o.item.data as PlanningItem).operationType ?? null)
+    );
+    if (opTypes.size > 1) {
+      // You can translate this key; example EN: "Selected receptions must have the same operation type."
+      this.toast.warning(
+        this.translationservice.instant('RECEPTION.PLANNING.GLOBAL_LOT.MUST_BE_SAME_OPERATION_TYPE')
+      );
+      return;
+    }
+    const sharedOperationType = [...opTypes][0]; // may be null if none; that’s OK
+
     // 3) Compute new lot number
     const lotNumbers = itemsToGroup.map((o) => (o.item.data as PlanningItem).lotNumber);
     const largestLot = lotNumbers.reduce((max, cur) => {
-      const n1 = parseInt(max, 10),
-        n2 = parseInt(cur, 10);
+      const n1 = parseInt(max, 10), n2 = parseInt(cur, 10);
       return n2 > n1 ? cur : max;
     }, lotNumbers[0]);
     const globalLotNumber = `G${largestLot.padStart(4, '0')}`;
@@ -362,7 +387,9 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
       childLotNumbers: lotNumbers,
       items: itemsToGroup.map((o) => ({ ...o.item })), // Deep copy to preserve all properties
       oilQuantity: itemsToGroup.reduce((sum, o) => sum + ((o.item.data as PlanningItem).oilQuantity ?? 0), 0),
-      rendement: undefined
+      rendement: undefined,
+      // If your GlobalLot model includes operationType, keep the next line; otherwise remove it:
+      ...(sharedOperationType !== undefined ? { operationType: sharedOperationType as any } : {})
     };
 
     // 5) Remove each original from its container
@@ -393,7 +420,6 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     this.translationservice.instant('RECEPTION.PLANNING.GLOBAL_LOT.CREATED_SUCCESS', { globalLotNumber });
     this.savePlanSilently();
   }
-
   _ungroupLot(globalLot: GlobalLot): void {
     // 1) Find and remove the global lot from its current location
     let foundMill: Mill | undefined;
@@ -708,119 +734,11 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   markAsCompleted(item: BoardItem): void {
-    const isMobile = window.innerWidth <= 768;
-
-    let dialogRef: MatDialogRef<CompletionDetailsDialogComponent, any>;
-    if (isMobile) {
-      dialogRef = this.dialog.open(CompletionDetailsDialogComponent, {
-        data: { item: item.data, itemType: item.type },
-        width: isMobile ? '100vw' : '80vw',
-        height: '100vh',
-        maxWidth: '100vw',
-        maxHeight: '100vh',
-        panelClass: 'mobile-fullscreen-dialog',
-        autoFocus: false
-      });
-    } else {
-      dialogRef = this.dialog.open(CompletionDetailsDialogComponent, {
-        data: { item: item.data, itemType: item.type },
-        width: 'auto',
-        maxHeight: 'auto',
-        panelClass: 'desktop-dialog',
-        autoFocus: false
-      });
+    if (item.type === PlanItemType.LOT) {
+      this.markAsCompletedLot(item);
+    } else if (item.type === PlanItemType.GLOBAL_LOT) {
+      this.markAsCompletedGlobalLot(item);
     }
-
-    dialogRef
-      .afterClosed()
-      .pipe(
-        filter((result) => result && result.confirmed),
-        map((result) => ({
-          oilQuantity: result.oilQuantity,
-          rendement: result.rendement,
-          unpaidPrice: result.unpaidPrice,
-          triturationPricePerKg: result.triturationPricePerKg,
-          totalTriturationPrice: result.totalTriturationPrice,
-          childLotsRendement: result.childLotsRendement,
-          autoSetStorage: result.autoSetStorage,
-          triturationDurationInMinutes: result.triturationDurationInMinutes
-        }))
-      )
-      .subscribe(({ oilQuantity, rendement, totalTriturationPrice, childLotsRendement, autoSetStorage, triturationDurationInMinutes }) => {
-        const itemToComplete = item;
-        let targetItemData: PlanningItem | GlobalLot | undefined;
-
-        // Helper to find the item in an array
-        const findAndUpdateItem = (arr: BoardItem[]): PlanningItem | GlobalLot | undefined => {
-          const foundItem = arr.find(
-            (i) =>
-              (i.type === PlanItemType.LOT &&
-                itemToComplete.type === PlanItemType.LOT &&
-                (i.data as PlanningItem).id === (itemToComplete.data as PlanningItem).id) ||
-              (i.type === PlanItemType.GLOBAL_LOT &&
-                itemToComplete.type === PlanItemType.GLOBAL_LOT &&
-                (i.data as GlobalLot).globalLotNumber === (itemToComplete.data as GlobalLot).globalLotNumber)
-          );
-          return foundItem ? foundItem.data : undefined;
-        };
-
-        // Search for the item
-        targetItemData = findAndUpdateItem(this.unassignedReceptions);
-
-        if (!targetItemData) {
-          for (const mill of this.mills) {
-            targetItemData = findAndUpdateItem(mill.receptions);
-            if (targetItemData) break;
-          }
-        }
-
-        if (!targetItemData && itemToComplete.type === PlanItemType.GLOBAL_LOT) {
-          targetItemData = this.globalLots.find((gl) => gl.globalLotNumber === (itemToComplete.data as GlobalLot).globalLotNumber);
-        }
-
-        if (targetItemData) {
-          // Update with new data
-          targetItemData.oilQuantity = oilQuantity;
-          targetItemData.rendement = rendement;
-          if ('autoSetStorage' in targetItemData) {
-            targetItemData.autoSetStorage = autoSetStorage;
-          }
-          if ('completed' in targetItemData) {
-            targetItemData.completed = true; // Set as completed
-          }
-        }
-        this.cdr.markForCheck();
-
-        const label =
-          itemToComplete.type === PlanItemType.LOT
-            ? (itemToComplete.data as PlanningItem).lotNumber
-            : (itemToComplete.data as GlobalLot).globalLotNumber;
-
-        console.log('[COMPLETE] Attempting to complete:', {
-          type: itemToComplete.type,
-          label,
-          oilQuantity,
-          rendement,
-          autoSetStorage,
-          totalTriturationPrice,
-          childLotsRendement,
-          triturationDurationInMinutes
-        });
-
-        // Call the backend (now sending oilQuantity, rendement, and unpaidAmount)
-        const req$ = this.completeIt(
-          itemToComplete,
-          label,
-          oilQuantity,
-          rendement,
-          totalTriturationPrice,
-          childLotsRendement,
-          autoSetStorage,
-          triturationDurationInMinutes
-        );
-
-        this.handleResponse(req$, itemToComplete, targetItemData);
-      });
   }
 
   // Add trackBy functions for better performance
@@ -832,16 +750,143 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     return item.type === PlanItemType.LOT ? (item.data as PlanningItem).lotNumber : (item.data as GlobalLot).globalLotNumber;
   }
 
-  //
-  // creatBonProduction(delivery: any) {
-  //   const parameters = JSON.parse(localStorage.getItem('osm_app_parameters') || '{}');
-  //   const config = getProductionPdfConfig(delivery.data, parameters);
-  //   this.pdfGeneratorService.generatePdf(config);
-  // }
-
   clearSearch(): void {
     this.searchControl.setValue('');
     this.applyFilter('');
+  }
+
+  /** LOT flow */
+  private markAsCompletedLot(item: BoardItem): void {
+    this.openCompletionDialog(item)
+      .pipe(
+        filter((r) => !!r && r.confirmed),
+        map((r) => ({
+          oilQuantity: Number(r.oilQuantity ?? 0),
+          rendement: Number(r.rendement ?? 0),
+          // for LOT we use totalTriturationPrice as unpaid price when calling completeIt
+          totalTriturationPrice: Number(r.totalTriturationPrice ?? 0),
+          autoSetStorage: !!r.autoSetStorage,
+          triturationDurationInMinutes:
+            r.triturationDurationInMinutes === '' || r.triturationDurationInMinutes === undefined
+              ? 0
+              : Number(r.triturationDurationInMinutes)
+        }))
+      )
+      .subscribe(({ oilQuantity, rendement, totalTriturationPrice, autoSetStorage, triturationDurationInMinutes }) => {
+        const label = (item.data as PlanningItem).lotNumber;
+
+        // Update UI model
+        const target = this.findTargetItemData(item);
+        if (target) {
+          (target as PlanningItem).oilQuantity = oilQuantity;
+          (target as PlanningItem).rendement = rendement;
+          if ('autoSetStorage' in target) (target as any).autoSetStorage = autoSetStorage;
+          if ('completed' in target) (target as any).completed = true;
+          this.cdr.markForCheck();
+        }
+
+        // Call backend via your existing completeIt (LOT path)
+        const req$ = this.completeIt(
+          item,
+          label,
+          oilQuantity,
+          rendement,
+          totalTriturationPrice, // unpaidPrice for LOT
+          null, // childLotsRendement not used for LOT
+          autoSetStorage,
+          triturationDurationInMinutes
+        );
+        this.handleResponse(req$, item, target);
+      });
+  }
+
+  /** GLOBAL LOT flow */
+  private markAsCompletedGlobalLot(item: BoardItem): void {
+    this.openCompletionDialog(item)
+      .pipe(
+        filter((r) => !!r && r.confirmed),
+        map((r) => ({
+          oilQuantity: Number(r.oilQuantity ?? 0),
+          rendement: Number(r.rendement ?? 0),
+          childLotsRendement: r.childLotsRendement ?? [],
+          autoSetStorage: !!r.autoSetStorage,
+          operationType: r.operationType,
+          triturationDurationInMinutes:
+            r.triturationDurationInMinutes === '' || r.triturationDurationInMinutes === undefined
+              ? 0
+              : Number(r.triturationDurationInMinutes)
+        }))
+      )
+      .subscribe(({ oilQuantity, rendement, childLotsRendement, autoSetStorage, triturationDurationInMinutes }) => {
+        const label = (item.data as GlobalLot).globalLotNumber;
+
+        // Update UI model
+        const target = this.findTargetItemData(item);
+        if (target) {
+          (target as GlobalLot).oilQuantity = oilQuantity;
+          (target as GlobalLot).rendement = rendement;
+          if ('autoSetStorage' in target) (target as any).autoSetStorage = autoSetStorage;
+          if ('completed' in target) (target as any).completed = true;
+          this.cdr.markForCheck();
+        }
+
+        const req$ = this.completeIt(
+          item,
+          label,
+          oilQuantity,
+          rendement,
+          null,
+          childLotsRendement,
+          autoSetStorage,
+          triturationDurationInMinutes
+        );
+        this.handleResponse(req$, item, target);
+      });
+  }
+
+  /** Shared: opens dialog and returns the raw result */
+  private openCompletionDialog(item: BoardItem) {
+    const isMobile = window.innerWidth <= 768;
+
+    const dialogRef = this.dialog.open(CompletionDetailsDialogComponent, {
+      data: { item: item.data, itemType: item.type },
+      width: isMobile ? '100vw' : 'auto',
+      height: isMobile ? '100vh' : undefined,
+      maxWidth: isMobile ? '100vw' : '80vw',
+      maxHeight: isMobile ? '100vh' : 'auto',
+      panelClass: isMobile ? 'mobile-fullscreen-dialog' : 'desktop-dialog',
+      autoFocus: false
+    });
+    return dialogRef.afterClosed() as Observable<CompletionResult>;
+  }
+
+  /** Shared: finds the concrete data object to update (LOT or GLOBAL_LOT) */
+  private findTargetItemData(itemToComplete: BoardItem): PlanningItem | GlobalLot | undefined {
+    const match = (i: BoardItem) =>
+      (i.type === PlanItemType.LOT &&
+        itemToComplete.type === PlanItemType.LOT &&
+        (i.data as PlanningItem).id === (itemToComplete.data as PlanningItem).id) ||
+      (i.type === PlanItemType.GLOBAL_LOT &&
+        itemToComplete.type === PlanItemType.GLOBAL_LOT &&
+        (i.data as GlobalLot).globalLotNumber === (itemToComplete.data as GlobalLot).globalLotNumber);
+
+    // unassigned
+    let found = this.unassignedReceptions.find(match);
+    if (found) return found.data as any;
+
+    // mills
+    for (const mill of this.mills) {
+      const f = mill.receptions.find(match);
+      if (f) return f.data as any;
+    }
+
+    // globalLots collection
+    if (itemToComplete.type === PlanItemType.GLOBAL_LOT) {
+      const gl = this.globalLots.find((gl) => gl.globalLotNumber === (itemToComplete.data as GlobalLot).globalLotNumber);
+      if (gl) return gl;
+    }
+
+    return undefined;
   }
 
   private handleResponse(req$: Observable<string>, itemToComplete: BoardItem, targetItemData?: PlanningItem | GlobalLot): void {
@@ -888,23 +933,28 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
         triturationDurationInMinutes
       );
     } else {
-      if (childLotsRendement && Array.isArray(childLotsRendement)) {
-        return this.planningService.completeGlobalLotWithDetails(
-          label,
-          childLotsRendement.map(
-            (child: { lotNumber: string; oilQuantity: number; rendement: number; triturationPrice: number; autoSetStorage: boolean }) => ({
-              lotNumber: child.lotNumber,
-              oilQuantity: child.oilQuantity ?? 0,
-              rendement: child.rendement ?? 0,
-              autoSetStorage: child.autoSetStorage ?? false,
-              unpaidPrice: child.triturationPrice ?? 0
-            })
-          ) as ChildLotCompletionDto[]
-        );
-      } else {
-        return this.planningService.completeGlobalLotWithDetails(label, []);
-      }
+      return this.planningService.completeGlobalLotWithDetails(
+        label,
+        this.getCHildLotsMap(childLotsRendement),
+        oilQuantity,
+        rendement,
+        totalTriturationPrice,
+
+        triturationDurationInMinutes
+      );
     }
+  }
+
+  private getCHildLotsMap(childLotsRendement: any) {
+    return childLotsRendement.map(
+      (child: { lotNumber: string; oilQuantity: number; rendement: number; triturationPrice: number; autoSetStorage: boolean }) => ({
+        lotNumber: child.lotNumber,
+        oilQuantity: child.oilQuantity ?? 0,
+        rendement: child.rendement ?? 0,
+        autoSetStorage: child.autoSetStorage ?? false,
+        unpaidPrice: child.triturationPrice ?? 0
+      })
+    ) as ChildLotCompletionDto[];
   }
 
   private confirm(message: string): Observable<boolean> {

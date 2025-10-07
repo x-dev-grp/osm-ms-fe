@@ -11,7 +11,6 @@ import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { transactionsHistoryList } from '../../../fake-data/transactions_history_list';
 
 @Component({
   selector: 'app-oil-sale-validation-dialog',

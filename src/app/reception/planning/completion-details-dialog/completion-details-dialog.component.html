@@ -97,7 +97,7 @@
                         <th>{{ 'RECEPTION.PLANNING.COMPLETION.LOT_LIST_QUANTITY' | translate }}</th>
                         <th>{{ 'RECEPTION.PLANNING.COMPLETION.LOT_LIST_OIL_QUANTITY' | translate }}</th>
                         <th>{{ 'RECEPTION.PLANNING.COMPLETION.LOT_LIST_YIELD' | translate }}</th>
-                        <th>{{ 'RECEPTION.PLANNING.COMPLETION.LOT_LIST_TRITURATION_PRICE' | translate }}</th>
+                        <th *ngIf="shouldShowTriturationPrice()" >{{ 'RECEPTION.PLANNING.COMPLETION.LOT_LIST_TRITURATION_PRICE' | translate }}</th>
                       </tr>
                       </thead>
                       <tbody>
@@ -107,7 +107,9 @@
                         <td>{{ child.oliveQuantity }} kg</td>
                         <td>{{ child.oilQuantity | number: '1.2-2' }} kg</td>
                         <td>{{ (child.calculatedRendement ?? 0) | number: '1.2-2' }}%</td>
-                        <td>{{ child.calculatedTriturationPrice | number: '1.2-2' }} TND</td>
+                        <td *ngIf="shouldShowTriturationPrice()" >
+                          {{ child.calculatedTriturationPrice | number: '1.2-2' }} TND
+                        </td>
                       </tr>
                       </tbody>
                     </table>
@@ -149,29 +151,24 @@
 
         <!-- Prices -->
         <div class="form-row">
-          @if (itemType === PlanItemType.LOT && item ) {
-            @if ((item).operationType!='BASE') {
+          @if (shouldShowTriturationPrice()) {
+            <div class="form-row">
               <mat-form-field appearance="outline" class="form-field ">
                 <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.TRITURATION_PRICE_PER_KG_LABEL' | translate }}</mat-label>
-                <input (ngModelChange)="onPricePerKgChange($event)"
-                       [(ngModel)]="triturationPricePerKg" matInput min="0" step="0.01" type="number"/>
+                <input
+                  (ngModelChange)="onPricePerKgChange($event)"
+                  [(ngModel)]="triturationPricePerKg"
+                  matInput
+                  type="number"
+                  min="0"
+                  step="0.01" />
               </mat-form-field>
+
               <mat-form-field appearance="outline" class="form-field ">
                 <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.TOTAL_TRITURATION_PRICE_LABEL' | translate }}</mat-label>
                 <input [value]="totalTriturationPrice | number: '1.2-2'" matInput type="text" disabled />
-              </mat-form-field>}
-
-          } @else {
-            <mat-form-field appearance="outline" class="form-field ">
-              <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.TRITURATION_PRICE_PER_KG_LABEL' | translate }}</mat-label>
-              <input (ngModelChange)="onPricePerKgChange($event)"
-                     [(ngModel)]="triturationPricePerKg" matInput min="0" step="0.01" type="number"/>
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="form-field ">
-              <mat-label>{{ 'RECEPTION.PLANNING.COMPLETION.TOTAL_TRITURATION_PRICE_LABEL' | translate }}</mat-label>
-              <input [value]="totalTriturationPrice | number: '1.2-2'" matInput type="text" disabled />
-            </mat-form-field>
-
+              </mat-form-field>
+            </div>
           }
         </div>
 

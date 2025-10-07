@@ -60,8 +60,16 @@ export const OilQCDASHBOARD: DashboardConfig = {
           value: 'OLIVE_PURCHASE',
           labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OLIVE_PURCHASE'
         },
-        { label: 'Achat Huile', value: 'OIL_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OIL_PURCHASE' },
-        { label: 'Echange', value: 'EXCHANGE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.EXCHANGE' },
+        {
+          label: 'Achat Huile',
+          value: 'OIL_PURCHASE',
+          labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OIL_PURCHASE'
+        },
+        {
+          label: 'Echange',
+          value: 'EXCHANGE',
+          labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.EXCHANGE'
+        },
         { label: 'Paiement', value: 'PAYMENT', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.PAYMENT' }
       ]
     },
@@ -76,14 +84,18 @@ export const OilQCDASHBOARD: DashboardConfig = {
       dataTable: true,
       filterable: true,
       options: [
-        { label: 'Olive', value: deliveryType.OLIVE, labelTranslatePath: 'SUPPLIER_PAYMENT.RECEPTION_TYPE_OLIVE' },
+        {
+          label: 'Olive',
+          value: deliveryType.OLIVE,
+          labelTranslatePath: 'SUPPLIER_PAYMENT.RECEPTION_TYPE_OLIVE'
+        },
         { label: 'Huile', value: deliveryType.OIL, labelTranslatePath: 'SUPPLIER_PAYMENT.RECEPTION_TYPE_OIL' }
       ]
     },
     {
       name: 'deliveryDate',
       label: 'Date ',
-      labelTranslatePath: 'DELIVERIES.FIELDS.DELIVERY_TYPE',
+      labelTranslatePath: 'RECEPTION_LIST.FIELDS.DELIVERY_DATE',
       attributeType: AttributeType.date,
       fieldType: FieldType.date,
       exportable: true,
@@ -106,10 +118,10 @@ export const OilQCDASHBOARD: DashboardConfig = {
       getOptionsUrl: 'production/suppliers_type'
     },
     {
-      name: 'poidsNet',
+      name: 'oilQuantity',
       label: 'Poids net (kg)',
       attributeType: AttributeType.number,
-      labelTranslatePath: 'DELIVERIES.FIELDS.DELIVERY_TYPE',
+      labelTranslatePath: 'PDF.OIL_QUANTITY',
 
       fieldType: FieldType.text,
       exportable: true,
@@ -118,9 +130,9 @@ export const OilQCDASHBOARD: DashboardConfig = {
       filterable: true
     },
     {
-      name: 'oliveType',
+      name: 'oilType',
       label: "Type d'olive",
-      labelTranslatePath: 'RECEPTION_LIST.FIELDS.OLIVE_TYPE',
+      labelTranslatePath: 'OIL_SALES.OIL_TYPE',
       attributeType: AttributeType.enum,
       exportable: true,
       dataTable: true,
@@ -143,7 +155,7 @@ export const OilQCDASHBOARD: DashboardConfig = {
     },
 
     {
-      name: 'oliveVariety',
+      name: 'oilVariety',
       label: "Variété d'olive",
       labelTranslatePath: 'DELIVERIES.FIELDS.OLIVE_VARIETY',
       attributeType: AttributeType.object,
@@ -187,9 +199,21 @@ export const OilQCDASHBOARD: DashboardConfig = {
       dataTable: true,
       filterable: true,
       options: [
-        { label: 'Nouveau', value: 'NEW', labelTranslatePath: 'RECEPTION_LIST.STATUS.NEW' },
-        { label: 'En attente', value: 'WAITING', labelTranslatePath: 'RECEPTION_LIST.STATUS.WAITING' },
-        { label: 'prét pour production', value: 'PROD_READY', labelTranslatePath: 'RECEPTION_LIST.STATUS.PROD_READY' },
+        {
+          label: 'Nouveau',
+          value: 'NEW',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.NEW'
+        },
+        {
+          label: 'En attente',
+          value: 'WAITING',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.WAITING'
+        },
+        {
+          label: 'prét pour production',
+          value: 'PROD_READY',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.PROD_READY'
+        },
         { label: 'En cours', value: 'IN_PROGRESS', labelTranslatePath: 'RECEPTION_LIST.STATUS.IN_PROGRESS' },
         {
           label: 'Contrôle Olives',
@@ -201,17 +225,25 @@ export const OilQCDASHBOARD: DashboardConfig = {
           value: 'OIL_CONTROLLED',
           labelTranslatePath: 'RECEPTION_LIST.STATUS.OIL_CONTROLLED'
         },
-        { label: 'Terminé', value: 'COMPLETED', labelTranslatePath: 'RECEPTION_LIST.STATUS.COMPLETED' },
+        {
+          label: 'Terminé',
+          value: 'COMPLETED',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.COMPLETED'
+        },
         { label: 'Refusé', value: 'REFUSED', labelTranslatePath: 'RECEPTION_LIST.STATUS.REFUSED' },
-        { label: 'Annulé', value: 'CANCELLED', labelTranslatePath: 'RECEPTION_LIST.STATUS.CANCELLED' },
+        {
+          label: 'Annulé',
+          value: 'CANCELLED',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.CANCELLED'
+        },
         { label: 'En stock', value: 'IN_STOCK', labelTranslatePath: 'RECEPTION_LIST.STATUS.IN_STOCK' }
       ]
     },
     {
       name: 'qualityControlResults',
-      flattedListName:"qualityControlResults",
+      flattedListName: 'qualityControlResults',
       label: 'qualityControlResults ',
-      exportLabel: 'Quality reslts',
+      exportLabel: 'Quality results',
       attributeType: AttributeType.object,
       fieldType: FieldType.list,
       exportable: true,

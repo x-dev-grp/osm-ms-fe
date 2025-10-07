@@ -11,6 +11,7 @@ export interface PdfFooterInfo {
 export interface PdfConfig {
   title: string;
   reference: string;
+  Number?: string;
   revision?: string;
   layout?: string;
   date?: string;
@@ -29,12 +30,10 @@ export interface PdfFactureConfig {
   generalInfo?: { label: string; value: string }[];
 
   // Tableau des lignes (produits)
-  fields?: { label: string; value: string }[];
-  PdfPaymentNoteConfig?:{
-
-  }
+  fields?: { name?:string;label: string; value: string }[];
   // Informations supplémentaires (poids, colis, réception, etc.)
   additionalInfo?: {
+
     grossWeight?: string;
     netWeight?: string;
     packages?: string;

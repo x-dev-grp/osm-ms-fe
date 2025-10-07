@@ -1,3 +1,4 @@
+// planning.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -37,36 +38,21 @@ export class PlanningService {
 
   /* ───── NEW: mark lot(s) completed ──────────────────────────── */
 
-
-
   /** POST one single LOT's status → COMPLETED, with oilQuantity and rendement */
-  completeLotWithDetails(
-    lotNumber: string,
-    oilQuantity: number,
-    rendement: number,
-    unpaidPrice: number,
-    autoSetStorage: boolean,
-    triturationDurationInMinutes?: number | null
-  ): Observable<string> {
-    const payload = {
-      oilQuantity,
-      rendement,
-      unpaidPrice,
-      autoSetStorage,
-      triturationDurationInMinutes
+  completeLotWithDetails(lotNumber: string, oilQuantity: number, rendement: number, unpaidPrice: number, autoSetStorage: boolean, triturationDurationInMinutes?: number | null): Observable<string> {
+    const payload = { oilQuantity, rendement, unpaidPrice, autoSetStorage, triturationDurationInMinutes
+    };
+    return this.http.post(`${this.API_BASE_URL}/lots/${lotNumber}/completed`, payload, { responseType: 'text' });
+  }
+
+  /** POST all lots in a global lot → COMPLETED, with oilQuantity and rendement */
+  completeGlobalLotWithDetails(globalLotNumber: string, childLots: ChildLotCompletionDto[], oilQuantity: number, rendement: number, totalTriturationPrice: number | null,   triturationDurationInMinutes?: number | null): Observable<string> {
+    const payload = { childLots, oilQuantity, rendement, totalTriturationPrice, triturationDurationInMinutes
     };
     return this.http.post(
-      `${this.API_BASE_URL}/lots/${lotNumber}/completed`,
+      `${this.API_BASE_URL}/globalLots/${globalLotNumber}/completed`,
       payload,
-      { responseType: 'text' }
-    );
-  }
-  /** POST all lots in a global lot → COMPLETED, with oilQuantity and rendement */
-  completeGlobalLotWithDetails(globalLotNumber: string, childLots: ChildLotCompletionDto[]): Observable<string> {
-    console.log('[SERVICE] Completing global lot with details:', { globalLotNumber, childLots });
-
-    return this.http.post(`${this.API_BASE_URL}/globalLots/${globalLotNumber}/completed`, childLots,
-      { responseType: 'text' }                  // 👈 expect text, not JSON
+      { responseType: 'text' } // 👈 expect text, not JSON
     );
   }
 }

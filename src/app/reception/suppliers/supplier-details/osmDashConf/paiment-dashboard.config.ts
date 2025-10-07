@@ -129,7 +129,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.text,
       exportable: true,
       sortable: true,
-      dataTable: false,
+      dataTable: true,
       filterable: true
     },
     {
@@ -162,7 +162,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.select,
       valueAttributeType: AttributeType.enum,
       options: [
-        { label: 'Huile', labelTranslatePath: 'SUPPLIER_PAYMENT.RECEPTION_TYPE_OIL', value: 'OIL' },
+        { label: 'Huile', value: 'OIL' , labelTranslatePath: 'SUPPLIER_PAYMENT.RECEPTION_TYPE_OIL'},
         {
           label: 'Olive',
           labelTranslatePath: 'SUPPLIER_PAYMENT.RECEPTION_TYPE_OLIVE',
@@ -257,18 +257,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       dataTable: true,
       filterable: true
     },
-    {
-      name: 'oilType',
-      label: "Type d'huile",
-      labelTranslatePath: 'RECEPTION_LIST.FIELDS.OIL_TYPE',
-      attributeType: AttributeType.object,
-      exportable: true,
-      dataTable: true,
-      filterable: true,
-      valuePath: 'name',
-      valueAttributeType: AttributeType.string,
-      fieldType: FieldType.autocomplete
-    },
+
     {
       name: 'oilQuantity',
       label: 'Qté huile (KG)',
@@ -284,13 +273,17 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       name: 'oliveType',
       label: "Type d'olive",
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.OLIVE_TYPE',
-      attributeType: AttributeType.object,
+      attributeType: AttributeType.enum,
       exportable: true,
-      dataTable: false,
+      dataTable: true,
       filterable: true,
       valuePath: 'name',
       valueAttributeType: AttributeType.string,
-      fieldType: FieldType.autocomplete
+      fieldType: FieldType.select,
+      options: [
+        { label: 'OB', value: 'OB', labelTranslatePath: 'OB' },
+        { label: 'OC', value: 'OC', labelTranslatePath: 'OC' }
+      ]
     },
     {
       name: 'operationType',

@@ -19,9 +19,10 @@ export function getOlivePdfConfig(delivery: UnifiedDelivery): PdfConfig {
 
   return {
     title: 'PDF.RECEPTION_OLIVE',
-    reference:'FOR-PRD-01',
-    revision:'0',
+    reference:'FOR-CQH-01',
+    revision:'00',
     date:  '01/12/2024',
+    Number: `${delivery.deliveryNumber} / ${new Date().getFullYear().toString().slice(-2)}`,
     generalInfo: [
       {
         label: 'PDF.DATE',

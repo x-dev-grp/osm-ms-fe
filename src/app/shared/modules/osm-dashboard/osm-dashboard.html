@@ -70,12 +70,11 @@
               <th mat-header-cell *matHeaderCellDef [mat-sort-header]="item?.valuePath?item?.valuePath:item?.name">
                 {{ item?.labelTranslatePath ? (item?.labelTranslatePath|translate) : item.label }}
               </th>
-            } @else if (item.flattedList){
+            } @else if (item.flattedList) {
               <th mat-header-cell *matHeaderCellDef="let record">
-<!--                {{ getValue(item?.nameField,record?.[item?.name]?.length() ? record?.[item?.name][item?.flattedItemIndex]:null) }}-->
+                <!--                {{ getValue(item?.nameField,record?.[item?.name]?.length() ? record?.[item?.name][item?.flattedItemIndex]:null) }}-->
               </th>
-            }
-            @else {
+            } @else {
               <th mat-header-cell *matHeaderCellDef>
                 {{ item?.labelTranslatePath ? (item?.labelTranslatePath|translate) : item.label }}
               </th>
@@ -92,13 +91,12 @@
                 {{ getSelectDataTableValue(record[item?.name], item?.name) }}
               } @else if (item?.fieldType === "date") {
                 {{ (item?.valuePath ? getValue(item?.valuePath, record) : getValue(item?.name, record)) | date:'dd-MM-yyyy HH:mm' }}
-              } @else if (item.flattedItemIndex || item.flattedItemIndex ==0){
-<!--                {{ getValue(item?.valueField,record?.[item?.flattedListName]? record?.[item?.flattedListName][item?.flattedItemIndex]:null) }}-->
-                {{ getValue(item?.valueField,getTargetItemFromFlattedList(record,item)) }}
-              }
-              @else {
-                @if(item?.isCurrency){
-                   <span class="metric-value">
+              } @else if (item.flattedItemIndex || item.flattedItemIndex == 0) {
+                <!--                {{ getValue(item?.valueField,record?.[item?.flattedListName]? record?.[item?.flattedListName][item?.flattedItemIndex]:null) }}-->
+                {{ getValue(item?.valueField, getTargetItemFromFlattedList(record, item)) }}
+              } @else {
+                @if (item?.isCurrency) {
+                  <span class="metric-value">
   {{
                       (item?.valuePath
                           ? getValue(item.name + '.' + item.valuePath, record)
@@ -120,23 +118,23 @@
           <td *matCellDef="let record" mat-cell>
             <div class="table-cell-value">
               @if (config().specificActions) {
-               <div  class="flex" >
+                <div class="flex">
                   @for (item of config().specificActions; track item; ) {
-                     <button
-                  style="cursor: pointer"
-                  mat-raised-button
-                  (click)="actionApply(item?.action, record)"
-                  [color]="item?.color || 'primary'"
-                  [disabled]="record[item?.disabled?.field]==item?.disabled?.value"
-                  size="small"
-                  [matTooltip]=" ('OSM_DASHBOARD.ACTIONS.' + item?.action| translate )"
-                  matTooltipPosition="above"
-                >
-                  <mat-icon>{{ item?.icon }}</mat-icon>
+                    <button
+                      style="cursor: pointer"
+                      mat-raised-button
+                      (click)="actionApply(item?.action, record)"
+                      [color]="item?.color || 'primary'"
+                      [disabled]="record[item?.disabled?.field]==item?.disabled?.value"
+                      size="small"
+                      [matTooltip]=" ('OSM_DASHBOARD.ACTIONS.' + item?.action| translate )"
+                      matTooltipPosition="above"
+                    >
+                      <mat-icon>{{ item?.icon }}</mat-icon>
 
-                </button>
-              }
-               </div>
+                    </button>
+                  }
+                </div>
               } @else {
                 @if (_store.actionLoading()) {
                   <mat-spinner diameter="25" color="warn"></mat-spinner>
@@ -148,8 +146,7 @@
                 }
 
                 <mat-menu #menu="matMenu">
-
-                  <ng-container *ngFor="let action of record?.actions">
+                  <ng-container  *ngFor="let action of ($any(record)?.actions || []) | sortByTranslated : 'OSM_DASHBOARD.ACTIONS.'; trackBy: trackByAction">
                     <button
                       *ngIf="!config()?.filteredActions?.includes(action)"
                       (click)="actionApply(action, record)"
@@ -211,22 +208,24 @@
         </button>
         <button [matMenuTriggerFor]="filterMenu"
                 [matTooltip]="'OSM_DASHBOARD.FILTER.TITLE' | translate"
+                aria-label="{{ 'OSM_DASHBOARD.FILTER.TITLE' | translate }}"
                 class="m-2"
                 color="link"
                 mat-stroked-button
-                matTooltipPosition="above"
-                aria-label="{{ 'OSM_DASHBOARD.FILTER.TITLE' | translate }}">
-          <ng-container><mat-icon aria-hidden="true">filter_list</mat-icon>
-            <span >{{ 'OSM_DASHBOARD.FILTER.TITLE' | translate }}</span> </ng-container>
+                matTooltipPosition="above">
+          <ng-container>
+            <mat-icon aria-hidden="true">filter_list</mat-icon>
+            <span>{{ 'OSM_DASHBOARD.FILTER.TITLE' | translate }}</span></ng-container>
         </button>
 
         <button (click)="resetFilter()"
+                aria-label="{{ 'OSM_DASHBOARD.FILTER.RESET' | translate }}"
                 class="m-2"
                 color="link"
-                mat-stroked-button
-                aria-label="{{ 'OSM_DASHBOARD.FILTER.RESET' | translate }}">
-          <ng-container>  <mat-icon aria-hidden="true">rotate_right</mat-icon>
-          <span >{{ 'OSM_DASHBOARD.FILTER.RESET' | translate }}</span></ng-container>
+                mat-stroked-button>
+          <ng-container>
+            <mat-icon aria-hidden="true">rotate_right</mat-icon>
+            <span>{{ 'OSM_DASHBOARD.FILTER.RESET' | translate }}</span></ng-container>
         </button>
 
         @if (config()?.addNewItem) {
@@ -234,8 +233,9 @@
                   mat-raised-button
                   color="primary"
                   class="m-2">
-            <ng-container> <mat-icon aria-hidden="true">add</mat-icon>
-            <span >{{ 'OSM_DASHBOARD.NEW' | translate }}</span></ng-container>
+            <ng-container>
+              <mat-icon aria-hidden="true">add</mat-icon>
+              <span>{{ 'OSM_DASHBOARD.NEW' | translate }}</span></ng-container>
           </button>
         }
       </div>

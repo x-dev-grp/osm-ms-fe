@@ -16,6 +16,12 @@ import { SupplierDetailsComponent } from './reception/suppliers/supplier-details
 import { AdminComponent } from './theme/layouts/admin';
 
 const routes: Routes = [
+  // {
+  //   path: 'welcome',
+  //   loadComponent: () =>
+  //     import('./welcome/welcome.component').then(m => m.WelcomeComponent),
+  // },
+
   {
     path: '',
     component: AdminComponent,
@@ -23,7 +29,7 @@ const routes: Routes = [
 
       {
         path: '',
-        redirectTo: '/reception',
+        redirectTo: '/welcome',
         pathMatch: 'full'
       },
 

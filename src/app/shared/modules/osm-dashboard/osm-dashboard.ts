@@ -34,6 +34,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { getValue } from '@ngx-translate/core';
+import { SortByTranslatedPipe } from '../../pipes/sort-by-translated.pipe';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -57,7 +58,8 @@ import { getValue } from '@ngx-translate/core';
     SharedModule,
     DynamicInput,
     MatCheckboxModule,
-    MatTooltipModule
+    MatTooltipModule,
+    SortByTranslatedPipe
   ]
 })
 export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
@@ -75,35 +77,27 @@ export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
   private readonly _actions = 'actions';
   dataTableFields$ = toObservable(this._store.dataTableFields);
   constructor() {
-    this.dataTableFields$
-      .pipe(takeUntilDestroyed())
-      .subscribe(
-
-        (fields) => {
-          console.log('dataTableFields$', fields)
-          this.displayedColumns = [
-            ...fields.filter((field) => field.dataTable )
-              .map((field) => field.label),
-            this._actions
-          ];
-          this.displayedColumns=[...this.displayedColumns];
-          console.log('displayColumns changed:', this.displayedColumns);
-        }
-
-      );
+    this.dataTableFields$.pipe(takeUntilDestroyed()).subscribe((fields) => {
+      console.log('dataTableFields$', fields);
+      this.displayedColumns = [...fields.filter((field) => field.dataTable).map((field) => field.label), this._actions];
+      this.displayedColumns = [...this.displayedColumns];
+      console.log('displayColumns changed:', this.displayedColumns);
+    });
   }
   ngOnChanges(changes: SimpleChanges): void {
-
-    if(this.config()?.groupedActions)
-        this.displayedColumns.unshift("ALL")
-    this._store.initialize(this.config()?.searchEndpoint, this.config().fields, this.config()?.defaultSearchData, this.config().fileName,this.config().filterTenant);
+    if (this.config()?.groupedActions) this.displayedColumns.unshift('ALL');
+    this._store.initialize(
+      this.config()?.searchEndpoint,
+      this.config().fields,
+      this.config()?.defaultSearchData,
+      this.config().fileName,
+      this.config().filterTenant
+    );
 
     this.cdr.detectChanges(); // Force change detection
   }
 
-  ngOnInit(): void {
-
-  }
+  ngOnInit(): void {}
 
   ngAfterViewInit(): void {}
 
@@ -116,24 +110,22 @@ export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
     this._store.setPageSize(event?.pageSize);
     this._store.setPage(event?.pageIndex);
   }
+  trackByAction = (_: number, a: string) => a;
 
-  getValue(path: string |undefined, object: any): any {
-
+  getValue(path: string | undefined, object: any): any {
     return path?.split('.')?.reduce((acc, key) => acc && acc[key], object);
   }
-  getTargetItemFromFlattedList(record:any,item:Field):any{
-    if(!item?.flattedListName || !(record?.[item.flattedListName]))
-      return null;
+  getTargetItemFromFlattedList(record: any, item: Field): any {
+    if (!item?.flattedListName || !record?.[item.flattedListName]) return null;
     // console.log({
     //   targetList:record?.[item.flattedListName],
     // })
-     const targetItem:any = record?.[item.flattedListName]?.find((f:any)=> this.getValue(item.nameField,f) == item?.name);
-     // console.log({
-     //   item:item,
-     //   targetItem:targetItem,
-     // })
-     return targetItem || null;
-
+    const targetItem: any = record?.[item.flattedListName]?.find((f: any) => this.getValue(item.nameField, f) == item?.name);
+    // console.log({
+    //   item:item,
+    //   targetItem:targetItem,
+    // })
+    return targetItem || null;
   }
 
   getSelectDataTableValue(value: string, fieldName: string): string {
@@ -173,7 +165,7 @@ export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
   exportCsv() {
     this._store.export('excel');
   }
-  refrechData(){
+  refrechData() {
     this._store.fetchData();
   }
 

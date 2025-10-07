@@ -173,7 +173,7 @@
       "MAX_LENGTH": "La longueur maximale est de {{maxLength}} caractères",
       "REQUIRED": "Ce champ est requis"
     },
-    "VIEW": "Voir",
+    "VIEW": "Afficher",
     "YES": "Oui"
   },
   "COMPANY_PROFILE_FORM": {
@@ -1107,8 +1107,8 @@
       "NAME": "Nom"
     }
   },
-  "HB": "HB",
-  "HC": "HC",
+  "HB": "OB",
+  "HC": "OC",
   "HR_TAB": "Config RH",
   "Helpdesk": "Service d'assistance",
   "Home": "Accueil",
@@ -1289,7 +1289,7 @@
       "EXPENSES": "Dépenses",
       "OIL_CREDIT": "Crédit d'Huile",
       "OIL_SALES": "Ventes d'Huile",
-      "OIL_TRANSACTIONS": "Transactions d'Huile",
+      "OIL_TRANSACTIONS": "Mouvments d'huile",
       "TITLE": "Finance & Comptabilité",
       "TRANSACTIONS": "Transactions Financières",
       "WASTE_MANAGEMENT": "Gestion des déchets"
@@ -1833,7 +1833,7 @@
       "RECEPTION_ID": "ID de réception",
       "SECTION": "Détails de la transaction",
       "SRC_UNIT_ID": "ID unité de stockage source",
-      "TITLE": "Détails de la transaction d'huile et de la réception",
+      "TITLE": "Détails de la mouvment d'huile et de la réception",
       "TOTAL_PRICE": "Prix total",
       "TYPE": "Type",
       "UNIT_PRICE": "Prix unitaire"
@@ -1845,7 +1845,7 @@
       "ACTIONS": {
         "DELETE": "Supprimer",
         "EDIT": "Modifier",
-        "VIEW": "Voir"
+        "VIEW": "Afficher"
       },
       "FIELDS": {
         "CREATED_DATE": "Date de création",
@@ -1868,13 +1868,13 @@
         "COMPLETED": "Terminé",
         "PENDING": "En attente"
       },
-      "TITLE": "Transactions d'huile",
+      "TITLE": "Mouvments d'huile",
       "TYPES": {
         "EXCHANGE": "Echange",
         "LOAN": "Prêt",
-        "RECEPTION_IN": "Réception Entrée",
-        "SALE": "Vente",
-        "TRANSFER_IN": "Transfert interne"
+        "RECEPTION_IN": "Entrée",
+        "SALE": "Sortie",
+        "TRANSFER_IN": "Transfert"
       }
     },
     "DIALOG": {
@@ -1943,8 +1943,8 @@
         "TRANSACTION_TYPE_AND_STATE": "Type et État de la Transaction"
       },
       "TITLE": {
-        "CREATE": "Nouvelle Transaction d'Huile",
-        "EDIT": "Modifier la Transaction d'Huile"
+        "CREATE": "Nouvelle Mouvment d'huile",
+        "EDIT": "Modifier la Mouvment d'huile"
       },
       "VALIDATION": {
         "CAPACITY": "Erreur de validation ",
@@ -1959,7 +1959,7 @@
       "REFINED": "Raffiné",
       "VIRGIN": "Vierge"
     },
-    "TITLE": "Transactions d'huile",
+    "TITLE": "Mouvments d'huile",
     "VIEW": {
       "ACTIONS": {
         "BACK": "Retour à la liste",
@@ -1996,7 +1996,7 @@
         "RECEPTION_INFO": "Réception",
         "STORAGE_UNITS": "Unités de stockage"
       },
-      "TITLE": "Détails de la transaction d'huile"
+      "TITLE": "Détails de la mouvment d'huile"
     }
   },
   "OLIVE_RECEPTION": {
@@ -2112,7 +2112,7 @@
       "MORE": "Plus",
       "OILCREDIT": "Crédit d'huile",
       "OILSALE": "Vente d'huile",
-      "OILTRANSACTION": "Transaction d'huile",
+      "OILTRANSACTION": "Mouvment d'huile",
       "OIL_IN_TRANSACTION": "Transaction Entrée Huile",
       "OIL_OUT_TRANSACTION": "Transaction Sortie Huile",
       "OIL_PAYMENT": "Paiement Huile",
@@ -2131,7 +2131,7 @@
       "QUALITY": "Qualité",
       "QUALITYCONTROLRESULT": "Résultat de contrôle qualité",
       "QUALITYCONTROLRULE": "Critère de contrôle qualité",
-      "READ": "Voir",
+      "READ": "Afficher",
       "RECEPTION": "Réception",
       "REJECT ": "Rejeter",
       "ROLE": "Rôle",
@@ -2293,7 +2293,7 @@
     "NOTE_PAYEMENT_VENTE_DECHET": "Note de Paiement Vente Déchet",
     "NOTE_PAYEMENT_VENTE_HUILE": "Note de Paiement Vente Huile",
     "NO_QUALITY_DATA": "Aucune donnée de contrôle qualité disponible",
-    "NUMBER_PLACEHOLDER": "N° : ......./........",
+    "NUMBER_PLACEHOLDER": "N° : ",
     "N°COLIS": "N° Colis",
     "OIL_CUSTOMER": "Cooperative Agricale",
     "OIL_DISPATCH": "Bon de Sortie d’Huile",
@@ -2530,6 +2530,7 @@
         "CONFIRM_UNGROUP": "Dissocier le lot global {{globalLotNumber}} ?",
         "CREATED_SUCCESS": "Lot global {{globalLotNumber}} créé avec succès !",
         "MUST_BE_SAME_COLUMN": "Toutes les réceptions sélectionnées doivent être dans la même colonne.",
+        "MUST_BE_SAME_OPERATION_TYPE": "Les réceptions sélectionnées doivent avoir le même type d'opération.",
         "NOT_FOUND": "Lot global introuvable.",
         "SELECT_AT_LEAST_ONE": "Veuillez sélectionner au moins une réception à regrouper.",
         "UNGROUPED_SUCCESS": "Lot global {{globalLotNumber}} dissocié avec succès !"
@@ -2639,8 +2640,8 @@
       "OIL_TRANSACTION": {
         "CANCEL": "Non, ignorer",
         "CONFIRM": "Oui, confirmer",
-        "MESSAGE": "Ce fournisseur dispose d'un stockage. Voulez‑vous également confirmer la transaction d'huile ?",
-        "TITLE": "Confirmer la transaction d'huile"
+        "MESSAGE": "Ce fournisseur dispose d'un stockage. Voulez‑vous également confirmer la mouvment d'huile ?",
+        "TITLE": "Confirmer la mouvment d'huile"
       },
       "SAVE": "Enregistrer",
       "SAVE_PAYMENT": {
@@ -2665,7 +2666,7 @@
       "UPDATE": {
         "CANCEL": "Annuler",
         "CONFIRM": "Oui, mettre à jour",
-        "MESSAGE": "Êtes-vous sûr de vouloir mettre à jour cette transaction d'huile ? Cette action est irréversible.",
+        "MESSAGE": "Êtes-vous sûr de vouloir mettre à jour cette mouvment d'huile ? Cette action est irréversible.",
         "TITLE": "Confirmer la mise à jour"
       },
       "WARNING": {
@@ -2738,7 +2739,7 @@
         "OUT_OF_SERVICE": "Hors service",
         "RESERVED": "Réservé"
       },
-      "TITLE": "Voir le stockage",
+      "TITLE": "Afficher le stockage",
       "TOTALCOST": "Coût total",
       "TOTAL_PRICE": "Prix total",
       "TRANSACTION_HISTORY": "Historique des transactions",
@@ -2936,7 +2937,7 @@
       "EXPORT": "Exporter",
       "PRINT": "Imprimer",
       "REJECT": "Rejeter",
-      "VIEW": "Voir"
+      "VIEW": "Afficher"
     },
     "CURRENCIES": {
       "EUR": "Euro",
@@ -2979,7 +2980,7 @@
       "RECEIPT_REFERENCE": "Référence Reçu",
       "SUPPLIER": "Fournisseur",
       "TRANSACTION_DATE": "Date de Transaction",
-      "TRANSACTION_TYPE": "Type de Transaction"
+      "TRANSACTION_TYPE": "Type de Mouvement"
     },
     "MESSAGES": {
       "APPROVE_ERROR": "Erreur lors de l'approbation",
@@ -3077,7 +3078,7 @@
   "Ui-Components": "Composants Ui",
   "Under Construction": "En cours de construction",
   "User Profile": "Profil de l'utilisateur",
-  "View": "Voir",
+  "View": "Afficher",
   "WASTE": {
     "FIELDS": {
       "CUSTOMER": "Client",

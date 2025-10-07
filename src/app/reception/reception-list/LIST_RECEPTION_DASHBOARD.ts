@@ -143,8 +143,8 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
       valueAttributeType: AttributeType.string,
       fieldType: FieldType.select,
       options: [
-        { label: 'HB', value: 'HB', labelTranslatePath: 'HB' },
-        { label: 'HC', value: 'HC', labelTranslatePath: 'HC' }
+        { label: 'OB', value: 'OB', labelTranslatePath: 'OB' },
+        { label: 'OC', value: 'OC', labelTranslatePath: 'OC' }
       ]
     },
     {

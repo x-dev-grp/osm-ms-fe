@@ -93,7 +93,7 @@ export class PdfGeneratorService {
       // Numéro
       doc.setFont(this._fontName, fontStyle1);
       doc.setFontSize(10);
-      doc.text(this.translationService.instant('PDF.NUMBER_PLACEHOLDER'), pageWidth / 2, currentY, { align: center });
+      doc.text(this.translationService.instant('PDF.NUMBER_PLACEHOLDER')+config.Number, pageWidth / 2, currentY, { align: center });
       currentY += 15;
 
       // Infos générales

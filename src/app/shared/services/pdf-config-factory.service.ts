@@ -5,6 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { UnifiedDelivery } from '../models/UnifiedDelivery';
 import { InvoiceSource } from '../../reception/suppliers/supplier-details/supplier-details.component';
 import { CompanyProfileService } from './company-profile.service';
+import { OperationType } from '../models/operation-type.enum';
 
 // Keep config mode separate from "source"
 export type PdfConfigMode = 'auto' | 'invoice' | 'paymentNote';
@@ -61,7 +62,7 @@ export class PdfConfigFactoryService {
    * @param source    Source type to influence titles/labels (e.g.,  nvoiceSource.DELIVERY_inv | 'OIL_SALE' | 'WASTE_SALE' ... per your app)
    * @param configMode 'auto' (unpaid>0 → payment note), or force 'invoice' / 'paymentNote'
    */
-  build(data: any, source?: InvoiceSource, configMode: PdfConfigMode = 'auto'): PdfFactureConfig | PdfPaymentNoteConfig {
+  build(data: any, source: InvoiceSource, configMode: PdfConfigMode = 'auto'): PdfFactureConfig | PdfPaymentNoteConfig {
     // Load company profile from localStorage (safe parse)
     try {
       this.companyProfileService.getProfile().subscribe({
@@ -76,7 +77,7 @@ export class PdfConfigFactoryService {
       this.profile = null;
     }
 
-    const unpaid = this.getUnpaidAmount(data,source);
+    const unpaid = this.getUnpaidAmount(data, source);
     const isPaymentNote = configMode === 'paymentNote' || (configMode === 'auto' && unpaid > 0);
 
     const nowStr = fmtDate();
@@ -99,17 +100,17 @@ export class PdfConfigFactoryService {
         label: 'PDF.LOT_NUMBER',
         value: (data as UnifiedDelivery).lotNumber || '—'
       },
-      { label: 'PDF.REFERENCE_DATE', value: this.getReferenceDate(data) }
+      { label: 'PDF.REFERENCE_DATE', value: this.getReferenceDate(data, source) }
     ];
 
     if (isPaymentNote) {
       // ---------- Payment Note ----------
-      const total = this.getTotalAmount(data,source);
+      const total = this.getTotalAmount(data, source);
       const paid = this.getPaidAmount(data);
 
       const cfg: PdfPaymentNoteConfig = {
         title: 'PDF.NOTE_DE_PAIEMENT',
-        reference: this.getReferencePrefix(data, source, true),
+        reference: this.getReferenceDate(data, source),
         date: nowStr,
 
         companyInfo,
@@ -137,7 +138,7 @@ export class PdfConfigFactoryService {
     const typeFields = this.getTypeFieldsForInvoice(data, source);
     const facture: PdfFactureConfig = {
       title: this.getInvoiceTitle(data, source),
-      reference: this.getReferencePrefix(data, source, false),
+      reference: this.getReferenceDate(data, source),
       date: nowStr,
 
       generalInfo,
@@ -207,8 +208,25 @@ export class PdfConfigFactoryService {
     if (source === InvoiceSource.WASTE_SALE_inv) return (data as any)?.type || 'VENTE DECHET';
   }
 
-  private getReferenceDate(data: any, source?: InvoiceSource): string {
-    if (source === InvoiceSource.DELIVERY_inv) return fmtDate(data.deliveryDate);
+  private getReferenceDate(data: any, source: InvoiceSource): string {
+    if (source === InvoiceSource.DELIVERY_inv) {
+      switch ((data as UnifiedDelivery).operationType) {
+        case OperationType.DECHET:
+          return `N°${data.deliveryNumber} / ${new Date().getFullYear().toString().slice(-2)}`;
+        case OperationType.PAYMENT:
+          return `N°${data.deliveryNumber} / ${new Date().getFullYear().toString().slice(-2)}`;
+        case OperationType.SIMPLE_RECEPTION:
+          return `N°${data.deliveryNumber} / ${new Date().getFullYear().toString().slice(-2)}`;
+        case OperationType.EXCHANGE:
+          return `N°${data.deliveryNumber} / ${new Date().getFullYear().toString().slice(-2)}`;
+        case OperationType.OIL_PURCHASE:
+          return `N°${data.deliveryNumber} / ${new Date().getFullYear().toString().slice(-2)}`;
+        case OperationType.BASE:
+          return `N°${data.deliveryNumber} / ${new Date().getFullYear().toString().slice(-2)}`;
+        case OperationType.OLIVE_PURCHASE:
+          return `N°${data.deliveryNumber} / ${new Date().getFullYear().toString().slice(-2)}`;
+      }
+    }
     if (source === InvoiceSource.OIL_SALE_inv) return fmtDate((data as any)?.saleDate);
     if (source === InvoiceSource.WASTE_SALE_inv) return fmtDate((data as any)?.saleDate);
     return fmtDate();
@@ -248,10 +266,10 @@ export class PdfConfigFactoryService {
     return Number((data as any)?.paidAmount ?? 0);
   }
 
-  private getUnpaidAmount(data: any,source  :any): number {
+  private getUnpaidAmount(data: any, source: any): number {
     const explicit = (data as any)?.unpaidAmount;
     if (explicit != null) return Number(explicit);
-    const rest = this.getTotalAmount(data,source) - this.getPaidAmount(data);
+    const rest = this.getTotalAmount(data, source) - this.getPaidAmount(data);
     return rest > 0 ? rest : 0;
   }
 
@@ -267,12 +285,14 @@ export class PdfConfigFactoryService {
   } {
     if (source === InvoiceSource.DELIVERY_inv) {
       let unitPrice = data.poidsNet > 0 ? data.price! / data.poidsNet : 0;
-    let  qty =
-        (data as UnifiedDelivery).deliveryType.toLowerCase() === 'oil'
-          ? Number((data as UnifiedDelivery)?.oilQuantity ?? 0)
-          : ((data as UnifiedDelivery)?.oliveQuantity ?? 0);
+      let qty: number;
+      if ((data as UnifiedDelivery).deliveryType.toLowerCase() === 'oil') {
+        qty = data?.oilQuantity;
+      } else {
+        qty = data?.poidsNet ?? 0;
+      }
 
-      const total = this.getTotalAmount(data,source);
+      const total = this.getTotalAmount(data, source);
       const desc = (data as any)?.deliveryType || "Huile d'olive";
       const fileName = `Facture_${(data as any)?.deliveryNumber ?? 'inconnu'}.pdf`;
 
@@ -293,7 +313,7 @@ export class PdfConfigFactoryService {
     if (source === InvoiceSource.OIL_SALE_inv) {
       const unitPrice = Number((data as any)?.unitPrice ?? 0);
       const qty = Number((data as any)?.quantity ?? 0);
-      const total = this.getTotalAmount(data,source);
+      const total = this.getTotalAmount(data, source);
       const fileName = `Facture_Vente_${(data as any).invoiceNumber || (data as any)?.id || 'inconnu'}.pdf`;
 
       return {
@@ -313,7 +333,7 @@ export class PdfConfigFactoryService {
     if (source === InvoiceSource.WASTE_SALE_inv) {
       const unitPrice = Number((data as any)?.unitPrice ?? 0);
       const qty = Number((data as any)?.quantityInKg ?? 0);
-      const total = this.getTotalAmount(data,source);
+      const total = this.getTotalAmount(data, source);
       const desc = (data as any)?.description ?? `Vente de déchets (${(data as any)?.type ?? ''})`;
       const fileName = `Facture_Vente_Dechet_${(data as any)?.invoiceNumber || (data as any)?.id || 'inconnu'}.pdf`;
 

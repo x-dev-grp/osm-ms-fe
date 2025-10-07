@@ -1109,8 +1109,8 @@
       "NAME": "الاسم"
     }
   },
-  "HB": "HB",
-  "HC": "HC",
+  "HB": "OB",
+  "HC": "OC",
   "HR_TAB": "تكوين الموارد البشرية",
   "Helpdesk": "دعم فني",
   "Home": "الرئيسية",
@@ -1873,9 +1873,9 @@
       "TYPES": {
         "EXCHANGE": "تبادل",
         "LOAN": "قرض",
-        "RECEPTION_IN": "استقبال داخلي",
+        "RECEPTION_IN": " داخلي",
         "SALE": "بيع",
-        "TRANSFER_IN": "نقل داخلي"
+        "TRANSFER_IN": "نقل"
       }
     },
     "DIALOG": {
@@ -2275,7 +2275,7 @@
     "NCOLIS": "رقم الحزمة",
     "NOTE_DE_PAIEMENT": "",
     "NO_QUALITY_DATA": "لا توجد بيانات مراقبة جودة متاحة",
-    "NUMBER_PLACEHOLDER": "رقم: ......./........",
+    "NUMBER_PLACEHOLDER": "رقم: ",
     "N°COLIS": "رقم الحزمة",
     "OIL_DISPATCH": "إشعار توزيع الزيت",
     "OIL_QUANTITY": "كمية الزيت",
@@ -2507,6 +2507,7 @@
         "CONFIRM_UNGROUP": "إلغاء تجميع الدفعة المُجمّعة {{globalLotNumber}}؟",
         "CREATED_SUCCESS": "تم إنشاء الدفعة المُجمّعة {{globalLotNumber}} بنجاح!",
         "MUST_BE_SAME_COLUMN": "يجب أن تكون جميع عمليات الاستلام المحددة في نفس العمود.",
+        "MUST_BE_SAME_OPERATION_TYPE": "يجب أن تكون جميع الاستقبالات المحددة من نفس نوع العملية.",
         "NOT_FOUND": "الدفعة المُجمّعة غير موجودة.",
         "SELECT_AT_LEAST_ONE": "يرجى تحديد عملية استلام واحدة على الأقل للتجميع.",
         "UNGROUPED_SUCCESS": "تم إلغاء تجميع الدفعة المُجمّعة {{globalLotNumber}} بنجاح!"

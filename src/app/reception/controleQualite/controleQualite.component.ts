@@ -448,18 +448,9 @@ export class ControleQualiteComponent implements OnInit {
       // Save other delivery data and QC results
       this.saveDeliveryAndQCResults();
     }
-    this.navigate()
-  }
+   }
 
-  navigate(): void {
-    const target = this.isOliveDelivery()
-      ? '/reception/reception-olive'
-      : '/reception/reception-huile';
 
-    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-      this.router.navigate([target]);
-    });
-  }
 
   saveQualityControlResults(): void {
     this.isLoading = true;

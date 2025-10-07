@@ -1,7 +1,7 @@
 // src/app/services/cookie.service.ts
 import { inject, Injectable } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
-import { CookieService } from 'ngx-cookie-service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -9,8 +9,11 @@ import { CookieService } from 'ngx-cookie-service';
 export class TokenService {
   private tokenKey = 'auth_token';
   private refreshTokenKey = 'auth_refresh_token';
+  private readonly STORAGE_KEY = 'company_profile';
+  private router = inject(Router);
+
   constructor() {}
-  private _cookieService = inject(CookieService);
+
   // Set token in the cookie
   setToken(token: string): void {
     // this._cookieService.set(this.tokenKey, token, {
@@ -21,6 +24,7 @@ export class TokenService {
     // });
     sessionStorage.setItem(this.tokenKey, token);
   }
+
   // Set refresh token in the cookie
   setRefreshToken(refreshToken: string): void {
     // this._cookieService.set(this.refreshTokenKey, refreshToken, {
@@ -30,17 +34,19 @@ export class TokenService {
     //   sameSite: 'Strict'
     // });
     sessionStorage.setItem(this.refreshTokenKey, refreshToken);
-
   }
+
   // Get token from the cookie
   getToken(): string | null {
-   // return this._cookieService.get(this.tokenKey);
+    // return this._cookieService.get(this.tokenKey);
     return sessionStorage.getItem(this.tokenKey);
   }
-  getRefreshToken(): string | null{
+
+  getRefreshToken(): string | null {
     //return this._cookieService.get(this.refreshTokenKey);
-    return  sessionStorage.getItem(this.refreshTokenKey);
+    return sessionStorage.getItem(this.refreshTokenKey);
   }
+
   // Delete token from the cookie
   // deleteToken(): void {
   //   this._cookieService.delete(this.tokenKey);
@@ -49,9 +55,10 @@ export class TokenService {
   clearTokens(): void {
     // this._cookieService.delete(this.tokenKey, '/');
     // this._cookieService.delete(this.refreshTokenKey, '/');
-     sessionStorage.removeItem(this.tokenKey);
-     sessionStorage.removeItem(this.refreshTokenKey);
+    sessionStorage.removeItem(this.tokenKey);
+    sessionStorage.removeItem(this.refreshTokenKey);
   }
+
   decodeToken() {
     //const token = this._cookieService.get(this.tokenKey);
     const token = sessionStorage.getItem(this.tokenKey);
@@ -65,6 +72,13 @@ export class TokenService {
     }
 
     console.warn('Token is missing or not a valid JWT');
+    this.logout();
     return null;
+  }
+
+  private logout() {
+    this.clearTokens();
+    localStorage.removeItem(this.STORAGE_KEY);
+    this.router.navigate(['/auth/login']);
   }
 }

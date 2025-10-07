@@ -4,10 +4,9 @@
 
 /* Full-height centered section */
 .welcome {
-  min-height: calc(100vh - 64px); /* leave room if you have a top bar; adjust if needed */
+  min-height: calc(100vh - 151px);
   display: grid;
   place-items: center;
-  padding: 24px;
 }
 
 .welcome__inner {

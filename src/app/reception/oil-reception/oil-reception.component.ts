@@ -1,45 +1,37 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {MatButtonModule} from '@angular/material/button';
-import {MatTableModule} from '@angular/material/table';
-import {MatIconModule} from '@angular/material/icon';
-import {MatDialog, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatExpansionModule} from '@angular/material/expansion';
-import {MatInputModule} from '@angular/material/input';
-import {MatSelectModule} from '@angular/material/select';
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatCardModule} from '@angular/material/card';
-import {
-  AbstractControl,
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  ValidationErrors,
-  ValidatorFn,
-  Validators
-} from '@angular/forms';
-import {MatSortModule} from '@angular/material/sort';
-import {MatPaginator} from '@angular/material/paginator';
-import {Router} from '@angular/router';
-import {combineLatest, forkJoin, Subscription} from 'rxjs';
+import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatCardModule } from '@angular/material/card';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { MatSortModule } from '@angular/material/sort';
+import { MatPaginator } from '@angular/material/paginator';
+import { Router } from '@angular/router';
+import { combineLatest, forkJoin, Subscription } from 'rxjs';
 
-import {SharedModule} from '../../shared/shared.module';
-import {OsmDashboard} from '../../shared/modules/osm-dashboard/osm-dashboard';
-import {DashboardConfig} from '../../shared/modules/osm-dashboard/models/dashboard-config';
-import {UnifiedDelivery} from '../../shared/models/UnifiedDelivery';
-import {BaseType} from '../../shared/models/base-type';
-import {UnifiedDeliveryService} from '../../shared/services/delivery.service';
-import {GenericTypeService} from '../../shared/services/generic-type.service';
-import {TypeCategory} from '../../shared/models/type-category.enum';
-import {SupplierType} from '../../shared/models/supplier-type';
-import {SupplierTypeService} from '../../shared/services/supplier.service';
+import { SharedModule } from '../../shared/shared.module';
+import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
+import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { UnifiedDelivery } from '../../shared/models/UnifiedDelivery';
+import { BaseType } from '../../shared/models/base-type';
+import { UnifiedDeliveryService } from '../../shared/services/delivery.service';
+import { GenericTypeService } from '../../shared/services/generic-type.service';
+import { TypeCategory } from '../../shared/models/type-category.enum';
+import { SupplierType } from '../../shared/models/supplier-type';
+import { SupplierTypeService } from '../../shared/services/supplier.service';
 
-import {PdfGeneratorService} from '../../shared/services/pdf-generator.service';
-import {OIL_DELIVERY_DASHBOARD} from './OIL_DELIVERY_DASHBOARD';
-import {AppParameterService} from '../../shared/services/AppParameterService';
- import {ToastService} from '../../shared/services/toast.service';
- import {PaymentDetailsDialogComponent} from './payment-details-dialog/payment-details-dialog.component';
+import { PdfGeneratorService } from '../../shared/services/pdf-generator.service';
+import { OIL_DELIVERY_DASHBOARD } from './OIL_DELIVERY_DASHBOARD';
+import { AppParameterService } from '../../shared/services/AppParameterService';
+import { ToastService } from '../../shared/services/toast.service';
+import { PaymentDetailsDialogComponent } from './payment-details-dialog/payment-details-dialog.component';
 import { getProductionPdfConfig } from '../pdf-config/production-pdf.config';
 import { getOilPdfConfig } from '../pdf-config/reception-oil-pdf.config';
 import { getControlQualitePdfConfig } from '../pdf-config/controlQualite.config';
@@ -107,6 +99,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   selectedRow: UnifiedDelivery | null = null;
   OilDelevery: UnifiedDelivery | null = null;
+  protected originalOliveReceptions: UnifiedDelivery[];
   protected originalOliveReception: UnifiedDelivery;
   private subs = new Subscription();
   private readonly prixbase = 'PRIX_BASE';
@@ -235,7 +228,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
 
   generateBonReception(delivery: UnifiedDelivery): void {
     let config = getOilPdfConfig(delivery);
-    config ={...config,layout:'oilReceptionForm'}
+    config = { ...config, layout: 'oilReceptionForm' };
     this.pdfService.generatePdf(config);
   }
 
@@ -308,7 +301,8 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
             console.log(`[OilReception] Generating PDF for delivery: ${e.row.lotNumber}`);
             const deliveryType = e.row.deliveryType?.toUpperCase() || '';
             const config = getControlQualitePdfConfig(e.row, deliveryType);
-            this.pdfService.generatePdf(config);         }
+            this.pdfService.generatePdf(config);
+          }
           break;
 
         default:
@@ -667,20 +661,115 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
   private setPrice(row: UnifiedDelivery): void {
     this.selectedRow = row;
 
-    // Use prix_base if available, fallback to row.unitPrice
-    const initialUnitPrice = this.prix_base || row.unitPrice || null;
+    if (this.selectedRow.globalLotNumber) {
+      this.deliveryService.getDeliveriesByGlobalLotNumber(row.globalLotNumber!).subscribe({
+        next: (res) => {
+          if (res.success && res.data) {
+            // NOTE: global lot returns a list
+            const list: any[] = Array.isArray(res.data) ? res.data : [res.data];
+            this.originalOliveReceptions = list as any[];
+            console.log('this.originalOliveReception (global lot)', this.originalOliveReceptions);
 
-    console.log('initialUnitPrice(): ' + initialUnitPrice);
+            // Σ(oliveQty × oliveUnitPrice)
+            const totalCost = this.originalOliveReceptions.reduce((acc, d: any) => acc + d.price, 0);
 
-    console.log('loadTriturationPriceFromParam(): ' + this.prix_base);
+            // Σ(oilQuantity) across all items in the global lot
+            const totalOilQty = this.originalOliveReceptions.reduce((acc, d: any) => acc + d?.oilQuantity, 0);
 
-    this.setPriceForm.get('unitPrice')?.setValue(initialUnitPrice);
-    this.dialog.open(this.setPriceDialogTemplate, {
-      width: 'auto',
-      data: row,
-      disableClose: true,
-      panelClass: 'set-price-dialog'
-    });
+            // Derived unit price for oil (rounded 3)
+            const computedUnitPrice = totalOilQty > 0 ? Number((totalCost / totalOilQty).toFixed(3)) : 0;
+
+            // Max total across the lot
+            const totalUnpaid = this.originalOliveReceptions.reduce((a, d: any) => a + Number(d?.unpaidAmount || 0), 0);
+            const totalPaid = this.originalOliveReceptions.reduce((a, d: any) => a + Number(d?.paidAmount || 0), 0);
+            const maxTotal = Math.max(0, totalUnpaid - totalPaid);
+
+            // Seeds: prefer row’s oil qty; else total
+            const quantity = Number(row?.oilQuantity || 0) || totalOilQty || null;
+
+            // Fallback chain for unit price: computed → prix_base → row.unitPrice
+
+            const total = computedUnitPrice != null && quantity != null ? Math.round(computedUnitPrice * quantity * 1000) / 1000 : null;
+
+            // Patch form before opening
+            this.setPriceForm.patchValue({
+              unitPrice: computedUnitPrice,
+              quantity: quantity,
+              total: total
+            });
+
+            // Open dialog here (after values are ready)
+            this.dialog.open(this.setPriceDialogTemplate, {
+              width: 'auto',
+              data: row,
+              disableClose: true,
+              panelClass: 'set-price-dialog'
+            });
+          } else {
+            console.log('Impossible de charger les détails de la réception (lot global).');
+          }
+        },
+        error: (err) => {
+          console.error('Erreur de chargement (lot global) :', err);
+        }
+      });
+
+      // Prevent the old bottom block from opening the dialog too early
+      return;
+    } else {
+      this.deliveryService.getDeliveryByLotNumber(row.lotOliveNumber!).subscribe({
+        next: (res) => {
+          if (res.success && res.data) {
+            // NOTE: global lot returns a list
+            this.originalOliveReception = Array.isArray(res.data) ? res.data : res.data;
+            console.log('this.originalOliveReception (global lot)', this.originalOliveReception);
+
+            // Σ(oliveQty × oliveUnitPrice)
+            const totalCost = this.originalOliveReception.price || 0;
+            // Σ(oilQuantity) across all items in the global lot
+            const totalOilQty = this.originalOliveReception.oilQuantity || 0;
+            // Derived unit price for oil (rounded 3)
+            const computedUnitPrice = totalOilQty > 0 ? Number((totalCost / totalOilQty).toFixed(3)) : 0;
+
+            // Max total across the lot
+            const totalUnpaid = this.originalOliveReception.unpaidAmount || 0;
+            const totalPaid = this.originalOliveReception.paidAmount || 0;
+            const maxTotal = Math.max(0, totalUnpaid - totalPaid);
+
+            // Seeds: prefer row’s oil qty; else total
+            let quantity = Number(row?.oilQuantity || 0).toFixed(3) || totalOilQty || 0;
+
+            const total = computedUnitPrice != null && quantity != null ? Number(computedUnitPrice * totalOilQty).toFixed(3) : null;
+
+            // Patch form before opening
+            this.setPriceForm.patchValue({
+              unitPrice: computedUnitPrice,
+              quantity: totalOilQty,
+              total: total
+            });
+
+            // Open dialog here (after values are ready)
+            this.dialog.open(this.setPriceDialogTemplate, {
+              width: 'auto',
+              data: row,
+              disableClose: true,
+              panelClass: 'set-price-dialog'
+            });
+          } else {
+            console.log('Impossible de charger les détails de la réception (lot global).');
+          }
+        },
+        error: (err) => {
+          console.error('Erreur de chargement :', err);
+        }
+      });
+
+      // Prevent the old bottom block from opening the dialog too early
+      return;
+    }
+
+    // (Removed) Old bottom block that opened the dialog immediately.
+    // It caused the dialog to open before async values were computed.
   }
 
   /**
@@ -737,6 +826,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
     // initial sync (compute total from current unitPrice*quantity)
     this.onQuantityChanged();
   }
+
   private onUnitPriceChanged(): void {
     if (!this.paymentDetailsForm) return;
     (this as any)._syncingPayment = true;
@@ -759,6 +849,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
       (this as any)._syncingPayment = false;
     }
   }
+
   private onQuantityChanged(): void {
     if (!this.paymentDetailsForm) return;
     (this as any)._syncingPayment = true;
