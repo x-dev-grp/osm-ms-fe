@@ -12,8 +12,8 @@ import { getControlQualitePdfConfig } from '../pdf-config/controlQualite.config'
 import { getOlivePdfConfig } from '../pdf-config/reception-olive-pdf.config';
 import { getProductionPdfConfig } from '../pdf-config/production-pdf.config';
 // Import the new unified PDF services
-import { PdfConfigFactoryService } from '../../shared/services/pdf-config-factory.service';
-import { UnifiedPdfGeneratorService } from '../../shared/services/unified-pdf-generator.service';
+// import { PdfConfigFactoryService } from '../../shared/services/pdf-config-factory.service';
+// import { UnifiedPdfGeneratorService } from '../../shared/services/unified-pdf-generator.service';
 
 @Component({
   selector: 'app-reception-list',
@@ -30,8 +30,8 @@ export class ReceptionListComponent {
     private toast: ToastService,
     private pdfGeneratorService: PdfGeneratorService,
     // Inject the new services
-    private pdfConfigFactory: PdfConfigFactoryService,
-    private unifiedPdfGenerator: UnifiedPdfGeneratorService
+    // private pdfConfigFactory: PdfConfigFactoryService,
+    // private unifiedPdfGenerator: UnifiedPdfGeneratorService
   ) {}
 
   handleDashboardAction(event: { row: UnifiedDelivery; action: string }): void {
@@ -86,12 +86,12 @@ export class ReceptionListComponent {
         break;
     }
   }
-  
+
   generateBonReception(delivery: UnifiedDelivery): void {
     const config = getOlivePdfConfig(delivery);
     this.pdfGeneratorService.generatePdf(config);
   }
-  
+
   generateBonProduction(delivery: UnifiedDelivery): void {
     const parameters = JSON.parse(localStorage.getItem('osm_app_parameters') || '{}');
     const config = getProductionPdfConfig(delivery, parameters);
@@ -104,14 +104,14 @@ export class ReceptionListComponent {
       // Using the factory to create a unified config
       // Note: You would need to determine the correct source type for your use case
       // const unifiedConfig = this.pdfConfigFactory.buildUnified(delivery, InvoiceSource.DELIVERY_inv);
-      
+
       // For demonstration, we'll create a simple config directly
       const config = getOlivePdfConfig(delivery);
-      
+
       // Convert the existing config to unified format
       // In a real implementation, you would use the factory method above
       // this.unifiedPdfGenerator.generatePdf(unifiedConfig);
-      
+
       // For now, we'll just show a toast message to indicate the feature is available
       this.toast.success(`Unified PDF generation feature is ready for implementation`);
     } catch (error) {
