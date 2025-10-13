@@ -2205,7 +2205,13 @@
     "DESCRIPTION": "La page que vous recherchez n’existe pas, a été déplacée ou est temporairement indisponible.",
     "IMAGE_ALT": "Illustration d’erreur 404",
     "TITLE": "Page introuvable"
-  },
+  },"PLANNING": {
+  "CANCEL_CAUSE": "Motif d'annulation",
+  "CANCEL_CAUSE_PLACEHOLDER": "Pourquoi cette réception est-elle annulée ?",
+  "CANCEL_PROMPT": "Veuillez saisir le motif d'annulation (facultatif).",
+  "CANCEL_RECEPTION": "Reception est annulé",
+  "CANCEL_TITLE": "Annuler la réception"
+},
   "PDF": {
     "ACIDITY": "Acidité",
     "ADDRESS": "Adresse",

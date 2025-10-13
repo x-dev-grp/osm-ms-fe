@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { BaseType } from '../../../../shared/models/base-type';
-import { SupplierType } from '../../../../shared/models/supplier-type';
+import { BaseType } from '../../../shared/models/base-type';
+import { SupplierType } from '../../../shared/models/supplier-type';
 
 type FilterableItem = BaseType | SupplierType;
 

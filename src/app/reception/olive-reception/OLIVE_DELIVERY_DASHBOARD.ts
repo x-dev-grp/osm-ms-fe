@@ -11,6 +11,7 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
   baseURL: 'production/deliveries',
   searchEndpoint: 'production/deliveries', //endpoint fl backedn
   addNewItem: true, //show new button
+  groupedActions: false,
   addNewItemUrl: 'reception/reception-olive/new', //add new componnt path
   defaultSearchData: {
     page: 0,
@@ -24,7 +25,7 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
           equalValue:false
         },
         status: {
-          inValues: ['NEW', 'IN_PROGRESS', 'OLIVE_CONTROLLED','WAITING','WAITING_FOR_PRICING','PROD_READY', 'REFUSED', 'CANCELLED']
+          inValues: ['NEW', 'IN_PROGRESS', 'OLIVE_CONTROLLED','WAITING','WAITING_FOR_PRICING','PROD_READY', 'REFUSED']
         },
         deliveryType: {
           equalValue: deliveryType.OLIVE

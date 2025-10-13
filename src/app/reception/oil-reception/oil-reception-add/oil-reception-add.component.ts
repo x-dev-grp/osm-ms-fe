@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Observable, startWith, Subscription } from 'rxjs';
 import { BaseType } from '../../../shared/models/base-type';
 import { SupplierType } from '../../../shared/models/supplier-type';
 import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
@@ -29,6 +29,7 @@ import { CardComponent } from '../../../theme/components/card/card.component';
 import { SupplierAddComponent } from '../../suppliers/supplier-add/supplier-add.component';
 import { MatDialog } from '@angular/material/dialog';
 import { GenericTypeDialogComponent } from '../../../settings/generic-type/generic-type-dialog/generic-type-dialog.component';
+import { map } from 'rxjs/operators';
 
 // Validator for net weight not exceeding gross weight
 const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | null => {
@@ -83,6 +84,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
   private deliveryId: string | null;
   private pendingEditReception: UnifiedDelivery | null = null;
   private _typeSubs: Subscription[] = [];
+    filteredSuppliers$: Observable<SupplierType[]>;
 
   constructor(
     private fb: FormBuilder,
@@ -263,7 +265,10 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       this.loading = false;
     }
   }
-
+  displayFn(item: SupplierType | string | null): string {
+    if (!item || typeof item === 'string') return item ?? '';
+    return `${item.name ?? ''} ${item.lastname ?? ''}`.trim();
+  }
   ngOnDestroy(): void {
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
@@ -362,18 +367,31 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     this.router.navigate(['reception/reception-huile']);
   }
 
-  validateSupplier() {
+  validateSupplier(): void {
     const value = this.receptionForm.get('supplier')!.value;
-    if (!isValidSelection(value, this.suppliers)) {
+    if (!(value && typeof value === 'object' && 'id' in value) ||
+      !this.suppliers.some(s => s.id && s.id === (value as SupplierType).id)) {
       this.receptionForm.get('supplier')!.setValue(null);
     }
   }
 
-  displayFn<T extends { name: string; lastname: string }>(item: T): string {
-    if (!item) return '';
 
-    return item.name + ' ' + item.lastname;
+
+// single place to wire autocomplete filtering (supplier typing)
+  private setupAutocompleteFilters(): void {
+    this.filteredSuppliers$ = this.receptionForm.get('supplier')!.valueChanges.pipe(
+      startWith(''),
+      // while typing, control emits a string; when selected, emits SupplierType
+      map(val => (typeof val === 'string' ? val : this.displayFn(val))),
+      map(text => {
+        const q = (text ?? '').toLowerCase();
+        return this.suppliers.filter(s =>
+          `${s.name ?? ''} ${s.lastname ?? ''}`.toLowerCase().includes(q)
+        );
+      })
+    );
   }
+
 
   openAddSupplierDialog(): void {
     const dialogRef = this.dialog.open(SupplierAddComponent, {
@@ -421,11 +439,13 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
   }
 
 
+// ensure we build the autocomplete streams only after lists are loaded
   private markCallDone(): void {
-    // Décrément‑le quand une requête se termine
     this.pendingCalls--;
     if (this.pendingCalls === 0) {
-      this.loading = false; // Désactive le spinner quand tout est fini
+      this.loading = false;
+      // suppliers/regions must be loaded before wiring filters
+      this.setupAutocompleteFilters();
     }
   }
 
@@ -443,39 +463,27 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     );
   }
 
+// patch with matched objects by id; avoid manual DOM pokes
   private patchForm(d: UnifiedDelivery): void {
-    const parse = (v: string | Date | null): Date | null => (v ? new Date(v) : null);
-    const matchedSupplier = this.suppliers.find((s) => s.id?.toString() === d.supplier?.id?.toString());
+    const parseDate = (v: string | Date | null | undefined): Date | null =>
+      !v ? null : (v instanceof Date ? v : new Date(v));
 
-    console.log('patchForm supplier:', d.supplier);
-    console.log(
-      'matched:',
-      this.suppliers.find((s) => s.id === d.supplier?.id)
+    const matchedSupplier = this.suppliers.find(s => s.id?.toString() === d.supplier?.id?.toString()) || null;
+    const matchedRegion   = this.regions.find(r => r.id === d.region?.id) || null;
+    const matchedParcel   = this.parcels.find(r => r.id === d.parcel?.id) || null;
+
+    this.receptionForm.patchValue(
+      {
+        ...d,
+        deliveryDate: parseDate(d.deliveryDate),
+        trtDate: parseDate(d.trtDate),
+        supplier: matchedSupplier,
+        region: matchedRegion,
+        parcel: matchedParcel
+        // (leave the rest of your fields as-is)
+      },
+      { emitEvent: false }
     );
-    this.receptionForm.patchValue({
-      id: this.isEditing ? this.deliveryId : null,
-      deliveryType: d.deliveryType,
-      deliveryNumber: d.deliveryNumber,
-      lotNumber: d.lotNumber,
-      parcel: this.parcels.find((r) => r.id === d.parcel?.id) || null,
-      deliveryDate: parse(d.deliveryDate),
-      region: this.regions.find((r) => r.id === d.region?.id) || null,
-      supplier: matchedSupplier || null,
-      matriculeCamion: d.matriculeCamion,
-      poidsBrute: d.poidsBrute,
-      oilQuantity: d.poidsNet,
-      poidsNet: d.poidsNet,
-      oilVariety: d.oilVariety || null,
-      oilType: d.oilType || null,
-      globalLotNumber: d.globalLotNumber || '',
-      operationType: OperationType.OIL_PURCHASE
-    });
-
-    // Mark all controls as touched and update validity to ensure UI updates
-    Object.values(this.receptionForm.controls).forEach((control) => {
-      control.markAsTouched();
-      control.updateValueAndValidity();
-    });
   }
 
   private generateLotNumber(oilType: Olive_Oil_Type | null, deliveryNumber: number): string {
@@ -486,6 +494,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
   }
 
   private setupFormSubscriptions(): void {
+    // lot number from oil type (leave as you had if identical)
     this.subscriptions.push(
       this.receptionForm.get('oilType')!.valueChanges.subscribe((oilType: Olive_Oil_Type | null) => {
         const deliveryNumber = this.receptionForm.get('deliveryNumber')?.value || this.deliveries.length + 1;
@@ -494,23 +503,35 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       })
     );
 
-    // Enforce autocomplete selection for supplier
-    this.receptionForm.get('supplier')!.valueChanges.subscribe((value) => {
-      if (value && !this.suppliers.some((s) => s.id === value.id)) {
-        this.receptionForm.get('supplier')!.setValue(null);
-      }
-    });
-    // Enforce autocomplete selection for region
-    this.receptionForm.get('region')!.valueChanges.subscribe((value) => {
-      if (value && !this.regions.some((r: BaseType) => r.id === value.id)) {
-        this.receptionForm.get('region')!.setValue(null);
-      }
-    });
-    // Enforce autocomplete selection for parcel
-    this.receptionForm.get('parcel')!.valueChanges.subscribe((value) => {
-      if (value && !this.parcels.some((r: BaseType) => r.id === value.id)) {
-        this.receptionForm.get('parcel')!.setValue(null);
-      }
-    });
+    // when a real Supplier object is selected, mirror its region
+    this.subscriptions.push(
+      this.receptionForm.get('supplier')!.valueChanges.subscribe((supplier: SupplierType | string | null) => {
+        if (supplier && typeof supplier === 'object' && (supplier as SupplierType).region) {
+          const reg = (supplier as SupplierType).region!;
+          const match = this.regions.find(r => r.id === reg.id) || reg;
+          this.receptionForm.patchValue({ region: match }, { emitEvent: false });
+        }
+      })
+    );
+
+    // guard region/parcel streams — ignore while user is typing (string)
+    this.subscriptions.push(
+      this.receptionForm.get('region')!.valueChanges.subscribe((value: any) => {
+        if (value && typeof value === 'object' && 'id' in value) {
+          if (!this.regions.some(r => r.id === value.id)) {
+            this.receptionForm.get('region')!.setValue(null);
+          }
+        }
+      })
+    );
+    this.subscriptions.push(
+      this.receptionForm.get('parcel')!.valueChanges.subscribe((value: any) => {
+        if (value && typeof value === 'object' && 'id' in value) {
+          if (!this.parcels.some(r => r.id === value.id)) {
+            this.receptionForm.get('parcel')!.setValue(null);
+          }
+        }
+      })
+    );
   }
 }

@@ -2369,6 +2369,13 @@
     "WEBSITE": "موقع إلكتروني",
     "YIELD": "العائد"
   },
+  "PLANNING": {
+    "CANCEL_CAUSE": "سبب الإلغاء",
+    "CANCEL_CAUSE_PLACEHOLDER": "لماذا سيتم إلغاء هذا الاستلام؟",
+    "CANCEL_PROMPT": "يرجى إدخال سبب الإلغاء (اختياري).",
+    "CANCEL_RECEPTION": "",
+    "CANCEL_TITLE": "إلغاء الاستلام"
+  },
   "PLANNING_ASSIGNED": "مُعين",
   "PLANNING_CANCEL": "إلغاء",
   "PLANNING_CARD_TITLE": "تخطيط استقبال الزيتون",

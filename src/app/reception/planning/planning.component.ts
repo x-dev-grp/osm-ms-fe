@@ -7,7 +7,7 @@ import {
   ElementRef,
   HostListener,
   OnDestroy,
-  OnInit,
+  OnInit, TemplateRef,
   ViewChild
 } from '@angular/core';
 import { CdkDragDrop, CdkDragEnter, CdkDragMove, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
@@ -51,6 +51,8 @@ import { ToastService } from '../../shared/services/toast.service';
 import { CardComponent } from '../../theme/components/card/card.component';
 import { TranslateService } from '@ngx-translate/core';
 import { PdfGeneratorService } from '../../shared/services/pdf-generator.service';
+import { OliveLotStatus } from '../../shared/models/OliveLotStatus';
+import { ApiResponse } from '../../shared/models/api-response';
 
 type CompletionResult = {
   confirmed: boolean;
@@ -118,8 +120,9 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
   private fullReceptionMap: Map<string, PlanningItem> = new Map();
   // gardez aussi ces tableaux pour restaurer l’état initial
   private allUnassigned: any[] = [];
-
-  constructor(
+  @ViewChild('cancelDialog') cancelDialogTpl!: TemplateRef<any>;
+  cancelCause = '';
+   constructor(
     private deliveryService: UnifiedDeliveryService,
     private millService: MillMachineService,
     private translationservice: TranslateService,
@@ -127,6 +130,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     private cdr: ChangeDetectorRef,
     private toast: ToastService,
     private dialog: MatDialog,
+    private currentDialogRef: MatDialog,
     private planningService: PlanningService,
     private pdfGeneratorService: PdfGeneratorService
   ) {}
@@ -357,14 +361,10 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     const millMachineId = [...millsInvolved][0] === 'UNASSIGNED' ? undefined : [...millsInvolved][0];
 
     // ★ 2b) Ensure all selected lots share the SAME operationType
-    const opTypes = new Set(
-      itemsToGroup.map((o) => (o.item.data as PlanningItem).operationType ?? null)
-    );
+    const opTypes = new Set(itemsToGroup.map((o) => (o.item.data as PlanningItem).operationType ?? null));
     if (opTypes.size > 1) {
       // You can translate this key; example EN: "Selected receptions must have the same operation type."
-      this.toast.warning(
-        this.translationservice.instant('RECEPTION.PLANNING.GLOBAL_LOT.MUST_BE_SAME_OPERATION_TYPE')
-      );
+      this.toast.warning(this.translationservice.instant('RECEPTION.PLANNING.GLOBAL_LOT.MUST_BE_SAME_OPERATION_TYPE'));
       return;
     }
     const sharedOperationType = [...opTypes][0]; // may be null if none; that’s OK
@@ -372,7 +372,8 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     // 3) Compute new lot number
     const lotNumbers = itemsToGroup.map((o) => (o.item.data as PlanningItem).lotNumber);
     const largestLot = lotNumbers.reduce((max, cur) => {
-      const n1 = parseInt(max, 10), n2 = parseInt(cur, 10);
+      const n1 = parseInt(max, 10),
+        n2 = parseInt(cur, 10);
       return n2 > n1 ? cur : max;
     }, lotNumbers[0]);
     const globalLotNumber = `G${largestLot.padStart(4, '0')}`;
@@ -420,6 +421,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     this.translationservice.instant('RECEPTION.PLANNING.GLOBAL_LOT.CREATED_SUCCESS', { globalLotNumber });
     this.savePlanSilently();
   }
+
   _ungroupLot(globalLot: GlobalLot): void {
     // 1) Find and remove the global lot from its current location
     let foundMill: Mill | undefined;
@@ -542,6 +544,24 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
       this.cdr.markForCheck();
     });
     this.savePlanSilently();
+  }
+  openCancelDialog(d: UnifiedDelivery): void {
+    // reset cause input every time
+    this.cancelCause = '';
+     this.currentDialogRef.open(this.cancelDialogTpl, {
+      width: '480px',
+      data: d,
+      disableClose: true
+    });
+  }
+
+  confirmCancel(d: UnifiedDelivery): void {
+    const cause = (this.cancelCause || '').trim();
+    // call your existing cancel with user-entered cause
+    this.cancelReception(d, cause);
+    if (this.currentDialogRef) {
+      this.currentDialogRef.closeAll();
+     }
   }
 
   toggleFullScreen(): void {
@@ -753,6 +773,19 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
   clearSearch(): void {
     this.searchControl.setValue('');
     this.applyFilter('');
+  }
+
+  cancelReception(d: UnifiedDelivery,cause:string): void {
+    if (d.id) {
+      this.deliveryService.updateStatus(d.id, OliveLotStatus.CANCELLED,cause).subscribe((res: ApiResponse<void>) => {
+        if (res.success) {
+          this.loadPlanning();
+          this.toast.success(this.translationservice.instant('PLANNING.CANCEL_RECEPTION'));
+        } else {
+          this.toast.error(this.translationservice.instant('LOGIN.UNEXPECTED_ERROR'));
+        }
+      });
+    }
   }
 
   /** LOT flow */
@@ -1087,6 +1120,9 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     console.log('[MILLS] Initialized:', this.mills);
   }
 
+  // --- Fallback method if delivery details loading fails ---
+  // Remove the old loadPlanningWithoutDetails method as it's no longer needed
+
   private populateReceptionMap(deliveryResponse: { data: UnifiedDelivery[] | UnifiedDelivery }): void {
     const deliveries: UnifiedDelivery[] = Array.isArray(deliveryResponse.data) ? deliveryResponse.data : [deliveryResponse.data];
 
@@ -1099,9 +1135,6 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     });
     console.log('[LOAD] fullReceptionMap populated:', this.fullReceptionMap);
   }
-
-  // --- Fallback method if delivery details loading fails ---
-  // Remove the old loadPlanningWithoutDetails method as it's no longer needed
 
   private processPlanningData(planning: PlanningSaveRequest): void {
     console.log('[PROCESS] Starting planning data processing...');
@@ -1288,8 +1321,6 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
       this.cleanupCorruptedAssignments();
     }
   }
-
-  // Remove the old loadPlanning method and related fallback methods
 
   private cleanupCorruptedAssignments(): void {
     console.log('[CLEANUP] Starting cleanup of corrupted assignments...');

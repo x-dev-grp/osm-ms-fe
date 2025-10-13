@@ -51,6 +51,12 @@
           <strong>{{ 'DELIVERIES.FIELDS.STATUS' | translate }}:</strong>
           {{ deliveryData.status ? (('RECEPTION_LIST.STATUS.' + deliveryData.status) | translate) : 'N/A' }}
         </div>
+        @if (deliveryData.status == OliveLotStatus.CANCELLED) {
+          <div class="grid-item">
+            <strong>{{ 'DEPARTMENT.FORM.DESCRIPTION' | translate }}:</strong>
+            {{ deliveryData?.description }}
+          </div>
+        }
       </div>
 
       <div class="grid-row">
@@ -206,16 +212,17 @@
     </div>
 
     <!-- Price Info -->
-    <div *ngIf="deliveryData.unitPrice != null || deliveryData.price != null || deliveryData.paidAmount != null || deliveryData.unpaidAmount != null || deliveryData.paymentMode || deliveryData.paymentStatus"
-         class="section">
+    <div
+      *ngIf="deliveryData.unitPrice != null || deliveryData.price != null || deliveryData.paidAmount != null || deliveryData.unpaidAmount != null || deliveryData.paymentMode || deliveryData.paymentStatus"
+      class="section">
       <h3 class="section-title">{{ 'DELIVERIES.DETAILS.SECTIONS.INFO_PRIX' | translate }}</h3>
 
       <div class="grid-row">
-        <div class="grid-item" *ngIf="deliveryData.unitPrice != null">
+        <div *ngIf="deliveryData.unitPrice != null" class="grid-item">
           <strong>{{ 'CONTROLE_QUALITE.FINANCIAL.UNIT_PRICE' | translate }}:</strong>
           {{ deliveryData.unitPrice | number:'1.2-2' }} TND/kg
         </div>
-        <div class="grid-item" *ngIf="deliveryData.price != null">
+        <div *ngIf="deliveryData.price != null" class="grid-item">
           <strong>{{ 'CONTROLE_QUALITE.FINANCIAL.PRICE' | translate }}:</strong>
           {{ deliveryData.price | number:'1.2-2' }} TND
         </div>

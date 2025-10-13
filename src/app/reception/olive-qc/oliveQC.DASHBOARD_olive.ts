@@ -10,7 +10,8 @@ export const OliveQCDASHBOARD_olive: DashboardConfig = {
   baseURL: 'production/deliveries',
   searchEndpoint: 'production/deliveries',
   addNewItem: false,
-  filteredActions: ['UPDATE', 'DELETE', 'CANCEL'],
+  groupedActions: false,
+  specificActions: [],
   defaultSearchData: {
     page: 0,
     size: 10,

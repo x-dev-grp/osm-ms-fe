@@ -11,6 +11,7 @@ import { UnifiedDeliveryService } from '../../shared/services/delivery.service';
 import { UnifiedDelivery } from '../../shared/models/UnifiedDelivery';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { ToastService } from '../../shared/services/toast.service';
+import { OliveLotStatus } from '../../shared/models/OliveLotStatus';
 
 @Component({
   selector: 'app-details-reception-olive',
@@ -66,4 +67,6 @@ export class DetailsReceptionComponent implements OnInit {
   onBack(): void {
     window.history.back();
   }
+
+  protected readonly OliveLotStatus = OliveLotStatus;
 }

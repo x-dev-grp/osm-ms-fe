@@ -10,6 +10,7 @@ import { Olive_Oil_Type } from './olive-type.enum';
 export class UnifiedDelivery {
   id!: string;
   deliveryNumber!: string;
+  description?: string;
   deliveryType!: string;
   lotNumber!: string;
   deliveryDate!: Date;

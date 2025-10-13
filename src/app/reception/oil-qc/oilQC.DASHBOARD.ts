@@ -9,6 +9,8 @@ export const OilQCDASHBOARD: DashboardConfig = {
   titleTranslatePath: 'OSM_DASHBOARD.ACTIONS.OIL_QUALITY',
   baseURL: 'production/deliveries',
   searchEndpoint: 'production/deliveries',
+  groupedActions: false,
+  specificActions: [],
   addNewItem: false,
   filteredActions: ['UPDATE', 'DELETE', 'CANCEL'],
   defaultSearchData: {
@@ -21,7 +23,8 @@ export const OilQCDASHBOARD: DashboardConfig = {
       search: {
         isDeleted: {
           equalValue: false
-        } ,deliveryType: {
+        },
+        deliveryType: {
           equalValue: deliveryType.OIL
         }
       }

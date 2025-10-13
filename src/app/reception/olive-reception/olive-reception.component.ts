@@ -103,7 +103,7 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
     this.router.navigate(['reception/quality', d.id]);
   }
 
-  sendToProduction(d: UnifiedDelivery): void {
+  cancelReception(d: UnifiedDelivery): void {
     if (d.id) {
       this.subs.add(
         this.deliveryService.updateStatus(d.id, OliveLotStatus.IN_PROGRESS).subscribe(

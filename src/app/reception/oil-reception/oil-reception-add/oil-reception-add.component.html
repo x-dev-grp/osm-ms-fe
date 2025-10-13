@@ -69,7 +69,6 @@
                   #supplierTrig="matAutocompleteTrigger"
                   (blur)="validateSupplier()"
                   [matAutocomplete]="supplierAuto"
-                  [value]="displayFn(receptionForm.get('supplier')?.value)"
                   formControlName="supplier"
                   matInput
                   required
@@ -86,9 +85,10 @@
                     <mat-icon>add</mat-icon>
                   </button>
                 }
+
                 <mat-autocomplete #supplierAuto="matAutocomplete" [displayWith]="displayFn">
-                  <mat-option *ngFor="let supplier of suppliers" [value]="supplier">
-                    {{ supplier.name + ' ' + supplier.lastname }}
+                  <mat-option *ngFor="let supplier of (filteredSuppliers$ | async) ?? []" [value]="supplier">
+                    {{ supplier.name }} {{ supplier.lastname }}
                   </mat-option>
                 </mat-autocomplete>
               </mat-form-field>

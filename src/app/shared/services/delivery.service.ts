@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../models/api-response';
 import { UnifiedDelivery } from '../models/UnifiedDelivery';
 import { environment } from '../../../environments/environment';
 import { OliveLotStatus } from '../models/OliveLotStatus';
 import { ExchangePricingDto } from '../models/ExchangePricingDto';
-import { map } from 'rxjs/operators';
 import { deliveryType } from '../models/deleveryType';
 
 @Injectable({
@@ -58,26 +57,31 @@ export class UnifiedDeliveryService {
   deleteUnifiedDelivery(id: string): Observable<ApiResponse<void>> {
     return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/${id}`);
   }
-//todo change it to new endpoint , updte statue to  creat the oil transaction with waitng statue
+
+  //todo change it to new endpoint , updte statue to  creat the oil transaction with waitng statue
   updateDelivery(delivery: UnifiedDelivery): Observable<ApiResponse<UnifiedDelivery>> {
     return this.http.put<ApiResponse<UnifiedDelivery>>(`${this.baseUrl}`, delivery);
   }
 
-
   getDeliveryByOliveLotNumber(id: string): Observable<ApiResponse<UnifiedDelivery>> {
     return this.http.get<ApiResponse<UnifiedDelivery>>(`${this.baseUrl}/getDeliveryByOliveLotNumber/${id}`);
   }
+
   getDeliveryByLotNumber(lotNumber: string): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/getDeliveryByLotNumber/${lotNumber}`);
   }
-  getDeliveryByLotNumberAndType(lotNumber: string,type:deliveryType): Observable<any> {
+
+  getDeliveryByLotNumberAndType(lotNumber: string, type: deliveryType): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/getDeliveryByLotNumber/${lotNumber}/${type}`);
   }
 
+  updateStatus(id: string, status: OliveLotStatus, cause?: string): Observable<ApiResponse<void>> {
+    let params = new HttpParams();
+    if (cause) params = params.set('cause', String(cause));
 
-  updateStatus(id: string, status: OliveLotStatus): Observable<ApiResponse<void>> {
-    return this.http.get<ApiResponse<void>>(`${this.baseUrl}/updateStatue/${id}/${status}`);
+    return this.http.get<ApiResponse<void>>(`${this.baseUrl}/updateStatue/${encodeURIComponent(id)}/${status}`, { params });
   }
+
   updatePricing(id: string, price: number): Observable<ApiResponse<void>> {
     return this.http.get<ApiResponse<void>>(`${this.baseUrl}/updateprice/${id}/${price}`);
   }
@@ -94,12 +98,11 @@ export class UnifiedDeliveryService {
     return this.http.post<ApiResponse<void>>(`${this.baseUrl}/update-payment-pricing`, dto);
   }
 
-
-  processPayment(payload:any): Observable<ApiResponse<any>> {
+  processPayment(payload: any): Observable<ApiResponse<any>> {
     return this.http.post<ApiResponse<void>>(`${this.baseUrl}/payment`, payload);
   }
 
-  getDeliveriesByGlobalLotNumber (glotNumber: string): Observable<any> {
+  getDeliveriesByGlobalLotNumber(glotNumber: string): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/getDeliveriesByGlobalLotNumber/${glotNumber}`);
   }
 }

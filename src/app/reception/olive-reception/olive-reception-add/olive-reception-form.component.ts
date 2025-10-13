@@ -1,14 +1,14 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {MatButtonModule} from '@angular/material/button';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
-import {MatSelectModule} from '@angular/material/select';
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {MatDialog} from '@angular/material/dialog';
-import {SupplierAddComponent} from '../../suppliers/supplier-add/supplier-add.component';
- import {
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialog } from '@angular/material/dialog';
+import { SupplierAddComponent } from '../../suppliers/supplier-add/supplier-add.component';
+import {
   AbstractControl,
   FormBuilder,
   FormControl,
@@ -18,27 +18,25 @@ import {SupplierAddComponent} from '../../suppliers/supplier-add/supplier-add.co
   ValidationErrors,
   Validators
 } from '@angular/forms';
-import {Observable, Subscription} from 'rxjs';
-import {ActivatedRoute, Router} from '@angular/router';
-import {TranslateModule, TranslateService} from '@ngx-translate/core';
-import {UnifiedDelivery} from '../../../shared/models/UnifiedDelivery';
-import {BaseType} from '../../../shared/models/base-type';
-import {SupplierType} from '../../../shared/models/supplier-type';
-import {GenericTypeService} from '../../../shared/services/generic-type.service';
-import {UnifiedDeliveryService} from '../../../shared/services/delivery.service';
-import {SupplierTypeService} from '../../../shared/services/supplier.service';
-import {TypeCategory} from '../../../shared/models/type-category.enum';
-import {MatIcon} from '@angular/material/icon';
-import {MatAutocompleteModule} from '@angular/material/autocomplete';
-import {map, startWith} from 'rxjs/operators';
-import {OperationType} from '../../../shared/models/operation-type.enum';
-import {BaseTypeComponent} from '../../../shared/modules/base-type/base-type.component';
-import {ToastService} from '../../../shared/services/toast.service';
-import {CardComponent} from '../../../theme/components/card/card.component';
-import {Olive_Oil_Type} from '../../../shared/models/olive-type.enum';
-import {
-  GenericTypeDialogComponent
-} from '../../../settings/generic-type/generic-type-dialog/generic-type-dialog.component';
+import { Observable, Subscription } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
+import { BaseType } from '../../../shared/models/base-type';
+import { SupplierType } from '../../../shared/models/supplier-type';
+import { GenericTypeService } from '../../../shared/services/generic-type.service';
+import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
+import { SupplierTypeService } from '../../../shared/services/supplier.service';
+import { TypeCategory } from '../../../shared/models/type-category.enum';
+import { MatIcon } from '@angular/material/icon';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { map, startWith } from 'rxjs/operators';
+import { OperationType } from '../../../shared/models/operation-type.enum';
+import { BaseTypeComponent } from '../../../shared/modules/base-type/base-type.component';
+import { ToastService } from '../../../shared/services/toast.service';
+import { CardComponent } from '../../../theme/components/card/card.component';
+import { Olive_Oil_Type } from '../../../shared/models/olive-type.enum';
+import { GenericTypeDialogComponent } from '../../../settings/generic-type/generic-type-dialog/generic-type-dialog.component';
 
 // Validator to ensure net weight does not exceed gross weight
 const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | null => {
@@ -50,6 +48,11 @@ const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | nu
 // Helper to check if value is a valid object from the list
 function isValidSelection<T extends { id?: string }>(value: unknown, list: T[]): boolean {
   return !!value && typeof value === 'object' && 'id' in value && list.some((item) => item.id && item.id === (value as T).id);
+}
+
+// FIX: Type guard used in valueChanges to avoid touching typed strings
+function isObjectWithId(value: unknown): value is { id: string | number } {
+  return !!value && typeof value === 'object' && 'id' in (value as any) && (value as any).id != null;
 }
 
 @Component({
@@ -83,13 +86,11 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
   errorMessage: string | null = null;
   receptionForm: FormGroup;
   olive_oil_Options = Object.values(Olive_Oil_Type);
-   regions: BaseType[] = [];
+  regions: BaseType[] = [];
   parcels: BaseType[] = [];
 
   suppliers: SupplierType[] = [];
   oliveVarieties: BaseType[] = [];
-  private hydrating = false;
-
   /** Dynamic labels (party = Supplier|Client) */
   partyLabelKey = 'OLIVE_RECEPTION.FORM.FIELDS.SUPPLIER';
   partyRegionSectionKey = 'OLIVE_RECEPTION.FORM.SECTIONS.SUPPLIER_REGION';
@@ -108,10 +109,13 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
   ];
   deliveries: UnifiedDelivery[] = [];
   // Autocomplete filtered options
-  filteredRegions: Observable<BaseType[]>;
-  filteredSuppliers: Observable<SupplierType[]>;
-  filteredOliveVarieties: Observable<BaseType[]>;
-  filteredOperationTypes: Observable<BaseType[]>;
+  filteredRegions!: Observable<BaseType[]>;
+  // FIX: use $ suffix and filter stream based on typing
+  filteredSuppliers$!: Observable<SupplierType[]>;
+  filteredOliveVarieties!: Observable<BaseType[]>;
+  filteredOperationTypes!: Observable<BaseType[]>;
+  protected readonly TypeCategory = TypeCategory;
+  private hydrating = false;
   private typeSubs: Subscription[] = [];
   private pendingCalls = 0;
   private subscriptions: Subscription[] = [];
@@ -125,7 +129,6 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     [OperationType.PAYMENT]: 'OLIVE_RECEPTION.FORM.FIELDS.SUPPLIER',
     [OperationType.DECHET]: 'OLIVE_RECEPTION.FORM.FIELDS.SUPPLIER'
   };
-
   // Pending data for when regions/parcels are not yet loaded
   private pendingEditReception: UnifiedDelivery | null = null;
   private regionsLoaded = false;
@@ -163,12 +166,11 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       },
       { validators: netNotGreaterThanGross }
     );
-    this.receptionForm.addControl('oliveType', new FormControl<Olive_Oil_Type| null>(null));
+    this.receptionForm.addControl('oliveType', new FormControl<Olive_Oil_Type | null>(null));
     this.receptionForm.addControl('oilType', new FormControl<Olive_Oil_Type | null>(null));
   }
+
   ngOnInit(): void {
-    // --- flags & basics ---
-    // NOTE: add `private hydrating = false;` as a class field.
     const deliveryId = this.route.snapshot.paramMap.get('id');
     this.isEditing = deliveryId !== null && deliveryId !== 'new';
 
@@ -176,34 +178,12 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.pendingCalls = 0;
 
-    // // --- sync oliveType -> oilType (and lot number) ---
-    // this.typeSubs.push(
-    //   this.receptionForm.get('oliveType')!.valueChanges.subscribe((val: OliveType | null) => {
-    //     // mirror oilType without firing another chain
-    //     this.receptionForm.get('oilType')!.setValue(mapOilFromOlive(val), { emitEvent: false });
-    //
-    //     // update lot number
-    //     const deliveryNumber = this.receptionForm.get('deliveryNumber')?.value || this.deliveries.length + 1;
-    //     const lotNumber = this.generateLotNumber(val, deliveryNumber);
-    //     this.receptionForm.patchValue({ lotNumber }, { emitEvent: false });
-    //   })
-    // );
-
-    // --- sync oilType -> oliveType ---
-    // this.typeSubs.push(
-    //   this.receptionForm.get('oilType')!.valueChanges.subscribe((val: OilType | null) => {
-    //     this.receptionForm.get('oliveType')!.setValue(mapOliveFromOil(val), { emitEvent: false });
-    //   })
-    // );
-
     // --- load Regions ---
     this.pendingCalls++;
     const regionSub = this.genericTypeService.getAllTypes(TypeCategory.REGION).subscribe({
       next: (res) => {
         this.regions = res.success ? res.data : [];
         this.regionsLoaded = true;
-
-        // Patch only when BOTH datasets are ready
         if (this.pendingEditReception && this.regionsLoaded && this.parcelsLoaded) {
           this.patchForm(this.pendingEditReception);
           this.pendingEditReception = null;
@@ -220,8 +200,6 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       next: (res) => {
         this.parcels = res.success ? res.data : [];
         this.parcelsLoaded = true;
-
-        // Patch only when BOTH datasets are ready
         if (this.pendingEditReception && this.regionsLoaded && this.parcelsLoaded) {
           this.patchForm(this.pendingEditReception);
           this.pendingEditReception = null;
@@ -232,44 +210,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     });
     this.subscriptions.push(parcelsSub);
 
-    // // --- region change -> default parcel (skip during hydrate) ---
-    // this.subscriptions.push(
-    //   this.receptionForm.get('region')!.valueChanges.subscribe((region: BaseType | null) => {
-    //     if (this.hydrating) return; // prevent overwriting while patching
-    //     const currentParcel = this.receptionForm.get('parcel')!.value;
-    //     if (region && (!currentParcel || (typeof currentParcel === 'object' && !currentParcel.id))) {
-    //       this.receptionForm.patchValue({ parcel: region }, { emitEvent: false });
-    //     }
-    //   })
-    // );
-
-    // --- supplier change -> set region (+ parcel) (skip during hydrate) ---
-    // this.subscriptions.push(
-    //   this.receptionForm.get('supplier')!.valueChanges.subscribe((supplier: SupplierType | null) => {
-    //     if (this.hydrating) return; // prevent overwriting while patching
-    //     if (!(supplier && supplier && supplier.region)) return;
-    //
-    //     if (this.regions?.length) {
-    //       const matchingRegion = this.regions.find((r) => r.id === supplier.region.id);
-    //       if (matchingRegion) {
-    //         this.receptionForm.patchValue({ region: matchingRegion }, { emitEvent: false });
-    //         const currentParcel = this.receptionForm.get('parcel')!.value;
-    //         if (!currentParcel || (typeof currentParcel === 'object' && !currentParcel.id)) {
-    //           this.receptionForm.patchValue({ parcel: matchingRegion }, { emitEvent: false });
-    //         }
-    //       }
-    //     } else {
-    //       // regions not loaded yet: use raw object from supplier
-    //       this.receptionForm.patchValue({ region: supplier.region }, { emitEvent: false });
-    //       const currentParcel = this.receptionForm.get('parcel')!.value;
-    //       if (!currentParcel || (typeof currentParcel === 'object' && !currentParcel.id)) {
-    //         this.receptionForm.patchValue({ parcel: supplier.region }, { emitEvent: false });
-    //       }
-    //     }
-    //   })
-    // );
-
-    // --- recompute net on weight changes ---
+    // recompute net on weight changes
     this.subscriptions.push(this.receptionForm.get('poidsBrute')!.valueChanges.subscribe(() => this.recomputeNet()));
     this.subscriptions.push(this.receptionForm.get('poidsCamionVide')!.valueChanges.subscribe(() => this.recomputeNet()));
 
@@ -291,7 +232,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
         this.deliveries = res.success ? res.data : [];
         if (!this.isEditing) {
           const deliveryCount = this.deliveries.length;
-          const maxLot = this.getMaxLotNumber();
+          const maxLot = this.getMaxLotNumber(); // currently unused but kept
           this.receptionForm.patchValue(
             {
               deliveryNumber: deliveryCount + 1,
@@ -322,10 +263,9 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
           if (res.success && res.data) {
             const delivery = Array.isArray(res.data) ? res.data[0] : res.data;
             if (!this.regionsLoaded || !this.parcelsLoaded) {
-              // wait for both datasets, then patch once
               this.pendingEditReception = delivery;
             } else {
-              this.patchForm(delivery); // assumes patchForm uses emitEvent:false and resolves region/parcel by id
+              this.patchForm(delivery);
             }
           } else {
             this.errorMessage = this.translate.instant('DELIVERIES.FORM.MESSAGES.RECEPTION_LOAD_ERROR');
@@ -341,29 +281,14 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       this.subscriptions.push(editSub);
     }
 
-    // --- other internal subscriptions you already have ---
+    // other internal subscriptions
     this.setupFormSubscriptions();
   }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
-  private recomputeNet(): void {
-    const gross = this.num(this.receptionForm.get('poidsBrute')?.value) ?? 0;
-    const empty = this.num(this.receptionForm.get('poidsCamionVide')?.value) ?? 0;
 
-    // Clamp to >= 0
-    const net = Math.max(gross - empty, 0);
-
-    // Update disabled control without re-triggering valueChanges
-    this.receptionForm.get('poidsNet')?.setValue(net, { emitEvent: false });
-  }
-
-  private num(value: any): number | null {
-    if (value === null || value === undefined || value === '') return null;
-    const n = Number(value);
-    return isNaN(n) ? null : n;
-  }
   // Save or update the reception
   async saveReception(): Promise<void> {
     if (this.receptionForm.invalid) {
@@ -373,7 +298,6 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
 
     const formValue = this.receptionForm.getRawValue();
 
-    // Validate required references
     if (!formValue.region?.id) {
       this.showToast(this.translate.instant('DELIVERIES.FORM.VALIDATION.INVALID_REGION'), 'warning');
       return;
@@ -383,7 +307,6 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Validate numeric values
     if (formValue.poidsBrute < 0 || formValue.poidsNet < 0) {
       this.showToast(this.translate.instant('DELIVERIES.FORM.VALIDATION.POSITIVE_VALUE'), 'warning');
       return;
@@ -406,7 +329,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       poidsBrute: Number(formValue.poidsBrute) || 0,
       poidsNet: Number(formValue.poidsNet) || 0,
       matriculeCamion: formValue.matriculeCamion || '',
-       supplier: formValue.supplier || null,
+      supplier: formValue.supplier || null,
       trtDate: formValue.trtDate ? new Date(formValue.trtDate) : null,
       oliveVariety: formValue.oliveVariety || null,
       sackCount: formValue.sackCount ? Number(formValue.sackCount) : 0,
@@ -446,7 +369,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
         this.isEditing ? 'DELIVERIES.FORM.MESSAGES.UPDATE_ERROR' : 'DELIVERIES.FORM.MESSAGES.SAVE_ERROR'
       );
 
-      if (error && typeof error === 'object' && 'status' in error && error.status === 400) {
+      if (error && typeof error === 'object' && 'status' in error && (error as any).status === 400) {
         const errorObj = error as { error?: { message?: string } };
         errorMessage = errorObj.error?.message || this.translate.instant('DELIVERIES.FORM.MESSAGES.VALIDATION_ERROR');
       }
@@ -463,10 +386,10 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     this.router.navigate(['/reception/reception-olive']);
   }
 
-  displayFn<T extends { name: string; lastname: string }>(item: T): string {
-    if (!item) return '';
-
-    return item.name + ' ' + item.lastname;
+  // FIX: accept string | object to play nice while typing
+  displayFn(item: SupplierType | string | null): string {
+    if (!item || typeof item === 'string') return item ?? '';
+    return `${item.name ?? ''} ${item.lastname ?? ''}`.trim();
   }
 
   validateSupplier() {
@@ -491,12 +414,67 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     this.partyRegionSectionKey = isClient ? 'OLIVE_RECEPTION.FORM.SECTIONS.CLIENT_REGION' : 'OLIVE_RECEPTION.FORM.SECTIONS.SUPPLIER_REGION';
   }
 
+  openAddSupplierDialog(): void {
+    const dialogRef = this.dialog.open(SupplierAddComponent, {
+      width: 'auto',
+      data: { fromDialog: true }
+    });
+
+    dialogRef.afterClosed().subscribe((newSupplier) => {
+      if (newSupplier) {
+        this.suppliers = [...this.suppliers, newSupplier];
+        this.receptionForm.get('supplier')?.setValue(newSupplier);
+      }
+    });
+  }
+
+  openAddRegionDialog(): void {
+    const dialogRef = this.dialog.open(GenericTypeDialogComponent, {
+      width: '500px',
+      data: { initialType: TypeCategory.REGION, fromDialog: true }
+    });
+
+    dialogRef.afterClosed().subscribe((newRegion: BaseType | undefined) => {
+      if (newRegion) {
+        this.regions = [...this.regions, newRegion];
+        this.receptionForm.get('region')?.setValue(newRegion);
+      }
+    });
+  }
+
+  openAddParcelDialog(): void {
+    const dialogRef = this.dialog.open(GenericTypeDialogComponent, {
+      width: '500px',
+      data: { initialType: TypeCategory.PARCEL, fromDialog: true }
+    });
+
+    dialogRef.afterClosed().subscribe((newParcel: BaseType | undefined) => {
+      if (newParcel) {
+        this.parcels = [...this.parcels, newParcel];
+        this.receptionForm.get('parcel')?.setValue(newParcel);
+      }
+    });
+  }
+
+  private recomputeNet(): void {
+    const gross = this.num(this.receptionForm.get('poidsBrute')?.value) ?? 0;
+    const empty = this.num(this.receptionForm.get('poidsCamionVide')?.value) ?? 0;
+    const net = Math.max(gross - empty, 0);
+    this.receptionForm.get('poidsNet')?.setValue(net, { emitEvent: false });
+  }
+
+  private num(value: any): number | null {
+    if (value === null || value === undefined || value === '') return null;
+    const n = Number(value);
+    return isNaN(n) ? null : n;
+  }
+
   /** Décrémente le compteur et cache le spinner quand tout est terminé */
   private markCallDone(): void {
     this.pendingCalls--;
     if (this.pendingCalls === 0) {
       this.loading = false;
-      // Les filtres autocomplete dépendent des listes chargées :
+      // Les filtres autocomplete dépendent des listes chargées :
       this.setupAutocompleteFilters();
     }
   }
@@ -526,20 +504,6 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     return lotNumbers.length ? Math.max(...lotNumbers) : 0;
   }
 
-  openAddSupplierDialog(): void {
-    const dialogRef = this.dialog.open(SupplierAddComponent, {
-      width: 'auto',
-      data: {fromDialog: true}
-    });
-
-    dialogRef.afterClosed().subscribe((newSupplier) => {
-      if (newSupplier) {
-        this.suppliers = [...this.suppliers, newSupplier];
-        this.receptionForm.get('supplier')?.setValue(newSupplier);
-      }
-    });
-  }
-
   private _getNestedValue<T extends Record<string, unknown>>(obj: T, path: string): string {
     return path.split('.').reduce((acc, part) => {
       if (acc && typeof acc === 'object') {
@@ -558,52 +522,29 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       return value instanceof Date ? value : new Date(value);
     };
 
-    console.log('patchForm delivery data:', d);
-    console.log('Available regions:', this.regions);
-    console.log('Available parcels:', this.parcels);
-    console.log('Delivery region ID:', d.region?.id);
-    console.log('Delivery parcel ID:', d.parcel?.id);
-
     const matchedRegion = this.regions.find((r) => r.id === d.region?.id) || null;
     const matchedParcel = this.parcels.find((r) => r.id === d.parcel?.id) || null;
 
-    console.log('Matched region:', matchedRegion);
-    console.log('Matched parcel:', matchedParcel);
+    this.receptionForm.patchValue(
+      {
+        ...d,
+        deliveryDate: parseDate(d.deliveryDate),
+        trtDate: parseDate(d.trtDate),
+        region: matchedRegion,
+        parcel: matchedParcel,
+        poidsBrute: d.poidsBrute,
+        poidsNet: d.poidsNet,
+        matriculeCamion: d.matriculeCamion,
+        supplier: matchedSupplier || null,
+        oliveVariety: d.oliveVariety || null,
+        sackCount: d.sackCount,
+        oliveType: d.oliveType || null,
+        operationType: d.operationType || null
+      },
+      { emitEvent: false }
+    );
 
-    this.receptionForm.patchValue({
-      ...d,
-      deliveryDate: parseDate(d.deliveryDate),
-      trtDate: parseDate(d.trtDate),
-      region: matchedRegion,
-      parcel: matchedParcel,
-      poidsBrute: d.poidsBrute,
-      poidsNet: d.poidsNet,
-      matriculeCamion: d.matriculeCamion,
-      supplier: matchedSupplier || null,
-      oliveVariety: d.oliveVariety || null,
-      sackCount: d.sackCount,
-      oliveType: d.oliveType || null,
-      operationType: d.operationType || null
-    });
-
-    // Manually trigger display update for region and parcel
-    setTimeout(() => {
-      if (matchedRegion && matchedRegion.name) {
-        const regionInput = document.querySelector('input[formcontrolname="region"]');
-        if (regionInput) {
-          (regionInput as HTMLInputElement).value = matchedRegion.name;
-        }
-      }
-      if (matchedParcel && matchedParcel.name) {
-        const parcelInput = document.querySelector('input[formcontrolname="parcel"]');
-        if (parcelInput) {
-          (parcelInput as HTMLInputElement).value = matchedParcel.name;
-        }
-      }
-    }, 100);
-
-    // Log the final form values
-    console.log('Final form values:', this.receptionForm.value);
+    // FIX: removed manual DOM value injection; display is handled by displayWith
   }
 
   // Setup form subscriptions
@@ -616,32 +557,37 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       })
     );
 
-    // Enforce autocomplete selection for supplier
-    this.receptionForm.get('supplier')!.valueChanges.subscribe((value) => {
-      if (value && !this.suppliers.some((s) => s.id === value.id)) {
-        this.receptionForm.get('supplier')!.setValue(null);
-      }
-    });
+    // FIX: DO NOT null-out on each keystroke. Only react when supplier is an object (selected).
     this.subscriptions.push(
-      this.receptionForm.get('supplier')!.valueChanges.subscribe((supplier: SupplierType | null) => {
-        if (supplier && supplier.region) {
-          this.receptionForm.patchValue({ region: supplier.region });
+      this.receptionForm.get('supplier')!.valueChanges.subscribe((supplier: SupplierType | string | null) => {
+        if (supplier && typeof supplier === 'object' && (supplier as SupplierType).region) {
+          const reg = (supplier as SupplierType).region!;
+          const match = this.regions.find((r) => r.id === reg.id) || reg;
+          this.receptionForm.patchValue({ region: match }, { emitEvent: false });
         }
       })
     );
 
-    // Enforce autocomplete selection for region
-    this.receptionForm.get('region')!.valueChanges.subscribe((value) => {
-      if (value && !this.regions.some((r) => r.id === value.id)) {
-        this.receptionForm.get('region')!.setValue(null);
-      }
-    });
-    // Enforce autocomplete selection for parcel
-    this.receptionForm.get('parcel')!.valueChanges.subscribe((value) => {
-      if (value && !this.parcels.some((r) => r.id === value.id)) {
-        this.receptionForm.get('parcel')!.setValue(null);
-      }
-    });
+    // FIX: Guard region/parcel handlers to avoid touching typed strings
+    this.subscriptions.push(
+      this.receptionForm.get('region')!.valueChanges.subscribe((value) => {
+        if (isObjectWithId(value)) {
+          if (!this.regions.some((r) => r.id === (value as any).id)) {
+            this.receptionForm.get('region')!.setValue(null);
+          }
+        }
+      })
+    );
+
+    this.subscriptions.push(
+      this.receptionForm.get('parcel')!.valueChanges.subscribe((value) => {
+        if (isObjectWithId(value)) {
+          if (!this.parcels.some((r) => r.id === (value as any).id)) {
+            this.receptionForm.get('parcel')!.setValue(null);
+          }
+        }
+      })
+    );
   }
 
   private setupAutocompleteFilters(): void {
@@ -651,16 +597,20 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       map((value) => this._filter(this.regions, value, 'name'))
     );
 
-    // Supplier filter
-    this.filteredSuppliers = this.receptionForm.get('supplier')!.valueChanges.pipe(
+    // FIX: Supplier filter that handles both string typing and selected object (name + lastname)
+    this.filteredSuppliers$ = this.receptionForm.get('supplier')!.valueChanges.pipe(
       startWith(''),
-      map((value) => this._filter(this.suppliers, value, 'name'))
+      map((val) => (typeof val === 'string' ? val : this.displayFn(val))),
+      map((text) => {
+        const q = (text ?? '').toLowerCase();
+        return this.suppliers.filter((s) => `${s.name ?? ''} ${s.lastname ?? ''}`.toLowerCase().includes(q));
+      })
     );
 
     // Operation type filter
     this.filteredOperationTypes = this.receptionForm.get('operationType')!.valueChanges.pipe(
       startWith(''),
-      map((value) => this._filter(this.operationTypes, value, 'name'))
+      map((value) => this._filter(this.operationTypes as any, value as any, 'name'))
     );
   }
 
@@ -675,38 +625,8 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     }
     const filterValue = value.toLowerCase();
     return items.filter((item) => {
-      const fieldValue = this._getNestedValue(item, displayField);
-      return fieldValue.toLowerCase().includes(filterValue);
-    });
-  }
-
-  openAddRegionDialog(): void {
-    const dialogRef = this.dialog.open(GenericTypeDialogComponent, {
-      width: '500px',
-      data: {initialType: TypeCategory.REGION, fromDialog: true}
-    });
-
-    dialogRef.afterClosed().subscribe((newRegion: BaseType | undefined) => {
-      if (newRegion) {
-        this.regions = [...this.regions, newRegion];
-        this.receptionForm.get('region')?.setValue(newRegion);
-
-      }
-    });
-  }
-
-  openAddParcelDialog(): void {
-    const dialogRef = this.dialog.open(GenericTypeDialogComponent, {
-      width: '500px',
-      data: {initialType: TypeCategory.PARCEL, fromDialog: true}
-    });
-
-    dialogRef.afterClosed().subscribe((newParcel: BaseType | undefined) => {
-      if (newParcel) {
-        this.parcels = [...this.parcels, newParcel];
-        this.receptionForm.get('parcel')?.setValue(newParcel);
-
-      }
+      const fieldValue = this._getNestedValue(item as any, displayField);
+      return fieldValue?.toLowerCase().includes(filterValue);
     });
   }
 
@@ -717,15 +637,4 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     const paddedNumber = deliveryNumber.toString().padStart(4, '0');
     return `${paddedNumber}${oliveType}${year}`;
   }
-
-  // // Méthode pour forcer la mise à jour du composant BaseTypeComponent
-  // private forceUpdateBaseTypeComponent(type: 'region' | 'parcel'): void {
-  //   if (type === 'region' && this.regionComponent) {
-  //     this.regionComponent.forceUpdate();
-  //   } else if (type === 'parcel' && this.parcelComponent) {
-  //     this.parcelComponent.forceUpdate();
-  //   }
-
-
-  protected readonly TypeCategory = TypeCategory;
 }

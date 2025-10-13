@@ -2207,6 +2207,13 @@
     "IMAGE_ALT": "404 error illustration",
     "TITLE": "Page Not Found"
   },
+  "PLANNING": {
+    "CANCEL_CAUSE": "Cancellation reason",
+    "CANCEL_CAUSE_PLACEHOLDER": "Why is this reception being canceled?",
+    "CANCEL_PROMPT": "Please enter the cancellation reason (optional).",
+    "CANCEL_RECEPTION": "Delevery has been canceled",
+    "CANCEL_TITLE": "Cancel reception"
+  },
   "PDF": {
     "ACIDITY": "Acidity",
     "ADDRESS": "Adresse",

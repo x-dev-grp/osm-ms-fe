@@ -130,77 +130,84 @@
             role="list"
           >
             @for (item of filteredReceptions| filterLot:searchTerm; track trackByReception($index, item)) {
-              @if (item.type === LOT) {
-                @let data = item.data ;
-                <div
-                  class="reception-card"
-                  cdkDrag
-                  (cdkDragMoved)="onDragMove($event)"
-                  [cdkDragData]="item"
-                  [attr.id]="'item-' + data.id"
-                  role="listitem"
-                  (cdkDragStarted)="onDragStart($event)"
-                  (cdkDragEnded)="onDragEnd($event)"
-                >
-                  <div class="side-controls">
-                    <div class="drag-handle" cdkDragHandle>
-                      <mat-icon fontIcon="drag_indicator"></mat-icon>
+                @if (item.type === LOT) {
+                  @let data = item.data ;
+                  <div
+                    class="reception-card"
+                    cdkDrag
+                    (cdkDragMoved)="onDragMove($event)"
+                    [cdkDragData]="item"
+                    [attr.id]="'item-' + data.id"
+                    role="listitem"
+                    (cdkDragStarted)="onDragStart($event)"
+                    (cdkDragEnded)="onDragEnd($event)"
+                  >
+                    <div class="side-controls">
+                      <div class="drag-handle" cdkDragHandle>
+                        <mat-icon fontIcon="drag_indicator"></mat-icon>
+                      </div>
+                      <mat-checkbox
+                        class="select-box"
+                        [(ngModel)]="selection[data.id]"
+                        (change)="onSelectChange(item)"
+                      ></mat-checkbox>
+                      <button
+                        mat-icon-button
+                        class="cancel-btn"
+                        (click)="openCancelDialog(data)"
+                        aria-label="Cancel reception">
+                        <mat-icon>cancel</mat-icon>
+                      </button>
                     </div>
-                    <mat-checkbox
-                      class="select-box"
-                      [(ngModel)]="selection[data.id]"
-                      (change)="onSelectChange(item)"
-                    ></mat-checkbox>
-                  </div>
-                  <div class="card-content">
-                    <div class="flex space-between">
-                      <div class="card-content">
-                        <div class="flex space-between">
-                          <div>
-                            <div class="lot-info">
-                              <strong>#{{ data.lotNumber }}</strong>
-                            </div>
-                            <div class="quantity-info">
+                    <div class="card-content">
+                      <div class="flex space-between">
+                        <div class="card-content">
+                          <div class="flex space-between">
+                            <div>
+                              <div class="lot-info">
+                                <strong>#{{ data.lotNumber }}</strong>
+                              </div>
+                              <div class="quantity-info">
 
-                              @if (data.poidsNet) {
-                                <span class="quantity">Net : {{ data.poidsNet }} kg</span>
-                              }
-                            </div>
-                            <div class="details-info">
-                              @if (data.supplier) {
-                                <span
-                                  class="supplier">{{ 'PLANNING_SUPPLIER'|translate }} {{ data.supplier.name + " " + data.supplier.lastname }}</span>
-                              }
-                              @if (data.operationType) {
-                                <span
-                                  class="operationType">{{ 'PLANNING_OPERATION_TYPE'|translate }} {{ ('OPERATION_TYPE.' + data.operationType)|translate }}</span>
-                              }
+                                @if (data.poidsNet) {
+                                  <span class="quantity">Net : {{ data.poidsNet }} kg</span>
+                                }
+                              </div>
+                              <div class="details-info">
+                                @if (data.supplier) {
+                                  <span
+                                    class="supplier">{{ 'PLANNING_SUPPLIER'|translate }} {{ data.supplier.name + " " + data.supplier.lastname }}</span>
+                                }
+                                @if (data.operationType) {
+                                  <span
+                                    class="operationType">{{ 'PLANNING_OPERATION_TYPE'|translate }} {{ ('OPERATION_TYPE.' + data.operationType)|translate }}</span>
+                                }
 
-                              @if (data.oliveVariety) {
-                                <span class="variety">{{ 'PLANNING_VARIETY'|translate }} {{ data.oliveVariety }}</span>
+                                @if (data.oliveVariety) {
+                                  <span class="variety">{{ 'PLANNING_VARIETY'|translate }} {{ data.oliveVariety }}</span>
+                                }
+                                @if (data.oliveType) {
+                                  <span class="type">{{ 'PLANNING_TYPE'|translate }} {{ data.oliveType }}</span>
+                                }
+                                @if (data.sackCount) {
+                                  <span class="sacks">{{ 'PLANNING_SACKS'|translate }} {{ data.sackCount }}</span>
+                                }
+                              </div>
+                              @if (data.globalLotNumber) {
+                                <span class="gl-badge">{{ data.globalLotNumber }}</span>
                               }
-                              @if (data.oliveType) {
-                                <span class="type">{{ 'PLANNING_TYPE'|translate }} {{ data.oliveType }}</span>
-                              }
-                              @if (data.sackCount) {
-                                <span class="sacks">{{ 'PLANNING_SACKS'|translate }} {{ data.sackCount }}</span>
-                              }
+                              <small
+                                class="block text-xs text-gray-600">{{ data.deliveryDate | date: 'shortDate' }}</small>
                             </div>
-                            @if (data.globalLotNumber) {
-                              <span class="gl-badge">{{ data.globalLotNumber }}</span>
-                            }
-                            <small
-                              class="block text-xs text-gray-600">{{ data.deliveryDate | date: 'shortDate' }}</small>
+                            <div>
+                            </div>
+
                           </div>
-                          <div>
-                          </div>
-
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              }
+                }
               @if (item.type === GLOBAL_LOT) {
                 @let data = item.data ;
                 <div
@@ -430,3 +437,31 @@
     </div>
   </app-card>
 </div>
+<ng-template #cancelDialog let-data>
+  <h2 mat-dialog-title>{{ 'PLANNING.CANCEL_TITLE' | translate }}</h2>
+
+  <mat-dialog-content>
+    <p class="m-b-10">
+      {{ 'PLANNING.CANCEL_PROMPT' | translate }}
+    </p>
+
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>{{ 'PLANNING.CANCEL_CAUSE' | translate }}</mat-label>
+      <textarea
+        matInput
+        [(ngModel)]="cancelCause"
+        rows="3"
+        cdkFocusInitial
+        placeholder="{{ 'PLANNING.CANCEL_CAUSE_PLACEHOLDER' | translate }}"></textarea>
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>
+      {{ 'COMMON.CLOSE' | translate }}
+    </button>
+    <button mat-flat-button color="warn" (click)="confirmCancel(data)">
+      {{ 'OSM_DASHBOARD.ACTIONS.CONFIRM' | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>
