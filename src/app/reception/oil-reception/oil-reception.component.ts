@@ -247,13 +247,6 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param e Object containing the row data and action to perform
    */
   onRowAction(e: { row: UnifiedDelivery; action: string }): void {
-    console.log(`[OilReception] Processing action: ${e.action} for delivery: ${e.row.lotNumber}`);
-
-    if (!e.row || !e.action) {
-      console.error('[OilReception] Invalid action data:', e);
-      this.toast.warning("Données d'action invalides");
-      return;
-    }
 
     try {
       switch (e.action) {
@@ -278,13 +271,6 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
           console.log(`[OilReception] Setting price for delivery: ${e.row.lotNumber}`);
           this.setPrice(e.row);
           break;
-
-        case 'GEN_PDF_PRODUCTION':
-          if (e.row) {
-            this.generateBonProduction(e.row);
-          }
-          break;
-
         case 'COMPLETE_PAYMENT_DETAILS':
           console.log(`[OilReception] Opening payment details dialog for delivery: ${e.row.lotNumber}`);
           this.openPaymentDetailsDialogFromParent(e.row);
@@ -602,25 +588,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
     return nums.length ? Math.max(...nums) : 0;
   }
 
-  private fetchDeliveries(): void {
-    this.deliveryService.getAllDeliveriesList().subscribe((res) => {
-      this.deliveries = res.success ? res.data.filter((d) => d.deliveryType === 'OIL') : [];
-      if (!res.success) this.toast.error(res.message || 'Erreur lors du chargement des réceptions.');
-      if (res.success) this.toast.success(res.message);
-    });
-  }
 
-  private deleteDelivery(d: UnifiedDelivery): void {
-    this.deliveryService.deleteUnifiedDelivery(d.id!).subscribe(
-      (res) => {
-        if (res.success) {
-          this.fetchDeliveries();
-          this.toast.success();
-        }
-      },
-      () => this.toast.error('Erreur lors de la suppression.')
-    );
-  }
 
   private setupOliveTypeSubscription(): void {
     const sub = this.receptionForm.get('oliveType')!.valueChanges.subscribe((ol: BaseType | null) => {
@@ -716,7 +684,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
 
       // Prevent the old bottom block from opening the dialog too early
       return;
-    } else {
+    } else if(row.lotOliveNumber) {
       this.deliveryService.getDeliveryByLotNumber(row.lotOliveNumber!).subscribe({
         next: (res) => {
           if (res.success && res.data) {
@@ -763,9 +731,15 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
           console.error('Erreur de chargement :', err);
         }
       });
-
-      // Prevent the old bottom block from opening the dialog too early
-      return;
+     } else {
+      const initialUnitPrice = this.prix_base || row.unitPrice || null;
+      this.setPriceForm.get('unitPrice')?.setValue(initialUnitPrice);
+      this.dialog.open(this.setPriceDialogTemplate, {
+        width: 'auto',
+        data: row,
+        disableClose: true,
+        panelClass: 'set-price-dialog'
+      });
     }
 
     // (Removed) Old bottom block that opened the dialog immediately.
