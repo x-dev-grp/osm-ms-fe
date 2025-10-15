@@ -78,13 +78,13 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
   parcels: BaseType[] = [];
   partyLabelKey = 'OLIVE_RECEPTION.FORM.FIELDS.SUPPLIER';
   partyRegionSectionKey = 'OLIVE_RECEPTION.FORM.SECTIONS.SUPPLIER_REGION';
+  filteredSuppliers$: Observable<SupplierType[]>;
   protected readonly TypeCategory = TypeCategory;
   private pendingCalls = 0; // Compteur de requêtes HTTP en cours
   private subscriptions: Subscription[] = [];
   private deliveryId: string | null;
   private pendingEditReception: UnifiedDelivery | null = null;
   private _typeSubs: Subscription[] = [];
-    filteredSuppliers$: Observable<SupplierType[]>;
 
   constructor(
     private fb: FormBuilder,
@@ -195,23 +195,13 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     /*************** 2.  Dans le flux de chargement des réceptions ****************/
     const deliveriesSub = this.deliverySrv.getAllDeliveriesList().subscribe({
       next: (res) => {
-        this.deliveries = res.success ? res.data : [];
+        this.deliveries = res?.success ? (res.data ?? []) : [];
+
         if (!this.isEditing) {
-          this.setNextNumbers(); // 👉 applique automatiquement le prochain deliveryNumber/lotNumber
-        }
-      },
-      error: (error) => {
-        console.error('Error loading deliveries:', error);
-        // En cas d'erreur, initialiser avec des valeurs par défaut
-        this.deliveries = [];
-        if (!this.isEditing) {
-          this.receptionForm.patchValue(
-            {
-              deliveryNumber: 1,
-              lotNumber: 1
-            },
-            { emitEvent: false }
-          );
+          // if nested: map(d => d.delivery?.deliveryNumber)
+          const nextNumber = this.nextFreeNumber(this.deliveries.map((d) => d.deliveryNumber));
+
+          this.receptionForm.patchValue({ deliveryNumber: nextNumber, lotNumber: nextNumber }, { emitEvent: false });
         }
         this.toast.warning(this.translate.instant('DELIVERIES.FORM.MESSAGES.LOAD_ERROR'));
       },
@@ -265,10 +255,12 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       this.loading = false;
     }
   }
+
   displayFn(item: SupplierType | string | null): string {
     if (!item || typeof item === 'string') return item ?? '';
     return `${item.name ?? ''} ${item.lastname ?? ''}`.trim();
   }
+
   ngOnDestroy(): void {
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
@@ -369,29 +361,13 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
 
   validateSupplier(): void {
     const value = this.receptionForm.get('supplier')!.value;
-    if (!(value && typeof value === 'object' && 'id' in value) ||
-      !this.suppliers.some(s => s.id && s.id === (value as SupplierType).id)) {
+    if (
+      !(value && typeof value === 'object' && 'id' in value) ||
+      !this.suppliers.some((s) => s.id && s.id === (value as SupplierType).id)
+    ) {
       this.receptionForm.get('supplier')!.setValue(null);
     }
   }
-
-
-
-// single place to wire autocomplete filtering (supplier typing)
-  private setupAutocompleteFilters(): void {
-    this.filteredSuppliers$ = this.receptionForm.get('supplier')!.valueChanges.pipe(
-      startWith(''),
-      // while typing, control emits a string; when selected, emits SupplierType
-      map(val => (typeof val === 'string' ? val : this.displayFn(val))),
-      map(text => {
-        const q = (text ?? '').toLowerCase();
-        return this.suppliers.filter(s =>
-          `${s.name ?? ''} ${s.lastname ?? ''}`.toLowerCase().includes(q)
-        );
-      })
-    );
-  }
-
 
   openAddSupplierDialog(): void {
     const dialogRef = this.dialog.open(SupplierAddComponent, {
@@ -407,18 +383,16 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     });
   }
 
-
   openAddRegionDialog(): void {
     const dialogRef = this.dialog.open(GenericTypeDialogComponent, {
       width: '500px',
-      data: {initialType: TypeCategory.REGION, fromDialog: true}
+      data: { initialType: TypeCategory.REGION, fromDialog: true }
     });
 
     dialogRef.afterClosed().subscribe((newRegion: BaseType | undefined) => {
       if (newRegion) {
         this.regions = [...this.regions, newRegion];
         this.receptionForm.get('region')?.setValue(newRegion);
-
       }
     });
   }
@@ -426,20 +400,38 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
   openAddParcelDialog(): void {
     const dialogRef = this.dialog.open(GenericTypeDialogComponent, {
       width: '500px',
-      data: {initialType: TypeCategory.PARCEL, fromDialog: true}
+      data: { initialType: TypeCategory.PARCEL, fromDialog: true }
     });
 
     dialogRef.afterClosed().subscribe((newParcel: BaseType | undefined) => {
       if (newParcel) {
         this.parcels = [...this.parcels, newParcel];
         this.receptionForm.get('parcel')?.setValue(newParcel);
-
       }
     });
   }
 
+  private nextFreeNumber(nums: Array<number | string>): number {
+    const used = new Set(nums.map((n) => Number(n)).filter((n) => Number.isInteger(n) && n > 0));
+    let i = 1;
+    while (used.has(i)) i++;
+    return i;
+  }
 
-// ensure we build the autocomplete streams only after lists are loaded
+  // single place to wire autocomplete filtering (supplier typing)
+  private setupAutocompleteFilters(): void {
+    this.filteredSuppliers$ = this.receptionForm.get('supplier')!.valueChanges.pipe(
+      startWith(''),
+      // while typing, control emits a string; when selected, emits SupplierType
+      map((val) => (typeof val === 'string' ? val : this.displayFn(val))),
+      map((text) => {
+        const q = (text ?? '').toLowerCase();
+        return this.suppliers.filter((s) => `${s.name ?? ''} ${s.lastname ?? ''}`.toLowerCase().includes(q));
+      })
+    );
+  }
+
+  // ensure we build the autocomplete streams only after lists are loaded
   private markCallDone(): void {
     this.pendingCalls--;
     if (this.pendingCalls === 0) {
@@ -463,14 +455,13 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     );
   }
 
-// patch with matched objects by id; avoid manual DOM pokes
+  // patch with matched objects by id; avoid manual DOM pokes
   private patchForm(d: UnifiedDelivery): void {
-    const parseDate = (v: string | Date | null | undefined): Date | null =>
-      !v ? null : (v instanceof Date ? v : new Date(v));
+    const parseDate = (v: string | Date | null | undefined): Date | null => (!v ? null : v instanceof Date ? v : new Date(v));
 
-    const matchedSupplier = this.suppliers.find(s => s.id?.toString() === d.supplier?.id?.toString()) || null;
-    const matchedRegion   = this.regions.find(r => r.id === d.region?.id) || null;
-    const matchedParcel   = this.parcels.find(r => r.id === d.parcel?.id) || null;
+    const matchedSupplier = this.suppliers.find((s) => s.id?.toString() === d.supplier?.id?.toString()) || null;
+    const matchedRegion = this.regions.find((r) => r.id === d.region?.id) || null;
+    const matchedParcel = this.parcels.find((r) => r.id === d.parcel?.id) || null;
 
     this.receptionForm.patchValue(
       {
@@ -508,7 +499,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
       this.receptionForm.get('supplier')!.valueChanges.subscribe((supplier: SupplierType | string | null) => {
         if (supplier && typeof supplier === 'object' && (supplier as SupplierType).region) {
           const reg = (supplier as SupplierType).region!;
-          const match = this.regions.find(r => r.id === reg.id) || reg;
+          const match = this.regions.find((r) => r.id === reg.id) || reg;
           this.receptionForm.patchValue({ region: match }, { emitEvent: false });
         }
       })
@@ -518,7 +509,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.receptionForm.get('region')!.valueChanges.subscribe((value: any) => {
         if (value && typeof value === 'object' && 'id' in value) {
-          if (!this.regions.some(r => r.id === value.id)) {
+          if (!this.regions.some((r) => r.id === value.id)) {
             this.receptionForm.get('region')!.setValue(null);
           }
         }
@@ -527,7 +518,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.receptionForm.get('parcel')!.valueChanges.subscribe((value: any) => {
         if (value && typeof value === 'object' && 'id' in value) {
-          if (!this.parcels.some(r => r.id === value.id)) {
+          if (!this.parcels.some((r) => r.id === value.id)) {
             this.receptionForm.get('parcel')!.setValue(null);
           }
         }

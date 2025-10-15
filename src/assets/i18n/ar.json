@@ -2207,12 +2207,21 @@
     "TITLE": "الصفحة غير موجودة"
   },
   "PDF": {
+    "OIL_GRADE": {
+      "EXTRA_VIRGIN": "بكر ممتاز",
+      "LAMPANTE": "لامة",
+      "OTHER": "آخر",
+      "REFINED": "مكرر",
+      "VIRGIN": "بكر"
+    },
+
     "ACIDITY": "الحموضة",
     "ADDRESS": "مجال بلابس 1214 قصر هلال",
     "BASCULE": "",
     "CATEGORY_OIL": "فئة الزيت",
     "CATEGORY_OLIVE": "فئة الزيتون",
     "CLIENT": "",
+    "CODEECH": "رمز العينة ",
     "COMPANY_ADDRESS": "العنوان",
     "COMPANY_EMAIL": "البريد الإلكتروني",
     "COMPANY_FAX": "الفاكس",
@@ -2267,6 +2276,7 @@
     "INVOICE_DATE": "تاريخ الفاتورة",
     "K232": "K232",
     "K270": "K270",
+    "LIEU_DU_STOCKAGE": "مكان التخزين",
     "LOAN": "قرض",
     "LOT": "الدفعة",
     "LOT_GLOBAL": "الدفعة العالمية",
@@ -2300,6 +2310,7 @@
     "PRODUCT": "المنتج",
     "PRODUCTION_MANAGER": "مدير الإنتاج",
     "PRODUCTION_RECEIPT": "إيصال الإنتاج",
+    "QUALITY": "الجودة",
     "QUALITY_FIELDS": {
       "ACIDITE": "الحموضة",
       "CATEGORIE_HUILE": "فئة الزيت",
@@ -2325,6 +2336,7 @@
     "RECEPTION_REGION": "منطقة الاستقبال",
     "RECEPTION_SUPPLIER": "مورد الاستقبال",
     "RECIPIENT": "المستفيد",
+    "RECPT_NOTE_OR_OLIVE_LOT_NUMBER": "رقم وصل الاستلام / رقم دفعة الزيتون",
     "REFERENCE": "المرجع",
     "REFERENCE_DATE": "",
     "REGION": "المنطقة",

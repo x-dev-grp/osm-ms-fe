@@ -11,6 +11,7 @@ import { ToastService } from '../../shared/services/toast.service';
 import { getControlQualitePdfConfig } from '../pdf-config/controlQualite.config';
 import { getOlivePdfConfig } from '../pdf-config/reception-olive-pdf.config';
 import { getProductionPdfConfig } from '../pdf-config/production-pdf.config';
+import { getOilPdfConfig } from '../pdf-config/reception-oil-pdf.config';
 // Import the new unified PDF services
 // import { PdfConfigFactoryService } from '../../shared/services/pdf-config-factory.service';
 // import { UnifiedPdfGeneratorService } from '../../shared/services/unified-pdf-generator.service';
@@ -28,7 +29,7 @@ export class ReceptionListComponent {
     private deliveryService: UnifiedDeliveryService,
     private _router: Router,
     private toast: ToastService,
-    private pdfGeneratorService: PdfGeneratorService,
+    private pdfGeneratorService: PdfGeneratorService
     // Inject the new services
     // private pdfConfigFactory: PdfConfigFactoryService,
     // private unifiedPdfGenerator: UnifiedPdfGeneratorService
@@ -47,14 +48,11 @@ export class ReceptionListComponent {
       case 'GEN_PDF':
         this.generateBonReception(event.row);
         break;
-      case 'QUALITY':
-        break;
 
       case 'GEN_PDF_QC_OIL':
         if (event.row.qualityControlResults && event.row.qualityControlResults.length > 0) {
           const config = getControlQualitePdfConfig(event.row, 'OIL');
           this.pdfGeneratorService.generatePdf(config);
-          this.toast.success(`[OilReception] Generating GEN_PDF_QC_OIL PDF for delivery: ${event.row.lotNumber}`);
         } else {
           this.toast.error('no quality control for oil');
         }
@@ -88,7 +86,14 @@ export class ReceptionListComponent {
   }
 
   generateBonReception(delivery: UnifiedDelivery): void {
-    const config = getOlivePdfConfig(delivery);
+    let config;
+    if (delivery.deliveryType === 'OLIVE') {
+      config = getOlivePdfConfig(delivery);
+    } else {
+      config = getOilPdfConfig(delivery);
+      config = { ...config, layout: 'oilReceptionForm' };
+    }
+
     this.pdfGeneratorService.generatePdf(config);
   }
 

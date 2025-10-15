@@ -169,6 +169,16 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     this.receptionForm.addControl('oliveType', new FormControl<Olive_Oil_Type | null>(null));
     this.receptionForm.addControl('oilType', new FormControl<Olive_Oil_Type | null>(null));
   }
+  private nextFreeNumber(nums: Array<number | string>): number {
+    const used = new Set(
+      nums
+        .map(n => Number(n))
+        .filter(n => Number.isInteger(n) && n > 0)
+    );
+    let i = 1;
+    while (used.has(i)) i++;
+    return i;
+  }
 
   ngOnInit(): void {
     const deliveryId = this.route.snapshot.paramMap.get('id');
@@ -229,14 +239,15 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     this.pendingCalls++;
     const deliveriesSub = this.deliveryService.getAllDeliveriesList().subscribe({
       next: (res) => {
-        this.deliveries = res.success ? res.data : [];
+        this.deliveries = res?.success ? (res.data ?? []) : [];
         if (!this.isEditing) {
-          const deliveryCount = this.deliveries.length;
-          const maxLot = this.getMaxLotNumber(); // currently unused but kept
+          // if nested: map(d => d.delivery?.deliveryNumber)
+          const nextNumber = this.nextFreeNumber(
+            this.deliveries.map(d => d.deliveryNumber)
+          );
           this.receptionForm.patchValue(
-            {
-              deliveryNumber: deliveryCount + 1,
-              lotNumber: deliveryCount + 1
+            { deliveryNumber: nextNumber,
+              lotNumber: nextNumber
             },
             { emitEvent: false }
           );

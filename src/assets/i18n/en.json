@@ -2207,14 +2207,14 @@
     "IMAGE_ALT": "404 error illustration",
     "TITLE": "Page Not Found"
   },
-  "PLANNING": {
-    "CANCEL_CAUSE": "Cancellation reason",
-    "CANCEL_CAUSE_PLACEHOLDER": "Why is this reception being canceled?",
-    "CANCEL_PROMPT": "Please enter the cancellation reason (optional).",
-    "CANCEL_RECEPTION": "Delevery has been canceled",
-    "CANCEL_TITLE": "Cancel reception"
-  },
   "PDF": {
+    "OIL_GRADE": {
+      "EXTRA_VIRGIN": "Extra Virgin",
+      "LAMPANTE": "Lampante",
+      "OTHER": "Other",
+      "REFINED": "Refined",
+      "VIRGIN": "Virgin"
+    },
     "ACIDITY": "Acidity",
     "ADDRESS": "Adresse",
     "BANK_DETAILS": "Bank Details",
@@ -2226,6 +2226,7 @@
     "CLIENT_INFO": "Client",
     "CLIENT_NAME": "Client name",
     "CLIENT_PHONE": "Mobile N°",
+    "CODEECH": "Sample code",
     "COMPANY_ADDRESS": "Address",
     "COMPANY_EMAIL": "Email",
     "COMPANY_FAX": "Fax",
@@ -2289,6 +2290,7 @@
     "INVOICE_TITLE": "Invoice",
     "K232": "K232",
     "K270": "K270",
+    "LIEU_DU_STOCKAGE": "Storage location",
     "LOAN": "Loan",
     "LOT": "Lot",
     "LOT_GLOBAL": "Global Lot",
@@ -2330,6 +2332,7 @@
     "PRODUCT": "Product",
     "PRODUCTION_MANAGER": "Production Manager",
     "PRODUCTION_RECEIPT": "Production Receipt",
+    "QUALITY": "Quality",
     "QUALITY_FIELDS": {
       "ACIDITE": "Acidity",
       "CATEGORIE_HUILE": "Oil category",
@@ -2355,6 +2358,7 @@
     "RECEPTION_REGION": "Reception Region",
     "RECEPTION_SUPPLIER": "Reception Supplier",
     "RECIPIENT": "Recipient",
+    "RECPT_NOTE_OR_OLIVE_LOT_NUMBER": "Receipt note No. / Olive lot No.",
     "REFERENCE": "Reference",
     "REFERENCE_DATE": "Reference date",
     "REGION": "Region",
@@ -2398,6 +2402,13 @@
     "WASTE_PROCESSING": "Olive Waste Processing",
     "WEBSITE": "Website",
     "YIELD": "Yield"
+  },
+  "PLANNING": {
+    "CANCEL_CAUSE": "Cancellation reason",
+    "CANCEL_CAUSE_PLACEHOLDER": "Why is this reception being canceled?",
+    "CANCEL_PROMPT": "Please enter the cancellation reason (optional).",
+    "CANCEL_RECEPTION": "Delevery has been canceled",
+    "CANCEL_TITLE": "Cancel reception"
   },
   "PLANNING_ASSIGNED": "Assigned",
   "PLANNING_CANCEL": "Cancel",

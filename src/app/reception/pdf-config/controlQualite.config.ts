@@ -67,6 +67,8 @@ export function getControlQualitePdfConfig(delivery: UnifiedDelivery, deliveryTy
     reference: 'FOR-CQH-01',
     date: '01/12/2024',
     revision: '0',
+    Number: `${delivery.deliveryNumber} / ${new Date().getFullYear().toString().slice(-2)}`,
+
     generalInfo: [
       {
         label: 'PDF.DATE',

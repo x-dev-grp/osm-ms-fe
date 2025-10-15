@@ -2205,14 +2205,15 @@
     "DESCRIPTION": "La page que vous recherchez n’existe pas, a été déplacée ou est temporairement indisponible.",
     "IMAGE_ALT": "Illustration d’erreur 404",
     "TITLE": "Page introuvable"
-  },"PLANNING": {
-  "CANCEL_CAUSE": "Motif d'annulation",
-  "CANCEL_CAUSE_PLACEHOLDER": "Pourquoi cette réception est-elle annulée ?",
-  "CANCEL_PROMPT": "Veuillez saisir le motif d'annulation (facultatif).",
-  "CANCEL_RECEPTION": "Reception est annulé",
-  "CANCEL_TITLE": "Annuler la réception"
-},
+  },
   "PDF": {
+    "OIL_GRADE": {
+      "EXTRA_VIRGIN": "Extra Vierge",
+      "LAMPANTE": "Lampante",
+      "OTHER": "Autre",
+      "REFINED": "Raffiné",
+      "VIRGIN": "Vierge"
+    },
     "ACIDITY": "Acidité",
     "ADDRESS": "Adresse",
     "BANK_DETAILS": "Coordonnées bancaires",
@@ -2224,6 +2225,7 @@
     "CLIENT_INFO": "Client",
     "CLIENT_NAME": "Nom",
     "CLIENT_PHONE": "N° tel",
+    "CODEECH": "Code échantillon",
     "COMPANY_ADDRESS": "Adresse",
     "COMPANY_EMAIL": "Email",
     "COMPANY_FAX": "Fax",
@@ -2287,6 +2289,7 @@
     "INVOICE_TITLE": "Facture",
     "K232": "K232",
     "K270": "K270",
+    "LIEU_DU_STOCKAGE": "Lieu du stockage",
     "LOAN": "Prêt",
     "LOT": "Lot",
     "LOT_GLOBAL": "Lot Global",
@@ -2328,6 +2331,7 @@
     "PRODUCT": "Produit",
     "PRODUCTION_MANAGER": "Chef de Production",
     "PRODUCTION_RECEIPT": "BON DE PRODUCTION",
+    "QUALITY": "Qualité",
     "QUALITY_FIELDS": {
       "ACIDITE": "Acidité",
       "CATEGORIE_HUILE": "Catégorie huile",
@@ -2353,6 +2357,7 @@
     "RECEPTION_REGION": "Région de la réception",
     "RECEPTION_SUPPLIER": "Fournisseur de la réception",
     "RECIPIENT": "Destinataire",
+    "RECPT_NOTE_OR_OLIVE_LOT_NUMBER": "N° de bon de réception / N° de lot olive",
     "REFERENCE": "Référence",
     "REFERENCE_DATE": "Date référence",
     "REGION": "Région",
@@ -2396,6 +2401,13 @@
     "WASTE_PROCESSING": "Traitement des déchets oléicoles",
     "WEBSITE": "Site web",
     "YIELD": "Rendement"
+  },
+  "PLANNING": {
+    "CANCEL_CAUSE": "Motif d'annulation",
+    "CANCEL_CAUSE_PLACEHOLDER": "Pourquoi cette réception est-elle annulée ?",
+    "CANCEL_PROMPT": "Veuillez saisir le motif d'annulation (facultatif).",
+    "CANCEL_RECEPTION": "Reception est annulé",
+    "CANCEL_TITLE": "Annuler la réception"
   },
   "PLANNING_ASSIGNED": "Assignées",
   "PLANNING_CANCEL": "Annuler",
