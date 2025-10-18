@@ -1,7 +1,7 @@
-import { Component, Inject, OnInit, computed, signal } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidatorFn } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
@@ -33,15 +33,21 @@ function toNum(v: any, d = 0): number {
   const n = Number(v);
   return Number.isFinite(n) ? n : d;
 }
-function r2(v: number): number { return Math.round((v + Number.EPSILON) * 100) / 100; }
-function r3(v: number): number { return Math.round((v + Number.EPSILON) * 1000) / 1000; }
+
+function r2(v: number): number {
+  return Math.round((v + Number.EPSILON) * 100) / 100;
+}
+
+function r3(v: number): number {
+  return Math.round((v + Number.EPSILON) * 1000) / 1000;
+}
 
 /** Cross-field validator enforcing total ≤ maxTotal and quantity ≤ maxQty */
 /** only enforce caps; do NOT force total = unitPrice * quantity */
 function capValidator(maxQty: number, maxTotal: number): ValidatorFn {
   return (g: AbstractControl) => {
     const quantity = toNum(g.get('quantity')?.value);
-    const total    = toNum(g.get('total')?.value);
+    const total = toNum(g.get('total')?.value);
     const errs: any = {};
     if (quantity > maxQty) errs.maxQty = { quantity, maxQty };
     if (total > maxTotal) errs.maxTotal = { total, maxTotal };
@@ -77,25 +83,29 @@ export class PaymentDetailsDialogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const maxQty   = Math.max(0, toNum(this.data.maxQty));
+    const maxQty = Math.max(0, toNum(this.data.maxQty));
     const maxTotal = Math.max(0, toNum(this.data.maxTotal));
 
     const unitPrice0 = toNum(this.data.initialUnitPrice);
-    const quantity0  = Math.min(toNum(this.data.initialQuantity), maxQty);
-    const total0     = r2(unitPrice0 * quantity0);
+    const quantity0 = Math.min(toNum(this.data.initialQuantity), maxQty);
+    const total0 = r2(unitPrice0 * quantity0);
 
-    this.form = this.fb.group({
-      unitPrice: [unitPrice0 || null, [Validators.required, Validators.min(0.0001)]],
-      quantity:  [quantity0  || null, [Validators.required, Validators.min(0)]],
-      total:     [total0],
-    }, { validators: capValidator(maxQty, maxTotal) });
+    this.form = this.fb.group(
+      {
+        unitPrice: [unitPrice0 || null, [Validators.required, Validators.min(0.0001)]],
+        quantity: [quantity0 || null, [Validators.required, Validators.min(0)]],
+        total: [total0]
+      },
+      { validators: capValidator(maxQty, maxTotal) }
+    );
   }
 
   // — sync rules (no back-propagation to other inputs except total) —
   onUnitPriceInput(): void {
-    if (this.syncing) return; this.syncing = true;
+    if (this.syncing) return;
+    this.syncing = true;
     const p = toNum(this.form.get('unitPrice')?.value);
-    let q   = toNum(this.form.get('quantity')?.value);
+    let q = toNum(this.form.get('quantity')?.value);
     // recompute total only; keep quantity as-is but cap its effect by maxTotal
     let total = r2(p * q);
     total = Math.min(total, toNum(this.data.maxTotal));
@@ -105,12 +115,13 @@ export class PaymentDetailsDialogComponent implements OnInit {
   }
 
   onQuantityInput(): void {
-    if (this.syncing) return; this.syncing = true;
+    if (this.syncing) return;
+    this.syncing = true;
     let q = toNum(this.form.get('quantity')?.value);
-    q = Math.min(q, toNum(this.data.maxQty));               // hard cap quantity
+    q = Math.min(q, toNum(this.data.maxQty)); // hard cap quantity
     const p = toNum(this.form.get('unitPrice')?.value);
-    let total = r2(p * q);                                  // recompute total only
-    total = Math.min(total, toNum(this.data.maxTotal));     // cap total
+    let total = r2(p * q); // recompute total only
+    total = Math.min(total, toNum(this.data.maxTotal)); // cap total
     this.form.get('quantity')?.patchValue(r2(q), { emitEvent: false });
     this.form.get('total')?.patchValue(total, { emitEvent: false });
     this.form.updateValueAndValidity({ emitEvent: false });
@@ -118,9 +129,10 @@ export class PaymentDetailsDialogComponent implements OnInit {
   }
 
   onTotalInput(): void {
-    if (this.syncing) return; this.syncing = true;
+    if (this.syncing) return;
+    this.syncing = true;
     let t = toNum(this.form.get('total')?.value);
-    t = Math.min(t, toNum(this.data.maxTotal));             // cap total
+    t = Math.min(t, toNum(this.data.maxTotal)); // cap total
     this.form.get('total')?.patchValue(r2(t), { emitEvent: false });
     this.form.updateValueAndValidity({ emitEvent: false });
     this.syncing = false;
@@ -129,8 +141,8 @@ export class PaymentDetailsDialogComponent implements OnInit {
   confirm(): void {
     if (this.form.invalid) return;
     const unitPrice = toNum(this.form.get('unitPrice')?.value);
-    const quantity  = toNum(this.form.get('quantity')?.value);
-    const total     = toNum(this.form.get('total')?.value);
+    const quantity = toNum(this.form.get('quantity')?.value);
+    const total = toNum(this.form.get('total')?.value);
     this.dialogRef.close({ unitPrice, quantity, total });
   }
 

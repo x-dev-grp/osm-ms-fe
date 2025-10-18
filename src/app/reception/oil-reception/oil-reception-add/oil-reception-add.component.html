@@ -67,12 +67,11 @@
 
                 <input
                   #supplierTrig="matAutocompleteTrigger"
-                  (blur)="validateSupplier()"
+                  (blur)="markSupplierTouched()"
+                  (keydown.enter)="selectActiveOption(supplierAuto, supplierTrig)"
                   [matAutocomplete]="supplierAuto"
                   formControlName="supplier"
-                  matInput
-                  required
-                />
+                  matInput />
 
                 @if (!isEditing) {
                   <button
@@ -86,9 +85,12 @@
                   </button>
                 }
 
-                <mat-autocomplete #supplierAuto="matAutocomplete" [displayWith]="displayFn">
-                  <mat-option *ngFor="let supplier of (filteredSuppliers$ | async) ?? []" [value]="supplier">
-                    {{ supplier.name }} {{ supplier.lastname }}
+                <mat-autocomplete
+                  #supplierAuto="matAutocomplete"
+                  (optionSelected)="onSupplierSelected($event)"
+                  [displayWith]="displayFn">
+                  <mat-option *ngFor="let s of (filteredSuppliers$ | async)" [value]="s">
+                    {{ s.name }} {{ s.lastname }}
                   </mat-option>
                 </mat-autocomplete>
               </mat-form-field>

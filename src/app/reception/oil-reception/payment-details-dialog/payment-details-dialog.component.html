@@ -1,4 +1,4 @@
-<form [formGroup]="form" class="form-section" (ngSubmit)="confirm()">
+<form (ngSubmit)="confirm()" [formGroup]="form" class="form-section">
   <div class="section-header">
     <mat-icon>payment</mat-icon>
     <h3>{{ 'OIL_RECEPTION.PAYMENT_DETAILS' | translate }}</h3>
@@ -12,7 +12,7 @@
     <div class="financial-card">
       <mat-form-field appearance="outline" class="financial-field">
         <mat-label>{{ 'OIL_RECEPTION.UNIT_PRICE' | translate }}</mat-label>
-        <input formControlName="unitPrice" matInput type="number" step="0.01" (input)="onUnitPriceInput()">
+        <input (input)="onUnitPriceInput()" formControlName="unitPrice" matInput step="0.01" type="number">
         <mat-icon matSuffix>attach_money</mat-icon>
         <mat-error *ngIf="form.get('unitPrice')?.hasError('required')">
           {{ 'OIL_RECEPTION.REQUIRED' | translate }}
@@ -24,7 +24,8 @@
     <div class="financial-card">
       <mat-form-field appearance="outline" class="financial-field">
         <mat-label>{{ 'OIL_RECEPTION.QUANTITY' | translate }}</mat-label>
-        <input formControlName="quantity" [max]="data.maxQty" matInput type="number" step="0.01" (input)="onQuantityInput()">
+        <input (input)="onQuantityInput()" [max]="data.maxQty" formControlName="quantity" matInput step="0.01"
+               type="number">
         <mat-icon matSuffix>scale</mat-icon>
         <mat-error *ngIf="form.get('quantity')?.hasError('required')">
           {{ 'OIL_RECEPTION.REQUIRED' | translate }}
@@ -39,7 +40,7 @@
     <div class="financial-card">
       <mat-form-field appearance="outline" class="financial-field">
         <mat-label>{{ 'OIL_RECEPTION.TOTAL' | translate }}</mat-label>
-        <input formControlName="total" matInput type="number" step="0.01" (input)="onTotalInput()">
+        <input (input)="onTotalInput()" formControlName="total" matInput step="0.01" type="number">
         <mat-icon matSuffix>account_balance_wallet</mat-icon>
         <mat-error *ngIf="form.errors?.['maxTotal']">
           {{ 'OIL_RECEPTION.TOTAL_MAX' | translate:{ max: data.maxTotal } }}
@@ -49,8 +50,8 @@
   </div>
 
   <div class="dialog-actions">
-    <button type="button" mat-button (click)="close()">{{ 'OSM_DASHBOARD.ACTIONS.CANCEL' | translate }}</button>
-    <button type="submit" color="primary" mat-flat-button [disabled]="form.invalid">
+    <button (click)="close()" mat-button type="button">{{ 'OSM_DASHBOARD.ACTIONS.CANCEL' | translate }}</button>
+    <button [disabled]="form.invalid" color="primary" mat-flat-button type="submit">
       {{ 'OSM_DASHBOARD.ACTIONS.CONFIRM' | translate }}
     </button>
   </div>

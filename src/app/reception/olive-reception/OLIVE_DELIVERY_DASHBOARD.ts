@@ -1,4 +1,3 @@
-
 import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
 import { TypeCategory } from '../../shared/models/type-category.enum';
 import { AttributeType, DashboardConfig, FieldType } from '../../shared/modules/osm-dashboard/models/dashboard-config';
@@ -20,18 +19,18 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
     order: 'DESC',
     searchData: {
       operation: SearchOperation.AND,
-      search:{
-        isDeleted:{
-          equalValue:false
+      search: {
+        isDeleted: {
+          equalValue: false
         },
         status: {
-          inValues: ['NEW', 'IN_PROGRESS', 'OLIVE_CONTROLLED','WAITING','WAITING_FOR_PRICING','PROD_READY', 'REFUSED']
+          inValues: ['NEW', 'IN_PROGRESS', 'OLIVE_CONTROLLED', 'WAITING', 'WAITING_FOR_PRICING', 'PROD_READY', 'REFUSED']
         },
         deliveryType: {
           equalValue: deliveryType.OLIVE
         }
       },
-      searchs:[]
+      searchs: []
     }
   }, // if youy need ot load the dta initilly based on this
   /* ────────────────────────────────────────────────────────────── */
@@ -97,7 +96,7 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
       valuePath: 'name',
       valueAttributeType: AttributeType.string,
       filterAttribute: 'supplier.name',
-      getOptionsUrl:'production/suppliers_type'
+      getOptionsUrl: 'production/suppliers_type'
     },
     {
       name: 'region',
@@ -110,7 +109,7 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.autocomplete,
       valuePath: 'name',
       valueAttributeType: AttributeType.string,
-      getOptionsUrl:"production/types",
+      getOptionsUrl: 'production/types',
       filterAttribute: 'region.name',
       autoCompleteDefaultCriteria: {
         page: 0,
@@ -164,19 +163,19 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
       exportable: true,
       dataTable: true,
       filterable: true,
-       fieldType: FieldType.select,
-       sortable: true,
-        options: [
+      fieldType: FieldType.select,
+      sortable: true,
+      options: [
         {
           label: 'OC',
-          value: 'OC',
+          value: 'OC'
         },
         {
           label: 'OB',
-          value: 'OB',
+          value: 'OB'
         }
       ],
-      valueAttributeType:AttributeType.string,
+      valueAttributeType: AttributeType.string
     },
     {
       name: 'oliveVariety',
@@ -189,7 +188,7 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
       filterable: true,
       valuePath: 'name',
       valueAttributeType: AttributeType.string,
-      getOptionsUrl:"production/types",
+      getOptionsUrl: 'production/types',
       filterAttribute: 'oliveVariety.name',
       autoCompleteDefaultCriteria: {
         page: 0,
@@ -222,9 +221,17 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
       dataTable: true,
       filterable: true,
       options: [
-        { label: 'Trituration particulier', value: 'SIMPLE_RECEPTION', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.SIMPLE_RECEPTION' },
+        {
+          label: 'Trituration particulier',
+          value: 'SIMPLE_RECEPTION',
+          labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.SIMPLE_RECEPTION'
+        },
         { label: 'Base', value: 'BASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.BASE' },
-        { label: 'Achat Olive', value: 'OLIVE_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OLIVE_PURCHASE' },
+        {
+          label: 'Achat Olive',
+          value: 'OLIVE_PURCHASE',
+          labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OLIVE_PURCHASE'
+        },
         { label: 'Achat Huile', value: 'OIL_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OIL_PURCHASE' },
         { label: 'Echange', value: 'EXCHANGE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.EXCHANGE' },
         { label: 'Paiement', value: 'PAYMENT', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.PAYMENT' }
@@ -246,8 +253,16 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
         { label: 'En attente', value: 'WAITING', labelTranslatePath: 'RECEPTION_LIST.STATUS.WAITING' },
         { label: 'prét pour production', value: 'PROD_READY', labelTranslatePath: 'RECEPTION_LIST.STATUS.PROD_READY' },
         { label: 'En cours', value: 'IN_PROGRESS', labelTranslatePath: 'RECEPTION_LIST.STATUS.IN_PROGRESS' },
-        { label: 'Contrôle Olives', value: 'OLIVE_CONTROLLED', labelTranslatePath: 'RECEPTION_LIST.STATUS.OLIVE_CONTROLLED' },
-        { label: 'Contrôle Huile', value: 'OIL_CONTROLLED', labelTranslatePath: 'RECEPTION_LIST.STATUS.OIL_CONTROLLED' },
+        {
+          label: 'Contrôle Olives',
+          value: 'OLIVE_CONTROLLED',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.OLIVE_CONTROLLED'
+        },
+        {
+          label: 'Contrôle Huile',
+          value: 'OIL_CONTROLLED',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.OIL_CONTROLLED'
+        },
         { label: 'Terminé', value: 'COMPLETED', labelTranslatePath: 'RECEPTION_LIST.STATUS.COMPLETED' },
         { label: 'Refusé', value: 'REFUSED', labelTranslatePath: 'RECEPTION_LIST.STATUS.REFUSED' },
         { label: 'Annulé', value: 'CANCELLED', labelTranslatePath: 'RECEPTION_LIST.STATUS.CANCELLED' },
@@ -255,7 +270,6 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
       ]
     }
   ],
-
 
   /* Nom par défaut du fichier d'export CSV */
   fileName: 'olive_deliveries'

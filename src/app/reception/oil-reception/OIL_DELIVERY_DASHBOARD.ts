@@ -236,10 +236,11 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
           label: 'prét pour production',
           value: 'PROD_READY',
           labelTranslatePath: 'RECEPTION_LIST.STATUS.PROD_READY'
-        },   {
+        },
+        {
           labelTranslatePath: 'RECEPTION_LIST.STATUS.STOCK_READY',
           label: 'prét pour stocker',
-          value: 'STOCK_READY',
+          value: 'STOCK_READY'
         },
         {
           label: 'En cours',

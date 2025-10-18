@@ -247,7 +247,6 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param e Object containing the row data and action to perform
    */
   onRowAction(e: { row: UnifiedDelivery; action: string }): void {
-
     try {
       switch (e.action) {
         case 'READ':
@@ -588,8 +587,6 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
     return nums.length ? Math.max(...nums) : 0;
   }
 
-
-
   private setupOliveTypeSubscription(): void {
     const sub = this.receptionForm.get('oliveType')!.valueChanges.subscribe((ol: BaseType | null) => {
       const num = this.receptionForm.get('deliveryNumber')?.value || this.deliveries.length + 1;
@@ -684,7 +681,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
 
       // Prevent the old bottom block from opening the dialog too early
       return;
-    } else if(row.lotOliveNumber) {
+    } else if (row.lotOliveNumber) {
       this.deliveryService.getDeliveryByLotNumber(row.lotOliveNumber!).subscribe({
         next: (res) => {
           if (res.success && res.data) {
@@ -731,7 +728,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
           console.error('Erreur de chargement :', err);
         }
       });
-     } else {
+    } else {
       const initialUnitPrice = this.prix_base || row.unitPrice || null;
       this.setPriceForm.get('unitPrice')?.setValue(initialUnitPrice);
       this.dialog.open(this.setPriceDialogTemplate, {

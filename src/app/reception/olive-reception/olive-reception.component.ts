@@ -127,7 +127,7 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
         this.deliveryService.updateUnifiedDelivery(updatedDelivery).subscribe(
           (res: ApiResponse<UnifiedDelivery>) => {
             if (res.success) {
-               this.toast.success(this.translate.instant('DELIVERIES.MESSAGES.CANCELLED_SUCCESS'));
+              this.toast.success(this.translate.instant('DELIVERIES.MESSAGES.CANCELLED_SUCCESS'));
             } else {
               this.toast.error(this.translate.instant('DELIVERIES.MESSAGES.CANCELLED_ERROR'));
             }

@@ -15,16 +15,21 @@ export class FilterPipe implements PipeTransform {
     }
 
     searchText = searchText.toLowerCase();
-    return items.filter(item => {
+    return items.filter((item) => {
       const value = this.getNestedValue(item, displayField);
       return value?.toString().toLowerCase().includes(searchText);
     });
   }
 
   private getNestedValue(obj: FilterableItem, path: string): string | null {
-    return path.split('.').reduce((current, key) => {
-      if (current === null || current === undefined) return null;
-      return (current as any)[key];
-    }, obj as any)?.toString() || null;
+    return (
+      path
+        .split('.')
+        .reduce((current, key) => {
+          if (current === null || current === undefined) return null;
+          return (current as any)[key];
+        }, obj as any)
+        ?.toString() || null
+    );
   }
 }

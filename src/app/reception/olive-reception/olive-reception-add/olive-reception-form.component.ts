@@ -29,7 +29,7 @@ import { UnifiedDeliveryService } from '../../../shared/services/delivery.servic
 import { SupplierTypeService } from '../../../shared/services/supplier.service';
 import { TypeCategory } from '../../../shared/models/type-category.enum';
 import { MatIcon } from '@angular/material/icon';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatAutocomplete, MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { map, startWith } from 'rxjs/operators';
 import { OperationType } from '../../../shared/models/operation-type.enum';
 import { BaseTypeComponent } from '../../../shared/modules/base-type/base-type.component';
@@ -169,25 +169,26 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     this.receptionForm.addControl('oliveType', new FormControl<Olive_Oil_Type | null>(null));
     this.receptionForm.addControl('oilType', new FormControl<Olive_Oil_Type | null>(null));
   }
-  private nextFreeNumber(nums: Array<number | string>): number {
-    const used = new Set(
-      nums
-        .map(n => Number(n))
-        .filter(n => Number.isInteger(n) && n > 0)
-    );
-    let i = 1;
-    while (used.has(i)) i++;
-    return i;
-  }
 
   ngOnInit(): void {
     const deliveryId = this.route.snapshot.paramMap.get('id');
     this.isEditing = deliveryId !== null && deliveryId !== 'new';
+    const supplierCtrl = this.receptionForm.get('supplier')!;
 
     this.recomputeNet();
     this.loading = true;
     this.pendingCalls = 0;
+    supplierCtrl.addValidators(this.requireSupplierSelection());
 
+    this.filteredSuppliers$ = supplierCtrl.valueChanges.pipe(
+      startWith(''),
+      map((val) => (typeof val === 'string' ? val : this.displayFn(val))),
+      map((text) => {
+        const q = (text ?? '').trim().toLowerCase();
+        if (!q) return this.suppliers ?? [];
+        return (this.suppliers ?? []).filter((s) => this.containsSupplier(s, q));
+      })
+    );
     // --- load Regions ---
     this.pendingCalls++;
     const regionSub = this.genericTypeService.getAllTypes(TypeCategory.REGION).subscribe({
@@ -242,15 +243,8 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
         this.deliveries = res?.success ? (res.data ?? []) : [];
         if (!this.isEditing) {
           // if nested: map(d => d.delivery?.deliveryNumber)
-          const nextNumber = this.nextFreeNumber(
-            this.deliveries.map(d => d.deliveryNumber)
-          );
-          this.receptionForm.patchValue(
-            { deliveryNumber: nextNumber,
-              lotNumber: nextNumber
-            },
-            { emitEvent: false }
-          );
+          const nextNumber = this.nextFreeNumber(this.deliveries.map((d) => d.deliveryNumber));
+          this.receptionForm.patchValue({ deliveryNumber: nextNumber, lotNumber: nextNumber }, { emitEvent: false });
         }
       },
       error: () => this.showToast(this.translate.instant('DELIVERIES.FORM.MESSAGES.LOAD_ERROR'), 'error'),
@@ -298,6 +292,30 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
+  }
+
+  /// Only change the value when the user selects
+  onSupplierSelected(ev: MatAutocompleteSelectedEvent) {
+    const selected: SupplierType = ev.option.value;
+    const ctrl = this.receptionForm.get('supplier')!;
+    ctrl.setValue(selected);
+    ctrl.updateValueAndValidity();
+  }
+
+  // Enter commits the highlighted option (if any); otherwise do nothing
+  selectActiveOption(auto: MatAutocomplete, trig: any) {
+    const active = auto.options?.find((o) => o.active);
+    if (active) {
+      active.select(); // triggers onSupplierSelected
+      trig.closePanel();
+    }
+  }
+
+  // Blur does NOT auto-select or clear. We just mark touched so validation can show.
+  markSupplierTouched() {
+    const ctrl = this.receptionForm.get('supplier')!;
+    ctrl.markAsTouched();
+    ctrl.updateValueAndValidity({ onlySelf: true });
   }
 
   // Save or update the reception
@@ -398,17 +416,8 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
   }
 
   // FIX: accept string | object to play nice while typing
-  displayFn(item: SupplierType | string | null): string {
-    if (!item || typeof item === 'string') return item ?? '';
-    return `${item.name ?? ''} ${item.lastname ?? ''}`.trim();
-  }
-
-  validateSupplier() {
-    const value = this.receptionForm.get('supplier')!.value;
-    if (!isValidSelection(value, this.suppliers)) {
-      this.receptionForm.get('supplier')!.setValue(null);
-    }
-  }
+  displayFn = (val: SupplierType | string | null): string =>
+    !val ? '' : typeof val === 'string' ? val : `${val.name ?? ''} ${val.lastname ?? ''}`.trim();
 
   onBack(): void {
     window.history.back();
@@ -465,6 +474,29 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
         this.receptionForm.get('parcel')?.setValue(newParcel);
       }
     });
+  }
+
+  private nextFreeNumber(nums: Array<number | string>): number {
+    const used = new Set(nums.map((n) => Number(n)).filter((n) => Number.isInteger(n) && n > 0));
+    let i = 1;
+    while (used.has(i)) i++;
+    return i;
+  }
+
+  // Validator that enforces: control must contain a SupplierType object (not a string)
+  private requireSupplierSelection() {
+    return (ctrl: import('@angular/forms').AbstractControl) => {
+      const v = ctrl.value;
+      const isObjectSelected = v && typeof v === 'object';
+      return isObjectSelected ? null : { selectionRequired: true };
+    };
+  }
+
+  // Case-insensitive "contains" check on name or lastname
+  private containsSupplier(s: SupplierType, q: string): boolean {
+    const n = (s.name ?? '').toLowerCase();
+    const l = (s.lastname ?? '').toLowerCase();
+    return n.includes(q) || l.includes(q);
   }
 
   private recomputeNet(): void {

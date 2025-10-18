@@ -18,7 +18,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatIcon } from '@angular/material/icon';
 import { StorageUnitDtoService } from '../../../shared/services/storage.service';
 import { OliveLotStatus } from '../../../shared/models/OliveLotStatus';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatAutocomplete, MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { OperationType } from '../../../shared/models/operation-type.enum';
 import { BaseTypeComponent } from '../../../shared/modules/base-type/base-type.component';
@@ -131,7 +131,21 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     if (!this.receptionForm.get('oilType')) {
       this.receptionForm.addControl('oilType', new FormControl<Olive_Oil_Type | null>(null, Validators.required));
     }
+    const supplierCtrl = this.receptionForm.get('supplier')!;
 
+    this.loading = true;
+    this.pendingCalls = 0;
+    supplierCtrl.addValidators(this.requireSupplierSelection());
+
+    this.filteredSuppliers$ = supplierCtrl.valueChanges.pipe(
+      startWith(''),
+      map((val) => (typeof val === 'string' ? val : this.displayFn(val))),
+      map((text) => {
+        const q = (text ?? '').trim().toLowerCase();
+        if (!q) return this.suppliers ?? [];
+        return (this.suppliers ?? []).filter((s) => this.containsSupplier(s, q));
+      })
+    );
     // Load regions for the BaseTypeComponent
     this.pendingCalls++;
     const regionSub = this.genericSrv.getAllTypes(TypeCategory.REGION).subscribe({
@@ -411,6 +425,37 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     });
   }
 
+  /// Only change the value when the user selects
+  onSupplierSelected(ev: MatAutocompleteSelectedEvent) {
+    const selected: SupplierType = ev.option.value;
+    const ctrl = this.receptionForm.get('supplier')!;
+    ctrl.setValue(selected);
+    ctrl.updateValueAndValidity();
+  }
+
+  // Enter commits the highlighted option (if any); otherwise do nothing
+  selectActiveOption(auto: MatAutocomplete, trig: any) {
+    const active = auto.options?.find((o) => o.active);
+    if (active) {
+      active.select(); // triggers onSupplierSelected
+      trig.closePanel();
+    }
+  }
+
+  // Blur does NOT auto-select or clear. We just mark touched so validation can show.
+  markSupplierTouched() {
+    const ctrl = this.receptionForm.get('supplier')!;
+    ctrl.markAsTouched();
+    ctrl.updateValueAndValidity({ onlySelf: true });
+  }
+
+  // Case-insensitive "contains" check on name or lastname
+  private containsSupplier(s: SupplierType, q: string): boolean {
+    const n = (s.name ?? '').toLowerCase();
+    const l = (s.lastname ?? '').toLowerCase();
+    return n.includes(q) || l.includes(q);
+  }
+
   private nextFreeNumber(nums: Array<number | string>): number {
     const used = new Set(nums.map((n) => Number(n)).filter((n) => Number.isInteger(n) && n > 0));
     let i = 1;
@@ -524,5 +569,14 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
         }
       })
     );
+  }
+
+  // Validator that enforces: control must contain a SupplierType object (not a string)
+  private requireSupplierSelection() {
+    return (ctrl: import('@angular/forms').AbstractControl) => {
+      const v = ctrl.value;
+      const isObjectSelected = v && typeof v === 'object';
+      return isObjectSelected ? null : { selectionRequired: true };
+    };
   }
 }

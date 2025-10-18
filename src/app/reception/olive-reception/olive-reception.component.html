@@ -94,14 +94,14 @@
 
     <!-- ─── DIALOG ACTIONS ────────────────────────────────────────────────── -->
     <div class="dialog-actions">
-      <button mat-button (click)="dialogRef.close()">
+      <button (click)="dialogRef.close()" mat-button>
         {{ 'OSM_DASHBOARD.ACTIONS.CANCEL' | translate }}
       </button>
       <button
-        mat-flat-button
-        color="primary"
+        (click)="confirmPrice(dialogRef)"
         [disabled]="setPriceForm.invalid"
-        (click)="confirmPrice(dialogRef)">
+        color="primary"
+        mat-flat-button>
         {{ 'OSM_DASHBOARD.ACTIONS.CONFIRM' | translate }}
       </button>
     </div>

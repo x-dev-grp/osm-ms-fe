@@ -19,7 +19,6 @@
   <form [formGroup]="receptionForm" class="form-content">
     <!-- Header -->
     <div class="header-row">
-
       <h3>{{ translate.instant('OLIVE_RECEPTION.FORM.SECTIONS.GENERAL_INFO') }}</h3>
     </div>
 
@@ -73,11 +72,11 @@
 
               <input
                 #supplierTrig="matAutocompleteTrigger"
-                matInput
-                formControlName="supplier"
+                (blur)="markSupplierTouched()"
+                (keydown.enter)="selectActiveOption(supplierAuto, supplierTrig)"
                 [matAutocomplete]="supplierAuto"
-                (blur)="validateSupplier()"
-              />
+                formControlName="supplier"
+                matInput />
 
               @if (!isEditing) {
                 <button
@@ -87,43 +86,42 @@
                   color="primary"
                   (mousedown)="$event.preventDefault()"
                   (click)="$event.stopPropagation(); supplierTrig.closePanel(); openAddSupplierDialog()">
-                <mat-icon>add</mat-icon>
+                  <mat-icon>add</mat-icon>
                 </button>
               }
 
               <mat-autocomplete
                 #supplierAuto="matAutocomplete"
+                (optionSelected)="onSupplierSelected($event)"
                 [displayWith]="displayFn">
-                <mat-option *ngFor="let supplier of (filteredSuppliers$ | async)" [value]="supplier">
-                  {{ supplier.name }} {{ supplier.lastname }}
+                <mat-option *ngFor="let s of (filteredSuppliers$ | async)" [value]="s">
+                  {{ s.name }} {{ s.lastname }}
                 </mat-option>
               </mat-autocomplete>
-            </mat-form-field>          </div>
+            </mat-form-field>
+          </div>
+
           <div class="col-md-4 w-100 m-b-10">
             <base-type
               #regionBaseType
               (addAction)="openAddRegionDialog()"
               [formControl]="receptionForm?.controls?.region"
-              [showAddButton]="!isEditing &&true"
+              [showAddButton]="!isEditing && true"
               [type]="TypeCategory.REGION">
             </base-type>
-
-
           </div>
+
           <div class="col-md-4 w-100 m-b-10">
             <base-type
               (addAction)="openAddParcelDialog()"
               [formControl]="receptionForm?.controls?.parcel"
               [options]="parcels"
-              [showAddButton]="!isEditing &&true"
+              [showAddButton]="!isEditing && true"
               [type]="TypeCategory.PARCEL">
             </base-type>
-
-
           </div>
         </div>
       </div>
-
 
       <!-- Olive Details Section -->
       <div class="section">
@@ -137,14 +135,7 @@
               <mat-datepicker #trtPicker></mat-datepicker>
             </mat-form-field>
           </div>
-          <!--          <div class="col-md-3 w-100 m-b-10 ">-->
-          <!--            <base-type-->
-          <!--              [formControl]="receptionForm?.controls?.oliveVariety"-->
-          <!--              [type]="'OLIVE_VARIETY'">-->
-          <!--            </base-type>-->
-          <!--          </div>-->
 
-          <!-- Enum-driven Olive Type & Oil Type -->
           <div class="col-md-4 w-100 m-b-10">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>{{ 'DELIVERIES.FORM.FIELDS.OLIVE_TYPE'|translate }}</mat-label>
@@ -153,17 +144,9 @@
               </mat-select>
             </mat-form-field>
           </div>
-
-          <!--          <div class="col-md-4 w-100 m-b-10">-->
-          <!--            <mat-form-field appearance="outline" class="w-100">-->
-          <!--              <mat-label>Oil Type</mat-label>-->
-          <!--              <mat-select formControlName="oilType">-->
-          <!--                <mat-option *ngFor="let o of oilOptions" [value]="o">{{ o }}</mat-option>-->
-          <!--              </mat-select>-->
-          <!--            </mat-form-field>-->
-          <!--          </div>-->
         </div>
       </div>
+
       <!-- Vehicle Information Section -->
       <div class="section">
         <h4>{{ translate.instant('OLIVE_RECEPTION.FORM.SECTIONS.VEHICLE_INFO') }}</h4>
@@ -189,7 +172,6 @@
             <mat-form-field appearance="outline" class="w-100 m-b-10">
               <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.GROSS_WEIGHT') }}</mat-label>
               <input formControlName="poidsBrute" matInput min="0" type="number" />
-
             </mat-form-field>
           </div>
 
