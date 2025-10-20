@@ -12,13 +12,25 @@ import { UnifiedDelivery } from '../../shared/models/UnifiedDelivery';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { ToastService } from '../../shared/services/toast.service';
 import { OliveLotStatus } from '../../shared/models/OliveLotStatus';
+import { MatChip, MatChipListbox } from '@angular/material/chips';
 
 @Component({
   selector: 'app-details-reception-olive',
   standalone: true,
   templateUrl: './details-reception.component.html',
   styleUrl: './details-reception.component.scss',
-  imports: [CommonModule, DatePipe, MatCardModule, MatDividerModule, MatIconModule, MatButtonModule, TranslateModule, MatProgressSpinner]
+  imports: [
+    CommonModule,
+    DatePipe,
+    MatCardModule,
+    MatDividerModule,
+    MatIconModule,
+    MatButtonModule,
+    TranslateModule,
+    MatProgressSpinner,
+    MatChipListbox,
+    MatChip
+  ]
 })
 export class DetailsReceptionComponent implements OnInit {
   receptionId!: string | null;

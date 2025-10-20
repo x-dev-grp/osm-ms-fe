@@ -33,8 +33,8 @@ export class QualityControlResultService {
   }
 
   // Save results with idx as path param (for direct QC entry)
-  saveResultsWithIdx(idx: string, results: QualityControlResultDto[]): Observable<ApiResponse<QualityControlResultDto>> {
-    return this.http.post<ApiResponse<QualityControlResultDto>>(`${this.baseUrl}/save-batch-direct/${idx}`, results);
+  saveResultsWithIdx(idx: string, results: QualityControlResultDto[],std:string|null): Observable<ApiResponse<QualityControlResultDto>> {
+    return this.http.post<ApiResponse<QualityControlResultDto>>(`${this.baseUrl}/save-batch-direct/${idx}/${std}`, results);
   }
 
   // Fetch only oil QC results for a given oil reception (deliveryId)

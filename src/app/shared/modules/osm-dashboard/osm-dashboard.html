@@ -88,7 +88,7 @@
                   disabled
                 />
               } @else if (item?.fieldType === "select") {
-                {{ getSelectDataTableValue(record[item?.name], item?.name) }}
+                {{ getSelectDataTableValue(record[item?.name], item?.name) | translate  }}
               } @else if (item?.fieldType === "date") {
                 {{ (item?.valuePath ? getValue(item?.valuePath, record) : getValue(item?.name, record)) | date:'dd-MM-yyyy HH:mm' }}
               } @else if (item.flattedItemIndex || item.flattedItemIndex == 0) {

@@ -217,7 +217,6 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
 
           this.receptionForm.patchValue({ deliveryNumber: nextNumber, lotNumber: nextNumber }, { emitEvent: false });
         }
-        this.toast.warning(this.translate.instant('DELIVERIES.FORM.MESSAGES.LOAD_ERROR'));
       },
       complete: () => this.markCallDone()
     });

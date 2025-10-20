@@ -8,7 +8,7 @@ import { UnifiedDeliveryService } from '../../shared/services/delivery.service';
 import { UnifiedDelivery } from '../../shared/models/UnifiedDelivery';
 import { QualityControlResultService } from '../../shared/services/quality-control-result.service';
 import { QualityControlResultDto } from '../../shared/models/QualityControlResultDto';
-import { forkJoin, Observable, of, Subscription } from 'rxjs';
+import { of, Subscription } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
 import { MatOption, MatSelect, MatSelectModule } from '@angular/material/select';
@@ -71,14 +71,15 @@ export class ControleQualiteComponent implements OnInit {
   isQualityControlDone: boolean = false;
   storageUnits: StorageUnitDto[] = [];
   deliveryForm: FormGroup;
+  protected oilFromOlive = false;
   // misc
   private subs: Subscription[] = []; // if you don’t already track subscriptions
   private xxx: string | null;
   private lastQualityPayload: any = null;
   private payload: any;
-  protected oilFromOlive = false;
   private sourceOliveReceptionId: string | null = null;
   private oilQuantity: any;
+
   /**
    * Constructor for the component
    * @param fb - FormBuilder instance for creating reactive forms
@@ -143,11 +144,6 @@ export class ControleQualiteComponent implements OnInit {
     );
   }
 
-  /** Optional: if you allow programmatic set */
-  setStorageUnit(u: StorageUnitDto | null): void {
-    this.storageunitForm.patchValue({ storageUnitDestinationId: u }, { emitEvent: true });
-  }
-
   loadReception(): void {
     if (!this.receptionId) {
       this.message = 'ID de réception manquant';
@@ -158,7 +154,7 @@ export class ControleQualiteComponent implements OnInit {
     this.deliveryService.getUnifiedDelivery(this.receptionId).subscribe({
       next: (response) => {
         this.deliveryData = Array.isArray(response.data) ? response.data[0] : response.data;
-         this.loadRules();
+        this.loadRules();
       },
       error: () => {
         this.message = 'Erreur lors du chargement des données de réception';
@@ -260,18 +256,12 @@ export class ControleQualiteComponent implements OnInit {
           case 'STRING':
             initialValue = existing.measuredValue || '';
             break;
-
-
-
         }
       }
 
-      const shouldDisable = this.isQualityControlDone ;
+      const shouldDisable = this.isQualityControlDone;
 
-      const ctrlValidators =
-        rule.ruleType === 'STRING' && rule.ruleTextValue
-          ? []
-            : [Validators.required];
+      const ctrlValidators = rule.ruleType === 'STRING' && rule.ruleTextValue ? [] : [Validators.required];
 
       group[rule.ruleKey] = new FormControl({ value: initialValue, disabled: shouldDisable }, ctrlValidators);
     });
@@ -280,7 +270,7 @@ export class ControleQualiteComponent implements OnInit {
     this.mainForm = this.fb.group({ ...this.dynamicForm.controls });
 
     // handle races (if deliveryData arrived later/earlier)
-     this.dynamicForm = this.fb.group(group);
+    this.dynamicForm = this.fb.group(group);
     this.mainForm = this.fb.group({ ...this.dynamicForm.controls });
     this.mainForm.get('unitPrice')?.valueChanges.subscribe((unitPrice: number) => {
       const oilQty = this.deliveryData?.oilQuantity || 0;
@@ -307,10 +297,9 @@ export class ControleQualiteComponent implements OnInit {
     // });
   }
 
-  getRuleType(ruleKey: string): 'NUMERIC' | 'BOOLEAN' | 'STRING'  {
+  getRuleType(ruleKey: string): 'NUMERIC' | 'BOOLEAN' | 'STRING' {
     return this.rules.find((r) => r.ruleKey === ruleKey)?.ruleType || 'NUMERIC';
   }
-
 
   async onSave(): Promise<void> {
     this.submitted = true;
@@ -342,55 +331,9 @@ export class ControleQualiteComponent implements OnInit {
     ref.afterClosed().subscribe((res: ConfirmationDialogResult) => {
       if (res?.confirmed) {
         this.performSave();
-        // this.saveStorageUnitOnly();
       }
     });
   }
-  // saveStorageUnitOnly(): void {
-  //
-  //   if (this.storageunitForm.invalid) {
-  //     this.storageunitForm.markAllAsTouched();
-  //     this.toast.error(this.translate.instant('OIL_TRANSACTIONS.FORM.VALIDATION.REQUIRED'));
-  //     return;
-  //   }
-  //
-  //   if (this.capacityError) {
-  //     this.toast.error(this.translate.instant('OIL_TRANSACTIONS.FORM.VALIDATION.CAPACITY'));
-  //     return;
-  //   }
-  //
-  //   const unit: StorageUnitDto | null = this.storageunitForm.get('storageUnitDestinationId')!.value ?? null;
-  //   const payload = {
-  //     ...this.deliveryData,
-  //     storageUnit: unit
-  //   } as UnifiedDelivery;
-  //
-  //   this.isLoading = true;
-  //   this.deliveryService.updateUnifiedDelivery(payload as UnifiedDelivery).subscribe({
-  //     next: (res) => {
-  //       this.isLoading = false;
-  //
-  //       if (!res?.success) {
-  //         this.toast.error(this.translate.instant('OIL_TRANSACTIONS.SAVE_STORAGE_UNIT.ERROR'));
-  //         this.cdr.detectChanges();
-  //         return;
-  //       }
-  //
-  //       // keep the component state in sync with backend response
-  //       this.deliveryData = Array.isArray(res.data) ? res.data[0] : res.data;
-  //       this.toast.success(this.translate.instant('OIL_TRANSACTIONS.SAVE_STORAGE_UNIT.SUCCESS'));
-  //
-  //       // recompute capacity UI (optional)
-  //       this.updateCapacityState(unit);
-  //       this.cdr.detectChanges();
-  //     },
-  //     error: () => {
-  //       this.isLoading = false;
-  //       this.toast.error(this.translate.instant('OIL_TRANSACTIONS.SAVE_STORAGE_UNIT.ERROR'));
-  //       this.cdr.detectChanges();
-  //     }
-  //   });
-  // }
 
   async performSave(): Promise<void> {
     this.submitted = true;
@@ -404,6 +347,7 @@ export class ControleQualiteComponent implements OnInit {
     }
 
     // If idx is present, send results to a new endpoint with idx as path param
+    let storageUnit;
     if (this.xxx) {
       const results: QualityControlResultDto[] = Object.keys(this.dynamicForm.controls)
         .map((ruleKey) => {
@@ -418,12 +362,19 @@ export class ControleQualiteComponent implements OnInit {
         })
         .filter(Boolean) as QualityControlResultDto[];
       this.isLoading = true;
-      this.qcResService.saveResultsWithIdx(this.xxx, results).subscribe({
+      const selectedStorageUnitId = this.storageunitForm.get('storageUnitDestinationId')?.value;
+      if (selectedStorageUnitId) {
+        const selectedStorageUnit = this.storageUnits.find((unit) => unit === selectedStorageUnitId);
+        storageUnit = selectedStorageUnit || null;
+      } else {
+        storageUnit = null;
+      }
+      this.qcResService.saveResultsWithIdx(this.xxx, results, storageUnit?.id!).subscribe({
         next: (res: any) => {
           this.toast.success(res.message || 'Résultats enregistrés avec succès.');
           this.isLoading = false;
           this.cdr.detectChanges();
-          },
+        },
         error: () => {
           this.toast.error("Erreur lors de l'enregistrement des résultats.");
           this.isLoading = false;
@@ -448,9 +399,7 @@ export class ControleQualiteComponent implements OnInit {
       // Save other delivery data and QC results
       this.saveDeliveryAndQCResults();
     }
-   }
-
-
+  }
 
   saveQualityControlResults(): void {
     this.isLoading = true;
@@ -462,7 +411,7 @@ export class ControleQualiteComponent implements OnInit {
       Object.keys(this.dynamicForm.controls).forEach((ruleKey) => {
         if (ruleKey === 'oliveVariety') return;
 
-        const rule = this.rules.find(r => r.ruleKey === ruleKey);
+        const rule = this.rules.find((r) => r.ruleKey === ruleKey);
         if (!rule) return;
 
         const rawValue = this.mainForm.get(ruleKey)?.value;
@@ -504,28 +453,30 @@ export class ControleQualiteComponent implements OnInit {
       }
 
       // Single batch create call — no forkJoin
-      this.qcResService.createResults(creates).pipe(
-        catchError((err) => {
-          console.error('Erreur lors de la création:', err);
-          this.toast.error("Erreur lors de l'enregistrement des résultats de contrôle qualité.");
+      this.qcResService
+        .createResults(creates)
+        .pipe(
+          catchError((err) => {
+            console.error('Erreur lors de la création:', err);
+            this.toast.error("Erreur lors de l'enregistrement des résultats de contrôle qualité.");
+            this.isLoading = false;
+            this.cdr.detectChanges();
+            // Swallow error since we already handled it
+            return of({ success: false, message: 'Erreur lors de la création des résultats.' });
+          })
+        )
+        .subscribe((res: { success: boolean; message?: string }) => {
+          if (res?.success) {
+            this.toast.success('Résultats créés avec succès.');
+          } else {
+            this.toast.warning(res?.message || "Aucun résultat n'a pu être enregistré.");
+          }
           this.isLoading = false;
           this.cdr.detectChanges();
-          // Swallow error since we already handled it
-          return of({ success: false, message: 'Erreur lors de la création des résultats.' });
-        })
-      ).subscribe((res: { success: boolean; message?: string }) => {
-        if (res?.success) {
-          this.toast.success('Résultats créés avec succès.');
-        } else {
-          this.toast.warning(res?.message || "Aucun résultat n'a pu être enregistré.");
-        }
-        this.isLoading = false;
-        this.cdr.detectChanges();
-        this.loadQualityControlResults();
-      });
-
+          this.loadQualityControlResults();
+        });
     } catch (e: any) {
-      this.toast.error(e?.message || "Erreur lors de la préparation des résultats.");
+      this.toast.error(e?.message || 'Erreur lors de la préparation des résultats.');
       this.isLoading = false;
       this.cdr.detectChanges();
     }
@@ -534,10 +485,14 @@ export class ControleQualiteComponent implements OnInit {
   getRuleName(key: string): string {
     const r = this.rules.find((rule) => rule.ruleKey === key);
     return r ? r.ruleName! : key;
-  } getRuleMAX(key: string): string {
+  }
+
+  getRuleMAX(key: string): string {
     const r = this.rules.find((rule) => rule.ruleKey === key);
     return r ? r.maxValue!.toString() : key;
-  }getRuleMIN(key: string): string {
+  }
+
+  getRuleMIN(key: string): string {
     const r = this.rules.find((rule) => rule.ruleKey === key);
     return r ? r.minValue!.toString() : key;
   }
@@ -600,6 +555,7 @@ export class ControleQualiteComponent implements OnInit {
     const incoming = Number(this.deliveryData?.poidsNet ?? 0);
     this.capacityError = !!u && this.availableCapacity < incoming;
   }
+
   /**
    * Updates the delivery with the selected olive variety
    */
@@ -693,12 +649,6 @@ export class ControleQualiteComponent implements OnInit {
     }
   }
 
-  private findRuleKey(displayedName: string): string {
-    const normalized = displayedName.toLowerCase();
-    const rule = this.rules.find((r) => r.ruleKey?.toLowerCase() === normalized);
-    return rule ? rule.ruleKey : '';
-  }
-
   private filterRules(allRules: QualityControlRule[]): QualityControlRule[] {
     // If idx is present, always return oil QC rules
     if (this.xxx) {
@@ -716,90 +666,6 @@ export class ControleQualiteComponent implements OnInit {
         return [];
     }
   }
-
-  // private calculateCategorie(): string {
-  //   if (this.isOliveDelivery()) {
-  //     return this.calculateCategorieOlive();
-  //   } else {
-  //     return this.calculateCategorieOil();
-  //   }
-  // }
-
-  // private updateCategorie(): void {
-  //   // const calculated = this.calculateCategorie();
-  //   const categorieControl = this.dynamicForm.get('Categorie');
-  //
-  //   if (!categorieControl) {
-  //     console.warn("Le champ 'Categorie' n'existe pas dans le formulaire.");
-  //     return;
-  //   }
-  //
-  //   const currentCategorie = categorieControl.value;
-  //
-  //   if (currentCategorie !== calculated) {
-  //     console.log('Mise à jour automatique de la catégorie en :', calculated);
-  //     // categorieControl.setValue(calculated, { emitEvent: false });
-  //     categorieControl.updateValueAndValidity();
-  //   }
-  // }
-
-  private calculateCategorieOil(): string {
-    const acidite = this.dynamicForm.get('Acidite')?.value;
-    const k270 = this.dynamicForm.get('K270')?.value;
-    const k232 = this.dynamicForm.get('K232')?.value;
-
-    console.log('Valeurs avant calcul (OIL):', { acidite, k270, k232 });
-    if (
-      acidite == null ||
-      typeof acidite !== 'number' ||
-      k270 == null ||
-      typeof k270 !== 'number' ||
-      k232 == null ||
-      typeof k232 !== 'number'
-    ) {
-      return '';
-    }
-
-    if (acidite < 0.8 && k270 < 0.22 && k232 < 2.5) {
-      return 'Extra Vierge';
-    } else if (acidite < 2 && k270 < 0.25 && k232 < 2.6) {
-      return 'Vierge';
-    } else {
-      return 'Lampante';
-    }
-  }
-
-  // New method: fetch all rules and show form, skip delivery
-
-  // private calculateCategorieOlive(): string {
-  //   const infestees = this.dynamicForm.get('Infestees')?.value;
-  //   const fermentees = this.dynamicForm.get('Fermentees')?.value;
-  //   const endommagees = this.dynamicForm.get('Endommagees')?.value;
-  //
-  //   console.log('Valeurs avant calcul (OLIVE):', { infestees, fermentees, endommagees });
-  //
-  //   if (
-  //     infestees == null ||
-  //     typeof infestees !== 'number' ||
-  //     fermentees == null ||
-  //     typeof fermentees !== 'number' ||
-  //     endommagees == null ||
-  //     typeof endommagees !== 'number'
-  //   ) {
-  //     return '';
-  //   }
-  //
-  //   const allLessThanOrEqual30 = infestees <= 30 && fermentees <= 30 && endommagees <= 30;
-  //   const allLessThanOrEqual60 = infestees <= 60 && fermentees <= 60 && endommagees <= 60;
-  //
-  //   if (allLessThanOrEqual30) {
-  //     return 'Extra Vierge';
-  //   } else if (allLessThanOrEqual60) {
-  //     return 'Vierge';
-  //   } else {
-  //     return 'Lampante';
-  //   }
-  // }
 
   private loadRulesDirect(): void {
     this.isLoading = true;
@@ -833,7 +699,4 @@ export class ControleQualiteComponent implements OnInit {
       }
     });
   }
-
-
-
 }

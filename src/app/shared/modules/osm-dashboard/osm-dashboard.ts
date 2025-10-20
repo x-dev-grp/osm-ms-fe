@@ -131,7 +131,7 @@ export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
   getSelectDataTableValue(value: string, fieldName: string): string {
     const field = this.config().fields.find((field) => field.name == fieldName);
     const option = field?.options?.find((option) => option.value == value);
-    return option?.label || option?.value;
+    return option?.labelTranslatePath||option?.label || option?.value;
   }
 
   redirectToFormPage() {
