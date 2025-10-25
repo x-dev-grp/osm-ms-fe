@@ -1455,6 +1455,10 @@
       "STORAGE_LOCATION": "موقع التخزين",
       "UPDATE": "تحديث"
     },
+    "MESSAGES": {
+      "CREATED": "تم إنشاء حاوية الزيت بنجاح",
+      "UPDATED": "تم تحديث حاوية الزيت بنجاح"
+    },
     "TITLE_ADD": "إضافة حاوية زيت",
     "TITLE_EDIT": "تعديل حاوية زيت"
   },
@@ -2100,6 +2104,7 @@
       "FINANCIALTRANSACTION": "معاملة مالية",
       "GEN_INVOICE": "إنشاء فاتورة",
       "GEN_PDF": "إنشاء إيصال",
+      "GEN_PDF_BON_COMMANDE": "أمر شراء الزيت ",
       "GEN_PDF_PRODUCTION": "إنشاء إيصال إنتاج",
       "GEN_PDF_QC_OIL": "إنشاء إيصال مراقبة جودة الزيت ",
       "GEN_PDF_QC_OLIVE": "إنشاء إيصال مراقبة جودة الزيتون ",
@@ -2207,14 +2212,6 @@
     "TITLE": "الصفحة غير موجودة"
   },
   "PDF": {
-    "OIL_GRADE": {
-      "EXTRA_VIRGIN": "بكر ممتاز",
-      "LAMPANTE": "لامة",
-      "OTHER": "آخر",
-      "REFINED": "مكرر",
-      "VIRGIN": "بكر"
-    },
-
     "ACIDITY": "الحموضة",
     "ADDRESS": "مجال بلابس 1214 قصر هلال",
     "BASCULE": "",
@@ -2269,6 +2266,7 @@
     "FICH_CONTROL_QUALITE_HUIL": "ورقة مراقبة جودة الزيت",
     "FICH_CONTROL_QUALITE_OLIVE": "ورقة مراقبة جودة الزيتون",
     "FORM": "نموذج",
+    "GEN_PDF_BON_COMMANDE": "أمر شراء الزيت",
     "GLOBAL_LOT": "الدفعة العالمية",
     "GROSS_WEIGHT": "الوزن الإجمالي",
     "INDICE_PEROXYDE": "مؤشر البيروكسيد",
@@ -2288,6 +2286,13 @@
     "NUMBER_PLACEHOLDER": "رقم: ",
     "N°COLIS": "رقم الحزمة",
     "OIL_DISPATCH": "إشعار توزيع الزيت",
+    "OIL_GRADE": {
+      "EXTRA_VIRGIN": "بكر ممتاز",
+      "LAMPANTE": "لامة",
+      "OTHER": "آخر",
+      "REFINED": "مكرر",
+      "VIRGIN": "بكر"
+    },
     "OIL_QUANTITY": "كمية الزيت",
     "OIL_TYPE": "نوع الزيت",
     "OIL_VARIETY": "تنوع الزيت",
@@ -2354,7 +2359,8 @@
     "STORAGE_UNIT_SOURCE": "وحدة التخزين (المصدر)",
     "SUBTOTAL": "المجموع الفرعي",
     "SUPPLIER": "المورد",
-    "TANK_NUMBER": "رقم الخزان",
+    "TANK_NUMBER": "رقم ",
+    "TERMS": "",
     "TOTAL": "المبلغ الإجمالي",
     "TOTAL_AMOUNT": "المبلغ الإجمالي",
     "TOTAL_PRICE": "السعر الكلي",
@@ -2571,6 +2577,7 @@
     },
     "TITLE": "استقبالات الزيت والطحن"
   },
+  "REQUIRED": "مطلوب",
   "RESET_PASSWORD": {
     "CODE_PLACEHOLDER": "أدخل رمزك",
     "CONFIRMATION_CODE": "رمز التأكيد",
@@ -2753,12 +2760,14 @@
       "TITLE_EDIT": "تعديل المورد"
     },
     "DETAILS": {
+      "COUNT": "",
       "OIL_CREDIT_STATS_TITLE": "إحصائيات اعتماد الزيت",
       "OIL_CREDIT_TOTAL": "اعتمادات الزيت",
       "PAID_OILSALES_TITLE": "مبيعات زيت مدفوعة",
       "PAID_WASTE_SALES_TITLE": "مبيعات نفايات مدفوعة",
       "PAYMENT_HISTORY_COUNT": "مدفوعات تم إجراؤها",
       "PAYMENT_HISTORY_TITLE": "سجل الدفعات",
+      "TOTAL": "",
       "UNPAID_COUNT": "مدفوعات معلقة",
       "UNPAID_OILSALES_TITLE ": "مبيعات زيت غير مدفوعة",
       "UNPAID_TITLE": "المدفوعات غير المدفوعة",

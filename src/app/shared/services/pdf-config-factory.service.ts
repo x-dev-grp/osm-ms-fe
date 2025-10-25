@@ -173,32 +173,7 @@ export class PdfConfigFactoryService {
     return 'PDF.FACTURE';
   }
 
-  /**
-   * Title for PAYMENT NOTE (lets you customize by source as well)
-   */
-  private getPaymentNoteTitle(data: any, source?: InvoiceSource): string {
-    return '';
-  }
 
-  private getReferencePrefix(data: any, source: InvoiceSource | undefined, isPaymentNote: boolean): string {
-    const inv = this.getInvoiceNumber(data) || this.getId(data) || 'XXXX';
-
-    // Prefer explicit source mapping
-    switch (source) {
-      case InvoiceSource.DELIVERY_inv:
-        return isPaymentNote
-          ? `PAY-${'XXXX'}`
-          : `${InvoiceSource.DELIVERY_inv ? data.lotNumber || 'LOT' : 'LOT'} ${this.translateService.instant('OPERATION_TYPE.' + data.operationType) || ''}`.trim();
-      case InvoiceSource.OIL_SALE_inv:
-        return isPaymentNote ? `PAY-VENTE-${'XXXX'}` : `VENTE-HUILE-${'XXXX'}`;
-      case InvoiceSource.WASTE_SALE_inv:
-        return isPaymentNote ? `PAY-VENTE-DECHET-${'XXXX'}` : `VENTE-DECHET-${'XXXX'}`;
-    }
-
-    // Fallback to inferred type
-
-    return inv;
-  }
 
   private getOperationType(data: any, source?: InvoiceSource): any {
     if (source === InvoiceSource.DELIVERY_inv) {
@@ -284,12 +259,21 @@ export class PdfConfigFactoryService {
     fileName: string;
   } {
     if (source === InvoiceSource.DELIVERY_inv) {
-      let unitPrice = data.poidsNet > 0 ? data.price! / data.poidsNet : 0;
+      // Prefer provided unitPrice; else compute price/poidsNet; else 0
+      const providedUnit = Number((data as any)?.unitPrice);
+      const hasUnitPrice = providedUnit !== undefined && providedUnit !== null && !isNaN(providedUnit);
+
+      const priceNum = Number((data as any)?.price);
+      const poidsNetNum = Number((data as any)?.poidsNet);
+      const canCompute = !isNaN(priceNum) && !isNaN(poidsNetNum) && poidsNetNum > 0;
+
+      const unitPrice: number = hasUnitPrice ? providedUnit : (canCompute ? priceNum / poidsNetNum : 0);
+
       let qty: number;
-      if ((data as UnifiedDelivery).deliveryType.toLowerCase() === 'oil') {
-        qty = data?.oilQuantity;
+      if ((data as UnifiedDelivery).deliveryType?.toLowerCase() === 'oil') {
+        qty = Number((data as any)?.oilQuantity) || 0;
       } else {
-        qty = data?.poidsNet ?? 0;
+        qty = poidsNetNum || 0;
       }
 
       const total = this.getTotalAmount(data, source);

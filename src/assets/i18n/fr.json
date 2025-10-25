@@ -1453,6 +1453,10 @@
       "STORAGE_LOCATION": "Emplacement de stockage",
       "UPDATE": "Mettre à jour"
     },
+    "MESSAGES": {
+      "CREATED": "Conteneur d'huile créé avec succès",
+      "UPDATED": "Conteneur d'huile mis à jour avec succès"
+    },
     "TITLE_ADD": "Ajouter un conteneur d'huile",
     "TITLE_EDIT": "Modifier un conteneur d'huile"
   },
@@ -2100,6 +2104,7 @@
       "FINANCIALTRANSACTION": "Transaction financière",
       "GEN_INVOICE": "Générer Facture",
       "GEN_PDF": "Générer Bon Réception",
+      "GEN_PDF_BON_COMMANDE": "Bon de commande huile",
       "GEN_PDF_PRODUCTION": "Générer Bon de Production",
       "GEN_PDF_QC_OIL": "Bon control quality huile",
       "GEN_PDF_QC_OLIVE": "Bon control quality olive",
@@ -2207,13 +2212,6 @@
     "TITLE": "Page introuvable"
   },
   "PDF": {
-    "OIL_GRADE": {
-      "EXTRA_VIRGIN": "Extra Vierge",
-      "LAMPANTE": "Lampante",
-      "OTHER": "Autre",
-      "REFINED": "Raffiné",
-      "VIRGIN": "Vierge"
-    },
     "ACIDITY": "Acidité",
     "ADDRESS": "Adresse",
     "BANK_DETAILS": "Coordonnées bancaires",
@@ -2278,6 +2276,7 @@
     "FICH_CONTROL_QUALITE_HUIL": "Fiche de Contrôle Qualité Huile",
     "FICH_CONTROL_QUALITE_OLIVE": "Fiche de Contrôle Qualité Olive",
     "FORM": "FORMULAIRE",
+    "GEN_PDF_BON_COMMANDE": "Bon de commande huile",
     "GLOBAL_LOT": "Lot global",
     "GROSS_WEIGHT": "Poids Brut",
     "HUILE_TYPE": "Type d'huile",
@@ -2306,6 +2305,13 @@
     "N°COLIS": "N° Colis",
     "OIL_CUSTOMER": "Cooperative Agricale",
     "OIL_DISPATCH": "Bon de Sortie d’Huile",
+    "OIL_GRADE": {
+      "EXTRA_VIRGIN": "Extra Vierge",
+      "LAMPANTE": "Lampante",
+      "OTHER": "Autre",
+      "REFINED": "Raffiné",
+      "VIRGIN": "Vierge"
+    },
     "OIL_QUANTITY": "Quantité d'huile",
     "OIL_TYPE": "Type Huile",
     "OIL_VARIETY": "Variété Huile",
@@ -2375,7 +2381,8 @@
     "STORAGE_UNIT_SOURCE": "Unité de stockage (source)",
     "SUBTOTAL": "Sous-total",
     "SUPPLIER": "Fournisseur",
-    "TANK_NUMBER": "N° Citerne",
+    "TANK_NUMBER": "N° item",
+    "TERMS": "Condition",
     "TOTAL": "Total",
     "TOTAL_AMOUNT": "Montant total",
     "TOTAL_PRICE": "Prix total",
@@ -2593,6 +2600,7 @@
     },
     "TITLE": "Réceptions d'huile et triturations"
   },
+  "REQUIRED": "Requis",
   "RESET_PASSWORD": {
     "CODE_PLACEHOLDER": "Entrez votre code",
     "CONFIRMATION_CODE": "Code de confirmation",
@@ -2775,12 +2783,14 @@
       "TITLE_EDIT": "Modifier l'agriculteur"
     },
     "DETAILS": {
+      "COUNT": "N°:",
       "OIL_CREDIT_STATS_TITLE": "Statistiques crédits d'huile",
       "OIL_CREDIT_TOTAL": "Crédits d'huile",
       "PAID_OILSALES_TITLE": "Vente huile paiés",
       "PAID_WASTE_SALES_TITLE": "Vente déchet paié",
       "PAYMENT_HISTORY_COUNT": "paiements effectués",
       "PAYMENT_HISTORY_TITLE": "Historique des Paiements",
+      "TOTAL": "Total",
       "UNPAID_COUNT": "paiements en attente",
       "UNPAID_OILSALES_TITLE ": "Vente huiles unpaiés",
       "UNPAID_TITLE": "Paiements en Attente",

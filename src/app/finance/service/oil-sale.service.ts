@@ -6,6 +6,7 @@ import {
   OilSale,
 } from '../models/oil-sale.model';
 import { ApiResponse } from '../../shared/models/api-response';
+import { OilSaleCreateRequest } from '../oil-sales/oil-sale-add/oil-sale-create.request';
 
 
 @Injectable({
@@ -27,8 +28,8 @@ export class OilSaleService {
   }
 
   // Create new oil sale
-  createOilSale(oilSale: OilSale): Observable<ApiResponse<OilSale>> {
-    return this.http.post<ApiResponse<OilSale>>(this.baseUrl, oilSale);
+  createOilSale(oilSale: OilSaleCreateRequest): Observable<ApiResponse<OilSale>> {
+    return this.http.post<ApiResponse<OilSale>>(`${this.baseUrl}/create`, oilSale);
   }
 
   // Update oil sale

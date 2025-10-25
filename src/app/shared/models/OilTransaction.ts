@@ -43,11 +43,18 @@ export interface OilTransaction {
   /** Price per kilogram */
   unitPrice: number;
 
-  /** Calculated total (unitPrice * quantityKg) */
+  /** Calculated total (unitPrice * quantityKg + container costs) */
   totalPrice: number;
+
+  /** Reference to the associated oil sale (optional) */
+  oilSaleId?: string;
 
   /** Reference to the reception lot (optional) */
   reception?: UnifiedDelivery;
+
+  /** List of containers used in the transaction */
+  containers?: { id: string; count: number }[];
+
   /** Audit fields (from BaseEntity) */
   createdDate?: string;
   lastModifiedDate?: string;

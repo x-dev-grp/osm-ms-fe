@@ -181,14 +181,7 @@
             <span class="label">{{ 'OIL_SALES.LAST_MODIFIED_DATE' | translate }}:</span>
             <span class="value">{{ oilSale.lastModifiedDate | date:'medium' }}</span>
           </div>
-          <div *ngIf="oilSale.createdBy" class="info-row">
-            <span class="label">{{ 'OIL_SALES.CREATED_BY' | translate }}:</span>
-            <span class="value">{{ oilSale.createdBy }}</span>
-          </div>
-          <div *ngIf="oilSale.lastModifiedBy" class="info-row">
-            <span class="label">{{ 'OIL_SALES.LAST_MODIFIED_BY' | translate }}:</span>
-            <span class="value">{{ oilSale.lastModifiedBy }}</span>
-          </div>
+
         </div>
       </mat-card-content>
     </mat-card>

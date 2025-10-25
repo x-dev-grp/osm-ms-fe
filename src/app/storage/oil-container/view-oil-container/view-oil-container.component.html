@@ -1,1 +1,111 @@
-<p>view-oil-container works!</p>
+<!-- Loading State -->
+<div *ngIf="loading" @fade class="loading-container">
+  <mat-progress-spinner diameter="40" mode="indeterminate"></mat-progress-spinner>
+  <p>{{ 'COMMON.LOADING' | translate }}</p>
+</div>
+
+<!-- Error State -->
+<div *ngIf="error && !loading" @fade class="error-container">
+  <mat-icon color="warn">error</mat-icon>
+  <h3>{{ 'SUPPLIER_PAYMENT.ERRORS.NO_DATA_FOUND' | translate }}</h3>
+  <p>{{ error }}</p>
+  <div class="error-actions">
+    <button (click)="retry()" color="primary" mat-raised-button>
+      {{ 'COMMON.REFRESH' | translate }}
+    </button>
+    <button (click)="goBack()" mat-stroked-button>
+      {{ 'COMMON.BACK' | translate }}
+    </button>
+  </div>
+</div>
+
+<!-- Details State -->
+<div *ngIf="data && !loading" @fade class="details-container">
+  <mat-card-header class="card-header">
+    <div aria-hidden="true" class="avatar" mat-card-avatar>
+      <mat-icon>inventory_2</mat-icon>
+    </div>
+    <mat-card-title class="title">{{ data.name || '-' }}</mat-card-title>
+    <mat-card-subtitle class="subtitle">
+      <mat-chip
+        [ngClass]="{
+              'status-active': data.active,
+              'status-inactive': !data.active
+            }"
+      >
+        <mat-icon>{{
+            data.active ? 'check_circle' : 'cancel'
+          }}
+        </mat-icon>
+        {{
+          data.active
+            ? ('BANK_ACCOUNTS.FIELDS.ACTIVE' | translate)
+            : ('BANK_ACCOUNTS.FIELDS.INACTIVE' | translate)
+        }}
+      </mat-chip>
+    </mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content class="details-content">
+    <div class="details-grid">
+      <div class="field">
+        <div class="label">
+          {{ 'OIL_CONTAINER.FORM.CAPACITY' | translate }}
+        </div>
+        <div class="value">{{ data.capacityInLiters || '-' }}</div>
+      </div>
+
+      <div class="field">
+        <div class="label">
+          {{ 'OIL_CONTAINER.FORM.STOCK_QUANTITY' | translate }}
+        </div>
+        <div class="value">{{ data.stockQuantity || '-' }}</div>
+      </div>
+      <div class="field">
+        <div class="label">
+          {{ 'department.description' | translate }}
+        </div>
+        <div class="value">{{ data.description || '-' }}</div>
+      </div>
+
+      <div class="field">
+        <div class="label">
+          {{ 'OIL_CONTAINER.FORM.SELLING_PRICE' | translate }}
+        </div>
+        <div class="value">{{ fmtMoney(data.sellingPrice) }}</div>
+      </div>
+
+      <div class="field">
+        <div class="label">
+          {{ 'OIL_CONTAINER.FORM.BUY_PRICE' | translate }}
+        </div>
+        <div class="value">
+          {{ data.buyPrice != null ? fmtMoney(data.buyPrice) : '-' }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Audit Fields -->
+    <div class="audit-section">
+      <h4>{{ 'OIL_TRANSACTIONS.VIEW.SECTIONS.AUDIT_INFO' | translate }}</h4>
+      <div class="details-grid">
+        <div class="field">
+          <div class="label">
+            {{ 'CUSTOMERS.FIELDS.CREATED_DATE' | translate }}
+          </div>
+          <div class="value">{{ formatDate(data.createdDate) }}</div>
+        </div>
+
+        <div class="field">
+          <div class="label">
+            {{ 'OIL_TRANSACTIONS.VIEW.FIELDS.LAST_MODIFIED_DATE' | translate }}
+          </div>
+          <div class="value">{{ formatDate(data.lastModifiedDate) }}</div>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+
+
+</div>
+

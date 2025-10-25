@@ -6,13 +6,15 @@
 
       <!-- Right Side: Payment Form -->
       <div [class.active]="selectedDelivery" class="payment-section">
-        <mat-card *ngIf="selectedDelivery" class="payment-form-card">
+        <mat-card *ngIf="selectedDelivery"
+                  class="payment-form-card"
+                  [ngClass]="derivedDirection === TransactionDirection.INBOUND ? 'inbound' : 'outbound'">
           <mat-card-title>
             <div class="payment-header">
               <span>{{ 'SUPPLIER_PAYMENT.PAYMENT' | translate }} - {{ 'SUPPLIER_PAYMENT.LOT' | translate }} {{ selectedDelivery?.lotNumber }}</span>
               <!-- New: Direction chip (read-only) -->
               <mat-chip color="primary" selected>
-                <mat-icon aria-hidden="true">
+              <mat-icon aria-hidden="true">
                   {{ derivedDirection === TransactionDirection.INBOUND ? 'call_received' : 'call_made' }}
                 </mat-icon>
                 {{ 'SUPPLIER_PAYMENT.DIRECTION' | translate }}:

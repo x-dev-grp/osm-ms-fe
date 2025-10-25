@@ -28,12 +28,12 @@ export class PdfGeneratorFactureService {
       const marginRight = 12;
       const contentWidth = pageWidth - marginLeft - marginRight;
 
-      // Two-column header like the sample (client left, company/right on the right)
+      // Two-column header (client left, company/right on the right)
       const gap = 6;
       const leftColW = 96; // left column width (client block)
       const rightColW = contentWidth - leftColW - gap;
 
-      const leftColX  = marginLeft;
+      const leftColX = marginLeft;
       const rightColX = marginLeft + leftColW + gap;
 
       const headerTopY = 12;
@@ -43,14 +43,29 @@ export class PdfGeneratorFactureService {
 
       // Helpers
       const t = (key: string) => this.translationService.instant(key);
+      const norm = (v: any) => (v == null || v === 'undefined' ? '' : String(v).trim());
       const safeText = (
         text: any,
         x: number,
         y: number,
         align: 'left' | 'right' | 'center' = 'left'
       ) => {
-        const str = text == null || text === 'undefined' ? '' : String(text).trim();
+        const str = norm(text);
         if (str) doc.text(str, x, y, { align });
+      };
+      const drawWrapped = (
+        text: any,
+        x: number,
+        y: number,
+        maxWidth: number,
+        lineStep = 5,
+        align: 'left' | 'right' | 'center' = 'left'
+      ) => {
+        const str = norm(text);
+        if (!str) return y;
+        const lines = doc.splitTextToSize(str, maxWidth);
+        lines.forEach((ln: string, i: number) => doc.text(ln, x, y + i * lineStep, { align }));
+        return y + lines.length * lineStep;
       };
 
       // ---------- LEFT COLUMN: Logo + Company info ----------
@@ -66,32 +81,48 @@ export class PdfGeneratorFactureService {
         }
       }
 
-      // COMPANY INFO (left column, below logo)
+      // COMPANY INFO (left column, below logo) — now wrapped
       let companyY = headerTopY + logoH + 4;
       doc.setFont(this._fontName, 'normal');
       doc.setFontSize(fsS);
-      safeText(config.companyInfo?.address || t('PDF.ADDRESS'), leftColX, companyY);
-      companyY += 5;
-      if (config.companyInfo?.vatNumber) { safeText(`Matricule fiscal: ${config.companyInfo.vatNumber}`, leftColX, companyY); companyY += 5; }
-      if (config.companyInfo?.mobile)    { safeText(`Mobile: ${config.companyInfo.mobile}`, leftColX, companyY); companyY += 5; }
-      if (config.companyInfo?.website)   { safeText(`w. ${config.companyInfo.website}`, leftColX, companyY); companyY += 5; }
+
+      const companyMaxW = leftColW; // keep within the left column
+      companyY = drawWrapped(config.companyInfo?.address || t('PDF.ADDRESS'), leftColX, companyY, companyMaxW);
+      if (config.companyInfo?.vatNumber) {
+        companyY = drawWrapped(`${t('PDF.VAT')}: ${config.companyInfo.vatNumber}`, leftColX, companyY, companyMaxW);
+      }
+      if (config.companyInfo?.mobile) {
+        companyY = drawWrapped(`${t('PDF.MOBILE')}: ${config.companyInfo.mobile}`, leftColX, companyY, companyMaxW);
+      }
+      if (config.companyInfo?.website) {
+        companyY = drawWrapped(`${t('PDF.WEBSITE')}: ${config.companyInfo.website}`, leftColX, companyY, companyMaxW);
+      }
 
       const companyBottom = companyY;
 
-      // ---------- RIGHT COLUMN: Title ----------
+      // ---------- RIGHT COLUMN: Title + Reference ----------
       doc.setFont(this._fontName, 'bold');
       doc.setFontSize(fsL);
-      safeText('Facture', pageWidth- (marginRight+20), headerTopY + 20, 'center');
+      // keep centered at right area; allow wrapping if extremely long
+      const rightCenterX = pageWidth - (marginRight + 20);
+      drawWrapped(t('PDF.INVOICE') || 'Facture', rightCenterX, headerTopY + 20, rightColW, 5, 'center');
 
-      // Reference number below title
+      // Reference (wrap if long)
       doc.setFontSize(fsM);
-      const refNumber = config.reference  ;
-      safeText(refNumber, pageWidth- (marginRight+20), headerTopY + 15, 'center');
+      drawWrapped(config.reference || '', rightCenterX, headerTopY + 15, rightColW, 5, 'center');
 
-      // ---------- CLIENT BLOCK (below company info, left, bordered but not shaded) ----------
+      // ---------- CLIENT BLOCK (below company info, bordered) ----------
       let terms = '';
-      const clientInfo = (config.generalInfo || [])
-        .filter((g) => g && g.value != null && String(g.value).trim() !== '' && g.label !== 'PDF.OPERATION_TYPE' && g.label !== 'PDF.INVOICE_NUMBER' && g.label !== 'PDF.LOT_NUMBER' && g.label !== 'PDF.REFERENCE_DATE');
+      const clientInfo = (config.generalInfo || []).filter(
+        (g) =>
+          g &&
+          g.value != null &&
+          String(g.value).trim() !== '' &&
+          g.label !== 'PDF.OPERATION_TYPE' &&
+          g.label !== 'PDF.INVOICE_NUMBER' &&
+          g.label !== 'PDF.LOT_NUMBER' &&
+          g.label !== 'PDF.REFERENCE_DATE'
+      );
 
       (config.generalInfo || []).forEach((g) => {
         if (g.label === 'PDF.OPERATION_TYPE') {
@@ -124,8 +155,7 @@ export class PdfGeneratorFactureService {
       let y = clientBlockY + pad + 4;
       clientInfo.forEach((info) => {
         const full = `${t(info.label)}: ${info.value}`;
-        const lines = doc.splitTextToSize(full, clientBlockW - pad * 2);
-        lines.forEach((ln: string) => { safeText(ln, clientBlockX + pad, y); y += 5; });
+        y = drawWrapped(full, clientBlockX + pad, y, clientBlockW - pad * 2, 5);
       });
 
       const clientBottom = clientBlockY + clientBlockH + pad * 2;
@@ -133,14 +163,17 @@ export class PdfGeneratorFactureService {
       // ---------- RIGHT OF CLIENT: Date and Terms ----------
       const rightClientX = clientBlockX + clientBlockW + 10;
       let rightClientY = clientBlockY + pad + 4;
-      safeText(`Date: ${config.date || new Date().toLocaleDateString()}`, rightClientX, rightClientY);
+      safeText(`${t('PDF.DATE')}: ${config.date || new Date().toLocaleDateString()}`, rightClientX, rightClientY);
       rightClientY += 7;
       if (terms) {
-        safeText(`Terms: `, rightClientX, rightClientY);
-        doc.setTextColor(0, 0, 255); // blue
-        safeText(terms, rightClientX + doc.getTextWidth(`Terms: `), rightClientY);
-        doc.setTextColor(0); // black
-        rightClientY += 7;
+        const label = `${t('PDF.TERMS') || 'Terms'}: `;
+        const labelW = doc.getTextWidth(label);
+        safeText(label, rightClientX, rightClientY);
+        doc.setTextColor(0, 0, 255);
+        // wrap the value portion if long
+        rightClientY = drawWrapped(terms, rightClientX + labelW, rightClientY, rightColW - labelW, 5);
+        doc.setTextColor(0);
+        rightClientY += 2;
       }
 
       const rightClientBottom = rightClientY;
@@ -148,21 +181,21 @@ export class PdfGeneratorFactureService {
       // current Y for table
       let currentY = Math.max(clientBottom, rightClientBottom) + 12;
 
-      // ---------- PRODUCTS TABLE (aligned grid) ----------
+      // ---------- PRODUCTS TABLE ----------
       const tableLeft = marginLeft;
       const cols = [
-        { key: 'desc',  w: 100 },
-        { key: 'unit',  w: 30  },
-        { key: 'qty',   w: 30  },
-        { key: 'total', w: 30  },
+        { key: 'desc', w: 100 },
+        { key: 'unit', w: 30 },
+        { key: 'qty', w: 30 },
+        { key: 'total', w: 30 }
       ];
 
-      // Precompute X positions to guarantee alignment
+      // Precompute X positions
       const colX: number[] = [tableLeft];
       for (let i = 0; i < cols.length - 1; i++) colX.push(colX[i] + cols[i].w);
 
       const headerH = 10;
-      const rowH    = 8;
+      const rowH = 8;
 
       // Header background
       doc.setFillColor(225, 225, 225);
@@ -172,21 +205,20 @@ export class PdfGeneratorFactureService {
       doc.setFont(this._fontName, 'bold');
       doc.setFontSize(fsS);
       safeText(t('PDF.DESCRIPTION'), colX[0] + cols[0].w / 2, currentY + 6, 'center');
-      safeText(t('Price'), colX[1] + cols[1].w / 2, currentY + 6, 'center');
-      safeText(t('PDF.QUANTITY'), colX[2] + cols[2].w / 2, currentY + 6, 'center');
+      safeText(t('Price'),          colX[1] + cols[1].w / 2, currentY + 6, 'center');
+      safeText(t('PDF.QUANTITY'),   colX[2] + cols[2].w / 2, currentY + 6, 'center');
       safeText(t('PDF.TOTAL_AMOUNT'), colX[3] + cols[3].w / 2, currentY + 6, 'center');
 
       currentY += headerH;
 
       // Rows (config.fields)
-       doc.setFont(this._fontName, 'normal');
+      doc.setFont(this._fontName, 'normal');
       doc.setFontSize(fsS);
 
       const lines = (config.fields || []) as Array<{ label: string; value: string }>;
-
       let grandTotal = 0;
 
-// ---- Group the 4 standard fields into ONE row if present ----
+      // Group the 4 standard fields into ONE row if present
       const byLabel: Record<string, string> = {};
       lines.forEach((it) => (byLabel[it.label] = it.value));
 
@@ -199,8 +231,8 @@ export class PdfGeneratorFactureService {
       if (hasStdFields) {
         const desc = terms || '';
         const unitPriceNum = this.parseNumberFrom(byLabel['PDF.PRICE_UNIT'] || '');
-        const qtyNum       = this.parseNumberFrom(byLabel['PDF.QUANTITY'] || '');
-        let totalNum       = this.parseNumberFrom(byLabel['PDF.TOTAL'] || '');
+        const qtyNum = this.parseNumberFrom(byLabel['PDF.QUANTITY'] || '');
+        let totalNum = this.parseNumberFrom(byLabel['PDF.TOTAL'] || '');
 
         if ((!totalNum || Number.isNaN(totalNum)) && isFinite(unitPriceNum) && isFinite(qtyNum)) {
           totalNum = unitPriceNum * qtyNum;
@@ -209,14 +241,14 @@ export class PdfGeneratorFactureService {
         // draw row borders
         cols.forEach((c, i) => doc.rect(colX[i], currentY, c.w, rowH));
 
-        // description (left-aligned)
+        // description (left-aligned) — keep single line to preserve row height
         const descLines = doc.splitTextToSize(desc, cols[0].w - 4);
         safeText(descLines[0] || '', colX[0] + 2, currentY + 5);
 
         // numbers (centered)
         const unitStr = isFinite(unitPriceNum) && unitPriceNum !== 0 ? this.formatMoney(unitPriceNum) : '';
-        const qtyStr  = isFinite(qtyNum)       && qtyNum       !== 0 ? this.formatQty(qtyNum) : '';
-        const totStr  = isFinite(totalNum)     && totalNum     !== 0 ? this.formatMoney(totalNum) : '';
+        const qtyStr = isFinite(qtyNum) && qtyNum !== 0 ? this.formatQty(qtyNum) : '';
+        const totStr = isFinite(totalNum) && totalNum !== 0 ? this.formatMoney(totalNum) : '';
 
         safeText(unitStr, colX[1] + cols[1].w / 2, currentY + 5, 'center');
         safeText(qtyStr,  colX[2] + cols[2].w / 2, currentY + 5, 'center');
@@ -224,9 +256,8 @@ export class PdfGeneratorFactureService {
 
         grandTotal += isFinite(totalNum) ? totalNum : 0;
         currentY += rowH;
-
       } else {
-        // ---- Fallback: treat each line as its own row (old behavior) ----
+        // Fallback: each line as its own row
         lines.forEach((it) => {
           const { desc, unitPrice, qty, total } = this.parseInvoiceLine(it.label, it.value);
 
@@ -236,9 +267,9 @@ export class PdfGeneratorFactureService {
           safeText(descLines[0] || '', colX[0] + 2, currentY + 5);
 
           const unitStr = unitPrice != null ? this.formatMoney(unitPrice) : '';
-          const qtyStr  = qty       != null ? this.formatQty(qty) : '';
-          const rowTot  = total     != null ? total : (unitPrice != null && qty != null ? unitPrice * qty : null);
-          const totStr  = rowTot    != null ? this.formatMoney(rowTot) : '';
+          const qtyStr = qty != null ? this.formatQty(qty) : '';
+          const rowTot = total != null ? total : unitPrice != null && qty != null ? unitPrice * qty : null;
+          const totStr = rowTot != null ? this.formatMoney(rowTot) : '';
 
           safeText(unitStr, colX[1] + cols[1].w / 2, currentY + 5, 'center');
           safeText(qtyStr,  colX[2] + cols[2].w / 2, currentY + 5, 'center');
@@ -263,13 +294,12 @@ export class PdfGeneratorFactureService {
       currentY += rowH + 8;
 
       // ---------- BOTTOM INFO BLOCKS ----------
-      // Left: Additional Info snapped to left column, Right: Bank Info snapped to right column
-      const blockLeftX  = leftColX;
+      const blockLeftX = leftColX;
       const blockRightX = rightColX;
-      const blockLeftW  = leftColW;
+      const blockLeftW = leftColW;
       const blockRightW = rightColW;
 
-      // Additional Info (left)
+      // Additional Info (left) — already wrapped
       const add = config.additionalInfo || {};
       const addLines: string[] = [];
       if (add.grossWeight) addLines.push(`${t('PDF.GROSS_WEIGHT')}: ${add.grossWeight}`);
@@ -288,15 +318,11 @@ export class PdfGeneratorFactureService {
         doc.setFont(this._fontName, 'normal');
         doc.setFontSize(fsS);
         addLines.forEach((ln) => {
-          const wrapped = doc.splitTextToSize(ln, blockLeftW);
-          wrapped.forEach((wln: string) => {
-            safeText(wln, blockLeftX, leftBottomY);
-            leftBottomY += 5;
-          });
+          leftBottomY = drawWrapped(ln, blockLeftX, leftBottomY, blockLeftW, 5);
         });
       }
 
-      // Bank Info (right)
+      // Bank Info (right) — now wrapped
       const bank = config.bankInfo || {};
       let rightBottomY = currentY;
       if (bank.bankName || bank.iban || bank.swiftCode) {
@@ -307,14 +333,20 @@ export class PdfGeneratorFactureService {
 
         doc.setFont(this._fontName, 'normal');
         doc.setFontSize(fsS);
-        if (bank.bankName) { safeText(`${t('PDF.BANK')}: ${bank.bankName}`, blockRightX, rightBottomY); rightBottomY += 5; }
-        if (bank.iban)     { safeText(`IBAN: ${bank.iban}`, blockRightX, rightBottomY); rightBottomY += 5; }
-        if (bank.swiftCode){ safeText(`SWIFT: ${bank.swiftCode}`, blockRightX, rightBottomY); rightBottomY += 5; }
+        if (bank.bankName) {
+          rightBottomY = drawWrapped(`${t('PDF.BANK')}: ${bank.bankName}`, blockRightX, rightBottomY, blockRightW, 5);
+        }
+        if (bank.iban) {
+          rightBottomY = drawWrapped(`IBAN: ${bank.iban}`, blockRightX, rightBottomY, blockRightW, 5);
+        }
+        if (bank.swiftCode) {
+          rightBottomY = drawWrapped(`SWIFT: ${bank.swiftCode}`, blockRightX, rightBottomY, blockRightW, 5);
+        }
       }
 
       currentY = Math.max(leftBottomY, rightBottomY) + 6;
 
-      // Payment Terms (full width)
+      // Payment Terms (full width) — wrapped & centered
       const termsList = config.paymentTerms || [];
       if (termsList.length) {
         doc.setFont(this._fontName, 'bold');
@@ -335,7 +367,7 @@ export class PdfGeneratorFactureService {
         currentY += 2;
       }
 
-      // Footer contact (full width)
+      // Footer contact (full width) — wrapped & centered
       const fc = config.footerContact || {};
       if (fc.name || fc.phone) {
         doc.setFont(this._fontName, 'bold');
@@ -349,7 +381,14 @@ export class PdfGeneratorFactureService {
           fc.name ? `${t('PDF.NAME')}: ${fc.name}` : '',
           fc.phone ? `${t('PDF.PHONE')}: ${fc.phone}` : ''
         ].filter(Boolean);
-        parts.forEach((p) => { safeText(p, pageWidth / 2, currentY, 'center'); currentY += 5; });
+        const fullW = pageWidth - marginLeft - marginRight;
+        parts.forEach((p) => {
+          const wrapped = doc.splitTextToSize(p, fullW);
+          wrapped.forEach((ln: string) => {
+            safeText(ln, pageWidth / 2, currentY, 'center');
+            currentY += 5;
+          });
+        });
       }
 
       // OPEN
@@ -371,8 +410,8 @@ export class PdfGeneratorFactureService {
       const marginLeft = 10;
       const marginRight = 10;
       const pageWidth = 210;
-      const logoWidth = 48;
-      const logoHeight = 48;
+      const logoWidth = 25;
+      const logoHeight = 25;
       const rightX = pageWidth - 100;
       const fontSizeSmall = 9;
       const fontSizeMedium = 10;
@@ -381,11 +420,22 @@ export class PdfGeneratorFactureService {
       const lineHeight = 7;
       const clientPadding = 4;
 
+      const t = (key: string) => this.translationService.instant(key);
+      const norm = (v: any) => (v == null || v === 'undefined' ? '' : String(v).trim());
+
       const safeText = (text: any, x: number, y: number) => {
-        const str = text == null || text === 'undefined' ? '' : String(text).trim();
+        const str = norm(text);
         if (str) doc.text(str, x, y);
       };
-      const t = (key: string) => this.translationService.instant(key);
+
+      // helper: wrap text to a max width and render; returns the y after the drawn block
+      const drawWrapped = (txt: any, x: number, y: number, maxWidth: number, lh = lineHeight) => {
+        const str = norm(txt);
+        if (!str) return y;
+        const lines = doc.splitTextToSize(str, maxWidth);
+        lines.forEach((ln: string, i: any) => doc.text(ln, x, y + i * lh));
+        return y + lines.length * lh;
+      };
 
       // --- LOGO ---
       if (base64Logo) {
@@ -397,15 +447,23 @@ export class PdfGeneratorFactureService {
       }
 
       // --- COMPANY INFO (left) ---
-      const companyInfoX = marginLeft + 10;
-      const companyInfoYStart = currentY + 25;
+      // we keep your positions, but wrap within the left column width
+      const companyInfoX = marginLeft + 10; // 20
+      const companyInfoYStart = currentY + 25; // ~35
+      const leftColumnMaxWidth = rightX - companyInfoX - 6; // space up to the right column
+
       doc.setFont(this._fontName, 'normal');
       doc.setFontSize(fontSizeSmall);
-      safeText(config.companyInfo.companyName || t('PDF.COMPANY_NAME'), companyInfoX, companyInfoYStart);
-      safeText(config.companyInfo.address || t('PDF.ADDRESS'), companyInfoX, companyInfoYStart + lineHeight);
-      safeText(`${t('PDF.VAT')} ${config.companyInfo.vatNumber || t('PDF.VAT')}`, companyInfoX, companyInfoYStart + 2 * lineHeight);
-      safeText(`${t('PDF.MOBILE')} ${config.companyInfo.mobile || t('PDF.MOBILE')}`, companyInfoX, companyInfoYStart + 3 * lineHeight);
-      safeText(`${t('PDF.WEBSITE')} ${config.companyInfo.website || t('PDF.WEBSITE')}`, companyInfoX, companyInfoYStart + 4 * lineHeight);
+
+      // Start drawing each line but wrapped to the available width
+      let yPtr = companyInfoYStart;
+      yPtr = drawWrapped(config.companyInfo?.companyName || t('PDF.COMPANY_NAME'), companyInfoX, yPtr, leftColumnMaxWidth);
+      yPtr = drawWrapped(config.companyInfo?.address || t('PDF.ADDRESS'), companyInfoX, yPtr, leftColumnMaxWidth);
+
+      // For the “label + value” lines, build a single string and wrap it too
+      yPtr = drawWrapped(`${t('PDF.VAT')} ${config.companyInfo?.vatNumber || t('PDF.VAT')}`, companyInfoX, yPtr, leftColumnMaxWidth);
+      yPtr = drawWrapped(`${t('PDF.MOBILE')} ${config.companyInfo?.mobile || t('PDF.MOBILE')}`, companyInfoX, yPtr, leftColumnMaxWidth);
+      yPtr = drawWrapped(`${t('PDF.WEBSITE')} ${config.companyInfo?.website || t('PDF.WEBSITE')}`, companyInfoX, yPtr, leftColumnMaxWidth);
 
       // --- TITLE & REF (right) ---
       doc.setFontSize(fontSizeLarge);
@@ -503,7 +561,7 @@ export class PdfGeneratorFactureService {
 
         // text
         const paymentTypeLines = doc.splitTextToSize(item.paymentType, col1Width - 4);
-        safeText(paymentTypeLines[0], tableLeft + 2, currentY + 6);
+        safeText(paymentTypeLines[0], tableLeft + 2, currentY + 6); // keep one line to preserve your row height
 
         const totalWidth = doc.getTextWidth(item.totalAmount);
         const paidWidth = doc.getTextWidth(item.paidAmount);
@@ -636,12 +694,15 @@ export class PdfGeneratorFactureService {
   private parseInvoiceLine(
     label: string,
     value: string
-  ): { desc: string; unitPrice: number | null; qty: number | null; total: number | null } {
+  ): {
+    desc: string;
+    unitPrice: number | null;
+    qty: number | null;
+    total: number | null;
+  } {
     const desc = (label || '').trim();
 
-    const nums = (value || '')
-      .replace(/,/g, '.')
-      .match(/-?\d+(\.\d+)?/g) || [];
+    const nums = (value || '').replace(/,/g, '.').match(/-?\d+(\.\d+)?/g) || [];
 
     let unitPrice: number | null = null;
     let qty: number | null = null;
@@ -649,12 +710,12 @@ export class PdfGeneratorFactureService {
 
     if (nums.length >= 3) {
       unitPrice = Number(nums[0]);
-      qty       = Number(nums[1]);
-      total     = Number(nums[2]);
+      qty = Number(nums[1]);
+      total = Number(nums[2]);
     } else if (nums.length === 2) {
       unitPrice = Number(nums[0]);
-      qty       = Number(nums[1]);
-      total     = null; // compute later
+      qty = Number(nums[1]);
+      total = null; // compute later
     } else if (nums.length === 1) {
       if (/[x×*]/i.test(value)) {
         qty = Number(nums[0]); // looks like just "× qty"

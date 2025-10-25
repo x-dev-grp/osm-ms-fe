@@ -1455,6 +1455,10 @@
       "STORAGE_LOCATION": "Storage Location",
       "UPDATE": "Update"
     },
+    "MESSAGES": {
+      "CREATED": "Oil container created successfully",
+      "UPDATED": "Oil container updated successfully"
+    },
     "TITLE_ADD": "Add Oil Container",
     "TITLE_EDIT": "Edit Oil Container"
   },
@@ -2101,6 +2105,7 @@
       "FINANCIALTRANSACTION": "Financial Transaction",
       "GEN_INVOICE": "Generate Invoice",
       "GEN_PDF": "Generate Receipt",
+      "GEN_PDF_BON_COMMANDE": "Oil purchase order ",
       "GEN_PDF_PRODUCTION": "Generate Production voucher",
       "GEN_PDF_QC_OIL": "Generate oil QC receipt ",
       "GEN_PDF_QC_OLIVE": "Generate Olive QC receipt ",
@@ -2208,13 +2213,6 @@
     "TITLE": "Page Not Found"
   },
   "PDF": {
-    "OIL_GRADE": {
-      "EXTRA_VIRGIN": "Extra Virgin",
-      "LAMPANTE": "Lampante",
-      "OTHER": "Other",
-      "REFINED": "Refined",
-      "VIRGIN": "Virgin"
-    },
     "ACIDITY": "Acidity",
     "ADDRESS": "Adresse",
     "BANK_DETAILS": "Bank Details",
@@ -2279,6 +2277,7 @@
     "FICH_CONTROL_QUALITE_HUIL": "Oil Quality Control Sheet",
     "FICH_CONTROL_QUALITE_OLIVE": "Olive Quality Control Sheet",
     "FORM": "FORM",
+    "GEN_PDF_BON_COMMANDE": "Oil purchase order",
     "GLOBAL_LOT": "Global Lot",
     "GROSS_WEIGHT": "Gross Weight",
     "HUILE_TYPE": "Oil Type",
@@ -2307,6 +2306,13 @@
     "N°COLIS": "Package #",
     "OIL_CUSTOMER": "Oil Customer",
     "OIL_DISPATCH": "Oil Dispatch Note",
+    "OIL_GRADE": {
+      "EXTRA_VIRGIN": "Extra Virgin",
+      "LAMPANTE": "Lampante",
+      "OTHER": "Other",
+      "REFINED": "Refined",
+      "VIRGIN": "Virgin"
+    },
     "OIL_QUANTITY": "Oil Quantity",
     "OIL_TYPE": "Oil Type",
     "OIL_VARIETY": "Oil Variety",
@@ -2376,7 +2382,8 @@
     "STORAGE_UNIT_SOURCE": "Storage Unit (Source)",
     "SUBTOTAL": "Subtotal",
     "SUPPLIER": "Supplier",
-    "TANK_NUMBER": "Tank #",
+    "TANK_NUMBER": "N° Article",
+    "TERMS": "Condition",
     "TOTAL": "Total Amount",
     "TOTAL_AMOUNT": "Total Amount",
     "TOTAL_PRICE": "Total Price",
@@ -2594,6 +2601,7 @@
     },
     "TITLE": "Oil Receptions and Milling"
   },
+  "REQUIRED": "Required ",
   "RESET_PASSWORD": {
     "CODE_PLACEHOLDER": "Enter your code",
     "CONFIRMATION_CODE": "Confirmation Code",
@@ -2776,12 +2784,14 @@
       "TITLE_EDIT": "Edit Agriculture"
     },
     "DETAILS": {
+      "COUNT": "Count:",
       "OIL_CREDIT_STATS_TITLE": "Oil Credit Stats",
       "OIL_CREDIT_TOTAL": "Oil Credits",
       "PAID_OILSALES_TITLE": "Paid Oil sales",
       "PAID_WASTE_SALES_TITLE": "Paid waste sales",
       "PAYMENT_HISTORY_COUNT": "payments made",
       "PAYMENT_HISTORY_TITLE": "Payment History",
+      "TOTAL": "Total",
       "UNPAID_COUNT": "payments pending",
       "UNPAID_OILSALES_TITLE ": "Unpaid oil sales",
       "UNPAID_TITLE": "Unpaid Payments",

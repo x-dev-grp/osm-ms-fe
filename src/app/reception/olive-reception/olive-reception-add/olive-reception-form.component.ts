@@ -582,7 +582,9 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
         oliveVariety: d.oliveVariety || null,
         sackCount: d.sackCount,
         oliveType: d.oliveType || null,
-        operationType: d.operationType || null
+        operationType: d.operationType || null,
+        status: d.status || null
+
       },
       { emitEvent: false }
     );

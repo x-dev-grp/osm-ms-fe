@@ -31,6 +31,7 @@ export interface OilSale {
   lastModifiedDate?: string;
   createdBy?: string;
   lastModifiedBy?: string;
+  containerSales?: { id: string; count: number }[];
 }
 
 export enum OilSaleStatus {
@@ -40,16 +41,4 @@ export enum OilSaleStatus {
   DELIVERED = 'DELIVERED'
 }
 
-export interface CreateOilSaleDto {
-  customerId?: string;
-  supplierId?: string;
-  storageUnitId: string;
-  quantity: number;
-  unitPrice: number;
-  currency: Currency;
-  paymentMethod: PaymentMethod;
-  saleDate: string;
-  statue: string;
-  invoiceNumber?: string;
-  description?: string;
-}
+

@@ -9,13 +9,13 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
   searchEndpoint: 'production/oil_sale',
   addNewItem: true,
   addNewItemUrl: 'finance/oil-sales/new',
-  specificActions: [
-    {
-      action: 'GEN_INVOICE',
-      color: 'primary',
-      icon: 'request_quote'
-    }
-  ],
+  // specificActions: [
+  //   {
+  //     action: 'GEN_INVOICE',
+  //     color: 'primary',
+  //     icon: 'request_quote'
+  //   }
+  // ],
   fields: [
     // ==================== CORE SALE FIELDS ====================
     {
@@ -72,8 +72,8 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
         { value: 'VIRGIN', label: 'VIRGIN', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.VIRGIN' },
         {
           value: 'EXTRA_VIRGIN',
-          label: 'OIL_TRANSACTIONS.QUALITY_GRADES.EXTRA_VIRGIN',
-          labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.EXTRA_VIRGIN'
+          label: 'EXTRA_VIRGIN',
+          labelTranslatePath: 'PDF.OIL_GRADE.EXTRA_VIRGIN'
         },
         { value: 'LAMPANTE', label: 'LAMPANTE', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.LAMPANTE' },
         { value: 'REFINED', label: 'REFINED', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.REFINED' },

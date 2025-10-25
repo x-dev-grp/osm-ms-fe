@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -19,74 +19,98 @@ import { ToastService } from '../../../shared/services/toast.service';
   styleUrl: './add-oil-container.component.scss'
 })
 export class AddOilContainerComponent implements OnInit {
-  containerForm: FormGroup;
-  isSaving = false;
+  containerForm!: FormGroup;
   isEditMode = false;
-  containerId: string | null;
-
-  constructor(
-    private fb: FormBuilder,
-    private service: OilContainerService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private toast: ToastService
-  ) {}
+  isSaving = false;
+  currentId?: string;
+  private fb = inject(FormBuilder);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private service = inject(OilContainerService);
+  private toast = inject(ToastService);
 
   ngOnInit(): void {
-    this.containerForm = this.fb.group({
-      name: ['', [Validators.required, Validators.maxLength(100)]],
-      description: ['', [Validators.maxLength(1000)]],
-      lotNumber: ['', [Validators.maxLength(1000)]],
-      capacityInLiters: [null, [Validators.required, Validators.min(0.01)]],
-      stockQuantity: [0, [Validators.required, Validators.min(0)]],
-      material: ['', [Validators.maxLength(50)]],
-      buyPrice: [null, [Validators.required, Validators.min(0)]],
-      sellingPrice: [null, [Validators.required, Validators.min(0)]],
-      reorderThreshold: [null],
-      reorderQuantity: [null],
-      barcode: ['', [Validators.maxLength(100)]],
-      storageLocationCode: ['', [Validators.maxLength(100)]],
-      active: [true, Validators.required],
-      certification: ['', [Validators.maxLength(100)]]
-    });
-    this.containerId = this.route.snapshot.paramMap.get('id');
-     if (this.containerId) {
-      this.isEditMode = true;
-      this.loadContainer(this.containerId);
+    this.buildForm();
+
+    this.currentId = this.route.snapshot.paramMap.get('id') || undefined;
+    this.isEditMode = !!this.currentId;
+
+    if (this.isEditMode && this.currentId) {
+      this.loadContainer(this.currentId);
     }
-   }
+  }
+
+  cancel(): void {
+    this.router.navigate(['/storage/oil-container']);
+  }
 
   onSubmit(): void {
     if (this.containerForm.invalid) {
       this.containerForm.markAllAsTouched();
       return;
     }
-
     this.isSaving = true;
-    const payload: OilContainer = this.containerForm.value;
-    const request = this.isEditMode ? this.service.updateOilContainer(payload) : this.service.addOilContainer(payload);
 
-    request.subscribe({
-      next: () => this.router.navigate(['/oil-containers']),
-      error: () => (this.isSaving = false)
+    const v = this.containerForm.value;
+    const payload: OilContainer = {
+      ...(this.currentId ? { id: this.currentId } : {}),
+      name: (v.name as string).trim(),
+      description: (v.description as string).trim(),
+      capacityInLiters: Number(v.capacityInLiters),
+      stockQuantity: Number(v.stockQuantity),
+      buyPrice: v.buyPrice !== null && v.buyPrice !== undefined ? Number(v.buyPrice) : 0,
+      sellingPrice: Number(v.sellingPrice),
+      active: !!v.active
+    };
+
+    const request$ = this.isEditMode ? this.service.updateOilContainer(payload) : this.service.addOilContainer(payload);
+
+    request$.subscribe({
+      next: () => {
+        this.toast.success(this.isEditMode ? 'OIL_CONTAINER.MESSAGES.UPDATED' : 'OIL_CONTAINER.MESSAGES.CREATED');
+        this.router.navigate(['/storage/oil-container']);
+      },
+      error: (err: any) => {
+        console.error('Save error:', err);
+        this.isSaving = false;
+      }
     });
   }
 
-  cancel(): void {
-    this.router.navigate(['/oil-containers']);
+  private buildForm(): void {
+    this.containerForm = this.fb.group({
+      name: ['', [Validators.required, Validators.maxLength(120)]],
+      description: [''],
+      capacityInLiters: [null, [Validators.required, Validators.min(0.1)]],
+      stockQuantity: [0, [Validators.required, Validators.min(0)]],
+      buyPrice: [null, [Validators.min(0)]],
+      sellingPrice: [null, [Validators.required, Validators.min(0)]],
+      active: [true]
+    });
   }
 
   private loadContainer(id: string): void {
-     this.service.getOilContainer(id).subscribe({
-      next: (response) => {
-        if (response.success && response.data) {
-          this.containerForm.patchValue(response.data);
+    this.service.getOilContainer(id).subscribe({
+      next: (res: any) => {
+        const data = res?.data ?? res; // support {success,data} or plain payload
+        if (data) {
+          // Only patch known fields (ignore legacy ones that may still exist on the server)
+          const patch: Partial<OilContainer> = {
+            name: data.name,
+            capacityInLiters: data.capacityInLiters,
+            stockQuantity: data.stockQuantity,
+            description: data.description,
+            buyPrice: data.buyPrice,
+            sellingPrice: data.sellingPrice,
+            active: data.active
+          };
+          this.containerForm.patchValue(patch);
         }
-       },
-      error: (error) => {
-        console.error('Error loading bank account:', error);
-        this.toast.error('Error loading bank account details');
-       }
+      },
+      error: (err) => {
+        console.error('Error loading oil container:', err);
+        this.toast.error('Failed to load oil container');
+      }
     });
   }
 }

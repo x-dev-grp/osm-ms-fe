@@ -42,6 +42,9 @@ jobs:
           name: dist
           path: ${{ steps.outdir.outputs.out_dir }}/**
           if-no-files-found: error
+          retention-days: 3
+          compression-level: 9
+
   publish:
     needs: build
     runs-on: ubuntu-latest

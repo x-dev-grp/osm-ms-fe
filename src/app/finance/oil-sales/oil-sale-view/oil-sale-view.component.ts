@@ -51,29 +51,6 @@ export class OilSaleViewComponent implements OnInit {
     }
   }
 
-  private loadOilSale(id: string): void {
-    this.loading = true;
-    this.oilSaleService.getOilSale(id).subscribe({
-      next: (response) => {
-        if (response.success && response.data) {
-          this.oilSale = response.data[0];
-        } else {
-          this.toast.error('Oil sale not found');
-          this.router.navigate(['/finance/oil-sales']);
-        }
-        this.loading = false;
-      },
-      error: (error) => {
-        console.error('Error loading oil sale:', error);
-        this.toast.error('Error loading oil sale');
-        this.router.navigate(['/finance/oil-sales']);
-        this.loading = false;
-      }
-    });
-  }
-
-
-
   onConfirm(): void {
     if (this.oilSaleId && this.oilSale?.status === OilSaleStatus.PENDING) {
       this.oilSaleService.confirmOilSale(this.oilSaleId).subscribe({
@@ -160,5 +137,26 @@ export class OilSaleViewComponent implements OnInit {
 
   canDeliver(): boolean {
     return this.oilSale?.status === OilSaleStatus.CONFIRMED;
+  }
+
+  private loadOilSale(id: string): void {
+    this.loading = true;
+    this.oilSaleService.getOilSale(id).subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          this.oilSale = Array.isArray(response.data) ? response.data[0] : response.data;
+        } else {
+          this.toast.error('Oil sale not found');
+          this.router.navigate(['/finance/oil-sales']);
+        }
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading oil sale:', error);
+        this.toast.error('Error loading oil sale');
+        this.router.navigate(['/finance/oil-sales']);
+        this.loading = false;
+      }
+    });
   }
 }

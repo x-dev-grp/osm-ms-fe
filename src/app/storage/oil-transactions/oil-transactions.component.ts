@@ -21,6 +21,8 @@ import { PdfGeneratorService } from '../../shared/services/pdf-generator.service
 import { OilSaleValidationDialogComponent } from './oil-sale-validation/oil-sale-validation.component';
 import { ToastService } from '../../shared/services/toast.service';
 import { getOilSortiePdfConfig } from './Oil-sortie-pdf-config';
+import { getBonCommandeHuileConfig } from '../../finance/oil-sales/Oil-COMMAND-pdf-config';
+import { OilSaleService } from '../../finance/service/oil-sale.service';
 
 @Component({
   selector: 'app-oil-transactions',
@@ -45,6 +47,7 @@ export class OilTransactionsComponent implements OnInit {
     private storageUnitService: StorageUnitDtoService,
     private dialog: MatDialog,
     private router: Router,
+    private oilsaleService: OilSaleService,
     private pdfService: PdfGeneratorService
   ) {}
 
@@ -76,6 +79,26 @@ export class OilTransactionsComponent implements OnInit {
       case 'GEN_PDF_SORTIE':
         if (event.row) {
           this.generateOilSortiePdf(event.row);
+        }
+        break;
+      case 'GEN_PDF_BON_COMMANDE':
+        if (event.row) {
+          this.oilsaleService.getOilSale(event.row.oilSaleId!).subscribe({
+            next: (response) => {
+              if (response.success && response.data) {
+                const oilsale = Array.isArray(response.data) ? response.data[0] : response.data;
+
+                const config = getBonCommandeHuileConfig(oilsale);
+                this.pdfService.generatePdf(config);
+              } else {
+                this.toast.error('Oil sale not found');
+              }
+            },
+            error: (error) => {
+              console.error('Error loading oil sale:', error);
+              this.toast.error('Error loading oil sale');
+            }
+          });
         }
         break;
 

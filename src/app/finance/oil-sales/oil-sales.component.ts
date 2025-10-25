@@ -1,12 +1,14 @@
-import {Component, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
-import {ToastService} from '../../shared/services/toast.service';
-import {CommonModule} from '@angular/common';
-import {OilSaleService} from '../service/oil-sale.service';
-import {OilSale} from '../models/oil-sale.model';
-import {DashboardConfig} from '../../shared/modules/osm-dashboard/models/dashboard-config';
-import {OIL_SALES_DASHBOARD_CONFIG} from './oil-sales-dashboard.config';
-import {OsmDashboard} from '../../shared/modules/osm-dashboard/osm-dashboard';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ToastService } from '../../shared/services/toast.service';
+import { CommonModule } from '@angular/common';
+import { OilSaleService } from '../service/oil-sale.service';
+import { OilSale } from '../models/oil-sale.model';
+import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { OIL_SALES_DASHBOARD_CONFIG } from './oil-sales-dashboard.config';
+import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
+import { getBonCommandeHuileConfig } from './Oil-COMMAND-pdf-config';
+import { PdfGeneratorService } from '../../shared/services/pdf-generator.service';
 
 @Component({
   selector: 'app-oil-sales',
@@ -19,8 +21,9 @@ export class OilSalesComponent implements OnInit {
 
   constructor(
     private oilSaleService: OilSaleService,
-     private router: Router,
-    private toast: ToastService,
+    private router: Router,
+    private pdfService: PdfGeneratorService,
+    private toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -43,6 +46,12 @@ export class OilSalesComponent implements OnInit {
 
       case 'CANCEL':
         this.cancelOilSale(event.row);
+        break;
+      case 'GEN_PDF_BON_COMMANDE':
+        if (event.row) {
+          const config = getBonCommandeHuileConfig(event.row);
+          this.pdfService.generatePdf(config);
+        }
         break;
 
       case 'DELIVER':
