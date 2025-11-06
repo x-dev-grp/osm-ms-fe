@@ -1,5 +1,4 @@
-import { Navigation } from 'src/app/theme/types/navigation';
-import { Role } from 'src/app/theme/types/role';
+import {Navigation} from 'src/app/theme/types/navigation';
 // CHANGE: permissions - use enums
 import {
   Action,
@@ -190,13 +189,60 @@ export const osm_menus: Navigation[] = [
         permissions: [permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.PLANNING)]
       },
       {
-        id: 'triturationHistory',
-        title: 'MENU.PRODUCTION.MILLING_HISTORY',
-        type: 'item',
-        url: '/reception/reception-list',
-        icon: 'fact_check',
-        breadcrumbs: false, // CHANGE: permissions - require RECEPTION:UNIFIEDDELIVERY:READ (for history)
-        permissions: [permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)]
+        id: 'group-reception',
+        title: 'MENU.PRODUCTION.RECEPTIONS',
+        type: 'collapse',
+        icon: 'list_alt',
+        children: [
+          {
+            id: 'reception-olive',
+            title: 'Réception Olive',
+            type: 'collapse',
+            icon: 'spa',
+            children: [
+              {
+                id: 'reception-olive-simple',
+                title: 'Trituration Particulier',
+                type: 'item',
+                url: '/reception/reception-list/olive/SIMPLE_RECEPTION',
+                icon: 'person',
+                breadcrumbs: false
+              },
+              {
+                id: 'reception-olive-base',
+                title: 'Trituration sur Base',
+                type: 'item',
+                url: '/reception/reception-list/olive/BASE',
+                icon: 'recycling',
+                breadcrumbs: false
+              },
+              {
+                id: 'reception-olive-purchase',
+                title: 'Achat Olive',
+                type: 'item',
+                url: '/reception/reception-list/olive/OLIVE_PURCHASE',
+                icon: 'shopping_basket',
+                breadcrumbs: false
+              },
+              {
+                id: 'reception-olive-exchange',
+                title: 'Échange',
+                type: 'item',
+                url: '/reception/reception-list/olive/EXCHANGE',
+                icon: 'compare_arrows',
+                breadcrumbs: false
+              }
+            ]
+          },
+          {
+            id: 'reception-huile',
+            title: 'Réception Huile',
+            type: 'item',
+            url: '/reception/reception-list/oil',
+            icon: 'water_drop',
+            breadcrumbs: false
+          }
+        ]
       },
 
       {

@@ -136,7 +136,8 @@ export const receptionRoutes: Routes = [
     path: 'fournisseur/new',
     component: SupplierAddComponent,
     canActivate: [allPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.SUPPLIER, Action.CREATE)])]
-  },  {
+  },
+  {
     path: 'fournisseur/info/:id',
     component: SupplierInfoComponent,
     canActivate: [allPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.SUPPLIER, Action.CREATE)])]
@@ -222,7 +223,12 @@ export const receptionRoutes: Routes = [
 
   // RECEPTION LIST (READ)
   {
-    path: 'reception-list',
+    path: 'reception-list/:deliveryType',
+    component: ReceptionListComponent,
+    canActivate: [allPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)])]
+  },
+  {
+    path: 'reception-list/:deliveryType/:operationType',
     component: ReceptionListComponent,
     canActivate: [allPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)])]
   }
