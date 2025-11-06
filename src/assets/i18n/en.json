@@ -1315,7 +1315,10 @@
     "PRODUCTION": {
       "MILLING_HISTORY": "Milling History",
       "MILLING_SCHEDULE": "Milling Schedule",
-      "TITLE": "Production"
+      "TITLE": "Production",
+      "RECEPTIONS": "Receptions History",
+      "RECEPTION_OLIVE": "Olive Reception",
+      "RECEPTION_OIL": "Oil Reception"
     },
     "RECEPTION": {
       "AGRICULTURE": "Agriculters",

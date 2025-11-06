@@ -1,26 +1,28 @@
-import { Routes } from '@angular/router';
-import { SupplierComponent } from './suppliers/suppliers.component';
-import { SupplierAddComponent } from './suppliers/supplier-add/supplier-add.component';
-import { SupplierDetailsComponent } from './suppliers/supplier-details/supplier-details.component';
-import { DetailsReceptionComponent } from './details-reception/details-reception.component';
-import { ControleQualiteComponent } from './controleQualite/controleQualite.component';
-import { PlanningComponent } from './planning/planning.component';
-import { MillMachineComponent } from './mill-machine/mill-machine.component';
-import { OliveReceptionComponent } from './olive-reception/olive-reception.component';
-import { OliveReceptionFormComponent } from './olive-reception/olive-reception-add/olive-reception-form.component';
-import { OilReceptionFormComponent } from './oil-reception/oil-reception-add/oil-reception-add.component';
-import { OilReceptionComponent } from './oil-reception/oil-reception.component';
-import { MillMachineAddComponent } from './mill-machine/mill-machine-add/mill-machine-add.component';
-import { MillMachineViewComponent } from './mill-machine/mill-machine-view/mill-machine-view.component';
-import { MillMachineMaintenanceComponent } from './mill-machine/mill-machine-maintenance/mill-machine-maintenance.component';
-import { OilQCComponent } from './oil-qc/oilQC.component';
-import { ReceptionListComponent } from './reception-list/reception-list.component';
-import { ReceptionDashboardComponent } from './reception-dashboard/reception-dashboard.component';
-import { SupplierPaymentHistoryComponent } from './suppliers/supplier-payment-history/supplier-payment-history.component';
-import { allPermissionGuard, anyPermissionGuard, moduleGuard } from '../interceptors/guards/permission.guard';
+import {Routes} from '@angular/router';
+import {SupplierComponent} from './suppliers/suppliers.component';
+import {SupplierAddComponent} from './suppliers/supplier-add/supplier-add.component';
+import {SupplierDetailsComponent} from './suppliers/supplier-details/supplier-details.component';
+import {DetailsReceptionComponent} from './details-reception/details-reception.component';
+import {ControleQualiteComponent} from './controleQualite/controleQualite.component';
+import {PlanningComponent} from './planning/planning.component';
+import {MillMachineComponent} from './mill-machine/mill-machine.component';
+import {OliveReceptionComponent} from './olive-reception/olive-reception.component';
+import {OliveReceptionFormComponent} from './olive-reception/olive-reception-add/olive-reception-form.component';
+import {OilReceptionFormComponent} from './oil-reception/oil-reception-add/oil-reception-add.component';
+import {OilReceptionComponent} from './oil-reception/oil-reception.component';
+import {MillMachineAddComponent} from './mill-machine/mill-machine-add/mill-machine-add.component';
+import {MillMachineViewComponent} from './mill-machine/mill-machine-view/mill-machine-view.component';
+import {
+  MillMachineMaintenanceComponent
+} from './mill-machine/mill-machine-maintenance/mill-machine-maintenance.component';
+import {OilQCComponent} from './oil-qc/oilQC.component';
+import {ReceptionListComponent} from './reception-list/reception-list.component';
+import {ReceptionDashboardComponent} from './reception-dashboard/reception-dashboard.component';
+import {SupplierPaymentHistoryComponent} from './suppliers/supplier-payment-history/supplier-payment-history.component';
+import {allPermissionGuard, anyPermissionGuard, moduleGuard} from '../interceptors/guards/permission.guard';
 // CHANGE: permissions - use enums
-import { Action, OSMModule, permissionKey, ProductionEntity, ReceptionEntity } from 'src/app/theme/types/permissions';
-import { OliveQCComponent } from './olive-qc/oliveQC.component';
+import {Action, OSMModule, permissionKey, ProductionEntity, ReceptionEntity} from 'src/app/theme/types/permissions';
+import {OliveQCComponent} from './olive-qc/oliveQC.component';
 
 export const receptionRoutes: Routes = [
   // CHANGE: permissions - dashboard requires RECEPTION:UNIFIEDDELIVERY:READ
@@ -149,8 +151,18 @@ export const receptionRoutes: Routes = [
     canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.MILLMACHINE, Action.MAINTENANCE)])]
   }, // CHANGE: permissions - reception list requires RECEPTION:UNIFIEDDELIVERY:READ
   {
-    path: 'reception-list',
+    path: 'reception-list/:deliveryType',
     component: ReceptionListComponent,
-    canActivate: [allPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)])]
+    canActivate: [allPermissionGuard([
+      permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)
+    ])]
+  },
+  {
+    path: 'reception-list/:deliveryType/:operationType',
+    component: ReceptionListComponent,
+    canActivate: [allPermissionGuard([
+      permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)
+    ])]
   }
+
 ];

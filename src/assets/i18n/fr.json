@@ -777,8 +777,8 @@
       "SENT_TO_PRODUCTION_ERROR": "Erreur lors de l'envoi en production",
       "SENT_TO_PRODUCTION_SUCCESS": "Réception envoyée en production avec succès"
     },
-    "OIL_TITLE": "Historique des réceptions d'Huile & olive ",
-    "OLIVE_TITLE": "Réceptions d'Olives",
+    "OIL_TITLE": "Historique des réceptions Huile  ",
+    "OLIVE_TITLE": "Historique Réceptions Olives",
     "OPERATION_TYPE": {
       "BASE": "Base",
       "EXCHANGE": "Echange",
@@ -1313,7 +1313,19 @@
     "PRODUCTION": {
       "MILLING_HISTORY": "Historique de trituration",
       "MILLING_SCHEDULE": "Plannings de trituration",
-      "TITLE": "Production"
+      "TITLE": "Production",
+      "RECEPTIONS": "Historique des réceptions",
+      "RECEPTION_OLIVE": "Réception Olive",
+      "RECEPTION_OIL": "Réception Huile",
+      "RECEPTIONS_OLIVE": "Réceptions Olive",
+      "RECEPTIONS_HUILE": "Réceptions Huile",
+      "TRITURATION_PARTICULIER": "Réception Olive - Trituration Particulier",
+      "TRITURATION_BASE": "Réception Olive - Trituration sur Base",
+      "ACHAT_OLIVE": "Réception Olive - Achat Olive",
+      "ECHANGE": "Réception Olive - Échange"
+
+
+
     },
     "RECEPTION": {
       "AGRICULTURE": "Agriculteurs",
