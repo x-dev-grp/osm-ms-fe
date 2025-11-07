@@ -2097,6 +2097,7 @@
       "CREATE": "Créer",
       "DELETE": "Supprimer",
       "DEPARTMENT": "Département",
+      "DETAIL": "Détails",
       "EMPLOYEE": "Employé",
       "ERROR": "Une erreur s'est produite",
       "EXPENSE": "Dépense",
@@ -2784,6 +2785,7 @@
     },
     "DETAILS": {
       "COUNT": "N°:",
+      "NO_EMAIL": "Pas d'email",
       "OIL_CREDIT_STATS_TITLE": "Statistiques crédits d'huile",
       "OIL_CREDIT_TOTAL": "Crédits d'huile",
       "PAID_OILSALES_TITLE": "Vente huile paiés",
@@ -2815,6 +2817,7 @@
       "ADDRESS": "Adresse",
       "BANK_NAME": "Nom de la banque",
       "EMAIL": "Email",
+      "HAS_STORAGE": "Dispose d'un espace de stockage",
       "LASTNAME": "Prénom",
       "NAME": "Nom",
       "PARCEL": "Parcelle",

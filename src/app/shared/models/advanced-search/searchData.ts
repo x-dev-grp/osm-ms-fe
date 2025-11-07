@@ -7,4 +7,5 @@ export class SearchData {
     order? = 'DESC';
     filterTenant?:boolean=true;
     searchData?: SearchModel=new  SearchModel();
+    toCalculateTotal?:string[]|null=null;
   }

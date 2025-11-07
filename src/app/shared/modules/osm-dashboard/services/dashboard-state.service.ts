@@ -38,7 +38,8 @@ const initialState: DashboardState = {
     total: 0,
     data: [],
     totalPages: 0,
-    page: 0
+    page: 0,
+    totals:new Map<string, number>()
   },
   loading: false,
   actionLoading:false,
@@ -98,6 +99,11 @@ export const DashboardStore = signalStore(
            searchData={...searchData,filterTenant:filterTenant}
            patchState(store, { searchData });
 
+        }
+        const toCalculateTotal:string[]=allFields.filter( field=>field.dataTable &&  field.calculateTotal).map(f=>f.name);
+        if(toCalculateTotal?.length>0){
+          searchData= {...searchData,toCalculateTotal:toCalculateTotal };
+          patchState(store,{searchData});
         }
 
 
@@ -176,10 +182,16 @@ export const DashboardStore = signalStore(
       fetchData() {
          console.log('New search triggered with:', store.searchData());
          this.setLoading(true);
+
       _searchService.search(store.searchData(), store.endpoint())
              .pipe(
-                tap((response) => {
+                tap((response:SearchResponse) => {
                   console.log('Data fetched:', response);
+                  const totalsObj = response.totals ?? {};
+                  const totalsMap = new Map<string, number>(
+                    Object.entries(totalsObj).map(([k, v]) => [k, Number(v) || 0])
+                  );
+                  response={...response,totals:totalsMap}
                   this.setData(response);
                   this.setLoading(false);
                 }),

@@ -6,6 +6,19 @@
     background-color: #e8f5e9;
   }
 }
+.col-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;   // left-align the text
+  gap: 2px;                  // small vertical spacing
+  line-height: 1.2;
+}
+
+.col-total {
+  color: red;                // or your theme color
+  font-weight: 600;
+  font-size: 0.85rem;        // optional: slightly smaller
+}
 
 .field-checkbox-container {
   padding: 0.5rem 1rem;
@@ -75,6 +88,56 @@
     color: #1e3720;
     background-color: #83da9c;
   }
+}
+/* Always top-align table headers */
+.mat-header-cell,
+th.mat-header-cell,
+th.mat-mdc-header-cell {
+  vertical-align: top !important;
+}
+
+/* Ensure header content stacks label (top) then total (below) */
+.col-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.15;
+  gap: 2px; /* small space between name and total */
+  white-space: normal; /* allow wrapping */
+}
+
+/* Style for the total line */
+.col-total {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+/* Make sortable headers also align their content to the top */
+.mat-sort-header-container {
+  align-items: flex-start !important; /* put label at top */
+  white-space: normal;                /* allow wrap */
+}
+
+.mat-sort-header-content {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+/* Example: add a class like .is-numeric to numeric column headers/cells */
+th.is-numeric,
+td.is-numeric {
+  text-align: right;
+}
+/* Optional: give header cells a little extra top padding for clarity */
+th.mat-header-cell,
+th.mat-mdc-header-cell {
+  padding-top: 8px;
+}
+
+/* Optional: prevent header text clipping when sort arrow shows */
+.mat-sort-header-arrow {
+  margin-top: 0; /* keep arrow close to label */
 }
 
 .button-container {

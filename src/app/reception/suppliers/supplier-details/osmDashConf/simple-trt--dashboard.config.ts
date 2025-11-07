@@ -128,6 +128,7 @@ export const SIMPLE_RECEPTION_DASHBOARD: DashboardConfig = {
     {
       name: 'price',
       label: 'Montant total',
+      calculateTotal:true,
       labelTranslatePath: 'OIL_SALES.FIELDS.TOTAL_AMOUNT',
       attributeType: AttributeType.number,
       fieldType: FieldType.text,
@@ -139,6 +140,7 @@ export const SIMPLE_RECEPTION_DASHBOARD: DashboardConfig = {
     {
       name: 'unpaidAmount',
       label: 'Montant umpaié',
+      calculateTotal:true,
       labelTranslatePath: 'OIL_SALES.FIELDS.UNPAIDAMOUNT',
       attributeType: AttributeType.number,
       fieldType: FieldType.text,
@@ -150,6 +152,7 @@ export const SIMPLE_RECEPTION_DASHBOARD: DashboardConfig = {
     {
       name: 'paidAmount',
       label: 'Montant partiallment',
+      calculateTotal:true,
       labelTranslatePath: 'OIL_SALES.FIELDS.PARTIALLYPAID',
       attributeType: AttributeType.number,
       fieldType: FieldType.text,
@@ -194,6 +197,7 @@ export const SIMPLE_RECEPTION_DASHBOARD: DashboardConfig = {
       exportable: true,
       sortable: true,
       dataTable: true,
+      calculateTotal:true,
       filterable: true
     },
 
@@ -205,6 +209,7 @@ export const SIMPLE_RECEPTION_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.text,
       exportable: true,
       sortable: true,
+      calculateTotal:true,
       dataTable: true,
       filterable: true
     },
@@ -222,31 +227,6 @@ export const SIMPLE_RECEPTION_DASHBOARD: DashboardConfig = {
       options: [
         { label: 'OB', value: 'OB', labelTranslatePath: 'OB' },
         { label: 'OC', value: 'OC', labelTranslatePath: 'OC' }
-      ]
-    },
-    {
-      name: 'operationType',
-      label: 'Type de trituration',
-      labelTranslatePath: 'RECEPTION_LIST.FIELDS.OPERATION_TYPE',
-      attributeType: AttributeType.string,
-      fieldType: FieldType.select,
-      exportable: true,
-      dataTable: true,
-      filterable: true,
-      options: [
-        {
-          label: 'Trituration particulier',
-          value: 'SIMPLE_RECEPTION',
-          labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.SIMPLE_RECEPTION'
-        },
-        { label: 'Base', value: 'BASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.BASE' },
-        {
-          label: 'Achat Olive',
-          value: 'OLIVE_PURCHASE',
-          labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OLIVE_PURCHASE'
-        },
-        { label: 'Achat Huile', value: 'OIL_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OIL_PURCHASE' },
-        { label: 'Echange', value: 'EXCHANGE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.EXCHANGE' }
       ]
     },
     {

@@ -134,6 +134,7 @@ export const OIL_PURCHASE_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'price',
+      calculateTotal:true,
       label: 'Montant total',
       labelTranslatePath: 'OIL_SALES.FIELDS.TOTAL_AMOUNT',
       attributeType: AttributeType.number,
@@ -145,6 +146,7 @@ export const OIL_PURCHASE_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'unpaidAmount',
+      calculateTotal:true,
       label: 'Montant umpaié',
       labelTranslatePath: 'OIL_SALES.FIELDS.UNPAIDAMOUNT',
       attributeType: AttributeType.number,
@@ -156,6 +158,7 @@ export const OIL_PURCHASE_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'paidAmount',
+      calculateTotal:true,
       label: 'Montant partiallment',
       labelTranslatePath: 'OIL_SALES.FIELDS.PARTIALLYPAID',
       attributeType: AttributeType.number,
@@ -194,6 +197,7 @@ export const OIL_PURCHASE_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'poidsNet',
+      calculateTotal:true,
       label: 'Poids net (kg)',
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.NET_WEIGHT',
       attributeType: AttributeType.number,
@@ -206,6 +210,7 @@ export const OIL_PURCHASE_DASHBOARD: DashboardConfig = {
 
     {
       name: 'oilQuantity',
+      calculateTotal:true,
       label: 'Qté huile (KG)',
       labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.OIL_QUANTITY',
       attributeType: AttributeType.number,
@@ -231,34 +236,10 @@ export const OIL_PURCHASE_DASHBOARD: DashboardConfig = {
         { label: 'OC', value: 'OC', labelTranslatePath: 'OC' }
       ]
     },
-    {
-      name: 'operationType',
-      label: 'Type de trituration',
-      labelTranslatePath: 'RECEPTION_LIST.FIELDS.OPERATION_TYPE',
-      attributeType: AttributeType.string,
-      fieldType: FieldType.select,
-      exportable: true,
-      dataTable: true,
-      filterable: true,
-      options: [
-        {
-          label: 'Trituration particulier',
-          value: 'SIMPLE_RECEPTION',
-          labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.SIMPLE_RECEPTION'
-        },
-        { label: 'Base', value: 'BASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.BASE' },
-        {
-          label: 'Achat Olive',
-          value: 'OLIVE_PURCHASE',
-          labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OLIVE_PURCHASE'
-        },
-        { label: 'Achat Huile', value: 'OIL_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OIL_PURCHASE' },
-        { label: 'Echange', value: 'EXCHANGE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.EXCHANGE' }
-      ]
-    },
-    {
+     {
       name: 'paid',
       label: 'Payé',
+      calculateTotal:true,
       labelTranslatePath: 'Payé',
       attributeType: AttributeType.boolean,
       exportable: true,

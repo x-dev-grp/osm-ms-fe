@@ -52,6 +52,7 @@ export enum HabilitationEntity {
 
 export enum Action {
   READ = 'READ',
+  DETAIL = 'DETAIL',
   CREATE = 'CREATE',
   UPDATE = 'UPDATE',
   DELETE = 'DELETE',

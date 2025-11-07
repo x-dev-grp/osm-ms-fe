@@ -188,6 +188,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'price',
+      calculateTotal:true,
       label: 'Montant total',
       labelTranslatePath: 'OIL_SALES.FIELDS.TOTAL_AMOUNT',
       attributeType: AttributeType.number,
@@ -199,6 +200,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'unpaidAmount',
+      calculateTotal:true,
       label: 'Montant umpaié',
       labelTranslatePath: 'OIL_SALES.FIELDS.UNPAIDAMOUNT',
       attributeType: AttributeType.number,
@@ -216,6 +218,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.text,
       exportable: true,
       sortable: true,
+      calculateTotal:true,
       dataTable: true,
       filterable: true
     },
@@ -254,6 +257,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.text,
       exportable: true,
       sortable: true,
+      calculateTotal:true,
       dataTable: true,
       filterable: true
     },
@@ -265,6 +269,7 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       attributeType: AttributeType.number,
       fieldType: FieldType.text,
       exportable: true,
+      calculateTotal:true,
       sortable: true,
       dataTable: true,
       filterable: true

@@ -218,8 +218,8 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
       attributeType: AttributeType.enum,
       fieldType: FieldType.select,
       exportable: true,
-      dataTable: true,
-      filterable: true,
+      dataTable: false,
+      filterable: false,
       options: [
         {
           label: 'Trituration particulier',

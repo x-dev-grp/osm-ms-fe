@@ -63,22 +63,41 @@
 
         @let dataTableFields = _store.dataTableFields() ;
         @for (item of dataTableFields; track item.name; ) {
-
           <ng-container matColumnDef="{{item.label}}">
 
             @if (item?.sortable) {
-              <th mat-header-cell *matHeaderCellDef [mat-sort-header]="item?.valuePath?item?.valuePath:item?.name">
-                {{ item?.labelTranslatePath ? (item?.labelTranslatePath|translate) : item.label }}
+              <th mat-header-cell *matHeaderCellDef [mat-sort-header]="item?.valuePath || item?.name">
+                <div class="col-header">
+                  <span>
+                    {{ item?.labelTranslatePath ? (item?.labelTranslatePath | translate) : item?.label }}
+                  </span>
+                  @if (item?.calculateTotal) {
+                    <span class="col-total">
+                      {{ 'SUPPLIER.DETAILS.TOTAL'|translate }}:
+                      {{ _store.data()?.totals?.get(item?.name) ?? 0 }}</span>
+                  }
+                </div>
               </th>
+
             } @else if (item.flattedList) {
-              <th mat-header-cell *matHeaderCellDef="let record">
-                <!--                {{ getValue(item?.nameField,record?.[item?.name]?.length() ? record?.[item?.name][item?.flattedItemIndex]:null) }}-->
+              <th mat-header-cell *matHeaderCellDef>
               </th>
             } @else {
               <th mat-header-cell *matHeaderCellDef>
-                {{ item?.labelTranslatePath ? (item?.labelTranslatePath|translate) : item.label }}
+                <div class="col-header">
+      <span>
+        {{ item?.labelTranslatePath ? (item?.labelTranslatePath | translate) : item?.label }}
+      </span>
+                  @if (item?.calculateTotal) {
+                    <span class="col-total">
+          {{ 'SUPPLIER.DETAILS.TOTAL' | translate }}:
+                      {{ _store.data()?.totals?.get(item?.name) ?? 0 }}
+        </span>
+                  }
+                </div>
               </th>
             }
+
             <td mat-cell *matCellDef="let record">
               @if (item?.fieldType === "checkbox") {
                 <input
@@ -88,7 +107,7 @@
                   disabled
                 />
               } @else if (item?.fieldType === "select") {
-                {{ getSelectDataTableValue(record[item?.name], item?.name) | translate  }}
+                {{ getSelectDataTableValue(record[item?.name], item?.name) | translate }}
               } @else if (item?.fieldType === "date") {
                 {{ (item?.valuePath ? getValue(item?.valuePath, record) : getValue(item?.name, record)) | date:'dd-MM-yyyy HH:mm' }}
               } @else if (item.flattedItemIndex || item.flattedItemIndex == 0) {
@@ -146,7 +165,8 @@
                 }
 
                 <mat-menu #menu="matMenu">
-                  <ng-container  *ngFor="let action of ($any(record)?.actions || []) | sortByTranslated : 'OSM_DASHBOARD.ACTIONS.'; trackBy: trackByAction">
+                  <ng-container
+                    *ngFor="let action of ($any(record)?.actions || []) | sortByTranslated : 'OSM_DASHBOARD.ACTIONS.'; trackBy: trackByAction">
                     <button
                       *ngIf="!config()?.filteredActions?.includes(action)"
                       (click)="actionApply(action, record)"

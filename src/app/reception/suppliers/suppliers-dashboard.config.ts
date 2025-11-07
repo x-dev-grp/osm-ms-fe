@@ -31,7 +31,7 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
   },
   fields: [
     {
-      name: 'name',
+      name: 'fullName',
       label: 'Prénom',
       labelTranslatePath: 'SUPPLIERS.FIRST_NAME',
       attributeType: AttributeType.string,
@@ -41,17 +41,7 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
       dataTable: true,
       filterable: true
     },
-    {
-      name: 'lastname',
-      label: 'Nom',
-      labelTranslatePath: 'SUPPLIERS.LAST_NAME',
-      attributeType: AttributeType.string,
-      fieldType: FieldType.text,
-      exportable: true,
-      sortable: true,
-      dataTable: true,
-      filterable: true
-    },
+
     {
       name: 'phone',
       label: 'Téléphone',

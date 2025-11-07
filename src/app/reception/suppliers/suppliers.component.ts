@@ -79,8 +79,11 @@ export class SupplierComponent implements OnInit, OnDestroy {
   handleAction(event: { row: SupplierType; action: string }): void {
     const { row, action } = event;
     switch (action) {
-      case 'READ':
+      case 'DETAIL':
         this.router.navigate(['/reception/fournisseur/details', row.id!]);
+        break;
+      case 'READ':
+        this.router.navigate(['/reception/fournisseur/info', row.id!]);
         break;
       case 'UPDATE':
         if (row.id) {

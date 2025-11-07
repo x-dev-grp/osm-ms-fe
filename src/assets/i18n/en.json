@@ -2098,6 +2098,7 @@
       "CREATE": "Create",
       "DELETE": "Delete",
       "DEPARTMENT": "Department",
+      "DETAIL": "Details",
       "EMPLOYEE": "Employee",
       "ERROR": "An error occurred",
       "EXPENSE": "Expense",
@@ -2785,6 +2786,7 @@
     },
     "DETAILS": {
       "COUNT": "Count:",
+      "NO_EMAIL": "No Email",
       "OIL_CREDIT_STATS_TITLE": "Oil Credit Stats",
       "OIL_CREDIT_TOTAL": "Oil Credits",
       "PAID_OILSALES_TITLE": "Paid Oil sales",
@@ -2816,6 +2818,7 @@
       "ADDRESS": "Address",
       "BANK_NAME": "Bank Name",
       "EMAIL": "Email",
+      "HAS_STORAGE": "Has storage",
       "LASTNAME": "Last Name",
       "NAME": "Name",
       "PARCEL": "Parcel",

@@ -81,25 +81,65 @@ export const osm_menus: Navigation[] = [
   {
     id: 'group-reception',
     title: 'MENU.RECEPTION.TITLE',
-    type: 'group', // CHANGE: permissions - group requires RECEPTION:UNIFIEDDELIVERY:READ
-    modulePermission: 'RECEPTION',
+    type: 'group',
+    modulePermission: 'RECEPTION', // group-level gate
     children: [
+      // Submenu for Olive receptions (by operation type)
       {
-        id: 'item-reception-olive',
+        id: 'collapse-reception-olive',
         title: 'MENU.RECEPTION.OLIVE',
-        type: 'item',
-        url: '/reception/reception-olive',
+        type: 'collapse',
         icon: 'shopping_basket',
-        breadcrumbs: false,
-        ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
+        // keep same permission style you used before
+        ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY,
+        children: [
+          {
+            id: 'item-reception-olive-exchange',
+            title: 'OPERATION_TYPE.EXCHANGE',
+            type: 'item',
+            url: '/reception/reception-olive/exchange',
+            icon: 'swap_horiz',
+            breadcrumbs: false,
+            ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
+          },
+          {
+            id: 'item-reception-olive-simple',
+            title: 'OPERATION_TYPE.SIMPLE_RECEPTION',
+            type: 'item',
+            url: '/reception/reception-olive/simple_reception',
+            icon: 'inventory_2',
+            breadcrumbs: false,
+            ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
+          },
+          {
+            id: 'item-reception-olive-base',
+            title: 'OPERATION_TYPE.BASE',
+            type: 'item',
+            url: '/reception/reception-olive/base',
+            icon: 'category',
+            breadcrumbs: false,
+            ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
+          },
+          {
+            id: 'item-reception-olive-purchase',
+            title: 'OPERATION_TYPE.OLIVE_PURCHASE',
+            type: 'item',
+            url: '/reception/reception-olive/olive_purchase',
+            icon: 'shopping_cart',
+            breadcrumbs: false,
+            ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
+          }
+        ]
       },
+
+      // Keep Oil reception as a separate item
       {
         id: 'item-reception-oil',
         title: 'MENU.RECEPTION.OIL',
         type: 'item',
         url: '/reception/reception-huile',
         icon: 'local_shipping',
-        breadcrumbs: false, // CHANGE: permissions - require RECEPTION:UNIFIEDDELIVERY:CREATE
+        breadcrumbs: false,
         ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
       }
     ]

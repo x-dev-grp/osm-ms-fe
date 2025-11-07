@@ -19,7 +19,7 @@ import {
   Validators
 } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Data, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
 import { BaseType } from '../../../shared/models/base-type';
@@ -37,6 +37,7 @@ import { ToastService } from '../../../shared/services/toast.service';
 import { CardComponent } from '../../../theme/components/card/card.component';
 import { Olive_Oil_Type } from '../../../shared/models/olive-type.enum';
 import { GenericTypeDialogComponent } from '../../../settings/generic-type/generic-type-dialog/generic-type-dialog.component';
+import { MatDivider } from '@angular/material/divider';
 
 // Validator to ensure net weight does not exceed gross weight
 const netNotGreaterThanGross = (control: AbstractControl): ValidationErrors | null => {
@@ -72,7 +73,8 @@ function isObjectWithId(value: unknown): value is { id: string | number } {
     MatAutocompleteModule,
     FormsModule,
     TranslateModule,
-    BaseTypeComponent
+    BaseTypeComponent,
+    MatDivider
   ],
   templateUrl: './olive-reception-form.component.html',
   styleUrls: ['./olive-reception-form.component.scss']
@@ -91,34 +93,35 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
 
   suppliers: SupplierType[] = [];
   oliveVarieties: BaseType[] = [];
+
   /** Dynamic labels (party = Supplier|Client) */
   partyLabelKey = 'OLIVE_RECEPTION.FORM.FIELDS.SUPPLIER';
   partyRegionSectionKey = 'OLIVE_RECEPTION.FORM.SECTIONS.SUPPLIER_REGION';
 
+  /** Operation types in the selector (will be filtered to single value when forced) */
   operationTypes: { name: string; value: OperationType }[] = [
-    {
-      name: 'EXCHANGE',
-      value: OperationType.EXCHANGE
-    },
+    { name: 'EXCHANGE', value: OperationType.EXCHANGE },
     { name: 'SIMPLE_RECEPTION', value: OperationType.SIMPLE_RECEPTION },
-    {
-      name: 'BASE',
-      value: OperationType.BASE
-    },
+    { name: 'BASE', value: OperationType.BASE },
     { name: 'OLIVE_PURCHASE', value: OperationType.OLIVE_PURCHASE }
   ];
+
+  /** When true, the OPERATION_TYPE select is replaced with read-only display */
+  opLocked = false;
   deliveries: UnifiedDelivery[] = [];
   // Autocomplete filtered options
   filteredRegions!: Observable<BaseType[]>;
-  // FIX: use $ suffix and filter stream based on typing
   filteredSuppliers$!: Observable<SupplierType[]>;
   filteredOliveVarieties!: Observable<BaseType[]>;
   filteredOperationTypes!: Observable<BaseType[]>;
   protected readonly TypeCategory = TypeCategory;
+  /** Operation type forced by router (data.op or :op) */
+  private forcedOp?: OperationType;
   private hydrating = false;
   private typeSubs: Subscription[] = [];
   private pendingCalls = 0;
   private subscriptions: Subscription[] = [];
+
   /** Map which op types use Supplier vs Client label */
   private readonly partyLabelByOp: Record<OperationType, 'OLIVE_RECEPTION.FORM.FIELDS.SUPPLIER' | 'OLIVE_RECEPTION.FORM.FIELDS.CLIENT'> = {
     OIL_PURCHASE: 'OLIVE_RECEPTION.FORM.FIELDS.SUPPLIER',
@@ -171,10 +174,10 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const deliveryId = this.route.snapshot.paramMap.get('id');
+    this.getRoutingData();
+     const deliveryId = this.route.snapshot.paramMap.get('id');
     this.isEditing = deliveryId !== null && deliveryId !== 'new';
     const supplierCtrl = this.receptionForm.get('supplier')!;
-
     this.recomputeNet();
     this.loading = true;
     this.pendingCalls = 0;
@@ -242,7 +245,6 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       next: (res) => {
         this.deliveries = res?.success ? (res.data ?? []) : [];
         if (!this.isEditing) {
-          // if nested: map(d => d.delivery?.deliveryNumber)
           const nextNumber = this.nextFreeNumber(this.deliveries.map((d) => d.deliveryNumber));
           this.receptionForm.patchValue({ deliveryNumber: nextNumber, lotNumber: nextNumber }, { emitEvent: false });
         }
@@ -252,7 +254,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     });
     this.subscriptions.push(deliveriesSub);
 
-    // --- party label by operationType ---
+    // party label by operationType (watch form control)
     this.updatePartyLabel(this.receptionForm.get('operationType')?.value as OperationType);
     this.subscriptions.push(
       this.receptionForm.get('operationType')!.valueChanges.subscribe((op: OperationType) => {
@@ -260,7 +262,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       })
     );
 
-    // --- if editing, load the delivery and patch when both lookups are ready ---
+    // If editing, load entity then patch (after lookups loaded)
     if (this.isEditing && deliveryId) {
       this.pendingCalls++;
       const editSub = this.deliveryService.getUnifiedDelivery(deliveryId).subscribe({
@@ -274,12 +276,12 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
             }
           } else {
             this.errorMessage = this.translate.instant('DELIVERIES.FORM.MESSAGES.RECEPTION_LOAD_ERROR');
-            this.router.navigate(['/reception-olive']);
+            this.router.navigate([`/reception/reception-olive/${this.forcedOp}`]);
           }
         },
         error: () => {
           this.errorMessage = this.translate.instant('DELIVERIES.FORM.MESSAGES.RECEPTION_LOAD_ERROR');
-          this.router.navigate(['/reception-olive']);
+          this.router.navigate([`/reception/reception-olive/${this.forcedOp}`]);
         },
         complete: () => this.markCallDone()
       });
@@ -363,7 +365,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       oliveVariety: formValue.oliveVariety || null,
       sackCount: formValue.sackCount ? Number(formValue.sackCount) : 0,
       oliveType: formValue.oliveType || null,
-      operationType: formValue.operationType || null,
+      operationType: (this.forcedOp ?? formValue.operationType) || null,
       parcel: formValue.parcel || '',
       price: Number(formValue.price) || 0,
       globalLotNumber: formValue.globalLotNumber || null,
@@ -388,7 +390,12 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
           this.translate.instant(this.isEditing ? 'DELIVERIES.FORM.MESSAGES.UPDATE_SUCCESS' : 'DELIVERIES.FORM.MESSAGES.SAVE_SUCCESS'),
           'success'
         );
-        this.router.navigate(['reception/reception-olive']);
+        // Navigate back to the op-specific list if available
+         if (this.forcedOp) {
+          this.router.navigate([`/reception/reception-olive/${this.forcedOp}`]);
+        } else {
+          this.router.navigate(['/reception/reception-olive']);
+        }
       } else {
         const errorMessage = response?.message || this.translate.instant('DELIVERIES.FORM.MESSAGES.OPERATION_FAILED');
         this.showToast(errorMessage, 'error');
@@ -410,9 +417,10 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Navigate back to dashboard
+  // Navigate back to the op-specific list (if forced), else general route
   resetForm(): void {
-    this.router.navigate(['/reception/reception-olive']);
+       this.router.navigate([`/reception/reception-olive/${this.forcedOp}`]);
+
   }
 
   // FIX: accept string | object to play nice while typing
@@ -475,6 +483,14 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  private getRoutingData(): void {
+    this.route.data.subscribe((d: Data) => {
+      this.forcedOp=d?.['op'];
+       this.receptionForm.get('operationType')?.setValue(this.forcedOp);
+    });
+  }
+
 
   private nextFreeNumber(nums: Array<number | string>): number {
     const used = new Set(nums.map((n) => Number(n)).filter((n) => Number.isInteger(n) && n > 0));
@@ -559,14 +575,15 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
   // Patch form with delivery data
   private patchForm(d: UnifiedDelivery): void {
     const matchedSupplier = this.suppliers.find((s) => s.id?.toString() === d.supplier?.id?.toString());
-
     const parseDate = (value: string | Date | null | undefined): Date | null => {
       if (!value) return null;
       return value instanceof Date ? value : new Date(value);
     };
-
     const matchedRegion = this.regions.find((r) => r.id === d.region?.id) || null;
     const matchedParcel = this.parcels.find((r) => r.id === d.parcel?.id) || null;
+
+    // If route forces op, prefer that; else use the entity's operationType
+    const opToApply = this.forcedOp ?? d.operationType ?? null;
 
     this.receptionForm.patchValue(
       {
@@ -582,14 +599,20 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
         oliveVariety: d.oliveVariety || null,
         sackCount: d.sackCount,
         oliveType: d.oliveType || null,
-        operationType: d.operationType || null,
+        operationType: opToApply,
         status: d.status || null
-
       },
       { emitEvent: false }
     );
 
-    // FIX: removed manual DOM value injection; display is handled by displayWith
+    // If op is forced, keep control disabled & selector filtered
+    if (this.forcedOp) {
+      const found = this.operationTypes.find((t) => t.value === this.forcedOp);
+      if (found) this.operationTypes = [found];
+      this.receptionForm.get('operationType')?.disable({ emitEvent: false });
+      this.opLocked = true;
+      this.updatePartyLabel(this.forcedOp);
+    }
   }
 
   // Setup form subscriptions
@@ -613,7 +636,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       })
     );
 
-    // FIX: Guard region/parcel handlers to avoid touching typed strings
+    // Guard region/parcel handlers to avoid touching typed strings
     this.subscriptions.push(
       this.receptionForm.get('region')!.valueChanges.subscribe((value) => {
         if (isObjectWithId(value)) {
@@ -642,7 +665,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       map((value) => this._filter(this.regions, value, 'name'))
     );
 
-    // FIX: Supplier filter that handles both string typing and selected object (name + lastname)
+    // Supplier filter with object/string safety
     this.filteredSuppliers$ = this.receptionForm.get('supplier')!.valueChanges.pipe(
       startWith(''),
       map((val) => (typeof val === 'string' ? val : this.displayFn(val))),
@@ -652,7 +675,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       })
     );
 
-    // Operation type filter
+    // Operation type filter (mostly moot when locked)
     this.filteredOperationTypes = this.receptionForm.get('operationType')!.valueChanges.pipe(
       startWith(''),
       map((value) => this._filter(this.operationTypes as any, value as any, 'name'))

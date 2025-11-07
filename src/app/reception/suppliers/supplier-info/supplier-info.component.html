@@ -1,0 +1,89 @@
+<div class="supplier-info-container">
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="!loading && error" class="error">
+    <mat-icon color="warn">error</mat-icon>
+    <span>{{ error }}</span>
+    <div class="actions">
+      <button mat-button (click)="onClose()">
+        {{ 'STANDARD.BTNS.CLOSE' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <mat-card *ngIf="!loading && !error && supplier" class="card">
+    <mat-card-header>
+      <div mat-card-avatar class="avatar">
+        <mat-icon>person</mat-icon>
+      </div>
+      <mat-card-title>  {{ this.supplier?.name + ' ' + this.supplier?.lastname }} </mat-card-title>
+      <mat-card-subtitle>
+        {{ supplier?.email || ('SUPPLIER.DETAILS.NO_EMAIL' | translate) }}
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="grid">
+        <div class="item">
+          <div class="label">{{ 'SUPPLIER.FIELDS.PHONE' | translate }}</div>
+          <div class="value">{{ supplier?.phone || '—' }}</div>
+        </div>
+
+        <div class="item">
+          <div class="label">{{ 'SUPPLIER.FIELDS.EMAIL' | translate }}</div>
+          <div class="value">{{ supplier?.email || '—' }}</div>
+        </div>
+
+        <div class="item">
+          <div class="label">{{ 'SUPPLIER.FIELDS.ADDRESS' | translate }}</div>
+          <div class="value">{{ supplier?.address || '—' }}</div>
+        </div>
+
+        <div class="item">
+          <div class="label">{{ 'BASE_TYPE.REGION' | translate }}</div>
+          <div class="value">{{ regionName || '—' }}</div>
+        </div>
+
+        <div class="item">
+          <div class="label">{{ 'CUSTOMERS.FIELDS.MATRICULE_FISCAL' | translate }}</div>
+          <div class="value">{{ supplier?.matriculeFiscal || '—' }}</div>
+        </div>
+
+        <div class="item">
+          <div class="label">{{ 'SUPPLIER.FIELDS.RIB' | translate }}</div>
+          <div class="value">{{ supplier?.rib || '—' }}</div>
+        </div>
+
+        <div class="item">
+          <div class="label">{{ 'SUPPLIER.FIELDS.BANK_NAME' | translate }}</div>
+          <div class="value">{{ supplier?.bankName || '—' }}</div>
+        </div>
+
+        <div class="item">
+          <div class="label">{{ 'SUPPLIER.FIELDS.HAS_STORAGE' | translate }}</div>
+          <div class="value">
+            <span class="chip" [class.yes]="supplier?.hasStorage" [class.no]="!supplier?.hasStorage">
+              {{ supplier?.hasStorage ? ('COMMON.YES' | translate) : ('COMMON.NO' | translate) }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <button mat-button (click)="onClose()">
+        <mat-icon>close</mat-icon>
+        {{ 'STANDARD.BTNS.CLOSE' | translate }}
+      </button>
+      <button mat-flat-button color="primary" (click)="onEdit()" [disabled]="!supplier?.id">
+        <mat-icon>edit</mat-icon>
+        {{ 'STANDARD.BTNS.EDIT' | translate }}
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>
