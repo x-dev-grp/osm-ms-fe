@@ -80,8 +80,9 @@ export class SupplierComponent implements OnInit, OnDestroy {
     const { row, action } = event;
     switch (action) {
       case 'DETAIL':
-        this.router.navigate(['/reception/fournisseur/details', row.id!]);
-        break;
+        this.router.navigate(['/reception/fournisseur/details', row.id], {
+          state: { supplier: row } // includes firstName/lastName if present
+        });        break;
       case 'READ':
         this.router.navigate(['/reception/fournisseur/info', row.id!]);
         break;

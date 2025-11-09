@@ -195,6 +195,7 @@ export const OLIVE_PURCHASE_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'poidsNet',
+      calculateTotal: true,
       label: 'Poids net (kg)',
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.NET_WEIGHT',
       attributeType: AttributeType.number,

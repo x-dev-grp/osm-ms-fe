@@ -607,6 +607,7 @@
       "BUTTONS": {
         "BACK": "العودة إلى القائمة"
       },
+      "LINKED_OIL_RECEPTION_DESC": "",
       "MESSAGES": {
         "DATA_ERROR": "خطأ أثناء تحميل البيانات.",
         "INVALID_ID": "معرف استقبال غير صالح.",

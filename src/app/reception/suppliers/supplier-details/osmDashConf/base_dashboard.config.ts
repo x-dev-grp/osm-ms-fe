@@ -73,7 +73,7 @@ export const BASE_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.text,
       exportable: true,
       sortable: true,
-      dataTable: true,
+      dataTable: false,
       filterable: true
     },
     {
@@ -95,7 +95,7 @@ export const BASE_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.text,
       exportable: true,
       sortable: true,
-      dataTable: true,
+      dataTable: false,
       filterable: true
     },
     {
@@ -106,17 +106,17 @@ export const BASE_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.select,
       valueAttributeType: AttributeType.enum,
       options: [
-        { label: 'Huile', value: 'OIL', labelTranslatePath: 'SUPPLIER_PAYMENT.RECEPTION_TYPE_OIL' },
         {
-          label: 'Olive',
-          labelTranslatePath: 'SUPPLIER_PAYMENT.RECEPTION_TYPE_OLIVE',
-          value: 'OLIVE'
-        }
+          label: 'Huile',
+          value: 'OIL',
+          labelTranslatePath: 'SUPPLIER_PAYMENT.RECEPTION_TYPE_OIL'
+        },
+        { label: 'Olive', value: 'OLIVE', labelTranslatePath: 'SUPPLIER_PAYMENT.RECEPTION_TYPE_OLIVE' }
       ],
       valuePath: 'name',
       exportable: true,
       sortable: true,
-      dataTable: true,
+      dataTable: false,
       filterable: true
     },
     {
@@ -127,12 +127,12 @@ export const BASE_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.date,
       exportable: true,
       sortable: true,
-      dataTable: false,
+      dataTable: true,
+      defaultFilter: true,
       filterable: true
     },
     {
       name: 'unitPrice',
-      calculateTotal:true,
       label: 'Prix unitaire (TND/kg)',
       labelTranslatePath: 'WASTE.FIELDS.UNIT_PRICE',
       attributeType: AttributeType.number,
@@ -144,7 +144,7 @@ export const BASE_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'price',
-      calculateTotal:true,
+      calculateTotal: true,
       label: 'Montant total',
       labelTranslatePath: 'OIL_SALES.FIELDS.TOTAL_AMOUNT',
       attributeType: AttributeType.number,
@@ -156,7 +156,7 @@ export const BASE_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'unpaidAmount',
-      calculateTotal:true,
+      calculateTotal: true,
       label: 'Montant umpaié',
       labelTranslatePath: 'OIL_SALES.FIELDS.UNPAIDAMOUNT',
       attributeType: AttributeType.number,
@@ -168,9 +168,9 @@ export const BASE_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'paidAmount',
-      calculateTotal:true,
+      calculateTotal: true,
       label: 'Montant partiallment',
-      labelTranslatePath: 'OIL_SALES.FIELDS.PARTIALLYPAID',
+      labelTranslatePath: 'DELIVERIES.FIELDS.PAID_AMOUNT',
       attributeType: AttributeType.number,
       fieldType: FieldType.text,
       exportable: true,
@@ -185,7 +185,7 @@ export const BASE_DASHBOARD: DashboardConfig = {
       attributeType: AttributeType.object,
       fieldType: FieldType.autocomplete,
       exportable: true,
-      dataTable: true,
+      dataTable: false,
       filterable: true,
       valuePath: 'name',
       valueAttributeType: AttributeType.string,
@@ -198,7 +198,7 @@ export const BASE_DASHBOARD: DashboardConfig = {
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.REGION',
       attributeType: AttributeType.object,
       exportable: true,
-      dataTable: false,
+      dataTable: true,
       filterable: true,
       fieldType: FieldType.autocomplete,
       valuePath: 'name',
@@ -207,7 +207,7 @@ export const BASE_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'poidsNet',
-      calculateTotal:true,
+      calculateTotal: true,
       label: 'Poids net (kg)',
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.NET_WEIGHT',
       attributeType: AttributeType.number,
@@ -221,7 +221,7 @@ export const BASE_DASHBOARD: DashboardConfig = {
     {
       name: 'oilQuantity',
       label: 'Qté huile (KG)',
-      calculateTotal:true,
+      calculateTotal: true,
       labelTranslatePath: 'OIL_RECEPTION.DASHBOARD.FIELDS.OIL_QUANTITY',
       attributeType: AttributeType.number,
       fieldType: FieldType.text,
@@ -236,7 +236,7 @@ export const BASE_DASHBOARD: DashboardConfig = {
       labelTranslatePath: 'RECEPTION_LIST.FIELDS.OLIVE_TYPE',
       attributeType: AttributeType.enum,
       exportable: true,
-      dataTable: true,
+      dataTable: false,
       filterable: true,
       valuePath: 'name',
       valueAttributeType: AttributeType.string,
@@ -250,10 +250,9 @@ export const BASE_DASHBOARD: DashboardConfig = {
         }
       ]
     },
-     {
+    {
       name: 'paid',
       label: 'Payé',
-      calculateTotal:true,
       labelTranslatePath: 'Payé',
       attributeType: AttributeType.boolean,
       exportable: true,
@@ -279,7 +278,11 @@ export const BASE_DASHBOARD: DashboardConfig = {
           value: 'NEW',
           labelTranslatePath: 'RECEPTION_LIST.STATUS.NEW'
         },
-        { label: 'En cours', value: 'IN_PROGRESS', labelTranslatePath: 'RECEPTION_LIST.STATUS.IN_PROGRESS' },
+        {
+          label: 'En cours',
+          value: 'IN_PROGRESS',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.IN_PROGRESS'
+        },
         {
           label: 'Contrôle Olives',
           value: 'OLIVE_CONTROLLED',
@@ -313,7 +316,200 @@ export const BASE_DASHBOARD: DashboardConfig = {
         },
         { label: 'Pre pour production', value: 'PROD_READY', labelTranslatePath: 'RECEPTION_LIST.STATUS.PROD_READY' }
       ]
-    }
+    },
+
+    // ====== NEW fields appended from UnifiedDelivery ======
+    {
+      name: 'description',
+      label: 'Description',
+      labelTranslatePath: 'OIL_SALES.DESCRIPTION',
+      attributeType: AttributeType.string,
+      fieldType: FieldType.text,
+      exportable: true,
+      sortable: false,
+      dataTable: false,
+      filterable: true
+    },
+    {
+      name: 'poidsBrute',
+      calculateTotal: true,
+      label: 'Poids brut (kg)',
+      labelTranslatePath: 'DELIVERIES.FIELDS.GROSS_WEIGHT',
+      attributeType: AttributeType.number,
+      fieldType: FieldType.text,
+      exportable: true,
+      sortable: true,
+      dataTable: false,
+      filterable: true
+    },
+    {
+      name: 'poidsCamionVide',
+      label: 'Poids camion vide (kg)',
+      labelTranslatePath: 'OLIVE_RECEPTION.FORM.FIELDS.EMPTY_TRUCK_WEIGHT',
+      attributeType: AttributeType.number,
+      fieldType: FieldType.text,
+      exportable: true,
+      sortable: false,
+      dataTable: false,
+      filterable: true
+    },
+    {
+      name: 'matriculeCamion',
+      label: 'Matricule camion',
+      labelTranslatePath: 'RECEPTION_LIST.FIELDS.TRUCK_PLATE',
+      attributeType: AttributeType.string,
+      fieldType: FieldType.text,
+      exportable: true,
+      sortable: false,
+      dataTable: false,
+      filterable: true
+    },
+    {
+      name: 'etatCamion',
+      label: 'État camion',
+      labelTranslatePath: 'DELIVERIES.FIELDS.TRUCK_STATE',
+      attributeType: AttributeType.string,
+      fieldType: FieldType.text,
+      exportable: true,
+      sortable: false,
+      dataTable: false,
+      filterable: true
+    },
+    {
+      name: 'oilVariety',
+      label: "Variété d'huile",
+      labelTranslatePath: 'OIL_TRANSACTION.DELIVERY.OIL_VARIETY',
+      attributeType: AttributeType.object,
+      fieldType: FieldType.autocomplete,
+      exportable: true,
+      dataTable: false,
+      filterable: true,
+      valuePath: 'name',
+      valueAttributeType: AttributeType.string,
+      filterAttribute: 'oilVariety.name'
+    },
+    {
+      name: 'oilType',
+      label: "Type d'huile",
+      labelTranslatePath: 'RECEPTION_LIST.FIELDS.OIL_TYPE',
+      attributeType: AttributeType.enum,
+      fieldType: FieldType.select,
+      exportable: true,
+      sortable: false,
+      dataTable: true,
+      filterable: true, // Values depend on Olive_Oil_Type; keep as free-form select for now
+      options: [
+        { label: 'OB', value: 'OB', labelTranslatePath: 'OB' },
+        {
+          label: 'OC',
+          value: 'OC',
+          labelTranslatePath: 'OC'
+        }
+      ]    },
+    {
+      name: 'trtDate',
+      label: 'Date traitement',
+      labelTranslatePath: 'DELIVERIES.FIELDS.TRT_DATE',
+      attributeType: AttributeType.date,
+      fieldType: FieldType.date,
+      exportable: true,
+      sortable: true,
+      dataTable: false,
+      filterable: true
+    },
+    {
+      name: 'operationType',
+      label: "Type d'opération",
+      labelTranslatePath: 'BASE_TYPE.OPERATION_TYPE',
+      attributeType: AttributeType.string,
+      fieldType: FieldType.select,
+      exportable: true,
+      sortable: true,
+      dataTable: false,
+      filterable: true,
+      options: [
+        {
+          label: 'Réception simple',
+          value: 'SIMPLE_RECEPTION',
+          labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.SIMPLE_RECEPTION'
+        },
+        {
+          label: 'Achat olives',
+          value: 'OLIVE_PURCHASE',
+          labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OLIVE_PURCHASE'
+        },
+        { label: 'Base', value: 'BASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.BASE' },
+        {
+          label: 'Échange',
+          value: 'EXCHANGE',
+          labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.EXCHANGE'
+        },
+        { label: 'Achat huile', value: 'OIL_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OIL_PURCHASE' }
+      ]
+    },
+    {
+      name: 'oliveVariety',
+      label: "Variété d'olive",
+      labelTranslatePath: 'OLIVE_RECEPTION.FORM.FIELDS.OLIVE_VARIETY',
+      attributeType: AttributeType.object,
+      fieldType: FieldType.autocomplete,
+      exportable: true,
+      dataTable: false,
+      filterable: true,
+      valuePath: 'name',
+      valueAttributeType: AttributeType.string,
+      filterAttribute: 'oliveVariety.name'
+    },
+    {
+      name: 'sackCount',
+      label: 'Nb. sacs',
+      labelTranslatePath: 'CONTROLE_QUALITE.OLIVE_DETAILS.SACK_COUNT',
+      attributeType: AttributeType.number,
+      fieldType: FieldType.text,
+      exportable: true,
+      sortable: true,
+      dataTable: false,
+      filterable: true
+    },
+
+    {
+      name: 'oliveQuantity',
+      calculateTotal: true,
+      label: 'Qté olives (KG)',
+      labelTranslatePath: 'OLIVE_RECEPTION.FORM.FIELDS.OLIVE_QUANTITY',
+      attributeType: AttributeType.number,
+      fieldType: FieldType.text,
+      exportable: true,
+      sortable: true,
+      dataTable: false,
+      filterable: true
+    },
+    {
+      name: 'parcel',
+      label: 'Parcelle',
+      labelTranslatePath: 'BASE_TYPE.PARCEL',
+      attributeType: AttributeType.object,
+      fieldType: FieldType.autocomplete,
+      exportable: true,
+      dataTable: false,
+      filterable: true,
+      valuePath: 'name',
+      valueAttributeType: AttributeType.string,
+      filterAttribute: 'parcel.name'
+    },
+    {
+      name: 'storageUnit',
+      label: 'Unité de stockage',
+      labelTranslatePath: 'CONTROLE_QUALITE.STORAGE_UNIT.LABEL',
+      attributeType: AttributeType.object,
+      fieldType: FieldType.autocomplete,
+      exportable: true,
+      dataTable: true,
+      filterable: true,
+      valuePath: 'name',
+      valueAttributeType: AttributeType.string,
+      filterAttribute: 'storageUnit.name'
+    },
   ],
 
   fileName: 'oil_receptions'

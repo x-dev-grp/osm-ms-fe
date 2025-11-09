@@ -15,11 +15,16 @@
 
     <div class="header-chips">
       <mat-chip-listbox aria-label="Reception meta">
-        <mat-chip>{{ 'DELIVERIES.FIELDS.DELIVERY_TYPE' | translate }}: {{ deliveryData.deliveryType || 'N/A' }}</mat-chip>
+        <mat-chip>
+          {{ 'DELIVERIES.FIELDS.DELIVERY_TYPE' | translate }}:
+          {{ deliveryData.deliveryType || 'N/A' }}
+        </mat-chip>
+
         <mat-chip>
           {{ 'DELIVERIES.FIELDS.OPERATION_TYPE' | translate }}:
           {{ deliveryData.operationType ? (('OPERATION_TYPE.' + deliveryData.operationType) | translate) : 'N/A' }}
         </mat-chip>
+
         <mat-chip>
           {{ 'DELIVERIES.FIELDS.STATUS' | translate }}:
           {{ deliveryData.status ? (('RECEPTION_LIST.STATUS.' + deliveryData.status) | translate) : 'N/A' }}
@@ -28,8 +33,33 @@
     </div>
   </div>
 
-  <mat-card-content class="scrollable-content">
+  <!-- Linked counterpart banner (OLIVE <-> OIL) -->
+  <div *ngIf="associatedCounterpart" class="assoc-banner" role="region" aria-label="Associated reception">
+    <div class="assoc-banner__content">
+      <mat-icon class="assoc-banner__icon" aria-hidden="true">link</mat-icon>
 
+      <div class="assoc-banner__text">
+
+
+        <div class="assoc-banner__meta">
+          <span>{{ 'SUPPLIER_PAYMENT.LOT'|translate }}: <b>{{ associatedCounterpart?.lotNumber }}</b></span>
+           <span class="sep" *ngIf="associatedCounterpart?.deliveryType">•</span>
+          <span *ngIf="associatedCounterpart?.deliveryType">
+            {{ 'CONFIGURATION.RECEPTION.TABLE.TYPE'|translate }}: <b>{{ associatedCounterpart?.deliveryType }}</b>
+          </span>
+        </div>
+      </div>
+
+      <button mat-stroked-button color="primary" (click)="openCounterpart()">
+        <mat-icon>open_in_new</mat-icon>
+        <span class="ms-1">
+          {{ isOilReception() ? 'Ouvrir la réception Olives' : 'Ouvrir la réception Huile' }}
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <mat-card-content class="scrollable-content">
     <!-- General Information -->
     <div class="section">
       <h3 class="section-title">{{ 'DELIVERIES.DETAILS.SECTIONS.GENERAL_INFO' | translate }}</h3>
@@ -67,7 +97,7 @@
         </div>
       </div>
 
-      <div class="grid-row" *ngIf="deliveryData?.description">
+      <div *ngIf="deliveryData?.description" class="grid-row">
         <div class="grid-item col-span-2">
           <strong>{{ 'DEPARTMENT.FORM.DESCRIPTION' | translate }}:</strong>
           {{ deliveryData.description }}
@@ -77,25 +107,25 @@
 
     <!-- Weights & Quantities -->
     <div class="section">
-      <h3 class="section-title">{{ 'DELIVERIES.DETAILS.SECTIONS.WEIGHTS' | translate }}</h3>
+      <h3 class="section-title">{{ 'DELIVERIES.FORM.SECTIONS.WEIGHT_QUANTITY' | translate }}</h3>
 
       <div class="grid-row">
         <div class="grid-item">
-          <strong>{{ 'DELIVERIES.FIELDS.POIDS_BRUTE' | translate }}:</strong>
+          <strong>{{ 'DELIVERIES.FIELDS.GROSS_WEIGHT' | translate }}:</strong>
           {{ deliveryData.poidsBrute ?? 'N/A' }} kg
         </div>
         <div class="grid-item">
-          <strong>{{ 'DELIVERIES.FIELDS.POIDS_CAMION_VIDE' | translate }}:</strong>
+          <strong>{{ 'OLIVE_RECEPTION.FORM.FIELDS.EMPTY_TRUCK_WEIGHT' | translate }}:</strong>
           {{ deliveryData.poidsCamionVide ?? 'N/A' }} kg
         </div>
       </div>
 
       <div class="grid-row">
         <div class="grid-item">
-          <strong>{{ 'DELIVERIES.FIELDS.POIDS_NET' | translate }}:</strong>
+          <strong>{{ 'DELIVERIES.FIELDS.NET_WEIGHT' | translate }}:</strong>
           {{ deliveryData.poidsNet ?? 'N/A' }} kg
         </div>
-        <div class="grid-item" *ngIf="deliveryData?.oliveQuantity != null">
+        <div *ngIf="deliveryData?.oliveQuantity != null" class="grid-item">
           <strong>{{ 'DELIVERIES.FIELDS.OLIVE_QUANTITY' | translate }}:</strong>
           {{ deliveryData.oliveQuantity }} kg
         </div>
@@ -184,7 +214,6 @@
           </div>
           <div class="grid-item">
             <strong>{{ 'DELIVERIES.FIELDS.OIL_TYPE' | translate }}:</strong>
-            <!-- If oilType is an enum/string; if it's BaseType, change to .name -->
             {{ (deliveryData.oilType?.name || deliveryData.oilType) || 'N/A' }}
           </div>
         </div>
@@ -231,7 +260,7 @@
     </div>
 
     <!-- Processing -->
-    <div class="section" *ngIf="deliveryData.trtDate || deliveryData.millMachine || deliveryData.millStartDate">
+    <div *ngIf="deliveryData.trtDate || deliveryData.millMachine || deliveryData.millStartDate" class="section">
       <h3 class="section-title">{{ 'DELIVERIES.DETAILS.SECTIONS.PROCESSING' | translate }}</h3>
 
       <div class="grid-row">
@@ -256,7 +285,7 @@
       class="section">
       <h3 class="section-title">{{ 'DELIVERIES.DETAILS.SECTIONS.INFO_PRIX' | translate }}</h3>
 
-      <div class="grid-row" *ngIf="deliveryData.unitPrice != null || deliveryData.price != null">
+      <div *ngIf="deliveryData.unitPrice != null || deliveryData.price != null" class="grid-row">
         <div *ngIf="deliveryData.unitPrice != null" class="grid-item">
           <strong>{{ 'CONTROLE_QUALITE.FINANCIAL.UNIT_PRICE' | translate }}:</strong>
           {{ deliveryData.unitPrice | number:'1.2-2' }} TND/kg
@@ -312,6 +341,5 @@
         </a>
       </div>
     </div>
-
   </mat-card-content>
 </mat-card>

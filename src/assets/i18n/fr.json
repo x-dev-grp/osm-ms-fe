@@ -607,6 +607,7 @@
       "BUTTONS": {
         "BACK": "Retour à la liste"
       },
+      "LINKED_OIL_RECEPTION_DESC": "Réception huile associé",
       "MESSAGES": {
         "DATA_ERROR": "Erreur lors du chargement des données.",
         "INVALID_ID": "ID de réception invalide.",
@@ -1311,21 +1312,18 @@
       "TITLE": "Ressources Humaines"
     },
     "PRODUCTION": {
+      "ACHAT_OLIVE": "Réception Olive - Achat Olive",
+      "ECHANGE": "Réception Olive - Échange",
       "MILLING_HISTORY": "Historique de trituration",
       "MILLING_SCHEDULE": "Plannings de trituration",
-      "TITLE": "Production",
       "RECEPTIONS": "Historique des réceptions",
-      "RECEPTION_OLIVE": "Réception Olive",
-      "RECEPTION_OIL": "Réception Huile",
-      "RECEPTIONS_OLIVE": "Réceptions Olive",
       "RECEPTIONS_HUILE": "Réceptions Huile",
-      "TRITURATION_PARTICULIER": "Réception Olive - Trituration Particulier",
+      "RECEPTIONS_OLIVE": "Réceptions Olive",
+      "RECEPTION_OIL": "Réception Huile",
+      "RECEPTION_OLIVE": "Réception Olive",
+      "TITLE": "Production",
       "TRITURATION_BASE": "Réception Olive - Trituration sur Base",
-      "ACHAT_OLIVE": "Réception Olive - Achat Olive",
-      "ECHANGE": "Réception Olive - Échange"
-
-
-
+      "TRITURATION_PARTICULIER": "Réception Olive - Trituration Particulier"
     },
     "RECEPTION": {
       "AGRICULTURE": "Agriculteurs",

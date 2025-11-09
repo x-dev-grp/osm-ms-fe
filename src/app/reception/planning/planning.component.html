@@ -277,7 +277,8 @@
 
       <!-- Scrollable Mill Columns -->
       <div #scrollContainer class="scrollable-columns">
-        @for (mill of mills; track trackByMill($index, mill); let i = $index) {
+        @for (mill of mills; track trackByMill($index,
+          mill); let i = $index) {
           <mat-expansion-panel expanded>
             <mat-expansion-panel-header class="sticky-header">
               <mat-panel-description>

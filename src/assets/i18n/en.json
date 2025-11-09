@@ -607,6 +607,7 @@
       "BUTTONS": {
         "BACK": "Back to list"
       },
+      "LINKED_OIL_RECEPTION_DESC": "Associated oil reception",
       "MESSAGES": {
         "DATA_ERROR": "Error loading data.",
         "INVALID_ID": "Invalid reception ID.",
@@ -1315,10 +1316,10 @@
     "PRODUCTION": {
       "MILLING_HISTORY": "Milling History",
       "MILLING_SCHEDULE": "Milling Schedule",
-      "TITLE": "Production",
       "RECEPTIONS": "Receptions History",
+      "RECEPTION_OIL": "Oil Reception",
       "RECEPTION_OLIVE": "Olive Reception",
-      "RECEPTION_OIL": "Oil Reception"
+      "TITLE": "Production"
     },
     "RECEPTION": {
       "AGRICULTURE": "Agriculters",

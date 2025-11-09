@@ -84,6 +84,7 @@ export const WASTE_DASHBOARD: DashboardConfig = {
     {
       name: 'totalPrice',
       label: 'Prix total (TND)',
+
       calculateTotal:true,
       labelTranslatePath: 'WASTE.FIELDS.TOTAL_PRICE',
       attributeType: AttributeType.number,

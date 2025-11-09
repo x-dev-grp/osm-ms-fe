@@ -19,6 +19,8 @@ import { SupplierTypeService } from '../../../shared/services/supplier.service';
 import { SupplierType } from '../../../shared/models/supplier-type';
 import { BaseType } from '../../../shared/models/base-type';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatDivider } from '@angular/material/divider';
+import { CardComponent } from '../../../theme/components/card/card.component';
 
 @Component({
   selector: 'app-supplier-info',
@@ -30,10 +32,12 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
     MatButtonModule,
     MatProgressSpinnerModule,
     TranslateModule,
+    MatDivider,
+    CardComponent
   ],
   templateUrl: './supplier-info.component.html',
   styleUrls: ['./supplier-info.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SupplierInfoComponent implements OnInit, OnDestroy {
   supplier: SupplierType | null = null;
@@ -117,20 +121,17 @@ export class SupplierInfoComponent implements OnInit, OnDestroy {
         if (res?.success && res.data) {
           this.supplier = (Array.isArray(res.data) ? res.data[0] : res.data) as SupplierType;
         } else {
-          this.error =
-            this.translate.instant('SUPPLIER.ERRORS.NOT_FOUND') || 'Supplier not found';
+          this.error = this.translate.instant('SUPPLIER.ERRORS.NOT_FOUND') || 'Supplier not found';
         }
         this.loading = false;
         this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('Error loading supplier:', err);
-        this.error =
-          this.translate.instant('SUPPLIER.ERRORS.LOAD') ||
-          'Error while loading supplier';
+        this.error = this.translate.instant('SUPPLIER.ERRORS.LOAD') || 'Error while loading supplier';
         this.loading = false;
         this.cdr.markForCheck();
-      },
+      }
     });
 
     this.subs.add(sub);

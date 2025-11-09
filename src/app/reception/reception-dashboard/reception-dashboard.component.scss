@@ -1,4 +1,5 @@
-/* Reception Dashboard — UI polish while keeping data bindings intact */
+/* Reception Dashboard - Optimized Styles */
+
 :host {
   display: block;
 }
@@ -6,204 +7,394 @@
 /* Import shared dashboard styles */
 @import '../../shared/styles/dashboard-common.scss';
 
-/* ---------------------------------------
- * Grid / spacing
- * ------------------------------------- */
-.row.g-3 {
-  --gap: 1rem;
-  margin-left: calc(-1 * var(--gap) / 2);
-  margin-right: calc(-1 * var(--gap) / 2);
-}
-.row.g-3 > [class^="col-"], .row.g-3 > [class*=" col-"] {
-  padding-left: calc(var(--gap) / 2);
-  padding-right: calc(var(--gap) / 2);
-}
-
-/* ---------------------------------------
- * Header
- * ------------------------------------- */
-.dashboard-header .header-icon {
-  font-size: 28px;
-}
-.dashboard-header .last-sync .inline-icon {
-  font-size: 16px;
-  vertical-align: -3px;
-  margin-right: 4px;
-}
-
-/* ---------------------------------------
- * Action visibility helpers
- * ------------------------------------- */
-.actions .hide-xs {
-  display: none;
-}
-@media (min-width: 576px) {
-  .actions .hide-xs { display: inline; }
-}
-
-/* ---------------------------------------
- * Buttons (legacy .btn-group support)
- * ------------------------------------- */
-.btn-group button.active {
-  border-color: var(--bs-primary);
-  color: var(--bs-primary);
-  background: rgba(var(--bs-primary-rgb, 13,110,253), .06);
-}
-
-/* Material toggle groups used for Period/Size */
-.mat-button-toggle-group {
-  background: var(--bs-gray-100, #f1f3f5);
-  border-radius: .5rem;
-}
-.mat-button-toggle-checked {
-  background: var(--bs-primary, #0d6efd);
-  color: #fff !important;
-}
-
-/* ---------------------------------------
- * Cards
- * ------------------------------------- */
-app-card {
-  display: block;
-}
-
-/* Subtle hover elevation for cards */
-app-card:hover {
-  transition: box-shadow .2s ease, transform .2s ease;
-  box-shadow: 0 6px 24px rgba(0,0,0,.06);
-}
-
-/* Tighten spacing between stacked cards on small screens */
-@media (max-width: 991.98px) {
-  .dashboard-analytics app-card + app-card {
-    margin-top: .5rem;
-  }
-}
-
-/* KPI compacts */
-.kpi-compact {
+/* ============================================
+   COMPACT INTEGRATED PAGE HEADER
+   ============================================ */
+.page-header {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
   display: flex;
-  align-items: center;
-  gap: .5rem;
-  padding-top: .25rem;
-  padding-bottom: .25rem;
-}
-.kpi-compact mat-icon {
-  opacity: .85;
-}
-.kpi-compact .value {
-  font-weight: 700;
-  font-size: 1.15rem;
-}
-
-/* Optional larger KPI cards */
-.kpi-card {
-  min-height: 170px;
-  display: block;
-}
-
-/* ---------------------------------------
- * Filters menu
- * ------------------------------------- */
-.filters-menu .mat-mdc-menu-content {
-  min-width: 220px;
-}
-
-/* ---------------------------------------
- * Charts
- * ------------------------------------- */
-apx-chart {
-  width: 100%;
-}
-
-/* Unified chart containers (used in all chart cards) */
-.card--chart .chart-container {
-  display: block;
-}
-
-/* Size presets controlled by classes */
-.card--chart .chart-container.small  { --chart-h: 220px; }
-.card--chart .chart-container.medium { --chart-h: 280px; }
-.card--chart .chart-container.large  { --chart-h: 360px; }
-
-/* Full-width trend can be a bit taller on large */
-.card--chart .chart-container.wide.large { --chart-h: 420px; }
-
-/* Fallback if a chart ignores [height] binding */
-.card--chart .chart-container .apexcharts-canvas,
-.card--chart .chart-container .apexcharts-svg {
-  min-height: var(--chart-h);
-  width: 100% !important;
-}
-
-/* Right column charts slightly tighter on small laptops */
-@media (max-width: 1199.98px) {
-  .card--chart .chart-container.right {
-    --chart-h: 260px;
-  }
-}
-
-/* ---------------------------------------
- * Trend toolbar: period left, size right
- * ------------------------------------- */
-.card--chart .toolbar {
-  display: flex;
-  gap: .75rem;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-bottom: .5rem;
-}
-.card--chart .toolbar--split {
-  justify-content: space-between;
-}
-.card--chart .toolbar__left,
-.card--chart .toolbar__right {
-  display: flex;
-  align-items: center;
-  gap: .5rem;
-}
-
-/* ---------------------------------------
- * Minor polish
- * ------------------------------------- */
-:host ::ng-deep .mat-mdc-button .mdc-button__label mat-icon {
-  vertical-align: middle;
-}
-/* Inline right-side mini dashboard (above the graphs) */
-.aside-inline-row .aside-inline {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;   /* push to right side */
+  flex-direction: column;
   gap: 1rem;
-}
 
-/* Two small cards, inline, responsive */
-.aside-inline .card--chart {
-  flex: 0 1 380px;             /* preferred width on desktop */
-  min-width: 260px;            /* don't get too small */
-}
-
-/* Respect the same size presets as other charts */
-.aside-inline .chart-container.small  { --chart-h: 220px; }
-.aside-inline .chart-container.medium { --chart-h: 280px; }
-.aside-inline .chart-container.large  { --chart-h: 320px; } /* slightly shorter than wide graphs */
-
-/* Make each card full-width on phones */
-@media (max-width: 575.98px) {
-  .aside-inline {
-    justify-content: stretch;
+  /* Title & Actions Row */
+  .header-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
   }
-  .aside-inline .card--chart {
-    flex: 1 1 100%;
-    min-width: auto;
+
+  .header-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+    min-width: 0;
+
+    mat-icon {
+      font-size: 26px;
+      width: 26px;
+      height: 26px;
+      flex-shrink: 0;
+    }
+
+    h2 {
+      margin: 0;
+      font-weight: 600;
+      font-size: 1.5rem;
+      white-space: nowrap;
+
+      @media (max-width: 767.98px) {
+        font-size: 1.25rem;
+      }
+    }
+
+    .last-updated {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.8125rem;
+      color: var(--bs-gray-600);
+      margin-left: 0.5rem;
+      white-space: nowrap;
+
+      mat-icon {
+        font-size: 14px;
+        width: 14px;
+        height: 14px;
+      }
+
+      @media (max-width: 991.98px) {
+        display: none;
+      }
+    }
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+
+    .compact-btn {
+      height: 36px;
+      padding: 0 12px;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      transition: all 0.2s ease;
+
+      mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        margin-right: 6px;
+      }
+
+      .btn-text {
+        @media (max-width: 575.98px) {
+          display: none;
+        }
+      }
+
+      &:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+      }
+    }
+  }
+
+  /* Filters Row */
+  .header-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--bs-gray-200);
+
+    &.loading {
+      opacity: 0.6;
+      pointer-events: none;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+  }
+
+  .filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    &.period-pills {
+      flex: 1 1 auto;
+      flex-wrap: wrap;
+      gap: 0.375rem;
+
+      .period-pill {
+        height: 32px;
+        padding: 0 12px;
+        font-size: 0.8125rem;
+        font-weight: 500;
+        border-radius: 16px;
+        background: var(--bs-gray-100);
+        color: var(--bs-gray-700);
+        transition: all 0.2s ease;
+        min-width: 0;
+        white-space: nowrap;
+
+        &:hover:not(:disabled) {
+          background: var(--bs-gray-200);
+        }
+
+        &.active {
+          background: var(--primary-500);
+          color: white;
+          box-shadow: 0 2px 4px rgba(13, 110, 253, 0.3);
+        }
+
+        &:disabled {
+          opacity: 0.5;
+        }
+
+        @media (max-width: 767.98px) {
+          padding: 0 10px;
+          font-size: 0.75rem;
+          height: 30px;
+        }
+      }
+    }
+
+    &.date-range {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: nowrap;
+
+      mat-form-field {
+        width: 145px;
+
+        @media (max-width: 991.98px) {
+          width: 130px;
+        }
+
+        @media (max-width: 767.98px) {
+          flex: 1;
+          min-width: 130px;
+        }
+      }
+
+      .date-separator {
+        font-size: 1.25rem;
+        color: var(--bs-gray-500);
+        margin: 0 -0.25rem;
+
+        @media (max-width: 767.98px) {
+          display: none;
+        }
+      }
+
+      button[mat-icon-button] {
+        width: 36px;
+        height: 36px;
+        flex-shrink: 0;
+
+        mat-icon {
+          font-size: 20px;
+        }
+      }
+
+      @media (max-width: 767.98px) {
+        flex-wrap: wrap;
+        width: 100%;
+
+        button[mat-icon-button] {
+          margin-left: auto;
+        }
+      }
+    }
+
+    &.type-and-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+
+      mat-form-field {
+        width: 180px;
+
+        @media (max-width: 991.98px) {
+          width: 160px;
+        }
+
+        @media (max-width: 767.98px) {
+          flex: 1;
+          width: auto;
+        }
+      }
+
+      .period-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.375rem 0.5rem 0.375rem 0.75rem;
+        background: var(--primary-50, #e7f3ff);
+        color: var(--primary-700, #004085);
+        border-radius: 20px;
+        font-size: 0.8125rem;
+        font-weight: 500;
+        white-space: nowrap;
+
+        mat-icon {
+          font-size: 16px;
+          width: 16px;
+          height: 16px;
+        }
+
+
+
+        @media (max-width: 767.98px) {
+          flex: 1;
+          justify-content: center;
+        }
+      }
+    }
+  }
+
+  /* Responsive breakpoints */
+  @media (max-width: 991.98px) {
+    padding: 0.875rem 1rem;
+    gap: 0.875rem;
+
+    .header-filters {
+      padding-top: 0.625rem;
+      gap: 0.625rem;
+    }
+  }
+
+  @media (max-width: 767.98px) {
+    .header-main {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.75rem;
+    }
+
+    .header-actions {
+      width: 100%;
+
+      .compact-btn {
+        flex: 1;
+      }
+    }
+
+    .filter-group {
+      &.period-pills {
+        order: 3;
+        width: 100%;
+      }
+
+      &.date-range {
+        order: 1;
+        width: 100%;
+      }
+
+      &.type-and-info {
+        order: 2;
+        width: 100%;
+      }
+    }
+
+    .header-filters {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+
+  @media (max-width: 575.98px) {
+    padding: 0.75rem;
+
+    .header-title h2 {
+      font-size: 1.125rem;
+    }
+
+    .filter-group.period-pills .period-pill {
+      flex: 1 1 calc(25% - 0.375rem);
+      min-width: 70px;
+      text-align: center;
+      padding: 0 6px;
+    }
   }
 }
 
-/* Add Finance Dashboard styling for consistency */
+/* Compact Material Form Fields in Header */
+.page-header {
+  ::ng-deep {
+    .mat-mdc-form-field.mat-form-field-appearance-outline {
+      .mat-mdc-text-field-wrapper {
+        padding-bottom: 0;
+      }
+
+      .mat-mdc-form-field-subscript-wrapper {
+        display: none;
+      }
+
+      .mat-mdc-form-field-infix {
+        padding-top: 8px;
+        padding-bottom: 8px;
+        min-height: 36px;
+      }
+
+      .mat-mdc-form-field-hint-wrapper,
+      .mat-mdc-form-field-error-wrapper {
+        display: none;
+      }
+
+      .mdc-notched-outline {
+        .mdc-notched-outline__leading,
+        .mdc-notched-outline__notch,
+        .mdc-notched-outline__trailing {
+          border-color: var(--bs-gray-300);
+        }
+      }
+
+      &.mat-focused .mdc-notched-outline {
+        .mdc-notched-outline__leading,
+        .mdc-notched-outline__notch,
+        .mdc-notched-outline__trailing {
+          border-width: 1px;
+        }
+      }
+    }
+  }
+}
+
+/* ============================================
+   LOADING STATE
+   ============================================ */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+
+
+  p {
+    font-size: 1rem;
+    color: var(--bs-gray-600);
+    margin: 0;
+  }
+}
+
+/* ============================================
+   KPI CARDS
+   ============================================ */
 .dashboard-kpis {
-  margin-bottom: 2rem;
 
-  // Ensure all cards in the first 4 rows have the same height
   .row {
     display: flex;
     flex-wrap: wrap;
@@ -212,23 +403,12 @@ apx-chart {
     > [class*="col-"] {
       display: flex;
       flex-direction: column;
-      margin-bottom: 1rem;
-    }
-  }
-
-  // Specific height for the first 4 rows of cards
-  .row:first-child,
-  .row:nth-child(2),
-  .row:nth-child(3),
-  .row:nth-child(4) {
-    > [class*="col-"] {
-      min-height: 280px;
-    }
+     }
   }
 
   .kpi-card {
     border-radius: 12px;
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-sm, 0 2px 8px rgba(0, 0, 0, 0.08));
     transition: all 0.2s ease;
     height: 100%;
     display: flex;
@@ -236,13 +416,13 @@ apx-chart {
 
     &:hover {
       transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
+      box-shadow: var(--shadow-md, 0 4px 16px rgba(0, 0, 0, 0.12));
     }
   }
 
   .mini-kpi {
     border-radius: 12px;
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-sm, 0 2px 8px rgba(0, 0, 0, 0.08));
     transition: all 0.2s ease;
     height: 100%;
     display: flex;
@@ -250,7 +430,7 @@ apx-chart {
 
     &:hover {
       transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
+      box-shadow: var(--shadow-md, 0 4px 16px rgba(0, 0, 0, 0.12));
     }
 
     &__body {
@@ -273,172 +453,236 @@ apx-chart {
       .value {
         font-size: 1.5rem;
         font-weight: 700;
-        color: var(--text-primary);
+        color: var(--text-primary, #212529);
         line-height: 1;
       }
     }
   }
+}
 
-  .card--chart {
-    border-radius: 12px;
-    box-shadow: var(--shadow-sm);
-    transition: all 0.2s ease;
-    height: 100%;
+/* ============================================
+   CHART CARDS
+   ============================================ */
+.card--chart {
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm, 0 2px 8px rgba(0, 0, 0, 0.08));
+  transition: all 0.2s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md, 0 4px 16px rgba(0, 0, 0, 0.12));
+  }
+
+  .chart-container {
+    flex: 1;
     display: flex;
     flex-direction: column;
+    padding: 1rem;
 
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
+    &.small {
+      min-height: 220px;
     }
 
-    // Ensure chart container fills the card
-    .chart-container {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
+    &.medium {
+      min-height: 280px;
+    }
+
+    &.large {
+      min-height: 360px;
+    }
+
+    &.wide {
+      width: 100%;
+
+      &.large {
+        min-height: 420px;
+      }
+    }
+
+    apx-chart {
+      width: 100%;
+      height: 100%;
     }
   }
 }
 
-/* If you pass panelClass: 'payment-details-dialog' when opening the dialog,
-   these styles will scope to only this dialog surface. Safe to keep even if not used. */
-.payment-details-dialog .mat-mdc-dialog-container .mdc-dialog__surface {
+/* ============================================
+   DAILY METRIC DIALOG
+   ============================================ */
+.daily-metric-dialog .mat-mdc-dialog-container .mdc-dialog__surface {
   border-radius: 16px;
-  padding: 0; /* we handle spacing inside .form-section */
+  padding: 0;
 }
 
-/* Component-scoped layout */
-:host {
-  display: block;
-}
-
-/* Root section */
 .form-section {
   padding: 20px clamp(16px, 3vw, 24px);
-  min-width: min(92vw, 760px);
-  max-width: 880px;
+  min-width: min(92vw, 360px);
+  max-width: 420px;
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 12px;
+
+    mat-icon {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+      color: rgba(0, 0, 0, 0.54);
+    }
+
+    h3 {
+      margin: 0;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+  }
+
+  .dialog-description {
+    margin: 0 0 16px;
+    color: rgba(0, 0, 0, 0.62);
+    font-size: 0.95rem;
+    line-height: 1.35rem;
+  }
+
+  .mat-mdc-form-field {
+    width: 100%;
+   }
+
+  .dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 16px;
+    min-height: 40px;
+
+    button {
+      border-radius: 10px;
+
+      &:focus-visible {
+        outline: 3px solid rgba(25, 118, 210, 0.35);
+        outline-offset: 2px;
+      }
+    }
+  }
 }
 
-/* Header */
-.section-header {
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+.text-primary {
+  color: var(--primary-500, #0d6efd) !important;
+}
+
+.w-100 {
+  width: 100% !important;
+}
+
+/* Accessibility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ============================================
+   GRID SYSTEM
+   ============================================ */
+.row {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 0 0 12px;
+  flex-wrap: wrap;
+  margin-left: -0.5rem;
+  margin-right: -0.5rem;
 
-  mat-icon {
-    font-size: 24px;
-    inline-size: 24px;
-    block-size: 24px;
-    color: rgba(0, 0, 0, 0.54);
+  &.g-3 {
+    margin-left: -0.75rem;
+    margin-right: -0.75rem;
+
+    > [class*="col-"] {
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+    }
   }
 
-  h3 {
-    margin: 0;
-    font-weight: 600;
-    letter-spacing: .2px;
-  }
-}
-
-/* Helper text */
-.dialog-description {
-  margin: 0 0 16px;
-  color: rgba(0, 0, 0, 0.62);
-  font-size: .95rem;
-  line-height: 1.35rem;
-}
-
-/* Form grid */
-.financial-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-  margin-block: 12px 6px;
-}
-
-/* Cards are just grid items; keep them light */
-.financial-card {
-  background: transparent;
-  border-radius: 12px;
-}
-
-/* Make fields reliably full-width */
-.financial-field,
-.financial-card .mat-form-field {
-  inline-size: 100%;
-}
-
-/* Tighten Material form spacing a bit */
-.mat-mdc-form-field {
-  --_field-mb: 2px;
-  margin-bottom: var(--_field-mb);
-
-  .mat-mdc-form-field-subscript-wrapper {
-    margin-top: 2px;
+  > [class*="col-"] {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
   }
 }
 
-/* Actions */
-.dialog-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  margin-top: 16px;
-
-  /* Prevent layout shift on validation errors */
-  min-height: 40px;
+.col-12 {
+  flex: 0 0 100%;
+  max-width: 100%;
 }
 
-/* Buttons: subtle hover/focus affordances */
-.dialog-actions button[mat-flat-button],
-.dialog-actions button[mat-button],
-button[mat-stroked-button] {
-  border-radius: 10px;
-
-  &:focus-visible {
-    outline: 3px solid rgba(25, 118, 210, 0.35); /* accessible focus */
-    outline-offset: 2px;
+.col-md-4 {
+  @media (min-width: 768px) {
+    flex: 0 0 33.333333%;
+    max-width: 33.333333%;
   }
 }
 
-/* Inputs: stronger focus ring for accessibility */
-.mat-mdc-text-field-wrapper.mdc-text-field--focused {
-  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.14);
-  border-radius: 12px;
-}
-
-/* Responsive adjustments */
-@media (max-width: 900px) {
-  .financial-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+.col-md-6 {
+  @media (min-width: 768px) {
+    flex: 0 0 50%;
+    max-width: 50%;
   }
 }
 
-@media (max-width: 600px) {
+.col-xxl-4 {
+  @media (min-width: 1400px) {
+    flex: 0 0 33.333333%;
+    max-width: 33.333333%;
+  }
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+@media (max-width: 991.98px) {
+  .dashboard-kpis app-card + app-card {
+    margin-top: 0.5rem;
+  }
+
+  .card--chart .chart-container.right {
+    min-height: 260px;
+  }
+}
+
+@media (max-width: 767.98px) {
   .form-section {
     min-width: auto;
     padding: 16px;
-  }
 
-  .financial-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
+    .dialog-actions {
+      flex-direction: column-reverse;
+      align-items: stretch;
 
-  .dialog-actions {
-    flex-direction: column-reverse;
-    align-items: stretch;
-
-    button {
-      inline-size: 100%;
+      button {
+        width: 100%;
+      }
     }
   }
-}
-
-/* Optional: if you also use a simple header-only dialog to set a single value
-   (openDailyMetricDialog), you can reuse the same look & feel by scoping here: */
-.daily-metric-card,
-.daily-metric-dialog .mat-mdc-dialog-container .mdc-dialog__surface {
-  border-radius: 16px;
 }
