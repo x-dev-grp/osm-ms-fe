@@ -134,6 +134,7 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
     // ==================== QUANTITY & PRICING ====================
     {
       name: 'quantity',
+      calculateTotal:true,
       label: 'Quantité (L)',
       labelTranslatePath: 'OIL_SALES.FIELDS.QUANTITY',
       attributeType: AttributeType.number,
@@ -158,6 +159,7 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
     },
     {
       name: 'totalAmount',
+      calculateTotal:true,
       label: 'Montant total',
       labelTranslatePath: 'OIL_SALES.FIELDS.TOTAL_AMOUNT',
       attributeType: AttributeType.number,

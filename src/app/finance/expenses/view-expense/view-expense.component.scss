@@ -27,7 +27,8 @@
   }
 }
 
-.actions {
+  .actions {
+  justify-content: space-around;
   display: flex;
   gap: 1rem;
   margin-top: 2rem;
@@ -49,7 +50,8 @@
 
 @media print {
   .header-actions,
-  .actions {
+    .actions {
+  justify-content: space-around;
     display: none;
   }
 }

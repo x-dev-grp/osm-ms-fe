@@ -16,10 +16,7 @@ export class UnifiedDeliveryService {
 
   constructor(private http: HttpClient) {}
 
-  // Get all deliveries with pagination.
-  getAllDeliveries(page: number, size: number): Observable<ApiResponse<never>> {
-    return this.http.get<ApiResponse<never>>(`${this.baseUrl}/fetchAll?page=${page}&size=${size}`);
-  }
+
 
   getAllDeliveriesList(): Observable<ApiResponse<UnifiedDelivery>> {
     return this.http.get<ApiResponse<UnifiedDelivery>>(`${this.baseUrl}/fetchAll`);

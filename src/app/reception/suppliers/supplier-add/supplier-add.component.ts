@@ -84,9 +84,6 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.supplierId = this.route.snapshot.paramMap.get('id');
 
-    // Preload types used by BaseTypeComponent (if it relies on a cache)
-    // this.genericTypeService.getAllTypes('SUPPLIER_TYPE').subscribe();
-
     if (this.supplierId) {
       this.isEditMode = true;
       this.loadSupplier(this.supplierId);

@@ -607,6 +607,7 @@
       "BUTTONS": {
         "BACK": "Retour à la liste"
       },
+      "LINKED_OIL_RECEPTION_DESC": "Réception huile associé",
       "MESSAGES": {
         "DATA_ERROR": "Erreur lors du chargement des données.",
         "INVALID_ID": "ID de réception invalide.",
@@ -777,8 +778,8 @@
       "SENT_TO_PRODUCTION_ERROR": "Erreur lors de l'envoi en production",
       "SENT_TO_PRODUCTION_SUCCESS": "Réception envoyée en production avec succès"
     },
-    "OIL_TITLE": "Historique des réceptions d'Huile & olive ",
-    "OLIVE_TITLE": "Réceptions d'Olives",
+    "OIL_TITLE": "Historique des réceptions Huile  ",
+    "OLIVE_TITLE": "Historique Réceptions Olives",
     "OPERATION_TYPE": {
       "BASE": "Base",
       "EXCHANGE": "Echange",
@@ -1311,9 +1312,18 @@
       "TITLE": "Ressources Humaines"
     },
     "PRODUCTION": {
+      "ACHAT_OLIVE": "Réception Olive - Achat Olive",
+      "ECHANGE": "Réception Olive - Échange",
       "MILLING_HISTORY": "Historique de trituration",
       "MILLING_SCHEDULE": "Plannings de trituration",
-      "TITLE": "Production"
+      "RECEPTIONS": "Historique des réceptions",
+      "RECEPTIONS_HUILE": "Réceptions Huile",
+      "RECEPTIONS_OLIVE": "Réceptions Olive",
+      "RECEPTION_OIL": "Réception Huile",
+      "RECEPTION_OLIVE": "Réception Olive",
+      "TITLE": "Production",
+      "TRITURATION_BASE": "Réception Olive - Trituration sur Base",
+      "TRITURATION_PARTICULIER": "Réception Olive - Trituration Particulier"
     },
     "RECEPTION": {
       "AGRICULTURE": "Agriculteurs",
@@ -2097,6 +2107,7 @@
       "CREATE": "Créer",
       "DELETE": "Supprimer",
       "DEPARTMENT": "Département",
+      "DETAIL": "Détails",
       "EMPLOYEE": "Employé",
       "ERROR": "Une erreur s'est produite",
       "EXPENSE": "Dépense",
@@ -2784,6 +2795,7 @@
     },
     "DETAILS": {
       "COUNT": "N°:",
+      "NO_EMAIL": "Pas d'email",
       "OIL_CREDIT_STATS_TITLE": "Statistiques crédits d'huile",
       "OIL_CREDIT_TOTAL": "Crédits d'huile",
       "PAID_OILSALES_TITLE": "Vente huile paiés",
@@ -2815,6 +2827,7 @@
       "ADDRESS": "Adresse",
       "BANK_NAME": "Nom de la banque",
       "EMAIL": "Email",
+      "HAS_STORAGE": "Dispose d'un espace de stockage",
       "LASTNAME": "Prénom",
       "NAME": "Nom",
       "PARCEL": "Parcelle",

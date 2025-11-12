@@ -59,6 +59,7 @@ export const WASTE_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'quantityInKg',
+      calculateTotal:true,
       label: 'Quantité (kg)',
       labelTranslatePath: 'WASTE.FIELDS.QUANTITY',
       attributeType: AttributeType.number,
@@ -71,6 +72,7 @@ export const WASTE_DASHBOARD: DashboardConfig = {
     {
       name: 'unitPrice',
       label: 'Prix unitaire (TND/kg)',
+      calculateTotal:true,
       labelTranslatePath: 'WASTE.FIELDS.UNIT_PRICE',
       attributeType: AttributeType.number,
       fieldType: FieldType.text,
@@ -82,6 +84,8 @@ export const WASTE_DASHBOARD: DashboardConfig = {
     {
       name: 'totalPrice',
       label: 'Prix total (TND)',
+
+      calculateTotal:true,
       labelTranslatePath: 'WASTE.FIELDS.TOTAL_PRICE',
       attributeType: AttributeType.number,
       fieldType: FieldType.text,

@@ -7,7 +7,7 @@ import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dial
 import { MatCardModule } from '@angular/material/card';
 import { MatSortModule } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Data, ParamMap, Router } from '@angular/router';
 import { Subscription, tap } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -27,6 +27,15 @@ import { ToastService } from '../../shared/services/toast.service';
 import { SharedModule } from '../../shared/shared.module';
 import { getControlQualitePdfConfig } from '../pdf-config/controlQualite.config';
 import { getOlivePdfConfig } from '../pdf-config/reception-olive-pdf.config';
+
+const LS_OP_KEY = 'OSM_RECEPTION_SELECTED_OP';
+
+// small helpers (safe for SSR/testing)
+function setOpToLS(opKey?: string) {
+  try {
+    if (opKey) localStorage.setItem(LS_OP_KEY, opKey);
+  } catch {}
+}
 
 @Component({
   selector: 'app-olive-reception',
@@ -60,12 +69,12 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
   isLoading: boolean = false;
   qualityGrade: { id: string; name: string }[] = [
     { id: 'vierge_extra', name: 'Extra Vierge' },
-    {
-      id: 'vierge',
-      name: 'Vierge'
-    },
+    { id: 'vierge', name: 'Vierge' },
     { id: 'lampante', name: 'Lampante' }
   ];
+  /** Operation type forced by the route (e.g. EXCHANGE, SIMPLE_RECEPTION, BASE, OLIVE_PURCHASE) */
+  forcedOp?: OperationType;
+  currentOpKey?: string;
   protected readonly OperationType = OperationType;
   private subs = new Subscription();
 
@@ -76,22 +85,71 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
     private pdfService: PdfGeneratorService,
     private translate: TranslateService,
     private fb: FormBuilder,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    // this.fetchDeliveries();
+    this.subs.add(
+      this.route.data.subscribe((d: Data) => {
+        const op = (d?.['op'] ?? '').toString().toUpperCase();
+        if (op) {
+          const i18n = `DELIVERIES.OPERATION_TYPE.${op}`;
+          this.dashboardConfig = {
+            ...this.dashboardConfig,
+            addNewItemUrl: `reception/reception-olive/${op.toLowerCase()}/new`,
+            titleTranslatePath: `${this.translate.instant('DELIVERIES.OLIVE_TITLE')} — ${this.translate.instant(i18n)}`,
+            defaultSearchData: {
+              ...this.dashboardConfig.defaultSearchData,
+              searchData: {
+                ...this.dashboardConfig.defaultSearchData?.searchData,
+                search: {
+                  ...this.dashboardConfig.defaultSearchData?.searchData?.search,
+                  operationType: { equalValue: op }
+                }
+              }
+            }
+          };
+        } else {
+          this.dashboardConfig = {
+            ...this.dashboardConfig,
+            addNewItemUrl: 'reception/reception-olive/new',
+            titleTranslatePath: 'DELIVERIES.OLIVE_TITLE',
+            title: this.translate.instant('DELIVERIES.OLIVE_TITLE')
+          };
+        }
+      })
+    );
   }
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
   }
 
+  /**
+   * Create/edit navigation
+   * - If an id exists -> go to op-specific edit route: /reception-olive/<op>/<id>
+   * - Else (new) -> go to op-specific create route with 'new' id: /reception-olive/<op>/new
+   * - Fallback to legacy routes if no op available
+   */
   selectReception(d?: UnifiedDelivery): void {
+    // Prefer the row's operationType (when editing from list); otherwise use forcedOp from the route
+    const op = this.normalizeOp(d?.operationType ?? this.forcedOp);
+    const opSeg = this.opToPath(op);
+
     if (d?.id) {
-      this.router.navigate(['/reception/reception-olive', d.id]);
+      if (opSeg) {
+        this.router.navigate(['/reception/reception-olive', opSeg, d.id]);
+      } else {
+        // Legacy fallback
+        this.router.navigate(['/reception/reception-olive', d.id]);
+      }
     } else {
-      this.router.navigate(['/reception/reception-olive', 'new']);
+      if (opSeg) {
+        this.router.navigate(['/reception/reception-olive', opSeg, 'new']);
+      } else {
+        this.router.navigate(['/reception/reception-olive', 'new']);
+      }
     }
   }
 
@@ -103,22 +161,7 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
     this.router.navigate(['reception/quality', d.id]);
   }
 
-  cancelReception(d: UnifiedDelivery): void {
-    if (d.id) {
-      this.subs.add(
-        this.deliveryService.updateStatus(d.id, OliveLotStatus.IN_PROGRESS).subscribe(
-          (res: ApiResponse<void>) => {
-            if (res.success) {
-              this.dashboard.refrechData();
-            } else {
-              this.toast.error(this.translate.instant('DELIVERIES.MESSAGES.SENT_TO_PRODUCTION_ERROR'));
-            }
-          },
-          () => this.toast.warning(this.translate.instant('DELIVERIES.MESSAGES.SENT_TO_PRODUCTION_ERROR'))
-        )
-      );
-    }
-  }
+
 
   cancelDelivery(d: UnifiedDelivery): void {
     if (d.id) {
@@ -149,7 +192,7 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
         this.viewDelivery(e.row);
         break;
       case 'UPDATE':
-        this.selectReception(e.row);
+        this.selectReception(e.row); // will navigate with the row's operationType if present
         break;
 
       case 'GEN_PDF':
@@ -170,7 +213,6 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
         break;
       case 'GEN_PDF_QC_OIL':
         if (e.row.qualityControlResults) {
-          console.log(`[OilReception] Generating PDF for delivery: ${e.row.lotNumber}`);
           const deliveryType = e.row.deliveryType?.toUpperCase() || '';
           const config = getControlQualitePdfConfig(e.row, deliveryType);
           this.pdfService.generatePdf(config);
@@ -180,7 +222,6 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
         break;
       case 'GEN_PDF_QC_OLIVE':
         if (e.row.qualityControlResults) {
-          console.log(`[OilReception] Generating PDF for delivery: ${e.row.lotNumber}`);
           const deliveryType = e.row.deliveryType?.toUpperCase() || '';
           const config = getControlQualitePdfConfig(e.row, deliveryType);
           this.pdfService.generatePdf(config);
@@ -204,17 +245,11 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
     this.selectedRow.price = this.setPriceForm.get('price')?.value;
 
     if (this.selectedRow.operationType === OperationType.EXCHANGE) {
-      // Handle exchange delivery pricing - also update oil fields
       const oilQuantity = this.setPriceForm.get('oilQuantity')?.value;
       const oilUnitPrice = this.setPriceForm.get('oilUnitPrice')?.value;
       const oilTotalValue = this.setPriceForm.get('oilTotalValue')?.value;
       const qualityGrade = this.setPriceForm.get('qualityGrade')?.value;
 
-      // Update the selected row with exchange values
-      this.selectedRow.oilQuantity = oilQuantity;
-      // Note: oilType assignment removed due to type mismatch - qualityGrade is string but BaseType expects number id
-
-      // Create DTO with all exchange pricing data
       const exchangePricingDto: ExchangePricingDto = {
         deliveryId: this.selectedRow.id!,
         unitPrice: this.selectedRow.unitPrice || 0,
@@ -225,7 +260,6 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
         oilTotalValue: oilTotalValue || 0
       };
 
-      // Call the service to update exchange pricing
       this.deliveryService.updatePricingAndCreatOilTransactionOut(exchangePricingDto).subscribe({
         next: () => {
           dialogRef.close();
@@ -242,7 +276,6 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
         }
       });
     } else {
-      // Handle standard delivery pricing
       this.deliveryService.updatePricing(this.selectedRow.id!, this.selectedRow.unitPrice || 0).subscribe({
         next: () => {
           dialogRef.close();
@@ -264,53 +297,58 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
     }
   }
 
-  private fetchDeliveries(): void {
-    this.subs.add(
-      this.deliveryService.getAllDeliveriesList().subscribe((res) => {
-        this.deliveries = res.success ? res.data.filter((d) => d.deliveryType === 'OLIVE') : [];
-        if (!res.success) this.toast.error(this.translate.instant('DELIVERIES.MESSAGES.LOAD_ERROR'));
-        if (res.success) this.toast.success();
-      })
-    );
+  /** Translate enum/string to OperationType if possible */
+  private normalizeOp(v: string | OperationType | undefined | null): OperationType | undefined {
+    if (!v) return undefined;
+    if (typeof v !== 'string') return v;
+    const key = v.toUpperCase().trim();
+    return (OperationType as any)[key] as OperationType | undefined;
   }
+
+  /** Map OperationType to route path segment */
+  private opToPath(op?: OperationType): string | undefined {
+    switch (op) {
+      case OperationType.EXCHANGE:
+        return 'exchange';
+      case OperationType.SIMPLE_RECEPTION:
+        return 'simple_reception';
+      case OperationType.BASE:
+        return 'base';
+      case OperationType.OLIVE_PURCHASE:
+        return 'olive_purchase';
+      default:
+        return undefined;
+    }
+  }
+
+
 
   private setPrice(row: UnifiedDelivery): void {
     this.selectedRow = row;
-    // Always start with standard pricing fields
     const poidsNet = row.poidsNet || 0;
     const initialUnitPrice = row.unitPrice || 0;
     const initialPrice = initialUnitPrice * poidsNet;
 
     if (row.operationType === OperationType.EXCHANGE) {
-      // Load oil types for exchange deliveries
-      // this.getOilTypes(); // This line is removed as oilTypes is now static
-
-      // Handle exchange delivery type - add oil fields to standard form
       const initialOilQuantity = row.oilQuantity || 0;
-      // For exchange, oil total value should equal olive total price
-      const initialOilTotalValue = initialPrice; // Equal to olive total price
+      const initialOilTotalValue = initialPrice;
       const initialOilUnitPrice = initialOilQuantity > 0 ? initialOilTotalValue / initialOilQuantity : 0;
       const initialQualityGrade = row.oilType || this.qualityGrade[0]?.id || '';
 
       this.setPriceForm = this.fb.group({
-        // Standard fields
         unitPrice: [initialUnitPrice, Validators.required],
-        price: [initialPrice, Validators.required], // Exchange fields
+        price: [initialPrice, Validators.required],
         qualityGrade: [initialQualityGrade, Validators.required],
         oilUnitPrice: [initialOilUnitPrice, Validators.required],
         oilQuantity: [initialOilQuantity, Validators.required],
         oilTotalValue: [initialOilTotalValue, Validators.required]
       });
 
-      // Update standard price live as unitPrice changes
       this.setPriceForm.get('unitPrice')?.valueChanges.subscribe((unitPrice: string) => {
         const price = (parseFloat(unitPrice) || 0) * poidsNet;
         this.setPriceForm.get('price')?.setValue(+price.toFixed(3), { emitEvent: false });
-
-        // For exchange, update oil total value to match olive total price
         this.setPriceForm.get('oilTotalValue')?.setValue(+price.toFixed(3), { emitEvent: false });
 
-        // Update oil unit price based on oil quantity
         const oilQuantity = this.setPriceForm.get('oilQuantity')?.value || 0;
         if (oilQuantity > 0) {
           const newOilUnitPrice = price / oilQuantity;
@@ -318,7 +356,6 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
         }
       });
 
-      // Update oil unit price when oil quantity changes (keeping total value equal to olive price)
       this.setPriceForm.get('oilQuantity')?.valueChanges.subscribe((oilQuantity: number) => {
         const oliveTotalPrice = this.setPriceForm.get('price')?.value || 0;
         this.setPriceForm.get('oilTotalValue')?.setValue(+oliveTotalPrice.toFixed(3), { emitEvent: false });
@@ -329,7 +366,6 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
         }
       });
 
-      // Update oil quantity when oil unit price changes (keeping total value equal to olive price)
       this.setPriceForm.get('oilUnitPrice')?.valueChanges.subscribe((oilUnitPrice: number) => {
         const oliveTotalPrice = this.setPriceForm.get('price')?.value || 0;
         this.setPriceForm.get('oilTotalValue')?.setValue(+oliveTotalPrice.toFixed(3), { emitEvent: false });
@@ -361,18 +397,10 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
     });
   }
 
-  private getOilTypes(): void {
-    // This method is no longer needed as oilTypes is now static
-  }
-
   private createOilTransactionFromExchange = (row: UnifiedDelivery) => {
     this.deliveryService
       .createOilTransactionFromExchange(row?.id)
-      .pipe(
-        tap((response: ApiResponse<unknown>) => {
-          console.log(response);
-        })
-      )
+      .pipe(tap((response: ApiResponse<unknown>) => console.log(response)))
       .subscribe();
   };
 }

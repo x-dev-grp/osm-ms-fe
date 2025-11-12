@@ -92,5 +92,6 @@ export interface Field {
   valueField?:string;
   flattedList?:boolean;
   flattedItemIndex?:number;
+  calculateTotal?:boolean;
 }
 

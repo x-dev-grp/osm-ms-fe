@@ -22,7 +22,8 @@
   }
 
   /* Action buttons container ------------------------------------------- */
-  .actions {
+    .actions {
+  justify-content: space-around;
     display: flex;
     justify-content: flex-end;
     gap: 8px;

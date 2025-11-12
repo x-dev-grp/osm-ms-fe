@@ -607,6 +607,7 @@
       "BUTTONS": {
         "BACK": "العودة إلى القائمة"
       },
+      "LINKED_OIL_RECEPTION_DESC": "",
       "MESSAGES": {
         "DATA_ERROR": "خطأ أثناء تحميل البيانات.",
         "INVALID_ID": "معرف استقبال غير صالح.",
@@ -2761,6 +2762,7 @@
     },
     "DETAILS": {
       "COUNT": "",
+      "NO_EMAIL": "",
       "OIL_CREDIT_STATS_TITLE": "إحصائيات اعتماد الزيت",
       "OIL_CREDIT_TOTAL": "اعتمادات الزيت",
       "PAID_OILSALES_TITLE": "مبيعات زيت مدفوعة",
@@ -2792,6 +2794,7 @@
       "ADDRESS": "العنوان",
       "BANK_NAME": "اسم البنك",
       "EMAIL": "البريد الإلكتروني",
+      "HAS_STORAGE": "لديه مساحة تخزين",
       "LASTNAME": "اللقب",
       "NAME": "الاسم",
       "PARCEL": "الحزمة",

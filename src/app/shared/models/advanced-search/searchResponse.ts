@@ -3,4 +3,5 @@ export interface SearchResponse {
  data:any[];
  totalPages:number;
  page:number;
+ totals?:Map<string, number>;
 }

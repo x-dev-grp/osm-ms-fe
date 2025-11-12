@@ -1,5 +1,6 @@
 export const ACTION_ICONS: Map<string, string> = new Map<string, string>([
   ['READ', 'visibility'],
+  ['DETAIL', 'info'],
   ['CREATE', 'add'],
   ['UPDATE', 'edit'],
   ['DELETE', 'delete'],

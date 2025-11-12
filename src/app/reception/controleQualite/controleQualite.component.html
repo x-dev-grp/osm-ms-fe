@@ -248,7 +248,7 @@
       </div>
       <!-- Single Save Button -->
       <div class="form-actions">
-        <button (click)="onSave()" [disabled]="!isFormValid() || isLoading " class="submit-button" color="primary"
+        <button (click)="onSave()" [disabled]="!isFormValid() || isLoading ||disableButton " class="submit-button" color="primary"
                 mat-raised-button>
           <mat-icon>save</mat-icon>
           {{ 'CONFIGURATION.SITE.BTNS.SAVE' | translate }}

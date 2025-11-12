@@ -38,7 +38,8 @@
     right: 8px;
   }
 }
-.actions {
+  .actions {
+  justify-content: space-around;
   display: flex;
   justify-content: flex-end;
   gap: 12px;

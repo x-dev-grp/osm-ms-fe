@@ -58,6 +58,7 @@ export const OIL_CREDIT_DASHBOARD: DashboardConfig = {
     },
     {
       name: 'quantity',
+      calculateTotal:true,
       label: 'Quantité',
       labelTranslatePath: 'OIL_CREDIT.FIELDS.QUANTITY',
       attributeType: AttributeType.number,

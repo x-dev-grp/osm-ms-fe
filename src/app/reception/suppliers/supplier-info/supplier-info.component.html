@@ -1,0 +1,81 @@
+<app-card
+  [showHeader]="true"
+  [showContent]="true"
+  [icon]="'person'"
+  [cardTitle]="(supplier?.name || '') + (supplier?.lastname ? ' ' + supplier?.lastname : '')"
+>
+  <!-- Error banner (same pattern as your example) -->
+  <div *ngIf="error" class="mat-alert mat-error" role="alert">
+    {{ error }}
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+
+  <!-- Content -->
+  <section *ngIf="!loading && !error && supplier" class="supplier-body">
+    <!-- Details grid (kept from your original) -->
+    <div class="grid">
+      <div class="item">
+        <div class="label">{{ 'SUPPLIER.FIELDS.PHONE' | translate }}</div>
+        <div class="value">{{ supplier?.phone || '—' }}</div>
+      </div>
+
+      <div class="item">
+        <div class="label">{{ 'SUPPLIER.FIELDS.EMAIL' | translate }}</div>
+        <div class="value">{{ supplier?.email || '—' }}</div>
+      </div>
+
+      <div class="item">
+        <div class="label">{{ 'SUPPLIER.FIELDS.ADDRESS' | translate }}</div>
+        <div class="value">{{ supplier?.address || '—' }}</div>
+      </div>
+
+      <div class="item">
+        <div class="label">{{ 'BASE_TYPE.REGION' | translate }}</div>
+        <div class="value">{{ regionName || '—' }}</div>
+      </div>
+
+      <div class="item">
+        <div class="label">{{ 'CUSTOMERS.FIELDS.MATRICULE_FISCAL' | translate }}</div>
+        <div class="value">{{ supplier?.matriculeFiscal || '—' }}</div>
+      </div>
+
+      <div class="item">
+        <div class="label">{{ 'SUPPLIER.FIELDS.RIB' | translate }}</div>
+        <div class="value">{{ supplier?.rib || '—' }}</div>
+      </div>
+
+      <div class="item">
+        <div class="label">{{ 'SUPPLIER.FIELDS.BANK_NAME' | translate }}</div>
+        <div class="value">{{ supplier?.bankName || '—' }}</div>
+      </div>
+
+      <div class="item">
+        <div class="label">{{ 'SUPPLIER.FIELDS.HAS_STORAGE' | translate }}</div>
+        <div class="value">
+          <span class="chip" [class.yes]="supplier?.hasStorage" [class.no]="!supplier?.hasStorage">
+            {{ supplier?.hasStorage ? ('COMMON.YES' | translate) : ('COMMON.NO' | translate) }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer actions (mirrors your example’s button row) -->
+  <div class="footer text-end" *ngIf="!loading && !error && supplier">
+    <button (click)="onClose()" mat-stroked-button class="m-r-10">
+      {{ 'STANDARD.BTNS.CLOSE' | translate }}
+    </button>
+    <button
+      (click)="onEdit()"
+      mat-flat-button
+      color="primary"
+      [disabled]="!supplier?.id"
+    >
+      {{ 'STANDARD.BTNS.EDIT' | translate }}
+    </button>
+  </div>
+</app-card>

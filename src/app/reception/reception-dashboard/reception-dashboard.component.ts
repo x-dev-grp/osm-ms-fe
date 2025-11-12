@@ -11,6 +11,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { forkJoin, of, Subject } from 'rxjs';
@@ -30,8 +31,7 @@ import { CardComponent } from '../../theme/components/card/card.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DailyMetricClient } from '../../shared/services/DailyMetricPayload';
 import { ToastService } from '../../shared/services/toast.service';
-
-// import { EarningChartComponent } from '../../../theme/pages/apex-chart/earning-chart/earning-chart.component';
+import { OperationType } from '../../shared/models/operation-type.enum';
 
 type TrendGranularity = 'daily' | 'weekly' | 'monthly' | 'yearly';
 type PresetPeriod = 'today' | 'yesterday' | 'thisWeek' | 'lastWeek' | 'thisMonth' | 'lastMonth' | 'thisYear' | 'lastYear' | 'custom';
@@ -54,6 +54,7 @@ type PresetPeriod = 'today' | 'yesterday' | 'thisWeek' | 'lastWeek' | 'thisMonth
     MatDatepickerModule,
     MatInputModule,
     MatNativeDateModule,
+    MatSelectModule,
     FormsModule,
     RouterModule,
     EarningChartComponent,
@@ -64,105 +65,105 @@ type PresetPeriod = 'today' | 'yesterday' | 'thisWeek' | 'lastWeek' | 'thisMonth
   ]
 })
 export class ReceptionDashboardComponent implements OnInit, OnDestroy {
+  // Loading & Error States
   isLoading = true;
   error: string | null = null;
   destroy$ = new Subject<void>();
+  lastUpdated: Date | null = new Date();
+
+  // Dialog Management
   @ViewChild('dailyMetricDialog') dailyMetricDialogTpl!: TemplateRef<any>;
   dailyMetricRef?: MatDialogRef<any>;
   dailyMetricValue: number | null = null;
-  // Period and size (legacy API restored)
-  currentReceptionTrendView: 'monthly' | 'weekly' | 'daily' = 'daily';
-  baseUnitPriceTrendChartOptions: any = {
-    chart: { type: 'line', height: 320, toolbar: { show: false } },
-    colors: ['#0E6FFF'], // pick a palette color consistent with your theme
-    series: [{ name: 'Unit Price (BASE)', data: [] }],
-    xaxis: { categories: [] },
-    yaxis: {
-      title: { text: 'TND/kg' },
-      labels: {
-        formatter: (val: number) => Number(val)?.toFixed(2) ?? '0.00'
-      }
-    },
-    stroke: { curve: 'smooth', width: 2 },
-    markers: { size: 3 },
-    tooltip: {
-      y: {
-        formatter: (val: number) => `${(Number(val) || 0).toFixed(3)} TND/kg`
-      }
-    }
-  };
-
-  receptions: UnifiedDelivery[] = [];
-  suppliers: SupplierType[] = [];
-  storageUnits: StorageUnitDto[] = [];
-  chartHeights: Record<'small' | 'medium' | 'large', number> = { small: 220, medium: 400, large: 600 };
-  currentChartSize: 'small' | 'medium' | 'large' = 'small';
-  // Date range + granularity
+  // Quick period configuration for compact pills
+  quickPeriods = [
+    { value: 'today' as PresetPeriod, label: 'DASHBOARD.DATE_FILTER.TODAY' },
+    { value: 'yesterday' as PresetPeriod, label: 'DASHBOARD.DATE_FILTER.YESTERDAY' },
+    { value: 'thisWeek' as PresetPeriod, label: 'DASHBOARD.DATE_FILTER.THIS_WEEK' },
+    { value: 'lastWeek' as PresetPeriod, label: 'DASHBOARD.DATE_FILTER.LAST_WEEK' },
+    { value: 'thisMonth' as PresetPeriod, label: 'DASHBOARD.DATE_FILTER.THIS_MONTH' },
+    { value: 'lastMonth' as PresetPeriod, label: 'DASHBOARD.DATE_FILTER.LAST_MONTH' },
+    { value: 'thisYear' as PresetPeriod, label: 'DASHBOARD.DATE_FILTER.THIS_YEAR' },
+    { value: 'lastYear' as PresetPeriod, label: 'DASHBOARD.DATE_FILTER.LAST_YEAR' }
+  ];
+  // Date Range & Filtering
   rangeStart!: Date;
   rangeEnd!: Date;
   trendGranularity: TrendGranularity = 'monthly';
-  // Calendar/Date picker properties
   selectedPreset: PresetPeriod = 'thisMonth';
   customStartDate: Date | null = null;
   customEndDate: Date | null = null;
   maxDate = new Date();
   selectedPeriodDisplay: string | null = null;
-  // Summary stats
+  // Operation Type Filter
+  selectedOperationType: string;
+  operationTypes = [
+    { value: OperationType.SIMPLE_RECEPTION, labelKey: 'DELIVERIES.OPERATION_TYPE.SIMPLE_RECEPTION' },
+    { value: OperationType.OLIVE_PURCHASE, labelKey: 'DELIVERIES.OPERATION_TYPE.OLIVE_PURCHASE' },
+    { value: OperationType.BASE, labelKey: 'DELIVERIES.OPERATION_TYPE.BASE' },
+    { value: OperationType.EXCHANGE, labelKey: 'DELIVERIES.OPERATION_TYPE.EXCHANGE' },
+    { value: OperationType.OIL_PURCHASE, labelKey: 'DELIVERIES.OPERATION_TYPE.OIL_PURCHASE' }
+  ];
+  // Data Collections
+  receptions: UnifiedDelivery[] = [];
+  suppliers: SupplierType[] = [];
+  storageUnits: StorageUnitDto[] = [];
+  // KPIs
   totalReceptions = 0;
   pendingReceptions = 0;
   completedReceptions = 0;
   totalVolume = 0;
-  // Sparkline arrays (now adapt to granularity)
-  receptionsPerDay: number[] = [];
-  pendingReceptionsPerDay: number[] = [];
-  completedReceptionsPerDay: number[] = [];
-  volumePerDay: number[] = [];
-  // Bar/Pie data
-  supplierNames: string[] = [];
-  supplierVolumes: number[] = [];
-  storageNames: string[] = [];
-  storageUtilization: number[] = [];
-  // Recent receptions
-  recentReceptions: UnifiedDelivery[] = [];
-  // KPIs
   avgVolumePerReception = 0;
   avgUnitPrice = 0;
   totalPaidAmount = 0;
   totalUnpaidAmount = 0;
+  totalAmount = 0;
   uniqueSuppliers = 0;
   storageUnitsUsed = 0;
   avgProcessingTime = 0;
-  // Apex options (heights controlled in template)
-  receptionsByStatusChartOptions: Partial<ApexOptions> = {};
-  volumeBySupplierChartOptions: Partial<ApexOptions> = {};
-  volumeByStorageChartOptions: Partial<ApexOptions> = {};
-  receptionsByTypeChartOptions: Partial<ApexOptions> = {};
+  // Sparkline Arrays (for earning charts)
+  receptionsPerDay: number[] = [];
+  pendingReceptionsPerDay: number[] = [];
+  completedReceptionsPerDay: number[] = [];
+  volumePerDay: number[] = [];
+  // Chart Options
+  currentReceptionTrendView: 'monthly' | 'weekly' | 'daily' = 'daily';
+  currentChartSize: 'small' | 'medium' | 'large' = 'small';
+  baseUnitPriceTrendChartOptions: any = {
+    chart: { type: 'line', height: 320, toolbar: { show: false } },
+    colors: ['#0E6FFF'],
+    series: [{ name: 'Unit Price (BASE)', data: [] }],
+    xaxis: { categories: [] },
+    yaxis: {
+      title: { text: 'TND/kg' },
+      labels: { formatter: (val: number) => Number(val)?.toFixed(2) ?? '0.00' }
+    },
+    stroke: { curve: 'smooth', width: 2 },
+    markers: { size: 3 },
+    tooltip: {
+      y: { formatter: (val: number) => `${(Number(val) || 0).toFixed(3)} TND/kg` }
+    }
+  };
   receptionsTrendChartOptions: Partial<ApexOptions> = {};
-  qualityControlChartOptions: Partial<ApexOptions> = {};
-  recentReceptionsChartOptions: Partial<ApexOptions> = {};
-  // UI
-  lastUpdated: Date | null = new Date();
   private readonly DAILY_METRIC_CODE = 'DAILY_OIL_METRIC';
   canEditToday$ = this.dailyMetric.canEditToday(this.DAILY_METRIC_CODE);
-  // DI
+  private allReceptions: UnifiedDelivery[] = [];
+  // Services
   private deliveryService = inject(UnifiedDeliveryService);
   private supplierService = inject(SupplierTypeService);
   private storageService = inject(StorageUnitDtoService);
   private translate = inject(TranslateService);
-  // Raw data vs filtered
-  private allReceptions: UnifiedDelivery[] = [];
 
   constructor(
     private dialog: MatDialog,
     private dailyMetric: DailyMetricClient,
     private toast: ToastService
   ) {
-    // Initialize with current month as default
     this.initializeDefaultDateRange();
     this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => this.updateChartLabels());
   }
 
-  // Theme colors (as arrays for your mini charts)
+  // Theme Colors for Earning Charts
   get primaryColor() {
     return ['var(--primary-500)'];
   }
@@ -175,14 +176,6 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
     return ['var(--success-500)'];
   }
 
-  get infoColor() {
-    return ['var(--info-500)'];
-  }
-
-  // Currency formatting
-  get formattedAvgUnitPrice(): string {
-    return this.avgUnitPrice.toFixed(2) + ' TND';
-  }
 
   get formattedTotalPaidAmount(): string {
     return this.totalPaidAmount.toFixed(2) + ' TND';
@@ -192,8 +185,11 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
     return this.totalUnpaidAmount.toFixed(2) + ' TND';
   }
 
+
+
   ngOnInit(): void {
     this.loadData();
+  this.onOperationTypeChange(OperationType.SIMPLE_RECEPTION)
   }
 
   ngOnDestroy(): void {
@@ -201,116 +197,7 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  openDailyMetricDialog(): void {
-    // Block opening if already set today (optional; you can also allow open but disable Save)
-    this.canEditToday$.subscribe((can) => {
-      if (!can) {
-        this.toast.info('La valeur du jour a déjà été saisie.');
-        return;
-      }
-      // Prefill with current
-      this.dailyMetric.get(this.DAILY_METRIC_CODE).subscribe({
-        next: (p) => {
-          this.dailyMetricValue = Number(p.current) || 0;
-          this.dailyMetricRef = this.dialog.open(this.dailyMetricDialogTpl, {
-            width: '420px',
-            autoFocus: true,
-            restoreFocus: false,
-            panelClass: 'daily-metric-dialog'
-          });
-        },
-        error: () => {
-          this.dailyMetricValue = null;
-          this.dailyMetricRef = this.dialog.open(this.dailyMetricDialogTpl, {
-            width: '420px',
-            autoFocus: true,
-            restoreFocus: false,
-            panelClass: 'daily-metric-dialog'
-          });
-        }
-      });
-    });
-  }
-
-  selectPresetPeriod(preset: PresetPeriod): void {
-    this.selectedPreset = preset;
-    this.customStartDate = null;
-    this.customEndDate = null;
-
-    const dates = this.getPresetDateRange(preset);
-    this.rangeStart = dates.start;
-    this.rangeEnd = dates.end;
-
-    this.updateSelectedPeriodDisplay();
-    this.applyFiltersAndRebuild();
-  }
-
-  saveDailyMetric(): void {
-    const val = Number(this.dailyMetricValue);
-    if (!isFinite(val) || val < 0) {
-      this.toast.warning('Veuillez saisir une valeur valide');
-      return;
-    }
-
-    const code = 'DAILY_OIL_METRIC';
-    this.dailyMetric.upsertToday(code, val).subscribe((result) => {
-      if (result instanceof Error) {
-        if (result.message === 'Déjà saisi pour aujourd’hui.') {
-          this.toast.warning(result.message);
-        } else {
-          this.toast.error('Erreur lors de la sauvegarde: ' + result.message);
-          console.error('Save error details:', result);
-        }
-      } else {
-        this.toast.success('Valeur quotidienne enregistrée');
-        this.dailyMetricRef?.close();
-        window.location.reload()
-        // TODO: Implement KPI/chart refresh logic if needed
-        console.log('Save operation completed');
-      }
-    });
-  }
-  applyCustomDateRange(): void {
-    if (!this.customStartDate || !this.customEndDate) return;
-
-    this.selectedPreset = 'custom';
-    this.rangeStart = this.stripTime(this.customStartDate);
-    this.rangeEnd = this.stripTime(this.customEndDate);
-
-    this.updateSelectedPeriodDisplay();
-    this.applyFiltersAndRebuild();
-  }
-
-  clearDateRange(): void {
-    this.selectedPreset = 'thisMonth';
-    this.customStartDate = null;
-    this.customEndDate = null;
-    this.selectedPeriodDisplay = null;
-    this.initializeDefaultDateRange();
-    this.applyFiltersAndRebuild();
-  }
-
-  // === Range + Granularity API (call these from UI) ===
-  setDateRange(start: Date | null, end: Date | null): void {
-    if (!start || !end) return;
-    this.rangeStart = this.stripTime(start);
-    this.rangeEnd = this.stripTime(end);
-    this.selectedPreset = 'custom';
-    this.customStartDate = start;
-    this.customEndDate = end;
-    this.updateSelectedPeriodDisplay();
-    this.applyFiltersAndRebuild();
-  }
-
-  refresh(): void {
-    try {
-      this.loadData();
-    } finally {
-      this.lastUpdated = new Date();
-    }
-  }
-
-  // === Data load (still client-side filtering) ===
+  // === Data Loading ===
   loadData(): void {
     this.isLoading = true;
     this.error = null;
@@ -337,37 +224,155 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
       });
   }
 
-  // Trend uses your legacy updater:
-  updateReceptionTrendView(view: 'monthly' | 'weekly' | 'daily') {
-    this.currentReceptionTrendView = view;
-    const data = this.getReceptionsTrendData(this.receptions, view);
-    this.receptionsTrendChartOptions = this.withHeight({
-      series: [{ name: 'Réceptions', data: data.data }],
-      chart: { type: 'line', toolbar: { show: false } },
-      xaxis: { categories: data.categories },
-      colors: ['var(--primary-500)']
+  refresh(): void {
+    try {
+      this.loadData();
+    } finally {
+      this.lastUpdated = new Date();
+    }
+  }
+
+  onOperationTypeChange(op: string): void {
+    this.selectedOperationType = op;
+    this.refresh();
+  }
+
+  selectPresetPeriod(preset: PresetPeriod): void {
+    this.selectedPreset = preset;
+    this.customStartDate = null;
+    this.customEndDate = null;
+
+    const dates = this.getPresetDateRange(preset);
+    this.rangeStart = dates.start;
+    this.rangeEnd = dates.end;
+
+    this.updateSelectedPeriodDisplay();
+    this.applyFiltersAndRebuild();
+  }
+
+  applyCustomDateRange(): void {
+    if (!this.customStartDate || !this.customEndDate) return;
+
+    this.selectedPreset = 'custom';
+    this.rangeStart = this.stripTime(this.customStartDate);
+    this.rangeEnd = this.stripTime(this.customEndDate);
+
+    this.updateSelectedPeriodDisplay();
+    this.applyFiltersAndRebuild();
+  }
+
+  clearDateRange(): void {
+    this.selectedPreset = 'thisMonth';
+    this.customStartDate = null;
+    this.customEndDate = null;
+    this.selectedPeriodDisplay = null;
+    this.initializeDefaultDateRange();
+    this.applyFiltersAndRebuild();
+  }
+
+  // === Daily Metric Dialog ===
+  openDailyMetricDialog(): void {
+    this.canEditToday$.subscribe((can) => {
+      if (!can) {
+        this.toast.info('La valeur du jour a déjà été saisie.');
+        return;
+      }
+      this.dailyMetric.get(this.DAILY_METRIC_CODE).subscribe({
+        next: (p) => {
+          this.dailyMetricValue = Number(p.current) || 0;
+          this.dailyMetricRef = this.dialog.open(this.dailyMetricDialogTpl, {
+            width: '420px',
+            autoFocus: true,
+            restoreFocus: false,
+            panelClass: 'daily-metric-dialog'
+          });
+        },
+        error: () => {
+          this.dailyMetricValue = null;
+          this.dailyMetricRef = this.dialog.open(this.dailyMetricDialogTpl, {
+            width: '420px',
+            autoFocus: true,
+            restoreFocus: false,
+            panelClass: 'daily-metric-dialog'
+          });
+        }
+      });
     });
   }
 
-  // 4) when size changes, just re-apply heights
-  updateChartSize(size: 'small' | 'medium' | 'large') {
-    this.currentChartSize = size;
+  saveDailyMetric(): void {
+    const val = Number(this.dailyMetricValue);
+    if (!isFinite(val) || val < 0) {
+      this.toast.warning('Veuillez saisir une valeur valide');
+      return;
+    }
 
-    // re-apply height to all options
-    this.volumeBySupplierChartOptions = this.withHeight(this.volumeBySupplierChartOptions);
-    this.volumeByStorageChartOptions = this.withHeight(this.volumeByStorageChartOptions);
-    this.recentReceptionsChartOptions = this.withHeight(this.recentReceptionsChartOptions);
-    this.updateReceptionTrendView(this.currentReceptionTrendView);
+    this.dailyMetric.upsertToday(this.DAILY_METRIC_CODE, val).subscribe((result) => {
+      if (result instanceof Error) {
+        if (result.message === "Déjà saisi pour aujourd'hui.") {
+          this.toast.warning(result.message);
+        } else {
+          this.toast.error('Erreur lors de la sauvegarde: ' + result.message);
+        }
+      } else {
+        this.toast.success('Valeur quotidienne enregistrée');
+        this.dailyMetricRef?.close();
+        window.location.reload();
+      }
+    });
   }
 
-  // Quick actions (unchanged hooks)
-  setQuickRange(range: '7d' | '30d' | 'ytd'): void {
-    const end = this.stripTime(new Date());
-    let start = new Date(end);
-    if (range === '7d') start.setUTCDate(end.getUTCDate() - 6);
-    if (range === '30d') start.setUTCDate(end.getUTCDate() - 29);
-    if (range === 'ytd') start = new Date(Date.UTC(end.getUTCFullYear(), 0, 1));
-    this.setDateRange(start, end);
+  updateReceptionTrendView(view: 'monthly' | 'weekly' | 'daily'): void {
+    this.currentReceptionTrendView = view;
+    const data = this.getReceptionsTrendData(this.receptions, view);
+    this.receptionsTrendChartOptions = {
+      series: [{ name: 'Réceptions', data: data.data }],
+      chart: { type: 'line', height: 320, toolbar: { show: false } },
+      xaxis: { categories: data.categories },
+      colors: ['var(--primary-500)']
+    };
+  }
+
+  // === Filtering & Data Processing ===
+  private applyFiltersAndRebuild(): void {
+    // Filter by date range and operation type
+    this.receptions = this.allReceptions.filter((r) => {
+      if (!r.deliveryDate) return false;
+      const d = this.stripTime(new Date(r.deliveryDate));
+      const inRange = d >= this.rangeStart && d <= this.rangeEnd;
+
+      if (this.selectedOperationType) {
+        const op = String((r as any).operationType ?? '').toUpperCase();
+        return inRange && op === this.selectedOperationType;
+      }
+
+      return inRange;
+    });
+
+    // Build sparklines (7 bins ending at rangeEnd)
+    this.receptionsPerDay = this.getCountsForSparkline(this.receptions, this.trendGranularity, 7);
+    this.pendingReceptionsPerDay = this.getCountsForSparkline(
+      this.receptions.filter((r) => this.isStatus(r, OliveLotStatus.IN_PROGRESS)),
+      this.trendGranularity,
+      7
+    );
+    this.completedReceptionsPerDay = this.getCountsForSparkline(
+      this.receptions.filter((r) => this.isStatus(r, OliveLotStatus.COMPLETED)),
+      this.trendGranularity,
+      7
+    );
+    this.volumePerDay = this.getVolumeForSparkline(this.receptions, this.trendGranularity, 7);
+
+    // Calculate KPIs and update charts
+    this.prepareStatsAndCharts();
+  }
+
+  // === Date Range Management ===
+  private initializeDefaultDateRange(): void {
+    const now = new Date();
+    this.rangeStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    this.rangeEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    this.updateSelectedPeriodDisplay();
   }
 
   private getPresetDateRange(preset: PresetPeriod): { start: Date; end: Date } {
@@ -386,7 +391,7 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
       case 'thisWeek':
         const startOfWeek = new Date(today);
         const dayOfWeek = startOfWeek.getDay();
-        const diff = startOfWeek.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); // Monday
+        const diff = startOfWeek.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
         startOfWeek.setDate(diff);
         const endOfWeek = new Date(startOfWeek);
         endOfWeek.setDate(startOfWeek.getDate() + 6);
@@ -430,27 +435,6 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  export(fmt: 'png' | 'csv' | 'pdf'): void {
-    (this as any).exportDashboard?.(fmt);
-  }
-
-  // 2) helper to inject height into options
-  private withHeight<T extends Partial<ApexOptions>>(opts: T): T {
-    return {
-      ...opts,
-      chart: { ...(opts.chart || {}), height: this.chartHeights[this.currentChartSize] }
-    } as T;
-  }
-
-  // === Date Range Management ===
-  private initializeDefaultDateRange(): void {
-    // Default to current month
-    const now = new Date();
-    this.rangeStart = new Date(now.getFullYear(), now.getMonth(), 1);
-    this.rangeEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-    this.updateSelectedPeriodDisplay();
-  }
-
   private updateSelectedPeriodDisplay(): void {
     if (this.selectedPreset === 'custom' && this.customStartDate && this.customEndDate) {
       this.selectedPeriodDisplay = `${this.customStartDate.toLocaleDateString()} - ${this.customEndDate.toLocaleDateString()}`;
@@ -470,8 +454,33 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  private isStatus(r: UnifiedDelivery, target: OliveLotStatus): boolean {
-    return this.statusKey(r.status) === OliveLotStatus[target];
+  // === KPIs & Charts ===
+  private prepareStatsAndCharts(): void {
+    // Calculate KPIs
+    this.totalReceptions = this.receptions.length;
+    this.pendingReceptions = this.receptions.filter((r) => this.isStatus(r, OliveLotStatus.IN_PROGRESS)).length;
+    this.completedReceptions = this.receptions.filter((r) => this.isStatus(r, OliveLotStatus.COMPLETED)).length;
+    this.totalVolume = this.receptions.reduce((sum, r) => sum + (r.oilQuantity || 0), 0);
+
+    this.avgVolumePerReception = this.receptions.length ? this.totalVolume / this.receptions.length : 0;
+    this.avgUnitPrice = this.receptions.length
+      ? this.receptions.reduce((sum, r) => sum + (r.unitPrice || 0), 0) / this.receptions.length
+      : 0;
+    this.totalPaidAmount = this.receptions.reduce((s, r) => s + (r.paidAmount || 0), 0);
+    this.totalUnpaidAmount = this.receptions.reduce((s, r) => s + (r.unpaidAmount || 0), 0);
+    this.totalAmount = this.receptions.reduce((s, r) => s + (r.price || 0), 0);
+    this.uniqueSuppliers = new Set(this.receptions.map((r) => r.supplier?.id)).size;
+    this.storageUnitsUsed = new Set(this.receptions.map((r) => r.storageUnit?.id)).size;
+
+    const completed = this.receptions.filter((r) => this.isStatus(r, OliveLotStatus.COMPLETED) && r.deliveryDate && r.trtDate);
+    this.avgProcessingTime = completed.length
+      ? completed.reduce((sum, r) => sum + (new Date(r.trtDate!).getTime() - new Date(r.deliveryDate).getTime()) / 86_400_000, 0) /
+        completed.length
+      : 0;
+
+    // Update charts
+    this.updateReceptionTrendView(this.currentReceptionTrendView);
+    this.buildBaseUnitPriceTrend_OIL_BASE(this.receptions);
   }
 
   private getReceptionsTrendData(receptions: UnifiedDelivery[], view: 'monthly' | 'weekly' | 'daily') {
@@ -480,233 +489,67 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
     return this.generateDailyReceptionsTrend(receptions);
   }
 
-  // === Filtering + rebuilding stats/charts ===
-  private applyFiltersAndRebuild(): void {
-    // 1) filter by [rangeStart, rangeEnd]
-    this.receptions = this.allReceptions.filter((r) => {
-      if (!r.deliveryDate) return false;
-      const d = this.stripTime(new Date(r.deliveryDate));
-      return d >= this.rangeStart && d <= this.rangeEnd;
-    });
+  private buildBaseUnitPriceTrend_OIL_BASE(receptions: any[]): void {
+    const trendCats: string[] = this.receptionsTrendChartOptions?.xaxis?.categories ?? [];
 
-    // 2) rebuild sparklines using selected granularity (last 7 bins ending at rangeEnd)
-    this.receptionsPerDay = this.getCountsForSparkline(this.receptions, this.trendGranularity, 7);
-    this.pendingReceptionsPerDay = this.getCountsForSparkline(
-      this.receptions.filter((r) => this.isStatus(r, OliveLotStatus.IN_PROGRESS)),
-      this.trendGranularity,
-      7
+    const rows = (receptions || []).filter(
+      (r) =>
+        r?.deliveryType?.toUpperCase?.() === 'OIL' &&
+        String(r?.operationType).toUpperCase() === 'BASE' &&
+        Number.isFinite(Number(r?.unitPrice ?? r?.oilUnitPrice)) &&
+        (r?.deliveryDate || r?.date || r?.createdDate)
     );
-    this.completedReceptionsPerDay = this.getCountsForSparkline(
-      this.receptions.filter((r) => this.isStatus(r, OliveLotStatus.COMPLETED)),
-      this.trendGranularity,
-      7
-    );
-    this.volumePerDay = this.getVolumeForSparkline(this.receptions, this.trendGranularity, 7);
 
-    // 3) KPIs + main charts
-    this.prepareStatsAndCharts();
-  }
-
-  // === Status helpers ===
-  private statusKey(status: any): string {
-    try {
-      if (status == null) return 'UNKNOWN';
-      if (typeof status === 'string') return status;
-      const key = (OliveLotStatus as any)[status];
-      return key ?? String(status);
-    } catch {
-      return String(status);
+    const dayMap = new Map<string, { sum: number; count: number }>();
+    for (const r of rows) {
+      const dateSource = r.deliveryDate || r.date || r.createdDate;
+      const key = this.toDayKey(dateSource);
+      const unit = Number(r.unitPrice ?? r.oilUnitPrice) || 0;
+      const bucket = dayMap.get(key) || { sum: 0, count: 0 };
+      bucket.sum += unit;
+      bucket.count += 1;
+      dayMap.set(key, bucket);
     }
-  }
 
-  // === KPIs + charts (respect current this.receptions i.e., filtered range) ===
-  private prepareStatsAndCharts(): void {
-    // KPIs
-    this.totalReceptions = this.receptions.length;
-    this.pendingReceptions = this.receptions.filter((r) => this.isStatus(r, OliveLotStatus.IN_PROGRESS)).length;
-    this.completedReceptions = this.receptions.filter((r) => this.isStatus(r, OliveLotStatus.COMPLETED)).length;
-    this.totalVolume = this.receptions.reduce((sum, r) => sum + (r.oilQuantity || 0), 0);
-
-    this.recentReceptions = [...this.receptions]
-      .filter((r) => r.deliveryDate)
-      .sort((a, b) => new Date(b.deliveryDate).getTime() - new Date(a.deliveryDate).getTime())
-      .slice(0, 5);
-
-    this.avgVolumePerReception = this.receptions.length ? this.totalVolume / this.receptions.length : 0;
-    this.avgUnitPrice = this.receptions.length
-      ? this.receptions.reduce((sum, r) => sum + (r.unitPrice || 0), 0) / this.receptions.length
-      : 0;
-    this.totalPaidAmount = this.receptions.reduce((s, r) => s + (r.paidAmount || 0), 0);
-    this.totalUnpaidAmount = this.receptions.reduce((s, r) => s + (r.unpaidAmount || 0), 0);
-    this.uniqueSuppliers = new Set(this.receptions.map((r) => r.supplier?.id)).size;
-    this.storageUnitsUsed = new Set(this.receptions.map((r) => r.storageUnit?.id)).size;
-    this.buildBaseUnitPriceTrend_OIL_BASE(this.receptions);
-
-    const completed = this.receptions.filter((r) => this.isStatus(r, OliveLotStatus.COMPLETED) && r.deliveryDate && r.trtDate);
-    this.avgProcessingTime = completed.length
-      ? completed.reduce((sum, r) => sum + (new Date(r.trtDate!).getTime() - new Date(r.deliveryDate).getTime()) / 86_400_000, 0) /
-        completed.length
-      : 0;
-
-    this.updateReceptionTrendView(this.currentReceptionTrendView);
-
-    // --- Status distribution (Pie) ---
-    const statusCounts: Record<string, number> = {};
-    this.receptions.forEach((r) => {
-      const key = this.statusKey(r.status);
-      const label = this.translate.instant('RECEPTION_LIST.STATUS.' + key) || key || 'INCONNU';
-      statusCounts[label] = (statusCounts[label] || 0) + 1;
+    const cats = trendCats.length ? trendCats : Array.from(dayMap.keys()).sort();
+    const oilBaseData = cats.map((d) => {
+      const b = dayMap.get(d);
+      const avg = b ? b.sum / b.count : 0;
+      return +(Number.isFinite(avg) ? avg : 0).toFixed(3);
     });
-    this.receptionsByStatusChartOptions = {
-      series: Object.values(statusCounts),
-      chart: {
-        type: 'pie',
-        toolbar: { show: false },
-        height: 240,
-        width: '100%'
-      },
-      labels: Object.keys(statusCounts),
-      colors: ['#4CAF50', '#FFC107', '#F44336', '#2196F3', '#9C27B0'],
-      plotOptions: {
-        pie: {
-          expandOnClick: false
-        }
-      },
-      legend: {
-        position: 'bottom',
-        horizontalAlign: 'center',
-        fontSize: '12px',
-        fontFamily: 'inherit'
-      }
-    };
 
-    // --- Supplier volumes (Bar) ---
-    const supplierMap = new Map<string, number>();
-    this.receptions.forEach((r) => {
-      const name = r.supplier?.name || 'Inconnu';
-      supplierMap.set(name, (supplierMap.get(name) || 0) + (r.oilQuantity || 0));
-    });
-    this.supplierNames = [...supplierMap.keys()];
-    this.supplierVolumes = [...supplierMap.values()];
-    this.volumeBySupplierChartOptions = {
-      series: [{ name: 'Volume', data: this.supplierVolumes }],
-      chart: { type: 'bar', toolbar: { show: false } },
-      xaxis: { categories: this.supplierNames },
-      colors: ['var(--primary-500)']
-    };
-
-    // --- Storage utilization (Bar) ---
-    this.storageNames = this.storageUnits.map((s) => s.name);
-    this.storageUtilization = this.storageUnits.map((s) => {
-      const max = s.maxCapacity || 0;
-      const cur = s.currentVolume || 0;
-      return max > 0 ? Math.round((cur / max) * 100) : 0;
-    });
-    this.volumeByStorageChartOptions = {
-      series: [{ name: 'Utilisation', data: this.storageUtilization }],
-      chart: { type: 'bar', toolbar: { show: false } },
-      xaxis: { categories: this.storageNames },
-      colors: ['var(--info-500)']
-    };
-
-    // --- Receptions by type (Bar) ---
-    const typeMap = new Map<string, number>();
-    this.receptions.forEach((r) => {
-      const type = r.deliveryType || 'INCONNU';
-      typeMap.set(type, (typeMap.get(type) || 0) + 1);
-    });
-    this.receptionsByTypeChartOptions = {
-      series: [{ name: 'Réceptions', data: [...typeMap.values()] }],
-      chart: {
-        type: 'bar',
-        toolbar: { show: false },
-        height: 240,
-        width: '100%'
-      },
-      xaxis: { categories: [...typeMap.keys()] },
-      colors: ['var(--success-500)'],
-      plotOptions: {
-        bar: {
-          horizontal: false,
-          columnWidth: '60%'
-        }
-      }
-    };
-
-    // --- QC distribution (Pie) ---
-    const qcMap: Record<string, number> = {};
-    this.receptions.forEach((r) => {
-      if (r.qualityControlResults?.length) {
-        r.qualityControlResults.forEach((qc) => {
-          const rule = qc.rule?.ruleName?.toString() || 'INCONNU';
-          qcMap[rule] = (qcMap[rule] || 0) + 1;
+    this.dailyMetric.get(this.DAILY_METRIC_CODE).subscribe({
+      next: (payload) => {
+        const histMap = new Map<string, number>(Array.isArray(payload?.history) ? (payload.history as [string, number][]) : []);
+        const refData = cats.map((d) => {
+          const v = histMap.has(d) ? Number(histMap.get(d)) : Number(payload?.current) || 0;
+          return +(v || 0).toFixed(3);
         });
+
+        this.baseUnitPriceTrendChartOptions = {
+          ...this.baseUnitPriceTrendChartOptions,
+          xaxis: { ...(this.baseUnitPriceTrendChartOptions?.xaxis ?? {}), categories: cats },
+          colors: ['#0E6FFF', '#FF7A00'],
+          stroke: { curve: 'smooth', width: [2, 2], dashArray: [0, 6] },
+          series: [
+            { name: 'Unit Price (BASE - OIL)', data: oilBaseData },
+            { name: 'Référence (TND/kg)', data: refData }
+          ]
+        };
+      },
+      error: () => {
+        this.baseUnitPriceTrendChartOptions = {
+          ...this.baseUnitPriceTrendChartOptions,
+          xaxis: { ...(this.baseUnitPriceTrendChartOptions?.xaxis ?? {}), categories: cats },
+          colors: ['#0E6FFF'],
+          stroke: { curve: 'smooth', width: 2 },
+          series: [{ name: 'Unit Price (BASE - OIL)', data: oilBaseData }]
+        };
       }
     });
-    this.qualityControlChartOptions = {
-      series: Object.values(qcMap),
-      chart: {
-        type: 'pie',
-        toolbar: { show: false },
-        height: 240,
-        width: '100%'
-      },
-      labels: Object.keys(qcMap),
-      colors: ['#4CAF50', '#FFC107', '#F44336', '#2196F3', '#9C27B0'],
-      plotOptions: {
-        pie: {
-          expandOnClick: false
-        }
-      },
-      legend: {
-        position: 'bottom',
-        horizontalAlign: 'center',
-        fontSize: '12px',
-        fontFamily: 'inherit'
-      }
-    };
-
-    // --- Recent receptions (Bar) ---
-    this.recentReceptionsChartOptions = {
-      series: [{ name: "Quantité d'huile", data: this.recentReceptions.map((r) => r.oilQuantity || 0) }],
-      chart: { type: 'bar', toolbar: { show: false } },
-      xaxis: {
-        categories: this.recentReceptions.map((r) => `Lot ${r.lotNumber} (${r.supplier?.name || 'Inconnu'})`),
-        labels: { rotate: -45, trim: true, hideOverlappingLabels: true }
-      },
-      yaxis: { title: { text: 'Quantité (T)' } },
-      tooltip: { y: { formatter: (val: number) => val.toFixed(2) + ' T' } },
-      colors: ['var(--secondary-500)']
-    };
-    this.volumeBySupplierChartOptions = this.withHeight(this.volumeBySupplierChartOptions);
-    this.volumeByStorageChartOptions = this.withHeight(this.volumeByStorageChartOptions);
-    this.recentReceptionsChartOptions = this.withHeight(this.recentReceptionsChartOptions);
   }
 
-  // === Bucketing ===
-  private makeTrailingBuckets(gran: TrendGranularity, bins: number, end: Date) {
-    const out: { key: string; label: string }[] = [];
-    const e = this.stripTime(new Date(end));
-    for (let i = bins - 1; i >= 0; i--) {
-      const d = this.addToDate(e, gran, -i);
-      out.push({ key: this.bucketKey(gran, d), label: this.bucketLabel(gran, d) });
-    }
-    return out;
-  }
-
-  private makeBucketsBetween(gran: TrendGranularity, start: Date, end: Date) {
-    const out: { key: string; label: string }[] = [];
-    const s = this.alignToBucketStart(gran, this.stripTime(new Date(start)));
-    const e = this.stripTime(new Date(end));
-    let cursor = new Date(s);
-    while (cursor <= e) {
-      out.push({ key: this.bucketKey(gran, cursor), label: this.bucketLabel(gran, cursor) });
-      cursor = this.addToDate(cursor, gran, 1);
-    }
-    return out;
-  }
-
-  // === Sparkline helpers (7 bins ending at rangeEnd) ===
+  // === Sparkline Helpers ===
   private getCountsForSparkline(recs: UnifiedDelivery[], gran: TrendGranularity, bins = 7): number[] {
     const buckets = this.makeTrailingBuckets(gran, bins, this.rangeEnd);
     const map = new Map<string, number>(buckets.map((b) => [b.key, 0]));
@@ -729,52 +572,25 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
     return buckets.map((b) => map.get(b.key) || 0);
   }
 
-  private alignToBucketStart(gran: TrendGranularity, d: Date): Date {
-    const x = new Date(d);
-    if (gran === 'weekly') {
-      // align to Monday (ISO week)
-      const day = (x.getUTCDay() + 6) % 7; // 0=Monday
-      x.setUTCDate(x.getUTCDate() - day);
-    } else if (gran === 'monthly') {
-      x.setUTCDate(1);
-    } else if (gran === 'yearly') {
-      x.setUTCMonth(0, 1);
+  private makeTrailingBuckets(gran: TrendGranularity, bins: number, end: Date) {
+    const out: { key: string; label: string }[] = [];
+    const e = this.stripTime(new Date(end));
+    for (let i = bins - 1; i >= 0; i--) {
+      const d = this.addToDate(e, gran, -i);
+      out.push({ key: this.bucketKey(gran, d), label: this.bucketLabel(gran, d) });
     }
-    return x;
+    return out;
   }
 
-  // === Trend helpers (for any [start,end]) ===
-  private getTrendSeries(recs: UnifiedDelivery[], gran: TrendGranularity, start: Date, end: Date) {
-    const buckets = this.makeBucketsBetween(gran, start, end);
-    const map = new Map<string, number>(buckets.map((b) => [b.key, 0]));
-    recs.forEach((r) => {
-      if (!r.deliveryDate) return;
-      const key = this.bucketKey(gran, new Date(r.deliveryDate));
-      if (map.has(key)) map.set(key, (map.get(key) || 0) + 1);
-    });
-    return {
-      categories: buckets.map((b) => b.label),
-      data: buckets.map((b) => map.get(b.key) || 0)
-    };
-  }
-
-  private isoWeekKey(date: Date): string {
-    const d = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
-    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
-    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-    const weekNo = Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
-    const ww = weekNo.toString().padStart(2, '0');
-    return `${d.getUTCFullYear()}-W${ww}`;
-  }
-
+  // === Bucketing Utilities ===
   private bucketKey(gran: TrendGranularity, d: Date): string {
     const y = d.getUTCFullYear();
     const m = (d.getUTCMonth() + 1).toString().padStart(2, '0');
     const day = d.getUTCDate().toString().padStart(2, '0');
     if (gran === 'daily') return `${y}-${m}-${day}`;
-    if (gran === 'weekly') return this.isoWeekKey(d); // YYYY-Www
+    if (gran === 'weekly') return this.isoWeekKey(d);
     if (gran === 'monthly') return `${y}-${m}`;
-    return `${y}`; // yearly
+    return `${y}`;
   }
 
   private bucketLabel(gran: TrendGranularity, d: Date): string {
@@ -796,37 +612,16 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
     return x;
   }
 
-  // === Misc ===
-  private stripTime(d: Date): Date {
-    return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  private isoWeekKey(date: Date): string {
+    const d = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    const weekNo = Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
+    const ww = weekNo.toString().padStart(2, '0');
+    return `${d.getUTCFullYear()}-W${ww}`;
   }
 
-  private toDayKey(date: Date | string): string {
-    // Normalize to YYYY-MM-DD in Africa/Tunis
-    const d = typeof date === 'string' ? new Date(date) : date;
-    const fmt = new Intl.DateTimeFormat('en-CA', {
-      timeZone: 'Africa/Tunis',
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit'
-    });
-    const parts = fmt.formatToParts(d);
-    const y = parts.find((p) => p.type === 'year')!.value;
-    const m = parts.find((p) => p.type === 'month')!.value;
-    const da = parts.find((p) => p.type === 'day')!.value;
-    return `${y}-${m}-${da}`;
-  }
-
-  private getLastNMonths(n: number): string[] {
-    const months: string[] = [];
-    for (let i = 0; i < n; i++) {
-      const date = new Date();
-      date.setMonth(date.getMonth() - i);
-      months.unshift(date.toLocaleString('fr-FR', { year: 'numeric', month: 'short' }));
-    }
-    return months;
-  }
-
+  // === Trend Generation ===
   private generateMonthlyReceptionsTrend(receptions: UnifiedDelivery[]): { categories: string[]; data: number[] } {
     const monthlyCounts: Record<string, number> = {};
     const last12Months = this.getLastNMonths(12);
@@ -864,28 +659,6 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
     return { categories, data: last14Days.map((date) => weeklyCounts[this.getWeekNumber(date)]) };
   }
 
-  private getWeekNumber(date: Date): string {
-    date = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-    // Set to nearest Thursday: current date + 4 - current day number
-    // (Sunday is 0)
-    date.setUTCDate(date.getUTCDate() + 4 - (date.getUTCDay() || 7));
-    // Get full year number in ISO-8601 year numbering.
-    const yearStart = new Date(Date.UTC(date.getFullYear(), 0, 1));
-    // Calculate full weeks to the nearest Thursday
-    const weekNo = Math.ceil(((date.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
-    return `${date.getFullYear()}-${weekNo}`;
-  }
-
-  private getLastNDates(n: number): Date[] {
-    const dates: Date[] = [];
-    for (let i = 0; i < n; i++) {
-      const date = new Date();
-      date.setDate(date.getDate() - i);
-      dates.unshift(date);
-    }
-    return dates;
-  }
-
   private generateDailyReceptionsTrend(receptions: UnifiedDelivery[]): { categories: string[]; data: number[] } {
     const dailyCounts: Record<string, number> = {};
     const last14Days = this.getLastNDates(14);
@@ -903,137 +676,82 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
     };
   }
 
-  private buildBaseUnitPriceTrend_OIL_BASE(receptions: any[]): void {
-    // 0) Use SAME categories as the main trend (guarantees rendering)
-    const trendCats: string[] = this.receptionsTrendChartOptions?.xaxis?.categories ?? [];
-
-    // 1) Filter: OIL + BASE + valid unit price + has a date
-    const rows = (receptions || []).filter(
-      (r) =>
-        r?.deliveryType?.toUpperCase?.() === 'OIL' &&
-        String(r?.operationType).toUpperCase() === 'BASE' &&
-        Number.isFinite(Number(r?.unitPrice ?? r?.oilUnitPrice)) &&
-        (r?.deliveryDate || r?.date || r?.createdDate)
-    );
-
-    // 2) Group by YYYY-MM-DD (Africa/Tunis), compute daily average
-    const dayMap = new Map<string, { sum: number; count: number }>();
-    for (const r of rows) {
-      const dateSource = r.deliveryDate || r.date || r.createdDate;
-      const key = this.toDayKey(dateSource);
-      const unit = Number(r.unitPrice ?? r.oilUnitPrice) || 0;
-      const bucket = dayMap.get(key) || { sum: 0, count: 0 };
-      bucket.sum += unit;
-      bucket.count += 1;
-      dayMap.set(key, bucket);
+  private getLastNMonths(n: number): string[] {
+    const months: string[] = [];
+    for (let i = 0; i < n; i++) {
+      const date = new Date();
+      date.setMonth(date.getMonth() - i);
+      months.unshift(date.toLocaleString('fr-FR', { year: 'numeric', month: 'short' }));
     }
+    return months;
+  }
 
-    // 3) Build OIL/BASE series data against categories
-    const cats = trendCats.length ? trendCats : Array.from(dayMap.keys()).sort();
-    const oilBaseData = cats.map((d) => {
-      const b = dayMap.get(d);
-      const avg = b ? b.sum / b.count : 0;
-      return +(Number.isFinite(avg) ? avg : 0).toFixed(3);
+  private getLastNDates(n: number): Date[] {
+    const dates: Date[] = [];
+    for (let i = 0; i < n; i++) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      dates.unshift(date);
+    }
+    return dates;
+  }
+
+  private getWeekNumber(date: Date): string {
+    date = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    date.setUTCDate(date.getUTCDate() + 4 - (date.getUTCDay() || 7));
+    const yearStart = new Date(Date.UTC(date.getFullYear(), 0, 1));
+    const weekNo = Math.ceil(((date.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
+    return `${date.getFullYear()}-${weekNo}`;
+  }
+
+  // === Utility Methods ===
+  private stripTime(d: Date): Date {
+    return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  }
+
+  private toDayKey(date: Date | string): string {
+    const d = typeof date === 'string' ? new Date(date) : date;
+    const fmt = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Africa/Tunis',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
     });
+    const parts = fmt.formatToParts(d);
+    const y = parts.find((p) => p.type === 'year')!.value;
+    const m = parts.find((p) => p.type === 'month')!.value;
+    const da = parts.find((p) => p.type === 'day')!.value;
+    return `${y}-${m}-${da}`;
+  }
 
-    // 4) Fetch reference metric and overlay it as a second series
-    this.dailyMetric.get(this.DAILY_METRIC_CODE).subscribe({
-      next: (payload) => {
-        // payload shape is the "old" one: { current: number, history: [ [date, value], ... ] }
-        const histMap = new Map<string, number>(Array.isArray(payload?.history) ? (payload.history as [string, number][]) : []);
+  private isStatus(r: UnifiedDelivery, target: OliveLotStatus): boolean {
+    return this.statusKey(r.status) === OliveLotStatus[target];
+  }
 
-        // For each category day, pick history value if present; fallback to current
-        const refData = cats.map((d) => {
-          const v = histMap.has(d) ? Number(histMap.get(d)) : Number(payload?.current) || 0;
-          return +(v || 0).toFixed(3);
-        });
-
-        // 5) Push into Apex options (immutably!) with 2 series and dashed reference
-        this.baseUnitPriceTrendChartOptions = {
-          ...this.baseUnitPriceTrendChartOptions,
-          xaxis: { ...(this.baseUnitPriceTrendChartOptions?.xaxis ?? {}), categories: cats },
-          colors: ['#0E6FFF', '#FF7A00'], // main series, reference series
-          stroke: { curve: 'smooth', width: [2, 2], dashArray: [0, 6] },
-          series: [
-            { name: 'Unit Price (BASE - OIL)', data: oilBaseData },
-            { name: 'Référence (TND/kg)', data: refData }
-          ],
-          tooltip: {
-            ...this.baseUnitPriceTrendChartOptions?.tooltip,
-            y: {
-              formatter: (val: number) => `${(Number(val) || 0).toFixed(3)} TND/kg`
-            }
-          },
-          yaxis: {
-            ...(this.baseUnitPriceTrendChartOptions?.yaxis ?? {}),
-            labels: {
-              formatter: (val: number) => Number(val)?.toFixed(2) ?? '0.00'
-            },
-            title: { text: 'TND/kg' }
-          }
-        };
-      },
-      error: () => {
-        // If metric fails, still render the main series so the chart shows up
-        this.baseUnitPriceTrendChartOptions = {
-          ...this.baseUnitPriceTrendChartOptions,
-          xaxis: { ...(this.baseUnitPriceTrendChartOptions?.xaxis ?? {}), categories: cats },
-          colors: ['#0E6FFF'],
-          stroke: { curve: 'smooth', width: 2 },
-          series: [{ name: 'Unit Price (BASE - OIL)', data: oilBaseData }]
-        };
-      }
-    });
+  private statusKey(status: any): string {
+    try {
+      if (status == null) return 'UNKNOWN';
+      if (typeof status === 'string') return status;
+      const key = (OliveLotStatus as any)[status];
+      return key ?? String(status);
+    } catch {
+      return String(status);
+    }
   }
 
   private updateChartLabels(): void {
     this.translate
-      .get([
-        'DASHBOARD.ANALYTICS.RECEPTION_STATUS',
-        'DASHBOARD.ANALYTICS.RECEPTION_TYPE',
-        'DASHBOARD.ANALYTICS.VOLUME_BY_SUPPLIER',
-        'DASHBOARD.ANALYTICS.VOLUME_BY_STORAGE',
-        'DASHBOARD.ANALYTICS.QUALITY_CONTROL',
-        'DASHBOARD.ANALYTICS.RECENT_RECEPTIONS',
-        'DASHBOARD.ANALYTICS.RECEPTION_TREND.TITLE'
-      ])
+      .get(['DASHBOARD.ANALYTICS.RECEPTION_TREND.TITLE', 'DASHBOARD.ANALYTICS.BASE_UNIT_PRICE_TREND.TITLE'])
       .pipe(takeUntil(this.destroy$))
       .subscribe((t) => {
-        if (this.receptionsByStatusChartOptions)
-          this.receptionsByStatusChartOptions = {
-            ...this.receptionsByStatusChartOptions,
-            title: { text: t['DASHBOARD.ANALYTICS.RECEPTION_STATUS'] }
-          };
-        if (this.receptionsByTypeChartOptions)
-          this.receptionsByTypeChartOptions = {
-            ...this.receptionsByTypeChartOptions,
-            title: { text: t['DASHBOARD.ANALYTICS.RECEPTION_TYPE'] }
-          };
-        if (this.volumeBySupplierChartOptions)
-          this.volumeBySupplierChartOptions = {
-            ...this.volumeBySupplierChartOptions,
-            title: { text: t['DASHBOARD.ANALYTICS.VOLUME_BY_SUPPLIER'] }
-          };
-        if (this.volumeByStorageChartOptions)
-          this.volumeByStorageChartOptions = {
-            ...this.volumeByStorageChartOptions,
-            title: { text: t['DASHBOARD.ANALYTICS.VOLUME_BY_STORAGE'] }
-          };
-        if (this.qualityControlChartOptions)
-          this.qualityControlChartOptions = {
-            ...this.qualityControlChartOptions,
-            title: { text: t['DASHBOARD.ANALYTICS.QUALITY_CONTROL'] }
-          };
-        if (this.recentReceptionsChartOptions)
-          this.recentReceptionsChartOptions = {
-            ...this.recentReceptionsChartOptions,
-            title: { text: t['DASHBOARD.ANALYTICS.RECENT_RECEPTIONS'] }
-          };
-        if (this.receptionsTrendChartOptions)
+        if (this.receptionsTrendChartOptions) {
           this.receptionsTrendChartOptions = {
             ...this.receptionsTrendChartOptions,
             title: { text: t['DASHBOARD.ANALYTICS.RECEPTION_TREND.TITLE'] }
           };
+        }
       });
   }
+
+  protected readonly OperationType = OperationType;
 }
