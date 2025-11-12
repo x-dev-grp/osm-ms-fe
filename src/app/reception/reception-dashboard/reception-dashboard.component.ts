@@ -189,6 +189,7 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadData();
+  this.onOperationTypeChange(OperationType.SIMPLE_RECEPTION)
   }
 
   ngOnDestroy(): void {
@@ -751,4 +752,6 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
         }
       });
   }
+
+  protected readonly OperationType = OperationType;
 }

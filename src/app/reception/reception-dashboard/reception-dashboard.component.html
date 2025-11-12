@@ -223,7 +223,7 @@
   <!-- Charts Row -->
   <div class="row g-3 mt-1">
     <!-- Base Unit Price Trend Chart -->
-    <div class="col-12">
+    <div class="col-12" *ngIf="selectedOperationType==OperationType.BASE">
       <app-card
         [cardTitle]="'DASHBOARD.ANALYTICS.BASE_UNIT_PRICE_TREND.TITLE' | translate"
         [icon]="'timeline'"

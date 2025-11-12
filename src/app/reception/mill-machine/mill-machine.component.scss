@@ -98,7 +98,8 @@
   padding: 1rem;
 }
 
-.actions {
+  .actions {
+  justify-content: space-around;
   display: flex;
   gap: 1rem;
   margin-bottom: 2rem;

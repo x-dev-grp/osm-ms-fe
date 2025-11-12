@@ -26,7 +26,7 @@
 
 .section {
   padding: 1rem;
-  border: 1px solid rgba(0,0,0,.06);
+  border: 1px solid rgba(0, 0, 0, .06);
   border-radius: 12px;
   background: var(--section-bg, #fff);
 
@@ -43,15 +43,34 @@
   display: flex;
   flex-wrap: wrap;
 }
+
 .row--gap {
   gap: .75rem 1rem;
 }
-.col { flex: 1 1 0; min-width: 220px; }
-.col-3 { flex: 0 0 calc(25% - 1rem); min-width: 220px; }
-.col-4 { flex: 0 0 calc(33.333% - 1rem); min-width: 260px; }
-.col-6 { flex: 0 0 calc(50% - 1rem); min-width: 320px; }
 
-.w-100 { width: 100%; }
+.col {
+  flex: 1 1 0;
+  min-width: 220px;
+}
+
+.col-3 {
+  flex: 0 0 calc(25% - 1rem);
+  min-width: 220px;
+}
+
+.col-4 {
+  flex: 0 0 calc(33.333% - 1rem);
+  min-width: 260px;
+}
+
+.col-6 {
+  flex: 0 0 calc(50% - 1rem);
+  min-width: 320px;
+}
+
+.w-100 {
+  width: 100%;
+}
 
 /* Operation badge */
 .op-badge {
@@ -65,11 +84,16 @@
   font-weight: 600;
   font-size: .85rem;
 
-  &__icon { font-size: 18px; height: 18px; width: 18px; }
+  &__icon {
+    font-size: 18px;
+    height: 18px;
+    width: 18px;
+  }
 }
 
 /* Actions */
 .actions {
+  justify-content: space-around;
   display: flex;
   gap: .75rem;
   margin-top: .25rem;
@@ -81,7 +105,7 @@
   inset: 0;
   display: grid;
   place-items: center;
-  background: rgba(0,0,0,.08);
+  background: rgba(0, 0, 0, .08);
   z-index: 1000;
 }
 

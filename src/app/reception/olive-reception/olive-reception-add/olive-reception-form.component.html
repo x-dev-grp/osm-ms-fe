@@ -63,6 +63,15 @@
               <mat-datepicker #picker></mat-datepicker>
             </mat-form-field>
           </div>
+          <div class="col col-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.TRUCK_PLATE') }}</mat-label>
+              <input formControlName="matriculeCamion" matInput required />
+              <mat-error *ngIf="receptionForm.get('matriculeCamion')?.hasError('pattern')">
+                Le format doit être 3 chiffres + TN + 4 chiffres (ex 258TN1234)
+              </mat-error>
+            </mat-form-field>
+          </div>
         </div>
       </div>
 
@@ -133,16 +142,7 @@
         <h4>{{ translate.instant('OLIVE_RECEPTION.FORM.SECTIONS.OLIVE_INFO') }}</h4>
 
         <div class="row row--gap">
-          <div class="col col-4">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.TREATMENT_DATE') }}</mat-label>
-              <input [matDatepicker]="trtPicker" formControlName="trtDate" matInput />
-              <mat-datepicker-toggle [for]="trtPicker" matSuffix></mat-datepicker-toggle>
-              <mat-datepicker #trtPicker></mat-datepicker>
-            </mat-form-field>
-          </div>
-
-          <div class="col col-4">
+          <div class="col col-2">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>{{ 'DELIVERIES.FORM.FIELDS.OLIVE_TYPE' | translate }}</mat-label>
               <mat-select formControlName="oliveType">
@@ -150,46 +150,21 @@
               </mat-select>
             </mat-form-field>
           </div>
-        </div>
-      </div>
-
-      <!-- Vehicle -->
-      <div class="section">
-        <h4>{{ translate.instant('OLIVE_RECEPTION.FORM.SECTIONS.VEHICLE_INFO') }}</h4>
-
-        <div class="row row--gap">
-          <div class="col col-6">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.TRUCK_PLATE') }}</mat-label>
-              <input formControlName="matriculeCamion" matInput required />
-              <mat-error *ngIf="receptionForm.get('matriculeCamion')?.hasError('pattern')">
-                Le format doit être 3 chiffres + TN + 4 chiffres (ex 258TN1234)
-              </mat-error>
-            </mat-form-field>
-          </div>
-        </div>
-      </div>
-
-      <!-- Weights -->
-      <div class="section">
-        <h4>{{ translate.instant('OLIVE_RECEPTION.FORM.SECTIONS.WEIGHT_QUANTITY') }}</h4>
-
-        <div class="row row--gap">
-          <div class="col col-3">
+          <div class="col col-2">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.GROSS_WEIGHT') }}</mat-label>
               <input formControlName="poidsBrute" matInput min="0" type="number" />
             </mat-form-field>
           </div>
 
-          <div class="col col-3">
+          <div class="col col-2">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.EMPTY_TRUCK_WEIGHT') }}</mat-label>
               <input formControlName="poidsCamionVide" matInput min="0" type="number" />
             </mat-form-field>
           </div>
 
-          <div class="col col-3">
+          <div class="col col-2">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.SACK_COUNT') }}</mat-label>
               <input formControlName="sackCount" matInput min="0" type="number" />
@@ -199,7 +174,7 @@
             </mat-form-field>
           </div>
 
-          <div class="col col-3">
+          <div class="col col-2">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.NET_WEIGHT') }}</mat-label>
               <input formControlName="poidsNet" matInput min="0" readonly type="number" />
@@ -209,7 +184,10 @@
             </mat-form-field>
           </div>
         </div>
+
+
       </div>
+
 
       <!-- Actions -->
       <div class="actions">

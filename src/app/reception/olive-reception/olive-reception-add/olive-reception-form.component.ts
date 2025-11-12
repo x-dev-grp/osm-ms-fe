@@ -203,7 +203,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
           this.pendingEditReception = null;
         }
       },
-      error: () => this.showToast(this.translate.instant('DELIVERIES.FORM.MESSAGES.LOAD_ERROR'), 'error'),
+      error: () => this.showToast(this.translate.instant('xDELIVERIES.FORM.MESSAGES.LOAD_ERROR'), 'error'),
       complete: () => this.markCallDone()
     });
     this.subscriptions.push(regionSub);
@@ -276,12 +276,12 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
             }
           } else {
             this.errorMessage = this.translate.instant('DELIVERIES.FORM.MESSAGES.RECEPTION_LOAD_ERROR');
-            this.router.navigate([`/reception/reception-olive/${this.forcedOp}`]);
+            this.router.navigate([`/reception/reception-olive/${this.forcedOp?.toLowerCase()}`]);
           }
         },
         error: () => {
           this.errorMessage = this.translate.instant('DELIVERIES.FORM.MESSAGES.RECEPTION_LOAD_ERROR');
-          this.router.navigate([`/reception/reception-olive/${this.forcedOp}`]);
+          this.router.navigate([`/reception/reception-olive/${this.forcedOp?.toLowerCase()}`]);
         },
         complete: () => this.markCallDone()
       });
@@ -392,7 +392,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
         );
         // Navigate back to the op-specific list if available
          if (this.forcedOp) {
-          this.router.navigate([`/reception/reception-olive/${this.forcedOp}`]);
+          this.router.navigate([`/reception/reception-olive/${this.forcedOp?.toLowerCase()}`]);
         } else {
           this.router.navigate(['/reception/reception-olive']);
         }
@@ -419,7 +419,7 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
 
   // Navigate back to the op-specific list (if forced), else general route
   resetForm(): void {
-       this.router.navigate([`/reception/reception-olive/${this.forcedOp}`]);
+       this.router.navigate([`/reception/reception-olive/${this.forcedOp?.toLowerCase()}`]);
 
   }
 

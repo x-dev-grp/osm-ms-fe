@@ -79,6 +79,7 @@ export class ControleQualiteComponent implements OnInit {
   private payload: any;
   private sourceOliveReceptionId: string | null = null;
   private oilQuantity: any;
+  disableButton : boolean = false;
 
   /**
    * Constructor for the component
@@ -124,7 +125,7 @@ export class ControleQualiteComponent implements OnInit {
     if (this.xxx) {
       this.oilFromOlive = true;
       // If idx is present, fetch rules directly and skip delivery
-      this.loadOliveReceptionData(this.xxx); // <-- your function (below), then force oil UI
+      this.loadOliveReceptionData(this.xxx);
       this.loadRulesDirect();
     } else {
       this.loadReception();
@@ -468,6 +469,7 @@ export class ControleQualiteComponent implements OnInit {
         .subscribe((res: { success: boolean; message?: string }) => {
           if (res?.success) {
             this.toast.success('Résultats créés avec succès.');
+            this.disableButton = true;
           } else {
             this.toast.warning(res?.message || "Aucun résultat n'a pu être enregistré.");
           }

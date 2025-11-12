@@ -98,7 +98,8 @@
 }
 
 // Action buttons
-.actions {
+  .actions {
+  justify-content: space-around;
   display: flex;
   gap: 10px;
   justify-content: flex-end;

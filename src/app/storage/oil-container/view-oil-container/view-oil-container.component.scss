@@ -192,11 +192,11 @@
   }
 }
 
-.actions {
+  .actions {
+  justify-content: space-around;
   display: flex;
   gap: 0.75rem;
   padding: 1rem;
-  justify-content: flex-end;
 
   button {
     font-size: 0.9rem;
@@ -244,7 +244,8 @@
     grid-template-columns: 1fr;
   }
 
-  .actions {
+    .actions {
+  justify-content: space-around;
     flex-direction: column;
     align-items: stretch;
 

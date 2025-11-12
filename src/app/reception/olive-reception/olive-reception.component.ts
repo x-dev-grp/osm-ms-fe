@@ -120,21 +120,6 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
         }
       })
     );
-    if (this.currentOpKey) setOpToLS(this.currentOpKey);
-
-    // Listen to :op param fallback (/reception-olive/:op)
-    this.subs.add(
-      this.route.paramMap.subscribe((pm: ParamMap) => {
-        const p = pm.get('op');
-        if (p) {
-          this.forcedOp = this.normalizeOp(p);
-          this.fetchDeliveries(); // refetch when op changes
-        } else if (!this.forcedOp) {
-          // No op provided; still fetch all olive deliveries
-          this.fetchDeliveries();
-        }
-      })
-    );
   }
 
   ngOnDestroy(): void {
@@ -176,22 +161,7 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
     this.router.navigate(['reception/quality', d.id]);
   }
 
-  cancelReception(d: UnifiedDelivery): void {
-    if (d.id) {
-      this.subs.add(
-        this.deliveryService.updateStatus(d.id, OliveLotStatus.IN_PROGRESS).subscribe(
-          (res: ApiResponse<void>) => {
-            if (res.success) {
-              this.dashboard.refrechData();
-            } else {
-              this.toast.error(this.translate.instant('DELIVERIES.MESSAGES.SENT_TO_PRODUCTION_ERROR'));
-            }
-          },
-          () => this.toast.warning(this.translate.instant('DELIVERIES.MESSAGES.SENT_TO_PRODUCTION_ERROR'))
-        )
-      );
-    }
-  }
+
 
   cancelDelivery(d: UnifiedDelivery): void {
     if (d.id) {
@@ -351,15 +321,7 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
     }
   }
 
-  private fetchDeliveries(): void {
-    this.subs.add(
-      this.deliveryService.getAllDeliveriesList().subscribe((res) => {
-        this.deliveries = res.success ? res.data.filter((d) => d.deliveryType === 'OLIVE') : [];
-        if (!res.success) this.toast.error(this.translate.instant('DELIVERIES.MESSAGES.LOAD_ERROR'));
-        if (res.success) this.toast.success();
-      })
-    );
-  }
+
 
   private setPrice(row: UnifiedDelivery): void {
     this.selectedRow = row;

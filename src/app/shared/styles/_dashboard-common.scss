@@ -3,7 +3,7 @@
 /* ===== Sticky page header (separate from filters) ===== */
 .page-header {
   position: sticky;
-  top: var(--header-offset, 0); // adjust if you have a fixed top nav
+  top: var(--header-offset, 70); // adjust if you have a fixed top nav
   z-index: 5;
   display: flex;
   align-items: center;

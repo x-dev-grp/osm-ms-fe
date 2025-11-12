@@ -330,7 +330,19 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
       filterable: true
     }
   ],
-
+  defaultSearchData: {
+    page: 0,
+    size: 10,
+    sort: 'legalName',
+    order: 'DESC',
+    searchData: {
+      operation: SearchOperation.AND,
+      search: {
+        isDeleted: { equalValue: false }
+      },
+      searchs: []
+    }
+  },
   /* ── Menu actions ───────────────────────── */
   fileName: 'ventes-huile'
 };
