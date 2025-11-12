@@ -4,7 +4,7 @@ import { SearchOperation } from '../../../../shared/models/advanced-search/searc
 export const BASE_DASHBOARD: DashboardConfig = {
   icon: 'list_alt',
   addNewItem: false,
-  title: 'Paiements en ddddd',
+  title: 'Base',
   titleTranslatePath: 'DELIVERIES.OPERATION_TYPE.BASE',
   baseURL: 'production/deliveries',
   searchEndpoint: 'production/deliveries',

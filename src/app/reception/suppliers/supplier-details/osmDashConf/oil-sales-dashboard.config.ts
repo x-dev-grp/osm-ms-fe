@@ -259,6 +259,8 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
       attributeType: AttributeType.date,
       fieldType: FieldType.date,
       exportable: true,
+      defaultFilter: true,
+
       sortable: true,
       dataTable: false, // Hide from main table, available in details
       filterable: true

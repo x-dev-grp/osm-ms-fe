@@ -230,7 +230,6 @@ export const SIMPLE_RECEPTION_DASHBOARD: DashboardConfig = {
     {
       name: 'paid',
       label: 'Payé',
-      calculateTotal:true,
       labelTranslatePath: 'Payé',
       attributeType: AttributeType.boolean,
       exportable: true,

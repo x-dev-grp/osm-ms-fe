@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {OsmDashboard} from '../../shared/modules/osm-dashboard/osm-dashboard';
 import {LIST_RECEPTION_DASHBOARD} from './LIST_RECEPTION_DASHBOARD';
@@ -24,7 +24,7 @@ import {getOilPdfConfig} from '../pdf-config/reception-oil-pdf.config';
   imports: [CommonModule, OsmDashboard],
   templateUrl: './reception-list.component.html'
 })
-export class ReceptionListComponent {
+export class ReceptionListComponent implements OnInit {
   dashboardConfig = LIST_RECEPTION_DASHBOARD;
 
   constructor(
@@ -67,18 +67,18 @@ export class ReceptionListComponent {
     let translateKey = '';
 
     if (deliveryType === 'OIL') {
-      translateKey = 'MENU.PRODUCTION.RECEPTIONS_HUILE';
+      translateKey = 'MENU.RECEPTION.OIL';
     } else if (deliveryType === 'OLIVE') {
       if (!operationType) {
-        translateKey = 'MENU.PRODUCTION.RECEPTIONS_OLIVE';
+        translateKey = 'MENU.PRODUCTION.MILLING_HISTORY';
       } else {
         const keyMap: Record<string, string> = {
-          SIMPLE_RECEPTION: 'MENU.PRODUCTION.TRITURATION_PARTICULIER',
-          BASE: 'MENU.PRODUCTION.TRITURATION_BASE',
-          OLIVE_PURCHASE: 'MENU.PRODUCTION.ACHAT_OLIVE',
-          EXCHANGE: 'MENU.PRODUCTION.ECHANGE'
+          SIMPLE_RECEPTION: 'DELIVERIES.OPERATION_TYPE.SIMPLE_RECEPTION',
+          BASE: 'DELIVERIES.OPERATION_TYPE.BASE',
+          OLIVE_PURCHASE: 'DELIVERIES.OPERATION_TYPE.OLIVE_PURCHASE',
+          EXCHANGE: 'DELIVERIES.OPERATION_TYPE.EXCHANGE'
         };
-        translateKey = keyMap[operationType] || 'MENU.PRODUCTION.RECEPTIONS_OLIVE';
+        translateKey = keyMap[operationType] || 'MENU.PRODUCTION.MILLING_HISTORY';
       }
     }
 

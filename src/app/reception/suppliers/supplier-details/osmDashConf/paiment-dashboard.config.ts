@@ -184,6 +184,8 @@ export const PAIMENT_DASHBOARD: DashboardConfig = {
       exportable: true,
       sortable: true,
       dataTable: false,
+      defaultFilter: true,
+
       filterable: true
     },
     {

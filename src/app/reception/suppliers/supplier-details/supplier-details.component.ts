@@ -227,7 +227,7 @@ export class SupplierDetailsComponent implements OnInit {
       this.supplierDisplayName = `${this.supplier.name ?? ''} ${this.supplier.lastname ?? ''}`.trim();
     } else if (this.supplierId) {
       // ✅ fallback fetch to get the supplier name when not passed via state
-      this.fetchSupplierById(this.supplierId).subscribe();
+      //this.fetchSupplierById(this.supplierId).subscribe();
     }
 
     if (this.supplierId) {
@@ -243,10 +243,11 @@ export class SupplierDetailsComponent implements OnInit {
       };
 
       // ✅ ensure the suffix is applied to ALL configs right after building them
-      this.appendSupplierNameToTitles();
+      // this.appendSupplierNameToTitles();
 
       this.countAllOperations();
       this.loadOperation(this.activeOp);
+      this.dashboardByOperation.refrechData();
     }
   }
 
@@ -293,8 +294,8 @@ export class SupplierDetailsComponent implements OnInit {
         tap((result) => {
           if (result?.ok) {
             this.toast.success(result.message || 'Paiement réussi.');
-            this.refreshList();
             this.countAllOperations();
+            this.dashboardByOperation.refrechData();
           } else if (result) {
             this.toast.error(result.message || 'Échec du paiement.');
           }
@@ -305,7 +306,7 @@ export class SupplierDetailsComponent implements OnInit {
 
   loadOperation(type: OperationType) {
     this.activeOp = type;
-    if (this.dashboardByOperation) this.dashboardByOperation.refrechData();
+    this.dashboardByOperation.refrechData();
   }
 
   private appendSupplierNameToTitles(): void {
@@ -347,8 +348,7 @@ export class SupplierDetailsComponent implements OnInit {
         if (item) {
           this.supplier = item as SupplierType;
           this.supplierDisplayName = `${this.supplier.name ?? ''} ${this.supplier.lastname ?? ''}`.trim();
-          this.appendSupplierNameToTitles(); // ← REMPLACE l'ancien updateTitles()
-        }
+         }
       }),
       catchError(() => of(null)) // Non-blocking
     );

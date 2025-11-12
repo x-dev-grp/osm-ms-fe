@@ -4,7 +4,7 @@ import { SearchOperation } from '../../../../shared/models/advanced-search/searc
 export const OLIVE_PURCHASE_DASHBOARD: DashboardConfig = {
   icon: 'list_alt',
   addNewItem: false,
-  title: 'Paiements en ddddd',
+  title: 'DELIVERIES.OPERATION_TYPE.OLIVE_PURCHASE',
   titleTranslatePath: 'DELIVERIES.OPERATION_TYPE.OLIVE_PURCHASE',
   baseURL: 'production/deliveries',
   searchEndpoint: 'production/deliveries',
@@ -126,7 +126,8 @@ export const OLIVE_PURCHASE_DASHBOARD: DashboardConfig = {
       attributeType: AttributeType.date,
       fieldType: FieldType.date,
       exportable: true,
-      sortable: true,
+      sortable: true,      defaultFilter: true,
+
       dataTable: false,
       filterable: true
     },
