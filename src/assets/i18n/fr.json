@@ -1770,7 +1770,8 @@
     "FORM": {
       "VALIDATION": {
         "BOTH_CUSTOMER_AND_SUPPLIER_SELECTED": "Veuillez sélectionner soit le client soit le fournisseur, pas les deux",
-        "CUSTOMER_OR_SUPPLIER_REQUIRED": "Le client ou le fournisseur doit être sélectionné"
+        "CUSTOMER_OR_SUPPLIER_REQUIRED": "Le client ou le fournisseur doit être sélectionné",
+        "INCOMPLETE_FORM": "Veuillez remplir tous les champs obligatoires du formulaire."
       }
     },
     "FORM_SUBTITLE": "Créer ou mettre à jour les informations de vente d'huile",
@@ -1779,6 +1780,22 @@
     "LAST_MODIFIED_BY": "Dernière modification par",
     "LAST_MODIFIED_DATE": "Dernière date de modification",
     "LEFTOVER": "Quantité huile pas encore régler",
+    "MESSAGES": {
+      "ERROR": {
+        "ADD": "Une erreur s’est produite lors de l’ajout de la vente d’huile.",
+        "INSUFFICIENT_STORAGE": "’unité de stockage sélectionnée n’a pas une quantité d’huile suffisante pour cette vente.",
+        "LOAD": "Impossible de charger les données de la vente d’huile.",
+        "SUPPLIERS": "Impossible de charger les clients.",
+        "UPDATE": "Une erreur s’est produite lors de la mise à jour de la vente d’huile."
+      },
+      "SUCCESS": {
+        "ADD": "Vente d’huile ajoutée avec succès.",
+        "UPDATE": "Vente d’huile mise à jour avec succès."
+      },
+      "WARNING": {
+        "STORAGE_RESET": "L’unité de stockage a été réinitialisée car elle ne contient pas assez d’huile pour la quantité sélectionnée."
+      }
+    },
     "OIL_TYPE": "Type d'huile",
     "PAYMENT_METHOD": "Méthode de paiement",
     "PAYMENT_METHODS": {

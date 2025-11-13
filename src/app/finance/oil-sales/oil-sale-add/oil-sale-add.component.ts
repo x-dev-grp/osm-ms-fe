@@ -120,14 +120,15 @@ export class OilSaleAddComponent implements OnInit {
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((res) => {
-          this.containerList = res?.data ?? [];
+          this.containerList = (res?.data ?? []).filter((c: OilContainer) => (c.stockQuantity ?? 0) > 0);
         })
       )
       .subscribe();
 
     // Auto-distribute counts when quantity changes
-    this.oilSaleForm.get('quantity')!.valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
+    this.oilSaleForm
+      .get('quantity')!
+      .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.distributeCounts());
   }
 
@@ -384,8 +385,9 @@ export class OilSaleAddComponent implements OnInit {
     });
 
     // Setup reactive changes
-    this.oilSaleForm.get('quantity')?.valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
+    this.oilSaleForm
+      .get('quantity')
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.calculateTotalAmount();
         // Reset storage unit if insufficient
@@ -396,15 +398,15 @@ export class OilSaleAddComponent implements OnInit {
         }
       });
 
-    this.oilSaleForm.get('unitPrice')?.valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
+    this.oilSaleForm
+      .get('unitPrice')
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.calculateTotalAmount());
 
-    this.oilSaleForm.get('selectedContainers')!.valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((selected: OilContainer[]) =>
-        this.onContainerSelectionChange({ value: selected } as MatSelectChange)
-      );
+    this.oilSaleForm
+      .get('selectedContainers')!
+      .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((selected: OilContainer[]) => this.onContainerSelectionChange({ value: selected } as MatSelectChange));
 
     this.setupSupplierAutocomplete();
   }
@@ -486,7 +488,7 @@ export class OilSaleAddComponent implements OnInit {
 
           this.oilSaleForm.patchValue({
             supplier: matchedSupplier,
-            storageUnit: this.storageUnits.find(u => u.id === oilSale.storageUnit?.id) || null,
+            storageUnit: this.storageUnits.find((u) => u.id === oilSale.storageUnit?.id) || null,
             quantity: oilSale.quantity,
             unitPrice: oilSale.unitPrice,
             qualityGrade: oilSale.qualityGrade,
@@ -518,7 +520,7 @@ export class OilSaleAddComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading storage units:', error);
-        this.toast.error('OIL_SALES.MESSAGES.ERROR.STORAGE_UNITS');
+        this.toast.error('CONTROLE_QUALITE.STORAGE_UNIT.MESSAGES.SELECTION_ERROR');
       }
     });
     this.subscriptions.push(sub);

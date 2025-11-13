@@ -1765,7 +1765,8 @@
     "FORM": {
       "VALIDATION": {
         "BOTH_CUSTOMER_AND_SUPPLIER_SELECTED": "Please select either customer or supplier, not both",
-        "CUSTOMER_OR_SUPPLIER_REQUIRED": "Either customer or supplier must be selected"
+        "CUSTOMER_OR_SUPPLIER_REQUIRED": "Either customer or supplier must be selected",
+        "INCOMPLETE_FORM": "Please complete all required fields in the form."
       }
     },
     "FORM_SUBTITLE": "Create or update oil sale information",
@@ -1774,6 +1775,22 @@
     "LAST_MODIFIED_BY": "Last Modified By",
     "LAST_MODIFIED_DATE": "Last Modified Date",
     "LEFTOVER": "Oil quantity not yet in containers",
+    "MESSAGES": {
+      "ERROR": {
+        "ADD": "An error occurred while adding the oil sale.",
+        "INSUFFICIENT_STORAGE": "The selected storage unit does not have enough oil for this sale.",
+        "LOAD": "Failed to load oil sale data.",
+        "SUPPLIERS": "Failed to load clients.",
+        "UPDATE": "An error occurred while updating the oil sale."
+      },
+      "SUCCESS": {
+        "ADD": "Oil sale added successfully.",
+        "UPDATE": "Oil sale updated successfully."
+      },
+      "WARNING": {
+        "STORAGE_RESET": "Storage unit was reset because it does not have enough oil for the selected quantity."
+      }
+    },
     "OIL_TYPE": "Oil Type",
     "PAYMENT_METHOD": "Payment Method",
     "PAYMENT_METHODS": {

@@ -6,7 +6,14 @@
     gap: 16px;
     margin-top: 16px;
   }
+  .form-row.two-cols {
+    display: flex;
+    gap: 0.75rem;
+  }
 
+  .half-width {
+    flex: 1 1 0;
+  }
   .container-item {
     display: flex;
     flex-direction: row;
@@ -120,11 +127,7 @@
     }
   }
 
-  .form-row {
-    display: flex;
-    flex-direction: column;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  }
+
 
   .full-width {
     grid-column: 1 / -1;
@@ -285,3 +288,4 @@
     }
   }
 }
+

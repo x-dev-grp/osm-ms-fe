@@ -1762,7 +1762,8 @@
     "FORM": {
       "VALIDATION": {
         "BOTH_CUSTOMER_AND_SUPPLIER_SELECTED": "يرجى اختيار العميل أو المورد، وليس كليهما",
-        "CUSTOMER_OR_SUPPLIER_REQUIRED": "يجب اختيار العميل أو المورد"
+        "CUSTOMER_OR_SUPPLIER_REQUIRED": "يجب اختيار العميل أو المورد",
+        "INCOMPLETE_FORM": "يرجى إكمال جميع الحقول الإلزامية في النموذج."
       }
     },
     "FORM_SUBTITLE": "أنشئ أو عدّل معلومات مبيعات الزيت",
@@ -1771,6 +1772,22 @@
     "LAST_MODIFIED_BY": "آخر من عدّل",
     "LAST_MODIFIED_DATE": "تاريخ آخر تعديل",
     "LEFTOVER": "كمية زيت غير معبأة بعد",
+    "MESSAGES": {
+      "ERROR": {
+        "ADD": "حدث خطأ أثناء إضافة عملية بيع الزيت.",
+        "INSUFFICIENT_STORAGE": "وحدة التخزين المحددة لا تحتوي على كمية كافية من الزيت لهذه العملية.",
+        "LOAD": "فشل في تحميل بيانات عملية بيع الزيت.",
+        "SUPPLIERS": "Impossible de charger les clients.",
+        "UPDATE": "حدث خطأ أثناء تحديث عملية بيع الزيت."
+      },
+      "SUCCESS": {
+        "ADD": "تمت إضافة عملية بيع الزيت بنجاح.",
+        "UPDATE": "تمت عملية تحديث بيع الزيت بنجاح."
+      },
+      "WARNING": {
+        "STORAGE_RESET": "تم إعادة تعيين وحدة التخزين لأنها لا تحتوي على كمية كافية من الزيت للكمية المختارة."
+      }
+    },
     "OIL_TYPE": "نوع الزيت",
     "PAYMENT_METHOD": "طريقة الدفع",
     "PAYMENT_METHODS": {
