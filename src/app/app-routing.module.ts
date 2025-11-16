@@ -91,7 +91,9 @@ const routes: Routes = [
       }
     ]
   },
-
+  {
+    path: 'landing', loadComponent: () => import('./landing/landing.component').then((e) => e.LandingComponent)
+  },
   {
     path: 'auth',
     loadChildren: () => import('./auth/authentication.module').then((e) => e.AuthenticationModule)

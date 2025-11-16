@@ -1,0 +1,421 @@
+<!-- Navigation -->
+<mat-toolbar [class.scrolled]="scrolled" class="navbar">
+  <div class="container navbar-content">
+    <div class="logo">
+      <div class="logo-icon">O</div>
+      <span class="logo-text">OSM</span>
+    </div>
+
+    <div class="nav-links">
+      <a href="#features">Fonctionnalités</a>
+      <a href="#pricing">Tarifs</a>
+      <a href="#testimonials">Témoignages</a>
+      <button mat-raised-button color="primary" class="demo-btn">
+        Demander une démo
+      </button>
+    </div>
+
+    <button mat-icon-button class="mobile-menu-btn" (click)="toggleMobileMenu()">
+      <mat-icon>{{ mobileMenuOpen ? 'close' : 'menu' }}</mat-icon>
+    </button>
+  </div>
+
+  <div *ngIf="mobileMenuOpen" class="mobile-menu">
+    <a href="#features">Fonctionnalités</a>
+    <a href="#pricing">Tarifs</a>
+    <a href="#testimonials">Témoignages</a>
+    <button mat-raised-button color="primary" class="w-full">
+      Demander une démo
+    </button>
+  </div>
+</mat-toolbar>
+
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="bg-decoration bg-decoration-1 animate-pulse"></div>
+  <div class="bg-decoration bg-decoration-2 animate-pulse"></div>
+
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-content" [class.animate-fade-in-up]="isVisible">
+        <mat-chip-set>
+          <mat-chip class="badge-chip">
+            <mat-icon>auto_awesome</mat-icon>
+            Solution N°1 pour huileries en Tunisie
+          </mat-chip>
+        </mat-chip-set>
+
+        <h1 class="hero-title">
+          Transformez votre huilerie
+        </h1>
+
+        <p class="hero-subtitle">
+          La plateforme tout-en-un qui <strong>révolutionne</strong> la gestion des huileries modernes
+        </p>
+
+        <p class="hero-description">
+          Réception, production, paie, traçabilité… Tout simplifié. Tout automatisé.
+        </p>
+
+        <div class="hero-actions">
+          <button mat-raised-button color="primary" class="btn-large">
+            <mat-icon>play_arrow</mat-icon>
+            Voir la démo vidéo
+          </button>
+          <button mat-stroked-button class="btn-large btn-outline">
+            <mat-icon>phone</mat-icon>
+            +216 00 000 000
+          </button>
+        </div>
+
+        <div class="hero-features">
+          <div class="feature-item">
+            <mat-icon color="primary">check_circle</mat-icon>
+            <span>Installation en 48h</span>
+          </div>
+          <div class="feature-item">
+            <mat-icon color="primary">check_circle</mat-icon>
+            <span>Formation incluse</span>
+          </div>
+          <div class="feature-item">
+            <mat-icon color="primary">check_circle</mat-icon>
+            <span>Support 7j/7</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-cards" [class.animate-fade-in-up]="isVisible">
+        <div class="stats-grid">
+          <mat-card *ngFor="let stat of stats" class="stat-card">
+            <mat-card-content>
+              <mat-icon class="stat-icon" color="primary">{{ stat.icon }}</mat-icon>
+              <div class="stat-value">{{ stat.value }}</div>
+              <div class="stat-label">{{ stat.label }}</div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <mat-card class="testimonial-card">
+          <mat-card-content>
+            <div class="stars">
+              <mat-icon *ngFor="let _ of getStarArray(testimonials[currentTestimonial].rating)" class="star-icon">
+                star
+              </mat-icon>
+            </div>
+
+            <p class="testimonial-quote">
+              "{{ testimonials[currentTestimonial].quote }}"
+            </p>
+
+            <div class="testimonial-author">
+              <div class="author-avatar">
+                {{ testimonials[currentTestimonial].avatar }}
+              </div>
+              <div>
+                <p class="author-name">{{ testimonials[currentTestimonial].author }}</p>
+                <p class="author-role">{{ testimonials[currentTestimonial].role }}</p>
+              </div>
+            </div>
+
+            <div class="testimonial-indicators">
+              <button
+                *ngFor="let _ of testimonials; let i = index"
+                class="indicator"
+                [class.active]="i === currentTestimonial"
+                (click)="setTestimonial(i)">
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Problem-Solution Section -->
+<section class="problem-solution-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>Fini les complications !</h2>
+      <p>OSM résout les problèmes quotidiens de votre huilerie</p>
+    </div>
+
+    <div class="problem-grid">
+      <mat-card *ngFor="let item of problemSolutions" class="problem-card">
+        <mat-card-content>
+          <mat-icon class="problem-icon" [class.text-red]="true">{{ item.icon }}</mat-icon>
+          <p class="problem-text">{{ item.problem }}</p>
+          <div class="solution">
+            <mat-icon class="arrow-icon">arrow_forward</mat-icon>
+            <span class="solution-text">{{ item.solution }}</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</section>
+
+<!-- Before/After Comparison -->
+<section class="comparison-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>Avant vs Après OSM</h2>
+      <p>Découvrez l'impact mesurable sur votre activité</p>
+    </div>
+
+    <mat-card class="comparison-card">
+      <mat-card-content>
+        <div class="comparison-table">
+          <div class="comparison-header">
+            <div></div>
+            <div class="text-center">❌ Sans OSM</div>
+            <div class="text-center">✅ Avec OSM</div>
+          </div>
+          <div *ngFor="let row of comparisonData" class="comparison-row">
+            <div class="feature-name">{{ row.feature }}</div>
+            <div class="before-value">{{ row.before }}</div>
+            <div class="after-value">{{ row.after }}</div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</section>
+
+<!-- Modules Section -->
+<section id="features" class="modules-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>Toutes les fonctionnalités dont vous avez besoin</h2>
+      <p>Une suite complète d'outils professionnels pour gérer chaque aspect de votre huilerie</p>
+    </div>
+
+    <mat-chip-set class="category-chips">
+      <mat-chip
+        *ngFor="let tab of categoryTabs"
+        [class.chip-selected]="activeTab === tab"
+        (click)="setActiveTab(tab)">
+        {{ tab === 'all' ? 'Tout voir' : (tab | titlecase) }}
+      </mat-chip>
+    </mat-chip-set>
+
+    <div class="modules-grid">
+      <mat-card
+        *ngFor="let module of filteredModules; let i = index"
+        class="module-card"
+        [class.module-active]="activeModule === i"
+        [ngClass]="'card-' + module.color"
+        (mouseenter)="setActiveModule(i)">
+        <mat-card-content>
+          <mat-icon class="module-icon">{{ module.icon }}</mat-icon>
+          <h3>{{ module.title }}</h3>
+          <p>{{ module.description }}</p>
+          <div class="learn-more">
+            <span>En savoir plus</span>
+            <mat-icon>chevron_right</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</section>
+
+<!-- Features Grid -->
+<section class="features-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>Pourquoi OSM est différent</h2>
+    </div>
+
+    <div class="features-grid">
+      <mat-card *ngFor="let feature of features" class="feature-card">
+        <mat-card-content>
+          <div class="feature-icon-wrapper">
+            <mat-icon class="feature-icon">{{ feature.icon }}</mat-icon>
+          </div>
+          <h3>{{ feature.title }}</h3>
+          <p>{{ feature.desc }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing Section -->
+<section id="pricing" class="pricing-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>Des tarifs transparents, adaptés à votre taille</h2>
+      <p>Choisissez la formule qui correspond à vos besoins</p>
+    </div>
+
+    <div class="pricing-grid">
+      <mat-card
+        *ngFor="let plan of pricingPlans"
+        class="pricing-card"
+        [class.popular]="plan.popular">
+        <div *ngIf="plan.popular" class="popular-badge">
+          ⭐ PLUS POPULAIRE
+        </div>
+        <mat-card-content>
+          <h3>{{ plan.name }}</h3>
+          <p class="price">{{ plan.price }}</p>
+          <p class="description">{{ plan.description }}</p>
+
+          <ul class="features-list">
+            <li *ngFor="let feature of plan.features">
+              <mat-icon>check_circle</mat-icon>
+              <span>{{ feature }}</span>
+            </li>
+          </ul>
+
+          <button
+            mat-raised-button
+            [color]="plan.popular ? 'primary' : ''"
+            class="w-full pricing-btn">
+            Commencer maintenant
+          </button>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <p class="pricing-footer">
+      💳 Paiement mensuel ou annuel • 🔄 Changez de plan à tout moment • ✅ Sans engagement
+    </p>
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section id="testimonials" class="testimonials-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>Ils nous font confiance</h2>
+      <p>Découvrez les témoignages de nos clients satisfaits</p>
+    </div>
+
+    <div class="testimonials-grid">
+      <mat-card *ngFor="let testimonial of testimonials" class="testimonial-grid-card">
+        <mat-card-content>
+          <div class="stars">
+            <mat-icon *ngFor="let _ of getStarArray(testimonial.rating)" class="star-icon">
+              star
+            </mat-icon>
+          </div>
+
+          <p class="quote">"{{ testimonial.quote }}"</p>
+
+          <div class="author-info">
+            <div class="avatar">{{ testimonial.avatar }}</div>
+            <div>
+              <p class="name">{{ testimonial.author }}</p>
+              <p class="role">{{ testimonial.role }}</p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</section>
+
+<!-- Final CTA Section -->
+<section class="cta-section">
+  <div class="cta-decoration cta-decoration-1"></div>
+  <div class="cta-decoration cta-decoration-2"></div>
+
+  <div class="container cta-content">
+    <h2>Prêt à moderniser votre huilerie ?</h2>
+    <p class="cta-subtitle">
+      Rejoignez les 50+ huileries qui ont fait le choix de l'excellence
+    </p>
+    <p class="cta-description">
+      Démonstration gratuite • Sans engagement • Installation rapide
+    </p>
+
+    <div class="cta-actions">
+      <button mat-raised-button class="cta-btn cta-btn-primary">
+        <mat-icon>phone</mat-icon>
+        Appelez maintenant
+      </button>
+      <button mat-raised-button class="cta-btn cta-btn-secondary">
+        <mat-icon>download</mat-icon>
+        Télécharger la brochure
+      </button>
+    </div>
+
+    <div class="cta-features">
+      <div class="cta-feature">
+        <mat-icon>check_circle</mat-icon>
+        <span>Réponse sous 24h</span>
+      </div>
+      <div class="cta-feature">
+        <mat-icon>check_circle</mat-icon>
+        <span>Démo personnalisée</span>
+      </div>
+      <div class="cta-feature">
+        <mat-icon>check_circle</mat-icon>
+        <span>Sans engagement</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="logo-icon">O</div>
+          <span class="logo-text">OSM</span>
+        </div>
+        <p class="footer-description">
+          La solution de gestion intelligente pour les huileries modernes.
+          Simplifiez votre quotidien, optimisez votre production.
+        </p>
+        <div class="social-links">
+          <a href="#" class="social-link">
+            <mat-icon>facebook</mat-icon>
+          </a>
+          <a href="#" class="social-link">
+            <mat-icon>link</mat-icon>
+          </a>
+          <a href="#" class="social-link">
+            <mat-icon>email</mat-icon>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-links">
+        <h3>Produit</h3>
+        <ul>
+          <li><a href="#features">Fonctionnalités</a></li>
+          <li><a href="#pricing">Tarifs</a></li>
+          <li><a href="#">Démo</a></li>
+          <li><a href="#">Mises à jour</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links">
+        <h3>Support</h3>
+        <ul>
+          <li><a href="#">Documentation</a></li>
+          <li><a href="#">Formation</a></li>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">FAQ</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="login-text">
+        Déjà utilisateur ?
+        <button mat-raised-button color="primary" class="login-btn">
+          Se connecter
+        </button>
+      </p>
+      <p class="copyright">
+        © 2024 OSM - Solution de gestion pour huileries. Tous droits réservés.
+      </p>
+    </div>
+  </div>
+</footer>
