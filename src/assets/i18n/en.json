@@ -1323,7 +1323,8 @@
     },
     "RECEPTION": {
       "AGRICULTURE": "Agriculters",
-      "OIL": "Oil Reception",
+      "OILBASE": "Oil Reception && Base",
+      "OIL_ONLY": "Oil Reception",
       "OLIVE": "Olive Reception",
       "QUALITY_CONTROL": "Quality Control",
       "QUALITY_CONTROL_HUILE": "Oil quality controle",

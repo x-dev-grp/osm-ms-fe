@@ -67,7 +67,7 @@ export class ReceptionListComponent implements OnInit {
     let translateKey = '';
 
     if (deliveryType === 'OIL') {
-      translateKey = 'MENU.RECEPTION.OIL';
+      translateKey = 'MENU.RECEPTION.OILBASE';
     } else if (deliveryType === 'OLIVE') {
       if (!operationType) {
         translateKey = 'MENU.PRODUCTION.MILLING_HISTORY';

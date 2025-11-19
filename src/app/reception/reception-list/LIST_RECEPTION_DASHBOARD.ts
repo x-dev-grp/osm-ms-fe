@@ -130,7 +130,55 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
       sortable: true,
       dataTable: true,
       filterable: true,
-      calculateTotal:true
+      calculateTotal: true
+    },
+        {
+      name: 'oliveQuantity',
+      label: 'oliveQuantity',
+      labelTranslatePath: 'OLIVE_RECEPTION.FORM.FIELDS.OLIVE_QUANTITY',
+      attributeType: AttributeType.number,
+      fieldType: FieldType.text,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true,
+      calculateTotal: true
+    },
+
+    {
+      name: 'unitPrice',
+      label: 'unit_price',
+      labelTranslatePath: 'OIL_SALES.FIELDS.UNIT_PRICE',
+      attributeType: AttributeType.number,
+      fieldType: FieldType.text,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true
+    },
+    {
+      name: 'unpaidAmount',
+      label: 'unpaidAmount',
+      labelTranslatePath: 'DELIVERIES.FIELDS.UNPAID_AMOUNT',
+      attributeType: AttributeType.number,
+      fieldType: FieldType.text,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true,
+      calculateTotal: true
+    },
+    {
+      name: 'paidAmount',
+      label: 'paidAmount',
+      labelTranslatePath: 'DELIVERIES.FIELDS.PAID_AMOUNT',
+      attributeType: AttributeType.number,
+      fieldType: FieldType.text,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true,
+      calculateTotal: true
     },
     {
       name: 'oilType',
@@ -145,7 +193,11 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.select,
       options: [
         { label: 'OB', value: 'OB', labelTranslatePath: 'OB' },
-        { label: 'OC', value: 'OC', labelTranslatePath: 'OC' }
+        {
+          label: 'OC',
+          value: 'OC',
+          labelTranslatePath: 'OC'
+        }
       ]
     },
     {
@@ -161,7 +213,11 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
       fieldType: FieldType.select,
       options: [
         { label: 'OB', value: 'OB', labelTranslatePath: 'OB' },
-        { label: 'OC', value: 'OC', labelTranslatePath: 'OC' }
+        {
+          label: 'OC',
+          value: 'OC',
+          labelTranslatePath: 'OC'
+        }
       ]
     },
     {
@@ -174,11 +230,27 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
       dataTable: true,
       filterable: true,
       options: [
-        { label: 'Trituration particulier', value: 'SIMPLE_RECEPTION', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.SIMPLE_RECEPTION' },
+        {
+          label: 'Trituration particulier',
+          value: 'SIMPLE_RECEPTION',
+          labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.SIMPLE_RECEPTION'
+        },
         { label: 'Base', value: 'BASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.BASE' },
-        { label: 'Achat Olive', value: 'OLIVE_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OLIVE_PURCHASE' },
-        { label: 'Achat Huile', value: 'OIL_PURCHASE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OIL_PURCHASE' },
-        { label: 'Echange', value: 'EXCHANGE', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.EXCHANGE' },
+        {
+          label: 'Achat Olive',
+          value: 'OLIVE_PURCHASE',
+          labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OLIVE_PURCHASE'
+        },
+        {
+          label: 'Achat Huile',
+          value: 'OIL_PURCHASE',
+          labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.OIL_PURCHASE'
+        },
+        {
+          label: 'Echange',
+          value: 'EXCHANGE',
+          labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.EXCHANGE'
+        },
         { label: 'Paiement', value: 'PAYMENT', labelTranslatePath: 'DELIVERIES.OPERATION_TYPE.PAYMENT' }
       ]
     },
@@ -203,17 +275,41 @@ export const LIST_RECEPTION_DASHBOARD: DashboardConfig = {
       dataTable: true,
       filterable: true,
       options: [
-        { label: 'Nouveau', value: 'NEW', labelTranslatePath: 'RECEPTION_LIST.STATUS.NEW' },
-        { label: 'En cours', value: 'IN_PROGRESS', labelTranslatePath: 'RECEPTION_LIST.STATUS.IN_PROGRESS' },
-        { label: 'Contrôle Olives', value: 'OLIVE_CONTROLLED', labelTranslatePath: 'RECEPTION_LIST.STATUS.OLIVE_CONTROLLED' },
-        { label: 'Contrôle Huile', value: 'OIL_CONTROLLED', labelTranslatePath: 'RECEPTION_LIST.STATUS.OIL_CONTROLLED' },
-        { label: 'Terminé', value: 'COMPLETED', labelTranslatePath: 'RECEPTION_LIST.STATUS.COMPLETED' },
+        {
+          label: 'Nouveau',
+          value: 'NEW',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.NEW'
+        },
+        {
+          label: 'En cours',
+          value: 'IN_PROGRESS',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.IN_PROGRESS'
+        },
+        {
+          label: 'Contrôle Olives',
+          value: 'OLIVE_CONTROLLED',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.OLIVE_CONTROLLED'
+        },
+        {
+          label: 'Contrôle Huile',
+          value: 'OIL_CONTROLLED',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.OIL_CONTROLLED'
+        },
+        {
+          label: 'Terminé',
+          value: 'COMPLETED',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.COMPLETED'
+        },
         { label: 'Refusé', value: 'REFUSED', labelTranslatePath: 'RECEPTION_LIST.STATUS.REFUSED' },
-        { label: 'Annulé', value: 'CANCELLED', labelTranslatePath: 'RECEPTION_LIST.STATUS.CANCELLED' },
+        {
+          label: 'Annulé',
+          value: 'CANCELLED',
+          labelTranslatePath: 'RECEPTION_LIST.STATUS.CANCELLED'
+        },
         { label: 'En stock', value: 'IN_STOCK', labelTranslatePath: 'RECEPTION_LIST.STATUS.IN_STOCK' }
       ]
     }
   ],
 
-  fileName: 'oil_receptions'
+  fileName: 'receptions'
 };

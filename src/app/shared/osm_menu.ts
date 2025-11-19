@@ -134,7 +134,7 @@ export const osm_menus: Navigation[] = [
       // Keep Oil reception as a separate item
       {
         id: 'item-reception-oil',
-        title: 'MENU.RECEPTION.OIL',
+        title: 'MENU.RECEPTION.OIL_ONLY',
         type: 'item',
         url: '/reception/reception-huile',
         icon: 'local_shipping',
@@ -196,29 +196,22 @@ export const osm_menus: Navigation[] = [
         children: [
           {
             id: 'reception-olive',
-            title: 'Réception Olive',
+            title: 'MENU.RECEPTION.OLIVE',
             type: 'collapse',
             icon: 'spa',
             children: [
               {
                 id: 'reception-olive-simple',
-                title: 'Trituration Particulier',
+                title: 'OPERATION_TYPE.SIMPLE_RECEPTION',
                 type: 'item',
                 url: '/reception/reception-list/olive/SIMPLE_RECEPTION',
                 icon: 'person',
                 breadcrumbs: false
               },
-              {
-                id: 'reception-olive-base',
-                title: 'Trituration sur Base',
-                type: 'item',
-                url: '/reception/reception-list/olive/BASE',
-                icon: 'recycling',
-                breadcrumbs: false
-              },
+
               {
                 id: 'reception-olive-purchase',
-                title: 'Achat Olive',
+                title: 'OPERATION_TYPE.OLIVE_PURCHASE',
                 type: 'item',
                 url: '/reception/reception-list/olive/OLIVE_PURCHASE',
                 icon: 'shopping_basket',
@@ -226,7 +219,7 @@ export const osm_menus: Navigation[] = [
               },
               {
                 id: 'reception-olive-exchange',
-                title: 'Échange',
+                title: 'OPERATION_TYPE.EXCHANGE',
                 type: 'item',
                 url: '/reception/reception-list/olive/EXCHANGE',
                 icon: 'compare_arrows',
@@ -236,7 +229,7 @@ export const osm_menus: Navigation[] = [
           },
           {
             id: 'reception-huile',
-            title: 'Réception Huile',
+            title: 'MENU.RECEPTION.OILBASE',
             type: 'item',
             url: '/reception/reception-list/oil',
             icon: 'water_drop',

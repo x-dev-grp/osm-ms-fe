@@ -1320,7 +1320,8 @@
     },
     "RECEPTION": {
       "AGRICULTURE": "الفلاحون",
-      "OIL": "استقبال الزيت",
+      "OILBASE": "استقبال الزيت",
+      "OIL_ONLY": "استقبال الزيت",
       "OLIVE": "استقبال الزيتون",
       "QUALITY_CONTROL": "مراقبة الجودة",
       "QUALITY_CONTROL_HUILE": "",

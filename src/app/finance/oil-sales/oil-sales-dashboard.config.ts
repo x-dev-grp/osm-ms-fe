@@ -340,7 +340,6 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
       search: {
         isDeleted: { equalValue: false }
       },
-      searchs: []
     }
   },
   /* ── Menu actions ───────────────────────── */
