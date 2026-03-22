@@ -1,0 +1,298 @@
+<div class="mouvement-container">
+  <!-- En-tête avec titre et actions -->
+  <div class="header-section">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h1 class="page-title">
+          <i class="fas fa-history me-2"></i>
+          Historique des mouvements
+        </h1>
+        <p class="text-muted mb-0">
+          <i class="fas fa-database me-1"></i>
+          {{ totalMouvements }} mouvement(s) au total
+        </p>
+      </div>
+      <div class="action-buttons">
+        <button class="btn btn-refresh me-2" (click)="loadMouvements()" [disabled]="loading">
+          <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
+          Actualiser
+        </button>
+        <button class="btn btn-export" (click)="exportToCSV()" [disabled]="filteredMouvements.length === 0">
+          <i class="fas fa-download me-1"></i>
+          Exporter CSV
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cartes de statistiques -->
+  <div class="stats-grid">
+    <div class="stat-card total">
+      <div class="stat-icon">
+        <i class="fas fa-boxes"></i>
+      </div>
+      <div class="stat-content">
+        <span class="stat-label">Total mouvements</span>
+        <span class="stat-value">{{ totalMouvements }}</span>
+      </div>
+    </div>
+    <div class="stat-card entrees">
+      <div class="stat-icon">
+        <i class="fas fa-arrow-down"></i>
+      </div>
+      <div class="stat-content">
+        <span class="stat-label">Entrées</span>
+        <span class="stat-value">{{ stats.totalEntrees }}</span>
+      </div>
+    </div>
+    <div class="stat-card sorties">
+      <div class="stat-icon">
+        <i class="fas fa-arrow-up"></i>
+      </div>
+      <div class="stat-content">
+        <span class="stat-label">Sorties</span>
+        <span class="stat-value">{{ stats.totalSorties }}</span>
+      </div>
+    </div>
+    <div class="stat-card quantite">
+      <div class="stat-icon">
+        <i class="fas fa-weight-hanging"></i>
+      </div>
+      <div class="stat-content">
+        <span class="stat-label">Quantité totale</span>
+        <span class="stat-value">{{ stats.quantiteTotale }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section des filtres -->
+  <div class="filters-section">
+    <div class="filters-header" (click)="showFilters = !showFilters">
+      <h5>
+        <i class="fas fa-filter me-2"></i>
+        Filtres
+      </h5>
+      <i class="fas fa-chevron-down" [class.rotated]="showFilters"></i>
+    </div>
+
+    <div class="filters-body" [class.show]="showFilters">
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label class="filter-label">
+            <i class="fas fa-tag me-1"></i>
+            Type de mouvement
+          </label>
+          <div class="filter-select-wrapper">
+            <select class="filter-select" [(ngModel)]="typeFilter" (change)="applyFilters()">
+              <option *ngFor="let option of typeOptions" [value]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+            <i class="fas fa-chevron-down select-arrow"></i>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <label class="filter-label">
+            <i class="fas fa-search me-1"></i>
+            Rechercher
+          </label>
+          <div class="search-wrapper">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text"
+                   class="filter-input search-input"
+                   placeholder="Code, article, motif..."
+                   [(ngModel)]="searchTerm"
+                   (input)="onSearchInput()">
+            <button *ngIf="searchTerm" class="clear-search" (click)="searchTerm = ''; applyFilters()">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <label class="filter-label">
+            <i class="fas fa-calendar-alt me-1"></i>
+            Date début
+          </label>
+          <input type="date"
+                 class="filter-input"
+                 [(ngModel)]="startDate"
+                 (change)="applyFilters()">
+        </div>
+
+        <div class="col-md-2">
+          <label class="filter-label">
+            <i class="fas fa-calendar-alt me-1"></i>
+            Date fin
+          </label>
+          <input type="date"
+                 class="filter-input"
+                 [(ngModel)]="endDate"
+                 (change)="applyFilters()">
+        </div>
+
+        <div class="col-md-2 d-flex align-items-end">
+          <button class="btn-reset-filters w-100" (click)="resetFilters()">
+            <i class="fas fa-undo-alt me-1"></i>
+            Réinitialiser
+          </button>
+        </div>
+      </div>
+
+      <!-- Filtres actifs -->
+      <div *ngIf="typeFilter || searchTerm || startDate || endDate" class="active-filters">
+        <span class="active-filters-label">Filtres actifs:</span>
+        <span *ngIf="typeFilter" class="filter-tag" (click)="typeFilter = ''; applyFilters()">
+          {{ typeFilter === 'ENTREE' ? 'Entrées' : 'Sorties' }}
+          <i class="fas fa-times ms-1"></i>
+        </span>
+        <span *ngIf="searchTerm" class="filter-tag" (click)="searchTerm = ''; applyFilters()">
+          "{{ searchTerm }}"
+          <i class="fas fa-times ms-1"></i>
+        </span>
+        <span *ngIf="startDate" class="filter-tag" (click)="startDate = ''; applyFilters()">
+          Du {{ startDate | date:'dd/MM/yyyy' }}
+          <i class="fas fa-times ms-1"></i>
+        </span>
+        <span *ngIf="endDate" class="filter-tag" (click)="endDate = ''; applyFilters()">
+          Au {{ endDate | date:'dd/MM/yyyy' }}
+          <i class="fas fa-times ms-1"></i>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- État de chargement -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Chargement des mouvements...</p>
+  </div>
+
+  <!-- Message d'erreur -->
+  <div *ngIf="error && !loading" class="error-state">
+    <i class="fas fa-exclamation-circle"></i>
+    <h4>Oups ! Une erreur est survenue</h4>
+    <p>{{ error }}</p>
+    <button class="btn-retry" (click)="loadMouvements()">
+      <i class="fas fa-redo-alt me-1"></i>
+      Réessayer
+    </button>
+  </div>
+
+  <!-- Tableau des mouvements -->
+  <div *ngIf="!loading && !error" class="table-section">
+    <div class="table-header">
+      <span class="results-count">
+        <i class="fas fa-list me-1"></i>
+        {{ filteredMouvements.length }} résultat(s)
+      </span>
+      <div class="pagination-info">
+        <span class="me-2">
+          Page {{ currentPage }} / {{ totalPages }}
+        </span>
+        <select class="items-per-page" [(ngModel)]="itemsPerPage" (change)="applyFilters()">
+          <option [value]="5">5 par page</option>
+          <option [value]="10">10 par page</option>
+          <option [value]="20">20 par page</option>
+          <option [value]="50">50 par page</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="modern-table">
+        <thead>
+        <tr>
+          <th>
+            <i class="fas fa-clock me-1"></i>
+            Date
+          </th>
+          <th>
+            <i class="fas fa-barcode me-1"></i>
+            Article
+          </th>
+          <th>
+            <i class="fas fa-tag me-1"></i>
+            Type
+          </th>
+          <th class="text-end">
+            <i class="fas fa-weight-hanging me-1"></i>
+            Quantité
+          </th>
+          <th>
+            <i class="fas fa-comment me-1"></i>
+            Motif
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let mvt of getPaginatedMouvements()" class="table-row">
+          <td class="date-cell">
+            <span class="date">{{ formatDate(mvt.dateMouvement).split(' ')[0] }}</span>
+            <span class="time">{{ formatDate(mvt.dateMouvement).split(' ')[1] }}</span>
+          </td>
+          <td>
+            <div class="article-info">
+              <span class="sku">{{ getArticleCode(mvt.article) }}</span>
+              <span class="nom">{{ getArticleNom(mvt.article) }}</span>
+            </div>
+          </td>
+          <td>
+              <span class="type-badge" [ngClass]="getTypeClass(mvt.typeMouvement).class === 'success' ? 'success' : 'danger'">
+                <i class="fas" [ngClass]="'fa-' + getTypeClass(mvt.typeMouvement).icon"></i>
+                {{ mvt.typeMouvement }}
+              </span>
+          </td>
+          <td class="text-end">
+              <span class="quantite" [ngClass]="mvt.typeMouvement === 'ENTREE' ? 'text-success' : 'text-danger'">
+                {{ mvt.typeMouvement === 'ENTREE' ? '+' : '-' }}{{ mvt.quantite }}
+                <small>{{ getUniteMesure(mvt.article) }}</small>
+              </span>
+          </td>
+          <td>
+              <span class="motif" [title]="mvt.motif">
+                {{ mvt.motif || '-' }}
+              </span>
+          </td>
+        </tr>
+        <tr *ngIf="filteredMouvements.length === 0">
+          <td colspan="5" class="empty-state">
+            <div class="empty-state-content">
+              <i class="fas fa-box-open"></i>
+              <h4>Aucun mouvement trouvé</h4>
+              <p>Essayez de modifier vos filtres ou d'ajouter des mouvements</p>
+              <button class="btn-reset-filters" (click)="resetFilters()">
+                <i class="fas fa-undo-alt me-1"></i>
+                Réinitialiser les filtres
+              </button>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div *ngIf="filteredMouvements.length > 0" class="pagination-section">
+      <button class="pagination-btn"
+              [disabled]="currentPage === 1"
+              (click)="changePage(currentPage - 1)">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+
+      <button *ngFor="let page of [].constructor(totalPages); let i = index"
+              class="pagination-btn"
+              [class.active]="currentPage === i + 1"
+              (click)="changePage(i + 1)">
+        {{ i + 1 }}
+      </button>
+
+      <button class="pagination-btn"
+              [disabled]="currentPage === totalPages"
+              (click)="changePage(currentPage + 1)">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+</div>

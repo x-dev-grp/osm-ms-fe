@@ -1,0 +1,147 @@
+<div class="fournisseur-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Fournisseurs</h1>
+      <p class="page-subtitle">Gestion des fournisseurs et partenaires</p>
+    </div>
+    <button class="btn btn-primary" routerLink="/stock/fournisseurs/nouveau">
+      <i class="fas fa-plus"></i>
+      Nouveau fournisseur
+    </button>
+  </div>
+
+  <!-- Filtres et recherche -->
+  <div class="filters-card">
+    <div class="filters-grid">
+      <div class="filter-group search-group">
+        <i class="fas fa-search search-icon"></i>
+        <input
+          type="text"
+          class="form-control search-input"
+          placeholder="Rechercher par nom, code, email..."
+          [(ngModel)]="searchQuery"
+          (input)="onSearch()">
+      </div>
+
+      <div class="filter-group">
+        <label>Catégorie</label>
+        <select class="form-control" [(ngModel)]="filters.categorie" (change)="applyFilters()">
+          <option value="">Toutes catégories</option>
+          <option *ngFor="let cat of categories" [value]="cat">
+            {{ cat | titlecase }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Pays</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Pays..."
+          [(ngModel)]="filters.pays"
+          (input)="applyFilters()">
+      </div>
+
+      <div class="filter-group">
+        <label>Statut</label>
+        <select class="form-control" [(ngModel)]="filters.actif" (change)="applyFilters()">
+          <option value="">Tous</option>
+          <option value="true">Actif</option>
+          <option value="false">Inactif</option>
+        </select>
+      </div>
+
+      <div class="filter-group filter-actions">
+        <button class="btn btn-outline-secondary" (click)="resetFilters()">
+          <i class="fas fa-undo"></i>
+          Réinitialiser
+        </button>
+      </div>
+    </div>
+    <div class="search-results" *ngIf="hasActiveFilters()">
+      <span class="badge bg-info">
+        {{ filteredFournisseurs.length }} résultat(s) trouvé(s)
+      </span>
+    </div>
+  </div>
+  <div *ngIf="loading" class="text-center my-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Chargement...</span>
+    </div>
+  </div>
+
+
+  <div class="table-card" *ngIf="!loading">
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+        <tr>
+          <th>Code</th>
+          <th>Nom</th>
+          <th>Catégorie</th>
+          <th>Email</th>
+          <th>Téléphone</th>
+          <th>Pays</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let fournisseur of filteredFournisseurs">
+          <td class="fw-bold text-primary">{{ fournisseur.code }}</td>
+          <td>
+            <div>{{ fournisseur.nom }}</div>
+            <small *ngIf="fournisseur.nomCommercial" class="text-muted">
+              {{ fournisseur.nomCommercial }}
+            </small>
+          </td>
+          <td>
+              <span class="badge" [ngClass]="getCategorieBadgeClass(fournisseur.categorieFournisseur)">
+                {{ fournisseur.categorieFournisseur || 'N/A' }}
+              </span>
+          </td>
+          <td>
+            <a *ngIf="fournisseur.email" [href]="'mailto:' + fournisseur.email">
+              {{ fournisseur.email }}
+            </a>
+            <span *ngIf="!fournisseur.email">-</span>
+          </td>
+          <td>{{ fournisseur.telephone || '-' }}</td>
+          <td>{{ fournisseur.pays || '-' }}</td>
+          <td>
+              <span class="badge" [ngClass]="fournisseur.actif ? 'bg-success' : 'bg-secondary'">
+                {{ fournisseur.actif ? 'Actif' : 'Inactif' }}
+              </span>
+          </td>
+          <td class="actions">
+            <button class="btn btn-sm btn-info me-1"
+                    [routerLink]="['/stock/fournisseurs', fournisseur.id]"
+                    title="Voir détails">
+              <i class="fas fa-eye"></i>
+            </button>
+            <button class="btn btn-sm btn-warning me-1"
+                    [routerLink]="['/stock/fournisseurs', fournisseur.id, 'editer']"
+                    title="Modifier">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn btn-sm"
+                    [ngClass]="fournisseur.actif ? 'btn-secondary' : 'btn-success'"
+                    (click)="toActif(fournisseur)"
+                    title="{{ fournisseur.actif ? 'Désactiver' : 'Activer' }}">
+              <i class="fas" [ngClass]="fournisseur.actif ? 'fa-ban' : 'fa-check'"></i>
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="filteredFournisseurs.length === 0">
+          <td colspan="8" class="text-center py-4">
+            <i class="fas fa-building fa-2x text-muted mb-2"></i>
+            <p class="text-muted">Aucun fournisseur trouvé</p>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

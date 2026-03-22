@@ -1,0 +1,198 @@
+<div class="container-fluid p-4">
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary"></div>
+    <p class="mt-2">Chargement du bon de commande...</p>
+  </div>
+
+  <div *ngIf="!loading && bon" class="bon-detail">
+    <!-- En-tête avec actions -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <button class="btn btn-outline-secondary me-2" routerLink="/stock/bons-commande">
+          <i class="fas fa-arrow-left"></i> Retour
+        </button>
+        <h2 class="d-inline-block ms-2">Bon de commande {{ bon.numeroBC }}</h2>
+      </div>
+      <div class="btn-group">
+        <button *ngIf="bon.statut === 'EN_ATTENTE'" class="btn btn-success" (click)="validerBon()">
+          <i class="fas fa-check"></i> Valider
+        </button>
+        <button *ngIf="bon.statut === 'EN_ATTENTE'" class="btn btn-danger" (click)="refuserBon()">
+          <i class="fas fa-times"></i> Refuser
+        </button>
+        <button *ngIf="bon.statut === 'VALIDE'" class="btn btn-info" (click)="showReception = !showReception">
+          <i class="fas fa-truck-loading"></i> Réceptionner
+        </button>
+        <button class="btn btn-outline-primary" (click)="downloadPdf()">
+          <i class="fas fa-file-pdf"></i> PDF
+        </button>
+      </div>
+    </div>
+
+    <!-- Message d'erreur -->
+    <div *ngIf="error" class="alert alert-danger">
+      {{ error }}
+    </div>
+
+    <!-- Formulaire de réception  -->
+    <div *ngIf="showReception" class="card mb-4 border-info">
+      <div class="card-header bg-info text-white">
+        <h5 class="mb-0">Réceptionner la commande</h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <label class="form-label">Quantité reçue</label>
+            <div class="input-group">
+              <input type="number" class="form-control" [(ngModel)]="quantiteRecue" min="1">
+              <button class="btn btn-primary" (click)="receptionner()">
+                <i class="fas fa-save"></i> Enregistrer
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Badge de statut -->
+    <div class="mb-4">
+      <span class="badge fs-6 p-3 {{ getStatutBadgeClass(bon.statut) }}">
+        {{ bon.statut }}
+      </span>
+    </div>
+
+    <!-- Informations générales -->
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5>Informations générales</h5>
+          </div>
+          <div class="card-body">
+            <table class="table table-borderless">
+              <tr>
+                <th>N° Bon de commande :</th>
+                <td>{{ bon.numeroBC }}</td>
+              </tr>
+              <tr>
+                <th>Fournisseur :</th>
+                <td>{{ bon.fournisseur || 'Non spécifié' }}</td>
+              </tr>
+              <tr>
+                <th>Date création :</th>
+                <td>{{ bon.dateCreation | date:'dd/MM/yyyy HH:mm' }}</td>
+              </tr>
+              <tr *ngIf="bon.dateValidation">
+                <th>Date validation :</th>
+                <td>{{ bon.dateValidation | date:'dd/MM/yyyy HH:mm' }}</td>
+              </tr>
+              <tr *ngIf="bon.dateCreation">
+                <th>Date réception :</th>
+                <td>{{ bon.dateCreation | date:'dd/MM/yyyy HH:mm' }}</td>
+              </tr>
+              <tr *ngIf="bon.motifRefus">
+                <th>Motif refus :</th>
+                <td class="text-danger">{{ bon.motifRefus }}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Statistiques -->
+      <div class="col-md-6">
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5>Récapitulatif</h5>
+          </div>
+          <div class="card-body">
+            <div class="row text-center">
+              <div class="col-6">
+                <h3>{{ getTotalArticles() }}</h3>
+                <small class="text-muted">Articles différents</small>
+              </div>
+              <div class="col-6">
+                <h3>{{ getQuantiteTotale() }}</h3>
+                <small class="text-muted">Quantité totale</small>
+              </div>
+            </div>
+            <div class="progress mt-3" style="height: 25px;">
+              <div class="progress-bar bg-success"
+                   [style.width.%]="getProgressionReception()">
+                {{ getProgressionReception() }}%
+              </div>
+            </div>
+            <p class="text-center mt-2">
+              <small>{{ getQuantiteRecueTotale() }} / {{ getQuantiteTotale() }} reçus</small>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lignes du bon de commande -->
+    <div class="card">
+      <div class="card-header">
+        <h5>Détail des articles</h5>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+            <tr>
+              <th>SKU</th>
+              <th>Désignation</th>
+              <th>Catégorie</th>
+              <th class="text-end">Quantité commandée</th>
+              <th class="text-end">Quantité reçue</th>
+              <th class="text-end">Prix unitaire</th>
+              <th class="text-end">Total</th>
+              <th>Statut</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let ligne of bon.lignes">
+              <td><strong>{{ ligne.article.sku }}</strong></td>
+              <td>{{ ligne.article.nom }}</td>
+              <td>{{ ligne.article.categorie }}</td>
+              <td class="text-end">
+                {{ ligne.quantiteCommandee }} {{ ligne.article.uniteMesure }}
+              </td>
+              <td class="text-end">
+                  <span *ngIf="ligne.quantiteRecue > 0" class="text-success">
+                    {{ ligne.quantiteRecue }} {{ ligne.article.uniteMesure }}
+                  </span>
+                <span *ngIf="!ligne.quantiteRecue">-</span>
+              </td>
+              <td class="text-end">
+                {{ ligne.prixUnitaire ? (ligne.prixUnitaire | number:'1.2-2') + ' dt' : '-' }}
+              </td>
+              <td class="text-end">
+                <strong *ngIf="ligne.prixUnitaire">
+                  {{ (ligne.quantiteCommandee * ligne.prixUnitaire) | number:'1.2-2' }} dt
+                </strong>
+                <span *ngIf="!ligne.prixUnitaire">-</span>
+              </td>
+              <td>
+                  <span class="badge"
+                        [ngClass]="getLigneStatutClass(ligne)">
+                    {{ getLigneStatut(ligne) }}
+                  </span>
+              </td>
+            </tr>
+            </tbody>
+            <tfoot  class="table-light">
+            <tr>
+              <td colspan="6" class="text-end"><strong>Total </strong></td>
+              <td class="text-end">
+                <strong>{{ getTotalPrix() | number:'1.2-2' }} dt</strong>
+              </td>
+              <td></td>
+            </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

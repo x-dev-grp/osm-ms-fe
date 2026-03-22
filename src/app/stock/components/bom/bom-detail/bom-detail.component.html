@@ -1,0 +1,70 @@
+<link rel="stylesheet" href="bom-detail.component.scss">
+<div class="bom-detail-page">
+  <!-- En-tête -->
+  <div class="detail-header">
+    <button class="btn-back-floating" [routerLink]="['/stock/boms']">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <div class="header-left">
+      <h2 class="page-title">Détail de la nomenclature</h2>
+      <p class="page-subtitle" *ngIf="bom">Version {{ bom.version }}</p>
+    </div>
+    <div class="header-actions" *ngIf="bom">
+      <button class="btn-action edit" [routerLink]="['/stock/boms', bom.id, 'editer']">
+        <i class="fas fa-edit"></i> Modifier
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner-border"></div>
+    <p>Chargement de la nomenclature...</p>
+  </div>
+
+  <!-- Contenu -->
+  <div *ngIf="!loading && bom" class="detail-grid">
+    <!-- Carte infos générales -->
+    <div class="card-box info-card">
+      <h5 class="card-title">Informations générales</h5>
+      <div class="info-row">
+        <span>SKU</span>
+        <strong>{{ bom.skuCode || bom.skuId }}</strong>
+      </div>
+      <div class="info-row">
+        <span>Version</span>
+        <strong>{{ bom.version }}</strong>
+      </div>
+      <div class="info-row" *ngIf="bom.id">
+        <span>ID</span>
+        <small>{{ bom.id }}</small>
+      </div>
+    </div>
+
+    <!-- Carte liste des composants -->
+    <div class="card-box components-card">
+      <h5 class="card-title">Composants ({{ bom.lines.length }})</h5>
+      <table class="components-table">
+        <thead>
+        <tr>
+          <th>#</th>
+          <th>Composant</th>
+          <th>Quantité</th>
+          <th>Unité</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let line of bom.lines; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ line.articleName || line.articleId }}</td>
+          <td>{{ line.quantity }}</td>
+          <td>{{ line.unitOfMeasure || '-' }}</td>
+        </tr>
+        <tr *ngIf="bom.lines.length === 0">
+          <td colspan="4" class="empty-row">Aucun composant défini</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

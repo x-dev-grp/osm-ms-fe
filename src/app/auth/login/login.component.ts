@@ -29,13 +29,14 @@ export class LoginComponent implements OnInit {
   form: FormGroup;
   // public props
   hide = true;
-  errorMessage: any ;
+  errorMessage: any;
   private _fb = inject(FormBuilder);
   private router = inject(Router);
   private tokenService = inject(TokenService);
   private translateService = inject(TranslateService); // Added injection
   private companyService = inject(CompanyProfileService); // Added injection
   private profile: CompanyProfile;
+
   getUserNameErrorMessage() {
     if (this.form.controls['username'].hasError('required')) {
       return this.translateService.instant('LOGIN.USERNAME_REQUIRED');
@@ -108,7 +109,7 @@ export class LoginComponent implements OnInit {
 
     const passwordValid = hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar;
 
-    return passwordValid ? null : { passwordStrength: true };
+    return passwordValid ? null : {passwordStrength: true};
   }
 
   submit() {
@@ -140,20 +141,21 @@ export class LoginComponent implements OnInit {
           this.loading = false;
           console.log(err);
           if ([504, 503].includes(err?.status)) {
-            this.errorMessage = { message: this.translateService.instant('LOGIN.SERVICE_UNAVAILABLE') };
+            this.errorMessage = {message: this.translateService.instant('LOGIN.SERVICE_UNAVAILABLE')};
           } else if (err?.error?.error_uri && err?.error?.error_description) {
-            this.router.navigate([
-              '/auth/user/update-password',
-              {
-                username: err.error.error_description,
-                id: err.error.error_uri
-              }
-            ]);
+            // Si l'utilisateur doit changer son mot de passe, redirige vers la page de changement de mot de passe
+            if (err?.error?.error_description === 'Password reset required') {
+              this.router.navigate([
+                '/auth/user/update-password',
+                {
+                  username: err.error.error_description,
+                  id: err.error.error_uri
+                }
+              ]);
+            }
           } else {
             this.errorMessage = err?.error;
           }
-          //this.authenticationService.logout();
-
           return of(null);
         })
       )
@@ -164,47 +166,46 @@ export class LoginComponent implements OnInit {
             this.loading = false;
             this.tokenService.setToken((response as Record<string, unknown>)['access_token'] as string);
             this.tokenService.setRefreshToken((response as Record<string, unknown>)['refresh_token'] as string);
+
             const decodedToken = this.tokenService.decodeToken() as Record<string, unknown>;
-              if (decodedToken && decodedToken['osmUser']) {
+            if (decodedToken && decodedToken['osmUser']) {
               const role = decodedToken['role'] as string;
               const permissions = decodedToken['authorities'];
               const user: User = decodedToken['osmUser'] as User;
               user.role = role;
               user.permissions = permissions;
               this.authenticationService.setCurrentUserValue = user;
-             console.log( "this.companyService.getProfile()")
+
+              // Charge le profil de l'entreprise si ce n'est pas un administrateur
+              if (role !== Role.OsmAdmin) {
                 this.companyService.getProfile().subscribe({
-                  next:  p => { this.profile =  p;   },
-                  error: () => { console.log( 'Unable to load profile') }
+                  next: (p) => {
+                    this.profile = p;
+                  },
+                  error: () => {
+                    console.log('Unable to load profile');
+                  }
                 });
-             console.log( "this.companyService.getProfile()")
-              // Add logging for debugging
-              console.log('[Login] User set for navigation:', user);
-              console.log('[Login] Token:', this.tokenService.getToken());
-                const tenantId = user.tenantId || decodedToken['tenantId'];
-                if (role !== Role.OsmAdmin && tenantId) {
-                // Fetch company profile for non-OsmAdmin users
-                  this.router.navigate(['welcome']);
+              }
+
+              // Redirige vers le tableau de bord ou l'écran approprié en fonction du rôle
+              const tenantId = user.tenantId || decodedToken['tenantId'];
+              if (role !== Role.OsmAdmin && tenantId) {
+                // Pour les utilisateurs non-administrateurs, charger le profil de l'entreprise et rediriger
+                this.router.navigate(['welcome']);
               } else {
-                // For OsmAdmin, skip company profile fetch
-                this.router
-                  .navigate(['/administration/dashboard'])
-                  .then((success) => {
-                    console.log('[Login] Navigation to /administration/dashboard success:', success);
-                  })
-                  .catch((err) => {
-                    console.error('[Login] Navigation error:', err);
-                  });
+                // Si c'est un administrateur, rediriger directement vers l'administration
+                this.router.navigate(['/administration/dashboard']).then((success) => {
+                  console.log('[Login] Navigation to /administration/dashboard success:', success);
+                }).catch((err) => {
+                  console.error('[Login] Navigation error:', err);
+                });
               }
             }
           }
         },
         error: (error: unknown) => {
-          if (typeof error === 'object' && error !== null && 'error' in error) {
-            this.errorMessage = (error as { error?: string }).error ?? null;
-          } else {
-            this.errorMessage = this.translateService.instant('LOGIN.UNEXPECTED_ERROR');
-          }
+          this.errorMessage = this.translateService.instant('LOGIN.UNEXPECTED_ERROR');
           this.loading = false;
         }
       });

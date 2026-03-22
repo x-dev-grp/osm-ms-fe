@@ -89,6 +89,7 @@ const routes: Routes = [
         },
         loadComponent: () => import('./user-management/components/form/user-form.component').then((c) => c.UserFormComponent)
       }
+
     ]
   },
   {
@@ -128,6 +129,7 @@ const routes: Routes = [
         },
         loadComponent: () => import('./user-management/components/role-form/role-form.component').then((c) => c.RoleFormComponent)
       }
+
     ]
   }
 ];

@@ -1,0 +1,950 @@
+// Variables - Thème bleu cohérent avec l'autre page
+$primary: #2563eb;
+$primary-light: #3b82f6;
+$primary-dark: #1d4ed8;
+$success: #10b981;
+$warning: #f59e0b;
+$danger: #ef4444;
+$info: #06b6d4;
+$gray-50: #f9fafb;
+$gray-100: #f1f5f9;
+$gray-200: #e2e8f0;
+$gray-300: #cbd5e1;
+$gray-400: #94a3b8;
+$gray-500: #64748b;
+$gray-600: #475569;
+$gray-700: #334155;
+$gray-800: #1e293b;
+$gray-900: #0f172a;
+
+// Animations
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// Container principal
+.bc-container {
+  padding: 2rem;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  min-height: 100vh;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+// En-tête
+.header-section {
+  background: white;
+  border-radius: 20px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  animation: slideIn 0.5s ease;
+  border-bottom: 4px solid $primary;
+
+  .page-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: $gray-800;
+    margin: 0;
+    display: flex;
+    align-items: center;
+
+    i {
+      color: $primary;
+      font-size: 2rem;
+      background: rgba($primary, 0.1);
+      padding: 0.5rem;
+      border-radius: 12px;
+      margin-right: 1rem;
+    }
+  }
+}
+
+// Boutons d'action
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+
+  .btn-verify, .btn-create {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 12px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+
+    i {
+      margin-right: 0.5rem;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  .btn-verify {
+    background: $gray-100;
+    color: $gray-700;
+
+    &:hover:not(:disabled) {
+      background: $gray-200;
+      transform: translateY(-2px);
+    }
+  }
+
+  .btn-create {
+    background: $primary;
+    color: white;
+
+    &:hover:not(:disabled) {
+      background: $primary-dark;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba($primary, 0.3);
+    }
+  }
+}
+
+// Statistiques
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+
+  .stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    animation: slideIn 0.5s ease;
+    animation-fill-mode: both;
+    border: 1px solid rgba($primary, 0.1);
+
+    @for $i from 1 through 4 {
+      &:nth-child(#{$i}) {
+        animation-delay: #{$i * 0.1}s;
+      }
+    }
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba($primary, 0.15);
+    }
+
+    &.total {
+      border-left: 4px solid $primary;
+
+      .stat-icon {
+        background: rgba($primary, 0.1);
+        color: $primary;
+      }
+    }
+    &.en-attente {
+      border-left: 4px solid $warning;
+
+      .stat-icon {
+        background: rgba($warning, 0.1);
+        color: $warning;
+      }
+    }
+    &.valide {
+      border-left: 4px solid $success;
+
+      .stat-icon {
+        background: rgba($success, 0.1);
+        color: $success;
+      }
+    }
+    &.recu {
+      border-left: 4px solid $info;
+
+      .stat-icon {
+        background: rgba($info, 0.1);
+        color: $info;
+      }
+    }
+
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1rem;
+      font-size: 1.5rem;
+    }
+
+    .stat-content {
+      display: flex;
+      flex-direction: column;
+
+      .stat-label {
+        font-size: 0.9rem;
+        color: $gray-500;
+        margin-bottom: 0.2rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .stat-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: $gray-800;
+      }
+    }
+  }
+}
+
+// Section des filtres
+.filters-section {
+  background: white;
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  animation: slideIn 0.5s ease;
+  border: 1px solid rgba($primary, 0.1);
+
+  .filters-header {
+    padding: 1rem 1.5rem;
+    background: $gray-50;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.3s ease;
+    border-bottom: 1px solid $gray-200;
+
+    &:hover {
+      background: $gray-100;
+    }
+
+    h5 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
+      color: $gray-700;
+      display: flex;
+      align-items: center;
+
+      i {
+        color: $primary;
+        background: rgba($primary, 0.1);
+        padding: 0.3rem;
+        border-radius: 6px;
+        margin-right: 0.5rem;
+      }
+    }
+
+    i {
+      transition: transform 0.3s ease;
+      color: $gray-500;
+
+      &.rotated {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  .filters-body {
+    max-height: 0;
+    padding: 0 1.5rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+
+    &.show {
+      max-height: 300px;
+      padding: 1.5rem;
+    }
+  }
+}
+
+// Éléments de filtres
+.filter-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: $gray-700;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.search-wrapper {
+  position: relative;
+
+  .search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $gray-400;
+    font-size: 0.9rem;
+  }
+
+  .search-input {
+    padding-left: 2.5rem;
+  }
+
+  .clear-search {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: $gray-400;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: $gray-200;
+      color: $gray-600;
+    }
+  }
+}
+
+.filter-select-wrapper {
+  position: relative;
+
+  .filter-select {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    border: 2px solid $gray-200;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    color: $gray-800;
+    background: white;
+    cursor: pointer;
+    appearance: none;
+    transition: all 0.3s ease;
+
+    &:focus {
+      outline: none;
+      border-color: $primary;
+      box-shadow: 0 0 0 3px rgba($primary, 0.1);
+    }
+  }
+
+  .select-arrow {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $gray-400;
+    pointer-events: none;
+  }
+}
+
+.filter-input {
+  width: 100%;
+  padding: 0.6rem 1rem;
+  border: 2px solid $gray-200;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  color: $gray-800;
+  transition: all 0.3s ease;
+
+  &:focus {
+    outline: none;
+    border-color: $primary;
+    box-shadow: 0 0 0 3px rgba($primary, 0.1);
+  }
+}
+
+.date-range {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  .date-separator {
+    color: $gray-400;
+    font-weight: 600;
+  }
+}
+
+// Filtres actifs
+.active-filters {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 2px solid $gray-200;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+
+  .active-filters-label {
+    font-size: 0.9rem;
+    color: $gray-500;
+    margin-right: 0.5rem;
+    font-weight: 500;
+  }
+
+  .filter-tag {
+    background: rgba($primary, 0.1);
+    color: $primary;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba($primary, 0.2);
+
+    &:hover {
+      background: rgba($primary, 0.15);
+      border-color: $primary;
+    }
+
+    i {
+      font-size: 0.7rem;
+    }
+  }
+
+  .reset-all-filters {
+    background: none;
+    border: none;
+    color: $gray-500;
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: $gray-100;
+      color: $danger;
+    }
+  }
+}
+
+// État de chargement
+.loading-state {
+  text-align: center;
+  padding: 4rem;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  animation: slideIn 0.5s ease;
+
+  .spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid $gray-200;
+    border-top-color: $primary;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  p {
+    color: $gray-600;
+    font-size: 1rem;
+  }
+}
+
+// Section du tableau
+.table-section {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  animation: slideIn 0.5s ease;
+
+  .table-header {
+    padding: 1rem 1.5rem;
+    background: $gray-50;
+    border-bottom: 2px solid $gray-200;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .results-info {
+      font-size: 0.95rem;
+      color: $gray-600;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+
+      .filtered-badge {
+        background: rgba($warning, 0.1);
+        color: $warning;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        margin-left: 0.5rem;
+      }
+    }
+
+    .table-controls {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+
+      .items-per-page {
+        padding: 0.3rem 0.8rem;
+        border: 2px solid $gray-200;
+        border-radius: 8px;
+        background: white;
+        color: $gray-700;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:focus {
+          outline: none;
+          border-color: $primary;
+        }
+      }
+
+      .btn-refresh {
+        width: 35px;
+        height: 35px;
+        border: 2px solid $gray-200;
+        background: white;
+        color: $gray-600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover:not(:disabled) {
+          background: $gray-100;
+          border-color: $primary;
+          color: $primary;
+        }
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+}
+
+// Tableau moderne
+.modern-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+
+  thead {
+    th {
+      padding: 1rem 1.2rem;
+      background: $gray-50;
+      color: $gray-700;
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid $gray-200;
+      white-space: nowrap;
+
+      i {
+        margin-right: 0.3rem;
+        color: $primary;
+        font-size: 0.8rem;
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      transition: all 0.2s ease;
+      cursor: pointer;
+
+      &:hover {
+        background: $gray-50;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      }
+
+      td {
+        padding: 1rem 1.2rem;
+        border-bottom: 1px solid $gray-200;
+        color: $gray-700;
+        font-size: 0.95rem;
+        vertical-align: middle;
+      }
+    }
+  }
+
+  .bon-numero {
+    font-weight: 600;
+    color: $primary;
+    background: rgba($primary, 0.1);
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
+
+  .fournisseur-info {
+    .fournisseur-nom {
+      font-weight: 500;
+      color: $gray-800;
+    }
+  }
+
+  .date-info {
+    display: flex;
+    flex-direction: column;
+
+    .date {
+      font-weight: 500;
+      color: $gray-800;
+    }
+
+    .time {
+      font-size: 0.8rem;
+      color: $gray-500;
+    }
+  }
+
+  .badge-articles {
+    background: $gray-100;
+    color: $gray-700;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .quantite {
+    font-weight: 600;
+    color: $gray-800;
+
+    .unit {
+      font-size: 0.75rem;
+      color: $gray-500;
+      margin-left: 0.2rem;
+    }
+  }
+
+  .total-prix {
+    font-weight: 700;
+    color: $success;
+  }
+
+  .reception-progress {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .progress-bar-container {
+      width: 80px;
+      height: 6px;
+      background: $gray-200;
+      border-radius: 3px;
+      overflow: hidden;
+
+      .progress-bar-fill {
+        height: 100%;
+        border-radius: 3px;
+        transition: width 0.3s ease;
+      }
+    }
+
+    .progress-text {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: $gray-600;
+    }
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+
+    i {
+      margin-right: 0.3rem;
+      font-size: 0.7rem;
+    }
+
+    &.status-EN_ATTENTE {
+      background: rgba($warning, 0.15);
+      color: $warning;
+      border: 1px solid rgba($warning, 0.3);
+    }
+
+    &.status-VALIDE {
+      background: rgba($success, 0.15);
+      color: $success;
+      border: 1px solid rgba($success, 0.3);
+    }
+
+    &.status-RECU {
+      background: rgba($info, 0.15);
+      color: $info;
+      border: 1px solid rgba($info, 0.3);
+    }
+
+    &.status-PARTIELLEMENT_RECU {
+      background: rgba($primary, 0.15);
+      color: $primary;
+      border: 1px solid rgba($primary, 0.3);
+    }
+
+    &.status-BROUILLON, &.status-ANNULE, &.status-REFUSE {
+      background: rgba($gray-500, 0.15);
+      color: $gray-600;
+      border: 1px solid rgba($gray-500, 0.3);
+    }
+  }
+
+  .action-buttons-cell {
+    display: flex;
+    gap: 0.3rem;
+    justify-content: center;
+
+    .btn-action {
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: $gray-100;
+      color: $gray-600;
+
+      &:hover {
+        transform: translateY(-2px);
+      }
+
+      &.view:hover {
+        background: $primary;
+        color: white;
+      }
+
+      &.pdf:hover {
+        background: $danger;
+        color: white;
+      }
+
+      &.edit:hover {
+        background: $warning;
+        color: white;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+
+        &:hover {
+          transform: none;
+          background: $gray-100;
+          color: $gray-600;
+        }
+      }
+    }
+  }
+}
+
+// État vide
+.empty-state {
+  text-align: center;
+  padding: 4rem;
+
+  .empty-state-content {
+    i {
+      font-size: 4rem;
+      color: $gray-300;
+      margin-bottom: 1rem;
+    }
+
+    h4 {
+      color: $gray-700;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    p {
+      color: $gray-500;
+      margin-bottom: 1.5rem;
+    }
+
+    .btn-create-sm {
+      padding: 0.6rem 1.5rem;
+      background: $primary;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: $primary-dark;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba($primary, 0.3);
+      }
+    }
+  }
+}
+
+// Pied de tableau avec pagination
+.table-footer {
+  padding: 1rem 1.5rem;
+  background: $gray-50;
+  border-top: 2px solid $gray-200;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .pagination-info {
+    font-size: 0.9rem;
+    color: $gray-600;
+
+    strong {
+      color: $gray-800;
+      font-weight: 600;
+    }
+  }
+
+  .pagination {
+    display: flex;
+    gap: 0.3rem;
+
+    .pagination-btn {
+      min-width: 35px;
+      height: 35px;
+      border: 2px solid $gray-200;
+      background: white;
+      color: $gray-600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+
+      &:hover:not(:disabled) {
+        background: $gray-100;
+        border-color: $primary;
+        color: $primary;
+      }
+
+      &.active {
+        background: $primary;
+        border-color: $primary;
+        color: white;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 1200px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .table-section {
+    overflow-x: auto;
+  }
+
+  .modern-table {
+    min-width: 1200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .bc-container {
+    padding: 1rem;
+  }
+
+  .header-section {
+    padding: 1rem;
+    flex-direction: column;
+    gap: 1rem;
+
+    .page-title {
+      font-size: 1.4rem;
+    }
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filters-body.show {
+    max-height: 400px;
+  }
+
+  .date-range {
+    flex-direction: column;
+
+    .date-separator {
+      display: none;
+    }
+  }
+
+  .table-footer {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+}
+
+// Tooltip personnalisé (si vous utilisez Angular Material)
+::ng-deep .mat-tooltip {
+  background: $gray-800 !important;
+  font-size: 0.8rem !important;
+  padding: 0.4rem 0.8rem !important;
+  border-radius: 6px !important;
+}

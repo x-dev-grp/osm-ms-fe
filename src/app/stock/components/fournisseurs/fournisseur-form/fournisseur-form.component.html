@@ -1,0 +1,271 @@
+<div class="fournisseur-form-container">
+  <div class="form-card">
+    <div class="form-header">
+      <h2 class="form-title">
+        {{ isEditMode ? 'Modifier' : 'Nouveau' }} fournisseur
+      </h2>
+      <p class="form-subtitle">
+        {{ isEditMode ? 'Modifier les informations du fournisseur' : 'Ajouter un nouveau fournisseur' }}
+      </p>
+    </div>
+
+    <form [formGroup]="fournisseurForm" (ngSubmit)="onSubmit()">
+      <!-- Informations générales -->
+      <div class="form-section">
+        <h3 class="section-title">Informations générales</h3>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="nom">Nom *</label>
+            <input
+              type="text"
+              id="nom"
+              class="form-control"
+              [class.is-invalid]="submitted && f['nom'].errors"
+              formControlName="nom">
+            <div class="invalid-feedback" *ngIf="submitted && f['nom'].errors">
+              Le nom est requis
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="nomCommercial">Nom commercial</label>
+            <input
+              type="text"
+              id="nomCommercial"
+              class="form-control"
+              formControlName="nomCommercial">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="categorieFournisseur">Catégorie</label>
+            <select
+              id="categorieFournisseur"
+              class="form-control"
+              formControlName="categorieFournisseur">
+              <option value="">Sélectionner...</option>
+              <option *ngFor="let cat of categories" [value]="cat">
+                {{ cat | titlecase }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="devise">Devise *</label>
+            <select
+              id="devise"
+              class="form-control"
+              [class.is-invalid]="submitted && f['devise'].errors"
+              formControlName="devise">
+              <option value="EUR">Euro (EUR)</option>
+              <option value="USD">Dollar (USD)</option>
+              <option value="GBP">Livre (GBP)</option>
+              <option value="TND">Dinar (TND)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-check mt-3">
+          <input
+            type="checkbox"
+            id="actif"
+            class="form-check-input"
+            formControlName="actif">
+          <label for="actif" class="form-check-label">Fournisseur actif</label>
+        </div>
+      </div>
+
+      <!-- Coordonnées -->
+      <div class="form-section">
+        <h3 class="section-title">Coordonnées</h3>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              formControlName="email">
+          </div>
+
+          <div class="form-group">
+            <label for="telephone">Téléphone</label>
+            <input
+              type="tel"
+              id="telephone"
+              class="form-control"
+              formControlName="telephone">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fax">Fax</label>
+            <input
+              type="text"
+              id="fax"
+              class="form-control"
+              formControlName="fax">
+          </div>
+
+          <div class="form-group">
+            <label for="siteWeb">Site web</label>
+            <input
+              type="url"
+              id="siteWeb"
+              class="form-control"
+              formControlName="siteWeb">
+          </div>
+        </div>
+      </div>
+
+      <!-- Adresse -->
+      <div class="form-section">
+        <h3 class="section-title">Adresse</h3>
+
+        <div class="form-group">
+          <label for="adresse">Adresse</label>
+          <textarea
+            id="adresse"
+            class="form-control"
+            rows="2"
+            formControlName="adresse"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="ville">Ville</label>
+            <input
+              type="text"
+              id="ville"
+              class="form-control"
+              formControlName="ville">
+          </div>
+
+          <div class="form-group">
+            <label for="codePostal">Code postal</label>
+            <input
+              type="text"
+              id="codePostal"
+              class="form-control"
+              formControlName="codePostal">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="pays">Pays</label>
+            <input
+              type="text"
+              id="pays"
+              class="form-control"
+              formControlName="pays">
+          </div>
+
+          <div class="form-group">
+            <label for="numeroTva">Numéro TVA</label>
+            <input
+              type="text"
+              id="numeroTva"
+              class="form-control"
+              formControlName="numeroTva">
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact principal -->
+      <div class="form-section">
+        <h3 class="section-title">Contact principal</h3>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="contactNom">Nom</label>
+            <input
+              type="text"
+              id="contactNom"
+              class="form-control"
+              formControlName="contactNom">
+          </div>
+
+          <div class="form-group">
+            <label for="contactPrenom">Prénom</label>
+            <input
+              type="text"
+              id="contactPrenom"
+              class="form-control"
+              formControlName="contactPrenom">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="contactEmail">Email</label>
+            <input
+              type="email"
+              id="contactEmail"
+              class="form-control"
+              formControlName="contactEmail">
+          </div>
+
+          <div class="form-group">
+            <label for="contactTelephone">Téléphone</label>
+            <input
+              type="tel"
+              id="contactTelephone"
+              class="form-control"
+              formControlName="contactTelephone">
+          </div>
+        </div>
+      </div>
+
+      <!-- Informations commerciales -->
+      <div class="form-section">
+        <h3 class="section-title">Informations commerciales</h3>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="delaiLivraisonMoyen">Délai livraison moyen (jours)</label>
+            <input
+              type="number"
+              id="delaiLivraisonMoyen"
+              class="form-control"
+              formControlName="delaiLivraisonMoyen"
+              min="0">
+          </div>
+
+          <div class="form-group">
+            <label for="conditionsPaiement">Conditions de paiement</label>
+            <input
+              type="text"
+              id="conditionsPaiement"
+              class="form-control"
+              formControlName="conditionsPaiement">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="certifications">Certifications</label>
+          <textarea
+            id="certifications"
+            class="form-control"
+            rows="2"
+            formControlName="certifications"></textarea>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="onCancel()">
+          Annuler
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="submitting">
+          <span *ngIf="submitting" class="spinner-border spinner-border-sm me-2"></span>
+          {{ isEditMode ? 'Mettre à jour' : 'Créer' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

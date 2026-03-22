@@ -1,0 +1,106 @@
+<div class="article-container">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Articles</h1>
+      <p class="page-subtitle">Gestion des articles et SKU</p>
+    </div>
+    <button class="btn btn-primary" routerLink="/stock/articles/nouveau">
+      <i class="fas fa-plus"></i>
+      Nouvel article
+    </button>
+  </div>
+  <div class="filters-card">
+    <div class="filters-grid">
+      <div class="filter-group">
+        <label>Recherche</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Nom..."
+          [(ngModel)]="filters.nom"
+          (input)="applyFilters()">
+      </div>
+
+      <div class="filter-group">
+        <label>Catégorie</label>
+        <select class="form-control" [(ngModel)]="filters.categorie" (change)="applyFilters()">
+          <option value="">Toutes</option>
+          <option *ngFor="let cat of categories" [value]="cat">
+            {{ cat }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Statut</label>
+        <select class="form-control" [(ngModel)]="filters.actif" (change)="applyFilters()">
+          <option value="">Tous</option>
+          <option value="true">Actif</option>
+          <option value="false">Inactif</option>
+        </select>
+      </div>
+
+      <div class="filter-group filter-actions">
+        <button class="btn btn-secondary" (click)="resetFilters()">
+          <i class="fas fa-undo"></i>
+          Réinitialiser
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="text-center my-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Chargement...</span>
+    </div>
+  </div>
+
+  <div class="table-card" *ngIf="!loading">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Catégorie</th>
+          <th>Unité</th>
+          <th>Stock Min</th>
+          <th>Stock Max</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let article of filteredArticles">
+          <td class="fw-bold">{{ article.nom }}</td>
+          <td>
+              <span class="badge" [ngClass]="getCategoryBadgeClass(article.categorie)">
+                {{ article.categorie }}
+              </span>
+          </td>
+          <td>{{ article.um }}</td>
+          <td>{{ article.stockMinimum }}</td>
+          <td>{{ article.stockMaximum }}</td>
+          <td>
+              <span class="badge" [ngClass]="article.actif ? 'bg-success' : 'bg-secondary'">
+                {{ article.actif ? 'Actif' : 'Inactif' }}
+              </span>
+          </td>
+          <td class="actions">
+            <button class="btn btn-sm btn-info me-1" [routerLink]="['/stock/articles', article.id]">
+              <i class="fas fa-eye"></i>
+            </button>
+            <button class="btn btn-sm btn-warning me-1" [routerLink]="['/stock/articles', article.id, 'editer']">
+              <i class="fas fa-edit"></i>
+            </button>
+
+        </tr>
+        <tr *ngIf="filteredArticles.length === 0">
+          <td colspan="7" class="text-center py-4">
+            Aucun article trouvé
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -18,6 +18,12 @@ const routes: Routes = [
   //   loadComponent: () =>
   //     import('./welcome/welcome.component').then(m => m.WelcomeComponent),
   // },
+  {
+    path: 'activate-account',
+    loadComponent: () =>
+      import('./settings/user-management/components/activate-account/activate-account.component')
+        .then((m) => m.ActivateAccountComponent)
+  },
 
   {
     path: '',
@@ -28,7 +34,12 @@ const routes: Routes = [
         redirectTo: '/welcome',
         pathMatch: 'full'
       },
-
+      {
+        path: 'stock',
+        loadChildren: () => import('./stock/stock.module').then(m => m.StockModule)
+      },
+      { path: 'of',
+        loadChildren: () => import('./OF/of.module').then(m => m.OfModule) },
       {
         path: 'welcome',
         loadComponent: () => import('./welcome/welcome.component').then((m) => m.WelcomeComponent)
@@ -91,6 +102,7 @@ const routes: Routes = [
       }
     ]
   },
+
 
   {
     path: 'auth',

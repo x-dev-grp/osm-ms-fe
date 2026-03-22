@@ -1,0 +1,161 @@
+<div class="modern-container">
+  @if (error) {
+    <div class="alert-modern alert-danger">
+      <div class="alert-icon">
+        <i class="fas fa-exclamation-circle"></i>
+      </div>
+      <div class="alert-content">
+        {{ error }}
+      </div>
+      <button class="alert-close" (click)="error = null">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  }
+
+  <div class="form-card glass-effect">
+    <div class="form-header">
+      <div class="header-icon-wrapper">
+        <div class="header-icon">
+          <i class="fas" [ngClass]="isEditMode ? 'fa-edit' : 'fa-plus'"></i>
+        </div>
+      </div>
+      <div class="header-content">
+        <h2 class="form-title gradient-text">
+          {{ isEditMode ? 'Modifier le SKU' : 'Nouveau SKU' }}
+        </h2>
+        <p class="form-subtitle">
+          {{ isEditMode ? 'Modifiez les informations de la référence' : 'Créez une nouvelle référence produit' }}
+        </p>
+      </div>
+    </div>
+
+    <form [formGroup]="skuForm" (ngSubmit)="onSubmit()" class="modern-form">
+      <div class="form-group floating-group">
+        <div class="input-wrapper">
+          <i class="fas fa-barcode input-icon"></i>
+          <input type="text"
+                 id="code"
+                 class="modern-input"
+                 [class.is-invalid]="submitted && f['code'].errors"
+                 [class.is-valid]="submitted && !f['code'].errors && f['code'].value"
+                 formControlName="code"
+                 placeholder=" ">
+          <label for="code" class="floating-label">
+            Code SKU <span class="required-star">*</span>
+          </label>
+        </div>
+        @if (submitted && f['code'].errors) {
+          <div class="error-message animated">
+            <i class="fas fa-exclamation-circle me-1"></i>
+            @if (f['code'].errors['required']) {
+              <span>Le code SKU est requis</span>
+            }
+            @if (f['code'].errors['pattern']) {
+              <span>Format: lettres majuscules, chiffres, tirets et underscores</span>
+            }
+          </div>
+        }
+        <small class="form-hint">
+          <i class="fas fa-info-circle me-1"></i>
+          Ex: SKU-001, REF-ABC-123
+        </small>
+      </div>
+
+      <div class="form-group floating-group">
+        <div class="input-wrapper">
+          <i class="fas fa-tag input-icon"></i>
+          <input type="text"
+                 id="category"
+                 class="modern-input"
+                 formControlName="category"
+                 placeholder=" ">
+          <label for="category" class="floating-label">Catégorie</label>
+        </div>
+        <small class="form-hint">ex: EMBALLAGE, FINI, MATIERE PREMIERE</small>
+      </div>
+
+      <div class="form-group floating-group">
+        <div class="input-wrapper">
+          <i class="fas fa-cube input-icon"></i>
+          <input type="number"
+                 id="volume"
+                 class="modern-input"
+                 formControlName="volume"
+                 step="0.001"
+                 min="0"
+                 placeholder=" ">
+          <label for="volume" class="floating-label">Volume (m³)</label>
+        </div>
+        @if (submitted && f['volume'].errors) {
+          <div class="error-message animated">
+            <i class="fas fa-exclamation-circle me-1"></i>
+            Le volume doit être positif
+          </div>
+        }
+      </div>
+
+      <div class="row g-4">
+        <div class="col-md-6">
+          <div class="form-group floating-group">
+            <div class="input-wrapper">
+              <i class="fas fa-boxes input-icon"></i>
+              <input type="number"
+                     id="unitesParCoulis"
+                     class="modern-input"
+                     formControlName="unitesParCols"
+                     min="1"
+                     placeholder=" ">
+              <label for="unitesParCoulis" class="floating-label">Unités par colis</label>
+            </div>
+            @if (submitted && f['unitesParCols'].errors) {
+              <div class="error-message animated">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                Minimum 1 unité
+              </div>
+            }
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group floating-group">
+            <div class="input-wrapper">
+              <i class="fas fa-pallet input-icon"></i>
+              <input type="number"
+                     id="colisParPalette"
+                     class="modern-input"
+                     formControlName="colisParPalette"
+                     min="1"
+                     placeholder=" ">
+              <label for="colisParPalette" class="floating-label">Colis par palette</label>
+            </div>
+            @if (submitted && f['colisParPalette'].errors) {
+              <div class="error-message animated">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                Minimum 1 colis
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="form-separator">
+        <span class="separator-text">Informations de conditionnement</span>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn-outline" (click)="onCancel()">
+          <i class="fas fa-times me-2"></i>
+          Annuler
+        </button>
+        <button type="submit" class="btn-primary" [disabled]="submitting">
+          @if (submitting) {
+            <span class="spinner-small"></span>
+            <span class="ms-2">Traitement...</span>
+          } @else {
+            <i class="fas fa-check me-2"></i>
+            {{ isEditMode ? 'Mettre à jour' : 'Créer le SKU' }}
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

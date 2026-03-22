@@ -10,6 +10,7 @@ import {
   ReceptionEntity
 } from 'src/app/theme/types/permissions';
 
+
 export const osm_menus: Navigation[] = [
   // ────────────────────────
   // Accueil / Tableau de bord
@@ -373,6 +374,119 @@ export const osm_menus: Navigation[] = [
       }
     ]
   },
+  {
+    id: 'group-conditionnement',
+    title: 'CONDITIONNEMENT',
+    type: 'group',
+    children: [
+      {
+        id: 'item-production-of',
+        title: 'Ordres de conditionnement',
+        type: 'item',
+        url: '/of',
+        icon: 'factory',
+        breadcrumbs: false,
+      }
+    ]
+  },
+  {
+    id: 'group-stocks',
+    title: 'STOCKS',
+    type: 'group',
+    children: [
+      {
+        id: 'item-stocks-dashboard',
+        title: 'Dashboard Stock',
+        type: 'item',
+        url: '/stock/dashboard',
+        icon: 'dashboard',
+        breadcrumbs: false
+      },
+      {
+        id: 'item-stocks-audit',
+        title: 'Audit',
+        type: 'item',
+        url: '/stock/audit',
+        icon: 'history',
+        breadcrumbs: false
+      },
+      {
+        id: 'item-stocks-articles',
+        title: 'Articles',
+        type: 'item',
+        url: '/stock/articles',
+        icon: 'inventory_2',
+        breadcrumbs: false
+      },
+      {
+        id: 'item-stocks-fournisseurs',
+        title: 'Fournisseurs',
+        type: 'item',
+        url: '/stock/fournisseurs',
+        icon: 'local_shipping',
+        breadcrumbs: false
+      },
+      {
+        id: 'item-stocks-clients',
+        title: 'Clients',
+        type: 'item',
+        url: '/stock/clients',
+        icon: 'people',
+        breadcrumbs: false
+      },
+      {
+        id: 'item-stocks-skus',
+        title: 'SKUs',
+        type: 'item',
+        url: '/stock/skus',
+        icon: 'inventory',
+        breadcrumbs: false
+      },
+
+      {
+        id: 'item-stocks-bom',
+        title: 'Nomenclatures',
+        type: 'item',
+        url: '/stock/boms',
+        icon: 'receipt',
+        breadcrumbs: false
+      },
+      {
+        id: 'item-stocks-lignes',
+        title: 'Lignes de conditionnement',
+        type: 'item',
+        url: '/stock/lignes',
+        icon: 'oil_barrel',
+        breadcrumbs: false
+      },
+      {
+        id: 'item-stocks-emplacements',
+        title: 'Emplacements',
+        type: 'item',
+        url: '/stock/emplacements',
+        icon: 'warehouse',
+        breadcrumbs: false
+      },
+
+
+     /* {
+        id: 'item-stocks-bc',
+        title: 'Bons de commande',
+        type: 'item',
+        url: '/stock/bons-commande',
+        icon: 'receipt_long',
+        breadcrumbs: false
+      },
+      {
+        id: 'item-stocks-mouvements',
+        title: 'Mouvements',
+        type: 'item',
+        url: '/stock/mouvements',
+        icon: 'swap_horiz',
+        breadcrumbs: false
+      }*/
+    ]
+  },
 
   // =========================
   // SETTINGS (>3 items → wrapped)
@@ -433,6 +547,7 @@ export const osm_menus: Navigation[] = [
             icon: 'precision_manufacturing',
             breadcrumbs: false, // CHANGE: permissions - require PRODUCTION:MILLMACHINE:READ
             ressourcePermission:  ProductionEntity.MILLMACHINE
+
           },
           {
             id: 'item-settings-users',

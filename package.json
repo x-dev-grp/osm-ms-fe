@@ -42,6 +42,7 @@
     "apexcharts": "3.24.0",
     "arabic-reshaper": "^1.1.0",
     "bidi-js": "^1.0.3",
+    "chart.js": "^4.5.1",
     "date-fns": "4.1.0",
     "exceljs": "^4.4.0",
     "file-saver": "^2.0.5",

@@ -1,0 +1,109 @@
+<div class="of-detail-page" *ngIf="of">
+  <div class="detail-header">
+    <button class="btn-back-floating" routerLink="/of">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <div>
+      <h2 class="page-title">OF {{ of.code }}</h2>
+      <p class="page-subtitle">{{ of.skuCode || of.skuId }} - Statut: {{ of.statut }}</p>
+    </div>
+    <div class="header-actions">
+      <button *ngIf="canStart()" class="btn-action start" (click)="start()">
+        <i class="fas fa-play"></i> Démarrer
+      </button>
+      <button *ngIf="canPause()" class="btn-action pause" (click)="pause()">
+        <i class="fas fa-pause"></i> Pause
+      </button>
+      <button *ngIf="canResume()" class="btn-action resume" (click)="resume()">
+        <i class="fas fa-play-circle"></i> Reprendre
+      </button>
+      <button *ngIf="canClose()" class="btn-action close" (click)="close()">
+        <i class="fas fa-check-circle"></i> Clôturer
+      </button>
+    </div>
+  </div>
+
+  <div class="detail-grid">
+    <div class="card-box info-card">
+      <h5>Informations générales</h5>
+      <div class="info-row"><span>Code</span><strong>{{ of.code }}</strong></div>
+      <div class="info-row"><span>SKU</span><strong>{{ of.skuCode || of.skuId }}</strong></div>
+      <div class="info-row"><span>Ligne</span><strong>{{ of.ligneNom || of.ligneId || '-' }}</strong></div>
+      <div class="info-row"><span>Lot vrac</span><strong>{{ of.lotVracId || '-' }}</strong></div>
+      <div class="info-row"><span>Statut</span><span class="status-badge" [ngClass]="of.statut.toLowerCase()">{{ of.statut }}</span></div>
+      <div class="info-row"><span>Quantité cible</span><strong>{{ of.quantiteCible }}</strong></div>
+      <div class="info-row"><span>Bon / NC</span><strong>{{ of.quantiteBonne }} / {{ of.quantiteNC }}</strong></div>
+      <div class="info-row"><span>Durée réelle (min)</span><strong>{{ of.dureeReelle || '-' }}</strong></div>
+      <!-- Dans info-card, après "Durée réelle" -->
+      <div class="info-row" *ngIf="of.statut === 'EN_COURS'">
+        <span>Temps écoulé</span>
+        <strong>{{ TimeFormatted }}</strong>
+      </div>
+    </div>
+
+
+    <div class="card-box timeline-card">
+      <h5>Dates</h5>
+      <div class="info-row"><span>Prévu début</span><strong>{{ of.dateDebutPrevue | date:'dd/MM/yyyy HH:mm' }}</strong></div>
+      <div class="info-row"><span>Prévu fin</span><strong>{{ of.dateFinPrevue | date:'dd/MM/yyyy HH:mm' }}</strong></div>
+      <div class="info-row"><span>Réel début</span><strong>{{ of.dateDebutReelle | date:'dd/MM/yyyy HH:mm' }}</strong></div>
+      <div class="info-row"><span>Réel fin</span><strong>{{ of.dateFinReelle | date:'dd/MM/yyyy HH:mm' }}</strong></div>
+    </div>
+  </div>
+
+  <!-- Saisie de production -->
+  <div class="card-box production-card" *ngIf="isEditable()">
+    <h5>Saisie de production</h5>
+    <div class="production-form">
+      <div class="form-group">
+        <label>Bons</label>
+        <input type="number" [(ngModel)]="newBons" class="form-control" min="0">
+      </div>
+      <div class="form-group">
+        <label>Non-conformes</label>
+        <input type="number" [(ngModel)]="newNC" class="form-control" min="0">
+      </div>
+      <button class="btn-save" (click)="recordProduction()">Enregistrer</button>
+    </div>
+  </div>
+
+  <!-- Composants -->
+  <div class="card-box lines-card">
+    <h5>Composants consommés</h5>
+    <table class="data-table">
+      <thead>
+      <tr>
+        <th>Article</th>
+        <th>Quantité théorique</th>
+        <th>Quantité réelle</th>
+        <th>Motif</th>
+        <th>Action</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let line of of.lignes">
+        <td>{{ line.articleNom || line.articleId }}</td>
+        <td>{{ line.quantiteTheorique }}</td>
+        <td>
+          <input type="number" [(ngModel)]="line.quantiteReelle" class="form-control-sm" *ngIf="isEditable()">
+          <span *ngIf="!isEditable()">{{ line.quantiteReelle || '-' }}</span>
+        </td>
+        <td>
+          <input type="text" [(ngModel)]="line.motifAjustement" class="form-control-sm" *ngIf="isEditable()">
+          <span *ngIf="!isEditable()">{{ line.motifAjustement || '-' }}</span>
+        </td>
+        <td>
+          <button *ngIf="isEditable()" class="btn-icon save" (click)="saveAdjustment(line)">
+            <i class="fas fa-save"></i>
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div *ngIf="loading" class="loading-container">
+  <div class="spinner-border"></div>
+  <p>Chargement...</p>
+</div>

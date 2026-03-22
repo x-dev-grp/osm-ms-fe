@@ -1,0 +1,176 @@
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm">
+        <!-- En-tête -->
+        <div class="card-header bg-transparent border-0">
+          <div class="d-flex align-items-center">
+            <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3">
+              <i class="fas fa-industry text-primary"></i>
+            </div>
+            <div>
+              <h2 class="fw-bold mb-1">
+                {{ isEditMode ? 'Modifier la ligne' : 'Nouvelle ligne de conditionnement' }}
+              </h2>
+              <p class="text-muted mb-0">
+                {{ isEditMode ? 'Modifiez les informations de la ligne' : 'Créez une nouvelle ligne de production' }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <!-- Loading -->
+          <div *ngIf="loading" class="text-center py-5">
+            <div class="spinner-border" style="width: 3rem; height: 3rem;"></div>
+            <p class="mt-3 text-muted">Chargement...</p>
+          </div>
+
+          <!-- Error -->
+          <div *ngIf="error" class="alert alert-danger border-0">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            {{ error }}
+          </div>
+
+          <!-- Formulaire -->
+          <form *ngIf="!loading" [formGroup]="ligneForm" (ngSubmit)="onSubmit()">
+            <!-- Informations de base -->
+            <div class="form-section mb-4">
+              <h6>Informations de base</h6>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">
+                    Nom <span class="text-danger">*</span>
+                  </label>
+                  <input type="text" class="form-control"
+                         [class.is-invalid]="submitted && f['nom']?.errors"
+                         formControlName="nom"
+                         placeholder="Ex: Ligne d'embouteillage">
+                  <div class="invalid-feedback" *ngIf="submitted && f['nom']?.errors?.['required']">
+                    <i class="fas fa-exclamation-circle me-1"></i>
+                    Nom requis
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label fw-semibold">Description</label>
+                  <textarea class="form-control" rows="3"
+                            formControlName="description"
+                            placeholder="Description de la ligne..."></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- Configuration -->
+            <div class="form-section mb-4">
+              <h6>Configuration</h6>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">État</label>
+                  <select class="form-select" formControlName="etat">
+                    <option value="ACTIF">Actif</option>
+                    <option value="INACTIF">Inactif</option>
+                    <option value="EN_MAINTENANCE">En maintenance</option>
+                    <option value="EN_PANNE">En panne</option>
+                  </select>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">Responsable</label>
+                  <input type="text" class="form-control"
+                         formControlName="responsable"
+                         placeholder="Nom du responsable">
+                </div>
+              </div>
+            </div>
+
+            <!-- Performances -->
+            <div class="form-section mb-4">
+              <h6>Performances</h6>
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <label class="form-label fw-semibold">Vitesse nominale</label>
+                  <div class="input-group">
+                    <input type="number" class="form-control"
+                           formControlName="vitesseNominale"
+                           placeholder="0">
+                    <span class="input-group-text">u/h</span>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label fw-semibold">Temps préparation</label>
+                  <div class="input-group">
+                    <input type="number" class="form-control"
+                           formControlName="tempsPreparation"
+                           placeholder="0">
+                    <span class="input-group-text">min</span>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label fw-semibold">Temps nettoyage</label>
+                  <div class="input-group">
+                    <input type="number" class="form-control"
+                           formControlName="tempsNettoyage"
+                           placeholder="0">
+                    <span class="input-group-text">min</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Maintenance -->
+            <div class="form-section mb-4">
+              <h6>Maintenance</h6>
+              <div class="row g-3">
+
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">
+                    Dernière maintenance
+                  </label>
+                  <input type="date"
+                         class="form-control"
+                         formControlName="dateDerniereMaintenance">
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">
+                    Prochaine maintenance
+                  </label>
+                  <input type="date"
+                         class="form-control"
+                         formControlName="dateProchaineMaintenance">
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="form-section mb-4">
+              <h6>Notes</h6>
+              <div class="row">
+                <div class="col-12">
+                  <textarea class="form-control" rows="3"
+                            formControlName="notes"
+                            placeholder="Notes supplémentaires..."></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="d-flex justify-content-end gap-3 pt-3 border-top">
+              <button type="button" class="btn btn-light" (click)="onCancel()">
+                <i class="fas fa-times me-2"></i>
+                Annuler
+              </button>
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-check me-2"></i>
+                {{ isEditMode ? 'Mettre à jour' : 'Créer' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

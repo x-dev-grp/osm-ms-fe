@@ -1,0 +1,238 @@
+<div class="modern-container">
+  <!-- Hero section -->
+  <div class="detail-hero" [style.background-image]="'url(assets/images/pattern.svg)'">
+    <div class="hero-overlay"></div>
+    <div class="container-fluid">
+      <div class="hero-content">
+        <button class="btn-back" (click)="goBack()">
+          <i class="fas fa-arrow-left me-2"></i>
+          Retour à la liste
+        </button>
+
+        <div class="hero-title">
+          <div class="status-badge-large" [ngClass]="getEtatBadge(ligne?.etat)">
+            <span class="status-dot-large" [ngClass]="{
+              'active': ligne?.etat === 'ACTIF',
+              'maintenance': ligne?.etat === 'EN_MAINTENANCE',
+              'stopped': ligne?.etat === 'EN_PANNE' || ligne?.etat === 'INACTIF'
+            }"></span>
+            {{ getEtatLabel(ligne?.etat) }}
+          </div>
+          <h1 class="display-4 fw-bold">{{ ligne?.nom }}</h1>
+          <p class="lead">{{ ligne?.code }}</p>
+          <p class="responsable-hero" *ngIf="ligne?.responsable">
+            <i class="fas fa-user-circle me-2"></i>
+            Responsable : {{ ligne?.responsable }}
+          </p>
+        </div>
+
+        <div class="hero-actions">
+          <button class="btn-action primary" [routerLink]="['/stock/lignes', ligne?.id, 'edit']">
+            <i class="fas fa-edit me-2"></i>
+            Modifier
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenu principal -->
+  <div class="container-fluid py-4">
+    <!-- Loading -->
+    <div *ngIf="loading" class="loading-state">
+      <div class="loader">
+        <div class="loader-spinner"></div>
+        <div class="loader-text">Chargement des données...</div>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div *ngIf="error" class="error-state">
+      <i class="fas fa-exclamation-circle"></i>
+      <h3>Une erreur est survenue</h3>
+      <p>{{ error }}</p>
+      <button class="btn-retry" (click)="loadLigne(ligne?.id)">
+        <i class="fas fa-sync-alt me-2"></i>
+        Réessayer
+      </button>
+    </div>
+
+    <!-- Détails de la ligne -->
+    <div *ngIf="!loading && !error && ligne" class="detail-grid">
+      <!-- Colonne principale -->
+      <div class="main-column">
+        <!-- Carte des informations générales -->
+        <div class="detail-card glass-card mb-4">
+          <div class="card-header-with-icon">
+            <div class="header-icon"><i class="fas fa-info-circle"></i></div>
+            <h3>Informations générales</h3>
+          </div>
+          <div class="info-list">
+            <div class="info-item">
+              <span class="info-label">Code</span>
+              <span class="info-value code-value">{{ ligne.code }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Nom</span>
+              <span class="info-value">{{ ligne.nom }}</span>
+            </div>
+            <div class="info-item" *ngIf="ligne.responsable">
+              <span class="info-label">Responsable</span>
+              <span class="info-value">
+                <span class="responsible-badge">
+                  <i class="fas fa-user-circle"></i>
+                  {{ ligne.responsable }}
+                </span>
+              </span>
+            </div>
+            <div class="info-item description">
+              <span class="info-label">Description</span>
+              <p>{{ ligne.description || 'Aucune description' }}</p>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Dernière modification</span>
+              <span class="info-value">{{ ligne.lastModifiedDate | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Carte des paramètres techniques -->
+        <div class="detail-card glass-card mb-4" *ngIf="ligne.vitesseNominale || ligne.tempsPreparation || ligne.tempsNettoyage">
+          <div class="card-header-with-icon">
+            <div class="header-icon"><i class="fas fa-cog"></i></div>
+            <h3>Paramètres techniques</h3>
+          </div>
+          <div class="tech-params">
+            <div class="param-item" *ngIf="ligne.vitesseNominale">
+              <div class="param-icon">
+                <i class="fas fa-tachometer-alt"></i>
+              </div>
+              <div class="param-details">
+                <span class="param-label">Vitesse nominale</span>
+                <span class="param-value">{{ ligne.vitesseNominale }} <small>u/h</small></span>
+              </div>
+            </div>
+
+            <div class="param-item" *ngIf="ligne.tempsPreparation">
+              <div class="param-icon">
+                <i class="fas fa-clock"></i>
+              </div>
+              <div class="param-details">
+                <span class="param-label">Temps de préparation</span>
+                <span class="param-value">{{ ligne.tempsPreparation }} <small>min</small></span>
+              </div>
+            </div>
+
+            <div class="param-item" *ngIf="ligne.tempsNettoyage">
+              <div class="param-icon">
+                <i class="fas fa-broom"></i>
+              </div>
+              <div class="param-details">
+                <span class="param-label">Temps de nettoyage</span>
+                <span class="param-value">{{ ligne.tempsNettoyage }} <small>min</small></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Message si pas de paramètres techniques -->
+        <div class="detail-card glass-card mb-4" *ngIf="!ligne.vitesseNominale && !ligne.tempsPreparation && !ligne.tempsNettoyage">
+          <div class="card-header-with-icon">
+            <div class="header-icon"><i class="fas fa-cog"></i></div>
+            <h3>Paramètres techniques</h3>
+          </div>
+          <div class="tech-params text-center py-4">
+            <i class="fas fa-info-circle mb-3" style="font-size: 2rem; color: var(--gray-300);"></i>
+            <p class="text-muted">Aucun paramètre technique renseigné</p>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="detail-card glass-card" *ngIf="ligne.notes">
+          <div class="card-header-with-icon">
+            <div class="header-icon"><i class="fas fa-sticky-note"></i></div>
+            <h3>Notes</h3>
+          </div>
+          <div class="notes-content">
+            <i class="fas fa-quote-left quote-icon"></i>
+            <p>{{ ligne.notes }}</p>
+          </div>
+        </div>
+
+        <div class="detail-card glass-card" *ngIf="!ligne.notes">
+          <div class="card-header-with-icon">
+            <div class="header-icon"><i class="fas fa-sticky-note"></i></div>
+            <h3>Notes</h3>
+          </div>
+          <div class="notes-content text-center py-4">
+            <i class="fas fa-pencil-alt mb-3" style="font-size: 2rem; color: var(--gray-300);"></i>
+            <p class="text-muted">Aucune note disponible</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Colonne latérale -->
+      <div class="side-column">
+        <!-- Carte Maintenance -->
+        <div class="detail-card glass-card mb-4">
+          <div class="card-header-with-icon">
+            <div class="header-icon"><i class="fas fa-tools"></i></div>
+            <h3>Maintenance</h3>
+          </div>
+          <div class="maintenance-info">
+            <div class="maintenance-item" *ngIf="ligne.dateDerniereMaintenance">
+              <i class="fas fa-calendar-check"></i>
+              <div class="maintenance-details">
+                <span class="maintenance-label">Dernière maintenance</span>
+                <span class="maintenance-value">{{ ligne.dateDerniereMaintenance | date:'dd/MM/yyyy' }}</span>
+              </div>
+            </div>
+
+            <div class="maintenance-item" *ngIf="!ligne.dateDerniereMaintenance">
+              <i class="fas fa-calendar-times"></i>
+              <div class="maintenance-details">
+                <span class="maintenance-label">Dernière maintenance</span>
+                <span class="maintenance-value text-muted">Non effectuée</span>
+              </div>
+            </div>
+
+            <div class="maintenance-item" *ngIf="ligne.dateProchaineMaintenance">
+              <i class="fas fa-calendar-alt"></i>
+              <div class="maintenance-details">
+                <span class="maintenance-label">Prochaine maintenance</span>
+                <span class="maintenance-value" [ngClass]="{'warning': isMaintenanceDue()}">
+                  {{ ligne.dateProchaineMaintenance | date:'dd/MM/yyyy' }}
+                  <small *ngIf="isMaintenanceDue()" class="warning-text">(Due)</small>
+                </span>
+              </div>
+            </div>
+
+            <div class="maintenance-item" *ngIf="!ligne.dateProchaineMaintenance">
+              <i class="fas fa-calendar-times"></i>
+              <div class="maintenance-details">
+                <span class="maintenance-label">Prochaine maintenance</span>
+                <span class="maintenance-value text-muted">Non planifiée</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Carte Métadonnées -->
+        <div class="detail-card glass-card">
+          <div class="card-header-with-icon">
+            <div class="header-icon"><i class="fas fa-database"></i></div>
+            <h3>Métadonnées</h3>
+          </div>
+            <div class="metadata-item" *ngIf="ligne.createdDate">
+              <span class="metadata-label">Créé le</span>
+              <span class="metadata-value">{{ ligne.createdDate | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+            <div class="metadata-item">
+              <span class="metadata-label">Dernière modification</span>
+              <span class="metadata-value">{{ ligne.lastModifiedDate | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

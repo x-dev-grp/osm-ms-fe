@@ -1,0 +1,108 @@
+<div class="article-form-container">
+  <div class="form-card">
+    <h2 class="form-title">
+      {{ isEditMode ? 'Modifier' : 'Nouvel' }} article
+    </h2>
+
+    <form [formGroup]="articleForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="nom">Nom *</label>
+        <input
+          type="text"
+          id="nom"
+          class="form-control"
+          [class.is-invalid]="submitted && f['nom'].errors"
+          formControlName="nom">
+        <div class="invalid-feedback" *ngIf="submitted && f['nom'].errors">
+          Le nom est requis
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="categorie">Catégorie *</label>
+        <select
+          id="categorie"
+          class="form-control"
+          [class.is-invalid]="submitted && f['categorie'].errors"
+          formControlName="categorie">
+          <option value="">Sélectionner...</option>
+          <option *ngFor="let cat of categories" [value]="cat">
+            {{ cat }}
+          </option>
+        </select>
+        <div class="invalid-feedback" *ngIf="submitted && f['categorie'].errors">
+          La catégorie est requise
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="um">Unité de mesure *</label>
+        <select
+          id="um"
+          class="form-control"
+          [class.is-invalid]="submitted && f['um'].errors"
+          formControlName="um">
+          <option value="">Sélectionner...</option>
+          <option *ngFor="let unite of unitesMesure" [value]="unite">
+            {{ unite }}
+          </option>
+        </select>
+        <div class="invalid-feedback" *ngIf="submitted && f['um'].errors">
+          L'unité de mesure est requise
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="fournisseur">Fournisseur</label>
+        <select
+          id="fournisseur"
+          class="form-control"
+          formControlName="fournisseur">
+          <option value="">Aucun</option>
+          <option *ngFor="let fournisseur of fournisseurs" [value]="fournisseur.id">
+            {{ fournisseur.nom }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="stockMinimum">Stock minimum</label>
+        <input
+          type="number"
+          id="stockMinimum"
+          class="form-control"
+          formControlName="stockMinimum"
+          min="0">
+      </div>
+
+      <div class="form-group">
+        <label for="stockMaximum">Stock maximum</label>
+        <input
+          type="number"
+          id="stockMaximum"
+          class="form-control"
+          formControlName="stockMaximum"
+          min="0">
+      </div>
+
+      <div class="form-group form-check">
+        <input
+          type="checkbox"
+          id="actif"
+          class="form-check-input"
+          formControlName="actif">
+        <label for="actif" class="form-check-label">Article actif</label>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="onCancel()">
+          Annuler
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="submitting">
+          <span *ngIf="submitting" class="spinner-border spinner-border-sm me-1"></span>
+          {{ isEditMode ? 'Mettre à jour' : 'Créer' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
