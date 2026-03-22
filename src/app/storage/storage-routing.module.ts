@@ -109,6 +109,35 @@ const routes: Routes = [
         // CHANGE: permissions - require PRODUCTION:STORAGEUNIT:UPDATE
         canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.UPDATE)])]
       }
+
+      ,{
+        path: 'oil-filtering',
+        loadComponent: () => import('./filtration/filtration-list.component').then((m) => m.FiltrationListComponent),
+        // CHANGE: permissions - require PRODUCTION:STORAGEUNIT:READ (container listing bound to storage perms)
+        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.READ)])]
+      },
+
+      {
+        path: 'oil-filtering/:id/view',
+        loadComponent: () =>
+          import('./filtration/filtration-form/filtration-form.component').then((m) => m.FiltrationFormComponent),
+        // CHANGE: permissions - require PRODUCTION:STORAGEUNIT:READ
+        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.READ)])]
+      },
+      {
+        path: 'oil-filtering/new',
+        loadComponent: () =>
+          import('./filtration/filtration-form/filtration-form.component').then((m) => m.FiltrationFormComponent),
+        // CHANGE: permissions - require PRODUCTION:STORAGEUNIT:CREATE
+        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.CREATE)])]
+      },
+      {
+        path: 'oil-container/:id/edit',
+        loadComponent: () =>
+          import('./filtration/filtration-form/filtration-form.component').then((m) => m.FiltrationFormComponent),
+        // CHANGE: permissions - require PRODUCTION:STORAGEUNIT:UPDATE
+        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.UPDATE)])]
+      }
     ]
   }
 ];

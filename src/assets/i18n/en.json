@@ -797,6 +797,15 @@
       "REFUSED": "Refused"
     }
   },
+  "QR": {
+    "TITLE": "Universal QR Code",
+    "GENERATE": "Generate QR Code",
+    "TYPE": "Entity Type",
+    "ENCRYPTED": "Encrypted",
+    "ERROR": {
+      "GENERATE": "Error generating QR code"
+    }
+  },
   "DEPARTMENT": {
     "DETAIL": {
       "EMPLOYEES": "Employees",

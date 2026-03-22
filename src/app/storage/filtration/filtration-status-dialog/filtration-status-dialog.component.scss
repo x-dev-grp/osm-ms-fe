@@ -1,0 +1,164 @@
+/* ===================================== */
+/* DIALOGUE STATUT - ABIOC */
+/* cohérent + accessible */
+/* ===================================== */
+
+:host {
+  --text: #0f172a;
+  --muted: #64748b;
+  --border: rgba(15, 23, 42, 0.10);
+
+  --primary: #2c5f2d;
+  --source: #b45309;
+  --target: #15803d;
+  --danger: #b91c1c;
+  --focus: rgba(44, 95, 45, 0.35);
+  display: block;
+}
+
+/* Status colors */
+$status-created: #1d4ed8;
+$status-progress: #f59e0b;
+$status-completed: #16a34a;
+$status-cancelled: #dc2626;
+
+.abioc-dialog-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 20px;
+  margin: 0;
+  background: #fbfcfe;
+  border-bottom: 1px solid var(--border);
+
+  mat-icon { color: var(--primary); }
+
+  span {
+    font-size: 16px;
+    font-weight: 900;
+    color: var(--text);
+    letter-spacing: 0.2px;
+  }
+}
+
+.abioc-dialog-content {
+  padding: 18px 20px !important;
+  min-width: 460px;
+  max-width: 620px;
+  color: var(--text);
+}
+
+.operation-info {
+  border: 1px solid var(--border);
+  background: #fbfcfe;
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+
+  .info-row {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    padding: 6px 0;
+    border-bottom: 1px dashed rgba(15, 23, 42, 0.10);
+
+    &:last-child { border-bottom: none; }
+  }
+
+  .info-label {
+    width: 110px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .info-value {
+    flex: 1;
+    font-weight: 800;
+
+    &.mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+      font-size: 12px;
+      word-break: break-all;
+    }
+
+    &.status {
+      font-size: 12px;
+      letter-spacing: 0.2px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+  }
+}
+
+.abioc-form {
+  display: grid;
+  gap: 12px;
+}
+
+.full-width { width: 100%; }
+
+.status-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 28px;
+
+  .status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+
+    &.created { background: $status-created; }
+    &.in_progress { background: $status-progress; }
+    &.completed { background: $status-completed; }
+    &.cancelled { background: $status-cancelled; }
+  }
+}
+
+.volume-field {
+  .volume-suffix {
+    color: var(--muted);
+    margin-right: 6px;
+    font-weight: 700;
+  }
+}
+
+.abioc-dialog-actions {
+  padding: 14px 20px 18px 20px;
+  border-top: 1px solid var(--border);
+  gap: 10px;
+
+  button {
+    min-width: 140px;
+    border-radius: 12px;
+    font-weight: 800;
+
+    mat-icon { margin-right: 6px; }
+    mat-spinner { display: inline-block; margin-right: 6px; vertical-align: middle; }
+  }
+}
+
+button:focus-visible,
+:host ::ng-deep .mat-mdc-focus-indicator:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 12px;
+}
+
+@media (max-width: 700px) {
+  .abioc-dialog-content { min-width: auto; padding: 16px !important; }
+
+  .operation-info {
+    .info-row { flex-direction: column; align-items: flex-start; }
+    .info-label { width: auto; }
+  }
+
+  .abioc-dialog-actions {
+    flex-direction: column-reverse;
+    button { width: 100%; }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}

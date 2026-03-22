@@ -371,6 +371,15 @@ export const osm_menus: Navigation[] = [
 
         breadcrumbs: false, // CHANGE: permissions - require PRODUCTION:STORAGEUNIT:READ
         ressourcePermission:  ProductionEntity.STORAGEUNIT
+      },
+      {
+        id: 'item-storage-filtrage',
+        title: 'OIL_FILTRAGE_MANAGEMENT',
+        type: 'item',
+        url: '/storage/oil-filtering',
+        icon: 'filter',
+        breadcrumbs: false, // CHANGE: permissions - require PRODUCTION:STORAGEUNIT:READ
+        ressourcePermission:  ProductionEntity.STORAGEUNIT
       }
     ]
   },

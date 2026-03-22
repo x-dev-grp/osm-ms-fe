@@ -137,6 +137,16 @@ export const dashboardConfig: DashboardConfig = {
       exportable: true
     },
     {
+      name: 'filteredOil',
+      label: 'Pour filtrage',
+      attributeType: AttributeType.boolean,
+      fieldType: FieldType.checkbox,
+      sortable: true,
+      filterable: false,
+      dataTable: true,
+      exportable: true
+    },
+    {
       name: 'status',
       label: 'Statut',
       labelTranslatePath: 'SUPPLIER_PAYMENT.STATUS',

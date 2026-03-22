@@ -1,0 +1,389 @@
+/* ===================================== */
+/* FILTRATION LIST - OLIVE OIL UI */
+/* Clean – modern – responsive */
+/* Direct colors only (no variables) */
+/* ===================================== */
+
+:host {
+  display: block;
+}
+
+/* Layout */
+.abioc-container {
+  min-height: 100vh;
+  background: #f6f7fb;
+  padding: clamp(14px, 2vw, 24px);
+  color: #0f172a;
+}
+
+/* Header */
+.abioc-header {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+  margin-bottom: 14px;
+}
+
+.abioc-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: rgba(44, 95, 45, 0.10);
+  border: 1px solid rgba(15, 23, 42, 0.10);
+}
+
+.brand-icon mat-icon {
+  color: #2c5f2d;
+}
+
+.brand-text h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.brand-subtitle {
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* Stats */
+.header-stats {
+  display: flex;
+  gap: 10px;
+}
+
+.stat-item {
+  background: #f8fafc;
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  border-radius: 12px;
+  padding: 10px 12px;
+  text-align: right;
+}
+
+.stat-value {
+  font-weight: 900;
+  font-size: 16px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* Toolbar */
+.abioc-toolbar {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  border-radius: 14px;
+  margin-bottom: 14px;
+}
+
+.toolbar-filters {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.filter-statut {
+  min-width: 260px;
+}
+
+.btn-nouvelle {
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 800;
+}
+
+.btn-nouvelle mat-icon {
+  margin-right: 6px;
+}
+
+/* Status select */
+.option-statut {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.statut-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.statut-dot.created {
+  background: #2563eb;
+}
+
+.statut-dot.in_progress {
+  background: #f59e0b;
+}
+
+.statut-dot.completed {
+  background: #16a34a;
+}
+
+.statut-dot.cancelled {
+  background: #dc2626;
+}
+
+/* Loading / Empty */
+.abioc-loading,
+.abioc-empty {
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  border-radius: 14px;
+  padding: 26px;
+  text-align: center;
+}
+
+.abioc-empty mat-icon {
+  color: #2c5f2d;
+}
+
+.abioc-empty p,
+.abioc-loading p {
+  color: #64748b;
+}
+
+/* Table card */
+.abioc-table-card {
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+/* Table header */
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 18px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.10);
+}
+
+.table-header h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.table-subtitle {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.table-count {
+  font-size: 12px;
+  color: #64748b;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  background: #f8fafc;
+}
+
+/* Table */
+.table-responsive {
+  width: 100%;
+  overflow: auto;
+}
+
+.abioc-table {
+  width: 100%;
+  min-width: 980px;
+}
+
+.abioc-table th {
+  font-weight: 900;
+  background: #fbfcfe;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.10);
+  padding: 12px 14px;
+}
+
+.abioc-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.abioc-table tr:hover td {
+  background: rgba(44, 95, 45, 0.04);
+}
+
+/* Table icons */
+.source-icon {
+  color: #b45309;
+}
+
+.target-icon {
+  color: #15803d;
+}
+
+/* Date */
+.date-day {
+  font-weight: 900;
+}
+
+.date-time {
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* Cuve */
+.source-cuve .cuve-id {
+  color: #b45309;
+}
+
+.target-cuve .cuve-id {
+  color: #15803d;
+}
+
+.cuve-type {
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* Numbers */
+.volume-cell {
+  font-weight: 900;
+}
+
+.unit {
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* Loss badge */
+.loss-badge {
+  display: inline-flex;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  background: #f8fafc;
+  font-weight: 900;
+}
+
+.loss-volume {
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* Status badge */
+.statut-badge {
+  display: inline-flex;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: 12px;
+}
+
+.statut-badge.created {
+  color: #1d4ed8;
+  background: rgba(29, 78, 216, 0.08);
+  border: 1px solid rgba(29, 78, 216, 0.16);
+}
+
+.statut-badge.in_progress {
+  color: #b45309;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.22);
+}
+
+.statut-badge.completed {
+  color: #166534;
+  background: rgba(22, 163, 74, 0.10);
+  border: 1px solid rgba(22, 163, 74, 0.18);
+}
+
+.statut-badge.cancelled {
+  color: #991b1b;
+  background: rgba(220, 38, 38, 0.10);
+  border: 1px solid rgba(220, 38, 38, 0.18);
+}
+
+/* Actions */
+.col-actions {
+  width: 96px;
+  text-align: right;
+}
+
+.btn-actions {
+  border-radius: 10px;
+}
+
+/* Menu */
+.abioc-menu .danger {
+  color: #b91c1c;
+}
+
+.menu-hint {
+  margin-left: 8px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* Footer */
+.table-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-top: 1px solid rgba(15, 23, 42, 0.10);
+  background: #fbfcfe;
+}
+
+.footer-info span {
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  background: #ffffff;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+
+  .abioc-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .abioc-toolbar {
+    flex-direction: column;
+  }
+
+  .btn-nouvelle {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .abioc-table {
+    min-width: 920px;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

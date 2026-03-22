@@ -14,6 +14,9 @@ import { SearchOperation } from '../../shared/models/advanced-search/searchOpera
 import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
 import { OilTransaction, TransactionType } from '../../shared/models/OilTransaction';
 import { ToastService } from '../../shared/services/toast.service';
+import { MatDialog } from '@angular/material/dialog';
+import { QrDialogComponent } from '../../shared/components/qr-dialog/qr-dialog.component';
+import { QrCodeRequest } from '../../shared/models/qr-models';
 
 @Component({
   selector: 'app-view-storage',
@@ -42,7 +45,8 @@ export class ViewStorageComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private toastService: ToastService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -133,6 +137,32 @@ export class ViewStorageComponent implements OnInit {
     });
   }
 
+  generateQr(encrypted: boolean = true): void {
+    if (!this.storageUnitId) return;
+
+    this.loading = true;
+    const request: QrCodeRequest = {
+      payloadType: 'STORAGE_UNIT',
+      uuids: [this.storageUnitId],
+      encrypted: encrypted
+    };
+
+    this.storageService.generateQrCode(request).subscribe({
+      next: (response) => {
+        this.loading = false;
+        this.dialog.open(QrDialogComponent, {
+          width: '400px',
+          data: response
+        });
+      },
+      error: (error) => {
+        this.loading = false;
+        console.error('Error generating QR:', error);
+        this.toastService.error('QR.ERROR.GENERATE');
+      }
+    });
+  }
+
   private setupConfig(storageUnitId: string | null) {
     this.dashboardConfig = {
       title: '',
@@ -147,14 +177,12 @@ export class ViewStorageComponent implements OnInit {
         sort: 'createdDate',
         order: 'DESC',
         searchData: {
-          operation: SearchOperation.AND,               // Top-level AND
+          operation: SearchOperation.AND,
           searchs: [
             {
-              // ⬇️ Outer AND group: your UI will append into THIS array.
               operation: SearchOperation.AND,
               searchs: [
                 {
-                  // ⬇️ Inner OR keeps the (dest OR src) logic intact
                   operation: SearchOperation.OR,
                   searchs: [
                     {
@@ -173,15 +201,9 @@ export class ViewStorageComponent implements OnInit {
                     }
                   ]
                 }
-                // ⬅️ When your UI "appends a search", it will add another
-                //     { operation: AND, search: { ...new filters... } }
-                //     HERE, resulting in:
-                //     AND( OR(dest, src), AND(new filters) )
               ]
             }
           ]
-          // (Optional) global must-have filters could also go in top-level `search`
-          // search: { tenantId: { equalValue: ... } }
         }
       },
       fields: [

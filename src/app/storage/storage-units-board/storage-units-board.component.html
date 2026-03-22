@@ -10,6 +10,13 @@
           color="primary">
           {{ 'STORAGE.VIEW.SHOW_ONLY_PAID' | translate }}
         </mat-slide-toggle>
+
+        <!-- New Filtered Oil Toggle -->
+        <mat-slide-toggle
+          [formControl]="filters.controls.showOnlyFiltered"
+          color="primary">
+          {{ 'STORAGE.VIEW.SHOW_ONLY_FILTERED' | translate }}
+        </mat-slide-toggle>
       </div>
 
       <button (click)="refresh()" color="primary" mat-stroked-button>
@@ -38,6 +45,7 @@
     <div *ngIf="!loading() && !error() && filteredUnits().length" class="units-grid">
       <div *ngFor="let storageUnit of filteredUnits(); trackBy: trackById"
            [class.paid-storage]="paidStorage(storageUnit)"
+           [class.filtered-oil]="filteredOil(storageUnit)"
            class="storage-card">
         <div class="storage-card-header optimized-header">
           <div class="storage-title-status">
@@ -48,13 +56,19 @@
               <h2>{{ storageUnit.name }}</h2>
 
               <!-- Lot badge -->
-              <div class="status-available storage-status">
-                {{ storageUnit.lotNumber | translate }}
+              <div *ngIf="storageUnit.lotNumber" class="lot-badge storage-status">
+                {{ storageUnit.lotNumber }}
               </div>
               <!-- Paid Storage Badge -->
               <div *ngIf="storageUnit.paidStorage" class="paid-storage-badge">
                 <mat-icon class="paid-icon">paid</mat-icon>
                 <span class="paid-label">{{ 'STORAGE.VIEW.PAID_STORAGE' | translate }}</span>
+              </div>
+
+              <!-- New Filtered Oil Badge -->
+              <div *ngIf="storageUnit.filteredOil" class="filtered-oil-badge">
+                <mat-icon class="filtered-icon">filter_alt</mat-icon>
+                <span class="filtered-label">{{ 'STORAGE.VIEW.FILTERED' | translate }}</span>
               </div>
             </div>
             <div [ngClass]="getStatusClass(storageUnit)" class="storage-status">
@@ -92,12 +106,17 @@
 <!--              <span class="metric-value">{{ storageUnit.oilVariety?.name || ('STORAGE.VIEW.NA' | translate) }}</span>-->
 <!--            </div>-->
 
-<!--            &lt;!&ndash; Quality Grade &ndash;&gt;-->
-<!--            <div class="metric">-->
-<!--              <span class="metric-label">Quality Grade</span>-->
-<!--              <span-->
-<!--                class="metric-value">{{ ('OIL_TRANSACTIONS.QUALITY_GRADES.' + storageUnit.qualityGrade)|translate }}</span>-->
-<!--            </div>-->
+            <!-- Oil Variety -->
+            <div class="metric" *ngIf="storageUnit.oilVariety">
+              <span class="metric-label">{{ 'STORAGE.VIEW.OIL_VARIETY' | translate }}</span>
+              <span class="metric-value">{{ storageUnit.oilVariety.name }}</span>
+            </div>
+
+            <!-- Quality Grade -->
+            <div class="metric" *ngIf="storageUnit.qualityGrade">
+              <span class="metric-label">{{ 'STORAGE.VIEW.QUALITY_GRADE' | translate }}</span>
+              <span class="metric-value">{{ ('OIL_TRANSACTIONS.QUALITY_GRADES.' + storageUnit.qualityGrade) | translate }}</span>
+            </div>
 
             <!-- Paid Storage Information -->
             <div *ngIf="storageUnit.paidStorage" class="metric paid-storage-info">
@@ -106,6 +125,17 @@
                 {{ 'STORAGE.VIEW.PAID_STORAGE' | translate }}
               </span>
               <span class="metric-value">{{ storageUnit.monthlyRentalPrice | number:'1.2-2' }} TND</span>
+            </div>
+
+            <!-- Filtered Oil Information -->
+            <div *ngIf="storageUnit.filteredOil" class="metric filtered-oil-info">
+              <span class="metric-label">
+                <mat-icon class="filtered-icon-small">filter_alt</mat-icon>
+                {{ 'STORAGE.VIEW.FILTERED_OIL' | translate }}
+              </span>
+              <span class="metric-value">
+                {{ storageUnit.lastFiltrationDate ? (storageUnit.lastFiltrationDate | date:'shortDate') : ('COMMON.YES' | translate) }}
+              </span>
             </div>
           </div>
         </div>
@@ -124,6 +154,10 @@
               <!-- Paid Storage Indicator on Visualization -->
               <div *ngIf="storageUnit.paidStorage" class="paid-visualization-indicator">
                 <mat-icon class="paid-icon-visual">paid</mat-icon>
+              </div>
+              <!-- New Filtered Oil Indicator on Visualization -->
+              <div *ngIf="storageUnit.filteredOil" class="filtered-visualization-indicator">
+                <mat-icon class="filtered-icon-visual">filter_alt</mat-icon>
               </div>
             </div>
           </div>

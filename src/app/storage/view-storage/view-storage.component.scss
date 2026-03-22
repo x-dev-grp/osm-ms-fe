@@ -5,7 +5,22 @@
   margin-bottom: 24px;
   gap: 16px;
 }
+.filtration-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #e3f2fd;
+  color: #1565c0;
+  padding: 4px 8px;
+  border-radius: 16px;
+  font-size: 14px;
+}
 
+.filtration-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
 .loading-container {
   display: flex;
   justify-content: center;
@@ -372,6 +387,12 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
 }
 
 .storage-header-metrics {

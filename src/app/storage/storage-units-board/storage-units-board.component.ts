@@ -23,8 +23,6 @@ import { QualityGrades } from '../../finance/models/oil-sale.model';
 export interface oilVariety { id?: string; name?: string; code?: string; }
 export type   status= 'AVAILABLE' | 'FULL' | 'FILLING' | 'MAINTENANCE' | 'IN_USE' | 'CLEANING' | 'RESERVED' | 'OUT_OF_SERVICE';
 
-
-
 @Component({
   selector: 'app-storage-units-board',
   standalone: true,
@@ -64,7 +62,8 @@ export class StorageUnitsBoardComponent implements OnInit {
     search: [''],
     status: [''],
     oilVariety: [''],
-    showOnlyPaid: [false]
+    showOnlyPaid: [false],
+    showOnlyFiltered: [false] // New filter for filtered oil
   });
 
   /** Distinct status list (derived from data) */
@@ -90,6 +89,7 @@ export class StorageUnitsBoardComponent implements OnInit {
       .subscribe({
         next: (units) => {
           this.data$.next(units);
+          this.statuses.set(this.distinctStatuses(units));
           this.oilVarietys.set(this.distinctOilTypes(units));
           this.applyFilters();
           this.loading.set(false);
@@ -114,11 +114,12 @@ export class StorageUnitsBoardComponent implements OnInit {
   }
 
   private applyFilters(): void {
-    const { search, status, oilVariety, showOnlyPaid } = this.filters.value;
+    const { search, status, oilVariety, showOnlyPaid, showOnlyFiltered } = this.filters.value;
     const s = (search ?? '').toString().trim().toLowerCase();
     const st = (status ?? '').toString().trim();
     const ot = (oilVariety ?? '').toString().trim().toLowerCase();
     const paidFilter = showOnlyPaid ?? false;
+    const filteredFilter = showOnlyFiltered ?? false;
 
     const filtered = (this.data$.value || []).filter((u) => {
       const matchesSearch = !s || u.name.toLowerCase().includes(s) || u.oilVariety?.name?.toLowerCase().includes(s);
@@ -128,8 +129,9 @@ export class StorageUnitsBoardComponent implements OnInit {
 
       // Apply paid storage filter
       const matchesPaidFilter = !paidFilter || u.paidStorage === true;
+      const matchesFilteredFilter = !filteredFilter || u.filteredOil === true;
 
-      return matchesSearch && matchesStatus && matchesOilType && matchesPaidFilter;
+      return matchesSearch && matchesStatus && matchesOilType && matchesPaidFilter && matchesFilteredFilter;
     });
 
     this.filteredUnits.set(filtered);
@@ -152,6 +154,10 @@ export class StorageUnitsBoardComponent implements OnInit {
 
   paidStorage(u: StorageUnitDto): boolean {
     return u.paidStorage === true;
+  }
+
+  filteredOil(u: StorageUnitDto): boolean {
+    return u.filteredOil === true;
   }
 
   viewUnit(u: StorageUnitDto): void {

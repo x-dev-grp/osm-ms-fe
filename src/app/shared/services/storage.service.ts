@@ -5,6 +5,7 @@ import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../models/api-response';
 import { StorageUnitDto } from '../models/StorageUnitDto';
 import { ChangeSupplierDto } from '../../storage/assign-supplier/assign-supplier.component';
+import { QrCodeRequest, QrCodeResponse } from '../models/qr-models';
 
 @Injectable({
   providedIn: 'root'
@@ -50,5 +51,9 @@ export class StorageUnitDtoService {
     }
 
     return this.http.put<ApiResponse<void>>(url, null, { params });
+  }
+
+  generateQrCode(request: QrCodeRequest): Observable<QrCodeResponse> {
+    return this.http.post<QrCodeResponse>(`${this.baseUrl}/generate`, request);
   }
 }

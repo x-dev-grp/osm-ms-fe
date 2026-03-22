@@ -1,3 +1,4 @@
+// storage-unit.dto.ts
 import { BaseType } from './base-type';
 import { SupplierType } from './supplier-type';
 import { QualityGrades } from '../../finance/models/oil-sale.model';
@@ -28,4 +29,8 @@ export interface StorageUnitDto {
   // Pricing information for storage unit rental
   monthlyRentalPrice?: number; // Price per month for renting this storage unit
   paidStorage?: boolean; // Indicates if this is a paid storage unit
+
+  // Filtration information (NEW)
+  filteredOil?: boolean; // Indicates if the oil in this storage unit is filtered
+  lastFiltrationDate?: Date; // Date of the last filtration
 }

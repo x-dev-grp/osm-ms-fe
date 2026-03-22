@@ -1,0 +1,102 @@
+<!-- ===================================== -->
+<!-- DIALOGUE DE SUPPRESSION - ABIOC -->
+<!-- Version sans nouvelles méthodes TS -->
+<!-- ===================================== -->
+
+<h2 mat-dialog-title class="abioc-dialog-title">
+  <mat-icon class="warning-icon">warning_amber</mat-icon>
+  <span>Supprimer l'opération de filtration</span>
+</h2>
+
+<mat-dialog-content class="abioc-dialog-content">
+  <!-- MESSAGE D'AVERTISSEMENT -->
+  <div class="warning-message">
+    <mat-icon class="info-icon">info</mat-icon>
+    <div class="warning-text">
+      <strong>Action irréversible</strong>
+      <p>Cette opération sera définitivement supprimée du système.</p>
+    </div>
+  </div>
+
+  <!-- CARTE DÉTAILS OPÉRATION -->
+  <div class="details-card">
+    <h4 class="details-title">
+      <mat-icon>receipt</mat-icon>
+      Détails de l'opération
+    </h4>
+
+    <div class="details-grid">
+      <!-- ID Opération -->
+      <div class="detail-item">
+        <span class="detail-label">ID opération</span>
+        <span class="detail-value mono">{{ data.row.operationId }}</span>
+      </div>
+
+      <!-- Date -->
+      <div class="detail-item">
+        <span class="detail-label">Date</span>
+        <span class="detail-value">{{ data.row.timestamp | date:'dd/MM/yyyy HH:mm' }}</span>
+      </div>
+
+      <!-- Cuve source - CORRIGÉ: plus de formatCuveId, on affiche l'ID complet -->
+      <div class="detail-item">
+        <span class="detail-label">Cuve source</span>
+        <span class="detail-value mono source-text">{{ data.row.source?.name ?? 'Inconnue' }}</span>
+      </div>
+
+      <!-- Cuve cible - CORRIGÉ: plus de formatCuveId -->
+      <div class="detail-item">
+        <span class="detail-label">Cuve cible</span>
+        <span class="detail-value mono target-text">{{ data.row.target?.name ?? 'Inconnue' }}</span>
+      </div>
+
+      <!-- Volume -->
+      <div class="detail-item">
+        <span class="detail-label">Volume</span>
+        <span class="detail-value">{{ data.row.volumeFiltered }} <span class="unit">L</span></span>
+      </div>
+
+      <!-- Statut - CORRIGÉ: plus de getStatutClass/getStatutIcon/getStatutLabel -->
+      <div class="detail-item statut-item">
+        <span class="detail-label">Statut actuel</span>
+        <span class="statut-badge"
+              [class.created]="data.row.status === 'CREATED'"
+              [class.in_progress]="data.row.status === 'IN_PROGRESS'"
+              [class.completed]="data.row.status === 'COMPLETED'"
+              [class.cancelled]="data.row.status === 'CANCELLED'">
+          {{ data.row.status }}
+        </span>
+      </div>
+
+      <!-- Note (si présente) -->
+      @if (data.row.note) {
+        <div class="detail-item note-item">
+          <span class="detail-label">Note</span>
+          <span class="detail-value note-text">"{{ data.row.note }}"</span>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- CHECKBOX DE CONFIRMATION -->
+  <div class="confirmation-section">
+    <mat-checkbox [(ngModel)]="confirmed" class="confirmation-checkbox">
+      <span class="checkbox-label">Je confirme la suppression définitive</span>
+    </mat-checkbox>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="abioc-dialog-actions">
+  <button mat-stroked-button class="btn-cancel" (click)="cancel()">
+    <mat-icon>close</mat-icon>
+    Annuler
+  </button>
+  <button
+    mat-raised-button
+    class="btn-delete"
+    (click)="confirm()"
+    [disabled]="!confirmed">
+    <mat-icon>delete</mat-icon>
+    Supprimer définitivement
+  </button>
+</mat-dialog-actions>

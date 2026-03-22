@@ -797,6 +797,15 @@
       "REFUSED": "Refusé"
     }
   },
+  "QR": {
+    "TITLE": "Code QR Universel",
+    "GENERATE": "Générer Code QR",
+    "TYPE": "Type d'entité",
+    "ENCRYPTED": "Chiffré",
+    "ERROR": {
+      "GENERATE": "Erreur lors de la génération du code QR"
+    }
+  },
   "DEPARTMENT": {
     "DETAIL": {
       "EMPLOYEES": "Employés",
@@ -1356,6 +1365,8 @@
       "OIL_STORAGE_UNITS": "Unités de stockage d'huile",
       "TITLE": "Stockage & Inventaire",
       "VIEW": {
+        "FILTERED_OIL": "Huile Filtrée",
+        "FILTERED": "Filtrée",
         "DASHBOARD": {
           "TITLE": "Tableau de bord de stockage"
         },
@@ -1472,6 +1483,7 @@
   },
   "OIL_CONTAINER_LIST": "List des conteneur d'huile",
   "OIL_CONTAINER_MANAGEMENT": "Gestion des conteneur huile",
+  "OIL_FILTRAGE_MANAGEMENT": "Gestion de filtrage huile",
   "OIL_CONTAINER_MANAGEMENT_ADD": "Ajouter un nouveau conteneur",
   "OIL_CREDIT": {
     "ACTIONS": {

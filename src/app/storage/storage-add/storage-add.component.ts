@@ -100,10 +100,11 @@ export class StorageAddComponent implements OnInit, OnDestroy {
         maxCapacity: [null, [Validators.required, Validators.min(1)]],
         currentVolume: [0],
 
-        oilVariety: [null ], // BaseType full object
+        oilVariety: [null], // BaseType full object
         status: ['AVAILABLE', Validators.required],
 
-
+        // Filtration field
+        filteredOil: [false],
 
         paidStorage: [false],
         monthlyRentalPrice: [0] // OPTIONAL
@@ -167,7 +168,9 @@ export class StorageAddComponent implements OnInit, OnDestroy {
       nextMaintenanceDate: toISO(v.nextMaintenanceDate),
       lastInspectionDate: toISO(v.lastInspectionDate),
       paidStorage: !!v.paidStorage,
-      monthlyRentalPrice: v.monthlyRentalPrice != null && v.monthlyRentalPrice !== '' ? Number(v.monthlyRentalPrice) : 0.0
+      monthlyRentalPrice: v.monthlyRentalPrice != null && v.monthlyRentalPrice !== '' ? Number(v.monthlyRentalPrice) : 0.0,
+      // Filtration field
+      filteredOil: !!v.filteredOil
     };
 
     this.loading = true;
@@ -253,7 +256,7 @@ export class StorageAddComponent implements OnInit, OnDestroy {
   /** Patch only when we have unit + both catalogs (for edit mode) */
   private tryPatchWhenReady(): void {
     if (!this.isEditing) return;
-    if (this.unitLoaded    && this.unit) {
+    if (this.unitLoaded && this.unit) {
       this.patchForm(this.unit);
       this.loading = false;
     }
@@ -281,6 +284,9 @@ export class StorageAddComponent implements OnInit, OnDestroy {
 
       nextMaintenanceDate: storage.nextMaintenanceDate ? new Date(storage.nextMaintenanceDate) : null,
       lastInspectionDate: storage.lastInspectionDate ? new Date(storage.lastInspectionDate) : null,
+
+      // Filtration field
+      filteredOil: !!storage.filteredOil,
 
       paidStorage: !!storage.paidStorage,
       monthlyRentalPrice: storage.paidStorage ? (storage.monthlyRentalPrice ?? 0) : null

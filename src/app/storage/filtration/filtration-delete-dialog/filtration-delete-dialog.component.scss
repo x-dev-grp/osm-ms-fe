@@ -1,0 +1,318 @@
+/* ===================================== */
+/* STYLES DIALOGUE SUPPRESSION - ABIOC */
+/* Design premium sans toucher au TS */
+/* ===================================== */
+
+// Palette ABIOC
+$abioc-warning: #d32f2f;
+$abioc-warning-light: #ffebee;
+$abioc-source: #f4a261;
+$abioc-target: #2c5f2d;
+
+/* ===================================== */
+/* TITRE DU DIALOGUE */
+/* ===================================== */
+.abioc-dialog-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 24px;
+  margin: 0;
+  background: $abioc-warning-light;
+  border-bottom: 1px solid rgba($abioc-warning, 0.2);
+
+  .warning-icon {
+    color: $abioc-warning;
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+  }
+
+  span {
+    color: $abioc-warning;
+    font-weight: 600;
+    font-size: 18px;
+  }
+}
+
+/* ===================================== */
+/* CONTENU DU DIALOGUE */
+/* ===================================== */
+.abioc-dialog-content {
+  padding: 24px !important;
+  min-width: 520px;
+  max-width: 560px;
+}
+
+/* ===================================== */
+/* MESSAGE D'AVERTISSEMENT */
+/* ===================================== */
+.warning-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background: #fff8e7;
+  padding: 16px 20px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  border-left: 4px solid #f4a261;
+
+  .info-icon {
+    color: #f4a261;
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+
+  .warning-text {
+    strong {
+      display: block;
+      color: #2d3e50;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    p {
+      margin: 0;
+      color: #757575;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+  }
+}
+
+/* ===================================== */
+/* CARTE DÉTAILS */
+/* ===================================== */
+.details-card {
+  background: #ffffff-dark;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 24px;
+  border: 1px solid #e1e8ed;
+}
+
+.details-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 16px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #2d3e50;
+
+  mat-icon {
+    color: #2c5f2d;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.details-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: baseline;
+  padding: 8px 0;
+  border-bottom: 1px dashed rgba(#e1e8ed, 0.7);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .detail-label {
+    width: 110px;
+    color: #757575;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .detail-value {
+    flex: 1;
+    color: #2d3e50;
+    font-weight: 500;
+    font-size: 14px;
+
+    &.mono {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 13px;
+      letter-spacing: -0.2px;
+    }
+
+    .unit {
+      color: #757575;
+      font-size: 12px;
+      margin-left: 2px;
+    }
+  }
+}
+
+.source-text {
+  color: $abioc-source !important;
+  font-weight: 600 !important;
+}
+
+.target-text {
+  color: $abioc-target !important;
+  font-weight: 600 !important;
+}
+
+.statut-item {
+  .statut-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 600;
+
+    mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+    }
+
+    &.created {
+      background: rgba(#4361ee, 0.12);
+      color: #4361ee;
+    }
+    &.in_progress {
+      background: rgba(#f4a261, 0.12);
+      color: #f4a261;
+    }
+    &.completed {
+      background: rgba(#2c5f2d, 0.12);
+      color: #2c5f2d;
+    }
+    &.cancelled {
+      background: rgba($abioc-warning, 0.12);
+      color: $abioc-warning;
+    }
+  }
+}
+
+.note-item {
+  background: rgba(#2c5f2d, 0.03);
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 4px;
+
+  .detail-label {
+    color: #2c5f2d;
+  }
+
+  .note-text {
+    font-style: italic;
+    color: #757575;
+    font-weight: 400;
+    background: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border-left: 3px solid #2c5f2d;
+  }
+}
+
+/* ===================================== */
+/* SECTION CONFIRMATION */
+/* ===================================== */
+.confirmation-section {
+  background: #f9f9f9;
+  border-radius: 12px;
+  padding: 16px 20px;
+  border: 1px solid #e1e8ed;
+}
+
+.confirmation-checkbox {
+  width: 100%;
+
+  ::ng-deep .mat-checkbox-label {
+    font-size: 14px;
+    color: #2d3e50;
+  }
+
+  .checkbox-label {
+    font-weight: 500;
+    color: $abioc-warning;
+  }
+}
+
+/* ===================================== */
+/* ACTIONS DU DIALOGUE */
+/* ===================================== */
+.abioc-dialog-actions {
+  padding: 16px 24px 24px 24px;
+  gap: 12px;
+
+  button {
+    min-width: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 8px;
+    font-weight: 500;
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  .btn-cancel {
+    color: #757575;
+    border-color: #e1e8ed;
+
+    &:hover {
+      background: #ffffff-dark;
+    }
+  }
+
+  .btn-delete {
+    background: $abioc-warning !important;
+    color: white !important;
+
+    &:hover:not(:disabled) {
+      background: darken($abioc-warning, 10%) !important;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
+
+/* ===================================== */
+/* RESPONSIVE */
+/* ===================================== */
+@media (max-width: 600px) {
+  .abioc-dialog-content {
+    min-width: auto;
+    padding: 16px !important;
+  }
+
+  .detail-item {
+    flex-direction: column;
+    gap: 4px;
+
+    .detail-label {
+      width: auto;
+    }
+  }
+
+  .abioc-dialog-actions {
+    flex-direction: column-reverse;
+
+    button {
+      width: 100%;
+    }
+  }
+}
