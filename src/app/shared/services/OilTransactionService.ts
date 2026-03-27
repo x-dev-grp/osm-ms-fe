@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { OilTransaction, TransactionState } from '../models/OilTransaction';
 import { ApiResponse } from '../models/api-response';
+import {QrCodeRequest, QrCodeResponse} from "../models/qr-models";
 
 // Interface for exchange completion payload
 export interface ExchangeCompletionPayload {
@@ -91,5 +92,8 @@ export class OilTransactionService {
   // Approve an oil transaction
   approveOilTransaction(oilTransaction: OilTransaction): Observable<ApiResponse<OilTransaction>> {
     return this.http.put<ApiResponse<OilTransaction>>(`${this.baseUrl}/approve`, oilTransaction);
+  }
+  generateQrCode(request: QrCodeRequest): Observable<QrCodeResponse> {
+    return this.http.post<QrCodeResponse>(`${this.baseUrl}/generate`, request);
   }
 }

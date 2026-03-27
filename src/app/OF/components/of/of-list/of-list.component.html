@@ -16,50 +16,53 @@
     <p>Chargement des ordres de conditionnement...</p>
   </div>
 
-
-  <div *ngIf="!loading" class="table-container">
-    <div class="table-responsive">
-      <table class="data-table">
-        <thead>
-        <tr>
-          <th>Code</th>
-          <th>SKU</th>
-          <th>Statut</th>
-          <th>Cible</th>
-          <th>Bon / NC</th>
-          <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let of of ofs">
-          <td data-label="Code">{{ of.code }}</td>
-          <td data-label="SKU">{{ of.skuCode || of.skuId }}</td>
-          <td data-label="Statut">
-              <span class="status-badge" [ngClass]="getStatusClass(of.statut)">
-                {{ of.statut }}
-              </span>
-          </td>
-          <td data-label="Cible">{{ of.quantiteCible }}</td>
-          <td data-label="Bon / NC">
-              <span class="production-stats">
-                <span class="good">{{ of.quantiteBonne || 0 }}</span>
-                <span class="separator">/</span>
-                <span class="nc">{{ of.quantiteNC || 0 }}</span>
-              </span>
-          </td>
-          <td class="actions">
-            <div class="action-buttons">
-              <button class="btn-icon view" [routerLink]="['/of', of.id]" title="Voir détails">
-                <i class="fas fa-eye"></i>
-              </button>
-            </div>
-          </td>
-        </tr>
-        <tr *ngIf="ofs.length === 0">
-          <td colspan="6" class="empty-row">Aucun ordre de conditionnement trouvé</td>
-        </tr>
-        </tbody>
-      </table>
+  <div *ngIf="!loading" class="cards-grid">
+    <div class="of-card" *ngFor="let of of ofs" [routerLink]="['/of', of.id]">
+      <div class="card-header">
+        <div class="card-title">
+          <i class="fas fa-box-open"></i>
+          <span>{{ of.code }}</span>
+        </div>
+        <span class="status-badge" [ngClass]="getStatusClass(of.statut)">
+          {{ of.statut }}
+        </span>
+      </div>
+      <div class="card-body">
+        <div class="info-row">
+          <i class="fas fa-tag"></i>
+          <span>SKU :</span>
+          <strong>{{ of.skuCode || of.skuId }}</strong>
+        </div>
+        <div class="info-row">
+          <i class="fas fa-chart-line"></i>
+          <span>Cible :</span>
+          <strong>{{ of.quantiteCible }}</strong>
+        </div>
+        <div class="info-row">
+          <i class="fas fa-check-circle"></i>
+          <span>Bon / NC :</span>
+          <strong>
+            <span class="good">{{ of.quantiteBonne || 0 }}</span>
+            <span class="separator">/</span>
+            <span class="nc">{{ of.quantiteNC || 0 }}</span>
+          </strong>
+        </div>
+        <div class="info-row">
+          <i class="fas fa-calendar-alt"></i>
+          <span>Début prévu :</span>
+          <strong>{{ of.dateDebutPrevue | date:'dd/MM/yyyy HH:mm' }}</strong>
+        </div>
+      </div>
+      <div class="card-footer">
+        <button class="btn-view" [routerLink]="['/of', of.id]">
+          Voir détails <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+    <div *ngIf="ofs.length === 0" class="empty-state">
+      <i class="fas fa-clipboard-list"></i>
+      <p>Aucun ordre de conditionnement trouvé</p>
+      <button class="btn-create-empty" routerLink="/of/nouveau">Créer un nouvel OF</button>
     </div>
   </div>
 </div>
