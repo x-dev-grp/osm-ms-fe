@@ -1,4 +1,5 @@
 <div class="of-detail-page" *ngIf="of">
+  <!-- En‑tête avec actions -->
   <div class="detail-header">
     <button class="btn-back-floating" routerLink="/of">
       <i class="fas fa-arrow-left"></i>
@@ -23,31 +24,38 @@
     </div>
   </div>
 
+  <!-- Grille des cartes d'information -->
   <div class="detail-grid">
     <div class="card-box info-card">
       <h5>Informations générales</h5>
-      <div class="info-row"><span>Code</span><strong>{{ of.code }}</strong></div>
-      <div class="info-row"><span>SKU</span><strong>{{ of.skuCode || of.skuId }}</strong></div>
-      <div class="info-row"><span>Ligne</span><strong>{{ of.ligneNom || of.ligneId || '-' }}</strong></div>
-      <div class="info-row"><span>Lot vrac</span><strong>{{ of.lotVracId || '-' }}</strong></div>
-      <div class="info-row"><span>Statut</span><span class="status-badge" [ngClass]="of.statut.toLowerCase()">{{ of.statut }}</span></div>
-      <div class="info-row"><span>Quantité cible</span><strong>{{ of.quantiteCible }}</strong></div>
-      <div class="info-row"><span>Bon / NC</span><strong>{{ of.quantiteBonne }} / {{ of.quantiteNC }}</strong></div>
-      <div class="info-row"><span>Durée réelle (min)</span><strong>{{ of.dureeReelle || '-' }}</strong></div>
-      <!-- Dans info-card, après "Durée réelle" -->
+      <div class="info-row"><i class="fas fa-barcode"></i><span>Code</span><strong>{{ of.code }}</strong></div>
+      <div class="info-row"><i class="fas fa-tag"></i><span>SKU</span><strong>{{ of.skuCode || of.skuId }}</strong></div>
+      <div class="info-row"><i class="fas fa-industry"></i><span>Ligne</span><strong>{{ of.ligneNom || of.ligneId || '-' }}</strong></div>
+      <div class="info-row"><i class="fas fa-oil-can"></i><span>Lot vrac</span><strong>{{ of.lotVracId || '-' }}</strong></div>
+      <div class="info-row"><i class="fas fa-chart-simple"></i><span>Statut</span><span class="status-badge" [ngClass]="of.statut.toLowerCase()">{{ of.statut }}</span></div>
+      <div class="info-row"><i class="fas fa-chart-line"></i><span>Quantité cible</span><strong>{{ of.quantiteCible }}</strong></div>
+      <div class="info-row"><i class="fas fa-check-circle"></i><span>Bon / NC</span><strong>{{ of.quantiteBonne }} / {{ of.quantiteNC }}</strong></div>
+      <div class="info-row"><i class="fas fa-clock"></i><span>Durée réelle (min)</span><strong>{{ of.dureeReelle || '-' }}</strong></div>
       <div class="info-row" *ngIf="of.statut === 'EN_COURS'">
-        <span>Temps écoulé</span>
+        <i class="fas fa-hourglass-half"></i><span>Temps écoulé</span>
         <strong>{{ TimeFormatted }}</strong>
+      </div>
+      <!-- Progression de production -->
+      <div class="production-progress">
+        <span>Progression</span>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="(of.quantiteBonne / of.quantiteCible) * 100"></div>
+        </div>
+        <span class="progress-value">{{ (of.quantiteBonne / of.quantiteCible) * 100 | number:'1.0-0' }}%</span>
       </div>
     </div>
 
-
     <div class="card-box timeline-card">
       <h5>Dates</h5>
-      <div class="info-row"><span>Prévu début</span><strong>{{ of.dateDebutPrevue | date:'dd/MM/yyyy HH:mm' }}</strong></div>
-      <div class="info-row"><span>Prévu fin</span><strong>{{ of.dateFinPrevue | date:'dd/MM/yyyy HH:mm' }}</strong></div>
-      <div class="info-row"><span>Réel début</span><strong>{{ of.dateDebutReelle | date:'dd/MM/yyyy HH:mm' }}</strong></div>
-      <div class="info-row"><span>Réel fin</span><strong>{{ of.dateFinReelle | date:'dd/MM/yyyy HH:mm' }}</strong></div>
+      <div class="info-row"><i class="fas fa-calendar-week"></i><span>Prévu début</span><strong>{{ of.dateDebutPrevue | date:'dd/MM/yyyy HH:mm' }}</strong></div>
+      <div class="info-row"><i class="fas fa-calendar-week"></i><span>Prévu fin</span><strong>{{ of.dateFinPrevue | date:'dd/MM/yyyy HH:mm' }}</strong></div>
+      <div class="info-row"><i class="fas fa-play-circle"></i><span>Réel début</span><strong>{{ of.dateDebutReelle | date:'dd/MM/yyyy HH:mm' }}</strong></div>
+      <div class="info-row"><i class="fas fa-stop-circle"></i><span>Réel fin</span><strong>{{ of.dateFinReelle | date:'dd/MM/yyyy HH:mm' }}</strong></div>
     </div>
   </div>
 
@@ -82,17 +90,17 @@
       </thead>
       <tbody>
       <tr *ngFor="let line of of.lignes">
-        <td>{{ line.articleNom || line.articleId }}</td>
-        <td>{{ line.quantiteTheorique }}</td>
-        <td>
+        <td data-label="Article">{{ line.articleNom || line.articleId }}</td>
+        <td data-label="Théorique">{{ line.quantiteTheorique }}</td>
+        <td data-label="Réelle">
           <input type="number" [(ngModel)]="line.quantiteReelle" class="form-control-sm" *ngIf="isEditable()">
           <span *ngIf="!isEditable()">{{ line.quantiteReelle || '-' }}</span>
         </td>
-        <td>
+        <td data-label="Motif">
           <input type="text" [(ngModel)]="line.motifAjustement" class="form-control-sm" *ngIf="isEditable()">
           <span *ngIf="!isEditable()">{{ line.motifAjustement || '-' }}</span>
         </td>
-        <td>
+        <td data-label="Action">
           <button *ngIf="isEditable()" class="btn-icon save" (click)="saveAdjustment(line)">
             <i class="fas fa-save"></i>
           </button>
@@ -100,6 +108,37 @@
       </tr>
       </tbody>
     </table>
+  </div>
+
+  <!-- QR Code Section -->
+  <div class="card-box qr-card">
+    <h5>QR Code</h5>
+    <div *ngIf="of.publicCode; else noQr">
+      <div class="qr-container">
+        <img *ngIf="of.qrImageBase64; else missingQrImage"
+             [src]="'data:image/png;base64,' + of.qrImageBase64"
+             alt="QR Code">
+        <ng-template #missingQrImage>
+          <p class="qr-status">Le code public existe déjà, mais l'image QR doit être régénérée.</p>
+        </ng-template>
+        <p class="public-code">Code manuel: <strong>{{ of.publicCode }}</strong></p>
+        <p class="qr-url" *ngIf="of.qrUrl">{{ of.qrUrl }}</p>
+        <div class="qr-buttons">
+          <button class="btn-generate-qr" (click)="generateQr()" [disabled]="generatingQr">
+            {{ generatingQr ? 'Génération...' : (of.qrImageBase64 ? 'Régénérer le QR Code' : 'Générer l\'image QR') }}
+          </button>
+          <button *ngIf="of.qrImageBase64" class="btn-print" (click)="printQr()">
+            <i class="fas fa-print"></i> Imprimer
+          </button>
+        </div>
+      </div>
+    </div>
+    <ng-template #noQr>
+      <p>Pas encore de QR code pour cet OF.</p>
+      <button class="btn-generate-qr" (click)="generateQr()" [disabled]="generatingQr">
+        {{ generatingQr ? 'Génération...' : 'Générer QR Code' }}
+      </button>
+    </ng-template>
   </div>
 </div>
 

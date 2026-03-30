@@ -4,8 +4,8 @@ export interface OrdreFabrication {
   id?: string;
   code?: string;
   statut: StatutOF;
-  dateDebutPrevue?: String;
-  dateFinPrevue?: String;
+  dateDebutPrevue?: string;
+  dateFinPrevue?: string;
   dateDebutReelle?: string;
   dateFinReelle?: string;
   quantiteCible: number;
@@ -19,6 +19,9 @@ export interface OrdreFabrication {
   ligneNom?: string;
   lotVracId?: string;
   lignes?: LigneOF[];
+  qrUrl?: string;
+  publicCode?: string;
+  qrImageBase64?: string;
 }
 
 

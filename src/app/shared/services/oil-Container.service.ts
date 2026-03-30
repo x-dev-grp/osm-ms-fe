@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
  import { ApiResponse } from '../models/api-response';
 import { OilContainer } from '../models/oil-container';
+import {QrCodeRequest, QrCodeResponse} from "../models/qr-models";
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +33,8 @@ export class OilContainerService {
   updateOilContainer( oilContainer: OilContainer): Observable<ApiResponse<OilContainer>> {
     return this.http.put<ApiResponse<OilContainer>>(`${this.baseUrl}`, oilContainer);
   }
-
+  generateQrCode(request: QrCodeRequest): Observable<QrCodeResponse> {
+    return this.http.post<QrCodeResponse>(`${this.baseUrl}/generate`, request);
+  }
 
 }
