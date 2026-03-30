@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule
-} from '@angular/common';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import {OrdreFabrication, StatutOF} from "../../../models/of.model";
-import {OFService} from "../../../services/OFService";
-import {LigneOF} from "../../../models/LigneOF";
+import { OrdreFabrication, StatutOF } from "../../../models/of.model";
+import { OFService } from "../../../services/OFService";
+import { LigneOF } from "../../../models/LigneOF";
 
 @Component({
   selector: 'app-of-detail',
@@ -14,14 +13,15 @@ import {LigneOF} from "../../../models/LigneOF";
   templateUrl: './of-detail.component.html',
   styleUrls: ['./of-detail.component.scss']
 })
-export class OFDetailComponent implements OnInit {
+export class OFDetailComponent implements OnInit, OnDestroy {
   of!: OrdreFabrication;
   loading = true;
   newBons = 0;
   newNC = 0;
   time = 0;
   TimeFormatted = '00:00:00';
-  private timerInterval: any;//(nécessaire pour l’arrêter proprement).
+  private timerInterval: any;
+  generatingQr = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -36,6 +36,10 @@ export class OFDetailComponent implements OnInit {
       return;
     }
     this.loadOF(id);
+  }
+
+  ngOnDestroy(): void {
+    this.stopTimer();
   }
 
   loadOF(id: string): void {
@@ -55,6 +59,62 @@ export class OFDetailComponent implements OnInit {
         this.router.navigate(['/of']);
       }
     });
+  }
+
+  generateQr(): void {
+    if (this.generatingQr || !this.of?.id) return;
+    this.generatingQr = true;
+    this.ofService.generateQr(this.of.id).subscribe({
+      next: (qrInfo) => {
+        this.of = {
+          ...this.of,
+          publicCode: qrInfo.publicCode,
+          qrUrl: qrInfo.qrUrl,
+          qrImageBase64: qrInfo.qrImageBase64
+        };
+        this.generatingQr = false;
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Erreur lors de la génération du QR');
+        this.generatingQr = false;
+      }
+    });
+  }
+
+  /**
+   * Ouvre une fenêtre d'impression avec le QR code et le code manuel.
+   */
+  printQr(): void {
+    if (!this.of.qrImageBase64) {
+      alert('QR non disponible');
+      return;
+    }
+
+    const printContent = `
+      <div style="text-align: center; padding: 20px; font-family: sans-serif;">
+        <h2>Ordre de Fabrication ${this.of.code}</h2>
+        <img src="data:image/png;base64,${this.of.qrImageBase64}"
+             style="width: 200px; height: 200px; margin: 20px 0;" />
+        <p style="font-size: 16px;">Code manuel : <strong>${this.of.publicCode}</strong></p>
+        <p style="margin-top: 20px; font-size: 12px; color: gray;">Scannez le QR code ou saisissez le code manuel</p>
+      </div>
+    `;
+
+    const printWindow = window.open('', '_blank', 'width=600,height=600');
+    printWindow?.document.write(`
+      <html>
+        <head>
+          <title>QR Code - OF ${this.of.code}</title>
+          <style>
+            body { font-family: Arial, sans-serif; }
+          </style>
+        </head>
+        <body>${printContent}</body>
+      </html>
+    `);
+    printWindow?.document.close();
+    printWindow?.print();
   }
 
   isEditable(): boolean {
@@ -147,6 +207,7 @@ export class OFDetailComponent implements OnInit {
       error: (err) => alert('Erreur ajustement')
     });
   }
+
   private startTimer(): void {
     if (!this.of?.dateDebutReelle) return;
     const start = new Date(this.of.dateDebutReelle).getTime();
