@@ -24,7 +24,15 @@ export class OFListComponent implements OnInit {
   loadOFs(): void {
     this.ofService.getAll().subscribe({
       next: (data) => {
-        this.ofs = data;
+
+        this.ofs = data
+          .slice()
+          .sort((a, b) => {
+            const dateA = new Date(a.createdDate || 0).getTime();
+            const dateB = new Date(b.createdDate || 0).getTime();
+            return dateB - dateA; // plus récent en premier
+          });
+
         this.loading = false;
       },
       error: (err) => {

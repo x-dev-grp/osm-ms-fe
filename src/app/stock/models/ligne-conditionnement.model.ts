@@ -14,6 +14,7 @@ export interface LigneConditionnement {
   lastModifiedDate: string;
   createdDate: string;
   actif?: boolean;
+
 }
 
 export enum Statue {

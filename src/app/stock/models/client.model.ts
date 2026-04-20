@@ -13,4 +13,5 @@ export interface Client {
   numeroTva?: string;
   notes?: string;
    actif: boolean;
+  createdDate?: string;
 }

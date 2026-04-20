@@ -4,4 +4,5 @@ export interface BomLine {
   articleName?: string;
   quantity: number;
   unitOfMeasure?: string;
+  createdDate?: string;
 }

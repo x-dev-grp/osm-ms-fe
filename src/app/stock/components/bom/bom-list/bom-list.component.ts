@@ -25,7 +25,12 @@ export class BomListComponent implements OnInit {
   loadBoms(): void {
     this.bomService.getAll().subscribe({
       next: (data) => {
-        this.boms = data;
+        // Tri par createdDate décroissant (ou par id si pas de date)
+        this.boms = data.sort((a, b) => {
+          const dateA = a.createdDate ? new Date(a.createdDate).getTime() : 0;
+          const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
+          return dateB - dateA;
+        });
         this.loading = false;
       },
       error: (err) => {

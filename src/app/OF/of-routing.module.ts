@@ -3,11 +3,21 @@ import { RouterModule, Routes } from '@angular/router';
 import { OFListComponent } from './components/of/of-list/of-list.component';
 import {OFDetailComponent} from "./components/of/of-detail/of-detail.component";
 import {OFFormComponent} from "./components/of/of-form/of-form.component";
+import {
+  ControlPointDefinitionComponent
+} from "./components/QC/control-point-definition/control-point-definition.component";
+import {QualityControlEntryComponent} from "./components/QC/quality-control-entry/quality-control-entry.component";
+import {QualityHistoryComponent} from "./components/QC/quality-history/quality-history.component";
 
 const routes: Routes = [
   { path: '', component: OFListComponent },
   { path: 'nouveau', component: OFFormComponent },
-  { path: ':id', component: OFDetailComponent }
+  { path: ':id', component: OFDetailComponent },
+
+  { path: 'qualite/points', component: ControlPointDefinitionComponent },
+  { path: 'qualite/entry', component: QualityControlEntryComponent },
+  { path: 'qualite/history', component: QualityHistoryComponent }
+
 ];
 
 @NgModule({

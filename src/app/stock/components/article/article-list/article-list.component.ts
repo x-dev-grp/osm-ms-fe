@@ -17,6 +17,8 @@ export class ArticleListComponent implements OnInit {
   filteredArticles: Article[] = [];
   categories = Object.values(CategorieArticle);
   loading = false;
+  togglingId: string | null = null;
+  activeDropdown: string | null = null;
 
   filters = {
     nom: '',
@@ -34,13 +36,19 @@ export class ArticleListComponent implements OnInit {
     this.loading = true;
     this.articleService.getAllArticles().subscribe({
       next: (data) => {
-        console.log("DATA API :", data);
-        this.articles = data;
+        this.articles = data.sort((a, b) => {
+          if (a.actif !== b.actif) {
+            return a.actif ? -1 : 1;
+          }
+          const dateA = a.createdDate ? new Date(a.createdDate).getTime() : 0;
+          const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
+          return dateB - dateA;
+        });
         this.applyFilters();
         this.loading = false;
       },
-      error: (error) => {
-        console.error('Erreur chargement articles:', error);
+      error: (err) => {
+        console.error('Erreur chargement articles:', err);
         this.loading = false;
       }
     });
@@ -53,36 +61,92 @@ export class ArticleListComponent implements OnInit {
       if (this.filters.nom) {
         match = match && article.nom.toLowerCase().includes(this.filters.nom.toLowerCase());
       }
-
       if (this.filters.categorie) {
         match = match && article.categorie === this.filters.categorie;
       }
-
       if (this.filters.actif !== '') {
         const actif = this.filters.actif === 'true';
         match = match && article.actif === actif;
       }
-
       return match;
     });
   }
 
   resetFilters(): void {
-    this.filters = {
-      nom: '',
-      categorie: '',
-      actif: ''
-    };
+    this.filters = { nom: '', categorie: '', actif: '' };
+    this.applyFilters();
+  }
+
+  toActif(article: Article, event: Event): void {
+    event.stopPropagation();
+    if (!article.id) return;
+
+    const action = article.actif ? 'désactiver' : 'activer';
+    if (confirm(`Voulez-vous vraiment ${action} l'article "${article.nom}" ?`)) {
+      this.togglingId = article.id;
+
+      const request = article.actif
+        ? this.articleService.desactiverArticle(article.id)
+        : this.articleService.activerArticle(article.id);
+
+      request.subscribe({
+        next: (updatedArticle) => {
+          const index = this.articles.findIndex(a => a.id === updatedArticle.id);
+          if (index !== -1) {
+            this.articles[index] = updatedArticle;
+          }
+          this.sortArticles();
+          this.togglingId = null;
+        },
+        error: (err) => {
+          console.error(err);
+          this.togglingId = null;
+          alert(`Erreur lors de l'${action} de l'article`);
+        }
+      });
+    }
+  }
+
+  sortArticles(): void {
+    this.articles.sort((a, b) => {
+      if (a.actif !== b.actif) {
+        return a.actif ? -1 : 1;
+      }
+      const dateA = a.createdDate ? new Date(a.createdDate).getTime() : 0;
+      const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
+      return dateB - dateA;
+    });
     this.applyFilters();
   }
 
   getCategoryBadgeClass(categorie: CategorieArticle): string {
     const classes = {
+      [CategorieArticle.UNITE]: 'bg-primary',
+      [CategorieArticle.COLIS]: 'bg-success',
+      [CategorieArticle.PALETTE]: 'bg-info',
       [CategorieArticle.EMBALLAGE]: 'bg-primary',
       [CategorieArticle.CONSOMMABLE]: 'bg-warning text-dark',
       [CategorieArticle.MATIERE_PREMIERE]: 'bg-info',
       [CategorieArticle.ACCESSOIRE]: 'bg-secondary'
     };
     return classes[categorie] || 'bg-light text-dark';
+  }
+
+  getCategoryIcon(categorie: CategorieArticle): string {
+    const icons = {
+      [CategorieArticle.UNITE]: 'fas fa-cube',
+      [CategorieArticle.COLIS]: 'fas fa-boxes',
+      [CategorieArticle.PALETTE]: 'fas fa-pallet',
+      [CategorieArticle.EMBALLAGE]: 'fas fa-box',
+      [CategorieArticle.CONSOMMABLE]: 'fas fa-wine-bottle',
+      [CategorieArticle.MATIERE_PREMIERE]: 'fas fa-cubes',
+      [CategorieArticle.ACCESSOIRE]: 'fas fa-microchip'
+    };
+    return icons[categorie] || 'fas fa-tag';
+  }
+
+  toggleDropdown(id: string | undefined, event: Event): void {
+    event.stopPropagation();
+    this.activeDropdown = this.activeDropdown === id ? null : id!;
   }
 }

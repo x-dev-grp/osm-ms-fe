@@ -19,17 +19,23 @@ export interface OrdreFabrication {
   ligneNom?: string;
   lotVracId?: string;
   lignes?: LigneOF[];
+  articleNom?: string;
+  createdDate?: string;
   qrUrl?: string;
   publicCode?: string;
   qrImageBase64?: string;
+  qualityStatus?: QualityStatus;
 }
 
 
 export enum StatutOF {
-  BROUILLON = 'BROUILLON',
   PLANIFIE = 'PLANIFIE',
   EN_COURS = 'EN_COURS',
   EN_PAUSE = 'EN_PAUSE',
   TERMINE = 'TERMINE',
   CLOTURE = 'CLOTURE'
+}
+export enum  QualityStatus {
+  FREE = 'FREE',
+  BLOCKED = 'BLOCKED',
 }

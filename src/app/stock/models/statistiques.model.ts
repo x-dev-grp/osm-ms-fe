@@ -7,4 +7,5 @@ export interface StatistiquesStock {
   delaiValidationMoyen: number;
   mouvementsRecents: number;
   lastModifiedDate: string;
+  createdDate?: string;
 }

@@ -1,5 +1,4 @@
 <div class="fournisseur-container">
-  <!-- Header -->
   <div class="page-header">
     <div>
       <h1 class="page-title">Fournisseurs</h1>
@@ -11,7 +10,6 @@
     </button>
   </div>
 
-  <!-- Filtres et recherche -->
   <div class="filters-card">
     <div class="filters-grid">
       <div class="filter-group search-group">
@@ -66,16 +64,16 @@
       </span>
     </div>
   </div>
+
   <div *ngIf="loading" class="text-center my-5">
     <div class="spinner-border text-primary" role="status">
       <span class="visually-hidden">Chargement...</span>
     </div>
   </div>
 
-
   <div class="table-card" *ngIf="!loading">
     <div class="table-responsive">
-      <table class="table table-hover">
+      <table class="table">
         <thead>
         <tr>
           <th>Code</th>
@@ -89,7 +87,8 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let fournisseur of filteredFournisseurs">
+        <tr *ngFor="let fournisseur of filteredFournisseurs"
+            [ngClass]="{'inactive-row': !fournisseur.actif}">
           <td class="fw-bold text-primary">{{ fournisseur.code }}</td>
           <td>
             <div>{{ fournisseur.nom }}</div>
@@ -99,7 +98,8 @@
           </td>
           <td>
               <span class="badge" [ngClass]="getCategorieBadgeClass(fournisseur.categorieFournisseur)">
-                {{ fournisseur.categorieFournisseur || 'N/A' }}
+                <i [ngClass]="getCategoryIcon(fournisseur.categorieFournisseur)"></i>
+                <span class="ms-1">{{ fournisseur.categorieFournisseur || 'N/A' }}</span>
               </span>
           </td>
           <td>
@@ -116,22 +116,22 @@
               </span>
           </td>
           <td class="actions">
-            <button class="btn btn-sm btn-info me-1"
-                    [routerLink]="['/stock/fournisseurs', fournisseur.id]"
-                    title="Voir détails">
-              <i class="fas fa-eye"></i>
-            </button>
-            <button class="btn btn-sm btn-warning me-1"
-                    [routerLink]="['/stock/fournisseurs', fournisseur.id, 'editer']"
-                    title="Modifier">
-              <i class="fas fa-edit"></i>
-            </button>
-            <button class="btn btn-sm"
-                    [ngClass]="fournisseur.actif ? 'btn-secondary' : 'btn-success'"
-                    (click)="toActif(fournisseur)"
-                    title="{{ fournisseur.actif ? 'Désactiver' : 'Activer' }}">
-              <i class="fas" [ngClass]="fournisseur.actif ? 'fa-ban' : 'fa-check'"></i>
-            </button>
+            <ng-container *ngIf="fournisseur.actif; else inactiveActions">
+              <button class="btn btn-sm btn-info me-1" [routerLink]="['/stock/fournisseurs', fournisseur.id]">
+                <i class="fas fa-eye"></i>
+              </button>
+              <button class="btn btn-sm btn-warning me-1" [routerLink]="['/stock/fournisseurs', fournisseur.id, 'editer']">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn btn-sm btn-danger" (click)="toActif(fournisseur, $event)">
+                <i class="fas fa-ban"></i> Désactiver
+              </button>
+            </ng-container>
+            <ng-template #inactiveActions>
+              <button class="btn btn-sm btn-success" (click)="toActif(fournisseur, $event)">
+                <i class="fas fa-check-circle"></i> Activer
+              </button>
+            </ng-template>
           </td>
         </tr>
         <tr *ngIf="filteredFournisseurs.length === 0">

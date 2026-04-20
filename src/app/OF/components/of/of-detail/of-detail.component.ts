@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { OrdreFabrication, StatutOF } from "../../../models/of.model";
 import { OFService } from "../../../services/OFService";
 import { LigneOF } from "../../../models/LigneOF";
+import {ToastService} from "../../../../shared/services/toast.service";
 
 @Component({
   selector: 'app-of-detail',
@@ -26,7 +27,8 @@ export class OFDetailComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private ofService: OFService
+    private ofService: OFService,
+    private toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -122,7 +124,7 @@ export class OFDetailComponent implements OnInit, OnDestroy {
   }
 
   canStart(): boolean {
-    return [StatutOF.BROUILLON, StatutOF.PLANIFIE, StatutOF.EN_PAUSE].includes(this.of.statut);
+    return [ StatutOF.PLANIFIE].includes(this.of.statut);
   }
 
   canPause(): boolean {
@@ -176,8 +178,22 @@ export class OFDetailComponent implements OnInit, OnDestroy {
       next: (updated) => {
         this.of = updated;
         this.stopTimer();
+        this.toast.success('OF clôturé avec succès');
       },
-      error: (err) => alert('Erreur clôture')
+      error: (err) => {
+        let errorMessage = 'Erreur lors de la clôture';
+        if (err.error?.error) {
+          errorMessage = err.error.error;
+        } else if (err.message) {
+          errorMessage = err.message;
+        }
+
+        console.error('Erreur clôture:', errorMessage);
+        if (errorMessage.includes('bloqué') || errorMessage.includes('qualité')) {
+          this.toast.error(errorMessage);
+
+        }
+      }
     });
   }
 
@@ -202,9 +218,15 @@ export class OFDetailComponent implements OnInit, OnDestroy {
       quantiteReelle: line.quantiteReelle,
       motif: line.motifAjustement
     };
-    this.ofService.ajusterConsommation(this.of.id!, [ajustement]).subscribe({
-      next: (updated) => this.of = updated,
-      error: (err) => alert('Erreur ajustement')
+    this.ofService.ajusterConsommation(this.of.id!, ajustement).subscribe({
+      next: (updated) => {
+        this.of = updated;
+        alert(' Ajustement enregistré avec succès');
+      },
+      error: (err) => {
+        alert(' Erreur lors de l\'ajustement');
+        console.error(err);
+      }
     });
   }
 
@@ -241,5 +263,21 @@ export class OFDetailComponent implements OnInit, OnDestroy {
 
   private pad(num: number): string {
     return num.toString().padStart(2, '0');
+  }
+  goToQualityControl(): void {
+    this.router.navigate(['/of/qualite/points'], {
+      queryParams: { ofId: this.of.id, ofCode: this.of.code }
+    });
+  }
+  goToQualityHistory(): void {
+    this.router.navigate(['/of/qualite/history'], {
+      queryParams: { ofId: this.of.id }
+    });
+  }
+
+  goToQualityEntry(): void {
+    this.router.navigate(['/of/qualite/entry'], {
+      queryParams: { ofId: this.of.id }
+    });
   }
 }

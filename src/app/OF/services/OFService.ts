@@ -38,12 +38,15 @@ export class OFService {
     return this.http.put<OrdreFabrication>(`${this.baseUrl}/${id}/cloturer`, {});
   }
 
-  saisirProduction(id: string, bons: number, nc: number): Observable<OrdreFabrication> {
-    return this.http.put<OrdreFabrication>(`${this.baseUrl}/${id}/production`, { quantiteBonne: bons, quantiteNC: nc });
+  saisirProduction(id: string, quantiteBonne: number, quantiteNC: number): Observable<OrdreFabrication> {
+    return this.http.put<OrdreFabrication>(`${this.baseUrl}/${id}/production`, {
+      quantiteBonne,
+      quantiteNC
+    });
   }
 
-  ajusterConsommation(id: string, ajustements: any[]): Observable<OrdreFabrication> {
-    return this.http.put<OrdreFabrication>(`${this.baseUrl}/${id}/ajustements`, ajustements);
+  ajusterConsommation(id: string, ajustement: any): Observable<OrdreFabrication> {
+    return this.http.put<OrdreFabrication>(`${this.baseUrl}/${id}/ajustements`, ajustement);
   }
 
   generateQr(entityId: string): Observable<QrCodeInfo> {

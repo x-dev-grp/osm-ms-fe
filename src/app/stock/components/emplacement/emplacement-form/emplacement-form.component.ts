@@ -30,6 +30,7 @@ export class EmplacementFormComponent implements OnInit {
     private emplacementService: EmplacementStockService
   ) {
     this.emplacementForm = this.fb.group({
+      code: [{value: '', disabled: true}],
       nom: ['', Validators.required],
       typeEmplacement: ['', Validators.required],
       capaciteMaximale: [null],

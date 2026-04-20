@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import {FormBuilder, FormGroup, Validators, ReactiveFormsModule, ValidationErrors} from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {LigneConditionnement} from "../../../../stock/models/ligne-conditionnement.model";
 import {SKU} from "../../../../stock/models/sku.model";
@@ -10,6 +10,7 @@ import {OrdreFabrication, StatutOF} from "../../../models/of.model";
 import {SKUService} from "../../../../stock/services/sku.service";
 import {Bom} from "../../../../stock/models/Bom";
 import {BomService} from "../../../../stock/services/BomService";
+import {ToastService} from "../../../../shared/services/toast.service";
 
 @Component({
   selector: 'app-of-form',
@@ -33,7 +34,8 @@ export class OFFormComponent implements OnInit {
     private ofService: OFService,
     private skuService: SKUService,
     private ligneService: LigneConditionnementService,
-    private bomService: BomService
+    private bomService: BomService,
+    private toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -59,8 +61,17 @@ export class OFFormComponent implements OnInit {
       quantiteCible: [null, [Validators.required, Validators.min(1)]],
       dateDebutPrevue: [''],
       dateFinPrevue: ['']
-    });
+    }, { validators: this.dateRangeValidator });
   }
+  private dateRangeValidator(group: FormGroup): ValidationErrors | null {
+    const debut = group.get('dateDebutPrevue')?.value;
+    const fin = group.get('dateFinPrevue')?.value;
+    if (debut && fin && new Date(debut) > new Date(fin)) {
+      return { dateFinAfterDebut: true };
+    }
+    return null;
+  }
+
 
   loadSkus(): void {
     this.skuService.getActiveSKUs().subscribe((data: SKU[]) => this.skus = data);
@@ -104,22 +115,29 @@ export class OFFormComponent implements OnInit {
       ligneId: formValue.ligneId || undefined,
       lotVracId: formValue.lotVracId || undefined,
       quantiteCible: formValue.quantiteCible,
+      statut: StatutOF.PLANIFIE,
+      quantiteBonne: 0,
+      quantiteNC: 0,
       dateDebutPrevue: formValue.dateDebutPrevue || undefined,
       dateFinPrevue: formValue.dateFinPrevue || undefined,
-      statut: StatutOF.BROUILLON,
-      quantiteBonne: 0,
-      quantiteNC: 0
     };
 
     this.ofService.create(newOF).subscribe({
       next: () => {
         this.isSubmitting = false;
+        this.toast.success('OF créé avec succès');
         this.router.navigate(['/of']);
       },
       error: (err) => {
-        console.error(err);
         this.isSubmitting = false;
-        alert('Erreur lors de la création');
+        console.error(err);
+        let errorMessage = 'Erreur lors de la création de l\'OF';
+        if (err.error) {
+          errorMessage = err.error.error || err.error.message || errorMessage;
+        } else if (err.message) {
+          errorMessage = err.message;
+        }
+        this.toast.error(errorMessage);
       }
     });
   }

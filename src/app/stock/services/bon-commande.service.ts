@@ -24,11 +24,6 @@ export class BonCommandeService {
   createBonCommande(bonCommande: BonCommande): Observable<ApiResponse<BonCommande>> {
     return this.http.post<ApiResponse<BonCommande>>(`${this.apiUrl}/create`, bonCommande);
   }
-
-  updateBonCommande(id: string, bonCommande: BonCommande): Observable<ApiResponse<BonCommande>> {
-    return this.http.put<ApiResponse<BonCommande>>(`${this.apiUrl}/${id}`, bonCommande);
-  }
-
   validerBonCommande(id: string): Observable<ApiResponse<BonCommande>> {
     return this.http.post<ApiResponse<BonCommande>>(`${this.apiUrl}/${id}/valider`, {});
   }
@@ -37,7 +32,7 @@ export class BonCommandeService {
     return this.http.post<ApiResponse<BonCommande>>(`${this.apiUrl}/${id}/refuser`, { motif });
   }
 
-  receptionnerCommande(id: string, quantite: number): Observable<ApiResponse<BonCommande>> {
-    return this.http.post<ApiResponse<BonCommande>>(`${this.apiUrl}/${id}/receptionner`, { quantite });
+  receptionnerCommande(id: string, lignes: { id: string; quantiteRecue: number }[]): Observable<ApiResponse<BonCommande>> {
+    return this.http.post<ApiResponse<BonCommande>>(`${this.apiUrl}/${id}/receptionner`, lignes);
   }
 }

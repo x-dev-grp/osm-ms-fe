@@ -1,5 +1,4 @@
 <div class="mouvement-container">
-  <!-- En-tête avec titre et actions -->
   <div class="header-section">
     <div class="d-flex justify-content-between align-items-center">
       <div>
@@ -9,63 +8,17 @@
         </h1>
         <p class="text-muted mb-0">
           <i class="fas fa-database me-1"></i>
-          {{ totalMouvements }} mouvement(s) au total
+          {{ filteredMouvements.length }} mouvement(s) affiché(s)
         </p>
       </div>
       <div class="action-buttons">
-        <button class="btn btn-refresh me-2" (click)="loadMouvements()" [disabled]="loading">
+        <button class="btn btn-refresh" (click)="loadMouvements()" [disabled]="loading">
           <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
           Actualiser
         </button>
-        <button class="btn btn-export" (click)="exportToCSV()" [disabled]="filteredMouvements.length === 0">
-          <i class="fas fa-download me-1"></i>
-          Exporter CSV
-        </button>
       </div>
     </div>
   </div>
-
-  <!-- Cartes de statistiques -->
-  <div class="stats-grid">
-    <div class="stat-card total">
-      <div class="stat-icon">
-        <i class="fas fa-boxes"></i>
-      </div>
-      <div class="stat-content">
-        <span class="stat-label">Total mouvements</span>
-        <span class="stat-value">{{ totalMouvements }}</span>
-      </div>
-    </div>
-    <div class="stat-card entrees">
-      <div class="stat-icon">
-        <i class="fas fa-arrow-down"></i>
-      </div>
-      <div class="stat-content">
-        <span class="stat-label">Entrées</span>
-        <span class="stat-value">{{ stats.totalEntrees }}</span>
-      </div>
-    </div>
-    <div class="stat-card sorties">
-      <div class="stat-icon">
-        <i class="fas fa-arrow-up"></i>
-      </div>
-      <div class="stat-content">
-        <span class="stat-label">Sorties</span>
-        <span class="stat-value">{{ stats.totalSorties }}</span>
-      </div>
-    </div>
-    <div class="stat-card quantite">
-      <div class="stat-icon">
-        <i class="fas fa-weight-hanging"></i>
-      </div>
-      <div class="stat-content">
-        <span class="stat-label">Quantité totale</span>
-        <span class="stat-value">{{ stats.quantiteTotale }}</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Section des filtres -->
   <div class="filters-section">
     <div class="filters-header" (click)="showFilters = !showFilters">
       <h5>
@@ -77,7 +30,7 @@
 
     <div class="filters-body" [class.show]="showFilters">
       <div class="row g-3">
-        <div class="col-md-3">
+        <div class="col-md-4">
           <label class="filter-label">
             <i class="fas fa-tag me-1"></i>
             Type de mouvement
@@ -92,7 +45,7 @@
           </div>
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md-4">
           <label class="filter-label">
             <i class="fas fa-search me-1"></i>
             Rechercher
@@ -110,29 +63,7 @@
           </div>
         </div>
 
-        <div class="col-md-2">
-          <label class="filter-label">
-            <i class="fas fa-calendar-alt me-1"></i>
-            Date début
-          </label>
-          <input type="date"
-                 class="filter-input"
-                 [(ngModel)]="startDate"
-                 (change)="applyFilters()">
-        </div>
-
-        <div class="col-md-2">
-          <label class="filter-label">
-            <i class="fas fa-calendar-alt me-1"></i>
-            Date fin
-          </label>
-          <input type="date"
-                 class="filter-input"
-                 [(ngModel)]="endDate"
-                 (change)="applyFilters()">
-        </div>
-
-        <div class="col-md-2 d-flex align-items-end">
+        <div class="col-md-4 d-flex align-items-end">
           <button class="btn-reset-filters w-100" (click)="resetFilters()">
             <i class="fas fa-undo-alt me-1"></i>
             Réinitialiser
@@ -140,36 +71,24 @@
         </div>
       </div>
 
-      <!-- Filtres actifs -->
-      <div *ngIf="typeFilter || searchTerm || startDate || endDate" class="active-filters">
+      <div *ngIf="typeFilter || searchTerm" class="active-filters">
         <span class="active-filters-label">Filtres actifs:</span>
         <span *ngIf="typeFilter" class="filter-tag" (click)="typeFilter = ''; applyFilters()">
-          {{ typeFilter === 'ENTREE' ? 'Entrées' : 'Sorties' }}
+          {{ getTypeLabel(typeFilter) }}
           <i class="fas fa-times ms-1"></i>
         </span>
         <span *ngIf="searchTerm" class="filter-tag" (click)="searchTerm = ''; applyFilters()">
           "{{ searchTerm }}"
           <i class="fas fa-times ms-1"></i>
         </span>
-        <span *ngIf="startDate" class="filter-tag" (click)="startDate = ''; applyFilters()">
-          Du {{ startDate | date:'dd/MM/yyyy' }}
-          <i class="fas fa-times ms-1"></i>
-        </span>
-        <span *ngIf="endDate" class="filter-tag" (click)="endDate = ''; applyFilters()">
-          Au {{ endDate | date:'dd/MM/yyyy' }}
-          <i class="fas fa-times ms-1"></i>
-        </span>
       </div>
     </div>
   </div>
-
-  <!-- État de chargement -->
   <div *ngIf="loading" class="loading-state">
     <div class="spinner"></div>
     <p>Chargement des mouvements...</p>
   </div>
 
-  <!-- Message d'erreur -->
   <div *ngIf="error && !loading" class="error-state">
     <i class="fas fa-exclamation-circle"></i>
     <h4>Oups ! Une erreur est survenue</h4>
@@ -179,25 +98,12 @@
       Réessayer
     </button>
   </div>
-
-  <!-- Tableau des mouvements -->
   <div *ngIf="!loading && !error" class="table-section">
     <div class="table-header">
       <span class="results-count">
         <i class="fas fa-list me-1"></i>
         {{ filteredMouvements.length }} résultat(s)
       </span>
-      <div class="pagination-info">
-        <span class="me-2">
-          Page {{ currentPage }} / {{ totalPages }}
-        </span>
-        <select class="items-per-page" [(ngModel)]="itemsPerPage" (change)="applyFilters()">
-          <option [value]="5">5 par page</option>
-          <option [value]="10">10 par page</option>
-          <option [value]="20">20 par page</option>
-          <option [value]="50">50 par page</option>
-        </select>
-      </div>
     </div>
 
     <div class="table-responsive">
@@ -227,7 +133,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let mvt of getPaginatedMouvements()" class="table-row">
+        <tr *ngFor="let mvt of filteredMouvements" class="table-row">
           <td class="date-cell">
             <span class="date">{{ formatDate(mvt.dateMouvement).split(' ')[0] }}</span>
             <span class="time">{{ formatDate(mvt.dateMouvement).split(' ')[1] }}</span>
@@ -245,8 +151,8 @@
               </span>
           </td>
           <td class="text-end">
-              <span class="quantite" [ngClass]="mvt.typeMouvement === 'ENTREE' ? 'text-success' : 'text-danger'">
-                {{ mvt.typeMouvement === 'ENTREE' ? '+' : '-' }}{{ mvt.quantite }}
+              <span class="quantite" [ngClass]="mvt.typeMouvement === TypeMouvement.ENTREE ? 'text-success' : 'text-danger'">
+                {{ mvt.typeMouvement === TypeMouvement.ENTREE ? '+' : '-' }}{{ mvt.quantite }}
                 <small>{{ getUniteMesure(mvt.article) }}</small>
               </span>
           </td>
@@ -271,28 +177,6 @@
         </tr>
         </tbody>
       </table>
-    </div>
-
-    <!-- Pagination -->
-    <div *ngIf="filteredMouvements.length > 0" class="pagination-section">
-      <button class="pagination-btn"
-              [disabled]="currentPage === 1"
-              (click)="changePage(currentPage - 1)">
-        <i class="fas fa-chevron-left"></i>
-      </button>
-
-      <button *ngFor="let page of [].constructor(totalPages); let i = index"
-              class="pagination-btn"
-              [class.active]="currentPage === i + 1"
-              (click)="changePage(i + 1)">
-        {{ i + 1 }}
-      </button>
-
-      <button class="pagination-btn"
-              [disabled]="currentPage === totalPages"
-              (click)="changePage(currentPage + 1)">
-        <i class="fas fa-chevron-right"></i>
-      </button>
     </div>
   </div>
 </div>

@@ -33,10 +33,11 @@ export class FournisseurService {
     return this.http.put<Fournisseur>(`${this.apiUrl}/${id}/desactiver`, {});
   }
 
-  deleteFournisseur(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
-  }
+
   createFournisseur(fournisseur: Fournisseur): Observable<Fournisseur> {
     return this.http.post<Fournisseur>(`${this.apiUrl}/create`, fournisseur);
+  }
+  getActiveFournisseurs(): Observable<Fournisseur[]> {
+    return this.http.get<Fournisseur[]>(`${this.apiUrl}/actifs`);
   }
 }

@@ -12,7 +12,12 @@
   position: relative;
   z-index: 1;
 }
-
+.inactive-row {
+  background-color: #dee2e6 !important;
+  &:hover {
+    background-color: #ced4da !important;
+  }
+}
 // Animations
 @keyframes fadeIn {
   from {

@@ -1,396 +1,81 @@
-<div class="bc-container">
-  <!-- Messages de notification -->
-  @if (successMessage) {
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-      <i class="fas fa-check-circle me-2"></i> {{ successMessage }}
-      <button type="button" class="btn-close" (click)="successMessage = null"></button>
-    </div>
-  }
+<div class="bc-list-container">
+  <div class="header">
+    <h2>Bons de Commande</h2>
+    <button class="btn-add" routerLink="nouveau">
+      <i class="fas fa-plus"></i> Nouveau bon
+    </button>
+  </div>
+  <div class="filters">
+    <input type="text"
+           placeholder="Rechercher par numéro"
+           [(ngModel)]="searchTerm"
+           (input)="onSearch()"
+           class="search-input" />
 
-  @if (error) {
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-      <i class="fas fa-exclamation-triangle me-2"></i> {{ error }}
-      <button type="button" class="btn-close" (click)="error = null"></button>
-    </div>
-  }
+    <select [(ngModel)]="statutFilter"
+            (change)="onStatutChange()"
+            class="statut-select">
+      <option value="">Tous les statuts</option>
+      <option *ngFor="let s of statuts" [value]="s">
+        {{ getStatutLabel(s) }}
+      </option>
+    </select>
 
-  <!-- En-tête avec titre et actions -->
-  <div class="header-section">
-    <div class="d-flex justify-content-between align-items-center">
-      <div>
-        <h1 class="page-title">
-          <i class="fas fa-file-invoice me-2"></i>
-          Bons de commande
-        </h1>
-        <p class="text-muted mb-0">
-          <i class="fas fa-database me-1"></i>
-          {{ totalItems }} bon(s) de commande
-        </p>
-      </div>
-      <div class="action-buttons">
-        <button class="btn-verify me-2"
-                (click)="verifierSeuils()"
-                [disabled]="verifyingSeuils || loading">
-          <i class="fas" [ngClass]="verifyingSeuils ? 'fa-spinner fa-spin' : 'fa-sync-alt'"></i>
-          {{ verifyingSeuils ? 'Vérification...' : 'Vérifier seuils' }}
-        </button>
-        <button class="btn-create" routerLink="nouveau">
-          <i class="fas fa-plus me-1"></i>
-          Nouveau bon
-        </button>
-      </div>
-    </div>
+    <button (click)="resetFilters()" class="reset-btn">Réinitialiser</button>
   </div>
 
-  <!-- Cartes de statistiques -->
-  <div class="stats-grid">
-    <div class="stat-card total">
-      <div class="stat-icon">
-        <i class="fas fa-file-invoice"></i>
-      </div>
-      <div class="stat-content">
-        <span class="stat-label">Total</span>
-        <span class="stat-value">{{ stats.total }}</span>
-      </div>
-    </div>
-    <div class="stat-card en-attente">
-      <div class="stat-icon">
-        <i class="fas fa-clock"></i>
-      </div>
-      <div class="stat-content">
-        <span class="stat-label">En attente</span>
-        <span class="stat-value">{{ stats.enAttente }}</span>
-      </div>
-    </div>
-    <div class="stat-card valide">
-      <div class="stat-icon">
-        <i class="fas fa-check-circle"></i>
-      </div>
-      <div class="stat-content">
-        <span class="stat-label">Validés</span>
-        <span class="stat-value">{{ stats.valide }}</span>
-      </div>
-    </div>
-    <div class="stat-card recu">
-      <div class="stat-icon">
-        <i class="fas fa-truck-loading"></i>
-      </div>
-      <div class="stat-content">
-        <span class="stat-label">Reçus</span>
-        <span class="stat-value">{{ stats.recu }}</span>
-      </div>
-    </div>
-  </div>
+  <div *ngIf="loading" class="loading">Chargement...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
 
-  <!-- Section des filtres -->
-  <div class="filters-section">
-    <div class="filters-header" (click)="showFilters = !showFilters">
-      <h5>
-        <i class="fas fa-filter me-2"></i>
-        Filtres avancés
-      </h5>
-      <i class="fas fa-chevron-down" [class.rotated]="showFilters"></i>
-    </div>
-
-    <div class="filters-body" [class.show]="showFilters">
-      <div class="row g-3">
-        <div class="col-md-4">
-          <label class="filter-label">
-            <i class="fas fa-search me-1"></i>
-            Recherche
-          </label>
-          <div class="search-wrapper">
-            <i class="fas fa-search search-icon"></i>
-            <input type="text"
-                   class="filter-input search-input"
-                   placeholder="N° bon, fournisseur, article..."
-                   [(ngModel)]="searchTerm"
-                   (input)="onSearch()">
-            @if (searchTerm) {
-              <button class="clear-search" (click)="searchTerm = ''; onSearch()">
-                <i class="fas fa-times"></i>
-              </button>
-            }
-          </div>
-        </div>
-
-        <div class="col-md-3">
-          <label class="filter-label">
-            <i class="fas fa-tag me-1"></i>
-            Statut
-          </label>
-          <div class="filter-select-wrapper">
-            <select class="filter-select" [(ngModel)]="statutFilter" (change)="onStatutChange()">
-              <option value="">Tous les statuts</option>
-              @for (statut of statuts; track statut) {
-                <option [value]="statut">
-                  {{ getStatutLabel(statut) }}
-                </option>
-              }
-            </select>
-            <i class="fas fa-chevron-down select-arrow"></i>
-          </div>
-        </div>
-
-        <div class="col-md-5">
-          <label class="filter-label">
-            <i class="fas fa-calendar-alt me-1"></i>
-            Période
-          </label>
-          <div class="date-range">
-            <input type="date"
-                   class="filter-input"
-                   [(ngModel)]="dateDebut"
-                   (change)="onDateChange()"
-                   placeholder="Date début">
-            <span class="date-separator">-</span>
-            <input type="date"
-                   class="filter-input"
-                   [(ngModel)]="dateFin"
-                   (change)="onDateChange()"
-                   placeholder="Date fin">
-          </div>
-        </div>
-      </div>
-
-      <!-- Filtres actifs -->
-      @if (statutFilter || searchTerm || dateDebut || dateFin) {
-        <div class="active-filters">
-          <span class="active-filters-label">Filtres actifs:</span>
-          @if (statutFilter) {
-            <span class="filter-tag" (click)="statutFilter = ''; onStatutChange()">
-              {{ getStatutLabel(statutFilter) }}
-              <i class="fas fa-times ms-1"></i>
-            </span>
-          }
-          @if (searchTerm) {
-            <span class="filter-tag" (click)="searchTerm = ''; onSearch()">
-              "{{ searchTerm }}"
-              <i class="fas fa-times ms-1"></i>
-            </span>
-          }
-          @if (dateDebut) {
-            <span class="filter-tag" (click)="dateDebut = ''; onDateChange()">
-              Du {{ dateDebut | date:'dd/MM/yyyy' }}
-              <i class="fas fa-times ms-1"></i>
-            </span>
-          }
-          @if (dateFin) {
-            <span class="filter-tag" (click)="dateFin = ''; onDateChange()">
-              Au {{ dateFin | date:'dd/MM/yyyy' }}
-              <i class="fas fa-times ms-1"></i>
-            </span>
-          }
-          <button class="reset-all-filters" (click)="resetFilters()">
-            <i class="fas fa-undo-alt me-1"></i>
-            Tout effacer
-          </button>
-        </div>
-      }
-    </div>
-  </div>
-
-  <!-- État de chargement -->
-  @if (loading) {
-    <div class="loading-state">
-      <div class="spinner"></div>
-      <p>Chargement des bons de commande...</p>
-    </div>
-  }
-
-  <!-- Tableau des bons de commande -->
-  @if (!loading) {
-    <div class="table-section">
-      <!-- En-tête du tableau avec contrôles -->
-      <div class="table-header">
-        <div class="results-info">
-          <i class="fas fa-list me-2"></i>
-          <span>{{ filteredBons.length }} résultat(s) affiché(s)</span>
-          @if (filteredBons.length !== stats.total) {
-            <span class="filtered-badge">(filtré sur {{ stats.total }} total)</span>
-          }
-        </div>
-        <div class="table-controls">
-          <select class="items-per-page" [(ngModel)]="itemsPerPage" (change)="pageChanged(1)">
-            <option [value]="5">5 lignes</option>
-            <option [value]="10">10 lignes</option>
-            <option [value]="25">25 lignes</option>
-            <option [value]="50">50 lignes</option>
-            <option [value]="100">100 lignes</option>
-          </select>
-          <button class="btn-refresh" (click)="loadBons()" [disabled]="loading">
-            <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- Tableau -->
-      <div class="table-responsive">
-        <table class="modern-table">
-          <thead>
-          <tr>
-            <th>
-              <i class="fas fa-hashtag me-1"></i>
-              N° Bon
-            </th>
-            <th>
-              <i class="fas fa-truck me-1"></i>
-              Fournisseur
-            </th>
-            <th>
-              <i class="fas fa-calendar me-1"></i>
-              Date création
-            </th>
-            <th class="text-center">
-              <i class="fas fa-boxes me-1"></i>
-              Articles
-            </th>
-            <th class="text-end">
-              <i class="fas fa-weight-hanging me-1"></i>
-              Quantité
-            </th>
-            <th class="text-end">
-              <i class="fas fa-euro-sign me-1"></i>
-              Total
-            </th>
-            <th class="text-center">
-              <i class="fas fa-chart-line me-1"></i>
-              Réception
-            </th>
-            <th class="text-center">
-              <i class="fas fa-tag me-1"></i>
-              Statut
-            </th>
-            <th class="text-center">
-              <i class="fas fa-cog me-1"></i>
-              Actions
-            </th>
-          </tr>
-          </thead>
-          <tbody>
-            @for (bon of filteredBons; track bon.id)  {
-              <tr class="bon-row" (click)="viewBon(bon.id!)">
-                <td class="fw-bold">
-                  <span class="bon-numero">{{ bon.numeroBC }}</span>
-                </td>
-                <td>
-                  <div class="fournisseur-info">
-                    <span class="fournisseur-nom">{{ bon.fournisseur || 'Non spécifié' }}</span>
-                  </div>
-                </td>
-                <td>
-                  <div class="date-info">
-                    <span class="date">{{ bon.dateCreation | date:'dd/MM/yyyy' }}</span>
-                    <span class="time">{{ bon.dateCreation | date:'HH:mm' }}</span>
-                  </div>
-                </td>
-                <td class="text-center">
-                  <span class="badge-articles">{{ getNombreArticles(bon) }}</span>
-                </td>
-                <td class="text-end">
-                  <span class="quantite">{{ getQuantiteTotale(bon) }}</span>
-                  <small class="unit">unités</small>
-                </td>
-                <td class="text-end">
-                  @if (hasPrix(bon)) {
-                    <span class="total-prix">{{ getTotalPrixBon(bon) | number:'1.2-2' }} €</span>
-                  } @else {
-                    <span class="text-muted">-</span>
-                  }
-                </td>
-                <td class="text-center">
-                  <!-- CORRECTION: utiliser bon.status au lieu de bon.statut -->
-                  @if (bon.status === 'VALIDE' || bon.status === 'PARTIELLEMENT_RECU' || bon.status === 'RECU') {
-                    <div class="reception-progress">
-                      <div class="progress-bar-container" [matTooltip]="getProgressionReception(bon) + '% reçu'">
-                        <div class="progress-bar-fill"
-                             [style.width.%]="getProgressionReception(bon)"
-                             [style.background-color]="getProgressColor(bon)"></div>
-                      </div>
-                      <span class="progress-text">{{ getProgressionReception(bon) }}%</span>
-                    </div>
-                  } @else {
-                    <span class="text-muted">-</span>
-                  }
-                </td>
-                <td class="text-center">
-                  <!-- CORRECTION: utiliser bon.status au lieu de bon.statut -->
-                  <span class="status-badge" [ngClass]="getStatusClass(bon.status)">
-                    <i class="fas" [ngClass]="getStatusIcon(bon.status)"></i>
-                    {{ getStatutLabel(bon.status) }}
-                  </span>
-                </td>
-                <td class="text-center">
-                  <div class="action-buttons-cell" (click)="$event.stopPropagation()">
-                    <button class="btn-action view" [routerLink]="['/stock/bons-commande', bon.id]" title="Voir détails">
-                      <i class="fas fa-eye"></i>
-                    </button>
-                    <button class="btn-action pdf" (click)="downloadPdf(bon.id!, $event)" [disabled]="downloadingPdf" title="Télécharger PDF">
-                      <i class="fas" [ngClass]="downloadingPdf ? 'fa-spinner fa-spin' : 'fa-file-pdf'"></i>
-                    </button>
-                    <!-- CORRECTION: utiliser bon.status au lieu de bon.statut -->
-                    @if (bon.status === 'EN_ATTENTE') {
-                      <button class="btn-action edit" [routerLink]="['/stock/bons-commande', bon.id, 'edit']" title="Modifier">
-                        <i class="fas fa-edit"></i>
-                      </button>
-                    }
-                  </div>
-                </td>
-              </tr>
-            } @empty {
-              <tr>
-                <td colspan="9" class="empty-state">
-                  <div class="empty-state-content">
-                    <i class="fas fa-file-invoice"></i>
-                    <h4>Aucun bon de commande trouvé</h4>
-                    <p>Essayez de modifier vos filtres ou créez un nouveau bon</p>
-                    <button class="btn-create-sm" routerLink="nouveau">
-                      <i class="fas fa-plus me-1"></i>
-                      Créer un bon
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Pied de tableau avec pagination -->
-      @if (filteredBons.length > 0) {
-        <div class="table-footer">
-          <div class="pagination-info">
-            Affichage de
-            <strong>{{ (currentPage - 1) * itemsPerPage + 1 }}</strong>
-            à
-            <strong>{{ min(currentPage * itemsPerPage, filteredBons.length) }}</strong>
-            sur
-            <strong>{{ filteredBons.length }}</strong> résultats
-          </div>
-
-          <div class="pagination">
-            <button class="pagination-btn"
-                    [disabled]="currentPage === 1"
-                    (click)="pageChanged(currentPage - 1)">
-              <i class="fas fa-chevron-left"></i>
+  <table *ngIf="!loading && filteredBons.length > 0" class="bc-table">
+    <thead>
+    <tr>
+      <th>#</th>
+      <th>Numéro BC</th>
+      <th>Date</th>
+      <th>Articles</th>
+      <th>Qté totale</th>
+      <th>Prix total</th>
+      <th>Statut</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let bon of filteredBons; let i = index">
+      <td>{{ i+1 }}</td>
+      <td>{{ bon.numeroBC }}</td>
+      <td>{{ bon.createdDate | date:'dd/MM/yyyy' }}</td>
+      <td>{{ getNombreArticles(bon) }}</td>
+      <td>{{ getQuantiteTotale(bon) }}</td>
+      <td>{{ getTotalPrixBon(bon) | number:'1.2-2' }} TND</td>
+      <td>
+          <span [ngClass]="getStatusClass(bon.status)">
+            {{ getStatutLabel(bon.status) }}
+          </span>
+      </td>
+      <td class="actions-cell">
+        <div class="dropdown">
+          <button class="dropdown-btn" (click)="toggleDropdown(bon.id!)">⋮</button>
+          <div class="dropdown-content" *ngIf="activeDropdown === bon.id">
+            <button (click)="viewBon(bon.id)" class="dropdown-item">Voir</button>
+            <button *ngIf="bon.status === 'EN_ATTENTE'"
+                    (click)="validerBon(bon.id!)"
+                    class="dropdown-item valider">
+              Valider
             </button>
-
-            @for (page of pages; track page) {
-              <button class="pagination-btn"
-                      [class.active]="page === currentPage"
-                      (click)="pageChanged(page)">
-                {{ page }}
-              </button>
-            }
-
-            <button class="pagination-btn"
-                    [disabled]="currentPage === pages.length"
-                    (click)="pageChanged(currentPage + 1)">
-              <i class="fas fa-chevron-right"></i>
+            <button *ngIf="bon.status === 'EN_ATTENTE'"
+                    (click)="refuserBon(bon.id!)"
+                    class="dropdown-item refuser">
+              Refuser
             </button>
           </div>
         </div>
-      }
-    </div>
-  }
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <div *ngIf="!loading && filteredBons.length === 0" class="no-data">
+    Aucun bon de commande trouvé.
+  </div>
 </div>
+1

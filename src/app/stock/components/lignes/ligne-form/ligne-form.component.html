@@ -119,11 +119,11 @@
                 </div>
               </div>
             </div>
+
             <!-- Maintenance -->
             <div class="form-section mb-4">
               <h6>Maintenance</h6>
               <div class="row g-3">
-
                 <div class="col-md-6">
                   <label class="form-label fw-semibold">
                     Dernière maintenance
@@ -139,9 +139,14 @@
                   </label>
                   <input type="date"
                          class="form-control"
+                         [class.is-invalid]="(ligneForm.hasError('dateInvalid') && (ligneForm.get('dateProchaineMaintenance')?.touched || submitted))"
                          formControlName="dateProchaineMaintenance">
+                  <div *ngIf="ligneForm.hasError('dateInvalid') && (ligneForm.get('dateProchaineMaintenance')?.touched || submitted)"
+                       class="invalid-feedback d-block">
+                    <i class="fas fa-exclamation-circle me-1"></i>
+                    La date de prochaine maintenance ne peut pas être antérieure à la dernière maintenance.
+                  </div>
                 </div>
-
               </div>
             </div>
 

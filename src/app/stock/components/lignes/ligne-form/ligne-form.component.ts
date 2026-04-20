@@ -1,14 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
+  Validators
+} from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LigneConditionnementService } from '../../../services/ligne-conditionnement.service';
 import { LigneConditionnement, Statue } from '../../../models/ligne-conditionnement.model';
 
 @Component({
   selector: 'app-ligne-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './ligne-form.component.html',
   styleUrls: ['./ligne-form.component.scss']
 })
@@ -37,8 +45,19 @@ export class LigneFormComponent implements OnInit {
       responsable: [''],
       notes: [''],
       dateDerniereMaintenance: [null],
-      dateProchaineMaintenance: [null]
+      dateProchaineMaintenance: [null],
     });
+    this.ligneForm.setValidators(this.dateRangeValidator());
+  }
+  private dateRangeValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const dateDerniere = control.get('dateDerniereMaintenance')?.value;
+      const dateProchaine = control.get('dateProchaineMaintenance')?.value;
+      if (dateDerniere && dateProchaine && new Date(dateProchaine) < new Date(dateDerniere)) {
+        return { dateInvalid: true };
+      }
+      return null;
+    };
   }
 
   ngOnInit(): void {

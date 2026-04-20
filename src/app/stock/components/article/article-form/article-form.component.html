@@ -35,6 +35,205 @@
         </div>
       </div>
 
+      <!-- Bloc de configuration spécifique -->
+      <div class="form-group" *ngIf="articleForm.get('categorie')?.value">
+        <hr />
+        <label>Configuration spécifique à la catégorie</label>
+        <div class="config-panel">
+
+          <!-- UNITE -->
+          <div *ngIf="articleForm.get('categorie')?.value === 'UNITE'">
+            <div class="form-group">
+              <label>Matériau</label>
+              <input type="text" class="form-control" formControlName="uniteMaterial">
+            </div>
+            <div class="form-group">
+              <label>Volume (ml)</label>
+              <input type="number" class="form-control" formControlName="uniteVolumeMl">
+            </div>
+            <div class="form-group">
+              <label>Couleur</label>
+              <input type="text" class="form-control" formControlName="uniteColor">
+            </div>
+            <div class="form-group">
+              <label>Type de goulot</label>
+              <input type="text" class="form-control" formControlName="uniteNeckType">
+            </div>
+            <div class="form-group">
+              <label>Poids (g)</label>
+              <input type="number" class="form-control" formControlName="uniteWeightGr">
+            </div>
+          </div>
+
+          <!-- COLIS -->
+          <div *ngIf="articleForm.get('categorie')?.value === 'COLIS'">
+            <div class="form-group">
+              <label>Article unitaire *</label>
+              <select class="form-control" formControlName="colisUnitArticleId">
+                <option [value]="null" disabled>Sélectionner un article unitaire</option>
+                <option *ngFor="let unit of uniteArticles" [value]="unit.id">
+                  {{ unit.nom }} ({{ unit.um }})
+                </option>
+              </select>
+              <small *ngIf="loadingUnites" class="text-muted">Chargement...</small>
+              <small *ngIf="!loadingUnites && uniteArticles.length === 0" class="text-warning">
+                Aucun article unitaire trouvé. Créez d'abord un article de type UNITE.
+              </small>
+            </div>
+            <div class="form-group">
+              <label>Unités par colis</label>
+              <input type="number" class="form-control" formControlName="colisUnitsPerColis">
+            </div>
+            <div class="form-group">
+              <label>Longueur (cm)</label>
+              <input type="number" class="form-control" formControlName="colisLength">
+            </div>
+            <div class="form-group">
+              <label>Largeur (cm)</label>
+              <input type="number" class="form-control" formControlName="colisWidth">
+            </div>
+            <div class="form-group">
+              <label>Hauteur (cm)</label>
+              <input type="number" class="form-control" formControlName="colisHeight">
+            </div>
+            <div class="form-group">
+              <label>Poids max (kg)</label>
+              <input type="number" class="form-control" formControlName="colisMaxWeightKg">
+            </div>
+          </div>
+
+          <!-- PALETTE -->
+          <div *ngIf="articleForm.get('categorie')?.value === 'PALETTE'">
+            <div class="form-group">
+              <label>Colis utilisé *</label>
+              <select class="form-control" formControlName="paletteColisId">
+                <option [value]="null" disabled>Sélectionner un colis</option>
+                <option *ngFor="let colis of colisArticles" [value]="colis.id">
+                  {{ colis.nom }} ({{ colis.um }})
+                </option>
+              </select>
+              <small *ngIf="loadingColis" class="text-muted">Chargement...</small>
+              <small *ngIf="!loadingColis && colisArticles.length === 0" class="text-warning">
+                Aucun colis trouvé. Créez d'abord un article de type COLIS.
+              </small>
+            </div>
+            <div class="form-group">
+              <label>Type</label>
+              <input type="text" class="form-control" formControlName="paletteType">
+            </div>
+            <div class="form-group">
+              <label>Matériau</label>
+              <input type="text" class="form-control" formControlName="paletteMaterial">
+            </div>
+            <div class="form-group">
+              <label>Colis par couche</label>
+              <input type="number" class="form-control" formControlName="paletteColisPerLayer">
+            </div>
+            <div class="form-group">
+              <label>Nombre de couches</label>
+              <input type="number" class="form-control" formControlName="paletteNumberOfLayers">
+            </div>
+            <div class="form-group">
+              <label>Hauteur max (cm)</label>
+              <input type="number" class="form-control" formControlName="paletteMaxHeightCm">
+            </div>
+            <div class="form-group form-check">
+              <input type="checkbox" class="form-check-input" formControlName="paletteClientSpecific">
+              <label class="form-check-label">Client spécifique</label>
+            </div>
+          </div>
+
+          <!-- EMBALLAGE -->
+          <div *ngIf="articleForm.get('categorie')?.value === 'EMBALLAGE'">
+            <div class="form-group">
+              <label>Sous-type</label>
+              <input type="text" class="form-control" formControlName="emballageSousType">
+            </div>
+            <div class="form-group">
+              <label>Matériau</label>
+              <input type="text" class="form-control" formControlName="emballageMaterial">
+            </div>
+            <div class="form-group">
+              <label>Longueur (cm)</label>
+              <input type="number" class="form-control" formControlName="emballageLength">
+            </div>
+            <div class="form-group">
+              <label>Largeur (cm)</label>
+              <input type="number" class="form-control" formControlName="emballageWidth">
+            </div>
+            <div class="form-group">
+              <label>Hauteur (cm)</label>
+              <input type="number" class="form-control" formControlName="emballageHeight">
+            </div>
+            <div class="form-group form-check">
+              <input type="checkbox" class="form-check-input" formControlName="emballageClientBranding">
+              <label class="form-check-label">Marquage client</label>
+            </div>
+            <div class="form-group">
+              <label>Poids (g)</label>
+              <input type="number" class="form-control" formControlName="emballagePoidsGrammes">
+            </div>
+          </div>
+
+          <!-- CONSOMMABLE -->
+          <div *ngIf="articleForm.get('categorie')?.value === 'CONSOMMABLE'">
+            <div class="form-group">
+              <label>Type</label>
+              <input type="text" class="form-control" formControlName="consommableType">
+            </div>
+            <div class="form-group">
+              <label>Volume (litres)</label>
+              <input type="number" class="form-control" formControlName="consommableVolumeLitre">
+            </div>
+            <div class="form-group">
+              <label>Composition</label>
+              <input type="text" class="form-control" formControlName="consommableComposition">
+            </div>
+            <div class="form-group">
+              <label>Température stockage (°C)</label>
+              <input type="number" class="form-control" formControlName="consommableTemperatureStockage">
+            </div>
+          </div>
+
+          <!-- MATIERE_PREMIERE -->
+          <div *ngIf="articleForm.get('categorie')?.value === 'MATIERE_PREMIERE'">
+            <div class="form-group">
+              <label>Code fournisseur</label>
+              <input type="text" class="form-control" formControlName="matiereCodeFournisseur">
+            </div>
+            <div class="form-group">
+              <label>Densité</label>
+              <input type="number" class="form-control" formControlName="matiereDensite">
+            </div>
+            <div class="form-group">
+              <label>Origine</label>
+              <input type="text" class="form-control" formControlName="matiereOrigine">
+            </div>
+            <div class="form-group form-check">
+              <input type="checkbox" class="form-check-input" formControlName="matiereCertifieBio">
+              <label class="form-check-label">Certifié bio</label>
+            </div>
+          </div>
+
+          <!-- ACCESSOIRE -->
+          <div *ngIf="articleForm.get('categorie')?.value === 'ACCESSOIRE'">
+            <div class="form-group">
+              <label>Usage</label>
+              <input type="text" class="form-control" formControlName="accessoireUsage">
+            </div>
+            <div class="form-group form-check">
+              <input type="checkbox" class="form-check-input" formControlName="accessoireNecessiteMontage">
+              <label class="form-check-label">Nécessite montage</label>
+            </div>
+            <div class="form-group">
+              <label>Garantie (mois)</label>
+              <input type="text" class="form-control" formControlName="accessoireGarantieMois">
+            </div>
+          </div>
+
+        </div>
+      </div>
+
       <div class="form-group">
         <label for="um">Unité de mesure *</label>
         <select
@@ -84,16 +283,6 @@
           formControlName="stockMaximum"
           min="0">
       </div>
-
-      <div class="form-group form-check">
-        <input
-          type="checkbox"
-          id="actif"
-          class="form-check-input"
-          formControlName="actif">
-        <label for="actif" class="form-check-label">Article actif</label>
-      </div>
-
       <div class="form-actions">
         <button type="button" class="btn btn-secondary" (click)="onCancel()">
           Annuler

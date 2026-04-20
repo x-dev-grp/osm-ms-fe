@@ -9,6 +9,7 @@ export interface MouvementStock{
   motif?: string;
   dateMouvement?: Date;
   lastModifiedDate: string;
+  createdDate?: string;
 }
 
 export enum TypeMouvement {

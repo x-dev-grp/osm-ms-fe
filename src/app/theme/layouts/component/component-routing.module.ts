@@ -12,7 +12,7 @@ const routes: Routes = [
         redirectTo: '/components/input/button',
         pathMatch: 'full'
       },
-      {
+      /*{
         path: 'input',
         loadChildren: () => import('../../pages/components/input-component/input-component.module').then((m) => m.InputComponentModule)
       },
@@ -38,7 +38,7 @@ const routes: Routes = [
       {
         path: 'utils',
         loadChildren: () => import('../../pages/components/utils/utils.module').then((m) => m.UtilsModule)
-      }
+      }*/
     ]
   }
 ];

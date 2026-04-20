@@ -78,6 +78,11 @@ const routes: Routes = [
         canActivate: [anyPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.SUPPLIER, Action.READ)])],
         data: { roles: [Role.Admin, Role.User] }
       },
+      {
+        path: 'stock/par-emplacement',
+        loadComponent: () => import('./stock/components/stock-par-emplacement/stock-par-emplacement.component')
+          .then(m => m.StockParEmplacementComponent)
+      },
 
       {
         path: 'reception',

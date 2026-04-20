@@ -26,6 +26,60 @@ $gray-900: #0f172a;
     opacity: 1;
   }
 }
+.bg-primary {
+  background-color: #007bff;
+  color: white;
+}
+.bg-warning {
+  background-color: #ffc107;
+  color: #212529;
+}
+.bg-info {
+  background-color: #17a2b8;
+  color: white;
+}
+.bg-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+.bg-success {
+  background-color: #28a745;
+  color: white;
+}
+.bg-light {
+  background-color: #f8f9fa;
+  color: #212529;
+}
+.text-dark {
+  color: #212529;
+}
+.bg-primary {
+  background-color: #007bff !important;
+  color: white !important;
+}
+.bg-warning {
+  background-color: #ffc107 !important;
+  color: #212529 !important;
+}
+.bg-info {
+  background-color: #17a2b8 !important;
+  color: white !important;
+}
+.bg-secondary {
+  background-color: #6c757d !important;
+  color: white !important;
+}
+.bg-success {
+  background-color: #28a745 !important;
+  color: white !important;
+}
+.bg-light {
+  background-color: #f8f9fa !important;
+  color: #212529 !important;
+}
+.text-dark {
+  color: #212529 !important;
+}
 
 @keyframes slideUp {
   from {
@@ -36,6 +90,11 @@ $gray-900: #0f172a;
     opacity: 1;
     transform: translateY(0);
   }
+}
+.inactive-row {
+  background-color: #e0e0e0;   // gris plus foncé
+  opacity: 0.9;
+  color: #495057;              // texte légèrement plus visible
 }
 
 @keyframes shimmer {
@@ -449,3 +508,63 @@ $gray-900: #0f172a;
       min-width: 800px;
     }
   }}
+
+// Styles pour le menu à trois points
+.actions-cell {
+  position: relative;
+
+  .dropdown {
+    position: relative;
+    display: inline-block;
+
+    .dropdown-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0 0.5rem;
+      line-height: 1;
+      border-radius: 4px;
+      transition: background 0.2s;
+      &:hover {
+        background-color: #f0f0f0;
+      }
+    }
+
+    .dropdown-content {
+      position: absolute;
+      right: 0;
+      background-color: white;
+      min-width: 120px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      z-index: 1;
+      border-radius: 4px;
+      overflow: hidden;
+
+      .dropdown-item {
+        width: 100%;
+        padding: 8px 12px;
+        text-align: left;
+        border: none;
+        background: none;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: background 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        &:hover {
+          background-color: #f5f5f5;
+        }
+
+        &.valider {
+          color: green;
+        }
+        &.activer {
+          color: green;
+        }
+      }
+    }
+  }
+}

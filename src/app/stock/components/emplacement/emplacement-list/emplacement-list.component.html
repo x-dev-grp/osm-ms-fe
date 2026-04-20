@@ -61,7 +61,7 @@
               <i class="fas fa-search search-icon"></i>
               <input type="text"
                      class="filter-input search-input"
-                     placeholder="Code, nom, zone, client..."
+                     placeholder="Code, nom, client..."
                      [(ngModel)]="searchTerm"
                      (input)="filterEmplacements()">
               <button *ngIf="searchTerm" class="clear-search" (click)="searchTerm = ''; filterEmplacements()">
@@ -118,7 +118,6 @@
                 <option value="">Tous</option>
                 <option value="disponible">Disponible</option>
                 <option value="reserve">Réservé</option>
-                <option value="occupe">Occupé</option>
               </select>
               <i class="fas fa-chevron-down select-arrow"></i>
             </div>
@@ -136,6 +135,7 @@
       </div>
     </div>
   </div>
+
   @if (loading) {
     <div class="loading-state-modern">
       <div class="spinner-container">
@@ -146,9 +146,9 @@
       <p class="loading-subtext">Veuillez patienter...</p>
     </div>
   }
+
   @if (!loading && !error) {
     <div class="table-section glass-effect">
-      <!-- En-tête du tableau -->
       <div class="table-header">
         <div class="results-info">
           <div class="info-badge">
@@ -163,6 +163,7 @@
           }
         </div>
       </div>
+
       <div class="table-responsive">
         <table class="modern-table">
           <thead>
@@ -178,7 +179,9 @@
           </thead>
           <tbody>
             @for (emp of filteredEmplacements; track emp.id; let i = $index) {
-              <tr class="table-row" style="animation-delay: {{ i * 0.05 }}s">
+              <tr class="table-row"
+                  [ngClass]="{'inactive-row': !emp.actif}"
+                  [style.animation-delay]="i * 0.05 + 's'">
                 <td>
                   <div class="sku-cell">
                     <span class="sku-code">{{ emp.code }}</span>
@@ -243,16 +246,30 @@
                 </td>
                 <td class="text-center">
                   <div class="action-group">
-                    <button class="action-btn view"
-                            [routerLink]="['/stock/emplacements', emp.id]"
-                            title="Voir détails">
-                      <i class="fas fa-eye"></i>
-                    </button>
-                    <button class="action-btn edit"
-                            [routerLink]="['/stock/emplacements', emp.id, 'edit']"
-                            title="Modifier">
-                      <i class="fas fa-edit"></i>
-                    </button>
+                    <ng-container *ngIf="emp.actif; else inactiveActions">
+                      <button class="action-btn view"
+                              [routerLink]="['/stock/emplacements', emp.id]"
+                              title="Voir détails">
+                        <i class="fas fa-eye"></i>
+                      </button>
+                      <button class="action-btn edit"
+                              [routerLink]="['/stock/emplacements', emp.id, 'edit']"
+                              title="Modifier">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button class="action-btn delete"
+                              (click)="toActif(emp, $event)"
+                              title="Désactiver">
+                        <i class="fas fa-ban"></i>
+                      </button>
+                    </ng-container>
+                    <ng-template #inactiveActions>
+                      <button class="action-btn success"
+                              (click)="toActif(emp, $event)"
+                              title="Activer">
+                        <i class="fas fa-check-circle"></i>
+                      </button>
+                    </ng-template>
                   </div>
                 </td>
               </tr>

@@ -81,6 +81,11 @@
             <input type="datetime-local" class="form-control" formControlName="dateFinPrevue">
           </div>
         </div>
+
+        <!-- Message d'erreur sur les dates -->
+        <div *ngIf="ofForm.errors?.['dateFinAfterDebut'] && (ofForm.get('dateFinPrevue')?.touched || ofForm.get('dateDebutPrevue')?.touched)" class="error-message">
+          <i class="fas fa-exclamation-circle"></i> La date de fin doit être postérieure à la date de début.
+        </div>
       </div>
 
       <div class="form-actions">

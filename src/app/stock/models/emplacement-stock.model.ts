@@ -14,6 +14,7 @@ export interface EmplacementStock {
   description?: string;
   notes?: string;
   actif: boolean;
+  createdDate?: string;
 }
 
 export enum TypeEmplacement {
