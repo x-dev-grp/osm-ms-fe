@@ -27,9 +27,7 @@ export enum CategorieArticle {
   CONSOMMABLE = 'CONSOMMABLE',
   MATIERE_PREMIERE = 'MATIERE_PREMIERE',
   ACCESSOIRE = 'ACCESSOIRE',
-  UNITE = 'UNITE',
-  COLIS = 'COLIS',
-  PALETTE = 'PALETTE'
+
 }
 
 export const categorieLabels: Record<CategorieArticle, string> = {
