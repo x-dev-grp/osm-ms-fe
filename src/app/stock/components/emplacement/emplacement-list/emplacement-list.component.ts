@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -23,13 +23,16 @@ export class EmplacementListComponent implements OnInit {
   zoneFilter: string = '';
   disponibiliteFilter: string = '';
 
+  // Pour l'activation/désactivation
+  togglingId: string | null = null;
 
   typesEmplacement = Object.values(TypeEmplacement);
   zones: string[] = [];
 
   constructor(
     private emplacementService: EmplacementStockService,
-    public router: Router
+    public router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -40,18 +43,30 @@ export class EmplacementListComponent implements OnInit {
     this.loading = true;
     this.emplacementService.getAllEmplacements().subscribe({
       next: (response) => {
-        this.emplacements = (response.data || []).flat();
+        const data = (response.data || []).flat();
+        // Tri : actifs en premier, puis par date décroissante
+        this.emplacements = data.sort((a, b) => {
+          if (a.actif !== b.actif) {
+            return a.actif ? -1 : 1;
+          }
+          const dateA = a.createdDate ? new Date(a.createdDate).getTime() : 0;
+          const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
+          return dateB - dateA;
+        });
         this.extractZones();
         this.filterEmplacements();
         this.loading = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Erreur chargement', err);
         this.error = 'Impossible de charger les emplacements';
         this.loading = false;
+        this.cdr.detectChanges();
       }
     });
   }
+
   extractZones(): void {
     const zonesSet = new Set(this.emplacements.map(e => e.zone).filter(zone => zone));
     this.zones = Array.from(zonesSet) as string[];
@@ -83,12 +98,11 @@ export class EmplacementListComponent implements OnInit {
         filtered = filtered.filter(e => e.disponible);
       } else if (this.disponibiliteFilter === 'reserve') {
         filtered = filtered.filter(e => !e.disponible && e.reservePour);
-      } else if (this.disponibiliteFilter === 'occupe') {
-        filtered = filtered.filter(e => !e.disponible && !e.reservePour);
       }
     }
 
     this.filteredEmplacements = filtered;
+    this.cdr.detectChanges();
   }
 
   resetFilters(): void {
@@ -98,6 +112,55 @@ export class EmplacementListComponent implements OnInit {
     this.disponibiliteFilter = '';
     this.filterEmplacements();
   }
+
+  // Activation / désactivation
+  toActif(emp: EmplacementStock, event: Event): void {
+    event.stopPropagation();
+    if (!emp.id) return;
+
+    const isActif = emp.actif;
+    const action = isActif ? 'désactiver' : 'activer';
+    const message = `Voulez-vous vraiment ${action} l'emplacement "${emp.code}" ?`;
+
+    if (confirm(message)) {
+      this.togglingId = emp.id;
+      const serviceCall = isActif
+        ? this.emplacementService.desactiverEmplacement(emp.id)
+        : this.emplacementService.activerEmplacement(emp.id);
+
+      serviceCall.subscribe({
+        next: (updated) => {
+          // Mettre à jour localement
+          emp.actif = !isActif;
+          // Re-trier la liste complète
+          this.sortEmplacements();
+          // Réappliquer les filtres
+          this.filterEmplacements();
+          this.togglingId = null;
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error(`Erreur lors de la ${action}`, err);
+          alert(`Erreur lors de l'${action} de l'emplacement`);
+          this.togglingId = null;
+          this.cdr.detectChanges();
+        }
+      });
+    }
+  }
+
+  private sortEmplacements(): void {
+    this.emplacements.sort((a, b) => {
+      if (a.actif !== b.actif) {
+        return a.actif ? -1 : 1;
+      }
+      const dateA = a.createdDate ? new Date(a.createdDate).getTime() : 0;
+      const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
+      return dateB - dateA;
+    });
+  }
+
+  // Méthodes utilitaires
   getTypeLabel(type: TypeEmplacement): string {
     const labels = {
       [TypeEmplacement.CHAMBRE_FROIDE]: 'Chambre froide',

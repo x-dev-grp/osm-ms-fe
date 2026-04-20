@@ -47,7 +47,7 @@ export class AuditComponent implements OnInit {
     this.auditService.getAllAudits().subscribe({
       next: (response: AuditDto[]) => {
         this.audits = response;
-        this.extractMetadata();
+        this.extractdata();
         this.applyFilters();
         this.loading = false;
       },
@@ -60,7 +60,7 @@ export class AuditComponent implements OnInit {
   }
 
 
-  extractMetadata(): void {
+  extractdata(): void {
     const users = new Set<string>();
     const entities = new Set<string>();
 
@@ -92,8 +92,6 @@ export class AuditComponent implements OnInit {
           if (auditDate > dateFin) return false;
         }
       }
-
-
       if (this.filters.typeAction !== 'TOUS') {
         const isCreation = this.filters.typeAction === 'CRÉATION' &&
           audit.createdDate === audit.lastModifiedDate;
@@ -102,7 +100,6 @@ export class AuditComponent implements OnInit {
 
         if (!isCreation && !isModification) return false;
       }
-
       if (this.filters.utilisateur) {
         const searchTerm = this.filters.utilisateur.toLowerCase();
         const matchesCreatedBy = audit.createdBy?.toLowerCase().includes(searchTerm);
@@ -110,7 +107,6 @@ export class AuditComponent implements OnInit {
 
         if (!matchesCreatedBy && !matchesModifiedBy) return false;
       }
-
       if (this.filters.entityName && !audit.entityName?.toLowerCase().includes(this.filters.entityName.toLowerCase())) {
         return false;
       }

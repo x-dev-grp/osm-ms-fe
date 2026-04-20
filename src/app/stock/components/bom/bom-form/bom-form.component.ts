@@ -47,7 +47,6 @@ export class BomFormComponent implements OnInit {
       this.bomId = id;
       this.loadBom(id);
     } else {
-      // Ajouter une ligne par défaut
       this.addLine();
     }
   }
@@ -102,7 +101,6 @@ export class BomFormComponent implements OnInit {
           skuId: bom.skuId,
           version: bom.version
         });
-        // Remplir les lignes
         this.lines.clear();
         if (bom.lines && bom.lines.length > 0) {
           bom.lines.forEach(line => {
@@ -112,7 +110,7 @@ export class BomFormComponent implements OnInit {
             }));
           });
         } else {
-          this.addLine(); // fallback
+          this.addLine();
         }
         this.loading = false;
       },
@@ -160,6 +158,13 @@ export class BomFormComponent implements OnInit {
       });
     }
   }
+  getFilteredArticlesForLine(lineIndex: number): Article[] {
+    const selectedArticleIds = this.lines.controls
+      .map((control, idx) => idx !== lineIndex ? control.get('articleId')?.value : null)
+      .filter(id => id && id !== '');
+    return this.articles.filter(article => !selectedArticleIds.includes(article.id));
+  }
+
 
   cancel(): void {
     this.router.navigate(['/stock/boms']);

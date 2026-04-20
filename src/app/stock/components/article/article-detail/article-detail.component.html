@@ -57,6 +57,36 @@
           </span>
         </div>
       </div>
+      <!-- Dans article-detail.component.html, après la carte emplacement-box -->
+      <div class="card-box qr-card">
+        <h5>QR Code</h5>
+        <div *ngIf="article.publicCode; else noQr">
+          <div class="qr-container">
+            <img *ngIf="article.qrImageBase64; else missingQrImage"
+                 [src]="'data:image/png;base64,' + article.qrImageBase64"
+                 alt="QR Code">
+            <ng-template #missingQrImage>
+              <p class="qr-status">Le code public existe, mais l’image QR doit être régénérée.</p>
+            </ng-template>
+            <p class="public-code">Code manuel : <strong>{{ article.publicCode }}</strong></p>
+            <p class="qr-url" *ngIf="article.qrUrl">{{ article.qrUrl }}</p>
+            <div class="qr-buttons">
+              <button class="btn-generate-qr" (click)="generateQr()" [disabled]="generatingQr">
+                {{ generatingQr ? 'Génération...' : (article.qrImageBase64 ? 'Régénérer le QR Code' : 'Générer l\'image QR') }}
+              </button>
+              <button *ngIf="article.qrImageBase64" class="btn-print" (click)="printQr()">
+                <i class="fas fa-print"></i> Imprimer
+              </button>
+            </div>
+          </div>
+        </div>
+        <ng-template #noQr>
+          <p>Pas encore de QR code pour cet article.</p>
+          <button class="btn-generate-qr" (click)="generateQr()" [disabled]="generatingQr">
+            {{ generatingQr ? 'Génération...' : 'Générer QR Code' }}
+          </button>
+        </ng-template>
+      </div>
 
       <div class="card-box">
         <h5>Seuils de stock</h5>
@@ -84,72 +114,7 @@
           Dernière MAJ : {{ stock.lastModifiedDate | date:'dd/MM/yyyy HH:mm' }}
         </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-       <!-- <div class="stock-actions">
+        <div class="stock-actions">
           <button class="btn-stock in"
                   (click)="mouvementType = TypeMouvement.ENTREE; showMouvementForm = true">
             <i class="fas fa-plus"></i> Entrée
@@ -158,114 +123,106 @@
           <button class="btn-stock out"
                   (click)="mouvementType = TypeMouvement.SORTIE; showMouvementForm = true">
             <i class="fas fa-minus"></i> Sortie
-          </button> -->
+          </button>
+
+          <button class="btn-stock adjust"
+                  (click)="showAjustementForm = true">
+            <i class="fas fa-balance-scale"></i> Ajuster
+          </button>
+        </div>
+      </div>
+      <div class="card-box emplacement-box">
+        <h5>Emplacement physique</h5>
+
+        <div *ngIf="stock?.emplacement; else noEmplacement">
+          <div class="info-row">
+            <span>Emplacement</span>
+            <strong>{{ stock.emplacement.nom || stock.emplacement.code }}</strong>
+          </div>
+          <div class="info-row" *ngIf="stock.emplacement.zone">
+            <span>Zone</span>
+            <strong>{{ stock.emplacement.zone }}</strong>
+          </div>
+          <div class="info-row" *ngIf="stock.emplacement.typeEmplacement">
+            <span>Type</span>
+            <strong>{{ stock.emplacement.typeEmplacement }}</strong>
+          </div>
+          <div class="info-row" *ngIf="stock.emplacement.disponible === false">
+            <span>Réservé pour</span>
+            <strong>{{ stock.emplacement.reservePour || 'Oui' }}</strong>
+          </div>
+        </div>
+
+        <ng-template #noEmplacement>
+          <div class="no-emplacement">
+            <p>Aucun emplacement assigné</p>
+          </div>
+        </ng-template>
+
+        <div class="emplacement-actions">
+          <button class="btn-emplacement assign" (click)="openAssignEmplacement()" *ngIf="!stock?.emplacement">
+            <i class="fas fa-map-marker-alt"></i> Assigner un emplacement
+          </button>
+          <button class="btn-emplacement transfer" (click)="transfererEmplacement()" *ngIf="stock?.emplacement">
+            <i class="fas fa-exchange-alt"></i> Transférer
+          </button>
+          <button class="btn-emplacement remove" (click)="retirerEmplacement()" *ngIf="stock?.emplacement">
+            <i class="fas fa-trash-alt"></i> Retirer
+          </button>
         </div>
       </div>
 
     </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <!--<div class="card-box movement-form" *ngIf="showMouvementForm">
+    <div class="card-box movement-form" *ngIf="showMouvementForm">
       <h5>{{ mouvementType === TypeMouvement.ENTREE ? 'Entrée' : 'Sortie' }} de stock</h5>
-
       <div class="movement-grid">
         <input type="number"
                class="form-control"
                [(ngModel)]="quantite"
                placeholder="Quantité"
                min="1">
-
         <input type="text"
                class="form-control"
                [(ngModel)]="motif"
                placeholder="Motif (réception, production...)">
-
-        <button class="btn-primary"
-                (click)="onMouvement()">
-          Valider
-        </button>
-
-        <button class="btn-cancel"
-                (click)="showMouvementForm = false">
-          Annuler
-        </button>
+        <button class="btn-primary" (click)="onMouvement()">Valider</button>
+        <button class="btn-cancel" (click)="showMouvementForm = false">Annuler</button>
       </div>
     </div>
-
+    <div class="card-box movement-form" *ngIf="showAjustementForm">
+      <h5>Ajustement de stock</h5>
+      <div class="movement-grid">
+        <input type="number"
+               class="form-control"
+               [(ngModel)]="ajustementQuantite"
+               placeholder="Quantité (peut être négative)"
+               step="any">
+        <input type="text"
+               class="form-control"
+               [(ngModel)]="ajustementMotif"
+               placeholder="Motif (inventaire, correction, etc.)">
+        <button class="btn-primary" (click)="onAjustement()">Valider</button>
+        <button class="btn-cancel" (click)="showAjustementForm = false">Annuler</button>
+      </div>
+    </div>
+    <div class="card-box emplacement-form" *ngIf="showEmplacementForm">
+      <h5>Choisir un emplacement</h5>
+      <div *ngIf="loadingEmplacements" class="text-center py-2">
+        Chargement...
+      </div>
+      <div *ngIf="!loadingEmplacements">
+        <select class="form-control" [(ngModel)]="selectedEmplacementId">
+          <option [value]="null" disabled>-- Sélectionner un emplacement --</option>
+          <option *ngFor="let emp of emplacements" [value]="emp.id">
+            {{ emp.code }} - {{ emp.nom }} ({{ emp.typeEmplacement }}) {{ emp.zone ? '- Zone ' + emp.zone : '' }}
+          </option>
+        </select>
+        <div class="movement-grid mt-3">
+          <button class="btn-primary" (click)="assignEmplacement()">Valider</button>
+          <button class="btn-cancel" (click)="showEmplacementForm = false; selectedEmplacementId = null">Annuler</button>
+        </div>
+      </div>
+    </div>
     <div class="card-box">
       <h5>Historique des mouvements</h5>
 
@@ -286,16 +243,14 @@
         <tr *ngFor="let mvt of mouvements">
           <td>{{ mvt.dateMouvement | date:'dd/MM/yyyy HH:mm' }}</td>
           <td>
-
-            <span class="badge-type"
-                  [ngClass]="mvt.typeMouvement === TypeMouvement.ENTREE ? 'in' : 'out'">
-              {{ mvt.typeMouvement }}
-            </span>
+              <span class="badge-type"
+                    [ngClass]="mvt.typeMouvement === TypeMouvement.ENTREE ? 'in' : 'out'">
+                {{ mvt.typeMouvement }}
+              </span>
           </td>
           <td>{{ mvt.quantite }} {{ article.um }}</td>
           <td>{{ mvt.motif || '-' }}</td>
         </tr>
-
         <tr *ngIf="mouvements.length === 0">
           <td colspan="4" class="empty-row">
             Aucun mouvement enregistré
@@ -303,8 +258,7 @@
         </tr>
         </tbody>
       </table>
-
-    </div>-->
+    </div>
 
   </div>
-
+</div>

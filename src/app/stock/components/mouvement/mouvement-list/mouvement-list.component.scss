@@ -51,10 +51,10 @@ $gray-900: #0f172a;
   }
 }
 
-// Container principal
+// Container principal – fond blanc
 .mouvement-container {
   padding: 2rem;
-  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  background: #ffffff;  // Changement : fond blanc
   min-height: 100vh;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }

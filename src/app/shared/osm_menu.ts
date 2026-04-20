@@ -395,7 +395,7 @@ export const osm_menus: Navigation[] = [
         url: '/of',
         icon: 'factory',
         breadcrumbs: false,
-      }
+      },
     ]
   },
   {
@@ -476,9 +476,7 @@ export const osm_menus: Navigation[] = [
         icon: 'warehouse',
         breadcrumbs: false
       },
-
-
-     /* {
+      {
         id: 'item-stocks-bc',
         title: 'Bons de commande',
         type: 'item',
@@ -493,7 +491,15 @@ export const osm_menus: Navigation[] = [
         url: '/stock/mouvements',
         icon: 'swap_horiz',
         breadcrumbs: false
-      }*/
+      },
+      {
+        id: 'item-stocks-par-emplacement',
+        title: 'Stock par emplacement',
+        type: 'item',
+        url: '/stock/par-emplacement',
+        icon: 'store',
+        breadcrumbs: false
+      }
     ]
   },
 

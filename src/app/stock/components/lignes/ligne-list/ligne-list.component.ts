@@ -36,6 +36,7 @@ export class LigneListComponent implements OnInit {
     this.ligneService.getAllLignes().subscribe({
       next: (data) => {
         this.lignes = data;
+        this.sortLignes(); // <-- nouvelle ligne
         this.filterLignes();
         this.loading = false;
       },
@@ -50,7 +51,6 @@ export class LigneListComponent implements OnInit {
     if (!ligne.id) return;
 
     const isActif = ligne.actif === true;
-
     const action = isActif ? 'désactiver' : 'activer';
     const message = `Voulez-vous vraiment ${action} la ligne "${ligne.nom}" ?`;
 
@@ -64,6 +64,9 @@ export class LigneListComponent implements OnInit {
       serviceCall.subscribe({
         next: () => {
           ligne.actif = !isActif;
+          // Re-trier pour conserver l'ordre (optionnel)
+          this.sortLignes();
+          this.filterLignes();
           this.togglingId = null;
         },
         error: (err) => {
@@ -74,6 +77,19 @@ export class LigneListComponent implements OnInit {
       });
     }
   }
+  private sortLignes(): void {
+    this.lignes.sort((a, b) => {
+      // 1. Les actifs avant les inactifs
+      if (a.actif !== b.actif) {
+        return a.actif ? -1 : 1;
+      }
+      // 2. Dans chaque groupe, tri par date décroissante (plus récent en premier)
+      const dateA = a.createdDate ? new Date(a.createdDate).getTime() : 0;
+      const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
+      return dateB - dateA;
+    });
+  }
+
 
   filterLignes(): void {
     let filtered = [...this.lignes];

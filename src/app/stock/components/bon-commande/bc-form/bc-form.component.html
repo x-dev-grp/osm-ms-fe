@@ -1,15 +1,14 @@
 <div class="bc-form-container">
-  <!-- En-tête -->
   <div class="header-section">
     <div class="d-flex justify-content-between align-items-center">
       <div>
         <h1 class="page-title">
-          <i class="fas" [ngClass]="isEditMode ? 'fa-edit' : 'fa-plus-circle'"></i>
-          {{ isEditMode ? 'Modifier' : 'Nouveau' }} bon de commande
+          <i class="fas fa-plus-circle"></i>
+          Nouveau bon de commande
         </h1>
         <p class="text-muted mb-0">
           <i class="fas fa-info-circle me-1"></i>
-          {{ isEditMode ? 'Modifiez les informations du bon' : 'Créez un nouveau bon de commande' }}
+          Créez un nouveau bon de commande
         </p>
       </div>
       <div class="action-buttons">
@@ -24,127 +23,55 @@
       </div>
     </div>
   </div>
-
-  <!-- Messages -->
   @if (successMessage) {
     <div class="alert alert-success">
       <i class="fas fa-check-circle me-2"></i>
       {{ successMessage }}
     </div>
   }
-
   @if (error) {
     <div class="alert alert-danger">
       <i class="fas fa-exclamation-triangle me-2"></i>
       {{ error }}
     </div>
   }
-
-  <!-- Loading -->
   @if (loading) {
     <div class="loading-state">
       <div class="spinner"></div>
       <p>Chargement du bon de commande...</p>
     </div>
   }
-
-  <!-- Formulaire -->
   @if (!loading) {
     <form id="bcForm" [formGroup]="bcForm" (ngSubmit)="onSubmit()">
       <div class="form-grid">
-        <!-- Informations générales -->
         <div class="form-section">
           <div class="section-header">
             <i class="fas fa-info-circle"></i>
             <h3>Informations générales</h3>
           </div>
-
           <div class="section-body">
-            <!-- Numéro BC -->
             <div class="form-group">
               <label class="required">
-                <i class="fas fa-hashtag me-1"></i>
-                N° Bon de commande
+                <i class="fas fa-calendar-check me-1"></i>
+                Date réception prévue
               </label>
-              <input type="text"
+              <input type="date"
                      class="form-control"
-                     formControlName="numeroBC"
-                     placeholder="BC-2024-0001"
-                     [class.is-invalid]="numeroBCTouched && numeroBCErrors">
-              @if (numeroBCTouched && numeroBCErrors) {
+                     formControlName="dateReceptionPrevue"
+                     [class.is-invalid]="dateReceptionTouched && dateReceptionErrors">
+              @if (dateReceptionTouched && dateReceptionErrors) {
                 <div class="error-message">
-                  @if (numeroBCErrors['required']) {
-                    <span>Le numéro est obligatoire</span>
+                  @if (dateReceptionErrors['required']) {
+                    La date de réception est obligatoire
                   }
-                  @if (numeroBCErrors['pattern']) {
-                    <span>Format attendu: BC-2024-0001</span>
+                  @if (dateReceptionErrors['futureDate']) {
+                    La date de réception doit être postérieure à aujourd'hui
                   }
                 </div>
               }
-              <small class="form-text">Format: BC-AAAA-XXXX</small>
             </div>
-
-            <!-- Fournisseur -->
-            <div class="form-group">
-              <label class="required">
-                <i class="fas fa-truck me-1"></i>
-                Fournisseur
-              </label>
-              <input type="text"
-                     class="form-control"
-                     formControlName="fournisseur"
-                     placeholder="Nom du fournisseur"
-                     [class.is-invalid]="fournisseurTouched && fournisseurErrors">
-              @if (fournisseurTouched && fournisseurErrors?.['required']) {
-                <div class="error-message">Le fournisseur est obligatoire</div>
-              }
-            </div>
-
-            <!-- Dates -->
-            <div class="row">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label class="required">
-                    <i class="fas fa-calendar-plus me-1"></i>
-                    Date création
-                  </label>
-                  <input type="date"
-                         class="form-control"
-                         formControlName="dateCreation">
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label class="required">
-                    <i class="fas fa-calendar-check me-1"></i>
-                    Date réception prévue
-                  </label>
-                  <input type="date"
-                         class="form-control"
-                         formControlName="dateReceptionPrevue"
-                         [class.is-invalid]="dateReceptionTouched && dateReceptionErrors">
-                  @if (dateReceptionTouched && dateReceptionErrors?.['required']) {
-                    <div class="error-message">La date de réception est obligatoire</div>
-                  }
-                </div>
-              </div>
-            </div>
-
-            <!-- Remarque -->
-            <div class="form-group">
-              <label>
-                <i class="fas fa-comment me-1"></i>
-                Remarque
-              </label>
-              <textarea class="form-control"
-                        formControlName="remarque"
-                        rows="3"
-                        placeholder="Remarques ou instructions particulières..."></textarea>
-            </div>
-          </div>
         </div>
-
-        <!-- Articles -->
+        </div>
         <div class="form-section">
           <div class="section-header">
             <i class="fas fa-boxes"></i>
@@ -156,7 +83,6 @@
           </div>
 
           <div class="section-body">
-            <!-- Liste des lignes -->
             <div formArrayName="lignes">
               @for (ligne of lignes.controls; track i; let i = $index) {
                 <div class="ligne-article" [formGroupName]="i">
@@ -170,7 +96,6 @@
                   </div>
 
                   <div class="ligne-body">
-                    <!-- Sélection article -->
                     <div class="form-group article-select">
                       <label class="required">Article</label>
                       <div class="article-search-wrapper">
@@ -186,7 +111,6 @@
                           <div class="article-dropdown">
                             @for (article of filteredArticles; track article.id) {
                               <div class="article-option" (click)="selectArticle(article, i)">
-                                <span class="article-sku">{{ article.sku }}</span>
                                 <span class="article-nom">{{ article.nom }}</span>
                                 <span class="article-categorie">{{ article.categorie }}</span>
                               </div>
@@ -198,8 +122,6 @@
                       @if (ligne.get('articleId')?.touched && !ligne.get('articleId')?.valid) {
                         <div class="error-message">L'article est obligatoire</div>
                       }
-
-                      <!-- Infos article sélectionné -->
                       @if (ligne.get('articleSku')?.value) {
                         <div class="article-info">
                           <span class="badge">{{ ligne.get('articleSku')?.value }}</span>
@@ -209,7 +131,6 @@
                     </div>
 
                     <div class="row">
-                      <!-- Quantité -->
                       <div class="col-md-4">
                         <div class="form-group">
                           <label class="required">Quantité</label>
@@ -230,11 +151,9 @@
                           }
                         </div>
                       </div>
-
-                      <!-- Prix unitaire -->
                       <div class="col-md-4">
                         <div class="form-group">
-                          <label>Prix unitaire (€)</label>
+                          <label>Prix unitaire</label>
                           <input type="number"
                                  class="form-control"
                                  formControlName="prixUnitaire"
@@ -242,15 +161,13 @@
                                  step="0.01">
                         </div>
                       </div>
-
-                      <!-- Total ligne -->
                       <div class="col-md-4">
                         <div class="form-group">
                           <label>Total</label>
                           <div class="total-field">
                             @if (ligne.get('prixUnitaire')?.value && ligne.get('quantiteCommandee')?.value) {
                               <span class="total-amount">
-                                {{ ligne.get('quantiteCommandee')?.value * ligne.get('prixUnitaire')?.value | number:'1.2-2' }} €
+                                {{ ligne.get('quantiteCommandee')?.value * ligne.get('prixUnitaire')?.value | number:'1.2-2' }}
                               </span>
                             } @else {
                               <span class="text-muted">-</span>
@@ -259,22 +176,10 @@
                         </div>
                       </div>
                     </div>
-
-                    <!-- Remarque ligne -->
-                    <div class="form-group">
-                      <label>Remarque (ligne)</label>
-                      <input type="text"
-                             class="form-control"
-                             formControlName="remarque"
-                             placeholder="Remarque pour cet article...">
-                    </div>
                   </div>
                 </div>
               }
             </div>
-
-            <!-- Récapitulatif -->
-            <!-- Récapitulatif -->
             @if (lignes.length > 0) {
               <div class="recap-section">
                 <div class="recap-item">
@@ -287,7 +192,7 @@
                 </div>
                 <div class="recap-item total">
                   <span>Total TTC:</span>
-                  <strong>{{ getTotalPrix() | number:'1.2-2' }} €</strong>
+                  <strong>{{ getTotalPrix() | number:'1.2-2' }} </strong>
                 </div>
               </div>
             }

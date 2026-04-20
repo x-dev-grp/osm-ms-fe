@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -28,7 +28,13 @@ export class FournisseurListComponent implements OnInit {
     actif: ''
   };
 
-  constructor(private fournisseurService: FournisseurService) {
+  // Pour l'activation/désactivation
+  togglingId: string | null = null;
+
+  constructor(
+    private fournisseurService: FournisseurService,
+    private cdr: ChangeDetectorRef
+  ) {
     this.searchSubject.pipe(
       debounceTime(300),
       distinctUntilChanged()
@@ -45,13 +51,23 @@ export class FournisseurListComponent implements OnInit {
     this.loading = true;
     this.fournisseurService.getAllFournisseurs().subscribe({
       next: (data) => {
-        this.fournisseurs = data;
+        // Tri : actifs d'abord, puis par date décroissante
+        this.fournisseurs = data.sort((a, b) => {
+          if (a.actif !== b.actif) {
+            return a.actif ? -1 : 1;
+          }
+          const dateA = a.createdDate ? new Date(a.createdDate).getTime() : 0;
+          const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
+          return dateB - dateA;
+        });
         this.applyFilters();
         this.loading = false;
+        this.cdr.detectChanges();
       },
       error: (error) => {
         console.error('Erreur chargement fournisseurs:', error);
         this.loading = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -62,7 +78,7 @@ export class FournisseurListComponent implements OnInit {
 
   applyFilters(): void {
     this.filteredFournisseurs = this.fournisseurs.filter(f => {
-      let match: false | boolean | undefined = true; // Correction du type
+      let match: false | boolean | undefined = true;
 
       if (this.searchQuery) {
         const term = this.searchQuery.toLowerCase();
@@ -88,6 +104,7 @@ export class FournisseurListComponent implements OnInit {
 
       return match;
     });
+    this.cdr.detectChanges();
   }
 
   resetFilters(): void {
@@ -104,27 +121,51 @@ export class FournisseurListComponent implements OnInit {
     return !!(this.filters.categorie || this.filters.pays || this.filters.actif || this.searchQuery);
   }
 
-  toActif(fournisseur: Fournisseur): void {
-    const action = fournisseur.actif ? 'desactiver' : 'activer';
+  // Méthode pour activer/désactiver avec gestion de l'événement
+  toActif(fournisseur: Fournisseur, event: Event): void {
+    event.stopPropagation();
+    if (!fournisseur.id) return;
+
+    const action = fournisseur.actif ? 'désactiver' : 'activer';
     if (confirm(`Voulez-vous ${action} le fournisseur "${fournisseur.nom}" ?`)) {
+      this.togglingId = fournisseur.id;
       const serviceCall = fournisseur.actif
-        ? this.fournisseurService.desactiverFournisseur(fournisseur.id!)
-        : this.fournisseurService.activerFournisseur(fournisseur.id!);
+        ? this.fournisseurService.desactiverFournisseur(fournisseur.id)
+        : this.fournisseurService.activerFournisseur(fournisseur.id);
 
       serviceCall.subscribe({
         next: (updated) => {
+          // Mettre à jour l'objet dans le tableau
           const index = this.fournisseurs.findIndex(f => f.id === updated.id);
           if (index !== -1) {
             this.fournisseurs[index] = updated;
-            this.applyFilters();
           }
+          // Re-trier la liste complète
+          this.sortFournisseurs();
+          // Réappliquer les filtres
+          this.applyFilters();
+          this.togglingId = null;
+          this.cdr.detectChanges();
         },
         error: (error) => {
           console.error('Erreur changement statut:', error);
           alert('Erreur lors du changement de statut');
+          this.togglingId = null;
+          this.cdr.detectChanges();
         }
       });
     }
+  }
+
+  private sortFournisseurs(): void {
+    this.fournisseurs.sort((a, b) => {
+      if (a.actif !== b.actif) {
+        return a.actif ? -1 : 1;
+      }
+      const dateA = a.createdDate ? new Date(a.createdDate).getTime() : 0;
+      const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
+      return dateB - dateA;
+    });
   }
 
   getCategorieBadgeClass(categorie?: CategorieFournisseur): string {
@@ -144,5 +185,24 @@ export class FournisseurListComponent implements OnInit {
       [CategorieFournisseur.AUTRE]: 'bg-light text-dark'
     };
     return categorie ? classes[categorie] || 'bg-light text-dark' : 'bg-light text-dark';
+  }
+
+  getCategoryIcon(categorie?: CategorieFournisseur): string {
+    const icons: { [key in CategorieFournisseur]?: string } = {
+      [CategorieFournisseur.MATIERES_PREMIERES]: 'fas fa-oil-can',
+      [CategorieFournisseur.EMBALLAGES]: 'fas fa-box',
+      [CategorieFournisseur.PRODUITS_FINIS]: 'fas fa-wine-bottle',
+      [CategorieFournisseur.ETIQUETTES]: 'fas fa-tag',
+      [CategorieFournisseur.BOUCHONS]: 'fas fa-cork',
+      [CategorieFournisseur.CAPSULES]: 'fas fa-capsules',
+      [CategorieFournisseur.OPERCULES]: 'fas fa-circle',
+      [CategorieFournisseur.FILMS]: 'fas fa-film',
+      [CategorieFournisseur.CARTONS]: 'fas fa-box-open',
+      [CategorieFournisseur.PALETTES]: 'fas fa-pallet',
+      [CategorieFournisseur.SERVICES]: 'fas fa-concierge-bell',
+      [CategorieFournisseur.TRANSPORT]: 'fas fa-truck',
+      [CategorieFournisseur.AUTRE]: 'fas fa-building'
+    };
+    return categorie ? icons[categorie] || 'fas fa-truck' : 'fas fa-truck';
   }
 }

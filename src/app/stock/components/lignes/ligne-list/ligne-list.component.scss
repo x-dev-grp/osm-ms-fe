@@ -42,7 +42,6 @@
       }
     }
   }
-
   .stat-card-inner {
     display: flex;
     align-items: center;
@@ -1217,5 +1216,11 @@
         width: 30px;
       }
     }
+  }
+}
+.inactive-row {
+  background-color: #dee2e6 !important;
+  &:hover {
+    background-color: #ced4da !important;
   }
 }

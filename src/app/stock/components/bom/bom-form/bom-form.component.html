@@ -2,7 +2,6 @@
   <a routerLink="/stock/boms" routerLinkActive="active">
     <i class="fas fa-clipboard-list"></i> Nomenclatures
   </a>
-  <!-- En-tête -->
   <div class="form-header">
     <button class="btn-back-floating" [routerLink]="['/stock/boms']">
       <i class="fas fa-arrow-left"></i>
@@ -15,16 +14,13 @@
     </div>
   </div>
 
-  <!-- Loading -->
   <div *ngIf="loading" class="loading-container">
     <div class="spinner-border"></div>
     <p>Chargement...</p>
   </div>
 
-  <!-- Formulaire -->
   <div *ngIf="!loading" class="form-content">
     <form [formGroup]="bomForm" (ngSubmit)="onSubmit()">
-      <!-- Infos générales -->
       <div class="form-card">
         <h5 class="card-title">Informations générales</h5>
         <div class="form-row">
@@ -47,8 +43,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Lignes de composants -->
       <div class="form-card">
         <div class="card-header">
           <h5 class="card-title">Composants</h5>
@@ -56,7 +50,6 @@
             <i class="fas fa-plus"></i> Ajouter un composant
           </button>
         </div>
-
         <div formArrayName="lines">
           <div *ngFor="let line of lines.controls; let i = index" [formGroupName]="i" class="line-item">
             <div class="line-number">#{{ i + 1 }}</div>
@@ -65,7 +58,7 @@
                 <label>Composant</label>
                 <select class="form-control" formControlName="articleId" required>
                   <option value="" disabled>Choisir un article</option>
-                  <option *ngFor="let article of articles" [value]="article.id">
+                  <option *ngFor="let article of getFilteredArticlesForLine(i)" [value]="article.id">
                     {{ article.nom }} ({{ article.um }})
                   </option>
                 </select>
@@ -75,14 +68,13 @@
                 <input type="number" step="0.001" class="form-control" formControlName="quantity" required>
               </div>
             </div>
+          </div>
             <button type="button" class="btn-remove" (click)="removeLine(i)" *ngIf="lines.length > 1">
               <i class="fas fa-trash"></i>
             </button>
           </div>
         </div>
-      </div>
 
-      <!-- Boutons d'action -->
       <div class="form-actions">
         <button type="button" class="btn-cancel" (click)="cancel()">Annuler</button>
         <button type="submit" class="btn-save" [disabled]="bomForm.invalid || isSubmitting">
@@ -91,4 +83,5 @@
       </div>
     </form>
   </div>
+
 </div>

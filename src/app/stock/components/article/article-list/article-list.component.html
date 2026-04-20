@@ -70,11 +70,12 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let article of filteredArticles">
+        <tr *ngFor="let article of filteredArticles" [ngClass]="{'inactive-row': !article.actif}">
           <td class="fw-bold">{{ article.nom }}</td>
           <td>
               <span class="badge" [ngClass]="getCategoryBadgeClass(article.categorie)">
-                {{ article.categorie }}
+                <i [ngClass]="getCategoryIcon(article.categorie)"></i>
+                <span class="ms-1">{{ article.categorie }}</span>
               </span>
           </td>
           <td>{{ article.um }}</td>
@@ -85,14 +86,29 @@
                 {{ article.actif ? 'Actif' : 'Inactif' }}
               </span>
           </td>
-          <td class="actions">
-            <button class="btn btn-sm btn-info me-1" [routerLink]="['/stock/articles', article.id]">
-              <i class="fas fa-eye"></i>
-            </button>
-            <button class="btn btn-sm btn-warning me-1" [routerLink]="['/stock/articles', article.id, 'editer']">
-              <i class="fas fa-edit"></i>
-            </button>
-
+          <td class="actions-cell">
+            <div class="dropdown">
+              <button class="dropdown-btn" (click)="toggleDropdown(article.id, $event)">⋮</button>
+              <div class="dropdown-content" *ngIf="activeDropdown === article.id">
+                <ng-container *ngIf="article.actif; else inactiveActions">
+                  <button class="dropdown-item" [routerLink]="['/stock/articles', article.id]">
+                    <i class="fas fa-eye"></i> Voir
+                  </button>
+                  <button class="dropdown-item" [routerLink]="['/stock/articles', article.id, 'editer']">
+                    <i class="fas fa-edit"></i> Modifier
+                  </button>
+                  <button class="dropdown-item valider" (click)="toActif(article, $event); activeDropdown = null">
+                    <i class="fas fa-ban"></i> Désactiver
+                  </button>
+                </ng-container>
+                <ng-template #inactiveActions>
+                  <button class="dropdown-item activer" (click)="toActif(article, $event); activeDropdown = null">
+                    <i class="fas fa-check-circle"></i> Activer
+                  </button>
+                </ng-template>
+              </div>
+            </div>
+          </td>
         </tr>
         <tr *ngIf="filteredArticles.length === 0">
           <td colspan="7" class="text-center py-4">

@@ -104,154 +104,131 @@ $transition: all 0.3s ease;
     }
   }
 
-  .cards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 1.5rem;
+  .table-container {
+    background: $white;
+    border-radius: 24px;
+    box-shadow: $shadow-md;
+    overflow-x: auto;
+    border: 1px solid rgba($olive-green, 0.1);
+    transition: $transition;
 
-    .of-card {
-      background: $white;
-      border-radius: 24px;
-      box-shadow: $shadow-md;
+    &:hover {
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+    }
+  }
+
+  .of-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+
+    th, td {
+      padding: 1rem 1.25rem;
+      text-align: left;
+      border-bottom: 1px solid $gray-200;
+    }
+
+    th {
+      background: $cream;
+      font-weight: 600;
+      color: $olive-dark;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    tr {
       transition: $transition;
-      cursor: pointer;
-      overflow: hidden;
-      border: 1px solid rgba($olive-green, 0.1);
 
       &:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
-        border-color: $olive-green;
+        background: rgba($olive-green, 0.02);
       }
+    }
 
-      .card-header {
-        padding: 1.25rem 1.5rem;
-        background: linear-gradient(135deg, $cream 0%, #fff5e6 100%);
-        border-bottom: 1px solid rgba($olive-green, 0.1);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+    td {
+      color: $gray-800;
+      vertical-align: middle;
+    }
 
-        .card-title {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          font-size: 1.1rem;
-          font-weight: 600;
-          color: $olive-dark;
+    .of-code {
+      font-weight: 600;
+      color: $olive-dark;
 
-          i {
-            font-size: 1.2rem;
-            color: $gold;
-          }
-        }
-
-        .status-badge {
-          padding: 0.25rem 1rem;
-          border-radius: 30px;
-          font-size: 0.75rem;
-          font-weight: 600;
-          text-transform: uppercase;
-
-          &.brouillon {
-            background: #e9ecef;
-            color: #6c757d;
-          }
-          &.planifie {
-            background: #cfe2ff;
-            color: #0a58ca;
-          }
-          &.en_cours {
-            background: #d1e7dd;
-            color: #0f5132;
-          }
-          &.en_pause {
-            background: #fff3cd;
-            color: #997404;
-          }
-          &.termine {
-            background: #d1e7dd;
-            color: #0f5132;
-          }
-          &.cloture {
-            background: #d1e7dd;
-            color: #0f5132;
-          }
-        }
+      i {
+        margin-right: 0.5rem;
+        color: $gold;
       }
+    }
 
-      .card-body {
-        padding: 1.25rem 1.5rem;
+    .status-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 30px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      display: inline-block;
 
-        .info-row {
-          display: flex;
-          align-items: center;
-          margin-bottom: 0.75rem;
-          font-size: 0.9rem;
-
-          i {
-            width: 24px;
-            color: $olive-green;
-          }
-          span {
-            width: 100px;
-            color: $gray-600;
-          }
-          strong {
-            flex: 1;
-            color: $gray-800;
-            font-weight: 600;
-          }
-          .good {
-            color: $olive-green;
-            font-weight: 700;
-          }
-          .nc {
-            color: #dc3545;
-            font-weight: 700;
-          }
-          .separator {
-            margin: 0 0.25rem;
-            color: $gray-600;
-          }
-        }
+      &.brouillon {
+        background: #e9ecef;
+        color: #6c757d;
       }
+      &.planifie {
+        background: #cfe2ff;
+        color: #0a58ca;
+      }
+      &.en_cours {
+        background: #d1e7dd;
+        color: #0f5132;
+      }
+      &.en_pause {
+        background: #fff3cd;
+        color: #997404;
+      }
+      &.termine, &.cloture {
+        background: #d1e7dd;
+        color: #0f5132;
+      }
+    }
 
-      .card-footer {
-        padding: 1rem 1.5rem;
-        border-top: 1px solid rgba($olive-green, 0.1);
-        background: $cream;
-        text-align: right;
+    .good {
+      color: $olive-green;
+      font-weight: 700;
+    }
+    .nc {
+      color: #dc3545;
+      font-weight: 700;
+    }
+    .separator {
+      margin: 0 0.25rem;
+      color: $gray-600;
+    }
 
-        .btn-view {
-          background: none;
-          border: none;
-          color: $olive-green;
-          font-weight: 600;
-          cursor: pointer;
-          transition: $transition;
-          display: inline-flex;
-          align-items: center;
-          gap: 0.5rem;
+    .btn-view {
+      background: none;
+      border: none;
+      color: $olive-green;
+      font-weight: 600;
+      cursor: pointer;
+      transition: $transition;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 30px;
 
-          &:hover {
-            color: $olive-dark;
-            transform: translateX(4px);
-          }
-        }
+      &:hover {
+        background: rgba($olive-green, 0.1);
+        color: $olive-dark;
+        transform: translateX(4px);
       }
     }
 
     .empty-state {
-      grid-column: 1 / -1;
       text-align: center;
-      padding: 4rem;
-      background: $white;
-      border-radius: 24px;
-      box-shadow: $shadow-md;
+      padding: 3rem;
 
       i {
-        font-size: 3rem;
+        font-size: 2.5rem;
         color: $gray-600;
         margin-bottom: 1rem;
       }
@@ -263,7 +240,7 @@ $transition: all 0.3s ease;
         background: $olive-green;
         color: $white;
         border: none;
-        padding: 0.75rem 1.5rem;
+        padding: 0.6rem 1.2rem;
         border-radius: 40px;
         font-weight: 600;
         cursor: pointer;
@@ -282,7 +259,7 @@ $transition: all 0.3s ease;
   to { transform: rotate(360deg); }
 }
 
-// Responsive
+// Responsive : pour les très petits écrans, on réduit les paddings
 @media (max-width: 768px) {
   .of-list-page {
     padding: 1rem;
@@ -299,8 +276,16 @@ $transition: all 0.3s ease;
       }
     }
 
-    .cards-grid {
-      grid-template-columns: 1fr;
+    .of-table {
+      font-size: 0.8rem;
+
+      th, td {
+        padding: 0.75rem;
+      }
+
+      .btn-view {
+        padding: 0.3rem 0.8rem;
+      }
     }
   }
 }

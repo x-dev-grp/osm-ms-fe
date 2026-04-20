@@ -6,5 +6,6 @@ export interface SKU {
   unitesParCols?: number;
   colisParPalette?: number;
   actif:boolean
+  createdDate?: string;
 
 }

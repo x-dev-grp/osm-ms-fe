@@ -23,6 +23,7 @@ export class ClientListComponent implements OnInit, OnDestroy {
   successMessage: string | null = null;
 
   searchTerm: string = '';
+  togglingId: string | null = null;
 
   private destroy$ = new Subject<void>();
   private searchSubject = new Subject<string>();
@@ -56,8 +57,16 @@ export class ClientListComponent implements OnInit, OnDestroy {
     this.clientService.getAllClients().subscribe({
       next: (response: ApiResponse<Client>) => {
         if (response.success && response.data) {
-          this.clients = response.data;
-          this.filteredClients = response.data;
+          // Tri : actifs en premier, puis par date décroissante
+          this.clients = response.data.sort((a, b) => {
+            if (a.actif !== undefined && b.actif !== undefined && a.actif !== b.actif) {
+              return a.actif ? -1 : 1;
+            }
+            const dateA = a.createdDate ? new Date(a.createdDate).getTime() : 0;
+            const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
+            return dateB - dateA;
+          });
+          this.filteredClients = [...this.clients];
         } else {
           this.error = response.message || 'Erreur lors du chargement des clients';
         }
@@ -73,10 +82,8 @@ export class ClientListComponent implements OnInit, OnDestroy {
 
   applyFilters(): void {
     let filtered = [...this.clients];
-
     if (this.searchTerm && this.searchTerm.trim() !== '') {
       const term = this.searchTerm.toLowerCase().trim();
-
       filtered = filtered.filter(client =>
         client.nom?.toLowerCase().includes(term) ||
         client.codeClient?.toLowerCase().includes(term) ||
@@ -84,13 +91,65 @@ export class ClientListComponent implements OnInit, OnDestroy {
         client.pays?.toLowerCase().includes(term)
       );
     }
-
-    filtered.sort((a, b) => (a.nom || '').localeCompare(b.nom || ''));
     this.filteredClients = filtered;
   }
 
   resetFilters(): void {
     this.searchTerm = '';
     this.applyFilters();
+  }
+
+  // Méthode appelée depuis le template pour activer/désactiver un client
+  toActif(client: Client, event: Event): void {
+    event.stopPropagation();
+    if (!client.id) return;
+
+    const action = client.actif ? 'désactiver' : 'activer';
+    const message = `Voulez-vous ${action} le client "${client.nom}" ?`;
+
+    if (confirm(message)) {
+      this.togglingId = client.id;
+      const request = client.actif
+        ? this.clientService.desactiverClient(client.id)
+        : this.clientService.activerClient(client.id);
+
+      request.subscribe({
+        next: (response: ApiResponse<Client>) => {
+          if (response.success && response.data && response.data.length > 0) {
+            const updatedClient = response.data[0];
+            // Mettre à jour l'objet dans les tableaux
+            const index = this.clients.findIndex(c => c.id === updatedClient.id);
+            if (index !== -1) {
+              this.clients[index] = updatedClient;
+            }
+            // Re-trier la liste
+            this.sortClients();
+            this.applyFilters();
+            this.successMessage = `Client ${action} avec succès`;
+            setTimeout(() => this.successMessage = null, 3000);
+          } else {
+            this.error = response.message || 'Erreur lors du changement de statut';
+          }
+          this.togglingId = null;
+        },
+        error: (err) => {
+          console.error(`Erreur lors de la ${action}`, err);
+          this.error = `Erreur lors de ${action}`;
+          this.togglingId = null;
+          setTimeout(() => this.error = null, 3000);
+        }
+      });
+    }
+  }
+
+  private sortClients(): void {
+    this.clients.sort((a, b) => {
+      if (a.actif !== undefined && b.actif !== undefined && a.actif !== b.actif) {
+        return a.actif ? -1 : 1;
+      }
+      const dateA = a.createdDate ? new Date(a.createdDate).getTime() : 0;
+      const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
+      return dateB - dateA;
+    });
   }
 }

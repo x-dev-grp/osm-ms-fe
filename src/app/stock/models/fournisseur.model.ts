@@ -23,6 +23,7 @@ export interface Fournisseur {
   actif: boolean;
   certifications?: string;
   dateDerniereCommande?: Date;
+  createdDate?: string;
 }
 
 export enum Currency {

@@ -42,6 +42,17 @@ $border-radius-sm: 12px;
     transform: rotate(360deg);
   }
 }
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin-top: 10px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
 // Page principale
 .of-form-page {
@@ -302,6 +313,44 @@ $border-radius-sm: 12px;
           justify-content: center;
         }
       }
+    }
+  }
+}
+.error-details-block {
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: $border-radius-sm;
+  padding: 1rem;
+  margin: 1rem 0;
+  color: #721c24;
+
+  .error-header {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    i {
+      margin-right: 0.5rem;
+    }
+  }
+
+  .error-list {
+    margin: 0.5rem 0 0 1.5rem;
+    li {
+      margin-bottom: 0.25rem;
+      font-family: monospace;
+    }
+  }
+
+  .btn-close-error {
+    margin-top: 0.75rem;
+    background: none;
+    border: none;
+    color: #721c24;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 0.85rem;
+
+    &:hover {
+      color: #491217;
     }
   }
 }

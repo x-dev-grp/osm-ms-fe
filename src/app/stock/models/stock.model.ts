@@ -10,4 +10,5 @@ export interface Stock {
   emplacementId?: string;
   lastModifiedDate: string;
   actif:boolean
+  createdDate?: string;
 }

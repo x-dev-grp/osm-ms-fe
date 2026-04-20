@@ -21,6 +21,9 @@ export class SkuListComponent implements OnInit {
   searchTerm: string = '';
   categoryFilter: string = '';
 
+  // Pour gérer le chargement pendant le toggle
+  togglingId: string | null = null;
+
   constructor(private skuService: SKUService) {}
 
   ngOnInit(): void {
@@ -33,19 +36,24 @@ export class SkuListComponent implements OnInit {
 
     this.skuService.getAllSkus().subscribe({
       next: (response: any) => {
-        console.log("API RESPONSE:", response);
-        this.skus = response ?? [];
+        const skus = response ?? [];
+        // Tri : actifs d'abord (true > false) puis par date décroissante
+        this.skus = skus.sort((a: SKU, b: SKU) => {
+          if (a.actif !== b.actif) {
+            return a.actif ? -1 : 1;
+          }
+          // Utilisez createdDate si disponible, sinon id
+          const dateA = a.createdDate ? new Date(a.createdDate).getTime() : 0;
+          const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
+          return dateB - dateA;
+        });
         this.resetFilters();
-        console.log("SKUS LIST:", this.skus);
         this.loading = false;
       },
       error: (err) => {
         console.error("Erreur chargement SKUs:", err);
         this.error = "Impossible de charger la liste des SKUs";
         this.loading = false;
-      },
-      complete: () => {
-        console.log("Chargement terminé");
       }
     });
   }
@@ -75,6 +83,7 @@ export class SkuListComponent implements OnInit {
     this.applyFilters();
   }
 
+  // Méthode toggle activée/désactivée
   toActif(sku: SKU, event: Event): void {
     event.stopPropagation();
 
@@ -82,23 +91,43 @@ export class SkuListComponent implements OnInit {
     const message = `Voulez-vous ${action} le SKU "${sku.code}" ?`;
 
     if (confirm(message)) {
+      this.togglingId = sku.id!;
       const request = sku.actif
         ? this.skuService.desactiverSku(sku.id!)
         : this.skuService.activerSku(sku.id!);
 
       request.subscribe({
         next: () => {
-          this.successMessage = `SKU ${action} avec succès`;
+          // Mettre à jour le statut localement
           sku.actif = !sku.actif;
+          // Re-trier la liste complète
+          this.sortSkus();
+          // Réappliquer les filtres
+          this.applyFilters();
+          this.togglingId = null;
+          this.successMessage = `SKU ${action} avec succès`;
           setTimeout(() => this.successMessage = null, 3000);
         },
         error: (err) => {
           console.error(`Erreur lors de la ${action}`, err);
           this.error = `Erreur lors de ${action}`;
+          this.togglingId = null;
           setTimeout(() => this.error = null, 3000);
         }
       });
     }
+  }
+
+  // Fonction de tri réutilisable
+  private sortSkus(): void {
+    this.skus.sort((a, b) => {
+      if (a.actif !== b.actif) {
+        return a.actif ? -1 : 1;
+      }
+      const dateA = a.createdDate ? new Date(a.createdDate).getTime() : 0;
+      const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
+      return dateB - dateA;
+    });
   }
 
   getCategories(): string[] {

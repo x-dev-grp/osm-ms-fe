@@ -11,4 +11,5 @@ export interface LigneBonCommande {
   quantiteRecue: number;
   prixUnitaire?: number;
   remarque?: string;
+  createdDate?: string;
 }

@@ -12,6 +12,10 @@
   position: relative;
   z-index: 1;
 }
+.inactive-row {
+  background-color: #ced4da !important;   // gris moyen
+  color: #212529;
+}
 
 // Animations
 @keyframes fadeIn {

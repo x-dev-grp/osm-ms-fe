@@ -56,13 +56,6 @@
           </div>
         </div>
         <div class="header-actions">
-          <button class="btn-action toggle"
-                  [ngClass]="emplacement.actif ? 'active' : 'inactive'"
-                  (click)="toActif()"
-                  [disabled]="actionEnCours">
-            <i class="fas" [ngClass]="emplacement.actif ? 'fa-toggle-on' : 'fa-toggle-off'"></i>
-            {{ emplacement.actif ? 'Désactiver' : 'Activer' }}
-          </button>
           <button class="btn-icon-edit" [routerLink]="['/stock/emplacements', emplacement.id, 'edit']">
             <i class="fas fa-edit me-2"></i>
             Modifier

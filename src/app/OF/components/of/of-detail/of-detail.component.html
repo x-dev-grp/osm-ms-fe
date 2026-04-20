@@ -1,5 +1,4 @@
 <div class="of-detail-page" *ngIf="of">
-  <!-- En‑tête avec actions -->
   <div class="detail-header">
     <button class="btn-back-floating" routerLink="/of">
       <i class="fas fa-arrow-left"></i>
@@ -21,10 +20,18 @@
       <button *ngIf="canClose()" class="btn-action close" (click)="close()">
         <i class="fas fa-check-circle"></i> Clôturer
       </button>
+      <button *ngIf="isEditable()" class="btn-action quality" (click)="goToQualityControl()">
+        <i class="fas fa-clipboard-list"></i> Contrôle qualité
+      </button>
+      <button *ngIf="isEditable()" class="btn-action quality-entry" (click)="goToQualityEntry()">
+        <i class="fas fa-pen-alt"></i> Saisir contrôle
+      </button>
+      <button *ngIf="isEditable()" class="btn-action history" (click)="goToQualityHistory()">
+        <i class="fas fa-history"></i> Historique qualité
+      </button>
     </div>
   </div>
 
-  <!-- Grille des cartes d'information -->
   <div class="detail-grid">
     <div class="card-box info-card">
       <h5>Informations générales</h5>
@@ -33,6 +40,16 @@
       <div class="info-row"><i class="fas fa-industry"></i><span>Ligne</span><strong>{{ of.ligneNom || of.ligneId || '-' }}</strong></div>
       <div class="info-row"><i class="fas fa-oil-can"></i><span>Lot vrac</span><strong>{{ of.lotVracId || '-' }}</strong></div>
       <div class="info-row"><i class="fas fa-chart-simple"></i><span>Statut</span><span class="status-badge" [ngClass]="of.statut.toLowerCase()">{{ of.statut }}</span></div>
+      <div class="info-row">
+        <i class="fas fa-lock"></i>
+        <span>Qualité Status</span>
+        <span class="status-badge blocked" *ngIf="of.qualityStatus === 'BLOCKED'">
+          <i class="fas fa-ban"></i> Bloqué
+        </span>
+        <span class="status-badge free" *ngIf="of.qualityStatus === 'FREE'">
+          Libre
+        </span>
+      </div>
       <div class="info-row"><i class="fas fa-chart-line"></i><span>Quantité cible</span><strong>{{ of.quantiteCible }}</strong></div>
       <div class="info-row"><i class="fas fa-check-circle"></i><span>Bon / NC</span><strong>{{ of.quantiteBonne }} / {{ of.quantiteNC }}</strong></div>
       <div class="info-row"><i class="fas fa-clock"></i><span>Durée réelle (min)</span><strong>{{ of.dureeReelle || '-' }}</strong></div>
@@ -40,7 +57,6 @@
         <i class="fas fa-hourglass-half"></i><span>Temps écoulé</span>
         <strong>{{ TimeFormatted }}</strong>
       </div>
-      <!-- Progression de production -->
       <div class="production-progress">
         <span>Progression</span>
         <div class="progress-bar">
@@ -59,7 +75,6 @@
     </div>
   </div>
 
-  <!-- Saisie de production -->
   <div class="card-box production-card" *ngIf="isEditable()">
     <h5>Saisie de production</h5>
     <div class="production-form">
@@ -75,7 +90,6 @@
     </div>
   </div>
 
-  <!-- Composants -->
   <div class="card-box lines-card">
     <h5>Composants consommés</h5>
     <table class="data-table">
@@ -109,8 +123,6 @@
       </tbody>
     </table>
   </div>
-
-  <!-- QR Code Section -->
   <div class="card-box qr-card">
     <h5>QR Code</h5>
     <div *ngIf="of.publicCode; else noQr">
