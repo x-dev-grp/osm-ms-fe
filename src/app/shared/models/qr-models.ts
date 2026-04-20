@@ -6,6 +6,7 @@ export interface QrCodeRequest {
 
 export interface QrCodeInfo {
   publicCode: string;
+  qrUrl: string;
   qrImageBase64: string;
 }
 
