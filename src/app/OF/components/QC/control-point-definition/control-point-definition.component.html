@@ -1,0 +1,149 @@
+<div *ngIf="showCreatePlanModal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Créer un plan qualité</h3>
+      <button class="close-button" (click)="cancelCreatePlan()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input
+        type="text"
+        [(ngModel)]="newPlanTitle"
+        placeholder="Titre du plan"
+        class="plan-title-input"
+        autofocus
+      />
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="cancelCreatePlan()">Annuler</button>
+      <button class="btn-primary" (click)="createPlanWithTitle()">Créer</button>
+    </div>
+  </div>
+</div>
+
+<div class="control-point-definition">
+  <div class="page-header">
+    <h2>Définition des points de contrôle</h2>
+    <p>Sélectionnez un OF pour définir les critères qualité</p>
+  </div>
+
+  <div class="of-selector">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>OF</mat-label>
+      <mat-select [(ngModel)]="selectedOfId" (selectionChange)="onOfSelected()">
+        <mat-option *ngFor="let of of ofs" [value]="of.id">
+          {{ of.code }} - {{ of.skuCode }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="selectedOfId" class="plan-section">
+    <div class="plan-header">
+      <h3>Plan de contrôle</h3>
+      <div class="plan-actions">
+        <!-- Nouveau bouton pour voir le détail de l'OF -->
+        <button mat-raised-button color="basic" (click)="goToOFDetail()" *ngIf="selectedOfId">
+          <mat-icon>visibility</mat-icon> Détails OF
+        </button>
+        <button mat-raised-button color="primary" (click)="openCreatePlanModal()" *ngIf="!plan">
+          Créer un plan
+        </button>
+        <button mat-raised-button color="accent" (click)="goToQualityEntry()"
+                *ngIf="selectedOfId && plan?.actif" [disabled]="!points.length">
+          <mat-icon>assignment</mat-icon> Saisir contrôle
+        </button>
+        <button mat-raised-button color="warn" *ngIf="plan && !plan.actif" disabled>Plan désactivé</button>
+      </div>
+    </div>
+
+    <div *ngIf="plan" class="plan-details">
+      <p><strong>Titre :</strong> {{ plan.titre }}</p>
+      <p><strong>Statut :</strong> {{ plan.actif ? 'Actif' : 'Inactif' }}</p>
+
+      <div class="points-section">
+        <h4>Points de contrôle</h4>
+        <button mat-stroked-button color="primary" (click)="addPoint()" *ngIf="plan.actif">
+          <mat-icon>add</mat-icon> Ajouter un point
+        </button>
+
+        <table mat-table [dataSource]="points" class="mat-elevation-z1">
+          <ng-container matColumnDef="nom">
+            <th mat-header-cell *matHeaderCellDef> Nom </th>
+            <td mat-cell *matCellDef="let point"> {{point.nom}}  </td>
+          </ng-container>
+
+          <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef> Type </th>
+            <td mat-cell *matCellDef="let point"> {{point.type}}  </td>
+          </ng-container>
+
+          <ng-container matColumnDef="min">
+            <th mat-header-cell *matHeaderCellDef> Min </th>
+            <td mat-cell *matCellDef="let point"> {{point.minValue}}  </td>
+          </ng-container>
+
+          <ng-container matColumnDef="max">
+            <th mat-header-cell *matHeaderCellDef> Max </th>
+            <td mat-cell *matCellDef="let point"> {{point.maxValue}}  </td>
+          </ng-container>
+
+          <ng-container matColumnDef="blocking">
+            <th mat-header-cell *matHeaderCellDef> Bloquant </th>
+            <td mat-cell *matCellDef="let point"> {{point.blocking ? 'Oui' : 'Non'}}  </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef> Actions </th>
+            <td mat-cell *matCellDef="let point; let i=index">
+              <button mat-icon-button color="warn" (click)="removePoint(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #pointDialog>
+  <h2 mat-dialog-title>Ajouter un point de contrôle</h2>
+  <mat-dialog-content>
+    <form [formGroup]="pointForm">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Nom</mat-label>
+        <input matInput formControlName="nom" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Type</mat-label>
+        <mat-select formControlName="type" required>
+          <mat-option *ngFor="let type of controlTypes" [value]="type">
+            {{ type }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div *ngIf="pointForm.get('type')?.value === numericType">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Valeur minimale</mat-label>
+          <input matInput type="number" formControlName="minValue">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Valeur maximale</mat-label>
+          <input matInput type="number" formControlName="maxValue">
+        </mat-form-field>
+      </div>
+
+      <mat-checkbox formControlName="blocking">Point bloquant (NOK empêche la clôture)</mat-checkbox>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Annuler</button>
+    <button mat-raised-button color="primary" [disabled]="pointForm.invalid" (click)="savePoint()">Enregistrer</button>
+  </mat-dialog-actions>
+</ng-template>
