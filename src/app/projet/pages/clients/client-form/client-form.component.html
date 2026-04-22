@@ -1,0 +1,65 @@
+<div class="abioc-container">
+  <div class="header-card">
+    <div class="header-left">
+      <div class="header-copy">
+        <h1>{{ isEdit ? 'Modifier client' : 'Nouveau client' }}</h1>
+        <p>Saisie des informations client</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <div class="form-grid two-cols">
+        <div class="field-block">
+          <label class="form-label">Nom *</label>
+          <input
+            formControlName="nom"
+            class="form-control"
+            [class.is-invalid]="form.get('nom')?.invalid && form.get('nom')?.touched">
+          <div class="invalid-feedback">Requis</div>
+        </div>
+
+        <div class="field-block">
+          <label class="form-label">Type *</label>
+          <select formControlName="type" class="form-select">
+            <option value="BUYER">Acheteur</option>
+            <option value="BRAND_OWNER">Proprietaire de marque</option>
+          </select>
+        </div>
+
+        <div class="field-block">
+          <label class="form-label">Email *</label>
+          <input
+            type="email"
+            formControlName="email"
+            class="form-control"
+            [class.is-invalid]="form.get('email')?.invalid && form.get('email')?.touched">
+        </div>
+
+        <div class="field-block">
+          <label class="form-label">Telephone *</label>
+          <input
+            formControlName="telephone"
+            class="form-control"
+            [class.is-invalid]="form.get('telephone')?.invalid && form.get('telephone')?.touched">
+        </div>
+      </div>
+
+      <div class="field-block">
+        <label class="form-label">Adresse</label>
+        <textarea formControlName="adresse" rows="3" class="form-control"></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" [disabled]="loading">
+          {{ loading ? 'Enregistrement...' : 'Enregistrer' }}
+        </button>
+
+        <button type="button" class="btn btn-secondary" (click)="onCancel()">
+          Annuler
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

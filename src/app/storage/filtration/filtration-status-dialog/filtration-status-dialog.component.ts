@@ -1,18 +1,18 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
-import {MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle} from '@angular/material/dialog';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 
 import { FiltrationApiService } from '../../../shared/services/filtration-api.service';
 import { FiltrationOperation } from '../../../shared/models/filtration-operation';
 import { FiltrationStatus, FILTRATION_STATUS_LABEL } from '../../../shared/models/filtration-status';
-import {MatOption} from "@angular/material/core";
-import {MatFormField, MatHint, MatLabel} from "@angular/material/form-field";
-import {MatSelect} from "@angular/material/select";
-import {MatIcon} from "@angular/material/icon";
-import {MatProgressSpinner} from "@angular/material/progress-spinner";
-import {MatInput} from "@angular/material/input";
-import {MatButton} from "@angular/material/button";
+import { MatOption } from "@angular/material/core";
+import { MatFormField, MatHint, MatLabel } from "@angular/material/form-field";
+import { MatSelect } from "@angular/material/select";
+import { MatIcon } from "@angular/material/icon";
+import { MatProgressSpinner } from "@angular/material/progress-spinner";
+import { MatInput } from "@angular/material/input";
+import { MatButton } from "@angular/material/button";
 
 @Component({
   selector: 'app-filtration-status-dialog',
@@ -35,18 +35,12 @@ import {MatButton} from "@angular/material/button";
     MatInput
   ]
 })
-export class FiltrationStatusDialogComponent {
-  // True pendant l’appel API.
+export class FiltrationStatusDialogComponent implements OnInit {
   loading = false;
 
-  // Statuts proposés dans le select.
   readonly statuses: FiltrationStatus[] = ['CREATED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'];
   readonly label = FILTRATION_STATUS_LABEL;
 
-  // Formulaire:
-  // - status obligatoire
-  // - note optionnelle
-  // - volumeAfter visible/obligatoire uniquement si COMPLETED
   form = this.fb.group({
     status: ['CREATED' as FiltrationStatus, Validators.required],
     note: [''],
@@ -59,48 +53,130 @@ export class FiltrationStatusDialogComponent {
     private ref: MatDialogRef<FiltrationStatusDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { row: FiltrationOperation }
   ) {
-    // On initialise le statut sur la valeur actuelle.
-    this.form.patchValue({ status: data.row.status as FiltrationStatus });
+    const allowed = this.allowedStatuses();
+    if (allowed.length > 0) {
+      this.form.patchValue({ status: allowed[0] });
+    }
   }
 
-  // Permet d’afficher le champ volumeAfter seulement si COMPLETED est sélectionné.
-  isCompleteSelected(): boolean {
-    return this.form.value.status === 'COMPLETED';
-  }
+  ngOnInit() {
+    // Ajouter les validateurs dynamiquement quand le statut change
+    this.form.get('status')?.valueChanges.subscribe(status => {
+      const volumeAfterControl = this.form.get('volumeAfter');
 
-  // Sauvegarde:
-  // - COMPLETED => endpoint /complete (volumeAfter requis)
-  // - Sinon => endpoint /status
-  save(): void {
-    const op = this.data.row;
-    const status = this.form.value.status as FiltrationStatus;
-    const note = (this.form.value.note ?? '').trim();
-
-    this.loading = true;
-
-    if (status === 'COMPLETED') {
-      const volumeAfter = this.form.value.volumeAfter;
-
-      // Validation simple côté UI.
-      if (volumeAfter == null || volumeAfter < 0) {
-        this.loading = false;
-        return;
+      if (status === 'COMPLETED') {
+        volumeAfterControl?.setValidators([Validators.required, Validators.min(0)]);
+      } else {
+        volumeAfterControl?.clearValidators();
+        volumeAfterControl?.setValue(null);
       }
+      volumeAfterControl?.updateValueAndValidity();
+    });
+  }
 
-      this.api.complete(op.operationId, { volumeAfter, note }).subscribe({
-        next: () => this.ref.close(true),
-        error: () => (this.loading = false),
+  allowedStatuses(): FiltrationStatus[] {
+    const current = this.data.row.status as FiltrationStatus;
+
+    switch (current) {
+      case 'CREATED':
+        return ['IN_PROGRESS'];
+      case 'IN_PROGRESS':
+        return ['COMPLETED', 'CANCELLED'];
+      case 'COMPLETED':
+      case 'CANCELLED':
+      default:
+        return [];
+    }
+  }
+
+  //renvoi true si l'utilisateur
+  isCompleteSelected(): boolean {
+    return this.form.get('status')?.value === 'COMPLETED';
+  }
+
+  save(): void {
+    // Vérifier si le formulaire est valide
+    if (this.form.invalid) {
+      // Marquer tous les champs comme touchés pour afficher les erreurs
+      Object.keys(this.form.controls).forEach(key => {
+        const control = this.form.get(key);
+        control?.markAsTouched();
       });
       return;
     }
 
-    this.api.updateStatus(op.operationId, { status, note: note || undefined }).subscribe({
-      next: () => this.ref.close(true),
-      error: () => (this.loading = false),
-    });
+    const op = this.data.row;
+    const currentStatus = op.status as FiltrationStatus;
+    const newStatus = this.form.get('status')?.value as FiltrationStatus;
+    const note = (this.form.get('note')?.value ?? '').trim();
+    const allowed = this.allowedStatuses();
+
+    // Blocage si aucun changement n'est autorisé
+    if (allowed.length === 0) {
+      this.ref.close(false);
+      return;
+    }
+
+    // Blocage si le statut sélectionné n'est pas autorisé
+    if (!allowed.includes(newStatus)) {
+      return;
+    }
+
+    this.loading = true;
+
+    // CREATED -> IN_PROGRESS
+    if (currentStatus === 'CREATED' && newStatus === 'IN_PROGRESS') {
+      this.api.start(op.operationId).subscribe({
+        next: () => this.ref.close(true),
+        error: (error) => {
+          console.error('Erreur:', error);
+          this.loading = false;
+        },
+      });
+      return;
+    }
+
+    // IN_PROGRESS -> COMPLETED
+    if (currentStatus === 'IN_PROGRESS' && newStatus === 'COMPLETED') {
+      const volumeAfter = this.form.get('volumeAfter')?.value;
+
+      if (volumeAfter === null || volumeAfter === undefined || volumeAfter < 0) {
+        this.loading = false;
+        this.form.get('volumeAfter')?.markAsTouched();
+        return;
+      }
+
+      this.api.complete(op.operationId, {
+        volumeAfter: Number(volumeAfter),
+        note: note || undefined,
+      }).subscribe({
+        next: () => this.ref.close(true),
+        error: (error) => {
+          console.error('Erreur:', error);
+          this.loading = false;
+        },
+      });
+      return;
+    }
+
+    // IN_PROGRESS -> CANCELLED
+    if (currentStatus === 'IN_PROGRESS' && newStatus === 'CANCELLED') {
+      this.api.updateStatus(op.operationId, {
+        status: newStatus,
+        note: note || undefined,
+      }).subscribe({
+        next: () => this.ref.close(true),
+        error: (error) => {
+          console.error('Erreur:', error);
+          this.loading = false;
+        },
+      });
+      return;
+    }
+
+    this.loading = false;
   }
 
-  // Ferme sans changement.
   close(): void {
     this.ref.close(false);
   }

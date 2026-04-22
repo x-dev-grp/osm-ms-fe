@@ -24,7 +24,7 @@ export class QrService {
     const url = `${this.baseUrl}/api/${entityType.toLowerCase()}/qr/${entityType}/${entityId}`;
     console.log(`[QR] Generating QR for ${entityType} with ID ${entityId}`);
     return this.http.get<QrCodeInfo>(url).pipe(
-      tap(info => console.log(`[QR] Generated: publicCode=${info.publicCode}, qrUrl=${info.qrUrl}, hasImage=${!!info.qrImageBase64}`))
+      tap(info => console.log(`[QR] Generated: publicCode=${info.publicCode}, hasImage=${!!info.qrImageBase64}`))
     );
   }
 

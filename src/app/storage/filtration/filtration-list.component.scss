@@ -1,386 +1,302 @@
-/* ===================================== */
-/* FILTRATION LIST - OLIVE OIL UI */
-/* Clean – modern – responsive */
-/* Direct colors only (no variables) */
-/* ===================================== */
+$green: #2f7d32;
+$green-light: #eaf5ec;
+$green-soft: #f4fbf6;
 
-:host {
-  display: block;
-}
+$text-main: #18221b;
+$text-soft: #6b756f;
 
-/* Layout */
+$border: #e5e7eb;
+$white: #ffffff;
+
+$warning: #c58100;
+$danger: #b42318;
+
+/* GLOBAL */
 .abioc-container {
+  padding: 24px;
+  background: #f7faf7;
   min-height: 100vh;
-  background: #f6f7fb;
-  padding: clamp(14px, 2vw, 24px);
-  color: #0f172a;
+  color: $text-main;
 }
 
-/* Header */
-.abioc-header {
+/* HEADER */
+.header-card {
   display: flex;
-  gap: 16px;
-  align-items: center;
   justify-content: space-between;
-  padding: 16px 18px;
-  background: #ffffff;
-  border: 1px solid rgba(15, 23, 42, 0.10);
-  border-radius: 14px;
-  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
-  margin-bottom: 14px;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  padding: 20px;
+  background: $white;
+  border: 1px solid $border;
+  border-radius: 16px;
+
+  margin-bottom: 16px;
 }
 
-.abioc-brand {
+.header-left {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
-.brand-icon {
-  width: 44px;
-  height: 44px;
+.icon-box {
+  width: 50px;
+  height: 50px;
   border-radius: 12px;
   display: grid;
   place-items: center;
-  background: rgba(44, 95, 45, 0.10);
-  border: 1px solid rgba(15, 23, 42, 0.10);
+
+  background: $green-light;
+  color: $green;
+
+  mat-icon {
+    font-size: 26px;
+  }
 }
 
-.brand-icon mat-icon {
-  color: #2c5f2d;
-}
-
-.brand-text h1 {
+.header-left h1 {
   margin: 0;
-  font-size: 18px;
-  font-weight: 800;
+  font-size: 24px;
+  font-weight: 700;
 }
 
-.brand-subtitle {
-  font-size: 12px;
-  color: #64748b;
+.header-left p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: $text-soft;
 }
 
-/* Stats */
-.header-stats {
-  display: flex;
-  gap: 10px;
-}
-
-.stat-item {
-  background: #f8fafc;
-  border: 1px solid rgba(15, 23, 42, 0.10);
-  border-radius: 12px;
-  padding: 10px 12px;
-  text-align: right;
-}
-
-.stat-value {
-  font-weight: 900;
-  font-size: 16px;
-}
-
-.stat-label {
-  font-size: 12px;
-  color: #64748b;
-}
-
-/* Toolbar */
-.abioc-toolbar {
-  display: flex;
-  gap: 12px;
-  align-items: flex-end;
-  justify-content: space-between;
-  padding: 14px 16px;
-  background: #ffffff;
-  border: 1px solid rgba(15, 23, 42, 0.10);
-  border-radius: 14px;
-  margin-bottom: 14px;
-}
-
-.toolbar-filters {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.filter-statut {
-  min-width: 260px;
-}
-
-.btn-nouvelle {
-  border-radius: 12px;
-  padding: 10px 14px;
-  font-weight: 800;
-}
-
-.btn-nouvelle mat-icon {
-  margin-right: 6px;
-}
-
-/* Status select */
-.option-statut {
+.header-right {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 16px;
 }
 
-.statut-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-}
-
-.statut-dot.created {
-  background: #2563eb;
-}
-
-.statut-dot.in_progress {
-  background: #f59e0b;
-}
-
-.statut-dot.completed {
-  background: #16a34a;
-}
-
-.statut-dot.cancelled {
-  background: #dc2626;
-}
-
-/* Loading / Empty */
-.abioc-loading,
-.abioc-empty {
-  background: #ffffff;
-  border: 1px solid rgba(15, 23, 42, 0.10);
-  border-radius: 14px;
-  padding: 26px;
+/* KPI */
+.kpi {
   text-align: center;
 }
 
-.abioc-empty mat-icon {
-  color: #2c5f2d;
+.kpi-value {
+  display: block;
+  font-size: 22px;
+  font-weight: 700;
+  color: $green;
 }
 
-.abioc-empty p,
-.abioc-loading p {
-  color: #64748b;
+.kpi-label {
+  font-size: 12px;
+  color: $text-soft;
 }
 
-/* Table card */
-.abioc-table-card {
-  background: #ffffff;
-  border: 1px solid rgba(15, 23, 42, 0.10);
-  border-radius: 14px;
+/* FILTER */
+.filter-card {
+  padding: 16px;
+  background: $white;
+  border: 1px solid $border;
+  border-radius: 16px;
+  margin-bottom: 16px;
+}
+
+/* TABLE CARD */
+.table-card {
+  background: $white;
+  border: 1px solid $border;
+  border-radius: 16px;
   overflow: hidden;
 }
 
-/* Table header */
 .table-header {
+  padding: 16px;
+  border-bottom: 1px solid $border;
+
   display: flex;
   justify-content: space-between;
-  padding: 16px 18px;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.10);
+  align-items: center;
+
+  h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  span {
+    font-size: 13px;
+    color: $text-soft;
+  }
 }
 
-.table-header h3 {
-  margin: 0;
-  font-size: 15px;
-  font-weight: 900;
-}
-
-.table-subtitle {
-  font-size: 12px;
-  color: #64748b;
-}
-
-.table-count {
-  font-size: 12px;
-  color: #64748b;
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(15, 23, 42, 0.10);
-  background: #f8fafc;
-}
-
-/* Table */
-.table-responsive {
-  width: 100%;
-  overflow: auto;
-}
-
+/* TABLE */
 .abioc-table {
   width: 100%;
-  min-width: 980px;
+
+  .mat-mdc-header-cell {
+    background: #f9fcf9;
+    font-weight: 600;
+    font-size: 13px;
+    color: $text-main;
+  }
+
+  .mat-mdc-cell {
+    padding-top: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #eef2ef;
+  }
+
+  .mat-mdc-row {
+    height: 64px;
+  }
 }
 
-.abioc-table th {
-  font-weight: 900;
-  background: #fbfcfe;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.10);
-  padding: 12px 14px;
+/* CUVE */
+.cuve {
+  display: flex;
+  flex-direction: column;
 }
 
-.abioc-table td {
-  padding: 12px 14px;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
-}
-
-.abioc-table tr:hover td {
-  background: rgba(44, 95, 45, 0.04);
-}
-
-/* Table icons */
-.source-icon {
-  color: #b45309;
-}
-
-.target-icon {
-  color: #15803d;
-}
-
-/* Date */
-.date-day {
-  font-weight: 900;
-}
-
-.date-time {
-  font-size: 12px;
-  color: #64748b;
-}
-
-/* Cuve */
-.source-cuve .cuve-id {
-  color: #b45309;
-}
-
-.target-cuve .cuve-id {
-  color: #15803d;
+.cuve-name {
+  font-weight: 600;
 }
 
 .cuve-type {
   font-size: 12px;
+  color: $text-soft;
+}
+
+/* NOUVEAU - NUMÉRO DE LOT */
+.lot-number {
+  display: block;
+  font-size: 11px;
+  font-family: 'SF Mono', 'Fira Code', monospace;
   color: #64748b;
+  margin-top: 4px;
+  letter-spacing: -0.2px;
 }
 
-/* Numbers */
-.volume-cell {
-  font-weight: 900;
-}
-
-.unit {
-  font-size: 12px;
-  color: #64748b;
-}
-
-/* Loss badge */
-.loss-badge {
-  display: inline-flex;
-  gap: 8px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(15, 23, 42, 0.10);
-  background: #f8fafc;
-  font-weight: 900;
-}
-
-.loss-volume {
-  font-size: 12px;
-  color: #64748b;
-}
-
-/* Status badge */
-.statut-badge {
-  display: inline-flex;
-  padding: 6px 10px;
-  border-radius: 999px;
-  font-weight: 900;
-  font-size: 12px;
-}
-
-.statut-badge.created {
-  color: #1d4ed8;
-  background: rgba(29, 78, 216, 0.08);
-  border: 1px solid rgba(29, 78, 216, 0.16);
-}
-
-.statut-badge.in_progress {
-  color: #b45309;
-  background: rgba(245, 158, 11, 0.12);
-  border: 1px solid rgba(245, 158, 11, 0.22);
-}
-
-.statut-badge.completed {
-  color: #166534;
-  background: rgba(22, 163, 74, 0.10);
-  border: 1px solid rgba(22, 163, 74, 0.18);
-}
-
-.statut-badge.cancelled {
-  color: #991b1b;
-  background: rgba(220, 38, 38, 0.10);
-  border: 1px solid rgba(220, 38, 38, 0.18);
-}
-
-/* Actions */
-.col-actions {
-  width: 96px;
-  text-align: right;
-}
-
-.btn-actions {
-  border-radius: 10px;
-}
-
-/* Menu */
-.abioc-menu .danger {
-  color: #b91c1c;
-}
-
+/* NOUVEAU - HINT DANS LE MENU */
 .menu-hint {
   margin-left: 8px;
-  font-size: 12px;
-  color: #64748b;
+  font-size: 11px;
+  color: #94a3b8;
 }
 
-/* Footer */
-.table-footer {
-  display: flex;
-  justify-content: space-between;
-  padding: 12px 16px;
-  border-top: 1px solid rgba(15, 23, 42, 0.10);
-  background: #fbfcfe;
+/* NOUVEAU - LIGNE ANNULÉE (OPACITÉ) */
+.row-cancelled {
+  opacity: 0.7;
+  background-color: #f8fafc;
 }
 
-.footer-info span {
+/* STATUS */
+.status-badge {
   padding: 6px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(15, 23, 42, 0.10);
-  background: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
 }
 
-/* Responsive */
-@media (max-width: 900px) {
+.status-badge.created {
+  background: #eef7ef;
+  color: $green;
+}
 
-  .abioc-header {
+.status-badge.in_progress {
+  background: #fff4e5;
+  color: $warning;
+}
+
+.status-badge.completed {
+  background: #e6f7ef;
+  color: #1f7a45;
+}
+
+.status-badge.cancelled {
+  background: #fdeaea;
+  color: $danger;
+}
+
+/* ACTION BUTTON */
+button[mat-icon-button] {
+  border-radius: 8px;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #f0f2f0;
+  }
+}
+
+/* MENU DANGER (SUPPRIMER) */
+.danger {
+  color: $danger !important;
+
+  mat-icon {
+    color: $danger !important;
+  }
+
+  &:hover {
+    background: #fdeaea !important;
+  }
+}
+
+/* LOADING */
+.abioc-loading {
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+}
+
+/* EMPTY */
+.abioc-empty {
+  text-align: center;
+  padding: 40px;
+
+  mat-icon {
+    font-size: 40px;
+    color: $green;
+  }
+
+  p {
+    margin-top: 10px;
+    color: $text-soft;
+  }
+
+  button {
+    margin-top: 16px;
+  }
+}
+
+/* PAGINATOR */
+mat-paginator {
+  border-top: 1px solid $border;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .abioc-container {
+    padding: 16px;
+  }
+
+  .header-card {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .abioc-toolbar {
-    flex-direction: column;
-  }
-
-  .btn-nouvelle {
+  .header-right {
     width: 100%;
-    justify-content: center;
+    justify-content: space-between;
   }
 
   .abioc-table {
-    min-width: 920px;
+    .mat-mdc-header-cell,
+    .mat-mdc-cell {
+      padding-left: 12px;
+      padding-right: 12px;
+    }
   }
 }
 
-/* Reduced motion */
+/* ANIMATIONS */
 @media (prefers-reduced-motion: reduce) {
   * {
     transition: none !important;
