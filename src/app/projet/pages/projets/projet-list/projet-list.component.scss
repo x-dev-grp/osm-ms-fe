@@ -1,0 +1,286 @@
+.abioc-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1rem;
+}
+
+.header-card,
+.table-card,
+.abioc-empty,
+.filter-card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+  border: 1px solid #eef2f7;
+}
+
+.header-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  gap: 1rem;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.icon-box {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #0f766e, #14b8a6);
+  color: #fff;
+
+  mat-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+  }
+}
+
+.header-left h1 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.header-left p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.kpi {
+  min-width: 100px;
+  text-align: right;
+}
+
+.kpi-value {
+  display: block;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.kpi-label {
+  display: block;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.filter-card {
+  padding: 1rem 1.25rem;
+}
+
+.filter-card mat-form-field {
+  width: 280px;
+  max-width: 100%;
+}
+
+.abioc-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 180px;
+}
+
+.abioc-empty {
+  padding: 2rem;
+  text-align: center;
+  color: #64748b;
+
+  mat-icon {
+    font-size: 46px;
+    width: 46px;
+    height: 46px;
+    margin-bottom: 0.75rem;
+    color: #94a3b8;
+  }
+
+  p {
+    margin: 0 0 1rem;
+    font-size: 1rem;
+  }
+}
+
+.table-card {
+  overflow: hidden;
+}
+
+.table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #eef2f7;
+
+  h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  span {
+    color: #64748b;
+    font-size: 0.9rem;
+  }
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.abioc-table {
+  width: 100%;
+  min-width: 1080px;
+}
+
+.mat-mdc-header-row {
+  background: #f8fafc;
+}
+
+.mat-mdc-header-cell {
+  color: #334155;
+  font-weight: 700;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.mat-mdc-cell {
+  color: #0f172a;
+  vertical-align: middle;
+}
+
+.mat-mdc-row {
+  transition: background-color 0.2s ease;
+}
+
+.mat-mdc-row:hover {
+  background: #f7fbfa;
+}
+
+.client-name-cell {
+  display: flex;
+  flex-direction: column;
+}
+
+.client-name {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.client-email {
+  font-size: 0.82rem;
+  color: #64748b;
+}
+
+.quantity-pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  background: #ecfeff;
+  color: #0f766e;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.amount-value {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+
+  &.created {
+    background: #e2e8f0;
+    color: #475569;
+  }
+
+  &.completed {
+    background: #dcfce7;
+    color: #15803d;
+  }
+
+  &.cancelled {
+    background: #fee2e2;
+    color: #dc2626;
+  }
+
+  &.in_progress {
+    background: #fef3c7;
+    color: #b45309;
+  }
+}
+
+.btn-details {
+  white-space: nowrap;
+}
+
+.btn-actions {
+  color: #475569;
+}
+
+.btn-actions:hover {
+  background: #f1f5f9;
+}
+
+.danger {
+  color: #dc2626;
+
+  mat-icon {
+    color: #dc2626;
+  }
+}
+
+mat-paginator {
+  border-top: 1px solid #eef2f7;
+}
+
+@media (max-width: 900px) {
+  .header-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .header-right {
+    justify-content: space-between;
+  }
+
+  .kpi {
+    text-align: left;
+  }
+
+  .filter-card mat-form-field {
+    width: 100%;
+  }
+}

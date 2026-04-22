@@ -1,0 +1,61 @@
+<div class="detail-container" *ngIf="!loading && projet as p">
+  <div class="detail-card">
+    <div class="detail-header no-print">
+      <div class="detail-title">
+        <mat-icon>assignment</mat-icon>
+        <div>
+          <h1>{{ p.code || 'Projet' }}</h1>
+          <p>{{ p.clientNom || '-' }}</p>
+        </div>
+      </div>
+
+      <div class="status-badge">
+        {{ p.statut || '-' }}
+      </div>
+    </div>
+
+    <div class="detail-body">
+      <div class="detail-grid no-print">
+        <div class="detail-item"><strong>Client</strong><span>{{ p.clientNom || '-' }}</span></div>
+        <div class="detail-item"><strong>Email</strong><span>{{ p.clientEmail || '-' }}</span></div>
+        <div class="detail-item"><strong>Produit</strong><span>{{ p.typeProduit | titlecase }}</span></div>
+        <div class="detail-item"><strong>Emballage</strong><span>{{ p.typeEmballage | titlecase }}</span></div>
+        <div class="detail-item"><strong>Quantite</strong><span>{{ p.quantiteCible }} {{ p.unite === 'LITRES' ? 'L' : 'unites' }}</span></div>
+        <div class="detail-item"><strong>Prix unitaire</strong><span>{{ p.prixUnitaire | currency:'TND' }}</span></div>
+        <div class="detail-item"><strong>Valeur totale</strong><span>{{ p.valeurTotale | currency:'TND' }}</span></div>
+        <div class="detail-item"><strong>Date limite</strong><span>{{ p.dateLimiteLivraison | date:'dd/MM/yyyy' }}</span></div>
+        <div class="detail-item full-width"><strong>Conditions</strong><span>{{ p.conditionsLivraison }}</span></div>
+      </div>
+
+      <div class="qr-section" id="qr-print-section">
+        <h2>QR Code</h2>
+
+        <div class="qr-box" *ngIf="hasQrImage()">
+          <img
+            [src]="getQrImage()"
+            (error)="onQrError($event)"
+            alt="QR Code Projet" />
+        </div>
+
+        <p class="manual-code">
+          Code manuel: <strong>{{ getManualCode() }}</strong>
+        </p>
+
+        <div class="qr-actions no-print">
+          <button mat-flat-button color="primary" (click)="onPrint()">
+            <mat-icon>print</mat-icon>
+            Imprimer
+          </button>
+
+          <button mat-stroked-button color="primary" (click)="onBack()">
+            Retour
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="loading-box" *ngIf="loading">
+  Chargement...
+</div>

@@ -123,6 +123,12 @@ const routes: Routes = [
           import('./filtration/filtration-form/filtration-form.component').then((m) => m.FiltrationFormComponent),
         // CHANGE: permissions - require PRODUCTION:STORAGEUNIT:READ
         canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.READ)])]
+      }, {
+        path: 'oil-filtering/:id/edit',
+        loadComponent: () =>
+          import('./filtration/filtration-form/filtration-form.component').then((m) => m.FiltrationFormComponent),
+        // CHANGE: permissions - require PRODUCTION:STORAGEUNIT:READ
+        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.READ)])]
       },
       {
         path: 'oil-filtering/new',

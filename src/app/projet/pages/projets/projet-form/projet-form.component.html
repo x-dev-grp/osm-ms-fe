@@ -1,0 +1,126 @@
+<div class="abioc-container">
+  <div class="header-card">
+    <div class="header-left">
+      <div class="header-copy">
+        <h1>{{ isEdit ? 'Modifier projet' : 'Nouveau projet' }}</h1>
+        <p>Parametrage des besoins de conditionnement</p>
+      </div>
+    </div>
+  </div>
+
+  @if (projetCode) {
+    <div class="code-card">
+      <span>Code projet</span>
+      <strong>{{ projetCode }}</strong>
+    </div>
+  }
+
+  <div class="form-card">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <div class="form-grid two-cols">
+        <div class="field-block">
+          <label>Client *</label>
+          <select formControlName="clientId" class="form-select" [class.is-invalid]="isFieldInvalid('clientId')">
+            <option value="">-- Selectionner --</option>
+            <option *ngFor="let c of clients" [value]="c.id">
+              {{ c.nom }} ({{ c.type === 'BUYER' ? 'Acheteur' : 'Marque' }})
+            </option>
+          </select>
+          <div class="invalid-feedback d-block" *ngIf="isFieldInvalid('clientId')">
+            Le client est obligatoire.
+          </div>
+        </div>
+
+        <div class="field-block">
+          <label>Type de produit *</label>
+          <select formControlName="typeProduit" class="form-select">
+            <option *ngFor="let t of typeProduits" [value]="t">
+              {{ t | titlecase }}
+            </option>
+          </select>
+        </div>
+
+        <div class="field-block">
+          <label>Emballage *</label>
+          <select formControlName="typeEmballage" class="form-select">
+            <option *ngFor="let e of typeEmballages" [value]="e">
+              {{ e | titlecase }}
+            </option>
+          </select>
+        </div>
+
+        <div class="field-block">
+          <label>Date limite livraison *</label>
+          <input
+            type="date"
+            formControlName="dateLimiteLivraison"
+            class="form-control"
+            [class.is-invalid]="isFieldInvalid('dateLimiteLivraison')">
+          <div class="invalid-feedback d-block" *ngIf="isFieldInvalid('dateLimiteLivraison')">
+            La date limite est obligatoire.
+          </div>
+        </div>
+
+        <div class="field-block full-row">
+          <label>Quantite cible *</label>
+          <div class="input-group">
+            <input
+              type="number"
+              step="0.01"
+              formControlName="quantiteCible"
+              class="form-control"
+              [class.is-invalid]="isFieldInvalid('quantiteCible')">
+            <select formControlName="unite" class="form-select unite-select">
+              <option *ngFor="let u of unites" [value]="u">{{ u }}</option>
+            </select>
+          </div>
+          <div class="invalid-feedback d-block" *ngIf="isFieldInvalid('quantiteCible')">
+            La quantite doit etre superieure a 0.
+          </div>
+        </div>
+
+        <div class="field-block">
+          <label>Prix unitaire (TND) *</label>
+          <input
+            type="number"
+            step="0.01"
+            formControlName="prixUnitaire"
+            class="form-control"
+            [class.is-invalid]="isFieldInvalid('prixUnitaire')">
+          <div class="invalid-feedback d-block" *ngIf="isFieldInvalid('prixUnitaire')">
+            Le prix unitaire doit etre superieur a 0.
+          </div>
+        </div>
+
+        <div class="field-block value-box">
+          <label>Valeur totale estimee</label>
+          <div class="readonly-value">
+            {{ valeurTotaleEstimee | currency:'TND' }}
+          </div>
+        </div>
+
+        <div class="field-block full-row">
+          <label>Conditions de livraison *</label>
+          <textarea
+            formControlName="conditionsLivraison"
+            rows="4"
+            class="form-control"
+            [class.is-invalid]="isFieldInvalid('conditionsLivraison')"></textarea>
+          <div class="invalid-feedback d-block" *ngIf="isFieldInvalid('conditionsLivraison')">
+            Les conditions de livraison sont obligatoires.
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" [disabled]="loading">
+          {{ loading ? 'Enregistrement...' : 'Enregistrer' }}
+        </button>
+
+        <button type="button" class="btn btn-secondary" (click)="onCancel()">
+          Annuler
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

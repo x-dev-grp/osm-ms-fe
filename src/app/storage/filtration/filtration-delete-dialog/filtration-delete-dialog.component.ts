@@ -25,11 +25,11 @@ import {DatePipe, NgClass} from "@angular/common";
     FormsModule,
     MatCheckbox,
     MatIcon,
-    NgClass,
     DatePipe
   ]
 })
 export class FiltrationDeleteDialogComponent {
+  isConfirmed = false; // ← renamed from "confirmed" (was clashing with the method)
   constructor(
     private ref: MatDialogRef<FiltrationDeleteDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { row: FiltrationOperation }
@@ -41,9 +41,8 @@ export class FiltrationDeleteDialogComponent {
   }
 
   // Confirmer la suppression (la liste appellera l’API).
-  confirmed(): void {
+  confirm(): void {
     this.ref.close(true);
   }
 
-  protected readonly confirm = confirm;
 }

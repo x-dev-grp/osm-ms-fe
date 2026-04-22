@@ -1,7 +1,12 @@
 // angular import
 import { CommonModule } from '@angular/common';
 import { Component, effect, inject, output } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 
 // third party
 import { TranslateService } from '@ngx-translate/core';
@@ -13,10 +18,21 @@ import { AbleProConfig } from 'src/app/app-config';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { RTL } from '../../../const';
 import { ThemeConfigService } from '../../../../shared/services/theme-config.service';
+import { GlobalSearchService } from '../../../../shared/services/global-search.service';
+import { QrResolveResponse } from '../../../../shared/models/qr-models';
 
 @Component({
   selector: 'app-nav-right',
-  imports: [SharedModule, CommonModule, RouterModule],
+  imports: [
+    SharedModule,
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatButtonModule
+  ],
   templateUrl: './toolbar-right.component.html',
   standalone: true,
   styleUrls: ['./toolbar-right.component.scss']
@@ -72,6 +88,10 @@ export class NavRightComponent {
   ];
   private translate = inject(TranslateService);
   private themeService = inject(ThemeLayoutService);
+  private router = inject(Router);
+  private globalSearchService = inject(GlobalSearchService);
+  searchCode = '';
+  searching = false;
 
   // public method
   private themeDirection = inject(ThemeConfigService);
@@ -118,9 +138,51 @@ export class NavRightComponent {
   logout() {
     this.authenticationService.logout();
   }
-
   // private methods
   private isRtlTheme(direction: string) {
     this.direction = direction;
   }
+
+
+//----------- chercher pa code ------//
+  //déclenche la recherche.
+  Search() {
+    const code = this.searchCode.trim();
+    if (!code || this.searching) {
+      return;
+    }
+
+    this.searching = true;
+    this.globalSearchService.searchByCode(code ).subscribe({
+      next: (response) => {
+        this.searching = false;
+        const hit = response.result || response.results?.[0];
+        if (!hit) {
+          alert('Code introuvable');
+          return;
+        }
+        this.navigateToFoundEntity(hit);
+      },
+      error: () => {
+        this.searching = false;
+        alert('Code introuvable');
+      }
+    });
+  }
+
+  private navigateToFoundEntity(entity: QrResolveResponse): void {
+    if (entity.webRoute) {
+      this.router.navigateByUrl(entity.webRoute);
+      return;
+    }
+
+    if (entity.entityType === 'OF' && entity.entityId) {
+      this.router.navigate(['/of', entity.entityId]);
+      return;
+    }
+
+    alert(`Entite trouvee (${entity.entityType}) mais route indisponible`);
+  }
+  //----------- chercher pa code ------//
+
 }

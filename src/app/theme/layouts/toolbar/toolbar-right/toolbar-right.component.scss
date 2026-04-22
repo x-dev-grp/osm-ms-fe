@@ -166,6 +166,18 @@
   }
 }
 
+.global-search-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 8px;
+
+  .global-search-field {
+    width: 260px;
+    margin-bottom: -1.25em;
+  }
+}
+
 @media only screen and (max-width: 1024px) {
   .pc-header {
     left: 0px;
@@ -174,6 +186,12 @@
 }
 
 @media (max-width: 575.98px) {
+  .global-search-wrapper {
+    .global-search-field {
+      width: 190px;
+    }
+  }
+
   .pc-header {
     .header-wrapper {
       padding: 10px;

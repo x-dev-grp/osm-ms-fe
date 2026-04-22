@@ -41,6 +41,14 @@ const routes: Routes = [
       { path: 'of',
         loadChildren: () => import('./OF/of.module').then(m => m.OfModule) },
       {
+        path: 'labels',
+        loadChildren: () => import('./labels/labels.module').then((m) => m.LabelsModule)
+      },
+      {
+        path: 'projets',
+        loadChildren: () => import('./projet/projet.module').then((m) => m.ProjetModule)
+      },
+      {
         path: 'welcome',
         loadComponent: () => import('./welcome/welcome.component').then((m) => m.WelcomeComponent)
       },
@@ -124,3 +132,5 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AppRoutingModule {}
+
+
