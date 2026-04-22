@@ -1,0 +1,96 @@
+<div class="stock-by-location-container">
+  <div class="page-header glass-effect">
+    <h1>Stock par emplacement</h1>
+    <p>Consultez en temps réel les stocks de composants et produits finis par zone de stockage</p>
+  </div>
+
+  <div class="filters-section glass-effect">
+    <div class="row g-4">
+      <div class="col-md-3">
+        <label class="filter-label">Emplacement</label>
+        <select class="form-control modern-select"
+                [(ngModel)]="selectedEmplacementId"
+                [disabled]="loadingEmplacements">
+          <option value="">-- Tous les emplacements --</option>
+          <option *ngFor="let emp of emplacements" [value]="emp.id">
+            {{ emp.code }} - {{ emp.nom || emp.typeEmplacement }}
+          </option>
+        </select>
+      </div>
+
+      <div class="col-md-3">
+        <label class="filter-label">Recherche article</label>
+        <input type="text" class="form-control modern-input"
+               placeholder="Nom, code..."
+               [(ngModel)]="searchTerm">
+      </div>
+
+      <div class="col-md-3">
+        <label class="filter-label">Catégorie</label>
+        <select class="form-control modern-select" [(ngModel)]="categorieFilter">
+          <option value="">Toutes</option>
+          <option *ngFor="let cat of categories" [value]="cat">
+            {{ getCategorieLabel(cat) }}
+          </option>
+        </select>
+      </div>
+      <div class="col-md-3 d-flex align-items-end">
+        <button class="btn btn-primary w-100" (click)="loadAllStocks()" [disabled]="loadingStocks">
+          <i class="fas fa-sync-alt" [ngClass]="{'fa-spin': loadingStocks}"></i> Actualiser
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loadingStocks" class="loading-state">
+    <div class="spinner-border text-primary"></div>
+    <p>Chargement du stock...</p>
+  </div>
+
+  <div *ngIf="!loadingStocks && filteredStocks.length === 0" class="empty-state">
+    <i class="fas fa-box-open"></i>
+    <p>Aucun stock ne correspond aux critères.</p>
+  </div>
+
+  <div *ngIf="!loadingStocks && filteredStocks.length > 0" class="table-responsive glass-effect">
+    <table class="modern-table">
+      <thead>
+      <tr>
+        <th>Article</th>
+        <th>Catégorie</th>
+        <th>Emplacement</th>
+        <th>Quantité</th>
+        <th>Unité</th>
+        <th>Seuil min</th>
+        <th>Statut</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let stock of filteredStocks">
+        <td>{{ stock.article.nom }}</td>
+        <td>
+            <span class="badge" [ngClass]="'badge-' + getCategorieClass(stock.article.categorie)">
+              {{ getCategorieLabel(stock.article.categorie) }}
+            </span>
+        </td>
+        <td>
+            <span *ngIf="stock.emplacement; else noLocation">
+              {{ stock.emplacement.code }} - {{ stock.emplacement.nom || stock.emplacement.typeEmplacement }}
+              <span *ngIf="stock.emplacement.zone">(Zone {{ stock.emplacement.zone }})</span>
+            </span>
+          <ng-template #noLocation>
+            <span class="text-muted">Non assigné</span>
+          </ng-template>
+        </td>
+        <td class="quantite">{{ stock.quantiteActuelle }}</td>
+        <td>{{ stock.article.um }}</td>
+        <td>{{ stock.article.stockMinimum }}</td>
+        <td>
+          <span class="status-dot" [ngClass]="getStockStatusClass(stock.quantiteActuelle, stock.article.stockMinimum)"></span>
+          {{ getStockStatusText(stock.quantiteActuelle, stock.article.stockMinimum) }}
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
