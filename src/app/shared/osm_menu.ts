@@ -395,7 +395,33 @@ export const osm_menus: Navigation[] = [
         url: '/of',
         icon: 'factory',
         breadcrumbs: false,
+      },
+      {
+        id: 'item-production-labels',
+        title: 'Etiquettes',
+        type: 'item',
+        url: '/labels',
+        icon: 'sell',
+        breadcrumbs: false,
+      },
+      {
+        id: 'item-client',
+        title: 'Clients',
+        type: 'item',
+        url: '/projets/clients',
+        icon: 'groups',
+        breadcrumbs: false,
+      },
+      {
+        id: 'item-projet',
+        title: 'Projets',
+        type: 'item',
+        url: '/projets',//
+        icon: 'assignment',
+        breadcrumbs: false,
       }
+
+
     ]
   },
   {
@@ -618,3 +644,5 @@ export const osm_menus: Navigation[] = [
   //   ]
   // }
 ];
+
+

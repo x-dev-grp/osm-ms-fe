@@ -18,6 +18,12 @@ export class OFService {
     return this.http.get<OrdreFabrication>(`${this.baseUrl}/${id}`);
   }
 
+  getByCode(code: string): Observable<OrdreFabrication> {
+    return this.http.get<OrdreFabrication>(`${this.baseUrl}/search/by-code`, {
+      params: { code }
+    });
+  }
+
   create(of: OrdreFabrication): Observable<OrdreFabrication> {
     return this.http.post<OrdreFabrication>(`${this.baseUrl}/create`, of);
   }
@@ -46,9 +52,12 @@ export class OFService {
     return this.http.put<OrdreFabrication>(`${this.baseUrl}/${id}/ajustements`, ajustements);
   }
 
+  //-------QRCode-------//
   generateQr(entityId: string): Observable<QrCodeInfo> {
     return this.http.get<QrCodeInfo>(
       `${this.baseUrl}/qr/OF/${entityId}`
     );
   }
+  //-------QRCode-------//
+
 }

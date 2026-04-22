@@ -13,14 +13,25 @@ export interface Article {
   lastModifiedDate?: string;
 }
 
-
-
 export enum CategorieArticle {
   EMBALLAGE = 'EMBALLAGE',
   CONSOMMABLE = 'CONSOMMABLE',
   MATIERE_PREMIERE = 'MATIERE_PREMIERE',
-  ACCESSOIRE = 'ACCESSOIRE'
+  ACCESSOIRE = 'ACCESSOIRE',
+  UNITE = 'UNITE',
+  COLIS = 'COLIS',
+  PALETTE = 'PALETTE'
 }
+
+export const categorieLabels: Record<CategorieArticle, string> = {
+  [CategorieArticle.EMBALLAGE]: 'Emballage',
+  [CategorieArticle.CONSOMMABLE]: 'Consommable',
+  [CategorieArticle.MATIERE_PREMIERE]: 'Matière première',
+  [CategorieArticle.ACCESSOIRE]: 'Accessoire',
+  [CategorieArticle.UNITE]: 'Unité',
+  [CategorieArticle.COLIS]: 'Colis',
+  [CategorieArticle.PALETTE]: 'Palette'
+};
 
 export enum UniteMesure {
   KG = 'KG',

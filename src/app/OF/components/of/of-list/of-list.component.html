@@ -2,10 +2,25 @@
   <div class="list-header">
     <div class="header-left">
       <h2 class="page-title">Ordres de conditionnement</h2>
-      <p class="page-subtitle">Suivez et gérez vos ordres de fabrication en temps réel</p>
+      <p class="page-subtitle">Suivez et gerez vos ordres de fabrication en temps reel</p>
     </div>
     <div class="header-actions">
-      <button class="btn-action create" routerLink="/of/nouveau">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="search-code-field">
+        <mat-label>Code OF</mat-label>
+        <input
+          matInput
+          placeholder="Ex: C49D27"
+          [(ngModel)]="searchCode"
+          (keyup.enter)="searchByCode()"
+        />
+        <button mat-icon-button matSuffix (click)="searchByCode()" [disabled]="searching" aria-label="Rechercher OF">
+          <mat-icon>{{ searching ? 'hourglass_top' : 'search' }}</mat-icon>
+        </button>
+      </mat-form-field>
+      <button class="btn-action create" mat-flat-button color="primary" (click)="searchByCode()" [disabled]="searching">
+        {{ searching ? 'Recherche...' : 'Rechercher' }}
+      </button>
+      <button class="btn-action create" mat-flat-button color="primary" routerLink="/of/nouveau">
         <i class="fas fa-plus"></i> Nouvel OF
       </button>
     </div>
@@ -49,20 +64,20 @@
         </div>
         <div class="info-row">
           <i class="fas fa-calendar-alt"></i>
-          <span>Début prévu :</span>
+          <span>Debut prevu :</span>
           <strong>{{ of.dateDebutPrevue | date:'dd/MM/yyyy HH:mm' }}</strong>
         </div>
       </div>
       <div class="card-footer">
         <button class="btn-view" [routerLink]="['/of', of.id]">
-          Voir détails <i class="fas fa-arrow-right"></i>
+          Voir details <i class="fas fa-arrow-right"></i>
         </button>
       </div>
     </div>
     <div *ngIf="ofs.length === 0" class="empty-state">
       <i class="fas fa-clipboard-list"></i>
-      <p>Aucun ordre de conditionnement trouvé</p>
-      <button class="btn-create-empty" routerLink="/of/nouveau">Créer un nouvel OF</button>
+      <p>Aucun ordre de conditionnement trouve</p>
+      <button class="btn-create-empty" routerLink="/of/nouveau">Creer un nouvel OF</button>
     </div>
   </div>
 </div>

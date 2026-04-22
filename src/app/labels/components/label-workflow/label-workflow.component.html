@@ -1,0 +1,188 @@
+<section class="label-workflow-page">
+  <header class="hero-card">
+    <div>
+      <p class="eyebrow">Conditionnement</p>
+      <h1>Moteur de contenu etiquette</h1>
+      <p class="subtitle">
+        Selectionnez un lot filtre et un packaging, puis generez une etiquette structuree, validable et exportable. Le backend utilisera automatiquement l utilisateur courant et les donnees societe.
+      </p>
+    </div>
+    <div class="hero-state">
+      <span class="state-chip" [class.ready]="hasGeneratedLabel">
+        {{ currentLabel?.status || 'A_GENERER' }}
+      </span>
+      <span class="state-note">
+        {{ hasGeneratedLabel ? 'Draft charge' : 'Aucune etiquette generee' }}
+      </span>
+    </div>
+  </header>
+  <div class="feedback success" *ngIf="successMessage">{{ successMessage }}</div>
+  <div class="feedback error" *ngIf="errorMessage">{{ errorMessage }}</div>
+  <div class="feedback" *ngIf="pageBusy">Chargement du workflow etiquette...</div>
+  <div class="layout-grid">
+    <section class="panel-card">
+      <div class="panel-head">
+        <h2>Generation</h2>
+        <div class="action-row compact">
+          <button type="button" class="ghost-btn" (click)="clearAndRestart()" [disabled]="pageBusy">
+            Nouveau draft
+          </button>
+          <button type="button" class="ghost-btn" (click)="loadLotsAndPackaging()" [disabled]="loadingLookups">
+            {{ loadingLookups ? 'Chargement...' : 'Recharger les listes' }}
+          </button>
+        </div>
+      </div>
+      <form [formGroup]="labelForm" class="workflow-form">
+        <label class="field-block">
+          <span>Lot filtre</span>
+          <select formControlName="lotId">
+            <option value="">Selectionner un lot filtre</option>
+            <option *ngFor="let lot of filteredLots; trackBy: trackById" [value]="lot.id">
+              {{ storageUnitLabel(lot) }}
+            </option>
+          </select>
+        </label>
+        <label class="field-block">
+          <span>Packaging</span>
+          <select formControlName="packagingId">
+            <option value="">Selectionner un packaging</option>
+            <option *ngFor="let sku of packagingOptions; trackBy: trackById" [value]="sku.id">
+              {{ skuLabel(sku) }}
+            </option>
+          </select>
+        </label>
+
+        <div class="field-row">
+          <label class="field-block">
+            <span>Date de conditionnement</span>
+            <input type="date" formControlName="packagingDate" />
+          </label>
+          <label class="field-block">
+            <span>Categorie etiquette</span>
+            <select formControlName="labelCategory">
+              <option value="UNIT">Unite (Bouteille/Bidon)</option>
+              <option value="COLIS">Colis (Carton)</option>
+              <option value="PALLET">Palette</option>
+            </select>
+          </label>
+          <label class="field-block">
+            <span>Langue</span>
+            <select formControlName="language">
+              <option *ngFor="let language of languages" [value]="language">{{ language }}</option>
+            </select>
+          </label>
+        </div>
+        <div class="selection-summary">
+          <div><strong>Lot:</strong> {{ selectedLotLabel() }}</div>
+          <div><strong>Packaging:</strong> {{ selectedPackagingLabel() }}</div>
+
+        </div>
+        <div class="action-row">
+          <button type="button" class="primary-btn" (click)="generateLabel()" [disabled]="generating || pageBusy">
+            {{ generating ? 'Generation...' : 'Generer le draft etiquette' }}
+          </button>
+        </div>
+      </form>
+    </section>
+    <section class="panel-card" *ngIf="currentLabel as label">
+      <div class="panel-head">
+        <h2>Edition controlee</h2>
+        <span class="state-chip mini" [class.finalized]="label.status === 'FINALIZED'">{{ label.status }}</span>
+      </div>
+      <div class="label-overview">
+        <div class="overview-item">
+          <span>Denomination legale</span>
+          <strong>{{ label.legalDenomination || '-' }}</strong>
+        </div>
+        <div class="overview-item">
+          <span>Origine</span>
+          <strong>{{ label.originCountry || '-' }}</strong>
+        </div>
+        <div class="overview-item">
+          <span>Quantite nette</span>
+          <strong>{{ label.netQuantity || '-' }}</strong>
+        </div>
+        <div class="overview-item">
+          <span>DDM</span>
+          <strong>{{ label.bestBeforeDate || '-' }}</strong>
+        </div>
+        <div class="overview-item">
+          <span>Numero de lot</span>
+          <strong>{{ label.lotNumber || '-' }}</strong>
+        </div>
+        <div class="overview-item">
+          <span>Responsable</span>
+          <strong>{{ label.responsibleName || '-' }}</strong>
+        </div>
+        <div class="overview-item wide">
+          <span>Adresse responsable</span>
+          <strong>{{ label.responsibleAddress || '-' }}</strong>
+        </div>
+        <div class="overview-item wide">
+          <span>Methode d extraction</span>
+          <strong>{{ label.extractionMethod || '-' }}</strong>
+        </div>
+      </div>
+      <div class="editable-zone">
+        <label class="field-block">
+          <span>Denomination legale</span>
+          <input type="text" formControlName="legalDenomination" [readonly]="isFinalized" />
+        </label>
+        <label class="field-block">
+          <span>Conditions de stockage</span>
+          <textarea rows="3" formControlName="storageConditions" [readonly]="isFinalized"></textarea>
+        </label>
+        <label class="field-block">
+          <span>Profil sensoriel</span>
+          <textarea rows="3" formControlName="sensoryProfile" [readonly]="isFinalized"></textarea>
+        </label>
+      </div>
+      <div class="action-row compact">
+        <button type="button" class="secondary-btn" (click)="saveDraftChanges()" [disabled]="saving || isFinalized">
+          {{ saving ? 'Sauvegarde...' : 'Sauver le draft' }}
+        </button>
+        <button type="button" class="secondary-btn" (click)="validateLabel()" [disabled]="validating">
+          {{ validating ? 'Validation...' : 'Valider' }}
+        </button>
+        <button type="button" class="accent-btn" (click)="finalizeLabel()" [disabled]="finalizing || blockingIssues.length > 0 || isFinalized">
+          {{ finalizing ? 'Finalisation...' : 'Finaliser' }}
+        </button>
+        <button type="button" class="ghost-btn" (click)="exportLabel()" [disabled]="exporting">
+          {{ exporting ? 'Export...' : 'Exporter JSON' }}
+        </button>
+      </div>
+    </section>
+  </div>
+  <section class="panel-card issues-card" *ngIf="currentLabel">
+    <div class="panel-head">
+      <h2>Validation</h2>
+      <span class="issue-counter" [class.ok]="blockingIssues.length === 0">
+        {{ blockingIssues.length }} blocage(s)
+      </span>
+    </div>
+    <div class="issues-empty" *ngIf="!currentLabel.validationIssues.length">
+      Aucune incoherence detectee pour le moment.
+    </div>
+    <div class="issues-list" *ngIf="currentLabel.validationIssues.length">
+      <article class="issue-item" *ngFor="let issue of currentLabel.validationIssues">
+        <span class="issue-badge" [class.blocking]="issue.blocking">{{ issue.blocking ? 'BLOQUANT' : 'INFO' }}</span>
+        <div>
+          <strong>{{ issue.field }}</strong>
+          <p>{{ issue.message }}</p>
+        </div>
+      </article>
+    </div>
+  </section>
+  <section class="panel-card payload-card" *ngIf="currentLabel">
+    <div class="panel-head">
+      <h2>Payload exportable</h2>
+      <span class="state-note">{{ exportedLabel?.frozen || currentLabel.status === 'FINALIZED' ? 'Payload fige' : 'Payload genere a la demande' }}</span>
+    </div>
+    <pre *ngIf="previewPayload; else noPayload">{{ previewPayload }}</pre>
+    <ng-template #noPayload>
+      <p class="placeholder-copy">Aucun payload exporte pour l instant. Utilisez le bouton "Exporter JSON" pour obtenir la version structuree.</p>
+    </ng-template>
+  </section>
+</section>
+
+

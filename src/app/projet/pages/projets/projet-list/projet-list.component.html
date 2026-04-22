@@ -1,0 +1,182 @@
+<div class="abioc-container">
+  <div class="header-card">
+    <div class="header-left">
+      <div class="icon-box">
+        <mat-icon>assignment</mat-icon>
+      </div>
+
+      <div class="header-copy">
+        <h1>Projets</h1>
+        <p>Gestion des projets d'achat</p>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <div class="kpi">
+        <span class="kpi-value">{{ rows().length }}</span>
+        <span class="kpi-label">Projets</span>
+      </div>
+
+      <button mat-flat-button color="primary" (click)="onCreate()">
+        <mat-icon>add</mat-icon>
+        Nouveau projet
+      </button>
+    </div>
+  </div>
+
+  <div class="filter-card">
+    <mat-form-field appearance="outline">
+      <mat-label>Statut</mat-label>
+      <mat-select [value]="statusFilter()" (selectionChange)="onStatusChange($event.value)">
+        @for (s of statusOptions; track s) {
+          <mat-option [value]="s">
+            {{ statusLabel(s) }}
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  @if (loading()) {
+    <div class="abioc-loading">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  }
+
+  @if (!loading() && rows().length === 0) {
+    <div class="abioc-empty">
+      <mat-icon>assignment</mat-icon>
+      <p>Aucun projet</p>
+      <button mat-stroked-button color="primary" (click)="onCreate()">
+        <mat-icon>add</mat-icon>
+        Creer un projet
+      </button>
+    </div>
+  }
+
+  @if (!loading() && rows().length > 0) {
+    <div class="table-card">
+      <div class="table-header">
+        <h3>Liste des projets</h3>
+        <span>{{ rows().length }} projets</span>
+      </div>
+
+      <div class="table-wrap">
+        <table mat-table [dataSource]="rows()" class="abioc-table">
+          <ng-container matColumnDef="code">
+            <th mat-header-cell *matHeaderCellDef>Code</th>
+            <td mat-cell *matCellDef="let row">
+              <span class="client-name">{{ row.code || '-' }}</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="client">
+            <th mat-header-cell *matHeaderCellDef>Client</th>
+            <td mat-cell *matCellDef="let row">
+              <div class="client-name-cell">
+                <span class="client-name">{{ row.clientNom || '-' }}</span>
+                <span class="client-email">{{ row.clientEmail || '-' }}</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="produit">
+            <th mat-header-cell *matHeaderCellDef>Produit</th>
+            <td mat-cell *matCellDef="let row">
+              {{ row.typeProduit | titlecase }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="emballage">
+            <th mat-header-cell *matHeaderCellDef>Emballage</th>
+            <td mat-cell *matCellDef="let row">
+              {{ row.typeEmballage | titlecase }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="quantite">
+            <th mat-header-cell *matHeaderCellDef>Quantite</th>
+            <td mat-cell *matCellDef="let row">
+              <span class="quantity-pill">{{ row.quantiteCible }} {{ row.unite === 'LITRES' ? 'L' : 'unites' }}</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="dateLimite">
+            <th mat-header-cell *matHeaderCellDef>Date limite</th>
+            <td mat-cell *matCellDef="let row">
+              {{ row.dateLimiteLivraison | date:'dd/MM/yyyy' }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="valeurTotale">
+            <th mat-header-cell *matHeaderCellDef>Valeur totale</th>
+            <td mat-cell *matCellDef="let row">
+              <span class="amount-value">{{ row.valeurTotale | currency:'TND' }}</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="statut">
+            <th mat-header-cell *matHeaderCellDef>Statut</th>
+            <td mat-cell *matCellDef="let row">
+              <span class="status-badge" [ngClass]="statusClass(row.statut)">
+                {{ statusLabel(row.statut || '-') }}
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let row">
+              <button
+                mat-icon-button
+                [matMenuTriggerFor]="menu"
+                [matMenuTriggerRestoreFocus]="false"
+                class="btn-actions"
+                aria-label="Ouvrir les actions projet">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="onEdit(row)">
+                  <mat-icon>edit</mat-icon>
+                  <span>Modifier</span>
+                </button>
+
+                <button mat-menu-item (click)="onViewDetails(row)">
+                  <mat-icon>visibility</mat-icon>
+                  <span>Voir details</span>
+                </button>
+
+                <button
+                  mat-menu-item
+                  *ngIf="canChangeStatus(row)"
+                  (click)="openStatusDialog(row)">
+                  <mat-icon>swap_horiz</mat-icon>
+                  <span>Changer statut</span>
+                </button>
+
+                <mat-divider></mat-divider>
+
+                <button mat-menu-item class="danger" (click)="onDelete(row)">
+                  <mat-icon>delete</mat-icon>
+                  <span>Supprimer</span>
+                </button>
+              </mat-menu>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </div>
+
+      <mat-paginator
+        [length]="totalElements()"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="[5, 10, 25]"
+        (page)="onPageChange($event)"
+        showFirstLastButtons>
+      </mat-paginator>
+    </div>
+  }
+</div>

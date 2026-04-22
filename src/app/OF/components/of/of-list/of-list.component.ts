@@ -1,21 +1,39 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { OrdreFabrication, StatutOF } from '../../../models/of.model';
 import { OFService } from "../../../services/OFService";
 
 @Component({
   selector: 'app-of-list',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [
+    CommonModule,
+    RouterLink,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatButtonModule
+  ],
   templateUrl: './of-list.component.html',
   styleUrls: ['./of-list.component.scss']
 })
 export class OFListComponent implements OnInit {
   ofs: OrdreFabrication[] = [];
   loading = true;
+  searchCode = '';
+  searching = false;
 
-  constructor(private ofService: OFService) {}
+  constructor(
+    private ofService: OFService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadOFs();
@@ -36,5 +54,26 @@ export class OFListComponent implements OnInit {
 
   getStatusClass(statut: StatutOF): string {
     return statut.toLowerCase();
+  }
+
+  searchByCode(): void {
+    const code = this.searchCode.trim();
+    if (!code || this.searching) {
+      return;
+    }
+
+    this.searching = true;
+    this.ofService.getByCode(code).subscribe({
+      next: (of) => {
+        this.searching = false;
+        if (of?.id) {
+          this.router.navigate(['/of', of.id]);
+        }
+      },
+      error: () => {
+        this.searching = false;
+        alert('Aucun OF trouve pour ce code');
+      }
+    });
   }
 }

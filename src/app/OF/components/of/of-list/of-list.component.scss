@@ -58,6 +58,17 @@ $transition: all 0.3s ease;
       }
     }
 
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+
+      .search-code-field {
+        width: 260px;
+        margin-bottom: -1.25em;
+      }
+    }
+
     .btn-action.create {
       padding: 0.75rem 1.5rem;
       background: $olive-green;
@@ -296,6 +307,17 @@ $transition: all 0.3s ease;
       .btn-action.create {
         width: 100%;
         justify-content: center;
+      }
+
+      .header-actions {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+
+        .search-code-field {
+          width: 100%;
+          margin-bottom: -1.25em;
+        }
       }
     }
 
