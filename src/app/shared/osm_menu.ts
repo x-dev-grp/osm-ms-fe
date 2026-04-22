@@ -420,8 +420,6 @@ export const osm_menus: Navigation[] = [
         icon: 'assignment',
         breadcrumbs: false,
       }
-
-
     ]
   },
   {
