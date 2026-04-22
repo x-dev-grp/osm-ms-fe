@@ -1,0 +1,42 @@
+<h2 mat-dialog-title>Traçabilité de l'opération</h2>
+
+<mat-dialog-content>
+  <div class="traceability-info">
+    <div class="info-row">
+      <span class="label">Opération :</span>
+      <span class="value">{{ data.operation.operationId }}</span>
+    </div>
+    <div class="info-row">
+      <span class="label">Lot source :</span>
+      <span class="value mono">{{ data.operation.sourceLotNumber || 'Non renseigné' }}</span>
+    </div>
+    <div class="info-row">
+      <span class="label">Lot cible :</span>
+      <span class="value mono">{{ data.operation.targetLotNumber || 'Non renseigné' }}</span>
+    </div>
+    <div class="info-row">
+      <span class="label">Cuve source :</span>
+      <span class="value">{{ data.operation.source?.name }}</span>
+    </div>
+    <div class="info-row">
+      <span class="label">Cuve cible :</span>
+      <span class="value">{{ data.operation.target?.name }}</span>
+    </div>
+    <div class="info-row">
+      <span class="label">Volume filtré :</span>
+      <span class="value">{{ data.operation.volumeFiltered | number }} L</span>
+    </div>
+    <div class="info-row" *ngIf="data.operation.volumeAfter">
+      <span class="label">Volume après :</span>
+      <span class="value">{{ data.operation.volumeAfter | number }} L</span>
+    </div>
+    <div class="info-row" *ngIf="data.operation.lossVolume">
+      <span class="label">Pertes :</span>
+      <span class="value">{{ data.operation.lossVolume | number }} L ({{ data.operation.lossPercent | number }}%)</span>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Fermer</button>
+</mat-dialog-actions>

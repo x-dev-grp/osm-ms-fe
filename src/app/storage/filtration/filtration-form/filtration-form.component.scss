@@ -1,359 +1,286 @@
-/* ===================================== */
-/* FORMULAIRE FILTRATION - ABIOC */
-/* UI olive-oil: clair, épuré, accessible */
-/* ===================================== */
-
 :host {
-  /* Tokens (alignés avec la liste) */
-  --bg: #f6f7fb;
-  --card: #ffffff;
-  --text: #0f172a;
-  --muted: #64748b;
-  --border: rgba(15, 23, 42, 0.10);
-
-  --primary: #2c5f2d;          /* olive green */
-  --primary-weak: rgba(44, 95, 45, 0.10);
-
-  --source: #b45309;           /* amber */
-  --source-weak: rgba(180, 83, 9, 0.12);
-
-  --target: #15803d;           /* green */
-  --target-weak: rgba(21, 128, 61, 0.12);
-
-  --danger: #b91c1c;
-  --focus: rgba(44, 95, 45, 0.35);
-
   display: block;
 }
 
+$green-50: #f4fbf6;
+$green-100: #e5f4e8;
+$green-200: #d4e9d8;
+$green-500: #2f7d32;
+$green-600: #25682a;
+$text-main: #18221b;
+$text-soft: #617064;
+$border: #dce8de;
+$bg: #f7faf7;
+$white: #fff;
+
 .abioc-page {
   min-height: 100vh;
-  padding: clamp(14px, 2vw, 24px);
-  background:
-    radial-gradient(1200px 500px at 20% -10%, rgba(44, 95, 45, 0.08), transparent 60%),
-    radial-gradient(900px 420px at 90% 0%, rgba(180, 83, 9, 0.08), transparent 55%),
-    var(--bg);
-  color: var(--text);
+  padding: 24px;
+  background: $bg;
 }
 
-/* Header */
 .abioc-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 16px 18px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
-  margin-bottom: 14px;
-
-  .header-brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    min-width: 0;
-  }
-
-  .brand-icon {
-    width: 46px;
-    height: 46px;
-    border-radius: 12px;
-    display: grid;
-    place-items: center;
-    background: var(--primary-weak);
-    border: 1px solid var(--border);
-
-    mat-icon {
-      color: var(--primary);
-    }
-  }
-
-  .brand-text {
-    min-width: 0;
-
-    h2 {
-      margin: 0;
-      font-size: 18px;
-      line-height: 1.2;
-      font-weight: 800;
-      letter-spacing: 0.2px;
-    }
-
-    .subtitle {
-      margin-top: 3px;
-      font-size: 12px;
-      color: var(--muted);
-    }
-  }
-}
-
-/* Loading */
-.abioc-loading {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 28px 16px;
-  display: grid;
-  place-items: center;
-  gap: 10px;
-  text-align: center;
-
-  div { color: var(--muted); }
-}
-
-/* Card */
-.abioc-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
-  overflow: hidden;
-}
-
-.abioc-form {
-  padding: 18px;
-}
-
-.form-section {
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  background: $white;
+  border: 1px solid $border;
+  border-radius: 18px;
+  padding: 20px 22px;
   margin-bottom: 18px;
-
-  &:last-child { margin-bottom: 0; }
-
-  .section-title {
-    margin: 0 0 12px 0;
-    font-size: 14px;
-    font-weight: 900;
-    letter-spacing: 0.2px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    position: relative;
-    padding-left: 12px;
-
-    &::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 2px;
-      bottom: 2px;
-      width: 4px;
-      border-radius: 2px;
-      background: var(--primary);
-    }
-  }
 }
 
-/* Create: grid source -> target */
-.caves-grid {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: 14px;
-  align-items: stretch;
-}
-
-.cuve-card {
-  border-radius: 14px;
-  padding: 14px;
-  border: 1px solid var(--border);
-  background: #fbfcfe;
-
-  &.source-cuve {
-    box-shadow: inset 4px 0 0 0 var(--source);
-  }
-
-  &.target-cuve {
-    box-shadow: inset 4px 0 0 0 var(--target);
-  }
-
-  .cuve-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 12px;
-
-    .source-icon { color: var(--source); }
-    .target-icon { color: var(--target); }
-
-    .cuve-label {
-      font-weight: 900;
-      font-size: 13px;
-    }
-
-    .cuve-badge {
-      margin-left: auto;
-      font-size: 11px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      background: #ffffff;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-      white-space: nowrap;
-    }
-  }
-}
-
-.transfert-icon {
-  display: grid;
-  place-items: center;
-  padding: 0 4px;
-
-  mat-icon {
-    width: 32px;
-    height: 32px;
-    font-size: 26px;
-    color: var(--muted);
-  }
-}
-
-.cuve-option {
+.header-brand {
   display: flex;
   align-items: center;
-  min-height: 28px;
+  gap: 14px;
+}
 
-  .cuve-nom {
-    font-weight: 700;
+.brand-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(180deg, $green-100 0%, $green-50 100%);
+  color: $green-600;
+
+  mat-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
   }
 }
 
-.full-width { width: 100%; }
-
-.volume-field {
-  width: min(420px, 100%);
-
-  .volume-suffix {
-    color: var(--muted);
-    margin-right: 6px;
-    font-weight: 700;
-  }
+.brand-text h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
 }
 
-/* Edit mode */
+.subtitle {
+  margin-top: 4px;
+  color: $text-soft;
+  font-size: 14px;
+}
+
+.btn-back {
+  border-radius: 12px;
+}
+
+.abioc-loading {
+  background: $white;
+  border: 1px solid $border;
+  border-radius: 18px;
+  padding: 32px;
+  text-align: center;
+}
+
+.abioc-card {
+  background: $white;
+  border: 1px solid $border;
+  border-radius: 18px;
+  padding: 22px;
+}
+
 .edit-banner {
   display: flex;
+  align-items: flex-start;
   gap: 12px;
-  padding: 14px 18px;
-  background: rgba(44, 95, 45, 0.06);
-  border-bottom: 1px solid var(--border);
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: $green-50;
+  border: 1px solid $green-200;
+  margin-bottom: 18px;
 
   mat-icon {
-    color: var(--primary);
-    margin-top: 1px;
+    color: $green-600;
+    margin-top: 2px;
   }
 
-  .edit-banner-text {
-    display: grid;
-    gap: 2px;
+  .title {
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
 
-    .title { font-weight: 900; }
-    .desc { color: var(--muted); font-size: 12px; }
+  .desc {
+    color: $text-soft;
+    font-size: 14px;
   }
 }
 
 .operation-summary {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-  padding: 14px 18px;
-  border-bottom: 1px solid var(--border);
-  background: #fbfcfe;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
 
-  .summary-item {
-    display: grid;
-    gap: 2px;
+.summary-item {
+  background: #fafdfb;
+  border: 1px solid $border;
+  border-radius: 14px;
+  padding: 12px 14px;
+}
 
-    .k { font-size: 12px; color: var(--muted); }
-    .v { font-weight: 800; }
-    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace; }
-  }
+.k {
+  display: block;
+  font-size: 12px;
+  color: $text-soft;
+  margin-bottom: 4px;
+}
+
+.v {
+  display: block;
+  font-weight: 600;
+  color: $text-main;
+}
+
+.mono {
+  word-break: break-all;
 }
 
 .status-pill {
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  width: fit-content;
   padding: 6px 10px;
   border-radius: 999px;
-  border: 1px solid var(--border);
-  background: #ffffff;
   font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 0.2px;
-
-  &.created { color: #1d4ed8; background: rgba(29, 78, 216, 0.08); border-color: rgba(29, 78, 216, 0.16); }
-  &.in_progress { color: var(--source); background: var(--source-weak); border-color: rgba(180, 83, 9, 0.25); }
-  &.completed { color: var(--target); background: var(--target-weak); border-color: rgba(21, 128, 61, 0.22); }
-  &.cancelled { color: var(--danger); background: rgba(185, 28, 28, 0.10); border-color: rgba(185, 28, 28, 0.18); }
+  font-weight: 700;
+  border: 1px solid transparent;
 }
 
-/* Footer */
-.form-footer {
+.status-pill.created {
+  background: #eef7ef;
+  color: #2f7d32;
+  border-color: #d1e7d5;
+}
+
+.status-pill.in_progress {
+  background: #fff7e8;
+  color: #8a5a00;
+  border-color: #f0ddb3;
+}
+
+.status-pill.completed {
+  background: #e9f7ef;
+  color: #1f6a3a;
+  border-color: #c7e8d3;
+}
+
+.status-pill.cancelled {
+  background: #fff1f1;
+  color: #b42318;
+  border-color: #f3c8c8;
+}
+
+.abioc-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.single-section {
+  max-width: 720px;
+}
+
+.section-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: $text-main;
+}
+
+.cuve-box {
+  border: 1px solid $border;
+  border-radius: 16px;
+  padding: 16px;
+  background: #fbfdfb;
+}
+
+.source-box {
+  border-left: 4px solid #9b7a00;
+}
+
+.target-box {
+  border-left: 4px solid $green-500;
+}
+
+.box-head {
   display: flex;
   align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-weight: 700;
+  color: $text-main;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.volume-field {
+  width: min(100%, 320px);
+}
+
+.volume-suffix {
+  color: $text-soft;
+}
+
+.cuve-option,
+.cuve-name {
+  white-space: normal;
+}
+
+.form-footer {
+  display: flex;
   justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  border-top: 1px solid $border;
+  padding-top: 16px;
+}
+
+.footer-actions {
+  display: flex;
   gap: 12px;
-  margin-top: 18px;
-  padding-top: 14px;
-  border-top: 1px solid var(--border);
-
-  .loading-hint {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--muted);
-    font-size: 12px;
-  }
-
-  .footer-actions {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-
-    button mat-icon { margin-right: 6px; }
-  }
+  flex-wrap: wrap;
 }
 
-/* Focus visibility (accessibilité clavier) */
-button:focus-visible,
-:host ::ng-deep .mat-mdc-focus-indicator:focus-visible {
-  outline: 3px solid var(--focus);
-  outline-offset: 2px;
-  border-radius: 12px;
+.loading-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: $text-soft;
+  font-size: 13px;
 }
 
-/* Responsive */
 @media (max-width: 900px) {
+  .abioc-page {
+    padding: 16px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .abioc-card,
   .abioc-header {
-    flex-direction: column;
-    align-items: stretch;
+    padding: 16px;
   }
-
-  .caves-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .transfert-icon {
-    transform: rotate(90deg);
-  }
-
-  .operation-summary {
-    grid-template-columns: 1fr;
-  }
-
-  .form-footer {
-    flex-direction: column;
-    align-items: stretch;
-
-    .footer-actions {
-      flex-direction: column;
-      button { width: 100%; }
-    }
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  * { transition: none !important; animation: none !important; }
 }

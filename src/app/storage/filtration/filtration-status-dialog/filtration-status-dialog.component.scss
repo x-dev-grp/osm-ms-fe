@@ -1,164 +1,134 @@
-/* ===================================== */
-/* DIALOGUE STATUT - ABIOC */
-/* cohérent + accessible */
-/* ===================================== */
+$green-50: #f4fbf6;
+$green-100: #e5f4e8;
+$green-200: #d4e9d8;
+$green-500: #2f7d32;
+$green-600: #25682a;
+$green-700: #1f5a24;
 
-:host {
-  --text: #0f172a;
-  --muted: #64748b;
-  --border: rgba(15, 23, 42, 0.10);
-
-  --primary: #2c5f2d;
-  --source: #b45309;
-  --target: #15803d;
-  --danger: #b91c1c;
-  --focus: rgba(44, 95, 45, 0.35);
-  display: block;
-}
-
-/* Status colors */
-$status-created: #1d4ed8;
-$status-progress: #f59e0b;
-$status-completed: #16a34a;
-$status-cancelled: #dc2626;
+$text-main: #18221b;
+$text-soft: #617064;
+$border: #dce8de;
+$white: #fff;
 
 .abioc-dialog-title {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 16px 20px;
-  margin: 0;
-  background: #fbfcfe;
-  border-bottom: 1px solid var(--border);
+  color: $text-main;
 
-  mat-icon { color: var(--primary); }
-
-  span {
-    font-size: 16px;
-    font-weight: 900;
-    color: var(--text);
-    letter-spacing: 0.2px;
+  mat-icon {
+    color: $green-600;
   }
 }
 
 .abioc-dialog-content {
-  padding: 18px 20px !important;
-  min-width: 460px;
-  max-width: 620px;
-  color: var(--text);
+  padding-top: 6px;
 }
 
 .operation-info {
-  border: 1px solid var(--border);
-  background: #fbfcfe;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.info-card {
+  border: 1px solid $border;
+  background: $green-50;
   border-radius: 14px;
   padding: 12px 14px;
-  margin-bottom: 14px;
+}
 
-  .info-row {
-    display: flex;
-    gap: 10px;
-    align-items: baseline;
-    padding: 6px 0;
-    border-bottom: 1px dashed rgba(15, 23, 42, 0.10);
+.info-label {
+  display: block;
+  font-size: 12px;
+  color: $text-soft;
+  margin-bottom: 5px;
+}
 
-    &:last-child { border-bottom: none; }
-  }
+.info-value {
+  font-weight: 600;
+  color: $text-main;
+}
 
-  .info-label {
-    width: 110px;
-    color: var(--muted);
-    font-size: 12px;
-  }
+.mono {
+  word-break: break-all;
+}
 
-  .info-value {
-    flex: 1;
-    font-weight: 800;
-
-    &.mono {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
-      font-size: 12px;
-      word-break: break-all;
-    }
-
-    &.status {
-      font-size: 12px;
-      letter-spacing: 0.2px;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-  }
+.status-chip {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: $green-100;
+  color: $green-700;
+  border: 1px solid $green-200;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .abioc-form {
-  display: grid;
-  gap: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.full-width { width: 100%; }
+.full-width {
+  width: 100%;
+}
+
+.no-transition-message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 12px;
+  background: $green-50;
+  border: 1px solid $green-200;
+  color: $text-main;
+
+  mat-icon {
+    color: $green-600;
+  }
+}
 
 .status-option {
   display: flex;
   align-items: center;
   gap: 10px;
-  min-height: 28px;
+}
 
-  .status-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
 
-    &.created { background: $status-created; }
-    &.in_progress { background: $status-progress; }
-    &.completed { background: $status-completed; }
-    &.cancelled { background: $status-cancelled; }
-  }
+.status-dot.created {
+  background: $green-500;
+}
+
+.status-dot.in_progress {
+  background: #c58100;
+}
+
+.status-dot.completed {
+  background: #1e8a4d;
+}
+
+.status-dot.cancelled {
+  background: #cf3030;
 }
 
 .volume-field {
-  .volume-suffix {
-    color: var(--muted);
-    margin-right: 6px;
-    font-weight: 700;
-  }
+  max-width: 250px;
 }
 
 .abioc-dialog-actions {
-  padding: 14px 20px 18px 20px;
-  border-top: 1px solid var(--border);
-  gap: 10px;
-
-  button {
-    min-width: 140px;
-    border-radius: 12px;
-    font-weight: 800;
-
-    mat-icon { margin-right: 6px; }
-    mat-spinner { display: inline-block; margin-right: 6px; vertical-align: middle; }
-  }
+  padding-top: 10px;
 }
 
-button:focus-visible,
-:host ::ng-deep .mat-mdc-focus-indicator:focus-visible {
-  outline: 3px solid var(--focus);
-  outline-offset: 2px;
-  border-radius: 12px;
-}
-
-@media (max-width: 700px) {
-  .abioc-dialog-content { min-width: auto; padding: 16px !important; }
-
+@media (max-width: 600px) {
   .operation-info {
-    .info-row { flex-direction: column; align-items: flex-start; }
-    .info-label { width: auto; }
+    grid-template-columns: 1fr;
   }
-
-  .abioc-dialog-actions {
-    flex-direction: column-reverse;
-    button { width: 100%; }
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  * { transition: none !important; animation: none !important; }
 }

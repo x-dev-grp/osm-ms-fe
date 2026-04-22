@@ -120,14 +120,14 @@ export class ArticleListComponent implements OnInit {
   }
 
   getCategoryBadgeClass(categorie: CategorieArticle): string {
-    const classes = {
-      [CategorieArticle.UNITE]: 'bg-primary',
-      [CategorieArticle.COLIS]: 'bg-success',
-      [CategorieArticle.PALETTE]: 'bg-info',
+    const classes: Record<CategorieArticle, string> = {
       [CategorieArticle.EMBALLAGE]: 'bg-primary',
       [CategorieArticle.CONSOMMABLE]: 'bg-warning text-dark',
       [CategorieArticle.MATIERE_PREMIERE]: 'bg-info',
-      [CategorieArticle.ACCESSOIRE]: 'bg-secondary'
+      [CategorieArticle.ACCESSOIRE]: 'bg-secondary',
+      [CategorieArticle.UNITE]: 'bg-dark',
+      [CategorieArticle.COLIS]: 'bg-success',
+      [CategorieArticle.PALETTE]: 'bg-danger'
     };
     return classes[categorie] || 'bg-light text-dark';
   }

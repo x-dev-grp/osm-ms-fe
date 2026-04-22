@@ -1,23 +1,32 @@
-<!-- ===================================== -->
-<!-- FORMULAIRE DE FILTRATION - ABIOC -->
-
-<!-- ===================================== -->
-
 <div class="abioc-page">
-  <!-- EN-TÊTE ABIOC -->
   <div class="abioc-header">
     <div class="header-brand">
       <div class="brand-icon">
         <mat-icon>oil_barrel</mat-icon>
       </div>
       <div class="brand-text">
-        <h2>{{ isEdit ? 'Modifier une filtration' : 'Créer une filtration' }}</h2>
+        <h2>
+          {{
+            !isEdit
+              ? 'Créer une filtration'
+              : op?.status === 'CREATED'
+                ? 'Modifier une filtration'
+                : 'Modifier la note'
+          }}
+        </h2>
         <div class="subtitle">
-          {{ isEdit ? 'Ajout de note (modification bloquée si EN COURS).' : 'Sélectionner la cuve source et la cuve filtrée (cible).' }}
+          {{
+            !isEdit
+              ? 'Sélectionner la cuve source, la cuve cible et le volume à filtrer.'
+              : op?.status === 'CREATED'
+                ? 'Modification autorisée : source, cible, quantité et note.'
+                : 'Modification autorisée : note seulement.'
+          }}
         </div>
       </div>
     </div>
-    <button mat-stroked-button type="button" (click)="cancel()">
+
+    <button mat-stroked-button type="button" (click)="cancel()" class="btn-back">
       <mat-icon>arrow_back</mat-icon>
       Retour
     </button>
@@ -30,17 +39,17 @@
     </div>
   }
 
-  @if (isEdit) {
-    <div class="abioc-card" aria-label="Ajout de note sur l'opération">
-      <div class="edit-banner" role="note" aria-label="Mode édition">
-        <mat-icon aria-hidden="true">info</mat-icon>
+  @if (isCompletedEdit()) {
+    <div class="abioc-card" aria-label="Modification de la note">
+      <div class="edit-banner" role="note">
+        <mat-icon aria-hidden="true">task_alt</mat-icon>
         <div class="edit-banner-text">
-          <div class="title">Mode édition</div>
-          <div class="desc">Seule l’ajout d’une note est autorisé. Les champs cuves/volume ne sont pas modifiables.</div>
+          <div class="title">Opération terminée</div>
+          <div class="desc">Seule la note est modifiable.</div>
         </div>
       </div>
 
-      <div class="operation-summary" *ngIf="op as o" aria-label="Résumé de l'opération">
+      <div class="operation-summary" *ngIf="op as o">
         <div class="summary-item">
           <span class="k">Opération</span>
           <span class="v mono">{{ o.operationId }}</span>
@@ -61,11 +70,11 @@
         </div>
         <div class="summary-item">
           <span class="k">Source</span>
-          <span class="v mono">{{ o.sourceId }}</span>
+          <span class="v">{{ o.source?.name ?? o.source?.id }}</span>
         </div>
         <div class="summary-item">
           <span class="k">Cible</span>
-          <span class="v mono">{{ o.targetId }}</span>
+          <span class="v">{{ o.target?.name ?? o.target?.id }}</span>
         </div>
         <div class="summary-item">
           <span class="k">Volume</span>
@@ -73,25 +82,22 @@
         </div>
       </div>
 
-      <form class="abioc-form" [formGroup]="noteForm" aria-label="Formulaire ajout note">
+      <form class="abioc-form" [formGroup]="noteForm">
         <div class="form-section">
-          <h3 class="section-title">Ajouter une note</h3>
+          <h3 class="section-title">Note</h3>
 
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Note</mat-label>
-            <textarea matInput rows="4" formControlName="note" aria-label="Saisir une note"></textarea>
-            <mat-hint>La note sera ajoutée à l’historique de l’opération.</mat-hint>
+            <textarea matInput rows="5" formControlName="note"></textarea>
             <mat-error *ngIf="noteForm.get('note')?.hasError('required')">Note obligatoire.</mat-error>
-            <mat-error *ngIf="noteForm.get('note')?.hasError('minlength')">Note trop courte.</mat-error>
           </mat-form-field>
         </div>
 
         <div class="form-footer">
-          <div class="footer-left"></div>
           <div class="footer-actions">
             <button mat-stroked-button type="button" (click)="cancel()">Annuler</button>
             <button mat-flat-button color="primary" type="button" (click)="submitAddNote()" [disabled]="noteForm.invalid || loading()">
-              <mat-icon aria-hidden="true">save</mat-icon>
+              <mat-icon>save</mat-icon>
               {{ loading() ? 'Enregistrement...' : 'Enregistrer la note' }}
             </button>
           </div>
@@ -100,95 +106,82 @@
     </div>
   }
 
-  @if (!isEdit) {
+  @if (!isEdit || isCreatedEdit()) {
     <div class="abioc-card">
       <form class="abioc-form" [formGroup]="createForm">
-        <!-- SECTION CUVES -->
-        <div class="form-section">
-          <h3 class="section-title">Sélection des cuves</h3>
+        <div class="form-grid">
+          <div class="form-section">
+            <h3 class="section-title">Cuve source</h3>
 
-          <div class="caves-grid">
-            <!-- Cuve source -->
-            <div class="cuve-card source-cuve">
-              <div class="cuve-header">
-                <mat-icon class="source-icon">arrow_upward</mat-icon>
-                <span class="cuve-label">Cuve source</span>
-                <span class="cuve-badge">huile non filtrée</span>
+            <div class="cuve-box source-box">
+              <div class="box-head">
+                <mat-icon>arrow_upward</mat-icon>
+                <span>Huile non filtrée</span>
               </div>
 
               <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Cuve source (huile non filtrée)</mat-label>
-                <mat-select formControlName="source" [disabled]="loadingUnits()">
+                <mat-label>Cuve source</mat-label>
+                <mat-select formControlName="source" [disabled]="loadingUnits() || loading()">
                   @for (u of sourceUnits(); track trackById($index, u)) {
                     <mat-option [value]="u.id">
                       <div class="cuve-option">
-                        <span class="cuve-nom">{{ unitLabel(u) }}</span>
+                        <span class="cuve-name">{{ unitLabel(u) }}</span>
                       </div>
                     </mat-option>
                   }
                 </mat-select>
-                <mat-hint>Sources = cuves avec filteredOil = false</mat-hint>
                 <mat-error *ngIf="createForm.get('source')?.hasError('required')">Cuve source obligatoire.</mat-error>
               </mat-form-field>
             </div>
+          </div>
 
-            <!-- Icône de transfert -->
-            <div class="transfert-icon">
-              <mat-icon>arrow_forward</mat-icon>
-            </div>
+          <div class="form-section">
+            <h3 class="section-title">Cuve cible</h3>
 
-            <!-- Cuve cible -->
-            <div class="cuve-card target-cuve">
-              <div class="cuve-header">
-                <mat-icon class="target-icon">arrow_downward</mat-icon>
-                <span class="cuve-label">Cuve cible</span>
-                <span class="cuve-badge">huile filtrée</span>
+            <div class="cuve-box target-box">
+              <div class="box-head">
+                <mat-icon>arrow_downward</mat-icon>
+                <span>Huile filtrée</span>
               </div>
 
               <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Cuve cible (huile filtrée)</mat-label>
-                <mat-select formControlName="target" [disabled]="loadingUnits()">
+                <mat-label>Cuve cible</mat-label>
+                <mat-select formControlName="target" [disabled]="loadingUnits() || loading()">
                   @for (u of targetUnits(); track trackById($index, u)) {
                     <mat-option [value]="u.id">
                       <div class="cuve-option">
-                        <span class="cuve-nom">{{ unitLabel(u) }}</span>
+                        <span class="cuve-name">{{ unitLabel(u) }}</span>
                       </div>
                     </mat-option>
                   }
                 </mat-select>
-                <mat-hint>Cibles = cuves avec filteredOil = true</mat-hint>
                 <mat-error *ngIf="createForm.get('target')?.hasError('required')">Cuve cible obligatoire.</mat-error>
               </mat-form-field>
             </div>
           </div>
         </div>
 
-        <!-- SECTION VOLUME -->
-        <div class="form-section">
+        <div class="form-section single-section">
           <h3 class="section-title">Volume à filtrer</h3>
 
           <mat-form-field appearance="outline" class="volume-field">
             <mat-label>Volume à filtrer (L)</mat-label>
             <input matInput type="number" formControlName="volumeToFilter" />
             <span matSuffix class="volume-suffix">L</span>
-            <mat-hint>Doit être > 0. Le backend vérifie la disponibilité en source.</mat-hint>
             <mat-error *ngIf="createForm.get('volumeToFilter')?.hasError('required')">Volume obligatoire.</mat-error>
             <mat-error *ngIf="createForm.get('volumeToFilter')?.hasError('min')">Volume doit être &gt; 0.</mat-error>
           </mat-form-field>
         </div>
 
-        <!-- SECTION NOTE -->
-        <div class="form-section">
-          <h3 class="section-title">Note (optionnel)</h3>
+        <div class="form-section single-section">
+          <h3 class="section-title">Note</h3>
 
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Note (optionnel)</mat-label>
-            <textarea matInput rows="3" formControlName="note"></textarea>
-            <mat-hint>Informations complémentaires sur l'opération</mat-hint>
+            <mat-label>Note</mat-label>
+            <textarea matInput rows="4" formControlName="note"></textarea>
           </mat-form-field>
         </div>
 
-        <!-- PIED DU FORMULAIRE -->
         <div class="form-footer">
           <div class="footer-left">
             @if (loadingUnits()) {
@@ -200,9 +193,7 @@
           </div>
 
           <div class="footer-actions">
-            <button mat-stroked-button type="button" (click)="cancel()">
-              Annuler
-            </button>
+            <button mat-stroked-button type="button" (click)="cancel()">Annuler</button>
             <button
               mat-flat-button
               color="primary"
@@ -210,7 +201,13 @@
               (click)="submitCreate()"
               [disabled]="createForm.invalid || loading() || loadingUnits()">
               <mat-icon>check_circle</mat-icon>
-              {{ loading() ? 'Création...' : 'Créer l’opération' }}
+              {{
+                loading()
+                  ? 'Enregistrement...'
+                  : isCreatedEdit()
+                    ? 'Modifier l’opération'
+                    : 'Créer l’opération'
+              }}
             </button>
           </div>
         </div>
