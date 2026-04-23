@@ -1,4 +1,25 @@
+<!-- header.component.html -->
 <div class="header-button">
+  <div class="global-search-wrapper">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="global-search-field">
+      <mat-label>Recherche globale</mat-label>
+      <input
+        matInput
+        placeholder="Code unique (ex: C49D27)"
+        [(ngModel)]="searchCode"
+        (keyup.enter)="Search()"
+      />
+    </mat-form-field>
+    <button
+      mat-icon-button
+      aria-label="Lancer la recherche globale"
+      (click)="Search()"
+      [disabled]="searching"
+    >
+      <mat-icon>{{ searching ? 'hourglass_top' : 'search' }}</mat-icon>
+    </button>
+  </div>
+
   <button [matMenuTriggerFor]="languages" aria-label="mode" class="header-item" mat-button>
     <a class="pc-head-link">
       <svg class="pc-icon">
@@ -6,76 +27,50 @@
       </svg>
     </a>
   </button>
+
   <button [matMenuTriggerFor]="user" aria-label="mode" class="header-item" mat-button>
     <a class="pc-head-link">
       <img alt="user-image" class="user-avatar" src="assets/images/user/avatar-2.png" />
     </a>
-    <mat-menu #languages="matMenu" xPosition="before">
-      <button mat-menu-item>
-        <div (click)="useLanguage('en')" class="mat-body">English</div>
-      </button>
-      <button mat-menu-item>
-        <div (click)="useLanguage('fr')" class="mat-body">Francais</div>
-      </button>
-      <button mat-menu-item>
-        <div (click)="useLanguage('ar')" class="mat-body">Arabic</div>
-      </button>
-
-    </mat-menu>
-
   </button>
+
+  <mat-menu #languages="matMenu" xPosition="before">
+    <button mat-menu-item (click)="useLanguage('en')">English</button>
+    <button mat-menu-item (click)="useLanguage('fr')">Francais</button>
+    <button mat-menu-item (click)="useLanguage('ar')">Arabic</button>
+  </mat-menu>
+
   <mat-menu #user="matMenu" class="dropdown-user-profile" xPosition="before">
     <div class="dropdown-header flex align-item-center justify-content-between">
       <div class="user-title f-16 f-w-600">Profile</div>
     </div>
-    <ng-scrollbar [dir]="direction" visibility="hover">
+    <ng-scrollbar [dir]="direction" visibility="hover">  <!-- ✅ direction typée correctement -->
       <div class="dropdown-body">
         <div class="flex m-b-5">
           <div class="topic-icon">
             <img alt="user-images" class="user-avatar" src="assets/images/user/avatar-2.png" />
           </div>
           <div class="topic-description m-l-15">
-            <div class="user-name mat-body f-w-600">{{ this.authenticationService?.currentUserName || "testUser" }}🖖
+            <div class="user-name mat-body f-w-600">
+              {{ authenticationService?.currentUserName || "testUser" }}🖖
             </div>
-            <p class="mat-caption">{{ this.authenticationService?.currentUserValue?.email || "test@gmail.com" }}</p>
+            <p class="mat-caption">{{ authenticationService?.currentUserValue?.email || "test@gmail.com" }}</p>
           </div>
         </div>
         <mat-divider class="m-y-15"></mat-divider>
-        <app-card [showHeader]="false" padding="16">
+        <app-card [showHeader]="false" [padding]="16">  <!-- ✅ [padding]="16" au lieu de padding="16" -->
           <div class="m-b-15 mat-body f-w-500">Manage</div>
-          <a [routerLink]="['/application/profile/account/account']" class="dropdown-item text-muted"
-             href="javascript:">
+          <a [routerLink]="['/application/profile/account/account']" class="dropdown-item text-muted" href="javascript:">
             <i class="ti ti-user"></i>
             <div class="m-b-0 mat-body">My Account</div>
           </a>
           <a [routerLink]="['/settings/general-config']" class="dropdown-item text-muted" href="javascript:">
             <i class="ti ti-settings"></i>
-            <div class="m-b-0 mat-body">{{ 'MENU.SETTINGS.GENERAL_CONFIG'|translate }}</div>
+            <div class="m-b-0 mat-body">{{ 'MENU.SETTINGS.GENERAL_CONFIG' | translate }}</div>
           </a>
-          <!--            <a href="javascript:" class="dropdown-item text-muted" [routerLink]="['/contact-us']">-->
-          <!--              <i class="ti ti-headset"></i>-->
-          <!--              <div class="m-b-0 mat-body">Support</div>-->
-          <!--            </a>-->
-          <!--            <a href="javascript:" class="dropdown-item text-muted" [routerLink]="['/settings/general-config']">-->
-          <!--              <i class="ti ti-lock"></i>-->
-          <!--              <div class="m-b-0 mat-body">Lock Screen</div>-->
-          <!--            </a>-->
-          <!--            <a href="javascript:" class="dropdown-item text-muted">-->
-          <!--              <svg class="pc-icon m-r-10">-->
-          <!--                <use xlink:href="assets/fonts/custom-icon.svg#custom-share-bold"></use>-->
-          <!--              </svg>-->
-          <!--              <div class="m-b-0 mat-body">Share</div>-->
-          <!--            </a>-->
-<!--          <a [routerLink]="['/application/profile/account/password']" class="dropdown-item text-muted"-->
-<!--             href="javascript:">-->
-<!--            <svg class="pc-icon m-r-10">-->
-<!--              <use xlink:href="assets/fonts/custom-icon.svg#custom-lock-outline"></use>-->
-<!--            </svg>-->
-<!--            <div class="m-b-0 mat-body">Change Password</div>-->
-<!--          </a>-->
         </app-card>
         <mat-divider class="m-y-15"></mat-divider>
-        <app-card [showHeader]="false" padding="16">
+        <app-card [showHeader]="false" [padding]="16">  <!-- ✅ [padding]="16" -->
           <div class="m-b-15 mat-body f-w-500">Language</div>
           <a (click)="useLanguage('en')" class="dropdown-item text-muted" href="javascript:">
             <svg class="pc-icon m-r-10">
@@ -88,14 +83,14 @@
               <use xlink:href="assets/fonts/custom-icon.svg#custom-global"></use>
             </svg>
             <div class="m-b-0 mat-body">français</div>
-          </a> <a (click)="useLanguage('ar')" class="dropdown-item text-muted" href="javascript:">
+          </a>
+          <a (click)="useLanguage('ar')" class="dropdown-item text-muted" href="javascript:">
             <svg class="pc-icon m-r-10">
               <use xlink:href="assets/fonts/custom-icon.svg#custom-global"></use>
             </svg>
             <div class="m-b-0 mat-body">Arabe</div>
           </a>
         </app-card>
-
         <mat-divider class="m-b-15 m-t-15"></mat-divider>
         <div class="grid m-b-15">
           <button (click)="logout()" class="user-logout" color="primary" mat-flat-button>
@@ -107,20 +102,6 @@
             </div>
           </button>
         </div>
-        <!--        <app-card cardClass="m-b-0 user-account-card" [showHeader]="false" padding="16">-->
-        <!--          <div class="user-group">-->
-        <!--            <img src="assets/images/user/avatar-1.png" alt="user-image" class="avatar" />-->
-        <!--            <img src="assets/images/user/avatar-2.png" alt="user-image" class="avatar" />-->
-        <!--            <img src="assets/images/user/avatar-3.png" alt="user-image" class="avatar" />-->
-        <!--            <img src="assets/images/user/avatar-4.jpg" alt="user-image" class="avatar" />-->
-        <!--            <img src="assets/images/user/avatar-5.jpg" alt="user-image" class="avatar" />-->
-        <!--            <span class="avatar bg-primary-50 text-primary-500">+20</span>-->
-        <!--          </div>-->
-        <!--          <div class="user-followers f-20 f-w-600">-->
-        <!--            245.3k-->
-        <!--            <span class="text-muted f-16">Followers</span>-->
-        <!--          </div>-->
-        <!--        </app-card>-->
       </div>
     </ng-scrollbar>
   </mat-menu>

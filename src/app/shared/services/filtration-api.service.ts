@@ -51,9 +51,18 @@ export class FiltrationApiService {
     return this.http.put<FiltrationOperation>(`${this.baseUrl}/${operationId}/status`, body);
   }
 
+
+  update(operationId: string, payload: any) {
+    return this.http.put<FiltrationOperation>(`${this.baseUrl}/${operationId}`, payload);
+  }
+
   // Suppression (nécessite un endpoint DELETE côté backend).
   // L’UI affiche une confirmation avant d’appeler cette méthode.
   delete(operationId: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${operationId}`);
   }
+
+
+
+
 }

@@ -17,7 +17,15 @@ export interface QrResolveResponse {
   label: string;
   status: string;
   mobileRoute: string;
+  webRoute?: string;
   data?: unknown;
+}
+
+export interface GlobalCodeSearchResponse {
+  code: string;
+  matchCount: number;
+  result?: QrResolveResponse;
+  results: QrResolveResponse[];
 }
 
 export interface QrCodeResponse {
