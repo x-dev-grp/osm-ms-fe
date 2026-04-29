@@ -12,6 +12,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { LigneConditionnementService } from '../../../services/ligne-conditionnement.service';
 import { LigneConditionnement, Statue } from '../../../models/ligne-conditionnement.model';
+import {HttpHandler, HttpRequest} from "@angular/common/http";
 
 @Component({
   selector: 'app-ligne-form',
@@ -107,11 +108,17 @@ export class LigneFormComponent implements OnInit {
       return;
     }
 
-    const ligne: LigneConditionnement = this.ligneForm.value;
+    const formValue = this.ligneForm.value;
+
+    const ligne: LigneConditionnement = {
+      ...formValue,
+      code: formValue.code && formValue.code.trim() !== ''
+        ? formValue.code
+        : this.generateCode(formValue.nom),
+      actif: true
+    };
 
     if (this.isEditMode) {
-      ligne.code = this.ligneForm.get('code')?.value;
-
       this.ligneService.updateLigne(this.ligneId!, ligne).subscribe({
         next: () => this.router.navigate(['/stock/lignes', this.ligneId]),
         error: (err) => {
@@ -128,6 +135,28 @@ export class LigneFormComponent implements OnInit {
         }
       });
     }
+  }
+
+
+  private generateCode(nom: string): string {
+    const base = nom?.substring(0, 3)?.toUpperCase() || 'LIG';
+    const random = Math.floor(Math.random() * 1000);
+    return `${base}-${Date.now()}-${random}`;
+  }
+
+
+  intercept(req: HttpRequest<any>, next: HttpHandler) {
+    const token = localStorage.getItem('access_token');
+
+    if (token) {
+      req = req.clone({
+        setHeaders: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+    }
+
+    return next.handle(req);
   }
 
   onCancel(): void {

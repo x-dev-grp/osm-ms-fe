@@ -25,6 +25,7 @@ export class ProjetDetailComponent implements OnInit {
   projet: ProjetDto | null = null;
   loading = false;
   projetId: string | null = null;
+  generatingQr = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -46,8 +47,6 @@ export class ProjetDetailComponent implements OnInit {
     this.projetService.getById(id).subscribe({
       next: (data) => {
         this.projet = data;
-
-        // Correction: reset loading dans le success
         this.loading = false;
       },
       error: (err) => {
@@ -61,10 +60,75 @@ export class ProjetDetailComponent implements OnInit {
     this.router.navigate(['/projets']);
   }
 
-  // Correction: l'impression reste simple, c'est le CSS @media print
-  // qui force l'impression du QR uniquement
-  onPrint(): void {
-    window.print();
+  openShipping(): void {
+    if (!this.projetId) {
+      return;
+    }
+    this.router.navigate(['/projets/detail', this.projetId, 'shipping']);
+  }
+
+  generateQr(): void {
+    if (this.generatingQr || !this.projetId) return;
+    this.generatingQr = true;
+    this.projetService.generateQr(this.projetId).subscribe({
+      next: (qrInfo) => {
+        if (this.projet) {
+          this.projet = {
+            ...this.projet,
+            publicCode: qrInfo.publicCode,
+            qrImageBase64: qrInfo.qrImageBase64
+          };
+        }
+        this.generatingQr = false;
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Erreur lors de la génération du QR');
+        this.generatingQr = false;
+      }
+    });
+  }
+
+  printQr(): void {
+    const qrImage = this.getQrImage();
+    if (!qrImage) {
+      alert('QR non disponible. Veuillez le générer d\'abord.');
+      return;
+    }
+
+    const manualCode = this.getManualCode();
+    const projectCode = this.projet?.code || 'N/A';
+
+    const printContent = `
+      <div style="text-align: center; padding: 20px; font-family: sans-serif;">
+        <h2>Projet de Conditionnement ${projectCode}</h2>
+        <img src="${qrImage}"
+             style="width: 200px; height: 200px; margin: 20px 0;" />
+        <p style="font-size: 16px;">Code manuel : <strong>${manualCode}</strong></p>
+        <p style="margin-top: 20px; font-size: 12px; color: gray;">Scannez le QR code ou saisissez le code manuel dans la recherche globale</p>
+      </div>
+    `;
+
+    const printWindow = window.open('', '_blank', 'width=600,height=600');
+    if (printWindow) {
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>QR Code - Projet ${projectCode}</title>
+            <style>
+              body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+            </style>
+          </head>
+          <body>${printContent}</body>
+        </html>
+      `);
+      printWindow.document.close();
+      // Petit délai pour s'assurer que l'image est chargée avant l'impression
+      setTimeout(() => {
+        printWindow.print();
+        // printWindow.close(); // Optionnel
+      }, 500);
+    }
   }
 
   onQrError(event: Event): void {
@@ -85,7 +149,6 @@ export class ProjetDetailComponent implements OnInit {
       return '';
     }
 
-    // CAS 1: le backend renvoie deja le base64
     if (this.projet.qrImageBase64 && this.projet.qrImageBase64.trim() !== '') {
       if (!this.projet.qrImageBase64.startsWith('data:image')) {
         return 'data:image/png;base64,' + this.projet.qrImageBase64;
@@ -93,7 +156,6 @@ export class ProjetDetailComponent implements OnInit {
       return this.projet.qrImageBase64;
     }
 
-    // CAS 2: fallback vers endpoint backend
     if (this.projet.id) {
       return this.projetService.getQrImageUrl(this.projet.id);
     }
@@ -102,6 +164,6 @@ export class ProjetDetailComponent implements OnInit {
   }
 
   getManualCode(): string {
-    return this.projet?.code?.trim() || 'N/A';
+    return this.projet?.publicCode || this.projet?.code || 'N/A';
   }
 }

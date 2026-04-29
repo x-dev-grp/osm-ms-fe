@@ -42,13 +42,23 @@
         </p>
 
         <div class="qr-actions no-print">
-          <button mat-flat-button color="primary" (click)="onPrint()">
+          <button mat-flat-button color="accent" *ngIf="!hasQrImage()" (click)="generateQr()" [disabled]="generatingQr">
+            <mat-icon>qr_code</mat-icon>
+            Générer QR
+          </button>
+
+          <button mat-flat-button color="primary" *ngIf="hasQrImage()" (click)="printQr()">
             <mat-icon>print</mat-icon>
-            Imprimer
+            Imprimer QR
           </button>
 
           <button mat-stroked-button color="primary" (click)="onBack()">
             Retour
+          </button>
+
+          <button mat-flat-button color="primary" (click)="openShipping()">
+            <mat-icon>local_shipping</mat-icon>
+            Gérer shipping
           </button>
         </div>
       </div>

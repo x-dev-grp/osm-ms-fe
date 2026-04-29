@@ -40,6 +40,7 @@ export interface ProjetDto {
   createdDate?: string;
 
   // QR
-  qrCode?: string;
+  publicCode?: string;
+  qrUrl?: string;
   qrImageBase64?: string;
 }

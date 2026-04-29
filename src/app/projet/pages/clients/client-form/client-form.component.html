@@ -10,22 +10,34 @@
 
   <div class="form-card">
     <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <div *ngIf="errorMessage" class="alert alert-danger mb-3">
+        {{ errorMessage }}
+      </div>
+
       <div class="form-grid two-cols">
         <div class="field-block">
           <label class="form-label">Nom *</label>
           <input
             formControlName="nom"
             class="form-control"
-            [class.is-invalid]="form.get('nom')?.invalid && form.get('nom')?.touched">
-          <div class="invalid-feedback">Requis</div>
+            [class.is-invalid]="f['nom'].invalid && f['nom'].touched" />
+          <div class="invalid-feedback" *ngIf="f['nom'].invalid && f['nom'].touched">
+            Le nom est requis.
+          </div>
         </div>
 
         <div class="field-block">
           <label class="form-label">Type *</label>
-          <select formControlName="type" class="form-select">
+          <select
+            formControlName="type"
+            class="form-select"
+            [class.is-invalid]="f['type'].invalid && f['type'].touched">
             <option value="BUYER">Acheteur</option>
-            <option value="BRAND_OWNER">Proprietaire de marque</option>
+            <option value="BRAND_OWNER">Propriétaire de marque</option>
           </select>
+          <div class="invalid-feedback" *ngIf="f['type'].invalid && f['type'].touched">
+            Le type est requis.
+          </div>
         </div>
 
         <div class="field-block">
@@ -34,21 +46,33 @@
             type="email"
             formControlName="email"
             class="form-control"
-            [class.is-invalid]="form.get('email')?.invalid && form.get('email')?.touched">
+            [class.is-invalid]="f['email'].invalid && f['email'].touched" />
+          <div class="invalid-feedback" *ngIf="f['email'].errors?.['required'] && f['email'].touched">
+            L’email est requis.
+          </div>
+          <div class="invalid-feedback" *ngIf="f['email'].errors?.['email'] && f['email'].touched">
+            Format email invalide.
+          </div>
         </div>
 
         <div class="field-block">
-          <label class="form-label">Telephone *</label>
+          <label class="form-label">Téléphone *</label>
           <input
             formControlName="telephone"
             class="form-control"
-            [class.is-invalid]="form.get('telephone')?.invalid && form.get('telephone')?.touched">
+            [class.is-invalid]="f['telephone'].invalid && f['telephone'].touched" />
+          <div class="invalid-feedback" *ngIf="f['telephone'].invalid && f['telephone'].touched">
+            Le téléphone est requis.
+          </div>
         </div>
       </div>
 
       <div class="field-block">
         <label class="form-label">Adresse</label>
-        <textarea formControlName="adresse" rows="3" class="form-control"></textarea>
+        <textarea
+          formControlName="adresse"
+          rows="3"
+          class="form-control"></textarea>
       </div>
 
       <div class="form-actions">
@@ -56,7 +80,7 @@
           {{ loading ? 'Enregistrement...' : 'Enregistrer' }}
         </button>
 
-        <button type="button" class="btn btn-secondary" (click)="onCancel()">
+        <button type="button" class="btn btn-secondary" [disabled]="loading" (click)="onCancel()">
           Annuler
         </button>
       </div>

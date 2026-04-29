@@ -25,16 +25,46 @@
   </div>
 
   <div class="filter-card">
-    <mat-form-field appearance="outline">
-      <mat-label>Statut</mat-label>
-      <mat-select [value]="statusFilter()" (selectionChange)="onStatusChange($event.value)">
-        @for (s of statusOptions; track s) {
-          <mat-option [value]="s">
-            {{ statusLabel(s) }}
-          </mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
+    <div class="filter-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Statut</mat-label>
+        <mat-select [value]="statusFilter()" (selectionChange)="onStatusChange($event.value)">
+          @for (s of statusOptions; track s) {
+            <mat-option [value]="s">
+              {{ statusLabel(s) }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="search-code-field">
+        <mat-label>Code projet</mat-label>
+        <input
+          matInput
+          placeholder="Ex: P001"
+          [value]="searchCode()"
+          (input)="onSearchCodeInput($event)"
+          (keyup.enter)="searchByCode()"
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          (click)="searchByCode()"
+          [disabled]="searching()"
+          aria-label="Rechercher projet">
+          <mat-icon>{{ searching() ? 'hourglass_top' : 'search' }}</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <button
+        mat-flat-button
+        color="primary"
+        class="search-btn"
+        (click)="searchByCode()"
+        [disabled]="searching()">
+        {{ searching() ? 'Recherche...' : 'Rechercher' }}
+      </button>
+    </div>
   </div>
 
   @if (loading()) {
@@ -140,6 +170,11 @@
                 <button mat-menu-item (click)="onEdit(row)">
                   <mat-icon>edit</mat-icon>
                   <span>Modifier</span>
+                </button>
+
+                <button mat-menu-item (click)="onAddOF(row)">
+                  <mat-icon>add_box</mat-icon>
+                  <span>Ajouter OF</span>
                 </button>
 
                 <button mat-menu-item (click)="onViewDetails(row)">

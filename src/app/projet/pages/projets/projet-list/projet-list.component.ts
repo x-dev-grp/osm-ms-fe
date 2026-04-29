@@ -19,6 +19,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatDivider } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
@@ -45,6 +46,7 @@ type ProjetStatusFilter = 'ALL' | 'BROUILLON' | 'EN_COURS' | 'VALIDE' | 'ANNULE'
     MatPaginator,
     MatDivider,
     MatFormFieldModule,
+    MatInputModule,
     MatSelectModule,
     MatDialogModule
   ],
@@ -74,8 +76,10 @@ export class ProjetListComponent {
   ];
 
   readonly loading = signal(false);
+  readonly searching = signal(false);
   readonly allRows = signal<ProjetDto[]>([]);
   readonly statusFilter = signal<ProjetStatusFilter>('ALL');
+  readonly searchCode = signal('');
 
   readonly rows = computed(() => {
     const selectedStatus = this.statusFilter();
@@ -127,12 +131,10 @@ export class ProjetListComponent {
   }
 
   onEdit(row: ProjetDto): void {
-    if (!row?.id) return;
     this.router.navigate([row.id], { relativeTo: this.route });
   }
 
   onViewDetails(row: ProjetDto): void {
-    if (!row?.id) return;
     this.router.navigate(['detail', row.id], { relativeTo: this.route });
   }
 
@@ -158,6 +160,39 @@ export class ProjetListComponent {
 
   onStatusChange(value: ProjetStatusFilter): void {
     this.statusFilter.set(value);
+  }
+
+  onSearchCodeInput(event: Event): void {
+    const value = (event.target as HTMLInputElement | null)?.value ?? '';
+    this.searchCode.set(value);
+  }
+
+  searchByCode(): void {
+    const code = this.searchCode().trim();
+    if (!code || this.searching()) {
+      return;
+    }
+
+    this.searching.set(true);
+
+    this.projetService.getByUniqueCode(code)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (projet) => {
+          this.searching.set(false);
+
+          if (!projet?.id) {
+            alert('Aucun projet trouve pour ce code.');
+            return;
+          }
+
+          this.router.navigate(['detail', projet.id], { relativeTo: this.route });
+        },
+        error: () => {
+          this.searching.set(false);
+          alert('Aucun projet trouve pour ce code.');
+        }
+      });
   }
 
   normalizeStatus(statut?: string): ProjetStatusFilter {
@@ -254,6 +289,16 @@ export class ProjetListComponent {
 
   onPageChange(event: { pageSize: number }): void {
     this.pageSize = event.pageSize;
+  }
+
+  onAddOF(row: ProjetDto): void {
+    if (!row?.id) {
+      return;
+    }
+
+    this.router.navigate(['/of/nouveau'], {
+      queryParams: { projetId: row.id }
+    });
   }
 }
 

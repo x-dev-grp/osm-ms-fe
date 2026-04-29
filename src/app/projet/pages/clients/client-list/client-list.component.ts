@@ -94,6 +94,11 @@ export class ClientListComponent {
     this.router.navigate([row.id], { relativeTo: this.route });
   }
 
+  onViewDetails(row: Client): void {
+    if (!row?.id) return;
+    this.router.navigate(['detail', row.id], { relativeTo: this.route });
+  }
+
   onDelete(row: Client): void {
     if (!row?.id) return;
 

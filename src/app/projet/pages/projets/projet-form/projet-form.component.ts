@@ -4,10 +4,10 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ProjetService } from '../../../services/projet.service';
-import { ClientService } from "../../../services/ClientService";
+import { ClientService } from '../../../services/ClientService';
 
-import { Client } from "../../../models/Client";
-import { ProjetDto, TypeEmballage, TypeProduit } from "../../../models/TypeProduit";
+import { Client } from '../../../models/Client';
+import { ProjetDto, TypeEmballage, TypeProduit } from '../../../models/TypeProduit';
 
 @Component({
   selector: 'app-projet-form',
@@ -32,8 +32,6 @@ export class ProjetFormComponent implements OnInit {
   projetId: string | null = null;
   loading = false;
   valeurTotaleEstimee = 0;
-
-  // Correction: affichage du code projet retourne par le back
   projetCode?: string;
 
   constructor(
@@ -50,6 +48,7 @@ export class ProjetFormComponent implements OnInit {
     this.loadClients();
 
     this.projetId = this.route.snapshot.paramMap.get('id');
+
     if (this.projetId) {
       this.isEdit = true;
       this.loadProjet();
@@ -80,10 +79,10 @@ export class ProjetFormComponent implements OnInit {
 
   private loadClients(): void {
     this.clientService.getAll().subscribe({
-      next: (data) => {
+      next: (data: Client[]) => {
         this.clients = data || [];
       },
-      error: (err) => {
+      error: (err: unknown) => {
         console.error('Erreur chargement clients', err);
         this.clients = [];
       }
@@ -94,8 +93,7 @@ export class ProjetFormComponent implements OnInit {
     if (!this.projetId) return;
 
     this.projetService.getById(this.projetId).subscribe({
-      next: (projet) => {
-        // Correction: recuperation du code genere cote backend
+      next: (projet: ProjetDto) => {
         this.projetCode = projet.code;
 
         this.form.patchValue({
@@ -112,7 +110,7 @@ export class ProjetFormComponent implements OnInit {
 
         this.valeurTotaleEstimee = this.calculValeurTotale();
       },
-      error: (err) => {
+      error: (err: unknown) => {
         console.error('Erreur chargement projet', err);
       }
     });
@@ -127,6 +125,7 @@ export class ProjetFormComponent implements OnInit {
   onSubmit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      alert('Veuillez remplir tous les champs obligatoires correctement.');
       return;
     }
 
@@ -141,23 +140,19 @@ export class ProjetFormComponent implements OnInit {
       : this.projetService.create(request);
 
     action.subscribe({
-      next: (saved) => {
+      next: () => {
         this.loading = false;
-
-        //on recupere le code genere apres creation
-        this.projetCode = saved.code;
-
-        this.router.navigate(['/projets']);
+        this.router.navigate(['../'], { relativeTo: this.route });
       },
-      error: (err) => {
-        console.error('Erreur enregistrement projet', err);
+      error: (err: unknown) => {
+        console.error(err);
         this.loading = false;
       }
     });
   }
 
   onCancel(): void {
-    this.router.navigate(['/projets']);
+    this.router.navigate(['../'], { relativeTo: this.route });
   }
 
   isFieldInvalid(fieldName: string): boolean {

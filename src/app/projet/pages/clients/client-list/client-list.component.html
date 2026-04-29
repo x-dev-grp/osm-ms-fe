@@ -103,6 +103,11 @@
                   <span>Modifier</span>
                 </button>
 
+                <button mat-menu-item (click)="onViewDetails(row)">
+                  <mat-icon>visibility</mat-icon>
+                  <span>Voir details</span>
+                </button>
+
                 <mat-divider></mat-divider>
 
                 <button mat-menu-item class="danger" (click)="onDelete(row)">

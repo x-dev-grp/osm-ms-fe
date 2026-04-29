@@ -6,8 +6,10 @@ import { ProjetRoutingModule } from './projet-routing.module';
 // Composants
 import { ClientListComponent } from './pages/clients/client-list/client-list.component';
 import { ClientFormComponent } from './pages/clients/client-form/client-form.component';
+import { ClientDetailComponent } from './pages/clients/client-detail/client-detail.component';
 import { ProjetListComponent } from './pages/projets/projet-list/projet-list.component';
 import { ProjetFormComponent } from './pages/projets/projet-form/projet-form.component';
+import { ProjetShippingComponent } from './pages/projets/projet-shipping/projet-shipping.component';
 
 @NgModule({
   declarations: [
@@ -19,8 +21,10 @@ import { ProjetFormComponent } from './pages/projets/projet-form/projet-form.com
     ProjetRoutingModule,
     ClientListComponent,
     ClientFormComponent,
+    ClientDetailComponent,
     ProjetListComponent,
-    ProjetFormComponent
+    ProjetFormComponent,
+    ProjetShippingComponent
   ]
 })
 export class ProjetModule { }

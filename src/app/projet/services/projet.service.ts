@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { ProjetDto } from "../models/TypeProduit";
 import { environment } from "../../../environments/environment";
+import { QrCodeInfo } from "../../shared/models/qr-models";
 
 interface ApiResponse<T> {
   success: boolean;
@@ -41,7 +42,7 @@ export class ProjetService {
 
   create(projet: ProjetDto): Observable<ProjetDto> {
     return this.http
-      .post<ApiResponse<ProjetDto>>(this.baseUrl, projet)
+      .post<ApiResponse<ProjetDto>>(this.baseUrl+"/create", projet)
       .pipe(
         // Correction: extraction du DTO depuis l'enveloppe backend
         map(response => response.data)
@@ -116,5 +117,11 @@ export class ProjetService {
 
   getQrImageUrl(id: string): string {
     return `${this.baseUrl}/${id}/qr-image`;
+  }
+
+  generateQr(entityId: string): Observable<QrCodeInfo> {
+    return this.http.get<QrCodeInfo>(
+      `${this.baseUrl}/qr/PROJET/${entityId}`
+    );
   }
 }
