@@ -181,6 +181,11 @@ export class NavRightComponent {
       return;
     }
 
+    if (entity.entityType === 'PROJET' && entity.entityId) {
+      this.router.navigate(['/projets/detail', entity.entityId]);
+      return;
+    }
+
     alert(`Entite trouvee (${entity.entityType}) mais route indisponible`);
   }
   //----------- chercher pa code ------//

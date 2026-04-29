@@ -92,9 +92,26 @@
   padding: 1rem 1.25rem;
 }
 
+.filter-grid {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
 .filter-card mat-form-field {
   width: 280px;
   max-width: 100%;
+}
+
+.search-code-field {
+  flex: 1 1 280px;
+  min-width: 220px;
+}
+
+.search-btn {
+  height: 44px;
+  white-space: nowrap;
 }
 
 .abioc-loading {
@@ -281,6 +298,10 @@ mat-paginator {
   }
 
   .filter-card mat-form-field {
+    width: 100%;
+  }
+
+  .search-btn {
     width: 100%;
   }
 }
