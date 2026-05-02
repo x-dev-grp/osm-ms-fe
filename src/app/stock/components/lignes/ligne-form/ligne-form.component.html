@@ -1,181 +1,152 @@
-<div class="container-fluid">
-  <div class="row justify-content-center">
-    <div class="col-lg-8">
-      <div class="card border-0 shadow-sm">
-        <!-- En-tête -->
-        <div class="card-header bg-transparent border-0">
-          <div class="d-flex align-items-center">
-            <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3">
-              <i class="fas fa-industry text-primary"></i>
-            </div>
-            <div>
-              <h2 class="fw-bold mb-1">
-                {{ isEditMode ? 'Modifier la ligne' : 'Nouvelle ligne de conditionnement' }}
-              </h2>
-              <p class="text-muted mb-0">
-                {{ isEditMode ? 'Modifiez les informations de la ligne' : 'Créez une nouvelle ligne de production' }}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="card-body">
-          <!-- Loading -->
-          <div *ngIf="loading" class="text-center py-5">
-            <div class="spinner-border" style="width: 3rem; height: 3rem;"></div>
-            <p class="mt-3 text-muted">Chargement...</p>
-          </div>
-
-          <!-- Error -->
-          <div *ngIf="error" class="alert alert-danger border-0">
-            <i class="fas fa-exclamation-circle me-2"></i>
-            {{ error }}
-          </div>
-
-          <!-- Formulaire -->
-          <form *ngIf="!loading" [formGroup]="ligneForm" (ngSubmit)="onSubmit()">
-            <!-- Informations de base -->
-            <div class="form-section mb-4">
-              <h6>Informations de base</h6>
-              <div class="row g-3">
-                <div class="col-md-6">
-                  <label class="form-label fw-semibold">
-                    Nom <span class="text-danger">*</span>
-                  </label>
-                  <input type="text" class="form-control"
-                         [class.is-invalid]="submitted && f['nom']?.errors"
-                         formControlName="nom"
-                         placeholder="Ex: Ligne d'embouteillage">
-                  <div class="invalid-feedback" *ngIf="submitted && f['nom']?.errors?.['required']">
-                    <i class="fas fa-exclamation-circle me-1"></i>
-                    Nom requis
-                  </div>
-                </div>
-
-                <div class="col-12">
-                  <label class="form-label fw-semibold">Description</label>
-                  <textarea class="form-control" rows="3"
-                            formControlName="description"
-                            placeholder="Description de la ligne..."></textarea>
-                </div>
-              </div>
-            </div>
-
-            <!-- Configuration -->
-            <div class="form-section mb-4">
-              <h6>Configuration</h6>
-              <div class="row g-3">
-                <div class="col-md-6">
-                  <label class="form-label fw-semibold">État</label>
-                  <select class="form-select" formControlName="etat">
-                    <option value="ACTIF">Actif</option>
-                    <option value="INACTIF">Inactif</option>
-                    <option value="EN_MAINTENANCE">En maintenance</option>
-                    <option value="EN_PANNE">En panne</option>
-                  </select>
-                </div>
-
-                <div class="col-md-6">
-                  <label class="form-label fw-semibold">Responsable</label>
-                  <input type="text" class="form-control"
-                         formControlName="responsable"
-                         placeholder="Nom du responsable">
-                </div>
-              </div>
-            </div>
-
-            <!-- Performances -->
-            <div class="form-section mb-4">
-              <h6>Performances</h6>
-              <div class="row g-3">
-                <div class="col-md-4">
-                  <label class="form-label fw-semibold">Vitesse nominale</label>
-                  <div class="input-group">
-                    <input type="number" class="form-control"
-                           formControlName="vitesseNominale"
-                           placeholder="0">
-                    <span class="input-group-text">u/h</span>
-                  </div>
-                </div>
-
-                <div class="col-md-4">
-                  <label class="form-label fw-semibold">Temps préparation</label>
-                  <div class="input-group">
-                    <input type="number" class="form-control"
-                           formControlName="tempsPreparation"
-                           placeholder="0">
-                    <span class="input-group-text">min</span>
-                  </div>
-                </div>
-
-                <div class="col-md-4">
-                  <label class="form-label fw-semibold">Temps nettoyage</label>
-                  <div class="input-group">
-                    <input type="number" class="form-control"
-                           formControlName="tempsNettoyage"
-                           placeholder="0">
-                    <span class="input-group-text">min</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Maintenance -->
-            <div class="form-section mb-4">
-              <h6>Maintenance</h6>
-              <div class="row g-3">
-                <div class="col-md-6">
-                  <label class="form-label fw-semibold">
-                    Dernière maintenance
-                  </label>
-                  <input type="date"
-                         class="form-control"
-                         formControlName="dateDerniereMaintenance">
-                </div>
-
-                <div class="col-md-6">
-                  <label class="form-label fw-semibold">
-                    Prochaine maintenance
-                  </label>
-                  <input type="date"
-                         class="form-control"
-                         [class.is-invalid]="(ligneForm.hasError('dateInvalid') && (ligneForm.get('dateProchaineMaintenance')?.touched || submitted))"
-                         formControlName="dateProchaineMaintenance">
-                  <div *ngIf="ligneForm.hasError('dateInvalid') && (ligneForm.get('dateProchaineMaintenance')?.touched || submitted)"
-                       class="invalid-feedback d-block">
-                    <i class="fas fa-exclamation-circle me-1"></i>
-                    La date de prochaine maintenance ne peut pas être antérieure à la dernière maintenance.
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Notes -->
-            <div class="form-section mb-4">
-              <h6>Notes</h6>
-              <div class="row">
-                <div class="col-12">
-                  <textarea class="form-control" rows="3"
-                            formControlName="notes"
-                            placeholder="Notes supplémentaires..."></textarea>
-                </div>
-              </div>
-            </div>
-
-            <!-- Actions -->
-            <div class="d-flex justify-content-end gap-3 pt-3 border-top">
-              <button type="button" class="btn btn-light" (click)="onCancel()">
-                <i class="fas fa-times me-2"></i>
-                Annuler
-              </button>
-              <button type="submit" class="btn btn-primary">
-                <i class="fas fa-check me-2"></i>
-                {{ isEditMode ? 'Mettre à jour' : 'Créer' }}
-              </button>
-            </div>
-          </form>
-        </div>
+<div class="p-6 min-h-screen bg-gray-50/50">
+  <!-- Page Header -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 max-w-4xl mx-auto">
+    <div class="flex items-center gap-4">
+      <button mat-icon-button (click)="onCancel()" title="Retour">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div>
+        <h1 class="text-2xl font-bold text-slate-800 m-0">
+          {{ isEditMode ? 'Modifier la ligne' : 'Nouvelle ligne de conditionnement' }}
+        </h1>
+        <p class="text-slate-500 text-sm mt-1">
+          {{ isEditMode ? 'Mettez à jour les paramètres de votre unité de production.' : 'Définissez une nouvelle unité de production pour votre usine.' }}
+        </p>
       </div>
     </div>
   </div>
+
+  @if (loading()) {
+    <div class="flex flex-col items-center justify-center p-20">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p class="text-slate-400 mt-4 font-medium">Chargement des données...</p>
+    </div>
+  }
+
+  @if (!loading()) {
+    <form [formGroup]="ligneForm" (ngSubmit)="onSubmit()" class="max-w-4xl mx-auto space-y-6">
+      
+      <!-- Basic Info Section -->
+      <mat-card class="rounded-xl border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-4 bg-slate-50 border-b border-slate-100">
+          <h3 class="text-slate-700 font-bold m-0 flex items-center gap-2 text-sm uppercase tracking-wider">
+            <mat-icon class="text-slate-400">info_outline</mat-icon>
+            Informations de base
+          </h3>
+        </div>
+        <div class="p-6 space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Nom de la ligne</mat-label>
+              <input matInput formControlName="nom" placeholder="Ex: Ligne d'embouteillage A">
+              <mat-error *ngIf="ligneForm.get('nom')?.hasError('required')">Le nom est obligatoire</mat-error>
+              <mat-error *ngIf="ligneForm.get('nom')?.hasError('minlength')">Le nom doit contenir au moins 3 caractères</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Responsable</mat-label>
+              <input matInput formControlName="responsable" placeholder="Nom du responsable technique">
+              <mat-icon matSuffix class="text-slate-400">person</mat-icon>
+            </mat-form-field>
+          </div>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="description" rows="3" placeholder="Brève description de la ligne..."></textarea>
+          </mat-form-field>
+        </div>
+      </mat-card>
+
+      <!-- Operation Section -->
+      <mat-card class="rounded-xl border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-4 bg-slate-50 border-b border-slate-100">
+          <h3 class="text-slate-700 font-bold m-0 flex items-center gap-2 text-sm uppercase tracking-wider">
+            <mat-icon class="text-slate-400">settings</mat-icon>
+            Paramètres Opérationnels
+          </h3>
+        </div>
+        <div class="p-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>État opérationnel</mat-label>
+              <mat-select formControlName="etat">
+                <mat-option value="ACTIF">Actif</mat-option>
+                <mat-option value="INACTIF">Inactif</mat-option>
+                <mat-option value="EN_MAINTENANCE">En maintenance</mat-option>
+                <mat-option value="EN_PANNE">En panne</mat-option>
+              </mat-select>
+              <mat-icon matSuffix class="text-slate-400">sensors</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Vitesse nominale (Unités / heure)</mat-label>
+              <input matInput type="number" formControlName="vitesseNominale">
+              <mat-icon matSuffix class="text-slate-400">speed</mat-icon>
+              <mat-hint>Capacité de production par heure</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Temps de préparation (min)</mat-label>
+              <input matInput type="number" formControlName="tempsPreparation">
+              <mat-icon matSuffix class="text-slate-400">hourglass_top</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Temps de nettoyage (min)</mat-label>
+              <input matInput type="number" formControlName="tempsNettoyage">
+              <mat-icon matSuffix class="text-slate-400">clean_hands</mat-icon>
+            </mat-form-field>
+          </div>
+        </div>
+      </mat-card>
+
+      <!-- Maintenance Section -->
+      <mat-card class="rounded-xl border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-4 bg-slate-50 border-b border-slate-100">
+          <h3 class="text-slate-700 font-bold m-0 flex items-center gap-2 text-sm uppercase tracking-wider">
+            <mat-icon class="text-slate-400">build_circle</mat-icon>
+            Planification de Maintenance
+          </h3>
+        </div>
+        <div class="p-6 space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Dernière maintenance</mat-label>
+              <input matInput [matDatepicker]="picker1" formControlName="dateDerniereMaintenance">
+              <mat-hint>JJ/MM/AAAA</mat-hint>
+              <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+              <mat-datepicker #picker1></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Prochaine maintenance</mat-label>
+              <input matInput [matDatepicker]="picker2" formControlName="dateProchaineMaintenance">
+              <mat-hint>JJ/MM/AAAA</mat-hint>
+              <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+              <mat-datepicker #picker2></mat-datepicker>
+              <mat-error *ngIf="ligneForm.hasError('dateInvalid')">La prochaine maintenance doit être après la dernière</mat-error>
+            </mat-form-field>
+          </div>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Notes internes</mat-label>
+            <textarea matInput formControlName="notes" rows="3" placeholder="Observations, rappels de maintenance..."></textarea>
+          </mat-form-field>
+        </div>
+      </mat-card>
+
+      <!-- Form Actions -->
+      <div class="flex items-center justify-end gap-3 pt-4 pb-10">
+        <button mat-button type="button" (click)="onCancel()" [disabled]="submitting()">
+          Annuler
+        </button>
+        <button mat-flat-button color="primary" type="submit" [disabled]="submitting() || ligneForm.invalid">
+          <mat-icon *ngIf="!submitting()">check</mat-icon>
+          <mat-spinner *ngIf="submitting()" diameter="20" class="mr-2"></mat-spinner>
+          {{ isEditMode ? 'Mettre à jour la ligne' : 'Créer la ligne' }}
+        </button>
+      </div>
+
+    </form>
+  }
 </div>

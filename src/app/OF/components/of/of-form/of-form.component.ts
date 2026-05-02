@@ -11,6 +11,10 @@ import {SKUService} from "../../../../stock/services/sku.service";
 import {Bom} from "../../../../stock/models/Bom";
 import {BomService} from "../../../../stock/services/BomService";
 import {ToastService} from "../../../../shared/services/toast.service";
+import {StorageUnitDtoService} from "../../../../shared/services/storage.service";
+import {StorageUnitDto} from "../../../../shared/models/StorageUnitDto";
+import {ProjetService} from "../../../../projet/services/projet.service";
+import {ProjetDto} from "../../../../projet/models/TypeProduit";
 
 @Component({
   selector: 'app-of-form',
@@ -22,7 +26,9 @@ import {ToastService} from "../../../../shared/services/toast.service";
 export class OFFormComponent implements OnInit {
   ofForm!: FormGroup;
   skus: SKU[] = [];
+  projects: ProjetDto[] = [];
   lignes: LigneConditionnement[] = [];
+  storageUnits: StorageUnitDto[] = [];
   loading = false;
   isSubmitting = false;
   loadingBoms = false;
@@ -35,13 +41,18 @@ export class OFFormComponent implements OnInit {
     private skuService: SKUService,
     private ligneService: LigneConditionnementService,
     private bomService: BomService,
+    private storageService: StorageUnitDtoService,
+    private projetService: ProjetService,
     private toast: ToastService
   ) {}
 
   ngOnInit(): void {
     this.initForm();
     this.loadSkus();
+    this.loadProjects();
     this.loadLignes();
+    this.loadStorageUnits();
+
     this.ofForm.get('skuId')?.valueChanges.subscribe(skuId => {
       if (skuId) {
         this.loadBomsForSku(skuId);
@@ -50,10 +61,20 @@ export class OFFormComponent implements OnInit {
         this.ofForm.get('bomId')?.setValue('');
       }
     });
+
+    this.ofForm.get('projectId')?.valueChanges.subscribe(projectId => {
+      if (projectId) {
+        const p = this.projects.find(x => x.id === projectId);
+        if (p && p.skuId) {
+          this.ofForm.get('skuId')?.setValue(p.skuId);
+        }
+      }
+    });
   }
 
   private initForm(): void {
     this.ofForm = this.fb.group({
+      projectId: [''],
       skuId: ['', Validators.required],
       bomId: ['', Validators.required],
       ligneId: [''],
@@ -77,9 +98,28 @@ export class OFFormComponent implements OnInit {
     this.skuService.getActiveSKUs().subscribe((data: SKU[]) => this.skus = data);
   }
 
+  loadProjects(): void {
+    this.projetService.getAll().subscribe(data => this.projects = data);
+  }
+
   loadLignes(): void {
     this.ligneService.getActiveLignes().subscribe(data => this.lignes = data);
   }
+
+  loadStorageUnits(): void {
+    this.storageService.getAllStorageUnit().subscribe({
+      next: (resp) => {
+        if (resp && resp.data) {
+          // Filtrer les cuves qui ont de l'huile (volume > 0) ET qui est FILTRÉE
+          this.storageUnits = Array.isArray(resp.data) 
+            ? resp.data.filter(u => (u.currentVolume || 0) > 0 && u.filteredOil === true)
+            : [];
+        }
+      },
+      error: (err) => console.error('Erreur chargement cuves', err)
+    });
+  }
+
   loadBomsForSku(skuId: string): void {
     this.loadingBoms = true;
     this.bomService.getBomsBySku(skuId).subscribe({
@@ -110,6 +150,7 @@ export class OFFormComponent implements OnInit {
     this.isSubmitting = true;
     const formValue = this.ofForm.value;
     const newOF: OrdreFabrication = {
+      projectId: formValue.projectId || undefined,
       skuId: formValue.skuId,
       bomId: formValue.bomId,
       ligneId: formValue.ligneId || undefined,

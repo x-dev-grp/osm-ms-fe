@@ -43,4 +43,8 @@ export interface ProjetDto {
   publicCode?: string;
   qrUrl?: string;
   qrImageBase64?: string;
+
+  skuId?: string;
+  skuCode?: string;
+  bomId?: string;
 }

@@ -109,3 +109,38 @@ export interface PdfPaymentNoteConfig {
 
 
 
+
+export interface PdfExpeditionConfig {
+  title: string;
+  reference: string;
+  date?: string;
+  clientInfo?: {
+    name?: string;
+    address?: string;
+    phone?: string;
+  };
+  logistics?: {
+    carrier?: string;
+    driver?: string;
+    truck?: string;
+    tracking?: string;
+    incoterm?: string;
+    destination?: string;
+  };
+  lines: Array<{
+    ofCode: string;
+    articleName: string;
+    quantity: number;
+    unit: string;
+    lotNumber: string;
+  }>;
+  traceability?: any; // The snapshot object
+  companyInfo?: {
+    logoUrl?: string;
+    companyName?: string;
+    address?: string;
+    vatNumber?: string;
+    mobile?: string;
+    website?: string;
+  };
+}

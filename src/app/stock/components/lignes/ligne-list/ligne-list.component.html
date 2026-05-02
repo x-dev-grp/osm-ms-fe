@@ -1,248 +1,175 @@
-<div class="modern-container">
-  @if (error) {
-    <div class="alert-modern alert-danger slide-down">
-      <div class="alert-icon">
-        <i class="fas fa-exclamation-triangle"></i>
-      </div>
-      <div class="alert-content">
-        {{ error }}
-      </div>
-      <button class="alert-close" (click)="error = null">
-        <i class="fas fa-times"></i>
+<div class="p-6 min-h-screen bg-gray-50/50">
+  <!-- Header Section -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-800 flex items-center gap-2">
+        <mat-icon class="text-primary-600">precision_manufacturing</mat-icon>
+        Lignes de Conditionnement
+      </h1>
+      <p class="text-slate-500 text-sm mt-1">
+        Gérez vos unités de production et suivez leur état opérationnel.
+      </p>
+    </div>
+    
+    <div class="flex items-center gap-3">
+      <button mat-stroked-button color="primary" (click)="loadLignes()" [disabled]="loading()">
+        <mat-icon [class.animate-spin]="loading()">refresh</mat-icon>
+        Actualiser
+      </button>
+      
+      <button mat-flat-button color="primary" routerLink="nouveau">
+        <mat-icon>add</mat-icon>
+        Nouvelle Ligne
       </button>
     </div>
-  }
-  <div class="header-section glass-effect">
-    <div class="d-flex justify-content-between align-items-center">
-      <div class="header-left">
-        <div class="header-icon-wrapper">
-          <i class="fas fa-industry"></i>
-        </div>
-        <div>
-          <h1 class="page-title gradient-text">
-            Lignes de conditionnement
-          </h1>
-          <p class="stats-badge">
-            <i class="fas fa-database me-1"></i>
-            <span>{{ lignes.length }} ligne(s) enregistrée(s)</span>
-          </p>
-        </div>
-      </div>
-      <div class="header-actions">
-        <button class="btn-create" routerLink="nouveau">
-          <i class="fas fa-plus me-2"></i>
-          <span>Nouvelle ligne</span>
-          <div class="btn-glow"></div>
-        </button>
-      </div>
+  </div>
+
+  <!-- Filters Card -->
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 items-end">
+      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-label>Rechercher</mat-label>
+        <mat-icon matPrefix class="text-slate-400">search</mat-icon>
+        <input matInput (input)="onSearch($event)" [value]="searchTerm()" placeholder="Code, nom, responsable...">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-label>État de la ligne</mat-label>
+        <mat-select (selectionChange)="onEtatChange($event.value)" [value]="etatFilter()">
+          <mat-option value="">Tous les états</mat-option>
+          <mat-option value="ACTIF">Actif</mat-option>
+          <mat-option value="INACTIF">Inactif</mat-option>
+          <mat-option value="EN_MAINTENANCE">Maintenance</mat-option>
+          <mat-option value="EN_PANNE">Panne</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-button color="warn" (click)="resetFilters()" [disabled]="!searchTerm() && !etatFilter()">
+        <mat-icon>filter_alt_off</mat-icon>
+        Réinitialiser
+      </button>
+      
+      <div class="hidden lg:block"></div>
     </div>
   </div>
 
+  <!-- Table Container -->
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden relative">
+    @if (loading()) {
+      <div class="absolute inset-0 z-10 flex items-center justify-center bg-white/60 backdrop-blur-[1px]">
+        <mat-spinner diameter="40"></mat-spinner>
       </div>
+    }
 
-  <div class="filters-section glass-effect">
-    <div class="filters-header">
-      <div class="filters-title">
-        <i class="fas fa-sliders-h me-2"></i>
-        Filtres de recherche
-      </div>
-      <div class="active-filters" *ngIf="searchTerm || etatFilter">
-        <span class="filter-chip">Filtres actifs</span>
-      </div>
-    </div>
-
-    <div class="filters-body">
-      <div class="row g-4">
-        <div class="col-md-5">
-          <div class="filter-group">
-            <label class="filter-label">
-              <i class="fas fa-search me-1"></i>
-              Recherche
-            </label>
-            <div class="search-wrapper">
-              <i class="fas fa-search search-icon"></i>
-              <input type="text"
-                     class="filter-input search-input"
-                     placeholder="Rechercher par code, nom, responsable..."
-                     [(ngModel)]="searchTerm"
-                     (input)="filterLignes()">
-              <button *ngIf="searchTerm" class="clear-search" (click)="searchTerm = ''; filterLignes()">
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-4">
-          <div class="filter-group">
-            <label class="filter-label">
-              <i class="fas fa-tag me-1"></i>
-            </label>
-            <div class="filter-select-wrapper">
-              <select class="filter-select"
-                      [(ngModel)]="etatFilter"
-                      (change)="filterLignes()">
-                <option value="">Tous les états</option>
-                <option value="ACTIF">Actif</option>
-                <option value="INACTIF">Inactif</option>
-                <option value="EN_MAINTENANCE">Maintenance</option>
-                <option value="EN_PANNE">Panne</option>
-              </select>
-              <i class="fas fa-chevron-down select-arrow"></i>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-3">
-          <div class="filter-group">
-            <label>&nbsp;</label>
-            <button class="btn-reset" (click)="resetFilters()" [disabled]="!searchTerm && !etatFilter">
-              <i class="fas fa-undo-alt me-2"></i>
-              Réinitialiser
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  @if (loading) {
-    <div class="loading-state-modern">
-      <div class="spinner-container">
-        <div class="spinner-ring"></div>
-        <div class="spinner-ring-inner"></div>
-      </div>
-      <p class="loading-text">Chargement des lignes</p>
-      <p class="loading-subtext">Veuillez patienter...</p>
-    </div>
-  }
-
-  @if (!loading && !error) {
-    <div class="table-section glass-effect">
-      <!-- En-tête du tableau -->
-      <div class="table-header">
-        <div class="results-info">
-          <div class="info-badge">
-            <i class="fas fa-list-ul me-2"></i>
-            <span>{{ filteredLignes.length }} résultat(s) affiché(s)</span>
-          </div>
-          @if (filteredLignes.length !== lignes.length) {
-            <span class="filtered-badge">
-              <i class="fas fa-filter me-1"></i>
-              filtré sur {{ lignes.length }} total
+    <div class="overflow-x-auto">
+      <table mat-table [dataSource]="dataSource" matSort class="w-full">
+        
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="w-32"> État </th>
+          <td mat-cell *matCellDef="let row">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border"
+                  [ngClass]="getEtatClass(row.etat)">
+              {{ getEtatLabel(row.etat) }}
             </span>
-          }
-        </div>
-      </div>
-      <div class="table-responsive">
-        <table class="modern-table">
-          <thead>
-          <tr>
-            <th class="sortable">
-              Code
-              <i class="fas fa-sort ms-2"></i>
-            </th>
-            <th class="sortable">
-              Nom
-              <i class="fas fa-sort ms-2"></i>
-            </th>
-            <th>Responsable</th>
-            <th class="text-center">Vitesse</th>
-            <th class="text-center">État</th>
-            <th class="text-center">Actions</th>
-          </tr>
-          </thead>
-          <tbody>
-            @for (ligne of filteredLignes; track ligne.id; let i = $index) {
-              <tr class="table-row"
-                  [ngClass]="{'inactive-row': !ligne.actif}"
-                  [style.animation-delay]="i * 0.05 + 's'">
-                <td>
-                  <div class="sku-cell">
-                    <span class="sku-code">{{ ligne.code }}</span>
-                    <span class="sku-id">ID: {{ ligne.id | slice:0:8 }}...</span>
-                  </div>
-                </td>
-                <td>
-                  <span class="fw-medium">{{ ligne.nom }}</span>
-                </td>
-                <td>
-                  <span>{{ ligne.responsable || '-' }}</span>
-                </td>
-                <td class="text-center">
-                  @if (ligne.vitesseNominale) {
-                    <div class="metric-cell">
-                      <span class="metric-value">{{ ligne.vitesseNominale }}</span>
-                      <span class="metric-unit">u/h</span>
-                    </div>
+          </td>
+        </ng-container>
+
+        <!-- Code Column -->
+        <ng-container matColumnDef="code">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="w-40"> Code </th>
+          <td mat-cell *matCellDef="let row">
+            <code class="px-2 py-1 bg-slate-100 rounded text-slate-700 font-semibold text-xs">{{ row.code }}</code>
+          </td>
+        </ng-container>
+
+        <!-- Nom Column -->
+        <ng-container matColumnDef="nom">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Nom de la ligne </th>
+          <td mat-cell *matCellDef="let row" class="font-medium text-slate-800"> {{ row.nom }} </td>
+        </ng-container>
+
+        <!-- Responsable Column -->
+        <ng-container matColumnDef="responsable">
+          <th mat-header-cell *matHeaderCellDef> Responsable </th>
+          <td mat-cell *matCellDef="let row" class="text-slate-600"> 
+            <div class="flex items-center gap-2">
+              <mat-icon class="text-slate-400 text-sm w-4 h-4">person</mat-icon>
+              {{ row.responsable || '-' }}
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Vitesse Column -->
+        <ng-container matColumnDef="vitesse">
+          <th mat-header-cell *matHeaderCellDef class="text-right"> Vitesse </th>
+          <td mat-cell *matCellDef="let row" class="text-right">
+            @if (row.vitesseNominale) {
+              <span class="font-bold text-primary-700">{{ row.vitesseNominale }}</span>
+              <span class="text-slate-400 text-xs ml-1">u/h</span>
+            } @else {
+              <span class="text-slate-300">-</span>
+            }
+          </td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef class="w-20"></th>
+          <td mat-cell *matCellDef="let row">
+            <div class="flex items-center justify-end gap-1">
+              <button mat-icon-button [matMenuTriggerFor]="menu" class="text-slate-500">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              
+              <mat-menu #menu="matMenu" xPosition="before">
+                <button mat-menu-item [routerLink]="['/stock/lignes', row.id]">
+                  <mat-icon class="text-primary-600">visibility</mat-icon>
+                  <span>Détails</span>
+                </button>
+                <button mat-menu-item [routerLink]="['/stock/lignes', row.id, 'edit']">
+                  <mat-icon class="text-amber-600">edit</mat-icon>
+                  <span>Modifier</span>
+                </button>
+                <mat-divider></mat-divider>
+                <button mat-menu-item (click)="toggleActif(row)" [disabled]="togglingId() === row.id">
+                  @if (row.actif) {
+                    <mat-icon class="text-red-600">toggle_on</mat-icon>
+                    <span>Désactiver</span>
                   } @else {
-                    <span class="metric-empty">—</span>
+                    <mat-icon class="text-green-600">toggle_off</mat-icon>
+                    <span>Activer</span>
                   }
-                </td>
-                <td class="text-center">
-                  <span class="status-badge {{ getEtatBadge(ligne.etat) }}">
-                    <span class="status-dot"></span>
-                    {{ getEtatLabel(ligne.etat) }}
-                  </span>
-                </td>
-                <td class="text-center">
-                  <div class="action-group">
-                    @if (ligne.actif) {
-                      <button class="action-btn view"
-                              [routerLink]="['/stock/lignes', ligne.id]"
-                              title="Voir détails">
-                        <i class="fas fa-eye"></i>
-                      </button>
-                      <button class="action-btn edit"
-                              [routerLink]="['/stock/lignes', ligne.id, 'edit']"
-                              title="Modifier">
-                        <i class="fas fa-edit"></i>
-                      </button>
-                    }
-                    <button class="action-btn toggle"
-                            [class.active]="ligne.actif"
-                            (click)="toActif(ligne)"
-                            [disabled]="togglingId === ligne.id">
-                      <i class="fas" [class.fa-toggle-on]="ligne.actif" [class.fa-toggle-off]="!ligne.actif"></i>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            }
+                </button>
+              </mat-menu>
+            </div>
+          </td>
+        </ng-container>
 
-            @if (filteredLignes.length === 0) {
-              <tr>
-                <td colspan="6" class="empty-state">
-                  <div class="empty-state-content">
-                    <div class="empty-icon">
-                      <i class="fas fa-industry"></i>
-                    </div>
-                    <h3>Aucune ligne trouvée</h3>
-                    <p class="empty-text">
-                      @if (searchTerm || etatFilter) {
-                        Aucun résultat ne correspond à vos critères de recherche
-                      } @else {
-                        Commencez par créer votre première ligne
-                      }
-                    </p>
-                    @if (searchTerm || etatFilter) {
-                      <button class="btn-reset-lg" (click)="resetFilters()">
-                        <i class="fas fa-undo-alt me-2"></i>
-                        Effacer les filtres
-                      </button>
-                    } @else {
-                      <button class="btn-create-lg" routerLink="nouveau">
-                        <i class="fas fa-plus me-2"></i>
-                        Créer une ligne
-                      </button>
-                    }
-                  </div>
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns" class="bg-slate-50"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" 
+            class="hover:bg-slate-50/80 transition-colors border-b border-slate-100 last:border-0"
+            [class.opacity-50]="!row.actif"></tr>
+
+        <!-- No Data Row -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell p-12 text-center" colspan="6">
+            <div class="flex flex-col items-center justify-center text-slate-400">
+              <mat-icon class="text-5xl w-12 h-12 mb-4">inventory_2</mat-icon>
+              @if (!loading()) {
+                <p class="text-lg font-medium">Aucune ligne de conditionnement trouvée.</p>
+                <p class="text-sm">Essayez de modifier vos filtres ou créez une nouvelle ligne.</p>
+              } @else {
+                <p class="text-lg font-medium">Chargement des données...</p>
+              }
+            </div>
+          </td>
+        </tr>
+      </table>
     </div>
-  }
 
+    <mat-paginator [pageSizeOptions]="[10, 25, 50]" 
+                   class="border-t border-slate-100"
+                   aria-label="Sélectionner la page"></mat-paginator>
+  </div>
+</div>

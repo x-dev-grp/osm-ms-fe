@@ -14,6 +14,10 @@ export class OFService {
   getAll(): Observable<OrdreFabrication[]> {
     return this.http.get<OrdreFabrication[]>(`${this.baseUrl}/all`);
   }
+
+  getByProject(projectId: string): Observable<OrdreFabrication[]> {
+    return this.http.get<OrdreFabrication[]>(`${this.baseUrl}/project/${projectId}`);
+  }
   getById(id: string): Observable<OrdreFabrication> {
     return this.http.get<OrdreFabrication>(`${this.baseUrl}/${id}`);
   }
