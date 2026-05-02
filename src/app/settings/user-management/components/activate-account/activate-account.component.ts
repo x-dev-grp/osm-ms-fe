@@ -70,23 +70,7 @@ export class ActivateAccountComponent implements OnInit {
     this.loading = true;
     const { code, newPassword, confirmPassword } = this.form.getRawValue();
 
-    this.userService.verifyOtpAndSetPassword(this.email, code, newPassword, confirmPassword)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          this.loading = false;
-          this.snackBar.open(
-            this.mode === 'activation' ? 'Compte activé avec succès' : 'Mot de passe réinitialisé avec succès',
-            'Fermer',
-            { duration: 4000 }
-          );
-          this.router.navigate(['/login']);
-        },
-        error: (err) => {
-          this.loading = false;
-          this.snackBar.open(err?.error || 'Erreur lors du traitement', 'Fermer', { duration: 5000 });
-        }
-      });
+
   }
 
   resendCode(): void {
@@ -96,19 +80,6 @@ export class ActivateAccountComponent implements OnInit {
     }
 
     this.loading = true;
-
-    this.userService.resendActivationOtp(this.email)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          this.loading = false;
-          this.snackBar.open('Un nouveau code OTP a été envoyé', 'Fermer', { duration: 4000 });
-        },
-        error: (err) => {
-          this.loading = false;
-          this.snackBar.open(err?.error || 'Erreur lors du renvoi du code', 'Fermer', { duration: 5000 });
-        }
-      });
-  }
+}
 }
 
