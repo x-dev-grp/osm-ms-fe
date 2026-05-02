@@ -60,11 +60,18 @@ export class ProjetDetailComponent implements OnInit {
     this.router.navigate(['/projets']);
   }
 
-  openShipping(): void {
+  openExpedition(): void {
     if (!this.projetId) {
       return;
     }
-    this.router.navigate(['/projets/detail', this.projetId, 'shipping']);
+    this.router.navigate(['/projets/detail', this.projetId, 'expedition']);
+  }
+
+  openTraceability(): void {
+    if (!this.projetId) {
+      return;
+    }
+    this.router.navigate(['/projets/detail', this.projetId, 'traceability']);
   }
 
   generateQr(): void {

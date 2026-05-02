@@ -9,7 +9,7 @@ import { ClientFormComponent } from './pages/clients/client-form/client-form.com
 import { ClientDetailComponent } from './pages/clients/client-detail/client-detail.component';
 import { ProjetListComponent } from './pages/projets/projet-list/projet-list.component';
 import { ProjetFormComponent } from './pages/projets/projet-form/projet-form.component';
-import { ProjetShippingComponent } from './pages/projets/projet-shipping/projet-shipping.component';
+import { ExpeditionListComponent } from './pages/expeditions/expedition-list/expedition-list.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +24,7 @@ import { ProjetShippingComponent } from './pages/projets/projet-shipping/projet-
     ClientDetailComponent,
     ProjetListComponent,
     ProjetFormComponent,
-    ProjetShippingComponent
+    ExpeditionListComponent
   ]
 })
 export class ProjetModule { }

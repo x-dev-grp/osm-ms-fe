@@ -25,7 +25,7 @@ export interface OrdreFabrication {
   publicCode?: string;
   qrImageBase64?: string;
   qualityStatus?: QualityStatus;
-  projetId?: string;
+  projectId?: string;
 }
 
 

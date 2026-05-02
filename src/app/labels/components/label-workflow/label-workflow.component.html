@@ -8,23 +8,23 @@
       </p>
     </div>
     <div class="hero-state">
-      <span class="state-chip" [class.ready]="hasGeneratedLabel">
+      <span class="state-chip" [class.ready]="hasGeneratedLabel()">
         {{ currentLabel?.status || 'A_GENERER' }}
       </span>
       <span class="state-note">
-        {{ hasGeneratedLabel ? 'Draft charge' : 'Aucune etiquette generee' }}
+        {{ hasGeneratedLabel() ? 'Draft charge' : 'Aucune etiquette generee' }}
       </span>
     </div>
   </header>
   <div class="feedback success" *ngIf="successMessage">{{ successMessage }}</div>
   <div class="feedback error" *ngIf="errorMessage">{{ errorMessage }}</div>
-  <div class="feedback" *ngIf="pageBusy">Chargement du workflow etiquette...</div>
+  <div class="feedback" *ngIf="pageBusy()">Chargement du workflow etiquette...</div>
   <div class="layout-grid">
     <section class="panel-card">
       <div class="panel-head">
         <h2>Generation</h2>
         <div class="action-row compact">
-          <button type="button" class="ghost-btn" (click)="clearAndRestart()" [disabled]="pageBusy">
+          <button type="button" class="ghost-btn" (click)="clearAndRestart()" [disabled]="pageBusy()">
             Nouveau draft
           </button>
           <button type="button" class="ghost-btn" (click)="loadLotsAndPackaging()" [disabled]="loadingLookups">
@@ -78,13 +78,13 @@
 
         </div>
         <div class="action-row">
-          <button type="button" class="primary-btn" (click)="generateLabel()" [disabled]="generating || pageBusy">
+          <button type="button" class="primary-btn" (click)="generateLabel()" [disabled]="generating || pageBusy()">
             {{ generating ? 'Generation...' : 'Generer le draft etiquette' }}
           </button>
         </div>
       </form>
     </section>
-    <section class="panel-card" *ngIf="currentLabel as label">
+    <section class="panel-card" *ngIf="currentLabel  as label">
       <div class="panel-head">
         <h2>Edition controlee</h2>
         <span class="state-chip mini" [class.finalized]="label.status === 'FINALIZED'">{{ label.status }}</span>
@@ -126,45 +126,68 @@
       <div class="editable-zone">
         <label class="field-block">
           <span>Denomination legale</span>
-          <input type="text" formControlName="legalDenomination" [readonly]="isFinalized" />
+          <input type="text" formControlName="legalDenomination" [readonly]="isFinalized()" />
         </label>
         <label class="field-block">
           <span>Conditions de stockage</span>
-          <textarea rows="3" formControlName="storageConditions" [readonly]="isFinalized"></textarea>
+          <textarea rows="3" formControlName="storageConditions" [readonly]="isFinalized()"></textarea>
         </label>
         <label class="field-block">
           <span>Profil sensoriel</span>
-          <textarea rows="3" formControlName="sensoryProfile" [readonly]="isFinalized"></textarea>
+          <textarea rows="3" formControlName="sensoryProfile" [readonly]="isFinalized()"></textarea>
         </label>
       </div>
       <div class="action-row compact">
-        <button type="button" class="secondary-btn" (click)="saveDraftChanges()" [disabled]="saving || isFinalized">
+        <button
+          type="button"
+          class="secondary-btn"
+          (click)="saveDraftChanges()"
+          [disabled]="saving || isFinalized()"
+        >
           {{ saving ? 'Sauvegarde...' : 'Sauver le draft' }}
         </button>
-        <button type="button" class="secondary-btn" (click)="validateLabel()" [disabled]="validating">
+
+        <button
+          type="button"
+          class="secondary-btn"
+          (click)="validateLabel()"
+          [disabled]="validating"
+        >
           {{ validating ? 'Validation...' : 'Valider' }}
         </button>
-        <button type="button" class="accent-btn" (click)="finalizeLabel()" [disabled]="finalizing || blockingIssues.length > 0 || isFinalized">
+
+        <button
+          type="button"
+          class="accent-btn"
+          (click)="finalizeLabel()"
+          [disabled]="finalizing || blockingIssues().length > 0 || isFinalized()"
+        >
           {{ finalizing ? 'Finalisation...' : 'Finaliser' }}
         </button>
-        <button type="button" class="ghost-btn" (click)="exportLabel()" [disabled]="exporting">
+
+        <button
+          type="button"
+          class="ghost-btn"
+          (click)="exportLabel()"
+          [disabled]="exporting"
+        >
           {{ exporting ? 'Export...' : 'Exporter JSON' }}
         </button>
       </div>
     </section>
   </div>
-  <section class="panel-card issues-card" *ngIf="currentLabel">
+  <section class="panel-card issues-card" *ngIf="currentLabel as label">
     <div class="panel-head">
       <h2>Validation</h2>
       <span class="issue-counter" [class.ok]="blockingIssues.length === 0">
-        {{ blockingIssues.length }} blocage(s)
+{{ blockingIssues().length }} blocage(s)
       </span>
     </div>
-    <div class="issues-empty" *ngIf="!currentLabel.validationIssues.length">
+    <div class="issues-empty" *ngIf="!label.validationIssues.length">
       Aucune incoherence detectee pour le moment.
     </div>
-    <div class="issues-list" *ngIf="currentLabel.validationIssues.length">
-      <article class="issue-item" *ngFor="let issue of currentLabel.validationIssues">
+    <div class="issues-list" *ngIf="label.validationIssues.length">
+      <article class="issue-item" *ngFor="let issue of label.validationIssues">
         <span class="issue-badge" [class.blocking]="issue.blocking">{{ issue.blocking ? 'BLOQUANT' : 'INFO' }}</span>
         <div>
           <strong>{{ issue.field }}</strong>
@@ -176,13 +199,11 @@
   <section class="panel-card payload-card" *ngIf="currentLabel">
     <div class="panel-head">
       <h2>Payload exportable</h2>
-      <span class="state-note">{{ exportedLabel?.frozen || currentLabel.status === 'FINALIZED' ? 'Payload fige' : 'Payload genere a la demande' }}</span>
+      <span class="state-note">{{ exportedLabel?.frozen || currentLabel?.status === 'FINALIZED' ? 'Payload fige' : 'Payload genere a la demande' }}</span>
     </div>
-    <pre *ngIf="previewPayload; else noPayload">{{ previewPayload }}</pre>
+    <pre *ngIf="previewPayload(); else noPayload">{{ previewPayload() }}</pre>
     <ng-template #noPayload>
       <p class="placeholder-copy">Aucun payload exporte pour l instant. Utilisez le bouton "Exporter JSON" pour obtenir la version structuree.</p>
     </ng-template>
   </section>
 </section>
-
-

@@ -1,21 +1,18 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin, Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import {CommonModule} from '@angular/common';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {forkJoin, Observable, of} from 'rxjs';
+import {switchMap} from 'rxjs/operators';
 import {
-  LabelContent,
-  LabelExport,
-  LabelGenerateRequest,
-  LabelLanguage,
-  LabelCategory
+  LabelContent, LabelExport, LabelGenerateRequest, LabelLanguage, LabelCategory
 } from '../../models/label.model';
-import { LabelService } from '../../services/label.service';
-import { StorageUnitDto } from '../../../shared/models/StorageUnitDto';
-import { StorageUnitDtoService } from '../../../shared/services/storage.service';
-import { SKU } from '../../../stock/models/sku.model';
-import { SKUService } from '../../../stock/services/sku.service';
+import {LabelService} from '../../services/label.service';
+import {StorageUnitDto} from '../../../shared/models/StorageUnitDto';
+import {StorageUnitDtoService} from '../../../shared/services/storage.service';
+import {SKU} from '../../../stock/models/sku.model';
+import {SKUService} from '../../../stock/services/sku.service';
+import {MatIcon} from "@angular/material/icon";
 
 @Component({
   selector: 'app-label-workflow',
@@ -55,32 +52,30 @@ export class LabelWorkflowComponent implements OnInit {
   errorMessage = '';
   successMessage = '';
 
-  constructor(
-    private readonly fb: FormBuilder,
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly labelService: LabelService,
-    private readonly storageUnitService: StorageUnitDtoService,
-    private readonly skuService: SKUService
-  ) {}
+  constructor(private readonly fb: FormBuilder, private readonly route: ActivatedRoute, private readonly router: Router, private readonly labelService: LabelService, private readonly storageUnitService: StorageUnitDtoService, private readonly skuService: SKUService) {
+  }
 
   ngOnInit(): void {
     this.loadLotsAndPackaging();
+    this.saving = false;
+    this.validating = false;
+    this.finalizing = false;
+    this.exporting = false;
   }
 
-  get hasGeneratedLabel(): boolean {
+  hasGeneratedLabel(): boolean {
     return !!this.currentLabel?.id;
   }
 
-  get isFinalized(): boolean {
+  isFinalized(): boolean {
     return this.currentLabel?.status === 'FINALIZED';
   }
 
-  get blockingIssues() {
+  blockingIssues() {
     return (this.currentLabel?.validationIssues ?? []).filter((issue) => issue.blocking);
   }
 
-  get previewPayload(): string {
+  previewPayload(): string {
     if (this.exportedLabel?.payloadJson) {
       return this.exportedLabel.payloadJson; // plus de formatage
     }
@@ -91,8 +86,7 @@ export class LabelWorkflowComponent implements OnInit {
   }
 
 
-
-  get pageBusy(): boolean {
+  pageBusy(): boolean {
     return this.loadingLookups || this.loadingLabel;
   }
 
@@ -102,10 +96,9 @@ export class LabelWorkflowComponent implements OnInit {
 
     forkJoin({
       //lancer http
-      storageResponse: this.storageUnitService.getAllStorageUnit(),
-      packagingOptions: this.skuService.getActiveSKUs()
+      storageResponse: this.storageUnitService.getAllStorageUnit(), packagingOptions: this.skuService.getActiveSKUs()
     }).subscribe({
-      next: ({ storageResponse, packagingOptions }) => {
+      next: ({storageResponse, packagingOptions}) => {
         //trait lot
         const storageUnits = this.normalizeArray<StorageUnitDto>((storageResponse as { data?: unknown }).data)
           .filter((unit) => unit?.id);
@@ -118,8 +111,7 @@ export class LabelWorkflowComponent implements OnInit {
           .sort((left, right) => left.code.localeCompare(right.code));
         this.loadingLookups = false;
         this.initFromRoute();
-      },
-      error: (error) => {
+      }, error: (error) => {
         this.loadingLookups = false;
         this.errorMessage = this.resolveErrorMessage(error, 'Impossible de charger les donnees necessaires a la generation des etiquettes.');
       }
@@ -151,8 +143,7 @@ export class LabelWorkflowComponent implements OnInit {
         this.generating = false;
         this.syncFormWithLabel(label);
         this.successMessage = 'Le draft etiquette a ete genere avec succes.';
-      },
-      error: (error) => {
+      }, error: (error) => {
         this.generating = false;
         this.errorMessage = this.resolveErrorMessage(error, 'Erreur lors de la generation de l etiquette.');
       }
@@ -161,7 +152,7 @@ export class LabelWorkflowComponent implements OnInit {
 
   //sauv les modif sur une eyiquette non finaliser
   saveDraftChanges(): void {
-    if (!this.currentLabel?.id || this.isFinalized) {
+    if (!this.currentLabel?.id || this.isFinalized()) {
       return;
     }
 
@@ -182,8 +173,7 @@ export class LabelWorkflowComponent implements OnInit {
           this.saving = false;
           this.syncFormWithLabel(label);
           this.successMessage = 'Le draft etiquette a ete mis a jour.';
-        },
-        error: (error) => {
+        }, error: (error) => {
           this.saving = false;
           this.errorMessage = this.resolveErrorMessage(error, 'Erreur lors de la mise a jour du draft etiquette.');
         }
@@ -198,61 +188,44 @@ export class LabelWorkflowComponent implements OnInit {
     this.validating = true;
     this.clearMessages();
 
-    this.saveChanges().pipe(
-      switchMap(() => this.labelService.validate(this.currentLabel!.id!))
-    ).subscribe({
+    this.saveChanges().pipe(switchMap(() => this.labelService.validate(this.currentLabel!.id!))).subscribe({
       next: (label) => {
         this.validating = false;
         this.syncFormWithLabel(label);
 
-        this.successMessage = label.validationIssues.length
-          ? 'Validation effectuee avec incoherences a corriger.'
-          : 'Le contenu etiquette est valide.';
-      },
-      error: (error) => {
+        this.successMessage = label.validationIssues.length ? 'Validation effectuee avec incoherences a corriger.' : 'Le contenu etiquette est valide.';
+      }, error: (error) => {
         this.validating = false;
         this.errorMessage = this.resolveErrorMessage(error, 'Erreur lors de la validation de l etiquette.');
       }
     });
   }
-  //sauv les modif di necessaire
-  private saveChanges(): Observable<LabelContent> {
-    if (!this.currentLabel?.id || this.isFinalized || !this.labelForm.dirty) {
-      return of(this.currentLabel as LabelContent);
-    }
-
-    return this.labelService.update(this.currentLabel.id, {
-      language: (this.labelForm.value.language as LabelLanguage | null) ?? undefined,
-      packagingDate: this.labelForm.value.packagingDate ?? undefined,
-      legalDenomination: this.labelForm.value.legalDenomination?.trim() || undefined,
-      storageConditions: this.labelForm.value.storageConditions?.trim() || undefined,
-      sensoryProfile: this.labelForm.value.sensoryProfile?.trim() || undefined
-    });
-  }
 
   finalizeLabel(): void {
-    if (!this.currentLabel?.id || this.blockingIssues.length > 0) {
+    if (!this.currentLabel?.id || this.blockingIssues().length > 0) {
       return;
     }
 
     this.finalizing = true;
     this.clearMessages();
 
-    this.saveChanges().pipe(
-      switchMap(() => this.labelService.finalize(this.currentLabel!.id!))
-    ).subscribe({
-      next: (label) => {
-        this.finalizing = false;
-        this.syncFormWithLabel(label);
-        this.successMessage = 'Le contenu etiquette a ete finalise et fige.';
-      },
-      error: (error) => {
-        this.finalizing = false;
-        this.errorMessage = this.resolveErrorMessage(error, 'Erreur lors de la finalisation de l etiquette.');
-      }
-    });
+    this.saveChanges()
+      .pipe(switchMap(() => this.labelService.finalize(this.currentLabel!.id!)))
+      .subscribe({
+        next: (label) => {
+          this.finalizing = false;
+          this.syncFormWithLabel(label);
+          this.successMessage = 'Le contenu etiquette a ete finalise et fige.';
+        },
+        error: (error) => {
+          this.finalizing = false;
+          this.errorMessage = this.resolveErrorMessage(
+            error,
+            'Erreur lors de la finalisation de l etiquette.'
+          );
+        }
+      });
   }
-
   //demande au backend le json
   exportLabel(): void {
     if (!this.currentLabel?.id) {
@@ -268,8 +241,7 @@ export class LabelWorkflowComponent implements OnInit {
         this.exportedLabel = labelExport;
         this.downloadJson(labelExport);
         this.successMessage = 'Le JSON etiquette a ete exporte.';
-      },
-      error: (error) => {
+      }, error: (error) => {
         this.exporting = false;
         this.errorMessage = this.resolveErrorMessage(error, 'Erreur lors de l export de l etiquette.');
       }
@@ -317,6 +289,21 @@ export class LabelWorkflowComponent implements OnInit {
     return item.id ?? `${_}`;
   }
 
+  //sauv les modif di necessaire
+  private saveChanges(): Observable<LabelContent> {
+    if (!this.currentLabel?.id || this.isFinalized() || !this.labelForm.dirty) {
+      return of(this.currentLabel as LabelContent);
+    }
+
+    return this.labelService.update(this.currentLabel.id, {
+      language: (this.labelForm.value.language as LabelLanguage | null) ?? undefined,
+      packagingDate: this.labelForm.value.packagingDate ?? undefined,
+      legalDenomination: this.labelForm.value.legalDenomination?.trim() || undefined,
+      storageConditions: this.labelForm.value.storageConditions?.trim() || undefined,
+      sensoryProfile: this.labelForm.value.sensoryProfile?.trim() || undefined
+    });
+  }
+
   private initFromRoute(): void {
     const labelId = this.route.snapshot.paramMap.get('id');
     if (labelId) {
@@ -348,8 +335,7 @@ export class LabelWorkflowComponent implements OnInit {
         this.loadingLabel = false;
         this.syncFormWithLabel(label);
         this.successMessage = 'Etiquette chargee avec succes.';
-      },
-      error: (error) => {
+      }, error: (error) => {
         this.loadingLabel = false;
         this.errorMessage = this.resolveErrorMessage(error, 'Impossible de charger cette etiquette.');
       }
@@ -379,15 +365,16 @@ export class LabelWorkflowComponent implements OnInit {
     this.labelForm.markAsPristine();
 
     if (label.id && this.route.snapshot.paramMap.get('id') !== label.id) {
-      this.router.navigate(['/labels', label.id], { replaceUrl: true });
+      this.router.navigate(['/labels', label.id], {replaceUrl: true});
     }
   }
+
   //Un Blob est un objet qui contient des données (ici du texte JSON)
   // et qui permet de les manipuler comme un fichier,
   // notamment pour déclencher un téléchargement.
   private downloadJson(labelExport: LabelExport): void {
     const fileName = `label-${labelExport.lotNumber || labelExport.labelId}.json`;
-    const blob = new Blob([labelExport.payloadJson], { type: 'application/json;charset=utf-8' });
+    const blob = new Blob([labelExport.payloadJson], {type: 'application/json;charset=utf-8'});
     const url = window.URL.createObjectURL(blob); //temp url
     const anchor = document.createElement('a');
     anchor.href = url;
@@ -411,7 +398,6 @@ export class LabelWorkflowComponent implements OnInit {
     const genericMessage = (error as { message?: string })?.message;
     return apiMessage || genericMessage || fallback;
   }
-
 
 
   private formatDateInput(date: Date): string {

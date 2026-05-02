@@ -1,0 +1,53 @@
+<div class="detail-container" *ngIf="!loading && client as c">
+  <div class="detail-card">
+    <div class="detail-header">
+      <div class="detail-title">
+        <mat-icon>person</mat-icon>
+        <div>
+          <h1>{{ c.nom || 'Client' }}</h1>
+          <p>{{ c.email || '-' }}</p>
+        </div>
+      </div>
+
+      <div class="type-badge">
+        {{ typeLabel(c.type) }}
+      </div>
+    </div>
+
+    <div class="detail-body">
+      <div class="detail-grid">
+        <div class="detail-item">
+          <strong>Nom</strong>
+          <span>{{ c.nom || '-' }}</span>
+        </div>
+        <div class="detail-item">
+          <strong>Email</strong>
+          <span>{{ c.email || '-' }}</span>
+        </div>
+        <div class="detail-item">
+          <strong>Telephone</strong>
+          <span>{{ c.telephone || '-' }}</span>
+        </div>
+        <div class="detail-item">
+          <strong>Type</strong>
+          <span>{{ typeLabel(c.type) }}</span>
+        </div>
+        <div class="detail-item full-width">
+          <strong>Adresse</strong>
+          <span>{{ c.adresse || '-' }}</span>
+        </div>
+      </div>
+
+      <div class="detail-actions">
+        <button mat-stroked-button color="primary" (click)="onBack()">
+          Retour
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="loading-box" *ngIf="loading">
+  Chargement...
+</div>
+

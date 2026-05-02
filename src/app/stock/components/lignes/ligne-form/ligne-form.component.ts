@@ -1,169 +1,163 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  AbstractControl,
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  ValidationErrors,
-  ValidatorFn,
-  Validators
-} from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+
 import { LigneConditionnementService } from '../../../services/ligne-conditionnement.service';
 import { LigneConditionnement, Statue } from '../../../models/ligne-conditionnement.model';
-import {HttpHandler, HttpRequest} from "@angular/common/http";
+import { ToastService } from '../../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-ligne-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatCardModule,
+    MatDividerModule,
+    MatProgressSpinnerModule,
+    MatDatepickerModule,
+    MatNativeDateModule
+  ],
   templateUrl: './ligne-form.component.html',
   styleUrls: ['./ligne-form.component.scss']
 })
 export class LigneFormComponent implements OnInit {
-  ligneForm: FormGroup;
+  ligneForm!: FormGroup;
   isEditMode = false;
-  ligneId?: string;
-  submitted = false;
-  loading = false;
-  error = '';
+  ligneId: string | null = null;
+  loading = signal<boolean>(false);
+  submitting = signal<boolean>(false);
+  error = signal<string | null>(null);
 
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private ligneService: LigneConditionnementService
-  ) {
-    this.ligneForm = this.fb.group({
-      code: [''],
-      nom: ['', Validators.required],
-      description: [''],
-      etat: [Statue.ACTIF, Validators.required],
-      vitesseNominale: [null],
-      tempsPreparation: [null],
-      tempsNettoyage: [null],
-      responsable: [''],
-      notes: [''],
-      dateDerniereMaintenance: [null],
-      dateProchaineMaintenance: [null],
-    });
-    this.ligneForm.setValidators(this.dateRangeValidator());
-  }
-  private dateRangeValidator(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      const dateDerniere = control.get('dateDerniereMaintenance')?.value;
-      const dateProchaine = control.get('dateProchaineMaintenance')?.value;
-      if (dateDerniere && dateProchaine && new Date(dateProchaine) < new Date(dateDerniere)) {
-        return { dateInvalid: true };
-      }
-      return null;
-    };
-  }
+    private ligneService: LigneConditionnementService,
+    private toast: ToastService
+  ) {}
 
   ngOnInit(): void {
-    this.ligneId = this.route.snapshot.params['id'];
-    this.isEditMode = !!this.ligneId;
-
-    if (this.isEditMode) {
-      this.loadLigne();
+    this.initForm();
+    this.ligneId = this.route.snapshot.paramMap.get('id');
+    if (this.ligneId) {
+      this.isEditMode = true;
+      this.loadLigne(this.ligneId);
     }
   }
 
-  get f() {
-    return this.ligneForm.controls;
+  private initForm(): void {
+    this.ligneForm = this.fb.group({
+      nom: ['', [Validators.required, Validators.minLength(3)]],
+      description: [''],
+      etat: [Statue.ACTIF, Validators.required],
+      vitesseNominale: [0, [Validators.min(0)]],
+      tempsPreparation: [0, [Validators.min(0)]],
+      tempsNettoyage: [0, [Validators.min(0)]],
+      responsable: [''],
+      dateDerniereMaintenance: [null],
+      dateProchaineMaintenance: [null],
+      notes: ['']
+    }, { validators: this.dateValidator });
   }
 
-  loadLigne(): void {
-    this.loading = true;
-    this.ligneService.getLigneById(this.ligneId!).subscribe({
+  private loadLigne(id: string): void {
+    this.loading.set(true);
+    this.ligneService.getLigneById(id).subscribe({
       next: (ligne) => {
         this.ligneForm.patchValue({
-          code: ligne.code,
-          nom: ligne.nom,
-          description: ligne.description || '',
-          etat: ligne.etat,
-          vitesseNominale: ligne.vitesseNominale || null,
-          tempsPreparation: ligne.tempsPreparation || null,
-          tempsNettoyage: ligne.tempsNettoyage || null,
-          responsable: ligne.responsable || '',
-          notes: ligne.notes || '',
-          dateDerniereMaintenance: ligne.dateDerniereMaintenance || null,
-          dateProchaineMaintenance: ligne.dateProchaineMaintenance || null
+          ...ligne,
+          dateDerniereMaintenance: ligne.dateDerniereMaintenance ? new Date(ligne.dateDerniereMaintenance.toString()) : null,
+          dateProchaineMaintenance: ligne.dateProchaineMaintenance ? new Date(ligne.dateProchaineMaintenance.toString()) : null
         });
-        this.loading = false;
+        this.loading.set(false);
       },
       error: (err) => {
-        console.error('Erreur chargement', err);
-        this.error = 'Impossible de charger la ligne';
-        this.loading = false;
+        console.error('Erreur chargement ligne', err);
+        this.toast.error('Erreur lors du chargement des données');
+        this.loading.set(false);
       }
     });
   }
 
   onSubmit(): void {
-    this.submitted = true;
-
     if (this.ligneForm.invalid) {
+      this.ligneForm.markAllAsTouched();
+      this.toast.warning('Veuillez vérifier les champs du formulaire');
       return;
     }
 
+    this.submitting.set(true);
     const formValue = this.ligneForm.value;
-
-    const ligne: LigneConditionnement = {
+    
+    // Format dates back to string if needed by backend (assuming ISO string)
+    const payload = {
       ...formValue,
-      code: formValue.code && formValue.code.trim() !== ''
-        ? formValue.code
-        : this.generateCode(formValue.nom),
-      actif: true
+      dateDerniereMaintenance: formValue.dateDerniereMaintenance ? formValue.dateDerniereMaintenance.toISOString().split('T')[0] : null,
+      dateProchaineMaintenance: formValue.dateProchaineMaintenance ? formValue.dateProchaineMaintenance.toISOString().split('T')[0] : null
     };
 
-    if (this.isEditMode) {
-      this.ligneService.updateLigne(this.ligneId!, ligne).subscribe({
-        next: () => this.router.navigate(['/stock/lignes', this.ligneId]),
+    if (this.isEditMode && this.ligneId) {
+      this.ligneService.updateLigne(this.ligneId, payload).subscribe({
+        next: () => {
+          this.toast.success('Ligne mise à jour avec succès');
+          this.router.navigate(['/stock/lignes', this.ligneId]);
+          this.submitting.set(false);
+        },
         error: (err) => {
-          console.error('Erreur mise à jour', err);
-          this.error = 'Erreur lors de la mise à jour';
+          console.error('Erreur update', err);
+          this.toast.error('Erreur lors de la mise à jour');
+          this.submitting.set(false);
         }
       });
     } else {
-      this.ligneService.createLigne(ligne).subscribe({
-        next: (created) => this.router.navigate(['/stock/lignes', created.id]),
+      this.ligneService.createLigne(payload).subscribe({
+        next: (created) => {
+          this.toast.success('Ligne créée avec succès');
+          this.router.navigate(['/stock/lignes', created.id]);
+          this.submitting.set(false);
+        },
         error: (err) => {
-          console.error('Erreur création', err);
-          this.error = 'Erreur lors de la création';
+          console.error('Erreur create', err);
+          this.toast.error('Erreur lors de la création');
+          this.submitting.set(false);
         }
       });
     }
-  }
-
-
-  private generateCode(nom: string): string {
-    const base = nom?.substring(0, 3)?.toUpperCase() || 'LIG';
-    const random = Math.floor(Math.random() * 1000);
-    return `${base}-${Date.now()}-${random}`;
-  }
-
-
-  intercept(req: HttpRequest<any>, next: HttpHandler) {
-    const token = localStorage.getItem('access_token');
-
-    if (token) {
-      req = req.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-    }
-
-    return next.handle(req);
   }
 
   onCancel(): void {
-    if (this.isEditMode) {
+    if (this.isEditMode && this.ligneId) {
       this.router.navigate(['/stock/lignes', this.ligneId]);
     } else {
       this.router.navigate(['/stock/lignes']);
     }
+  }
+
+  private dateValidator(group: FormGroup): any {
+    const start = group.get('dateDerniereMaintenance')?.value;
+    const end = group.get('dateProchaineMaintenance')?.value;
+
+    if (start && end && new Date(start) > new Date(end)) {
+      return { dateInvalid: true };
+    }
+    return null;
   }
 }
