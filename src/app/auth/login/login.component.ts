@@ -141,18 +141,15 @@ export class LoginComponent implements OnInit {
           this.loading = false;
           console.log(err);
           if ([504, 503].includes(err?.status)) {
-            this.errorMessage = {message: this.translateService.instant('LOGIN.SERVICE_UNAVAILABLE')};
+            this.errorMessage = { message: this.translateService.instant('LOGIN.SERVICE_UNAVAILABLE') };
           } else if (err?.error?.error_uri && err?.error?.error_description) {
-            // Si l'utilisateur doit changer son mot de passe, redirige vers la page de changement de mot de passe
-            if (err?.error?.error_description === 'Password reset required') {
-              this.router.navigate([
-                '/auth/user/update-password',
-                {
-                  username: err.error.error_description,
-                  id: err.error.error_uri
-                }
-              ]);
-            }
+            this.router.navigate([
+              '/auth/user/update-password',
+              {
+                username: err.error.error_description,
+                id: err.error.error_uri
+              }
+            ]);
           } else {
             this.errorMessage = err?.error;
           }
