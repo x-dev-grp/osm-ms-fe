@@ -21,6 +21,16 @@
       <div class="warning-text" *ngIf="data.destructive">
         {{ resolvedDestructiveWarning }}
       </div>
+      <div class="required-text-container" *ngIf="hasRequiredText()">
+        <p class="required-text-hint">{{ getRequiredTextHint() }}</p>
+        <input
+          type="text"
+          class="required-text-input"
+          [(ngModel)]="requiredTextValue"
+          [placeholder]="data.requiredTextPlaceholder || ''"
+          autocomplete="off"
+          spellcheck="false" />
+      </div>
     </div>
   </div>
 
@@ -37,6 +47,7 @@
       mat-raised-button
       [class]="getConfirmButtonClass()"
       (click)="onConfirm()"
+      [disabled]="!isRequiredTextValid()"
       [attr.aria-label]="'Confirm'"
       cdkFocusInitial>
       <mat-icon *ngIf="data.destructive">warning</mat-icon>

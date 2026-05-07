@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ConfirmationDialogData, ConfirmationDialogResult, ConfirmationType } from '../../services/confirmation-dialog.service';
 import { Subscription, forkJoin } from 'rxjs';
@@ -15,6 +16,7 @@ import { Subscription, forkJoin } from 'rxjs';
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
+    FormsModule,
     TranslateModule
   ],
   templateUrl: './confirmation-dialog.component.html',
@@ -26,6 +28,7 @@ export class ConfirmationDialogComponent implements OnInit, OnDestroy {
   resolvedConfirmText = '';
   resolvedCancelText = '';
   resolvedDestructiveWarning = '';
+  requiredTextValue = '';
   private langSub?: Subscription;
 
   constructor(
@@ -88,7 +91,40 @@ export class ConfirmationDialogComponent implements OnInit, OnDestroy {
     return `confirm-button ${this.data.type}`;
   }
 
+  getRequiredTextHint(): string {
+    if (this.data.requiredTextHint) {
+      return this.data.requiredTextHint;
+    }
+    if (!this.data.requiredText) {
+      return '';
+    }
+    return `Type "${this.data.requiredText}" to confirm.`;
+  }
+
+  hasRequiredText(): boolean {
+    return !!this.data.requiredText?.trim();
+  }
+
+  isRequiredTextValid(): boolean {
+    if (!this.hasRequiredText()) {
+      return true;
+    }
+
+    const requiredText = this.data.requiredText?.trim() || '';
+    const enteredText = this.requiredTextValue.trim();
+
+    if (this.data.requiredTextCaseSensitive) {
+      return enteredText === requiredText;
+    }
+
+    return enteredText.toUpperCase() === requiredText.toUpperCase();
+  }
+
   onConfirm(): void {
+    if (!this.isRequiredTextValid()) {
+      return;
+    }
+
     const result: ConfirmationDialogResult = {
       confirmed: true,
       data: this.data

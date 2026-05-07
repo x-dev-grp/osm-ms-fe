@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -16,6 +17,7 @@ import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
 import { CardComponent } from '../../theme/components/card/card.component';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { ToastService } from '../../shared/services/toast.service';
 import { QualityGrades } from '../../finance/models/oil-sale.model';
 
 // Adjust import path to your actual service/model locations
@@ -28,10 +30,12 @@ export type   status= 'AVAILABLE' | 'FULL' | 'FILLING' | 'MAINTENANCE' | 'IN_USE
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     ReactiveFormsModule,
     MatIconModule,
     MatProgressSpinnerModule,
     MatButtonModule,
+    MatFormFieldModule,
     MatSelectModule,
     MatInputModule,
     MatSlideToggleModule,
@@ -48,9 +52,13 @@ export class StorageUnitsBoardComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
+  private readonly toastService = inject(ToastService);
 
   loading = signal<boolean>(true);
   error = signal<string | null>(null);
+  searchCode = signal('');
+  searchingByCode = signal(false);
+  searchError = signal<string | null>(null);
 
   /** Raw list loaded from API */
   private data$ = new BehaviorSubject<StorageUnitDto[]>([]);
@@ -110,7 +118,50 @@ export class StorageUnitsBoardComponent implements OnInit {
   }
 
   refresh(): void {
+    this.searchError.set(null);
     this.reload$.next();
+  }
+
+  searchByPublicCode(): void {
+    const code = this.searchCode().trim();
+    if (!code || this.searchingByCode()) {
+      return;
+    }
+
+    this.searchError.set(null);
+    this.searchingByCode.set(true);
+
+    this.storageUnitService.searchByCode(code).subscribe({
+      next: (response) => {
+        this.searchingByCode.set(false);
+        const targetRoute = this.resolveTargetRoute(response?.webRoute);
+        if (targetRoute) {
+          this.router.navigateByUrl(targetRoute);
+        } else {
+          const message = this.translate.instant('STORAGE.ERROR.NOT_FOUND_BY_CODE') || 'Storage unit not found for code: ' + code;
+          this.searchError.set(message);
+          this.toastService.error(message);
+        }
+      },
+      error: (err) => {
+        this.searchingByCode.set(false);
+        const message =
+          err?.error?.error ||
+          err?.error ||
+          this.translate.instant('STORAGE.ERROR.NOT_FOUND_BY_CODE') ||
+          'Storage unit not found for code: ' + code;
+        this.searchError.set(message);
+        this.toastService.error(message);
+      }
+    });
+  }
+
+  private resolveTargetRoute(webRoute?: string): string | null {
+    const route = webRoute?.trim();
+    if (route) {
+      return route.startsWith('/') ? route : `/${route}`;
+    }
+    return null;
   }
 
   private applyFilters(): void {

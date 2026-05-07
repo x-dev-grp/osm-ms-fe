@@ -54,6 +54,32 @@
       font-size: 16px;
       color: #333;
     }
+    .required-text-container {
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      .required-text-hint {
+        margin: 0;
+        font-size: 14px;
+        color: #4a4a4a;
+      }
+
+      .required-text-input {
+        border: 1px solid #d0d0d0;
+        border-radius: 6px;
+        padding: 10px 12px;
+        font-size: 14px;
+        outline: none;
+        transition: border-color .2s ease, box-shadow .2s ease;
+
+        &:focus {
+          border-color: #1976d2;
+          box-shadow: 0 0 0 2px rgba(25, 118, 210, .15);
+        }
+      }
+    }
     .warning-text {
       background: #fff3e0;
       border: 1px solid #ffe0b2;
@@ -107,6 +133,10 @@
     &.success {
       background: #4caf50;
       &:hover { background: #388e3c; }
+    }
+    &:disabled {
+      background: #bdbdbd;
+      cursor: not-allowed;
     }
   }
 }

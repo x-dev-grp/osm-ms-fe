@@ -19,6 +19,11 @@
                 <div [ngClass]="getStatusClass()" class="storage-status">
                   {{ 'STORAGE.VIEW.STATUS.' + storageUnit.status | translate }}
                 </div>
+                <div class="qr-hover-preview" *ngIf="hasCompleteQrMetadata()">
+                  <button mat-icon-button color="accent" matTooltip="View QR" (click)="openExistingQrDialog()">
+                    <mat-icon>visibility</mat-icon>
+                  </button>
+                </div>
                 <button mat-icon-button color="primary" (click)="generateQr(true)" matTooltip="{{ 'QR.GENERATE' | translate }}">
                   <mat-icon>qr_code_2</mat-icon>
                 </button>
@@ -27,6 +32,10 @@
 
           </div>
             <div class="storage-header-metrics">
+              <div class="metric" *ngIf="hasCompleteQrMetadata()">
+                <span class="metric-label">QR HEX</span>
+                <span class="metric-value code-value">{{ getQrCodeText() }}</span>
+              </div>
               <div class="metric">
                 <span class="metric-label">{{ 'STORAGE.VIEW.AVGCOST' | translate }}</span>
                 <span class="metric-value">{{ storageUnit.avgCost | number:'1.2-2' }}&nbsp;TND</span>

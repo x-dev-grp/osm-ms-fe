@@ -36,7 +36,6 @@ export class LoginComponent implements OnInit {
   private translateService = inject(TranslateService); // Added injection
   private companyService = inject(CompanyProfileService); // Added injection
   private profile: CompanyProfile;
-
   getUserNameErrorMessage() {
     if (this.form.controls['username'].hasError('required')) {
       return this.translateService.instant('LOGIN.USERNAME_REQUIRED');
@@ -109,7 +108,7 @@ export class LoginComponent implements OnInit {
 
     const passwordValid = hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar;
 
-    return passwordValid ? null : {passwordStrength: true};
+    return passwordValid ? null : { passwordStrength: true };
   }
 
   submit() {
@@ -163,7 +162,6 @@ export class LoginComponent implements OnInit {
             this.loading = false;
             this.tokenService.setToken((response as Record<string, unknown>)['access_token'] as string);
             this.tokenService.setRefreshToken((response as Record<string, unknown>)['refresh_token'] as string);
-
             const decodedToken = this.tokenService.decodeToken() as Record<string, unknown>;
             if (decodedToken && decodedToken['osmUser']) {
               const role = decodedToken['role'] as string;
@@ -172,37 +170,39 @@ export class LoginComponent implements OnInit {
               user.role = role;
               user.permissions = permissions;
               this.authenticationService.setCurrentUserValue = user;
-
-              // Charge le profil de l'entreprise si ce n'est pas un administrateur
-              if (role !== Role.OsmAdmin) {
+             console.log( "this.companyService.getProfile()")
                 this.companyService.getProfile().subscribe({
-                  next: (p) => {
-                    this.profile = p;
-                  },
-                  error: () => {
-                    console.log('Unable to load profile');
-                  }
+                  next:  p => { this.profile =  p;   },
+                  error: () => { console.log( 'Unable to load profile') }
                 });
-              }
-
-              // Redirige vers le tableau de bord ou l'écran approprié en fonction du rôle
-              const tenantId = user.tenantId || decodedToken['tenantId'];
-              if (role !== Role.OsmAdmin && tenantId) {
-                // Pour les utilisateurs non-administrateurs, charger le profil de l'entreprise et rediriger
-                this.router.navigate(['welcome']);
+             console.log( "this.companyService.getProfile()")
+              // Add logging for debugging
+              console.log('[Login] User set for navigation:', user);
+              console.log('[Login] Token:', this.tokenService.getToken());
+                const tenantId = user.tenantId || decodedToken['tenantId'];
+                if (role !== Role.OsmAdmin && tenantId) {
+                // Fetch company profile for non-OsmAdmin users
+                  this.router.navigate(['welcome']);
               } else {
-                // Si c'est un administrateur, rediriger directement vers l'administration
-                this.router.navigate(['/administration/dashboard']).then((success) => {
-                  console.log('[Login] Navigation to /administration/dashboard success:', success);
-                }).catch((err) => {
-                  console.error('[Login] Navigation error:', err);
-                });
+                // For OsmAdmin, skip company profile fetch
+                this.router
+                  .navigate(['/administration/dashboard'])
+                  .then((success) => {
+                    console.log('[Login] Navigation to /administration/dashboard success:', success);
+                  })
+                  .catch((err) => {
+                    console.error('[Login] Navigation error:', err);
+                  });
               }
             }
           }
         },
         error: (error: unknown) => {
-          this.errorMessage = this.translateService.instant('LOGIN.UNEXPECTED_ERROR');
+          if (typeof error === 'object' && error !== null && 'error' in error) {
+            this.errorMessage = (error as { error?: string }).error ?? null;
+          } else {
+            this.errorMessage = this.translateService.instant('LOGIN.UNEXPECTED_ERROR');
+          }
           this.loading = false;
         }
       });
