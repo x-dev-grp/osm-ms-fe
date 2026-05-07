@@ -8,16 +8,16 @@
         placeholder="Code unique (ex: C49D27)"
         [(ngModel)]="searchCode"
         (keyup.enter)="Search()"
-      />
-    </mat-form-field>
-    <button
-      mat-icon-button
-      aria-label="Lancer la recherche globale"
-      (click)="Search()"
-      [disabled]="searching"
+      />    <button matSuffix
+                    mat-icon-button
+                    aria-label="Lancer la recherche globale"
+                    (click)="Search()"
+                    [disabled]="searching"
     >
       <mat-icon>{{ searching ? 'hourglass_top' : 'search' }}</mat-icon>
     </button>
+    </mat-form-field>
+
   </div>
 
   <button [matMenuTriggerFor]="languages" aria-label="mode" class="header-item" mat-button>

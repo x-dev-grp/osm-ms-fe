@@ -8,7 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SharedModule } from '../../shared/shared.module';
 import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
 import { StorageUnitDtoService } from '../../shared/services/storage.service';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { AttributeType, DashboardConfig, FieldType } from '../../shared/modules/osm-dashboard/models/dashboard-config';
 import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
 import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
@@ -16,7 +16,8 @@ import { OilTransaction, TransactionType } from '../../shared/models/OilTransact
 import { ToastService } from '../../shared/services/toast.service';
 import { MatDialog } from '@angular/material/dialog';
 import { QrDialogComponent } from '../../shared/components/qr-dialog/qr-dialog.component';
-import { QrCodeRequest } from '../../shared/models/qr-models';
+import { ConfirmationDialogService, ConfirmationType } from '../../shared/services/confirmation-dialog.service';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-view-storage',
@@ -45,8 +46,8 @@ export class ViewStorageComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private toastService: ToastService,
-    private translate: TranslateService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private confirmationDialog: ConfirmationDialogService
   ) {}
 
   ngOnInit(): void {
@@ -109,6 +110,43 @@ export class ViewStorageComponent implements OnInit {
     return `status-icon-${this.storageUnit?.status?.toLowerCase()}`;
   }
 
+  getQrCodeText(): string {
+    return this.storageUnit?.publicCode?.trim() || this.storageUnit?.qrHex?.trim() || '';
+  }
+
+  hasQrCode(): boolean {
+    return !!this.getQrCodeText();
+  }
+
+  hasQrImagePreview(): boolean {
+    return !!this.getQrImageSrc();
+  }
+
+  hasCompleteQrMetadata(): boolean {
+    return !!this.getQrCodeText() && !!this.getQrImageSrc();
+  }
+
+  openExistingQrDialog(): void {
+    if (!this.hasCompleteQrMetadata()) return;
+
+    this.dialog.open(QrDialogComponent, {
+      width: '400px',
+      data: {
+        qrText: this.getQrCodeText(),
+        qrImageBase64: this.storageUnit?.qrImageBase64 || '',
+        encrypted: true,
+        payloadType: 'STORAGEUNIT',
+        payloadMode: 'PUBLIC_CODE'
+      }
+    });
+  }
+
+  getQrImageSrc(): string {
+    const value = this.storageUnit?.qrImageBase64?.trim();
+    if (!value) return '';
+    return value.startsWith('data:image') ? value : `data:image/png;base64,${value}`;
+  }
+
   private loadStorageUnit(): void {
     this.loading = true;
 
@@ -122,6 +160,13 @@ export class ViewStorageComponent implements OnInit {
       next: (response) => {
         if (response.success && response.data) {
           this.storageUnit = Array.isArray(response.data) ? response.data[0] : response.data;
+
+          // Backward/alternate backend field support
+          const anyUnit = this.storageUnit as any;
+          if (!this.storageUnit.publicCode && anyUnit?.qrHex) {
+            this.storageUnit.publicCode = anyUnit.qrHex;
+            this.storageUnit.qrHex = anyUnit.qrHex;
+          }
         } else {
           this.toastService.error(response.message || 'STORAGE.ERROR.LOAD');
           this.router.navigate(['/storage']);
@@ -139,20 +184,39 @@ export class ViewStorageComponent implements OnInit {
 
   generateQr(encrypted: boolean = true): void {
     if (!this.storageUnitId) return;
+    this.confirmQrRegeneration((confirmed) => {
+      if (!confirmed) return;
+      this.executeQrGeneration(encrypted);
+    });
+  }
+
+  private executeQrGeneration(encrypted: boolean): void {
+    if (!this.storageUnitId) return;
 
     this.loading = true;
-    const request: QrCodeRequest = {
-      payloadType: 'STORAGE_UNIT',
-      uuids: [this.storageUnitId],
-      encrypted: encrypted
-    };
-
-    this.storageService.generateQrCode(request).subscribe({
+    this.storageService.generateQrCode(this.storageUnitId).subscribe({
       next: (response) => {
         this.loading = false;
+
+        if (this.storageUnit) {
+          this.storageUnit = {
+            ...this.storageUnit,
+            publicCode: response.publicCode,
+            qrHex: response.publicCode,
+            qrUrl: response.qrUrl,
+            qrImageBase64: response.qrImageBase64
+          };
+        }
+
         this.dialog.open(QrDialogComponent, {
           width: '400px',
-          data: response
+          data: {
+            qrText: response.publicCode,
+            qrImageBase64: response.qrImageBase64,
+            encrypted: encrypted,
+            payloadType: 'STORAGEUNIT',
+            payloadMode: 'PUBLIC_CODE'
+          }
         });
       },
       error: (error) => {
@@ -161,6 +225,29 @@ export class ViewStorageComponent implements OnInit {
         this.toastService.error('QR.ERROR.GENERATE');
       }
     });
+  }
+
+  private confirmQrRegeneration(onResolved: (confirmed: boolean) => void): void {
+    if (!this.hasQrCode()) {
+      onResolved(true);
+      return;
+    }
+
+    this.confirmationDialog.confirm({
+      title: 'Regenerate QR Code',
+      message: 'This will regenerate the QR code and may invalidate already printed physical QR labels.',
+      type: ConfirmationType.WARNING,
+      confirmText: 'Regenerate',
+      cancelText: 'Cancel',
+      showIcon: true,
+      destructive: true,
+      requiredText: 'OKAY',
+      requiredTextHint: 'To continue, type OKAY in the field below.',
+      requiredTextPlaceholder: 'Type OKAY'
+    }).pipe(take(1))
+      .subscribe((result) => {
+        onResolved(!!result?.confirmed);
+      });
   }
 
   private setupConfig(storageUnitId: string | null) {

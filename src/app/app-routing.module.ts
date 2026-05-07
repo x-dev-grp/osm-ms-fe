@@ -18,12 +18,6 @@ const routes: Routes = [
   //   loadComponent: () =>
   //     import('./welcome/welcome.component').then(m => m.WelcomeComponent),
   // },
-  {
-    path: 'activate-account',
-    loadComponent: () =>
-      import('./settings/user-management/components/activate-account/activate-account.component')
-        .then((m) => m.ActivateAccountComponent)
-  },
 
   {
     path: '',

@@ -5,7 +5,7 @@ import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../models/api-response';
 import { StorageUnitDto } from '../models/StorageUnitDto';
 import { ChangeSupplierDto } from '../../storage/assign-supplier/assign-supplier.component';
-import { QrCodeRequest, QrCodeResponse } from '../models/qr-models';
+import { QrCodeInfo, QrResolveResponse } from '../models/qr-models';
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +37,7 @@ export class StorageUnitDtoService {
 
   // Delete a StorageUnit by ID
   deleteStorageUnit(id: string): Observable<ApiResponse<void>> {
-    return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/${id}`);
+    return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/delete/${id}`);
   }
 
 
@@ -53,7 +53,17 @@ export class StorageUnitDtoService {
     return this.http.put<ApiResponse<void>>(url, null, { params });
   }
 
-  generateQrCode(request: QrCodeRequest): Observable<QrCodeResponse> {
-    return this.http.post<QrCodeResponse>(`${this.baseUrl}/generate`, request);
+  generateQrCode(storageUnitId: string): Observable<QrCodeInfo> {
+    return this.http.get<QrCodeInfo>(`${this.baseUrl}/qr/STORAGEUNIT/${storageUnitId}`);
+  }
+
+  resolveByPublicCode(publicCode: string): Observable<QrResolveResponse> {
+    return this.http.get<QrResolveResponse>(`${this.baseUrl}/resolve/${encodeURIComponent(publicCode)}`);
+  }
+
+  searchByCode(code: string): Observable<QrResolveResponse> {
+    return this.http.get<QrResolveResponse>(`${this.baseUrl}/search/by-code`, {
+      params: { code }
+    });
   }
 }

@@ -20,6 +20,10 @@ export interface ConfirmationDialogData {
   showIcon?: boolean;
   itemName?: string;
   destructive?: boolean;
+  requiredText?: string;
+  requiredTextPlaceholder?: string;
+  requiredTextHint?: string;
+  requiredTextCaseSensitive?: boolean;
 }
 
 export interface ConfirmationDialogResult {

@@ -3,6 +3,17 @@
 
     <!-- Top actions / filters -->
     <div class="toolbar">
+      <div class="search-panel">
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-label>Public code</mat-label>
+          <input matInput [(ngModel)]="searchCode" placeholder="Enter public code" (keyup.enter)="searchByPublicCode()" />
+        </mat-form-field>
+        <button mat-stroked-button color="primary" (click)="searchByPublicCode()" [disabled]="searchingByCode() || !searchCode().trim()">
+          <mat-icon>search</mat-icon>
+          {{ searchingByCode() ? 'Searching...' : ('COMMON.SEARCH' | translate) }}
+        </button>
+      </div>
+
       <div class="filters">
 
         <mat-slide-toggle
@@ -23,6 +34,9 @@
         <mat-icon>refresh</mat-icon>
         {{ 'COMMON.REFRESH' | translate }}
       </button>
+    </div>
+    <div *ngIf="searchError()" class="search-error">
+      {{ searchError() }}
     </div>
 
     <!-- Loading -->

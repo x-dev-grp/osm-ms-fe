@@ -33,4 +33,10 @@ export interface StorageUnitDto {
   // Filtration information (NEW)
   filteredOil?: boolean; // Indicates if the oil in this storage unit is filtered
   lastFiltrationDate?: Date; // Date of the last filtration
+
+  // QR metadata
+  publicCode?: string;
+  qrHex?: string;
+  qrUrl?: string;
+  qrImageBase64?: string;
 }
