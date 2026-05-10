@@ -15,6 +15,7 @@ export interface OrdreFabrication {
   skuId: string;
   bomId?: string;
   skuCode?: string;
+  unite?: string;
   ligneId?: string;
   ligneNom?: string;
   lotVracId?: string;

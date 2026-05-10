@@ -240,3 +240,193 @@ a.flex {
 .side-panel-dialog .mat-mdc-dialog-container {
   border-radius: 0;
 }
+
+/* Scoped fallback for the project expedition list.
+   Keeps /projets/expeditions usable if component-scoped SCSS is not hot-reloaded. */
+.expedition-list-page.abioc-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 16px;
+  background: #f8fafc;
+
+  .header-card,
+  .table-card,
+  .stat-card,
+  .abioc-loading,
+  .abioc-empty {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+
+  .header-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 20px;
+  }
+
+  .header-left,
+  .header-right,
+  .stat-card,
+  .icon-box,
+  .stat-icon {
+    display: flex;
+    align-items: center;
+  }
+
+  .header-left {
+    gap: 16px;
+  }
+
+  .header-right {
+    gap: 16px;
+  }
+
+  .icon-box,
+  .stat-icon {
+    justify-content: center;
+    flex: 0 0 auto;
+    border-radius: 10px;
+  }
+
+  .icon-box {
+    width: 40px;
+    height: 40px;
+    background: #eff6ff;
+    color: #2563eb;
+  }
+
+  h1 {
+    margin: 0;
+    color: #1e293b;
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 0;
+    color: #64748b;
+    font-size: 13px;
+  }
+
+  .summary-count {
+    color: #1e293b;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .kpi {
+    text-align: right;
+  }
+
+  .kpi-value,
+  .stat-value {
+    display: block;
+    color: #1e293b;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .kpi-value {
+    font-size: 18px;
+  }
+
+  .kpi-label,
+  .stat-label {
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .stat-card {
+    gap: 12px;
+    min-height: 76px;
+    padding: 14px 16px;
+  }
+
+  .stat-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .stat-icon.total {
+    background: #eff6ff;
+    color: #2563eb;
+  }
+
+  .stat-icon.ready {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  .stat-icon.shipped {
+    background: #fef3c7;
+    color: #b45309;
+  }
+
+  .stat-icon.delivered {
+    background: #f0fdfa;
+    color: #0f766e;
+  }
+
+  .stat-value {
+    font-size: 20px;
+  }
+
+  .table-card {
+    overflow: hidden;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+  }
+
+  .abioc-table {
+    width: 100%;
+  }
+
+  .abioc-loading,
+  .abioc-empty {
+    min-height: 150px;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+  }
+
+  @media (max-width: 1100px) {
+    .stats-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 760px) {
+    padding: 12px;
+
+    .header-card {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .header-right {
+      width: 100%;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}

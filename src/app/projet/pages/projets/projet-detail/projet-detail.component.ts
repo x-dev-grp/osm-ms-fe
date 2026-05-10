@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, CurrencyPipe, DatePipe, TitleCasePipe } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
 import { ProjetService } from '../../../services/projet.service';
 import { ProjetDto } from '../../../models/TypeProduit';
+import { OFService } from '../../../../OF/services/OFService';
+import { OrdreFabrication } from '../../../../OF/models/of.model';
 
 @Component({
   selector: 'app-projet-detail',
@@ -16,21 +18,25 @@ import { ProjetDto } from '../../../models/TypeProduit';
     DatePipe,
     TitleCasePipe,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    RouterModule
   ],
   templateUrl: './projet-detail.component.html',
   styleUrls: ['./projet-detail.component.scss']
 })
 export class ProjetDetailComponent implements OnInit {
   projet: ProjetDto | null = null;
+  ofs: OrdreFabrication[] = [];
   loading = false;
+  loadingOfs = false;
   projetId: string | null = null;
   generatingQr = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private projetService: ProjetService
+    private projetService: ProjetService,
+    private ofService: OFService
   ) {}
 
   ngOnInit(): void {
@@ -48,10 +54,26 @@ export class ProjetDetailComponent implements OnInit {
       next: (data) => {
         this.projet = data;
         this.loading = false;
+        this.loadOfs(id);
       },
       error: (err) => {
         console.error('Erreur chargement projet detail', err);
         this.loading = false;
+      }
+    });
+  }
+
+  private loadOfs(id: string): void {
+    this.loadingOfs = true;
+    this.ofService.getByProject(id).subscribe({
+      next: (data) => {
+        // Unwraps the response if it is wrapped in an ApiResponse format, or takes it directly
+        this.ofs = (data as any)?.data ? (data as any).data : data;
+        this.loadingOfs = false;
+      },
+      error: (err) => {
+        console.error('Erreur chargement OFs', err);
+        this.loadingOfs = false;
       }
     });
   }
@@ -74,6 +96,15 @@ export class ProjetDetailComponent implements OnInit {
     this.router.navigate(['/projets/detail', this.projetId, 'traceability']);
   }
 
+  onAddOF(): void {
+    if (!this.projetId) {
+      return;
+    }
+    this.router.navigate(['/of/nouveau'], {
+      queryParams: { projetId: this.projetId }
+    });
+  }
+
   generateQr(): void {
     if (this.generatingQr || !this.projetId) return;
     this.generatingQr = true;
@@ -90,7 +121,7 @@ export class ProjetDetailComponent implements OnInit {
       },
       error: (err) => {
         console.error(err);
-        alert('Erreur lors de la génération du QR');
+        alert('Erreur lors de la generation du QR');
         this.generatingQr = false;
       }
     });
@@ -99,7 +130,7 @@ export class ProjetDetailComponent implements OnInit {
   printQr(): void {
     const qrImage = this.getQrImage();
     if (!qrImage) {
-      alert('QR non disponible. Veuillez le générer d\'abord.');
+      alert('QR non disponible. Veuillez le generer d\'abord.');
       return;
     }
 
@@ -130,7 +161,7 @@ export class ProjetDetailComponent implements OnInit {
         </html>
       `);
       printWindow.document.close();
-      // Petit délai pour s'assurer que l'image est chargée avant l'impression
+      // Petit delai pour s'assurer que l'image est chargee avant l'impression
       setTimeout(() => {
         printWindow.print();
         // printWindow.close(); // Optionnel

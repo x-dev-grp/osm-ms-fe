@@ -33,10 +33,16 @@ export class OFFormComponent implements OnInit {
   isSubmitting = false;
   loadingBoms = false;
   boms: Bom[] = [];
+  isEditMode = false;
+  ofId: string | null = null;
+  selectedProject: ProjetDto | null = null;
+  projectRemainingQuantity: number | null = null;
+  private preferredProjectBomId: string | null = null;
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
+    private route: ActivatedRoute,
     private ofService: OFService,
     private skuService: SKUService,
     private ligneService: LigneConditionnementService,
@@ -53,6 +59,12 @@ export class OFFormComponent implements OnInit {
     this.loadLignes();
     this.loadStorageUnits();
 
+    this.ofId = this.route.snapshot.paramMap.get('id');
+    if (this.ofId) {
+      this.isEditMode = true;
+      this.loadOF(this.ofId);
+    }
+
     this.ofForm.get('skuId')?.valueChanges.subscribe(skuId => {
       if (skuId) {
         this.loadBomsForSku(skuId);
@@ -65,9 +77,30 @@ export class OFFormComponent implements OnInit {
     this.ofForm.get('projectId')?.valueChanges.subscribe(projectId => {
       if (projectId) {
         const p = this.projects.find(x => x.id === projectId);
-        if (p && p.skuId) {
-          this.ofForm.get('skuId')?.setValue(p.skuId);
+        if (p) {
+          this.selectedProject = p;
+          this.applyProjectDefaults(p);
+          this.calculateRemainingQuantity(projectId);
         }
+      } else {
+        this.selectedProject = null;
+        this.projectRemainingQuantity = null;
+      }
+    });
+  }
+
+  calculateRemainingQuantity(projectId: string): void {
+    this.ofService.getByProject(projectId).subscribe(data => {
+      const existingOfs = (data as any)?.data ? (data as any).data : data;
+      const otherOfs = this.isEditMode && this.ofId
+        ? existingOfs.filter((o: any) => o.id !== this.ofId)
+        : existingOfs;
+
+      const sumExisting = otherOfs.reduce((sum: number, o: any) => sum + (o.quantiteCible || 0), 0);
+      this.projectRemainingQuantity = (this.selectedProject?.quantiteCible || 0) - sumExisting;
+
+      if (!this.isEditMode && this.projectRemainingQuantity > 0) {
+        this.ofForm.patchValue({ quantiteCible: this.projectRemainingQuantity });
       }
     });
   }
@@ -99,11 +132,21 @@ export class OFFormComponent implements OnInit {
   }
 
   loadProjects(): void {
-    this.projetService.getAll().subscribe(data => this.projects = data);
+    this.projetService.getAll().subscribe(data => {
+      this.projects = data;
+      const projectId = this.route.snapshot.queryParamMap.get('projetId');
+      if (projectId) {
+        this.ofForm.patchValue({ projectId: projectId });
+        this.ofForm.get('projectId')?.disable();
+      }
+    });
   }
 
   loadLignes(): void {
-    this.ligneService.getActiveLignes().subscribe(data => this.lignes = data);
+    this.ligneService.getActiveLignes().subscribe(data => {
+      this.lignes = data;
+      this.autoSelectSingleOption('ligneId', this.lignes);
+    });
   }
 
   loadStorageUnits(): void {
@@ -114,6 +157,7 @@ export class OFFormComponent implements OnInit {
           this.storageUnits = Array.isArray(resp.data) 
             ? resp.data.filter(u => (u.currentVolume || 0) > 0 && u.filteredOil === true)
             : [];
+          this.autoSelectSingleOption('lotVracId', this.storageUnits);
         }
       },
       error: (err) => console.error('Erreur chargement cuves', err)
@@ -125,7 +169,16 @@ export class OFFormComponent implements OnInit {
     this.bomService.getBomsBySku(skuId).subscribe({
       next: (boms) => {
         this.boms = boms;
-        if (boms.length === 1) {
+        const currentBomId = this.ofForm.get('bomId')?.value;
+        const projectBom = this.preferredProjectBomId
+          ? boms.find(bom => bom.id === this.preferredProjectBomId)
+          : null;
+
+        if (currentBomId && boms.some(bom => bom.id === currentBomId)) {
+          this.ofForm.get('bomId')?.setValue(currentBomId);
+        } else if (projectBom) {
+          this.ofForm.get('bomId')?.setValue(projectBom.id);
+        } else if (boms.length === 1) {
           this.ofForm.get('bomId')?.setValue(boms[0].id);
         } else if (boms.length === 0) {
           this.ofForm.get('bomId')?.setErrors({ noBom: true });
@@ -141,6 +194,79 @@ export class OFFormComponent implements OnInit {
     });
   }
 
+  loadOF(id: string): void {
+    this.loading = true;
+    this.ofService.getById(id).subscribe({
+      next: (of) => {
+        this.ofForm.patchValue({
+          projectId: of.projectId,
+          skuId: of.skuId,
+          bomId: of.bomId,
+          ligneId: of.ligneId,
+          lotVracId: of.lotVracId,
+          quantiteCible: of.quantiteCible,
+          dateDebutPrevue: this.formatDate(of.dateDebutPrevue),
+          dateFinPrevue: this.formatDate(of.dateFinPrevue)
+        });
+        this.ofForm.get('projectId')?.disable();
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Erreur chargement OF:', err);
+        this.toast.error('Impossible de charger les données de l\'OF');
+        this.loading = false;
+      }
+    });
+  }
+
+  private formatDate(date: any): string {
+    if (!date) return '';
+    const d = new Date(date);
+    const pad = (n: number) => n < 10 ? '0' + n : n;
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  }
+
+  private toLocalDateTime(date: string | null | undefined, boundary: 'start' | 'end'): string | undefined {
+    if (!date) {
+      return undefined;
+    }
+
+    if (date.includes('T')) {
+      return date;
+    }
+
+    return boundary === 'start'
+      ? `${date}T00:00:00`
+      : `${date}T23:59:59`;
+  }
+
+  private applyProjectDefaults(project: ProjetDto): void {
+    if (this.isEditMode) {
+      return;
+    }
+
+    this.preferredProjectBomId = project.bomId ?? null;
+
+    this.ofForm.patchValue({
+      skuId: project.skuId || this.ofForm.get('skuId')?.value || '',
+      bomId: project.bomId || this.ofForm.get('bomId')?.value || '',
+      dateDebutPrevue: this.ofForm.get('dateDebutPrevue')?.value || this.todayDate(),
+      dateFinPrevue: project.dateLimiteLivraison ? this.formatDate(project.dateLimiteLivraison) : this.ofForm.get('dateFinPrevue')?.value
+    });
+  }
+
+  private autoSelectSingleOption(controlName: 'ligneId' | 'lotVracId', options: Array<{ id?: string }>): void {
+    if (this.isEditMode || this.ofForm.get(controlName)?.value || options.length !== 1) {
+      return;
+    }
+
+    this.ofForm.get(controlName)?.setValue(options[0].id || '');
+  }
+
+  private todayDate(): string {
+    return this.formatDate(new Date());
+  }
+
   onSubmit(): void {
     if (this.ofForm.invalid) {
       this.ofForm.markAllAsTouched();
@@ -148,7 +274,17 @@ export class OFFormComponent implements OnInit {
     }
 
     this.isSubmitting = true;
-    const formValue = this.ofForm.value;
+    const formValue = this.ofForm.getRawValue();
+
+    // Validation métier: Quantité totale projet
+    if (this.selectedProject && this.projectRemainingQuantity !== null) {
+      if (formValue.quantiteCible > this.projectRemainingQuantity) {
+        this.toast.error(`La quantité (${formValue.quantiteCible}) dépasse le reste à produire du projet (${this.projectRemainingQuantity} ${this.selectedProject.unite || ''})`);
+        this.isSubmitting = false;
+        return;
+      }
+    }
+
     const newOF: OrdreFabrication = {
       projectId: formValue.projectId || undefined,
       skuId: formValue.skuId,
@@ -159,14 +295,18 @@ export class OFFormComponent implements OnInit {
       statut: StatutOF.PLANIFIE,
       quantiteBonne: 0,
       quantiteNC: 0,
-      dateDebutPrevue: formValue.dateDebutPrevue || undefined,
-      dateFinPrevue: formValue.dateFinPrevue || undefined,
+      dateDebutPrevue: this.toLocalDateTime(formValue.dateDebutPrevue, 'start'),
+      dateFinPrevue: this.toLocalDateTime(formValue.dateFinPrevue, 'end'),
     };
 
-    this.ofService.create(newOF).subscribe({
+    const request = this.isEditMode && this.ofId
+      ? this.ofService.update(this.ofId, newOF)
+      : this.ofService.create(newOF);
+
+    request.subscribe({
       next: () => {
         this.isSubmitting = false;
-        this.toast.success('OF créé avec succès');
+        this.toast.success(this.isEditMode ? 'OF mis à jour avec succès' : 'OF créé avec succès');
         this.router.navigate(['/of']);
       },
       error: (err) => {

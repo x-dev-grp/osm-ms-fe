@@ -4,7 +4,7 @@
       <i class="fas fa-arrow-left"></i>
     </button>
     <div>
-      <h2 class="form-title">Nouvel ordre de conditionnement</h2>
+      <h2 class="form-title">{{ isEditMode ? 'Modifier l\'ordre' : 'Nouvel ordre' }}</h2>
       <p class="form-subtitle">Planifiez votre production</p>
     </div>
   </div>
@@ -16,95 +16,94 @@
 
   <div *ngIf="!loading" class="form-content">
     <form [formGroup]="ofForm" (ngSubmit)="onSubmit()">
-      <div class="form-card">
-        <h5 class="card-title">Informations générales</h5>
-        <div class="form-row">
-          <div class="form-group">
-            <label><i class="fas fa-project-diagram"></i> Projet (optionnel)</label>
-            <select class="form-control" formControlName="projectId">
-              <option value="">-- Indépendant (Aucun projet) --</option>
-              <option *ngFor="let p of projects" [value]="p.id">
-                {{ p.code }} — {{ p.clientNom }}
-              </option>
-            </select>
-            <small class="form-text text-muted">Lier cet OF à un projet existant ou laisser vide.</small>
+        <!-- Section 1: Produit & Quantité -->
+        <div class="form-section">
+          <div class="section-title">
+            <i class="fas fa-bullseye"></i> Objectifs & Quantité
           </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label><i class="fas fa-cube"></i> SKU (produit fini)</label>
-            <select class="form-control" formControlName="skuId" required>
-              <option value="" disabled>Choisir un SKU</option>
-              <option *ngFor="let sku of skus" [value]="sku.id">{{ sku.code }}</option>
-            </select>
-            <div class="error" *ngIf="ofForm.get('skuId')?.invalid && ofForm.get('skuId')?.touched">
-              Le SKU est requis
+          <div class="form-grid">
+            <div class="form-group span-2">
+              <label><i class="fas fa-project-diagram"></i> Projet (optionnel)</label>
+              <select class="form-control" formControlName="projectId">
+                <option value="">-- Indépendant --</option>
+                <option *ngFor="let p of projects" [value]="p.id">{{ p.code }} — {{ p.clientNom }}</option>
+              </select>
             </div>
-          </div>
-          <div class="form-group">
-            <label><i class="fas fa-list"></i> BOM (Nomenclature)</label>
-            <select class="form-control" formControlName="bomId" required>
-              <option value="" disabled>-- Choisir une version de BOM --</option>
-              <option *ngFor="let bom of boms" [value]="bom.id">
-                {{ bom.version }} ({{ bom.skuCode }})
-              </option>
-            </select>
-            <div class="error" *ngIf="loadingBoms">Chargement des BOMs...</div>
-            <div class="error" *ngIf="ofForm.get('bomId')?.hasError('required') && ofForm.get('bomId')?.touched">
-              La BOM est requise
+            <div class="form-group">
+              <label><i class="fas fa-chart-line"></i> Quantité cible</label>
+              <input type="number" step="1" class="form-control" formControlName="quantiteCible" 
+                     [class.is-invalid]="projectRemainingQuantity !== null && ofForm.get('quantiteCible')?.value > projectRemainingQuantity"
+                     required>
+              <div class="remaining-info" *ngIf="projectRemainingQuantity !== null">
+                <i class="fas fa-info-circle"></i> Reste à produire : <strong>{{ projectRemainingQuantity }}</strong> {{ selectedProject?.unite }}
+              </div>
+              <div class="error" *ngIf="projectRemainingQuantity !== null && ofForm.get('quantiteCible')?.value > projectRemainingQuantity">
+                Dépasse la limite du projet !
+              </div>
             </div>
-            <div class="error" *ngIf="ofForm.get('bomId')?.hasError('noBom')">
-              Aucune BOM trouvée pour ce SKU. Veuillez d'abord créer une BOM.
-            </div>
-            <div class="error" *ngIf="ofForm.get('bomId')?.hasError('serverError')">
-              Erreur de chargement des BOMs. Veuillez réessayer.
-            </div>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label><i class="fas fa-cogs"></i> Ligne de conditionnement (optionnel)</label>
-            <select class="form-control" formControlName="ligneId">
-              <option value="">-- Aucune ligne --</option>
-              <option *ngFor="let ligne of lignes" [value]="ligne.id">{{ ligne.nom }}</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label><i class="fas fa-droplet"></i> Cuve d'huile source (Lot Vrac)</label>
-            <select class="form-control" formControlName="lotVracId">
-              <option value="">-- Choisir une cuve --</option>
-              <option *ngFor="let unit of storageUnits" [value]="unit.id">
-                {{ unit.name }} ({{ unit.lotNumber }}) — {{ unit.currentVolume }} L
-              </option>
-            </select>
-            <div class="error" *ngIf="storageUnits.length === 0">Aucune cuve avec du stock disponible</div>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label><i class="fas fa-chart-line"></i> Quantité cible</label>
-            <input type="number" step="1" class="form-control" formControlName="quantiteCible" required>
-            <div class="error" *ngIf="ofForm.get('quantiteCible')?.invalid && ofForm.get('quantiteCible')?.touched">
-              Quantité cible requise
-            </div>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label><i class="fas fa-calendar-alt"></i> Date début prévue</label>
-            <input type="datetime-local" class="form-control" formControlName="dateDebutPrevue">
-          </div>
-          <div class="form-group">
-            <label><i class="fas fa-calendar-alt"></i> Date fin prévue</label>
-            <input type="datetime-local" class="form-control" formControlName="dateFinPrevue">
           </div>
         </div>
 
-        <!-- Message d'erreur sur les dates -->
-        <div *ngIf="ofForm.errors?.['dateFinAfterDebut'] && (ofForm.get('dateFinPrevue')?.touched || ofForm.get('dateDebutPrevue')?.touched)" class="error-message">
-          <i class="fas fa-exclamation-circle"></i> La date de fin doit être postérieure à la date de début.
+        <!-- Section 2: Configuration technique -->
+        <div class="form-section">
+          <div class="section-title">
+            <i class="fas fa-tools"></i> Configuration technique
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label><i class="fas fa-cube"></i> SKU (Produit fini)</label>
+              <select class="form-control" formControlName="skuId" required>
+                <option value="" disabled>Choisir un SKU</option>
+                <option *ngFor="let sku of skus" [value]="sku.id">{{ sku.code }}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-list"></i> BOM (Nomenclature)</label>
+              <select class="form-control" formControlName="bomId" required>
+                <option value="" disabled>-- Choisir BOM --</option>
+                <option *ngFor="let bom of boms" [value]="bom.id">{{ bom.version }}</option>
+              </select>
+              <div class="error" *ngIf="loadingBoms">Chargement...</div>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-cogs"></i> Ligne (optionnel)</label>
+              <select class="form-control" formControlName="ligneId">
+                <option value="">-- Aucune --</option>
+                <option *ngFor="let ligne of lignes" [value]="ligne.id">{{ ligne.nom }}</option>
+              </select>
+            </div>
+          </div>
         </div>
-      </div>
+
+        <!-- Section 3: Planning & Ressources -->
+        <div class="form-section">
+          <div class="section-title">
+            <i class="fas fa-calendar-check"></i> Planning & Ressources
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label><i class="fas fa-droplet"></i> Cuve source</label>
+              <select class="form-control" formControlName="lotVracId">
+                <option value="">-- Choisir cuve --</option>
+                <option *ngFor="let unit of storageUnits" [value]="unit.id">{{ unit.name }} ({{ unit.lotNumber }})</option>
+              </select>
+              <div class="error" *ngIf="storageUnits.length === 0">Aucune cuve disponible</div>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-calendar-alt"></i> Date début</label>
+              <input type="date" class="form-control" formControlName="dateDebutPrevue">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-calendar-check"></i> Date fin</label>
+              <input type="date" class="form-control" formControlName="dateFinPrevue">
+            </div>
+          </div>
+        </div>
+
+        <!-- Error message -->
+        <div *ngIf="ofForm.errors?.['dateFinAfterDebut'] && (ofForm.get('dateFinPrevue')?.touched || ofForm.get('dateDebutPrevue')?.touched)" class="error-message">
+          <i class="fas fa-exclamation-circle"></i> La date de fin doit être postérieure au début.
+        </div>
 
       <div class="form-actions">
         <button type="button" class="btn-cancel" (click)="cancel()">Annuler</button>

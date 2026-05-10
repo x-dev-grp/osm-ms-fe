@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, map } from 'rxjs';
+
 import { environment } from '../../../environments/environment';
+
 import {
   LabelApiResponse,
-  LabelContent,
-  LabelContentUpdateRequest,
-  LabelExport,
-  LabelGenerateRequest
+  LabelContentDto,
+  LabelContentUpdateRequestDto,
+  LabelExportDto,
+  LabelGenerateRequestDto
 } from '../models/label.model';
 
 @Injectable({
@@ -19,39 +20,57 @@ export class LabelService {
 
   constructor(private readonly http: HttpClient) {}
 
-  generate(request: LabelGenerateRequest): Observable<LabelContent> {
+  getAll(): Observable<LabelContentDto[]> {
     return this.http
-      .post<LabelApiResponse<LabelContent>>(`${this.baseUrl}/generate`, request)
+      .get<LabelApiResponse<LabelContentDto[]>>(this.baseUrl)
+      .pipe(map((response) => response.data ?? []));
+  }
+
+  generate(request: LabelGenerateRequestDto): Observable<LabelContentDto> {
+    return this.http
+      .post<LabelApiResponse<LabelContentDto>>(`${this.baseUrl}/generate`, request)
       .pipe(map((response) => response.data));
   }
 
-  getById(id: string): Observable<LabelContent> {
+  getById(id: string): Observable<LabelContentDto> {
     return this.http
-      .get<LabelApiResponse<LabelContent>>(`${this.baseUrl}/${id}`)
+      .get<LabelApiResponse<LabelContentDto>>(`${this.baseUrl}/${id}`)
       .pipe(map((response) => response.data));
   }
 
-  update(id: string, request: LabelContentUpdateRequest): Observable<LabelContent> {
+  update(id: string, request: LabelContentUpdateRequestDto): Observable<LabelContentDto> {
     return this.http
-      .put<LabelApiResponse<LabelContent>>(`${this.baseUrl}/${id}`, request)
+      .put<LabelApiResponse<LabelContentDto>>(`${this.baseUrl}/${id}`, request)
       .pipe(map((response) => response.data));
   }
 
-  validate(id: string): Observable<LabelContent> {
+  markAsDraft(id: string): Observable<LabelContentDto> {
     return this.http
-      .post<LabelApiResponse<LabelContent>>(`${this.baseUrl}/${id}/validate`, {})
+      .post<LabelApiResponse<LabelContentDto>>(`${this.baseUrl}/${id}/draft`, {})
       .pipe(map((response) => response.data));
   }
 
-  finalize(id: string): Observable<LabelContent> {
+  validate(id: string): Observable<LabelContentDto> {
     return this.http
-      .post<LabelApiResponse<LabelContent>>(`${this.baseUrl}/${id}/finalize`, {})
+      .post<LabelApiResponse<LabelContentDto>>(`${this.baseUrl}/${id}/validate`, {})
       .pipe(map((response) => response.data));
   }
 
-  export(id: string): Observable<LabelExport> {
+  finalize(id: string): Observable<LabelContentDto> {
     return this.http
-      .get<LabelApiResponse<LabelExport>>(`${this.baseUrl}/${id}/export`)
+      .post<LabelApiResponse<LabelContentDto>>(`${this.baseUrl}/${id}/finalize`, {})
       .pipe(map((response) => response.data));
+  }
+
+  export(id: string): Observable<LabelExportDto> {
+    return this.http
+      .get<LabelApiResponse<LabelExportDto>>(`${this.baseUrl}/${id}/export`)
+      .pipe(map((response) => response.data));
+  }
+
+  delete(id: string): Observable<void> {
+    return this.http
+      .delete<LabelApiResponse<void>>(`${this.baseUrl}/${id}`)
+      .pipe(map(() => void 0));
   }
 }
