@@ -1,30 +1,60 @@
-export type LabelContentStatus = 'DRAFT' | 'VALIDATED' | 'FINALIZED';
+export type LabelContentStatus =
+  | 'DRAFT'
+  | 'VALIDATED'
+  | 'FINALIZED'
+  | 'EXPORTED_JSON';
+
 export type LabelLanguage = 'FR' | 'EN' | 'AR';
+
 export type LabelCategory = 'UNIT' | 'COLIS' | 'PALLET';
 
-export interface LabelValidationIssue {
+export type LabelClaimType =
+  | 'MADE_IN_TUNISIA'
+  | 'BIO'
+  | 'COLD_EXTRACTION'
+  | 'PRIVATE_LABEL'
+  | 'OTHER';
+
+export type LabelQualityGrade =
+  | 'EXTRA_VIRGIN'
+  | 'VIRGIN'
+  | 'ORDINARY_VIRGIN'
+  | 'LAMPANTE'
+  | 'REFINED'
+  | 'OLIVE_OIL'
+  | 'POMACE_OIL';
+
+export interface LabelValidationIssueDto {
   field: string;
   message: string;
   blocking: boolean;
 }
 
-export interface LabelSourceSnapshot {
+export interface LabelSourceSnapshotDto {
   id?: string;
+  isDeleted?: boolean;
+  externalId?: string;
   sourceType: string;
   sourceId?: string;
   sourceBusinessKey?: string;
   snapshotJson?: string;
 }
 
-export interface LabelContent {
+export interface LabelContentDto {
   id?: string;
+  isDeleted?: boolean;
+  externalId?: string;
+  actions?: string[];
+
   lotId?: string;
   packagingId?: string;
   operatorId?: string;
+
   status: LabelContentStatus;
   language: LabelLanguage;
   packagingDate?: string;
   labelCategory?: LabelCategory;
+
   legalDenomination?: string;
   originCountry?: string;
   netQuantity?: string;
@@ -33,32 +63,55 @@ export interface LabelContent {
   responsibleName?: string;
   responsibleAddress?: string;
   lotNumber?: string;
+  variety?: string;
+  qualityGrade?: LabelQualityGrade | string;
   extractionMethod?: string;
   sensoryProfile?: string;
+
+  certifications?: string[];
+  claimTypes?: LabelClaimType[];
+  marketingClaims?: string[];
+
   finalPayloadJson?: string;
   finalizedAt?: string;
   finalizedBy?: string;
-  sourceSnapshots: LabelSourceSnapshot[];
-  validationIssues: LabelValidationIssue[];
+  publicCode?: string;
+
+  sourceSnapshots?: LabelSourceSnapshotDto[];
+  validationIssues?: LabelValidationIssueDto[];
 }
 
-export interface LabelGenerateRequest {
+export interface LabelGenerateRequestDto {
   lotId: string;
   packagingId: string;
   packagingDate?: string;
+  qualityGrade?: LabelQualityGrade;
+  variety?: string;
   language?: LabelLanguage;
   labelCategory?: LabelCategory;
 }
 
-export interface LabelContentUpdateRequest {
+export interface LabelContentUpdateRequestDto {
   language?: LabelLanguage;
   packagingDate?: string;
   legalDenomination?: string;
   storageConditions?: string;
   sensoryProfile?: string;
+  certifications?: string[];
+  claimTypes?: LabelClaimType[];
+  lotNumber?: string;
+  bestBeforeDate?: string;
+  originCountry?: string;
+  netQuantity?: string;
+  responsibleName?: string;
+  responsibleAddress?: string;
+  extractionMethod?: string;
+  marketingClaims?: string[];
+  qualityGrade?: LabelQualityGrade;
+  variety?: string;
 }
 
-export interface LabelExport {
+export interface LabelExportDto {
   labelId: string;
   status: LabelContentStatus;
   language: LabelLanguage;
@@ -71,12 +124,20 @@ export interface LabelExport {
   responsibleName?: string;
   responsibleAddress?: string;
   lotNumber?: string;
+  variety?: string;
+  qualityGrade?: LabelQualityGrade | string;
   extractionMethod?: string;
   sensoryProfile?: string;
+
+  certifications?: string[];
+  claimTypes?: LabelClaimType[];
+  marketingClaims?: string[];
+
   frozen: boolean;
   payloadJson: string;
   finalizedAt?: string;
   finalizedBy?: string;
+  publicCode?: string;
 }
 
 export interface LabelApiResponse<T> {

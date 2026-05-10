@@ -138,6 +138,12 @@ const routes: Routes = [
         canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.CREATE)])]
       },
       {
+        path: 'oil-filtering/:id/traceability',
+        loadComponent: () =>
+          import('./filtration/traceability/filtration-traceability-page.component').then((m) => m.FiltrationTraceabilityPageComponent),
+        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.READ)])]
+      },
+      {
         path: 'oil-container/:id/edit',
         loadComponent: () =>
           import('./filtration/filtration-form/filtration-form.component').then((m) => m.FiltrationFormComponent),

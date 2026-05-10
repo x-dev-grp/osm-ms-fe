@@ -7,7 +7,7 @@ import {
   inject,
   signal
 } from '@angular/core';
-import { CommonModule, CurrencyPipe, DatePipe, NgClass, TitleCasePipe } from '@angular/common';
+import { CommonModule, CurrencyPipe, DatePipe, DecimalPipe, NgClass, TitleCasePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -16,8 +16,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatDivider } from '@angular/material/divider';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -37,18 +37,19 @@ type ProjetStatusFilter = 'ALL' | 'BROUILLON' | 'EN_COURS' | 'VALIDE' | 'ANNULE'
     TitleCasePipe,
     CurrencyPipe,
     DatePipe,
+    DecimalPipe,
     NgClass,
     MatTableModule,
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
     MatProgressSpinnerModule,
-    MatPaginator,
-    MatDivider,
+    MatPaginatorModule,
+    MatDividerModule,
+    MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule,
-    MatDialogModule
+    MatSelectModule
   ],
   templateUrl: './projet-list.component.html',
   styleUrls: ['./projet-list.component.scss'],
@@ -76,25 +77,45 @@ export class ProjetListComponent {
   ];
 
   readonly loading = signal(false);
-  readonly searching = signal(false);
   readonly allRows = signal<ProjetDto[]>([]);
+  readonly pageIndex = signal(0);
+  readonly pageSize = signal(10);
   readonly statusFilter = signal<ProjetStatusFilter>('ALL');
   readonly searchCode = signal('');
+  readonly searching = signal(false);
 
   readonly rows = computed(() => {
-    const selectedStatus = this.statusFilter();
-    const data = this.allRows();
+    const all = this.allRows();
+    const filter = this.statusFilter();
 
-    if (selectedStatus === 'ALL') {
-      return data;
+    if (filter === 'ALL') {
+      return all;
     }
 
-    return data.filter(row => this.normalizeStatus(row.statut) === selectedStatus);
+    return all.filter(row => this.normalizeStatus(row.statut) === filter);
+  });
+
+  readonly projectStats = computed(() => {
+    const rows = this.allRows();
+    const totalValue = rows.reduce((sum, row) => sum + (Number(row.valeurTotale) || 0), 0);
+    const totalQuantity = rows.reduce((sum, row) => sum + (Number(row.quantiteCible) || 0), 0);
+
+    return {
+      total: rows.length,
+      active: rows.filter(row => this.normalizeStatus(row.statut) === 'EN_COURS').length,
+      validated: rows.filter(row => this.normalizeStatus(row.statut) === 'VALIDE').length,
+      totalValue,
+      totalQuantity
+    };
+  });
+
+  readonly pagedRows = computed(() => {
+    const size = this.pageSize();
+    const start = this.pageIndex() * size;
+    return this.rows().slice(start, start + size);
   });
 
   readonly totalElements = computed(() => this.rows().length);
-
-  pageSize = 10;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -110,6 +131,7 @@ export class ProjetListComponent {
 
   load(): void {
     this.loading.set(true);
+    this.resetPaginator();
 
     this.projetService.getAll()
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -138,6 +160,14 @@ export class ProjetListComponent {
     this.router.navigate(['detail', row.id], { relativeTo: this.route });
   }
 
+  onOpenExpedition(row: ProjetDto): void {
+    if (!row?.id) {
+      return;
+    }
+
+    this.router.navigate(['detail', row.id, 'expedition'], { relativeTo: this.route });
+  }
+
   onDelete(row: ProjetDto): void {
     if (!row?.id) return;
 
@@ -160,6 +190,7 @@ export class ProjetListComponent {
 
   onStatusChange(value: ProjetStatusFilter): void {
     this.statusFilter.set(value);
+    this.resetPaginator();
   }
 
   onSearchCodeInput(event: Event): void {
@@ -287,8 +318,9 @@ export class ProjetListComponent {
       });
   }
 
-  onPageChange(event: { pageSize: number }): void {
-    this.pageSize = event.pageSize;
+  onPageChange(event: { pageIndex: number; pageSize: number }): void {
+    this.pageSize.set(event.pageSize);
+    this.pageIndex.set(event.pageIndex);
   }
 
   onAddOF(row: ProjetDto): void {
@@ -299,6 +331,11 @@ export class ProjetListComponent {
     this.router.navigate(['/of/nouveau'], {
       queryParams: { projetId: row.id }
     });
+  }
+
+  private resetPaginator(): void {
+    this.pageIndex.set(0);
+    this.paginator?.firstPage();
   }
 }
 

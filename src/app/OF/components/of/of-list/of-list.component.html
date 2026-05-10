@@ -67,6 +67,9 @@
           <button class="btn-view" [routerLink]="['/of', of.id]">
             Voir <i class="fas fa-arrow-right"></i>
           </button>
+          <button class="btn-edit" [routerLink]="['/of/modifier', of.id]" style="margin-left: 8px; color: #b57b27; border: 1px solid #b57b27; background: transparent; padding: 4px 8px; border-radius: 4px; cursor: pointer;">
+            <i class="fas fa-edit"></i>
+          </button>
         </td>
       </tr>
       <tr *ngIf="ofs.length === 0">

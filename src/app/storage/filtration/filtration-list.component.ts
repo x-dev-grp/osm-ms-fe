@@ -187,16 +187,13 @@ export class FiltrationListComponent {
   }
 
   onTraceability(row: FiltrationOperation): void {
-    this.dialog.open(FiltrationTraceabilityDialogComponent, {
-      width: '600px',
-      data: { operation: row }
-    });
+    this.router.navigate(['storage', 'oil-filtering', row.operationId, 'traceability']);
   }
   onPrepareLabel(row: FiltrationOperation): void {
     if (!row.target?.id) {
       return;
     }
-    this.router.navigate(['/labels'], {
+    this.router.navigate(['/labels', 'new'], {
       queryParams: {
         lotId: row.target.id
       }

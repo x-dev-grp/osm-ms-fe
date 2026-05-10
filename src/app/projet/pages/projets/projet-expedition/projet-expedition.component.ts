@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 import { ProjetDto } from '../../../models/TypeProduit';
 import { ProjetService } from '../../../services/projet.service';
@@ -22,7 +25,7 @@ import { PdfExpeditionConfig } from '../../../../shared/models/pdf-config.model'
 @Component({
   selector: 'app-projet-expedition',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, DatePipe, MatButtonModule, MatIconModule],
+  imports: [CommonModule, ReactiveFormsModule, DatePipe, MatButtonModule, MatIconModule, MatTooltipModule, MatFormFieldModule, MatInputModule],
   templateUrl: './projet-expedition.component.html',
   styleUrls: ['./projet-expedition.component.scss']
 })
@@ -36,6 +39,7 @@ export class ProjetExpeditionComponent implements OnInit {
 
   expeditions: ExpeditionDto[] = [];
   selectedExpedition: ExpeditionDto | null = null;
+  queryExpeditionId: string | null = null;
 
   loading = false;
   saving = false;
@@ -43,11 +47,18 @@ export class ProjetExpeditionComponent implements OnInit {
   addingLine = false;
   actionLoading = false;
   showTraceability = false;
+  showCreateForm = false;
+  showAddLine = false;
+  showDetail = false;
 
   readonly createForm = this.fb.group({
     destination: [''],
     plannedShipDate: [''],
     notes: ['']
+  });
+
+  readonly createLinesForm = this.fb.group({
+    lines: this.fb.array([])
   });
 
   readonly editForm = this.fb.group({
@@ -63,7 +74,7 @@ export class ProjetExpeditionComponent implements OnInit {
 
   readonly lineForm = this.fb.group({
     ofId: ['', Validators.required],
-    articleId: ['', Validators.required],
+    articleId: [''],
     quantity: [1, [Validators.required, Validators.min(1)]],
     volume: [null as number | null],
     lotNumber: [''],
@@ -100,14 +111,56 @@ export class ProjetExpeditionComponent implements OnInit {
     }
   }
 
+  get createLineControls(): FormArray {
+    return this.createLinesForm.get('lines') as FormArray;
+  }
+
+  get selectedCreateLineCount(): number {
+    return this.createLineControls.controls.filter(control => control.value.selected).length;
+  }
+
+  get selectedCreateLineQuantity(): number {
+    return this.createLineControls.controls
+      .filter(control => control.value.selected)
+      .reduce((sum, control) => sum + Number(control.value.quantity || 0), 0);
+  }
+
+  getTraceabilityItems(exp: ExpeditionDto): Array<{ label: string; value: string }> {
+    const snapshot = this.getParsedSnapshot(exp);
+    if (!snapshot || typeof snapshot !== 'object') {
+      return [];
+    }
+
+    const items: Array<{ label: string; value: string }> = [];
+    this.pushTraceabilityItem(items, 'Projet', snapshot.projetCode || snapshot.projectCode || exp.projetCode);
+    this.pushTraceabilityItem(items, 'Expedition', snapshot.expeditionNumber || exp.expeditionNumber);
+    this.pushTraceabilityItem(items, 'Client', snapshot.clientName || snapshot.clientNom || this.project?.clientNom);
+    this.pushTraceabilityItem(items, 'OF associes', this.countSnapshotItems(snapshot.ordresFabrication || snapshot.ofs || snapshot.orders));
+    this.pushTraceabilityItem(items, 'Etiquettes', this.countSnapshotItems(snapshot.labels || snapshot.packagedLabels || snapshot.packagedLabelsByLot));
+    this.pushTraceabilityItem(items, 'Lots', this.countSnapshotItems(snapshot.lots || snapshot.lotVrac || snapshot.lotVracId));
+
+    return items;
+  }
+
   toggleTraceability() {
     this.showTraceability = !this.showTraceability;
+  }
+
+  toggleCreateForm() {
+    this.showCreateForm = !this.showCreateForm;
+    if (this.showCreateForm) {
+      this.applyCreateDefaults();
+    }
+  }
+
+  toggleAddLine() {
+    this.showAddLine = !this.showAddLine;
   }
 
   generatePDF(exp: ExpeditionDto) {
     const snapshot = this.getParsedSnapshot(exp);
     const config: PdfExpeditionConfig = {
-      title: 'Bon de Livraison & Traçabilité',
+      title: 'Bon de Livraison & Tracabilite',
       reference: exp.expeditionNumber,
       date: new Date(exp.createdDate || '').toLocaleDateString(),
       clientInfo: {
@@ -147,6 +200,8 @@ export class ProjetExpeditionComponent implements OnInit {
       return;
     }
 
+    this.queryExpeditionId = this.route.snapshot.queryParamMap.get('expeditionId');
+
     this.loadProject(this.projectId);
     this.loadExpeditions(this.projectId);
     this.loadProjectOfs(this.projectId);
@@ -156,7 +211,11 @@ export class ProjetExpeditionComponent implements OnInit {
 
   private loadProject(id: string): void {
     this.projetService.getById(id).subscribe({
-      next: (project) => (this.project = project),
+      next: (project) => {
+        this.project = project;
+        this.applyCreateDefaults();
+        this.applyDefaultUnitToCreateLines();
+      },
       error: (err) => {
         console.error('Erreur chargement projet', err);
         this.toast.error('Erreur lors du chargement du projet');
@@ -169,7 +228,8 @@ export class ProjetExpeditionComponent implements OnInit {
     this.expeditionService.getByProject(projectId).subscribe({
       next: (items) => {
         this.expeditions = items;
-        this.selectedExpedition = items.length ? items[0] : null;
+        const found = this.queryExpeditionId ? items.find(item => item.id === this.queryExpeditionId) : null;
+        this.selectedExpedition = found || (items.length ? items[0] : null);
         if (this.selectedExpedition) {
           this.patchEditForm(this.selectedExpedition);
         }
@@ -177,7 +237,7 @@ export class ProjetExpeditionComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erreur chargement expeditions', err);
-        this.toast.error('Erreur lors du chargement des expéditions');
+        this.toast.error('Erreur lors du chargement des expeditions');
         this.loading = false;
       }
     });
@@ -185,14 +245,48 @@ export class ProjetExpeditionComponent implements OnInit {
 
   private loadProjectOfs(projectId: string): void {
     this.ofService.getByProject(projectId).subscribe({
-      next: (ofs: any[]) => (this.projectOfs = ofs),
+      next: (ofs: any[]) => {
+        this.projectOfs = ofs;
+        this.buildCreateLines(ofs);
+      },
       error: (err: any) => console.error('Erreur chargement OFs du projet', err)
     });
   }
 
   selectExpedition(expedition: ExpeditionDto): void {
     this.selectedExpedition = expedition;
+    this.showDetail = true;
+    this.showCreateForm = false;
     this.patchEditForm(expedition);
+  }
+
+  deselectExpedition(): void {
+    this.selectedExpedition = null;
+    this.showDetail = false;
+  }
+
+  deleteExpedition(exp: ExpeditionDto): void {
+    if (!confirm(`Supprimer l'expedition ${exp.expeditionNumber} ?`)) {
+      return;
+    }
+
+    this.expeditionService.delete(exp.id).subscribe({
+      next: () => {
+        this.expeditions = this.expeditions.filter(e => e.id !== exp.id);
+        if (this.selectedExpedition?.id === exp.id) {
+          this.deselectExpedition();
+        }
+        this.toast.success('Expedition supprimee');
+      },
+      error: (err) => {
+        console.error('Erreur suppression expedition', err);
+        this.toast.error('Erreur lors de la suppression');
+      }
+    });
+  }
+
+  canDelete(): boolean {
+    return this.selectedExpedition?.status === ExpeditionStatus.DRAFT;
   }
 
   private patchEditForm(expedition: ExpeditionDto): void {
@@ -214,7 +308,7 @@ export class ProjetExpeditionComponent implements OnInit {
     if (selectedOf) {
       this.lineForm.patchValue({
         ofId: selectedOf.id,
-        articleId: selectedOf.skuId, // In this context, articleId usually matches skuId of the OF
+        articleId: '',
         unit: this.project?.unite === 'LITRES' ? 'L' : 'UNIT'
       });
     } else {
@@ -227,25 +321,43 @@ export class ProjetExpeditionComponent implements OnInit {
       return;
     }
 
+    const selectedLines = this.createLineControls.controls
+      .filter(control => control.value.selected)
+      .map(control => ({
+        ofId: this.trimToUndefined(control.value.ofId),
+        quantity: Number(control.value.quantity || 0),
+        volume: control.value.volume ?? undefined,
+        lotNumber: this.trimToUndefined(control.value.lotNumber),
+        unit: this.trimToUndefined(control.value.unit)?.toUpperCase() ?? this.projectUnit()
+      }))
+      .filter(line => line.ofId && line.quantity > 0);
+
+    if (!selectedLines.length) {
+      this.toast.warning('Selectionnez au moins un OF a expedier');
+      return;
+    }
+
     this.creating = true;
     this.expeditionService
       .create({
         projetId: this.projectId,
         destination: this.createForm.value.destination ?? undefined,
         plannedShipDate: this.createForm.value.plannedShipDate ?? undefined,
-        notes: this.createForm.value.notes ?? undefined
+        notes: this.createForm.value.notes ?? undefined,
+        lines: selectedLines
       })
       .subscribe({
         next: (expedition) => {
           this.creating = false;
           this.createForm.reset({ destination: '', plannedShipDate: '', notes: '' });
+          this.buildCreateLines(this.projectOfs);
           this.expeditions = [expedition, ...this.expeditions];
           this.selectExpedition(expedition);
-          this.toast.success('Expédition créée avec succès');
+          this.toast.success('Expedition creee avec succes');
         },
         error: (err) => {
           console.error('Erreur creation expedition', err);
-          this.toast.error('Erreur lors de la création de l\'expédition');
+          this.toast.error('Erreur lors de la creation de l\'expedition');
           this.creating = false;
         }
       });
@@ -272,7 +384,7 @@ export class ProjetExpeditionComponent implements OnInit {
         next: (updated) => {
           this.saving = false;
           this.syncExpedition(updated);
-          this.toast.success('Modifications enregistrées');
+          this.toast.success('Modifications enregistrees');
         },
         error: (err) => {
           console.error('Erreur sauvegarde expedition', err);
@@ -286,7 +398,7 @@ export class ProjetExpeditionComponent implements OnInit {
     if (!this.selectedExpedition?.id || this.addingLine || this.lineForm.invalid) {
       this.lineForm.markAllAsTouched();
       if (this.lineForm.invalid) {
-        this.toast.warning('Veuillez sélectionner un OF et saisir une quantité');
+        this.toast.warning('Veuillez selectionner un OF et saisir une quantite');
       }
       return;
     }
@@ -313,7 +425,7 @@ export class ProjetExpeditionComponent implements OnInit {
             unit: this.project?.unite === 'LITRES' ? 'L' : 'UNIT'
           });
           this.syncExpedition(updated);
-          this.toast.success('Ligne ajoutée');
+          this.toast.success('Ligne ajoutee');
         },
         error: (err) => {
           console.error('Erreur ajout ligne expedition', err);
@@ -336,7 +448,7 @@ export class ProjetExpeditionComponent implements OnInit {
     this.expeditionService.removeLine(this.selectedExpedition.id, lineId).subscribe({
       next: (updated) => {
         this.syncExpedition(updated);
-        this.toast.success('Ligne supprimée');
+        this.toast.success('Ligne supprimee');
       },
       error: (err) => {
         console.error('Erreur suppression ligne', err);
@@ -371,7 +483,7 @@ export class ProjetExpeditionComponent implements OnInit {
         this.actionLoading = false;
         this.actionForm.reset({ comment: '' });
         this.syncExpedition(updated);
-        this.toast.success(`Action ${action.toUpperCase()} effectuée`);
+        this.toast.success(`Action ${action.toUpperCase()} effectuee`);
       },
       error: (err) => {
         console.error('Erreur action expedition', err);
@@ -391,17 +503,17 @@ export class ProjetExpeditionComponent implements OnInit {
     this.expeditionService.resolve(code).subscribe({
       next: (resolved) => {
         if (!resolved.entityId) {
-          this.toast.warning('Aucune expédition trouvée pour ce code');
+          this.toast.warning('Aucune expedition trouvee pour ce code');
           return;
         }
         this.expeditionService.getById(resolved.entityId).subscribe({
           next: (expedition) => {
             this.syncExpedition(expedition);
-            this.toast.info('Expédition chargée');
+            this.toast.info('Expedition chargee');
           },
           error: (err) => {
             console.error('Erreur chargement expedition resolue', err);
-            this.toast.error('Erreur lors du chargement de l\'expédition trouvée');
+            this.toast.error('Erreur lors du chargement de l\'expedition trouvee');
           }
         });
       },
@@ -450,11 +562,16 @@ export class ProjetExpeditionComponent implements OnInit {
     if (!status) {
       return '-';
     }
-    return status
-      .toLowerCase()
-      .split('_')
-      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-      .join(' ');
+    switch (status) {
+      case ExpeditionStatus.DRAFT: return 'Brouillon';
+      case ExpeditionStatus.READY: return 'Pret';
+      case ExpeditionStatus.VALIDATED: return 'Valide';
+      case ExpeditionStatus.SHIPPED: return 'Expedie';
+      case ExpeditionStatus.DELIVERED: return 'Livre';
+      case ExpeditionStatus.CLOSED: return 'Cloture';
+      case ExpeditionStatus.CANCELLED: return 'Annule';
+      default: return status;
+    }
   }
 
   statusClass(status?: ExpeditionStatus): string {
@@ -491,11 +608,78 @@ export class ProjetExpeditionComponent implements OnInit {
     this.selectExpedition(updated);
   }
 
+  private applyCreateDefaults(): void {
+    if (!this.project) {
+      return;
+    }
+
+    this.createForm.patchValue({
+      plannedShipDate: this.createForm.value.plannedShipDate || this.formatDate(this.project.dateLimiteLivraison),
+      notes: this.createForm.value.notes || this.project.conditionsLivraison || ''
+    });
+  }
+
+  private buildCreateLines(ofs: OrdreFabrication[]): void {
+    this.createLineControls.clear();
+
+    ofs.forEach(of => {
+      const quantity = this.defaultQuantityForOf(of);
+      this.createLineControls.push(this.fb.group({
+        selected: [quantity > 0],
+        ofId: [of.id],
+        quantity: [quantity, [Validators.required, Validators.min(1)]],
+        volume: [null as number | null],
+        lotNumber: [of.lotVracId || ''],
+        unit: [this.projectUnit()]
+      }));
+    });
+  }
+
+  private applyDefaultUnitToCreateLines(): void {
+    this.createLineControls.controls.forEach(control => {
+      if (!control.value.unit || control.value.unit === 'UNIT') {
+        control.patchValue({ unit: this.projectUnit() });
+      }
+    });
+  }
+
+  private defaultQuantityForOf(of: OrdreFabrication): number {
+    return Number(of.quantiteBonne || of.quantiteCible || 0);
+  }
+
+  private projectUnit(): string {
+    return this.project?.unite === 'LITRES' ? 'L' : 'UNIT';
+  }
+
+  private formatDate(date?: string): string {
+    if (!date) {
+      return '';
+    }
+    return date.includes('T') ? date.substring(0, 10) : date;
+  }
+
   private trimToUndefined(value?: string | null): string | undefined {
     if (value == null) {
       return undefined;
     }
     const trimmed = value.trim();
     return trimmed ? trimmed : undefined;
+  }
+
+  private pushTraceabilityItem(items: Array<{ label: string; value: string }>, label: string, value: unknown): void {
+    if (value == null || value === '') {
+      return;
+    }
+    items.push({ label, value: String(value) });
+  }
+
+  private countSnapshotItems(value: unknown): string | null {
+    if (Array.isArray(value)) {
+      return value.length ? String(value.length) : null;
+    }
+    if (value && typeof value === 'object') {
+      return String(Object.keys(value).length);
+    }
+    return value == null || value === '' ? null : String(value);
   }
 }

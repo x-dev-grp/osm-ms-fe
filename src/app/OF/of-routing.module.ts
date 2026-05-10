@@ -12,6 +12,7 @@ import {QualityHistoryComponent} from "./components/QC/quality-history/quality-h
 const routes: Routes = [
   { path: '', component: OFListComponent },
   { path: 'nouveau', component: OFFormComponent },
+  { path: 'modifier/:id', component: OFFormComponent },
   { path: ':id', component: OFDetailComponent },
 
   { path: 'qualite/points', component: ControlPointDefinitionComponent },

@@ -2,8 +2,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
+  ViewChild,
+  AfterViewInit,
   inject,
-  signal
+  signal,
+  computed
 } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
@@ -12,11 +15,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatChipsModule } from '@angular/material/chips';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatMenuModule } from '@angular/material/menu';
 
 import { ExpeditionService } from '../../../services/expedition.service';
 import { ExpeditionDto, ExpeditionStatus } from '../../../models/expedition.model';
@@ -30,28 +32,52 @@ import { ExpeditionDto, ExpeditionStatus } from '../../../models/expedition.mode
     MatTableModule,
     MatButtonModule,
     MatIconModule,
-    MatMenuModule,
     MatProgressSpinnerModule,
+    MatPaginator,
     MatPaginatorModule,
-    MatDividerModule,
-    MatChipsModule
+    MatMenuModule
   ],
   templateUrl: './expedition-list.component.html',
   styleUrls: ['./expedition-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ExpeditionListComponent {
+export class ExpeditionListComponent implements AfterViewInit {
   readonly displayedColumns: string[] = [
     'expeditionNumber',
     'projetCode',
     'plannedShipDate',
-    'status',
     'totalQuantity',
+    'status',
     'actions'
   ];
 
   readonly loading = signal(false);
   readonly allRows = signal<ExpeditionDto[]>([]);
+  readonly pageIndex = signal(0);
+  readonly pageSize = signal(10);
+  readonly dataSource = new MatTableDataSource<ExpeditionDto>();
+
+  readonly pagedRows = computed(() => {
+    const size = this.pageSize();
+    const start = this.pageIndex() * size;
+    return this.allRows().slice(start, start + size);
+  });
+
+  readonly totalElements = computed(() => this.allRows().length);
+
+  readonly stats = computed(() => {
+    const rows = this.allRows();
+
+    return {
+      total: rows.length,
+      ready: rows.filter(row => row.status === ExpeditionStatus.READY).length,
+      shipped: rows.filter(row => row.status === ExpeditionStatus.SHIPPED).length,
+      delivered: rows.filter(row => row.status === ExpeditionStatus.DELIVERED).length,
+      totalQuantity: rows.reduce((sum, row) => sum + (Number(row.totalQuantity) || 0), 0)
+    };
+  });
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   private readonly destroyRef = inject(DestroyRef);
   private readonly expeditionService = inject(ExpeditionService);
@@ -61,40 +87,56 @@ export class ExpeditionListComponent {
     this.load();
   }
 
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
+  }
+
   load(): void {
     this.loading.set(true);
+    this.resetPaginator();
 
     this.expeditionService.getAll()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (data) => {
           this.allRows.set(data ?? []);
+          this.dataSource.data = data ?? [];
           this.loading.set(false);
         },
         error: (err) => {
           console.error(err);
           this.allRows.set([]);
+          this.dataSource.data = [];
           this.loading.set(false);
         }
       });
   }
 
   onViewDetails(row: ExpeditionDto): void {
-    // Navigate to the project detail expedition tab
-    this.router.navigate(['/projets/detail', row.projetId, 'expedition'], { 
-      queryParams: { expeditionId: row.id } 
+    this.router.navigate(['/projets/detail', row.projetId, 'expedition'], {
+      queryParams: { expeditionId: row.id }
     });
+  }
+
+  onPageChange(event: { pageIndex: number; pageSize: number }): void {
+    this.pageSize.set(event.pageSize);
+    this.pageIndex.set(event.pageIndex);
+  }
+
+  private resetPaginator(): void {
+    this.pageIndex.set(0);
+    this.paginator?.firstPage();
   }
 
   statusLabel(status: ExpeditionStatus): string {
     switch (status) {
       case ExpeditionStatus.DRAFT: return 'Brouillon';
-      case ExpeditionStatus.READY: return 'Prêt';
-      case ExpeditionStatus.VALIDATED: return 'Validé';
-      case ExpeditionStatus.SHIPPED: return 'Expédié';
-      case ExpeditionStatus.DELIVERED: return 'Livré';
-      case ExpeditionStatus.CLOSED: return 'Clôturé';
-      case ExpeditionStatus.CANCELLED: return 'Annulé';
+      case ExpeditionStatus.READY: return 'Pret';
+      case ExpeditionStatus.VALIDATED: return 'Valide';
+      case ExpeditionStatus.SHIPPED: return 'Expedie';
+      case ExpeditionStatus.DELIVERED: return 'Livre';
+      case ExpeditionStatus.CLOSED: return 'Cloture';
+      case ExpeditionStatus.CANCELLED: return 'Annule';
       default: return status;
     }
   }
