@@ -462,15 +462,14 @@ export const osm_menus: Navigation[] = [
         breadcrumbs: false
       },
       {
-        id: 'item-conditioning-expeditions',
+        id: 'item-expedition',
         title: 'Expéditions & Logistique',
         type: 'item',
         url: '/projets/expeditions',
-        icon: 'local_shipping',
-        breadcrumbs: false
+        icon: 'local_shipping'
       },
       {
-        id: 'item-conditioning-clients',
+        id: 'item-client-cond',
         title: 'Gestion Clients',
         type: 'item',
         url: '/projets/clients',
