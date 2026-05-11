@@ -4,20 +4,22 @@ import { Observable } from 'rxjs';
 import { Client } from '../models/client.model';
 import { environment } from 'src/environments/environment';
 import { ApiResponse } from 'src/app/shared/models/api-response';
+import {map} from "rxjs/operators";
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class ClientService {
-  private apiUrl = `${environment.apiUrl}/api/inventaire/clients`;
+  private apiUrl = `${environment.apiUrl}/api/ordreConditionement/clients`;
 
   constructor(private http: HttpClient) {}
 
-  getAllClients(): Observable<ApiResponse<Client>> {
-    return this.http.get<ApiResponse<Client>>(this.apiUrl);
+  getAllClients(): Observable<Client[]> {
+    return this.http
+      .get<{ data: Client[] }>(this.apiUrl)
+      .pipe(map(response => response.data ?? []));
   }
-
   getClientById(id: string): Observable<ApiResponse<Client>> {
     return this.http.get<ApiResponse<Client>>(`${this.apiUrl}/${id}`);
   }

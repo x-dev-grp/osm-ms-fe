@@ -150,17 +150,17 @@
         </td>
         <td class="date-cell">{{ formatDate(audit.lastModifiedDate) }}</td>
         <td>
-            <span class="action-badge" [ngClass]="getActionClass(getActionType(audit))">
-              <i class="fas" [ngClass]="{
-                'fa-plus-circle': getActionType(audit) === 'CRÉATION',
-                'fa-edit': getActionType(audit) === 'MODIFICATION'
-              }"></i>
-              {{ getActionType(audit) }}
-            </span>
+          <span class="action-badge" [ngClass]="getActionClass(getActionType(audit))">
+            <i class="fas" [ngClass]="{
+              'fa-plus-circle': getActionType(audit) === 'CRÉATION',
+              'fa-edit': getActionType(audit) === 'MODIFICATION'
+            }"></i>
+            {{ getActionType(audit) }}
+          </span>
         </td>
       </tr>
       <tr *ngIf="filteredAudits.length === 0">
-        <td colspan="7" class="empty-state">
+        <td colspan="9" class="empty-state">
           <i class="fas fa-search"></i>
           <p>Aucun résultat trouvé</p>
         </td>

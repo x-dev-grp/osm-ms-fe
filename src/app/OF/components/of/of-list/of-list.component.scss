@@ -214,23 +214,19 @@ $transition: all 0.3s ease;
       color: $gray-600;
     }
 
-    .btn-view {
-      background: none;
-      border: none;
-      color: $olive-green;
-      font-weight: 600;
-      cursor: pointer;
-      transition: $transition;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 1rem;
-      border-radius: 30px;
+    // ✅ Menu 3 points dans les actions
+    .actions {
+      text-align: center;
+      white-space: nowrap;
 
-      &:hover {
-        background: rgba($olive-green, 0.1);
-        color: $olive-dark;
-        transform: translateX(4px);
+      .btn-menu-dots {
+        color: $gray-600;
+        transition: $transition;
+
+        &:hover {
+          color: $olive-green;
+          background: rgba($olive-green, 0.1);
+        }
       }
     }
 
@@ -303,10 +299,6 @@ $transition: all 0.3s ease;
 
       th, td {
         padding: 0.75rem;
-      }
-
-      .btn-view {
-        padding: 0.3rem 0.8rem;
       }
     }
   }

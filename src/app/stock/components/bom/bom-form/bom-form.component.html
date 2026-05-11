@@ -1,13 +1,13 @@
 <div class="bom-form-page">
   <a routerLink="/stock/boms" routerLinkActive="active">
-    <i class="fas fa-clipboard-list"></i> Nomenclatures
+    <i class="fas fa-clipboard-list"></i> ProductComposition
   </a>
   <div class="form-header">
     <button class="btn-back-floating" [routerLink]="['/stock/boms']">
       <i class="fas fa-arrow-left"></i>
     </button>
     <div>
-      <h2 class="form-title">{{ isEditMode ? 'Modifier la nomenclature' : 'Nouvelle nomenclature' }}</h2>
+      <h2 class="form-title">{{ isEditMode ? 'Modifier la ProductComposition' : 'Nouvelle ProductComposition' }}</h2>
       <p class="form-subtitle">{{ isEditMode ? 'Modifiez les composants de la recette' : 'Définissez les composants nécessaires pour une unité de produit fini' }}</p>
     </div>
     <div class="header-actions" *ngIf="isEditMode">
@@ -32,13 +32,6 @@
             </select>
             <div class="error" *ngIf="bomForm.get('skuId')?.invalid && bomForm.get('skuId')?.touched">
               Le SKU est requis
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Version</label>
-            <input type="text" class="form-control" formControlName="version" required>
-            <div class="error" *ngIf="bomForm.get('version')?.invalid && bomForm.get('version')?.touched">
-              La version est requise
             </div>
           </div>
         </div>

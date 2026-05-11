@@ -48,11 +48,8 @@ export class OFService {
     return this.http.put<OrdreFabrication>(`${this.baseUrl}/${id}/cloturer`, {});
   }
 
-  saisirProduction(id: string, quantiteBonne: number, quantiteNC: number): Observable<OrdreFabrication> {
-    return this.http.put<OrdreFabrication>(`${this.baseUrl}/${id}/production`, {
-      quantiteBonne,
-      quantiteNC
-    });
+  saisirProduction(ofId: string, payload: { quantiteBonne: number; quantiteNC: number; motifNC: string | null }) {
+    return this.http.put<OrdreFabrication>(`${this.baseUrl}/${ofId}/production`, payload);
   }
 
   ajusterConsommation(id: string, ajustement: any): Observable<OrdreFabrication> {

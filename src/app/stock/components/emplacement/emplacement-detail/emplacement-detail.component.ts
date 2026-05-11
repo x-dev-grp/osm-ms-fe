@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { EmplacementStockService } from '../../../services/emplacement-stock.service';
 import { EmplacementStock, TypeEmplacement } from '../../../models/emplacement-stock.model';
+import {CategorieArticle} from "../../../models/article.model";
 
 @Component({
   selector: 'app-emplacement-detail',
@@ -179,5 +180,17 @@ export class EmplacementDetailComponent implements OnInit {
         }
       });
     }
+  }
+  getCategorieLabel(categorie: CategorieArticle): string {
+    const labels: Record<CategorieArticle, string> = {
+      [CategorieArticle.EMBALLAGE]: 'Emballage',
+      [CategorieArticle.CONSOMMABLE]: 'Consommable',
+      [CategorieArticle.MATIERE_PREMIERE]: 'Matière première',
+      [CategorieArticle.ACCESSOIRE]: 'Accessoire',
+      [CategorieArticle.UNITE]: 'Unité',
+      [CategorieArticle.COLIS]: 'Colis',
+      [CategorieArticle.PALETTE]: 'Palette'
+    };
+    return labels[categorie] || categorie;
   }
 }

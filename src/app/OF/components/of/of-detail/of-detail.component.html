@@ -1,4 +1,13 @@
 <div class="of-detail-page" *ngIf="of">
+  <div class="alert-blocked" *ngIf="of.qualityStatus === 'BLOCKED'">
+    <i class="fas fa-exclamation-triangle"></i>
+    <span>Attention : Cet OF est <strong>bloqué par la qualité</strong>. Les actions de production sont limitées.</span>
+  </div>
+  <div class="alert-free" *ngIf="of.qualityStatus === 'FREE'">
+    <i class="fas fa-check-circle"></i>
+    <span>Qualité : <strong>Libre</strong> – Aucun blocage.</span>
+  </div>
+
   <div class="detail-header">
     <button class="btn-back-floating" routerLink="/of">
       <i class="fas fa-arrow-left"></i>
@@ -8,26 +17,8 @@
       <p class="page-subtitle">{{ of.skuCode || of.skuId }} - Statut: {{ of.statut }}</p>
     </div>
     <div class="header-actions">
-      <button *ngIf="canStart()" class="btn-action start" (click)="start()">
-        <i class="fas fa-play"></i> Démarrer
-      </button>
-      <button *ngIf="canPause()" class="btn-action pause" (click)="pause()">
-        <i class="fas fa-pause"></i> Pause
-      </button>
-      <button *ngIf="canResume()" class="btn-action resume" (click)="resume()">
-        <i class="fas fa-play-circle"></i> Reprendre
-      </button>
-      <button *ngIf="canClose()" class="btn-action close" (click)="close()">
-        <i class="fas fa-check-circle"></i> Clôturer
-      </button>
-      <button *ngIf="isEditable()" class="btn-action quality" (click)="goToQualityControl()">
-        <i class="fas fa-clipboard-list"></i> Contrôle qualité
-      </button>
-      <button *ngIf="isEditable()" class="btn-action quality-entry" (click)="goToQualityEntry()">
-        <i class="fas fa-pen-alt"></i> Saisir contrôle
-      </button>
-      <button *ngIf="isEditable()" class="btn-action history" (click)="goToQualityHistory()">
-        <i class="fas fa-history"></i> Historique qualité
+      <button class="btn-action production" (click)="goToProduction()">
+        <i class="fas fa-cogs"></i> Production & Qualité
       </button>
     </div>
   </div>
@@ -40,22 +31,28 @@
       <div class="info-row"><i class="fas fa-industry"></i><span>Ligne</span><strong>{{ of.ligneNom || of.ligneId || '-' }}</strong></div>
       <div class="info-row"><i class="fas fa-oil-can"></i><span>Lot vrac</span><strong>{{ of.lotVracId || '-' }}</strong></div>
       <div class="info-row"><i class="fas fa-chart-simple"></i><span>Statut</span><span class="status-badge" [ngClass]="of.statut.toLowerCase()">{{ of.statut }}</span></div>
-      <div class="info-row">
+      <div class="info-row quality-status-row">
         <i class="fas fa-lock"></i>
-        <span>Qualité Status</span>
-        <span class="status-badge blocked" *ngIf="of.qualityStatus === 'BLOCKED'">
+        <span>Qualité</span>
+        <span class="quality-blocked-badge" *ngIf="of.qualityStatus === 'BLOCKED'">
           <i class="fas fa-ban"></i> Bloqué
         </span>
-        <span class="status-badge free" *ngIf="of.qualityStatus === 'FREE'">
-          Libre
+        <span class="quality-free-badge" *ngIf="of.qualityStatus === 'FREE'">
+          <i class="fas fa-check"></i> Libre
         </span>
       </div>
       <div class="info-row"><i class="fas fa-chart-line"></i><span>Quantité cible</span><strong>{{ of.quantiteCible }}</strong></div>
-      <div class="info-row"><i class="fas fa-check-circle"></i><span>Bon / NC</span><strong>{{ of.quantiteBonne }} / {{ of.quantiteNC }}</strong></div>
+      <div class="info-row"><i class="fas fa-check-circle"></i><span>Bon / NC</span>
+        <strong><span class="text-success">{{ of.quantiteBonne }}</span> / <span class="text-danger">{{ of.quantiteNC }}</span></strong>
+      </div>
+      <div class="info-row" *ngIf="of.motifNC">
+        <i class="fas fa-comment-alt"></i><span>Motif NC</span>
+        <strong class="motif-nc-text">{{ of.motifNC }}</strong>
+      </div>
       <div class="info-row"><i class="fas fa-clock"></i><span>Durée réelle (min)</span><strong>{{ of.dureeReelle || '-' }}</strong></div>
       <div class="info-row" *ngIf="of.statut === 'EN_COURS'">
         <i class="fas fa-hourglass-half"></i><span>Temps écoulé</span>
-        <strong>{{ TimeFormatted }}</strong>
+        <strong class="live-timer">{{ TimeFormatted }}</strong>
       </div>
       <div class="production-progress">
         <span>Progression</span>
@@ -65,7 +62,6 @@
         <span class="progress-value">{{ (of.quantiteBonne / of.quantiteCible) * 100 | number:'1.0-0' }}%</span>
       </div>
     </div>
-
     <div class="card-box timeline-card">
       <h5>Dates</h5>
       <div class="info-row"><i class="fas fa-calendar-week"></i><span>Prévu début</span><strong>{{ of.dateDebutPrevue | date:'dd/MM/yyyy HH:mm' }}</strong></div>
@@ -75,54 +71,6 @@
     </div>
   </div>
 
-  <div class="card-box production-card" *ngIf="isEditable()">
-    <h5>Saisie de production</h5>
-    <div class="production-form">
-      <div class="form-group">
-        <label>Bons</label>
-        <input type="number" [(ngModel)]="newBons" class="form-control" min="0">
-      </div>
-      <div class="form-group">
-        <label>Non-conformes</label>
-        <input type="number" [(ngModel)]="newNC" class="form-control" min="0">
-      </div>
-      <button class="btn-save" (click)="recordProduction()">Enregistrer</button>
-    </div>
-  </div>
-
-  <div class="card-box lines-card">
-    <h5>Composants consommés</h5>
-    <table class="data-table">
-      <thead>
-      <tr>
-        <th>Article</th>
-        <th>Quantité théorique</th>
-        <th>Quantité réelle</th>
-        <th>Motif</th>
-        <th>Action</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let line of of.lignes">
-        <td data-label="Article">{{ line.articleNom || line.articleId }}</td>
-        <td data-label="Théorique">{{ line.quantiteTheorique }}</td>
-        <td data-label="Réelle">
-          <input type="number" [(ngModel)]="line.quantiteReelle" class="form-control-sm" *ngIf="isEditable()">
-          <span *ngIf="!isEditable()">{{ line.quantiteReelle || '-' }}</span>
-        </td>
-        <td data-label="Motif">
-          <input type="text" [(ngModel)]="line.motifAjustement" class="form-control-sm" *ngIf="isEditable()">
-          <span *ngIf="!isEditable()">{{ line.motifAjustement || '-' }}</span>
-        </td>
-        <td data-label="Action">
-          <button *ngIf="isEditable()" class="btn-icon save" (click)="saveAdjustment(line)">
-            <i class="fas fa-save"></i>
-          </button>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
   <div class="card-box qr-card">
     <h5>QR Code</h5>
     <div *ngIf="of.publicCode; else noQr">

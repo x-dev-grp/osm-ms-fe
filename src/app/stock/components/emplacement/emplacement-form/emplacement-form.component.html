@@ -114,6 +114,24 @@
                     }
                   </div>
                 </div>
+                <!-- ✅ NOUVEAU : Catégorie d'article stocké -->
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-label fw-semibold">
+                      <i class="fas fa-boxes me-1"></i>
+                      Catégorie d'article stocké
+                    </label>
+                    <div class="select-wrapper-modern">
+                      <select class="modern-select" formControlName="categorieArticleStocke">
+                        <option value="">-- Non spécifiée --</option>
+                        @for (cat of categoriesArticle; track cat) {
+                          <option [value]="cat">{{ getCategorieLabel(cat) }}</option>
+                        }
+                      </select>
+                      <i class="fas fa-chevron-down select-arrow"></i>
+                    </div>
+                  </div>
+                </div>
                 <div class="col-md-6">
                   <div class="form-group floating-group">
                     <div class="input-wrapper">

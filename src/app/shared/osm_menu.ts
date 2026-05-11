@@ -203,6 +203,13 @@ export const osm_menus: Navigation[] = [
     type: 'group',
     children: [
       {
+        id: 'item-stocks-audit',
+        title: 'Journal d\'Audit',
+        type: 'item',
+        url: '/stock/audit',
+        icon: 'history'
+      },
+      {
         id: 'item-projet',
         title: 'Projets Clients',
         type: 'item',
@@ -311,13 +318,7 @@ export const osm_menus: Navigation[] = [
             url: '/stock/par-emplacement',
             icon: 'view_list'
           },
-          {
-            id: 'item-stocks-audit',
-            title: 'Journal d\'Audit',
-            type: 'item',
-            url: '/stock/audit',
-            icon: 'history'
-          }
+
         ]
       },
       {

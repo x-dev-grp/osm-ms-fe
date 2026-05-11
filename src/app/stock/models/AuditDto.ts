@@ -5,6 +5,9 @@ export interface AuditDto {
   createdDate: string;
   lastModifiedBy: string;
   lastModifiedDate: string;
+  serviceSource?: string;
+  revision?: number;
+  revisionType?: string;
 }
 
 export interface AuditFilters {
