@@ -113,7 +113,7 @@ $border-radius-sm: 12px;
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      transition: $transition;
+
       cursor: pointer;
 
       i {
@@ -223,7 +223,7 @@ $border-radius-sm: 12px;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    transition: $transition;
+
     cursor: pointer;
 
     i {
@@ -283,7 +283,7 @@ $border-radius-sm: 12px;
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      transition: $transition;
+
       cursor: pointer;
 
       &:hover {
@@ -321,7 +321,7 @@ $border-radius-sm: 12px;
         border: 2px solid $gray-200;
         border-radius: $border-radius-sm;
         font-size: 0.95rem;
-        transition: $transition;
+
 
         &:focus {
           outline: none;
@@ -389,7 +389,7 @@ $border-radius-sm: 12px;
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      transition: $transition;
+
       cursor: pointer;
 
       &:hover {
@@ -453,7 +453,7 @@ $border-radius-sm: 12px;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    transition: $transition;
+
     cursor: pointer;
 
     &:hover {
@@ -503,7 +503,7 @@ $border-radius-sm: 12px;
 
     tbody {
       tr {
-        transition: $transition;
+
 
         &:hover {
           background: $gray-100;
@@ -596,7 +596,7 @@ $border-radius-sm: 12px;
         color: $primary;
         border-radius: $border-radius-sm;
         font-weight: 600;
-        transition: $transition;
+
         cursor: pointer;
 
         &:hover {
@@ -634,7 +634,7 @@ $border-radius-sm: 12px;
       color: $gray-700;
       font-size: 0.9rem;
       cursor: pointer;
-      transition: $transition;
+
 
       &:hover {
         border-color: $primary;
@@ -657,7 +657,7 @@ $border-radius-sm: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: $transition;
+
       cursor: pointer;
 
       &:hover:not(:disabled) {

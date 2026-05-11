@@ -47,7 +47,7 @@ export const osm_menus: Navigation[] = [
       },
       {
         id: 'collapse-analytics-reports',
-        title: 'MENU.HOME.DASHBOARD.STORAGE_RECAP',
+        title: 'Rapports',
         type: 'collapse',
         icon: 'insights',
         children: [
@@ -56,35 +56,40 @@ export const osm_menus: Navigation[] = [
             title: 'Vue Globale (OF)',
             type: 'item',
             url: '/analytics/dashboard',
-            icon: 'dashboard'
+            icon: 'dashboard',
+            breadcrumbs: false
           },
           {
             id: 'item-analytics-of-yield',
             title: 'Rendements des OF',
             type: 'item',
             url: '/analytics/of-yield',
-            icon: 'speed'
+            icon: 'speed',
+            breadcrumbs: false
           },
           {
             id: 'item-analytics-quality',
             title: 'Qualité & Non-conformités',
             type: 'item',
             url: '/analytics/quality',
-            icon: 'fact_check'
+            icon: 'fact_check',
+            breadcrumbs: false
           },
           {
             id: 'item-analytics-bom-gap',
             title: 'Écarts Nomenclatures (BOM)',
             type: 'item',
             url: '/analytics/bom-gap',
-            icon: 'difference'
+            icon: 'difference',
+            breadcrumbs: false
           },
           {
             id: 'item-analytics-filtration',
             title: 'Efficacité Filtrage',
             type: 'item',
             url: '/analytics/filtration',
-            icon: 'filter_alt'
+            icon: 'filter_alt',
+            breadcrumbs: false
           }
         ]
       },
@@ -295,6 +300,7 @@ export const osm_menus: Navigation[] = [
       }
     ]
   },
+
   {
     id: 'group-reception',
     title: 'MENU.PRODUCTION.RECEPTIONS',
@@ -351,6 +357,7 @@ export const osm_menus: Navigation[] = [
       }
     ]
   },
+
   // ──────────────────────────────────────────────────────────────────────────
   // 3. PRODUCTION & STOCKAGE HUILERIE
   // ──────────────────────────────────────────────────────────────────────────
@@ -413,9 +420,9 @@ export const osm_menus: Navigation[] = [
         type: 'item',
         url: '/stock/audit',
         icon: 'history',
-        breadcrumbs: false,
-
-      },  {
+        breadcrumbs: false
+      },
+      {
         id: 'item-conditioning-projects',
         title: 'Projets Clients',
         type: 'collapse',
@@ -426,14 +433,16 @@ export const osm_menus: Navigation[] = [
             title: 'Liste des projets',
             type: 'item',
             url: '/projets',
-            icon: 'list_alt'
+            icon: 'list_alt',
+            breadcrumbs: false
           },
           {
             id: 'item-projet-expeditions',
             title: 'Expéditions',
             type: 'item',
             url: '/projets/expeditions',
-            icon: 'route'
+            icon: 'route',
+            breadcrumbs: false
           }
         ]
       },
@@ -466,7 +475,8 @@ export const osm_menus: Navigation[] = [
         title: 'Expéditions & Logistique',
         type: 'item',
         url: '/projets/expeditions',
-        icon: 'local_shipping'
+        icon: 'local_shipping',
+        breadcrumbs: false
       },
       {
         id: 'item-client-cond',
@@ -724,6 +734,7 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/labels/certifications',
             icon: 'verified_user',
+            breadcrumbs: false,
             ressourcePermission: ProductionEntity.CERTIFICATION
           },
           {

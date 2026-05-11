@@ -134,7 +134,7 @@ export class ProjetExpeditionComponent implements OnInit {
     const items: Array<{ label: string; value: string }> = [];
     this.pushTraceabilityItem(items, 'Projet', snapshot.projetCode || snapshot.projectCode || exp.projetCode);
     this.pushTraceabilityItem(items, 'Expedition', snapshot.expeditionNumber || exp.expeditionNumber);
-    this.pushTraceabilityItem(items, 'Client', snapshot.clientName || snapshot.clientNom || this.project?.clientNom);
+    this.pushTraceabilityItem(items, 'Client', snapshot.clientName || snapshot.client.nom || this.project?.client.nom);
     this.pushTraceabilityItem(items, 'OF associes', this.countSnapshotItems(snapshot.ordresFabrication || snapshot.ofs || snapshot.orders));
     this.pushTraceabilityItem(items, 'Etiquettes', this.countSnapshotItems(snapshot.labels || snapshot.packagedLabels || snapshot.packagedLabelsByLot));
     this.pushTraceabilityItem(items, 'Lots', this.countSnapshotItems(snapshot.lots || snapshot.lotVrac || snapshot.lotVracId));
@@ -164,7 +164,7 @@ export class ProjetExpeditionComponent implements OnInit {
       reference: exp.expeditionNumber,
       date: new Date(exp.createdDate || '').toLocaleDateString(),
       clientInfo: {
-        name: this.project?.clientNom,
+        name: this.project?.client.nom,
         address: '' // Address not in ProjetDto, could be added later
       },
       logistics: {
@@ -205,7 +205,7 @@ export class ProjetExpeditionComponent implements OnInit {
     this.loadProject(this.projectId);
     this.loadExpeditions(this.projectId);
     this.loadProjectOfs(this.projectId);
-    
+
     this.companyService.getProfile().subscribe((p: any) => this.companyProfile = p);
   }
 

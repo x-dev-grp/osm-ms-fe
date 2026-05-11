@@ -40,7 +40,7 @@ $border-radius-sm: 12px;
   padding: 2rem;
   max-width: 1000px;
   margin: 0 auto;
-  animation: fadeInUp 0.5s ease-out;
+
 
   .page-header {
     margin-bottom: 2rem;
@@ -90,7 +90,7 @@ $border-radius-sm: 12px;
       mat-card {
         border-radius: $border-radius-sm;
         box-shadow: $shadow-sm;
-        transition: $transition;
+
         border-left: 4px solid $olive-green;
 
         &:hover {
@@ -131,7 +131,7 @@ $border-radius-sm: 12px;
         background: $white;
         border: 1px solid $gray-300;
         color: $gray-700;
-        transition: $transition;
+
 
         mat-icon {
           margin-right: 0.5rem;
@@ -161,7 +161,7 @@ $border-radius-sm: 12px;
         border: none;
         border-radius: $border-radius-sm;
         font-weight: 600;
-        transition: $transition;
+
 
         &:hover:not(:disabled) {
           background: $olive-dark;

@@ -124,7 +124,7 @@ $border-radius-sm: 12px;
   border-radius: $border-radius;
   box-shadow: $shadow-lg;
   border: 1px solid rgba($primary, 0.1);
-  transition: $transition;
+
 
   &:hover {
     box-shadow: $shadow-xl;
@@ -171,12 +171,12 @@ $border-radius-sm: 12px;
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      transition: $transition;
+
       cursor: pointer;
 
       i {
         font-size: 1rem;
-        transition: $transition;
+
       }
 
       &.edit {
@@ -227,7 +227,7 @@ $border-radius-sm: 12px;
     padding: 1.75rem;
     box-shadow: $shadow-lg;
     border: 1px solid rgba($primary, 0.1);
-    transition: $transition;
+
     animation: slideIn 0.5s ease-out;
     animation-fill-mode: both;
 
@@ -409,7 +409,7 @@ $border-radius-sm: 12px;
           align-items: center;
           justify-content: center;
           gap: 0.5rem;
-          transition: $transition;
+
           cursor: pointer;
 
           i {
@@ -474,7 +474,7 @@ $border-radius-sm: 12px;
       border: 2px solid $gray-200;
       border-radius: $border-radius-sm;
       font-size: 0.95rem;
-      transition: $transition;
+
 
       &:focus {
         outline: none;
@@ -492,7 +492,7 @@ $border-radius-sm: 12px;
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
-      transition: $transition;
+
       cursor: pointer;
 
       i {
@@ -554,7 +554,7 @@ $border-radius-sm: 12px;
 
   tbody {
     tr {
-      transition: $transition;
+
 
       &:hover {
         background: $gray-100;
@@ -655,7 +655,7 @@ $border-radius-sm: 12px;
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
-      transition: $transition;
+
       cursor: pointer;
 
       &.assign {
@@ -709,7 +709,7 @@ $border-radius-sm: 12px;
     border: 2px solid $gray-200;
     border-radius: $border-radius-sm;
     font-size: 0.95rem;
-    transition: $transition;
+
     width: 100%;
 
     &:focus {

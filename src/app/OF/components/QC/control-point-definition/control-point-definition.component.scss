@@ -41,7 +41,7 @@ $gray-50: #fafafc;
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
-  animation: fadeInUp 0.5s ease-out;
+
 
   .page-header {
     margin-bottom: 2rem;
@@ -255,7 +255,7 @@ $gray-50: #fafafc;
     font-size: 1.5rem;
     cursor: pointer;
     color: $gray-600;
-    transition: $transition;
+
     line-height: 1;
     padding: 0;
     width: 32px;
@@ -281,7 +281,7 @@ $gray-50: #fafafc;
     font-size: 1rem;
     border: 1px solid $gray-300;
     border-radius: $border-radius-sm;
-    transition: $transition;
+
     font-family: inherit;
 
     &:focus {
@@ -307,7 +307,7 @@ $gray-50: #fafafc;
     font-weight: 500;
     font-size: 0.9rem;
     cursor: pointer;
-    transition: $transition;
+
     border: none;
     font-family: inherit;
   }

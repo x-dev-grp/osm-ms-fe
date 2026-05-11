@@ -26,12 +26,12 @@
               <label><i class="fas fa-project-diagram"></i> Projet (optionnel)</label>
               <select class="form-control" formControlName="projectId">
                 <option value="">-- Indépendant --</option>
-                <option *ngFor="let p of projects" [value]="p.id">{{ p.code }} — {{ p.clientNom }}</option>
+                <option *ngFor="let p of projects" [value]="p.id">{{ p.code }} — {{ p.client.nom }}</option>
               </select>
             </div>
             <div class="form-group">
               <label><i class="fas fa-chart-line"></i> Quantité cible</label>
-              <input type="number" step="1" class="form-control" formControlName="quantiteCible" 
+              <input type="number" step="1" class="form-control" formControlName="quantiteCible"
                      [class.is-invalid]="projectRemainingQuantity !== null && ofForm.get('quantiteCible')?.value > projectRemainingQuantity"
                      required>
               <div class="remaining-info" *ngIf="projectRemainingQuantity !== null">

@@ -8,6 +8,7 @@ import { ProjetService } from '../../../services/projet.service';
 import { ProjetDto } from '../../../models/TypeProduit';
 import { OFService } from '../../../../OF/services/OFService';
 import { OrdreFabrication } from '../../../../OF/models/of.model';
+import {ClientType} from "../../../models/client.model";
 
 @Component({
   selector: 'app-projet-detail',
@@ -65,9 +66,9 @@ export class ProjetDetailComponent implements OnInit {
 
   private loadOfs(id: string): void {
     this.loadingOfs = true;
+
     this.ofService.getByProject(id).subscribe({
       next: (data) => {
-        // Unwraps the response if it is wrapped in an ApiResponse format, or takes it directly
         this.ofs = (data as any)?.data ? (data as any).data : data;
         this.loadingOfs = false;
       },
@@ -86,6 +87,7 @@ export class ProjetDetailComponent implements OnInit {
     if (!this.projetId) {
       return;
     }
+
     this.router.navigate(['/projets/detail', this.projetId, 'expedition']);
   }
 
@@ -93,6 +95,7 @@ export class ProjetDetailComponent implements OnInit {
     if (!this.projetId) {
       return;
     }
+
     this.router.navigate(['/projets/detail', this.projetId, 'traceability']);
   }
 
@@ -100,14 +103,19 @@ export class ProjetDetailComponent implements OnInit {
     if (!this.projetId) {
       return;
     }
+
     this.router.navigate(['/of/nouveau'], {
       queryParams: { projetId: this.projetId }
     });
   }
 
   generateQr(): void {
-    if (this.generatingQr || !this.projetId) return;
+    if (this.generatingQr || !this.projetId) {
+      return;
+    }
+
     this.generatingQr = true;
+
     this.projetService.generateQr(this.projetId).subscribe({
       next: (qrInfo) => {
         if (this.projet) {
@@ -117,6 +125,7 @@ export class ProjetDetailComponent implements OnInit {
             qrImageBase64: qrInfo.qrImageBase64
           };
         }
+
         this.generatingQr = false;
       },
       error: (err) => {
@@ -129,6 +138,7 @@ export class ProjetDetailComponent implements OnInit {
 
   printQr(): void {
     const qrImage = this.getQrImage();
+
     if (!qrImage) {
       alert('QR non disponible. Veuillez le generer d\'abord.');
       return;
@@ -148,23 +158,31 @@ export class ProjetDetailComponent implements OnInit {
     `;
 
     const printWindow = window.open('', '_blank', 'width=600,height=600');
+
     if (printWindow) {
       printWindow.document.write(`
         <html>
           <head>
             <title>QR Code - Projet ${projectCode}</title>
             <style>
-              body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+              body {
+                font-family: Arial, sans-serif;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+              }
             </style>
           </head>
           <body>${printContent}</body>
         </html>
       `);
+
       printWindow.document.close();
-      // Petit delai pour s'assurer que l'image est chargee avant l'impression
+
       setTimeout(() => {
         printWindow.print();
-        // printWindow.close(); // Optionnel
       }, 500);
     }
   }
@@ -173,6 +191,7 @@ export class ProjetDetailComponent implements OnInit {
     console.error('Erreur chargement QR', event);
 
     const target = event.target as HTMLImageElement | null;
+
     if (target) {
       target.style.display = 'none';
     }
@@ -191,6 +210,7 @@ export class ProjetDetailComponent implements OnInit {
       if (!this.projet.qrImageBase64.startsWith('data:image')) {
         return 'data:image/png;base64,' + this.projet.qrImageBase64;
       }
+
       return this.projet.qrImageBase64;
     }
 
@@ -204,4 +224,6 @@ export class ProjetDetailComponent implements OnInit {
   getManualCode(): string {
     return this.projet?.publicCode || this.projet?.code || 'N/A';
   }
+
+  protected readonly ClientType = ClientType;
 }
