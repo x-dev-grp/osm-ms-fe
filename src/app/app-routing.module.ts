@@ -106,6 +106,11 @@ const routes: Routes = [
       {
         path: 'administration',
         loadChildren: () => import('./administration/administration-routing.module').then((m) => m.AdministrationRoutingModule)
+      },
+      {
+        path: 'analytics',
+        loadChildren: () =>
+          import('./analytics/analytics.module').then(m => m.AnalyticsModule)
       }
     ]
   },

@@ -9,18 +9,8 @@ $gray-200: #e9ecef;
 $gray-600: #6c757d;
 $gray-800: #343a40;
 $shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
-$transition: all 0.3s ease;
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+
 
 .of-list-page {
   padding: 2rem;
@@ -28,7 +18,7 @@ $transition: all 0.3s ease;
   margin: 0 auto;
   min-height: 100vh;
   background: linear-gradient(135deg, #faf3e0 0%, #fff5e6 100%);
-  animation: fadeInUp 0.5s ease-out;
+
 
   .list-header {
     display: flex;
@@ -80,7 +70,7 @@ $transition: all 0.3s ease;
       align-items: center;
       gap: 0.5rem;
       cursor: pointer;
-      transition: $transition;
+
 
       i {
         font-size: 1rem;
@@ -107,7 +97,6 @@ $transition: all 0.3s ease;
       border: 3px solid $gray-200;
       border-top-color: $olive-green;
       border-radius: 50%;
-      animation: spin 0.8s linear infinite;
       margin-bottom: 1rem;
     }
     p {
@@ -121,7 +110,7 @@ $transition: all 0.3s ease;
     box-shadow: $shadow-md;
     overflow-x: auto;
     border: 1px solid rgba($olive-green, 0.1);
-    transition: $transition;
+
 
     &:hover {
       box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
@@ -149,7 +138,7 @@ $transition: all 0.3s ease;
     }
 
     tr {
-      transition: $transition;
+
 
       &:hover {
         background: rgba($olive-green, 0.02);
@@ -221,7 +210,7 @@ $transition: all 0.3s ease;
 
       .btn-menu-dots {
         color: $gray-600;
-        transition: $transition;
+
 
         &:hover {
           color: $olive-green;
@@ -251,7 +240,7 @@ $transition: all 0.3s ease;
         border-radius: 40px;
         font-weight: 600;
         cursor: pointer;
-        transition: $transition;
+
 
         &:hover {
           background: $olive-dark;

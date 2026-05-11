@@ -12,6 +12,11 @@ export interface Client {
   siret?: string;
   numeroTva?: string;
   notes?: string;
-   actif: boolean;
+  type: ClientType;
+  actif: boolean;
   createdDate?: string;
+}
+export enum ClientType {
+  BUYER = 'BUYER',
+  BRAND = 'BRAND'
 }

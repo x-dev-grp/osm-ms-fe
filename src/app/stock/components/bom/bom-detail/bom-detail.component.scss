@@ -69,7 +69,7 @@ $border-radius-sm: 12px;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: $transition;
+
 
       &:hover {
         background: $primary;
@@ -110,7 +110,7 @@ $border-radius-sm: 12px;
         align-items: center;
         gap: 0.5rem;
         cursor: pointer;
-        transition: $transition;
+
 
         &.edit {
           background: rgba($primary, 0.1);
@@ -176,7 +176,7 @@ $border-radius-sm: 12px;
       padding: 1.75rem;
       box-shadow: $shadow-lg;
       border: 1px solid rgba($primary, 0.1);
-      transition: $transition;
+
 
       &:hover {
         transform: translateY(-5px);
@@ -270,7 +270,7 @@ $border-radius-sm: 12px;
 
           tbody {
             tr {
-              transition: $transition;
+
 
               &:hover {
                 background: $gray-100;

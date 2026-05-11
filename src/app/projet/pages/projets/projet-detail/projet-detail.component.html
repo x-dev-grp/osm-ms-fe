@@ -1,76 +1,202 @@
-<div class="detail-container" *ngIf="!loading && projet as p">
-  <div class="detail-card">
-    <div class="detail-header no-print">
-      <div class="detail-title">
-        <mat-icon>assignment</mat-icon>
+<div class="modern-container" *ngIf="!loading && projet as p">
+  <div class="header-section no-print">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div class="header-left">
+        <div class="header-icon-wrapper">
+          <i class="fas fa-project-diagram"></i>
+        </div>
+
         <div>
-          <h1>{{ p.code || 'Projet' }}</h1>
-          <p>{{ p.clientNom || '-' }}</p>
+          <h1 class="page-title d-flex align-items-center gap-2">
+            {{ p.code || 'Projet' }}
+            <span class="status-badge ms-2">
+              <i class="fas fa-circle" style="font-size: 8px;"></i>
+              {{ p.statut || '-' }}
+            </span>
+          </h1>
+
+          <p class="subtitle">
+            Client: {{ p.client?.nom || '-' }}
+          </p>
         </div>
       </div>
 
-      <div class="status-badge">
-        {{ p.statut || '-' }}
+      <div class="actions-bar m-0">
+        <button class="btn-outline" (click)="onBack()">
+          <mat-icon>arrow_back</mat-icon>
+          Retour
+        </button>
+
+        <button class="btn-primary" (click)="openExpedition()">
+          <mat-icon>local_shipping</mat-icon>
+          Expedition
+        </button>
+
+        <button class="btn-light-primary" (click)="openTraceability()">
+          <mat-icon>history_edu</mat-icon>
+          Tracabilite
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-grid">
+    <div class="left-col">
+      <div class="modern-card no-print">
+        <div class="card-header">
+          <h5>Details du projet</h5>
+        </div>
+
+        <div class="card-body">
+          <div class="details-grid">
+            <div class="detail-item">
+              <span class="label">Client</span>
+              <span class="value">{{ p.client?.nom || '-' }}</span>
+            </div>
+
+            <div class="detail-item">
+              <span class="label">Type client</span>
+              <span class="value">
+                {{ p.client?.type === ClientType.BUYER  ? 'Acheteur' : p.client?.type === 'BRAND' ? 'Marque' : '-' }}
+              </span>
+            </div>
+
+            <div class="detail-item">
+              <span class="label">Produit</span>
+              <span class="value">{{ p.typeProduit | titlecase }}</span>
+            </div>
+
+            <div class="detail-item">
+              <span class="label">Emballage</span>
+              <span class="value">{{ p.typeEmballage | titlecase }}</span>
+            </div>
+
+            <div class="detail-item">
+              <span class="label">Quantite cible</span>
+              <span class="value">
+                {{ p.quantiteCible | number }} {{ p.unite === 'LITRES' ? 'L' : 'unites' }}
+              </span>
+            </div>
+
+            <div class="detail-item">
+              <span class="label">Date limite de livraison</span>
+              <span class="value">{{ p.dateLimiteLivraison | date:'dd/MM/yyyy' }}</span>
+            </div>
+
+            <div class="detail-item">
+              <span class="label">Prix unitaire</span>
+              <span class="value">{{ p.prixUnitaire | currency:'TND' }}</span>
+            </div>
+
+            <div class="detail-item">
+              <span class="label">Valeur totale</span>
+              <span class="value fw-bold text-success">{{ p.valeurTotale | currency:'TND' }}</span>
+            </div>
+
+            <div class="detail-item full-width">
+              <span class="label">Conditions de livraison</span>
+              <span class="value">{{ p.conditionsLivraison || 'Aucune condition specifiee' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modern-card no-print">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5>Ordres de fabrication (OF)</h5>
+          <span class="badge bg-primary rounded-pill">{{ ofs.length }}</span>
+        </div>
+
+        <div class="card-body p-0">
+          <div *ngIf="loadingOfs" class="text-center p-2">
+            <i class="fas fa-spinner fa-spin text-primary fs-4"></i>
+            <p class="text-muted mt-2 mb-0">Chargement des OF...</p>
+          </div>
+
+          <div class="table-responsive" *ngIf="!loadingOfs && ofs.length > 0">
+            <table class="modern-table">
+              <thead>
+              <tr>
+                <th>Code OF</th>
+                <th>Statut</th>
+                <th class="text-center">Qte cible</th>
+                <th class="text-center">Qte bonne</th>
+                <th>Date debut prevue</th>
+              </tr>
+              </thead>
+
+              <tbody>
+              <tr *ngFor="let of of ofs">
+                <td>
+                  <a [routerLink]="['/of/detail', of.id]" class="of-code">
+                    {{ of.code }}
+                  </a>
+                </td>
+
+                <td>
+                    <span class="status-badge-sm" [ngClass]="{
+                      'bg-success': of.statut === 'TERMINE',
+                      'bg-primary': of.statut === 'EN_COURS',
+                      'bg-warning': of.statut === 'PLANIFIE',
+                      'bg-danger': of.statut === 'ANNULE' || of.statut === 'CLOTURE',
+                      'bg-secondary': of.statut === 'EN_ATTENTE'
+                    }">
+                      {{ of.statut }}
+                    </span>
+                </td>
+
+                <td class="text-center">{{ of.quantiteCible | number }}</td>
+                <td class="text-center fw-bold text-success">{{ of.quantiteBonne | number }}</td>
+                <td class="text-muted">{{ of.dateDebutPrevue | date: 'short' || '-' }}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div *ngIf="!loadingOfs && ofs.length === 0" class="empty-state py-3">
+            <i class="fas fa-clipboard-list fs-3"></i>
+            <h5 class="mt-2">Aucun OF associe</h5>
+            <p class="small">Ce projet ne contient actuellement aucun ordre de fabrication.</p>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="detail-body">
-      <div class="detail-grid no-print">
-        <div class="detail-item"><strong>Client</strong><span>{{ p.clientNom || '-' }}</span></div>
-        <div class="detail-item"><strong>Email</strong><span>{{ p.clientEmail || '-' }}</span></div>
-        <div class="detail-item"><strong>Produit</strong><span>{{ p.typeProduit | titlecase }}</span></div>
-        <div class="detail-item"><strong>Emballage</strong><span>{{ p.typeEmballage | titlecase }}</span></div>
-        <div class="detail-item"><strong>Quantite</strong><span>{{ p.quantiteCible }} {{ p.unite === 'LITRES' ? 'L' : 'unites' }}</span></div>
-        <div class="detail-item"><strong>Prix unitaire</strong><span>{{ p.prixUnitaire | currency:'TND' }}</span></div>
-        <div class="detail-item"><strong>Valeur totale</strong><span>{{ p.valeurTotale | currency:'TND' }}</span></div>
-        <div class="detail-item"><strong>Date limite</strong><span>{{ p.dateLimiteLivraison | date:'dd/MM/yyyy' }}</span></div>
-        <div class="detail-item full-width"><strong>Conditions</strong><span>{{ p.conditionsLivraison }}</span></div>
-      </div>
-
-      <div class="qr-section" id="qr-print-section">
-        <h2>QR Code</h2>
-
-        <div class="qr-box" *ngIf="hasQrImage()">
-          <img
-            [src]="getQrImage()"
-            (error)="onQrError($event)"
-            alt="QR Code Projet" />
+    <div class="right-col">
+      <div class="modern-card" id="qr-print-section">
+        <div class="card-header no-print">
+          <h5>Tracabilite (QR Code)</h5>
         </div>
 
-        <p class="manual-code">
-          Code manuel: <strong>{{ getManualCode() }}</strong>
-        </p>
+        <div class="card-body qr-section">
+          <h2 class="d-none d-print-block">Projet {{ p.code }}</h2>
 
-        <div class="qr-actions no-print">
-          <button mat-flat-button color="accent" *ngIf="!hasQrImage()" (click)="generateQr()" [disabled]="generatingQr">
-            <mat-icon>qr_code</mat-icon>
-            Générer QR
-          </button>
+          <div class="qr-box" *ngIf="hasQrImage()">
+            <img [src]="getQrImage()" (error)="onQrError($event)" alt="QR Code Projet" />
+          </div>
 
-          <button mat-flat-button color="primary" *ngIf="hasQrImage()" (click)="printQr()">
-            <mat-icon>print</mat-icon>
-            Imprimer QR
-          </button>
+          <p class="manual-code">
+            Code manuel: <strong>{{ getManualCode() }}</strong>
+          </p>
 
-          <button mat-stroked-button color="primary" (click)="onBack()">
-            Retour
-          </button>
+          <div class="actions-bar justify-content-center no-print">
+            <button class="btn-primary" *ngIf="!hasQrImage()" (click)="generateQr()" [disabled]="generatingQr">
+              <mat-icon>qr_code</mat-icon>
+              Generer QR
+            </button>
 
-          <button mat-flat-button color="primary" (click)="openExpedition()">
-            <mat-icon>local_shipping</mat-icon>
-            Expédition & Livraison
-          </button>
-
-          <button mat-stroked-button color="accent" (click)="openTraceability()">
-            <mat-icon>history_edu</mat-icon>
-            Traçabilité Globale
-          </button>
+            <button class="btn-outline" *ngIf="hasQrImage()" (click)="printQr()">
+              <mat-icon>print</mat-icon>
+              Imprimer
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="loading-box" *ngIf="loading">
-  Chargement...
+<div *ngIf="loading" class="loading-state-modern" style="margin-top: 10vh;">
+  <div class="spinner-container"></div>
+  <p class="loading-text">Chargement des details du projet...</p>
 </div>

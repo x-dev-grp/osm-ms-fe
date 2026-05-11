@@ -1,22 +1,26 @@
 <div class="abioc-container">
+
+  <!-- ── Header ── -->
   <div class="header-card">
     <div class="header-left">
       <div class="icon-box">
         <mat-icon>assignment</mat-icon>
       </div>
-
-      <div class="header-copy">
-        <h1>Projets</h1>
-        <p>Gestion des projets d'achat</p>
+      <div>
+        <h1>Projets de Conditionnement</h1>
+        <p>{{ rows().length }} projet(s) trouvé(s)</p>
       </div>
     </div>
 
     <div class="header-right">
       <div class="kpi">
-        <span class="kpi-value">{{ rows().length }}</span>
-        <span class="kpi-label">Projets</span>
+        <span class="kpi-value">{{ projectStats().active }}</span>
+        <span class="kpi-label">En cours</span>
       </div>
-
+      <div class="kpi">
+        <span class="kpi-value">{{ projectStats().totalValue | currency:'TND':'symbol':'1.0-0' }}</span>
+        <span class="kpi-label">Valeur totale</span>
+      </div>
       <button mat-flat-button color="primary" (click)="onCreate()">
         <mat-icon>add</mat-icon>
         Nouveau projet
@@ -24,194 +28,211 @@
     </div>
   </div>
 
-  <div class="filter-card">
-    <div class="filter-grid">
-      <mat-form-field appearance="outline">
+  <!-- ── Filters ── -->
+  <div class="filters-card">
+    <div class="search-box">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Rechercher par code</mat-label>
+        <input matInput [value]="searchCode()" (input)="onSearchCodeInput($event)" (keyup.enter)="searchByCode()"
+          placeholder="Ex: PRJ-2024-001">
+        <button mat-icon-button matSuffix (click)="searchByCode()" [disabled]="searching() || !searchCode().trim()">
+          <mat-icon>{{ searching() ? 'hourglass_empty' : 'search' }}</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+
+    <div class="filter-actions">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>Statut</mat-label>
         <mat-select [value]="statusFilter()" (selectionChange)="onStatusChange($event.value)">
-          @for (s of statusOptions; track s) {
-            <mat-option [value]="s">
-              {{ statusLabel(s) }}
-            </mat-option>
+          @for (opt of statusOptions; track opt) {
+          <mat-option [value]="opt">{{ statusLabel(opt) }}</mat-option>
           }
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="search-code-field">
-        <mat-label>Code projet</mat-label>
-        <input
-          matInput
-          placeholder="Ex: P001"
-          [value]="searchCode()"
-          (input)="onSearchCodeInput($event)"
-          (keyup.enter)="searchByCode()"
-        />
-        <button
-          mat-icon-button
-          matSuffix
-          (click)="searchByCode()"
-          [disabled]="searching()"
-          aria-label="Rechercher projet">
-          <mat-icon>{{ searching() ? 'hourglass_top' : 'search' }}</mat-icon>
-        </button>
-      </mat-form-field>
-
-      <button
-        mat-flat-button
-        color="primary"
-        class="search-btn"
-        (click)="searchByCode()"
-        [disabled]="searching()">
-        {{ searching() ? 'Recherche...' : 'Rechercher' }}
+      <button mat-stroked-button (click)="load()" [disabled]="loading()">
+        <mat-icon>refresh</mat-icon>
+        Actualiser
       </button>
     </div>
   </div>
 
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon total">
+        <mat-icon>folder_copy</mat-icon>
+      </div>
+      <div>
+        <span class="stat-value">{{ projectStats().total }}</span>
+        <span class="stat-label">Total projets</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon active">
+        <mat-icon>pending_actions</mat-icon>
+      </div>
+      <div>
+        <span class="stat-value">{{ projectStats().active }}</span>
+        <span class="stat-label">En production</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon validated">
+        <mat-icon>task_alt</mat-icon>
+      </div>
+      <div>
+        <span class="stat-value">{{ projectStats().validated }}</span>
+        <span class="stat-label">Valid&eacute;s</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon quantity">
+        <mat-icon>inventory_2</mat-icon>
+      </div>
+      <div>
+        <span class="stat-value">{{ projectStats().totalQuantity | number:'1.0-0' }}</span>
+        <span class="stat-label">Quantit&eacute; cible</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Loading ── -->
   @if (loading()) {
-    <div class="abioc-loading">
-      <mat-spinner diameter="40"></mat-spinner>
-    </div>
+  <div class="abioc-loading">
+    <mat-spinner diameter="36"></mat-spinner>
+  </div>
   }
 
+  <!-- ── Empty state ── -->
   @if (!loading() && rows().length === 0) {
-    <div class="abioc-empty">
-      <mat-icon>assignment</mat-icon>
-      <p>Aucun projet</p>
-      <button mat-stroked-button color="primary" (click)="onCreate()">
-        <mat-icon>add</mat-icon>
-        Creer un projet
-      </button>
-    </div>
+  <div class="abioc-empty">
+    <mat-icon>assignment</mat-icon>
+    <p>Aucun projet trouvé</p>
+    <button mat-stroked-button color="primary" (click)="onCreate()">
+      <mat-icon>add</mat-icon> Créer un projet
+    </button>
+  </div>
   }
 
+  <!-- ── Table ── -->
   @if (!loading() && rows().length > 0) {
-    <div class="table-card">
-      <div class="table-header">
-        <h3>Liste des projets</h3>
-        <span>{{ rows().length }} projets</span>
-      </div>
+  <div class="table-card">
+    <div class="table-wrap">
+      <table mat-table [dataSource]="pagedRows()" class="abioc-table">
 
-      <div class="table-wrap">
-        <table mat-table [dataSource]="rows()" class="abioc-table">
-          <ng-container matColumnDef="code">
-            <th mat-header-cell *matHeaderCellDef>Code</th>
-            <td mat-cell *matCellDef="let row">
-              <span class="client-name">{{ row.code || '-' }}</span>
-            </td>
-          </ng-container>
+        <!-- Code -->
+        <ng-container matColumnDef="code">
+          <th mat-header-cell *matHeaderCellDef>Code</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="client-name">{{ row.code || '-' }}</span>
+          </td>
+        </ng-container>
 
-          <ng-container matColumnDef="client">
-            <th mat-header-cell *matHeaderCellDef>Client</th>
-            <td mat-cell *matCellDef="let row">
-              <div class="client-name-cell">
-                <span class="client-name">{{ row.clientNom || '-' }}</span>
-                <span class="client-email">{{ row.clientEmail || '-' }}</span>
-              </div>
-            </td>
-          </ng-container>
+        <!-- Client -->
+        <ng-container matColumnDef="client">
+          <th mat-header-cell *matHeaderCellDef>Client</th>
+          <td mat-cell *matCellDef="let row">
+            <div class="client-name-cell">
+              <span class="client-name">{{ row.client.nom || '-' }}</span>
+              <span class="client-email">{{ row.clientEmail || '-' }}</span>
+            </div>
+          </td>
+        </ng-container>
 
-          <ng-container matColumnDef="produit">
-            <th mat-header-cell *matHeaderCellDef>Produit</th>
-            <td mat-cell *matCellDef="let row">
-              {{ row.typeProduit | titlecase }}
-            </td>
-          </ng-container>
+        <!-- Produit -->
+        <ng-container matColumnDef="produit">
+          <th mat-header-cell *matHeaderCellDef>Produit</th>
+          <td mat-cell *matCellDef="let row">{{ row.typeProduit | titlecase }}</td>
+        </ng-container>
 
-          <ng-container matColumnDef="emballage">
-            <th mat-header-cell *matHeaderCellDef>Emballage</th>
-            <td mat-cell *matCellDef="let row">
-              {{ row.typeEmballage | titlecase }}
-            </td>
-          </ng-container>
+        <!-- Emballage -->
+        <ng-container matColumnDef="emballage">
+          <th mat-header-cell *matHeaderCellDef>Emballage</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="packaging-pill">{{ row.typeEmballage | titlecase }}</span>
+          </td>
+        </ng-container>
 
-          <ng-container matColumnDef="quantite">
-            <th mat-header-cell *matHeaderCellDef>Quantite</th>
-            <td mat-cell *matCellDef="let row">
-              <span class="quantity-pill">{{ row.quantiteCible }} {{ row.unite === 'LITRES' ? 'L' : 'unites' }}</span>
-            </td>
-          </ng-container>
+        <!-- Quantite -->
+        <ng-container matColumnDef="quantite">
+          <th mat-header-cell *matHeaderCellDef>Quantité</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="quantity-pill">
+              {{ row.quantiteCible | number }} {{ row.unite === 'LITRES' ? 'L' : 'u' }}
+            </span>
+          </td>
+        </ng-container>
 
-          <ng-container matColumnDef="dateLimite">
-            <th mat-header-cell *matHeaderCellDef>Date limite</th>
-            <td mat-cell *matCellDef="let row">
-              {{ row.dateLimiteLivraison | date:'dd/MM/yyyy' }}
-            </td>
-          </ng-container>
+        <!-- Date Limite -->
+        <ng-container matColumnDef="dateLimite">
+          <th mat-header-cell *matHeaderCellDef>Date limite</th>
+          <td mat-cell *matCellDef="let row">{{ row.dateLimiteLivraison | date:'dd/MM/yy' }}</td>
+        </ng-container>
 
-          <ng-container matColumnDef="valeurTotale">
-            <th mat-header-cell *matHeaderCellDef>Valeur totale</th>
-            <td mat-cell *matCellDef="let row">
-              <span class="amount-value">{{ row.valeurTotale | currency:'TND' }}</span>
-            </td>
-          </ng-container>
+        <!-- Valeur -->
+        <ng-container matColumnDef="valeurTotale">
+          <th mat-header-cell *matHeaderCellDef>Valeur</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="amount-value">{{ row.valeurTotale | currency:'TND':'symbol':'1.0-0' }}</span>
+          </td>
+        </ng-container>
 
-          <ng-container matColumnDef="statut">
-            <th mat-header-cell *matHeaderCellDef>Statut</th>
-            <td mat-cell *matCellDef="let row">
-              <span class="status-badge" [ngClass]="statusClass(row.statut)">
-                {{ statusLabel(row.statut || '-') }}
-              </span>
-            </td>
-          </ng-container>
+        <!-- Statut -->
+        <ng-container matColumnDef="statut">
+          <th mat-header-cell *matHeaderCellDef>Statut</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="status-badge" [ngClass]="statusClass(row.statut)">
+              {{ statusLabel(row.statut || '-') }}
+            </span>
+          </td>
+        </ng-container>
 
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef>Actions</th>
-            <td mat-cell *matCellDef="let row">
-              <button
-                mat-icon-button
-                [matMenuTriggerFor]="menu"
-                [matMenuTriggerRestoreFocus]="false"
-                class="btn-actions"
-                aria-label="Ouvrir les actions projet">
-                <mat-icon>more_vert</mat-icon>
+        <!-- Actions -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let row" (click)="$event.stopPropagation()">
+            <button mat-icon-button [matMenuTriggerFor]="menu" [matMenuTriggerRestoreFocus]="false" class="btn-actions"
+              aria-label="Actions">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="onViewDetails(row)">
+                <mat-icon>visibility</mat-icon><span>Voir détails</span>
               </button>
+              <button mat-menu-item (click)="onOpenExpedition(row)">
+                <mat-icon>local_shipping</mat-icon><span>Expedition</span>
+              </button>
+              <button mat-menu-item (click)="onEdit(row)">
+                <mat-icon>edit</mat-icon><span>Modifier</span>
+              </button>
+              <button mat-menu-item (click)="onAddOF(row)">
+                <mat-icon>add_box</mat-icon><span>Ajouter OF</span>
+              </button>
+              <button mat-menu-item *ngIf="canChangeStatus(row)" (click)="openStatusDialog(row)">
+                <mat-icon>swap_horiz</mat-icon><span>Changer statut</span>
+              </button>
+              <mat-divider></mat-divider>
+              <button mat-menu-item class="danger" (click)="onDelete(row)">
+                <mat-icon>delete</mat-icon><span>Supprimer</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
 
-              <mat-menu #menu="matMenu">
-                <button mat-menu-item (click)="onEdit(row)">
-                  <mat-icon>edit</mat-icon>
-                  <span>Modifier</span>
-                </button>
-
-                <button mat-menu-item (click)="onAddOF(row)">
-                  <mat-icon>add_box</mat-icon>
-                  <span>Ajouter OF</span>
-                </button>
-
-                <button mat-menu-item (click)="onViewDetails(row)">
-                  <mat-icon>visibility</mat-icon>
-                  <span>Voir details</span>
-                </button>
-
-                <button
-                  mat-menu-item
-                  *ngIf="canChangeStatus(row)"
-                  (click)="openStatusDialog(row)">
-                  <mat-icon>swap_horiz</mat-icon>
-                  <span>Changer statut</span>
-                </button>
-
-                <mat-divider></mat-divider>
-
-                <button mat-menu-item class="danger" (click)="onDelete(row)">
-                  <mat-icon>delete</mat-icon>
-                  <span>Supprimer</span>
-                </button>
-              </mat-menu>
-            </td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-        </table>
-      </div>
-
-      <mat-paginator
-        [length]="totalElements()"
-        [pageSize]="pageSize"
-        [pageSizeOptions]="[5, 10, 25]"
-        (page)="onPageChange($event)"
-        showFirstLastButtons>
-      </mat-paginator>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="onViewDetails(row)" style="cursor:pointer">
+        </tr>
+      </table>
     </div>
+
+    <mat-paginator [length]="totalElements()" [pageSize]="pageSize()" [pageIndex]="pageIndex()"
+      [pageSizeOptions]="[10, 25, 50]" (page)="onPageChange($event)" showFirstLastButtons>
+    </mat-paginator>
+  </div>
   }
+
 </div>

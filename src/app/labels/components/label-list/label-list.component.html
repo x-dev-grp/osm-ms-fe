@@ -1,0 +1,171 @@
+<div class="abioc-container">
+  <!-- HEADER CARD -->
+  <div class="header-card">
+    <div class="header-left">
+      <div class="icon-box">
+        <mat-icon>sell</mat-icon>
+      </div>
+      <div>
+        <h1>Étiquettes</h1>
+        <p>Bibliothèque des empreintes numériques</p>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="search-field">
+        <mat-label>Rechercher</mat-label>
+        <input matInput placeholder="Lot, dénomination..." (input)="onSearch($event)" />
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <div class="kpi">
+        <span class="kpi-value">{{ allLabels.length }}</span>
+        <span class="kpi-label">Étiquettes</span>
+      </div>
+
+      <button mat-mini-fab color="primary" (click)="createNewLabel()" matTooltip="Nouvelle Étiquette">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- FEEDBACK -->
+  <div class="feedback-container">
+    <div class="feedback success" *ngIf="successMessage">
+      <mat-icon>check_circle</mat-icon> {{ successMessage }}
+    </div>
+    <div class="feedback error" *ngIf="errorMessage">
+      <mat-icon>error</mat-icon> {{ errorMessage }}
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div class="abioc-loading" *ngIf="loading">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+
+  <!-- TABLE CARD -->
+  <div class="table-card" *ngIf="!loading">
+    <div class="table-header">
+      <h3>Liste des étiquettes</h3>
+      <span>{{ allLabels.length }} élément(s)</span>
+    </div>
+
+    <table mat-table [dataSource]="dataSource" class="abioc-table">
+      <!-- Lot Column -->
+      <ng-container matColumnDef="lotNumber">
+        <th mat-header-cell *matHeaderCellDef>N° Lot</th>
+        <td mat-cell *matCellDef="let label">
+          <span class="lot-badge">{{ label.lotNumber || '-' }}</span>
+        </td>
+      </ng-container>
+
+      <!-- Denomination Column -->
+      <ng-container matColumnDef="legalDenomination">
+        <th mat-header-cell *matHeaderCellDef>Dénomination</th>
+        <td mat-cell *matCellDef="let label">
+          <span class="denomination-text">{{ label.legalDenomination || '-' }}</span>
+        </td>
+      </ng-container>
+
+      <!-- Quantity Column -->
+      <ng-container matColumnDef="netQuantity">
+        <th mat-header-cell *matHeaderCellDef>Quantité</th>
+        <td mat-cell *matCellDef="let label">{{ label.netQuantity || '-' }}</td>
+      </ng-container>
+      
+      <!-- Certifications Column -->
+      <ng-container matColumnDef="certifications">
+        <th mat-header-cell *matHeaderCellDef>Certifications</th>
+        <td mat-cell *matCellDef="let label">
+          <div class="cert-logos-list">
+            <ng-container *ngFor="let certName of label.certifications">
+              <div class="mini-cert" *ngIf="getCertInfo(certName) as cert" [matTooltip]="cert.name">
+                <img *ngIf="cert.logoData" [src]="'data:' + cert.logoContentType + ';base64,' + cert.logoData" />
+                <mat-icon *ngIf="!cert.logoData">verified</mat-icon>
+              </div>
+            </ng-container>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Date Column -->
+      <ng-container matColumnDef="packagingDate">
+        <th mat-header-cell *matHeaderCellDef>Date Cond.</th>
+        <td mat-cell *matCellDef="let label">{{ label.packagingDate | date:'dd/MM/yyyy' }}</td>
+      </ng-container>
+
+      <!-- Category Column -->
+      <ng-container matColumnDef="labelCategory">
+        <th mat-header-cell *matHeaderCellDef>Catégorie</th>
+        <td mat-cell *matCellDef="let label">{{ label.labelCategory }}</td>
+      </ng-container>
+
+      <!-- Language Column -->
+      <ng-container matColumnDef="language">
+        <th mat-header-cell *matHeaderCellDef>Langue</th>
+        <td mat-cell *matCellDef="let label">{{ label.language }}</td>
+      </ng-container>
+
+      <!-- Status Column -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Statut</th>
+        <td mat-cell *matCellDef="let label">
+          <span class="status-badge" [ngClass]="statusClass(label.status)">
+            {{ statusLabel(label.status) }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let label">
+          <div class="row-actions">
+            <!-- QUICK ACTION DRAFT: GO TO WORKFLOW -->
+            <button mat-icon-button color="primary" *ngIf="label.status === 'DRAFT' || label.status === 'VALIDATED'"
+                    (click)="editLabel(label)" matTooltip="Éditer / Finaliser">
+              <mat-icon>edit_note</mat-icon>
+            </button>
+
+            <!-- QUICK ACTION FINALIZED: EXPORT -->
+            <button mat-icon-button color="primary" *ngIf="label.status === 'FINALIZED' || label.status === 'EXPORTED_JSON'"
+                    (click)="exportLabel(label)" matTooltip="Télécharger JSON">
+              <mat-icon>download</mat-icon>
+            </button>
+
+            <button mat-icon-button [matMenuTriggerFor]="menu" class="btn-actions">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+          </div>
+
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="viewDetails(label)">
+              <mat-icon>visibility</mat-icon>
+              <span>Voir</span>
+            </button>
+            <button mat-menu-item *ngIf="label.status === 'FINALIZED' || label.status === 'EXPORTED_JSON'" (click)="markAsDraft(label)">
+              <mat-icon>lock_open</mat-icon>
+              <span>Déverrouiller</span>
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item class="danger" (click)="onDelete(label)">
+              <mat-icon color="warn">delete</mat-icon>
+              <span class="text-warn">Supprimer</span>
+            </button>
+          </mat-menu>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+
+    <div class="abioc-empty" *ngIf="allLabels.length === 0">
+      <mat-icon>sell</mat-icon>
+      <p>Aucune étiquette trouvée</p>
+    </div>
+
+    <mat-paginator [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator>
+  </div>
+</div>

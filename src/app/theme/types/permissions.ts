@@ -33,6 +33,7 @@ export enum ProductionEntity {
   OILTRANSACTION = 'OILTRANSACTION',
   OILCREDIT = 'OILCREDIT',
   base_type = 'base_type',
+  CERTIFICATION='CERTIFICATION'
 }
 
 export enum FinanceEntity {

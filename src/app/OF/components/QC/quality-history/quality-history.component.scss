@@ -40,7 +40,7 @@ $border-radius-sm: 12px;
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
-  animation: fadeInUp 0.5s ease-out;
+
 
   .page-header {
     margin-bottom: 2rem;
@@ -88,7 +88,7 @@ $border-radius-sm: 12px;
     margin-bottom: 1rem;
     border-radius: $border-radius-sm !important;
     box-shadow: $shadow-sm;
-    transition: $transition;
+
 
     &:hover {
       box-shadow: $shadow-md;
@@ -131,7 +131,7 @@ $border-radius-sm: 12px;
       color: $olive-green;
       text-decoration: none;
       border-bottom: 1px dotted $olive-green;
-      transition: $transition;
+
 
       &:hover {
         color: $olive-dark;

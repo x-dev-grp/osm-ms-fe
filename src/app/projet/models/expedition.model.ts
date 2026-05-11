@@ -58,6 +58,7 @@ export interface ExpeditionCreateRequest {
   destination?: string;
   plannedShipDate?: string;
   notes?: string;
+  lines?: ExpeditionLineCreateRequest[];
 }
 
 export interface ExpeditionUpdateRequest {

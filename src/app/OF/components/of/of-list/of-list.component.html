@@ -69,20 +69,26 @@
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="viewOF(of)">
+            <button mat-menu-item type="button" (click)="viewOF(of)">
               <mat-icon>visibility</mat-icon>
               <span>Voir OF</span>
             </button>
-            <button mat-menu-item (click)="goToProduction(of)">
-              <mat-icon>cogs</mat-icon>
+
+            <button mat-menu-item type="button" [routerLink]="['/of/modifier', of.id]">
+              <mat-icon>edit</mat-icon>
+              <span>Modifier</span>
+            </button>
+
+            <button mat-menu-item type="button" (click)="goToProduction(of)">
+              <mat-icon>precision_manufacturing</mat-icon>
               <span>Production</span>
             </button>
-            <button mat-menu-item (click)="goToQualityControl(of)">
-              <mat-icon>clipboard-check</mat-icon>
+
+            <button mat-menu-item type="button" (click)="goToQualityControl(of)">
+              <mat-icon>fact_check</mat-icon>
               <span>Contrôle qualité</span>
             </button>
-          </mat-menu>
-        </td>
+          </mat-menu>        </td>
       </tr>
       <tr *ngIf="ofs.length === 0">
         <td colspan="7" class="empty-state">

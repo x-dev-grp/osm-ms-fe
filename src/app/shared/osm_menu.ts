@@ -46,8 +46,56 @@ export const osm_menus: Navigation[] = [
         breadcrumbs: false
       },
       {
-        id: 'item-storage-storage-recap',
-        title: 'MENU.HOME.DASHBOARD.STORAGE_RECAP',
+        id: 'collapse-analytics-reports',
+        title: 'Rapports',
+        type: 'collapse',
+        icon: 'insights',
+        children: [
+          {
+            id: 'item-analytics-dashboard',
+            title: 'Vue Globale (OF)',
+            type: 'item',
+            url: '/analytics/dashboard',
+            icon: 'dashboard',
+            breadcrumbs: false
+          },
+          {
+            id: 'item-analytics-of-yield',
+            title: 'Rendements des OF',
+            type: 'item',
+            url: '/analytics/of-yield',
+            icon: 'speed',
+            breadcrumbs: false
+          },
+          {
+            id: 'item-analytics-quality',
+            title: 'Qualité & Non-conformités',
+            type: 'item',
+            url: '/analytics/quality',
+            icon: 'fact_check',
+            breadcrumbs: false
+          },
+          {
+            id: 'item-analytics-bom-gap',
+            title: 'Écarts Nomenclatures (BOM)',
+            type: 'item',
+            url: '/analytics/bom-gap',
+            icon: 'difference',
+            breadcrumbs: false
+          },
+          {
+            id: 'item-analytics-filtration',
+            title: 'Efficacité Filtrage',
+            type: 'item',
+            url: '/analytics/filtration',
+            icon: 'filter_alt',
+            breadcrumbs: false
+          }
+        ]
+      },
+      {
+        id: 'item-storage-storage_recap',
+        title: 'Stockage Huile',
         type: 'item',
         url: '/storage/storage_recap',
         icon: 'water_drop',
@@ -253,9 +301,66 @@ export const osm_menus: Navigation[] = [
     ]
   },
 
-  // ────────────────────────
-  // Stockage / Huilerie
-  // ────────────────────────
+  {
+    id: 'group-reception',
+    title: 'MENU.PRODUCTION.RECEPTIONS',
+    type: 'collapse',
+    icon: 'list_alt',
+    children: [
+      {
+        id: 'reception-olive',
+        title: 'Réception Olive',
+        type: 'collapse',
+        icon: 'spa',
+        children: [
+          {
+            id: 'reception-olive-simple',
+            title: 'Trituration Particulier',
+            type: 'item',
+            url: '/reception/reception-list/olive/SIMPLE_RECEPTION',
+            icon: 'person',
+            breadcrumbs: false
+          },
+          {
+            id: 'reception-olive-base',
+            title: 'Trituration sur Base',
+            type: 'item',
+            url: '/reception/reception-list/olive/BASE',
+            icon: 'recycling',
+            breadcrumbs: false
+          },
+          {
+            id: 'reception-olive-purchase',
+            title: 'Achat Olive',
+            type: 'item',
+            url: '/reception/reception-list/olive/OLIVE_PURCHASE',
+            icon: 'shopping_basket',
+            breadcrumbs: false
+          },
+          {
+            id: 'reception-olive-exchange',
+            title: 'Échange',
+            type: 'item',
+            url: '/reception/reception-list/olive/EXCHANGE',
+            icon: 'compare_arrows',
+            breadcrumbs: false
+          }
+        ]
+      },
+      {
+        id: 'reception-huile',
+        title: 'Réception Huile',
+        type: 'item',
+        url: '/reception/reception-list/oil',
+        icon: 'water_drop',
+        breadcrumbs: false
+      }
+    ]
+  },
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // 3. PRODUCTION & STOCKAGE HUILERIE
+  // ──────────────────────────────────────────────────────────────────────────
   {
     id: 'group-storage',
     title: 'MENU.STORAGE.TITLE',
@@ -315,15 +420,31 @@ export const osm_menus: Navigation[] = [
         type: 'item',
         url: '/stock/audit',
         icon: 'history',
-        breadcrumbs: false,
-
-      },  {
+        breadcrumbs: false
+      },
+      {
         id: 'item-conditioning-projects',
         title: 'Projets Clients',
-        type: 'item',
-        url: '/projets',
+        type: 'collapse',
         icon: 'assignment',
-        breadcrumbs: false
+        children: [
+          {
+            id: 'item-projet-list',
+            title: 'Liste des projets',
+            type: 'item',
+            url: '/projets',
+            icon: 'list_alt',
+            breadcrumbs: false
+          },
+          {
+            id: 'item-projet-expeditions',
+            title: 'Expéditions',
+            type: 'item',
+            url: '/projets/expeditions',
+            icon: 'route',
+            breadcrumbs: false
+          }
+        ]
       },
       {
         id: 'item-conditioning-of',
@@ -350,7 +471,7 @@ export const osm_menus: Navigation[] = [
         breadcrumbs: false
       },
       {
-        id: 'item-conditioning-expeditions',
+        id: 'item-expedition',
         title: 'Expéditions & Logistique',
         type: 'item',
         url: '/projets/expeditions',
@@ -358,7 +479,7 @@ export const osm_menus: Navigation[] = [
         breadcrumbs: false
       },
       {
-        id: 'item-conditioning-clients',
+        id: 'item-client-cond',
         title: 'Gestion Clients',
         type: 'item',
         url: '/projets/clients',
@@ -486,7 +607,7 @@ export const osm_menus: Navigation[] = [
     children: [
       {
         id: 'collapse-group-finance-main',
-        title: 'Gestion de Caisse',
+        title: 'Gestion de Colis',
         type: 'collapse',
         icon: 'account_balance',
         children: [
@@ -606,6 +727,15 @@ export const osm_menus: Navigation[] = [
             icon: 'verified',
             breadcrumbs: false,
             ressourcePermission: ProductionEntity.QUALITYCONTROLRULE
+          },
+          {
+            id: 'item-settings-certifications',
+            title: 'Certifications',
+            type: 'item',
+            url: '/labels/certifications',
+            icon: 'verified_user',
+            breadcrumbs: false,
+            ressourcePermission: ProductionEntity.CERTIFICATION
           },
           {
             id: 'item-settings-mill-machines',

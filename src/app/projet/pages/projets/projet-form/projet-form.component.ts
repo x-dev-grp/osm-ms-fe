@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule, CurrencyPipe, TitleCasePipe } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+
 import { ProjetDto, TypeEmballage, TypeProduit } from '../../../models/TypeProduit';
-import {Client} from "../../../models/client.model";
-import {ProjetService} from "../../../services/projet.service";
-import {ClientService} from "../../../services/client.service";
+import {Client, ClientType} from '../../../models/client.model';
+import { ProjetService } from '../../../services/projet.service';
+import { ClientService } from '../../../services/client.service';
 
 @Component({
   selector: 'app-projet-form',
@@ -88,14 +89,16 @@ export class ProjetFormComponent implements OnInit {
   }
 
   private loadProjet(): void {
-    if (!this.projetId) return;
+    if (!this.projetId) {
+      return;
+    }
 
     this.projetService.getById(this.projetId).subscribe({
       next: (projet: ProjetDto) => {
         this.projetCode = projet.code;
 
         this.form.patchValue({
-          clientId: projet.clientId,
+          clientId: projet.client?.id ?? '',
           typeProduit: projet.typeProduit,
           typeEmballage: projet.typeEmballage,
           quantiteCible: projet.quantiteCible,
@@ -117,6 +120,7 @@ export class ProjetFormComponent implements OnInit {
   calculValeurTotale(): number {
     const qte = Number(this.form?.get('quantiteCible')?.value || 0);
     const prix = Number(this.form?.get('prixUnitaire')?.value || 0);
+
     return qte * prix;
   }
 
@@ -127,10 +131,38 @@ export class ProjetFormComponent implements OnInit {
       return;
     }
 
+    const selectedClient = this.getSelectedClient();
+
+    if (!selectedClient) {
+      this.form.get('clientId')?.setErrors({ required: true });
+      this.form.get('clientId')?.markAsTouched();
+      alert('Veuillez selectionner un client valide.');
+      return;
+    }
+
     this.loading = true;
 
+    const formValue = this.form.value;
+
     const request: ProjetDto = {
-      ...this.form.value
+      id: this.projetId ?? '',
+      code: this.projetCode,
+
+      client: selectedClient,
+
+      typeProduit: formValue.typeProduit,
+      typeEmballage: formValue.typeEmballage,
+
+      quantiteCible: Number(formValue.quantiteCible),
+      unite: formValue.unite,
+
+      dateLimiteLivraison: formValue.dateLimiteLivraison,
+      prixUnitaire: Number(formValue.prixUnitaire),
+      valeurTotale: this.calculValeurTotale(),
+
+      conditionsLivraison: formValue.conditionsLivraison,
+
+      statut: formValue.statut
     };
 
     const action = this.isEdit && this.projetId
@@ -157,4 +189,12 @@ export class ProjetFormComponent implements OnInit {
     const field = this.form.get(fieldName);
     return !!field && field.invalid && (field.touched || field.dirty);
   }
+
+  private getSelectedClient(): Client | undefined {
+    const clientId = this.form.get('clientId')?.value;
+
+    return this.clients.find((client) => client.id === clientId);
+  }
+
+  protected readonly ClientType = ClientType;
 }

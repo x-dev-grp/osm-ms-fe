@@ -90,7 +90,7 @@ $border-radius-sm: 12px;
       align-items: center;
       gap: 0.5rem;
       cursor: pointer;
-      transition: $transition;
+
 
       i {
         font-size: 1rem;
@@ -157,7 +157,7 @@ $border-radius-sm: 12px;
 
       tbody {
         tr {
-          transition: $transition;
+
 
           &:hover {
             background: $gray-100;
@@ -200,7 +200,7 @@ $border-radius-sm: 12px;
                 background: transparent;
                 color: $gray-600;
                 cursor: pointer;
-                transition: $transition;
+
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;

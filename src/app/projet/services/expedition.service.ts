@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
   ExpeditionActionRequest,
@@ -10,6 +10,12 @@ import {
   ExpeditionUpdateRequest,
   ResolveResponse
 } from '../models/expedition.model';
+
+interface ApiSingleResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+}
 
 @Injectable({ providedIn: 'root' })
 export class ExpeditionService {
@@ -22,11 +28,15 @@ export class ExpeditionService {
   }
 
   create(request: ExpeditionCreateRequest): Observable<ExpeditionDto> {
-    return this.http.post<ExpeditionDto>(this.baseUrl, request);
+    return this.http
+      .post<ApiSingleResponse<ExpeditionDto>>(this.baseUrl, request)
+      .pipe(map(response => response.data));
   }
 
   getById(expeditionId: string): Observable<ExpeditionDto> {
-    return this.http.get<ExpeditionDto>(`${this.baseUrl}/${expeditionId}`);
+    return this.http
+      .get<ApiSingleResponse<ExpeditionDto>>(`${this.baseUrl}/fetch/${expeditionId}`)
+      .pipe(map(response => response.data));
   }
 
   getByProject(projectId: string): Observable<ExpeditionDto[]> {
@@ -38,7 +48,9 @@ export class ExpeditionService {
   }
 
   update(expeditionId: string, request: ExpeditionUpdateRequest): Observable<ExpeditionDto> {
-    return this.http.put<ExpeditionDto>(`${this.baseUrl}/${expeditionId}`, request);
+    return this.http
+      .put<ApiSingleResponse<ExpeditionDto>>(`${this.baseUrl}/${expeditionId}`, request)
+      .pipe(map(response => response.data));
   }
 
   addLine(expeditionId: string, request: ExpeditionLineCreateRequest): Observable<ExpeditionDto> {
@@ -75,5 +87,11 @@ export class ExpeditionService {
 
   resolve(publicCode: string): Observable<ResolveResponse> {
     return this.http.get<ResolveResponse>(`${this.baseUrl}/resolve/${encodeURIComponent(publicCode)}`);
+  }
+
+  delete(expeditionId: string): Observable<void> {
+    return this.http
+      .delete<ApiSingleResponse<ExpeditionDto>>(`${this.baseUrl}/delete/${expeditionId}`)
+      .pipe(map(() => undefined));
   }
 }
