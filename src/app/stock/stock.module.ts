@@ -18,9 +18,9 @@ import { FournisseurDetailComponent } from "./components/fournisseurs/fournisseu
 import { SkuListComponent } from "./components/sku/sku-list/sku-list.component";
 import { SkuFormComponent } from "./components/sku/sku-form/sku-form.component";
 import { SkuDetailComponent } from "./components/sku/sku-detail/sku-detail.component";
-import { ClientListComponent } from "./components/clients/client-list/client-list.component";
-import { ClientDetailComponent } from "./components/clients/client-detail/client-detail.component";
-import { ClientFormComponent } from "./components/clients/client-form/client-form.component";
+import { ClientListComponent } from "../projet/pages/clients/client-list/client-list.component";
+import { ClientDetailComponent } from "../projet/pages/clients/client-detail/client-detail.component";
+import { ClientFormComponent } from "../projet/pages/clients/client-form/client-form.component";
 import { LigneListComponent } from "./components/lignes/ligne-list/ligne-list.component";
 import { LigneFormComponent } from "./components/lignes/ligne-form/ligne-form.component";
 import { LigneDetailComponent } from "./components/lignes/ligne-detail/ligne-detail.component";
@@ -57,9 +57,6 @@ import {BomDetailComponent} from "./components/bom/bom-detail/bom-detail.compone
     SkuListComponent,
     SkuFormComponent,
     SkuDetailComponent,
-    ClientListComponent,
-    ClientFormComponent,
-    ClientDetailComponent,
     LigneListComponent,
     LigneFormComponent,
     LigneDetailComponent,

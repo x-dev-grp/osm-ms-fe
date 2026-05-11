@@ -72,6 +72,7 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
       phone: ['', [Validators.required, Validators.pattern(/^[0-9+\-\s()]{6,}$/)]],
       email: [''],
       address: [''],
+      genericSupplierType:[null as BaseType | null, Validators.required],
       region: [null as BaseType | null, Validators.required], // BaseType
       hasStorage: [false],
       matriculeFiscal: [''],

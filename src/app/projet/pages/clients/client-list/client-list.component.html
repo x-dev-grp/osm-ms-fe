@@ -1,135 +1,167 @@
-<div class="abioc-container">
-  <div class="header-card">
-    <div class="header-left">
-      <div class="icon-box">
-        <mat-icon>groups</mat-icon>
-      </div>
-
-      <div class="header-copy">
-        <h1>Clients</h1>
-        <p>Gestion des acheteurs et proprietaires de marque</p>
-      </div>
+<div class="client-container">
+  @if (successMessage) {
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <i class="fas fa-check-circle me-2"></i> {{ successMessage }}
+      <button type="button" class="btn-close" (click)="successMessage = null"></button>
     </div>
+  }
 
-    <div class="header-right">
-      <div class="kpi">
-        <span class="kpi-value">{{ rows().length }}</span>
-        <span class="kpi-label">Clients</span>
+  @if (error) {
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <i class="fas fa-exclamation-triangle me-2"></i> {{ error }}
+      <button type="button" class="btn-close" (click)="error = null"></button>
+    </div>
+  }
+  <div class="header-section">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h1 class="page-title">
+          <i class="fas fa-users me-2"></i>
+          Clients
+        </h1>
+        <p class="text-muted mb-0">
+          <i class="fas fa-database me-1"></i>
+          {{ filteredClients.length }} client(s)
+        </p>
       </div>
-
-      <button mat-flat-button color="primary" (click)="onCreate()">
-        <mat-icon>add</mat-icon>
-        Nouveau client
-      </button>
+      <div class="action-buttons">
+        <button class="btn-create" routerLink="nouveau">
+          <i class="fas fa-plus me-1"></i>
+          Nouveau client
+        </button>
+      </div>
     </div>
   </div>
+  <div class="filters-section">
+    <div class="filters-body">
+      <div class="row g-3">
+        <div class="col-md-5">
+          <label class="filter-label">
+            <i class="fas fa-search me-1"></i>
+            Recherche
+          </label>
+          <div class="search-wrapper">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text"
+                   class="filter-input search-input"
+                   placeholder="Nom, code client, email, pays..."
+                   [(ngModel)]="searchTerm"
+                   (input)="applyFilters()">
+            @if (searchTerm) {
+              <button class="clear-search" (click)="searchTerm = ''; applyFilters()">
+                <i class="fas fa-times"></i>
+              </button>
+            }
+          </div>
+        </div>
 
-  @if (loading()) {
-    <div class="abioc-loading">
-      <mat-spinner diameter="40"></mat-spinner>
+        <div class="col-md-1 filter-actions">
+          <button class="btn-reset" (click)="resetFilters()" title="Réinitialiser les filtres">
+            <i class="fas fa-undo-alt"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  @if (loading) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Chargement des clients...</p>
     </div>
   }
-
-  @if (!loading() && rows().length === 0) {
-    <div class="abioc-empty">
-      <mat-icon>groups</mat-icon>
-      <p>Aucun client</p>
-      <button mat-stroked-button color="primary" (click)="onCreate()">
-        <mat-icon>add</mat-icon>
-        Creer un client
-      </button>
-    </div>
-  }
-
-  @if (!loading() && rows().length > 0) {
-    <div class="table-card">
+  @if (!loading) {
+    <div class="table-section">
       <div class="table-header">
-        <h3>Liste des clients</h3>
-        <span>{{ rows().length }} clients</span>
+        <div class="results-info">
+          <i class="fas fa-list me-2"></i>
+          <span>{{ filteredClients.length }} résultat(s) affiché(s)</span>
+        </div>
       </div>
 
-      <div class="table-wrap">
-        <table mat-table [dataSource]="rows()" class="abioc-table">
-          <ng-container matColumnDef="nom">
-            <th mat-header-cell *matHeaderCellDef>Nom</th>
-            <td mat-cell *matCellDef="let row">
-              <div class="client-name-cell">
-                <span class="client-name">{{ row.nom }}</span>
-              </div>
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="email">
-            <th mat-header-cell *matHeaderCellDef>Email</th>
-            <td mat-cell *matCellDef="let row">
-              <span class="muted-text">{{ row.email || '-' }}</span>
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="telephone">
-            <th mat-header-cell *matHeaderCellDef>Telephone</th>
-            <td mat-cell *matCellDef="let row">
-              <span class="phone-pill">{{ row.telephone || '-' }}</span>
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="type">
-            <th mat-header-cell *matHeaderCellDef>Type</th>
-            <td mat-cell *matCellDef="let row">
-              <span
-                class="status-badge"
-                [class.created]="row.type === 'BUYER'"
-                [class.completed]="row.type === 'BRAND_OWNER'">
-                {{ typeLabel(row.type) }}
-              </span>
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef>Actions</th>
-            <td mat-cell *matCellDef="let row">
-              <button
-                mat-icon-button
-                [matMenuTriggerFor]="menu"
-                [matMenuTriggerRestoreFocus]="false"
-                class="btn-actions"
-                aria-label="Ouvrir les actions client">
-                <mat-icon>more_vert</mat-icon>
-              </button>
-
-              <mat-menu #menu="matMenu">
-                <button mat-menu-item (click)="onEdit(row)">
-                  <mat-icon>edit</mat-icon>
-                  <span>Modifier</span>
-                </button>
-
-                <button mat-menu-item (click)="onViewDetails(row)">
-                  <mat-icon>visibility</mat-icon>
-                  <span>Voir details</span>
-                </button>
-
-                <mat-divider></mat-divider>
-
-                <button mat-menu-item class="danger" (click)="onDelete(row)">
-                  <mat-icon>delete</mat-icon>
-                  <span>Supprimer</span>
-                </button>
-              </mat-menu>
-            </td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      <div class="table-responsive">
+        <table class="modern-table">
+          <thead>
+          <tr>
+            <th>Nom / Raison sociale</th>
+            <th>Code client</th>
+            <th>Contact</th>
+            <th>Localisation</th>
+            <th>Type</th>
+            <th class="text-center">Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+            @for (client of filteredClients; track client.id) {
+              <tr class="client-row" (click)="router.navigate(['/stock/clients', client.id])">
+                <td class="fw-bold">
+                  <span class="client-nom">{{ client.nom }}</span>
+                </td>
+                <td>
+                  <span class="client-code">{{ client.codeClient || '-' }}</span>
+                </td>
+                <td>
+                  <div class="contact-info">
+                    @if (client.email) {
+                      <div><i class="fas fa-envelope me-1"></i> {{ client.email }}</div>
+                    }
+                    @if (client.telephone) {
+                      <div><i class="fas fa-phone me-1"></i> {{ client.telephone }}</div>
+                    }
+                  </div>
+                </td>
+                <td>
+                  <div class="location-info">
+                    @if (client.ville || client.pays) {
+                      <div>
+                        {{ client.ville || '' }}{{ client.ville && client.pays ? ', ' : '' }}{{ client.pays || '' }}
+                      </div>
+                    }
+                    @if (client.codePostal) {
+                      <div class="text-muted">{{ client.codePostal }}</div>
+                    }
+                  </div>
+                </td>
+                <td>
+                  @if (client.privateLabel) {
+                    <span class="badge private-label">
+                      <i class="fas fa-star me-1"></i> Private Label
+                    </span>
+                  } @else {
+                    <span class="badge standard">
+                      <i class="fas fa-user me-1"></i> Standard
+                    </span>
+                  }
+                </td>
+                <td class="text-center">
+                  <div class="action-buttons-cell" (click)="$event.stopPropagation()">
+                    <button class="btn-action view" [routerLink]="['/stock/clients', client.id]" title="Voir détails">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn-action edit" [routerLink]="['/stock/clients', client.id, 'editer']" title="Modifier">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="empty-state">
+                  <div class="empty-state-content">
+                    <i class="fas fa-users"></i>
+                    <h4>Aucun client trouvé</h4>
+                    <p>Commencez par créer un nouveau client</p>
+                    <button class="btn-create-sm" routerLink="nouveau">
+                      <i class="fas fa-plus me-1"></i>
+                      Créer un client
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
         </table>
       </div>
 
-      <mat-paginator
-        [length]="totalElements()"
-        [pageSize]="pageSize"
-        [pageSizeOptions]="[5, 10, 25]"
-        (page)="onPageChange($event)"
-        showFirstLastButtons>
-      </mat-paginator>
     </div>
   }
 </div>

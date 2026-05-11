@@ -213,12 +213,22 @@ export class ArticleDetailComponent implements OnInit {
     this.loadingEmplacements = true;
     this.emplacementService.getAllEmplacements().subscribe({
       next: (response) => {
-        if (response && response.data) {
-          // @ts-ignore
-          this.emplacements = response.data.filter(e => e.actif === true && e.disponible === true);
-        } else {
-          this.emplacements = [];
+        let data: EmplacementStock[] = [];
+        // Si le service renvoie un tableau directement
+        if (Array.isArray(response)) {
+          data = response;
         }
+        // Si le service renvoie { data: EmplacementStock[] }
+        else if (response && Array.isArray(response.data)) {
+          // @ts-ignore
+          data = response.data;
+        }
+        // Filtre : actif, disponible, et catégorie correspondante (ou non définie)
+        this.emplacements = data.filter(emp =>
+          emp.actif === true &&
+          emp.disponible === true &&
+          (!emp.categorieArticleStocke || emp.categorieArticleStocke === this.article.categorie)
+        );
         this.loadingEmplacements = false;
       },
       error: (err) => {
