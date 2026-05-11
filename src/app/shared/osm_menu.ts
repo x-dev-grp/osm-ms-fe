@@ -1,4 +1,5 @@
-import {Navigation} from 'src/app/theme/types/navigation';
+import { Navigation } from 'src/app/theme/types/navigation';
+
 import {
   Action,
   FinanceEntity,
@@ -9,43 +10,44 @@ import {
   ReceptionEntity
 } from 'src/app/theme/types/permissions';
 
-
 export const osm_menus: Navigation[] = [
   // ────────────────────────
   // Accueil / Tableau de bord
   // ────────────────────────
   {
-    id: 'group-dashboards',
-    title: 'Tableaux de Bord', // Literal as per "ignore translation" guidance
+    id: 'Dashboard',
+    title: 'MENU.HOME.DASHBOARD.TITLE',
     type: 'group',
-    icon: 'dashboard',
     children: [
       {
         id: 'item-dashboard-finance',
-        title: 'Finance',
+        title: 'MENU.HOME.DASHBOARD.FINANCE',
         type: 'item',
         url: '/finance/dashboard',
         icon: 'show_chart',
+        breadcrumbs: false,
         permissions: [permissionKey(OSMModule.FINANCE, FinanceEntity.FINANCIALTRANSACTION, Action.READ)]
       },
       {
         id: 'item-dashboard-reception-overview',
-        title: 'Réceptions',
+        title: 'MENU.HOME.DASHBOARD.RECEPTION',
         type: 'item',
         url: '/reception',
         icon: 'assignment',
+        breadcrumbs: false,
         permissions: [permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)]
       },
       {
-        id: 'item-stocks-dashboard',
+        id: 'item-dashboard-stocks',
         title: 'Stocks',
         type: 'item',
         url: '/stock/dashboard',
-        icon: 'analytics'
+        icon: 'analytics',
+        breadcrumbs: false
       },
       {
         id: 'collapse-analytics-reports',
-        title: 'Rapports & Analyses',
+        title: 'MENU.HOME.DASHBOARD.STORAGE_RECAP',
         type: 'collapse',
         icon: 'insights',
         children: [
@@ -92,94 +94,203 @@ export const osm_menus: Navigation[] = [
         type: 'item',
         url: '/storage/storage_recap',
         icon: 'water_drop',
+        breadcrumbs: false,
         permissions: [permissionKey(OSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.READ)]
       }
     ]
   },
 
-  // ──────────────────────────────────────────────────────────────────────────
-  // 2. RÉCEPTIONS & QUALITÉ
-  // ──────────────────────────────────────────────────────────────────────────
+  // ────────────────────────
+  // Réception
+  // ────────────────────────
   {
     id: 'group-reception',
-    title: 'Réceptions & Qualité',
+    title: 'MENU.RECEPTION.TITLE',
     type: 'group',
     modulePermission: 'RECEPTION',
     children: [
       {
         id: 'collapse-reception-olive',
-        title: 'Réception Olives',
+        title: 'MENU.RECEPTION.OLIVE',
         type: 'collapse',
-        icon: 'spa',
+        icon: 'shopping_basket',
+        ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY,
         children: [
           {
+            id: 'item-reception-olive-exchange',
+            title: 'OPERATION_TYPE.EXCHANGE',
+            type: 'item',
+            url: '/reception/reception-olive/exchange',
+            icon: 'swap_horiz',
+            breadcrumbs: false,
+            ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
+          },
+          {
             id: 'item-reception-olive-simple',
-            title: 'Trituration Particulier',
+            title: 'OPERATION_TYPE.SIMPLE_RECEPTION',
             type: 'item',
             url: '/reception/reception-olive/simple_reception',
-            icon: 'person'
+            icon: 'person',
+            breadcrumbs: false,
+            ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
           },
           {
             id: 'item-reception-olive-base',
-            title: 'Trituration sur Base',
+            title: 'OPERATION_TYPE.BASE',
             type: 'item',
             url: '/reception/reception-olive/base',
-            icon: 'recycling'
+            icon: 'recycling',
+            breadcrumbs: false,
+            ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
           },
           {
             id: 'item-reception-olive-purchase',
-            title: 'Achat Olive',
+            title: 'OPERATION_TYPE.OLIVE_PURCHASE',
             type: 'item',
             url: '/reception/reception-olive/olive_purchase',
-            icon: 'shopping_cart'
-          },
-          {
-            id: 'item-reception-olive-exchange',
-            title: 'Échange',
-            type: 'item',
-            url: '/reception/reception-olive/exchange',
-            icon: 'swap_horiz'
+            icon: 'shopping_cart',
+            breadcrumbs: false,
+            ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
           }
         ]
       },
       {
         id: 'item-reception-oil',
-        title: 'Réception Huile',
+        title: 'MENU.RECEPTION.OIL',
         type: 'item',
         url: '/reception/reception-huile',
         icon: 'local_shipping',
+        breadcrumbs: false,
         ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
       },
       {
-        id: 'collapse-quality',
-        title: 'Contrôles Qualité',
+        id: 'collapse-reception-lists',
+        title: 'MENU.PRODUCTION.RECEPTIONS',
         type: 'collapse',
-        icon: 'fact_check',
+        icon: 'list_alt',
         children: [
           {
-            id: 'item-reception-quality-oil',
-            title: 'Contrôle Huile',
-            type: 'item',
-            url: '/reception/oil_qc',
-            icon: 'rule',
-            ressourcePermission: ProductionEntity.QUALITYCONTROLRESULT
+            id: 'collapse-reception-list-olive',
+            title: 'Réception Olive',
+            type: 'collapse',
+            icon: 'spa',
+            children: [
+              {
+                id: 'item-reception-list-olive-simple',
+                title: 'Trituration Particulier',
+                type: 'item',
+                url: '/reception/reception-list/olive/SIMPLE_RECEPTION',
+                icon: 'person',
+                breadcrumbs: false,
+                ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
+              },
+              {
+                id: 'item-reception-list-olive-base',
+                title: 'Trituration sur Base',
+                type: 'item',
+                url: '/reception/reception-list/olive/BASE',
+                icon: 'recycling',
+                breadcrumbs: false,
+                ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
+              },
+              {
+                id: 'item-reception-list-olive-purchase',
+                title: 'Achat Olive',
+                type: 'item',
+                url: '/reception/reception-list/olive/OLIVE_PURCHASE',
+                icon: 'shopping_basket',
+                breadcrumbs: false,
+                ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
+              },
+              {
+                id: 'item-reception-list-olive-exchange',
+                title: 'Échange',
+                type: 'item',
+                url: '/reception/reception-list/olive/EXCHANGE',
+                icon: 'compare_arrows',
+                breadcrumbs: false,
+                ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
+              }
+            ]
           },
           {
-            id: 'item-reception-quality-olive',
-            title: 'Contrôle Olive',
+            id: 'item-reception-list-oil',
+            title: 'Réception Huile',
             type: 'item',
-            url: '/reception/olive_qc',
-            icon: 'rule',
-            ressourcePermission: ProductionEntity.QUALITYCONTROLRESULT
+            url: '/reception/reception-list/oil',
+            icon: 'water_drop',
+            breadcrumbs: false,
+            ressourcePermission: ReceptionEntity.UNIFIEDDELIVERY
           }
         ]
       },
       {
-        id: 'item-production-mill-schedules',
+        id: 'item-reception-supplier-manage',
+        title: 'MENU.RECEPTION.AGRICULTURE',
+        type: 'item',
+        url: '/reception/fournisseur',
+        icon: 'contact_page',
+        breadcrumbs: false,
+        ressourcePermission: ReceptionEntity.SUPPLIER
+      },
+      {
+        id: 'item-reception-mill-schedules',
         title: 'Plannings Trituration',
         type: 'item',
         url: '/reception/mill-schedules',
         icon: 'schedule',
+        breadcrumbs: false,
+        permissions: [permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.PLANNING)]
+      }
+    ]
+  },
+
+  // ────────────────────────
+  // Contrôle Qualité
+  // ────────────────────────
+  {
+    id: 'group-quality-control',
+    title: 'OSM_DASHBOARD.ACTIONS.QUALITYCONTROLRESULT',
+    type: 'group',
+    modulePermission: 'PRODUCTION',
+    children: [
+      {
+        id: 'item-quality-control-oil',
+        title: 'MENU.RECEPTION.QUALITY_CONTROL_HUILE',
+        type: 'item',
+        url: '/reception/oil_qc',
+        icon: 'rule',
+        breadcrumbs: false,
+        ressourcePermission: ProductionEntity.QUALITYCONTROLRESULT
+      },
+      {
+        id: 'item-quality-control-olive',
+        title: 'MENU.RECEPTION.QUALITY_CONTROL_OLIVE',
+        type: 'item',
+        url: '/reception/olive_qc',
+        icon: 'rule',
+        breadcrumbs: false,
+        ressourcePermission: ProductionEntity.QUALITYCONTROLRESULT
+      }
+    ]
+  },
+
+  // ────────────────────────
+  // Production
+  // ────────────────────────
+  {
+    id: 'group-production',
+    title: 'MENU.PRODUCTION.TITLE',
+    type: 'group',
+    modulePermission: 'PRODUCTION',
+    children: [
+      {
+        id: 'item-production-mill-schedules',
+        title: 'MENU.PRODUCTION.MILLING_SCHEDULE',
+        type: 'item',
+        url: '/reception/mill-schedules',
+        icon: 'schedule',
+        breadcrumbs: false,
         permissions: [permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.PLANNING)]
       }
     ]
@@ -244,59 +355,55 @@ export const osm_menus: Navigation[] = [
   // 3. PRODUCTION & STOCKAGE HUILERIE
   // ──────────────────────────────────────────────────────────────────────────
   {
-    id: 'group-mill-production',
-    title: 'Production & Huilerie',
+    id: 'group-storage',
+    title: 'MENU.STORAGE.TITLE',
     type: 'group',
     modulePermission: 'PRODUCTION',
     children: [
       {
         id: 'item-storage-units',
-        title: 'Unités de Stockage',
+        title: 'MENU.STORAGE.OIL_STORAGE_UNITS',
         type: 'item',
         url: '/storage',
         icon: 'warehouse',
+        breadcrumbs: false,
         ressourcePermission: ProductionEntity.STORAGEUNIT
       },
       {
         id: 'item-storage-oil-transactions',
-        title: 'Mouvements d\'huile',
+        title: 'MENU.FINANCE.OIL_TRANSACTIONS',
         type: 'item',
         url: '/storage/oil-transactions',
         icon: 'water_drop',
+        breadcrumbs: false,
         ressourcePermission: ProductionEntity.OILTRANSACTION
       },
       {
-        id: 'item-storage-filtrage',
+        id: 'item-storage-oil-filtering',
         title: 'Filtrage Huile',
         type: 'item',
         url: '/storage/oil-filtering',
         icon: 'filter_alt',
+        breadcrumbs: false,
         ressourcePermission: ProductionEntity.STORAGEUNIT
       },
       {
         id: 'item-storage-containers',
-        title: 'Conditionnement Vrac',
+        title: 'OIL_CONTAINER_MANAGEMENT',
         type: 'item',
         url: '/storage/oil-container',
         icon: 'inbox',
+        breadcrumbs: false,
         ressourcePermission: ProductionEntity.STORAGEUNIT
-      },
-      {
-        id: 'item-reception-supplier-manage',
-        title: 'Agriculteurs',
-        type: 'item',
-        url: '/reception/fournisseur',
-        icon: 'contact_page',
-        ressourcePermission: ReceptionEntity.SUPPLIER
       }
     ]
   },
 
-  // ──────────────────────────────────────────────────────────────────────────
-  // 4. CONDITIONNEMENT & LOGISTIQUE
-  // ──────────────────────────────────────────────────────────────────────────
+  // ────────────────────────
+  // Conditionnement & Ventes
+  // ────────────────────────
   {
-    id: 'group-conditionnement',
+    id: 'group-conditioning-sales',
     title: 'Conditionnement & Ventes',
     type: 'group',
     children: [
@@ -305,10 +412,11 @@ export const osm_menus: Navigation[] = [
         title: 'Journal d\'Audit',
         type: 'item',
         url: '/stock/audit',
-        icon: 'history'
-      },
-      {
-        id: 'item-projet',
+        icon: 'history',
+        breadcrumbs: false,
+
+      },  {
+        id: 'item-conditioning-projects',
         title: 'Projets Clients',
         type: 'collapse',
         icon: 'assignment',
@@ -330,39 +438,51 @@ export const osm_menus: Navigation[] = [
         ]
       },
       {
-        id: 'item-production-of',
+        id: 'item-conditioning-of',
         title: 'Ordres de Fab. (OF)',
         type: 'item',
         url: '/of',
-        icon: 'factory'
+        icon: 'factory',
+        breadcrumbs: false
       },
       {
-        id: 'item-stocks-lignes',
+        id: 'item-conditioning-lines',
         title: 'Lignes de Conditionnement',
         type: 'item',
         url: '/stock/lignes',
-        icon: 'precision_manufacturing'
+        icon: 'precision_manufacturing',
+        breadcrumbs: false
       },
       {
-        id: 'item-production-labels',
+        id: 'item-conditioning-labels',
         title: 'Étiquettes & Labellisation',
         type: 'item',
         url: '/labels',
-        icon: 'label'
+        icon: 'label',
+        breadcrumbs: false
       },
       {
-        id: 'item-client-cond',
+        id: 'item-conditioning-expeditions',
+        title: 'Expéditions & Logistique',
+        type: 'item',
+        url: '/projets/expeditions',
+        icon: 'local_shipping',
+        breadcrumbs: false
+      },
+      {
+        id: 'item-conditioning-clients',
         title: 'Gestion Clients',
         type: 'item',
         url: '/projets/clients',
-        icon: 'groups'
+        icon: 'groups',
+        breadcrumbs: false
       }
     ]
   },
 
-  // ──────────────────────────────────────────────────────────────────────────
-  // 5. GESTION DES STOCKS & ACHATS
-  // ──────────────────────────────────────────────────────────────────────────
+  // ────────────────────────
+  // Stocks & Inventaire
+  // ────────────────────────
   {
     id: 'group-stocks-inventory',
     title: 'Stocks & Inventaire',
@@ -379,26 +499,29 @@ export const osm_menus: Navigation[] = [
             title: 'Articles de cond.',
             type: 'item',
             url: '/stock/articles',
-            icon: 'category'
+            icon: 'category',
+            breadcrumbs: false
           },
           {
             id: 'item-stocks-skus',
             title: 'Unités de Vente (SKU)',
             type: 'item',
             url: '/stock/skus',
-            icon: 'barcode_scanner'
+            icon: 'barcode_scanner',
+            breadcrumbs: false
           },
           {
             id: 'item-stocks-bom',
             title: 'Nomenclatures (BOM)',
             type: 'item',
             url: '/stock/boms',
-            icon: 'receipt'
+            icon: 'receipt',
+            breadcrumbs: false
           }
         ]
       },
       {
-        id: 'collapse-stock-ops',
+        id: 'collapse-stock-operations',
         title: 'Mouvements & Zones',
         type: 'collapse',
         icon: 'inventory',
@@ -408,56 +531,68 @@ export const osm_menus: Navigation[] = [
             title: 'Mouvements Stock',
             type: 'item',
             url: '/stock/mouvements',
-            icon: 'swap_horiz'
+            icon: 'swap_horiz',
+            breadcrumbs: false
           },
           {
             id: 'item-stocks-emplacements',
             title: 'Emplacements',
             type: 'item',
             url: '/stock/emplacements',
-            icon: 'grid_view'
+            icon: 'grid_view',
+            breadcrumbs: false
           },
           {
             id: 'item-stocks-par-emplacement',
             title: 'Stock par Zone',
             type: 'item',
             url: '/stock/par-emplacement',
-            icon: 'view_list'
+            icon: 'view_list',
+            breadcrumbs: false
           },
-
+          {
+            id: 'item-stocks-audit',
+            title: "Journal d'Audit",
+            type: 'item',
+            url: '/stock/audit',
+            icon: 'history',
+            breadcrumbs: false
+          }
         ]
       },
       {
-        id: 'collapse-purchasing',
+        id: 'collapse-stock-purchasing',
         title: 'Achats & Fournisseurs',
         type: 'collapse',
         icon: 'shopping_bag',
         children: [
           {
-            id: 'item-stocks-bc',
+            id: 'item-stocks-bons-commande',
             title: 'Bons de Commande',
             type: 'item',
             url: '/stock/bons-commande',
-            icon: 'description'
+            icon: 'description',
+            breadcrumbs: false
           },
           {
             id: 'item-stocks-fournisseurs',
             title: 'Fournisseurs Mat.',
             type: 'item',
             url: '/stock/fournisseurs',
-            icon: 'business'
+            icon: 'business',
+            breadcrumbs: false
           }
         ]
       }
     ]
   },
 
-  // ──────────────────────────────────────────────────────────────────────────
-  // 6. FINANCE & COMPTABILITÉ
-  // ──────────────────────────────────────────────────────────────────────────
+  // ────────────────────────
+  // Finance
+  // ────────────────────────
   {
     id: 'group-finance',
-    title: 'Finance & Trésorerie',
+    title: 'MENU.FINANCE.TITLE',
     type: 'group',
     modulePermission: 'FINANCE',
     children: [
@@ -469,26 +604,29 @@ export const osm_menus: Navigation[] = [
         children: [
           {
             id: 'item-finance-expenses',
-            title: 'Dépenses',
+            title: 'MENU.FINANCE.EXPENSES',
             type: 'item',
             url: '/finance/expenses',
             icon: 'receipt_long',
+            breadcrumbs: false,
             ressourcePermission: FinanceEntity.EXPENSE
           },
           {
             id: 'item-finance-transactions',
-            title: 'Transactions',
+            title: 'MENU.FINANCE.TRANSACTIONS',
             type: 'item',
             url: '/finance/transactions',
             icon: 'sync_alt',
+            breadcrumbs: false,
             ressourcePermission: FinanceEntity.FINANCIALTRANSACTION
           },
           {
             id: 'item-finance-banks',
-            title: 'Comptes Bancaires',
+            title: 'MENU.FINANCE.BANK_MANAGEMENT',
             type: 'item',
             url: '/finance/banks',
             icon: 'account_balance',
+            breadcrumbs: false,
             ressourcePermission: FinanceEntity.BANKACCOUNT
           }
         ]
@@ -501,26 +639,29 @@ export const osm_menus: Navigation[] = [
         children: [
           {
             id: 'item-finance-oil-sales',
-            title: 'Ventes Huile',
+            title: 'MENU.FINANCE.OIL_SALES',
             type: 'item',
             url: '/finance/oil-sales',
             icon: 'point_of_sale',
+            breadcrumbs: false,
             ressourcePermission: FinanceEntity.OILSALE
           },
           {
             id: 'item-finance-oil-credit',
-            title: 'Crédits Huile',
+            title: 'MENU.FINANCE.OIL_CREDIT',
             type: 'item',
             url: '/finance/oil-credit',
             icon: 'credit_score',
+            breadcrumbs: false,
             ressourcePermission: ProductionEntity.OILCREDIT
           },
           {
             id: 'item-finance-waste-sales',
-            title: 'Grignons & Déchets',
+            title: 'MENU.FINANCE.WASTE_MANAGEMENT',
             type: 'item',
             url: '/finance/waste-sales',
             icon: 'delete_sweep',
+            breadcrumbs: false,
             ressourcePermission: FinanceEntity.WASTESALE
           }
         ]
@@ -528,50 +669,54 @@ export const osm_menus: Navigation[] = [
     ]
   },
 
-  // ──────────────────────────────────────────────────────────────────────────
-  // 7. PARAMÈTRES & CONFIGURATION
-  // ──────────────────────────────────────────────────────────────────────────
+  // ────────────────────────
+  // Paramètres
+  // ────────────────────────
   {
     id: 'group-settings',
-    title: 'Paramètres Système',
+    title: 'MENU.SETTINGS.TITLE',
     type: 'group',
     children: [
       {
-        id: 'collapse-group-settings-main',
+        id: 'collapse-settings-application',
         title: 'Config. Applicative',
         type: 'collapse',
         icon: 'settings',
         children: [
           {
             id: 'item-settings-general-config',
-            title: 'Société',
+            title: 'MENU.SETTINGS.GENERAL_CONFIG',
             type: 'item',
             url: '/settings/general-config',
             icon: 'business',
-            ressourcePermission:HabilitationEntity.COMPANYPROFILE
+            breadcrumbs: false,
+            ressourcePermission: HabilitationEntity.COMPANYPROFILE
           },
           {
             id: 'item-settings-configuration',
-            title: 'Apparence UI',
+            title: 'MENU.SETTINGS.APP_UI',
             type: 'item',
             url: '/settings/configuration',
             icon: 'dashboard_customize',
-            ressourcePermission:HabilitationEntity.COMPANYPROFILE
+            breadcrumbs: false,
+            ressourcePermission: HabilitationEntity.COMPANYPROFILE
           },
           {
             id: 'item-settings-generic',
-            title: 'Types Génériques',
+            title: 'MENU.SETTINGS.GENERIC_TYPES',
             type: 'item',
             url: '/settings/generic',
             icon: 'list_alt',
-            ressourcePermission:ProductionEntity.base_type
+            breadcrumbs: false,
+            ressourcePermission: ProductionEntity.base_type
           },
           {
             id: 'item-settings-quality-rules',
-            title: 'Règles Qualité',
+            title: 'MENU.SETTINGS.QUALITY_CONTROL_RULES',
             type: 'item',
             url: '/settings/quality-control',
             icon: 'verified',
+            breadcrumbs: false,
             ressourcePermission: ProductionEntity.QUALITYCONTROLRULE
           },
           {
@@ -584,10 +729,11 @@ export const osm_menus: Navigation[] = [
           },
           {
             id: 'item-settings-mill-machines',
-            title: 'Équipements Moulin',
+            title: 'MENU.SETTINGS.MILLING_MACHINES',
             type: 'item',
             url: '/reception/mill-machines',
             icon: 'settings_input_component',
+            breadcrumbs: false,
             ressourcePermission: ProductionEntity.MILLMACHINE
           }
         ]
@@ -600,18 +746,20 @@ export const osm_menus: Navigation[] = [
         children: [
           {
             id: 'item-settings-users',
-            title: 'Utilisateurs',
+            title: 'MENU.SETTINGS.USERS',
             type: 'item',
             url: '/settings/users',
             icon: 'person_outline',
+            breadcrumbs: false,
             ressourcePermission: HabilitationEntity.OSMUSER
           },
           {
             id: 'item-settings-roles',
-            title: 'Habilitations',
+            title: 'MENU.SETTINGS.ROLES',
             type: 'item',
             url: '/settings/roles',
             icon: 'admin_panel_settings',
+            breadcrumbs: false,
             ressourcePermission: HabilitationEntity.ROLE
           }
         ]
