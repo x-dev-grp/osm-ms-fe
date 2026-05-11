@@ -79,7 +79,7 @@ $border-radius-sm: 10px;
     align-items: center;
     gap: 1.5rem;
     margin-bottom: 2rem;
-    padding: 1.25rem 2rem;
+    padding: 1.5rem 2rem;
     background: $white;
     border-radius: $border-radius;
     box-shadow: $shadow-md;
@@ -96,8 +96,9 @@ $border-radius-sm: 10px;
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      transition: $transition;
 
-      font-size: 1.2rem;
+      i { font-size: 1.2rem; }
 
       &:hover {
         background: $olive-green;
@@ -458,4 +459,27 @@ $border-radius-sm: 10px;
       .btn-generate-qr, .btn-print { width: 100%; justify-content: center; }
     }
   }
+}
+.status-badge {
+  &.blocked {
+    background: #f8d7da;
+    color: #721c24;
+  }
+  &.free {
+    background: #d4edda;
+    color: #155724;
+  }
+}
+
+.alert-blocked {
+  background-color: #f8d7da;
+  border-left: 4px solid #dc3545;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: 8px;
+  color: #721c24;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 500;
 }
