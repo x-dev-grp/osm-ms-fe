@@ -137,7 +137,7 @@
           <th mat-header-cell *matHeaderCellDef>Client</th>
           <td mat-cell *matCellDef="let row">
             <div class="client-name-cell">
-              <span class="client-name">{{ row.clientNom || '-' }}</span>
+              <span class="client-name">{{ row.client.nom || '-' }}</span>
               <span class="client-email">{{ row.clientEmail || '-' }}</span>
             </div>
           </td>

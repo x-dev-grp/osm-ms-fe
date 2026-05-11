@@ -171,7 +171,7 @@ export class ProjetListComponent {
   onDelete(row: ProjetDto): void {
     if (!row?.id) return;
 
-    if (!confirm(`Supprimer le projet "${row.code ?? row.clientNom}" ?`)) {
+    if (!confirm(`Supprimer le projet "${row.code ?? row.client.nom}" ?`)) {
       return;
     }
 

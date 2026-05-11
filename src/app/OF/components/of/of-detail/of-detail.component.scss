@@ -45,7 +45,7 @@ $border-radius-sm: 10px;
   margin: 0 auto;
   min-height: 100vh;
   background: linear-gradient(135deg, #faf3e0 0%, #fff5e6 100%);
-  animation: fadeInUp 0.5s ease-out;
+
   font-size: 1rem; // taille de base standard
 
   // ── Bannières qualité ──────────────────────────────────
@@ -96,7 +96,7 @@ $border-radius-sm: 10px;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: $transition;
+
       font-size: 1.2rem;
 
       &:hover {
@@ -137,7 +137,7 @@ $border-radius-sm: 10px;
         align-items: center;
         gap: 0.5rem;
         cursor: pointer;
-        transition: $transition;
+
         background: rgba($olive-green, 0.15);
         color: darken($olive-green, 10%);
 
@@ -172,7 +172,7 @@ $border-radius-sm: 10px;
     padding: 1.5rem;
     box-shadow: $shadow-md;
     border: 1px solid rgba($olive-green, 0.08);
-    transition: $transition;
+
 
     &:hover {
       transform: translateY(-3px);
@@ -377,7 +377,7 @@ $border-radius-sm: 10px;
         font-weight: 600;
         font-size: 0.9rem;
         cursor: pointer;
-        transition: $transition;
+
       }
 
       .btn-generate-qr {

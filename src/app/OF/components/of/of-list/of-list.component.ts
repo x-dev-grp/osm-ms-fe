@@ -8,7 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { OrdreFabrication, StatutOF } from '../../../models/of.model';
 import { OFService } from "../../../services/OFService";
-import {MatMenu, MatMenuTrigger} from "@angular/material/menu";
+import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
 
 @Component({
   selector: 'app-of-list',
@@ -22,7 +22,8 @@ import {MatMenu, MatMenuTrigger} from "@angular/material/menu";
     MatIconModule,
     MatButtonModule,
     MatMenu,
-    MatMenuTrigger
+    MatMenuTrigger,
+    MatMenuItem
   ],
   templateUrl: './of-list.component.html',
   styleUrls: ['./of-list.component.scss']

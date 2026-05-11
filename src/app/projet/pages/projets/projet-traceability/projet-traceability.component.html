@@ -2,7 +2,7 @@
   <div class="header">
     <div>
       <h1>Rapport de Traçabilité Global</h1>
-      <p>{{ project?.code }} — {{ project?.clientNom }}</p>
+      <p>{{ project?.code }} — {{ project?.client.nom }}</p>
     </div>
     <div class="header-actions">
       <button mat-flat-button color="accent" (click)="generatePDF()">
@@ -22,7 +22,7 @@
   </div>
 
   <div class="content-container" *ngIf="traceabilityData; else noDataTpl">
-    
+
     <!-- OF Loop -->
     <div class="of-card card" *ngFor="let ofItem of (traceabilityData.ofDetails | keyvalue)">
       <div class="of-header">
@@ -41,7 +41,7 @@
 
       <!-- Timeline -->
       <div class="genealogy-timeline" *ngIf="traceabilityData.oilGenealogy[(ofItem.value | any).lotVracId] as genea; else noGeneaTpl">
-        
+
         <!-- Root Sources -->
         <div class="timeline-item root" *ngFor="let root of genea.rootSources">
           <div class="marker"></div>
@@ -50,7 +50,7 @@
             <div class="info-box">
               <strong>{{ root.supplierName }}</strong>
               <p>Lot vrac: <code>{{ root.lotNumber }}</code></p>
-              
+
               <!-- QC Results for Root -->
               <div class="qc-grid" *ngIf="root.qualityControls && (root.qualityControls | keyvalue).length > 0">
                 <div class="qc-item" *ngFor="let qc of root.qualityControls | keyvalue">

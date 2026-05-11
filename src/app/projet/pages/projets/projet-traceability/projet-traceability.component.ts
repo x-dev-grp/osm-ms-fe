@@ -17,10 +17,10 @@ import { PdfExpeditionConfig } from '../../../../shared/models/pdf-config.model'
   selector: 'app-projet-traceability',
   standalone: true,
   imports: [
-    CommonModule, 
-    DatePipe, 
-    MatButtonModule, 
-    MatIconModule, 
+    CommonModule,
+    DatePipe,
+    MatButtonModule,
+    MatIconModule,
     MatProgressSpinnerModule
   ],
   templateUrl: './projet-traceability.component.html',
@@ -101,7 +101,7 @@ export class ProjetTraceabilityComponent implements OnInit {
       reference: this.project.code || 'PROJET',
       date: new Date().toLocaleDateString(),
       clientInfo: {
-        name: this.project.clientNom,
+        name: this.project.client.nom,
         address: ''
       },
       lines: Object.values(this.traceabilityData.ofDetails || {}).map((of: any) => ({

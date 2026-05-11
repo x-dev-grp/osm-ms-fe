@@ -12,7 +12,7 @@
             {{ statusLabel(selectedExpedition.status) }}
           </span>
         </div>
-        <p>{{ project?.code || projectId }} - {{ project?.clientNom || 'Client non defini' }}</p>
+        <p>{{ project?.code || projectId }} - {{ project?.client.nom || 'Client non defini' }}</p>
       </div>
     </div>
 
