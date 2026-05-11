@@ -16,94 +16,99 @@
 
   <div *ngIf="!loading" class="form-content">
     <form [formGroup]="ofForm" (ngSubmit)="onSubmit()">
-        <!-- Section 1: Produit & Quantité -->
-        <div class="form-section">
-          <div class="section-title">
-            <i class="fas fa-bullseye"></i> Objectifs & Quantité
+      <!-- Section 1: Produit & Quantité -->
+      <div class="form-section">
+        <div class="section-title">
+          <i class="fas fa-bullseye"></i> Objectifs & Quantité
+        </div>
+        <div class="form-grid">
+          <div class="form-group span-2">
+            <label><i class="fas fa-project-diagram"></i> Projet (optionnel)</label>
+            <select class="form-control" formControlName="projectId">
+              <option value="">-- Indépendant --</option>
+              <option *ngFor="let p of projects" [value]="p.id">{{ p.code }} — {{ p.client.nom }}</option>
+            </select>
           </div>
-          <div class="form-grid">
-            <div class="form-group span-2">
-              <label><i class="fas fa-project-diagram"></i> Projet (optionnel)</label>
-              <select class="form-control" formControlName="projectId">
-                <option value="">-- Indépendant --</option>
-                <option *ngFor="let p of projects" [value]="p.id">{{ p.code }} — {{ p.client.nom }}</option>
-              </select>
+          <div class="form-group">
+            <label><i class="fas fa-chart-line"></i> Quantité cible</label>
+            <input type="number" step="1" class="form-control" formControlName="quantiteCible"
+              [class.is-invalid]="projectRemainingQuantity !== null && ofForm.get('quantiteCible')?.value > projectRemainingQuantity"
+              required>
+            <div class="remaining-info" *ngIf="projectRemainingQuantity !== null">
+              <i class="fas fa-info-circle"></i> Reste à produire : <strong>{{ projectRemainingQuantity }}</strong> {{
+              selectedProject?.unite }}
             </div>
-            <div class="form-group">
-              <label><i class="fas fa-chart-line"></i> Quantité cible</label>
-              <input type="number" step="1" class="form-control" formControlName="quantiteCible"
-                     [class.is-invalid]="projectRemainingQuantity !== null && ofForm.get('quantiteCible')?.value > projectRemainingQuantity"
-                     required>
-              <div class="remaining-info" *ngIf="projectRemainingQuantity !== null">
-                <i class="fas fa-info-circle"></i> Reste à produire : <strong>{{ projectRemainingQuantity }}</strong> {{ selectedProject?.unite }}
-              </div>
-              <div class="error" *ngIf="projectRemainingQuantity !== null && ofForm.get('quantiteCible')?.value > projectRemainingQuantity">
-                Dépasse la limite du projet !
-              </div>
+            <div class="error"
+              *ngIf="projectRemainingQuantity !== null && ofForm.get('quantiteCible')?.value > projectRemainingQuantity">
+              Dépasse la limite du projet !
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Section 2: Configuration technique -->
-        <div class="form-section">
-          <div class="section-title">
-            <i class="fas fa-tools"></i> Configuration technique
+      <!-- Section 2: Configuration technique -->
+      <div class="form-section">
+        <div class="section-title">
+          <i class="fas fa-tools"></i> Configuration technique
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label><i class="fas fa-cube"></i> Produit fini</label>
+            <select class="form-control" formControlName="productId" required>
+              <option value="" disabled>Choisir un produit</option>
+              <option *ngFor="let product of products" [value]="product.id">{{ productName(product) }}</option>
+            </select>
           </div>
-          <div class="form-grid">
-            <div class="form-group">
-              <label><i class="fas fa-cube"></i> SKU (Produit fini)</label>
-              <select class="form-control" formControlName="skuId" required>
-                <option value="" disabled>Choisir un SKU</option>
-                <option *ngFor="let sku of skus" [value]="sku.id">{{ sku.code }}</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label><i class="fas fa-list"></i> BOM (Nomenclature)</label>
-              <select class="form-control" formControlName="bomId" required>
-                <option value="" disabled>-- Choisir BOM --</option>
-                <option *ngFor="let bom of boms" [value]="bom.id">{{ bom.version }}</option>
-              </select>
-              <div class="error" *ngIf="loadingBoms">Chargement...</div>
-            </div>
-            <div class="form-group">
-              <label><i class="fas fa-cogs"></i> Ligne (optionnel)</label>
-              <select class="form-control" formControlName="ligneId">
-                <option value="">-- Aucune --</option>
-                <option *ngFor="let ligne of lignes" [value]="ligne.id">{{ ligne.nom }}</option>
-              </select>
-            </div>
+          <div class="form-group">
+            <label><i class="fas fa-list"></i> Nomenclature</label>
+            <select class="form-control" formControlName="bomId" required>
+              <option value="" disabled>-- Choisir Nomenclature --</option>
+              <option *ngFor="let bom of boms" [value]="bom.id">{{ bom.version }}</option>
+            </select>
+            <div class="error" *ngIf="loadingBoms">Chargement...</div>
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-cogs"></i> Ligne (optionnel)</label>
+            <select class="form-control" formControlName="ligneId">
+              <option value="">-- Aucune --</option>
+              <option *ngFor="let ligne of lignes" [value]="ligne.id">{{ ligne.nom }}</option>
+            </select>
           </div>
         </div>
+      </div>
 
-        <!-- Section 3: Planning & Ressources -->
-        <div class="form-section">
-          <div class="section-title">
-            <i class="fas fa-calendar-check"></i> Planning & Ressources
+      <!-- Section 3: Planning & Ressources -->
+      <div class="form-section">
+        <div class="section-title">
+          <i class="fas fa-calendar-check"></i> Planning & Ressources
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label><i class="fas fa-droplet"></i> Cuve source</label>
+            <select class="form-control" formControlName="lotVracId">
+              <option value="">-- Choisir cuve --</option>
+              <option *ngFor="let unit of storageUnits" [value]="unit.id">{{ unit.name }} ({{ unit.lotNumber }})
+              </option>
+            </select>
+            <div class="error" *ngIf="storageUnits.length === 0">Aucune cuve disponible</div>
           </div>
-          <div class="form-grid">
-            <div class="form-group">
-              <label><i class="fas fa-droplet"></i> Cuve source</label>
-              <select class="form-control" formControlName="lotVracId">
-                <option value="">-- Choisir cuve --</option>
-                <option *ngFor="let unit of storageUnits" [value]="unit.id">{{ unit.name }} ({{ unit.lotNumber }})</option>
-              </select>
-              <div class="error" *ngIf="storageUnits.length === 0">Aucune cuve disponible</div>
-            </div>
-            <div class="form-group">
-              <label><i class="fas fa-calendar-alt"></i> Date début</label>
-              <input type="date" class="form-control" formControlName="dateDebutPrevue">
-            </div>
-            <div class="form-group">
-              <label><i class="fas fa-calendar-check"></i> Date fin</label>
-              <input type="date" class="form-control" formControlName="dateFinPrevue">
-            </div>
+          <div class="form-group">
+            <label><i class="fas fa-calendar-alt"></i> Date début</label>
+            <input type="date" class="form-control" formControlName="dateDebutPrevue">
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-calendar-check"></i> Date fin</label>
+            <input type="date" class="form-control" formControlName="dateFinPrevue">
           </div>
         </div>
+      </div>
 
-        <!-- Error message -->
-        <div *ngIf="ofForm.errors?.['dateFinAfterDebut'] && (ofForm.get('dateFinPrevue')?.touched || ofForm.get('dateDebutPrevue')?.touched)" class="error-message">
-          <i class="fas fa-exclamation-circle"></i> La date de fin doit être postérieure au début.
-        </div>
+      <!-- Error message -->
+      <div
+        *ngIf="ofForm.errors?.['dateFinAfterDebut'] && (ofForm.get('dateFinPrevue')?.touched || ofForm.get('dateDebutPrevue')?.touched)"
+        class="error-message">
+        <i class="fas fa-exclamation-circle"></i> La date de fin doit être postérieure au début.
+      </div>
 
       <div class="form-actions">
         <button type="button" class="btn-cancel" (click)="cancel()">Annuler</button>

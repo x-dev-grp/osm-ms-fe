@@ -12,8 +12,10 @@ export interface OrdreFabrication {
   quantiteBonne?: number;
   quantiteNC?: number;
   dureeReelle?: number;
-  skuId: string;
+  productId: string;
+  skuId?: string;
   bomId?: string;
+  productName?: string;
   skuCode?: string;
   unite?: string;
   ligneId?: string;

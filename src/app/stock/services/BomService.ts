@@ -3,12 +3,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {Bom} from "../models/Bom";
-import {create} from "lodash";
+import {environment} from "../../../environments/environment";
 
 
 @Injectable({ providedIn: 'root' })
 export class BomService {
-  private apiUrl = 'http://localhost:8084/api/inventaire/boms';
+  private apiUrl = `${environment.apiUrl}/api/inventaire/boms`;
 
   constructor(private http: HttpClient) {}
 
@@ -18,8 +18,12 @@ export class BomService {
     return this.http.get<Bom>(`${this.apiUrl}/${id}`);
   }
 
+  getBomsByProduct(productId: string): Observable<Bom[]> {
+    return this.http.get<Bom[]>(`${this.apiUrl}/product/${productId}`);
+  }
+
   getBomsBySku(skuId: string): Observable<Bom[]> {
-    return this.http.get<Bom[]>(`${this.apiUrl}/sku/${skuId}`);
+    return this.getBomsByProduct(skuId);
   }
 
   create(bom: Bom): Observable<Bom> {

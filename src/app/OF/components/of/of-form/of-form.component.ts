@@ -1,20 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {FormBuilder, FormGroup, Validators, ReactiveFormsModule, ValidationErrors} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import {LigneConditionnement} from "../../../../stock/models/ligne-conditionnement.model";
-import {SKU} from "../../../../stock/models/sku.model";
-import {OFService} from "../../../services/OFService";
-import {LigneConditionnementService} from "../../../../stock/services/ligne-conditionnement.service";
-import {OrdreFabrication, StatutOF} from "../../../models/of.model";
-import {SKUService} from "../../../../stock/services/sku.service";
-import {Bom} from "../../../../stock/models/Bom";
-import {BomService} from "../../../../stock/services/BomService";
-import {ToastService} from "../../../../shared/services/toast.service";
-import {StorageUnitDtoService} from "../../../../shared/services/storage.service";
-import {StorageUnitDto} from "../../../../shared/models/StorageUnitDto";
-import {ProjetService} from "../../../../projet/services/projet.service";
-import {ProjetDto} from "../../../../projet/models/TypeProduit";
+import { LigneConditionnement } from "../../../../stock/models/ligne-conditionnement.model";
+import { Product, productDisplayName } from "../../../../stock/models/sku.model";
+import { OFService } from "../../../services/OFService";
+import { LigneConditionnementService } from "../../../../stock/services/ligne-conditionnement.service";
+import { OrdreFabrication, StatutOF } from "../../../models/of.model";
+import { SKUService } from "../../../../stock/services/sku.service";
+import { Bom } from "../../../../stock/models/Bom";
+import { BomService } from "../../../../stock/services/BomService";
+import { ToastService } from "../../../../shared/services/toast.service";
+import { StorageUnitDtoService } from "../../../../shared/services/storage.service";
+import { StorageUnitDto } from "../../../../shared/models/StorageUnitDto";
+import { ProjetService } from "../../../../projet/services/projet.service";
+import { ProjetDto } from "../../../../projet/models/TypeProduit";
 
 @Component({
   selector: 'app-of-form',
@@ -25,7 +25,7 @@ import {ProjetDto} from "../../../../projet/models/TypeProduit";
 })
 export class OFFormComponent implements OnInit {
   ofForm!: FormGroup;
-  skus: SKU[] = [];
+  products: Product[] = [];
   projects: ProjetDto[] = [];
   lignes: LigneConditionnement[] = [];
   storageUnits: StorageUnitDto[] = [];
@@ -50,7 +50,7 @@ export class OFFormComponent implements OnInit {
     private storageService: StorageUnitDtoService,
     private projetService: ProjetService,
     private toast: ToastService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.initForm();
@@ -65,9 +65,9 @@ export class OFFormComponent implements OnInit {
       this.loadOF(this.ofId);
     }
 
-    this.ofForm.get('skuId')?.valueChanges.subscribe(skuId => {
-      if (skuId) {
-        this.loadBomsForSku(skuId);
+    this.ofForm.get('productId')?.valueChanges.subscribe(productId => {
+      if (productId) {
+        this.loadBomsForProduct(productId);
       } else {
         this.boms = [];
         this.ofForm.get('bomId')?.setValue('');
@@ -108,7 +108,7 @@ export class OFFormComponent implements OnInit {
   private initForm(): void {
     this.ofForm = this.fb.group({
       projectId: [''],
-      skuId: ['', Validators.required],
+      productId: ['', Validators.required],
       bomId: ['', Validators.required],
       ligneId: [''],
       lotVracId: [''],
@@ -128,7 +128,7 @@ export class OFFormComponent implements OnInit {
 
 
   loadSkus(): void {
-    this.skuService.getActiveSKUs().subscribe((data: SKU[]) => this.skus = data);
+    this.skuService.getActiveProductsByType('NON_VRAC').subscribe((data: Product[]) => this.products = data);
   }
 
   loadProjects(): void {
@@ -154,7 +154,7 @@ export class OFFormComponent implements OnInit {
       next: (resp) => {
         if (resp && resp.data) {
           // Filtrer les cuves qui ont de l'huile (volume > 0) ET qui est FILTRÉE
-          this.storageUnits = Array.isArray(resp.data) 
+          this.storageUnits = Array.isArray(resp.data)
             ? resp.data.filter(u => (u.currentVolume || 0) > 0 && u.filteredOil === true)
             : [];
           this.autoSelectSingleOption('lotVracId', this.storageUnits);
@@ -164,9 +164,9 @@ export class OFFormComponent implements OnInit {
     });
   }
 
-  loadBomsForSku(skuId: string): void {
+  loadBomsForProduct(productId: string): void {
     this.loadingBoms = true;
-    this.bomService.getBomsBySku(skuId).subscribe({
+    this.bomService.getBomsByProduct(productId).subscribe({
       next: (boms) => {
         this.boms = boms;
         const currentBomId = this.ofForm.get('bomId')?.value;
@@ -186,7 +186,7 @@ export class OFFormComponent implements OnInit {
         this.loadingBoms = false;
       },
       error: (err) => {
-        console.error('Erreur chargement BOMs', err);
+        console.error('Erreur chargement des Nomenclatures', err);
         this.boms = [];
         this.ofForm.get('bomId')?.setErrors({ serverError: true });
         this.loadingBoms = false;
@@ -200,7 +200,7 @@ export class OFFormComponent implements OnInit {
       next: (of) => {
         this.ofForm.patchValue({
           projectId: of.projectId,
-          skuId: of.skuId,
+          productId: of.productId || of.skuId,
           bomId: of.bomId,
           ligneId: of.ligneId,
           lotVracId: of.lotVracId,
@@ -248,7 +248,7 @@ export class OFFormComponent implements OnInit {
     this.preferredProjectBomId = project.bomId ?? null;
 
     this.ofForm.patchValue({
-      skuId: project.skuId || this.ofForm.get('skuId')?.value || '',
+      productId: project.productId || project.skuId || this.ofForm.get('productId')?.value || '',
       bomId: project.bomId || this.ofForm.get('bomId')?.value || '',
       dateDebutPrevue: this.ofForm.get('dateDebutPrevue')?.value || this.todayDate(),
       dateFinPrevue: project.dateLimiteLivraison ? this.formatDate(project.dateLimiteLivraison) : this.ofForm.get('dateFinPrevue')?.value
@@ -287,7 +287,7 @@ export class OFFormComponent implements OnInit {
 
     const newOF: OrdreFabrication = {
       projectId: formValue.projectId || undefined,
-      skuId: formValue.skuId,
+      productId: formValue.productId,
       bomId: formValue.bomId,
       ligneId: formValue.ligneId || undefined,
       lotVracId: formValue.lotVracId || undefined,
@@ -325,5 +325,9 @@ export class OFFormComponent implements OnInit {
 
   cancel(): void {
     this.router.navigate(['/of']);
+  }
+
+  productName(product: Product): string {
+    return productDisplayName(product);
   }
 }

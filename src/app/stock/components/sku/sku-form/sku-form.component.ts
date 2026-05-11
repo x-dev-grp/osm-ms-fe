@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import { SKUService } from '../../../services/sku.service';
-import { SKU } from '../../../models/sku.model';
+import { ProductType, ProductUnitOfMeasure, SKU, productTypeLabel } from '../../../models/sku.model';
 
 @Component({
   selector: 'app-sku-form',
@@ -19,6 +19,8 @@ export class SkuFormComponent implements OnInit {
   submitted = false;
   submitting = false;
   error: string | null = null;
+  readonly productTypes: ProductType[] = ['VRAC', 'NON_VRAC'];
+  readonly unitOptions: ProductUnitOfMeasure[] = ['L', 'KG', 'BOTTLE', 'CARTON'];
 
   constructor(
     private fb: FormBuilder,
@@ -27,17 +29,35 @@ export class SkuFormComponent implements OnInit {
     private skuService: SKUService
   ) {
     this.skuForm = this.fb.group({
-      code: ['', [Validators.required]],
+      name: ['', [Validators.required]],
+      code: [''],
+      type: ['NON_VRAC' as ProductType, [Validators.required]],
       category: [''],
-      volume: [null, ],
-      unitesParCols: [null, [Validators.min(1)]],
-      colisParPalette: [null, [Validators.min(1)]]
+      unitOfMeasure: ['BOTTLE'],
+      description: [''],
+      grade: [''],
+      origin: [''],
+      harvestCampaign: [''],
+      volume: [null],
+      packagingType: [''],
+      barcode: [''],
+      unitsPerCarton: [null, [Validators.min(1)]],
+      cartonsPerPallet: [null, [Validators.min(1)]],
+      netWeight: [null, [Validators.min(0)]],
+      grossWeight: [null, [Validators.min(0)]],
+      brand: [''],
+      density: [null, [Validators.min(0)]],
+      storageUnit: ['']
     });
   }
 
   ngOnInit(): void {
     this.skuId = this.route.snapshot.params['id'];
     this.isEditMode = !!this.skuId;
+    this.updateTypeFields(this.skuForm.get('type')?.value || 'NON_VRAC');
+    this.skuForm.get('type')?.valueChanges.subscribe((type: ProductType) => {
+      this.updateTypeFields(type, true);
+    });
 
     if (this.isEditMode) {
       this.loadSku();
@@ -45,20 +65,35 @@ export class SkuFormComponent implements OnInit {
   }
 
   loadSku(): void {
-    this.skuService.getSkuById(this.skuId!).subscribe({
+    this.skuService.getProductById(this.skuId!).subscribe({
       next: (sku) => {
         this.skuForm.patchValue({
-          code: sku.code,
+          name: sku.name || sku.code,
+          code: sku.code || '',
+          type: sku.type || 'NON_VRAC',
           category: sku.category || '',
+          unitOfMeasure: sku.unitOfMeasure || (sku.type === 'VRAC' ? 'L' : 'BOTTLE'),
+          description: sku.description || '',
+          grade: sku.grade || '',
+          origin: sku.origin || '',
+          harvestCampaign: sku.harvestCampaign || '',
           volume: sku.volume || null,
-          unitesParCols: sku.unitesParCols || null,
-          colisParPalette: sku.colisParPalette || null
+          packagingType: sku.packagingType || '',
+          barcode: sku.barcode || '',
+          unitsPerCarton: sku.unitsPerCarton ?? sku.unitesParCols ?? null,
+          cartonsPerPallet: sku.cartonsPerPallet ?? sku.colisParPalette ?? null,
+          netWeight: sku.netWeight || null,
+          grossWeight: sku.grossWeight || null,
+          brand: sku.brand || '',
+          density: sku.density || null,
+          storageUnit: sku.storageUnit || ''
         });
+        this.updateTypeFields(sku.type || 'NON_VRAC');
       },
       error: (err) => {
-        console.error('Erreur chargement SKU', err);
-        this.error = 'Impossible de charger le SKU';
-        setTimeout(() => this.router.navigate(['/stock/skus']), 2000);
+        console.error('Erreur chargement produit', err);
+        this.error = 'Impossible de charger le produit';
+        setTimeout(() => this.router.navigate(['/stock/products']), 2000);
       }
     });
   }
@@ -75,9 +110,9 @@ export class SkuFormComponent implements OnInit {
     const sku: SKU = this.skuForm.value;
 
     if (this.isEditMode) {
-      this.skuService.updateSku(this.skuId!, sku).subscribe({
+      this.skuService.updateProduct(this.skuId!, sku).subscribe({
         next: () => {
-          this.router.navigate(['/stock/skus', this.skuId]);
+          this.router.navigate(['/stock/products', this.skuId]);
         },
         error: (err) => {
           console.error('Erreur mise à jour', err);
@@ -86,9 +121,9 @@ export class SkuFormComponent implements OnInit {
         }
       });
     } else {
-      this.skuService.createSku(sku).subscribe({
+      this.skuService.createProduct(sku).subscribe({
         next: (created) => {
-          this.router.navigate(['/stock/skus', created.id]);
+          this.router.navigate(['/stock/products', created.id]);
         },
         error: (err) => {
           console.error('Erreur création', err);
@@ -101,13 +136,48 @@ export class SkuFormComponent implements OnInit {
 
   onCancel(): void {
     if (this.isEditMode) {
-      this.router.navigate(['/stock/skus', this.skuId]);
+      this.router.navigate(['/stock/products', this.skuId]);
     } else {
-      this.router.navigate(['/stock/skus']);
+      this.router.navigate(['/stock/products']);
     }
   }
 
   get f() {
     return this.skuForm.controls;
+  }
+
+  isVrac(): boolean {
+    return this.skuForm.get('type')?.value === 'VRAC';
+  }
+
+  isNonVrac(): boolean {
+    return !this.isVrac();
+  }
+
+  formatProductType(type?: ProductType): string {
+    return productTypeLabel(type);
+  }
+
+  private updateTypeFields(type: ProductType, clearMismatch = false): void {
+    const volumeControl = this.skuForm.get('volume');
+    const unitControl = this.skuForm.get('unitOfMeasure');
+
+    if (type === 'VRAC') {
+      unitControl?.setValue(!unitControl?.value || unitControl.value === 'BOTTLE' || unitControl.value === 'CARTON' ? 'L' : unitControl.value, { emitEvent: false });
+      volumeControl?.clearValidators();
+      if (clearMismatch) {
+        ['volume', 'packagingType', 'barcode', 'unitsPerCarton', 'cartonsPerPallet', 'netWeight', 'grossWeight', 'brand']
+          .forEach((controlName) => this.skuForm.get(controlName)?.reset(controlName === 'volume' ? null : '', { emitEvent: false }));
+      }
+    } else {
+      unitControl?.setValue(unitControl.value === 'L' || !unitControl.value ? 'BOTTLE' : unitControl.value, { emitEvent: false });
+      volumeControl?.setValidators([Validators.required, Validators.min(0.001)]);
+      if (clearMismatch) {
+        ['density', 'storageUnit']
+          .forEach((controlName) => this.skuForm.get(controlName)?.reset(controlName === 'density' ? null : '', { emitEvent: false }));
+      }
+    }
+
+    volumeControl?.updateValueAndValidity({ emitEvent: false });
   }
 }

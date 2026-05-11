@@ -16,6 +16,7 @@ export interface ProjetDto {
   // code metier manuel genere par le back
   code?: string;
 
+  clientId?: string;
   client: Client;
 
   typeProduit: TypeProduit;
@@ -38,6 +39,8 @@ export interface ProjetDto {
   qrUrl?: string;
   qrImageBase64?: string;
 
+  productId?: string;
+  productName?: string;
   skuId?: string;
   skuCode?: string;
   bomId?: string;

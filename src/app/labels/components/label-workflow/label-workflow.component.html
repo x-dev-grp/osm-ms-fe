@@ -52,11 +52,11 @@
           </div>
 
           <div class="form-group span-3">
-            <label>Packaging (SKU)</label>
+            <label>Packaging (produit)</label>
             <select class="form-control" formControlName="packagingId">
               <option value="">-- Sélectionner un packaging --</option>
-              <option *ngFor="let sku of packagingOptions; trackBy: trackById" [value]="sku.id">
-                {{ skuLabel(sku) }}
+              <option *ngFor="let product of packagingOptions; trackBy: trackById" [value]="product.id">
+                {{ productLabel(product) }}
               </option>
             </select>
           </div>

@@ -15,6 +15,18 @@ $gray-700: #334155;
 $gray-800: #1e293b;
 $gray-900: #0f172a;
 
+:host {
+  display: block;
+  min-height: 100vh;
+  background: $gray-50;
+  padding: 24px;
+}
+
+.modern-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
 // Animations
 @keyframes slideIn {
   from {
@@ -34,7 +46,7 @@ $gray-900: #0f172a;
 // Container principal
 .sku-detail-container {
   padding: 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: $gray-50;
   min-height: 100vh;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }

@@ -4,9 +4,7 @@
       <div class="alert-icon">
         <i class="fas fa-exclamation-circle"></i>
       </div>
-      <div class="alert-content">
-        {{ error }}
-      </div>
+      <div class="alert-content">{{ error }}</div>
       <button class="alert-close" (click)="error = null">
         <i class="fas fa-times"></i>
       </button>
@@ -22,125 +20,320 @@
       </div>
       <div class="header-content">
         <h2 class="form-title gradient-text">
-          {{ isEditMode ? 'Modifier le SKU' : 'Nouveau SKU' }}
+          {{ isEditMode ? 'Modifier le produit' : 'Nouveau produit' }}
         </h2>
         <p class="form-subtitle">
-          {{ isEditMode ? 'Modifiez les informations de la référence' : 'Créez une nouvelle référence produit' }}
+          {{ isEditMode ? 'Mettre a jour la fiche produit' : 'Creer une fiche produit olive oil' }}
         </p>
       </div>
     </div>
 
     <form [formGroup]="skuForm" (ngSubmit)="onSubmit()" class="modern-form">
-      <div class="form-group floating-group">
-        <div class="input-wrapper">
-          <i class="fas fa-barcode input-icon"></i>
-          <input type="text"
-                 id="code"
-                 class="modern-input"
-                 [class.is-invalid]="submitted && f['code'].errors"
-                 [class.is-valid]="submitted && !f['code'].errors && f['code'].value"
-                 formControlName="code"
-                 placeholder=" ">
-          <label for="code" class="floating-label">
-            Code SKU <span class="required-star">*</span>
-          </label>
-        </div>
-        @if (submitted && f['code'].errors) {
-          <div class="error-message animated">
-            <i class="fas fa-exclamation-circle me-1"></i>
-            @if (f['code'].errors['required']) {
-              <span>Le code SKU est requis</span>
-            }
-            @if (f['code'].errors['pattern']) {
-              <span>Format: lettres majuscules, chiffres, tirets et underscores</span>
-            }
-          </div>
-        }
-        <small class="form-hint">
-          <i class="fas fa-info-circle me-1"></i>
-          Ex: SKU-001, REF-ABC-123
-        </small>
-      </div>
-
-      <div class="form-group floating-group">
-        <div class="input-wrapper">
-          <i class="fas fa-tag input-icon"></i>
-          <input type="text"
-                 id="category"
-                 class="modern-input"
-                 formControlName="category"
-                 placeholder=" ">
-          <label for="category" class="floating-label">Catégorie</label>
-        </div>
-        <small class="form-hint">ex: EMBALLAGE, FINI, MATIERE PREMIERE</small>
-      </div>
-
-      <div class="form-group floating-group">
-        <div class="input-wrapper">
-          <i class="fas fa-cube input-icon"></i>
-          <input type="number"
-                 id="volume"
-                 class="modern-input"
-                 formControlName="volume"
-                 step="0.001"
-                 min="0"
-                 placeholder=" ">
-          <label for="volume" class="floating-label">Volume (m³)</label>
-        </div>
-        @if (submitted && f['volume'].errors) {
-          <div class="error-message animated">
-            <i class="fas fa-exclamation-circle me-1"></i>
-            Le volume doit être positif
-          </div>
-        }
+      <div class="form-separator">
+        <span class="separator-text">Identite produit</span>
       </div>
 
       <div class="row g-4">
         <div class="col-md-6">
           <div class="form-group floating-group">
             <div class="input-wrapper">
-              <i class="fas fa-boxes input-icon"></i>
-              <input type="number"
-                     id="unitesParCoulis"
+              <i class="fas fa-tag input-icon"></i>
+              <input type="text"
+                     id="name"
                      class="modern-input"
-                     formControlName="unitesParCols"
-                     min="1"
+                     [class.is-invalid]="submitted && f['name'].errors"
+                     [class.is-valid]="submitted && !f['name'].errors && f['name'].value"
+                     formControlName="name"
                      placeholder=" ">
-              <label for="unitesParCoulis" class="floating-label">Unités par colis</label>
+              <label for="name" class="floating-label">
+                Nom du produit <span class="required-star">*</span>
+              </label>
             </div>
-            @if (submitted && f['unitesParCols'].errors) {
+            @if (submitted && f['name'].errors) {
               <div class="error-message animated">
                 <i class="fas fa-exclamation-circle me-1"></i>
-                Minimum 1 unité
+                <span>Le nom du produit est requis</span>
               </div>
             }
+            <small class="form-hint">Ex: Huile extra vierge 1L, Huile vrac premium</small>
           </div>
         </div>
+
         <div class="col-md-6">
           <div class="form-group floating-group">
             <div class="input-wrapper">
-              <i class="fas fa-pallet input-icon"></i>
-              <input type="number"
-                     id="colisParPalette"
+              <i class="fas fa-barcode input-icon"></i>
+              <input type="text"
+                     id="code"
                      class="modern-input"
-                     formControlName="colisParPalette"
-                     min="1"
+                     formControlName="code"
                      placeholder=" ">
-              <label for="colisParPalette" class="floating-label">Colis par palette</label>
+              <label for="code" class="floating-label">Code interne</label>
             </div>
-            @if (submitted && f['colisParPalette'].errors) {
-              <div class="error-message animated">
-                <i class="fas fa-exclamation-circle me-1"></i>
-                Minimum 1 colis
-              </div>
-            }
           </div>
         </div>
       </div>
 
-      <div class="form-separator">
-        <span class="separator-text">Informations de conditionnement</span>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="form-group floating-group">
+            <div class="input-wrapper">
+              <i class="fas fa-layer-group input-icon"></i>
+              <select id="type" class="modern-input" formControlName="type">
+                <option *ngFor="let type of productTypes" [value]="type">
+                  {{ formatProductType(type) }}
+                </option>
+              </select>
+              <label for="type" class="floating-label">Type <span class="required-star">*</span></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group floating-group">
+            <div class="input-wrapper">
+              <i class="fas fa-list input-icon"></i>
+              <input type="text"
+                     id="category"
+                     class="modern-input"
+                     formControlName="category"
+                     placeholder=" ">
+              <label for="category" class="floating-label">Categorie</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group floating-group">
+            <div class="input-wrapper">
+              <i class="fas fa-ruler-combined input-icon"></i>
+              <select id="unitOfMeasure" class="modern-input" formControlName="unitOfMeasure">
+                <option *ngFor="let unit of unitOptions" [value]="unit">{{ unit }}</option>
+              </select>
+              <label for="unitOfMeasure" class="floating-label">Unite</label>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="form-group floating-group">
+            <div class="input-wrapper">
+              <i class="fas fa-certificate input-icon"></i>
+              <input type="text" id="grade" class="modern-input" formControlName="grade" placeholder=" ">
+              <label for="grade" class="floating-label">Grade huile</label>
+            </div>
+            <small class="form-hint">Extra vierge, vierge, lampante</small>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group floating-group">
+            <div class="input-wrapper">
+              <i class="fas fa-map-marker-alt input-icon"></i>
+              <input type="text" id="origin" class="modern-input" formControlName="origin" placeholder=" ">
+              <label for="origin" class="floating-label">Origine</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group floating-group">
+            <div class="input-wrapper">
+              <i class="fas fa-calendar input-icon"></i>
+              <input type="text" id="harvestCampaign" class="modern-input" formControlName="harvestCampaign" placeholder=" ">
+              <label for="harvestCampaign" class="floating-label">Campagne</label>
+            </div>
+            <small class="form-hint">Ex: 2025/2026</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group floating-group">
+        <div class="input-wrapper">
+          <i class="fas fa-align-left input-icon"></i>
+          <input type="text" id="description" class="modern-input" formControlName="description" placeholder=" ">
+          <label for="description" class="floating-label">Description</label>
+        </div>
+      </div>
+
+      @if (isNonVrac()) {
+        <div class="form-separator">
+          <span class="separator-text">Conditionnement non vrac</span>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="form-group floating-group">
+              <div class="input-wrapper">
+                <i class="fas fa-wine-bottle input-icon"></i>
+                <input type="number"
+                       id="volume"
+                       class="modern-input"
+                       [class.is-invalid]="submitted && f['volume'].errors"
+                       formControlName="volume"
+                       step="1"
+                       min="0"
+                       placeholder=" ">
+                <label for="volume" class="floating-label">
+                  Volume unitaire ml <span class="required-star">*</span>
+                </label>
+              </div>
+              @if (submitted && f['volume'].errors) {
+                <div class="error-message animated">
+                  <i class="fas fa-exclamation-circle me-1"></i>
+                  <span>Le volume unitaire est requis</span>
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group floating-group">
+              <div class="input-wrapper">
+                <i class="fas fa-box-open input-icon"></i>
+                <input type="text" id="packagingType" class="modern-input" formControlName="packagingType" placeholder=" ">
+                <label for="packagingType" class="floating-label">Type packaging</label>
+              </div>
+              <small class="form-hint">Bouteille verre, PET, bidon, bag-in-box</small>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group floating-group">
+              <div class="input-wrapper">
+                <i class="fas fa-trademark input-icon"></i>
+                <input type="text" id="brand" class="modern-input" formControlName="brand" placeholder=" ">
+                <label for="brand" class="floating-label">Marque</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="form-group floating-group">
+              <div class="input-wrapper">
+                <i class="fas fa-barcode input-icon"></i>
+                <input type="text" id="barcode" class="modern-input" formControlName="barcode" placeholder=" ">
+                <label for="barcode" class="floating-label">Code barre</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group floating-group">
+              <div class="input-wrapper">
+                <i class="fas fa-boxes input-icon"></i>
+                <input type="number"
+                       id="unitsPerCarton"
+                       class="modern-input"
+                       formControlName="unitsPerCarton"
+                       min="1"
+                       placeholder=" ">
+                <label for="unitsPerCarton" class="floating-label">Unites par carton</label>
+              </div>
+              @if (submitted && f['unitsPerCarton'].errors) {
+                <div class="error-message animated">
+                  <i class="fas fa-exclamation-circle me-1"></i>
+                  <span>Minimum 1 unite</span>
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group floating-group">
+              <div class="input-wrapper">
+                <i class="fas fa-pallet input-icon"></i>
+                <input type="number"
+                       id="cartonsPerPallet"
+                       class="modern-input"
+                       formControlName="cartonsPerPallet"
+                       min="1"
+                       placeholder=" ">
+                <label for="cartonsPerPallet" class="floating-label">Cartons par palette</label>
+              </div>
+              @if (submitted && f['cartonsPerPallet'].errors) {
+                <div class="error-message animated">
+                  <i class="fas fa-exclamation-circle me-1"></i>
+                  <span>Minimum 1 carton</span>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-md-6">
+            <div class="form-group floating-group">
+              <div class="input-wrapper">
+                <i class="fas fa-weight input-icon"></i>
+                <input type="number"
+                       id="netWeight"
+                       class="modern-input"
+                       formControlName="netWeight"
+                       step="0.001"
+                       min="0"
+                       placeholder=" ">
+                <label for="netWeight" class="floating-label">Poids net kg</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group floating-group">
+              <div class="input-wrapper">
+                <i class="fas fa-weight-hanging input-icon"></i>
+                <input type="number"
+                       id="grossWeight"
+                       class="modern-input"
+                       formControlName="grossWeight"
+                       step="0.001"
+                       min="0"
+                       placeholder=" ">
+                <label for="grossWeight" class="floating-label">Poids brut kg</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      @if (isVrac()) {
+        <div class="form-separator">
+          <span class="separator-text">Produit vrac</span>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-md-6">
+            <div class="form-group floating-group">
+              <div class="input-wrapper">
+                <i class="fas fa-vial input-icon"></i>
+                <input type="number"
+                       id="density"
+                       class="modern-input"
+                       formControlName="density"
+                       step="0.0001"
+                       min="0"
+                       placeholder=" ">
+                <label for="density" class="floating-label">Densite</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group floating-group">
+              <div class="input-wrapper">
+                <i class="fas fa-industry input-icon"></i>
+                <input type="text" id="storageUnit" class="modern-input" formControlName="storageUnit" placeholder=" ">
+                <label for="storageUnit" class="floating-label">Cuve / stockage par defaut</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
       <div class="form-actions">
         <button type="button" class="btn-outline" (click)="onCancel()">
           <i class="fas fa-times me-2"></i>
@@ -152,7 +345,7 @@
             <span class="ms-2">Traitement...</span>
           } @else {
             <i class="fas fa-check me-2"></i>
-            {{ isEditMode ? 'Mettre à jour' : 'Créer le SKU' }}
+            {{ isEditMode ? 'Mettre a jour' : 'Creer le produit' }}
           }
         </button>
       </div>

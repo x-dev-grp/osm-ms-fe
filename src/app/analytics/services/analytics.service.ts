@@ -21,7 +21,7 @@ export class AnalyticsService {
 
 
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   // =========================
   // 23.1 Rendement des OF
@@ -66,7 +66,7 @@ export class AnalyticsService {
   }
 
   // =========================
-  // 23.4 Écarts BOM
+  // 23.4 Ecarts Nomenclatures
   // =========================
 
   getBomGap(request: any = {}): Observable<any[]> {

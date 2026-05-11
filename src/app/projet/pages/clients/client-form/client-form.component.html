@@ -24,7 +24,7 @@
       </p>
     </div>
 
-    <form [formGroup]="clientForm" (ngSubmit)="onSubmit()">
+    <form [formGroup]="clientForm" (ngSubmit)="onSubmit()" novalidate>
       <div class="form-section">
         <h3 class="section-title">
           <i class="fas fa-info-circle me-2"></i>
@@ -52,6 +52,29 @@
             </div>
           </div>
 
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="type" class="required">
+                <i class="fas fa-tags me-1"></i>
+                Type client
+              </label>
+
+              <select
+                id="type"
+                class="form-control"
+                [class.is-invalid]="submitted && f['type'].errors"
+                formControlName="type">
+
+                <option [value]="ClientType.BUYER">Acheteur</option>
+                <option [value]="ClientType.BRAND">Marque</option>
+              </select>
+
+              @if (submitted && f['type'].errors) {
+                <div class="error-message">
+                  Le type client est requis
+                </div>
+              }
+            </div>
           </div>
         </div>
 
@@ -89,6 +112,7 @@
             </div>
           </div>
         </div>
+      </div>
 
       <!-- Section Adresse -->
       <div class="form-section">

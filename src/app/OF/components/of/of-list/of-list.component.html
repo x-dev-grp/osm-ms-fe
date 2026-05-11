@@ -36,7 +36,7 @@
       <thead>
       <tr>
         <th>Code OF</th>
-        <th>SKU</th>
+        <th>Produit</th>
         <th>Statut</th>
         <th>Quantité cible</th>
         <th>Bon / NC</th>
@@ -50,7 +50,7 @@
           <i class="fas fa-box-open"></i>
           {{ of.code }}
         </td>
-        <td>{{ of.skuCode || of.skuId }}</td>
+        <td>{{ of.productName || of.skuCode || of.productId || of.skuId }}</td>
         <td>
           <span class="status-badge" [ngClass]="getStatusClass(of.statut)">
             {{ of.statut }}

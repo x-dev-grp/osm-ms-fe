@@ -86,7 +86,7 @@
               <tr>
                 <th></th>
                 <th>OF</th>
-                <th>Article / SKU</th>
+                <th>Article / Produit</th>
                 <th>Quantite</th>
                 <th>Lot source</th>
                 <th>Volume</th>
@@ -98,7 +98,7 @@
                   <input type="checkbox" formControlName="selected" />
                 </td>
                 <td><code>{{ projectOfs[i]?.code || '-' }}</code></td>
-                <td>{{ projectOfs[i]?.skuCode || projectOfs[i]?.articleNom || '-' }}</td>
+                <td>{{ projectOfs[i]?.productName || projectOfs[i]?.skuCode || projectOfs[i]?.articleNom || '-' }}</td>
                 <td>
                   <input type="number" formControlName="quantity" min="1" />
                 </td>
@@ -274,7 +274,7 @@
               <thead>
               <tr>
                 <th>OF</th>
-                <th>Article / SKU</th>
+                <th>Article / Produit</th>
                 <th class="qty-cell">Quantite</th>
                 <th>Lot</th>
                 <th>Volume</th>

@@ -1430,7 +1430,7 @@
         "REORDER_QUANTITY": "كمية إعادة الطلب",
         "REORDER_THRESHOLD": "عتبة إعادة الطلب",
         "SELLING_PRICE": "سعر البيع",
-        "SKU": "SKU",
+        "SKU": "المنتج",
         "STOCK_QUANTITY": "كمية المخزون",
         "STORAGE_LOCATION_CODE": "موقع التخزين"
       }

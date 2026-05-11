@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import {BomService} from "../../../services/BomService";
-import {Bom} from "../../../models/Bom";
+import { BomService } from "../../../services/BomService";
+import { Bom } from "../../../models/Bom";
 
 
 @Component({
@@ -20,7 +20,7 @@ export class BomDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private bomService: BomService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -38,7 +38,7 @@ export class BomDetailComponent implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        console.error('Erreur chargement BOM', err);
+        console.error('Erreur chargement des Nomenclatures', err);
         this.loading = false;
         this.router.navigate(['/stock/boms']);
       }
