@@ -46,7 +46,7 @@ $border-radius-sm: 12px;
   margin: 0 auto;
   min-height: 100vh;
   background: linear-gradient(135deg, #faf3e0 0%, #fff5e6 100%);
-  animation: fadeInUp 0.5s ease-out;
+
 
   // ── Header ──────────────────────────────────────────────
   .detail-header {
@@ -71,7 +71,7 @@ $border-radius-sm: 12px;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: $transition;
+
 
       i { font-size: 1.2rem; }
 
@@ -111,7 +111,7 @@ $border-radius-sm: 12px;
         align-items: center;
         gap: 0.5rem;
         cursor: pointer;
-        transition: $transition;
+
         font-size: 0.9rem;
 
         i { font-size: 1rem; }
@@ -196,7 +196,7 @@ $border-radius-sm: 12px;
     box-shadow: $shadow-md;
     border: 1px solid rgba($olive-green, 0.1);
     margin-bottom: 1.5rem;
-    transition: $transition;
+
 
     &:hover {
       transform: translateY(-3px);
@@ -250,7 +250,7 @@ $border-radius-sm: 12px;
           border: 2px solid $gray-200;
           border-radius: $border-radius-sm;
           font-size: 0.95rem;
-          transition: $transition;
+
 
           &:focus {
             outline: none;
@@ -271,7 +271,7 @@ $border-radius-sm: 12px;
         align-items: center;
         gap: 0.5rem;
         cursor: pointer;
-        transition: $transition;
+
         white-space: nowrap;
 
         &:hover {
@@ -304,7 +304,7 @@ $border-radius-sm: 12px;
       }
 
       tbody tr {
-        transition: $transition;
+
         &:hover { background: $gray-100; }
 
         td {
@@ -334,7 +334,7 @@ $border-radius-sm: 12px;
             background: transparent;
             color: $olive-green;
             cursor: pointer;
-            transition: $transition;
+
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -365,7 +365,7 @@ $border-radius-sm: 12px;
         align-items: center;
         gap: 0.5rem;
         cursor: pointer;
-        transition: $transition;
+
         font-size: 0.9rem;
         background: rgba($olive-green, 0.08);
         color: $olive-dark;

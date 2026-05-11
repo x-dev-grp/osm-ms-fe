@@ -1,9 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { OrdreFabrication } from '../models/of.model';
 import {environment} from "../../../environments/environment";
 import { QrCodeInfo } from "../../shared/models/qr-models";
+
+interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+}
 
 @Injectable({ providedIn: 'root' })
 export class OFService {
@@ -29,7 +35,15 @@ export class OFService {
   }
 
   create(of: OrdreFabrication): Observable<OrdreFabrication> {
-    return this.http.post<OrdreFabrication>(`${this.baseUrl}/create`, of);
+    return this.http
+      .post<ApiResponse<OrdreFabrication>>(`${this.baseUrl}/create`, of)
+      .pipe(map(response => response.data));
+  }
+
+  update(id: string, of: OrdreFabrication): Observable<OrdreFabrication> {
+    return this.http
+      .put<ApiResponse<OrdreFabrication>>(this.baseUrl, { ...of, id })
+      .pipe(map(response => response.data));
   }
 
   demarrer(id: string): Observable<OrdreFabrication> {

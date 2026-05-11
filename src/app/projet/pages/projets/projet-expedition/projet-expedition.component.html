@@ -1,304 +1,411 @@
 <div class="expedition-page" *ngIf="!loading; else loadingTpl">
   <div class="header">
-    <div>
-      <h1>Expédition & Livraison</h1>
-      <p>{{ project?.code || projectId }} — {{ project?.clientNom || 'Client non défini' }}</p>
-    </div>
-    <div class="header-actions">
-      <button mat-stroked-button color="primary" (click)="onBack()">
+    <div class="header-info">
+      <button mat-icon-button (click)="deselectExpedition()" *ngIf="selectedExpedition" title="Retour a la liste" class="back-btn">
         <mat-icon>arrow_back</mat-icon>
-        Retour projet
+      </button>
+      <div>
+        <h1 *ngIf="!selectedExpedition">Expedition & Livraison</h1>
+        <div class="exp-title-row" *ngIf="selectedExpedition">
+          <h1>{{ selectedExpedition.expeditionNumber }}</h1>
+          <span class="status-badge" [ngClass]="statusClass(selectedExpedition.status)">
+            {{ statusLabel(selectedExpedition.status) }}
+          </span>
+        </div>
+        <p>{{ project?.code || projectId }} - {{ project?.client.nom || 'Client non defini' }}</p>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <ng-container *ngIf="selectedExpedition">
+        <button mat-icon-button color="primary" (click)="generatePDF(selectedExpedition)" matTooltip="Imprimer le bon de livraison">
+          <mat-icon>picture_as_pdf</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="deleteExpedition(selectedExpedition)" *ngIf="canDelete()" matTooltip="Supprimer l'expedition">
+          <mat-icon>delete</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="doAction('cancel')" *ngIf="canAction('cancel')" matTooltip="Annuler l'expedition">
+          <mat-icon>cancel</mat-icon>
+        </button>
+        <div class="v-divider"></div>
+      </ng-container>
+
+      <button mat-stroked-button color="primary" (click)="onBack()" matTooltip="Retour aux details du projet">
+        <mat-icon>assignment</mat-icon>
+        Projet
       </button>
     </div>
   </div>
 
-  <!-- Search by QR / code -->
-  <section class="card">
-    <h2>Recherche scan / code expédition</h2>
-    <form class="inline-form" [formGroup]="searchForm" (submit)="$event.preventDefault(); searchByCode()">
-      <input type="text" formControlName="code" placeholder="Code public / numéro expédition" />
+  <section class="toolbar-section" *ngIf="!selectedExpedition">
+    <form class="search-card" [formGroup]="searchForm" (ngSubmit)="searchByCode()">
+      <mat-icon>qr_code_scanner</mat-icon>
+      <input type="text" formControlName="code" placeholder="Code expedition ou QR" />
       <button mat-flat-button color="primary" type="submit">
-        <mat-icon>qr_code_scanner</mat-icon>
+        <mat-icon>search</mat-icon>
         Rechercher
       </button>
     </form>
+
+    <button mat-flat-button color="primary" type="button" (click)="toggleCreateForm()">
+      <mat-icon>{{ showCreateForm ? 'close' : 'add' }}</mat-icon>
+      {{ showCreateForm ? 'Fermer' : 'Nouvelle expedition' }}
+    </button>
   </section>
 
-  <!-- Create new -->
-  <section class="card">
-    <h2>Créer une expédition</h2>
-    <form class="create-grid" [formGroup]="createForm">
-      <input type="text" formControlName="destination" placeholder="Destination" />
-      <input type="date" formControlName="plannedShipDate" />
-      <input type="text" formControlName="notes" placeholder="Notes" />
-      <button mat-flat-button color="primary" type="button" (click)="createExpedition()" [disabled]="creating">
-        <mat-icon>add</mat-icon>
-        Nouvelle expédition
-      </button>
-    </form>
-  </section>
-
-  <!-- Main content: list + detail -->
-  <section class="content-grid">
-    <!-- Left: expedition list -->
-    <article class="card">
-      <h2>Expéditions du projet</h2>
-      <div class="exp-list" *ngIf="expeditions.length; else noExpTpl">
-        <button
-          class="exp-item"
-          type="button"
-          *ngFor="let exp of expeditions"
-          [class.active]="selectedExpedition?.id === exp.id"
-          (click)="selectExpedition(exp)"
-        >
-          <strong>{{ exp.expeditionNumber }}</strong>
-          <span [class]="statusClass(exp.status)">{{ statusLabel(exp.status) }}</span>
-          <small>{{ exp.createdDate | date: 'dd/MM/yyyy HH:mm' }}</small>
-        </button>
-      </div>
-    </article>
-
-    <!-- Right: selected expedition detail -->
-    <article class="card" *ngIf="selectedExpedition as exp">
-      <div class="title-row">
-        <div>
-          <h2>{{ exp.expeditionNumber }}</h2>
-          <span class="status" [class]="statusClass(exp.status)">{{ statusLabel(exp.status) }}</span>
+  <section class="card create-section" *ngIf="!selectedExpedition && showCreateForm">
+    <div class="create-header">
+      <h2>Nouvelle expedition</h2>
+    </div>
+    <div class="create-content">
+      <form class="create-form" [formGroup]="createForm">
+        <div class="form-row">
+          <div class="form-field">
+            <label>Destination</label>
+            <input type="text" formControlName="destination" placeholder="Lieu de livraison" />
+          </div>
+          <div class="form-field">
+            <label>Date prevue</label>
+            <input type="date" formControlName="plannedShipDate" />
+          </div>
+          <div class="form-field full">
+            <label>Notes</label>
+            <input type="text" formControlName="notes" placeholder="Informations utiles" />
+          </div>
         </div>
-        <button mat-flat-button color="accent" (click)="generatePDF(exp)">
-          <mat-icon>picture_as_pdf</mat-icon>
-          Imprimer BL & Traçabilité
-        </button>
-      </div>
 
-      <div class="meta">
-        <span>Validée: {{ exp.validatedAt ? (exp.validatedAt | date: 'dd/MM/yyyy HH:mm') : '—' }}</span>
-        <span>Expédiée: {{ exp.shippedAt ? (exp.shippedAt | date: 'dd/MM/yyyy HH:mm') : '—' }}</span>
-        <span>Livrée: {{ exp.deliveredAt ? (exp.deliveredAt | date: 'dd/MM/yyyy HH:mm') : '—' }}</span>
-        <span>Clôturée: {{ exp.closedAt ? (exp.closedAt | date: 'dd/MM/yyyy HH:mm') : '—' }}</span>
-      </div>
+        <div class="create-lines" [formGroup]="createLinesForm">
+          <div class="lines-header">
+            <h3>OF du projet a expedier</h3>
+            <span>{{ selectedCreateLineCount }} OF - {{ selectedCreateLineQuantity }} {{ project?.unite === 'LITRES' ? 'L' : 'u' }}</span>
+          </div>
 
-      <div class="qr-box" *ngIf="getQrImage(exp)">
-        <img [src]="getQrImage(exp)" alt="QR expedition" />
-        <p>Code: <strong>{{ exp.publicCode || '—' }}</strong></p>
-      </div>
-
-      <!-- Editable info -->
-      <form [formGroup]="editForm" class="edit-grid">
-        <h3 class="section-title full">Destination & Planning</h3>
-        <label>
-          Destination
-          <input type="text" formControlName="destination" [readonly]="!isEditable()" />
-        </label>
-        <label>
-          Date prévue
-          <input type="date" formControlName="plannedShipDate" [readonly]="!isEditable()" />
-        </label>
-
-        <h3 class="section-title full">Transport</h3>
-        <label>
-          Transporteur
-          <input type="text" formControlName="carrierName" [readonly]="!isEditable()" />
-        </label>
-        <label>
-          Chauffeur
-          <input type="text" formControlName="driverName" [readonly]="!isEditable()" />
-        </label>
-        <label>
-          Camion
-          <input type="text" formControlName="truckNumber" [readonly]="!isEditable()" />
-        </label>
-        <label>
-          N° Tracking
-          <input type="text" formControlName="trackingNumber" [readonly]="!isEditable()" />
-        </label>
-        <label>
-          Incoterm
-          <input type="text" formControlName="incoterm" [readonly]="!isEditable()" placeholder="EXW, FOB, CIF..." />
-        </label>
-
-        <label class="full">
-          Notes
-          <textarea rows="3" formControlName="notes" [readonly]="!isEditable()"></textarea>
-        </label>
-      </form>
-
-      <div class="actions" *ngIf="isEditable()">
-        <button mat-flat-button color="primary" (click)="saveExpedition()" [disabled]="saving">
-          <mat-icon>save</mat-icon>
-          Enregistrer les modifications
-        </button>
-      </div>
-
-      <!-- Status transitions -->
-      <h3 class="section-title">Workflow Logistique</h3>
-      <div class="workflow-box">
-        <form [formGroup]="actionForm" class="comment-row">
-          <input type="text" formControlName="comment" placeholder="Ajouter un commentaire à l'action..." />
-        </form>
-        <div class="status-actions">
-          <button mat-stroked-button color="primary" [disabled]="!canAction('ready') || actionLoading" (click)="doAction('ready')">
-            <mat-icon>check_circle_outline</mat-icon> Prêt (Ready)
-          </button>
-          <button mat-stroked-button color="primary" [disabled]="!canAction('validate') || actionLoading" (click)="doAction('validate')">
-            <mat-icon>verified</mat-icon> Valider (Frozen)
-          </button>
-          <button mat-stroked-button color="primary" [disabled]="!canAction('ship') || actionLoading" (click)="doAction('ship')">
-            <mat-icon>local_shipping</mat-icon> Expédier (Stock Exit)
-          </button>
-          <button mat-stroked-button color="primary" [disabled]="!canAction('deliver') || actionLoading" (click)="doAction('deliver')">
-            <mat-icon>where_to_vote</mat-icon> Livré (Client)
-          </button>
-          <button mat-stroked-button color="primary" [disabled]="!canAction('close') || actionLoading" (click)="doAction('close')">
-            <mat-icon>archive</mat-icon> Clôturer
-          </button>
-          <button mat-stroked-button color="warn" [disabled]="!canAction('cancel') || actionLoading" (click)="doAction('cancel')">
-            <mat-icon>cancel</mat-icon> Annuler
-          </button>
+          <div class="lines-table compact" formArrayName="lines" *ngIf="createLineControls.length; else noProjectOfTpl">
+            <table class="table">
+              <thead>
+              <tr>
+                <th></th>
+                <th>OF</th>
+                <th>Article / SKU</th>
+                <th>Quantite</th>
+                <th>Lot source</th>
+                <th>Volume</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let control of createLineControls.controls; let i = index" [formGroupName]="i">
+                <td>
+                  <input type="checkbox" formControlName="selected" />
+                </td>
+                <td><code>{{ projectOfs[i]?.code || '-' }}</code></td>
+                <td>{{ projectOfs[i]?.skuCode || projectOfs[i]?.articleNom || '-' }}</td>
+                <td>
+                  <input type="number" formControlName="quantity" min="1" />
+                </td>
+                <td>
+                  <input type="text" formControlName="lotNumber" placeholder="Lot" />
+                </td>
+                <td>
+                  <input type="number" step="0.01" formControlName="volume" placeholder="m3" />
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
 
-      <!-- Lines -->
-      <h3 class="section-title">Contenu de l'expédition</h3>
-      <div class="add-line-box" *ngIf="isEditable()">
-        <form [formGroup]="lineForm" class="line-form">
-          <select class="select-of" (change)="onOfSelected($event)" [class.error]="lineForm.get('ofId')?.touched && lineForm.get('ofId')?.invalid">
-            <option value="">Sélectionner un OF / Article...</option>
-            <option *ngFor="let of of projectOfs" [value]="of.id">
-              {{ of.code }} — {{ of.skuCode || 'Produit' }} (Qté: {{ of.quantiteBonne ?? 0 }})
-            </option>
-          </select>
-          
-          <input type="number" min="1" formControlName="quantity" placeholder="Qté" [class.error]="lineForm.get('quantity')?.touched && lineForm.get('quantity')?.invalid" />
-          <input type="number" min="0" step="0.001" formControlName="volume" placeholder="Volume" />
-          <input type="text" formControlName="lotNumber" placeholder="N° Lot" />
-          <input type="text" formControlName="unit" placeholder="Unité" />
-          
-          <button mat-flat-button color="primary" type="button" (click)="addLine()" [disabled]="addingLine || lineForm.invalid">
+        <div class="form-actions">
+          <button mat-flat-button color="primary" type="button" (click)="createExpedition()" [disabled]="creating">
             <mat-icon>add</mat-icon>
-            Ajouter
-          </button>
-        </form>
-      </div>
-
-      <div class="totals" *ngIf="exp.totalQuantity || exp.totalVolume">
-        <span>Total articles: <strong>{{ exp.totalQuantity ?? 0 }}</strong></span>
-        <span *ngIf="exp.totalVolume">Volume total: <strong>{{ exp.totalVolume }} m³</strong></span>
-      </div>
-
-      <!-- Traceability Snapshot UI -->
-      <div class="traceability-section card" *ngIf="getParsedSnapshot(exp) as snapshot">
-        <div class="title-row">
-          <h3><mat-icon>history_edu</mat-icon> Traçabilité & Généalogie (Audit Snapshot)</h3>
-          <button mat-button color="primary" (click)="toggleTraceability()">
-            {{ showTraceability ? 'Masquer' : 'Afficher les détails' }}
+            Creer l'expedition avec les OF
           </button>
         </div>
+      </form>
+    </div>
+  </section>
 
-        <div class="genealogy-container" *ngIf="showTraceability">
-          <div class="of-trace" *ngFor="let ofId of (snapshot.ofDetails | keyvalue)">
-            <h4 class="of-header">
-              <mat-icon>inventory</mat-icon> OF: {{ (ofId.value | any).code }} — {{ (ofId.value | any).articleName }}
-            </h4>
-            
-            <div class="timeline" *ngIf="snapshot.oilGenealogy[(ofId.value | any).lotVracId] as genea">
-              <!-- Root Sources -->
-              <div class="timeline-item root" *ngFor="let root of genea.rootSources">
-                <div class="marker"></div>
-                <div class="content">
-                  <span class="label">Origine ({{ root.type }})</span>
-                  <div class="source-info">
-                    <strong>{{ root.supplierName }}</strong>
-                    <p>Lot vrac: <code>{{ root.lotNumber }}</code></p>
-                    <small>{{ root.date | date: 'dd/MM/yyyy' }} <span *ngIf="root.extra?.storageUnitName">| Cuve: {{ root.extra.storageUnitName }}</span></small>
-                    <div class="extra" *ngIf="root.extra">
-                       <span *ngIf="root.extra.rendement">Rendement: {{ root.extra.rendement }}%</span>
-                       <span *ngIf="root.extra.variety">Variété: {{ root.extra.variety }}</span>
-                    </div>
-                  </div>
+  <div class="detail-section" *ngIf="selectedExpedition && !showCreateForm">
+    <div class="detail-grid">
+      <div class="detail-main">
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <mat-icon>inventory_2</mat-icon>
+            <div>
+              <span class="metric-value">{{ selectedExpedition.totalQuantity ?? 0 }}</span>
+              <span class="metric-label">Articles total</span>
+            </div>
+          </div>
+          <div class="metric-card" *ngIf="selectedExpedition.totalVolume">
+            <mat-icon>straighten</mat-icon>
+            <div>
+              <span class="metric-value">{{ selectedExpedition.totalVolume }} m3</span>
+              <span class="metric-label">Volume total</span>
+            </div>
+          </div>
+          <div class="metric-card">
+            <mat-icon>calendar_today</mat-icon>
+            <div>
+              <span class="metric-value">{{ selectedExpedition.plannedShipDate ? (selectedExpedition.plannedShipDate | date:'dd/MM/yy') : '-' }}</span>
+              <span class="metric-label">Date prevue</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="workflow-section card">
+          <h3>Etapes de l'expedition</h3>
+          <div class="workflow-content">
+            <div class="action-form" [formGroup]="actionForm">
+              <div class="form-field full">
+                <input type="text" formControlName="comment" placeholder="Commentaire d'action" />
+              </div>
+            </div>
+
+            <div class="workflow-actions">
+              <button mat-flat-button color="primary" (click)="doAction('ready')" *ngIf="canAction('ready')" [disabled]="actionLoading">
+                Pret pour validation
+              </button>
+              <button mat-flat-button color="accent" (click)="doAction('validate')" *ngIf="canAction('validate')" [disabled]="actionLoading">
+                Valider l'expedition
+              </button>
+              <button mat-flat-button class="ship-btn" (click)="doAction('ship')" *ngIf="canAction('ship')" [disabled]="actionLoading">
+                Marquer comme expedie
+              </button>
+              <button mat-flat-button class="deliver-btn" (click)="doAction('deliver')" *ngIf="canAction('deliver')" [disabled]="actionLoading">
+                Confirmer la livraison
+              </button>
+              <button mat-flat-button color="primary" (click)="doAction('close')" *ngIf="canAction('close')" [disabled]="actionLoading">
+                Cloturer le dossier
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="edit-form card">
+          <h3>Logistique & Destination</h3>
+          <form [formGroup]="editForm" (ngSubmit)="saveExpedition()">
+            <div class="form-grid">
+              <div class="form-field">
+                <label>Destination</label>
+                <input type="text" formControlName="destination" placeholder="Lieu de livraison" [readonly]="!isEditable()" />
+              </div>
+              <div class="form-field">
+                <label>Date prevue</label>
+                <input type="date" formControlName="plannedShipDate" [readonly]="!isEditable()" />
+              </div>
+              <div class="form-field">
+                <label>Transporteur</label>
+                <input type="text" formControlName="carrierName" placeholder="Nom du transporteur" [readonly]="!isEditable()" />
+              </div>
+              <div class="form-field">
+                <label>Chauffeur</label>
+                <input type="text" formControlName="driverName" placeholder="Nom du chauffeur" [readonly]="!isEditable()" />
+              </div>
+              <div class="form-field">
+                <label>Camion</label>
+                <input type="text" formControlName="truckNumber" placeholder="Plaque d'immatriculation" [readonly]="!isEditable()" />
+              </div>
+              <div class="form-field">
+                <label>Tracking</label>
+                <input type="text" formControlName="trackingNumber" placeholder="Numero de suivi" [readonly]="!isEditable()" />
+              </div>
+              <div class="form-field">
+                <label>Incoterm</label>
+                <input type="text" formControlName="incoterm" placeholder="Ex: EXW, FOB" [readonly]="!isEditable()" />
+              </div>
+              <div class="form-field full">
+                <label>Notes</label>
+                <textarea formControlName="notes" placeholder="Informations complementaires" [readonly]="!isEditable()"></textarea>
+              </div>
+            </div>
+            <div class="form-actions" *ngIf="isEditable()">
+              <button mat-flat-button color="primary" type="submit" [disabled]="saving">
+                <mat-icon>{{ saving ? 'sync' : 'save' }}</mat-icon>
+                Enregistrer
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="lines-section card">
+          <div class="lines-header">
+            <h3>Articles a expedier</h3>
+            <button mat-stroked-button (click)="toggleAddLine()" *ngIf="isEditable()">
+              <mat-icon>{{ showAddLine ? 'remove' : 'add' }}</mat-icon>
+              Ajouter un OF
+            </button>
+          </div>
+
+          <div class="add-line-form" *ngIf="showAddLine && isEditable()">
+            <form [formGroup]="lineForm" (ngSubmit)="addLine()" class="line-form">
+              <div class="form-row">
+                <div class="form-field">
+                  <label>Ordre de fabrication</label>
+                  <select formControlName="ofId" (change)="onOfSelected($event)">
+                    <option value="">Selectionner un OF</option>
+                    <option *ngFor="let of of projectOfs" [value]="of.id">
+                      {{ of.code }} ({{ of.quantiteCible }} {{ of.unite === 'LITRES' ? 'L' : 'u' }})
+                    </option>
+                  </select>
+                </div>
+                <div class="form-field">
+                  <label>Quantite</label>
+                  <input type="number" formControlName="quantity" />
+                </div>
+                <div class="form-field">
+                  <label>Lot</label>
+                  <input type="text" formControlName="lotNumber" placeholder="Numero de lot" />
+                </div>
+                <div class="form-field">
+                  <label>Volume (m3)</label>
+                  <input type="number" step="0.01" formControlName="volume" />
+                </div>
+                <div class="form-actions">
+                  <button mat-flat-button color="primary" type="submit" [disabled]="addingLine || lineForm.invalid">
+                    <mat-icon>check</mat-icon>
+                    Confirmer
+                  </button>
                 </div>
               </div>
+            </form>
+          </div>
 
-              <!-- Filtrations -->
-              <div class="timeline-item filt" *ngFor="let filt of genea.filtrations">
-                <div class="marker"></div>
-                <div class="content">
-                  <span class="label">Filtration</span>
-                  <div class="filt-info">
-                    <strong>Lot Cible: <code>{{ filt.targetLotNumber }}</code></strong>
-                    <p>Volume: {{ filt.volumeFiltered }} L <span *ngIf="filt.sourceStorageUnitName">| Source: {{ filt.sourceStorageUnitName }}</span></p>
-                    <small>{{ filt.timestamp | date: 'dd/MM/yyyy HH:mm' }}</small>
-                  </div>
-                </div>
-              </div>
+          <div class="lines-table">
+            <table class="table" *ngIf="selectedExpedition.lines?.length; else noLinesTpl">
+              <thead>
+              <tr>
+                <th>OF</th>
+                <th>Article / SKU</th>
+                <th class="qty-cell">Quantite</th>
+                <th>Lot</th>
+                <th>Volume</th>
+                <th *ngIf="isEditable()"></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let line of selectedExpedition.lines">
+                <td><code>{{ line.ofCode || '-' }}</code></td>
+                <td>{{ line.articleName || '-' }}</td>
+                <td class="qty-cell">{{ line.quantity }} {{ line.unit }}</td>
+                <td>{{ line.lotNumber || '-' }}</td>
+                <td>{{ line.volume ? line.volume + ' m3' : '-' }}</td>
+                <td *ngIf="isEditable()">
+                  <button mat-icon-button color="warn" (click)="removeLine(line.id!)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
 
-              <!-- End: Final Storage Unit -->
-              <div class="timeline-item final">
-                <div class="marker"></div>
-                <div class="content">
-                  <span class="label">Unité de Stockage Finale</span>
-                  <div class="unit-info">
-                    <strong>{{ genea.storageUnitName }}</strong>
-                    <p>Lot final: <code>{{ genea.lotNumber }}</code></p>
-                  </div>
-                </div>
+      <div class="detail-sidebar">
+        <div class="qr-section card">
+          <div class="qr-card">
+            <img *ngIf="getQrImage(selectedExpedition)" [src]="getQrImage(selectedExpedition)" alt="QR Code" />
+            <div class="qr-info">
+              <span class="qr-label">Code tracabilite</span>
+              <code>{{ selectedExpedition.publicCode || '-' }}</code>
+            </div>
+          </div>
+        </div>
+
+        <div class="traceability-section card" *ngIf="getTraceabilityItems(selectedExpedition).length">
+          <div class="traceability-header">
+            <h3><mat-icon>history</mat-icon> Tracabilite</h3>
+            <button mat-icon-button (click)="toggleTraceability()">
+              <mat-icon>{{ showTraceability ? 'expand_less' : 'expand_more' }}</mat-icon>
+            </button>
+          </div>
+          <div class="traceability-timeline" *ngIf="showTraceability">
+            <div class="trace-step" *ngFor="let item of getTraceabilityItems(selectedExpedition)">
+              <span class="step-dot"></span>
+              <div>
+                <strong>{{ item.label }}</strong>
+                <span>{{ item.value }}</span>
               </div>
             </div>
           </div>
-          <p class="snapshot-footer">Capture effectuée le {{ snapshot.capturedAt | date: 'dd/MM/yyyy HH:mm' }}</p>
         </div>
       </div>
+    </div>
+  </div>
 
-      <table class="table" *ngIf="exp.lines?.length; else noLinesTpl">
-        <thead>
-          <tr>
-            <th>OF Source</th>
-            <th>Article</th>
-            <th>Désignation</th>
-            <th>Qté</th>
-            <th>Volume</th>
-            <th>Lot</th>
-            <th>Unité</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let line of exp.lines">
-            <td><code class="of-code">{{ line.ofCode || line.ofId || '—' }}</code></td>
-            <td><small>{{ line.articleId || '—' }}</small></td>
-            <td>{{ line.articleName || '—' }}</td>
-            <td class="qty-cell"><strong>{{ line.quantity }}</strong></td>
-            <td>{{ line.volume ?? '—' }}</td>
-            <td>{{ line.lotNumber || '—' }}</td>
-            <td>{{ line.unit || '—' }}</td>
-            <td>
-              <button mat-icon-button color="warn" (click)="removeLine(line.id)" *ngIf="isEditable()">
-                <mat-icon>delete_outline</mat-icon>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </article>
+  <section class="content-section" *ngIf="!selectedExpedition">
+    <div class="expedition-grid" *ngIf="expeditions.length; else noExpTpl">
+      <div class="exp-card" *ngFor="let exp of expeditions" (click)="selectExpedition(exp)">
+        <div class="exp-card-header">
+          <div class="exp-header-left">
+            <div class="exp-title">
+              <strong>{{ exp.expeditionNumber || 'Expedition' }}</strong>
+              <small>{{ exp.createdDate | date: 'dd/MM/yyyy' }} - {{ exp.projetCode || project?.code }}</small>
+            </div>
+          </div>
+          <div class="exp-header-right">
+            <span class="exp-qty">{{ exp.totalQuantity ?? 0 }}</span>
+            <span class="status" [ngClass]="statusClass(exp.status)">{{ statusLabel(exp.status) }}</span>
+          </div>
+        </div>
+
+        <div class="exp-card-content">
+          <div class="exp-info-row">
+            <div class="info-item">
+              <mat-icon>event</mat-icon>
+              <span>{{ exp.plannedShipDate ? (exp.plannedShipDate | date: 'dd/MM/yyyy') : '-' }}</span>
+            </div>
+            <div class="info-item" *ngIf="exp.carrierName">
+              <mat-icon>local_shipping</mat-icon>
+              <span>{{ exp.carrierName }}</span>
+            </div>
+            <div class="info-item" *ngIf="exp.destination">
+              <mat-icon>place</mat-icon>
+              <span>{{ exp.destination }}</span>
+            </div>
+          </div>
+
+          <div class="exp-metrics">
+            <div class="metric-item">
+              <span class="metric-label">Articles</span>
+              <span class="metric-value">{{ exp.totalQuantity ?? 0 }}</span>
+            </div>
+            <div class="metric-item" *ngIf="exp.totalVolume">
+              <span class="metric-label">Volume</span>
+              <span class="metric-value">{{ exp.totalVolume }} m3</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 </div>
 
 <ng-template #loadingTpl>
   <div class="loading-box">
     <mat-icon class="spin">sync</mat-icon>
-    Chargement du module expédition...
+    Chargement du module expedition...
   </div>
 </ng-template>
 
 <ng-template #noExpTpl>
   <div class="empty-state">
     <mat-icon>inventory_2</mat-icon>
-    <p>Aucune expédition n'a encore été créée pour ce projet.</p>
+    <p>Aucune expedition n'a encore ete creee pour ce projet.</p>
+    <button mat-flat-button color="primary" type="button" (click)="toggleCreateForm()">
+      <mat-icon>add</mat-icon>
+      Nouvelle expedition
+    </button>
   </div>
 </ng-template>
 
 <ng-template #noLinesTpl>
   <div class="empty-state small">
-    <p>Cette expédition est vide. Ajoutez des articles ci-dessus.</p>
+    <p>Cette expedition est vide. Ajoutez des articles ci-dessus.</p>
+  </div>
+</ng-template>
+
+<ng-template #noProjectOfTpl>
+  <div class="empty-state small">
+    <p>Aucun OF disponible pour creer une expedition.</p>
   </div>
 </ng-template>

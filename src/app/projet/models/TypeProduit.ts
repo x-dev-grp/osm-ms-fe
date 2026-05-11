@@ -1,15 +1,11 @@
+import {Client} from "./client.model";
+
 export enum TypeProduit {
-  EXTRA_VIERGE = 'EXTRA_VIERGE',
-  VIERGE = 'VIERGE',
-  RAFFINE = 'RAFFINE',
-  BLEND = 'BLEND'
+  EXTRA_VIERGE = 'EXTRA_VIERGE', VIERGE = 'VIERGE', RAFFINE = 'RAFFINE', BLEND = 'BLEND'
 }
 
 export enum TypeEmballage {
-  BOUTEILLE = 'BOUTEILLE',
-  CANETTE = 'CANETTE',
-  PET = 'PET',
-  VRAC = 'VRAC'
+  BOUTEILLE = 'BOUTEILLE', CANETTE = 'CANETTE', PET = 'PET', VRAC = 'VRAC'
 }
 
 export type Unite = 'LITRES' | 'UNITES';
@@ -20,9 +16,7 @@ export interface ProjetDto {
   // code metier manuel genere par le back
   code?: string;
 
-  clientId: string;
-  clientNom?: string;
-  clientEmail?: string;
+  client: Client;
 
   typeProduit: TypeProduit;
   typeEmballage: TypeEmballage;

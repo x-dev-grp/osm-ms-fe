@@ -22,8 +22,9 @@
           <label>Client *</label>
           <select formControlName="clientId" class="form-select" [class.is-invalid]="isFieldInvalid('clientId')">
             <option value="">-- Selectionner --</option>
+
             <option *ngFor="let c of clients" [value]="c.id">
-              {{ c.nom }} ({{ c.type === 'BUYER' ? 'Acheteur' : 'Marque' }})
+              {{ c.nom }} ({{ c.type === ClientType.BUYER ? 'Acheteur' : 'Marque' }})
             </option>
           </select>
           <div class="invalid-feedback d-block" *ngIf="isFieldInvalid('clientId')">

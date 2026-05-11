@@ -15,6 +15,7 @@ export interface OrdreFabrication {
   skuId: string;
   bomId?: string;
   skuCode?: string;
+  unite?: string;
   ligneId?: string;
   ligneNom?: string;
   lotVracId?: string;
@@ -35,7 +36,9 @@ export enum StatutOF {
   EN_COURS = 'EN_COURS',
   EN_PAUSE = 'EN_PAUSE',
   TERMINE = 'TERMINE',
-  CLOTURE = 'CLOTURE'
+  CLOTURE = 'CLOTURE',
+  EN_ATTENTE = 'EN_ATTENTE',
+ANNULE = 'ANNULE'
 }
 export enum  QualityStatus {
   FREE = 'FREE',

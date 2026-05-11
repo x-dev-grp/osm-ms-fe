@@ -11,6 +11,9 @@ import { OFProductionComponent } from "./components/of/of-production/of-producti
 const routes: Routes = [
   { path: '', component: OFListComponent },
   { path: 'nouveau', component: OFFormComponent },
+  { path: 'modifier/:id', component: OFFormComponent },
+  { path: ':id', component: OFDetailComponent },
+
   { path: 'production', component: OFProductionComponent },        // ✅ AVANT :id
   { path: 'qualite/points', component: ControlPointDefinitionComponent },
   { path: 'qualite/entry', component: QualityControlEntryComponent },

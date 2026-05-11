@@ -64,7 +64,7 @@ $border-radius-sm: 12px;
     text-decoration: none;
     font-weight: 500;
     box-shadow: $shadow-sm;
-    transition: $transition;
+
 
     i {
       font-size: 1rem;
@@ -101,7 +101,7 @@ $border-radius-sm: 12px;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: $transition;
+
 
       &:hover {
         background: $primary;
@@ -136,7 +136,7 @@ $border-radius-sm: 12px;
         align-items: center;
         gap: 0.5rem;
         cursor: pointer;
-        transition: $transition;
+
 
         &.active {
           background: rgba($success, 0.1);
@@ -231,7 +231,7 @@ $border-radius-sm: 12px;
         align-items: center;
         gap: 0.5rem;
         cursor: pointer;
-        transition: $transition;
+
 
         &:hover {
           background: $primary;
@@ -262,7 +262,7 @@ $border-radius-sm: 12px;
           border: 2px solid $gray-200;
           border-radius: $border-radius-sm;
           font-size: 0.95rem;
-          transition: $transition;
+
 
           &:focus {
             outline: none;
@@ -291,7 +291,7 @@ $border-radius-sm: 12px;
         background: $white;
         border-radius: $border-radius-sm;
         border: 1px solid $gray-200;
-        transition: $transition;
+
 
         &:hover {
           box-shadow: $shadow-sm;
@@ -320,7 +320,7 @@ $border-radius-sm: 12px;
           color: $danger;
           border: none;
           cursor: pointer;
-          transition: $transition;
+
 
           &:hover {
             transform: scale(1.1);
@@ -347,7 +347,7 @@ $border-radius-sm: 12px;
         align-items: center;
         gap: 0.5rem;
         cursor: pointer;
-        transition: $transition;
+
       }
 
       .btn-cancel {
