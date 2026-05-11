@@ -4,10 +4,10 @@ import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } fr
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ArticleService } from '../../../services/article.service';
 import { Article } from '../../../models/article.model';
-import {Bom} from "../../../models/Bom";
-import {SKU} from "../../../models/sku.model";
-import {BomService} from "../../../services/BomService";
-import {SKUService} from "../../../services/sku.service";
+import { Bom } from "../../../models/Bom";
+import { Product, productDisplayName } from "../../../models/sku.model";
+import { BomService } from "../../../services/BomService";
+import { SKUService } from "../../../services/sku.service";
 
 
 @Component({
@@ -19,7 +19,7 @@ import {SKUService} from "../../../services/sku.service";
 })
 export class BomFormComponent implements OnInit {
   bomForm!: FormGroup;
-  skus: SKU[] = [];
+  products: Product[] = [];
   articles: Article[] = [];
   loading = false;
   isSubmitting = false;
@@ -34,7 +34,7 @@ export class BomFormComponent implements OnInit {
     private bomService: BomService,
     private skuService: SKUService,
     private articleService: ArticleService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.initForm();
@@ -57,7 +57,7 @@ export class BomFormComponent implements OnInit {
 
   private initForm(): void {
     this.bomForm = this.fb.group({
-      skuId: ['', Validators.required],
+      productId: ['', Validators.required],
       lines: this.fb.array([])
     });
   }
@@ -78,9 +78,9 @@ export class BomFormComponent implements OnInit {
   }
 
   loadSkus(): void {
-    this.skuService.getActiveSKUs().subscribe({
-      next: (data: SKU[]) => this.skus = data,
-      error: (err: any) => console.error('Erreur chargement SKU', err)
+    this.skuService.getActiveProductsByType('NON_VRAC').subscribe({
+      next: (data: Product[]) => this.products = data,
+      error: (err: any) => console.error('Erreur chargement produits', err)
     });
   }
 
@@ -97,7 +97,7 @@ export class BomFormComponent implements OnInit {
       next: (bom) => {
         this.bom = bom;
         this.bomForm.patchValue({
-          skuId: bom.skuId,
+          productId: bom.productId || bom.skuId,
           version: bom.version
         });
         this.lines.clear();
@@ -114,7 +114,7 @@ export class BomFormComponent implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        console.error('Erreur chargement BOM', err);
+        console.error('Erreur chargement des Nomenclatures', err);
         this.loading = false;
         this.router.navigate(['/stock/boms']);
       }
@@ -167,5 +167,9 @@ export class BomFormComponent implements OnInit {
 
   cancel(): void {
     this.router.navigate(['/stock/boms']);
+  }
+
+  productName(product: Product): string {
+    return productDisplayName(product);
   }
 }

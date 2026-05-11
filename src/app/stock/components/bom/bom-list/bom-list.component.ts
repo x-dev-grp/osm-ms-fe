@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import {Bom} from "../../../models/Bom";
-import {BomService} from "../../../services/BomService";
+import { Bom } from "../../../models/Bom";
+import { BomService } from "../../../services/BomService";
 
 
 @Component({
@@ -16,7 +16,7 @@ export class BomListComponent implements OnInit {
   boms: Bom[] = [];
   loading = true;
 
-  constructor(private bomService: BomService) {}
+  constructor(private bomService: BomService) { }
 
   ngOnInit(): void {
     this.loadBoms();
@@ -34,7 +34,7 @@ export class BomListComponent implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        console.error('Erreur chargement BOM', err);
+        console.error('Erreur chargement des Nomenclatures', err);
         this.loading = false;
       }
     });

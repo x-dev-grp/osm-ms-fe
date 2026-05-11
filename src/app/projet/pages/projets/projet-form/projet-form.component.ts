@@ -98,7 +98,7 @@ export class ProjetFormComponent implements OnInit {
         this.projetCode = projet.code;
 
         this.form.patchValue({
-          clientId: projet.client?.id ?? '',
+          clientId: projet.clientId ?? projet.client?.id ?? '',
           typeProduit: projet.typeProduit,
           typeEmballage: projet.typeEmballage,
           quantiteCible: projet.quantiteCible,
@@ -148,6 +148,7 @@ export class ProjetFormComponent implements OnInit {
       id: this.projetId ?? '',
       code: this.projetCode,
 
+      clientId: selectedClient.id,
       client: selectedClient,
 
       typeProduit: formValue.typeProduit,

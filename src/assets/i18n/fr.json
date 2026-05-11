@@ -1466,7 +1466,7 @@
         "REORDER_QUANTITY": "Quantité de réappro.",
         "REORDER_THRESHOLD": "Seuil de réapprovisionnement",
         "SELLING_PRICE": "Prix de vente",
-        "SKU": "SKU",
+        "SKU": "Produit",
         "STOCK_QUANTITY": "Quantité en stock",
         "STORAGE_LOCATION_CODE": "Emplacement"
       }

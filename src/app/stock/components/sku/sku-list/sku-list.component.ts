@@ -3,7 +3,14 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SKUService } from '../../../services/sku.service';
-import { SKU } from '../../../models/sku.model';
+import {
+  ProductType,
+  SKU,
+  productCartonsPerPallet,
+  productDisplayName,
+  productTypeLabel,
+  productUnitsPerCarton
+} from '../../../models/sku.model';
 
 @Component({
   selector: 'app-sku-list',
@@ -20,6 +27,8 @@ export class SkuListComponent implements OnInit {
   successMessage: string | null = null;
   searchTerm: string = '';
   categoryFilter: string = '';
+  typeFilter: ProductType | '' = '';
+  readonly productTypes: ProductType[] = ['VRAC', 'NON_VRAC'];
 
   // Pour gérer le chargement pendant le toggle
   togglingId: string | null = null;
@@ -34,7 +43,7 @@ export class SkuListComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    this.skuService.getAllSkus().subscribe({
+    this.skuService.getAllProducts().subscribe({
       next: (response: any) => {
         const skus = response ?? [];
         // Tri : actifs d'abord (true > false) puis par date décroissante
@@ -51,8 +60,8 @@ export class SkuListComponent implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        console.error("Erreur chargement SKUs:", err);
-        this.error = "Impossible de charger la liste des SKUs";
+        console.error("Erreur chargement produits:", err);
+        this.error = "Impossible de charger la liste des produits";
         this.loading = false;
       }
     });
@@ -63,12 +72,19 @@ export class SkuListComponent implements OnInit {
     if (this.searchTerm) {
       const term = this.searchTerm.toLowerCase().trim();
       filtered = filtered.filter(sku =>
-        sku.code.toLowerCase().includes(term) ||
-        (sku.category && sku.category.toLowerCase().includes(term))
+        productDisplayName(sku).toLowerCase().includes(term) ||
+        (sku.code && sku.code.toLowerCase().includes(term)) ||
+        (sku.category && sku.category.toLowerCase().includes(term)) ||
+        (sku.grade && sku.grade.toLowerCase().includes(term)) ||
+        (sku.brand && sku.brand.toLowerCase().includes(term)) ||
+        (sku.barcode && sku.barcode.toLowerCase().includes(term))
       );
     }
     if (this.categoryFilter) {
       filtered = filtered.filter(sku => sku.category === this.categoryFilter);
+    }
+    if (this.typeFilter) {
+      filtered = filtered.filter(sku => sku.type === this.typeFilter);
     }
     this.filteredSkus = filtered;
   }
@@ -80,6 +96,7 @@ export class SkuListComponent implements OnInit {
   resetFilters(): void {
     this.searchTerm = '';
     this.categoryFilter = '';
+    this.typeFilter = '';
     this.applyFilters();
   }
 
@@ -88,7 +105,7 @@ export class SkuListComponent implements OnInit {
     event.stopPropagation();
 
     const action = sku.actif ? 'désactiver' : 'activer';
-    const message = `Voulez-vous ${action} le SKU "${sku.code}" ?`;
+    const message = `Voulez-vous ${action} le produit "${productDisplayName(sku)}" ?`;
 
     if (confirm(message)) {
       this.togglingId = sku.id!;
@@ -105,7 +122,7 @@ export class SkuListComponent implements OnInit {
           // Réappliquer les filtres
           this.applyFilters();
           this.togglingId = null;
-          this.successMessage = `SKU ${action} avec succès`;
+          this.successMessage = `Produit ${action} avec succès`;
           setTimeout(() => this.successMessage = null, 3000);
         },
         error: (err) => {
@@ -135,5 +152,30 @@ export class SkuListComponent implements OnInit {
       .map(sku => sku.category)
       .filter((cat): cat is string => cat !== undefined && cat !== null && cat !== '');
     return [...new Set(categories)];
+  }
+
+  getProductName(sku: SKU): string {
+    return productDisplayName(sku);
+  }
+
+  formatProductType(type?: ProductType): string {
+    return productTypeLabel(type);
+  }
+
+  packagingSummary(sku: SKU): string {
+    if (sku.type === 'VRAC') {
+      return [sku.unitOfMeasure, sku.density ? `densite ${sku.density}` : '', sku.storageUnit]
+        .filter(Boolean)
+        .join(' / ') || '-';
+    }
+
+    const unitsPerCarton = productUnitsPerCarton(sku);
+    const cartonsPerPallet = productCartonsPerPallet(sku);
+    return [
+      sku.volume ? `${sku.volume} ml` : '',
+      sku.packagingType,
+      unitsPerCarton ? `${unitsPerCarton} u/carton` : '',
+      cartonsPerPallet ? `${cartonsPerPallet} c/palette` : ''
+    ].filter(Boolean).join(' / ') || '-';
   }
 }

@@ -1442,7 +1442,7 @@
         "REORDER_QUANTITY": "Reorder Quantity",
         "REORDER_THRESHOLD": "Reorder Threshold",
         "SELLING_PRICE": "Selling Price",
-        "SKU": "SKU",
+        "SKU": "Product",
         "STOCK_QUANTITY": "Stock Quantity",
         "STORAGE_LOCATION_CODE": "Storage Location"
       }

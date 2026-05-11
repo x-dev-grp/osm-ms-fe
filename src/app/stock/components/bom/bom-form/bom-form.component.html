@@ -1,14 +1,15 @@
 <div class="bom-form-page">
   <a routerLink="/stock/boms" routerLinkActive="active">
-    <i class="fas fa-clipboard-list"></i> ProductComposition
+    <i class="fas fa-clipboard-list"></i> Nomenclature
   </a>
   <div class="form-header">
     <button class="btn-back-floating" [routerLink]="['/stock/boms']">
       <i class="fas fa-arrow-left"></i>
     </button>
     <div>
-      <h2 class="form-title">{{ isEditMode ? 'Modifier la ProductComposition' : 'Nouvelle ProductComposition' }}</h2>
-      <p class="form-subtitle">{{ isEditMode ? 'Modifiez les composants de la recette' : 'Définissez les composants nécessaires pour une unité de produit fini' }}</p>
+      <h2 class="form-title">{{ isEditMode ? 'Modifier la Nomenclature' : 'Nouvelle Nomenclature' }}</h2>
+      <p class="form-subtitle">{{ isEditMode ? 'Modifiez les composants de la recette' : 'Définissez les composants
+        nécessaires pour une unité de produit fini' }}</p>
     </div>
     <div class="header-actions" *ngIf="isEditMode">
     </div>
@@ -25,13 +26,13 @@
         <h5 class="card-title">Informations générales</h5>
         <div class="form-row">
           <div class="form-group">
-            <label>SKU (produit fini)</label>
-            <select class="form-control" formControlName="skuId" required>
-              <option value="" disabled selected>Choisir un SKU</option>
-              <option *ngFor="let sku of skus" [value]="sku.id">{{ sku.code }}</option>
+            <label>Produit fini</label>
+            <select class="form-control" formControlName="productId" required>
+              <option value="" disabled selected>Choisir un produit</option>
+              <option *ngFor="let product of products" [value]="product.id">{{ productName(product) }}</option>
             </select>
-            <div class="error" *ngIf="bomForm.get('skuId')?.invalid && bomForm.get('skuId')?.touched">
-              Le SKU est requis
+            <div class="error" *ngIf="bomForm.get('productId')?.invalid && bomForm.get('productId')?.touched">
+              Le produit est requis
             </div>
           </div>
         </div>
@@ -62,11 +63,11 @@
               </div>
             </div>
           </div>
-            <button type="button" class="btn-remove" (click)="removeLine(i)" *ngIf="lines.length > 1">
-              <i class="fas fa-trash"></i>
-            </button>
-          </div>
+          <button type="button" class="btn-remove" (click)="removeLine(i)" *ngIf="lines.length > 1">
+            <i class="fas fa-trash"></i>
+          </button>
         </div>
+      </div>
 
       <div class="form-actions">
         <button type="button" class="btn-cancel" (click)="cancel()">Annuler</button>

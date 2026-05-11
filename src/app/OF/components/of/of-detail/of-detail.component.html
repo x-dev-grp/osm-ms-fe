@@ -14,7 +14,7 @@
     </button>
     <div>
       <h2 class="page-title">OF {{ of.code }}</h2>
-      <p class="page-subtitle">{{ of.skuCode || of.skuId }} - Statut: {{ of.statut }}</p>
+      <p class="page-subtitle">{{ of.productName || of.skuCode || of.productId || of.skuId }} - Statut: {{ of.statut }}</p>
     </div>
     <div class="header-actions">
       <button class="btn-action production" (click)="goToProduction()">
@@ -27,7 +27,7 @@
     <div class="card-box info-card">
       <h5>Informations générales</h5>
       <div class="info-row"><i class="fas fa-barcode"></i><span>Code</span><strong>{{ of.code }}</strong></div>
-      <div class="info-row"><i class="fas fa-tag"></i><span>SKU</span><strong>{{ of.skuCode || of.skuId }}</strong></div>
+      <div class="info-row"><i class="fas fa-tag"></i><span>Produit</span><strong>{{ of.productName || of.skuCode || of.productId || of.skuId }}</strong></div>
       <div class="info-row"><i class="fas fa-industry"></i><span>Ligne</span><strong>{{ of.ligneNom || of.ligneId || '-' }}</strong></div>
       <div class="info-row"><i class="fas fa-oil-can"></i><span>Lot vrac</span><strong>{{ of.lotVracId || '-' }}</strong></div>
       <div class="info-row"><i class="fas fa-chart-simple"></i><span>Statut</span><span class="status-badge" [ngClass]="of.statut.toLowerCase()">{{ of.statut }}</span></div>

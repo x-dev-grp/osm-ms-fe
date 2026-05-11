@@ -20,7 +20,7 @@ import {
 import { LabelService } from '../../services/label.service';
 import { StorageUnitDto } from '../../../shared/models/StorageUnitDto';
 import { StorageUnitDtoService } from '../../../shared/services/storage.service';
-import { SKU } from '../../../stock/models/sku.model';
+import { Product, productDisplayName } from '../../../stock/models/sku.model';
 import { SKUService } from '../../../stock/services/sku.service';
 import { CertificationService } from '../../services/certification.service';
 import { Certification } from '../../models/certification.model';
@@ -106,7 +106,7 @@ export class LabelWorkflowComponent implements OnInit {
   });
 
   filteredLots: StorageUnitDto[] = [];
-  packagingOptions: SKU[] = [];
+  packagingOptions: Product[] = [];
   availableCertifications: Certification[] = [];
   oilVarieties: BaseType[] = [];
 
@@ -185,7 +185,7 @@ export class LabelWorkflowComponent implements OnInit {
 
     forkJoin({
       storageResponse: this.storageUnitService.getAllStorageUnit(),
-      packagingOptions: this.skuService.getActiveSKUs(),
+      packagingOptions: this.skuService.getActiveProductsByType('NON_VRAC'),
       availableCertifications: this.certificationService.getAll(),
       oilVarieties: this.genericTypeService.getAllTypes(TypeCategory.OLIVE_VARIETY)
     }).subscribe({
@@ -205,7 +205,7 @@ export class LabelWorkflowComponent implements OnInit {
 
         this.packagingOptions = [...(packagingOptions ?? [])]
           .filter((sku) => sku?.id)
-          .sort((left, right) => left.code.localeCompare(right.code));
+          .sort((left, right) => productDisplayName(left).localeCompare(productDisplayName(right)));
 
         this.availableCertifications = (availableCertifications || []).filter((c) => c.isActive);
         this.oilVarieties = oilVarieties?.data || [];
@@ -452,7 +452,7 @@ export class LabelWorkflowComponent implements OnInit {
       (sku) => sku.id === this.labelForm.value.packagingId
     );
 
-    return selectedPackaging ? this.skuLabel(selectedPackaging) : '-';
+    return selectedPackaging ? this.productLabel(selectedPackaging) : '-';
   }
 
   get selectedCertifications(): Certification[] {
@@ -514,9 +514,10 @@ export class LabelWorkflowComponent implements OnInit {
     return parts.join(' | ');
   }
 
-  skuLabel(sku: SKU): string {
-    const volume = sku.volume ? `${sku.volume} ml` : 'volume inconnu';
-    return `${sku.code} | ${volume}`;
+  productLabel(product: Product): string {
+    const volume = product.volume ? `${product.volume} ml` : 'volume inconnu';
+    const packaging = product.packagingType ? ` | ${product.packagingType}` : '';
+    return `${productDisplayName(product)} | ${volume}${packaging}`;
   }
 
   trackById(index: number, item: unknown): string {

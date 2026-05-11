@@ -48,10 +48,16 @@ const routes: Routes = [
       { path: 'fournisseurs/:id', component: FournisseurDetailComponent },
       { path: 'fournisseurs/:id/editer', component: FournisseurFormComponent },
 
+      { path: 'products', component: SkuListComponent },
+      { path: 'products/nouveau', component: SkuFormComponent },
+      { path: 'products/:id', component: SkuDetailComponent },
+      { path: 'products/:id/edit', component: SkuFormComponent },
+      { path: 'products/:id/editer', component: SkuFormComponent },
       { path: 'skus', component: SkuListComponent },
       { path: 'skus/nouveau', component: SkuFormComponent },
       { path: 'skus/:id', component: SkuDetailComponent },
       { path: 'skus/:id/edit', component: SkuFormComponent },
+      { path: 'skus/:id/editer', component: SkuFormComponent },
 
       { path: 'clients', component: ClientListComponent },
       { path: 'clients/nouveau', component: ClientFormComponent },

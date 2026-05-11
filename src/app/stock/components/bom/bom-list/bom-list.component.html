@@ -2,12 +2,12 @@
   <!-- En-tête -->
   <div class="list-header">
     <div class="header-left">
-      <h2 class="page-title">ProductComposition (BOM)</h2>
+      <h2 class="page-title">Nomenclatures</h2>
       <p class="page-subtitle">Liste des recettes de fabrication</p>
     </div>
     <div class="header-actions">
       <button class="btn-action create" [routerLink]="['/stock/boms/nouveau']">
-        <i class="fas fa-plus"></i> Nouvelle BOM
+        <i class="fas fa-plus"></i> Nouvelle Nomenclature
       </button>
     </div>
   </div>
@@ -18,32 +18,32 @@
   <div *ngIf="!loading" class="table-container">
     <table class="data-table">
       <thead>
-      <tr>
-        <th>SKU</th>
-        <th>Version</th>
-        <th>Nb composants</th>
-        <th>Actions</th>
-      </tr>
+        <tr>
+          <th>Produit</th>
+          <th>Version</th>
+          <th>Nb composants</th>
+          <th>Actions</th>
+        </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let bom of boms">
-        <td>{{ bom.skuCode || bom.skuId }}</td>
-        <td>{{ bom.version }}</td>
-        <td>{{ bom.lines.length }}</td>
-        <td>
-          <div class="action-buttons">
-            <button class="btn-icon view" [routerLink]="['/stock/boms', bom.id]" title="Voir détails">
-              <i class="fas fa-eye"></i>
-            </button>
-            <button class="btn-icon edit" [routerLink]="['/stock/boms', bom.id, 'editer']" title="Modifier">
-              <i class="fas fa-edit"></i>
-            </button>
-          </div>
-        </td>
-      </tr>
-      <tr *ngIf="boms.length === 0">
-        <td colspan="5" class="empty-row">Aucune nomenclature trouvée</td>
-      </tr>
+        <tr *ngFor="let bom of boms">
+          <td>{{ bom.productName || bom.skuCode || bom.productId || bom.skuId }}</td>
+          <td>{{ bom.version }}</td>
+          <td>{{ bom.lines.length }}</td>
+          <td>
+            <div class="action-buttons">
+              <button class="btn-icon view" [routerLink]="['/stock/boms', bom.id]" title="Voir détails">
+                <i class="fas fa-eye"></i>
+              </button>
+              <button class="btn-icon edit" [routerLink]="['/stock/boms', bom.id, 'editer']" title="Modifier">
+                <i class="fas fa-edit"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="boms.length === 0">
+          <td colspan="5" class="empty-row">Aucune Nomenclature trouvée</td>
+        </tr>
       </tbody>
     </table>
   </div>

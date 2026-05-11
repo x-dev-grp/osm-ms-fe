@@ -9,7 +9,7 @@
       <mat-label>OF</mat-label>
       <mat-select [(ngModel)]="selectedOfId" (selectionChange)="onOfSelected()">
         <mat-option *ngFor="let of of ofs" [value]="of.id">
-          {{ of.code }} - {{ of.skuCode }}
+          {{ of.code }} - {{ of.productName || of.skuCode || of.productId || of.skuId }}
         </mat-option>
       </mat-select>
     </mat-form-field>

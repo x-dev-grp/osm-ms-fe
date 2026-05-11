@@ -5,7 +5,7 @@
     </button>
     <div>
       <h2 class="page-title">Production OF {{ of.code }}</h2>
-      <p class="page-subtitle">{{ of.skuCode || of.skuId }} - Statut: {{ of.statut }}</p>
+      <p class="page-subtitle">{{ of.productName || of.skuCode || of.productId || of.skuId }} - Statut: {{ of.statut }}</p>
     </div>
     <div class="header-actions">
       <button *ngIf="canStart()" class="btn-action start" (click)="start()">

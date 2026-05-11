@@ -4,9 +4,7 @@
       <div class="alert-icon">
         <i class="fas fa-check-circle"></i>
       </div>
-      <div class="alert-content">
-        {{ successMessage }}
-      </div>
+      <div class="alert-content">{{ successMessage }}</div>
       <button class="alert-close" (click)="successMessage = null">
         <i class="fas fa-times"></i>
       </button>
@@ -18,24 +16,24 @@
       <div class="alert-icon">
         <i class="fas fa-exclamation-triangle"></i>
       </div>
-      <div class="alert-content">
-        {{ error }}
-      </div>
+      <div class="alert-content">{{ error }}</div>
       <button class="alert-close" (click)="error = null">
         <i class="fas fa-times"></i>
       </button>
     </div>
   }
+
   @if (loading) {
     <div class="loading-state-modern">
       <div class="spinner-container">
         <div class="spinner-ring"></div>
         <div class="spinner-ring-inner"></div>
       </div>
-      <p class="loading-text">Chargement du SKU</p>
+      <p class="loading-text">Chargement du produit</p>
       <p class="loading-subtext">Veuillez patienter...</p>
     </div>
   }
+
   @if (!loading && !error && sku) {
     <div class="detail-content fade-in">
       <div class="detail-header glass-effect">
@@ -45,12 +43,13 @@
           </button>
           <div class="title-section">
             <div class="title-badge">
-              <i class="fas fa-barcode"></i>
-              <span>SKU</span>
+              <i class="fas fa-tag"></i>
+              <span>Produit</span>
             </div>
-            <h1 class="page-title">{{ sku.code }}</h1>
+            <h1 class="page-title">{{ getProductName() }}</h1>
           </div>
         </div>
+
         <div class="header-status me-3">
           <span class="status-badge"
                 [class.status-actif]="sku.actif"
@@ -63,7 +62,6 @@
         </div>
 
         <div class="header-actions">
-          <!-- NEW: Activate/Deactivate button -->
           <button class="btn-icon-toggle"
                   [class.btn-activer]="!sku.actif"
                   [class.btn-desactiver]="sku.actif"
@@ -71,217 +69,181 @@
             <i class="fas"
                [class.fa-check]="!sku.actif"
                [class.fa-ban]="sku.actif"></i>
-            {{ sku.actif ? 'Désactiver' : 'Activer' }}
+            {{ sku.actif ? 'Desactiver' : 'Activer' }}
           </button>
 
-          <button class="btn-icon-edit" [routerLink]="['/stock/skus', sku.id, 'edit']">
+          <button class="btn-icon-edit" [routerLink]="['/stock/products', sku.id, 'edit']">
             <i class="fas fa-edit me-2"></i>
             Modifier
           </button>
         </div>
       </div>
+
       <div class="detail-grid">
         <div class="info-card glass-effect hover-lift">
           <div class="card-header">
             <div class="header-icon-wrapper">
               <i class="fas fa-info-circle"></i>
             </div>
-            <h3>Informations générales</h3>
+            <h3>Informations generales</h3>
           </div>
           <div class="card-body">
             <div class="info-row">
-              <span class="info-label">Code SKU</span>
-              <span class="info-value code-highlight">{{ sku.code }}</span>
+              <span class="info-label">Nom du produit</span>
+              <span class="info-value code-highlight">{{ getProductName() }}</span>
             </div>
             <div class="info-row">
-              <span class="info-label">Catégorie</span>
-              <span class="info-value">
-                @if (sku.category) {
-                  <span class="category-chip">
-                    <i class="fas fa-tag me-1"></i>
-                    {{ sku.category }}
-                  </span>
-                } @else {
-                  <span class="value-placeholder">Non spécifiée</span>
-                }
-              </span>
+              <span class="info-label">Code interne</span>
+              <span class="info-value">{{ sku.code || '-' }}</span>
             </div>
             <div class="info-row">
-              <span class="info-label">Statut</span>
+              <span class="info-label">Type</span>
               <span class="info-value">
-                <span class="badge"
-                      [class.badge-success]="sku.actif"
-                      [class.badge-secondary]="!sku.actif">
-                  <i class="fas"
-                     [class.fa-check-circle]="sku.actif"
-                     [class.fa-ban]="!sku.actif"></i>
-                  {{ sku.actif ? 'Actif' : 'Inactif' }}
+                <span class="category-chip">
+                  <i class="fas fa-layer-group me-1"></i>
+                  {{ formatProductType(sku.type) }}
                 </span>
               </span>
             </div>
+            <div class="info-row">
+              <span class="info-label">Categorie</span>
+              <span class="info-value">{{ sku.category || '-' }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Unite</span>
+              <span class="info-value">{{ sku.unitOfMeasure || '-' }}</span>
+            </div>
           </div>
         </div>
 
-        <!-- Rest of your cards remain exactly the same -->
-        <!-- Carte Caractéristiques physiques -->
         <div class="info-card glass-effect hover-lift">
           <div class="card-header">
             <div class="header-icon-wrapper">
-              <i class="fas fa-weight-hanging"></i>
+              <i class="fas fa-certificate"></i>
             </div>
-            <h3>Caractéristiques</h3>
+            <h3>Profil huile</h3>
           </div>
           <div class="card-body">
             <div class="info-row">
-              <span class="info-label">Volume unitaire</span>
-              <span class="info-value">
-                @if (sku.volume) {
-                  <span class="metric-value">
-                    <strong>{{ sku.volume | number:'1.3-3' }}</strong>
-                    <small>m³</small>
-                  </span>
-                } @else {
-                  <span class="value-placeholder">Non défini</span>
-                }
-              </span>
+              <span class="info-label">Grade</span>
+              <span class="info-value">{{ sku.grade || '-' }}</span>
             </div>
             <div class="info-row">
-              <span class="info-label">Unités par colis</span>
-              <span class="info-value">
-                @if (sku.unitesParCols) {
-                  <span class="metric-value">
-                    <strong>{{ sku.unitesParCols }}</strong>
-                    <small>unités</small>
-                  </span>
-                } @else {
-                  <span class="value-placeholder">Non défini</span>
-                }
-              </span>
+              <span class="info-label">Origine</span>
+              <span class="info-value">{{ sku.origin || '-' }}</span>
             </div>
             <div class="info-row">
-              <span class="info-label">Colis par palette</span>
-              <span class="info-value">
-                @if (sku.colisParPalette) {
-                  <span class="metric-value">
-                    <strong>{{ sku.colisParPalette }}</strong>
-                    <small>colis</small>
-                  </span>
-                } @else {
-                  <span class="value-placeholder">Non défini</span>
-                }
-              </span>
+              <span class="info-label">Campagne</span>
+              <span class="info-value">{{ sku.harvestCampaign || '-' }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Description</span>
+              <span class="info-value">{{ sku.description || '-' }}</span>
             </div>
           </div>
         </div>
 
-        <!-- Carte Calculs et capacités -->
-        @if (sku.volume || sku.unitesParCols || sku.colisParPalette) {
-          <div class="info-card glass-effect hover-lift calculations-card">
+        @if (!isVrac()) {
+          <div class="info-card glass-effect hover-lift">
             <div class="card-header">
-              <div class="header-icon-wrapper accent">
-                <i class="fas fa-calculator"></i>
+              <div class="header-icon-wrapper">
+                <i class="fas fa-box-open"></i>
               </div>
-              <h3>Capacités calculées</h3>
+              <h3>Conditionnement</h3>
             </div>
             <div class="card-body">
-              @if (sku.unitesParCols && sku.colisParPalette) {
-                <div class="info-row highlight-row">
-                  <span class="info-label">Unités par palette</span>
-                  <span class="info-value highlight-value">
-                    <span class="value-large">{{ getUnitesParPalette() }}</span>
-                    <span class="value-unit">unités</span>
-                  </span>
-                </div>
-              }
+              <div class="info-row">
+                <span class="info-label">Volume unitaire</span>
+                <span class="info-value">
+                  @if (sku.volume) {
+                    <span class="metric-value"><strong>{{ sku.volume | number:'1.0-3' }}</strong><small>ml</small></span>
+                  } @else {
+                    <span class="value-placeholder">Non defini</span>
+                  }
+                </span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Type packaging</span>
+                <span class="info-value">{{ sku.packagingType || '-' }}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Marque</span>
+                <span class="info-value">{{ sku.brand || '-' }}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Code barre</span>
+                <span class="info-value">{{ sku.barcode || '-' }}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Unites par carton</span>
+                <span class="info-value">{{ getUnitsPerCarton() || '-' }}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Cartons par palette</span>
+                <span class="info-value">{{ getCartonsPerPallet() || '-' }}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Poids net / brut</span>
+                <span class="info-value">
+                  {{ sku.netWeight || '-' }} kg / {{ sku.grossWeight || '-' }} kg
+                </span>
+              </div>
+            </div>
+          </div>
 
-              @if (sku.volume && sku.unitesParCols && sku.colisParPalette) {
-                <div class="info-row highlight-row">
-                  <span class="info-label">Volume total / palette</span>
-                  <span class="info-value highlight-value">
-                    <span class="value-large">{{ getVolumeParPalette() | number:'1.2-2' }}</span>
-                    <span class="value-unit">m³</span>
-                  </span>
+          @if (getUnitesParPalette() || getVolumeParPalette()) {
+            <div class="info-card glass-effect hover-lift calculations-card">
+              <div class="card-header">
+                <div class="header-icon-wrapper accent">
+                  <i class="fas fa-calculator"></i>
                 </div>
-              }
+                <h3>Capacites calculees</h3>
+              </div>
+              <div class="card-body">
+                @if (getUnitesParPalette()) {
+                  <div class="info-row highlight-row">
+                    <span class="info-label">Unites par palette</span>
+                    <span class="info-value highlight-value">
+                      <span class="value-large">{{ getUnitesParPalette() }}</span>
+                      <span class="value-unit">unites</span>
+                    </span>
+                  </div>
+                }
 
-              <div class="pill-container">
-                @if (sku.unitesParCols) {
-                  <span class="info-pill">
-                    <i class="fas fa-box me-1"></i>
-                    {{ sku.unitesParCols }} unités/colis
-                  </span>
+                @if (getVolumeParPalette()) {
+                  <div class="info-row highlight-row">
+                    <span class="info-label">Volume total / palette</span>
+                    <span class="info-value highlight-value">
+                      <span class="value-large">{{ getVolumeParPalette() | number:'1.2-2' }}</span>
+                      <span class="value-unit">L</span>
+                    </span>
+                  </div>
                 }
-                @if (sku.colisParPalette) {
-                  <span class="info-pill">
-                    <i class="fas fa-pallet me-1"></i>
-                    {{ sku.colisParPalette }} colis/palette
-                  </span>
-                }
+              </div>
+            </div>
+          }
+        }
+
+        @if (isVrac()) {
+          <div class="info-card glass-effect hover-lift">
+            <div class="card-header">
+              <div class="header-icon-wrapper">
+                <i class="fas fa-industry"></i>
+              </div>
+              <h3>Vrac</h3>
+            </div>
+            <div class="card-body">
+              <div class="info-row">
+                <span class="info-label">Densite</span>
+                <span class="info-value">{{ sku.density || '-' }}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Stockage par defaut</span>
+                <span class="info-value">{{ sku.storageUnit || '-' }}</span>
               </div>
             </div>
           </div>
         }
-
-        <!-- Carte Résumé avec design moderne -->
-        <div class="info-card glass-effect hover-lift summary-card">
-          <div class="card-header">
-            <div class="header-icon-wrapper success">
-              <i class="fas fa-chart-pie"></i>
-            </div>
-            <h3>Résumé</h3>
-          </div>
-          <div class="card-body">
-            <div class="summary-grid">
-              <div class="summary-item">
-                <div class="summary-icon volume">
-                  <i class="fas fa-cube"></i>
-                </div>
-                <div class="summary-content">
-                  <span class="summary-label">Volume</span>
-                  <span class="summary-value">
-                    @if (sku.volume) {
-                      {{ sku.volume }} <small>m³</small>
-                    } @else {
-                      <span class="text-muted">—</span>
-                    }
-                  </span>
-                </div>
-              </div>
-
-              <div class="summary-item">
-                <div class="summary-icon box">
-                  <i class="fas fa-box"></i>
-                </div>
-                <div class="summary-content">
-                  <span class="summary-label">Par colis</span>
-                  <span class="summary-value">
-                    @if (sku.unitesParCols) {
-                      {{ sku.unitesParCols }} <small>unités</small>
-                    } @else {
-                      <span class="text-muted">—</span>
-                    }
-                  </span>
-                </div>
-              </div>
-
-              <div class="summary-item">
-                <div class="summary-icon palette">
-                  <i class="fas fa-pallet"></i>
-                </div>
-                <div class="summary-content">
-                  <span class="summary-label">Par palette</span>
-                  <span class="summary-value">
-                    @if (sku.colisParPalette) {
-                      {{ sku.colisParPalette }} <small>colis</small>
-                    } @else {
-                      <span class="text-muted">—</span>
-                    }
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   }

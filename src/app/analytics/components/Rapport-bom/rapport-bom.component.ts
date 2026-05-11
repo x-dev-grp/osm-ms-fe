@@ -17,7 +17,7 @@ export class RapportBomComponent implements OnInit {
   distributionChartOptions: Partial<ApexOptions> | any;
   topGapsChartOptions: Partial<ApexOptions> | any;
 
-  constructor(private analyticsService: AnalyticsService) {}
+  constructor(private analyticsService: AnalyticsService) { }
 
   ngOnInit() {
     this.loadData();
@@ -25,10 +25,10 @@ export class RapportBomComponent implements OnInit {
   // button actualiser
   loadData() {
     this.loading = true;
-    console.log('Loading BOM Gap Report...');
+    console.log('Loading Nomenclatures gap report...');
     this.analyticsService.getBomGap().subscribe({ //appelle le backend
       next: (res: any) => {
-        console.log('BOM Gap Response:', res);
+        console.log('Nomenclatures gap response:', res);
         this.data = res?.data ? res.data : res;  //lit la reponse
         this.initCharts(); //initialiser le graphique
         this.loading = false;//descativer le chargement

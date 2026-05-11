@@ -6,7 +6,7 @@
       <i class="fas fa-arrow-left"></i>
     </button>
     <div class="header-left">
-      <h2 class="page-title">Détail de la ProductComposition</h2>
+      <h2 class="page-title">Détail de la Nomenclature</h2>
       <p class="page-subtitle" *ngIf="bom">Version {{ bom.version }}</p>
     </div>
     <div class="header-actions" *ngIf="bom">
@@ -19,7 +19,7 @@
   <!-- Loading -->
   <div *ngIf="loading" class="loading-container">
     <div class="spinner-border"></div>
-    <p>Chargement de la ProductComposition...</p>
+    <p>Chargement de la Nomenclature...</p>
   </div>
 
   <!-- Contenu -->
@@ -28,8 +28,8 @@
     <div class="card-box info-card">
       <h5 class="card-title">Informations générales</h5>
       <div class="info-row">
-        <span>SKU</span>
-        <strong>{{ bom.skuCode || bom.skuId }}</strong>
+        <span>Produit</span>
+        <strong>{{ bom.productName || bom.skuCode || bom.productId || bom.skuId }}</strong>
       </div>
       <div class="info-row">
         <span>Version</span>
@@ -46,23 +46,23 @@
       <h5 class="card-title">Composants ({{ bom.lines.length }})</h5>
       <table class="components-table">
         <thead>
-        <tr>
-          <th>#</th>
-          <th>Composant</th>
-          <th>Quantité</th>
-          <th>Unité</th>
-        </tr>
+          <tr>
+            <th>#</th>
+            <th>Composant</th>
+            <th>Quantité</th>
+            <th>Unité</th>
+          </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let line of bom.lines; let i = index">
-          <td>{{ i + 1 }}</td>
-          <td>{{ line.articleName || line.articleId }}</td>
-          <td>{{ line.quantity }}</td>
-          <td>{{ line.unitOfMeasure || '-' }}</td>
-        </tr>
-        <tr *ngIf="bom.lines.length === 0">
-          <td colspan="4" class="empty-row">Aucun composant défini</td>
-        </tr>
+          <tr *ngFor="let line of bom.lines; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ line.articleName || line.articleId }}</td>
+            <td>{{ line.quantity }}</td>
+            <td>{{ line.unitOfMeasure || '-' }}</td>
+          </tr>
+          <tr *ngIf="bom.lines.length === 0">
+            <td colspan="4" class="empty-row">Aucun composant défini</td>
+          </tr>
         </tbody>
       </table>
     </div>
