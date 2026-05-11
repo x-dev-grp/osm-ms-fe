@@ -1,3 +1,5 @@
+import {CategorieArticle} from "./article.model";
+
 export interface EmplacementStock {
   id?: string;
   code: string;
@@ -15,6 +17,7 @@ export interface EmplacementStock {
   notes?: string;
   actif: boolean;
   createdDate?: string;
+  categorieArticleStocke?: CategorieArticle;
 }
 
 export enum TypeEmplacement {

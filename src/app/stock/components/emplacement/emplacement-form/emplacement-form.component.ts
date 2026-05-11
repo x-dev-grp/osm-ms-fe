@@ -3,7 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { EmplacementStockService } from '../../../services/emplacement-stock.service';
-import { EmplacementStock, TypeEmplacement } from '../../../models/emplacement-stock.model';
+import {EmplacementStock, TypeEmplacement} from "../../../models/emplacement-stock.model";
+import {CategorieArticle} from "../../../models/article.model";
+
 
 @Component({
   selector: 'app-emplacement-form',
@@ -22,6 +24,7 @@ export class EmplacementFormComponent implements OnInit {
   error = '';
 
   typesEmplacement = Object.values(TypeEmplacement);
+  categoriesArticle = Object.values(CategorieArticle);    // ✅ NOUVEAU
 
   constructor(
     private fb: FormBuilder,
@@ -33,6 +36,7 @@ export class EmplacementFormComponent implements OnInit {
       code: [{value: '', disabled: true}],
       nom: ['', Validators.required],
       typeEmplacement: ['', Validators.required],
+      categorieArticleStocke: [''],                         // ✅ NOUVEAU
       capaciteMaximale: [null],
       capaciteActuelle: [null],
       zone: [''],
@@ -48,8 +52,8 @@ export class EmplacementFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.emplacementId = this.route.snapshot.params['id'];
-    //double négation !! tourne true or false
     this.isEditMode = !!this.emplacementId;
+
     this.emplacementForm.get('disponible')?.valueChanges.subscribe((available) => {
       if (available) {
         this.emplacementForm.get('reservePour')?.disable();
@@ -58,6 +62,7 @@ export class EmplacementFormComponent implements OnInit {
         this.emplacementForm.get('reservePour')?.enable();
       }
     });
+
     if (!this.isEditMode && this.emplacementForm.get('disponible')?.value) {
       this.emplacementForm.get('reservePour')?.disable();
     }
@@ -85,6 +90,7 @@ export class EmplacementFormComponent implements OnInit {
             code: emp.code,
             nom: emp.nom,
             typeEmplacement: emp.typeEmplacement,
+            categorieArticleStocke: emp.categorieArticleStocke,    // ✅ NOUVEAU
             capaciteMaximale: emp.capaciteMaximale,
             capaciteActuelle: emp.capaciteActuelle,
             zone: emp.zone,
@@ -162,5 +168,19 @@ export class EmplacementFormComponent implements OnInit {
       [TypeEmplacement.ZONE_RECONDITIONNEMENT]: 'Zone de reconditionnement'
     };
     return labels[type] || type;
+  }
+
+  // ✅ NOUVEAU
+  getCategorieLabel(categorie: CategorieArticle): string {
+    const labels: Record<CategorieArticle, string> = {
+      [CategorieArticle.EMBALLAGE]: 'Emballage',
+      [CategorieArticle.CONSOMMABLE]: 'Consommable',
+      [CategorieArticle.MATIERE_PREMIERE]: 'Matière première',
+      [CategorieArticle.ACCESSOIRE]: 'Accessoire',
+      [CategorieArticle.UNITE]: 'Unité',
+      [CategorieArticle.COLIS]: 'Colis',
+      [CategorieArticle.PALETTE]: 'Palette'
+    };
+    return labels[categorie] || categorie;
   }
 }

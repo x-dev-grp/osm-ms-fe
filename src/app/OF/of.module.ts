@@ -6,9 +6,8 @@ import {OFFormComponent} from "./components/of/of-form/of-form.component";
 import {OFDetailComponent} from "./components/of/of-detail/of-detail.component";
 import {QualityControlEntryComponent} from "./components/QC/quality-control-entry/quality-control-entry.component";
 import {QualityHistoryComponent} from "./components/QC/quality-history/quality-history.component";
-import {
-  ControlPointDefinitionComponent
-} from "./components/QC/control-point-definition/control-point-definition.component";
+import {ControlPointDefinitionComponent} from "./components/QC/control-point-definition/control-point-definition.component";
+import {OFProductionComponent} from "./components/of/of-production/of-production.component";
 
 
 @NgModule({
@@ -22,6 +21,7 @@ import {
     ControlPointDefinitionComponent,
     QualityControlEntryComponent,
     QualityHistoryComponent,
+    OFProductionComponent
 
   ]
 })

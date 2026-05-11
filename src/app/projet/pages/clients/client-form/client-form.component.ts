@@ -1,129 +1,152 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { finalize } from 'rxjs/operators';
-
-import { ClientService } from '../../../services/ClientService';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ClientService } from '../../../services/client.service';
+import { Client } from '../../../models/client.model';
+import { ApiResponse } from '../../../../shared/models/api-response';
 
 @Component({
   selector: 'app-client-form',
   standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './client-form.component.html',
-  styleUrls: ['./client-form.component.scss'],
-  imports: [CommonModule, ReactiveFormsModule]
+  styleUrls: ['./client-form.component.scss']
 })
 export class ClientFormComponent implements OnInit {
-  form!: FormGroup;
-  isEdit = false;
-  clientId: string | null = null;
-  loading = false;
-  errorMessage = '';
+  clientForm: FormGroup;
+  isEditMode = false;
+  clientId?: string;
+  submitted = false;
+  submitting = false;
+  error: string | null = null;
+  successMessage: string | null = null;
 
   constructor(
     private fb: FormBuilder,
-    private clientService: ClientService,
     private route: ActivatedRoute,
-    private router: Router
-  ) {}
+    private router: Router,
+    private clientService: ClientService
+  ) {
+    this.clientForm = this.fb.group({
+      nom: ['', Validators.required],
+      codeClient: [''],
+      email: ['', [Validators.email]],
+      telephone: [''],
+      adresse: [''],
+      ville: [''],
+      pays: [''],
+      codePostal: [''],
+      privateLabel: [false],
+      siret: [''],
+      numeroTva: [''],
+      notes: ['']
+    });
+  }
 
   ngOnInit(): void {
-    this.initForm();
-    this.clientId = this.route.snapshot.paramMap.get('id');
+    this.clientId = this.route.snapshot.params['id'];
+    this.isEditMode = !!this.clientId;
 
-    if (this.clientId) {
-      this.isEdit = true;
+    if (this.isEditMode) {
       this.loadClient();
     }
   }
 
-  initForm(): void {
-    this.form = this.fb.group({
-      nom: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      telephone: ['', Validators.required],
-      type: ['BUYER', Validators.required],
-      adresse: ['']
+  loadClient(): void {
+    this.clientService.getClientById(this.clientId!).subscribe({
+      next: (response: ApiResponse<Client>) => {
+        if (response.success && response.data && response.data.length > 0) {
+          const client = response.data[0];
+          this.clientForm.patchValue({
+            nom: client.nom,
+            codeClient: client.codeClient || '',
+            email: client.email || '',
+            telephone: client.telephone || '',
+            adresse: client.adresse || '',
+            ville: client.ville || '',
+            pays: client.pays || '',
+            codePostal: client.codePostal || '',
+            privateLabel: client.privateLabel,
+            siret: client.siret || '',
+            numeroTva: client.numeroTva || '',
+            notes: client.notes || ''
+          });
+        } else {
+          this.error = response.message || 'Client non trouvé';
+          setTimeout(() => this.router.navigate(['/stock/clients']), 2000);
+        }
+      },
+      error: (err) => {
+        console.error('Erreur chargement client', err);
+        this.error = 'Impossible de charger le client';
+        setTimeout(() => this.router.navigate(['/stock/clients']), 2000);
+      }
     });
   }
 
-  loadClient(): void {
-    if (!this.clientId) return;
-
-    this.loading = true;
-    this.errorMessage = '';
-
-    this.clientService.getById(this.clientId)
-      .pipe(finalize(() => (this.loading = false)))
-      .subscribe({
-        next: (response: any) => {
-          const client = response?.data ?? response;
-          if (!client) {
-            this.errorMessage = 'Client introuvable.';
-            return;
-          }
-          this.form.patchValue({
-            nom: client.nom ?? '',
-            email: client.email ?? '',
-            telephone: client.telephone ?? '',
-            type: client.type ?? 'BUYER',
-            adresse: client.adresse ?? ''
-          });
-        },
-        error: (err) => {
-          console.error('Erreur chargement client:', err);
-          this.errorMessage = err?.error?.message || 'Erreur lors du chargement du client.';
-        }
-      });
-  }
-
   onSubmit(): void {
-    this.errorMessage = '';
+    this.submitted = true;
+    this.error = null;
 
-    if (this.loading) return;
-
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
+    if (this.clientForm.invalid) {
       return;
     }
 
-    this.loading = true;
+    this.submitting = true;
+    const client: Client = this.clientForm.value;
 
-    const request = {
-      nom: this.form.value.nom?.trim(),
-      email: this.form.value.email?.trim(),
-      telephone: this.form.value.telephone?.trim(),
-      type: this.form.value.type,
-      adresse: this.form.value.adresse?.trim() || ''
-    };
-
-    const action$ = this.isEdit && this.clientId
-      ? this.clientService.update(this.clientId, request)
-      : this.clientService.create(request);
-
-    action$
-      .pipe(finalize(() => (this.loading = false)))
-      .subscribe({
-        next: (response: any) => {
-          console.log('Client sauvegardé avec succès:', response);
-          this.router.navigate(['/projets/clients']);
+    if (this.isEditMode) {
+      this.clientService.updateClient(this.clientId!, client).subscribe({
+        next: (response: ApiResponse<Client>) => {
+          if (response.success) {
+            this.successMessage = 'Client mis à jour avec succès';
+            setTimeout(() => {
+              this.router.navigate(['/stock/clients', this.clientId]);
+            }, 1500);
+          } else {
+            this.error = response.message || 'Erreur lors de la mise à jour';
+            this.submitting = false;
+          }
         },
         error: (err) => {
-          console.error('Erreur sauvegarde client:', err);
-          this.errorMessage =
-            err?.error?.message ||
-            err?.error?.error ||
-            'Erreur lors de l’enregistrement du client.';
+          console.error('Erreur mise à jour', err);
+          this.error = err.error?.message || 'Erreur lors de la mise à jour';
+          this.submitting = false;
         }
       });
+    } else {
+      this.clientService.createClient(client).subscribe({
+        next: (response: ApiResponse<Client>) => {
+          if (response.success && response.data && response.data.length > 0) {
+            const created = response.data[0];
+            this.successMessage = 'Client créé avec succès';
+            setTimeout(() => {
+              this.router.navigate(['/stock/clients', created.id]);
+            }, 1500);
+          } else {
+            this.error = response.message || 'Erreur lors de la création';
+            this.submitting = false;
+          }
+        },
+        error: (err) => {
+          console.error('Erreur création', err);
+          this.error = err.error?.message || 'Erreur lors de la création';
+          this.submitting = false;
+        }
+      });
+    }
   }
 
   onCancel(): void {
-    if (this.loading) return;
-    this.router.navigate(['/projets/clients']);
+    if (this.isEditMode) {
+      this.router.navigate(['/stock/clients', this.clientId]);
+    } else {
+      this.router.navigate(['/stock/clients']);
+    }
   }
 
   get f() {
-    return this.form.controls;
+    return this.clientForm.controls;
   }
 }

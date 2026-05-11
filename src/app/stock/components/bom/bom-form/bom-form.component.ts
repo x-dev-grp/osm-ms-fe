@@ -58,7 +58,6 @@ export class BomFormComponent implements OnInit {
   private initForm(): void {
     this.bomForm = this.fb.group({
       skuId: ['', Validators.required],
-      version: ['', Validators.required],
       lines: this.fb.array([])
     });
   }
