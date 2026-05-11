@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { OrdreFabrication, StatutOF } from '../../../models/of.model';
 import { OFService } from "../../../services/OFService";
+import {MatMenu, MatMenuTrigger} from "@angular/material/menu";
 
 @Component({
   selector: 'app-of-list',
@@ -19,7 +20,9 @@ import { OFService } from "../../../services/OFService";
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    MatMenu,
+    MatMenuTrigger
   ],
   templateUrl: './of-list.component.html',
   styleUrls: ['./of-list.component.scss']
@@ -82,6 +85,21 @@ export class OFListComponent implements OnInit {
         this.searching = false;
         alert('Aucun OF trouve pour ce code');
       }
+    });
+  }
+  viewOF(of: OrdreFabrication): void {
+    this.router.navigate(['/of', of.id]);
+  }
+
+  goToProduction(of: OrdreFabrication): void {
+    this.router.navigate(['/of/production'], {
+      queryParams: { ofId: of.id, ofCode: of.code }
+    });
+  }
+
+  goToQualityControl(of: OrdreFabrication): void {
+    this.router.navigate(['/of/qualite/points'], {
+      queryParams: { ofId: of.id, ofCode: of.code }
     });
   }
 }

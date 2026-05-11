@@ -17,7 +17,7 @@
     <div class="form-row">
       <mat-form-field appearance="outline">
         <mat-label>{{ 'SUPPLIER.FIELDS.NAME' | translate }}</mat-label>
-        <input formControlName="name" matInput required />
+        <input formControlName="name" matInput required/>
         <mat-error *ngIf="supplierForm.get('name')?.hasError('required')">
           {{ 'SUPPLIER.ERRORS.NAME_REQUIRED' | translate }}
         </mat-error>
@@ -28,7 +28,7 @@
 
       <mat-form-field appearance="outline">
         <mat-label>{{ 'SUPPLIER.FIELDS.LASTNAME' | translate }}</mat-label>
-        <input formControlName="lastname" matInput required />
+        <input formControlName="lastname" matInput required/>
         <mat-error *ngIf="supplierForm.get('lastname')?.hasError('required')">
           {{ 'SUPPLIER.ERRORS.LASTNAME_REQUIRED' | translate }}
         </mat-error>
@@ -42,7 +42,7 @@
     <div class="form-row">
       <mat-form-field appearance="outline">
         <mat-label>{{ 'SUPPLIER.FIELDS.PHONE' | translate }}</mat-label>
-        <input formControlName="phone" matInput required />
+        <input formControlName="phone" matInput required/>
         <mat-error *ngIf="supplierForm.get('phone')?.hasError('required')">
           {{ 'SUPPLIER.ERRORS.PHONE_REQUIRED' | translate }}
         </mat-error>
@@ -51,38 +51,38 @@
         </mat-error>
       </mat-form-field>
 
-<!--      <mat-form-field appearance="outline">-->
-<!--        <mat-label>{{ 'SUPPLIER.FIELDS.EMAIL' | translate }}</mat-label>-->
-<!--        <input formControlName="email" matInput required type="email" />-->
-<!--        <mat-error *ngIf="supplierForm.get('email')?.hasError('required')">-->
-<!--          {{ 'SUPPLIER.ERRORS.EMAIL_REQUIRED' | translate }}-->
-<!--        </mat-error>-->
-<!--        <mat-error *ngIf="supplierForm.get('email')?.hasError('email')">-->
-<!--          {{ 'SUPPLIER.ERRORS.EMAIL_INVALID' | translate }}-->
-<!--        </mat-error>-->
-<!--      </mat-form-field>-->
+      <!--      <mat-form-field appearance="outline">-->
+      <!--        <mat-label>{{ 'SUPPLIER.FIELDS.EMAIL' | translate }}</mat-label>-->
+      <!--        <input formControlName="email" matInput required type="email" />-->
+      <!--        <mat-error *ngIf="supplierForm.get('email')?.hasError('required')">-->
+      <!--          {{ 'SUPPLIER.ERRORS.EMAIL_REQUIRED' | translate }}-->
+      <!--        </mat-error>-->
+      <!--        <mat-error *ngIf="supplierForm.get('email')?.hasError('email')">-->
+      <!--          {{ 'SUPPLIER.ERRORS.EMAIL_INVALID' | translate }}-->
+      <!--        </mat-error>-->
+      <!--      </mat-form-field>-->
     </div>
 
     <!-- Row: matriculeFiscal / address / region -->
     <div class="form-row">
       <mat-form-field appearance="outline">
         <mat-label>{{ 'CUSTOMERS.FIELDS.MATRICULE_FISCAL' | translate }}</mat-label>
-        <input formControlName="matriculeFiscal" matInput />
+        <input formControlName="matriculeFiscal" matInput/>
         <mat-error *ngIf="supplierForm.get('matriculeFiscal')?.invalid">
           {{ getErrorMessage('matriculeFiscal') }}
         </mat-error>
       </mat-form-field>
 
-<!--      <mat-form-field appearance="outline">-->
-<!--        <mat-label>{{ 'SUPPLIER.FIELDS.ADDRESS' | translate }}</mat-label>-->
-<!--        <input formControlName="address" matInput required />-->
-<!--        <mat-error *ngIf="supplierForm.get('address')?.hasError('required')">-->
-<!--          {{ 'SUPPLIER.ERRORS.ADDRESS_REQUIRED' | translate }}-->
-<!--        </mat-error>-->
-<!--        <mat-error *ngIf="supplierForm.get('address')?.hasError('minlength')">-->
-<!--          {{ 'SUPPLIER.ERRORS.ADDRESS_MIN' | translate }}-->
-<!--        </mat-error>-->
-<!--      </mat-form-field>-->
+      <!--      <mat-form-field appearance="outline">-->
+      <!--        <mat-label>{{ 'SUPPLIER.FIELDS.ADDRESS' | translate }}</mat-label>-->
+      <!--        <input formControlName="address" matInput required />-->
+      <!--        <mat-error *ngIf="supplierForm.get('address')?.hasError('required')">-->
+      <!--          {{ 'SUPPLIER.ERRORS.ADDRESS_REQUIRED' | translate }}-->
+      <!--        </mat-error>-->
+      <!--        <mat-error *ngIf="supplierForm.get('address')?.hasError('minlength')">-->
+      <!--          {{ 'SUPPLIER.ERRORS.ADDRESS_MIN' | translate }}-->
+      <!--        </mat-error>-->
+      <!--      </mat-form-field>-->
 
       <div class="col-md-4 w-100 m-b-10">
         <!-- region is BaseType at ROOT now -->
@@ -91,19 +91,19 @@
           [type]="'REGION'">
         </base-type>
       </div>
-<!--      <div class="col-md-4 w-100 m-b-10">-->
-<!--        <base-type-->
-<!--          [formControl]="supplierForm?.controls?.genericSupplierType"-->
-<!--          [type]="'SUPPLIER_TYPE'">-->
-<!--        </base-type>-->
-<!--      </div>-->
+      <div class="col-md-4 w-100 m-b-10">
+        <base-type
+          [formControl]="supplierForm?.controls?.genericSupplierType"
+          [type]="'SUPPLIER_TYPE'">
+        </base-type>
+      </div>
     </div>
 
     <!-- Row: rib / bankName -->
     <div class="form-row">
       <mat-form-field appearance="outline">
         <mat-label>{{ 'SUPPLIER.FIELDS.RIB' | translate }}</mat-label>
-        <input formControlName="rib" matInput />
+        <input formControlName="rib" matInput/>
         <mat-error *ngIf="supplierForm.get('rib')?.hasError('pattern')">
           {{ 'SUPPLIER.ERRORS.RIB_PATTERN' | translate }}
         </mat-error>
@@ -111,7 +111,7 @@
 
       <mat-form-field appearance="outline">
         <mat-label>{{ 'SUPPLIER.FIELDS.BANK_NAME' | translate }}</mat-label>
-        <input formControlName="bankName" matInput />
+        <input formControlName="bankName" matInput/>
       </mat-form-field>
     </div>
 

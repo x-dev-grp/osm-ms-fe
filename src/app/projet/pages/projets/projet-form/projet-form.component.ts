@@ -2,12 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule, CurrencyPipe, TitleCasePipe } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-
-import { ProjetService } from '../../../services/projet.service';
-import { ClientService } from '../../../services/ClientService';
-
-import { Client } from '../../../models/Client';
 import { ProjetDto, TypeEmballage, TypeProduit } from '../../../models/TypeProduit';
+import {Client} from "../../../models/client.model";
+import {ProjetService} from "../../../services/projet.service";
+import {ClientService} from "../../../services/client.service";
 
 @Component({
   selector: 'app-projet-form',
@@ -78,7 +76,7 @@ export class ProjetFormComponent implements OnInit {
   }
 
   private loadClients(): void {
-    this.clientService.getAll().subscribe({
+    this.clientService.getAllClients().subscribe({
       next: (data: Client[]) => {
         this.clients = data || [];
       },

@@ -209,6 +209,17 @@
                 </span>
               </div>
             }
+            @if (emplacement.categorieArticleStocke) {
+              <div class="info-row">
+                <span class="info-label">Catégorie stockée</span>
+                <span class="info-value">
+          <span class="type-badge info">
+            <i class="fas fa-boxes me-1"></i>
+            {{ getCategorieLabel(emplacement.categorieArticleStocke) }}
+          </span>
+        </span>
+              </div>
+            }
 
             <div class="action-buttons-container mt-4">
               @if (emplacement.disponible && !emplacement.reservePour) {
