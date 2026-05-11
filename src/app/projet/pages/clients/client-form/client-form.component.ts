@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+
 import { ClientService } from '../../../services/client.service';
-import { Client } from '../../../models/client.model';
+import { Client, ClientType } from '../../../models/client.model';
 import { ApiResponse } from '../../../../shared/models/api-response';
 
 @Component({
@@ -14,6 +15,8 @@ import { ApiResponse } from '../../../../shared/models/api-response';
   styleUrls: ['./client-form.component.scss']
 })
 export class ClientFormComponent implements OnInit {
+  readonly ClientType = ClientType;
+
   clientForm: FormGroup;
   isEditMode = false;
   clientId?: string;
@@ -30,6 +33,7 @@ export class ClientFormComponent implements OnInit {
   ) {
     this.clientForm = this.fb.group({
       nom: ['', Validators.required],
+      type: [ClientType.BUYER, Validators.required],
       codeClient: [''],
       email: ['', [Validators.email]],
       telephone: [''],
@@ -58,8 +62,10 @@ export class ClientFormComponent implements OnInit {
       next: (response: ApiResponse<Client>) => {
         if (response.success && response.data && response.data.length > 0) {
           const client = response.data[0];
+
           this.clientForm.patchValue({
             nom: client.nom,
+            type: client.type ?? ClientType.BUYER,
             codeClient: client.codeClient || '',
             email: client.email || '',
             telephone: client.telephone || '',
@@ -67,7 +73,7 @@ export class ClientFormComponent implements OnInit {
             ville: client.ville || '',
             pays: client.pays || '',
             codePostal: client.codePostal || '',
-            privateLabel: client.privateLabel,
+            privateLabel: client.privateLabel ?? false,
             siret: client.siret || '',
             numeroTva: client.numeroTva || '',
             notes: client.notes || ''
@@ -90,11 +96,16 @@ export class ClientFormComponent implements OnInit {
     this.error = null;
 
     if (this.clientForm.invalid) {
+      this.clientForm.markAllAsTouched();
       return;
     }
 
     this.submitting = true;
-    const client: Client = this.clientForm.value;
+
+    const client: Client = {
+      ...this.clientForm.value,
+      type: this.clientForm.value.type ?? ClientType.BUYER
+    };
 
     if (this.isEditMode) {
       this.clientService.updateClient(this.clientId!, client).subscribe({
