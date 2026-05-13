@@ -46,7 +46,7 @@ export class LabelListComponent implements OnInit {
   allLabels: LabelContentDto[] = [];
   availableCertifications: Certification[] = [];
   searchTerm = '';
-  
+
   displayedColumns: string[] = ['lotNumber', 'legalDenomination', 'netQuantity', 'certifications', 'packagingDate', 'labelCategory', 'status', 'actions'];
 
   loading = false;
@@ -64,17 +64,17 @@ export class LabelListComponent implements OnInit {
     private readonly labelService: LabelService,
     private readonly certificationService: CertificationService,
     private readonly router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadLabels();
-    
+
     this.dataSource.filterPredicate = (data: LabelContentDto, filter: string) => {
       const searchStr = filter.toLowerCase();
-      return (data.lotNumber?.toLowerCase().includes(searchStr) || 
-              data.legalDenomination?.toLowerCase().includes(searchStr) || 
-              data.publicCode?.toLowerCase().includes(searchStr) ||
-              this.statusLabel(data.status).toLowerCase().includes(searchStr));
+      return (data.lotNumber?.toLowerCase().includes(searchStr) ||
+        data.legalDenomination?.toLowerCase().includes(searchStr) ||
+        data.publicCode?.toLowerCase().includes(searchStr) ||
+        this.statusLabel(data.status).toLowerCase().includes(searchStr));
     };
   }
 
@@ -142,7 +142,7 @@ export class LabelListComponent implements OnInit {
   onSearch(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.dataSource.filter = input.value.trim().toLowerCase();
-    
+
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
@@ -154,7 +154,7 @@ export class LabelListComponent implements OnInit {
 
   onDelete(label: LabelContentDto): void {
     if (!label.id) return;
-    
+
     let message = 'Êtes-vous sûr de vouloir supprimer cette étiquette ?';
     if (label.status === 'FINALIZED' || label.status === 'EXPORTED_JSON') {
       message = 'ATTENTION : Cette étiquette est FINALISÉE. Sa suppression est fortement déconseillée pour la traçabilité. Voulez-vous vraiment continuer ?';
@@ -203,10 +203,7 @@ export class LabelListComponent implements OnInit {
       return;
     }
 
-    if (status === 'VALIDATED') {
-      this.validateLabel(label);
-      return;
-    }
+
 
     if (status === 'FINALIZED') {
       this.finalizeLabel(label);
@@ -248,34 +245,7 @@ export class LabelListComponent implements OnInit {
     });
   }
 
-  validateLabel(label: LabelContentDto): void {
-    if (!label.id || label.status === 'VALIDATED' || label.status === 'FINALIZED' || label.status === 'EXPORTED_JSON') {
-      return;
-    }
 
-    this.changingStatusId = label.id;
-    this.clearMessages();
-    this.closeMenus();
-
-    this.labelService.validate(label.id).subscribe({
-      next: (updatedLabel) => {
-        this.changingStatusId = null;
-        this.replaceLabel(updatedLabel);
-        if (updatedLabel.validationIssues?.some(i => i.blocking)) {
-           this.errorMessage = 'L etiquette contient des erreurs bloquantes, elle reste en brouillon.';
-        } else {
-           this.successMessage = 'Etiquette validee avec succes.';
-        }
-      },
-      error: (error) => {
-        this.changingStatusId = null;
-        this.errorMessage = this.resolveErrorMessage(
-          error,
-          'Erreur lors de la validation de l etiquette.'
-        );
-      }
-    });
-  }
 
   finalizeLabel(label: LabelContentDto): void {
     if (!label.id) {
@@ -317,13 +287,13 @@ export class LabelListComponent implements OnInit {
           labelExport.payloadJson ?? '{}',
           String(labelExport.lotNumber || labelExport.labelId || label.id || 'etiquette')
         );
-        
+
         // Update local status if it was finalized
         if (label.status === 'FINALIZED') {
           label.status = 'EXPORTED_JSON';
           this.replaceLabel(label);
         }
-        
+
         this.successMessage = 'JSON etiquette exporte avec succes.';
       },
       error: (error) => {

@@ -49,6 +49,7 @@ export interface LabelContentDto {
   lotId?: string;
   packagingId?: string;
   operatorId?: string;
+  filtrationOperationId?: string;
 
   status: LabelContentStatus;
   language: LabelLanguage;
@@ -89,6 +90,7 @@ export interface LabelGenerateRequestDto {
   variety?: string;
   language?: LabelLanguage;
   labelCategory?: LabelCategory;
+  filtrationOperationId?: string;
 }
 
 export interface LabelContentUpdateRequestDto {

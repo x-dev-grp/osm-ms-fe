@@ -50,12 +50,6 @@ export class LabelService {
       .pipe(map((response) => response.data));
   }
 
-  validate(id: string): Observable<LabelContentDto> {
-    return this.http
-      .post<LabelApiResponse<LabelContentDto>>(`${this.baseUrl}/${id}/validate`, {})
-      .pipe(map((response) => response.data));
-  }
-
   finalize(id: string): Observable<LabelContentDto> {
     return this.http
       .post<LabelApiResponse<LabelContentDto>>(`${this.baseUrl}/${id}/finalize`, {})
