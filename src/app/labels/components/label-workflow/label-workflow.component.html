@@ -42,11 +42,11 @@
       <form [formGroup]="labelForm">
         <div class="form-grid">
           <div class="form-group span-3">
-            <label>Lot filtré (source)</label>
+            <label>Opération de filtration (source)</label>
             <select class="form-control" formControlName="lotId">
-              <option value="">-- Sélectionner un lot --</option>
-              <option *ngFor="let lot of filteredLots; trackBy: trackById" [value]="lot.id">
-                {{ storageUnitLabel(lot) }}
+              <option value="">-- Sélectionner une opération --</option>
+              <option *ngFor="let op of filtrationOperations; trackBy: trackById" [value]="op.operationId">
+                {{ filtrationOperationLabel(op) }}
               </option>
             </select>
           </div>
@@ -275,13 +275,6 @@
             <button mat-fab color="primary" type="button" (click)="saveDraftChanges()" [disabled]="saving || isFinalized()" matTooltip="Sauvegarder">
               <mat-icon *ngIf="!saving">save</mat-icon>
               <mat-spinner diameter="24" color="accent" *ngIf="saving"></mat-spinner>
-            </button>
-          </div>
-
-          <div class="group">
-            <button mat-fab color="primary" type="button" (click)="validateLabel()" [disabled]="validating || isFinalized()" matTooltip="Valider">
-              <mat-icon *ngIf="!validating">fact_check</mat-icon>
-              <mat-spinner diameter="24" color="accent" *ngIf="validating"></mat-spinner>
             </button>
           </div>
 

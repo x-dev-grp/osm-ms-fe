@@ -513,7 +513,7 @@ export const osm_menus: Navigation[] = [
           },
           {
             id: 'item-stocks-skus',
-            title: 'Unités de Vente (SKU)',
+            title: 'Produits finis',
             type: 'item',
             url: '/stock/skus',
             icon: 'barcode_scanner',

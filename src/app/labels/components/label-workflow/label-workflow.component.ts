@@ -18,8 +18,6 @@ import {
 } from '../../models/label.model';
 
 import { LabelService } from '../../services/label.service';
-import { StorageUnitDto } from '../../../shared/models/StorageUnitDto';
-import { StorageUnitDtoService } from '../../../shared/services/storage.service';
 import { Product, productDisplayName } from '../../../stock/models/sku.model';
 import { SKUService } from '../../../stock/services/sku.service';
 import { CertificationService } from '../../services/certification.service';
@@ -28,6 +26,8 @@ import { Certification } from '../../models/certification.model';
 import { BaseType } from '../../../shared/models/base-type';
 import { GenericTypeService } from '../../../shared/services/generic-type.service';
 import { TypeCategory } from '../../../shared/models/type-category.enum';
+import { FiltrationApiService } from '../../../shared/services/filtration-api.service';
+import { FiltrationOperation } from '../../../shared/models/filtration-operation';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -105,7 +105,7 @@ export class LabelWorkflowComponent implements OnInit {
     bestBeforeDate: ['']
   });
 
-  filteredLots: StorageUnitDto[] = [];
+  filtrationOperations: FiltrationOperation[] = [];
   packagingOptions: Product[] = [];
   availableCertifications: Certification[] = [];
   oilVarieties: BaseType[] = [];
@@ -117,7 +117,6 @@ export class LabelWorkflowComponent implements OnInit {
   loadingLabel = false;
   generating = false;
   saving = false;
-  validating = false;
   drafting = false;
   finalizing = false;
   exporting = false;
@@ -136,10 +135,10 @@ export class LabelWorkflowComponent implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly labelService: LabelService,
-    private readonly storageUnitService: StorageUnitDtoService,
     private readonly skuService: SKUService,
     private readonly certificationService: CertificationService,
-    private readonly genericTypeService: GenericTypeService
+    private readonly genericTypeService: GenericTypeService,
+    private readonly filtrationService: FiltrationApiService
   ) {}
 
   ngOnInit(): void {
@@ -184,24 +183,20 @@ export class LabelWorkflowComponent implements OnInit {
     this.clearMessages();
 
     forkJoin({
-      storageResponse: this.storageUnitService.getAllStorageUnit(),
+      filtrationResponse: this.filtrationService.getAll(),
       packagingOptions: this.skuService.getActiveProductsByType('NON_VRAC'),
       availableCertifications: this.certificationService.getAll(),
-      oilVarieties: this.genericTypeService.getAllTypes(TypeCategory.OLIVE_VARIETY)
+      oilVarieties: this.genericTypeService.getAllTypes(TypeCategory.OLIVE_VARIETY) //type d'olive) exp
     }).subscribe({
       next: ({
-               storageResponse,
+               filtrationResponse,
                packagingOptions,
                availableCertifications,
                oilVarieties
              }) => {
-        const storageUnits = this.normalizeArray<StorageUnitDto>(
-          (storageResponse as { data?: unknown }).data
-        ).filter((unit) => unit?.id);
-
-        this.filteredLots = storageUnits
-          .filter((unit) => unit.filteredOil)
-          .sort((left, right) => (left.lotNumber || '').localeCompare(right.lotNumber || ''));
+        this.filtrationOperations = (filtrationResponse || [])
+          .filter(op => op.status === 'COMPLETED')
+          .sort((a, b) => b.timestamp.localeCompare(a.timestamp));
 
         this.packagingOptions = [...(packagingOptions ?? [])]
           .filter((sku) => sku?.id)
@@ -230,9 +225,11 @@ export class LabelWorkflowComponent implements OnInit {
     }
 
     const formValue = this.labelForm.getRawValue();
+    const selectedOp = this.filtrationOperations.find(op => op.operationId === formValue.lotId);
 
     const request: LabelGenerateRequestDto = {
-      lotId: formValue.lotId ?? '',
+      lotId: selectedOp?.target?.id ?? '',
+      filtrationOperationId: selectedOp?.operationId,
       packagingId: formValue.packagingId ?? '',
       packagingDate: formValue.packagingDate ?? undefined,
       language: formValue.language ?? 'FR',
@@ -263,6 +260,7 @@ export class LabelWorkflowComponent implements OnInit {
     });
   }
 
+  //enregi en format brouillon
   saveDraftChanges(): void {
     if (!this.currentLabel?.id || this.isFinalized()) {
       return;
@@ -290,39 +288,6 @@ export class LabelWorkflowComponent implements OnInit {
         );
       }
     });
-  }
-
-  validateLabel(): void {
-    if (!this.currentLabel?.id || this.isFinalized()) {
-      return;
-    }
-
-    this.validating = true;
-    this.clearMessages();
-    this.resetDraftSavedIndicator();
-    this.resetFinalizedIndicator();
-
-    this.saveChanges()
-      .pipe(switchMap(() => this.labelService.validate(this.currentLabel!.id!)))
-      .subscribe({
-        next: (label) => {
-          this.validating = false;
-          this.syncFormWithLabel(label);
-
-          if (this.blockingIssues().length > 0) {
-            this.errorMessage = 'L etiquette contient encore des erreurs bloquantes.';
-          } else {
-            this.successMessage = 'Le contenu etiquette a ete valide avec succes.';
-          }
-        },
-        error: (error) => {
-          this.validating = false;
-          this.errorMessage = this.resolveErrorMessage(
-            error,
-            'Erreur lors de la validation de l etiquette.'
-          );
-        }
-      });
   }
 
   markAsDraft(): void {
@@ -443,8 +408,10 @@ export class LabelWorkflowComponent implements OnInit {
   }
 
   selectedLotLabel(): string {
-    const selectedLot = this.filteredLots.find((lot) => lot.id === this.labelForm.value.lotId);
-    return selectedLot ? this.storageUnitLabel(selectedLot) : '-';
+    const selectedOp = this.filtrationOperations.find(
+      (op) => op.operationId === this.labelForm.value.lotId
+    );
+    return selectedOp ? this.filtrationOperationLabel(selectedOp) : '-';
   }
 
   selectedPackagingLabel(): string {
@@ -509,9 +476,11 @@ export class LabelWorkflowComponent implements OnInit {
     return item.code || item.value || item.name || String(item.id || '');
   }
 
-  storageUnitLabel(unit: StorageUnitDto): string {
-    const parts = [unit.lotNumber, unit.qualityGrade, unit.oilVariety?.name].filter(Boolean);
-    return parts.join(' | ');
+  filtrationOperationLabel(op: FiltrationOperation): string {
+    const lot = op.targetLotNumber || op.target?.lotNumber || 'LOT INCONNU';
+    const volume = op.volumeAfter ? ` | ${op.volumeAfter}L` : '';
+    const date = op.timestamp ? ` (${new Date(op.timestamp).toLocaleDateString()})` : '';
+    return `OP-${op.operationId.substring(0, 8)} | ${lot}${volume}${date}`;
   }
 
   productLabel(product: Product): string {
@@ -521,8 +490,8 @@ export class LabelWorkflowComponent implements OnInit {
   }
 
   trackById(index: number, item: unknown): string {
-    const typedItem = item as { id?: string };
-    return typedItem?.id ?? `${index}`;
+    const typedItem = item as { id?: string; operationId?: string };
+    return typedItem?.id ?? typedItem?.operationId ?? `${index}`;
   }
 
   private saveChanges(): Observable<LabelContentDto> {
@@ -612,7 +581,7 @@ export class LabelWorkflowComponent implements OnInit {
     this.currentLabel = label;
 
     this.labelForm.patchValue({
-      lotId: label.lotId || '',
+      lotId: label.filtrationOperationId || label.lotId || '',
       packagingId: label.packagingId || '',
       packagingDate: label.packagingDate || this.formatDateInput(new Date()),
       language: label.language || 'FR',
