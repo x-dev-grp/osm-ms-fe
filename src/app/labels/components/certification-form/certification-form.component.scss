@@ -1,0 +1,341 @@
+.dialog-container {
+  padding: 10px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  overflow-x: hidden;
+}
+
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid #f3f4f6;
+
+  .header-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .title-icon {
+      color: #3d4a2a;
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 600;
+      color: #3d4a2a;
+      font-family: 'Outfit', sans-serif;
+    }
+  }
+
+  .close-btn {
+    color: #9ca3af;
+    &:hover { color: #3d4a2a; }
+  }
+}
+
+.modern-form {
+  padding: 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  width: 100%;
+}
+
+.form-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    .required { color: #ef4444; }
+  }
+}
+
+// Material Field Customization
+::ng-deep {
+  .mat-mdc-form-field {
+    width: 100%;
+
+    .mat-mdc-text-field-wrapper {
+      background-color: #ffffff !important;
+      border-radius: 12px !important;
+      padding: 0 !important;
+      transition: all 0.2s ease;
+      border: 1px solid #e5e7eb !important;
+      
+      &:hover { border-color: #d1d5db !important; }
+      &.mdc-text-field--focused { border-color: #3d4a2a !important; border-width: 2px !important; }
+    }
+
+    .mat-mdc-form-field-flex {
+      align-items: center !important;
+    }
+
+    .mat-mdc-form-field-infix {
+      padding: 12px 16px !important;
+      min-height: auto !important;
+    }
+
+    .mdc-notched-outline { display: none !important; } // We use our own border
+
+    .mat-mdc-form-field-icon-prefix {
+      background: #f9fafb;
+      padding: 12px;
+      border-right: 1px solid #e5e7eb;
+      margin: 0 !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-top-left-radius: 12px;
+      border-bottom-left-radius: 12px;
+
+      mat-icon {
+        color: #3d4a2a !important;
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+
+  .status-field {
+    width: 200px !important;
+  }
+}
+
+.logo-section {
+  margin: 16px 0;
+  
+  .section-info {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
+
+    .main-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: #374151;
+    }
+
+    .file-hint {
+      font-size: 12px;
+      color: #6b7280;
+      .highlight { color: #3d4a2a; font-weight: 700; }
+    }
+  }
+}
+
+.upload-area {
+  position: relative;
+  height: 200px;
+  width: 100%;
+  border: 2px dashed #d1d5db;
+  border-radius: 20px;
+  background: #f9fafb;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover, &.dragging {
+    border-color: #3d4a2a;
+    background: rgba(61, 74, 42, 0.05);
+    
+    .upload-icon-circle { transform: translateY(-5px); background: #3d4a2a; mat-icon { color: white; } }
+  }
+
+  &.has-logo {
+    border-style: solid;
+    border-color: #e5e7eb;
+    background: white;
+    
+    &:hover {
+      border-color: #3d4a2a;
+      .preview-overlay { opacity: 1; transform: translateY(0); }
+    }
+  }
+
+  .upload-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    .upload-icon-circle {
+      width: 56px;
+      height: 56px;
+      background: white;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+      
+      mat-icon { color: #3d4a2a; font-size: 28px; width: 28px; height: 28px; }
+    }
+
+    p {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 600;
+      color: #374151;
+
+      &.secondary {
+        font-size: 12px;
+        color: #9ca3af;
+        margin-top: 6px;
+        font-weight: 400;
+      }
+
+      .link {
+        color: #3d4a2a;
+        font-weight: 700;
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .upload-preview {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+
+    .preview-img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+
+    .preview-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(61, 74, 42, 0.8);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: white;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+      backdrop-filter: blur(4px);
+
+      mat-icon { font-size: 32px; width: 32px; height: 32px; }
+      span { font-weight: 600; font-size: 14px; }
+    }
+
+    .remove-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: white;
+      color: #ef4444;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      z-index: 10;
+      
+      &:hover { background: #fef2f2; transform: scale(1.1); }
+    }
+  }
+
+  &.upload-error {
+    border-color: #ef4444;
+    background: #fef2f2;
+
+    .upload-icon-circle { 
+      background: #fee2e2; 
+      mat-icon { color: #ef4444; } 
+    }
+    p { color: #ef4444; }
+  }
+}
+
+.logo-error-msg {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #ef4444;
+  font-weight: 500;
+
+  mat-icon { font-size: 16px; width: 16px; height: 16px; }
+}
+
+.status-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    &.active { background: #10b981; }
+    &.inactive { background: #9ca3af; }
+  }
+}
+
+.form-footer {
+  padding: 16px 24px;
+  border-top: 1px solid #f3f4f6;
+  gap: 12px;
+
+  .btn-cancel {
+    border-radius: 12px;
+    padding: 10px 24px;
+    color: #4b5563;
+    font-weight: 600;
+  }
+
+  .btn-submit {
+    background-color: #3d4a2a !important;
+    color: white !important;
+    border-radius: 12px !important;
+    padding: 10px 32px !important;
+    font-weight: 600 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+
+    mat-icon { font-size: 20px; width: 20px; height: 20px; }
+
+    &:disabled {
+      background-color: #e5e7eb !important;
+      color: #9ca3af !important;
+    }
+  }
+}
+
+.mt-2 { margin-top: 16px; }

@@ -1,0 +1,139 @@
+<div class="page-container" *ngIf="certification">
+  <!-- Top Navigation -->
+  <div class="top-nav">
+    <button mat-button class="btn-back" (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon> Retour à la liste
+    </button>
+    <div class="action-group">
+      <button mat-flat-button class="btn-edit" (click)="openEditForm()">
+        <mat-icon>edit</mat-icon> Modifier
+      </button>
+    </div>
+  </div>
+
+  <div class="detail-grid">
+    <!-- Left Section: Details -->
+    <div class="info-card-container">
+      <div class="details-list shadow-premium">
+        <div class="card-header-internal">
+          <mat-icon class="header-icon">eco</mat-icon>
+          <h2>Informations générales</h2>
+        </div>
+
+        <!-- Nom -->
+        <div class="detail-row">
+          <div class="label-box">
+            <mat-icon>eco</mat-icon>
+            <span class="label">Nom de la certification</span>
+          </div>
+          <span class="value bold">{{ certification.name }}</span>
+        </div>
+
+        <!-- Code -->
+        <div class="detail-row">
+          <div class="label-box">
+            <mat-icon>sell</mat-icon>
+            <span class="label">Code</span>
+          </div>
+          <span class="value bold">{{ certification.code || '--' }}</span>
+        </div>
+
+        <!-- Description -->
+        <div class="detail-row">
+          <div class="label-box">
+            <mat-icon>chat_bubble_outline</mat-icon>
+            <span class="label">Description</span>
+          </div>
+          <span class="value description">{{ certification.description || 'Aucune description fournie.' }}</span>
+        </div>
+
+        <!-- Organisme -->
+        <div class="detail-row">
+          <div class="label-box">
+            <mat-icon>business</mat-icon>
+            <span class="label">Organisme certificateur</span>
+          </div>
+          <span class="value">{{ certification.issuingBody }}</span>
+        </div>
+
+        <!-- Catégorie -->
+        <div class="detail-row">
+          <div class="label-box">
+            <mat-icon>grid_view</mat-icon>
+            <span class="label">Catégorie</span>
+          </div>
+          <span class="value">{{ certification.category }}</span>
+        </div>
+
+        <!-- Site Web -->
+        <div class="detail-row">
+          <div class="label-box">
+            <mat-icon>language</mat-icon>
+            <span class="label">Site Web</span>
+          </div>
+          <a [href]="certification.websiteUrl" target="_blank" class="value link" *ngIf="certification.websiteUrl">
+            {{ certification.websiteUrl }}
+          </a>
+          <span class="value" *ngIf="!certification.websiteUrl">--</span>
+        </div>
+
+        <!-- Statut -->
+        <div class="detail-row">
+          <div class="label-box">
+            <mat-icon>verified_user</mat-icon>
+            <span class="label">Statut</span>
+          </div>
+          <div class="status-pill" [class.active]="certification.isActive">
+            {{ certification.isActive ? 'Actif' : 'Inactif' }}
+          </div>
+        </div>
+
+        <!-- Date Création -->
+        <div class="detail-row">
+          <div class="label-box">
+            <mat-icon>calendar_today</mat-icon>
+            <span class="label">Date de création</span>
+          </div>
+          <span class="value">{{ certification.createdDate | date:'dd MMMM yyyy' }}</span>
+        </div>
+
+        <!-- Dernière MAJ -->
+        <div class="detail-row">
+          <div class="label-box">
+            <mat-icon>edit_calendar</mat-icon>
+            <span class="label">Dernière mise à jour</span>
+          </div>
+          <span class="value">{{ (certification.lastModifiedDate || certification.createdDate) | date:'dd MMMM yyyy'
+            }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Section: Logo Preview -->
+    <div class="logo-preview-container">
+      <div class="logo-card shadow-premium">
+        <div class="card-header-internal">
+          <h3>Aperçu du logo</h3>
+        </div>
+
+        <div class="logo-display">
+          <div class="logo-circle"
+            [style.background-image]="certification.logoData ? 'url(data:' + certification.logoContentType + ';base64,' + certification.logoData + ')' : ''">
+            <mat-icon *ngIf="!certification.logoData">eco</mat-icon>
+          </div>
+        </div>
+
+        <div class="logo-actions">
+          <button mat-stroked-button class="btn-view-large" (click)="viewLargeLogo()">
+            <mat-icon>visibility</mat-icon> Voir en grand
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="loading-state" *ngIf="isLoading">
+  <mat-spinner diameter="40"></mat-spinner>
+  <p>Chargement des informations...</p>
+</div>

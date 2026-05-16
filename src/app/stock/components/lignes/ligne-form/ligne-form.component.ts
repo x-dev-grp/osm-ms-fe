@@ -12,6 +12,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { LigneConditionnementService } from '../../../services/ligne-conditionnement.service';
 import { LigneConditionnement, Statue } from '../../../models/ligne-conditionnement.model';
@@ -33,7 +34,8 @@ import { ToastService } from '../../../../shared/services/toast.service';
     MatDividerModule,
     MatProgressSpinnerModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatTooltipModule
   ],
   templateUrl: './ligne-form.component.html',
   styleUrls: ['./ligne-form.component.scss']

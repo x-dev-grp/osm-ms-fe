@@ -123,8 +123,6 @@ export class ArticleListComponent implements OnInit {
     const classes: Record<CategorieArticle, string> = {
       [CategorieArticle.EMBALLAGE]: 'bg-primary',
       [CategorieArticle.CONSOMMABLE]: 'bg-warning text-dark',
-      [CategorieArticle.MATIERE_PREMIERE]: 'bg-info',
-      [CategorieArticle.ACCESSOIRE]: 'bg-secondary',
       [CategorieArticle.UNITE]: 'bg-dark',
       [CategorieArticle.COLIS]: 'bg-success',
       [CategorieArticle.PALETTE]: 'bg-danger'
@@ -138,9 +136,7 @@ export class ArticleListComponent implements OnInit {
       [CategorieArticle.COLIS]: 'fas fa-boxes',
       [CategorieArticle.PALETTE]: 'fas fa-pallet',
       [CategorieArticle.EMBALLAGE]: 'fas fa-box',
-      [CategorieArticle.CONSOMMABLE]: 'fas fa-wine-bottle',
-      [CategorieArticle.MATIERE_PREMIERE]: 'fas fa-cubes',
-      [CategorieArticle.ACCESSOIRE]: 'fas fa-microchip'
+      [CategorieArticle.CONSOMMABLE]: 'fas fa-wine-bottle'
     };
     return icons[categorie] || 'fas fa-tag';
   }

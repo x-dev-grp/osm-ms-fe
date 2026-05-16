@@ -86,33 +86,29 @@ export class StockParEmplacementComponent implements OnInit {
 
   getCategorieLabel(categorie: string): string {
     const labels: Record<string, string> = {
-      [CategorieArticle.MATIERE_PREMIERE]: 'Matière première',
       [CategorieArticle.CONSOMMABLE]: 'Consommable',
-      [CategorieArticle.EMBALLAGE]: 'Emballage',
-      [CategorieArticle.ACCESSOIRE]: 'Accessoire'
+      [CategorieArticle.EMBALLAGE]: 'Emballage'
     };
     return labels[categorie] || categorie;
   }
 
   getCategorieClass(categorie: string): string {
     const map: Record<string, string> = {
-      [CategorieArticle.MATIERE_PREMIERE]: 'primary',
       [CategorieArticle.CONSOMMABLE]: 'success',
-      [CategorieArticle.EMBALLAGE]: 'info',
-      [CategorieArticle.ACCESSOIRE]: 'warning'
+      [CategorieArticle.EMBALLAGE]: 'info'
     };
     return map[categorie] || 'secondary';
   }
 
-  getStockStatusClass(quantite: number, stockMin: number): string {
-    if (quantite <= 0) return 'danger';
-    if (quantite <= stockMin) return 'warning';
+  getStockStatusClass(available: number, stockMin: number): string {
+    if (available <= 0) return 'danger';
+    if (available <= stockMin) return 'warning';
     return 'success';
   }
 
-  getStockStatusText(quantite: number, stockMin: number): string {
-    if (quantite <= 0) return 'Rupture';
-    if (quantite <= stockMin) return 'Alerte';
+  getStockStatusText(available: number, stockMin: number): string {
+    if (available <= 0) return 'Rupture / Réservé';
+    if (available <= stockMin) return 'Alerte';
     return 'Normal';
   }
 }

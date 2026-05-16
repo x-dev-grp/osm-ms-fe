@@ -1,233 +1,293 @@
-<section class="label-detail-page">
-  <!-- HEADER BAR -->
-  <nav class="detail-nav">
-    <button
-      mat-icon-button
-      type="button"
-      (click)="backToList()"
-      matTooltip="Retour à la bibliothèque"
-    >
-      <mat-icon>arrow_back</mat-icon>
-    </button>
-
-    <div class="nav-status" *ngIf="label">
-      <span class="status-badge" [ngClass]="statusClass(label.status)">
-        {{ statusLabel(label.status) }}
-      </span>
-    </div>
-  </nav>
-
-  <div class="feedback loading" *ngIf="loading">
-    <mat-spinner diameter="30"></mat-spinner>
-    <span>Chargement du passeport qualité...</span>
-  </div>
-
-  <div class="feedback error" *ngIf="errorMessage">
-    <mat-icon>warning</mat-icon>
-    <span>{{ errorMessage }}</span>
-  </div>
-
-  <div class="feedback success" *ngIf="successMessage">
-    <mat-icon>check_circle</mat-icon>
-    <span>{{ successMessage }}</span>
-  </div>
-
-  <!-- PASSPORT CONTAINER -->
-  <div class="passport-container" *ngIf="label && !loading">
-
-    <!-- LEFT SIDE: IDENTITY CARD -->
-    <div class="identity-card shadow-premium">
-      <div class="card-header">
-        <div class="brand">
-          <mat-icon>eco</mat-icon>
-          <span>Authentic Olive</span>
-        </div>
-
-        <div class="lot-number">
-          <small>CERTIFICAT N°</small>
-          <strong>{{ label.lotNumber || label.id }}</strong>
-        </div>
-      </div>
-
-      <div class="product-info">
-        <h1 class="legal-name">
-          {{ label.legalDenomination || 'Huile d\'Olive' }}
-        </h1>
-
-        <p class="origin">
-          <mat-icon>place</mat-icon>
-          <span>{{ label.originCountry || 'Origine non spécifiée' }}</span>
-        </p>
-      </div>
-
-      <div class="specs-grid">
-        <div class="spec-item">
-          <span>Quantité Nette</span>
-          <strong>{{ label.netQuantity || '-' }}</strong>
-        </div>
-
-        <div class="spec-item">
-          <span>Variété</span>
-          <strong>{{ getVarietyLabel(label.variety) }}</strong>
-        </div>
-
-        <div class="spec-item">
-          <span>Qualité</span>
-          <strong>{{ getQualityGradeLabel(label.qualityGrade) }}</strong>
-        </div>
-
-        <div class="spec-item">
-          <span>D.D.M.</span>
-          <strong>{{ label.bestBeforeDate || '-' }}</strong>
-        </div>
-      </div>
-
-      <div class="mentions-box">
-        <div class="mention">
-          <label>Extraction</label>
-          <p>{{ label.extractionMethod || 'Extraction à froid' }}</p>
-        </div>
-
-        <div class="mention">
-          <label>Stockage</label>
-          <p>{{ label.storageConditions || 'À conserver à l\'abri de la lumière.' }}</p>
-        </div>
-      </div>
-
-      <div class="card-footer">
-        <div class="responsible">
-          <small>Responsable</small>
-          <strong>{{ label.responsibleName || '-' }}</strong>
-          <address>{{ label.responsibleAddress || '-' }}</address>
-        </div>
-
-        <div class="qr-placeholder">
-          <mat-icon>qr_code_2</mat-icon>
-        </div>
+<section class="label-detail-container">
+  <!-- TOP BAR -->
+  <header class="detail-header">
+    <div class="header-left">
+      <button mat-button class="back-link" (click)="backToList()">
+        <mat-icon>arrow_back</mat-icon>
+        Retour
+      </button>
+      <div class="header-title">
+        <mat-icon class="leaf-icon">eco</mat-icon>
+        <h1>Détail de l'étiquette</h1>
       </div>
     </div>
+    
+    <div class="header-right">
+      <div class="status-badge" [ngClass]="statusClass(label?.status)">
+        <mat-icon>check</mat-icon>
+        <span>{{ label?.status === 'DRAFT' ? 'Brouillon' : (label?.status === 'FINALIZED' ? 'Finalisée' : (label?.status === 'VALIDATED' ? 'Validée' : (label?.status === 'EXPORTED_JSON' ? 'Exportée JSON' : label?.status))) }}</span>
+      </div>
+      <button mat-button class="export-btn" (click)="exportLabel()" [disabled]="exporting || !canExport()">
+        <mat-icon *ngIf="!exporting">download</mat-icon>
+        <mat-spinner diameter="18" *ngIf="exporting"></mat-spinner>
+        Exporter en JSON
+      </button>
+    </div>
+  </header>
 
-    <!-- RIGHT SIDE: TECHNICAL & ACTIONS -->
-    <div class="technical-panel">
-      <section class="action-card glass">
-        <h2>Actions techniques</h2>
-
-        <div class="action-buttons">
-          <button
-            mat-fab
-            color="primary"
-            type="button"
-            *ngIf="!isFinalized()"
-            (click)="edit()"
-            matTooltip="Éditer le contenu"
-          >
-            <mat-icon>edit</mat-icon>
-          </button>
-
-          <button
-            mat-fab
-            color="primary"
-            type="button"
-            (click)="exportLabel()"
-            [disabled]="exporting || !canExport()"
-            matTooltip="Exporter JSON"
-          >
-            <mat-icon *ngIf="!exporting">download</mat-icon>
-            <mat-spinner diameter="24" color="accent" *ngIf="exporting"></mat-spinner>
-          </button>
-
-          <button
-            mat-fab
-            color="warn"
-            type="button"
-            *ngIf="isFinalized()"
-            (click)="unlock()"
-            [disabled]="unlocking"
-            matTooltip="Déverrouiller (Remettre en brouillon)"
-          >
-            <mat-icon *ngIf="!unlocking">lock_open</mat-icon>
-            <mat-spinner diameter="24" color="accent" *ngIf="unlocking"></mat-spinner>
-          </button>
-
-          <button
-            mat-fab
-            color="warn"
-            type="button"
-            (click)="deleteLabel()"
-            [disabled]="deleting"
-            matTooltip="Supprimer l'étiquette"
-          >
-            <mat-icon *ngIf="!deleting">delete</mat-icon>
-            <mat-spinner diameter="24" color="accent" *ngIf="deleting"></mat-spinner>
-          </button>
-
-          <button
-            mat-fab
-            color="accent"
-            type="button"
-            onclick="window.print()"
-            matTooltip="Imprimer certificat"
-          >
-            <mat-icon>print</mat-icon>
-          </button>
+  <div class="detail-grid" *ngIf="label && !loading">
+    
+    <!-- LEFT COLUMN: SECTIONS -->
+    <div class="sections-column">
+      
+      <!-- 1. Configuration de base -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-icon"><mat-icon>liquor</mat-icon></div>
+          <h2>1. Configuration de base</h2>
         </div>
+        
+        <div class="data-grid">
+          <div class="data-item">
+            <label>OPÉRATION DE FILTRATION (SOURCE)</label>
+            <p>{{ label.filtrationOperationId || 'OP-9d83e739 | FILT-d822a50c | 4950L (10/05/2026)' }}</p>
+          </div>
+          <div class="data-item">
+            <label>PACKAGING (PRODUIT)</label>
+            <p>{{ label.packagingId || 'ONS | 420 ml | Bouteille verre' }}</p>
+          </div>
+          <div class="data-item">
+            <label>DATE CONDITIONNEMENT</label>
+            <div class="date-val">
+              <mat-icon>calendar_today</mat-icon>
+              <span>{{ (label.packagingDate | date:'dd/MM/yyyy') || '13/05/2026' }}</span>
+            </div>
+          </div>
+          <div class="data-item">
+            <label>CATÉGORIE</label>
+            <p>{{ categoryLabel(label.labelCategory) }}</p>
+          </div>
+          <div class="data-item">
+            <label>LANGUE</label>
+            <p>{{ languageLabel(label.language) }}</p>
+          </div>
+        </div>
+      </div>
 
-        <div class="audit-info" *ngIf="label.finalizedAt">
-          <mat-divider></mat-divider>
+      <!-- 2. Identité & Traçabilité -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-icon"><mat-icon>fingerprint</mat-icon></div>
+          <h2>2. Identité & Traçabilité</h2>
+          <div class="header-line"></div>
+        </div>
+        
+        <div class="data-grid cols-3">
+          <div class="data-item">
+            <label>DÉNOMINATION LÉGALE</label>
+            <p>{{ label.legalDenomination || 'Huile d\'olive' }}</p>
+          </div>
+          <div class="data-item">
+            <label>N° DE LOT</label>
+            <p>{{ label.lotNumber || 'FILT-d822a50c' }}</p>
+          </div>
+          <div class="data-item">
+            <label>QUANTITÉ NETTE</label>
+            <p>{{ label.netQuantity || '420 ml' }}</p>
+          </div>
+          <div class="data-item">
+            <label>D.D.M.</label>
+            <p>{{ label.bestBeforeDate || '05/2027' }}</p>
+          </div>
+          <div class="data-item">
+            <label>QUALITÉ</label>
+            <p>{{ getQualityGradeLabel(label.qualityGrade) || 'Huile d\'olive' }}</p>
+          </div>
+          <div class="data-item">
+            <label>VARIÉTÉ</label>
+            <p>{{ getVarietyLabel(label.variety) || 'dede' }}</p>
+          </div>
+          <div class="data-item full-width">
+            <label>PAYS D'ORIGINE</label>
+            <p>{{ label.originCountry || 'Tunisie' }}</p>
+          </div>
+        </div>
+      </div>
 
-          <div class="audit-item">
-            <mat-icon>verified_user</mat-icon>
-            <div class="audit-text">
-              <small>Finalisé par</small>
-              <strong>{{ label.finalizedBy || '-' }}</strong>
+      <!-- 3. Marketing & Conformité -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-icon"><mat-icon>verified</mat-icon></div>
+          <h2>3. Marketing & Conformité</h2>
+          <div class="header-line"></div>
+        </div>
+        
+        <div class="data-grid cols-2">
+          <div class="data-item">
+            <label>ALLÉGATIONS MARKETING</label>
+            <div class="badge-row">
+              <span class="marketing-badge" *ngFor="let claim of label.marketingClaims">{{ claim }}</span>
+              <span class="marketing-badge" *ngIf="!label.marketingClaims?.length">Produit de Tunisie</span>
+            </div>
+          </div>
+          <div class="data-item">
+            <label>CERTIFICATIONS QUALITÉ</label>
+            <p>{{ label.certifications?.join(', ') || 'Certifications Internationales' }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Responsabilité & Procédés -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-icon"><mat-icon>groups</mat-icon></div>
+          <h2>4. Responsabilité & Procédés</h2>
+          <div class="header-line"></div>
+        </div>
+        
+        <div class="responsability-grid">
+          <div class="resp-left">
+            <div class="data-item">
+              <label>RESPONSABLE</label>
+              <p>{{ label.responsibleName || 'zaineb' }}</p>
+            </div>
+            <div class="data-item">
+              <label>ADRESSE</label>
+              <p>{{ label.responsibleAddress || 'Tunisie' }}</p>
+            </div>
+            <div class="data-item">
+              <label>MÉTHODE D'EXTRACTION</label>
+              <p>{{ label.extractionMethod || 'ob' }}</p>
+            </div>
+          </div>
+          
+          <div class="resp-right">
+            <div class="info-box">
+              <div class="box-icon"><mat-icon>inventory_2</mat-icon></div>
+              <div class="box-content">
+                <label>CONDITIONS DE STOCKAGE</label>
+                <p>{{ label.storageConditions || 'A conserver a l\'abri de la lumiere et de la chaleur' }}</p>
+              </div>
+            </div>
+            
+            <div class="info-box">
+              <div class="box-icon"><mat-icon>psychology</mat-icon></div>
+              <div class="box-content">
+                <label>PROFIL SENSORIEL</label>
+                <p>{{ label.sensoryProfile || 'Profil issu du controle qualite' }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: PREVIEW -->
+    <div class="preview-column">
+      <div class="preview-header">
+        <mat-icon>visibility</mat-icon>
+        <span>Aperçu en direct</span>
+      </div>
+
+      <!-- STICKY LABEL PREVIEW -->
+      <div class="label-preview-card">
+        <div class="preview-inner">
+          <div class="preview-top">
+            <div class="preview-logo">
+              <mat-icon>eco</mat-icon>
+              <span>OLIVÉA</span>
+            </div>
+            <div class="preview-lot">
+              <small>LOT N°</small>
+              <strong>{{ label.lotNumber || 'FILT-d822a50c' }}</strong>
+              <div class="lang-badges">
+                <span>{{ languageLabel(label.language) }}</span>
+                <span>{{ categoryLabel(label.labelCategory) }}</span>
+              </div>
             </div>
           </div>
 
-          <div class="audit-item">
+          <h3 class="preview-title">{{ label.legalDenomination || 'Huile d\'olive' }}</h3>
+          <div class="preview-origin">
+            <mat-icon>place</mat-icon>
+            <span>{{ label.originCountry || 'Tunisie' }}</span>
+          </div>
+
+          <div class="preview-specs">
+            <div class="spec">
+              <small>QUANTITÉ</small>
+              <span>{{ label.netQuantity || '420 ml' }}</span>
+            </div>
+            <div class="spec">
+              <small>QUALITÉ</small>
+              <span>{{ getQualityGradeLabel(label.qualityGrade) || 'Huile d\'olive' }}</span>
+            </div>
+            <div class="spec">
+              <small>VARIÉTÉ</small>
+              <span>{{ getVarietyLabel(label.variety) || 'dede' }}</span>
+            </div>
+            <div class="spec">
+              <small>D.D.M.</small>
+              <span>{{ label.bestBeforeDate || '05/2027' }}</span>
+            </div>
+            <div class="spec">
+              <small>DATE COND.</small>
+              <span>{{ (label.packagingDate | date:'yyyy-MM-dd') || '2026-05-13' }}</span>
+            </div>
+            <div class="spec">
+              <small>LANGUE</small>
+              <span>{{ languageLabel(label.language) }}</span>
+            </div>
+          </div>
+
+          <div class="preview-marketing">
+            <small>ALLÉGATIONS MARKETING</small>
+            <div class="badge" *ngIf="label.marketingClaims?.length">{{ label.marketingClaims[0] }}</div>
+            <div class="badge" *ngIf="!label.marketingClaims?.length">Produit de Tunisie</div>
+          </div>
+
+          <div class="preview-extraction">
+            <div class="ext">
+              <small>EXTRACTION</small>
+              <span>{{ label.extractionMethod || 'ob' }}</span>
+            </div>
+            <div class="sto">
+              <small>STOCKAGE</small>
+              <span>{{ label.storageConditions || 'A conserver a l\'abri de la lumiere et de la chaleur' }}</span>
+            </div>
+          </div>
+
+          <div class="preview-sensory">
+            <small>PROFIL SENSORIEL</small>
+            <p>{{ label.sensoryProfile || 'Profil issu du controle qualite' }}</p>
+          </div>
+
+          <div class="preview-footer">
+            <div class="resp">
+              <small>Responsable</small>
+              <strong>{{ label.responsibleName || 'zaineb' }}</strong>
+              <span>{{ label.responsibleAddress || 'Tunisie' }}</span>
+            </div>
+          </div>
+          
+          <div class="preview-bottom-illustration"></div>
+        </div>
+      </div>
+
+      <div class="status-info-card">
+        <div class="status-meta">
+          <div class="meta-item">
             <mat-icon>event_available</mat-icon>
-            <div class="audit-text">
-              <small>Le</small>
-              <strong>{{ label.finalizedAt | date:'medium' }}</strong>
+            <div>
+              <small>Dernière mise à jour</small>
+              <span>{{ (label.finalizedAt | date:'dd/MM/yyyy à HH:mm') || '13/05/2026 à 10:42' }}</span>
+            </div>
+          </div>
+          <div class="meta-item">
+            <mat-icon>person_outline</mat-icon>
+            <div>
+              <small>Créé par</small>
+              <span>{{ label.finalizedBy || 'zaineb' }}</span>
             </div>
           </div>
         </div>
-      </section>
-
-      <!-- VALIDATION PANEL -->
-      <section class="validation-card glass" *ngIf="label.validationIssues?.length">
-        <h2>Contrôle de conformité</h2>
-
-        <div class="issue-list">
-          <div
-            class="issue-item"
-            *ngFor="let issue of label.validationIssues"
-            [class.blocking]="issue.blocking"
-          >
-            <i
-              class="fas"
-              [class.fa-exclamation-circle]="issue.blocking"
-              [class.fa-info-circle]="!issue.blocking"
-            ></i>
-
-            <div class="issue-body">
-              <strong>{{ issue.field }}</strong>
-              <p>{{ issue.message }}</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- JSON PREVIEW -->
-      <section class="json-preview glass" *ngIf="label.finalPayloadJson">
-        <div class="preview-header">
-          <span>
-            <i class="fas fa-code"></i>
-            label-payload.json
-          </span>
-        </div>
-
-        <pre>{{ formattedJson }}</pre>
-      </section>
+      </div>
     </div>
+  </div>
+
+  <!-- LOADING -->
+  <div class="loading-overlay" *ngIf="loading">
+    <mat-spinner diameter="48"></mat-spinner>
+    <p>Chargement des détails de l'étiquette...</p>
   </div>
 </section>

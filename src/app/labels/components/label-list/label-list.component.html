@@ -1,86 +1,152 @@
 <div class="abioc-container">
-  <!-- HEADER CARD -->
-  <div class="header-card">
-    <div class="header-left">
-      <div class="icon-box">
-        <mat-icon>sell</mat-icon>
-      </div>
-      <div>
-        <h1>Étiquettes</h1>
-        <p>Bibliothèque des empreintes numériques</p>
+  <!-- TOP BRANDED HEADER -->
+  <header class="page-header">
+    <div class="header-decoration">
+      <img src="/assets/logo_certif2.jpeg" alt="Decorative Olive Branch" class="header-img">
+    </div>
+    
+    <div class="header-content">
+      <div class="brand-section">
+        <mat-icon class="brand-icon">eco</mat-icon>
+        <div class="title-section">
+          <h1>Étiquettes</h1>
+          <p class="subtitle">Bibliothèque des empreintes numériques</p>
+        </div>
       </div>
     </div>
+  </header>
 
-    <div class="header-right">
-      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="search-field">
-        <mat-label>Rechercher</mat-label>
-        <input matInput placeholder="Lot, dénomination..." (input)="onSearch($event)" />
-        <mat-icon matSuffix>search</mat-icon>
-      </mat-form-field>
+  <!-- ACTION BAR CARD -->
+  <div class="action-card shadow-premium">
+    <div class="search-box">
+      <mat-icon class="search-icon">search</mat-icon>
+      <input type="text" placeholder="Rechercher Lot, dénomination..." [formControl]="searchControl">
+    </div>
 
-      <div class="kpi">
+    <div class="kpi-card">
+      <div class="kpi-icon-box">
+        <mat-icon>sell</mat-icon>
+      </div>
+      <div class="kpi-content">
         <span class="kpi-value">{{ allLabels.length }}</span>
         <span class="kpi-label">Étiquettes</span>
       </div>
+    </div>
 
-      <button mat-mini-fab color="primary" (click)="createNewLabel()" matTooltip="Nouvelle Étiquette">
-        <mat-icon>add</mat-icon>
+    <button mat-button class="btn-filters" [matMenuTriggerFor]="filterMenu">
+      <mat-icon>tune</mat-icon>
+      <span>Filtres</span>
+      <mat-icon class="chevron">expand_more</mat-icon>
+    </button>
+
+    <mat-menu #filterMenu="matMenu" class="premium-menu">
+      <button mat-menu-item (click)="resetFilters()">
+        <mat-icon>refresh</mat-icon>
+        <span>Toutes les étiquettes</span>
       </button>
+      <mat-divider></mat-divider>
+      
+      <!-- Status Filters -->
+      <div class="menu-label">STATUT</div>
+      <button mat-menu-item (click)="filterByStatus('DRAFT')">
+        <mat-icon class="status-icon draft">circle</mat-icon>
+        <span>Brouillon</span>
+      </button>
+      <button mat-menu-item (click)="filterByStatus('VALIDATED')">
+        <mat-icon class="status-icon validated">circle</mat-icon>
+        <span>Validée</span>
+      </button>
+      <button mat-menu-item (click)="filterByStatus('FINALIZED')">
+        <mat-icon class="status-icon finalized">circle</mat-icon>
+        <span>Finalisée</span>
+      </button>
+      <button mat-menu-item (click)="filterByStatus('EXPORTED_JSON')">
+        <mat-icon class="status-icon exported">circle</mat-icon>
+        <span>Exportée JSON</span>
+      </button>
+      
+      <mat-divider></mat-divider>
+      
+      <!-- Category Filters -->
+      <div class="menu-label">CATÉGORIE</div>
+      <button mat-menu-item (click)="filterByCategory('LEGAL')">
+        <mat-icon>gavel</mat-icon>
+        <span>Légale</span>
+      </button>
+      <button mat-menu-item (click)="filterByCategory('MARKETING')">
+        <mat-icon>campaign</mat-icon>
+        <span>Marketing</span>
+      </button>
+      <button mat-menu-item (click)="filterByCategory('RESPONSIBILITY')">
+        <mat-icon>volunteer_activism</mat-icon>
+        <span>Responsabilité</span>
+      </button>
+    </mat-menu>
+
+    <button mat-flat-button class="btn-new" (click)="createNewLabel()">
+      <mat-icon>add</mat-icon> Nouvelle Étiquette
+    </button>
+  </div>
+
+  <!-- ALERTS / FEEDBACK -->
+  <div class="feedback-stack" *ngIf="successMessage || errorMessage">
+    <div class="feedback-banner success" *ngIf="successMessage">
+      <div class="banner-content">
+        <mat-icon>check_circle</mat-icon>
+        <span>{{ successMessage }}</span>
+      </div>
+      <button mat-icon-button (click)="successMessage = ''"><mat-icon>close</mat-icon></button>
+    </div>
+
+    <div class="feedback-banner error" *ngIf="errorMessage">
+      <div class="banner-content">
+        <mat-icon>warning</mat-icon>
+        <span>{{ errorMessage }}</span>
+      </div>
+      <button mat-icon-button (click)="errorMessage = ''"><mat-icon>close</mat-icon></button>
     </div>
   </div>
 
-  <!-- FEEDBACK -->
-  <div class="feedback-container">
-    <div class="feedback success" *ngIf="successMessage">
-      <mat-icon>check_circle</mat-icon> {{ successMessage }}
-    </div>
-    <div class="feedback error" *ngIf="errorMessage">
-      <mat-icon>error</mat-icon> {{ errorMessage }}
-    </div>
-  </div>
-
-  <!-- LOADING -->
-  <div class="abioc-loading" *ngIf="loading">
-    <mat-spinner diameter="40"></mat-spinner>
-  </div>
-
-  <!-- TABLE CARD -->
-  <div class="table-card" *ngIf="!loading">
-    <div class="table-header">
-      <h3>Liste des étiquettes</h3>
-      <span>{{ allLabels.length }} élément(s)</span>
+  <!-- DATA GRID CARD -->
+  <div class="table-card shadow-premium">
+    <div class="table-header-row">
+      <div class="header-left">
+        <mat-icon>eco</mat-icon>
+        <h3>Liste des étiquettes</h3>
+        <span class="count-badge">{{ allLabels.length }} élément(s)</span>
+      </div>
     </div>
 
-    <table mat-table [dataSource]="dataSource" class="abioc-table">
-      <!-- Lot Column -->
+    <table mat-table [dataSource]="dataSource" class="modern-table">
+      <!-- ... existing columns ... -->
       <ng-container matColumnDef="lotNumber">
         <th mat-header-cell *matHeaderCellDef>N° Lot</th>
         <td mat-cell *matCellDef="let label">
-          <span class="lot-badge">{{ label.lotNumber || '-' }}</span>
+          <span class="lot-pill">{{ label.lotNumber || '-' }}</span>
         </td>
       </ng-container>
 
-      <!-- Denomination Column -->
       <ng-container matColumnDef="legalDenomination">
         <th mat-header-cell *matHeaderCellDef>Dénomination</th>
         <td mat-cell *matCellDef="let label">
-          <span class="denomination-text">{{ label.legalDenomination || '-' }}</span>
+          <div class="denom-box">
+            <span class="main-text">{{ label.legalDenomination || '-' }}</span>
+            <span class="sub-text" *ngIf="label.productDescription">{{ label.productDescription }}</span>
+          </div>
         </td>
       </ng-container>
 
-      <!-- Quantity Column -->
       <ng-container matColumnDef="netQuantity">
         <th mat-header-cell *matHeaderCellDef>Quantité</th>
-        <td mat-cell *matCellDef="let label">{{ label.netQuantity || '-' }}</td>
+        <td mat-cell *matCellDef="let label" class="text-secondary">{{ label.netQuantity || '-' }}</td>
       </ng-container>
       
-      <!-- Certifications Column -->
       <ng-container matColumnDef="certifications">
         <th mat-header-cell *matHeaderCellDef>Certifications</th>
         <td mat-cell *matCellDef="let label">
-          <div class="cert-logos-list">
+          <div class="cert-list">
             <ng-container *ngFor="let certName of label.certifications">
-              <div class="mini-cert" *ngIf="getCertInfo(certName) as cert" [matTooltip]="cert.name">
+              <div class="cert-icon" *ngIf="getCertInfo(certName) as cert" [matTooltip]="cert.name">
                 <img *ngIf="cert.logoData" [src]="'data:' + cert.logoContentType + ';base64,' + cert.logoData" />
                 <mat-icon *ngIf="!cert.logoData">verified</mat-icon>
               </div>
@@ -89,83 +155,77 @@
         </td>
       </ng-container>
 
-      <!-- Date Column -->
       <ng-container matColumnDef="packagingDate">
         <th mat-header-cell *matHeaderCellDef>Date Cond.</th>
-        <td mat-cell *matCellDef="let label">{{ label.packagingDate | date:'dd/MM/yyyy' }}</td>
+        <td mat-cell *matCellDef="let label" class="text-secondary">{{ label.packagingDate | date:'dd/MM/yyyy' }}</td>
       </ng-container>
 
-      <!-- Category Column -->
       <ng-container matColumnDef="labelCategory">
         <th mat-header-cell *matHeaderCellDef>Catégorie</th>
-        <td mat-cell *matCellDef="let label">{{ label.labelCategory }}</td>
+        <td mat-cell *matCellDef="let label" class="text-secondary">{{ label.labelCategory }}</td>
       </ng-container>
 
-      <!-- Language Column -->
       <ng-container matColumnDef="language">
         <th mat-header-cell *matHeaderCellDef>Langue</th>
-        <td mat-cell *matCellDef="let label">{{ label.language }}</td>
+        <td mat-cell *matCellDef="let label">
+          <div class="lang-cell">
+            <span class="flag-icon">{{ getFlagEmoji(label.language) }}</span>
+            <span class="lang-code">{{ label.language }}</span>
+          </div>
+        </td>
       </ng-container>
 
-      <!-- Status Column -->
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef>Statut</th>
         <td mat-cell *matCellDef="let label">
-          <span class="status-badge" [ngClass]="statusClass(label.status)">
+          <span class="status-pill" [ngClass]="label.status?.toLowerCase()">
             {{ statusLabel(label.status) }}
           </span>
         </td>
       </ng-container>
 
-      <!-- Actions Column -->
       <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <th mat-header-cell *matHeaderCellDef class="actions-header-cell">
+          <div class="actions-header-content">
+            <mat-icon>settings</mat-icon>
+            <span>Actions</span>
+          </div>
+        </th>
         <td mat-cell *matCellDef="let label">
-          <div class="row-actions">
-            <!-- QUICK ACTION DRAFT: GO TO WORKFLOW -->
-            <button mat-icon-button color="primary" *ngIf="label.status === 'DRAFT' || label.status === 'VALIDATED'"
-                    (click)="editLabel(label)" matTooltip="Éditer / Finaliser">
-              <mat-icon>edit_note</mat-icon>
+          <div class="action-buttons-grid">
+            <button mat-icon-button class="action-btn view" (click)="viewDetails(label)" matTooltip="Voir détails">
+              <mat-icon>visibility</mat-icon>
             </button>
-
-            <!-- QUICK ACTION FINALIZED: EXPORT -->
-            <button mat-icon-button color="primary" *ngIf="label.status === 'FINALIZED' || label.status === 'EXPORTED_JSON'"
-                    (click)="exportLabel(label)" matTooltip="Télécharger JSON">
-              <mat-icon>download</mat-icon>
+            <button mat-icon-button class="action-btn edit" (click)="editLabel(label)" matTooltip="Modifier">
+              <mat-icon>edit</mat-icon>
             </button>
-
-            <button mat-icon-button [matMenuTriggerFor]="menu" class="btn-actions">
-              <mat-icon>more_vert</mat-icon>
+            <button mat-icon-button class="action-btn delete" (click)="onDelete(label, $event)" matTooltip="Supprimer">
+              <mat-icon>delete</mat-icon>
             </button>
           </div>
-
-          <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="viewDetails(label)">
-              <mat-icon>visibility</mat-icon>
-              <span>Voir</span>
-            </button>
-            <button mat-menu-item *ngIf="label.status === 'FINALIZED' || label.status === 'EXPORTED_JSON'" (click)="markAsDraft(label)">
-              <mat-icon>lock_open</mat-icon>
-              <span>Déverrouiller</span>
-            </button>
-            <mat-divider></mat-divider>
-            <button mat-menu-item class="danger" (click)="onDelete(label)">
-              <mat-icon color="warn">delete</mat-icon>
-              <span class="text-warn">Supprimer</span>
-            </button>
-          </mat-menu>
         </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+          <div class="no-data-info">
+            <mat-icon>search_off</mat-icon>
+            <p>Aucune étiquette trouvée</p>
+          </div>
+        </td>
+      </tr>
     </table>
 
-    <div class="abioc-empty" *ngIf="allLabels.length === 0">
-      <mat-icon>sell</mat-icon>
-      <p>Aucune étiquette trouvée</p>
+    <div class="paginator-container">
+      <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Sélectionner la page"></mat-paginator>
     </div>
+  </div>
 
-    <mat-paginator [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator>
+  <div class="loading-state" *ngIf="loading">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Chargement des empreintes...</p>
   </div>
 </div>

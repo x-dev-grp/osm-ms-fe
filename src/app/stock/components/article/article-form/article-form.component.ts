@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from '../../../services/article.service';
 import { FournisseurService } from '../../../services/fournisseur.service';
-import { Article, CategorieArticle, UniteMesure, ArticleConfig } from '../../../models/article.model';
+import { Article, CategorieArticle, UniteMesure, ArticleConfig, categorieLabels } from '../../../models/article.model';
 import { Fournisseur } from '../../../models/fournisseur.model';
 
 @Component({
@@ -18,6 +18,7 @@ export class ArticleFormComponent implements OnInit {
   articleForm: FormGroup;
   categories = Object.values(CategorieArticle);
   unitesMesure = Object.values(UniteMesure);
+  categorieLabels = categorieLabels;
   fournisseurs: Fournisseur[] = [];
   uniteArticles: Article[] = [];
   loadingUnites = false;
@@ -40,7 +41,7 @@ export class ArticleFormComponent implements OnInit {
       nom: ['', Validators.required],
       categorie: ['', Validators.required],
       um: ['', Validators.required],
-      fournisseur: [null],
+      fournisseur: [''],
       stockMinimum: [0, [Validators.min(0)]],
       stockMaximum: [0, [Validators.min(0)]],
       actif: [true],
@@ -75,20 +76,11 @@ export class ArticleFormComponent implements OnInit {
       emballageClientBranding: [false],
       emballagePoidsGrammes: [0],
 
-      consommableType: [''],
-      consommableVolumeLitre: [0],
-      consommableComposition: [''],
-      consommableTemperatureStockage: [0],
-
-      matiereCodeFournisseur: [''],
-      matiereDensite: [0],
-      matiereOrigine: [''],
-      matiereCertifieBio: [false],
-
-
-      accessoireUsage: [''],
-      accessoireNecessiteMontage: [false],
-      accessoireGarantieMois: ['']
+      consommableSousType: [''],
+      consommableUsage: [''],
+      consommableUnit: [''],
+      consommableQuantity: [0],
+      consommableTemperatureStockage: [0]
     });
   }
 
@@ -101,13 +93,10 @@ export class ArticleFormComponent implements OnInit {
     }
 
     this.articleForm.get('categorie')?.valueChanges.subscribe(cat => {
-      if (cat === CategorieArticle.COLIS) {
-        this.loadUniteArticles();
-      }
-      if (cat === CategorieArticle.PALETTE) {
-        this.loadColisArticles();
-      }
+      this.handleCategoryChange(cat);
     });
+
+    this.setupAutoCalculations();
   }
 
   loadFournisseurs(): void {
@@ -149,6 +138,88 @@ export class ArticleFormComponent implements OnInit {
     });
   }
 
+  handleCategoryChange(cat: string): void {
+    // 1. Load related articles if needed
+    if (cat === CategorieArticle.COLIS) {
+      this.loadUniteArticles();
+    }
+    if (cat === CategorieArticle.PALETTE) {
+      this.loadColisArticles();
+    }
+
+    // 2. Set dynamic strict validations
+    this.clearAllDynamicValidators();
+
+    switch (cat) {
+      case CategorieArticle.UNITE:
+        this.setValidators('uniteVolumeMl', [Validators.required, Validators.min(0.1)]);
+        break;
+      case CategorieArticle.COLIS:
+        this.setValidators('colisUnitArticleId', [Validators.required]);
+        this.setValidators('colisUnitsPerColis', [Validators.required, Validators.min(1)]);
+        this.setValidators('colisLength', [Validators.required, Validators.min(0.1)]);
+        this.setValidators('colisWidth', [Validators.required, Validators.min(0.1)]);
+        this.setValidators('colisHeight', [Validators.required, Validators.min(0.1)]);
+        break;
+      case CategorieArticle.PALETTE:
+        this.setValidators('paletteColisId', [Validators.required]);
+        this.setValidators('paletteColisPerLayer', [Validators.required, Validators.min(1)]);
+        this.setValidators('paletteNumberOfLayers', [Validators.required, Validators.min(1)]);
+        break;
+      case CategorieArticle.EMBALLAGE:
+        // Either dimensions or weight is required conceptually, but we can leave it flexible
+        break;
+    }
+  }
+
+  clearAllDynamicValidators(): void {
+    const dynamicFields = [
+      'uniteVolumeMl', 'colisUnitArticleId', 'colisUnitsPerColis', 
+      'colisLength', 'colisWidth', 'colisHeight', 
+      'paletteColisId', 'paletteColisPerLayer', 'paletteNumberOfLayers'
+    ];
+    
+    dynamicFields.forEach(field => {
+      const control = this.articleForm.get(field);
+      if (control) {
+        control.clearValidators();
+        control.updateValueAndValidity({ emitEvent: false });
+      }
+    });
+  }
+
+  setValidators(fieldName: string, validators: any[]): void {
+    const control = this.articleForm.get(fieldName);
+    if (control) {
+      control.setValidators(validators);
+      control.updateValueAndValidity({ emitEvent: false });
+    }
+  }
+
+  setupAutoCalculations(): void {
+    // Colis: Auto-calculate Max Weight based on unit weight * units
+    this.articleForm.get('colisUnitsPerColis')?.valueChanges.subscribe(units => {
+      this.calculateColisMaxWeight(units, this.articleForm.get('colisUnitArticleId')?.value);
+    });
+
+    this.articleForm.get('colisUnitArticleId')?.valueChanges.subscribe(unitId => {
+      this.calculateColisMaxWeight(this.articleForm.get('colisUnitsPerColis')?.value, unitId);
+    });
+  }
+
+  calculateColisMaxWeight(units: number, unitId: string): void {
+    if (units && unitId && this.uniteArticles.length > 0) {
+      const unit = this.uniteArticles.find(u => u.id === unitId);
+      if (unit && unit.configuration && (unit.configuration as any).weightGr) {
+        const weightGr = (unit.configuration as any).weightGr;
+        // Poids total en KG (poids unitaire * nbr d'unités / 1000)
+        const totalWeightKg = (weightGr * units) / 1000;
+        // On met à jour le champ (si l'utilisateur ne l'a pas déjà écrasé)
+        this.articleForm.patchValue({ colisMaxWeightKg: totalWeightKg }, { emitEvent: false });
+      }
+    }
+  }
+
   loadArticle(): void {
     this.articleService.getArticleById(this.articleId!).subscribe({
       next: (article) => {
@@ -156,7 +227,7 @@ export class ArticleFormComponent implements OnInit {
           nom: article.nom,
           categorie: article.categorie,
           um: article.um,
-          fournisseur: article.fournisseur?.id ?? null,
+          fournisseur: article.fournisseur?.id ?? '',
           stockMinimum: article.stockMinimum,
           stockMaximum: article.stockMaximum,
           actif: article.actif
@@ -215,27 +286,15 @@ export class ArticleFormComponent implements OnInit {
               break;
             case CategorieArticle.CONSOMMABLE:
               this.articleForm.patchValue({
-                consommableType: (config as any).type,
-                consommableVolumeLitre: (config as any).volumeLitre,
-                consommableComposition: (config as any).composition,
+                consommableSousType: (config as any).sousType,
+                consommableUsage: (config as any).usage,
+                consommableUnit: (config as any).unit,
+                consommableQuantity: (config as any).quantity,
                 consommableTemperatureStockage: (config as any).temperatureStockageCelsius
               });
               break;
-            case CategorieArticle.MATIERE_PREMIERE:
-              this.articleForm.patchValue({
-                matiereCodeFournisseur: (config as any).codeFournisseur,
-                matiereDensite: (config as any).densite,
-                matiereOrigine: (config as any).origine,
-                matiereCertifieBio: (config as any).certifieBio
-              });
-              break;
-            case CategorieArticle.ACCESSOIRE:
-              this.articleForm.patchValue({
-                accessoireUsage: (config as any).usage,
-                accessoireNecessiteMontage: (config as any).necessiteMontage,
-                accessoireGarantieMois: (config as any).garantieMois
-              });
-              break;
+
+
           }
         }
       },
@@ -302,26 +361,14 @@ export class ArticleFormComponent implements OnInit {
       case CategorieArticle.CONSOMMABLE:
         return {
           configType: 'CONSOMMABLE',
-          type: form.consommableType,
-          volumeLitre: form.consommableVolumeLitre,
-          composition: form.consommableComposition,
+          sousType: form.consommableSousType,
+          usage: form.consommableUsage,
+          unit: form.consommableUnit,
+          quantity: form.consommableQuantity,
           temperatureStockageCelsius: form.consommableTemperatureStockage
         };
-      case CategorieArticle.MATIERE_PREMIERE:
-        return {
-          configType: 'MATIERE_PREMIERE',
-          codeFournisseur: form.matiereCodeFournisseur,
-          densite: form.matiereDensite,
-          origine: form.matiereOrigine,
-          certifieBio: form.matiereCertifieBio
-        };
-      case CategorieArticle.ACCESSOIRE:
-        return {
-          configType: 'ACCESSOIRE',
-          usage: form.accessoireUsage,
-          necessiteMontage: form.accessoireNecessiteMontage,
-          garantieMois: form.accessoireGarantieMois
-        };
+
+
       default:
         throw new Error('Catégorie non prise en charge');
     }
@@ -330,6 +377,8 @@ export class ArticleFormComponent implements OnInit {
   onSubmit(): void {
     this.submitted = true;
     if (this.articleForm.invalid) {
+      alert("Le formulaire est invalide. Veuillez vérifier les champs obligatoires (en rouge).");
+      this.articleForm.markAllAsTouched();
       return;
     }
 
@@ -369,7 +418,7 @@ export class ArticleFormComponent implements OnInit {
         error: (error) => {
           console.error('Erreur création:', error);
           this.submitting = false;
-          alert('Erreur lors de la création');
+          alert('Erreur du serveur : ' + (error.error?.error || error.message || 'Erreur inconnue'));
         }
       });
     }

@@ -8,7 +8,7 @@
     </button>
     <div>
       <h2 class="form-title">{{ isEditMode ? 'Modifier la Nomenclature' : 'Nouvelle Nomenclature' }}</h2>
-      <p class="form-subtitle">{{ isEditMode ? 'Modifiez les composants de la recette' : 'Définissez les composants
+      <p class="form-subtitle">{{ isEditMode ? 'Modifiez les composants de la recette' : 'Définissez les composants'
         nécessaires pour une unité de produit fini' }}</p>
     </div>
     <div class="header-actions" *ngIf="isEditMode">
@@ -39,9 +39,9 @@
       </div>
       <div class="form-card">
         <div class="card-header">
-          <h5 class="card-title">Composants</h5>
+          <h5 class="card-title">Article</h5>
           <button type="button" class="btn-add" (click)="addLine()">
-            <i class="fas fa-plus"></i> Ajouter un composant
+            <i class="fas fa-plus"></i> Ajouter un Article
           </button>
         </div>
         <div formArrayName="lines">
@@ -49,7 +49,7 @@
             <div class="line-number">#{{ i + 1 }}</div>
             <div class="line-fields">
               <div class="form-group">
-                <label>Composant</label>
+                <label>Article</label>
                 <select class="form-control" formControlName="articleId" required>
                   <option value="" disabled>Choisir un article</option>
                   <option *ngFor="let article of getFilteredArticlesForLine(i)" [value]="article.id">

@@ -8,7 +8,9 @@ import { ProjetService } from '../../../services/projet.service';
 import { ProjetDto } from '../../../models/TypeProduit';
 import { OFService } from '../../../../OF/services/OFService';
 import { OrdreFabrication } from '../../../../OF/models/of.model';
-import {ClientType} from "../../../models/client.model";
+import { ClientType } from "../../../models/client.model";
+import { ArticleService } from '../../../../stock/services/article.service';
+import { SKUService } from '../../../../stock/services/sku.service';
 
 @Component({
   selector: 'app-projet-detail',
@@ -33,19 +35,64 @@ export class ProjetDetailComponent implements OnInit {
   projetId: string | null = null;
   generatingQr = false;
 
+  articlesMap: { [id: string]: any } = {};
+  skusMap: { [id: string]: any } = {};
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private projetService: ProjetService,
-    private ofService: OFService
+    private ofService: OFService,
+    private articleService: ArticleService,
+    private skuService: SKUService
   ) {}
 
   ngOnInit(): void {
     this.projetId = this.route.snapshot.paramMap.get('id');
 
+    this.loadCatalogs();
+
     if (this.projetId) {
       this.loadProjet(this.projetId);
     }
+  }
+
+  private loadCatalogs(): void {
+    this.articleService.getActiveArticles().subscribe({
+      next: (articles) => {
+        articles.forEach(a => {
+          if (a.id) {
+            this.articlesMap[a.id] = a;
+          }
+        });
+      }
+    });
+
+    this.skuService.getAllProducts().subscribe({
+      next: (skus) => {
+        skus.forEach((s: any) => {
+          if (s.id) {
+            this.skusMap[s.id] = s;
+          }
+        });
+      }
+    });
+  }
+
+  getArticleName(articleId: string): string {
+    const article = this.articlesMap[articleId];
+    return article ? article.nom : 'Article Inconnu';
+  }
+
+  getArticleUnit(articleId: string): string {
+    const article = this.articlesMap[articleId];
+    return article ? article.um : '';
+  }
+
+  getSkuName(skuId: string): string {
+    const sku = this.skusMap[skuId];
+    if (!sku) return 'SKU Inconnu';
+    return `${sku.code} - ${sku.packagingType} (${sku.volume} ${sku.unitOfMeasure})`;
   }
 
   private loadProjet(id: string): void {

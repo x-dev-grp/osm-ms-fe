@@ -10,10 +10,14 @@ import { CertificationDetailComponent } from './components/certification-detail/
 
 const routes: Routes = [
   { path: '', component: LabelListComponent },
+
   { path: 'certifications', component: CertificationListComponent },
   { path: 'certifications/:id', component: CertificationDetailComponent },
+
   { path: 'new', component: LabelWorkflowComponent },
   { path: ':id/edit', component: LabelWorkflowComponent },
+
+  // DÉTAIL ÉTIQUETTE
   { path: ':id', component: LabelDetailComponent }
 ];
 

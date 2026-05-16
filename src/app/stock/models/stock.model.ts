@@ -6,6 +6,8 @@ export interface Stock {
   article: Article;
   articleId?: string;
   quantiteActuelle: number;
+  quantiteReservee: number;
+  quantiteDisponible: number;
   emplacement?: EmplacementStock;
   emplacementId?: string;
   lastModifiedDate: string;

@@ -59,7 +59,9 @@
         <th>Article</th>
         <th>Catégorie</th>
         <th>Emplacement</th>
-        <th>Quantité</th>
+        <th>Total</th>
+        <th>Réservé</th>
+        <th>Disponible</th>
         <th>Unité</th>
         <th>Seuil min</th>
         <th>Statut</th>
@@ -83,11 +85,15 @@
           </ng-template>
         </td>
         <td class="quantite">{{ stock.quantiteActuelle }}</td>
+        <td class="quantite-reservee text-warning">{{ stock.quantiteReservee || 0 }}</td>
+        <td class="quantite-disponible fw-bold" [ngClass]="stock.quantiteDisponible <= 0 ? 'text-danger' : 'text-success'">
+          {{ stock.quantiteDisponible }}
+        </td>
         <td>{{ stock.article.um }}</td>
         <td>{{ stock.article.stockMinimum }}</td>
         <td>
-          <span class="status-dot" [ngClass]="getStockStatusClass(stock.quantiteActuelle, stock.article.stockMinimum)"></span>
-          {{ getStockStatusText(stock.quantiteActuelle, stock.article.stockMinimum) }}
+          <span class="status-dot" [ngClass]="getStockStatusClass(stock.quantiteDisponible, stock.article.stockMinimum)"></span>
+          {{ getStockStatusText(stock.quantiteDisponible, stock.article.stockMinimum) }}
         </td>
       </tr>
       </tbody>

@@ -1,272 +1,461 @@
 // label-detail.component.scss
-$olive-50:  #f8f9f4;
-$olive-100: #f1f3e8;
-$olive-200: #e2e7d1;
-$olive-300: #ccd5b3;
-$olive-400: #b1bd8c;
-$olive-500: #93a165;
-$olive-600: #75834d;
-$olive-700: #5d6840;
+$olive-900: #3d442d;
 $olive-800: #4a5334;
-$olive-900: #3c432d;
-$gold:      #d4af37;
+$olive-700: #5d6840;
+$olive-600: #75834d;
+$olive-500: #93a165;
+$olive-200: #e2e7d1;
+$olive-100: #f1f3e8;
+$olive-50:  #f8f9f4;
+$gray-100: #f3f4f6;
+$gray-500: #6b7280;
+$gray-900: #111827;
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@400;500;600;700;800&display=swap');
 
 :host {
   display: block;
-  font-family: 'Inter', system-ui, sans-serif;
-  color: $olive-900;
-}
-
-.label-detail-page {
-  padding: 24px;
+  font-family: 'Outfit', sans-serif;
   background: #fdfdfb;
   min-height: 100vh;
 }
 
-.detail-nav {
+.label-detail-container {
+  padding: 24px 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* HEADER */
+.detail-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
-}
+  margin-bottom: 32px;
 
-.passport-container {
-  display: grid;
-  grid-template-columns: 1fr 340px;
-  gap: 32px;
-  max-width: 1300px;
-  margin: 0 auto;
-
-  @media (max-width: 1000px) {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* IDENTITY CARD (PASSPORT) */
-.identity-card {
-  background: #ffffff;
-  border: 1px solid $olive-100;
-  border-radius: 4px;
-  padding: 40px 60px;
-  position: relative;
-  background-image: 
-    linear-gradient(rgba(147, 161, 101, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(147, 161, 101, 0.02) 1px, transparent 1px);
-  background-size: 15px 15px;
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    right: 15px;
-    bottom: 15px;
-    border: 1px solid $olive-200;
-    pointer-events: none;
-    opacity: 0.5;
-  }
-
-  .card-header {
+  .header-left {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 40px;
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: $olive-700;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      font-size: 13px;
-      mat-icon { font-size: 20px; width: 20px; height: 20px; color: $gold; }
-    }
-
-    .lot-number {
-      text-align: right;
-      small { display: block; font-size: 9px; color: #9ca3af; font-weight: 700; }
-      strong { font-size: 16px; color: $olive-900; font-family: 'DM Mono', monospace; }
-    }
-  }
-
-  .product-info {
-    margin-bottom: 32px;
-    .legal-name {
-      font-size: 42px;
-      font-weight: 800;
-      margin: 0 0 4px 0;
-      letter-spacing: -1px;
-      color: $olive-900;
-    }
-    .origin {
-      font-size: 16px;
-      color: $olive-500;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      mat-icon { font-size: 18px; width: 18px; height: 18px; }
-    }
-  }
-
-  .specs-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
-    margin-bottom: 40px;
-    padding-bottom: 32px;
-    border-bottom: 1px dashed $olive-200;
-
-    .spec-item {
-      span { display: block; font-size: 10px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 4px; }
-      strong { font-size: 15px; color: $olive-900; font-weight: 700; }
-    }
-  }
-
-  .mentions-box {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    align-items: center;
     gap: 32px;
-    margin-bottom: 40px;
 
-    .mention {
-      label { display: block; font-size: 11px; font-weight: 800; text-transform: uppercase; color: $olive-700; margin-bottom: 6px; }
-      p { font-size: 14px; color: #4b5563; line-height: 1.5; margin: 0; }
+    .back-link {
+      color: $gray-500;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-right: 1px solid $gray-100;
+      border-radius: 0;
+      height: 40px;
+      mat-icon { font-size: 20px; width: 20px; height: 20px; }
+      &:hover { color: $gray-900; background: transparent; }
+    }
+
+    .header-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      .leaf-icon { color: $olive-600; font-size: 28px; width: 28px; height: 28px; }
+      h1 { font-size: 28px; font-weight: 700; color: $olive-900; margin: 0; }
     }
   }
 
-  .card-footer {
+  .header-right {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
+    align-items: center;
+    gap: 16px;
 
-    .responsible {
-      small { display: block; font-size: 9px; color: #9ca3af; font-weight: 700; text-transform: uppercase; }
-      strong { display: block; font-size: 15px; color: $olive-900; margin: 2px 0; }
-      address { font-style: normal; font-size: 12px; color: #6b7280; max-width: 250px; }
+    .status-badge {
+      background: #dcfce7;
+      color: #166534;
+      padding: 6px 16px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      mat-icon { font-size: 16px; width: 16px; height: 16px; }
     }
 
-    .qr-placeholder {
-      width: 70px;
-      height: 70px;
+    .export-btn {
+      background: $olive-900;
+      color: white;
+      border-radius: 10px;
+      padding: 10px 24px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      mat-icon { font-size: 20px; width: 20px; height: 20px; }
+      &:hover { background: $olive-800; }
+    }
+  }
+}
+
+/* GRID LAYOUT */
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 40px;
+  align-items: start;
+
+  @media (max-width: 1100px) { grid-template-columns: 1fr; }
+}
+
+/* SECTIONS COLUMN */
+.sections-column {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.section-card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid $gray-100;
+  padding: 32px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.01);
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    position: relative;
+
+    .section-icon {
+      width: 44px;
+      height: 44px;
       background: $olive-50;
-      border: 1px solid $olive-100;
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      mat-icon { font-size: 32px; width: 32px; height: 32px; color: $olive-200; }
+      mat-icon { color: $olive-600; font-size: 22px; width: 22px; height: 22px; }
+    }
+
+    h2 { font-size: 20px; font-weight: 700; color: $olive-900; margin: 0; white-space: nowrap; }
+    
+    .header-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, $olive-200, transparent);
+      margin-left: 20px;
     }
   }
 }
 
-/* TECHNICAL PANEL */
-.technical-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+.data-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+
+  &.cols-2 { grid-template-columns: repeat(2, 1fr); }
+  &.cols-3 { grid-template-columns: repeat(3, 1fr); }
+
+  .data-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    &.full-width { grid-column: span 3; }
+
+    label {
+      font-size: 11px;
+      font-weight: 800;
+      color: $gray-500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    p { font-size: 15px; font-weight: 600; color: $gray-900; margin: 0; }
+    
+    .date-val {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      color: $gray-900;
+      mat-icon { color: $gray-500; font-size: 18px; width: 18px; height: 18px; }
+    }
+
+    .badge-row {
+      display: flex;
+      gap: 8px;
+      .marketing-badge {
+        background: #fef3c7;
+        color: #92400e;
+        padding: 4px 12px;
+        border-radius: 100px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+    }
+  }
 }
 
-.glass {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 10px 30px rgba(147, 161, 101, 0.05);
+.responsability-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
 
-  h2 { font-size: 13px; font-weight: 800; color: $olive-700; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 16px 0; }
+  .resp-left { display: flex; flex-direction: column; gap: 24px; }
+  .resp-right { display: flex; flex-direction: column; gap: 16px; }
 }
 
-.action-buttons {
+.info-box {
+  background: $olive-50;
+  border-radius: 12px;
+  padding: 16px 20px;
   display: flex;
   gap: 16px;
-  margin-bottom: 20px;
+  align-items: flex-start;
+
+  .box-icon {
+    width: 32px;
+    height: 32px;
+    background: white;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    mat-icon { color: $olive-600; font-size: 18px; width: 18px; height: 18px; }
+  }
+
+  .box-content {
+    flex: 1;
+    label { font-size: 10px; font-weight: 800; color: $gray-500; text-transform: uppercase; }
+    p { font-size: 14px; font-weight: 600; color: $gray-900; margin: 4px 0 0; line-height: 1.4; }
+  }
 }
 
-.audit-info {
+/* PREVIEW COLUMN */
+.preview-column {
+  position: sticky;
+  top: 24px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding-top: 16px;
+  gap: 24px;
 
-  mat-divider { margin-bottom: 4px; }
-
-  .audit-item {
+  .preview-header {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
+    color: $olive-900;
+    font-weight: 700;
+    font-size: 18px;
+    mat-icon { color: $olive-600; }
+  }
+}
 
-    mat-icon {
-      color: $olive-400;
-      font-size: 20px;
-      width: 20px;
-      height: 20px;
+.label-preview-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid $gray-100;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+
+  .preview-inner {
+    border: 1px solid $olive-100;
+    border-radius: 12px;
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+
+    .preview-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 40px;
+
+      .preview-logo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        mat-icon { color: $olive-600; font-size: 32px; width: 32px; height: 32px; }
+        span { font-size: 10px; font-weight: 800; letter-spacing: 2px; }
+      }
+
+      .preview-lot {
+        text-align: right;
+        small { font-size: 9px; font-weight: 800; color: #9ca3af; }
+        strong { display: block; font-size: 14px; font-weight: 700; margin: 4px 0; }
+        .lang-badges {
+          display: flex;
+          justify-content: flex-end;
+          gap: 4px;
+          span { font-size: 9px; font-weight: 800; padding: 2px 6px; background: #f3f4f6; border-radius: 4px; }
+        }
+      }
     }
 
-    .audit-text {
+    .preview-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 36px;
+      font-weight: 700;
+      color: $olive-900;
+      margin: 0 0 12px;
+    }
+
+    .preview-origin {
       display: flex;
-      flex-direction: column;
-      
-      small {
-        font-size: 9px;
-        color: #9ca3af;
+      align-items: center;
+      gap: 6px;
+      color: $gray-500;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 32px;
+      mat-icon { font-size: 16px; width: 16px; height: 16px; }
+    }
+
+    .preview-specs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px dotted $olive-200;
+
+      .spec {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        small { font-size: 8px; font-weight: 800; color: #9ca3af; text-transform: uppercase; }
+        span { font-size: 13px; font-weight: 700; color: $gray-900; }
+      }
+    }
+
+    .preview-marketing {
+      margin-bottom: 24px;
+      small { font-size: 8px; font-weight: 800; color: #9ca3af; text-transform: uppercase; }
+      .badge {
+        margin-top: 8px;
+        display: inline-block;
+        background: #fef3c7;
+        color: #92400e;
+        padding: 4px 10px;
+        border-radius: 100px;
+        font-size: 10px;
         font-weight: 700;
-        text-transform: uppercase;
+      }
+    }
+
+    .preview-extraction {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 24px;
+      .ext, .sto {
+        flex: 1;
+        small { font-size: 8px; font-weight: 800; color: #9ca3af; text-transform: uppercase; }
+        span { display: block; font-size: 11px; font-weight: 600; margin-top: 4px; line-height: 1.4; }
+      }
+    }
+
+    .preview-sensory {
+      margin-bottom: 32px;
+      small { font-size: 8px; font-weight: 800; color: #9ca3af; text-transform: uppercase; }
+      p { font-size: 11px; font-weight: 600; color: $gray-900; margin: 4px 0; font-style: italic; }
+    }
+
+    .preview-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      
+      .resp {
+        small { font-size: 8px; font-weight: 800; color: #9ca3af; }
+        strong { display: block; font-size: 13px; font-weight: 700; margin: 2px 0; }
+        span { font-size: 11px; color: $gray-500; }
       }
 
-      strong {
-        font-size: 13px;
-        color: $olive-800;
+      .qr-placeholder {
+        color: #e5e7eb;
+        mat-icon { font-size: 48px; width: 48px; height: 48px; }
       }
+    }
+
+    .preview-bottom-illustration {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background-image: url('../../../../assets/logo_etiquette%20.png');
+      background-size: cover;
+      background-position: bottom;
+      opacity: 0.15;
     }
   }
 }
 
-.json-preview {
-  pre {
-    background: #1a1a1a;
-    color: #d4d4d4;
+.status-info-card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid $gray-100;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.01);
+
+  .status-banner {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    background: #f0fdf4;
     padding: 16px;
     border-radius: 12px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    overflow-x: auto;
-    max-height: 350px;
-    margin: 0;
+    margin-bottom: 24px;
+
+    .status-icon {
+      width: 40px;
+      height: 40px;
+      background: $olive-600;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      mat-icon { color: white; }
+    }
+
+    .status-text {
+      h4 { font-size: 16px; font-weight: 700; color: #166534; margin: 0; }
+      p { font-size: 12px; color: #166534; margin: 2px 0 0; opacity: 0.8; }
+    }
   }
-  .preview-header {
-    margin-bottom: 8px;
-    font-size: 11px;
-    font-weight: 700;
-    color: $olive-500;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    mat-icon { font-size: 16px; width: 16px; height: 16px; }
+
+  .status-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+
+    .meta-item {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      mat-icon { color: $gray-500; font-size: 20px; width: 20px; height: 20px; }
+      div {
+        small { display: block; font-size: 10px; font-weight: 700; color: #9ca3af; }
+        span { font-size: 13px; font-weight: 600; color: $gray-900; }
+      }
+    }
   }
 }
 
-.shadow-premium {
-  box-shadow: 0 20px 40px rgba(0,0,0,0.04), 0 5px 10px rgba(0,0,0,0.01);
-}
-
-.status-badge {
-  padding: 5px 12px;
-  border-radius: 999px;
-  font-size: 10px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-
-  &.draft { background: #fef3c7; color: #92400e; }
-  &.finalized { background: #d1fae5; color: #065f46; }
-  &.exported { background: #dbeafe; color: #1e40af; }
-}
-
-@media print {
-  .detail-nav, .technical-panel { display: none !important; }
-  .label-detail-page { padding: 0; background: white; }
-  .passport-container { display: block; }
-  .identity-card { border: none; box-shadow: none; padding: 0; }
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255,255,255,0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  z-index: 100;
+  p { font-weight: 700; color: $olive-900; }
 }

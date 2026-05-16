@@ -1,72 +1,102 @@
-<div class="p-6 min-h-screen bg-gray-50/50">
-  <!-- Page Header -->
-  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 max-w-4xl mx-auto">
-    <div class="flex items-center gap-4">
-      <button mat-icon-button (click)="onCancel()" title="Retour">
-        <mat-icon>arrow_back</mat-icon>
-      </button>
-      <div>
-        <h1 class="text-2xl font-bold text-slate-800 m-0">
-          {{ isEditMode ? 'Modifier la ligne' : 'Nouvelle ligne de conditionnement' }}
-        </h1>
-        <p class="text-slate-500 text-sm mt-1">
-          {{ isEditMode ? 'Mettez à jour les paramètres de votre unité de production.' : 'Définissez une nouvelle unité de production pour votre usine.' }}
-        </p>
-      </div>
+<div class="ligne-form-page">
+  <section class="form-hero">
+    <button
+      mat-icon-button
+      class="back-button"
+      matTooltip="Retour"
+      matTooltipPosition="above"
+      aria-label="Retour"
+      (click)="onCancel()"
+    >
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+
+    <div class="hero-icon">
+      <mat-icon>precision_manufacturing</mat-icon>
     </div>
-  </div>
+
+    <div class="hero-copy">
+      <div class="eyebrow">Production · Ligne de conditionnement</div>
+      <h1>{{ isEditMode ? 'Modifier la ligne' : 'Nouvelle ligne de conditionnement' }}</h1>
+      <p>
+        {{
+          isEditMode
+            ? 'Mettez à jour les paramètres de votre unité de production.'
+            : 'Définissez une nouvelle unité de production pour votre usine.'
+        }}
+      </p>
+    </div>
+  </section>
 
   @if (loading()) {
-    <div class="flex flex-col items-center justify-center p-20">
-      <mat-spinner diameter="50"></mat-spinner>
-      <p class="text-slate-400 mt-4 font-medium">Chargement des données...</p>
+    <div class="loading-state">
+      <mat-spinner diameter="42"></mat-spinner>
+      <p>Chargement des données...</p>
     </div>
   }
 
   @if (!loading()) {
-    <form [formGroup]="ligneForm" (ngSubmit)="onSubmit()" class="max-w-4xl mx-auto space-y-6">
-      
-      <!-- Basic Info Section -->
-      <mat-card class="rounded-xl border-slate-200 shadow-sm overflow-hidden">
-        <div class="p-4 bg-slate-50 border-b border-slate-100">
-          <h3 class="text-slate-700 font-bold m-0 flex items-center gap-2 text-sm uppercase tracking-wider">
-            <mat-icon class="text-slate-400">info_outline</mat-icon>
-            Informations de base
-          </h3>
-        </div>
-        <div class="p-6 space-y-4">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <form [formGroup]="ligneForm" (ngSubmit)="onSubmit()" class="ligne-form">
+      <div class="form-grid">
+        <mat-card class="form-card basic-card">
+          <div class="card-head">
+            <div class="card-title">
+              <span class="card-icon">
+                <mat-icon>info_outline</mat-icon>
+              </span>
+              <div>
+                <h2>Informations de base</h2>
+                <p>Identification générale de la ligne.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-body">
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>Nom de la ligne</mat-label>
-              <input matInput formControlName="nom" placeholder="Ex: Ligne d'embouteillage A">
-              <mat-error *ngIf="ligneForm.get('nom')?.hasError('required')">Le nom est obligatoire</mat-error>
-              <mat-error *ngIf="ligneForm.get('nom')?.hasError('minlength')">Le nom doit contenir au moins 3 caractères</mat-error>
+              <input matInput formControlName="nom" placeholder="Ex: Ligne d'embouteillage A" />
+              <mat-icon matSuffix>label</mat-icon>
+
+              <mat-error *ngIf="ligneForm.get('nom')?.hasError('required')">
+                Le nom est obligatoire
+              </mat-error>
+
+              <mat-error *ngIf="ligneForm.get('nom')?.hasError('minlength')">
+                Le nom doit contenir au moins 3 caractères
+              </mat-error>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>Responsable</mat-label>
-              <input matInput formControlName="responsable" placeholder="Nom du responsable technique">
-              <mat-icon matSuffix class="text-slate-400">person</mat-icon>
+              <input matInput formControlName="responsable" placeholder="Nom du responsable technique" />
+              <mat-icon matSuffix>person</mat-icon>
             </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Description</mat-label>
+              <input
+                matInput
+                formControlName="description"
+                placeholder="Brève description de la ligne..."
+              />
+              <mat-icon matSuffix>notes</mat-icon>
+            </mat-form-field>          </div>
+        </mat-card>
+
+        <mat-card class="form-card operation-card">
+          <div class="card-head">
+            <div class="card-title">
+              <span class="card-icon">
+                <mat-icon>settings</mat-icon>
+              </span>
+              <div>
+                <h2>Paramètres opérationnels</h2>
+                <p>Capacité, état et temps techniques.</p>
+              </div>
+            </div>
           </div>
 
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Description</mat-label>
-            <textarea matInput formControlName="description" rows="3" placeholder="Brève description de la ligne..."></textarea>
-          </mat-form-field>
-        </div>
-      </mat-card>
-
-      <!-- Operation Section -->
-      <mat-card class="rounded-xl border-slate-200 shadow-sm overflow-hidden">
-        <div class="p-4 bg-slate-50 border-b border-slate-100">
-          <h3 class="text-slate-700 font-bold m-0 flex items-center gap-2 text-sm uppercase tracking-wider">
-            <mat-icon class="text-slate-400">settings</mat-icon>
-            Paramètres Opérationnels
-          </h3>
-        </div>
-        <div class="p-6">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="card-body compact">
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>État opérationnel</mat-label>
               <mat-select formControlName="etat">
@@ -75,78 +105,108 @@
                 <mat-option value="EN_MAINTENANCE">En maintenance</mat-option>
                 <mat-option value="EN_PANNE">En panne</mat-option>
               </mat-select>
-              <mat-icon matSuffix class="text-slate-400">sensors</mat-icon>
+              <mat-icon matSuffix>sensors</mat-icon>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Vitesse nominale (Unités / heure)</mat-label>
-              <input matInput type="number" formControlName="vitesseNominale">
-              <mat-icon matSuffix class="text-slate-400">speed</mat-icon>
-              <mat-hint>Capacité de production par heure</mat-hint>
+              <mat-label>Vitesse nominale</mat-label>
+              <input matInput type="number" formControlName="vitesseNominale" />
+              <mat-icon matSuffix>speed</mat-icon>
+              <mat-hint>Unités par heure</mat-hint>
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Temps de préparation (min)</mat-label>
-              <input matInput type="number" formControlName="tempsPreparation">
-              <mat-icon matSuffix class="text-slate-400">hourglass_top</mat-icon>
-            </mat-form-field>
+            <div class="two-fields">
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Préparation</mat-label>
+                <input matInput type="number" formControlName="tempsPreparation" />
+                <mat-icon matSuffix>hourglass_top</mat-icon>
+                <mat-hint>minutes</mat-hint>
+              </mat-form-field>
 
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Temps de nettoyage (min)</mat-label>
-              <input matInput type="number" formControlName="tempsNettoyage">
-              <mat-icon matSuffix class="text-slate-400">clean_hands</mat-icon>
-            </mat-form-field>
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Nettoyage</mat-label>
+                <input matInput type="number" formControlName="tempsNettoyage" />
+                <mat-icon matSuffix>clean_hands</mat-icon>
+                <mat-hint>minutes</mat-hint>
+              </mat-form-field>
+            </div>
           </div>
-        </div>
-      </mat-card>
+        </mat-card>
 
-      <!-- Maintenance Section -->
-      <mat-card class="rounded-xl border-slate-200 shadow-sm overflow-hidden">
-        <div class="p-4 bg-slate-50 border-b border-slate-100">
-          <h3 class="text-slate-700 font-bold m-0 flex items-center gap-2 text-sm uppercase tracking-wider">
-            <mat-icon class="text-slate-400">build_circle</mat-icon>
-            Planification de Maintenance
-          </h3>
-        </div>
-        <div class="p-6 space-y-4">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <mat-card class="form-card maintenance-card">
+          <div class="card-head">
+            <div class="card-title">
+              <span class="card-icon warning">
+                <mat-icon>build_circle</mat-icon>
+              </span>
+              <div>
+                <h2>Planification de maintenance</h2>
+                <p>Interventions techniques.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-body compact">
             <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Dernière maintenance</mat-label>
-              <input matInput [matDatepicker]="picker1" formControlName="dateDerniereMaintenance">
-              <mat-hint>JJ/MM/AAAA</mat-hint>
+              <mat-label>Dernière</mat-label>
+              <input matInput [matDatepicker]="picker1" formControlName="dateDerniereMaintenance" />
               <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
               <mat-datepicker #picker1></mat-datepicker>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Prochaine maintenance</mat-label>
-              <input matInput [matDatepicker]="picker2" formControlName="dateProchaineMaintenance">
-              <mat-hint>JJ/MM/AAAA</mat-hint>
+              <mat-label>Prochaine</mat-label>
+              <input matInput [matDatepicker]="picker2" formControlName="dateProchaineMaintenance" />
               <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
               <mat-datepicker #picker2></mat-datepicker>
-              <mat-error *ngIf="ligneForm.hasError('dateInvalid')">La prochaine maintenance doit être après la dernière</mat-error>
+
+              <mat-error *ngIf="ligneForm.hasError('dateInvalid')">
+                Date invalide
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-full notes-field">
+              <mat-label>Notes</mat-label>
+              <input
+                matInput
+                formControlName="notes"
+                placeholder="Observations..."
+              />
+              <mat-icon matSuffix>edit_note</mat-icon>
             </mat-form-field>
           </div>
-
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Notes internes</mat-label>
-            <textarea matInput formControlName="notes" rows="3" placeholder="Observations, rappels de maintenance..."></textarea>
-          </mat-form-field>
-        </div>
-      </mat-card>
-
-      <!-- Form Actions -->
-      <div class="flex items-center justify-end gap-3 pt-4 pb-10">
-        <button mat-button type="button" (click)="onCancel()" [disabled]="submitting()">
-          Annuler
-        </button>
-        <button mat-flat-button color="primary" type="submit" [disabled]="submitting() || ligneForm.invalid">
-          <mat-icon *ngIf="!submitting()">check</mat-icon>
-          <mat-spinner *ngIf="submitting()" diameter="20" class="mr-2"></mat-spinner>
-          {{ isEditMode ? 'Mettre à jour la ligne' : 'Créer la ligne' }}
-        </button>
+        </mat-card>
       </div>
 
+      <div class="form-actions-bar">
+        <button
+          mat-stroked-button
+          type="button"
+          class="cancel-button"
+          (click)="onCancel()"
+          [disabled]="submitting()"
+        >
+          <mat-icon>close</mat-icon>
+          Annuler
+        </button>
+
+        <button
+          mat-flat-button
+          type="submit"
+          class="submit-button"
+          [disabled]="submitting() || ligneForm.invalid"
+        >
+          @if (!submitting()) {
+            <mat-icon>check</mat-icon>
+            {{ isEditMode ? 'Mettre à jour' : 'Créer la ligne' }}
+          }
+
+          @if (submitting()) {
+            <mat-spinner diameter="18"></mat-spinner>
+            Traitement...
+          }
+        </button>
+      </div>
     </form>
   }
 </div>

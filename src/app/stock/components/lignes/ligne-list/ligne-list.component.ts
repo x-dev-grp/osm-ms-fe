@@ -24,8 +24,8 @@ import { ToastService } from '../../../../shared/services/toast.service';
   selector: 'app-ligne-list',
   standalone: true,
   imports: [
-    CommonModule, 
-    RouterLink, 
+    CommonModule,
+    RouterLink,
     FormsModule,
     MatTableModule,
     MatButtonModule,
@@ -47,7 +47,7 @@ import { ToastService } from '../../../../shared/services/toast.service';
 export class LigneListComponent implements OnInit, AfterViewInit {
   // Data source for Material Table
   dataSource = new MatTableDataSource<LigneConditionnement>([]);
-  
+
   // State management signals
   loading = signal<boolean>(false);
   searchTerm = signal<string>('');
@@ -63,22 +63,22 @@ export class LigneListComponent implements OnInit, AfterViewInit {
     private ligneService: LigneConditionnementService,
     private toast: ToastService,
     public router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadLignes();
-    
+
     // Custom filter predicate for the data source
     this.dataSource.filterPredicate = (data: LigneConditionnement, filter: string) => {
       const searchObj = JSON.parse(filter);
       const term = searchObj.term.toLowerCase();
       const etat = searchObj.etat;
 
-      const matchesTerm = !term || 
-        data.code.toLowerCase().includes(term) || 
-        data.nom.toLowerCase().includes(term) || 
+      const matchesTerm = !term ||
+        data.code.toLowerCase().includes(term) ||
+        data.nom.toLowerCase().includes(term) ||
         (data.responsable && data.responsable.toLowerCase().includes(term));
-      
+
       const matchesEtat = !etat || data.etat === etat;
 
       return !!(matchesTerm && matchesEtat);
@@ -101,7 +101,7 @@ export class LigneListComponent implements OnInit, AfterViewInit {
           const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
           return dateB - dateA;
         });
-        
+
         this.dataSource.data = sortedData;
         this.loading.set(false);
       },
@@ -118,7 +118,7 @@ export class LigneListComponent implements OnInit, AfterViewInit {
       term: this.searchTerm(),
       etat: this.etatFilter()
     });
-    
+
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
@@ -157,11 +157,11 @@ export class LigneListComponent implements OnInit, AfterViewInit {
       serviceCall.subscribe({
         next: () => {
           // Update local data
-          const newData = this.dataSource.data.map(l => 
+          const newData = this.dataSource.data.map(l =>
             l.id === ligne.id ? { ...l, actif: !isCurrentlyActif } : l
           );
           this.dataSource.data = newData;
-          
+
           this.toast.success(`Ligne ${ligne.nom} ${isCurrentlyActif ? 'désactivée' : 'activée'}`);
           this.togglingId.set(null);
         },
@@ -192,5 +192,17 @@ export class LigneListComponent implements OnInit, AfterViewInit {
       [Statue.EN_PANNE]: 'bg-red-100 text-red-700'
     };
     return classes[etat] || 'bg-gray-100 text-gray-700';
+  }
+
+  totalCount(): number {
+    return this.dataSource.data.length;
+  }
+
+  activeCount(): number {
+    return this.dataSource.data.filter((row) => row.actif).length;
+  }
+
+  maintenanceCount(): number {
+    return this.dataSource.data.filter((row) => row.etat === Statue.EN_MAINTENANCE).length;
   }
 }

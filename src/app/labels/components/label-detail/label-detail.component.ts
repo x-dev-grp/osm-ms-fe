@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, forkJoin } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { LabelContentDto, LabelContentStatus } from '../../models/label.model';
+import { LabelCategory, LabelContentDto, LabelContentStatus, LabelValidationIssueDto } from '../../models/label.model';
 import { LabelService } from '../../services/label.service';
 
 import { BaseType } from '../../../shared/models/base-type';
@@ -16,7 +16,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
-import {TypeCategory} from "../../../shared/models/type-category.enum";
+import { TypeCategory } from "../../../shared/models/type-category.enum";
 
 @Component({
   selector: 'app-label-detail',
@@ -54,7 +54,7 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
     private readonly router: Router,
     private readonly labelService: LabelService,
     private readonly genericTypeService: GenericTypeService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadInitialData();
@@ -327,15 +327,43 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
   statusLabel(status: LabelContentStatus | undefined): string {
     switch (status) {
       case 'DRAFT':
-        return 'Draft';
+        return 'Brouillon';
       case 'VALIDATED':
-        return 'Validee';
+        return 'Validée';
       case 'FINALIZED':
-        return 'Finalisee';
+        return 'Finalisée';
       case 'EXPORTED_JSON':
-        return 'Exportee JSON';
+        return 'Exportée JSON';
       default:
         return '-';
+    }
+  }
+
+  categoryLabel(category: LabelCategory | string | undefined): string {
+    if (!category) return '-';
+    switch (category) {
+      case 'UNIT':
+        return 'Unité';
+      case 'COLIS':
+        return 'Colis';
+      case 'PALLET':
+        return 'Palette';
+      default:
+        return String(category);
+    }
+  }
+
+  languageLabel(lang: string | undefined): string {
+    if (!lang) return '-';
+    switch (lang) {
+      case 'FR':
+        return 'Français';
+      case 'EN':
+        return 'Anglais';
+      case 'AR':
+        return 'Arabe';
+      default:
+        return lang;
     }
   }
 
@@ -356,6 +384,29 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
 
   canExport(): boolean {
     return this.label?.status === 'FINALIZED' || this.label?.status === 'EXPORTED_JSON';
+  }
+
+  getInitials(name: string | undefined): string {
+    if (!name) return '??';
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+  }
+
+  getIssueColor(issue: LabelValidationIssueDto): string {
+    if (issue.blocking) return '#ef4444';
+    if (issue.message.toLowerCase().includes('attention') || issue.message.toLowerCase().includes('manquant')) return '#f97316';
+    return '#3b82f6';
+  }
+
+  getIssueBadgeLabel(issue: LabelValidationIssueDto): string {
+    if (issue.blocking) return 'BLOQUANT';
+    if (issue.message.toLowerCase().includes('attention') || issue.message.toLowerCase().includes('manquant')) return 'ATTENTION';
+    return 'INFORMATION';
+  }
+
+  getIssueBadgeClass(issue: LabelValidationIssueDto): string {
+    if (issue.blocking) return 'blocking';
+    if (issue.message.toLowerCase().includes('attention') || issue.message.toLowerCase().includes('manquant')) return 'attention';
+    return 'info';
   }
 
   get formattedJson(): string {

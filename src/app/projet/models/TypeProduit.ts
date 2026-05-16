@@ -44,4 +44,7 @@ export interface ProjetDto {
   skuId?: string;
   skuCode?: string;
   bomId?: string;
+  ligneIds?: string[];
+  produits?: any[];
+  reservations?: any[];
 }

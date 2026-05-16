@@ -25,16 +25,11 @@ export enum CategorieArticle {
   PALETTE = 'PALETTE',
   EMBALLAGE = 'EMBALLAGE',
   CONSOMMABLE = 'CONSOMMABLE',
-  MATIERE_PREMIERE = 'MATIERE_PREMIERE',
-  ACCESSOIRE = 'ACCESSOIRE',
-
 }
 
 export const categorieLabels: Record<CategorieArticle, string> = {
   [CategorieArticle.EMBALLAGE]: 'Emballage',
   [CategorieArticle.CONSOMMABLE]: 'Consommable',
-  [CategorieArticle.MATIERE_PREMIERE]: 'Matière première',
-  [CategorieArticle.ACCESSOIRE]: 'Accessoire',
   [CategorieArticle.UNITE]: 'Unité',
   [CategorieArticle.COLIS]: 'Colis',
   [CategorieArticle.PALETTE]: 'Palette'
@@ -91,25 +86,11 @@ export interface EmballageConfig {
 
 export interface ConsommableConfig {
   configType: 'CONSOMMABLE';
-  type: string;
-  volumeLitre: number;
-  composition: string;
-  temperatureStockageCelsius: number;
-}
-
-export interface MatierePremiereConfig {
-  configType: 'MATIERE_PREMIERE';
-  codeFournisseur: string;
-  densite: number;
-  origine: string;
-  certifieBio: boolean;
-}
-
-export interface AccessoireConfig {
-  configType: 'ACCESSOIRE';
+  sousType: string;
   usage: string;
-  necessiteMontage: boolean;
-  garantieMois: string;
+  unit: string;
+  quantity: number;
+  temperatureStockageCelsius: number;
 }
 
 export type ArticleConfig =
@@ -117,6 +98,4 @@ export type ArticleConfig =
   | ColisConfig
   | PaletteConfig
   | EmballageConfig
-  | ConsommableConfig
-  | MatierePremiereConfig
-  | AccessoireConfig;
+  | ConsommableConfig;
