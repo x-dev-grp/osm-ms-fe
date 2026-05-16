@@ -38,6 +38,9 @@
               <button class="btn-icon edit" [routerLink]="['/stock/boms', bom.id, 'editer']" title="Modifier">
                 <i class="fas fa-edit"></i>
               </button>
+              <button class="btn-icon delete" (click)="deleteBom(bom.id!)" title="Supprimer">
+                <i class="fas fa-trash-alt"></i>
+              </button>
             </div>
           </td>
         </tr>
