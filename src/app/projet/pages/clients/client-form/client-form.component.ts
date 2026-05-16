@@ -92,20 +92,28 @@ export class ClientFormComponent implements OnInit {
   }
 
   onSubmit(): void {
+    alert("Bouton cliqué ! Validation du formulaire...");
     this.submitted = true;
     this.error = null;
 
     if (this.clientForm.invalid) {
+      alert("Le formulaire est invalide ! Vérifiez les champs obligatoires (ex: Nom).");
+      this.error = "Veuillez remplir correctement tous les champs obligatoires.";
       this.clientForm.markAllAsTouched();
       return;
     }
 
     this.submitting = true;
 
+    const formValue = this.clientForm.value;
     const client: Client = {
-      ...this.clientForm.value,
-      type: this.clientForm.value.type ?? ClientType.BUYER
+      ...formValue,
+      type: formValue.type ?? ClientType.BUYER,
+      codeClient: formValue.codeClient?.trim() || undefined,
+      email: formValue.email?.trim() || undefined
     };
+
+    alert("Envoi en cours vers le serveur...");
 
     if (this.isEditMode) {
       this.clientService.updateClient(this.clientId!, client).subscribe({
@@ -142,6 +150,7 @@ export class ClientFormComponent implements OnInit {
         },
         error: (err) => {
           console.error('Erreur création', err);
+          alert("Erreur du serveur : " + (err.error?.message || err.message || 'Erreur inconnue'));
           this.error = err.error?.message || 'Erreur lors de la création';
           this.submitting = false;
         }

@@ -170,13 +170,11 @@ export class EmplacementFormComponent implements OnInit {
     return labels[type] || type;
   }
 
-  // ✅ NOUVEAU
+  
   getCategorieLabel(categorie: CategorieArticle): string {
     const labels: Record<CategorieArticle, string> = {
       [CategorieArticle.EMBALLAGE]: 'Emballage',
       [CategorieArticle.CONSOMMABLE]: 'Consommable',
-      [CategorieArticle.MATIERE_PREMIERE]: 'Matière première',
-      [CategorieArticle.ACCESSOIRE]: 'Accessoire',
       [CategorieArticle.UNITE]: 'Unité',
       [CategorieArticle.COLIS]: 'Colis',
       [CategorieArticle.PALETTE]: 'Palette'

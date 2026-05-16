@@ -31,6 +31,11 @@ export class CertificationFormComponent implements OnInit {
   logoPreview: string | null = null;
   isDragging = false;
 
+  get logoMissing(): boolean {
+    const ctrl = this.certForm?.get('logoData');
+    return !ctrl?.value && (ctrl?.touched ?? false);
+  }
+
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<CertificationFormComponent>,
@@ -39,15 +44,15 @@ export class CertificationFormComponent implements OnInit {
     this.isEdit = !!data?.id;
     this.certForm = this.fb.group({
       id: [data?.id],
-      name: [data?.name || '', Validators.required],
-      code: [data?.code || ''],
-      description: [data?.description || ''],
-      issuingBody: [data?.issuingBody || ''],
-      logoData: [data?.logoData || ''],
-      logoContentType: [data?.logoContentType || ''],
-      websiteUrl: [data?.websiteUrl || ''],
-      category: [data?.category || 'MARKETING'],
-      isActive: [data?.isActive ?? true]
+      name:         [data?.name        || '', [Validators.required, Validators.minLength(2)]],
+      code:         [data?.code        || '', [Validators.required]],
+      description:  [data?.description || ''],
+      issuingBody:  [data?.issuingBody || '', [Validators.required]],
+      logoData:         [data?.logoData         || '', [Validators.required]],
+      logoContentType:  [data?.logoContentType  || ''],
+      websiteUrl:   [data?.websiteUrl  || ''],
+      category:     [data?.category    || '', [Validators.required]],
+      isActive:     [data?.isActive ?? true]
     });
 
     if (data?.logoData && data?.logoContentType) {
@@ -113,6 +118,7 @@ export class CertificationFormComponent implements OnInit {
   }
 
   onSave(): void {
+    this.certForm.markAllAsTouched();
     if (this.certForm.valid) {
       this.dialogRef.close(this.certForm.value);
     }

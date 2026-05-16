@@ -1,0 +1,220 @@
+.page-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+
+  .btn-back {
+    color: #3d4a2a;
+    font-weight: 600;
+    mat-icon { margin-right: 8px; }
+  }
+
+  .btn-edit {
+    background-color: #3d4a2a;
+    color: white;
+    border-radius: 12px;
+    padding: 0 24px;
+    font-weight: 600;
+    mat-icon { margin-right: 8px; font-size: 20px; width: 20px; height: 20px; }
+  }
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 40px;
+  align-items: stretch; // Ensure cards have equal potential height
+}
+
+.card-header-internal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px 32px;
+  border-bottom: 1px solid #f3f4f6;
+  margin-bottom: 8px;
+
+  .header-icon {
+    color: #3d4a2a;
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+  }
+
+  h2, h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #3d4a2a;
+    font-family: 'Outfit', sans-serif;
+  }
+
+  h3 {
+    font-size: 18px;
+    color: #374151;
+    margin: 0;
+  }
+}
+
+.details-list, .logo-card {
+  background: white;
+  border-radius: 20px;
+  border: 1px solid #f3f4f6;
+  height: 100%; // Make them fill the grid cell height
+}
+
+.details-list {
+  padding-bottom: 16px;
+
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 32px;
+    border-bottom: 1px solid #f9fafb;
+
+    &:last-child { border-bottom: none; }
+
+    .label-box {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      color: #6b7280;
+
+      mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+        color: #3d4a2a;
+      }
+
+      .label {
+        font-size: 15px;
+        font-weight: 500;
+      }
+    }
+
+    .value {
+      font-size: 16px;
+      color: #111827;
+      max-width: 60%;
+      text-align: right;
+
+      &.bold { font-weight: 700; }
+      &.description {
+        font-size: 14px;
+        line-height: 1.6;
+        color: #4b5563;
+      }
+      &.link {
+        color: #15803d;
+        text-decoration: none;
+        font-weight: 600;
+        &:hover { text-decoration: underline; }
+      }
+    }
+
+    .status-pill {
+      padding: 6px 20px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 700;
+      background: #f3f4f6;
+      color: #6b7280;
+
+      &.active {
+        background: #f0fdf4;
+        color: #15803d;
+      }
+    }
+  }
+}
+
+.logo-card {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .card-header-internal {
+    width: 100%;
+  }
+
+  .logo-display {
+    margin: 32px 0;
+
+    .logo-circle {
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background-color: #ffffff;
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      border: 1px solid #f1f1f1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+
+      mat-icon {
+        font-size: 80px;
+        width: 80px;
+        height: 80px;
+        color: #e5e7eb;
+      }
+    }
+  }
+
+  .logo-actions {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    gap: 16px;
+    padding-bottom: 32px;
+
+    .btn-view-large {
+      border-radius: 100px;
+      border-color: #d1d5db;
+      color: #3d4a2a;
+      height: 48px;
+      font-weight: 600;
+      
+      mat-icon { margin-right: 8px; }
+    }
+
+    .btn-download {
+      color: #3d4a2a;
+      font-weight: 600;
+      mat-icon { margin-right: 8px; }
+    }
+  }
+}
+
+.shadow-premium {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+  color: #9ca3af;
+  gap: 16px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

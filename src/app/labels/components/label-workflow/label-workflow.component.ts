@@ -139,7 +139,7 @@ export class LabelWorkflowComponent implements OnInit {
     private readonly certificationService: CertificationService,
     private readonly genericTypeService: GenericTypeService,
     private readonly filtrationService: FiltrationApiService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadLotsAndPackaging();
@@ -160,6 +160,28 @@ export class LabelWorkflowComponent implements OnInit {
 
   blockingIssues(): LabelValidationIssueDto[] {
     return (this.currentLabel?.validationIssues || []).filter((i) => i.blocking);
+  }
+
+  /** Returns list of required fields that are currently empty */
+  missingRequiredFields(): { field: string; label: string }[] {
+    const v = this.labelForm.value;
+    const missing: { field: string; label: string }[] = [];
+
+    if (!v.legalDenomination?.trim()) missing.push({ field: 'legalDenomination', label: 'Dénomination légale' });
+    if (!v.lotNumber?.trim()) missing.push({ field: 'lotNumber', label: 'N° de Lot' });
+    if (!v.netQuantity?.trim()) missing.push({ field: 'netQuantity', label: 'Quantité nette' });
+    if (!v.packagingDate?.trim()) missing.push({ field: 'packagingDate', label: 'Date de conditionnement' });
+    if (!v.bestBeforeDate?.trim()) missing.push({ field: 'bestBeforeDate', label: 'D.D.M.' });
+    if (!v.originCountry?.trim()) missing.push({ field: 'originCountry', label: 'Pays d\'origine' });
+    if (!v.qualityGrade) missing.push({ field: 'qualityGrade', label: 'Qualité' });
+    if (!v.responsibleName?.trim()) missing.push({ field: 'responsibleName', label: 'Responsable' });
+    if (!v.responsibleAddress?.trim()) missing.push({ field: 'responsibleAddress', label: 'Adresse du responsable' });
+
+    return missing;
+  }
+
+  canFinalize(): boolean {
+    return this.missingRequiredFields().length === 0 && this.blockingIssues().length === 0;
   }
 
   previewPayload(): string {
@@ -189,11 +211,11 @@ export class LabelWorkflowComponent implements OnInit {
       oilVarieties: this.genericTypeService.getAllTypes(TypeCategory.OLIVE_VARIETY) //type d'olive) exp
     }).subscribe({
       next: ({
-               filtrationResponse,
-               packagingOptions,
-               availableCertifications,
-               oilVarieties
-             }) => {
+        filtrationResponse,
+        packagingOptions,
+        availableCertifications,
+        oilVarieties
+      }) => {
         this.filtrationOperations = (filtrationResponse || [])
           .filter(op => op.status === 'COMPLETED')
           .sort((a, b) => b.timestamp.localeCompare(a.timestamp));
@@ -248,7 +270,7 @@ export class LabelWorkflowComponent implements OnInit {
       next: (label) => {
         this.generating = false;
         this.syncFormWithLabel(label);
-        this.successMessage = 'Le draft etiquette a ete genere avec succes.';
+        this.successMessage = 'Le brouillon a été généré avec succès.';
       },
       error: (error) => {
         this.generating = false;
@@ -258,6 +280,47 @@ export class LabelWorkflowComponent implements OnInit {
         );
       }
     });
+  }
+
+  // Client-side auto-fill when lot is selected
+  onLotChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    const selectedOp = this.filtrationOperations.find(op => op.operationId === select.value);
+    if (!selectedOp) return;
+
+    // Pre-fill lot number from the filtration operation
+    const lotNumber = selectedOp.targetLotNumber || selectedOp.target?.lotNumber || '';
+    if (lotNumber && !this.labelForm.value.lotNumber) {
+      this.labelForm.patchValue({ lotNumber });
+    }
+
+    // Pre-fill origin country (Tunisia by default for olive oil operations)
+    if (!this.labelForm.value.originCountry) {
+      this.labelForm.patchValue({ originCountry: 'Tunisie' });
+    }
+
+    // Pre-fill legal denomination if available from operation
+    if (!this.labelForm.value.legalDenomination) {
+      const grade = this.labelForm.value.qualityGrade;
+      if (grade) {
+        const gradeLabel = this.qualityGradeOptions.find(o => o.value === grade)?.label;
+        if (gradeLabel) {
+          this.labelForm.patchValue({ legalDenomination: gradeLabel });
+        }
+      }
+    }
+  }
+
+  // Client-side auto-fill when packaging is selected
+  onPackagingChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    const selectedProduct = this.packagingOptions.find(p => p.id === select.value);
+    if (!selectedProduct) return;
+
+    // Pre-fill net quantity from the packaging volume
+    if (selectedProduct.volume && !this.labelForm.value.netQuantity) {
+      this.labelForm.patchValue({ netQuantity: `${selectedProduct.volume} ml` });
+    }
   }
 
   //enregi en format brouillon
@@ -276,7 +339,7 @@ export class LabelWorkflowComponent implements OnInit {
       next: (label) => {
         this.saving = false;
         this.syncFormWithLabel(label);
-        this.successMessage = 'Le draft etiquette a ete mis a jour.';
+        this.successMessage = 'Le brouillon a été mis à jour.';
         this.showDraftSavedIndicator();
       },
       error: (error) => {
@@ -284,7 +347,7 @@ export class LabelWorkflowComponent implements OnInit {
         this.resetDraftSavedIndicator();
         this.errorMessage = this.resolveErrorMessage(
           error,
-          'Erreur lors de la mise a jour du draft etiquette.'
+          'Erreur lors de la mise à jour du brouillon.'
         );
       }
     });
@@ -308,7 +371,7 @@ export class LabelWorkflowComponent implements OnInit {
       next: (label) => {
         this.drafting = false;
         this.syncFormWithLabel(label);
-        this.successMessage = 'L etiquette a ete remise en brouillon.';
+        this.successMessage = 'L\'étiquette a été remise en brouillon.';
       },
       error: (error) => {
         this.drafting = false;

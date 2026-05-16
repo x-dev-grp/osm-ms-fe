@@ -35,7 +35,7 @@ export function productDisplayName(product: Pick<Product, 'name' | 'code'> | nul
 }
 
 export function productTypeLabel(type?: ProductType): string {
-  return type === 'VRAC' ? 'Vrac' : 'Non vrac';
+  return type === 'VRAC' ? 'Vrac (Huile)' : 'Conditionné (Emballé)';
 }
 
 export function productUnitsPerCarton(product: Product | null | undefined): number | undefined {

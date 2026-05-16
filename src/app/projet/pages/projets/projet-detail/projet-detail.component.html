@@ -160,6 +160,74 @@
           </div>
         </div>
       </div>
+
+      <div class="modern-card no-print mt-4" *ngIf="p.produits && p.produits.length > 0">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5>Produits Finis (SKU) à produire</h5>
+          <span class="badge bg-primary rounded-pill">{{ p.produits.length }}</span>
+        </div>
+
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="modern-table">
+              <thead>
+              <tr>
+                <th>Produit / SKU</th>
+                <th class="text-center">Quantité Cible</th>
+                <th class="text-center">Nomenclature (BOM)</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let prod of p.produits">
+                <td>{{ getSkuName(prod.productId) }}</td>
+                <td class="text-center fw-bold">{{ prod.quantiteCible | number }}</td>
+                <td class="text-center text-muted">
+                  <i class="fas fa-file-alt me-1"></i> Liée
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="modern-card no-print mt-4" *ngIf="p.reservations && p.reservations.length > 0">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5>Besoins (Réservations de Stock)</h5>
+          <span class="badge bg-info rounded-pill text-dark">{{ p.reservations.length }}</span>
+        </div>
+
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="modern-table">
+              <thead>
+              <tr>
+                <th>Article (Composant)</th>
+                <th class="text-center">Quantité Réservée</th>
+                <th class="text-center">Statut</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let res of p.reservations">
+                <td>{{ getArticleName(res.articleId) }}</td>
+                <td class="text-center fw-bold text-primary">
+                  {{ res.quantiteReservee | number }} {{ getArticleUnit(res.articleId) }}
+                </td>
+                <td class="text-center">
+                  <span class="status-badge-sm" [ngClass]="{
+                    'bg-warning': res.statut === 'PENDING',
+                    'bg-success': res.statut === 'CONFIRMED',
+                    'bg-secondary': res.statut === 'RELEASED'
+                  }">
+                    {{ res.statut || 'PENDING' }}
+                  </span>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="right-col">

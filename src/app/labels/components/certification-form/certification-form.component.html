@@ -1,0 +1,154 @@
+<div class="dialog-container">
+  <div class="form-header">
+    <div class="header-title">
+      <mat-icon class="title-icon">eco</mat-icon>
+      <h2>Informations générales</h2>
+    </div>
+    <button mat-icon-button (click)="onCancel()" class="close-btn">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-content>
+    <form [formGroup]="certForm" class="modern-form">
+      <!-- Name & Code Row -->
+      <div class="form-grid">
+        <div class="form-field-group">
+          <label>Nom de la certification <span class="required">*</span></label>
+          <mat-form-field appearance="outline">
+            <mat-icon matPrefix>eco</mat-icon>
+            <input matInput formControlName="name" placeholder="Ex : Agriculture Biologique">
+            <mat-error *ngIf="certForm.get('name')?.hasError('required')">Le nom est requis</mat-error>
+            <mat-error *ngIf="certForm.get('name')?.hasError('minlength')">Le nom doit contenir au moins 2 caractères</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-field-group">
+          <label>Code <span class="required">*</span></label>
+          <mat-form-field appearance="outline">
+            <mat-icon matPrefix>sell</mat-icon>
+            <input matInput formControlName="code" placeholder="Ex : BIO">
+            <mat-error *ngIf="certForm.get('code')?.hasError('required')">Le code est requis</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Description Area -->
+      <div class="form-field-group">
+        <label>Description</label>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-icon matPrefix>chat_bubble_outline</mat-icon>
+          <textarea matInput formControlName="description" rows="3" placeholder="Décrivez cette certification..."></textarea>
+        </mat-form-field>
+      </div>
+
+      <!-- Issuing Body & Category Row -->
+      <div class="form-grid">
+        <div class="form-field-group">
+          <label>Organisme certificateur <span class="required">*</span></label>
+          <mat-form-field appearance="outline">
+            <mat-icon matPrefix>business</mat-icon>
+            <input matInput formControlName="issuingBody" placeholder="Ex : Ecocert">
+            <mat-error *ngIf="certForm.get('issuingBody')?.hasError('required')">L'organisme certificateur est requis</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-field-group">
+          <label>Catégorie <span class="required">*</span></label>
+          <mat-form-field appearance="outline">
+            <mat-icon matPrefix>grid_view</mat-icon>
+            <mat-select formControlName="category" placeholder="Sélectionnez une catégorie">
+              <mat-option value="LEGAL">Légale</mat-option>
+              <mat-option value="MARKETING">Marketing</mat-option>
+              <mat-option value="QUALITY">Qualité</mat-option>
+            </mat-select>
+            <mat-error *ngIf="certForm.get('category')?.hasError('required')">La catégorie est requise</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="logo-section">
+        <div class="section-info">
+          <label class="main-label">Logo de la certification <span class="required">*</span></label>
+          <span class="file-hint">Formats acceptés : <span class="highlight">PNG, JPG</span> (max 200KB)</span>
+        </div>
+
+        <div class="upload-area"
+             [class.has-logo]="logoPreview"
+             [class.dragging]="isDragging"
+             [class.upload-error]="logoMissing"
+             (click)="fileInput.click()"
+             (dragover)="onDragOver($event)"
+             (dragleave)="onDragLeave($event)"
+             (drop)="onDrop($event)">
+
+          <input #fileInput type="file" (change)="onFileSelected($event)" accept="image/*" style="display: none">
+
+          <!-- Empty State -->
+          <div class="upload-placeholder" *ngIf="!logoPreview">
+            <div class="upload-icon-circle">
+              <mat-icon>cloud_upload</mat-icon>
+            </div>
+            <p>Glissez-déposez votre logo ici</p>
+            <p class="secondary">ou <span class="link">cliquez pour parcourir</span></p>
+          </div>
+
+          <!-- Logo Preview State -->
+          <div class="upload-preview" *ngIf="logoPreview">
+            <img [src]="logoPreview" alt="Logo preview" class="preview-img">
+            <div class="preview-overlay">
+              <mat-icon>cached</mat-icon>
+              <span>Changer le logo</span>
+            </div>
+            <button mat-icon-button color="warn" (click)="removeLogo($event)" class="remove-btn" matTooltip="Supprimer le logo">
+              <mat-icon>delete_outline</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <!-- Error message -->
+        <div class="logo-error-msg" *ngIf="logoMissing">
+          <mat-icon>error_outline</mat-icon>
+          Le logo est requis
+        </div>
+      </div>
+
+      <!-- Website URL -->
+      <div class="form-field-group mt-2">
+        <label>Site Web</label>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-icon matPrefix>language</mat-icon>
+          <input matInput formControlName="websiteUrl" placeholder="https://www.exemple.com">
+        </mat-form-field>
+      </div>
+
+      <!-- Status Row -->
+      <div class="form-field-group">
+        <label>Statut <span class="required">*</span></label>
+        <mat-form-field appearance="outline" class="status-field">
+          <mat-icon matPrefix>verified_user</mat-icon>
+          <mat-select formControlName="isActive">
+            <mat-option [value]="true">
+              <div class="status-option">
+                <span class="dot active"></span> Actif
+              </div>
+            </mat-option>
+            <mat-option [value]="false">
+              <div class="status-option">
+                <span class="dot inactive"></span> Inactif
+              </div>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="form-footer">
+    <button mat-button class="btn-cancel" (click)="onCancel()">Annuler</button>
+    <button mat-flat-button class="btn-submit" [disabled]="certForm.invalid" (click)="onSave()">
+      <mat-icon>eco</mat-icon>
+      {{ isEdit ? 'Mettre à jour' : 'Créer la certification' }}
+    </button>
+  </mat-dialog-actions>
+</div>

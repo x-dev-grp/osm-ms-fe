@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { LabelContentDto, LabelContentStatus } from '../../models/label.model';
@@ -36,18 +37,20 @@ import { forkJoin } from 'rxjs';
     MatSelectModule,
     MatDividerModule,
     MatTooltipModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule
   ],
   templateUrl: './label-list.component.html',
   styleUrls: ['./label-list.component.scss']
 })
-export class LabelListComponent implements OnInit {
+export class LabelListComponent implements OnInit, AfterViewInit {
   dataSource = new MatTableDataSource<LabelContentDto>([]);
   allLabels: LabelContentDto[] = [];
+  originalLabels: LabelContentDto[] = [];
   availableCertifications: Certification[] = [];
   searchTerm = '';
 
-  displayedColumns: string[] = ['lotNumber', 'legalDenomination', 'netQuantity', 'certifications', 'packagingDate', 'labelCategory', 'status', 'actions'];
+  displayedColumns: string[] = ['lotNumber', 'legalDenomination', 'netQuantity', 'certifications', 'packagingDate', 'labelCategory', 'language', 'status', 'actions'];
 
   loading = false;
   changingStatusId: string | null = null;
@@ -57,6 +60,8 @@ export class LabelListComponent implements OnInit {
 
   errorMessage = '';
   successMessage = '';
+  
+  searchControl = new FormControl('');
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -69,13 +74,43 @@ export class LabelListComponent implements OnInit {
   ngOnInit(): void {
     this.loadLabels();
 
-    this.dataSource.filterPredicate = (data: LabelContentDto, filter: string) => {
-      const searchStr = filter.toLowerCase();
-      return (data.lotNumber?.toLowerCase().includes(searchStr) ||
-        data.legalDenomination?.toLowerCase().includes(searchStr) ||
-        data.publicCode?.toLowerCase().includes(searchStr) ||
-        this.statusLabel(data.status).toLowerCase().includes(searchStr));
-    };
+    this.searchControl.valueChanges.subscribe(value => {
+      this.applyManualFilter(value || '');
+    });
+  }
+
+  private applyManualFilter(value: string): void {
+    const filterValue = value.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    
+    if (!filterValue) {
+      this.dataSource.data = [...this.originalLabels];
+    } else {
+      this.dataSource.data = this.originalLabels.filter(data => {
+        const lot = (data.lotNumber || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        const denom = (data.legalDenomination || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        const status = this.statusLabel(data.status).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        const category = (data.labelCategory || '').toLowerCase();
+        const lang = (data.language || '').toLowerCase();
+        const pCode = (data.publicCode || '').toLowerCase();
+        const certs = (data.certifications || []).join(' ').toLowerCase();
+        
+        return lot.includes(filterValue) || 
+               denom.includes(filterValue) || 
+               status.includes(filterValue) ||
+               category.includes(filterValue) ||
+               lang.includes(filterValue) ||
+               pCode.includes(filterValue) ||
+               certs.includes(filterValue);
+      });
+    }
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
+
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
   }
 
   loadLabels(): void {
@@ -90,10 +125,32 @@ export class LabelListComponent implements OnInit {
     }).subscribe({
       next: ({ labels, certs }) => {
         this.availableCertifications = certs || [];
-        this.allLabels = labels ?? [];
+        const unsorted = labels ?? [];
+        
+        // Tri par statut (Finalisée/Exportée > Validée > Brouillon) puis Date (récente en premier)
+        this.allLabels = unsorted.sort((a, b) => {
+          const statusWeight = { 'EXPORTED_JSON': 0, 'FINALIZED': 0, 'VALIDATED': 1, 'DRAFT': 2, 'UNKNOWN': 9 };
+          const weightA = statusWeight[a.status || 'UNKNOWN'];
+          const weightB = statusWeight[b.status || 'UNKNOWN'];
+          
+          if (weightA !== weightB) {
+            return weightA - weightB;
+          }
+          
+          // Secondary sort: Date descending
+          const dateA = a.packagingDate ? new Date(a.packagingDate).getTime() : 0;
+          const dateB = b.packagingDate ? new Date(b.packagingDate).getTime() : 0;
+          return dateB - dateA;
+        });
+
+        this.originalLabels = [...this.allLabels];
         this.dataSource.data = this.allLabels;
-        this.dataSource.paginator = this.paginator;
         this.loading = false;
+        
+        // Use setTimeout to ensure paginator is bound after *ngIf resolves
+        setTimeout(() => {
+          this.dataSource.paginator = this.paginator;
+        });
       },
       error: (error) => {
         this.loading = false;
@@ -139,21 +196,19 @@ export class LabelListComponent implements OnInit {
     this.openedStatusMenuId = null;
   }
 
-  onSearch(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.dataSource.filter = input.value.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
-  }
-
   canFinalize(label: LabelContentDto): boolean {
     return label.status !== 'FINALIZED' && label.status !== 'EXPORTED_JSON';
   }
 
-  onDelete(label: LabelContentDto): void {
-    if (!label.id) return;
+  onDelete(label: LabelContentDto, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+    
+    if (!label.id) {
+      console.error('Impossible de supprimer : ID manquant', label);
+      return;
+    }
 
     let message = 'Êtes-vous sûr de vouloir supprimer cette étiquette ?';
     if (label.status === 'FINALIZED' || label.status === 'EXPORTED_JSON') {
@@ -163,6 +218,7 @@ export class LabelListComponent implements OnInit {
     if (!confirm(message)) return;
 
     this.loading = true;
+    this.clearMessages();
     this.labelService.delete(label.id).subscribe({
       next: () => {
         this.allLabels = this.allLabels.filter(l => l.id !== label.id);
@@ -326,13 +382,13 @@ export class LabelListComponent implements OnInit {
   statusLabel(status: LabelContentStatus | undefined): string {
     switch (status) {
       case 'DRAFT':
-        return 'Draft';
+        return 'Brouillon';
       case 'VALIDATED':
-        return 'Validee';
+        return 'Validée';
       case 'FINALIZED':
-        return 'Finalisee';
+        return 'Finalisée';
       case 'EXPORTED_JSON':
-        return 'Exportee JSON';
+        return 'Exportée JSON';
       default:
         return '-';
     }
@@ -374,5 +430,51 @@ export class LabelListComponent implements OnInit {
     const genericMessage = (error as { message?: string })?.message;
 
     return apiMessage || genericMessage || fallback;
+  }
+
+  getFlagEmoji(langCode?: string): string {
+    if (!langCode) return '🏳️';
+    const code = langCode.toUpperCase();
+    switch (code) {
+      case 'FR': return '🇫🇷';
+      case 'EN': return '🇬🇧';
+      case 'IT': return '🇮🇹';
+      case 'ES': return '🇪🇸';
+      case 'DE': return '🇩🇪';
+      case 'AR': return '🇲🇦';
+      default: return '🌍';
+    }
+  }
+
+  getTotalPages(): number {
+    if (!this.paginator || !this.dataSource.data.length) return 1;
+    return Math.ceil(this.dataSource.data.length / this.paginator.pageSize);
+  }
+
+  getPageArray(): number[] {
+    const total = this.getTotalPages();
+    return Array.from({ length: total }, (_, i) => i);
+  }
+
+  goToPage(index: number): void {
+    if (this.paginator) {
+      this.paginator.pageIndex = index;
+      this.dataSource.paginator = this.paginator; // Trigger update
+    }
+  }
+
+  filterByStatus(status: LabelContentStatus): void {
+    this.dataSource.data = this.originalLabels.filter(l => l.status === status);
+    if (this.dataSource.paginator) this.dataSource.paginator.firstPage();
+  }
+
+  filterByCategory(category: string): void {
+    this.dataSource.data = this.originalLabels.filter(l => l.labelCategory === category);
+    if (this.dataSource.paginator) this.dataSource.paginator.firstPage();
+  }
+
+  resetFilters(): void {
+    this.dataSource.data = [...this.originalLabels];
+    if (this.dataSource.paginator) this.dataSource.paginator.firstPage();
   }
 }

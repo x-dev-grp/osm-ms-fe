@@ -110,6 +110,19 @@
           <small>{{ article.um }}</small>
         </div>
 
+        <div class="stock-details-grid mt-2" *ngIf="stock">
+          <div class="stock-detail-item">
+            <span>Réservé</span>
+            <strong class="text-warning">{{ stock.quantiteReservee || 0 }} {{ article.um }}</strong>
+          </div>
+          <div class="stock-detail-item">
+            <span>Disponible</span>
+            <strong [ngClass]="stock.quantiteDisponible <= 0 ? 'text-danger' : 'text-success'">
+              {{ stock.quantiteDisponible }} {{ article.um }}
+            </strong>
+          </div>
+        </div>
+
         <div class="text-muted mt-2" *ngIf="stock">
           Dernière MAJ : {{ stock.lastModifiedDate | date:'dd/MM/yyyy HH:mm' }}
         </div>

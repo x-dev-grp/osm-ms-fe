@@ -1,297 +1,284 @@
 <div class="article-form-container">
-  <div class="form-card">
-    <h2 class="form-title">
-      {{ isEditMode ? 'Modifier' : 'Nouvel' }} article
-    </h2>
-
-    <form [formGroup]="articleForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label for="nom">Nom *</label>
-        <input
-          type="text"
-          id="nom"
-          class="form-control"
-          [class.is-invalid]="submitted && f['nom'].errors"
-          formControlName="nom">
-        <div class="invalid-feedback" *ngIf="submitted && f['nom'].errors">
-          Le nom est requis
-        </div>
+  <!-- PREMIUM HEADER -->
+  <div class="header-card">
+    <div class="header-info">
+      <div class="icon-box">
+        <i class="fas fa-box-open"></i>
       </div>
-
-      <div class="form-group">
-        <label for="categorie">Catégorie *</label>
-        <select
-          id="categorie"
-          class="form-control"
-          [class.is-invalid]="submitted && f['categorie'].errors"
-          formControlName="categorie">
-          <option value="">Sélectionner...</option>
-          <option *ngFor="let cat of categories" [value]="cat">
-            {{ cat }}
-          </option>
-        </select>
-        <div class="invalid-feedback" *ngIf="submitted && f['categorie'].errors">
-          La catégorie est requise
-        </div>
+      <div class="header-text">
+        <h1>{{ isEditMode ? 'Modifier l\'article' : 'Nouvel Article' }}</h1>
+        <p>Gérez les spécifications techniques et les paramètres de stock</p>
       </div>
-
-      <!-- Bloc de configuration spécifique -->
-      <div class="form-group" *ngIf="articleForm.get('categorie')?.value">
-        <hr />
-        <label>Configuration spécifique à la catégorie</label>
-        <div class="config-panel">
-
-          <!-- UNITE -->
-          <div *ngIf="articleForm.get('categorie')?.value === 'UNITE'">
-            <div class="form-group">
-              <label>Matériau</label>
-              <input type="text" class="form-control" formControlName="uniteMaterial">
-            </div>
-            <div class="form-group">
-              <label>Volume (ml)</label>
-              <input type="number" class="form-control" formControlName="uniteVolumeMl">
-            </div>
-            <div class="form-group">
-              <label>Couleur</label>
-              <input type="text" class="form-control" formControlName="uniteColor">
-            </div>
-            <div class="form-group">
-              <label>Type de goulot</label>
-              <input type="text" class="form-control" formControlName="uniteNeckType">
-            </div>
-            <div class="form-group">
-              <label>Poids (g)</label>
-              <input type="number" class="form-control" formControlName="uniteWeightGr">
-            </div>
-          </div>
-
-          <!-- COLIS -->
-          <div *ngIf="articleForm.get('categorie')?.value === 'COLIS'">
-            <div class="form-group">
-              <label>Article unitaire *</label>
-              <select class="form-control" formControlName="colisUnitArticleId">
-                <option [value]="null" disabled>Sélectionner un article unitaire</option>
-                <option *ngFor="let unit of uniteArticles" [value]="unit.id">
-                  {{ unit.nom }} ({{ unit.um }})
-                </option>
-              </select>
-              <small *ngIf="loadingUnites" class="text-muted">Chargement...</small>
-              <small *ngIf="!loadingUnites && uniteArticles.length === 0" class="text-warning">
-                Aucun article unitaire trouvé. Créez d'abord un article de type UNITE.
-              </small>
-            </div>
-            <div class="form-group">
-              <label>Unités par colis</label>
-              <input type="number" class="form-control" formControlName="colisUnitsPerColis">
-            </div>
-            <div class="form-group">
-              <label>Longueur (cm)</label>
-              <input type="number" class="form-control" formControlName="colisLength">
-            </div>
-            <div class="form-group">
-              <label>Largeur (cm)</label>
-              <input type="number" class="form-control" formControlName="colisWidth">
-            </div>
-            <div class="form-group">
-              <label>Hauteur (cm)</label>
-              <input type="number" class="form-control" formControlName="colisHeight">
-            </div>
-            <div class="form-group">
-              <label>Poids max (kg)</label>
-              <input type="number" class="form-control" formControlName="colisMaxWeightKg">
-            </div>
-          </div>
-
-          <!-- PALETTE -->
-          <div *ngIf="articleForm.get('categorie')?.value === 'PALETTE'">
-            <div class="form-group">
-              <label>Colis utilisé *</label>
-              <select class="form-control" formControlName="paletteColisId">
-                <option [value]="null" disabled>Sélectionner un colis</option>
-                <option *ngFor="let colis of colisArticles" [value]="colis.id">
-                  {{ colis.nom }} ({{ colis.um }})
-                </option>
-              </select>
-              <small *ngIf="loadingColis" class="text-muted">Chargement...</small>
-              <small *ngIf="!loadingColis && colisArticles.length === 0" class="text-warning">
-                Aucun colis trouvé. Créez d'abord un article de type COLIS.
-              </small>
-            </div>
-            <div class="form-group">
-              <label>Type</label>
-              <input type="text" class="form-control" formControlName="paletteType">
-            </div>
-            <div class="form-group">
-              <label>Matériau</label>
-              <input type="text" class="form-control" formControlName="paletteMaterial">
-            </div>
-            <div class="form-group">
-              <label>Colis par couche</label>
-              <input type="number" class="form-control" formControlName="paletteColisPerLayer">
-            </div>
-            <div class="form-group">
-              <label>Nombre de couches</label>
-              <input type="number" class="form-control" formControlName="paletteNumberOfLayers">
-            </div>
-            <div class="form-group">
-              <label>Hauteur max (cm)</label>
-              <input type="number" class="form-control" formControlName="paletteMaxHeightCm">
-            </div>
-            <div class="form-group form-check">
-              <input type="checkbox" class="form-check-input" formControlName="paletteClientSpecific">
-              <label class="form-check-label">Client spécifique</label>
-            </div>
-          </div>
-
-          <!-- EMBALLAGE -->
-          <div *ngIf="articleForm.get('categorie')?.value === 'EMBALLAGE'">
-            <div class="form-group">
-              <label>Sous-type</label>
-              <input type="text" class="form-control" formControlName="emballageSousType">
-            </div>
-            <div class="form-group">
-              <label>Matériau</label>
-              <input type="text" class="form-control" formControlName="emballageMaterial">
-            </div>
-            <div class="form-group">
-              <label>Longueur (cm)</label>
-              <input type="number" class="form-control" formControlName="emballageLength">
-            </div>
-            <div class="form-group">
-              <label>Largeur (cm)</label>
-              <input type="number" class="form-control" formControlName="emballageWidth">
-            </div>
-            <div class="form-group">
-              <label>Hauteur (cm)</label>
-              <input type="number" class="form-control" formControlName="emballageHeight">
-            </div>
-            <div class="form-group form-check">
-              <input type="checkbox" class="form-check-input" formControlName="emballageClientBranding">
-              <label class="form-check-label">Marquage client</label>
-            </div>
-            <div class="form-group">
-              <label>Poids (g)</label>
-              <input type="number" class="form-control" formControlName="emballagePoidsGrammes">
-            </div>
-          </div>
-
-          <!-- CONSOMMABLE -->
-          <div *ngIf="articleForm.get('categorie')?.value === 'CONSOMMABLE'">
-            <div class="form-group">
-              <label>Type</label>
-              <input type="text" class="form-control" formControlName="consommableType">
-            </div>
-            <div class="form-group">
-              <label>Volume (litres)</label>
-              <input type="number" class="form-control" formControlName="consommableVolumeLitre">
-            </div>
-            <div class="form-group">
-              <label>Composition</label>
-              <input type="text" class="form-control" formControlName="consommableComposition">
-            </div>
-            <div class="form-group">
-              <label>Température stockage (°C)</label>
-              <input type="number" class="form-control" formControlName="consommableTemperatureStockage">
-            </div>
-          </div>
-
-          <!-- MATIERE_PREMIERE -->
-          <div *ngIf="articleForm.get('categorie')?.value === 'MATIERE_PREMIERE'">
-            <div class="form-group">
-              <label>Code fournisseur</label>
-              <input type="text" class="form-control" formControlName="matiereCodeFournisseur">
-            </div>
-            <div class="form-group">
-              <label>Densité</label>
-              <input type="number" class="form-control" formControlName="matiereDensite">
-            </div>
-            <div class="form-group">
-              <label>Origine</label>
-              <input type="text" class="form-control" formControlName="matiereOrigine">
-            </div>
-            <div class="form-group form-check">
-              <input type="checkbox" class="form-check-input" formControlName="matiereCertifieBio">
-              <label class="form-check-label">Certifié bio</label>
-            </div>
-          </div>
-
-          <!-- ACCESSOIRE -->
-          <div *ngIf="articleForm.get('categorie')?.value === 'ACCESSOIRE'">
-            <div class="form-group">
-              <label>Usage</label>
-              <input type="text" class="form-control" formControlName="accessoireUsage">
-            </div>
-            <div class="form-group form-check">
-              <input type="checkbox" class="form-check-input" formControlName="accessoireNecessiteMontage">
-              <label class="form-check-label">Nécessite montage</label>
-            </div>
-            <div class="form-group">
-              <label>Garantie (mois)</label>
-              <input type="text" class="form-control" formControlName="accessoireGarantieMois">
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="um">Unité de mesure *</label>
-        <select
-          id="um"
-          class="form-control"
-          [class.is-invalid]="submitted && f['um'].errors"
-          formControlName="um">
-          <option value="">Sélectionner...</option>
-          <option *ngFor="let unite of unitesMesure" [value]="unite">
-            {{ unite }}
-          </option>
-        </select>
-        <div class="invalid-feedback" *ngIf="submitted && f['um'].errors">
-          L'unité de mesure est requise
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="fournisseur">Fournisseur</label>
-        <select
-          id="fournisseur"
-          class="form-control"
-          formControlName="fournisseur">
-          <option value="">Aucun</option>
-          <option *ngFor="let fournisseur of fournisseurs" [value]="fournisseur.id">
-            {{ fournisseur.nom }}
-          </option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="stockMinimum">Stock minimum</label>
-        <input
-          type="number"
-          id="stockMinimum"
-          class="form-control"
-          formControlName="stockMinimum"
-          min="0">
-      </div>
-
-      <div class="form-group">
-        <label for="stockMaximum">Stock maximum</label>
-        <input
-          type="number"
-          id="stockMaximum"
-          class="form-control"
-          formControlName="stockMaximum"
-          min="0">
-      </div>
-      <div class="form-actions">
-        <button type="button" class="btn btn-secondary" (click)="onCancel()">
-          Annuler
-        </button>
-        <button type="submit" class="btn btn-primary" [disabled]="submitting">
-          <span *ngIf="submitting" class="spinner-border spinner-border-sm me-1"></span>
-          {{ isEditMode ? 'Mettre à jour' : 'Créer' }}
-        </button>
-      </div>
-    </form>
+    </div>
+    <div class="header-actions">
+      <span class="badge" [ngClass]="articleForm.get('actif')?.value ? 'bg-success' : 'bg-secondary'">
+        {{ articleForm.get('actif')?.value ? 'Actif' : 'Inactif' }}
+      </span>
+    </div>
   </div>
+
+  <form [formGroup]="articleForm" (ngSubmit)="onSubmit()">
+    <div class="form-layout">
+      <!-- MAIN COLUMN -->
+      <div class="main-column">
+        <!-- IDENTITY CARD -->
+        <div class="card-panel">
+          <div class="panel-header">
+            <i class="fas fa-id-card"></i>
+            <h3>Identité de l'article</h3>
+          </div>
+
+          <div class="form-grid">
+            <div class="field-block">
+              <label for="nom">Nom de l'article *</label>
+              <input type="text" id="nom" class="form-control" [class.is-invalid]="submitted && f['nom'].errors"
+                formControlName="nom" placeholder="Ex: Bouteille Marasca 750ml">
+              <div class="invalid-feedback" *ngIf="submitted && f['nom'].errors">
+                Le nom est requis
+              </div>
+            </div>
+
+            <div class="field-block">
+              <label for="categorie">Catégorie *</label>
+              <select id="categorie" class="form-select" [class.is-invalid]="submitted && f['categorie'].errors"
+                formControlName="categorie">
+                <option value="">Sélectionner une catégorie...</option>
+                <option *ngFor="let cat of categories" [value]="cat">
+                  {{ categorieLabels[cat] }}
+                </option>
+              </select>
+              <div class="invalid-feedback" *ngIf="submitted && f['categorie'].errors">
+                La catégorie est requise
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DYNAMIC CONFIGURATION PANEL -->
+        <div class="card-panel" *ngIf="articleForm.get('categorie')?.value">
+          <div class="panel-header">
+            <i class="fas fa-cog"></i>
+            <h3>Spécifications Techniques</h3>
+          </div>
+
+          <div class="config-section">
+            <span class="config-title">
+              <i class="fas fa-sliders-h"></i>
+              Spécifications {{ categorieLabels[articleForm.get('categorie')?.value] || '' }}
+            </span>
+
+            <!-- UNITE (Bouteille, Bouchon, etc.) -->
+            <div class="form-grid" *ngIf="articleForm.get('categorie')?.value === 'UNITE'">
+              <div class="field-block">
+                <label>Matériau</label>
+                <input type="text" class="form-control" formControlName="uniteMaterial"
+                  placeholder="Ex: Verre, Plastique">
+              </div>
+              <div class="field-block">
+                <label>Volume (ml)</label>
+                <input type="number" class="form-control" formControlName="uniteVolumeMl">
+              </div>
+              <div class="field-block">
+                <label>Couleur</label>
+                <input type="text" class="form-control" formControlName="uniteColor">
+              </div>
+              <div class="field-block">
+                <label>Type de goulot</label>
+                <input type="text" class="form-control" formControlName="uniteNeckType" placeholder="Ex: DOP, Vis">
+              </div>
+              <div class="field-block">
+                <label>Poids (g)</label>
+                <input type="number" class="form-control" formControlName="uniteWeightGr">
+              </div>
+            </div>
+
+            <!-- COLIS -->
+            <div class="form-grid" *ngIf="articleForm.get('categorie')?.value === 'COLIS'">
+              <div class="field-block full">
+                <label>Article unitaire contenu *</label>
+                <select class="form-select" formControlName="colisUnitArticleId">
+                  <option [value]="null" disabled>Sélectionner un article unitaire</option>
+                  <option *ngFor="let unit of uniteArticles" [value]="unit.id">
+                    {{ unit.nom }}
+                  </option>
+                </select>
+                <small *ngIf="loadingUnites" class="text-muted">Chargement des articles...</small>
+              </div>
+              <div class="field-block">
+                <label>Unités par colis</label>
+                <input type="number" class="form-control" formControlName="colisUnitsPerColis">
+              </div>
+              <div class="field-block">
+                <label>Poids max (kg)</label>
+                <input type="number" class="form-control" formControlName="colisMaxWeightKg">
+              </div>
+              <div class="field-block">
+                <label>Dimensions (L x l x H cm)</label>
+                <div class="d-flex gap-2">
+                  <input type="number" class="form-control" formControlName="colisLength" placeholder="L">
+                  <input type="number" class="form-control" formControlName="colisWidth" placeholder="l">
+                  <input type="number" class="form-control" formControlName="colisHeight" placeholder="H">
+                </div>
+              </div>
+            </div>
+
+            <!-- PALETTE -->
+            <div class="form-grid" *ngIf="articleForm.get('categorie')?.value === 'PALETTE'">
+              <div class="field-block full">
+                <label>Type de Colis utilisé *</label>
+                <select class="form-select" formControlName="paletteColisId">
+                  <option [value]="null" disabled>Sélectionner un colis</option>
+                  <option *ngFor="let colis of colisArticles" [value]="colis.id">
+                    {{ colis.nom }}
+                  </option>
+                </select>
+              </div>
+              <div class="field-block">
+                <label>Colis par couche</label>
+                <input type="number" class="form-control" formControlName="paletteColisPerLayer">
+              </div>
+              <div class="field-block">
+                <label>Nombre de couches</label>
+                <input type="number" class="form-control" formControlName="paletteNumberOfLayers">
+              </div>
+              <div class="field-block">
+                <label>Hauteur max (cm)</label>
+                <input type="number" class="form-control" formControlName="paletteMaxHeightCm">
+              </div>
+              <div class="field-block">
+                <label>Matériau palette</label>
+                <input type="text" class="form-control" formControlName="paletteMaterial" placeholder="Bois, Plastique">
+              </div>
+              <div class="field-block">
+                <label class="check-block">
+                  <input type="checkbox" formControlName="paletteClientSpecific">
+                  <span>Usage spécifique client</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- EMBALLAGE (Cartons vides, Films, etc.) -->
+            <div class="form-grid" *ngIf="articleForm.get('categorie')?.value === 'EMBALLAGE'">
+              <div class="field-block">
+                <label>Sous-type</label>
+                <input type="text" class="form-control" formControlName="emballageSousType"
+                  placeholder="Ex: Carton, Film">
+              </div>
+              <div class="field-block">
+                <label>Matériau</label>
+                <input type="text" class="form-control" formControlName="emballageMaterial">
+              </div>
+              <div class="field-block">
+                <label>Poids (g)</label>
+                <input type="number" class="form-control" formControlName="emballagePoidsGrammes">
+              </div>
+              <div class="field-block">
+                <label class="check-block">
+                  <input type="checkbox" formControlName="emballageClientBranding">
+                  <span>Logo/Marquage client</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- CONSOMMABLE -->
+            <div class="form-grid" *ngIf="articleForm.get('categorie')?.value === 'CONSOMMABLE'">
+              <div class="field-block">
+                <label>Sous-type (Ex: Colle, Encre)</label>
+                <input type="text" class="form-control" formControlName="consommableSousType">
+              </div>
+              <div class="field-block">
+                <label>Usage prévu</label>
+                <input type="text" class="form-control" formControlName="consommableUsage">
+              </div>
+              <div class="field-block">
+                <label>Unité d'usage</label>
+                <input type="text" class="form-control" formControlName="consommableUnit">
+              </div>
+              <div class="field-block">
+                <label>Quantité contenue</label>
+                <input type="number" class="form-control" formControlName="consommableQuantity">
+              </div>
+              <div class="field-block">
+                <label>Température de stockage (°C)</label>
+                <input type="number" class="form-control" formControlName="consommableTemperatureStockage">
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- SIDE COLUMN -->
+      <div class="side-column">
+        <!-- LOGISTICS PANEL -->
+        <div class="card-panel">
+          <div class="panel-header">
+            <i class="fas fa-truck-loading"></i>
+            <h3>Logistique & Unité</h3>
+          </div>
+
+          <div class="form-grid full">
+            <div class="field-block">
+              <label for="um">Unité de mesure *</label>
+              <select id="um" class="form-select" [class.is-invalid]="submitted && f['um'].errors" formControlName="um">
+                <option value="">Choisir l'unité...</option>
+                <option *ngFor="let unite of unitesMesure" [value]="unite">
+                  {{ unite | titlecase }}
+                </option>
+              </select>
+            </div>
+
+            <div class="field-block">
+              <label for="fournisseur">Fournisseur principal</label>
+              <select id="fournisseur" class="form-select" formControlName="fournisseur">
+                <option value="">Aucun</option>
+                <option *ngFor="let fournisseur of fournisseurs" [value]="fournisseur.id">
+                  {{ fournisseur.nom }}
+                </option>
+              </select>
+            </div>
+
+            <div class="field-block">
+              <label class="check-block">
+                <input type="checkbox" formControlName="actif">
+                <span>Article Actif</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- STOCK THRESHOLDS -->
+        <div class="card-panel">
+          <div class="panel-header">
+            <i class="fas fa-warehouse"></i>
+            <h3>Seuils de Stock</h3>
+          </div>
+
+          <div class="form-grid full">
+            <div class="field-block">
+              <label for="stockMinimum">Stock d'alerte (Min)</label>
+              <input type="number" id="stockMinimum" class="form-control" formControlName="stockMinimum" min="0">
+            </div>
+
+            <div class="field-block">
+              <label for="stockMaximum">Capacité max</label>
+              <input type="number" id="stockMaximum" class="form-control" formControlName="stockMaximum" min="0">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORM ACTIONS -->
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="onCancel()">
+        <i class="fas fa-times"></i> Annuler
+      </button>
+      <button type="submit" class="btn btn-primary" [disabled]="submitting">
+        <span *ngIf="submitting" class="spinner-border spinner-border-sm"></span>
+        <i class="fas fa-save" *ngIf="!submitting"></i>
+        {{ isEditMode ? 'Mettre à jour' : 'Enregistrer l\'article' }}
+      </button>
+    </div>
+  </form>
 </div>

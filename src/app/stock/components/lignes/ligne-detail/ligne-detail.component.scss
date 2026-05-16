@@ -2,6 +2,12 @@
   display: block;
 }
 
+.page-shell {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
 .text-primary-600 { color: var(--primary-600); }
 .text-primary-700 { color: var(--primary-700); }
 .text-primary-900 { color: var(--primary-900); }
@@ -49,7 +55,7 @@
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
-.p-6 { padding: 1.5rem; }
-.mb-6 { margin-bottom: 1.5rem; }
+.p-6 { padding: 1rem; }
+.mb-6 { margin-bottom: 1rem; }
 .gap-4 { gap: 1rem; }
 .mt-1 { margin-top: 0.25rem; }

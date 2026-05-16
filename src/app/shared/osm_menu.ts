@@ -499,7 +499,7 @@ export const osm_menus: Navigation[] = [
     children: [
       {
         id: 'collapse-stock-items',
-        title: 'Articles & SKUs',
+        title: 'Articles & Produits-finis',
         type: 'collapse',
         icon: 'inventory_2',
         children: [
