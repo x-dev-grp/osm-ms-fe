@@ -92,6 +92,13 @@ export class ArticleFormComponent implements OnInit {
       this.loadArticle();
     }
 
+    // Pre-select category if passed as query param (from SKU BOM builder "Créer →" link)
+    const preselectedCategorie = this.route.snapshot.queryParams['categorie'] as CategorieArticle;
+    if (preselectedCategorie && Object.values(CategorieArticle).includes(preselectedCategorie)) {
+      this.articleForm.get('categorie')?.setValue(preselectedCategorie, { emitEvent: false });
+      this.handleCategoryChange(preselectedCategorie);
+    }
+
     this.articleForm.get('categorie')?.valueChanges.subscribe(cat => {
       this.handleCategoryChange(cat);
     });

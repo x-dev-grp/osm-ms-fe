@@ -1,355 +1,481 @@
-<div class="modern-container">
-  @if (error) {
-    <div class="alert-modern alert-danger">
-      <div class="alert-icon">
-        <i class="fas fa-exclamation-circle"></i>
-      </div>
-      <div class="alert-content">{{ error }}</div>
-      <button class="alert-close" (click)="error = null">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-  }
-
-  <div class="form-card glass-effect">
-    <div class="form-header">
-      <div class="header-icon-wrapper">
-        <div class="header-icon">
-          <i class="fas" [ngClass]="isEditMode ? 'fa-edit' : 'fa-plus'"></i>
+<div class="sku-page">
+  <div class="sku-shell">
+    @if (error) {
+      <div class="alert-modern alert-danger">
+        <div class="alert-icon">
+          <i class="fas fa-exclamation-circle"></i>
         </div>
+        <div class="alert-content">{{ error }}</div>
+        <button class="alert-close" type="button" (click)="error = null">
+          <i class="fas fa-times"></i>
+        </button>
       </div>
-      <div class="header-content">
-        <h2 class="form-title gradient-text">
-          {{ isEditMode ? 'Modifier le produit' : 'Nouveau produit' }}
-        </h2>
-        <p class="form-subtitle">
-          {{ isEditMode ? 'Mettre a jour la fiche produit' : 'Creer une fiche produit olive oil' }}
-        </p>
+    }
+
+    <div class="hero-card">
+      <div class="hero-icon">
+        <img src="assets/background_projet.png" alt="Produit huile d'olive" />
+      </div>
+
+      <div class="hero-title">
+        <h1>{{ isEditMode ? 'Modifier le produit' : 'Nouveau produit' }}</h1>
+        <p>Paramétrage du produit, du vrac et de la nomenclature d'emballage</p>
+      </div>
+
+      <div class="hero-badge" [class.vrac]="isVrac()" [class.conditionne]="isNonVrac()">
+        @if (isVrac()) {
+          <i class="fas fa-tint"></i>
+          <span>Huile en vrac</span>
+        } @else {
+          <i class="fas fa-wine-bottle"></i>
+          <span>Produit conditionné</span>
+        }
       </div>
     </div>
 
-    <form [formGroup]="skuForm" (ngSubmit)="onSubmit()" class="modern-form">
-      <div class="form-separator">
-        <span class="separator-text">Identite produit</span>
-      </div>
+    <div class="form-card">
+      <form [formGroup]="skuForm" (ngSubmit)="onSubmit()" class="modern-form">
+        <div class="type-switcher">
+          <button
+            type="button"
+            class="type-btn"
+            [class.active-vrac]="isVrac()"
+            (click)="skuForm.get('type')?.setValue('VRAC')">
+            <i class="fas fa-tint"></i>
+            <span>VRAC</span>
+            <small>Huile en cuve</small>
+          </button>
 
-      <div class="row g-4">
-        <div class="col-md-6">
-          <div class="form-group floating-group">
-            <div class="input-wrapper">
-              <i class="fas fa-tag input-icon"></i>
-              <input type="text"
-                     id="name"
-                     class="modern-input"
-                     [class.is-invalid]="submitted && f['name'].errors"
-                     [class.is-valid]="submitted && !f['name'].errors && f['name'].value"
-                     formControlName="name"
-                     placeholder=" ">
-              <label for="name" class="floating-label">
-                Nom du produit <span class="required-star">*</span>
-              </label>
+          <button
+            type="button"
+            class="type-btn"
+            [class.active-conditionne]="isNonVrac()"
+            (click)="skuForm.get('type')?.setValue('NON_VRAC')">
+            <i class="fas fa-wine-bottle"></i>
+            <span>CONDITIONNÉ</span>
+            <small>Produit emballé</small>
+          </button>
+        </div>
+
+        <section class="section-card">
+          <div class="section-title">
+            <div class="section-icon">
+              <i class="fas fa-clipboard-list"></i>
             </div>
-            @if (submitted && f['name'].errors) {
-              <div class="error-message animated">
-                <i class="fas fa-exclamation-circle me-1"></i>
-                <span>Le nom du produit est requis</span>
+            <h2>Identité produit</h2>
+            <span></span>
+          </div>
+
+          <div class="form-grid two-cols">
+            <div class="field-block">
+              <label for="name">Nom du produit *</label>
+              <div class="input-with-icon">
+                <i class="fas fa-tag"></i>
+                <input
+                  type="text"
+                  id="name"
+                  class="form-control"
+                  [class.is-invalid]="submitted && f['name'].errors"
+                  [class.is-valid]="submitted && !f['name'].errors && f['name'].value"
+                  formControlName="name"
+                  placeholder="Nom du produit" />
+              </div>
+
+              @if (submitted && f['name'].errors) {
+                <div class="invalid-feedback d-block">
+                  Le nom du produit est requis.
+                </div>
+              }
+
+              <small class="form-hint">
+                @if (isVrac()) {
+                  Ex: Huile Extra Vierge Vrac 2024/2025
+                } @else {
+                  Ex: Huile Olivéa 750ml Bouteille Verre
+                }
+              </small>
+            </div>
+
+            <div class="field-block">
+              <label for="code">Code interne</label>
+              <div class="input-with-icon">
+                <i class="fas fa-barcode"></i>
+                <input
+                  type="text"
+                  id="code"
+                  class="form-control"
+                  formControlName="code"
+                  placeholder="Code interne" />
+              </div>
+            </div>
+
+            <div class="field-block">
+              <label for="category">Catégorie</label>
+              <div class="input-with-icon">
+                <i class="fas fa-list"></i>
+                <input
+                  type="text"
+                  id="category"
+                  class="form-control"
+                  formControlName="category"
+                  placeholder="Catégorie" />
+              </div>
+            </div>
+
+            <div class="field-block">
+              <label for="unitOfMeasure">Unité de mesure</label>
+              <div class="input-with-icon">
+                <i class="fas fa-ruler-combined"></i>
+                <select id="unitOfMeasure" class="form-select" formControlName="unitOfMeasure">
+                  <option *ngFor="let unit of currentUnitOptions" [value]="unit">{{ unit }}</option>
+                </select>
+              </div>
+
+              <small class="form-hint">
+                @if (isVrac()) {
+                  Litres ou Kilogrammes
+                } @else {
+                  Bouteille ou Carton
+                }
+              </small>
+            </div>
+
+            <div class="field-block">
+              <label for="harvestCampaign">Campagne</label>
+              <div class="input-with-icon">
+                <i class="fas fa-calendar"></i>
+                <input
+                  type="text"
+                  id="harvestCampaign"
+                  class="form-control"
+                  formControlName="harvestCampaign"
+                  placeholder="Ex: 2025/2026" />
+              </div>
+            </div>
+
+            <div class="field-block">
+              <label for="grade">Grade huile</label>
+              <div class="input-with-icon">
+                <i class="fas fa-certificate"></i>
+                <input
+                  type="text"
+                  id="grade"
+                  class="form-control"
+                  formControlName="grade"
+                  placeholder="Extra vierge, vierge, lampante" />
+              </div>
+            </div>
+
+            <div class="field-block">
+              <label for="origin">Origine</label>
+              <div class="input-with-icon">
+                <i class="fas fa-map-marker-alt"></i>
+                <input
+                  type="text"
+                  id="origin"
+                  class="form-control"
+                  formControlName="origin"
+                  placeholder="Origine" />
+              </div>
+            </div>
+
+            <div class="field-block full-row">
+              <label for="description">Description</label>
+              <div class="input-with-icon">
+                <i class="fas fa-align-left"></i>
+                <input
+                  type="text"
+                  id="description"
+                  class="form-control"
+                  formControlName="description"
+                  placeholder="Description courte du produit" />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        @if (isVrac()) {
+          <section class="section-card">
+            <div class="section-title">
+              <div class="section-icon">
+                <i class="fas fa-industry"></i>
+              </div>
+              <h2>Paramètres Vrac</h2>
+              <span></span>
+            </div>
+
+            <div class="info-banner-modern vrac-banner">
+              <div class="banner-icon">
+                <i class="fas fa-info"></i>
+              </div>
+              <span>
+                <strong>Produit Vrac :</strong>
+                l'huile est stockée directement en cuve ou en citerne. Aucune nomenclature d'emballage n'est nécessaire.
+              </span>
+            </div>
+
+            <div class="form-grid two-cols">
+              <div class="field-block">
+                <label for="density">Densité (g/ml)</label>
+                <div class="input-with-icon">
+                  <i class="fas fa-vial"></i>
+                  <input
+                    type="number"
+                    id="density"
+                    class="form-control"
+                    formControlName="density"
+                    step="0.0001"
+                    min="0"
+                    placeholder="Ex: 0.916" />
+                </div>
+                <small class="form-hint">Ex: 0.916 pour l'huile d'olive</small>
+              </div>
+
+              <div class="field-block">
+                <label for="storageUnit">Cuve / Unité de stockage</label>
+                <div class="input-with-icon">
+                  <i class="fas fa-warehouse"></i>
+                  <input
+                    type="text"
+                    id="storageUnit"
+                    class="form-control"
+                    formControlName="storageUnit"
+                    placeholder="Ex: Cuve C1, Citerne Nord" />
+                </div>
+              </div>
+            </div>
+          </section>
+        }
+
+        @if (isNonVrac()) {
+          <section class="section-card">
+            <div class="section-title">
+              <div class="section-icon">
+                <i class="fas fa-wine-bottle"></i>
+              </div>
+              <h2>Spécifications produit conditionné</h2>
+              <span></span>
+            </div>
+
+            <div class="info-banner-modern conditionne-banner">
+              <div class="banner-icon">
+                <i class="fas fa-info"></i>
+              </div>
+              <span>
+                <strong>Produit Conditionné :</strong>
+                l'huile est mise en bouteille ou bidon. Renseignez les caractéristiques physiques du produit fini.
+              </span>
+            </div>
+
+            <div class="form-grid four-cols">
+              <div class="field-block">
+                <label for="volume">Volume (ml) *</label>
+                <div class="input-with-icon">
+                  <i class="fas fa-tint"></i>
+                  <input
+                    type="number"
+                    id="volume"
+                    class="form-control"
+                    [class.is-invalid]="submitted && f['volume'].errors"
+                    formControlName="volume"
+                    step="1"
+                    min="0"
+                    placeholder="Ex: 750" />
+                </div>
+
+                @if (submitted && f['volume'].errors) {
+                  <div class="invalid-feedback d-block">Requis.</div>
+                }
+
+                <small class="form-hint">Ex: 750, 1000, 5000</small>
+              </div>
+
+              <div class="field-block">
+                <label for="brand">Marque</label>
+                <div class="input-with-icon">
+                  <i class="fas fa-trademark"></i>
+                  <input
+                    type="text"
+                    id="brand"
+                    class="form-control"
+                    formControlName="brand"
+                    placeholder="Marque" />
+                </div>
+              </div>
+
+              <div class="field-block">
+                <label for="barcode">Code barre (EAN)</label>
+                <div class="input-with-icon">
+                  <i class="fas fa-barcode"></i>
+                  <input
+                    type="text"
+                    id="barcode"
+                    class="form-control"
+                    formControlName="barcode"
+                    placeholder="Code EAN" />
+                </div>
+              </div>
+
+              <div class="field-block">
+                <label for="netWeight">Poids net (kg)</label>
+                <div class="input-with-icon">
+                  <i class="fas fa-weight"></i>
+                  <input
+                    type="number"
+                    id="netWeight"
+                    class="form-control"
+                    formControlName="netWeight"
+                    step="0.001"
+                    min="0"
+                    placeholder="Poids net" />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section-card">
+            <div class="section-title">
+              <div class="section-icon">
+                <i class="fas fa-sitemap"></i>
+              </div>
+              <h2>Nomenclature d'emballage (BOM)</h2>
+              <span></span>
+            </div>
+
+            <p class="form-hint-text">
+              <i class="fas fa-lightbulb"></i>
+              Sélectionnez les articles du catalogue par catégorie pour constituer la nomenclature du produit conditionné.
+            </p>
+
+            <!-- ─── BOM IMPORTER & PROJECT LINK ─── -->
+            @if (existingBoms.length > 0 || projects.length > 0) {
+              <div class="bom-importer-section">
+                <div class="importer-card">
+                  <div class="importer-header">
+                    <i class="fas fa-project-diagram"></i>
+                    <span>Source de la nomenclature</span>
+                  </div>
+                  
+                  <div class="importer-grid">
+                    <!-- Existing BOM -->
+                    <div class="importer-field">
+                      <label>Importer un modèle existant</label>
+                      <div class="d-flex gap-2">
+                        <select class="modern-input" [(ngModel)]="selectedBomId" [ngModelOptions]="{standalone: true}">
+                          <option value="">— Choisir un modèle —</option>
+                          <option *ngFor="let bom of existingBoms" [value]="bom.id">
+                            {{ bom.productName || bom.skuCode || 'Produit sans nom' }} (v{{ bom.version }})
+                          </option>
+                        </select>
+                        <button type="button" class="btn-import" (click)="applyExistingBom(selectedBomId)" [disabled]="!selectedBomId">
+                          <i class="fas fa-magic"></i>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="importer-separator">OU</div>
+
+                    <!-- Project / Production -->
+                    <div class="importer-field">
+                      <label>Calculer depuis un Projet / Production</label>
+                      <div class="d-flex gap-2">
+                        <select class="modern-input" [(ngModel)]="selectedProjectId" [ngModelOptions]="{standalone: true}" (change)="onProjectChange(selectedProjectId)">
+                          <option value="">— Choisir le projet —</option>
+                          <option *ngFor="let p of projects" [value]="p.id">
+                            {{ p.code }} - {{ p.client?.nom }} ({{ p.quantiteCible }} {{ p.unite }})
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p class="importer-hint">
+                    <i class="fas fa-info-circle me-1"></i> 
+                    Le calcul automatique déduira la quantité par unité à partir des réservations totales du projet.
+                  </p>
+                </div>
               </div>
             }
-            <small class="form-hint">Ex: Huile extra vierge 1L, Huile vrac premium</small>
-          </div>
-        </div>
 
-        <div class="col-md-6">
-          <div class="form-group floating-group">
-            <div class="input-wrapper">
-              <i class="fas fa-barcode input-icon"></i>
-              <input type="text"
-                     id="code"
-                     class="modern-input"
-                     formControlName="code"
-                     placeholder=" ">
-              <label for="code" class="floating-label">Code interne</label>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <div class="row g-4">
-        <div class="col-md-4">
-          <div class="form-group floating-group">
-            <div class="input-wrapper">
-              <i class="fas fa-layer-group input-icon"></i>
-              <select id="type" class="modern-input" formControlName="type">
-                <option *ngFor="let type of productTypes" [value]="type">
-                  {{ formatProductType(type) }}
-                </option>
-              </select>
-              <label for="type" class="floating-label">Type <span class="required-star">*</span></label>
-            </div>
-          </div>
-        </div>
 
-        <div class="col-md-4">
-          <div class="form-group floating-group">
-            <div class="input-wrapper">
-              <i class="fas fa-list input-icon"></i>
-              <input type="text"
-                     id="category"
-                     class="modern-input"
-                     formControlName="category"
-                     placeholder=" ">
-              <label for="category" class="floating-label">Categorie</label>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-4">
-          <div class="form-group floating-group">
-            <div class="input-wrapper">
-              <i class="fas fa-ruler-combined input-icon"></i>
-              <select id="unitOfMeasure" class="modern-input" formControlName="unitOfMeasure">
-                <option *ngFor="let unit of unitOptions" [value]="unit">{{ unit }}</option>
-              </select>
-              <label for="unitOfMeasure" class="floating-label">Unite</label>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row g-4">
-        <div class="col-md-4">
-          <div class="form-group floating-group">
-            <div class="input-wrapper">
-              <i class="fas fa-certificate input-icon"></i>
-              <input type="text" id="grade" class="modern-input" formControlName="grade" placeholder=" ">
-              <label for="grade" class="floating-label">Grade huile</label>
-            </div>
-            <small class="form-hint">Extra vierge, vierge, lampante</small>
-          </div>
-        </div>
-
-        <div class="col-md-4">
-          <div class="form-group floating-group">
-            <div class="input-wrapper">
-              <i class="fas fa-map-marker-alt input-icon"></i>
-              <input type="text" id="origin" class="modern-input" formControlName="origin" placeholder=" ">
-              <label for="origin" class="floating-label">Origine</label>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-4">
-          <div class="form-group floating-group">
-            <div class="input-wrapper">
-              <i class="fas fa-calendar input-icon"></i>
-              <input type="text" id="harvestCampaign" class="modern-input" formControlName="harvestCampaign" placeholder=" ">
-              <label for="harvestCampaign" class="floating-label">Campagne</label>
-            </div>
-            <small class="form-hint">Ex: 2025/2026</small>
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group floating-group">
-        <div class="input-wrapper">
-          <i class="fas fa-align-left input-icon"></i>
-          <input type="text" id="description" class="modern-input" formControlName="description" placeholder=" ">
-          <label for="description" class="floating-label">Description</label>
-        </div>
-      </div>
-
-      @if (isNonVrac()) {
-        <div class="form-separator">
-          <span class="separator-text">Détails du Conditionnement (Produit Emballé)</span>
-        </div>
-        <p class="form-hint-text"><i class="fas fa-info-circle"></i> Le conditionnement utilise l'huile en vrac pour créer le produit fini.</p>
-
-        <div class="row g-4">
-          <div class="col-md-4">
-            <div class="form-group floating-group">
-              <div class="input-wrapper">
-                <i class="fas fa-wine-bottle input-icon"></i>
-                <input type="number"
-                       id="volume"
-                       class="modern-input"
-                       [class.is-invalid]="submitted && f['volume'].errors"
-                       formControlName="volume"
-                       step="1"
-                       min="0"
-                       placeholder=" ">
-                <label for="volume" class="floating-label">
-                  Volume unitaire ml <span class="required-star">*</span>
-                </label>
-              </div>
-              @if (submitted && f['volume'].errors) {
-                <div class="error-message animated">
-                  <i class="fas fa-exclamation-circle me-1"></i>
-                  <span>Le volume unitaire est requis</span>
+            @if (bomLines.length > 0) {
+              <div class="bom-lines-table">
+                <div class="bom-lines-header">
+                  <i class="fas fa-list-ul"></i>
+                  Nomenclature constituée ({{ bomLines.length }} article(s))
                 </div>
-              }
-            </div>
-          </div>
 
-          <div class="col-md-4">
-            <div class="form-group floating-group">
-              <div class="input-wrapper">
-                <i class="fas fa-box-open input-icon"></i>
-                <input type="text" id="packagingType" class="modern-input" formControlName="packagingType" placeholder=" ">
-                <label for="packagingType" class="floating-label">Type packaging</label>
-              </div>
-              <small class="form-hint">Bouteille verre, PET, bidon, bag-in-box</small>
-            </div>
-          </div>
+                <div class="table-responsive">
+                  <table class="bom-table">
+                    <thead>
+                    <tr>
+                      <th>Article</th>
+                      <th>Catégorie</th>
+                      <th>Quantité</th>
+                      <th>Unité</th>
+                      <th></th>
+                    </tr>
+                    </thead>
 
-          <div class="col-md-4">
-            <div class="form-group floating-group">
-              <div class="input-wrapper">
-                <i class="fas fa-trademark input-icon"></i>
-                <input type="text" id="brand" class="modern-input" formControlName="brand" placeholder=" ">
-                <label for="brand" class="floating-label">Marque</label>
-              </div>
-            </div>
-          </div>
-        </div>
+                    <tbody>
+                    <tr *ngFor="let line of bomLines; let i = index">
+                      <td>
+                        <i class="fas {{ getCatIcon(line.article.categorie) }} text-muted"></i>
+                        {{ line.article.nom }}
+                      </td>
 
-        <div class="row g-4">
-          <div class="col-md-4">
-            <div class="form-group floating-group">
-              <div class="input-wrapper">
-                <i class="fas fa-barcode input-icon"></i>
-                <input type="text" id="barcode" class="modern-input" formControlName="barcode" placeholder=" ">
-                <label for="barcode" class="floating-label">Code barre</label>
-              </div>
-            </div>
-          </div>
+                      <td>
+                        <span class="bom-cat-badge">{{ line.article.categorie }}</span>
+                      </td>
 
-          <div class="col-md-4">
-            <div class="form-group floating-group">
-              <div class="input-wrapper">
-                <i class="fas fa-boxes input-icon"></i>
-                <input type="number"
-                       id="unitsPerCarton"
-                       class="modern-input"
-                       formControlName="unitsPerCarton"
-                       min="1"
-                       placeholder=" ">
-                <label for="unitsPerCarton" class="floating-label">Unites par carton</label>
-              </div>
-              @if (submitted && f['unitsPerCarton'].errors) {
-                <div class="error-message animated">
-                  <i class="fas fa-exclamation-circle me-1"></i>
-                  <span>Minimum 1 unite</span>
+                      <td>
+                        <input
+                          type="number"
+                          class="bom-qty-inline"
+                          [(ngModel)]="line.quantity"
+                          [ngModelOptions]="{ standalone: true }"
+                          min="1" />
+                      </td>
+
+                      <td>{{ line.article.um }}</td>
+
+                      <td>
+                        <button type="button" class="bom-remove-btn" (click)="removeBomLine(i)">
+                          <i class="fas fa-trash-alt"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
                 </div>
-              }
-            </div>
-          </div>
-
-          <div class="col-md-4">
-            <div class="form-group floating-group">
-              <div class="input-wrapper">
-                <i class="fas fa-pallet input-icon"></i>
-                <input type="number"
-                       id="cartonsPerPallet"
-                       class="modern-input"
-                       formControlName="cartonsPerPallet"
-                       min="1"
-                       placeholder=" ">
-                <label for="cartonsPerPallet" class="floating-label">Cartons par palette</label>
               </div>
-              @if (submitted && f['cartonsPerPallet'].errors) {
-                <div class="error-message animated">
-                  <i class="fas fa-exclamation-circle me-1"></i>
-                  <span>Minimum 1 carton</span>
-                </div>
-              }
-            </div>
-          </div>
+            } @else {
+              <div class="bom-empty-state">
+                <i class="fas fa-box-open"></i>
+                <p>Aucun article ajouté à la nomenclature. Importez une nomenclature existante pour commencer.</p>
+              </div>
+            }
+          </section>
+        }
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="onCancel()">
+            <i class="fas fa-times"></i>
+            Annuler
+          </button>
+
+          <button type="submit" class="btn btn-primary" [disabled]="submitting">
+            @if (submitting) {
+              <span class="spinner-small"></span>
+              <span>Traitement...</span>
+            } @else {
+              <i class="fas fa-check"></i>
+              {{ isEditMode ? 'Mettre à jour' : 'Créer le produit' }}
+            }
+          </button>
         </div>
-
-        <div class="row g-4">
-          <div class="col-md-6">
-            <div class="form-group floating-group">
-              <div class="input-wrapper">
-                <i class="fas fa-weight input-icon"></i>
-                <input type="number"
-                       id="netWeight"
-                       class="modern-input"
-                       formControlName="netWeight"
-                       step="0.001"
-                       min="0"
-                       placeholder=" ">
-                <label for="netWeight" class="floating-label">Poids net kg</label>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-6">
-            <div class="form-group floating-group">
-              <div class="input-wrapper">
-                <i class="fas fa-weight-hanging input-icon"></i>
-                <input type="number"
-                       id="grossWeight"
-                       class="modern-input"
-                       formControlName="grossWeight"
-                       step="0.001"
-                       min="0"
-                       placeholder=" ">
-                <label for="grossWeight" class="floating-label">Poids brut kg</label>
-              </div>
-            </div>
-          </div>
-        </div>
-      }
-
-      @if (isVrac()) {
-        <div class="form-separator">
-          <span class="separator-text">Détails Huile (Vrac)</span>
-        </div>
-
-        <div class="row g-4">
-          <div class="col-md-6">
-            <div class="form-group floating-group">
-              <div class="input-wrapper">
-                <i class="fas fa-vial input-icon"></i>
-                <input type="number"
-                       id="density"
-                       class="modern-input"
-                       formControlName="density"
-                       step="0.0001"
-                       min="0"
-                       placeholder=" ">
-                <label for="density" class="floating-label">Densite</label>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-6">
-            <div class="form-group floating-group">
-              <div class="input-wrapper">
-                <i class="fas fa-industry input-icon"></i>
-                <input type="text" id="storageUnit" class="modern-input" formControlName="storageUnit" placeholder=" ">
-                <label for="storageUnit" class="floating-label">Cuve / stockage par defaut</label>
-              </div>
-            </div>
-          </div>
-        </div>
-      }
-
-      <div class="form-actions">
-        <button type="button" class="btn-outline" (click)="onCancel()">
-          <i class="fas fa-times me-2"></i>
-          Annuler
-        </button>
-        <button type="submit" class="btn-primary" [disabled]="submitting">
-          @if (submitting) {
-            <span class="spinner-small"></span>
-            <span class="ms-2">Traitement...</span>
-          } @else {
-            <i class="fas fa-check me-2"></i>
-            {{ isEditMode ? 'Mettre a jour' : 'Creer le produit' }}
-          }
-        </button>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
 </div>

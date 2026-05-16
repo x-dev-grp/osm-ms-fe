@@ -35,4 +35,8 @@ export class BomService {
   getAll(): Observable<Bom[]> {
     return this.http.get<Bom[]>(`${this.apiUrl}/all`);
   }
+
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }

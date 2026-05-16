@@ -1,14 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import {ActivatedRoute, Router, RouterLink} from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { SKUService } from '../../../services/sku.service';
 import { ProductType, ProductUnitOfMeasure, SKU, productTypeLabel } from '../../../models/sku.model';
+import { ArticleService } from '../../../services/article.service';
+import { Article, CategorieArticle } from '../../../models/article.model';
+import { BomService } from '../../../services/BomService';
+import { Bom } from '../../../models/Bom';
+import { BomLine } from '../../../models/BomLine';
+import { FormsModule } from '@angular/forms';
+
+
+export interface BomLineUi {
+  article: Article;
+  quantity: number;
+}
 
 @Component({
   selector: 'app-sku-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink],
   templateUrl: './sku-form.component.html',
   styleUrls: ['./sku-form.component.scss']
 })
@@ -22,11 +34,41 @@ export class SkuFormComponent implements OnInit {
   readonly productTypes: ProductType[] = ['VRAC', 'NON_VRAC'];
   readonly unitOptions: ProductUnitOfMeasure[] = ['L', 'KG', 'BOTTLE', 'CARTON'];
 
+  // --- BOM Builder state ---
+  // BOM categories depend on product type:
+  // - NON_VRAC (conditionné): full packaging chain
+  // - VRAC: no packaging BOM needed
+  readonly bomCategoriesConditionne: { key: CategorieArticle; label: string; icon: string }[] = [
+    { key: CategorieArticle.UNITE,       label: 'Unité (Bouteille / Contenant)', icon: 'fa-wine-bottle' },
+    { key: CategorieArticle.EMBALLAGE,   label: 'Emballage (Bouchon, Étiquette…)', icon: 'fa-tag' },
+    { key: CategorieArticle.COLIS,       label: 'Colis (Carton)', icon: 'fa-boxes' },
+    { key: CategorieArticle.PALETTE,     label: 'Palette', icon: 'fa-pallet' },
+    { key: CategorieArticle.CONSOMMABLE, label: 'Consommable (Colle, Encre…)', icon: 'fa-flask' },
+  ];
+
+  get activeBomCategories() {
+    return this.isNonVrac() ? this.bomCategoriesConditionne : [];
+  }
+
+  articlesByCategory: Partial<Record<CategorieArticle, Article[]>> = {};
+  loadingArticles: Partial<Record<CategorieArticle, boolean>> = {};
+  bomLines: BomLineUi[] = [];
+
+  // Per-category picker state
+  selectedArticleId: Partial<Record<CategorieArticle, string>> = {};
+  selectedQuantity: Partial<Record<CategorieArticle, number>> = {};
+
+  existingBoms: Bom[] = [];
+  selectedBomId: string = '';
+  loadingBoms = false;
+
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private skuService: SKUService
+    private skuService: SKUService,
+    private articleService: ArticleService,
+    private bomService: BomService
   ) {
     this.skuForm = this.fb.group({
       name: ['', [Validators.required]],
@@ -39,10 +81,7 @@ export class SkuFormComponent implements OnInit {
       origin: [''],
       harvestCampaign: [''],
       volume: [null],
-      packagingType: [''],
       barcode: [''],
-      unitsPerCarton: [null, [Validators.min(1)]],
-      cartonsPerPallet: [null, [Validators.min(1)]],
       netWeight: [null, [Validators.min(0)]],
       grossWeight: [null, [Validators.min(0)]],
       brand: [''],
@@ -59,9 +98,86 @@ export class SkuFormComponent implements OnInit {
       this.updateTypeFields(type, true);
     });
 
+    // Pre-load all BOM categories
+    this.bomCategoriesConditionne.forEach(cat => this.loadArticlesForCategory(cat.key));
+
+    this.loadAllBoms();
+
     if (this.isEditMode) {
       this.loadSku();
     }
+  }
+
+  loadArticlesForCategory(cat: CategorieArticle): void {
+    this.loadingArticles[cat] = true;
+    this.articleService.getArticlesByCategorie(cat).subscribe({
+      next: (articles) => {
+        this.articlesByCategory[cat] = articles.filter(a => a.actif !== false);
+        this.loadingArticles[cat] = false;
+      },
+      error: () => { this.loadingArticles[cat] = false; }
+    });
+  }
+
+  addBomLine(cat: CategorieArticle): void {
+    const articleId = this.selectedArticleId[cat];
+    const quantity = this.selectedQuantity[cat] ?? 1;
+    if (!articleId || quantity <= 0) return;
+
+    const article = (this.articlesByCategory[cat] || []).find(a => a.id === articleId);
+    if (!article) return;
+
+    // Avoid duplicates – update quantity if already added
+    const existing = this.bomLines.find(l => l.article.id === articleId);
+    if (existing) {
+      existing.quantity = quantity;
+    } else {
+      this.bomLines.push({ article, quantity });
+    }
+
+    // Reset picker for this category
+    this.selectedArticleId[cat] = '';
+    this.selectedQuantity[cat] = 1;
+  }
+
+  removeBomLine(index: number): void {
+    this.bomLines.splice(index, 1);
+  }
+
+  getCatIcon(cat: CategorieArticle): string {
+    return this.bomCategoriesConditionne.find(c => c.key === cat)?.icon ?? 'fa-box';
+  }
+
+  loadAllBoms(): void {
+    this.loadingBoms = true;
+    this.bomService.getAll().subscribe({
+      next: (boms) => {
+        this.existingBoms = boms;
+        this.loadingBoms = false;
+      },
+      error: () => {
+        this.loadingBoms = false;
+      }
+    });
+  }
+
+  applyExistingBom(bomId: string): void {
+    if (!bomId) return;
+    const selectedBom = this.existingBoms.find(b => b.id === bomId);
+    if (!selectedBom || !selectedBom.lines) return;
+
+    // We copy the lines from the existing BOM
+    this.bomLines = [];
+    selectedBom.lines.forEach(line => {
+      if (line.articleId) {
+        this.articleService.getArticleById(line.articleId).subscribe({
+          next: (article) => {
+            this.bomLines.push({ article, quantity: line.quantity });
+          },
+          error: (err) => console.error('Error fetching article for BOM copy', err)
+        });
+      }
+    });
   }
 
   loadSku(): void {
@@ -78,10 +194,7 @@ export class SkuFormComponent implements OnInit {
           origin: sku.origin || '',
           harvestCampaign: sku.harvestCampaign || '',
           volume: sku.volume || null,
-          packagingType: sku.packagingType || '',
           barcode: sku.barcode || '',
-          unitsPerCarton: sku.unitsPerCarton ?? sku.unitesParCols ?? null,
-          cartonsPerPallet: sku.cartonsPerPallet ?? sku.colisParPalette ?? null,
           netWeight: sku.netWeight || null,
           grossWeight: sku.grossWeight || null,
           brand: sku.brand || '',
@@ -89,6 +202,25 @@ export class SkuFormComponent implements OnInit {
           storageUnit: sku.storageUnit || ''
         });
         this.updateTypeFields(sku.type || 'NON_VRAC');
+
+        // Load existing BOM lines for this SKU
+        if (sku.id) {
+          this.bomService.getBomsByProduct(sku.id).subscribe({
+            next: (boms) => {
+              if (boms?.length > 0 && boms[0].lines) {
+                boms[0].lines.forEach((line: BomLine) => {
+                  if (line.articleId) {
+                    this.articleService.getArticleById(line.articleId).subscribe({
+                      next: (article) => {
+                        this.bomLines.push({ article, quantity: line.quantity });
+                      }
+                    });
+                  }
+                });
+              }
+            }
+          });
+        }
       },
       error: (err) => {
         console.error('Erreur chargement produit', err);
@@ -102,36 +234,42 @@ export class SkuFormComponent implements OnInit {
     this.submitted = true;
     this.error = null;
 
-    if (this.skuForm.invalid) {
-      return;
-    }
+    if (this.skuForm.invalid) return;
 
     this.submitting = true;
     const sku: SKU = this.skuForm.value;
 
-    if (this.isEditMode) {
-      this.skuService.updateProduct(this.skuId!, sku).subscribe({
-        next: () => {
-          this.router.navigate(['/stock/products', this.skuId]);
-        },
-        error: (err) => {
-          console.error('Erreur mise à jour', err);
-          this.error = err.error?.message || 'Erreur lors de la mise à jour';
-          this.submitting = false;
+    const saveSku$ = this.isEditMode
+      ? this.skuService.updateProduct(this.skuId!, sku)
+      : this.skuService.createProduct(sku);
+
+    saveSku$.subscribe({
+      next: (saved) => {
+        const skuId = saved.id!;
+        if (this.bomLines.length > 0) {
+          const bom = {
+            productId: skuId,
+            version: '1.0',
+            lines: this.bomLines.map(l => ({
+              articleId: l.article.id!,
+              quantity: l.quantity,
+              unitOfMeasure: l.article.um
+            }))
+          };
+          this.bomService.create(bom as any).subscribe({
+            next: () => this.router.navigate(['/stock/products', skuId]),
+            error: () => this.router.navigate(['/stock/products', skuId])
+          });
+        } else {
+          this.router.navigate(['/stock/products', skuId]);
         }
-      });
-    } else {
-      this.skuService.createProduct(sku).subscribe({
-        next: (created) => {
-          this.router.navigate(['/stock/products', created.id]);
-        },
-        error: (err) => {
-          console.error('Erreur création', err);
-          this.error = err.error?.message || 'Erreur lors de la création';
-          this.submitting = false;
-        }
-      });
-    }
+      },
+      error: (err) => {
+        console.error('Erreur création/maj', err);
+        this.error = err.error?.message || 'Erreur lors de la création';
+        this.submitting = false;
+      }
+    });
   }
 
   onCancel(): void {
@@ -142,20 +280,22 @@ export class SkuFormComponent implements OnInit {
     }
   }
 
-  get f() {
-    return this.skuForm.controls;
+  get f() { return this.skuForm.controls; }
+  isVrac(): boolean { return this.skuForm.get('type')?.value === 'VRAC'; }
+  isNonVrac(): boolean { return !this.isVrac(); }
+  formatProductType(type?: ProductType): string { return productTypeLabel(type); }
+
+  get vracUnitOptions(): ProductUnitOfMeasure[] { return ['L', 'KG']; }
+  get conditionneUnitOptions(): ProductUnitOfMeasure[] { return ['BOTTLE', 'CARTON']; }
+  get currentUnitOptions(): ProductUnitOfMeasure[] {
+    return this.isVrac() ? this.vracUnitOptions : this.conditionneUnitOptions;
   }
 
-  isVrac(): boolean {
-    return this.skuForm.get('type')?.value === 'VRAC';
-  }
-
-  isNonVrac(): boolean {
-    return !this.isVrac();
-  }
-
-  formatProductType(type?: ProductType): string {
-    return productTypeLabel(type);
+  openNewArticle(categorie?: CategorieArticle): void {
+    const url = categorie
+      ? `/stock/articles/nouveau?categorie=${categorie}`
+      : '/stock/articles/nouveau';
+    window.open(url, '_blank');
   }
 
   private updateTypeFields(type: ProductType, clearMismatch = false): void {
@@ -166,18 +306,17 @@ export class SkuFormComponent implements OnInit {
       unitControl?.setValue(!unitControl?.value || unitControl.value === 'BOTTLE' || unitControl.value === 'CARTON' ? 'L' : unitControl.value, { emitEvent: false });
       volumeControl?.clearValidators();
       if (clearMismatch) {
-        ['volume', 'packagingType', 'barcode', 'unitsPerCarton', 'cartonsPerPallet', 'netWeight', 'grossWeight', 'brand']
-          .forEach((controlName) => this.skuForm.get(controlName)?.reset(controlName === 'volume' ? null : '', { emitEvent: false }));
+        ['volume', 'barcode', 'netWeight', 'grossWeight', 'brand']
+          .forEach(c => this.skuForm.get(c)?.reset(c === 'volume' ? null : '', { emitEvent: false }));
       }
     } else {
       unitControl?.setValue(unitControl.value === 'L' || !unitControl.value ? 'BOTTLE' : unitControl.value, { emitEvent: false });
       volumeControl?.setValidators([Validators.required, Validators.min(0.001)]);
       if (clearMismatch) {
         ['density', 'storageUnit']
-          .forEach((controlName) => this.skuForm.get(controlName)?.reset(controlName === 'density' ? null : '', { emitEvent: false }));
+          .forEach(c => this.skuForm.get(c)?.reset(c === 'density' ? null : '', { emitEvent: false }));
       }
     }
-
     volumeControl?.updateValueAndValidity({ emitEvent: false });
   }
 }

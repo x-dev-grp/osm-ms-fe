@@ -39,4 +39,18 @@ export class BomListComponent implements OnInit {
       }
     });
   }
+
+  deleteBom(id: string): void {
+    if (confirm('Êtes-vous sûr de vouloir supprimer cette nomenclature ?')) {
+      this.bomService.delete(id).subscribe({
+        next: () => {
+          this.loadBoms();
+        },
+        error: (err) => {
+          console.error('Erreur lors de la suppression de la nomenclature', err);
+          alert('Impossible de supprimer cette nomenclature car elle est probablement utilisée par un projet ou une commande.');
+        }
+      });
+    }
+  }
 }
