@@ -10,6 +10,8 @@ import { BomService } from '../../../services/BomService';
 import { Bom } from '../../../models/Bom';
 import { BomLine } from '../../../models/BomLine';
 import { FormsModule } from '@angular/forms';
+import { ToastService } from '../../../../shared/services/toast.service';
+import { CampaignService } from '../../../../shared/services/campaign.service';
 
 
 export interface BomLineUi {
@@ -30,7 +32,6 @@ export class SkuFormComponent implements OnInit {
   skuId?: string;
   submitted = false;
   submitting = false;
-  error: string | null = null;
   readonly productTypes: ProductType[] = ['VRAC', 'NON_VRAC'];
   readonly unitOptions: ProductUnitOfMeasure[] = ['L', 'KG', 'BOTTLE', 'CARTON'];
 
@@ -62,13 +63,19 @@ export class SkuFormComponent implements OnInit {
   selectedBomId: string = '';
   loadingBoms = false;
 
+  get codePlaceholder(): string {
+    return this.isEditMode ? '' : 'Genere automatiquement apres creation';
+  }
+
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     private skuService: SKUService,
     private articleService: ArticleService,
-    private bomService: BomService
+    private bomService: BomService,
+    private toast: ToastService,
+    private campaignService: CampaignService
   ) {
     this.skuForm = this.fb.group({
       name: ['', [Validators.required]],
@@ -93,6 +100,11 @@ export class SkuFormComponent implements OnInit {
   ngOnInit(): void {
     this.skuId = this.route.snapshot.params['id'];
     this.isEditMode = !!this.skuId;
+    if (!this.isEditMode) {
+      this.skuForm.patchValue({
+        harvestCampaign: this.campaignService.getCurrentCampaignLabel()
+      });
+    }
     this.updateTypeFields(this.skuForm.get('type')?.value || 'NON_VRAC');
     this.skuForm.get('type')?.valueChanges.subscribe((type: ProductType) => {
       this.updateTypeFields(type, true);
@@ -224,20 +236,22 @@ export class SkuFormComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erreur chargement produit', err);
-        this.error = 'Impossible de charger le produit';
-        setTimeout(() => this.router.navigate(['/stock/products']), 2000);
+        this.toast.error('Impossible de charger le produit');
+        this.router.navigate(['/stock/products']);
       }
     });
   }
 
   onSubmit(): void {
     this.submitted = true;
-    this.error = null;
 
-    if (this.skuForm.invalid) return;
+    if (this.skuForm.invalid) {
+      this.toast.warning('Veuillez verifier les champs du formulaire');
+      return;
+    }
 
     this.submitting = true;
-    const sku: SKU = this.skuForm.value;
+    const sku: SKU = this.skuForm.getRawValue();
 
     const saveSku$ = this.isEditMode
       ? this.skuService.updateProduct(this.skuId!, sku)
@@ -257,16 +271,23 @@ export class SkuFormComponent implements OnInit {
             }))
           };
           this.bomService.create(bom as any).subscribe({
-            next: () => this.router.navigate(['/stock/products', skuId]),
-            error: () => this.router.navigate(['/stock/products', skuId])
+            next: () => {
+              this.toast.success(this.isEditMode ? 'Produit mis a jour avec succes' : 'Produit cree avec succes');
+              this.router.navigate(['/stock/products', skuId]);
+            },
+            error: () => {
+              this.toast.warning('Produit enregistre, mais la nomenclature n a pas pu etre creee');
+              this.router.navigate(['/stock/products', skuId]);
+            }
           });
         } else {
+          this.toast.success(this.isEditMode ? 'Produit mis a jour avec succes' : 'Produit cree avec succes');
           this.router.navigate(['/stock/products', skuId]);
         }
       },
       error: (err) => {
         console.error('Erreur création/maj', err);
-        this.error = err.error?.message || 'Erreur lors de la création';
+        this.toast.error(err.error?.message || 'Erreur lors de l enregistrement du produit');
         this.submitting = false;
       }
     });

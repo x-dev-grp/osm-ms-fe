@@ -1,7 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { forkJoin } from 'rxjs';
 import { SKUService } from '../../../services/sku.service';
+import { LabelService } from '../../../../labels/services/label.service';
+import { LabelContentDto } from '../../../../labels/models/label.model';
+import { ToastService } from '../../../../shared/services/toast.service';
+import {
+  ConfirmationDialogService,
+  ConfirmationType
+} from '../../../../shared/services/confirmation-dialog.service';
 import {
   ProductType,
   SKU,
@@ -20,14 +28,18 @@ import {
 })
 export class SkuDetailComponent implements OnInit {
   sku: SKU | null = null;
+  relatedLabels: LabelContentDto[] = [];
   loading = true;
-  error: string | null = null;
-  successMessage: string | null = null;
+  labelsLoading = false;
+  deleting = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private skuService: SKUService
+    private skuService: SKUService,
+    private labelService: LabelService,
+    private toast: ToastService,
+    private confirmationDialog: ConfirmationDialogService
   ) {}
 
   ngOnInit(): void {
@@ -35,34 +47,56 @@ export class SkuDetailComponent implements OnInit {
     if (id) {
       this.loadSku(id);
     } else {
-      this.error = 'ID du produit manquant';
+      this.toast.error('ID du produit manquant');
       this.loading = false;
+      this.router.navigate(['/stock/products']);
     }
   }
 
   loadSku(id: string): void {
     this.loading = true;
-    this.error = null;
+    this.labelsLoading = true;
 
-    this.skuService.getProductById(id).subscribe({
-      next: (data) => {
-        this.sku = data;
+    forkJoin({
+      sku: this.skuService.getProductById(id),
+      labels: this.labelService.getByProductId(id)
+    }).subscribe({
+      next: ({ sku, labels }) => {
+        this.sku = sku;
+        this.relatedLabels = [...(labels ?? [])].sort((left, right) =>
+          (right.packagingDate || right.finalizedAt || '').localeCompare(left.packagingDate || left.finalizedAt || '')
+        );
         this.loading = false;
+        this.labelsLoading = false;
       },
       error: (err) => {
         console.error('Erreur chargement produit', err);
-        this.error = 'Impossible de charger le produit';
+        this.toast.error('Impossible de charger le produit');
         this.loading = false;
+        this.labelsLoading = false;
+        this.router.navigate(['/stock/products']);
       }
     });
   }
   toActif(): void {
     if (!this.sku?.id) return;
 
-    const action = this.sku.actif ? 'désactiver' : 'activer';
-    const message = `Voulez-vous ${action} le produit "${this.getProductName()}" ?`;
+    const isCurrentlyActif = this.sku.actif === true;
+    const action = isCurrentlyActif ? 'desactiver' : 'activer';
 
-    if (confirm(message)) {
+    this.confirmationDialog.confirm({
+      title: 'Confirmation',
+      message: `Voulez-vous vraiment ${action} le produit "${this.getProductName()}" ?`,
+      type: ConfirmationType.WARNING,
+      confirmText: isCurrentlyActif ? 'Desactiver' : 'Activer',
+      cancelText: 'Annuler',
+      showIcon: true,
+      destructive: isCurrentlyActif
+    }).subscribe((result) => {
+      if (!result?.confirmed || !this.sku?.id) {
+        return;
+      }
+
       const request = this.sku.actif
         ? this.skuService.desactiverSku(this.sku.id)
         : this.skuService.activerSku(this.sku.id);
@@ -72,19 +106,45 @@ export class SkuDetailComponent implements OnInit {
           if (this.sku) {
             this.sku.actif = !this.sku.actif;
           }
-          this.successMessage = `Produit ${action} avec succès`;
+          this.toast.success(`Produit ${action} avec succes`);
         },
         error: (err) => {
-          console.error(`Erreur lors de la ${action}`, err);
-          this.error = `Erreur lors de ${action}`;
-          setTimeout(() => this.error = null, 3000);
+          console.error(`Erreur lors de ${action}`, err);
+          this.toast.error(`Erreur lors de ${action}`);
         }
       });
-    }
+    });
   }
 
   goBack(): void {
     this.router.navigate(['/stock/products']);
+  }
+
+  deleteSku(): void {
+    if (!this.sku?.id) {
+      return;
+    }
+
+    const productName = this.getProductName();
+    this.confirmationDialog.confirmDelete(productName, `Voulez-vous vraiment supprimer le produit "${productName}" ?`)
+      .subscribe((result) => {
+        if (!result?.confirmed || !this.sku?.id) {
+          return;
+        }
+
+        this.deleting = true;
+        this.skuService.deleteSku(this.sku.id).subscribe({
+          next: () => {
+            this.toast.success('Produit supprime avec succes');
+            this.router.navigate(['/stock/products']);
+          },
+          error: (err) => {
+            console.error('Erreur suppression produit', err);
+            this.toast.error('Erreur lors de la suppression du produit');
+            this.deleting = false;
+          }
+        });
+      });
   }
 
   getProductName(): string {
@@ -144,5 +204,28 @@ export class SkuDetailComponent implements OnInit {
       this.sku.storageUnit ||
       this.sku.unitOfMeasure
     );
+  }
+
+  relatedLabelsCount(): number {
+    return this.relatedLabels.length;
+  }
+
+  labelStatusLabel(status?: string): string {
+    switch (status) {
+      case 'FINALIZED':
+        return 'Finalisee';
+      case 'DRAFT':
+        return 'Brouillon';
+      case 'VALIDATED':
+        return 'Validee';
+      case 'EXPORTED_JSON':
+        return 'Exportee';
+      default:
+        return status || 'Inconnue';
+    }
+  }
+
+  labelDate(label: LabelContentDto): string {
+    return label.packagingDate || label.finalizedAt || '-';
   }
 }

@@ -97,6 +97,16 @@ table {
   }
 }
 
+.string-field {
+  max-width: 460px;
+}
+
+.empty-state-cell {
+  padding: 1rem;
+  text-align: center;
+  color: #77796e;
+}
+
 @media screen and (max-width: 768px) {
   :host {
     padding: 16px;

@@ -169,6 +169,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.42rem;
+  min-width: 0;
 
   &.full-row {
     grid-column: 1 / -1;
@@ -206,7 +207,9 @@ label {
 .bom-select,
 .bom-qty-input,
 .bom-qty-inline {
+  box-sizing: border-box;
   width: 100%;
+  max-width: 100%;
   min-height: 39px;
   border-radius: 7px;
   border: 1px solid #d7d5cc;
@@ -234,11 +237,23 @@ label {
   }
 }
 
+.readonly-control {
+  background: #f5f1e6;
+  color: #5f6459;
+  cursor: default;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .form-hint {
+  display: block;
+  max-width: 100%;
   margin-top: -0.05rem;
   font-size: 0.78rem;
   color: #77796e;
   font-style: italic;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .invalid-feedback {
