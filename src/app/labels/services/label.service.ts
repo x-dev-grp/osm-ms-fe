@@ -38,6 +38,12 @@ export class LabelService {
       .pipe(map((response) => response.data));
   }
 
+  getByProductId(productId: string): Observable<LabelContentDto[]> {
+    return this.http
+      .get<LabelApiResponse<LabelContentDto[]>>(`${this.baseUrl}/product/${productId}`)
+      .pipe(map((response) => response.data ?? []));
+  }
+
   update(id: string, request: LabelContentUpdateRequestDto): Observable<LabelContentDto> {
     return this.http
       .put<LabelApiResponse<LabelContentDto>>(`${this.baseUrl}/${id}`, request)

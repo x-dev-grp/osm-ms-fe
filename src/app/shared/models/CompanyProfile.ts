@@ -19,6 +19,10 @@ export interface CompanyProfile {
   city?: string;
   postalCode?: string;
   governorate?: string;
+  campaignStartMonth?: number;
+  campaignStartDay?: number;
+  campaignEndMonth?: number;
+  campaignEndDay?: number;
   /** Base64‑encoded image data for logo */
   logoData?: string;
   /** MIME type of the logo (e.g. "image/png") */

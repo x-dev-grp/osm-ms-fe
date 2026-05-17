@@ -251,6 +251,7 @@ export class LabelWorkflowComponent implements OnInit {
 
     const request: LabelGenerateRequestDto = {
       lotId: selectedOp?.target?.id ?? '',
+      productId: formValue.packagingId ?? '',
       filtrationOperationId: selectedOp?.operationId,
       packagingId: formValue.packagingId ?? '',
       packagingDate: formValue.packagingDate ?? undefined,

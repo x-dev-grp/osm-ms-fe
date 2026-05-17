@@ -1,194 +1,279 @@
-<div class="modern-container">
-  <div *ngIf="successMessage" class="alert-modern alert-success slide-down">
-    <div class="alert-icon">
-      <i class="fas fa-check-circle"></i>
-    </div>
-    <div class="alert-content">{{ successMessage }}</div>
-    <button class="alert-close" (click)="successMessage = null">
-      <i class="fas fa-times"></i>
-    </button>
-  </div>
+<div class="produits-page">
+  <section class="hero-card">
+    <div class="hero-content">
+      <div class="hero-icon">
+        <mat-icon>inventory_2</mat-icon>
+      </div>
 
-  <div *ngIf="error" class="alert-modern alert-danger slide-down">
-    <div class="alert-icon">
-      <i class="fas fa-exclamation-triangle"></i>
+      <div>
+        <div class="eyebrow">Stock · Produits finis</div>
+        <h1>Produits</h1>
+        <p>
+          Pilotez votre catalogue de produits finis, suivez leur statut et gardez une vue claire sur le conditionnement.
+        </p>
+      </div>
     </div>
-    <div class="alert-content">{{ error }}</div>
-    <button class="alert-close" (click)="error = null">
-      <i class="fas fa-times"></i>
-    </button>
-  </div>
-  <div class="header-section glass-effect">
-    <div class="d-flex justify-content-between align-items-center">
-      <div class="header-left">
-        <div class="header-icon-wrapper">
-          <i class="fas fa-barcode"></i>
-        </div>
+
+    <div class="header-actions">
+      <button
+        mat-icon-button
+        class="btn-refresh icon-only-button"
+        matTooltip="Actualiser"
+        matTooltipPosition="above"
+        aria-label="Actualiser"
+        (click)="loadSkus()"
+        [disabled]="loading()"
+      >
+        <mat-icon [class.animate-spin]="loading()">refresh</mat-icon>
+      </button>
+
+      <button
+        mat-icon-button
+        class="btn-create icon-only-button"
+        matTooltip="Nouveau produit"
+        matTooltipPosition="above"
+        aria-label="Nouveau produit"
+        routerLink="nouveau"
+      >
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+  </section>
+
+  <section class="kpis">
+    <div class="kpi-card kpi-total">
+      <div class="kpi-top">
         <div>
-          <h1 class="page-title gradient-text">Gestion des produits</h1>
-          <p class="stats-badge">
-            <i class="fas fa-database me-1"></i>
-            <span>{{ skus.length }} produit(s) enregistré(s)</span>
-          </p>
+          <div class="label">Total produits</div>
+          <div class="value">{{ totalCount() }}</div>
+        </div>
+        <div class="kpi-icon">
+          <mat-icon>inventory</mat-icon>
         </div>
       </div>
-      <div class="header-actions">
-        <button class="btn-create" routerLink="nouveau">
-          <i class="fas fa-plus me-2"></i>
-          Nouveau produit
-          <div class="btn-glow"></div>
-        </button>
-      </div>
+      <div class="kpi-caption">Tous les produits enregistrés</div>
     </div>
-  </div>
 
-  <div class="filters-section glass-effect">
-    <div class="filters-header">
-      <div class="filters-title">
-        <i class="fas fa-sliders-h me-2"></i> Filtres de recherche
-      </div>
-      <div class="active-filters" *ngIf="searchTerm || categoryFilter">
-        <span class="filter-chip">Filtres actifs</span>
-      </div>
-    </div>
-    <div class="filters-body">
-      <div class="row g-4">
-
-        <div class="col-md-5">
-          <div class="filter-group">
-            <label class="filter-label"><i class="fas fa-search me-1"></i> Recherche</label>
-            <div class="search-wrapper">
-              <i class="fas fa-search search-icon"></i>
-              <input type="text" class="filter-input search-input" placeholder="Rechercher par code SKU, catégorie..."
-                [(ngModel)]="searchTerm" (input)="onSearch()">
-              <button *ngIf="searchTerm" class="clear-search" (click)="searchTerm=''; onSearch()">
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
-          </div>
+    <div class="kpi-card kpi-ok">
+      <div class="kpi-top">
+        <div>
+          <div class="label">Actifs</div>
+          <div class="value">{{ activeCount() }}</div>
         </div>
-        <div class="col-md-4">
-          <div class="filter-group">
-            <label class="filter-label"><i class="fas fa-tag me-1"></i> Catégorie</label>
-            <div class="filter-select-wrapper">
-              <select class="filter-select" [(ngModel)]="categoryFilter" (change)="onSearch()">
-                <option value="">Toutes les catégories</option>
-                <option *ngFor="let cat of getCategories()" [value]="cat">{{ cat }}</option>
-              </select>
-              <i class="fas fa-chevron-down select-arrow"></i>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-3">
-          <div class="filter-group">
-            <label>&nbsp;</label>
-            <button class="btn-reset" (click)="resetFilters()">
-              <i class="fas fa-undo-alt me-2"></i> Réinitialiser
-            </button>
-          </div>
+        <div class="kpi-icon">
+          <mat-icon>verified</mat-icon>
         </div>
       </div>
+      <div class="kpi-caption">Produits disponibles à l'utilisation</div>
     </div>
-  </div>
-  <div *ngIf="loading" class="loading-state-modern">
-    <div class="spinner-container">
-      <div class="spinner-ring"></div>
-      <div class="spinner-ring-inner"></div>
-    </div>
-    <p class="loading-text">Chargement des SKUs...</p>
-  </div>
 
-  <div *ngIf="!loading" class="table-section glass-effect">
+    <div class="kpi-card kpi-warn">
+      <div class="kpi-top">
+        <div>
+          <div class="label">Vrac</div>
+          <div class="value">{{ bulkCount() }}</div>
+        </div>
+        <div class="kpi-icon">
+          <mat-icon>science</mat-icon>
+        </div>
+      </div>
+      <div class="kpi-caption">Produits gérés hors conditionnement unitaire</div>
+    </div>
+  </section>
+
+  <section class="filters-card">
+    <div class="filters-title">
+      <mat-icon>tune</mat-icon>
+      <span>Filtres de recherche</span>
+    </div>
+
+    <div class="filters-grid">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Rechercher</mat-label>
+        <mat-icon matPrefix>search</mat-icon>
+        <input
+          matInput
+          (input)="onSearch($event)"
+          [value]="searchTerm()"
+          placeholder="Nom, code, categorie, marque..."
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Categorie</mat-label>
+        <mat-icon matPrefix>sell</mat-icon>
+        <mat-select (selectionChange)="onCategoryChange($event.value)" [value]="categoryFilter()">
+          <mat-option value="">Toutes les categories</mat-option>
+          <mat-option *ngFor="let category of getCategories()" [value]="category">{{ category }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Type</mat-label>
+        <mat-icon matPrefix>layers</mat-icon>
+        <mat-select (selectionChange)="onTypeChange($event.value)" [value]="typeFilter()">
+          <mat-option value="">Tous les types</mat-option>
+          <mat-option *ngFor="let type of productTypes" [value]="type">{{ formatProductType(type) }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button
+        mat-icon-button
+        class="btn-reset icon-only-button"
+        matTooltip="Reinitialiser les filtres"
+        matTooltipPosition="above"
+        aria-label="Reinitialiser les filtres"
+        (click)="resetFilters()"
+        [disabled]="!searchTerm() && !categoryFilter() && !typeFilter()"
+      >
+        <mat-icon>filter_alt_off</mat-icon>
+      </button>
+    </div>
+  </section>
+
+  <section class="table-card">
     <div class="table-header">
-      <div class="results-info">
-        <div class="info-badge">
-          <i class="fas fa-list-ul me-2"></i>
-          <span>{{ filteredSkus.length }} résultat(s) affiché(s)</span>
-        </div>
-        <span *ngIf="filteredSkus.length !== skus.length" class="filtered-badge">
-          <i class="fas fa-filter me-1"></i> filtré sur {{ skus.length }} total
-        </span>
+      <div>
+        <h2>Liste des produits</h2>
+        <p>Vue opérationnelle des produits finis et de leurs informations de conditionnement.</p>
+      </div>
+      <div class="table-badge">
+        {{ dataSource.filteredData.length || totalCount() }} produit(s)
       </div>
     </div>
 
-    <div class="table-responsive">
-      <table class="modern-table">
-        <thead>
-          <tr>
-            <th>Code SKU</th>
-            <th>Catégorie</th>
-            <th>Statut</th>
-            <th class="text-center">Volume</th>
-            <th class="text-center">Unités/Colis</th>
-            <th class="text-center">Colis/Palette</th>
-            <th class="text-center">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let sku of filteredSkus; let i = index" [style.animation-delay]="i*0.05+'s'"
-            [ngClass]="{'inactive-row': !sku.actif}">
-            <td>
-              <div class="sku-cell">
-                <span class="sku-code">{{ sku.code }}</span>
-                <span class="sku-id">ID: {{ sku.id | slice:0:8 }}...</span>
-              </div>
-            </td>
-            <td>
-              <span *ngIf="sku.category; else noCat" class="category-badge">
-                <i class="fas fa-tag me-1"></i> {{ sku.category }}
-              </span>
-              <ng-template #noCat><span class="text-muted">—</span></ng-template>
-            </td>
-            <td>
-              <span class="status-badge" [class.status-actif]="sku.actif" [class.status-inactif]="!sku.actif">
-                <i class="fas" [class.fa-check-circle]="sku.actif" [class.fa-ban]="!sku.actif"></i>
-                {{ sku.actif ? 'Actif' : 'Inactif' }}
-              </span>
-            </td>
-            <td class="text-center">{{ sku.volume ?? '—' }}</td>
-            <td class="text-center">{{ sku.unitesParCols ?? '—' }}</td>
-            <td class="text-center">{{ sku.colisParPalette ?? '—' }}</td>
-            <td class="actions">
-              <ng-container *ngIf="sku.actif; else inactiveActions">
-                <button class="btn btn-sm btn-info me-1" [routerLink]="['/stock/skus', sku.id]">
-                  <i class="fas fa-eye"></i>
-                </button>
-                <button class="btn btn-sm btn-warning me-1" [routerLink]="['/stock/skus', sku.id, 'editer']">
-                  <i class="fas fa-edit"></i>
-                </button>
-                <button class="btn btn-sm btn-danger" (click)="toActif(sku, $event)">
-                </button>
-              </ng-container>
+    @if (loading()) {
+      <div class="table-loading">
+        <mat-spinner diameter="36"></mat-spinner>
+      </div>
+    }
 
-              <ng-template #inactiveActions>
-                <button class="btn btn-sm btn-success" (click)="toActif(sku, $event)">
-                  <i class="fas fa-check-circle"></i> Activer
-                </button>
-              </ng-template>
-            </td>
-          </tr>
+    <div class="table-wrapper">
+      <table mat-table [dataSource]="dataSource" matSort class="w-full">
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Statut</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="status-pill" [class.active]="row.actif" [class.inactive]="!row.actif">
+              {{ row.actif ? 'Actif' : 'Inactif' }}
+            </span>
+          </td>
+        </ng-container>
 
-          <tr *ngIf="filteredSkus.length === 0">
-            <td colspan="7" class="empty-state">
-              <div class="empty-state-content">
-                <div class="empty-icon"><i class="fas fa-barcode"></i></div>
-                <h3>Aucun SKU trouvé</h3>
-                <p class="empty-text">
-                  {{ searchTerm || categoryFilter ? 'Aucun résultat ne correspond à vos critères' : 'Commencez par créer
-                  votre premier SKU' }}
-                </p>
-                <button *ngIf="searchTerm || categoryFilter" class="btn-reset-lg" (click)="resetFilters()">
-                  <i class="fas fa-undo-alt me-2"></i> Effacer les filtres
-                </button>
-                <button *ngIf="!searchTerm && !categoryFilter" class="btn-create-lg" routerLink="nouveau">
-                  <i class="fas fa-plus me-2"></i> Créer un SKU
-                </button>
+        <ng-container matColumnDef="code">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Code</th>
+          <td mat-cell *matCellDef="let row">
+            <code>{{ row.code || '-' }}</code>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Produit</th>
+          <td mat-cell *matCellDef="let row">
+            <div class="product-name">
+              <span class="product-dot"></span>
+              <div class="product-text">
+                <strong>{{ getProductName(row) }}</strong>
+                <span>{{ row.brand || row.grade || '-' }}</span>
               </div>
-            </td>
-          </tr>
-        </tbody>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Type</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="type-pill" [class.bulk]="row.type === 'VRAC'">
+              {{ formatProductType(row.type) }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="category">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Categorie</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="muted">{{ row.category || '-' }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="packaging">
+          <th mat-header-cell *matHeaderCellDef>Conditionnement</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="packaging-text">{{ packagingSummary(row) }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let row" class="text-right">
+            <button
+              mat-icon-button
+              class="action-button icon-only-button"
+              matTooltip="Actions"
+              matTooltipPosition="above"
+              aria-label="Actions"
+              [matMenuTriggerFor]="menu"
+            >
+              <mat-icon>more_vert</mat-icon>
+            </button>
+
+            <mat-menu #menu="matMenu" xPosition="before">
+              <button mat-menu-item [routerLink]="['/stock/products', row.id]">
+                <mat-icon>visibility</mat-icon>
+                <span>Details</span>
+              </button>
+
+              <button mat-menu-item [routerLink]="['/stock/products', row.id, 'edit']">
+                <mat-icon>edit</mat-icon>
+                <span>Modifier</span>
+              </button>
+
+              <mat-divider></mat-divider>
+
+              <button mat-menu-item (click)="toActif(row)" [disabled]="togglingId() === row.id">
+                @if (row.actif) {
+                  <mat-icon>toggle_on</mat-icon>
+                  <span>Desactiver</span>
+                } @else {
+                  <mat-icon>toggle_off</mat-icon>
+                  <span>Activer</span>
+                }
+              </button>
+
+              <button mat-menu-item (click)="deleteSku(row)" [disabled]="deletingId() === row.id">
+                <mat-icon>delete</mat-icon>
+                <span>Supprimer</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns;"
+          [class.opacity-50]="!row.actif"
+        ></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell empty" colspan="7">
+            <div class="empty-state">
+              <mat-icon>inventory_2</mat-icon>
+
+              @if (!loading()) {
+                <strong>Aucun produit trouve.</strong>
+                <span>Modifiez les filtres ou creez un nouveau produit.</span>
+              } @else {
+                <strong>Chargement des donnees...</strong>
+              }
+            </div>
+          </td>
+        </tr>
       </table>
     </div>
-  </div>
+
+    <mat-paginator
+      [pageSizeOptions]="[10, 25, 50]"
+      aria-label="Selectionner la page"
+    ></mat-paginator>
+  </section>
 </div>

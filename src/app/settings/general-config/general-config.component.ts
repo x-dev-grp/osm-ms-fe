@@ -13,14 +13,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
 import { SharedModule } from '../../shared/shared.module';
-import { BankAccount } from '../../finance/models/BankAccount';
 import { CompanyProfileService } from '../../shared/services/company-profile.service';
 import { CompanyProfile } from '../../shared/models/CompanyProfile';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { TypeCategory } from '../../shared/models/type-category.enum';
 import { CompanyProfileComponent } from '../company/company-profile.component';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ParameterComponent } from '../parameter/parameter.component';
+import { CampaignService } from '../../shared/services/campaign.service';
 
 
 @Component({
@@ -53,19 +52,42 @@ export class GeneralConfigComponent implements OnInit {
   hrConfigForm!: FormGroup;
   otherConfigForm!: FormGroup;
   activeTab: string = 'company'; // default tab
+  companyProfile: CompanyProfile | null = null;
 
   productionConfigFormEnabled = false;
   financeConfigFormEnabled = false;
   hrConfigFormEnabled = false;
   otherConfigFormEnabled = false;
 
+  readonly months = [
+    { value: 1, label: 'Janvier' },
+    { value: 2, label: 'Fevrier' },
+    { value: 3, label: 'Mars' },
+    { value: 4, label: 'Avril' },
+    { value: 5, label: 'Mai' },
+    { value: 6, label: 'Juin' },
+    { value: 7, label: 'Juillet' },
+    { value: 8, label: 'Aout' },
+    { value: 9, label: 'Septembre' },
+    { value: 10, label: 'Octobre' },
+    { value: 11, label: 'Novembre' },
+    { value: 12, label: 'Decembre' }
+  ];
+
   constructor(
     private fb: FormBuilder,
-    private toast: ToastService
+    private toast: ToastService,
+    private companyProfileService: CompanyProfileService,
+    private campaignService: CampaignService
   ) {}
 
   ngOnInit(): void {
-    this.productionConfigForm = this.fb.group({});
+    this.productionConfigForm = this.fb.group({
+      campaignStartMonth: [9, Validators.required],
+      campaignStartDay: [1, [Validators.required, Validators.min(1), Validators.max(31)]],
+      campaignEndMonth: [4, Validators.required],
+      campaignEndDay: [30, [Validators.required, Validators.min(1), Validators.max(31)]]
+    });
     this.financeConfigForm = this.fb.group({
       millingPricePerKg: [0]
     });
@@ -75,11 +97,40 @@ export class GeneralConfigComponent implements OnInit {
     this.financeConfigForm.disable();
     this.hrConfigForm.disable();
     this.otherConfigForm.disable();
+    this.loadProductionConfig();
   }
 
   onSaveProductionConfig(): void {
     if (this.productionConfigForm.invalid) return;
-    // Implement save logic for production config
+
+    const currentProfile = this.companyProfile ?? this.companyProfileService.getProfileFromCache();
+    if (!currentProfile) {
+      this.toast.error('Impossible de charger la configuration de campagne');
+      return;
+    }
+
+    const payload: CompanyProfile = {
+      ...currentProfile,
+      ...this.productionConfigForm.getRawValue()
+    };
+
+    this.companyProfileService.saveProfile(payload).subscribe({
+      next: (savedProfile) => {
+        this.companyProfile = savedProfile;
+        this.productionConfigForm.patchValue({
+          campaignStartMonth: savedProfile.campaignStartMonth ?? 9,
+          campaignStartDay: savedProfile.campaignStartDay ?? 1,
+          campaignEndMonth: savedProfile.campaignEndMonth ?? 4,
+          campaignEndDay: savedProfile.campaignEndDay ?? 30
+        });
+        this.productionConfigForm.disable();
+        this.productionConfigFormEnabled = false;
+        this.toast.success('Configuration de campagne enregistree avec succes');
+      },
+      error: () => {
+        this.toast.error('Erreur lors de l enregistrement de la campagne');
+      }
+    });
   }
   onSaveFinanceConfig(): void {
     if (this.financeConfigForm.invalid) return;
@@ -95,7 +146,9 @@ export class GeneralConfigComponent implements OnInit {
   }
 
   onResetProductionConfig() {
-    this.productionConfigForm.reset();
+    this.patchProductionConfig(this.companyProfile ?? this.companyProfileService.getProfileFromCache());
+    this.productionConfigForm.disable();
+    this.productionConfigFormEnabled = false;
   }
   onResetFinanceConfig() {
     this.financeConfigForm.reset();
@@ -140,5 +193,38 @@ export class GeneralConfigComponent implements OnInit {
         this.activeTab = 'other';
       }
 
+  }
+
+  get campaignPreview(): string {
+    return this.campaignService.getCampaignPreview(new Date(), this.productionConfigForm.getRawValue());
+  }
+
+  private loadProductionConfig(): void {
+    const cachedProfile = this.companyProfileService.getProfileFromCache();
+    if (cachedProfile) {
+      this.companyProfile = cachedProfile;
+      this.patchProductionConfig(cachedProfile);
+    }
+
+    this.companyProfileService.getProfile().subscribe({
+      next: (profile) => {
+        this.companyProfile = profile;
+        this.patchProductionConfig(profile);
+      },
+      error: () => {
+        if (!cachedProfile) {
+          this.toast.error('Impossible de charger la configuration de campagne');
+        }
+      }
+    });
+  }
+
+  private patchProductionConfig(profile: CompanyProfile | null): void {
+    this.productionConfigForm.patchValue({
+      campaignStartMonth: profile?.campaignStartMonth ?? 9,
+      campaignStartDay: profile?.campaignStartDay ?? 1,
+      campaignEndMonth: profile?.campaignEndMonth ?? 4,
+      campaignEndDay: profile?.campaignEndDay ?? 30
+    }, { emitEvent: false });
   }
 }

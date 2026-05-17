@@ -106,7 +106,7 @@ export class SKUService {
     return {
       ...product,
       name,
-      code: product?.code || name,
+      code: product?.code || '',
       type: product?.type || 'NON_VRAC',
       unitOfMeasure: product?.unitOfMeasure || (product?.type === 'VRAC' ? 'L' : 'BOTTLE'),
       unitsPerCarton,
@@ -118,14 +118,14 @@ export class SKUService {
   }
 
   private toPayload(product: Product): Product {
-    const name = product.name || product.code || '';
+    const name = product.name || '';
     const type = product.type || 'NON_VRAC';
     const unitsPerCarton = product.unitsPerCarton ?? product.unitesParCols;
     const cartonsPerPallet = product.cartonsPerPallet ?? product.colisParPalette;
     const payload: Product = {
       ...product,
       name,
-      code: product.code || name,
+      code: product.code || undefined,
       type,
       unitOfMeasure: product.unitOfMeasure || (type === 'VRAC' ? 'L' : 'BOTTLE'),
       unitsPerCarton,

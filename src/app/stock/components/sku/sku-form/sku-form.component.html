@@ -1,17 +1,5 @@
 <div class="sku-page">
   <div class="sku-shell">
-    @if (error) {
-      <div class="alert-modern alert-danger">
-        <div class="alert-icon">
-          <i class="fas fa-exclamation-circle"></i>
-        </div>
-        <div class="alert-content">{{ error }}</div>
-        <button class="alert-close" type="button" (click)="error = null">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-    }
-
     <div class="hero-card">
       <div class="hero-icon">
         <img src="assets/background_projet.png" alt="Produit huile d'olive" />
@@ -103,10 +91,13 @@
                 <input
                   type="text"
                   id="code"
-                  class="form-control"
+                  class="form-control readonly-control"
                   formControlName="code"
-                  placeholder="Code interne" />
+                  [placeholder]="codePlaceholder"
+                  readonly />
               </div>
+
+              <small class="form-hint">Ce code est gere automatiquement par le systeme.</small>
             </div>
 
             <div class="field-block">

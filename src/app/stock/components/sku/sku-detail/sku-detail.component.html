@@ -1,28 +1,4 @@
 <div class="modern-container">
-  @if (successMessage) {
-    <div class="alert-modern alert-success slide-down">
-      <div class="alert-icon">
-        <i class="fas fa-check-circle"></i>
-      </div>
-      <div class="alert-content">{{ successMessage }}</div>
-      <button class="alert-close" (click)="successMessage = null">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-  }
-
-  @if (error) {
-    <div class="alert-modern alert-danger slide-down">
-      <div class="alert-icon">
-        <i class="fas fa-exclamation-triangle"></i>
-      </div>
-      <div class="alert-content">{{ error }}</div>
-      <button class="alert-close" (click)="error = null">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-  }
-
   @if (loading) {
     <div class="loading-state-modern">
       <div class="spinner-container">
@@ -34,7 +10,7 @@
     </div>
   }
 
-  @if (!loading && !error && sku) {
+  @if (!loading && sku) {
     <div class="detail-content fade-in">
       <div class="detail-header glass-effect">
         <div class="header-left">
@@ -75,6 +51,11 @@
           <button class="btn-icon-edit" [routerLink]="['/stock/products', sku.id, 'edit']">
             <i class="fas fa-edit me-2"></i>
             Modifier
+          </button>
+
+          <button class="btn-icon-toggle btn-delete" (click)="deleteSku()" [disabled]="deleting">
+            <i class="fas fa-trash-alt"></i>
+            Supprimer
           </button>
         </div>
       </div>
@@ -244,6 +225,58 @@
             </div>
           </div>
         }
+
+        <div class="info-card glass-effect hover-lift labels-card">
+          <div class="card-header">
+            <div class="header-icon-wrapper">
+              <i class="fas fa-tags"></i>
+            </div>
+            <h3>Etiquettes liees</h3>
+          </div>
+          <div class="card-body">
+            @if (labelsLoading) {
+              <div class="labels-state">
+                <div class="mini-spinner"></div>
+                <span>Chargement des etiquettes...</span>
+              </div>
+            } @else if (relatedLabelsCount() === 0) {
+              <div class="labels-empty">
+                <i class="fas fa-inbox"></i>
+                <p>Aucune etiquette liee a ce produit pour le moment.</p>
+              </div>
+            } @else {
+              <div class="labels-summary">
+                <span class="labels-count">{{ relatedLabelsCount() }}</span>
+                <span class="labels-text">etiquette(s) trouvee(s)</span>
+              </div>
+
+              <div class="labels-list">
+                @for (label of relatedLabels; track label.id) {
+                  <div class="label-item">
+                    <div class="label-item-main">
+                      <div class="label-item-top">
+                        <span class="label-code">{{ label.publicCode || label.lotNumber || 'Sans code' }}</span>
+                        <span class="label-status" [class.finalized]="label.status === 'FINALIZED'">
+                          {{ labelStatusLabel(label.status) }}
+                        </span>
+                      </div>
+                      <div class="label-item-meta">
+                        <span><strong>Lot:</strong> {{ label.lotNumber || '-' }}</span>
+                        <span><strong>Date:</strong> {{ labelDate(label) }}</span>
+                        <span><strong>Langue:</strong> {{ label.language || '-' }}</span>
+                      </div>
+                    </div>
+
+                    <div class="label-item-actions">
+                      <a class="btn-label-link" [routerLink]="['/labels', label.id]">Voir</a>
+                      <a class="btn-label-link secondary" [routerLink]="['/labels', label.id, 'edit']">Editer</a>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
       </div>
     </div>
   }
