@@ -2,8 +2,10 @@ import { Navigation } from 'src/app/theme/types/navigation';
 
 import {
   Action,
+  ConditioningEntity,
   FinanceEntity,
   HabilitationEntity,
+  InventoryEntity,
   OSMModule,
   permissionKey,
   ProductionEntity,
@@ -420,7 +422,8 @@ export const osm_menus: Navigation[] = [
         type: 'item',
         url: '/stock/audit',
         icon: 'history',
-        breadcrumbs: false
+        breadcrumbs: false,
+        permissions: [permissionKey(OSMModule.CONDITIONING, ConditioningEntity.AUDIT, Action.READ)]
       },
       {
         id: 'item-conditioning-projects',
@@ -434,7 +437,8 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/projets',
             icon: 'list_alt',
-            breadcrumbs: false
+            breadcrumbs: false,
+            permissions: [permissionKey(OSMModule.CONDITIONING, ConditioningEntity.PROJET, Action.READ)]
           },
           {
             id: 'item-projet-expeditions',
@@ -442,7 +446,8 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/projets/expeditions',
             icon: 'route',
-            breadcrumbs: false
+            breadcrumbs: false,
+            permissions: [permissionKey(OSMModule.CONDITIONING, ConditioningEntity.EXPEDITION, Action.READ)]
           }
         ]
       },
@@ -452,7 +457,8 @@ export const osm_menus: Navigation[] = [
         type: 'item',
         url: '/of',
         icon: 'factory',
-        breadcrumbs: false
+        breadcrumbs: false,
+        permissions: [permissionKey(OSMModule.CONDITIONING, ConditioningEntity.OF, Action.READ)]
       },
       {
         id: 'item-conditioning-lines',
@@ -460,7 +466,8 @@ export const osm_menus: Navigation[] = [
         type: 'item',
         url: '/stock/lignes',
         icon: 'precision_manufacturing',
-        breadcrumbs: false
+        breadcrumbs: false,
+        permissions: [permissionKey(OSMModule.INVENTAIR, InventoryEntity.LIGNECONDITIONNEMENT, Action.READ)]
       },
       {
         id: 'item-conditioning-labels',
@@ -468,7 +475,8 @@ export const osm_menus: Navigation[] = [
         type: 'item',
         url: '/labels',
         icon: 'label',
-        breadcrumbs: false
+        breadcrumbs: false,
+        permissions: [permissionKey(OSMModule.CONDITIONING, ConditioningEntity.LABELCONTENT, Action.READ)]
       },
       {
         id: 'item-expedition',
@@ -476,7 +484,8 @@ export const osm_menus: Navigation[] = [
         type: 'item',
         url: '/projets/expeditions',
         icon: 'local_shipping',
-        breadcrumbs: false
+        breadcrumbs: false,
+        permissions: [permissionKey(OSMModule.CONDITIONING, ConditioningEntity.EXPEDITION, Action.READ)]
       },
       {
         id: 'item-client-cond',
@@ -484,7 +493,8 @@ export const osm_menus: Navigation[] = [
         type: 'item',
         url: '/projets/clients',
         icon: 'groups',
-        breadcrumbs: false
+        breadcrumbs: false,
+        permissions: [permissionKey(OSMModule.CONDITIONING, ConditioningEntity.CLIENT, Action.READ)]
       }
     ]
   },
@@ -509,7 +519,8 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/stock/articles',
             icon: 'category',
-            breadcrumbs: false
+            breadcrumbs: false,
+            permissions: [permissionKey(OSMModule.INVENTAIR, InventoryEntity.ARTICLESEC, Action.READ)]
           },
           {
             id: 'item-stocks-skus',
@@ -517,7 +528,8 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/stock/skus',
             icon: 'barcode_scanner',
-            breadcrumbs: false
+            breadcrumbs: false,
+            permissions: [permissionKey(OSMModule.INVENTAIR, InventoryEntity.PRODUCT, Action.READ)]
           },
           {
             id: 'item-stocks-bom',
@@ -525,7 +537,8 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/stock/boms',
             icon: 'receipt',
-            breadcrumbs: false
+            breadcrumbs: false,
+            permissions: [permissionKey(OSMModule.INVENTAIR, InventoryEntity.BOM, Action.READ)]
           }
         ]
       },
@@ -541,7 +554,8 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/stock/mouvements',
             icon: 'swap_horiz',
-            breadcrumbs: false
+            breadcrumbs: false,
+            permissions: [permissionKey(OSMModule.INVENTAIR, InventoryEntity.MOUVEMENTSTOCKSEC, Action.READ)]
           },
           {
             id: 'item-stocks-emplacements',
@@ -549,7 +563,8 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/stock/emplacements',
             icon: 'grid_view',
-            breadcrumbs: false
+            breadcrumbs: false,
+            permissions: [permissionKey(OSMModule.INVENTAIR, InventoryEntity.EMPLACEMENTSTOCK, Action.READ)]
           },
           {
             id: 'item-stocks-par-emplacement',
@@ -557,7 +572,8 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/stock/par-emplacement',
             icon: 'view_list',
-            breadcrumbs: false
+            breadcrumbs: false,
+            permissions: [permissionKey(OSMModule.INVENTAIR, InventoryEntity.STOCKSEC, Action.READ)]
           },
           {
             id: 'item-stocks-audit',
@@ -565,7 +581,8 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/stock/audit',
             icon: 'history',
-            breadcrumbs: false
+            breadcrumbs: false,
+            permissions: [permissionKey(OSMModule.INVENTAIR, InventoryEntity.STOCKSEC, Action.READ)]
           }
         ]
       },
@@ -581,7 +598,8 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/stock/bons-commande',
             icon: 'description',
-            breadcrumbs: false
+            breadcrumbs: false,
+            permissions: [permissionKey(OSMModule.INVENTAIR, InventoryEntity.BONCOMMANDE, Action.READ)]
           },
           {
             id: 'item-stocks-fournisseurs',
@@ -589,7 +607,8 @@ export const osm_menus: Navigation[] = [
             type: 'item',
             url: '/stock/fournisseurs',
             icon: 'business',
-            breadcrumbs: false
+            breadcrumbs: false,
+            permissions: [permissionKey(OSMModule.INVENTAIR, InventoryEntity.FOURNISSEUR, Action.READ)]
           }
         ]
       }

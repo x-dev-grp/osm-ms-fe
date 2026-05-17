@@ -1728,8 +1728,7 @@
   },
   "OIL_SALES": {
     "ADD_TITLE": "Add Oil Sale",
-    "CANCEL": "Cancel",
-    "CONFIRM": "Confirm",
+    "CANCEL": "Cancel","CONFIRM": "Confirm",
     "CONTAINERS": {
       "COUNT": "Number of containers needed",
       "SHOW": "Show the list of containers",
@@ -1835,8 +1834,7 @@
     "TOTAL_IN_CONTAINERS": "Oil quantity in containers",
     "TOTAL_OILAMOUNT": "Total oil amount",
     "UNIT_PRICE": "Unit Price",
-    "VALIDATION": {
-      "CONFIRM": "Confirm",
+    "VALIDATION": {"CONFIRM": "Confirm",
       "INSUFFICIENT_QUANTITY": "Insufficient quantity",
       "SOURCE_STORAGE_UNIT": "Source Storage Unit",
       "TITLE": "Validate Oil Sale"
@@ -1927,8 +1925,7 @@
       },
       "CONFIRMATION": {
         "APPROVE": {
-          "CANCEL": "Cancel",
-          "CONFIRM": "Approve",
+          "CANCEL": "Cancel","CONFIRM": "Approve",
           "MESSAGE": "Are you sure you want to approve this transaction? This action cannot be undone.",
           "TITLE": "Approve Transaction"
         }
@@ -2114,6 +2111,51 @@
   },
   "OSM_DASHBOARD": {
     "ACTIONS": {
+      "CONDITIONING": "Conditioning",
+      "INVENTAIR": "Inventory",
+      "OF": "Manufacturing Order",
+      "PROJET": "Project",
+      "CLIENT": "Client",
+      "CERTIFICATION": "Certification",
+      "SHIPPING": "Shipping",
+      "EXPEDITION": "Expedition",
+      "LABELCONTENT": "Label Content",
+      "ANALYTICS": "Analytics",
+      "MOBILESYNC": "Mobile Sync",
+      "AUDIT": "Audit",
+      "ARTICLESEC": "Article",
+      "STOCKSEC": "Stock",
+      "PRODUCT": "Product",
+      "SKU": "SKU",
+      "BOM": "Bill of Materials",
+      "BONCOMMANDE": "Purchase Order",
+      "FOURNISSEUR": "Supplier",
+      "LIGNECONDITIONNEMENT": "Conditioning Line",
+      "EMPLACEMENTSTOCK": "Stock Location",
+      "MOUVEMENTSTOCKSEC": "Stock Movement",
+      "START": "Start",
+      "PAUSE": "Pause",
+      "RESUME": "Resume",
+      "CLOSE": "Close",
+      "SHIP": "Ship",
+      "DELIVER": "Deliver",
+      "ADD_LINE": "Add Line",
+      "REMOVE_LINE": "Remove Line",
+      "UPDATE_STATUS": "Update Status",
+      "DRAFT": "Draft",
+      "FINALIZE": "Finalize",
+      "EXPORT": "Export",
+      "SYNC": "Sync",
+      "REPORT": "Report",
+      "ENTREE_STOCK": "Stock Entry",
+      "SORTIE_STOCK": "Stock Exit",
+      "AJUSTER_STOCK": "Adjust Stock",
+      "ASSIGN_EMPLACEMENT": "Assign Location",
+      "RESERVER_STOCK": "Reserve Stock",
+      "LIBERER_STOCK": "Release Stock",
+      "CHECK_STOCK": "Check Stock",
+      "TRANSFERER_STOCK": "Transfer Stock",
+      "DELIVERYHISTORY": "Delivery History",
       "APPROVE": "Approve",
       "ASSIGN_SUPPLIER": "Assign Supplier",
       "BANKACCOUNT": "Bank Account",
@@ -2121,8 +2163,7 @@
       "CANCEL": "Cancel",
       "COMPANYPROFILE": "Company Profile",
       "COMPLETE": "Complete",
-      "COMPLETE_PAYMENT_DETAILS": "To be completed for payment ",
-      "CONFIRM": "Confirm",
+      "COMPLETE_PAYMENT_DETAILS": "To be completed for payment ","CONFIRM": "Confirm",
       "CONFIRM_DELETE": "Are you sure you want to delete this item?",
       "CONTRACT": "Contract",
       "CREATE": "Create",
@@ -2672,32 +2713,27 @@
     },
     "CONFIRMATION": {
       "BULK_DELETE": {
-        "CANCEL": "Cancel",
-        "CONFIRM": "Delete All",
+        "CANCEL": "Cancel","CONFIRM": "Delete All",
         "MESSAGE": "Are you sure you want to delete the selected items? This action cannot be undone.",
         "TITLE": "Confirm Bulk Deletion"
       },
       "CANCEL": "Cancel",
       "DATA_LOSS": {
-        "CANCEL": "Cancel",
-        "CONFIRM": "Continue",
+        "CANCEL": "Cancel","CONFIRM": "Continue",
         "MESSAGE": "This action will result in permanent data loss. Are you sure you want to continue?",
         "TITLE": "Data Loss Warning"
       },
       "DEFAULT": {
-        "CANCEL": "Cancel",
-        "CONFIRM": "Confirm"
+        "CANCEL": "Cancel","CONFIRM": "Confirm"
       },
       "DELETE": {
-        "CANCEL": "Cancel",
-        "CONFIRM": "Delete",
+        "CANCEL": "Cancel","CONFIRM": "Delete",
         "MESSAGE": "Are you sure you want to delete this item? This action cannot be undone.",
         "TITLE": "Confirm Deletion"
       },
       "DESTRUCTIVE_WARNING": "This action is irreversible and will permanently delete the data.",
       "OIL_TRANSACTION": {
-        "CANCEL": "No, skip",
-        "CONFIRM": "Yes, confirm",
+        "CANCEL": "No, skip","CONFIRM": "Yes, confirm",
         "MESSAGE": "This supplier has storage. Do you also want to confirm the oil transaction?",
         "TITLE": "Confirm Oil Transaction"
       },
@@ -2710,26 +2746,22 @@
         "TITLE": "Confirm Save"
       },
       "SIMPLE": {
-        "CANCEL": "No",
-        "CONFIRM": "Yes",
+        "CANCEL": "No","CONFIRM": "Yes",
         "MESSAGE": "Are you sure?",
         "TITLE": "Confirmation"
       },
       "UNSAVED_CHANGES": {
-        "CANCEL": "Stay",
-        "CONFIRM": "Leave",
+        "CANCEL": "Stay","CONFIRM": "Leave",
         "MESSAGE": "You have unsaved changes. Are you sure you want to leave without saving?",
         "TITLE": "Unsaved Changes"
       },
       "UPDATE": {
-        "CANCEL": "Cancel",
-        "CONFIRM": "Yes, update",
+        "CANCEL": "Cancel","CONFIRM": "Yes, update",
         "MESSAGE": "Are you sure you want to update this oil transaction? This action cannot be undone.",
         "TITLE": "Confirm Update"
       },
       "WARNING": {
-        "CANCEL": "Cancel",
-        "CONFIRM": "Continue",
+        "CANCEL": "Cancel","CONFIRM": "Continue",
         "MESSAGE": "Please confirm this action.",
         "TITLE": "Warning"
       }
