@@ -1754,8 +1754,7 @@
   },
   "OIL_SALES": {
     "ADD_TITLE": "Ajouter une vente d'huile",
-    "CANCEL": "Annuler",
-    "CONFIRM": "Confirmer",
+    "CANCEL": "Annuler","CONFIRM": "Confirmer",
     "CONTAINERS": {
       "COUNT": "Nombre des conteneur ",
       "SHOW": "Afficher la liste des conteneur ",
@@ -1861,8 +1860,7 @@
     "TOTAL_IN_CONTAINERS": "Quantité huile régler",
     "TOTAL_OILAMOUNT": "Montant total d'huile",
     "UNIT_PRICE": "Prix unitaire",
-    "VALIDATION": {
-      "CONFIRM": "Confirmer",
+    "VALIDATION": {"CONFIRM": "Confirmer",
       "INSUFFICIENT_QUANTITY": "Quantité insuffisante",
       "SOURCE_STORAGE_UNIT": "Unité de stockage source",
       "TITLE": "Valider la vente d'huile"
@@ -1953,8 +1951,7 @@
       },
       "CONFIRMATION": {
         "APPROVE": {
-          "CANCEL": "Annuler",
-          "CONFIRM": "Approuver",
+          "CANCEL": "Annuler","CONFIRM": "Approuver",
           "MESSAGE": "Êtes-vous sûr de vouloir approuver cette transaction ? Cette action ne peut pas être annulée.",
           "TITLE": "Approuver la Transaction"
         }
@@ -2140,6 +2137,51 @@
   },
   "OSM_DASHBOARD": {
     "ACTIONS": {
+      "CONDITIONING": "Conditionnement",
+      "INVENTAIR": "Inventaire",
+      "OF": "Ordre de fabrication",
+      "PROJET": "Projet",
+      "CLIENT": "Client",
+      "CERTIFICATION": "Certification",
+      "SHIPPING": "Expédition",
+      "EXPEDITION": "Expédition",
+      "LABELCONTENT": "Contenu d'étiquette",
+      "ANALYTICS": "Analytique",
+      "MOBILESYNC": "Synchronisation mobile",
+      "AUDIT": "Audit",
+      "ARTICLESEC": "Article",
+      "STOCKSEC": "Stock",
+      "PRODUCT": "Produit",
+      "SKU": "SKU",
+      "BOM": "Nomenclature",
+      "BONCOMMANDE": "Bon de commande",
+      "FOURNISSEUR": "Fournisseur",
+      "LIGNECONDITIONNEMENT": "Ligne de conditionnement",
+      "EMPLACEMENTSTOCK": "Emplacement de stock",
+      "MOUVEMENTSTOCKSEC": "Mouvement de stock",
+      "START": "Démarrer",
+      "PAUSE": "Mettre en pause",
+      "RESUME": "Reprendre",
+      "CLOSE": "Clôturer",
+      "SHIP": "Expédier",
+      "DELIVER": "Livrer",
+      "ADD_LINE": "Ajouter une ligne",
+      "REMOVE_LINE": "Supprimer une ligne",
+      "UPDATE_STATUS": "Mettre à jour le statut",
+      "DRAFT": "Brouillon",
+      "FINALIZE": "Finaliser",
+      "EXPORT": "Exporter",
+      "SYNC": "Synchroniser",
+      "REPORT": "Rapport",
+      "ENTREE_STOCK": "Entrée stock",
+      "SORTIE_STOCK": "Sortie stock",
+      "AJUSTER_STOCK": "Ajuster le stock",
+      "ASSIGN_EMPLACEMENT": "Assigner un emplacement",
+      "RESERVER_STOCK": "Réserver le stock",
+      "LIBERER_STOCK": "Libérer le stock",
+      "CHECK_STOCK": "Vérifier le stock",
+      "TRANSFERER_STOCK": "Transférer le stock",
+      "DELIVERYHISTORY": "Historique des réceptions",
       "APPROVE": "Approuver",
       "ASSIGN_SUPPLIER": "Assigner un fournisseur",
       "BANKACCOUNT": "Compte bancaire",
@@ -2147,8 +2189,7 @@
       "CANCEL": "Annuler",
       "COMPANYPROFILE": "Profil d'entreprise",
       "COMPLETE": "Terminer",
-      "COMPLETE_PAYMENT_DETAILS": "à completer pour paiment",
-      "CONFIRM": "Confirmer",
+      "COMPLETE_PAYMENT_DETAILS": "à completer pour paiment","CONFIRM": "Confirmer",
       "CONFIRM_DELETE": "Êtes-vous sûr de vouloir supprimer cet élément ?",
       "CONTRACT": "Contrat",
       "CREATE": "Créer",
@@ -2712,32 +2753,27 @@
     },
     "CONFIRMATION": {
       "BULK_DELETE": {
-        "CANCEL": "Annuler",
-        "CONFIRM": "Tout supprimer",
+        "CANCEL": "Annuler","CONFIRM": "Tout supprimer",
         "MESSAGE": "Êtes-vous sûr de vouloir supprimer les éléments sélectionnés ? Cette action ne peut pas être annulée.",
         "TITLE": "Confirmer la suppression en masse"
       },
       "CANCEL": "Annuler",
       "DATA_LOSS": {
-        "CANCEL": "Annuler",
-        "CONFIRM": "Continuer",
+        "CANCEL": "Annuler","CONFIRM": "Continuer",
         "MESSAGE": "Cette action entraînera une perte permanente de données. Êtes-vous sûr de vouloir continuer ?",
         "TITLE": "Avertissement de perte de données"
       },
       "DEFAULT": {
-        "CANCEL": "Annuler",
-        "CONFIRM": "Confirmer"
+        "CANCEL": "Annuler","CONFIRM": "Confirmer"
       },
       "DELETE": {
-        "CANCEL": "Annuler",
-        "CONFIRM": "Supprimer",
+        "CANCEL": "Annuler","CONFIRM": "Supprimer",
         "MESSAGE": "Êtes-vous sûr de vouloir supprimer cet élément ? Cette action ne peut pas être annulée.",
         "TITLE": "Confirmer la suppression"
       },
       "DESTRUCTIVE_WARNING": "Cette action est irréversible et supprimera définitivement les données.",
       "OIL_TRANSACTION": {
-        "CANCEL": "Non, ignorer",
-        "CONFIRM": "Oui, confirmer",
+        "CANCEL": "Non, ignorer","CONFIRM": "Oui, confirmer",
         "MESSAGE": "Ce fournisseur dispose d'un stockage. Voulez‑vous également confirmer la mouvment d'huile ?",
         "TITLE": "Confirmer la mouvment d'huile"
       },
@@ -2750,26 +2786,22 @@
         "TITLE": "Confirmer l'enregistrement"
       },
       "SIMPLE": {
-        "CANCEL": "Non",
-        "CONFIRM": "Oui",
+        "CANCEL": "Non","CONFIRM": "Oui",
         "MESSAGE": "Êtes-vous sûr ?",
         "TITLE": "Confirmation"
       },
       "UNSAVED_CHANGES": {
-        "CANCEL": "Rester",
-        "CONFIRM": "Partir",
+        "CANCEL": "Rester","CONFIRM": "Partir",
         "MESSAGE": "Vous avez des modifications non sauvegardées. Êtes-vous sûr de vouloir partir sans sauvegarder ?",
         "TITLE": "Modifications non sauvegardées"
       },
       "UPDATE": {
-        "CANCEL": "Annuler",
-        "CONFIRM": "Oui, mettre à jour",
+        "CANCEL": "Annuler","CONFIRM": "Oui, mettre à jour",
         "MESSAGE": "Êtes-vous sûr de vouloir mettre à jour cette mouvment d'huile ? Cette action est irréversible.",
         "TITLE": "Confirmer la mise à jour"
       },
       "WARNING": {
-        "CANCEL": "Annuler",
-        "CONFIRM": "Continuer",
+        "CANCEL": "Annuler","CONFIRM": "Continuer",
         "MESSAGE": "Veuillez confirmer cette action.",
         "TITLE": "Avertissement"
       }

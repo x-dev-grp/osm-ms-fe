@@ -1716,8 +1716,7 @@
   },
   "OIL_SALES": {
     "ADD_TITLE": "إضافة مبيعات زيت",
-    "CANCEL": "إلغاء",
-    "CONFIRM": "تأكيد",
+    "CANCEL": "إلغاء","CONFIRM": "تأكيد",
     "CONTAINERS": {
       "COUNT": "عدد الحاويات المطلوبة",
       "SHOW": "عرض قائمة الحاويات",
@@ -1823,8 +1822,7 @@
     "TOTAL_IN_CONTAINERS": "كمية الزيت في الحاويات",
     "TOTAL_OILAMOUNT": "إجمالي كمية الزيت",
     "UNIT_PRICE": "سعر الوحدة",
-    "VALIDATION": {
-      "CONFIRM": "تأكيد",
+    "VALIDATION": {"CONFIRM": "تأكيد",
       "INSUFFICIENT_QUANTITY": "الكمية غير كافية",
       "SOURCE_STORAGE_UNIT": "وحدة التخزين المصدر",
       "TITLE": "التحقق من مبيعات الزيت"
@@ -1915,8 +1913,7 @@
       },
       "CONFIRMATION": {
         "APPROVE": {
-          "CANCEL": "إلغاء",
-          "CONFIRM": "قبول",
+          "CANCEL": "إلغاء","CONFIRM": "قبول",
           "MESSAGE": "هل أنت متأكد أنك تريد قبول هذه المعاملة؟ هذا الإجراء لا يمكن التراجع عنه.",
           "TITLE": "قبول المعاملة"
         }
@@ -2102,14 +2099,58 @@
   },
   "OSM_DASHBOARD": {
     "ACTIONS": {
+      "CONDITIONING": "التعبئة والتكييف",
+      "INVENTAIR": "المخزون",
+      "OF": "أمر التصنيع",
+      "PROJET": "المشروع",
+      "CLIENT": "العميل",
+      "CERTIFICATION": "الشهادة",
+      "SHIPPING": "الشحن",
+      "EXPEDITION": "الإرسال",
+      "LABELCONTENT": "محتوى الملصق",
+      "ANALYTICS": "التحليلات",
+      "MOBILESYNC": "مزامنة الجوال",
+      "AUDIT": "التدقيق",
+      "ARTICLESEC": "المادة",
+      "STOCKSEC": "المخزون",
+      "PRODUCT": "المنتج",
+      "SKU": "SKU",
+      "BOM": "قائمة المواد",
+      "BONCOMMANDE": "طلب شراء",
+      "FOURNISSEUR": "المورد",
+      "LIGNECONDITIONNEMENT": "خط التعبئة",
+      "EMPLACEMENTSTOCK": "موقع المخزون",
+      "MOUVEMENTSTOCKSEC": "حركة المخزون",
+      "START": "بدء",
+      "PAUSE": "إيقاف مؤقت",
+      "RESUME": "استئناف",
+      "CLOSE": "إغلاق",
+      "SHIP": "شحن",
+      "DELIVER": "تسليم",
+      "ADD_LINE": "إضافة سطر",
+      "REMOVE_LINE": "حذف سطر",
+      "UPDATE_STATUS": "تحديث الحالة",
+      "DRAFT": "مسودة",
+      "FINALIZE": "إنهاء",
+      "EXPORT": "تصدير",
+      "SYNC": "مزامنة",
+      "REPORT": "تقرير",
+      "ENTREE_STOCK": "إدخال مخزون",
+      "SORTIE_STOCK": "إخراج مخزون",
+      "AJUSTER_STOCK": "تعديل المخزون",
+      "ASSIGN_EMPLACEMENT": "تعيين موقع",
+      "RESERVER_STOCK": "حجز مخزون",
+      "LIBERER_STOCK": "تحرير مخزون",
+      "CHECK_STOCK": "فحص المخزون",
+      "TRANSFERER_STOCK": "نقل مخزون",
+      "DELIVERYHISTORY": "سجل الاستلام",
       "ASSIGN_SUPPLIER": "تعيين المورد",
       "BANKACCOUNT": "حساب بنكي",
       "Base_type": "نوع أساسي",
       "CANCEL": "إلغاء",
       "COMPANYPROFILE": "ملف الشركة",
       "COMPLETE": "إكمال",
-      "COMPLETE_PAYMENT_DETAILS": "لإكمال تفاصيل الدفع",
-      "CONFIRM": "تأكيد",
+      "COMPLETE_PAYMENT_DETAILS": "لإكمال تفاصيل الدفع","CONFIRM": "تأكيد",
       "CONFIRM_DELETE": "هل أنت متأكد أنك تريد حذف هذا العنصر؟",
       "CONTRACT": "عقد",
       "CREATE": "إنشاء",
@@ -2635,32 +2676,27 @@
     },
     "CONFIRMATION": {
       "BULK_DELETE": {
-        "CANCEL": "إلغاء",
-        "CONFIRM": "حذف الكل",
+        "CANCEL": "إلغاء","CONFIRM": "حذف الكل",
         "MESSAGE": "هل أنت متأكد أنك تريد حذف العناصر المحددة؟ هذا الإجراء لا يمكن التراجع عنه.",
         "TITLE": "تأكيد الحذف الجماعي"
       },
       "CANCEL": "إلغاء",
       "DATA_LOSS": {
-        "CANCEL": "إلغاء",
-        "CONFIRM": "متابعة",
+        "CANCEL": "إلغاء","CONFIRM": "متابعة",
         "MESSAGE": "سيؤدي هذا الإجراء إلى فقدان دائم للبيانات. هل أنت متأكد أنك تريد المتابعة؟",
         "TITLE": "تحذير فقدان البيانات"
       },
       "DEFAULT": {
-        "CANCEL": "إلغاء",
-        "CONFIRM": "تأكيد"
+        "CANCEL": "إلغاء","CONFIRM": "تأكيد"
       },
       "DELETE": {
-        "CANCEL": "إلغاء",
-        "CONFIRM": "حذف",
+        "CANCEL": "إلغاء","CONFIRM": "حذف",
         "MESSAGE": "هل أنت متأكد أنك تريد حذف هذا العنصر؟ هذا الإجراء لا يمكن التراجع عنه.",
         "TITLE": "تأكيد الحذف"
       },
       "DESTRUCTIVE_WARNING": "هذا الإجراء لا رجعة فيه وسيحذف البيانات بشكل دائم.",
       "OIL_TRANSACTION": {
-        "CANCEL": "لا، تخطي",
-        "CONFIRM": "نعم، تأكيد",
+        "CANCEL": "لا، تخطي","CONFIRM": "نعم، تأكيد",
         "MESSAGE": "هذا المورد لديه تخزين. هل ترغب أيضًا في تأكيد معاملة الزيت؟",
         "TITLE": "تأكيد معاملة الزيت"
       },
@@ -2673,26 +2709,22 @@
         "TITLE": "تأكيد الحفظ"
       },
       "SIMPLE": {
-        "CANCEL": "لا",
-        "CONFIRM": "نعم",
+        "CANCEL": "لا","CONFIRM": "نعم",
         "MESSAGE": "هل أنت متأكد؟",
         "TITLE": "تأكيد"
       },
       "UNSAVED_CHANGES": {
-        "CANCEL": "البقاء",
-        "CONFIRM": "المغادرة",
+        "CANCEL": "البقاء","CONFIRM": "المغادرة",
         "MESSAGE": "لديك تغييرات غير محفوظة. هل أنت متأكد أنك تريد المغادرة دون حفظ؟",
         "TITLE": "تغييرات غير محفوظة"
       },
       "UPDATE": {
-        "CANCEL": "إلغاء",
-        "CONFIRM": "نعم، تحديث",
+        "CANCEL": "إلغاء","CONFIRM": "نعم، تحديث",
         "MESSAGE": "هل أنت متأكد أنك تريد تحديث هذه المعاملة؟ هذا الإجراء لا يمكن التراجع عنه.",
         "TITLE": "تأكيد التحديث"
       },
       "WARNING": {
-        "CANCEL": "إلغاء",
-        "CONFIRM": "متابعة",
+        "CANCEL": "إلغاء","CONFIRM": "متابعة",
         "MESSAGE": "يرجى تأكيد هذا الإجراء.",
         "TITLE": "تحذير"
       }
