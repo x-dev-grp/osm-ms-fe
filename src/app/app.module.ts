@@ -30,8 +30,6 @@ import { SharedModule } from './shared/shared.module';
  import { GenericTypeComponent } from './settings/generic-type/generic-type.component';
 import { QualityControlRuleComponent } from './settings/quality-control-rule/quality-control-rule.component';
 import { SupplierComponent } from './reception/suppliers/suppliers.component';
-
-// AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }

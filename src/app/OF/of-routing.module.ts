@@ -12,13 +12,11 @@ const routes: Routes = [
   { path: '', component: OFListComponent },
   { path: 'nouveau', component: OFFormComponent },
   { path: 'modifier/:id', component: OFFormComponent },
-  { path: ':id', component: OFDetailComponent },
-
-  { path: 'production', component: OFProductionComponent },        // ✅ AVANT :id
+  { path: 'production', component: OFProductionComponent },
   { path: 'qualite/points', component: ControlPointDefinitionComponent },
   { path: 'qualite/entry', component: QualityControlEntryComponent },
   { path: 'qualite/history', component: QualityHistoryComponent },
-  { path: ':id', component: OFDetailComponent },                    // ✅ :id EN DERNIER
+  { path: ':id', component: OFDetailComponent }
 ];
 
 @NgModule({

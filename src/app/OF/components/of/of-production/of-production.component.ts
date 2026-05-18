@@ -210,7 +210,7 @@ export class OFProductionComponent implements OnInit, OnDestroy {
         this.TimeFormatted = this.formatTime(diffSeconds);
       }
     };
-    update(); // première mise à jour immédiate
+    update();
     if (this.timerInterval) clearInterval(this.timerInterval);
     this.timerInterval = setInterval(update, 1000);
   }
