@@ -221,17 +221,20 @@
                 </div>
                 <small class="form-hint">Ex: 0.916 pour l'huile d'olive</small>
               </div>
-
               <div class="field-block">
                 <label for="storageUnit">Cuve / Unité de stockage</label>
                 <div class="input-with-icon">
                   <i class="fas fa-warehouse"></i>
-                  <input
-                    type="text"
-                    id="storageUnit"
-                    class="form-control"
-                    formControlName="storageUnit"
-                    placeholder="Ex: Cuve C1, Citerne Nord" />
+                  <select id="storageUnit" class="form-select" formControlName="storageUnit">
+                    <option value="">— Sélectionner une cuve —</option>
+                    <ng-container *ngFor="let unit of storageUnits">
+                      <option
+                        *ngIf="unit.currentVolume > 0 || unit.name === skuForm.get('storageUnit')?.value"
+                        [value]="unit.name">
+                        {{ unit.name }} ({{ unit.filteredOil ? 'Filtré' : 'Non filtré' }} — {{ unit.currentVolume || 0 }} L)
+                      </option>
+                    </ng-container>
+                  </select>
                 </div>
               </div>
             </div>
@@ -322,6 +325,24 @@
                 </div>
               </div>
             </div>
+
+            <div class="form-grid two-cols" style="margin-top: 1.5rem; border-top: 1px solid #eaeaea; padding-top: 1.5rem;">
+              <div class="field-block full-row">
+                <label for="labelId">Associer une étiquette réglementaire par défaut</label>
+                <div class="input-with-icon">
+                  <i class="fas fa-tag" style="color: #6b8e23;"></i>
+                  <select id="labelId" class="form-select" formControlName="labelId">
+                    <option value="">— Pas d'étiquette associée par défaut —</option>
+                    <option *ngFor="let label of labels" [value]="label.id">
+                      {{ label.legalDenomination || 'Sans dénomination' }} [{{ label.status }}] - Lot: {{ label.lotNumber }} - DDM: {{ label.bestBeforeDate | date:'dd/MM/yyyy' }}
+                    </option>
+                  </select>
+                </div>
+                <small class="form-hint">
+                  L'étiquette choisie sera présélectionnée et liée par défaut à ce produit (SKU) lors du lancement d'un Ordre de Fabrication (OF).
+                </small>
+              </div>
+            </div>
           </section>
 
           <section class="section-card">
@@ -346,7 +367,7 @@
                     <i class="fas fa-project-diagram"></i>
                     <span>Source de la nomenclature</span>
                   </div>
-                  
+
                   <div class="importer-grid">
                     <!-- Existing BOM -->
                     <div class="importer-field">
@@ -381,7 +402,7 @@
                   </div>
 
                   <p class="importer-hint">
-                    <i class="fas fa-info-circle me-1"></i> 
+                    <i class="fas fa-info-circle me-1"></i>
                     Le calcul automatique déduira la quantité par unité à partir des réservations totales du projet.
                   </p>
                 </div>

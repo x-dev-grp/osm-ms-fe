@@ -1,271 +1,369 @@
-<div class="fournisseur-form-container">
-  <div class="form-card">
-    <div class="form-header">
-      <h2 class="form-title">
-        {{ isEditMode ? 'Modifier' : 'Nouveau' }} fournisseur
-      </h2>
-      <p class="form-subtitle">
-        {{ isEditMode ? 'Modifier les informations du fournisseur' : 'Ajouter un nouveau fournisseur' }}
-      </p>
-    </div>
+<div class="fournisseur-form-page">
+  <div class="fournisseur-form-container">
 
-    <form [formGroup]="fournisseurForm" (ngSubmit)="onSubmit()">
-      <!-- Informations générales -->
-      <div class="form-section">
-        <h3 class="section-title">Informations générales</h3>
+    <!-- HERO -->
+    <section class="form-hero">
+      <div class="hero-left">
+        <div class="hero-icon">
+          <i class="fas fa-user-plus"></i>
+        </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label for="nom">Nom *</label>
-            <input
-              type="text"
-              id="nom"
-              class="form-control"
-              [class.is-invalid]="submitted && f['nom'].errors"
-              formControlName="nom">
-            <div class="invalid-feedback" *ngIf="submitted && f['nom'].errors">
-              Le nom est requis
+        <div>
+          <h1>
+            {{ isEditMode ? 'Modifier fournisseur' : 'Nouveau fournisseur' }}
+          </h1>
+          <p>
+            {{
+              isEditMode
+                ? 'Modifier les informations du fournisseur et ses coordonnées.'
+                : 'Ajouter un nouveau fournisseur ou partenaire de votre huilerie.'
+            }}
+          </p>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-secondary hero-back" (click)="onCancel()">
+        <i class="fas fa-arrow-left"></i>
+        Retour
+      </button>
+    </section>
+
+    <!-- FORM CARD -->
+    <section class="form-card">
+      <form [formGroup]="fournisseurForm" (ngSubmit)="onSubmit()">
+
+        <!-- INFORMATIONS GÉNÉRALES -->
+        <div class="form-section">
+          <div class="section-header">
+            <div class="section-icon">
+              <i class="fas fa-id-card"></i>
+            </div>
+
+            <div>
+              <h3>Informations générales</h3>
+              <p>Identité principale du fournisseur.</p>
             </div>
           </div>
 
-          <div class="form-group">
-            <label for="nomCommercial">Nom commercial</label>
-            <input
-              type="text"
-              id="nomCommercial"
-              class="form-control"
-              formControlName="nomCommercial">
+          <div class="form-grid two-cols">
+            <div class="form-group">
+              <label for="nom">Nom *</label>
+              <input
+                type="text"
+                id="nom"
+                class="form-control"
+                placeholder="Nom du fournisseur"
+                [class.is-invalid]="submitted && f['nom'].errors"
+                formControlName="nom">
+
+              <div class="invalid-feedback" *ngIf="submitted && f['nom'].errors">
+                Le nom est requis
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="nomCommercial">Nom commercial</label>
+              <input
+                type="text"
+                id="nomCommercial"
+                class="form-control"
+                placeholder="Nom commercial"
+                formControlName="nomCommercial">
+            </div>
+
+            <div class="form-group">
+              <label for="categorieFournisseur">Catégorie</label>
+              <select
+                id="categorieFournisseur"
+                class="form-control"
+                formControlName="categorieFournisseur">
+                <option value="">Sélectionner...</option>
+                <option *ngFor="let cat of categories" [value]="cat">
+                  {{ cat | titlecase }}
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="currency">Devise *</label>
+              <select
+                id="currency"
+                class="form-control"
+                [class.is-invalid]="submitted && f['currency'].errors"
+                formControlName="currency">
+                <option value="EUR">Euro (EUR)</option>
+                <option value="USD">Dollar (USD)</option>
+                <option value="GBP">Livre (GBP)</option>
+                <option value="TND">Dinar (TND)</option>
+              </select>
+
+              <div class="invalid-feedback" *ngIf="submitted && f['currency'].errors">
+                La devise est requise
+              </div>
+            </div>
+          </div>
+
+          <div class="active-box">
+            <label for="actif" class="switch-row">
+              <input
+                type="checkbox"
+                id="actif"
+                class="switch-input"
+                formControlName="actif">
+
+              <span class="switch-ui"></span>
+
+              <span class="switch-text">
+                <strong>Fournisseur actif</strong>
+                <small>Disponible pour les achats, commandes et opérations courantes.</small>
+              </span>
+            </label>
           </div>
         </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label for="categorieFournisseur">Catégorie</label>
-            <select
-              id="categorieFournisseur"
-              class="form-control"
-              formControlName="categorieFournisseur">
-              <option value="">Sélectionner...</option>
-              <option *ngFor="let cat of categories" [value]="cat">
-                {{ cat | titlecase }}
-              </option>
-            </select>
+        <!-- COORDONNÉES -->
+        <div class="form-section">
+          <div class="section-header">
+            <div class="section-icon">
+              <i class="fas fa-address-book"></i>
+            </div>
+
+            <div>
+              <h3>Coordonnées</h3>
+              <p>Email, téléphone, fax et site web.</p>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label for="devise">Devise *</label>
-            <select
-              id="devise"
-              class="form-control"
-              [class.is-invalid]="submitted && f['devise'].errors"
-              formControlName="devise">
-              <option value="EUR">Euro (EUR)</option>
-              <option value="USD">Dollar (USD)</option>
-              <option value="GBP">Livre (GBP)</option>
-              <option value="TND">Dinar (TND)</option>
-            </select>
-          </div>
-        </div>
+          <div class="form-grid two-cols">
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                class="form-control"
+                placeholder="email@domaine.com"
+                [class.is-invalid]="submitted && f['email'].errors"
+                formControlName="email">
 
-        <div class="form-check mt-3">
-          <input
-            type="checkbox"
-            id="actif"
-            class="form-check-input"
-            formControlName="actif">
-          <label for="actif" class="form-check-label">Fournisseur actif</label>
-        </div>
-      </div>
+              <div class="invalid-feedback" *ngIf="submitted && f['email'].errors">
+                Email invalide
+              </div>
+            </div>
 
-      <!-- Coordonnées -->
-      <div class="form-section">
-        <h3 class="section-title">Coordonnées</h3>
+            <div class="form-group">
+              <label for="telephone">Téléphone</label>
+              <input
+                type="tel"
+                id="telephone"
+                class="form-control"
+                placeholder="+216 ..."
+                formControlName="telephone">
+            </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              class="form-control"
-              formControlName="email">
-          </div>
+            <div class="form-group">
+              <label for="fax">Fax</label>
+              <input
+                type="text"
+                id="fax"
+                class="form-control"
+                placeholder="Fax"
+                formControlName="fax">
+            </div>
 
-          <div class="form-group">
-            <label for="telephone">Téléphone</label>
-            <input
-              type="tel"
-              id="telephone"
-              class="form-control"
-              formControlName="telephone">
+            <div class="form-group">
+              <label for="siteWeb">Site web</label>
+              <input
+                type="url"
+                id="siteWeb"
+                class="form-control"
+                placeholder="https://..."
+                formControlName="siteWeb">
+            </div>
           </div>
         </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label for="fax">Fax</label>
-            <input
-              type="text"
-              id="fax"
-              class="form-control"
-              formControlName="fax">
+        <!-- ADRESSE -->
+        <div class="form-section">
+          <div class="section-header">
+            <div class="section-icon">
+              <i class="fas fa-map-marker-alt"></i>
+            </div>
+
+            <div>
+              <h3>Adresse</h3>
+              <p>Adresse administrative et informations fiscales.</p>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label for="siteWeb">Site web</label>
-            <input
-              type="url"
-              id="siteWeb"
-              class="form-control"
-              formControlName="siteWeb">
-          </div>
-        </div>
-      </div>
-
-      <!-- Adresse -->
-      <div class="form-section">
-        <h3 class="section-title">Adresse</h3>
-
-        <div class="form-group">
-          <label for="adresse">Adresse</label>
-          <textarea
-            id="adresse"
-            class="form-control"
-            rows="2"
-            formControlName="adresse"></textarea>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="ville">Ville</label>
-            <input
-              type="text"
-              id="ville"
-              class="form-control"
-              formControlName="ville">
+          <div class="form-grid one-col">
+            <div class="form-group">
+              <label for="adresse">Adresse</label>
+              <textarea
+                id="adresse"
+                class="form-control textarea"
+                rows="3"
+                placeholder="Adresse complète"
+                formControlName="adresse"></textarea>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label for="codePostal">Code postal</label>
-            <input
-              type="text"
-              id="codePostal"
-              class="form-control"
-              formControlName="codePostal">
-          </div>
-        </div>
+          <div class="form-grid two-cols">
+            <div class="form-group">
+              <label for="ville">Ville</label>
+              <input
+                type="text"
+                id="ville"
+                class="form-control"
+                placeholder="Ville"
+                formControlName="ville">
+            </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label for="pays">Pays</label>
-            <input
-              type="text"
-              id="pays"
-              class="form-control"
-              formControlName="pays">
-          </div>
+            <div class="form-group">
+              <label for="codePostal">Code postal</label>
+              <input
+                type="text"
+                id="codePostal"
+                class="form-control"
+                placeholder="Code postal"
+                formControlName="codePostal">
+            </div>
 
-          <div class="form-group">
-            <label for="numeroTva">Numéro TVA</label>
-            <input
-              type="text"
-              id="numeroTva"
-              class="form-control"
-              formControlName="numeroTva">
-          </div>
-        </div>
-      </div>
+            <div class="form-group">
+              <label for="pays">Pays</label>
+              <input
+                type="text"
+                id="pays"
+                class="form-control"
+                placeholder="Pays"
+                formControlName="pays">
+            </div>
 
-      <!-- Contact principal -->
-      <div class="form-section">
-        <h3 class="section-title">Contact principal</h3>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="contactNom">Nom</label>
-            <input
-              type="text"
-              id="contactNom"
-              class="form-control"
-              formControlName="contactNom">
-          </div>
-
-          <div class="form-group">
-            <label for="contactPrenom">Prénom</label>
-            <input
-              type="text"
-              id="contactPrenom"
-              class="form-control"
-              formControlName="contactPrenom">
+            <div class="form-group">
+              <label for="numeroTva">Numéro TVA</label>
+              <input
+                type="text"
+                id="numeroTva"
+                class="form-control"
+                placeholder="Numéro TVA"
+                formControlName="numeroTva">
+            </div>
           </div>
         </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label for="contactEmail">Email</label>
-            <input
-              type="email"
-              id="contactEmail"
-              class="form-control"
-              formControlName="contactEmail">
+        <!-- CONTACT PRINCIPAL -->
+        <div class="form-section">
+          <div class="section-header">
+            <div class="section-icon">
+              <i class="fas fa-user-tie"></i>
+            </div>
+
+            <div>
+              <h3>Contact principal</h3>
+              <p>Personne de référence chez le fournisseur.</p>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label for="contactTelephone">Téléphone</label>
-            <input
-              type="tel"
-              id="contactTelephone"
-              class="form-control"
-              formControlName="contactTelephone">
+          <div class="form-grid two-cols">
+            <div class="form-group">
+              <label for="contactNom">Nom</label>
+              <input
+                type="text"
+                id="contactNom"
+                class="form-control"
+                placeholder="Nom du contact"
+                formControlName="contactNom">
+            </div>
+
+            <div class="form-group">
+              <label for="contactPrenom">Prénom</label>
+              <input
+                type="text"
+                id="contactPrenom"
+                class="form-control"
+                placeholder="Prénom du contact"
+                formControlName="contactPrenom">
+            </div>
+
+            <div class="form-group">
+              <label for="contactEmail">Email</label>
+              <input
+                type="email"
+                id="contactEmail"
+                class="form-control"
+                placeholder="contact@domaine.com"
+                [class.is-invalid]="submitted && f['contactEmail'].errors"
+                formControlName="contactEmail">
+
+              <div class="invalid-feedback" *ngIf="submitted && f['contactEmail'].errors">
+                Email invalide
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="contactTelephone">Téléphone</label>
+              <input
+                type="tel"
+                id="contactTelephone"
+                class="form-control"
+                placeholder="+216 ..."
+                formControlName="contactTelephone">
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Informations commerciales -->
-      <div class="form-section">
-        <h3 class="section-title">Informations commerciales</h3>
+        <!-- INFORMATIONS COMMERCIALES -->
+        <div class="form-section">
+          <div class="section-header">
+            <div class="section-icon">
+              <i class="fas fa-file-invoice-dollar"></i>
+            </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label for="delaiLivraisonMoyen">Délai livraison moyen (jours)</label>
-            <input
-              type="number"
-              id="delaiLivraisonMoyen"
-              class="form-control"
-              formControlName="delaiLivraisonMoyen"
-              min="0">
+            <div>
+              <h3>Informations commerciales</h3>
+              <p>Conditions de paiement et délai moyen.</p>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label for="conditionsPaiement">Conditions de paiement</label>
-            <input
-              type="text"
-              id="conditionsPaiement"
-              class="form-control"
-              formControlName="conditionsPaiement">
+          <div class="form-grid two-cols">
+            <div class="form-group">
+              <label for="delaiLivraisonMoyen">Délai livraison moyen (jours)</label>
+              <input
+                type="number"
+                id="delaiLivraisonMoyen"
+                class="form-control"
+                placeholder="0"
+                formControlName="delaiLivraisonMoyen"
+                min="0">
+            </div>
+
+            <div class="form-group">
+              <label for="conditionsPaiement">Conditions de paiement</label>
+              <input
+                type="text"
+                id="conditionsPaiement"
+                class="form-control"
+                placeholder="Ex : 30 jours fin de mois"
+                formControlName="conditionsPaiement">
+            </div>
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="certifications">Certifications</label>
-          <textarea
-            id="certifications"
-            class="form-control"
-            rows="2"
-            formControlName="certifications"></textarea>
-        </div>
-      </div>
+        <!-- ACTIONS -->
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="onCancel()">
+            <i class="fas fa-xmark"></i>
+            Annuler
+          </button>
 
-      <!-- Actions -->
-      <div class="form-actions">
-        <button type="button" class="btn btn-secondary" (click)="onCancel()">
-          Annuler
-        </button>
-        <button type="submit" class="btn btn-primary" [disabled]="submitting">
-          <span *ngIf="submitting" class="spinner-border spinner-border-sm me-2"></span>
-          {{ isEditMode ? 'Mettre à jour' : 'Créer' }}
-        </button>
-      </div>
-    </form>
+          <button type="submit" class="btn btn-primary" [disabled]="submitting">
+            <span *ngIf="submitting" class="spinner-border spinner-border-sm"></span>
+            <i *ngIf="!submitting" class="fas fa-check"></i>
+            {{ isEditMode ? 'Mettre à jour' : 'Créer' }}
+          </button>
+        </div>
+
+      </form>
+    </section>
+
   </div>
 </div>

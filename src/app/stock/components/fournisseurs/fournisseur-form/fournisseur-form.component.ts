@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FournisseurService } from '../../../services/fournisseur.service';
 import { Fournisseur, CategorieFournisseur } from '../../../models/fournisseur.model';
 
+
 @Component({
   selector: 'app-fournisseur-form',
   standalone: true,
@@ -15,6 +16,7 @@ import { Fournisseur, CategorieFournisseur } from '../../../models/fournisseur.m
 export class FournisseurFormComponent implements OnInit {
   fournisseurForm: FormGroup;
   categories = Object.values(CategorieFournisseur);
+
 
   isEditMode = false;
   fournisseurId?: string;
@@ -48,8 +50,7 @@ export class FournisseurFormComponent implements OnInit {
       delaiLivraisonMoyen: [0, [Validators.min(0)]],
       conditionsPaiement: [''],
       currency: ['TND', Validators.required], // ⚡ correspond au backend
-      actif: [true],
-      certifications: ['']
+      actif: [true]
     });
   }
 
@@ -86,14 +87,9 @@ export class FournisseurFormComponent implements OnInit {
           delaiLivraisonMoyen: fournisseur.delaiLivraisonMoyen,
           conditionsPaiement: fournisseur.conditionsPaiement,
           currency: fournisseur.currency,
-          actif: fournisseur.actif,
-          certifications: fournisseur.certifications
+          actif: fournisseur.actif
         });
       },
-      error: (error) => {
-        console.error('Erreur chargement fournisseur:', error);
-        this.router.navigate(['/stock/fournisseurs']);
-      }
     });
   }
 
@@ -146,4 +142,6 @@ export class FournisseurFormComponent implements OnInit {
   get f() {
     return this.fournisseurForm.controls;
   }
+
+
 }
