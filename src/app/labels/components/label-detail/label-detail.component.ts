@@ -242,6 +242,34 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
       });
   }
 
+  finalizeLabel(): void {
+    if (!this.label?.id) {
+      return;
+    }
+
+    if (!confirm('Êtes-vous sûr de vouloir finaliser cette étiquette ? Elle deviendra immuable et prête pour la production.')) {
+      return;
+    }
+
+    this.loading = true;
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    this.labelService.finalize(this.label.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (updated) => {
+          this.loading = false;
+          this.label = updated;
+          this.successMessage = 'L\'étiquette a été finalisée avec succès et est prête à l\'emploi !';
+        },
+        error: (error) => {
+          this.loading = false;
+          this.errorMessage = this.resolveErrorMessage(error, 'Erreur lors de la finalisation.');
+        }
+      });
+  }
+
   deleteLabel(): void {
     if (!this.label?.id) {
       return;

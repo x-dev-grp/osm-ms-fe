@@ -12,6 +12,8 @@ import { BomLine } from '../../../models/BomLine';
 import { FormsModule } from '@angular/forms';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { CampaignService } from '../../../../shared/services/campaign.service';
+import { StorageUnitDtoService } from '../../../../shared/services/storage.service';
+import { StorageUnitDto } from '../../../../shared/models/StorageUnitDto';
 
 
 export interface BomLineUi {
@@ -34,6 +36,7 @@ export class SkuFormComponent implements OnInit {
   submitting = false;
   readonly productTypes: ProductType[] = ['VRAC', 'NON_VRAC'];
   readonly unitOptions: ProductUnitOfMeasure[] = ['L', 'KG', 'BOTTLE', 'CARTON'];
+  storageUnits: StorageUnitDto[] = [];
 
   // --- BOM Builder state ---
   // BOM categories depend on product type:
@@ -75,7 +78,8 @@ export class SkuFormComponent implements OnInit {
     private articleService: ArticleService,
     private bomService: BomService,
     private toast: ToastService,
-    private campaignService: CampaignService
+    private campaignService: CampaignService,
+    private storageUnitService: StorageUnitDtoService
   ) {
     this.skuForm = this.fb.group({
       name: ['', [Validators.required]],
@@ -100,6 +104,7 @@ export class SkuFormComponent implements OnInit {
   ngOnInit(): void {
     this.skuId = this.route.snapshot.params['id'];
     this.isEditMode = !!this.skuId;
+    this.loadStorageUnits();
     if (!this.isEditMode) {
       this.skuForm.patchValue({
         harvestCampaign: this.campaignService.getCurrentCampaignLabel()
@@ -339,5 +344,18 @@ export class SkuFormComponent implements OnInit {
       }
     }
     volumeControl?.updateValueAndValidity({ emitEvent: false });
+  }
+
+  loadStorageUnits(): void {
+    this.storageUnitService.getAllStorageUnit().subscribe({
+      next: (resp) => {
+        if (resp && resp.data) {
+          this.storageUnits = resp.data;
+        }
+      },
+      error: (err) => {
+        console.error('Erreur chargement des cuves:', err);
+      }
+    });
   }
 }

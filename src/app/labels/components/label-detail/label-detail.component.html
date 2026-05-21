@@ -11,32 +11,79 @@
         <h1>Détail de l'étiquette</h1>
       </div>
     </div>
-    
-    <div class="header-right">
-      <div class="status-badge" [ngClass]="statusClass(label?.status)">
-        <mat-icon>check</mat-icon>
+
+    <div class="header-right" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+      <div class="status-badge" [ngClass]="statusClass(label?.status)" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; font-weight: 500; font-size: 0.875rem;">
+        <mat-icon style="font-size: 18px; width: 18px; height: 18px;">{{ label?.status === 'DRAFT' ? 'edit_note' : 'check_circle' }}</mat-icon>
         <span>{{ label?.status === 'DRAFT' ? 'Brouillon' : (label?.status === 'FINALIZED' ? 'Finalisée' : (label?.status === 'VALIDATED' ? 'Validée' : (label?.status === 'EXPORTED_JSON' ? 'Exportée JSON' : label?.status))) }}</span>
       </div>
-      <button mat-button class="export-btn" (click)="exportLabel()" [disabled]="exporting || !canExport()">
+
+      <!-- Action: Modifier -->
+      <button mat-flat-button class="action-btn" (click)="edit()" *ngIf="!isFinalized()" style="background-color: #3b82f6; color: white;">
+        <mat-icon>edit</mat-icon>
+        Modifier
+      </button>
+
+      <!-- Action: Finaliser -->
+      <button mat-flat-button class="action-btn" (click)="finalizeLabel()" *ngIf="!isFinalized()" style="background-color: #28a745; color: white;">
+        <mat-icon>lock</mat-icon>
+        Finaliser
+      </button>
+
+      <!-- Action: Déverrouiller (Remettre en brouillon) -->
+      <button mat-flat-button class="action-btn" (click)="unlock()" *ngIf="isFinalized()" style="background-color: #f97316; color: white;">
+        <mat-icon>lock_open</mat-icon>
+        Remettre en brouillon
+      </button>
+
+      <!-- Action: Exporter -->
+      <button mat-stroked-button class="export-btn" (click)="exportLabel()" [disabled]="exporting || !canExport()">
         <mat-icon *ngIf="!exporting">download</mat-icon>
         <mat-spinner diameter="18" *ngIf="exporting"></mat-spinner>
-        Exporter en JSON
+        Exporter JSON
+      </button>
+
+      <!-- Action: Supprimer -->
+      <button mat-flat-button class="action-btn" (click)="deleteLabel()" [disabled]="deleting" style="background-color: #ef4444; color: white;">
+        <mat-icon>delete</mat-icon>
+        Supprimer
       </button>
     </div>
   </header>
 
+  <!-- FEEDBACK MESSAGES -->
+  <div class="alert-banner alert-success" *ngIf="successMessage" style="background: rgba(40, 167, 69, 0.1); border-left: 4px solid #28a745; color: #28a745; padding: 12px 16px; margin: 12px 0; border-radius: 6px; display: flex; align-items: center; justify-content: space-between; font-weight: 500;">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <mat-icon style="color: #28a745;">check_circle</mat-icon>
+      <span>{{ successMessage }}</span>
+    </div>
+    <button mat-icon-button (click)="successMessage = ''" style="color: #28a745; border: none; background: transparent; cursor: pointer;">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="alert-banner alert-danger" *ngIf="errorMessage" style="background: rgba(220, 53, 69, 0.1); border-left: 4px solid #dc3545; color: #dc3545; padding: 12px 16px; margin: 12px 0; border-radius: 6px; display: flex; align-items: center; justify-content: space-between; font-weight: 500;">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <mat-icon style="color: #dc3545;">error</mat-icon>
+      <span>{{ errorMessage }}</span>
+    </div>
+    <button mat-icon-button (click)="errorMessage = ''" style="color: #dc3545; border: none; background: transparent; cursor: pointer;">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
   <div class="detail-grid" *ngIf="label && !loading">
-    
+
     <!-- LEFT COLUMN: SECTIONS -->
     <div class="sections-column">
-      
+
       <!-- 1. Configuration de base -->
       <div class="section-card">
         <div class="section-header">
           <div class="section-icon"><mat-icon>liquor</mat-icon></div>
           <h2>1. Configuration de base</h2>
         </div>
-        
+
         <div class="data-grid">
           <div class="data-item">
             <label>OPÉRATION DE FILTRATION (SOURCE)</label>
@@ -71,7 +118,7 @@
           <h2>2. Identité & Traçabilité</h2>
           <div class="header-line"></div>
         </div>
-        
+
         <div class="data-grid cols-3">
           <div class="data-item">
             <label>DÉNOMINATION LÉGALE</label>
@@ -172,7 +219,7 @@
           <h2>3. Marketing & Conformité</h2>
           <div class="header-line"></div>
         </div>
-        
+
         <div class="data-grid cols-2">
           <div class="data-item">
             <label>ALLÉGATIONS MARKETING</label>
@@ -195,7 +242,7 @@
           <h2>4. Responsabilité & Procédés</h2>
           <div class="header-line"></div>
         </div>
-        
+
         <div class="responsability-grid">
           <div class="resp-left">
             <div class="data-item">
@@ -211,7 +258,7 @@
               <p>{{ label.extractionMethod || 'ob' }}</p>
             </div>
           </div>
-          
+
           <div class="resp-right">
             <div class="info-box">
               <div class="box-icon"><mat-icon>inventory_2</mat-icon></div>
@@ -220,7 +267,7 @@
                 <p>{{ label.storageConditions || 'A conserver a l\'abri de la lumiere et de la chaleur' }}</p>
               </div>
             </div>
-            
+
             <div class="info-box">
               <div class="box-icon"><mat-icon>psychology</mat-icon></div>
               <div class="box-content">
@@ -320,7 +367,7 @@
               <span>{{ label.responsibleAddress || 'Tunisie' }}</span>
             </div>
           </div>
-          
+
           <div class="preview-bottom-illustration"></div>
         </div>
       </div>

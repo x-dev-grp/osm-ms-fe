@@ -25,6 +25,7 @@ export interface Product {
   density?: number;
   storageUnit?: string;
   actif?: boolean;
+  labelId?: string;
   createdDate?: string;
 }
 
