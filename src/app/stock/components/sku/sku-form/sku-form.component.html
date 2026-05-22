@@ -113,9 +113,10 @@
               <input
                 type="text"
                 id="category"
-                class="form-control"
+                class="form-control readonly-control"
                 formControlName="category"
                 placeholder="Catégorie"
+                readonly
               />
             </div>
           </div>
@@ -124,18 +125,16 @@
             <label for="unitOfMeasure">Unité de mesure</label>
             <div class="input-with-icon">
               <i class="fas fa-ruler-combined"></i>
-              <select id="unitOfMeasure" class="form-select" formControlName="unitOfMeasure">
-                <option *ngFor="let unit of currentUnitOptions" [value]="unit">{{ unit }}</option>
-              </select>
+              <input
+                type="text"
+                id="unitOfMeasure"
+                class="form-control readonly-control"
+                formControlName="unitOfMeasure"
+                readonly
+              />
             </div>
 
-            <small class="form-hint">
-              @if (isVrac()) {
-                Litres ou Kilogrammes
-              } @else {
-                Bouteille ou Carton
-              }
-            </small>
+
           </div>
 
           <div class="field-block">
@@ -404,6 +403,20 @@
                   Le modèle sélectionné remplira automatiquement les articles de la nomenclature.
                 </p>
               </div>
+            </div>
+          }
+          @else {
+            <div class="info-banner-modern">
+              <div class="banner-icon">
+                <i class="fas fa-info"></i>
+              </div>
+              <span>
+                Aucune nomenclature existante. Créez une nouvelle BOM puis revenez l'appliquer à ce produit.
+              </span>
+              <button type="button" class="btn btn-secondary" (click)="openNewBom()">
+                <i class="fas fa-plus"></i>
+                Ajouter nouvelle BOM
+              </button>
             </div>
           }
 

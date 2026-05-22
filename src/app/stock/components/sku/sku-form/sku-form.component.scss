@@ -1,5 +1,12 @@
 :host {
   display: block;
+  box-sizing: border-box;
+}
+
+:host *,
+:host *::before,
+:host *::after {
+  box-sizing: inherit;
 }
 
 .sku-page {
@@ -206,6 +213,7 @@
 /* SECTIONS */
 .section-card {
   padding: 1rem 1rem 1.05rem;
+  overflow: hidden;
 }
 
 .section-title {
@@ -245,7 +253,8 @@
 /* GRID */
 .form-grid {
   display: grid;
-  gap: 1rem 1rem;
+  gap: 1.1rem 1.1rem;
+  align-items: start;
 }
 
 .two-cols {
@@ -262,6 +271,7 @@
 
 .field-block {
   min-width: 0;
+  max-width: 100%;
 }
 
 .field-block label {
@@ -274,6 +284,9 @@
 
 .input-with-icon {
   position: relative;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .input-with-icon > i {
@@ -291,6 +304,8 @@
 .form-select,
 .modern-input {
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
   height: 37px;
   padding: 0 0.8rem 0 2.1rem;
   border: 1px solid #d8d3c4;
@@ -346,12 +361,17 @@
 .info-banner-modern {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.8rem;
   margin-bottom: 1rem;
   padding: 0.95rem 1rem;
   border-radius: 9px;
   color: #31401f;
   line-height: 1.45;
+}
+
+.info-banner-modern .btn {
+  margin-left: auto;
 }
 
 .conditionne-banner,

@@ -87,8 +87,8 @@ export class SkuFormComponent implements OnInit {
       name: ['', [Validators.required]],
       code: [''],
       type: ['NON_VRAC' as ProductType, [Validators.required]],
-      category: [''],
-      unitOfMeasure: ['BOTTLE'],
+      category: [{ value: '', disabled: true }, [Validators.required]],
+      unitOfMeasure: [{ value: 'BOTTLE', disabled: true }],
       description: [''],
       grade: [''],
       origin: [''],
@@ -109,7 +109,8 @@ export class SkuFormComponent implements OnInit {
     this.loadStorageUnits();
     if (!this.isEditMode) {
       this.skuForm.patchValue({
-        harvestCampaign: this.campaignService.getCurrentCampaignLabel()
+        harvestCampaign: this.campaignService.getCurrentCampaignLabel(),
+        category: this.defaultCategoryForType(this.skuForm.get('type')?.value || 'NON_VRAC')
       });
     }
     this.updateTypeFields(this.skuForm.get('type')?.value || 'NON_VRAC');
@@ -265,6 +266,11 @@ export class SkuFormComponent implements OnInit {
       return;
     }
 
+    if (this.isNonVrac() && this.bomLines.length === 0) {
+      this.toast.warning('Une nomenclature (BOM) est obligatoire pour un produit conditionne.');
+      return;
+    }
+
     this.submitting = true;
     const sku: SKU = this.skuForm.getRawValue();
 
@@ -353,9 +359,51 @@ export class SkuFormComponent implements OnInit {
     window.open(url, '_blank');
   }
 
+  openNewBom(): void {
+    const productId = this.skuId || this.route.snapshot.params['id'] || null;
+    if (productId) {
+      this.router.navigate(['/stock/boms/nouveau'], {
+        queryParams: { productId }
+      });
+      return;
+    }
+
+    if (this.skuForm.invalid) {
+      this.submitted = true;
+      this.skuForm.markAllAsTouched();
+      this.toast.warning('Renseignez les champs obligatoires du produit avant de créer la BOM.');
+      return;
+    }
+
+    const sku: SKU = this.skuForm.getRawValue();
+    this.submitting = true;
+
+    this.skuService.createProduct(sku).subscribe({
+      next: (saved) => {
+        this.submitting = false;
+        const savedId = saved.id;
+        if (!savedId) {
+          this.toast.error('Produit créé sans identifiant. Impossible de préselectionner la BOM.');
+          return;
+        }
+
+        this.skuId = savedId;
+        this.toast.success('Produit créé. Ouverture de la création BOM...');
+        this.router.navigate(['/stock/boms/nouveau'], {
+          queryParams: { productId: savedId }
+        });
+      },
+      error: (err) => {
+        this.submitting = false;
+        this.toast.error(err?.error?.message || 'Impossible de créer le produit avant la BOM.');
+      }
+    });
+  }
+
   private updateTypeFields(type: ProductType, clearMismatch = false): void {
     const volumeControl = this.skuForm.get('volume');
     const unitControl = this.skuForm.get('unitOfMeasure');
+    const categoryControl = this.skuForm.get('category');
 
     if (type === 'VRAC') {
       unitControl?.setValue(!unitControl?.value || unitControl.value === 'BOTTLE' || unitControl.value === 'CARTON' ? 'L' : unitControl.value, { emitEvent: false });
@@ -372,6 +420,13 @@ export class SkuFormComponent implements OnInit {
           .forEach(c => this.skuForm.get(c)?.reset(c === 'density' ? null : '', { emitEvent: false }));
       }
     }
+
+    const defaultUnit = type === 'VRAC' ? 'L' : 'BOTTLE';
+    unitControl?.setValue(defaultUnit, { emitEvent: false });
+
+    if (categoryControl) {
+      categoryControl.setValue(this.defaultCategoryForType(type), { emitEvent: false });
+    }
     volumeControl?.updateValueAndValidity({ emitEvent: false });
   }
 
@@ -386,6 +441,10 @@ export class SkuFormComponent implements OnInit {
         console.error('Erreur chargement des cuves:', err);
       }
     });
+  }
+
+  private defaultCategoryForType(type: ProductType): string {
+    return type === 'VRAC' ? 'Huile Vrac' : 'Produit Conditionne';
   }
 
   private openTicketCreation(productId: string): void {
