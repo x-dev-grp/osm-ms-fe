@@ -3,6 +3,7 @@ import { enableProdMode, importProvidersFrom, isDevMode } from '@angular/core';
 import { environment } from './environments/environment';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ErrorInterceptor } from 'src/app/interceptors/error.interceptor';
+import { ResponseMessageInterceptor } from './app/interceptors/response-message.interceptor';
 import { AppRoutingModule } from './app/app-routing.module';
 import { SharedModule } from './app/shared/shared.module';
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -43,6 +44,7 @@ bootstrapApplication(AppComponent, {
       })
     ),
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ResponseMessageInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: MAT_DATE_LOCALE, useValue: 'fr' },
     [provideHttpClient(withInterceptorsFromDi())],
