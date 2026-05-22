@@ -12,6 +12,7 @@ import { ToastService } from '../../../../shared/services/toast.service';
 import { PdfGeneratorExpeditionService } from '../../../../shared/services/pdf-generator-expedition.service';
 import { CompanyProfileService } from '../../../../shared/services/company-profile.service';
 import { PdfExpeditionConfig } from '../../../../shared/models/pdf-config.model';
+import { ProductionGenealogy, ProductionRootSource } from '../../../../shared/models/production-genealogy.model';
 
 @Component({
   selector: 'app-projet-traceability',
@@ -109,7 +110,7 @@ export class ProjetTraceabilityComponent implements OnInit {
         articleName: of.articleName || '',
         quantity: of.quantityGood || 0,
         unit: 'UNIT', // Fallback
-        lotNumber: of.lotVracId || ''
+        lotNumber: of.traceabilityLotId || of.lotVracId || ''
       })),
       traceability: this.traceabilityData,
       companyInfo: {
@@ -128,5 +129,23 @@ export class ProjetTraceabilityComponent implements OnInit {
       return;
     }
     this.router.navigate(['/projets']);
+  }
+
+  genealogyAnchor(ofDetails: any): string {
+    return ofDetails?.traceabilityLotId || ofDetails?.lotVracId || '';
+  }
+
+  genealogyFor(ofDetails: any): ProductionGenealogy | null {
+    const anchor = this.genealogyAnchor(ofDetails);
+    return anchor ? (this.traceabilityData?.oilGenealogy?.[anchor] as ProductionGenealogy || null) : null;
+  }
+
+  labelsFor(ofDetails: any): any[] {
+    const anchor = this.genealogyAnchor(ofDetails);
+    return anchor ? (this.traceabilityData?.packagedLabelsByLot?.[anchor] || []) : [];
+  }
+
+  rootSourceFor(ofDetails: any): ProductionRootSource | null {
+    return this.genealogyFor(ofDetails)?.rootSources?.[0] || null;
   }
 }

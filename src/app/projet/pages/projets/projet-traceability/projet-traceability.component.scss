@@ -57,6 +57,23 @@
   }
 
   .of-card {
+    .traceability-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: -12px 0 20px;
+
+      .meta-chip {
+        background: #f6f8eb;
+        color: #455a23;
+        border: 1px solid #dde5c2;
+        border-radius: 999px;
+        padding: 6px 12px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+    }
+
     .of-header {
       display: flex;
       justify-content: space-between;
@@ -235,17 +252,23 @@
       letter-spacing: 0.5px;
     }
 
-    .label-qc-card {
-      background: white;
-      padding: 16px;
-      border-radius: 6px;
-      border: 1px solid #e0e0e0;
+      .label-qc-card {
+        background: white;
+        padding: 16px;
+        border-radius: 6px;
+        border: 1px solid #e0e0e0;
       margin-bottom: 12px;
 
       &:last-child { margin-bottom: 0; }
 
       .label-info {
         strong { display: block; margin-bottom: 8px; font-size: 15px; }
+        .traceability-line {
+          margin: 0 0 12px;
+          color: #6b7280;
+          font-size: 13px;
+          font-weight: 600;
+        }
       }
     }
 

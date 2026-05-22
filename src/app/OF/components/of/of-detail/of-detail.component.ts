@@ -5,6 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { OrdreFabrication, StatutOF } from "../../../models/of.model";
 import { OFService } from "../../../services/OFService";
 import { ToastService } from "../../../../shared/services/toast.service";
+import { ProductionGenealogy, ProductionRootSource } from '../../../../shared/models/production-genealogy.model';
+import { ProductionTraceabilityService } from '../../../../shared/services/production-traceability.service';
 
 @Component({
   selector: 'app-of-detail',
@@ -20,12 +22,15 @@ export class OFDetailComponent implements OnInit, OnDestroy {
   TimeFormatted = '00:00:00';
   private timerInterval: any;
   generatingQr = false;
+  genealogy: ProductionGenealogy | null = null;
+  genealogyLoading = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private ofService: OFService,
-    private toast: ToastService
+    private toast: ToastService,
+    private productionTraceabilityService: ProductionTraceabilityService
   ) {}
 
   ngOnInit(): void {
@@ -42,6 +47,7 @@ export class OFDetailComponent implements OnInit, OnDestroy {
       next: (data) => {
         this.of = data;
         this.loading = false;
+        this.loadGenealogy();
         if (this.of.statut === StatutOF.EN_COURS) {
           this.startTimer();
         } else {
@@ -54,6 +60,38 @@ export class OFDetailComponent implements OnInit, OnDestroy {
         this.router.navigate(['/of']);
       }
     });
+  }
+
+  private loadGenealogy(): void {
+    const anchorId = this.of?.traceabilityLotId || this.of?.lotVracId;
+    if (!anchorId) {
+      this.genealogy = null;
+      return;
+    }
+
+    this.genealogyLoading = true;
+    this.productionTraceabilityService.getGenealogy(anchorId).subscribe({
+      next: (data) => {
+        this.genealogy = data;
+        this.genealogyLoading = false;
+      },
+      error: () => {
+        this.genealogy = null;
+        this.genealogyLoading = false;
+      }
+    });
+  }
+
+  get traceabilityAnchor(): string {
+    return this.of?.traceabilityLotId || this.of?.lotVracId || '-';
+  }
+
+  get hasGenealogy(): boolean {
+    return !!this.genealogy && (!!this.genealogy.rootSources?.length || !!this.genealogy.filtrations?.length);
+  }
+
+  get primaryRootSource(): ProductionRootSource | null {
+    return this.genealogy?.rootSources?.[0] || null;
   }
   private startTimer(): void {
     if (!this.of?.dateDebutReelle) return;

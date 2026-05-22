@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ArticleService } from '../../../services/article.service';
 import { Article, CategorieArticle } from '../../../models/article.model';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-article-list',
@@ -12,7 +14,9 @@ import { Article, CategorieArticle } from '../../../models/article.model';
   templateUrl: './article-list.component.html',
   styleUrls: ['./article-list.component.scss']
 })
-export class ArticleListComponent implements OnInit {
+export class ArticleListComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+
   articles: Article[] = [];
   filteredArticles: Article[] = [];
   categories = Object.values(CategorieArticle);
@@ -32,26 +36,34 @@ export class ArticleListComponent implements OnInit {
     this.loadArticles();
   }
 
+  ngOnDestroy(): void {
+    // Fixed as part of TICKET-009: Unsubscribe to prevent memory leaks
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   loadArticles(): void {
     this.loading = true;
-    this.articleService.getAllArticles().subscribe({
-      next: (data) => {
-        this.articles = data.sort((a, b) => {
-          if (a.actif !== b.actif) {
-            return a.actif ? -1 : 1;
-          }
-          const dateA = a.createdDate ? new Date(a.createdDate).getTime() : 0;
-          const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
-          return dateB - dateA;
-        });
-        this.applyFilters();
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Erreur chargement articles:', err);
-        this.loading = false;
-      }
-    });
+    this.articleService.getAllArticles()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data) => {
+          this.articles = data.sort((a, b) => {
+            if (a.actif !== b.actif) {
+              return a.actif ? -1 : 1;
+            }
+            const dateA = a.createdDate ? new Date(a.createdDate).getTime() : 0;
+            const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
+            return dateB - dateA;
+          });
+          this.applyFilters();
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error('Erreur chargement articles:', err);
+          this.loading = false;
+        }
+      });
   }
 
   applyFilters(): void {
@@ -89,21 +101,23 @@ export class ArticleListComponent implements OnInit {
         ? this.articleService.desactiverArticle(article.id)
         : this.articleService.activerArticle(article.id);
 
-      request.subscribe({
-        next: (updatedArticle) => {
-          const index = this.articles.findIndex(a => a.id === updatedArticle.id);
-          if (index !== -1) {
-            this.articles[index] = updatedArticle;
+      request
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (updatedArticle) => {
+            const index = this.articles.findIndex(a => a.id === updatedArticle.id);
+            if (index !== -1) {
+              this.articles[index] = updatedArticle;
+            }
+            this.sortArticles();
+            this.togglingId = null;
+          },
+          error: (err) => {
+            console.error(err);
+            this.togglingId = null;
+            alert(`Erreur lors de l'${action} de l'article`);
           }
-          this.sortArticles();
-          this.togglingId = null;
-        },
-        error: (err) => {
-          console.error(err);
-          this.togglingId = null;
-          alert(`Erreur lors de l'${action} de l'article`);
-        }
-      });
+        });
     }
   }
 

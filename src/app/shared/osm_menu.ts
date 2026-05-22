@@ -45,6 +45,15 @@ export const osm_menus: Navigation[] = [
         breadcrumbs: false
       },
       {
+        id: 'item-storage-storage-recap',
+        title: 'Stockage Huile',
+        type: 'item',
+        url: '/storage/storage_recap',
+        icon: 'water_drop',
+        breadcrumbs: false,
+        permissions: [permissionKey(OSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.READ)]
+      },
+      {
         id: 'collapse-dashboard-reports',
         title: 'Rapports & Analyses',
         type: 'collapse',
@@ -282,15 +291,7 @@ export const osm_menus: Navigation[] = [
             breadcrumbs: false,
             ressourcePermission: ProductionEntity.STORAGEUNIT
           },
-          {
-            id: 'item-storage-storage-recap',
-            title: 'Stockage Huile',
-            type: 'item',
-            url: '/storage/storage_recap',
-            icon: 'water_drop',
-            breadcrumbs: false,
-            permissions: [permissionKey(OSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.READ)]
-          },
+
           {
             id: 'item-storage-oil-transactions',
             title: 'Transactions huile',

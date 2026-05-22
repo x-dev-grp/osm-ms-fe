@@ -2,10 +2,10 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { OrdreFabrication, StatutOF } from "../../../models/of.model";
-import { OFService } from "../../../services/OFService";
-import { LigneOF } from "../../../models/LigneOF";
-import { ToastService } from "../../../../shared/services/toast.service";
+import { OrdreFabrication, StatutOF } from '../../../models/of.model';
+import { OFService } from '../../../services/OFService';
+import { LigneOF } from '../../../models/LigneOF';
+import { ToastService } from '../../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-of-production',
@@ -19,7 +19,7 @@ export class OFProductionComponent implements OnInit, OnDestroy {
   loading = true;
   newBons = 0;
   newNC = 0;
-  motifNC: string = '';
+  motifNC = '';
   time = 0;
   TimeFormatted = '00:00:00';
   private timerInterval: any;
@@ -55,6 +55,7 @@ export class OFProductionComponent implements OnInit, OnDestroy {
       }
     });
   }
+
   isEditable(): boolean {
     return [StatutOF.EN_COURS, StatutOF.EN_PAUSE].includes(this.of.statut);
   }
@@ -75,20 +76,45 @@ export class OFProductionComponent implements OnInit, OnDestroy {
     return [StatutOF.EN_COURS, StatutOF.EN_PAUSE].includes(this.of.statut);
   }
 
+  isProjectMode(): boolean {
+    return !!this.of?.projectId;
+  }
+
+  stockCheckLabel(): string {
+    return this.isProjectMode() ? 'stock reserve du projet' : 'stock disponible';
+  }
+
+  stockCloseLabel(): string {
+    return this.isProjectMode() ? 'la reservation du projet' : 'le stock disponible';
+  }
+
+  stockAdjustmentHint(): string {
+    return this.isProjectMode()
+      ? 'Les ajustements restent provisoires pendant la production. La reservation du projet sera consommee seulement a la cloture.'
+      : 'Les ajustements restent provisoires pendant la production. Le stock sera deduit seulement a la cloture.';
+  }
+
   start(): void {
-    if (!confirm('Démarrer la production ?')) return;
+    if (!confirm(`Demarrer la production ? Le systeme verifiera ${this.stockCheckLabel()} avant ouverture.`)) {
+      return;
+    }
     this.ofService.demarrer(this.of.id!).subscribe({
       next: (updated) => {
         this.of = updated;
         this.startTimer();
-        this.toast.success('Production démarrée');
+        this.toast.success('Production demarree');
       },
-      error: () => this.toast.error('Erreur au démarrage')
+      error: (err) => {
+        const msg = err.error?.error || err.message || 'Erreur au demarrage';
+        this.toast.error(msg);
+      }
     });
   }
 
   pause(): void {
-    if (!confirm('Mettre en pause ?')) return;
+    if (!confirm('Mettre en pause ?')) {
+      return;
+    }
     this.ofService.pause(this.of.id!).subscribe({
       next: (updated) => {
         this.of = updated;
@@ -100,7 +126,9 @@ export class OFProductionComponent implements OnInit, OnDestroy {
   }
 
   resume(): void {
-    if (!confirm('Reprendre la production ?')) return;
+    if (!confirm('Reprendre la production ?')) {
+      return;
+    }
     this.ofService.reprendre(this.of.id!).subscribe({
       next: (updated) => {
         this.of = updated;
@@ -112,18 +140,18 @@ export class OFProductionComponent implements OnInit, OnDestroy {
   }
 
   close(): void {
-    if (!confirm('Clôturer l\'OF ? Cette action est définitive.')) return;
+    if (!confirm(`Cloturer l'OF ? Cette action est definitive et consommera ${this.stockCloseLabel()}.`)) {
+      return;
+    }
     this.ofService.cloturer(this.of.id!).subscribe({
       next: (updated) => {
         this.of = updated;
         this.stopTimer();
-        this.toast.success('OF clôturé avec succès');
+        this.toast.success('OF cloture avec succes');
       },
       error: (err) => {
-        let errorMessage = 'Erreur lors de la clôture';
-        if (err.error?.error) errorMessage = err.error.error;
-        else if (err.message) errorMessage = err.message;
-        console.error('Erreur clôture:', errorMessage);
+        const errorMessage = err.error?.error || err.message || 'Erreur lors de la cloture';
+        console.error('Erreur cloture:', errorMessage);
         this.toast.error(errorMessage);
       }
     });
@@ -131,7 +159,7 @@ export class OFProductionComponent implements OnInit, OnDestroy {
 
   recordProduction(): void {
     if (this.newBons <= 0 && this.newNC <= 0) {
-      alert('Veuillez saisir une quantité positive');
+      alert('Veuillez saisir une quantite positive');
       return;
     }
     if (this.newNC > 0 && (!this.motifNC || this.motifNC.trim() === '')) {
@@ -151,10 +179,10 @@ export class OFProductionComponent implements OnInit, OnDestroy {
         this.newBons = 0;
         this.newNC = 0;
         this.motifNC = '';
-        this.toast.success('Production enregistrée');
+        this.toast.success('Production enregistree');
         if (updated.statut === StatutOF.CLOTURE) {
           this.stopTimer();
-          this.toast.info('Production terminée, OF clôturé automatiquement');
+          this.toast.info('Production terminee, OF cloture automatiquement');
         }
       },
       error: (err) => {
@@ -163,6 +191,7 @@ export class OFProductionComponent implements OnInit, OnDestroy {
       }
     });
   }
+
   saveAdjustment(line: LigneOF): void {
     const ajustement = {
       articleId: line.articleId,
@@ -172,14 +201,16 @@ export class OFProductionComponent implements OnInit, OnDestroy {
     this.ofService.ajusterConsommation(this.of.id!, ajustement).subscribe({
       next: (updated) => {
         this.of = updated;
-        this.toast.success('Ajustement enregistré avec succès');
+        this.toast.success('Ajustement enregistre avec succes');
       },
       error: (err) => {
         console.error(err);
-        this.toast.error('Erreur lors de l\'ajustement');
+        const msg = err.error?.error || err.message || 'Erreur lors de l ajustement';
+        this.toast.error(msg);
       }
     });
   }
+
   goToQualityControl(): void {
     this.router.navigate(['/of/qualite/points'], {
       queryParams: { ofId: this.of.id, ofCode: this.of.code }
@@ -199,7 +230,9 @@ export class OFProductionComponent implements OnInit, OnDestroy {
   }
 
   private startTimer(): void {
-    if (!this.of?.dateDebutReelle) return;
+    if (!this.of?.dateDebutReelle) {
+      return;
+    }
     const start = new Date(this.of.dateDebutReelle).getTime();
 
     const update = () => {
@@ -211,7 +244,9 @@ export class OFProductionComponent implements OnInit, OnDestroy {
       }
     };
     update();
-    if (this.timerInterval) clearInterval(this.timerInterval);
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+    }
     this.timerInterval = setInterval(update, 1000);
   }
 
@@ -236,5 +271,4 @@ export class OFProductionComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.stopTimer();
   }
-
 }

@@ -21,6 +21,7 @@ export interface OrdreFabrication {
   ligneId?: string;
   ligneNom?: string;
   lotVracId?: string;
+  traceabilityLotId?: string;
   lignes?: LigneOF[];
   articleNom?: string;
   createdDate?: string;

@@ -10,7 +10,8 @@ import {MouvementStock} from "../models/mouvement-stock.model";
   providedIn: 'root'
 })
 export class StockService {
-  private apiUrl = `http://localhost:8084/api/inventaire/stocks`;
+  // Fixed as part of TICKET-002: Derive base URL from environment config
+  private apiUrl = `${environment.apiUrl}/api/inventaire/stocks`;
 
   constructor(private http: HttpClient) {
   }

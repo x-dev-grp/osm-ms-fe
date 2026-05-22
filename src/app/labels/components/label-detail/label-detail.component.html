@@ -97,6 +97,18 @@
             <label>VARIÉTÉ</label>
             <p>{{ getVarietyLabel(label.variety) || 'dede' }}</p>
           </div>
+          <div class="data-item">
+            <label>LOT TRACEABILITE</label>
+            <p>{{ label.traceabilityLotId || '-' }}</p>
+          </div>
+          <div class="data-item">
+            <label>RECEPTION RACINE</label>
+            <p>{{ filteredLotRootReceptionId }}</p>
+          </div>
+          <div class="data-item">
+            <label>CUVE FILTREE</label>
+            <p>{{ filteredLotStorageName }}</p>
+          </div>
           <div class="data-item full-width">
             <label>PAYS D'ORIGINE</label>
             <p>{{ label.originCountry || 'Tunisie' }}</p>
@@ -104,7 +116,56 @@
         </div>
       </div>
 
-      <!-- 3. Marketing & Conformité -->
+      <div class="section-card" *ngIf="filteredLotGenealogy || label.sourceSnapshots?.length">
+        <div class="section-header">
+          <div class="section-icon"><mat-icon>account_tree</mat-icon></div>
+          <h2>3. Chaîne d'origine</h2>
+          <div class="header-line"></div>
+        </div>
+
+        <div class="origin-grid">
+          <div class="origin-summary">
+            <div class="origin-row">
+              <label>Ancre de traçabilité</label>
+              <p>{{ traceabilityAnchor }}</p>
+            </div>
+            <div class="origin-row">
+              <label>Source racine</label>
+              <p>{{ filteredLotGenealogy?.traceabilitySourceType || rootSource?.type || '-' }}</p>
+            </div>
+            <div class="origin-row">
+              <label>Lot d'origine</label>
+              <p>{{ rootSource?.lotNumber || '-' }}</p>
+            </div>
+            <div class="origin-row">
+              <label>Preuves enregistrées</label>
+              <p>{{ sourceProofCount }}</p>
+            </div>
+          </div>
+
+          <div class="origin-root" *ngIf="rootSource as root">
+            <label>Origine identifiée</label>
+            <h3>{{ root.supplierName || '-' }}</h3>
+            <p>{{ root.type || '-' }} | {{ root.date | date:'dd/MM/yyyy' }}</p>
+            <div class="origin-tags" *ngIf="root.qualityControls && (root.qualityControls | keyvalue).length">
+              <span class="origin-tag" *ngFor="let qc of root.qualityControls | keyvalue">
+                {{ qc.key }}: {{ qc.value }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="filtration-chain" *ngIf="filteredLotGenealogy?.filtrations?.length">
+          <div class="chain-step" *ngFor="let step of filteredLotGenealogy?.filtrations">
+            <strong>{{ step.targetLotNumber || '-' }}</strong>
+            <span>{{ step.sourceStorageUnitName || step.sourceLotNumber || '-' }}</span>
+            <span>{{ step.volumeFiltered || 0 }} L</span>
+            <span>{{ step.timestamp | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Marketing & Conformité -->
       <div class="section-card">
         <div class="section-header">
           <div class="section-icon"><mat-icon>verified</mat-icon></div>

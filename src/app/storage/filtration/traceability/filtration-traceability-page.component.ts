@@ -132,9 +132,14 @@ export class FiltrationTraceabilityPageComponent implements OnInit {
   }
 
   prepareLabel(): void {
-    const targetId = this.operation()?.target?.id;
-    if (targetId) {
-      this.router.navigate(['/labels', 'new'], { queryParams: { lotId: targetId } });
+    const operation = this.operation();
+    if (operation?.operationId) {
+      this.router.navigate(['/labels', 'new'], {
+        queryParams: {
+          filtrationOperationId: operation.operationId,
+          lotId: operation.target?.id
+        }
+      });
     }
   }
 }

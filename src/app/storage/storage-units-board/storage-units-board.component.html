@@ -142,15 +142,7 @@
             </div>
 
             <!-- Filtered Oil Information -->
-            <div *ngIf="storageUnit.filteredOil" class="metric filtered-oil-info">
-              <span class="metric-label">
-                <mat-icon class="filtered-icon-small">filter_alt</mat-icon>
-                {{ 'STORAGE.VIEW.FILTERED_OIL' | translate }}
-              </span>
-              <span class="metric-value">
-                {{ storageUnit.lastFiltrationDate ? (storageUnit.lastFiltrationDate | date:'shortDate') : ('COMMON.YES' | translate) }}
-              </span>
-            </div>
+
           </div>
         </div>
 

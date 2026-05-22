@@ -21,6 +21,7 @@ import { ToastService } from '../../../../shared/services/toast.service';
 import { PdfGeneratorExpeditionService } from '../../../../shared/services/pdf-generator-expedition.service';
 import { CompanyProfileService } from '../../../../shared/services/company-profile.service';
 import { PdfExpeditionConfig } from '../../../../shared/models/pdf-config.model';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-projet-expedition',
@@ -244,10 +245,22 @@ export class ProjetExpeditionComponent implements OnInit {
   }
 
   private loadProjectOfs(projectId: string): void {
-    this.ofService.getByProject(projectId).subscribe({
-      next: (ofs: any[]) => {
-        this.projectOfs = ofs;
-        this.buildCreateLines(ofs);
+    forkJoin({
+      projectOfs: this.ofService.getByProject(projectId),
+      allOfs: this.ofService.getAll()
+    }).subscribe({
+      next: ({ projectOfs, allOfs }) => {
+        const unassignedOfs = allOfs.filter(of => !of.projectId);
+        const merged = [...projectOfs];
+
+        unassignedOfs.forEach(of => {
+          if (!merged.some(existing => existing.id === of.id)) {
+            merged.push(of);
+          }
+        });
+
+        this.projectOfs = merged;
+        this.buildCreateLines(merged);
       },
       error: (err: any) => console.error('Erreur chargement OFs du projet', err)
     });
@@ -314,6 +327,19 @@ export class ProjetExpeditionComponent implements OnInit {
     } else {
       this.lineForm.patchValue({ ofId: '', articleId: '' });
     }
+  }
+
+  isUnassignedOf(of?: OrdreFabrication | null): boolean {
+    return !!of && !of.projectId;
+  }
+
+  ofAssignmentLabel(of?: OrdreFabrication | null): string | null {
+    return this.isUnassignedOf(of) ? 'Non assigne - sera rattache a ce projet' : null;
+  }
+
+  getSelectedLineOf(): OrdreFabrication | undefined {
+    const selectedOfId = this.lineForm.value.ofId;
+    return this.projectOfs.find(of => of.id === selectedOfId);
   }
 
   createExpedition(): void {
@@ -625,7 +651,7 @@ export class ProjetExpeditionComponent implements OnInit {
     ofs.forEach(of => {
       const quantity = this.defaultQuantityForOf(of);
       this.createLineControls.push(this.fb.group({
-        selected: [quantity > 0],
+        selected: [quantity > 0 && !this.isUnassignedOf(of)],
         ofId: [of.id],
         quantity: [quantity, [Validators.required, Validators.min(1)]],
         volume: [null as number | null],

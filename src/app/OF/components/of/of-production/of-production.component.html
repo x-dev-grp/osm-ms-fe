@@ -9,7 +9,7 @@
     </div>
     <div class="header-actions">
       <button *ngIf="canStart()" class="btn-action start" (click)="start()">
-        <i class="fas fa-play"></i> Démarrer
+        <i class="fas fa-play"></i> Demarrer
       </button>
       <button *ngIf="canPause()" class="btn-action pause" (click)="pause()">
         <i class="fas fa-pause"></i> Pause
@@ -18,7 +18,7 @@
         <i class="fas fa-play-circle"></i> Reprendre
       </button>
       <button *ngIf="canClose()" class="btn-action close" (click)="close()">
-        <i class="fas fa-check-circle"></i> Clôturer
+        <i class="fas fa-check-circle"></i> Cloturer
       </button>
     </div>
   </div>
@@ -26,7 +26,7 @@
   <div class="stats-banner" *ngIf="of.statut === 'EN_COURS'">
     <div class="stat-item">
       <i class="fas fa-hourglass-half"></i>
-      Temps écoulé : <strong>{{ TimeFormatted }}</strong>
+      Temps ecoule : <strong>{{ TimeFormatted }}</strong>
     </div>
     <div class="stat-item">
       <i class="fas fa-check-circle"></i>
@@ -37,6 +37,19 @@
       NC : <strong>{{ of.quantiteNC }}</strong>
     </div>
   </div>
+
+  <div class="flow-banner" *ngIf="isEditable()">
+    <div class="flow-banner-icon">
+      <i class="fas fa-boxes-stacked"></i>
+    </div>
+    <div class="flow-banner-copy">
+      <strong>Flux stock en cours de production</strong>
+      <p>{{ stockAdjustmentHint() }}</p>
+      <span class="flow-banner-chip">Verification au demarrage: {{ stockCheckLabel() }}</span>
+      <span class="flow-banner-chip">Deduction a la cloture: {{ stockCloseLabel() }}</span>
+    </div>
+  </div>
+
   <div class="card-box production-card" *ngIf="isEditable()">
     <h5>Saisie de production</h5>
     <div class="production-form">
@@ -57,14 +70,18 @@
       </button>
     </div>
   </div>
+
   <div class="card-box lines-card">
-    <h5>Composants consommés</h5>
+    <h5>Composants consommes</h5>
+    <p class="lines-caption" *ngIf="isEditable()">
+      La quantite reelle enregistree ici prepare la consommation finale. Aucun mouvement de stock n'est lance avant la cloture de l'OF.
+    </p>
     <table class="data-table">
       <thead>
       <tr>
         <th>Article</th>
-        <th>Quantité théorique</th>
-        <th>Quantité réelle</th>
+        <th>Quantite theorique</th>
+        <th>Quantite reelle</th>
         <th>Motif</th>
         <th>Action</th>
       </tr>
@@ -72,8 +89,8 @@
       <tbody>
       <tr *ngFor="let line of of.lignes">
         <td data-label="Article">{{ line.articleNom || line.articleId }}</td>
-        <td data-label="Théorique">{{ line.quantiteTheorique }}</td>
-        <td data-label="Réelle">
+        <td data-label="Theorique">{{ line.quantiteTheorique }}</td>
+        <td data-label="Reelle">
           <input type="number" [(ngModel)]="line.quantiteReelle" class="form-control-sm" *ngIf="isEditable()">
           <span *ngIf="!isEditable()">{{ line.quantiteReelle || '-' }}</span>
         </td>
@@ -90,17 +107,18 @@
       </tbody>
     </table>
   </div>
+
   <div class="card-box quality-card">
-    <h5>Contrôle qualité</h5>
+    <h5>Controle qualite</h5>
     <div class="quality-actions">
       <button class="btn-quality" (click)="goToQualityControl()">
-        <i class="fas fa-clipboard-list"></i> Voir points de contrôle
+        <i class="fas fa-clipboard-list"></i> Voir points de controle
       </button>
       <button class="btn-quality" (click)="goToQualityEntry()">
-        <i class="fas fa-pen-alt"></i> Saisir contrôle
+        <i class="fas fa-pen-alt"></i> Saisir controle
       </button>
       <button class="btn-quality" (click)="goToQualityHistory()">
-        <i class="fas fa-history"></i> Historique qualité
+        <i class="fas fa-history"></i> Historique qualite
       </button>
     </div>
   </div>
