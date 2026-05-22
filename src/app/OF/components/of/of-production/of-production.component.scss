@@ -188,6 +188,64 @@ $border-radius-sm: 12px;
     }
   }
 
+  .flow-banner {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+    padding: 1.25rem 1.5rem;
+    background: linear-gradient(135deg, rgba($olive-green, 0.08) 0%, rgba($gold, 0.1) 100%);
+    border: 1px solid rgba($olive-green, 0.18);
+    border-radius: $border-radius;
+    box-shadow: $shadow-sm;
+
+    .flow-banner-icon {
+      width: 44px;
+      height: 44px;
+      flex: 0 0 44px;
+      border-radius: 14px;
+      background: rgba($olive-dark, 0.12);
+      color: $olive-dark;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    .flow-banner-copy {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+
+      strong {
+        display: block;
+        width: 100%;
+        color: $olive-dark;
+        font-size: 1rem;
+      }
+
+      p {
+        width: 100%;
+        margin: 0;
+        color: $gray-700;
+        line-height: 1.5;
+      }
+    }
+
+    .flow-banner-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.45rem 0.8rem;
+      border-radius: 999px;
+      background: rgba($white, 0.92);
+      color: $olive-dark;
+      border: 1px solid rgba($olive-green, 0.16);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+  }
+
   // ── Cards ────────────────────────────────────────────────
   .card-box {
     background: $white;
@@ -286,6 +344,12 @@ $border-radius-sm: 12px;
   // ── Tableau des lignes ───────────────────────────────────
   .lines-card {
     overflow-x: auto;
+
+    .lines-caption {
+      margin: -0.25rem 0 1rem;
+      color: $gray-600;
+      line-height: 1.5;
+    }
 
     .data-table {
       width: 100%;
@@ -430,6 +494,14 @@ $border-radius-sm: 12px;
     .stats-banner {
       flex-direction: column;
       gap: 0.75rem;
+    }
+
+    .flow-banner {
+      flex-direction: column;
+
+      .flow-banner-copy {
+        width: 100%;
+      }
     }
 
     .production-form {

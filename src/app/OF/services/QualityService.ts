@@ -6,9 +6,12 @@ import { QCControlPoint } from '../models/QCControlPoint.model';
 import {QCPlan} from "../models/QCPlan.model";
 import {QCResult} from "../models/QCResult.model";
 
+import { environment } from '../../../environments/environment';
+
 @Injectable({ providedIn: 'root' })
 export class QualityService {
-  private apiUrl = 'http://localhost:8084/api/ordreConditionement/qualite'; // via gateway
+  // Fixed as part of TICKET-002: Derive URL from environment config
+  private apiUrl = `${environment.apiUrl}/api/ordreConditionement/qualite`;
 
   constructor(private http: HttpClient) {}
 

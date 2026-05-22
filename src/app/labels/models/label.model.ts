@@ -47,6 +47,7 @@ export interface LabelContentDto {
   actions?: string[];
 
   lotId?: string;
+  traceabilityLotId?: string;
   productId?: string;
   packagingId?: string;
   operatorId?: string;
@@ -85,6 +86,7 @@ export interface LabelContentDto {
 
 export interface LabelGenerateRequestDto {
   lotId: string;
+  traceabilityLotId?: string;
   productId?: string;
   packagingId: string;
   packagingDate?: string;

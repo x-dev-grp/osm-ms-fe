@@ -247,12 +247,19 @@ export class LabelWorkflowComponent implements OnInit {
     }
 
     const formValue = this.labelForm.getRawValue();
-    const selectedOp = this.filtrationOperations.find(op => op.operationId === formValue.lotId);
+    const selectedOp = this.resolveFiltrationOperation(formValue.lotId || '');
+    const filteredStorageId = selectedOp?.target?.id;
+
+    if (!selectedOp || !filteredStorageId) {
+      this.errorMessage = 'Selectionnez une operation de filtration terminee avec une cuve filtree valide.';
+      this.labelForm.get('lotId')?.enable();
+      return;
+    }
 
     const request: LabelGenerateRequestDto = {
-      lotId: selectedOp?.target?.id ?? '',
+      lotId: filteredStorageId,
       productId: formValue.packagingId ?? '',
-      filtrationOperationId: selectedOp?.operationId,
+      filtrationOperationId: selectedOp.operationId,
       packagingId: formValue.packagingId ?? '',
       packagingDate: formValue.packagingDate ?? undefined,
       language: formValue.language ?? 'FR',
@@ -286,9 +293,10 @@ export class LabelWorkflowComponent implements OnInit {
   // Client-side auto-fill when lot is selected
   onLotChange(event: Event): void {
     const select = event.target as HTMLSelectElement;
-    const selectedOp = this.filtrationOperations.find(op => op.operationId === select.value);
+    const selectedOp = this.resolveFiltrationOperation(select.value);
     if (!selectedOp) return;
 
+    this.labelForm.get('lotId')?.setValue(selectedOp.operationId);
     // Pre-fill lot number from the filtration operation
     const lotNumber = selectedOp.targetLotNumber || selectedOp.target?.lotNumber || '';
     if (lotNumber && !this.labelForm.value.lotNumber) {
@@ -472,10 +480,22 @@ export class LabelWorkflowComponent implements OnInit {
   }
 
   selectedLotLabel(): string {
-    const selectedOp = this.filtrationOperations.find(
-      (op) => op.operationId === this.labelForm.value.lotId
-    );
+    const selectedOp = this.selectedFiltrationOperation();
     return selectedOp ? this.filtrationOperationLabel(selectedOp) : '-';
+  }
+
+  selectedFiltrationOperation(): FiltrationOperation | undefined {
+    return this.resolveFiltrationOperation(this.labelForm.getRawValue().lotId || '');
+  }
+
+  selectedSourceStorageLabel(): string {
+    const source = this.selectedFiltrationOperation()?.source;
+    return source ? this.storageUnitLabel(source) : '-';
+  }
+
+  selectedFilteredStorageLabel(): string {
+    const target = this.selectedFiltrationOperation()?.target;
+    return target ? this.storageUnitLabel(target) : '-';
   }
 
   selectedPackagingLabel(): string {
@@ -547,6 +567,13 @@ export class LabelWorkflowComponent implements OnInit {
     return `OP-${op.operationId.substring(0, 8)} | ${lot}${volume}${date}`;
   }
 
+  storageUnitLabel(storageUnit: { id?: string; name?: string; lotNumber?: string; currentVolume?: number | null }): string {
+    const name = storageUnit.name || 'Cuve inconnue';
+    const lot = storageUnit.lotNumber ? ` | Lot ${storageUnit.lotNumber}` : '';
+    const volume = storageUnit.currentVolume != null ? ` | ${storageUnit.currentVolume}L` : '';
+    return `${name}${lot}${volume}`;
+  }
+
   productLabel(product: Product): string {
     const volume = product.volume ? `${product.volume} ml` : 'volume inconnu';
     const packaging = product.packagingType ? ` | ${product.packagingType}` : '';
@@ -602,11 +629,12 @@ export class LabelWorkflowComponent implements OnInit {
 
   private fromUrl(): void {
     const queryParams = this.route.snapshot.queryParamMap;
-    const lotId = queryParams.get('lotId');
+    const requestedLotOrOperationId = queryParams.get('filtrationOperationId') ?? queryParams.get('lotId');
+    const selectedOp = this.resolveFiltrationOperation(requestedLotOrOperationId);
 
-    if (lotId) {
-      this.labelForm.get('lotId')?.setValue(lotId);
-      this.labelForm.get('lotId')?.disable();
+    if (selectedOp) {
+      this.labelForm.get('lotId')?.setValue(selectedOp.operationId);
+      this.prefillFromFiltration(selectedOp);
     }
 
     this.labelForm.patchValue({
@@ -643,9 +671,10 @@ export class LabelWorkflowComponent implements OnInit {
 
   private syncFormWithLabel(label: LabelContentDto): void {
     this.currentLabel = label;
+    const selectedOp = this.resolveFiltrationOperation(label.filtrationOperationId || label.lotId || '');
 
     this.labelForm.patchValue({
-      lotId: label.filtrationOperationId || label.lotId || '',
+      lotId: selectedOp?.operationId || label.filtrationOperationId || label.lotId || '',
       packagingId: label.packagingId || '',
       packagingDate: label.packagingDate || this.formatDateInput(new Date()),
       language: label.language || 'FR',
@@ -672,6 +701,31 @@ export class LabelWorkflowComponent implements OnInit {
 
     if (label.id && this.route.snapshot.paramMap.get('id') !== label.id) {
       this.router.navigate(['/labels', label.id], { replaceUrl: true });
+    }
+  }
+
+  private resolveFiltrationOperation(id: string | null | undefined): FiltrationOperation | undefined {
+    if (!id) {
+      return undefined;
+    }
+
+    return this.filtrationOperations.find((op) =>
+      op.operationId === id ||
+      op.target?.id === id ||
+      op.source?.id === id ||
+      op.targetLotNumber === id ||
+      op.target?.lotNumber === id
+    );
+  }
+
+  private prefillFromFiltration(selectedOp: FiltrationOperation): void {
+    const lotNumber = selectedOp.targetLotNumber || selectedOp.target?.lotNumber || '';
+    if (lotNumber && !this.labelForm.value.lotNumber) {
+      this.labelForm.patchValue({ lotNumber });
+    }
+
+    if (!this.labelForm.value.originCountry) {
+      this.labelForm.patchValue({ originCountry: 'Tunisie' });
     }
   }
 

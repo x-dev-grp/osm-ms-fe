@@ -76,7 +76,10 @@
 
         <div class="create-lines" [formGroup]="createLinesForm">
           <div class="lines-header">
-            <h3>OF du projet a expedier</h3>
+            <div class="lines-heading">
+              <h3>OF du projet a expedier</h3>
+              <p>Les OF non assignes peuvent etre ajoutes ici et seront rattaches au projet lors de l'ajout.</p>
+            </div>
             <span>{{ selectedCreateLineCount }} OF - {{ selectedCreateLineQuantity }} {{ project?.unite === 'LITRES' ? 'L' : 'u' }}</span>
           </div>
 
@@ -97,7 +100,12 @@
                 <td>
                   <input type="checkbox" formControlName="selected" />
                 </td>
-                <td><code>{{ projectOfs[i]?.code || '-' }}</code></td>
+                <td>
+                  <div class="of-cell">
+                    <code>{{ projectOfs[i]?.code || '-' }}</code>
+                    <span class="of-badge unassigned" *ngIf="isUnassignedOf(projectOfs[i])">Non assigne</span>
+                  </div>
+                </td>
                 <td>{{ projectOfs[i]?.productName || projectOfs[i]?.skuCode || projectOfs[i]?.articleNom || '-' }}</td>
                 <td>
                   <input type="number" formControlName="quantity" min="1" />
@@ -131,7 +139,7 @@
           <div class="metric-card">
             <mat-icon>inventory_2</mat-icon>
             <div>
-              <span class="metric-value">{{ selectedExpedition.totalQuantity ?? 0 }}</span>
+              <span class="metric-value">{{ selectedExpedition.totalQuantity || 0 }}</span>
               <span class="metric-label">Articles total</span>
             </div>
           </div>
@@ -243,9 +251,12 @@
                   <select formControlName="ofId" (change)="onOfSelected($event)">
                     <option value="">Selectionner un OF</option>
                     <option *ngFor="let of of projectOfs" [value]="of.id">
-                      {{ of.code }} ({{ of.quantiteCible }} {{ of.unite === 'LITRES' ? 'L' : 'u' }})
+                      {{ of.code }} ({{ of.quantiteCible }} {{ of.unite === 'LITRES' ? 'L' : 'u' }}){{ isUnassignedOf(of) ? ' - Non assigne' : '' }}
                     </option>
                   </select>
+                  <small class="field-hint" *ngIf="lineForm.value.ofId">
+                    {{ ofAssignmentLabel(getSelectedLineOf()) }}
+                  </small>
                 </div>
                 <div class="form-field">
                   <label>Quantite</label>
@@ -343,7 +354,7 @@
             </div>
           </div>
           <div class="exp-header-right">
-            <span class="exp-qty">{{ exp.totalQuantity ?? 0 }}</span>
+            <span class="exp-qty">{{ exp.totalQuantity || 0 }}</span>
             <span class="status" [ngClass]="statusClass(exp.status)">{{ statusLabel(exp.status) }}</span>
           </div>
         </div>
@@ -367,7 +378,7 @@
           <div class="exp-metrics">
             <div class="metric-item">
               <span class="metric-label">Articles</span>
-              <span class="metric-value">{{ exp.totalQuantity ?? 0 }}</span>
+              <span class="metric-value">{{ exp.totalQuantity || 0 }}</span>
             </div>
             <div class="metric-item" *ngIf="exp.totalVolume">
               <span class="metric-label">Volume</span>

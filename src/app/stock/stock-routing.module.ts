@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-//import { StockDashboardComponent } from './components/dashboard/stock-dashboard/stock-dashboard.component';
+import { StockDashboardComponent } from './components/dashboard/stock-dashboard/stock-dashboard.component';
 import { ArticleListComponent } from './components/article/article-list/article-list.component';
 import { ArticleFormComponent } from './components/article/article-form/article-form.component';
 import { ArticleDetailComponent } from './components/article/article-detail/article-detail.component';
@@ -28,61 +28,62 @@ import {BomFormComponent} from "./components/bom/bom-form/bom-form.component";
 import {BomDetailComponent} from "./components/bom/bom-detail/bom-detail.component";
 import {AuditComponent} from "./components/audit/audit.component";
 
+import { anyPermissionGuard, moduleGuard } from '../interceptors/guards/permission.guard';
+import { Action, OSMModule, permissionKey, InventoryEntity, ConditioningEntity } from '../theme/types/permissions';
+
 const routes: Routes = [
   {
     path: '',
+    canActivate: [moduleGuard([OSMModule.INVENTAIR])],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      //{ path: 'dashboard', component: StockDashboardComponent },
-      { path: 'articles', component: ArticleListComponent },
-      { path: 'articles/nouveau', component: ArticleFormComponent },
-      { path: 'articles/:id', component: ArticleDetailComponent },
-      { path: 'articles/:id/editer', component: ArticleFormComponent },
-      { path: 'bons-commande', component: BcListComponent },
-      { path: 'bons-commande/nouveau', component: BcFormComponent },
-      { path: 'bons-commande/:id/edit', component: BcFormComponent },
-      { path: 'bons-commande/:id', component: BcDetailComponent },
-      { path: 'mouvements', component: MouvementListComponent },
-      { path: 'fournisseurs', component: FournisseurListComponent },
-      { path: 'fournisseurs/nouveau', component: FournisseurFormComponent },
-      { path: 'fournisseurs/:id', component: FournisseurDetailComponent },
-      { path: 'fournisseurs/:id/editer', component: FournisseurFormComponent },
+      { path: 'dashboard', component: StockDashboardComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.STOCKSEC, Action.READ)])] },
+      { path: 'articles', component: ArticleListComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.ARTICLESEC, Action.READ)])] },
+      { path: 'articles/nouveau', component: ArticleFormComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.ARTICLESEC, Action.CREATE)])] },
+      { path: 'articles/:id', component: ArticleDetailComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.ARTICLESEC, Action.READ)])] },
+      { path: 'articles/:id/editer', component: ArticleFormComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.ARTICLESEC, Action.UPDATE)])] },
+      { path: 'bons-commande', component: BcListComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.BONCOMMANDE, Action.READ)])] },
+      { path: 'bons-commande/nouveau', component: BcFormComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.BONCOMMANDE, Action.CREATE)])] },
+      { path: 'bons-commande/:id/edit', component: BcFormComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.BONCOMMANDE, Action.UPDATE)])] },
+      { path: 'bons-commande/:id', component: BcDetailComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.BONCOMMANDE, Action.READ)])] },
+      { path: 'mouvements', component: MouvementListComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.MOUVEMENTSTOCKSEC, Action.READ)])] },
 
-      { path: 'products', component: SkuListComponent },
-      { path: 'products/nouveau', component: SkuFormComponent },
-      { path: 'products/:id', component: SkuDetailComponent },
-      { path: 'products/:id/edit', component: SkuFormComponent },
-      { path: 'products/:id/editer', component: SkuFormComponent },
-      { path: 'skus', component: SkuListComponent },
-      { path: 'skus/nouveau', component: SkuFormComponent },
-      { path: 'skus/:id', component: SkuDetailComponent },
-      { path: 'skus/:id/edit', component: SkuFormComponent },
-      { path: 'skus/:id/editer', component: SkuFormComponent },
+      { path: 'fournisseurs', component: FournisseurListComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.FOURNISSEUR, Action.READ)])] },
+      { path: 'fournisseurs/nouveau', component: FournisseurFormComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.FOURNISSEUR, Action.CREATE)])] },
+      { path: 'fournisseurs/:id', component: FournisseurDetailComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.FOURNISSEUR, Action.READ)])] },
+      { path: 'fournisseurs/:id/editer', component: FournisseurFormComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.FOURNISSEUR, Action.UPDATE)])] },
+
+      { path: 'products', component: SkuListComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.PRODUCT, Action.READ)])] },
+      { path: 'products/nouveau', component: SkuFormComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.PRODUCT, Action.CREATE)])] },
+      { path: 'products/:id', component: SkuDetailComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.PRODUCT, Action.READ)])] },
+      { path: 'products/:id/edit', component: SkuFormComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.PRODUCT, Action.UPDATE)])] },
+      { path: 'products/:id/editer', component: SkuFormComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.PRODUCT, Action.UPDATE)])] },
+      { path: 'skus', component: SkuListComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.SKU, Action.READ)])] },
+      { path: 'skus/nouveau', component: SkuFormComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.SKU, Action.CREATE)])] },
+      { path: 'skus/:id', component: SkuDetailComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.SKU, Action.READ)])] },
+      { path: 'skus/:id/edit', component: SkuFormComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.SKU, Action.UPDATE)])] },
+      { path: 'skus/:id/editer', component: SkuFormComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.SKU, Action.UPDATE)])] },
 
       { path: 'clients', component: ClientListComponent },
       { path: 'clients/nouveau', component: ClientFormComponent },
       { path: 'clients/:id', component: ClientDetailComponent },
       { path: 'clients/:id/editer', component: ClientFormComponent },
 
-      { path: 'lignes', component: LigneListComponent },
-      { path: 'lignes/nouveau', component: LigneFormComponent },
-      { path: 'lignes/:id', component: LigneDetailComponent },
-      { path: 'lignes/:id/edit', component: LigneFormComponent },
+      { path: 'lignes', component: LigneListComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.LIGNECONDITIONNEMENT, Action.READ)])] },
+      { path: 'lignes/nouveau', component: LigneFormComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.LIGNECONDITIONNEMENT, Action.CREATE)])] },
+      { path: 'lignes/:id', component: LigneDetailComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.LIGNECONDITIONNEMENT, Action.READ)])] },
+      { path: 'lignes/:id/edit', component: LigneFormComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.LIGNECONDITIONNEMENT, Action.UPDATE)])] },
 
+      { path: 'emplacements', component: EmplacementListComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.EMPLACEMENTSTOCK, Action.READ)])] },
+      { path: 'emplacements/nouveau', component: EmplacementFormComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.EMPLACEMENTSTOCK, Action.CREATE)])] },
+      { path: 'emplacements/:id', component: EmplacementDetailComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.EMPLACEMENTSTOCK, Action.READ)])] },
+      { path: 'emplacements/:id/edit', component: EmplacementFormComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.EMPLACEMENTSTOCK, Action.UPDATE)])] },
 
-      { path: 'emplacements', component: EmplacementListComponent },
-      { path: 'emplacements/nouveau', component: EmplacementFormComponent },
-      { path: 'emplacements/:id', component: EmplacementDetailComponent },
-      { path: 'emplacements/:id/edit', component: EmplacementFormComponent },
-
-      { path: 'boms', component: BomListComponent },
-      { path: 'boms/nouveau', component: BomFormComponent },
-      { path: 'boms/:id/editer', component: BomFormComponent },
-      { path: 'boms/:id', component: BomDetailComponent },
-      { path: 'audit', component: AuditComponent },
-
-
-
+      { path: 'boms', component: BomListComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.BOM, Action.READ)])] },
+      { path: 'boms/nouveau', component: BomFormComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.BOM, Action.CREATE)])] },
+      { path: 'boms/:id/editer', component: BomFormComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.BOM, Action.UPDATE)])] },
+      { path: 'boms/:id', component: BomDetailComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.BOM, Action.READ)])] },
+      { path: 'audit', component: AuditComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.CONDITIONING, ConditioningEntity.AUDIT, Action.READ)])] },
 
     ]
   }

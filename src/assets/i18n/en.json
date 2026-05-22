@@ -797,15 +797,6 @@
       "REFUSED": "Refused"
     }
   },
-  "QR": {
-    "TITLE": "Universal QR Code",
-    "GENERATE": "Generate QR Code",
-    "TYPE": "Entity Type",
-    "ENCRYPTED": "Encrypted",
-    "ERROR": {
-      "GENERATE": "Error generating QR code"
-    }
-  },
   "DEPARTMENT": {
     "DETAIL": {
       "EMPLOYEES": "Employees",
@@ -1728,7 +1719,8 @@
   },
   "OIL_SALES": {
     "ADD_TITLE": "Add Oil Sale",
-    "CANCEL": "Cancel","CONFIRM": "Confirm",
+    "CANCEL": "Cancel",
+    "CONFIRM": "Confirm",
     "CONTAINERS": {
       "COUNT": "Number of containers needed",
       "SHOW": "Show the list of containers",
@@ -1834,7 +1826,8 @@
     "TOTAL_IN_CONTAINERS": "Oil quantity in containers",
     "TOTAL_OILAMOUNT": "Total oil amount",
     "UNIT_PRICE": "Unit Price",
-    "VALIDATION": {"CONFIRM": "Confirm",
+    "VALIDATION": {
+      "CONFIRM": "Confirm",
       "INSUFFICIENT_QUANTITY": "Insufficient quantity",
       "SOURCE_STORAGE_UNIT": "Source Storage Unit",
       "TITLE": "Validate Oil Sale"
@@ -1925,7 +1918,8 @@
       },
       "CONFIRMATION": {
         "APPROVE": {
-          "CANCEL": "Cancel","CONFIRM": "Approve",
+          "CANCEL": "Cancel",
+          "CONFIRM": "Approve",
           "MESSAGE": "Are you sure you want to approve this transaction? This action cannot be undone.",
           "TITLE": "Approve Transaction"
         }
@@ -2111,70 +2105,48 @@
   },
   "OSM_DASHBOARD": {
     "ACTIONS": {
-      "CONDITIONING": "Conditioning",
-      "INVENTAIR": "Inventory",
-      "OF": "Manufacturing Order",
-      "PROJET": "Project",
-      "CLIENT": "Client",
-      "CERTIFICATION": "Certification",
-      "SHIPPING": "Shipping",
-      "EXPEDITION": "Expedition",
-      "LABELCONTENT": "Label Content",
+      "ADD_LINE": "Add Line",
+      "AJUSTER_STOCK": "Adjust Stock",
       "ANALYTICS": "Analytics",
-      "MOBILESYNC": "Mobile Sync",
-      "AUDIT": "Audit",
+      "APPROVE": "Approve",
       "ARTICLESEC": "Article",
-      "STOCKSEC": "Stock",
-      "PRODUCT": "Product",
-      "SKU": "SKU",
+      "ASSIGN_EMPLACEMENT": "Assign Location",
+      "ASSIGN_SUPPLIER": "Assign Supplier",
+      "AUDIT": "Audit",
+      "BANKACCOUNT": "Bank Account",
       "BOM": "Bill of Materials",
       "BONCOMMANDE": "Purchase Order",
-      "FOURNISSEUR": "Supplier",
-      "LIGNECONDITIONNEMENT": "Conditioning Line",
-      "EMPLACEMENTSTOCK": "Stock Location",
-      "MOUVEMENTSTOCKSEC": "Stock Movement",
-      "START": "Start",
-      "PAUSE": "Pause",
-      "RESUME": "Resume",
-      "CLOSE": "Close",
-      "SHIP": "Ship",
-      "DELIVER": "Deliver",
-      "ADD_LINE": "Add Line",
-      "REMOVE_LINE": "Remove Line",
-      "UPDATE_STATUS": "Update Status",
-      "DRAFT": "Draft",
-      "FINALIZE": "Finalize",
-      "EXPORT": "Export",
-      "SYNC": "Sync",
-      "REPORT": "Report",
-      "ENTREE_STOCK": "Stock Entry",
-      "SORTIE_STOCK": "Stock Exit",
-      "AJUSTER_STOCK": "Adjust Stock",
-      "ASSIGN_EMPLACEMENT": "Assign Location",
-      "RESERVER_STOCK": "Reserve Stock",
-      "LIBERER_STOCK": "Release Stock",
-      "CHECK_STOCK": "Check Stock",
-      "TRANSFERER_STOCK": "Transfer Stock",
-      "DELIVERYHISTORY": "Delivery History",
-      "APPROVE": "Approve",
-      "ASSIGN_SUPPLIER": "Assign Supplier",
-      "BANKACCOUNT": "Bank Account",
       "Base_type": "Base type",
       "CANCEL": "Cancel",
+      "CERTIFICATION": "Certification",
+      "CHECK_STOCK": "Check Stock",
+      "CLIENT": "Client",
+      "CLOSE": "Close",
       "COMPANYPROFILE": "Company Profile",
       "COMPLETE": "Complete",
-      "COMPLETE_PAYMENT_DETAILS": "To be completed for payment ","CONFIRM": "Confirm",
+      "COMPLETE_PAYMENT_DETAILS": "To be completed for payment ",
+      "CONDITIONING": "Conditioning",
+      "CONFIRM": "Confirm",
       "CONFIRM_DELETE": "Are you sure you want to delete this item?",
       "CONTRACT": "Contract",
       "CREATE": "Create",
       "DELETE": "Delete",
+      "DELIVER": "Deliver",
+      "DELIVERYHISTORY": "Delivery History",
       "DEPARTMENT": "Department",
       "DETAIL": "Details",
+      "DRAFT": "Draft",
+      "EMPLACEMENTSTOCK": "Stock Location",
       "EMPLOYEE": "Employee",
+      "ENTREE_STOCK": "Stock Entry",
       "ERROR": "An error occurred",
+      "EXPEDITION": "Expedition",
       "EXPENSE": "Expense",
+      "EXPORT": "Export",
+      "FINALIZE": "Finalize",
       "FINANCE": "Finance",
       "FINANCIALTRANSACTION": "Financial Transaction",
+      "FOURNISSEUR": "Supplier",
       "GEN_INVOICE": "Generate Invoice",
       "GEN_PDF": "Generate Receipt",
       "GEN_PDF_BON_COMMANDE": "Oil purchase order ",
@@ -2183,11 +2155,18 @@
       "GEN_PDF_QC_OLIVE": "Generate Olive QC receipt ",
       "HABILITATION": "Authorization",
       "HR": "HR",
+      "INVENTAIR": "Inventory",
+      "LABELCONTENT": "Label Content",
       "LEAVEREQUEST": "Leave Request",
+      "LIBERER_STOCK": "Release Stock",
+      "LIGNECONDITIONNEMENT": "Conditioning Line",
       "MACHINEPLAN": "Machine Plan",
       "MAINTENANCE": "Maintenance",
       "MILLMACHINE": "Mill Machine",
+      "MOBILESYNC": "Mobile Sync",
       "MORE": "More",
+      "MOUVEMENTSTOCKSEC": "Stock Movement",
+      "OF": "Manufacturing Order",
       "OILCREDIT": "Oil Credit",
       "OILSALE": "Oil Sale",
       "OILTRANSACTION": "Oil Transaction",
@@ -2199,31 +2178,47 @@
       "OLIVE_QUALITY": "Olive Quality Control",
       "OSMUSER": "OSM User",
       "PARAMETER": "Parameter",
+      "PAUSE": "Pause",
       "PAY": "Pay",
       "PAYROLL": "Payroll",
       "PERMISSION": "Permission",
       "PLANNING": "Production Planning",
       "POINTAGE": "Time Tracking",
       "POSTE": "Position",
+      "PRODUCT": "Product",
       "PRODUCTION": "Production",
+      "PROJET": "Project",
       "QUALITY": "Quality",
       "QUALITYCONTROLRESULT": "Quality Control Result",
       "QUALITYCONTROLRULE": "Quality Control Rule",
       "READ": "View",
       "RECEPTION": "Reception",
       "REJECT ": "Reject",
+      "REMOVE_LINE": "Remove Line",
+      "REPORT": "Report",
+      "RESERVER_STOCK": "Reserve Stock",
+      "RESUME": "Resume",
       "ROLE": "Role",
       "SET_PRICE": "Set price",
+      "SHIP": "Ship",
+      "SHIPPING": "Shipping",
+      "SKU": "SKU",
+      "SORTIE_STOCK": "Stock Exit",
+      "START": "Start",
+      "STOCKSEC": "Stock",
       "STORAGEUNIT": "Storage Unit",
       "SUCCESS": "Operation completed successfully",
       "SUPPLIER": "Supplier",
+      "SYNC": "Sync",
       "TITLE": "Actions",
       "TO_PROD": "Send to Production",
+      "TRANSFERER_STOCK": "Transfer Stock",
       "TRANSPORTER": "Transporter",
       "UNIFIEDDELIVERY": "Delivery",
       "UPDATE": "Edit",
       "UPDATE_OIL_QUALITY": "Update Oil Quality",
       "UPDATE_OLIVE_QUALITY": "Update Olive Quality",
+      "UPDATE_STATUS": "Update Status",
       "USER": "User",
       "VALIDATE": "Validate",
       "WRITE": "Add"
@@ -2531,6 +2526,15 @@
   "Product Details": "Product Details",
   "Product List": "Product List",
   "Profile": "Profile",
+  "QR": {
+    "ENCRYPTED": "Encrypted",
+    "ERROR": {
+      "GENERATE": "Error generating QR code"
+    },
+    "GENERATE": "Generate QR Code",
+    "TITLE": "Universal QR Code",
+    "TYPE": "Entity Type"
+  },
   "QUALITY_CONTROL_RULE": {
     "ACTIONS": {
       "CANCEL": "Cancel",
@@ -2713,27 +2717,32 @@
     },
     "CONFIRMATION": {
       "BULK_DELETE": {
-        "CANCEL": "Cancel","CONFIRM": "Delete All",
+        "CANCEL": "Cancel",
+        "CONFIRM": "Delete All",
         "MESSAGE": "Are you sure you want to delete the selected items? This action cannot be undone.",
         "TITLE": "Confirm Bulk Deletion"
       },
       "CANCEL": "Cancel",
       "DATA_LOSS": {
-        "CANCEL": "Cancel","CONFIRM": "Continue",
+        "CANCEL": "Cancel",
+        "CONFIRM": "Continue",
         "MESSAGE": "This action will result in permanent data loss. Are you sure you want to continue?",
         "TITLE": "Data Loss Warning"
       },
       "DEFAULT": {
-        "CANCEL": "Cancel","CONFIRM": "Confirm"
+        "CANCEL": "Cancel",
+        "CONFIRM": "Confirm"
       },
       "DELETE": {
-        "CANCEL": "Cancel","CONFIRM": "Delete",
+        "CANCEL": "Cancel",
+        "CONFIRM": "Delete",
         "MESSAGE": "Are you sure you want to delete this item? This action cannot be undone.",
         "TITLE": "Confirm Deletion"
       },
       "DESTRUCTIVE_WARNING": "This action is irreversible and will permanently delete the data.",
       "OIL_TRANSACTION": {
-        "CANCEL": "No, skip","CONFIRM": "Yes, confirm",
+        "CANCEL": "No, skip",
+        "CONFIRM": "Yes, confirm",
         "MESSAGE": "This supplier has storage. Do you also want to confirm the oil transaction?",
         "TITLE": "Confirm Oil Transaction"
       },
@@ -2746,22 +2755,26 @@
         "TITLE": "Confirm Save"
       },
       "SIMPLE": {
-        "CANCEL": "No","CONFIRM": "Yes",
+        "CANCEL": "No",
+        "CONFIRM": "Yes",
         "MESSAGE": "Are you sure?",
         "TITLE": "Confirmation"
       },
       "UNSAVED_CHANGES": {
-        "CANCEL": "Stay","CONFIRM": "Leave",
+        "CANCEL": "Stay",
+        "CONFIRM": "Leave",
         "MESSAGE": "You have unsaved changes. Are you sure you want to leave without saving?",
         "TITLE": "Unsaved Changes"
       },
       "UPDATE": {
-        "CANCEL": "Cancel","CONFIRM": "Yes, update",
+        "CANCEL": "Cancel",
+        "CONFIRM": "Yes, update",
         "MESSAGE": "Are you sure you want to update this oil transaction? This action cannot be undone.",
         "TITLE": "Confirm Update"
       },
       "WARNING": {
-        "CANCEL": "Cancel","CONFIRM": "Continue",
+        "CANCEL": "Cancel",
+        "CONFIRM": "Continue",
         "MESSAGE": "Please confirm this action.",
         "TITLE": "Warning"
       }
@@ -2810,6 +2823,7 @@
       "DASHBOARD": {
         "TITLE": "Storage Dashboard"
       },
+      "FILTERED": "Filtred",
       "MAX_CAPACITY": "Max Capacity",
       "NA": "N/A",
       "NO_UNITS": "No storage units",

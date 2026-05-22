@@ -17,6 +17,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { TypeCategory } from "../../../shared/models/type-category.enum";
+import { ProductionGenealogy, ProductionRootSource } from '../../../shared/models/production-genealogy.model';
 
 @Component({
   selector: 'app-label-detail',
@@ -421,6 +422,52 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
       return JSON.stringify(parsed, null, 2);
     } catch {
       return json;
+    }
+  }
+
+  get filteredLotSnapshot(): Record<string, unknown> | null {
+    return this.parseSnapshot(
+      this.label?.sourceSnapshots?.find((snapshot) => snapshot.sourceType === 'FILTERED_LOT')?.snapshotJson
+    );
+  }
+
+  get filteredLotGenealogy(): ProductionGenealogy | null {
+    const genealogy = this.filteredLotSnapshot?.['genealogy'];
+    return genealogy && typeof genealogy === 'object' ? genealogy as ProductionGenealogy : null;
+  }
+
+  get rootSource(): ProductionRootSource | null {
+    return this.filteredLotGenealogy?.rootSources?.[0] || null;
+  }
+
+  get traceabilityAnchor(): string {
+    return this.label?.traceabilityLotId || this.label?.lotId || '-';
+  }
+
+  get sourceProofCount(): number {
+    return this.label?.sourceSnapshots?.length || 0;
+  }
+
+  get filteredLotStorageName(): string {
+    const snapshot = this.filteredLotSnapshot;
+    return String(snapshot?.['storageUnitName'] || this.filteredLotGenealogy?.storageUnitName || '-');
+  }
+
+  get filteredLotRootReceptionId(): string {
+    const snapshot = this.filteredLotSnapshot;
+    return String(snapshot?.['rootReceptionId'] || this.filteredLotGenealogy?.rootReceptionId || '-');
+  }
+
+  private parseSnapshot(snapshotJson: string | undefined): Record<string, unknown> | null {
+    if (!snapshotJson) {
+      return null;
+    }
+
+    try {
+      const parsed = JSON.parse(snapshotJson);
+      return parsed && typeof parsed === 'object' ? parsed as Record<string, unknown> : null;
+    } catch {
+      return null;
     }
   }
 

@@ -77,6 +77,18 @@
               </select>
             </div>
 
+            <div class="source-summary span-full" *ngIf="selectedFiltrationOperation()">
+              <div class="source-summary-item">
+                <span>Cuve non filtree</span>
+                <strong>{{ selectedSourceStorageLabel() }}</strong>
+              </div>
+              <mat-icon>arrow_forward</mat-icon>
+              <div class="source-summary-item">
+                <span>Cuve filtree utilisee pour etiquette</span>
+                <strong>{{ selectedFilteredStorageLabel() }}</strong>
+              </div>
+            </div>
+
             <div class="form-group span-full">
               <label>Packaging (produit) <span class="req">*</span></label>
               <select class="form-control" formControlName="packagingId" [disabled]="!!currentLabel"

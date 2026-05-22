@@ -285,6 +285,56 @@ textarea.form-control {
   resize: vertical;
 }
 
+.source-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 32px minmax(0, 1fr);
+  align-items: stretch;
+  gap: 12px;
+  padding: 14px;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+
+  mat-icon {
+    align-self: center;
+    justify-self: center;
+    color: $olive-500;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  .source-summary-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+
+    span {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #6b7280;
+    }
+
+    strong {
+      font-size: 13px;
+      font-weight: 700;
+      color: $olive-900;
+      overflow-wrap: anywhere;
+      line-height: 1.35;
+    }
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+
+    mat-icon {
+      transform: rotate(90deg);
+    }
+  }
+}
+
 ::ng-deep .mat-select.form-control,
 ::ng-deep .mat-mdc-select.form-control {
   display: flex !important;
