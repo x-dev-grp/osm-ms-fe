@@ -220,7 +220,10 @@ $shadow-md: 0 16px 36px rgba(49, 61, 35, 0.10);
 }
 
 .form-control {
-  width: 100%;
+  width: auto;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   height: 39px;
   padding: 0 0.85rem;
   border: 1px solid #d8d3c4;
@@ -581,6 +584,11 @@ $shadow-md: 0 16px 36px rgba(49, 61, 35, 0.10);
   .filters-grid,
   .audit-kpis {
     grid-template-columns: 1fr;
+  }
+
+  /* keep inputs full-width on small screens for usability */
+  .filters-grid .form-control {
+    width: 100%;
   }
 
   .date-range {

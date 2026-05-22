@@ -12,65 +12,18 @@
       </div>
     </div>
 
-    <div class="header-right" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-      <div class="status-badge" [ngClass]="statusClass(label?.status)" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; font-weight: 500; font-size: 0.875rem;">
-        <mat-icon style="font-size: 18px; width: 18px; height: 18px;">{{ label?.status === 'DRAFT' ? 'edit_note' : 'check_circle' }}</mat-icon>
+    <div class="header-right">
+      <div class="status-badge" [ngClass]="statusClass(label?.status)">
+        <mat-icon>check</mat-icon>
         <span>{{ label?.status === 'DRAFT' ? 'Brouillon' : (label?.status === 'FINALIZED' ? 'Finalisée' : (label?.status === 'VALIDATED' ? 'Validée' : (label?.status === 'EXPORTED_JSON' ? 'Exportée JSON' : label?.status))) }}</span>
       </div>
-
-      <!-- Action: Modifier -->
-      <button mat-flat-button class="action-btn" (click)="edit()" *ngIf="!isFinalized()" style="background-color: #3b82f6; color: white;">
-        <mat-icon>edit</mat-icon>
-        Modifier
-      </button>
-
-      <!-- Action: Finaliser -->
-      <button mat-flat-button class="action-btn" (click)="finalizeLabel()" *ngIf="!isFinalized()" style="background-color: #28a745; color: white;">
-        <mat-icon>lock</mat-icon>
-        Finaliser
-      </button>
-
-      <!-- Action: Déverrouiller (Remettre en brouillon) -->
-      <button mat-flat-button class="action-btn" (click)="unlock()" *ngIf="isFinalized()" style="background-color: #f97316; color: white;">
-        <mat-icon>lock_open</mat-icon>
-        Remettre en brouillon
-      </button>
-
-      <!-- Action: Exporter -->
-      <button mat-stroked-button class="export-btn" (click)="exportLabel()" [disabled]="exporting || !canExport()">
+      <button mat-button class="export-btn" (click)="exportLabel()" [disabled]="exporting || !canExport()">
         <mat-icon *ngIf="!exporting">download</mat-icon>
         <mat-spinner diameter="18" *ngIf="exporting"></mat-spinner>
-        Exporter JSON
-      </button>
-
-      <!-- Action: Supprimer -->
-      <button mat-flat-button class="action-btn" (click)="deleteLabel()" [disabled]="deleting" style="background-color: #ef4444; color: white;">
-        <mat-icon>delete</mat-icon>
-        Supprimer
+        Exporter en JSON
       </button>
     </div>
   </header>
-
-  <!-- FEEDBACK MESSAGES -->
-  <div class="alert-banner alert-success" *ngIf="successMessage" style="background: rgba(40, 167, 69, 0.1); border-left: 4px solid #28a745; color: #28a745; padding: 12px 16px; margin: 12px 0; border-radius: 6px; display: flex; align-items: center; justify-content: space-between; font-weight: 500;">
-    <div style="display: flex; align-items: center; gap: 8px;">
-      <mat-icon style="color: #28a745;">check_circle</mat-icon>
-      <span>{{ successMessage }}</span>
-    </div>
-    <button mat-icon-button (click)="successMessage = ''" style="color: #28a745; border: none; background: transparent; cursor: pointer;">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
-
-  <div class="alert-banner alert-danger" *ngIf="errorMessage" style="background: rgba(220, 53, 69, 0.1); border-left: 4px solid #dc3545; color: #dc3545; padding: 12px 16px; margin: 12px 0; border-radius: 6px; display: flex; align-items: center; justify-content: space-between; font-weight: 500;">
-    <div style="display: flex; align-items: center; gap: 8px;">
-      <mat-icon style="color: #dc3545;">error</mat-icon>
-      <span>{{ errorMessage }}</span>
-    </div>
-    <button mat-icon-button (click)="errorMessage = ''" style="color: #dc3545; border: none; background: transparent; cursor: pointer;">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
 
   <div class="detail-grid" *ngIf="label && !loading">
 
@@ -86,23 +39,23 @@
 
         <div class="data-grid">
           <div class="data-item">
-            <label>OPÉRATION DE FILTRATION (SOURCE)</label>
-            <p>{{ label.filtrationOperationId || 'OP-9d83e739 | FILT-d822a50c | 4950L (10/05/2026)' }}</p>
+            <label>SOURCE DE L'ETIQUETTE</label>
+            <p>{{ label.filtrationOperationId ? 'Filtration liee' : '-' }}</p>
           </div>
           <div class="data-item">
             <label>PACKAGING (PRODUIT)</label>
-            <p>{{ label.packagingId || 'ONS | 420 ml | Bouteille verre' }}</p>
+            <p>{{ packagingDisplayLabel }}</p>
           </div>
           <div class="data-item">
             <label>DATE CONDITIONNEMENT</label>
             <div class="date-val">
               <mat-icon>calendar_today</mat-icon>
-              <span>{{ (label.packagingDate | date:'dd/MM/yyyy') || '13/05/2026' }}</span>
+              <span>{{ (label.packagingDate | date:'dd/MM/yyyy') || '-' }}</span>
             </div>
           </div>
           <div class="data-item">
             <label>CATÉGORIE</label>
-            <p>{{ categoryLabel(label.labelCategory) }}</p>
+            <p>{{ categoryLabel(label.labelCategory || 'UNIT') }}</p>
           </div>
           <div class="data-item">
             <label>LANGUE</label>
@@ -126,11 +79,11 @@
           </div>
           <div class="data-item">
             <label>N° DE LOT</label>
-            <p>{{ label.lotNumber || 'FILT-d822a50c' }}</p>
+            <p>{{ label.lotNumber || '-' }}</p>
           </div>
           <div class="data-item">
             <label>QUANTITÉ NETTE</label>
-            <p>{{ label.netQuantity || '420 ml' }}</p>
+            <p>{{ label.netQuantity || '-' }}</p>
           </div>
           <div class="data-item">
             <label>D.D.M.</label>
@@ -142,17 +95,17 @@
           </div>
           <div class="data-item">
             <label>VARIÉTÉ</label>
-            <p>{{ getVarietyLabel(label.variety) || 'dede' }}</p>
+            <p>{{ getVarietyLabel(label.variety) || '-' }}</p>
           </div>
           <div class="data-item">
-            <label>LOT TRACEABILITE</label>
-            <p>{{ label.traceabilityLotId || '-' }}</p>
+            <label>TRACEABILITE</label>
+            <p>{{ label.traceabilityLotId ? 'Verifiee' : '-' }}</p>
           </div>
-          <div class="data-item">
+          <div class="data-item" *ngIf="hasOriginIdentity">
             <label>RECEPTION RACINE</label>
-            <p>{{ filteredLotRootReceptionId }}</p>
+            <p>{{ rootSource?.lotNumber || rootSource?.supplierName || '-' }}</p>
           </div>
-          <div class="data-item">
+          <div class="data-item" *ngIf="hasFilteredLotStorageName">
             <label>CUVE FILTREE</label>
             <p>{{ filteredLotStorageName }}</p>
           </div>
@@ -174,19 +127,19 @@
           <div class="origin-summary">
             <div class="origin-row">
               <label>Ancre de traçabilité</label>
-              <p>{{ traceabilityAnchor }}</p>
+              <p>{{ traceabilityAnchor !== '-' ? 'Verifiee' : '-' }}</p>
             </div>
-            <div class="origin-row">
+            <div class="origin-row" *ngIf="hasOriginIdentity">
               <label>Source racine</label>
-              <p>{{ filteredLotGenealogy?.traceabilitySourceType || rootSource?.type || '-' }}</p>
+              <p>{{ originSourceLabel }}</p>
             </div>
-            <div class="origin-row">
+            <div class="origin-row" *ngIf="originLotLabel !== '-'">
               <label>Lot d'origine</label>
-              <p>{{ rootSource?.lotNumber || '-' }}</p>
+              <p>{{ originLotLabel }}</p>
             </div>
             <div class="origin-row">
               <label>Preuves enregistrées</label>
-              <p>{{ sourceProofCount }}</p>
+              <p>{{ sourceProofLabel }}</p>
             </div>
           </div>
 
@@ -196,6 +149,16 @@
             <p>{{ root.type || '-' }} | {{ root.date | date:'dd/MM/yyyy' }}</p>
             <div class="origin-tags" *ngIf="root.qualityControls && (root.qualityControls | keyvalue).length">
               <span class="origin-tag" *ngFor="let qc of root.qualityControls | keyvalue">
+                {{ qc.key }}: {{ qc.value }}
+              </span>
+            </div>
+          </div>
+
+          <div class="origin-root" *ngIf="postFiltrationQualityControls as controls">
+            <label>Controle qualite apres filtration</label>
+            <h3>Resultats du lot filtre</h3>
+            <div class="origin-tags">
+              <span class="origin-tag" *ngFor="let qc of controls | keyvalue">
                 {{ qc.key }}: {{ qc.value }}
               </span>
             </div>
@@ -216,7 +179,7 @@
       <div class="section-card">
         <div class="section-header">
           <div class="section-icon"><mat-icon>verified</mat-icon></div>
-          <h2>3. Marketing & Conformité</h2>
+          <h2>4. Marketing & Conformité</h2>
           <div class="header-line"></div>
         </div>
 
@@ -230,7 +193,7 @@
           </div>
           <div class="data-item">
             <label>CERTIFICATIONS QUALITÉ</label>
-            <p>{{ label.certifications?.join(', ') || 'Certifications Internationales' }}</p>
+            <p>{{ certificationsLabel }}</p>
           </div>
         </div>
       </div>
@@ -239,7 +202,7 @@
       <div class="section-card">
         <div class="section-header">
           <div class="section-icon"><mat-icon>groups</mat-icon></div>
-          <h2>4. Responsabilité & Procédés</h2>
+          <h2>5. Responsabilité & Procédés</h2>
           <div class="header-line"></div>
         </div>
 
@@ -247,7 +210,7 @@
           <div class="resp-left">
             <div class="data-item">
               <label>RESPONSABLE</label>
-              <p>{{ label.responsibleName || 'zaineb' }}</p>
+              <p>{{ label.responsibleName || '-' }}</p>
             </div>
             <div class="data-item">
               <label>ADRESSE</label>
@@ -255,7 +218,7 @@
             </div>
             <div class="data-item">
               <label>MÉTHODE D'EXTRACTION</label>
-              <p>{{ label.extractionMethod || 'ob' }}</p>
+              <p>{{ extractionMethodLabel }}</p>
             </div>
           </div>
 
@@ -297,10 +260,10 @@
             </div>
             <div class="preview-lot">
               <small>LOT N°</small>
-              <strong>{{ label.lotNumber || 'FILT-d822a50c' }}</strong>
+              <strong>{{ label.lotNumber || '-' }}</strong>
               <div class="lang-badges">
                 <span>{{ languageLabel(label.language) }}</span>
-                <span>{{ categoryLabel(label.labelCategory) }}</span>
+                <span>{{ categoryLabel(label.labelCategory || 'UNIT') }}</span>
               </div>
             </div>
           </div>
@@ -314,7 +277,7 @@
           <div class="preview-specs">
             <div class="spec">
               <small>QUANTITÉ</small>
-              <span>{{ label.netQuantity || '420 ml' }}</span>
+              <span>{{ label.netQuantity || '-' }}</span>
             </div>
             <div class="spec">
               <small>QUALITÉ</small>
@@ -322,7 +285,7 @@
             </div>
             <div class="spec">
               <small>VARIÉTÉ</small>
-              <span>{{ getVarietyLabel(label.variety) || 'dede' }}</span>
+              <span>{{ getVarietyLabel(label.variety) || '-' }}</span>
             </div>
             <div class="spec">
               <small>D.D.M.</small>
@@ -330,7 +293,7 @@
             </div>
             <div class="spec">
               <small>DATE COND.</small>
-              <span>{{ (label.packagingDate | date:'yyyy-MM-dd') || '2026-05-13' }}</span>
+              <span>{{ (label.packagingDate | date:'yyyy-MM-dd') || '-' }}</span>
             </div>
             <div class="spec">
               <small>LANGUE</small>
@@ -347,7 +310,7 @@
           <div class="preview-extraction">
             <div class="ext">
               <small>EXTRACTION</small>
-              <span>{{ label.extractionMethod || 'ob' }}</span>
+              <span>{{ extractionMethodLabel }}</span>
             </div>
             <div class="sto">
               <small>STOCKAGE</small>
@@ -363,7 +326,7 @@
           <div class="preview-footer">
             <div class="resp">
               <small>Responsable</small>
-              <strong>{{ label.responsibleName || 'zaineb' }}</strong>
+              <strong>{{ label.responsibleName || '-' }}</strong>
               <span>{{ label.responsibleAddress || 'Tunisie' }}</span>
             </div>
           </div>
@@ -378,14 +341,14 @@
             <mat-icon>event_available</mat-icon>
             <div>
               <small>Dernière mise à jour</small>
-              <span>{{ (label.finalizedAt | date:'dd/MM/yyyy à HH:mm') || '13/05/2026 à 10:42' }}</span>
+              <span>{{ (label.finalizedAt | date:'dd/MM/yyyy à HH:mm') || '-' }}</span>
             </div>
           </div>
           <div class="meta-item">
             <mat-icon>person_outline</mat-icon>
             <div>
               <small>Créé par</small>
-              <span>{{ label.finalizedBy || 'zaineb' }}</span>
+              <span>{{ label.finalizedBy || '-' }}</span>
             </div>
           </div>
         </div>

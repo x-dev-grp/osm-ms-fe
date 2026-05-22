@@ -70,7 +70,7 @@ export class ProjetStatusDialogComponent {
   }
 
   getProjetLabel(): string {
-    return this.data?.projet?.code || this.data?.projet?.client.nom || this.data?.projet?.id || '-';
+    return this.data?.projet?.code || this.data?.projet?.client.nom || '-';
   }
 
   getCurrentStatusLabel(): string {

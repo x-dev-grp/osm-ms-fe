@@ -4,5 +4,7 @@ export interface QualityControlResultDto {
   id?: string;
   rule: QualityControlRule;
   measuredValue: string;
-  deliveryId: string;
+  deliveryId?: string;
+  filtrationOperationId?: string;
+  traceabilityLotId?: string;
 }

@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
+import { map } from 'rxjs/operators';
 import {QualityControlRule} from '../models/quality-control-rule';
 import {ApiResponse} from '../models/api-response';
 import { environment } from '../../../environments/environment';
@@ -19,11 +20,21 @@ export class QualityControlRuleService {
   }
 
   getAllOilRules(): Observable<ApiResponse<QualityControlRule>> {
-    return this.http.get<ApiResponse<QualityControlRule>>(`${this.baseUrl}/fetchAll/oil`);
+    return this.http.get<ApiResponse<QualityControlRule>>(`${this.baseUrl}/fetchAll`).pipe(
+      map((response) => ({
+        ...response,
+        data: (response?.data || []).filter((rule) => rule?.oilQc === true)
+      }))
+    );
   }
 
   getAllOliveRules(): Observable<ApiResponse<QualityControlRule>> {
-    return this.http.get<ApiResponse<QualityControlRule>>(`${this.baseUrl}/fetchAll/olive`);
+    return this.http.get<ApiResponse<QualityControlRule>>(`${this.baseUrl}/fetchAll`).pipe(
+      map((response) => ({
+        ...response,
+        data: (response?.data || []).filter((rule) => rule?.oilQc !== true)
+      }))
+    );
   }
 
   // Get a rule by ID

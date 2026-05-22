@@ -134,7 +134,7 @@ export class StorageUnitsBoardComponent implements OnInit {
     this.storageUnitService.searchByCode(code).subscribe({
       next: (response) => {
         this.searchingByCode.set(false);
-        const targetRoute = this.resolveTargetRoute(response?.webRoute);
+        const targetRoute = this.resolveTargetRoute(response?.webRoute, response?.entityId);
         if (targetRoute) {
           this.router.navigateByUrl(targetRoute);
         } else {
@@ -156,11 +156,16 @@ export class StorageUnitsBoardComponent implements OnInit {
     });
   }
 
-  private resolveTargetRoute(webRoute?: string): string | null {
+  private resolveTargetRoute(webRoute?: string, entityId?: string): string | null {
     const route = webRoute?.trim();
     if (route) {
       return route.startsWith('/') ? route : `/${route}`;
     }
+
+    if (entityId) {
+      return `/storage/${entityId}/view`;
+    }
+
     return null;
   }
 

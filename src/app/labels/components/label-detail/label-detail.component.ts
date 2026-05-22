@@ -18,6 +18,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { TypeCategory } from "../../../shared/models/type-category.enum";
 import { ProductionGenealogy, ProductionRootSource } from '../../../shared/models/production-genealogy.model';
+import { ProductionTraceabilityService } from '../../../shared/services/production-traceability.service';
 
 @Component({
   selector: 'app-label-detail',
@@ -35,6 +36,7 @@ import { ProductionGenealogy, ProductionRootSource } from '../../../shared/model
 })
 export class LabelDetailComponent implements OnInit, OnDestroy {
   label: LabelContentDto | null = null;
+  currentGenealogy: ProductionGenealogy | null = null;
 
   loading = false;
   loadingTypes = false;
@@ -54,7 +56,8 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly labelService: LabelService,
-    private readonly genericTypeService: GenericTypeService
+    private readonly genericTypeService: GenericTypeService,
+    private readonly productionTraceabilityService: ProductionTraceabilityService
   ) { }
 
   ngOnInit(): void {
@@ -113,6 +116,7 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
         next: (label) => {
           this.label = label;
           this.loading = false;
+          this.loadCurrentGenealogy(label);
         },
         error: (error) => {
           this.loading = false;
@@ -124,12 +128,42 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
       });
   }
 
+  private loadCurrentGenealogy(label: LabelContentDto): void {
+    const genealogyId = label.traceabilityLotId || label.lotId;
+    if (!genealogyId) {
+      this.currentGenealogy = null;
+      return;
+    }
+
+    this.productionTraceabilityService.getGenealogy(genealogyId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (genealogy) => {
+          this.currentGenealogy = genealogy;
+        },
+        error: () => {
+          this.currentGenealogy = null;
+        }
+      });
+  }
+
   getVarietyLabel(value: unknown): string {
     return this.resolveBaseTypeLabel(value, this.oilVarieties);
   }
 
   getQualityGradeLabel(value: unknown): string {
-    return this.resolveBaseTypeLabel(value, this.oilTypes);
+    const resolved = this.resolveBaseTypeLabel(value, this.oilTypes);
+    const qualityLabels: Record<string, string> = {
+      EXTRA_VIRGIN: "Huile d'olive vierge extra",
+      VIRGIN: "Huile d'olive vierge",
+      ORDINARY_VIRGIN: "Huile d'olive vierge courante",
+      LAMPANTE: "Huile d'olive lampante",
+      REFINED: "Huile d'olive raffinee",
+      OLIVE_OIL: "Huile d'olive",
+      POMACE_OIL: "Huile de grignons d'olive"
+    };
+
+    return qualityLabels[resolved] || resolved;
   }
 
   private resolveBaseTypeLabel(value: unknown, source: BaseType[]): string {
@@ -242,34 +276,6 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
       });
   }
 
-  finalizeLabel(): void {
-    if (!this.label?.id) {
-      return;
-    }
-
-    if (!confirm('Êtes-vous sûr de vouloir finaliser cette étiquette ? Elle deviendra immuable et prête pour la production.')) {
-      return;
-    }
-
-    this.loading = true;
-    this.errorMessage = '';
-    this.successMessage = '';
-
-    this.labelService.finalize(this.label.id)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (updated) => {
-          this.loading = false;
-          this.label = updated;
-          this.successMessage = 'L\'étiquette a été finalisée avec succès et est prête à l\'emploi !';
-        },
-        error: (error) => {
-          this.loading = false;
-          this.errorMessage = this.resolveErrorMessage(error, 'Erreur lors de la finalisation.');
-        }
-      });
-  }
-
   deleteLabel(): void {
     if (!this.label?.id) {
       return;
@@ -369,7 +375,7 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
   }
 
   categoryLabel(category: LabelCategory | string | undefined): string {
-    if (!category) return '-';
+    if (!category) return 'Unite';
     switch (category) {
       case 'UNIT':
         return 'Unité';
@@ -460,6 +466,10 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
   }
 
   get filteredLotGenealogy(): ProductionGenealogy | null {
+    if (this.currentGenealogy) {
+      return this.currentGenealogy;
+    }
+
     const genealogy = this.filteredLotSnapshot?.['genealogy'];
     return genealogy && typeof genealogy === 'object' ? genealogy as ProductionGenealogy : null;
   }
@@ -469,11 +479,39 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
   }
 
   get traceabilityAnchor(): string {
-    return this.label?.traceabilityLotId || this.label?.lotId || '-';
+    return this.label?.traceabilityLotId || this.label?.lotId ? 'Verifiee' : '-';
+  }
+
+  get packagingDisplayLabel(): string {
+    if (!this.label?.packagingId && !this.label?.productId) {
+      return '-';
+    }
+
+    return this.label?.netQuantity
+      ? `Packaging lie - ${this.label.netQuantity}`
+      : 'Packaging lie';
+  }
+
+  get certificationsLabel(): string {
+    const certifications = this.label?.certifications?.filter((value) => String(value || '').trim());
+    return certifications?.length ? certifications.join(', ') : '-';
+  }
+
+  get extractionMethodLabel(): string {
+    const value = String(this.label?.extractionMethod || '').trim();
+    return value.length >= 3 ? value : '-';
   }
 
   get sourceProofCount(): number {
     return this.label?.sourceSnapshots?.length || 0;
+  }
+
+  get sourceProofLabel(): string {
+    const count = this.sourceProofCount;
+    if (count <= 0) {
+      return '-';
+    }
+    return `${count} preuve${count > 1 ? 's' : ''} enregistree${count > 1 ? 's' : ''}`;
   }
 
   get filteredLotStorageName(): string {
@@ -481,9 +519,37 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
     return String(snapshot?.['storageUnitName'] || this.filteredLotGenealogy?.storageUnitName || '-');
   }
 
+  get hasFilteredLotStorageName(): boolean {
+    return this.filteredLotStorageName !== '-';
+  }
+
   get filteredLotRootReceptionId(): string {
-    const snapshot = this.filteredLotSnapshot;
-    return String(snapshot?.['rootReceptionId'] || this.filteredLotGenealogy?.rootReceptionId || '-');
+    return this.rootSource?.lotNumber || this.rootSource?.supplierName || '-';
+  }
+
+  get hasOriginIdentity(): boolean {
+    return !!(this.rootSource?.lotNumber || this.rootSource?.supplierName || this.filteredLotGenealogy?.traceabilitySourceType);
+  }
+
+  get originSourceLabel(): string {
+    return this.filteredLotGenealogy?.traceabilitySourceType || this.rootSource?.type || '-';
+  }
+
+  get originLotLabel(): string {
+    return this.rootSource?.lotNumber || '-';
+  }
+
+  get postFiltrationQualityControls(): Record<string, string> | null {
+    const direct = this.filteredLotGenealogy?.filteredQualityControls;
+    if (direct && Object.keys(direct).length > 0) {
+      return direct;
+    }
+
+    const fromSteps = this.filteredLotGenealogy?.filtrations
+      ?.map((step) => step.qualityControls)
+      .find((controls): controls is Record<string, string> => !!controls && Object.keys(controls).length > 0);
+
+    return fromSteps || null;
   }
 
   private parseSnapshot(snapshotJson: string | undefined): Record<string, unknown> | null {

@@ -480,6 +480,13 @@
             Annuler
           </button>
 
+          @if (isNonVrac()) {
+            <button type="button" class="btn btn-outline-primary" [disabled]="submitting" (click)="saveAndCreateTicket()">
+              <i class="fas fa-ticket-alt"></i>
+              {{ isEditMode ? 'Mettre a jour + Creer ticket' : 'Creer + ticket produit' }}
+            </button>
+          }
+
           <button type="submit" class="btn btn-primary" [disabled]="submitting">
             @if (submitting) {
               <span class="spinner-small"></span>
