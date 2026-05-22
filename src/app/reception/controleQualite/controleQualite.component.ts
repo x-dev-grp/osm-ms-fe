@@ -538,7 +538,9 @@ export class ControleQualiteComponent implements OnInit {
       next: (res) => {
         this.storageUnits = res?.data ?? res ?? [];
         this.isLoading = false;
-
+        this.storageUnits = this.storageUnits.filter((unit: any) =>
+          unit.filteredOil === false
+        );
         // If you’re editing and you have a saved unit id:
         // this.preselectStorageUnit(existingId);
       },

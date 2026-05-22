@@ -26,6 +26,7 @@ export class BomFormComponent implements OnInit {
   isEditMode = false;
   bomId: string | null = null;
   bom: Bom | null = null;
+  private preselectedProductId: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -38,6 +39,7 @@ export class BomFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
+    this.preselectedProductId = this.route.snapshot.queryParamMap.get('productId');
     this.loadSkus();
     this.loadArticles();
 
@@ -79,7 +81,15 @@ export class BomFormComponent implements OnInit {
 
   loadSkus(): void {
     this.skuService.getActiveProductsByType('NON_VRAC').subscribe({
-      next: (data: Product[]) => this.products = data,
+      next: (data: Product[]) => {
+        this.products = data;
+        if (!this.isEditMode && this.preselectedProductId) {
+          const exists = this.products.some((p) => p.id === this.preselectedProductId);
+          if (exists) {
+            this.bomForm.patchValue({ productId: this.preselectedProductId });
+          }
+        }
+      },
       error: (err: any) => console.error('Erreur chargement produits', err)
     });
   }
