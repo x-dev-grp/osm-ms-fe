@@ -24,7 +24,7 @@ export interface BomLineUi {
 @Component({
   selector: 'app-sku-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './sku-form.component.html',
   styleUrls: ['./sku-form.component.scss']
 })
@@ -179,9 +179,17 @@ export class SkuFormComponent implements OnInit {
   }
 
   applyExistingBom(bomId: string): void {
-    if (!bomId) return;
+    this.selectedBomId = bomId || '';
+    if (!bomId) {
+      this.bomLines = [];
+      return;
+    }
+
     const selectedBom = this.existingBoms.find(b => b.id === bomId);
-    if (!selectedBom || !selectedBom.lines) return;
+    if (!selectedBom || !selectedBom.lines) {
+      this.bomLines = [];
+      return;
+    }
 
     // We copy the lines from the existing BOM
     this.bomLines = [];

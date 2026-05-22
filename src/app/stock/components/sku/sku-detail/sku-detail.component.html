@@ -243,6 +243,12 @@
               <div class="labels-empty">
                 <i class="fas fa-inbox"></i>
                 <p>Aucune etiquette liee a ce produit pour le moment.</p>
+                @if (!isVrac()) {
+                  <a class="btn-create-label-direct" [routerLink]="['/labels/new']" [queryParams]="{ packagingId: sku.id }">
+                    <i class="fas fa-plus me-2"></i>
+                    Créer une étiquette
+                  </a>
+                }
               </div>
             } @else {
               <div class="labels-summary">

@@ -1,0 +1,7 @@
+.product-labels-card { }
+.label-list { list-style: none; padding: 0; margin: 0; }
+.label-list li { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid rgba(0,0,0,0.05); }
+.label-main strong { display:block; }
+.label-main .muted { color: #6c757d; font-size: 0.85rem; }
+.label-actions a { color: var(--primary); }
+.empty-state, .loading { padding: 12px; color: #666; }

@@ -1,0 +1,45 @@
+<div class="product-labels-card section-card">
+  <div class="section-title">
+    <div class="section-icon"><i class="fas fa-tags"></i></div>
+    <h2>Étiquettes liées</h2>
+    <span></span>
+  </div>
+
+  <div class="section-body">
+    <ng-container *ngIf="productId; else noProduct">
+      <ng-container *ngIf="labels$ | async as labels; else loading">
+        <div *ngIf="labels.length > 0; else empty">
+          <ul class="label-list">
+            <li *ngFor="let l of labels">
+              <div class="label-main">
+                <strong>{{ l.name || l.id }}</strong>
+                <small class="muted">{{ l.createdAt | date:'short' }}</small>
+              </div>
+              <div class="label-actions">
+                <a [routerLink]="['/labels', l.id]">Voir</a>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </ng-container>
+    </ng-container>
+
+    <ng-template #noProduct>
+      <div class="info-banner-modern">
+        <i class="fas fa-info"></i>
+        Créez le produit pour pouvoir lier ou générer des étiquettes.
+      </div>
+    </ng-template>
+
+    <ng-template #empty>
+      <div class="empty-state">
+        <i class="fas fa-box-open"></i>
+        <p>Aucune étiquette liée pour le moment.</p>
+      </div>
+    </ng-template>
+
+    <ng-template #loading>
+      <div class="loading">Chargement des étiquettes…</div>
+    </ng-template>
+  </div>
+</div>
