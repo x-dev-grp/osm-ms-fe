@@ -79,6 +79,18 @@
             </div>
 
             <div class="detail-item">
+              <span class="label">Quantite planifiee en OF</span>
+              <span class="value">{{ totalOfTargetQuantity | number }} {{ p.unite === 'LITRES' ? 'L' : 'unites' }}</span>
+            </div>
+
+            <div class="detail-item">
+              <span class="label">Quantite OF restante</span>
+              <span class="value" [class.text-danger]="remainingOfQuantity > 0">
+                {{ remainingOfQuantity | number }} {{ p.unite === 'LITRES' ? 'L' : 'unites' }}
+              </span>
+            </div>
+
+            <div class="detail-item">
               <span class="label">Date limite de livraison</span>
               <span class="value">{{ p.dateLimiteLivraison | date:'dd/MM/yyyy' }}</span>
             </div>
@@ -106,6 +118,11 @@
           <h5>Ordres de fabrication (OF)</h5>
           <span class="badge bg-primary rounded-pill">{{ ofs.length }}</span>
         </div>
+        <div class="px-3 pt-2" *ngIf="remainingOfQuantity > 0">
+          <small class="text-danger">
+            Il reste {{ remainingOfQuantity | number }} {{ p.unite === 'LITRES' ? 'L' : 'unites' }} a planifier en OF.
+          </small>
+        </div>
 
         <div class="card-body p-0">
           <div *ngIf="loadingOfs" class="text-center p-2">
@@ -128,7 +145,7 @@
               <tbody>
               <tr *ngFor="let of of ofs">
                 <td>
-                  <a [routerLink]="['/of/detail', of.id]" class="of-code">
+                  <a [routerLink]="['/of', of.id]" class="of-code">
                     {{ of.code }}
                   </a>
                 </td>

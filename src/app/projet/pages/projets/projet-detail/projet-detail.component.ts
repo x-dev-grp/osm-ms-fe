@@ -38,6 +38,15 @@ export class ProjetDetailComponent implements OnInit {
   articlesMap: { [id: string]: any } = {};
   skusMap: { [id: string]: any } = {};
 
+  get totalOfTargetQuantity(): number {
+    return this.ofs.reduce((sum, of) => sum + Number(of.quantiteCible || 0), 0);
+  }
+
+  get remainingOfQuantity(): number {
+    const target = Number(this.projet?.quantiteCible || 0);
+    return Math.max(0, target - this.totalOfTargetQuantity);
+  }
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,

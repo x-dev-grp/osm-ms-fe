@@ -126,6 +126,20 @@ export class ProjetExpeditionComponent implements OnInit {
       .reduce((sum, control) => sum + Number(control.value.quantity || 0), 0);
   }
 
+  get projectTargetQuantity(): number {
+    return Number(this.project?.quantiteCible || 0);
+  }
+
+  get usedProjectQuantity(): number {
+    return this.expeditions
+      .filter((exp) => exp.status !== ExpeditionStatus.CANCELLED)
+      .reduce((sum, exp) => sum + Number(exp.totalQuantity || 0), 0);
+  }
+
+  get remainingProjectQuantity(): number {
+    return Math.max(0, this.projectTargetQuantity - this.usedProjectQuantity);
+  }
+
   getTraceabilityItems(exp: ExpeditionDto): Array<{ label: string; value: string }> {
     const snapshot = this.getParsedSnapshot(exp);
     if (!snapshot || typeof snapshot !== 'object') {
@@ -347,6 +361,11 @@ export class ProjetExpeditionComponent implements OnInit {
       return;
     }
 
+    if (this.remainingProjectQuantity <= 0) {
+      this.toast.warning('Quantite projet deja atteinte. Impossible de creer une nouvelle expedition.');
+      return;
+    }
+
     const selectedLines = this.createLineControls.controls
       .filter(control => control.value.selected)
       .map(control => ({
@@ -360,6 +379,12 @@ export class ProjetExpeditionComponent implements OnInit {
 
     if (!selectedLines.length) {
       this.toast.warning('Selectionnez au moins un OF a expedier');
+      return;
+    }
+
+    const totalSelected = selectedLines.reduce((sum, line) => sum + Number(line.quantity || 0), 0);
+    if (totalSelected > this.remainingProjectQuantity) {
+      this.toast.warning(`Quantite depassee. Maximum autorise: ${this.remainingProjectQuantity}.`);
       return;
     }
 
@@ -430,6 +455,14 @@ export class ProjetExpeditionComponent implements OnInit {
     }
 
     this.addingLine = true;
+    const requestedQty = Number(this.lineForm.value.quantity ?? 0);
+    const projected = this.usedProjectQuantity + requestedQty;
+    if (projected > this.projectTargetQuantity) {
+      this.toast.warning(`Quantite depassee. Maximum restant projet: ${this.remainingProjectQuantity}.`);
+      this.addingLine = false;
+      return;
+    }
+
     this.expeditionService
       .addLine(this.selectedExpedition.id, {
         ofId: this.trimToUndefined(this.lineForm.value.ofId),
@@ -648,17 +681,50 @@ export class ProjetExpeditionComponent implements OnInit {
   private buildCreateLines(ofs: OrdreFabrication[]): void {
     this.createLineControls.clear();
 
+    let remaining = this.remainingProjectQuantity;
     ofs.forEach(of => {
-      const quantity = this.defaultQuantityForOf(of);
+      const defaultQty = this.defaultQuantityForOf(of);
+      const quantity = Math.max(0, Math.min(defaultQty, remaining));
+      remaining = Math.max(0, remaining - quantity);
       this.createLineControls.push(this.fb.group({
         selected: [quantity > 0 && !this.isUnassignedOf(of)],
         ofId: [of.id],
-        quantity: [quantity, [Validators.required, Validators.min(1)]],
+        quantity: [quantity, [Validators.required, Validators.min(0)]],
         volume: [null as number | null],
         lotNumber: [of.lotVracId || ''],
         unit: [this.projectUnit()]
       }));
     });
+  }
+
+  getCreateLineMax(index: number): number {
+    const controls = this.createLineControls.controls;
+    if (!controls[index]) return 0;
+
+    const current = Number(controls[index].value.quantity || 0);
+    const others = controls
+      .filter((_, i) => i !== index && !!controls[i].value.selected)
+      .reduce((sum, c) => sum + Number(c.value.quantity || 0), 0);
+
+    const max = this.remainingProjectQuantity - others + current;
+    return Math.max(0, max);
+  }
+
+  clampCreateLineQuantity(index: number): void {
+    const control = this.createLineControls.at(index);
+    if (!control) return;
+
+    const selected = !!control.value.selected;
+    if (!selected) return;
+
+    const max = this.getCreateLineMax(index);
+    const value = Number(control.value.quantity || 0);
+    const clamped = Math.max(0, Math.min(value, max));
+
+    if (clamped !== value) {
+      control.patchValue({ quantity: clamped }, { emitEvent: false });
+      this.toast.info(`Quantite ajustee au maximum autorise (${max}).`);
+    }
   }
 
   private applyDefaultUnitToCreateLines(): void {
