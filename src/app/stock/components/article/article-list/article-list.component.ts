@@ -3,9 +3,11 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ArticleService } from '../../../services/article.service';
+import { StockService } from '../../../services/stock.service';
 import { Article, CategorieArticle } from '../../../models/article.model';
-import { Subject } from 'rxjs';
+import { Subject, forkJoin, of } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-article-list',
@@ -23,6 +25,7 @@ export class ArticleListComponent implements OnInit, OnDestroy {
   loading = false;
   togglingId: string | null = null;
   activeDropdown: string | null = null;
+  articleStockMap: Record<string, number> = {};
 
   filters = {
     nom: '',
@@ -30,7 +33,10 @@ export class ArticleListComponent implements OnInit, OnDestroy {
     actif: ''
   };
 
-  constructor(private articleService: ArticleService) {}
+  constructor(
+    private articleService: ArticleService,
+    private stockService: StockService
+  ) {}
 
   ngOnInit(): void {
     this.loadArticles();
@@ -56,6 +62,7 @@ export class ArticleListComponent implements OnInit, OnDestroy {
             const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
             return dateB - dateA;
           });
+          this.loadStockQuantities(this.articles);
           this.applyFilters();
           this.loading = false;
         },
@@ -64,6 +71,39 @@ export class ArticleListComponent implements OnInit, OnDestroy {
           this.loading = false;
         }
       });
+  }
+
+  private loadStockQuantities(articles: Article[]): void {
+    const calls = articles
+      .filter((a) => !!a.id)
+      .map((article) =>
+        this.stockService.getStockByArticle(article.id!).pipe(
+          catchError(() => of(null))
+        )
+      );
+
+    if (!calls.length) {
+      this.articleStockMap = {};
+      return;
+    }
+
+    forkJoin(calls)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((stocks) => {
+        const map: Record<string, number> = {};
+        let idx = 0;
+        for (const article of articles) {
+          if (!article.id) continue;
+          const stock = stocks[idx++];
+          map[article.id] = stock?.quantiteActuelle ?? 0;
+        }
+        this.articleStockMap = map;
+      });
+  }
+
+  getArticleStock(articleId?: string): number {
+    if (!articleId) return 0;
+    return this.articleStockMap[articleId] ?? 0;
   }
 
   applyFilters(): void {

@@ -6,6 +6,9 @@ import { OrdreFabrication, StatutOF } from '../../../models/of.model';
 import { OFService } from '../../../services/OFService';
 import { LigneOF } from '../../../models/LigneOF';
 import { ToastService } from '../../../../shared/services/toast.service';
+import { StockService } from '../../../../stock/services/stock.service';
+import { Stock } from '../../../../stock/models/stock.model';
+import { catchError, forkJoin, map, of } from 'rxjs';
 
 @Component({
   selector: 'app-of-production',
@@ -23,12 +26,16 @@ export class OFProductionComponent implements OnInit, OnDestroy {
   time = 0;
   TimeFormatted = '00:00:00';
   private timerInterval: any;
+  checkingStock = false;
+  stockRows: StockCheckRow[] = [];
+  stockIssueMessage = '';
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private ofService: OFService,
-    private toast: ToastService
+    private toast: ToastService,
+    private stockService: StockService
   ) {}
 
   ngOnInit(): void {
@@ -45,6 +52,7 @@ export class OFProductionComponent implements OnInit, OnDestroy {
       next: (data) => {
         this.of = data;
         this.loading = false;
+        this.refreshStockCheck();
         if (this.of.statut === StatutOF.EN_COURS) {
           this.startTimer();
         }
@@ -57,23 +65,23 @@ export class OFProductionComponent implements OnInit, OnDestroy {
   }
 
   isEditable(): boolean {
-    return [StatutOF.EN_COURS, StatutOF.EN_PAUSE].includes(this.of.statut);
+    return this.of ? [StatutOF.EN_COURS, StatutOF.EN_PAUSE].includes(this.of.statut) : false;
   }
 
   canStart(): boolean {
-    return [StatutOF.PLANIFIE].includes(this.of.statut);
+    return this.of ? [StatutOF.PLANIFIE].includes(this.of.statut) : false;
   }
 
   canPause(): boolean {
-    return this.of.statut === StatutOF.EN_COURS;
+    return this.of?.statut === StatutOF.EN_COURS;
   }
 
   canResume(): boolean {
-    return this.of.statut === StatutOF.EN_PAUSE;
+    return this.of?.statut === StatutOF.EN_PAUSE;
   }
 
   canClose(): boolean {
-    return [StatutOF.EN_COURS, StatutOF.EN_PAUSE].includes(this.of.statut);
+    return this.of ? [StatutOF.EN_COURS, StatutOF.EN_PAUSE].includes(this.of.statut) : false;
   }
 
   isProjectMode(): boolean {
@@ -94,7 +102,77 @@ export class OFProductionComponent implements OnInit, OnDestroy {
       : 'Les ajustements restent provisoires pendant la production. Le stock sera deduit seulement a la cloture.';
   }
 
+  refreshStockCheck(): void {
+    if (!this.of?.lignes?.length || !this.canStart()) {
+      this.stockRows = [];
+      this.stockIssueMessage = '';
+      return;
+    }
+
+    this.checkingStock = true;
+    this.stockIssueMessage = '';
+
+    const calls = this.of.lignes.map((line) =>
+      this.stockService.getStockByArticle(line.articleId).pipe(
+        map((stock) => this.buildStockRow(line, stock)),
+        catchError(() => of(this.buildStockRow(line, null)))
+      )
+    );
+
+    forkJoin(calls).subscribe({
+      next: (rows) => {
+        this.stockRows = rows;
+        this.checkingStock = false;
+      },
+      error: () => {
+        this.stockRows = [];
+        this.checkingStock = false;
+      }
+    });
+  }
+
+  hasStockIssues(): boolean {
+    return this.stockRows.some((row) => row.status !== 'OK');
+  }
+
+  canStartNow(): boolean {
+    return this.canStart() && !this.checkingStock && this.stockRows.length > 0 && !this.hasStockIssues();
+  }
+
+  private buildStockRow(line: LigneOF, stock: Stock | null): StockCheckRow {
+    const required = Number(line.quantiteTheorique || 0);
+    const available = this.isProjectMode()
+      ? Number(stock?.quantiteReservee || 0)
+      : Number(stock?.quantiteDisponible || 0);
+
+    if (!stock) {
+      return {
+        articleId: line.articleId,
+        articleName: line.articleNom || line.articleId,
+        required,
+        available: 0,
+        exists: false,
+        status: 'MISSING'
+      };
+    }
+
+    return {
+      articleId: line.articleId,
+      articleName: line.articleNom || line.articleId,
+      required,
+      available,
+      exists: true,
+      status: available >= required ? 'OK' : 'INSUFFICIENT'
+    };
+  }
+
   start(): void {
+    if (!this.canStartNow()) {
+      this.stockIssueMessage = 'Stock non valide pour demarrer. Verifiez les lignes en rouge avant de continuer.';
+      this.toast.error(this.stockIssueMessage);
+      return;
+    }
+
     if (!confirm(`Demarrer la production ? Le systeme verifiera ${this.stockCheckLabel()} avant ouverture.`)) {
       return;
     }
@@ -105,8 +183,10 @@ export class OFProductionComponent implements OnInit, OnDestroy {
         this.toast.success('Production demarree');
       },
       error: (err) => {
-        const msg = err.error?.error || err.message || 'Erreur au demarrage';
+        const msg = err.error?.error || err.error?.message || err.message || 'Erreur au demarrage';
         this.toast.error(msg);
+        this.stockIssueMessage = msg;
+        this.refreshStockCheck();
       }
     });
   }
@@ -158,7 +238,11 @@ export class OFProductionComponent implements OnInit, OnDestroy {
   }
 
   recordProduction(): void {
-    if (this.newBons <= 0 && this.newNC <= 0) {
+    if (this.newBons < 0 || this.newNC < 0) {
+      alert('Les quantites ne peuvent pas etre negatives');
+      return;
+    }
+    if (this.newBons === 0 && this.newNC === 0) {
       alert('Veuillez saisir une quantite positive');
       return;
     }
@@ -271,4 +355,13 @@ export class OFProductionComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.stopTimer();
   }
+}
+
+interface StockCheckRow {
+  articleId: string;
+  articleName: string;
+  required: number;
+  available: number;
+  exists: boolean;
+  status: 'OK' | 'INSUFFICIENT' | 'MISSING';
 }

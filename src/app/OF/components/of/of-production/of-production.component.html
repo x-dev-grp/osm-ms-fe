@@ -8,7 +8,7 @@
       <p class="page-subtitle">{{ of.productName || of.skuCode || of.productId || of.skuId }} - Statut: {{ of.statut }}</p>
     </div>
     <div class="header-actions">
-      <button *ngIf="canStart()" class="btn-action start" (click)="start()">
+      <button *ngIf="canStart()" class="btn-action start" [disabled]="!canStartNow()" (click)="start()">
         <i class="fas fa-play"></i> Demarrer
       </button>
       <button *ngIf="canPause()" class="btn-action pause" (click)="pause()">
@@ -48,6 +48,52 @@
       <span class="flow-banner-chip">Verification au demarrage: {{ stockCheckLabel() }}</span>
       <span class="flow-banner-chip">Deduction a la cloture: {{ stockCloseLabel() }}</span>
     </div>
+  </div>
+
+  <div class="card-box stock-check-card" *ngIf="canStart()">
+    <div class="stock-check-head">
+      <h5>Verification stock avant demarrage</h5>
+      <button class="btn-refresh-stock" (click)="refreshStockCheck()" [disabled]="checkingStock">
+        <i class="fas fa-rotate"></i> {{ checkingStock ? 'Verification...' : 'Actualiser' }}
+      </button>
+    </div>
+
+    <p class="stock-check-caption">
+      Le demarrage est autorise uniquement si chaque article couvre la quantite theorique.
+    </p>
+
+    <div class="stock-check-error" *ngIf="stockIssueMessage">
+      <i class="fas fa-triangle-exclamation"></i>
+      <span>{{ stockIssueMessage }}</span>
+    </div>
+
+    <table class="data-table stock-check-table" *ngIf="stockRows.length > 0">
+      <thead>
+      <tr>
+        <th>Article</th>
+        <th>Besoin</th>
+        <th>Stock actuel</th>
+        <th>Etat stock</th>
+        <th>Resultat</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let row of stockRows" [ngClass]="{'row-ok': row.status === 'OK', 'row-ko': row.status !== 'OK'}">
+        <td data-label="Article">{{ row.articleName }}</td>
+        <td data-label="Besoin">{{ row.required }}</td>
+        <td data-label="Stock actuel">{{ row.available }}</td>
+        <td data-label="Etat stock">
+          <span *ngIf="row.exists">Existant</span>
+          <span *ngIf="!row.exists">Non cree</span>
+        </td>
+        <td data-label="Resultat">
+          <span class="stock-status ok" *ngIf="row.status === 'OK'">OK</span>
+          <span class="stock-status warn" *ngIf="row.status === 'INSUFFICIENT'">Insuffisant</span>
+          <span class="stock-status danger" *ngIf="row.status === 'MISSING'">Manquant</span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
   </div>
 
   <div class="card-box production-card" *ngIf="isEditable()">

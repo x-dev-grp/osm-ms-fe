@@ -63,6 +63,7 @@
           <th>Nom</th>
           <th>Catégorie</th>
           <th>Unité</th>
+          <th>En stock</th>
           <th>Stock Min</th>
           <th>Stock Max</th>
           <th>Statut</th>
@@ -79,6 +80,7 @@
               </span>
           </td>
           <td>{{ article.um }}</td>
+          <td>{{ getArticleStock(article.id) }}</td>
           <td>{{ article.stockMinimum }}</td>
           <td>{{ article.stockMaximum }}</td>
           <td>
@@ -111,7 +113,7 @@
           </td>
         </tr>
         <tr *ngIf="filteredArticles.length === 0">
-          <td colspan="7" class="text-center py-4">
+          <td colspan="8" class="text-center py-4">
             Aucun article trouvé
           </td>
         </tr>

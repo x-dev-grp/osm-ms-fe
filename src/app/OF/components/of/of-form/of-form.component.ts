@@ -39,6 +39,11 @@ export class OFFormComponent implements OnInit {
   projectRemainingQuantity: number | null = null;
   private preferredProjectBomId: string | null = null;
 
+  get exceedsProjectRemaining(): boolean {
+    const qty = Number(this.ofForm?.get('quantiteCible')?.value || 0);
+    return this.projectRemainingQuantity !== null && qty > this.projectRemainingQuantity;
+  }
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -325,6 +330,18 @@ export class OFFormComponent implements OnInit {
 
   cancel(): void {
     this.router.navigate(['/of']);
+  }
+
+  onQuantiteInput(): void {
+    if (this.projectRemainingQuantity === null) {
+      return;
+    }
+
+    const control = this.ofForm.get('quantiteCible');
+    const qty = Number(control?.value || 0);
+    if (qty > this.projectRemainingQuantity) {
+      control?.setValue(this.projectRemainingQuantity);
+    }
   }
 
   productName(product: Product): string {

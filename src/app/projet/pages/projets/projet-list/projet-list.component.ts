@@ -87,12 +87,28 @@ export class ProjetListComponent {
   readonly rows = computed(() => {
     const all = this.allRows();
     const filter = this.statusFilter();
+    const search = this.searchCode().trim().toLowerCase();
 
-    if (filter === 'ALL') {
-      return all;
+    let filtered = all;
+
+    if (filter !== 'ALL') {
+      filtered = filtered.filter(row => this.normalizeStatus(row.statut) === filter);
     }
 
-    return all.filter(row => this.normalizeStatus(row.statut) === filter);
+    if (search) {
+      filtered = filtered.filter(row => {
+        const code = (row.code || '').toLowerCase();
+        const clientNom = (row.client?.nom || '').toLowerCase();
+        const typeProduit = (row.typeProduit || '').toLowerCase();
+        const typeEmballage = (row.typeEmballage || '').toLowerCase();
+        return code.includes(search) ||
+               clientNom.includes(search) ||
+               typeProduit.includes(search) ||
+               typeEmballage.includes(search);
+      });
+    }
+
+    return filtered;
   });
 
   readonly projectStats = computed(() => {
@@ -196,6 +212,7 @@ export class ProjetListComponent {
   onSearchCodeInput(event: Event): void {
     const value = (event.target as HTMLInputElement | null)?.value ?? '';
     this.searchCode.set(value);
+    this.resetPaginator();
   }
 
   searchByCode(): void {

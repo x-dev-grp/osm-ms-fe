@@ -32,6 +32,8 @@
           <div class="form-group">
             <label><i class="fas fa-chart-line"></i> Quantité cible</label>
             <input type="number" step="1" class="form-control" formControlName="quantiteCible"
+              [attr.max]="projectRemainingQuantity !== null ? projectRemainingQuantity : null"
+              (input)="onQuantiteInput()"
               [class.is-invalid]="projectRemainingQuantity !== null && ofForm.get('quantiteCible')?.value > projectRemainingQuantity"
               required>
             <div class="remaining-info" *ngIf="projectRemainingQuantity !== null">
@@ -112,7 +114,7 @@
 
       <div class="form-actions">
         <button type="button" class="btn-cancel" (click)="cancel()">Annuler</button>
-        <button type="submit" class="btn-save" [disabled]="ofForm.invalid || isSubmitting">
+        <button type="submit" class="btn-save" [disabled]="ofForm.invalid || isSubmitting || exceedsProjectRemaining">
           <i class="fas fa-save"></i> Enregistrer
         </button>
       </div>

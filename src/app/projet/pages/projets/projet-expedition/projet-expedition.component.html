@@ -79,6 +79,7 @@
             <div class="lines-heading">
               <h3>OF du projet a expedier</h3>
               <p>Les OF non assignes peuvent etre ajoutes ici et seront rattaches au projet lors de l'ajout.</p>
+              <p>Maximum autorise: {{ remainingProjectQuantity }} {{ project?.unite === 'LITRES' ? 'L' : 'u' }}</p>
             </div>
             <span>{{ selectedCreateLineCount }} OF - {{ selectedCreateLineQuantity }} {{ project?.unite === 'LITRES' ? 'L' : 'u' }}</span>
           </div>
@@ -98,7 +99,7 @@
               <tbody>
               <tr *ngFor="let control of createLineControls.controls; let i = index" [formGroupName]="i">
                 <td>
-                  <input type="checkbox" formControlName="selected" />
+                  <input type="checkbox" formControlName="selected" (change)="clampCreateLineQuantity(i)" />
                 </td>
                 <td>
                   <div class="of-cell">
@@ -108,7 +109,12 @@
                 </td>
                 <td>{{ projectOfs[i]?.productName || projectOfs[i]?.skuCode || projectOfs[i]?.articleNom || '-' }}</td>
                 <td>
-                  <input type="number" formControlName="quantity" min="1" />
+                  <input
+                    type="number"
+                    formControlName="quantity"
+                    min="0"
+                    [max]="getCreateLineMax(i)"
+                    (input)="clampCreateLineQuantity(i)" />
                 </td>
                 <td>
                   <input type="text" formControlName="lotNumber" placeholder="Lot" />
@@ -123,7 +129,12 @@
         </div>
 
         <div class="form-actions">
-          <button mat-flat-button color="primary" type="button" (click)="createExpedition()" [disabled]="creating">
+          <button
+            mat-flat-button
+            color="primary"
+            type="button"
+            (click)="createExpedition()"
+            [disabled]="creating || selectedCreateLineQuantity > remainingProjectQuantity || remainingProjectQuantity <= 0">
             <mat-icon>add</mat-icon>
             Creer l'expedition avec les OF
           </button>
