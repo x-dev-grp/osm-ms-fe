@@ -32,6 +32,8 @@ import { EmplacementDetailComponent } from "./components/emplacement/emplacement
 import {BomFormComponent} from "./components/bom/bom-form/bom-form.component";
 import {BomListComponent} from "./components/bom/bom-list/bom-list.component";
 import {BomDetailComponent} from "./components/bom/bom-detail/bom-detail.component";
+import { ProductLabelsComponent } from './components/sku/product-labels/product-labels.component';
+//import { StockDashboardComponent } from './components/dashboard/stock-dashboard/stock-dashboard.component';
 import { StockDashboardComponent } from './components/dashboard/stock-dashboard/stock-dashboard.component';
 
 @NgModule({
@@ -67,6 +69,8 @@ import { StockDashboardComponent } from './components/dashboard/stock-dashboard/
     BomListComponent,
     BomFormComponent,
     BomDetailComponent
+    ,
+    ProductLabelsComponent
 
   ],
   exports: [

@@ -637,8 +637,16 @@ export class LabelWorkflowComponent implements OnInit {
       this.prefillFromFiltration(selectedOp);
     }
 
+    const packagingId = queryParams.get('packagingId') ?? queryParams.get('productId') ?? '';
+    if (packagingId) {
+      this.labelForm.patchValue({ packagingId });
+      const selectedProduct = this.packagingOptions.find((p) => p.id === packagingId);
+      if (selectedProduct && selectedProduct.volume && !this.labelForm.value.netQuantity) {
+        this.labelForm.patchValue({ netQuantity: `${selectedProduct.volume} ml` });
+      }
+    }
+
     this.labelForm.patchValue({
-      packagingId: queryParams.get('packagingId') ?? this.labelForm.value.packagingId ?? '',
       packagingDate:
         queryParams.get('packagingDate') ??
         this.labelForm.value.packagingDate ??

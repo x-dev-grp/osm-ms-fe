@@ -368,6 +368,34 @@ $gray-900: #0f172a;
   p {
     margin: 0;
   }
+
+  .btn-create-label-direct {
+    margin-top: 1rem;
+    padding: 0.6rem 1.2rem;
+    background: $primary;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+
+    i {
+      font-size: 0.9rem;
+      color: white;
+    }
+
+    &:hover {
+      background: $primary-dark;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba($primary, 0.3);
+    }
+  }
 }
 
 .mini-spinner {
