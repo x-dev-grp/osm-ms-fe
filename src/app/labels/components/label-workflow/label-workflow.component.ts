@@ -39,6 +39,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { CompanyProfileService } from '../../../shared/services/company-profile.service';
+import { CompanyProfile } from '../../../shared/models/CompanyProfile';
+import { ProductionTraceabilityService } from '../../../shared/services/production-traceability.service';
+import { ProductionGenealogy } from '../../../shared/models/production-genealogy.model';
 
 @Component({
   selector: 'app-label-workflow',
@@ -123,6 +127,7 @@ export class LabelWorkflowComponent implements OnInit {
 
   draftSavedRecently = false;
   finalizedRecently = false;
+  private companyProfile: CompanyProfile | null = null;
 
   private draftSavedTimer: ReturnType<typeof setTimeout> | null = null;
   private finalizedTimer: ReturnType<typeof setTimeout> | null = null;
@@ -138,10 +143,13 @@ export class LabelWorkflowComponent implements OnInit {
     private readonly skuService: SKUService,
     private readonly certificationService: CertificationService,
     private readonly genericTypeService: GenericTypeService,
-    private readonly filtrationService: FiltrationApiService
+    private readonly filtrationService: FiltrationApiService,
+    private readonly companyProfileService: CompanyProfileService,
+    private readonly productionTraceabilityService: ProductionTraceabilityService
   ) { }
 
   ngOnInit(): void {
+    this.loadCompanyProfileDefaults();
     this.loadLotsAndPackaging();
     this.saving = false;
     this.finalizing = false;
@@ -318,6 +326,8 @@ export class LabelWorkflowComponent implements OnInit {
         }
       }
     }
+
+    this.prefillSensoryProfileFromFiltrationQc(selectedOp);
   }
 
   // Client-side auto-fill when packaging is selected
@@ -474,6 +484,7 @@ export class LabelWorkflowComponent implements OnInit {
       extractionMethod: '',
       bestBeforeDate: ''
     });
+    this.applyCompanyDefaultsToForm();
 
     this.clearMessages();
     this.router.navigate(['/labels']);
@@ -564,7 +575,7 @@ export class LabelWorkflowComponent implements OnInit {
     const lot = op.targetLotNumber || op.target?.lotNumber || 'LOT INCONNU';
     const volume = op.volumeAfter ? ` | ${op.volumeAfter}L` : '';
     const date = op.timestamp ? ` (${new Date(op.timestamp).toLocaleDateString()})` : '';
-    return `OP-${op.operationId.substring(0, 8)} | ${lot}${volume}${date}`;
+    return `${lot}${volume}${date}`;
   }
 
   storageUnitLabel(storageUnit: { id?: string; name?: string; lotNumber?: string; currentVolume?: number | null }): string {
@@ -630,23 +641,18 @@ export class LabelWorkflowComponent implements OnInit {
   private fromUrl(): void {
     const queryParams = this.route.snapshot.queryParamMap;
     const requestedLotOrOperationId = queryParams.get('filtrationOperationId') ?? queryParams.get('lotId');
-    const selectedOp = this.resolveFiltrationOperation(requestedLotOrOperationId);
+    const selectedOp =
+      this.resolveFiltrationOperation(requestedLotOrOperationId) ||
+      this.filtrationOperations[0];
 
     if (selectedOp) {
       this.labelForm.get('lotId')?.setValue(selectedOp.operationId);
       this.prefillFromFiltration(selectedOp);
-    }
-
-    const packagingId = queryParams.get('packagingId') ?? queryParams.get('productId') ?? '';
-    if (packagingId) {
-      this.labelForm.patchValue({ packagingId });
-      const selectedProduct = this.packagingOptions.find((p) => p.id === packagingId);
-      if (selectedProduct && selectedProduct.volume && !this.labelForm.value.netQuantity) {
-        this.labelForm.patchValue({ netQuantity: `${selectedProduct.volume} ml` });
-      }
+      this.prefillSensoryProfileFromFiltrationQc(selectedOp);
     }
 
     this.labelForm.patchValue({
+      packagingId: queryParams.get('packagingId') ?? this.labelForm.value.packagingId ?? '',
       packagingDate:
         queryParams.get('packagingDate') ??
         this.labelForm.value.packagingDate ??
@@ -704,8 +710,12 @@ export class LabelWorkflowComponent implements OnInit {
       extractionMethod: label.extractionMethod || '',
       bestBeforeDate: label.bestBeforeDate || ''
     });
+    this.applyCompanyDefaultsToForm();
 
     this.labelForm.markAsPristine();
+    if (selectedOp) {
+      this.prefillSensoryProfileFromFiltrationQc(selectedOp);
+    }
 
     if (label.id && this.route.snapshot.paramMap.get('id') !== label.id) {
       this.router.navigate(['/labels', label.id], { replaceUrl: true });
@@ -735,6 +745,107 @@ export class LabelWorkflowComponent implements OnInit {
     if (!this.labelForm.value.originCountry) {
       this.labelForm.patchValue({ originCountry: 'Tunisie' });
     }
+  }
+
+  private prefillSensoryProfileFromFiltrationQc(selectedOp: FiltrationOperation): void {
+    const sensoryProfile = (this.labelForm.getRawValue().sensoryProfile || '').trim();
+    if (sensoryProfile) {
+      return;
+    }
+
+    const genealogyAnchor = selectedOp.target?.id || selectedOp.source?.id;
+    if (!genealogyAnchor) {
+      return;
+    }
+
+    this.productionTraceabilityService.getGenealogy(genealogyAnchor).subscribe({
+      next: (genealogy) => {
+        const controls = this.resolvePostFiltrationQualityControls(genealogy);
+        const formatted = this.formatQualityControlsForSensoryProfile(controls);
+
+        if (!formatted) {
+          return;
+        }
+
+        const currentProfile = (this.labelForm.getRawValue().sensoryProfile || '').trim();
+        if (!currentProfile) {
+          this.labelForm.patchValue({ sensoryProfile: formatted });
+        }
+      }
+    });
+  }
+
+  private resolvePostFiltrationQualityControls(genealogy: ProductionGenealogy | null | undefined): Record<string, string> | null {
+    const direct = genealogy?.filteredQualityControls;
+    if (direct && Object.keys(direct).length > 0) {
+      return direct;
+    }
+
+    const fromSteps = genealogy?.filtrations
+      ?.map((step) => step.qualityControls)
+      .find((controls): controls is Record<string, string> => !!controls && Object.keys(controls).length > 0);
+
+    return fromSteps || null;
+  }
+
+  private formatQualityControlsForSensoryProfile(controls: Record<string, string> | null): string {
+    if (!controls) {
+      return '';
+    }
+
+    return Object.entries(controls)
+      .filter(([key, value]) => !!String(key || '').trim() && !!String(value || '').trim())
+      .map(([key, value]) => `${key}: ${value}`)
+      .join(' | ');
+  }
+
+  private loadCompanyProfileDefaults(): void {
+    const cachedProfile = this.companyProfileService.getProfileFromCache();
+    if (cachedProfile) {
+      this.companyProfile = cachedProfile;
+      this.applyCompanyDefaultsToForm();
+    }
+
+    this.companyProfileService.getProfile().subscribe({
+      next: (profile) => {
+        this.companyProfile = profile;
+        this.applyCompanyDefaultsToForm();
+      }
+    });
+  }
+
+  private applyCompanyDefaultsToForm(): void {
+    if (!this.companyProfile) {
+      return;
+    }
+
+    const currentValues = this.labelForm.getRawValue();
+    const defaultAddress = this.buildCompanyAddress(this.companyProfile);
+
+    const patch: Partial<typeof currentValues> = {};
+
+    if (!currentValues.responsibleName?.trim() && this.companyProfile.legalName?.trim()) {
+      patch.responsibleName = this.companyProfile.legalName.trim();
+    }
+
+    if (!currentValues.responsibleAddress?.trim() && defaultAddress) {
+      patch.responsibleAddress = defaultAddress;
+    }
+
+    if (Object.keys(patch).length > 0) {
+      this.labelForm.patchValue(patch);
+    }
+  }
+
+  private buildCompanyAddress(profile: CompanyProfile): string {
+    return [
+      profile.addressLine1?.trim(),
+      profile.postalCode?.trim(),
+      profile.city?.trim(),
+      profile.governorate?.trim()
+    ]
+      .filter((part) => !!part)
+      .join(', ');
   }
 
   private resolveBaseTypeLabel(value: string | null | undefined, source: BaseType[]): string {

@@ -40,8 +40,8 @@
       </div>
 
       <div class="traceability-meta">
-        <span class="meta-chip">Lot traceabilite: {{ ofItem.value.traceabilityLotId || '-' }}</span>
-        <span class="meta-chip">Lot vrac: {{ ofItem.value.lotVracId || '-' }}</span>
+        <span class="meta-chip">Traceabilite: {{ ofItem.value.traceabilityLotId || ofItem.value.lotVracId ? 'Verifiee' : 'A verifier' }}</span>
+        <span class="meta-chip" *ngIf="genealogyFor(ofItem.value) as geneaMeta">Lot vrac: {{ geneaMeta.lotNumber || '-' }}</span>
       </div>
 
       <!-- Timeline -->
@@ -88,7 +88,7 @@
           <div class="label-qc-card" *ngFor="let label of labels">
              <div class="label-info">
                 <strong>Lot Conditionné: {{ label.lotNumber }}</strong>
-                <p class="traceability-line">Lot traceabilite: {{ label.traceabilityLotId || '-' }}</p>
+                <p class="traceability-line">Traceabilite: {{ label.traceabilityLotId ? 'Verifiee' : 'A verifier' }}</p>
                 <div class="qc-grid">
                   <div class="qc-item" *ngIf="label.sensoryProfile">
                     <span class="qc-label">Profil Sensoriel:</span>

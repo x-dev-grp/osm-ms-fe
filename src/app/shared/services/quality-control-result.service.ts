@@ -41,4 +41,33 @@ export class QualityControlResultService {
   getOilResultsByOliveLotNumber(oliveLotNUmber: string): Observable<ApiResponse<QualityControlResultDto>> {
     return this.http.get<ApiResponse<QualityControlResultDto>>(`${this.baseUrl}/fetchByOilDeliveryOfOliveDelivery/${oliveLotNUmber}`);
   }
+
+  // Save QC results for a completed filtration operation
+  saveResultsForFiltration(
+    filtrationOperationId: string,
+    results: QualityControlResultDto[]
+  ): Observable<ApiResponse<QualityControlResultDto[]>> {
+    return this.http.post<ApiResponse<QualityControlResultDto[]>>(
+      `${this.baseUrl}/filtration/${filtrationOperationId}/save-batch`,
+      results
+    );
+  }
+
+  // Read QC results linked to a filtration operation
+  getResultsByFiltration(
+    filtrationOperationId: string
+  ): Observable<ApiResponse<QualityControlResultDto[]>> {
+    return this.http.get<ApiResponse<QualityControlResultDto[]>>(
+      `${this.baseUrl}/filtration/${filtrationOperationId}`
+    );
+  }
+
+  // Read QC results linked to a traceability lot
+  getResultsByTraceabilityLot(
+    traceabilityLotId: string
+  ): Observable<ApiResponse<QualityControlResultDto[]>> {
+    return this.http.get<ApiResponse<QualityControlResultDto[]>>(
+      `${this.baseUrl}/traceability-lot/${traceabilityLotId}`
+    );
+  }
 }

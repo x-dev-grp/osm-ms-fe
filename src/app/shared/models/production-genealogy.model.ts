@@ -16,6 +16,7 @@ export interface ProductionFiltrationStep {
   timestamp?: string;
   sourceStorageUnitId?: string;
   sourceStorageUnitName?: string;
+  qualityControls?: Record<string, string>;
 }
 
 export interface ProductionGenealogy {
@@ -25,6 +26,7 @@ export interface ProductionGenealogy {
   storageUnitId?: string;
   lotNumber?: string;
   storageUnitName?: string;
+  filteredQualityControls?: Record<string, string>;
   filtrations?: ProductionFiltrationStep[];
   rootSources?: ProductionRootSource[];
 }

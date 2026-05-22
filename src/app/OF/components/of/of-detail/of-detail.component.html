@@ -36,9 +36,8 @@
       <div class="info-row"><i class="fas fa-barcode"></i><span>Code</span><strong>{{ of.code }}</strong></div>
       <div class="info-row"><i class="fas fa-tag"></i><span>Produit</span><strong>{{ of.productName || of.skuCode || of.productId || of.skuId }}</strong></div>
       <div class="info-row"><i class="fas fa-industry"></i><span>Ligne</span><strong>{{ of.ligneNom || of.ligneId || '-' }}</strong></div>
-      <div class="info-row"><i class="fas fa-oil-can"></i><span>Lot vrac</span><strong>{{ of.lotVracId || '-' }}</strong></div>
-      <div class="info-row"><i class="fas fa-fingerprint"></i><span>Lot traceabilite</span><strong>{{ of.traceabilityLotId || '-' }}</strong></div>
-      <div class="info-row"><i class="fas fa-anchor"></i><span>Ancre genealogie</span><strong>{{ traceabilityAnchor }}</strong></div>
+      <div class="info-row"><i class="fas fa-oil-can"></i><span>Lot vrac</span><strong>{{ genealogy?.lotNumber || '-' }}</strong></div>
+      <div class="info-row"><i class="fas fa-fingerprint"></i><span>Traceabilite</span><strong>{{ genealogy ? 'Verifiee' : '-' }}</strong></div>
       <div class="info-row"><i class="fas fa-chart-simple"></i><span>Statut</span><span class="status-badge" [ngClass]="of.statut.toLowerCase()">{{ of.statut }}</span></div>
       <div class="info-row quality-status-row">
         <i class="fas fa-lock"></i>
@@ -88,11 +87,11 @@
     </div>
     <div class="traceability-grid" *ngIf="!genealogyLoading && genealogy">
       <div class="traceability-summary">
-        <div class="summary-row"><span>Lot traceabilite</span><strong>{{ genealogy.traceabilityLotId || of.traceabilityLotId || '-' }}</strong></div>
+        <div class="summary-row"><span>Traceabilite</span><strong>{{ genealogy.traceabilityLotId || of.traceabilityLotId ? 'Verifiee' : '-' }}</strong></div>
         <div class="summary-row"><span>Source racine</span><strong>{{ genealogy.traceabilitySourceType || primaryRootSource?.type || '-' }}</strong></div>
-        <div class="summary-row"><span>Reception racine</span><strong>{{ genealogy.rootReceptionId || primaryRootSource?.sourceId || '-' }}</strong></div>
-        <div class="summary-row"><span>Cuve finale</span><strong>{{ genealogy.storageUnitName || genealogy.storageUnitId || '-' }}</strong></div>
-        <div class="summary-row"><span>Lot final</span><strong>{{ genealogy.lotNumber || of.lotVracId || '-' }}</strong></div>
+        <div class="summary-row"><span>Reception racine</span><strong>{{ primaryRootSource?.lotNumber || primaryRootSource?.supplierName || '-' }}</strong></div>
+        <div class="summary-row"><span>Cuve finale</span><strong>{{ genealogy.storageUnitName || '-' }}</strong></div>
+        <div class="summary-row"><span>Lot final</span><strong>{{ genealogy.lotNumber || '-' }}</strong></div>
       </div>
 
       <div class="root-source" *ngIf="primaryRootSource as root">

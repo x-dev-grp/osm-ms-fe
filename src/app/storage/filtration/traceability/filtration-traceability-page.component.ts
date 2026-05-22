@@ -1,7 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import {forkJoin, map, Observable, of} from 'rxjs';
+import { forkJoin, map, of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 
 import { MatIconModule } from '@angular/material/icon';
@@ -9,14 +9,18 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialog } from '@angular/material/dialog';
+import { ToastService } from '../../../shared/services/toast.service';
 
 import { FiltrationApiService } from '../../../shared/services/filtration-api.service';
-import { UnifiedDeliveryService } from '../../../shared/services/delivery.service';
 import { OilTransactionService } from '../../../shared/services/OilTransactionService';
+import { ProductionTraceabilityService } from '../../../shared/services/production-traceability.service';
 import { FiltrationOperation } from '../../../shared/models/filtration-operation';
 import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
 import { QualityControlResultDto } from '../../../shared/models/QualityControlResultDto';
 import { OilTransaction } from '../../../shared/models/OilTransaction';
+import { ProductionGenealogy, ProductionRootSource } from '../../../shared/models/production-genealogy.model';
+import { FiltrationQcEntryDialogComponent } from './filtration-qc-entry-dialog.component';
 
 @Component({
   selector: 'app-filtration-traceability-page',
@@ -39,20 +43,23 @@ export class FiltrationTraceabilityPageComponent implements OnInit {
   readonly error = signal<string | null>(null);
 
   operation = signal<FiltrationOperation | null>(null);
+  genealogy = signal<ProductionGenealogy | null>(null);
   sourceDeliveries = signal<UnifiedDelivery[]>([]);
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private filtrationApi: FiltrationApiService,
-    private deliveryService: UnifiedDeliveryService,
-    private transactionService: OilTransactionService
+    private transactionService: OilTransactionService,
+    private productionTraceability: ProductionTraceabilityService,
+    private dialog: MatDialog,
+    private toast: ToastService
   ) {}
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) {
-      this.error.set('Identifiant de l\'opération introuvable.');
+      this.error.set('Identifiant de l operation introuvable.');
       this.loading.set(false);
       return;
     }
@@ -60,46 +67,29 @@ export class FiltrationTraceabilityPageComponent implements OnInit {
     this.filtrationApi.getById(id).pipe(
       switchMap(op => {
         this.operation.set(op);
-        console.log('🔍 Filtration Operation Loaded:', op);
 
         const sourceUnitId = op.source?.id;
-
         if (!sourceUnitId) {
-          console.warn('⚠️ No source unit ID found for this operation.');
-          return of([]);
+          return of({ genealogy: null, deliveries: [] });
         }
 
-        // Strictly fetch by Transaction History (Exact Ledger)
-        return this.transactionService.getByStorageUnit(sourceUnitId).pipe(
-          map((res: any) => {
-            const transactions: OilTransaction[] = res?.data ?? (Array.isArray(res) ? res : []);
+        const genealogyAnchor = op.target?.id || op.source?.id;
+        const genealogy$ = genealogyAnchor
+          ? this.productionTraceability.getGenealogy(genealogyAnchor).pipe(catchError(() => of(null)))
+          : of(null);
 
-            const deliveries: UnifiedDelivery[] = [];
-            const seenIds = new Set<string>();
-
-            transactions.forEach(tx => {
-              if (tx.reception && tx.reception.id && !seenIds.has(tx.reception.id)) {
-                // If tank was destination, this oil came from this reception
-                if (tx.storageUnitDestination?.id === sourceUnitId) {
-                  deliveries.push(tx.reception);
-                  seenIds.add(tx.reception.id);
-                }
-              }
-            });
-
-            return deliveries;
-          }),
-          catchError(err => {
-            return of([]);
-          })
-        );
+        return forkJoin({
+          genealogy: genealogy$,
+          deliveries: this.loadDeliveriesFromTransactions(sourceUnitId)
+        });
       }),
-      catchError(err => {
-        this.error.set('Erreur lors du chargement de la traçabilité.');
+      catchError(() => {
+        this.error.set('Erreur lors du chargement de la tracabilite.');
         this.loading.set(false);
-        return of([]);
+        return of({ genealogy: null, deliveries: [] });
       })
-    ).subscribe((deliveries: UnifiedDelivery[]) => {
+    ).subscribe(({ genealogy, deliveries }) => {
+      this.genealogy.set(genealogy);
       this.sourceDeliveries.set(deliveries || []);
       this.loading.set(false);
     });
@@ -111,6 +101,38 @@ export class FiltrationTraceabilityPageComponent implements OnInit {
     if (s === 'IN_PROGRESS') return 'status-inprogress';
     if (s === 'CANCELLED') return 'status-cancelled';
     return 'status-created';
+  }
+
+  rootSources(): ProductionRootSource[] {
+    return this.genealogy()?.rootSources || [];
+  }
+
+  rootSourceExtra(source: ProductionRootSource | undefined, key: string): string {
+    const value = source?.extra?.[key];
+    return value == null || value === '' ? '-' : String(value);
+  }
+
+  rootSourceQualityEntries(source: ProductionRootSource): { key: string; value: string }[] {
+    return Object.entries(source.qualityControls || {}).map(([key, value]) => ({ key, value }));
+  }
+
+  filteredQualityEntries(): { key: string; value: string }[] {
+    const direct = this.genealogy()?.filteredQualityControls;
+    if (direct && Object.keys(direct).length > 0) {
+      return Object.entries(direct).map(([key, value]) => ({ key, value }));
+    }
+
+    const fromStep = this.genealogy()?.filtrations
+      ?.map(step => step.qualityControls)
+      .find(controls => !!controls && Object.keys(controls).length > 0);
+
+    return fromStep ? Object.entries(fromStep).map(([key, value]) => ({ key, value })) : [];
+  }
+
+  storageLabel(storage: { name?: string; lotNumber?: string; id?: string } | null | undefined, fallbackLot?: string): string {
+    const name = storage?.name || 'Cuve inconnue';
+    const lot = storage?.lotNumber || fallbackLot;
+    return lot ? `${name} | Lot ${lot}` : name;
   }
 
   qcStatus(qc: QualityControlResultDto): 'PASS' | 'FAIL' | 'INFO' {
@@ -141,5 +163,68 @@ export class FiltrationTraceabilityPageComponent implements OnInit {
         }
       });
     }
+  }
+
+  openFiltrationQcEntry(): void {
+    const operation = this.operation();
+    const filtrationOperationId = operation?.operationId;
+    if (!filtrationOperationId) {
+      this.toast.error('Operation de filtration introuvable.');
+      return;
+    }
+
+    const ref = this.dialog.open(FiltrationQcEntryDialogComponent, {
+      width: '860px',
+      maxWidth: '96vw',
+      data: {
+        filtrationOperationId,
+        traceabilityLotId: this.genealogy()?.traceabilityLotId || null
+      }
+    });
+
+    ref.afterClosed().subscribe((saved: boolean) => {
+      if (saved) {
+        this.refreshGenealogy();
+      }
+    });
+  }
+
+  canEnterFilteredQc(): boolean {
+    const operation = this.operation();
+    return !!operation?.operationId && operation?.status === 'COMPLETED';
+  }
+
+  private loadDeliveriesFromTransactions(sourceUnitId: string) {
+    return this.transactionService.getByStorageUnit(sourceUnitId).pipe(
+      map((res: any) => {
+        const transactions: OilTransaction[] = res?.data ?? (Array.isArray(res) ? res : []);
+        const deliveries: UnifiedDelivery[] = [];
+        const seenIds = new Set<string>();
+
+        transactions.forEach(tx => {
+          if (tx.reception?.id && !seenIds.has(tx.reception.id) && tx.storageUnitDestination?.id === sourceUnitId) {
+            deliveries.push(tx.reception);
+            seenIds.add(tx.reception.id);
+          }
+        });
+
+        return deliveries;
+      }),
+      catchError(() => of([]))
+    );
+  }
+
+  private refreshGenealogy(): void {
+    const op = this.operation();
+    const genealogyAnchor = op?.target?.id || op?.source?.id;
+    if (!genealogyAnchor) {
+      return;
+    }
+
+    this.productionTraceability.getGenealogy(genealogyAnchor)
+      .pipe(catchError(() => of(null)))
+      .subscribe((genealogy) => {
+        this.genealogy.set(genealogy);
+      });
   }
 }

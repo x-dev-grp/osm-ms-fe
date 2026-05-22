@@ -14,6 +14,7 @@ import { ToastService } from '../../../../shared/services/toast.service';
 import { CampaignService } from '../../../../shared/services/campaign.service';
 import { StorageUnitDtoService } from '../../../../shared/services/storage.service';
 import { StorageUnitDto } from '../../../../shared/models/StorageUnitDto';
+import { ProductLabelsComponent } from '../product-labels/product-labels.component';
 
 
 export interface BomLineUi {
@@ -24,7 +25,7 @@ export interface BomLineUi {
 @Component({
   selector: 'app-sku-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, ProductLabelsComponent],
   templateUrl: './sku-form.component.html',
   styleUrls: ['./sku-form.component.scss']
 })
@@ -34,6 +35,7 @@ export class SkuFormComponent implements OnInit {
   skuId?: string;
   submitted = false;
   submitting = false;
+  createTicketAfterSave = false;
   readonly productTypes: ProductType[] = ['VRAC', 'NON_VRAC'];
   readonly unitOptions: ProductUnitOfMeasure[] = ['L', 'KG', 'BOTTLE', 'CARTON'];
   storageUnits: StorageUnitDto[] = [];
@@ -273,6 +275,7 @@ export class SkuFormComponent implements OnInit {
     saveSku$.subscribe({
       next: (saved) => {
         const skuId = saved.id!;
+        const shouldOpenTicket = this.createTicketAfterSave && this.isNonVrac();
         if (this.bomLines.length > 0) {
           const bom = {
             productId: skuId,
@@ -286,24 +289,42 @@ export class SkuFormComponent implements OnInit {
           this.bomService.create(bom as any).subscribe({
             next: () => {
               this.toast.success(this.isEditMode ? 'Produit mis a jour avec succes' : 'Produit cree avec succes');
-              this.router.navigate(['/stock/products', skuId]);
+              if (shouldOpenTicket) {
+                this.openTicketCreation(skuId);
+              } else {
+                this.router.navigate(['/stock/products', skuId]);
+              }
             },
             error: () => {
               this.toast.warning('Produit enregistre, mais la nomenclature n a pas pu etre creee');
-              this.router.navigate(['/stock/products', skuId]);
+              if (shouldOpenTicket) {
+                this.openTicketCreation(skuId);
+              } else {
+                this.router.navigate(['/stock/products', skuId]);
+              }
             }
           });
         } else {
           this.toast.success(this.isEditMode ? 'Produit mis a jour avec succes' : 'Produit cree avec succes');
-          this.router.navigate(['/stock/products', skuId]);
+          if (shouldOpenTicket) {
+            this.openTicketCreation(skuId);
+          } else {
+            this.router.navigate(['/stock/products', skuId]);
+          }
         }
       },
       error: (err) => {
         console.error('Erreur création/maj', err);
         this.toast.error(err.error?.message || 'Erreur lors de l enregistrement du produit');
         this.submitting = false;
+        this.createTicketAfterSave = false;
       }
     });
+  }
+
+  saveAndCreateTicket(): void {
+    this.createTicketAfterSave = true;
+    this.onSubmit();
   }
 
   onCancel(): void {
@@ -364,6 +385,14 @@ export class SkuFormComponent implements OnInit {
       error: (err) => {
         console.error('Erreur chargement des cuves:', err);
       }
+    });
+  }
+
+  private openTicketCreation(productId: string): void {
+    this.createTicketAfterSave = false;
+    this.submitting = false;
+    this.router.navigate(['/labels/new'], {
+      queryParams: { packagingId: productId }
     });
   }
 }

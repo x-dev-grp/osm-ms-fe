@@ -1,288 +1,267 @@
 <section class="traceability-page">
-
-  <!-- HEADER -->
-  <header class="trace-hero">
-    <div class="hero-top">
-      <button class="back-btn" mat-stroked-button (click)="goBack()">
+  <header class="page-header">
+    <div class="header-left">
+      <button mat-icon-button (click)="goBack()" matTooltip="Retour a la liste">
         <mat-icon>arrow_back</mat-icon>
-        Retour
       </button>
-
-      <button
-        *ngIf="operation()?.target?.id"
-        class="label-btn"
-        mat-flat-button
-        (click)="prepareLabel()">
-        <mat-icon>print</mat-icon>
-        Générer étiquette
-      </button>
+      <div class="header-title">
+        <p class="eyebrow">Filtration - Tracabilite complete</p>
+        <h1>Historique de l'operation</h1>
+      </div>
     </div>
-
-    <div class="hero-title">
-      <p>Filtration · Traçabilité complète</p>
-      <h1>Historique de l’opération</h1>
+    <div class="header-actions" *ngIf="operation()?.target?.id">
+      <button mat-stroked-button color="primary" (click)="openFiltrationQcEntry()" *ngIf="canEnterFilteredQc()">
+        <mat-icon>science</mat-icon>
+        Saisir controle qualite
+      </button>
+      <button mat-raised-button color="primary" (click)="prepareLabel()">
+        <mat-icon>label</mat-icon>
+        Generer etiquette
+      </button>
     </div>
   </header>
 
-  <!-- LOADING -->
   <div class="loading-state" *ngIf="loading()">
     <mat-spinner diameter="48"></mat-spinner>
-    <p>Chargement de la traçabilité...</p>
+    <p>Chargement de la tracabilite...</p>
   </div>
 
-  <!-- ERROR -->
   <div class="error-state" *ngIf="error() && !loading()">
     <mat-icon>error_outline</mat-icon>
     <p>{{ error() }}</p>
   </div>
 
-  <!-- CONTENT -->
-  <div class="timeline-wrapper" *ngIf="!loading() && !error() && operation()">
-
-    <!-- OPERATION -->
+  <div class="page-content" *ngIf="!loading() && !error() && operation()">
     <div class="timeline-section">
       <div class="timeline-marker">
-        <div class="marker-dot filtration">
-          <mat-icon>filter_alt</mat-icon>
-        </div>
+        <div class="marker-dot filtration"></div>
         <div class="marker-line"></div>
       </div>
 
-      <article class="trace-card operation-card">
-        <div class="card-header">
-          <div class="card-title">
-            <div class="title-icon">
-              <mat-icon>filter_alt</mat-icon>
-            </div>
-            <h2>Opération de filtration</h2>
-          </div>
-
-          <span class="status-chip" [class]="statusClass">
-            <mat-icon>check_circle</mat-icon>
-            {{ operation()!.status }}
-          </span>
+      <div class="section-card">
+        <div class="card-head">
+          <mat-icon>water</mat-icon>
+          <span>Operation de filtration</span>
+          <span class="status-chip" [class]="statusClass">{{ operation()!.status }}</span>
         </div>
 
-        <div class="operation-metrics">
-          <div class="metric">
-            <label>ID Opération</label>
-            <strong class="mono">{{ operation()!.operationId }}</strong>
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Date / heure</label>
+            <span>{{ operation()!.timestamp | date:'dd/MM/yyyy HH:mm' }}</span>
           </div>
-
-          <div class="metric">
-            <label>Date / Heure</label>
-            <strong>{{ operation()!.timestamp | date:'dd/MM/yyyy HH:mm' }}</strong>
+          <div class="info-item">
+            <label>Volume filtre</label>
+            <span class="value-badge">{{ operation()!.volumeFiltered | number:'1.0-2' }} L</span>
           </div>
-
-          <div class="metric">
-            <label>Volume filtré</label>
-            <strong>{{ operation()!.volumeFiltered | number:'1.0-2' }} L</strong>
+          <div class="info-item" *ngIf="operation()!.volumeAfter">
+            <label>Volume apres filtration</label>
+            <span class="value-badge green">{{ operation()!.volumeAfter | number:'1.0-2' }} L</span>
           </div>
-
-          <div class="metric" *ngIf="operation()!.volumeAfter">
-            <label>Volume après filtration</label>
-            <strong>{{ operation()!.volumeAfter | number:'1.0-2' }} L</strong>
-          </div>
-
-          <div class="metric" *ngIf="operation()!.lossVolume">
+          <div class="info-item" *ngIf="operation()!.lossVolume">
             <label>Pertes</label>
-            <strong>
+            <span class="value-badge warn">
               {{ operation()!.lossVolume | number:'1.0-2' }} L
               ({{ operation()!.lossPercent | number:'1.1-1' }}%)
-            </strong>
+            </span>
           </div>
-
-          <div class="metric">
-            <label>Notes</label>
-            <strong>{{ operation()!.note || '—' }}</strong>
+          <div class="info-item" *ngIf="genealogy()?.traceabilityLotId">
+            <label>Traceabilite</label>
+            <span class="value-badge green">Lot source verifie</span>
           </div>
         </div>
 
-        <div class="tank-flow">
-          <div class="tank-panel source">
-            <div class="tank-image tank-nf"></div>
+        <mat-divider></mat-divider>
 
-            <div class="tank-info">
-              <label>Source — Huile non filtrée</label>
-              <h3>{{ operation()!.source?.name || '—' }}</h3>
-              <p>huile brute</p>
-
-              <strong *ngIf="operation()!.volumeFiltered">
-                {{ operation()!.volumeFiltered | number:'1.0-2' }} L
-              </strong>
-
-              <span class="lot-tag" *ngIf="operation()!.sourceLotNumber || operation()!.source?.lotNumber">
-                Lot : {{ operation()!.sourceLotNumber || operation()!.source?.lotNumber }}
+        <div class="tanks-row">
+          <div class="tank-card source">
+            <mat-icon>storage</mat-icon>
+            <div>
+              <label>Cuve source - huile non filtree</label>
+              <strong>{{ storageLabel(operation()!.source, operation()!.sourceLotNumber) }}</strong>
+              <span class="sub-info">
+                {{ operation()!.source?.location || 'Emplacement non renseigne' }}
+                - Grade: {{ operation()!.source?.qualityGrade || rootSourceExtra(rootSources()[0], 'qualityGrade') }}
               </span>
             </div>
           </div>
 
-          <div class="flow-arrow">
-            <mat-icon>arrow_forward</mat-icon>
-          </div>
+          <mat-icon class="flow-arrow">arrow_forward</mat-icon>
 
-          <div class="tank-panel target">
-            <div class="tank-image tank-f"></div>
-
-            <div class="tank-info">
-              <label>Cible — Huile filtrée</label>
-              <h3>{{ operation()!.target?.name || '—' }}</h3>
-              <p>huile filtrée</p>
-
-              <strong *ngIf="operation()!.volumeAfter">
-                {{ operation()!.volumeAfter | number:'1.0-2' }} L
-              </strong>
-
-              <span class="lot-tag green" *ngIf="operation()!.targetLotNumber || operation()!.target?.lotNumber">
-                Lot : {{ operation()!.targetLotNumber || operation()!.target?.lotNumber }}
+          <div class="tank-card target">
+            <mat-icon>water_drop</mat-icon>
+            <div>
+              <label>Cuve cible - huile filtree</label>
+              <strong>{{ storageLabel(operation()!.target, operation()!.targetLotNumber) }}</strong>
+              <span class="sub-info">
+                {{ operation()!.target?.location || 'Emplacement non renseigne' }}
+                - Grade: {{ operation()!.target?.qualityGrade || rootSourceExtra(rootSources()[0], 'qualityGrade') }}
               </span>
             </div>
           </div>
         </div>
-      </article>
+      </div>
     </div>
 
-    <!-- DELIVERIES -->
-    <ng-container *ngIf="sourceDeliveries().length > 0; else noDelivery">
-      <div class="timeline-section" *ngFor="let delivery of sourceDeliveries(); let i = index">
-        <div class="timeline-marker">
-          <div class="marker-dot delivery">
-            <mat-icon>local_shipping</mat-icon>
-          </div>
-          <div class="marker-line" *ngIf="i < sourceDeliveries().length - 1"></div>
+    <div class="timeline-section" *ngIf="filteredQualityEntries().length > 0">
+      <div class="timeline-marker">
+        <div class="marker-dot qc"></div>
+        <div class="marker-line"></div>
+      </div>
+
+      <div class="section-card qc-card">
+        <div class="card-head">
+          <mat-icon>science</mat-icon>
+          <span>Controle qualite apres filtration</span>
+          <span class="count-badge">{{ filteredQualityEntries().length }} resultat(s)</span>
         </div>
 
-        <article class="trace-card delivery-card">
-          <div class="card-header">
-            <div class="card-title">
-              <h2>Livraison d’origine</h2>
-              <span class="lot-chip" *ngIf="delivery.lotNumber">
-                Lot olives : {{ delivery.lotNumber }}
+        <div class="qc-table simple">
+          <div class="qc-header">
+            <span>Regle</span>
+            <span>Valeur mesuree</span>
+            <span>Statut</span>
+          </div>
+          <div class="qc-row" *ngFor="let qc of filteredQualityEntries()">
+            <div class="qc-name"><strong>{{ qc.key }}</strong></div>
+            <div class="qc-value mono">{{ qc.value }}</div>
+            <div class="qc-status">
+              <span class="qc-badge info">
+                <mat-icon>verified</mat-icon>
+                Trace
               </span>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
 
-          <div class="delivery-grid">
-            <div class="metric">
-              <label>Numéro de livraison</label>
-              <strong class="mono">{{ delivery.deliveryNumber }}</strong>
+    <ng-container *ngIf="rootSources().length > 0; else legacyDeliveries">
+      <div class="timeline-section" *ngFor="let source of rootSources(); let i = index">
+        <div class="timeline-marker">
+          <div class="marker-dot delivery"></div>
+          <div class="marker-line" *ngIf="i < rootSources().length - 1"></div>
+        </div>
+
+        <div class="delivery-stack">
+          <div class="section-card">
+            <div class="card-head">
+              <mat-icon>local_shipping</mat-icon>
+              <span>Origine du lot #{{ i + 1 }}</span>
+              <span class="lot-chip">{{ source.lotNumber || '-' }}</span>
             </div>
 
-            <div class="metric">
-              <label>Date de livraison</label>
-              <strong>{{ delivery.deliveryDate | date:'dd/MM/yyyy' }}</strong>
-            </div>
-
-            <div class="metric">
-              <label>Type</label>
-              <strong>{{ delivery.deliveryType }}</strong>
-            </div>
-
-            <div class="metric" *ngIf="delivery.oilType">
-              <label>Type d’huile</label>
-              <strong>{{ delivery.oilType }}</strong>
-            </div>
-
-            <div class="metric" *ngIf="delivery.oilVariety">
-              <label>Variété</label>
-              <strong>{{ delivery.oilVariety?.label }}</strong>
-            </div>
-
-            <div class="metric" *ngIf="delivery.oilQuantity">
-              <label>Quantité d’huile</label>
-              <strong>{{ delivery.oilQuantity | number:'1.0-2' }} L</strong>
-            </div>
-
-            <div class="metric" *ngIf="delivery.region">
-              <label>Région</label>
-              <strong>{{ delivery.region?.label }}</strong>
-            </div>
-
-            <div class="metric" *ngIf="delivery.lotOliveNumber">
-              <label>Lot olives associé</label>
-              <strong class="mono">{{ delivery.lotOliveNumber }}</strong>
-            </div>
-
-            <div class="metric" *ngIf="delivery.globalLotNumber">
-              <label>Lot global</label>
-              <strong class="mono">{{ delivery.globalLotNumber }}</strong>
+            <div class="info-grid">
+              <div class="info-item">
+                <label>Type source</label>
+                <span>{{ source.type || '-' }}</span>
+              </div>
+              <div class="info-item">
+                <label>Numero de livraison</label>
+                <span class="mono">{{ rootSourceExtra(source, 'deliveryNumber') }}</span>
+              </div>
+              <div class="info-item">
+                <label>Date</label>
+                <span>{{ source.date | date:'dd/MM/yyyy HH:mm' }}</span>
+              </div>
+              <div class="info-item">
+                <label>Fournisseur / origine</label>
+                <span>{{ source.supplierName || '-' }}</span>
+              </div>
+              <div class="info-item">
+                <label>Qualite</label>
+                <span>{{ rootSourceExtra(source, 'qualityGrade') }}</span>
+              </div>
+              <div class="info-item">
+                <label>Variete</label>
+                <span>{{ rootSourceExtra(source, 'variety') }}</span>
+              </div>
+              <div class="info-item">
+                <label>Stockage initial</label>
+                <span>{{ rootSourceExtra(source, 'storageUnitName') }}</span>
+              </div>
             </div>
           </div>
 
-          <div class="delivery-bottom" [class.with-qc]="delivery.qualityControlResults && delivery.qualityControlResults.length > 0">
-            <div class="supplier-box" *ngIf="delivery.supplier">
-              <h3>
-                <mat-icon>person_outline</mat-icon>
-                Fournisseur
-              </h3>
-
-              <div class="supplier-grid">
-                <div class="metric">
-                  <label>Nom</label>
-                  <strong>{{ delivery.supplier?.label || delivery.supplier?.name }}</strong>
-                </div>
-
-                <div class="metric" *ngIf="delivery.matriculeCamion">
-                  <label>Matricule camion</label>
-                  <strong class="mono">{{ delivery.matriculeCamion }}</strong>
-                </div>
-
-                <div class="metric" *ngIf="delivery.poidsNet">
-                  <label>Poids net</label>
-                  <strong>{{ delivery.poidsNet | number:'1.0-2' }} kg</strong>
-                </div>
-              </div>
+          <div class="section-card qc-card" *ngIf="rootSourceQualityEntries(source).length > 0">
+            <div class="card-head">
+              <mat-icon>science</mat-icon>
+              <span>Controle qualite d'origine</span>
+              <span class="count-badge">{{ rootSourceQualityEntries(source).length }} preuve(s)</span>
             </div>
 
-            <div class="qc-box" *ngIf="delivery.qualityControlResults && delivery.qualityControlResults.length > 0">
-              <h3>
-                <mat-icon>verified_user</mat-icon>
-                Contrôle Qualité
-              </h3>
-
-              <div class="qc-table">
-                <div class="qc-header">
-                  <span>Règle</span>
-                  <span>Valeur mesurée</span>
-                  <span>Résultat</span>
-                </div>
-
-                <div class="qc-row" *ngFor="let qc of delivery.qualityControlResults">
-                  <span>{{ qc.rule.ruleName || qc.rule.ruleKey }}</span>
-                  <span class="mono">{{ qc.measuredValue }}</span>
-
-                  <span
-                    class="qc-badge"
-                    [class.pass]="qcStatus(qc) === 'PASS'"
-                    [class.fail]="qcStatus(qc) === 'FAIL'"
-                    [class.info]="qcStatus(qc) === 'INFO'">
-                    <mat-icon>
-                      {{ qcStatus(qc) === 'PASS' ? 'check_circle' : qcStatus(qc) === 'FAIL' ? 'cancel' : 'info' }}
-                    </mat-icon>
-                    {{ qcStatus(qc) }}
+            <div class="qc-table simple">
+              <div class="qc-header">
+                <span>Regle</span>
+                <span>Valeur mesuree</span>
+                <span>Statut</span>
+              </div>
+              <div class="qc-row" *ngFor="let qc of rootSourceQualityEntries(source)">
+                <div class="qc-name"><strong>{{ qc.key }}</strong></div>
+                <div class="qc-value mono">{{ qc.value }}</div>
+                <div class="qc-status">
+                  <span class="qc-badge info">
+                    <mat-icon>verified</mat-icon>
+                    Trace
                   </span>
                 </div>
               </div>
             </div>
           </div>
-        </article>
+        </div>
       </div>
     </ng-container>
+
+    <ng-template #legacyDeliveries>
+      <ng-container *ngIf="sourceDeliveries().length > 0; else noDelivery">
+        <div class="timeline-section" *ngFor="let delivery of sourceDeliveries(); let i = index">
+          <div class="timeline-marker">
+            <div class="marker-dot delivery"></div>
+            <div class="marker-line" *ngIf="i < sourceDeliveries().length - 1"></div>
+          </div>
+
+          <div class="delivery-stack">
+            <div class="section-card">
+              <div class="card-head">
+                <mat-icon>local_shipping</mat-icon>
+                <span>Livraison d'origine #{{ i + 1 }}</span>
+                <span class="lot-chip">{{ delivery.lotNumber || '-' }}</span>
+              </div>
+
+              <div class="info-grid">
+                <div class="info-item">
+                  <label>Numero de livraison</label>
+                  <span class="mono">{{ delivery.deliveryNumber || '-' }}</span>
+                </div>
+                <div class="info-item">
+                  <label>Date de livraison</label>
+                  <span>{{ delivery.deliveryDate | date:'dd/MM/yyyy' }}</span>
+                </div>
+                <div class="info-item">
+                  <label>Type</label>
+                  <span>{{ delivery.deliveryType || '-' }}</span>
+                </div>
+                <div class="info-item">
+                  <label>Qualite</label>
+                  <span>{{ delivery.categoryOliveOil || '-' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </ng-template>
 
     <ng-template #noDelivery>
       <div class="timeline-section">
         <div class="timeline-marker">
-          <div class="marker-dot delivery muted">
-            <mat-icon>info</mat-icon>
-          </div>
+          <div class="marker-dot delivery muted"></div>
         </div>
-
-        <article class="trace-card muted-card">
+        <div class="section-card muted-card">
           <mat-icon>info_outline</mat-icon>
-          <p>Aucune livraison source identifiée pour ce lot de filtration.</p>
-        </article>
+          <p>Aucune reception source identifiee. Verifier que la migration traceability_lot est appliquee et que la filtration a ete terminee apres cette migration.</p>
+        </div>
       </div>
     </ng-template>
-
   </div>
 </section>
