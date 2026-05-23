@@ -60,19 +60,19 @@ $shadow-soft: 0 4px 12px rgba(47, 66, 27, 0.10);
   box-shadow: none;
 }
 
-/* Header */
+/* Header compact */
 
 .form-header {
-  min-height: 210px;
-  margin-bottom: 28px;
-  padding: 34px 32px;
+  min-height: 105px;
+  margin-bottom: 18px;
+  padding: 16px 24px;
   border: 1px solid $border-color;
-  border-radius: 18px;
+  border-radius: 16px;
   box-shadow: $shadow-card;
   overflow: hidden;
   position: relative;
   background:
-    linear-gradient(90deg, rgba(255, 255, 255, 0.94) 0%, rgba(255, 255, 255, 0.80) 58%, rgba(255, 253, 245, 0.72) 100%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.97) 0%, rgba(255, 255, 255, 0.86) 58%, rgba(255, 253, 245, 0.72) 100%),
     url('/assets/listeClient.png') center right / cover no-repeat;
 }
 
@@ -81,7 +81,7 @@ $shadow-soft: 0 4px 12px rgba(47, 66, 27, 0.10);
   position: absolute;
   inset: 0;
   pointer-events: none;
-  border-radius: 18px;
+  border-radius: 16px;
   border: 1px solid rgba(199, 166, 74, 0.35);
 }
 
@@ -90,55 +90,56 @@ $shadow-soft: 0 4px 12px rgba(47, 66, 27, 0.10);
   z-index: 1;
   display: flex;
   align-items: center;
-  gap: 26px;
+  gap: 16px;
   height: 100%;
 }
 
 .header-icon {
-  width: 94px;
-  height: 94px;
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
   border-radius: 50%;
   background: linear-gradient(145deg, #294713, #17320c);
   color: #d9bf69;
-  border: 3px solid rgba(199, 166, 74, 0.85);
+  border: 2px solid rgba(199, 166, 74, 0.85);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 9px 20px rgba(47, 66, 27, 0.18);
+  box-shadow: 0 7px 14px rgba(47, 66, 27, 0.16);
 
   i {
-    font-size: 34px;
+    font-size: 22px;
   }
 }
 
 .form-title {
   margin: 0;
   color: $olive-dark;
-  font-size: 46px;
+  font-size: 28px;
   line-height: 1;
   font-weight: 850;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.03em;
   font-family: Georgia, 'Times New Roman', serif;
 }
 
 .form-subtitle {
-  margin: 16px 0 0;
+  margin: 7px 0 0;
   color: $text-muted;
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 700;
 
   i {
     color: $olive-main;
-    margin-right: 8px;
-    font-size: 13px;
+    margin-right: 6px;
+    font-size: 11px;
   }
 }
 
 /* Sections */
 
 .form-section {
-  margin-bottom: 28px;
-  padding: 30px 32px;
+  margin-bottom: 22px;
+  padding: 26px 30px;
   border: 1px solid $border-color;
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.96);
@@ -146,29 +147,29 @@ $shadow-soft: 0 4px 12px rgba(47, 66, 27, 0.10);
 }
 
 .section-title {
-  margin: 0 0 28px;
+  margin: 0 0 24px;
   color: $olive-dark;
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 24px;
+  font-size: 23px;
   font-weight: 850;
   font-family: Georgia, 'Times New Roman', serif;
 
   i {
     color: $olive-main;
-    font-size: 22px;
+    font-size: 21px;
   }
 }
 
 .section-grid {
-  row-gap: 22px;
+  row-gap: 20px;
 }
 
 /* Form groups */
 
 .form-group {
-  margin-bottom: 24px;
+  margin-bottom: 22px;
 }
 
 .form-section .row:last-child .form-group,
@@ -180,7 +181,7 @@ label {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 11px;
   color: $olive-dark;
   font-size: 15px;
   font-weight: 800;
@@ -201,7 +202,7 @@ label {
 
 .form-control {
   width: 100%;
-  min-height: 52px;
+  min-height: 50px;
   padding: 0 16px;
   border: 1px solid $input-border;
   border-radius: 9px;
@@ -234,7 +235,7 @@ select.form-control {
 }
 
 textarea.form-control {
-  min-height: 96px;
+  min-height: 92px;
   padding-top: 14px;
   resize: vertical;
 }
@@ -372,20 +373,35 @@ textarea.form-control {
   }
 
   .form-header {
-    min-height: auto;
-    padding: 26px;
+    min-height: 95px;
+    padding: 14px 18px;
     background:
-      linear-gradient(90deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.86)),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.97), rgba(255, 255, 255, 0.88)),
       url('/assets/listeClient.png') center right / cover no-repeat;
   }
 
   .header-left {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .header-icon {
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+
+    i {
+      font-size: 20px;
+    }
   }
 
   .form-title {
-    font-size: 34px;
+    font-size: 26px;
+  }
+
+  .form-subtitle {
+    font-size: 12px;
   }
 
   .form-section {
@@ -398,22 +414,32 @@ textarea.form-control {
     padding: 10px;
   }
 
-  .form-header,
+  .form-header {
+    min-height: auto;
+    padding: 14px;
+  }
+
   .form-section {
     padding: 18px;
   }
 
+  .header-left {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   .header-icon {
-    width: 72px;
-    height: 72px;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
 
     i {
-      font-size: 28px;
+      font-size: 19px;
     }
   }
 
   .form-title {
-    font-size: 30px;
+    font-size: 24px;
   }
 
   .section-title {
