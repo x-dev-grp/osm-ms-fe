@@ -17,6 +17,24 @@ export interface ProductionFiltrationStep {
   sourceStorageUnitId?: string;
   sourceStorageUnitName?: string;
   qualityControls?: Record<string, string>;
+  sourceIntakeChain?: ProductionIntakeStep[];
+}
+
+export interface ProductionIntakeStep {
+  type?: string;
+  deliveryId?: string;
+  transactionId?: string;
+  deliveryNumber?: string;
+  lotNumber?: string;
+  lotOliveNumber?: string;
+  deliveryType?: string;
+  supplierName?: string;
+  deliveryDate?: string;
+  quantityKg?: number;
+  storageUnitId?: string;
+  storageUnitName?: string;
+  qualityControls?: Record<string, string>;
+  extra?: Record<string, unknown>;
 }
 
 export interface ProductionGenealogy {
@@ -29,4 +47,5 @@ export interface ProductionGenealogy {
   filteredQualityControls?: Record<string, string>;
   filtrations?: ProductionFiltrationStep[];
   rootSources?: ProductionRootSource[];
+  intakeChain?: ProductionIntakeStep[];
 }

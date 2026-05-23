@@ -10,10 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 
 import { ProjetDto } from '../../../models/TypeProduit';
 import { ProjetService } from '../../../services/projet.service';
-import {
-  ExpeditionDto,
-  ExpeditionStatus
-} from '../../../models/expedition.model';
+import { ExpeditionDto, ExpeditionStatus } from '../../../models/expedition.model';
 import { ExpeditionService } from '../../../services/expedition.service';
 import { OFService } from '../../../../OF/services/OFService';
 import { OrdreFabrication } from '../../../../OF/models/of.model';
@@ -21,12 +18,27 @@ import { ToastService } from '../../../../shared/services/toast.service';
 import { PdfGeneratorExpeditionService } from '../../../../shared/services/pdf-generator-expedition.service';
 import { CompanyProfileService } from '../../../../shared/services/company-profile.service';
 import { PdfExpeditionConfig } from '../../../../shared/models/pdf-config.model';
-
+import { TraceabilityTimelineComponent } from '../../../../shared/components/traceability-timeline/traceability-timeline.component';
+import {
+  countGenealogyLots,
+  countOfDetails,
+  countPackagedLabels
+} from '../../../../shared/utils/traceability-snapshot.util';
 
 @Component({
   selector: 'app-projet-expedition',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, DatePipe, MatButtonModule, MatIconModule, MatTooltipModule, MatFormFieldModule, MatInputModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    DatePipe,
+    MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
+    MatFormFieldModule,
+    MatInputModule,
+    TraceabilityTimelineComponent
+  ],
   templateUrl: './projet-expedition.component.html',
   styleUrls: ['./projet-expedition.component.scss']
 })
@@ -41,6 +53,7 @@ export class ProjetExpeditionComponent implements OnInit {
   expeditions: ExpeditionDto[] = [];
   selectedExpedition: ExpeditionDto | null = null;
   queryExpeditionId: string | null = null;
+  private openTraceabilityOnLoad = false;
 
   loading = false;
   saving = false;
@@ -48,6 +61,8 @@ export class ProjetExpeditionComponent implements OnInit {
   addingLine = false;
   actionLoading = false;
   showTraceability = false;
+  traceabilityLoading = false;
+  expeditionTraceabilityData: Record<string, unknown> | null = null;
   showCreateForm = false;
   showAddLine = false;
   showDetail = false;
@@ -140,25 +155,94 @@ export class ProjetExpeditionComponent implements OnInit {
     return Math.max(0, this.projectTargetQuantity - this.usedProjectQuantity);
   }
 
+  hasFrozenTraceability(exp: ExpeditionDto | null): boolean {
+    return !!exp?.traceabilitySnapshotJson?.trim();
+  }
+
+  isTraceabilityFrozen(exp: ExpeditionDto | null): boolean {
+    if (!exp) {
+      return false;
+    }
+    return [
+      ExpeditionStatus.VALIDATED,
+      ExpeditionStatus.SHIPPED,
+      ExpeditionStatus.DELIVERED,
+      ExpeditionStatus.CLOSED
+    ].includes(exp.status);
+  }
+
+  displayTraceabilityData(): Record<string, unknown> | null {
+    if (!this.selectedExpedition) {
+      return null;
+    }
+    const frozen = this.getParsedSnapshot(this.selectedExpedition);
+    if (frozen) {
+      return frozen;
+    }
+    return this.expeditionTraceabilityData;
+  }
+
   getTraceabilityItems(exp: ExpeditionDto): Array<{ label: string; value: string }> {
-    const snapshot = this.getParsedSnapshot(exp);
+    const snapshot = this.getParsedSnapshot(exp) ?? this.expeditionTraceabilityData;
     if (!snapshot || typeof snapshot !== 'object') {
       return [];
     }
 
+    const expeditionMeta = (snapshot['expedition'] as Record<string, unknown>) || {};
     const items: Array<{ label: string; value: string }> = [];
-    this.pushTraceabilityItem(items, 'Projet', snapshot.projetCode || snapshot.projectCode || exp.projetCode);
-    this.pushTraceabilityItem(items, 'Expedition', snapshot.expeditionNumber || exp.expeditionNumber);
-    this.pushTraceabilityItem(items, 'Client', snapshot.clientName || snapshot.client.nom || this.project?.client.nom);
-    this.pushTraceabilityItem(items, 'OF associes', this.countSnapshotItems(snapshot.ordresFabrication || snapshot.ofs || snapshot.orders));
-    this.pushTraceabilityItem(items, 'Etiquettes', this.countSnapshotItems(snapshot.labels || snapshot.packagedLabels || snapshot.packagedLabelsByLot));
-    this.pushTraceabilityItem(items, 'Lots', this.countSnapshotItems(snapshot.lots || snapshot.lotVrac || snapshot.lotVracId));
+    this.pushTraceabilityItem(
+      items,
+      'Projet',
+      String(expeditionMeta['projectCode'] || snapshot['projectCode'] || exp.projetCode || '')
+    );
+    this.pushTraceabilityItem(
+      items,
+      'Expedition',
+      String(expeditionMeta['expeditionNumber'] || exp.expeditionNumber || '')
+    );
+    this.pushTraceabilityItem(
+      items,
+      'Client',
+      String(expeditionMeta['clientName'] || snapshot['clientName'] || this.project?.client.nom || '')
+    );
+    this.pushTraceabilityItem(items, 'OF', String(countOfDetails(snapshot)));
+    this.pushTraceabilityItem(items, 'Lots huile', String(countGenealogyLots(snapshot)));
+    this.pushTraceabilityItem(items, 'Etiquettes', String(countPackagedLabels(snapshot)));
+    if (snapshot['capturedAt']) {
+      this.pushTraceabilityItem(items, 'Figé le', String(snapshot['capturedAt']));
+    }
 
     return items;
   }
 
-  toggleTraceability() {
+  toggleTraceability(): void {
     this.showTraceability = !this.showTraceability;
+    if (this.showTraceability) {
+      this.loadExpeditionTraceability();
+    }
+  }
+
+  loadExpeditionTraceability(): void {
+    if (!this.selectedExpedition?.id) {
+      return;
+    }
+    if (this.hasFrozenTraceability(this.selectedExpedition)) {
+      this.expeditionTraceabilityData = this.getParsedSnapshot(this.selectedExpedition);
+      return;
+    }
+
+    this.traceabilityLoading = true;
+    this.expeditionService.getExpeditionTraceability(this.selectedExpedition.id).subscribe({
+      next: (data) => {
+        this.expeditionTraceabilityData = data;
+        this.traceabilityLoading = false;
+      },
+      error: (err) => {
+        console.error('Erreur chargement tracabilite expedition', err);
+        this.toast.error('Impossible de charger la traçabilité de l\'expédition');
+        this.traceabilityLoading = false;
+      }
+    });
   }
 
   toggleCreateForm() {
@@ -173,7 +257,7 @@ export class ProjetExpeditionComponent implements OnInit {
   }
 
   generatePDF(exp: ExpeditionDto) {
-    const snapshot = this.getParsedSnapshot(exp);
+    const snapshot = this.getParsedSnapshot(exp) ?? (exp.id === this.selectedExpedition?.id ? this.expeditionTraceabilityData : null);
     const config: PdfExpeditionConfig = {
       title: 'Bon de Livraison & Tracabilite',
       reference: exp.expeditionNumber,
@@ -216,6 +300,7 @@ export class ProjetExpeditionComponent implements OnInit {
     }
 
     this.queryExpeditionId = this.route.snapshot.queryParamMap.get('expeditionId');
+    this.openTraceabilityOnLoad = this.route.snapshot.queryParamMap.get('traceability') === '1';
 
     this.loadProject(this.projectId);
     this.loadExpeditions(this.projectId);
@@ -247,6 +332,11 @@ export class ProjetExpeditionComponent implements OnInit {
         this.selectedExpedition = found || (items.length ? items[0] : null);
         if (this.selectedExpedition) {
           this.patchEditForm(this.selectedExpedition);
+          if (this.openTraceabilityOnLoad) {
+            this.showTraceability = true;
+            this.loadExpeditionTraceability();
+            this.openTraceabilityOnLoad = false;
+          }
         }
         this.loading = false;
       },
@@ -272,6 +362,8 @@ export class ProjetExpeditionComponent implements OnInit {
     this.selectedExpedition = expedition;
     this.showDetail = true;
     this.showCreateForm = false;
+    this.showTraceability = false;
+    this.expeditionTraceabilityData = null;
     this.patchEditForm(expedition);
   }
 
@@ -523,11 +615,20 @@ export class ProjetExpeditionComponent implements OnInit {
         this.actionLoading = false;
         this.actionForm.reset({ comment: '' });
         this.syncExpedition(updated);
+        if (action === 'validate') {
+          this.showTraceability = true;
+          this.loadExpeditionTraceability();
+        }
         this.toast.success(`Action ${action.toUpperCase()} effectuee`);
       },
       error: (err) => {
         console.error('Erreur action expedition', err);
-        const msg = err.error?.message || `Erreur lors de l'action ${action}`;
+        const body = err.error;
+        const msg =
+          (typeof body === 'string' ? body : null) ||
+          body?.message ||
+          body?.error ||
+          `Erreur lors de l'action ${action}`;
         this.toast.error(msg);
         this.actionLoading = false;
       }

@@ -65,7 +65,7 @@
             <label><i class="fas fa-list"></i> Nomenclature</label>
             <select class="form-control" formControlName="bomId" required>
               <option value="" disabled>-- Choisir Nomenclature --</option>
-              <option *ngFor="let bom of boms" [value]="bom.id">{{ bom.version }}</option>
+              <option *ngFor="let bom of boms" [value]="bom.id">{{ bom.version }}{{ bom.active ? ' (active)' : '' }}</option>
             </select>
             <div class="error" *ngIf="loadingBoms">Chargement...</div>
           </div>
@@ -76,6 +76,15 @@
               <option *ngFor="let ligne of lignes" [value]="ligne.id">{{ ligne.nom }}</option>
             </select>
           </div>
+        </div>
+
+        <div class="material-preview-block" *ngIf="ofForm.get('bomId')?.value && (ofForm.get('quantiteCible')?.value || 0) > 0">
+          <app-material-needs-preview
+            [bomId]="ofForm.get('bomId')?.value"
+            [quantity]="ofForm.get('quantiteCible')?.value || 0"
+            [useReservedStock]="!!ofForm.get('projectId')?.value"
+            title="Besoins emballage vs stock">
+          </app-material-needs-preview>
         </div>
       </div>
 
@@ -93,6 +102,7 @@
               </option>
             </select>
             <div class="error" *ngIf="storageUnits.length === 0">Aucune cuve disponible</div>
+            <app-traceability-preview [anchorId]="ofForm.get('lotVracId')?.value || null"></app-traceability-preview>
           </div>
           <div class="form-group">
             <label><i class="fas fa-calendar-alt"></i> Date début</label>

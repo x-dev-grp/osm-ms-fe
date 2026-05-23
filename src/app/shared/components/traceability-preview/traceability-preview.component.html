@@ -1,0 +1,30 @@
+<div class="traceability-preview" *ngIf="anchorId">
+  <div class="preview-loading" *ngIf="loading()">
+    <mat-spinner diameter="22"></mat-spinner>
+    <span>Vérification de la chaîne de traçabilité…</span>
+  </div>
+
+  <div class="preview-error" *ngIf="!loading() && error()">
+    <mat-icon>warning_amber</mat-icon>
+    <span>{{ error() }}</span>
+  </div>
+
+  <div class="preview-body" *ngIf="!loading() && genealogy() as genea">
+    <div class="preview-row">
+      <mat-icon>eco</mat-icon>
+      <span><strong>Origine:</strong> {{ rootSource() }}</span>
+    </div>
+    <div class="preview-row" *ngIf="genea.traceabilityLotId">
+      <mat-icon>fingerprint</mat-icon>
+      <span><strong>Lot traçabilité:</strong> <code>{{ genea.traceabilityLotId }}</code></span>
+    </div>
+    <div class="preview-row" *ngIf="genea.filtrations?.length">
+      <mat-icon>filter_alt</mat-icon>
+      <span><strong>Filtrations:</strong> {{ genea.filtrations.length }} étape(s)</span>
+    </div>
+    <div class="preview-row" *ngIf="genea.storageUnitName">
+      <mat-icon>water_drop</mat-icon>
+      <span><strong>Cuve:</strong> {{ genea.storageUnitName }} · {{ genea.lotNumber }}</span>
+    </div>
+  </div>
+</div>

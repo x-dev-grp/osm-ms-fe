@@ -15,11 +15,13 @@ import { StorageUnitDtoService } from "../../../../shared/services/storage.servi
 import { StorageUnitDto } from "../../../../shared/models/StorageUnitDto";
 import { ProjetService } from "../../../../projet/services/projet.service";
 import { ProjetDto } from "../../../../projet/models/TypeProduit";
+import { TraceabilityPreviewComponent } from "../../../../shared/components/traceability-preview/traceability-preview.component";
+import { MaterialNeedsPreviewComponent } from '../../../../shared/components/material-needs-preview/material-needs-preview.component';
 
 @Component({
   selector: 'app-of-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, TraceabilityPreviewComponent, MaterialNeedsPreviewComponent],
   templateUrl: './of-form.component.html',
   styleUrls: ['./of-form.component.scss']
 })
@@ -179,10 +181,13 @@ export class OFFormComponent implements OnInit {
           ? boms.find(bom => bom.id === this.preferredProjectBomId)
           : null;
 
+        const activeBom = boms.find((bom) => bom.active);
         if (currentBomId && boms.some(bom => bom.id === currentBomId)) {
           this.ofForm.get('bomId')?.setValue(currentBomId);
         } else if (projectBom) {
           this.ofForm.get('bomId')?.setValue(projectBom.id);
+        } else if (activeBom?.id) {
+          this.ofForm.get('bomId')?.setValue(activeBom.id);
         } else if (boms.length === 1) {
           this.ofForm.get('bomId')?.setValue(boms[0].id);
         } else if (boms.length === 0) {

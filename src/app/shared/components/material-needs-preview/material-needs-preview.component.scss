@@ -1,0 +1,184 @@
+@import '../../../stock/styles/inventory-ui';
+
+.material-needs {
+  @include inv-card;
+  padding: 1.25rem 1.35rem;
+  margin-top: 1rem;
+  border-left: 4px solid $inv-primary;
+}
+
+.material-needs-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+
+  .title-block {
+    display: flex;
+    gap: 0.85rem;
+    align-items: flex-start;
+
+    > i {
+      font-size: 1.35rem;
+      color: $inv-primary;
+      margin-top: 0.15rem;
+    }
+
+    h4 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .subtitle {
+      margin: 0.2rem 0 0;
+      font-size: 0.82rem;
+      color: $inv-muted;
+    }
+  }
+
+  .status-badges .badge {
+    @include inv-pill($inv-success-bg, $inv-success);
+
+    &.ko {
+      background: $inv-danger-bg;
+      color: $inv-danger;
+    }
+  }
+}
+
+.mode-hint {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 0.85rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+  color: $inv-muted;
+  background: #f1f5f9;
+  border-radius: $inv-radius-sm;
+
+  i {
+    color: $inv-primary;
+  }
+}
+
+.state {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem;
+  border-radius: $inv-radius-sm;
+  font-size: 0.88rem;
+
+  &.loading {
+    color: $inv-muted;
+    background: #f8fafc;
+  }
+
+  &.error {
+    color: $inv-danger;
+    background: $inv-danger-bg;
+  }
+
+  &.empty {
+    color: $inv-muted;
+    background: #f8fafc;
+    font-style: italic;
+  }
+
+  .spinner {
+    width: 1.1rem;
+    height: 1.1rem;
+    border: 2px solid $inv-border;
+    border-top-color: $inv-primary;
+    border-radius: 50%;
+    animation: inv-spin 0.7s linear infinite;
+  }
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border-radius: $inv-radius-sm;
+  border: 1px solid $inv-border;
+}
+
+.needs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+
+  th,
+  td {
+    padding: 0.55rem 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid $inv-border;
+  }
+
+  th {
+    background: #f8fafc;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: $inv-muted;
+    font-weight: 600;
+  }
+
+  th.num,
+  td.num {
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .status-col {
+    width: 7rem;
+    text-align: center;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  tbody tr.row-ko {
+    background: $inv-danger-bg;
+  }
+
+  .article-cell {
+    .article-name {
+      display: block;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .article-meta {
+      font-size: 0.75rem;
+      color: $inv-muted;
+    }
+  }
+
+  .unit {
+    margin-left: 0.25rem;
+    color: $inv-muted;
+    font-size: 0.78rem;
+  }
+
+  .status {
+    @include inv-pill($inv-success-bg, $inv-success);
+    justify-content: center;
+    width: 100%;
+
+    &.ko {
+      background: rgba($inv-danger, 0.12);
+      color: $inv-danger;
+    }
+  }
+}
+
+@keyframes inv-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

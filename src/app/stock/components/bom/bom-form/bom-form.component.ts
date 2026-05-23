@@ -8,12 +8,14 @@ import { Bom } from "../../../models/Bom";
 import { Product, productDisplayName } from "../../../models/sku.model";
 import { BomService } from "../../../services/BomService";
 import { SKUService } from "../../../services/sku.service";
+import { ToastService } from '../../../../shared/services/toast.service';
+import { MaterialNeedsPreviewComponent } from '../../../../shared/components/material-needs-preview/material-needs-preview.component';
 
 
 @Component({
   selector: 'app-bom-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, MaterialNeedsPreviewComponent],
   templateUrl: './bom-form.component.html',
   styleUrls: ['./bom-form.component.scss']
 })
@@ -34,7 +36,8 @@ export class BomFormComponent implements OnInit {
     private router: Router,
     private bomService: BomService,
     private skuService: SKUService,
-    private articleService: ArticleService
+    private articleService: ArticleService,
+    private toast: ToastService
   ) { }
 
   ngOnInit(): void {
@@ -60,6 +63,7 @@ export class BomFormComponent implements OnInit {
   private initForm(): void {
     this.bomForm = this.fb.group({
       productId: ['', Validators.required],
+      active: [true],
       lines: this.fb.array([])
     });
   }
@@ -95,8 +99,10 @@ export class BomFormComponent implements OnInit {
   }
 
   loadArticles(): void {
-    this.articleService.getActiveArticles().subscribe({
-      next: (data) => this.articles = data,
+    this.articleService.getAllArticles().subscribe({
+      next: (data) => {
+        this.articles = data.filter((a) => a.actif !== false);
+      },
       error: (err) => console.error('Erreur chargement articles', err)
     });
   }
@@ -108,7 +114,8 @@ export class BomFormComponent implements OnInit {
         this.bom = bom;
         this.bomForm.patchValue({
           productId: bom.productId || bom.skuId,
-          version: bom.version
+          version: bom.version,
+          active: bom.active ?? false
         });
         this.lines.clear();
         if (bom.lines && bom.lines.length > 0) {
@@ -117,6 +124,7 @@ export class BomFormComponent implements OnInit {
               articleId: [line.articleId, Validators.required],
               quantity: [line.quantity, [Validators.required, Validators.min(0.001)]]
             }));
+            this.ensureArticleInList(line.articleId, line.articleName);
           });
         } else {
           this.addLine();
@@ -133,45 +141,89 @@ export class BomFormComponent implements OnInit {
 
 
   onSubmit(): void {
+    if (this.lines.length === 0) {
+      this.toast.warning('Ajoutez au moins une ligne à la nomenclature');
+      return;
+    }
     if (this.bomForm.invalid) {
       this.bomForm.markAllAsTouched();
       return;
     }
 
     this.isSubmitting = true;
-    const formValue = this.bomForm.value;
+    const formValue = this.bomForm.getRawValue();
+    const payload: Bom = {
+      productId: formValue.productId,
+      active: !!formValue.active,
+      lines: formValue.lines,
+      version: this.bom?.version || ''
+    };
 
     if (this.isEditMode && this.bomId) {
-      this.bomService.update(this.bomId, formValue).subscribe({
+      this.bomService.update(this.bomId, payload).subscribe({
         next: () => {
           this.isSubmitting = false;
+          this.toast.success('Nomenclature mise à jour');
           this.router.navigate(['/stock/boms']);
         },
         error: (err) => {
           console.error('Erreur mise à jour', err);
           this.isSubmitting = false;
-          alert('Erreur lors de la mise à jour');
+          this.toast.error(err?.error?.error || err?.error?.message || 'Erreur lors de la mise à jour');
         }
       });
     } else {
-      this.bomService.create(formValue).subscribe({
+      this.bomService.create(payload).subscribe({
         next: () => {
           this.isSubmitting = false;
+          this.toast.success('Nomenclature créée');
           this.router.navigate(['/stock/boms']);
         },
         error: (err) => {
           console.error('Erreur création', err);
           this.isSubmitting = false;
-          alert('Erreur lors de la création');
+          this.toast.error(err?.error?.error || err?.error?.message || 'Erreur lors de la création');
         }
       });
     }
   }
   getFilteredArticlesForLine(lineIndex: number): Article[] {
+    const currentId = this.lines.at(lineIndex)?.get('articleId')?.value;
     const selectedArticleIds = this.lines.controls
-      .map((control, idx) => idx !== lineIndex ? control.get('articleId')?.value : null)
-      .filter(id => id && id !== '');
-    return this.articles.filter(article => !selectedArticleIds.includes(article.id));
+      .map((control, idx) => (idx !== lineIndex ? control.get('articleId')?.value : null))
+      .filter((id): id is string => !!id && id !== '');
+    return this.articles.filter(
+      (article) => article.id === currentId || !selectedArticleIds.includes(article.id!)
+    );
+  }
+
+  private ensureArticleInList(articleId?: string, articleName?: string): void {
+    if (!articleId || this.articles.some((a) => a.id === articleId)) {
+      return;
+    }
+    this.articleService.getArticleById(articleId).subscribe({
+      next: (article) => {
+        if (!this.articles.some((a) => a.id === article.id)) {
+          this.articles = [...this.articles, article];
+        }
+      },
+      error: () => {
+        if (!this.articles.some((a) => a.id === articleId)) {
+          this.articles = [
+            ...this.articles,
+            {
+              id: articleId,
+              nom: articleName || `Article ${articleId.substring(0, 8)}`,
+              categorie: 'CONSOMMABLE' as Article['categorie'],
+              stockMinimum: 0,
+              stockMaximum: 0,
+              actif: false,
+              um: 'UNITE' as Article['um']
+            }
+          ];
+        }
+      }
+    });
   }
 
 

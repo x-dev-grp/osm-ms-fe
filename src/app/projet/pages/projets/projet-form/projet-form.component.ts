@@ -15,12 +15,14 @@ import {SKU} from '../../../../stock/models/sku.model';
 import {Bom} from '../../../../stock/models/Bom';
 import {ArticleService} from '../../../../stock/services/article.service';
 import {Article} from '../../../../stock/models/article.model';
+import { MaterialNeedsPreviewComponent } from '../../../../shared/components/material-needs-preview/material-needs-preview.component';
+import { ToastService } from '../../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-projet-form',
   standalone: true,
   templateUrl: './projet-form.component.html',
-  imports: [CommonModule, ReactiveFormsModule, TitleCasePipe, CurrencyPipe],
+  imports: [CommonModule, ReactiveFormsModule, TitleCasePipe, CurrencyPipe, MaterialNeedsPreviewComponent],
   styleUrls: ['./projet-form.component.scss']
 })
 export class ProjetFormComponent implements OnInit {
@@ -49,7 +51,21 @@ export class ProjetFormComponent implements OnInit {
 
   protected readonly ClientType = ClientType;
 
-  constructor(private fb: FormBuilder, private projetService: ProjetService, private clientService: ClientService, private ligneService: LigneConditionnementService, private skuService: SKUService, private bomService: BomService, private articleService: ArticleService, private route: ActivatedRoute, private router: Router) {
+  constructor(private fb: FormBuilder, private projetService: ProjetService, private clientService: ClientService, private ligneService: LigneConditionnementService, private skuService: SKUService, private bomService: BomService, private articleService: ArticleService, private route: ActivatedRoute, private router: Router, private toast: ToastService) {
+  }
+
+  get materialPreviewBomId(): string | null {
+    if (this.produits.length !== 1) {
+      return null;
+    }
+    return this.produits.at(0).get('bomId')?.value || null;
+  }
+
+  get materialPreviewQuantity(): number {
+    if (this.produits.length === 1) {
+      return Number(this.produits.at(0).get('quantiteCible')?.value || 0);
+    }
+    return Number(this.form.get('quantiteCible')?.value || 0);
   }
 
   get produits(): FormArray {
@@ -273,9 +289,10 @@ export class ProjetFormComponent implements OnInit {
       next: () => {
         this.loading = false;
         this.router.navigate(['../'], {relativeTo: this.route});
-      }, error: (err: unknown) => {
+      }, error: (err: any) => {
         console.error(err);
         this.loading = false;
+        this.toast.error(err?.error?.error || err?.error?.message || 'Erreur lors de l\'enregistrement du projet');
       }
     });
   }

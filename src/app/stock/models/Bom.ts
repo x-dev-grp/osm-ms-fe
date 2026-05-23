@@ -7,6 +7,7 @@ export interface Bom {
   skuId?: string;
   skuCode?: string;
   version: string;
+  active?: boolean;
   lines: BomLine[];
   createdDate?: string;
 }

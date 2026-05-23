@@ -1,3 +1,4 @@
+* { box-sizing: border-box; }
 :host {
   display: block;
 }
@@ -416,3 +417,4 @@ $blue: #2563eb;
     animation: none !important;
   }
 }
+

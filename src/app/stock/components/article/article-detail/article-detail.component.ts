@@ -9,6 +9,7 @@ import { Article } from '../../../models/article.model';
 import { Stock } from '../../../models/stock.model';
 import { EmplacementStock } from '../../../models/emplacement-stock.model';
 import { MouvementStock, TypeMouvement } from '../../../models/mouvement-stock.model';
+import { ToastService } from '../../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-article-detail',
@@ -44,7 +45,8 @@ export class ArticleDetailComponent implements OnInit {
     private router: Router,
     private articleService: ArticleService,
     private stockService: StockService,
-    private emplacementService: EmplacementStockService
+    private emplacementService: EmplacementStockService,
+    private toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -115,7 +117,7 @@ export class ArticleDetailComponent implements OnInit {
 
   onMouvement(): void {
     if (this.quantite <= 0) {
-      alert('La quantite doit etre positive');
+      this.toast.warning('La quantité doit être positive');
       return;
     }
 
@@ -128,8 +130,8 @@ export class ArticleDetailComponent implements OnInit {
           this.motif = '';
           this.loadMouvements();
         },
-        error: () => {
-          alert("Erreur lors de l'entree en stock");
+        error: (err) => {
+          this.toast.error(err?.error?.error || err?.error?.message || "Erreur lors de l'entrée en stock");
         }
       });
       return;
@@ -144,14 +146,14 @@ export class ArticleDetailComponent implements OnInit {
         this.loadMouvements();
       },
       error: (err) => {
-        alert(err?.error?.error || err?.error?.message || 'Erreur lors de la sortie de stock');
+        this.toast.error(err?.error?.error || err?.error?.message || 'Erreur lors de la sortie de stock');
       }
     });
   }
 
   onAjustement(): void {
     if (this.ajustementQuantite === 0) {
-      alert("La quantite d'ajustement ne peut pas etre nulle");
+      this.toast.warning("La quantité d'ajustement ne peut pas être nulle");
       return;
     }
     this.stockService.ajusterStock(this.article.id!, this.ajustementQuantite, this.ajustementMotif).subscribe({
@@ -163,7 +165,7 @@ export class ArticleDetailComponent implements OnInit {
         this.loadMouvements();
       },
       error: (err) => {
-        alert(err?.error?.error || "Erreur lors de l'ajustement du stock");
+        this.toast.error(err?.error?.error || err?.error?.message || "Erreur lors de l'ajustement du stock");
       }
     });
   }
@@ -183,9 +185,9 @@ export class ArticleDetailComponent implements OnInit {
         this.article = updatedArticle;
         this.Actif = false;
       },
-      error: () => {
+      error: (err) => {
         this.Actif = false;
-        alert(`Erreur lors de l'action ${action}`);
+        this.toast.error(err?.error?.error || err?.error?.message || `Erreur lors de l'action ${action}`);
       }
     });
   }
@@ -218,15 +220,15 @@ export class ArticleDetailComponent implements OnInit {
         }
         this.emplacements = data.filter(
           (emp) =>
-            emp.actif === true &&
-            emp.disponible === true &&
-            (!emp.categorieArticleStocke || emp.categorieArticleStocke === this.article.categorie)
+            emp.actif !== false &&
+            (emp.disponible !== false && emp.disponible !== 'false' as any) &&
+            (!emp.categorieArticleStocke || String(emp.categorieArticleStocke).toUpperCase() === String(this.article.categorie).toUpperCase())
         );
         this.loadingEmplacements = false;
       },
       error: () => {
         this.loadingEmplacements = false;
-        alert('Impossible de charger la liste des emplacements');
+        this.toast.error('Impossible de charger la liste des emplacements');
       }
     });
   }
@@ -238,11 +240,11 @@ export class ArticleDetailComponent implements OnInit {
       selectedId = (selectEl?.value ?? '').trim();
     }
     if (!selectedId || selectedId === 'null' || selectedId === 'undefined') {
-      alert('Veuillez sélectionner un emplacement');
+      this.toast.warning('Veuillez sélectionner un emplacement');
       return;
     }
     if (!this.stock?.id) {
-      alert('Stock introuvable pour cet article, veuillez recharger la page');
+      this.toast.error('Stock introuvable pour cet article, veuillez recharger la page');
       return;
     }
 
@@ -251,10 +253,10 @@ export class ArticleDetailComponent implements OnInit {
         this.stock = updatedStock;
         this.showEmplacementForm = false;
         this.selectedEmplacementId = null;
-        alert('Emplacement assigné avec succès');
+        this.toast.success('Emplacement assigné avec succès');
       },
       error: (err) => {
-        alert(err?.error?.error || "Erreur lors de l'assignation de l'emplacement");
+        this.toast.error(err?.error?.error || err?.error?.message || "Erreur lors de l'assignation de l'emplacement");
       }
     });
   }
@@ -266,10 +268,10 @@ export class ArticleDetailComponent implements OnInit {
     this.stockService.retirerEmplacement(this.stock.id).subscribe({
       next: (updatedStock) => {
         this.stock = updatedStock;
-        alert('Emplacement retiré avec succès');
+        this.toast.success('Emplacement retiré avec succès');
       },
       error: (err) => {
-        alert(err?.error?.error || "Erreur lors du retrait de l'emplacement");
+        this.toast.error(err?.error?.error || err?.error?.message || "Erreur lors du retrait de l'emplacement");
       }
     });
   }
@@ -292,7 +294,7 @@ export class ArticleDetailComponent implements OnInit {
         this.generatingQr = false;
       },
       error: () => {
-        alert('Erreur lors de la generation du QR code');
+        this.toast.error('Erreur lors de la génération du QR code');
         this.generatingQr = false;
       }
     });
@@ -300,7 +302,7 @@ export class ArticleDetailComponent implements OnInit {
 
   printQr(): void {
     if (!this.article.qrImageBase64) {
-      alert('QR code non disponible');
+      this.toast.warning('QR code non disponible');
       return;
     }
 

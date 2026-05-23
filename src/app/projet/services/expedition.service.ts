@@ -44,7 +44,14 @@ export class ExpeditionService {
   }
 
   getProjectTraceability(projectId: string): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/project/${projectId}/traceability`);
+    return this.http.get<ApiSingleResponse<any>>(`${this.baseUrl}/project/${projectId}/traceability`)
+      .pipe(map(response => response.data || response));
+  }
+
+  getExpeditionTraceability(expeditionId: string): Observable<Record<string, unknown>> {
+    return this.http
+      .get<ApiSingleResponse<Record<string, unknown>>>(`${this.baseUrl}/${expeditionId}/traceability`)
+      .pipe(map(response => response.data || response));
   }
 
   update(expeditionId: string, request: ExpeditionUpdateRequest): Observable<ExpeditionDto> {

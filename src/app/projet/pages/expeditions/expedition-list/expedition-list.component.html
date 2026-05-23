@@ -1,35 +1,60 @@
-<div class="abioc-container expedition-list-page">
+<div class="osm-expedition-page">
 
-  <div class="header-card">
-    <div class="header-left">
-      <div class="icon-box">
-        <mat-icon>route</mat-icon>
+  <section class="page-hero">
+    <div class="hero-left">
+      <div class="hero-icon">
+        <mat-icon>local_shipping</mat-icon>
       </div>
+
       <div>
-        <p class="summary-count">{{ allRows().length }} expedition(s) trouvee(s)</p>
+        <h1>Expéditions</h1>
+        <p>Suivi des expéditions, des quantités préparées et des livraisons planifiées.</p>
       </div>
     </div>
 
-    <div class="header-right">
-      <div class="kpi">
-        <span class="kpi-value">{{ stats().shipped }}</span>
-        <span class="kpi-label">Expediees</span>
+    <div class="hero-banner"></div>
+  </section>
+
+  <section class="toolbar-card">
+    <div class="search-box">
+      <mat-icon>search</mat-icon>
+
+      <input
+        type="text"
+        placeholder="Rechercher référence, projet, statut..."
+        aria-label="Rechercher une expédition"
+        (input)="dataSource.filter = $any($event.target).value.trim().toLowerCase()"
+      />
+    </div>
+
+    <div class="toolbar-center">
+      <div class="mini-stat">
+        <div class="mini-stat-icon">
+          <mat-icon>inventory_2</mat-icon>
+        </div>
+        <div>
+          <strong>{{ stats().shipped }}</strong>
+          <span>Expédiées</span>
+        </div>
       </div>
-      <button mat-flat-button color="primary" (click)="load()">
+    </div>
+
+    <div class="toolbar-right">
+      <button mat-flat-button class="refresh-btn" (click)="load()">
         <mat-icon>refresh</mat-icon>
         Actualiser
       </button>
     </div>
-  </div>
+  </section>
 
-  <div class="stats-grid">
+  <section class="stats-grid">
     <div class="stat-card">
       <div class="stat-icon total">
         <mat-icon>receipt_long</mat-icon>
       </div>
       <div>
         <span class="stat-value">{{ stats().total }}</span>
-        <span class="stat-label">Total expeditions</span>
+        <span class="stat-label">Total expéditions</span>
       </div>
     </div>
 
@@ -39,7 +64,7 @@
       </div>
       <div>
         <span class="stat-value">{{ stats().ready }}</span>
-        <span class="stat-label">Pretes</span>
+        <span class="stat-label">Prêtes</span>
       </div>
     </div>
 
@@ -59,61 +84,79 @@
       </div>
       <div>
         <span class="stat-value">{{ stats().totalQuantity | number:'1.0-0' }}</span>
-        <span class="stat-label">Quantite totale</span>
+        <span class="stat-label">Quantité totale</span>
       </div>
     </div>
-  </div>
+  </section>
 
   @if (loading()) {
-    <div class="abioc-loading">
-      <mat-spinner diameter="36"></mat-spinner>
+    <div class="osm-loading">
+      <mat-spinner diameter="38"></mat-spinner>
+      <p>Chargement des expéditions...</p>
     </div>
   }
 
   @if (!loading() && allRows().length === 0) {
-    <div class="abioc-empty">
-      <mat-icon>route</mat-icon>
-      <p>Aucune expedition trouvee</p>
-      <button mat-stroked-button color="primary" (click)="load()">
-        <mat-icon>refresh</mat-icon> Actualiser
+    <div class="osm-empty">
+      <div class="empty-icon">
+        <mat-icon>route</mat-icon>
+      </div>
+
+      <h3>Aucune expédition trouvée</h3>
+      <p>Aucune donnée d’expédition n’est disponible pour le moment.</p>
+
+      <button mat-stroked-button class="empty-btn" (click)="load()">
+        <mat-icon>refresh</mat-icon>
+        Actualiser
       </button>
     </div>
   }
 
   @if (!loading() && allRows().length > 0) {
-    <div class="table-card">
-      <div class="table-wrap">
-        <table mat-table [dataSource]="dataSource" class="abioc-table">
+    <section class="table-card">
+      <div class="table-header">
+        <div class="table-title">
+          <mat-icon>eco</mat-icon>
+          <div>
+            <h2>Liste des expéditions</h2>
+            <span>{{ allRows().length }} élément(s)</span>
+          </div>
+        </div>
+      </div>
 
-          <!-- Expedition Number -->
+      <div class="table-wrap">
+        <table mat-table [dataSource]="dataSource" class="osm-table">
+
           <ng-container matColumnDef="expeditionNumber">
-            <th mat-header-cell *matHeaderCellDef>Reference</th>
+            <th mat-header-cell *matHeaderCellDef>Référence</th>
             <td mat-cell *matCellDef="let row">
-              <span class="client-name">{{ row.expeditionNumber || '-' }}</span>
+              <span class="reference-pill">{{ row.expeditionNumber || '-' }}</span>
             </td>
           </ng-container>
 
-          <!-- Projet Code -->
           <ng-container matColumnDef="projetCode">
             <th mat-header-cell *matHeaderCellDef>Projet</th>
-            <td mat-cell *matCellDef="let row">{{ row.projetCode || '-' }}</td>
-          </ng-container>
-
-          <!-- Planned Ship Date -->
-          <ng-container matColumnDef="plannedShipDate">
-            <th mat-header-cell *matHeaderCellDef>Date prevue</th>
-            <td mat-cell *matCellDef="let row">{{ row.plannedShipDate | date:'dd/MM/yyyy' }}</td>
-          </ng-container>
-
-          <!-- Total Quantity -->
-          <ng-container matColumnDef="totalQuantity">
-            <th mat-header-cell *matHeaderCellDef>Quantite</th>
             <td mat-cell *matCellDef="let row">
-              <span class="quantity-pill">{{ (row.totalQuantity || 0) | number:'1.0-0' }}</span>
+              <span class="project-name">{{ row.projetCode || '-' }}</span>
             </td>
           </ng-container>
 
-          <!-- Status -->
+          <ng-container matColumnDef="plannedShipDate">
+            <th mat-header-cell *matHeaderCellDef>Date prévue</th>
+            <td mat-cell *matCellDef="let row">
+              <span class="date-text">{{ row.plannedShipDate | date:'dd/MM/yyyy' }}</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="totalQuantity">
+            <th mat-header-cell *matHeaderCellDef>Quantité</th>
+            <td mat-cell *matCellDef="let row">
+              <span class="quantity-pill">
+                {{ (row.totalQuantity || 0) | number:'1.0-0' }}
+              </span>
+            </td>
+          </ng-container>
+
           <ng-container matColumnDef="status">
             <th mat-header-cell *matHeaderCellDef>Statut</th>
             <td mat-cell *matCellDef="let row">
@@ -123,31 +166,64 @@
             </td>
           </ng-container>
 
-          <!-- Actions -->
+          <ng-container matColumnDef="traceability">
+            <th mat-header-cell *matHeaderCellDef>Traçabilité</th>
+            <td mat-cell *matCellDef="let row">
+              <span class="traceability-badge" [ngClass]="traceabilityClass(row)">
+                <mat-icon>{{ hasFrozenTraceability(row) ? 'lock' : 'history' }}</mat-icon>
+                {{ traceabilityLabel(row) }}
+              </span>
+            </td>
+          </ng-container>
+
           <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef></th>
+            <th mat-header-cell *matHeaderCellDef>
+              <span class="actions-header">
+                <mat-icon>settings</mat-icon>
+                Actions
+              </span>
+            </th>
+
             <td mat-cell *matCellDef="let row" (click)="$event.stopPropagation()">
-              <button mat-icon-button [matMenuTriggerFor]="menu" [matMenuTriggerRestoreFocus]="false" class="btn-actions"
-                aria-label="Actions">
+              <button
+                mat-icon-button
+                [matMenuTriggerFor]="menu"
+                [matMenuTriggerRestoreFocus]="false"
+                class="btn-actions"
+                aria-label="Actions"
+                title="Actions">
                 <mat-icon>more_vert</mat-icon>
               </button>
+
               <mat-menu #menu="matMenu">
                 <button mat-menu-item (click)="onViewDetails(row)">
-                  <mat-icon>visibility</mat-icon><span>Voir detail</span>
+                  <mat-icon>visibility</mat-icon>
+                  <span>Voir détail</span>
+                </button>
+                <button mat-menu-item (click)="onViewTraceability(row)">
+                  <mat-icon>history</mat-icon>
+                  <span>Chaîne de traçabilité</span>
                 </button>
               </mat-menu>
             </td>
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="onViewDetails(row)" style="cursor:pointer">
+
+          <tr
+            mat-row
+            *matRowDef="let row; columns: displayedColumns"
+            (click)="onViewDetails(row)"
+            class="clickable-row">
           </tr>
         </table>
       </div>
 
-      <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons>
-      </mat-paginator>
-    </div>
+      <div class="paginator-zone">
+        <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons>
+        </mat-paginator>
+      </div>
+    </section>
   }
 
 </div>

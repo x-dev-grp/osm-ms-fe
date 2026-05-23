@@ -78,10 +78,17 @@ $border-radius-sm: 12px;
   }
 }
 
+:host {
+  * { box-sizing: border-box; }
+  display: block;
+  overflow-x: hidden;
+}
+
 // Style principal
 .article-detail-page {
   padding: 2rem;
   max-width: 1400px;
+  width: 100%;
   margin: 0 auto;
   min-height: 100vh;
   background: linear-gradient(135deg, #667eea0d 0%, #764ba00d 100%);
@@ -217,9 +224,10 @@ $border-radius-sm: 12px;
 // Grille de détails
 .detail-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 350px), 1fr));
   gap: 1.5rem;
   margin-bottom: 2rem;
+  min-width: 0;
 
   .card-box {
     background: $white;
@@ -360,32 +368,64 @@ $border-radius-sm: 12px;
         }
       }
 
-      .stock-value {
-        font-size: 3rem;
-        font-weight: 800;
-        line-height: 1;
+      .stock-kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.65rem;
         margin-bottom: 1rem;
+
+        .kpi {
+          background: rgba($white, 0.12);
+          border: 1px solid rgba($white, 0.2);
+          border-radius: $border-radius-sm;
+          padding: 0.75rem 0.5rem;
+          text-align: center;
+
+          .kpi-label {
+            display: block;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            opacity: 0.85;
+            margin-bottom: 0.35rem;
+          }
+
+          .kpi-value {
+            display: block;
+            font-size: 1.75rem;
+            font-weight: 800;
+            line-height: 1.1;
+          }
+
+          .kpi-unit {
+            font-size: 0.75rem;
+            opacity: 0.85;
+          }
+
+          &.kpi-dispo.alert {
+            background: rgba($danger, 0.25);
+            border-color: rgba($danger, 0.4);
+          }
+        }
+      }
+
+      .stock-hint {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        font-size: 0.85rem;
+        padding: 0.65rem 0.75rem;
+        background: rgba($white, 0.12);
+        border-radius: $border-radius-sm;
+        margin: 0 0 0.75rem;
+        opacity: 0.95;
+      }
+
+      .stock-empty {
         text-align: center;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-
-        small {
-          font-size: 1.2rem;
-          font-weight: 400;
-          opacity: 0.9;
-          margin-left: 0.5rem;
-        }
-
-        &.low {
-          color: #ffcdb2;
-        }
-
-        &.medium {
-          color: #ffe5b4;
-        }
-
-        &.high {
-          color: $white;
-        }
+        opacity: 0.9;
+        font-size: 0.9rem;
+        margin: 0.5rem 0 1rem;
       }
 
       .stock-details-grid {
@@ -502,6 +542,7 @@ $border-radius-sm: 12px;
       border: 2px solid $gray-200;
       border-radius: $border-radius-sm;
       font-size: 0.95rem;
+      width: 100%;
 
 
       &:focus {
@@ -552,8 +593,15 @@ $border-radius-sm: 12px;
 }
 
 // Tableau des mouvements
+.movement-table-container {
+  width: 100%;
+  overflow-x: auto;
+  min-width: 0;
+}
+
 .movement-table {
   width: 100%;
+  min-width: 600px;
   border-collapse: separate;
   border-spacing: 0;
 

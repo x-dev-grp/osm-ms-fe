@@ -103,25 +103,32 @@
       </div>
 
       <div class="card-box stock-box">
-        <h5>Stock actuel</h5>
+        <h5><i class="fas fa-chart-simple"></i> Stock</h5>
 
-        <div class="stock-value" [ngClass]="getStockStatus()">
-          {{ stock?.quantiteActuelle ?? 0 }}
-          <small>{{ article.um }}</small>
+        <div class="stock-kpi-grid" *ngIf="stock">
+          <div class="kpi kpi-total">
+            <span class="kpi-label">En stock</span>
+            <strong class="kpi-value">{{ stock.quantiteActuelle ?? 0 }}</strong>
+            <span class="kpi-unit">{{ article.um }}</span>
+          </div>
+          <div class="kpi kpi-reserve">
+            <span class="kpi-label">Réservé</span>
+            <strong class="kpi-value">{{ stock.quantiteReservee || 0 }}</strong>
+            <span class="kpi-unit">{{ article.um }}</span>
+          </div>
+          <div class="kpi kpi-dispo" [class.alert]="(stock.quantiteDisponible ?? 0) <= 0">
+            <span class="kpi-label">Disponible</span>
+            <strong class="kpi-value">{{ stock.quantiteDisponible ?? 0 }}</strong>
+            <span class="kpi-unit">{{ article.um }}</span>
+          </div>
         </div>
 
-        <div class="stock-details-grid mt-2" *ngIf="stock">
-          <div class="stock-detail-item">
-            <span>Réservé</span>
-            <strong class="text-warning">{{ stock.quantiteReservee || 0 }} {{ article.um }}</strong>
-          </div>
-          <div class="stock-detail-item">
-            <span>Disponible</span>
-            <strong [ngClass]="stock.quantiteDisponible <= 0 ? 'text-danger' : 'text-success'">
-              {{ stock.quantiteDisponible }} {{ article.um }}
-            </strong>
-          </div>
-        </div>
+        <p class="stock-hint" *ngIf="stock && (stock.quantiteReservee || 0) > 0">
+          <i class="fas fa-bookmark"></i>
+          Une partie du stock est réservée pour des projets en cours.
+        </p>
+
+        <p class="stock-empty" *ngIf="!stock">Aucun enregistrement de stock pour cet article.</p>
 
         <div class="text-muted mt-2" *ngIf="stock">
           Dernière MAJ : {{ stock.lastModifiedDate | date:'dd/MM/yyyy HH:mm' }}

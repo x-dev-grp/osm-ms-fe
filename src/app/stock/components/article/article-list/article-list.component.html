@@ -70,6 +70,14 @@
     </div>
   </div>
 
+  <div class="stock-insights" *ngIf="!loading && stockAlertCount > 0">
+    <i class="fas fa-triangle-exclamation"></i>
+    <span>
+      <strong>{{ stockAlertCount }}</strong>
+      article(s) en dessous du stock minimum — vérifiez les lignes surlignées.
+    </span>
+  </div>
+
   <!-- Loading -->
   <div *ngIf="loading" class="loading-state">
     <div class="spinner"></div>
@@ -86,6 +94,8 @@
           <th>Catégorie</th>
           <th>Unité</th>
           <th>En stock</th>
+          <th>Disponible</th>
+          <th>Réservé</th>
           <th>Stock Min</th>
           <th>Stock Max</th>
           <th>Statut</th>
@@ -94,7 +104,7 @@
         </thead>
 
         <tbody>
-        <tr *ngFor="let article of filteredArticles" [ngClass]="{'inactive-row': !article.actif}">
+        <tr *ngFor="let article of filteredArticles" [ngClass]="{'inactive-row': !article.actif, 'stock-alert-row': isBelowMinimum(article)}" [title]="isBelowMinimum(article) ? 'Stock en dessous du minimum' : ''">
           <td class="article-name-cell">
             <span class="article-mini-icon">
               <i class="fas fa-box"></i>
@@ -113,7 +123,18 @@
             <span class="unit-value">{{ article.um }}</span>
           </td>
 
-          <td>{{ getArticleStock(article.id) }}</td>
+          <td class="stock-cell">
+            <span class="stock-chip total" [title]="'En stock'">{{ getArticleStock(article.id) }}</span>
+          </td>
+          <td class="stock-cell">
+            <span class="stock-chip disponible" [class.low]="getArticleDisponible(article.id) <= (article.stockMinimum || 0)">
+              {{ getArticleDisponible(article.id) }}
+            </span>
+          </td>
+          <td class="stock-cell">
+            <span class="stock-chip reserve" *ngIf="getArticleReserve(article.id) > 0">{{ getArticleReserve(article.id) }}</span>
+            <span class="text-muted" *ngIf="getArticleReserve(article.id) === 0">—</span>
+          </td>
           <td>{{ article.stockMinimum }}</td>
           <td>{{ article.stockMaximum }}</td>
 

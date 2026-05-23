@@ -48,6 +48,7 @@ export class ExpeditionListComponent implements AfterViewInit {
     'plannedShipDate',
     'totalQuantity',
     'status',
+    'traceability',
     'actions'
   ];
 
@@ -116,6 +117,36 @@ export class ExpeditionListComponent implements AfterViewInit {
     this.router.navigate(['/projets/detail', row.projetId, 'expedition'], {
       queryParams: { expeditionId: row.id }
     });
+  }
+
+  onViewTraceability(row: ExpeditionDto): void {
+    this.router.navigate(['/projets/detail', row.projetId, 'expedition'], {
+      queryParams: { expeditionId: row.id, traceability: '1' }
+    });
+  }
+
+  hasFrozenTraceability(row: ExpeditionDto): boolean {
+    return !!row.traceabilitySnapshotJson?.trim();
+  }
+
+  traceabilityLabel(row: ExpeditionDto): string {
+    if (this.hasFrozenTraceability(row)) {
+      return 'Figée';
+    }
+    if (row.status === ExpeditionStatus.READY || row.status === ExpeditionStatus.DRAFT) {
+      return 'À valider';
+    }
+    return 'En cours';
+  }
+
+  traceabilityClass(row: ExpeditionDto): string {
+    if (this.hasFrozenTraceability(row)) {
+      return 'trace-frozen';
+    }
+    if (row.status === ExpeditionStatus.READY) {
+      return 'trace-pending';
+    }
+    return 'trace-open';
   }
 
   onPageChange(event: { pageIndex: number; pageSize: number }): void {
