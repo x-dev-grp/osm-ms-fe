@@ -14,7 +14,7 @@ import Chart from 'chart.js/auto';
 export class StockDashboardComponent implements OnInit, AfterViewInit {
   stats: any = null;
 
-  // ✅ dérivés côté front (pas dans DTO)
+  //  dérivés côté front (pas dans DTO)
   pourcentageAlerte = 0;
   articlesRupture = 0;
 

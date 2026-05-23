@@ -81,6 +81,7 @@ export class ProjetFormComponent implements OnInit {
     });
 
     produitGroup.get('productId')?.valueChanges.subscribe(id => {
+      produitGroup.get('bomId')?.setValue('');
       if (id) {
         this.loadBomsForProduct(id, produitGroup);
       }
