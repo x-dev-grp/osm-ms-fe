@@ -101,7 +101,7 @@
                 </button>
               </div>
 
-              <div class="product-grid single-col" [class.has-error]="prod.invalid && (prod.touched || prod.dirty)">
+              <div class="product-grid" [class.has-error]="prod.invalid && (prod.touched || prod.dirty)">
                 <div class="field-block">
                   <label>Produit fini à produire *</label>
                   <select formControlName="productId" class="form-select"
@@ -109,6 +109,17 @@
                     <option value="">-- Sélectionner un produit --</option>
                     <option *ngFor="let sku of skus" [value]="sku.id">
                       {{ sku.code }} - {{ sku.packagingType }} ({{ sku.volume }} {{ sku.unitOfMeasure }})
+                    </option>
+                  </select>
+                </div>
+
+                <div class="field-block" *ngIf="prod.get('productId')?.value">
+                  <label>Nomenclature (BOM) *</label>
+                  <select formControlName="bomId" class="form-select"
+                    [class.is-invalid]="prod.get('bomId')?.invalid && prod.get('bomId')?.touched">
+                    <option value="" disabled>-- Sélectionner une nomenclature --</option>
+                    <option *ngFor="let bom of productBoms[prod.get('productId')?.value] || []" [value]="bom.id">
+                      {{ bom.version || bom.code || bom.name || bom.id }}
                     </option>
                   </select>
                 </div>

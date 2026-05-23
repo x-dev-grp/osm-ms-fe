@@ -1,4 +1,4 @@
-<div class="modern-container">
+<div class="product-detail-page">
   @if (loading) {
     <div class="loading-state-modern">
       <div class="spinner-container">
@@ -12,278 +12,348 @@
 
   @if (!loading && sku) {
     <div class="detail-content fade-in">
-      <div class="detail-header glass-effect">
-        <div class="header-left">
-          <button class="btn-back" (click)="goBack()">
+      <section class="product-hero">
+        <div class="hero-left">
+          <button class="btn-back" (click)="goBack()" aria-label="Retour">
             <i class="fas fa-arrow-left"></i>
           </button>
+
           <div class="title-section">
             <div class="title-badge">
-              <i class="fas fa-tag"></i>
+              <i class="fas fa-cube"></i>
               <span>Produit</span>
             </div>
-            <h1 class="page-title">{{ getProductName() }}</h1>
+
+            <div class="title-line">
+              <h1>{{ getProductName() }}</h1>
+
+              <span
+                class="status-badge"
+                [class.status-actif]="sku.actif"
+                [class.status-inactif]="!sku.actif"
+              >
+                <i
+                  class="fas"
+                  [class.fa-check-circle]="sku.actif"
+                  [class.fa-ban]="!sku.actif"
+                ></i>
+                {{ sku.actif ? 'Actif' : 'Inactif' }}
+              </span>
+            </div>
           </div>
         </div>
 
-        <div class="header-status me-3">
-          <span class="status-badge"
-                [class.status-actif]="sku.actif"
-                [class.status-inactif]="!sku.actif">
-            <i class="fas"
-               [class.fa-check-circle]="sku.actif"
-               [class.fa-ban]="!sku.actif"></i>
-            {{ sku.actif ? 'Actif' : 'Inactif' }}
-          </span>
-        </div>
-
-        <div class="header-actions">
-          <button class="btn-icon-toggle"
-                  [class.btn-activer]="!sku.actif"
-                  [class.btn-desactiver]="sku.actif"
-                  (click)="toActif()">
-            <i class="fas"
-               [class.fa-check]="!sku.actif"
-               [class.fa-ban]="sku.actif"></i>
-            {{ sku.actif ? 'Desactiver' : 'Activer' }}
+        <div class="hero-actions">
+          <button
+            class="btn-outline"
+            [class.btn-activer]="!sku.actif"
+            [class.btn-desactiver]="sku.actif"
+            (click)="toActif()"
+          >
+            <i
+              class="fas"
+              [class.fa-check]="!sku.actif"
+              [class.fa-ban]="sku.actif"
+            ></i>
+            {{ sku.actif ? 'Désactiver' : 'Activer' }}
           </button>
 
-          <button class="btn-icon-edit" [routerLink]="['/stock/products', sku.id, 'edit']">
-            <i class="fas fa-edit me-2"></i>
+          <button class="btn-outline" [routerLink]="['/stock/products', sku.id, 'edit']">
+            <i class="fas fa-edit"></i>
             Modifier
           </button>
 
-          <button class="btn-icon-toggle btn-delete" (click)="deleteSku()" [disabled]="deleting">
+          <button class="btn-outline btn-delete" (click)="deleteSku()" [disabled]="deleting">
             <i class="fas fa-trash-alt"></i>
             Supprimer
           </button>
         </div>
-      </div>
+      </section>
 
-      <div class="detail-grid">
-        <div class="info-card glass-effect hover-lift">
+      <section class="detail-grid">
+        <article class="info-card">
           <div class="card-header">
             <div class="header-icon-wrapper">
               <i class="fas fa-info-circle"></i>
             </div>
-            <h3>Informations generales</h3>
+            <h3>Informations générales</h3>
+            <span class="header-decoration"></span>
           </div>
+
           <div class="card-body">
             <div class="info-row">
-              <span class="info-label">Nom du produit</span>
-              <span class="info-value code-highlight">{{ getProductName() }}</span>
+              <span class="info-label">
+                <i class="fas fa-align-left"></i>
+                Nom du produit
+              </span>
+              <span class="info-value">{{ getProductName() }}</span>
             </div>
+
             <div class="info-row">
-              <span class="info-label">Code interne</span>
+              <span class="info-label">
+                <i class="fas fa-barcode"></i>
+                Code interne
+              </span>
               <span class="info-value">{{ sku.code || '-' }}</span>
             </div>
+
             <div class="info-row">
-              <span class="info-label">Type</span>
+              <span class="info-label">
+                <i class="fas fa-box"></i>
+                Type
+              </span>
               <span class="info-value">
                 <span class="category-chip">
-                  <i class="fas fa-layer-group me-1"></i>
+                  <i class="fas fa-layer-group"></i>
                   {{ formatProductType(sku.type) }}
                 </span>
               </span>
             </div>
+
             <div class="info-row">
-              <span class="info-label">Categorie</span>
+              <span class="info-label">
+                <i class="fas fa-list"></i>
+                Catégorie
+              </span>
               <span class="info-value">{{ sku.category || '-' }}</span>
             </div>
+
             <div class="info-row">
-              <span class="info-label">Unite</span>
+              <span class="info-label">
+                <i class="fas fa-ruler-combined"></i>
+                Unité
+              </span>
               <span class="info-value">{{ sku.unitOfMeasure || '-' }}</span>
             </div>
           </div>
-        </div>
+        </article>
 
-        <div class="info-card glass-effect hover-lift">
+        <article class="info-card">
           <div class="card-header">
             <div class="header-icon-wrapper">
-              <i class="fas fa-certificate"></i>
+              <i class="fas fa-tint"></i>
             </div>
             <h3>Profil huile</h3>
+            <span class="header-decoration"></span>
           </div>
+
           <div class="card-body">
             <div class="info-row">
-              <span class="info-label">Grade</span>
+              <span class="info-label">
+                <i class="fas fa-award"></i>
+                Grade
+              </span>
               <span class="info-value">{{ sku.grade || '-' }}</span>
             </div>
+
             <div class="info-row">
-              <span class="info-label">Origine</span>
+              <span class="info-label">
+                <i class="fas fa-map-marker-alt"></i>
+                Origine
+              </span>
               <span class="info-value">{{ sku.origin || '-' }}</span>
             </div>
+
             <div class="info-row">
-              <span class="info-label">Campagne</span>
+              <span class="info-label">
+                <i class="fas fa-calendar-alt"></i>
+                Campagne
+              </span>
               <span class="info-value">{{ sku.harvestCampaign || '-' }}</span>
             </div>
+
             <div class="info-row">
-              <span class="info-label">Description</span>
+              <span class="info-label">
+                <i class="fas fa-file-alt"></i>
+                Description
+              </span>
               <span class="info-value">{{ sku.description || '-' }}</span>
             </div>
           </div>
-        </div>
+        </article>
 
         @if (!isVrac()) {
-          <div class="info-card glass-effect hover-lift">
+          <article class="info-card">
             <div class="card-header">
               <div class="header-icon-wrapper">
-                <i class="fas fa-box-open"></i>
+                <i class="fas fa-cube"></i>
               </div>
               <h3>Conditionnement</h3>
+              <span class="header-decoration"></span>
             </div>
+
             <div class="card-body">
               <div class="info-row">
-                <span class="info-label">Volume unitaire</span>
+                <span class="info-label">
+                  <i class="fas fa-bottle-water"></i>
+                  Volume unitaire
+                </span>
                 <span class="info-value">
                   @if (sku.volume) {
-                    <span class="metric-value"><strong>{{ sku.volume | number:'1.0-3' }}</strong><small>ml</small></span>
+                    <span class="metric-value">
+                      <strong>{{ sku.volume | number:'1.0-3' }}</strong><small>ml</small>
+                    </span>
                   } @else {
-                    <span class="value-placeholder">Non defini</span>
+                    -
                   }
                 </span>
               </div>
+
               <div class="info-row">
-                <span class="info-label">Type packaging</span>
+                <span class="info-label">
+                  <i class="fas fa-box-open"></i>
+                  Type packaging
+                </span>
                 <span class="info-value">{{ sku.packagingType || '-' }}</span>
               </div>
+
               <div class="info-row">
-                <span class="info-label">Marque</span>
+                <span class="info-label">
+                  <i class="fas fa-tag"></i>
+                  Marque
+                </span>
                 <span class="info-value">{{ sku.brand || '-' }}</span>
               </div>
+
               <div class="info-row">
-                <span class="info-label">Code barre</span>
+                <span class="info-label">
+                  <i class="fas fa-barcode"></i>
+                  Code barre
+                </span>
                 <span class="info-value">{{ sku.barcode || '-' }}</span>
               </div>
+
               <div class="info-row">
-                <span class="info-label">Unites par carton</span>
+                <span class="info-label">
+                  <i class="fas fa-boxes-stacked"></i>
+                  Unités par carton
+                </span>
                 <span class="info-value">{{ getUnitsPerCarton() || '-' }}</span>
               </div>
+
               <div class="info-row">
-                <span class="info-label">Cartons par palette</span>
+                <span class="info-label">
+                  <i class="fas fa-pallet"></i>
+                  Cartons par palette
+                </span>
                 <span class="info-value">{{ getCartonsPerPallet() || '-' }}</span>
               </div>
+
               <div class="info-row">
-                <span class="info-label">Poids net / brut</span>
+                <span class="info-label">
+                  <i class="fas fa-weight-hanging"></i>
+                  Poids net / brut
+                </span>
                 <span class="info-value">
                   {{ sku.netWeight || '-' }} kg / {{ sku.grossWeight || '-' }} kg
                 </span>
               </div>
             </div>
-          </div>
-
-          @if (getUnitesParPalette() || getVolumeParPalette()) {
-            <div class="info-card glass-effect hover-lift calculations-card">
-              <div class="card-header">
-                <div class="header-icon-wrapper accent">
-                  <i class="fas fa-calculator"></i>
-                </div>
-                <h3>Capacites calculees</h3>
-              </div>
-              <div class="card-body">
-                @if (getUnitesParPalette()) {
-                  <div class="info-row highlight-row">
-                    <span class="info-label">Unites par palette</span>
-                    <span class="info-value highlight-value">
-                      <span class="value-large">{{ getUnitesParPalette() }}</span>
-                      <span class="value-unit">unites</span>
-                    </span>
-                  </div>
-                }
-
-                @if (getVolumeParPalette()) {
-                  <div class="info-row highlight-row">
-                    <span class="info-label">Volume total / palette</span>
-                    <span class="info-value highlight-value">
-                      <span class="value-large">{{ getVolumeParPalette() | number:'1.2-2' }}</span>
-                      <span class="value-unit">L</span>
-                    </span>
-                  </div>
-                }
-              </div>
-            </div>
-          }
+          </article>
         }
 
         @if (isVrac()) {
-          <div class="info-card glass-effect hover-lift">
+          <article class="info-card">
             <div class="card-header">
               <div class="header-icon-wrapper">
                 <i class="fas fa-industry"></i>
               </div>
               <h3>Vrac</h3>
+              <span class="header-decoration"></span>
             </div>
+
             <div class="card-body">
               <div class="info-row">
-                <span class="info-label">Densite</span>
+                <span class="info-label">
+                  <i class="fas fa-vial"></i>
+                  Densité
+                </span>
                 <span class="info-value">{{ sku.density || '-' }}</span>
               </div>
+
               <div class="info-row">
-                <span class="info-label">Stockage par defaut</span>
+                <span class="info-label">
+                  <i class="fas fa-warehouse"></i>
+                  Stockage par défaut
+                </span>
                 <span class="info-value">{{ sku.storageUnit || '-' }}</span>
               </div>
             </div>
-          </div>
+          </article>
         }
+      </section>
 
-        <div class="info-card glass-effect hover-lift labels-card">
-          <div class="card-header">
+      <section class="labels-card">
+        <div class="labels-header">
+          <div class="labels-title">
             <div class="header-icon-wrapper">
               <i class="fas fa-tags"></i>
             </div>
-            <h3>Etiquettes liees</h3>
+            <h3>Étiquettes liées</h3>
           </div>
-          <div class="card-body">
-            @if (labelsLoading) {
-              <div class="labels-state">
-                <div class="mini-spinner"></div>
-                <span>Chargement des etiquettes...</span>
-              </div>
-            } @else if (relatedLabelsCount() === 0) {
-              <div class="labels-empty">
-                <i class="fas fa-inbox"></i>
-                <p>Aucune etiquette liee a ce produit pour le moment.</p>
-                @if (!isVrac()) {
-                  <a class="btn-create-label-direct" [routerLink]="['/labels/new']" [queryParams]="{ packagingId: sku.id }">
-                    <i class="fas fa-plus me-2"></i>
-                    Créer une étiquette
-                  </a>
-                }
-              </div>
-            } @else {
-              <div class="labels-summary">
-                <span class="labels-count">{{ relatedLabelsCount() }}</span>
-                <span class="labels-text">etiquette(s) trouvee(s)</span>
+
+          <span class="header-decoration"></span>
+        </div>
+
+        <div class="labels-body">
+          @if (labelsLoading) {
+            <div class="labels-state">
+              <div class="mini-spinner"></div>
+              <span>Chargement des étiquettes...</span>
+            </div>
+          } @else if (relatedLabelsCount() === 0) {
+            <div class="labels-empty">
+              <div class="empty-olive-icon">
+                <i class="fas fa-leaf"></i>
               </div>
 
-              <div class="labels-list">
-                @for (label of relatedLabels; track label.id) {
-                  <div class="label-item">
-                    <div class="label-item-main">
-                      <div class="label-item-top">
-                        <span class="label-code">{{ label.publicCode || label.lotNumber || 'Sans code' }}</span>
-                        <span class="label-status" [class.finalized]="label.status === 'FINALIZED'">
-                          {{ labelStatusLabel(label.status) }}
-                        </span>
-                      </div>
-                      <div class="label-item-meta">
-                        <span><strong>Lot:</strong> {{ label.lotNumber || '-' }}</span>
-                        <span><strong>Date:</strong> {{ labelDate(label) }}</span>
-                        <span><strong>Langue:</strong> {{ label.language || '-' }}</span>
-                      </div>
+              <p>Aucune étiquette liée à ce produit pour le moment.</p>
+
+              @if (!isVrac()) {
+                <a
+                  class="btn-create-label-direct"
+                  [routerLink]="['/labels/new']"
+                  [queryParams]="{ packagingId: sku.id }"
+                >
+                  <i class="fas fa-plus"></i>
+                  Créer une étiquette
+                </a>
+              }
+            </div>
+          } @else {
+            <div class="labels-summary">
+              <span class="labels-count">{{ relatedLabelsCount() }}</span>
+              <span class="labels-text">étiquette(s) trouvée(s)</span>
+            </div>
+
+            <div class="labels-list">
+              @for (label of relatedLabels; track label.id) {
+                <div class="label-item">
+                  <div class="label-item-main">
+                    <div class="label-item-top">
+                      <span class="label-code">{{ label.publicCode || label.lotNumber || 'Sans code' }}</span>
+                      <span class="label-status" [class.finalized]="label.status === 'FINALIZED'">
+                        {{ labelStatusLabel(label.status) }}
+                      </span>
                     </div>
 
-                    <div class="label-item-actions">
-                      <a class="btn-label-link" [routerLink]="['/labels', label.id]">Voir</a>
-                      <a class="btn-label-link secondary" [routerLink]="['/labels', label.id, 'edit']">Editer</a>
+                    <div class="label-item-meta">
+                      <span><strong>Lot:</strong> {{ label.lotNumber || '-' }}</span>
+                      <span><strong>Date:</strong> {{ labelDate(label) }}</span>
+                      <span><strong>Langue:</strong> {{ label.language || '-' }}</span>
                     </div>
                   </div>
-                }
-              </div>
-            }
-          </div>
+
+                  <div class="label-item-actions">
+                    <a class="btn-label-link" [routerLink]="['/labels', label.id]">Voir</a>
+                    <a class="btn-label-link secondary" [routerLink]="['/labels', label.id, 'edit']">Éditer</a>
+                  </div>
+                </div>
+              }
+            </div>
+          }
         </div>
-      </div>
+      </section>
     </div>
   }
 </div>
