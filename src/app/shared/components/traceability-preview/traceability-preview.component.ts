@@ -5,6 +5,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { ProductionTraceabilityService } from '../../services/production-traceability.service';
 import { ProductionGenealogy } from '../../models/production-genealogy.model';
+import { oilReceptionsFromGenealogy, OilReceptionDisplay } from '../../utils/traceability-display.util';
 
 @Component({
   selector: 'app-traceability-preview',
@@ -28,23 +29,19 @@ export class TraceabilityPreviewComponent implements OnChanges {
     }
   }
 
-  rootSource(): string {
-    const intake = this.genealogy()?.intakeChain;
-    if (intake?.length) {
-      const olive = intake.find((s) => s.type === 'OLIVE_RECEPTION');
-      const oil = intake.find((s) => s.type === 'OIL_RECEPTION');
-      if (olive) {
-        return `${olive.supplierName || '—'} · olive ${olive.lotNumber || '—'}`;
-      }
-      if (oil) {
-        return `${oil.supplierName || '—'} · huile ${oil.lotNumber || '—'}`;
-      }
+  oilReceptions(): OilReceptionDisplay[] {
+    return oilReceptionsFromGenealogy(this.genealogy());
+  }
+
+  receptionSummary(rec: OilReceptionDisplay): string {
+    const parts = [rec.supplierName || '—', rec.lotNumber ? `lot ${rec.lotNumber}` : ''].filter(Boolean);
+    if (rec.deliveryNumber) {
+      parts.push(`n° ${rec.deliveryNumber}`);
     }
-    const root = this.genealogy()?.rootSources?.[0];
-    if (!root) {
-      return 'Origine non résolue';
+    if (rec.quantityKg != null) {
+      parts.push(`${rec.quantityKg} kg`);
     }
-    return `${root.supplierName || '—'} · lot ${root.lotNumber || '—'}`;
+    return parts.join(' · ');
   }
 
   private loadGenealogy(): void {
