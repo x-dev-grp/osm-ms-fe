@@ -21,20 +21,35 @@
       <span class="meta-chip" *ngIf="useEventTree(ofItem.key)">
         {{ eventsForOf(ofItem.key).length }} événement(s)
       </span>
+      <span class="meta-chip accent" *ngIf="oilReceptionCount(ofItem.key, ofItem.value) > 1">
+        {{ oilReceptionCount(ofItem.key, ofItem.value) }} réceptions huile
+      </span>
     </div>
 
     <!-- Runtime event tree (preferred) -->
     <div class="genealogy-timeline event-tree" *ngIf="useEventTree(ofItem.key); else legacyTimelineTpl">
+      <ng-container *ngIf="eventsForOf(ofItem.key) as ofEvents">
       <div
         class="timeline-item"
-        *ngFor="let evt of eventsForOf(ofItem.key)"
+        *ngFor="let evt of ofEvents"
         [ngClass]="eventCssClass(evt.type)">
         <div class="marker"></div>
         <div class="content">
-          <span class="label">{{ eventTypeLabel(evt.type) }} · {{ eventPhaseLabel(evt.phase) }}</span>
+          <span class="label">{{ eventTypeLabel(evt.type, evt, ofEvents) }} · {{ eventPhaseLabel(evt.phase) }}</span>
           <div class="info-box" [class.accent]="evt.type === 'STORAGE' || evt.type === 'EXPEDITION'">
             <strong>{{ evt.title }}</strong>
             <small *ngIf="evt.timestamp">{{ evt.timestamp | date: 'dd/MM/yyyy HH:mm' }}</small>
+            <p class="event-meta" *ngIf="eventDetail(evt, 'deliveryNumber') as dn">
+              N° livraison : <code>{{ dn }}</code>
+            </p>
+            <p class="event-meta" *ngIf="eventDetail(evt, 'quantityKg') as qty">
+              Quantité : <strong>{{ qty }}</strong> kg
+            </p>
+            <p
+              class="event-meta"
+              *ngIf="(evt.type === 'OIL_RECEPTION' || evt.type === 'RECEPTION') && eventDetail(evt, 'supplierName') as sup">
+              Fournisseur : {{ sup }}
+            </p>
 
             <div class="qc-grid" *ngIf="eventQualityControls(evt) as qcs">
               <div class="qc-item" *ngFor="let qc of qcs | keyvalue">
@@ -52,14 +67,51 @@
           </div>
         </div>
       </div>
+      </ng-container>
     </div>
 
     <ng-template #legacyTimelineTpl>
       <div class="genealogy-timeline" *ngIf="genealogyFor(ofItem.value) as genea; else noGeneaTpl">
-        <div class="timeline-item root" *ngFor="let root of genea.rootSources">
+        <ng-container *ngIf="useLegacyIntakeChain(genea); else rootSourcesOnlyTpl">
+          <div
+            class="timeline-item"
+            *ngFor="let step of legacyIntakeSteps(genea); let i = index"
+            [ngClass]="intakeStepClass(step)">
+            <div class="marker"></div>
+            <div class="content">
+              <span class="label">{{ intakeStepTypeLabel(step.type) }}</span>
+              <div class="info-box">
+                <strong>
+                  <ng-container [ngSwitch]="step.type">
+                    <span *ngSwitchCase="'OIL_RECEPTION'">Réception huile — {{ step.supplierName || '—' }}</span>
+                    <span *ngSwitchCase="'OLIVE_RECEPTION'">Réception olive — {{ step.supplierName || '—' }}</span>
+                    <span *ngSwitchCase="'STORAGE_INTAKE'">Entrée en cuve {{ step.storageUnitName || '—' }}</span>
+                    <span *ngSwitchDefault>{{ step.type }}</span>
+                  </ng-container>
+                </strong>
+                <p *ngIf="step.lotNumber">Lot : <code>{{ step.lotNumber }}</code></p>
+                <p *ngIf="step.deliveryNumber">N° livraison : <code>{{ step.deliveryNumber }}</code></p>
+                <p *ngIf="step.quantityKg != null">Quantité : <strong>{{ step.quantityKg }}</strong> kg</p>
+                <div class="qc-grid" *ngIf="step.qualityControls && (step.qualityControls | keyvalue).length > 0">
+                  <div class="qc-item" *ngFor="let qc of step.qualityControls | keyvalue">
+                    <span class="qc-label">{{ qc.key }}:</span>
+                    <span class="qc-val">{{ qc.value }}</span>
+                  </div>
+                </div>
+                <small *ngIf="step.deliveryDate">{{ step.deliveryDate | date: 'dd/MM/yyyy HH:mm' }}</small>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-template #rootSourcesOnlyTpl>
+        <div class="timeline-item root" *ngFor="let root of genea.rootSources; let i = index">
           <div class="marker"></div>
           <div class="content">
-            <span class="label">Origine ({{ root.type }})</span>
+            <span class="label">
+              Origine ({{ root.type }})
+              <ng-container *ngIf="genea.rootSources && genea.rootSources.length > 1"> — {{ i + 1 }}/{{ genea.rootSources.length }}</ng-container>
+            </span>
             <div class="info-box">
               <strong>{{ root.supplierName }}</strong>
               <p>Lot vrac: <code>{{ root.lotNumber }}</code></p>
@@ -76,6 +128,7 @@
             </div>
           </div>
         </div>
+        </ng-template>
 
         <div class="timeline-item filt" *ngFor="let filt of genea.filtrations">
           <div class="marker"></div>

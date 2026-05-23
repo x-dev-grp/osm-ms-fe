@@ -10,9 +10,19 @@
   </div>
 
   <div class="preview-body" *ngIf="!loading() && genealogy() as genea">
-    <div class="preview-row">
+    <div class="preview-row" *ngIf="oilReceptions().length === 0">
       <mat-icon>eco</mat-icon>
-      <span><strong>Origine:</strong> {{ rootSource() }}</span>
+      <span><strong>Origine:</strong> Non résolue</span>
+    </div>
+    <div class="preview-row reception-row" *ngFor="let rec of oilReceptions()">
+      <mat-icon>local_shipping</mat-icon>
+      <span>
+        <strong>
+          Réception huile
+          <ng-container *ngIf="rec.total > 1"> ({{ rec.index }}/{{ rec.total }})</ng-container>:
+        </strong>
+        {{ receptionSummary(rec) }}
+      </span>
     </div>
     <div class="preview-row" *ngIf="genea.traceabilityLotId">
       <mat-icon>fingerprint</mat-icon>

@@ -10,6 +10,14 @@ import {
   genealogyFor,
   labelsFor
 } from '../../utils/traceability-snapshot.util';
+import {
+  countOilReceptionEvents,
+  intakeStepTypeLabel,
+  intakeStepsForLegacyTimeline,
+  oilReceptionOrdinal,
+  oilReceptionsFromGenealogy
+} from '../../utils/traceability-display.util';
+import { ProductionGenealogy, ProductionIntakeStep } from '../../models/production-genealogy.model';
 
 @Component({
   selector: 'app-traceability-timeline',
@@ -34,8 +42,33 @@ export class TraceabilityTimelineComponent {
     return labelsFor(this.traceabilityData, ofDetails);
   }
 
-  rootSourceFor(ofDetails: Record<string, unknown>): ProductionRootSource | null {
-    return this.genealogyFor(ofDetails)?.rootSources?.[0] ?? null;
+  oilReceptionCount(ofId: string, ofDetails: Record<string, unknown>): number {
+    if (this.useEventTree(ofId)) {
+      return countOilReceptionEvents(this.eventsForOf(ofId));
+    }
+    return oilReceptionsFromGenealogy(this.genealogyFor(ofDetails)).length;
+  }
+
+  oilReceptionsFor(ofDetails: Record<string, unknown>) {
+    return oilReceptionsFromGenealogy(this.genealogyFor(ofDetails));
+  }
+
+  legacyIntakeSteps(genea: ProductionGenealogy): ProductionIntakeStep[] {
+    return intakeStepsForLegacyTimeline(genea);
+  }
+
+  useLegacyIntakeChain(genea: ProductionGenealogy): boolean {
+    return this.legacyIntakeSteps(genea).length > 0;
+  }
+
+  intakeStepClass(step: ProductionIntakeStep): string {
+    if (step.type === 'STORAGE_INTAKE') {
+      return 'root storage-intake';
+    }
+    if (step.type === 'OLIVE_RECEPTION' || step.type === 'OIL_RECEPTION' || step.type === 'RECEPTION') {
+      return 'root';
+    }
+    return 'root';
   }
 
   ofDetailsEntries(): Array<{ key: string; value: Record<string, unknown> }> {
@@ -100,34 +133,61 @@ export class TraceabilityTimelineComponent {
     }
   }
 
-  eventTypeLabel(type: string | undefined): string {
+  eventTypeLabel(type: string | undefined, evt?: TraceabilityEvent, allEvents?: TraceabilityEvent[]): string {
+    let base: string;
     switch (type) {
       case 'OLIVE_RECEPTION':
-        return 'Réception olive';
+        base = 'Réception olive';
+        break;
       case 'OIL_RECEPTION':
       case 'RECEPTION':
-        return 'Réception huile';
+        base = 'Réception huile';
+        break;
       case 'TRITURATION':
-        return 'Trituration';
+        base = 'Trituration';
+        break;
       case 'STORAGE_INTAKE':
-        return 'Entrée en cuve';
+        base = 'Entrée en cuve';
+        break;
       case 'STORAGE':
-        return 'Stockage';
+        base = 'Stockage';
+        break;
       case 'FILTRATION':
-        return 'Filtration';
+        base = 'Filtration';
+        break;
       case 'OF':
-        return 'Ordre de fabrication';
+        base = 'Ordre de fabrication';
+        break;
       case 'OF_START':
-        return 'Démarrage OF';
+        base = 'Démarrage OF';
+        break;
       case 'OF_END':
-        return 'Fin OF';
+        base = 'Fin OF';
+        break;
       case 'LABEL':
-        return 'Étiquetage';
+        base = 'Étiquetage';
+        break;
       case 'EXPEDITION':
-        return 'Expédition';
+        base = 'Expédition';
+        break;
       default:
-        return type || '';
+        base = type || '';
     }
+
+    if (evt && allEvents) {
+      const ordinal = oilReceptionOrdinal(evt, allEvents);
+      if (ordinal != null) {
+        const total = countOilReceptionEvents(allEvents);
+        return `${base} (${ordinal}/${total})`;
+      }
+    }
+    return base;
+  }
+
+  intakeStepTypeLabel = intakeStepTypeLabel;
+
+  eventDetail(evt: TraceabilityEvent, key: string): unknown {
+    return evt.details?.[key];
   }
 
   eventQualityControls(evt: TraceabilityEvent): Record<string, string> | null {
