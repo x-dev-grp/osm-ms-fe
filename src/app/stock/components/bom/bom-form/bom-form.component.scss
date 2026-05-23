@@ -1,3 +1,5 @@
+@import '../../../styles/inventory-ui';
+
 // Variables (à adapter selon votre thème)
 $primary: #4361ee;
 $primary-dark: #3a56d4;
@@ -51,31 +53,158 @@ $border-radius-sm: 12px;
   background: linear-gradient(135deg, #667eea0d 0%, #764ba00d 100%);
   animation: slideIn 0.5s ease-out;
 
-  // Lien de navigation (optionnel)
-  > a {
-    display: inline-flex;
+  .breadcrumb {
+    display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-bottom: 1.5rem;
-    padding: 0.5rem 1rem;
-    background: $white;
-    border-radius: 30px;
-    color: $primary;
-    text-decoration: none;
-    font-weight: 500;
-    box-shadow: $shadow-sm;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    color: $inv-muted;
 
+    a {
+      color: $primary;
+      text-decoration: none;
+      font-weight: 500;
 
-    i {
-      font-size: 1rem;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .header-text {
+    flex: 1;
+  }
+
+  .status-pill.active {
+    @include inv-pill(rgba($success, 0.15), $inv-success);
+    align-self: flex-start;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+
+    .span-2 {
+      grid-column: span 2;
     }
 
-    &:hover {
-      background: $primary;
-      color: $white;
-      transform: translateY(-2px);
-      box-shadow: $shadow-md;
+    .flex-1 { flex: 1; }
+    .flex-2 { flex: 2; }
+  }
+
+  .req {
+    color: $danger;
+  }
+
+  .toggle-card {
+    padding: 1rem;
+    border: 1px solid $inv-border;
+    border-radius: $inv-radius-sm;
+    background: #f8fafc;
+    transition: border-color 0.2s, background 0.2s;
+
+    &.on {
+      border-color: rgba($success, 0.4);
+      background: $inv-success-bg;
     }
+
+    .toggle-label {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: pointer;
+      margin: 0;
+    }
+
+    .toggle-input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-track {
+      width: 2.75rem;
+      height: 1.5rem;
+      background: #cbd5e1;
+      border-radius: 999px;
+      position: relative;
+      flex-shrink: 0;
+      transition: background 0.2s;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 1.1rem;
+        height: 1.1rem;
+        background: white;
+        border-radius: 50%;
+        transition: transform 0.2s;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      }
+    }
+
+    .toggle-input:checked + .toggle-track {
+      background: $inv-success;
+
+      &::after {
+        transform: translateX(1.25rem);
+      }
+    }
+
+    .toggle-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+
+      small {
+        color: $inv-muted;
+        font-weight: 400;
+      }
+    }
+  }
+
+  .empty-lines {
+    color: $inv-muted;
+    font-size: 0.9rem;
+    margin: 0 0 1rem;
+    font-style: italic;
+  }
+
+  .lines-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .save-hint {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1rem 0;
+    padding: 0.65rem 0.85rem;
+    font-size: 0.85rem;
+    color: $inv-muted;
+    background: #f8fafc;
+    border-radius: $inv-radius-sm;
+  }
+
+  .form-actions.sticky {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    margin-top: 1.5rem;
+    padding: 1rem 0;
+    background: linear-gradient(to top, #fff 70%, transparent);
+  }
+
+  .readonly {
+    background: #f1f5f9;
+    cursor: not-allowed;
   }
 
   // En-tête
@@ -279,6 +408,21 @@ $border-radius-sm: 12px;
           color: $danger;
           font-size: 0.85rem;
           margin-top: 0.25rem;
+        }
+
+        .checkbox-label {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-weight: 500;
+          cursor: pointer;
+        }
+
+        .hint {
+          display: block;
+          margin-top: 0.35rem;
+          color: $gray-600;
+          font-size: 0.8rem;
         }
       }
 

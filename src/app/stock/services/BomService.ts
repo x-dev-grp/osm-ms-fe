@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {Bom} from "../models/Bom";
+import {MaterialNeedLine} from "../../shared/models/material-need-line.model";
 import {environment} from "../../../environments/environment";
 
 
@@ -38,5 +39,19 @@ export class BomService {
 
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  getActiveBomForProduct(productId: string): Observable<Bom | null> {
+    return this.http.get<Bom>(`${this.apiUrl}/product/${productId}/active`);
+  }
+
+  activate(id: string): Observable<Bom> {
+    return this.http.put<Bom>(`${this.apiUrl}/${id}/activate`, {});
+  }
+
+  getMaterialNeeds(bomId: string, quantity: number): Observable<MaterialNeedLine[]> {
+    return this.http.get<MaterialNeedLine[]>(`${this.apiUrl}/${bomId}/material-needs`, {
+      params: { quantity: String(quantity) }
+    });
   }
 }

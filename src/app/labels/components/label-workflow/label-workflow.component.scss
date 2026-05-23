@@ -1,3 +1,4 @@
+* { box-sizing: border-box; }
 // label-workflow.component.scss
 $olive-50: #f8f9f4;
 $olive-100: #f1f3e8;
@@ -252,7 +253,7 @@ $gold: #d4af37;
 
 /* FORM CONTROLS */
 .form-control {
-  width: 100%;
+  width: 100%; box-sizing: border-box;
   height: 44px;
   padding: 0 14px;
   background: #ffffff;
@@ -342,7 +343,7 @@ textarea.form-control {
 
   .mat-select-trigger,
   .mat-mdc-select-trigger {
-    width: 100%;
+    width: 100%; box-sizing: border-box;
   }
 }
 
@@ -833,3 +834,4 @@ textarea.form-control {
     }
   }
 }
+

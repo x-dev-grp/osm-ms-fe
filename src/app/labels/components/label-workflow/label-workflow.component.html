@@ -89,6 +89,11 @@
               </div>
             </div>
 
+            <app-traceability-preview
+              class="span-full"
+              [anchorId]="traceabilityAnchorId()">
+            </app-traceability-preview>
+
             <div class="form-group span-full">
               <label>Packaging (produit) <span class="req">*</span></label>
               <select class="form-control" formControlName="packagingId" [disabled]="!!currentLabel"

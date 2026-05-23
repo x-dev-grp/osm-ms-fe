@@ -1,3 +1,4 @@
+* { box-sizing: border-box; }
 $primary: #4361ee;
 $primary-dark: #3a56d4;
 $primary-light: #4895ef;
@@ -232,7 +233,7 @@ $border-radius-sm: 12px;
   border: 1px solid rgba($primary, 0.1);
 
   .modern-table {
-    width: 100%;
+    width: 100%; overflow-x: auto; min-width: 0;
     border-collapse: separate;
     border-spacing: 0;
 
@@ -402,3 +403,4 @@ $border-radius-sm: 12px;
     }
   }
 }
+

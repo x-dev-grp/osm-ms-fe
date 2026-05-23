@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Stock } from '../models/stock.model';
 import {environment} from "../../../environments/environment";
 import {MouvementStock} from "../models/mouvement-stock.model";
+import { ArticleStockSummary } from '../models/article-stock-summary.model';
 
 
 @Injectable({
@@ -32,6 +33,10 @@ export class StockService {
   }
   getAllStocks(): Observable<Stock[]> {
     return this.http.get<Stock[]>(this.apiUrl);
+  }
+
+  getStockSummary(): Observable<ArticleStockSummary[]> {
+    return this.http.get<ArticleStockSummary[]>(`${this.apiUrl}/summary`);
   }
   ajusterStock(articleId: string, quantite: number, motif?: string): Observable<Stock> {
     return this.http.put<Stock>(`${this.apiUrl}/${articleId}/ajuster`, {quantite, motif});

@@ -5,9 +5,9 @@ import { FormsModule } from '@angular/forms';
 import { ArticleService } from '../../../services/article.service';
 import { StockService } from '../../../services/stock.service';
 import { Article, CategorieArticle } from '../../../models/article.model';
-import { Subject, forkJoin, of } from 'rxjs';
+import { ArticleStockSummary } from '../../../models/article-stock-summary.model';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-article-list',
@@ -25,7 +25,7 @@ export class ArticleListComponent implements OnInit, OnDestroy {
   loading = false;
   togglingId: string | null = null;
   activeDropdown: string | null = null;
-  articleStockMap: Record<string, number> = {};
+  stockSummaryMap: Record<string, ArticleStockSummary> = {};
 
   filters = {
     nom: '',
@@ -62,7 +62,7 @@ export class ArticleListComponent implements OnInit, OnDestroy {
             const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
             return dateB - dateA;
           });
-          this.loadStockQuantities(this.articles);
+          this.loadStockQuantities();
           this.applyFilters();
           this.loading = false;
         },
@@ -73,37 +73,52 @@ export class ArticleListComponent implements OnInit, OnDestroy {
       });
   }
 
-  private loadStockQuantities(articles: Article[]): void {
-    const calls = articles
-      .filter((a) => !!a.id)
-      .map((article) =>
-        this.stockService.getStockByArticle(article.id!).pipe(
-          catchError(() => of(null))
-        )
-      );
-
-    if (!calls.length) {
-      this.articleStockMap = {};
-      return;
-    }
-
-    forkJoin(calls)
+  private loadStockQuantities(): void {
+    this.stockService.getStockSummary()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((stocks) => {
-        const map: Record<string, number> = {};
-        let idx = 0;
-        for (const article of articles) {
-          if (!article.id) continue;
-          const stock = stocks[idx++];
-          map[article.id] = stock?.quantiteActuelle ?? 0;
+      .subscribe({
+        next: (summaries) => {
+          const map: Record<string, ArticleStockSummary> = {};
+          summaries.forEach((s) => {
+            if (s.articleId) {
+              map[s.articleId] = s;
+            }
+          });
+          this.stockSummaryMap = map;
+        },
+        error: () => {
+          this.stockSummaryMap = {};
         }
-        this.articleStockMap = map;
       });
   }
 
   getArticleStock(articleId?: string): number {
     if (!articleId) return 0;
-    return this.articleStockMap[articleId] ?? 0;
+    return this.stockSummaryMap[articleId]?.quantiteActuelle ?? 0;
+  }
+
+  getArticleDisponible(articleId?: string): number {
+    if (!articleId) return 0;
+    return this.stockSummaryMap[articleId]?.quantiteDisponible ?? 0;
+  }
+
+  getArticleReserve(articleId?: string): number {
+    if (!articleId) return 0;
+    return this.stockSummaryMap[articleId]?.quantiteReservee ?? 0;
+  }
+
+  isBelowMinimum(article: Article): boolean {
+    if (!article.id) return false;
+    if (this.stockSummaryMap[article.id]?.belowMinimum) {
+      return true;
+    }
+    const qty = this.getArticleStock(article.id);
+    const min = Number(article.stockMinimum ?? 0);
+    return min > 0 && qty <= min;
+  }
+
+  get stockAlertCount(): number {
+    return this.filteredArticles.filter(a => this.isBelowMinimum(a)).length;
   }
 
   applyFilters(): void {

@@ -4,6 +4,7 @@ import autoTable from 'jspdf-autotable';
 import { TranslateService } from '@ngx-translate/core';
 import { PdfExpeditionConfig } from '../models/pdf-config.model';
 import { DatePipe } from '@angular/common';
+import { findOfInfoForGenealogyKey } from '../utils/traceability-snapshot.util';
 
 @Injectable({ providedIn: 'root' })
 export class PdfGeneratorExpeditionService {
@@ -95,7 +96,37 @@ export class PdfGeneratorExpeditionService {
       currentY = (doc as any).lastAutoTable.finalY + 20;
 
       // --- 4. TRACEABILITY GENEALOGY (The Highlight) ---
-      if (config.traceability && config.traceability.oilGenealogy) {
+      if (config.traceability?.eventChains?.length) {
+        if (currentY > 200) {
+          doc.addPage();
+          currentY = 20;
+        }
+        doc.setFontSize(fsL);
+        doc.setFont(this._fontName, 'bold');
+        doc.setTextColor(40, 40, 40);
+        doc.text(t('PDF.TRACEABILITY_GENEALOGY'), marginLeft, currentY);
+        currentY += 10;
+
+        const snapshot = config.traceability;
+        for (const chain of snapshot.eventChains as Array<{ ofCode?: string; events?: Array<{ sequence?: number; title?: string; type?: string; timestamp?: string; phase?: string }> }>) {
+          doc.setFontSize(fsM);
+          doc.setFont(this._fontName, 'bold');
+          doc.setTextColor(59, 130, 246);
+          doc.text(`OF: ${chain.ofCode || '—'}`, marginLeft, currentY);
+          currentY += 8;
+          const events = [...(chain.events || [])].sort((a, b) => (a.sequence ?? 0) - (b.sequence ?? 0));
+          currentY = this.drawEventChain(doc, events, marginLeft + 5, currentY);
+          currentY += 12;
+          if (currentY > 250) {
+            doc.addPage();
+            currentY = 20;
+          }
+        }
+        doc.setFontSize(fsS);
+        doc.setTextColor(150, 150, 150);
+        doc.setFont(this._fontName, 'italic');
+        doc.text(`${t('PDF.SNAPSHOT_CAPTURED_AT')}: ${this.datePipe.transform(snapshot.capturedAt, 'dd/MM/yyyy HH:mm')}`, marginLeft, currentY);
+      } else if (config.traceability && config.traceability.oilGenealogy) {
         // Check if we need a new page
         if (currentY > 200) {
           doc.addPage();
@@ -112,9 +143,9 @@ export class PdfGeneratorExpeditionService {
         const genealogyMap = snapshot.oilGenealogy;
         const ofDetails = snapshot.ofDetails;
 
-        for (const lotVracId in genealogyMap) {
-          const genea = genealogyMap[lotVracId];
-          const ofInfo = Object.values(ofDetails).find((o: any) => o.lotVracId === lotVracId) as any;
+        for (const anchorKey in genealogyMap) {
+          const genea = genealogyMap[anchorKey];
+          const ofInfo = findOfInfoForGenealogyKey(ofDetails, anchorKey);
 
           if (!genea) continue;
 
@@ -122,7 +153,8 @@ export class PdfGeneratorExpeditionService {
           doc.setFontSize(fsM);
           doc.setFont(this._fontName, 'bold');
           doc.setTextColor(59, 130, 246); // Blue color
-          doc.text(`OF: ${ofInfo?.code || '—'} | Lot Vrac: ${lotVracId}`, marginLeft, currentY);
+          const lotLabel = ofInfo?.['traceabilityLotId'] || ofInfo?.['lotVracId'] || anchorKey;
+          doc.text(`OF: ${ofInfo?.['code'] || '—'} | Lot: ${lotLabel}`, marginLeft, currentY);
           currentY += 8;
 
           // Draw Timeline
@@ -153,6 +185,43 @@ export class PdfGeneratorExpeditionService {
     } catch (err) {
       console.error('Error generating Expedition PDF', err);
     }
+  }
+
+  private drawEventChain(
+    doc: jsPDF,
+    events: Array<{ title?: string; type?: string; timestamp?: string; phase?: string }>,
+    x: number,
+    y: number
+  ): number {
+    let currentY = y;
+    const markerX = x + 2;
+    const contentX = x + 10;
+    const circleRadius = 1.5;
+    const startY = y;
+
+    for (const evt of events) {
+      this.drawMarker(doc, markerX, currentY, '#64748b', circleRadius);
+      doc.setFontSize(8);
+      doc.setFont(this._fontName, 'bold');
+      doc.setTextColor(100, 100, 100);
+      doc.text(`${evt.phase || ''} · ${evt.type || ''}`, contentX, currentY);
+      currentY += 5;
+      doc.setFontSize(9);
+      doc.setFont(this._fontName, 'normal');
+      doc.setTextColor(0, 0, 0);
+      doc.text(evt.title || '—', contentX, currentY);
+      currentY += 4;
+      if (evt.timestamp) {
+        doc.setFontSize(8);
+        doc.text(this.datePipe.transform(evt.timestamp, 'dd/MM/yyyy HH:mm') || '—', contentX, currentY);
+        currentY += 4;
+      }
+      currentY += 6;
+    }
+
+    doc.setDrawColor(200, 200, 200);
+    doc.line(markerX, startY + circleRadius, markerX, currentY - circleRadius);
+    return currentY;
   }
 
   private drawTimeline(doc: jsPDF, genea: any, x: number, y: number): number {

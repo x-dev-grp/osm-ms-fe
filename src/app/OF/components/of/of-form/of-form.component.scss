@@ -24,6 +24,12 @@ $shadow:    rgba(0, 0, 0, 0.05);
   min-height: 100vh;
 }
 
+.material-preview-block {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px dashed #d4d4c8;
+}
+
 .form-section {
   margin-bottom: 24px;
   

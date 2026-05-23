@@ -43,6 +43,7 @@ import { CompanyProfileService } from '../../../shared/services/company-profile.
 import { CompanyProfile } from '../../../shared/models/CompanyProfile';
 import { ProductionTraceabilityService } from '../../../shared/services/production-traceability.service';
 import { ProductionGenealogy } from '../../../shared/models/production-genealogy.model';
+import { TraceabilityPreviewComponent } from '../../../shared/components/traceability-preview/traceability-preview.component';
 
 @Component({
   selector: 'app-label-workflow',
@@ -59,7 +60,8 @@ import { ProductionGenealogy } from '../../../shared/models/production-genealogy
     MatSelectModule,
     MatOptionModule,
     MatDividerModule,
-    MatExpansionModule
+    MatExpansionModule,
+    TraceabilityPreviewComponent
   ],
   templateUrl: './label-workflow.component.html',
   styleUrls: ['./label-workflow.component.scss']
@@ -497,6 +499,11 @@ export class LabelWorkflowComponent implements OnInit {
 
   selectedFiltrationOperation(): FiltrationOperation | undefined {
     return this.resolveFiltrationOperation(this.labelForm.getRawValue().lotId || '');
+  }
+
+  traceabilityAnchorId(): string | null {
+    const selectedOp = this.selectedFiltrationOperation();
+    return selectedOp?.target?.id || selectedOp?.source?.id || null;
   }
 
   selectedSourceStorageLabel(): string {

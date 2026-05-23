@@ -7,9 +7,9 @@
         <mat-icon>account_tree</mat-icon>
       </div>
 
-        <div class="hero-info">
-          <h1 class="page-title d-flex align-items-center gap-2">
-            {{ p.code || 'Projet' }}
+        <div class="hero-info w-100 d-flex flex-column gap-3">
+          <div class="title-row">
+            <h1>{{ p.code || 'Projet' }}</h1>
             <span class="status-badge ms-2" [ngClass]="{
               'status-failed': p.statut === 'FAILED',
               'status-completed': p.statut === 'COMPLETED' || p.statut === 'VALIDE' || p.statut === 'ACCEPTE',
@@ -20,43 +20,30 @@
               <i class="fas fa-circle" style="font-size: 8px;"></i>
               {{ p.statut || '-' }}
             </span>
-          </h1>
+          </div>
 
-          <p class="subtitle">
-            Client: {{ p.client?.nom || '-' }}
+          <p>
+            Client :
+            <strong>{{ p.client?.nom || '-' }}</strong>
           </p>
-      <div class="hero-info">
-        <div class="title-row">
-          <h1>{{ p.code || 'Projet' }}</h1>
 
-          <span class="status-badge">
-            <span class="status-dot"></span>
-            {{ p.statut || '-' }}
-          </span>
+          <div class="actions-bar">
+            <button class="btn-outline" (click)="onBack()">
+              <mat-icon>arrow_back</mat-icon>
+              Retour
+            </button>
+
+            <button class="btn-primary" [disabled]="p.statut === 'FAILED'" (click)="openExpedition()">
+              <mat-icon>local_shipping</mat-icon>
+              Expédition
+            </button>
+
+            <button class="btn-light-primary" (click)="openTraceability()">
+              <mat-icon>history_edu</mat-icon>
+              Traçabilité
+            </button>
+          </div>
         </div>
-
-        <p>
-          Client :
-          <strong>{{ p.client?.nom || '-' }}</strong>
-        </p>
-
-        <div class="actions-bar">
-          <button class="btn-outline" (click)="onBack()">
-            <mat-icon>arrow_back</mat-icon>
-            Retour
-          </button>
-
-          <button class="btn-primary" [disabled]="p.statut === 'FAILED'" (click)="openExpedition()">
-            <mat-icon>local_shipping</mat-icon>
-            Expédition
-          </button>
-
-          <button class="btn-light-primary" (click)="openTraceability()">
-            <mat-icon>history_edu</mat-icon>
-            Traçabilité
-          </button>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -71,6 +58,20 @@
     </div>
     <button class="btn btn-danger btn-sm" [routerLink]="['/projets', p.id]" style="background-color: #c5221f; border: none; color: white; padding: 8px 16px; border-radius: 6px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
       <mat-icon style="font-size: 16px; width: 16px; height: 16px;">edit</mat-icon> Modifier le projet
+    </button>
+  </div>
+
+  <!-- Success Banner for Finished OFs -->
+  <div class="alert alert-success d-flex align-items-center justify-content-between p-3 mb-4 rounded-3 border no-print" *ngIf="allOfsFinished && p.statut !== 'FAILED'" style="background-color: #e6fce8; border-color: #c2f5cb; color: #1ba538; margin-top: 16px;">
+    <div class="d-flex align-items-center gap-3">
+      <mat-icon style="color: #1fc53b; font-size: 28px; width: 28px; height: 28px;">check_circle</mat-icon>
+      <div>
+        <strong style="font-size: 16px; display: block; margin-bottom: 2px;">Production terminée</strong>
+        <span class="small" style="color: #14601c !important;">Tous les Ordres de Fabrication de ce projet sont terminés. Vous pouvez maintenant procéder à l'expédition.</span>
+      </div>
+    </div>
+    <button class="btn btn-success btn-sm" (click)="openExpedition()" style="background-color: #1fc53b; border: none; color: white; padding: 8px 16px; border-radius: 6px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
+      <mat-icon style="font-size: 16px; width: 16px; height: 16px;">local_shipping</mat-icon> Expédier
     </button>
   </div>
 

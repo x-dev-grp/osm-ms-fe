@@ -1,3 +1,4 @@
+* { box-sizing: border-box; }
 $olive-dark: #203b13;
 $olive-main: #44651f;
 $olive-light: #eef4e4;
@@ -201,7 +202,7 @@ label {
 /* Inputs */
 
 .form-control {
-  width: 100%;
+  width: 100%; box-sizing: border-box;
   min-height: 50px;
   padding: 0 16px;
   border: 1px solid $input-border;
@@ -459,3 +460,4 @@ textarea.form-control {
     margin-left: 0;
   }
 }
+

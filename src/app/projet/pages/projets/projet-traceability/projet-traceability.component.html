@@ -18,119 +18,13 @@
 
   <div class="alert-info" *ngIf="traceabilityData">
     <mat-icon>info</mat-icon>
-    <span>Ce rapport affiche la traçabilité en direct pour tous les ordres de fabrication associés à ce projet.</span>
+    <span>
+      Chronologie : réception → stockage → filtration → conditionnement → expédition.
+    </span>
   </div>
 
   <div class="content-container" *ngIf="traceabilityData; else noDataTpl">
-
-    <!-- OF Loop -->
-    <div class="of-card card" *ngFor="let ofItem of (traceabilityData.ofDetails | keyvalue)">
-      <div class="of-header">
-        <div class="of-title">
-          <mat-icon>inventory_2</mat-icon>
-          <div>
-            <h3>OF: {{ (ofItem.value | any).code }}</h3>
-            <span class="sku">{{ (ofItem.value | any).articleName }}</span>
-          </div>
-        </div>
-        <div class="of-stats">
-          <span class="badge">Statut: {{ (ofItem.value | any).status }}</span>
-          <span class="badge">Qté: {{ (ofItem.value | any).quantityGood }} / {{ (ofItem.value | any).quantityTarget }}</span>
-        </div>
-      </div>
-
-      <div class="traceability-meta">
-        <span class="meta-chip">Traceabilite: {{ ofItem.value.traceabilityLotId || ofItem.value.lotVracId ? 'Verifiee' : 'A verifier' }}</span>
-        <span class="meta-chip" *ngIf="genealogyFor(ofItem.value) as geneaMeta">Lot vrac: {{ geneaMeta.lotNumber || '-' }}</span>
-      </div>
-
-      <!-- Timeline -->
-      <div class="genealogy-timeline" *ngIf="genealogyFor(ofItem.value) as genea; else noGeneaTpl">
-
-        <!-- Root Sources -->
-        <div class="timeline-item root" *ngFor="let root of genea.rootSources">
-          <div class="marker"></div>
-          <div class="content">
-            <span class="label">Origine ({{ root.type }})</span>
-            <div class="info-box">
-              <strong>{{ root.supplierName }}</strong>
-              <p>Lot vrac: <code>{{ root.lotNumber }}</code></p>
-
-              <!-- QC Results for Root -->
-              <div class="qc-grid" *ngIf="root.qualityControls && (root.qualityControls | keyvalue).length > 0">
-                <div class="qc-item" *ngFor="let qc of root.qualityControls | keyvalue">
-                  <span class="qc-label">{{ qc.key }}:</span>
-                  <span class="qc-val">{{ qc.value }}</span>
-                </div>
-              </div>
-
-              <small>{{ root.date | date: 'dd/MM/yyyy' }} <span *ngIf="root.extra?.storageUnitName">| Cuve: {{ root.extra.storageUnitName }}</span></small>
-            </div>
-          </div>
-        </div>
-
-        <!-- Filtrations -->
-        <div class="timeline-item filt" *ngFor="let filt of genea.filtrations">
-          <div class="marker"></div>
-          <div class="content">
-            <span class="label">Filtration</span>
-            <div class="info-box">
-              <strong>Lot Cible: <code>{{ filt.targetLotNumber }}</code></strong>
-              <p>Volume: {{ filt.volumeFiltered }} L <span *ngIf="filt.sourceStorageUnitName">| Source: {{ filt.sourceStorageUnitName }}</span></p>
-              <small>{{ filt.timestamp | date: 'dd/MM/yyyy HH:mm' }}</small>
-            </div>
-          </div>
-        </div>
-
-        <!-- Conditionnement (Labels) -->
-        <div class="conditioning-section" *ngIf="labelsFor(ofItem.value) as labels">
-          <h4 class="sub-title">Qualité & Certification Conditionnement</h4>
-          <div class="label-qc-card" *ngFor="let label of labels">
-             <div class="label-info">
-                <strong>Lot Conditionné: {{ label.lotNumber }}</strong>
-                <p class="traceability-line">Traceabilite: {{ label.traceabilityLotId ? 'Verifiee' : 'A verifier' }}</p>
-                <div class="qc-grid">
-                  <div class="qc-item" *ngIf="label.sensoryProfile">
-                    <span class="qc-label">Profil Sensoriel:</span>
-                    <span class="qc-val">{{ label.sensoryProfile }}</span>
-                  </div>
-                  <div class="qc-item" *ngIf="label.extractionMethod">
-                    <span class="qc-label">Méthode d'extraction:</span>
-                    <span class="qc-val">{{ label.extractionMethod }}</span>
-                  </div>
-                </div>
-                <div class="certs" *ngIf="label.certifications?.length > 0">
-                   <span class="cert-tag" *ngFor="let cert of label.certifications">
-                     <mat-icon>verified</mat-icon> {{ cert }}
-                   </span>
-                </div>
-             </div>
-          </div>
-        </div>
-
-        <!-- Final Unit -->
-        <div class="timeline-item final">
-          <div class="marker"></div>
-          <div class="content">
-            <span class="label">Unité de Stockage Finale</span>
-            <div class="info-box accent">
-              <strong>{{ genea.storageUnitName }}</strong>
-              <p>Lot final: <code>{{ genea.lotNumber }}</code></p>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <ng-template #noGeneaTpl>
-        <div class="empty-mini">
-          <mat-icon>warning_amber</mat-icon>
-          <p>Aucune donnée de généalogie huile pour ce lot.</p>
-        </div>
-      </ng-template>
-
-    </div>
-
+    <app-traceability-timeline [traceabilityData]="traceabilityData"></app-traceability-timeline>
   </div>
 
   <p class="footer" *ngIf="traceabilityData">Généré le {{ traceabilityData.capturedAt | date: 'dd/MM/yyyy HH:mm' }}</p>

@@ -1,70 +1,105 @@
-<link rel="stylesheet" href="bom-detail.component.scss">
 <div class="bom-detail-page">
-  <!-- En-tête -->
-  <div class="detail-header">
-    <button class="btn-back-floating" [routerLink]="['/stock/boms']">
+  <header class="detail-header">
+    <button class="btn-back-floating" routerLink="/stock/boms" type="button" aria-label="Retour">
       <i class="fas fa-arrow-left"></i>
     </button>
     <div class="header-left">
-      <h2 class="page-title">Détail de la Nomenclature</h2>
-      <p class="page-subtitle" *ngIf="bom">Version {{ bom.version }}</p>
+      <h2 class="page-title">Nomenclature</h2>
+      <p class="page-subtitle" *ngIf="bom">
+        <span class="version-tag">{{ bom.version }}</span>
+        <span class="status-pill active" *ngIf="bom.active"><i class="fas fa-star"></i> Active</span>
+        <span class="status-pill inactive" *ngIf="!bom.active">Inactive</span>
+      </p>
     </div>
     <div class="header-actions" *ngIf="bom">
-      <button class="btn-action edit" [routerLink]="['/stock/boms', bom.id, 'editer']">
+      <button
+        class="btn-action activate"
+        type="button"
+        *ngIf="!bom.active"
+        [disabled]="activating"
+        (click)="activateBom()">
+        <i class="fas fa-check-circle"></i>
+        {{ activating ? 'Activation…' : 'Définir active' }}
+      </button>
+      <button class="btn-action edit" [routerLink]="['/stock/boms', bom.id, 'editer']" type="button">
         <i class="fas fa-edit"></i> Modifier
       </button>
     </div>
-  </div>
+  </header>
 
-  <!-- Loading -->
   <div *ngIf="loading" class="loading-container">
     <div class="spinner-border"></div>
-    <p>Chargement de la Nomenclature...</p>
+    <p>Chargement de la nomenclature…</p>
   </div>
 
-  <!-- Contenu -->
-  <div *ngIf="!loading && bom" class="detail-grid">
-    <!-- Carte infos générales -->
-    <div class="card-box info-card">
-      <h5 class="card-title">Informations générales</h5>
-      <div class="info-row">
-        <span>Produit</span>
-        <strong>{{ bom.productName || bom.skuCode || bom.productId || bom.skuId }}</strong>
-      </div>
-      <div class="info-row">
-        <span>Version</span>
-        <strong>{{ bom.version }}</strong>
-      </div>
-      <div class="info-row" *ngIf="bom.id">
-        <span>ID</span>
-        <small>{{ bom.id }}</small>
-      </div>
+  <ng-container *ngIf="!loading && bom">
+    <div class="detail-grid">
+      <aside class="card-box info-card">
+        <h5 class="card-title"><i class="fas fa-info-circle"></i> Informations</h5>
+        <div class="info-row">
+          <span>Produit fini</span>
+          <strong>{{ bom.productName || bom.skuCode || '—' }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Version</span>
+          <strong>{{ bom.version }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Statut</span>
+          <span class="status-pill active" *ngIf="bom.active">Active</span>
+          <span class="status-pill inactive" *ngIf="!bom.active">Inactive</span>
+        </div>
+        <div class="info-row">
+          <span>Composants</span>
+          <strong>{{ bom.lines.length }} article(s)</strong>
+        </div>
+      </aside>
+
+      <section class="card-box components-card">
+        <h5 class="card-title"><i class="fas fa-list-check"></i> Composants par unité</h5>
+        <div class="table-wrap">
+          <table class="components-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Article</th>
+                <th class="num">Qté / unité</th>
+                <th>Unité</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let line of bom.lines; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ line.articleName || line.articleId }}</td>
+                <td class="num">{{ line.quantity }}</td>
+                <td>{{ line.unitOfMeasure || '—' }}</td>
+              </tr>
+              <tr *ngIf="bom.lines.length === 0">
+                <td colspan="4" class="empty-row">Aucun composant défini</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
     </div>
 
-    <!-- Carte liste des composants -->
-    <div class="card-box components-card">
-      <h5 class="card-title">Composants ({{ bom.lines.length }})</h5>
-      <table class="components-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Composant</th>
-            <th>Quantité</th>
-            <th>Unité</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let line of bom.lines; let i = index">
-            <td>{{ i + 1 }}</td>
-            <td>{{ line.articleName || line.articleId }}</td>
-            <td>{{ line.quantity }}</td>
-            <td>{{ line.unitOfMeasure || '-' }}</td>
-          </tr>
-          <tr *ngIf="bom.lines.length === 0">
-            <td colspan="4" class="empty-row">Aucun composant défini</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+    <section class="preview-section">
+      <div class="preview-controls">
+        <label for="previewQty">Simuler les besoins pour</label>
+        <input
+          id="previewQty"
+          type="number"
+          min="1"
+          step="1"
+          class="qty-input"
+          [(ngModel)]="previewQuantity" />
+        <span>unités produites</span>
+      </div>
+      <app-material-needs-preview
+        [bomId]="bom.id!"
+        [quantity]="previewQuantity"
+        title="Besoins matières vs stock">
+      </app-material-needs-preview>
+    </section>
+  </ng-container>
 </div>

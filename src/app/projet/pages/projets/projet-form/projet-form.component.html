@@ -215,6 +215,15 @@
               </table>
             </div>
 
+            <div class="material-preview-block" *ngIf="materialPreviewBomId && materialPreviewQuantity > 0">
+              <app-material-needs-preview
+                [bomId]="materialPreviewBomId"
+                [quantity]="materialPreviewQuantity"
+                [useReservedStock]="true"
+                title="Vérification stock avant réservation">
+              </app-material-needs-preview>
+            </div>
+
             <div class="summary-footer">
               <i class="fas fa-shield-alt"></i>
               <span>

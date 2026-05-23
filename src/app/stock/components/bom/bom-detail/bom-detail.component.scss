@@ -1,3 +1,5 @@
+@import '../../../styles/inventory-ui';
+
 // Variables (à adapter selon votre structure)
 $primary: #4361ee;
 $primary-dark: #3a56d4;
@@ -118,6 +120,19 @@ $border-radius-sm: 12px;
           &:hover {
             background: $primary;
             color: $white;
+          }
+        }
+
+        &.activate {
+          background: rgba($success, 0.12);
+          color: darken($success, 8%);
+          &:hover:not(:disabled) {
+            background: $success;
+            color: $white;
+          }
+          &:disabled {
+            opacity: 0.7;
+            cursor: wait;
           }
         }
 
@@ -293,6 +308,62 @@ $border-radius-sm: 12px;
         }
       }
     }
+  }
+
+  .version-tag {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    margin-right: 0.5rem;
+    background: #f1f5f9;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+
+  .status-pill {
+    @include inv-pill(#f1f5f9, $gray-600);
+    font-size: 0.75rem;
+
+    &.active {
+      @include inv-pill(rgba($success, 0.15), $inv-success);
+    }
+
+    &.inactive {
+      @include inv-pill(#f1f5f9, $inv-muted);
+    }
+  }
+
+  .preview-section {
+    margin-top: 1.5rem;
+
+    .preview-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.65rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      color: $inv-muted;
+
+      .qty-input {
+        width: 5.5rem;
+        padding: 0.4rem 0.6rem;
+        border: 1px solid $inv-border;
+        border-radius: $inv-radius-sm;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: $inv-radius-sm;
+    border: 1px solid $inv-border;
+  }
+
+  th.num,
+  td.num {
+    text-align: right;
   }
 }
 

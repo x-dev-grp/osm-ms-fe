@@ -266,10 +266,7 @@ export class SkuFormComponent implements OnInit {
       return;
     }
 
-    if (this.isNonVrac() && this.bomLines.length === 0) {
-      this.toast.warning('Une nomenclature (BOM) est obligatoire pour un produit conditionne.');
-      return;
-    }
+    // Nomenclature (BOM) is now optional for product creation.
 
     this.submitting = true;
     const sku: SKU = this.skuForm.getRawValue();

@@ -42,6 +42,11 @@ export class ProjetDetailComponent implements OnInit {
     return this.ofs.reduce((sum, of) => sum + Number(of.quantiteCible || 0), 0);
   }
 
+  get allOfsFinished(): boolean {
+    if (!this.ofs || this.ofs.length === 0) return false;
+    return this.ofs.every(of => of.statut === 'TERMINE' || of.statut === 'CLOTURE');
+  }
+
   get remainingOfQuantity(): number {
     const target = Number(this.projet?.quantiteCible || 0);
     return Math.max(0, target - this.totalOfTargetQuantity);

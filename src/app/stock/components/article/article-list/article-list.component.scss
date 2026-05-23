@@ -18,6 +18,7 @@ $shadow-soft: 0 4px 12px rgba(47, 66, 27, 0.10);
   padding: 18px;
   color: $text-main;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  overflow-x: hidden;
   background:
     radial-gradient(circle at 12% 8%, rgba(223, 232, 207, 0.45), transparent 26%),
     radial-gradient(circle at 90% 12%, rgba(245, 234, 208, 0.55), transparent 30%),
@@ -26,10 +27,13 @@ $shadow-soft: 0 4px 12px rgba(47, 66, 27, 0.10);
 
 .article-container {
   max-width: 1480px;
+  width: 100%;
+  box-sizing: border-box;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 18px;
+  min-width: 0;
 }
 
 /* Header */
@@ -45,6 +49,7 @@ $shadow-soft: 0 4px 12px rgba(47, 66, 27, 0.10);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  box-sizing: border-box;
   background:
     linear-gradient(90deg, rgba(255, 255, 255, 0.94) 0%, rgba(255, 255, 255, 0.82) 55%, rgba(255, 253, 245, 0.74) 100%),
     url('/assets/logoArticle.png') center right / cover no-repeat;
@@ -137,6 +142,8 @@ $shadow-soft: 0 4px 12px rgba(47, 66, 27, 0.10);
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.96);
   box-shadow: $shadow-card;
+  box-sizing: border-box;
+  min-width: 0;
 }
 
 .filters-grid {
@@ -185,6 +192,7 @@ $shadow-soft: 0 4px 12px rgba(47, 66, 27, 0.10);
   font-size: 15px;
   font-weight: 600;
   outline: none;
+  box-sizing: border-box;
   transition: all 0.18s ease;
 
   &::placeholder {
@@ -269,19 +277,22 @@ select.form-control {
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.96);
   box-shadow: $shadow-card;
-  overflow: visible;
+  overflow: hidden;
+  min-width: 0;
 }
 
 .table-responsive {
   width: 100%;
   overflow-x: auto;
-  overflow-y: visible;
+  min-width: 0;
 }
 
 .table {
-  width: 100%;
+  width: auto;
+  min-width: 100%;
   border-collapse: collapse;
   margin: 0;
+  table-layout: auto;
 
   thead {
     background: #fbfaf5;
@@ -320,6 +331,65 @@ select.form-control {
     font-weight: 600;
     vertical-align: middle;
     white-space: nowrap;
+  }
+}
+
+.stock-insights {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  color: #9a3412;
+
+  i {
+    color: #ea580c;
+  }
+}
+
+.stock-alert-row td {
+  background: #fff7ed;
+  box-shadow: inset 3px 0 0 #f59e0b;
+}
+
+.text-muted {
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+.stock-cell {
+  .stock-chip {
+    display: inline-block;
+    min-width: 2.5rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-align: center;
+
+    &.total {
+      background: #f1f5f9;
+      color: #334155;
+    }
+
+    &.disponible {
+      background: #ecfdf5;
+      color: #047857;
+
+      &.low {
+        background: #fef2f2;
+        color: #b91c1c;
+      }
+    }
+
+    &.reserve {
+      background: #fffbeb;
+      color: #b45309;
+    }
   }
 }
 
