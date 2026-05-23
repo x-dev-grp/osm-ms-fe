@@ -1,60 +1,82 @@
 <div class="article-container">
+
+  <!-- Header -->
   <div class="page-header">
-    <div>
-      <h1 class="page-title">Articles</h1>
-      <p class="page-subtitle">Gestion des articles et produits</p>
+    <div class="header-left">
+      <div class="header-icon">
+        <i class="fas fa-box-open"></i>
+      </div>
+
+      <div>
+        <h1 class="page-title">Articles</h1>
+        <p class="page-subtitle">Gestion des articles et produits</p>
+      </div>
     </div>
-    <button class="btn btn-primary" routerLink="/stock/articles/nouveau">
+
+    <button class="btn-create-icon" routerLink="/stock/articles/nouveau" title="Nouvel article">
       <i class="fas fa-plus"></i>
-      Nouvel article
     </button>
   </div>
+
+  <!-- Filtres -->
   <div class="filters-card">
     <div class="filters-grid">
-      <div class="filter-group">
+
+      <div class="filter-group search-group">
         <label>Recherche</label>
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Nom..."
-          [(ngModel)]="filters.nom"
-          (input)="applyFilters()">
+        <div class="input-with-icon">
+          <i class="fas fa-search"></i>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Nom..."
+            [(ngModel)]="filters.nom"
+            (input)="applyFilters()">
+        </div>
       </div>
 
       <div class="filter-group">
         <label>Catégorie</label>
-        <select class="form-control" [(ngModel)]="filters.categorie" (change)="applyFilters()">
-          <option value="">Toutes</option>
-          <option *ngFor="let cat of categories" [value]="cat">
-            {{ cat }}
-          </option>
-        </select>
+        <div class="input-with-icon select-field">
+          <i class="fas fa-layer-group"></i>
+          <select class="form-control" [(ngModel)]="filters.categorie" (change)="applyFilters()">
+            <option value="">Toutes</option>
+            <option *ngFor="let cat of categories" [value]="cat">
+              {{ cat }}
+            </option>
+          </select>
+        </div>
       </div>
 
       <div class="filter-group">
         <label>Statut</label>
-        <select class="form-control" [(ngModel)]="filters.actif" (change)="applyFilters()">
-          <option value="">Tous</option>
-          <option value="true">Actif</option>
-          <option value="false">Inactif</option>
-        </select>
+        <div class="input-with-icon select-field">
+          <i class="fas fa-circle-check"></i>
+          <select class="form-control" [(ngModel)]="filters.actif" (change)="applyFilters()">
+            <option value="">Tous</option>
+            <option value="true">Actif</option>
+            <option value="false">Inactif</option>
+          </select>
+        </div>
       </div>
 
       <div class="filter-group filter-actions">
-        <button class="btn btn-secondary" (click)="resetFilters()">
+        <button class="btn-reset" (click)="resetFilters()" title="Réinitialiser">
           <i class="fas fa-undo"></i>
-          Réinitialiser
+          <span>Réinitialiser</span>
         </button>
       </div>
+
     </div>
   </div>
 
-  <div *ngIf="loading" class="text-center my-5">
-    <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Chargement...</span>
-    </div>
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Chargement des articles...</p>
   </div>
 
+  <!-- Table -->
   <div class="table-card" *ngIf="!loading">
     <div class="table-responsive">
       <table class="table">
@@ -70,55 +92,83 @@
           <th>Actions</th>
         </tr>
         </thead>
+
         <tbody>
         <tr *ngFor="let article of filteredArticles" [ngClass]="{'inactive-row': !article.actif}">
-          <td class="fw-bold">{{ article.nom }}</td>
-          <td>
-              <span class="badge" [ngClass]="getCategoryBadgeClass(article.categorie)">
-                <i [ngClass]="getCategoryIcon(article.categorie)"></i>
-                <span class="ms-1">{{ article.categorie }}</span>
-              </span>
+          <td class="article-name-cell">
+            <span class="article-mini-icon">
+              <i class="fas fa-box"></i>
+            </span>
+            <span class="fw-bold">{{ article.nom }}</span>
           </td>
-          <td>{{ article.um }}</td>
+
+          <td>
+            <span class="badge category-badge" [ngClass]="getCategoryBadgeClass(article.categorie)">
+              <i [ngClass]="getCategoryIcon(article.categorie)"></i>
+              <span>{{ article.categorie }}</span>
+            </span>
+          </td>
+
+          <td>
+            <span class="unit-value">{{ article.um }}</span>
+          </td>
+
           <td>{{ getArticleStock(article.id) }}</td>
           <td>{{ article.stockMinimum }}</td>
           <td>{{ article.stockMaximum }}</td>
+
           <td>
-              <span class="badge" [ngClass]="article.actif ? 'bg-success' : 'bg-secondary'">
-                {{ article.actif ? 'Actif' : 'Inactif' }}
-              </span>
+            <span class="badge status-badge" [ngClass]="article.actif ? 'bg-success' : 'bg-secondary'">
+              {{ article.actif ? 'Actif' : 'Inactif' }}
+            </span>
           </td>
+
           <td class="actions-cell">
             <div class="dropdown">
-              <button class="dropdown-btn" (click)="toggleDropdown(article.id, $event)">⋮</button>
+              <button class="dropdown-btn" (click)="toggleDropdown(article.id, $event)">
+                <i class="fas fa-ellipsis-v"></i>
+              </button>
+
               <div class="dropdown-content" *ngIf="activeDropdown === article.id">
                 <ng-container *ngIf="article.actif; else inactiveActions">
                   <button class="dropdown-item" [routerLink]="['/stock/articles', article.id]">
-                    <i class="fas fa-eye"></i> Voir
+                    <i class="fas fa-eye"></i>
+                    Voir
                   </button>
+
                   <button class="dropdown-item" [routerLink]="['/stock/articles', article.id, 'editer']">
-                    <i class="fas fa-edit"></i> Modifier
+                    <i class="fas fa-edit"></i>
+                    Modifier
                   </button>
+
                   <button class="dropdown-item valider" (click)="toActif(article, $event); activeDropdown = null">
-                    <i class="fas fa-ban"></i> Désactiver
+                    <i class="fas fa-ban"></i>
+                    Désactiver
                   </button>
                 </ng-container>
+
                 <ng-template #inactiveActions>
                   <button class="dropdown-item activer" (click)="toActif(article, $event); activeDropdown = null">
-                    <i class="fas fa-check-circle"></i> Activer
+                    <i class="fas fa-check-circle"></i>
+                    Activer
                   </button>
                 </ng-template>
               </div>
             </div>
           </td>
         </tr>
+
         <tr *ngIf="filteredArticles.length === 0">
-          <td colspan="8" class="text-center py-4">
-            Aucun article trouvé
+          <td colspan="8" class="empty-state">
+            <div>
+              <i class="fas fa-box-open"></i>
+              <p>Aucun article trouvé</p>
+            </div>
           </td>
         </tr>
         </tbody>
       </table>
     </div>
   </div>
+
 </div>
