@@ -585,6 +585,7 @@ $shadow-card: 0 4px 13px rgba(47, 66, 27, 0.08);
       background: #6d8b35;
     }
   }
+  &.failed { background: #fce8e6; color: #a51b1b; }
 }
 
 .btn-actions {

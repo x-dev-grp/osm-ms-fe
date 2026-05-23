@@ -7,6 +7,24 @@
         <mat-icon>account_tree</mat-icon>
       </div>
 
+        <div class="hero-info">
+          <h1 class="page-title d-flex align-items-center gap-2">
+            {{ p.code || 'Projet' }}
+            <span class="status-badge ms-2" [ngClass]="{
+              'status-failed': p.statut === 'FAILED',
+              'status-completed': p.statut === 'COMPLETED' || p.statut === 'VALIDE' || p.statut === 'ACCEPTE',
+              'status-in-progress': p.statut === 'IN_PROGRESS' || p.statut === 'EN_COURS',
+              'status-cancelled': p.statut === 'CANCELLED' || p.statut === 'ANNULE',
+              'status-created': p.statut === 'CREATED' || p.statut === 'BROUILLON'
+            }">
+              <i class="fas fa-circle" style="font-size: 8px;"></i>
+              {{ p.statut || '-' }}
+            </span>
+          </h1>
+
+          <p class="subtitle">
+            Client: {{ p.client?.nom || '-' }}
+          </p>
       <div class="hero-info">
         <div class="title-row">
           <h1>{{ p.code || 'Projet' }}</h1>
@@ -28,7 +46,7 @@
             Retour
           </button>
 
-          <button class="btn-primary" (click)="openExpedition()">
+          <button class="btn-primary" [disabled]="p.statut === 'FAILED'" (click)="openExpedition()">
             <mat-icon>local_shipping</mat-icon>
             Expédition
           </button>
@@ -40,6 +58,20 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Warning Banner for FAILED Projects -->
+  <div class="alert alert-danger d-flex align-items-center justify-content-between p-3 mb-4 rounded-3 border no-print" *ngIf="p.statut === 'FAILED'" style="background-color: #fce8e6; border-color: #f5c2c2; color: #a51b1b; margin-top: 16px;">
+    <div class="d-flex align-items-center gap-3">
+      <mat-icon style="color: #c5221f; font-size: 28px; width: 28px; height: 28px;">error</mat-icon>
+      <div>
+        <strong style="font-size: 16px; display: block; margin-bottom: 2px;">Ce projet a échoué (Réservations de stock insuffisantes)</strong>
+        <span class="small" style="color: #601414 !important;">Toutes les actions sont bloquées. Veuillez vérifier les stocks disponibles pour ce projet, puis cliquez sur Modifier pour ajuster ou réenregistrer le projet afin de relancer les réservations.</span>
+      </div>
+    </div>
+    <button class="btn btn-danger btn-sm" [routerLink]="['/projets', p.id]" style="background-color: #c5221f; border: none; color: white; padding: 8px 16px; border-radius: 6px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
+      <mat-icon style="font-size: 16px; width: 16px; height: 16px;">edit</mat-icon> Modifier le projet
+    </button>
   </div>
 
   <div class="content-grid">

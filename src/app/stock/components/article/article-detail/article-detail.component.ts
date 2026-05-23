@@ -94,6 +94,18 @@ export class ArticleDetailComponent implements OnInit {
             new Date(b.dateMouvement ?? '').getTime() - new Date(a.dateMouvement ?? '').getTime()
         );
         this.loadingMouvements = false;
+
+        // Fallback: if the stock API failed, compute the balance from movements
+        if (!this.stock && this.mouvements.length > 0) {
+          const computed = this.mouvements.reduce((total, m) => {
+            if (m.typeMouvement === TypeMouvement.ENTREE) return total + (m.quantite ?? 0);
+            if (m.typeMouvement === TypeMouvement.SORTIE)  return total - (m.quantite ?? 0);
+            return total + (m.quantite ?? 0); // AJUSTEMENT
+          }, 0);
+          const qty = Math.max(0, computed);
+          this.stock = { quantiteActuelle: qty, quantiteReservee: 0, quantiteDisponible: qty,
+            article: this.article, actif: true, lastModifiedDate: '' } as any;
+        }
       },
       error: () => {
         this.loadingMouvements = false;

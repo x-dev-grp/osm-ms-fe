@@ -144,6 +144,11 @@ export class ProjetDetailComponent implements OnInit {
       return;
     }
 
+    if (this.projet?.statut === 'FAILED') {
+      alert('Action impossible: Le projet a échoué en raison de réservations de stock insuffisantes.');
+      return;
+    }
+
     this.router.navigate(['/projets/detail', this.projetId, 'expedition']);
   }
 

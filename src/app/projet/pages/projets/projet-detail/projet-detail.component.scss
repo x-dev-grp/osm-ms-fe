@@ -117,7 +117,44 @@ $shadow-soft: 0 10px 28px rgba(47, 66, 27, 0.10);
   }
 }
 
-/* Buttons */
+  .status-badge {
+    background: #eff6ff;
+    color: $primary;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    &.status-failed {
+      background: #fee2e2;
+      color: #b91c1c;
+      i { color: #b91c1c; }
+    }
+    &.status-completed {
+      background: #dcfce7;
+      color: #166534;
+      i { color: #166534; }
+    }
+    &.status-in-progress {
+      background: #eff6ff;
+      color: #1d4ed8;
+      i { color: #1d4ed8; }
+    }
+    &.status-cancelled {
+      background: #f1f5f9;
+      color: #475569;
+      i { color: #475569; }
+    }
+    &.status-created {
+      background: #fef3c7;
+      color: #b45309;
+      i { color: #b45309; }
+    }
+  }
+
 
 .actions-bar {
   display: flex;
