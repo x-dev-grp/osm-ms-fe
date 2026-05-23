@@ -21,7 +21,7 @@ import { ToastService } from '../../../../shared/services/toast.service';
 import { PdfGeneratorExpeditionService } from '../../../../shared/services/pdf-generator-expedition.service';
 import { CompanyProfileService } from '../../../../shared/services/company-profile.service';
 import { PdfExpeditionConfig } from '../../../../shared/models/pdf-config.model';
-import { forkJoin } from 'rxjs';
+
 
 @Component({
   selector: 'app-projet-expedition',
@@ -259,22 +259,10 @@ export class ProjetExpeditionComponent implements OnInit {
   }
 
   private loadProjectOfs(projectId: string): void {
-    forkJoin({
-      projectOfs: this.ofService.getByProject(projectId),
-      allOfs: this.ofService.getAll()
-    }).subscribe({
-      next: ({ projectOfs, allOfs }) => {
-        const unassignedOfs = allOfs.filter(of => !of.projectId);
-        const merged = [...projectOfs];
-
-        unassignedOfs.forEach(of => {
-          if (!merged.some(existing => existing.id === of.id)) {
-            merged.push(of);
-          }
-        });
-
-        this.projectOfs = merged;
-        this.buildCreateLines(merged);
+    this.ofService.getByProject(projectId).subscribe({
+      next: (data) => {
+        this.projectOfs = (data as any)?.data ? (data as any).data : data;
+        this.buildCreateLines(this.projectOfs);
       },
       error: (err: any) => console.error('Erreur chargement OFs du projet', err)
     });
@@ -343,13 +331,6 @@ export class ProjetExpeditionComponent implements OnInit {
     }
   }
 
-  isUnassignedOf(of?: OrdreFabrication | null): boolean {
-    return !!of && !of.projectId;
-  }
-
-  ofAssignmentLabel(of?: OrdreFabrication | null): string | null {
-    return this.isUnassignedOf(of) ? 'Non assigne - sera rattache a ce projet' : null;
-  }
 
   getSelectedLineOf(): OrdreFabrication | undefined {
     const selectedOfId = this.lineForm.value.ofId;
@@ -687,7 +668,7 @@ export class ProjetExpeditionComponent implements OnInit {
       const quantity = Math.max(0, Math.min(defaultQty, remaining));
       remaining = Math.max(0, remaining - quantity);
       this.createLineControls.push(this.fb.group({
-        selected: [quantity > 0 && !this.isUnassignedOf(of)],
+        selected: [quantity > 0],
         ofId: [of.id],
         quantity: [quantity, [Validators.required, Validators.min(0)]],
         volume: [null as number | null],

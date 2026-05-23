@@ -27,7 +27,7 @@ import { ProjetService } from '../../../services/projet.service';
 import { ProjetDto } from '../../../models/TypeProduit';
 import { ProjetStatusDialogComponent, ProjetStatusDialogResult } from '../projet-status-dialog/projet-status-dialog.component';
 
-type ProjetStatusFilter = 'ALL' | 'BROUILLON' | 'EN_COURS' | 'VALIDE' | 'ANNULE';
+type ProjetStatusFilter = 'ALL' | 'BROUILLON' | 'EN_COURS' | 'VALIDE' | 'ANNULE' | 'FAILED';
 
 @Component({
   selector: 'app-projet-list',
@@ -73,7 +73,8 @@ export class ProjetListComponent {
     'BROUILLON',
     'EN_COURS',
     'VALIDE',
-    'ANNULE'
+    'ANNULE',
+    'FAILED'
   ];
 
   readonly loading = signal(false);
@@ -181,6 +182,11 @@ export class ProjetListComponent {
       return;
     }
 
+    if (row.statut === 'FAILED') {
+      alert('Action impossible: Le projet a échoué en raison de réservations de stock insuffisantes.');
+      return;
+    }
+
     this.router.navigate(['detail', row.id, 'expedition'], { relativeTo: this.route });
   }
 
@@ -250,6 +256,7 @@ export class ProjetListComponent {
     if (value === 'IN_PROGRESS' || value === 'EN_COURS') return 'EN_COURS';
     if (value === 'COMPLETED' || value === 'VALIDE' || value === 'ACCEPTE') return 'VALIDE';
     if (value === 'CANCELLED' || value === 'ANNULE') return 'ANNULE';
+    if (value === 'FAILED') return 'FAILED';
 
     return 'BROUILLON';
   }
@@ -270,6 +277,8 @@ export class ProjetListComponent {
         return 'Valide';
       case 'ANNULE':
         return 'Annule';
+      case 'FAILED':
+        return 'Échoué';
       default:
         return raw || '-';
     }
@@ -282,6 +291,7 @@ export class ProjetListComponent {
     if (normalized === 'EN_COURS') return 'in_progress';
     if (normalized === 'VALIDE') return 'completed';
     if (normalized === 'ANNULE') return 'cancelled';
+    if (normalized === 'FAILED') return 'failed';
 
     return 'created';
   }
@@ -342,6 +352,11 @@ export class ProjetListComponent {
 
   onAddOF(row: ProjetDto): void {
     if (!row?.id) {
+      return;
+    }
+
+    if (row.statut === 'FAILED') {
+      alert('Action impossible: Le projet a échoué en raison de réservations de stock insuffisantes.');
       return;
     }
 

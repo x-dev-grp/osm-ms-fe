@@ -251,7 +251,7 @@
                   <span>Voir détails</span>
                 </button>
 
-                <button mat-menu-item (click)="onOpenExpedition(row)">
+                <button mat-menu-item (click)="onOpenExpedition(row)" [disabled]="row.statut === 'FAILED'">
                   <mat-icon>local_shipping</mat-icon>
                   <span>Expedition</span>
                 </button>
@@ -261,7 +261,7 @@
                   <span>Modifier</span>
                 </button>
 
-                <button mat-menu-item (click)="onAddOF(row)">
+                <button mat-menu-item (click)="onAddOF(row)" [disabled]="row.statut === 'FAILED'">
                   <mat-icon>add_box</mat-icon>
                   <span>Ajouter OF</span>
                 </button>
