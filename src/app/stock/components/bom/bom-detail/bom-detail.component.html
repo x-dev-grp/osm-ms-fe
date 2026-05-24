@@ -1,16 +1,34 @@
 <div class="bom-detail-page">
-  <header class="detail-header">
-    <button class="btn-back-floating" routerLink="/stock/boms" type="button" aria-label="Retour">
+
+  <!-- HEADER SANS BACKGROUND IMAGE -->
+  <header class="detail-hero">
+    <button class="btn-back" routerLink="/stock/boms" type="button" aria-label="Retour">
       <i class="fas fa-arrow-left"></i>
     </button>
-    <div class="header-left">
-      <h2 class="page-title">Nomenclature</h2>
-      <p class="page-subtitle" *ngIf="bom">
-        <span class="version-tag">{{ bom.version }}</span>
-        <span class="status-pill active" *ngIf="bom.active"><i class="fas fa-star"></i> Active</span>
-        <span class="status-pill inactive" *ngIf="!bom.active">Inactive</span>
+
+    <div class="hero-text">
+      <h1>Nomenclature</h1>
+
+      <p *ngIf="bom">
+        Consultation détaillée de la nomenclature, des composants et des besoins matières.
       </p>
+
+      <div class="hero-badges" *ngIf="bom">
+        <span class="version-tag">
+          {{ bom.version }}
+        </span>
+
+        <span class="status-pill active" *ngIf="bom.active">
+          <i class="fas fa-star"></i>
+          Active
+        </span>
+
+        <span class="status-pill inactive" *ngIf="!bom.active">
+          Inactive
+        </span>
+      </div>
     </div>
+
     <div class="header-actions" *ngIf="bom">
       <button
         class="btn-action activate"
@@ -18,88 +36,180 @@
         *ngIf="!bom.active"
         [disabled]="activating"
         (click)="activateBom()">
-        <i class="fas fa-check-circle"></i>
-        {{ activating ? 'Activation…' : 'Définir active' }}
+        <i class="fas" [ngClass]="activating ? 'fa-spinner fa-spin' : 'fa-check-circle'"></i>
+        {{ activating ? 'Activation...' : 'Définir active' }}
       </button>
-      <button class="btn-action edit" [routerLink]="['/stock/boms', bom.id, 'editer']" type="button">
-        <i class="fas fa-edit"></i> Modifier
+
+      <button
+        class="btn-action edit"
+        [routerLink]="['/stock/boms', bom.id, 'editer']"
+        type="button">
+        <i class="fas fa-edit"></i>
+        Modifier
       </button>
     </div>
   </header>
 
+  <!-- LOADING -->
   <div *ngIf="loading" class="loading-container">
     <div class="spinner-border"></div>
-    <p>Chargement de la nomenclature…</p>
+    <p>Chargement de la nomenclature...</p>
   </div>
 
   <ng-container *ngIf="!loading && bom">
-    <div class="detail-grid">
+
+    <!-- MAIN DETAIL -->
+    <section class="detail-grid">
+
+      <!-- INFORMATIONS -->
       <aside class="card-box info-card">
-        <h5 class="card-title"><i class="fas fa-info-circle"></i> Informations</h5>
-        <div class="info-row">
-          <span>Produit fini</span>
-          <strong>{{ bom.productName || bom.skuCode || '—' }}</strong>
+        <div class="card-title">
+          <span class="card-icon">
+            <i class="fas fa-info-circle"></i>
+          </span>
+
+          <div>
+            <h2>Informations</h2>
+            <p>Données principales de la nomenclature.</p>
+          </div>
         </div>
-        <div class="info-row">
-          <span>Version</span>
-          <strong>{{ bom.version }}</strong>
-        </div>
-        <div class="info-row">
-          <span>Statut</span>
-          <span class="status-pill active" *ngIf="bom.active">Active</span>
-          <span class="status-pill inactive" *ngIf="!bom.active">Inactive</span>
-        </div>
-        <div class="info-row">
-          <span>Composants</span>
-          <strong>{{ bom.lines.length }} article(s)</strong>
+
+        <div class="info-list">
+          <div class="info-row">
+            <span>Produit fini</span>
+            <strong>{{ bom.productName || bom.skuCode || '—' }}</strong>
+          </div>
+
+          <div class="info-row">
+            <span>Version</span>
+            <strong class="mono">{{ bom.version }}</strong>
+          </div>
+
+          <div class="info-row">
+            <span>Statut</span>
+
+            <span class="status-pill active" *ngIf="bom.active">
+              <i class="fas fa-star"></i>
+              Active
+            </span>
+
+            <span class="status-pill inactive" *ngIf="!bom.active">
+              Inactive
+            </span>
+          </div>
+
+          <div class="info-row">
+            <span>Composants</span>
+            <strong>{{ bom.lines.length }} article(s)</strong>
+          </div>
         </div>
       </aside>
 
+      <!-- COMPOSANTS -->
       <section class="card-box components-card">
-        <h5 class="card-title"><i class="fas fa-list-check"></i> Composants par unité</h5>
+        <div class="card-title">
+          <span class="card-icon">
+            <i class="fas fa-list-check"></i>
+          </span>
+
+          <div>
+            <h2>Composants par unité</h2>
+            <p>Articles consommés pour une unité de produit fini.</p>
+          </div>
+        </div>
+
         <div class="table-wrap">
           <table class="components-table">
             <thead>
-              <tr>
-                <th>#</th>
-                <th>Article</th>
-                <th class="num">Qté / unité</th>
-                <th>Unité</th>
-              </tr>
+            <tr>
+              <th>#</th>
+              <th>Article</th>
+              <th class="num">Qté / unité</th>
+              <th>Unité</th>
+            </tr>
             </thead>
+
             <tbody>
-              <tr *ngFor="let line of bom.lines; let i = index">
-                <td>{{ i + 1 }}</td>
-                <td>{{ line.articleName || line.articleId }}</td>
-                <td class="num">{{ line.quantity }}</td>
-                <td>{{ line.unitOfMeasure || '—' }}</td>
-              </tr>
-              <tr *ngIf="bom.lines.length === 0">
-                <td colspan="4" class="empty-row">Aucun composant défini</td>
-              </tr>
+            <tr *ngFor="let line of bom.lines; let i = index">
+              <td>
+                <span class="line-number">{{ i + 1 }}</span>
+              </td>
+
+              <td>
+                <div class="article-cell">
+                  <span class="article-icon">
+                    <i class="fas fa-box"></i>
+                  </span>
+
+                  <strong>{{ line.articleName || line.articleId }}</strong>
+                </div>
+              </td>
+
+              <td class="num">
+                <span class="quantity-pill">
+                  {{ line.quantity }}
+                </span>
+              </td>
+
+              <td>
+                <span class="unit-pill">
+                  {{ line.unitOfMeasure || '—' }}
+                </span>
+              </td>
+            </tr>
+
+            <tr *ngIf="bom.lines.length === 0">
+              <td colspan="4" class="empty-row">
+                <div class="empty-state">
+                  <i class="fas fa-inbox"></i>
+                  Aucun composant défini.
+                </div>
+              </td>
+            </tr>
             </tbody>
           </table>
         </div>
       </section>
-    </div>
 
-    <section class="preview-section">
-      <div class="preview-controls">
-        <label for="previewQty">Simuler les besoins pour</label>
-        <input
-          id="previewQty"
-          type="number"
-          min="1"
-          step="1"
-          class="qty-input"
-          [(ngModel)]="previewQuantity" />
-        <span>unités produites</span>
-      </div>
-      <app-material-needs-preview
-        [bomId]="bom.id!"
-        [quantity]="previewQuantity"
-        title="Besoins matières vs stock">
-      </app-material-needs-preview>
     </section>
+
+    <!-- PREVIEW -->
+    <section class="preview-section">
+      <div class="preview-card">
+        <div class="preview-header">
+          <div class="card-title compact">
+            <span class="card-icon">
+              <i class="fas fa-calculator"></i>
+            </span>
+
+            <div>
+              <h2>Simulation des besoins</h2>
+              <p>Calculer les besoins matières selon la quantité produite.</p>
+            </div>
+          </div>
+
+          <div class="preview-controls">
+            <label for="previewQty">Quantité</label>
+
+            <input
+              id="previewQty"
+              type="number"
+              min="1"
+              step="1"
+              class="qty-input"
+              [(ngModel)]="previewQuantity" />
+
+            <span>unités produites</span>
+          </div>
+        </div>
+
+        <app-material-needs-preview
+          [bomId]="bom.id!"
+          [quantity]="previewQuantity"
+          title="Besoins matières vs stock">
+        </app-material-needs-preview>
+      </div>
+    </section>
+
   </ng-container>
 </div>

@@ -15,26 +15,14 @@
           </div>
         </div>
 
-        <div class="hero-bottom">
-          <div class="kpi-card">
-            <div class="kpi-icon">
-              <mat-icon>waves</mat-icon>
-            </div>
+        <div class="hero-right">
+          <span class="hero-count-pill">
+            <mat-icon>waves</mat-icon>
+            {{ rows().length }} {{ rows().length > 1 ? 'opérations' : 'opération' }}
+          </span>
 
-            <div class="kpi-separator"></div>
-
-            <div class="kpi-content">
-              <span class="kpi-value">{{ rows().length }}</span>
-              <span class="kpi-label">
-                {{ rows().length > 1 ? 'Opérations' : 'Opération' }}
-              </span>
-              <small>Total des opérations de filtration</small>
-            </div>
-          </div>
-
-          <button mat-flat-button class="btn-primary-filtration" (click)="onCreate()">
+          <button mat-icon-button class="btn-icon-filtration" (click)="onCreate()" title="Nouvelle filtration">
             <mat-icon>add_circle_outline</mat-icon>
-            Nouvelle filtration
           </button>
         </div>
       </div>
@@ -81,9 +69,8 @@
         <h3>Aucune opération</h3>
         <p>Aucune opération de filtration n’est disponible pour le statut sélectionné.</p>
 
-        <button mat-flat-button class="btn-primary-filtration" (click)="onCreate()">
-          <mat-icon>add</mat-icon>
-          Créer une opération
+        <button mat-icon-button class="btn-icon-filtration" (click)="onCreate()" title="Créer une opération">
+          <mat-icon>add_circle_outline</mat-icon>
         </button>
       </section>
     }

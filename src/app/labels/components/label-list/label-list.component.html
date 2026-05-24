@@ -4,7 +4,7 @@
     <div class="header-decoration">
       <img src="/assets/logo_certif2.jpeg" alt="Decorative Olive Branch" class="header-img">
     </div>
-    
+
     <div class="header-content">
       <div class="brand-section">
         <mat-icon class="brand-icon">eco</mat-icon>
@@ -45,7 +45,7 @@
         <span>Toutes les étiquettes</span>
       </button>
       <mat-divider></mat-divider>
-      
+
       <!-- Status Filters -->
       <div class="menu-label">STATUT</div>
       <button mat-menu-item (click)="filterByStatus('DRAFT')">
@@ -64,9 +64,9 @@
         <mat-icon class="status-icon exported">circle</mat-icon>
         <span>Exportée JSON</span>
       </button>
-      
+
       <mat-divider></mat-divider>
-      
+
       <!-- Category Filters -->
       <div class="menu-label">CATÉGORIE</div>
       <button mat-menu-item (click)="filterByCategory('LEGAL')">
@@ -83,8 +83,8 @@
       </button>
     </mat-menu>
 
-    <button mat-flat-button class="btn-new" (click)="createNewLabel()">
-      <mat-icon>add</mat-icon> Nouvelle Étiquette
+    <button mat-icon-button class="btn-new" (click)="createNewLabel()" title="Nouvelle Étiquette">
+      <mat-icon>add</mat-icon>
     </button>
   </div>
 
@@ -140,7 +140,7 @@
         <th mat-header-cell *matHeaderCellDef>Quantité</th>
         <td mat-cell *matCellDef="let label" class="text-secondary">{{ label.netQuantity || '-' }}</td>
       </ng-container>
-      
+
       <ng-container matColumnDef="certifications">
         <th mat-header-cell *matHeaderCellDef>Certifications</th>
         <td mat-cell *matCellDef="let label">
