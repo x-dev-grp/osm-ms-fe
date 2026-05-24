@@ -9,6 +9,8 @@ import { ToastService } from '../../../../shared/services/toast.service';
 import { StockService } from '../../../../stock/services/stock.service';
 import { Stock } from '../../../../stock/models/stock.model';
 import { catchError, forkJoin, map, of } from 'rxjs';
+import { BomService } from '../../../../stock/services/BomService';
+import { MaterialNeedLine } from '../../../../shared/models/material-need-line.model';
 
 @Component({
   selector: 'app-of-production',
@@ -35,7 +37,8 @@ export class OFProductionComponent implements OnInit, OnDestroy {
     private router: Router,
     private ofService: OFService,
     private toast: ToastService,
-    private stockService: StockService
+    private stockService: StockService,
+    private bomService: BomService
   ) {}
 
   ngOnInit(): void {
@@ -103,7 +106,7 @@ export class OFProductionComponent implements OnInit, OnDestroy {
   }
 
   refreshStockCheck(): void {
-    if (!this.of?.lignes?.length || !this.canStart()) {
+    if (!this.canStart()) {
       this.stockRows = [];
       this.stockIssueMessage = '';
       return;
@@ -111,6 +114,27 @@ export class OFProductionComponent implements OnInit, OnDestroy {
 
     this.checkingStock = true;
     this.stockIssueMessage = '';
+
+    if (this.of?.bomId && Number(this.of?.quantiteCible || 0) > 0) {
+      this.bomService.getMaterialNeeds(this.of.bomId, Number(this.of.quantiteCible)).subscribe({
+        next: (lines) => {
+          this.stockRows = lines.map((line) => this.buildStockRowFromMaterialNeed(line));
+          this.checkingStock = false;
+        },
+        error: (err) => {
+          this.stockRows = [];
+          this.checkingStock = false;
+          this.stockIssueMessage = err?.error?.error || err?.error?.message || 'Impossible de verifier le stock';
+        }
+      });
+      return;
+    }
+
+    if (!this.of?.lignes?.length) {
+      this.stockRows = [];
+      this.checkingStock = false;
+      return;
+    }
 
     const calls = this.of.lignes.map((line) =>
       this.stockService.getStockByArticle(line.articleId).pipe(
@@ -139,6 +163,27 @@ export class OFProductionComponent implements OnInit, OnDestroy {
     return this.canStart() && !this.checkingStock && this.stockRows.length > 0 && !this.hasStockIssues();
   }
 
+  stockQuantityHeader(): string {
+    return this.isProjectMode() ? 'Stock reserve' : 'Stock disponible';
+  }
+
+  private buildStockRowFromMaterialNeed(line: MaterialNeedLine): StockCheckRow {
+    const required = Number(line.quantityNeededRounded || 0);
+    const available = this.isProjectMode()
+      ? Number(line.quantiteReservee || 0)
+      : Number(line.quantiteDisponible || 0);
+
+    return {
+      articleId: line.articleId,
+      articleName: line.articleName || line.articleId,
+      required,
+      available,
+      exists: true,
+      sourceLabel: this.isProjectMode() ? 'Reserve projet' : 'Disponible',
+      status: available >= required ? 'OK' : 'INSUFFICIENT'
+    };
+  }
+
   private buildStockRow(line: LigneOF, stock: Stock | null): StockCheckRow {
     const required = Number(line.quantiteTheorique || 0);
     const available = this.isProjectMode()
@@ -152,6 +197,7 @@ export class OFProductionComponent implements OnInit, OnDestroy {
         required,
         available: 0,
         exists: false,
+        sourceLabel: 'Non cree',
         status: 'MISSING'
       };
     }
@@ -162,6 +208,7 @@ export class OFProductionComponent implements OnInit, OnDestroy {
       required,
       available,
       exists: true,
+      sourceLabel: this.isProjectMode() ? 'Reserve projet' : 'Disponible',
       status: available >= required ? 'OK' : 'INSUFFICIENT'
     };
   }
@@ -363,5 +410,6 @@ interface StockCheckRow {
   required: number;
   available: number;
   exists: boolean;
+  sourceLabel: string;
   status: 'OK' | 'INSUFFICIENT' | 'MISSING';
 }

@@ -1,9 +1,27 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { StatistiqueService } from '../../../services/statistique.service';
-import { BonCommandeService } from '../../../services/bon-commande.service';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  ChangeDetectorRef
+} from '@angular/core';
 import { CommonModule, DatePipe, DecimalPipe, NgClass } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import Chart from 'chart.js/auto';
+
+import { StatistiqueService } from '../../../services/statistique.service';
+import { BonCommandeService } from '../../../services/bon-commande.service';
+import { ApiResponse } from '../../../../shared/models/api-response';
+import { BonCommande, StatutBonCommande } from '../../../models/bon-commande.model';
+import { StatistiquesStock } from '../../../models/statistiques.model';
+import { ArticleCritique, MouvementRecent } from '../../../models/stock-dashboard-payload.model';
+import { ToastService } from '../../../../shared/services/toast.service';
+
+interface DashboardLoadOptions {
+  notifyThresholdCheck?: boolean;
+  preserveContent?: boolean;
+}
 
 @Component({
   selector: 'app-stock-dashboard',
@@ -11,83 +29,111 @@ import Chart from 'chart.js/auto';
   imports: [CommonModule, DatePipe, DecimalPipe, RouterLink, NgClass],
   styleUrls: ['./stock-dashboard.component.scss']
 })
-export class StockDashboardComponent implements OnInit, AfterViewInit {
-  stats: any = null;
+export class StockDashboardComponent implements OnInit, OnDestroy {
+  @ViewChild('stockChartCanvas') chartCanvas?: ElementRef<HTMLCanvasElement>;
 
-  //  dérivés côté front (pas dans DTO)
+  stats: StatistiquesStock | null = null;
   pourcentageAlerte = 0;
   articlesRupture = 0;
 
-  bonsEnAttente: any[] = [];
-  articlesCritiques: any[] = [];
-  mouvementsRecents: any[] = [];
+  bonsEnAttente: BonCommande[] = [];
+  articlesCritiques: ArticleCritique[] = [];
+  mouvementsRecents: MouvementRecent[] = [];
 
   loading = true;
+  refreshingThresholds = false;
+  loadError: string | null = null;
+
   private chart: Chart | null = null;
 
   constructor(
     private statistiqueService: StatistiqueService,
-    private bonCommandeService: BonCommandeService
+    private bonCommandeService: BonCommandeService,
+    private cdr: ChangeDetectorRef,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
     this.loadDashboardData();
   }
 
-  ngAfterViewInit(): void {
-    // le chart sera initialisé après réception des stats
+  ngOnDestroy(): void {
+    this.destroyChart();
   }
 
-  loadDashboardData(): void {
-    this.loading = true;
+  loadDashboardData(options: DashboardLoadOptions = {}): void {
+    const preserveContent = !!options.preserveContent && !!this.stats;
 
-    this.statistiqueService.getDashboard().subscribe({
-      next: (data: any) => {
-        this.stats = data;
+    this.loading = !preserveContent;
+    this.refreshingThresholds = preserveContent;
+    this.loadError = null;
+
+    this.statistiqueService.getDashboardPayload(10).subscribe({
+      next: (payload) => {
+        this.stats = payload.statistiques;
+        this.articlesCritiques = payload.articlesCritiques ?? [];
+        this.mouvementsRecents = payload.mouvementsRecents ?? [];
         this.computeDerivedStats();
-        this.loading = false;
-        this.initChartFromStats();
+        this.loadBonsEnAttente(options);
       },
-      error: (err: any) => {
-        console.error('Erreur chargement stats', err);
-        this.stats = null;
-        this.pourcentageAlerte = 0;
-        this.articlesRupture = 0;
-        this.loading = false;
-        this.destroyChart();
+      error: (err) => {
+        console.error('Dashboard payload failed', err);
+        this.loadError =
+          'Impossible de joindre le service statistiques. Vérifiez que le service inventaire (osm-pack) est démarré.';
+
+        if (!preserveContent) {
+          this.stats = null;
+          this.articlesCritiques = [];
+          this.mouvementsRecents = [];
+        }
+
+        this.finishLoading(options, false);
       }
     });
+  }
 
-    this.statistiqueService.getArticlesCritiques().subscribe({
-      next: (data: any[]) => {
-        this.articlesCritiques = (data || []).slice(0, 5);
-      },
-      error: (err: any) => {
-        console.error('Erreur chargement articles critiques', err);
-        this.articlesCritiques = [];
-      }
-    });
-
-    this.statistiqueService.getMouvementsRecents(10).subscribe({
-      next: (data: any[]) => {
-        this.mouvementsRecents = data || [];
-      },
-      error: (err: any) => {
-        console.error('Erreur chargement mouvements', err);
-        this.mouvementsRecents = [];
-      }
-    });
-
+  private loadBonsEnAttente(options: DashboardLoadOptions): void {
     this.bonCommandeService.getAllBonsCommande().subscribe({
-      next: (response: any) => {
-        const list = response?.data || [];
-        this.bonsEnAttente = list.filter((bon: any) => bon.statut === 'EN_ATTENTE').slice(0, 5);
+      next: (response: ApiResponse<BonCommande>) => {
+        this.bonsEnAttente = this.extractPendingBons(response);
+        if (this.stats) {
+          this.stats = { ...this.stats, bonsEnAttente: this.bonsEnAttente.length };
+        }
+        this.finishLoading(options, true);
       },
-      error: (err: any) => {
-        console.error('Erreur chargement bons', err);
+      error: () => {
         this.bonsEnAttente = [];
+        this.finishLoading(options, true);
       }
     });
+  }
+
+  private finishLoading(options: DashboardLoadOptions, thresholdCheckSucceeded: boolean): void {
+    this.loading = false;
+    this.refreshingThresholds = false;
+    this.cdr.detectChanges();
+
+    if (options.notifyThresholdCheck) {
+      if (thresholdCheckSucceeded && this.stats) {
+        this.showThresholdCheckResult();
+      } else {
+        this.toastService.error('Impossible de vérifier les seuils pour le moment.');
+      }
+    }
+
+    if (this.stats) {
+      setTimeout(() => this.initChartFromStats(), 0);
+    }
+  }
+
+  private extractPendingBons(response: ApiResponse<BonCommande> | null): BonCommande[] {
+    if (!response?.success || !response.data) {
+      return [];
+    }
+
+    return response.data
+      .filter((bon) => bon.status === StatutBonCommande.EN_ATTENTE)
+      .slice(0, 5);
   }
 
   private computeDerivedStats(): void {
@@ -99,6 +145,24 @@ export class StockDashboardComponent implements OnInit, AfterViewInit {
     this.articlesRupture = total > 0 ? Math.round((tauxRupture / 100) * total) : 0;
   }
 
+  private showThresholdCheckResult(): void {
+    const alertCount = Math.max(Number(this.stats?.articlesEnAlerte ?? 0), this.articlesCritiques.length);
+
+    if (alertCount > 0) {
+      this.toastService.warning(
+        `${alertCount} article${alertCount > 1 ? 's' : ''} sous seuil critique détecté${alertCount > 1 ? 's' : ''}.`
+      );
+      return;
+    }
+
+    this.toastService.success('Aucun article sous seuil critique.');
+  }
+
+  chartHasData(): boolean {
+    const map = this.stats?.mouvementsParMois;
+    return !!map && Object.keys(map).length > 0;
+  }
+
   private destroyChart(): void {
     if (this.chart) {
       this.chart.destroy();
@@ -107,12 +171,14 @@ export class StockDashboardComponent implements OnInit, AfterViewInit {
   }
 
   private initChartFromStats(): void {
-    const canvas = document.getElementById('stockChart') as HTMLCanvasElement | null;
-    if (!canvas) return;
+    const canvas = this.chartCanvas?.nativeElement;
+    if (!canvas || !this.chartHasData()) {
+      return;
+    }
 
-    const mouvementsParMois = this.stats?.mouvementsParMois || {};
-    const labels: string[] = Object.keys(mouvementsParMois);
-    const values: number[] = Object.values(mouvementsParMois);
+    const mouvementsParMois = this.stats?.mouvementsParMois ?? {};
+    const labels = Object.keys(mouvementsParMois);
+    const values = Object.values(mouvementsParMois);
 
     this.destroyChart();
 
@@ -125,7 +191,10 @@ export class StockDashboardComponent implements OnInit, AfterViewInit {
             label: 'Mouvements',
             data: values,
             tension: 0.35,
-            fill: true
+            fill: true,
+            borderColor: '#4361ee',
+            backgroundColor: 'rgba(67, 97, 238, 0.12)',
+            pointBackgroundColor: '#4361ee'
           }
         ]
       },
@@ -134,53 +203,188 @@ export class StockDashboardComponent implements OnInit, AfterViewInit {
         maintainAspectRatio: false,
         plugins: { legend: { display: false } },
         scales: {
-          y: { beginAtZero: true },
+          y: { beginAtZero: true, ticks: { stepSize: 1 } },
           x: { grid: { display: false } }
         }
       }
     });
   }
 
-
   exportData(): void {
-    console.log('Export des données...');
+    if (!this.stats) {
+      this.toastService.warning('Aucune donnée disponible à exporter.');
+      return;
+    }
+
+    const csvContent = this.buildExportContent();
+    const filename = `stock-dashboard-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-')}.csv`;
+    this.downloadFile(csvContent, filename, 'text/csv;charset=utf-8;');
+    this.toastService.success('Export du tableau de bord généré.');
   }
 
   getStatutClass(statut: string): string {
-    const classes: any = {
+    const classes: Record<string, string> = {
       EN_ATTENTE: 'warning',
       VALIDE: 'success',
       REFUSE: 'danger',
-      RECEPTIONNE: 'info',
-      ANNULE: 'secondary'
+      RECU: 'info',
+      PARTIELLEMENT_RECU: 'info'
     };
     return classes[statut] || 'secondary';
   }
 
-  getStockPercentage(article: any): number {
+  getStockPercentage(article: ArticleCritique): number {
     const min = Number(article?.stockMinimum || 0);
     const act = Number(article?.stockActuel || 0);
-    if (!min || min <= 0) return 0;
+    if (!min || min <= 0) {
+      return 0;
+    }
     return Math.min((act / min) * 100, 100);
   }
 
-  getReceptionProgress(bon: any): number {
-    if (!bon?.lignes || bon.lignes.length === 0) return 0;
+  getReceptionProgress(bon: BonCommande): number {
+    if (!bon?.lignes || bon.lignes.length === 0) {
+      return 0;
+    }
 
-    const totalCommandee = bon.lignes.reduce((sum: number, ligne: any) => sum + Number(ligne.quantiteCommandee || 0), 0);
-    const totalRecue = bon.lignes.reduce((sum: number, ligne: any) => sum + Number(ligne.quantiteRecue || 0), 0);
-
+    const totalCommandee = bon.lignes.reduce((sum, l) => sum + Number(l.quantiteCommandee || 0), 0);
+    const totalRecue = bon.lignes.reduce((sum, l) => sum + Number(l.quantiteRecue || 0), 0);
     return totalCommandee > 0 ? Math.round((totalRecue / totalCommandee) * 100) : 0;
   }
 
-  commanderArticle(article: any): void {
-    console.log('Commander article:', article);
+  commanderArticle(article: ArticleCritique): void {
     alert(`Création d'un bon de commande pour ${article?.nom}`);
   }
 
   verifierSeuils(): void {
-    // Fixed as part of TICKET-008: Added verifierSeuils method to prevent compile errors and trigger threshold check
-    console.log('Vérification des seuils de stock...');
-    alert('Vérification des seuils de stock effectuée.');
+    if (this.loading || this.refreshingThresholds) {
+      return;
+    }
+
+    this.loadDashboardData({
+      notifyThresholdCheck: true,
+      preserveContent: true
+    });
+  }
+
+  movementArticleSku(mvt: MouvementRecent): string {
+    return mvt.articleSku || mvt.articleId || '—';
+  }
+
+  movementArticleName(mvt: MouvementRecent): string {
+    return mvt.articleNom || '—';
+  }
+
+  movementArticleLabel(mvt: MouvementRecent): string {
+    return mvt.articleNom || mvt.articleSku || mvt.articleId || '—';
+  }
+
+  movementUnit(mvt: MouvementRecent): string {
+    return mvt.uniteMesure || '';
+  }
+
+  private buildExportContent(): string {
+    const rows: string[][] = [
+      ['Section', 'Clé', 'Valeur'],
+      ['Indicateurs', 'Total stock', this.formatExportNumber(this.stats?.valeurTotaleStock)],
+      ['Indicateurs', 'Articles actifs', this.formatExportNumber(this.stats?.totalArticles)],
+      ['Indicateurs', 'Articles en alerte', this.formatExportNumber(this.stats?.articlesEnAlerte)],
+      ['Indicateurs', 'Taux de rupture', `${Number(this.stats?.tauxRupture ?? 0).toFixed(1)}%`],
+      ['Indicateurs', 'Bons en attente', this.formatExportNumber(this.stats?.bonsEnAttente)],
+      ['Indicateurs', 'Délai moyen de validation (h)', this.formatExportNumber(this.stats?.delaiValidationMoyen)],
+      [],
+      ['Articles critiques', 'SKU', 'Nom', 'Stock actuel', 'Stock minimum', 'Stock disponible', 'Catégorie'],
+      ...this.buildCriticalArticleRows(),
+      [],
+      ['Mouvements récents', 'SKU', 'Article', 'Type', 'Quantité', 'Unité', 'Date'],
+      ...this.buildRecentMovementRows(),
+      [],
+      ['Bons de commande en attente', 'Numéro', 'Statut', 'Fournisseur', 'Date', 'Progression'],
+      ...this.buildPendingOrderRows()
+    ];
+
+    return `\uFEFF${rows.map((row) => row.map((cell) => this.escapeCsvCell(cell)).join(';')).join('\n')}`;
+  }
+
+  private buildCriticalArticleRows(): string[][] {
+    if (this.articlesCritiques.length === 0) {
+      return [['', 'Aucun article critique', '', '', '', '', '']];
+    }
+
+    return this.articlesCritiques.map((article) => [
+      '',
+      article.sku || '',
+      article.nom || '',
+      this.formatExportNumber(article.stockActuel),
+      this.formatExportNumber(article.stockMinimum),
+      this.formatExportNumber(article.stockDisponible),
+      article.categorie || ''
+    ]);
+  }
+
+  private buildRecentMovementRows(): string[][] {
+    if (this.mouvementsRecents.length === 0) {
+      return [['', 'Aucun mouvement récent', '', '', '', '', '']];
+    }
+
+    return this.mouvementsRecents.map((mvt) => [
+      '',
+      this.movementArticleSku(mvt),
+      this.movementArticleName(mvt),
+      mvt.typeMouvement || '',
+      this.formatExportNumber(mvt.quantite),
+      this.movementUnit(mvt),
+      this.formatExportDate(mvt.dateMouvement)
+    ]);
+  }
+
+  private buildPendingOrderRows(): string[][] {
+    if (this.bonsEnAttente.length === 0) {
+      return [['', 'Aucun bon en attente', '', '', '', '']];
+    }
+
+    return this.bonsEnAttente.map((bon) => [
+      '',
+      bon.numeroBC || '',
+      bon.status || '',
+      bon.fournisseurNom || 'Non spécifié',
+      this.formatExportDate(bon.createdDate),
+      `${this.getReceptionProgress(bon)}%`
+    ]);
+  }
+
+  private formatExportDate(value?: string): string {
+    if (!value) {
+      return '';
+    }
+
+    const parsedDate = new Date(value);
+    return Number.isNaN(parsedDate.getTime()) ? value : parsedDate.toLocaleString('fr-FR');
+  }
+
+  private formatExportNumber(value: number | string | undefined): string {
+    if (value == null || value === '') {
+      return '';
+    }
+
+    const numericValue = Number(value);
+    return Number.isNaN(numericValue) ? String(value) : new Intl.NumberFormat('fr-FR').format(numericValue);
+  }
+
+  private escapeCsvCell(value: unknown): string {
+    const text = value == null ? '' : String(value);
+    return /[;"\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+  }
+
+  private downloadFile(content: string, filename: string, mimeType: string): void {
+    const blob = new Blob([content], { type: mimeType });
+    const objectUrl = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = objectUrl;
+    anchor.download = filename;
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+    setTimeout(() => URL.revokeObjectURL(objectUrl), 0);
   }
 }

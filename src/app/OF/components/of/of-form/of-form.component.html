@@ -23,11 +23,15 @@
         </div>
         <div class="form-grid">
           <div class="form-group span-2">
-            <label><i class="fas fa-project-diagram"></i> Projet (optionnel)</label>
-            <select class="form-control" formControlName="projectId">
-              <option value="">-- Indépendant --</option>
+            <label><i class="fas fa-project-diagram"></i> Projet *</label>
+            <select class="form-control" formControlName="projectId"
+              [class.is-invalid]="ofForm.get('projectId')?.invalid && ofForm.get('projectId')?.touched">
+              <option value="">-- Sélectionner un projet --</option>
               <option *ngFor="let p of projects" [value]="p.id">{{ p.code }} — {{ p.client.nom }}</option>
             </select>
+            <div class="error" *ngIf="ofForm.get('projectId')?.invalid && ofForm.get('projectId')?.touched">
+              Le projet est obligatoire.
+            </div>
           </div>
           <div class="form-group">
             <label><i class="fas fa-chart-line"></i> Quantité cible</label>

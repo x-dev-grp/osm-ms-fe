@@ -14,10 +14,19 @@
       <button class="btn-outline" (click)="onBack()">
         <mat-icon>assignment</mat-icon> Projet
       </button>
-      <button class="btn-create-icon" (click)="toggleCreateForm()">
+      <button class="btn-create-icon" (click)="toggleCreateForm()" [disabled]="!canCreateExpedition()" [matTooltip]="createExpeditionDisabledMessage()">
         <mat-icon>{{ showCreateForm ? 'close' : 'add' }}</mat-icon>
       </button>
     </div>
+  </div>
+
+  <div class="filters-card" *ngIf="!selectedExpedition && !showCreateForm && projectDeliveryComplete">
+    <div class="card-title-olive" style="margin-bottom: 6px;">
+      <mat-icon>verified</mat-icon> Projet livre
+    </div>
+    <p style="margin: 0; color: #5d6b4f; font-weight: 700;">
+      La quantite cible est entierement livree. Nouvelle expedition desactivee.
+    </p>
   </div>
 
   <!-- DETAILS VIEW HEADER -->
@@ -134,7 +143,7 @@
       </div>
 
       <div class="form-actions">
-        <button class="btn-reset" type="button" (click)="createExpedition()" [disabled]="creating || selectedCreateLineQuantity > remainingProjectQuantity || remainingProjectQuantity <= 0" style="background: #44651f; color: white; border-color: #203b13;">
+        <button class="btn-reset" type="button" (click)="createExpedition()" [disabled]="creating || !canCreateExpedition() || selectedCreateLineQuantity > remainingProjectQuantity || remainingProjectQuantity <= 0" style="background: #44651f; color: white; border-color: #203b13;">
           <mat-icon>add</mat-icon> Créer l'expédition
         </button>
       </div>
@@ -282,12 +291,12 @@
             <div class="card-title-olive" style="margin: 0;">
               <mat-icon>format_list_bulleted</mat-icon> Articles à expédier
             </div>
-            <button class="btn-outline" (click)="toggleAddLine()" *ngIf="isEditable()">
+            <button class="btn-outline" (click)="toggleAddLine()" *ngIf="isEditable() && !projectDeliveryComplete">
               <mat-icon>{{ showAddLine ? 'remove' : 'add' }}</mat-icon> Ajouter un OF
             </button>
           </div>
 
-          <div class="line-form-container m-3" *ngIf="showAddLine && isEditable()">
+          <div class="line-form-container m-3" *ngIf="showAddLine && isEditable() && !projectDeliveryComplete">
             <form [formGroup]="lineForm" (ngSubmit)="addLine()">
               <div class="form-grid align-items-end">
                 <div class="form-field" style="flex: 2">
@@ -411,7 +420,7 @@
   <div class="empty-state">
     <mat-icon>inventory_2</mat-icon>
     <p>Aucune expédition n'a encore été créée pour ce projet.</p>
-    <button class="btn-reset mt-3" type="button" (click)="toggleCreateForm()" style="background: #eef4e4;">
+    <button class="btn-reset mt-3" type="button" (click)="toggleCreateForm()" [disabled]="!canCreateExpedition()" style="background: #eef4e4;">
       <mat-icon>add</mat-icon> Nouvelle expédition
     </button>
   </div>

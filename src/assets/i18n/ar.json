@@ -17,6 +17,7 @@
     "COMPANY_NAME_REQUIRED": "اسم الشركة مطلوب",
     "COMPANY_SECTION": "معلومات الشركة",
     "SAVE": "حفظ",
+    "SEARCH": "بحث",
     "USER_SECTION": "معلومات المستخدم"
   },
   "ADMIN_COMPANY_PROFILE": {
@@ -2786,15 +2787,19 @@
       "DASHBOARD": {
         "TITLE": "لوحة تحكم التخزين"
       },
-      "FILTERED": "Filtré",
+      "FILTERED": "مفلتر",
       "MAX_CAPACITY": "السعة القصوى",
       "NA": "غير متوفر",
       "NO_UNITS": "لا توجد وحدات تخزين",
       "OIL_TYPE": "نوع الزيت",
       "PAID_STORAGE": "تخزين مدفوع",
       "PER_MONTH": "شهرياً",
+      "PUBLIC_CODE": "الرمز العام",
+      "PUBLIC_CODE_PLACEHOLDER": "أدخل الرمز العام",
       "QUALITY_GRADE": "درجة الجودة",
       "QUANTITY_KG": "الكمية (كغ)",
+      "SEARCHING": "جارٍ البحث...",
+      "SHOW_ONLY_FILTERED": "عرض الزيت المفلتر فقط",
       "SHOW_ONLY_PAID": "عرض التخزين المدفوع فقط",
       "STATUS": {
         "AVAILABLE": "متاح",

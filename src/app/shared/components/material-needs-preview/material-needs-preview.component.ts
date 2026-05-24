@@ -13,6 +13,7 @@ import { MaterialNeedLine } from '../../models/material-need-line.model';
 export class MaterialNeedsPreviewComponent implements OnChanges {
   @Input() bomId: string | null = null;
   @Input() quantity = 0;
+  @Input() quantityLabel = 'Quantité cible';
   @Input() title = 'Besoins matières vs stock';
   @Input() useReservedStock = false;
 

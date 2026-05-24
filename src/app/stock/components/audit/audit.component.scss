@@ -29,10 +29,7 @@ $shadow-md: 0 16px 36px rgba(49, 61, 35, 0.10);
   margin: 0 auto;
   padding: 1.25rem;
   color: $text;
-  background:
-    radial-gradient(circle at 0% 0%, rgba(96, 119, 48, 0.10), transparent 32%),
-    radial-gradient(circle at 100% 12%, rgba(200, 155, 60, 0.10), transparent 36%),
-    linear-gradient(180deg, #fbfaf2 0%, #f4f6ee 100%);
+  background: #ffffff;
 }
 
 /* HERO */
@@ -49,15 +46,7 @@ $shadow-md: 0 16px 36px rgba(49, 61, 35, 0.10);
   border: 1px solid rgba(224, 216, 184, 0.95);
   border-radius: 24px;
 
-  background:
-    linear-gradient(
-        90deg,
-        rgba(255, 253, 246, 0.74) 0%,
-        rgba(255, 253, 246, 0.56) 34%,
-        rgba(255, 249, 232, 0.18) 100%
-    ),
-    url('/assets/logo_etiquette%20.png') center right / cover no-repeat,
-    linear-gradient(135deg, #fffdf4 0%, #fff8e4 100%);
+  background: #ffffff;
 
   box-shadow:
     0 14px 30px rgba(59, 64, 39, 0.09),
@@ -65,13 +54,7 @@ $shadow-md: 0 16px 36px rgba(49, 61, 35, 0.10);
 }
 
 .audit-hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(circle at 7% 12%, rgba(109, 129, 53, 0.10), transparent 24%),
-    radial-gradient(circle at 97% 88%, rgba(216, 174, 66, 0.12), transparent 26%);
-  pointer-events: none;
+  content: none;
 }
 
 .hero-left {
@@ -308,8 +291,7 @@ $shadow-md: 0 16px 36px rgba(49, 61, 35, 0.10);
   padding: 0.95rem;
   border: 1px solid rgba(226, 213, 181, 0.95);
   border-radius: 18px;
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(250, 247, 236, 0.88));
+  background: #ffffff;
   box-shadow: $shadow-sm;
 
   &::after {
@@ -432,6 +414,113 @@ $shadow-md: 0 16px 36px rgba(49, 61, 35, 0.10);
 
 .table-scroll {
   overflow-x: auto;
+}
+
+.table-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1rem 1rem;
+  border-top: 1px solid #eee9dc;
+  background: #fffef9;
+}
+
+.pagination-summary {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  color: $muted;
+  font-size: 0.84rem;
+  font-weight: 800;
+
+  strong {
+    color: $olive-dark;
+    font-size: 0.94rem;
+  }
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.page-size-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: $muted;
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.page-size-select {
+  min-width: 76px;
+  height: 36px;
+  padding: 0 0.75rem;
+  border: 1px solid #d8d3c4;
+  border-radius: 10px;
+  background: $white;
+  color: $olive-dark;
+  font-size: 0.82rem;
+  font-weight: 850;
+  outline: none;
+
+  &:focus {
+    border-color: #78914b;
+    box-shadow: 0 0 0 3px rgba(120, 145, 75, 0.13);
+  }
+}
+
+.page-navigation {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.page-btn,
+.page-number {
+  height: 36px;
+  min-width: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0 0.8rem;
+  border: 1px solid #d8d3c4;
+  border-radius: 10px;
+  background: $white;
+  color: $olive-dark;
+  font-size: 0.82rem;
+  font-weight: 850;
+  cursor: pointer;
+  transition: 160ms ease;
+
+  &:hover:not(:disabled) {
+    border-color: $gold;
+    background: $cream;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.page-number {
+  padding: 0;
+
+  &.active {
+    border-color: #244d18;
+    background: linear-gradient(135deg, #1f4416, #42691f);
+    color: $white;
+    box-shadow: 0 10px 18px rgba(34, 64, 20, 0.16);
+  }
 }
 
 .audit-table {
@@ -608,5 +697,27 @@ $shadow-md: 0 16px 36px rgba(49, 61, 35, 0.10);
   .btn-clear-filters {
     width: 100%;
     margin-left: 0;
+  }
+
+  .table-pagination,
+  .pagination-controls,
+  .page-navigation {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .pagination-controls,
+  .page-navigation {
+    width: 100%;
+  }
+
+  .page-size-control {
+    justify-content: space-between;
+  }
+
+  .page-btn,
+  .page-number,
+  .page-size-select {
+    width: 100%;
   }
 }

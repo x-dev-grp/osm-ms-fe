@@ -8,10 +8,7 @@
   min-height: 100vh;
   padding: 28px;
   color: #1f2a24;
-  background:
-    linear-gradient(135deg, rgba(247, 250, 244, 0.96), rgba(238, 245, 232, 0.94)),
-    radial-gradient(circle at top right, rgba(118, 148, 83, 0.18), transparent 36%),
-    radial-gradient(circle at bottom left, rgba(183, 135, 62, 0.16), transparent 34%);
+  background: #ffffff;
   font-family: inherit;
 }
 
@@ -395,20 +392,18 @@ button {
 }
 
 .stock-box {
-  color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.12);
-  background:
-    linear-gradient(135deg, rgba(35, 75, 42, 0.96), rgba(77, 105, 48, 0.94)),
-    radial-gradient(circle at top right, rgba(255, 255, 255, 0.2), transparent 30%);
+  color: #173c20;
+  border-color: rgba(73, 107, 54, 0.18);
+  background: #ffffff;
   box-shadow: 0 22px 44px rgba(31, 74, 45, 0.2);
 }
 
 .stock-box::before {
-  background: rgba(255, 255, 255, 0.42);
+  background: rgba(73, 107, 54, 0.12);
 }
 
 .stock-box h5 {
-  color: #ffffff;
+  color: #173c20;
 }
 
 .white-bar {
@@ -416,7 +411,7 @@ button {
   height: 24px;
   display: inline-block;
   border-radius: 999px;
-  background: #ffffff;
+  background: linear-gradient(180deg, #496b36, #c09a4f);
 }
 
 .stock-value {
@@ -432,20 +427,20 @@ button {
   font-size: 0.95rem;
   font-weight: 700;
   letter-spacing: 0;
-  color: rgba(255, 255, 255, 0.82);
+  color: #5f6f5e;
 }
 
 .stock-value.low {
-  color: #ffd7c2;
+  color: #b24a31;
 }
 
 .stock-value.warning {
-  color: #ffe59a;
+  color: #9a6a12;
 }
 
 .stock-value.good,
 .stock-value.normal {
-  color: #ffffff;
+  color: #173c20;
 }
 
 .stock-details-grid {
@@ -456,21 +451,21 @@ button {
 
 .stock-detail-item {
   padding: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(73, 107, 54, 0.16);
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(73, 107, 54, 0.06);
 }
 
 .stock-detail-item span {
   display: block;
   margin-bottom: 6px;
-  color: rgba(255, 255, 255, 0.74);
+  color: #64725f;
   font-size: 0.82rem;
   font-weight: 700;
 }
 
 .stock-detail-item strong {
-  color: #ffffff;
+  color: #173c20;
   font-size: 1.02rem;
   font-weight: 900;
 }
@@ -482,20 +477,20 @@ button {
   margin: 14px 0 0;
   padding: 12px 14px;
   border-radius: 16px;
-  color: #fff2cf;
-  background: rgba(255, 255, 255, 0.12);
+  color: #8a5f0f;
+  background: rgba(243, 216, 148, 0.32);
   font-weight: 600;
 }
 
 .stock-empty {
-  border-color: rgba(255, 255, 255, 0.25);
-  color: rgba(255, 255, 255, 0.84);
-  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(73, 107, 54, 0.18);
+  color: #64725f;
+  background: rgba(73, 107, 54, 0.06);
 }
 
 .stock-date {
   margin-top: 14px;
-  color: rgba(255, 255, 255, 0.72);
+  color: #64725f;
   font-size: 0.82rem;
   font-weight: 600;
 }
@@ -506,7 +501,7 @@ button {
 
 .btn-stock.in {
   color: #164e2a;
-  background: #ffffff;
+  background: rgba(73, 107, 54, 0.1);
 }
 
 .btn-stock.out {

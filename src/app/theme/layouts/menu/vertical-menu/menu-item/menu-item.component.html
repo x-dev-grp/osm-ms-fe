@@ -3,12 +3,15 @@
     <li
       [ngClass]="item().classes!"
       [routerLinkActive]="['active']"
+      [routerLinkActiveOptions]="{ exact: item().exactMatch ?? false }"
       matTooltip="{{ !isEnabled ? ('STANDARD.ACCESS_RESSOURCE_ERROR'|translate) : '' }}"
     >
       <a
         class="nav-link"
         [routerLink]="[item().url]"
         [target]="item().target ? '_blank' : '_self'"
+        [routerLinkActive]="['active']"
+        [routerLinkActiveOptions]="{ exact: item().exactMatch ?? false }"
         [ngClass]="{ disabled: !isEnabled }"
         (click)="toggleMenu($event); $event.stopPropagation()"
       >

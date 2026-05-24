@@ -3,6 +3,17 @@ import { CommonModule } from '@angular/common';
 import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
 import { AnalyticsService } from '../../services/analytics.service';
 
+type FiltrationRow = {
+  operationId: string;
+  operationDate: string | null;
+  inputVolume: number;
+  outputVolume: number;
+  lossVolume: number;
+  efficiencyRate: number;
+  operationLabel: string;
+  operationDateLabel: string;
+};
+
 @Component({
   selector: 'app-filtration-report',
   standalone: true,
@@ -11,37 +22,61 @@ import { AnalyticsService } from '../../services/analytics.service';
   styleUrls: ['./Rapport-Filtration.component.scss']
 })
 export class RapportFiltrationComponent implements OnInit {
-  data: any[] = [];
+  data: FiltrationRow[] = [];
   loading = false;
+  errorMessage = '';
 
-  efficiencyChartOptions: Partial<ApexOptions> | any;
-  volumeTrendsChartOptions: Partial<ApexOptions> | any;
+  efficiencyChartOptions: Partial<ApexOptions> | null = null;
+  volumeTrendsChartOptions: Partial<ApexOptions> | null = null;
 
   constructor(private analyticsService: AnalyticsService) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadData();
   }
 
-  loadData() {
+  get hasData(): boolean {
+    return this.data.length > 0;
+  }
+
+  loadData(): void {
     this.loading = true;
-    console.log('Loading Filtration Report...');
+    this.errorMessage = '';
+
     this.analyticsService.getFiltration().subscribe({
       next: (res: any) => {
-        console.log('Filtration Response:', res);
-        this.data = res?.data ? res.data : res;
+        const rows = Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : [];
+
+        this.data = rows.map((row: any, index: number) => {
+          const operationDate = row?.operationDate ? String(row.operationDate) : null;
+          return {
+            operationId: String(row?.operationId ?? ''),
+            operationDate,
+            inputVolume: Number(row?.inputVolume ?? 0),
+            outputVolume: Number(row?.outputVolume ?? 0),
+            lossVolume: Number(row?.lossVolume ?? 0),
+            efficiencyRate: Number(row?.efficiencyRate ?? 0),
+            operationLabel: this.buildOperationLabel(operationDate, index),
+            operationDateLabel: this.formatOperationDate(operationDate)
+          };
+        });
+
         this.initCharts();
         this.loading = false;
       },
       error: (err) => {
-        console.error('Error', err);
+        this.data = [];
+        this.efficiencyChartOptions = null;
+        this.volumeTrendsChartOptions = null;
+        this.errorMessage = err?.error?.message || err?.message || 'Impossible de charger le rapport de filtration.';
         this.loading = false;
       }
     });
   }
 
-  exportPdf() {
+  exportPdf(): void {
     this.loading = true;
+
     this.analyticsService.exportFiltrationPdf().subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
@@ -53,21 +88,24 @@ export class RapportFiltrationComponent implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        console.error('Error', err);
+        this.errorMessage = err?.error?.message || err?.message || 'Impossible d exporter le PDF.';
         this.loading = false;
       }
     });
   }
 
-  private initCharts() {
-    if (!this.data || this.data.length === 0) return;
+  private initCharts(): void {
+    if (!this.data.length) {
+      this.efficiencyChartOptions = null;
+      this.volumeTrendsChartOptions = null;
+      return;
+    }
 
-    // Efficiency Distribution
     let excellent = 0;
     let good = 0;
     let poor = 0;
 
-    this.data.forEach(item => {
+    this.data.forEach((item) => {
       if (item.efficiencyRate >= 98) excellent++;
       else if (item.efficiencyRate >= 95) good++;
       else poor++;
@@ -76,34 +114,77 @@ export class RapportFiltrationComponent implements OnInit {
     this.efficiencyChartOptions = {
       series: [excellent, good, poor],
       chart: { type: 'donut', height: 320 },
-      labels: ['Excellent (≥98%)', 'Bon (95-97%)', 'Faible (<95%)'],
+      labels: ['Excellent (>=98%)', 'Bon (95-97%)', 'Faible (<95%)'],
       colors: ['#10b981', '#f59e0b', '#ef4444'],
       legend: { position: 'bottom' },
       dataLabels: { enabled: true }
     };
 
-    // Volume Trends
     const sortedData = [...this.data]
-      .sort((a, b) => new Date(a.operationDate).getTime() - new Date(b.operationDate).getTime())
-      .slice(-10); // Last 10 operations
+      .sort((a, b) => this.timeValue(a.operationDate) - this.timeValue(b.operationDate))
+      .slice(-10);
 
     this.volumeTrendsChartOptions = {
       series: [
-        { name: 'Volume Entrant', data: sortedData.map(item => item.inputVolume) },
-        { name: 'Volume Sortant', data: sortedData.map(item => item.outputVolume) }
+        { name: 'Volume entrant', data: sortedData.map((item) => item.inputVolume) },
+        { name: 'Volume sortant', data: sortedData.map((item) => item.outputVolume) }
       ],
       chart: { type: 'area', height: 320, toolbar: { show: false } },
       colors: ['#64748b', '#3b82f6'],
       dataLabels: { enabled: false },
       stroke: { curve: 'smooth', width: 2 },
       xaxis: {
-        categories: sortedData.map(item => new Date(item.operationDate).toLocaleDateString()),
+        categories: sortedData.map((item) => this.chartDateLabel(item.operationDate, item.operationLabel)),
         labels: { style: { fontSize: '10px' } }
       },
       tooltip: {
-        y: { formatter: (val: number) => val.toLocaleString() + ' L' }
+        y: { formatter: (val: number) => `${val.toLocaleString()} L` }
       },
       legend: { position: 'top' }
     };
+  }
+
+  private buildOperationLabel(operationDate: string | null, index: number): string {
+    if (operationDate) {
+      const parsed = new Date(operationDate);
+      if (!Number.isNaN(parsed.getTime())) {
+        return `Operation ${index + 1}`;
+      }
+    }
+
+    return `Operation ${index + 1}`;
+  }
+
+  private formatOperationDate(operationDate: string | null): string {
+    if (!operationDate) {
+      return '-';
+    }
+
+    const parsed = new Date(operationDate);
+    if (Number.isNaN(parsed.getTime())) {
+      return '-';
+    }
+
+    return parsed.toLocaleString();
+  }
+
+  private chartDateLabel(operationDate: string | null, fallback: string): string {
+    if (operationDate) {
+      const parsed = new Date(operationDate);
+      if (!Number.isNaN(parsed.getTime())) {
+        return parsed.toLocaleDateString();
+      }
+    }
+
+    return fallback;
+  }
+
+  private timeValue(operationDate: string | null): number {
+    if (!operationDate) {
+      return 0;
+    }
+
+    const parsed = new Date(operationDate).getTime();
+    return Number.isNaN(parsed) ? 0 : parsed;
   }
 }

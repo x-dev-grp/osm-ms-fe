@@ -1,11 +1,11 @@
 <div class="modern-container">
   <div class="header-section">
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+    <div class="page-header-shell">
       <div class="header-left">
         <div class="header-icon-wrapper">
           <i class="fas fa-chart-line"></i>
         </div>
-        <div>
+        <div class="header-title-block">
           <h1 class="page-title">Rendement des OF</h1>
           <p class="stats-badge">
             <i class="fas fa-industry me-1"></i>
@@ -13,11 +13,11 @@
           </p>
         </div>
       </div>
-      <div class="d-flex gap-2">
-        <button class="btn-outline-primary d-flex align-items-center gap-2" (click)="exportPdf()" [disabled]="loading || !data?.length">
+      <div class="header-actions">
+        <button class="header-btn btn-outline-primary" type="button" (click)="exportPdf()" [disabled]="loading || !data?.length">
           <i class="fas fa-file-pdf"></i> Exporter PDF
         </button>
-        <button class="btn-primary d-flex align-items-center gap-2" (click)="loadData()" [disabled]="loading">
+        <button class="header-btn btn-primary" type="button" (click)="loadData()" [disabled]="loading">
           <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i> Actualiser
         </button>
       </div>
@@ -99,7 +99,7 @@
             <td><span class="status-badge" [ngClass]="getBadgeClass(row.statut)">{{ row.statut }}</span></td>
             <td class="text-center">{{ row.quantiteCible | number }}</td>
             <td class="text-center text-success fw-bold">{{ row.quantiteBonne | number }}</td>
-            <td class="text-center text-danger fw-bold">{{ row.quantiteNc | number }}</td>
+            <td class="text-center text-danger fw-bold">{{ (row.quantiteNc || 0) | number }}</td>
             <td>
               <div class="d-flex align-items-center">
                 <div class="flex-grow-1 progress me-2">

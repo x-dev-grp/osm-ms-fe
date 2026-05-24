@@ -164,6 +164,7 @@
     "PRINT": "Print",
     "REFRESH": "Refresh",
     "SAVE": "Save",
+    "SEARCH": "Search",
     "SAVING": "Saving...",
     "SELECT_OPTION": "Select an option",
     "TRANSACTIONS": "transactions",
@@ -2823,15 +2824,19 @@
       "DASHBOARD": {
         "TITLE": "Storage Dashboard"
       },
-      "FILTERED": "Filtred",
+      "FILTERED": "Filtered",
       "MAX_CAPACITY": "Max Capacity",
       "NA": "N/A",
       "NO_UNITS": "No storage units",
       "OIL_TYPE": "Oil Type",
       "PAID_STORAGE": "Paid Storage",
       "PER_MONTH": "per month",
+      "PUBLIC_CODE": "Public code",
+      "PUBLIC_CODE_PLACEHOLDER": "Enter public code",
       "QUALITY_GRADE": "Quality Grade",
       "QUANTITY_KG": "Quantity (kg)",
+      "SEARCHING": "Searching...",
+      "SHOW_ONLY_FILTERED": "Show only filtered oil",
       "SHOW_ONLY_PAID": "Show only paid storage",
       "STATUS": {
         "AVAILABLE": "Available",

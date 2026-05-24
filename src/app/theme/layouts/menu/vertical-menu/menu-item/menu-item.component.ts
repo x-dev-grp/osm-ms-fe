@@ -5,10 +5,7 @@ import { CommonModule } from '@angular/common';
 
 // Project import
 import { NavigationItem } from 'src/app/theme/types/navigation';
-import { ThemeLayoutService } from 'src/app/theme/services/theme-layout.service';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { AuthenticationService } from 'src/app/auth/services/authentication.service';
-import { Role } from 'src/app/theme/types/role';
 
 @Component({
   selector: 'app-menu-item',
@@ -18,9 +15,6 @@ import { Role } from 'src/app/theme/types/role';
   styleUrls: ['./menu-item.component.scss']
 })
 export class MenuItemVerticalComponent implements OnInit {
-  private themeService = inject(ThemeLayoutService);
-  private authenticationService = inject(AuthenticationService);
-
   // public props
   readonly item = input.required<NavigationItem>();
   readonly parentRole = input<string[]>();
@@ -29,35 +23,8 @@ export class MenuItemVerticalComponent implements OnInit {
 
   //life cycle hook
   ngOnInit() {
-    /**
-     * current login user role
-     */
-    const CurrentUserRole = this.authenticationService.currentUserValue?.role || Role.Admin;
-
-    /**
-     * menu items
-     */
     const item = this.item();
     this.isEnabled = item?.disabled ? false : true;
-    /**
-     * items parent role
-     */
-    // const parentRoleValue = this.parentRole();
-
-    // if (item.role && item.role.length > 0) {
-    //   if (CurrentUserRole) {
-    //     const parentRole = this.parentRole();
-    //     const allowedFromParent = item.isMainParent || (parentRole && parentRole.length > 0 && parentRole.includes(CurrentUserRole));
-    //     if (allowedFromParent) {
-    //       this.isEnabled = item.role.includes(CurrentUserRole);
-    //     }
-    //   }
-    // } else if (parentRoleValue && parentRoleValue.length > 0) {
-    //   // If item.role is empty, check parentRole
-    //   if (CurrentUserRole) {
-    //     this.isEnabled = parentRoleValue.includes(CurrentUserRole);
-    //   }
-    // }
   }
 
   // public method

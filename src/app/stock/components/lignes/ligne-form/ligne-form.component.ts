@@ -17,6 +17,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { LigneConditionnementService } from '../../../services/ligne-conditionnement.service';
 import { LigneConditionnement, Statue } from '../../../models/ligne-conditionnement.model';
 import { ToastService } from '../../../../shared/services/toast.service';
+import { AssignableUser, UserService } from '../../../../settings/user-management/services/user.service';
+import { Action, InventoryEntity, OSMModule } from '../../../../theme/types/permissions';
 
 @Component({
   selector: 'app-ligne-form',
@@ -47,17 +49,21 @@ export class LigneFormComponent implements OnInit {
   loading = signal<boolean>(false);
   submitting = signal<boolean>(false);
   error = signal<string | null>(null);
+  responsables = signal<AssignableUser[]>([]);
+  loadingResponsables = signal<boolean>(false);
 
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     private ligneService: LigneConditionnementService,
-    private toast: ToastService
+    private toast: ToastService,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
     this.initForm();
+    this.loadResponsables();
     this.ligneId = this.route.snapshot.paramMap.get('id');
     if (this.ligneId) {
       this.isEditMode = true;
@@ -89,6 +95,7 @@ export class LigneFormComponent implements OnInit {
           dateDerniereMaintenance: ligne.dateDerniereMaintenance ? new Date(ligne.dateDerniereMaintenance.toString()) : null,
           dateProchaineMaintenance: ligne.dateProchaineMaintenance ? new Date(ligne.dateProchaineMaintenance.toString()) : null
         });
+        this.ensureCurrentResponsableInList();
         this.loading.set(false);
       },
       error: (err) => {
@@ -97,6 +104,49 @@ export class LigneFormComponent implements OnInit {
         this.loading.set(false);
       }
     });
+  }
+
+  private loadResponsables(): void {
+    this.loadingResponsables.set(true);
+
+    this.userService.getUsersByPermission(
+      OSMModule.INVENTAIR,
+      InventoryEntity.LIGNECONDITIONNEMENT,
+      Action.READ
+    ).subscribe({
+      next: (users) => {
+        this.responsables.set(users || []);
+        this.ensureCurrentResponsableInList();
+        this.loadingResponsables.set(false);
+      },
+      error: (err) => {
+        console.error('Erreur chargement responsables', err);
+        this.toast.error('Impossible de charger la liste des responsables');
+        this.loadingResponsables.set(false);
+      }
+    });
+  }
+
+  private ensureCurrentResponsableInList(): void {
+    const currentResponsable = (this.ligneForm.get('responsable')?.value || '').trim();
+    if (!currentResponsable) {
+      return;
+    }
+
+    const exists = this.responsables().some((user) => user.username === currentResponsable);
+    if (exists) {
+      return;
+    }
+
+    this.responsables.update((current) => [
+      {
+        id: currentResponsable,
+        username: currentResponsable,
+        displayName: currentResponsable,
+        roleName: 'LEGACY'
+      },
+      ...current
+    ]);
   }
 
   onSubmit(): void {

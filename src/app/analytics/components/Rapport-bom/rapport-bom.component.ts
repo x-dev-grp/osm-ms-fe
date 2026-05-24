@@ -2,6 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
 import { AnalyticsService } from '../../services/analytics.service';
+import { ArticleService } from '../../../stock/services/article.service';
+
+type BomGapRow = {
+  materialName: string;
+  plannedQuantity: number;
+  actualQuantity: number;
+  gapQuantity: number;
+  gapPercentage: number;
+};
 
 @Component({
   selector: 'app-bom-gap-report',
@@ -11,37 +20,60 @@ import { AnalyticsService } from '../../services/analytics.service';
   styleUrls: ['./rapport-bom.component.scss']
 })
 export class RapportBomComponent implements OnInit {
-  data: any[] = [];
+  data: BomGapRow[] = [];
   loading = false;
+  errorMessage = '';
+  private articleNamesByPrefix: Record<string, string> = {};
 
-  distributionChartOptions: Partial<ApexOptions> | any;
-  topGapsChartOptions: Partial<ApexOptions> | any;
+  distributionChartOptions: Partial<ApexOptions> | null = null;
+  topGapsChartOptions: Partial<ApexOptions> | null = null;
 
-  constructor(private analyticsService: AnalyticsService) { }
+  constructor(
+    private analyticsService: AnalyticsService,
+    private articleService: ArticleService
+  ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.loadArticleNames();
     this.loadData();
   }
-  // button actualiser
-  loadData() {
+
+  get hasData(): boolean {
+    return this.data.length > 0;
+  }
+
+  loadData(): void {
     this.loading = true;
-    console.log('Loading Nomenclatures gap report...');
-    this.analyticsService.getBomGap().subscribe({ //appelle le backend
+    this.errorMessage = '';
+
+    this.analyticsService.getBomGap().subscribe({
       next: (res: any) => {
-        console.log('Nomenclatures gap response:', res);
-        this.data = res?.data ? res.data : res;  //lit la reponse
-        this.initCharts(); //initialiser le graphique
-        this.loading = false;//descativer le chargement
+        const rows = Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : [];
+        this.data = rows.map((row: any) => ({
+          materialName: this.formatMaterialName(String(row?.materialName ?? '-')),
+          plannedQuantity: Number(row?.plannedQuantity ?? row?.theoreticalQuantity ?? 0),
+          actualQuantity: Number(row?.actualQuantity ?? 0),
+          gapQuantity: Number(row?.gapQuantity ?? 0),
+          gapPercentage: Number(row?.gapPercentage ?? 0)
+        }));
+
+        this.initCharts();
+        this.loading = false;
       },
       error: (err) => {
-        console.error('Error', err);
+        console.error('Error loading BOM gap report', err);
+        this.data = [];
+        this.distributionChartOptions = null;
+        this.topGapsChartOptions = null;
+        this.errorMessage = err?.error?.message || err?.message || 'Impossible de charger le rapport BOM.';
         this.loading = false;
       }
     });
   }
 
-  exportPdf() {
+  exportPdf(): void {
     this.loading = true;
+
     this.analyticsService.exportBomGapPdf().subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
@@ -53,21 +85,25 @@ export class RapportBomComponent implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        console.error('Error', err);
+        console.error('Error exporting BOM gap PDF', err);
+        this.errorMessage = err?.error?.message || err?.message || 'Impossible d exporter le PDF.';
         this.loading = false;
       }
     });
   }
 
-  //CETTE func telechargeer le boom en pdf depuis le backend
-  private initCharts() {
-    if (!this.data || this.data.length === 0) return;
+  private initCharts(): void {
+    if (!this.data.length) {
+      this.distributionChartOptions = null;
+      this.topGapsChartOptions = null;
+      return;
+    }
 
     let surconsommation = 0;
     let sousconsommation = 0;
     let conforme = 0;
 
-    this.data.forEach(item => {
+    this.data.forEach((item) => {
       if (item.gapPercentage > 0) surconsommation++;
       else if (item.gapPercentage < 0) sousconsommation++;
       else conforme++;
@@ -88,8 +124,8 @@ export class RapportBomComponent implements OnInit {
 
     this.topGapsChartOptions = {
       series: [{
-        name: 'Écart (%)',
-        data: sortedData.map(item => Number(item.gapPercentage).toFixed(2))
+        name: 'Ecart (%)',
+        data: sortedData.map((item) => Number(item.gapPercentage))
       }],
       chart: { type: 'bar', height: 320, toolbar: { show: false } },
       plotOptions: {
@@ -107,13 +143,60 @@ export class RapportBomComponent implements OnInit {
       },
       dataLabels: { enabled: false },
       xaxis: {
-        categories: sortedData.map(item => item.materialName.substring(0, 15) + '...'),
+        categories: sortedData.map((item) => this.chartLabel(item.materialName)),
         labels: { style: { fontSize: '10px' } }
       },
       tooltip: {
-        y: { formatter: (val: number) => val + '%' }
+        y: { formatter: (val: number) => `${val}%` }
       },
       legend: { show: false }
     };
+  }
+
+  private chartLabel(value: string): string {
+    const cleaned = (value || '-').trim();
+    return cleaned.length > 18 ? `${cleaned.substring(0, 18)}...` : cleaned;
+  }
+
+  private loadArticleNames(): void {
+    this.articleService.getActiveArticles().subscribe({
+      next: (articles) => {
+        this.articleNamesByPrefix = (articles || []).reduce((acc: Record<string, string>, article: any) => {
+          const id = String(article?.id || '').trim().toLowerCase();
+          const name = String(article?.nom || '').trim();
+          if (id.length >= 8 && name) {
+            acc[id.substring(0, 8)] = name;
+          }
+          return acc;
+        }, {});
+
+        if (this.data.length) {
+          this.data = this.data.map((row) => ({
+            ...row,
+            materialName: this.formatMaterialName(row.materialName)
+          }));
+          this.initCharts();
+        }
+      },
+      error: (err) => {
+        console.error('Error loading article names for BOM gap report', err);
+      }
+    });
+  }
+
+  private formatMaterialName(value: string): string {
+    const raw = (value || '-').trim();
+    const match = raw.match(/^Article\s+([0-9a-f]{8})\b/i);
+    if (!match) {
+      return raw;
+    }
+
+    const prefix = match[1].toLowerCase();
+    const articleName = this.articleNamesByPrefix[prefix];
+    if (!articleName) {
+      return raw;
+    }
+
+    return raw.replace(/^Article\s+[0-9a-f]{8}/i, articleName);
   }
 }

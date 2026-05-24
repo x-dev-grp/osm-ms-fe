@@ -25,12 +25,14 @@ export class OfYieldReportComponent implements OnInit {
 
   loadData() {
     this.loading = true;
-    console.log('Loading OF Yield Report...');
     this.analyticsService.getOfYields().subscribe({
       next: (res: any) => {
-        console.log('OF Yield Response:', res);
-        // Handle wrapped ApiResponse or direct Array
-        this.data = res?.data ? res.data : res;
+        const rows = Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : [];
+        this.data = rows.map((row: any) => ({
+          ...row,
+          yieldPercent: Number(row?.yieldPercent ?? row?.yieldPercentage ?? 0),
+          quantiteNc: Number(row?.quantiteNc ?? row?.quantiteNC ?? 0)
+        }));
         this.initCharts();
         this.loading = false;
       },
@@ -99,7 +101,9 @@ export class OfYieldReportComponent implements OnInit {
     };
 
     // Top 10 OFs by Yield
-    const sortedData = [...this.data].sort((a, b) => b.yieldPercent - a.yieldPercent).slice(0, 10);
+    const sortedData = [...this.data]
+      .sort((a, b) => Number(b.yieldPercent || 0) - Number(a.yieldPercent || 0))
+      .slice(0, 10);
 
     this.yieldChartOptions = {
       series: [{

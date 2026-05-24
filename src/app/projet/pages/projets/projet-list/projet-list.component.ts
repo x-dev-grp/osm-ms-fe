@@ -183,7 +183,7 @@ export class ProjetListComponent {
     }
 
     if (row.statut === 'FAILED') {
-      alert('Action impossible: Le projet a échoué en raison de réservations de stock insuffisantes.');
+      alert('Action impossible: le projet est bloque. Consultez le detail pour voir la cause et la correction.');
       return;
     }
 
@@ -278,7 +278,7 @@ export class ProjetListComponent {
       case 'ANNULE':
         return 'Annule';
       case 'FAILED':
-        return 'Échoué';
+        return 'Echoue';
       default:
         return raw || '-';
     }
@@ -352,11 +352,6 @@ export class ProjetListComponent {
 
   onAddOF(row: ProjetDto): void {
     if (!row?.id) {
-      return;
-    }
-
-    if (row.statut === 'FAILED') {
-      alert('Action impossible: Le projet a échoué en raison de réservations de stock insuffisantes.');
       return;
     }
 

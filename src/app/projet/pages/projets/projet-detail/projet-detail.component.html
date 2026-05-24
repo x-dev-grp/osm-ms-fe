@@ -52,17 +52,18 @@
     <div class="d-flex align-items-center gap-3">
       <mat-icon style="color: #c5221f; font-size: 28px; width: 28px; height: 28px;">error</mat-icon>
       <div>
-        <strong style="font-size: 16px; display: block; margin-bottom: 2px;">Ce projet a échoué (Réservations de stock insuffisantes)</strong>
-        <span class="small" style="color: #601414 !important;">Toutes les actions sont bloquées. Veuillez vérifier les stocks disponibles pour ce projet, puis cliquez sur Modifier pour ajuster ou réenregistrer le projet afin de relancer les réservations.</span>
+        <strong style="font-size: 16px; display: block; margin-bottom: 2px;">Ce projet a echoue : {{ failedProjectReasonTitle() }}</strong>
+        <span class="small d-block" style="color: #601414 !important;">Cause : {{ failedProjectReasonText() }}</span>
+        <span class="small d-block" style="color: #601414 !important;">Correction : {{ failedProjectFixText() }}</span>
       </div>
     </div>
-    <button class="btn btn-danger btn-sm" [routerLink]="['/projets', p.id]" style="background-color: #c5221f; border: none; color: white; padding: 8px 16px; border-radius: 6px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
-      <mat-icon style="font-size: 16px; width: 16px; height: 16px;">edit</mat-icon> Modifier le projet
+    <button class="btn btn-danger btn-sm" (click)="resolveFailedProject()" style="background-color: #c5221f; border: none; color: white; padding: 8px 16px; border-radius: 6px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
+      <mat-icon style="font-size: 16px; width: 16px; height: 16px;">{{ hasMissingOfQuantity ? 'add_box' : 'edit' }}</mat-icon> {{ failedProjectPrimaryActionLabel() }}
     </button>
   </div>
 
   <!-- Success Banner for Finished OFs -->
-  <div class="alert alert-success d-flex align-items-center justify-content-between p-3 mb-4 rounded-3 border no-print" *ngIf="allOfsFinished && p.statut !== 'FAILED'" style="background-color: #e6fce8; border-color: #c2f5cb; color: #1ba538; margin-top: 16px;">
+  <div class="alert alert-success d-flex align-items-center justify-content-between p-3 mb-4 rounded-3 border no-print" *ngIf="allOfsFinished && p.statut !== 'FAILED' && !isProjectCompletedStatus(p.statut)" style="background-color: #e6fce8; border-color: #c2f5cb; color: #1ba538; margin-top: 16px;">
     <div class="d-flex align-items-center gap-3">
       <mat-icon style="color: #1fc53b; font-size: 28px; width: 28px; height: 28px;">check_circle</mat-icon>
       <div>
@@ -343,7 +344,7 @@
                     <span class="of-status" [ngClass]="{
                       'planned': res.statut === 'PENDING',
                       'done': res.statut === 'CONFIRMED',
-                      'waiting': res.statut === 'RELEASED'
+                      'waiting': res.statut === 'RELEASED' || res.statut === 'CONSUMED'
                     }">
                       {{ res.statut || 'PENDING' }}
                     </span>

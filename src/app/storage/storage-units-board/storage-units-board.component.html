@@ -5,12 +5,17 @@
     <div class="toolbar">
       <div class="search-panel">
         <mat-form-field appearance="outline" class="search-field">
-          <mat-label>Public code</mat-label>
-          <input matInput [(ngModel)]="searchCode" placeholder="Enter public code" (keyup.enter)="searchByPublicCode()" />
+          <mat-label>{{ 'STORAGE.VIEW.PUBLIC_CODE' | translate }}</mat-label>
+          <input
+            matInput
+            [(ngModel)]="searchCode"
+            [placeholder]="'STORAGE.VIEW.PUBLIC_CODE_PLACEHOLDER' | translate"
+            (keyup.enter)="searchByPublicCode()"
+          />
         </mat-form-field>
         <button mat-stroked-button color="primary" (click)="searchByPublicCode()" [disabled]="searchingByCode() || !searchCode().trim()">
           <mat-icon>search</mat-icon>
-          {{ searchingByCode() ? 'Searching...' : ('COMMON.SEARCH' | translate) }}
+          {{ searchingByCode() ? ('STORAGE.VIEW.SEARCHING' | translate) : ('COMMON.SEARCH' | translate) }}
         </button>
       </div>
 

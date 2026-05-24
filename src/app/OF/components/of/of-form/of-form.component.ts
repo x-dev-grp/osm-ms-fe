@@ -114,7 +114,7 @@ export class OFFormComponent implements OnInit {
 
   private initForm(): void {
     this.ofForm = this.fb.group({
-      projectId: [''],
+      projectId: ['', Validators.required],
       productId: ['', Validators.required],
       bomId: ['', Validators.required],
       ligneId: [''],

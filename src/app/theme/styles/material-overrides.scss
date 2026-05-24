@@ -9,11 +9,11 @@ body {
   /*  @ mat drawer
   /* -------------------------------------------------------------------------- */
   .mat-drawer-container {
-    background-color: var(--accent-100) !important;
+    background-color: #ffffff !important;
     color: var(--accent-800) !important;
 
     .mat-drawer {
-      background-color: var(--accent-100) !important;
+      background-color: #ffffff !important;
 
       &.mat-drawer-side {
         border-right: 1px dashed var(--accent-400) !important;
@@ -31,20 +31,20 @@ body {
 
   &.theme-contrast {
     .mat-drawer-container {
-      background-color: var(--accent-50) !important;
+      background-color: #ffffff !important;
     }
 
     .mat-drawer {
-      background-color: var(--accent-50) !important;
+      background-color: #ffffff !important;
     }
 
     &.dark {
       .mat-drawer-container {
-        background-color: var(--accent-100) !important;
+        background-color: #ffffff !important;
       }
 
       .mat-drawer {
-        background-color: var(--accent-100) !important;
+        background-color: #ffffff !important;
       }
     }
   }
@@ -82,11 +82,11 @@ body {
       width: -webkit-fill-available !important;
 
       &.pc-header {
-        background: rgba(var(--accent-100), 0.7) !important;
+        background: #ffffff !important;
 
         &.header-blur {
           backdrop-filter: none !important;
-          background: var(--accent-100) !important;
+          background: #ffffff !important;
         }
       }
 
@@ -112,7 +112,7 @@ body {
     &.dark {
       .mat-toolbar {
         &.mat-toolbar-single-row {
-          background: var(--accent-100) !important;
+          background: #ffffff !important;
         }
       }
     }
@@ -129,7 +129,7 @@ body {
   /*  @ mat table
   /* -------------------------------------------------------------------------- */
   .mat-mdc-header-row {
-    background: var(--accent-100) !important;
+    background: #ffffff !important;
 
     .mdc-data-table__header-cell {
       font-weight: 700;

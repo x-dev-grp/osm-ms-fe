@@ -119,8 +119,11 @@
               <div class="field-block full">
                 <label>Article unitaire contenu *</label>
 
-                <select class="form-select" formControlName="colisUnitArticleId">
-                  <option [value]="null" disabled>Sélectionner un article unitaire</option>
+                <select
+                  class="form-select"
+                  [class.is-invalid]="submitted && f['colisUnitArticleId'].errors"
+                  formControlName="colisUnitArticleId">
+                  <option value="">Selectionner un article unitaire</option>
 
                   <option *ngFor="let unit of uniteArticles" [value]="unit.id">
                     {{ unit.nom }}
@@ -128,11 +131,21 @@
                 </select>
 
                 <small *ngIf="loadingUnites" class="text-muted">Chargement des articles...</small>
+                <div class="invalid-feedback" *ngIf="submitted && f['colisUnitArticleId'].errors">
+                  L'article unitaire est requis
+                </div>
               </div>
 
               <div class="field-block">
-                <label>Unités par colis</label>
-                <input type="number" class="form-control" formControlName="colisUnitsPerColis">
+                <label>Unites par colis</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  [class.is-invalid]="submitted && f['colisUnitsPerColis'].errors"
+                  formControlName="colisUnitsPerColis">
+                <div class="invalid-feedback" *ngIf="submitted && f['colisUnitsPerColis'].errors">
+                  Minimum 1 unite par colis
+                </div>
               </div>
 
               <div class="field-block">
@@ -144,13 +157,32 @@
                 <label>Dimensions (L x l x H cm)</label>
 
                 <div class="dimensions-row">
-                  <input type="number" class="form-control" formControlName="colisLength" placeholder="L">
-                  <input type="number" class="form-control" formControlName="colisWidth" placeholder="l">
-                  <input type="number" class="form-control" formControlName="colisHeight" placeholder="H">
+                  <input
+                    type="number"
+                    class="form-control"
+                    [class.is-invalid]="submitted && f['colisLength'].errors"
+                    formControlName="colisLength"
+                    placeholder="L">
+                  <input
+                    type="number"
+                    class="form-control"
+                    [class.is-invalid]="submitted && f['colisWidth'].errors"
+                    formControlName="colisWidth"
+                    placeholder="l">
+                  <input
+                    type="number"
+                    class="form-control"
+                    [class.is-invalid]="submitted && f['colisHeight'].errors"
+                    formControlName="colisHeight"
+                    placeholder="H">
+                </div>
+                <div
+                  class="invalid-feedback"
+                  *ngIf="submitted && (f['colisLength'].errors || f['colisWidth'].errors || f['colisHeight'].errors)">
+                  Les trois dimensions doivent etre superieures a 0
                 </div>
               </div>
             </div>
-
             <!-- PALETTE -->
             <div class="form-grid" *ngIf="articleForm.get('categorie')?.value === 'PALETTE'">
               <div class="field-block full">
@@ -270,10 +302,12 @@
                 [class.is-invalid]="submitted && f['um'].errors"
                 formControlName="um">
 
-                <option value="">Choisir l'unité...</option>
+                <option value="">
+                  {{ loadingUnitesMesure ? 'Chargement des unités...' : 'Choisir l\'unité...' }}
+                </option>
 
-                <option *ngFor="let unite of unitesMesure" [value]="unite">
-                  {{ unite | titlecase }}
+                <option *ngFor="let unite of unitesMesure" [value]="unite.value">
+                  {{ unite.label }}
                 </option>
               </select>
             </div>
