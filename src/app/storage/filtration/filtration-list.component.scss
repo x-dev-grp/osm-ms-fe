@@ -25,10 +25,7 @@ $blue: #2563eb;
   min-height: 100vh;
   padding: 22px;
   color: $text-main;
-  background:
-    linear-gradient(180deg, rgba(255, 250, 240, 0.84), rgba(248, 244, 232, 0.94)),
-    radial-gradient(circle at top right, rgba(215, 168, 59, 0.16), transparent 34%),
-    radial-gradient(circle at bottom left, rgba(49, 95, 27, 0.08), transparent 34%);
+  background: #ffffff;
 }
 
 .filtration-shell {
@@ -44,29 +41,25 @@ $blue: #2563eb;
   margin-bottom: 18px;
   border: 1px solid $border;
   border-radius: 22px;
-  background:
-    linear-gradient(90deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 251, 241, 0.9) 54%, rgba(250, 244, 224, 0.46) 100%),
-    url('/assets/logo_filtration.png') right center / contain no-repeat;
+  background: #ffffff;
   box-shadow: 0 8px 24px rgba(69, 53, 21, 0.10);
 
   &::before {
-    content: '';
+    content: none;
     position: absolute;
     inset: 0;
-    background:
-      linear-gradient(135deg, rgba(255, 255, 255, 0.44), transparent 38%),
-      radial-gradient(circle at 78% 22%, rgba(215, 168, 59, 0.16), transparent 26%);
+    background: none;
     pointer-events: none;
   }
 
   &::after {
-    content: '';
+    content: none;
     position: absolute;
     left: 0;
     right: 0;
     bottom: 0;
     height: 3px;
-    background: linear-gradient(90deg, $gold, #e9c969, $olive-2);
+    background: none;
   }
 }
 
@@ -184,20 +177,18 @@ $blue: #2563eb;
   padding: 26px 30px;
   border-radius: 20px;
   border: 1px solid $border;
-  background:
-    linear-gradient(90deg, rgba(255, 255, 255, 0.96), rgba(255, 252, 244, 0.92)),
-    radial-gradient(circle at 96% 65%, rgba(63, 118, 36, 0.1), transparent 22%);
+  background: #ffffff;
   box-shadow: 0 12px 32px rgba(64, 53, 25, 0.07);
 
   &::after {
-    content: '';
+    content: none;
     position: absolute;
     right: 24px;
     bottom: -18px;
     width: 180px;
     height: 110px;
     opacity: 0.16;
-    background: url('/assets/logo_filtration.png') center / contain no-repeat;
+    background: none;
     pointer-events: none;
   }
 }
@@ -270,9 +261,7 @@ $blue: #2563eb;
   text-align: center;
   border: 1px solid $border;
   border-radius: 22px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 250, 238, 0.9)),
-    radial-gradient(circle at top, rgba(215, 168, 59, 0.12), transparent 32%);
+  background: #ffffff;
   box-shadow: 0 16px 36px rgba(64, 53, 25, 0.08);
 
   .empty-icon {
@@ -311,7 +300,7 @@ $blue: #2563eb;
   overflow: hidden;
   border-radius: 22px;
   border: 1px solid $border;
-  background: rgba(255, 255, 255, 0.95);
+  background: #ffffff;
   box-shadow: 0 18px 42px rgba(64, 53, 25, 0.1);
 }
 
@@ -322,7 +311,7 @@ $blue: #2563eb;
   align-items: center;
   gap: 18px;
   border-bottom: 1px solid $border-soft;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.96), rgba(255, 250, 238, 0.84));
+  background: #ffffff;
 
   h3 {
     margin: 0;
@@ -553,9 +542,7 @@ mat-paginator {
 /* RESPONSIVE */
 @media (max-width: 1024px) {
   .filtration-hero {
-    background:
-      linear-gradient(90deg, rgba(255, 255, 255, 0.96), rgba(255, 251, 241, 0.86)),
-      url('/assets/logo_filtration.png') right center / contain no-repeat;
+    background: #ffffff;
   }
 
   .hero-content {
@@ -570,9 +557,7 @@ mat-paginator {
 
   .filtration-hero {
     min-height: auto;
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 251, 241, 0.9)),
-      url('/assets/logo_filtration.png') right center / contain no-repeat;
+    background: #ffffff;
   }
 
   .hero-content {

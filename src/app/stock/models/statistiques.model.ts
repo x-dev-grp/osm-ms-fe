@@ -5,7 +5,10 @@ export interface StatistiquesStock {
   tauxRupture: number;
   bonsEnAttente: number;
   delaiValidationMoyen: number;
-  mouvementsRecents: number;
-  lastModifiedDate: string;
-  createdDate?: string;
+  joursCouvertureMoyen?: number;
+  bonsValidesMois?: number;
+  montantAchatsMois?: number;
+  mouvementsParMois?: Record<string, number>;
+  alertesParCategorie?: Record<string, number>;
+  achatsParFournisseur?: Record<string, number>;
 }

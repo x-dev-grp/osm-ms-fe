@@ -1,9 +1,10 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { EmplacementStockService } from '../../../services/emplacement-stock.service';
+import { Router, RouterLink } from '@angular/router';
+
 import { EmplacementStock, TypeEmplacement } from '../../../models/emplacement-stock.model';
+import { EmplacementStockService } from '../../../services/emplacement-stock.service';
 
 @Component({
   selector: 'app-emplacement-list',
@@ -18,12 +19,12 @@ export class EmplacementListComponent implements OnInit {
 
   loading = false;
   error: string | null = null;
-  searchTerm: string = '';
-  typeFilter: string = '';
-  zoneFilter: string = '';
-  disponibiliteFilter: string = '';
+  searchTerm = '';
+  typeFilter = '';
+  zoneFilter = '';
+  disponibiliteFilter = '';
+  showFilters = true;
 
-  // Pour l'activation/désactivation
   togglingId: string | null = null;
 
   typesEmplacement = Object.values(TypeEmplacement);
@@ -35,24 +36,58 @@ export class EmplacementListComponent implements OnInit {
     private cdr: ChangeDetectorRef
   ) {}
 
+  get hasActiveFilters(): boolean {
+    return Boolean(this.searchTerm || this.typeFilter || this.zoneFilter || this.disponibiliteFilter);
+  }
+
+  get activeCount(): number {
+    return this.filteredEmplacements.filter((emplacement) => emplacement.actif).length;
+  }
+
+  get availableCount(): number {
+    return this.filteredEmplacements.filter((emplacement) => emplacement.disponible).length;
+  }
+
+  get reservedCount(): number {
+    return this.filteredEmplacements.filter((emplacement) => !emplacement.disponible && Boolean(emplacement.reservePour)).length;
+  }
+
+  get inactiveCount(): number {
+    return this.filteredEmplacements.filter((emplacement) => !emplacement.actif).length;
+  }
+
+  get visibleZoneCount(): number {
+    const set = new Set(
+      this.filteredEmplacements
+        .map((emplacement) => emplacement.zone)
+        .filter((zone): zone is string => Boolean(zone))
+    );
+
+    return set.size;
+  }
+
   ngOnInit(): void {
     this.loadEmplacements();
   }
 
   loadEmplacements(): void {
     this.loading = true;
+    this.error = null;
+
     this.emplacementService.getAllEmplacements().subscribe({
       next: (response) => {
         const data = (response.data || []).flat();
-        // Tri : actifs en premier, puis par date décroissante
+
         this.emplacements = data.sort((a, b) => {
           if (a.actif !== b.actif) {
             return a.actif ? -1 : 1;
           }
+
           const dateA = a.createdDate ? new Date(a.createdDate).getTime() : 0;
           const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
           return dateB - dateA;
         });
+
         this.extractZones();
         this.filterEmplacements();
         this.loading = false;
@@ -68,36 +103,38 @@ export class EmplacementListComponent implements OnInit {
   }
 
   extractZones(): void {
-    const zonesSet = new Set(this.emplacements.map(e => e.zone).filter(zone => zone));
+    const zonesSet = new Set(this.emplacements.map((emplacement) => emplacement.zone).filter((zone) => zone));
     this.zones = Array.from(zonesSet) as string[];
   }
 
   filterEmplacements(): void {
-    let filtered = this.emplacements;
+    let filtered = [...this.emplacements];
 
     if (this.searchTerm) {
       const term = this.searchTerm.toLowerCase();
-      filtered = filtered.filter(e =>
-        e.code.toLowerCase().includes(term) ||
-        (e.nom && e.nom.toLowerCase().includes(term)) ||
-        (e.zone && e.zone.toLowerCase().includes(term)) ||
-        (e.reservePour && e.reservePour.toLowerCase().includes(term))
+      filtered = filtered.filter((emplacement) =>
+        emplacement.code.toLowerCase().includes(term) ||
+        (emplacement.nom && emplacement.nom.toLowerCase().includes(term)) ||
+        (emplacement.zone && emplacement.zone.toLowerCase().includes(term)) ||
+        (emplacement.reservePour && emplacement.reservePour.toLowerCase().includes(term))
       );
     }
 
     if (this.typeFilter) {
-      filtered = filtered.filter(e => e.typeEmplacement === this.typeFilter);
+      filtered = filtered.filter((emplacement) => emplacement.typeEmplacement === this.typeFilter);
     }
 
     if (this.zoneFilter) {
-      filtered = filtered.filter(e => e.zone === this.zoneFilter);
+      filtered = filtered.filter((emplacement) => emplacement.zone === this.zoneFilter);
     }
 
     if (this.disponibiliteFilter) {
       if (this.disponibiliteFilter === 'disponible') {
-        filtered = filtered.filter(e => e.disponible);
+        filtered = filtered.filter((emplacement) => emplacement.disponible);
       } else if (this.disponibiliteFilter === 'reserve') {
-        filtered = filtered.filter(e => !e.disponible && e.reservePour);
+        filtered = filtered.filter((emplacement) => !emplacement.disponible && emplacement.reservePour);
+      } else if (this.disponibiliteFilter === 'occupe') {
+        filtered = filtered.filter((emplacement) => !emplacement.disponible && !emplacement.reservePour);
       }
     }
 
@@ -113,40 +150,42 @@ export class EmplacementListComponent implements OnInit {
     this.filterEmplacements();
   }
 
-  // Activation / désactivation
-  toActif(emp: EmplacementStock, event: Event): void {
+  toActif(emplacement: EmplacementStock, event: Event): void {
     event.stopPropagation();
-    if (!emp.id) return;
 
-    const isActif = emp.actif;
-    const action = isActif ? 'désactiver' : 'activer';
-    const message = `Voulez-vous vraiment ${action} l'emplacement "${emp.code}" ?`;
-
-    if (confirm(message)) {
-      this.togglingId = emp.id;
-      const serviceCall = isActif
-        ? this.emplacementService.desactiverEmplacement(emp.id)
-        : this.emplacementService.activerEmplacement(emp.id);
-
-      serviceCall.subscribe({
-        next: (updated) => {
-          // Mettre à jour localement
-          emp.actif = !isActif;
-          // Re-trier la liste complète
-          this.sortEmplacements();
-          // Réappliquer les filtres
-          this.filterEmplacements();
-          this.togglingId = null;
-          this.cdr.detectChanges();
-        },
-        error: (err) => {
-          console.error(`Erreur lors de la ${action}`, err);
-          alert(`Erreur lors de l'${action} de l'emplacement`);
-          this.togglingId = null;
-          this.cdr.detectChanges();
-        }
-      });
+    if (!emplacement.id || this.togglingId) {
+      return;
     }
+
+    const isActif = emplacement.actif;
+    const action = isActif ? 'desactiver' : 'activer';
+    const message = `Voulez-vous vraiment ${action} l'emplacement "${emplacement.code}" ?`;
+
+    if (!confirm(message)) {
+      return;
+    }
+
+    this.togglingId = emplacement.id;
+
+    const serviceCall = isActif
+      ? this.emplacementService.desactiverEmplacement(emplacement.id)
+      : this.emplacementService.activerEmplacement(emplacement.id);
+
+    serviceCall.subscribe({
+      next: () => {
+        emplacement.actif = !isActif;
+        this.sortEmplacements();
+        this.filterEmplacements();
+        this.togglingId = null;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error(`Erreur lors de la ${action}`, err);
+        alert(`Erreur lors de l'${action} de l'emplacement`);
+        this.togglingId = null;
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   private sortEmplacements(): void {
@@ -154,28 +193,29 @@ export class EmplacementListComponent implements OnInit {
       if (a.actif !== b.actif) {
         return a.actif ? -1 : 1;
       }
+
       const dateA = a.createdDate ? new Date(a.createdDate).getTime() : 0;
       const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
       return dateB - dateA;
     });
   }
 
-  // Méthodes utilitaires
-  getTypeLabel(type: TypeEmplacement): string {
+  getTypeLabel(type: TypeEmplacement | string): string {
     const labels = {
       [TypeEmplacement.CHAMBRE_FROIDE]: 'Chambre froide',
-      [TypeEmplacement.CONGELATEUR]: 'Congélateur',
+      [TypeEmplacement.CONGELATEUR]: 'Congelateur',
       [TypeEmplacement.ZONE_DANGEREUSE]: 'Zone dangereuse',
-      [TypeEmplacement.ZONE_SECURISEE]: 'Zone sécurisée',
-      [TypeEmplacement.QUAI_RECEPTION]: 'Quai réception',
-      [TypeEmplacement.QUAI_EXPEDITION]: 'Quai expédition',
-      [TypeEmplacement.ZONE_CONTROLE]: 'Zone contrôle',
+      [TypeEmplacement.ZONE_SECURISEE]: 'Zone securisee',
+      [TypeEmplacement.QUAI_RECEPTION]: 'Quai reception',
+      [TypeEmplacement.QUAI_EXPEDITION]: 'Quai expedition',
+      [TypeEmplacement.ZONE_CONTROLE]: 'Zone controle',
       [TypeEmplacement.ZONE_RECONDITIONNEMENT]: 'Zone reconditionnement'
     };
-    return labels[type] || type;
+
+    return labels[type as TypeEmplacement] || type;
   }
 
-  getTypeIcon(type: TypeEmplacement): string {
+  getTypeIcon(type: TypeEmplacement | string): string {
     const icons = {
       [TypeEmplacement.CHAMBRE_FROIDE]: 'fa-snowflake',
       [TypeEmplacement.CONGELATEUR]: 'fa-temperature-low',
@@ -186,10 +226,11 @@ export class EmplacementListComponent implements OnInit {
       [TypeEmplacement.ZONE_CONTROLE]: 'fa-clipboard-check',
       [TypeEmplacement.ZONE_RECONDITIONNEMENT]: 'fa-boxes'
     };
-    return icons[type] || 'fa-map-marker-alt';
+
+    return icons[type as TypeEmplacement] || 'fa-map-marker-alt';
   }
 
-  getTypeColor(type: TypeEmplacement): string {
+  getTypeColor(type: TypeEmplacement | string): string {
     const colors = {
       [TypeEmplacement.CHAMBRE_FROIDE]: 'info',
       [TypeEmplacement.CONGELATEUR]: 'primary',
@@ -200,26 +241,50 @@ export class EmplacementListComponent implements OnInit {
       [TypeEmplacement.ZONE_CONTROLE]: 'secondary',
       [TypeEmplacement.ZONE_RECONDITIONNEMENT]: 'purple'
     };
-    return colors[type] || 'secondary';
+
+    return colors[type as TypeEmplacement] || 'secondary';
   }
 
   getDisponibiliteBadge(disponible: boolean, reservePour?: string): string {
-    if (disponible) return 'badge-success';
-    if (reservePour) return 'badge-warning';
-    return 'badge-danger';
+    if (disponible) {
+      return 'status-disponible';
+    }
+
+    if (reservePour) {
+      return 'status-reserve';
+    }
+
+    return 'status-indisponible';
   }
 
   getDisponibiliteLabel(disponible: boolean, reservePour?: string): string {
-    if (disponible) return 'Disponible';
-    if (reservePour) return `Réservé pour ${reservePour}`;
-    return 'Occupé';
+    if (disponible) {
+      return 'Disponible';
+    }
+
+    if (reservePour) {
+      return `Reserve pour ${reservePour}`;
+    }
+
+    return 'Occupe';
   }
 
   getCapacitePercentage(capaciteActuelle?: string, capaciteMax?: string): number {
-    if (!capaciteActuelle || !capaciteMax) return 0;
-    const actuelle = parseFloat(capaciteActuelle);
-    const max = parseFloat(capaciteMax);
-    if (isNaN(actuelle) || isNaN(max) || max === 0) return 0;
+    if (!capaciteActuelle || !capaciteMax) {
+      return 0;
+    }
+
+    const actuelle = parseFloat(capaciteActuelle.replace(',', '.'));
+    const max = parseFloat(capaciteMax.replace(',', '.'));
+
+    if (Number.isNaN(actuelle) || Number.isNaN(max) || max === 0) {
+      return 0;
+    }
+
     return Math.min(100, (actuelle / max) * 100);
+  }
+
+  trackByEmplacement(index: number, emplacement: EmplacementStock): string {
+    return emplacement.id || `${emplacement.code}-${index}`;
   }
 }

@@ -1,311 +1,412 @@
-<div class="modern-container">
+<div class="emplacement-page">
   @if (error) {
-    <div class="alert-modern alert-danger slide-down">
+    <div class="alert-modern alert-danger">
       <div class="alert-icon">
-        <i class="fas fa-exclamation-triangle"></i>
+        <i class="fas fa-triangle-exclamation"></i>
       </div>
-      <div class="alert-content">
-        {{ error }}
-      </div>
-      <button class="alert-close" (click)="error = null">
+      <div class="alert-content">{{ error }}</div>
+      <button class="alert-close" type="button" (click)="error = null">
         <i class="fas fa-times"></i>
       </button>
     </div>
   }
-  <div class="header-section glass-effect">
-    <div class="d-flex justify-content-between align-items-center">
-      <div class="header-left">
-        <div class="header-icon-wrapper">
-          <i class="fas fa-warehouse"></i>
-        </div>
-        <div>
-          <h1 class="page-title gradient-text">
-            Emplacements de stock
-          </h1>
-          <p class="stats-badge">
-            <i class="fas fa-database me-1"></i>
-            <span>{{ emplacements.length }} emplacement(s) enregistré(s)</span>
-          </p>
+
+  <section class="hero-panel surface-panel">
+    <div class="hero-main">
+      <div class="hero-copy">
+        <span class="hero-kicker">Stock physique</span>
+        <h1>Emplacements de stockage</h1>
+        <p>
+          Pilotez les zones, capacites et disponibilites avec une vue compacte pour l'exploitation terrain.
+        </p>
+        <div class="hero-meta">
+          <span class="hero-pill">
+            <i class="fas fa-list"></i>
+            {{ filteredEmplacements.length }} vue(s) active(s)
+          </span>
+          <span class="hero-pill subtle">
+            <i class="fas fa-database"></i>
+            {{ emplacements.length }} emplacement(s) total
+          </span>
         </div>
       </div>
-      <div class="header-actions">
-        <button class="btn-create" routerLink="nouveau">
-          <i class="fas fa-plus me-2"></i>
-          <span>Nouvel emplacement</span>
-          <div class="btn-glow"></div>
+
+      <div class="hero-actions">
+        <button class="hero-action ghost" type="button" (click)="showFilters = !showFilters">
+          <i class="fas" [ngClass]="showFilters ? 'fa-eye-slash' : 'fa-filter'"></i>
+          {{ showFilters ? 'Masquer filtres' : 'Afficher filtres' }}
+        </button>
+        <button class="hero-action ghost" type="button" (click)="loadEmplacements()" [disabled]="loading">
+          <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
+          Actualiser
+        </button>
+        <button class="hero-action primary" type="button" routerLink="nouveau">
+          <i class="fas fa-plus"></i>
+          Nouvel emplacement
         </button>
       </div>
     </div>
-  </div>
 
-  <div class="filters-section glass-effect">
-    <div class="filters-header">
-      <div class="filters-title">
-        <i class="fas fa-sliders-h me-2"></i>
-        Filtres de recherche
+    <div class="hero-stats">
+      <article class="stat-card success">
+        <span class="stat-label">Actifs</span>
+        <strong>{{ activeCount }}</strong>
+        <span class="stat-note">Zones actives dans la vue</span>
+      </article>
+      <article class="stat-card available">
+        <span class="stat-label">Disponibles</span>
+        <strong>{{ availableCount }}</strong>
+        <span class="stat-note">Pretes a recevoir du stock</span>
+      </article>
+      <article class="stat-card reserved">
+        <span class="stat-label">Reserves</span>
+        <strong>{{ reservedCount }}</strong>
+        <span class="stat-note">Reservees par client ou lot</span>
+      </article>
+      <article class="stat-card neutral">
+        <span class="stat-label">Zones visibles</span>
+        <strong>{{ visibleZoneCount }}</strong>
+        <span class="stat-note">Repartition des zones filtrees</span>
+      </article>
+    </div>
+  </section>
+
+  <section class="filter-panel surface-panel">
+    <div class="panel-heading">
+      <div>
+        <span class="panel-kicker">Affinage</span>
+        <h2>Filtres de recherche</h2>
       </div>
-      <div class="active-filters" *ngIf="searchTerm || typeFilter || zoneFilter || disponibiliteFilter">
-        <span class="filter-chip">Filtres actifs</span>
-      </div>
+      <button class="toggle-button" type="button" (click)="showFilters = !showFilters">
+        <i class="fas" [ngClass]="showFilters ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+        {{ showFilters ? 'Reduire' : 'Etendre' }}
+      </button>
     </div>
 
-    <div class="filters-body">
-      <div class="row g-4">
-        <div class="col-md-4">
-          <div class="filter-group">
-            <label class="filter-label">
-              <i class="fas fa-search me-1"></i>
-              Recherche
-            </label>
-            <div class="search-wrapper">
-              <i class="fas fa-search search-icon"></i>
-              <input type="text"
-                     class="filter-input search-input"
-                     placeholder="Code, nom, client..."
-                     [(ngModel)]="searchTerm"
-                     (input)="filterEmplacements()">
-              <button *ngIf="searchTerm" class="clear-search" (click)="searchTerm = ''; filterEmplacements()">
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
+    <div class="filters-body" [class.show]="showFilters">
+      <div class="filters-grid">
+        <div class="filter-group span-2">
+          <label class="filter-label" for="emplacement-search">
+            <i class="fas fa-search"></i>
+            Recherche
+          </label>
+          <div class="search-wrapper">
+            <i class="fas fa-search search-icon"></i>
+            <input
+              id="emplacement-search"
+              type="text"
+              class="filter-input"
+              placeholder="Code, nom, zone, reservation..."
+              [(ngModel)]="searchTerm"
+              (input)="filterEmplacements()"
+            >
+            <button *ngIf="searchTerm" class="clear-search" type="button" (click)="searchTerm = ''; filterEmplacements()">
+              <i class="fas fa-times"></i>
+            </button>
           </div>
         </div>
 
-        <div class="col-md-3">
-          <div class="filter-group">
-            <label class="filter-label">
-              <i class="fas fa-tag me-1"></i>
-              Type
-            </label>
-            <div class="filter-select-wrapper">
-              <select class="filter-select" [(ngModel)]="typeFilter" (change)="filterEmplacements()">
-                <option value="">Tous les types</option>
-                @for (type of typesEmplacement; track type) {
-                  <option [value]="type">{{ getTypeLabel(type) }}</option>
-                }
-              </select>
-              <i class="fas fa-chevron-down select-arrow"></i>
-            </div>
+        <div class="filter-group">
+          <label class="filter-label" for="emplacement-type">
+            <i class="fas fa-tag"></i>
+            Type
+          </label>
+          <div class="filter-select-wrapper">
+            <select id="emplacement-type" class="filter-select" [(ngModel)]="typeFilter" (change)="filterEmplacements()">
+              <option value="">Tous les types</option>
+              @for (type of typesEmplacement; track type) {
+                <option [value]="type">{{ getTypeLabel(type) }}</option>
+              }
+            </select>
+            <i class="fas fa-chevron-down select-arrow"></i>
           </div>
         </div>
 
-        <div class="col-md-3">
-          <div class="filter-group">
-            <label class="filter-label">
-              <i class="fas fa-map-marker-alt me-1"></i>
-              Zone
-            </label>
-            <div class="filter-select-wrapper">
-              <select class="filter-select" [(ngModel)]="zoneFilter" (change)="filterEmplacements()">
-                <option value="">Toutes les zones</option>
-                @for (zone of zones; track zone) {
-                  <option [value]="zone">{{ zone }}</option>
-                }
-              </select>
-              <i class="fas fa-chevron-down select-arrow"></i>
-            </div>
+        <div class="filter-group">
+          <label class="filter-label" for="emplacement-zone">
+            <i class="fas fa-map-marker-alt"></i>
+            Zone
+          </label>
+          <div class="filter-select-wrapper">
+            <select id="emplacement-zone" class="filter-select" [(ngModel)]="zoneFilter" (change)="filterEmplacements()">
+              <option value="">Toutes les zones</option>
+              @for (zone of zones; track zone) {
+                <option [value]="zone">{{ zone }}</option>
+              }
+            </select>
+            <i class="fas fa-chevron-down select-arrow"></i>
           </div>
         </div>
 
-        <div class="col-md-2">
-          <div class="filter-group">
-            <label class="filter-label">
-              <i class="fas fa-circle me-1"></i>
-              Statut
-            </label>
-            <div class="filter-select-wrapper">
-              <select class="filter-select" [(ngModel)]="disponibiliteFilter" (change)="filterEmplacements()">
-                <option value="">Tous</option>
-                <option value="disponible">Disponible</option>
-                <option value="reserve">Réservé</option>
-              </select>
-              <i class="fas fa-chevron-down select-arrow"></i>
-            </div>
+        <div class="filter-group">
+          <label class="filter-label" for="emplacement-statut">
+            <i class="fas fa-circle"></i>
+            Statut
+          </label>
+          <div class="filter-select-wrapper">
+            <select id="emplacement-statut" class="filter-select" [(ngModel)]="disponibiliteFilter" (change)="filterEmplacements()">
+              <option value="">Tous</option>
+              <option value="disponible">Disponible</option>
+              <option value="reserve">Reserve</option>
+              <option value="occupe">Occupe</option>
+            </select>
+            <i class="fas fa-chevron-down select-arrow"></i>
           </div>
         </div>
-      </div>
 
-      <div class="row mt-3">
-        <div class="col-12 text-end">
-          <button class="btn-reset" (click)="resetFilters()">
-            <i class="fas fa-undo-alt me-2"></i>
-            Réinitialiser les filtres
+        <div class="filter-actions">
+          <button class="reset-button" type="button" (click)="resetFilters()" [disabled]="!hasActiveFilters">
+            <i class="fas fa-eraser"></i>
+            Reinitialiser
           </button>
         </div>
       </div>
+
+      @if (hasActiveFilters) {
+        <div class="active-filters">
+          <span class="active-label">Filtres actifs</span>
+          @if (searchTerm) {
+            <button class="filter-chip" type="button" (click)="searchTerm = ''; filterEmplacements()">
+              "{{ searchTerm }}"
+              <i class="fas fa-times"></i>
+            </button>
+          }
+          @if (typeFilter) {
+            <button class="filter-chip" type="button" (click)="typeFilter = ''; filterEmplacements()">
+              {{ getTypeLabel(typeFilter) }}
+              <i class="fas fa-times"></i>
+            </button>
+          }
+          @if (zoneFilter) {
+            <button class="filter-chip" type="button" (click)="zoneFilter = ''; filterEmplacements()">
+              {{ zoneFilter }}
+              <i class="fas fa-times"></i>
+            </button>
+          }
+          @if (disponibiliteFilter) {
+            <button class="filter-chip" type="button" (click)="disponibiliteFilter = ''; filterEmplacements()">
+              {{ disponibiliteFilter }}
+              <i class="fas fa-times"></i>
+            </button>
+          }
+        </div>
+      }
     </div>
-  </div>
+  </section>
 
   @if (loading) {
-    <div class="loading-state-modern">
-      <div class="spinner-container">
-        <div class="spinner-ring"></div>
-        <div class="spinner-ring-inner"></div>
-      </div>
-      <p class="loading-text">Chargement des emplacements</p>
-      <p class="loading-subtext">Veuillez patienter...</p>
+    <div class="state-panel surface-panel loading-state">
+      <div class="loader-ring"></div>
+      <h3>Chargement des emplacements</h3>
+      <p>Recuperation des donnees en cours.</p>
     </div>
   }
 
   @if (!loading && !error) {
-    <div class="table-section glass-effect">
-      <div class="table-header">
-        <div class="results-info">
-          <div class="info-badge">
-            <i class="fas fa-list-ul me-2"></i>
-            <span>{{ filteredEmplacements.length }} résultat(s) affiché(s)</span>
-          </div>
-          @if (filteredEmplacements.length !== emplacements.length) {
-            <span class="filtered-badge">
-              <i class="fas fa-filter me-1"></i>
-              filtré sur {{ emplacements.length }} total
-            </span>
+    <section class="results-panel surface-panel">
+      <div class="results-bar">
+        <div class="results-copy">
+          <span class="results-kicker">Journal d'emplacements</span>
+          <h2>{{ filteredEmplacements.length }} resultat(s) dans la vue</h2>
+          @if (hasActiveFilters) {
+            <p>Vue filtree sur {{ emplacements.length }} emplacement(s) total.</p>
+          } @else {
+            <p>Historique complet trie avec les emplacements actifs en priorite.</p>
           }
+        </div>
+
+        <div class="results-legend">
+          <span class="legend-chip available">Disponible</span>
+          <span class="legend-chip reserved">Reserve</span>
+          <span class="legend-chip inactive">Occupe</span>
         </div>
       </div>
 
-      <div class="table-responsive">
-        <table class="modern-table">
-          <thead>
-          <tr>
-            <th>Code</th>
-            <th>Nom / Zone</th>
-            <th>Type</th>
-            <th class="text-center">Capacité</th>
-            <th class="text-center">Température</th>
-            <th class="text-center">Statut</th>
-            <th class="text-center">Actions</th>
-          </tr>
-          </thead>
-          <tbody>
-            @for (emp of filteredEmplacements; track emp.id; let i = $index) {
-              <tr class="table-row"
-                  [ngClass]="{'inactive-row': !emp.actif}"
-                  [style.animation-delay]="i * 0.05 + 's'">
-                <td>
-                  <div class="sku-cell">
-                    <span class="sku-code">{{ emp.code }}</span>
-                    @if (emp.code) {
-                      <span class="sku-id">
-                        <i class="fas fa-barcode me-1"></i>
-                        {{ emp.code }}
-                      </span>
-                    }
-                  </div>
-                </td>
+      @if (filteredEmplacements.length > 0) {
+        <div class="table-shell">
+          <table class="emplacement-table">
+            <thead>
+            <tr>
+              <th>Code / Nom</th>
+              <th>Type</th>
+              <th class="text-center">Capacite</th>
+              <th class="text-center">Temperature</th>
+              <th class="text-center">Statut</th>
+              <th class="text-center">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            @for (emp of filteredEmplacements; track trackByEmplacement($index, emp)) {
+              <tr class="table-row" [class.inactive-row]="!emp.actif">
                 <td>
                   <div class="name-cell">
-                    <span class="fw-medium">{{ emp.nom || 'Sans nom' }}</span>
+                    <span class="code-line">{{ emp.code }}</span>
+                    <span class="name-line">{{ emp.nom || 'Sans nom' }}</span>
                     @if (emp.zone) {
-                      <span class="zone-badge">
-                        <i class="fas fa-map-marker-alt me-1"></i>
-                        {{ emp.zone }}
+                      <span class="zone-line">
+                        <i class="fas fa-location-dot"></i>
+                        Zone {{ emp.zone }}
                       </span>
                     }
                   </div>
                 </td>
+
                 <td>
                   <span class="type-badge {{ getTypeColor(emp.typeEmplacement) }}">
-                    <i class="fas {{ getTypeIcon(emp.typeEmplacement) }} me-1"></i>
+                    <i class="fas {{ getTypeIcon(emp.typeEmplacement) }}"></i>
                     {{ getTypeLabel(emp.typeEmplacement) }}
                   </span>
                 </td>
+
                 <td class="text-center">
                   @if (emp.capaciteMaximale) {
                     <div class="capacity-cell">
-                      <div class="capacity-value">
-                        {{ emp.capaciteActuelle || '0' }} / {{ emp.capaciteMaximale }}
-                      </div>
+                      <div class="capacity-value">{{ emp.capaciteActuelle || '0' }} / {{ emp.capaciteMaximale }}</div>
                       <div class="capacity-bar">
-                        <div class="capacity-fill"
-                             [style.width]="getCapacitePercentage(emp.capaciteActuelle, emp.capaciteMaximale) + '%'"
-                             [class.warning]="getCapacitePercentage(emp.capaciteActuelle, emp.capaciteMaximale) > 80"
-                             [class.danger]="getCapacitePercentage(emp.capaciteActuelle, emp.capaciteMaximale) > 95">
-                        </div>
+                        <div
+                          class="capacity-fill"
+                          [style.width]="getCapacitePercentage(emp.capaciteActuelle, emp.capaciteMaximale) + '%'"
+                          [class.warning]="getCapacitePercentage(emp.capaciteActuelle, emp.capaciteMaximale) > 80"
+                          [class.danger]="getCapacitePercentage(emp.capaciteActuelle, emp.capaciteMaximale) > 95"
+                        ></div>
                       </div>
                     </div>
                   } @else {
-                    <span class="metric-empty">—</span>
+                    <span class="metric-empty">n/a</span>
                   }
                 </td>
+
                 <td class="text-center">
                   @if (emp.temperatureMin || emp.temperatureMax) {
                     <div class="temperature-cell">
-                      <i class="fas fa-thermometer-half me-1"></i>
-                      <span>{{ emp.temperatureMin || '-' }}°C / {{ emp.temperatureMax || '-' }}°C</span>
+                      <i class="fas fa-thermometer-half"></i>
+                      <span>{{ emp.temperatureMin || '-' }} C / {{ emp.temperatureMax || '-' }} C</span>
                     </div>
                   } @else {
-                    <span class="metric-empty">—</span>
+                    <span class="metric-empty">n/a</span>
                   }
                 </td>
+
                 <td class="text-center">
                   <span class="status-badge {{ getDisponibiliteBadge(emp.disponible, emp.reservePour) }}">
                     <span class="status-dot"></span>
                     {{ getDisponibiliteLabel(emp.disponible, emp.reservePour) }}
                   </span>
                 </td>
+
                 <td class="text-center">
                   <div class="action-group">
-                    <ng-container *ngIf="emp.actif; else inactiveActions">
-                      <button class="action-btn view"
-                              [routerLink]="['/stock/emplacements', emp.id]"
-                              title="Voir détails">
+                    @if (emp.actif) {
+                      <button class="action-btn view" type="button" [routerLink]="['/stock/emplacements', emp.id]" title="Voir details">
                         <i class="fas fa-eye"></i>
                       </button>
-                      <button class="action-btn edit"
-                              [routerLink]="['/stock/emplacements', emp.id, 'edit']"
-                              title="Modifier">
+                      <button class="action-btn edit" type="button" [routerLink]="['/stock/emplacements', emp.id, 'edit']" title="Modifier">
                         <i class="fas fa-edit"></i>
                       </button>
-                      <button class="action-btn delete"
-                              (click)="toActif(emp, $event)"
-                              title="Désactiver">
-                        <i class="fas fa-ban"></i>
-                      </button>
-                    </ng-container>
-                    <ng-template #inactiveActions>
-                      <button class="action-btn success"
-                              (click)="toActif(emp, $event)"
-                              title="Activer">
-                        <i class="fas fa-check-circle"></i>
-                      </button>
-                    </ng-template>
-                  </div>
-                </td>
-              </tr>
-            } @empty {
-              <tr>
-                <td colspan="7" class="empty-state">
-                  <div class="empty-state-content">
-                    <div class="empty-icon">
-                      <i class="fas fa-warehouse"></i>
-                    </div>
-                    <h3>Aucun emplacement trouvé</h3>
-                    <p class="empty-text">
-                      @if (searchTerm || typeFilter || zoneFilter || disponibiliteFilter) {
-                        Aucun résultat ne correspond à vos critères de recherche
-                      } @else {
-                        Commencez par créer votre premier emplacement
-                      }
-                    </p>
-                    @if (searchTerm || typeFilter || zoneFilter || disponibiliteFilter) {
-                      <button class="btn-reset-lg" (click)="resetFilters()">
-                        <i class="fas fa-undo-alt me-2"></i>
-                        Effacer les filtres
+                      <button
+                        class="action-btn delete"
+                        type="button"
+                        [disabled]="togglingId === emp.id"
+                        (click)="toActif(emp, $event)"
+                        title="Desactiver"
+                      >
+                        <i class="fas" [ngClass]="togglingId === emp.id ? 'fa-spinner fa-spin' : 'fa-ban'"></i>
                       </button>
                     } @else {
-                      <button class="btn-create-lg" routerLink="nouveau">
-                        <i class="fas fa-plus me-2"></i>
-                        Créer un emplacement
+                      <button
+                        class="action-btn success"
+                        type="button"
+                        [disabled]="togglingId === emp.id"
+                        (click)="toActif(emp, $event)"
+                        title="Activer"
+                      >
+                        <i class="fas" [ngClass]="togglingId === emp.id ? 'fa-spinner fa-spin' : 'fa-check-circle'"></i>
                       </button>
                     }
                   </div>
                 </td>
               </tr>
             }
-          </tbody>
-        </table>
-      </div>
-    </div>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mobile-list">
+          @for (emp of filteredEmplacements; track trackByEmplacement($index, emp)) {
+            <article class="mobile-card" [class.inactive-card]="!emp.actif">
+              <div class="mobile-top">
+                <div>
+                  <span class="code-line">{{ emp.code }}</span>
+                  <h3>{{ emp.nom || 'Sans nom' }}</h3>
+                </div>
+                <span class="status-badge {{ getDisponibiliteBadge(emp.disponible, emp.reservePour) }}">
+                  <span class="status-dot"></span>
+                  {{ getDisponibiliteLabel(emp.disponible, emp.reservePour) }}
+                </span>
+              </div>
+
+              <div class="mobile-meta">
+                <span class="type-badge {{ getTypeColor(emp.typeEmplacement) }}">
+                  <i class="fas {{ getTypeIcon(emp.typeEmplacement) }}"></i>
+                  {{ getTypeLabel(emp.typeEmplacement) }}
+                </span>
+                @if (emp.zone) {
+                  <span class="zone-line"><i class="fas fa-location-dot"></i> Zone {{ emp.zone }}</span>
+                }
+              </div>
+
+              <div class="mobile-bottom">
+                <div>
+                  <span class="meta-label">Capacite</span>
+                  <strong>{{ emp.capaciteActuelle || '0' }} / {{ emp.capaciteMaximale || '-' }}</strong>
+                </div>
+                <div>
+                  <span class="meta-label">Temperature</span>
+                  <strong>{{ emp.temperatureMin || '-' }} C / {{ emp.temperatureMax || '-' }} C</strong>
+                </div>
+              </div>
+
+              <div class="mobile-actions">
+                <button class="action-btn view" type="button" [routerLink]="['/stock/emplacements', emp.id]" title="Voir details">
+                  <i class="fas fa-eye"></i>
+                </button>
+                <button class="action-btn edit" type="button" [routerLink]="['/stock/emplacements', emp.id, 'edit']" title="Modifier">
+                  <i class="fas fa-edit"></i>
+                </button>
+                @if (emp.actif) {
+                  <button class="action-btn delete" type="button" [disabled]="togglingId === emp.id" (click)="toActif(emp, $event)" title="Desactiver">
+                    <i class="fas" [ngClass]="togglingId === emp.id ? 'fa-spinner fa-spin' : 'fa-ban'"></i>
+                  </button>
+                } @else {
+                  <button class="action-btn success" type="button" [disabled]="togglingId === emp.id" (click)="toActif(emp, $event)" title="Activer">
+                    <i class="fas" [ngClass]="togglingId === emp.id ? 'fa-spinner fa-spin' : 'fa-check-circle'"></i>
+                  </button>
+                }
+              </div>
+            </article>
+          }
+        </div>
+      } @else {
+        <div class="empty-state">
+          <div class="empty-icon">
+            <i class="fas fa-warehouse"></i>
+          </div>
+          <h3>Aucun emplacement trouve</h3>
+          @if (hasActiveFilters) {
+            <p>Aucun resultat ne correspond aux filtres actifs.</p>
+            <button class="reset-button" type="button" (click)="resetFilters()">
+              <i class="fas fa-eraser"></i>
+              Effacer les filtres
+            </button>
+          } @else {
+            <p>Commencez par creer votre premier emplacement de stockage.</p>
+            <button class="hero-action primary" type="button" routerLink="nouveau">
+              <i class="fas fa-plus"></i>
+              Creer un emplacement
+            </button>
+          }
+        </div>
+      }
+    </section>
   }
 </div>

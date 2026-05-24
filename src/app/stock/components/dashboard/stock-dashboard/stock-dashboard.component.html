@@ -14,7 +14,13 @@
     </div>
   </div>
 
-  <div class="stats-grid" *ngIf="!loading">
+  <div class="alert-banner danger" *ngIf="loadError && !loading">
+    <i class="fas fa-exclamation-circle"></i>
+    <span>{{ loadError }}</span>
+    <button type="button" class="btn-retry" (click)="loadDashboardData()">Réessayer</button>
+  </div>
+
+  <div class="stats-grid" *ngIf="!loading && stats">
     <div class="stat-card">
       <div class="stat-header">
         <h3>Total stock</h3>
@@ -63,16 +69,25 @@
 
   <div *ngIf="loading" class="loading-container">
     <div class="spinner"></div>
-    <p>Chargement du tableau de bord.</p>
+    <p>Chargement du tableau de bord…</p>
   </div>
 
-  <div class="dashboard-grid" *ngIf="!loading">
+  <div *ngIf="!loading && !stats" class="empty-dashboard">
+    <i class="fas fa-chart-line"></i>
+    <p>Aucune donnée disponible.</p>
+    <button type="button" class="btn btn-primary" (click)="loadDashboardData()">Réessayer</button>
+  </div>
+
+  <div class="dashboard-grid" *ngIf="!loading && stats">
     <div class="card chart-card">
       <div class="card-header">
         <h5>Mouvements par mois</h5>
       </div>
       <div class="card-body">
-        <canvas id="stockChart" width="400" height="200"></canvas>
+        <canvas #stockChartCanvas width="400" height="220"></canvas>
+        <p class="chart-empty" *ngIf="!chartHasData()">
+          Aucun mouvement enregistré sur les 6 derniers mois.
+        </p>
       </div>
     </div>
 
@@ -125,13 +140,13 @@
 
             <div class="movement-details">
               <div>
-                <strong>{{ mvt.article?.sku }}</strong> - {{ mvt.article?.nom }}
+                <strong>{{ movementArticleSku(mvt) }}</strong> — {{ movementArticleName(mvt) }}
               </div>
               <small>{{ mvt.dateMouvement | date:'dd/MM/yyyy HH:mm' }}</small>
             </div>
 
             <div class="movement-quantity" [ngClass]="mvt.typeMouvement">
-              {{ mvt.typeMouvement === 'ENTREE' ? '+' : '-' }}{{ mvt.quantite }} {{ mvt.article?.uniteMesure }}
+              {{ mvt.typeMouvement === 'ENTREE' ? '+' : '-' }}{{ mvt.quantite }} {{ movementUnit(mvt) }}
             </div>
           </div>
 
@@ -154,14 +169,14 @@
           <div *ngFor="let bon of bonsEnAttente" class="pending-item">
             <div class="item-header">
               <strong>{{ bon.numeroBC }}</strong>
-              <span class="badge bg-{{ getStatutClass(bon.statut) }}">
-                {{ bon.statut }}
+              <span class="badge bg-{{ getStatutClass(bon.status) }}">
+                {{ bon.status }}
               </span>
             </div>
 
             <div class="item-details">
-              <span><i class="fas fa-truck"></i> {{ bon.fournisseur || 'Non spécifié' }}</span>
-              <span><i class="fas fa-calendar"></i> {{ bon.dateCreation | date:'dd/MM' }}</span>
+              <span><i class="fas fa-truck"></i> {{ bon.fournisseurNom || 'Non spécifié' }}</span>
+              <span><i class="fas fa-calendar"></i> {{ bon.createdDate | date:'dd/MM' }}</span>
             </div>
 
             <div class="item-progress">

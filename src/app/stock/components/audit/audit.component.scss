@@ -29,10 +29,7 @@ $shadow-md: 0 16px 36px rgba(49, 61, 35, 0.10);
   margin: 0 auto;
   padding: 1.25rem;
   color: $text;
-  background:
-    radial-gradient(circle at 0% 0%, rgba(96, 119, 48, 0.10), transparent 32%),
-    radial-gradient(circle at 100% 12%, rgba(200, 155, 60, 0.10), transparent 36%),
-    linear-gradient(180deg, #fbfaf2 0%, #f4f6ee 100%);
+  background: #ffffff;
 }
 
 /* HERO */
@@ -49,15 +46,7 @@ $shadow-md: 0 16px 36px rgba(49, 61, 35, 0.10);
   border: 1px solid rgba(224, 216, 184, 0.95);
   border-radius: 24px;
 
-  background:
-    linear-gradient(
-        90deg,
-        rgba(255, 253, 246, 0.74) 0%,
-        rgba(255, 253, 246, 0.56) 34%,
-        rgba(255, 249, 232, 0.18) 100%
-    ),
-    url('/assets/logo_etiquette%20.png') center right / cover no-repeat,
-    linear-gradient(135deg, #fffdf4 0%, #fff8e4 100%);
+  background: #ffffff;
 
   box-shadow:
     0 14px 30px rgba(59, 64, 39, 0.09),
@@ -65,13 +54,7 @@ $shadow-md: 0 16px 36px rgba(49, 61, 35, 0.10);
 }
 
 .audit-hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(circle at 7% 12%, rgba(109, 129, 53, 0.10), transparent 24%),
-    radial-gradient(circle at 97% 88%, rgba(216, 174, 66, 0.12), transparent 26%);
-  pointer-events: none;
+  content: none;
 }
 
 .hero-left {
@@ -308,8 +291,7 @@ $shadow-md: 0 16px 36px rgba(49, 61, 35, 0.10);
   padding: 0.95rem;
   border: 1px solid rgba(226, 213, 181, 0.95);
   border-radius: 18px;
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(250, 247, 236, 0.88));
+  background: #ffffff;
   box-shadow: $shadow-sm;
 
   &::after {

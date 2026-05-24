@@ -1,93 +1,112 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ViewChild,
+  ElementRef,
+  ChangeDetectorRef
+} from '@angular/core';
 import { StatistiqueService } from '../../../services/statistique.service';
 import { BonCommandeService } from '../../../services/bon-commande.service';
-import { CommonModule, DatePipe, DecimalPipe, NgClass } from '@angular/common';
+import { CommonModule, DatePipe, DecimalPipe, NgClass, KeyValuePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import Chart from 'chart.js/auto';
+import { catchError, of } from 'rxjs';
+import { ApiResponse } from '../../../../shared/models/api-response';
+import { BonCommande, StatutBonCommande } from '../../../models/bon-commande.model';
+import { StatistiquesStock } from '../../../models/statistiques.model';
+import { ArticleCritique, MouvementRecent } from '../../../models/stock-dashboard-payload.model';
 
 @Component({
   selector: 'app-stock-dashboard',
   templateUrl: './stock-dashboard.component.html',
-  imports: [CommonModule, DatePipe, DecimalPipe, RouterLink, NgClass],
+  imports: [CommonModule, DatePipe, DecimalPipe, RouterLink, NgClass, KeyValuePipe],
   styleUrls: ['./stock-dashboard.component.scss']
 })
-export class StockDashboardComponent implements OnInit, AfterViewInit {
-  stats: any = null;
+export class StockDashboardComponent implements OnInit, OnDestroy {
+  @ViewChild('stockChartCanvas') chartCanvas?: ElementRef<HTMLCanvasElement>;
 
-  //  dérivés côté front (pas dans DTO)
+  stats: StatistiquesStock | null = null;
   pourcentageAlerte = 0;
   articlesRupture = 0;
 
-  bonsEnAttente: any[] = [];
-  articlesCritiques: any[] = [];
-  mouvementsRecents: any[] = [];
+  bonsEnAttente: BonCommande[] = [];
+  articlesCritiques: ArticleCritique[] = [];
+  mouvementsRecents: MouvementRecent[] = [];
 
   loading = true;
+  loadError: string | null = null;
+
   private chart: Chart | null = null;
 
   constructor(
     private statistiqueService: StatistiqueService,
-    private bonCommandeService: BonCommandeService
+    private bonCommandeService: BonCommandeService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.loadDashboardData();
   }
 
-  ngAfterViewInit(): void {
-    // le chart sera initialisé après réception des stats
+  ngOnDestroy(): void {
+    this.destroyChart();
   }
 
   loadDashboardData(): void {
     this.loading = true;
+    this.loadError = null;
 
-    this.statistiqueService.getDashboard().subscribe({
-      next: (data: any) => {
-        this.stats = data;
+    this.statistiqueService.getDashboardPayload(10).subscribe({
+      next: (payload) => {
+        this.stats = payload.statistiques;
+        this.articlesCritiques = payload.articlesCritiques ?? [];
+        this.mouvementsRecents = payload.mouvementsRecents ?? [];
         this.computeDerivedStats();
-        this.loading = false;
-        this.initChartFromStats();
+        this.loadBonsEnAttente();
       },
-      error: (err: any) => {
-        console.error('Erreur chargement stats', err);
+      error: (err) => {
+        console.error('Dashboard payload failed', err);
+        this.loadError =
+          'Impossible de joindre le service statistiques. Vérifiez que le service inventaire (osm-pack) est démarré.';
         this.stats = null;
-        this.pourcentageAlerte = 0;
-        this.articlesRupture = 0;
-        this.loading = false;
-        this.destroyChart();
-      }
-    });
-
-    this.statistiqueService.getArticlesCritiques().subscribe({
-      next: (data: any[]) => {
-        this.articlesCritiques = (data || []).slice(0, 5);
-      },
-      error: (err: any) => {
-        console.error('Erreur chargement articles critiques', err);
         this.articlesCritiques = [];
-      }
-    });
-
-    this.statistiqueService.getMouvementsRecents(10).subscribe({
-      next: (data: any[]) => {
-        this.mouvementsRecents = data || [];
-      },
-      error: (err: any) => {
-        console.error('Erreur chargement mouvements', err);
         this.mouvementsRecents = [];
+        this.loading = false;
+        this.cdr.detectChanges();
       }
     });
+  }
 
+  private loadBonsEnAttente(): void {
     this.bonCommandeService.getAllBonsCommande().subscribe({
-      next: (response: any) => {
-        const list = response?.data || [];
-        this.bonsEnAttente = list.filter((bon: any) => bon.statut === 'EN_ATTENTE').slice(0, 5);
+      next: (response: ApiResponse<BonCommande>) => {
+        this.bonsEnAttente = this.extractPendingBons(response);
+        if (this.stats) {
+          this.stats = { ...this.stats, bonsEnAttente: this.bonsEnAttente.length };
+        }
+        this.finishLoading();
       },
-      error: (err: any) => {
-        console.error('Erreur chargement bons', err);
+      error: () => {
         this.bonsEnAttente = [];
+        this.finishLoading();
       }
     });
+  }
+
+  private finishLoading(): void {
+    this.loading = false;
+    this.cdr.detectChanges();
+    setTimeout(() => this.initChartFromStats(), 0);
+  }
+
+  private extractPendingBons(response: ApiResponse<BonCommande> | null): BonCommande[] {
+    if (!response?.success || !response.data) {
+      return [];
+    }
+    return response.data
+      .filter((bon) => bon.status === StatutBonCommande.EN_ATTENTE)
+      .slice(0, 5);
   }
 
   private computeDerivedStats(): void {
@@ -99,6 +118,11 @@ export class StockDashboardComponent implements OnInit, AfterViewInit {
     this.articlesRupture = total > 0 ? Math.round((tauxRupture / 100) * total) : 0;
   }
 
+  chartHasData(): boolean {
+    const map = this.stats?.mouvementsParMois;
+    return !!map && Object.keys(map).length > 0;
+  }
+
   private destroyChart(): void {
     if (this.chart) {
       this.chart.destroy();
@@ -107,12 +131,14 @@ export class StockDashboardComponent implements OnInit, AfterViewInit {
   }
 
   private initChartFromStats(): void {
-    const canvas = document.getElementById('stockChart') as HTMLCanvasElement | null;
-    if (!canvas) return;
+    const canvas = this.chartCanvas?.nativeElement;
+    if (!canvas || !this.chartHasData()) {
+      return;
+    }
 
-    const mouvementsParMois = this.stats?.mouvementsParMois || {};
-    const labels: string[] = Object.keys(mouvementsParMois);
-    const values: number[] = Object.values(mouvementsParMois);
+    const mouvementsParMois = this.stats?.mouvementsParMois ?? {};
+    const labels = Object.keys(mouvementsParMois);
+    const values = Object.values(mouvementsParMois);
 
     this.destroyChart();
 
@@ -125,7 +151,10 @@ export class StockDashboardComponent implements OnInit, AfterViewInit {
             label: 'Mouvements',
             data: values,
             tension: 0.35,
-            fill: true
+            fill: true,
+            borderColor: '#4361ee',
+            backgroundColor: 'rgba(67, 97, 238, 0.12)',
+            pointBackgroundColor: '#4361ee'
           }
         ]
       },
@@ -134,53 +163,59 @@ export class StockDashboardComponent implements OnInit, AfterViewInit {
         maintainAspectRatio: false,
         plugins: { legend: { display: false } },
         scales: {
-          y: { beginAtZero: true },
+          y: { beginAtZero: true, ticks: { stepSize: 1 } },
           x: { grid: { display: false } }
         }
       }
     });
   }
 
-
   exportData(): void {
-    console.log('Export des données...');
+    console.log('Export des données…');
   }
 
   getStatutClass(statut: string): string {
-    const classes: any = {
+    const classes: Record<string, string> = {
       EN_ATTENTE: 'warning',
       VALIDE: 'success',
       REFUSE: 'danger',
-      RECEPTIONNE: 'info',
-      ANNULE: 'secondary'
+      RECU: 'info',
+      PARTIELLEMENT_RECU: 'info'
     };
     return classes[statut] || 'secondary';
   }
 
-  getStockPercentage(article: any): number {
+  getStockPercentage(article: ArticleCritique): number {
     const min = Number(article?.stockMinimum || 0);
     const act = Number(article?.stockActuel || 0);
     if (!min || min <= 0) return 0;
     return Math.min((act / min) * 100, 100);
   }
 
-  getReceptionProgress(bon: any): number {
+  getReceptionProgress(bon: BonCommande): number {
     if (!bon?.lignes || bon.lignes.length === 0) return 0;
-
-    const totalCommandee = bon.lignes.reduce((sum: number, ligne: any) => sum + Number(ligne.quantiteCommandee || 0), 0);
-    const totalRecue = bon.lignes.reduce((sum: number, ligne: any) => sum + Number(ligne.quantiteRecue || 0), 0);
-
+    const totalCommandee = bon.lignes.reduce((sum, l) => sum + Number(l.quantiteCommandee || 0), 0);
+    const totalRecue = bon.lignes.reduce((sum, l) => sum + Number(l.quantiteRecue || 0), 0);
     return totalCommandee > 0 ? Math.round((totalRecue / totalCommandee) * 100) : 0;
   }
 
-  commanderArticle(article: any): void {
-    console.log('Commander article:', article);
+  commanderArticle(article: ArticleCritique): void {
     alert(`Création d'un bon de commande pour ${article?.nom}`);
   }
 
   verifierSeuils(): void {
-    // Fixed as part of TICKET-008: Added verifierSeuils method to prevent compile errors and trigger threshold check
-    console.log('Vérification des seuils de stock...');
-    alert('Vérification des seuils de stock effectuée.');
+    this.loadDashboardData();
+  }
+
+  movementArticleSku(mvt: MouvementRecent): string {
+    return mvt.articleSku || mvt.articleId || '—';
+  }
+
+  movementArticleName(mvt: MouvementRecent): string {
+    return mvt.articleNom || '—';
+  }
+
+  movementUnit(mvt: MouvementRecent): string {
+    return mvt.uniteMesure || '';
   }
 }

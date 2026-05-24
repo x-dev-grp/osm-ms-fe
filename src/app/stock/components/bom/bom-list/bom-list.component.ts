@@ -2,10 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { Bom } from "../../../models/Bom";
-import { BomService } from "../../../services/BomService";
+import { Bom } from '../../../models/Bom';
+import { BomService } from '../../../services/BomService';
 import { ToastService } from '../../../../shared/services/toast.service';
-
 
 @Component({
   selector: 'app-bom-list',
@@ -18,15 +17,16 @@ export class BomListComponent implements OnInit {
   boms: Bom[] = [];
   displayedBoms: Bom[] = [];
   loading = true;
+  searchTerm = '';
   filterActive: '' | 'active' | 'inactive' = '';
-
   activatingId: string | null = null;
+  activeDropdown: string | null = null;
 
   constructor(
     private bomService: BomService,
     private toast: ToastService,
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.loadBoms();
@@ -35,7 +35,6 @@ export class BomListComponent implements OnInit {
   loadBoms(): void {
     this.bomService.getAll().subscribe({
       next: (data) => {
-        // Tri par createdDate décroissant (ou par id si pas de date)
         this.boms = data.sort((a, b) => {
           const dateA = a.createdDate ? new Date(a.createdDate).getTime() : 0;
           const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
@@ -45,22 +44,32 @@ export class BomListComponent implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        console.error('Erreur chargement des Nomenclatures', err);
+        console.error('Erreur chargement des nomenclatures', err);
         this.loading = false;
       }
     });
   }
 
   applyFilter(): void {
+    const search = this.searchTerm.trim().toLowerCase();
     this.displayedBoms = this.boms.filter((bom) => {
+      const searchableText = `${bom.productName || ''} ${bom.skuCode || ''} ${bom.version || ''}`.toLowerCase();
+      const matchesSearch = search.length === 0 || searchableText.includes(search);
+
       if (this.filterActive === 'active') {
-        return !!bom.active;
+        return !!bom.active && matchesSearch;
       }
       if (this.filterActive === 'inactive') {
-        return !bom.active;
+        return !bom.active && matchesSearch;
       }
-      return true;
+      return matchesSearch;
     });
+  }
+
+  resetFilters(): void {
+    this.searchTerm = '';
+    this.filterActive = '';
+    this.applyFilter();
   }
 
   goToDetail(id: string | undefined, event: MouseEvent): void {
@@ -73,17 +82,24 @@ export class BomListComponent implements OnInit {
     }
   }
 
+  toggleDropdown(id: string | undefined, event: Event): void {
+    event.stopPropagation();
+    this.activeDropdown = this.activeDropdown === id ? null : id ?? null;
+  }
+
   activateBom(bom: Bom, event: Event): void {
     event.preventDefault();
     event.stopPropagation();
     if (!bom.id || bom.active) {
       return;
     }
+
     this.activatingId = bom.id;
     this.bomService.activate(bom.id).subscribe({
       next: () => {
         this.activatingId = null;
-        this.toast.success(`Nomenclature ${bom.version} activée`);
+        this.activeDropdown = null;
+        this.toast.success(`Nomenclature ${bom.version} activee`);
         this.loadBoms();
       },
       error: (err) => {
@@ -96,10 +112,11 @@ export class BomListComponent implements OnInit {
   deleteBom(id: string, event?: Event): void {
     event?.preventDefault();
     event?.stopPropagation();
-    if (confirm('Êtes-vous sûr de vouloir supprimer cette nomenclature ?')) {
+    if (confirm('Etes-vous sur de vouloir supprimer cette nomenclature ?')) {
       this.bomService.delete(id).subscribe({
         next: () => {
-          this.toast.success('Nomenclature supprimée');
+          this.activeDropdown = null;
+          this.toast.success('Nomenclature supprimee');
           this.loadBoms();
         },
         error: (err) => {

@@ -1,4 +1,4 @@
-﻿$olive-dark: #16380f;
+$olive-dark: #16380f;
 $olive-main: #3f6d1f;
 $olive-soft: #edf4e5;
 $olive-pale: #f7faf1;
@@ -19,10 +19,7 @@ $shadow-soft: 0 10px 28px rgba(47, 66, 27, 0.10);
   color: $text-main;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   overflow-x: hidden;
-  background:
-    radial-gradient(circle at 12% 10%, rgba(223, 232, 207, 0.40), transparent 26%),
-    radial-gradient(circle at 88% 15%, rgba(245, 234, 208, 0.40), transparent 30%),
-    linear-gradient(180deg, #fbfaf6 0%, #f8f8f4 100%);
+  background: #ffffff;
 }
 
 .modern-container {
@@ -52,14 +49,7 @@ $shadow-soft: 0 10px 28px rgba(47, 66, 27, 0.10);
 }
 
 .project-hero::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(circle at 70% 52%, rgba(79, 107, 42, 0.12) 0%, rgba(79, 107, 42, 0.12) 1.5%, transparent 1.8%),
-    radial-gradient(circle at 73% 38%, rgba(79, 107, 42, 0.10) 0%, rgba(79, 107, 42, 0.10) 1.2%, transparent 1.6%),
-    radial-gradient(circle at 78% 22%, rgba(201, 163, 63, 0.10) 0%, rgba(201, 163, 63, 0.10) 1.1%, transparent 1.5%);
+  content: none;
 }
 
 .hero-left {

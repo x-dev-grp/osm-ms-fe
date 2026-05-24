@@ -5,10 +5,7 @@
 .product-detail-page {
   min-height: 100vh;
   padding: 1rem;
-  background:
-    radial-gradient(circle at 0% 0%, rgba(96, 119, 48, 0.10), transparent 32%),
-    radial-gradient(circle at 100% 12%, rgba(200, 155, 60, 0.10), transparent 36%),
-    linear-gradient(180deg, #fbfaf2 0%, #f4f6ee 100%);
+  background: #ffffff;
   color: #25320f;
 }
 
@@ -49,13 +46,7 @@
 }
 
 .product-hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(circle at 12% 18%, rgba(109, 129, 53, 0.10), transparent 24%),
-    radial-gradient(circle at 96% 80%, rgba(216, 174, 66, 0.12), transparent 24%);
-  pointer-events: none;
+  content: none;
 }
 
 .hero-left,

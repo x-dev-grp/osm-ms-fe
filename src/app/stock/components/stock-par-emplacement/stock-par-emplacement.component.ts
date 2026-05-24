@@ -17,13 +17,14 @@ import { Stock } from "../../models/stock.model";
 export class StockParEmplacementComponent implements OnInit {
 
   emplacements: EmplacementStock[] = [];
-  selectedEmplacementId: string = '';
+  selectedEmplacementId = '';
   allStocks: Stock[] = [];
   loadingStocks = false;
   loadingEmplacements = false;
   error = '';
   searchTerm = '';
   categorieFilter = '';
+  showFilters = true;
   categories = Object.values(CategorieArticle);
 
   constructor(
@@ -68,9 +69,11 @@ export class StockParEmplacementComponent implements OnInit {
 
   get filteredStocks(): Stock[] {
     let filtered = this.allStocks;
+
     if (this.selectedEmplacementId) {
       filtered = filtered.filter(stock => stock.emplacement?.id === this.selectedEmplacementId);
     }
+
     if (this.searchTerm) {
       const term = this.searchTerm.toLowerCase();
       filtered = filtered.filter(stock =>
@@ -78,10 +81,50 @@ export class StockParEmplacementComponent implements OnInit {
         (stock.article.code && stock.article.code.toLowerCase().includes(term))
       );
     }
+
     if (this.categorieFilter) {
       filtered = filtered.filter(stock => stock.article.categorie === this.categorieFilter);
     }
+
     return filtered;
+  }
+
+  get hasActiveFilters(): boolean {
+    return Boolean(this.selectedEmplacementId || this.searchTerm || this.categorieFilter);
+  }
+
+  get totalQuantity(): number {
+    return this.filteredStocks.reduce((total, stock) => total + Number(stock.quantiteActuelle || 0), 0);
+  }
+
+  get reservedQuantity(): number {
+    return this.filteredStocks.reduce((total, stock) => total + Number(stock.quantiteReservee || 0), 0);
+  }
+
+  get availableQuantity(): number {
+    return this.filteredStocks.reduce((total, stock) => total + Number(stock.quantiteDisponible || 0), 0);
+  }
+
+  get alertCount(): number {
+    return this.filteredStocks.filter(stock =>
+      Number(stock.quantiteDisponible || 0) <= Number(stock.article.stockMinimum || 0)
+    ).length;
+  }
+
+  get visibleLocationCount(): number {
+    const locations = new Set(
+      this.filteredStocks
+        .map(stock => stock.emplacement?.id || stock.emplacement?.code)
+        .filter((location): location is string => Boolean(location))
+    );
+
+    return locations.size;
+  }
+
+  resetFilters(): void {
+    this.selectedEmplacementId = '';
+    this.searchTerm = '';
+    this.categorieFilter = '';
   }
 
   getCategorieLabel(categorie: string): string {
@@ -110,5 +153,16 @@ export class StockParEmplacementComponent implements OnInit {
     if (available <= 0) return 'Rupture / Réservé';
     if (available <= stockMin) return 'Alerte';
     return 'Normal';
+  }
+  getLocationLabel(stock: Stock): string {
+    if (!stock.emplacement) {
+      return 'Non assigne';
+    }
+
+    return `${stock.emplacement.code} - ${stock.emplacement.nom || stock.emplacement.typeEmplacement}`;
+  }
+
+  trackByStock(index: number, stock: Stock): string {
+    return stock.id || `${stock.article?.id || stock.article?.code || index}-${stock.emplacement?.id || 'none'}`;
   }
 }

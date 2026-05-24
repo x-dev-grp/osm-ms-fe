@@ -8,10 +8,7 @@
   min-height: 100vh;
   padding: 28px;
   color: #1f2a24;
-  background:
-    linear-gradient(135deg, rgba(247, 250, 244, 0.96), rgba(238, 245, 232, 0.94)),
-    radial-gradient(circle at top right, rgba(118, 148, 83, 0.18), transparent 36%),
-    radial-gradient(circle at bottom left, rgba(183, 135, 62, 0.16), transparent 34%);
+  background: #ffffff;
   font-family: inherit;
 }
 
@@ -397,9 +394,7 @@ button {
 .stock-box {
   color: #ffffff;
   border-color: rgba(255, 255, 255, 0.12);
-  background:
-    linear-gradient(135deg, rgba(35, 75, 42, 0.96), rgba(77, 105, 48, 0.94)),
-    radial-gradient(circle at top right, rgba(255, 255, 255, 0.2), transparent 30%);
+  background: #ffffff;
   box-shadow: 0 22px 44px rgba(31, 74, 45, 0.2);
 }
 

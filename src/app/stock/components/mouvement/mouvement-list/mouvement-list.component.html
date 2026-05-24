@@ -1,42 +1,86 @@
-<div class="mouvement-container">
-  <div class="header-section">
-    <div class="d-flex justify-content-between align-items-center">
-      <div>
-        <h1 class="page-title">
-          <i class="fas fa-history me-2"></i>
-          Historique des mouvements
-        </h1>
-        <p class="text-muted mb-0">
-          <i class="fas fa-database me-1"></i>
-          {{ filteredMouvements.length }} mouvement(s) affiché(s)
+<div class="movement-page">
+  <section class="hero-panel surface-panel">
+    <div class="hero-main">
+      <div class="hero-copy">
+        <span class="hero-kicker">Traceabilite stock</span>
+        <h1>Flux des mouvements</h1>
+        <p>
+          Suivez les entrees, sorties et ajustements depuis une vue unique, classee du plus recent au plus ancien.
         </p>
+        <div class="hero-meta">
+          <span class="hero-pill">
+            <i class="fas fa-stream"></i>
+            {{ filteredMouvements.length }} ligne(s) visibles
+          </span>
+          <span class="hero-pill subtle">
+            <i class="fas fa-clock"></i>
+            {{ latestMovementLabel }}
+          </span>
+        </div>
       </div>
-      <div class="action-buttons">
-        <button class="btn btn-refresh" (click)="loadMouvements()" [disabled]="loading">
+
+      <div class="hero-actions">
+        <button class="hero-action ghost" type="button" (click)="showFilters = !showFilters">
+          <i class="fas" [ngClass]="showFilters ? 'fa-eye-slash' : 'fa-filter'"></i>
+          {{ showFilters ? 'Masquer les filtres' : 'Afficher les filtres' }}
+        </button>
+        <button class="hero-action primary" type="button" (click)="loadMouvements()" [disabled]="loading">
           <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
           Actualiser
         </button>
       </div>
     </div>
-  </div>
-  <div class="filters-section">
-    <div class="filters-header" (click)="showFilters = !showFilters">
-      <h5>
-        <i class="fas fa-filter me-2"></i>
-        Filtres
-      </h5>
-      <i class="fas fa-chevron-down" [class.rotated]="showFilters"></i>
+
+    <div class="hero-stats">
+      <article class="stat-card entry">
+        <span class="stat-label">Entrees</span>
+        <strong>{{ countByType(TypeMouvement.ENTREE) }}</strong>
+        <span class="stat-note">Mouvements de ravitaillement</span>
+      </article>
+      <article class="stat-card exit">
+        <span class="stat-label">Sorties</span>
+        <strong>{{ countByType(TypeMouvement.SORTIE) }}</strong>
+        <span class="stat-note">Consommations ou retraits</span>
+      </article>
+      <article class="stat-card adjust">
+        <span class="stat-label">Ajustements</span>
+        <strong>{{ countByType(TypeMouvement.AJUSTEMENT) }}</strong>
+        <span class="stat-note">Corrections d'inventaire</span>
+      </article>
+      <article class="stat-card neutral">
+        <span class="stat-label">Articles touches</span>
+        <strong>{{ uniqueArticleCount }}</strong>
+        <span class="stat-note">References distinctes dans la vue</span>
+      </article>
+    </div>
+  </section>
+
+  <section class="filter-panel surface-panel" [class.collapsed]="!showFilters">
+    <div class="panel-heading">
+      <div>
+        <span class="panel-kicker">Affinage</span>
+        <h2>Filtres de recherche</h2>
+      </div>
+      <button class="toggle-button" type="button" (click)="showFilters = !showFilters">
+        <i class="fas" [ngClass]="showFilters ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+        {{ showFilters ? 'Reduire' : 'Etendre' }}
+      </button>
     </div>
 
     <div class="filters-body" [class.show]="showFilters">
-      <div class="row g-3">
-        <div class="col-md-4">
-          <label class="filter-label">
-            <i class="fas fa-tag me-1"></i>
+      <div class="filters-grid">
+        <div class="filter-group">
+          <label class="filter-label" for="movement-type-filter">
+            <i class="fas fa-tag"></i>
             Type de mouvement
           </label>
           <div class="filter-select-wrapper">
-            <select class="filter-select" [(ngModel)]="typeFilter" (change)="applyFilters()">
+            <select
+              id="movement-type-filter"
+              class="filter-select"
+              [(ngModel)]="typeFilter"
+              (change)="applyFilters()"
+            >
               <option *ngFor="let option of typeOptions" [value]="option.value">
                 {{ option.label }}
               </option>
@@ -45,138 +89,186 @@
           </div>
         </div>
 
-        <div class="col-md-4">
-          <label class="filter-label">
-            <i class="fas fa-search me-1"></i>
-            Rechercher
+        <div class="filter-group search-group">
+          <label class="filter-label" for="movement-search">
+            <i class="fas fa-search"></i>
+            Recherche
           </label>
           <div class="search-wrapper">
             <i class="fas fa-search search-icon"></i>
-            <input type="text"
-                   class="filter-input search-input"
-                   placeholder="Code, article, motif..."
-                   [(ngModel)]="searchTerm"
-                   (input)="onSearchInput()">
-            <button *ngIf="searchTerm" class="clear-search" (click)="searchTerm = ''; applyFilters()">
+            <input
+              id="movement-search"
+              type="text"
+              class="filter-input"
+              placeholder="Code, article, motif..."
+              [(ngModel)]="searchTerm"
+              (input)="onSearchInput()"
+            >
+            <button *ngIf="searchTerm" class="clear-search" type="button" (click)="searchTerm = ''; applyFilters()">
               <i class="fas fa-times"></i>
             </button>
           </div>
         </div>
 
-        <div class="col-md-4 d-flex align-items-end">
-          <button class="btn-reset-filters w-100" (click)="resetFilters()">
-            <i class="fas fa-undo-alt me-1"></i>
-            Réinitialiser
+        <div class="filter-actions">
+          <button class="reset-button" type="button" (click)="resetFilters()" [disabled]="!hasActiveFilters">
+            <i class="fas fa-undo-alt"></i>
+            Reinitialiser
           </button>
         </div>
       </div>
 
-      <div *ngIf="typeFilter || searchTerm" class="active-filters">
-        <span class="active-filters-label">Filtres actifs:</span>
-        <span *ngIf="typeFilter" class="filter-tag" (click)="typeFilter = ''; applyFilters()">
+      <div *ngIf="hasActiveFilters" class="active-filters">
+        <span class="active-label">Filtres actifs</span>
+        <button *ngIf="typeFilter" class="filter-chip" type="button" (click)="typeFilter = ''; applyFilters()">
           {{ getTypeLabel(typeFilter) }}
-          <i class="fas fa-times ms-1"></i>
-        </span>
-        <span *ngIf="searchTerm" class="filter-tag" (click)="searchTerm = ''; applyFilters()">
+          <i class="fas fa-times"></i>
+        </button>
+        <button *ngIf="searchTerm" class="filter-chip" type="button" (click)="searchTerm = ''; applyFilters()">
           "{{ searchTerm }}"
-          <i class="fas fa-times ms-1"></i>
-        </span>
+          <i class="fas fa-times"></i>
+        </button>
       </div>
     </div>
-  </div>
-  <div *ngIf="loading" class="loading-state">
-    <div class="spinner"></div>
-    <p>Chargement des mouvements...</p>
+  </section>
+
+  <div *ngIf="loading" class="state-panel surface-panel loading-state">
+    <div class="loader-ring"></div>
+    <h3>Chargement des mouvements</h3>
+    <p>Recuperation de l'historique en cours.</p>
   </div>
 
-  <div *ngIf="error && !loading" class="error-state">
-    <i class="fas fa-exclamation-circle"></i>
-    <h4>Oups ! Une erreur est survenue</h4>
+  <div *ngIf="error && !loading" class="state-panel surface-panel error-state">
+    <div class="state-icon">
+      <i class="fas fa-triangle-exclamation"></i>
+    </div>
+    <h3>Le journal ne peut pas etre charge</h3>
     <p>{{ error }}</p>
-    <button class="btn-retry" (click)="loadMouvements()">
-      <i class="fas fa-redo-alt me-1"></i>
-      Réessayer
+    <button class="retry-button" type="button" (click)="loadMouvements()">
+      <i class="fas fa-rotate-right"></i>
+      Reessayer
     </button>
   </div>
-  <div *ngIf="!loading && !error" class="table-section">
-    <div class="table-header">
-      <span class="results-count">
-        <i class="fas fa-list me-1"></i>
-        {{ filteredMouvements.length }} résultat(s)
-      </span>
+
+  <section *ngIf="!loading && !error" class="results-panel surface-panel">
+    <div class="results-bar">
+      <div class="results-copy">
+        <span class="results-kicker">Journal affiche</span>
+        <h2>{{ filteredMouvements.length }} mouvement(s) dans la vue</h2>
+        <p *ngIf="hasActiveFilters; else fullHistory">
+          Vue filtree sur {{ mouvements.length }} mouvement(s) au total.
+        </p>
+        <ng-template #fullHistory>
+          <p>Historique complet, trie du plus recent au plus ancien.</p>
+        </ng-template>
+      </div>
+
+      <div class="results-legend">
+        <span class="legend-chip entry">Entree</span>
+        <span class="legend-chip exit">Sortie</span>
+        <span class="legend-chip adjust">Ajustement</span>
+      </div>
     </div>
 
-    <div class="table-responsive">
-      <table class="modern-table">
-        <thead>
-        <tr>
-          <th>
-            <i class="fas fa-clock me-1"></i>
-            Date
-          </th>
-          <th>
-            <i class="fas fa-barcode me-1"></i>
-            Article
-          </th>
-          <th>
-            <i class="fas fa-tag me-1"></i>
-            Type
-          </th>
-          <th class="text-end">
-            <i class="fas fa-weight-hanging me-1"></i>
-            Quantité
-          </th>
-          <th>
-            <i class="fas fa-comment me-1"></i>
-            Motif
-          </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let mvt of filteredMouvements" class="table-row">
-          <td class="date-cell">
-            <span class="date">{{ formatDate(mvt.dateMouvement).split(' ')[0] }}</span>
-            <span class="time">{{ formatDate(mvt.dateMouvement).split(' ')[1] }}</span>
-          </td>
-          <td>
-            <div class="article-info">
-              <span class="sku">{{ getArticleCode(mvt.article) }}</span>
-              <span class="nom">{{ getArticleNom(mvt.article) }}</span>
+    <ng-container *ngIf="filteredMouvements.length > 0; else emptyState">
+      <div class="table-shell">
+        <table class="movement-table">
+          <thead>
+          <tr>
+            <th>Date</th>
+            <th>Article</th>
+            <th>Flux</th>
+            <th class="text-end">Quantite</th>
+            <th>Motif</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let mvt of filteredMouvements; trackBy: trackByMovement" class="movement-row">
+            <td class="date-cell">
+              <span class="date">{{ formatDatePart(mvt.dateMouvement) }}</span>
+              <span class="time">{{ formatTimePart(mvt.dateMouvement) }}</span>
+            </td>
+
+            <td>
+              <div class="article-cell">
+                <span class="article-code">{{ getArticleCode(mvt.article) }}</span>
+                <span class="article-name">{{ getArticleNom(mvt.article) }}</span>
+              </div>
+            </td>
+
+            <td>
+              <div class="type-cell">
+                <span class="type-badge" [ngClass]="getTypeTone(mvt.typeMouvement)">
+                  <i class="fas" [ngClass]="'fa-' + getTypeIcon(mvt.typeMouvement)"></i>
+                  {{ getTypeLabel(mvt.typeMouvement) }}
+                </span>
+                <span class="type-caption">{{ getTypeCaption(mvt.typeMouvement) }}</span>
+              </div>
+            </td>
+
+            <td class="text-end">
+              <span class="quantity-pill" [ngClass]="getTypeTone(mvt.typeMouvement)">
+                {{ getQuantityPrefix(mvt.typeMouvement) }}{{ mvt.quantite }}
+                <small>{{ getUniteMesure(mvt.article) || 'u' }}</small>
+              </span>
+            </td>
+
+            <td>
+              <span class="motif-text" [title]="mvt.motif || 'Aucun motif saisi'">
+                {{ mvt.motif || 'Aucun motif saisi' }}
+              </span>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mobile-list">
+        <article *ngFor="let mvt of filteredMouvements; trackBy: trackByMovement" class="movement-card">
+          <div class="card-top">
+            <div>
+              <span class="date">{{ formatDatePart(mvt.dateMouvement) }}</span>
+              <span class="time">{{ formatTimePart(mvt.dateMouvement) }}</span>
             </div>
-          </td>
-          <td>
-              <span class="type-badge" [ngClass]="getTypeClass(mvt.typeMouvement).class === 'success' ? 'success' : 'danger'">
-                <i class="fas" [ngClass]="'fa-' + getTypeClass(mvt.typeMouvement).icon"></i>
-                {{ mvt.typeMouvement }}
-              </span>
-          </td>
-          <td class="text-end">
-              <span class="quantite" [ngClass]="mvt.typeMouvement === TypeMouvement.ENTREE ? 'text-success' : 'text-danger'">
-                {{ mvt.typeMouvement === TypeMouvement.ENTREE ? '+' : '-' }}{{ mvt.quantite }}
-                <small>{{ getUniteMesure(mvt.article) }}</small>
-              </span>
-          </td>
-          <td>
-              <span class="motif" [title]="mvt.motif">
-                {{ mvt.motif || '-' }}
-              </span>
-          </td>
-        </tr>
-        <tr *ngIf="filteredMouvements.length === 0">
-          <td colspan="5" class="empty-state">
-            <div class="empty-state-content">
-              <i class="fas fa-box-open"></i>
-              <h4>Aucun mouvement trouvé</h4>
-              <p>Essayez de modifier vos filtres ou d'ajouter des mouvements</p>
-              <button class="btn-reset-filters" (click)="resetFilters()">
-                <i class="fas fa-undo-alt me-1"></i>
-                Réinitialiser les filtres
-              </button>
-            </div>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+            <span class="type-badge" [ngClass]="getTypeTone(mvt.typeMouvement)">
+              <i class="fas" [ngClass]="'fa-' + getTypeIcon(mvt.typeMouvement)"></i>
+              {{ getTypeLabel(mvt.typeMouvement) }}
+            </span>
+          </div>
+
+          <div class="card-article">
+            <span class="article-code">{{ getArticleCode(mvt.article) }}</span>
+            <h3>{{ getArticleNom(mvt.article) }}</h3>
+          </div>
+
+          <div class="card-bottom">
+            <span class="quantity-pill" [ngClass]="getTypeTone(mvt.typeMouvement)">
+              {{ getQuantityPrefix(mvt.typeMouvement) }}{{ mvt.quantite }}
+              <small>{{ getUniteMesure(mvt.article) || 'u' }}</small>
+            </span>
+            <p>{{ mvt.motif || 'Aucun motif saisi' }}</p>
+          </div>
+        </article>
+      </div>
+    </ng-container>
+
+    <ng-template #emptyState>
+      <div class="empty-state">
+        <div class="state-icon">
+          <i class="fas fa-box-open"></i>
+        </div>
+        <h3>Aucun mouvement trouve</h3>
+        <p *ngIf="hasActiveFilters; else noMovementHistory">
+          Aucun resultat ne correspond aux filtres actifs.
+        </p>
+        <ng-template #noMovementHistory>
+          <p>L'historique de mouvements est encore vide.</p>
+        </ng-template>
+        <button *ngIf="hasActiveFilters" class="reset-button large" type="button" (click)="resetFilters()">
+          <i class="fas fa-eraser"></i>
+          Effacer les filtres
+        </button>
+      </div>
+    </ng-template>
+  </section>
 </div>

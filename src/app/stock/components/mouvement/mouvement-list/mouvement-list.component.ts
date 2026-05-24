@@ -1,10 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { StockService } from '../../../services/stock.service';
-import { MouvementStock, TypeMouvement } from '../../../models/mouvement-stock.model';
-import { CommonModule } from "@angular/common";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+
+import { MouvementStock, TypeMouvement } from '../../../models/mouvement-stock.model';
+import { StockService } from '../../../services/stock.service';
 
 @Component({
   selector: 'app-mouvement-list',
@@ -17,23 +18,22 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
   ]
 })
 export class MouvementListComponent implements OnInit, OnDestroy {
-
   mouvements: MouvementStock[] = [];
   filteredMouvements: MouvementStock[] = [];
 
   loading = false;
   error: string | null = null;
 
-  typeFilter: string = '';
-  searchTerm: string = '';
-  showFilters: boolean = true;
+  typeFilter = '';
+  searchTerm = '';
+  showFilters = true;
 
   private searchSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
 
   typeOptions = [
     { value: '', label: 'Tous les types' },
-    { value: TypeMouvement.ENTREE, label: 'Entrées' },
+    { value: TypeMouvement.ENTREE, label: 'Entrees' },
     { value: TypeMouvement.SORTIE, label: 'Sorties' },
     { value: TypeMouvement.AJUSTEMENT, label: 'Ajustements' }
   ];
@@ -48,6 +48,30 @@ export class MouvementListComponent implements OnInit, OnDestroy {
     ).subscribe(() => {
       this.applyFilters();
     });
+  }
+
+  get hasActiveFilters(): boolean {
+    return Boolean(this.typeFilter || this.searchTerm.trim());
+  }
+
+  get uniqueArticleCount(): number {
+    const articleKeys = new Set(
+      this.filteredMouvements
+        .map((mouvement) => this.getArticleIdentity(mouvement.article))
+        .filter((identity): identity is string => Boolean(identity))
+    );
+
+    return articleKeys.size;
+  }
+
+  get latestMovementLabel(): string {
+    const latest = this.filteredMouvements[0]?.dateMouvement ?? this.mouvements[0]?.dateMouvement;
+
+    if (!latest) {
+      return 'Aucun mouvement recent';
+    }
+
+    return `Dernier flux ${this.formatDatePart(latest)} a ${this.formatTimePart(latest)}`;
   }
 
   ngOnInit(): void {
@@ -73,9 +97,9 @@ export class MouvementListComponent implements OnInit, OnDestroy {
         this.applyFilters();
         this.loading = false;
       },
-      error: (err: any) => {
+      error: (err: unknown) => {
         console.error('Erreur lors du chargement des mouvements', err);
-        this.error = 'Impossible de charger les mouvements. Veuillez réessayer plus tard.';
+        this.error = 'Impossible de charger les mouvements. Veuillez reessayer plus tard.';
         this.loading = false;
       }
     });
@@ -85,17 +109,22 @@ export class MouvementListComponent implements OnInit, OnDestroy {
     let filtered = [...this.mouvements];
 
     if (this.typeFilter) {
-      filtered = filtered.filter(mvt => mvt.typeMouvement === this.typeFilter);
+      filtered = filtered.filter((mouvement) => mouvement.typeMouvement === this.typeFilter);
     }
 
-    if (this.searchTerm && this.searchTerm.trim()) {
+    if (this.searchTerm.trim()) {
       const term = this.searchTerm.toLowerCase().trim();
-      filtered = filtered.filter(mvt => {
-        if (!mvt.article) return false;
-        const nom = mvt.article.nom?.toLowerCase() || '';
-        const code = (mvt.article as any).code || (mvt.article as any).sku || '';
-        const motif = mvt.motif?.toLowerCase() || '';
-        return nom.includes(term) || code.toString().toLowerCase().includes(term) || motif.includes(term);
+
+      filtered = filtered.filter((mouvement) => {
+        if (!mouvement.article) {
+          return false;
+        }
+
+        const nom = mouvement.article.nom?.toLowerCase() || '';
+        const code = this.getArticleCode(mouvement.article).toLowerCase();
+        const motif = mouvement.motif?.toLowerCase() || '';
+
+        return nom.includes(term) || code.includes(term) || motif.includes(term);
       });
     }
 
@@ -112,38 +141,99 @@ export class MouvementListComponent implements OnInit, OnDestroy {
     this.searchSubject.next(this.searchTerm);
   }
 
-  getTypeClass(type: string): { class: string; icon: string } {
-    switch(type) {
+  countByType(type: TypeMouvement): number {
+    return this.filteredMouvements.filter((mouvement) => mouvement.typeMouvement === type).length;
+  }
+
+  getTypeTone(type: string): string {
+    switch (type) {
       case TypeMouvement.ENTREE:
-        return { class: 'success', icon: 'arrow-down' };
+        return 'tone-entry';
       case TypeMouvement.SORTIE:
-        return { class: 'danger', icon: 'arrow-up' };
+        return 'tone-exit';
       case TypeMouvement.AJUSTEMENT:
-        return { class: 'warning', icon: 'balance-scale' };
+        return 'tone-adjustment';
       default:
-        return { class: 'secondary', icon: 'circle' };
+        return 'tone-neutral';
+    }
+  }
+
+  getTypeIcon(type: string): string {
+    switch (type) {
+      case TypeMouvement.ENTREE:
+        return 'arrow-down';
+      case TypeMouvement.SORTIE:
+        return 'arrow-up';
+      case TypeMouvement.AJUSTEMENT:
+        return 'sliders';
+      default:
+        return 'circle';
     }
   }
 
   getTypeLabel(type: string): string {
-    const option = this.typeOptions.find(opt => opt.value === type);
+    const option = this.typeOptions.find((currentOption) => currentOption.value === type);
     return option ? option.label : type;
   }
 
-  formatDate(date: Date | string | undefined): string {
-    if (!date) return '-';
-    const d = new Date(date);
-    return d.toLocaleDateString('fr-FR', {
+  getTypeCaption(type: string): string {
+    switch (type) {
+      case TypeMouvement.ENTREE:
+        return 'Ajout de stock';
+      case TypeMouvement.SORTIE:
+        return 'Retrait de stock';
+      case TypeMouvement.AJUSTEMENT:
+        return 'Correction manuelle';
+      default:
+        return 'Mouvement';
+    }
+  }
+
+  getQuantityPrefix(type: string): string {
+    switch (type) {
+      case TypeMouvement.ENTREE:
+        return '+';
+      case TypeMouvement.SORTIE:
+        return '-';
+      case TypeMouvement.AJUSTEMENT:
+        return '+/-';
+      default:
+        return '';
+    }
+  }
+
+  formatDatePart(date: Date | string | undefined): string {
+    const parsedDate = this.parseDate(date);
+
+    if (!parsedDate) {
+      return '-';
+    }
+
+    return parsedDate.toLocaleDateString('fr-FR', {
       day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    });
+  }
+
+  formatTimePart(date: Date | string | undefined): string {
+    const parsedDate = this.parseDate(date);
+
+    if (!parsedDate) {
+      return '--:--';
+    }
+
+    return parsedDate.toLocaleTimeString('fr-FR', {
       hour: '2-digit',
       minute: '2-digit'
     });
   }
 
   getArticleCode(article: any): string {
-    if (!article) return '-';
+    if (!article) {
+      return '-';
+    }
+
     return article.code || article.sku || article.reference?.code || '-';
   }
 
@@ -152,7 +242,31 @@ export class MouvementListComponent implements OnInit, OnDestroy {
   }
 
   getUniteMesure(article: any): string {
-    if (!article) return '';
+    if (!article) {
+      return '';
+    }
+
     return article.um || article.uniteMesure || '';
+  }
+
+  trackByMovement(index: number, mouvement: MouvementStock): string {
+    return mouvement.id || `${mouvement.articleId || this.getArticleCode(mouvement.article)}-${mouvement.dateMouvement || index}`;
+  }
+
+  private parseDate(date: Date | string | undefined): Date | null {
+    if (!date) {
+      return null;
+    }
+
+    const parsedDate = new Date(date);
+    return Number.isNaN(parsedDate.getTime()) ? null : parsedDate;
+  }
+
+  private getArticleIdentity(article: any): string | null {
+    if (!article) {
+      return null;
+    }
+
+    return article.id || article.code || article.sku || article.reference?.code || article.nom || null;
   }
 }

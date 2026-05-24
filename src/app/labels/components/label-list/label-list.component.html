@@ -1,52 +1,71 @@
-<div class="abioc-container">
-  <!-- TOP BRANDED HEADER -->
+<div class="labels-container">
   <header class="page-header">
-    <div class="header-decoration">
-      <img src="/assets/logo_certif2.jpeg" alt="Decorative Olive Branch" class="header-img">
-    </div>
-
-    <div class="header-content">
-      <div class="brand-section">
-        <mat-icon class="brand-icon">eco</mat-icon>
-        <div class="title-section">
-          <h1>Étiquettes</h1>
-          <p class="subtitle">Bibliothèque des empreintes numériques</p>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- ACTION BAR CARD -->
-  <div class="action-card shadow-premium">
-    <div class="search-box">
-      <mat-icon class="search-icon">search</mat-icon>
-      <input type="text" placeholder="Rechercher Lot, dénomination..." [formControl]="searchControl">
-    </div>
-
-    <div class="kpi-card">
-      <div class="kpi-icon-box">
+    <div class="header-left">
+      <div class="header-icon">
         <mat-icon>sell</mat-icon>
       </div>
-      <div class="kpi-content">
-        <span class="kpi-value">{{ allLabels.length }}</span>
-        <span class="kpi-label">Étiquettes</span>
+      <div>
+        <h1 class="page-title">Etiquettes</h1>
+        <p class="page-subtitle">Bibliotheque des empreintes numeriques et des contenus d'etiquetage.</p>
       </div>
     </div>
 
-    <button mat-button class="btn-filters" [matMenuTriggerFor]="filterMenu">
-      <mat-icon>tune</mat-icon>
-      <span>Filtres</span>
-      <mat-icon class="chevron">expand_more</mat-icon>
+    <button mat-flat-button class="btn-create-icon" (click)="createNewLabel()" title="Nouvelle etiquette">
+      <mat-icon>add</mat-icon>
     </button>
+  </header>
+
+  <div class="labels-insights" *ngIf="!loading">
+    <mat-icon>info</mat-icon>
+    <span>
+      <strong>{{ allLabels.length }}</strong>
+      etiquette(s) disponibles. Utilisez les filtres pour isoler les brouillons, validations et categories.
+    </span>
+  </div>
+
+  <div class="filters-card">
+    <div class="filters-grid">
+      <div class="filter-group search-group">
+        <label>Recherche</label>
+        <div class="input-with-icon">
+          <mat-icon>search</mat-icon>
+          <input type="text" class="form-control" placeholder="Lot, denomination, langue..." [formControl]="searchControl">
+        </div>
+      </div>
+
+      <div class="filter-group stat-group">
+        <label>Volume</label>
+        <div class="stat-card">
+          <span class="stat-value">{{ allLabels.length }}</span>
+          <span class="stat-label">Etiquettes</span>
+        </div>
+      </div>
+
+      <div class="filter-group filter-actions">
+        <label>Filtres</label>
+        <button mat-button class="btn-filters" [matMenuTriggerFor]="filterMenu">
+          <mat-icon>tune</mat-icon>
+          <span>Ouvrir</span>
+          <mat-icon class="chevron">expand_more</mat-icon>
+        </button>
+      </div>
+
+      <div class="filter-group create-action">
+        <label>Creation</label>
+        <button mat-flat-button class="btn-new" (click)="createNewLabel()">
+          <mat-icon>add</mat-icon>
+          <span>Nouvelle etiquette</span>
+        </button>
+      </div>
+    </div>
 
     <mat-menu #filterMenu="matMenu" class="premium-menu">
       <button mat-menu-item (click)="resetFilters()">
         <mat-icon>refresh</mat-icon>
-        <span>Toutes les étiquettes</span>
+        <span>Toutes les etiquettes</span>
       </button>
       <mat-divider></mat-divider>
 
-      <!-- Status Filters -->
       <div class="menu-label">STATUT</div>
       <button mat-menu-item (click)="filterByStatus('DRAFT')">
         <mat-icon class="status-icon draft">circle</mat-icon>
@@ -54,24 +73,23 @@
       </button>
       <button mat-menu-item (click)="filterByStatus('VALIDATED')">
         <mat-icon class="status-icon validated">circle</mat-icon>
-        <span>Validée</span>
+        <span>Validee</span>
       </button>
       <button mat-menu-item (click)="filterByStatus('FINALIZED')">
         <mat-icon class="status-icon finalized">circle</mat-icon>
-        <span>Finalisée</span>
+        <span>Finalisee</span>
       </button>
       <button mat-menu-item (click)="filterByStatus('EXPORTED_JSON')">
         <mat-icon class="status-icon exported">circle</mat-icon>
-        <span>Exportée JSON</span>
+        <span>Exportee JSON</span>
       </button>
 
       <mat-divider></mat-divider>
 
-      <!-- Category Filters -->
-      <div class="menu-label">CATÉGORIE</div>
+      <div class="menu-label">CATEGORIE</div>
       <button mat-menu-item (click)="filterByCategory('LEGAL')">
         <mat-icon>gavel</mat-icon>
-        <span>Légale</span>
+        <span>Legale</span>
       </button>
       <button mat-menu-item (click)="filterByCategory('MARKETING')">
         <mat-icon>campaign</mat-icon>
@@ -79,16 +97,11 @@
       </button>
       <button mat-menu-item (click)="filterByCategory('RESPONSIBILITY')">
         <mat-icon>volunteer_activism</mat-icon>
-        <span>Responsabilité</span>
+        <span>Responsabilite</span>
       </button>
     </mat-menu>
-
-    <button mat-icon-button class="btn-new" (click)="createNewLabel()" title="Nouvelle Étiquette">
-      <mat-icon>add</mat-icon>
-    </button>
   </div>
 
-  <!-- ALERTS / FEEDBACK -->
   <div class="feedback-stack" *ngIf="successMessage || errorMessage">
     <div class="feedback-banner success" *ngIf="successMessage">
       <div class="banner-content">
@@ -107,27 +120,25 @@
     </div>
   </div>
 
-  <!-- DATA GRID CARD -->
   <div class="table-card shadow-premium">
     <div class="table-header-row">
-      <div class="header-left">
+      <div class="header-left table-title">
         <mat-icon>eco</mat-icon>
-        <h3>Liste des étiquettes</h3>
-        <span class="count-badge">{{ allLabels.length }} élément(s)</span>
+        <h3>Liste des etiquettes</h3>
+        <span class="count-badge">{{ allLabels.length }} element(s)</span>
       </div>
     </div>
 
     <table mat-table [dataSource]="dataSource" class="modern-table">
-      <!-- ... existing columns ... -->
       <ng-container matColumnDef="lotNumber">
-        <th mat-header-cell *matHeaderCellDef>N° Lot</th>
+        <th mat-header-cell *matHeaderCellDef>N� Lot</th>
         <td mat-cell *matCellDef="let label">
           <span class="lot-pill">{{ label.lotNumber || '-' }}</span>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="legalDenomination">
-        <th mat-header-cell *matHeaderCellDef>Dénomination</th>
+        <th mat-header-cell *matHeaderCellDef>Denomination</th>
         <td mat-cell *matCellDef="let label">
           <div class="denom-box">
             <span class="main-text">{{ label.legalDenomination || '-' }}</span>
@@ -137,7 +148,7 @@
       </ng-container>
 
       <ng-container matColumnDef="netQuantity">
-        <th mat-header-cell *matHeaderCellDef>Quantité</th>
+        <th mat-header-cell *matHeaderCellDef>Quantite</th>
         <td mat-cell *matCellDef="let label" class="text-secondary">{{ label.netQuantity || '-' }}</td>
       </ng-container>
 
@@ -156,12 +167,12 @@
       </ng-container>
 
       <ng-container matColumnDef="packagingDate">
-        <th mat-header-cell *matHeaderCellDef>Date Cond.</th>
+        <th mat-header-cell *matHeaderCellDef>Date cond.</th>
         <td mat-cell *matCellDef="let label" class="text-secondary">{{ label.packagingDate | date:'dd/MM/yyyy' }}</td>
       </ng-container>
 
       <ng-container matColumnDef="labelCategory">
-        <th mat-header-cell *matHeaderCellDef>Catégorie</th>
+        <th mat-header-cell *matHeaderCellDef>Categorie</th>
         <td mat-cell *matCellDef="let label" class="text-secondary">{{ label.labelCategory }}</td>
       </ng-container>
 
@@ -193,7 +204,7 @@
         </th>
         <td mat-cell *matCellDef="let label">
           <div class="action-buttons-grid">
-            <button mat-icon-button class="action-btn view" (click)="viewDetails(label)" matTooltip="Voir détails">
+            <button mat-icon-button class="action-btn view" (click)="viewDetails(label)" matTooltip="Voir details">
               <mat-icon>visibility</mat-icon>
             </button>
             <button mat-icon-button class="action-btn edit" (click)="editLabel(label)" matTooltip="Modifier">
@@ -213,14 +224,14 @@
         <td class="mat-cell" [attr.colspan]="displayedColumns.length">
           <div class="no-data-info">
             <mat-icon>search_off</mat-icon>
-            <p>Aucune étiquette trouvée</p>
+            <p>Aucune etiquette trouvee</p>
           </div>
         </td>
       </tr>
     </table>
 
     <div class="paginator-container">
-      <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Sélectionner la page"></mat-paginator>
+      <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Selectionner la page"></mat-paginator>
     </div>
   </div>
 
