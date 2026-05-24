@@ -1,57 +1,79 @@
 <div class="bom-form-page">
-  <nav class="breadcrumb">
-    <a routerLink="/stock/boms"><i class="fas fa-sitemap"></i> Nomenclatures</a>
-    <span>/</span>
-    <span>{{ isEditMode ? 'Modifier' : 'Nouvelle' }}</span>
-  </nav>
 
-  <header class="form-header">
-    <button class="btn-back-floating" routerLink="/stock/boms" type="button" aria-label="Retour">
+  <header class="page-hero">
+    <button class="btn-back" routerLink="/stock/boms" type="button" aria-label="Retour">
       <i class="fas fa-arrow-left"></i>
     </button>
-    <div class="header-text">
-      <h2 class="form-title">{{ isEditMode ? 'Modifier la nomenclature' : 'Nouvelle nomenclature' }}</h2>
-      <p class="form-subtitle">
-        Définissez les articles consommés <strong>par unité</strong> de produit fini (emballage, consommables).
+
+    <div class="hero-text">
+      <h1>{{ isEditMode ? 'Modifier la nomenclature' : 'Nouvelle nomenclature' }}</h1>
+      <p>
+        Définissez les articles consommés <strong>par unité</strong> de produit fini
+        (emballage, consommables).
       </p>
     </div>
-    <span class="status-pill active" *ngIf="isEditMode && bomForm.get('active')?.value">
-      <i class="fas fa-star"></i> Sera active
+
+    <span class="hero-status" *ngIf="isEditMode && bomForm.get('active')?.value">
+      <i class="fas fa-star"></i>
+      Nomenclature active
     </span>
   </header>
 
   <div *ngIf="loading" class="loading-container">
     <div class="spinner-border"></div>
-    <p>Chargement…</p>
+    <p>Chargement...</p>
   </div>
 
-  <div *ngIf="!loading" class="form-content">
+  <main *ngIf="!loading" class="form-shell">
     <form [formGroup]="bomForm" (ngSubmit)="onSubmit()">
-      <section class="form-card">
-        <h5 class="card-title"><i class="fas fa-cube"></i> Produit & statut</h5>
+
+      <!-- PRODUIT & STATUT -->
+      <section class="form-card product-card">
+        <div class="section-heading">
+          <div class="section-icon product-icon">
+            <i class="fas fa-cube"></i>
+          </div>
+
+          <div>
+            <h2>Produit & statut</h2>
+          </div>
+        </div>
+
         <div class="form-grid">
           <div class="form-group span-2">
             <label for="productId">Produit fini <span class="req">*</span></label>
+
             <select id="productId" class="form-control" formControlName="productId">
               <option value="" disabled>Choisir un produit NON_VRAC</option>
-              <option *ngFor="let product of products" [value]="product.id">{{ productName(product) }}</option>
+              <option *ngFor="let product of products" [value]="product.id">
+                {{ productName(product) }}
+              </option>
             </select>
+
             <div class="error" *ngIf="bomForm.get('productId')?.invalid && bomForm.get('productId')?.touched">
               Le produit est requis
             </div>
           </div>
-          <div class="form-group" *ngIf="isEditMode && bom?.version">
+
+          <div class="form-group version-field" *ngIf="isEditMode && bom?.version">
             <label>Version</label>
             <input class="form-control readonly" [value]="bom!.version" readonly />
           </div>
+
           <div class="form-group span-2">
             <div class="toggle-card" [class.on]="bomForm.get('active')?.value">
               <label class="toggle-label">
                 <input type="checkbox" formControlName="active" class="toggle-input" />
+
                 <span class="toggle-track"></span>
+
                 <span class="toggle-text">
                   <strong>Nomenclature active</strong>
                   <small>Utilisée par défaut pour les OF et projets sur ce produit</small>
+                </span>
+
+                <span class="toggle-decoration">
+                  <i class="fas fa-leaf"></i>
                 </span>
               </label>
             </div>
@@ -59,36 +81,66 @@
         </div>
       </section>
 
-      <section class="form-card">
+      <!-- COMPOSANTS -->
+      <section class="form-card components-card">
         <div class="card-header">
-          <h5 class="card-title"><i class="fas fa-boxes-stacked"></i> Composants</h5>
+          <div class="section-heading compact">
+            <div class="section-icon">
+              <i class="fas fa-leaf"></i>
+            </div>
+
+            <div>
+              <h2>Composants</h2>
+            </div>
+          </div>
+
           <button type="button" class="btn-add" (click)="addLine()">
-            <i class="fas fa-plus"></i> Ajouter une ligne
+            <i class="fas fa-plus"></i>
+            Ajouter une ligne
           </button>
         </div>
 
         <p class="empty-lines" *ngIf="lines.length === 0">
-          Ajoutez au moins un article (bouteille, carton, étiquette…).
+          Ajoutez au moins un article : bouteille, carton, bouchon, étiquette...
         </p>
 
-        <div formArrayName="lines" class="lines-list">
-          <div *ngFor="let line of lines.controls; let i = index" [formGroupName]="i" class="line-item">
-            <div class="line-number">#{{ i + 1 }}</div>
-            <div class="line-fields">
-              <div class="form-group flex-2">
-                <label>Article <span class="req">*</span></label>
-                <select class="form-control" formControlName="articleId">
-                  <option value="" disabled>Choisir</option>
-                  <option *ngFor="let article of getFilteredArticlesForLine(i)" [value]="article.id">
-                    {{ article.nom }} ({{ article.um }})
-                  </option>
-                </select>
-              </div>
-              <div class="form-group flex-1">
-                <label>Qté / unité <span class="req">*</span></label>
-                <input type="number" step="0.001" min="0.001" class="form-control" formControlName="quantity" />
-              </div>
+        <div formArrayName="lines" class="lines-panel">
+          <div class="lines-header">
+            <span>#</span>
+            <span>Article <strong>*</strong></span>
+            <span>Qté / unité <strong>*</strong></span>
+            <span></span>
+          </div>
+
+          <div
+            *ngFor="let line of lines.controls; let i = index"
+            [formGroupName]="i"
+            class="line-item">
+
+            <div class="line-number">
+              {{ i + 1 }}
             </div>
+
+            <div class="form-group article-field">
+              <select class="form-control" formControlName="articleId">
+                <option value="" disabled>Choisir un article</option>
+                <option *ngFor="let article of getFilteredArticlesForLine(i)" [value]="article.id">
+                  {{ article.nom }} ({{ article.um }})
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group quantity-field">
+              <input
+                type="number"
+                step="0.001"
+                min="0.001"
+                class="form-control"
+                formControlName="quantity" />
+
+              <span class="unit-addon">u.</span>
+            </div>
+
             <button
               type="button"
               class="btn-remove"
@@ -113,13 +165,17 @@
         Après enregistrement, vous pourrez simuler les besoins pour une quantité de production depuis la fiche détail.
       </p>
 
-      <footer class="form-actions sticky">
-        <button type="button" class="btn-cancel" (click)="cancel()">Annuler</button>
+      <footer class="form-actions">
+        <button type="button" class="btn-cancel" (click)="cancel()">
+          Annuler
+        </button>
+
         <button type="submit" class="btn-save" [disabled]="bomForm.invalid || isSubmitting || lines.length === 0">
           <i class="fas" [ngClass]="isSubmitting ? 'fa-spinner fa-spin' : 'fa-save'"></i>
-          {{ isSubmitting ? 'Enregistrement…' : 'Enregistrer' }}
+          {{ isSubmitting ? 'Enregistrement...' : 'Enregistrer' }}
         </button>
       </footer>
+
     </form>
-  </div>
+  </main>
 </div>
