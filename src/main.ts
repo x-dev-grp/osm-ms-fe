@@ -44,7 +44,7 @@ bootstrapApplication(AppComponent, {
       })
     ),
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: ResponseMessageInterceptor, multi: true },
+    /*{ provide: HTTP_INTERCEPTORS, useClass: ResponseMessageInterceptor, multi: true },*/
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: MAT_DATE_LOCALE, useValue: 'fr' },
     [provideHttpClient(withInterceptorsFromDi())],

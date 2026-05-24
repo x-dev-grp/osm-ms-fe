@@ -2,7 +2,6 @@ import { Component, Input } from '@angular/core';
 import { CommonModule, DatePipe, KeyValuePipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 
-import { ProductionGenealogy, ProductionRootSource } from '../../models/production-genealogy.model';
 import { TraceabilityEvent } from '../../models/traceability-event.model';
 import {
   eventChainFor,
