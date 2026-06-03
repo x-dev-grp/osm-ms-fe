@@ -416,6 +416,113 @@ $shadow-md: 0 16px 36px rgba(49, 61, 35, 0.10);
   overflow-x: auto;
 }
 
+.table-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1rem 1rem;
+  border-top: 1px solid #eee9dc;
+  background: #fffef9;
+}
+
+.pagination-summary {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  color: $muted;
+  font-size: 0.84rem;
+  font-weight: 800;
+
+  strong {
+    color: $olive-dark;
+    font-size: 0.94rem;
+  }
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.page-size-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: $muted;
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.page-size-select {
+  min-width: 76px;
+  height: 36px;
+  padding: 0 0.75rem;
+  border: 1px solid #d8d3c4;
+  border-radius: 10px;
+  background: $white;
+  color: $olive-dark;
+  font-size: 0.82rem;
+  font-weight: 850;
+  outline: none;
+
+  &:focus {
+    border-color: #78914b;
+    box-shadow: 0 0 0 3px rgba(120, 145, 75, 0.13);
+  }
+}
+
+.page-navigation {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.page-btn,
+.page-number {
+  height: 36px;
+  min-width: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0 0.8rem;
+  border: 1px solid #d8d3c4;
+  border-radius: 10px;
+  background: $white;
+  color: $olive-dark;
+  font-size: 0.82rem;
+  font-weight: 850;
+  cursor: pointer;
+  transition: 160ms ease;
+
+  &:hover:not(:disabled) {
+    border-color: $gold;
+    background: $cream;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.page-number {
+  padding: 0;
+
+  &.active {
+    border-color: #244d18;
+    background: linear-gradient(135deg, #1f4416, #42691f);
+    color: $white;
+    box-shadow: 0 10px 18px rgba(34, 64, 20, 0.16);
+  }
+}
+
 .audit-table {
   width: 100%;
   min-width: 1120px;
@@ -590,5 +697,27 @@ $shadow-md: 0 16px 36px rgba(49, 61, 35, 0.10);
   .btn-clear-filters {
     width: 100%;
     margin-left: 0;
+  }
+
+  .table-pagination,
+  .pagination-controls,
+  .page-navigation {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .pagination-controls,
+  .page-navigation {
+    width: 100%;
+  }
+
+  .page-size-control {
+    justify-content: space-between;
+  }
+
+  .page-btn,
+  .page-number,
+  .page-size-select {
+    width: 100%;
   }
 }

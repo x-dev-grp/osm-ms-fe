@@ -1,11 +1,9 @@
 import { Component, OnInit, signal } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
@@ -22,11 +20,8 @@ import { ToastService } from '../../../../shared/services/toast.service';
     MatButtonModule,
     MatIconModule,
     MatCardModule,
-    MatDividerModule,
-    MatChipsModule,
     MatTooltipModule,
-    MatProgressSpinnerModule,
-    DatePipe
+    MatProgressSpinnerModule
   ],
   templateUrl: './ligne-detail.component.html',
   styleUrls: ['./ligne-detail.component.scss']

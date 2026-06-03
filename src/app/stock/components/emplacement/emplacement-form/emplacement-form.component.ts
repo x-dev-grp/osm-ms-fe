@@ -1,30 +1,29 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { EmplacementStockService } from '../../../services/emplacement-stock.service';
-import {EmplacementStock, TypeEmplacement} from "../../../models/emplacement-stock.model";
-import {CategorieArticle} from "../../../models/article.model";
-
+import { EmplacementStock, TypeEmplacement } from '../../../models/emplacement-stock.model';
+import { CategorieArticle } from '../../../models/article.model';
 
 @Component({
   selector: 'app-emplacement-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './emplacement-form.component.html',
   styleUrls: ['./emplacement-form.component.scss']
 })
 export class EmplacementFormComponent implements OnInit {
-
   emplacementForm: FormGroup;
   isEditMode = false;
   emplacementId?: string;
   submitted = false;
+  submitting = false;
   loading = false;
   error = '';
 
   typesEmplacement = Object.values(TypeEmplacement);
-  categoriesArticle = Object.values(CategorieArticle);    // ✅ NOUVEAU
+  categoriesArticle = Object.values(CategorieArticle);
 
   constructor(
     private fb: FormBuilder,
@@ -33,10 +32,10 @@ export class EmplacementFormComponent implements OnInit {
     private emplacementService: EmplacementStockService
   ) {
     this.emplacementForm = this.fb.group({
-      code: [{value: '', disabled: true}],
+      code: [{ value: '', disabled: true }],
       nom: ['', Validators.required],
       typeEmplacement: ['', Validators.required],
-      categorieArticleStocke: [''],                         // ✅ NOUVEAU
+      categorieArticleStocke: [null],
       capaciteMaximale: [null],
       capaciteActuelle: [null],
       zone: [''],
@@ -90,7 +89,7 @@ export class EmplacementFormComponent implements OnInit {
             code: emp.code,
             nom: emp.nom,
             typeEmplacement: emp.typeEmplacement,
-            categorieArticleStocke: emp.categorieArticleStocke,    // ✅ NOUVEAU
+            categorieArticleStocke: emp.categorieArticleStocke ?? null,
             capaciteMaximale: emp.capaciteMaximale,
             capaciteActuelle: emp.capaciteActuelle,
             zone: emp.zone,
@@ -122,9 +121,20 @@ export class EmplacementFormComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
-    if (this.emplacementForm.invalid) return;
 
-    const emplacement: EmplacementStock = this.emplacementForm.value;
+    if (this.emplacementForm.invalid) {
+      this.submitting = false;
+      return;
+    }
+
+    this.error = '';
+    this.submitting = true;
+
+    const emplacement: EmplacementStock = this.emplacementForm.getRawValue();
+    if (!emplacement.categorieArticleStocke) {
+      delete emplacement.categorieArticleStocke;
+    }
+
     if (this.isEditMode) {
       emplacement.code = this.emplacementForm.get('code')?.value;
     }
@@ -136,8 +146,9 @@ export class EmplacementFormComponent implements OnInit {
         next: () => this.router.navigate(['/stock/emplacements']),
         error: (err) => {
           console.error(err);
-          this.error = "Erreur lors de la mise à jour";
+          this.error = 'Erreur lors de la mise a jour';
           this.loading = false;
+          this.submitting = false;
         }
       });
     } else {
@@ -145,8 +156,9 @@ export class EmplacementFormComponent implements OnInit {
         next: () => this.router.navigate(['/stock/emplacements']),
         error: (err) => {
           console.error(err);
-          this.error = "Erreur lors de la création";
+          this.error = 'Erreur lors de la creation';
           this.loading = false;
+          this.submitting = false;
         }
       });
     }
@@ -159,26 +171,26 @@ export class EmplacementFormComponent implements OnInit {
   getTypeLabel(type: TypeEmplacement): string {
     const labels: Record<TypeEmplacement, string> = {
       [TypeEmplacement.CHAMBRE_FROIDE]: 'Chambre froide',
-      [TypeEmplacement.CONGELATEUR]: 'Congélateur',
+      [TypeEmplacement.CONGELATEUR]: 'Congelateur',
       [TypeEmplacement.ZONE_DANGEREUSE]: 'Zone dangereuse',
-      [TypeEmplacement.ZONE_SECURISEE]: 'Zone sécurisée',
-      [TypeEmplacement.QUAI_RECEPTION]: 'Quai de réception',
-      [TypeEmplacement.QUAI_EXPEDITION]: 'Quai d\'expédition',
-      [TypeEmplacement.ZONE_CONTROLE]: 'Zone de contrôle',
+      [TypeEmplacement.ZONE_SECURISEE]: 'Zone securisee',
+      [TypeEmplacement.QUAI_RECEPTION]: 'Quai de reception',
+      [TypeEmplacement.QUAI_EXPEDITION]: "Quai d'expedition",
+      [TypeEmplacement.ZONE_CONTROLE]: 'Zone de controle',
       [TypeEmplacement.ZONE_RECONDITIONNEMENT]: 'Zone de reconditionnement'
     };
     return labels[type] || type;
   }
 
-  
   getCategorieLabel(categorie: CategorieArticle): string {
     const labels: Record<CategorieArticle, string> = {
       [CategorieArticle.EMBALLAGE]: 'Emballage',
       [CategorieArticle.CONSOMMABLE]: 'Consommable',
-      [CategorieArticle.UNITE]: 'Unité',
+      [CategorieArticle.UNITE]: 'Unite',
       [CategorieArticle.COLIS]: 'Colis',
       [CategorieArticle.PALETTE]: 'Palette'
     };
     return labels[categorie] || categorie;
   }
 }
+

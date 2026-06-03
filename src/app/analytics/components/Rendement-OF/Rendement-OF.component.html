@@ -99,7 +99,7 @@
             <td><span class="status-badge" [ngClass]="getBadgeClass(row.statut)">{{ row.statut }}</span></td>
             <td class="text-center">{{ row.quantiteCible | number }}</td>
             <td class="text-center text-success fw-bold">{{ row.quantiteBonne | number }}</td>
-            <td class="text-center text-danger fw-bold">{{ row.quantiteNc | number }}</td>
+            <td class="text-center text-danger fw-bold">{{ (row.quantiteNc || 0) | number }}</td>
             <td>
               <div class="d-flex align-items-center">
                 <div class="flex-grow-1 progress me-2">

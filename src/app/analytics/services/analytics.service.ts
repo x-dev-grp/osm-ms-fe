@@ -42,7 +42,7 @@ export class AnalyticsService {
   // =========================
 
   getGlobalOf(request: any = {}): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/reports/global`, request);
+      return this.http.post<any>(`${this.apiUrl}/reports/global`, request);
   }
 
   exportGlobalOfPdf(request: any = {}): Observable<Blob> {

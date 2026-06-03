@@ -3,6 +3,14 @@ import { CommonModule } from '@angular/common';
 import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
 import { AnalyticsService } from '../../services/analytics.service';
 
+type QualityRow = {
+  productName: string;
+  totalControls: number;
+  failedControls: number;
+  nonConformityRate: number;
+  conformControls: number;
+};
+
 @Component({
   selector: 'app-quality-report',
   standalone: true,
@@ -11,36 +19,60 @@ import { AnalyticsService } from '../../services/analytics.service';
   styleUrls: ['./Rapport-Qualite.component.scss']
 })
 export class RapportQualiteComponent implements OnInit {
-  data: any = null;
+  data: QualityRow[] = [];
   loading = false;
+  errorMessage = '';
 
-  conformityChartOptions: Partial<ApexOptions> | any;
+  conformityChartOptions: Partial<ApexOptions> | null = null;
 
   constructor(private analyticsService: AnalyticsService) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadData();
   }
 
-  loadData() {
+  get hasData(): boolean {
+    return this.data.length > 0;
+  }
+
+  loadData(): void {
     this.loading = true;
-    console.log('Loading Quality Report...');
+    this.errorMessage = '';
+
     this.analyticsService.getQuality().subscribe({
       next: (res: any) => {
-        console.log('Quality Response:', res);
-        this.data = res?.data ? res.data : res;
+        const rows = Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : [];
+
+        this.data = rows.map((row: any) => {
+          const totalControls = Number(row?.totalControls ?? 0);
+          const failedControls = Number(row?.failedControls ?? 0);
+          const nonConformityRate = Number(row?.nonConformityRate ?? 0);
+
+          return {
+            productName: String(row?.productName ?? '-'),
+            totalControls,
+            failedControls,
+            nonConformityRate,
+            conformControls: Math.max(0, totalControls - failedControls)
+          };
+        });
+
         this.initCharts();
         this.loading = false;
       },
       error: (err) => {
-        console.error('Error', err);
+        console.error('Error loading quality report', err);
+        this.data = [];
+        this.conformityChartOptions = null;
+        this.errorMessage = err?.error?.message || err?.message || 'Impossible de charger le rapport qualite.';
         this.loading = false;
       }
     });
   }
 
-  exportPdf() {
+  exportPdf(): void {
     this.loading = true;
+
     this.analyticsService.exportQualityPdf().subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
@@ -52,34 +84,41 @@ export class RapportQualiteComponent implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        console.error('Error', err);
+        console.error('Error exporting PDF', err);
+        this.errorMessage = err?.error?.message || err?.message || 'Impossible d exporter le PDF.';
         this.loading = false;
       }
     });
   }
 
-  private initCharts() {
-    if (!this.data) return;
+  getConformityRate(row: QualityRow): number {
+    return Math.max(0, 100 - row.nonConformityRate);
+  }
 
-    let conformeCount = 0;
-    let nonConformeCount = 0;
+  getRateBarClass(rate: number): string {
+    if (rate >= 95) return 'bg-success';
+    if (rate >= 80) return 'bg-warning';
+    return 'bg-danger';
+  }
 
-    // data is an object grouping by Control Point
-    Object.values(this.data).forEach((results: any) => {
-      if (Array.isArray(results)) {
-        results.forEach((r: any) => {
-          if (r.estConforme) conformeCount++;
-          else nonConformeCount++;
-        });
-      }
-    });
+  private initCharts(): void {
+    if (!this.data.length) {
+      this.conformityChartOptions = null;
+      return;
+    }
 
-    if (conformeCount === 0 && nonConformeCount === 0) return;
+    const conformeCount = this.data.reduce((sum, row) => sum + row.conformControls, 0);
+    const nonConformeCount = this.data.reduce((sum, row) => sum + row.failedControls, 0);
+
+    if (conformeCount === 0 && nonConformeCount === 0) {
+      this.conformityChartOptions = null;
+      return;
+    }
 
     this.conformityChartOptions = {
       series: [conformeCount, nonConformeCount],
       chart: { type: 'donut', height: 320 },
-      labels: ['Conforme', 'Non Conforme'],
+      labels: ['Conforme', 'Non conforme'],
       colors: ['#10b981', '#ef4444'],
       legend: { position: 'bottom' },
       dataLabels: { enabled: true }

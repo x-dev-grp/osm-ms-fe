@@ -96,7 +96,7 @@
       <div class="filter-group">
         <label>
           <i class="fas fa-cube"></i>
-          Entité
+          Module métier
         </label>
 
         <div class="autocomplete-wrapper">
@@ -105,7 +105,7 @@
             class="form-control"
             [(ngModel)]="filters.entityName"
             (input)="applyFilters()"
-            placeholder="Filtrer par entité..."
+            placeholder="Filtrer par module métier..."
             list="entity-list"
           />
 
@@ -170,9 +170,9 @@
       </div>
 
       <div class="kpi-content">
-        <span>Entités</span>
+        <span>Modules métier</span>
         <strong>{{ entityNames.length }}</strong>
-        <p>Modules audités</p>
+        <p>Domaines métier audités</p>
       </div>
     </div>
   </section>
@@ -197,7 +197,7 @@
       <table class="audit-table">
         <thead>
         <tr>
-          <th>Entité</th>
+          <th>Module métier</th>
           <th>ID</th>
           <th>Créé par</th>
           <th>Date création</th>
@@ -208,9 +208,9 @@
         </thead>
 
         <tbody>
-        <tr *ngFor="let audit of filteredAudits" class="audit-row">
+        <tr *ngFor="let audit of paginatedAudits; trackBy: trackByAudit" class="audit-row">
           <td>
-            <span class="entity-badge">{{ audit.entityName || '-' }}</span>
+            <span class="entity-badge">{{ getEntityDisplayName(audit.entityName) }}</span>
           </td>
 
           <td class="id-cell">{{ audit.id }}</td>
@@ -236,16 +236,16 @@
           <td class="date-cell">{{ formatDate(audit.lastModifiedDate) }}</td>
 
           <td>
-              <span class="action-badge" [ngClass]="getActionClass(getActionType(audit))">
-                <i
-                  class="fas"
-                  [ngClass]="{
-                    'fa-plus-circle': getActionType(audit) === 'CRÉATION',
-                    'fa-edit': getActionType(audit) === 'MODIFICATION'
-                  }"
-                ></i>
-                {{ getActionType(audit) }}
-              </span>
+            <span class="action-badge" [ngClass]="getActionClass(getActionType(audit))">
+              <i
+                class="fas"
+                [ngClass]="{
+                  'fa-plus-circle': getActionType(audit) === 'CRÉATION',
+                  'fa-edit': getActionType(audit) === 'MODIFICATION'
+                }"
+              ></i>
+              {{ getActionType(audit) }}
+            </span>
           </td>
         </tr>
 
@@ -261,6 +261,51 @@
         </tr>
         </tbody>
       </table>
+    </div>
+
+    <div class="table-pagination" *ngIf="filteredAudits.length > 0">
+      <div class="pagination-summary">
+        <strong>{{ pageStartIndex }}-{{ pageEndIndex }}</strong>
+        <span>sur {{ filteredAudits.length }} entrée(s)</span>
+      </div>
+
+      <div class="pagination-controls">
+        <label class="page-size-control" for="audit-page-size">
+          <span>Lignes</span>
+          <select
+            id="audit-page-size"
+            class="page-size-select"
+            [ngModel]="pageSize"
+            (ngModelChange)="onPageSizeChange($event)"
+          >
+            <option *ngFor="let option of pageSizeOptions" [value]="option">
+              {{ option }}
+            </option>
+          </select>
+        </label>
+
+        <div class="page-navigation">
+          <button class="page-btn" type="button" (click)="goToPreviousPage()" [disabled]="currentPage === 1">
+            <i class="fas fa-chevron-left"></i>
+            <span>Précédent</span>
+          </button>
+
+          <button
+            *ngFor="let page of visiblePageNumbers"
+            class="page-number"
+            type="button"
+            [class.active]="page === currentPage"
+            (click)="goToPage(page)"
+          >
+            {{ page }}
+          </button>
+
+          <button class="page-btn" type="button" (click)="goToNextPage()" [disabled]="currentPage === totalPages">
+            <span>Suivant</span>
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
     </div>
   </section>
 </div>

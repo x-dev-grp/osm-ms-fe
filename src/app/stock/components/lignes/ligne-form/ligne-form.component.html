@@ -68,8 +68,15 @@
 
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>Responsable</mat-label>
-              <input matInput formControlName="responsable" placeholder="Nom du responsable technique" />
+              <mat-select formControlName="responsable">
+                <mat-option value="">Non assigné</mat-option>
+                <mat-option *ngFor="let user of responsables()" [value]="user.username">
+                  {{ user.displayName || user.username }}
+                  <span *ngIf="user.roleName"> ({{ user.roleName }})</span>
+                </mat-option>
+              </mat-select>
               <mat-icon matSuffix>person</mat-icon>
+              <mat-hint *ngIf="loadingResponsables()">Chargement des utilisateurs...</mat-hint>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="w-full">

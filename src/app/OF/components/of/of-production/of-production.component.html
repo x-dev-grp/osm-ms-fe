@@ -59,7 +59,7 @@
     </div>
 
     <p class="stock-check-caption">
-      Le demarrage est autorise uniquement si chaque article couvre la quantite theorique.
+      Le demarrage est autorise uniquement si chaque article couvre la quantite theorique avec {{ stockCheckLabel() }}.
     </p>
 
     <div class="stock-check-error" *ngIf="stockIssueMessage">
@@ -72,8 +72,8 @@
       <tr>
         <th>Article</th>
         <th>Besoin</th>
-        <th>Stock actuel</th>
-        <th>Etat stock</th>
+        <th>{{ stockQuantityHeader() }}</th>
+        <th>Source</th>
         <th>Resultat</th>
       </tr>
       </thead>
@@ -81,10 +81,9 @@
       <tr *ngFor="let row of stockRows" [ngClass]="{'row-ok': row.status === 'OK', 'row-ko': row.status !== 'OK'}">
         <td data-label="Article">{{ row.articleName }}</td>
         <td data-label="Besoin">{{ row.required }}</td>
-        <td data-label="Stock actuel">{{ row.available }}</td>
-        <td data-label="Etat stock">
-          <span *ngIf="row.exists">Existant</span>
-          <span *ngIf="!row.exists">Non cree</span>
+        <td [attr.data-label]="stockQuantityHeader()">{{ row.available }}</td>
+        <td data-label="Source">
+          <span>{{ row.sourceLabel }}</span>
         </td>
         <td data-label="Resultat">
           <span class="stock-status ok" *ngIf="row.status === 'OK'">OK</span>

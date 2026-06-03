@@ -146,13 +146,31 @@ export class ProjetExpeditionComponent implements OnInit {
   }
 
   get usedProjectQuantity(): number {
+    return this.allocatedProjectQuantity;
+  }
+
+  get allocatedProjectQuantity(): number {
     return this.expeditions
       .filter((exp) => exp.status !== ExpeditionStatus.CANCELLED)
       .reduce((sum, exp) => sum + Number(exp.totalQuantity || 0), 0);
   }
 
+  get deliveredProjectQuantity(): number {
+    return this.expeditions
+      .filter((exp) => exp.status === ExpeditionStatus.DELIVERED || exp.status === ExpeditionStatus.CLOSED)
+      .reduce((sum, exp) => sum + Number(exp.totalQuantity || 0), 0);
+  }
+
   get remainingProjectQuantity(): number {
-    return Math.max(0, this.projectTargetQuantity - this.usedProjectQuantity);
+    return Math.max(0, this.projectTargetQuantity - this.allocatedProjectQuantity);
+  }
+
+  get projectDeliveryComplete(): boolean {
+    if (this.isCompletedProjectStatus(this.project?.statut)) {
+      return true;
+    }
+
+    return this.projectTargetQuantity > 0 && this.deliveredProjectQuantity >= this.projectTargetQuantity;
   }
 
   hasFrozenTraceability(exp: ExpeditionDto | null): boolean {
@@ -246,6 +264,12 @@ export class ProjetExpeditionComponent implements OnInit {
   }
 
   toggleCreateForm() {
+    if (!this.canCreateExpedition()) {
+      this.showCreateForm = false;
+      this.toast.info(this.createExpeditionDisabledMessage());
+      return;
+    }
+
     this.showCreateForm = !this.showCreateForm;
     if (this.showCreateForm) {
       this.applyCreateDefaults();
@@ -313,6 +337,7 @@ export class ProjetExpeditionComponent implements OnInit {
     this.projetService.getById(id).subscribe({
       next: (project) => {
         this.project = project;
+        this.applyProjectDeliveryCompletion();
         this.applyCreateDefaults();
         this.applyDefaultUnitToCreateLines();
       },
@@ -328,6 +353,7 @@ export class ProjetExpeditionComponent implements OnInit {
     this.expeditionService.getByProject(projectId).subscribe({
       next: (items) => {
         this.expeditions = items;
+        this.applyProjectDeliveryCompletion();
         const found = this.queryExpeditionId ? items.find(item => item.id === this.queryExpeditionId) : null;
         this.selectedExpedition = found || (items.length ? items[0] : null);
         if (this.selectedExpedition) {
@@ -337,6 +363,9 @@ export class ProjetExpeditionComponent implements OnInit {
             this.loadExpeditionTraceability();
             this.openTraceabilityOnLoad = false;
           }
+        }
+        if (!this.canCreateExpedition()) {
+          this.showCreateForm = false;
         }
         this.loading = false;
       },
@@ -416,10 +445,11 @@ export class ProjetExpeditionComponent implements OnInit {
       this.lineForm.patchValue({
         ofId: selectedOf.id,
         articleId: '',
+        lotNumber: this.defaultLotNumberForOf(selectedOf),
         unit: this.project?.unite === 'LITRES' ? 'L' : 'UNIT'
       });
     } else {
-      this.lineForm.patchValue({ ofId: '', articleId: '' });
+      this.lineForm.patchValue({ ofId: '', articleId: '', lotNumber: '' });
     }
   }
 
@@ -434,8 +464,8 @@ export class ProjetExpeditionComponent implements OnInit {
       return;
     }
 
-    if (this.remainingProjectQuantity <= 0) {
-      this.toast.warning('Quantite projet deja atteinte. Impossible de creer une nouvelle expedition.');
+    if (!this.canCreateExpedition()) {
+      this.toast.warning(this.createExpeditionDisabledMessage());
       return;
     }
 
@@ -476,6 +506,7 @@ export class ProjetExpeditionComponent implements OnInit {
           this.createForm.reset({ destination: '', plannedShipDate: '', notes: '' });
           this.buildCreateLines(this.projectOfs);
           this.expeditions = [expedition, ...this.expeditions];
+          this.applyProjectDeliveryCompletion();
           this.selectExpedition(expedition);
           this.toast.success('Expedition creee avec succes');
         },
@@ -519,6 +550,11 @@ export class ProjetExpeditionComponent implements OnInit {
   }
 
   addLine(): void {
+    if (this.projectDeliveryComplete) {
+      this.toast.warning('Projet deja livre. Impossible d ajouter une ligne d expedition.');
+      return;
+    }
+
     if (!this.selectedExpedition?.id || this.addingLine || this.lineForm.invalid) {
       this.lineForm.markAllAsTouched();
       if (this.lineForm.invalid) {
@@ -694,6 +730,22 @@ export class ProjetExpeditionComponent implements OnInit {
     );
   }
 
+  canCreateExpedition(): boolean {
+    return !this.projectDeliveryComplete && this.remainingProjectQuantity > 0;
+  }
+
+  createExpeditionDisabledMessage(): string {
+    if (this.projectDeliveryComplete) {
+      return 'Projet deja livre. Aucune nouvelle expedition n est autorisee.';
+    }
+
+    if (this.remainingProjectQuantity <= 0) {
+      return 'Quantite projet deja atteinte. Impossible de creer une nouvelle expedition.';
+    }
+
+    return '';
+  }
+
   isEditable(): boolean {
     const status = this.selectedExpedition?.status;
     return status === ExpeditionStatus.DRAFT || status === ExpeditionStatus.READY;
@@ -746,6 +798,11 @@ export class ProjetExpeditionComponent implements OnInit {
     } else {
       this.expeditions = [updated, ...this.expeditions];
     }
+    this.applyProjectDeliveryCompletion();
+    this.buildCreateLines(this.projectOfs);
+    if (!this.canCreateExpedition()) {
+      this.showCreateForm = false;
+    }
     this.selectExpedition(updated);
   }
 
@@ -773,7 +830,7 @@ export class ProjetExpeditionComponent implements OnInit {
         ofId: [of.id],
         quantity: [quantity, [Validators.required, Validators.min(0)]],
         volume: [null as number | null],
-        lotNumber: [of.lotVracId || ''],
+        lotNumber: [this.defaultLotNumberForOf(of)],
         unit: [this.projectUnit()]
       }));
     });
@@ -823,6 +880,40 @@ export class ProjetExpeditionComponent implements OnInit {
 
   private projectUnit(): string {
     return this.project?.unite === 'LITRES' ? 'L' : 'UNIT';
+  }
+
+  private applyProjectDeliveryCompletion(): void {
+    if (!this.project || this.projectTargetQuantity <= 0 || this.deliveredProjectQuantity < this.projectTargetQuantity) {
+      return;
+    }
+
+    if (!this.isCompletedProjectStatus(this.project.statut)) {
+      this.project = {
+        ...this.project,
+        statut: 'VALIDE'
+      };
+    }
+  }
+
+  private isCompletedProjectStatus(status?: string | null): boolean {
+    const normalized = (status || '').trim().toUpperCase();
+    return normalized === 'VALIDE' || normalized === 'COMPLETED' || normalized === 'ACCEPTE';
+  }
+
+  private defaultLotNumberForOf(of: OrdreFabrication): string {
+    const raw =
+      (of as any).lotNumber ||
+      (of as any).lotVracNumber ||
+      (of as any).lotVracCode ||
+      (of as any).lotVracName ||
+      '';
+
+    const value = String(raw || '').trim();
+    return this.isUuidLike(value) ? '' : value;
+  }
+
+  private isUuidLike(value: string): boolean {
+    return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
   }
 
   private formatDate(date?: string): string {

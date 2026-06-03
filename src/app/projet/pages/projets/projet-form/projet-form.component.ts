@@ -63,7 +63,12 @@ export class ProjetFormComponent implements OnInit {
 
   get materialPreviewQuantity(): number {
     if (this.produits.length === 1) {
-      return Number(this.produits.at(0).get('quantiteCible')?.value || 0);
+      const productControl = this.produits.at(0);
+      const quantity = Number(productControl.get('quantiteCible')?.value || 0);
+      const productId = productControl.get('productId')?.value;
+      const sku = this.skus.find(s => s.id === productId);
+
+      return sku ? this.calculateBaseUnitCount(quantity, sku) : Math.ceil(quantity);
     }
     return Number(this.form.get('quantiteCible')?.value || 0);
   }
@@ -280,7 +285,7 @@ export class ProjetFormComponent implements OnInit {
         articleId: item.articleId, quantiteReservee: item.totalQuantity, statut: 'PRE-CALCULE'
       })),
 
-      statut: formValue.statut
+      statut: formValue.statut === 'FAILED' ? 'BROUILLON' : formValue.statut
     };
 
     const action = this.isEdit && this.projetId ? this.projetService.update(this.projetId, request) : this.projetService.create(request);
@@ -339,7 +344,7 @@ export class ProjetFormComponent implements OnInit {
       unite: ['LITRES', Validators.required],
       dateLimiteLivraison: ['', Validators.required],
       prixUnitaire: [null, [Validators.required, Validators.min(0.01)]],
-      conditionsLivraison: ['', [Validators.required, Validators.maxLength(2000)]],
+      conditionsLivraison: ['', [Validators.maxLength(2000)]],
       ligneIds: [[], Validators.required],
       statut: ['BROUILLON'],
       produits: this.fb.array([], [Validators.required, Validators.minLength(1)])

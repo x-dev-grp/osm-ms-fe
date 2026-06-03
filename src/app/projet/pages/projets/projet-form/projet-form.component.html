@@ -219,7 +219,8 @@
               <app-material-needs-preview
                 [bomId]="materialPreviewBomId"
                 [quantity]="materialPreviewQuantity"
-                [useReservedStock]="true"
+                [useReservedStock]="false"
+                quantityLabel="Unités à vérifier"
                 title="Vérification stock avant réservation">
               </app-material-needs-preview>
             </div>
@@ -311,12 +312,12 @@
             </div>
 
             <div class="field-block full-row">
-              <label>Conditions de livraison *</label>
+              <label>Conditions de livraison</label>
               <textarea formControlName="conditionsLivraison" rows="3" class="form-control"
                 [class.is-invalid]="isFieldInvalid('conditionsLivraison')"></textarea>
 
               <div class="invalid-feedback d-block" *ngIf="isFieldInvalid('conditionsLivraison')">
-                Les conditions de livraison sont obligatoires.
+                Les conditions de livraison ne doivent pas dépasser 2000 caractères.
               </div>
             </div>
           </div>

@@ -1,27 +1,12 @@
 <div class="of-list-page">
   <div class="list-header">
     <div class="header-left">
-      <h2 class="page-title">Ordres de conditionnement</h2>
+      <h2 class="page-title">Ordres de Fabrication</h2>
       <p class="page-subtitle">Suivez et gérez vos ordres de fabrication en temps réel</p>
     </div>
     <div class="header-actions">
-      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="search-code-field">
-        <mat-label>Code OF</mat-label>
-        <input
-          matInput
-          placeholder="Ex: C49D27"
-          [(ngModel)]="searchCode"
-          (keyup.enter)="searchByCode()"
-        />
-        <button mat-icon-button matSuffix (click)="searchByCode()" [disabled]="searching" aria-label="Rechercher OF">
-          <mat-icon>{{ searching ? 'hourglass_top' : 'search' }}</mat-icon>
-        </button>
-      </mat-form-field>
-      <button class="btn-action create" mat-flat-button color="primary" (click)="searchByCode()" [disabled]="searching">
-        {{ searching ? 'Recherche...' : 'Rechercher' }}
-      </button>
       <button class="btn-action create" mat-flat-button color="primary" routerLink="/of/nouveau">
-        <i class="fas fa-plus"></i> Nouvel OF
+        <i class="fas fa-plus"></i>
       </button>
     </div>
   </div>

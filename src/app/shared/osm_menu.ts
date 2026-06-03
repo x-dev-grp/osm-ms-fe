@@ -320,56 +320,7 @@ export const osm_menus: Navigation[] = [
             ressourcePermission: ProductionEntity.STORAGEUNIT
           }
         ]
-      },
-      {
-        id: 'collapse-production-analytics',
-        title: 'Rapports de production',
-        type: 'collapse',
-        icon: 'insights',
-        children: [
-          {
-            id: 'item-production-analytics-dashboard',
-            title: 'Vue Globale (OF)',
-            type: 'item',
-            url: '/analytics/dashboard',
-            icon: 'dashboard',
-            breadcrumbs: false
-          },
-          {
-            id: 'item-production-analytics-of-yield',
-            title: 'Rendements des OF',
-            type: 'item',
-            url: '/analytics/of-yield',
-            icon: 'speed',
-            breadcrumbs: false
-          },
-          {
-            id: 'item-production-analytics-quality',
-            title: 'Qualité & Non-conformités',
-            type: 'item',
-            url: '/analytics/quality',
-            icon: 'fact_check',
-            breadcrumbs: false
-          },
-          {
-            id: 'item-production-analytics-bom-gap',
-            title: 'Écarts Nomenclatures (BOM)',
-            type: 'item',
-            url: '/analytics/bom-gap',
-            icon: 'difference',
-            breadcrumbs: false
-          },
-          {
-            id: 'item-production-analytics-filtration',
-            title: 'Efficacité Filtrage',
-            type: 'item',
-            url: '/analytics/filtration',
-            icon: 'filter_alt',
-            breadcrumbs: false
-          }
-        ]
-      }
-    ]
+      }]
   },
   {
     id: 'group-conditioning',

@@ -39,8 +39,12 @@ export enum UniteMesure {
   KG = 'KG',
   LITRE = 'LITRE',
   UNITE = 'UNITE',
-  METRE = 'METRE',
-  TONNE = 'TONNE'
+  METRE = 'METRE'
+}
+
+export interface UniteMesureOption {
+  value: string;
+  label: string;
 }
 export interface Dimensions {
   length: number;

@@ -157,14 +157,15 @@ $border-color: #e2e8f0;
     }
   }
 
-  .op-id {
+  .operation-label {
     font-weight: 600;
     color: $primary;
-    font-family: monospace;
     font-size: 13px;
     background: #f1f5f9;
     padding: 4px 8px;
     border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
   }
   
   .volume-val {
@@ -216,6 +217,40 @@ $border-color: #e2e8f0;
     color: $text-muted;
     font-weight: 500;
     font-size: 15px;
+  }
+}
+
+.error-state {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 24px;
+  margin-top: 24px;
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  border-radius: 12px;
+  color: #9f1239;
+
+  .error-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #ffe4e6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+  }
+
+  h3 {
+    margin: 0 0 6px;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 0;
+    color: #881337;
   }
 }
 

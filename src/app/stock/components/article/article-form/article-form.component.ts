@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from '../../../services/article.service';
 import { FournisseurService } from '../../../services/fournisseur.service';
-import { Article, CategorieArticle, UniteMesure, ArticleConfig, categorieLabels } from '../../../models/article.model';
+import { Article, CategorieArticle, UniteMesure, UniteMesureOption, ArticleConfig, categorieLabels } from '../../../models/article.model';
 import { Fournisseur } from '../../../models/fournisseur.model';
 
 @Component({
@@ -17,11 +17,13 @@ import { Fournisseur } from '../../../models/fournisseur.model';
 export class ArticleFormComponent implements OnInit {
   articleForm: FormGroup;
   categories = Object.values(CategorieArticle);
-  unitesMesure = Object.values(UniteMesure);
+  allUnitesMesure: UniteMesureOption[] = this.getFallbackUnitesMesure();
+  unitesMesure: UniteMesureOption[] = [...this.allUnitesMesure];
   categorieLabels = categorieLabels;
   fournisseurs: Fournisseur[] = [];
   uniteArticles: Article[] = [];
   loadingUnites = false;
+  loadingUnitesMesure = false;
   colisArticles: Article[] = [];
   loadingColis = false;
 
@@ -29,6 +31,22 @@ export class ArticleFormComponent implements OnInit {
   articleId?: string;
   submitted = false;
   submitting = false;
+
+  private readonly defaultUniteByCategorie: Record<CategorieArticle, UniteMesure> = {
+    [CategorieArticle.UNITE]: UniteMesure.UNITE,
+    [CategorieArticle.COLIS]: UniteMesure.UNITE,
+    [CategorieArticle.PALETTE]: UniteMesure.UNITE,
+    [CategorieArticle.EMBALLAGE]: UniteMesure.UNITE,
+    [CategorieArticle.CONSOMMABLE]: UniteMesure.KG
+  };
+
+  private readonly unitesMesureByCategorie: Record<CategorieArticle, UniteMesure[]> = {
+    [CategorieArticle.UNITE]: [UniteMesure.UNITE],
+    [CategorieArticle.COLIS]: [UniteMesure.UNITE],
+    [CategorieArticle.PALETTE]: [UniteMesure.UNITE],
+    [CategorieArticle.EMBALLAGE]: [UniteMesure.UNITE, UniteMesure.METRE, UniteMesure.KG],
+    [CategorieArticle.CONSOMMABLE]: [UniteMesure.KG, UniteMesure.LITRE, UniteMesure.METRE, UniteMesure.UNITE]
+  };
 
   constructor(
     private fb: FormBuilder,
@@ -88,6 +106,7 @@ export class ArticleFormComponent implements OnInit {
     this.articleId = this.route.snapshot.params['id'];
     this.isEditMode = !!this.articleId;
     this.loadFournisseurs();
+    this.loadUnitesMesure();
     if (this.isEditMode) {
       this.loadArticle();
     }
@@ -113,6 +132,75 @@ export class ArticleFormComponent implements OnInit {
       },
       error: (error) => console.error('Erreur chargement fournisseurs:', error)
     });
+  }
+
+  loadUnitesMesure(): void {
+    this.loadingUnitesMesure = true;
+    this.articleService.getUnitesMesure().subscribe({
+      next: (unites) => {
+        this.allUnitesMesure = unites?.length ? unites : this.getFallbackUnitesMesure();
+        this.updateUnitesMesureForCategorie(this.articleForm.get('categorie')?.value, true);
+        this.ensureSelectedUniteMesureOption();
+        this.loadingUnitesMesure = false;
+      },
+      error: (error) => {
+        console.error('Erreur chargement unites de mesure:', error);
+        this.allUnitesMesure = this.getFallbackUnitesMesure();
+        this.updateUnitesMesureForCategorie(this.articleForm.get('categorie')?.value, true);
+        this.ensureSelectedUniteMesureOption();
+        this.loadingUnitesMesure = false;
+      }
+    });
+  }
+
+  private getFallbackUnitesMesure(): UniteMesureOption[] {
+    return Object.values(UniteMesure).map((value) => ({
+      value,
+      label: this.getUniteMesureLabel(value)
+    }));
+  }
+
+  private getUniteMesureLabel(value: string): string {
+    const labels: Record<string, string> = {
+      KG: 'Kilogramme (KG)',
+      LITRE: 'Litre',
+      UNITE: 'Unite',
+      METRE: 'Metre'
+    };
+
+    return labels[value] || value;
+  }
+
+  private ensureSelectedUniteMesureOption(): void {
+    const selectedUnite = this.articleForm.get('um')?.value;
+    if (!selectedUnite || this.unitesMesure.some((unite) => unite.value === selectedUnite)) {
+      return;
+    }
+
+    this.unitesMesure = [
+      { value: selectedUnite, label: this.getUniteMesureLabel(selectedUnite) },
+      ...this.unitesMesure
+    ];
+  }
+
+  private updateUnitesMesureForCategorie(cat: string, preserveCurrentUnit = false): void {
+    if (!Object.values(CategorieArticle).includes(cat as CategorieArticle)) {
+      this.unitesMesure = [...this.allUnitesMesure];
+      return;
+    }
+
+    const categorie = cat as CategorieArticle;
+    const allowedValues = this.unitesMesureByCategorie[categorie];
+    this.unitesMesure = this.allUnitesMesure.filter((unite) =>
+      allowedValues.includes(unite.value as UniteMesure)
+    );
+
+    const currentUnit = this.articleForm.get('um')?.value;
+    if (preserveCurrentUnit && currentUnit && allowedValues.includes(currentUnit as UniteMesure)) {
+      return;
+    }
+
+    this.articleForm.get('um')?.setValue(this.defaultUniteByCategorie[categorie], { emitEvent: false });
   }
 
   loadColisArticles(): void {
@@ -145,7 +233,9 @@ export class ArticleFormComponent implements OnInit {
     });
   }
 
-  handleCategoryChange(cat: string): void {
+  handleCategoryChange(cat: string, preserveCurrentUnit = false): void {
+    this.updateUnitesMesureForCategorie(cat, preserveCurrentUnit);
+
     // 1. Load related articles if needed
     if (cat === CategorieArticle.COLIS) {
       this.loadUniteArticles();
@@ -203,6 +293,46 @@ export class ArticleFormComponent implements OnInit {
     }
   }
 
+  private normalizeEmptySelectValue(value: unknown): string {
+    if (value === null || value === undefined || value === 'null') {
+      return '';
+    }
+
+    return String(value).trim();
+  }
+
+  private normalizeNumberValue(value: unknown): number {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+
+  private normalizeArticleFormValues(): void {
+    const categorie = this.articleForm.get('categorie')?.value;
+    const normalizedValues: Record<string, unknown> = {
+      nom: this.normalizeEmptySelectValue(this.articleForm.get('nom')?.value),
+      categorie: this.normalizeEmptySelectValue(categorie),
+      um: this.normalizeEmptySelectValue(this.articleForm.get('um')?.value),
+      fournisseur: this.normalizeEmptySelectValue(this.articleForm.get('fournisseur')?.value),
+      stockMinimum: this.normalizeNumberValue(this.articleForm.get('stockMinimum')?.value),
+      stockMaximum: this.normalizeNumberValue(this.articleForm.get('stockMaximum')?.value)
+    };
+
+    if (categorie === CategorieArticle.COLIS) {
+      Object.assign(normalizedValues, {
+        um: this.normalizeEmptySelectValue(this.articleForm.get('um')?.value) || UniteMesure.UNITE,
+        colisUnitArticleId: this.normalizeEmptySelectValue(this.articleForm.get('colisUnitArticleId')?.value),
+        colisUnitsPerColis: this.normalizeNumberValue(this.articleForm.get('colisUnitsPerColis')?.value),
+        colisLength: this.normalizeNumberValue(this.articleForm.get('colisLength')?.value),
+        colisWidth: this.normalizeNumberValue(this.articleForm.get('colisWidth')?.value),
+        colisHeight: this.normalizeNumberValue(this.articleForm.get('colisHeight')?.value),
+        colisMaxWeightKg: this.normalizeNumberValue(this.articleForm.get('colisMaxWeightKg')?.value)
+      });
+    }
+
+    this.articleForm.patchValue(normalizedValues, { emitEvent: false });
+    this.articleForm.updateValueAndValidity({ emitEvent: false });
+  }
+
   setupAutoCalculations(): void {
     // Colis: Auto-calculate Max Weight based on unit weight * units
     this.articleForm.get('colisUnitsPerColis')?.valueChanges.subscribe(units => {
@@ -238,14 +368,9 @@ export class ArticleFormComponent implements OnInit {
           stockMinimum: article.stockMinimum,
           stockMaximum: article.stockMaximum,
           actif: article.actif
-        });
-
-        if (article.categorie === CategorieArticle.COLIS) {
-          this.loadUniteArticles();
-        }
-        if (article.categorie === CategorieArticle.PALETTE) {
-          this.loadColisArticles();
-        }
+        }, { emitEvent: false });
+        this.handleCategoryChange(article.categorie, true);
+        this.ensureSelectedUniteMesureOption();
 
         const config = article.configuration;
         if (config) {
@@ -383,6 +508,8 @@ export class ArticleFormComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
+    this.normalizeArticleFormValues();
+
     if (this.articleForm.invalid) {
       alert("Le formulaire est invalide. Veuillez vérifier les champs obligatoires (en rouge).");
       this.articleForm.markAllAsTouched();
