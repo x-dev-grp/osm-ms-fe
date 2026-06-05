@@ -5,11 +5,23 @@
       <p class="text-muted">Aperçu général des stocks et alertes</p>
     </div>
     <div class="header-actions">
-      <button class="btn btn-outline-primary me-2" (click)="exportData()">
-        <i class="fas fa-download"></i> Exporter
+      <button
+        type="button"
+        class="header-btn header-btn-secondary"
+        (click)="exportData()"
+        [disabled]="loading || !stats"
+      >
+        <i class="fas fa-download"></i>
+        <span>Exporter</span>
       </button>
-      <button class="btn btn-warning" (click)="verifierSeuils()" [disabled]="loading">
-        <i class="fas fa-exclamation-triangle"></i> Vérifier les seuils
+      <button
+        type="button"
+        class="header-btn header-btn-warning"
+        (click)="verifierSeuils()"
+        [disabled]="loading || refreshingThresholds"
+      >
+        <i class="fas" [ngClass]="refreshingThresholds ? 'fa-spinner fa-spin' : 'fa-exclamation-triangle'"></i>
+        <span>{{ refreshingThresholds ? 'Vérification…' : 'Vérifier les seuils' }}</span>
       </button>
     </div>
   </div>
@@ -140,7 +152,7 @@
 
             <div class="movement-details">
               <div>
-                <strong>{{ movementArticleSku(mvt) }}</strong> — {{ movementArticleName(mvt) }}
+                <strong>{{ movementArticleLabel(mvt) }}</strong>
               </div>
               <small>{{ mvt.dateMouvement | date:'dd/MM/yyyy HH:mm' }}</small>
             </div>

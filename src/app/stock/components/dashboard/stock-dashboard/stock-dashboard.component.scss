@@ -74,6 +74,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 16px;
   margin-bottom: 24px;
 
   h1 {
@@ -88,7 +89,79 @@
   }
 }
 
-// Stats Grid comme dans le prototype
+.header-title {
+  min-width: 0;
+}
+
+.header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.header-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 10px 16px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease;
+
+  i {
+    font-size: 14px;
+  }
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(37, 99, 235, 0.24);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+}
+
+.header-btn-secondary {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #1e293b;
+
+  &:hover:not(:disabled) {
+    border-color: #94a3b8;
+    background: #f8fafc;
+  }
+}
+
+.header-btn-warning {
+  background: linear-gradient(135deg, #f59e0b, #f97316);
+  border-color: #ea580c;
+  color: #ffffff;
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, #f97316, #ea580c);
+  }
+}
+
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -99,12 +172,12 @@
     background: white;
     border-radius: 12px;
     padding: 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     transition: transform 0.2s;
 
     &:hover {
       transform: translateY(-4px);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     }
 
     &.warning {
@@ -177,7 +250,6 @@
   }
 }
 
-// Dashboard Grid
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -186,7 +258,7 @@
   .card {
     background: white;
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     overflow: hidden;
 
     .card-header {
@@ -257,7 +329,6 @@
   }
 }
 
-// Liste des articles critiques
 .critical-list {
   .critical-item {
     display: flex;
@@ -330,7 +401,6 @@
   }
 }
 
-// Liste des mouvements
 .movements-list {
   .movement-item {
     display: flex;
@@ -391,7 +461,6 @@
   }
 }
 
-// Liste des bons en attente
 .pending-list {
   .pending-item {
     padding: 16px 20px;
@@ -451,7 +520,6 @@
   }
 }
 
-// États vides
 .empty-list {
   padding: 40px 20px;
   text-align: center;
@@ -468,7 +536,6 @@
   }
 }
 
-// Loading
 .loading-container {
   text-align: center;
   padding: 60px;
@@ -489,10 +556,11 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-// Responsive
 @media (max-width: 1200px) {
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -517,11 +585,27 @@
     gap: 16px;
   }
 
+  .header-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .header-btn {
+    flex: 1 1 calc(50% - 6px);
+  }
+
   .stats-grid {
     grid-template-columns: 1fr;
   }
 
   .dashboard-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .header-btn {
+    flex-basis: 100%;
+    width: 100%;
   }
 }

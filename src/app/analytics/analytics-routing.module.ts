@@ -10,7 +10,7 @@ import { RapportQualiteComponent } from './components/Rapport-Qualite/Rapport-Qu
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'global-of',
+    redirectTo: 'dashboard',
     pathMatch: 'full'
   },
   {
@@ -19,7 +19,8 @@ const routes: Routes = [
   },
   {
     path: 'global-of',
-    component: RapportGlobalOFComponent
+    redirectTo: 'dashboard',
+    pathMatch: 'full'
   },
   {
     path: 'of-yield',
@@ -27,11 +28,13 @@ const routes: Routes = [
   },
   {
     path: 'rendement-of',
-    component: OfYieldReportComponent
+    redirectTo: 'of-yield',
+    pathMatch: 'full'
   },
   {
     path: 'bom',
-    component: RapportBomComponent
+    redirectTo: 'bom-gap',
+    pathMatch: 'full'
   },
   {
     path: 'bom-gap',
@@ -47,7 +50,8 @@ const routes: Routes = [
   },
   {
     path: 'qualite',
-    component: RapportQualiteComponent
+    redirectTo: 'quality',
+    pathMatch: 'full'
   }
 ];
 
