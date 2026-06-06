@@ -1,6 +1,5 @@
 <div class="article-container">
 
-  <!-- Header -->
   <div class="page-header">
     <div class="header-left">
       <div class="header-icon">
@@ -18,10 +17,8 @@
     </button>
   </div>
 
-  <!-- Filtres -->
   <div class="filters-card">
     <div class="filters-grid">
-
       <div class="filter-group search-group">
         <label>Recherche</label>
         <div class="input-with-icon">
@@ -29,10 +26,36 @@
           <input
             type="text"
             class="form-control"
-            placeholder="Nom..."
+            placeholder="Nom, code, code public..."
             [(ngModel)]="filters.nom"
             (input)="applyFilters()">
         </div>
+      </div>
+
+      <div class="filter-group code-search-group">
+        <label>Code public</label>
+        <div class="code-search-row">
+          <div class="input-with-icon">
+            <i class="fas fa-qrcode"></i>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Code hex QR, ex: A1B2C3"
+              [(ngModel)]="searchCode"
+              (input)="searchCodeError = null"
+              (keyup.enter)="searchByPublicCode()"
+              [disabled]="searchingByCode">
+          </div>
+          <button
+            class="btn-code-search"
+            type="button"
+            (click)="searchByPublicCode()"
+            [disabled]="searchingByCode || !searchCode.trim()">
+            <i class="fas" [ngClass]="searchingByCode ? 'fa-spinner fa-spin' : 'fa-arrow-up-right-from-square'"></i>
+            <span>Ouvrir</span>
+          </button>
+        </div>
+        <p *ngIf="searchCodeError" class="field-error">{{ searchCodeError }}</p>
       </div>
 
       <div class="filter-group">
@@ -66,7 +89,6 @@
           <span>Réinitialiser</span>
         </button>
       </div>
-
     </div>
   </div>
 
@@ -78,13 +100,11 @@
     </span>
   </div>
 
-  <!-- Loading -->
   <div *ngIf="loading" class="loading-state">
     <div class="spinner"></div>
     <p>Chargement des articles...</p>
   </div>
 
-  <!-- Table -->
   <div class="table-card" *ngIf="!loading">
     <div class="table-responsive">
       <table class="table">
@@ -133,7 +153,7 @@
           </td>
           <td class="stock-cell">
             <span class="stock-chip reserve" *ngIf="getArticleReserve(article.id) > 0">{{ getArticleReserve(article.id) }}</span>
-            <span class="text-muted" *ngIf="getArticleReserve(article.id) === 0">—</span>
+            <span class="text-muted" *ngIf="getArticleReserve(article.id) === 0">â€”</span>
           </td>
           <td>{{ article.stockMinimum }}</td>
           <td>{{ article.stockMaximum }}</td>

@@ -20,6 +20,9 @@ export class EmplacementListComponent implements OnInit {
   loading = false;
   error: string | null = null;
   searchTerm = '';
+  searchCode = '';
+  searchCodeError: string | null = null;
+  searchingByCode = false;
   typeFilter = '';
   zoneFilter = '';
   disponibiliteFilter = '';
@@ -148,6 +151,40 @@ export class EmplacementListComponent implements OnInit {
     this.zoneFilter = '';
     this.disponibiliteFilter = '';
     this.filterEmplacements();
+  }
+
+  searchByPublicCode(): void {
+    const code = this.searchCode.trim().toUpperCase();
+    if (!code || this.searchingByCode) {
+      return;
+    }
+
+    this.searchCode = code;
+    this.searchCodeError = null;
+    this.searchingByCode = true;
+
+    this.emplacementService.searchByCode(code).subscribe({
+      next: (response) => {
+        this.searchingByCode = false;
+        const targetRoute = this.resolveTargetRoute(response?.webRoute, response?.entityId);
+        if (targetRoute) {
+          this.router.navigateByUrl(targetRoute);
+          return;
+        }
+
+        this.searchCodeError = `Aucun emplacement trouvé pour le code ${code}`;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Erreur recherche code public', err);
+        this.searchingByCode = false;
+        this.searchCodeError =
+          err?.error?.error ||
+          err?.error ||
+          `Aucun emplacement trouvé pour le code ${code}`;
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   toActif(emplacement: EmplacementStock, event: Event): void {
@@ -286,5 +323,18 @@ export class EmplacementListComponent implements OnInit {
 
   trackByEmplacement(index: number, emplacement: EmplacementStock): string {
     return emplacement.id || `${emplacement.code}-${index}`;
+  }
+
+  private resolveTargetRoute(webRoute?: string, entityId?: string): string | null {
+    const route = webRoute?.trim();
+    if (route) {
+      return route.startsWith('/') ? route : `/${route}`;
+    }
+
+    if (entityId) {
+      return `/stock/emplacements/${entityId}`;
+    }
+
+    return null;
   }
 }

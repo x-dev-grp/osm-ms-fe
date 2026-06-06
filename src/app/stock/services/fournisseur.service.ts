@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Fournisseur, CategorieFournisseur } from '../models/fournisseur.model';
 import {environment} from "../../../environments/environment";
+import { QrCodeInfo, QrResolveResponse } from '../../shared/models/qr-models';
 
 
 @Injectable({
@@ -39,5 +40,19 @@ export class FournisseurService {
   }
   getActiveFournisseurs(): Observable<Fournisseur[]> {
     return this.http.get<Fournisseur[]>(`${this.apiUrl}/actifs`);
+  }
+
+  generateQr(fournisseurId: string): Observable<QrCodeInfo> {
+    return this.http.get<QrCodeInfo>(`${this.apiUrl}/qr/FOURNISSEUR/${fournisseurId}`);
+  }
+
+  searchByCode(code: string): Observable<QrResolveResponse> {
+    return this.http.get<QrResolveResponse>(`${this.apiUrl}/search/by-code`, {
+      params: { code }
+    });
+  }
+
+  resolveByPublicCode(publicCode: string): Observable<QrResolveResponse> {
+    return this.http.get<QrResolveResponse>(`${this.apiUrl}/resolve/${encodeURIComponent(publicCode)}`);
   }
 }

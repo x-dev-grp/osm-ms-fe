@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { GlobalCodeSearchResponse } from '../models/qr-models';
+import { GlobalCodeSearchResponse, QrResolveResponse } from '../models/qr-models';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +14,48 @@ export class GlobalSearchService {
   constructor(private http: HttpClient) {}
 
   searchByCode(code: string): Observable<GlobalCodeSearchResponse> {
-    return this.http.get<GlobalCodeSearchResponse>(`${this.baseUrl}/api/search/by-code`, {
-      params: { code }
-    });
+    const trimmed = code.trim();
+    const params = { code: trimmed };
+
+    const silent = <T>(source: Observable<T>): Observable<T | null> =>
+      source.pipe(catchError(() => of(null)));
+
+    const conditioning$ = silent(
+      this.http.get<GlobalCodeSearchResponse>(`${this.baseUrl}/api/search/by-code`, { params })
+    );
+
+    const article$ = silent(
+      this.http.get<QrResolveResponse>(`${this.baseUrl}/api/inventaire/articles/search/by-code`, { params })
+    );
+
+    return forkJoin({ conditioning: conditioning$, article: article$ }).pipe(
+      map(({ conditioning, article }) => {
+        const matches = new Map<string, QrResolveResponse>();
+
+        const add = (hit?: QrResolveResponse | null) => {
+          if (!hit?.entityId) {
+            return;
+          }
+          const key = `${hit.entityType ?? ''}|${hit.entityId}|${hit.publicCode ?? ''}`;
+          matches.set(key, hit);
+        };
+
+        if (conditioning?.results?.length) {
+          conditioning.results.forEach(add);
+        } else if (conditioning?.result) {
+          add(conditioning.result);
+        }
+
+        add(article);
+
+        const results = Array.from(matches.values());
+        return {
+          code: trimmed,
+          matchCount: results.length,
+          result: results[0],
+          results
+        };
+      })
+    );
   }
 }

@@ -1,14 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { take } from 'rxjs/operators';
 import { EmplacementStockService } from '../../../services/emplacement-stock.service';
 import { EmplacementStock, TypeEmplacement } from '../../../models/emplacement-stock.model';
 import {CategorieArticle} from "../../../models/article.model";
+import { QrDialogComponent } from '../../../../shared/components/qr-dialog/qr-dialog.component';
+import { ConfirmationDialogService, ConfirmationType } from '../../../../shared/services/confirmation-dialog.service';
+import { ToastService } from '../../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-emplacement-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, MatButtonModule, MatDialogModule, MatIconModule, MatTooltipModule],
   templateUrl: './emplacement-detail.component.html',
   styleUrls: ['./emplacement-detail.component.scss']
 })
@@ -16,6 +24,7 @@ export class EmplacementDetailComponent implements OnInit {
 
   emplacement: EmplacementStock | null = null;
   loading: boolean = true;
+  generatingQr = false;
   error: string = '';
   successMessage: string = '';
   actionEnCours = false;
@@ -23,7 +32,10 @@ export class EmplacementDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private emplacementService: EmplacementStockService
+    private emplacementService: EmplacementStockService,
+    private dialog: MatDialog,
+    private confirmationDialog: ConfirmationDialogService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -40,9 +52,9 @@ export class EmplacementDetailComponent implements OnInit {
     this.emplacementService.getEmplacementById(id).subscribe({
       next: (response: any) => {
         if (Array.isArray(response?.data)) {
-          this.emplacement = response.data[0] ?? null;
+          this.emplacement = this.normalizeQrFields(response.data[0] ?? null);
         } else {
-          this.emplacement = response?.data ?? null;
+          this.emplacement = this.normalizeQrFields(response?.data ?? null);
         }
         this.loading = false;
       },
@@ -51,6 +63,68 @@ export class EmplacementDetailComponent implements OnInit {
         this.error = "Impossible de charger l'emplacement";
         this.loading = false;
       }
+    });
+  }
+
+  getQrCodeText(): string {
+    return this.emplacement?.publicCode?.trim() || this.emplacement?.qrHex?.trim() || '';
+  }
+
+  hasQrCode(): boolean {
+    return !!this.getQrCodeText();
+  }
+
+  hasCompleteQrMetadata(): boolean {
+    return !!this.getQrCodeText() && !!this.emplacement?.qrImageBase64?.trim();
+  }
+
+  openExistingQrDialog(): void {
+    if (!this.hasCompleteQrMetadata() || !this.emplacement) return;
+
+    this.dialog.open(QrDialogComponent, {
+      width: '400px',
+      data: {
+        qrText: this.getQrCodeText(),
+        qrImageBase64: this.emplacement.qrImageBase64 || '',
+        encrypted: true,
+        payloadType: 'EMPLACEMENTSTOCK',
+        payloadMode: 'PUBLIC_CODE'
+      }
+    });
+  }
+
+  generateQr(): void {
+    if (this.generatingQr || !this.emplacement?.id) return;
+
+    this.confirmQrRegeneration((confirmed) => {
+      if (!confirmed) return;
+      this.generatingQr = true;
+      this.emplacementService.generateQr(this.emplacement!.id!).subscribe({
+        next: (response) => {
+          this.generatingQr = false;
+          this.emplacement = {
+            ...this.emplacement!,
+            publicCode: response.publicCode,
+            qrHex: response.publicCode,
+            qrUrl: response.qrUrl,
+            qrImageBase64: response.qrImageBase64
+          };
+          this.dialog.open(QrDialogComponent, {
+            width: '400px',
+            data: {
+              qrText: response.publicCode,
+              qrImageBase64: response.qrImageBase64,
+              encrypted: true,
+              payloadType: 'EMPLACEMENTSTOCK',
+              payloadMode: 'PUBLIC_CODE'
+            }
+          });
+        },
+        error: () => {
+          this.generatingQr = false;
+          this.toastService.error('QR.ERROR.GENERATE');
+        }
+      });
     });
   }
 
@@ -141,9 +215,9 @@ export class EmplacementDetailComponent implements OnInit {
       this.emplacementService.reserverEmplacement(this.emplacement.id, client).subscribe({
         next: (response: any) => {
           if (Array.isArray(response?.data)) {
-            this.emplacement = response.data[0] ?? null;
+            this.emplacement = this.normalizeQrFields(response.data[0] ?? null);
           } else {
-            this.emplacement = response?.data ?? null;
+            this.emplacement = this.normalizeQrFields(response?.data ?? null);
           }
           this.successMessage = 'Emplacement réservé avec succès';
           setTimeout(() => {
@@ -165,9 +239,9 @@ export class EmplacementDetailComponent implements OnInit {
       this.emplacementService.libererEmplacement(this.emplacement.id).subscribe({
         next: (response: any) => {
           if (Array.isArray(response?.data)) {
-            this.emplacement = response.data[0] ?? null;
+            this.emplacement = this.normalizeQrFields(response.data[0] ?? null);
           } else {
-            this.emplacement = response?.data ?? null;
+            this.emplacement = this.normalizeQrFields(response?.data ?? null);
           }
           this.successMessage = 'Emplacement libéré avec succès';
           setTimeout(() => {
@@ -181,6 +255,7 @@ export class EmplacementDetailComponent implements OnInit {
       });
     }
   }
+
   getCategorieLabel(categorie: CategorieArticle): string {
     const labels: Record<CategorieArticle, string> = {
       [CategorieArticle.EMBALLAGE]: 'Emballage',
@@ -190,5 +265,38 @@ export class EmplacementDetailComponent implements OnInit {
       [CategorieArticle.PALETTE]: 'Palette'
     };
     return labels[categorie] || categorie;
+  }
+
+  private normalizeQrFields(emplacement: EmplacementStock | null): EmplacementStock | null {
+    if (!emplacement) return null;
+    const normalized = { ...emplacement };
+    if (!normalized.publicCode && normalized.qrHex) {
+      normalized.publicCode = normalized.qrHex;
+    }
+    if (!normalized.qrHex && normalized.publicCode) {
+      normalized.qrHex = normalized.publicCode;
+    }
+    return normalized;
+  }
+
+  private confirmQrRegeneration(onResolved: (confirmed: boolean) => void): void {
+    if (!this.hasQrCode()) {
+      onResolved(true);
+      return;
+    }
+
+    this.confirmationDialog.confirm({
+      title: 'Regenerate QR Code',
+      message: 'This will regenerate the QR code and may invalidate already printed physical QR labels.',
+      type: ConfirmationType.WARNING,
+      confirmText: 'Regenerate',
+      cancelText: 'Cancel',
+      showIcon: true,
+      destructive: true,
+      requiredText: 'OKAY',
+      requiredTextHint: 'To continue, type OKAY in the field below.',
+      requiredTextPlaceholder: 'Type OKAY'
+    }).pipe(take(1))
+      .subscribe((result) => onResolved(!!result?.confirmed));
   }
 }

@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Article, CategorieArticle, UniteMesureOption } from '../models/article.model';
 import {environment} from "../../../environments/environment";
-import {QrCodeInfo} from "../../shared/models/qr-models";
+import {QrCodeInfo, QrResolveResponse} from "../../shared/models/qr-models";
 
 
 @Injectable({
@@ -52,5 +52,15 @@ export class ArticleService {
     return this.http.get<QrCodeInfo>(
       `${this.apiUrl}/qr/ARTICLE/${articleId}`
     );
+  }
+
+  searchByCode(code: string): Observable<QrResolveResponse> {
+    return this.http.get<QrResolveResponse>(`${this.apiUrl}/search/by-code`, {
+      params: { code }
+    });
+  }
+
+  resolveByPublicCode(publicCode: string): Observable<QrResolveResponse> {
+    return this.http.get<QrResolveResponse>(`${this.apiUrl}/resolve/${encodeURIComponent(publicCode)}`);
   }
 }

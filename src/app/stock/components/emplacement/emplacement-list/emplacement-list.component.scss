@@ -405,6 +405,13 @@ $shadow-sm: 0 10px 24px rgba(53, 63, 35, 0.05);
   min-width: 0;
 }
 
+.code-search-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  align-items: center;
+}
+
 .filter-select {
   appearance: none;
   padding-right: 2.6rem;
@@ -449,6 +456,17 @@ $shadow-sm: 0 10px 24px rgba(53, 63, 35, 0.05);
     background: #f3f6ed;
     color: $ink;
   }
+}
+
+.code-search-button {
+  min-width: 124px;
+}
+
+.field-error {
+  margin: 0.45rem 0 0;
+  color: #963b2b;
+  font-size: 0.78rem;
+  font-weight: 700;
 }
 
 .filter-actions {
@@ -960,6 +978,10 @@ $shadow-sm: 0 10px 24px rgba(53, 63, 35, 0.05);
 
   .hero-stats,
   .filters-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .code-search-row {
     grid-template-columns: 1fr;
   }
 

@@ -43,6 +43,20 @@
         </div>
 
         <div class="header-actions">
+          @if (hasCompleteQrMetadata()) {
+            <button class="btn-action" matTooltip="View QR" (click)="openExistingQrDialog()">
+              <i class="fas fa-qrcode"></i>
+              QR
+            </button>
+          }
+          <button class="btn-action" [disabled]="generatingQr" (click)="generateQr()">
+            <i class="fas fa-qrcode"></i>
+            {{ generatingQr ? 'Generation...' : 'Generer QR' }}
+          </button>
+          @if (hasCompleteQrMetadata()) {
+            <span class="fournisseur-code qr-code">{{ getQrCodeText() }}</span>
+          }
+
           <button
             class="btn-action btn-edit"
             [routerLink]="['/stock/fournisseurs', fournisseur.id, 'editer']">

@@ -106,6 +106,43 @@
           </div>
         </div>
 
+        <div class="filter-group span-2">
+          <label class="filter-label" for="emplacement-code-search">
+            <i class="fas fa-qrcode"></i>
+            Code public
+          </label>
+          <div class="code-search-row">
+            <div class="search-wrapper">
+              <i class="fas fa-qrcode search-icon"></i>
+              <input
+                id="emplacement-code-search"
+                type="text"
+                class="filter-input"
+                placeholder="Code hex QR, ex: A1B2C3"
+                [(ngModel)]="searchCode"
+                (input)="searchCodeError = null"
+                (keyup.enter)="searchByPublicCode()"
+                [disabled]="searchingByCode"
+              >
+              <button *ngIf="searchCode" class="clear-search" type="button" (click)="searchCode = ''; searchCodeError = null">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <button
+              class="hero-action ghost code-search-button"
+              type="button"
+              (click)="searchByPublicCode()"
+              [disabled]="searchingByCode || !searchCode.trim()"
+            >
+              <i class="fas" [ngClass]="searchingByCode ? 'fa-spinner fa-spin' : 'fa-arrow-up-right-from-square'"></i>
+              Ouvrir
+            </button>
+          </div>
+          @if (searchCodeError) {
+            <p class="field-error">{{ searchCodeError }}</p>
+          }
+        </div>
+
         <div class="filter-group">
           <label class="filter-label" for="emplacement-type">
             <i class="fas fa-tag"></i>

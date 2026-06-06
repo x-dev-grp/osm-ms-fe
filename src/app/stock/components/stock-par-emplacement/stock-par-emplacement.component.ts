@@ -78,7 +78,9 @@ export class StockParEmplacementComponent implements OnInit {
       const term = this.searchTerm.toLowerCase();
       filtered = filtered.filter(stock =>
         stock.article.nom.toLowerCase().includes(term) ||
-        (stock.article.code && stock.article.code.toLowerCase().includes(term))
+        (stock.article.code && stock.article.code.toLowerCase().includes(term)) ||
+        (stock.article.publicCode && stock.article.publicCode.toLowerCase().includes(term)) ||
+        (stock.article.qrHex && stock.article.qrHex.toLowerCase().includes(term))
       );
     }
 

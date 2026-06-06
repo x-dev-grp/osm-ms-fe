@@ -24,6 +24,10 @@ export interface Fournisseur {
   certifications?: string;
   dateDerniereCommande?: Date;
   createdDate?: string;
+  publicCode?: string;
+  qrHex?: string;
+  qrUrl?: string;
+  qrImageBase64?: string;
 }
 
 export enum Currency {

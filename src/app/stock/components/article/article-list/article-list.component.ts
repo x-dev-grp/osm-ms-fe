@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ArticleService } from '../../../services/article.service';
 import { StockService } from '../../../services/stock.service';
@@ -8,6 +8,7 @@ import { Article, CategorieArticle } from '../../../models/article.model';
 import { ArticleStockSummary } from '../../../models/article-stock-summary.model';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { QrResolveResponse } from '../../../../shared/models/qr-models';
 
 @Component({
   selector: 'app-article-list',
@@ -26,6 +27,9 @@ export class ArticleListComponent implements OnInit, OnDestroy {
   togglingId: string | null = null;
   activeDropdown: string | null = null;
   stockSummaryMap: Record<string, ArticleStockSummary> = {};
+  searchCode = '';
+  searchCodeError: string | null = null;
+  searchingByCode = false;
 
   filters = {
     nom: '',
@@ -35,7 +39,8 @@ export class ArticleListComponent implements OnInit, OnDestroy {
 
   constructor(
     private articleService: ArticleService,
-    private stockService: StockService
+    private stockService: StockService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -126,7 +131,13 @@ export class ArticleListComponent implements OnInit, OnDestroy {
       let match = true;
 
       if (this.filters.nom) {
-        match = match && article.nom.toLowerCase().includes(this.filters.nom.toLowerCase());
+        const term = this.filters.nom.toLowerCase();
+        match = match && (
+          article.nom.toLowerCase().includes(term) ||
+          Boolean(article.code?.toLowerCase().includes(term)) ||
+          Boolean(article.publicCode?.toLowerCase().includes(term)) ||
+          Boolean(article.qrHex?.toLowerCase().includes(term))
+        );
       }
       if (this.filters.categorie) {
         match = match && article.categorie === this.filters.categorie;
@@ -141,7 +152,43 @@ export class ArticleListComponent implements OnInit, OnDestroy {
 
   resetFilters(): void {
     this.filters = { nom: '', categorie: '', actif: '' };
+    this.searchCode = '';
+    this.searchCodeError = null;
     this.applyFilters();
+  }
+
+  searchByPublicCode(): void {
+    const code = this.searchCode.trim().toUpperCase();
+    if (!code || this.searchingByCode) {
+      return;
+    }
+
+    this.searchCode = code;
+    this.searchCodeError = null;
+    this.searchingByCode = true;
+
+    this.articleService.searchByCode(code)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.searchingByCode = false;
+          const targetRoute = this.resolveTargetRoute(response);
+          if (targetRoute) {
+            this.router.navigateByUrl(targetRoute);
+            return;
+          }
+
+          this.searchCodeError = `Aucun article trouvé pour le code ${code}`;
+        },
+        error: (err) => {
+          console.error('Erreur recherche code public', err);
+          this.searchingByCode = false;
+          this.searchCodeError =
+            err?.error?.error ||
+            err?.error ||
+            `Aucun article trouvé pour le code ${code}`;
+        }
+      });
   }
 
   toActif(article: Article, event: Event): void {
@@ -213,5 +260,18 @@ export class ArticleListComponent implements OnInit, OnDestroy {
   toggleDropdown(id: string | undefined, event: Event): void {
     event.stopPropagation();
     this.activeDropdown = this.activeDropdown === id ? null : id!;
+  }
+
+  private resolveTargetRoute(response: QrResolveResponse | null | undefined): string | null {
+    const route = response?.webRoute?.trim();
+    if (route) {
+      return route.startsWith('/') ? route : `/${route}`;
+    }
+
+    if (response?.entityId) {
+      return `/stock/articles/${response.entityId}`;
+    }
+
+    return null;
   }
 }

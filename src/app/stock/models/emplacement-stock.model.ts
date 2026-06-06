@@ -17,6 +17,10 @@ export interface EmplacementStock {
   notes?: string;
   actif: boolean;
   createdDate?: string;
+  publicCode?: string;
+  qrHex?: string;
+  qrUrl?: string;
+  qrImageBase64?: string;
   categorieArticleStocke?: CategorieArticle;
 }
 

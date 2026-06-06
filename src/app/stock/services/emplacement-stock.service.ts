@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { EmplacementStock, TypeEmplacement } from '../models/emplacement-stock.model';
 import { environment } from 'src/environments/environment';
 import { ApiResponse } from 'src/app/shared/models/api-response';
+import { QrCodeInfo, QrResolveResponse } from 'src/app/shared/models/qr-models';
 
 @Injectable({
   providedIn: 'root'
@@ -52,5 +53,19 @@ export class EmplacementStockService {
   }
   desactiverEmplacement(id: string): Observable<EmplacementStock> {
     return this.http.put<EmplacementStock>(`${this.apiUrl}/${id}/desactiver`, {});
+  }
+
+  searchByCode(code: string): Observable<QrResolveResponse> {
+    return this.http.get<QrResolveResponse>(`${this.apiUrl}/search/by-code`, {
+      params: { code }
+    });
+  }
+
+  generateQr(emplacementId: string): Observable<QrCodeInfo> {
+    return this.http.get<QrCodeInfo>(`${this.apiUrl}/qr/EMPLACEMENTSTOCK/${emplacementId}`);
+  }
+
+  resolveByPublicCode(publicCode: string): Observable<QrResolveResponse> {
+    return this.http.get<QrResolveResponse>(`${this.apiUrl}/resolve/${encodeURIComponent(publicCode)}`);
   }
 }

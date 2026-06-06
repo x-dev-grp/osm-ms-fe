@@ -12,8 +12,9 @@ export interface Article {
   actif: boolean;
   um: UniteMesure;
   lastModifiedDate?: string;
-   createdDate?: string;
+  createdDate?: string;
   publicCode?: string;
+  qrHex?: string;
   qrUrl?: string;
   qrImageBase64?: string;
   configuration?: ArticleConfig;
