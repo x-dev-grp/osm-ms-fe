@@ -27,6 +27,10 @@ export interface Product {
   actif?: boolean;
   labelId?: string;
   createdDate?: string;
+  publicCode?: string;
+  qrHex?: string;
+  qrUrl?: string;
+  qrImageBase64?: string;
 }
 
 export type SKU = Product;

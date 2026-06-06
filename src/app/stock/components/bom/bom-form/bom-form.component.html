@@ -39,8 +39,8 @@
           </div>
         </div>
 
-        <div class="form-grid">
-          <div class="form-group span-2">
+        <div class="form-grid" [class.has-version]="isEditMode && bom?.version">
+          <div class="form-group" [class.span-2]="!(isEditMode && bom?.version)">
             <label for="productId">Produit fini <span class="req">*</span></label>
 
             <select id="productId" class="form-control" formControlName="productId">
@@ -56,26 +56,27 @@
           </div>
 
           <div class="form-group version-field" *ngIf="isEditMode && bom?.version">
-            <label>Version</label>
-            <input class="form-control readonly" [value]="bom!.version" readonly />
+            <label for="bomVersion">Version</label>
+            <input id="bomVersion" class="form-control readonly" [value]="bom!.version" readonly />
           </div>
 
           <div class="form-group span-2">
             <div class="toggle-card" [class.on]="bomForm.get('active')?.value">
-              <label class="toggle-label">
-                <input type="checkbox" formControlName="active" class="toggle-input" />
+              <div class="toggle-row">
+                <label class="switch-wrap" for="bom-active-toggle">
+                  <input
+                    id="bom-active-toggle"
+                    type="checkbox"
+                    formControlName="active"
+                    class="switch-input" />
+                  <span class="switch-slider" aria-hidden="true"></span>
+                </label>
 
-                <span class="toggle-track"></span>
-
-                <span class="toggle-text">
+                <div class="toggle-copy">
                   <strong>Nomenclature active</strong>
                   <small>Utilisée par défaut pour les OF et projets sur ce produit</small>
-                </span>
-
-                <span class="toggle-decoration">
-                  <i class="fas fa-leaf"></i>
-                </span>
-              </label>
+                </div>
+              </div>
             </div>
           </div>
         </div>

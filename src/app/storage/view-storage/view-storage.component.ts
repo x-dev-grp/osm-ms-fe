@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { SharedModule } from '../../shared/shared.module';
@@ -28,6 +29,7 @@ import { take } from 'rxjs/operators';
     TranslateModule,
     MatIconModule,
     MatProgressBarModule,
+    MatTooltipModule,
     SharedModule,
     TranslateModule,
     OsmDashboard
@@ -37,6 +39,7 @@ import { take } from 'rxjs/operators';
 })
 export class ViewStorageComponent implements OnInit {
   loading = false;
+  generatingQr = false;
   storageUnit: StorageUnitDto | null = null;
   dashboardConfig: DashboardConfig;
   private storageUnitId: string | null;
@@ -193,10 +196,10 @@ export class ViewStorageComponent implements OnInit {
   private executeQrGeneration(encrypted: boolean): void {
     if (!this.storageUnitId) return;
 
-    this.loading = true;
+    this.generatingQr = true;
     this.storageService.generateQrCode(this.storageUnitId).subscribe({
       next: (response) => {
-        this.loading = false;
+        this.generatingQr = false;
 
         if (this.storageUnit) {
           this.storageUnit = {
@@ -220,7 +223,7 @@ export class ViewStorageComponent implements OnInit {
         });
       },
       error: (error) => {
-        this.loading = false;
+        this.generatingQr = false;
         console.error('Error generating QR:', error);
         this.toastService.error('QR.ERROR.GENERATE');
       }

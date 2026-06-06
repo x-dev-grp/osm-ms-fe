@@ -10,6 +10,10 @@ export interface BonCommande {
   lignes: LigneBonCommande[];
   createdDate?: string;
   fournisseurNom?: string;
+  publicCode?: string;
+  qrHex?: string;
+  qrUrl?: string;
+  qrImageBase64?: string;
 }
 
 export enum StatutBonCommande {

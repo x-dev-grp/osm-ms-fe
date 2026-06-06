@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { BonCommande, StatutBonCommande } from '../models/bon-commande.model';
 import {environment} from "../../../environments/environment";
 import {ApiResponse} from "../../shared/models/api-response";
+import { QrCodeInfo, QrResolveResponse } from '../../shared/models/qr-models';
 
 @Injectable({
   providedIn: 'root'
@@ -34,5 +35,17 @@ export class BonCommandeService {
 
   receptionnerCommande(id: string, lignes: { id: string; quantiteRecue: number }[]): Observable<ApiResponse<BonCommande>> {
     return this.http.post<ApiResponse<BonCommande>>(`${this.apiUrl}/${id}/receptionner`, lignes);
+  }
+
+  generateQr(bonCommandeId: string): Observable<QrCodeInfo> {
+    return this.http.get<QrCodeInfo>(`${this.apiUrl}/qr/BONCOMMANDE/${bonCommandeId}`);
+  }
+
+  searchByCode(code: string): Observable<QrResolveResponse> {
+    return this.http.get<QrResolveResponse>(`${this.apiUrl}/search/by-code`, { params: { code } });
+  }
+
+  resolveByPublicCode(publicCode: string): Observable<QrResolveResponse> {
+    return this.http.get<QrResolveResponse>(`${this.apiUrl}/resolve/${encodeURIComponent(publicCode)}`);
   }
 }

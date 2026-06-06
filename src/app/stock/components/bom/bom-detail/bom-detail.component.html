@@ -30,6 +30,19 @@
     </div>
 
     <div class="header-actions" *ngIf="bom">
+      @if (hasCompleteQrMetadata()) {
+        <button class="btn-action" matTooltip="View QR" (click)="openExistingQrDialog()">
+          <i class="fas fa-qrcode"></i>
+          QR
+        </button>
+      }
+      <button class="btn-action" [disabled]="generatingQr" (click)="generateQr()">
+        <i class="fas fa-qrcode"></i>
+        {{ generatingQr ? 'Generation...' : 'Generer QR' }}
+      </button>
+      @if (hasCompleteQrMetadata()) {
+        <span class="qr-code-badge">{{ getQrCodeText() }}</span>
+      }
       <button
         class="btn-action activate"
         type="button"

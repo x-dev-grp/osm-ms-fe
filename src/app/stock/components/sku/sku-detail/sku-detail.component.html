@@ -172,6 +172,60 @@
           </div>
         </article>
 
+        <article class="info-card qr-card">
+          <div class="card-header">
+            <div class="header-icon-wrapper">
+              <i class="fas fa-qrcode"></i>
+            </div>
+            <h3>QR Code</h3>
+            <span class="header-decoration"></span>
+          </div>
+
+          <div class="card-body qr-card-body">
+            @if (sku.publicCode) {
+              <div class="qr-container">
+                @if (sku.qrImageBase64) {
+                  <img
+                    [src]="'data:image/png;base64,' + sku.qrImageBase64"
+                    alt="QR Code"
+                  />
+                } @else {
+                  <p class="qr-status">Le code public existe, mais l'image QR doit etre regeneree.</p>
+                }
+
+                <p class="public-code">
+                  Code manuel :
+                  <strong>{{ sku.publicCode }}</strong>
+                </p>
+
+                @if (sku.qrUrl) {
+                  <p class="qr-url">{{ sku.qrUrl }}</p>
+                }
+
+                <div class="qr-buttons">
+                  <button class="btn-qr" (click)="generateQr()" [disabled]="generatingQr">
+                    <i class="fas fa-download"></i>
+                    {{ generatingQr ? 'Generation...' : (sku.qrImageBase64 ? 'Regenerer le QR Code' : 'Generer l\'image QR') }}
+                  </button>
+
+                  @if (sku.qrImageBase64) {
+                    <button class="btn-qr btn-qr-print" (click)="printQr()">
+                      <i class="fas fa-print"></i>
+                      Imprimer
+                    </button>
+                  }
+                </div>
+              </div>
+            } @else {
+              <p class="qr-status">Pas encore de QR code pour ce produit.</p>
+              <button class="btn-qr" (click)="generateQr()" [disabled]="generatingQr">
+                <i class="fas fa-qrcode"></i>
+                {{ generatingQr ? 'Generation...' : 'Generer QR Code' }}
+              </button>
+            }
+          </div>
+        </article>
+
         @if (!isVrac()) {
           <article class="info-card">
             <div class="card-header">

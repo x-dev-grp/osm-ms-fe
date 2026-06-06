@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import {Bom} from "../models/Bom";
 import {MaterialNeedLine} from "../../shared/models/material-need-line.model";
 import {environment} from "../../../environments/environment";
+import { QrCodeInfo, QrResolveResponse } from '../../shared/models/qr-models';
 
 
 @Injectable({ providedIn: 'root' })
@@ -53,5 +54,17 @@ export class BomService {
     return this.http.get<MaterialNeedLine[]>(`${this.apiUrl}/${bomId}/material-needs`, {
       params: { quantity: String(quantity) }
     });
+  }
+
+  generateQr(bomId: string): Observable<QrCodeInfo> {
+    return this.http.get<QrCodeInfo>(`${this.apiUrl}/qr/BOM/${bomId}`);
+  }
+
+  searchByCode(code: string): Observable<QrResolveResponse> {
+    return this.http.get<QrResolveResponse>(`${this.apiUrl}/search/by-code`, { params: { code } });
+  }
+
+  resolveByPublicCode(publicCode: string): Observable<QrResolveResponse> {
+    return this.http.get<QrResolveResponse>(`${this.apiUrl}/resolve/${encodeURIComponent(publicCode)}`);
   }
 }

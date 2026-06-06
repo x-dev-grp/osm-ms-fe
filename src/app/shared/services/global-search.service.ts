@@ -28,8 +28,46 @@ export class GlobalSearchService {
       this.http.get<QrResolveResponse>(`${this.baseUrl}/api/inventaire/articles/search/by-code`, { params })
     );
 
-    return forkJoin({ conditioning: conditioning$, article: article$ }).pipe(
-      map(({ conditioning, article }) => {
+    const produitFinal$ = silent(
+      this.http.get<QrResolveResponse>(`${this.baseUrl}/api/inventaire/products/search/by-code`, { params })
+    );
+
+    const emplacement$ = silent(
+      this.http.get<QrResolveResponse>(`${this.baseUrl}/api/inventaire/emplacements/search/by-code`, { params })
+    );
+
+    const fournisseur$ = silent(
+      this.http.get<QrResolveResponse>(`${this.baseUrl}/api/inventaire/fournisseurs/search/by-code`, { params })
+    );
+
+    const storageUnit$ = silent(
+      this.http.get<QrResolveResponse>(`${this.baseUrl}/api/production/storage-units/search/by-code`, { params })
+    );
+
+    const bonCommande$ = silent(
+      this.http.get<QrResolveResponse>(`${this.baseUrl}/api/inventaire/bons-commande/search/by-code`, { params })
+    );
+
+    const ligneConditionnement$ = silent(
+      this.http.get<QrResolveResponse>(`${this.baseUrl}/api/inventaire/lignes/search/by-code`, { params })
+    );
+
+    const bom$ = silent(
+      this.http.get<QrResolveResponse>(`${this.baseUrl}/api/inventaire/boms/search/by-code`, { params })
+    );
+
+    return forkJoin({
+      conditioning: conditioning$,
+      article: article$,
+      produitFinal: produitFinal$,
+      emplacement: emplacement$,
+      fournisseur: fournisseur$,
+      storageUnit: storageUnit$,
+      bonCommande: bonCommande$,
+      ligneConditionnement: ligneConditionnement$,
+      bom: bom$
+    }).pipe(
+      map(({ conditioning, article, produitFinal, emplacement, fournisseur, storageUnit, bonCommande, ligneConditionnement, bom }) => {
         const matches = new Map<string, QrResolveResponse>();
 
         const add = (hit?: QrResolveResponse | null) => {
@@ -47,6 +85,13 @@ export class GlobalSearchService {
         }
 
         add(article);
+        add(produitFinal);
+        add(emplacement);
+        add(fournisseur);
+        add(storageUnit);
+        add(bonCommande);
+        add(ligneConditionnement);
+        add(bom);
 
         const results = Array.from(matches.values());
         return {

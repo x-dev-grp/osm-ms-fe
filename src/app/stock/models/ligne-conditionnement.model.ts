@@ -14,6 +14,10 @@ export interface LigneConditionnement {
   lastModifiedDate: string;
   createdDate: string;
   actif?: boolean;
+  publicCode?: string;
+  qrHex?: string;
+  qrUrl?: string;
+  qrImageBase64?: string;
 
 }
 

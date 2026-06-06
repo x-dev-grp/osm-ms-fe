@@ -13,6 +13,18 @@
         <h2 class="d-inline-block ms-2">Bon de commande {{ bon.numeroBC }}</h2>
       </div>
       <div class="btn-group">
+        @if (hasCompleteQrMetadata()) {
+          <button class="btn btn-outline-primary" matTooltip="View QR" (click)="openExistingQrDialog()">
+            <i class="fas fa-qrcode"></i> QR
+          </button>
+        }
+        <button class="btn btn-outline-primary" [disabled]="generatingQr" (click)="generateQr()">
+          <i class="fas fa-qrcode"></i>
+          {{ generatingQr ? 'Generation...' : 'Generer QR' }}
+        </button>
+        @if (hasCompleteQrMetadata()) {
+          <span class="badge bg-light text-dark border ms-2 qr-code-badge">{{ getQrCodeText() }}</span>
+        }
         <button *ngIf="bon.status === 'EN_ATTENTE'" class="btn btn-success" (click)="validerBon()">
           <i class="fas fa-check"></i> Valider
         </button>

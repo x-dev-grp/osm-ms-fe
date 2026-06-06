@@ -10,4 +10,8 @@ export interface Bom {
   active?: boolean;
   lines: BomLine[];
   createdDate?: string;
+  publicCode?: string;
+  qrHex?: string;
+  qrUrl?: string;
+  qrImageBase64?: string;
 }
