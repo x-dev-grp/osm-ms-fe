@@ -1,0 +1,72 @@
+/* assign-supplier.component.scss */
+
+:host {
+  display: block;
+  max-width: 400px;    /* cap overall dialog width */
+  margin: 0 auto;      /* center if needed */
+}
+
+/* Style the div that holds your form controls */
+:host > div[formGroup] {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;            /* space between checkbox & dropdown */
+}
+
+/* Tweak the checkbox */
+:host mat-checkbox {
+  align-self: flex-start;
+  margin-bottom: 8px;
+}
+
+/* Make your supplierList full-width */
+:host supplierList {
+  width: 100%;
+  min-height: 48px;     /* give it a tappable area */
+}
+
+/* Style the action buttons container */
+:host mat-dialog-actions {
+  padding: 16px 24px;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+  display: flex;
+  justify-content: flex-end;
+
+  /* Space the two buttons */
+  button + button {
+    margin-left: 12px;
+  }
+}
+
+/* Paid storage message styling */
+.paid-storage-message {
+  background-color: #e3f2fd;
+  border: 1px solid #2196f3;
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+
+  .info-icon {
+    color: #2196f3;
+    flex-shrink: 0;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: #333;
+
+    &:first-of-type {
+      font-weight: 500;
+    }
+
+    &:last-of-type {
+      margin-top: 4px;
+      font-style: italic;
+    }
+  }
+}

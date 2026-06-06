@@ -1,0 +1,175 @@
+<div class="of-production-page" *ngIf="of">
+  <div class="detail-header">
+    <button class="btn-back-floating" routerLink="/of">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <div>
+      <h2 class="page-title">Production OF {{ of.code }}</h2>
+      <p class="page-subtitle">{{ of.productName || of.skuCode || of.productId || of.skuId }} - Statut: {{ of.statut }}</p>
+    </div>
+    <div class="header-actions">
+      <button *ngIf="canStart()" class="btn-action start" [disabled]="!canStartNow()" (click)="start()">
+        <i class="fas fa-play"></i> Demarrer
+      </button>
+      <button *ngIf="canPause()" class="btn-action pause" (click)="pause()">
+        <i class="fas fa-pause"></i> Pause
+      </button>
+      <button *ngIf="canResume()" class="btn-action resume" (click)="resume()">
+        <i class="fas fa-play-circle"></i> Reprendre
+      </button>
+      <button *ngIf="canClose()" class="btn-action close" (click)="close()">
+        <i class="fas fa-check-circle"></i> Cloturer
+      </button>
+    </div>
+  </div>
+
+  <div class="stats-banner" *ngIf="of.statut === 'EN_COURS'">
+    <div class="stat-item">
+      <i class="fas fa-hourglass-half"></i>
+      Temps ecoule : <strong>{{ TimeFormatted }}</strong>
+    </div>
+    <div class="stat-item">
+      <i class="fas fa-check-circle"></i>
+      Bons : <strong>{{ of.quantiteBonne }}</strong>
+    </div>
+    <div class="stat-item">
+      <i class="fas fa-times-circle"></i>
+      NC : <strong>{{ of.quantiteNC }}</strong>
+    </div>
+  </div>
+
+  <div class="flow-banner" *ngIf="isEditable()">
+    <div class="flow-banner-icon">
+      <i class="fas fa-boxes-stacked"></i>
+    </div>
+    <div class="flow-banner-copy">
+      <strong>Flux stock en cours de production</strong>
+      <p>{{ stockAdjustmentHint() }}</p>
+      <span class="flow-banner-chip">Verification au demarrage: {{ stockCheckLabel() }}</span>
+      <span class="flow-banner-chip">Deduction a la cloture: {{ stockCloseLabel() }}</span>
+    </div>
+  </div>
+
+  <div class="card-box stock-check-card" *ngIf="canStart()">
+    <div class="stock-check-head">
+      <h5>Verification stock avant demarrage</h5>
+      <button class="btn-refresh-stock" (click)="refreshStockCheck()" [disabled]="checkingStock">
+        <i class="fas fa-rotate"></i> {{ checkingStock ? 'Verification...' : 'Actualiser' }}
+      </button>
+    </div>
+
+    <p class="stock-check-caption">
+      Le demarrage est autorise uniquement si chaque article couvre la quantite theorique avec {{ stockCheckLabel() }}.
+    </p>
+
+    <div class="stock-check-error" *ngIf="stockIssueMessage">
+      <i class="fas fa-triangle-exclamation"></i>
+      <span>{{ stockIssueMessage }}</span>
+    </div>
+
+    <table class="data-table stock-check-table" *ngIf="stockRows.length > 0">
+      <thead>
+      <tr>
+        <th>Article</th>
+        <th>Besoin</th>
+        <th>{{ stockQuantityHeader() }}</th>
+        <th>Source</th>
+        <th>Resultat</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let row of stockRows" [ngClass]="{'row-ok': row.status === 'OK', 'row-ko': row.status !== 'OK'}">
+        <td data-label="Article">{{ row.articleName }}</td>
+        <td data-label="Besoin">{{ row.required }}</td>
+        <td [attr.data-label]="stockQuantityHeader()">{{ row.available }}</td>
+        <td data-label="Source">
+          <span>{{ row.sourceLabel }}</span>
+        </td>
+        <td data-label="Resultat">
+          <span class="stock-status ok" *ngIf="row.status === 'OK'">OK</span>
+          <span class="stock-status warn" *ngIf="row.status === 'INSUFFICIENT'">Insuffisant</span>
+          <span class="stock-status danger" *ngIf="row.status === 'MISSING'">Manquant</span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card-box production-card" *ngIf="isEditable()">
+    <h5>Saisie de production</h5>
+    <div class="production-form">
+      <div class="form-group">
+        <label>Bons</label>
+        <input type="number" [(ngModel)]="newBons" class="form-control" min="0">
+      </div>
+      <div class="form-group">
+        <label>Non-conformes</label>
+        <input type="number" [(ngModel)]="newNC" class="form-control" min="0">
+      </div>
+      <div class="form-group" *ngIf="newNC > 0">
+        <label>Motif NC <span style="color: red;">*</span></label>
+        <input type="text" [(ngModel)]="motifNC" class="form-control" placeholder="Motif obligatoire">
+      </div>
+      <button class="btn-save" (click)="recordProduction()">
+        <i class="fas fa-save"></i> Enregistrer
+      </button>
+    </div>
+  </div>
+
+  <div class="card-box lines-card">
+    <h5>Composants consommes</h5>
+    <p class="lines-caption" *ngIf="isEditable()">
+      La quantite reelle enregistree ici prepare la consommation finale. Aucun mouvement de stock n'est lance avant la cloture de l'OF.
+    </p>
+    <table class="data-table">
+      <thead>
+      <tr>
+        <th>Article</th>
+        <th>Quantite theorique</th>
+        <th>Quantite reelle</th>
+        <th>Motif</th>
+        <th>Action</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let line of of.lignes">
+        <td data-label="Article">{{ line.articleNom || line.articleId }}</td>
+        <td data-label="Theorique">{{ line.quantiteTheorique }}</td>
+        <td data-label="Reelle">
+          <input type="number" [(ngModel)]="line.quantiteReelle" class="form-control-sm" *ngIf="isEditable()">
+          <span *ngIf="!isEditable()">{{ line.quantiteReelle || '-' }}</span>
+        </td>
+        <td data-label="Motif">
+          <input type="text" [(ngModel)]="line.motifAjustement" class="form-control-sm" *ngIf="isEditable()">
+          <span *ngIf="!isEditable()">{{ line.motifAjustement || '-' }}</span>
+        </td>
+        <td data-label="Action">
+          <button *ngIf="isEditable()" class="btn-icon save" (click)="saveAdjustment(line)">
+            <i class="fas fa-save"></i>
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card-box quality-card">
+    <h5>Controle qualite</h5>
+    <div class="quality-actions">
+      <button class="btn-quality" (click)="goToQualityControl()">
+        <i class="fas fa-clipboard-list"></i> Voir points de controle
+      </button>
+      <button class="btn-quality" (click)="goToQualityEntry()">
+        <i class="fas fa-pen-alt"></i> Saisir controle
+      </button>
+      <button class="btn-quality" (click)="goToQualityHistory()">
+        <i class="fas fa-history"></i> Historique qualite
+      </button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="loading" class="loading-container">
+  <div class="spinner-border"></div>
+  <p>Chargement...</p>
+</div>

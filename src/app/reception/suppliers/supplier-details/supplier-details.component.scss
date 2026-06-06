@@ -1,0 +1,138 @@
+/* layout */
+.history-cards-container {
+  margin: 6px 0 8px;
+}
+
+.history-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 8px;
+}
+
+/* card */
+.history-card {
+  --radius: 12px;
+  --pad: 9px;
+  --shadow: 0 2px 8px rgba(0,0,0,.04);
+
+  border-radius: var(--radius);
+  padding: var(--pad);
+  min-height: 96px; /* ↓ from 120 */
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.05);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, background-color .12s ease;
+}
+
+.history-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0,0,0,.06);
+}
+
+/* ✅ persistent highlight for the selected card */
+.history-card.active {
+  border-color: var(--mat-primary-500, #1976d2);
+  background: color-mix(in srgb, var(--mat-primary-50, #e3f2fd) 38%, #fff);
+  box-shadow: 0 0 0 2px rgba(25,118,210,.16), 0 6px 18px rgba(25,118,210,.08);
+}
+
+/* make sure Material's host styles don't override our active border */
+.history-card.active.mdc-card {
+  border-color: var(--mat-primary-500, #1976d2) !important;
+}
+
+.history-card .mat-mdc-card-content {
+  padding: 0 !important;
+}
+
+.history-card .card-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px; /* ↓ from 10px */
+}
+
+.history-card .card-header .card-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+}
+
+.history-card .card-header .card-title {
+  font-size: 13px;         /* ↓ from 14px */
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.15;
+  letter-spacing: .15px;
+  color: rgba(0,0,0,.82);
+}
+
+.history-card .card-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 6px;             /* ↓ tighter */
+}
+
+.history-card .card-stats .stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;                 /* ↓ tighter */
+}
+
+.history-card .card-stats .stat-item .stat-label {
+  font-size: 10.5px;        /* ↓ from 11.5px */
+  color: rgba(0,0,0,.5);
+  line-height: 1.1;
+}
+
+.history-card .card-stats .stat-item .stat-value {
+  font-size: 14.5px;        /* ↓ from 16px */
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.history-card .card-stats .stat-item .stat-value.amount {
+  font-size: 13.5px;
+}
+
+.history-card .card-stats .stat-item .stat-value.primary {
+  color: var(--mat-primary-600, #1e88e5);
+}
+.history-card .card-stats .stat-item .stat-value.accent {
+  color: var(--mat-accent-600,  #7c4dff);
+}
+.history-card .card-stats .stat-item .stat-value.warn {
+  color: var(--mat-warn-600,    #d32f2f);
+}
+
+/* table spacing */
+.table-section {
+  margin-top: 6px;
+}
+
+/* small screens */
+@media (max-width: 599px) {
+  .history-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .history-card {
+    min-height: 92px;
+    --pad: 8px;
+  }
+  .history-card .card-header {
+    gap: 5px;
+  }
+  .history-card .card-header .card-title {
+    font-size: 12.5px;
+  }
+}
+
+/* keyboard focus ring (in addition to active state) */
+.history-card:focus {
+  outline: 2px solid var(--mat-primary-500, #1976d2);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px rgba(25,118,210,.14);
+}

@@ -1,0 +1,760 @@
+:host {
+  display: block;
+  box-sizing: border-box;
+}
+
+:host *,
+:host *::before,
+:host *::after {
+  box-sizing: inherit;
+}
+
+.sku-page {
+  min-height: 100vh;
+  padding: 1.4rem 1rem 2rem;
+  color: #26330f;
+  background: #ffffff;
+}
+
+.sku-shell {
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+/* HERO */
+.hero-card {
+  position: relative;
+  min-height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  padding: 1.65rem 2rem;
+  border: 1px solid rgba(224, 216, 184, 0.95);
+  border-radius: 30px;
+
+  background:
+    linear-gradient(
+        90deg,
+        rgba(255, 253, 246, 0.68) 0%,
+        rgba(255, 253, 246, 0.50) 34%,
+        rgba(255, 249, 232, 0.16) 100%
+    ),
+    url('/assets/logoProduitFinis.png') center right / cover no-repeat,
+    linear-gradient(135deg, #fffdf4 0%, #fff8e4 100%);
+
+  box-shadow:
+    0 18px 36px rgba(59, 64, 39, 0.11),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.hero-card::before {
+  content: none;
+}
+
+.hero-title {
+  position: relative;
+  z-index: 2;
+  max-width: 520px;
+  margin-left: 2.2rem;
+}
+
+.hero-title h1 {
+  margin: 0;
+  color: #2d501f;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(2.1rem, 3vw, 2.85rem);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+
+.hero-title p {
+  margin: 0.65rem 0 0;
+  color: #4f5f47;
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.hero-badge {
+  position: relative;
+  z-index: 2;
+  min-width: 172px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 0 1rem;
+  margin-right: 1.2rem;
+  border: 1px solid rgba(112, 132, 76, 0.42);
+  border-radius: 14px;
+  background: rgba(245, 248, 238, 0.78);
+  color: #2f4f1b;
+  font-size: 0.82rem;
+  font-weight: 900;
+  box-shadow: 0 8px 20px rgba(64, 68, 42, 0.09);
+}
+
+.hero-badge i {
+  color: #5f7828;
+}
+
+.hero-badge.conditionne {
+  border-color: rgba(112, 132, 76, 0.42);
+  background: rgba(245, 248, 238, 0.80);
+}
+
+.hero-badge.vrac {
+  border-color: rgba(219, 181, 91, 0.52);
+  background: rgba(255, 248, 230, 0.78);
+}
+
+/* MAIN FORM */
+.modern-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.type-switcher-card,
+.section-card,
+.form-actions {
+  border: 1px solid rgba(226, 213, 181, 0.95);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 12px 28px rgba(62, 65, 42, 0.055);
+}
+
+/* TYPE SWITCHER */
+.type-switcher-card {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  padding: 0.9rem;
+}
+
+.type-btn {
+  height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 1.15rem;
+  border: 1px solid #ddd8c8;
+  border-radius: 11px;
+  background: #ffffff;
+  color: #293611;
+  text-align: left;
+  cursor: pointer;
+  transition: 160ms ease;
+}
+
+.type-btn:hover {
+  border-color: #9dae78;
+  background: #fbfcf7;
+}
+
+.type-btn.active-conditionne {
+  border-color: #446830;
+  background: #f2f8ee;
+  box-shadow: inset 0 0 0 1px rgba(68, 104, 48, 0.12);
+}
+
+.type-btn.active-vrac {
+  border-color: #d3aa47;
+  background: #fff7e4;
+  box-shadow: inset 0 0 0 1px rgba(211, 170, 71, 0.12);
+}
+
+.type-icon {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: #edf4e5;
+  color: #355b20;
+}
+
+.active-vrac .type-icon {
+  background: #fff0c7;
+  color: #9a7413;
+}
+
+.type-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.type-text strong {
+  color: #263c12;
+  font-size: 0.86rem;
+  font-weight: 950;
+  letter-spacing: 0.025em;
+}
+
+.type-text small {
+  color: #66705f;
+  font-size: 0.78rem;
+}
+
+/* SECTIONS */
+.section-card {
+  padding: 1rem 1rem 1.05rem;
+  overflow: hidden;
+}
+
+.section-title {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.section-icon {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #42681f, #6f8834);
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(51, 82, 28, 0.20);
+}
+
+.section-title h2 {
+  margin: 0;
+  color: #274816;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.35rem;
+  font-weight: 900;
+  letter-spacing: -0.025em;
+  white-space: nowrap;
+}
+
+.section-title span {
+  height: 1px;
+  background: linear-gradient(90deg, rgba(184, 143, 54, 0.7), transparent);
+}
+
+/* GRID */
+.form-grid {
+  display: grid;
+  gap: 1.1rem 1.1rem;
+  align-items: start;
+}
+
+.two-cols {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.four-cols {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.full-row {
+  grid-column: 1 / -1;
+}
+
+.field-block {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.field-block label {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: #1f2b16;
+  font-size: 0.83rem;
+  font-weight: 900;
+}
+
+.input-with-icon {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.input-with-icon > i {
+  position: absolute;
+  top: 50%;
+  left: 0.85rem;
+  z-index: 2;
+  transform: translateY(-50%);
+  color: #72803d;
+  font-size: 0.88rem;
+  pointer-events: none;
+}
+
+.form-control,
+.form-select,
+.modern-input {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  height: 37px;
+  padding: 0 0.8rem 0 2.1rem;
+  border: 1px solid #d8d3c4;
+  border-radius: 7px;
+  outline: none;
+  background-color: #ffffff;
+  color: #313928;
+  font-size: 0.88rem;
+  transition: 160ms ease;
+}
+
+.form-select,
+.modern-input {
+  appearance: auto;
+}
+
+.form-control:focus,
+.form-select:focus,
+.modern-input:focus {
+  border-color: #78914b;
+  box-shadow: 0 0 0 3px rgba(120, 145, 75, 0.12);
+}
+
+.readonly-control {
+  background: #f2efe5;
+  color: #7a766b;
+}
+
+.is-invalid {
+  border-color: #c75a4b !important;
+}
+
+.is-valid {
+  border-color: #6a9b46 !important;
+}
+
+.invalid-feedback {
+  margin-top: 0.35rem;
+  color: #b44235;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.form-hint {
+  display: block;
+  margin-top: 0.42rem;
+  color: #77776b;
+  font-size: 0.78rem;
+  font-style: italic;
+}
+
+/* INFO BANNERS */
+.info-banner-modern {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+  padding: 0.95rem 1rem;
+  border-radius: 9px;
+  color: #31401f;
+  line-height: 1.45;
+}
+
+.info-banner-modern .btn {
+  margin-left: auto;
+}
+
+.conditionne-banner,
+.vrac-banner {
+  border-left: 4px solid #456b31;
+  background: #f0f6ea;
+}
+
+.banner-icon {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: #42681f;
+  color: #ffffff;
+  font-size: 0.8rem;
+}
+
+.form-hint-text {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin: 0 0 1rem;
+  padding: 0.85rem 1rem;
+  border-left: 3px solid #c7952e;
+  border-radius: 0 8px 8px 0;
+  background: #fff7df;
+  color: #62563a;
+  font-size: 0.88rem;
+}
+
+.form-hint-text i {
+  color: #b68117;
+}
+
+/* BOM IMPORTER */
+.bom-importer-section {
+  margin-bottom: 1rem;
+}
+
+.importer-card {
+  padding: 1rem;
+  border: 1px solid #e0e8ef;
+  border-radius: 13px;
+  background: linear-gradient(135deg, #fbfdff, #f5f9fd);
+}
+
+.importer-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.9rem;
+  color: #36445a;
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.importer-header i {
+  color: #6677e8;
+}
+
+.importer-grid {
+  display: grid;
+  grid-template-columns: minmax(260px, 420px);
+  gap: 0.9rem;
+}
+
+.importer-field label {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: #1f2b16;
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.importer-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.importer-row .modern-input {
+  padding-left: 0.75rem;
+}
+
+.btn-import {
+  width: 38px;
+  height: 37px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border: 1px solid #cfd6de;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #6572b7;
+  cursor: pointer;
+}
+
+.btn-import:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.importer-hint {
+  margin: 0.8rem 0 0;
+  color: #8a93a1;
+  font-size: 0.8rem;
+}
+
+/* BOM TABLE */
+.bom-lines-table {
+  margin-top: 1rem;
+  overflow: hidden;
+  border: 1px solid #e0e5d8;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.bom-lines-header {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid #e8ecdf;
+  background: #f7faf0;
+  color: #34461e;
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.bom-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.bom-table th,
+.bom-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #eef0e8;
+  color: #303728;
+  font-size: 0.85rem;
+  text-align: left;
+}
+
+.bom-table th {
+  background: #fbfcf7;
+  color: #3d4a26;
+  font-size: 0.75rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.bom-cat-badge {
+  display: inline-flex;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  background: #eef5e7;
+  color: #4a6728;
+  font-size: 0.75rem;
+  font-weight: 850;
+}
+
+.bom-qty-inline {
+  width: 86px;
+  height: 32px;
+  padding: 0 0.55rem;
+  border: 1px solid #d7ddcd;
+  border-radius: 7px;
+  outline: none;
+}
+
+.bom-remove-btn {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #f0d7d1;
+  border-radius: 7px;
+  background: #fff5f2;
+  color: #b9513f;
+  cursor: pointer;
+}
+
+.bom-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 118px;
+  margin-top: 1rem;
+  border: 1px dashed #d8c7a2;
+  border-radius: 10px;
+  background: #fffdf7;
+  color: #6c6f63;
+  text-align: center;
+}
+
+.bom-empty-state i {
+  margin-bottom: 0.5rem;
+  color: #8fa06e;
+  font-size: 1.6rem;
+}
+
+.bom-empty-state p {
+  margin: 0;
+  font-size: 0.88rem;
+}
+
+/* FOOTER */
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.required-note {
+  flex: 1;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border: 1px solid #ede6d4;
+  border-radius: 8px;
+  background: #fffdf8;
+  color: #77776b;
+  font-size: 0.78rem;
+}
+
+.required-note i {
+  color: #88996d;
+}
+
+.required-note strong {
+  color: #b34a3e;
+}
+
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.btn {
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0 1rem;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font-size: 0.85rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: 160ms ease;
+}
+
+.btn-secondary {
+  border-color: #cbd5bd;
+  background: #ffffff;
+  color: #31451e;
+}
+
+.btn-secondary:hover {
+  background: #f8faf4;
+}
+
+.btn-primary {
+  border-color: #244d18;
+  background: linear-gradient(135deg, #244d18, #4b7223);
+  color: #ffffff;
+  box-shadow: 0 10px 20px rgba(34, 64, 20, 0.18);
+}
+
+.btn-primary:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.spinner-small {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  border-top-color: #ffffff;
+  border-radius: 999px;
+  animation: spin 800ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* RESPONSIVE */
+@media (max-width: 1100px) {
+  .four-cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hero-card {
+    background:
+      linear-gradient(
+          90deg,
+          rgba(255, 253, 246, 0.74),
+          rgba(255, 249, 232, 0.34)
+      ),
+      url('/assets/logoProduitFinis.png') center right / cover no-repeat,
+      linear-gradient(135deg, #fffdf4 0%, #fff8e4 100%);
+  }
+}
+
+@media (max-width: 760px) {
+  .sku-page {
+    padding: 1rem 0.75rem;
+  }
+
+  .hero-card {
+    align-items: flex-start;
+    flex-direction: column;
+    min-height: 170px;
+    padding: 1.25rem;
+    background:
+      linear-gradient(
+          90deg,
+          rgba(255, 253, 246, 0.78),
+          rgba(255, 249, 232, 0.38)
+      ),
+      url('/assets/logoProduitFinis.png') center right / cover no-repeat,
+      linear-gradient(135deg, #fffdf4 0%, #fff8e4 100%);
+  }
+
+  .hero-title {
+    margin-left: 0;
+  }
+
+  .hero-badge {
+    min-width: auto;
+    margin-right: 0;
+  }
+
+  .type-switcher-card,
+  .two-cols,
+  .four-cols {
+    grid-template-columns: 1fr;
+  }
+
+  .section-title {
+    grid-template-columns: auto 1fr;
+  }
+
+  .section-title span {
+    display: none;
+  }
+
+  .form-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .action-buttons {
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-card,
+  .type-switcher-card,
+  .section-card,
+  .form-actions {
+    border-radius: 14px;
+  }
+
+  .hero-title h1 {
+    font-size: 2rem;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .action-buttons .btn {
+    width: 100%;
+  }
+}

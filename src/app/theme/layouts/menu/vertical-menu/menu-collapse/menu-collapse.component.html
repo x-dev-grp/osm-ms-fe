@@ -1,0 +1,23 @@
+@if (!item()!.hidden) {
+  <li
+    data-username="able-pro dashboard"
+    class="nav-item coded-hasmenu"
+    [class.active]="isActive()"
+    [class.coded-trigger]="isOpen()"
+    [ngClass]="{ disabled: !isEnabled }"
+   >
+    <a class="nav-link" [class.active]="isActive()" (click)="navCollapse($event); $event.stopPropagation()">
+      <mat-icon *ngIf="item()!.icon" class="coded-micon">{{ item()!.icon }}</mat-icon>
+      <span class="coded-mtext">{{ item()!.title | translate }}</span>
+    </a>
+    <ul class="coded-submenu" [class.active]="isOpen()" [ngClass]="item()!.classes!">
+      @for (items of item()!.children; track $index) {
+        @if (items.type === 'item') {
+          <app-menu-item [item]="items" [parentRole]="item()!.role && item()!.role!.length > 0 ? item()!.role : parentRole.role" />
+        } @else if (items.type === 'collapse') {
+          <app-menu-collapse [item]="items" [parentRole]="item()!.role && item()!.role!.length > 0 ? item()!.role : parentRole.role" />
+        }
+      }
+    </ul>
+  </li>
+}

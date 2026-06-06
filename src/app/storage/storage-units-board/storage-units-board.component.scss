@@ -1,0 +1,356 @@
+.board-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+
+  .filters {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+
+    .filter {
+      min-width: 180px;
+    }
+
+    mat-slide-toggle {
+      margin-left: 0;
+      white-space: nowrap;
+    }
+  }
+}
+
+.loading-container {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 180px;
+}
+
+.error, .empty {
+  display: flex; gap: .5rem; align-items: center; justify-content: center;
+  min-height: 140px; color: #b00020;
+  mat-icon { font-size: 28px; height: 28px; width: 28px; }
+}
+
+.empty {
+  color: #6c757d;
+  mat-icon { color: #6c757d; }
+}
+
+.units-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(450px, 1fr)); /* two columns, each with a min width */
+  gap: 1rem;
+}
+
+@media (max-width: 920px) {
+  .units-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Card */
+.storage-card {
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(0,0,0,.06);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,.12);
+  }
+}
+
+/* Paid Storage Unit Card */
+.storage-card.paid-storage {
+  border: 2px solid #2196f3;
+  box-shadow: 0 2px 10px rgba(33, 150, 243, 0.2);
+}
+
+/* Filtered Oil Unit Card */
+.storage-card.filtered-oil {
+  border: 2px solid #4caf50;
+  box-shadow: 0 2px 10px rgba(76, 175, 80, 0.2);
+}
+
+/* Combined special styling for units that are both paid and filtered */
+.storage-card.paid-storage.filtered-oil {
+  border: 2px solid;
+  border-image: linear-gradient(45deg, #2196f3, #4caf50) 1;
+  box-shadow: 0 2px 10px rgba(33, 150, 243, 0.2), 0 2px 10px rgba(76, 175, 80, 0.2);
+}
+
+.storage-card-header {
+  padding: 1rem 1rem .5rem 1rem;
+  display: flex; flex-direction: column; gap: .75rem;
+}
+
+.storage-title-status {
+  display: flex; align-items: center; justify-content: space-between; gap: .75rem;
+  flex-wrap: wrap;
+
+  .storage-title {
+    display: flex; align-items: center; gap: .5rem;
+    flex-wrap: wrap;
+
+    .storage-icon {
+      font-size: 26px; height: 26px; width: 26px;
+    }
+    h2 { font-size: 1.1rem; margin: 0; font-weight: 600; }
+  }
+
+  .storage-status {
+    padding: .25rem .5rem; border-radius: 999px; font-size: .78rem; font-weight: 600;
+    white-space: nowrap;
+  }
+}
+
+/* Lot Badge */
+.lot-badge {
+  background: #e9ecef;
+  color: #495057;
+}
+
+/* Paid Storage Information */
+.paid-storage-info {
+  .metric-label {
+    color: #2196f3;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .metric-value {
+    color: #1976d2;
+    font-weight: 700;
+  }
+}
+
+/* Filtered Oil Information */
+.filtered-oil-info {
+  .metric-label {
+    color: #4caf50;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .metric-value {
+    color: #388e3c;
+    font-weight: 700;
+  }
+}
+
+.paid-icon-small, .filtered-icon-small {
+  font-size: 16px;
+  height: 16px;
+  width: 16px;
+}
+
+/* Paid Storage Badge */
+.paid-storage-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background-color: #e3f2fd;
+  color: #1976d2;
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  .paid-icon {
+    font-size: 16px;
+    height: 16px;
+    width: 16px;
+  }
+}
+
+/* Filtered Oil Badge */
+.filtered-oil-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background-color: #e8f5e9;
+  color: #388e3c;
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  .filtered-icon {
+    font-size: 16px;
+    height: 16px;
+    width: 16px;
+  }
+}
+
+/* Metrics */
+.storage-header-metrics {
+  display: flex;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  align-items: stretch;
+  align-content: center;
+  justify-content: space-evenly;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  @media (min-width: 1200px) {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .metric {
+    display: flex;
+    flex-direction: column;
+    min-width: 100px;
+
+    .metric-label {
+      font-size: .72rem;
+      color: #6c757d;
+      white-space: nowrap;
+    }
+    .metric-value {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+  }
+}
+
+/* Visualization */
+.storage-visualization {
+  padding: 0 1rem 1rem 1rem;
+
+  .storage-unit {
+    height: 120px;
+    border-radius: 12px;
+    border: 1px dashed #d7d7d7;
+    display: flex;
+    align-items: center;
+    padding: .5rem;
+    position: relative;
+
+    .storage-unit-body {
+      position: relative;
+      flex: 1;
+      height: 60px;
+      border-radius: 12px;
+      background: #f5f6f8;
+      overflow: hidden;
+
+      .fill-level-indicator {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .fill-pattern {
+          position: absolute;
+          inset: 0;
+          opacity: .15;
+          background-image: linear-gradient(45deg, #000 25%, transparent 25%, transparent 50%, #000 50%, #000 75%, transparent 75%, transparent);
+          background-size: 16px 16px;
+        }
+
+        .fill-level-text {
+          position: relative;
+          font-weight: 700;
+          text-shadow: 0 1px 2px rgba(0,0,0,.2);
+          color: #fff;
+        }
+      }
+    }
+  }
+}
+
+/* Visualization Indicators */
+.paid-visualization-indicator,
+.filtered-visualization-indicator {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  border-radius: 50%;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.paid-visualization-indicator {
+  background-color: #e3f2fd;
+
+  .paid-icon-visual {
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
+    color: #1976d2;
+  }
+}
+
+.filtered-visualization-indicator {
+  background-color: #e8f5e9;
+  right: 48px; /* Position to the left of paid indicator if both exist */
+
+  .filtered-icon-visual {
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
+    color: #388e3c;
+  }
+}
+
+/* When both indicators exist, adjust positioning */
+.paid-visualization-indicator + .filtered-visualization-indicator {
+  right: 48px;
+}
+
+/* Fill-level colors */
+.fill-empty { background: #e9ecef; }
+.fill-low { background: #90caf9; }
+.fill-mid { background: #64b5f6; }
+.fill-high { background: #42a5f5; }
+
+/* ── Status colors (new set) ─────────────────────────── */
+/* Badge background + text color */
+.status-available { background: #ecfdf5; color: #059669; }       /* green */
+.status-full       { background: #fef2f2; color: #dc2626; }       /* red */
+.status-filling    { background: #eff6ff; color: #3b82f6; }       /* blue */
+.status-maintenance{ background: #fff7ed; color: #ea580c; }       /* orange */
+.status-inuse      { background: #f0fdf4; color: #16a34a; }       /* brighter green */
+.status-cleaning   { background: #ecfeff; color: #0ea5e9; }       /* cyan */
+.status-reserved   { background: #fdf2f8; color: #db2777; }       /* pink */
+.status-outofservice{ background: #f3f4f6; color: #6b7280; }      /* gray */
+
+/* Icon color overrides to match badges */
+.status-icon.status-available   { color: #059669; }
+.status-icon.status-full        { color: #dc2626; }
+.status-icon.status-filling     { color: #3b82f6; }
+.status-icon.status-maintenance { color: #ea580c; }
+.status-icon.status-inuse       { color: #16a34a; }
+.status-icon.status-cleaning    { color: #0ea5e9; }
+.status-icon.status-reserved    { color: #db2777; }
+.status-icon.status-outofservice{ color: #6b7280; }
+
+/* (optional) legacy classes kept for backward compatibility */
+.status-empty { background: #eef2ff; color: #3b82f6; }
+.status-partial { background: #fff7ed; color: #ea580c; }
+.status-blocked { background: #f3e8ff; color: #7c3aed; }
+.status-icon.status-empty { color: #3b82f6; }
+.status-icon.status-partial { color: #ea580c; }
+.status-icon.status-blocked { color: #7c3aed; }

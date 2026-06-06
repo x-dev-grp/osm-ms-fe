@@ -1,0 +1,416 @@
+.logo-preview {
+  max-height: 120px;
+  display: block;
+  margin-bottom: 16px;
+}
+.mat-form-field .mat-form-field-wrapper input[type=file] {
+  cursor: pointer;
+  padding: 8px 0;
+}
+.logo-drop-zone {
+  border: 2px dashed #ccc;
+  border-radius: 4px;
+  text-align: center;
+  padding: 24px;
+  position: relative;
+  cursor: pointer;
+  transition: background-color .2s, border-color .2s;
+
+  &.file-over {
+    background-color: rgba(63,81,181,0.1);
+    border-color: #3f51b5;
+  }
+
+  p {
+    margin: 0;
+    color: #666;
+  }
+
+  .logo-preview {
+    max-height: 120px;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .remove-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+  }
+}
+  .actions {
+  justify-content: space-around;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+
+  button {
+    min-width: 120px;
+    transition: transform .1s ease-in-out;
+  }
+  button:disabled {
+    opacity: 0.6;
+  }
+  button:not(:disabled):hover {
+    transform: scale(1.05);
+  }
+}
+
+// Logo section styles
+.logo-section {
+  .logo-drop-zone {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    text-align: center;
+    padding: 32px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: #fafafa;
+    max-width: 300px;
+    margin: 0 auto;
+
+    &:hover {
+      border-color: #3f51b5;
+      background-color: rgba(63, 81, 181, 0.04);
+    }
+
+    &.file-over {
+      background-color: rgba(63, 81, 181, 0.1);
+      border-color: #3f51b5;
+    }
+
+    .placeholder-content {
+      .upload-icon {
+        font-size: 48px;
+        width: 48px;
+        height: 48px;
+        color: #9e9e9e;
+      }
+
+      p {
+        margin: 0;
+        color: #666;
+      }
+    }
+
+    .logo-preview {
+      max-height: 120px;
+      max-width: 200px;
+      display: block;
+      margin: 0 auto;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .remove-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  }
+}
+
+// Section titles
+.section-title {
+  display: flex;
+  align-items: center;
+  color: #333;
+  font-size: 1.1rem;
+  font-weight: 500;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 16px;
+
+  mat-icon {
+    color: #3f51b5;
+  }
+}
+
+// Form fields
+.mat-form-field {
+  .mat-icon {
+    color: #9e9e9e;
+  }
+}
+
+// Bank accounts card
+.bank-accounts-card {
+  background-color: #fafafa;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+  .bank-account-item {
+    border-bottom: 1px solid #eee;
+    padding: 12px 16px;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    mat-icon {
+      color: #3f51b5;
+    }
+
+    [matListItemTitle] {
+      font-weight: 500;
+    }
+
+    [matListItemLine] {
+      font-size: 0.875rem;
+    }
+  }
+}
+
+// Card header actions
+.card-header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-left: auto;
+
+  button {
+    min-width: 120px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:disabled {
+      opacity: 0.6;
+    }
+
+    &:not(:disabled):hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    mat-icon {
+      margin-right: 4px;
+    }
+  }
+}
+
+// Profile sections
+.profile-section {
+  background: #fff;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    padding: 16px 24px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    color: #333;
+    font-size: 1.1rem;
+    font-weight: 500;
+
+    mat-icon {
+      color: #3f51b5;
+      margin-right: 8px;
+    }
+  }
+
+  .section-content {
+    padding: 24px;
+  }
+}
+
+// Logo section specific styles
+.logo-section-wrapper {
+  .section-content {
+    padding: 32px;
+  }
+}
+
+// Logo drop zone styles
+.logo-drop-zone {
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  text-align: center;
+  padding: 32px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: #fafafa;
+  max-width: 300px;
+  margin: 0 auto;
+
+  &:hover {
+    border-color: #3f51b5;
+    background-color: rgba(63, 81, 181, 0.04);
+  }
+
+  &.file-over {
+    background-color: rgba(63, 81, 181, 0.1);
+    border-color: #3f51b5;
+  }
+
+  .placeholder-content {
+    .upload-icon {
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+      color: #9e9e9e;
+    }
+
+    p {
+      margin: 0;
+      color: #666;
+    }
+  }
+
+  .logo-preview {
+    max-height: 120px;
+    max-width: 200px;
+    display: block;
+    margin: 0 auto;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .remove-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+}
+
+// Form fields
+.mat-form-field {
+  .mat-icon {
+    color: #9e9e9e;
+  }
+}
+
+// Bank accounts card
+.bank-accounts-card {
+  background-color: #fafafa;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+  .bank-account-item {
+    border-bottom: 1px solid #eee;
+    padding: 12px 16px;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    mat-icon {
+      color: #3f51b5;
+    }
+
+    [matListItemTitle] {
+      font-weight: 500;
+    }
+
+    [matListItemLine] {
+      font-size: 0.875rem;
+    }
+  }
+}
+
+// Spacing between expansion panels
+mat-accordion {
+  margin-bottom: 32px;
+}
+
+mat-expansion-panel {
+  margin-bottom: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(60,60,60,0.04);
+  background: #fff;
+}
+
+mat-card-content {
+  padding: 24px 16px 16px 16px;
+}
+
+.form-section {
+  padding: 24px 16px 16px 16px;
+}
+
+// Page padding
+:host {
+  display: block;
+  padding: 32px 0 32px 0;
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .card-header-actions {
+    flex-direction: column;
+    width: 100%;
+
+    button {
+      width: 100%;
+    }
+  }
+
+  .profile-section {
+    .section-header {
+      padding: 12px 16px;
+    }
+
+    .section-content {
+      padding: 16px;
+    }
+  }
+
+  .logo-section-wrapper .section-content {
+    padding: 24px;
+  }
+}
+
+// Header actions
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 120px;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+
+    &:disabled {
+      opacity: 0.6;
+    }
+
+    &:not(:disabled):hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+    }
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+
+    span {
+      font-weight: 500;
+    }
+  }
+}

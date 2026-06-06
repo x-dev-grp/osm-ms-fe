@@ -1,0 +1,207 @@
+<!-- Payment history content -->
+<form [formGroup]="paymentForm">
+  <div class="content">
+
+    <div [class.payment-active]="selectedDelivery" class="split-layout">
+
+      <!-- Right Side: Payment Form -->
+      <div [class.active]="selectedDelivery" class="payment-section">
+        <mat-card *ngIf="selectedDelivery"
+                  class="payment-form-card"
+                  [ngClass]="derivedDirection === TransactionDirection.INBOUND ? 'inbound' : 'outbound'">
+          <mat-card-title>
+            <div class="payment-header">
+              <span>{{ 'SUPPLIER_PAYMENT.PAYMENT' | translate }} - {{ 'SUPPLIER_PAYMENT.LOT' | translate }} {{ selectedDelivery?.lotNumber }}</span>
+              <!-- New: Direction chip (read-only) -->
+              <mat-chip color="primary" selected>
+              <mat-icon aria-hidden="true">
+                  {{ derivedDirection === TransactionDirection.INBOUND ? 'call_received' : 'call_made' }}
+                </mat-icon>
+                {{ 'SUPPLIER_PAYMENT.DIRECTION' | translate }}:
+                {{ derivedDirection === TransactionDirection.INBOUND
+                ? ('SUPPLIER_PAYMENT.INBOUND' | translate)
+                : ('SUPPLIER_PAYMENT.OUTBOUND' | translate) }}
+              </mat-chip>
+            </div>
+
+          </mat-card-title>
+          <mat-divider></mat-divider>
+          @if (transactionNotCompletedError) {
+            <!-- Error message -->
+            <div class="error-container">
+              <mat-icon color="warn">error</mat-icon>
+              <span>{{ 'SUPPLIER_PAYMENT.PAYMENT_TRANSACTION' |translate }} </span>
+            </div>
+          }
+          <mat-card-content>
+
+            <!-- Payment Method Selection -->
+            <div class="payment-method-section">
+              <h4>{{ 'SUPPLIER_PAYMENT.PAYMENT_METHOD' | translate }}</h4>
+              <mat-radio-group formControlName="paymentMethod"
+                               (change)="onPaymentMethodChanged($event.value)">
+                <mat-radio-button   class="payment-option"  value="cash">
+                  <div class="payment-option-content">
+                    <mat-icon>account_balance_wallet</mat-icon>
+                    <div>
+                      <strong>{{ 'SUPPLIER_PAYMENT.MONEY_PAYMENT' | translate }}</strong>
+                    </div>
+                  </div>
+                </mat-radio-button>
+                <mat-radio-button
+                  [disabled]="!hasOilReceptionData"
+
+                  class="payment-option"
+
+                  value="oil">
+                  <div class="payment-option-content">
+                    <mat-icon>local_gas_station</mat-icon>
+                    <div>
+                      <strong>{{ 'SUPPLIER_PAYMENT.OIL_PAYMENT' | translate }}</strong>
+                    </div>
+                  </div>
+                </mat-radio-button>
+                <mat-radio-button
+                  class="payment-option"
+                  value="both"
+                  [disabled]="!hasOilReceptionData"
+                >
+                  <div class="payment-option-content">
+                    <mat-icon>sync_alt</mat-icon>
+                    <div>
+                      <strong>{{ 'SUPPLIER_PAYMENT.BOTH_PAYMENT' | translate }}</strong>
+                    </div>
+                  </div>
+                </mat-radio-button>
+              </mat-radio-group>
+            </div>
+
+            <!-- Cash Payment Form (shown for cash or both) -->
+            <div *ngIf="paymentForm.value?.paymentMethod === 'cash' || paymentForm.value?.paymentMethod  === 'both'"
+                 class="money-payment-form">
+              <h4>{{ 'SUPPLIER_PAYMENT.CASH_PAYMENT' | translate }}</h4>
+              <!-- Money Payment Method Selection -->
+              <div class="form-row">
+                <mat-radio-group class="money-method-group"
+                                 formControlName="moneyPaymentMethod">
+                  <mat-radio-button class="money-option" value="cash">
+                    <div class="money-option-content">
+                      <mat-icon>money</mat-icon>
+                      <div>
+                        <strong>{{ 'SUPPLIER_PAYMENT.CASH' | translate }}</strong>
+                      </div>
+                    </div>
+                  </mat-radio-button>
+                  <mat-radio-button class="money-option" value="check">
+                    <div class="money-option-content">
+                      <mat-icon>receipt</mat-icon>
+                      <div>
+                        <strong>{{ 'SUPPLIER_PAYMENT.CHECK' | translate }}</strong>
+                      </div>
+                    </div>
+                  </mat-radio-button>
+                  <mat-radio-button class="money-option" value="bank_transfer">
+                    <div class="money-option-content">
+                      <mat-icon>account_balance</mat-icon>
+                      <div>
+                        <strong>{{ 'SUPPLIER_PAYMENT.BANK_TRANSFER' | translate }}</strong>
+                      </div>
+                    </div>
+                  </mat-radio-button>
+                </mat-radio-group>
+              </div>
+
+              <div *ngIf="paymentForm.value?.moneyPaymentMethod  === 'check'" class="form-row">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>{{ 'SUPPLIER_PAYMENT.CHECK_NUMBER' | translate }}</mat-label>
+                  <input formControlName="checkNumber" matInput  type="text">
+                </mat-form-field>
+              </div>
+              <!-- Bank Transfer Payment Fields -->
+              <div *ngIf="paymentForm.value?.moneyPaymentMethod  === 'bank_transfer'" class="form-row">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>{{ 'SUPPLIER_PAYMENT.BANK_ACCOUNT' | translate }}</mat-label>
+                  <mat-select formControlName="bankAccount" >
+                    <mat-option *ngFor="let account of bankAccounts" [value]="account">
+                      {{ account?.bankName }} - {{ account?.rib }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>{{ 'SUPPLIER_PAYMENT.AMOUNT' | translate }}</mat-label>
+                <input [max]="data?.row?.unpaidAmount" [min]="0"
+                       formControlName="amount"
+                       (input)="onAmountInput()"
+                       matInput
+                       required step="0.01" type="number">
+                <mat-error *ngIf="paymentForm.get('amount')?.hasError('required')">
+                  {{ 'SUPPLIER_PAYMENT.ERRORS.AMOUNT_REQUIRED' | translate }}
+                </mat-error>
+                <mat-error *ngIf="paymentForm.get('amount')?.hasError('min')">
+                  {{ 'SUPPLIER_PAYMENT.ERRORS.AMOUNT_MIN' | translate }}
+                </mat-error>
+
+              </mat-form-field>
+            </div>
+
+            <!-- Oil Payment Form (shown for oil or both) -->
+            <div *ngIf="paymentForm.value?.paymentMethod  === 'oil' || paymentForm.value?.paymentMethod  === 'both'"
+                 class="oil-payment-form">
+              <h4>{{ 'SUPPLIER_PAYMENT.OIL_PAYMENT' | translate }}</h4>
+              <!-- Oil Payment Fields (add your oil payment fields here) -->
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>{{ 'SUPPLIER_PAYMENT.OIL_QUANTITY' | translate }}</mat-label>
+                <input [disabled]="!hasOilReceptionData"
+                       [min]="0" formControlName="oilQuantity" matInput
+                       (input)="onOilQuantityInput()"
+                       step="0.01"
+                       type="number">
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>{{ 'SUPPLIER_PAYMENT.OIL_PRICE' | translate }}</mat-label>
+                <input readonly disabled [min]="0" formControlName="oilPrice" matInput  step="0.01"
+                       type="number">
+              </mat-form-field>
+              <!-- Add more oil payment fields as needed -->
+            </div>
+
+            <!-- Payment Summary -->
+            <div class="payment-summary">
+              <h4>{{ 'SUPPLIER_PAYMENT.PAYMENT_SUMMARY' | translate }}</h4>
+              <div class="summary-item">
+                <span>{{ 'SUPPLIER_PAYMENT.UNPAID_AMOUNT' | translate }}:</span>
+                <span>{{ unpaidAmount || 0 | currency:'TND' }}</span>
+              </div>
+              <div class="summary-item">
+                <span>{{ 'SUPPLIER_PAYMENT.TOTAL_PRICE' | translate }}:</span>
+                <span>{{ totalPrice || 0 | currency:'TND' }}</span>
+              </div>
+              <div class="summary-item">
+                <span>{{ 'SUPPLIER_PAYMENT.REMAINING_AMOUNT' | translate }}:</span>
+                <span>{{ remainingAmount | currency:'TND' }}</span>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="payment-actions">
+              <button
+                (click)="processPayment()"
+                [disabled]="paymentForm.invalid|| transactionNotCompletedError"
+                color="primary"
+                mat-raised-button>
+                <mat-icon>check</mat-icon>
+                {{ 'SUPPLIER_PAYMENT.CONFIRM_PAYMENT' | translate }}
+              </button>
+              <button
+                (click)="closePaymentForm()"
+                mat-stroked-button>
+                {{ 'SUPPLIER_PAYMENT.CANCEL' | translate }}
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</form>

@@ -1,0 +1,86 @@
+<app-card [icon]="'add'" [cardTitle]="isEditing ? ('CONTRACT.EDIT_TITLE' | translate) : ('CONTRACT.ADD_TITLE' | translate)">
+  <div class="form-container">
+    <form [formGroup]="contractForm" (ngSubmit)="onSubmit()">
+      <div class="form-grid">
+        <div class="form-grid-item">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'CONTRACT.TYPE' | translate }}</mat-label>
+            <mat-select formControlName="contractType" required>
+              <mat-option *ngFor="let type of contractTypes" [value]="type">
+                {{ type | translate }}
+              </mat-option>
+            </mat-select>
+            <mat-error>{{ getErrorMessage('') }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-grid-item">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'CONTRACT.STATUS' | translate }}</mat-label>
+            <mat-select formControlName="contractStatus" required>
+              <mat-option *ngFor="let status of contractStatuses" [value]="status">
+                {{ status | translate }}
+              </mat-option>
+            </mat-select>
+            <mat-error>{{ getErrorMessage('contractStatus') }}</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-grid-item">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'CONTRACT.START_DATE' | translate }}</mat-label>
+            <input matInput [matDatepicker]="startPicker" formControlName="startDate" required>
+            <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+            <mat-datepicker #startPicker></mat-datepicker>
+            <mat-error>{{ getErrorMessage('startDate') }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-grid-item">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'CONTRACT.END_DATE' | translate }}</mat-label>
+            <input matInput [matDatepicker]="endPicker" formControlName="endDate" required>
+            <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+            <mat-datepicker #endPicker></mat-datepicker>
+            <mat-error>{{ getErrorMessage('endDate') }}</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-grid-item">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'CONTRACT.SALARY' | translate }}</mat-label>
+            <input matInput formControlName="salary" type="number" min="0" required>
+            <mat-error>{{ getErrorMessage('salary') }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-grid-item">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'CONTRACT.POSTE' | translate }}</mat-label>
+            <mat-select formControlName="poste">
+              <mat-option *ngFor="let poste of postes" [value]="poste">
+                {{ poste.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button mat-button type="button" (click)="onCancel()">
+          {{ 'CONTRACT.CANCEL' | translate }}
+        </button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="contractForm.invalid || loading">
+          <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+          <span *ngIf="!loading">
+            {{ isEditing ? ('CONTRACT.UPDATE' | translate) : ('CONTRACT.SAVE' | translate) }}
+          </span>
+        </button>
+      </div>
+    </form>
+  </div>
+</app-card>

@@ -1,0 +1,288 @@
+.oil-credit-detail-card {
+  margin: 24px auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  max-width: 1200px;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.detail-content {
+  padding: 16px;
+}
+
+.detail-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.detail-row {
+  display: grid;
+  grid-template-columns: 32px 120px 1fr;
+  align-items: center;
+  padding: 8px 0;
+  transition: background-color 0.2s;
+  border-bottom: 1px solid #eee;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+  }
+  
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.detail-icon {
+  color: #666;
+  font-size: 20px;
+}
+
+.detail-label {
+  font-weight: 500;
+  color: #444;
+}
+
+.detail-value {
+  color: #333;
+  word-break: break-word;
+}
+
+// Loading and Error states
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  text-align: center;
+
+  p {
+    margin-top: 16px;
+    color: #666;
+  }
+}
+
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  text-align: center;
+
+  .error-icon {
+    font-size: 48px;
+    color: #f44336;
+    margin-bottom: 16px;
+  }
+
+  h3 {
+    color: #333;
+    margin-bottom: 8px;
+  }
+
+  p {
+    color: #666;
+    margin-bottom: 24px;
+  }
+}
+
+// Credit State Badges
+.state-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.state-pending {
+  background-color: #fff3e0;
+  color: #f57c00;
+  border: 1px solid #ffcc02;
+}
+
+.state-approved {
+  background-color: #e8f5e8;
+  color: #2e7d32;
+  border: 1px solid #4caf50;
+}
+
+.state-rejected {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #f44336;
+}
+
+.state-completed {
+  background-color: #e3f2fd;
+  color: #1565c0;
+  border: 1px solid #2196f3;
+}
+
+.state-cancelled {
+  background-color: #fafafa;
+  color: #616161;
+  border: 1px solid #9e9e9e;
+}
+
+.skeleton {
+  .skeleton-header {
+    height: 24px;
+    width: 60%;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 4px;
+    margin: 16px;
+  }
+
+  .skeleton-row {
+    display: grid;
+    grid-template-columns: 32px 120px 1fr;
+    padding: 8px 0;
+  }
+
+  .skeleton-icon {
+    height: 24px;
+    width: 24px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 4px;
+  }
+
+  .skeleton-label {
+    height: 16px;
+    width: 80%;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 4px;
+  }
+
+  .skeleton-value {
+    height: 16px;
+    width: 60%;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 4px;
+  }
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+// Print styles
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .oil-credit-detail-card {
+    box-shadow: none;
+    margin: 0;
+  }
+  
+  .detail-row {
+    page-break-inside: avoid;
+  }
+}
+
+// Responsive improvements
+@media (max-width: 992px) {
+  .oil-credit-detail-card {
+    margin: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .detail-content {
+    padding: 12px;
+  }
+  
+  .detail-grid {
+    gap: 12px;
+  }
+  
+  .detail-row {
+    grid-template-columns: 24px 100px 1fr;
+    padding: 6px 0;
+  }
+  
+  .detail-icon {
+    font-size: 18px;
+  }
+  
+  .detail-label {
+    font-size: 0.9rem;
+  }
+  
+  .detail-value {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .oil-credit-detail-card {
+    margin: 12px;
+    border-radius: 4px;
+  }
+
+  .detail-row {
+    grid-template-columns: 20px 1fr;
+    gap: 8px;
+    padding: 8px 0;
+  }
+
+  .detail-icon {
+    grid-row: span 2;
+    align-self: start;
+    font-size: 16px;
+  }
+
+  .detail-label {
+    grid-column: 2;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .detail-value {
+    grid-column: 2;
+    font-size: 0.875rem;
+  }
+
+  .loading-container,
+  .error-container {
+    padding: 24px;
+  }
+  
+  .state-badge {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+  }
+}
+
+@media (max-width: 400px) {
+  .detail-row {
+    grid-template-columns: 16px 1fr;
+  }
+  
+  .detail-icon {
+    font-size: 14px;
+  }
+}

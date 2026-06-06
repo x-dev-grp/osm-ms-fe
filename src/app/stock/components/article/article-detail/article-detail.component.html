@@ -1,0 +1,362 @@
+<div class="article-detail-page">
+
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner-border"></div>
+    <p>Chargement de l'article...</p>
+  </div>
+
+  <div *ngIf="!loading && article">
+
+    <!-- HEADER -->
+    <div class="detail-header">
+      <button class="btn-back-floating" [routerLink]="['/stock/articles']">
+        <i class="fas fa-arrow-left"></i>
+      </button>
+
+      <div class="header-title">
+        <h2 class="article-title">{{ article.nom }}</h2>
+        <p>Détail de l'article</p>
+      </div>
+
+      <div class="header-actions">
+        <button class="btn-action toggle"
+                [ngClass]="article.actif ? 'active' : 'inactive'"
+                (click)="toActif()">
+          <i class="fas" [ngClass]="article.actif ? 'fa-toggle-on' : 'fa-toggle-off'"></i>
+          {{ article.actif ? 'Désactiver' : 'Activer' }}
+        </button>
+
+        <button class="btn-action edit"
+                [routerLink]="['/stock/articles', article.id, 'editer']">
+          <i class="fas fa-edit"></i>
+          Modifier
+        </button>
+      </div>
+    </div>
+
+    <!-- TOP GRID -->
+    <div class="detail-grid top-grid">
+
+      <!-- INFORMATIONS -->
+      <div class="card-box">
+        <h5>
+          <span class="title-icon"><i class="fas fa-info-circle"></i></span>
+          Informations générales
+        </h5>
+
+        <div class="info-row">
+          <span>Catégorie</span>
+          <strong>{{ article.categorie }}</strong>
+        </div>
+
+        <div class="info-row">
+          <span>Fournisseur</span>
+          <strong>{{ article.fournisseur?.nom || '-' }}</strong>
+        </div>
+
+        <div class="info-row">
+          <span>Unité</span>
+          <strong>{{ article.um }}</strong>
+        </div>
+
+        <div class="info-row">
+          <span>Statut</span>
+          <span class="status-badge" [ngClass]="article.actif ? 'active' : 'inactive'">
+            <span class="dot"></span>
+            {{ article.actif ? 'Actif' : 'Inactif' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- QR -->
+      <div class="card-box qr-card">
+        <h5>
+          <span class="title-icon"><i class="fas fa-qrcode"></i></span>
+          QR Code
+        </h5>
+
+        <div *ngIf="article.publicCode; else noQr">
+          <div class="qr-container">
+            <img *ngIf="article.qrImageBase64; else missingQrImage"
+                 [src]="'data:image/png;base64,' + article.qrImageBase64"
+                 alt="QR Code">
+
+            <ng-template #missingQrImage>
+              <p class="qr-status">Le code public existe, mais l’image QR doit être régénérée.</p>
+            </ng-template>
+
+            <p class="public-code">
+              Code manuel :
+              <strong>{{ article.publicCode }}</strong>
+            </p>
+
+            <p class="qr-url" *ngIf="article.qrUrl">{{ article.qrUrl }}</p>
+
+            <div class="qr-buttons">
+              <button class="btn-generate-qr" (click)="generateQr()" [disabled]="generatingQr">
+                <i class="fas fa-download"></i>
+                {{ generatingQr ? 'Génération...' : (article.qrImageBase64 ? 'Télécharger le QR Code' : 'Générer l\'image QR') }}
+              </button>
+
+              <button *ngIf="article.qrImageBase64" class="btn-print" (click)="printQr()">
+                <i class="fas fa-print"></i>
+                Imprimer
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #noQr>
+          <p class="qr-status">Pas encore de QR code pour cet article.</p>
+          <button class="btn-generate-qr" (click)="generateQr()" [disabled]="generatingQr">
+            <i class="fas fa-qrcode"></i>
+            {{ generatingQr ? 'Génération...' : 'Générer QR Code' }}
+          </button>
+        </ng-template>
+      </div>
+
+      <!-- SEUILS -->
+      <div class="card-box">
+        <h5>
+          <span class="title-icon"><i class="fas fa-chart-simple"></i></span>
+          Seuils de stock
+        </h5>
+
+        <div class="threshold">
+          <span>Stock Minimum</span>
+          <strong>{{ article.stockMinimum }} {{ article.um }}</strong>
+        </div>
+
+        <div class="threshold">
+          <span>Stock Maximum</span>
+          <strong>{{ article.stockMaximum }} {{ article.um }}</strong>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SECOND GRID -->
+    <div class="detail-grid bottom-grid">
+
+      <!-- STOCK -->
+      <div class="card-box stock-box">
+        <h5>
+          <span class="white-bar"></span>
+          Stock actuel
+        </h5>
+
+        <div class="stock-value" [ngClass]="getStockStatus()">
+          {{ stock?.quantiteActuelle ?? 0 }}
+          <small>{{ article.um }}</small>
+        </div>
+
+        <div class="stock-details-grid mt-2" *ngIf="stock">
+          <div class="stock-detail-item">
+            <span>Réservé</span>
+            <strong>{{ stock.quantiteReservee || 0 }} {{ article.um }}</strong>
+          </div>
+
+          <div class="stock-detail-item">
+            <span>Disponible</span>
+            <strong>
+              {{ stock.quantiteDisponible }} {{ article.um }}
+            </strong>
+          </div>
+        </div>
+
+        <p class="stock-hint" *ngIf="stock && (stock.quantiteReservee || 0) > 0">
+          <i class="fas fa-bookmark"></i>
+          Une partie du stock est réservée pour des projets en cours.
+        </p>
+
+        <p class="stock-empty" *ngIf="!stock">Aucun enregistrement de stock pour cet article.</p>
+
+        <div class="stock-date" *ngIf="stock">
+          Dernière MAJ : {{ stock.lastModifiedDate | date:'dd/MM/yyyy HH:mm' }}
+        </div>
+
+        <div class="stock-actions">
+          <button class="btn-stock in"
+                  (click)="mouvementType = TypeMouvement.ENTREE; showMouvementForm = true">
+            <i class="fas fa-plus"></i>
+            Entrée
+          </button>
+
+          <button class="btn-stock out"
+                  (click)="mouvementType = TypeMouvement.SORTIE; showMouvementForm = true">
+            <i class="fas fa-minus"></i>
+            Sortie
+          </button>
+
+          <button class="btn-stock adjust"
+                  (click)="showAjustementForm = true">
+            <i class="fas fa-balance-scale"></i>
+            Ajuster
+          </button>
+        </div>
+      </div>
+
+      <!-- EMPLACEMENT -->
+      <div class="card-box emplacement-box">
+        <h5>
+          <span class="title-icon"><i class="fas fa-location-dot"></i></span>
+          Emplacement physique
+        </h5>
+
+        <div *ngIf="stock?.emplacement; else noEmplacement">
+          <div class="info-row">
+            <span>Emplacement</span>
+            <strong>{{ stock.emplacement.nom || stock.emplacement.code }}</strong>
+          </div>
+
+          <div class="info-row" *ngIf="stock.emplacement.zone">
+            <span>Zone</span>
+            <strong>{{ stock.emplacement.zone }}</strong>
+          </div>
+
+          <div class="info-row" *ngIf="stock.emplacement.typeEmplacement">
+            <span>Type</span>
+            <strong>{{ stock.emplacement.typeEmplacement }}</strong>
+          </div>
+
+          <div class="info-row" *ngIf="stock.emplacement.disponible === false">
+            <span>Réservé pour</span>
+            <strong>{{ stock.emplacement.reservePour || 'Oui' }}</strong>
+          </div>
+        </div>
+
+        <ng-template #noEmplacement>
+          <div class="no-emplacement">
+            <p>Aucun emplacement assigné</p>
+          </div>
+        </ng-template>
+
+        <div class="emplacement-actions">
+          <button class="btn-emplacement assign" (click)="openAssignEmplacement()" *ngIf="!stock?.emplacement">
+            <i class="fas fa-map-marker-alt"></i>
+            Assigner un emplacement
+          </button>
+
+          <button class="btn-emplacement transfer" (click)="transfererEmplacement()" *ngIf="stock?.emplacement">
+            <i class="fas fa-exchange-alt"></i>
+            Transférer
+          </button>
+
+          <button class="btn-emplacement remove" (click)="retirerEmplacement()" *ngIf="stock?.emplacement">
+            <i class="fas fa-trash-alt"></i>
+            Retirer
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- MOUVEMENT FORM -->
+    <div class="card-box movement-form" *ngIf="showMouvementForm">
+      <h5>{{ mouvementType === TypeMouvement.ENTREE ? 'Entrée' : 'Sortie' }} de stock</h5>
+
+      <div class="movement-grid">
+        <input type="number"
+               class="form-control"
+               [(ngModel)]="quantite"
+               placeholder="Quantité"
+               min="1">
+
+        <input type="text"
+               class="form-control"
+               [(ngModel)]="motif"
+               placeholder="Motif (réception, production...)">
+
+        <button class="btn-primary" (click)="onMouvement()">Valider</button>
+        <button class="btn-cancel" (click)="showMouvementForm = false">Annuler</button>
+      </div>
+    </div>
+
+    <!-- AJUSTEMENT FORM -->
+    <div class="card-box movement-form" *ngIf="showAjustementForm">
+      <h5>Ajustement de stock</h5>
+
+      <div class="movement-grid">
+        <input type="number"
+               class="form-control"
+               [(ngModel)]="ajustementQuantite"
+               placeholder="Quantité (peut être négative)"
+               step="any">
+
+        <input type="text"
+               class="form-control"
+               [(ngModel)]="ajustementMotif"
+               placeholder="Motif (inventaire, correction, etc.)">
+
+        <button class="btn-primary" (click)="onAjustement()">Valider</button>
+        <button class="btn-cancel" (click)="showAjustementForm = false">Annuler</button>
+      </div>
+    </div>
+
+    <!-- EMPLACEMENT FORM -->
+    <div class="card-box emplacement-form" *ngIf="showEmplacementForm">
+      <h5>Choisir un emplacement</h5>
+
+      <div *ngIf="loadingEmplacements" class="text-center py-2">
+        Chargement...
+      </div>
+
+      <div *ngIf="!loadingEmplacements">
+        <select class="form-control" [(ngModel)]="selectedEmplacementId">
+          <option [value]="null" disabled>-- Sélectionner un emplacement --</option>
+
+          <option *ngFor="let emp of emplacements" [value]="emp.id">
+            {{ emp.code }} - {{ emp.nom }} ({{ emp.typeEmplacement }}) {{ emp.zone ? '- Zone ' + emp.zone : '' }}
+          </option>
+        </select>
+
+        <div class="movement-grid mt-3">
+          <button class="btn-primary" (click)="assignEmplacement()">Valider</button>
+          <button class="btn-cancel" (click)="showEmplacementForm = false; selectedEmplacementId = null">Annuler</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- HISTORIQUE -->
+    <div class="card-box history-card">
+      <h5>Historique des mouvements</h5>
+
+      <div *ngIf="loadingMouvements" class="text-center py-3">
+        Chargement...
+      </div>
+
+      <table *ngIf="!loadingMouvements" class="movement-table">
+        <thead>
+        <tr>
+          <th>Date</th>
+          <th>Type</th>
+          <th>Quantité</th>
+          <th>Motif</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr *ngFor="let mvt of mouvements">
+          <td>{{ mvt.dateMouvement | date:'dd/MM/yyyy HH:mm' }}</td>
+
+          <td>
+            <span class="badge-type" [ngClass]="mvt.typeMouvement === TypeMouvement.ENTREE ? 'in' : 'out'">
+              {{ mvt.typeMouvement }}
+            </span>
+          </td>
+
+          <td>{{ mvt.quantite }} {{ article.um }}</td>
+          <td>{{ mvt.motif || '-' }}</td>
+        </tr>
+
+        <tr *ngIf="mouvements.length === 0">
+          <td colspan="4" class="empty-row">
+            Aucun mouvement enregistré
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>

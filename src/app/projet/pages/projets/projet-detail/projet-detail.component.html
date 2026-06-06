@@ -1,0 +1,405 @@
+<div class="modern-container" *ngIf="!loading && projet as p">
+
+  <!-- Header -->
+  <div class="project-hero no-print">
+    <div class="hero-left">
+      <div class="hero-icon">
+        <mat-icon>account_tree</mat-icon>
+      </div>
+
+        <div class="hero-info w-100 d-flex flex-column gap-3">
+          <div class="title-row">
+            <h1>{{ p.code || 'Projet' }}</h1>
+            <span class="status-badge ms-2" [ngClass]="{
+              'status-failed': p.statut === 'FAILED',
+              'status-completed': p.statut === 'COMPLETED' || p.statut === 'VALIDE' || p.statut === 'ACCEPTE',
+              'status-in-progress': p.statut === 'IN_PROGRESS' || p.statut === 'EN_COURS',
+              'status-cancelled': p.statut === 'CANCELLED' || p.statut === 'ANNULE',
+              'status-created': p.statut === 'CREATED' || p.statut === 'BROUILLON'
+            }">
+              <i class="fas fa-circle" style="font-size: 8px;"></i>
+              {{ p.statut || '-' }}
+            </span>
+          </div>
+
+          <p>
+            Client :
+            <strong>{{ p.client?.nom || '-' }}</strong>
+          </p>
+
+          <div class="actions-bar">
+            <button class="btn-outline" (click)="onBack()">
+              <mat-icon>arrow_back</mat-icon>
+              Retour
+            </button>
+
+            <button class="btn-primary" [disabled]="p.statut === 'FAILED'" (click)="openExpedition()">
+              <mat-icon>local_shipping</mat-icon>
+              Expédition
+            </button>
+
+            <button class="btn-light-primary" (click)="openTraceability()">
+              <mat-icon>history_edu</mat-icon>
+              Traçabilité
+            </button>
+          </div>
+        </div>
+    </div>
+  </div>
+
+  <!-- Warning Banner for FAILED Projects -->
+  <div class="alert alert-danger d-flex align-items-center justify-content-between p-3 mb-4 rounded-3 border no-print" *ngIf="p.statut === 'FAILED'" style="background-color: #fce8e6; border-color: #f5c2c2; color: #a51b1b; margin-top: 16px;">
+    <div class="d-flex align-items-center gap-3">
+      <mat-icon style="color: #c5221f; font-size: 28px; width: 28px; height: 28px;">error</mat-icon>
+      <div>
+        <strong style="font-size: 16px; display: block; margin-bottom: 2px;">Ce projet a echoue : {{ failedProjectReasonTitle() }}</strong>
+        <span class="small d-block" style="color: #601414 !important;">Cause : {{ failedProjectReasonText() }}</span>
+        <span class="small d-block" style="color: #601414 !important;">Correction : {{ failedProjectFixText() }}</span>
+      </div>
+    </div>
+    <button class="btn btn-danger btn-sm" (click)="resolveFailedProject()" style="background-color: #c5221f; border: none; color: white; padding: 8px 16px; border-radius: 6px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
+      <mat-icon style="font-size: 16px; width: 16px; height: 16px;">{{ hasMissingOfQuantity ? 'add_box' : 'edit' }}</mat-icon> {{ failedProjectPrimaryActionLabel() }}
+    </button>
+  </div>
+
+  <!-- Success Banner for Finished OFs -->
+  <div class="alert alert-success d-flex align-items-center justify-content-between p-3 mb-4 rounded-3 border no-print" *ngIf="allOfsFinished && p.statut !== 'FAILED' && !isProjectCompletedStatus(p.statut)" style="background-color: #e6fce8; border-color: #c2f5cb; color: #1ba538; margin-top: 16px;">
+    <div class="d-flex align-items-center gap-3">
+      <mat-icon style="color: #1fc53b; font-size: 28px; width: 28px; height: 28px;">check_circle</mat-icon>
+      <div>
+        <strong style="font-size: 16px; display: block; margin-bottom: 2px;">Production terminée</strong>
+        <span class="small" style="color: #14601c !important;">Tous les Ordres de Fabrication de ce projet sont terminés. Vous pouvez maintenant procéder à l'expédition.</span>
+      </div>
+    </div>
+    <button class="btn btn-success btn-sm" (click)="openExpedition()" style="background-color: #1fc53b; border: none; color: white; padding: 8px 16px; border-radius: 6px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
+      <mat-icon style="font-size: 16px; width: 16px; height: 16px;">local_shipping</mat-icon> Expédier
+    </button>
+  </div>
+
+  <div class="content-grid">
+
+    <!-- Left column -->
+    <div class="left-col">
+
+      <!-- Details -->
+      <div class="modern-card no-print">
+        <div class="card-header">
+          <div class="section-title">
+            <mat-icon>description</mat-icon>
+            <h5>Détails du projet</h5>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="details-grid">
+
+            <div class="detail-item">
+              <div class="detail-icon">
+                <mat-icon>person</mat-icon>
+              </div>
+              <div>
+                <span class="label">Client</span>
+                <span class="value">{{ p.client?.nom || '-' }}</span>
+              </div>
+            </div>
+
+            <div class="detail-item">
+              <div class="detail-icon">
+                <mat-icon>business</mat-icon>
+              </div>
+              <div>
+                <span class="label">Type client</span>
+                <span class="value">
+                  {{ p.client?.type === ClientType.BUYER ? 'Acheteur' : p.client?.type === 'BRAND' ? 'Marque' : '-' }}
+                </span>
+              </div>
+            </div>
+
+            <div class="detail-item">
+              <div class="detail-icon">
+                <mat-icon>eco</mat-icon>
+              </div>
+              <div>
+                <span class="label">Produit</span>
+                <span class="value">{{ p.typeProduit | titlecase }}</span>
+              </div>
+            </div>
+
+            <div class="detail-item">
+              <div class="detail-icon">
+                <mat-icon>local_drink</mat-icon>
+              </div>
+              <div>
+                <span class="label">Emballage</span>
+                <span class="value">{{ p.typeEmballage | titlecase }}</span>
+              </div>
+            </div>
+
+            <div class="detail-item">
+              <div class="detail-icon">
+                <mat-icon>track_changes</mat-icon>
+              </div>
+              <div>
+                <span class="label">Quantité cible</span>
+                <span class="value">
+                  {{ p.quantiteCible | number }} {{ p.unite === 'LITRES' ? 'L' : 'unités' }}
+                </span>
+              </div>
+            </div>
+
+            <div class="detail-item">
+              <span class="label">Quantite planifiee en OF</span>
+              <span class="value">{{ totalOfTargetQuantity | number }} {{ p.unite === 'LITRES' ? 'L' : 'unites' }}</span>
+            </div>
+
+            <div class="detail-item">
+              <span class="label">Quantite OF restante</span>
+              <span class="value" [class.text-danger]="remainingOfQuantity > 0">
+                {{ remainingOfQuantity | number }} {{ p.unite === 'LITRES' ? 'L' : 'unites' }}
+              </span>
+            </div>
+
+            <div class="detail-item">
+              <div class="detail-icon">
+                <mat-icon>event</mat-icon>
+              </div>
+              <div>
+                <span class="label">Date limite de livraison</span>
+                <span class="value">{{ p.dateLimiteLivraison | date:'dd/MM/yyyy' }}</span>
+              </div>
+            </div>
+
+            <div class="detail-item">
+              <div class="detail-icon">
+                <mat-icon>sell</mat-icon>
+              </div>
+              <div>
+                <span class="label">Prix unitaire</span>
+                <span class="value">{{ p.prixUnitaire | currency:'TND' }}</span>
+              </div>
+            </div>
+
+            <div class="detail-item">
+              <div class="detail-icon">
+                <mat-icon>payments</mat-icon>
+              </div>
+              <div>
+                <span class="label">Valeur totale</span>
+                <span class="value amount">{{ p.valeurTotale | currency:'TND' }}</span>
+              </div>
+            </div>
+
+            <div class="detail-item">
+              <div class="detail-icon">
+                <mat-icon>local_shipping</mat-icon>
+              </div>
+              <div>
+                <span class="label">Conditions de livraison</span>
+                <span class="value">{{ p.conditionsLivraison || '-' }}</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- OF -->
+      <div class="modern-card no-print">
+        <div class="card-header">
+          <div class="section-title">
+            <mat-icon>settings</mat-icon>
+            <h5>Ordres de fabrication (OF)</h5>
+          </div>
+
+          <span class="count-badge">{{ ofs.length }} OF</span>
+        </div>
+        <div class="px-3 pt-2" *ngIf="remainingOfQuantity > 0">
+          <small class="text-danger">
+            Il reste {{ remainingOfQuantity | number }} {{ p.unite === 'LITRES' ? 'L' : 'unites' }} a planifier en OF.
+          </small>
+        </div>
+
+        <div class="card-body p-0">
+          <div *ngIf="loadingOfs" class="loading-inline">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Chargement des OF...</p>
+          </div>
+
+          <div class="table-responsive" *ngIf="!loadingOfs && ofs.length > 0">
+            <table class="modern-table">
+              <thead>
+              <tr>
+                <th>Code OF</th>
+                <th>Statut</th>
+                <th class="text-center">Qté cible</th>
+                <th class="text-center">Qté bonne</th>
+                <th>Date début prévue</th>
+              </tr>
+              </thead>
+
+              <tbody>
+              <tr *ngFor="let of of ofs">
+                <td>
+                  <a [routerLink]="['/of', of.id]" class="of-code">
+                    {{ of.code }}
+                  </a>
+                </td>
+
+                <td>
+                    <span class="of-status" [ngClass]="{
+                      'done': of.statut === 'TERMINE',
+                      'progress': of.statut === 'EN_COURS',
+                      'planned': of.statut === 'PLANIFIE',
+                      'danger': of.statut === 'ANNULE' || of.statut === 'CLOTURE',
+                      'waiting': of.statut === 'EN_ATTENTE'
+                    }">
+                      {{ of.statut }}
+                    </span>
+                </td>
+
+                <td class="text-center">{{ of.quantiteCible | number }}</td>
+                <td class="text-center good-value">{{ of.quantiteBonne | number }}</td>
+                <td>{{ of.dateDebutPrevue | date: 'short' || '-' }}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div *ngIf="!loadingOfs && ofs.length === 0" class="empty-state">
+            <mat-icon>assignment</mat-icon>
+            <h5>Aucun OF associé</h5>
+            <p>Ce projet ne contient actuellement aucun ordre de fabrication.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Produits Finis -->
+      <div class="modern-card no-print" *ngIf="p.produits && p.produits.length > 0">
+        <div class="card-header">
+          <div class="section-title">
+            <mat-icon>inventory_2</mat-icon>
+            <h5>Produits finis (SKU) à produire</h5>
+          </div>
+
+          <span class="count-badge">{{ p.produits.length }}</span>
+        </div>
+
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="modern-table">
+              <thead>
+              <tr>
+                <th>Produit / SKU</th>
+                <th class="text-center">Quantité cible</th>
+                <th class="text-center">Nomenclature (BOM)</th>
+              </tr>
+              </thead>
+
+              <tbody>
+              <tr *ngFor="let prod of p.produits">
+                <td>{{ getSkuName(prod.productId) }}</td>
+                <td class="text-center good-value">{{ prod.quantiteCible | number }}</td>
+                <td class="text-center muted-cell">
+                  <i class="fas fa-file-alt me-1"></i>
+                  Liée
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Réservations -->
+      <div class="modern-card no-print" *ngIf="p.reservations && p.reservations.length > 0">
+        <div class="card-header">
+          <div class="section-title">
+            <mat-icon>warehouse</mat-icon>
+            <h5>Besoins (Réservations de stock)</h5>
+          </div>
+
+          <span class="count-badge info">{{ p.reservations.length }}</span>
+        </div>
+
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="modern-table">
+              <thead>
+              <tr>
+                <th>Article (Composant)</th>
+                <th class="text-center">Quantité réservée</th>
+                <th class="text-center">Statut</th>
+              </tr>
+              </thead>
+
+              <tbody>
+              <tr *ngFor="let res of p.reservations">
+                <td>{{ getArticleName(res.articleId) }}</td>
+
+                <td class="text-center good-value">
+                  {{ res.quantiteReservee | number }} {{ getArticleUnit(res.articleId) }}
+                </td>
+
+                <td class="text-center">
+                    <span class="of-status" [ngClass]="{
+                      'planned': res.statut === 'PENDING',
+                      'done': res.statut === 'CONFIRMED',
+                      'waiting': res.statut === 'RELEASED' || res.statut === 'CONSUMED'
+                    }">
+                      {{ res.statut || 'PENDING' }}
+                    </span>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right column -->
+    <div class="right-col">
+      <div class="modern-card qr-card" id="qr-print-section">
+        <div class="card-header no-print">
+          <div class="section-title">
+            <mat-icon>verified_user</mat-icon>
+            <h5>Traçabilité (QR Code)</h5>
+          </div>
+        </div>
+
+        <div class="card-body qr-section">
+          <h2>Projet</h2>
+          <h3>{{ p.code }}</h3>
+
+          <div class="qr-box" *ngIf="hasQrImage()">
+            <img [src]="getQrImage()" (error)="onQrError($event)" alt="QR Code Projet" />
+          </div>
+
+          <p class="manual-code">
+            Code manuel :
+            <strong>{{ getManualCode() }}</strong>
+          </p>
+
+          <div class="actions-bar justify-content-center no-print">
+            <button class="btn-primary qr-btn" *ngIf="!hasQrImage()" (click)="generateQr()" [disabled]="generatingQr">
+              <mat-icon>qr_code</mat-icon>
+              Générer QR
+            </button>
+
+            <button class="btn-outline qr-btn" *ngIf="hasQrImage()" (click)="printQr()">
+              <mat-icon>print</mat-icon>
+              Imprimer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div *ngIf="loading" class="loading-state-modern">
+  <div class="spinner-container"></div>
+  <p class="loading-text">Chargement des détails du projet...</p>
+</div>

@@ -1,0 +1,35 @@
+* { box-sizing: border-box; }
+:host {
+  display: block;
+}
+
+.loading,
+.empty {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #5f6b5f;
+  padding: 8px 4px 14px;
+}
+
+.qc-form {
+  display: grid;
+  gap: 12px;
+  min-width: min(760px, 92vw);
+}
+
+.rule-row {
+  display: grid;
+  gap: 6px;
+}
+
+.rule-row label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #293329;
+}
+
+mat-form-field {
+  width: 100%;
+}
+

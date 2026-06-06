@@ -1,0 +1,204 @@
+<div class="bc-form-container">
+  <div class="header-section">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h1 class="page-title">
+          <i class="fas fa-plus-circle"></i>
+          Nouveau bon de commande
+        </h1>
+        <p class="text-muted mb-0">
+          <i class="fas fa-info-circle me-1"></i>
+          Créez un nouveau bon de commande
+        </p>
+      </div>
+      <div class="action-buttons">
+        <button type="button" class="btn-cancel" (click)="onCancel()">
+          <i class="fas fa-times me-1"></i>
+          Annuler
+        </button>
+        <button type="submit" form="bcForm" class="btn-save" [disabled]="submitting">
+          <i class="fas" [ngClass]="submitting ? 'fa-spinner fa-spin' : 'fa-save'"></i>
+          {{ submitting ? 'Enregistrement...' : 'Enregistrer' }}
+        </button>
+      </div>
+    </div>
+  </div>
+  @if (successMessage) {
+    <div class="alert alert-success">
+      <i class="fas fa-check-circle me-2"></i>
+      {{ successMessage }}
+    </div>
+  }
+  @if (error) {
+    <div class="alert alert-danger">
+      <i class="fas fa-exclamation-triangle me-2"></i>
+      {{ error }}
+    </div>
+  }
+  @if (loading) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Chargement du bon de commande...</p>
+    </div>
+  }
+  @if (!loading) {
+    <form id="bcForm" [formGroup]="bcForm" (ngSubmit)="onSubmit()">
+      <div class="form-grid">
+        <div class="form-section">
+          <div class="section-header">
+            <i class="fas fa-info-circle"></i>
+            <h3>Informations générales</h3>
+          </div>
+          <div class="section-body">
+            <div class="form-group">
+              <label class="required">
+                <i class="fas fa-calendar-check me-1"></i>
+                Date réception prévue
+              </label>
+              <input type="date"
+                     class="form-control"
+                     formControlName="dateReceptionPrevue"
+                     [class.is-invalid]="dateReceptionTouched && dateReceptionErrors">
+              @if (dateReceptionTouched && dateReceptionErrors) {
+                <div class="error-message">
+                  @if (dateReceptionErrors['required']) {
+                    La date de réception est obligatoire
+                  }
+                  @if (dateReceptionErrors['futureDate']) {
+                    La date de réception doit être postérieure à aujourd'hui
+                  }
+                </div>
+              }
+            </div>
+        </div>
+        </div>
+        <div class="form-section">
+          <div class="section-header">
+            <i class="fas fa-boxes"></i>
+            <h3>Articles commandés</h3>
+            <button type="button" class="btn-add" (click)="ajouterLigne()">
+              <i class="fas fa-plus"></i>
+              Ajouter un article
+            </button>
+          </div>
+
+          <div class="section-body">
+            <div formArrayName="lignes">
+              @for (ligne of lignes.controls; track i; let i = $index) {
+                <div class="ligne-article" [formGroupName]="i">
+                  <div class="ligne-header">
+                    <span class="ligne-num">Article #{{ i + 1 }}</span>
+                    <button type="button" class="btn-remove"
+                            (click)="supprimerLigne(i)"
+                            [disabled]="lignes.length === 1">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+
+                  <div class="ligne-body">
+                    <div class="form-group article-select">
+                      <label class="required">Article</label>
+                      <div class="article-search-wrapper">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text"
+                               class="form-control search-input"
+                               placeholder="Rechercher un article..."
+                               [value]="ligne.get('articleNom')?.value"
+                               (input)="onArticleSearch($event, i)"
+                               (focus)="showArticleDropdown = true">
+
+                        @if (showArticleDropdown && filteredArticles.length > 0) {
+                          <div class="article-dropdown">
+                            @for (article of filteredArticles; track article.id) {
+                              <div class="article-option" (click)="selectArticle(article, i)">
+                                <span class="article-nom">{{ article.nom }}</span>
+                                <span class="article-categorie">{{ article.categorie }}</span>
+                              </div>
+                            }
+                          </div>
+                        }
+                      </div>
+
+                      @if (ligne.get('articleId')?.touched && !ligne.get('articleId')?.valid) {
+                        <div class="error-message">L'article est obligatoire</div>
+                      }
+                      @if (ligne.get('articleSku')?.value) {
+                        <div class="article-info">
+                          <span class="badge">{{ ligne.get('articleSku')?.value }}</span>
+                          <span class="unite">Unité: {{ ligne.get('articleUnite')?.value || 'N/A' }}</span>
+                        </div>
+                      }
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label class="required">Quantité</label>
+                          <input type="number"
+                                 class="form-control"
+                                 formControlName="quantiteCommandee"
+                                 min="1"
+                                 [class.is-invalid]="ligne.get('quantiteCommandee')?.touched && ligne.get('quantiteCommandee')?.invalid">
+                          @if (ligne.get('quantiteCommandee')?.touched && ligne.get('quantiteCommandee')?.errors) {
+                            <div class="error-message">
+                              @if (ligne.get('quantiteCommandee')?.errors?.['required']) {
+                                <span>Quantité requise</span>
+                              }
+                              @if (ligne.get('quantiteCommandee')?.errors?.['min']) {
+                                <span>Minimum 1</span>
+                              }
+                            </div>
+                          }
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label>Prix unitaire</label>
+                          <input type="number"
+                                 class="form-control"
+                                 formControlName="prixUnitaire"
+                                 min="0"
+                                 step="0.01">
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label>Total</label>
+                          <div class="total-field">
+                            @if (ligne.get('prixUnitaire')?.value && ligne.get('quantiteCommandee')?.value) {
+                              <span class="total-amount">
+                                {{ ligne.get('quantiteCommandee')?.value * ligne.get('prixUnitaire')?.value | number:'1.2-2' }}
+                              </span>
+                            } @else {
+                              <span class="text-muted">-</span>
+                            }
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+            @if (lignes.length > 0) {
+              <div class="recap-section">
+                <div class="recap-item">
+                  <span>Nombre d'articles:</span>
+                  <strong>{{ getNombreArticles() }}</strong>
+                </div>
+                <div class="recap-item">
+                  <span>Quantité totale:</span>
+                  <strong>{{ getQuantiteTotale() }} unités</strong>
+                </div>
+                <div class="recap-item total">
+                  <span>Total TTC:</span>
+                  <strong>{{ getTotalPrix() | number:'1.2-2' }} </strong>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </form>
+  }
+</div>

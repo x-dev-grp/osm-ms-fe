@@ -1,0 +1,136 @@
+<div class="modern-container">
+  <div class="header-section">
+    <div class="page-header-shell">
+      <div class="header-left">
+        <div class="header-icon-wrapper">
+          <i class="fas fa-filter"></i>
+        </div>
+        <div class="header-title-block">
+          <h1 class="page-title">Rapport de Filtration</h1>
+          <p class="stats-badge">
+            <i class="fas fa-tint me-1"></i>
+            <span>Analyse de l'efficacite de la filtration des huiles</span>
+          </p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="header-btn btn-outline-primary" type="button" (click)="exportPdf()" [disabled]="loading || !hasData">
+          <i class="fas fa-file-pdf"></i> Exporter PDF
+        </button>
+        <button class="header-btn btn-primary" type="button" (click)="loadData()" [disabled]="loading">
+          <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i> Actualiser
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading-state-modern">
+    <div class="spinner-container"></div>
+    <p class="loading-text">Analyse des operations de filtration en cours...</p>
+  </div>
+
+  <div *ngIf="!loading && errorMessage" class="error-state">
+    <div class="error-icon">
+      <i class="fas fa-exclamation-triangle"></i>
+    </div>
+    <div>
+      <h3>Chargement impossible</h3>
+      <p>{{ errorMessage }}</p>
+    </div>
+  </div>
+
+  <div class="row mt-4" *ngIf="!loading && hasData">
+    <div class="col-lg-4 mb-4">
+      <div class="card h-100 border-0 shadow-sm rounded-4">
+        <div class="card-header bg-white border-0 pt-4 pb-0">
+          <h5 class="fw-bold mb-0 text-dark">Efficacite de Filtration</h5>
+        </div>
+        <div class="card-body d-flex align-items-center justify-content-center">
+          <apx-chart
+            *ngIf="efficiencyChartOptions"
+            [series]="efficiencyChartOptions.series"
+            [chart]="efficiencyChartOptions.chart"
+            [labels]="efficiencyChartOptions.labels"
+            [colors]="efficiencyChartOptions.colors"
+            [legend]="efficiencyChartOptions.legend"
+            [dataLabels]="efficiencyChartOptions.dataLabels"
+          ></apx-chart>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-8 mb-4">
+      <div class="card h-100 border-0 shadow-sm rounded-4">
+        <div class="card-header bg-white border-0 pt-4 pb-0">
+          <h5 class="fw-bold mb-0 text-dark">Tendances des Volumes (10 Dernieres Operations)</h5>
+        </div>
+        <div class="card-body">
+          <apx-chart
+            *ngIf="volumeTrendsChartOptions"
+            [series]="volumeTrendsChartOptions.series"
+            [chart]="volumeTrendsChartOptions.chart"
+            [colors]="volumeTrendsChartOptions.colors"
+            [dataLabels]="volumeTrendsChartOptions.dataLabels"
+            [stroke]="volumeTrendsChartOptions.stroke"
+            [xaxis]="volumeTrendsChartOptions.xaxis"
+            [tooltip]="volumeTrendsChartOptions.tooltip"
+            [legend]="volumeTrendsChartOptions.legend"
+          ></apx-chart>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-section" *ngIf="!loading && !errorMessage">
+    <div class="table-header">
+      <div class="results-info">
+        <div class="info-badge">
+          <i class="fas fa-list-ul me-2"></i>
+          <span>{{ data.length }} operation(s) trouvee(s)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="modern-table">
+        <thead>
+          <tr>
+            <th>Operation</th>
+            <th>Date</th>
+            <th class="text-center">Volume Entrant (L)</th>
+            <th class="text-center">Volume Sortant (L)</th>
+            <th class="text-center">Pertes (L)</th>
+            <th class="text-center">Taux d'Efficacite</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of data">
+            <td><span class="operation-label">{{ row.operationLabel }}</span></td>
+            <td class="text-muted">{{ row.operationDateLabel }}</td>
+            <td class="text-center volume-val">{{ row.inputVolume | number }}</td>
+            <td class="text-center volume-val text-success">{{ row.outputVolume | number }}</td>
+            <td class="text-center loss-val">{{ row.lossVolume | number }}</td>
+            <td class="text-center">
+              <span class="efficiency-badge"
+                    [ngClass]="{
+                      'excellent': row.efficiencyRate >= 98,
+                      'good': row.efficiencyRate >= 95 && row.efficiencyRate < 98,
+                      'poor': row.efficiencyRate < 95
+                    }">
+                {{ row.efficiencyRate | number:'1.2-2' }}%
+              </span>
+            </td>
+          </tr>
+
+          <tr *ngIf="!hasData">
+            <td colspan="6" class="empty-state">
+              <div class="empty-icon"><i class="fas fa-filter"></i></div>
+              <h3>Aucune operation de filtration</h3>
+              <p class="empty-text">Aucune donnee de filtration n'est disponible pour la periode demandee.</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

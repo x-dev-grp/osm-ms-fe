@@ -1,0 +1,108 @@
+<!-- header.component.html -->
+<div class="header-button">
+  <div class="global-search-wrapper">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="global-search-field">
+      <mat-label>Recherche globale</mat-label>
+      <input
+        matInput
+        placeholder="Code unique (ex: C49D27)"
+        [(ngModel)]="searchCode"
+        (keyup.enter)="Search()"
+      />    <button matSuffix
+                    mat-icon-button
+                    aria-label="Lancer la recherche globale"
+                    (click)="Search()"
+                    [disabled]="searching"
+    >
+      <mat-icon>{{ searching ? 'hourglass_top' : 'search' }}</mat-icon>
+    </button>
+    </mat-form-field>
+
+  </div>
+
+  <button [matMenuTriggerFor]="languages" aria-label="mode" class="header-item" mat-button>
+    <a class="pc-head-link">
+      <svg class="pc-icon">
+        <use xlink:href="assets/fonts/custom-icon.svg#custom-global"></use>
+      </svg>
+    </a>
+  </button>
+
+  <button [matMenuTriggerFor]="user" aria-label="mode" class="header-item" mat-button>
+    <a class="pc-head-link">
+      <img alt="user-image" class="user-avatar" src="assets/images/user/avatar-2.png" />
+    </a>
+  </button>
+
+  <mat-menu #languages="matMenu" xPosition="before">
+    <button mat-menu-item (click)="useLanguage('en')">English</button>
+    <button mat-menu-item (click)="useLanguage('fr')">Francais</button>
+    <button mat-menu-item (click)="useLanguage('ar')">Arabic</button>
+  </mat-menu>
+
+  <mat-menu #user="matMenu" class="dropdown-user-profile" xPosition="before">
+    <div class="dropdown-header flex align-item-center justify-content-between">
+      <div class="user-title f-16 f-w-600">Profile</div>
+    </div>
+    <ng-scrollbar [dir]="direction" visibility="hover">  <!-- ✅ direction typée correctement -->
+      <div class="dropdown-body">
+        <div class="flex m-b-5">
+          <div class="topic-icon">
+            <img alt="user-images" class="user-avatar" src="assets/images/user/avatar-2.png" />
+          </div>
+          <div class="topic-description m-l-15">
+            <div class="user-name mat-body f-w-600">
+              {{ authenticationService?.currentUserName || "testUser" }}🖖
+            </div>
+            <p class="mat-caption">{{ authenticationService?.currentUserValue?.email || "test@gmail.com" }}</p>
+          </div>
+        </div>
+        <mat-divider class="m-y-15"></mat-divider>
+        <app-card [showHeader]="false" [padding]="16">  <!-- ✅ [padding]="16" au lieu de padding="16" -->
+          <div class="m-b-15 mat-body f-w-500">Manage</div>
+          <a [routerLink]="['/application/profile/account/account']" class="dropdown-item text-muted" href="javascript:">
+            <i class="ti ti-user"></i>
+            <div class="m-b-0 mat-body">My Account</div>
+          </a>
+          <a [routerLink]="['/settings/general-config']" class="dropdown-item text-muted" href="javascript:">
+            <i class="ti ti-settings"></i>
+            <div class="m-b-0 mat-body">{{ 'MENU.SETTINGS.GENERAL_CONFIG' | translate }}</div>
+          </a>
+        </app-card>
+        <mat-divider class="m-y-15"></mat-divider>
+        <app-card [showHeader]="false" [padding]="16">  <!-- ✅ [padding]="16" -->
+          <div class="m-b-15 mat-body f-w-500">Language</div>
+          <a (click)="useLanguage('en')" class="dropdown-item text-muted" href="javascript:">
+            <svg class="pc-icon m-r-10">
+              <use xlink:href="assets/fonts/custom-icon.svg#custom-global"></use>
+            </svg>
+            <div class="m-b-0 mat-body">English (uk)</div>
+          </a>
+          <a (click)="useLanguage('fr')" class="dropdown-item text-muted" href="javascript:">
+            <svg class="pc-icon m-r-10">
+              <use xlink:href="assets/fonts/custom-icon.svg#custom-global"></use>
+            </svg>
+            <div class="m-b-0 mat-body">français</div>
+          </a>
+          <a (click)="useLanguage('ar')" class="dropdown-item text-muted" href="javascript:">
+            <svg class="pc-icon m-r-10">
+              <use xlink:href="assets/fonts/custom-icon.svg#custom-global"></use>
+            </svg>
+            <div class="m-b-0 mat-body">Arabe</div>
+          </a>
+        </app-card>
+        <mat-divider class="m-b-15 m-t-15"></mat-divider>
+        <div class="grid m-b-15">
+          <button (click)="logout()" class="user-logout" color="primary" mat-flat-button>
+            <div class="flex-inline align-item-center">
+              <svg class="pc-icon m-r-10">
+                <use xlink:href="assets/fonts/custom-icon.svg#custom-logout-1-outline"></use>
+              </svg>
+              Logout
+            </div>
+          </button>
+        </div>
+      </div>
+    </ng-scrollbar>
+  </mat-menu>
+</div>

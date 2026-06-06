@@ -1,0 +1,436 @@
+// Quality Control Container
+.quality-control-container {
+
+  font-family: 'Roboto', sans-serif;
+
+  // Header Section
+  .quality-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    color: white;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+
+      .header-icon {
+        mat-icon {
+          font-size: 3rem;
+          width: 3rem;
+          height: 3rem;
+          color: rgba(255, 255, 255, 0.9);
+        }
+      }
+
+      .header-text {
+        flex: 1;
+
+        h2 {
+          margin: 0 0 0.5rem 0;
+          font-size: 2rem;
+          font-weight: 300;
+          color: white;
+        }
+
+        p {
+          margin: 0;
+          font-size: 1rem;
+          opacity: 0.9;
+          font-weight: 300;
+        }
+      }
+
+      .header-status {
+        mat-chip {
+          background: rgba(255, 255, 255, 0.2);
+          color: white;
+          border: 1px solid rgba(255, 255, 255, 0.3);
+
+          mat-icon {
+            margin-right: 0.5rem;
+          }
+        }
+      }
+    }
+  }
+  .string-control {
+    border: 2px solid #1976d2; // blue highlight
+    background-color: #e3f2fd; // light blue
+    border-radius: 8px;
+    padding: 16px;
+  }
+  // Loading State
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+
+    mat-spinner {
+      margin-bottom: 1rem;
+    }
+
+    p {
+      color: #666;
+      font-size: 1.1rem;
+      margin: 0;
+    }
+  }
+
+  // Error State
+  .error-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: #ffebee;
+    border-radius: 12px;
+    border: 1px solid #ffcdd2;
+    color: #c62828;
+
+    mat-icon {
+      font-size: 2rem;
+      margin-right: 1rem;
+    }
+
+    p {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+  }
+
+  // Quality Content
+  .quality-content {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+
+    .quality-form {
+      padding: 2rem;
+
+      .form-section {
+        margin-bottom: 3rem;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        .section-header {
+          display: flex;
+          align-items: center;
+          margin-bottom: 2rem;
+          padding-bottom: 1rem;
+          border-bottom: 2px solid #f0f0f0;
+
+          mat-icon {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            color: #667eea;
+          }
+
+          h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: #333;
+          }
+        }
+
+        // Parameters Grid
+        .parameters-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 1.5rem;
+
+          .parameter-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+
+            &:hover {
+              transform: translateY(-2px);
+              box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+              border-color: #667eea;
+            }
+
+            .parameter-header {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 1rem;
+
+              .parameter-label {
+                font-size: 1rem;
+                font-weight: 600;
+                color: #333;
+                margin: 0;
+              }
+
+              .parameter-type {
+                padding: 0.25rem 0.75rem;
+                border-radius: 20px;
+                font-size: 0.75rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+
+                &.numeric {
+                  background: #e3f2fd;
+                  color: #1976d2;
+                }
+
+                &.string {
+                  background: #f3e5f5;
+                  color: #7b1fa2;
+                }
+
+                &.boolean {
+                  background: #e8f5e8;
+                  color: #388e3c;
+                }
+              }
+            }
+
+            .parameter-field {
+              width: 100%;
+
+              ::ng-deep .mat-form-field-wrapper {
+                padding-bottom: 0;
+              }
+
+              ::ng-deep .mat-form-field-outline {
+                color: #ddd;
+              }
+
+              ::ng-deep .mat-form-field-outline-thick {
+                color: #667eea;
+              }
+
+              ::ng-deep .mat-form-field-infix {
+                padding: 0.75em 0;
+              }
+
+              ::ng-deep .mat-select-value {
+                color: #333;
+              }
+
+              ::ng-deep .mat-select-arrow {
+                color: #667eea;
+              }
+            }
+          }
+        }
+
+        // Financial Grid
+        .financial-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 1.5rem;
+
+          .financial-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+
+            &:hover {
+              transform: translateY(-2px);
+              box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+              border-color: #28a745;
+            }
+
+            .financial-field {
+              width: 100%;
+
+              ::ng-deep .mat-form-field-wrapper {
+                padding-bottom: 0;
+              }
+
+              ::ng-deep .mat-form-field-outline {
+                color: #ddd;
+              }
+
+              ::ng-deep .mat-form-field-outline-thick {
+                color: #28a745;
+              }
+
+              ::ng-deep .mat-form-field-infix {
+                padding: 0.75em 0;
+              }
+
+              ::ng-deep .mat-select-value {
+                color: #333;
+              }
+
+              ::ng-deep .mat-select-arrow {
+                color: #28a745;
+              }
+            }
+
+            .storage-option {
+              display: flex;
+              flex-direction: column;
+              gap: 0.25rem;
+
+              .storage-name {
+                font-weight: 500;
+                color: #333;
+              }
+
+              .storage-capacity {
+                font-size: 0.85rem;
+                color: #666;
+              }
+            }
+          }
+        }
+      }
+
+      // Form Actions
+      .form-actions {
+        display: flex;
+        justify-content: center;
+        padding: 2rem 0 0 0;
+        border-top: 1px solid #f0f0f0;
+        margin-top: 2rem;
+
+        .submit-button {
+          padding: 0.75rem 2rem;
+          font-size: 1rem;
+          font-weight: 500;
+          border-radius: 8px;
+          min-width: 200px;
+          transition: all 0.3s ease;
+
+          mat-icon {
+            margin-right: 0.5rem;
+          }
+
+          &:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+          }
+
+          &:disabled {
+            opacity: 0.6;
+            transform: none;
+            box-shadow: none;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .quality-control-container {
+    padding: 1rem;
+
+    .quality-header {
+      padding: 1.5rem;
+
+      .header-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+
+        .header-text {
+          h2 {
+            font-size: 1.5rem;
+          }
+        }
+      }
+    }
+
+    .quality-content {
+      .quality-form {
+        padding: 1rem;
+
+        .form-section {
+          .parameters-grid,
+          .financial-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+          }
+
+          .parameter-card,
+          .financial-card {
+            padding: 1rem;
+          }
+        }
+
+        .form-actions {
+          .submit-button {
+            width: 100%;
+            min-width: auto;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .quality-control-container {
+    padding: 0.5rem;
+
+    .quality-header {
+      padding: 1rem;
+      border-radius: 12px;
+
+      .header-content {
+        .header-icon mat-icon {
+          font-size: 2rem;
+          width: 2rem;
+          height: 2rem;
+        }
+
+        .header-text {
+          h2 {
+            font-size: 1.25rem;
+          }
+
+          p {
+            font-size: 0.9rem;
+          }
+        }
+      }
+    }
+
+    .quality-content {
+      border-radius: 12px;
+
+      .quality-form {
+        padding: 0.75rem;
+
+        .form-section {
+          .section-header {
+            h3 {
+              font-size: 1.25rem;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.parameter-footnote {
+  font-size: 11px;        /* smaller than default subscript */
+  line-height: 1.15;
+  opacity: 0.75;          /* lighter */
+  letter-spacing: 0.1px;
+  margin-top: -2px;       /* tuck closer to the field */
+}

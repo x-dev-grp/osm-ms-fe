@@ -1,0 +1,106 @@
+<h2 mat-dialog-title class="abioc-dialog-title">
+  <mat-icon>swap_horiz</mat-icon>
+  <span>Changer le statut</span>
+</h2>
+
+<mat-dialog-content class="abioc-dialog-content">
+  <div class="operation-info">
+    <div class="info-card">
+      <span class="info-label">Opération</span>
+      <span class="info-value mono">Operation selectionnee</span>
+    </div>
+
+    <div class="info-card">
+      <span class="info-label">Cuve source</span>
+      <span class="info-value">{{ data.row.source?.name ?? 'Inconnue' }}</span>
+    </div>
+
+    <div class="info-card">
+      <span class="info-label">Cuve cible</span>
+      <span class="info-value">{{ data.row.target?.name ?? 'Inconnue' }}</span>
+    </div>
+
+    <div class="info-card">
+      <span class="info-label">Statut actuel</span>
+      <span class="status-chip">{{ data.row.status }}</span>
+    </div>
+  </div>
+
+  @if (allowedStatuses().length === 0) {
+    <div class="no-transition-message">
+      <mat-icon>info</mat-icon>
+      <span>Aucun changement de statut autorisé pour cette opération.</span>
+    </div>
+  }
+
+  @if (allowedStatuses().length > 0) {
+    <form [formGroup]="form" class="abioc-form">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Nouveau statut</mat-label>
+        <mat-select formControlName="status">
+          @for (s of allowedStatuses(); track s) {
+            <mat-option [value]="s">
+              <div class="status-option">
+                <span
+                  class="status-dot"
+                  [class.created]="s === 'CREATED'"
+                  [class.in_progress]="s === 'IN_PROGRESS'"
+                  [class.completed]="s === 'COMPLETED'"
+                  [class.cancelled]="s === 'CANCELLED'">
+                </span>
+                @if (s === 'IN_PROGRESS') {
+                  <span>IN_PROGRESS - En cours</span>
+                }
+                @if (s === 'COMPLETED') {
+                  <span>COMPLETED - Terminée</span>
+                }
+                @if (s === 'CANCELLED') {
+                  <span>CANCELLED - Annulée</span>
+                }
+                @if (s === 'CREATED') {
+                  <span>CREATED - En attente</span>
+                }
+              </div>
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Note (optionnel)</mat-label>
+        <textarea matInput rows="4" formControlName="note"></textarea>
+        <mat-hint>Raison du changement de statut</mat-hint>
+      </mat-form-field>
+
+      @if (isCompleteSelected()) {
+        <mat-form-field appearance="outline" class="full-width volume-field">
+          <mat-label>Volume après filtration (L)</mat-label>
+          <input matInput type="number" formControlName="volumeAfter" step="0.1" />
+          <span matSuffix class="volume-suffix">L</span>
+          <mat-hint>Obligatoire si l'opération est terminée.</mat-hint>
+        </mat-form-field>
+      }
+    </form>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="abioc-dialog-actions">
+  <button mat-stroked-button (click)="close()" [disabled]="loading">
+    Annuler
+  </button>
+
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="save()"
+    [disabled]="loading || allowedStatuses().length === 0 || form.invalid">
+    @if (!loading) {
+      <mat-icon>save</mat-icon>
+    }
+    @if (loading) {
+      <mat-spinner diameter="20"></mat-spinner>
+    }
+    {{ loading ? 'Enregistrement...' : 'Enregistrer' }}
+  </button>
+</mat-dialog-actions>
+

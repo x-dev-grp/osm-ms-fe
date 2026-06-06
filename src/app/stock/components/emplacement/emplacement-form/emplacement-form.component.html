@@ -1,0 +1,266 @@
+<div class="emplacement-form-page">
+  <div class="emplacement-form-container">
+
+    <section class="form-hero">
+      <div class="hero-left">
+        <div class="hero-icon">
+          <i class="fas fa-warehouse"></i>
+        </div>
+
+        <div>
+          <h1>
+            {{ isEditMode ? 'Modifier emplacement' : 'Nouvel emplacement' }}
+          </h1>
+          <p>
+            {{
+              isEditMode
+                ? 'Modifier les informations de l’emplacement de stock.'
+                : 'Ajouter un nouvel emplacement pour organiser votre stockage.'
+            }}
+          </p>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-secondary hero-back" (click)="onCancel()">
+        <i class="fas fa-arrow-left"></i>
+        Retour
+      </button>
+    </section>
+
+    <section class="form-card">
+      <div class="error-banner" *ngIf="error">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span>{{ error }}</span>
+      </div>
+
+      <div class="loading-state" *ngIf="loading">
+        <div class="spinner-border"></div>
+        <p>Chargement...</p>
+      </div>
+
+      <form *ngIf="!loading" [formGroup]="emplacementForm" (ngSubmit)="onSubmit()">
+
+        <div class="form-section">
+          <div class="section-header">
+            <div class="section-icon">
+              <i class="fas fa-id-card"></i>
+            </div>
+
+            <div>
+              <h3>Informations generales</h3>
+              <p>Identite et classification de l’emplacement.</p>
+            </div>
+          </div>
+
+          <div class="form-grid two-cols">
+            <div class="form-group" *ngIf="isEditMode">
+              <label for="code">Code</label>
+              <input id="code" type="text" class="form-control" formControlName="code" readonly />
+            </div>
+
+            <div class="form-group">
+              <label for="nom">Nom *</label>
+              <input
+                id="nom"
+                type="text"
+                class="form-control"
+                formControlName="nom"
+                placeholder="Nom de l’emplacement"
+                [class.is-invalid]="submitted && f['nom'].errors" />
+              <div class="invalid-feedback" *ngIf="submitted && f['nom'].errors">
+                Le nom est requis
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="zone">Zone</label>
+              <input
+                id="zone"
+                type="text"
+                class="form-control"
+                formControlName="zone"
+                placeholder="Zone" />
+            </div>
+
+            <div class="form-group">
+              <label for="typeEmplacement">Type d’emplacement *</label>
+              <select
+                id="typeEmplacement"
+                class="form-control"
+                formControlName="typeEmplacement"
+                [class.is-invalid]="submitted && f['typeEmplacement'].errors">
+                <option value="" disabled>Selectionner...</option>
+                <option *ngFor="let type of typesEmplacement" [value]="type">
+                  {{ getTypeLabel(type) }}
+                </option>
+              </select>
+              <div class="invalid-feedback" *ngIf="submitted && f['typeEmplacement'].errors">
+                Le type est requis
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="categorieArticleStocke">Categorie article stocke</label>
+              <select id="categorieArticleStocke" class="form-control" formControlName="categorieArticleStocke">
+                <option [ngValue]="null">Non specifiee</option>
+                <option *ngFor="let cat of categoriesArticle" [value]="cat">
+                  {{ getCategorieLabel(cat) }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="section-header">
+            <div class="section-icon">
+              <i class="fas fa-sliders-h"></i>
+            </div>
+
+            <div>
+              <h3>Capacite et conditions</h3>
+              <p>Bornes de capacite, temperature et contraintes specifiques.</p>
+            </div>
+          </div>
+
+          <div class="form-grid two-cols">
+            <div class="form-group">
+              <label for="capaciteMaximale">Capacite maximale</label>
+              <input
+                id="capaciteMaximale"
+                type="text"
+                class="form-control"
+                formControlName="capaciteMaximale"
+                placeholder="Capacite maximale" />
+            </div>
+
+            <div class="form-group">
+              <label for="capaciteActuelle">Capacite actuelle</label>
+              <input
+                id="capaciteActuelle"
+                type="text"
+                class="form-control"
+                formControlName="capaciteActuelle"
+                placeholder="Capacite actuelle" />
+            </div>
+
+            <div class="form-group">
+              <label for="temperatureMin">Temperature min (C)</label>
+              <input
+                id="temperatureMin"
+                type="number"
+                step="0.1"
+                class="form-control"
+                formControlName="temperatureMin"
+                placeholder="Temperature min" />
+            </div>
+
+            <div class="form-group">
+              <label for="temperatureMax">Temperature max (C)</label>
+              <input
+                id="temperatureMax"
+                type="number"
+                step="0.1"
+                class="form-control"
+                formControlName="temperatureMax"
+                placeholder="Temperature max" />
+            </div>
+
+            <div class="form-group">
+              <label for="conditionsSpeciales">Conditions speciales</label>
+              <input
+                id="conditionsSpeciales"
+                type="text"
+                class="form-control"
+                formControlName="conditionsSpeciales"
+                placeholder="Conditions speciales" />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="section-header">
+            <div class="section-icon">
+              <i class="fas fa-toggle-on"></i>
+            </div>
+
+            <div>
+              <h3>Disponibilite</h3>
+              <p>Gestion de disponibilite et reservation.</p>
+            </div>
+          </div>
+
+          <div class="active-box active-box-grid">
+            <label for="disponible" class="switch-row">
+              <input id="disponible" type="checkbox" class="switch-input" formControlName="disponible" />
+              <span class="switch-ui"></span>
+
+              <span class="switch-text">
+                <strong>Emplacement disponible</strong>
+                <small>Si active, le champ “Reserve pour” est desactive automatiquement.</small>
+              </span>
+            </label>
+
+            <div class="form-group reserve-field">
+              <label for="reservePour">Reserve pour</label>
+              <input
+                id="reservePour"
+                type="text"
+                class="form-control"
+                formControlName="reservePour"
+                placeholder="Projet / usage reserve" />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="section-header">
+            <div class="section-icon">
+              <i class="fas fa-align-left"></i>
+            </div>
+
+            <div>
+              <h3>Description et notes</h3>
+              <p>Informations complementaires pour l’equipe operationnelle.</p>
+            </div>
+          </div>
+
+          <div class="form-grid one-col">
+            <div class="form-group">
+              <label for="description">Description</label>
+              <textarea
+                id="description"
+                class="form-control textarea"
+                rows="3"
+                formControlName="description"
+                placeholder="Description"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="notes">Notes</label>
+              <textarea
+                id="notes"
+                class="form-control textarea"
+                rows="3"
+                formControlName="notes"
+                placeholder="Notes internes"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="onCancel()">
+            <i class="fas fa-xmark"></i>
+            Annuler
+          </button>
+
+          <button type="submit" class="btn btn-primary" [disabled]="submitting">
+            <span *ngIf="submitting" class="spinner-border spinner-border-sm"></span>
+            <i *ngIf="!submitting" class="fas fa-check"></i>
+            {{ isEditMode ? 'Mettre a jour' : 'Creer' }}
+          </button>
+        </div>
+
+      </form>
+    </section>
+  </div>
+</div>

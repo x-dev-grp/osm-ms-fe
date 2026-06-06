@@ -1,0 +1,89 @@
+<form [formGroup]="paramForm">
+<!--  <mat-form-field appearance="outline" class="category-filter">-->
+<!--    <mat-label>Category</mat-label>-->
+<!--    <mat-select (ngModelChange)="filtered" [(ngModel)]="selectedCategory" formControlName="category">-->
+<!--      <mat-option value="">All</mat-option>-->
+<!--      <mat-option *ngFor="let cat of categories" [value]="cat">{{ cat }}</mat-option>-->
+<!--    </mat-select>-->
+<!--  </mat-form-field>-->
+
+  <table [dataSource]="filtered" class="mat-elevation-z2" mat-table>
+    <!-- Code Column -->
+    <ng-container matColumnDef="code">
+      <th *matHeaderCellDef mat-header-cell>Code</th>
+      <td *matCellDef="let param" mat-cell>{{ param.code }}</td>
+    </ng-container>
+
+    <!-- Value Column -->
+    <ng-container matColumnDef="value">
+      <th *matHeaderCellDef mat-header-cell>Value</th>
+      <td *matCellDef="let param" class="value-cell" mat-cell>
+        <ng-container [ngSwitch]="getParameterType(param)">
+          <mat-form-field *ngSwitchCase="'DOUBLE'" appearance="outline" class="value-field">
+            <input step="0.01" [(ngModel)]="param.value" [formControlName]="'param_' + param.code" matInput required type="number">
+            <mat-error *ngIf="paramForm.get('param_' + param.code)?.hasError('required')">
+              Value is required
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field *ngSwitchCase="'INTEGER'" appearance="outline" class="value-field">
+            <input step="1" [(ngModel)]="param.value" [formControlName]="'param_' + param.code" matInput required type="number">
+            <mat-error *ngIf="paramForm.get('param_' + param.code)?.hasError('required')">
+              Value is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field *ngSwitchCase="'STRING'" appearance="outline" class="value-field string-field">
+            <textarea [(ngModel)]="param.value" [formControlName]="'param_' + param.code" matInput required rows="4"></textarea>
+            <mat-error *ngIf="paramForm.get('param_' + param.code)?.hasError('required')">
+              Value is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field *ngSwitchCase="'DATE'" appearance="outline" class="value-field">
+            <input [(ngModel)]="param.value" [formControlName]="'param_' + param.code" matInput required type="date">
+            <mat-error *ngIf="paramForm.get('param_' + param.code)?.hasError('required')">
+              Value is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-slide-toggle *ngSwitchCase="'BOOLEAN'" [(ngModel)]="param.value"
+                            [formControlName]="'param_' + param.code"
+          >
+          </mat-slide-toggle>
+
+          <mat-form-field *ngSwitchDefault appearance="outline" class="value-field">
+            <input [(ngModel)]="param.value" [formControlName]="'param_' + param.code" matInput required type="text">
+            <mat-error *ngIf="paramForm.get('param_' + param.code)?.hasError('required')">
+              Value is required
+            </mat-error>
+          </mat-form-field>
+        </ng-container>
+      </td>
+    </ng-container>
+
+    <!-- Description Column -->
+    <ng-container matColumnDef="description">
+      <th *matHeaderCellDef mat-header-cell>Description</th>
+      <td *matCellDef="let param" mat-cell>{{ param.description }}</td>
+    </ng-container>
+
+    <!-- Actions Column -->
+    <ng-container matColumnDef="action">
+      <th *matHeaderCellDef mat-header-cell></th>
+      <td *matCellDef="let param" mat-cell>
+        <button (click)="save(param)" [disabled]="param.dirty || param.invalid" aria-label="Save parameter"
+                class="save-button" mat-icon-button>
+          <mat-icon>save</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr *matHeaderRowDef="displayedColumns" class="header-row" mat-header-row></tr>
+    <tr *matRowDef="let row; columns: displayedColumns;" mat-row></tr>
+    <tr *ngIf="filtered.length === 0">
+      <td [attr.colspan]="displayedColumns.length" class="empty-state-cell">
+        Aucun parametre trouve pour cette configuration.
+      </td>
+    </tr>
+  </table>
+</form>

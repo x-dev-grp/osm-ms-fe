@@ -1,0 +1,460 @@
+// ===================================
+// Variables couleurs
+// ===================================
+$gray-50: #f8f9fa;
+$gray-100: #e9ecef;
+$gray-200: #dee2e6;
+$gray-300: #ced4da;
+$gray-400: #adb5bd;
+$gray-600: #6c757d;
+$gray-800: #343a40;
+$blue: #0d6efd;
+$blue-dark: #0b5ed7;
+$green: #198754;
+$red: #dc3545;
+
+// ===================================
+// Conteneur principal
+// ===================================
+.bc-form-container {
+  max-width: 1400px;
+  margin: 2rem auto;
+  padding: 2.5rem;
+  background: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: $gray-800;
+}
+
+// ===================================
+// Header
+// ===================================
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+
+  h1.page-title {
+    font-size: 1.875rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    i {
+      color: $blue;
+      font-size: 1.5rem;
+    }
+  }
+
+  p.text-muted {
+    font-size: 0.95rem;
+    color: $gray-600;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 0.75rem;
+
+    button {
+      font-weight: 500;
+      font-size: 0.9rem;
+      padding: 0.5rem 1.25rem;
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: 0.2s;
+
+      &.btn-cancel {
+        border: 1px solid $gray-300;
+        background: #f9f9f9;
+        color: $gray-600;
+
+        &:hover {
+          background: $gray-100;
+        }
+      }
+
+      &.btn-save {
+        background: $blue;
+        color: #fff;
+
+        &:hover:not(:disabled) {
+          background: $blue-dark;
+        }
+
+        &:disabled {
+          opacity: 0.6;
+        }
+      }
+
+      i {
+        font-size: 0.9rem;
+      }
+    }
+  }
+}
+
+// ===================================
+// Alerts
+// ===================================
+.alert {
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+
+  i {
+    font-size: 1rem;
+  }
+
+  &.alert-success {
+    background: #d1e7dd;
+    border: 1px solid #badbcc;
+    color: #0f5132;
+  }
+
+  &.alert-danger {
+    background: #f8d7da;
+    border: 1px solid #f5c2c7;
+    color: #842029;
+  }
+}
+
+// ===================================
+// Loading
+// ===================================
+.loading-state {
+  text-align: center;
+  padding: 3rem;
+  color: $gray-600;
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+
+  .spinner {
+    width: 3rem;
+    height: 3rem;
+    border: 4px solid $gray-200;
+    border-top: 4px solid $blue;
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  p {
+    font-size: 0.95rem;
+  }
+}
+
+// ===================================
+// Grille formulaire
+// ===================================
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 1.5rem;
+}
+
+// ===================================
+// Form sections (cartes)
+// ===================================
+.form-section {
+  background: #fefefe;
+  border-radius: 0.75rem;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid $gray-200;
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      i {
+        color: $blue;
+      }
+    }
+
+    .btn-add {
+      background: $green;
+      color: #fff;
+      padding: 0.4rem 0.9rem;
+      border-radius: 0.5rem;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+
+      i {
+        font-size: 0.85rem;
+      }
+
+      &:hover {
+        background: darken($green, 10%);
+      }
+    }
+  }
+}
+
+// ===================================
+// Form inputs
+// ===================================
+.form-group {
+  margin-bottom: 1rem;
+
+  label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: $gray-800;
+
+    &.required:after {
+      content: '*';
+      color: $red;
+      margin-left: 0.25rem;
+    }
+
+    i {
+      color: $gray-600;
+    }
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 0.55rem 0.85rem;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: $gray-800;
+    background: white;
+    border: 1px solid $gray-300;
+    border-radius: 0.5rem;
+    transition: border-color 0.15s, box-shadow 0.15s;
+
+    &:focus {
+      border-color: $blue;
+      outline: 0;
+      box-shadow: 0 0 0 0.2rem rgba(13,110,253,0.15);
+    }
+
+    &.is-invalid {
+      border-color: $red;
+
+      &:focus {
+        box-shadow: 0 0 0 0.2rem rgba(220,53,69,0.2);
+      }
+    }
+  }
+
+  textarea.form-control {
+    resize: vertical;
+  }
+
+  .error-message {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: $red;
+  }
+}
+
+// ===================================
+// Lignes d'articles
+// ===================================
+.ligne-article {
+  border: 1px solid $gray-200;
+  border-radius: 0.75rem;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+
+  .ligne-header {
+    padding: 0.6rem 1rem;
+    background: $gray-50;
+    border-bottom: 1px solid $gray-200;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 500;
+  }
+
+  .btn-remove {
+    background: $red;
+    color: #fff;
+    border-radius: 0.4rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.85rem;
+
+    &:hover:not(:disabled) {
+      background: darken($red, 10%);
+    }
+  }
+
+  .ligne-body {
+    padding: 1rem;
+  }
+}
+
+// ===================================
+// Dropdown articles
+// ===================================
+.article-dropdown {
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  overflow: hidden;
+  max-height: 200px;
+  overflow-y: auto;
+  background: white;
+  margin-top: 0.25rem;
+  z-index: 1000;
+
+  .article-option {
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid $gray-100;
+    transition: background 0.15s;
+
+    &:hover {
+      background: $gray-50;
+    }
+
+    .article-nom {
+      font-weight: 500;
+    }
+
+    .article-categorie {
+      font-size: 0.75rem;
+      color: $gray-600;
+    }
+  }
+}
+
+// ===================================
+// Récapitulatif total
+// ===================================
+.recap-section {
+  background: $gray-50;
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 2rem;
+  font-size: 0.9rem;
+
+  div {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .total {
+    font-size: 1rem;
+    font-weight: 600;
+    color: $green;
+  }
+}
+
+// ===================================
+// Responsive
+// ===================================
+@media (max-width: 992px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .bc-form-container {
+    padding: 1rem;
+  }
+
+  .header-section {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+
+    .action-buttons {
+      justify-content: center;
+    }
+  }
+
+  .row {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .recap-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
+// Conteneur principal déjà défini
+.bc-form-container {
+  max-width: 1400px;
+  margin: 2rem auto;
+  padding: 2.5rem;
+  background: $gray-50;
+  border-radius: 1rem;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: $gray-800;
+}
+
+// ===================================
+// Grille pour deux blocs côte à côte
+// ===================================
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; // Deux colonnes égales
+  gap: 2rem; // Espace entre les colonnes
+  align-items: start; // Alignement en haut
+}
+
+// Chaque bloc (Informations générales / Articles) en carte
+.form-section {
+  background: white;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  border: 1px solid $gray-200;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+  display: flex;
+  flex-direction: column;
+}
+
+// ===================================
+// Responsive : empilement sur tablette/mobile
+// ===================================
+@media (max-width: 992px) {
+  .form-grid {
+    grid-template-columns: 1fr; // Une seule colonne
+    gap: 1.5rem;
+  }
+}

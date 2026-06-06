@@ -1,0 +1,27 @@
+<mat-card [ngClass]="cardClass()">
+  @if (showHeader()) {
+    <mat-card-header class="card-header justify-content-between align-item-center" [ngClass]="headerClass()">
+      <div class="f-16 f-w-600 card-header-content" [class.icon-left]="effectiveIconPosition === 'left'" [class.icon-right]="effectiveIconPosition === 'right'">
+        <ng-container *ngIf="icon && effectiveIconPosition === 'left'">
+          <mat-icon [color]="iconColor()" class="card-header-icon left">{{ icon() }}</mat-icon>
+        </ng-container>
+        {{ cardTitle() }}
+        <ng-container *ngTemplateOutlet="headerTitleTemplate()"></ng-container>
+        <ng-container *ngIf="icon && effectiveIconPosition === 'right'">
+          <mat-icon [color]="iconColor()" class="card-header-icon right">{{ icon() }}</mat-icon>
+        </ng-container>
+      </div>
+      <ng-container *ngTemplateOutlet="headerOptionsTemplate()"></ng-container>
+    </mat-card-header>
+  }
+  @if (showContent()) {
+    <mat-card-content [style.padding.px]="padding()">
+      <ng-content></ng-content>
+    </mat-card-content>
+  }
+  @if (actionTemplate) {
+    <mat-card-actions [ngClass]="actionClass()">
+      <ng-container *ngTemplateOutlet="actionTemplate"></ng-container>
+    </mat-card-actions>
+  }
+</mat-card>

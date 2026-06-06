@@ -1,0 +1,147 @@
+<app-card [icon]="'swap_horiz'" [cardTitle]="getTitle() | translate">
+  <div header-action>
+    <button mat-icon-button (click)="onCancel()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+  </div>
+
+  <div class="form-container">
+    <div *ngIf="loading" class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>{{ 'COMMON.LOADING' | translate }}</p>
+    </div>
+
+    <form [formGroup]="transactionForm" (ngSubmit)="onSubmit()" class="transaction-form" *ngIf="!loading">
+      <!-- Transaction Type and Direction -->
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'TRANSACTIONS.FIELDS.TRANSACTION_TYPE' | translate }}</mat-label>
+          <mat-select formControlName="transactionType" required>
+            <mat-option value="">{{ 'COMMON.SELECT_OPTION' | translate }}</mat-option>
+            <mat-option *ngFor="let type of transactionTypes" [value]="type">
+              {{ 'TRANSACTIONS.TYPES.' + type | translate }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="transactionForm.get('transactionType')?.hasError('required')">
+            {{ 'TRANSACTIONS.ERRORS.TRANSACTION_TYPE_REQUIRED' | translate }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'TRANSACTIONS.FIELDS.DIRECTION' | translate }}</mat-label>
+          <mat-select formControlName="direction" required>
+            <mat-option value="">{{ 'COMMON.SELECT_OPTION' | translate }}</mat-option>
+            <mat-option *ngFor="let direction of transactionDirections" [value]="direction">
+              {{ 'TRANSACTIONS.DIRECTIONS.' + direction | translate }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="transactionForm.get('direction')?.hasError('required')">
+            {{ 'TRANSACTIONS.ERRORS.DIRECTION_REQUIRED' | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Amount and Currency -->
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'TRANSACTIONS.FIELDS.AMOUNT' | translate }}</mat-label>
+          <input matInput type="number" formControlName="amount" step="0.01" min="0" required>
+          <mat-icon matSuffix>attach_money</mat-icon>
+          <mat-error *ngIf="transactionForm.get('amount')?.hasError('required')">
+            {{ 'TRANSACTIONS.ERRORS.AMOUNT_REQUIRED' | translate }}
+          </mat-error>
+          <mat-error *ngIf="transactionForm.get('amount')?.hasError('min')">
+            {{ 'TRANSACTIONS.ERRORS.AMOUNT_MIN' | translate }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'TRANSACTIONS.FIELDS.CURRENCY' | translate }}</mat-label>
+          <mat-select formControlName="currency">
+            <mat-option *ngFor="let currency of currencies" [value]="currency">
+              {{ 'TRANSACTIONS.CURRENCIES.' + currency | translate }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matSuffix>monetization_on</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <!-- Payment Method and Transaction Date -->
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'TRANSACTIONS.FIELDS.PAYMENT_METHOD' | translate }}</mat-label>
+          <mat-select formControlName="paymentMethod" required>
+            <mat-option value="">{{ 'COMMON.SELECT_OPTION' | translate }}</mat-option>
+            <mat-option *ngFor="let method of paymentMethods" [value]="method">
+              {{ 'TRANSACTIONS.PAYMENT_METHODS.' + method | translate }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matSuffix>payment</mat-icon>
+          <mat-error *ngIf="transactionForm.get('paymentMethod')?.hasError('required')">
+            {{ 'TRANSACTIONS.ERRORS.PAYMENT_METHOD_REQUIRED' | translate }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'TRANSACTIONS.FIELDS.TRANSACTION_DATE' | translate }}</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="transactionDate" required>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error *ngIf="transactionForm.get('transactionDate')?.hasError('required')">
+            {{ 'TRANSACTIONS.ERRORS.TRANSACTION_DATE_REQUIRED' | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Description -->
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>{{ 'TRANSACTIONS.FIELDS.DESCRIPTION' | translate }}</mat-label>
+          <textarea matInput formControlName="description" rows="3" 
+                    placeholder="{{ 'TRANSACTIONS.PLACEHOLDERS.DESCRIPTION' | translate }}"></textarea>
+          <mat-icon matSuffix>description</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <!-- References -->
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'TRANSACTIONS.FIELDS.LOT_NUMBER' | translate }}</mat-label>
+          <input matInput formControlName="lotNumber" 
+                 placeholder="{{ 'TRANSACTIONS.PLACEHOLDERS.LOT_NUMBER' | translate }}">
+          <mat-icon matSuffix>inventory</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'TRANSACTIONS.FIELDS.INVOICE_REFERENCE' | translate }}</mat-label>
+          <input matInput formControlName="invoiceReference" 
+                 placeholder="{{ 'TRANSACTIONS.PLACEHOLDERS.INVOICE_REFERENCE' | translate }}">
+          <mat-icon matSuffix>receipt</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <!-- Receipt Reference -->
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'TRANSACTIONS.FIELDS.RECEIPT_REFERENCE' | translate }}</mat-label>
+          <input matInput formControlName="receiptReference" 
+                 placeholder="{{ 'TRANSACTIONS.PLACEHOLDERS.RECEIPT_REFERENCE' | translate }}">
+          <mat-icon matSuffix>receipt_long</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button mat-button type="button" (click)="onCancel()">
+          {{ 'COMMON.CANCEL' | translate }}
+        </button>
+        <button mat-raised-button color="primary" type="submit" 
+                [disabled]="transactionForm.invalid || loading">
+          <mat-icon *ngIf="loading">hourglass_empty</mat-icon>
+          <span *ngIf="!loading">{{ getSubmitButtonText() | translate }}</span>
+          <span *ngIf="loading">{{ 'COMMON.SAVING' | translate }}</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</app-card>

@@ -1,0 +1,29 @@
+/* Make the INNER surface take the variant color */
+.app-toast-success .mat-mdc-snackbar-surface {
+  background: #0f5132 !important;
+  color: #e8fff3 !important;
+}
+
+.app-toast-error .mat-mdc-snackbar-surface {
+  background: #842029 !important;
+  color: #ffeaea !important;
+}
+
+.app-toast-info .mat-mdc-snackbar-surface {
+  background: #063970 !important;
+  color: #e6f0ff !important;
+}
+
+.app-toast-warning .mat-mdc-snackbar-surface {
+  background: #664d03 !important;
+  color: #fff5db !important;
+}
+
+/* Optional: action button color so it stays readable */
+.app-toast-success .mat-mdc-snackbar-surface .mdc-button__label,
+.app-toast-error   .mat-mdc-snackbar-surface .mdc-button__label,
+.app-toast-info    .mat-mdc-snackbar-surface .mdc-button__label,
+.app-toast-warning .mat-mdc-snackbar-surface .mdc-button__label {
+  color: currentColor !important;
+  opacity: 0.9;
+}

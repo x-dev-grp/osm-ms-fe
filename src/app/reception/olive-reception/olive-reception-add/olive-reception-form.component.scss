@@ -1,0 +1,118 @@
+/* Layout */
+.form-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-bottom: .5rem;
+
+  h3 {
+    margin: 0;
+    font-weight: 600;
+  }
+}
+
+.form-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.section {
+  padding: 1rem;
+  border: 1px solid rgba(0, 0, 0, .06);
+  border-radius: 12px;
+  background: var(--section-bg, #fff);
+
+  h4 {
+    margin: 0 0 .75rem 0;
+    font-weight: 600;
+    font-size: 1rem;
+    opacity: .9;
+  }
+}
+
+/* Grid helpers (Bootstrap-like, but lightweight) */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.row--gap {
+  gap: .75rem 1rem;
+}
+
+.col {
+  flex: 1 1 0;
+  min-width: 220px;
+}
+
+.col-3 {
+  flex: 0 0 calc(25% - 1rem);
+  min-width: 220px;
+}
+
+.col-4 {
+  flex: 0 0 calc(33.333% - 1rem);
+  min-width: 260px;
+}
+
+.col-6 {
+  flex: 0 0 calc(50% - 1rem);
+  min-width: 320px;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+/* Operation badge */
+.op-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .35rem .6rem;
+  border-radius: 999px;
+  background: rgba(25, 118, 210, .08); /* primary-ish background */
+  color: #1967d2;
+  font-weight: 600;
+  font-size: .85rem;
+
+  &__icon {
+    font-size: 18px;
+    height: 18px;
+    width: 18px;
+  }
+}
+
+/* Actions */
+.actions {
+  justify-content: space-around;
+  display: flex;
+  gap: .75rem;
+  margin-top: .25rem;
+}
+
+/* Overlay + error */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, .08);
+  z-index: 1000;
+}
+
+.error-message {
+  padding: .75rem 1rem;
+  border-radius: 10px;
+  background: #ffeaea;
+  color: #a01818;
+  font-weight: 600;
+}

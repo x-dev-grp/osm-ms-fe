@@ -1,4 +1,432 @@
-/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+@include mat.core();
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+// from third party packages
+@import 'node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.carousel.min.css';
+@import 'node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.theme.default.min.css';
+@import 'node_modules/animate.css/animate.min.css';
+
+// quill editor
+@import 'quill/dist/quill.bubble.css';
+@import 'quill/dist/quill.snow.css';
+
+// calender
+@import 'node_modules/flatpickr/dist/flatpickr.css';
+@import 'node_modules/angular-calendar/css/angular-calendar.css';
+
+// font
+@import 'scss/fonts/fontawesome.css';
+@import 'scss/fonts/material.css';
+@import 'scss/fonts/tabler-icons.min.css';
+@import 'scss/spacing-utils.scss';
+
+// theme setup
+@import './app/theme/styles/theme-palette-colors.scss';
+@import './app/theme/styles/theme-dark-palette-colors.scss';
+@import './app/theme/styles/theme.scss';
+@include mat.all-component-typographies(theme-typography("'Inter var', sans-serif")); // theme typography
+
+// default theme
+@include mat.all-component-themes(get-light-theme($blue-theme));
+
+// generate non material classes based on theme
+.blue-theme {
+  @include generate-theme-classes($blue-theme, false); // generate non material classes based on theme
+
+  &.dark {
+    @include mat.all-component-colors(get-dark-theme($blue-dark-theme));
+    @include generate-theme-classes($blue-dark-theme, true); // generate non material classes based on theme
+  }
+}
+
+.indigo-theme {
+  @include mat.all-component-colors(get-light-theme($indigo-theme));
+  @include generate-theme-classes($indigo-theme, false); // generate non material classes based on theme
+
+  &.dark {
+    @include mat.all-component-colors(get-dark-theme($indigo-dark-theme));
+    @include generate-theme-classes($indigo-dark-theme, true); // generate non material classes based on theme
+  }
+}
+
+.purple-theme {
+  @include mat.all-component-colors(get-light-theme($purple-theme));
+  @include generate-theme-classes($purple-theme, false); // generate non material classes based on theme
+
+  &.dark {
+    @include mat.all-component-colors(get-dark-theme($purple-dark-theme));
+    @include generate-theme-classes($purple-dark-theme, true); // generate non material classes based on theme
+  }
+}
+
+.pink-theme {
+  @include mat.all-component-colors(get-light-theme($pink-theme));
+  @include generate-theme-classes($pink-theme, false); // generate non material classes based on theme
+
+  &.dark {
+    @include mat.all-component-colors(get-dark-theme($pink-dark-theme));
+    @include generate-theme-classes($pink-dark-theme, true); // generate non material classes based on theme
+  }
+}
+
+.red-theme {
+  @include mat.all-component-colors(get-light-theme($red-theme));
+  @include generate-theme-classes($red-theme, false); // generate non material classes based on theme
+
+  &.dark {
+    @include mat.all-component-colors(get-dark-theme($red-dark-theme));
+    @include generate-theme-classes($red-dark-theme, true); // generate non material classes based on theme
+  }
+}
+
+.orange-theme {
+  @include mat.all-component-colors(get-light-theme($orange-theme));
+  @include generate-theme-classes($orange-theme, false); // generate non material classes based on theme
+
+  &.dark {
+    @include mat.all-component-colors(get-dark-theme($orange-dark-theme));
+    @include generate-theme-classes($orange-dark-theme, true); // generate non material classes based on theme
+  }
+}
+
+.yellow-theme {
+  @include mat.all-component-colors(get-light-theme($yellow-theme));
+  @include generate-theme-classes($yellow-theme, false); // generate non material classes based on theme
+
+  &.dark {
+    @include mat.all-component-colors(get-dark-theme($yellow-dark-theme));
+    @include generate-theme-classes($yellow-dark-theme, true); // generate non material classes based on theme
+  }
+}
+
+.green-theme {
+  @include mat.all-component-colors(get-light-theme($green-theme));
+  @include generate-theme-classes($green-theme, false); // generate non material classes based on theme
+
+  &.dark {
+    @include mat.all-component-colors(get-dark-theme($green-dark-theme));
+    @include generate-theme-classes($green-dark-theme, true); // generate non material classes based on theme
+  }
+}
+
+.teal-theme {
+  @include mat.all-component-colors(get-light-theme($teal-theme));
+  @include generate-theme-classes($teal-theme, false); // generate non material classes based on theme
+
+  &.dark {
+    @include mat.all-component-colors(get-dark-theme($teal-dark-theme));
+    @include generate-theme-classes($teal-dark-theme, true); // generate non material classes based on theme
+  }
+}
+
+.cyan-theme {
+  @include mat.all-component-colors(get-light-theme($cyan-theme));
+  @include generate-theme-classes($cyan-theme, false); // generate non material classes based on theme
+
+  &.dark {
+    @include mat.all-component-colors(get-dark-theme($cyan-dark-theme));
+    @include generate-theme-classes($cyan-dark-theme, true); // generate non material classes based on theme
+  }
+}
+
+// common
+@import './scss/generic';
+@import './scss/common';
+@import './scss/variables';
+
+// theme layouts
+@import './app/theme/styles/layouts/menu';
+@import './app/theme/styles/layouts/compact-menu.scss';
+@import './app/theme/styles/layouts/horizontal-menu.scss';
+@import './app/theme/styles/pages/file-manager.scss';
+@import './app/theme/styles/pages/dashboard.scss';
+@import './app/theme/styles/theme-mode/rtl';
+
+// grid
+@import './app/theme/styles/grid';
+
+// Enhanced toast styles
+a.flex {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .custom-logo {
+    width: 66px;
+    height: 28px;
+    fill: var(--primary-500); // Applying the same color as original SVG
+    transition: all 0.3s ease-in-out;
+  }
+
+  .version {
+    color: var(--primary-500);
+    font-size: 14px;
+    text-decoration: none;
+  }
+
+  .version:hover {
+    color: var(--primary-700); // Slightly darker color on hover
+  }
+}
+/* Base style */
+.app-toast {
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 8px;
+  box-shadow: 0 6px 12px rgba(0,0,0,.15);
+}
+
+/* Variantes simples */
+.app-toast-success {
+  background: #0f5132;
+  color: #e8fff3;
+}
+
+.app-toast-error {
+  background: #842029;
+  color: #ffeaea;
+}
+
+.app-toast-info {
+  background: #063970;
+  color: #e6f0ff;
+}
+
+.app-toast-warning {
+  background: #664d03;
+  color: #fff5db;
+}
+.app-toast-mobile.mat-snack-bar-container {
+  margin-bottom: max(env(safe-area-inset-bottom, 0px), 12px); /* iOS safe area */
+  width: calc(100% - 24px);
+  max-width: 480px; /* keep a pleasant width */
+  border-radius: 10px;
+}
+/* Backdrop for the mobile sheet */
+.mobile-sheet-backdrop {
+  background: rgba(0, 0, 0, 0.35) !important;
+}
+
+/* Make the pane attach to the bottom on mobile */
+.mobile-bottom-sheet-dialog.cdk-overlay-pane {
+  display: flex !important;
+  align-items: flex-end !important; /* bottom */
+  justify-content: center;
+}
+
+/* Rounded top like a bottom sheet */
+.mobile-bottom-sheet-dialog .mat-mdc-dialog-container {
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* Simple slide-up animation */
+.mobile-bottom-sheet-dialog .mdc-dialog__container {
+  transform: translateY(100%);
+  transition: transform .25s ease;
+}
+.mobile-bottom-sheet-dialog .mdc-dialog--open .mdc-dialog__container {
+  transform: translateY(0);
+}
+
+/* Desktop side panel polish (optional) */
+.side-panel-dialog.cdk-overlay-pane {
+  display: flex !important;
+  align-items: stretch !important;
+  justify-content: flex-end !important;
+}
+.side-panel-dialog .mat-mdc-dialog-container {
+  border-radius: 0;
+}
+
+/* Scoped fallback for the project expedition list.
+   Keeps /projets/expeditions usable if component-scoped SCSS is not hot-reloaded. */
+.expedition-list-page.abioc-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 16px;
+  background: #f8fafc;
+
+  .header-card,
+  .table-card,
+  .stat-card,
+  .abioc-loading,
+  .abioc-empty {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+
+  .header-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 20px;
+  }
+
+  .header-left,
+  .header-right,
+  .stat-card,
+  .icon-box,
+  .stat-icon {
+    display: flex;
+    align-items: center;
+  }
+
+  .header-left {
+    gap: 16px;
+  }
+
+  .header-right {
+    gap: 16px;
+  }
+
+  .icon-box,
+  .stat-icon {
+    justify-content: center;
+    flex: 0 0 auto;
+    border-radius: 10px;
+  }
+
+  .icon-box {
+    width: 40px;
+    height: 40px;
+    background: #eff6ff;
+    color: #2563eb;
+  }
+
+  h1 {
+    margin: 0;
+    color: #1e293b;
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 0;
+    color: #64748b;
+    font-size: 13px;
+  }
+
+  .summary-count {
+    color: #1e293b;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .kpi {
+    text-align: right;
+  }
+
+  .kpi-value,
+  .stat-value {
+    display: block;
+    color: #1e293b;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .kpi-value {
+    font-size: 18px;
+  }
+
+  .kpi-label,
+  .stat-label {
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .stat-card {
+    gap: 12px;
+    min-height: 76px;
+    padding: 14px 16px;
+  }
+
+  .stat-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .stat-icon.total {
+    background: #eff6ff;
+    color: #2563eb;
+  }
+
+  .stat-icon.ready {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  .stat-icon.shipped {
+    background: #fef3c7;
+    color: #b45309;
+  }
+
+  .stat-icon.delivered {
+    background: #f0fdfa;
+    color: #0f766e;
+  }
+
+  .stat-value {
+    font-size: 20px;
+  }
+
+  .table-card {
+    overflow: hidden;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+  }
+
+  .abioc-table {
+    width: 100%;
+  }
+
+  .abioc-loading,
+  .abioc-empty {
+    min-height: 150px;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+  }
+
+  @media (max-width: 1100px) {
+    .stats-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 760px) {
+    padding: 12px;
+
+    .header-card {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .header-right {
+      width: 100%;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}

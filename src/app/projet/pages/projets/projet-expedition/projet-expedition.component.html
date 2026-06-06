@@ -1,0 +1,439 @@
+<div class="article-container" *ngIf="!loading; else loadingTpl">
+  <!-- LIST VIEW HEADER -->
+  <div class="page-header" *ngIf="!selectedExpedition">
+    <div class="header-left">
+      <div class="header-icon">
+        <mat-icon>local_shipping</mat-icon>
+      </div>
+      <div>
+        <h1 class="page-title">Expéditions & Livraisons</h1>
+        <p class="page-subtitle">{{ project?.code || projectId }} - {{ project?.client?.nom || 'Client non défini' }}</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-outline" (click)="onBack()">
+        <mat-icon>assignment</mat-icon> Projet
+      </button>
+      <button class="btn-create-icon" (click)="toggleCreateForm()" [disabled]="!canCreateExpedition()" [matTooltip]="createExpeditionDisabledMessage()">
+        <mat-icon>{{ showCreateForm ? 'close' : 'add' }}</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="filters-card" *ngIf="!selectedExpedition && !showCreateForm && projectDeliveryComplete">
+    <div class="card-title-olive" style="margin-bottom: 6px;">
+      <mat-icon>verified</mat-icon> Projet livre
+    </div>
+    <p style="margin: 0; color: #5d6b4f; font-weight: 700;">
+      La quantite cible est entierement livree. Nouvelle expedition desactivee.
+    </p>
+  </div>
+
+  <!-- DETAILS VIEW HEADER -->
+  <div class="page-header" *ngIf="selectedExpedition && !showCreateForm">
+    <div class="header-left">
+      <div class="header-icon">
+        <mat-icon>local_shipping</mat-icon>
+      </div>
+      <div>
+        <h1 class="page-title d-flex align-items-center gap-2">
+          {{ selectedExpedition.expeditionNumber }}
+          <span class="badge" [ngClass]="statusClass(selectedExpedition.status)">
+            {{ statusLabel(selectedExpedition.status) }}
+          </span>
+        </h1>
+        <p class="page-subtitle">{{ project?.code || projectId }} - {{ project?.client?.nom || 'Client non défini' }}</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-reset text-danger" (click)="generatePDF(selectedExpedition)" matTooltip="Imprimer le bon de livraison">
+        <mat-icon>picture_as_pdf</mat-icon>
+      </button>
+      <button class="btn-reset text-danger" (click)="deleteExpedition(selectedExpedition)" *ngIf="canDelete()" matTooltip="Supprimer l'expédition">
+        <mat-icon>delete</mat-icon>
+      </button>
+      <button class="btn-reset text-warning" (click)="doAction('cancel')" *ngIf="canAction('cancel')" matTooltip="Annuler l'expédition">
+        <mat-icon>cancel</mat-icon>
+      </button>
+      <button class="btn-reset" (click)="deselectExpedition()">
+        <mat-icon>arrow_back</mat-icon> Retour
+      </button>
+    </div>
+  </div>
+
+  <!-- SEARCH FILTERS (LIST VIEW) -->
+  <div class="filters-card" *ngIf="!selectedExpedition && !showCreateForm">
+    <form class="filters-grid" [formGroup]="searchForm" (ngSubmit)="searchByCode()">
+      <div class="filter-group" style="grid-column: 1 / span 1;">
+        <label>Code expédition ou QR</label>
+        <div class="input-with-icon">
+          <mat-icon>qr_code_scanner</mat-icon>
+          <input type="text" class="form-control" formControlName="code" placeholder="Scanner ou taper le code..." />
+        </div>
+      </div>
+      <div class="filter-actions">
+        <button class="btn-reset" type="submit" style="width: 100%; justify-content: center; background: #eef4e4; color: #44651f; border-color: #cbd8b8;">
+          <mat-icon>search</mat-icon> Rechercher
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- CREATE FORM -->
+  <div class="filters-card" *ngIf="!selectedExpedition && showCreateForm">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+      <h2 style="margin: 0; color: #203b13; font-weight: 850;">Nouvelle expédition</h2>
+    </div>
+    <form class="create-form" [formGroup]="createForm">
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Destination</label>
+          <input type="text" class="form-control" formControlName="destination" placeholder="Lieu de livraison" />
+        </div>
+        <div class="form-field">
+          <label>Date prévue</label>
+          <input type="date" class="form-control" formControlName="plannedShipDate" />
+        </div>
+        <div class="form-field full">
+          <label>Notes</label>
+          <input type="text" class="form-control" formControlName="notes" placeholder="Informations utiles" />
+        </div>
+      </div>
+
+      <div class="line-form-container mt-3" [formGroup]="createLinesForm">
+        <div style="margin-bottom: 10px;">
+          <h3 style="margin: 0; color: #203b13; font-size: 15px; font-weight: 800;">OF du projet à expédier</h3>
+          <p style="margin: 4px 0 0; font-size: 13px; color: #6d735f;">Maximum autorisé : {{ remainingProjectQuantity }} {{ project?.unite === 'LITRES' ? 'L' : 'u' }}</p>
+        </div>
+
+        <div class="table-responsive" *ngIf="createLineControls.length; else noProjectOfTpl" formArrayName="lines">
+          <table class="table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>OF</th>
+                <th>Article / Produit</th>
+                <th>Quantité</th>
+                <th>Lot source</th>
+                <th>Volume</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let control of createLineControls.controls; let i = index" [formGroupName]="i">
+                <td>
+                  <input type="checkbox" formControlName="selected" (change)="clampCreateLineQuantity(i)" />
+                </td>
+                <td>
+                  <code style="background: #f8fafc; padding: 4px 8px; border-radius: 6px;">{{ projectOfs[i]?.code || '-' }}</code>
+                </td>
+                <td>{{ projectOfs[i]?.productName || projectOfs[i]?.skuCode || projectOfs[i]?.articleNom || '-' }}</td>
+                <td>
+                  <input type="number" class="form-control" style="min-height: 38px;" formControlName="quantity" min="0" [max]="getCreateLineMax(i)" (input)="clampCreateLineQuantity(i)" />
+                </td>
+                <td>
+                  <input type="text" class="form-control" style="min-height: 38px;" formControlName="lotNumber" placeholder="Lot" />
+                </td>
+                <td>
+                  <input type="number" class="form-control" style="min-height: 38px;" step="0.01" formControlName="volume" placeholder="m3" />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-reset" type="button" (click)="createExpedition()" [disabled]="creating || !canCreateExpedition() || selectedCreateLineQuantity > remainingProjectQuantity || remainingProjectQuantity <= 0" style="background: #44651f; color: white; border-color: #203b13;">
+          <mat-icon>add</mat-icon> Créer l'expédition
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- TABLE LIST VIEW -->
+  <div class="table-card" *ngIf="!selectedExpedition && !showCreateForm">
+    <div class="table-responsive">
+      <table class="table" *ngIf="expeditions.length; else noExpTpl">
+        <thead>
+          <tr>
+            <th>N° Expédition</th>
+            <th>Date Prévue</th>
+            <th>Statut</th>
+            <th>Transporteur</th>
+            <th>Destination</th>
+            <th class="text-center">Articles</th>
+            <th class="text-center">Volume</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let exp of expeditions" (click)="selectExpedition(exp)" style="cursor: pointer;">
+            <td>
+              <div class="fw-bold">{{ exp.expeditionNumber || 'Expédition' }}</div>
+              <small style="color: #6d735f">{{ exp.createdDate | date: 'dd/MM/yyyy' }}</small>
+            </td>
+            <td>{{ exp.plannedShipDate ? (exp.plannedShipDate | date: 'dd/MM/yyyy') : '-' }}</td>
+            <td>
+              <span class="badge" [ngClass]="statusClass(exp.status)">
+                {{ statusLabel(exp.status) }}
+              </span>
+            </td>
+            <td>{{ exp.carrierName || '-' }}</td>
+            <td>{{ exp.destination || '-' }}</td>
+            <td class="text-center fw-bold">{{ exp.totalQuantity || 0 }}</td>
+            <td class="text-center">{{ exp.totalVolume ? exp.totalVolume + ' m³' : '-' }}</td>
+            <td class="text-center">
+              <button class="dropdown-btn" (click)="$event.stopPropagation(); selectExpedition(exp)">
+                <mat-icon>visibility</mat-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- DETAIL VIEW -->
+  <div class="detail-section" *ngIf="selectedExpedition && !showCreateForm">
+    <div class="detail-grid">
+      <div class="detail-main">
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <mat-icon>inventory_2</mat-icon>
+            <div>
+              <span class="metric-value">{{ selectedExpedition.totalQuantity || 0 }}</span>
+              <span class="metric-label">Articles total</span>
+            </div>
+          </div>
+          <div class="metric-card" *ngIf="selectedExpedition.totalVolume">
+            <mat-icon>straighten</mat-icon>
+            <div>
+              <span class="metric-value">{{ selectedExpedition.totalVolume }} m³</span>
+              <span class="metric-label">Volume total</span>
+            </div>
+          </div>
+          <div class="metric-card">
+            <mat-icon>calendar_today</mat-icon>
+            <div>
+              <span class="metric-value">{{ selectedExpedition.plannedShipDate ? (selectedExpedition.plannedShipDate | date:'dd/MM/yy') : '-' }}</span>
+              <span class="metric-label">Date prévue</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="filters-card">
+          <div class="card-title-olive">
+            <mat-icon>route</mat-icon> Étapes de l'expédition
+          </div>
+          <div class="workflow-content">
+            <div class="action-form" [formGroup]="actionForm">
+              <input type="text" class="form-control" formControlName="comment" placeholder="Commentaire d'action" />
+            </div>
+            <div class="workflow-actions mt-3">
+              <button class="btn-reset" (click)="doAction('ready')" *ngIf="canAction('ready')" [disabled]="actionLoading">Prêt pour validation</button>
+              <button class="btn-reset" style="color: #0369a1; background: #e0f2fe; border-color: #bae6fd;" (click)="doAction('validate')" *ngIf="canAction('validate')" [disabled]="actionLoading">Valider l'expédition</button>
+              <button class="btn-reset" style="color: #86198f; background: #fae8ff; border-color: #f5d0fe;" (click)="doAction('ship')" *ngIf="canAction('ship')" [disabled]="actionLoading">Marquer comme expédié</button>
+              <button class="btn-reset" style="color: #166534; background: #dcfce7; border-color: #bbf7d0;" (click)="doAction('deliver')" *ngIf="canAction('deliver')" [disabled]="actionLoading">Confirmer la livraison</button>
+              <button class="btn-reset" (click)="doAction('close')" *ngIf="canAction('close')" [disabled]="actionLoading">Clôturer le dossier</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="filters-card">
+          <div class="card-title-olive">
+            <mat-icon>local_shipping</mat-icon> Logistique & Destination
+          </div>
+          <form [formGroup]="editForm" (ngSubmit)="saveExpedition()">
+            <div class="form-grid">
+              <div class="form-field">
+                <label>Destination</label>
+                <input type="text" class="form-control" formControlName="destination" placeholder="Lieu de livraison" [readonly]="!isEditable()" />
+              </div>
+              <div class="form-field">
+                <label>Date prévue</label>
+                <input type="date" class="form-control" formControlName="plannedShipDate" [readonly]="!isEditable()" />
+              </div>
+              <div class="form-field">
+                <label>Transporteur</label>
+                <input type="text" class="form-control" formControlName="carrierName" placeholder="Nom du transporteur" [readonly]="!isEditable()" />
+              </div>
+              <div class="form-field">
+                <label>Chauffeur</label>
+                <input type="text" class="form-control" formControlName="driverName" placeholder="Nom du chauffeur" [readonly]="!isEditable()" />
+              </div>
+              <div class="form-field">
+                <label>Camion</label>
+                <input type="text" class="form-control" formControlName="truckNumber" placeholder="Plaque d'immatriculation" [readonly]="!isEditable()" />
+              </div>
+              <div class="form-field">
+                <label>Tracking</label>
+                <input type="text" class="form-control" formControlName="trackingNumber" placeholder="Numéro de suivi" [readonly]="!isEditable()" />
+              </div>
+              <div class="form-field">
+                <label>Incoterm</label>
+                <input type="text" class="form-control" formControlName="incoterm" placeholder="Ex: EXW, FOB" [readonly]="!isEditable()" />
+              </div>
+              <div class="form-field full">
+                <label>Notes</label>
+                <textarea class="form-control" formControlName="notes" placeholder="Informations complémentaires" [readonly]="!isEditable()"></textarea>
+              </div>
+            </div>
+            <div class="form-actions" *ngIf="isEditable()">
+              <button class="btn-reset" style="background: #44651f; color: white; border-color: #203b13;" type="submit" [disabled]="saving">
+                <mat-icon>{{ saving ? 'sync' : 'save' }}</mat-icon> Enregistrer
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="table-card">
+          <div style="padding: 20px 24px; border-bottom: 1px solid #e2dccb; display: flex; justify-content: space-between; align-items: center;">
+            <div class="card-title-olive" style="margin: 0;">
+              <mat-icon>format_list_bulleted</mat-icon> Articles à expédier
+            </div>
+            <button class="btn-outline" (click)="toggleAddLine()" *ngIf="isEditable() && !projectDeliveryComplete">
+              <mat-icon>{{ showAddLine ? 'remove' : 'add' }}</mat-icon> Ajouter un OF
+            </button>
+          </div>
+
+          <div class="line-form-container m-3" *ngIf="showAddLine && isEditable() && !projectDeliveryComplete">
+            <form [formGroup]="lineForm" (ngSubmit)="addLine()">
+              <div class="form-grid align-items-end">
+                <div class="form-field" style="flex: 2">
+                  <label>Ordre de fabrication</label>
+                  <select class="form-control" formControlName="ofId" (change)="onOfSelected($event)">
+                    <option value="">Sélectionner un OF</option>
+                    <option *ngFor="let of of projectOfs" [value]="of.id">
+                      {{ of.code }} ({{ of.quantiteCible }} {{ of.unite === 'LITRES' ? 'L' : 'u' }})
+                    </option>
+                  </select>
+                </div>
+                <div class="form-field">
+                  <label>Quantité</label>
+                  <input type="number" class="form-control" formControlName="quantity" />
+                </div>
+                <div class="form-field">
+                  <label>Lot</label>
+                  <input type="text" class="form-control" formControlName="lotNumber" placeholder="Numéro de lot" />
+                </div>
+                <div class="form-field">
+                  <label>Volume (m³)</label>
+                  <input type="number" class="form-control" step="0.01" formControlName="volume" />
+                </div>
+                <div class="form-actions" style="margin-top: 0">
+                  <button class="btn-reset" type="submit" [disabled]="addingLine || lineForm.invalid">
+                    <mat-icon>check</mat-icon> Confirmer
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table" *ngIf="selectedExpedition.lines?.length; else noLinesTpl">
+              <thead>
+                <tr>
+                  <th>OF</th>
+                  <th>Article / Produit</th>
+                  <th class="text-center">Quantité</th>
+                  <th>Lot</th>
+                  <th>Volume</th>
+                  <th *ngIf="isEditable()"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let line of selectedExpedition.lines">
+                  <td><code style="background: #f8fafc; padding: 4px 8px; border-radius: 6px;">{{ line.ofCode || '-' }}</code></td>
+                  <td>{{ line.articleName || '-' }}</td>
+                  <td class="text-center fw-bold">{{ line.quantity }} {{ line.unit }}</td>
+                  <td>{{ line.lotNumber || '-' }}</td>
+                  <td>{{ line.volume ? line.volume + ' m³' : '-' }}</td>
+                  <td *ngIf="isEditable()" class="text-center">
+                    <button class="dropdown-btn text-danger" (click)="removeLine(line.id!)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="traceability-panel card" *ngIf="selectedExpedition.lines?.length">
+            <div class="traceability-panel-header" (click)="toggleTraceability()">
+              <div class="card-title-olive">
+                <mat-icon>history</mat-icon>
+                Chaîne de traçabilité (réception → filtration → OF → étiquettes)
+              </div>
+              <mat-icon>{{ showTraceability ? 'expand_less' : 'expand_more' }}</mat-icon>
+            </div>
+
+            <div class="traceability-summary" *ngIf="getTraceabilityItems(selectedExpedition).length">
+              <span class="summary-chip" *ngFor="let item of getTraceabilityItems(selectedExpedition)">
+                {{ item.label }}: {{ item.value }}
+              </span>
+            </div>
+
+            <div class="traceability-body" *ngIf="showTraceability">
+              <div class="alert-frozen" *ngIf="isTraceabilityFrozen(selectedExpedition)">
+                <mat-icon>lock</mat-icon>
+                Snapshot figé à la validation — ce document ne changera plus.
+              </div>
+              <div class="alert-live" *ngIf="!isTraceabilityFrozen(selectedExpedition)">
+                <mat-icon>info</mat-icon>
+                Aperçu en direct des lignes de cette expédition. La traçabilité sera figée à la validation.
+              </div>
+
+              <div class="traceability-loading" *ngIf="traceabilityLoading">
+                <p>Chargement de la traçabilité…</p>
+              </div>
+
+              <app-traceability-timeline
+                *ngIf="!traceabilityLoading && displayTraceabilityData() as traceData"
+                [traceabilityData]="traceData">
+              </app-traceability-timeline>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-sidebar">
+        <div class="qr-card">
+          <img *ngIf="getQrImage(selectedExpedition)" [src]="getQrImage(selectedExpedition)" alt="QR Code" />
+          <div class="qr-info">
+            <span class="qr-label">Code traçabilité</span>
+            <code>{{ selectedExpedition.publicCode || '-' }}</code>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loadingTpl>
+  <div class="loading-state">
+    <div class="spinner"></div>
+    <p>Chargement du module expédition...</p>
+  </div>
+</ng-template>
+
+<ng-template #noExpTpl>
+  <div class="empty-state">
+    <mat-icon>inventory_2</mat-icon>
+    <p>Aucune expédition n'a encore été créée pour ce projet.</p>
+    <button class="btn-reset mt-3" type="button" (click)="toggleCreateForm()" [disabled]="!canCreateExpedition()" style="background: #eef4e4;">
+      <mat-icon>add</mat-icon> Nouvelle expédition
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #noLinesTpl>
+  <div class="empty-state small">
+    <p>Cette expédition est vide. Ajoutez des articles ci-dessus.</p>
+  </div>
+</ng-template>
+
+<ng-template #noProjectOfTpl>
+  <div class="empty-state small">
+    <p>Aucun OF disponible pour créer une expédition.</p>
+  </div>
+</ng-template>

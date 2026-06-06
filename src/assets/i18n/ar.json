@@ -1,0 +1,3362 @@
+{
+  "ACCESS_DENIED": {
+    "GO_HOME": "العودة إلى الصفحة الرئيسية",
+    "GO_HOME_TITLE": "العودة إلى الصفحة الرئيسية",
+    "HELP": "مساعدة",
+    "HELP_TITLE": "فتح المساعدة",
+    "ICON_TITLE": "الوصول مرفوض",
+    "LOGOUT": "تسجيل الخروج",
+    "LOGOUT_TITLE": "تسجيل الخروج",
+    "MESSAGE": "ليس لديك الأذونات المطلوبة لعرض هذه الصفحة.",
+    "TITLE": "الوصول مرفوض"
+  },
+  "ADMIN": {
+    "ADD_COMPANY_USER_TITLE": "إنشاء شركة ومستخدم إداري لها",
+    "CANCEL": "إلغاء",
+    "COMPANY_NAME": "اسم الشركة",
+    "COMPANY_NAME_REQUIRED": "اسم الشركة مطلوب",
+    "COMPANY_SECTION": "معلومات الشركة",
+    "SAVE": "حفظ",
+    "SEARCH": "بحث",
+    "USER_SECTION": "معلومات المستخدم"
+  },
+  "ADMIN_COMPANY_PROFILE": {
+    "CAPITAL": "رأس المال",
+    "CITY": "المدينة",
+    "EMAIL": "البريد الإلكتروني",
+    "GOVERNORATE": "الولاية",
+    "LEGAL_FORM": "الشكل القانوني",
+    "LEGAL_NAME": "الاسم القانوني",
+    "PHONE": "الهاتف",
+    "REG_NUMBER": "رقم التسجيل",
+    "TAX_ID": "الرقم الضريبي"
+  },
+  "APPLICATION_CONFIG": {
+    "CUSTOM_THEME": {
+      "BLUE": "الموضوع الأزرق",
+      "DESCRIPTION": "اختر لونك الأساسي",
+      "GREEN": "الموضوع الأخضر",
+      "INDIGO": "الموضوع النيلي",
+      "ORANGE": "الموضوع البرتقالي",
+      "PINK": "الموضوع الوردي",
+      "PURPLE": "الموضوع البنفسجي",
+      "RED": "الموضوع الأحمر",
+      "TEAL": "الموضوع الفيروزي",
+      "TITLE": "الموضوع المخصص",
+      "YELLOW": "الموضوع الأصفر"
+    },
+    "LAYOUT_WIDTH": {
+      "BOXED": "مُربّع",
+      "DESCRIPTION": "اختر عرض التخطيط",
+      "FULL": "عرض كامل",
+      "TITLE": "عرض التخطيط"
+    },
+    "MENU_ORIENTATION": {
+      "DESCRIPTION": "اختر اتجاه القائمة",
+      "HORIZONTAL": "أفقي",
+      "TITLE": "اتجاه القائمة",
+      "VERTICAL": "عمودي"
+    },
+    "SIDEBAR_CAPTION": {
+      "DESCRIPTION": "إظهار/إخفاء عنوان الشريط الجانبي",
+      "HIDE": "إخفاء",
+      "SHOW": "إظهار",
+      "TITLE": "عنوان الشريط الجانبي"
+    },
+    "THEME_CONTRAST": {
+      "DESCRIPTION": "اختر تباين الموضوع",
+      "GRAY": "رمادي",
+      "LIGHT": "فاتح",
+      "TITLE": "تباين الموضوع"
+    },
+    "THEME_LAYOUT": {
+      "DESCRIPTION": "LTR/RTL",
+      "LTR": "من اليسار إلى اليمين",
+      "RTL": "من اليمين إلى اليسار",
+      "TITLE": "تخطيط الموضوع"
+    },
+    "THEME_MODE": {
+      "AUTO": "تلقائي",
+      "DARK": "مظلم",
+      "DESCRIPTION": "اختر وضع الإضاءة أو الظلام أو التلقائي",
+      "LIGHT": "فاتح",
+      "TITLE": "وضع الموضوع"
+    },
+    "TITLE": "تكوين الموضوع"
+  },
+  "Account Profile": "ملف التعريف",
+  "Action Bar": "شريط الإجراءات",
+  "Add": "إضافة",
+  "Add New Product": "إضافة منتج جديد",
+  "Admin Panel": "لوحة الإدارة",
+  "Analytics": "التحليلات",
+  "Apex Chart": "مخطط Apex",
+  "Application": "التطبيق",
+  "Apply": "تطبيق",
+  "Authentication": "المصادقة",
+  "Authentication 1": "المصادقة 1",
+  "Authentication 2": "المصادقة 2",
+  "Authentication 3": "المصادقة 3",
+  "BANK_ACCOUNTS": {
+    "ACTIONS": {
+      "CANCEL": "إلغاء",
+      "EDIT": "تعديل",
+      "PRINT": "طباعة",
+      "SAVE": "حفظ",
+      "UPDATE": "تحديث"
+    },
+    "ADD_TITLE": "إضافة حساب بنكي",
+    "DETAILS_TITLE": "تفاصيل الحساب البنكي",
+    "EDIT_TITLE": "تعديل الحساب البنكي",
+    "ERRORS": {
+      "ACCOUNT_TYPE_REQUIRED": "نوع الحساب مطلوب",
+      "BANK_BRANCH_REQUIRED": "فرع البنك مطلوب",
+      "BANK_NAME_REQUIRED": "اسم البنك مطلوب",
+      "BIC_LENGTH": "يجب أن يكون BIC/SWIFT بين 8 و11 حرفًا",
+      "BIC_REQUIRED": "BIC/SWIFT مطلوب",
+      "CURRENCY_REQUIRED": "العملة مطلوبة",
+      "IBAN_LENGTH": "يجب أن يكون IBAN بطول 24 حرفًا",
+      "IBAN_REQUIRED": "IBAN مطلوب",
+      "RIB_LENGTH": "يجب أن يكون RIB بطول 24 حرفًا",
+      "RIB_REQUIRED": "RIB مطلوب"
+    },
+    "FIELDS": {
+      "ACCOUNT_TYPE": "نوع الحساب",
+      "ACTIVE": "نشط",
+      "BANK_BRANCH": "فرع البنك",
+      "BANK_NAME": "اسم البنك",
+      "BIC_SWIFT": "BIC/SWIFT",
+      "BUSINESS": "تجاري",
+      "CHECKING": "حساب جاري",
+      "CURRENCY": "العملة",
+      "IBAN": "IBAN",
+      "INACTIVE": "غير نشط",
+      "RIB": "RIB",
+      "SAVINGS": "حساب توفير",
+      "STATUS": "الحالة"
+    },
+    "TITLE": "الحسابات البنكية"
+  },
+  "BASE_TYPE": {
+    "ADD": "إضافة نوع",
+    "ADD_TITLE": "",
+    "CATEGORY": "",
+    "OIL_TYPE": "نوع الزيت",
+    "OIL_VARIETY": "تنوع الزيت",
+    "OLIVE_TYPE": "نوع الزيتون",
+    "OLIVE_VARIETY": "تنوع الزيتون",
+    "OPERATION_TYPE": "نوع العملية",
+    "PARCEL": "الحزمة",
+    "PRODUCTION_METHOD": "طريقة الإنتاج",
+    "REGION": "المنطقة",
+    "SUPPLIER_TYPE": "نوع المورد",
+    "WASTE_TYPE": "نوع النفايات"
+  },
+  "Basic": "أساسي",
+  "COMMON": {
+    "BACK": "الخلف",
+    "CANCEL": "إلغاء",
+    "CLOSE": "إغلاق",
+    "DELETE": "حذف",
+    "EDIT": "تعديل",
+    "LAST_UPDATED": "آخر تحديث في ",
+    "LOADING": "جارٍ التحميل...",
+    "NO": "لا",
+    "PRINT": "طباعة",
+    "REFRESH": "تحديث",
+    "SAVE": "حفظ",
+    "SAVING": "جارٍ الحفظ...",
+    "SELECT_OPTION": "اختر خيارًا",
+    "TRANSACTIONS": "المعاملات",
+    "UPDATE": "تحديث",
+    "VALIDATION": {
+      "EMAIL": "يرجى إدخال عنوان بريد إلكتروني صالح",
+      "MAX_LENGTH": "أقصى طول هو {{maxLength}} حرفًا",
+      "REQUIRED": "هذا الحقل مطلوب"
+    },
+    "VIEW": "عرض",
+    "YES": "نعم"
+  },
+  "COMPANY_PROFILE_FORM": {
+    "CNSS_NUMBER": "رقم CNSS",
+    "CNSS_NUMBER_REQUIRED": "رقم CNSS مطلوب.",
+    "LEGAL_NAME": "الاسم القانوني",
+    "LEGAL_NAME_REQUIRED": "الاسم القانوني مطلوب.",
+    "REG_NUMBER": "رقم التسجيل",
+    "REG_NUMBER_REQUIRED": "رقم التسجيل مطلوب.",
+    "TAX_ID": "الرقم الضريبي",
+    "TAX_ID_REQUIRED": "الرقم الضريبي مطلوب."
+  },
+  "COMPANY_PROFILE_FORM_UI": {
+    "CNSS_NUMBER": "رقم CNSS",
+    "CNSS_NUMBER_REQUIRED": "رقم CNSS مطلوب.",
+    "LEGAL_NAME": "الاسم القانوني",
+    "LEGAL_NAME_REQUIRED": "الاسم القانوني مطلوب.",
+    "REG_NUMBER": "رقم التسجيل",
+    "REG_NUMBER_REQUIRED": "رقم التسجيل مطلوب.",
+    "TAX_ID": "الرقم الضريبي",
+    "TAX_ID_REQUIRED": "الرقم الضريبي مطلوب."
+  },
+  "COMPANY_PROFILE_UI": {
+    "ACTIONS": {
+      "CANCEL": "إلغاء",
+      "EDIT": "تعديل",
+      "RESET": "إعادة ضبط",
+      "SAVE": "حفظ",
+      "UPDATE": "تحديث"
+    },
+    "ADDRESS_INFO": {
+      "ADDRESS": "العنوان",
+      "ADDRESS_REQUIRED": "العنوان مطلوب.",
+      "CITY_REQUIRED": "المدينة مطلوبة.",
+      "GOVERNORATE_REQUIRED": "الولاية مطلوبة.",
+      "POSTAL_CODE_REQUIRED": "الرمز البريدي مطلوب.",
+      "TITLE": "معلومات العنوان"
+    },
+    "COMPANY_INFO": {
+      "CAPITAL": "رأس المال",
+      "CAPITAL_REQUIRED": "رأس المال مطلوب.",
+      "CNSS_NUMBER": "رقم CNSS",
+      "CNSS_NUMBER_REQUIRED": "رقم CNSS مطلوب.",
+      "CREATION_DATE": "تاريخ الإنشاء",
+      "CREATION_DATE_REQUIRED": "تاريخ الإنشاء مطلوب.",
+      "LEGAL_FORM": "الشكل القانوني",
+      "LEGAL_FORMS": {
+        "OTHER": "آخر",
+        "SA": "SA",
+        "SARL": "SARL",
+        "SNC": "SNC",
+        "SUARL": "SUARL"
+      },
+      "LEGAL_FORM_REQUIRED": "الشكل القانوني مطلوب.",
+      "LEGAL_NAME": "الاسم القانوني",
+      "LEGAL_NAME_REQUIRED": "الاسم القانوني مطلوب.",
+      "REG_NUMBER": "رقم التسجيل",
+      "REG_NUMBER_REQUIRED": "رقم التسجيل مطلوب.",
+      "TAX_ID": "الرقم الضريبي",
+      "TAX_ID_REQUIRED": "الرقم الضريبي مطلوب.",
+      "TITLE": "معلومات الشركة"
+    },
+    "CONTACT_INFO": {
+      "EMAIL": "البريد الإلكتروني",
+      "EMAIL_REQUIRED": "البريد الإلكتروني مطلوب.",
+      "PHONE": "الهاتف",
+      "PHONE_REQUIRED": "الهاتف مطلوب.",
+      "TITLE": "معلومات التواصل",
+      "WEBSITE": "الموقع الإلكتروني",
+      "WEBSITE_REQUIRED": "الموقع الإلكتروني مطلوب."
+    },
+    "LOGO": {
+      "CLICK_BROWSE": "أو انقر للتصفح",
+      "DRAG_DROP": "اسحب وأفلت شعارك هنا",
+      "FILE_TYPES": "PNG أو JPEG، أقصى 200KB",
+      "REMOVE": "إزالة الشعار",
+      "REQUIRED": "الشعار مطلوب.",
+      "TITLE": "شعار الشركة"
+    },
+    "MESSAGES": {
+      "CONFIRM_RESET": "هل أنت متأكد أنك تريد إعادة ضبط النموذج؟ سيتم فقدان جميع التغييرات غير المحفوظة."
+    }
+  },
+  "CONFIGURATION": {
+    "PRODUCTION": {
+      "TITLE": "تكوين الإنتاج"
+    },
+    "RECEPTION": {
+      "BTNS": {
+        "CANCEL": "إلغاء",
+        "CREATE": "إنشاء سجل",
+        "UPDATE": "تحديث السجل"
+      },
+      "FIELDS": {
+        "DESCRIPTION": "الوصف",
+        "FILTER": "تصفية",
+        "NAME": "الاسم",
+        "TYPE": "اختر النوع"
+      },
+      "TABLE": {
+        "ACTIONS": "الإجراءات",
+        "DESCRIPTION": "الوصف",
+        "NAME": "الاسم",
+        "TYPE": "النوع"
+      },
+      "TITLE": "تكوين الاستقبال"
+    },
+    "SITE": {
+      "BTNS": {
+        "SAVE": "حفظ"
+      },
+      "FIELDS": {
+        "ADDRESS": "العنوان",
+        "BANK": "البنك",
+        "COMPANY": "الشركة",
+        "LOGO": "الشعار",
+        "PATENT_NUMBER": "رقم البراءة",
+        "PHONE1": "الهاتف 1",
+        "PHONE2": "الهاتف 2",
+        "RIB": "RIB",
+        "WEBSITE": "الموقع الإلكتروني"
+      },
+      "TITLE": "التكوين العام"
+    },
+    "STOCK": {
+      "TITLE": "تكوين المخزون"
+    },
+    "TABS": {
+      "PRODUCTION": "تكوين الإنتاج",
+      "RECEPTION": "تكوين الاستقبال",
+      "SITE": "تكوين الموقع",
+      "STOCK": "تكوين المخزون"
+    }
+  },
+  "CONTRACT": {
+    "ADD": "إضافة عقد",
+    "ADD_TITLE": "إضافة عقد",
+    "CANCEL": "إلغاء",
+    "EDIT_TITLE": "تعديل العقد",
+    "END_DATE": "تاريخ الانتهاء",
+    "MESSAGES": {
+      "EMPLOYEE_REQUIRED": "الموظف مطلوب",
+      "ERROR_LOADING": "خطأ أثناء تحميل العقد",
+      "ERROR_UPDATING": "خطأ أثناء تحديث العقد",
+      "UPDATE_SUCCESS": "تم تحديث العقد بنجاح"
+    },
+    "POSITION": "المنصب",
+    "POSTE": "موقع العقد",
+    "SALARY": "الراتب",
+    "SAVE": "حفظ العقد",
+    "START_DATE": "تاريخ البدء",
+    "STATUS": "حالة العقد",
+    "TITLE": "العقود",
+    "TYPE": "النوع",
+    "UPDATE": "تحديث العقد"
+  },
+  "CONTRAT": {
+    "STATUS": {
+      "ACTIVE": "نشط",
+      "EXPIRED": "منتهي",
+      "SUSPENDED": "معلق"
+    }
+  },
+  "CONTROLE_QUALITE": {
+    "BUTTONS": {
+      "BACK": "الخلف",
+      "CANCEL": "إلغاء",
+      "SUBMIT": "إرسال",
+      "VALIDATE": "تحقق"
+    },
+    "CATEGORIES": {
+      "LAMPANTE": "لامة",
+      "VIERGE": "بكر",
+      "VIERGE_EXTRA": "بكر ممتاز"
+    },
+    "FINANCIAL": {
+      "OIL_QUANTITY": "كمية الزيت (كغ)",
+      "OIL_TOTAL_VALUE": "القيمة الإجمالية للزيت (د.ت)",
+      "OIL_TYPE": "نوع الزيت",
+      "OIL_UNIT_PRICE": "سعر الوحدة للزيت (د.ت/كغ)",
+      "PAID_AMOUNT": "المبلغ المدفوع (د.ت)",
+      "PRICE": "السعر الكلي (د.ت)",
+      "TITLE": "المعلومات المالية",
+      "UNIT_PRICE": "سعر الوحدة (د.ت/كغ)",
+      "UNPAID_AMOUNT": "المبلغ غير المدفوع (د.ت)"
+    },
+    "FORM": {
+      "FIELDS": {
+        "CATEGORY": "الفئة",
+        "DELIVERY_DATE": "تاريخ التسليم",
+        "DELIVERY_NUMBER": "رقم التسليم",
+        "DELIVERY_TYPE": "نوع التسليم",
+        "LOT_NUMBER": "رقم الدفعة",
+        "REGION": "المنطقة",
+        "SUPPLIER": "المورد"
+      },
+      "SECTIONS": {
+        "DELIVERY_INFO": "معلومات التسليم",
+        "FINANCIAL_INFO": "المعلومات المالية",
+        "QUALITY_CONTROL": "مراقبة الجودة"
+      },
+      "TITLE": "نموذج مراقبة الجودة",
+      "VALIDATION": {
+        "MAX_VALUE": "يجب أن تكون القيمة أقل من {{max}}",
+        "MIN_VALUE": "يجب أن تكون القيمة أكبر من 0",
+        "REQUIRED": "هذا الحقل مطلوب"
+      }
+    },
+    "LOADING": "جارٍ تحميل معاملات مراقبة الجودة...",
+    "MESSAGES": {
+      "ERROR": {
+        "INVALID_FORM": "نموذج غير صالح أو بيانات تسليم ناقصة",
+        "LOAD": "خطأ أثناء تحميل البيانات",
+        "SAVE": "خطأ أثناء حفظ البيانات",
+        "STORAGE_UNIT_NOT_FOUND": "خطأ: لم يتم العثور على وحدة التخزين"
+      },
+      "INFO": {
+        "LOADING": "جارٍ التحميل...",
+        "NO_STORAGE_UNIT": "لم يتم اختيار وحدة تخزين"
+      },
+      "SUCCESS": {
+        "SAVE": "تم تحديث البيانات بنجاح",
+        "STORAGE_UNIT_SAVED": "تم تحديث البيانات بنجاح - الوحدة: {{name}}"
+      }
+    },
+    "OIL_DETAILS": {
+      "OIL_TYPE": "نوع الزيت",
+      "OIL_VARIETY": "تنوع الزيت",
+      "OLIVE_TYPE": "نوع الزيتون",
+      "OPERATION_TYPE": "نوع العملية",
+      "TITLE": "تفاصيل الزيت"
+    },
+    "OLIVE_DETAILS": {
+      "OLIVE_TYPE": "نوع الزيتون",
+      "OLIVE_VARIETY": "تنوع الزيتون",
+      "OPERATION_TYPE": "نوع العملية",
+      "PARCEL": "الحزمة",
+      "SACK_COUNT": "عدد الأكياس",
+      "TITLE": "تفاصيل الزيتون",
+      "TREATMENT_DATE": "تاريخ المعالجة"
+    },
+    "PLACEHOLDER": {
+      "ENTER_VALUE": "أدخل قيمة"
+    },
+    "QUALITY_PARAMETERS": {
+      "ACIDITY": "الحموضة",
+      "DAMAGED": "التالفة",
+      "FERMENTED": "المتخمرة",
+      "INFESTED": "المصابة",
+      "K232": "K232",
+      "K270": "K270",
+      "TITLE": "معايير الجودة"
+    },
+    "SECTIONS": {
+      "FINANCIAL": "المعلومات المالية",
+      "OLIVE_PRICING": "سعر شراء الزيتون",
+      "PARAMETERS": "معايير الجودة"
+    },
+    "STATUS": {
+      "COMPLETED": "اكتملت مراقبة الجودة"
+    },
+    "STORAGE_UNIT": {
+      "ERRORS": {
+        "NOT_FOUND": "لم يتم العثور على وحدة التخزين",
+        "REQUIRED": "وحدة التخزين مطلوبة"
+      },
+      "LABEL": "وحدة التخزين",
+      "MESSAGES": {
+        "SELECTED": "تم اختيار وحدة التخزين: {{name}} (للتحقق)",
+        "SELECTION_ERROR": "خطأ: لم يتم العثور على وحدة التخزين"
+      },
+      "PLACEHOLDER": "اختر وحدة تخزين"
+    },
+    "SUBTITLE": "أكمل تقييم الجودة لهذا التسليم",
+    "TITLE": "مراقبة الجودة"
+  },
+  "CUSTOMERS": {
+    "ACTIONS": {
+      "BACK": "العودة إلى القائمة",
+      "CANCEL": "إلغاء",
+      "CREATE": "إنشاء عميل",
+      "EDIT": "تعديل",
+      "UPDATE": "تحديث العميل"
+    },
+    "ADD_TITLE": "إضافة عميل جديد",
+    "CATEGORIES": {
+      "BUSINESS": "تجاري",
+      "INDIVIDUAL": "فردي"
+    },
+    "EDIT_TITLE": "تعديل العميل",
+    "FIELDS": {
+      "ACTIVE": "نشط",
+      "ADDRESS": "العنوان",
+      "CATEGORY": "الفئة",
+      "CONTACT_PERSON": "شخص الاتصال",
+      "COUNTRY": "البلد",
+      "CREATED_DATE": "تاريخ الإنشاء",
+      "CUSTOMER_LAST_NAME": "اللقب",
+      "CUSTOMER_NAME": "الاسم الأول",
+      "EMAIL": "البريد الإلكتروني",
+      "FAX": "الفاكس",
+      "MATRICULE_FISCAL": "الرقم الضريبي",
+      "MOBILE": "الجوال",
+      "NOTES": "ملاحظات",
+      "NUM_CIN": "رقم البطاقة الوطنية",
+      "PHONE": "الهاتف",
+      "POSTAL_CODE": "الرمز البريدي"
+    },
+    "MESSAGES": {
+      "ERROR_LOADING": "خطأ أثناء تحميل العميل",
+      "ERROR_SAVING": "خطأ أثناء إنشاء العميل",
+      "ERROR_UPDATING": "خطأ أثناء تحديث العميل",
+      "LOADING": "جارٍ تحميل العميل...",
+      "NOT_FOUND": "العميل غير موجود",
+      "NOT_FOUND_DESC": "العميل الذي تبحث عنه غير موجود أو تم حذفه.",
+      "SAVE_SUCCESS": "تم إنشاء العميل بنجاح",
+      "UPDATE_SUCCESS": "تم تحديث العميل بنجاح"
+    },
+    "PLACEHOLDERS": {
+      "ADDRESS": "أدخل العنوان",
+      "CONTACT_PERSON": "أدخل شخص الاتصال",
+      "COUNTRY": "أدخل البلد",
+      "CUSTOMER_LAST_NAME": "أدخل لقب العميل",
+      "CUSTOMER_NAME": "أدخل اسم العميل",
+      "EMAIL": "أدخل عنوان البريد الإلكتروني",
+      "FAX": "أدخل رقم الفاكس",
+      "MATRICULE_FISCAL": "أدخل الرقم الضريبي",
+      "MOBILE": "أدخل رقم الجوال",
+      "NOTES": "أدخل ملاحظات إضافية",
+      "NUM_CIN": "أدخل رقم CIN",
+      "PHONE": "أدخل رقم الهاتف",
+      "POSTAL_CODE": "أدخل الرمز البريدي"
+    },
+    "SECTIONS": {
+      "ADDITIONAL_INFO": "معلومات إضافية",
+      "ADDRESS_INFO": "معلومات العنوان",
+      "BASIC_INFO": "المعلومات الأساسية",
+      "CONTACT_INFO": "معلومات التواصل"
+    },
+    "STATUS": {
+      "ACTIVE": "نشط",
+      "INACTIVE": "غير نشط"
+    },
+    "TITLE": "العملاء"
+  },
+  "Calender": "التقويم",
+  "Chart": "مخطط",
+  "Charts": "المخططات",
+  "Check Mail": "فحص البريد",
+  "Checkout": "الدفع",
+  "Clipboard": "لوحة الملاحظات",
+  "Code Verification": "تأكيد الرمز",
+  "Coming Soon": "قريبًا",
+  "Components": "المكونات",
+  "Contact Us": "اتصل بنا",
+  "Courses": "الدورات",
+  "Create": "إنشاء",
+  "Customer": "عميل",
+  "DASHBOARD": {
+    "ANALYTICS": {
+      "BASE_UNIT_PRICE_TREND": {
+        "TITLE": ""
+      },
+      "QUALITY_CONTROL": "توزيع مراقبة الجودة",
+      "RECENT_RECEPTIONS": "حجم الاستقبالات الأخيرة",
+      "RECEPTION_STATUS": "الاستقبالات حسب الحالة",
+      "RECEPTION_TREND": {
+        "DAILY": "يومي",
+        "MONTHLY": "شهري",
+        "TITLE": "اتجاه الاستقبال",
+        "WEEKLY": "أسبوعي"
+      },
+      "RECEPTION_TYPE": "الاستقبالات حسب النوع",
+      "VOLUME_BY_STORAGE": "الحجم حسب وحدة التخزين",
+      "VOLUME_BY_SUPPLIER": "الحجم حسب المورد"
+    },
+    "CHART": {
+      "SIZE": {
+        "LARGE": "كبير",
+        "MEDIUM": "متوسط",
+        "SMALL": "صغير"
+      }
+    },
+    "DATE_FILTER": {
+      "APPLY": "تطبيق",
+      "CLEAR": "مسح",
+      "CLEAR_FILTER": "مسح التصفية",
+      "CUSTOM_RANGE": "نطاق مخصص",
+      "FROM_DATE": "من التاريخ",
+      "LAST_MONTH": "الشهر الماضي",
+      "LAST_WEEK": "الأسبوع الماضي",
+      "LAST_YEAR": "السنة الماضية",
+      "PRESET_PERIODS": "فترات محددة مسبقًا",
+      "SELECT_END_DATE": "حدد تاريخ الانتهاء",
+      "SELECT_START_DATE": "حدد تاريخ البداية",
+      "THIS_MONTH": "هذا الشهر",
+      "THIS_WEEK": "هذا الأسبوع",
+      "THIS_YEAR": "هذه السنة",
+      "TITLE": "تصفية التاريخ",
+      "TODAY": "اليوم",
+      "TO_DATE": "إلى التاريخ",
+      "YESTERDAY": "أمس"
+    },
+    "KPIS": {
+      "AVG_UNIT_PRICE": "متوسط سعر الوحدة",
+      "AVG_VOLUME": "المتوسط الحجمي",
+      "COMPLETED_RECEPTIONS": "الاستقبالات المكتملة",
+      "PENDING_RECEPTIONS": "الاستقبالات المعلقة",
+      "TOTAL_PAID": "المدفوع كليًا",
+      "TOTAL_RECEPTIONS": "إجمالي الاستقبالات",
+      "TOTAL_UNPAID": "المستحق غير المدفوع",
+      "TOTAL_VOLUME": "الحجم الكلي (ط)",
+      "UNIQUE_SUPPLIERS": "الموردون الفريدون"
+    },
+    "LOADING": {
+      "TEXT": "جارٍ التحميل..."
+    },
+    "TITLE": {
+      "RECEPTION": "إحصائيات الاستقبال"
+    }
+  },
+  "DELIVERIES": {
+    "ACTIONS": {
+      "DELETE": "حذف",
+      "EDIT": "تعديل",
+      "GENERATE_RECEIPT": "إنشاء إيصال",
+      "QUALITY_CONTROL": "مراقبة الجودة",
+      "VIEW": "عرض"
+    },
+    "DETAILS": {
+      "BUTTONS": {
+        "BACK": "العودة إلى القائمة"
+      },
+      "LINKED_OIL_RECEPTION_DESC": "",
+      "MESSAGES": {
+        "DATA_ERROR": "خطأ أثناء تحميل البيانات.",
+        "INVALID_ID": "معرف استقبال غير صالح.",
+        "LOAD_ERROR": "خطأ أثناء تحميل التفاصيل."
+      },
+      "NOT_PROVIDED": "غير مقدم",
+      "SECTIONS": {
+        "ADDITIONAL_INFO": "معلومات إضافية",
+        "GENERAL_INFO": "المعلومات العامة",
+        "INFO_CONTROL_QUALITE": "معلومات مراقبة الجودة",
+        "INFO_PRIX": "معلومات التسعير",
+        "INFO_PRODUCTION": "معلومات الإنتاج",
+        "OIL_INFO": "معلومات الزيت",
+        "OLIVE_INFO": "معلومات الزيتون",
+        "OLIVE_OIL_INFO": "معلومات الزيتون والزيت",
+        "PROCESSING": "العصر",
+        "STORAGE": "وحدة التخزين",
+        "STORAGE_UNIT": "وحدة التخزين",
+        "SUPPLIER": "المورد",
+        "TRUCK": "معلومات الشاحنة",
+        "WEIGHT_CONTAINER ": "معلومات الوزن"
+      },
+      "TITLE": "تفاصيل الاستقبال"
+    },
+    "FIELDS": {
+      "CATEGORY_OLIVE_OIL": "فئة زيت الزيتون",
+      "DELIVERY_DATE": "تاريخ التسليم",
+      "DELIVERY_NUMBER": "رقم التسليم",
+      "DELIVERY_TYPE": "نوع التسليم",
+      "GLOBAL_LOT_NUMBER": "رقم الدفعة العالمي",
+      "GROSS_WEIGHT": "الوزن الإجمالي (كغ)",
+      "LOT_NUMBER": "رقم الدفعة",
+      "LOT_OLIVE_NUMBER": "رقم دفعة المرجع",
+      "MILL_MACHINE": "آلة العصر",
+      "MILL_START": "بداية العصر",
+      "NET_WEIGHT": "الوزن الصافي (كغ)",
+      "OIL_QUANTITY": "كمية الزيت",
+      "OIL_TYPE": "نوع الزيت",
+      "OLIVE_LOT_NUMBER": "رقم دفعة الزيتون",
+      "OLIVE_QUANTITY": "كمية الزيتون",
+      "OLIVE_TYPE": "نوع الزيتون",
+      "OLIVE_VARIETY": "تنوع الزيتون",
+      "OPERATION_TYPE": "نوع العملية",
+      "PAID_AMOUNT": "المبلغ المدفوع",
+      "PARCEL": "الحزمة",
+      "PAYMENT_MODE": "طريقة الدفع",
+      "PAYMENT_STATUS": "الدفع",
+      "REGION": "المنطقة",
+      "RENDEMENT": "العائد",
+      "SACK_COUNT": "عدد الأكياس",
+      "STATUS": "الحالة",
+      "STORAGE_UNIT": "وحدة التخزين",
+      "SUPPLIER": "المورد",
+      "SUPPLIER_ADDRESS": "العنوان",
+      "SUPPLIER_BANK": "البنك",
+      "SUPPLIER_EMAIL": "البريد الإلكتروني",
+      "SUPPLIER_LASTNAME": "",
+      "SUPPLIER_NAME": "الاسم",
+      "SUPPLIER_PHONE": "الهاتف",
+      "SUPPLIER_RIB": "RIB",
+      "TRITURATION_PRICE": "سعر الطحن",
+      "TRT_DATE": "تاريخ الطحن",
+      "TRUCK_PLATE": "لوحة الشاحنة",
+      "TRUCK_STATE": "حالة الشاحنة",
+      "UNPAID_AMOUNT": "المبلغ غير المدفوع",
+      "YIELD": "العائد"
+    },
+    "FORM": {
+      "BUTTONS": {
+        "ADD": "إضافة",
+        "BACK": "الخلف",
+        "CANCEL": "إلغاء",
+        "SAVE": "حفظ",
+        "UPDATE": "تحديث"
+      },
+      "FIELDS": {
+        "DELIVERY_DATE": "تاريخ التسليم",
+        "DELIVERY_NUMBER": "رقم التسليم",
+        "DELIVERY_TYPE": "نوع التسليم",
+        "GROSS_WEIGHT": "الوزن الإجمالي (كغ)",
+        "LOT_NUMBER": "رقم الدفعة",
+        "OIL_QUANTITY": "كمية الزيت (كغ)",
+        "OIL_TYPE": "نوع الزيت",
+        "OIL_VARIETY": "تنوع الزيت",
+        "OLIVE_TYPE": "نوع الزيتون",
+        "OPERATION_TYPE": "نوع العملية",
+        "PAID_AMOUNT": "المبلغ المدفوع (د.ت)",
+        "PARCEL": "الحزمة",
+        "REGION": "المنطقة",
+        "STORAGE_UNIT": "وحدة التخزين",
+        "SUPPLIER": "المورد",
+        "TOTAL_PRICE": "السعر الكلي (د.ت)",
+        "TRUCK_PLATE": "لوحة الشاحنة",
+        "TRUCK_STATE": "حالة الشاحنة",
+        "UNIT_PRICE": "سعر الوحدة (د.ت/ل)",
+        "UNPAID_AMOUNT": "المبلغ المتبقي (د.ت)"
+      },
+      "HINTS": {
+        "DELIVERY_NUMBER": "رقم تسليم تلقائي",
+        "LOT_NUMBER": "معرف فريد للدفعة",
+        "OIL_QUANTITY": "الكمية بالكيلوجرام",
+        "UNIT_PRICE": "السعر لكل لتر"
+      },
+      "MESSAGES": {
+        "CREATE_ERROR": "خطأ أثناء إنشاء التسليم",
+        "CREATE_SUCCESS": "تم إنشاء التسليم بنجاح",
+        "ERROR": {
+          "ADD": "خطأ أثناء إضافة استقبال الزيت",
+          "LOAD": "خطأ أثناء تحميل بيانات استقبال الزيت",
+          "UPDATE": "خطأ أثناء تحديث استقبال الزيت"
+        },
+        "INCOMPLETE_FORM": "نموذج غير مكتمل أو فشل التحقق",
+        "LOAD_ERROR": "خطأ أثناء تحميل بيانات التسليم",
+        "SAVE_ERROR": "خطأ أثناء حفظ تسليم الزيت",
+        "SAVE_SUCCESS": "تم حفظ تسليم الزيت بنجاح",
+        "STORAGE_CAPACITY": "وحدة التخزين {{name}} لديها {{available}} لتر متاحة من سعة {{max}} لتر",
+        "STORAGE_UNIT_FORMAT": "{{name}} ({{currentVolume}}/{{maxCapacity}} لتر)",
+        "SUCCESS": {
+          "ADD": "تم إضافة استقبال الزيت بنجاح",
+          "UPDATE": "تم تحديث استقبال الزيت بنجاح"
+        },
+        "UPDATE_ERROR": "خطأ أثناء تحديث التسليم",
+        "UPDATE_SUCCESS": "تم تحديث تسليم الزيت بنجاح"
+      },
+      "PLACEHOLDERS": {
+        "SEARCH_OIL_TYPE": "ابحث عن نوع...",
+        "SEARCH_OIL_VARIETY": "ابحث عن تنوع...",
+        "SEARCH_OLIVE_TYPE": "ابحث عن نوع...",
+        "SEARCH_OPERATION_TYPE": "ابحث عن نوع عملية...",
+        "SEARCH_REGION": "ابحث عن منطقة...",
+        "SEARCH_STORAGE_UNIT": "ابحث عن وحدة تخزين...",
+        "SEARCH_SUPPLIER": "ابحث عن مورد..."
+      },
+      "SECTIONS": {
+        "CLIENT_REGION": "العميل والمنطقة",
+        "DELIVERY_INFO": "معلومات التسليم",
+        "FINANCIAL_INFO": "المعلومات المالية",
+        "GENERAL_INFO": "المعلومات العامة",
+        "OIL_DETAILS": "تفاصيل الزيت",
+        "QUALITY_CONTROL_INFO": "معلومات مراقبة الجودة",
+        "RECEPTION_PRICE_INFO": "معلومات سعر الاستقبال",
+        "SUPPLIER_REGION": "المورد والمنطقة",
+        "VEHICLE_INFO": "معلومات المركبة",
+        "WEIGHT_QUANTITY": "الوزن والكمية"
+      },
+      "TITLE": {
+        "ADD": "إضافة تسليم زيت",
+        "EDIT": "تعديل تسليم زيت"
+      },
+      "TRUCK_STATES": {
+        "COMPLIANT": "متوافق",
+        "NON_COMPLIANT": "غير متوافق"
+      },
+      "VALIDATION": {
+        "EXCEEDS_CAPACITY": "الكمية تتجاوز سعة الخزان المتاحة",
+        "MIN_VALUE": "يجب أن تكون القيمة أكبر من أو تساوي 0",
+        "NET_GREATER": "لا يمكن أن تكون الكمية أكبر من الوزن الإجمالي",
+        "REMAINING_CAPACITY": "{{available}} لتر متبقية",
+        "REQUIRED": "هذا الحقل مطلوب"
+      }
+    },
+    "MESSAGES": {
+      "CANCELLED_ERROR": "خطأ أثناء إلغاء الاستقبال",
+      "CANCELLED_SUCCESS": "تم إلغاء الاستقبال بنجاح",
+      "DELETE_ERROR": "خطأ أثناء الحذف",
+      "DELETE_SUCCESS": "تم حذف الاستقبال بنجاح",
+      "LOAD_ERROR": "خطأ أثناء تحميل الاستقبالات",
+      "SENT_TO_PRODUCTION_ERROR": "خطأ أثناء إرسال الاستقبال للإنتاج",
+      "SENT_TO_PRODUCTION_SUCCESS": "تم إرسال الاستقبال للإنتاج بنجاح"
+    },
+    "OIL_TITLE": "سجل تسليمات الزيت والزيتون",
+    "OLIVE_TITLE": "تسليمات الزيتون",
+    "OPERATION_TYPE": {
+      "BASE": "أساسي",
+      "EXCHANGE": "تبادل",
+      "INTERNAL_RECEPTION": "استقبال داخلي",
+      "OIL_PURCHASE": "شراء زيت",
+      "OLIVE_PURCHASE": "شراء زيتون",
+      "PAYMENT": "دفع",
+      "SIMPLE_RECEPTION": "استقبال بسيط"
+    },
+    "STATUS": {
+      "CANCELLED": "ملغى",
+      "COMPLETED": "مكتمل",
+      "IN_PROGRESS": "قيد التنفيذ",
+      "NEW": "جديد",
+      "REFUSED": "مرفوض"
+    }
+  },
+  "DEPARTMENT": {
+    "DETAIL": {
+      "EMPLOYEES": "الموظفون",
+      "GENERAL_INFO": "المعلومات العامة",
+      "MANAGER_INFO": "معلومات المدير",
+      "MANAGER_NOT_FOUND": "لم يتم العثور على المدير",
+      "NO_EMPLOYEES": "لم يتم العثور على موظفين",
+      "TITLE": "تفاصيل القسم"
+    },
+    "FORM": {
+      "DESCRIPTION": "الوصف",
+      "NAME": "الاسم"
+    },
+    "MESSAGES": {
+      "NOT_FOUND": "القسم غير موجود"
+    }
+  },
+  "DIVORCED": "مطلق",
+  "Dashboard": "لوحة التحكم",
+  "Data": "البيانات",
+  "Default": "افتراضي",
+  "Delivery": "التسليم",
+  "Details": "التفاصيل",
+  "Document": "الوثيقة",
+  "Drop Zone": "منطقة السحب والإفلات",
+  "E-commerce": "التجارة الإلكترونية",
+  "EMPLOYEE": {
+    "ADDRESS": "العنوان",
+    "ADD_TITLE": "إضافة موظف",
+    "BIRTH_DATE": "تاريخ الميلاد",
+    "CANCEL": "إلغاء",
+    "CIN": "CIN",
+    "CITY": "المدينة",
+    "COUNTRY": "البلد",
+    "DEPARTMENT": "القسم",
+    "DETAIL": {
+      "CONTACT_INFO": "معلومات التواصل",
+      "PERSONAL_INFO": "المعلومات الشخصية",
+      "PROFESSIONAL_INFO": "المعلومات المهنية",
+      "TITLE": "تفاصيل الموظف"
+    },
+    "EDIT_TITLE": "تعديل الموظف",
+    "EMAIL": "البريد الإلكتروني",
+    "FIRST_NAME": "الاسم الأول",
+    "FORM": {
+      "ADDRESS": "العنوان",
+      "BIRTH_DATE": "تاريخ الميلاد",
+      "CIN": "CIN",
+      "CITY": "المدينة",
+      "COUNTRY": "البلد",
+      "DEPARTMENT": "القسم",
+      "EMAIL": "البريد الإلكتروني",
+      "GENDER": "الجنس",
+      "HIRE_DATE": "تاريخ التعيين",
+      "MARITAL_STATUS": "الحالة الاجتماعية",
+      "PHONE": "الهاتف",
+      "POSTAL_CODE": "الرمز البريدي"
+    },
+    "GENDER": {
+      "FEMALE": "أنثى",
+      "MALE": "ذكر"
+    },
+    "HIRE_DATE": "تاريخ التعيين",
+    "IS_ACTIVE": "نشط",
+    "LAST_NAME": "اللقب",
+    "MARITAL_STATUS": {
+      "MARRIED": "متزوج",
+      "SINGLE": "أعزب"
+    },
+    "MESSAGES": {
+      "NOT_FOUND": "الموظف غير موجود"
+    },
+    "PHONE": "الهاتف",
+    "POSTAL_CODE": "الرمز البريدي",
+    "SAVE": "حفظ",
+    "STATUS": {
+      "ACTIVE": "نشط",
+      "INACTIVE": "غير نشط"
+    },
+    "UPDATE": "تحديث"
+  },
+  "EXPENSE": {
+    "CATEGORY": {
+      "AGRICULTURE_SUPPLIES": "لوازم الزراعة",
+      "CLEANING_SUPPLIES": "لوازم التنظيف",
+      "CONSTRUCTION_MATERIALS": "مواد البناء",
+      "COURIER_POST_SHIPPING": "البريد والشحن",
+      "DONATIONS_SOCIAL": "الهبات والاجتماعية",
+      "ELECTRICAL_MATERIALS_WORKS": "مواد كهربائية وأعمال",
+      "FACTORY_CONSUMABLES": "مستهلكات المصنع",
+      "FUEL": "الوقود",
+      "GOVERNMENT_TAXES_FEES": "الضرائب والرسوم الحكومية",
+      "HEAVY_EQUIPMENT_WORKS": "أعمال المعدات الثقيلة",
+      "LAB_ANALYSIS_FEES": "رسوم تحليل المختبر",
+      "LUBRICANTS": "الزيوت التشحيم",
+      "MACHINE_MAINTENANCE_REPAIR": "صيانة وإصلاح الآلات",
+      "MEALS_CATERING": "الوجبات والتغذية",
+      "NON_OPERATING_PERSONAL": "غير تشغيلي وشخصي",
+      "OFFICE_SUPPLIES_PRINTING": "لوازم المكتب والطباعة",
+      "OTHER": "آخر",
+      "PACKAGING_CONTAINERS": "التعبئة والتغليف",
+      "PLUMBING_MATERIALS": "مواد السباكة",
+      "SAFETY_INSURANCE": "السلامة والتأمين",
+      "TOLLS_AND_ROAD_FEES": "الرسوم والضرائب على الطرق",
+      "TOOLS_HARDWARE_SERVICES": "الأدوات والعتاد والخدمات",
+      "TRANSPORT_LOGISTICS": "النقل واللوجستيات",
+      "UTILITIES_WATER": "المرافق والمياه",
+      "VEHICLE_PARTS_SERVICE": "قطع الغيار وخدمة المركبات"
+    }
+  },
+  "EXPENSES": {
+    "ACTIONS": {
+      "CANCEL": "إلغاء",
+      "EDIT": "تعديل",
+      "PRINT": "طباعة",
+      "SAVE": "حفظ",
+      "UPDATE": "تحديث"
+    },
+    "ADD_TITLE": "إضافة مصاريف",
+    "DETAILS_TITLE": "تفاصيل المصروفات",
+    "EDIT_TITLE": "تعديل المصروفات",
+    "ERRORS": {
+      "AMOUNT_MIN": "يجب أن يكون المبلغ موجبًا",
+      "AMOUNT_REQUIRED": "المبلغ مطلوب",
+      "DATE_REQUIRED": "التاريخ مطلوب",
+      "INVOICE_REF_REQUIRED": "مرجع الفاتورة مطلوب",
+      "OBJECT_REQUIRED": "الهدف مطلوب",
+      "PAYMENT_METHOD_REQUIRED": "طريقة الدفع مطلوبة",
+      "PURCHASE_NATURE_REQUIRED": "طبيعة الشراء مطلوبة",
+      "STATUS_REQUIRED": "الحالة مطلوبة"
+    },
+    "FIELDS": {
+      "AMOUNT": "المبلغ",
+      "APPROVAL_DATE": "تاريخ الموافقة",
+      "APPROVED": "مقبول",
+      "CATEGORY": "الفئة",
+      "CREATED_BY": "أنشأ بواسطة",
+      "INVOICE_REF": "مرجع الفاتورة",
+      "NOTES": "ملاحظات",
+      "OBJECT": "الهدف",
+      "PAYMENT_METHOD": "طريقة الدفع",
+      "PURCHASE_NATURE": "طبيعة الشراء",
+      "RECEIPT_NUMBER": "رقم الإيصال",
+      "STATUS": "الحالة",
+      "VENDOR": "المورد"
+    },
+    "HINT": {
+      "NOTES_OPTIONAL": "اختياري"
+    },
+    "PLACEHOLDER": {
+      "AMOUNT": 0.0,
+      "CATEGORY": "مثل: مصاريف تشغيلية",
+      "CREATED_BY": "مثل: admin",
+      "INVOICE_REF": "مثل: FAC-2024-001",
+      "NOTES": "أضف ملاحظات إضافية...",
+      "OBJECT": "مثل: شراء ورق",
+      "PURCHASE_NATURE": "مثل: لوازم مكتبية",
+      "RECEIPT_NUMBER": "مثل: 123456",
+      "VENDOR": "مثل: Stationery SARL"
+    },
+    "SECTION": {
+      "APPROVAL": "الموافقة",
+      "GENERAL_INFO": "المعلومات العامة",
+      "NOTES": "ملاحظات",
+      "PAYMENT_DETAILS": "تفاصيل الدفع"
+    },
+    "TITLE": "المصروفات"
+  },
+  "Edit": "تعديل",
+  "Editor": "محرر",
+  "Enter your password": "أدخل كلمة المرور الخاصة بك",
+  "Error 404": "خطأ 404",
+  "Error 500": "خطأ 500",
+  "FEMALE": "أنثى",
+  "FINANCE_TAB": "تكوين المالية",
+  "FORGOT_PASSWORD": {
+    "BACK_TO_LOGIN": "العودة إلى تسجيل الدخول",
+    "EMAIL": "البريد الإلكتروني",
+    "EMAIL_INVALID": "يرجى إدخال عنوان بريد إلكتروني صالح",
+    "EMAIL_REQUIRED": "البريد الإلكتروني مطلوب",
+    "ERROR_MESSAGE": "حدث خطأ أثناء معالجة طلبك. يرجى المحاولة مرة أخرى لاحقًا.",
+    "SERVICE_UNAVAILABLE": "الخدمة غير متاحة. يرجى المحاولة مرة أخرى لاحقًا.",
+    "SUBMIT": "إرسال رابط إعادة تعيين",
+    "SUCCESS_MESSAGE": "إذا كان هناك حساب موجود بهذا البريد الإلكتروني، فستتلقى رابط إعادة تعيين كلمة المرور قريبًا.",
+    "TITLE": "نسيت كلمة المرور"
+  },
+  "File Manager": "مدير الملفات",
+  "Finance": "التمويل",
+  "Forgot Password": "نسيت كلمة المرور",
+  "Form Validation": "التحقق من النموذج",
+  "Form Wizard": "معالج النماذج",
+  "Forms": "النماذج",
+  "GENERAL_CONFIG": {
+    "ACTIONS": {
+      "CANCEL": "إلغاء",
+      "EDIT": "تعديل",
+      "RESET": "إعادة ضبط",
+      "SAVE": "حفظ",
+      "UPDATE": "تحديث"
+    },
+    "CAPITAL": "رأس المال",
+    "CITY": "المدينة",
+    "EMAIL": "البريد الإلكتروني",
+    "EXPANDABLE": {
+      "CONFIGURATIONS": "التكوينات",
+      "FINANCE_CONFIG": "تكوين المالية",
+      "HR_CONFIG": "تكوين الموارد البشرية",
+      "OTHER_CONFIG": "تكوين آخر",
+      "PRODUCTION_CONFIG": "تكوين الإنتاج"
+    },
+    "MESSAGES": {
+      "LOAD_ERROR": "تعذّر تحميل الإعدادات العامة.",
+      "LOGO_FORMAT": "يجب أن يكون الشعار ملفًا بصيغة JPEG أو PNG.",
+      "LOGO_TOO_LARGE": "حجم ملف الشعار كبير جدًا."
+    },
+    "TITLE": "التكوين العام"
+  },
+  "GENERAL_CONFIG.CITY": "المدينة",
+  "GENERAL_CONFIG.EMAIL": "البريد الإلكتروني",
+  "GENERAL_CONFIG.GOVERNORATE": "الولاية",
+  "GENERAL_CONFIG.LEGAL_FORM": "الشكل القانوني",
+  "GENERAL_CONFIG.LEGAL_NAME": "الاسم القانوني",
+  "GENERAL_CONFIG.PHONE": "الهاتف",
+  "GENERAL_CONFIG.REG_NUMBER": "رقم التسجيل",
+  "GENERAL_CONFIG.TAX_ID": "الرقم الضريبي",
+  "GENERAL_CONFIG_UI": {
+    "ACTIONS": {
+      "CANCEL": "إلغاء",
+      "EDIT": "تعديل",
+      "RESET": "إعادة ضبط",
+      "SAVE": "حفظ",
+      "UPDATE": "تحديث"
+    },
+    "ADDRESS_INFO": {
+      "ADDRESS": "العنوان",
+      "ADDRESS_REQUIRED": "العنوان مطلوب.",
+      "CITY_REQUIRED": "المدينة مطلوبة.",
+      "GOVERNORATE_REQUIRED": "الولاية مطلوبة.",
+      "POSTAL_CODE_REQUIRED": "الرمز البريدي مطلوب.",
+      "TITLE": "معلومات العنوان"
+    },
+    "COMPANY_INFO": {
+      "CAPITAL": "رأس المال",
+      "CAPITAL_REQUIRED": "رأس المال مطلوب.",
+      "CNSS_NUMBER": "رقم CNSS",
+      "CNSS_NUMBER_REQUIRED": "رقم CNSS مطلوب.",
+      "CREATION_DATE": "تاريخ الإنشاء",
+      "CREATION_DATE_REQUIRED": "تاريخ الإنشاء مطلوب.",
+      "LEGAL_FORM": "الشكل القانوني",
+      "LEGAL_FORMS": {
+        "OTHER": "آخر",
+        "SA": "SA",
+        "SARL": "SARL",
+        "SNC": "SNC",
+        "SUARL": "SUARL"
+      },
+      "LEGAL_FORM_REQUIRED": "الشكل القانوني مطلوب.",
+      "LEGAL_NAME": "الاسم القانوني",
+      "LEGAL_NAME_REQUIRED": "الاسم القانوني مطلوب.",
+      "REG_NUMBER": "رقم التسجيل",
+      "REG_NUMBER_REQUIRED": "رقم التسجيل مطلوب.",
+      "TAX_ID": "الرقم الضريبي",
+      "TAX_ID_REQUIRED": "الرقم الضريبي مطلوب.",
+      "TITLE": "معلومات الشركة"
+    },
+    "CONFIGURATIONS": "التكوينات",
+    "CONTACT_INFO": {
+      "EMAIL": "البريد الإلكتروني",
+      "EMAIL_REQUIRED": "البريد الإلكتروني مطلوب.",
+      "PHONE": "الهاتف",
+      "PHONE_REQUIRED": "الهاتف مطلوب.",
+      "TITLE": "معلومات التواصل",
+      "WEBSITE": "الموقع الإلكتروني",
+      "WEBSITE_REQUIRED": "الموقع الإلكتروني مطلوب."
+    },
+    "FINANCE_TAB": "تكوين المالية",
+    "HR_TAB": "تكوين الموارد البشرية",
+    "LOGO": {
+      "CLICK_BROWSE": "أو انقر للتصفح",
+      "DRAG_DROP": "اسحب وأفلت شعارك هنا",
+      "FILE_TYPES": "PNG أو JPEG، أقصى 200KB",
+      "REMOVE": "إزالة الشعار",
+      "REQUIRED": "الشعار مطلوب.",
+      "TITLE": "شعار الشركة"
+    },
+    "MESSAGES": {
+      "CONFIRM_RESET": "هل أنت متأكد أنك تريد إعادة ضبط النموذج؟ سيتم فقدان جميع التغييرات غير المحفوظة."
+    },
+    "OTHER_TAB": "تكوين آخر",
+    "PRODUCTION_TAB": "تكوين الإنتاج",
+    "TAB_TITLE": "التكوين العام"
+  },
+  "GENERAL_CONFIG_UI_GENERAL_CONFIG": {
+    "CONFIGURATIONS": "التكوينات",
+    "FINANCE_TAB": "تكوين المالية",
+    "HR_TAB": "تكوين الموارد البشرية",
+    "OTHER_TAB": "تكوين آخر",
+    "PRODUCTION_TAB": "تكوين الإنتاج",
+    "TAB_TITLE": "التكوين العام"
+  },
+  "GENERIC_TYPE": {
+    "ACTION": {
+      "ADD_NEW": "إضافة جديد"
+    },
+    "ERRORS": {
+      "NAME_REQUIRED": "الاسم مطلوب"
+    },
+    "FIELDS": {
+      "CATEGORY": "الفئة",
+      "DESCRIPTION": "الوصف",
+      "NAME": "الاسم"
+    }
+  },
+  "HB": "OB",
+  "HC": "OC",
+  "HR_TAB": "تكوين الموارد البشرية",
+  "Helpdesk": "دعم فني",
+  "Home": "الرئيسية",
+  "Invoice": "فاتورة",
+  "Kanban": "كانبان",
+  "LOGIN": {
+    "FORGOT_PASSWORD": "نسيت كلمة المرور؟",
+    "PASSWORD": "كلمة المرور",
+    "PASSWORDCONFIRM": "تأكيد كلمة المرور الجديدة",
+    "PASSWORDNEW": "كلمة المرور الجديدة",
+    "PASSWORD_MIN_LENGTH_ERROR": "يجب أن تكون كلمة المرور على الأقل 8 أحرف",
+    "PASSWORD_MISMATCH_ERROR": "كلمات المرور غير متطابقة",
+    "PASSWORD_REQUIRED": "يجب إدخال كلمة مرور",
+    "PASSWORD_STRENGTH_ERROR": "يجب أن تحتوي كلمة المرور على حرف كبير واحد على الأقل، وحرف صغير واحد، ورقم واحد، وحرف خاص واحد",
+    "REMEMBERME": "تذكرني",
+    "REMEMBERME_EXPIRY_ERROR": "لقد انتهت صلاحية رمز 'تذكرني'",
+    "SERVICE_UNAVAILABLE": "الخدمة غير متاحة، يرجى المحاولة لاحقًا",
+    "TITLE": "سجل الدخول باستخدام اسم المستخدم الخاص بك",
+    "UNEXPECTED_ERROR": "حدث خطأ غير متوقع",
+    "UPDATEPASSWORD": "قم بتحديث كلمة المرور الخاصة بك",
+    "USERNAME": "اسم المستخدم",
+    "USERNAME_INVALID": "ليس بريدًا إلكترونيًا صالحًا",
+    "USERNAME_MISSING": "اسم المستخدم مفقود للدخول",
+    "USERNAME_REQUIRED": "يجب إدخال بريد إلكتروني"
+  },
+  "LOGO": {
+    "CLICK_BROWSE": "أو انقر للتصفح",
+    "DRAG_DROP": "اسحب وأفلت شعارك هنا",
+    "FILE_TYPES": "PNG أو JPEG، أقصى 200KB",
+    "REMOVE": "إزالة الشعار",
+    "REQUIRED": "الشعار مطلوب.",
+    "TITLE": "شعار الشركة"
+  },
+  "Landing": "الصفحة الأولى",
+  "Layouts": "التنسيقات",
+  "Level 2.1": "المستوى 2.1",
+  "List": "القائمة",
+  "Login": "تسجيل الدخول",
+  "MALE": "ذكر",
+  "MARRIED": "متزوج",
+  "MENU": {
+    "ADMINISTRATION": {
+      "ADD_COMPANY_USER": "إضافة شركة ومستخدم",
+      "COMPANY_PROFILES": "ملفات الشركات",
+      "DASHBOARD": "لوحة تحكم الإدارة",
+      "TITLE": "الإدارة"
+    },
+    "CUSTOMERS": {
+      "ACTIONS": {
+        "BACK": "العودة إلى العملاء",
+        "CANCEL": "إلغاء",
+        "CREATE": "إنشاء عميل",
+        "EDIT": "تعديل",
+        "SAVE": "حفظ",
+        "UPDATE": "تحديث"
+      },
+      "ADD_TITLE": "إضافة عميل جديد",
+      "CATEGORIES": {
+        "BUSINESS": "تجاري",
+        "INDIVIDUAL": "فردي"
+      },
+      "DETAILS_TITLE": "تفاصيل العميل",
+      "EDIT_TITLE": "تعديل العميل",
+      "FIELDS": {
+        "ACTIVE": "نشط",
+        "ADDRESS": "العنوان",
+        "CATEGORY": "الفئة",
+        "CONTACT_PERSON": "شخص الاتصال",
+        "COUNTRY": "البلد",
+        "CUSTOMER_LAST_NAME": "اللقب",
+        "CUSTOMER_NAME": "الاسم",
+        "EMAIL": "البريد الإلكتروني",
+        "FAX": "الفاكس",
+        "MATRICULE_FISCAL": "الرقم الضريبي",
+        "MOBILE": "الجوال",
+        "NOTES": "ملاحظات",
+        "NUM_CIN": "رقم CIN",
+        "PHONE": "الهاتف",
+        "POSTAL_CODE": "الرمز البريدي"
+      },
+      "MESSAGES": {
+        "DELETE_SUCCESS": "تم حذف العميل بنجاح",
+        "ERROR_DELETING": "خطأ أثناء حذف العميل",
+        "ERROR_LOADING": "خطأ أثناء تحميل تفاصيل العميل",
+        "ERROR_SAVING": "خطأ أثناء حفظ العميل",
+        "ERROR_UPDATING": "خطأ أثناء تحديث العميل",
+        "LOADING": "جارٍ تحميل تفاصيل العميل...",
+        "NOT_FOUND": "العميل غير موجود",
+        "NOT_FOUND_DESC": "لم يتم العثور على العميل المطلوب.",
+        "SAVE_SUCCESS": "تم حفظ العميل بنجاح",
+        "UPDATE_SUCCESS": "تم تحديث العميل بنجاح"
+      },
+      "PLACEHOLDERS": {
+        "ADDRESS": "أدخل العنوان",
+        "CONTACT_PERSON": "أدخل شخص الاتصال",
+        "COUNTRY": "أدخل البلد",
+        "CUSTOMER_LAST_NAME": "أدخل لقب العميل",
+        "CUSTOMER_NAME": "أدخل اسم العميل",
+        "EMAIL": "أدخل عنوان البريد الإلكتروني",
+        "FAX": "أدخل رقم الفاكس",
+        "MATRICULE_FISCAL": "أدخل الرقم الضريبي",
+        "MOBILE": "أدخل رقم الجوال",
+        "NOTES": "أدخل ملاحظات إضافية",
+        "NUM_CIN": "أدخل رقم CIN",
+        "PHONE": "أدخل رقم الهاتف",
+        "POSTAL_CODE": "أدخل الرمز البريدي"
+      },
+      "SECTIONS": {
+        "ADDITIONAL_INFO": "معلومات إضافية",
+        "ADDRESS_INFO": "معلومات العنوان",
+        "BASIC_INFO": "المعلومات الأساسية",
+        "CONTACT_INFO": "معلومات التواصل"
+      },
+      "STATUS": {
+        "ACTIVE": "نشط",
+        "INACTIVE": "غير نشط"
+      },
+      "TITLE": "العملاء"
+    },
+    "FINANCE": {
+      "BANK_MANAGEMENT": "إدارة البنوك",
+      "CUSTOMERS": "العملاء",
+      "DASHBOARD": {
+        "ANALYTICS": {
+          "DEBITED_CREDITED": "المدفوع مقابل المكتسب",
+          "EXPENSE_BY_CATEGORY": "المصروفات حسب الفئة",
+          "EXPENSE_STATUS": "حالة المصروفات",
+          "FINANCE_TREND": {
+            "TITLE": "اتجاه التمويل"
+          },
+          "RECENT_TRANSACTIONS": "المعاملات الأخيرة",
+          "REVENUE_BY_SOURCE": "الإيرادات حسب المصدر",
+          "SALES_BY_TYPE": "المبيعات حسب النوع",
+          "TRANSACTION_FLOW": "تدفق المعاملات"
+        },
+        "BANK_BALANCES": "أرصدة الحسابات البنكية",
+        "CHART_LABELS": {
+          "AMOUNT": "المبلغ",
+          "AMOUNT_TND": "المبلغ (د.ت)",
+          "BANK_BALANCES": "أرصدة البنوك",
+          "CREDITED": "مكتسب",
+          "CREDITS": "الاعتمادات",
+          "DEBITED": "مدفوع",
+          "EXPENSES_LABEL": "المصروفات",
+          "OIL_SALES": "مبيعات الزيت",
+          "PAID": "مدفوع",
+          "PENDING": "معلق",
+          "REVENUE": "الإيرادات",
+          "WASTE_SALES": "مبيعات النفايات"
+        },
+        "EXPENSES": "المصروفات",
+        "KPIS": {
+          "ACTIVE_ACCOUNTS": "الحسابات النشطة",
+          "AVG_TRANSACTION": "متوسط المعاملة",
+          "COMPLETED_SALES": "المبيعات المكتملة",
+          "INBOUND_PAID": "المعاملات الواردة المدفوعة",
+          "INBOUND_UNPAID": "المعاملات الواردة غير المدفوعة",
+          "NET_FLOW": "التدفق الصافي",
+          "OUTBOUND_PAID": "المعاملات الصادرة المدفوعة",
+          "OUTBOUND_UNPAID": "المعاملات الصادرة غير المدفوعة",
+          "PENDING_EXPENSES": "المصروفات المعلقة",
+          "TOTAL_CREDITED": "إجمالي المكتسب",
+          "TOTAL_DEBITED": "إجمالي المدفوع",
+          "TOTAL_PAID": "إجمالي المدفوع",
+          "TOTAL_REVENUE": "إجمالي الإيرادات",
+          "TOTAL_TRANSACTIONS": "إجمالي المعاملات",
+          "TOTAL_UNPAID": "إجمالي غير المدفوع"
+        },
+        "LOADING": {
+          "TEXT": "جارٍ تحميل البيانات المالية..."
+        },
+        "OIL_CREDITS": "اعتمادات الزيت",
+        "OIL_SALES": "مبيعات الزيت",
+        "TITLE": "لوحة التحكم المالية",
+        "TRANSACTIONS": "المعاملات",
+        "WASTE_SALES": "مبيعات النفايات"
+      },
+      "EXPENSES": "المصروفات",
+      "OIL_CREDIT": "اعتماد الزيت",
+      "OIL_SALES": "مبيعات الزيت",
+      "OIL_TRANSACTIONS": "معاملات الزيت",
+      "TITLE": "التمويل والمحاسبة",
+      "TRANSACTIONS": "المعاملات المالية",
+      "WASTE_MANAGEMENT": "إدارة النفايات"
+    },
+    "HOME": {
+      "DASHBOARD": {
+        "ANALYTICS": "التحليلات",
+        "DEFAULT": "افتراضي",
+        "FINANCE": "التمويل",
+        "RECEPTION": "الاستقبال",
+        "STORAGE_RECAP": "ملخص المخزون",
+        "TITLE": "لوحة التحكم"
+      },
+      "TITLE": "الرئيسية"
+    },
+    "HR": {
+      "EMPLOYEES": "الموظفون",
+      "ROLES_PERMISSIONS": "الأدوار والأذونات",
+      "TITLE": "الموارد البشرية"
+    },
+    "PRODUCTION": {
+      "MILLING_HISTORY": "تاريخ الطحن",
+      "MILLING_SCHEDULE": "جدول الطحن",
+      "TITLE": "الإنتاج"
+    },
+    "RECEPTION": {
+      "AGRICULTURE": "الفلاحون",
+      "OIL": "استقبال الزيت",
+      "OLIVE": "استقبال الزيتون",
+      "QUALITY_CONTROL": "مراقبة الجودة",
+      "QUALITY_CONTROL_HUILE": "",
+      "QUALITY_CONTROL_OLIVE": "",
+      "SUPPLIERS": "الموردون",
+      "TITLE": "الاستقبال"
+    },
+    "SETTINGS": {
+      "APP_UI": "إعدادات التطبيق",
+      "GENERAL_CONFIG": "التكوين العام",
+      "GENERIC_TYPES": "الأنواع العامة",
+      "MILLING_MACHINES": "آلات الطحن",
+      "QUALITY_CONTROL_RULES": "قواعد مراقبة الجودة",
+      "ROLES": "إدارة الأدوار",
+      "TITLE": "إعدادات النظام",
+      "USERS": "إدارة المستخدمين"
+    },
+    "STORAGE": {
+      "FORM": {
+        "IS_PAID_STORAGE": "هذه وحدة تخزين مدفوعة",
+        "MONTHLY_RENTAL_PRICE": "سعر الإيجار الشهري (د.ت)",
+        "PAID_STORAGE_INFO": "معلومات التخزين المدفوع",
+        "RENTAL_PRICE_MIN_ERROR": "يجب أن يكون سعر الإيجار أكبر من أو يساوي 0",
+        "RENTAL_PRICE_REQUIRED": "سعر الإيجار مطلوب لوحدات التخزين المدفوعة"
+      },
+      "OIL_STORAGE_UNITS": "وحدات تخزين الزيت",
+      "TITLE": "التخزين والمخزون",
+      "VIEW": {
+        "DASHBOARD": {
+          "TITLE": "لوحة التخزين"
+        },
+        "PAID_STORAGE": "التخزين المدفوع",
+        "PER_MONTH": "شهريًا",
+        "SHOW_ONLY_PAID": "عرض التخزين المدفوع فقط"
+      }
+    },
+    "SUPPLIER": {
+      "DASHBOARD": "لوحة المورد",
+      "HISTORY": "سجل المورد",
+      "TITLE": "الموردون"
+    }
+  },
+  "MESSAGES": {
+    "CONFIRM_RESET": "هل أنت متأكد أنك تريد إعادة ضبط النموذج؟ سيتم فقدان جميع التغييرات غير المحفوظة."
+  },
+  "MILL_MACHINE": {
+    "ACTIONS": {
+      "CANCEL": "إلغاء",
+      "EDIT": "تعديل",
+      "MAINTENANCE": "الصيانة",
+      "SAVE": "حفظ",
+      "UPDATE": "تحديث"
+    },
+    "ADD_TITLE": "إضافة آلة طحن",
+    "DETAILS_TITLE": "تفاصيل آلة الطحن",
+    "EDIT_TITLE": "تعديل آلة الطحن",
+    "ERRORS": {
+      "CAPACITY_MIN": "يجب أن تكون السعة أكبر من 0",
+      "CAPACITY_REQUIRED": "السعة مطلوبة",
+      "MACHINE_TYPE_REQUIRED": "نوع الآلة مطلوب",
+      "MANUFACTURER_REQUIRED": "المصنّع مطلوب",
+      "MODEL_REQUIRED": "الطراز مطلوب",
+      "NAME_REQUIRED": "الاسم مطلوب"
+    },
+    "FIELDS": {
+      "CAPACITY": "السعة",
+      "HOURS_OPERATED": "ساعات التشغيل",
+      "LAST_MAINTENANCE_DATE": "تاريخ الصيانة الأخير",
+      "MACHINE_TYPE": "نوع الآلة",
+      "MANUFACTURER": "المصنّع",
+      "MODEL": "الطراز",
+      "NAME": "الاسم",
+      "NEXT_MAINTENANCE_DATE": "تاريخ الصيانة التالي"
+    },
+    "TITLE": "آلات الطحن"
+  },
+  "Mail": "البريد",
+  "Maintenance": "الصيانة",
+  "Mask": "قناع",
+  "Material Table": "جدول المواد",
+  "Membership": "العضوية",
+  "Menu Level 2.2": "مستوى القائمة 2.2",
+  "Menu Level 2.3": "مستوى القائمة 2.3",
+  "Menu Level 3.1": "مستوى القائمة 3.1",
+  "Menu Level 3.2": "مستوى القائمة 3.2",
+  "Menu Level 3.3": "مستوى القائمة 3.3",
+  "Menu Level 4.1": "مستوى القائمة 4.1",
+  "Menu Level 4.2": "مستوى القائمة 4.2",
+  "Menu levels": "مستويات القائمة",
+  "Multi Column": "أعمدة متعددة",
+  "Navigation": "الملاحة",
+  "Notification": "إشعار",
+  "OB": "OB",
+  "OC": "OC",
+  "OIL_CONTAINER": {
+    "DASHBOARD": {
+      "FIELDS": {
+        "ACTIVE": "نشط",
+        "BARCODE": "الباركود",
+        "BUY_PRICE": "سعر الشراء",
+        "CAPACITY_IN_LITERS": "السعة (ل)",
+        "CERTIFICATION": "الشهادة",
+        "DESCRIPTION": "الوصف",
+        "IMAGE_URL": "الصورة",
+        "MATERIAL": "المادة",
+        "NAME": "الحاوية",
+        "REORDER_QUANTITY": "كمية إعادة الطلب",
+        "REORDER_THRESHOLD": "عتبة إعادة الطلب",
+        "SELLING_PRICE": "سعر البيع",
+        "SKU": "المنتج",
+        "STOCK_QUANTITY": "كمية المخزون",
+        "STORAGE_LOCATION_CODE": "موقع التخزين"
+      }
+    },
+    "FORM": {
+      "ACTIVE": "نشط",
+      "BARCODE": "الباركود",
+      "BUY_PRICE": "سعر الشراء",
+      "CANCEL": "إلغاء",
+      "CAPACITY": "السعة (ل)",
+      "CERTIFICATION": "الشهادة",
+      "DESCRIPTION": "الوصف",
+      "ERRORS": {
+        "NAME_REQUIRED": "الاسم مطلوب"
+      },
+      "MATERIAL": "المادة",
+      "NAME": "الاسم",
+      "REORDER_QUANTITY": "كمية إعادة الطلب",
+      "REORDER_THRESHOLD": "عتبة إعادة الطلب",
+      "SAVE": "حفظ",
+      "SELLING_PRICE": "سعر البيع",
+      "STOCK_QUANTITY": "كمية المخزون",
+      "STORAGE_LOCATION": "موقع التخزين",
+      "UPDATE": "تحديث"
+    },
+    "MESSAGES": {
+      "CREATED": "تم إنشاء حاوية الزيت بنجاح",
+      "UPDATED": "تم تحديث حاوية الزيت بنجاح"
+    },
+    "TITLE_ADD": "إضافة حاوية زيت",
+    "TITLE_EDIT": "تعديل حاوية زيت"
+  },
+  "OIL_CONTAINER_LIST": "قائمة حاويات الزيت",
+  "OIL_CONTAINER_MANAGEMENT": "إدارة حاويات الزيت",
+  "OIL_CONTAINER_MANAGEMENT_ADD": "إضافة حاوية جديدة",
+  "OIL_CREDIT": {
+    "ACTIONS": {
+      "CANCEL": "إلغاء",
+      "EDIT": "تعديل",
+      "SAVE": "حفظ",
+      "UPDATE": "تحديث"
+    },
+    "ADD_TITLE": "إضافة اعتماد زيت",
+    "DETAILS_TITLE": "تفاصيل اعتماد الزيت",
+    "EDIT_TITLE": "تعديل اعتماد الزيت",
+    "ERRORS": {
+      "CREDIT_STATE_REQUIRED": "حالة الاعتماد مطلوبة.",
+      "OIL_TYPE_REQUIRED": "نوع الزيت مطلوب.",
+      "PACKAGING_REQUIRED": "التعبئة مطلوبة.",
+      "QUANTITY_INSUFFICIENT": "الكمية غير كافية في التخزين.",
+      "QUANTITY_MIN": "يجب أن تكون الكمية أكبر من 0.",
+      "QUANTITY_REQUIRED": "الكمية مطلوبة.",
+      "QUANTITY_UNIT_MISMATCH": "عدم توافق الوحدة لوحدة التخزين المختارة.",
+      "RECIPIENT_REQUIRED": "المستفيد مطلوب.",
+      "STORAGE_TANK_REQUIRED": "خزان التخزين مطلوب.",
+      "SUPPLIER_REQUIRED": "المورد مطلوب.",
+      "UNIT_REQUIRED": "الوحدة مطلوبة."
+    },
+    "FIELDS": {
+      "CREATED_DATE": "تاريخ الإنشاء",
+      "CREDIT_STATE": "حالة الاعتماد",
+      "OIL_TYPE": "نوع الزيت",
+      "PACKAGING": "التعبئة",
+      "QUANTITY": "الكمية",
+      "RECIPIENT": "المستفيد",
+      "STORAGE_TANK": "خزان التخزين",
+      "SUPPLIER": "المورد",
+      "UNIT": "الوحدة"
+    },
+    "FORM": {
+      "BUTTONS": {
+        "CANCEL": "إلغاء",
+        "CREATE": "إنشاء",
+        "UPDATE": "تحديث"
+      },
+      "CREDIT_STATES": {
+        "APPROVED": "مقبول",
+        "CANCELLED": "ملغى",
+        "COMPLETED": "مكتمل",
+        "PENDING": "معلق",
+        "REJECTED": "مرفوض"
+      },
+      "ERRORS": {
+        "CITERNE_PILE_REQUIRED": "خزان التخزين مطلوب.",
+        "CREDIT_STATE_REQUIRED": "حالة الاعتماد مطلوبة.",
+        "DESTINATAIRE_REQUIRED": "المستفيد مطلوب.",
+        "EMBALLAGE_REQUIRED": "التعبئة مطلوبة.",
+        "OIL_TYPE_REQUIRED": "نوع الزيت مطلوب.",
+        "QUANTITY_INSUFFICIENT": "الكمية غير كافية في التخزين.",
+        "QUANTITY_MIN": "يجب أن تكون الكمية أكبر من 0.",
+        "QUANTITY_REQUIRED": "الكمية مطلوبة.",
+        "QUANTITY_UNIT_MISMATCH": "عدم توافق الوحدة لوحدة التخزين المختارة.",
+        "UNIT_REQUIRED": "الوحدة مطلوبة."
+      },
+      "FIELDS": {
+        "CITERNE_PILE": "خزان التخزين",
+        "CREATED_DATE": "تاريخ الإنشاء",
+        "CREDIT_STATE": "حالة الاعتماد",
+        "DESTINATAIRE": "المستفيد",
+        "EMBALLAGE": "التعبئة",
+        "OIL_TYPE": "نوع الزيت",
+        "QUANTITY": "الكمية",
+        "UNIT": "الوحدة"
+      },
+      "MESSAGES": {
+        "FORM_INVALID": "يرجى تصحيح الأخطاء في النموذج.",
+        "LOAD_ERROR": "خطأ أثناء تحميل البيانات.",
+        "QUANTITY_INSUFFICIENT_SNACK": "الكمية غير كافية في التخزين.",
+        "QUANTITY_UNIT_MISMATCH_SNACK": "عدم توافق الوحدة لوحدة التخزين المختارة.",
+        "SAVE_ERROR": "خطأ أثناء حفظ اعتماد الزيت.",
+        "SAVE_SUCCESS": "تم حفظ اعتماد الزيت بنجاح.",
+        "UPDATE_SUCCESS": "تم تحديث اعتماد الزيت بنجاح."
+      },
+      "PLACEHOLDERS": {
+        "SEARCH_CITERNE_PILE": "ابحث عن خزان تخزين...",
+        "SEARCH_DESTINATAIRE": "ابحث عن مستفيد...",
+        "SEARCH_OIL_TYPE": "ابحث عن نوع زيت...",
+        "SEARCH_RECIPIENT": "ابحث عن مستفيد...",
+        "SEARCH_STORAGE_TANK": "ابحث عن خزان تخزين..."
+      },
+      "TITLE_EDIT": "تعديل اعتماد الزيت",
+      "TITLE_NEW": "إضافة اعتماد الزيت",
+      "UNITS": {
+        "KILOGRAM": "كيلوغرام",
+        "LITRE": "لتر"
+      }
+    },
+    "MESSAGES": {
+      "FORM_INVALID": "يرجى تصحيح الأخطاء في النموذج.",
+      "LOAD_ERROR": "خطأ أثناء تحميل البيانات.",
+      "QUANTITY_INSUFFICIENT_SNACK": "الكمية غير كافية في التخزين.",
+      "QUANTITY_UNIT_MISMATCH_SNACK": "عدم توافق الوحدة لوحدة التخزين المختارة.",
+      "SAVE_ERROR": "خطأ أثناء حفظ اعتماد الزيت.",
+      "SAVE_SUCCESS": "تم حفظ اعتماد الزيت بنجاح.",
+      "UPDATE_SUCCESS": "تم تحديث اعتماد الزيت بنجاح."
+    },
+    "STATES": {
+      "APPROVED": "مقبول",
+      "CANCELLED": "ملغى",
+      "COMPLETED": "مكتمل",
+      "PENDING": "معلق",
+      "REJECTED": "مرفوض"
+    },
+    "TITLE": "إدارة اعتمادات الزيت",
+    "UNITS": {
+      "KILOGRAM": "كيلوغرام",
+      "LITER": "لتر"
+    },
+    "VIEW": {
+      "BACK": "الخلف",
+      "ERROR_MESSAGE": "تعذر تحميل اعتماد الزيت.",
+      "ERROR_TITLE": "خطأ",
+      "LAST_MODIFIED": "آخر تعديل",
+      "LOADING": "جارٍ تحميل اعتماد الزيت...",
+      "PRINT": "طباعة",
+      "PRINT_TOOLTIP": "طباعة اعتماد الزيت",
+      "TITLE": "اعتماد الزيت",
+      "TRANSACTION_ID_IN": "معرف المعاملة الداخلة",
+      "TRANSACTION_ID_OUT": "معرف المعاملة الخارجة"
+    }
+  },
+  "OIL_RECEPTION": {
+    "ADD": {
+      "BUTTONS": {
+        "ADD": "إضافة",
+        "CANCEL": "إلغاء",
+        "UPDATE": "تحديث"
+      },
+      "DELIVERY_INFO": "معلومات التسليم",
+      "EDIT_TITLE": "تعديل استقبال الزيت",
+      "ERRORS": {
+        "AVAILABLE_CAPACITY": "الكمية تتجاوز السعة المتاحة ({{available}} لتر متبقية)",
+        "EXCEEDS_CAPACITY": "الكمية تتجاوز سعة خزان التخزين",
+        "NET_GREATER": "لا يمكن أن تكون الكمية أكبر من الوزن الإجمالي",
+        "OPERATION_TYPE_REQUIRED": "نوع العملية مطلوب",
+        "STORAGE_UNIT_REQUIRED": "وحدة التخزين مطلوبة"
+      },
+      "FIELDS": {
+        "DELIVERY_DATE": "تاريخ التسليم",
+        "DELIVERY_NUMBER": "رقم التسليم",
+        "DELIVERY_TYPE": "نوع التسليم",
+        "GROSS_WEIGHT": "الوزن الإجمالي (كغ)",
+        "LOT_NUMBER": "رقم الدفعة",
+        "OIL_QUANTITY": "كمية الزيت (كغ)",
+        "OIL_TYPE": "نوع الزيت",
+        "OIL_VARIETY": "تنوع الزيت",
+        "OLIVE_TYPE": "نوع الزيتون",
+        "OPERATION_TYPE": "نوع العملية",
+        "OPERATION_TYPE_HINT": "شراء الزيت هو نوع العملية الافتراضي لاستقبال الزيت",
+        "OPERATION_TYPE_PURCHASE": "شراء الزيت (افتراضي)",
+        "OPERATION_TYPE_RECEPTION": "استقبال بسيط",
+        "PAID_AMOUNT": "المبلغ المدفوع (د.ت)",
+        "PARCEL": "الحزمة",
+        "REGION": "المنطقة",
+        "STORAGE_UNIT": "وحدة التخزين",
+        "SUPPLIER": "المورد",
+        "TOTAL_PRICE": "السعر الكلي (د.ت)",
+        "TRUCK_PLATE": "لوحة الشاحنة",
+        "TRUCK_STATE": "حالة الشاحنة",
+        "TRUCK_STATE_CONFORM": "متوافق",
+        "TRUCK_STATE_NON_CONFORM": "غير متوافق",
+        "UNIT_PRICE": "سعر الوحدة (د.ت/ل)",
+        "UNPAID_AMOUNT": "المبلغ المتبقي (د.ت)"
+      },
+      "FINANCIAL_INFO": "المعلومات المالية",
+      "GENERAL_INFO": "المعلومات العامة",
+      "MESSAGES": {
+        "CREATE_ERROR": "خطأ أثناء إنشاء التسليم",
+        "CREATE_SUCCESS": "تم إنشاء التسليم بنجاح",
+        "ERROR": {
+          "ADD": "خطأ أثناء إضافة استقبال الزيت",
+          "INCOMPLETE_FORM": "يرجى ملء جميع الحقول المطلوبة",
+          "LOAD": "خطأ أثناء تحميل بيانات استقبال الزيت",
+          "UPDATE": "خطأ أثناء تحديث استقبال الزيت"
+        },
+        "LOAD_ERROR": "خطأ أثناء تحميل بيانات التسليم",
+        "STORAGE_CAPACITY": "وحدة التخزين {{name}} لديها {{available}} لتر متاحة من سعة {{max}} لتر",
+        "SUCCESS": {
+          "ADD": "تم إضافة استقبال الزيت بنجاح",
+          "UPDATE": "تم تحديث استقبال الزيت بنجاح"
+        },
+        "UPDATE_ERROR": "خطأ أثناء تحديث التسليم",
+        "UPDATE_SUCCESS": "تم تحديث التسليم بنجاح"
+      },
+      "OIL_DETAILS": "تفاصيل الزيت",
+      "OPERATION_TYPE": "نوع العملية",
+      "PAYMENT_DETAILS": "تفاصيل الدفع",
+      "PAYMENT_DIALOG_DESCRIPTION": "أدخل سعر الوحدة والكمية لهذا الدفع بالزيت. لا يمكن أن يتجاوز المجموع المبلغ غير المدفوع من استقبال الزيتون الأصلي.",
+      "QUANTITY": "الكمية (كغ)",
+      "REQUIRED": "هذا الحقل مطلوب",
+      "SUBMIT": "إرسال",
+      "SUPPLIER_REGION": "المورد والمنطقة",
+      "TITLE": "إضافة استقبال زيت",
+      "TOTAL": "المجموع (د.ت)",
+      "UNIT_PRICE": "سعر الوحدة (د.ت)",
+      "VEHICLE_INFO": "معلومات المركبة",
+      "WEIGHT_QUANTITY": "الوزن والكمية"
+    },
+    "DASHBOARD": {
+      "ACTIONS": {
+        "DELETE": "حذف",
+        "EDIT": "تعديل",
+        "GENERATE_RECEIPT": "إنشاء إيصال",
+        "QUALITY": "مراقبة الجودة",
+        "VIEW": "عرض"
+      },
+      "FIELDS": {
+        "DELIVERY_DATE": "تاريخ التسليم",
+        "DELIVERY_NUMBER": "رقم التسليم",
+        "GLOBAL_LOT_NUMBER": "رقم الدفعة العالمي",
+        "LOT_NUMBER": "رقم الدفعة",
+        "OIL_QUANTITY": "كمية الزيت (كغ)",
+        "OIL_TYPE": "نوع الزيت",
+        "OIL_VARIETY": "تنوع الزيت",
+        "REGION": "المنطقة",
+        "STATUS": "الحالة",
+        "SUPPLIER": "المورد",
+        "TOTAL_PRICE": "السعر الكلي (€)",
+        "TRUCK_PLATE": "لوحة الشاحنة",
+        "UNIT_PRICE": "سعر الوحدة (€/ل)"
+      },
+      "MESSAGES": {
+        "DELETE_ERROR": "خطأ أثناء حذف الاستقبال",
+        "DELETE_SUCCESS": "تم حذف الاستقبال بنجاح",
+        "LOAD_ERROR": "خطأ أثناء تحميل الاستقبالات"
+      },
+      "STATUS": {
+        "CANCELLED": "ملغى",
+        "COMPLETED": "مكتمل",
+        "IN_PROGRESS": "قيد التنفيذ",
+        "NEW": "جديد",
+        "REFUSED": "مرفوض"
+      },
+      "TITLE": "تسليمات الزيت"
+    },
+    "PAYMENT_DETAILS": "تفاصيل الدفع",
+    "PAYMENT_DIALOG_DESCRIPTION": "أدخل سعر الوحدة والكمية لهذا الدفع بالزيت. لا يمكن أن يتجاوز المجموع المبلغ غير المدفوع من استقبال الزيتون الأصلي.",
+    "QUANTITY": "الكمية (كغ)",
+    "REQUIRED": "هذا الحقل مطلوب",
+    "SUBMIT": "إرسال",
+    "TOTAL": "المجموع (د.ت)",
+    "UNIT_PRICE": "سعر الوحدة (د.ت)"
+  },
+  "OIL_SALES": {
+    "ADD_TITLE": "إضافة مبيعات زيت",
+    "CANCEL": "إلغاء",
+    "CONFIRM": "تأكيد",
+    "CONTAINERS": {
+      "COUNT": "عدد الحاويات المطلوبة",
+      "SHOW": "عرض قائمة الحاويات",
+      "TITLE": "اختر حاوية(حاويات)"
+    },
+    "CONTAINERS_TOTAL_PRICE": "إجمالي سعر الحاويات",
+    "CREATED_BY": "أنشأ بواسطة",
+    "CREATED_DATE": "تاريخ الإنشاء",
+    "CURRENCIES": {
+      "EUR": "يورو",
+      "TND": "دينار تونسي",
+      "USD": "دولار أمريكي"
+    },
+    "CURRENCY": "العملة",
+    "CUSTOMER": "العميل",
+    "CUSTOMER_ADDRESS": "عنوان العميل",
+    "CUSTOMER_EMAIL": "بريد العميل الإلكتروني",
+    "CUSTOMER_INFO": "معلومات العميل",
+    "CUSTOMER_NAME": "اسم العميل",
+    "CUSTOMER_PHONE": "هاتف العميل",
+    "DELIVER": "التسليم",
+    "DESCRIPTION": "الوصف",
+    "DETAILS": "تفاصيل مبيعات الزيت",
+    "EDIT_TITLE": "تعديل مبيعات الزيت",
+    "FIELDS": {
+      "CREATED_DATE": "تاريخ الإنشاء ",
+      "CURRENCY": "العملة",
+      "CUSTOMER": "العميل",
+      "DELIVERY_NOTES": "ملاحظات",
+      "INVOICE_NUMBER": "رقم الفاتورة",
+      "PARTIALLYPAID": "مدفوع جزئيًا ",
+      "PAYMENT_METHOD": "طريقة الدفع",
+      "QUANTITY": "الكمية (ل)",
+      "SALE_DATE": "تاريخ البيع",
+      "STATUS": "الحالة",
+      "STORAGE_UNIT": "وحدة التخزين",
+      "SUPPLIER": "المورد",
+      "TOTAL_AMOUNT": "المبلغ الكلي",
+      "UNIT_PRICE": "سعر الوحدة",
+      "UNPAIDAMOUNT": "المبلغ غير المدفوع"
+    },
+    "FORM": {
+      "VALIDATION": {
+        "BOTH_CUSTOMER_AND_SUPPLIER_SELECTED": "يرجى اختيار العميل أو المورد، وليس كليهما",
+        "CUSTOMER_OR_SUPPLIER_REQUIRED": "يجب اختيار العميل أو المورد",
+        "INCOMPLETE_FORM": "يرجى إكمال جميع الحقول الإلزامية في النموذج."
+      }
+    },
+    "FORM_SUBTITLE": "أنشئ أو عدّل معلومات مبيعات الزيت",
+    "INVOICE": "فاتورة",
+    "INVOICE_NUMBER": "رقم الفاتورة",
+    "LAST_MODIFIED_BY": "آخر من عدّل",
+    "LAST_MODIFIED_DATE": "تاريخ آخر تعديل",
+    "LEFTOVER": "كمية زيت غير معبأة بعد",
+    "MESSAGES": {
+      "ERROR": {
+        "ADD": "حدث خطأ أثناء إضافة عملية بيع الزيت.",
+        "INSUFFICIENT_STORAGE": "وحدة التخزين المحددة لا تحتوي على كمية كافية من الزيت لهذه العملية.",
+        "LOAD": "فشل في تحميل بيانات عملية بيع الزيت.",
+        "SUPPLIERS": "Impossible de charger les clients.",
+        "UPDATE": "حدث خطأ أثناء تحديث عملية بيع الزيت."
+      },
+      "SUCCESS": {
+        "ADD": "تمت إضافة عملية بيع الزيت بنجاح.",
+        "UPDATE": "تمت عملية تحديث بيع الزيت بنجاح."
+      },
+      "WARNING": {
+        "STORAGE_RESET": "تم إعادة تعيين وحدة التخزين لأنها لا تحتوي على كمية كافية من الزيت للكمية المختارة."
+      }
+    },
+    "OIL_TYPE": "نوع الزيت",
+    "PAYMENT_METHOD": "طريقة الدفع",
+    "PAYMENT_METHODS": {
+      "BANK_TRANSFER": "تحويل بنكي",
+      "CASH": "نقدي",
+      "CHECK": "شيك",
+      "CREDIT_CARD": "بطاقة ائتمان",
+      "DEBIT_CARD": "بطاقة خصم",
+      "MOBILE_PAYMENT": "دفع عبر الهاتف المحمول",
+      "OIL_CREDIT": "اعتماد الزيت"
+    },
+    "QUANTITY": "الكمية",
+    "SALE_DATE": "تاريخ البيع",
+    "SALE_DETAILS": "تفاصيل البيع",
+    "SEARCH_CUSTOMER": "ابحث عن عميل...",
+    "SEARCH_SUPPLIER": "ابحث عن مورد...",
+    "STATUS": {
+      "CANCELLED": "ملغى",
+      "CONFIRMED": "مؤكد",
+      "DELIVERED": "مُسلَّم",
+      "PENDING": "معلق"
+    },
+    "STORAGE_UNIT": "وحدة التخزين",
+    "STORAGE_UNIT_CAPACITY": "سعة وحدة التخزين",
+    "STORAGE_UNIT_INFO": "معلومات وحدة التخزين",
+    "STORAGE_UNIT_LOCATION": "موقع وحدة التخزين",
+    "STORAGE_UNIT_NAME": "اسم وحدة التخزين",
+    "SUMMARY": "ملخص البيع",
+    "SUPPLIER": "المورد",
+    "TIMESTAMPS": "الطوابع الزمنية",
+    "TITLE": "مبيعات الزيت",
+    "TOTAL_AMOUNT": "المبلغ الكلي",
+    "TOTAL_IN_CONTAINERS": "كمية الزيت في الحاويات",
+    "TOTAL_OILAMOUNT": "إجمالي كمية الزيت",
+    "UNIT_PRICE": "سعر الوحدة",
+    "VALIDATION": {
+      "CONFIRM": "تأكيد",
+      "INSUFFICIENT_QUANTITY": "الكمية غير كافية",
+      "SOURCE_STORAGE_UNIT": "وحدة التخزين المصدر",
+      "TITLE": "التحقق من مبيعات الزيت"
+    }
+  },
+  "OIL_TRANSACTION": {
+    "DELIVERY": {
+      "DATE": "تاريخ التسليم",
+      "LOT_NUMBER": "رقم الدفعة",
+      "NUMBER": "رقم التسليم",
+      "OIL_QUANTITY": "كمية الزيت",
+      "OIL_VARIETY": "تنوع الزيت",
+      "PARCEL": "الحزمة",
+      "REGION": "المنطقة",
+      "SECTION": "تفاصيل التسليم ذات الصلة",
+      "STATUS": "الحالة",
+      "STORAGE_UNIT": "وحدة التخزين",
+      "SUPPLIER": "المورد",
+      "TOTAL_PRICE": "السعر الكلي",
+      "TYPE": "النوع",
+      "UNIT_PRICE": "سعر الوحدة"
+    },
+    "DETAILS": {
+      "CREATED_DATE": "تاريخ الإنشاء",
+      "DEST_UNIT_ID": "معرف وحدة التخزين الوجهة",
+      "ID": "ID",
+      "QUALITY_GRADE": "درجة الجودة",
+      "QUANTITY_KG": "الكمية (كغ)",
+      "RECEPTION_ID": "معرف الاستقبال",
+      "SECTION": "تفاصيل المعاملة",
+      "SRC_UNIT_ID": "معرف وحدة التخزين المصدر",
+      "TITLE": "تفاصيل المعاملة والتسليم",
+      "TOTAL_PRICE": "السعر الكلي",
+      "TYPE": "النوع",
+      "UNIT_PRICE": "سعر الوحدة"
+    },
+    "LIST": "قائمة معاملات الزيت "
+  },
+  "OIL_TRANSACTIONS": {
+    "DASHBOARD": {
+      "ACTIONS": {
+        "DELETE": "حذف",
+        "EDIT": "تعديل",
+        "VIEW": "عرض"
+      },
+      "FIELDS": {
+        "CREATED_DATE": "تاريخ الإنشاء",
+        "QUALITY_GRADE": "درجة الجودة",
+        "QUANTITY_KG": "الكمية (كغ)",
+        "RECEPTION": "الاستقبال",
+        "STORAGE_UNIT_DESTINATION": "الوحدة الوجهة",
+        "STORAGE_UNIT_SOURCE": "الوحدة المصدر",
+        "TOTAL_PRICE": "السعر الكلي",
+        "TRANSACTION_STATE": "حالة المعاملة",
+        "TRANSACTION_TYPE": "نوع المعاملة",
+        "UNIT_PRICE": "سعر الوحدة"
+      },
+      "MESSAGES": {
+        "DELETE_ERROR": "خطأ أثناء حذف المعاملة",
+        "DELETE_SUCCESS": "تم حذف المعاملة بنجاح",
+        "LOAD_ERROR": "خطأ أثناء تحميل المعاملات"
+      },
+      "STATUS": {
+        "COMPLETED": "مكتمل",
+        "PENDING": "معلق"
+      },
+      "TITLE": "معاملات الزيت",
+      "TYPES": {
+        "EXCHANGE": "تبادل",
+        "LOAN": "قرض",
+        "RECEPTION_IN": " داخلي",
+        "SALE": "بيع",
+        "TRANSFER_IN": "نقل"
+      }
+    },
+    "DIALOG": {
+      "EXCHANGE": {
+        "TITLE_DESTINATION": "اختر وحدة تخزين وجهة للتحقق من المعاملة",
+        "TITLE_SOURCE": "اختر وحدة تخزين مصدر للتحقق من المعاملة"
+      }
+    },
+    "FORM": {
+      "ACTIONS": {
+        "APPROVE": "قبول",
+        "CANCEL": "إلغاء",
+        "CREATE": "إنشاء",
+        "UPDATE": "تحديث"
+      },
+      "CONFIRMATION": {
+        "APPROVE": {
+          "CANCEL": "إلغاء",
+          "CONFIRM": "قبول",
+          "MESSAGE": "هل أنت متأكد أنك تريد قبول هذه المعاملة؟ هذا الإجراء لا يمكن التراجع عنه.",
+          "TITLE": "قبول المعاملة"
+        }
+      },
+      "FIELDS": {
+        "QUALITY_GRADE": "درجة الجودة",
+        "QUANTITY_KG": "الكمية (كغ)",
+        "STORAGE_UNIT_DESTINATION": "الوحدة الوجهة",
+        "STORAGE_UNIT_SOURCE": "الوحدة المصدر",
+        "TOTAL_PRICE": "السعر الكلي",
+        "TRANSACTION_STATE": "حالة المعاملة",
+        "TRANSACTION_TYPE": "نوع المعاملة",
+        "UNIT_PRICE": "سعر الوحدة"
+      },
+      "HINTS": {
+        "STORAGE_UNIT_SOURCE": "اختياري - للنقل بين الوحدات",
+        "TOTAL_PRICE": "يتم حسابه تلقائيًا"
+      },
+      "MESSAGES": {
+        "ERROR": {
+          "APPROVAL_NOT_AVAILABLE": "القبول غير متاح لهذه المعاملة",
+          "APPROVE": "خطأ أثناء قبول المعاملة",
+          "LOAD": "خطأ أثناء تحميل البيانات",
+          "LOAD_STORAGE_UNITS": "خطأ أثناء تحميل وحدات التخزين",
+          "UPDATE": "خطأ أثناء حفظ البيانات"
+        },
+        "INCOMPLETE_FORM": "يرجى إكمال جميع الحقول المطلوبة قبل التقديم.",
+        "LOADING": "جارٍ التحميل...",
+        "SUCCESS": {
+          "APPROVE": "تم قبول المعاملة بنجاح",
+          "CREATE": "تم إنشاء المعاملة بنجاح",
+          "UPDATE": "تم تحديث المعاملة بنجاح"
+        }
+      },
+      "OVERFILLING": "الحجم غير كافٍ",
+      "PLACEHOLDERS": {
+        "QUANTITY_KG": 0.0,
+        "SELECT_STORAGE_UNIT": "اختر وحدة",
+        "UNIT_PRICE": 0.0
+      },
+      "SECTIONS": {
+        "FINANCIAL_INFORMATION": "المعلومات المالية",
+        "QUALITY_AND_QUANTITY": "الجودة والكمية",
+        "QUALITY_CONTROL_INFO": "معلومات مراقبة الجودة",
+        "RECEPTION_PRICE_INFO": "معلومات سعر الاستقبال",
+        "STORAGE_UNITS": "وحدات التخزين",
+        "TRANSACTION_TYPE_AND_STATE": "نوع وحالة المعاملة"
+      },
+      "TITLE": {
+        "CREATE": "معاملة زيت جديدة",
+        "EDIT": "تعديل معاملة زيت"
+      },
+      "VALIDATION": {
+        "CAPACITY": "خطأ في التحقق من السعة أو كمية الزيت",
+        "MIN_VALUE": "يجب أن تكون القيمة أكبر من 0",
+        "REQUIRED": "هذا الحقل مطلوب"
+      }
+    },
+    "QUALITY_GRADES": {
+      "EXTRA_VIRGIN": "بكر ممتاز",
+      "LAMPANTE": "لامة",
+      "OTHER": "آخر",
+      "REFINED": "مكرر",
+      "VIRGIN": "بكر"
+    },
+    "TITLE": "معاملات الزيت",
+    "VIEW": {
+      "ACTIONS": {
+        "BACK": "العودة إلى القائمة",
+        "DELETE": "حذف",
+        "EDIT": "تعديل"
+      },
+      "FIELDS": {
+        "CREATED_DATE": "تاريخ الإنشاء",
+        "ID": "ID",
+        "LAST_MODIFIED_DATE": "تاريخ آخر تعديل",
+        "NOTES": "ملاحظات",
+        "OLIVE_QUANTITY": "كمية الزيتون",
+        "OLIVE_UNIT_PRICE": "سعر وحدة الزيتون",
+        "PAID_AMOUNT": "المبلغ المدفوع",
+        "QUALITY_GRADE": "درجة الجودة",
+        "QUANTITY_KG": "الكمية (كغ)",
+        "RECEPTION_DATE": "تاريخ الاستقبال",
+        "RECEPTION_ID": "معرف الاستقبال",
+        "RECEPTION_REGION": "منطقة الاستقبال",
+        "RECEPTION_SUPPLIER": "مورد الاستقبال",
+        "STORAGE_UNIT_DESTINATION": "الوحدة الوجهة",
+        "STORAGE_UNIT_SOURCE": "الوحدة المصدر",
+        "TOTAL_PRICE": "السعر الكلي",
+        "TRANSACTION_STATE": "حالة المعاملة",
+        "TRANSACTION_TYPE": "نوع المعاملة",
+        "UNIT_PRICE": "سعر الوحدة",
+        "UNPAID_AMOUNT": "المبلغ غير المدفوع"
+      },
+      "SECTIONS": {
+        "AUDIT_INFO": "معلومات التدقيق",
+        "FINANCIAL_INFO": "المعلومات المالية",
+        "GENERAL_INFO": "المعلومات العامة",
+        "QUALITY_AND_QUANTITY": "الجودة والكمية",
+        "RECEPTION_INFO": "الاستقبال",
+        "STORAGE_UNITS": "وحدات التخزين"
+      },
+      "TITLE": "تفاصيل معاملة الزيت"
+    }
+  },
+  "OLIVE_RECEPTION": {
+    "FORM": {
+      "BUTTONS": {
+        "ADD": "إضافة",
+        "BACK": "الخلف",
+        "CANCEL": "إلغاء",
+        "SAVE": "حفظ",
+        "UPDATE": "تحديث"
+      },
+      "FIELDS": {
+        "CLIENT": "العميل",
+        "DELIVERY_DATE": "تاريخ التسليم",
+        "DELIVERY_NUMBER": "رقم التسليم",
+        "DELIVERY_TYPE": "نوع التسليم",
+        "EMPTY_TRUCK_WEIGHT": "وزن الشاحنة الفارغة",
+        "GROSS_WEIGHT": "وزن الشاحنة المحملة (كغ)",
+        "LOT_NUMBER": "رقم الدفعة",
+        "NET_WEIGHT": "الوزن الصافي (كغ)",
+        "OLIVE_QUANTITY": "كمية الزيتون (كغ)",
+        "OLIVE_TYPE": "نوع الزيتون",
+        "OLIVE_VARIETY": "تنوع الزيتون",
+        "OPERATION_TYPE": "نوع العملية",
+        "PARCEL": "الحزمة",
+        "REGION": "المنطقة",
+        "SACK_COUNT": "عدد الأكياس",
+        "SUPPLIER": "المورد",
+        "TREATMENT_DATE": "تاريخ المعالجة",
+        "TRUCK_PLATE": "لوحة الشاحنة",
+        "TRUCK_STATE": "حالة الشاحنة",
+        "YIELD": "العائد (%)"
+      },
+      "MESSAGES": {
+        "LOAD_ERROR": "خطأ أثناء تحميل بيانات استقبال الزيتون",
+        "SAVE_ERROR": "خطأ أثناء حفظ استقبال الزيتون",
+        "SAVE_SUCCESS": "تم حفظ استقبال الزيتون بنجاح"
+      },
+      "PLACEHOLDERS": {
+        "SEARCH_OPERATION": "ابحث عن نوع عملية...",
+        "SEARCH_REGION": "ابحث عن منطقة...",
+        "SEARCH_SUPPLIER": "ابحث عن مورد...",
+        "SEARCH_TYPE": "ابحث عن نوع...",
+        "SEARCH_VARIETY": "ابحث عن تنوع..."
+      },
+      "SECTIONS": {
+        "CLIENT_REGION": "الزبون والمنطقة ",
+        "DELIVERY_INFO": "معلومات التسليم",
+        "GENERAL_INFO": "المعلومات العامة",
+        "OLIVE_INFO": "معلومات الزيتون",
+        "SUPPLIER_REGION": "المورد والمنطقة",
+        "VEHICLE_INFO": "معلومات المركبة",
+        "WEIGHT_QUANTITY": "الوزن والكمية"
+      },
+      "TITLE": {
+        "ADD": "إضافة استقبال زيتون",
+        "EDIT": "تعديل استقبال زيتون"
+      },
+      "TRUCK_STATES": {
+        "COMPLIANT": "متوافق",
+        "NON_COMPLIANT": "غير متوافق"
+      },
+      "VALIDATION": {
+        "MIN_VALUE": "يجب أن تكون القيمة أكبر من 0",
+        "NET_GREATER": "لا يمكن أن يكون الوزن الصافي أكبر من الوزن الإجمالي",
+        "REQUIRED": "هذا الحقل مطلوب"
+      }
+    },
+    "SECTIONS": {
+      "OIL_EXCHANGE": "التبادل"
+    }
+  },
+  "OPERATION_TYPE": {
+    "BASE": "طحن أساسي",
+    "EXCHANGE": "تبادل",
+    "INTERNAL_RECEPTION": "استقبال داخلي",
+    "OIL_PURCHASE": "شراء زيت",
+    "OLIVE_PURCHASE": "شراء زيتون",
+    "SIMPLE_RECEPTION": "طحن خاص"
+  },
+  "OSM_DASHBOARD": {
+    "ACTIONS": {
+      "ADD_LINE": "إضافة سطر",
+      "AJUSTER_STOCK": "تعديل المخزون",
+      "ANALYTICS": "التحليلات",
+      "ARTICLESEC": "المادة",
+      "ASSIGN_EMPLACEMENT": "تعيين موقع",
+      "ASSIGN_SUPPLIER": "تعيين المورد",
+      "AUDIT": "التدقيق",
+      "BANKACCOUNT": "حساب بنكي",
+      "BOM": "قائمة المواد",
+      "BONCOMMANDE": "طلب شراء",
+      "Base_type": "نوع أساسي",
+      "CANCEL": "إلغاء",
+      "CERTIFICATION": "الشهادة",
+      "CHECK_STOCK": "فحص المخزون",
+      "CLIENT": "العميل",
+      "CLOSE": "إغلاق",
+      "COMPANYPROFILE": "ملف الشركة",
+      "COMPLETE": "إكمال",
+      "COMPLETE_PAYMENT_DETAILS": "لإكمال تفاصيل الدفع",
+      "CONDITIONING": "التعبئة والتكييف",
+      "CONFIRM": "تأكيد",
+      "CONFIRM_DELETE": "هل أنت متأكد أنك تريد حذف هذا العنصر؟",
+      "CONTRACT": "عقد",
+      "CREATE": "إنشاء",
+      "DELETE": "حذف",
+      "DELIVER": "تسليم",
+      "DELIVERYHISTORY": "سجل الاستلام",
+      "DEPARTMENT": "قسم",
+      "DRAFT": "مسودة",
+      "EMPLACEMENTSTOCK": "موقع المخزون",
+      "EMPLOYEE": "موظف",
+      "ENTREE_STOCK": "إدخال مخزون",
+      "ERROR": "حدث خطأ",
+      "EXPEDITION": "الإرسال",
+      "EXPENSE": "مصروف",
+      "EXPORT": "تصدير",
+      "FINALIZE": "إنهاء",
+      "FINANCE": "المالية",
+      "FINANCIALTRANSACTION": "معاملة مالية",
+      "FOURNISSEUR": "المورد",
+      "GEN_INVOICE": "إنشاء فاتورة",
+      "GEN_PDF": "إنشاء إيصال",
+      "GEN_PDF_BON_COMMANDE": "أمر شراء الزيت ",
+      "GEN_PDF_PRODUCTION": "إنشاء إيصال إنتاج",
+      "GEN_PDF_QC_OIL": "إنشاء إيصال مراقبة جودة الزيت ",
+      "GEN_PDF_QC_OLIVE": "إنشاء إيصال مراقبة جودة الزيتون ",
+      "HABILITATION": "الصلاحيات",
+      "HR": "الموارد البشرية",
+      "INVENTAIR": "المخزون",
+      "LABELCONTENT": "محتوى الملصق",
+      "LEAVEREQUEST": "طلب إجازة",
+      "LIBERER_STOCK": "تحرير مخزون",
+      "LIGNECONDITIONNEMENT": "خط التعبئة",
+      "MACHINEPLAN": "تخطيط الآلة",
+      "MAINTENANCE": "الصيانة",
+      "MILLMACHINE": "آلة المعصرة",
+      "MOBILESYNC": "مزامنة الجوال",
+      "MORE": "مزيد",
+      "MOUVEMENTSTOCKSEC": "حركة المخزون",
+      "OF": "أمر التصنيع",
+      "OILCREDIT": "رصيد الزيت",
+      "OILSALE": "بيع الزيت",
+      "OILTRANSACTION": "معاملة زيت",
+      "OIL_IN_TRANSACTION": "حركة زيت داخلية",
+      "OIL_OUT_TRANSACTION": "حركة زيت خارجية",
+      "OIL_PAYMENT": "دفع بالزيت",
+      "OIL_QUALITY": "مراقبة جودة الزيت",
+      "OIL_RECEPTION": "استقبال الزيت",
+      "OLIVE_QUALITY": "مراقبة جودة الزيتون",
+      "OSMUSER": "مستخدم OSM",
+      "PARAMETER": "إعداد",
+      "PAUSE": "إيقاف مؤقت",
+      "PAY": "دفع",
+      "PAYROLL": "كشف الرواتب",
+      "PERMISSION": "صلاحية",
+      "PLANNING": "",
+      "POINTAGE": "تسجيل الدوام",
+      "POSTE": "المنصب",
+      "PRODUCT": "المنتج",
+      "PRODUCTION": "الإنتاج",
+      "PROJET": "المشروع",
+      "QUALITY": "الجودة",
+      "QUALITYCONTROLRESULT": "نتيجة ضبط الجودة",
+      "QUALITYCONTROLRULE": "قاعدة ضبط الجودة",
+      "READ": "عرض",
+      "RECEPTION": "الاستلام",
+      "REJECT ": "",
+      "REMOVE_LINE": "حذف سطر",
+      "REPORT": "تقرير",
+      "RESERVER_STOCK": "حجز مخزون",
+      "RESUME": "استئناف",
+      "ROLE": "الدور",
+      "SET_PRICE": "تحديد السعر",
+      "SHIP": "شحن",
+      "SHIPPING": "الشحن",
+      "SKU": "SKU",
+      "SORTIE_STOCK": "إخراج مخزون",
+      "START": "بدء",
+      "STOCKSEC": "المخزون",
+      "STORAGEUNIT": "وحدة التخزين",
+      "SUCCESS": "تم إنجاز العملية بنجاح",
+      "SUPPLIER": "المورّد",
+      "SYNC": "مزامنة",
+      "TITLE": "الإجراءات",
+      "TO_PROD": "إرسال للإنتاج",
+      "TRANSFERER_STOCK": "نقل مخزون",
+      "TRANSPORTER": "الناقل",
+      "UNIFIEDDELIVERY": "استلام",
+      "UPDATE": "تعديل",
+      "UPDATE_OIL_QUALITY": "تحديث جودة الزيت",
+      "UPDATE_OLIVE_QUALITY": "تحديث جودة الزيتون",
+      "UPDATE_STATUS": "تحديث الحالة",
+      "USER": "المستخدم",
+      "VALIDATE": "التحقق",
+      "WRITE": ""
+    },
+    "COLUMNS": {
+      "HIDE": "إخفاء الأعمدة",
+      "RESET": "إعادة تعيين الأعمدة",
+      "SHOW": "عرض الأعمدة",
+      "TITLE": "الأعمدة"
+    },
+    "EXPORT": {
+      "ALL": "تصدير الكل",
+      "BUTTON": "تصدير",
+      "CSV": "تصدير CSV",
+      "PDF": "تصدير PDF",
+      "SELECTED": "تصدير المحدد"
+    },
+    "FILTER": {
+      "ALL": "تحديد الكل",
+      "APPLY": "تطبيق التصفية",
+      "CLEAR": "مسح التصفية",
+      "PLACEHOLDER": "ابحث...",
+      "RESET": "إعادة الضبط",
+      "SEARCH": "بحث",
+      "TITLE": "التصفية"
+    },
+    "NEW": "جديد",
+    "QUALITY_CONTROL": {
+      "TITLE": "مراقبة الجودة"
+    },
+    "SORT": {
+      "ASC": "ترتيب تصاعدي",
+      "CLEAR": "مسح الترتيب",
+      "DESC": "ترتيب تنازلي"
+    },
+    "TABLE": {
+      "ERROR": "خطأ أثناء تحميل البيانات",
+      "FIRST_PAGE": "الصفحة الأولى",
+      "ITEMS_PER_PAGE": "العناصر لكل صفحة",
+      "LAST_PAGE": "الصفحة الأخيرة",
+      "LOADING": "جارٍ التحميل...",
+      "NEXT_PAGE": "الصفحة التالية",
+      "NO_DATA": "لا توجد بيانات متاحة",
+      "OF": "من",
+      "PAGE_SIZE": "العناصر لكل صفحة",
+      "PREVIOUS_PAGE": "الصفحة السابقة",
+      "SELECTED_ITEMS": "العناصر المحددة",
+      "TOTAL_ITEMS": "إجمالي العناصر"
+    },
+    "TITLE": "الإجراءات"
+  },
+  "OTHER_TAB": "تكوين آخر",
+  "Online Courses": "الدورات عبر الإنترنت",
+  "Other": "آخر",
+  "PAGE_404": {
+    "BACK_HOME": "العودة إلى الصفحة الرئيسية",
+    "DESCRIPTION": "الصفحة التي تبحث عنها غير موجودة أو تم نقلها أو غير متاحة مؤقتًا.",
+    "IMAGE_ALT": "رسم توضيحي لخطأ 404",
+    "TITLE": "الصفحة غير موجودة"
+  },
+  "PDF": {
+    "ACIDITY": "الحموضة",
+    "ADDRESS": "مجال بلابس 1214 قصر هلال",
+    "BASCULE": "",
+    "CATEGORY_OIL": "فئة الزيت",
+    "CATEGORY_OLIVE": "فئة الزيتون",
+    "CLIENT": "",
+    "CODEECH": "رمز العينة ",
+    "COMPANY_ADDRESS": "العنوان",
+    "COMPANY_EMAIL": "البريد الإلكتروني",
+    "COMPANY_FAX": "الفاكس",
+    "COMPANY_NAME": "ABIOOC",
+    "COMPANY_PHONE": "الهاتف",
+    "COMPANY_RIB": "(RIB)",
+    "COMPANY_TAX_NUMBER": "الرقم الضريبي",
+    "COMPANY_WEBSITE": "الموقع الإلكتروني",
+    "COMPLETED": "مكتمل",
+    "CREATED_DATE": "تاريخ الإنشاء",
+    "CRUSHING_DATE": "تاريخ الطحن",
+    "CRUSHING_PRICE_PER_KG": "سعر الطحن لكل كغ",
+    "CRUSHING_TOTAL_PRICE": "إجمالي سعر الطحن",
+    "CUSTOMER": "العميل",
+    "DAMAGED_PERCENT": "النسبة المئوية للتالفة",
+    "DATE": "التاريخ",
+    "DELIVERY_DATE": "تاريخ التسليم",
+    "DELTA_K": "Delta K",
+    "DESCRIPTION": "الوصف",
+    "DESIGNATION": "الوصف",
+    "DESTINATION_UNIT": "وحدة الوجهة",
+    "DRIVER": "السائق",
+    "ERROR": "خطأ",
+    "EXCHANGE": "تبادل",
+    "EXPENSE_AMOUNT": "المبلغ",
+    "EXPENSE_APPROVAL_DATE": "تاريخ الموافقة",
+    "EXPENSE_APPROVED": "مقبول",
+    "EXPENSE_BILL": "فاتورة المصروف",
+    "EXPENSE_CATEGORY": "الفئة",
+    "EXPENSE_CREATED_BY": "أنشأ بواسطة",
+    "EXPENSE_NOTES": "ملاحظات",
+    "EXPENSE_OBJECT": "الهدف",
+    "EXPENSE_PAYMENT_METHOD": "طريقة الدفع",
+    "EXPENSE_PURCHASE_NATURE": "طبيعة الشراء",
+    "EXPENSE_RECEIPT_NUMBER": "رقم الإيصال",
+    "EXPENSE_SIGNATURE_AGENT": "توقيع العميل",
+    "EXPENSE_SIGNATURE_RESPONSIBLE": "توقيع المسؤول",
+    "EXPENSE_STATUS": "الحالة",
+    "EXPENSE_VENDOR": "المورد",
+    "EXTRA_VIRGIN_OLIVE_OIL": "زيت زيتون بكر ممتاز",
+    "FACTURE": "",
+    "FERME": "",
+    "FERMENTED_PERCENT": "النسبة المئوية للمتخمرة",
+    "FICH_CONTROL_QUALITE": "ورقة مراقبة الجودة",
+    "FICH_CONTROL_QUALITE_HUIL": "ورقة مراقبة جودة الزيت",
+    "FICH_CONTROL_QUALITE_OLIVE": "ورقة مراقبة جودة الزيتون",
+    "FORM": "نموذج",
+    "GEN_PDF_BON_COMMANDE": "أمر شراء الزيت",
+    "GLOBAL_LOT": "الدفعة العالمية",
+    "GROSS_WEIGHT": "الوزن الإجمالي",
+    "INDICE_PEROXYDE": "مؤشر البيروكسيد",
+    "INFESTED_PERCENT": "النسبة المئوية للمصابة",
+    "INVOICE_DATE": "تاريخ الفاتورة",
+    "K232": "K232",
+    "K270": "K270",
+    "LIEU_DU_STOCKAGE": "مكان التخزين",
+    "LOAN": "قرض",
+    "LOT": "الدفعة",
+    "LOT_GLOBAL": "الدفعة العالمية",
+    "LOT_NUMBER": "رقم الدفعة",
+    "MOBILE": "+216 29 910 458",
+    "NCOLIS": "رقم الحزمة",
+    "NOTE_DE_PAIEMENT": "",
+    "NO_QUALITY_DATA": "لا توجد بيانات مراقبة جودة متاحة",
+    "NUMBER_PLACEHOLDER": "رقم: ",
+    "N°COLIS": "رقم الحزمة",
+    "OIL_DISPATCH": "إشعار توزيع الزيت",
+    "OIL_GRADE": {
+      "EXTRA_VIRGIN": "بكر ممتاز",
+      "LAMPANTE": "لامة",
+      "OTHER": "آخر",
+      "REFINED": "مكرر",
+      "VIRGIN": "بكر"
+    },
+    "OIL_QUANTITY": "كمية الزيت",
+    "OIL_TYPE": "نوع الزيت",
+    "OIL_VARIETY": "تنوع الزيت",
+    "OLIVE_NET_WEIGHT": "الوزن الصافي للزيتون",
+    "OLIVE_QUANTITY": "كمية الزيتون",
+    "OLIVE_TYPE": "نوع الزيتون",
+    "OLIVE_VARIETY": "تنوع الزيتون",
+    "OPERATION_TYPE": "",
+    "PAGE": "الصفحة",
+    "PAID": "مدفوع",
+    "PAID_AMOUNT": "المبلغ المدفوع",
+    "PARCEL": "الحزمة",
+    "PARTIALLY_PAID": "مدفوع جزئيًا",
+    "PAYMENT_NOTE_REMINDER": "يرجى سداد الرصيد المتبقي في أقرب وقت ممكن.",
+    "PAYMENT_STATUS": "حالة الدفع",
+    "PENDING": "معلق",
+    "PHONE": "الهاتف",
+    "PRICE_UNIT": "سعر الوحدة",
+    "PRODUCER": "",
+    "PRODUCT": "المنتج",
+    "PRODUCTION_MANAGER": "مدير الإنتاج",
+    "PRODUCTION_RECEIPT": "إيصال الإنتاج",
+    "QUALITY": "الجودة",
+    "QUALITY_FIELDS": {
+      "ACIDITE": "الحموضة",
+      "CATEGORIE_HUILE": "فئة الزيت",
+      "CATEGORIE_OLIVE": "فئة الزيتون",
+      "DELTA_K": "Delta K",
+      "ENDOMMAGEES_PCT": "النسبة المئوية للتالفة",
+      "FERMENTEES_PCT": "النسبة المئوية للمتخمرة",
+      "INDICE_PEROXYDE": "مؤشر البيروكسيد",
+      "INFESTEES_PCT": "النسبة المئوية للمصابة",
+      "K232": "K232",
+      "K270": "K270"
+    },
+    "QUALITY_GRADE": "درجة الجودة",
+    "QUALITY_MANAGER": "مدير الجودة",
+    "QUANTITY": "الكمية",
+    "QUANTITY_KG": "الكمية (كغ)",
+    "RECEPTION_DATE": "تاريخ الاستقبال",
+    "RECEPTION_ID": "معرف الاستقبال",
+    "RECEPTION_IN": "استقبال",
+    "RECEPTION_NUMBER": "رقم التسليم",
+    "RECEPTION_OIL": "إيصال استقبال الزيت",
+    "RECEPTION_OLIVE": "إيصال استقبال الزيتون",
+    "RECEPTION_REGION": "منطقة الاستقبال",
+    "RECEPTION_SUPPLIER": "مورد الاستقبال",
+    "RECIPIENT": "المستفيد",
+    "RECPT_NOTE_OR_OLIVE_LOT_NUMBER": "رقم وصل الاستلام / رقم دفعة الزيتون",
+    "REFERENCE": "المرجع",
+    "REFERENCE_DATE": "",
+    "REGION": "المنطقة",
+    "REMAINING_AMOUNT": "المبلغ المتبقي",
+    "REVISION": "النسخة",
+    "SALE": "بيع",
+    "SALE_DATE": "تاريخ البيع",
+    "SERVICE_DESCRIPTION": "وصف الخدمة",
+    "SIGNATURE": "التوقيع",
+    "SIGNATURE_AGENT": "توقيع العميل  ",
+    "SIGNATURE_RESPONSIBLE": "توقيع مدير الجودة",
+    "STATUS": "الحالة",
+    "STORAGE_UNIT_DEST": "وحدة التخزين (الوجهة)",
+    "STORAGE_UNIT_DESTINATION": "وحدة التخزين (الوجهة)",
+    "STORAGE_UNIT_SOURCE": "وحدة التخزين (المصدر)",
+    "SUBTOTAL": "المجموع الفرعي",
+    "SUPPLIER": "المورد",
+    "TANK_NUMBER": "رقم ",
+    "TERMS": "",
+    "TOTAL": "المبلغ الإجمالي",
+    "TOTAL_AMOUNT": "المبلغ الإجمالي",
+    "TOTAL_PRICE": "السعر الكلي",
+    "TOTAL_SERVICE_AMOUNT": "إجمالي مبلغ الخدمة",
+    "TRANSACTION_IN": "نوع المعاملة",
+    "TRANSACTION_OIL": "إيصال معاملة الزيت",
+    "TRANSACTION_STATE": "حالة المعاملة",
+    "TRANSACTION_TYPE": "نوع المعاملة",
+    "TRANSFER_IN": "نقل داخلي",
+    "TRANSPORTER": "",
+    "TRITURATION": "الطحن",
+    "TRITURATION_SERVICE": "خدمة طحن زيت الزيتون",
+    "TRUCK_MAT": "لوحة الشاحنة",
+    "TRUCK_STATE": "حالة الشاحنة",
+    "TYPE": "النوع",
+    "UNIT_PRICE": "سعر الوحدة",
+    "UNPAID": "غير مدفوع",
+    "UNPAID_AMOUNT": "المبلغ غير المدفوع",
+    "VAT": "رقم الضريبة",
+    "VEHICLE_REGISTRATION": "رقم تسجيل المركبة",
+    "VENTE_DECHET": "بيع النفايات",
+    "VENTE_HUILE": "بيع الزيت",
+    "WASTE_PROCESSING": "معالجة نفايات الزيتون",
+    "WEBSITE": "موقع إلكتروني",
+    "YIELD": "العائد"
+  },
+  "PLANNING": {
+    "CANCEL_CAUSE": "سبب الإلغاء",
+    "CANCEL_CAUSE_PLACEHOLDER": "لماذا سيتم إلغاء هذا الاستلام؟",
+    "CANCEL_PROMPT": "يرجى إدخال سبب الإلغاء (اختياري).",
+    "CANCEL_RECEPTION": "",
+    "CANCEL_TITLE": "إلغاء الاستلام"
+  },
+  "PLANNING_ASSIGNED": "مُعين",
+  "PLANNING_CANCEL": "إلغاء",
+  "PLANNING_CARD_TITLE": "تخطيط استقبال الزيتون",
+  "PLANNING_EXIT_FULLSCREEN": "الخروج من الشاشة الكاملة",
+  "PLANNING_FULLSCREEN": "الشاشة الكاملة",
+  "PLANNING_GROUP": "مجموعة",
+  "PLANNING_KG": "كغ",
+  "PLANNING_LOTS_LIST": "قائمة الدفعات:",
+  "PLANNING_NET": "صافي:",
+  "PLANNING_OPERATION_TYPE": "نوع العملية:",
+  "PLANNING_RECEPTIONS_UNASSIGNED_HEADER": "الاستقبالات غير المُعينة",
+  "PLANNING_SACKS": "أكياس:",
+  "PLANNING_SAVE": "حفظ",
+  "PLANNING_SEARCH": "ابحث عن الدفعة",
+  "PLANNING_SEARCH_PLACEHOLDER": "رقم الدفعة",
+  "PLANNING_SUPPLIER": "المورد:",
+  "PLANNING_TYPE": "النوع:",
+  "PLANNING_UNASSIGNED": "غير مُعين",
+  "PLANNING_VARIETY": "التنوع:",
+  "POSTE": {
+    "ADD_TITLE": "إضافة منصب",
+    "CANCEL": "إلغاء",
+    "DESCRIPTION": "وصف المنصب",
+    "EDIT_TITLE": "تعديل المنصب",
+    "MESSAGES": {
+      "ERROR_LOADING": "خطأ أثناء تحميل المناصب"
+    },
+    "NAME": "المنصب",
+    "SAVE": "حفظ المنصب",
+    "UPDATE": "تحديث المنصب"
+  },
+  "PRODUCTION_TAB": "تكوين الإنتاج",
+  "Pages": "الصفحات",
+  "Plugins": "الإضافات",
+  "Price": "السعر",
+  "Price 1": "السعر 1",
+  "Price 2": "السعر 2",
+  "Pricing": "التسعير",
+  "Product": "المنتج",
+  "Product Details": "تفاصيل المنتج",
+  "Product List": "قائمة المنتجات",
+  "Profile": "الملف الشخصي",
+  "QUALITY_CONTROL_RULE": {
+    "ACTIONS": {
+      "CANCEL": "إلغاء",
+      "EDIT": "تعديل",
+      "SAVE": "حفظ",
+      "UPDATE": "تحديث"
+    },
+    "ADD_TITLE": "إضافة قاعدة مراقبة الجودة",
+    "DETAILS_TITLE": "تفاصيل قاعدة مراقبة الجودة",
+    "EDIT_TITLE": "تعديل قاعدة مراقبة الجودة",
+    "ERRORS": {
+      "OIL_QC_REQUIRED": "مراقبة جودة الزيت مطلوبة",
+      "RULE_NAME_REQUIRED": "اسم القاعدة مطلوب",
+      "RULE_TYPE_REQUIRED": "نوع القاعدة مطلوب"
+    },
+    "FIELDS": {
+      "OIL_QC": "مراقبة جودة الزيت",
+      "RULE_NAME": "اسم القاعدة",
+      "RULE_TYPE": "نوع القاعدة"
+    },
+    "RULE_TYPES": {
+      "BOOLEAN": "منطقي (صحيح/خاطئ)",
+      "NUMERIC": "رقمي",
+      "STRING": "نصي"
+    },
+    "TITLE": "قواعد مراقبة الجودة"
+  },
+  "QUALITY_CONTROL_RULE_ADD": {
+    "CARD_TITLE": {
+      "ADD": "إضافة قاعدة",
+      "EDIT": "تعديل قاعدة"
+    },
+    "FIELDS": {
+      "ACTIONS": {
+        "ADD": "إضافة",
+        "CANCEL": "إلغاء",
+        "SAVE": "حفظ",
+        "UPDATE": "تحديث"
+      },
+      "DESCRIPTION": "الوصف",
+      "EXPECTED_VALUE": "القيمة المتوقعة",
+      "MAX_VALUE": "القيمة القصوى",
+      "MIN_VALUE": "القيمة الدنيا",
+      "OIL_QC": "مراقبة جودة الزيت",
+      "RULE_KEY": "مفتاح القاعدة",
+      "RULE_NAME": "اسم القاعدة",
+      "TEXT_VALUES": "القيم الممكنة (مفصولة بفواصل)",
+      "TYPE": "النوع"
+    },
+    "RULE_TYPES": {
+      "BOOLEAN": "منطقي",
+      "NUMERIC": "رقمي",
+      "STRING": "نص"
+    }
+  },
+  "RECEPTION": {
+    "PLANNING": {
+      "COMPLETION": {
+        "COMPLETION_DATE_LABEL": "تاريخ الإكمال",
+        "COMPLETION_DETAILS_TITLE": "تفاصيل الإكمال",
+        "CONFIRMATION_TEXT": "هل أنت متأكد أنك تريد علامة هذا كمكتمل؟",
+        "DELIVERY_DATE": "تاريخ التسليم",
+        "DELIVERY_NUMBER": "رقم التسليم",
+        "DETAILS_TITLE": "تفاصيل الإكمال",
+        "FINAL_OBSERVATION_LABEL": "الملاحظة النهائية (اختياري)",
+        "FINISH_BUTTON": "إنهاء",
+        "GLOBAL_LOT_NUMBER": "رقم الدفعة العالمي",
+        "LOT_INFO_TITLE": "معلومات الدفعة",
+        "LOT_LIST": "قائمة الدفعات",
+        "LOT_LIST_NUMBER": "رقم.",
+        "LOT_LIST_OIL_QUANTITY": "الزيت (كغ)",
+        "LOT_LIST_QUANTITY": "الكمية (كغ)",
+        "LOT_LIST_SUPPLIER": "المورد",
+        "LOT_LIST_TRITURATION_PRICE": "سعر الطحن",
+        "LOT_LIST_YIELD": "العائد (%)",
+        "LOT_NUMBER": "رقم الدفعة",
+        "OBSERVATION": "الملاحظة",
+        "OIL_QUANTITY_LABEL": "كمية الزيت (كغ)",
+        "OLIVE_QUANTITY": "الوزن الصافي للزيتون",
+        "OLIVE_TYPE": "نوع الزيتون",
+        "OLIVE_VARIETY": "تنوع الزيتون",
+        "REGION": "المنطقة",
+        "SUPPLIER": "المورد",
+        "TOTAL_OLIVE_WEIGHT": "إجمالي وزن الزيتون",
+        "TOTAL_TRITURATION_PRICE_LABEL": "إجمالي سعر الطحن",
+        "TRITURATION_DURATION_HOURS": "المدة",
+        "TRITURATION_DURATION_MINUTES": "المدة (دقائق)",
+        "TRITURATION_PRICE_PER_KG_LABEL": "سعر الطحن (لكل كغ)",
+        "YIELD_LABEL": "العائد (%)"
+      },
+      "CONFIRM_SAVE": "هل تريد حفظ التخطيط الحالي؟",
+      "GLOBAL_LOT": {
+        "CONFIRM_CREATE_FROM_SELECTION": "هل تريد إنشاء دفعة مُجمّعة جديدة من الدُفعات المحددة؟",
+        "CONFIRM_UNGROUP": "إلغاء تجميع الدفعة المُجمّعة {{globalLotNumber}}؟",
+        "CREATED_SUCCESS": "تم إنشاء الدفعة المُجمّعة {{globalLotNumber}} بنجاح!",
+        "MUST_BE_SAME_COLUMN": "يجب أن تكون جميع عمليات الاستلام المحددة في نفس العمود.",
+        "MUST_BE_SAME_OPERATION_TYPE": "يجب أن تكون جميع الاستقبالات المحددة من نفس نوع العملية.",
+        "NOT_FOUND": "الدفعة المُجمّعة غير موجودة.",
+        "SELECT_AT_LEAST_ONE": "يرجى تحديد عملية استلام واحدة على الأقل للتجميع.",
+        "UNGROUPED_SUCCESS": "تم إلغاء تجميع الدفعة المُجمّعة {{globalLotNumber}} بنجاح!"
+      }
+    }
+  },
+  "RECEPTION_LIST": {
+    "ACTIONS": {
+      "DELETE": "حذف",
+      "EDIT": "تعديل",
+      "GENERATE_PDF": "إنشاء إيصال",
+      "VIEW": "عرض"
+    },
+    "FIELDS": {
+      "DELIVERY_DATE": "تاريخ الاستقبال",
+      "DELIVERY_NUMBER": "رقم التسليم",
+      "GLOBAL_LOT_NUMBER": "رقم الدفعة العالمي",
+      "LOT_NUMBER": "رقم الدفعة",
+      "NET_WEIGHT": "الوزن الصافي (كغ)",
+      "OIL_TYPE": "نوع الزيت",
+      "OLIVE_TYPE": "نوع الزيتون",
+      "OPERATION_TYPE": "نوع الطحن",
+      "REGION": "المنطقة",
+      "STATUS": "الحالة",
+      "SUPPLIER": "المورد",
+      "TRUCK_PLATE": "لوحة الشاحنة"
+    },
+    "STATUS": {
+      "CANCELLED": "ملغى",
+      "COMPLETED": "مكتمل",
+      "IN_PROGRESS": "قيد التنفيذ",
+      "IN_STOCK": "في المخزون",
+      "NEW": "جديد",
+      "OIL_CONTROLLED": "تم التحكم في الزيت",
+      "OLIVE_CONTROLLED": "تم التحكم في الزيتون",
+      "PROD_READY": "جاهز للإنتاج",
+      "REFUSED": "مرفوض",
+      "STOCK_READY": "جاهز للتخزين",
+      "WAITING": "بانتظار ",
+      "WAITING_FOR_PAYMENT_DETAILS": "بانتظار تفاصيل السعر",
+      "WAITING_FOR_PRICING": "بانتظار التسعير والكمية"
+    },
+    "TITLE": "استقبالات الزيت والطحن"
+  },
+  "REQUIRED": "مطلوب",
+  "RESET_PASSWORD": {
+    "CODE_PLACEHOLDER": "أدخل رمزك",
+    "CONFIRMATION_CODE": "رمز التأكيد",
+    "CONFIRM_PASSWORD": "تأكيد كلمة المرور",
+    "CONFIRM_PASSWORD_PLACEHOLDER": "تأكيد كلمة المرور الجديدة",
+    "ENTER_CODE_TITLE": "أدخل رمز التأكيد",
+    "MISMATCH": "كلمات المرور غير متطابقة",
+    "MISSING_USER_ID": "معرف المستخدم مفقود.",
+    "NEW_PASSWORD": "كلمة المرور الجديدة",
+    "NEW_PASSWORD_PLACEHOLDER": "أدخل كلمة المرور الجديدة",
+    "NEW_PASSWORD_TITLE": "تعيين كلمة مرور جديدة",
+    "SUBMIT_NEW_PASSWORD": "تحديث كلمة المرور",
+    "VALIDATE_CODE": "التحقق من الرمز"
+  },
+  "Register": "التسجيل",
+  "Reset Password": "إعادة تعيين كلمة المرور",
+  "SINGLE": "أعزب",
+  "STANDARD": {
+    "ACCESS_RESSOURCE_ERROR": "ليس لديك حق الوصول إلى هذا المورد.",
+    "BOOLEAN": {
+      "FALSE": "خاطئ",
+      "TRUE": "صحيح"
+    },
+    "BTNS": {
+      "ADD": "إضافة",
+      "BACK": "الخلف",
+      "CANCEL": "إلغاء",
+      "CLOSE": "إغلاق",
+      "DELETE": "حذف",
+      "EDIT": "تعديل",
+      "NEXT": "التالي",
+      "PREVIOUS": "السابق",
+      "RETRY": "إعادة المحاولة",
+      "SAVE": "حفظ",
+      "SEARCH": "بحث",
+      "SUBMIT": "إرسال"
+    },
+    "CONFIRMATION": {
+      "BULK_DELETE": {
+        "CANCEL": "إلغاء",
+        "CONFIRM": "حذف الكل",
+        "MESSAGE": "هل أنت متأكد أنك تريد حذف العناصر المحددة؟ هذا الإجراء لا يمكن التراجع عنه.",
+        "TITLE": "تأكيد الحذف الجماعي"
+      },
+      "CANCEL": "إلغاء",
+      "DATA_LOSS": {
+        "CANCEL": "إلغاء",
+        "CONFIRM": "متابعة",
+        "MESSAGE": "سيؤدي هذا الإجراء إلى فقدان دائم للبيانات. هل أنت متأكد أنك تريد المتابعة؟",
+        "TITLE": "تحذير فقدان البيانات"
+      },
+      "DEFAULT": {
+        "CANCEL": "إلغاء",
+        "CONFIRM": "تأكيد"
+      },
+      "DELETE": {
+        "CANCEL": "إلغاء",
+        "CONFIRM": "حذف",
+        "MESSAGE": "هل أنت متأكد أنك تريد حذف هذا العنصر؟ هذا الإجراء لا يمكن التراجع عنه.",
+        "TITLE": "تأكيد الحذف"
+      },
+      "DESTRUCTIVE_WARNING": "هذا الإجراء لا رجعة فيه وسيحذف البيانات بشكل دائم.",
+      "OIL_TRANSACTION": {
+        "CANCEL": "لا، تخطي",
+        "CONFIRM": "نعم، تأكيد",
+        "MESSAGE": "هذا المورد لديه تخزين. هل ترغب أيضًا في تأكيد معاملة الزيت؟",
+        "TITLE": "تأكيد معاملة الزيت"
+      },
+      "SAVE": "حفظ",
+      "SAVE_PAYMENT": {
+        "MESSAGE": "هل أنت متأكد من أنك تريد حفظ هذا الدفع؟"
+      },
+      "SAVE_QC": {
+        "MESSAGE": "هل أنت متأكد أنك تريد حفظ نتائج مراقبة الجودة؟",
+        "TITLE": "تأكيد الحفظ"
+      },
+      "SIMPLE": {
+        "CANCEL": "لا",
+        "CONFIRM": "نعم",
+        "MESSAGE": "هل أنت متأكد؟",
+        "TITLE": "تأكيد"
+      },
+      "UNSAVED_CHANGES": {
+        "CANCEL": "البقاء",
+        "CONFIRM": "المغادرة",
+        "MESSAGE": "لديك تغييرات غير محفوظة. هل أنت متأكد أنك تريد المغادرة دون حفظ؟",
+        "TITLE": "تغييرات غير محفوظة"
+      },
+      "UPDATE": {
+        "CANCEL": "إلغاء",
+        "CONFIRM": "نعم، تحديث",
+        "MESSAGE": "هل أنت متأكد أنك تريد تحديث هذه المعاملة؟ هذا الإجراء لا يمكن التراجع عنه.",
+        "TITLE": "تأكيد التحديث"
+      },
+      "WARNING": {
+        "CANCEL": "إلغاء",
+        "CONFIRM": "متابعة",
+        "MESSAGE": "يرجى تأكيد هذا الإجراء.",
+        "TITLE": "تحذير"
+      }
+    },
+    "TOAST": {
+      "ERROR": "حدث خطأ",
+      "INFO": "معلومات",
+      "NETWORK_ERROR": "خطأ في اتصال الشبكة",
+      "SUCCESS": "تم إنجاز العملية بنجاح",
+      "VALIDATION_ERROR": "يرجى التحقق من إدخالك وحاول مرة أخرى",
+      "WARNING": "يرجى التحقق من إدخالك"
+    }
+  },
+  "STORAGE": {
+    "ERROR": {
+      "FAILED_TO_LOAD_UNITS": "فشل في تحميل وحدات التخزين",
+      "INVALID_ID": "معرف وحدة التخزين غير صالح",
+      "LOAD": "خطأ في تحميل وحدة التخزين"
+    },
+    "FORM": {
+      "IS_PAID_STORAGE": "تخزين مدفوع",
+      "MONTHLY_RENTAL_PRICE": "سعر الإيجار الشهري",
+      "PAID_STORAGE_INFO": "معلومات التخزين المدفوع",
+      "RENTAL_PRICE_MIN_ERROR": "يجب أن يكون سعر الإيجار أكبر من أو يساوي 0",
+      "RENTAL_PRICE_REQUIRED": "سعر الإيجار مطلوب للتخزين المدفوع"
+    },
+    "OIL_STORAGE_UNITS": "وحدات تخزين الزيت",
+    "OIL_TRANSACTIONS": {
+      "DASHBOARD": {
+        "TYPES": {
+          "LOAN": "قرض",
+          "RECEPTION_IN": "استقبال داخلي",
+          "SALE": "بيع",
+          "TRANSFER_IN": "تحويل داخلي"
+        }
+      }
+    },
+    "TITLE": {
+      "DASHBOARD": "لوحة تحكم التخزين"
+    },
+    "VIEW": {
+      "AVAILABLECAPACITY": "السعة المتاحة",
+      "AVGCOST": "التكلفة المتوسطة",
+      "CREATED_DATE": "تاريخ الإنشاء",
+      "CURRENT_VOLUME": "الحجم الحالي",
+      "DASHBOARD": {
+        "TITLE": "لوحة تحكم التخزين"
+      },
+      "FILTERED": "مفلتر",
+      "MAX_CAPACITY": "السعة القصوى",
+      "NA": "غير متوفر",
+      "NO_UNITS": "لا توجد وحدات تخزين",
+      "OIL_TYPE": "نوع الزيت",
+      "PAID_STORAGE": "تخزين مدفوع",
+      "PER_MONTH": "شهرياً",
+      "PUBLIC_CODE": "الرمز العام",
+      "PUBLIC_CODE_PLACEHOLDER": "أدخل الرمز العام",
+      "QUALITY_GRADE": "درجة الجودة",
+      "QUANTITY_KG": "الكمية (كغ)",
+      "SEARCHING": "جارٍ البحث...",
+      "SHOW_ONLY_FILTERED": "عرض الزيت المفلتر فقط",
+      "SHOW_ONLY_PAID": "عرض التخزين المدفوع فقط",
+      "STATUS": {
+        "AVAILABLE": "متاح",
+        "CLEANING": "تنظيف",
+        "FILLING": "ملء",
+        "FULL": "ممتلئ",
+        "IN_USE": "قيد الاستخدام",
+        "MAINTENANCE": "صيانة",
+        "OUT_OF_SERVICE": "خارج الخدمة",
+        "RESERVED": "محجوز"
+      },
+      "TITLE": "عرض التخزين",
+      "TOTALCOST": "التكلفة الإجمالية",
+      "TOTAL_PRICE": "السعر الكلي",
+      "TRANSACTION_HISTORY": "سجل المعاملات",
+      "UNIT_PRICE": "سعر الوحدة"
+    }
+  },
+  "SUPPLIER": {
+    "ACTIONS": {
+      "ADD": "إضافة",
+      "CANCEL": "إلغاء",
+      "EDIT": "تعديل"
+    },
+    "ADD": {
+      "TITLE_ADD": "إضافة مورد",
+      "TITLE_EDIT": "تعديل المورد"
+    },
+    "DETAILS": {
+      "COUNT": "",
+      "NO_EMAIL": "",
+      "OIL_CREDIT_STATS_TITLE": "إحصائيات اعتماد الزيت",
+      "OIL_CREDIT_TOTAL": "اعتمادات الزيت",
+      "PAID_OILSALES_TITLE": "مبيعات زيت مدفوعة",
+      "PAID_WASTE_SALES_TITLE": "مبيعات نفايات مدفوعة",
+      "PAYMENT_HISTORY_COUNT": "مدفوعات تم إجراؤها",
+      "PAYMENT_HISTORY_TITLE": "سجل الدفعات",
+      "TOTAL": "",
+      "UNPAID_COUNT": "مدفوعات معلقة",
+      "UNPAID_OILSALES_TITLE ": "مبيعات زيت غير مدفوعة",
+      "UNPAID_TITLE": "المدفوعات غير المدفوعة",
+      "UNPAID_WASTE_SALES_TITLE": "مبيعات نفايات غير مدفوعة "
+    },
+    "ERRORS": {
+      "ADDRESS_MIN": "يجب أن يكون العنوان على الأقل 5 أحرف",
+      "ADDRESS_REQUIRED": "العنوان مطلوب",
+      "EMAIL_INVALID": "عنوان بريد إلكتروني غير صالح",
+      "EMAIL_REQUIRED": "البريد الإلكتروني مطلوب",
+      "LASTNAME_MIN": "يجب أن يكون اللقب على الأقل حرفين",
+      "LASTNAME_REQUIRED": "اللقب مطلوب",
+      "NAME_MIN": "يجب أن يكون الاسم على الأقل حرفين",
+      "NAME_REQUIRED": "الاسم مطلوب",
+      "PHONE_PATTERN": "يجب أن يكون الهاتف 8 أرقام",
+      "PHONE_REQUIRED": "الهاتف مطلوب",
+      "REGION_REQUIRED": "المنطقة مطلوبة",
+      "RIB_PATTERN": "يجب أن يكون RIB 24 رقمًا",
+      "SUPPLIER_TYPE_REQUIRED": "نوع المورد مطلوب"
+    },
+    "FIELDS": {
+      "ADDRESS": "العنوان",
+      "BANK_NAME": "اسم البنك",
+      "EMAIL": "البريد الإلكتروني",
+      "HAS_STORAGE": "لديه مساحة تخزين",
+      "LASTNAME": "اللقب",
+      "NAME": "الاسم",
+      "PARCEL": "الحزمة",
+      "PHONE": "الهاتف",
+      "REGION": "المنطقة",
+      "RIB": "RIB",
+      "SUPPLIER_TYPE": "نوع المورد"
+    },
+    "OIL_CREDIT_STATS_TITLE": "إحصائيات اعتماد الزيت",
+    "OIL_CREDIT_TOTAL": "اعتمادات الزيت"
+  },
+  "SUPPLIERS": {
+    "ACTIONS": "الإجراءات",
+    "ADDRESS": "العنوان",
+    "EMAIL": "البريد الإلكتروني",
+    "FIRST_NAME": "الاسم الأول",
+    "LAST_NAME": "اللقب",
+    "PHONE": "الهاتف",
+    "REGION": "المنطقة",
+    "TITLE": "الموردون",
+    "TRANSACTIONS": {
+      "FIELDS": {
+        "TRANSACTION_TYPE": "نوع المعاملة"
+      }
+    },
+    "TYPE": "النوع",
+    "USER": {
+      "EMAIL": "البريد الإلكتروني",
+      "FIRST_NAME": "الاسم الأول",
+      "GROUP": "المجموعة",
+      "LAST_NAME": "اسم العائلة",
+      "PASSWORD": "كلمة المرور",
+      "STATUS": "الحالة",
+      "USERNAME": "اسم المستخدم"
+    },
+    "USERS": {
+      "ACTIONS": {
+        "ADD": "إضافة",
+        "CANCEL": "إلغاء",
+        "DELETE": "حذف",
+        "EDIT": "تعديل",
+        "GENERATE_PDF": "إنشاء إيصال"
+      },
+      "FIELDS": {
+        "EMAIL": "البريد الإلكتروني",
+        "FIRST_NAME": "الاسم الأول",
+        "GROUP": "المجموعة",
+        "LAST_NAME": "اسم العائلة",
+        "PASSWORD": "كلمة المرور",
+        "STATUS": "الحالة",
+        "USERNAME": "اسم المستخدم"
+      },
+      "MESSAGES": {
+        "DELETE": "هل أنت متأكد أنك تريد حذف هذا المستخدم؟ هذا الإجراء لا يمكن التراجع عنه.",
+        "ERROR": {
+          "EMAIL_REQUIRED": "البريد الإلكتروني مطلوب",
+          "PASSWORD_REQUIRED": "كلمة المرور مطلوبة",
+          "USERNAME_REQUIRED": "اسم المستخدم مطلوب"
+        },
+        "LOAD": "خطأ أثناء تحميل المستخدم",
+        "LOADING": "جارٍ التحميل...",
+        "SAVE": "خطأ أثناء حفظ المستخدم",
+        "SUCCESS": {
+          "DELETE": "تم حذف المستخدم بنجاح",
+          "SAVE": "تم حفظ المستخدم بنجاح"
+        }
+      },
+      "TITLE": "المستخدمين"
+    },
+    "WASTE": {
+      "ACTIONS": {
+        "ADD": "إضافة",
+        "CANCEL": "إلغاء",
+        "EDIT": "تعديل"
+      },
+      "ADD": {
+        "TITLE_ADD": "إضافة نفايات",
+        "TITLE_EDIT": "تعديل النفايات"
+      },
+      "FIELDS": {
+        "AMOUNT": "الكمية",
+        "DATE": "التاريخ",
+        "DESCRIPTION": "الوصف",
+        "METHOD": "الطريقة",
+        "OIL_TYPE": "نوع الزيت",
+        "OLIVE_TYPE": "نوع الزيتون",
+        "OPERATION_TYPE": "نوع العملية",
+        "PRICE": "السعر",
+        "REGION": "المنطقة",
+        "SUPPLIER": "المورد",
+        "TREATMENT_DATE": "تاريخ المعالجة",
+        "TYPE": "النوع",
+        "WEIGHT": "الوزن"
+      },
+      "MESSAGES": {
+        "LOAD_ERROR": "خطأ أثناء تحميل بيانات النفايات",
+        "SAVE_ERROR": "خطأ أثناء حفظ بيانات النفايات",
+        "SAVE_SUCCESS": "تم حفظ بيانات النفايات بنجاح"
+      },
+      "METHODS": {
+        "BURY": "دفن",
+        "DUMP": " выброс",
+        "RECYCLE": "تنقية",
+        "SOLD": "بيع"
+      },
+      "TITLE": "النفايات",
+      "TYPES": {
+        "OIL": "زيت",
+        "OLIVE": "زيتون"
+      }
+    },
+    "WASTE_PROCESSING": {
+      "FORM": {
+        "FIELDS": {
+          "METHOD": "الطريقة",
+          "OIL_TYPE": "نوع الزيت",
+          "OLIVE_TYPE": "نوع الزيتون",
+          "PRICE": "السعر",
+          "REGION": "المنطقة",
+          "WEIGHT": "الوزن"
+        },
+        "MESSAGES": {
+          "LOAD_ERROR": "خطأ أثناء تحميل بيانات معالجة النفايات",
+          "SAVE_ERROR": "خطأ أثناء حفظ بيانات معالجة النفايات",
+          "SAVE_SUCCESS": "تم حفظ بيانات معالجة النفايات بنجاح"
+        },
+        "METHODS": {
+          "BURY": "دفن",
+          "DUMP": " выброс",
+          "RECYCLE": "تنقية",
+          "SOLD": "بيع"
+        },
+        "TITLE": "معالجة النفايات"
+      }
+    },
+    "WASTE_PROCESSING_LIST": {
+      "ACTIONS": {
+        "DELETE": "حذف",
+        "EDIT": "تعديل",
+        "GENERATE_PDF": "إنشاء إيصال"
+      },
+      "FIELDS": {
+        "AMOUNT": "الكمية",
+        "DATE": "التاريخ",
+        "DESCRIPTION": "الوصف",
+        "METHOD": "الطريقة",
+        "OIL_TYPE": "نوع الزيت",
+        "OLIVE_TYPE": "نوع الزيتون",
+        "PRICE": "السعر",
+        "REGION": "المنطقة",
+        "TYPE": "النوع",
+        "WEIGHT": "الوزن"
+      },
+      "TITLE": "معالجة النفايات"
+    },
+    "WASTE_PROCESSING_METHODS": {
+      "BURY": "دفن",
+      "DUMP": " выброс",
+      "RECYCLE": "تنقية",
+      "SOLD": "بيع"
+    },
+    "WASTE_PROCESSING_TYPES": {
+      "OIL": "زيت",
+      "OLIVE": "زيتون"
+    }
+  },
+  "SUPPLIER_PAYMENT": {
+    "ACTIONS": "الإجراءات",
+    "ALL": "الكل",
+    "ALL_DELIVERIES": "جميع التسليمات",
+    "AMOUNT": "المبلغ",
+    "BANK_ACCOUNT": "الحساب البنكي",
+    "BANK_TRANSFER": "التحويل البنكي",
+    "BATCH_PAYMENT": "الدفع بالدفعة",
+    "BOTH_PAYMENT": "دفع مختلط",
+    "CANCEL": "إلغاء",
+    "CASH": "نقدي",
+    "CASH_AMOUNT": "المبلغ النقدي",
+    "CASH_PAYMENT": "الدفع النقدي",
+    "CHECK": "شيك",
+    "CHECK_NUMBER": "رقم الشيك",
+    "CHECK_NUMBER_PLACEHOLDER": "مثال: CHK-2024-001",
+    "CONFIRM_PAYMENT": "تأكيد الدفع",
+    "DELIVERY_DATE": "تاريخ التسليم",
+    "DELIVERY_NUMBER": "رقم التسليم",
+    "DIRECTION": "اتجاه الدفع",
+    "ENTER_NEGOTIATED_PRICE": "أدخل السعر المتفق عليه",
+    "ERRORS": {
+      "AMOUNT_MIN": "يجب أن يكون المبلغ أكبر من 0",
+      "AMOUNT_REQUIRED": "المبلغ مطلوب",
+      "BANK_ACCOUNT_REQUIRED": "الحساب البنكي مطلوب",
+      "CHECK_NUMBER_REQUIRED": "رقم الشيك مطلوب",
+      "LOAD_ERROR": "خطأ أثناء تحميل تاريخ الدفع",
+      "NO_DATA_FOUND": "لم يتم العثور على بيانات",
+      "OIL_PRICE_MIN": "يجب أن يكون سعر الزيت أكبر من 0",
+      "OIL_PRICE_REQUIRED": "سعر الزيت مطلوب",
+      "OIL_QUANTITY_EXCEEDS_REMAINING": "كمية الزيت تتجاوز المبلغ المتبقي",
+      "OIL_QUANTITY_MIN": "يجب أن تكون كمية الزيت أكبر من 0",
+      "OIL_QUANTITY_REQUIRED": "كمية الزيت مطلوبة",
+      "SUPPLIER_ID_NOT_FOUND": "معرف المورد غير موجود"
+    },
+    "INBOUND": "دفع وارد",
+    "LOT": "الدفعة",
+    "LOT_DETAILS": "تفاصيل الدفعة {{lotNumber}}",
+    "LOT_NUMBER": "رقم الدفعة",
+    "MIXED_PAYMENT": "دفع مختلط",
+    "MONEY_PAYMENT": "دفع نقدي",
+    "MONEY_PAYMENT_DESC": "ادفع نقدًا أو بشيك أو تحويل بنكي",
+    "NEGOTIATED_PRICE": "السعر المتفق عليه",
+    "NEGOTIATED_PRICE_HINT": "السعر المتفق عليه لهذا الدفع",
+    "NEGOTIATED_PRICE_PER_KG": "السعر المتفق عليه لكل كغ (د.ت)",
+    "OIL_CREDITS": "اعتمادات الزيت",
+    "OIL_CREDITS_LIST": "قائمة اعتمادات الزيت",
+    "OIL_CREDITS_TOTAL": "إجمالي اعتمادات الزيت",
+    "OIL_CREDITS_TOTAL_KG": "إجمالي الكمية (كغ)",
+    "OIL_CREDITS_TOTAL_L": "إجمالي الكمية (كغ)",
+    "OIL_CREDIT_CREATED_DATE": "تاريخ الإنشاء",
+    "OIL_CREDIT_ID": "ID",
+    "OIL_CREDIT_PACKAGING": "التعبئة",
+    "OIL_CREDIT_QUANTITY": "الكمية",
+    "OIL_CREDIT_STATE": "حالة الاعتماد",
+    "OIL_CREDIT_STATS_TITLE": "إحصائيات اعتماد الزيت",
+    "OIL_CREDIT_TOTAL": "اعتماد الزيت ",
+    "OIL_CREDIT_TYPE": "نوع الزيت",
+    "OIL_CREDIT_UNIT": "الوحدة",
+    "OIL_EQUIVALENT": "مكافئ الزيت",
+    "OIL_LOT_NUMBER": "رقم دفعة الزيت",
+    "OIL_PAYMENT": "دفع بالزيت",
+    "OIL_PAYMENT_DESC": "ادفع بزيت مكافئ",
+    "OIL_PRICE": "سعر الزيت",
+    "OIL_PRICE_PER_KG": "سعر الزيت لكل كغ (د.ت)",
+    "OIL_QUALITY_CONTROL": "مراقبة جودة الزيت",
+    "OIL_QUALITY_CONTROL_DESC": "مراقبة الجودة مطلوبة للدفعات بالزيت. يرجى إكمال تقييم الجودة أدناه.",
+    "OIL_QUANTITY": "كمية الزيت",
+    "OIL_QUANTITY_EXCEEDS_REMAINING": "كمية الزيت تتجاوز المبلغ المتبقي",
+    "OIL_QUANTITY_HINT": "الكمية القصوى:",
+    "OIL_STATUS": "حالة الزيت",
+    "OIL_VALUE": "قيمة الزيت",
+    "OLIVE_WEIGHT": "وزن الزيتون (كغ)",
+    "OUTBOUND": "دفع صادر",
+    "PAID": "مدفوع",
+    "PAID_AMOUNT": "المبلغ المدفوع",
+    "PAID_DELIVERIES": "التسليمات المدفوعة",
+    "PAY": "ادفع",
+    "PAYMENT": "الدفع",
+    "PAYMENT_HISTORY": "سجل الدفعات",
+    "PAYMENT_METHOD": "طريقة الدفع",
+    "PAYMENT_SUCCESS": "تم معالجة الدفع بنجاح",
+    "PAYMENT_SUMMARY": "ملخص الدفع",
+    "PAYMENT_TRANSACTION": "التحقق من المعاملة ذات الصلة  ",
+    "PRICE_NEGOTIATION": "مفاوضات السعر",
+    "PROCESS_PAYMENT": "معالجة الدفع",
+    "RECEPTION_TYPE": "نوع الاستقبال",
+    "RECEPTION_TYPE_OIL": "زيت",
+    "RECEPTION_TYPE_OLIVE": "زيتون",
+    "REFERENCE_PRICE": "السعر المرجعي",
+    "RELATED_OIL_DELIVERY": "تسليم الزيت ذو الصلة",
+    "REMAINING_AFTER_CASH": "المتبقي بعد النقد",
+    "REMAINING_AMOUNT": "المبلغ المتبقي",
+    "SELECT_LOTS_FOR_OIL_PAYMENT": "اختر الدفعات للدفع بالزيت",
+    "SELECT_PAYMENT_METHOD": "اختر طريقة الدفع",
+    "STATUS": "الحالة",
+    "STATUS_PAID": "مدفوع",
+    "STATUS_PARTIAL": "جزئي",
+    "STATUS_UNKNOWN": "غير معروف",
+    "STATUS_UNPAID": "غير مدفوع",
+    "TOTAL_DELIVERIES": "إجمالي التسليمات",
+    "TOTAL_OLIVE_WEIGHT": "إجمالي وزن الزيتون",
+    "TOTAL_PAID": "إجمالي المدفوع",
+    "TOTAL_PAYMENT": "إجمالي الدفع",
+    "TOTAL_PRICE": "السعر الكلي",
+    "TOTAL_UNPAID": "إجمالي غير المدفوع",
+    "UNPAID": "غير مدفوع",
+    "UNPAID_AMOUNT": "المبلغ غير المدفوع",
+    "UNPAID_DELIVERIES": "التسليمات غير المدفوعة"
+  },
+  "Sample Page": "صفحة تجريبية",
+  "Setting": "الإعدادات",
+  "Site": "الموقع",
+  "Social Profile": "الملف الشخصي الاجتماعي",
+  "Statistics": "الإحصائيات",
+  "Sticky Action Bar": "شريط إجراءات ثابت",
+  "Student": "طالب",
+  "TAB_TITLE": "التكوين العام",
+  "TRANSACTIONS": {
+    "ACTIONS": {
+      "ADD": "إضافة معاملة",
+      "APPROVE": "قبول",
+      "DELETE": "حذف",
+      "DUPLICATE": "نسخ",
+      "EDIT": "تعديل المعاملة",
+      "EXPORT": "تصدير",
+      "PRINT": "طباعة",
+      "REJECT": "رفض",
+      "VIEW": "عرض"
+    },
+    "CURRENCIES": {
+      "EUR": "اليورو",
+      "TND": "الدينار التونسي",
+      "USD": "الدولار الأمريكي"
+    },
+    "DIRECTIONS": {
+      "INBOUND": "وارد",
+      "INTERNAL": "داخلي",
+      "OUTBOUND": "صادر"
+    },
+    "ERRORS": {
+      "AMOUNT_MIN": "يجب أن يكون المبلغ موجبًا",
+      "AMOUNT_REQUIRED": "المبلغ مطلوب",
+      "CREATE_ERROR": "خطأ أثناء إنشاء المعاملة",
+      "DIRECTION_REQUIRED": "الاتجاه مطلوب",
+      "LOAD_ERROR": "خطأ أثناء تحميل المعاملة",
+      "NOT_FOUND": "المعاملة غير موجودة",
+      "PAYMENT_METHOD_REQUIRED": "طريقة الدفع مطلوبة",
+      "TRANSACTION_DATE_REQUIRED": "تاريخ المعاملة مطلوب",
+      "TRANSACTION_TYPE_REQUIRED": "نوع المعاملة مطلوب",
+      "UPDATE_ERROR": "خطأ أثناء تحديث المعاملة"
+    },
+    "FIELDS": {
+      "AMOUNT": "المبلغ",
+      "APPROVAL_DATE": "تاريخ الموافقة",
+      "APPROVED": "مقبول",
+      "APPROVED_BY": "تمت الموافقة بواسطة",
+      "BANK_ACCOUNT": "الحساب البنكي",
+      "CHECK_NUMBER": "رقم الشيك",
+      "CREATED_BY": "أنشأ بواسطة",
+      "CREATED_DATE": "تاريخ الإنشاء",
+      "CURRENCY": "العملة",
+      "CUSTOMER": "العميل",
+      "DESCRIPTION": "الوصف",
+      "DIRECTION": "الاتجاه",
+      "INVOICE_REFERENCE": "مرجع الفاتورة",
+      "LOT_NUMBER": "رقم الدفعة",
+      "PAYMENT_METHOD": "طريقة الدفع",
+      "RECEIPT_REFERENCE": "مرجع الإيصال",
+      "SUPPLIER": "المورد",
+      "TRANSACTION_DATE": "تاريخ المعاملة",
+      "TRANSACTION_TYPE": "نوع المعاملة"
+    },
+    "MESSAGES": {
+      "APPROVE_ERROR": "خطأ أثناء قبول المعاملة",
+      "APPROVE_SUCCESS": "تم قبول المعاملة بنجاح",
+      "CREATE_ERROR": "خطأ أثناء إنشاء المعاملة",
+      "CREATE_SUCCESS": "تم إنشاء المعاملة بنجاح",
+      "DELETE_ERROR": "خطأ أثناء حذف المعاملة",
+      "DELETE_SUCCESS": "تم حذف المعاملة بنجاح",
+      "DUPLICATE_SUCCESS": "تم نسخ المعاملة بنجاح",
+      "LOAD_ERROR": "خطأ أثناء تحميل المعاملات",
+      "REJECT_ERROR": "خطأ أثناء رفض المعاملة",
+      "REJECT_SUCCESS": "تم رفض المعاملة بنجاح",
+      "UPDATE_ERROR": "خطأ أثناء تحديث المعاملة",
+      "UPDATE_SUCCESS": "تم تحديث المعاملة بنجاح"
+    },
+    "PAYMENT_METHODS": {
+      "BANK_TRANSFER": "التحويل البنكي",
+      "BOTH": "كلاهما",
+      "CASH": "نقدي",
+      "CHECK": "شيك",
+      "CHEQUE": "شيك",
+      "CREDIT_CARD": "بطاقة ائتمان",
+      "DEBIT_CARD": "بطاقة خصم",
+      "MOBILE_PAYMENT": "دفع عبر الهاتف المحمول",
+      "OIL": "زيت",
+      "OIL_CREDIT": "اعتماد الزيت",
+      "TRANSFER": "نقل"
+    },
+    "PLACEHOLDERS": {
+      "DESCRIPTION": "أدخل وصف المعاملة...",
+      "INVOICE_REFERENCE": "أدخل مرجع الفاتورة...",
+      "LOT_NUMBER": "أدخل رقم الدفعة...",
+      "RECEIPT_REFERENCE": "أدخل مرجع الإيصال..."
+    },
+    "SECTIONS": {
+      "APPROVAL": "معلومات الموافقة",
+      "BASIC_INFO": "المعلومات الأساسية",
+      "PARTIES": "الأطراف ذات الصلة",
+      "REFERENCES": "المراجع"
+    },
+    "STATUS": {
+      "APPROVED": "مقبول",
+      "PENDING": "معلق",
+      "REJECTED": "مرفوض"
+    },
+    "SUMMARY": {
+      "APPROVED_TRANSACTIONS": "المعاملات المقبولة",
+      "BALANCE": "الرصيد",
+      "PENDING_TRANSACTIONS": "المعاملات المعلقة",
+      "TOTAL_AMOUNT": "المبلغ الإجمالي",
+      "TOTAL_INBOUND": "إجمالي الوارد",
+      "TOTAL_OUTBOUND": "إجمالي الصادر",
+      "TOTAL_TRANSACTIONS": "إجمالي المعاملات"
+    },
+    "TITLE": "المعاملات المالية",
+    "TYPES": {
+      "CHECK_DEPOSIT": "إيداع شيك",
+      "CHECK_PAYMENT": "دفع شيك",
+      "CREDIT": "ائتمان",
+      "DEBIT": "خصم",
+      "DEPOSIT": "إيداع",
+      "EXPENSE": "مصروف",
+      "INTERNAL_TRANSFER": "نقل داخلي",
+      "LOAN": "قرض",
+      "OIL_PURCHASE": "شراء زيت",
+      "OIL_SALE": "بيع زيت",
+      "PAYMENT": "دفع",
+      "PURCHASE": "شراء",
+      "SUPPLIER_CREDIT": "ائتمان المورد",
+      "SUPPLIER_PAYMENT": "دفع المورد",
+      "WITHDRAWAL": "سحب"
+    },
+    "VIEW": {
+      "TITLE": "تفاصيل المعاملة"
+    }
+  },
+  "Table": "جدول",
+  "Teacher": "معلم",
+  "Ticket": "تذكرة",
+  "USER_FORM": {
+    "CONFIRMATION_METHOD": "طريقة التأكيد",
+    "CONFIRMATION_METHOD_REQUIRED": "طريقة التأكيد مطلوبة.",
+    "EMAIL": "البريد الإلكتروني",
+    "EMAIL_REQUIRED": "البريد الإلكتروني مطلوب.",
+    "FIRST_NAME": "الاسم الأول",
+    "LAST_NAME": "اللقب",
+    "LOCKED": "مقفل",
+    "PHONE": "الهاتف",
+    "PHONE_REQUIRED": "الهاتف مطلوب.",
+    "ROLE": "الدور",
+    "ROLE_REQUIRED": "الدور مطلوب.",
+    "USERNAME": "اسم المستخدم",
+    "USERNAME_REQUIRED": "اسم المستخدم مطلوب."
+  },
+  "Ui-Components": "مكونات واجهة المستخدم",
+  "Under Construction": "قيد الإنشاء",
+  "User Profile": "ملف المستخدم",
+  "View": "عرض",
+  "WASTE": {
+    "FIELDS": {
+      "CUSTOMER": "العميل",
+      "INVOICE_NUMBER": "رقم الفاتورة",
+      "NOTES": "ملاحظات",
+      "PAID": "مدفوع؟",
+      "PAYMENT_DATE": "تاريخ الدفع",
+      "QUANTITY": "الكمية (كغ)",
+      "SALE_DATE": "تاريخ البيع",
+      "STORAGE_LOCATION": "رمز التخزين",
+      "SUPPLIER": "المورد",
+      "TOTAL_PRICE": "السعر الكلي (د.ت)",
+      "TYPE": "نوع النفايات",
+      "UNIT_PRICE": "سعر الوحدة (د.ت/كغ)"
+    },
+    "FORM": {
+      "ERRORS": {
+        "QUALITY_GRADE_REQUIRED": "جودة الزيت مطلوبة"
+      }
+    },
+    "TITLE": "إدارة النفايات",
+    "TYPES": {
+      "GRIGNON": "الغرينون",
+      "MARGINE": "المرجين",
+      "OTHER": "آخر",
+      "POMACE": "",
+      "SOLID": "",
+      "VEGETAL_SOLIDS": ""
+    }
+  },
+  "WELCOME": {
+    "CTA": {
+      "DOCS": "فتح الوثائق",
+      "START": "بدء عملية الاستلام"
+    },
+    "DESCRIPTION": "إدارة الاستلام والإنتاج والمخزون والمالية من مكان واحد.",
+    "HEADLINE": "مرحبًا بك في OSM",
+    "LINKS": {
+      "FINANCE": "المالية",
+      "FINANCE_HINT": "الفواتير والمدفوعات والتقارير",
+      "PRODUCTION": "الإنتاج",
+      "PRODUCTION_HINT": "العصر والتعبئة والعمليات",
+      "RECEPTION": "الاستلام",
+      "RECEPTION_HINT": "استلام الزيتون/الزيت وإدارة الدُفعات",
+      "SETTINGS": "الإعدادات",
+      "SETTINGS_HINT": "التهيئة والصلاحيات"
+    },
+    "SUB": "إدارة سلسلة الزيتون",
+    "TITLE": "مرحبًا"
+  },
+  "WIDOWED": "أرمل",
+  "Widget": "أداة",
+  "auth": {
+    "change_password_title": "تغيير كلمة المرور",
+    "password_changed_success": "تم تغيير كلمة المرور الخاصة بك بنجاح. هل ترغب في الدخول إلى التطبيق؟"
+  },
+  "department": {
+    "description": "الوصف"
+  },
+  "reCaptcha": "reCaptcha"
+}

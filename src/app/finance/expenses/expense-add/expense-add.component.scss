@@ -1,0 +1,231 @@
+.form-container {
+  padding: 1rem;
+}
+
+.expense-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.form-field {
+  flex: 1 1 32%;
+  min-width: 220px;
+  max-width: 32%;
+  box-sizing: border-box;
+}
+
+.full-width {
+  flex: 1 1 100%;
+  max-width: 100%;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+}
+
+h3 {
+  margin-bottom: 4px;
+  color: #1976d2;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+mat-divider {
+  margin-bottom: 12px;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+:host {
+  display: block;
+  padding: 1rem;
+}
+
+.notes-third {
+  flex: 0 0 33%;
+  max-width: 33%;
+  min-width: 220px;
+}
+
+.approval-two-thirds {
+  flex: 0 0 67%;
+  max-width: 67%;
+  min-width: 300px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.approval-row {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.approval-checkbox {
+  margin-top: 16px;
+  margin-right: 16px;
+  flex: 1 1 100%;
+}
+
+.approval-field {
+  flex: 1 1 0;
+  min-width: 160px;
+  max-width: 50%;
+}
+
+// Button styles
+.cancel-button,
+.submit-button {
+  min-height: 40px;
+  font-weight: 500;
+}
+
+// Responsive adjustments for tablets
+@media screen and (max-width: 1024px) {
+  .form-field {
+    flex: 1 1 48%;
+    max-width: 48%;
+  }
+  
+  .notes-third {
+    flex: 0 0 48%;
+    max-width: 48%;
+  }
+  
+  .approval-two-thirds {
+    flex: 0 0 52%;
+    max-width: 52%;
+  }
+  
+  .approval-field {
+    flex: 1 1 48%;
+    max-width: 48%;
+  }
+}
+
+// Responsive adjustments for mobile
+@media screen and (max-width: 768px) {
+  .form-container,
+  :host {
+    padding: 0.5rem;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .form-field {
+    flex: 1 1 100%;
+    max-width: 100%;
+    min-width: auto;
+  }
+  
+  .notes-third {
+    flex: 1 1 100%;
+    max-width: 100%;
+    min-width: auto;
+  }
+  
+  .approval-two-thirds {
+    flex: 1 1 100%;
+    max-width: 100%;
+    min-width: auto;
+  }
+  
+  .approval-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .approval-checkbox {
+    margin-top: 0;
+    margin-right: 0;
+    flex: 1 1 100%;
+  }
+  
+  .approval-field {
+    flex: 1 1 100%;
+    max-width: 100%;
+    min-width: auto;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .form-actions button,
+  .cancel-button,
+  .submit-button {
+    width: 100%;
+    min-height: 48px;
+  }
+  
+  h3 {
+    font-size: 1rem;
+  }
+  
+  mat-divider {
+    margin-bottom: 8px;
+  }
+}
+
+// Extra small devices (phones, 480px and down)
+@media screen and (max-width: 480px) {
+  .form-container,
+  :host {
+    padding: 0.25rem;
+  }
+  
+  .form-row {
+    gap: 12px;
+  }
+  
+  .form-field,
+  .notes-third,
+  .approval-two-thirds,
+  .approval-field {
+    min-width: auto;
+  }
+  
+  .form-actions {
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 12px;
+  }
+  
+  .form-actions button,
+  .cancel-button,
+  .submit-button {
+    min-height: 52px;
+    font-size: 16px;
+  }
+  
+  h3 {
+    font-size: 0.9rem;
+    margin-bottom: 2px;
+  }
+}

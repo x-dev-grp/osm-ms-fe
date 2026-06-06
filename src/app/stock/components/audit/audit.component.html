@@ -1,0 +1,311 @@
+<div class="audit-container">
+  <section class="audit-hero">
+    <div class="hero-left">
+      <div class="hero-logo">
+        <i class="fas fa-leaf"></i>
+      </div>
+
+      <div class="hero-text">
+        <h1>Audit Global</h1>
+        <p>Suivez toutes les actions effectuées dans le système</p>
+      </div>
+    </div>
+
+    <button class="btn-refresh" (click)="loadAudit()" [disabled]="loading">
+      <i class="fas" [ngClass]="loading ? 'fa-spinner fa-spin' : 'fa-sync-alt'"></i>
+      <span>Actualiser</span>
+    </button>
+  </section>
+
+  <section class="filters-card" *ngIf="!loading && !error">
+    <div class="filters-header">
+      <h3>
+        <i class="fas fa-sliders-h"></i>
+        Filtres avancés
+      </h3>
+
+      <button class="btn-reset" (click)="resetFilters()">
+        <i class="fas fa-undo-alt"></i>
+        Réinitialiser
+      </button>
+    </div>
+
+    <div class="filters-grid">
+      <div class="filter-group filter-period">
+        <label>
+          <i class="fas fa-calendar"></i>
+          Période
+        </label>
+
+        <div class="date-range">
+          <input
+            type="date"
+            class="form-control"
+            [(ngModel)]="filters.dateDebut"
+            (change)="applyFilters()"
+          />
+
+          <span class="date-separator">→</span>
+
+          <input
+            type="date"
+            class="form-control"
+            [(ngModel)]="filters.dateFin"
+            (change)="applyFilters()"
+          />
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label>
+          <i class="fas fa-tag"></i>
+          Type d'action
+        </label>
+
+        <select class="form-control" [(ngModel)]="filters.typeAction" (change)="applyFilters()">
+          <option *ngFor="let type of typeActions" [value]="type">
+            {{ type }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>
+          <i class="fas fa-user"></i>
+          Utilisateur
+        </label>
+
+        <div class="autocomplete-wrapper">
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="filters.utilisateur"
+            (input)="applyFilters()"
+            placeholder="Rechercher un utilisateur..."
+            list="utilisateurs-list"
+          />
+
+          <datalist id="utilisateurs-list">
+            <option *ngFor="let user of utilisateurs" [value]="user"></option>
+          </datalist>
+
+          <i class="fas fa-search search-icon"></i>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label>
+          <i class="fas fa-cube"></i>
+          Module métier
+        </label>
+
+        <div class="autocomplete-wrapper">
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="filters.entityName"
+            (input)="applyFilters()"
+            placeholder="Filtrer par module métier..."
+            list="entity-list"
+          />
+
+          <datalist id="entity-list">
+            <option *ngFor="let entity of entityNames" [value]="entity"></option>
+          </datalist>
+        </div>
+      </div>
+    </div>
+
+    <div class="filters-summary" *ngIf="filteredAudits.length !== audits.length">
+      <i class="fas fa-filter"></i>
+      <span>{{ filteredAudits.length }} résultat(s) sur {{ audits.length }} entrée(s)</span>
+
+      <button class="btn-clear-filters" (click)="resetFilters()">
+        <i class="fas fa-times"></i>
+        Effacer les filtres
+      </button>
+    </div>
+  </section>
+
+  <section class="audit-kpis" *ngIf="!loading && !error">
+    <div class="kpi-card kpi-total">
+      <div class="kpi-icon">
+        <i class="fas fa-clipboard-check"></i>
+      </div>
+
+      <div class="kpi-content">
+        <span>Total actions</span>
+        <strong>{{ audits.length }}</strong>
+        <p>Toutes actions confondues</p>
+      </div>
+    </div>
+
+    <div class="kpi-card kpi-visible">
+      <div class="kpi-icon">
+        <i class="fas fa-filter"></i>
+      </div>
+
+      <div class="kpi-content">
+        <span>Résultats affichés</span>
+        <strong>{{ filteredAudits.length }}</strong>
+        <p>Après application des filtres</p>
+      </div>
+    </div>
+
+    <div class="kpi-card kpi-users">
+      <div class="kpi-icon">
+        <i class="fas fa-users"></i>
+      </div>
+
+      <div class="kpi-content">
+        <span>Utilisateurs</span>
+        <strong>{{ utilisateurs.length }}</strong>
+        <p>Acteurs détectés</p>
+      </div>
+    </div>
+
+    <div class="kpi-card kpi-entities">
+      <div class="kpi-icon">
+        <i class="fas fa-cubes"></i>
+      </div>
+
+      <div class="kpi-content">
+        <span>Modules métier</span>
+        <strong>{{ entityNames.length }}</strong>
+        <p>Domaines métier audités</p>
+      </div>
+    </div>
+  </section>
+
+  <section *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Chargement des données d'audit...</p>
+  </section>
+
+  <section *ngIf="error" class="error-state">
+    <i class="fas fa-exclamation-circle"></i>
+    <p>{{ error }}</p>
+
+    <button class="btn-retry" (click)="loadAudit()">
+      <i class="fas fa-redo"></i>
+      Réessayer
+    </button>
+  </section>
+
+  <section *ngIf="!loading && !error" class="table-container">
+    <div class="table-scroll">
+      <table class="audit-table">
+        <thead>
+        <tr>
+          <th>Module métier</th>
+          <th>ID</th>
+          <th>Créé par</th>
+          <th>Date création</th>
+          <th>Modifié par</th>
+          <th>Date modification</th>
+          <th>Type</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr *ngFor="let audit of paginatedAudits; trackBy: trackByAudit" class="audit-row">
+          <td>
+            <span class="entity-badge">{{ getEntityDisplayName(audit.entityName) }}</span>
+          </td>
+
+          <td class="id-cell">{{ audit.id }}</td>
+
+          <td>
+            <div class="user-info">
+              <i class="fas fa-user-circle"></i>
+              <span>{{ audit.createdBy || '-' }}</span>
+            </div>
+          </td>
+
+          <td class="date-cell">{{ formatDate(audit.createdDate) }}</td>
+
+          <td>
+            <div class="user-info" *ngIf="audit.lastModifiedBy">
+              <i class="fas fa-user-edit"></i>
+              <span>{{ audit.lastModifiedBy }}</span>
+            </div>
+
+            <span *ngIf="!audit.lastModifiedBy">-</span>
+          </td>
+
+          <td class="date-cell">{{ formatDate(audit.lastModifiedDate) }}</td>
+
+          <td>
+            <span class="action-badge" [ngClass]="getActionClass(getActionType(audit))">
+              <i
+                class="fas"
+                [ngClass]="{
+                  'fa-plus-circle': getActionType(audit) === 'CRÉATION',
+                  'fa-edit': getActionType(audit) === 'MODIFICATION'
+                }"
+              ></i>
+              {{ getActionType(audit) }}
+            </span>
+          </td>
+        </tr>
+
+        <tr *ngIf="filteredAudits.length === 0">
+          <td colspan="7" class="empty-state">
+            <i class="fas fa-search"></i>
+            <p>Aucun résultat trouvé</p>
+
+            <button class="btn-reset-filters" (click)="resetFilters()">
+              Réinitialiser les filtres
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="table-pagination" *ngIf="filteredAudits.length > 0">
+      <div class="pagination-summary">
+        <strong>{{ pageStartIndex }}-{{ pageEndIndex }}</strong>
+        <span>sur {{ filteredAudits.length }} entrée(s)</span>
+      </div>
+
+      <div class="pagination-controls">
+        <label class="page-size-control" for="audit-page-size">
+          <span>Lignes</span>
+          <select
+            id="audit-page-size"
+            class="page-size-select"
+            [ngModel]="pageSize"
+            (ngModelChange)="onPageSizeChange($event)"
+          >
+            <option *ngFor="let option of pageSizeOptions" [value]="option">
+              {{ option }}
+            </option>
+          </select>
+        </label>
+
+        <div class="page-navigation">
+          <button class="page-btn" type="button" (click)="goToPreviousPage()" [disabled]="currentPage === 1">
+            <i class="fas fa-chevron-left"></i>
+            <span>Précédent</span>
+          </button>
+
+          <button
+            *ngFor="let page of visiblePageNumbers"
+            class="page-number"
+            type="button"
+            [class.active]="page === currentPage"
+            (click)="goToPage(page)"
+          >
+            {{ page }}
+          </button>
+
+          <button class="page-btn" type="button" (click)="goToNextPage()" [disabled]="currentPage === totalPages">
+            <span>Suivant</span>
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,82 @@
+:host {
+  display: block;
+}
+
+mat-card {
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+mat-card-header {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+mat-card-content {
+  display: block;
+}
+
+mat-card-actions {
+  padding: 8px;
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.block {
+  display: block !important;
+}
+
+.card-action {
+  border-top: 1px solid var(--accent-300);
+  padding: 20px;
+}
+.role-actions{
+  display: flex;
+  justify-content: center;
+  padding-bottom: 24px;
+  gap: 1rem;
+}
+.actions{
+   display: flex;
+  justify-content: end;
+  padding: 0 24px 24px 0;
+  gap: 1rem;
+}
+
+.role-card {
+  position: relative;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.header-class{
+  display: flex;
+  justify-content: start !important;
+  gap: 2rem;
+}
+
+.card-header-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  .card-header-icon {
+
+    vertical-align: middle;
+    &.left {
+      margin-right: 0.5rem;
+      margin-left: 0;
+    }
+    &.right {
+      margin-left: 0.5rem;
+      margin-right: 0;
+    }
+  }
+}

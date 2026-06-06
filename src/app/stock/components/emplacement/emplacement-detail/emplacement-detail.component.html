@@ -1,0 +1,282 @@
+<div class="modern-container">
+  @if (successMessage) {
+    <div class="alert-modern alert-success slide-down">
+      <div class="alert-icon">
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <div class="alert-content">
+        {{ successMessage }}
+      </div>
+      <button class="alert-close" (click)="successMessage = ''">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  }
+
+  @if (error) {
+    <div class="alert-modern alert-danger slide-down">
+      <div class="alert-icon">
+        <i class="fas fa-exclamation-triangle"></i>
+      </div>
+      <div class="alert-content">
+        {{ error }}
+      </div>
+      <button class="alert-close" (click)="error = ''">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  }
+  @if (loading) {
+    <div class="loading-state-modern">
+      <div class="spinner-container">
+        <div class="spinner-ring"></div>
+        <div class="spinner-ring-inner"></div>
+      </div>
+      <p class="loading-text">Chargement de l'emplacement</p>
+      <p class="loading-subtext">Veuillez patienter...</p>
+    </div>
+  }
+
+  @if (!loading && !error && emplacement) {
+    <div class="detail-content fade-in">
+      <div class="detail-header glass-effect">
+        <div class="header-left">
+          <button class="btn-back" (click)="goBack()">
+            <i class="fas fa-arrow-left"></i>
+          </button>
+          <div class="title-section">
+            <div class="title-badge">
+              <i class="fas fa-warehouse"></i>
+              <span>Emplacement</span>
+            </div>
+            <h1 class="page-title">{{ emplacement.code }}</h1>
+            @if (emplacement.nom) {
+              <p class="page-subtitle">{{ emplacement.nom }}</p>
+            }
+          </div>
+        </div>
+        <div class="header-actions">
+          @if (hasCompleteQrMetadata()) {
+            <button class="btn-icon-edit" matTooltip="View QR" (click)="openExistingQrDialog()">
+              <i class="fas fa-qrcode me-2"></i>
+              QR
+            </button>
+          }
+          <button class="btn-icon-edit" [disabled]="generatingQr" (click)="generateQr()">
+            <i class="fas fa-qrcode me-2"></i>
+            {{ generatingQr ? 'Generation...' : 'Generer QR' }}
+          </button>
+          @if (hasCompleteQrMetadata()) {
+            <span class="zone-badge">{{ getQrCodeText() }}</span>
+          }
+          <button class="btn-icon-edit" [routerLink]="['/stock/emplacements', emplacement.id, 'edit']">
+            <i class="fas fa-edit me-2"></i>
+            Modifier
+          </button>
+        </div>
+      </div>
+
+      <div class="status-section mb-4">
+        <span class="status-badge-large {{ getDisponibiliteBadge() }}">
+          <span class="status-dot-large"></span>
+          {{ getDisponibiliteLabel() }}
+        </span>
+        @if (emplacement.zone) {
+          <span class="zone-badge">
+            <i class="fas fa-map-marker-alt me-2"></i>
+            Zone: {{ emplacement.zone }}
+          </span>
+        }
+      </div>
+      <div class="detail-grid">
+        <div class="info-card glass-effect hover-lift">
+          <div class="card-header">
+            <div class="header-icon-wrapper">
+              <i class="fas fa-tag"></i>
+            </div>
+            <h3>Identification</h3>
+          </div>
+          <div class="card-body">
+            <div class="info-row">
+              <span class="info-label">Code</span>
+              <span class="info-value code-highlight">{{ emplacement.code }}</span>
+            </div>
+            @if (emplacement.nom) {
+              <div class="info-row">
+                <span class="info-label">Nom</span>
+                <span class="info-value">{{ emplacement.nom }}</span>
+              </div>
+            }
+            @if (emplacement.description) {
+              <div class="info-row description">
+                <span class="info-label">Description</span>
+                <p class="info-text">{{ emplacement.description }}</p>
+              </div>
+            }
+          </div>
+        </div>
+        <div class="info-card glass-effect hover-lift">
+          <div class="card-header">
+            <div class="header-icon-wrapper" [ngClass]="getTypeColor(emplacement.typeEmplacement)">
+              <i class="fas {{ getTypeIcon(emplacement.typeEmplacement) }}"></i>
+            </div>
+            <h3>Type & caractéristiques</h3>
+          </div>
+          <div class="card-body">
+            <div class="info-row">
+              <span class="info-label">Type</span>
+              <span class="info-value">
+                <span class="type-badge {{ getTypeColor(emplacement.typeEmplacement) }}">
+                  <i class="fas {{ getTypeIcon(emplacement.typeEmplacement) }} me-1"></i>
+                  {{ getTypeLabel(emplacement.typeEmplacement) }}
+                </span>
+              </span>
+            </div>
+            @if (hasTemperature()) {
+              <div class="info-row">
+                <span class="info-label">Température</span>
+                <span class="info-value temperature-range">
+                  <i class="fas fa-thermometer-half me-2"></i>
+                  {{ emplacement.temperatureMin || 'N/A' }}°C / {{ emplacement.temperatureMax || 'N/A' }}°C
+                </span>
+              </div>
+            }
+            @if (emplacement.conditionsSpeciales) {
+              <div class="info-row">
+                <span class="info-label">Conditions spéciales</span>
+                <span class="info-value">
+                  <span class="condition-badge">
+                    <i class="fas fa-exclamation-triangle me-1"></i>
+                    {{ emplacement.conditionsSpeciales }}
+                  </span>
+                </span>
+              </div>
+            }
+          </div>
+        </div>
+        <div class="info-card glass-effect hover-lift">
+          <div class="card-header">
+            <div class="header-icon-wrapper accent">
+              <i class="fas fa-chart-bar"></i>
+            </div>
+            <h3>Capacité</h3>
+          </div>
+          <div class="card-body">
+            @if (emplacement.capaciteMaximale) {
+              <div class="capacity-visual">
+                <div class="capacity-numbers">
+                  <span class="capacity-current">{{ emplacement.capaciteActuelle || '0' }}</span>
+                  <span class="capacity-separator">/</span>
+                  <span class="capacity-max">{{ emplacement.capaciteMaximale }}</span>
+                </div>
+                <div class="capacity-bar-large">
+                  <div class="capacity-fill"
+                       [style.width]="getCapacitePercentage() + '%'"
+                       [class.warning]="getCapacitePercentage() > 80"
+                       [class.danger]="getCapacitePercentage() > 95">
+                  </div>
+                </div>
+                <div class="capacity-percentage">
+                  Taux d'occupation: {{ getCapacitePercentage() | number:'1.0-0' }}%
+                </div>
+              </div>
+            } @else {
+              <div class="info-row">
+                <span class="info-label">Capacité maximale</span>
+                <span class="info-value value-placeholder">Non définie</span>
+              </div>
+              @if (emplacement.capaciteActuelle) {
+                <div class="info-row">
+                  <span class="info-label">Capacité actuelle</span>
+                  <span class="info-value">{{ emplacement.capaciteActuelle }}</span>
+                </div>
+              }
+            }
+          </div>
+        </div>
+        <div class="info-card glass-effect hover-lift">
+          <div class="card-header">
+            <div class="header-icon-wrapper success">
+              <i class="fas fa-calendar-check"></i>
+            </div>
+            <h3>Réservation</h3>
+          </div>
+          <div class="card-body">
+            @if (emplacement.reservePour) {
+              <div class="info-row highlight-row">
+                <span class="info-label">Réservé pour</span>
+                <span class="info-value highlight-value">
+                  <i class="fas fa-user me-2"></i>
+                  {{ emplacement.reservePour }}
+                </span>
+              </div>
+            } @else {
+              <div class="info-row">
+                <span class="info-label">Statut</span>
+                <span class="info-value">
+                  @if (emplacement.disponible) {
+                    <span class="text-success">Non réservé</span>
+                  } @else {
+                    <span class="text-danger">Occupé sans réservation</span>
+                  }
+                </span>
+              </div>
+            }
+            @if (emplacement.categorieArticleStocke) {
+              <div class="info-row">
+                <span class="info-label">Catégorie stockée</span>
+                <span class="info-value">
+          <span class="type-badge info">
+            <i class="fas fa-boxes me-1"></i>
+            {{ getCategorieLabel(emplacement.categorieArticleStocke) }}
+          </span>
+        </span>
+              </div>
+            }
+
+            <div class="action-buttons-container mt-4">
+              @if (emplacement.disponible && !emplacement.reservePour) {
+                <button class="btn-action-primary" (click)="reserverEmplacement()">
+                  <i class="fas fa-calendar-check me-2"></i>
+                  Réserver
+                </button>
+              }
+              @if (!emplacement.disponible && emplacement.reservePour) {
+                <button class="btn-action-warning" (click)="libererEmplacement()">
+                  <i class="fas fa-times-circle me-2"></i>
+                  Libérer
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+        @if (emplacement.notes) {
+          <div class="info-card glass-effect hover-lift notes-card">
+            <div class="card-header">
+              <div class="header-icon-wrapper">
+                <i class="fas fa-sticky-note"></i>
+              </div>
+              <h3>Notes</h3>
+            </div>
+            <div class="card-body">
+              <div class="notes-content">
+                <i class="fas fa-quote-left quote-icon"></i>
+                <p>{{ emplacement.notes }}</p>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+      <div class="action-footer">
+        <button class="btn-outline" (click)="goBack()">
+          <i class="fas fa-arrow-left me-2"></i>
+          Retour à la liste
+        </button>
+        <button class="btn-primary" [routerLink]="['/stock/emplacements', emplacement.id, 'edit']">
+          <i class="fas fa-edit me-2"></i>
+          Modifier cet emplacement
+        </button>
+      </div>
+    </div>
+  }
+</div>

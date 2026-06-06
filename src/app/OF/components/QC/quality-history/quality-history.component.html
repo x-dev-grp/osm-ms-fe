@@ -1,0 +1,39 @@
+<div class="quality-history">
+  <div class="page-header">
+    <h2>Historique des contrôles qualité</h2>
+    <p>Consultez les résultats pour un OF</p>
+  </div>
+  <div class="filters">
+    <mat-form-field appearance="outline">
+      <mat-label>OF</mat-label>
+      <mat-select [(ngModel)]="selectedOfId" (selectionChange)="loadHistory()">
+        <mat-option *ngFor="let of of ofs" [value]="of.id">
+          {{ of.code }} - {{ of.productName || of.skuCode || of.productId || of.skuId }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="history.length > 0">
+    <mat-accordion>
+      <mat-expansion-panel *ngFor="let result of history">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{ getPointName(result.controlPointId) }}
+          </mat-panel-title>
+          <mat-panel-description>
+            Valeur: {{ result.valeur }} - Statut: {{ result.statut }}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <p><strong>Date:</strong> {{ result.dateControle | date:'dd/MM/yyyy HH:mm' }}</p>
+        <p><strong>Commentaire:</strong> {{ result.commentaire }}</p>
+        <p *ngIf="result.photo"><strong>Photo:</strong> <a [href]="'data:image/jpeg;base64,' + result.photo" target="_blank">Voir photo</a></p>
+        <p *ngIf="result.signature"><strong>Signature:</strong> (signature enregistrée)</p>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+
+  <div *ngIf="!loading && history.length === 0" class="empty-state">
+    Aucun résultat trouvé
+  </div>
+</div>

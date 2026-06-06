@@ -1,0 +1,32 @@
+
+<div class="dynamic-input-container">
+    @switch (field().fieldType) {
+        @case ("text"){
+          <input-text [field]="field()"></input-text>
+        }
+        @case ("select") {
+         <select-field [field]="field()"></select-field>
+        }
+        @case ("autocomplete") {
+            <auto-complete [field]="field()"></auto-complete>
+        }
+        @case ("date") {
+          <date-range [field]="field()"></date-range>              
+
+        }
+        @case ("slider") {
+           <slider [field]="field()"></slider>
+        }
+        @case ("checkbox") {
+          <slide [field]="field()"> </slide>
+        }
+        @case ("radio") {
+            <mat-radio-group [formControl]="formControl" [placeholder]="field().labelTranslatePath?(field().labelTranslatePath|translate):field().label" class="w-100">
+                <mat-radio-button *ngFor="let option of field().options" [value]="option.value">{{option.label}}</mat-radio-button>
+            </mat-radio-group>
+        }
+        @default{
+            <p>Unsupported field type: {{ field().fieldType }}</p>
+        }
+    }
+</div>

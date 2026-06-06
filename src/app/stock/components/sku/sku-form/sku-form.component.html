@@ -1,0 +1,516 @@
+<div class="sku-page">
+  <div class="sku-shell">
+    <header class="hero-card">
+      <div class="hero-title">
+        <h1>{{ isEditMode ? 'Modifier le produit' : 'Nouveau produit' }}</h1>
+        <p>Paramétrage du produit, du vrac et de la nomenclature d'emballage</p>
+      </div>
+
+      <div class="hero-badge" [class.vrac]="isVrac()" [class.conditionne]="isNonVrac()">
+        @if (isVrac()) {
+          <i class="fas fa-tint"></i>
+          <span>Huile en vrac</span>
+        } @else {
+          <i class="fas fa-wine-bottle"></i>
+          <span>Produit conditionné</span>
+        }
+      </div>
+    </header>
+
+    <form [formGroup]="skuForm" (ngSubmit)="onSubmit()" class="modern-form">
+      <section class="type-switcher-card">
+        <button
+          type="button"
+          class="type-btn"
+          [class.active-vrac]="isVrac()"
+          (click)="skuForm.get('type')?.setValue('VRAC')"
+        >
+          <span class="type-icon">
+            <i class="fas fa-tint"></i>
+          </span>
+          <span class="type-text">
+            <strong>VRAC</strong>
+            <small>Huile en cuve</small>
+          </span>
+        </button>
+
+        <button
+          type="button"
+          class="type-btn"
+          [class.active-conditionne]="isNonVrac()"
+          (click)="skuForm.get('type')?.setValue('NON_VRAC')"
+        >
+          <span class="type-icon">
+            <i class="fas fa-wine-bottle"></i>
+          </span>
+          <span class="type-text">
+            <strong>CONDITIONNÉ</strong>
+            <small>Produit emballé</small>
+          </span>
+        </button>
+      </section>
+
+      <section class="section-card">
+        <div class="section-title">
+          <div class="section-icon">
+            <i class="fas fa-clipboard-list"></i>
+          </div>
+          <h2>Identité produit</h2>
+          <span></span>
+        </div>
+
+        <div class="form-grid two-cols">
+          <div class="field-block">
+            <label for="name">Nom du produit *</label>
+            <div class="input-with-icon">
+              <i class="fas fa-tag"></i>
+              <input
+                type="text"
+                id="name"
+                class="form-control"
+                [class.is-invalid]="submitted && f['name'].errors"
+                [class.is-valid]="submitted && !f['name'].errors && f['name'].value"
+                formControlName="name"
+                placeholder="Nom du produit"
+              />
+            </div>
+
+            @if (submitted && f['name'].errors) {
+              <div class="invalid-feedback d-block">
+                Le nom du produit est requis.
+              </div>
+            }
+
+            <small class="form-hint">
+              @if (isVrac()) {
+                Ex: Huile Extra Vierge Vrac 2024/2025
+              } @else {
+                Ex: Huile Olivéa 750ml Bouteille Verre
+              }
+            </small>
+          </div>
+
+          <div class="field-block">
+            <label for="code">Code interne</label>
+            <div class="input-with-icon">
+              <i class="fas fa-barcode"></i>
+              <input
+                type="text"
+                id="code"
+                class="form-control readonly-control"
+                formControlName="code"
+                [placeholder]="codePlaceholder"
+                readonly
+              />
+            </div>
+            <small class="form-hint">Ce code sera créé automatiquement par le système.</small>
+          </div>
+
+          <div class="field-block">
+            <label for="category">Catégorie</label>
+            <div class="input-with-icon">
+              <i class="fas fa-list"></i>
+              <input
+                type="text"
+                id="category"
+                class="form-control readonly-control"
+                formControlName="category"
+                placeholder="Catégorie"
+                readonly
+              />
+            </div>
+          </div>
+
+          <div class="field-block">
+            <label for="unitOfMeasure">Unité de mesure</label>
+            <div class="input-with-icon">
+              <i class="fas fa-ruler-combined"></i>
+              <input
+                type="text"
+                id="unitOfMeasure"
+                class="form-control readonly-control"
+                formControlName="unitOfMeasure"
+                readonly
+              />
+            </div>
+
+
+          </div>
+
+          <div class="field-block">
+            <label for="harvestCampaign">Campagne</label>
+            <div class="input-with-icon">
+              <i class="fas fa-calendar"></i>
+              <input
+                type="text"
+                id="harvestCampaign"
+                class="form-control"
+                formControlName="harvestCampaign"
+                placeholder="Ex: 2025/2026"
+              />
+            </div>
+          </div>
+
+          <div class="field-block">
+            <label for="grade">Grade huile</label>
+            <div class="input-with-icon">
+              <i class="fas fa-certificate"></i>
+              <input
+                type="text"
+                id="grade"
+                class="form-control"
+                formControlName="grade"
+                placeholder="Extra vierge, vierge, lampante"
+              />
+            </div>
+          </div>
+
+          <div class="field-block">
+            <label for="origin">Origine</label>
+            <div class="input-with-icon">
+              <i class="fas fa-map-marker-alt"></i>
+              <input
+                type="text"
+                id="origin"
+                class="form-control"
+                formControlName="origin"
+                placeholder="Origine"
+              />
+            </div>
+          </div>
+
+          <div class="field-block full-row">
+            <label for="description">Description</label>
+            <div class="input-with-icon">
+              <i class="fas fa-align-left"></i>
+              <input
+                type="text"
+                id="description"
+                class="form-control"
+                formControlName="description"
+                placeholder="Description courte du produit"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      @if (isVrac()) {
+        <section class="section-card">
+          <div class="section-title">
+            <div class="section-icon">
+              <i class="fas fa-industry"></i>
+            </div>
+            <h2>Paramètres vrac</h2>
+            <span></span>
+          </div>
+
+          <div class="info-banner-modern vrac-banner">
+            <div class="banner-icon">
+              <i class="fas fa-info"></i>
+            </div>
+            <span>
+              <strong>Produit Vrac :</strong>
+              l'huile est stockée directement en cuve ou en citerne. Aucune nomenclature d'emballage n'est nécessaire.
+            </span>
+          </div>
+
+          <div class="form-grid two-cols">
+            <div class="field-block">
+              <label for="density">Densité (g/ml)</label>
+              <div class="input-with-icon">
+                <i class="fas fa-vial"></i>
+                <input
+                  type="number"
+                  id="density"
+                  class="form-control"
+                  formControlName="density"
+                  step="0.0001"
+                  min="0"
+                  placeholder="Ex: 0.916"
+                />
+              </div>
+              <small class="form-hint">Ex: 0.916 pour l'huile d'olive</small>
+            </div>
+
+            <div class="field-block">
+              <label for="storageUnit">Cuve / Unité de stockage</label>
+              <div class="input-with-icon">
+                <i class="fas fa-warehouse"></i>
+                <select id="storageUnit" class="form-select" formControlName="storageUnit">
+                  <option value="">— Sélectionner une cuve —</option>
+                  <ng-container *ngFor="let unit of storageUnits">
+                    <option
+                      *ngIf="unit.currentVolume > 0 || unit.name === skuForm.get('storageUnit')?.value"
+                      [value]="unit.name"
+                    >
+                      {{ unit.name }} ({{ unit.filteredOil ? 'Filtré' : 'Non filtré' }} — {{ unit.currentVolume || 0 }} L)
+                    </option>
+                  </ng-container>
+                </select>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <app-product-labels [productId]="skuId"></app-product-labels>
+
+      }
+
+      @if (isNonVrac()) {
+        <section class="section-card">
+          <div class="section-title">
+            <div class="section-icon">
+              <i class="fas fa-wine-bottle"></i>
+            </div>
+            <h2>Spécifications produit conditionné</h2>
+            <span></span>
+          </div>
+
+          <div class="info-banner-modern conditionne-banner">
+            <div class="banner-icon">
+              <i class="fas fa-info"></i>
+            </div>
+            <span>
+              <strong>Produit Conditionné :</strong>
+              l'huile est mise en bouteille ou bidon. Renseignez les caractéristiques physiques du produit fini.
+            </span>
+          </div>
+
+          <div class="form-grid four-cols">
+            <div class="field-block">
+              <label for="volume">Volume (ml) *</label>
+              <div class="input-with-icon">
+                <i class="fas fa-tint"></i>
+                <input
+                  type="number"
+                  id="volume"
+                  class="form-control"
+                  [class.is-invalid]="submitted && f['volume'].errors"
+                  formControlName="volume"
+                  step="1"
+                  min="0"
+                  placeholder="Ex: 750"
+                />
+              </div>
+
+              @if (submitted && f['volume'].errors) {
+                <div class="invalid-feedback d-block">Requis.</div>
+              }
+
+              <small class="form-hint">Ex: 750, 1000, 5000</small>
+            </div>
+
+            <div class="field-block">
+              <label for="brand">Marque</label>
+              <div class="input-with-icon">
+                <i class="fas fa-trademark"></i>
+                <input
+                  type="text"
+                  id="brand"
+                  class="form-control"
+                  formControlName="brand"
+                  placeholder="Marque"
+                />
+              </div>
+            </div>
+
+            <div class="field-block">
+              <label for="barcode">Code barre (EAN)</label>
+              <div class="input-with-icon">
+                <i class="fas fa-barcode"></i>
+                <input
+                  type="text"
+                  id="barcode"
+                  class="form-control"
+                  formControlName="barcode"
+                  placeholder="Code EAN"
+                />
+              </div>
+            </div>
+
+            <div class="field-block">
+              <label for="netWeight">Poids net (kg)</label>
+              <div class="input-with-icon">
+                <i class="fas fa-weight"></i>
+                <input
+                  type="number"
+                  id="netWeight"
+                  class="form-control"
+                  formControlName="netWeight"
+                  step="0.001"
+                  min="0"
+                  placeholder="Poids net"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-card">
+          <div class="section-title">
+            <div class="section-icon">
+              <i class="fas fa-sitemap"></i>
+            </div>
+            <h2>Nomenclature d'emballage (BOM)</h2>
+            <span></span>
+          </div>
+
+          <p class="form-hint-text">
+            <i class="fas fa-lightbulb"></i>
+            Sélectionnez les articles du catalogue par catégorie pour constituer la nomenclature du produit conditionné.
+          </p>
+
+          @if (existingBoms.length > 0) {
+            <div class="bom-importer-section">
+              <div class="importer-card">
+                <div class="importer-header">
+                  <i class="fas fa-project-diagram"></i>
+                  <span>Source de la nomenclature</span>
+                </div>
+
+                <div class="importer-grid">
+                  <div class="importer-field">
+                    <label>Importer un modèle existant</label>
+
+                    <div class="importer-row">
+                      <select
+                        class="modern-input"
+                        [(ngModel)]="selectedBomId"
+                        [ngModelOptions]="{ standalone: true }"
+                        (ngModelChange)="applyExistingBom($event)"
+                      >
+                        <option value="">— Choisir un modèle —</option>
+                        <option *ngFor="let bom of existingBoms" [value]="bom.id">
+                          {{ bom.productName || bom.skuCode || 'Produit sans nom' }} (v{{ bom.version }})
+                        </option>
+                      </select>
+
+                      <button
+                        type="button"
+                        class="btn-import"
+                        (click)="applyExistingBom(selectedBomId)"
+                        [disabled]="!selectedBomId"
+                      >
+                        <i class="fas fa-magic"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <p class="importer-hint">
+                  <i class="fas fa-info-circle"></i>
+                  Le modèle sélectionné remplira automatiquement les articles de la nomenclature.
+                </p>
+              </div>
+            </div>
+          }
+          @else {
+            <div class="info-banner-modern">
+              <div class="banner-icon">
+                <i class="fas fa-info"></i>
+              </div>
+              <span>
+                Aucune nomenclature existante. Créez une nouvelle BOM puis revenez l'appliquer à ce produit.
+              </span>
+              <button type="button" class="btn btn-secondary" (click)="openNewBom()">
+                <i class="fas fa-plus"></i>
+                Ajouter nouvelle BOM
+              </button>
+            </div>
+          }
+
+          @if (bomLines.length > 0) {
+            <div class="bom-lines-table">
+              <div class="bom-lines-header">
+                <i class="fas fa-list-ul"></i>
+                Nomenclature constituée ({{ bomLines.length }} article(s))
+              </div>
+
+              <div class="table-responsive">
+                <table class="bom-table">
+                  <thead>
+                  <tr>
+                    <th>Article</th>
+                    <th>Catégorie</th>
+                    <th>Quantité</th>
+                    <th>Unité</th>
+                    <th></th>
+                  </tr>
+                  </thead>
+
+                  <tbody>
+                  <tr *ngFor="let line of bomLines; let i = index">
+                    <td>
+                      <i class="fas {{ getCatIcon(line.article.categorie) }} text-muted"></i>
+                      {{ line.article.nom }}
+                    </td>
+
+                    <td>
+                      <span class="bom-cat-badge">{{ line.article.categorie }}</span>
+                    </td>
+
+                    <td>
+                      <input
+                        type="number"
+                        class="bom-qty-inline"
+                        [(ngModel)]="line.quantity"
+                        [ngModelOptions]="{ standalone: true }"
+                        min="1"
+                      />
+                    </td>
+
+                    <td>{{ line.article.um }}</td>
+
+                    <td>
+                      <button type="button" class="bom-remove-btn" (click)="removeBomLine(i)">
+                        <i class="fas fa-trash-alt"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          } @else {
+            <div class="bom-empty-state">
+              <i class="fas fa-box-open"></i>
+              <p>Aucun article ajouté à la nomenclature. Importez une nomenclature existante pour commencer.</p>
+            </div>
+          }
+        </section>
+      }
+
+      <footer class="form-actions">
+        <div class="required-note">
+          <i class="fas fa-life-ring"></i>
+          Les champs marqués d'un <strong>*</strong> sont obligatoires
+        </div>
+
+        <div class="action-buttons">
+          <button type="button" class="btn btn-secondary" (click)="onCancel()">
+            <i class="fas fa-times"></i>
+            Annuler
+          </button>
+
+          @if (isNonVrac()) {
+            <button type="button" class="btn btn-outline-primary" [disabled]="submitting" (click)="saveAndCreateTicket()">
+              <i class="fas fa-ticket-alt"></i>
+              {{ isEditMode ? 'Mettre a jour + Creer ticket' : 'Creer + ticket produit' }}
+            </button>
+          }
+
+          <button type="submit" class="btn btn-primary" [disabled]="submitting">
+            @if (submitting) {
+              <span class="spinner-small"></span>
+              <span>Traitement...</span>
+            } @else {
+              <i class="fas fa-check"></i>
+              {{ isEditMode ? 'Mettre à jour' : 'Créer le produit' }}
+            }
+          </button>
+        </div>
+      </footer>
+    </form>
+  </div>
+</div>

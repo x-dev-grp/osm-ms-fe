@@ -1,0 +1,38 @@
+.bank-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+
+  /* Two‑column default: fields and checkboxes */
+  mat-form-field,
+  mat-checkbox {
+    flex: 1 1 calc(50% - 16px);
+  }
+
+  /* Any element with .full-width spans the entire row */
+  .full-width {
+    flex: 1 1 100%;
+  }
+
+  /* Center the checkboxes vertically */
+  mat-checkbox {
+    align-self: center;
+    margin-top: 4px;
+  }
+
+  /* Actions row */
+    .actions {
+  justify-content: space-around;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  /* Mobile: everything full‑width */
+  @media (max-width: 600px) {
+    mat-form-field,
+    mat-checkbox {
+      flex: 1 1 100%;
+    }
+  }
+}

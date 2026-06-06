@@ -1,0 +1,44 @@
+// Shared tokens for stock / BOM / material-needs screens
+$inv-primary: #4361ee;
+$inv-primary-light: #4895ef;
+$inv-success: #059669;
+$inv-success-bg: #ecfdf5;
+$inv-danger: #dc2626;
+$inv-danger-bg: #fef2f2;
+$inv-warning: #d97706;
+$inv-warning-bg: #fffbeb;
+$inv-muted: #64748b;
+$inv-border: #e2e8f0;
+$inv-surface: #ffffff;
+$inv-page-bg: linear-gradient(160deg, #f8fafc 0%, #eef2ff 45%, #f8fafc 100%);
+$inv-radius: 14px;
+$inv-radius-sm: 10px;
+$inv-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+$inv-shadow-hover: 0 12px 28px rgba(15, 23, 42, 0.1);
+
+@mixin inv-card {
+  background: $inv-surface;
+  border: 1px solid $inv-border;
+  border-radius: $inv-radius;
+  box-shadow: $inv-shadow;
+}
+
+@mixin inv-pill($bg, $color) {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: $bg;
+  color: $color;
+}
+
+@mixin inv-page-shell {
+  padding: 1.5rem 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: calc(100vh - 4rem);
+  background: $inv-page-bg;
+}

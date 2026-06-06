@@ -1,0 +1,181 @@
+<app-card [cardTitle]="'STORAGE.VIEW.DASHBOARD.TITLE' | translate">
+  <div class="board-container">
+
+    <!-- Top actions / filters -->
+    <div class="toolbar">
+      <div class="search-panel">
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-label>{{ 'STORAGE.VIEW.PUBLIC_CODE' | translate }}</mat-label>
+          <input
+            matInput
+            [(ngModel)]="searchCode"
+            [placeholder]="'STORAGE.VIEW.PUBLIC_CODE_PLACEHOLDER' | translate"
+            (keyup.enter)="searchByPublicCode()"
+          />
+        </mat-form-field>
+        <button mat-stroked-button color="primary" (click)="searchByPublicCode()" [disabled]="searchingByCode() || !searchCode().trim()">
+          <mat-icon>search</mat-icon>
+          {{ searchingByCode() ? ('STORAGE.VIEW.SEARCHING' | translate) : ('COMMON.SEARCH' | translate) }}
+        </button>
+      </div>
+
+      <div class="filters">
+
+        <mat-slide-toggle
+          [formControl]="filters.controls.showOnlyPaid"
+          color="primary">
+          {{ 'STORAGE.VIEW.SHOW_ONLY_PAID' | translate }}
+        </mat-slide-toggle>
+
+        <!-- New Filtered Oil Toggle -->
+        <mat-slide-toggle
+          [formControl]="filters.controls.showOnlyFiltered"
+          color="primary">
+          {{ 'STORAGE.VIEW.SHOW_ONLY_FILTERED' | translate }}
+        </mat-slide-toggle>
+      </div>
+
+      <button (click)="refresh()" color="primary" mat-stroked-button>
+        <mat-icon>refresh</mat-icon>
+        {{ 'COMMON.REFRESH' | translate }}
+      </button>
+    </div>
+    <div *ngIf="searchError()" class="search-error">
+      {{ searchError() }}
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading()" class="loading-container">
+      <mat-spinner></mat-spinner>
+    </div>
+
+    <!-- Error -->
+    <div *ngIf="!loading() && error()" class="error">
+      {{ error() }}
+    </div>
+
+    <!-- Empty -->
+    <div *ngIf="!loading() && !error() && filteredUnits().length === 0" class="empty">
+      <mat-icon>inventory_2</mat-icon>
+      <div>{{ 'STORAGE.VIEW.NO_UNITS' | translate }}</div>
+    </div>
+
+    <!-- Grid -->
+    <div *ngIf="!loading() && !error() && filteredUnits().length" class="units-grid">
+      <div *ngFor="let storageUnit of filteredUnits(); trackBy: trackById"
+           [class.paid-storage]="paidStorage(storageUnit)"
+           [class.filtered-oil]="filteredOil(storageUnit)"
+           class="storage-card">
+        <div class="storage-card-header optimized-header">
+          <div class="storage-title-status">
+            <div class="storage-title">
+              <mat-icon [ngClass]="getStatusIconClass(storageUnit)" class="storage-icon">
+                {{ getStatusIcon(storageUnit) }}
+              </mat-icon>
+              <h2>{{ storageUnit.name }}</h2>
+
+              <!-- Lot badge -->
+              <div *ngIf="storageUnit.lotNumber" class="lot-badge storage-status">
+                {{ storageUnit.lotNumber }}
+              </div>
+              <!-- Paid Storage Badge -->
+              <div *ngIf="storageUnit.paidStorage" class="paid-storage-badge">
+                <mat-icon class="paid-icon">paid</mat-icon>
+                <span class="paid-label">{{ 'STORAGE.VIEW.PAID_STORAGE' | translate }}</span>
+              </div>
+
+              <!-- New Filtered Oil Badge -->
+              <div *ngIf="storageUnit.filteredOil" class="filtered-oil-badge">
+                <mat-icon class="filtered-icon">filter_alt</mat-icon>
+                <span class="filtered-label">{{ 'STORAGE.VIEW.FILTERED' | translate }}</span>
+              </div>
+            </div>
+            <div [ngClass]="getStatusClass(storageUnit)" class="storage-status">
+              {{ 'STORAGE.VIEW.STATUS.' + storageUnit.status | translate }}
+            </div>
+
+            <button (click)="viewUnit(storageUnit)" color="primary" mat-stroked-button>
+              <mat-icon>open_in_new</mat-icon>
+              {{ 'COMMON.VIEW' | translate }}
+            </button>
+          </div>
+          <div class="storage-header-metrics">
+            <div class="metric">
+              <span class="metric-label">{{ 'STORAGE.VIEW.AVGCOST' | translate }}</span>
+              <span class="metric-value">{{ storageUnit.avgCost | number:'1.2-2' }}&nbsp;TND</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">{{ 'STORAGE.VIEW.TOTALCOST' | translate }}</span>
+              <span class="metric-value">{{ storageUnit.totalCost | number:'1.2-2' }}&nbsp;TND</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">{{ 'STORAGE.VIEW.CURRENT_VOLUME' | translate }}</span>
+              <span class="metric-value">{{ storageUnit.currentVolume }} KG</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">{{ 'STORAGE.VIEW.AVAILABLECAPACITY' | translate }}</span>
+              <span class="metric-value">{{ availableCapacity(storageUnit) }} KG</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">{{ 'STORAGE.VIEW.MAX_CAPACITY' | translate }}</span>
+              <span class="metric-value">{{ storageUnit.maxCapacity }} KG</span>
+            </div>
+<!--            <div class="metric">-->
+<!--              <span class="metric-label">Oil Variety</span>-->
+<!--              <span class="metric-value">{{ storageUnit.oilVariety?.name || ('STORAGE.VIEW.NA' | translate) }}</span>-->
+<!--            </div>-->
+
+            <!-- Oil Variety -->
+            <div class="metric" *ngIf="storageUnit.oilVariety">
+              <span class="metric-label">{{ 'STORAGE.VIEW.OIL_VARIETY' | translate }}</span>
+              <span class="metric-value">{{ storageUnit.oilVariety.name }}</span>
+            </div>
+
+            <!-- Quality Grade -->
+            <div class="metric" *ngIf="storageUnit.qualityGrade">
+              <span class="metric-label">{{ 'STORAGE.VIEW.QUALITY_GRADE' | translate }}</span>
+              <span class="metric-value">{{ ('OIL_TRANSACTIONS.QUALITY_GRADES.' + storageUnit.qualityGrade) | translate }}</span>
+            </div>
+
+            <!-- Paid Storage Information -->
+            <div *ngIf="storageUnit.paidStorage" class="metric paid-storage-info">
+              <span class="metric-label">
+                <mat-icon class="paid-icon-small">paid</mat-icon>
+                {{ 'STORAGE.VIEW.PAID_STORAGE' | translate }}
+              </span>
+              <span class="metric-value">{{ storageUnit.monthlyRentalPrice | number:'1.2-2' }} TND</span>
+            </div>
+
+            <!-- Filtered Oil Information -->
+
+          </div>
+        </div>
+
+        <div class="storage-visualization">
+          <div class="storage-unit">
+            <div class="storage-unit-body">
+              <div
+                [ngClass]="getFillLevelClass(storageUnit)"
+                [style.width.%]="getFillPercentage(storageUnit)"
+                class="fill-level-indicator"
+              >
+                <div class="fill-pattern"></div>
+                <span class="fill-level-text">{{ getFillPercentage(storageUnit) | number:'1.0-0' }}%</span>
+              </div>
+              <!-- Paid Storage Indicator on Visualization -->
+              <div *ngIf="storageUnit.paidStorage" class="paid-visualization-indicator">
+                <mat-icon class="paid-icon-visual">paid</mat-icon>
+              </div>
+              <!-- New Filtered Oil Indicator on Visualization -->
+              <div *ngIf="storageUnit.filteredOil" class="filtered-visualization-indicator">
+                <mat-icon class="filtered-icon-visual">filter_alt</mat-icon>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+</app-card>

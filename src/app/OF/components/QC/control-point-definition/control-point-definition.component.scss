@@ -1,0 +1,343 @@
+* { box-sizing: border-box; }
+// Variables (thème olive)
+$olive-green: #6b8e23;
+$olive-dark: #2c5f2d;
+$olive-light: #8aa64e;
+$gold: #d4af37;
+$cream: #fef9e6;
+$white: #ffffff;
+$gray-100: #f8f9fa;
+$gray-200: #e9ecef;
+$gray-300: #dee2e6;
+$gray-400: #ced4da;
+$gray-500: #adb5bd;
+$gray-600: #6c757d;
+$gray-700: #495057;
+$gray-800: #343a40;
+$gray-900: #212529;
+$shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+$transition: all 0.3s ease;
+$border-radius: 16px;
+$border-radius-sm: 12px;
+$gray-50: #fafafc;
+
+@mixin gradient-primary {
+  background: linear-gradient(135deg, $olive-dark 0%, $olive-green 100%);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.control-point-definition {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+
+
+  .page-header {
+    margin-bottom: 2rem;
+    text-align: center;
+
+    h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      @include gradient-primary;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin: 0 0 0.5rem 0;
+    }
+
+    p {
+      color: $gray-600;
+      font-size: 1rem;
+      margin: 0;
+    }
+  }
+
+  .of-selector {
+    background: $white;
+    border-radius: $border-radius;
+    padding: 1.5rem;
+    box-shadow: $shadow-md;
+    margin-bottom: 2rem;
+    border: 1px solid rgba($olive-green, 0.1);
+
+    mat-form-field {
+      width: 100%;
+      max-width: 400px;
+      display: block;
+      margin: 0 auto;
+    }
+  }
+
+  .plan-section {
+    background: $white;
+    border-radius: $border-radius;
+    padding: 1.5rem;
+    box-shadow: $shadow-md;
+    border: 1px solid rgba($olive-green, 0.1);
+
+    .plan-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid $gray-200;
+
+      h3 {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: $olive-dark;
+        margin: 0;
+      }
+    }
+
+    .plan-details {
+      p {
+        margin: 0.5rem 0;
+        color: $gray-700;
+
+        strong {
+          font-weight: 600;
+          color: $gray-800;
+        }
+      }
+
+      .points-section {
+        margin-top: 2rem;
+
+        h4 {
+          font-size: 1.2rem;
+          font-weight: 600;
+          color: $olive-dark;
+          margin: 0 0 1rem 0;
+          display: inline-block;
+        }
+
+        button {
+          margin-left: 1rem;
+          vertical-align: middle;
+        }
+
+        table {
+          width: 100%;
+          margin-top: 1rem;
+          border-radius: $border-radius-sm;
+          overflow: hidden;
+          box-shadow: $shadow-sm;
+
+          th {
+            background: $gray-100;
+            color: $gray-700;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 1rem;
+          }
+
+          td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid $gray-200;
+            color: $gray-800;
+          }
+
+          tr:last-child td {
+            border-bottom: none;
+          }
+
+          .mat-icon-button {
+            width: 32px;
+            height: 32px;
+            line-height: 32px;
+
+            mat-icon {
+              font-size: 20px;
+              color: $gray-600;
+            }
+
+            &:hover mat-icon {
+              color: $olive-green;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Dialog styling (applied globally, but we can add here for consistency)
+.mat-dialog-container {
+  border-radius: $border-radius !important;
+  padding: 0 !important;
+}
+
+.dialog-content {
+  padding: 1rem;
+}
+
+.dialog-actions {
+  padding: 1rem;
+  border-top: 1px solid $gray-200;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background: $white;
+  border-radius: $border-radius;
+  width: 90%;
+  max-width: 450px;
+  box-shadow: $shadow-lg;
+  overflow: hidden;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid $gray-200;
+  background: $gray-50;
+
+  h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: $olive-dark;
+  }
+
+  .close-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: $gray-600;
+
+    line-height: 1;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+
+    &:hover {
+      background: $gray-200;
+      color: $gray-900;
+    }
+  }
+}
+
+.modal-body {
+  padding: 1.5rem;
+
+  .plan-title-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 1px solid $gray-300;
+    border-radius: $border-radius-sm;
+
+    font-family: inherit;
+
+    &:focus {
+      outline: none;
+      border-color: $olive-green;
+      box-shadow: 0 0 0 3px rgba($olive-green, 0.1);
+    }
+  }
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1rem 1.5rem 1.5rem;
+  border-top: 1px solid $gray-200;
+  background: $gray-50;
+
+  .btn-primary,
+  .btn-secondary {
+    padding: 0.5rem 1.25rem;
+    border-radius: $border-radius-sm;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+
+    border: none;
+    font-family: inherit;
+  }
+
+  .btn-primary {
+    background: $olive-green;
+    color: white;
+    box-shadow: $shadow-sm;
+
+    &:hover:not(:disabled) {
+      background: $olive-dark;
+      transform: translateY(-1px);
+      box-shadow: $shadow-md;
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: $gray-700;
+    border: 1px solid $gray-300;
+
+    &:hover {
+      background: $gray-100;
+      border-color: $gray-400;
+    }
+  }
+}
+

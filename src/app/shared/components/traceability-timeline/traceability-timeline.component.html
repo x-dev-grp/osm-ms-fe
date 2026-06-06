@@ -1,0 +1,187 @@
+<div class="traceability-timeline-root" *ngIf="traceabilityData && ofDetailsEntries().length; else noDataTpl">
+  <div class="of-card card" *ngFor="let ofItem of ofDetailsEntries()" [class.compact]="compact">
+    <div class="of-header">
+      <div class="of-title">
+        <mat-icon>inventory_2</mat-icon>
+        <div>
+          <h3>OF: {{ ofItem.value['code'] }}</h3>
+          <span class="sku">{{ ofItem.value['articleName'] }}</span>
+        </div>
+      </div>
+      <div class="of-stats" *ngIf="!compact">
+        <span class="badge">Statut: {{ ofItem.value['status'] }}</span>
+        <span class="badge">Qté: {{ ofItem.value['quantityGood'] }} / {{ ofItem.value['quantityTarget'] }}</span>
+      </div>
+    </div>
+
+    <div class="traceability-meta">
+      <span class="meta-chip">
+        Traçabilité: {{ genealogyAnchor(ofItem.value) ? 'Vérifiée' : 'À vérifier' }}
+      </span>
+      <span class="meta-chip" *ngIf="useEventTree(ofItem.key)">
+        {{ eventsForOf(ofItem.key).length }} événement(s)
+      </span>
+      <span class="meta-chip accent" *ngIf="oilReceptionCount(ofItem.key, ofItem.value) > 1">
+        {{ oilReceptionCount(ofItem.key, ofItem.value) }} réceptions huile
+      </span>
+    </div>
+
+    <!-- Runtime event tree (preferred) -->
+    <div class="genealogy-timeline event-tree" *ngIf="useEventTree(ofItem.key); else legacyTimelineTpl">
+      <ng-container *ngIf="eventsForOf(ofItem.key) as ofEvents">
+      <div
+        class="timeline-item"
+        *ngFor="let evt of ofEvents"
+        [ngClass]="eventCssClass(evt.type)">
+        <div class="marker"></div>
+        <div class="content">
+          <span class="label">{{ eventTypeLabel(evt.type, evt, ofEvents) }} · {{ eventPhaseLabel(evt.phase) }}</span>
+          <div class="info-box" [class.accent]="evt.type === 'STORAGE' || evt.type === 'EXPEDITION'">
+            <strong>{{ evt.title }}</strong>
+            <small *ngIf="evt.timestamp">{{ evt.timestamp | date: 'dd/MM/yyyy HH:mm' }}</small>
+            <p class="event-meta" *ngIf="eventDetail(evt, 'deliveryNumber') as dn">
+              N° livraison : <code>{{ dn }}</code>
+            </p>
+            <p class="event-meta" *ngIf="eventDetail(evt, 'quantityKg') as qty">
+              Quantité : <strong>{{ qty }}</strong> kg
+            </p>
+            <p
+              class="event-meta"
+              *ngIf="(evt.type === 'OIL_RECEPTION' || evt.type === 'RECEPTION') && eventDetail(evt, 'supplierName') as sup">
+              Fournisseur : {{ sup }}
+            </p>
+
+            <div class="qc-grid" *ngIf="eventQualityControls(evt) as qcs">
+              <div class="qc-item" *ngFor="let qc of qcs | keyvalue">
+                <span class="qc-label">{{ qc.key }}:</span>
+                <span class="qc-val">{{ qc.value }}</span>
+              </div>
+            </div>
+
+            <p *ngIf="evt.type === 'EXPEDITION' && $any(evt.details)?.['destination']">
+              Destination: {{ $any(evt.details)['destination'] }}
+            </p>
+            <p *ngIf="evt.type === 'LABEL' && $any(evt.details)?.['publicCode']">
+              Code: <code>{{ $any(evt.details)['publicCode'] }}</code>
+            </p>
+          </div>
+        </div>
+      </div>
+      </ng-container>
+    </div>
+
+    <ng-template #legacyTimelineTpl>
+      <div class="genealogy-timeline" *ngIf="genealogyFor(ofItem.value) as genea; else noGeneaTpl">
+        <ng-container *ngIf="useLegacyIntakeChain(genea); else rootSourcesOnlyTpl">
+          <div
+            class="timeline-item"
+            *ngFor="let step of legacyIntakeSteps(genea); let i = index"
+            [ngClass]="intakeStepClass(step)">
+            <div class="marker"></div>
+            <div class="content">
+              <span class="label">{{ intakeStepTypeLabel(step.type) }}</span>
+              <div class="info-box">
+                <strong>
+                  <ng-container [ngSwitch]="step.type">
+                    <span *ngSwitchCase="'OIL_RECEPTION'">Réception huile — {{ step.supplierName || '—' }}</span>
+                    <span *ngSwitchCase="'OLIVE_RECEPTION'">Réception olive — {{ step.supplierName || '—' }}</span>
+                    <span *ngSwitchCase="'STORAGE_INTAKE'">Entrée en cuve {{ step.storageUnitName || '—' }}</span>
+                    <span *ngSwitchDefault>{{ step.type }}</span>
+                  </ng-container>
+                </strong>
+                <p *ngIf="step.lotNumber">Lot : <code>{{ step.lotNumber }}</code></p>
+                <p *ngIf="step.deliveryNumber">N° livraison : <code>{{ step.deliveryNumber }}</code></p>
+                <p *ngIf="step.quantityKg != null">Quantité : <strong>{{ step.quantityKg }}</strong> kg</p>
+                <div class="qc-grid" *ngIf="step.qualityControls && (step.qualityControls | keyvalue).length > 0">
+                  <div class="qc-item" *ngFor="let qc of step.qualityControls | keyvalue">
+                    <span class="qc-label">{{ qc.key }}:</span>
+                    <span class="qc-val">{{ qc.value }}</span>
+                  </div>
+                </div>
+                <small *ngIf="step.deliveryDate">{{ step.deliveryDate | date: 'dd/MM/yyyy HH:mm' }}</small>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-template #rootSourcesOnlyTpl>
+        <div class="timeline-item root" *ngFor="let root of genea.rootSources; let i = index">
+          <div class="marker"></div>
+          <div class="content">
+            <span class="label">
+              Origine ({{ root.type }})
+              <ng-container *ngIf="genea.rootSources && genea.rootSources.length > 1"> — {{ i + 1 }}/{{ genea.rootSources.length }}</ng-container>
+            </span>
+            <div class="info-box">
+              <strong>{{ root.supplierName }}</strong>
+              <p>Lot vrac: <code>{{ root.lotNumber }}</code></p>
+              <div class="qc-grid" *ngIf="root.qualityControls && (root.qualityControls | keyvalue).length > 0">
+                <div class="qc-item" *ngFor="let qc of root.qualityControls | keyvalue">
+                  <span class="qc-label">{{ qc.key }}:</span>
+                  <span class="qc-val">{{ qc.value }}</span>
+                </div>
+              </div>
+              <small>
+                {{ root.date | date: 'dd/MM/yyyy' }}
+                <span *ngIf="root.extra?.['storageUnitName']">| Cuve: {{ root.extra['storageUnitName'] }}</span>
+              </small>
+            </div>
+          </div>
+        </div>
+        </ng-template>
+
+        <div class="timeline-item filt" *ngFor="let filt of genea.filtrations">
+          <div class="marker"></div>
+          <div class="content">
+            <span class="label">Filtration</span>
+            <div class="info-box">
+              <strong>Lot cible: <code>{{ filt.targetLotNumber }}</code></strong>
+              <p>
+                Volume: {{ filt.volumeFiltered }} L
+                <span *ngIf="filt.sourceStorageUnitName">| Source: {{ filt.sourceStorageUnitName }}</span>
+              </p>
+              <small>{{ filt.timestamp | date: 'dd/MM/yyyy HH:mm' }}</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="conditioning-section" *ngIf="labelsFor(ofItem.value) as labels">
+          <h4 class="sub-title">Conditionnement & étiquettes</h4>
+          <div class="label-qc-card" *ngFor="let label of labels">
+            <div class="label-info">
+              <strong>Lot conditionné: {{ $any(label).lotNumber }}</strong>
+              <p class="traceability-line">
+                Traçabilité: {{ $any(label).traceabilityLotId ? 'Vérifiée' : 'À vérifier' }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item final">
+          <div class="marker"></div>
+          <div class="content">
+            <span class="label">Unité de stockage finale</span>
+            <div class="info-box accent">
+              <strong>{{ genea.storageUnitName }}</strong>
+              <p>Lot final: <code>{{ genea.lotNumber }}</code></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template #noGeneaTpl>
+      <div class="empty-mini">
+        <mat-icon>warning_amber</mat-icon>
+        <p>Aucune généalogie huile pour cet OF (réception → filtration).</p>
+      </div>
+    </ng-template>
+  </div>
+</div>
+
+<ng-template #noDataTpl>
+  <div class="empty-mini">
+    <mat-icon>history_edu</mat-icon>
+    <p>Aucune donnée de traçabilité à afficher.</p>
+  </div>
+</ng-template>

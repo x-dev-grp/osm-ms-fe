@@ -1,0 +1,35 @@
+@if (!item().hidden) {
+  @if (item().url && !item().external) {
+    <li
+      [ngClass]="item().classes!"
+      [routerLinkActive]="['active']"
+      [routerLinkActiveOptions]="{ exact: item().exactMatch ?? false }"
+      matTooltip="{{ !isEnabled ? ('STANDARD.ACCESS_RESSOURCE_ERROR'|translate) : '' }}"
+    >
+      <a
+        class="nav-link"
+        [routerLink]="[item().url]"
+        [target]="item().target ? '_blank' : '_self'"
+        [routerLinkActive]="['active']"
+        [routerLinkActiveOptions]="{ exact: item().exactMatch ?? false }"
+        [ngClass]="{ disabled: !isEnabled }"
+        (click)="toggleMenu($event); $event.stopPropagation()"
+      >
+        <mat-icon *ngIf="!isEnabled" class="coded-micon">lock</mat-icon>
+        <mat-icon *ngIf="isEnabled && item().icon" class="coded-micon">{{ item().icon }}</mat-icon>
+        <span class="coded-mtext">{{ item().title | translate }}</span>
+      </a>
+    </li>
+  } @else if (item().url && item().external) {
+    <li [ngClass]="item().classes!" matTooltip="{{ !isEnabled ? 'Logout and Login with Admin to view this page ' : '' }}">
+      <a
+        [href]="item().url"
+        [target]="item().target ? '_blank' : '_self'"
+        [ngClass]="{ disabled: !isEnabled }"
+      >
+        <mat-icon *ngIf="item().icon" class="coded-micon">{{ item().icon }}</mat-icon>
+        <span class="coded-mtext">{{ item().title | translate }}</span>
+      </a>
+    </li>
+  }
+}

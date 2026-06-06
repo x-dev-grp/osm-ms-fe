@@ -1,0 +1,129 @@
+<app-card [cardTitle]="'GENERAL_CONFIG_UI.CONFIGURATIONS' | translate" [showHeader]="true">
+  <mat-tab-group (selectedTabChange)="onTabChange($event)">
+    <mat-tab label="{{ 'GENERAL_CONFIG_UI.TAB_TITLE' | translate }}">
+      <app-company-profile></app-company-profile>
+    </mat-tab>
+    <mat-tab label="{{ 'GENERAL_CONFIG_UI.PRODUCTION_TAB' | translate }}">
+      <!-- Production Config Section -->
+      <form [formGroup]="productionConfigForm" (ngSubmit)="onSaveProductionConfig()" class="form-section">
+        <div class="row">
+          <div class="col-12">
+            <h3 class="mb-3">Campagne agricole</h3>
+          </div>
+          <div class="col-md-3">
+            <mat-form-field appearance="outline" class="w-100 mb-3">
+              <mat-label>Mois debut</mat-label>
+              <mat-select formControlName="campaignStartMonth" [disabled]="!productionConfigFormEnabled">
+                <mat-option *ngFor="let month of months" [value]="month.value">{{ month.label }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3">
+            <mat-form-field appearance="outline" class="w-100 mb-3">
+              <mat-label>Jour debut</mat-label>
+              <input matInput type="number" min="1" max="31" formControlName="campaignStartDay" [disabled]="!productionConfigFormEnabled" />
+            </mat-form-field>
+          </div>
+          <div class="col-md-3">
+            <mat-form-field appearance="outline" class="w-100 mb-3">
+              <mat-label>Mois fin</mat-label>
+              <mat-select formControlName="campaignEndMonth" [disabled]="!productionConfigFormEnabled">
+                <mat-option *ngFor="let month of months" [value]="month.value">{{ month.label }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3">
+            <mat-form-field appearance="outline" class="w-100 mb-3">
+              <mat-label>Jour fin</mat-label>
+              <input matInput type="number" min="1" max="31" formControlName="campaignEndDay" [disabled]="!productionConfigFormEnabled" />
+            </mat-form-field>
+          </div>
+          <div class="col-12">
+            <p class="text-muted small mb-3">
+              Campagne courante calculee: <strong>{{ campaignPreview }}</strong>
+            </p>
+          </div>
+        </div>
+        <div class="actions">
+          <button mat-flat-button color="primary" type="submit" [disabled]="productionConfigForm.invalid || !productionConfigFormEnabled">
+            <mat-icon>save</mat-icon>
+            <span>{{ 'GENERAL_CONFIG_UI.ACTIONS.SAVE' | translate }}</span>
+          </button>
+          <button mat-stroked-button color="warn" type="button" (click)="onResetProductionConfig()" [disabled]="!productionConfigFormEnabled">
+            <mat-icon>undo</mat-icon>
+            <span>{{ 'GENERAL_CONFIG_UI.ACTIONS.RESET' | translate }}</span>
+          </button>
+          <button mat-stroked-button color="accent" type="button" (click)="enableProductionConfigForm()" *ngIf="!productionConfigFormEnabled">
+            <mat-icon>edit</mat-icon>
+            <span>{{ 'GENERAL_CONFIG_UI.ACTIONS.EDIT' | translate }}</span>
+          </button>
+        </div>
+      </form>
+      <app-parameter [categoryFilter]="'PRODUCTION'"></app-parameter>
+     </mat-tab>
+    <mat-tab label="{{ 'GENERAL_CONFIG_UI.FINANCE_TAB' | translate }}">
+      <!-- Finance Config Section -->
+      <form [formGroup]="financeConfigForm" (ngSubmit)="onSaveFinanceConfig()" class="form-section">
+        <mat-form-field appearance="outline" class="w-100 mb-3">
+          <mat-label>Milling Price per Kg</mat-label>
+          <input matInput formControlName="millingPricePerKg" type="number" min="0" step="0.01" [disabled]="!financeConfigFormEnabled" />
+        </mat-form-field>
+        <div class="actions">
+          <button mat-flat-button color="primary" type="submit" [disabled]="financeConfigForm.invalid || !financeConfigFormEnabled">
+            <mat-icon>save</mat-icon>
+            <span>{{ 'GENERAL_CONFIG_UI.ACTIONS.SAVE' | translate }}</span>
+          </button>
+          <button mat-stroked-button color="warn" type="button" (click)="onResetFinanceConfig()" [disabled]="!financeConfigFormEnabled">
+            <mat-icon>undo</mat-icon>
+            <span>{{ 'GENERAL_CONFIG_UI.ACTIONS.RESET' | translate }}</span>
+          </button>
+          <button mat-stroked-button color="accent" type="button" (click)="enableFinanceConfigForm()" *ngIf="!financeConfigFormEnabled">
+            <mat-icon>edit</mat-icon>
+            <span>{{ 'GENERAL_CONFIG_UI.ACTIONS.EDIT' | translate }}</span>
+          </button>
+        </div>
+      </form>
+      <!-- Removed generic type lists from here -->
+    </mat-tab>
+    <mat-tab label="{{ 'GENERAL_CONFIG_UI.HR_TAB' | translate }}">
+      <!-- HR Config Section -->
+      <form [formGroup]="hrConfigForm" (ngSubmit)="onSaveHrConfig()" class="form-section">
+        <div class="actions">
+          <button mat-flat-button color="primary" type="submit" [disabled]="hrConfigForm.invalid || !hrConfigFormEnabled">
+            <mat-icon>save</mat-icon>
+            <span>{{ 'GENERAL_CONFIG_UI.ACTIONS.SAVE' | translate }}</span>
+          </button>
+          <button mat-stroked-button color="warn" type="button" (click)="onResetHrConfig()" [disabled]="!hrConfigFormEnabled">
+            <mat-icon>undo</mat-icon>
+            <span>{{ 'GENERAL_CONFIG_UI.ACTIONS.RESET' | translate }}</span>
+          </button>
+          <button mat-stroked-button color="accent" type="button" (click)="enableHrConfigForm()" *ngIf="!hrConfigFormEnabled">
+            <mat-icon>edit</mat-icon>
+            <span>{{ 'GENERAL_CONFIG_UI.ACTIONS.EDIT' | translate }}</span>
+          </button>
+        </div>
+      </form>
+      <!-- No generic type lists for HR for now -->
+    </mat-tab>
+    <mat-tab label="{{ 'GENERAL_CONFIG_UI.OTHER_TAB' | translate }}">
+      <!-- Other Config Section -->
+      <form [formGroup]="otherConfigForm" (ngSubmit)="onSaveOtherConfig()" class="form-section">
+        <div class="actions">
+          <button mat-flat-button color="primary" type="submit" [disabled]="otherConfigForm.invalid || !otherConfigFormEnabled">
+            <mat-icon>save</mat-icon>
+            <span>{{ 'GENERAL_CONFIG_UI.ACTIONS.SAVE' | translate }}</span>
+          </button>
+          <button mat-stroked-button color="warn" type="button" (click)="onResetOtherConfig()" [disabled]="!otherConfigFormEnabled">
+            <mat-icon>undo</mat-icon>
+            <span>{{ 'GENERAL_CONFIG_UI.ACTIONS.RESET' | translate }}</span>
+          </button>
+          <button mat-stroked-button color="accent" type="button" (click)="enableOtherConfigForm()" *ngIf="!otherConfigFormEnabled">
+            <mat-icon>edit</mat-icon>
+            <span>{{ 'GENERAL_CONFIG_UI.ACTIONS.EDIT' | translate }}</span>
+          </button>
+        </div>
+      </form>
+      <!-- Removed generic type lists from here -->
+    </mat-tab>
+  </mat-tab-group>
+</app-card>

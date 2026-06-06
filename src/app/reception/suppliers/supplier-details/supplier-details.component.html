@@ -1,0 +1,55 @@
+<!-- History Cards -->
+
+@if (!supplierId) {
+  <!-- Error message -->
+  <div class="error-container">
+    <mat-icon color="warn">error</mat-icon>
+    <p>Fournisseur non trouvé avec ce id !</p>
+  </div>
+} @else {
+  <div class="history-cards-container">
+    <div class="history-cards">
+
+      <!-- Dynamic cards by OPERATION TYPE -->
+      @for (op of operationCards; track op.type) {
+        <mat-card
+          class="history-card"
+          [class.active]="activeOp === op.type"
+          tabindex="0"
+          (click)="loadOperation(op.type)">
+          <mat-card-content>
+            <div class="card-header">
+              <mat-icon class="card-icon" [color]="op.color">{{ op.icon }}</mat-icon>
+              <h3 class="card-title">{{ op.titleKey | translate }}</h3>
+            </div>
+
+            <div class="card-stats">
+              <div class="stat-item">
+                <span class="stat-label">{{ 'SUPPLIER.DETAILS.COUNT' | translate }}</span>
+                <span class="stat-value" [ngClass]="op.color">
+                  {{ (stats[op.type]?.count ?? 0) }}
+                </span>
+              </div>
+
+              <div class="stat-item">
+                <span class="stat-label">{{ 'SUPPLIER.DETAILS.TOTAL' | translate }}</span>
+                <span class="stat-value amount" [ngClass]="op.color">
+                  {{ (stats[op.type]?.total ?? 0) | currency:'TND' }}
+                </span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      }
+
+    </div>
+  </div>
+
+  <div class="table-section">
+    <osm-dashboard
+      #dashboardByOperation
+      [config]="dashboardConfigs[activeOp]"
+      (applyAction)="handlePaymentAction($event)">
+    </osm-dashboard>
+  </div>
+}

@@ -1,0 +1,19 @@
+<mat-form-field appearance="outline" >
+  <mat-label>{{ translate.instant('OIL_RECEPTION.ADD.FIELDS.SUPPLIER') }}</mat-label>
+  <input
+    matInput
+    [placeholder]="translate.instant('OIL_RECEPTION.ADD.FIELDS.SUPPLIER')"
+    [formControl]="formControl()"
+    [matAutocomplete]="auto"
+
+  />
+  <mat-autocomplete    [displayWith]="displayWith"
+                       (optionsScroll)="scroll($event)" #auto="matAutocomplete" (optionSelected)="autoCompleteSelect($event.option.value)">
+    @for (item of autoCompleteOptions?.data ; track item?.id) {
+      <mat-option [value]="item">
+        {{ item?.name +" "+  item?.lastname }}
+      </mat-option>
+    }
+  </mat-autocomplete>
+
+</mat-form-field>

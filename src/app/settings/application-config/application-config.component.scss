@@ -1,0 +1,113 @@
+@import 'src/app/theme/styles/theme-palette-colors.scss';
+
+.customize-body {
+  padding: 0;
+
+  // Grid system fixes
+  .row {
+    margin: 0;
+  }
+
+  // Theme color swatches
+  .theme-color {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 0;
+
+    .color-swatch {
+      display: block;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 0.25rem;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: border-color 0.2s ease;
+
+      &.active {
+        border-color: rgba(0, 0, 0, 0.4);
+      }
+
+      // Theme colors
+      &.blue-layout   { background: map-get($blue-theme, 500); }
+      &.indigo-layout { background: map-get($indigo-theme, 500); }
+      &.purple-layout { background: map-get($purple-theme, 500); }
+      &.pink-layout   { background: map-get($pink-theme, 500); }
+      &.red-layout    { background: map-get($red-theme, 500); }
+      &.orange-layout { background: map-get($orange-theme, 500); }
+      &.yellow-layout { background: map-get($yellow-theme, 500); }
+      &.green-layout  { background: map-get($green-theme, 500); }
+      &.teal-layout   { background: map-get($teal-theme, 500); }
+      &.cyan-layout   { background: map-get($cyan-theme, 500); }
+    }
+  }
+
+  // Customize buttons
+  .customize-button {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 100%;
+    text-align: center;
+    padding: 0.75rem 1.25rem !important;
+    min-height: 3rem;
+    font-size: 1rem;
+
+    img,
+    svg {
+      width: 24px;
+      height: 24px;
+      margin: 0;
+    }
+
+    .pc-icon {
+      width: 22px;
+      height: 22px;
+      margin-right: 8px;
+
+      &.light {
+        color: map-get($yellow-theme, 500);
+      }
+    }
+
+    &.active {
+      border: 2px solid var(--primary-500);
+    }
+  }
+
+  // List group styles
+  .list-group {
+    display: flex;
+    flex-direction: column;
+    border-radius: 0;
+    padding: 0;
+    margin: 0;
+
+    .list-group-item {
+      padding: 20px 0;
+      border-bottom: 1px solid var(--accent-300);
+
+      .customize-button {
+        height: 60px;
+        border-radius: 20px;
+        padding: 0 10px;
+      }
+    }
+  }
+}
+
+// Action buttons
+  .actions {
+  justify-content: space-around;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+
+  button {
+    min-width: 120px;
+    padding: 0.75rem 1.25rem;
+    min-height: 3rem;
+    font-size: 1rem;
+  }
+}

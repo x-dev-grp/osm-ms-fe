@@ -1,0 +1,88 @@
+<div class="of-list-page">
+  <div class="list-header">
+    <div class="header-left">
+      <h2 class="page-title">Ordres de Fabrication</h2>
+      <p class="page-subtitle">Suivez et gérez vos ordres de fabrication en temps réel</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-action create" mat-flat-button color="primary" routerLink="/of/nouveau">
+        <i class="fas fa-plus"></i>
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner-border"></div>
+    <p>Chargement des ordres de conditionnement...</p>
+  </div>
+
+  <div *ngIf="!loading" class="table-container">
+    <table class="of-table">
+      <thead>
+      <tr>
+        <th>Code OF</th>
+        <th>Produit</th>
+        <th>Statut</th>
+        <th>Quantité cible</th>
+        <th>Bon / NC</th>
+        <th>Début prévu</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let of of ofs">
+        <td class="of-code">
+          <i class="fas fa-box-open"></i>
+          {{ of.code }}
+        </td>
+        <td>{{ of.productName || of.skuCode || of.productId || of.skuId }}</td>
+        <td>
+          <span class="status-badge" [ngClass]="getStatusClass(of.statut)">
+            {{ of.statut }}
+          </span>
+        </td>
+        <td>{{ of.quantiteCible }}</td>
+        <td>
+          <span class="good">{{ of.quantiteBonne || 0 }}</span>
+          <span class="separator">/</span>
+          <span class="nc">{{ of.quantiteNC || 0 }}</span>
+        </td>
+        <td>{{ of.dateDebutPrevue | date:'dd/MM/yyyy HH:mm' }}</td>
+        <td class="actions">
+          <!-- ✅ Menu à 3 points -->
+          <button mat-icon-button [matMenuTriggerFor]="menu" class="btn-menu-dots" aria-label="Actions">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item type="button" (click)="viewOF(of)">
+              <mat-icon>visibility</mat-icon>
+              <span>Voir OF</span>
+            </button>
+
+            <button mat-menu-item type="button" [routerLink]="['/of/modifier', of.id]">
+              <mat-icon>edit</mat-icon>
+              <span>Modifier</span>
+            </button>
+
+            <button mat-menu-item type="button" (click)="goToProduction(of)">
+              <mat-icon>precision_manufacturing</mat-icon>
+              <span>Production</span>
+            </button>
+
+            <button mat-menu-item type="button" (click)="goToQualityControl(of)">
+              <mat-icon>fact_check</mat-icon>
+              <span>Contrôle qualité</span>
+            </button>
+          </mat-menu>        </td>
+      </tr>
+      <tr *ngIf="ofs.length === 0">
+        <td colspan="7" class="empty-state">
+          <i class="fas fa-clipboard-list"></i>
+          <p>Aucun ordre de conditionnement trouvé</p>
+          <button class="btn-create-empty" routerLink="/of/nouveau">Créer un nouvel OF</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

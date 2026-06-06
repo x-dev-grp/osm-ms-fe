@@ -1,0 +1,69 @@
+<app-card
+  [cardTitle]="isEditMode
+    ? ('OIL_CONTAINER.TITLE_EDIT' | translate)
+    : ('OIL_CONTAINER.TITLE_ADD' | translate)"
+  [icon]="isEditMode ? 'edit' : 'add'">
+
+  <div class="form-container">
+    <form (ngSubmit)="onSubmit()" [formGroup]="containerForm">
+      <div class="grid">
+        <!-- Name -->
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'OIL_CONTAINER.FORM.NAME' | translate }}</mat-label>
+          <input formControlName="name" matInput />
+          <mat-error *ngIf="containerForm.get('name')?.hasError('required')">
+            {{ 'OIL_CONTAINER.FORM.ERRORS.NAME_REQUIRED' | translate }}
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'department.description' | translate }}</mat-label>
+          <input formControlName="description" matInput />
+
+        </mat-form-field>
+
+        <!-- Capacity -->
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'OIL_CONTAINER.FORM.CAPACITY' | translate }}</mat-label>
+          <input formControlName="capacityInLiters" matInput type="number" />
+          <mat-hint>ℓ</mat-hint>
+        </mat-form-field>
+
+        <!-- Stock Quantity -->
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'OIL_CONTAINER.FORM.STOCK_QUANTITY' | translate }}</mat-label>
+          <input formControlName="stockQuantity" matInput type="number" />
+        </mat-form-field>
+
+        <!-- Buy Price (optional) -->
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'OIL_CONTAINER.FORM.BUY_PRICE' | translate }}</mat-label>
+          <input formControlName="buyPrice" matInput type="number" />
+        </mat-form-field>
+
+        <!-- Selling Price -->
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'OIL_CONTAINER.FORM.SELLING_PRICE' | translate }}</mat-label>
+          <input formControlName="sellingPrice" matInput type="number" />
+        </mat-form-field>
+
+        <!-- Active -->
+        <mat-checkbox class="full-col" formControlName="active">
+          {{ 'OIL_CONTAINER.FORM.ACTIVE' | translate }}
+        </mat-checkbox>
+      </div>
+
+      <mat-card-actions align="end">
+        <button (click)="cancel()" mat-button type="button">
+          {{ 'OIL_CONTAINER.FORM.CANCEL' | translate }}
+        </button>
+        <button [disabled]="isSaving" color="primary" mat-flat-button type="submit">
+          {{
+            isEditMode
+              ? ('OIL_CONTAINER.FORM.UPDATE' | translate)
+              : ('OIL_CONTAINER.FORM.SAVE' | translate)
+          }}
+        </button>
+      </mat-card-actions>
+    </form>
+  </div>
+</app-card>

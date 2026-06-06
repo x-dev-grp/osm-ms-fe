@@ -1,0 +1,121 @@
+<div class="form-container">
+  <app-card [icon]="'business'" [cardTitle]="'DEPARTMENT.DETAIL.TITLE' | translate">
+
+    <div class="header-actions">
+      <button mat-stroked-button (click)="router.navigate(['/hr/department'])" class="back-button">
+        <mat-icon>arrow_back</mat-icon>
+        {{ 'COMMON.BACK' | translate }}
+      </button>
+    </div>
+    <div *ngIf="department && !loading" class="department-details">
+      <div class="department-info-header">
+        <mat-icon class="department-icon">business</mat-icon>
+        <h2>{{ department.name }}</h2>
+        <p class="department-description" *ngIf="department.description">{{ department.description }}</p>
+      </div>
+      <div class="detail-section">
+        <div class="section-header">
+          <mat-icon>info</mat-icon>
+          <h3>{{ 'DEPARTMENT.DETAIL.GENERAL_INFO' | translate }}</h3>
+        </div>
+        <div class="detail-grid">
+          <div class="detail-item full-width">
+            <div class="detail-label">
+              <mat-icon>badge</mat-icon>
+              {{ 'DEPARTMENT.FORM.NAME' | translate }}:
+            </div>
+            <div class="detail-value">{{ department.name }}</div>
+          </div>
+          <div class="detail-item full-width">
+            <div class="detail-label">
+              <mat-icon>description</mat-icon>
+              {{ 'DEPARTMENT.FORM.DESCRIPTION' | translate }}:
+            </div>
+            <div class="detail-value">{{ department.description || 'N/A' }}</div>
+          </div>
+        </div>
+      </div>
+
+<!--      <div class="detail-section" *ngIf="department.managerId">-->
+<!--        <div class="section-header">-->
+<!--          <mat-icon>supervisor_account</mat-icon>-->
+<!--          <h3>{{ 'DEPARTMENT.DETAIL.MANAGER_INFO' | translate }}</h3>-->
+<!--        </div>-->
+
+<!--        <div *ngIf="loadingManager" class="loading-spinner">-->
+<!--          <mat-spinner diameter="30"></mat-spinner>-->
+<!--        </div>-->
+
+<!--        <div *ngIf="!loadingManager && manager" class="detail-grid manager-details">-->
+<!--          <div class="detail-item">-->
+<!--            <div class="detail-label">{{ 'EMPLOYEE.FIRST_NAME' | translate }}:</div>-->
+<!--            <div class="detail-value">{{ manager.firstName }}</div>-->
+<!--          </div>-->
+<!--          <div class="detail-item">-->
+<!--            <div class="detail-label">{{ 'EMPLOYEE.LAST_NAME' | translate }}:</div>-->
+<!--            <div class="detail-value">{{ manager.lastName }}</div>-->
+<!--          </div>-->
+<!--          <div class="detail-item">-->
+<!--            <div class="detail-label">{{ 'EMPLOYEE.EMAIL' | translate }}:</div>-->
+<!--            <div class="detail-value">{{ manager.email || 'N/A' }}</div>-->
+<!--          </div>-->
+<!--          <div class="detail-item">-->
+<!--            <div class="detail-label">{{ 'EMPLOYEE.PHONE' | translate }}:</div>-->
+<!--            <div class="detail-value">{{ manager.phone || 'N/A' }}</div>-->
+<!--          </div>-->
+<!--          <div class="detail-item">-->
+<!--            <div class="detail-label">{{ 'EMPLOYEE.CIN' | translate }}:</div>-->
+<!--            <div class="detail-value">{{ manager.cin }}</div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <div *ngIf="!loadingManager && !manager" class="no-data">-->
+<!--          <mat-icon>person_off</mat-icon>-->
+<!--          <p>{{ 'DEPARTMENT.DETAIL.MANAGER_NOT_FOUND' | translate }}</p>-->
+<!--        </div>-->
+<!--      </div>-->
+
+      <div class="detail-section">
+        <div class="section-header">
+          <mat-icon>groups</mat-icon>
+          <h3>{{ 'DEPARTMENT.DETAIL.EMPLOYEES' | translate }} ({{ employees.length }})</h3>
+        </div>
+
+        <div *ngIf="employees.length > 0">
+          <div class="employees-list">
+            <div *ngFor="let employee of employees" class="employee-item">
+              <div class="employee-avatar">
+                <mat-icon>account_circle</mat-icon>
+              </div>
+              <div class="employee-info">
+                <div class="employee-name">
+                  <strong>{{ employee.firstName }} {{ employee.lastName }}</strong>
+                </div>
+                <div class="employee-contact">
+                  {{ employee.email }} • {{ employee.phone || 'N/A' }}
+                </div>
+                <div class="employee-details">
+                  <span class="employee-cin">{{ employee.cin }}</span>
+                  <span class="employee-gender">{{ employee.gender | translate }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="employees.length === 0" class="no-data">
+          <mat-icon>group_off</mat-icon>
+          <p>{{ 'DEPARTMENT.DETAIL.NO_EMPLOYEES' | translate }}</p>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="loading" class="loading-spinner main-loading">
+      <mat-spinner></mat-spinner>
+      <p>{{ 'COMMON.LOADING' | translate }}</p>
+    </div>
+    <div *ngIf="!department && !loading" class="no-data main-no-data">
+      <mat-icon>business_off</mat-icon>
+      <p>{{ 'DEPARTMENT.MESSAGES.NOT_FOUND' | translate }}</p>
+    </div>
+  </app-card>
+</div>

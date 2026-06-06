@@ -1,0 +1,80 @@
+<section class="material-needs" *ngIf="bomId && quantity > 0" role="region" [attr.aria-label]="title">
+  <header class="material-needs-header">
+    <div class="title-block">
+      <i class="fas fa-boxes-stacked" aria-hidden="true"></i>
+      <div>
+        <h4>{{ title }}</h4>
+        <p class="subtitle" *ngIf="quantity > 0">{{ quantityLabel }} : <strong>{{ quantity | number }}</strong></p>
+      </div>
+    </div>
+    <div class="status-badges" *ngIf="!loading && lines.length">
+      <span class="badge ok" *ngIf="allSufficient">
+        <i class="fas fa-circle-check"></i> Stock suffisant
+      </span>
+      <span class="badge ko" *ngIf="!allSufficient">
+        <i class="fas fa-triangle-exclamation"></i> Stock insuffisant
+      </span>
+    </div>
+  </header>
+
+  <p class="mode-hint" *ngIf="useReservedStock">
+    <i class="fas fa-bookmark"></i>
+    Mode projet : les besoins sont comparés au stock <strong>réservé</strong> (pas au disponible libre).
+  </p>
+  <p class="mode-hint" *ngIf="!useReservedStock">
+    <i class="fas fa-warehouse"></i>
+    Comparaison avec le stock <strong>disponible</strong> (actuel − réservé).
+  </p>
+
+  <div *ngIf="loading" class="state loading">
+    <span class="spinner"></span>
+    <span>Calcul des besoins matières…</span>
+  </div>
+
+  <div *ngIf="error" class="state error">
+    <i class="fas fa-circle-exclamation"></i>
+    <span>{{ error }}</span>
+  </div>
+
+  <div *ngIf="!loading && !error && !lines.length" class="state empty">
+    <i class="fas fa-list-ul"></i>
+    <span>Aucune ligne de nomenclature à afficher.</span>
+  </div>
+
+  <div class="table-wrap" *ngIf="!loading && lines.length">
+    <table class="needs-table">
+      <thead>
+        <tr>
+          <th>Article</th>
+          <th class="num">Besoin</th>
+          <th class="num">{{ stockLabel() }}</th>
+          <th class="status-col">État</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let line of lines" [class.row-ko]="!isLineOk(line)">
+          <td class="article-cell">
+            <span class="article-name">{{ line.articleName }}</span>
+            <span class="article-meta" *ngIf="line.quantityPerUnit">
+              {{ line.quantityPerUnit }} / unité
+            </span>
+          </td>
+          <td class="num">
+            <strong>{{ line.quantityNeededRounded }}</strong>
+            <span class="unit">{{ line.unitOfMeasure || '' }}</span>
+          </td>
+          <td class="num">{{ availableQty(line) }}</td>
+          <td class="status-col">
+            <span class="status ok" *ngIf="isLineOk(line)">
+              <i class="fas fa-check"></i> OK
+            </span>
+            <span class="status ko" *ngIf="!isLineOk(line)">
+              <i class="fas fa-xmark"></i>
+              Manque {{ line.quantityNeededRounded - availableQty(line) > 0 ? (line.quantityNeededRounded - availableQty(line)) : '?' }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>

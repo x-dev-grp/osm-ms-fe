@@ -1,0 +1,106 @@
+<div class="auth-main">
+  <div class="auth-wrapper">
+    <!-- Side image (same look & feel) -->
+    <div class="auth-side-content">
+      <img ngSrc="assets/huile-d-olive.jpg" alt="Olive farm" class="img-auth-side" height="1673" width="2507" />
+    </div>
+
+    <!-- Card with form(s) -->
+    <div class="auth-form">
+      <mat-card class="auth-form-card">
+        <!-- Logos row (kept identical) -->
+        <div class="logo-container">
+          <a href="#"><img ngSrc="assets/OSM.svg" alt="Logo OSM" class="logo" height="72" width="156" /></a>
+          |
+          <a href="#"><img ngSrc="assets/XDEV.svg" alt="Logo XDEV" class="logo" height="644" width="646" /></a>
+        </div>
+
+        <!-- Title -->
+        <h2 class="text-center">
+          {{ (phase === 'code' ? 'RESET_PASSWORD.ENTER_CODE_TITLE' : 'RESET_PASSWORD.NEW_PASSWORD_TITLE') | translate }}
+        </h2>
+
+        <!-- Alerts -->
+        <div *ngIf="successMessage" class="mat-alert mat-success" role="alert">{{ successMessage }}</div>
+        <div *ngIf="errorMessage" class="mat-alert mat-error" role="alert">{{ errorMessage }}</div>
+
+        <!-- Phase 1: confirmation code -->
+        <form
+          *ngIf="phase === 'code' && !successMessage"
+          [formGroup]="codeForm"
+          class="form-container"
+          (ngSubmit)="onValidateCode()"
+        >
+          <div class="form-group">
+            <label for="code" class="form-label">{{ 'RESET_PASSWORD.CONFIRMATION_CODE' | translate }}</label>
+            <mat-form-field appearance="outline" class="w-full">
+              <input
+                matInput id="code" formControlName="code" type="text"
+                autocomplete="one-time-code" inputmode="numeric" maxlength="8"
+                placeholder="{{ 'RESET_PASSWORD.CODE_PLACEHOLDER' | translate }}"
+              />
+              <mat-error *ngIf="codeForm.controls['code'].invalid">{{ getCodeErrorMessage() }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="button-container">
+            <button mat-flat-button color="primary" class="login-button" [disabled]="loading || codeForm.invalid" type="submit">
+              <mat-spinner *ngIf="loading" diameter="25" color="warn"></mat-spinner>
+              <span *ngIf="!loading">{{ 'RESET_PASSWORD.VALIDATE_CODE' | translate }}</span>
+            </button>
+          </div>
+        </form>
+
+        <!-- Phase 2: new password -->
+        <form
+          *ngIf="phase === 'password' && !successMessage"
+          [formGroup]="pwForm"
+          class="form-container"
+          (ngSubmit)="onUpdatePassword()"
+        >
+          <div class="form-group">
+            <label for="newPassword" class="form-label">{{ 'RESET_PASSWORD.NEW_PASSWORD' | translate }}</label>
+            <mat-form-field appearance="outline" class="w-full">
+              <input
+                matInput id="newPassword" formControlName="newPassword" type="password"
+                placeholder="{{ 'RESET_PASSWORD.NEW_PASSWORD_PLACEHOLDER' | translate }}" autocomplete="new-password"
+              />
+              <mat-error *ngIf="pwForm.controls['newPassword'].invalid">{{ getNewPasswordError() }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-group">
+            <label for="confirmPassword" class="form-label">{{ 'RESET_PASSWORD.CONFIRM_PASSWORD' | translate }}</label>
+            <mat-form-field appearance="outline" class="w-full">
+              <input
+                matInput id="confirmPassword" formControlName="confirmPassword" type="password"
+                placeholder="{{ 'RESET_PASSWORD.CONFIRM_PASSWORD_PLACEHOLDER' | translate }}" autocomplete="new-password"
+              />
+              <mat-error *ngIf="pwForm.errors?.mismatch">{{ 'RESET_PASSWORD.MISMATCH' | translate }}</mat-error>
+              <mat-error *ngIf="pwForm.controls['confirmPassword'].invalid && !pwForm.errors?.mismatch">
+                {{ getConfirmPasswordError() }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="button-container">
+            <button mat-flat-button color="primary" class="login-button" [disabled]="loading || pwForm.invalid" type="submit">
+              <mat-spinner *ngIf="loading" diameter="25" color="warn"></mat-spinner>
+              <span *ngIf="!loading">{{ 'RESET_PASSWORD.SUBMIT_NEW_PASSWORD' | translate }}</span>
+            </button>
+          </div>
+        </form>
+
+        <!-- Footer links -->
+        <div class="form-options" *ngIf="!successMessage">
+          <a (click)="navigateToLogin()" class="forgot-password">{{ 'FORGOT_PASSWORD.BACK_TO_LOGIN' | translate }}</a>
+        </div>
+
+        <!-- Success: show only back-to-login -->
+        <div *ngIf="successMessage" class="form-options">
+          <a (click)="navigateToLogin()" class="forgot-password">{{ 'FORGOT_PASSWORD.BACK_TO_LOGIN' | translate }}</a>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+</div>

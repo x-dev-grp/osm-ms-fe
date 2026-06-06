@@ -1,0 +1,116 @@
+<app-card [icon]="'oil_barrel'" [showHeader]="true" [cardTitle]="editing ? ('OIL_CREDIT.FORM.TITLE_EDIT' | translate) : ('OIL_CREDIT.FORM.TITLE_NEW' | translate)">
+  <form [formGroup]="form" (ngSubmit)="save()" class="credit-form">
+    <!-- First row: Emballage and Oil Type -->
+    <div class="row">
+      <div class="col-lg-6">
+        <mat-form-field appearance="outline" class="col">
+          <mat-label>{{ 'OIL_CREDIT.FORM.FIELDS.EMBALLAGE' | translate }}</mat-label>
+          <input matInput formControlName="emballage" autocomplete="off">
+          <mat-error *ngIf="submitted && form.get('emballage')?.hasError('required')">
+            {{ 'OIL_CREDIT.FORM.ERRORS.EMBALLAGE_REQUIRED' | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-6">
+        <mat-form-field appearance="outline" class="col">
+          <mat-label>{{ 'OIL_CREDIT.FORM.FIELDS.OIL_TYPE' | translate }}</mat-label>
+          <input
+            matInput
+            formControlName="oil_type"
+            [matAutocomplete]="oilTypeAuto"
+            [placeholder]="'OIL_CREDIT.FORM.PLACEHOLDERS.SEARCH_OIL_TYPE' | translate"
+            required
+            autocomplete="off"
+          />
+          <mat-autocomplete #oilTypeAuto="matAutocomplete" [displayWith]="displayFn" [requireSelection]="true">
+            <mat-option *ngFor="let type of filteredOilTypes | async" [value]="type">
+              {{ type.name }}
+            </mat-option>
+          </mat-autocomplete>
+          <mat-error *ngIf="submitted && form.get('oil_type')?.hasError('required')">
+            {{ 'OIL_CREDIT.FORM.ERRORS.OIL_TYPE_REQUIRED' | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Second row: Quantity and Unit -->
+    <div class="row">
+      <div class="col-lg-6">
+        <mat-form-field appearance="outline" class="col">
+          <mat-label>{{ 'OIL_CREDIT.FORM.FIELDS.QUANTITY' | translate }}</mat-label>
+          <input matInput type="number" formControlName="quantity" min="0" step="0.01">
+          <mat-error *ngIf="submitted && form.get('quantity')?.hasError('required')">
+            {{ 'OIL_CREDIT.FORM.ERRORS.QUANTITY_REQUIRED' | translate }}
+          </mat-error>
+          <mat-error *ngIf="submitted && form.get('quantity')?.hasError('min')">
+            {{ 'OIL_CREDIT.FORM.ERRORS.QUANTITY_MIN' | translate }}
+          </mat-error>
+          <mat-error *ngIf="submitted && form.get('quantity')?.hasError('insufficientVolume')">
+            {{ 'OIL_CREDIT.FORM.ERRORS.QUANTITY_INSUFFICIENT' | translate }}
+          </mat-error>
+          <mat-error *ngIf="submitted && form.get('quantity')?.hasError('unitMismatch')">
+            {{ 'OIL_CREDIT.FORM.ERRORS.QUANTITY_UNIT_MISMATCH' | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-6">
+        <mat-form-field appearance="outline" class="col">
+          <mat-label>{{ 'OIL_CREDIT.FORM.FIELDS.UNIT' | translate }}</mat-label>
+          <mat-select formControlName="unit">
+            <mat-option value="L">{{ 'OIL_CREDIT.FORM.UNITS.LITRE' | translate }}</mat-option>
+            <mat-option value="KG">{{ 'OIL_CREDIT.FORM.UNITS.KILOGRAM' | translate }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="submitted && form.get('unit')?.hasError('required')">
+            {{ 'OIL_CREDIT.FORM.ERRORS.UNIT_REQUIRED' | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Third row: Destinataire -->
+    <div class="row">
+      <div class="col-lg-6">
+        <mat-form-field appearance="outline" class="col">
+          <mat-label>{{ 'OIL_CREDIT.FORM.FIELDS.DESTINATAIRE' | translate }}</mat-label>
+          <input
+            matInput
+            formControlName="destinataire"
+            [matAutocomplete]="supplierAuto"
+            [placeholder]="'OIL_CREDIT.FORM.PLACEHOLDERS.SEARCH_DESTINATAIRE' | translate"
+            required
+            autocomplete="off"
+          />
+          <mat-autocomplete #supplierAuto="matAutocomplete" [displayWith]="displayFn" [requireSelection]="true">
+            <mat-option *ngFor="let supplier of filteredSuppliers | async" [value]="supplier">
+              {{ supplier.name }}
+            </mat-option>
+          </mat-autocomplete>
+          <mat-error *ngIf="submitted && form.get('destinataire')?.hasError('required')">
+            {{ 'OIL_CREDIT.FORM.ERRORS.DESTINATAIRE_REQUIRED' | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-6">
+        <!-- Empty column for spacing consistency -->
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button mat-stroked-button type="button" (click)="cancel()" class="cancel-button">
+        {{ 'OIL_CREDIT.FORM.BUTTONS.CANCEL' | translate }}
+      </button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="loading" class="submit-button">
+        <span *ngIf="!loading">
+          {{ editing ? ('OIL_CREDIT.FORM.BUTTONS.UPDATE' | translate) : ('OIL_CREDIT.FORM.BUTTONS.CREATE' | translate) }}
+        </span>
+        <span *ngIf="loading" class="loading-spinner">
+          <mat-spinner diameter="20"></mat-spinner>
+        </span>
+      </button>
+    </div>
+  </form>
+</app-card>

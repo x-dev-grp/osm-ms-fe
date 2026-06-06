@@ -1,0 +1,215 @@
+<div class="article-container">
+
+  <div class="page-header">
+    <div class="header-left">
+      <div class="header-icon">
+        <i class="fas fa-box-open"></i>
+      </div>
+
+      <div>
+        <h1 class="page-title">Articles</h1>
+        <p class="page-subtitle">Gestion des articles et produits</p>
+      </div>
+    </div>
+
+    <button class="btn-create-icon" routerLink="/stock/articles/nouveau" title="Nouvel article">
+      <i class="fas fa-plus"></i>
+    </button>
+  </div>
+
+  <div class="filters-card">
+    <div class="filters-grid">
+      <div class="filter-group search-group">
+        <label>Recherche</label>
+        <div class="input-with-icon">
+          <i class="fas fa-search"></i>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Nom, code, code public..."
+            [(ngModel)]="filters.nom"
+            (input)="applyFilters()">
+        </div>
+      </div>
+
+      <div class="filter-group code-search-group">
+        <label>Code public</label>
+        <div class="code-search-row">
+          <div class="input-with-icon">
+            <i class="fas fa-qrcode"></i>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Code hex QR, ex: A1B2C3"
+              [(ngModel)]="searchCode"
+              (input)="searchCodeError = null"
+              (keyup.enter)="searchByPublicCode()"
+              [disabled]="searchingByCode">
+          </div>
+          <button
+            class="btn-code-search"
+            type="button"
+            (click)="searchByPublicCode()"
+            [disabled]="searchingByCode || !searchCode.trim()">
+            <i class="fas" [ngClass]="searchingByCode ? 'fa-spinner fa-spin' : 'fa-arrow-up-right-from-square'"></i>
+            <span>Ouvrir</span>
+          </button>
+        </div>
+        <p *ngIf="searchCodeError" class="field-error">{{ searchCodeError }}</p>
+      </div>
+
+      <div class="filter-group">
+        <label>Catégorie</label>
+        <div class="input-with-icon select-field">
+          <i class="fas fa-layer-group"></i>
+          <select class="form-control" [(ngModel)]="filters.categorie" (change)="applyFilters()">
+            <option value="">Toutes</option>
+            <option *ngFor="let cat of categories" [value]="cat">
+              {{ cat }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label>Statut</label>
+        <div class="input-with-icon select-field">
+          <i class="fas fa-circle-check"></i>
+          <select class="form-control" [(ngModel)]="filters.actif" (change)="applyFilters()">
+            <option value="">Tous</option>
+            <option value="true">Actif</option>
+            <option value="false">Inactif</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="filter-group filter-actions">
+        <button class="btn-reset" (click)="resetFilters()" title="Réinitialiser">
+          <i class="fas fa-undo"></i>
+          <span>Réinitialiser</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="stock-insights" *ngIf="!loading && stockAlertCount > 0">
+    <i class="fas fa-triangle-exclamation"></i>
+    <span>
+      <strong>{{ stockAlertCount }}</strong>
+      article(s) en dessous du stock minimum — vérifiez les lignes surlignées.
+    </span>
+  </div>
+
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Chargement des articles...</p>
+  </div>
+
+  <div class="table-card" *ngIf="!loading">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Catégorie</th>
+          <th>Unité</th>
+          <th>En stock</th>
+          <th>Disponible</th>
+          <th>Réservé</th>
+          <th>Stock Min</th>
+          <th>Stock Max</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr *ngFor="let article of filteredArticles" [ngClass]="{'inactive-row': !article.actif, 'stock-alert-row': isBelowMinimum(article)}" [title]="isBelowMinimum(article) ? 'Stock en dessous du minimum' : ''">
+          <td class="article-name-cell">
+            <span class="article-mini-icon">
+              <i class="fas fa-box"></i>
+            </span>
+            <span class="fw-bold">{{ article.nom }}</span>
+          </td>
+
+          <td>
+            <span class="badge category-badge" [ngClass]="getCategoryBadgeClass(article.categorie)">
+              <i [ngClass]="getCategoryIcon(article.categorie)"></i>
+              <span>{{ article.categorie }}</span>
+            </span>
+          </td>
+
+          <td>
+            <span class="unit-value">{{ article.um }}</span>
+          </td>
+
+          <td class="stock-cell">
+            <span class="stock-chip total" [title]="'En stock'">{{ getArticleStock(article.id) }}</span>
+          </td>
+          <td class="stock-cell">
+            <span class="stock-chip disponible" [class.low]="getArticleDisponible(article.id) <= (article.stockMinimum || 0)">
+              {{ getArticleDisponible(article.id) }}
+            </span>
+          </td>
+          <td class="stock-cell">
+            <span class="stock-chip reserve" *ngIf="getArticleReserve(article.id) > 0">{{ getArticleReserve(article.id) }}</span>
+            <span class="text-muted" *ngIf="getArticleReserve(article.id) === 0">â€”</span>
+          </td>
+          <td>{{ article.stockMinimum }}</td>
+          <td>{{ article.stockMaximum }}</td>
+
+          <td>
+            <span class="badge status-badge" [ngClass]="article.actif ? 'bg-success' : 'bg-secondary'">
+              {{ article.actif ? 'Actif' : 'Inactif' }}
+            </span>
+          </td>
+
+          <td class="actions-cell">
+            <div class="dropdown">
+              <button class="dropdown-btn" (click)="toggleDropdown(article.id, $event)">
+                <i class="fas fa-ellipsis-v"></i>
+              </button>
+
+              <div class="dropdown-content" *ngIf="activeDropdown === article.id">
+                <ng-container *ngIf="article.actif; else inactiveActions">
+                  <button class="dropdown-item" [routerLink]="['/stock/articles', article.id]">
+                    <i class="fas fa-eye"></i>
+                    Voir
+                  </button>
+
+                  <button class="dropdown-item" [routerLink]="['/stock/articles', article.id, 'editer']">
+                    <i class="fas fa-edit"></i>
+                    Modifier
+                  </button>
+
+                  <button class="dropdown-item valider" (click)="toActif(article, $event); activeDropdown = null">
+                    <i class="fas fa-ban"></i>
+                    Désactiver
+                  </button>
+                </ng-container>
+
+                <ng-template #inactiveActions>
+                  <button class="dropdown-item activer" (click)="toActif(article, $event); activeDropdown = null">
+                    <i class="fas fa-check-circle"></i>
+                    Activer
+                  </button>
+                </ng-template>
+              </div>
+            </div>
+          </td>
+        </tr>
+
+        <tr *ngIf="filteredArticles.length === 0">
+          <td colspan="8" class="empty-state">
+            <div>
+              <i class="fas fa-box-open"></i>
+              <p>Aucun article trouvé</p>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>

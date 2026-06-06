@@ -1,0 +1,345 @@
+<app-card class="customize-body" [cardTitle]="'APPLICATION_CONFIG.TITLE' | translate">
+  <div class="row">
+    <!-- Left column -->
+    <div class="col-lg-6">
+      <div class="mb-4">
+        <h6 class="fw-semibold">{{ 'APPLICATION_CONFIG.THEME_MODE.TITLE' | translate }}</h6>
+        <p class="text-muted">{{ 'APPLICATION_CONFIG.THEME_MODE.DESCRIPTION' | translate }}</p>
+        <div class="row">
+          <div class="col-4">
+            <button
+              [matTooltip]="'APPLICATION_CONFIG.THEME_MODE.LIGHT' | translate"
+              mat-stroked-button
+              class="customize-button w-100"
+              [ngClass]="{ active: layoutType === 'light' }"
+              (click)="setLayouts('light')"
+              [attr.aria-label]="'APPLICATION_CONFIG.THEME_MODE.LIGHT' | translate"
+            >
+              <svg class="pc-icon light" aria-hidden="true">
+                <use xlink:href="assets/fonts/custom-icon.svg#custom-sun-1"></use>
+              </svg>
+              {{ 'APPLICATION_CONFIG.THEME_MODE.LIGHT' | translate }}
+            </button>
+          </div>
+          <div class="col-4">
+            <button
+              [matTooltip]="'APPLICATION_CONFIG.THEME_MODE.DARK' | translate"
+              mat-stroked-button
+              class="customize-button w-100"
+              [ngClass]="{ active: layoutType === 'dark' }"
+              (click)="setLayouts('dark')"
+              [attr.aria-label]="'APPLICATION_CONFIG.THEME_MODE.DARK' | translate"
+            >
+              <svg class="pc-icon" aria-hidden="true">
+                <use xlink:href="assets/fonts/custom-icon.svg#custom-moon"></use>
+              </svg>
+              {{ 'APPLICATION_CONFIG.THEME_MODE.DARK' | translate }}
+            </button>
+          </div>
+          <div class="col-4">
+            <button
+              [matTooltip]="'APPLICATION_CONFIG.THEME_MODE.AUTO' | translate"
+              mat-stroked-button
+              class="customize-button auto-button w-100"
+              [ngClass]="{ active: layoutType === 'auto' }"
+              (click)="setLayouts('auto')"
+              [attr.aria-label]="'APPLICATION_CONFIG.THEME_MODE.AUTO' | translate"
+            >
+              <svg class="pc-icon" aria-hidden="true">
+                <use xlink:href="assets/fonts/custom-icon.svg#custom-setting-2"></use>
+              </svg>
+              {{ 'APPLICATION_CONFIG.THEME_MODE.AUTO' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-4" *ngIf="layoutType !== 'dark'">
+        <h6 class="fw-semibold">{{ 'APPLICATION_CONFIG.THEME_CONTRAST.TITLE' | translate }}</h6>
+        <p class="text-muted">{{ 'APPLICATION_CONFIG.THEME_CONTRAST.DESCRIPTION' | translate }}</p>
+        <div class="row">
+          <div class="col-6">
+            <button
+              [matTooltip]="'APPLICATION_CONFIG.THEME_CONTRAST.LIGHT' | translate"
+              mat-stroked-button
+              class="customize-button w-100"
+              [ngClass]="{ active: contrast === true }"
+              (click)="setThemeContrast(true)"
+              [attr.aria-label]="'APPLICATION_CONFIG.THEME_CONTRAST.LIGHT' | translate"
+            >
+              <svg class="pc-icon" aria-hidden="true">
+                <use xlink:href="assets/fonts/custom-icon.svg#custom-mask"></use>
+              </svg>
+              {{ 'APPLICATION_CONFIG.THEME_CONTRAST.LIGHT' | translate }}
+            </button>
+          </div>
+          <div class="col-6">
+            <button
+              [matTooltip]="'APPLICATION_CONFIG.THEME_CONTRAST.GRAY' | translate"
+              mat-stroked-button
+              class="customize-button w-100"
+              [ngClass]="{ active: contrast === false }"
+              (click)="setThemeContrast(false)"
+              [attr.aria-label]="'APPLICATION_CONFIG.THEME_CONTRAST.GRAY' | translate"
+            >
+              <svg class="pc-icon" aria-hidden="true">
+                <use xlink:href="assets/fonts/custom-icon.svg#custom-mask-1-outline"></use>
+              </svg>
+              {{ 'APPLICATION_CONFIG.THEME_CONTRAST.GRAY' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <h6 class="fw-semibold">{{ 'APPLICATION_CONFIG.SIDEBAR_CAPTION.TITLE' | translate }}</h6>
+        <p class="text-muted">{{ 'APPLICATION_CONFIG.SIDEBAR_CAPTION.DESCRIPTION' | translate }}</p>
+        <div class="row">
+          <div class="col-6">
+            <button
+              [matTooltip]="'APPLICATION_CONFIG.SIDEBAR_CAPTION.SHOW' | translate"
+              mat-stroked-button
+              class="customize-button w-100"
+              [ngClass]="{ active: caption === false }"
+              (click)="setMenuCaption(false)"
+              [attr.aria-label]="'APPLICATION_CONFIG.SIDEBAR_CAPTION.SHOW' | translate"
+            >
+              <img src="assets/images/customizer/img-caption-1.svg" [alt]="'APPLICATION_CONFIG.SIDEBAR_CAPTION.SHOW' | translate" class="img-fluid" width="70%" />
+              {{ 'APPLICATION_CONFIG.SIDEBAR_CAPTION.SHOW' | translate }}
+            </button>
+          </div>
+          <div class="col-6">
+            <button
+              [matTooltip]="'APPLICATION_CONFIG.SIDEBAR_CAPTION.HIDE' | translate"
+              mat-stroked-button
+              class="customize-button w-100"
+              [ngClass]="{ active: caption === true }"
+              (click)="setMenuCaption(true)"
+              [attr.aria-label]="'APPLICATION_CONFIG.SIDEBAR_CAPTION.HIDE' | translate"
+            >
+              <img src="assets/images/customizer/img-caption-2.svg" [alt]="'APPLICATION_CONFIG.SIDEBAR_CAPTION.HIDE' | translate" class="img-fluid" width="70%" />
+              {{ 'APPLICATION_CONFIG.SIDEBAR_CAPTION.HIDE' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <h6 class="fw-semibold">{{ 'APPLICATION_CONFIG.THEME_LAYOUT.TITLE' | translate }}</h6>
+        <p class="text-muted">{{ 'APPLICATION_CONFIG.THEME_LAYOUT.DESCRIPTION' | translate }}</p>
+        <div class="row">
+          <div class="col-6">
+            <button
+              [matTooltip]="'APPLICATION_CONFIG.THEME_LAYOUT.LTR' | translate"
+              mat-stroked-button
+              class="customize-button w-100"
+              [ngClass]="{ active: rtlLayout === false }"
+              (click)="setRtlLayout(false)"
+              [attr.aria-label]="'APPLICATION_CONFIG.THEME_LAYOUT.LTR' | translate"
+            >
+              <img src="assets/images/customizer/img-layout-1.svg" [alt]="'APPLICATION_CONFIG.THEME_LAYOUT.LTR' | translate" class="img-fluid" width="70%" />
+              {{ 'APPLICATION_CONFIG.THEME_LAYOUT.LTR' | translate }}
+            </button>
+          </div>
+          <div class="col-6">
+            <button
+              [matTooltip]="'APPLICATION_CONFIG.THEME_LAYOUT.RTL' | translate"
+              [disabled]="layout === 'horizontal'"
+              mat-stroked-button
+              class="customize-button w-100"
+              [ngClass]="{ active: rtlLayout === true }"
+              (click)="setRtlLayout(true)"
+              [attr.aria-label]="'APPLICATION_CONFIG.THEME_LAYOUT.RTL' | translate"
+            >
+              <img src="assets/images/customizer/img-layout-2.svg" [alt]="'APPLICATION_CONFIG.THEME_LAYOUT.RTL' | translate" class="img-fluid" width="70%" />
+              {{ 'APPLICATION_CONFIG.THEME_LAYOUT.RTL' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right column -->
+    <div class="col-lg-6">
+      <div class="mb-4">
+        <h6 class="fw-semibold">{{ 'APPLICATION_CONFIG.CUSTOM_THEME.TITLE' | translate }}</h6>
+        <p class="text-muted">{{ 'APPLICATION_CONFIG.CUSTOM_THEME.DESCRIPTION' | translate }}</p>
+        <div class="theme-color">
+          <button
+            type="button"
+            class="color-swatch blue-layout"
+            [ngClass]="{ active: bodyColor === 'blue-theme' }"
+            (click)="setBodyColor('blue-theme')"
+            [matTooltip]="'APPLICATION_CONFIG.CUSTOM_THEME.BLUE' | translate"
+            [attr.aria-label]="'APPLICATION_CONFIG.CUSTOM_THEME.BLUE' | translate"
+          ></button>
+
+          <button
+            type="button"
+            class="color-swatch indigo-layout"
+            [ngClass]="{ active: bodyColor === 'indigo-theme' }"
+            (click)="setBodyColor('indigo-theme')"
+            [matTooltip]="'APPLICATION_CONFIG.CUSTOM_THEME.INDIGO' | translate"
+            [attr.aria-label]="'APPLICATION_CONFIG.CUSTOM_THEME.INDIGO' | translate"
+          ></button>
+
+          <button
+            type="button"
+            class="color-swatch purple-layout"
+            [ngClass]="{ active: bodyColor === 'purple-theme' }"
+            (click)="setBodyColor('purple-theme')"
+            [matTooltip]="'APPLICATION_CONFIG.CUSTOM_THEME.PURPLE' | translate"
+            [attr.aria-label]="'APPLICATION_CONFIG.CUSTOM_THEME.PURPLE' | translate"
+          ></button>
+
+          <button
+            type="button"
+            class="color-swatch pink-layout"
+            [ngClass]="{ active: bodyColor === 'pink-theme' }"
+            (click)="setBodyColor('pink-theme')"
+            [matTooltip]="'APPLICATION_CONFIG.CUSTOM_THEME.PINK' | translate"
+            [attr.aria-label]="'APPLICATION_CONFIG.CUSTOM_THEME.PINK' | translate"
+          ></button>
+
+          <button
+            type="button"
+            class="color-swatch red-layout"
+            [ngClass]="{ active: bodyColor === 'red-theme' }"
+            (click)="setBodyColor('red-theme')"
+            [matTooltip]="'APPLICATION_CONFIG.CUSTOM_THEME.RED' | translate"
+            [attr.aria-label]="'APPLICATION_CONFIG.CUSTOM_THEME.RED' | translate"
+          ></button>
+
+          <button
+            type="button"
+            class="color-swatch orange-layout"
+            [ngClass]="{ active: bodyColor === 'orange-theme' }"
+            (click)="setBodyColor('orange-theme')"
+            [matTooltip]="'APPLICATION_CONFIG.CUSTOM_THEME.ORANGE' | translate"
+            [attr.aria-label]="'APPLICATION_CONFIG.CUSTOM_THEME.ORANGE' | translate"
+          ></button>
+
+          <button
+            type="button"
+            class="color-swatch yellow-layout"
+            [ngClass]="{ active: bodyColor === 'yellow-theme' }"
+            (click)="setBodyColor('yellow-theme')"
+            [matTooltip]="'APPLICATION_CONFIG.CUSTOM_THEME.YELLOW' | translate"
+            [attr.aria-label]="'APPLICATION_CONFIG.CUSTOM_THEME.YELLOW' | translate"
+          ></button>
+
+          <button
+            type="button"
+            class="color-swatch green-layout"
+            [ngClass]="{ active: bodyColor === 'green-theme' }"
+            (click)="setBodyColor('green-theme')"
+            [matTooltip]="'APPLICATION_CONFIG.CUSTOM_THEME.GREEN' | translate"
+            [attr.aria-label]="'APPLICATION_CONFIG.CUSTOM_THEME.GREEN' | translate"
+          ></button>
+
+          <button
+            type="button"
+            class="color-swatch teal-layout"
+            [ngClass]="{ active: bodyColor === 'teal-theme' }"
+            (click)="setBodyColor('teal-theme')"
+            [matTooltip]="'APPLICATION_CONFIG.CUSTOM_THEME.TEAL' | translate"
+            [attr.aria-label]="'APPLICATION_CONFIG.CUSTOM_THEME.TEAL' | translate"
+          ></button>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <h6 class="fw-semibold">{{ 'APPLICATION_CONFIG.MENU_ORIENTATION.TITLE' | translate }}</h6>
+        <p class="text-muted">{{ 'APPLICATION_CONFIG.MENU_ORIENTATION.DESCRIPTION' | translate }}</p>
+        <div class="row">
+          <div class="col-6">
+            <button
+              [matTooltip]="'APPLICATION_CONFIG.MENU_ORIENTATION.VERTICAL' | translate"
+              mat-stroked-button
+              class="customize-button w-100"
+              [ngClass]="{ active: layout === 'vertical' }"
+              (click)="setMenuOrientation('vertical')"
+              [attr.aria-label]="'APPLICATION_CONFIG.MENU_ORIENTATION.VERTICAL' | translate"
+            >
+              <img src="assets/images/customizer/vertical.svg" [alt]="'APPLICATION_CONFIG.MENU_ORIENTATION.VERTICAL' | translate" class="img-fluid" width="70%" />
+              {{ 'APPLICATION_CONFIG.MENU_ORIENTATION.VERTICAL' | translate }}
+            </button>
+          </div>
+          <div class="col-6">
+            <button
+              [matTooltip]="'APPLICATION_CONFIG.MENU_ORIENTATION.HORIZONTAL' | translate"
+              mat-stroked-button
+              class="customize-button w-100"
+              [ngClass]="{ active: layout === 'horizontal' }"
+              (click)="setMenuOrientation('horizontal')"
+              [attr.aria-label]="'APPLICATION_CONFIG.MENU_ORIENTATION.HORIZONTAL' | translate"
+            >
+              <img src="assets/images/customizer/horizontal.svg" [alt]="'APPLICATION_CONFIG.MENU_ORIENTATION.HORIZONTAL' | translate" class="img-fluid" width="70%" />
+              {{ 'APPLICATION_CONFIG.MENU_ORIENTATION.HORIZONTAL' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <h6 class="fw-semibold">{{ 'APPLICATION_CONFIG.LAYOUT_WIDTH.TITLE' | translate }}</h6>
+        <p class="text-muted">{{ 'APPLICATION_CONFIG.LAYOUT_WIDTH.DESCRIPTION' | translate }}</p>
+        <div class="row">
+          <div class="col-6">
+            <button
+              [matTooltip]="'APPLICATION_CONFIG.LAYOUT_WIDTH.FULL' | translate"
+              mat-stroked-button
+              class="customize-button w-100"
+              [ngClass]="{ active: boxLayouts === false }"
+              (click)="setBoxLayouts(false)"
+            >
+              <img src="assets/images/customizer/img-container-1.svg"
+                   [alt]="'APPLICATION_CONFIG.LAYOUT_WIDTH.FULL' | translate" class="img-fluid" width="70%" />
+              {{ 'APPLICATION_CONFIG.LAYOUT_WIDTH.FULL' | translate }}
+            </button>
+          </div>
+          <div class="col-6">
+            <button
+              [matTooltip]="'APPLICATION_CONFIG.LAYOUT_WIDTH.BOXED' | translate"
+              mat-stroked-button
+              class="customize-button w-100"
+              [ngClass]="{ active: boxLayouts === true }"
+              (click)="setBoxLayouts(true)"
+              [attr.aria-label]="'APPLICATION_CONFIG.LAYOUT_WIDTH.BOXED' | translate"
+
+            >
+              <img src="assets/images/customizer/img-container-2.svg" [alt]="'APPLICATION_CONFIG.LAYOUT_WIDTH.BOXED' | translate" class="img-fluid" width="70%" />
+              {{ 'APPLICATION_CONFIG.LAYOUT_WIDTH.BOXED' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="col-12">
+      <div class="actions full-width mt-3">
+        <button
+          mat-flat-button
+          color="primary"
+          matTooltip="Apply theme settings"
+          (click)="applySettings()"
+          aria-label="Apply settings"
+        >
+          <mat-icon class="me-1">save</mat-icon>
+          Apply
+        </button>
+        <button
+          mat-stroked-button
+          color="warn"
+          matTooltip="Reset all settings"
+          (click)="resetLayout()"
+          aria-label="Reset layout"
+        >
+          <mat-icon class="me-1">undo</mat-icon>
+          Reset
+        </button>
+      </div>
+    </div>
+  </div>
+</app-card>

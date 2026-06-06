@@ -1,0 +1,105 @@
+<div class="add-company-user-wrapper">
+  <mat-card class="main-card">
+    <mat-card-header>
+      <mat-card-title>{{ 'ADMIN.ADD_COMPANY_USER_TITLE' | translate }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="userForm">
+        <div class="form-section">
+          <h3 class="section-title">{{ 'ADMIN.COMPANY_SECTION' | translate }}</h3>
+          <div class="row">
+            <div class="col-12 col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{ 'ADMIN.COMPANY_NAME' | translate }} <span class="text-warn-500">*</span></mat-label>
+                <input matInput formControlName="companyName" [placeholder]="'ADMIN.COMPANY_NAME' | translate" />
+                <mat-error *ngIf="userForm.get('companyName')?.hasError('required')">
+                  {{ 'ADMIN.COMPANY_NAME_REQUIRED' | translate }}
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <div class="form-section">
+          <h3 class="section-title">{{ 'ADMIN.USER_SECTION' | translate }}</h3>
+          <div class="row">
+            <div class="col-md-6 col-lg-4 col-12">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{ 'USER_FORM.FIRST_NAME' | translate }}</mat-label>
+                <input matInput formControlName="firstName" [placeholder]="'USER_FORM.FIRST_NAME' | translate" />
+              </mat-form-field>
+            </div>
+            <div class="col-md-6 col-lg-4 col-12">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{ 'USER_FORM.LAST_NAME' | translate }}</mat-label>
+                <input matInput formControlName="lastName" [placeholder]="'USER_FORM.LAST_NAME' | translate" />
+              </mat-form-field>
+            </div>
+            <div class="col-md-6 col-lg-4 col-12">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{ 'USER_FORM.USERNAME' | translate }} <span class="text-warn-500">*</span></mat-label>
+                <input matInput formControlName="username" [placeholder]="'USER_FORM.USERNAME' | translate" />
+                <mat-error *ngIf="userForm.get('username')?.hasError('required')">
+                  {{ 'USER_FORM.USERNAME_REQUIRED' | translate }}
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-md-6 col-lg-4 col-12">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{ 'USER_FORM.EMAIL' | translate }}</mat-label>
+                <input matInput formControlName="email" [placeholder]="'USER_FORM.EMAIL' | translate" />
+                <mat-error *ngIf="userForm.get('email')?.hasError('emailRequired')">
+                  {{ 'USER_FORM.EMAIL_REQUIRED' | translate }}
+                </mat-error>
+                <mat-error *ngIf="userForm.get('email')?.hasError('email')">
+                  {{ 'USER_FORM.EMAIL' | translate }} format is invalid.
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-md-6 col-lg-4 col-12">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{ 'USER_FORM.PHONE' | translate }}</mat-label>
+                <input matInput formControlName="phoneNumber" [placeholder]="'USER_FORM.PHONE' | translate" />
+                <mat-error *ngIf="userForm.get('phoneNumber')?.hasError('phoneRequired')">
+                  {{ 'USER_FORM.PHONE_REQUIRED' | translate }}
+                </mat-error>
+                <mat-error *ngIf="userForm.get('phoneNumber')?.hasError('pattern')">
+                  {{ 'USER_FORM.PHONE' | translate }} format is invalid.
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-md-6 col-lg-4 col-12">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{ 'USER_FORM.CONFIRMATION_METHOD' | translate }} <span class="text-warn-500">*</span></mat-label>
+                <mat-select formControlName="confirmationMethod">
+                  <mat-option value="EMAIL">{{ 'USER_FORM.EMAIL' | translate }}</mat-option>
+                  <mat-option value="PHONE">{{ 'USER_FORM.PHONE' | translate }}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="userForm.get('confirmationMethod')?.hasError('required')">
+                  {{ 'USER_FORM.CONFIRMATION_METHOD_REQUIRED' | translate }}
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-6 col-lg-4 col-12 mt-3">
+              <mat-slide-toggle id="locked" formControlName="locked" color="primary"> {{ 'USER_FORM.LOCKED' | translate }} </mat-slide-toggle>
+            </div>
+          </div>
+        </div>
+        <div class="form-actions text-end">
+          <button (click)="cancel()" mat-stroked-button class="m-r-10">{{ 'ADMIN.CANCEL' | translate }}</button>
+          <button [disabled]="userForm.invalid" (click)="onSubmit()" mat-flat-button *ngIf="updateMode" class="m-r-10" color="primary">
+            <mat-spinner *ngIf="loading" diameter="25" color="warn"></mat-spinner>
+            <span *ngIf="!loading">{{ 'GENERAL_CONFIG.ACTIONS.UPDATE' | translate }}</span>
+          </button>
+          <button [disabled]="userForm.invalid" (click)="onSubmit()" mat-flat-button *ngIf="!viewMode && !updateMode" class="m-r-10" color="primary">
+            <mat-spinner *ngIf="loading" diameter="25" color="warn"></mat-spinner>
+            <span *ngIf="!loading">{{ 'ADMIN.SAVE' | translate }}</span>
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+  <div *ngIf="errorMessage" class="mat-alert mat-error mt-3" role="alert">
+    {{ errorMessage }}
+  </div>
+</div>

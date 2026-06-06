@@ -1,0 +1,49 @@
+<app-card [showHeader]="true" actionClass="actions" [showContent]="true" cardTitle="Ajouter un role">
+  <form [formGroup]="roleForm">
+    <div class="form-fields">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Role Name</mat-label>
+        <input matInput formControlName="roleName" placeholder="Enter role name">
+        <mat-error *ngIf="roleForm.get('roleName')?.hasError('required')">
+          Role est obligatoire
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full-width mt-2">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description" placeholder="Role description" rows="3"></textarea>
+      </mat-form-field>
+    </div>
+    
+    <mat-divider></mat-divider>
+    
+    <div class="permissions-section">
+      <h3>Permissions</h3>
+      <p class="hint-text">Selectionner les permissions</p>
+      
+      <permission-tree
+        [initialPermissions]="selectedPermissions"
+        (permissionsChange)="onPermissionsChange($event)"
+         [viewMode]="viewMode"
+      ></permission-tree>
+    </div>
+  </form>
+  <ng-template #actionTemplate >
+    <button (click)="cancel()" mat-button type="button">Annuler</button>
+    @if (!viewMode && !updateMode) {
+       <button mat-raised-button color="primary" type="button" 
+      [disabled]="roleForm.invalid" (click)="saveRole(fasle)">
+     <mat-spinner *ngIf="loading" diameter="25" color="warn"></mat-spinner>
+     <span *ngIf="!loading">Sauvgarder</span>
+    </button>
+    }
+     @if (!viewMode && updateMode) {
+       <button mat-raised-button color="primary" type="button" 
+      [disabled]="roleForm.invalid" (click)="saveRole(true)">
+          <mat-spinner *ngIf="loading" diameter="25" color="warn"></mat-spinner>
+          <span *ngIf="!loading">Modifier</span>
+    </button>
+    }
+ </ng-template>
+</app-card>
+
+

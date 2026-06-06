@@ -1,0 +1,156 @@
+<app-card [icon]="'receipt_long'" [showHeader]="true" [cardTitle]="editing ? ('EXPENSES.EDIT_TITLE' | translate) : ('EXPENSES.ADD_TITLE' | translate)">
+  <form [formGroup]="form" (ngSubmit)="save()" class="expense-form">
+    <!-- General Information -->
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>{{ 'EXPENSES.FIELDS.INVOICE_REF' | translate }}</mat-label>
+        <input matInput formControlName="invoiceRef" required [placeholder]="'EXPENSES.PLACEHOLDER.INVOICE_REF' | translate">
+        <mat-icon matPrefix>receipt_long</mat-icon>
+        <mat-error *ngIf="form.get('invoiceRef')?.touched && form.get('invoiceRef')?.hasError('required')">
+          {{ 'EXPENSES.ERRORS.INVOICE_REF_REQUIRED' | translate }}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>{{ 'EXPENSES.FIELDS.PURCHASE_NATURE' | translate }}</mat-label>
+        <input matInput formControlName="purchaseNature" required [placeholder]="'EXPENSES.PLACEHOLDER.PURCHASE_NATURE' | translate">
+        <mat-icon matPrefix>category</mat-icon>
+        <mat-error *ngIf="form.get('purchaseNature')?.touched && form.get('purchaseNature')?.hasError('required')">
+          {{ 'EXPENSES.ERRORS.PURCHASE_NATURE_REQUIRED' | translate }}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>{{ 'EXPENSES.FIELDS.OBJECT' | translate }}</mat-label>
+        <input matInput formControlName="object" [placeholder]="'EXPENSES.PLACEHOLDER.OBJECT' | translate">
+        <mat-icon matPrefix>description</mat-icon>
+      </mat-form-field>
+    </div>
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>{{ 'EXPENSES.FIELDS.AMOUNT' | translate }}</mat-label>
+        <input matInput type="number" formControlName="amount" required [placeholder]="'EXPENSES.PLACEHOLDER.AMOUNT' | translate">
+        <mat-icon matPrefix>euro</mat-icon>
+        <mat-error *ngIf="form.get('amount')?.touched && form.get('amount')?.hasError('required')">
+          {{ 'EXPENSES.ERRORS.AMOUNT_REQUIRED' | translate }}
+        </mat-error>
+        <mat-error *ngIf="form.get('amount')?.touched && form.get('amount')?.hasError('min')">
+          {{ 'EXPENSES.ERRORS.AMOUNT_MIN' | translate }}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>{{ 'EXPENSES.FIELDS.CATEGORY' | translate }}</mat-label>
+
+        <mat-select
+          formControlName="category"
+          required
+          (openedChange)="onCategoryOpened($event)"
+          #categorySelect>
+          <!-- Inline search input pinned at the top of the panel -->
+          <mat-option class="!pointer-events-none !opacity-100" disabled>
+            <div class="d-flex align-items-center gap-2 w-100" (click)="$event.stopPropagation()">
+              <mat-icon inline>search</mat-icon>
+              <input
+                matInput
+                #categorySearchInput
+                [formControl]="categoryFilterCtrl"
+                (keydown)="$event.stopPropagation()"
+                (click)="$event.stopPropagation()"
+                [placeholder]="'COMMON.SEARCH' | translate" />
+            </div>
+          </mat-option>
+
+          <!-- Filtered categories -->
+          <mat-option
+            *ngFor="let cat of (filteredCategories$ | async)"
+            [value]="cat">
+            {{ ('EXPENSE.CATEGORY.' + cat) | translate }}
+          </mat-option>
+        </mat-select>
+
+        <mat-icon matPrefix>label</mat-icon>
+        <mat-error *ngIf="form.get('category')?.touched && form.get('category')?.hasError('required')">
+          {{ 'EXPENSES.ERRORS.CATEGORY_REQUIRED' | translate }}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>{{ 'EXPENSES.FIELDS.VENDOR' | translate }}</mat-label>
+        <input matInput formControlName="vendor" [placeholder]="'EXPENSES.PLACEHOLDER.VENDOR' | translate">
+        <mat-icon matPrefix>store</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <!-- Payment Details -->
+    <h3>{{ 'EXPENSES.SECTION.PAYMENT_DETAILS' | translate }}</h3>
+    <mat-divider></mat-divider>
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>{{ 'EXPENSES.FIELDS.PAYMENT_METHOD' | translate }}</mat-label>
+        <mat-select formControlName="paymentMethod" required>
+          <mat-option *ngFor="let method of paymentMethods" [value]="method">
+            {{ method }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matPrefix>payment</mat-icon>
+        <mat-error *ngIf="form.get('paymentMethod')?.touched && form.get('paymentMethod')?.hasError('required')">
+          {{ 'EXPENSES.ERRORS.PAYMENT_METHOD_REQUIRED' | translate }}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>{{ 'EXPENSES.FIELDS.STATUS' | translate }}</mat-label>
+        <mat-select formControlName="status" required>
+          <mat-option *ngFor="let status of statusOptions" [value]="status">
+            {{ status.toUpperCase() }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matPrefix>flag</mat-icon>
+        <mat-error *ngIf="form.get('status')?.touched && form.get('status')?.hasError('required')">
+          {{ 'EXPENSES.ERRORS.STATUS_REQUIRED' | translate }}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>{{ 'EXPENSES.FIELDS.RECEIPT_NUMBER' | translate }}</mat-label>
+        <input matInput formControlName="receiptNumber" [placeholder]="'EXPENSES.PLACEHOLDER.RECEIPT_NUMBER' | translate">
+        <mat-icon matPrefix>confirmation_number</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <!-- Notes and Approval Section -->
+    <h3>{{ 'EXPENSES.SECTION.NOTES' | translate }}</h3>
+    <mat-divider></mat-divider>
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="notes-third">
+        <mat-label>{{ 'EXPENSES.FIELDS.NOTES' | translate }}</mat-label>
+        <textarea matInput formControlName="notes" rows="3" [placeholder]="'EXPENSES.PLACEHOLDER.NOTES' | translate"></textarea>
+        <mat-icon matPrefix>notes</mat-icon>
+        <mat-hint>{{ 'EXPENSES.HINT.NOTES_OPTIONAL' | translate }}</mat-hint>
+      </mat-form-field>
+      <div class="approval-two-thirds approval-row">
+        <mat-checkbox formControlName="approved" class="approval-checkbox">{{ 'EXPENSES.FIELDS.APPROVED' | translate }}</mat-checkbox>
+        <mat-form-field appearance="outline" *ngIf="form.get('approved')!.value" class="approval-field">
+          <mat-label>{{ 'EXPENSES.FIELDS.APPROVAL_DATE' | translate }}</mat-label>
+          <input matInput [matDatepicker]="approvalDatePicker" formControlName="approvalDate">
+          <mat-datepicker-toggle matSuffix [for]="approvalDatePicker"></mat-datepicker-toggle>
+          <mat-datepicker #approvalDatePicker></mat-datepicker>
+          <mat-icon matPrefix>event_available</mat-icon>
+        </mat-form-field>
+        <mat-form-field appearance="outline" *ngIf="form.get('approved')!.value" class="approval-field">
+          <mat-label>{{ 'EXPENSES.FIELDS.CREATED_BY' | translate }}</mat-label>
+          <input matInput formControlName="createdBy" [placeholder]="'EXPENSES.PLACEHOLDER.CREATED_BY' | translate">
+          <mat-icon matPrefix>person</mat-icon>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="form-actions">
+      <button mat-button type="button" (click)="onBack()" class="cancel-button">{{ 'COMMON.CANCEL' | translate }}</button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid" class="submit-button">
+        {{ editing ? ('COMMON.UPDATE' | translate) : ('COMMON.SAVE' | translate) }}
+      </button>
+    </div>
+  </form>
+  <ng-template #loadingTemplate>
+    <div class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  </ng-template>
+</app-card>

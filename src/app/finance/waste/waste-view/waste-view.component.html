@@ -1,0 +1,131 @@
+<div class="waste-view-container" *ngIf="!loading; else loadingTemplate">
+  <div class="header">
+    <div class="header-content">
+
+      <div class="header-text">
+        <h2>Détails de la vente de déchet</h2>
+        <p class="header-subtitle">Informations complètes de la vente</p>
+      </div>
+      <div class="header-actions">
+        <button (click)="onEdit()" color="primary" mat-raised-button>
+          <mat-icon>edit</mat-icon>
+          Modifier
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="waste-details" *ngIf="wasteSale">
+    <!-- Section: Informations générales -->
+    <app-card [cardTitle]="'Informations générales'" class="detail-section" icon="info">
+      <div class="detail-grid">
+        <div class="detail-item">
+          <span class="label">
+            <mat-icon>category</mat-icon>
+            Type de déchet
+          </span>
+          <span class="value">{{ getWasteTypeDisplay(wasteSale.type) }}</span>
+        </div>
+
+        <div class="detail-item">
+          <span class="label">
+            <mat-icon>scale</mat-icon>
+            Quantité
+          </span>
+          <span class="value">{{ wasteSale.quantity | number:'1.2-2' }} kg</span>
+        </div>
+
+        <div class="detail-item">
+          <span class="label">
+            <mat-icon>attach_money</mat-icon>
+            Prix unitaire
+          </span>
+          <span class="value">{{ wasteSale.unitPrice | number:'1.2-2' }} TND/kg</span>
+        </div>
+
+        <div class="detail-item total-highlight">
+          <span class="label">
+            <mat-icon>calculate</mat-icon>
+            Prix total
+          </span>
+          <span class="value total-value">{{ wasteSale.totalPrice | number:'1.2-2' }} TND</span>
+        </div>
+      </div>
+    </app-card>
+
+    <!-- Section: Informations de vente -->
+    <app-card [cardTitle]="'Informations de vente'" class="detail-section" icon="sell">
+      <div class="detail-grid">
+        <div class="detail-item">
+          <span class="label">
+            <mat-icon>event</mat-icon>
+            Date de vente
+          </span>
+          <span class="value">{{ wasteSale.saleDate | date:'fullDate' }}</span>
+        </div>
+
+        <div class="detail-item" *ngIf="wasteSale.invoiceNumber">
+          <span class="label">
+            <mat-icon>receipt</mat-icon>
+            Numéro de facture
+          </span>
+          <span class="value">{{ wasteSale.invoiceNumber }}</span>
+        </div>
+
+        <div class="detail-item" *ngIf="wasteSale.storageLocationCode">
+          <span class="label">
+            <mat-icon>inventory_2</mat-icon>
+            Code de stockage
+          </span>
+          <span class="value">{{ wasteSale.storageLocationCode }}</span>
+        </div>
+
+        <div class="detail-item" *ngIf="wasteSale.supplier">
+          <span class="label">
+            <mat-icon>person</mat-icon>
+            Fournisseur
+          </span>
+          <span class="value">{{ getSupplierDisplay() }}</span>
+        </div>
+      </div>
+    </app-card>
+
+    <!-- Section: Informations de paiement -->
+    <app-card [cardTitle]="'Informations de paiement'" class="detail-section" icon="payment">
+      <div class="detail-grid">
+        <div class="detail-item">
+          <span class="label">
+            <mat-icon>account_balance</mat-icon>
+            Statut de paiement
+          </span>
+          <span class="value" [class.paid-status]="wasteSale.paid" [class.unpaid-status]="!wasteSale.paid">
+            <mat-icon>{{ wasteSale.paid ? 'check_circle' : 'schedule' }}</mat-icon>
+            {{ wasteSale.paid ? 'Payé' : 'Non payé' }}
+          </span>
+        </div>
+
+        <div class="detail-item" *ngIf="wasteSale.paid && wasteSale.paymentDate">
+          <span class="label">
+            <mat-icon>payment</mat-icon>
+            Date de paiement
+          </span>
+          <span class="value">{{ wasteSale.paymentDate | date:'fullDate' }}</span>
+        </div>
+      </div>
+    </app-card>
+
+    <!-- Section: Notes et description -->
+    <app-card [cardTitle]="'Notes et description'" class="detail-section" icon="notes" *ngIf="wasteSale.description">
+      <div class="description-content">
+        <p>{{ wasteSale.description }}</p>
+      </div>
+    </app-card>
+  </div>
+</div>
+
+<ng-template #loadingTemplate>
+  <div class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Chargement des détails...</p>
+  </div>
+</ng-template>

@@ -1,0 +1,364 @@
+<section class="label-detail-container">
+  <!-- TOP BAR -->
+  <header class="detail-header">
+    <div class="header-left">
+      <button mat-button class="back-link" (click)="backToList()">
+        <mat-icon>arrow_back</mat-icon>
+        Retour
+      </button>
+      <div class="header-title">
+        <mat-icon class="leaf-icon">eco</mat-icon>
+        <h1>Détail de l'étiquette</h1>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <div class="status-badge" [ngClass]="statusClass(label?.status)">
+        <mat-icon>check</mat-icon>
+        <span>{{ label?.status === 'DRAFT' ? 'Brouillon' : (label?.status === 'FINALIZED' ? 'Finalisée' : (label?.status === 'VALIDATED' ? 'Validée' : (label?.status === 'EXPORTED_JSON' ? 'Exportée JSON' : label?.status))) }}</span>
+      </div>
+      <button mat-button class="export-btn" (click)="exportLabel()" [disabled]="exporting || !canExport()">
+        <mat-icon *ngIf="!exporting">download</mat-icon>
+        <mat-spinner diameter="18" *ngIf="exporting"></mat-spinner>
+        Exporter en JSON
+      </button>
+    </div>
+  </header>
+
+  <div class="detail-grid" *ngIf="label && !loading">
+
+    <!-- LEFT COLUMN: SECTIONS -->
+    <div class="sections-column">
+
+      <!-- 1. Configuration de base -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-icon"><mat-icon>liquor</mat-icon></div>
+          <h2>1. Configuration de base</h2>
+        </div>
+
+        <div class="data-grid">
+          <div class="data-item">
+            <label>SOURCE DE L'ETIQUETTE</label>
+            <p>{{ label.filtrationOperationId ? 'Filtration liee' : '-' }}</p>
+          </div>
+          <div class="data-item">
+            <label>PACKAGING (PRODUIT)</label>
+            <p>{{ packagingDisplayLabel }}</p>
+          </div>
+          <div class="data-item">
+            <label>DATE CONDITIONNEMENT</label>
+            <div class="date-val">
+              <mat-icon>calendar_today</mat-icon>
+              <span>{{ (label.packagingDate | date:'dd/MM/yyyy') || '-' }}</span>
+            </div>
+          </div>
+          <div class="data-item">
+            <label>CATÉGORIE</label>
+            <p>{{ categoryLabel(label.labelCategory || 'UNIT') }}</p>
+          </div>
+          <div class="data-item">
+            <label>LANGUE</label>
+            <p>{{ languageLabel(label.language) }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Identité & Traçabilité -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-icon"><mat-icon>fingerprint</mat-icon></div>
+          <h2>2. Identité & Traçabilité</h2>
+          <div class="header-line"></div>
+        </div>
+
+        <div class="data-grid cols-3">
+          <div class="data-item">
+            <label>DÉNOMINATION LÉGALE</label>
+            <p>{{ label.legalDenomination || 'Huile d\'olive' }}</p>
+          </div>
+          <div class="data-item">
+            <label>N° DE LOT</label>
+            <p>{{ label.lotNumber || '-' }}</p>
+          </div>
+          <div class="data-item">
+            <label>QUANTITÉ NETTE</label>
+            <p>{{ label.netQuantity || '-' }}</p>
+          </div>
+          <div class="data-item">
+            <label>D.D.M.</label>
+            <p>{{ label.bestBeforeDate || '05/2027' }}</p>
+          </div>
+          <div class="data-item">
+            <label>QUALITÉ</label>
+            <p>{{ getQualityGradeLabel(label.qualityGrade) || 'Huile d\'olive' }}</p>
+          </div>
+          <div class="data-item">
+            <label>VARIÉTÉ</label>
+            <p>{{ getVarietyLabel(label.variety) || '-' }}</p>
+          </div>
+          <div class="data-item">
+            <label>TRACEABILITE</label>
+            <p>{{ label.traceabilityLotId ? 'Verifiee' : '-' }}</p>
+          </div>
+          <div class="data-item" *ngIf="hasOriginIdentity">
+            <label>RECEPTION RACINE</label>
+            <p>{{ rootSource?.lotNumber || rootSource?.supplierName || '-' }}</p>
+          </div>
+          <div class="data-item" *ngIf="hasFilteredLotStorageName">
+            <label>CUVE FILTREE</label>
+            <p>{{ filteredLotStorageName }}</p>
+          </div>
+          <div class="data-item full-width">
+            <label>PAYS D'ORIGINE</label>
+            <p>{{ label.originCountry || 'Tunisie' }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card" *ngIf="filteredLotGenealogy || label.sourceSnapshots?.length">
+        <div class="section-header">
+          <div class="section-icon"><mat-icon>account_tree</mat-icon></div>
+          <h2>3. Chaîne d'origine</h2>
+          <div class="header-line"></div>
+        </div>
+
+        <div class="origin-grid">
+          <div class="origin-summary">
+            <div class="origin-row">
+              <label>Ancre de traçabilité</label>
+              <p>{{ traceabilityAnchor !== '-' ? 'Verifiee' : '-' }}</p>
+            </div>
+            <div class="origin-row" *ngIf="hasOriginIdentity">
+              <label>Source racine</label>
+              <p>{{ originSourceLabel }}</p>
+            </div>
+            <div class="origin-row" *ngIf="originLotLabel !== '-'">
+              <label>Lot d'origine</label>
+              <p>{{ originLotLabel }}</p>
+            </div>
+            <div class="origin-row">
+              <label>Preuves enregistrées</label>
+              <p>{{ sourceProofLabel }}</p>
+            </div>
+          </div>
+
+          <div class="origin-root" *ngIf="rootSource as root">
+            <label>Origine identifiée</label>
+            <h3>{{ root.supplierName || '-' }}</h3>
+            <p>{{ root.type || '-' }} | {{ root.date | date:'dd/MM/yyyy' }}</p>
+            <div class="origin-tags" *ngIf="root.qualityControls && (root.qualityControls | keyvalue).length">
+              <span class="origin-tag" *ngFor="let qc of root.qualityControls | keyvalue">
+                {{ qc.key }}: {{ qc.value }}
+              </span>
+            </div>
+          </div>
+
+          <div class="origin-root" *ngIf="postFiltrationQualityControls as controls">
+            <label>Controle qualite apres filtration</label>
+            <h3>Resultats du lot filtre</h3>
+            <div class="origin-tags">
+              <span class="origin-tag" *ngFor="let qc of controls | keyvalue">
+                {{ qc.key }}: {{ qc.value }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="filtration-chain" *ngIf="filteredLotGenealogy?.filtrations?.length">
+          <div class="chain-step" *ngFor="let step of filteredLotGenealogy?.filtrations">
+            <strong>{{ step.targetLotNumber || '-' }}</strong>
+            <span>{{ step.sourceStorageUnitName || step.sourceLotNumber || '-' }}</span>
+            <span>{{ step.volumeFiltered || 0 }} L</span>
+            <span>{{ step.timestamp | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Marketing & Conformité -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-icon"><mat-icon>verified</mat-icon></div>
+          <h2>4. Marketing & Conformité</h2>
+          <div class="header-line"></div>
+        </div>
+
+        <div class="data-grid cols-2">
+          <div class="data-item">
+            <label>ALLÉGATIONS MARKETING</label>
+            <div class="badge-row">
+              <span class="marketing-badge" *ngFor="let claim of label.marketingClaims">{{ claim }}</span>
+              <span class="marketing-badge" *ngIf="!label.marketingClaims?.length">Produit de Tunisie</span>
+            </div>
+          </div>
+          <div class="data-item">
+            <label>CERTIFICATIONS QUALITÉ</label>
+            <p>{{ certificationsLabel }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Responsabilité & Procédés -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-icon"><mat-icon>groups</mat-icon></div>
+          <h2>5. Responsabilité & Procédés</h2>
+          <div class="header-line"></div>
+        </div>
+
+        <div class="responsability-grid">
+          <div class="resp-left">
+            <div class="data-item">
+              <label>RESPONSABLE</label>
+              <p>{{ label.responsibleName || '-' }}</p>
+            </div>
+            <div class="data-item">
+              <label>ADRESSE</label>
+              <p>{{ label.responsibleAddress || 'Tunisie' }}</p>
+            </div>
+            <div class="data-item">
+              <label>MÉTHODE D'EXTRACTION</label>
+              <p>{{ extractionMethodLabel }}</p>
+            </div>
+          </div>
+
+          <div class="resp-right">
+            <div class="info-box">
+              <div class="box-icon"><mat-icon>inventory_2</mat-icon></div>
+              <div class="box-content">
+                <label>CONDITIONS DE STOCKAGE</label>
+                <p>{{ label.storageConditions || 'A conserver a l\'abri de la lumiere et de la chaleur' }}</p>
+              </div>
+            </div>
+
+            <div class="info-box">
+              <div class="box-icon"><mat-icon>psychology</mat-icon></div>
+              <div class="box-content">
+                <label>PROFIL SENSORIEL</label>
+                <p>{{ label.sensoryProfile || 'Profil issu du controle qualite' }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: PREVIEW -->
+    <div class="preview-column">
+      <div class="preview-header">
+        <mat-icon>visibility</mat-icon>
+        <span>Aperçu en direct</span>
+      </div>
+
+      <!-- STICKY LABEL PREVIEW -->
+      <div class="label-preview-card">
+        <div class="preview-inner">
+          <div class="preview-top">
+            <div class="preview-logo">
+              <mat-icon>eco</mat-icon>
+              <span>OLIVÉA</span>
+            </div>
+            <div class="preview-lot">
+              <small>LOT N°</small>
+              <strong>{{ label.lotNumber || '-' }}</strong>
+              <div class="lang-badges">
+                <span>{{ languageLabel(label.language) }}</span>
+                <span>{{ categoryLabel(label.labelCategory || 'UNIT') }}</span>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="preview-title">{{ label.legalDenomination || 'Huile d\'olive' }}</h3>
+          <div class="preview-origin">
+            <mat-icon>place</mat-icon>
+            <span>{{ label.originCountry || 'Tunisie' }}</span>
+          </div>
+
+          <div class="preview-specs">
+            <div class="spec">
+              <small>QUANTITÉ</small>
+              <span>{{ label.netQuantity || '-' }}</span>
+            </div>
+            <div class="spec">
+              <small>QUALITÉ</small>
+              <span>{{ getQualityGradeLabel(label.qualityGrade) || 'Huile d\'olive' }}</span>
+            </div>
+            <div class="spec">
+              <small>VARIÉTÉ</small>
+              <span>{{ getVarietyLabel(label.variety) || '-' }}</span>
+            </div>
+            <div class="spec">
+              <small>D.D.M.</small>
+              <span>{{ label.bestBeforeDate || '05/2027' }}</span>
+            </div>
+            <div class="spec">
+              <small>DATE COND.</small>
+              <span>{{ (label.packagingDate | date:'yyyy-MM-dd') || '-' }}</span>
+            </div>
+            <div class="spec">
+              <small>LANGUE</small>
+              <span>{{ languageLabel(label.language) }}</span>
+            </div>
+          </div>
+
+          <div class="preview-marketing">
+            <small>ALLÉGATIONS MARKETING</small>
+            <div class="badge" *ngIf="label.marketingClaims?.length">{{ label.marketingClaims[0] }}</div>
+            <div class="badge" *ngIf="!label.marketingClaims?.length">Produit de Tunisie</div>
+          </div>
+
+          <div class="preview-extraction">
+            <div class="ext">
+              <small>EXTRACTION</small>
+              <span>{{ extractionMethodLabel }}</span>
+            </div>
+            <div class="sto">
+              <small>STOCKAGE</small>
+              <span>{{ label.storageConditions || 'A conserver a l\'abri de la lumiere et de la chaleur' }}</span>
+            </div>
+          </div>
+
+          <div class="preview-sensory">
+            <small>PROFIL SENSORIEL</small>
+            <p>{{ label.sensoryProfile || 'Profil issu du controle qualite' }}</p>
+          </div>
+
+          <div class="preview-footer">
+            <div class="resp">
+              <small>Responsable</small>
+              <strong>{{ label.responsibleName || '-' }}</strong>
+              <span>{{ label.responsibleAddress || 'Tunisie' }}</span>
+            </div>
+          </div>
+
+          <div class="preview-bottom-illustration"></div>
+        </div>
+      </div>
+
+      <div class="status-info-card">
+        <div class="status-meta">
+          <div class="meta-item">
+            <mat-icon>event_available</mat-icon>
+            <div>
+              <small>Dernière mise à jour</small>
+              <span>{{ (label.finalizedAt | date:'dd/MM/yyyy à HH:mm') || '-' }}</span>
+            </div>
+          </div>
+          <div class="meta-item">
+            <mat-icon>person_outline</mat-icon>
+            <div>
+              <small>Créé par</small>
+              <span>{{ label.finalizedBy || '-' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div class="loading-overlay" *ngIf="loading">
+    <mat-spinner diameter="48"></mat-spinner>
+    <p>Chargement des détails de l'étiquette...</p>
+  </div>
+</section>

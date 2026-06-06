@@ -1,0 +1,502 @@
+<!-- ===================== Finance Dashboard (Able Pro + Angular 19) ===================== -->
+
+<!-- ========= Sticky Page Header (separate from filters) ========= -->
+<div class="page-header sticky-actions">
+  <div class="page-header__left">
+    <mat-icon class="text-primary">dashboard</mat-icon>
+    <h2 class="m-0 f-w-600">{{ 'MENU.FINANCE.DASHBOARD.TITLE' | translate }}</h2>
+
+    <span *ngIf="lastUpdated" class="text-muted d-none d-sm-inline ms-2 page-header__updated">
+      <mat-icon class="me-1" inline>update</mat-icon>
+      {{ 'COMMON.LAST_UPDATED' | translate }}: {{ lastUpdated | date:'short' }}
+    </span>
+  </div>
+
+  <div class="page-header__right">
+    <button
+      mat-stroked-button
+      color="primary"
+      (click)="refresh()"
+      [disabled]="loading"
+      matTooltip="{{ 'COMMON.REFRESH' | translate }}"
+    >
+      <mat-icon>refresh</mat-icon>
+      <span class="d-none d-sm-inline ms-1">{{ 'COMMON.REFRESH' | translate }}</span>
+    </button>
+  </div>
+</div>
+
+<!-- ========= Filters Card (independent from header) ========= -->
+<div class="row mb-4">
+  <div class="col-12">
+    <app-card
+      [cardTitle]="'DASHBOARD.DATE_FILTER.TITLE' | translate"
+      [icon]="'date_range'"
+      class="date-filter-card"
+    >
+      <div
+        class="date-filter-grid"
+        [attr.aria-busy]="loading ? 'true' : null"
+        [class.loading]="loading"
+      >
+        <!-- LEFT: Preset Periods -->
+        <section class="preset-column" aria-labelledby="presetPeriodsTitle">
+          <h6 id="presetPeriodsTitle" class="mb-2">
+            {{ 'DASHBOARD.DATE_FILTER.PRESET_PERIODS' | translate }}
+          </h6>
+
+          <div class="preset-buttons-grid">
+            <button
+              mat-stroked-button
+              [class.active]="selectedPreset === 'today'"
+              (click)="selectPresetPeriod('today')"
+              [disabled]="loading"
+            >
+              {{ 'DASHBOARD.DATE_FILTER.TODAY' | translate }}
+            </button>
+
+            <button
+              mat-stroked-button
+              [class.active]="selectedPreset === 'yesterday'"
+              (click)="selectPresetPeriod('yesterday')"
+              [disabled]="loading"
+            >
+              {{ 'DASHBOARD.DATE_FILTER.YESTERDAY' | translate }}
+            </button>
+
+            <button
+              mat-stroked-button
+              [class.active]="selectedPreset === 'thisWeek'"
+              (click)="selectPresetPeriod('thisWeek')"
+              [disabled]="loading"
+            >
+              {{ 'DASHBOARD.DATE_FILTER.THIS_WEEK' | translate }}
+            </button>
+
+            <button
+              mat-stroked-button
+              [class.active]="selectedPreset === 'lastWeek'"
+              (click)="selectPresetPeriod('lastWeek')"
+              [disabled]="loading"
+            >
+              {{ 'DASHBOARD.DATE_FILTER.LAST_WEEK' | translate }}
+            </button>
+
+            <button
+              mat-stroked-button
+              [class.active]="selectedPreset === 'thisMonth'"
+              (click)="selectPresetPeriod('thisMonth')"
+              [disabled]="loading"
+            >
+              {{ 'DASHBOARD.DATE_FILTER.THIS_MONTH' | translate }}
+            </button>
+
+            <button
+              mat-stroked-button
+              [class.active]="selectedPreset === 'lastMonth'"
+              (click)="selectPresetPeriod('lastMonth')"
+              [disabled]="loading"
+            >
+              {{ 'DASHBOARD.DATE_FILTER.LAST_MONTH' | translate }}
+            </button>
+
+            <button
+              mat-stroked-button
+              [class.active]="selectedPreset === 'thisYear'"
+              (click)="selectPresetPeriod('thisYear')"
+              [disabled]="loading"
+            >
+              {{ 'DASHBOARD.DATE_FILTER.THIS_YEAR' | translate }}
+            </button>
+
+            <button
+              mat-stroked-button
+              [class.active]="selectedPreset === 'lastYear'"
+              (click)="selectPresetPeriod('lastYear')"
+              [disabled]="loading"
+            >
+              {{ 'DASHBOARD.DATE_FILTER.LAST_YEAR' | translate }}
+            </button>
+          </div>
+        </section>
+
+        <!-- RIGHT: Custom Date Range -->
+        <section class="custom-column" aria-labelledby="customRangeTitle">
+          <h6 id="customRangeTitle" class="mb-2">
+            {{ 'DASHBOARD.DATE_FILTER.CUSTOM_RANGE' | translate }}
+          </h6>
+
+          <div class="custom-form-row">
+            <!-- Start Date -->
+            <mat-form-field appearance="outline" class="flex-1">
+              <mat-label>{{ 'DASHBOARD.DATE_FILTER.FROM_DATE' | translate }}</mat-label>
+              <input
+                matInput
+                [matDatepicker]="startPicker"
+                [(ngModel)]="customStartDate"
+                [max]="customEndDate || maxDate"
+                [disabled]="loading"
+                [placeholder]="'DASHBOARD.DATE_FILTER.SELECT_START_DATE' | translate"
+              />
+              <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+              <mat-datepicker #startPicker></mat-datepicker>
+            </mat-form-field>
+
+            <!-- Arrow -->
+            <div class="date-arrow" aria-hidden="true">
+              <mat-icon>arrow_forward</mat-icon>
+            </div>
+
+            <!-- End Date -->
+            <mat-form-field appearance="outline" class="flex-1">
+              <mat-label>{{ 'DASHBOARD.DATE_FILTER.TO_DATE' | translate }}</mat-label>
+              <input
+                matInput
+                [matDatepicker]="endPicker"
+                [(ngModel)]="customEndDate"
+                [min]="customStartDate"
+                [max]="maxDate"
+                [disabled]="loading"
+                [placeholder]="'DASHBOARD.DATE_FILTER.SELECT_END_DATE' | translate"
+              />
+              <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+              <mat-datepicker #endPicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+          <div class="date-actions-row">
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="applyCustomDateRange()"
+              [disabled]="!customStartDate || !customEndDate || loading"
+              class="apply-button"
+            >
+              <mat-icon>check</mat-icon>
+              <span class="ms-1">{{ 'DASHBOARD.DATE_FILTER.APPLY' | translate }}</span>
+            </button>
+
+            <button
+              mat-stroked-button
+              (click)="clearDateRange()"
+              [disabled]="loading"
+              class="clear-button"
+            >
+              <mat-icon>clear</mat-icon>
+              <span class="ms-1">{{ 'DASHBOARD.DATE_FILTER.CLEAR' | translate }}</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Selected Period Display (spans both columns) -->
+        <div class="selected-period-display" *ngIf="selectedPeriodDisplay">
+          <div class="period-info">
+            <mat-icon>event</mat-icon>
+            <span class="period-text">{{ selectedPeriodDisplay }}</span>
+            <button
+              mat-icon-button
+              (click)="clearDateRange()"
+              [disabled]="loading"
+              matTooltip="{{ 'DASHBOARD.DATE_FILTER.CLEAR_FILTER' | translate }}"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </app-card>
+  </div>
+</div>
+
+<!-- Loading State -->
+<div *ngIf="loading" class="loading-container">
+  <mat-spinner diameter="60"></mat-spinner>
+  <p>{{ 'DASHBOARD.LOADING.TEXT' | translate }}</p>
+</div>
+
+<!-- ===================== KPI Row ===================== -->
+<div *ngIf="!loading && financeSummary" class="dashboard-kpis row g-3">
+  <!-- Total Transactions -->
+  <div class="col-md-6 col-xxl-4">
+    <app-earning-chart
+      [color]="primaryColor"
+      [data]="transactionsPerDay"
+      [earningValue]="financeSummary.transactions.totalTransactions?.toString() || '0'"
+      [headerTitle]="'MENU.FINANCE.DASHBOARD.KPIS.TOTAL_TRANSACTIONS' | translate"
+      background="bg-primary-50"
+      class="kpi-card "
+      iconImage="#wallet-2"
+      percentageValue=""
+      textColor="text-primary-500">
+    </app-earning-chart>
+  </div>
+
+  <!-- Pending Expenses -->
+  <div class="col-md-6 col-xxl-4">
+    <app-earning-chart
+      [color]="warningColor"
+      [data]="pendingExpensesPerDay"
+      [earningValue]="financeSummary.expenses.pending?.toString() || '0'"
+      [headerTitle]="'MENU.FINANCE.DASHBOARD.KPIS.PENDING_EXPENSES' | translate"
+      background="bg-warning-50"
+      class="kpi-card "
+      iconImage="#calendar"
+      percentageValue=""
+      textColor="text-warning-500">
+    </app-earning-chart>
+  </div>
+
+  <!-- Completed Sales -->
+  <div class="col-md-6 col-xxl-4">
+    <app-earning-chart
+      [color]="successColor"
+      [data]="completedSalesPerDay"
+      [earningValue]="financeSummary.oilSales.deliveredSales?.toString() || '0'"
+      [headerTitle]="'MENU.FINANCE.DASHBOARD.KPIS.COMPLETED_SALES' | translate"
+      background="bg-success-50"
+      class="kpi-card "
+      iconImage="#book"
+      percentageValue=""
+      textColor="text-success-500">
+    </app-earning-chart>
+  </div>
+
+  <!-- Total Revenue -->
+  <div class="col-md-6 col-xxl-6">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.KPIS.TOTAL_REVENUE' | translate" [icon]="'stacked_bar_chart'"
+              class="mini-kpi ">
+      <div class="mini-kpi__body">
+        <mat-icon>stacked_bar_chart</mat-icon>
+        <span class="value">{{ totalRevenue?.toFixed(2) || '0.00' }}</span>
+      </div>
+    </app-card>
+  </div>
+
+
+  <!-- Net Flow -->
+  <div class="col-md-6 col-xxl-6">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.KPIS.NET_FLOW' | translate" [icon]="'attach_money'"
+              class="mini-kpi ">
+      <div class="mini-kpi__body">
+        <mat-icon>attach_money</mat-icon>
+        <span class="value">{{ formattedNetFlow || '0' }}</span>
+      </div>
+    </app-card>
+  </div>
+
+  <!-- Total Paid -->
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.KPIS.TOTAL_PAID' | translate" [icon]="'paid'" class="mini-kpi ">
+      <div class="mini-kpi__body">
+        <mat-icon>paid</mat-icon>
+        <span class="value">{{ formattedTotalPaid || '0' }}</span>
+      </div>
+    </app-card>
+  </div>
+
+  <!-- Total Unpaid -->
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.KPIS.TOTAL_UNPAID' | translate" [icon]="'hourglass_bottom'"
+              class="mini-kpi ">
+      <div class="mini-kpi__body">
+        <mat-icon>hourglass_bottom</mat-icon>
+        <span class="value">{{ formattedTotalUnpaid || '0' }}</span>
+      </div>
+    </app-card>
+  </div>
+
+  <!-- Active Bank Accounts -->
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.KPIS.ACTIVE_ACCOUNTS' | translate" [icon]="'groups'"
+              class="mini-kpi ">
+      <div class="mini-kpi__body">
+        <mat-icon>groups</mat-icon>
+        <span class="value">{{ activeBankAccounts?.toString() || '0' }}</span>
+      </div>
+    </app-card>
+  </div>
+
+  <!-- Total Debited -->
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.KPIS.TOTAL_DEBITED' | translate" [icon]="'trending_down'"
+              class="mini-kpi ">
+      <div class="mini-kpi__body">
+        <mat-icon>trending_down</mat-icon>
+        <span class="value">{{ totalDebited?.toFixed(2) || '0.00' }}</span>
+      </div>
+    </app-card>
+  </div>
+
+  <!-- Total Credited -->
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.KPIS.TOTAL_CREDITED' | translate" [icon]="'trending_up'"
+              class="mini-kpi ">
+      <div class="mini-kpi__body">
+        <mat-icon>trending_up</mat-icon>
+        <span class="value">{{ totalCredited?.toFixed(2) || '0.00' }}</span>
+      </div>
+    </app-card>
+  </div>
+
+  <!-- Inbound Paid Transactions -->
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.KPIS.INBOUND_PAID' | translate" [icon]="'arrow_downward'"
+              class="mini-kpi ">
+      <div class="mini-kpi__body">
+        <mat-icon>arrow_downward</mat-icon>
+        <span class="value">{{ inboundPaidAmount?.toFixed(2) || '0.00' }}</span>
+        <span class="count">({{ inboundPaidCount }} {{ 'COMMON.TRANSACTIONS' | translate }})</span>
+      </div>
+    </app-card>
+  </div>
+
+  <!-- Inbound Unpaid Transactions -->
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.KPIS.INBOUND_UNPAID' | translate" [icon]="'arrow_downward'"
+              class="mini-kpi ">
+      <div class="mini-kpi__body">
+        <mat-icon>arrow_downward</mat-icon>
+        <span class="value">{{ inboundUnpaidAmount?.toFixed(2) || '0.00' }}</span>
+        <span class="count">({{ inboundUnpaidCount }} {{ 'COMMON.TRANSACTIONS' | translate }})</span>
+      </div>
+    </app-card>
+  </div>
+
+  <!-- Outbound Paid Transactions -->
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.KPIS.OUTBOUND_PAID' | translate" [icon]="'arrow_upward'"
+              class="mini-kpi ">
+      <div class="mini-kpi__body">
+        <mat-icon>arrow_upward</mat-icon>
+        <span class="value">{{ outboundPaidAmount?.toFixed(2) || '0.00' }}</span>
+        <span class="count">({{ outboundPaidCount }} {{ 'COMMON.TRANSACTIONS' | translate }})</span>
+      </div>
+    </app-card>
+  </div>
+
+  <!-- Outbound Unpaid Transactions -->
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.KPIS.OUTBOUND_UNPAID' | translate" [icon]="'arrow_upward'"
+              class="mini-kpi ">
+      <div class="mini-kpi__body">
+        <mat-icon>arrow_upward</mat-icon>
+        <span class="value">{{ outboundUnpaidAmount?.toFixed(2) || '0.00' }}</span>
+        <span class="count">({{ outboundUnpaidCount }} {{ 'COMMON.TRANSACTIONS' | translate }})</span>
+      </div>
+    </app-card>
+  </div>
+
+  <!-- Expense Status Chart -->
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.ANALYTICS.EXPENSE_STATUS' | translate" [icon]="'pie_chart'"
+              class="card--chart ">
+      <div class="chart-container small">
+        <apx-chart
+          [chart]="expenseStatusChartOptions.chart"
+          [colors]="expenseStatusChartOptions.colors"
+          [labels]="expenseStatusChartOptions.labels"
+          [series]="expenseStatusChartOptions.series">
+        </apx-chart>
+      </div>
+    </app-card>
+  </div>
+
+  <!-- Transaction Flow Chart -->
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.ANALYTICS.TRANSACTION_FLOW' | translate" [icon]="'rule'"
+              class="card--chart ">
+      <div class="chart-container small">
+        <apx-chart
+          [chart]="transactionFlowChartOptions.chart"
+          [colors]="transactionFlowChartOptions.colors"
+          [labels]="transactionFlowChartOptions.labels"
+          [series]="transactionFlowChartOptions.series">
+        </apx-chart>
+      </div>
+    </app-card>
+  </div>
+
+  <!-- Sales by Type Chart -->
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.ANALYTICS.SALES_BY_TYPE' | translate" [icon]="'category'"
+              class="card--chart ">
+      <div class="chart-container right">
+        <apx-chart
+          [chart]="salesByTypeChartOptions.chart"
+          [colors]="salesByTypeChartOptions.colors"
+          [series]="salesByTypeChartOptions.series"
+          [xaxis]="salesByTypeChartOptions.xaxis">
+        </apx-chart>
+      </div>
+    </app-card>
+  </div>
+
+  <!-- Debited vs Credited Payments Chart -->
+  <div class="col-md-4 col-xxl-4">
+    <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.ANALYTICS.DEBITED_CREDITED' | translate" [icon]="'swap_horiz'"
+              class="card--chart ">
+      <div class="chart-container small">
+        <apx-chart
+          [chart]="debitedCreditedChartOptions.chart"
+          [colors]="debitedCreditedChartOptions.colors"
+          [labels]="debitedCreditedChartOptions.labels"
+          [series]="debitedCreditedChartOptions.series">
+        </apx-chart>
+      </div>
+    </app-card>
+  </div>
+</div>
+
+<!-- ===================== Main Charts Section ===================== -->
+<div *ngIf="!loading && financeSummary" class="row g-3 mt-1">
+
+    <!-- Revenue by Source Chart -->
+    <div class="col-12">
+      <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.ANALYTICS.REVENUE_BY_SOURCE' | translate" [icon]="'storefront'"
+                class="card--chart ">
+        <div [ngClass]="currentChartSize" class="chart-container">
+          <apx-chart
+            [chart]="revenueBySourceChartOptions.chart"
+            [colors]="revenueBySourceChartOptions.colors"
+            [series]="revenueBySourceChartOptions.series"
+            [xaxis]="revenueBySourceChartOptions.xaxis">
+          </apx-chart>
+        </div>
+      </app-card>
+    </div>
+
+    <!-- Recent Transactions Chart -->
+    <div class="col-12">
+      <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.ANALYTICS.RECENT_TRANSACTIONS' | translate" [icon]="'insights'"
+                class="card--chart ">
+        <div [ngClass]="currentChartSize" class="chart-container">
+          <apx-chart
+            [chart]="recentTransactionsChartOptions.chart"
+            [colors]="recentTransactionsChartOptions.colors"
+            [series]="recentTransactionsChartOptions.series"
+            [tooltip]="recentTransactionsChartOptions.tooltip"
+            [xaxis]="recentTransactionsChartOptions.xaxis"
+            [yaxis]="recentTransactionsChartOptions.yaxis">
+          </apx-chart>
+        </div>
+      </app-card>
+    </div>
+
+    <!-- Expense by Category Chart -->
+    <div class="col-12">
+      <app-card [cardTitle]="'MENU.FINANCE.DASHBOARD.ANALYTICS.EXPENSE_BY_CATEGORY' | translate" [icon]="'inventory_2'"
+                class="card--chart ">
+        <div [ngClass]="currentChartSize" class="chart-container">
+          <apx-chart
+            [chart]="expenseByCategoryChartOptions.chart"
+            [colors]="expenseByCategoryChartOptions.colors"
+            [series]="expenseByCategoryChartOptions.series"
+            [xaxis]="expenseByCategoryChartOptions.xaxis">
+          </apx-chart>
+        </div>
+      </app-card>
+    </div>
+
+
+
+</div>

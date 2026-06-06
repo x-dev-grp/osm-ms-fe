@@ -1,0 +1,340 @@
+<div class="projet-page">
+  <div class="projet-shell">
+    <div class="hero-card">
+      <div class="hero-icon">
+        <img src="assets/background_projet.png" alt="Projet huile d'olive" />
+      </div>
+
+      <div class="hero-title">
+        <h1>{{ isEdit ? 'Modifier projet' : 'Nouveau projet' }}</h1>
+        <p>Paramétrage des besoins de conditionnement</p>
+      </div>
+    </div>
+
+    @if (projetCode) {
+    <div class="code-card">
+      <span>Code projet</span>
+      <strong>{{ projetCode }}</strong>
+    </div>
+    }
+
+    <div class="form-card">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+        <div class="info-banner-modern" *ngIf="form.get('typeEmballage')?.value !== 'VRAC'">
+          <div class="banner-icon">
+            <i class="fas fa-info"></i>
+          </div>
+          <span>
+            <strong>Note de production :</strong>
+            Ce projet utilisera de l'huile en
+            <strong>Vrac (Matière Première)</strong>
+            pour produire des unités emballées.
+          </span>
+        </div>
+
+        <section class="section-card">
+          <div class="section-title">
+            <div class="section-icon">
+              <i class="fas fa-clipboard-list"></i>
+            </div>
+            <h2>Informations générales</h2>
+            <span></span>
+          </div>
+
+          <div class="form-grid two-cols">
+            <div class="field-block">
+              <label>Client *</label>
+              <select formControlName="clientId" class="form-select" [class.is-invalid]="isFieldInvalid('clientId')">
+                <option value="">-- Sélectionner --</option>
+                <option *ngFor="let c of clients" [value]="c.id">
+                  {{ c.nom }} ({{ c.type === ClientType.BUYER ? 'Acheteur' : 'Marque' }})
+                </option>
+              </select>
+              <div class="invalid-feedback d-block" *ngIf="isFieldInvalid('clientId')">
+                Le client est obligatoire.
+              </div>
+            </div>
+
+            <div class="field-block">
+              <label>Variété de l'huile (Source Vrac) *</label>
+              <select formControlName="typeProduit" class="form-select">
+                <option *ngFor="let t of typeProduits" [value]="t">
+                  {{ t | titlecase }}
+                </option>
+              </select>
+              <small class="form-hint">Type d'huile en vrac à conditionner</small>
+            </div>
+
+            <div class="field-block">
+              <label>Mode de livraison / Emballage *</label>
+              <select formControlName="typeEmballage" class="form-select">
+                <option *ngFor="let e of typeEmballages" [value]="e">
+                  {{ e === 'VRAC' ? 'Export Vrac (Huile)' : 'Conditionnement (' + (e | titlecase) + ')' }}
+                </option>
+              </select>
+              <small class="form-hint">Définit si le produit est emballé ou vendu en vrac</small>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-card" formArrayName="produits">
+          <div class="section-title with-action">
+            <div class="section-icon">
+              <i class="fas fa-box-open"></i>
+            </div>
+            <h2>Produits finis à produire</h2>
+            <span></span>
+
+            <button type="button" class="btn-add-product" (click)="addProduit()">
+              <i class="fas fa-plus"></i>
+              Ajouter Produit
+            </button>
+          </div>
+
+          <div class="produits-list">
+            <div *ngFor="let prod of produits.controls; let i = index" [formGroupName]="i" class="produit-row">
+              <div class="produit-header">
+                <strong>Produit #{{ i + 1 }}</strong>
+
+                <button type="button" class="btn-delete-product" (click)="removeProduit(i)">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+
+              <div class="product-grid" [class.has-error]="prod.invalid && (prod.touched || prod.dirty)">
+                <div class="field-block">
+                  <label>Produit fini à produire *</label>
+                  <select formControlName="productId" class="form-select"
+                    [class.is-invalid]="prod.get('productId')?.invalid && prod.get('productId')?.touched">
+                    <option value="">-- Sélectionner un produit --</option>
+                    <option *ngFor="let sku of skus" [value]="sku.id">
+                      {{ sku.code }} - {{ sku.packagingType }} ({{ sku.volume }} {{ sku.unitOfMeasure }})
+                    </option>
+                  </select>
+                </div>
+
+                <div class="field-block" *ngIf="prod.get('productId')?.value">
+                  <label>Nomenclature (BOM) *</label>
+                  <select formControlName="bomId" class="form-select"
+                    [class.is-invalid]="prod.get('bomId')?.invalid && prod.get('bomId')?.touched">
+                    <option value="" disabled>-- Sélectionner une nomenclature --</option>
+                    <option *ngFor="let bom of productBoms[prod.get('productId')?.value] || []" [value]="bom.id">
+                      {{ bom.version || bom.code || bom.name || bom.id }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Product BOM Detail Preview -->
+              <div class="product-bom-detail" *ngIf="prod.get('productId')?.value">
+                <ng-container *ngIf="getCalculatedBomLines(prod.get('productId')?.value, prod.get('bomId')?.value, prod.get('quantiteCible')?.value || 0) as lines">
+                  <div *ngIf="lines.length > 0; else noBom">
+                    <div class="detail-header">
+                      <div class="d-flex align-items-center gap-2">
+                        <i class="fas fa-microchip"></i>
+                        <span>Articles requis pour ce conditionnement</span>
+                      </div>
+                      <span class="item-count-badge">{{ lines.length }} types d'articles</span>
+                    </div>
+                    
+                    <div class="detail-grid">
+                      <div class="detail-item" *ngFor="let line of lines">
+                        <div class="item-info">
+                          <span class="item-name">{{ line.articleName }}</span>
+                          <span class="item-unit-spec">{{ line.quantity }} {{ line.unitOfMeasure }} /unité</span>
+                        </div>
+                        <div class="item-total">
+                          <span class="total-val">{{ line.calculatedQuantity | number:'1.0-0' }}</span>
+                          <small>{{ line.unitOfMeasure }}</small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+
+                <ng-template #noBom>
+                  <div class="bom-loading">
+                    <i class="fas fa-spinner fa-spin me-2"></i>
+                    Chargement de la nomenclature...
+                  </div>
+                </ng-template>
+              </div>
+            </div>
+
+            <div class="empty-products" *ngIf="produits.length === 0"
+              [class.is-invalid]="form.get('produits')?.invalid && form.get('produits')?.touched">
+              <i class="fas fa-exclamation-triangle"></i>
+              Aucun produit ajouté. Vous devez ajouter au moins un produit pour enregistrer le projet.
+            </div>
+          </div>
+        </section>
+
+        <section class="section-card summary-section" *ngIf="bomSummary.length > 0">
+          <div class="section-title">
+            <div class="section-icon">
+              <i class="fas fa-layer-group"></i>
+            </div>
+            <h2>Estimation des besoins (Nomenclature)</h2>
+            <span></span>
+          </div>
+
+          <div class="summary-card">
+            <div class="summary-header">
+              <i class="fas fa-microchip"></i>
+              <h3>Articles à réserver</h3>
+              <span class="summary-badge">{{ bomSummary.length }} Articles identifiés</span>
+            </div>
+
+            <div class="summary-body">
+              <table class="summary-table">
+                <thead>
+                  <tr>
+                    <th>Article</th>
+                    <th class="text-end">Quantité à réserver</th>
+                    <th>Unité</th>
+                    <th>Statut</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr *ngFor="let item of bomSummary">
+                    <td class="article-cell">
+                      <strong>{{ item.articleName }}</strong>
+                      <small>{{ item.articleId.substring(0, 8) }}</small>
+                    </td>
+                    <td class="text-end highlight">{{ item.totalQuantity | number:'1.0-0' }}</td>
+                    <td>{{ item.unit }}</td>
+                    <td>
+                      <span class="status-indicator">
+                        <i class="fas fa-clock"></i>
+                        Pré-calculé
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="material-preview-block" *ngIf="materialPreviewBomId && materialPreviewQuantity > 0">
+              <app-material-needs-preview
+                [bomId]="materialPreviewBomId"
+                [quantity]="materialPreviewQuantity"
+                [useReservedStock]="false"
+                quantityLabel="Unités à vérifier"
+                title="Vérification stock avant réservation">
+              </app-material-needs-preview>
+            </div>
+
+            <div class="summary-footer">
+              <i class="fas fa-shield-alt"></i>
+              <span>
+                Ces articles seront
+                <strong>automatiquement réservés</strong>
+                dans le stock physique lors de l'enregistrement du projet.
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-card">
+          <div class="section-title">
+            <div class="section-icon">
+              <i class="fas fa-truck"></i>
+            </div>
+            <h2>Planification et livraison</h2>
+            <span></span>
+          </div>
+
+          <div class="form-grid two-cols">
+            <div class="field-block full-row">
+              <label>Lignes de conditionnement *</label>
+
+              <div class="ligne-cards" [class.is-invalid]="isFieldInvalid('ligneIds')">
+                <label class="ligne-card" *ngFor="let ligne of lignes" [class.selected]="isLigneSelected(ligne.id)">
+                  <input type="checkbox" [checked]="isLigneSelected(ligne.id)"
+                    (change)="onLigneToggle(ligne.id, $any($event.target).checked)" />
+
+                  <span class="ligne-logo">
+                    <i class="fas fa-industry"></i>
+                  </span>
+
+                  <span class="ligne-content">
+                    <strong>{{ ligne.nom }}</strong>
+                    <small>{{ ligne.code }}</small>
+                  </span>
+                </label>
+              </div>
+
+              <div class="invalid-feedback d-block" *ngIf="isFieldInvalid('ligneIds')">
+                Sélectionnez au moins une ligne de conditionnement.
+              </div>
+            </div>
+
+            <div class="field-block">
+              <label>Date limite livraison *</label>
+              <input type="date" formControlName="dateLimiteLivraison" class="form-control"
+                [class.is-invalid]="isFieldInvalid('dateLimiteLivraison')" />
+              <div class="invalid-feedback d-block" *ngIf="isFieldInvalid('dateLimiteLivraison')">
+                La date limite est obligatoire.
+              </div>
+            </div>
+
+            <div class="field-block">
+              <label>Quantité cible *</label>
+              <div class="input-group">
+                <input type="number" step="0.01" formControlName="quantiteCible" class="form-control"
+                  [class.is-invalid]="isFieldInvalid('quantiteCible')" />
+
+                <select formControlName="unite" class="form-select unite-select">
+                  <option *ngFor="let u of unites" [value]="u">{{ u }}</option>
+                </select>
+              </div>
+
+              <div class="invalid-feedback d-block" *ngIf="isFieldInvalid('quantiteCible')">
+                La quantité doit être supérieure à 0.
+              </div>
+            </div>
+
+            <div class="field-block">
+              <label>Prix unitaire (TND) *</label>
+              <input type="number" step="0.01" formControlName="prixUnitaire" class="form-control"
+                [class.is-invalid]="isFieldInvalid('prixUnitaire')" />
+              <div class="invalid-feedback d-block" *ngIf="isFieldInvalid('prixUnitaire')">
+                Le prix unitaire doit être supérieur à 0.
+              </div>
+            </div>
+
+            <div class="field-block value-box">
+              <label>Valeur totale estimée</label>
+              <div class="readonly-value">
+                {{ valeurTotaleEstimee | currency:'TND' }}
+              </div>
+            </div>
+
+            <div class="field-block full-row">
+              <label>Conditions de livraison</label>
+              <textarea formControlName="conditionsLivraison" rows="3" class="form-control"
+                [class.is-invalid]="isFieldInvalid('conditionsLivraison')"></textarea>
+
+              <div class="invalid-feedback d-block" *ngIf="isFieldInvalid('conditionsLivraison')">
+                Les conditions de livraison ne doivent pas dépasser 2000 caractères.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" [disabled]="loading">
+            <i class="fas fa-save"></i>
+            {{ loading ? 'Enregistrement...' : 'Enregistrer' }}
+          </button>
+
+          <button type="button" class="btn btn-secondary" (click)="onCancel()">
+            <i class="fas fa-times"></i>
+            Annuler
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

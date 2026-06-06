@@ -1,0 +1,118 @@
+<div class="bc-container">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Bons de Commande</h1>
+      <p class="page-subtitle">Gestion des commandes d'achat</p>
+    </div>
+    <button class="btn-primary" routerLink="nouveau">
+      <i class="fas fa-plus"></i>
+      Nouveau bon
+    </button>
+  </div>
+
+  <div class="filters-card">
+    <div class="filters-grid">
+      <div class="filter-group search-group">
+        <label>Recherche</label>
+        <div class="search-wrapper">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text"
+                 class="form-control search-input"
+                 placeholder="Rechercher par numéro..."
+                 [(ngModel)]="searchTerm"
+                 (input)="onSearch()">
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label>Statut</label>
+        <select class="form-control" [(ngModel)]="statutFilter" (change)="onStatutChange()">
+          <option value="">Tous les statuts</option>
+          <option *ngFor="let s of statuts" [value]="s">
+            {{ getStatutLabel(s) }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group filter-actions">
+        <button class="btn-outline-secondary" (click)="resetFilters()">
+          <i class="fas fa-undo"></i>
+          Réinitialiser
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="text-center py-4">
+    <div class="spinner-container">
+      <div class="spinner-ring"></div>
+    </div>
+    <p class="text-muted mt-2">Chargement...</p>
+  </div>
+  <div *ngIf="error" class="alert-modern alert-danger">
+    <i class="fas fa-exclamation-triangle alert-icon"></i>
+    <div class="alert-content">{{ error }}</div>
+  </div>
+
+  <div class="table-card" *ngIf="!loading && filteredBons.length > 0">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+        <tr>
+          <th>#</th>
+          <th>Numéro BC</th>
+          <th>Date</th>
+          <th class="text-center">Articles</th>
+          <th class="text-center">Qté totale</th>
+          <th class="text-end">Prix total</th>
+          <th>Statut</th>
+          <th class="text-end">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let bon of filteredBons; let i = index">
+          <td class="text-muted">{{ i+1 }}</td>
+          <td class="fw-bold">{{ bon.numeroBC }}</td>
+          <td>{{ bon.createdDate | date:'dd/MM/yyyy' }}</td>
+          <td class="text-center">{{ getNombreArticles(bon) }}</td>
+          <td class="text-center">{{ getQuantiteTotale(bon) }}</td>
+          <td class="text-end fw-bold">{{ getTotalPrixBon(bon) | number:'1.2-2' }} TND</td>
+          <td>
+            <span class="badge" [ngClass]="getStatusClass(bon.status)">
+              {{ getStatutLabel(bon.status) }}
+            </span>
+          </td>
+          <td class="actions-cell">
+            <div class="dropdown">
+              <button class="dropdown-btn" (click)="toggleDropdown(bon.id!)">
+                <i class="fas fa-ellipsis-v"></i>
+              </button>
+              <div class="dropdown-content" *ngIf="activeDropdown === bon.id">
+                <button (click)="viewBon(bon.id)" class="dropdown-item">
+                  <i class="fas fa-eye me-2"></i> Voir
+                </button>
+                <button *ngIf="bon.status === 'EN_ATTENTE'"
+                        (click)="validerBon(bon.id!)"
+                        class="dropdown-item valider">
+                  <i class="fas fa-check me-2"></i> Valider
+                </button>
+                <button *ngIf="bon.status === 'EN_ATTENTE'"
+                        (click)="refuserBon(bon.id!)"
+                        class="dropdown-item refuser">
+                  <i class="fas fa-times me-2"></i> Refuser
+                </button>
+              </div>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <div *ngIf="!loading && filteredBons.length === 0" class="empty-state">
+    <div class="empty-icon"><i class="fas fa-file-invoice"></i></div>
+    <h3>Aucun bon de commande trouvé</h3>
+    <p class="text-muted">Créez votre premier bon de commande pour commencer.</p>
+  </div>
+</div>

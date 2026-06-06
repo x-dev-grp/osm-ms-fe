@@ -1,0 +1,114 @@
+name: FE Build (Angular)
+
+on:
+  push:
+    branches: [ main, release ]
+  pull_request:
+    branches: [ main, release ]
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install deps (force)
+        run: npm ci --force
+
+      - name: Build for /osm
+        run: npx ng build -c=production --base-href=/ --deploy-url=/
+
+      # Discover the real outputPath from angular.json (e.g., "dist/ui" or "dist/<proj>/browser")
+      - name: Detect Angular output directory
+        id: outdir
+        run: |
+          OUT_DIR=$(node -e "const a=require('./angular.json'); const p=Object.keys(a.projects)[0]; process.stdout.write(a.projects[p].architect.build.options.outputPath)")
+          echo "out_dir=$OUT_DIR" >> "$GITHUB_OUTPUT"
+          echo "Detected output dir: $OUT_DIR"
+          echo "Tree:" && ls -la "$OUT_DIR" || true
+
+      - name: Upload dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: ${{ steps.outdir.outputs.out_dir }}/**
+          if-no-files-found: error
+          retention-days: 3
+          compression-level: 9
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    env:
+      REGISTRY: ghcr.io
+      ORG: x-dev-grp
+      IMAGE_NAME: osm-frontend
+      IMAGE_TAG_MAIN: release-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: site                   # download to ./site
+
+      # Normalize to ./dist with index.html at its root,
+      # regardless of whether the build produced dist/ui or dist/<proj>/browser
+      - name: Normalize site folder to ./dist
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$(node -e "const fs=require('fs'),p=require('path');function f(d){for(const e of fs.readdirSync(d,{withFileTypes:true})){const q=p.join(d,e.name);if(e.isFile()&&e.name==='index.html')return d;if(e.isDirectory()){const r=f(q);if(r)return r}}}process.stdout.write(f('site')||'')")"
+          if [ -z "$ROOT" ]; then echo "index.html not found in artifact"; ls -R site; exit 1; fi
+          rm -rf dist && mkdir dist
+          rsync -a "$ROOT"/ dist/
+          echo "Normalized site root: $ROOT"
+          ls -la dist | sed 's/^/dist: /'
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR (GITHUB_TOKEN)
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Read package version
+        id: pkg
+        shell: bash
+        run: |
+          VERSION=$(node -e "console.log(require('./package.json').version)")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Build & push Nginx image (serving /osm)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.nginx
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.ORG }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG_MAIN }}
+            ${{ env.REGISTRY }}/${{ env.ORG }}/${{ env.IMAGE_NAME }}:v${{ steps.pkg.outputs.version }}
+            ${{ env.REGISTRY }}/${{ env.ORG }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
