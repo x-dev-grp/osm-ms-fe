@@ -93,10 +93,6 @@
             <p class="qr-url" *ngIf="article.qrUrl">{{ article.qrUrl }}</p>
 
             <div class="qr-buttons">
-              <button class="btn-generate-qr" (click)="generateQr()" [disabled]="generatingQr">
-                <i class="fas fa-download"></i>
-                {{ generatingQr ? 'Génération...' : (article.qrImageBase64 ? 'Télécharger le QR Code' : 'Générer l\'image QR') }}
-              </button>
 
               <button *ngIf="article.qrImageBase64" class="btn-print" (click)="printQr()">
                 <i class="fas fa-print"></i>

@@ -6,10 +6,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { take } from 'rxjs/operators';
 
 import { LigneConditionnementService } from '../../../services/ligne-conditionnement.service';
 import { LigneConditionnement, Statue } from '../../../models/ligne-conditionnement.model';
 import { ToastService } from '../../../../shared/services/toast.service';
+import { QrDialogComponent } from '../../../../shared/components/qr-dialog/qr-dialog.component';
+import { ConfirmationDialogService, ConfirmationType } from '../../../../shared/services/confirmation-dialog.service';
 
 @Component({
   selector: 'app-ligne-detail',
@@ -21,7 +25,8 @@ import { ToastService } from '../../../../shared/services/toast.service';
     MatIconModule,
     MatCardModule,
     MatTooltipModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatDialogModule
   ],
   templateUrl: './ligne-detail.component.html',
   styleUrls: ['./ligne-detail.component.scss']
@@ -29,13 +34,16 @@ import { ToastService } from '../../../../shared/services/toast.service';
 export class LigneDetailComponent implements OnInit {
   ligne = signal<LigneConditionnement | null>(null);
   loading = signal<boolean>(false);
+  generatingQr = signal<boolean>(false);
   error = signal<string | null>(null);
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private ligneService: LigneConditionnementService,
-    private toast: ToastService
+    private toast: ToastService,
+    private dialog: MatDialog,
+    private confirmationDialog: ConfirmationDialogService
   ) {}
 
   ngOnInit(): void {
@@ -52,7 +60,7 @@ export class LigneDetailComponent implements OnInit {
     this.error.set(null);
     this.ligneService.getLigneById(id).subscribe({
       next: (data) => {
-        this.ligne.set(data);
+        this.ligne.set(this.normalizeQrFields(data));
         this.loading.set(false);
       },
       error: (err) => {
@@ -94,5 +102,104 @@ export class LigneDetailComponent implements OnInit {
     const date = this.ligne()?.dateProchaineMaintenance;
     if (!date) return false;
     return new Date(date.toString()) < new Date();
+  }
+
+  getQrCodeText(): string {
+    const current = this.ligne();
+    return current?.publicCode?.trim() || current?.qrHex?.trim() || '';
+  }
+
+  hasQrCode(): boolean {
+    return !!this.getQrCodeText();
+  }
+
+  hasCompleteQrMetadata(): boolean {
+    return !!this.getQrCodeText() && !!this.ligne()?.qrImageBase64?.trim();
+  }
+
+  openExistingQrDialog(): void {
+    const current = this.ligne();
+    if (!this.hasCompleteQrMetadata() || !current) return;
+
+    this.dialog.open(QrDialogComponent, {
+      width: '400px',
+      data: {
+        qrText: this.getQrCodeText(),
+        qrImageBase64: current.qrImageBase64 || '',
+        encrypted: true,
+        payloadType: 'LIGNECONDITIONNEMENT',
+        payloadMode: 'PUBLIC_CODE'
+      }
+    });
+  }
+
+  generateQr(): void {
+    const current = this.ligne();
+    if (this.generatingQr() || !current?.id) return;
+
+    this.confirmQrRegeneration((confirmed) => {
+      if (!confirmed) return;
+      this.generatingQr.set(true);
+      this.ligneService.generateQr(current.id!).subscribe({
+        next: (response) => {
+          this.generatingQr.set(false);
+          this.ligne.set({
+            ...current,
+            publicCode: response.publicCode,
+            qrHex: response.publicCode,
+            qrUrl: response.qrUrl,
+            qrImageBase64: response.qrImageBase64
+          });
+          this.dialog.open(QrDialogComponent, {
+            width: '400px',
+            data: {
+              qrText: response.publicCode,
+              qrImageBase64: response.qrImageBase64,
+              encrypted: true,
+              payloadType: 'LIGNECONDITIONNEMENT',
+              payloadMode: 'PUBLIC_CODE'
+            }
+          });
+        },
+        error: () => {
+          this.generatingQr.set(false);
+          this.toast.error('QR.ERROR.GENERATE');
+        }
+      });
+    });
+  }
+
+  private normalizeQrFields(ligne: LigneConditionnement): LigneConditionnement {
+    const normalized = { ...ligne };
+    if (!normalized.publicCode && normalized.qrHex) {
+      normalized.publicCode = normalized.qrHex;
+    }
+    if (!normalized.qrHex && normalized.publicCode) {
+      normalized.qrHex = normalized.publicCode;
+    }
+    return normalized;
+  }
+
+  private confirmQrRegeneration(onResolved: (confirmed: boolean) => void): void {
+    if (!this.hasQrCode()) {
+      onResolved(true);
+      return;
+    }
+
+    this.confirmationDialog.confirm({
+      title: 'Regenerate QR Code',
+      message: 'This will regenerate the QR code and may invalidate already printed physical QR labels.',
+      type: ConfirmationType.WARNING,
+      confirmText: 'Regenerate',
+      cancelText: 'Cancel',
+      showIcon: true,
+      destructive: true,
+      requiredText: 'OKAY',
+      requiredTextHint: 'To continue, type OKAY in the field below.',
+      requiredTextPlaceholder: 'Type OKAY'
+    }).pipe(take(1))
+      .subscribe((result) => {
+        onResolved(!!result?.confirmed);
+      });
   }
 }

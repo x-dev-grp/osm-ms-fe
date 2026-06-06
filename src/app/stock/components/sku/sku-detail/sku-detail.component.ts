@@ -32,6 +32,7 @@ export class SkuDetailComponent implements OnInit {
   loading = true;
   labelsLoading = false;
   deleting = false;
+  generatingQr = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -227,5 +228,61 @@ export class SkuDetailComponent implements OnInit {
 
   labelDate(label: LabelContentDto): string {
     return label.packagingDate || label.finalizedAt || '-';
+  }
+
+  generateQr(): void {
+    if (this.generatingQr || !this.sku?.id) {
+      return;
+    }
+
+    this.generatingQr = true;
+    this.skuService.generateQr(this.sku.id).subscribe({
+      next: (qrInfo) => {
+        if (this.sku) {
+          this.sku = {
+            ...this.sku,
+            publicCode: qrInfo.publicCode,
+            qrHex: qrInfo.publicCode,
+            qrUrl: qrInfo.qrUrl,
+            qrImageBase64: qrInfo.qrImageBase64
+          };
+        }
+        this.generatingQr = false;
+      },
+      error: () => {
+        this.toast.error('Erreur lors de la generation du QR code');
+        this.generatingQr = false;
+      }
+    });
+  }
+
+  printQr(): void {
+    if (!this.sku?.qrImageBase64) {
+      this.toast.warning('QR code non disponible');
+      return;
+    }
+
+    const productName = this.getProductName();
+    const printContent = `
+      <div style="text-align: center; padding: 20px; font-family: sans-serif;">
+        <h2>Produit ${productName}</h2>
+        <img src="data:image/png;base64,${this.sku.qrImageBase64}"
+             style="width: 200px; height: 200px; margin: 20px 0;" />
+        <p style="font-size: 16px;">Code manuel : <strong>${this.sku.publicCode}</strong></p>
+      </div>
+    `;
+
+    const printWindow = window.open('', '_blank', 'width=600,height=600');
+    printWindow?.document.write(`
+      <html>
+        <head>
+          <title>QR Code - Produit ${productName}</title>
+          <style>body { font-family: Arial, sans-serif; }</style>
+        </head>
+        <body>${printContent}</body>
+      </html>
+    `);
+    printWindow?.document.close();
+    printWindow?.print();
   }
 }

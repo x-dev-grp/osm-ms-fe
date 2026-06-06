@@ -2,16 +2,21 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { take } from 'rxjs/operators';
 import { BomService } from "../../../services/BomService";
 import { Bom } from "../../../models/Bom";
 import { ToastService } from '../../../../shared/services/toast.service';
 import { MaterialNeedsPreviewComponent } from '../../../../shared/components/material-needs-preview/material-needs-preview.component';
+import { QrDialogComponent } from '../../../../shared/components/qr-dialog/qr-dialog.component';
+import { ConfirmationDialogService, ConfirmationType } from '../../../../shared/services/confirmation-dialog.service';
 
 
 @Component({
   selector: 'app-bom-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, MaterialNeedsPreviewComponent],
+  imports: [CommonModule, RouterLink, FormsModule, MaterialNeedsPreviewComponent, MatDialogModule, MatTooltipModule],
   templateUrl: './bom-detail.component.html',
   styleUrls: ['./bom-detail.component.scss']
 })
@@ -19,13 +24,16 @@ export class BomDetailComponent implements OnInit {
   bom: Bom | null = null;
   loading = true;
   activating = false;
+  generatingQr = false;
   previewQuantity = 1;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private bomService: BomService,
-    private toast: ToastService
+    private toast: ToastService,
+    private dialog: MatDialog,
+    private confirmationDialog: ConfirmationDialogService
   ) { }
 
   ngOnInit(): void {
@@ -40,7 +48,7 @@ export class BomDetailComponent implements OnInit {
   loadBom(id: string): void {
     this.bomService.getById(id).subscribe({
       next: (data) => {
-        this.bom = data;
+        this.bom = this.normalizeQrFields(data);
         this.loading = false;
       },
       error: (err) => {
@@ -67,5 +75,101 @@ export class BomDetailComponent implements OnInit {
         this.toast.error(err?.error?.error || err?.error?.message || 'Impossible d\'activer la nomenclature');
       }
     });
+  }
+
+  getQrCodeText(): string {
+    return this.bom?.publicCode?.trim() || this.bom?.qrHex?.trim() || '';
+  }
+
+  hasQrCode(): boolean {
+    return !!this.getQrCodeText();
+  }
+
+  hasCompleteQrMetadata(): boolean {
+    return !!this.getQrCodeText() && !!this.bom?.qrImageBase64?.trim();
+  }
+
+  openExistingQrDialog(): void {
+    if (!this.hasCompleteQrMetadata() || !this.bom) return;
+
+    this.dialog.open(QrDialogComponent, {
+      width: '400px',
+      data: {
+        qrText: this.getQrCodeText(),
+        qrImageBase64: this.bom.qrImageBase64 || '',
+        encrypted: true,
+        payloadType: 'BOM',
+        payloadMode: 'PUBLIC_CODE'
+      }
+    });
+  }
+
+  generateQr(): void {
+    if (this.generatingQr || !this.bom?.id) return;
+
+    this.confirmQrRegeneration((confirmed) => {
+      if (!confirmed) return;
+      this.generatingQr = true;
+      this.bomService.generateQr(this.bom!.id!).subscribe({
+        next: (response) => {
+          this.generatingQr = false;
+          this.bom = {
+            ...this.bom!,
+            publicCode: response.publicCode,
+            qrHex: response.publicCode,
+            qrUrl: response.qrUrl,
+            qrImageBase64: response.qrImageBase64
+          };
+          this.dialog.open(QrDialogComponent, {
+            width: '400px',
+            data: {
+              qrText: response.publicCode,
+              qrImageBase64: response.qrImageBase64,
+              encrypted: true,
+              payloadType: 'BOM',
+              payloadMode: 'PUBLIC_CODE'
+            }
+          });
+        },
+        error: () => {
+          this.generatingQr = false;
+          this.toast.error('QR.ERROR.GENERATE');
+        }
+      });
+    });
+  }
+
+  private normalizeQrFields(bom: Bom): Bom {
+    const normalized = { ...bom };
+    if (!normalized.publicCode && normalized.qrHex) {
+      normalized.publicCode = normalized.qrHex;
+    }
+    if (!normalized.qrHex && normalized.publicCode) {
+      normalized.qrHex = normalized.publicCode;
+    }
+    return normalized;
+  }
+
+  private confirmQrRegeneration(onResolved: (confirmed: boolean) => void): void {
+    if (!this.hasQrCode()) {
+      onResolved(true);
+      return;
+    }
+
+    this.confirmationDialog.confirm({
+      title: 'Regenerate QR Code',
+      message: 'This will regenerate the QR code and may invalidate already printed physical QR labels.',
+      type: ConfirmationType.WARNING,
+      confirmText: 'Regenerate',
+      cancelText: 'Cancel',
+      showIcon: true,
+      destructive: true,
+      requiredText: 'OKAY',
+      requiredTextHint: 'To continue, type OKAY in the field below.',
+      requiredTextPlaceholder: 'Type OKAY'
+    }).pipe(take(1))
+      .subscribe((result) => {
+        onResolved(!!result?.confirmed);
+      });
   }
 }

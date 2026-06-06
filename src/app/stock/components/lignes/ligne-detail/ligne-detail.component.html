@@ -31,6 +31,19 @@
     </div>
 
     <div class="hero-actions" *ngIf="ligne() as current">
+      @if (hasCompleteQrMetadata()) {
+        <button mat-stroked-button matTooltip="View QR" (click)="openExistingQrDialog()">
+          <mat-icon>qr_code_2</mat-icon>
+          QR
+        </button>
+      }
+      <button mat-stroked-button color="primary" [disabled]="generatingQr()" (click)="generateQr()">
+        <mat-icon>qr_code_2</mat-icon>
+        {{ generatingQr() ? 'Generation...' : 'Generer QR' }}
+      </button>
+      @if (hasCompleteQrMetadata()) {
+        <span class="qr-code-badge">{{ getQrCodeText() }}</span>
+      }
       <button mat-stroked-button class="btn-light" [routerLink]="['/stock/lignes', current.id, 'edit']">
         <mat-icon>edit</mat-icon>
         Modifier

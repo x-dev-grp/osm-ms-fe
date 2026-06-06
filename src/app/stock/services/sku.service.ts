@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Product, ProductType, SKU } from '../models/sku.model';
 import { environment } from "../../../environments/environment";
+import { QrCodeInfo, QrResolveResponse } from '../../shared/models/qr-models';
 
 @Injectable({
   providedIn: 'root'
@@ -99,6 +100,18 @@ export class SKUService {
     );
   }
 
+  generateQr(productId: string): Observable<QrCodeInfo> {
+    return this.http.get<QrCodeInfo>(
+      `${this.apiUrl}/qr/PRODUITFINAL/${productId}`
+    );
+  }
+
+  searchByCode(code: string): Observable<QrResolveResponse> {
+    return this.http.get<QrResolveResponse>(`${this.apiUrl}/search/by-code`, {
+      params: { code }
+    });
+  }
+
   private normalizeProduct(product: Product): Product {
     const name = product?.name || product?.code || '';
     const unitsPerCarton = product?.unitsPerCarton ?? product?.unitesParCols;
@@ -113,7 +126,11 @@ export class SKUService {
       cartonsPerPallet,
       unitesParCols: unitsPerCarton,
       colisParPalette: cartonsPerPallet,
-      actif: product?.actif ?? true
+      actif: product?.actif ?? true,
+      publicCode: product?.publicCode || product?.qrHex,
+      qrHex: product?.qrHex,
+      qrUrl: product?.qrUrl,
+      qrImageBase64: product?.qrImageBase64
     };
   }
 

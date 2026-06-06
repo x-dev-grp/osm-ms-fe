@@ -85,8 +85,9 @@ export class FiltrationListComponent {
     const request$ = filter === 'ALL' ? this.api.getAll() : this.api.getByStatus(filter);
     request$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
-        this.rows.set(data ?? []);
-        this.totalElements.set(data?.length ?? 0);
+        const sortedRows = [...(data ?? [])].sort((a, b) => this.compareRows(a, b));
+        this.rows.set(sortedRows);
+        this.totalElements.set(sortedRows.length);
         this.loading.set(false);
       },
       error: () => {
@@ -198,6 +199,19 @@ export class FiltrationListComponent {
         lotId: row.target.id
       }
     });
+  }
+
+  private compareRows(a: FiltrationOperation, b: FiltrationOperation): number {
+    const statusA = (a.status as string) === 'CANCELLED' ? 1 : 0;
+    const statusB = (b.status as string) === 'CANCELLED' ? 1 : 0;
+
+    if (statusA !== statusB) {
+      return statusA - statusB;
+    }
+
+    const timeA = a.timestamp ? new Date(a.timestamp).getTime() : 0;
+    const timeB = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+    return timeB - timeA;
   }
 }
 

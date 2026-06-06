@@ -36,6 +36,13 @@ export class BomListComponent implements OnInit {
     this.bomService.getAll().subscribe({
       next: (data) => {
         this.boms = data.sort((a, b) => {
+          const activeA = a.active ? 0 : 1;
+          const activeB = b.active ? 0 : 1;
+
+          if (activeA !== activeB) {
+            return activeA - activeB;
+          }
+
           const dateA = a.createdDate ? new Date(a.createdDate).getTime() : 0;
           const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
           return dateB - dateA;

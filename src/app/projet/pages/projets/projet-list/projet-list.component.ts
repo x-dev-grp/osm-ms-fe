@@ -109,7 +109,7 @@ export class ProjetListComponent {
       });
     }
 
-    return filtered;
+    return [...filtered].sort((a, b) => this.compareProjetRows(a, b));
   });
 
   readonly projectStats = computed(() => {
@@ -259,6 +259,36 @@ export class ProjetListComponent {
     if (value === 'FAILED') return 'FAILED';
 
     return 'BROUILLON';
+  }
+
+  private compareProjetRows(a: ProjetDto, b: ProjetDto): number {
+    const priorityA = this.getStatusPriority(a.statut);
+    const priorityB = this.getStatusPriority(b.statut);
+
+    if (priorityA !== priorityB) {
+      return priorityA - priorityB;
+    }
+
+    const dateA = a.createdDate ? new Date(a.createdDate).getTime() : 0;
+    const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
+    return dateB - dateA;
+  }
+
+  private getStatusPriority(statut?: string): number {
+    switch (this.normalizeStatus(statut)) {
+      case 'VALIDE':
+        return 0;
+      case 'EN_COURS':
+        return 1;
+      case 'BROUILLON':
+        return 2;
+      case 'ANNULE':
+        return 3;
+      case 'FAILED':
+        return 4;
+      default:
+        return 2;
+    }
   }
 
   statusLabel(status: ProjetStatusFilter | string): string {

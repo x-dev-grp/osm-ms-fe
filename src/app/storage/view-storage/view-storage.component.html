@@ -19,23 +19,33 @@
                 <div [ngClass]="getStatusClass()" class="storage-status">
                   {{ 'STORAGE.VIEW.STATUS.' + storageUnit.status | translate }}
                 </div>
-                <div class="qr-hover-preview" *ngIf="hasCompleteQrMetadata()">
-                  <button mat-icon-button color="accent" matTooltip="View QR" (click)="openExistingQrDialog()">
-                    <mat-icon>visibility</mat-icon>
+                @if (hasCompleteQrMetadata()) {
+                  <button
+                    mat-stroked-button
+                    color="accent"
+                    matTooltip="View QR"
+                    (click)="openExistingQrDialog()">
+                    <mat-icon>qr_code_2</mat-icon>
+                    QR
                   </button>
-                </div>
-                <button mat-icon-button color="primary" (click)="generateQr(true)" matTooltip="{{ 'QR.GENERATE' | translate }}">
+                }
+                <button
+                  mat-stroked-button
+                  color="primary"
+                  [disabled]="generatingQr"
+                  (click)="generateQr(true)"
+                  matTooltip="{{ 'QR.GENERATE' | translate }}">
                   <mat-icon>qr_code_2</mat-icon>
+                  {{ generatingQr ? 'Generation...' : 'Generer QR' }}
                 </button>
+                @if (hasCompleteQrMetadata()) {
+                  <span class="qr-code-badge">{{ getQrCodeText() }}</span>
+                }
               </div>
             <!--   generer qr code -->
 
           </div>
             <div class="storage-header-metrics">
-              <div class="metric" *ngIf="hasCompleteQrMetadata()">
-                <span class="metric-label">QR HEX</span>
-                <span class="metric-value code-value">{{ getQrCodeText() }}</span>
-              </div>
               <div class="metric">
                 <span class="metric-label">{{ 'STORAGE.VIEW.AVGCOST' | translate }}</span>
                 <span class="metric-value">{{ storageUnit.avgCost | number:'1.2-2' }}&nbsp;TND</span>

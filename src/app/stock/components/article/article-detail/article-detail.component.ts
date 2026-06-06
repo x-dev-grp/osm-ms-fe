@@ -152,10 +152,7 @@ export class ArticleDetailComponent implements OnInit {
   }
 
   onAjustement(): void {
-    if (this.ajustementQuantite === 0) {
-      this.toast.warning("La quantité d'ajustement ne peut pas être nulle");
-      return;
-    }
+
     this.stockService.ajusterStock(this.article.id!, this.ajustementQuantite, this.ajustementMotif).subscribe({
       next: (updatedStock) => {
         this.stock = updatedStock;
