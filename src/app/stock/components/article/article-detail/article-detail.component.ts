@@ -10,6 +10,7 @@ import { Stock } from '../../../models/stock.model';
 import { EmplacementStock } from '../../../models/emplacement-stock.model';
 import { MouvementStock, TypeMouvement } from '../../../models/mouvement-stock.model';
 import { ToastService } from '../../../../shared/services/toast.service';
+import { mergeStockIntoArticle, stockFromArticle } from '../../../utils/article-stock.util';
 
 @Component({
   selector: 'app-article-detail',
@@ -62,9 +63,9 @@ export class ArticleDetailComponent implements OnInit {
     this.loading = true;
     this.articleService.getArticleById(id).subscribe({
       next: (article) => {
-        this.article = article;
-        this.loadStock(id);
+        this.applyArticle(article);
         this.loadMouvements();
+        this.loading = false;
       },
       error: () => {
         this.loading = false;
@@ -73,17 +74,24 @@ export class ArticleDetailComponent implements OnInit {
     });
   }
 
-  loadStock(articleId: string): void {
-    this.stockService.getStockByArticle(articleId).subscribe({
-      next: (stock) => {
-        this.stock = stock;
-        this.loading = false;
-      },
-      error: () => {
-        this.stock = null;
-        this.loading = false;
-      }
+  private applyArticle(article: Article): void {
+    this.article = article;
+    this.stock = stockFromArticle(article);
+  }
+
+  private reloadArticle(): void {
+    if (!this.article?.id) {
+      return;
+    }
+
+    this.articleService.getArticleById(this.article.id).subscribe({
+      next: (article) => this.applyArticle(article)
     });
+  }
+
+  private applyStockMutation(updatedStock: Stock): void {
+    this.stock = updatedStock;
+    this.article = mergeStockIntoArticle(this.article, updatedStock);
   }
 
   loadMouvements(): void {
@@ -96,18 +104,6 @@ export class ArticleDetailComponent implements OnInit {
             new Date(b.dateMouvement ?? '').getTime() - new Date(a.dateMouvement ?? '').getTime()
         );
         this.loadingMouvements = false;
-
-        // Fallback: if the stock API failed, compute the balance from movements
-        if (!this.stock && this.mouvements.length > 0) {
-          const computed = this.mouvements.reduce((total, m) => {
-            if (m.typeMouvement === TypeMouvement.ENTREE) return total + (m.quantite ?? 0);
-            if (m.typeMouvement === TypeMouvement.SORTIE)  return total - (m.quantite ?? 0);
-            return total + (m.quantite ?? 0); // AJUSTEMENT
-          }, 0);
-          const qty = Math.max(0, computed);
-          this.stock = { quantiteActuelle: qty, quantiteReservee: 0, quantiteDisponible: qty,
-            article: this.article, actif: true, lastModifiedDate: '' } as any;
-        }
       },
       error: () => {
         this.loadingMouvements = false;
@@ -124,11 +120,12 @@ export class ArticleDetailComponent implements OnInit {
     if (this.mouvementType === TypeMouvement.ENTREE) {
       this.stockService.entreeStock(this.article.id!, this.quantite, this.motif).subscribe({
         next: (updatedStock) => {
-          this.stock = updatedStock;
+          this.applyStockMutation(updatedStock);
           this.showMouvementForm = false;
           this.quantite = 0;
           this.motif = '';
           this.loadMouvements();
+          this.reloadArticle();
         },
         error: (err) => {
           this.toast.error(err?.error?.error || err?.error?.message || "Erreur lors de l'entrée en stock");
@@ -139,11 +136,12 @@ export class ArticleDetailComponent implements OnInit {
 
     this.stockService.sortieStock(this.article.id!, this.quantite, this.motif).subscribe({
       next: (updatedStock) => {
-        this.stock = updatedStock;
+        this.applyStockMutation(updatedStock);
         this.showMouvementForm = false;
         this.quantite = 0;
         this.motif = '';
         this.loadMouvements();
+        this.reloadArticle();
       },
       error: (err) => {
         this.toast.error(err?.error?.error || err?.error?.message || 'Erreur lors de la sortie de stock');
@@ -158,11 +156,12 @@ export class ArticleDetailComponent implements OnInit {
     }
     this.stockService.ajusterStock(this.article.id!, this.ajustementQuantite, this.ajustementMotif).subscribe({
       next: (updatedStock) => {
-        this.stock = updatedStock;
+        this.applyStockMutation(updatedStock);
         this.showAjustementForm = false;
         this.ajustementQuantite = 0;
         this.ajustementMotif = '';
         this.loadMouvements();
+        this.reloadArticle();
       },
       error: (err) => {
         this.toast.error(err?.error?.error || err?.error?.message || "Erreur lors de l'ajustement du stock");
@@ -182,7 +181,7 @@ export class ArticleDetailComponent implements OnInit {
 
     request.subscribe({
       next: (updatedArticle) => {
-        this.article = updatedArticle;
+        this.applyArticle(updatedArticle);
         this.Actif = false;
       },
       error: (err) => {
@@ -193,8 +192,8 @@ export class ArticleDetailComponent implements OnInit {
   }
 
   getStockStatus(): string {
-    if (!this.stock || !this.article) return '';
-    const quantite = Number(this.stock.quantiteActuelle ?? 0);
+    if (!this.article) return '';
+    const quantite = Number(this.article.quantiteActuelle ?? 0);
     const stockMin = Number(this.article.stockMinimum ?? 0);
     if (quantite <= 0) return 'low';
     if (quantite <= stockMin) return 'medium';
@@ -209,12 +208,9 @@ export class ArticleDetailComponent implements OnInit {
     this.emplacementService.getAllEmplacements().subscribe({
       next: (response) => {
         let data: EmplacementStock[] = [];
-        // Si le service renvoie un tableau directement
         if (Array.isArray(response)) {
           data = response;
-        }
-        // Si le service renvoie { data: EmplacementStock[] }
-        else if (response && Array.isArray(response.data)) {
+        } else if (response && Array.isArray(response.data)) {
           // @ts-ignore
           data = response.data;
         }
@@ -250,10 +246,11 @@ export class ArticleDetailComponent implements OnInit {
 
     this.stockService.assignerEmplacement(this.stock.id, selectedId).subscribe({
       next: (updatedStock) => {
-        this.stock = updatedStock;
+        this.applyStockMutation(updatedStock);
         this.showEmplacementForm = false;
         this.selectedEmplacementId = null;
         this.toast.success('Emplacement assigné avec succès');
+        this.reloadArticle();
       },
       error: (err) => {
         this.toast.error(err?.error?.error || err?.error?.message || "Erreur lors de l'assignation de l'emplacement");
@@ -267,8 +264,9 @@ export class ArticleDetailComponent implements OnInit {
 
     this.stockService.retirerEmplacement(this.stock.id).subscribe({
       next: (updatedStock) => {
-        this.stock = updatedStock;
+        this.applyStockMutation(updatedStock);
         this.toast.success('Emplacement retiré avec succès');
+        this.reloadArticle();
       },
       error: (err) => {
         this.toast.error(err?.error?.error || err?.error?.message || "Erreur lors du retrait de l'emplacement");

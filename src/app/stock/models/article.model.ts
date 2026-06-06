@@ -1,4 +1,5 @@
 import {Fournisseur} from "./fournisseur.model";
+import {EmplacementStock} from "./emplacement-stock.model";
 
 export interface Article {
   id?: string;
@@ -18,6 +19,14 @@ export interface Article {
   qrUrl?: string;
   qrImageBase64?: string;
   configuration?: ArticleConfig;
+  /** Stock snapshot returned with article — same fields used by list and detail. */
+  stockId?: string;
+  quantiteActuelle?: number;
+  quantiteReservee?: number;
+  quantiteDisponible?: number;
+  belowMinimum?: boolean;
+  stockLastModifiedDate?: string;
+  emplacement?: EmplacementStock;
 }
 
 export enum CategorieArticle {

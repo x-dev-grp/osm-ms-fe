@@ -124,7 +124,7 @@
         </thead>
 
         <tbody>
-        <tr *ngFor="let article of filteredArticles" [ngClass]="{'inactive-row': !article.actif, 'stock-alert-row': isBelowMinimum(article)}" [title]="isBelowMinimum(article) ? 'Stock en dessous du minimum' : ''">
+        <tr *ngFor="let article of pagedArticles" [ngClass]="{'inactive-row': !article.actif, 'stock-alert-row': isBelowMinimum(article)}" [title]="isBelowMinimum(article) ? 'Stock en dessous du minimum' : ''">
           <td class="article-name-cell">
             <span class="article-mini-icon">
               <i class="fas fa-box"></i>
@@ -144,16 +144,16 @@
           </td>
 
           <td class="stock-cell">
-            <span class="stock-chip total" [title]="'En stock'">{{ getArticleStock(article.id) }}</span>
+            <span class="stock-chip total" [title]="'En stock'">{{ getArticleStock(article) }}</span>
           </td>
           <td class="stock-cell">
-            <span class="stock-chip disponible" [class.low]="getArticleDisponible(article.id) <= (article.stockMinimum || 0)">
-              {{ getArticleDisponible(article.id) }}
+            <span class="stock-chip disponible" [class.low]="getArticleDisponible(article) <= (article.stockMinimum || 0)">
+              {{ getArticleDisponible(article) }}
             </span>
           </td>
           <td class="stock-cell">
-            <span class="stock-chip reserve" *ngIf="getArticleReserve(article.id) > 0">{{ getArticleReserve(article.id) }}</span>
-            <span class="text-muted" *ngIf="getArticleReserve(article.id) === 0">â€”</span>
+            <span class="stock-chip reserve" *ngIf="getArticleReserve(article) > 0">{{ getArticleReserve(article) }}</span>
+            <span class="text-muted" *ngIf="getArticleReserve(article) === 0">—</span>
           </td>
           <td>{{ article.stockMinimum }}</td>
           <td>{{ article.stockMaximum }}</td>
@@ -166,11 +166,15 @@
 
           <td class="actions-cell">
             <div class="dropdown">
-              <button class="dropdown-btn" (click)="toggleDropdown(article.id, $event)">
+              <button class="dropdown-btn" (click)="toggleDropdown(article, $event)">
                 <i class="fas fa-ellipsis-v"></i>
               </button>
 
-              <div class="dropdown-content" *ngIf="activeDropdown === article.id">
+              <div
+                class="dropdown-content"
+                *ngIf="activeDropdown === article.id"
+                [style.left.px]="dropdownPosition.left"
+                [style.top.px]="dropdownPosition.top">
                 <ng-container *ngIf="article.actif; else inactiveActions">
                   <button class="dropdown-item" [routerLink]="['/stock/articles', article.id]">
                     <i class="fas fa-eye"></i>
@@ -200,7 +204,7 @@
         </tr>
 
         <tr *ngIf="filteredArticles.length === 0">
-          <td colspan="8" class="empty-state">
+          <td colspan="10" class="empty-state">
             <div>
               <i class="fas fa-box-open"></i>
               <p>Aucun article trouvé</p>
@@ -209,6 +213,37 @@
         </tr>
         </tbody>
       </table>
+    </div>
+
+    <div class="table-pagination" *ngIf="filteredArticles.length > 0">
+      <div class="pagination-summary">
+        {{ paginationStart }}-{{ paginationEnd }} sur {{ filteredArticles.length }} article(s)
+      </div>
+
+      <div class="pagination-controls">
+        <label>
+          Lignes
+          <select class="page-size-select" [ngModel]="pageSize" (ngModelChange)="onPageSizeChange($event)">
+            <option *ngFor="let option of pageSizeOptions" [value]="option">{{ option }}</option>
+          </select>
+        </label>
+
+        <button class="page-btn" type="button" (click)="goToPage(1)" [disabled]="currentPage === 1" title="Premiere page">
+          <i class="fas fa-angles-left"></i>
+        </button>
+        <button class="page-btn" type="button" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1" title="Page precedente">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <span class="page-status">Page {{ currentPage }} / {{ totalPages }}</span>
+
+        <button class="page-btn" type="button" (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages" title="Page suivante">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+        <button class="page-btn" type="button" (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages" title="Derniere page">
+          <i class="fas fa-angles-right"></i>
+        </button>
+      </div>
     </div>
   </div>
 

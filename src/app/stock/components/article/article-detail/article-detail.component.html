@@ -146,33 +146,33 @@
         </h5>
 
         <div class="stock-value" [ngClass]="getStockStatus()">
-          {{ stock?.quantiteActuelle ?? 0 }}
+          {{ article.quantiteActuelle ?? 0 }}
           <small>{{ article.um }}</small>
         </div>
 
-        <div class="stock-details-grid mt-2" *ngIf="stock">
+        <div class="stock-details-grid mt-2">
           <div class="stock-detail-item">
             <span>Réservé</span>
-            <strong>{{ stock.quantiteReservee || 0 }} {{ article.um }}</strong>
+            <strong>{{ article.quantiteReservee ?? 0 }} {{ article.um }}</strong>
           </div>
 
           <div class="stock-detail-item">
             <span>Disponible</span>
             <strong>
-              {{ stock.quantiteDisponible }} {{ article.um }}
+              {{ article.quantiteDisponible ?? 0 }} {{ article.um }}
             </strong>
           </div>
         </div>
 
-        <p class="stock-hint" *ngIf="stock && (stock.quantiteReservee || 0) > 0">
+        <p class="stock-hint" *ngIf="(article.quantiteReservee ?? 0) > 0">
           <i class="fas fa-bookmark"></i>
           Une partie du stock est réservée pour des projets en cours.
         </p>
 
-        <p class="stock-empty" *ngIf="!stock">Aucun enregistrement de stock pour cet article.</p>
+        <p class="stock-empty" *ngIf="article.stockId == null">Aucun enregistrement de stock pour cet article.</p>
 
-        <div class="stock-date" *ngIf="stock">
-          Dernière MAJ : {{ stock.lastModifiedDate | date:'dd/MM/yyyy HH:mm' }}
+        <div class="stock-date" *ngIf="article.stockLastModifiedDate">
+          Dernière MAJ : {{ article.stockLastModifiedDate | date:'dd/MM/yyyy HH:mm' }}
         </div>
 
         <div class="stock-actions">
@@ -203,25 +203,25 @@
           Emplacement physique
         </h5>
 
-        <div *ngIf="stock?.emplacement; else noEmplacement">
+        <div *ngIf="article.emplacement; else noEmplacement">
           <div class="info-row">
             <span>Emplacement</span>
-            <strong>{{ stock.emplacement.nom || stock.emplacement.code }}</strong>
+            <strong>{{ article.emplacement.nom || article.emplacement.code }}</strong>
           </div>
 
-          <div class="info-row" *ngIf="stock.emplacement.zone">
+          <div class="info-row" *ngIf="article.emplacement.zone">
             <span>Zone</span>
-            <strong>{{ stock.emplacement.zone }}</strong>
+            <strong>{{ article.emplacement.zone }}</strong>
           </div>
 
-          <div class="info-row" *ngIf="stock.emplacement.typeEmplacement">
+          <div class="info-row" *ngIf="article.emplacement.typeEmplacement">
             <span>Type</span>
-            <strong>{{ stock.emplacement.typeEmplacement }}</strong>
+            <strong>{{ article.emplacement.typeEmplacement }}</strong>
           </div>
 
-          <div class="info-row" *ngIf="stock.emplacement.disponible === false">
+          <div class="info-row" *ngIf="article.emplacement.disponible === false">
             <span>Réservé pour</span>
-            <strong>{{ stock.emplacement.reservePour || 'Oui' }}</strong>
+            <strong>{{ article.emplacement.reservePour || 'Oui' }}</strong>
           </div>
         </div>
 
@@ -232,17 +232,17 @@
         </ng-template>
 
         <div class="emplacement-actions">
-          <button class="btn-emplacement assign" (click)="openAssignEmplacement()" *ngIf="!stock?.emplacement">
+          <button class="btn-emplacement assign" (click)="openAssignEmplacement()" *ngIf="!article.emplacement">
             <i class="fas fa-map-marker-alt"></i>
             Assigner un emplacement
           </button>
 
-          <button class="btn-emplacement transfer" (click)="transfererEmplacement()" *ngIf="stock?.emplacement">
+          <button class="btn-emplacement transfer" (click)="transfererEmplacement()" *ngIf="article.emplacement">
             <i class="fas fa-exchange-alt"></i>
             Transférer
           </button>
 
-          <button class="btn-emplacement remove" (click)="retirerEmplacement()" *ngIf="stock?.emplacement">
+          <button class="btn-emplacement remove" (click)="retirerEmplacement()" *ngIf="article.emplacement">
             <i class="fas fa-trash-alt"></i>
             Retirer
           </button>

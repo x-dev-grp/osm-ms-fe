@@ -537,13 +537,24 @@ button {
 
 .movement-grid {
   display: grid;
-  grid-template-columns: minmax(180px, 1fr) minmax(240px, 1.4fr) auto auto;
+  grid-template-columns: minmax(140px, 0.8fr) minmax(240px, 1.4fr) auto auto;
   gap: 12px;
   align-items: center;
 }
 
+.movement-grid > * {
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.movement-grid .btn-primary,
+.movement-grid .btn-cancel {
+  min-width: 82px;
+}
+
 .form-control {
   width: 100%;
+  box-sizing: border-box;
   min-height: 44px;
   border: 1px solid rgba(79, 112, 68, 0.2);
   border-radius: 14px;
@@ -658,6 +669,18 @@ select.form-control {
 
   .top-grid .qr-card {
     grid-column: span 1;
+  }
+}
+
+@media (max-width: 1040px) {
+  .movement-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: stretch;
+  }
+
+  .movement-grid .btn-primary,
+  .movement-grid .btn-cancel {
+    width: 100%;
   }
 }
 

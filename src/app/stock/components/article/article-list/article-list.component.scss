@@ -565,11 +565,9 @@ select.form-control {
 }
 
 .dropdown-content {
-  position: absolute;
-  right: 0;
-  top: 42px;
-  min-width: 165px;
-  z-index: 30;
+  position: fixed;
+  min-width: 176px;
+  z-index: 1000;
   overflow: hidden;
   border: 1px solid $border-color;
   border-radius: 12px;
@@ -617,6 +615,86 @@ select.form-control {
       color: #246b2c;
     }
   }
+}
+
+/* Pagination */
+
+.table-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 18px;
+  border-top: 1px solid #eee9dc;
+  background: #fbfaf5;
+}
+
+.pagination-summary {
+  color: $text-muted;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: 8px;
+    color: $text-muted;
+    font-size: 13px;
+    font-weight: 800;
+  }
+}
+
+.page-size-select {
+  height: 36px;
+  min-width: 68px;
+  padding: 0 10px;
+  border: 1px solid $input-border;
+  border-radius: 9px;
+  background: #ffffff;
+  color: $text-main;
+  font-weight: 800;
+  outline: none;
+}
+
+.page-btn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #d9e2cc;
+  border-radius: 9px;
+  background: #ffffff;
+  color: $olive-main;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.18s ease;
+
+  &:hover:not(:disabled) {
+    background: $olive-soft;
+    border-color: #cbd8b8;
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
+
+.page-status {
+  min-width: 88px;
+  color: $olive-dark;
+  font-size: 13px;
+  font-weight: 850;
+  text-align: center;
 }
 
 /* Empty */
@@ -727,5 +805,21 @@ select.form-control {
 
   .article-mini-icon {
     display: none;
+  }
+
+  .table-pagination,
+  .pagination-controls {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .pagination-controls {
+    width: 100%;
+  }
+
+  .pagination-controls label,
+  .page-status {
+    justify-content: center;
+    margin-right: 0;
   }
 }

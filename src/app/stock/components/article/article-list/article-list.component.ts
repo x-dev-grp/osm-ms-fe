@@ -1,13 +1,17 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ArticleService } from '../../../services/article.service';
-import { StockService } from '../../../services/stock.service';
 import { Article, CategorieArticle } from '../../../models/article.model';
-import { ArticleStockSummary } from '../../../models/article-stock-summary.model';
+import {
+  articleBelowMinimum,
+  articleQuantiteActuelle,
+  articleQuantiteDisponible,
+  articleQuantiteReservee
+} from '../../../utils/article-stock.util';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 import { QrResolveResponse } from '../../../../shared/models/qr-models';
 
 @Component({
@@ -26,10 +30,14 @@ export class ArticleListComponent implements OnInit, OnDestroy {
   loading = false;
   togglingId: string | null = null;
   activeDropdown: string | null = null;
-  stockSummaryMap: Record<string, ArticleStockSummary> = {};
+  dropdownPosition = { top: 0, left: 0 };
+  currentPage = 1;
+  pageSize = 10;
+  readonly pageSizeOptions = [5, 10, 25, 50];
   searchCode = '';
   searchCodeError: string | null = null;
   searchingByCode = false;
+  private listInitialized = false;
 
   filters = {
     nom: '',
@@ -39,27 +47,37 @@ export class ArticleListComponent implements OnInit, OnDestroy {
 
   constructor(
     private articleService: ArticleService,
-    private stockService: StockService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.loadArticles();
+
+    this.router.events.pipe(
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+      filter((event) => event.urlAfterRedirects === '/stock/articles'),
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      if (this.listInitialized) {
+        this.loadArticles();
+      }
+    });
   }
 
   ngOnDestroy(): void {
-    // Fixed as part of TICKET-009: Unsubscribe to prevent memory leaks
     this.destroy$.next();
     this.destroy$.complete();
   }
 
   loadArticles(): void {
     this.loading = true;
+
     this.articleService.getAllArticles()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (data) => {
-          this.articles = data.sort((a, b) => {
+        next: (articles) => {
+          this.articles = articles.sort((a, b) => {
             if (a.actif !== b.actif) {
               return a.actif ? -1 : 1;
             }
@@ -67,63 +85,57 @@ export class ArticleListComponent implements OnInit, OnDestroy {
             const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
             return dateB - dateA;
           });
-          this.loadStockQuantities();
           this.applyFilters();
           this.loading = false;
+          this.listInitialized = true;
+          this.cdr.detectChanges();
         },
         error: (err) => {
           console.error('Erreur chargement articles:', err);
           this.loading = false;
+          this.cdr.detectChanges();
         }
       });
   }
 
-  private loadStockQuantities(): void {
-    this.stockService.getStockSummary()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (summaries) => {
-          const map: Record<string, ArticleStockSummary> = {};
-          summaries.forEach((s) => {
-            if (s.articleId) {
-              map[s.articleId] = s;
-            }
-          });
-          this.stockSummaryMap = map;
-        },
-        error: () => {
-          this.stockSummaryMap = {};
-        }
-      });
+  getArticleStock(article: Article): number {
+    return articleQuantiteActuelle(article);
   }
 
-  getArticleStock(articleId?: string): number {
-    if (!articleId) return 0;
-    return this.stockSummaryMap[articleId]?.quantiteActuelle ?? 0;
+  getArticleDisponible(article: Article): number {
+    return articleQuantiteDisponible(article);
   }
 
-  getArticleDisponible(articleId?: string): number {
-    if (!articleId) return 0;
-    return this.stockSummaryMap[articleId]?.quantiteDisponible ?? 0;
-  }
-
-  getArticleReserve(articleId?: string): number {
-    if (!articleId) return 0;
-    return this.stockSummaryMap[articleId]?.quantiteReservee ?? 0;
+  getArticleReserve(article: Article): number {
+    return articleQuantiteReservee(article);
   }
 
   isBelowMinimum(article: Article): boolean {
-    if (!article.id) return false;
-    if (this.stockSummaryMap[article.id]?.belowMinimum) {
-      return true;
-    }
-    const qty = this.getArticleStock(article.id);
-    const min = Number(article.stockMinimum ?? 0);
-    return min > 0 && qty <= min;
+    return articleBelowMinimum(article);
   }
 
   get stockAlertCount(): number {
     return this.filteredArticles.filter(a => this.isBelowMinimum(a)).length;
+  }
+
+  get pagedArticles(): Article[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.filteredArticles.slice(start, start + this.pageSize);
+  }
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.filteredArticles.length / this.pageSize));
+  }
+
+  get paginationStart(): number {
+    if (this.filteredArticles.length === 0) {
+      return 0;
+    }
+    return (this.currentPage - 1) * this.pageSize + 1;
+  }
+
+  get paginationEnd(): number {
+    return Math.min(this.currentPage * this.pageSize, this.filteredArticles.length);
   }
 
   applyFilters(): void {
@@ -148,6 +160,8 @@ export class ArticleListComponent implements OnInit, OnDestroy {
       }
       return match;
     });
+    this.currentPage = 1;
+    this.activeDropdown = null;
   }
 
   resetFilters(): void {
@@ -235,6 +249,16 @@ export class ArticleListComponent implements OnInit, OnDestroy {
     this.applyFilters();
   }
 
+  onPageSizeChange(pageSize: number | string): void {
+    this.pageSize = Number(pageSize);
+    this.goToPage(1);
+  }
+
+  goToPage(page: number): void {
+    this.currentPage = Math.min(Math.max(page, 1), this.totalPages);
+    this.activeDropdown = null;
+  }
+
   getCategoryBadgeClass(categorie: CategorieArticle): string {
     const classes: Record<CategorieArticle, string> = {
       [CategorieArticle.EMBALLAGE]: 'bg-primary',
@@ -257,9 +281,50 @@ export class ArticleListComponent implements OnInit, OnDestroy {
     return icons[categorie] || 'fas fa-tag';
   }
 
-  toggleDropdown(id: string | undefined, event: Event): void {
+  @HostListener('document:click')
+  closeDropdown(): void {
+    this.activeDropdown = null;
+  }
+
+  @HostListener('window:resize')
+  @HostListener('window:scroll')
+  closeDropdownOnViewportChange(): void {
+    this.activeDropdown = null;
+  }
+
+  toggleDropdown(article: Article, event: Event): void {
     event.stopPropagation();
-    this.activeDropdown = this.activeDropdown === id ? null : id!;
+    if (!article.id) return;
+
+    if (this.activeDropdown === article.id) {
+      this.activeDropdown = null;
+      return;
+    }
+
+    this.dropdownPosition = this.getDropdownPosition(event.currentTarget as HTMLElement, article);
+    this.activeDropdown = article.id;
+  }
+
+  private getDropdownPosition(trigger: HTMLElement, article: Article): { top: number; left: number } {
+    const rect = trigger.getBoundingClientRect();
+    const menuWidth = 176;
+    const menuHeight = article.actif ? 138 : 50;
+    const gap = 8;
+    const padding = 12;
+
+    const left = Math.min(
+      Math.max(rect.right - menuWidth, padding),
+      window.innerWidth - menuWidth - padding
+    );
+    let top = rect.bottom + gap;
+    if (top + menuHeight > window.innerHeight - padding) {
+      top = rect.top - menuHeight - gap;
+    }
+
+    return {
+      top: Math.max(top, padding),
+      left
+    };
   }
 
   private resolveTargetRoute(response: QrResolveResponse | null | undefined): string | null {
