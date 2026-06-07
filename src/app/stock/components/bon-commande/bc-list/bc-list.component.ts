@@ -6,6 +6,7 @@ import { CommonModule, DatePipe, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
 import { ApiResponse } from "../../../../shared/models/api-response";
+import { extractHttpErrorMessage } from "../../../../shared/utils/http-error.util";
 
 @Component({
   selector: 'app-bc-list',
@@ -174,8 +175,8 @@ export class BcListComponent implements OnInit, OnDestroy {
           this.error = response.message || 'Erreur lors de la validation';
         }
       },
-      error: () => {
-        this.error = 'Erreur serveur lors de la validation';
+      error: (err) => {
+        this.error = extractHttpErrorMessage(err, 'Erreur serveur lors de la validation');
       }
     });
   }
@@ -193,8 +194,8 @@ export class BcListComponent implements OnInit, OnDestroy {
           this.error = response.message || 'Erreur lors du refus';
         }
       },
-      error: () => {
-        this.error = 'Erreur serveur lors du refus';
+      error: (err) => {
+        this.error = extractHttpErrorMessage(err, 'Erreur serveur lors du refus');
       }
     });
   }

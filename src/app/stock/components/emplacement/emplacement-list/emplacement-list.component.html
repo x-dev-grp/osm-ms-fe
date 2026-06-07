@@ -343,7 +343,7 @@
                       <button
                         class="action-btn delete"
                         type="button"
-                        [disabled]="togglingId === emp.id"
+                        [disabled]="togglingId === emp.id || deletingId === emp.id"
                         (click)="toActif(emp, $event)"
                         title="Desactiver"
                       >
@@ -353,11 +353,20 @@
                       <button
                         class="action-btn success"
                         type="button"
-                        [disabled]="togglingId === emp.id"
+                        [disabled]="togglingId === emp.id || deletingId === emp.id"
                         (click)="toActif(emp, $event)"
                         title="Activer"
                       >
                         <i class="fas" [ngClass]="togglingId === emp.id ? 'fa-spinner fa-spin' : 'fa-check-circle'"></i>
+                      </button>
+                      <button
+                        class="action-btn delete"
+                        type="button"
+                        [disabled]="togglingId === emp.id || deletingId === emp.id"
+                        (click)="deleteEmplacement(emp, $event)"
+                        title="Supprimer"
+                      >
+                        <i class="fas" [ngClass]="deletingId === emp.id ? 'fa-spinner fa-spin' : 'fa-trash'"></i>
                       </button>
                     }
                   </div>
@@ -411,12 +420,15 @@
                   <i class="fas fa-edit"></i>
                 </button>
                 @if (emp.actif) {
-                  <button class="action-btn delete" type="button" [disabled]="togglingId === emp.id" (click)="toActif(emp, $event)" title="Desactiver">
+                  <button class="action-btn delete" type="button" [disabled]="togglingId === emp.id || deletingId === emp.id" (click)="toActif(emp, $event)" title="Desactiver">
                     <i class="fas" [ngClass]="togglingId === emp.id ? 'fa-spinner fa-spin' : 'fa-ban'"></i>
                   </button>
                 } @else {
-                  <button class="action-btn success" type="button" [disabled]="togglingId === emp.id" (click)="toActif(emp, $event)" title="Activer">
+                  <button class="action-btn success" type="button" [disabled]="togglingId === emp.id || deletingId === emp.id" (click)="toActif(emp, $event)" title="Activer">
                     <i class="fas" [ngClass]="togglingId === emp.id ? 'fa-spinner fa-spin' : 'fa-check-circle'"></i>
+                  </button>
+                  <button class="action-btn delete" type="button" [disabled]="togglingId === emp.id || deletingId === emp.id" (click)="deleteEmplacement(emp, $event)" title="Supprimer">
+                    <i class="fas" [ngClass]="deletingId === emp.id ? 'fa-spinner fa-spin' : 'fa-trash'"></i>
                   </button>
                 }
               </div>

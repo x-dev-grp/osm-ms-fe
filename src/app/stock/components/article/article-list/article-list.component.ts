@@ -231,7 +231,6 @@ export class ArticleListComponent implements OnInit, OnDestroy {
           error: (err) => {
             console.error(err);
             this.togglingId = null;
-            alert(`Erreur lors de l'${action} de l'article`);
           }
         });
     }

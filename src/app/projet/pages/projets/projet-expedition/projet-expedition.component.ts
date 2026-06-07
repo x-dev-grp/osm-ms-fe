@@ -416,7 +416,6 @@ export class ProjetExpeditionComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erreur suppression expedition', err);
-        this.toast.error('Erreur lors de la suppression');
       }
     });
   }
@@ -620,7 +619,6 @@ export class ProjetExpeditionComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erreur suppression ligne', err);
-        this.toast.error('Erreur lors de la suppression');
       }
     });
   }
@@ -659,13 +657,6 @@ export class ProjetExpeditionComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erreur action expedition', err);
-        const body = err.error;
-        const msg =
-          (typeof body === 'string' ? body : null) ||
-          body?.message ||
-          body?.error ||
-          `Erreur lors de l'action ${action}`;
-        this.toast.error(msg);
         this.actionLoading = false;
       }
     });

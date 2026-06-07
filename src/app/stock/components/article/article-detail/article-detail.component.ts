@@ -216,7 +216,6 @@ export class ArticleDetailComponent implements OnInit {
       },
       error: (err) => {
         this.Actif = false;
-        this.toast.error(err?.error?.error || err?.error?.message || `Erreur lors de l'action ${action}`);
       }
     });
   }

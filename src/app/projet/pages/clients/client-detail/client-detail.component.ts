@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ClientService } from '../../../services/client.service';
 import { Client } from '../../../models/client.model';
 import { ApiResponse } from '../../../../shared/models/api-response';
+import { extractHttpErrorMessage } from '../../../../shared/utils/http-error.util';
 
 @Component({
   selector: 'app-client-detail',
@@ -81,7 +82,7 @@ export class ClientDetailComponent implements OnInit {
         error: (err) => {
           console.error(`Erreur lors de la ${action}`, err);
           this.Actif = false;
-          this.error = `Erreur lors de ${action}`;
+          this.error = extractHttpErrorMessage(err, `Erreur lors de ${action}`);
         }
       });
     }

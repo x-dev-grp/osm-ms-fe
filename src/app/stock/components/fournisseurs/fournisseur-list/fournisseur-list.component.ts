@@ -179,7 +179,6 @@ export class FournisseurListComponent implements OnInit {
         },
         error: (error) => {
           console.error('Erreur changement statut:', error);
-          alert('Erreur lors du changement de statut');
           this.togglingId = null;
           this.cdr.detectChanges();
         }

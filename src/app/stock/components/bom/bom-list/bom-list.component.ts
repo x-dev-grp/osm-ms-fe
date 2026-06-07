@@ -134,7 +134,6 @@ export class BomListComponent implements OnInit {
       },
       error: (err) => {
         this.activatingId = null;
-        this.toast.error(err?.error?.error || err?.error?.message || 'Impossible d\'activer la nomenclature');
       }
     });
   }
@@ -151,7 +150,6 @@ export class BomListComponent implements OnInit {
         },
         error: (err) => {
           console.error('Erreur lors de la suppression de la nomenclature', err);
-          this.toast.error(err?.error?.error || err?.error?.message || 'Impossible de supprimer cette nomenclature');
         }
       });
     }

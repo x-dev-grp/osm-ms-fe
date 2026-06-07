@@ -111,7 +111,6 @@ export class SkuDetailComponent implements OnInit {
         },
         error: (err) => {
           console.error(`Erreur lors de ${action}`, err);
-          this.toast.error(`Erreur lors de ${action}`);
         }
       });
     });
@@ -141,7 +140,6 @@ export class SkuDetailComponent implements OnInit {
           },
           error: (err) => {
             console.error('Erreur suppression produit', err);
-            this.toast.error('Erreur lors de la suppression du produit');
             this.deleting = false;
           }
         });

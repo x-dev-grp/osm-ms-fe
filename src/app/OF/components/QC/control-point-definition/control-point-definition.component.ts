@@ -228,7 +228,6 @@ export class ControlPointDefinitionComponent implements OnInit {
         },
         error: (err) => {
           console.error(err);
-          this.toast.error('Erreur réseau lors de la suppression');
         }
       });
     }

@@ -46,13 +46,14 @@ ARG DIST_PATH="/app/dist/ui/"
 # Copy compiled Angular app.
 COPY --from=build ${DIST_PATH} /usr/share/nginx/html/
 
-# Railway provides PORT at runtime; the official nginx image renders templates.
+# Render and Railway provide PORT at runtime.
 ENV PORT=8080
-ENV BACKEND_URL=http://localhost:8084
-COPY nginx.conf.template /etc/nginx/templates/default.conf.template
+ENV BACKEND_URL=
+ENV BACKEND_HOSTPORT=
+COPY nginx.conf.template /etc/nginx/default.conf.template
 
 # Healthcheck (hits the app path)
 HEALTHCHECK CMD wget -qO- "http://localhost:${PORT}/" >/dev/null 2>&1 || exit 1
 
 EXPOSE 8080
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["sh", "-c", "export BACKEND_PROXY_URL=\"${BACKEND_URL:-http://${BACKEND_HOSTPORT:-localhost:8084}}\"; envsubst '${PORT} ${BACKEND_PROXY_URL}' < /etc/nginx/default.conf.template > /etc/nginx/conf.d/default.conf; nginx -g 'daemon off;'"]

@@ -48,11 +48,11 @@ export class EmplacementStockService {
   deleteEmplacement(id: string): Observable<ApiResponse<EmplacementStock>> {
     return this.http.delete<ApiResponse<EmplacementStock>>(`${this.apiUrl}/${id}`);
   }
-  activerEmplacement(id: string): Observable<EmplacementStock> {
-    return this.http.put<EmplacementStock>(`${this.apiUrl}/${id}/activer`, {});
+  activerEmplacement(id: string): Observable<ApiResponse<EmplacementStock>> {
+    return this.http.put<ApiResponse<EmplacementStock>>(`${this.apiUrl}/${id}/activer`, {});
   }
-  desactiverEmplacement(id: string): Observable<EmplacementStock> {
-    return this.http.put<EmplacementStock>(`${this.apiUrl}/${id}/desactiver`, {});
+  desactiverEmplacement(id: string): Observable<ApiResponse<EmplacementStock>> {
+    return this.http.put<ApiResponse<EmplacementStock>>(`${this.apiUrl}/${id}/desactiver`, {});
   }
 
   searchByCode(code: string): Observable<QrResolveResponse> {

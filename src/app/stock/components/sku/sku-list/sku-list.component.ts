@@ -212,7 +212,6 @@ export class SkuListComponent implements OnInit, AfterViewInit {
         },
         error: (err) => {
           console.error('Erreur changement statut produit:', err);
-          this.toast.error('Erreur lors du changement de statut');
           this.togglingId.set(null);
         }
       });
@@ -243,7 +242,6 @@ export class SkuListComponent implements OnInit, AfterViewInit {
         },
         error: (err) => {
           console.error('Erreur suppression produit:', err);
-          this.toast.error('Erreur lors de la suppression du produit');
           this.deletingId.set(null);
         }
       });

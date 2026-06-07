@@ -338,7 +338,6 @@ export class ProjetListComponent {
             next: () => this.load(),
             error: (err) => {
               console.error('Erreur API lors du changement de statut:', err);
-              alert('Erreur lors du changement de statut : ' + (err.message || 'Erreur inconnue'));
               this.loading.set(false);
             }
           });

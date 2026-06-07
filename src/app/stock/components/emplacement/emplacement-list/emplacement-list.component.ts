@@ -5,6 +5,8 @@ import { Router, RouterLink } from '@angular/router';
 
 import { EmplacementStock, TypeEmplacement } from '../../../models/emplacement-stock.model';
 import { EmplacementStockService } from '../../../services/emplacement-stock.service';
+import { ToastService } from '../../../../shared/services/toast.service';
+import { extractHttpErrorMessage } from '../../../../shared/utils/http-error.util';
 
 @Component({
   selector: 'app-emplacement-list',
@@ -32,12 +34,14 @@ export class EmplacementListComponent implements OnInit {
   pageSizeOptions = [10, 25, 50];
 
   togglingId: string | null = null;
+  deletingId: string | null = null;
 
   typesEmplacement = Object.values(TypeEmplacement);
   zones: string[] = [];
 
   constructor(
     private emplacementService: EmplacementStockService,
+    private toast: ToastService,
     public router: Router,
     private cdr: ChangeDetectorRef
   ) {}
@@ -220,7 +224,7 @@ export class EmplacementListComponent implements OnInit {
   toActif(emplacement: EmplacementStock, event: Event): void {
     event.stopPropagation();
 
-    if (!emplacement.id || this.togglingId) {
+    if (!emplacement.id || this.togglingId || this.deletingId) {
       return;
     }
 
@@ -233,6 +237,7 @@ export class EmplacementListComponent implements OnInit {
     }
 
     this.togglingId = emplacement.id;
+    this.error = null;
 
     const serviceCall = isActif
       ? this.emplacementService.desactiverEmplacement(emplacement.id)
@@ -243,13 +248,46 @@ export class EmplacementListComponent implements OnInit {
         emplacement.actif = !isActif;
         this.sortEmplacements();
         this.filterEmplacements();
+        this.toast.success(`Emplacement ${isActif ? 'desactive' : 'active'} avec succes`);
         this.togglingId = null;
         this.cdr.detectChanges();
       },
       error: (err) => {
         console.error(`Erreur lors de la ${action}`, err);
-        alert(`Erreur lors de l'${action} de l'emplacement`);
+        this.error = extractHttpErrorMessage(err, `Erreur lors de l'${action} de l'emplacement`);
         this.togglingId = null;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  deleteEmplacement(emplacement: EmplacementStock, event: Event): void {
+    event.stopPropagation();
+
+    if (!emplacement.id || this.togglingId || this.deletingId) {
+      return;
+    }
+
+    if (!confirm(`Voulez-vous vraiment supprimer l'emplacement "${emplacement.code}" ?`)) {
+      return;
+    }
+
+    this.deletingId = emplacement.id;
+    this.error = null;
+
+    this.emplacementService.deleteEmplacement(emplacement.id).subscribe({
+      next: () => {
+        this.emplacements = this.emplacements.filter((item) => item.id !== emplacement.id);
+        this.extractZones();
+        this.filterEmplacements();
+        this.toast.success('Emplacement supprime avec succes');
+        this.deletingId = null;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Erreur lors de la suppression de l\'emplacement', err);
+        this.error = extractHttpErrorMessage(err, 'Impossible de supprimer cet emplacement');
+        this.deletingId = null;
         this.cdr.detectChanges();
       }
     });
