@@ -15,7 +15,7 @@ $shadow-soft: 0 4px 12px rgba(47, 66, 27, 0.10);
 :host {
   display: block;
   min-height: 100vh;
-  padding: 18px;
+  padding: 0;
   color: $text-main;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   overflow-x: hidden;
@@ -23,14 +23,15 @@ $shadow-soft: 0 4px 12px rgba(47, 66, 27, 0.10);
 }
 
 .article-container {
-  max-width: 1480px;
   width: 100%;
+  max-width: none;
   box-sizing: border-box;
-  margin: 0 auto;
+  margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 16px;
   min-width: 0;
+  padding: 18px;
 }
 
 /* Header */
@@ -47,6 +48,7 @@ $shadow-soft: 0 4px 12px rgba(47, 66, 27, 0.10);
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
+  width: 100%;
   background:
     linear-gradient(90deg, rgba(255, 255, 255, 0.94) 0%, rgba(255, 255, 255, 0.82) 55%, rgba(255, 253, 245, 0.74) 100%),
     url('/assets/logoArticle.png') center right / cover no-repeat;
@@ -141,6 +143,7 @@ $shadow-soft: 0 4px 12px rgba(47, 66, 27, 0.10);
   box-shadow: $shadow-card;
   box-sizing: border-box;
   min-width: 0;
+  width: 100%;
 }
 
 .filters-grid {
@@ -321,6 +324,7 @@ select.form-control {
   box-shadow: $shadow-card;
   overflow: hidden;
   min-width: 0;
+  width: 100%;
 }
 
 .table-responsive {
@@ -744,7 +748,12 @@ select.form-control {
 
 @media (max-width: 760px) {
   :host {
+    padding: 0;
+  }
+
+  .article-container {
     padding: 10px;
+    gap: 12px;
   }
 
   .page-header {
