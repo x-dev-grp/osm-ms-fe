@@ -33,6 +33,9 @@ export class OFListComponent implements OnInit {
   loading = true;
   searchCode = '';
   searching = false;
+  currentPage = 1;
+  pageSize = 10;
+  pageSizeOptions = [5, 10, 25, 50];
 
   constructor(
     private ofService: OFService,
@@ -54,6 +57,7 @@ export class OFListComponent implements OnInit {
             const dateB = new Date(b.createdDate || 0).getTime();
             return dateB - dateA; // plus récent en premier
           });
+        this.currentPage = 1;
 
         this.loading = false;
       },
@@ -62,6 +66,32 @@ export class OFListComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  get pagedOfs(): OrdreFabrication[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.ofs.slice(start, start + this.pageSize);
+  }
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.ofs.length / this.pageSize));
+  }
+
+  get paginationStart(): number {
+    return this.ofs.length ? (this.currentPage - 1) * this.pageSize + 1 : 0;
+  }
+
+  get paginationEnd(): number {
+    return Math.min(this.currentPage * this.pageSize, this.ofs.length);
+  }
+
+  onPageSizeChange(size: number): void {
+    this.pageSize = Number(size);
+    this.currentPage = 1;
+  }
+
+  goToPage(page: number): void {
+    this.currentPage = Math.min(Math.max(page, 1), this.totalPages);
   }
 
   getStatusClass(statut: StatutOF): string {

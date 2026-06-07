@@ -273,7 +273,7 @@
             </tr>
             </thead>
             <tbody>
-            @for (emp of filteredEmplacements; track trackByEmplacement($index, emp)) {
+            @for (emp of pagedEmplacements; track trackByEmplacement($index, emp)) {
               <tr class="table-row" [class.inactive-row]="!emp.actif">
                 <td>
                   <div class="name-cell">
@@ -369,7 +369,7 @@
         </div>
 
         <div class="mobile-list">
-          @for (emp of filteredEmplacements; track trackByEmplacement($index, emp)) {
+          @for (emp of pagedEmplacements; track trackByEmplacement($index, emp)) {
             <article class="mobile-card" [class.inactive-card]="!emp.actif">
               <div class="mobile-top">
                 <div>
@@ -422,6 +422,25 @@
               </div>
             </article>
           }
+        </div>
+
+        <div class="table-pagination">
+          <div class="pagination-summary">
+            {{ paginationStart }}-{{ paginationEnd }} sur {{ filteredEmplacements.length }} emplacement(s)
+          </div>
+          <div class="pagination-controls">
+            <label>
+              Lignes
+              <select class="page-size-select" [(ngModel)]="pageSize" (ngModelChange)="onPageSizeChange($event)">
+                <option *ngFor="let option of pageSizeOptions" [value]="option">{{ option }}</option>
+              </select>
+            </label>
+            <button class="page-btn" type="button" (click)="goToPage(1)" [disabled]="currentPage === 1">«</button>
+            <button class="page-btn" type="button" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">‹</button>
+            <span class="page-status">Page {{ currentPage }} / {{ totalPages }}</span>
+            <button class="page-btn" type="button" (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">›</button>
+            <button class="page-btn" type="button" (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages">»</button>
+          </div>
         </div>
       } @else {
         <div class="empty-state">

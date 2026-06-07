@@ -30,7 +30,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let of of ofs">
+      <tr *ngFor="let of of pagedOfs">
         <td class="of-code">
           <i class="fas fa-box-open"></i>
           {{ of.code }}
@@ -84,5 +84,24 @@
       </tr>
       </tbody>
     </table>
+
+    <div class="table-pagination" *ngIf="ofs.length > 0">
+      <div class="pagination-summary">
+        {{ paginationStart }}-{{ paginationEnd }} sur {{ ofs.length }} OF
+      </div>
+      <div class="pagination-controls">
+        <label>
+          Lignes
+          <select class="page-size-select" [(ngModel)]="pageSize" (ngModelChange)="onPageSizeChange($event)">
+            <option *ngFor="let option of pageSizeOptions" [value]="option">{{ option }}</option>
+          </select>
+        </label>
+        <button class="page-btn" type="button" (click)="goToPage(1)" [disabled]="currentPage === 1">«</button>
+        <button class="page-btn" type="button" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">‹</button>
+        <span class="page-status">Page {{ currentPage }} / {{ totalPages }}</span>
+        <button class="page-btn" type="button" (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">›</button>
+        <button class="page-btn" type="button" (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages">»</button>
+      </div>
+    </div>
   </div>
 </div>

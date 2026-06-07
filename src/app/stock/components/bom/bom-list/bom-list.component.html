@@ -95,7 +95,7 @@
 
         <tbody>
         <tr
-          *ngFor="let bom of displayedBoms"
+          *ngFor="let bom of pagedBoms"
           [class.row-active-bom]="bom.active"
           [class.row-inactive]="!bom.active"
           (click)="goToDetail(bom.id, $event)">
@@ -189,6 +189,25 @@
         </tr>
         </tbody>
       </table>
+    </div>
+
+    <div class="table-pagination" *ngIf="displayedBoms.length > 0">
+      <div class="pagination-summary">
+        {{ paginationStart }}-{{ paginationEnd }} sur {{ displayedBoms.length }} nomenclature(s)
+      </div>
+      <div class="pagination-controls">
+        <label>
+          Lignes
+          <select class="page-size-select" [(ngModel)]="pageSize" (ngModelChange)="onPageSizeChange($event)">
+            <option *ngFor="let option of pageSizeOptions" [value]="option">{{ option }}</option>
+          </select>
+        </label>
+        <button class="page-btn" type="button" (click)="goToPage(1)" [disabled]="currentPage === 1">«</button>
+        <button class="page-btn" type="button" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">‹</button>
+        <span class="page-status">Page {{ currentPage }} / {{ totalPages }}</span>
+        <button class="page-btn" type="button" (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">›</button>
+        <button class="page-btn" type="button" (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages">»</button>
+      </div>
     </div>
   </section>
 

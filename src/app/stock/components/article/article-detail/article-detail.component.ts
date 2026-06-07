@@ -26,6 +26,9 @@ export class ArticleDetailComponent implements OnInit {
   loading = true;
   Actif = false;
   mouvements: MouvementStock[] = [];
+  movementPage = 1;
+  movementPageSize = 10;
+  movementPageSizeOptions = [5, 10, 25, 50];
   loadingMouvements = false;
   showMouvementForm = false;
   mouvementType: TypeMouvement = TypeMouvement.ENTREE;
@@ -103,12 +106,39 @@ export class ArticleDetailComponent implements OnInit {
           (a, b) =>
             new Date(b.dateMouvement ?? '').getTime() - new Date(a.dateMouvement ?? '').getTime()
         );
+        this.movementPage = 1;
         this.loadingMouvements = false;
       },
       error: () => {
         this.loadingMouvements = false;
       }
     });
+  }
+
+  get pagedMouvements(): MouvementStock[] {
+    const start = (this.movementPage - 1) * this.movementPageSize;
+    return this.mouvements.slice(start, start + this.movementPageSize);
+  }
+
+  get movementTotalPages(): number {
+    return Math.max(1, Math.ceil(this.mouvements.length / this.movementPageSize));
+  }
+
+  get movementPaginationStart(): number {
+    return this.mouvements.length ? (this.movementPage - 1) * this.movementPageSize + 1 : 0;
+  }
+
+  get movementPaginationEnd(): number {
+    return Math.min(this.movementPage * this.movementPageSize, this.mouvements.length);
+  }
+
+  onMovementPageSizeChange(size: number): void {
+    this.movementPageSize = Number(size);
+    this.movementPage = 1;
+  }
+
+  goToMovementPage(page: number): void {
+    this.movementPage = Math.min(Math.max(page, 1), this.movementTotalPages);
   }
 
   onMouvement(): void {

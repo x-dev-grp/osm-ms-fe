@@ -27,6 +27,9 @@ export class MouvementListComponent implements OnInit, OnDestroy {
   typeFilter = '';
   searchTerm = '';
   showFilters = true;
+  currentPage = 1;
+  pageSize = 10;
+  pageSizeOptions = [10, 25, 50];
 
   private searchSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
@@ -72,6 +75,23 @@ export class MouvementListComponent implements OnInit, OnDestroy {
     }
 
     return `Dernier flux ${this.formatDatePart(latest)} a ${this.formatTimePart(latest)}`;
+  }
+
+  get pagedMouvements(): MouvementStock[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.filteredMouvements.slice(start, start + this.pageSize);
+  }
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.filteredMouvements.length / this.pageSize));
+  }
+
+  get paginationStart(): number {
+    return this.filteredMouvements.length ? (this.currentPage - 1) * this.pageSize + 1 : 0;
+  }
+
+  get paginationEnd(): number {
+    return Math.min(this.currentPage * this.pageSize, this.filteredMouvements.length);
   }
 
   ngOnInit(): void {
@@ -129,6 +149,7 @@ export class MouvementListComponent implements OnInit, OnDestroy {
     }
 
     this.filteredMouvements = filtered;
+    this.currentPage = 1;
   }
 
   resetFilters(): void {
@@ -139,6 +160,15 @@ export class MouvementListComponent implements OnInit, OnDestroy {
 
   onSearchInput(): void {
     this.searchSubject.next(this.searchTerm);
+  }
+
+  onPageSizeChange(size: number): void {
+    this.pageSize = Number(size);
+    this.currentPage = 1;
+  }
+
+  goToPage(page: number): void {
+    this.currentPage = Math.min(Math.max(page, 1), this.totalPages);
   }
 
   countByType(type: TypeMouvement): number {

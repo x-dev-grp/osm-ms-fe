@@ -70,8 +70,8 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let bon of filteredBons; let i = index">
-          <td class="text-muted">{{ i+1 }}</td>
+        <tr *ngFor="let bon of pagedBons; let i = index">
+          <td class="text-muted">{{ paginationStart + i }}</td>
           <td class="fw-bold">{{ bon.numeroBC }}</td>
           <td>{{ bon.createdDate | date:'dd/MM/yyyy' }}</td>
           <td class="text-center">{{ getNombreArticles(bon) }}</td>
@@ -107,6 +107,25 @@
         </tr>
         </tbody>
       </table>
+    </div>
+
+    <div class="table-pagination">
+      <div class="pagination-summary">
+        {{ paginationStart }}-{{ paginationEnd }} sur {{ filteredBons.length }} bon(s)
+      </div>
+      <div class="pagination-controls">
+        <label>
+          Lignes
+          <select class="page-size-select" [(ngModel)]="pageSize" (ngModelChange)="onPageSizeChange($event)">
+            <option *ngFor="let option of pageSizeOptions" [value]="option">{{ option }}</option>
+          </select>
+        </label>
+        <button class="page-btn" type="button" (click)="goToPage(1)" [disabled]="currentPage === 1">«</button>
+        <button class="page-btn" type="button" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">‹</button>
+        <span class="page-status">Page {{ currentPage }} / {{ totalPages }}</span>
+        <button class="page-btn" type="button" (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">›</button>
+        <button class="page-btn" type="button" (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages">»</button>
+      </div>
     </div>
   </div>
   

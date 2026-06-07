@@ -1,0 +1,11 @@
+.angular
+.git
+.github
+.idea
+dist
+node_modules
+npm-debug.log
+*.iml
+build_log.txt
+build_output.txt
+sass-warnings.txt

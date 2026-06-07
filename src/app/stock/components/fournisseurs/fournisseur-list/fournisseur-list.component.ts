@@ -18,6 +18,9 @@ export class FournisseurListComponent implements OnInit {
   filteredFournisseurs: Fournisseur[] = [];
   categories = Object.values(CategorieFournisseur);
   loading = false;
+  currentPage = 1;
+  pageSize = 10;
+  pageSizeOptions = [10, 25, 50];
 
   searchQuery = '';
   private searchSubject = new Subject<string>();
@@ -104,7 +107,34 @@ export class FournisseurListComponent implements OnInit {
 
       return match;
     });
+    this.currentPage = 1;
     this.cdr.detectChanges();
+  }
+
+  get pagedFournisseurs(): Fournisseur[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.filteredFournisseurs.slice(start, start + this.pageSize);
+  }
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.filteredFournisseurs.length / this.pageSize));
+  }
+
+  get paginationStart(): number {
+    return this.filteredFournisseurs.length ? (this.currentPage - 1) * this.pageSize + 1 : 0;
+  }
+
+  get paginationEnd(): number {
+    return Math.min(this.currentPage * this.pageSize, this.filteredFournisseurs.length);
+  }
+
+  onPageSizeChange(size: number): void {
+    this.pageSize = Number(size);
+    this.currentPage = 1;
+  }
+
+  goToPage(page: number): void {
+    this.currentPage = Math.min(Math.max(page, 1), this.totalPages);
   }
 
   resetFilters(): void {

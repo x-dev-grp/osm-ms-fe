@@ -87,6 +87,7 @@
               id="location-filter"
               class="filter-select"
               [(ngModel)]="selectedEmplacementId"
+              (ngModelChange)="onFiltersChanged()"
               [disabled]="loadingEmplacements"
             >
               <option value="">Tous les emplacements</option>
@@ -111,8 +112,9 @@
               class="filter-input"
               placeholder="Nom, code, code public..."
               [(ngModel)]="searchTerm"
+              (ngModelChange)="onFiltersChanged()"
             >
-            <button *ngIf="searchTerm" class="clear-search" type="button" (click)="searchTerm = ''">
+            <button *ngIf="searchTerm" class="clear-search" type="button" (click)="searchTerm = ''; onFiltersChanged()">
               <i class="fas fa-times"></i>
             </button>
           </div>
@@ -124,7 +126,7 @@
             Categorie
           </label>
           <div class="filter-select-wrapper">
-            <select id="category-filter" class="filter-select" [(ngModel)]="categorieFilter">
+            <select id="category-filter" class="filter-select" [(ngModel)]="categorieFilter" (ngModelChange)="onFiltersChanged()">
               <option value="">Toutes les categories</option>
               <option *ngFor="let cat of categories" [value]="cat">
                 {{ getCategorieLabel(cat) }}
@@ -146,19 +148,19 @@
         <div class="active-filters">
           <span class="active-label">Filtres actifs</span>
           @if (selectedEmplacementId) {
-            <button class="filter-chip" type="button" (click)="selectedEmplacementId = ''">
+            <button class="filter-chip" type="button" (click)="selectedEmplacementId = ''; onFiltersChanged()">
               Emplacement
               <i class="fas fa-times"></i>
             </button>
           }
           @if (searchTerm) {
-            <button class="filter-chip" type="button" (click)="searchTerm = ''">
+            <button class="filter-chip" type="button" (click)="searchTerm = ''; onFiltersChanged()">
               "{{ searchTerm }}"
               <i class="fas fa-times"></i>
             </button>
           }
           @if (categorieFilter) {
-            <button class="filter-chip" type="button" (click)="categorieFilter = ''">
+            <button class="filter-chip" type="button" (click)="categorieFilter = ''; onFiltersChanged()">
               {{ getCategorieLabel(categorieFilter) }}
               <i class="fas fa-times"></i>
             </button>
@@ -211,7 +213,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let stock of filteredStocks; trackBy: trackByStock" class="stock-row">
+            <tr *ngFor="let stock of pagedStocks; trackBy: trackByStock" class="stock-row">
               <td>
                 <div class="article-cell">
                   <span class="article-name">{{ stock.article.nom }}</span>
@@ -247,7 +249,7 @@
         </div>
 
         <div class="mobile-list">
-          <article *ngFor="let stock of filteredStocks; trackBy: trackByStock" class="stock-card">
+          <article *ngFor="let stock of pagedStocks; trackBy: trackByStock" class="stock-card">
             <div class="card-top">
               <div>
                 <span class="article-code">{{ stock.article.code || 'Sans code' }}</span>
@@ -288,6 +290,25 @@
               </div>
             </div>
           </article>
+        </div>
+
+        <div class="table-pagination">
+          <div class="pagination-summary">
+            {{ paginationStart }}-{{ paginationEnd }} sur {{ filteredStocks.length }} stock(s)
+          </div>
+          <div class="pagination-controls">
+            <label>
+              Lignes
+              <select class="page-size-select" [(ngModel)]="pageSize" (ngModelChange)="onPageSizeChange($event)">
+                <option *ngFor="let option of pageSizeOptions" [value]="option">{{ option }}</option>
+              </select>
+            </label>
+            <button class="page-btn" type="button" (click)="goToPage(1)" [disabled]="currentPage === 1">«</button>
+            <button class="page-btn" type="button" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">‹</button>
+            <span class="page-status">Page {{ currentPage }} / {{ totalPages }}</span>
+            <button class="page-btn" type="button" (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">›</button>
+            <button class="page-btn" type="button" (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages">»</button>
+          </div>
         </div>
       } @else {
         <div class="empty-state">

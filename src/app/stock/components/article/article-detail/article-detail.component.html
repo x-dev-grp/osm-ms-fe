@@ -336,7 +336,7 @@
         </thead>
 
         <tbody>
-        <tr *ngFor="let mvt of mouvements">
+        <tr *ngFor="let mvt of pagedMouvements">
           <td>{{ mvt.dateMouvement | date:'dd/MM/yyyy HH:mm' }}</td>
 
           <td>
@@ -356,6 +356,26 @@
         </tr>
         </tbody>
       </table>
+
+      <div class="table-pagination" *ngIf="!loadingMouvements && mouvements.length > 0">
+        <div class="pagination-summary">
+          {{ movementPaginationStart }}-{{ movementPaginationEnd }} sur {{ mouvements.length }} mouvement(s)
+        </div>
+
+        <div class="pagination-controls">
+          <label>
+            Lignes
+            <select class="page-size-select" [(ngModel)]="movementPageSize" (ngModelChange)="onMovementPageSizeChange($event)">
+              <option *ngFor="let option of movementPageSizeOptions" [value]="option">{{ option }}</option>
+            </select>
+          </label>
+          <button class="page-btn" type="button" (click)="goToMovementPage(1)" [disabled]="movementPage === 1">«</button>
+          <button class="page-btn" type="button" (click)="goToMovementPage(movementPage - 1)" [disabled]="movementPage === 1">‹</button>
+          <span class="page-status">Page {{ movementPage }} / {{ movementTotalPages }}</span>
+          <button class="page-btn" type="button" (click)="goToMovementPage(movementPage + 1)" [disabled]="movementPage === movementTotalPages">›</button>
+          <button class="page-btn" type="button" (click)="goToMovementPage(movementTotalPages)" [disabled]="movementPage === movementTotalPages">»</button>
+        </div>
+      </div>
     </div>
 
   </div>

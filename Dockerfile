@@ -40,17 +40,19 @@ FROM nginx:1.27-alpine AS runtime
 # Remove default welcome page
 RUN rm -rf /usr/share/nginx/html/*
 
-# Path to built files (override if your output isn't dist/*/browser/)
-ARG DIST_PATH="/app/dist/*/browser/"
+# Path to built files.
+ARG DIST_PATH="/app/dist/ui/"
 
-# Copy compiled Angular app to /osm
+# Copy compiled Angular app.
 COPY --from=build ${DIST_PATH} /usr/share/nginx/html/
 
-# Custom site config (serves app under /osm and handles SPA routing)
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Railway provides PORT at runtime; the official nginx image renders templates.
+ENV PORT=8080
+ENV BACKEND_URL=http://localhost:8084
+COPY nginx.conf.template /etc/nginx/templates/default.conf.template
 
 # Healthcheck (hits the app path)
-HEALTHCHECK CMD wget -qO- http://localhost/ >/dev/null 2>&1 || exit 1
+HEALTHCHECK CMD wget -qO- "http://localhost:${PORT}/" >/dev/null 2>&1 || exit 1
 
-EXPOSE 80
+EXPOSE 8080
 CMD ["nginx", "-g", "daemon off;"]

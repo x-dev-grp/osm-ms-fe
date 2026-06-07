@@ -21,6 +21,9 @@ export class BomListComponent implements OnInit {
   filterActive: '' | 'active' | 'inactive' = '';
   activatingId: string | null = null;
   activeDropdown: string | null = null;
+  currentPage = 1;
+  pageSize = 10;
+  pageSizeOptions = [10, 25, 50];
 
   constructor(
     private bomService: BomService,
@@ -64,6 +67,33 @@ export class BomListComponent implements OnInit {
       }
       return matchesSearch;
     });
+    this.currentPage = 1;
+  }
+
+  get pagedBoms(): Bom[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.displayedBoms.slice(start, start + this.pageSize);
+  }
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.displayedBoms.length / this.pageSize));
+  }
+
+  get paginationStart(): number {
+    return this.displayedBoms.length ? (this.currentPage - 1) * this.pageSize + 1 : 0;
+  }
+
+  get paginationEnd(): number {
+    return Math.min(this.currentPage * this.pageSize, this.displayedBoms.length);
+  }
+
+  onPageSizeChange(size: number): void {
+    this.pageSize = Number(size);
+    this.currentPage = 1;
+  }
+
+  goToPage(page: number): void {
+    this.currentPage = Math.min(Math.max(page, 1), this.totalPages);
   }
 
   resetFilters(): void {

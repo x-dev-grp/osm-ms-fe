@@ -183,7 +183,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let mvt of filteredMouvements; trackBy: trackByMovement" class="movement-row">
+          <tr *ngFor="let mvt of pagedMouvements; trackBy: trackByMovement" class="movement-row">
             <td class="date-cell">
               <span class="date">{{ formatDatePart(mvt.dateMouvement) }}</span>
               <span class="time">{{ formatTimePart(mvt.dateMouvement) }}</span>
@@ -224,7 +224,7 @@
       </div>
 
       <div class="mobile-list">
-        <article *ngFor="let mvt of filteredMouvements; trackBy: trackByMovement" class="movement-card">
+        <article *ngFor="let mvt of pagedMouvements; trackBy: trackByMovement" class="movement-card">
           <div class="card-top">
             <div>
               <span class="date">{{ formatDatePart(mvt.dateMouvement) }}</span>
@@ -249,6 +249,25 @@
             <p>{{ mvt.motif || 'Aucun motif saisi' }}</p>
           </div>
         </article>
+      </div>
+
+      <div class="table-pagination">
+        <div class="pagination-summary">
+          {{ paginationStart }}-{{ paginationEnd }} sur {{ filteredMouvements.length }} mouvement(s)
+        </div>
+        <div class="pagination-controls">
+          <label>
+            Lignes
+            <select class="page-size-select" [(ngModel)]="pageSize" (ngModelChange)="onPageSizeChange($event)">
+              <option *ngFor="let option of pageSizeOptions" [value]="option">{{ option }}</option>
+            </select>
+          </label>
+          <button class="page-btn" type="button" (click)="goToPage(1)" [disabled]="currentPage === 1">«</button>
+          <button class="page-btn" type="button" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">‹</button>
+          <span class="page-status">Page {{ currentPage }} / {{ totalPages }}</span>
+          <button class="page-btn" type="button" (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">›</button>
+          <button class="page-btn" type="button" (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages">»</button>
+        </div>
       </div>
     </ng-container>
 
