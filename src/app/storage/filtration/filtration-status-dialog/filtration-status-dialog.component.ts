@@ -2,10 +2,13 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
+import { switchMap } from 'rxjs';
 
 import { FiltrationApiService } from '../../../shared/services/filtration-api.service';
 import { FiltrationOperation } from '../../../shared/models/filtration-operation';
 import { FiltrationStatus, FILTRATION_STATUS_LABEL } from '../../../shared/models/filtration-status';
+import { ToastService } from '../../../shared/services/toast.service';
+import { extractHttpErrorMessage } from '../../../shared/utils/http-error.util';
 import { MatOption } from "@angular/material/core";
 import { MatFormField, MatHint, MatLabel } from "@angular/material/form-field";
 import { MatSelect } from "@angular/material/select";
@@ -38,7 +41,6 @@ import { MatButton } from "@angular/material/button";
 export class FiltrationStatusDialogComponent implements OnInit {
   loading = false;
 
-  readonly statuses: FiltrationStatus[] = ['CREATED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'];
   readonly label = FILTRATION_STATUS_LABEL;
 
   form = this.fb.group({
@@ -50,13 +52,39 @@ export class FiltrationStatusDialogComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private api: FiltrationApiService,
+    private toast: ToastService,
     private ref: MatDialogRef<FiltrationStatusDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { row: FiltrationOperation }
   ) {
     const allowed = this.allowedStatuses();
     if (allowed.length > 0) {
-      this.form.patchValue({ status: allowed[0] });
+      const preferred = allowed.includes('COMPLETED') ? 'COMPLETED' : allowed[0];
+      this.form.patchValue({
+        status: preferred,
+        volumeAfter: preferred === 'COMPLETED' ? (data.row.volumeFiltered ?? null) : null
+      });
+
+      if (preferred === 'COMPLETED') {
+        this.form.get('volumeAfter')?.setValidators([Validators.required, Validators.min(0)]);
+        this.form.get('volumeAfter')?.updateValueAndValidity();
+      }
     }
+  }
+
+  get dialogTitle(): string {
+    const current = this.data.row.status as FiltrationStatus;
+    if (current === 'IN_PROGRESS' || this.allowedStatuses().includes('COMPLETED')) {
+      return 'Terminer la filtration';
+    }
+    return 'Changer le statut';
+  }
+
+  get currentStatusLabel(): string {
+    return this.statusLabel(this.data.row.status as FiltrationStatus);
+  }
+
+  statusLabel(status: FiltrationStatus): string {
+    return this.label[status] ?? status;
   }
 
   ngOnInit() {
@@ -66,6 +94,9 @@ export class FiltrationStatusDialogComponent implements OnInit {
 
       if (status === 'COMPLETED') {
         volumeAfterControl?.setValidators([Validators.required, Validators.min(0)]);
+        if (volumeAfterControl?.value == null && this.data.row.volumeFiltered != null) {
+          volumeAfterControl?.setValue(this.data.row.volumeFiltered);
+        }
       } else {
         volumeAfterControl?.clearValidators();
         volumeAfterControl?.setValue(null);
@@ -79,9 +110,9 @@ export class FiltrationStatusDialogComponent implements OnInit {
 
     switch (current) {
       case 'CREATED':
-        return ['IN_PROGRESS'];
+        return ['IN_PROGRESS', 'COMPLETED'];
       case 'IN_PROGRESS':
-        return ['COMPLETED', 'CANCELLED'];
+        return ['COMPLETED'];
       case 'COMPLETED':
       case 'CANCELLED':
       default:
@@ -89,9 +120,17 @@ export class FiltrationStatusDialogComponent implements OnInit {
     }
   }
 
-  //renvoi true si l'utilisateur
   isCompleteSelected(): boolean {
     return this.form.get('status')?.value === 'COMPLETED';
+  }
+
+  showsCompleteHint(): boolean {
+    return this.isCompleteSelected() && this.data.row.status === 'CREATED';
+  }
+
+  private handleError(error: unknown, fallback: string): void {
+    this.toast.error(extractHttpErrorMessage(error, fallback));
+    this.loading = false;
   }
 
   save(): void {
@@ -128,10 +167,29 @@ export class FiltrationStatusDialogComponent implements OnInit {
     if (currentStatus === 'CREATED' && newStatus === 'IN_PROGRESS') {
       this.api.start(op.operationId).subscribe({
         next: () => this.ref.close(true),
-        error: (error) => {
-          console.error('Erreur:', error);
-          this.loading = false;
-        },
+        error: (error) => this.handleError(error, 'Impossible de demarrer la filtration'),
+      });
+      return;
+    }
+
+    // CREATED -> COMPLETED (demarrer puis terminer)
+    if (currentStatus === 'CREATED' && newStatus === 'COMPLETED') {
+      const volumeAfter = this.form.get('volumeAfter')?.value;
+
+      if (volumeAfter === null || volumeAfter === undefined || volumeAfter < 0) {
+        this.loading = false;
+        this.form.get('volumeAfter')?.markAsTouched();
+        return;
+      }
+
+      this.api.start(op.operationId).pipe(
+        switchMap(() => this.api.complete(op.operationId, {
+          volumeAfter: Number(volumeAfter),
+          note: note || undefined,
+        }))
+      ).subscribe({
+        next: () => this.ref.close(true),
+        error: (error) => this.handleError(error, 'Impossible de terminer la filtration'),
       });
       return;
     }
@@ -151,25 +209,7 @@ export class FiltrationStatusDialogComponent implements OnInit {
         note: note || undefined,
       }).subscribe({
         next: () => this.ref.close(true),
-        error: (error) => {
-          console.error('Erreur:', error);
-          this.loading = false;
-        },
-      });
-      return;
-    }
-
-    // IN_PROGRESS -> CANCELLED
-    if (currentStatus === 'IN_PROGRESS' && newStatus === 'CANCELLED') {
-      this.api.updateStatus(op.operationId, {
-        status: newStatus,
-        note: note || undefined,
-      }).subscribe({
-        next: () => this.ref.close(true),
-        error: (error) => {
-          console.error('Erreur:', error);
-          this.loading = false;
-        },
+        error: (error) => this.handleError(error, 'Impossible de terminer la filtration'),
       });
       return;
     }

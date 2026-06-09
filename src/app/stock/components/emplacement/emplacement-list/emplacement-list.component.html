@@ -269,6 +269,10 @@
               <th class="text-center">Capacite</th>
               <th class="text-center">Temperature</th>
               <th class="text-center">Statut</th>
+              <th class="sortable-th text-center" (click)="toggleCreatedDateSort()">
+                Date création
+                <i class="fas" [ngClass]="sortDirection === 'desc' ? 'fa-arrow-down' : 'fa-arrow-up'"></i>
+              </th>
               <th class="text-center">Actions</th>
             </tr>
             </thead>
@@ -329,6 +333,14 @@
                     <span class="status-dot"></span>
                     {{ getDisponibiliteLabel(emp.disponible, emp.reservePour) }}
                   </span>
+                </td>
+
+                <td class="text-center">
+                  @if (emp.createdDate) {
+                    {{ emp.createdDate | date:'dd/MM/yyyy HH:mm' }}
+                  } @else {
+                    <span class="metric-empty">-</span>
+                  }
                 </td>
 
                 <td class="text-center">

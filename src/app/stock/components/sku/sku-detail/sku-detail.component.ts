@@ -18,6 +18,7 @@ import {
   productTypeLabel,
   productUnitsPerCarton
 } from '../../../models/sku.model';
+import { resolveQualityGradeLabel } from '../../../../shared/models/quality-grades.enum';
 
 @Component({
   selector: 'app-sku-detail',
@@ -152,6 +153,10 @@ export class SkuDetailComponent implements OnInit {
 
   formatProductType(type?: ProductType): string {
     return productTypeLabel(type);
+  }
+
+  formatGradeLabel(grade?: string | null): string {
+    return resolveQualityGradeLabel(grade);
   }
 
   getVolumeParPalette(): number | null {

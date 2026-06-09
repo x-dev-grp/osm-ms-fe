@@ -127,7 +127,23 @@ export class FiltrationListComponent {
   }
 
   canDelete(row: FiltrationOperation): boolean {
-    return (row.status as string) !== 'CANCELLED';
+    return (row.status as string) === 'CREATED';
+  }
+
+  statusActionLabel(row: FiltrationOperation): string {
+    const status = row.status as string;
+    if (status === 'CREATED' || status === 'IN_PROGRESS') {
+      return 'Terminer';
+    }
+    return 'Changer statut';
+  }
+
+  statusActionIcon(row: FiltrationOperation): string {
+    const status = row.status as string;
+    if (status === 'CREATED' || status === 'IN_PROGRESS') {
+      return 'task_alt';
+    }
+    return 'swap_horiz';
   }
 
   canTraceability(row: FiltrationOperation): boolean {

@@ -89,6 +89,10 @@
           <th>Version</th>
           <th>Statut</th>
           <th class="num">Composants</th>
+          <th class="sortable-th" (click)="toggleCreatedDateSort()">
+            Date création
+            <i class="fas" [ngClass]="sortDirection === 'desc' ? 'fa-arrow-down' : 'fa-arrow-up'"></i>
+          </th>
           <th class="actions-col">Actions</th>
         </tr>
         </thead>
@@ -135,6 +139,14 @@
             <span class="component-count">
               {{ bom.lines?.length || 0 }}
             </span>
+          </td>
+
+          <td>
+            @if (bom.createdDate) {
+              {{ bom.createdDate | date:'dd/MM/yyyy HH:mm' }}
+            } @else {
+              —
+            }
           </td>
 
           <td class="actions-col" (click)="$event.stopPropagation()">

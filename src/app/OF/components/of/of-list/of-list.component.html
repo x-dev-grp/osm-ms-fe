@@ -1,107 +1,279 @@
-<div class="of-list-page">
-  <div class="list-header">
-    <div class="header-left">
-      <h2 class="page-title">Ordres de Fabrication</h2>
-      <p class="page-subtitle">Suivez et gérez vos ordres de fabrication en temps réel</p>
+<div class="of-page">
+  <section class="hero-card">
+    <div class="hero-content">
+      <div class="hero-icon">
+        <mat-icon>assignment</mat-icon>
+      </div>
+
+      <div>
+        <div class="eyebrow">Production · Fabrication</div>
+        <h1>Ordres de Fabrication</h1>
+        <p>Suivez et gérez vos ordres de fabrication en temps réel.</p>
+      </div>
     </div>
+
     <div class="header-actions">
-      <button class="btn-action create" mat-flat-button color="primary" routerLink="/of/nouveau">
-        <i class="fas fa-plus"></i>
+      <button
+        mat-icon-button
+        class="btn-refresh icon-only-button"
+        matTooltip="Actualiser"
+        matTooltipPosition="above"
+        aria-label="Actualiser"
+        (click)="loadOFs()"
+        [disabled]="loading()"
+      >
+        <mat-icon [class.animate-spin]="loading()">refresh</mat-icon>
+      </button>
+
+      <button
+        mat-icon-button
+        class="btn-create icon-only-button"
+        matTooltip="Nouvel OF"
+        matTooltipPosition="above"
+        aria-label="Nouvel OF"
+        routerLink="/of/nouveau"
+      >
+        <mat-icon>add</mat-icon>
       </button>
     </div>
-  </div>
+  </section>
 
-  <div *ngIf="loading" class="loading-container">
-    <div class="spinner-border"></div>
-    <p>Chargement des ordres de conditionnement...</p>
-  </div>
-
-  <div *ngIf="!loading" class="table-container">
-    <table class="of-table">
-      <thead>
-      <tr>
-        <th>Code OF</th>
-        <th>Produit</th>
-        <th>Statut</th>
-        <th>Quantité cible</th>
-        <th>Bon / NC</th>
-        <th>Début prévu</th>
-        <th>Actions</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let of of pagedOfs">
-        <td class="of-code">
-          <i class="fas fa-box-open"></i>
-          {{ of.code }}
-        </td>
-        <td>{{ of.productName || of.skuCode || of.productId || of.skuId }}</td>
-        <td>
-          <span class="status-badge" [ngClass]="getStatusClass(of.statut)">
-            {{ of.statut }}
-          </span>
-        </td>
-        <td>{{ of.quantiteCible }}</td>
-        <td>
-          <span class="good">{{ of.quantiteBonne || 0 }}</span>
-          <span class="separator">/</span>
-          <span class="nc">{{ of.quantiteNC || 0 }}</span>
-        </td>
-        <td>{{ of.dateDebutPrevue | date:'dd/MM/yyyy HH:mm' }}</td>
-        <td class="actions">
-          <!-- ✅ Menu à 3 points -->
-          <button mat-icon-button [matMenuTriggerFor]="menu" class="btn-menu-dots" aria-label="Actions">
-            <mat-icon>more_vert</mat-icon>
-          </button>
-          <mat-menu #menu="matMenu">
-            <button mat-menu-item type="button" (click)="viewOF(of)">
-              <mat-icon>visibility</mat-icon>
-              <span>Voir OF</span>
-            </button>
-
-            <button mat-menu-item type="button" [routerLink]="['/of/modifier', of.id]">
-              <mat-icon>edit</mat-icon>
-              <span>Modifier</span>
-            </button>
-
-            <button mat-menu-item type="button" (click)="goToProduction(of)">
-              <mat-icon>precision_manufacturing</mat-icon>
-              <span>Production</span>
-            </button>
-
-            <button mat-menu-item type="button" (click)="goToQualityControl(of)">
-              <mat-icon>fact_check</mat-icon>
-              <span>Contrôle qualité</span>
-            </button>
-          </mat-menu>        </td>
-      </tr>
-      <tr *ngIf="ofs.length === 0">
-        <td colspan="7" class="empty-state">
-          <i class="fas fa-clipboard-list"></i>
-          <p>Aucun ordre de conditionnement trouvé</p>
-          <button class="btn-create-empty" routerLink="/of/nouveau">Créer un nouvel OF</button>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-
-    <div class="table-pagination" *ngIf="ofs.length > 0">
-      <div class="pagination-summary">
-        {{ paginationStart }}-{{ paginationEnd }} sur {{ ofs.length }} OF
+  <section class="kpis">
+    <div class="kpi-card kpi-total">
+      <div class="kpi-top">
+        <div>
+          <div class="label">Total OF</div>
+          <div class="value">{{ totalCount() }}</div>
+        </div>
+        <div class="kpi-icon">
+          <mat-icon>inventory_2</mat-icon>
+        </div>
       </div>
-      <div class="pagination-controls">
-        <label>
-          Lignes
-          <select class="page-size-select" [(ngModel)]="pageSize" (ngModelChange)="onPageSizeChange($event)">
-            <option *ngFor="let option of pageSizeOptions" [value]="option">{{ option }}</option>
-          </select>
-        </label>
-        <button class="page-btn" type="button" (click)="goToPage(1)" [disabled]="currentPage === 1">«</button>
-        <button class="page-btn" type="button" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">‹</button>
-        <span class="page-status">Page {{ currentPage }} / {{ totalPages }}</span>
-        <button class="page-btn" type="button" (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">›</button>
-        <button class="page-btn" type="button" (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages">»</button>
+      <div class="kpi-caption">Tous les ordres enregistrés</div>
+    </div>
+
+    <div class="kpi-card kpi-ok">
+      <div class="kpi-top">
+        <div>
+          <div class="label">En cours</div>
+          <div class="value">{{ inProgressCount() }}</div>
+        </div>
+        <div class="kpi-icon">
+          <mat-icon>precision_manufacturing</mat-icon>
+        </div>
+      </div>
+      <div class="kpi-caption">OF actuellement en production</div>
+    </div>
+
+    <div class="kpi-card kpi-warn">
+      <div class="kpi-top">
+        <div>
+          <div class="label">Terminés</div>
+          <div class="value">{{ completedCount() }}</div>
+        </div>
+        <div class="kpi-icon">
+          <mat-icon>task_alt</mat-icon>
+        </div>
+      </div>
+      <div class="kpi-caption">OF terminés ou clôturés</div>
+    </div>
+  </section>
+
+  <section class="filters-card">
+    <div class="filters-title">
+      <mat-icon>tune</mat-icon>
+      <span>Filtres de recherche</span>
+    </div>
+
+    <div class="filters-grid">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Rechercher</mat-label>
+        <mat-icon matPrefix>search</mat-icon>
+        <input
+          matInput
+          (input)="onSearch($event)"
+          (keydown)="onSearchKeydown($event)"
+          [value]="searchTerm()"
+          placeholder="Code OF, produit, ligne..."
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Statut</mat-label>
+        <mat-icon matPrefix>radio_button_checked</mat-icon>
+        <mat-select (selectionChange)="onStatusChange($event.value)" [value]="statusFilter()">
+          <mat-option value="">Tous les statuts</mat-option>
+          <mat-option *ngFor="let status of statusOptions" [value]="status">
+            {{ getStatusLabel(status) }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button
+        mat-icon-button
+        class="btn-reset icon-only-button"
+        matTooltip="Réinitialiser les filtres"
+        matTooltipPosition="above"
+        aria-label="Réinitialiser les filtres"
+        (click)="resetFilters()"
+        [disabled]="!searchTerm() && !statusFilter()"
+      >
+        <mat-icon>filter_alt_off</mat-icon>
+      </button>
+    </div>
+  </section>
+
+  <section class="table-card">
+    <div class="table-header">
+      <div>
+        <h2>Liste des ordres</h2>
+        <p>Vue opérationnelle des ordres de fabrication.</p>
+      </div>
+      <div class="table-badge">
+        {{ totalCount() }} OF
       </div>
     </div>
-  </div>
+
+    @if (loading()) {
+      <div class="table-loading">
+        <mat-spinner diameter="36"></mat-spinner>
+      </div>
+    }
+
+    <div class="table-wrapper">
+      <table mat-table [dataSource]="dataSource" matSort matSortActive="createdDate" matSortDirection="desc" class="w-full">
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="statut">Statut</th>
+          <td mat-cell *matCellDef="let row">
+            <span
+              class="status-pill inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border"
+              [ngClass]="getStatusClass(row.statut)"
+            >
+              {{ getStatusLabel(row.statut) }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="code">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="code">Code OF</th>
+          <td mat-cell *matCellDef="let row">
+            <code>{{ row.code }}</code>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="product">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="productName">Produit</th>
+          <td mat-cell *matCellDef="let row">
+            <div class="line-name">
+              <span class="line-dot"></span>
+              <span>{{ productLabel(row) }}</span>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="quantiteCible">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="quantiteCible">Quantité cible</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="speed">{{ row.quantiteCible }}</span>
+            <span class="speed-unit" *ngIf="row.unite">{{ row.unite }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="quantities">
+          <th mat-header-cell *matHeaderCellDef>Bon / NC</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="qty-good">{{ row.quantiteBonne || 0 }}</span>
+            <span class="qty-separator">/</span>
+            <span class="qty-nc">{{ row.quantiteNC || 0 }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="dateDebutPrevue">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="dateDebutPrevue">Début prévu</th>
+          <td mat-cell *matCellDef="let row">
+            @if (row.dateDebutPrevue) {
+              <span>{{ row.dateDebutPrevue | date:'dd/MM/yyyy HH:mm' }}</span>
+            } @else {
+              <span class="muted">-</span>
+            }
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="createdDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="createdDate">Date création</th>
+          <td mat-cell *matCellDef="let row">
+            @if (row.createdDate) {
+              <span>{{ row.createdDate | date:'dd/MM/yyyy HH:mm' }}</span>
+            } @else {
+              <span class="muted">-</span>
+            }
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let row" class="text-right">
+            <button
+              mat-icon-button
+              class="action-button icon-only-button"
+              matTooltip="Actions"
+              matTooltipPosition="above"
+              aria-label="Actions"
+              [matMenuTriggerFor]="menu"
+            >
+              <mat-icon>more_vert</mat-icon>
+            </button>
+
+            <mat-menu #menu="matMenu" xPosition="before">
+              <button mat-menu-item type="button" (click)="viewOF(row)">
+                <mat-icon>visibility</mat-icon>
+                <span>Voir OF</span>
+              </button>
+
+              <button mat-menu-item type="button" [routerLink]="['/of/modifier', row.id]">
+                <mat-icon>edit</mat-icon>
+                <span>Modifier</span>
+              </button>
+
+              <mat-divider></mat-divider>
+
+              <button mat-menu-item type="button" (click)="goToProduction(row)">
+                <mat-icon>precision_manufacturing</mat-icon>
+                <span>Production</span>
+              </button>
+
+              <button mat-menu-item type="button" (click)="goToQualityControl(row)">
+                <mat-icon>fact_check</mat-icon>
+                <span>Contrôle qualité</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell empty" colspan="8">
+            <div class="empty-state">
+              <mat-icon>assignment</mat-icon>
+
+              @if (!loading()) {
+                <strong>Aucun ordre de fabrication trouvé.</strong>
+                <span>Modifiez les filtres ou créez un nouvel OF.</span>
+              } @else {
+                <strong>Chargement des données...</strong>
+              }
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <mat-paginator
+      [pageSizeOptions]="[10, 25, 50]"
+      aria-label="Sélectionner la page"
+    ></mat-paginator>
+  </section>
 </div>

@@ -726,3 +726,16 @@ $shadow-card: 0 4px 13px rgba(47, 66, 27, 0.08);
   }
 }
 
+.sortable-th {
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+
+  mat-icon {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+    vertical-align: middle;
+    margin-left: 0.25rem;
+  }
+}

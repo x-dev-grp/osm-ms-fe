@@ -17,6 +17,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { TypeCategory } from "../../../shared/models/type-category.enum";
+import { resolveQualityGradeLabel } from '../../../shared/models/quality-grades.enum';
 import { ProductionGenealogy, ProductionRootSource } from '../../../shared/models/production-genealogy.model';
 import { ProductionTraceabilityService } from '../../../shared/services/production-traceability.service';
 
@@ -152,18 +153,7 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
   }
 
   getQualityGradeLabel(value: unknown): string {
-    const resolved = this.resolveBaseTypeLabel(value, this.oilTypes);
-    const qualityLabels: Record<string, string> = {
-      EXTRA_VIRGIN: "Huile d'olive vierge extra",
-      VIRGIN: "Huile d'olive vierge",
-      ORDINARY_VIRGIN: "Huile d'olive vierge courante",
-      LAMPANTE: "Huile d'olive lampante",
-      REFINED: "Huile d'olive raffinee",
-      OLIVE_OIL: "Huile d'olive",
-      POMACE_OIL: "Huile de grignons d'olive"
-    };
-
-    return qualityLabels[resolved] || resolved;
+    return resolveQualityGradeLabel(typeof value === 'string' ? value : String(value ?? ''));
   }
 
   private resolveBaseTypeLabel(value: unknown, source: BaseType[]): string {

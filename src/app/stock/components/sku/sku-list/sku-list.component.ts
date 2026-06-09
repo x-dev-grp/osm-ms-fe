@@ -28,6 +28,7 @@ import {
   ConfirmationDialogService,
   ConfirmationType
 } from '../../../../shared/services/confirmation-dialog.service';
+import { configureMatTableCreatedDateSort } from '../../../../shared/utils/table-sort.util';
 
 @Component({
   selector: 'app-sku-list',
@@ -62,7 +63,7 @@ export class SkuListComponent implements OnInit, AfterViewInit {
   deletingId = signal<string | null>(null);
 
   readonly productTypes: ProductType[] = ['VRAC', 'NON_VRAC'];
-  displayedColumns: string[] = ['status', 'code', 'name', 'type', 'category', 'packaging', 'actions'];
+  displayedColumns: string[] = ['status', 'code', 'name', 'type', 'category', 'packaging', 'createdDate', 'actions'];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -76,6 +77,8 @@ export class SkuListComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.loadSkus();
+
+    configureMatTableCreatedDateSort(this.dataSource);
 
     this.dataSource.filterPredicate = (data: SKU, filter: string) => {
       const searchObj = JSON.parse(filter) as {
@@ -110,16 +113,7 @@ export class SkuListComponent implements OnInit, AfterViewInit {
 
     this.skuService.getAllProducts().subscribe({
       next: (data) => {
-        const sorted = [...(data ?? [])].sort((a, b) => {
-          if (a.actif !== b.actif) {
-            return a.actif ? -1 : 1;
-          }
-          const dateA = a.createdDate ? new Date(a.createdDate).getTime() : 0;
-          const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
-          return dateB - dateA;
-        });
-
-        this.dataSource.data = sorted;
+        this.dataSource.data = data ?? [];
         this.loading.set(false);
         this.applyFilters();
       },

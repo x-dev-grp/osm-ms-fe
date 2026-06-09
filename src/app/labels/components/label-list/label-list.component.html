@@ -129,9 +129,9 @@
       </div>
     </div>
 
-    <table mat-table [dataSource]="dataSource" class="modern-table">
+    <table mat-table [dataSource]="dataSource" matSort matSortActive="createdDate" matSortDirection="desc" class="modern-table">
       <ng-container matColumnDef="lotNumber">
-        <th mat-header-cell *matHeaderCellDef>N� Lot</th>
+        <th mat-header-cell *matHeaderCellDef>N° Lot</th>
         <td mat-cell *matCellDef="let label">
           <span class="lot-pill">{{ label.lotNumber || '-' }}</span>
         </td>
@@ -169,6 +169,17 @@
       <ng-container matColumnDef="packagingDate">
         <th mat-header-cell *matHeaderCellDef>Date cond.</th>
         <td mat-cell *matCellDef="let label" class="text-secondary">{{ label.packagingDate | date:'dd/MM/yyyy' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="createdDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="createdDate">Date création</th>
+        <td mat-cell *matCellDef="let label" class="text-secondary">
+          @if (labelCreatedDate(label); as createdDate) {
+            {{ createdDate | date:'dd/MM/yyyy HH:mm' }}
+          } @else {
+            -
+          }
+        </td>
       </ng-container>
 
       <ng-container matColumnDef="labelCategory">

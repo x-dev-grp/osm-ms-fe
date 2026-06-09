@@ -155,13 +155,12 @@
             <label for="grade">Grade huile</label>
             <div class="input-with-icon">
               <i class="fas fa-certificate"></i>
-              <input
-                type="text"
-                id="grade"
-                class="form-control"
-                formControlName="grade"
-                placeholder="Extra vierge, vierge, lampante"
-              />
+              <select id="grade" class="form-select" formControlName="grade">
+                <option value="">— Sélectionner un grade —</option>
+                <option *ngFor="let grade of grades" [value]="grade">
+                  {{ ('OIL_TRANSACTIONS.QUALITY_GRADES.' + grade) | translate }}
+                </option>
+              </select>
             </div>
           </div>
 

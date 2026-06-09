@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { SKUService } from '../../../services/sku.service';
 import { ProductType, ProductUnitOfMeasure, SKU, productTypeLabel } from '../../../models/sku.model';
+import { QualityGrades } from '../../../../shared/models/quality-grades.enum';
 import { ArticleService } from '../../../services/article.service';
 import { Article, CategorieArticle } from '../../../models/article.model';
 import { BomService } from '../../../services/BomService';
@@ -25,7 +27,7 @@ export interface BomLineUi {
 @Component({
   selector: 'app-sku-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, ProductLabelsComponent],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, ProductLabelsComponent, TranslateModule],
   templateUrl: './sku-form.component.html',
   styleUrls: ['./sku-form.component.scss']
 })
@@ -37,6 +39,7 @@ export class SkuFormComponent implements OnInit {
   submitting = false;
   createTicketAfterSave = false;
   readonly productTypes: ProductType[] = ['VRAC', 'NON_VRAC'];
+  readonly grades = Object.values(QualityGrades);
   readonly unitOptions: ProductUnitOfMeasure[] = ['L', 'KG', 'BOTTLE', 'CARTON'];
   storageUnits: StorageUnitDto[] = [];
 
@@ -90,7 +93,7 @@ export class SkuFormComponent implements OnInit {
       category: [{ value: '', disabled: true }, [Validators.required]],
       unitOfMeasure: [{ value: 'BOTTLE', disabled: true }],
       description: [''],
-      grade: [''],
+      grade: ['' as QualityGrades | ''],
       origin: [''],
       harvestCampaign: [''],
       volume: [null],

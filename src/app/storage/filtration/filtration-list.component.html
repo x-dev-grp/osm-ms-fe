@@ -258,8 +258,8 @@
                   </button>
 
                   <button mat-menu-item (click)="onChangeStatus(row)" [disabled]="!canChangeStatus(row)">
-                    <mat-icon>swap_horiz</mat-icon>
-                    <span>Changer statut</span>
+                    <mat-icon>{{ statusActionIcon(row) }}</mat-icon>
+                    <span>{{ statusActionLabel(row) }}</span>
                   </button>
 
                   <mat-divider></mat-divider>
@@ -279,6 +279,7 @@
                   <button mat-menu-item class="danger" (click)="onDelete(row)" [disabled]="!canDelete(row)">
                     <mat-icon>delete</mat-icon>
                     <span>Supprimer</span>
+                    <span class="menu-hint" *ngIf="!canDelete(row)">(en cours)</span>
                   </button>
                 </mat-menu>
               </td>

@@ -15,6 +15,7 @@ import { ExpeditionService } from '../../../services/expedition.service';
 import { OFService } from '../../../../OF/services/OFService';
 import { OrdreFabrication } from '../../../../OF/models/of.model';
 import { ToastService } from '../../../../shared/services/toast.service';
+import { extractHttpErrorMessage } from '../../../../shared/utils/http-error.util';
 import { PdfGeneratorExpeditionService } from '../../../../shared/services/pdf-generator-expedition.service';
 import { CompanyProfileService } from '../../../../shared/services/company-profile.service';
 import { PdfExpeditionConfig } from '../../../../shared/models/pdf-config.model';
@@ -511,7 +512,7 @@ export class ProjetExpeditionComponent implements OnInit {
         },
         error: (err) => {
           console.error('Erreur creation expedition', err);
-          this.toast.error('Erreur lors de la creation de l\'expedition');
+          this.toast.error(extractHttpErrorMessage(err, 'Erreur lors de la creation de l\'expedition'));
           this.creating = false;
         }
       });

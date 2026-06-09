@@ -101,6 +101,10 @@
             <th>Contact</th>
             <th>Localisation</th>
             <th>Type</th>
+            <th class="sortable-th" (click)="toggleCreatedDateSort()">
+              Date création
+              <i class="fas" [ngClass]="sortDirection === 'desc' ? 'fa-arrow-down' : 'fa-arrow-up'"></i>
+            </th>
             <th class="text-center">Actions</th>
           </tr>
           </thead>
@@ -167,6 +171,14 @@
                   }
                 </td>
 
+                <td>
+                  @if (client.createdDate) {
+                    {{ client.createdDate | date:'dd/MM/yyyy HH:mm' }}
+                  } @else {
+                    <span class="muted-text">-</span>
+                  }
+                </td>
+
                 <td class="text-center">
                   <div class="action-buttons-cell" (click)="$event.stopPropagation()">
                     <button class="btn-action view" [routerLink]="['/stock/clients', client.id]" title="Voir détails">
@@ -182,7 +194,7 @@
               </tr>
             } @empty {
               <tr>
-                <td colspan="6" class="empty-state">
+                <td colspan="7" class="empty-state">
                   <div class="empty-state-content">
                     <i class="fas fa-users"></i>
                     <h4>Aucun client trouvé</h4>

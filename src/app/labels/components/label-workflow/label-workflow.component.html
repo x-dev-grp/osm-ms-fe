@@ -166,7 +166,9 @@
               <label>Qualité</label>
               <select class="form-control" formControlName="qualityGrade" [disabled]="isFinalized()">
                 <option value="">-- Sélectionner --</option>
-                <option *ngFor="let type of qualityGradeOptions" [value]="type.value">{{ type.label }}</option>
+                <option *ngFor="let grade of grades" [value]="grade">
+                  {{ resolveQualityLabel(grade) }}
+                </option>
               </select>
             </div>
 

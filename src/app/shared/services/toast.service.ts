@@ -63,7 +63,11 @@ export class ToastService {
   }
 
   error(message: string) {
-    return this.open(message, 'close', { panelClass: ['app-toast', 'app-toast-error'] });
+    const duration = Math.min(Math.max(message.length * 45, 5000), 12000);
+    return this.open(message, 'close', {
+      duration,
+      panelClass: ['app-toast', 'app-toast-error']
+    });
   }
 
   info(message: string) {

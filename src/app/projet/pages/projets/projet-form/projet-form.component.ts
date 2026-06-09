@@ -17,6 +17,7 @@ import {ArticleService} from '../../../../stock/services/article.service';
 import {Article} from '../../../../stock/models/article.model';
 import { MaterialNeedsPreviewComponent } from '../../../../shared/components/material-needs-preview/material-needs-preview.component';
 import { ToastService } from '../../../../shared/services/toast.service';
+import { extractHttpErrorMessage } from '../../../../shared/utils/http-error.util';
 
 @Component({
   selector: 'app-projet-form',
@@ -77,6 +78,11 @@ export class ProjetFormComponent implements OnInit {
     return this.form.get('produits') as FormArray;
   }
 
+  get filteredSkus(): SKU[] {
+    const expectedType = this.form?.get('typeEmballage')?.value === TypeEmballage.VRAC ? 'VRAC' : 'NON_VRAC';
+    return this.skus.filter(sku => sku.type === expectedType);
+  }
+
   ngOnInit(): void {
     this.initForm();
     this.listenValeurTotale();
@@ -97,7 +103,7 @@ export class ProjetFormComponent implements OnInit {
 
     const produitGroup = this.fb.group({
       productId: [productId, Validators.required],
-      bomId: [bomId, Validators.required],
+      bomId: [bomId],
       quantiteCible: [defaultQty, [Validators.required, Validators.min(1)]]
     });
 
@@ -255,6 +261,14 @@ export class ProjetFormComponent implements OnInit {
       return;
     }
 
+    if (this.form.get('typeEmballage')?.value !== TypeEmballage.VRAC) {
+      const missingBom = this.produits.controls.some(control => !control.get('bomId')?.value);
+      if (missingBom) {
+        alert('La nomenclature est obligatoire pour un projet non VRAC.');
+        return;
+      }
+    }
+
     this.loading = true;
 
     const formValue = this.form.value;
@@ -279,7 +293,7 @@ export class ProjetFormComponent implements OnInit {
       conditionsLivraison: formValue.conditionsLivraison,
       ligneIds: formValue.ligneIds ?? [],
 
-      produits: formValue.produits,
+      produits: (formValue.produits || []).map((p: any) => ({...p, bomId: p.bomId || null})),
 
       reservations: this.bomSummary.map(item => ({
         articleId: item.articleId, quantiteReservee: item.totalQuantity, statut: 'PRE-CALCULE'
@@ -294,10 +308,10 @@ export class ProjetFormComponent implements OnInit {
       next: () => {
         this.loading = false;
         this.router.navigate(['../'], {relativeTo: this.route});
-      }, error: (err: any) => {
+      }, error: (err: unknown) => {
         console.error(err);
         this.loading = false;
-        this.toast.error(err?.error?.error || err?.error?.message || 'Erreur lors de l\'enregistrement du projet');
+        this.toast.error(this.buildProjetSaveErrorMessage(err));
       }
     });
   }
@@ -348,6 +362,20 @@ export class ProjetFormComponent implements OnInit {
       ligneIds: [[], Validators.required],
       statut: ['BROUILLON'],
       produits: this.fb.array([], [Validators.required, Validators.minLength(1)])
+    });
+
+    this.form.get('typeEmballage')?.valueChanges.subscribe(value => {
+      const expectedType = value === TypeEmballage.VRAC ? 'VRAC' : 'NON_VRAC';
+      this.produits.controls.forEach(control => {
+        const product = this.skus.find(sku => sku.id === control.get('productId')?.value);
+        if (product && product.type !== expectedType) {
+          control.get('productId')?.setValue('');
+        }
+      });
+      if (value === TypeEmballage.VRAC) {
+        this.produits.controls.forEach(control => control.get('bomId')?.setValue(''));
+      }
+      this.calculateSummary();
     });
   }
 
@@ -470,6 +498,12 @@ export class ProjetFormComponent implements OnInit {
   }
 
   private loadBomsForProduct(productId: string, control?: FormGroup): void {
+    if (this.form.get('typeEmballage')?.value === TypeEmballage.VRAC) {
+      this.productBoms[productId] = [];
+      control?.get('bomId')?.setValue('');
+      return;
+    }
+
     if (!this.productBoms[productId]) {
       this.bomService.getBomsByProduct(productId).subscribe({
         next: (boms) => {
@@ -545,6 +579,25 @@ export class ProjetFormComponent implements OnInit {
   private getSelectedClient(): Client | undefined {
     const clientId = this.form.get('clientId')?.value;
     return this.clients.find(client => client.id === clientId);
+  }
+
+  private buildProjetSaveErrorMessage(err: unknown): string {
+    const message = extractHttpErrorMessage(err, 'Erreur lors de l\'enregistrement du projet');
+    return this.replaceProductIdsWithNames(message);
+  }
+
+  private replaceProductIdsWithNames(message: string): string {
+    return message.replace(
+      /([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/gi,
+      (uuid) => {
+        const product = this.skus.find((sku) => sku.id === uuid);
+        if (!product) {
+          return uuid;
+        }
+
+        return product.name || product.code || uuid;
+      }
+    );
   }
 
 }

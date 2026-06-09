@@ -178,6 +178,29 @@ $blue: #2563eb;
   font-weight: 900;
 }
 
+.complete-hint {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  border-radius: 14px;
+  color: $olive-dark;
+  background: $olive-soft;
+  border: 1px solid rgba(49, 95, 27, 0.14);
+  font-size: 13px;
+  font-weight: 650;
+
+  mat-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    color: $olive;
+  }
+}
+
 /* NO TRANSITION */
 .no-transition-message {
   position: relative;

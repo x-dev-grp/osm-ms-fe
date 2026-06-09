@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { Bom } from '../../../models/Bom';
 import { BomService } from '../../../services/BomService';
 import { ToastService } from '../../../../shared/services/toast.service';
+import { sortRowsByCreatedDate, TableSortDirection, toggleSortDirection } from '../../../../shared/utils/table-sort.util';
 
 @Component({
   selector: 'app-bom-list',
@@ -24,6 +25,7 @@ export class BomListComponent implements OnInit {
   currentPage = 1;
   pageSize = 10;
   pageSizeOptions = [10, 25, 50];
+  sortDirection: TableSortDirection = 'desc';
 
   constructor(
     private bomService: BomService,
@@ -38,11 +40,7 @@ export class BomListComponent implements OnInit {
   loadBoms(): void {
     this.bomService.getAll().subscribe({
       next: (data) => {
-        this.boms = data.sort((a, b) => {
-          const dateA = a.createdDate ? new Date(a.createdDate).getTime() : 0;
-          const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
-          return dateB - dateA;
-        });
+        this.boms = data ?? [];
         this.applyFilter();
         this.loading = false;
       },
@@ -67,7 +65,13 @@ export class BomListComponent implements OnInit {
       }
       return matchesSearch;
     });
+    this.displayedBoms = sortRowsByCreatedDate(this.displayedBoms, this.sortDirection);
     this.currentPage = 1;
+  }
+
+  toggleCreatedDateSort(): void {
+    this.sortDirection = toggleSortDirection(this.sortDirection);
+    this.applyFilter();
   }
 
   get pagedBoms(): Bom[] {

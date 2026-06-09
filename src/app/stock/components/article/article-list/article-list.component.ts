@@ -13,6 +13,7 @@ import {
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import { QrResolveResponse } from '../../../../shared/models/qr-models';
+import { sortRowsByCreatedDate, TableSortDirection, toggleSortDirection } from '../../../../shared/utils/table-sort.util';
 
 @Component({
   selector: 'app-article-list',
@@ -38,6 +39,7 @@ export class ArticleListComponent implements OnInit, OnDestroy {
   searchCodeError: string | null = null;
   searchingByCode = false;
   private listInitialized = false;
+  sortDirection: TableSortDirection = 'desc';
 
   filters = {
     nom: '',
@@ -77,14 +79,7 @@ export class ArticleListComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (articles) => {
-          this.articles = articles.sort((a, b) => {
-            if (a.actif !== b.actif) {
-              return a.actif ? -1 : 1;
-            }
-            const dateA = a.createdDate ? new Date(a.createdDate).getTime() : 0;
-            const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
-            return dateB - dateA;
-          });
+          this.articles = articles;
           this.applyFilters();
           this.loading = false;
           this.listInitialized = true;
@@ -160,6 +155,7 @@ export class ArticleListComponent implements OnInit, OnDestroy {
       }
       return match;
     });
+    this.filteredArticles = sortRowsByCreatedDate(this.filteredArticles, this.sortDirection);
     this.currentPage = 1;
     this.activeDropdown = null;
   }
@@ -237,14 +233,11 @@ export class ArticleListComponent implements OnInit, OnDestroy {
   }
 
   sortArticles(): void {
-    this.articles.sort((a, b) => {
-      if (a.actif !== b.actif) {
-        return a.actif ? -1 : 1;
-      }
-      const dateA = a.createdDate ? new Date(a.createdDate).getTime() : 0;
-      const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
-      return dateB - dateA;
-    });
+    this.applyFilters();
+  }
+
+  toggleCreatedDateSort(): void {
+    this.sortDirection = toggleSortDirection(this.sortDirection);
     this.applyFilters();
   }
 

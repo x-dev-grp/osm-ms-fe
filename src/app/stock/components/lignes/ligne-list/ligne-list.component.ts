@@ -19,6 +19,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { LigneConditionnementService } from '../../../services/ligne-conditionnement.service';
 import { LigneConditionnement, Statue } from '../../../models/ligne-conditionnement.model';
 import { ToastService } from '../../../../shared/services/toast.service';
+import { configureMatTableCreatedDateSort } from '../../../../shared/utils/table-sort.util';
 
 @Component({
   selector: 'app-ligne-list',
@@ -54,7 +55,7 @@ export class LigneListComponent implements OnInit, AfterViewInit {
   etatFilter = signal<string>('');
   togglingId = signal<string | null>(null);
 
-  displayedColumns: string[] = ['status', 'code', 'nom', 'responsable', 'vitesse', 'actions'];
+  displayedColumns: string[] = ['status', 'code', 'nom', 'responsable', 'vitesse', 'createdDate', 'actions'];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -67,6 +68,8 @@ export class LigneListComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.loadLignes();
+
+    configureMatTableCreatedDateSort(this.dataSource);
 
     // Custom filter predicate for the data source
     this.dataSource.filterPredicate = (data: LigneConditionnement, filter: string) => {
@@ -94,15 +97,7 @@ export class LigneListComponent implements OnInit, AfterViewInit {
     this.loading.set(true);
     this.ligneService.getAllLignes().subscribe({
       next: (data) => {
-        // Sort: Actives first, then by creation date
-        const sortedData = (data ?? []).sort((a, b) => {
-          if (a.actif !== b.actif) return a.actif ? -1 : 1;
-          const dateA = a.createdDate ? new Date(a.createdDate).getTime() : 0;
-          const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
-          return dateB - dateA;
-        });
-
-        this.dataSource.data = sortedData;
+        this.dataSource.data = data ?? [];
         this.loading.set(false);
       },
       error: (err) => {

@@ -17,9 +17,9 @@ export function extractHttpErrorMessage(
   }
 
   if (error instanceof HttpErrorResponse) {
-    const fromBody = extractMessageFromBody(error.error);
-    if (fromBody) {
-      return fromBody;
+    const messages = collectHttpErrorMessages(error);
+    if (messages.length) {
+      return messages.join(' — ');
     }
 
     if (typeof error.message === 'string' && error.message.trim()) {
@@ -28,9 +28,9 @@ export function extractHttpErrorMessage(
   }
 
   if (typeof error === 'object') {
-    const fromBody = extractMessageFromBody(error);
-    if (fromBody) {
-      return fromBody;
+    const messages = collectHttpErrorMessages(error);
+    if (messages.length) {
+      return messages.join(' — ');
     }
 
     const errObj = error as { message?: unknown };
@@ -42,33 +42,63 @@ export function extractHttpErrorMessage(
   return fallback;
 }
 
-function extractMessageFromBody(body: unknown): string | null {
+function collectHttpErrorMessages(error: unknown): string[] {
+  if (!error) {
+    return [];
+  }
+
+  if (typeof error === 'string') {
+    const normalized = normalize(error);
+    return normalized ? [normalized] : [];
+  }
+
+  if (error instanceof HttpErrorResponse) {
+    return collectMessagesFromBody(error.error);
+  }
+
+  if (typeof error === 'object') {
+    return collectMessagesFromBody(error);
+  }
+
+  return [];
+}
+
+function collectMessagesFromBody(body: unknown): string[] {
   if (!body) {
-    return null;
+    return [];
   }
 
   if (typeof body === 'string') {
-    return normalize(body);
+    const normalized = normalize(body);
+    return normalized ? [normalized] : [];
   }
 
   if (typeof body !== 'object') {
-    return null;
+    return [];
   }
 
   const source = body as Record<string, unknown>;
+  const messages: string[] = [];
 
-  if (source['success'] === false && typeof source['message'] === 'string') {
-    return normalize(source['message']);
+  const add = (value: string | null | undefined) => {
+    const normalized = normalize(value);
+    if (!normalized || isGenericHttpError(normalized)) {
+      return;
+    }
+    if (!messages.some((existing) => existing === normalized)) {
+      messages.push(normalized);
+    }
+  };
+
+  if (source['success'] === false) {
+    add(typeof source['message'] === 'string' ? source['message'] : null);
   }
 
   const directKeys = ['message', 'error', 'error_description', 'detail', 'title'];
   for (const key of directKeys) {
     const value = source[key];
     if (typeof value === 'string') {
-      const normalized = normalize(value);
-      if (normalized) {
-        return normalized;
-      }
+      add(value);
     }
   }
 
@@ -76,14 +106,20 @@ function extractMessageFromBody(body: unknown): string | null {
   for (const key of nestedKeys) {
     const value = source[key];
     if (value && typeof value === 'object') {
-      const nested = extractMessageFromBody(value);
-      if (nested) {
-        return nested;
-      }
+      collectMessagesFromBody(value).forEach((nested) => add(nested));
     }
   }
 
-  return null;
+  return messages;
+}
+
+function isGenericHttpError(value: string): boolean {
+  const normalized = value.trim().toLowerCase();
+  return normalized === 'bad request'
+    || normalized === 'internal server error'
+    || normalized === 'not found'
+    || normalized === 'forbidden'
+    || normalized === 'unauthorized';
 }
 
 function normalize(value: string | null | undefined): string | null {

@@ -13,9 +13,9 @@ import {
   LabelExportDto,
   LabelGenerateRequestDto,
   LabelLanguage,
-  LabelQualityGrade,
   LabelValidationIssueDto
 } from '../../models/label.model';
+import { QualityGrades, resolveQualityGradeLabel } from '../../../shared/models/quality-grades.enum';
 
 import { LabelService } from '../../services/label.service';
 import { Product, productDisplayName } from '../../../stock/models/sku.model';
@@ -77,15 +77,7 @@ export class LabelWorkflowComponent implements OnInit {
     { value: 'OTHER', label: 'Autre' }
   ];
 
-  readonly qualityGradeOptions: { value: LabelQualityGrade; label: string }[] = [
-    { value: 'EXTRA_VIRGIN', label: 'Huile d’olive vierge extra' },
-    { value: 'VIRGIN', label: 'Huile d’olive vierge' },
-    { value: 'ORDINARY_VIRGIN', label: 'Huile d’olive vierge courante' },
-    { value: 'LAMPANTE', label: 'Huile d’olive lampante' },
-    { value: 'REFINED', label: 'Huile d’olive raffinée' },
-    { value: 'OLIVE_OIL', label: 'Huile d’olive' },
-    { value: 'POMACE_OIL', label: 'Huile de grignons d’olive' }
-  ];
+  readonly grades = Object.values(QualityGrades);
 
   readonly labelForm = this.fb.group({
     lotId: ['', Validators.required],
@@ -94,7 +86,7 @@ export class LabelWorkflowComponent implements OnInit {
     language: ['FR' as LabelLanguage, Validators.required],
     labelCategory: ['UNIT' as LabelCategory, Validators.required],
 
-    qualityGrade: ['' as LabelQualityGrade | ''],
+    qualityGrade: ['' as QualityGrades | ''],
     variety: [''],
 
     legalDenomination: [''],
@@ -322,8 +314,8 @@ export class LabelWorkflowComponent implements OnInit {
     if (!this.labelForm.value.legalDenomination) {
       const grade = this.labelForm.value.qualityGrade;
       if (grade) {
-        const gradeLabel = this.qualityGradeOptions.find(o => o.value === grade)?.label;
-        if (gradeLabel) {
+        const gradeLabel = this.resolveQualityLabel(grade);
+        if (gradeLabel !== '-') {
           this.labelForm.patchValue({ legalDenomination: gradeLabel });
         }
       }
@@ -341,6 +333,10 @@ export class LabelWorkflowComponent implements OnInit {
     // Pre-fill net quantity from the packaging volume
     if (selectedProduct.volume && !this.labelForm.value.netQuantity) {
       this.labelForm.patchValue({ netQuantity: `${selectedProduct.volume} ml` });
+    }
+
+    if (selectedProduct.grade && !this.labelForm.value.qualityGrade) {
+      this.labelForm.patchValue({ qualityGrade: selectedProduct.grade as QualityGrades });
     }
   }
 
@@ -534,11 +530,7 @@ export class LabelWorkflowComponent implements OnInit {
   }
 
   resolveQualityLabel(value: string | null | undefined): string {
-    if (!value) {
-      return '-';
-    }
-
-    return this.qualityGradeOptions.find((option) => option.value === value)?.label ?? value;
+    return resolveQualityGradeLabel(value);
   }
 
   resolveVarietyLabel(value: string | null | undefined): string {
@@ -701,7 +693,7 @@ export class LabelWorkflowComponent implements OnInit {
       language: label.language || 'FR',
       labelCategory: label.labelCategory || 'UNIT',
 
-      qualityGrade: (label.qualityGrade as LabelQualityGrade) || '',
+      qualityGrade: (label.qualityGrade as QualityGrades) || '',
       variety: label.variety || '',
 
       legalDenomination: label.legalDenomination || '',

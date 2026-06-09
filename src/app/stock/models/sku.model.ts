@@ -1,3 +1,5 @@
+import { QualityGrades } from '../../shared/models/quality-grades.enum';
+
 export type ProductType = 'VRAC' | 'NON_VRAC';
 export type ProductUnitOfMeasure = 'L' | 'KG' | 'BOTTLE' | 'CARTON';
 
@@ -9,7 +11,7 @@ export interface Product {
   category?: string;
   unitOfMeasure?: ProductUnitOfMeasure | string;
   description?: string;
-  grade?: string;
+  grade?: QualityGrades | string;
   origin?: string;
   harvestCampaign?: string;
   volume?: number;

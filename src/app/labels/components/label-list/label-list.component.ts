@@ -7,6 +7,7 @@ import { LabelContentDto, LabelContentStatus } from '../../models/label.model';
 import { LabelService } from '../../services/label.service';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
@@ -20,6 +21,7 @@ import { FormsModule } from '@angular/forms';
 import { CertificationService } from '../../services/certification.service';
 import { Certification } from '../../models/certification.model';
 import { forkJoin } from 'rxjs';
+import { getCreatedDateTimestamp } from '../../../shared/utils/table-sort.util';
 
 @Component({
   selector: 'app-label-list',
@@ -28,6 +30,7 @@ import { forkJoin } from 'rxjs';
     CommonModule,
     MatTableModule,
     MatPaginatorModule,
+    MatSortModule,
     MatIconModule,
     MatButtonModule,
     MatMenuModule,
@@ -50,7 +53,7 @@ export class LabelListComponent implements OnInit, AfterViewInit {
   availableCertifications: Certification[] = [];
   searchTerm = '';
 
-  displayedColumns: string[] = ['lotNumber', 'legalDenomination', 'netQuantity', 'certifications', 'packagingDate', 'labelCategory', 'language', 'status', 'actions'];
+  displayedColumns: string[] = ['lotNumber', 'legalDenomination', 'netQuantity', 'certifications', 'packagingDate', 'createdDate', 'labelCategory', 'language', 'status', 'actions'];
 
   loading = false;
   changingStatusId: string | null = null;
@@ -60,10 +63,11 @@ export class LabelListComponent implements OnInit, AfterViewInit {
 
   errorMessage = '';
   successMessage = '';
-  
+
   searchControl = new FormControl('');
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
     private readonly labelService: LabelService,
@@ -74,6 +78,19 @@ export class LabelListComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.loadLabels();
 
+    this.dataSource.sortingDataAccessor = (item, property) => {
+      if (property === 'createdDate') {
+        return getCreatedDateTimestamp(item.createdDate || item.finalizedAt);
+      }
+
+      const value = (item as unknown as Record<string, unknown>)[property];
+      if (value == null) {
+        return '';
+      }
+
+      return typeof value === 'string' || typeof value === 'number' ? value : String(value);
+    };
+
     this.searchControl.valueChanges.subscribe(value => {
       this.applyManualFilter(value || '');
     });
@@ -81,7 +98,7 @@ export class LabelListComponent implements OnInit, AfterViewInit {
 
   private applyManualFilter(value: string): void {
     const filterValue = value.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    
+
     if (!filterValue) {
       this.dataSource.data = [...this.originalLabels];
     } else {
@@ -93,9 +110,9 @@ export class LabelListComponent implements OnInit, AfterViewInit {
         const lang = (data.language || '').toLowerCase();
         const pCode = (data.publicCode || '').toLowerCase();
         const certs = (data.certifications || []).join(' ').toLowerCase();
-        
-        return lot.includes(filterValue) || 
-               denom.includes(filterValue) || 
+
+        return lot.includes(filterValue) ||
+               denom.includes(filterValue) ||
                status.includes(filterValue) ||
                category.includes(filterValue) ||
                lang.includes(filterValue) ||
@@ -111,6 +128,7 @@ export class LabelListComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
   loadLabels(): void {
@@ -126,17 +144,17 @@ export class LabelListComponent implements OnInit, AfterViewInit {
       next: ({ labels, certs }) => {
         this.availableCertifications = certs || [];
         const unsorted = labels ?? [];
-        
+
         // Tri par statut (Finalisée/Exportée > Validée > Brouillon) puis Date (récente en premier)
         this.allLabels = unsorted.sort((a, b) => {
           const statusWeight = { 'EXPORTED_JSON': 0, 'FINALIZED': 0, 'VALIDATED': 1, 'DRAFT': 2, 'UNKNOWN': 9 };
           const weightA = statusWeight[a.status || 'UNKNOWN'];
           const weightB = statusWeight[b.status || 'UNKNOWN'];
-          
+
           if (weightA !== weightB) {
             return weightA - weightB;
           }
-          
+
           // Secondary sort: Date descending
           const dateA = a.packagingDate ? new Date(a.packagingDate).getTime() : 0;
           const dateB = b.packagingDate ? new Date(b.packagingDate).getTime() : 0;
@@ -146,10 +164,11 @@ export class LabelListComponent implements OnInit, AfterViewInit {
         this.originalLabels = [...this.allLabels];
         this.dataSource.data = this.allLabels;
         this.loading = false;
-        
+
         // Use setTimeout to ensure paginator is bound after *ngIf resolves
         setTimeout(() => {
           this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
         });
       },
       error: (error) => {
@@ -160,6 +179,10 @@ export class LabelListComponent implements OnInit, AfterViewInit {
         );
       }
     });
+  }
+
+  labelCreatedDate(label: LabelContentDto): string | undefined {
+    return label.createdDate || label.finalizedAt;
   }
 
   getCertInfo(name: string): Certification | undefined {
@@ -204,7 +227,7 @@ export class LabelListComponent implements OnInit, AfterViewInit {
     if (event) {
       event.stopPropagation();
     }
-    
+
     if (!label.id) {
       console.error('Impossible de supprimer : ID manquant', label);
       return;

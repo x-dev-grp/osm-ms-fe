@@ -2,13 +2,8 @@ import { Currency, PaymentMethod } from './financial-transaction.model';
 import { SupplierType } from '../../shared/models/supplier-type';
 import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
 
-export enum QualityGrades {
-  VIRGIN = 'VIRGIN',
-  EXTRA_VIRGIN = 'EXTRA_VIRGIN',
-  LAMPANTE = 'LAMPANTE',
-  OTHER = 'OTHER',
-  REFINED = 'REFINED'
-}
+export { QualityGrades } from '../../shared/models/quality-grades.enum';
+import { QualityGrades } from '../../shared/models/quality-grades.enum';
 
 export interface OilSale {
   id?: string;

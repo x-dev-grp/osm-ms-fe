@@ -3,8 +3,8 @@
 export type FiltrationStatus = 'CREATED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
 
 export const FILTRATION_STATUS_LABEL: Record<FiltrationStatus, string> = {
-  CREATED: 'Created',
-  IN_PROGRESS: 'In progress',
-  COMPLETED: 'Completed',
-  CANCELLED: 'Cancelled',
+  CREATED: 'Créée',
+  IN_PROGRESS: 'En cours',
+  COMPLETED: 'Terminée',
+  CANCELLED: 'Annulée',
 };

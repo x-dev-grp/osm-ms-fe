@@ -1,6 +1,6 @@
 <h2 mat-dialog-title class="abioc-dialog-title">
-  <mat-icon>swap_horiz</mat-icon>
-  <span>Changer le statut</span>
+  <mat-icon>{{ isCompleteSelected() ? 'task_alt' : 'swap_horiz' }}</mat-icon>
+  <span>{{ dialogTitle }}</span>
 </h2>
 
 <mat-dialog-content class="abioc-dialog-content">
@@ -22,7 +22,7 @@
 
     <div class="info-card">
       <span class="info-label">Statut actuel</span>
-      <span class="status-chip">{{ data.row.status }}</span>
+      <span class="status-chip">{{ currentStatusLabel }}</span>
     </div>
   </div>
 
@@ -48,18 +48,7 @@
                   [class.completed]="s === 'COMPLETED'"
                   [class.cancelled]="s === 'CANCELLED'">
                 </span>
-                @if (s === 'IN_PROGRESS') {
-                  <span>IN_PROGRESS - En cours</span>
-                }
-                @if (s === 'COMPLETED') {
-                  <span>COMPLETED - Terminée</span>
-                }
-                @if (s === 'CANCELLED') {
-                  <span>CANCELLED - Annulée</span>
-                }
-                @if (s === 'CREATED') {
-                  <span>CREATED - En attente</span>
-                }
+                <span>{{ statusLabel(s) }}</span>
               </div>
             </mat-option>
           }
@@ -71,6 +60,13 @@
         <textarea matInput rows="4" formControlName="note"></textarea>
         <mat-hint>Raison du changement de statut</mat-hint>
       </mat-form-field>
+
+      @if (showsCompleteHint()) {
+        <div class="complete-hint">
+          <mat-icon>info</mat-icon>
+          <span>L'operation sera demarree puis cloturee avec le volume saisi.</span>
+        </div>
+      }
 
       @if (isCompleteSelected()) {
         <mat-form-field appearance="outline" class="full-width volume-field">
@@ -100,7 +96,7 @@
     @if (loading) {
       <mat-spinner diameter="20"></mat-spinner>
     }
-    {{ loading ? 'Enregistrement...' : 'Enregistrer' }}
+    {{ loading ? 'Enregistrement...' : (isCompleteSelected() ? 'Terminer' : 'Enregistrer') }}
   </button>
 </mat-dialog-actions>
 

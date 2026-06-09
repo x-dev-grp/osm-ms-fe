@@ -57,6 +57,16 @@
         </mat-checkbox>
       </div>
 
+      <mat-form-field appearance="outline" class="field">
+        <mat-label>{{ 'OIL_TRANSACTION.DETAILS.QUALITY_GRADE' | translate }}</mat-label>
+        <mat-select formControlName="qualityGrade">
+          <mat-option [value]="null">— Sélectionner —</mat-option>
+          <mat-option *ngFor="let grade of grades" [value]="grade">
+            {{ ('OIL_TRANSACTIONS.QUALITY_GRADES.' + grade) | translate }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
       <!-- Description (full width) -->
       <mat-form-field appearance="outline" class="field span-2">
         <mat-label>Description</mat-label>

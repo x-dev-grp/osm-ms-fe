@@ -26,6 +26,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ProjetService } from '../../../services/projet.service';
 import { ProjetDto } from '../../../models/TypeProduit';
 import { ProjetStatusDialogComponent, ProjetStatusDialogResult } from '../projet-status-dialog/projet-status-dialog.component';
+import { sortRowsByCreatedDate, TableSortDirection, toggleSortDirection } from '../../../../shared/utils/table-sort.util';
 
 type ProjetStatusFilter = 'ALL' | 'BROUILLON' | 'EN_COURS' | 'VALIDE' | 'ANNULE' | 'FAILED';
 
@@ -63,6 +64,7 @@ export class ProjetListComponent {
     'emballage',
     'quantite',
     'dateLimite',
+    'createdDate',
     'valeurTotale',
     'statut',
     'actions'
@@ -83,6 +85,7 @@ export class ProjetListComponent {
   readonly pageSize = signal(10);
   readonly statusFilter = signal<ProjetStatusFilter>('ALL');
   readonly searchCode = signal('');
+  readonly sortDirection = signal<TableSortDirection>('desc');
   readonly searching = signal(false);
 
   readonly rows = computed(() => {
@@ -109,7 +112,7 @@ export class ProjetListComponent {
       });
     }
 
-    return filtered;
+    return sortRowsByCreatedDate(filtered, this.sortDirection());
   });
 
   readonly projectStats = computed(() => {
@@ -218,6 +221,11 @@ export class ProjetListComponent {
   onSearchCodeInput(event: Event): void {
     const value = (event.target as HTMLInputElement | null)?.value ?? '';
     this.searchCode.set(value);
+    this.resetPaginator();
+  }
+
+  toggleCreatedDateSort(): void {
+    this.sortDirection.update((direction) => toggleSortDirection(direction));
     this.resetPaginator();
   }
 

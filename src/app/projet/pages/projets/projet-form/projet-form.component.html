@@ -107,13 +107,13 @@
                   <select formControlName="productId" class="form-select"
                     [class.is-invalid]="prod.get('productId')?.invalid && prod.get('productId')?.touched">
                     <option value="">-- Sélectionner un produit --</option>
-                    <option *ngFor="let sku of skus" [value]="sku.id">
+                    <option *ngFor="let sku of filteredSkus" [value]="sku.id">
                       {{ sku.code }} - {{ sku.packagingType }} ({{ sku.volume }} {{ sku.unitOfMeasure }})
                     </option>
                   </select>
                 </div>
 
-                <div class="field-block" *ngIf="prod.get('productId')?.value">
+                <div class="field-block" *ngIf="prod.get('productId')?.value && form.get('typeEmballage')?.value !== 'VRAC'">
                   <label>Nomenclature (BOM) *</label>
                   <select formControlName="bomId" class="form-select"
                     [class.is-invalid]="prod.get('bomId')?.invalid && prod.get('bomId')?.touched">
@@ -126,7 +126,7 @@
               </div>
 
               <!-- Product BOM Detail Preview -->
-              <div class="product-bom-detail" *ngIf="prod.get('productId')?.value">
+              <div class="product-bom-detail" *ngIf="prod.get('productId')?.value && form.get('typeEmballage')?.value !== 'VRAC'">
                 <ng-container *ngIf="getCalculatedBomLines(prod.get('productId')?.value, prod.get('bomId')?.value, prod.get('quantiteCible')?.value || 0) as lines">
                   <div *ngIf="lines.length > 0; else noBom">
                     <div class="detail-header">

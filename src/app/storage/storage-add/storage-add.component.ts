@@ -20,7 +20,8 @@ import { GenericTypeService } from '../../shared/services/generic-type.service';
 import { TypeCategory } from '../../shared/models/type-category.enum';
 import { ToastService } from '../../shared/services/toast.service';
 import { BaseTypeComponent } from '../../shared/modules/base-type/base-type.component';
-import { QualityGrades } from '../../finance/models/oil-sale.model';
+import { QualityGrades } from '../../shared/models/quality-grades.enum';
+import { TranslateModule } from '@ngx-translate/core';
 
 function toISO(d: any) {
   return d instanceof Date ? d.toISOString() : (d ?? null);
@@ -51,7 +52,8 @@ function sanitizeBaseType(obj: any | null) {
     MatProgressSpinnerModule,
     MatCheckboxModule,
     SharedModule,
-    BaseTypeComponent
+    BaseTypeComponent,
+    TranslateModule
   ],
   templateUrl: './storage-add.component.html',
   styleUrls: ['./storage-add.component.scss']
@@ -63,22 +65,10 @@ export class StorageAddComponent implements OnInit, OnDestroy {
 
   storageForm: FormGroup;
 
-  // catalogs
-  qualityGrade: QualityGrades;
-
   oilVarietys: BaseType[] = [];
-  // add this field in the class
-  qualityGrades = [
-    { value: 'EXTRA_VIRGIN', label: 'EXTRA_VIRGIN' },
-    { value: 'VIRGIN', label: 'VIRGIN' },
-    { value: 'LAMPANTE', label: 'LAMPANTE' },
-    { value: 'REFINED', label: 'REFINED' },
-    { value: 'OTHER', label: 'OTHER' }
-  ];
+  readonly grades = Object.values(QualityGrades);
   private subscriptions = new Subscription();
   private unit: StorageUnitDto | undefined;
-  // async readiness flags
-  private qualityGradeLoaded = false;
   private oilVarietysLoaded = false;
   private unitLoaded = false;
 
@@ -101,6 +91,7 @@ export class StorageAddComponent implements OnInit, OnDestroy {
         currentVolume: [0],
 
         oilVariety: [null], // BaseType full object
+        qualityGrade: [null],
         status: ['AVAILABLE', Validators.required],
 
         // Filtration field
@@ -238,7 +229,7 @@ export class StorageAddComponent implements OnInit, OnDestroy {
           this.router.navigate(['/storage']);
         },
         complete: () => {
-          if (this.qualityGradeLoaded && this.oilVarietysLoaded) this.loading = false;
+          if (this.oilVarietysLoaded) this.loading = false;
         }
       });
     this.subscriptions.add(sub);
@@ -246,7 +237,7 @@ export class StorageAddComponent implements OnInit, OnDestroy {
 
   /** For create mode: stop spinner once catalogs are both ready */
   private finishLoadingIfCreateMode(): void {
-    if (!this.isEditing && this.qualityGradeLoaded && this.oilVarietysLoaded) {
+    if (!this.isEditing && this.oilVarietysLoaded) {
       this.loading = false;
     }
   }
@@ -279,7 +270,7 @@ export class StorageAddComponent implements OnInit, OnDestroy {
 
       status: storage.status ?? 'AVAILABLE',
 
-      qualityGrade: (storage as any).qualityGrade ?? null, // ← string like 'vierge_extra'
+      qualityGrade: storage.qualityGrade ?? null,
       oilVariety: findOilVariety,
 
       nextMaintenanceDate: storage.nextMaintenanceDate ? new Date(storage.nextMaintenanceDate) : null,

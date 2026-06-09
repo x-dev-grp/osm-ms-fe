@@ -7,6 +7,7 @@ import { EmplacementStock, TypeEmplacement } from '../../../models/emplacement-s
 import { EmplacementStockService } from '../../../services/emplacement-stock.service';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { extractHttpErrorMessage } from '../../../../shared/utils/http-error.util';
+import { sortRowsByCreatedDate, TableSortDirection, toggleSortDirection } from '../../../../shared/utils/table-sort.util';
 
 @Component({
   selector: 'app-emplacement-list',
@@ -32,6 +33,7 @@ export class EmplacementListComponent implements OnInit {
   currentPage = 1;
   pageSize = 10;
   pageSizeOptions = [10, 25, 50];
+  sortDirection: TableSortDirection = 'desc';
 
   togglingId: string | null = null;
   deletingId: string | null = null;
@@ -105,15 +107,7 @@ export class EmplacementListComponent implements OnInit {
       next: (response) => {
         const data = (response.data || []).flat();
 
-        this.emplacements = data.sort((a, b) => {
-          if (a.actif !== b.actif) {
-            return a.actif ? -1 : 1;
-          }
-
-          const dateA = a.createdDate ? new Date(a.createdDate).getTime() : 0;
-          const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
-          return dateB - dateA;
-        });
+        this.emplacements = data ?? [];
 
         this.extractZones();
         this.filterEmplacements();
@@ -165,9 +159,14 @@ export class EmplacementListComponent implements OnInit {
       }
     }
 
-    this.filteredEmplacements = filtered;
+    this.filteredEmplacements = sortRowsByCreatedDate(filtered, this.sortDirection);
     this.currentPage = 1;
     this.cdr.detectChanges();
+  }
+
+  toggleCreatedDateSort(): void {
+    this.sortDirection = toggleSortDirection(this.sortDirection);
+    this.filterEmplacements();
   }
 
   onPageSizeChange(size: number): void {
@@ -294,15 +293,7 @@ export class EmplacementListComponent implements OnInit {
   }
 
   private sortEmplacements(): void {
-    this.emplacements.sort((a, b) => {
-      if (a.actif !== b.actif) {
-        return a.actif ? -1 : 1;
-      }
-
-      const dateA = a.createdDate ? new Date(a.createdDate).getTime() : 0;
-      const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
-      return dateB - dateA;
-    });
+    this.emplacements = sortRowsByCreatedDate(this.emplacements, this.sortDirection);
   }
 
   getTypeLabel(type: TypeEmplacement | string): string {

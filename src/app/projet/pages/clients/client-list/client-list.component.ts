@@ -6,6 +6,7 @@ import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import { ClientService } from '../../../services/client.service';
 import { Client } from '../../../models/client.model';
 import { ApiResponse } from '../../../../shared/models/api-response';
+import { sortRowsByCreatedDate, TableSortDirection, toggleSortDirection } from '../../../../shared/utils/table-sort.util';
 
 @Component({
   selector: 'app-client-list',
@@ -23,6 +24,7 @@ export class ClientListComponent implements OnInit, OnDestroy {
   successMessage: string | null = null;
 
   searchTerm: string = '';
+  sortDirection: TableSortDirection = 'desc';
 
   private destroy$ = new Subject<void>();
   private searchSubject = new Subject<string>();
@@ -81,8 +83,13 @@ export class ClientListComponent implements OnInit, OnDestroy {
       );
     }
 
-    filtered.sort((a, b) => (a.nom || '').localeCompare(b.nom || ''));
+    filtered = sortRowsByCreatedDate(filtered, this.sortDirection);
     this.filteredClients = filtered;
+  }
+
+  toggleCreatedDateSort(): void {
+    this.sortDirection = toggleSortDirection(this.sortDirection);
+    this.applyFilters();
   }
 
   resetFilters(): void {

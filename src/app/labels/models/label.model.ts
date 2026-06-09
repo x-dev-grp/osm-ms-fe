@@ -1,3 +1,5 @@
+import { QualityGrades } from '../../shared/models/quality-grades.enum';
+
 export type LabelContentStatus =
   | 'DRAFT'
   | 'VALIDATED'
@@ -14,15 +16,6 @@ export type LabelClaimType =
   | 'COLD_EXTRACTION'
   | 'PRIVATE_LABEL'
   | 'OTHER';
-
-export type LabelQualityGrade =
-  | 'EXTRA_VIRGIN'
-  | 'VIRGIN'
-  | 'ORDINARY_VIRGIN'
-  | 'LAMPANTE'
-  | 'REFINED'
-  | 'OLIVE_OIL'
-  | 'POMACE_OIL';
 
 export interface LabelValidationIssueDto {
   field: string;
@@ -67,7 +60,7 @@ export interface LabelContentDto {
   responsibleAddress?: string;
   lotNumber?: string;
   variety?: string;
-  qualityGrade?: LabelQualityGrade | string;
+  qualityGrade?: QualityGrades | string;
   extractionMethod?: string;
   sensoryProfile?: string;
 
@@ -78,6 +71,7 @@ export interface LabelContentDto {
   finalPayloadJson?: string;
   finalizedAt?: string;
   finalizedBy?: string;
+  createdDate?: string;
   publicCode?: string;
 
   sourceSnapshots?: LabelSourceSnapshotDto[];
@@ -90,7 +84,7 @@ export interface LabelGenerateRequestDto {
   productId?: string;
   packagingId: string;
   packagingDate?: string;
-  qualityGrade?: LabelQualityGrade;
+  qualityGrade?: QualityGrades;
   variety?: string;
   language?: LabelLanguage;
   labelCategory?: LabelCategory;
@@ -113,7 +107,7 @@ export interface LabelContentUpdateRequestDto {
   responsibleAddress?: string;
   extractionMethod?: string;
   marketingClaims?: string[];
-  qualityGrade?: LabelQualityGrade;
+  qualityGrade?: QualityGrades;
   variety?: string;
 }
 
@@ -131,7 +125,7 @@ export interface LabelExportDto {
   responsibleAddress?: string;
   lotNumber?: string;
   variety?: string;
-  qualityGrade?: LabelQualityGrade | string;
+  qualityGrade?: QualityGrades | string;
   extractionMethod?: string;
   sensoryProfile?: string;
 

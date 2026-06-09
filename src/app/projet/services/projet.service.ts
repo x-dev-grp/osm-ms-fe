@@ -42,10 +42,22 @@ export class ProjetService {
 
   create(projet: ProjetDto): Observable<ProjetDto> {
     return this.http
-      .post<ApiResponse<ProjetDto>>(this.baseUrl+"/create", projet)
+      .post<ApiResponse<ProjetDto> | ProjetDto>(`${this.baseUrl}/create`, projet)
       .pipe(
-        // Correction: extraction du DTO depuis l'enveloppe backend
-        map(response => response.data)
+        map((response) => {
+          if (response && typeof response === 'object' && 'success' in response) {
+            const apiResponse = response as ApiResponse<ProjetDto>;
+            if (apiResponse.success === false) {
+              throw apiResponse;
+            }
+            if (!apiResponse.data) {
+              throw new Error(apiResponse.message || 'Erreur lors de la creation du projet');
+            }
+            return apiResponse.data;
+          }
+
+          return response as ProjetDto;
+        })
       );
   }
 
