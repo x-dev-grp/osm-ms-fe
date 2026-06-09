@@ -39,11 +39,23 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CompanyProfileService } from '../../../shared/services/company-profile.service';
 import { CompanyProfile } from '../../../shared/models/CompanyProfile';
 import { ProductionTraceabilityService } from '../../../shared/services/production-traceability.service';
 import { ProductionGenealogy } from '../../../shared/models/production-genealogy.model';
 import { TraceabilityPreviewComponent } from '../../../shared/components/traceability-preview/traceability-preview.component';
+import { LabelPreviewCardComponent } from '../label-preview-card/label-preview-card.component';
+import {
+  LabelPreviewDialogComponent,
+  LabelPreviewDialogData
+} from '../label-preview-dialog/label-preview-dialog.component';
+import { LabelPreviewViewModel } from '../../models/label-preview.model';
+import {
+  buildLabelEtiquettePayload,
+  buildLabelPreviewViewModel,
+  formatLabelPayloadJson
+} from '../../utils/label-preview-payload.util';
 
 @Component({
   selector: 'app-label-workflow',
@@ -61,7 +73,9 @@ import { TraceabilityPreviewComponent } from '../../../shared/components/traceab
     MatOptionModule,
     MatDividerModule,
     MatExpansionModule,
-    TraceabilityPreviewComponent
+    MatDialogModule,
+    TraceabilityPreviewComponent,
+    LabelPreviewCardComponent
   ],
   templateUrl: './label-workflow.component.html',
   styleUrls: ['./label-workflow.component.scss']
@@ -122,6 +136,8 @@ export class LabelWorkflowComponent implements OnInit {
   draftSavedRecently = false;
   finalizedRecently = false;
   private companyProfile: CompanyProfile | null = null;
+  currentGenealogy: ProductionGenealogy | null = null;
+  postFiltrationQualityControls: Record<string, string> | null = null;
 
   private draftSavedTimer: ReturnType<typeof setTimeout> | null = null;
   private finalizedTimer: ReturnType<typeof setTimeout> | null = null;
@@ -139,7 +155,8 @@ export class LabelWorkflowComponent implements OnInit {
     private readonly genericTypeService: GenericTypeService,
     private readonly filtrationService: FiltrationApiService,
     private readonly companyProfileService: CompanyProfileService,
-    private readonly productionTraceabilityService: ProductionTraceabilityService
+    private readonly productionTraceabilityService: ProductionTraceabilityService,
+    private readonly dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -188,14 +205,33 @@ export class LabelWorkflowComponent implements OnInit {
 
   previewPayload(): string {
     if (this.exportedLabel?.payloadJson) {
-      return this.exportedLabel.payloadJson;
+      return formatLabelPayloadJson(this.exportedLabel.payloadJson);
     }
 
     if (this.currentLabel?.finalPayloadJson) {
-      return this.currentLabel.finalPayloadJson;
+      return formatLabelPayloadJson(this.currentLabel.finalPayloadJson);
     }
 
-    return '';
+    return formatLabelPayloadJson(buildLabelEtiquettePayload(this.buildPreviewPayloadOptions()));
+  }
+
+  previewViewModel(): LabelPreviewViewModel {
+    return buildLabelPreviewViewModel(this.buildPreviewPayloadOptions());
+  }
+
+  openPreviewDialog(): void {
+    const data: LabelPreviewDialogData = {
+      viewModel: this.previewViewModel(),
+      payloadJson: this.previewPayload()
+    };
+
+    this.dialog.open(LabelPreviewDialogComponent, {
+      width: '900px',
+      maxWidth: '96vw',
+      maxHeight: '95vh',
+      panelClass: 'label-preview-dialog-panel',
+      data
+    });
   }
 
   pageBusy(): boolean {
@@ -716,6 +752,10 @@ export class LabelWorkflowComponent implements OnInit {
       this.prefillSensoryProfileFromFiltrationQc(selectedOp);
     }
 
+    if (label.traceabilityLotId || label.lotId) {
+      this.loadGenealogyForLabel(label.traceabilityLotId || label.lotId || '');
+    }
+
     if (label.id && this.route.snapshot.paramMap.get('id') !== label.id) {
       this.router.navigate(['/labels', label.id], { replaceUrl: true });
     }
@@ -759,7 +799,9 @@ export class LabelWorkflowComponent implements OnInit {
 
     this.productionTraceabilityService.getGenealogy(genealogyAnchor).subscribe({
       next: (genealogy) => {
+        this.currentGenealogy = genealogy;
         const controls = this.resolvePostFiltrationQualityControls(genealogy);
+        this.postFiltrationQualityControls = controls;
         const formatted = this.formatQualityControlsForSensoryProfile(controls);
 
         if (!formatted) {
@@ -785,6 +827,22 @@ export class LabelWorkflowComponent implements OnInit {
       .find((controls): controls is Record<string, string> => !!controls && Object.keys(controls).length > 0);
 
     return fromSteps || null;
+  }
+
+  private loadGenealogyForLabel(anchorId: string): void {
+    if (!anchorId) {
+      return;
+    }
+
+    this.productionTraceabilityService.getGenealogy(anchorId).subscribe({
+      next: (genealogy) => {
+        this.currentGenealogy = genealogy;
+        this.postFiltrationQualityControls = this.resolvePostFiltrationQualityControls(genealogy);
+      },
+      error: () => {
+        this.currentGenealogy = null;
+      }
+    });
   }
 
   private formatQualityControlsForSensoryProfile(controls: Record<string, string> | null): string {
@@ -966,5 +1024,26 @@ export class LabelWorkflowComponent implements OnInit {
 
   private formatDateInput(date: Date): string {
     return date.toISOString().split('T')[0];
+  }
+
+  private buildPreviewPayloadOptions() {
+    const packaging = this.packagingOptions.find(
+      (product) => product.id === this.labelForm.getRawValue().packagingId
+    );
+
+    return {
+      form: this.labelForm.getRawValue(),
+      currentLabel: this.currentLabel,
+      certifications: this.availableCertifications,
+      brandName: this.companyProfile?.legalName,
+      brandLogoData: this.companyProfile?.logoData,
+      brandLogoContentType: this.companyProfile?.logoContentType,
+      postFiltrationQualityControls: this.postFiltrationQualityControls,
+      genealogy: this.currentGenealogy,
+      productDensity: packaging?.density ?? null,
+      resolveQualityLabel: (value: string | null | undefined) => this.resolveQualityLabel(value),
+      resolveVarietyLabel: (value: string | null | undefined) => this.resolveVarietyLabel(value),
+      resolveClaimLabel: (value: LabelClaimType | string) => this.resolveClaimLabel(value)
+    };
   }
 }

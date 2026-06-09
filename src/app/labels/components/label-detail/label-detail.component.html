@@ -154,11 +154,11 @@
             </div>
           </div>
 
-          <div class="origin-root" *ngIf="postFiltrationQualityControls as controls">
+          <div class="origin-root" *ngIf="sensoryFromQualityControl">
             <label>Controle qualite apres filtration</label>
             <h3>Resultats du lot filtre</h3>
             <div class="origin-tags">
-              <span class="origin-tag" *ngFor="let qc of controls | keyvalue">
+              <span class="origin-tag" *ngFor="let qc of nonCompositionPostFiltrationQualityControls | keyvalue">
                 {{ qc.key }}: {{ qc.value }}
               </span>
             </div>
@@ -227,15 +227,15 @@
               <div class="box-icon"><mat-icon>inventory_2</mat-icon></div>
               <div class="box-content">
                 <label>CONDITIONS DE STOCKAGE</label>
-                <p>{{ label.storageConditions || 'A conserver a l\'abri de la lumiere et de la chaleur' }}</p>
+                <p>{{ storageConditionsDisplay }}</p>
               </div>
             </div>
 
             <div class="info-box">
               <div class="box-icon"><mat-icon>psychology</mat-icon></div>
               <div class="box-content">
-                <label>PROFIL SENSORIEL</label>
-                <p>{{ label.sensoryProfile || 'Profil issu du controle qualite' }}</p>
+                <label>{{ sensoryFromQualityControl ? 'CONTRÔLE QUALITÉ APRÈS FILTRATION' : 'PROFIL SENSORIEL' }}</label>
+                <p>{{ sensoryProfileDisplay || '-' }}</p>
               </div>
             </div>
           </div>
@@ -245,93 +245,27 @@
 
     <!-- RIGHT COLUMN: PREVIEW -->
     <div class="preview-column">
-      <div class="preview-header">
-        <mat-icon>visibility</mat-icon>
-        <span>Aperçu en direct</span>
-      </div>
+      <div class="preview-panel">
+        <div class="preview-header">
+          <mat-icon>visibility</mat-icon>
+          <span>Aperçu en direct</span>
+          <button
+            mat-stroked-button
+            type="button"
+            class="preview-popup-btn"
+            (click)="openPreviewDialog()"
+            matTooltip="Ouvrir l'aperçu en plein écran"
+          >
+            <mat-icon>open_in_full</mat-icon>
+            Visualiser
+          </button>
+          <span class="status-badge mini" [ngClass]="statusClass(label.status)">
+            {{ statusLabel(label.status) }}
+          </span>
+        </div>
 
-      <!-- STICKY LABEL PREVIEW -->
-      <div class="label-preview-card">
-        <div class="preview-inner">
-          <div class="preview-top">
-            <div class="preview-logo">
-              <mat-icon>eco</mat-icon>
-              <span>OLIVÉA</span>
-            </div>
-            <div class="preview-lot">
-              <small>LOT N°</small>
-              <strong>{{ label.lotNumber || '-' }}</strong>
-              <div class="lang-badges">
-                <span>{{ languageLabel(label.language) }}</span>
-                <span>{{ categoryLabel(label.labelCategory || 'UNIT') }}</span>
-              </div>
-            </div>
-          </div>
-
-          <h3 class="preview-title">{{ label.legalDenomination || 'Huile d\'olive' }}</h3>
-          <div class="preview-origin">
-            <mat-icon>place</mat-icon>
-            <span>{{ label.originCountry || 'Tunisie' }}</span>
-          </div>
-
-          <div class="preview-specs">
-            <div class="spec">
-              <small>QUANTITÉ</small>
-              <span>{{ label.netQuantity || '-' }}</span>
-            </div>
-            <div class="spec">
-              <small>QUALITÉ</small>
-              <span>{{ getQualityGradeLabel(label.qualityGrade) || 'Huile d\'olive' }}</span>
-            </div>
-            <div class="spec">
-              <small>VARIÉTÉ</small>
-              <span>{{ getVarietyLabel(label.variety) || '-' }}</span>
-            </div>
-            <div class="spec">
-              <small>D.D.M.</small>
-              <span>{{ label.bestBeforeDate || '05/2027' }}</span>
-            </div>
-            <div class="spec">
-              <small>DATE COND.</small>
-              <span>{{ (label.packagingDate | date:'yyyy-MM-dd') || '-' }}</span>
-            </div>
-            <div class="spec">
-              <small>LANGUE</small>
-              <span>{{ languageLabel(label.language) }}</span>
-            </div>
-          </div>
-
-          <div class="preview-marketing">
-            <small>ALLÉGATIONS MARKETING</small>
-            <div class="badge" *ngIf="label.marketingClaims?.length">{{ label.marketingClaims[0] }}</div>
-            <div class="badge" *ngIf="!label.marketingClaims?.length">Produit de Tunisie</div>
-          </div>
-
-          <div class="preview-extraction">
-            <div class="ext">
-              <small>EXTRACTION</small>
-              <span>{{ extractionMethodLabel }}</span>
-            </div>
-            <div class="sto">
-              <small>STOCKAGE</small>
-              <span>{{ label.storageConditions || 'A conserver a l\'abri de la lumiere et de la chaleur' }}</span>
-            </div>
-          </div>
-
-          <div class="preview-sensory">
-            <small>PROFIL SENSORIEL</small>
-            <p>{{ label.sensoryProfile || 'Profil issu du controle qualite' }}</p>
-          </div>
-
-          <div class="preview-footer">
-            <div class="resp">
-              <small>Responsable</small>
-              <strong>{{ label.responsibleName || '-' }}</strong>
-              <span>{{ label.responsibleAddress || 'Tunisie' }}</span>
-            </div>
-          </div>
-
-          <div class="preview-bottom-illustration"></div>
+        <div class="passport-preview-container">
+          <app-label-preview-card [preview]="previewViewModel()" size="miniature"></app-label-preview-card>
         </div>
       </div>
 

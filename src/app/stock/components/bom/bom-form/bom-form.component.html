@@ -110,6 +110,7 @@
             <span>#</span>
             <span>Article <strong>*</strong></span>
             <span>Qté / unité <strong>*</strong></span>
+            <span>Unit&eacute; <strong>*</strong></span>
             <span></span>
           </div>
 
@@ -123,7 +124,7 @@
             </div>
 
             <div class="form-group article-field">
-              <select class="form-control" formControlName="articleId">
+              <select class="form-control" formControlName="articleId" (change)="onArticleChange(i)">
                 <option value="" disabled>Choisir un article</option>
                 <option *ngFor="let article of getFilteredArticlesForLine(i)" [value]="article.id">
                   {{ article.nom }} ({{ article.um }})
@@ -139,7 +140,14 @@
                 class="form-control"
                 formControlName="quantity" />
 
-              <span class="unit-addon">u.</span>
+            </div>
+
+            <div class="form-group unit-field">
+              <select class="form-control" formControlName="unitOfMeasure">
+                <option *ngFor="let unit of unitOptions" [value]="unit.value">
+                  {{ unit.label || unit.value }}
+                </option>
+              </select>
             </div>
 
             <button

@@ -1,0 +1,506 @@
+$olive-50: #f8f9f4;
+$olive-100: #f1f3e8;
+$olive-200: #e2e7d1;
+$olive-500: #93a165;
+$olive-600: #75834d;
+$olive-700: #5d6840;
+$olive-900: #3c432d;
+
+:host {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  overflow: visible;
+}
+
+.preview-card-root {
+  width: 100%;
+  min-width: 0;
+  overflow: visible;
+  box-sizing: border-box;
+
+  &.is-miniature {
+    display: flex;
+    justify-content: center;
+    padding: 0 4px 8px;
+
+
+  }
+
+  &.is-full {
+    .identity-card {
+      width: 100%;
+      max-width: 100%;
+    }
+  }
+}
+
+.identity-card {
+  box-sizing: border-box;
+  background: white;
+  padding: 28px;
+  border: 1px solid $olive-200;
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  overflow: visible;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    border: 1px solid $olive-100;
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 28px;
+    min-width: 0;
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 11px;
+      text-transform: uppercase;
+      color: $olive-700;
+      flex: 1 1 45%;
+      min-width: 0;
+      max-width: 50%;
+
+      .brand-logo {
+        height: 36px;
+        width: auto;
+        max-width: 72px;
+        object-fit: contain;
+        flex-shrink: 0;
+      }
+
+      mat-icon {
+        font-size: 28px;
+        width: 28px;
+        height: 28px;
+        color: $olive-600;
+        flex-shrink: 0;
+      }
+
+      span {
+        line-height: 1.2;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+      }
+    }
+
+    .card-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+      flex: 0 1 auto;
+      min-width: 0;
+      max-width: 50%;
+    }
+
+    .meta-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: flex-end;
+    }
+
+    .lot-number {
+      text-align: right;
+      min-width: 0;
+      max-width: 100%;
+
+      small {
+        display: block;
+        font-size: 8px;
+        color: #9ca3af;
+      }
+
+      strong {
+        display: block;
+        font-size: 13px;
+        font-family: monospace;
+        word-break: break-all;
+        overflow-wrap: anywhere;
+      }
+    }
+  }
+
+  .meta-pill {
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 100px;
+    background: $olive-100;
+    color: $olive-700;
+    white-space: nowrap;
+  }
+
+  .product-info {
+    margin-bottom: 20px;
+    min-width: 0;
+
+    .legal-name {
+      font-size: clamp(22px, 4vw, 28px);
+      font-weight: 900;
+      margin: 0;
+      color: $olive-900;
+      line-height: 1.1;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    .origin {
+      font-size: 13px;
+      color: $olive-500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+      word-break: break-word;
+    }
+  }
+
+  .preview-certs-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding: 6px;
+    background: #f8fafc;
+    border-radius: 8px;
+    width: fit-content;
+    max-width: 100%;
+
+    .preview-cert-item img {
+      height: 28px;
+      width: auto;
+      object-fit: contain;
+    }
+  }
+
+  .specs-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px dashed $olive-200;
+
+    .spec-item {
+      min-width: 0;
+
+      span {
+        display: block;
+        font-size: 8px;
+        color: #9ca3af;
+        text-transform: uppercase;
+        margin-bottom: 2px;
+      }
+
+      strong {
+        display: block;
+        font-size: 12px;
+        font-weight: 700;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+      }
+    }
+  }
+
+  .claims-section {
+    margin-bottom: 14px;
+
+    label {
+      display: block;
+      font-size: 9px;
+      font-weight: 800;
+      color: $olive-600;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .claims-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .claim-pill {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 100px;
+      background: #fef9c3;
+      color: #854d0e;
+      border: 1px solid #fde047;
+    }
+  }
+
+  .cert-text-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 100px;
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+  }
+
+  .mentions-box {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+
+    .mention {
+      min-width: 0;
+
+      label {
+        display: block;
+        font-size: 9px;
+        font-weight: 800;
+        color: $olive-600;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+      }
+
+      p {
+        margin: 0;
+        font-size: 11px;
+        color: $olive-900;
+        line-height: 1.4;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+      }
+
+      &.span-full {
+        grid-column: 1 / -1;
+      }
+    }
+  }
+
+  .qc-section,
+  .nutrition-section {
+    margin-bottom: 18px;
+
+    > label {
+      display: block;
+      font-size: 9px;
+      font-weight: 800;
+      color: $olive-600;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+  }
+
+  .nutrition-title {
+    margin: 0 0 8px;
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: $olive-700;
+    letter-spacing: 0.02em;
+    line-height: 1.3;
+  }
+
+  .nutrition-serving {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    margin-bottom: 10px;
+    font-size: 9px;
+    color: $olive-700;
+
+    strong {
+      font-weight: 800;
+      text-transform: uppercase;
+      color: $olive-600;
+    }
+  }
+
+  .nutrition-table-wrap {
+    overflow-x: auto;
+    border: 1px solid $olive-600;
+    border-radius: 4px;
+    background: white;
+  }
+
+  .nutrition-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9px;
+    color: $olive-900;
+
+    th,
+    td {
+      border: 1px solid $olive-500;
+      padding: 5px 6px;
+      text-align: left;
+      vertical-align: top;
+      line-height: 1.35;
+      word-break: break-word;
+    }
+
+    thead th {
+      background: $olive-100;
+      font-size: 8px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: $olive-700;
+      text-align: center;
+    }
+
+    tbody th.param-cell {
+      font-weight: 700;
+      background: $olive-50;
+      min-width: 110px;
+    }
+
+    tbody td {
+      text-align: center;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    tbody td:last-child {
+      min-width: 52px;
+    }
+  }
+
+  .param-cell {
+    display: table-cell;
+  }
+
+  .param-label {
+    display: inline;
+    margin-right: 4px;
+  }
+
+  .source-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 7px;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 1px 5px;
+    border-radius: 100px;
+    background: #fef3c7;
+    color: #92400e;
+    vertical-align: middle;
+    cursor: help;
+
+    &.measured {
+      background: #dcfce7;
+      color: #166534;
+    }
+  }
+
+  .nutrition-footnotes {
+    margin-top: 8px;
+
+    p {
+      margin: 0 0 3px;
+      font-size: 8px;
+      color: #6b7280;
+      line-height: 1.4;
+    }
+  }
+
+  .qc-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 14px;
+  }
+
+  .qc-item {
+    min-width: 0;
+    padding: 8px 10px;
+    border: 1px solid $olive-100;
+    border-radius: 8px;
+    background: $olive-50;
+
+    span {
+      display: block;
+      font-size: 8px;
+      color: #9ca3af;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    strong {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: $olive-900;
+      word-break: break-word;
+    }
+  }
+
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+    padding-top: 16px;
+    border-top: 1px solid $olive-100;
+    min-width: 0;
+
+    .responsible {
+      flex: 1 1 auto;
+      min-width: 0;
+
+      small {
+        display: block;
+        font-size: 8px;
+        color: #9ca3af;
+        text-transform: uppercase;
+        margin-bottom: 2px;
+      }
+
+      strong {
+        display: block;
+        font-size: 12px;
+        color: $olive-900;
+        word-break: break-word;
+      }
+
+      address {
+        font-style: normal;
+        font-size: 10px;
+        color: $olive-600;
+        margin-top: 4px;
+        line-height: 1.4;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+      }
+    }
+
+    .qr-placeholder {
+      width: 56px;
+      height: 56px;
+      border: 1px dashed $olive-200;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: $olive-500;
+      background: $olive-50;
+      flex: 0 0 56px;
+    }
+  }
+}

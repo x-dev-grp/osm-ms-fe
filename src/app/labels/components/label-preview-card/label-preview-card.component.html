@@ -1,0 +1,154 @@
+<div class="preview-card-root" [class.is-miniature]="size === 'miniature'" [class.is-full]="size === 'full'">
+  <div class="identity-card">
+    <div class="card-header">
+      <div class="brand">
+        <img
+          *ngIf="preview.brandLogoData"
+          class="brand-logo"
+          [src]="'data:' + preview.brandLogoContentType + ';base64,' + preview.brandLogoData"
+          [alt]="preview.brandName"
+        />
+        <mat-icon *ngIf="!preview.brandLogoData">business</mat-icon>
+        <span>{{ preview.brandName }}</span>
+      </div>
+      <div class="card-meta">
+        <div class="meta-pills">
+          <span class="meta-pill">{{ preview.language || 'FR' }}</span>
+          <span class="meta-pill">{{ preview.labelCategory || 'UNIT' }}</span>
+        </div>
+        <div class="lot-number">
+          <small>LOT N°</small>
+          <strong>{{ preview.lotNumber || 'BROUILLON' }}</strong>
+        </div>
+      </div>
+    </div>
+
+  <div class="preview-certs-row" *ngIf="preview.certifications.length > 0">
+    <div class="preview-cert-item" *ngFor="let cert of preview.certifications">
+      <img
+        *ngIf="cert.logoData"
+        [src]="'data:' + cert.logoContentType + ';base64,' + cert.logoData"
+        [matTooltip]="cert.name"
+        [alt]="cert.name"
+      />
+      <span *ngIf="!cert.logoData" class="cert-text-badge">{{ cert.name }}</span>
+    </div>
+  </div>
+
+  <div class="product-info">
+    <h1 class="legal-name">{{ preview.legalDenomination || 'Huile d\'Olive' }}</h1>
+    <p class="origin">
+      <mat-icon>place</mat-icon>
+      {{ preview.originCountry || 'Tunisie' }}
+    </p>
+  </div>
+
+  <div class="specs-grid">
+    <div class="spec-item">
+      <span>Quantité</span>
+      <strong>{{ preview.netQuantity || '-' }}</strong>
+    </div>
+    <div class="spec-item">
+      <span>Qualité</span>
+      <strong>{{ preview.qualityLabel }}</strong>
+    </div>
+    <div class="spec-item">
+      <span>Variété</span>
+      <strong>{{ preview.varietyLabel }}</strong>
+    </div>
+    <div class="spec-item">
+      <span>D.D.M.</span>
+      <strong>{{ preview.bestBeforeDate || '-' }}</strong>
+    </div>
+    <div class="spec-item">
+      <span>Date Cond.</span>
+      <strong>{{ preview.packagingDate || '-' }}</strong>
+    </div>
+    <div class="spec-item">
+      <span>Langue</span>
+      <strong>{{ preview.language || 'FR' }}</strong>
+    </div>
+  </div>
+
+  <div class="claims-section" *ngIf="preview.claimLabels.length > 0">
+    <label>Allégations Marketing</label>
+    <div class="claims-pills">
+      <span class="claim-pill" *ngFor="let claim of preview.claimLabels">{{ claim }}</span>
+    </div>
+  </div>
+
+  <div class="mentions-box">
+    <div class="mention" *ngIf="preview.extractionMethod">
+      <label>Extraction</label>
+      <p>{{ preview.extractionMethod }}</p>
+    </div>
+    <div class="mention">
+      <label>Stockage</label>
+      <p>{{ preview.storageConditions }}</p>
+    </div>
+    <div class="mention span-full" *ngIf="preview.sensoryProfile">
+      <label>{{ preview.sensoryFromQualityControl ? 'Contrôle qualité après filtration' : 'Profil Sensoriel' }}</label>
+      <p>{{ preview.sensoryProfile }}</p>
+    </div>
+  </div>
+
+  <div class="qc-section" *ngIf="preview.qualityControls.length > 0">
+    <label>Contrôle Qualité</label>
+    <div class="qc-grid">
+      <div class="qc-item" *ngFor="let qc of preview.qualityControls">
+        <span>{{ qc.label }}</span>
+        <strong>{{ qc.value }}</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="nutrition-section" *ngIf="preview.nutritionTable as nutrition">
+    <h3 class="nutrition-title">{{ nutrition.title }}</h3>
+    <div class="nutrition-serving">
+      <span><strong>{{ nutrition.servingSizeLabel }}:</strong> {{ nutrition.servingSize }}</span>
+      <span><strong>{{ nutrition.servingsPerPackLabel }}:</strong> {{ nutrition.servingsPerPack }}</span>
+    </div>
+    <div class="nutrition-table-wrap">
+      <table class="nutrition-table">
+        <thead>
+          <tr>
+            <th scope="col">{{ nutrition.columns.parameter }}</th>
+            <th scope="col">{{ nutrition.columns.per100 }}</th>
+            <th scope="col">{{ nutrition.columns.perServing }}</th>
+            <th scope="col">{{ nutrition.columns.rda }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of nutrition.rows">
+            <th scope="row" class="param-cell">
+              <span class="param-label">{{ row.parameter }}</span>
+              <small
+                class="source-badge"
+                [class.measured]="row.source === 'measured'"
+                [matTooltip]="sourceLabel(row.source)"
+              >{{ row.source === 'measured' ? 'M' : 'E' }}</small>
+            </th>
+            <td>{{ row.per100 }}</td>
+            <td>{{ row.perServing }}</td>
+            <td>{{ row.rdaPercent || '-' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="nutrition-footnotes">
+      <p *ngFor="let note of nutrition.footnotes">{{ note }}</p>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <div class="responsible">
+      <small>Responsable</small>
+      <strong>{{ preview.responsibleName || '-' }}</strong>
+      <address>{{ preview.responsibleAddress }}</address>
+    </div>
+    <div class="qr-placeholder">
+      <mat-icon>qr_code_2</mat-icon>
+    </div>
+  </div>
+  </div>
+</div>

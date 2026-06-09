@@ -4,7 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 // project import
 // CHANGE: permissions - import permission guards and enums
-import { anyPermissionGuard } from './interceptors/guards/permission.guard';
+import { anyPermissionGuard, moduleGuard } from './interceptors/guards/permission.guard';
 import { Action, OSMModule, permissionKey, ProductionEntity, ReceptionEntity } from './theme/types/permissions';
 
 //Type
@@ -30,17 +30,21 @@ const routes: Routes = [
       },
       {
         path: 'stock',
-        loadChildren: () => import('./stock/stock.module').then(m => m.StockModule)
+        loadChildren: () => import('./stock/stock.module').then(m => m.StockModule),
+        canActivate: [moduleGuard([OSMModule.INVENTAIR])]
       },
       { path: 'of',
-        loadChildren: () => import('./OF/of.module').then(m => m.OfModule) },
+        loadChildren: () => import('./OF/of.module').then(m => m.OfModule),
+        canActivate: [moduleGuard([OSMModule.CONDITIONING])] },
       {
         path: 'labels',
-        loadChildren: () => import('./labels/labels.module').then((m) => m.LabelsModule)
+        loadChildren: () => import('./labels/labels.module').then((m) => m.LabelsModule),
+        canActivate: [moduleGuard([OSMModule.CONDITIONING])]
       },
       {
         path: 'projets',
-        loadChildren: () => import('./projet/projet.module').then((m) => m.ProjetModule)
+        loadChildren: () => import('./projet/projet.module').then((m) => m.ProjetModule),
+        canActivate: [moduleGuard([OSMModule.CONDITIONING])]
       },
       {
         path: 'welcome',
@@ -70,6 +74,7 @@ const routes: Routes = [
       {
         path: 'storage',
         loadChildren: () => import('./storage/storage-routing.module').then((m) => m.StorageRoutingModule),
+        canActivate: [moduleGuard([OSMModule.PRODUCTION])],
         data: { roles: [Role.Admin, Role.User] }
       },
 
@@ -88,20 +93,24 @@ const routes: Routes = [
 
       {
         path: 'reception',
+        canActivate: [moduleGuard([OSMModule.RECEPTION])],
         children: receptionRoutes
       },
 
       {
         path: 'settings',
-        loadChildren: () => import('./settings/settings.module').then((m) => m.SettingsModule)
+        loadChildren: () => import('./settings/settings.module').then((m) => m.SettingsModule),
+        canActivate: [moduleGuard([OSMModule.HABILITATION])]
       },
       {
         path: 'hr',
-        loadChildren: () => import('./hr/hr.module').then((m) => m.HrModule)
+        loadChildren: () => import('./hr/hr.module').then((m) => m.HrModule),
+        canActivate: [moduleGuard([OSMModule.HR])]
       },
       {
         path: 'finance',
-        loadChildren: () => import('./finance/finance-routing.module').then((m) => m.FinanceRoutingModule)
+        loadChildren: () => import('./finance/finance-routing.module').then((m) => m.FinanceRoutingModule),
+        canActivate: [moduleGuard([OSMModule.FINANCE])]
       },
       {
         path: 'administration',
@@ -110,7 +119,8 @@ const routes: Routes = [
       {
         path: 'analytics',
         loadChildren: () =>
-          import('./analytics/analytics.module').then(m => m.AnalyticsModule)
+          import('./analytics/analytics.module').then(m => m.AnalyticsModule),
+        canActivate: [moduleGuard([OSMModule.CONDITIONING])]
       }
     ]
   },

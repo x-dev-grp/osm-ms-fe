@@ -355,8 +355,9 @@ export class ProjetExpeditionComponent implements OnInit {
       next: (items) => {
         this.expeditions = items;
         this.applyProjectDeliveryCompletion();
-        const found = this.queryExpeditionId ? items.find(item => item.id === this.queryExpeditionId) : null;
-        this.selectedExpedition = found || (items.length ? items[0] : null);
+        this.selectedExpedition = this.queryExpeditionId
+          ? items.find(item => item.id === this.queryExpeditionId) ?? null
+          : null;
         if (this.selectedExpedition) {
           this.patchEditForm(this.selectedExpedition);
           if (this.openTraceabilityOnLoad) {

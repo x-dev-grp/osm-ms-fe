@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ArticleService } from '../../../services/article.service';
-import { Article } from '../../../models/article.model';
+import { Article, UniteMesure, UniteMesureOption } from '../../../models/article.model';
 import { Bom } from "../../../models/Bom";
 import { Product, productDisplayName } from "../../../models/sku.model";
 import { BomService } from "../../../services/BomService";
@@ -23,6 +23,7 @@ export class BomFormComponent implements OnInit {
   bomForm!: FormGroup;
   products: Product[] = [];
   articles: Article[] = [];
+  unitOptions: UniteMesureOption[] = Object.values(UniteMesure).map((value) => ({ value, label: value }));
   loading = false;
   isSubmitting = false;
   isEditMode = false;
@@ -71,7 +72,8 @@ export class BomFormComponent implements OnInit {
   private createLineFormGroup(): FormGroup {
     return this.fb.group({
       articleId: ['', Validators.required],
-      quantity: [1, [Validators.required, Validators.min(0.001)]]
+      quantity: [1, [Validators.required, Validators.min(0.001)]],
+      unitOfMeasure: [UniteMesure.UNITE, Validators.required]
     });
   }
 
@@ -105,6 +107,15 @@ export class BomFormComponent implements OnInit {
       },
       error: (err) => console.error('Erreur chargement articles', err)
     });
+
+    this.articleService.getUnitesMesure().subscribe({
+      next: (units) => {
+        if (units?.length) {
+          this.unitOptions = units;
+        }
+      },
+      error: (err) => console.error('Erreur chargement unités', err)
+    });
   }
 
   loadBom(id: string): void {
@@ -122,7 +133,8 @@ export class BomFormComponent implements OnInit {
           bom.lines.forEach(line => {
             this.lines.push(this.fb.group({
               articleId: [line.articleId, Validators.required],
-              quantity: [line.quantity, [Validators.required, Validators.min(0.001)]]
+              quantity: [line.quantity, [Validators.required, Validators.min(0.001)]],
+              unitOfMeasure: [line.unitOfMeasure || UniteMesure.UNITE, Validators.required]
             }));
             this.ensureArticleInList(line.articleId, line.articleName);
           });
@@ -195,6 +207,14 @@ export class BomFormComponent implements OnInit {
     return this.articles.filter(
       (article) => article.id === currentId || !selectedArticleIds.includes(article.id!)
     );
+  }
+
+  onArticleChange(index: number): void {
+    const line = this.lines.at(index);
+    const article = this.articles.find((item) => item.id === line.get('articleId')?.value);
+    if (article?.um) {
+      line.get('unitOfMeasure')?.setValue(article.um);
+    }
   }
 
   private ensureArticleInList(articleId?: string, articleName?: string): void {

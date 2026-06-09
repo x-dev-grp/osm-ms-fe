@@ -283,154 +283,76 @@ $gray-900: #111827;
   flex-direction: column;
   gap: 24px;
 
+  .preview-panel {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid $gray-100;
+    overflow: visible;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
+  }
+
   .preview-header {
     display: flex;
     align-items: center;
     gap: 10px;
+    padding: 16px 20px;
+    background: $olive-50;
+    border-bottom: 1px solid $olive-100;
     color: $olive-900;
     font-weight: 700;
-    font-size: 18px;
-    mat-icon { color: $olive-600; }
-  }
-}
+    font-size: 16px;
 
-.label-preview-card {
-  background: white;
-  border-radius: 16px;
-  padding: 24px;
-  border: 1px solid $gray-100;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.03);
-
-  .preview-inner {
-    border: 1px solid $olive-100;
-    border-radius: 12px;
-    padding: 32px;
-    position: relative;
-    overflow: hidden;
-
-    .preview-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 40px;
-
-      .preview-logo {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 4px;
-        mat-icon { color: $olive-600; font-size: 32px; width: 32px; height: 32px; }
-        span { font-size: 10px; font-weight: 800; letter-spacing: 2px; }
-      }
-
-      .preview-lot {
-        text-align: right;
-        small { font-size: 9px; font-weight: 800; color: #9ca3af; }
-        strong { display: block; font-size: 14px; font-weight: 700; margin: 4px 0; }
-        .lang-badges {
-          display: flex;
-          justify-content: flex-end;
-          gap: 4px;
-          span { font-size: 9px; font-weight: 800; padding: 2px 6px; background: #f3f4f6; border-radius: 4px; }
-        }
-      }
+    mat-icon {
+      color: $olive-600;
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
     }
 
-    .preview-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 36px;
+    .preview-popup-btn {
+      margin-left: auto;
+      height: 32px;
+      line-height: 32px;
+      font-size: 12px;
       font-weight: 700;
-      color: $olive-900;
-      margin: 0 0 12px;
-    }
+      color: $olive-700;
+      border-color: $olive-200;
 
-    .preview-origin {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      color: $gray-500;
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 32px;
-      mat-icon { font-size: 16px; width: 16px; height: 16px; }
-    }
-
-    .preview-specs {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      margin-bottom: 32px;
-      padding-bottom: 24px;
-      border-bottom: 1px dotted $olive-200;
-
-      .spec {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        small { font-size: 8px; font-weight: 800; color: #9ca3af; text-transform: uppercase; }
-        span { font-size: 13px; font-weight: 700; color: $gray-900; }
+      mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+        margin-right: 4px;
       }
     }
 
-    .preview-marketing {
-      margin-bottom: 24px;
-      small { font-size: 8px; font-weight: 800; color: #9ca3af; text-transform: uppercase; }
-      .badge {
-        margin-top: 8px;
-        display: inline-block;
-        background: #fef3c7;
-        color: #92400e;
-        padding: 4px 10px;
-        border-radius: 100px;
-        font-size: 10px;
-        font-weight: 700;
-      }
+    .status-badge.mini {
+      margin-left: 8px;
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+
+      &.draft { background: #f3f4f6; color: #6b7280; }
+      &.validated { background: #dbeafe; color: #1d4ed8; }
+      &.finalized { background: #dcfce7; color: #166534; }
+      &.exported { background: #fef3c7; color: #92400e; }
     }
+  }
 
-    .preview-extraction {
-      display: flex;
-      gap: 24px;
-      margin-bottom: 24px;
-      .ext, .sto {
-        flex: 1;
-        small { font-size: 8px; font-weight: 800; color: #9ca3af; text-transform: uppercase; }
-        span { display: block; font-size: 11px; font-weight: 600; margin-top: 4px; line-height: 1.4; }
-      }
-    }
+  .passport-preview-container {
+    display: flex;
+    justify-content: center;
+    background: #fdfdfb;
+    padding: 24px 12px;
+    overflow: visible;
+    min-width: 0;
 
-    .preview-sensory {
-      margin-bottom: 32px;
-      small { font-size: 8px; font-weight: 800; color: #9ca3af; text-transform: uppercase; }
-      p { font-size: 11px; font-weight: 600; color: $gray-900; margin: 4px 0; font-style: italic; }
-    }
-
-    .preview-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-
-      .resp {
-        small { font-size: 8px; font-weight: 800; color: #9ca3af; }
-        strong { display: block; font-size: 13px; font-weight: 700; margin: 2px 0; }
-        span { font-size: 11px; color: $gray-500; }
-      }
-
-      .qr-placeholder {
-        color: #e5e7eb;
-        mat-icon { font-size: 48px; width: 48px; height: 48px; }
-      }
-    }
-
-    .preview-bottom-illustration {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 60px;
-      background-image: url('../../../../assets/logo_etiquette%20.png');
-      background-size: cover;
-      background-position: bottom;
-      opacity: 0.15;
+    app-label-preview-card {
+      display: block;
+      width: 100%;
+      min-width: 0;
     }
   }
 }

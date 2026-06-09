@@ -469,7 +469,7 @@ textarea.form-control {
   background: white;
   border-radius: 20px;
   border: 1px solid $olive-100;
-  overflow: hidden;
+  overflow: visible;
 
   .preview-panel-header {
     display: flex;
@@ -489,8 +489,25 @@ textarea.form-control {
       height: 18px;
     }
 
-    .status-badge {
+    .preview-popup-btn {
       margin-left: auto;
+      height: 32px;
+      line-height: 32px;
+      font-size: 12px;
+      font-weight: 700;
+      color: $olive-700;
+      border-color: $olive-200;
+
+      mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+        margin-right: 4px;
+      }
+    }
+
+    .status-badge {
+      margin-left: 8px;
     }
   }
 }
@@ -499,7 +516,15 @@ textarea.form-control {
   display: flex;
   justify-content: center;
   background: #fdfdfb;
-  padding: 24px 20px;
+  padding: 24px 12px;
+  overflow: visible;
+  min-width: 0;
+
+  app-label-preview-card {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
 }
 
 .identity-card {

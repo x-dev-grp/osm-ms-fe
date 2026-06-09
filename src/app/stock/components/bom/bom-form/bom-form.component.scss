@@ -495,7 +495,7 @@ select.form-control {
 
 .lines-header {
   display: grid;
-  grid-template-columns: 72px minmax(260px, 1fr) minmax(220px, 0.85fr) 64px;
+  grid-template-columns: 72px minmax(260px, 1fr) minmax(180px, 0.65fr) minmax(150px, 0.45fr) 64px;
   align-items: center;
   min-height: 54px;
   padding: 0 18px;
@@ -508,7 +508,7 @@ select.form-control {
 
 .line-item {
   display: grid;
-  grid-template-columns: 72px minmax(260px, 1fr) minmax(220px, 0.85fr) 64px;
+  grid-template-columns: 72px minmax(260px, 1fr) minmax(180px, 0.65fr) minmax(150px, 0.45fr) 64px;
   gap: 16px;
   align-items: center;
   padding: 16px 18px;
@@ -529,30 +529,6 @@ select.form-control {
   background: $olive-soft;
   font-size: 15px;
   font-weight: 800;
-}
-
-.quantity-field {
-  position: relative;
-
-  .form-control {
-    padding-right: 74px;
-  }
-}
-
-.unit-addon {
-  position: absolute;
-  top: 0;
-  right: 0;
-  height: 54px;
-  min-width: 58px;
-  display: grid;
-  place-items: center;
-  color: $text;
-  background: #f5f1e7;
-  border-left: 1px solid $border;
-  border-radius: 0 12px 12px 0;
-  font-size: 14px;
-  font-weight: 700;
 }
 
 .btn-remove {

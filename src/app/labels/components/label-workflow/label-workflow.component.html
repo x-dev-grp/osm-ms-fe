@@ -303,6 +303,16 @@
           <div class="preview-panel-header">
             <mat-icon>visibility</mat-icon>
             <span>Aperçu en direct</span>
+            <button
+              mat-stroked-button
+              type="button"
+              class="preview-popup-btn"
+              (click)="openPreviewDialog()"
+              matTooltip="Ouvrir l'aperçu en plein écran"
+            >
+              <mat-icon>open_in_full</mat-icon>
+              Visualiser
+            </button>
             <span class="status-badge mini" *ngIf="currentLabel" [class.finalized]="isFinalized()">
               {{ currentLabel.status === 'DRAFT' ? 'Brouillon' : (currentLabel.status === 'FINALIZED' ? 'Finalisée' :
               (currentLabel.status === 'VALIDATED' ? 'Validée' : (currentLabel.status === 'EXPORTED_JSON' ? 'Exportée
@@ -312,100 +322,7 @@
           </div>
 
           <div class="passport-preview-container">
-            <div class="identity-card miniature">
-              <div class="card-header">
-                <div class="brand">
-                  <mat-icon>eco</mat-icon>
-                  <span>Olivéa</span>
-                </div>
-                <div class="card-meta">
-                  <span class="meta-pill">{{ labelForm.value.language || 'FR' }}</span>
-                  <span class="meta-pill">{{ labelForm.value.labelCategory || 'UNIT' }}</span>
-                  <div class="lot-number">
-                    <small>LOT N°</small>
-                    <strong>{{ labelForm.value.lotNumber || currentLabel?.lotNumber || 'BROUILLON' }}</strong>
-                  </div>
-                </div>
-              </div>
-
-              <div class="preview-certs-row" *ngIf="selectedCertifications.length > 0">
-                <div class="preview-cert-item" *ngFor="let cert of selectedCertifications">
-                  <img *ngIf="cert.logoData" [src]="'data:' + cert.logoContentType + ';base64,' + cert.logoData"
-                    [matTooltip]="cert.name" />
-                  <span *ngIf="!cert.logoData" class="cert-text-badge">{{ cert.name }}</span>
-                </div>
-              </div>
-
-              <div class="product-info">
-                <h1 class="legal-name">{{ labelForm.value.legalDenomination || 'Huile d\'Olive' }}</h1>
-                <p class="origin">
-                  <mat-icon>place</mat-icon>
-                  {{ labelForm.value.originCountry || 'Tunisie' }}
-                </p>
-              </div>
-
-              <div class="specs-grid">
-                <div class="spec-item">
-                  <span>Quantité</span>
-                  <strong>{{ labelForm.value.netQuantity || '-' }}</strong>
-                </div>
-                <div class="spec-item">
-                  <span>Qualité</span>
-                  <strong>{{ resolveQualityLabel(labelForm.value.qualityGrade) }}</strong>
-                </div>
-                <div class="spec-item">
-                  <span>Variété</span>
-                  <strong>{{ resolveVarietyLabel(labelForm.value.variety) }}</strong>
-                </div>
-                <div class="spec-item">
-                  <span>D.D.M.</span>
-                  <strong>{{ labelForm.value.bestBeforeDate || '-' }}</strong>
-                </div>
-                <div class="spec-item">
-                  <span>Date Cond.</span>
-                  <strong>{{ labelForm.value.packagingDate || '-' }}</strong>
-                </div>
-                <div class="spec-item">
-                  <span>Langue</span>
-                  <strong>{{ labelForm.value.language || 'FR' }}</strong>
-                </div>
-              </div>
-
-              <div class="claims-section" *ngIf="(labelForm.value.claimTypes?.length || 0) > 0">
-                <label>Allégations Marketing</label>
-                <div class="claims-pills">
-                  <span class="claim-pill" *ngFor="let claim of labelForm.value.claimTypes">
-                    {{ resolveClaimLabel(claim) }}
-                  </span>
-                </div>
-              </div>
-
-              <div class="mentions-box">
-                <div class="mention" *ngIf="labelForm.value.extractionMethod">
-                  <label>Extraction</label>
-                  <p>{{ labelForm.value.extractionMethod }}</p>
-                </div>
-                <div class="mention" *ngIf="labelForm.value.storageConditions">
-                  <label>Stockage</label>
-                  <p>{{ labelForm.value.storageConditions }}</p>
-                </div>
-                <div class="mention span-full" *ngIf="labelForm.value.sensoryProfile">
-                  <label>Profil Sensoriel</label>
-                  <p>{{ labelForm.value.sensoryProfile }}</p>
-                </div>
-              </div>
-
-              <div class="card-footer">
-                <div class="responsible">
-                  <small>Responsable</small>
-                  <strong>{{ labelForm.value.responsibleName || '-' }}</strong>
-                  <address>{{ labelForm.value.responsibleAddress }}</address>
-                </div>
-                <div class="qr-placeholder">
-                  <mat-icon>qr_code_2</mat-icon>
-                </div>
-              </div>
-            </div>
+            <app-label-preview-card [preview]="previewViewModel()" size="miniature"></app-label-preview-card>
           </div>
         </div>
 

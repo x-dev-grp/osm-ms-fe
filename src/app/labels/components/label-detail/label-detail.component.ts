@@ -5,8 +5,30 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, forkJoin } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { LabelCategory, LabelContentDto, LabelContentStatus, LabelValidationIssueDto } from '../../models/label.model';
+import { LabelCategory, LabelClaimType, LabelContentDto, LabelContentStatus, LabelValidationIssueDto } from '../../models/label.model';
 import { LabelService } from '../../services/label.service';
+import { CertificationService } from '../../services/certification.service';
+import { Certification } from '../../models/certification.model';
+import { LabelPreviewCardComponent } from '../label-preview-card/label-preview-card.component';
+import {
+  LabelPreviewDialogComponent,
+  LabelPreviewDialogData
+} from '../label-preview-dialog/label-preview-dialog.component';
+import { LabelPreviewViewModel } from '../../models/label-preview.model';
+import {
+  buildLabelPreviewFromDto,
+  formatLabelPayloadJson
+} from '../../utils/label-preview-payload.util';
+import {
+  filterNonCompositionQualityControls,
+  hasSensoryQualityControls,
+  resolvePostFiltrationQualityControls,
+  resolveSensoryProfileDisplay,
+  resolveStorageConditionsDisplay
+} from '../../utils/label-qc-composition.util';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { CompanyProfileService } from '../../../shared/services/company-profile.service';
+import { CompanyProfile } from '../../../shared/models/CompanyProfile';
 
 import { BaseType } from '../../../shared/models/base-type';
 import { GenericTypeService } from '../../../shared/services/generic-type.service';
@@ -30,7 +52,9 @@ import { ProductionTraceabilityService } from '../../../shared/services/producti
     MatIconModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
-    MatDividerModule
+    MatDividerModule,
+    MatDialogModule,
+    LabelPreviewCardComponent
   ],
   templateUrl: './label-detail.component.html',
   styleUrls: ['./label-detail.component.scss']
@@ -38,6 +62,16 @@ import { ProductionTraceabilityService } from '../../../shared/services/producti
 export class LabelDetailComponent implements OnInit, OnDestroy {
   label: LabelContentDto | null = null;
   currentGenealogy: ProductionGenealogy | null = null;
+  availableCertifications: Certification[] = [];
+  companyProfile: CompanyProfile | null = null;
+
+  private readonly claimTypeOptions: { value: LabelClaimType; label: string }[] = [
+    { value: 'MADE_IN_TUNISIA', label: 'Produit de Tunisie' },
+    { value: 'BIO', label: 'Agriculture Biologique' },
+    { value: 'COLD_EXTRACTION', label: 'Extraction à froid' },
+    { value: 'PRIVATE_LABEL', label: 'Marque Privée' },
+    { value: 'OTHER', label: 'Autre' }
+  ];
 
   loading = false;
   loadingTypes = false;
@@ -58,7 +92,10 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
     private readonly router: Router,
     private readonly labelService: LabelService,
     private readonly genericTypeService: GenericTypeService,
-    private readonly productionTraceabilityService: ProductionTraceabilityService
+    private readonly productionTraceabilityService: ProductionTraceabilityService,
+    private readonly certificationService: CertificationService,
+    private readonly companyProfileService: CompanyProfileService,
+    private readonly dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -78,14 +115,17 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
 
     forkJoin({
       oilTypes: this.genericTypeService.getAllTypes(TypeCategory.OIL_TYPE),
-      oilVarieties: this.genericTypeService.getAllTypes(TypeCategory.OLIVE_VARIETY)
+      oilVarieties: this.genericTypeService.getAllTypes(TypeCategory.OLIVE_VARIETY),
+      availableCertifications: this.certificationService.getAll()
     })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: ({ oilTypes, oilVarieties }) => {
+        next: ({ oilTypes, oilVarieties, availableCertifications }) => {
           this.oilTypes = oilTypes?.data || [];
           this.oilVarieties = oilVarieties?.data || [];
+          this.availableCertifications = (availableCertifications || []).filter((cert) => cert.isActive);
           this.loadingTypes = false;
+          this.loadCompanyBrand();
           this.loadLabel();
         },
         error: (error) => {
@@ -154,6 +194,78 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
 
   getQualityGradeLabel(value: unknown): string {
     return resolveQualityGradeLabel(typeof value === 'string' ? value : String(value ?? ''));
+  }
+
+  previewViewModel(): LabelPreviewViewModel {
+    return buildLabelPreviewFromDto(this.buildPreviewOptions(this.label!)).viewModel;
+  }
+
+  previewPayload(): string {
+    if (!this.label) {
+      return '';
+    }
+
+    if (this.label.finalPayloadJson) {
+      return formatLabelPayloadJson(this.label.finalPayloadJson);
+    }
+
+    return formatLabelPayloadJson(buildLabelPreviewFromDto(this.buildPreviewOptions(this.label)).payload);
+  }
+
+  openPreviewDialog(): void {
+    if (!this.label) {
+      return;
+    }
+
+    const data: LabelPreviewDialogData = {
+      viewModel: this.previewViewModel(),
+      payloadJson: this.previewPayload()
+    };
+
+    this.dialog.open(LabelPreviewDialogComponent, {
+      width: '900px',
+      maxWidth: '96vw',
+      maxHeight: '95vh',
+      panelClass: 'label-preview-dialog-panel',
+      data
+    });
+  }
+
+  resolveClaimLabel(claimValue: string): string {
+    return this.claimTypeOptions.find((option) => option.value === claimValue)?.label ?? claimValue;
+  }
+
+  private buildPreviewOptions(label: LabelContentDto) {
+    return {
+      label,
+      certifications: this.availableCertifications,
+      brandName: this.companyProfile?.legalName,
+      brandLogoData: this.companyProfile?.logoData,
+      brandLogoContentType: this.companyProfile?.logoContentType,
+      postFiltrationQualityControls: this.postFiltrationQualityControls,
+      genealogy: this.filteredLotGenealogy,
+      productDensity: null,
+      languageDisplay: this.languageLabel(label.language),
+      categoryDisplay: this.categoryLabel(label.labelCategory || 'UNIT'),
+      resolveQualityLabel: (value: string | null | undefined) => this.getQualityGradeLabel(value),
+      resolveVarietyLabel: (value: string | null | undefined) => this.getVarietyLabel(value),
+      resolveClaimLabel: (value: LabelClaimType | string) => this.resolveClaimLabel(String(value))
+    };
+  }
+
+  private loadCompanyBrand(): void {
+    const cachedProfile = this.companyProfileService.getProfileFromCache();
+    if (cachedProfile) {
+      this.companyProfile = cachedProfile;
+    }
+
+    this.companyProfileService.getProfile()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (profile) => {
+          this.companyProfile = profile;
+        }
+      });
   }
 
   private resolveBaseTypeLabel(value: unknown, source: BaseType[]): string {
@@ -529,17 +641,28 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
     return this.rootSource?.lotNumber || '-';
   }
 
-  get postFiltrationQualityControls(): Record<string, string> | null {
-    const direct = this.filteredLotGenealogy?.filteredQualityControls;
-    if (direct && Object.keys(direct).length > 0) {
-      return direct;
-    }
+  get postFiltrationQualityControls(): Record<string, string> {
+    return resolvePostFiltrationQualityControls(
+      this.filteredLotGenealogy,
+      this.label,
+      null
+    );
+  }
 
-    const fromSteps = this.filteredLotGenealogy?.filtrations
-      ?.map((step) => step.qualityControls)
-      .find((controls): controls is Record<string, string> => !!controls && Object.keys(controls).length > 0);
+  get nonCompositionPostFiltrationQualityControls(): Record<string, string> {
+    return filterNonCompositionQualityControls(this.postFiltrationQualityControls);
+  }
 
-    return fromSteps || null;
+  get storageConditionsDisplay(): string {
+    return resolveStorageConditionsDisplay(this.label?.storageConditions);
+  }
+
+  get sensoryProfileDisplay(): string {
+    return resolveSensoryProfileDisplay(this.postFiltrationQualityControls, this.label?.sensoryProfile);
+  }
+
+  get sensoryFromQualityControl(): boolean {
+    return hasSensoryQualityControls(this.postFiltrationQualityControls);
   }
 
   private parseSnapshot(snapshotJson: string | undefined): Record<string, unknown> | null {

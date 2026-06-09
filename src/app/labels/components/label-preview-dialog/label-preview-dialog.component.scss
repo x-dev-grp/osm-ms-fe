@@ -1,0 +1,97 @@
+$olive-50: #f8f9f4;
+$olive-100: #f1f3e8;
+$olive-600: #75834d;
+$olive-800: #4a5334;
+
+.label-preview-dialog-panel .mat-mdc-dialog-container,
+.label-preview-dialog-panel .mat-mdc-dialog-surface {
+  overflow: visible;
+  max-width: 96vw;
+}
+
+.label-preview-dialog-panel .mat-mdc-dialog-content {
+  overflow: visible;
+  max-height: none;
+}
+
+.preview-dialog {
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  overflow: visible;
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px 24px 0;
+
+  h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+    color: $olive-800;
+  }
+
+  p {
+    margin: 4px 0 0;
+    font-size: 13px;
+    color: $olive-600;
+  }
+}
+
+.dialog-body {
+  padding: 16px 24px 8px;
+  overflow: auto;
+  overflow-x: hidden;
+}
+
+.preview-frame {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  overflow: visible;
+  background: #fdfdfb;
+  border: 1px solid $olive-100;
+  border-radius: 16px;
+  padding: 24px 20px;
+
+  app-label-preview-card {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    max-width: 720px;
+  }
+}
+
+.json-section {
+  margin-top: 16px;
+
+  .json-toggle {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .json-block {
+    margin: 12px 0 0;
+    padding: 16px;
+    background: #111827;
+    color: #e5e7eb;
+    border-radius: 12px;
+    font-size: 12px;
+    line-height: 1.5;
+    overflow: auto;
+    max-height: 280px;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 24px 20px;
+}

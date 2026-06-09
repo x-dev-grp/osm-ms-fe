@@ -1,0 +1,30 @@
+<div class="preview-dialog">
+  <div class="dialog-header">
+    <div>
+      <h2>Aperçu de l'étiquette</h2>
+      <p>Visualisation complète et payload JSON exportable</p>
+    </div>
+    <button mat-icon-button type="button" (click)="close()" aria-label="Fermer">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="dialog-body">
+    <div class="preview-frame">
+      <app-label-preview-card [preview]="data.viewModel" size="full"></app-label-preview-card>
+    </div>
+
+    <div class="json-section">
+      <button mat-stroked-button type="button" class="json-toggle" (click)="toggleJson()">
+        <mat-icon>{{ showJson ? 'expand_less' : 'code' }}</mat-icon>
+        {{ showJson ? 'Masquer le JSON' : 'Afficher le JSON étiquette' }}
+      </button>
+
+      <pre class="json-block" *ngIf="showJson">{{ data.payloadJson }}</pre>
+    </div>
+  </div>
+
+  <div class="dialog-actions">
+    <button mat-flat-button type="button" (click)="close()">Fermer</button>
+  </div>
+</div>
