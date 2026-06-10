@@ -101,13 +101,14 @@
 }
 
 .table-wrap {
-  overflow-x: auto;
+  overflow-x: hidden;
   border-radius: $inv-radius-sm;
   border: 1px solid $inv-border;
 }
 
 .needs-table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
   font-size: 0.86rem;
 
@@ -130,11 +131,11 @@
   th.num,
   td.num {
     text-align: right;
-    white-space: nowrap;
+    overflow-wrap: anywhere;
   }
 
   .status-col {
-    width: 7rem;
+    width: 24%;
     text-align: center;
   }
 
@@ -169,6 +170,8 @@
     @include inv-pill($inv-success-bg, $inv-success);
     justify-content: center;
     width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
 
     &.ko {
       background: rgba($inv-danger, 0.12);

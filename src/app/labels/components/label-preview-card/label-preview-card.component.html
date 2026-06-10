@@ -102,44 +102,6 @@
     </div>
   </div>
 
-  <div class="nutrition-section" *ngIf="preview.nutritionTable as nutrition">
-    <h3 class="nutrition-title">{{ nutrition.title }}</h3>
-    <div class="nutrition-serving">
-      <span><strong>{{ nutrition.servingSizeLabel }}:</strong> {{ nutrition.servingSize }}</span>
-      <span><strong>{{ nutrition.servingsPerPackLabel }}:</strong> {{ nutrition.servingsPerPack }}</span>
-    </div>
-    <div class="nutrition-table-wrap">
-      <table class="nutrition-table">
-        <thead>
-          <tr>
-            <th scope="col">{{ nutrition.columns.parameter }}</th>
-            <th scope="col">{{ nutrition.columns.per100 }}</th>
-            <th scope="col">{{ nutrition.columns.perServing }}</th>
-            <th scope="col">{{ nutrition.columns.rda }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let row of nutrition.rows">
-            <th scope="row" class="param-cell">
-              <span class="param-label">{{ row.parameter }}</span>
-              <small
-                class="source-badge"
-                [class.measured]="row.source === 'measured'"
-                [matTooltip]="sourceLabel(row.source)"
-              >{{ row.source === 'measured' ? 'M' : 'E' }}</small>
-            </th>
-            <td>{{ row.per100 }}</td>
-            <td>{{ row.perServing }}</td>
-            <td>{{ row.rdaPercent || '-' }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="nutrition-footnotes">
-      <p *ngFor="let note of nutrition.footnotes">{{ note }}</p>
-    </div>
-  </div>
-
   <div class="card-footer">
     <div class="responsible">
       <small>Responsable</small>

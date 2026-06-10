@@ -66,10 +66,6 @@ export class ProjetDetailComponent implements OnInit {
   }
 
   failedProjectReasonTitle(): string {
-    if (this.hasMissingOfQuantity) {
-      return 'OF manquant';
-    }
-
     if (this.failedReservationRows.length > 0) {
       return 'Reservations de stock incompletes';
     }
@@ -78,10 +74,6 @@ export class ProjetDetailComponent implements OnInit {
   }
 
   failedProjectReasonText(): string {
-    if (this.hasMissingOfQuantity) {
-      return `Il reste ${this.remainingOfQuantity} ${this.projet?.unite === 'LITRES' ? 'L' : 'unites'} a planifier en OF.`;
-    }
-
     if (this.failedReservationRows.length > 0) {
       return `${this.failedReservationRows.length} composant(s) n'ont pas de reservation utilisable.`;
     }
@@ -90,19 +82,15 @@ export class ProjetDetailComponent implements OnInit {
   }
 
   failedProjectFixText(): string {
-    if (this.hasMissingOfQuantity) {
-      return 'Creer un nouvel OF pour couvrir la quantite restante.';
-    }
-
     if (this.failedReservationRows.length > 0) {
-      return 'Corriger le stock ou modifier le projet, puis reenregistrer pour recalculer les reservations.';
+      return 'Corriger le stock. Les reservations seront automatiquement reverifiees au rechargement du projet.';
     }
 
     return 'Ouvrir le projet en modification puis reenregistrer pour relancer les controles.';
   }
 
   failedProjectPrimaryActionLabel(): string {
-    return this.hasMissingOfQuantity ? 'Ajouter OF' : 'Modifier le projet';
+    return 'Modifier le projet';
   }
 
   isProjectCompletedStatus(status?: string | null): boolean {
@@ -234,11 +222,6 @@ export class ProjetDetailComponent implements OnInit {
   }
 
   resolveFailedProject(): void {
-    if (this.hasMissingOfQuantity) {
-      this.onAddOF();
-      return;
-    }
-
     if (this.projet?.id) {
       this.router.navigate(['/projets', this.projet.id]);
     }

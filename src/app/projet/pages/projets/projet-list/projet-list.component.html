@@ -283,11 +283,6 @@
                   <span>Ajouter OF</span>
                 </button>
 
-                <button mat-menu-item *ngIf="canChangeStatus(row)" (click)="openStatusDialog(row)">
-                  <mat-icon>swap_horiz</mat-icon>
-                  <span>Changer statut</span>
-                </button>
-
                 <mat-divider></mat-divider>
 
                 <button mat-menu-item class="danger" (click)="onDelete(row)">

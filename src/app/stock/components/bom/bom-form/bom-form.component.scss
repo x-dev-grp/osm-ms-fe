@@ -487,16 +487,24 @@ select.form-control {
 .lines-panel {
   position: relative;
   z-index: 1;
-  overflow: hidden;
+  overflow-x: auto;
   border-radius: 16px;
   border: 1px solid $border;
   background: rgba(255, 255, 255, 0.92);
 }
 
-.lines-header {
+$lines-grid-columns: 44px minmax(0, 1fr) minmax(260px, 0.62fr) 40px;
+$lines-grid-gap: 14px;
+
+.lines-header,
+.line-item {
   display: grid;
-  grid-template-columns: 72px minmax(260px, 1fr) minmax(180px, 0.65fr) minmax(150px, 0.45fr) 64px;
+  grid-template-columns: $lines-grid-columns;
+  gap: $lines-grid-gap;
   align-items: center;
+}
+
+.lines-header {
   min-height: 54px;
   padding: 0 18px;
   color: $text;
@@ -506,16 +514,49 @@ select.form-control {
   font-weight: 700;
 }
 
-.line-item {
+.qty-unit-group {
   display: grid;
-  grid-template-columns: 72px minmax(260px, 1fr) minmax(180px, 0.65fr) minmax(150px, 0.45fr) 64px;
-  gap: 16px;
+  grid-template-columns: minmax(92px, 0.38fr) minmax(0, 0.62fr);
+  gap: 12px;
   align-items: center;
+  min-width: 0;
+}
+
+.qty-unit-header {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.line-item {
   padding: 16px 18px;
   border-bottom: 1px solid $border-soft;
 
   &:last-child {
     border-bottom: 0;
+  }
+
+  > .form-group,
+  .qty-unit-group > .form-group {
+    min-width: 0;
+    margin: 0;
+  }
+
+  .article-field,
+  .qty-unit-group {
+    min-width: 0;
+  }
+
+  .form-control {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  select.form-control {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 
@@ -629,6 +670,19 @@ select.form-control {
 }
 
 /* RESPONSIVE */
+@media (max-width: 1100px) {
+  .lines-header,
+  .line-item {
+    grid-template-columns: 36px minmax(0, 1fr) minmax(220px, 0.68fr) 36px;
+    gap: 10px;
+  }
+
+  .qty-unit-group {
+    grid-template-columns: minmax(84px, 0.4fr) minmax(0, 0.6fr);
+    gap: 10px;
+  }
+}
+
 @media (max-width: 980px) {
   .page-hero {
     flex-direction: column;
@@ -654,6 +708,11 @@ select.form-control {
   }
 
   .line-item {
+    gap: 12px;
+  }
+
+  .qty-unit-group {
+    grid-template-columns: 1fr 1fr;
     gap: 12px;
   }
 

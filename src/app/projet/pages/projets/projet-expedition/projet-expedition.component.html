@@ -114,8 +114,7 @@
                 <th>OF</th>
                 <th>Article / Produit</th>
                 <th>Quantité</th>
-                <th>Lot source</th>
-                <th>Volume</th>
+
               </tr>
             </thead>
             <tbody>
@@ -130,12 +129,7 @@
                 <td>
                   <input type="number" class="form-control" style="min-height: 38px;" formControlName="quantity" min="0" [max]="getCreateLineMax(i)" (input)="clampCreateLineQuantity(i)" />
                 </td>
-                <td>
-                  <input type="text" class="form-control" style="min-height: 38px;" formControlName="lotNumber" placeholder="Lot" />
-                </td>
-                <td>
-                  <input type="number" class="form-control" style="min-height: 38px;" step="0.01" formControlName="volume" placeholder="m3" />
-                </td>
+
               </tr>
             </tbody>
           </table>

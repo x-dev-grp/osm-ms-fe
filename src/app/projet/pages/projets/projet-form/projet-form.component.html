@@ -108,7 +108,7 @@
                     [class.is-invalid]="prod.get('productId')?.invalid && prod.get('productId')?.touched">
                     <option value="">-- Sélectionner un produit --</option>
                     <option *ngFor="let sku of filteredSkus" [value]="sku.id">
-                      {{ sku.code }} - {{ sku.packagingType }} ({{ sku.volume }} {{ sku.unitOfMeasure }})
+                      {{ sku.code }} - {{ sku.packagingType }} - ({{ sku.volume }} ml / {{ sku.unitOfMeasure }})
                     </option>
                   </select>
                 </div>
@@ -136,7 +136,7 @@
                       </div>
                       <span class="item-count-badge">{{ lines.length }} types d'articles</span>
                     </div>
-                    
+
                     <div class="detail-grid">
                       <div class="detail-item" *ngFor="let line of lines">
                         <div class="item-info">

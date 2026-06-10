@@ -22,6 +22,7 @@ const routes: Routes = [
   { path: 'clients/:id', component: ClientFormComponent },
 
   // Keep specific project routes above dynamic ':id'
+  { path: 'detail/:id/shipping', redirectTo: 'detail/:id/expedition', pathMatch: 'full' },
   { path: 'detail/:id/expedition', component: ProjetExpeditionComponent },
   { path: 'detail/:id/traceability', component: ProjetTraceabilityComponent },
   { path: 'detail/:id', component: ProjetDetailComponent },
