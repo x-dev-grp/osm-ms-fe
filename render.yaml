@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: osm-ms-fe-1
+    runtime: docker
+    plan: free
+    branch: pfe-v2-final
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /
+    autoDeployTrigger: commit
+    envVars:
+      - key: BACKEND_URL
+        value: https://oosm-api.onrender.com
