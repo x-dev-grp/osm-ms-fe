@@ -1,6 +1,8 @@
 # Render Deployment
 
-Deploy this frontend through the backend Blueprint in `x-dev-grp/oosm`.
+Create the service from the `render.yaml` Blueprint. It defines a Web Service
+with the Docker runtime. Do not create a Static Site or a native Node Web
+Service.
 
 The service is Docker-based so Nginx can proxy API calls:
 
@@ -9,18 +11,20 @@ The service is Docker-based so Nginx can proxy API calls:
 /oauth2/*  -> backend
 ```
 
-Render sets:
+Set this environment variable on the frontend Render service:
 
 ```text
-BACKEND_HOSTPORT=<oosm-api private host:port>
+BACKEND_URL=https://oosm-api.onrender.com
 ```
 
-The same variables are listed in `.env.render`.
+Do not set `BACKEND_HOSTPORT` to a Docker Compose service name such as
+`oosm-backend:8084`. Docker Compose service names are not resolvable from a
+separately deployed Render service.
 
-The Docker runtime builds:
+The Docker runtime uses `BACKEND_URL` directly:
 
 ```text
-BACKEND_PROXY_URL=http://$BACKEND_HOSTPORT
+BACKEND_PROXY_URL=$BACKEND_URL
 ```
 
 Production Angular keeps:

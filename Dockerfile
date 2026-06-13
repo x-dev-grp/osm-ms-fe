@@ -48,7 +48,7 @@ COPY --from=build ${DIST_PATH} /usr/share/nginx/html/
 
 # Render and Railway provide PORT at runtime.
 ENV PORT=8080
-ENV BACKEND_URL=
+ENV BACKEND_URL=https://oosm-api.onrender.com
 ENV BACKEND_HOSTPORT=
 COPY nginx.conf.template /etc/nginx/default.conf.template
 
@@ -56,4 +56,4 @@ COPY nginx.conf.template /etc/nginx/default.conf.template
 HEALTHCHECK CMD wget -qO- "http://localhost:${PORT}/" >/dev/null 2>&1 || exit 1
 
 EXPOSE 8080
-CMD ["sh", "-c", "export BACKEND_PROXY_URL=\"${BACKEND_URL:-http://${BACKEND_HOSTPORT:-oosm-backend:8084}}\"; envsubst '${PORT} ${BACKEND_PROXY_URL}' < /etc/nginx/default.conf.template > /etc/nginx/conf.d/default.conf; nginx -t && exec nginx -g 'daemon off;'"]
+CMD ["sh", "-c", "if [ -n \"$BACKEND_URL\" ]; then export BACKEND_PROXY_URL=\"$BACKEND_URL\"; elif [ -n \"$BACKEND_HOSTPORT\" ]; then export BACKEND_PROXY_URL=\"http://${BACKEND_HOSTPORT}\"; else echo 'BACKEND_URL or BACKEND_HOSTPORT is required' >&2; exit 1; fi; envsubst '${PORT} ${BACKEND_PROXY_URL}' < /etc/nginx/default.conf.template > /etc/nginx/conf.d/default.conf; nginx -t && exec nginx -g 'daemon off;'"]
