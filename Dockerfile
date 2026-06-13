@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.4
+# syntax=docker/dockerfile:1.7
 
 ##############################
 # 1) BUILD STAGE (Node)
@@ -25,7 +25,7 @@ COPY package.json package-lock.json* ./
 RUN test -z "$NPM_TOKEN" || echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
 
 # Install deps (same behavior as CI)
-RUN npm ci $NPM_CI_FLAGS
+RUN --mount=type=cache,target=/root/.npm npm ci $NPM_CI_FLAGS
 
 # 2. Copy source and build
 COPY . .
@@ -56,4 +56,4 @@ COPY nginx.conf.template /etc/nginx/default.conf.template
 HEALTHCHECK CMD wget -qO- "http://localhost:${PORT}/" >/dev/null 2>&1 || exit 1
 
 EXPOSE 8080
-CMD ["sh", "-c", "export BACKEND_PROXY_URL=\"${BACKEND_URL:-http://${BACKEND_HOSTPORT:-localhost:8084}}\"; envsubst '${PORT} ${BACKEND_PROXY_URL}' < /etc/nginx/default.conf.template > /etc/nginx/conf.d/default.conf; nginx -g 'daemon off;'"]
+CMD ["sh", "-c", "export BACKEND_PROXY_URL=\"${BACKEND_URL:-http://${BACKEND_HOSTPORT:-oosm-backend:8084}}\"; envsubst '${PORT} ${BACKEND_PROXY_URL}' < /etc/nginx/default.conf.template > /etc/nginx/conf.d/default.conf; nginx -t && exec nginx -g 'daemon off;'"]

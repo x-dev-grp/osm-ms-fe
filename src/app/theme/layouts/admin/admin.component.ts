@@ -258,6 +258,11 @@ filterMenuByPermissions(
    * Loads company logo from localStorage cache (fallback method)
    */
   private loadCompanyLogoFromCache(): void {
+    if (this.authenticationService.currentUserValue?.role === Role.OsmAdmin) {
+      this.logoPreview = null;
+      return;
+    }
+
     // Try to get company profile from localStorage
     const cachedProfile = localStorage.getItem('company_profile');
     if (cachedProfile) {

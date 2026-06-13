@@ -13,8 +13,6 @@ import { User } from 'src/app/theme/types/user';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Role } from '../../theme/types/role';
 import { TranslateService } from '@ngx-translate/core';
-import { CompanyProfileService } from '../../shared/services/company-profile.service';
-import { CompanyProfile } from '../../shared/models/CompanyProfile'; // Added import
 
 @Component({
   selector: 'app-login',
@@ -33,9 +31,7 @@ export class LoginComponent implements OnInit {
   private _fb = inject(FormBuilder);
   private router = inject(Router);
   private tokenService = inject(TokenService);
-  private translateService = inject(TranslateService); // Added injection
-  private companyService = inject(CompanyProfileService); // Added injection
-  private profile: CompanyProfile;
+  private translateService = inject(TranslateService);
   getUserNameErrorMessage() {
     if (this.form.controls['username'].hasError('required')) {
       return this.translateService.instant('LOGIN.USERNAME_REQUIRED');
@@ -170,29 +166,10 @@ export class LoginComponent implements OnInit {
               user.role = role;
               user.permissions = permissions;
               this.authenticationService.setCurrentUserValue = user;
-             console.log( "this.companyService.getProfile()")
-                this.companyService.getProfile().subscribe({
-                  next:  p => { this.profile =  p;   },
-                  error: () => { console.log( 'Unable to load profile') }
-                });
-             console.log( "this.companyService.getProfile()")
-              // Add logging for debugging
-              console.log('[Login] User set for navigation:', user);
-              console.log('[Login] Token:', this.tokenService.getToken());
-                const tenantId = user.tenantId || decodedToken['tenantId'];
-                if (role !== Role.OsmAdmin && tenantId) {
-                // Fetch company profile for non-OsmAdmin users
-                  this.router.navigate(['welcome']);
+              if (role === Role.OsmAdmin) {
+                this.router.navigate(['/administration/dashboard']);
               } else {
-                // For OsmAdmin, skip company profile fetch
-                this.router
-                  .navigate(['/administration/dashboard'])
-                  .then((success) => {
-                    console.log('[Login] Navigation to /administration/dashboard success:', success);
-                  })
-                  .catch((err) => {
-                    console.error('[Login] Navigation error:', err);
-                  });
+                this.router.navigate(['/welcome']);
               }
             }
           }
