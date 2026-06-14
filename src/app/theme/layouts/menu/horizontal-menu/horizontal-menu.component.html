@@ -1,0 +1,15 @@
+<div class="navbar-content sidenav-horizontal" [dir]="direction">
+  <div class="sidenav-horizontal-wrapper">
+    <ul class="coded-inner-navbar" (click)="$event.stopPropagation()">
+      @for (item of menus(); track item.id) {
+        @if (item.type === 'group') {
+          <app-menu-group-horizontal [item]="item" />
+        } @else if (item.type === 'item') {
+          <app-menu-item [item]="item" />
+        } @else if (item.type === 'collapse') {
+          <app-menu-collapse [item]="item" />
+        }
+      }
+    </ul>
+  </div>
+</div>

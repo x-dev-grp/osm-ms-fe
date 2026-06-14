@@ -11,7 +11,7 @@ import { Action, HabilitationEntity, OSMModule, permissionKey, ProductionEntity 
 import { UserResolver } from './user-management/services/user.resolver';
 import { RoleResolver } from './user-management/services/role.resolver';
 import { qualityControlRoutes } from './quality-control-rule/qualityControlQualityRule.routes';
-import { GenericTypeDialogComponent } from './generic-type/generic-type-dialog/generic-type-dialog.component';
+import { GenericTypeFormComponent } from './generic-type/generic-type-form/generic-type-form.component';
 
 const routes: Routes = [
   { path: 'general-config', component: GeneralConfigComponent, canActivate: [AuthGuardChild] },
@@ -27,22 +27,27 @@ const routes: Routes = [
   }, // CHANGE: permissions - PRODUCTION:base_type:READ for generic types
   {
     path: 'generic',
-    component: GenericTypeComponent,
-    canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.base_type, Action.READ)])]
-  },
-  {
-    path: 'generic',
+    canActivateChild: [AuthGuardChild],
     children: [
-      // CHANGE: permissions - create/update base types
+      {
+        path: '',
+        component: GenericTypeComponent,
+        canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.base_type, Action.READ)])]
+      },
       {
         path: 'new',
-        component: GenericTypeDialogComponent,
+        component: GenericTypeFormComponent,
         canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.base_type, Action.CREATE)])]
       },
       {
         path: ':id/edit',
-        component: GenericTypeDialogComponent,
+        component: GenericTypeFormComponent,
         canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.base_type, Action.UPDATE)])]
+      },
+      {
+        path: ':id/view',
+        component: GenericTypeFormComponent,
+        canActivate: [allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.base_type, Action.READ)])]
       }
     ]
   },

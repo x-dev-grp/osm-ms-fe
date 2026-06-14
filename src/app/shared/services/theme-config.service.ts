@@ -1,5 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { AbleProConfig } from '../../app-config';
+import { ThemeLayoutService } from '../../theme/services/theme-layout.service';
+import { LTR, RTL } from '../../theme/const';
+
+export type ResolvedThemeMode = 'light' | 'dark';
 
 export interface ThemeConfig {
   layoutType: 'light' | 'dark' | 'auto';
@@ -13,7 +17,10 @@ export interface ThemeConfig {
 
 @Injectable({ providedIn: 'root' })
 export class ThemeConfigService {
+  private readonly themeLayout = inject(ThemeLayoutService);
   private readonly STORAGE_KEY = 'themeConfig';
+  private autoModeMediaQuery?: MediaQueryList;
+  private autoModeListener?: (event: MediaQueryListEvent) => void;
   private readonly themeClasses = [
     'blue-theme',
     'indigo-theme',
@@ -26,6 +33,25 @@ export class ThemeConfigService {
     'teal-theme',
     'cyan-theme'
   ];
+
+  /** Apply saved theme as early as possible (APP bootstrap). */
+  init(): void {
+    const cfg = this.loadConfig();
+    this.applyConfig(cfg);
+  }
+
+  resolveMode(layoutType: ThemeConfig['layoutType']): ResolvedThemeMode {
+    if (layoutType === 'dark') {
+      return 'dark';
+    }
+    if (layoutType === 'light') {
+      return 'light';
+    }
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+    return 'light';
+  }
 
   /** Load from LS (if any), override static defaults, and return a config */
   loadConfig(): ThemeConfig {
@@ -67,13 +93,10 @@ export class ThemeConfigService {
 
   /** Apply a given config to <body> classes and html dir */
   applyConfig(cfg: ThemeConfig): void {
-    // 1) light/dark
-    document.body.classList.remove('light','dark');
-    if (cfg.layoutType === 'light') document.body.classList.add('light');
-    if (cfg.layoutType === 'dark') document.body.classList.add('dark');
-    // (auto: leave default or handle prefers-color-scheme)
+    this.applyAppearanceClasses(cfg);
 
-    // 2) contrast
+    // 2) contrast (Able Pro uses theme-contrast on body)
+    document.body.classList.toggle('theme-contrast', cfg.contrast);
     document.body.classList.toggle('gray-contrast', !cfg.contrast);
 
     // 3) caption
@@ -93,6 +116,13 @@ export class ThemeConfigService {
     document.body.classList.remove('vertical', 'horizontal', 'compact');
     document.body.classList.add(cfg.layout);
 
+    // 8) sync layout service so shell components react immediately
+    this.themeLayout.layout.set(cfg.layout);
+    this.themeLayout.directionChange.set(cfg.rtlLayout ? RTL : LTR);
+    this.themeLayout.isDarkMode.set(cfg.layoutType);
+    this.themeLayout.color.set(cfg.bodyColor);
+
+    this.syncAutoModeListener(cfg);
   }
 
   applyrtl(isRtl: boolean): void {
@@ -107,5 +137,35 @@ export class ThemeConfigService {
 
     // 4) apply to DOM (sets documentElement.dir, classes, etc.)
     this.applyConfig(next);
+  }
+
+  private applyAppearanceClasses(cfg: ThemeConfig): void {
+    const resolved = this.resolveMode(cfg.layoutType);
+    document.body.classList.remove('light', 'dark');
+    document.body.classList.add(resolved);
+    document.documentElement.style.colorScheme = resolved;
+    document.documentElement.setAttribute('data-theme-mode', resolved);
+  }
+
+  private syncAutoModeListener(cfg: ThemeConfig): void {
+    if (this.autoModeMediaQuery && this.autoModeListener) {
+      this.autoModeMediaQuery.removeEventListener('change', this.autoModeListener);
+    }
+
+    this.autoModeMediaQuery = undefined;
+    this.autoModeListener = undefined;
+
+    if (cfg.layoutType !== 'auto' || typeof window === 'undefined') {
+      return;
+    }
+
+    this.autoModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    this.autoModeListener = () => {
+      const current = this.loadConfig();
+      if (current.layoutType === 'auto') {
+        this.applyAppearanceClasses(current);
+      }
+    };
+    this.autoModeMediaQuery.addEventListener('change', this.autoModeListener);
   }
 }

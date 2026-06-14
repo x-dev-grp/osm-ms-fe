@@ -15,6 +15,30 @@ export const admin_menus: Navigation[] = [
         url: '/administration/dashboard',
         icon: 'admin_panel_settings',
         breadcrumbs: false
+      },
+      {
+        id: 'adminCompanies',
+        title: 'MENU.ADMINISTRATION.COMPANY_PROFILES',
+        type: 'item',
+        url: '/administration/companies',
+        icon: 'business',
+        breadcrumbs: false
+      },
+      {
+        id: 'adminUsers',
+        title: 'MENU.ADMINISTRATION.USERS',
+        type: 'item',
+        url: '/administration/users',
+        icon: 'manage_accounts',
+        breadcrumbs: false
+      },
+      {
+        id: 'addOsmAdmin',
+        title: 'MENU.ADMINISTRATION.ADD_OSM_ADMIN',
+        type: 'item',
+        url: '/administration/osm-admins/add',
+        icon: 'admin_panel_settings',
+        breadcrumbs: false
       }
     ]
   }

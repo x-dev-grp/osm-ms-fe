@@ -186,6 +186,11 @@ export class NavRightComponent {
       return;
     }
 
+    if (entity.entityType === 'UNIFIEDDELIVERY' && entity.entityId) {
+      this.router.navigate(['/reception/reception-details', entity.entityId]);
+      return;
+    }
+
     alert(`Entite trouvee (${entity.entityType}) mais route indisponible`);
   }
   //----------- chercher pa code ------//

@@ -19,7 +19,11 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CompanyProfileComponent } from '../company/company-profile.component';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ParameterComponent } from '../parameter/parameter.component';
+import { AppParameterService } from '../../shared/services/AppParameterService';
+import { Parameter } from '../../shared/models/Parameter';
+import { normalizeMetricValue } from '../../shared/services/DailyMetricPayload';
 import { CampaignService } from '../../shared/services/campaign.service';
+import { switchMap } from 'rxjs/operators';
 
 
 @Component({
@@ -53,6 +57,8 @@ export class GeneralConfigComponent implements OnInit {
   otherConfigForm!: FormGroup;
   activeTab: string = 'company'; // default tab
   companyProfile: CompanyProfile | null = null;
+  private millingPriceParameter: Parameter | null = null;
+  private readonly millingPriceCode = 'PRIX_TRITURATION_KG';
 
   productionConfigFormEnabled = false;
   financeConfigFormEnabled = false;
@@ -78,7 +84,8 @@ export class GeneralConfigComponent implements OnInit {
     private fb: FormBuilder,
     private toast: ToastService,
     private companyProfileService: CompanyProfileService,
-    private campaignService: CampaignService
+    private campaignService: CampaignService,
+    private parameterService: AppParameterService
   ) {}
 
   ngOnInit(): void {
@@ -89,7 +96,7 @@ export class GeneralConfigComponent implements OnInit {
       campaignEndDay: [30, [Validators.required, Validators.min(1), Validators.max(31)]]
     });
     this.financeConfigForm = this.fb.group({
-      millingPricePerKg: [0]
+      millingPricePerKg: [0, [Validators.required, Validators.min(0)]]
     });
     this.hrConfigForm = this.fb.group({});
     this.otherConfigForm = this.fb.group({});
@@ -98,6 +105,7 @@ export class GeneralConfigComponent implements OnInit {
     this.hrConfigForm.disable();
     this.otherConfigForm.disable();
     this.loadProductionConfig();
+    this.loadFinanceConfig();
   }
 
   onSaveProductionConfig(): void {
@@ -133,8 +141,34 @@ export class GeneralConfigComponent implements OnInit {
     });
   }
   onSaveFinanceConfig(): void {
-    if (this.financeConfigForm.invalid) return;
-    // Implement save logic for finance config
+    if (this.financeConfigForm.invalid) {
+      return;
+    }
+
+    const rawValue = this.financeConfigForm.getRawValue().millingPricePerKg;
+    const numericValue = normalizeMetricValue(rawValue);
+
+    this.parameterService.ensureParameterByCode(this.millingPriceCode).pipe(
+      switchMap((parameter) => {
+        const updatedParam: Parameter = {
+          ...parameter,
+          value: String(numericValue)
+        };
+        return this.parameterService.updateValue(updatedParam);
+      })
+    ).subscribe({
+      next: (res) => {
+        const updated = Array.isArray(res?.data) ? res.data[0] : res?.data;
+        this.millingPriceParameter = updated ?? this.millingPriceParameter;
+        this.patchFinanceConfig(this.millingPriceParameter);
+        this.financeConfigForm.disable();
+        this.financeConfigFormEnabled = false;
+        this.toast.success('Configuration finance enregistree avec succes');
+      },
+      error: () => {
+        this.toast.error('Erreur lors de l enregistrement du prix de trituration');
+      }
+    });
   }
   onSaveHrConfig(): void {
     if (this.hrConfigForm.invalid) return;
@@ -151,7 +185,9 @@ export class GeneralConfigComponent implements OnInit {
     this.productionConfigFormEnabled = false;
   }
   onResetFinanceConfig() {
-    this.financeConfigForm.reset();
+    this.patchFinanceConfig(this.millingPriceParameter);
+    this.financeConfigForm.disable();
+    this.financeConfigFormEnabled = false;
   }
   onResetHrConfig() {
     this.hrConfigForm.reset();
@@ -226,5 +262,25 @@ export class GeneralConfigComponent implements OnInit {
       campaignEndMonth: profile?.campaignEndMonth ?? 4,
       campaignEndDay: profile?.campaignEndDay ?? 30
     }, { emitEvent: false });
+  }
+
+  private loadFinanceConfig(): void {
+    this.parameterService.ensureParameterByCode(this.millingPriceCode).subscribe({
+      next: (parameter) => {
+        this.millingPriceParameter = parameter;
+        this.patchFinanceConfig(parameter);
+      },
+      error: () => {
+        this.millingPriceParameter = null;
+        this.patchFinanceConfig(null);
+      }
+    });
+  }
+
+  private patchFinanceConfig(parameter: Parameter | null): void {
+    this.financeConfigForm.patchValue(
+      { millingPricePerKg: normalizeMetricValue(parameter?.value) },
+      { emitEvent: false }
+    );
   }
 }

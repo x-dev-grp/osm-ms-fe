@@ -443,15 +443,14 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
   }
 
   openAddSupplierDialog(): void {
-    const dialogRef = this.dialog.open(SupplierAddComponent, {
-      width: 'auto',
-      data: { fromDialog: true }
-    });
+    const dialogRef = this.dialog.open(SupplierAddComponent, SupplierAddComponent.dialogConfig);
 
     dialogRef.afterClosed().subscribe((newSupplier) => {
       if (newSupplier) {
         this.suppliers = [...this.suppliers, newSupplier];
-        this.receptionForm.get('supplier')?.setValue(newSupplier);
+        const supplierCtrl = this.receptionForm.get('supplier');
+        supplierCtrl?.setValue(newSupplier);
+        supplierCtrl?.updateValueAndValidity();
       }
     });
   }

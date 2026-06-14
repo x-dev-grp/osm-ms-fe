@@ -99,11 +99,11 @@ hasModule(module:string){
   login(payload: Record<string, string>): Observable<Record<string, unknown>> {
     const body = new URLSearchParams();
     body.set('grant_type', 'TOKEN');
+    body.set('client_id', AppConfig.authentication.client_id);
     body.set('username', payload['username']);
     body.set('password', payload['password']);
 
     const headers = new HttpHeaders({
-      authorization: AppConfig.authentication.authorization_header,
       'Content-Type': 'application/x-www-form-urlencoded'
     });
     // Logging for debugging in production
@@ -127,9 +127,9 @@ hasModule(module:string){
   refreshToken(refreshToken: string | null): Observable<Record<string, unknown>> {
     const body = new URLSearchParams();
     body.set('grant_type', 'refresh_token');
+    body.set('client_id', AppConfig.authentication.client_id);
     body.set('refresh_token', refreshToken ?? '');
     const headers = new HttpHeaders({
-      authorization: AppConfig.authentication.authorization_header,
       'Content-Type': 'application/x-www-form-urlencoded'
     });
     return this.http.post<Record<string, unknown>>(`${AppConfig.authentication.authorization}`, body.toString(), { headers });

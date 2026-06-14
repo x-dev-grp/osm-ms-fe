@@ -1,0 +1,274 @@
+// Global light/dark adaptation for OSM custom surfaces layered on Able Pro.
+
+body.light,
+body.dark {
+  color: var(--accent-900);
+}
+
+body.light {
+  --section-bg: #ffffff;
+  --surface-card: var(--accent-50);
+  --surface-muted: var(--accent-100);
+  --border-subtle: var(--accent-300);
+  --text-primary: var(--accent-900);
+  --text-secondary: var(--accent-700);
+  --text-muted: var(--accent-600);
+  --hover-bg: var(--accent-200);
+  --active-bg: rgba(70, 128, 255, 0.1);
+  --submenu-bg: var(--accent-100);
+  --table-header-bg: var(--accent-100);
+  --table-row-hover: var(--accent-50);
+}
+
+body.dark {
+  --section-bg: var(--accent-50);
+  --surface-card: var(--accent-50);
+  --surface-muted: var(--accent-100);
+  --border-subtle: var(--accent-300);
+  --text-primary: var(--accent-900);
+  --text-secondary: var(--accent-700);
+  --text-muted: var(--accent-600);
+  --hover-bg: var(--accent-200);
+  --active-bg: rgba(70, 128, 255, 0.16);
+  --submenu-bg: var(--accent-100);
+  --table-header-bg: var(--accent-100);
+  --table-row-hover: rgba(255, 255, 255, 0.03);
+
+  color: var(--text-primary);
+
+  .text-muted,
+  .header-subtitle,
+  .cell-muted,
+  .hero-card__meta,
+  .metric-card__top,
+  .quick-link-card__text span {
+    color: var(--text-muted) !important;
+  }
+
+  .mat-drawer-content,
+  .app-container,
+  .page-wrapper,
+  .main-body {
+    background-color: var(--accent-100);
+    color: var(--text-primary);
+  }
+
+  .pc-sidebar,
+  .pc-sidebar .m-header,
+  .mat-drawer.pc-sidebar {
+    background: var(--accent-50) !important;
+    color: var(--text-primary);
+  }
+
+  .navbar-content.sidenav-horizontal {
+    background: var(--accent-50);
+    border-top-color: var(--border-subtle);
+  }
+
+  app-card mat-card,
+  .mat-mdc-card,
+  mat-card.mat-mdc-card {
+    background-color: var(--surface-card) !important;
+    color: var(--text-primary);
+    border-color: var(--border-subtle);
+  }
+
+  .section,
+  .metric-card,
+  .hero-card,
+  .quick-link-card,
+  .panel-card,
+  .supplier-form,
+  .add-osm-admin-user-wrapper .main-card,
+  .loading-container,
+  .error-state,
+  .form-section,
+  .details-card,
+  .quality-control-container .quality-content,
+  .quality-control-container .parameter-card,
+  .quality-control-container .financial-card,
+  .customize-body .customize-button {
+    background: var(--section-bg) !important;
+    border-color: var(--border-subtle) !important;
+    color: var(--text-primary);
+  }
+
+  .hero-card--tenants {
+    background: linear-gradient(135deg, rgba(25, 118, 210, 0.18), var(--accent-50)) !important;
+  }
+
+  .hero-card--users {
+    background: linear-gradient(135deg, rgba(46, 125, 50, 0.18), var(--accent-50)) !important;
+  }
+
+  .hero-card--growth {
+    background: linear-gradient(135deg, rgba(237, 108, 2, 0.18), var(--accent-50)) !important;
+  }
+
+  .quick-link-card__text strong,
+  .metric-card__value,
+  .hero-card__value,
+  .cell-strong,
+  .role-count,
+  .section-heading h3,
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--text-primary);
+  }
+
+  .admin-table th {
+    background: var(--table-header-bg) !important;
+    color: var(--text-muted) !important;
+    border-bottom-color: var(--border-subtle) !important;
+  }
+
+  .admin-table td {
+    border-bottom-color: var(--border-subtle) !important;
+    color: var(--text-primary);
+  }
+
+  .admin-table tbody tr:hover {
+    background: var(--table-row-hover) !important;
+  }
+
+  .section-heading {
+    border-bottom-color: var(--border-subtle) !important;
+  }
+
+  .role-bar-track {
+    background: var(--accent-200) !important;
+  }
+
+  .count-chip,
+  .role-chip,
+  .rank-badge {
+    background: var(--accent-200) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .empty-state,
+  .loading-container,
+  .error-state {
+    background: var(--surface-muted) !important;
+    border-color: var(--border-subtle) !important;
+  }
+
+  .mat-mdc-form-field .mdc-text-field--outlined .mdc-notched-outline__leading,
+  .mat-mdc-form-field .mdc-text-field--outlined .mdc-notched-outline__notch,
+  .mat-mdc-form-field .mdc-text-field--outlined .mdc-notched-outline__trailing {
+    border-color: var(--border-subtle) !important;
+  }
+
+  .mat-mdc-table,
+  .mat-mdc-paginator,
+  .mat-expansion-panel,
+  .mat-mdc-dialog-container .mdc-dialog__surface {
+    background: var(--surface-card) !important;
+    color: var(--text-primary);
+  }
+
+  .mat-mdc-header-row,
+  .mat-mdc-header-cell {
+    background: var(--table-header-bg) !important;
+    color: var(--text-muted) !important;
+  }
+
+  .mat-mdc-row:hover {
+    background: var(--table-row-hover) !important;
+  }
+
+  .menu-container::-webkit-scrollbar-thumb {
+    background-color: var(--accent-400);
+  }
+
+  .customize-body .customize-button img,
+  .customize-body .customize-button svg {
+    filter: brightness(0.92) contrast(1.05);
+  }
+
+  .customize-body .color-swatch.active {
+    border-color: var(--primary-300) !important;
+  }
+
+  .mat-toolbar.mat-toolbar-single-row.pc-header,
+  .mat-toolbar.mat-toolbar-single-row.pc-header.header-blur {
+    background: var(--accent-50) !important;
+    backdrop-filter: blur(7px) !important;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  &.theme-contrast {
+    .mat-drawer-container,
+    .mat-drawer-container .mat-drawer {
+      background-color: var(--accent-100) !important;
+      color: var(--text-primary) !important;
+    }
+
+    .mat-toolbar.mat-toolbar-single-row.pc-header,
+    .mat-toolbar.mat-toolbar-single-row {
+      background: var(--accent-50) !important;
+    }
+  }
+
+  .mat-drawer-container {
+    background-color: var(--accent-100) !important;
+    color: var(--text-primary) !important;
+
+    .mat-drawer:not(.pc-sidebar) {
+      background-color: var(--surface-card) !important;
+    }
+  }
+
+  .mat-mdc-header-row {
+    background: var(--table-header-bg) !important;
+  }
+
+  .period-info {
+    background: var(--surface-muted) !important;
+    color: var(--text-primary);
+  }
+
+  osm-dashboard,
+  .filter-details {
+    background: var(--surface-card);
+    border-color: var(--border-subtle);
+    color: var(--text-primary);
+  }
+
+  osm-dashboard {
+    .field-checkbox-container label::before {
+      color: var(--text-primary);
+    }
+
+    .menu-container::-webkit-scrollbar-thumb {
+      background-color: var(--accent-400);
+    }
+
+    .success-button {
+      color: var(--success-600, #66bb6a);
+
+      &:hover:not(:disabled) {
+        background-color: rgba(76, 175, 80, 0.16);
+      }
+    }
+
+    .accent-button:hover:not(:disabled) {
+      color: var(--text-primary);
+      background-color: var(--hover-bg);
+    }
+
+    .success_button:hover:not(:disabled) {
+      color: var(--success-600, #66bb6a);
+      background-color: rgba(76, 175, 80, 0.16);
+    }
+
+    .col-total {
+      color: var(--warning-500, #ffb74d);
+    }
+
+    table.mat-elevation-z8 {
+      background: var(--surface-card);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+  }
+}

@@ -1,0 +1,71 @@
+<h2 mat-dialog-title class="dialog-title">
+  <mat-icon>trending_up</mat-icon>
+  {{ 'DASHBOARD.DAILY_METRIC.TITLE' | translate }}
+</h2>
+
+<mat-dialog-content>
+  @if (loading) {
+    <div class="loading-row">
+      <mat-spinner diameter="32"></mat-spinner>
+    </div>
+  } @else {
+    <p class="dialog-description">
+      {{ 'DASHBOARD.DAILY_METRIC.DESCRIPTION' | translate }}
+    </p>
+
+    <div class="meta-row">
+      <span class="meta-chip">
+        <mat-icon inline>event</mat-icon>
+        {{ todayLabel }}
+      </span>
+      <span class="meta-chip">
+        <mat-icon inline>history</mat-icon>
+        {{ 'DASHBOARD.DAILY_METRIC.LAST_VALUE' | translate }}:
+        {{ lastValue | number:'1.2-3' }}{{ unitSuffix }}
+      </span>
+    </div>
+
+    @if (state?.todayEntry) {
+      <div class="info-banner">
+        <mat-icon>info</mat-icon>
+        <span>
+          {{ 'DASHBOARD.DAILY_METRIC.ALREADY_ENTERED' | translate }} —
+          {{ todayValue | number:'1.2-3' }}{{ unitSuffix }}
+        </span>
+      </div>
+    }
+
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>{{ 'DASHBOARD.DAILY_METRIC.VALUE_LABEL' | translate }}</mat-label>
+      <input
+        [(ngModel)]="value"
+        [disabled]="!state?.canEditToday || saving"
+        matInput
+        min="0"
+        step="0.001"
+        type="number"
+        [placeholder]="'DASHBOARD.DAILY_METRIC.VALUE_PLACEHOLDER' | translate" />
+      @if (data.unit) {
+        <span matTextSuffix>{{ data.unit }}</span>
+      }
+    </mat-form-field>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="close()" [disabled]="saving">
+    {{ 'STANDARD.BTNS.CANCEL' | translate }}
+  </button>
+  <button
+    mat-flat-button
+    color="primary"
+    type="button"
+    (click)="save()"
+    [disabled]="loading || saving || !state?.canEditToday">
+    @if (saving) {
+      <mat-spinner diameter="18"></mat-spinner>
+    } @else {
+      {{ 'STANDARD.BTNS.SAVE' | translate }}
+    }
+  </button>
+</mat-dialog-actions>

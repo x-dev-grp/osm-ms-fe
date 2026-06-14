@@ -49,8 +49,8 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
   supplierId: string | null = null;
   loading = false;
   error: string | null = null;
-  // Are we opened inside a MatDialog?
-  private inDialog = false;
+  /** Opened inside MatDialog (not as a routed page). */
+  readonly inDialog: boolean;
   private subs = new Subscription();
   private created: SupplierType;
 
@@ -83,13 +83,27 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    if (this.inDialog) {
+      return;
+    }
+
     this.supplierId = this.route.snapshot.paramMap.get('id');
 
-    if (this.supplierId) {
+    if (this.supplierId && this.supplierId !== 'new') {
       this.isEditMode = true;
       this.loadSupplier(this.supplierId);
     }
   }
+
+  /** Shared dialog options when opening this component from another screen. */
+  static dialogConfig = {
+    width: '720px',
+    maxWidth: '95vw',
+    maxHeight: '90vh',
+    autoFocus: 'first-tapable' as const,
+    panelClass: 'supplier-add-dialog',
+    data: { fromDialog: true }
+  };
 
   onSubmit(): void {
     if (this.supplierForm.invalid) {

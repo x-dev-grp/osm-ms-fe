@@ -1,4 +1,4 @@
-import { enableProdMode, importProvidersFrom, isDevMode } from '@angular/core';
+import { enableProdMode, importProvidersFrom, isDevMode, APP_INITIALIZER } from '@angular/core';
 
 import { environment } from './environments/environment';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -16,6 +16,13 @@ import { AuthenticationService } from './app/auth/services/authentication.servic
 import { CookieService } from 'ngx-cookie-service';
 import { TranslateService, TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { CustomTranslateLoader } from './app/shared/custom-translate-loader';
+import { ThemeConfigService } from './app/shared/services/theme-config.service';
+
+function initTheme(themeConfig: ThemeConfigService) {
+  return () => {
+    themeConfig.init();
+  };
+}
 
 if (environment.production) {
   enableProdMode();
@@ -47,6 +54,7 @@ bootstrapApplication(AppComponent, {
     { provide: HTTP_INTERCEPTORS, useClass: ResponseMessageInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: MAT_DATE_LOCALE, useValue: 'fr' },
+    { provide: APP_INITIALIZER, useFactory: initTheme, deps: [ThemeConfigService], multi: true },
     [provideHttpClient(withInterceptorsFromDi())],
     provideAnimations()
   ]

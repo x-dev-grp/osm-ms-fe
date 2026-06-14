@@ -91,19 +91,15 @@ export const DashboardStore = signalStore(
           dataTableFields: allFields.filter((field) => field.dataTable),
           fileName:fileName ?? 'default'
         });
-        if (searchData) {
-          patchState(store, { searchData });
+        let resolvedSearchData = searchData ?? store.searchData();
+        if (filterTenant != null) {
+          resolvedSearchData = { ...resolvedSearchData, filterTenant };
         }
-        else if(filterTenant != null){
-           let searchData:SearchData = store.searchData();
-           searchData={...searchData,filterTenant:filterTenant}
-           patchState(store, { searchData });
-
-        }
+        patchState(store, { searchData: resolvedSearchData });
         const toCalculateTotal:string[]=allFields.filter( field=>field.dataTable &&  field.calculateTotal).map(f=>f.name);
         if(toCalculateTotal?.length>0){
-          searchData= {...searchData,toCalculateTotal:toCalculateTotal };
-          patchState(store,{searchData});
+          resolvedSearchData = { ...resolvedSearchData, toCalculateTotal };
+          patchState(store, { searchData: resolvedSearchData });
         }
 
 

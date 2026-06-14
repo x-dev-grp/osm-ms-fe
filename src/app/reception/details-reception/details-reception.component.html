@@ -13,7 +13,8 @@
   <div class="card-header">
     <mat-card-title>{{ 'DELIVERIES.DETAILS.TITLE' | translate }}</mat-card-title>
 
-    <div class="header-chips">
+    <div class="header-actions">
+      <div class="header-chips">
       <mat-chip-listbox aria-label="Reception meta">
         <mat-chip>
           {{ 'DELIVERIES.FIELDS.DELIVERY_TYPE' | translate }}:
@@ -30,6 +31,35 @@
           {{ deliveryData.status ? (('RECEPTION_LIST.STATUS.' + deliveryData.status) | translate) : 'N/A' }}
         </mat-chip>
       </mat-chip-listbox>
+      </div>
+
+      <div class="header-qr-actions">
+        @if (hasCompleteQrMetadata()) {
+          <button
+            mat-stroked-button
+            type="button"
+            [matTooltip]="'QR.TITLE' | translate"
+            (click)="openExistingQrDialog()"
+          >
+            <mat-icon>qr_code_2</mat-icon>
+            QR
+          </button>
+        }
+        <button
+          mat-stroked-button
+          color="primary"
+          type="button"
+          [disabled]="generatingQr"
+          [matTooltip]="'QR.GENERATE' | translate"
+          (click)="generateQr()"
+        >
+          <mat-icon>qr_code_2</mat-icon>
+          {{ generatingQr ? 'Generation...' : ('QR.GENERATE' | translate) }}
+        </button>
+        @if (hasCompleteQrMetadata()) {
+          <span class="qr-code-badge">{{ getQrCodeText() }}</span>
+        }
+      </div>
     </div>
   </div>
 

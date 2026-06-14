@@ -9,11 +9,11 @@ body {
   /*  @ mat drawer
   /* -------------------------------------------------------------------------- */
   .mat-drawer-container {
-    background-color: #ffffff !important;
+    background-color: var(--accent-100) !important;
     color: var(--accent-800) !important;
 
     .mat-drawer {
-      background-color: #ffffff !important;
+      background-color: var(--accent-50) !important;
 
       &.mat-drawer-side {
         border-right: 1px dashed var(--accent-400) !important;
@@ -31,21 +31,11 @@ body {
 
   &.theme-contrast {
     .mat-drawer-container {
-      background-color: #ffffff !important;
+      background-color: color-mix(in srgb, var(--accent-100) 88%, transparent) !important;
     }
 
     .mat-drawer {
-      background-color: #ffffff !important;
-    }
-
-    &.dark {
-      .mat-drawer-container {
-        background-color: #ffffff !important;
-      }
-
-      .mat-drawer {
-        background-color: #ffffff !important;
-      }
+      background-color: color-mix(in srgb, var(--accent-50) 88%, transparent) !important;
     }
   }
 
@@ -82,11 +72,11 @@ body {
       width: -webkit-fill-available !important;
 
       &.pc-header {
-        background: #ffffff !important;
+        background: var(--accent-50) !important;
 
         &.header-blur {
-          backdrop-filter: none !important;
-          background: #ffffff !important;
+          backdrop-filter: blur(7px) !important;
+          background: var(--accent-50) !important;
         }
       }
 
@@ -105,15 +95,7 @@ body {
   &.theme-contrast {
     .mat-toolbar {
       &.mat-toolbar-single-row {
-        background: rgba(255, 255, 255, 0.8) !important;
-      }
-    }
-
-    &.dark {
-      .mat-toolbar {
-        &.mat-toolbar-single-row {
-          background: #ffffff !important;
-        }
+        background: color-mix(in srgb, var(--accent-50) 88%, transparent) !important;
       }
     }
   }
@@ -129,7 +111,7 @@ body {
   /*  @ mat table
   /* -------------------------------------------------------------------------- */
   .mat-mdc-header-row {
-    background: #ffffff !important;
+    background: var(--accent-100) !important;
 
     .mdc-data-table__header-cell {
       font-weight: 700;

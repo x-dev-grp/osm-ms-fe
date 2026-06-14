@@ -1,11 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { take } from 'rxjs/operators';
 
 import { UnifiedDeliveryService } from '../../shared/services/delivery.service';
 import { UnifiedDelivery } from '../../shared/models/UnifiedDelivery';
@@ -14,6 +17,8 @@ import { ToastService } from '../../shared/services/toast.service';
 import { OliveLotStatus } from '../../shared/models/OliveLotStatus';
 import { MatChip, MatChipListbox } from '@angular/material/chips';
 import { deliveryType } from '../../shared/models/deleveryType';
+import { QrDialogComponent } from '../../shared/components/qr-dialog/qr-dialog.component';
+import { ConfirmationDialogService, ConfirmationType } from '../../shared/services/confirmation-dialog.service';
 
 @Component({
   selector: 'app-details-reception-olive',
@@ -27,6 +32,8 @@ import { deliveryType } from '../../shared/models/deleveryType';
     MatDividerModule,
     MatIconModule,
     MatButtonModule,
+    MatTooltipModule,
+    MatDialogModule,
     TranslateModule,
     MatProgressSpinner,
     MatChipListbox,
@@ -34,40 +41,132 @@ import { deliveryType } from '../../shared/models/deleveryType';
   ]
 })
 export class DetailsReceptionComponent implements OnInit {
+  private readonly route = inject(ActivatedRoute);
+  private readonly toast = inject(ToastService);
+  private readonly deliveryService = inject(UnifiedDeliveryService);
+  private readonly translate = inject(TranslateService);
+  private readonly dialog = inject(MatDialog);
+  private readonly confirmationDialog = inject(ConfirmationDialogService);
+
   receptionId!: string | null;
   deliveryData: UnifiedDelivery | null = null;
-
-  /** When we’re showing an OIL reception, this holds the linked OLIVE one (and vice versa). */
   associatedCounterpart: UnifiedDelivery | null = null;
-
   loading = true;
   errorMessage: string | null = null;
-
-  constructor(
-    private route: ActivatedRoute,
-    private toast: ToastService,
-    private deliveryService: UnifiedDeliveryService,
-    protected translate: TranslateService
-  ) {}
+  generatingQr = false;
 
   ngOnInit(): void {
     this.receptionId = this.route.snapshot.paramMap.get('id');
     this.loadReceptionById(this.receptionId);
   }
 
-  /** Open counterpart by re-fetching data with its ID (no navigation). */
   openCounterpart(): void {
     const id = this.associatedCounterpart?.id;
     if (!id) return;
     this.loadReceptionById(id);
   }
 
-  /** Convenience to know if the *current* reception is OIL. */
   isOilReception(): boolean {
     return (this.deliveryData?.deliveryType || '').toUpperCase() === 'OIL';
   }
 
-  /** Load a reception by ID and then resolve its counterpart if possible. */
+  getQrCodeText(): string {
+    return this.deliveryData?.publicCode?.trim() || this.deliveryData?.qrHex?.trim() || '';
+  }
+
+  hasQrCode(): boolean {
+    return !!this.getQrCodeText();
+  }
+
+  hasCompleteQrMetadata(): boolean {
+    return !!this.getQrCodeText() && !!this.deliveryData?.qrImageBase64?.trim();
+  }
+
+  openExistingQrDialog(): void {
+    if (!this.hasCompleteQrMetadata() || !this.deliveryData) return;
+
+    this.dialog.open(QrDialogComponent, {
+      width: '400px',
+      data: {
+        qrText: this.getQrCodeText(),
+        qrImageBase64: this.deliveryData.qrImageBase64 || '',
+        encrypted: true,
+        payloadType: 'UNIFIEDDELIVERY',
+        payloadMode: 'PUBLIC_CODE'
+      }
+    });
+  }
+
+  generateQr(): void {
+    if (this.generatingQr || !this.deliveryData?.id) return;
+
+    this.confirmQrRegeneration((confirmed) => {
+      if (!confirmed) return;
+
+      this.generatingQr = true;
+      this.deliveryService.generateQr(this.deliveryData!.id).subscribe({
+        next: (response) => {
+          this.generatingQr = false;
+          this.deliveryData = {
+            ...this.deliveryData!,
+            publicCode: response.publicCode,
+            qrHex: response.publicCode,
+            qrUrl: response.qrUrl,
+            qrImageBase64: response.qrImageBase64
+          };
+
+          this.dialog.open(QrDialogComponent, {
+            width: '400px',
+            data: {
+              qrText: response.publicCode,
+              qrImageBase64: response.qrImageBase64,
+              encrypted: true,
+              payloadType: 'UNIFIEDDELIVERY',
+              payloadMode: 'PUBLIC_CODE'
+            }
+          });
+        },
+        error: () => {
+          this.generatingQr = false;
+          this.toast.error('QR.ERROR.GENERATE');
+        }
+      });
+    });
+  }
+
+  private confirmQrRegeneration(onResolved: (confirmed: boolean) => void): void {
+    if (!this.hasQrCode()) {
+      onResolved(true);
+      return;
+    }
+
+    this.confirmationDialog.confirm({
+      title: 'Regenerate QR Code',
+      message: 'This will regenerate the QR code and may invalidate already printed physical QR labels.',
+      type: ConfirmationType.WARNING,
+      confirmText: 'Regenerate',
+      cancelText: 'Cancel',
+      showIcon: true,
+      destructive: true,
+      requiredText: 'OKAY',
+      requiredTextHint: 'To continue, type OKAY in the field below.',
+      requiredTextPlaceholder: 'Type OKAY'
+    }).pipe(take(1)).subscribe((result) => {
+      onResolved(!!result?.confirmed);
+    });
+  }
+
+  private normalizeDelivery(delivery: UnifiedDelivery): UnifiedDelivery {
+    const normalized = { ...delivery };
+    if (!normalized.publicCode && normalized.qrHex) {
+      normalized.publicCode = normalized.qrHex;
+    }
+    if (!normalized.qrHex && normalized.publicCode) {
+      normalized.qrHex = normalized.publicCode;
+    }
+    return normalized;
+  }
+
   private loadReceptionById(id: string | null): void {
     if (!id) {
       this.errorMessage = this.translate.instant('DELIVERIES.DETAILS.MESSAGES.INVALID_ID');
@@ -79,13 +178,14 @@ export class DetailsReceptionComponent implements OnInit {
     this.loading = true;
     this.errorMessage = null;
     this.associatedCounterpart = null;
+    this.receptionId = id;
 
     this.deliveryService.getUnifiedDelivery(id).subscribe({
       next: (response) => {
         if (response?.success && response?.data) {
-          this.deliveryData = Array.isArray(response.data) ? response.data[0] : response.data;
+          const raw = Array.isArray(response.data) ? response.data[0] : response.data;
+          this.deliveryData = this.normalizeDelivery(raw);
 
-          // Attempt to fetch counterpart only if we have a lot number
           const lot = this.deliveryData?.lotNumber;
           const curType = (this.deliveryData?.deliveryType || '').toUpperCase();
           const targetType =
@@ -96,10 +196,6 @@ export class DetailsReceptionComponent implements OnInit {
             this.loadAssociatedCounterpart(lot, targetType);
           } else {
             this.loading = false;
-          }
-
-          if (response.message) {
-            this.toast.success(response.message);
           }
         } else {
           this.deliveryData = null;
@@ -118,22 +214,18 @@ export class DetailsReceptionComponent implements OnInit {
     });
   }
 
-  /** Look up the counterpart (OLIVE↔OIL) using the same lotNumber. */
   private loadAssociatedCounterpart(lotNumber: string, type: deliveryType): void {
     this.deliveryService.getDeliveryByLotNumberAndType(lotNumber, type).subscribe({
       next: (response) => {
         if (response?.success && response?.data) {
-          this.associatedCounterpart = Array.isArray(response.data) ? response.data[0] : response.data;
-          if (response.message) this.toast.success(response.message);
+          const raw = Array.isArray(response.data) ? response.data[0] : response.data;
+          this.associatedCounterpart = this.normalizeDelivery(raw);
         } else {
-          // It’s optional — no toast error
           this.associatedCounterpart = null;
         }
         this.loading = false;
       },
-      error: (error) => {
-        console.warn('Failed to load counterpart:', error);
-        // Optional data — don’t toast an error
+      error: () => {
         this.associatedCounterpart = null;
         this.loading = false;
       }

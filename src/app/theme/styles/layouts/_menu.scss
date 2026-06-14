@@ -9,7 +9,7 @@
 }
 
 .pc-sidebar {
-  background: $header-background;
+  background: var(--accent-50, $header-background);
   width: $sidebar-width;
   position: fixed !important;
   top: 0;

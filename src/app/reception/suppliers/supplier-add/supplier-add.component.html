@@ -1,4 +1,4 @@
-<div class="supplier-add-container">
+<div class="supplier-add-container" [class.supplier-add-container--dialog]="inDialog">
   <h2>{{ isEditMode ? ('SUPPLIER.ADD.TITLE_EDIT' | translate) : ('SUPPLIER.ADD.TITLE_ADD' | translate) }}</h2>
 
   <!-- Loading spinner -->

@@ -1,6 +1,5 @@
 // Angular import
-import { Component, effect, ElementRef, HostListener, inject, input, OnInit } from '@angular/core';
-import { Location, LocationStrategy } from '@angular/common';
+import { Component, effect, inject, input, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
@@ -17,6 +16,7 @@ import { environment } from '../../../../../environments/environment';
 import { CompanyProfile } from '../../../../shared/models/CompanyProfile';
 import { Role } from '../../../../theme/types/role';
 import { CompanyProfileService } from '../../../../shared/services/company-profile.service';
+import { NavigationActiveService } from '../../../services/navigation-active.service';
 
 @Component({
   selector: 'app-vertical-menu',
@@ -26,11 +26,10 @@ import { CompanyProfileService } from '../../../../shared/services/company-profi
   styleUrls: ['./vertical-menu.component.scss']
 })
 export class VerticalMenuComponent implements OnInit {
-  private location = inject(Location);
-  private locationStrategy = inject(LocationStrategy);
   private themeService = inject(ThemeLayoutService);
   authenticationService = inject(AuthenticationService);
   private companyProfileService = inject(CompanyProfileService);
+  private navigationActiveService = inject(NavigationActiveService);
   currentApplicationVersion = environment.appVersion;
 
   // public props
@@ -41,13 +40,18 @@ export class VerticalMenuComponent implements OnInit {
   logoPreview: any;
 
   // Constructor
-  constructor(  private elRef: ElementRef/*, other deps */) {
-
-effect(() => {
+  constructor() {
+    effect(() => {
       this.updateThemeLayout(this.themeService.layout());
     });
     effect(() => {
       this.isRtlTheme(this.themeService.directionChange());
+    });
+    effect(() => {
+      const menuItems = this.menus();
+      if (menuItems?.length) {
+        this.navigationActiveService.setMenuItems(menuItems);
+      }
     });
   }
 
@@ -116,41 +120,6 @@ effect(() => {
   private loadCompanyLogo(): void {
     this.loadCompanyLogoFromCache();
   }
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(ev: MouseEvent) {
-    const menuRoot: HTMLElement = this.elRef.nativeElement;
-    const clickedInside = menuRoot.contains(ev.target as Node);
-    if (!clickedInside) {
-      // Only collapse when clicking OUTSIDE the menu
-      this.fireOutClick?.();
-    }
-  }
-  // public method
-  fireOutClick() {
-    let current_url = this.location.path();
-    const baseHref = this.locationStrategy.getBaseHref();
-    if (baseHref) {
-      current_url = baseHref + this.location.path();
-    }
-    const link = "a.nav-link[ href='" + current_url + "' ]";
-    const ele = document.querySelector(link);
-    if (ele !== null && ele !== undefined) {
-      const parent = ele.parentElement;
-      const up_parent = parent?.parentElement?.parentElement;
-      const last_parent = up_parent?.parentElement;
-      if (parent?.classList.contains('coded-hasmenu')) {
-        parent.classList.add('coded-trigger');
-        parent.classList.add('active');
-      } else if (up_parent?.classList.contains('coded-hasmenu')) {
-        up_parent.classList.add('coded-trigger');
-        up_parent.classList.add('active');
-      } else if (last_parent?.classList.contains('coded-hasmenu')) {
-        last_parent.classList.add('coded-trigger');
-        last_parent.classList.add('active');
-      }
-    }
-  }
-
   private updateThemeLayout(layout: string) {
     if (layout == VERTICAL) {
       this.showContent = true;

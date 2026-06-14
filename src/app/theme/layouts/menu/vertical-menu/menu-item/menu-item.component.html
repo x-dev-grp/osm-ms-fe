@@ -2,16 +2,15 @@
   @if (item().url && !item().external) {
     <li
       [ngClass]="item().classes!"
-      [routerLinkActive]="['active']"
-      [routerLinkActiveOptions]="{ exact: item().exactMatch ?? false }"
+      [class.active]="isSelected()"
       matTooltip="{{ !isEnabled ? ('STANDARD.ACCESS_RESSOURCE_ERROR'|translate) : '' }}"
     >
       <a
         class="nav-link"
+        [class.active]="isSelected()"
+        [class.nav-link--selected]="isSelected()"
         [routerLink]="[item().url]"
         [target]="item().target ? '_blank' : '_self'"
-        [routerLinkActive]="['active']"
-        [routerLinkActiveOptions]="{ exact: item().exactMatch ?? false }"
         [ngClass]="{ disabled: !isEnabled }"
         (click)="toggleMenu($event); $event.stopPropagation()"
       >

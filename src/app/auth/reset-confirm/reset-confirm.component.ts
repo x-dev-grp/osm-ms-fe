@@ -99,6 +99,7 @@ export class ResetConfirmComponent implements OnInit {
     this.loading = true;
     const url = `${this.API}/user/auth/updatePassword/${this.userId}`;
     const dto = {
+      resetCode: this.codeForm.value.code,
       newPassword: this.pwForm.value.newPassword,
       newPasswordConfirmation: this.pwForm.value.confirmPassword
     };

@@ -14,12 +14,13 @@
     <div class="header-actions">
       <button
         (click)="openDailyMetricDialog()"
-        [disabled]="isLoading || !(canEditToday$ | async)"
+        [disabled]="isLoading"
+        [matTooltip]="((canEditToday$ | async) ? 'DASHBOARD.DAILY_METRIC.BUTTON' : 'DASHBOARD.DAILY_METRIC.BUTTON_VIEW') | translate"
         class="compact-btn"
         color="accent"
         mat-stroked-button>
         <mat-icon>trending_up</mat-icon>
-        <span class="btn-text">Valeur du jour</span>
+        <span class="btn-text">{{ ((canEditToday$ | async) ? 'DASHBOARD.DAILY_METRIC.BUTTON' : 'DASHBOARD.DAILY_METRIC.BUTTON_VIEW') | translate }}</span>
       </button>
 
       <button
@@ -261,42 +262,3 @@
     </div>
   </div>
 </ng-container>
-
-<!-- ========= Daily Metric Dialog Template ========= -->
-<ng-template #dailyMetricDialog>
-  <div class="form-section">
-    <div class="section-header">
-      <mat-icon>trending_up</mat-icon>
-      <h3>Valeur quotidienne</h3>
-    </div>
-
-    <p class="dialog-description">
-      Saisissez la valeur du jour, elle sera enregistrée et visible dans les graphiques.
-    </p>
-
-    <mat-form-field appearance="outline" class="w-100">
-      <mat-label>Valeur</mat-label>
-      <input
-        [(ngModel)]="dailyMetricValue"
-        matInput
-        placeholder="0.00"
-        step="0.01"
-        type="number">
-      <mat-icon matSuffix>edit</mat-icon>
-    </mat-form-field>
-
-    <div class="dialog-actions">
-      <button
-        (click)="dailyMetricRef?.close()"
-        mat-button>
-        Annuler
-      </button>
-      <button
-        (click)="saveDailyMetric()"
-        color="primary"
-        mat-flat-button>
-        Enregistrer
-      </button>
-    </div>
-  </div>
-</ng-template>

@@ -1,0 +1,58 @@
+<div *ngIf="loading" class="loading-overlay">
+  <mat-spinner diameter="50"></mat-spinner>
+</div>
+
+<div *ngIf="errorMessage && !loading" class="error-message">
+  {{ errorMessage | translate }}
+</div>
+
+<app-card
+  *ngIf="!errorMessage && !loading"
+  [cardTitle]="(viewMode ? 'BASE_TYPE.FORM.VIEW_TITLE' : (isEditing ? 'BASE_TYPE.FORM.EDIT_TITLE' : 'BASE_TYPE.FORM.ADD_TITLE')) | translate"
+  [padding]="20"
+  [showContent]="true"
+  [showHeader]="false">
+
+  <form [formGroup]="form" class="form-content" (ngSubmit)="save()">
+    <div class="row mb-4">
+      <div class="col-md-4">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ 'BASE_TYPE.FIELDS.NAME' | translate }}</mat-label>
+          <input formControlName="name" matInput />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ 'BASE_TYPE.FIELDS.DESCRIPTION' | translate }}</mat-label>
+          <input formControlName="description" matInput />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ 'BASE_TYPE.CATEGORY' | translate }}</mat-label>
+          <mat-select formControlName="type">
+            <mat-option *ngFor="let category of typeCategories" [value]="category">
+              {{ ('BASE_TYPE.' + category) | translate }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button mat-stroked-button type="button" (click)="backToList()">
+        {{ 'COMMON.BACK' | translate }}
+      </button>
+      <button
+        *ngIf="!viewMode"
+        mat-flat-button
+        color="primary"
+        type="submit"
+        [disabled]="form.invalid || submitting">
+        {{ (isEditing ? 'COMMON.UPDATE' : 'COMMON.SAVE') | translate }}
+      </button>
+    </div>
+  </form>
+</app-card>

@@ -111,10 +111,21 @@ export class UpdatePasswordComponent implements OnInit {
       return;
     }
 
+    const temporaryPassword = history.state?.temporaryPassword;
+    if (!temporaryPassword) {
+      this.errorMessage = 'Invalid credentials';
+      return;
+    }
+
     this.loading = true;
     this.errorMessage = '';
 
-    this.userService.updatePassword(this._form.value, userId)
+    const payload = {
+      ...this._form.value,
+      oldPassword: temporaryPassword
+    };
+
+    this.userService.updateInitialPassword(payload, userId)
       .pipe(
         tap(() => {
           this.loading = false;

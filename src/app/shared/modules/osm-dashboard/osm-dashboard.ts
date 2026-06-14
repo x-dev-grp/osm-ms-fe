@@ -68,6 +68,7 @@ export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
   _dialog = inject(MatDialog);
   config = input.required<DashboardConfig>();
   applyAction = output<{ row: any; action: string }>();
+  addNewItemClick = output<void>();
   displayedColumns: string[] = [];
   actions: Map<string, string> = ACTION_ICONS;
   private cdr = inject(ChangeDetectorRef);
@@ -135,7 +136,12 @@ export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
   }
 
   redirectToFormPage() {
-    this._router.navigate([this.config().addNewItemUrl]);
+    const url = this.config().addNewItemUrl;
+    if (url) {
+      this._router.navigate([url]);
+      return;
+    }
+    this.addNewItemClick.emit();
   }
 
   onFilterFieldChange(event: any, field: Field) {

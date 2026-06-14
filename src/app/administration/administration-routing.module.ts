@@ -13,6 +13,21 @@ const routes: Routes = [
     loadComponent: () => import('./add-company-user/add-company-user.component').then(m => m.AddCompanyUserComponent),
     canActivate: [AdminAuthGuard]
   },
+  {
+    path: 'osm-admins/add',
+    loadComponent: () => import('./add-osm-admin-user/add-osm-admin-user.component').then(m => m.AddOsmAdminUserComponent),
+    canActivate: [AdminAuthGuard]
+  },
+  {
+    path: 'companies',
+    loadComponent: () => import('./admin-companies/admin-companies.component').then((m) => m.AdminCompaniesComponent),
+    canActivate: [AdminAuthGuard]
+  },
+  {
+    path: 'users',
+    loadComponent: () => import('./admin-users/admin-users.component').then((m) => m.AdminUsersComponent),
+    canActivate: [AdminAuthGuard]
+  },
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
 ];
 

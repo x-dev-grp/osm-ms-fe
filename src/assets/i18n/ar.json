@@ -12,6 +12,11 @@
   },
   "ADMIN": {
     "ADD_COMPANY_USER_TITLE": "إنشاء شركة ومستخدم إداري لها",
+    "ADD_OSM_ADMIN_BUTTON": "إضافة مسؤول OSM",
+    "ADD_OSM_ADMIN_ROLE": "الدور",
+    "ADD_OSM_ADMIN_ROLE_VALUE": "مسؤول OSM",
+    "ADD_OSM_ADMIN_SAVE": "إنشاء مسؤول OSM",
+    "ADD_OSM_ADMIN_TITLE": "إنشاء مستخدم مسؤول OSM",
     "CANCEL": "إلغاء",
     "COMPANY_NAME": "اسم الشركة",
     "COMPANY_NAME_REQUIRED": "اسم الشركة مطلوب",
@@ -30,6 +35,77 @@
     "PHONE": "الهاتف",
     "REG_NUMBER": "رقم التسجيل",
     "TAX_ID": "الرقم الضريبي"
+  },
+  "ADMIN_DASHBOARD": {
+    "ADD_COMPANY_LINK": "إنشاء مستأجر جديد ومستخدمه الإداري.",
+    "ADD_OSM_ADMIN_LINK": "إنشاء حساب مسؤول جديد للمنصة.",
+    "COMPANIES_LINK": "استعراض وإدارة جميع ملفات الشركات.",
+    "HERO": {
+      "ACTIVE": "نشط",
+      "LAST_30_DAYS": "آخر 30 يومًا",
+      "TENANTS": "إجمالي المستأجرين",
+      "USERS": "إجمالي المستخدمين"
+    },
+    "KPIS": {
+      "ACTIVE_TENANTS": "المستأجرون النشطون",
+      "ACTIVE_USERS": "المستخدمون النشطون",
+      "INACTIVE_TENANTS": "المستأجرون غير النشطين",
+      "LOCKED_USERS": "المستخدمون المقفلون",
+      "NEW_USERS_30D": "مستخدمون جدد (30 يومًا)",
+      "TOTAL_TENANTS": "إجمالي المستأجرين",
+      "TOTAL_USERS": "إجمالي المستخدمين",
+      "USERS_WITHOUT_TENANT": "مستخدمون بدون مستأجر"
+    },
+    "LOADING": "جاري تحميل لوحة تحكم المسؤول...",
+    "LOAD_ERROR": "تعذر تحميل الإحصائيات. يرجى المحاولة مرة أخرى.",
+    "NO_DATA": "لا توجد بيانات.",
+    "SECTIONS": {
+      "QUICK_ACTIONS": "إجراءات سريعة",
+      "RECENT_TENANTS": "المستأجرون المنشأون مؤخرًا",
+      "RECENT_USERS": "المستخدمون المنشأون مؤخرًا",
+      "TENANTS": "نظرة عامة على المستأجرين",
+      "TOP_TENANTS": "أكثر المستأجرين من حيث المستخدمين",
+      "USERS": "نظرة عامة على المستخدمين",
+      "USERS_BY_ROLE": "المستخدمون حسب الدور"
+    },
+    "STATUS": {
+      "ACTIVE": "نشط",
+      "INACTIVE": "غير نشط"
+    },
+    "TABLE": {
+      "CREATED": "تاريخ الإنشاء",
+      "STATUS": "الحالة",
+      "USERS": "المستخدمون"
+    },
+    "TITLE": "نظرة عامة للمسؤول",
+    "SUBTITLE": "نظرة شاملة على المستأجرين والمستخدمين في المنصة"
+  },
+  "ADMIN_USERS": {
+    "CARD_DESCRIPTION": "البحث عن المستخدمين عبر جميع المستأجرين وإطلاق إعادة تعيين كلمة المرور.",
+    "FIELDS": {
+      "CONFIRMATION_METHOD": "طريقة التأكيد",
+      "EMAIL": "البريد الإلكتروني",
+      "FIRST_NAME": "الاسم",
+      "LAST_NAME": "اللقب",
+      "LOCKED": "مقفل",
+      "PHONE": "الهاتف",
+      "ROLE": "الدور",
+      "TENANT": "المستأجر",
+      "USERNAME": "اسم المستخدم"
+    },
+    "RESET_CONFIRM": "إرسال كلمة المرور المؤقتة",
+    "RESET_ERROR": "تعذر إرسال كلمة المرور المؤقتة.",
+    "RESET_MESSAGE": "سيتم إنشاء كلمة مرور مؤقتة جديدة وإرسالها إلى البريد الإلكتروني أو الهاتف. يجب على المستخدم تغييرها عند أول تسجيل دخول، مثل حساب جديد.",
+    "RESET_NO_CONTACT": "لا يوجد بريد إلكتروني أو رقم هاتف مسجل لهذا المستخدم.",
+    "RESET_SUCCESS": "تم إرسال كلمة المرور المؤقتة بنجاح.",
+    "RESET_TITLE": "إعادة تعيين كلمة المرور",
+    "SECTIONS": {
+      "ROLE": "الدور",
+      "TENANT": "المستأجر المرتبط",
+      "USER_INFO": "معلومات المستخدم"
+    },
+    "TITLE": "جميع المستخدمين",
+    "VIEW_TITLE": "تفاصيل المستخدم"
   },
   "APPLICATION_CONFIG": {
     "CUSTOM_THEME": {
@@ -52,6 +128,7 @@
       "TITLE": "عرض التخطيط"
     },
     "MENU_ORIENTATION": {
+      "COMPACT": "مضغوط (أيقونات فقط)",
       "DESCRIPTION": "اختر اتجاه القائمة",
       "HORIZONTAL": "أفقي",
       "TITLE": "اتجاه القائمة",
@@ -139,8 +216,26 @@
   },
   "BASE_TYPE": {
     "ADD": "إضافة نوع",
-    "ADD_TITLE": "",
-    "CATEGORY": "",
+    "ADD_TITLE": "إضافة نوع",
+    "CATEGORY": "الفئة",
+    "TITLE": "الأنواع العامة",
+    "FIELDS": {
+      "NAME": "الاسم",
+      "DESCRIPTION": "الوصف",
+      "TYPE": "الفئة"
+    },
+    "FORM": {
+      "ADD_TITLE": "إضافة نوع عام",
+      "EDIT_TITLE": "تعديل نوع عام",
+      "VIEW_TITLE": "تفاصيل النوع العام"
+    },
+    "MESSAGES": {
+      "CREATE_SUCCESS": "تم حفظ النوع بنجاح",
+      "UPDATE_SUCCESS": "تم تحديث النوع بنجاح",
+      "SAVE_FAILED": "فشل حفظ النوع",
+      "LOAD_FAILED": "فشل تحميل النوع",
+      "NOT_FOUND": "النوع غير موجود"
+    },
     "OIL_TYPE": "نوع الزيت",
     "OIL_VARIETY": "تنوع الزيت",
     "OLIVE_TYPE": "نوع الزيتون",
@@ -557,6 +652,20 @@
         "MEDIUM": "متوسط",
         "SMALL": "صغير"
       }
+    },
+    "DAILY_METRIC": {
+      "ALREADY_ENTERED": "تم إدخال قيمة اليوم بالفعل",
+      "BUTTON": "قيمة اليوم",
+      "BUTTON_VIEW": "عرض قيمة اليوم",
+      "DESCRIPTION": "أدخل سعر مرجع BASE لليوم. سيتم حفظه وعرضه في الرسوم البيانية.",
+      "INVALID_VALUE": "يرجى إدخال قيمة صالحة",
+      "LAST_VALUE": "آخر قيمة",
+      "PARAMETER_NOT_FOUND": "المعامل غير موجود. اتصل بالمسؤول.",
+      "SAVE_ERROR": "خطأ أثناء الحفظ",
+      "SAVED": "تم حفظ القيمة اليومية",
+      "TITLE": "القيمة اليومية",
+      "VALUE_LABEL": "القيمة",
+      "VALUE_PLACEHOLDER": "0.000"
     },
     "DATE_FILTER": {
       "APPLY": "تطبيق",
@@ -1156,9 +1265,11 @@
   "MENU": {
     "ADMINISTRATION": {
       "ADD_COMPANY_USER": "إضافة شركة ومستخدم",
+      "ADD_OSM_ADMIN": "إضافة مسؤول OSM",
       "COMPANY_PROFILES": "ملفات الشركات",
       "DASHBOARD": "لوحة تحكم الإدارة",
-      "TITLE": "الإدارة"
+      "TITLE": "الإدارة",
+      "USERS": "إدارة المستخدمين"
     },
     "CUSTOMERS": {
       "ACTIONS": {
@@ -2189,6 +2300,7 @@
       "QUALITYCONTROLRULE": "قاعدة ضبط الجودة",
       "READ": "عرض",
       "RECEPTION": "الاستلام",
+      "RESET_PASSWORD": "إعادة تعيين كلمة المرور",
       "REJECT ": "",
       "REMOVE_LINE": "حذف سطر",
       "REPORT": "تقرير",

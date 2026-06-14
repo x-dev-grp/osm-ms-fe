@@ -56,6 +56,10 @@ export class GlobalSearchService {
       this.http.get<QrResolveResponse>(`${this.baseUrl}/api/inventaire/boms/search/by-code`, { params })
     );
 
+    const unifiedDelivery$ = silent(
+      this.http.get<QrResolveResponse>(`${this.baseUrl}/api/production/deliveries/search/by-code`, { params })
+    );
+
     return forkJoin({
       conditioning: conditioning$,
       article: article$,
@@ -65,9 +69,10 @@ export class GlobalSearchService {
       storageUnit: storageUnit$,
       bonCommande: bonCommande$,
       ligneConditionnement: ligneConditionnement$,
-      bom: bom$
+      bom: bom$,
+      unifiedDelivery: unifiedDelivery$
     }).pipe(
-      map(({ conditioning, article, produitFinal, emplacement, fournisseur, storageUnit, bonCommande, ligneConditionnement, bom }) => {
+      map(({ conditioning, article, produitFinal, emplacement, fournisseur, storageUnit, bonCommande, ligneConditionnement, bom, unifiedDelivery }) => {
         const matches = new Map<string, QrResolveResponse>();
 
         const add = (hit?: QrResolveResponse | null) => {
@@ -92,6 +97,7 @@ export class GlobalSearchService {
         add(bonCommande);
         add(ligneConditionnement);
         add(bom);
+        add(unifiedDelivery);
 
         const results = Array.from(matches.values());
         return {

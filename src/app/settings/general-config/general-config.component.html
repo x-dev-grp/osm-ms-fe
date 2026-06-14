@@ -66,7 +66,7 @@
       <form [formGroup]="financeConfigForm" (ngSubmit)="onSaveFinanceConfig()" class="form-section">
         <mat-form-field appearance="outline" class="w-100 mb-3">
           <mat-label>Milling Price per Kg</mat-label>
-          <input matInput formControlName="millingPricePerKg" type="number" min="0" step="0.01" [disabled]="!financeConfigFormEnabled" />
+          <input matInput formControlName="millingPricePerKg" type="number" min="0" step="0.01" />
         </mat-form-field>
         <div class="actions">
           <button mat-flat-button color="primary" type="submit" [disabled]="financeConfigForm.invalid || !financeConfigFormEnabled">

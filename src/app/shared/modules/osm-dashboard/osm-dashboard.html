@@ -144,7 +144,7 @@
                       mat-raised-button
                       (click)="actionApply(item?.action, record)"
                       [color]="item?.color || 'primary'"
-                      [disabled]="record[item?.disabled?.field]==item?.disabled?.value"
+                      [disabled]="!!item?.disabled && record[item.disabled.field] === item.disabled.value"
                       size="small"
                       [matTooltip]=" ('OSM_DASHBOARD.ACTIONS.' + item?.action| translate )"
                       matTooltipPosition="above"

@@ -16,7 +16,7 @@
   <mat-form-field appearance="fill" class="w-100">
     <mat-label>{{ 'BASE_TYPE.CATEGORY' | translate }}</mat-label>
     <mat-select formControlName="type">
-      <mat-option *ngFor="let cat of typeCategories" [value]="cat" [disabled]="cat">
+      <mat-option *ngFor="let cat of typeCategories" [value]="cat">
         {{ ('BASE_TYPE.' + cat) | translate : { defaultValue: cat } }}
       </mat-option>
     </mat-select>

@@ -12,6 +12,11 @@
   },
   "ADMIN": {
     "ADD_COMPANY_USER_TITLE": "Create a company and its admin user ",
+    "ADD_OSM_ADMIN_BUTTON": "Add OSM Admin",
+    "ADD_OSM_ADMIN_ROLE": "Role",
+    "ADD_OSM_ADMIN_ROLE_VALUE": "OSM Admin",
+    "ADD_OSM_ADMIN_SAVE": "Create OSM Admin",
+    "ADD_OSM_ADMIN_TITLE": "Create OSM Admin User",
     "CANCEL": "Cancel",
     "COMPANY_NAME": "Company name",
     "COMPANY_NAME_REQUIRED": "Company name is requeird",
@@ -29,6 +34,77 @@
     "PHONE": "Phone",
     "REG_NUMBER": "Registration Number",
     "TAX_ID": "Tax ID"
+  },
+  "ADMIN_DASHBOARD": {
+    "ADD_COMPANY_LINK": "Create a new tenant and its admin user.",
+    "ADD_OSM_ADMIN_LINK": "Create a new platform administrator account.",
+    "COMPANIES_LINK": "Browse and manage all company profiles.",
+    "HERO": {
+      "ACTIVE": "active",
+      "LAST_30_DAYS": "Last 30 days",
+      "TENANTS": "Total tenants",
+      "USERS": "Total users"
+    },
+    "KPIS": {
+      "ACTIVE_TENANTS": "Active tenants",
+      "ACTIVE_USERS": "Active users",
+      "INACTIVE_TENANTS": "Inactive tenants",
+      "LOCKED_USERS": "Locked users",
+      "NEW_USERS_30D": "New users (30 days)",
+      "TOTAL_TENANTS": "Total tenants",
+      "TOTAL_USERS": "Total users",
+      "USERS_WITHOUT_TENANT": "Users without tenant"
+    },
+    "LOADING": "Loading admin dashboard...",
+    "LOAD_ERROR": "Unable to load dashboard statistics. Please try again.",
+    "NO_DATA": "No data available.",
+    "SECTIONS": {
+      "QUICK_ACTIONS": "Quick actions",
+      "RECENT_TENANTS": "Recently created tenants",
+      "RECENT_USERS": "Recently created users",
+      "TENANTS": "Tenant overview",
+      "TOP_TENANTS": "Top tenants by users",
+      "USERS": "User overview",
+      "USERS_BY_ROLE": "Users by role"
+    },
+    "STATUS": {
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive"
+    },
+    "TABLE": {
+      "CREATED": "Created",
+      "STATUS": "Status",
+      "USERS": "Users"
+    },
+    "TITLE": "Admin Overview",
+    "SUBTITLE": "Platform-wide overview of tenants and users"
+  },
+  "ADMIN_USERS": {
+    "CARD_DESCRIPTION": "Search users across all tenants and trigger password resets.",
+    "FIELDS": {
+      "CONFIRMATION_METHOD": "Confirmation method",
+      "EMAIL": "Email",
+      "FIRST_NAME": "First name",
+      "LAST_NAME": "Last name",
+      "LOCKED": "Locked",
+      "PHONE": "Phone",
+      "ROLE": "Role",
+      "TENANT": "Tenant",
+      "USERNAME": "Username"
+    },
+    "RESET_CONFIRM": "Send temporary password",
+    "RESET_ERROR": "Unable to send the temporary password.",
+    "RESET_MESSAGE": "A new temporary password will be generated and sent to the user's email or phone. The user must change it on first login, like a new account.",
+    "RESET_NO_CONTACT": "This user has no email or phone number on file.",
+    "RESET_SUCCESS": "Temporary password sent successfully.",
+    "RESET_TITLE": "Reset password",
+    "SECTIONS": {
+      "ROLE": "Role",
+      "TENANT": "Related tenant",
+      "USER_INFO": "User information"
+    },
+    "TITLE": "All Users",
+    "VIEW_TITLE": "User details"
   },
   "APPLICATION_CONFIG": {
     "CUSTOM_THEME": {
@@ -51,6 +127,7 @@
       "TITLE": "Layout Width"
     },
     "MENU_ORIENTATION": {
+      "COMPACT": "Compact (icons only)",
       "DESCRIPTION": "Choose Menu Orientation",
       "HORIZONTAL": "Horizontal",
       "TITLE": "Menu Orientation",
@@ -140,6 +217,24 @@
     "ADD": "Add type",
     "ADD_TITLE": "Add type",
     "CATEGORY": "Category",
+    "TITLE": "Generic types",
+    "FIELDS": {
+      "NAME": "Name",
+      "DESCRIPTION": "Description",
+      "TYPE": "Category"
+    },
+    "FORM": {
+      "ADD_TITLE": "Add generic type",
+      "EDIT_TITLE": "Edit generic type",
+      "VIEW_TITLE": "Generic type details"
+    },
+    "MESSAGES": {
+      "CREATE_SUCCESS": "Type created successfully",
+      "UPDATE_SUCCESS": "Type updated successfully",
+      "SAVE_FAILED": "Failed to save type",
+      "LOAD_FAILED": "Failed to load type",
+      "NOT_FOUND": "Type not found"
+    },
     "OIL_TYPE": "Oil type",
     "OIL_VARIETY": "Oil variety",
     "OLIVE_TYPE": "Olive type",
@@ -557,6 +652,20 @@
         "MEDIUM": "Medium",
         "SMALL": "Small"
       }
+    },
+    "DAILY_METRIC": {
+      "ALREADY_ENTERED": "Today's value has already been entered",
+      "BUTTON": "Daily value",
+      "BUTTON_VIEW": "View daily value",
+      "DESCRIPTION": "Enter today's reference BASE price. It will be saved and shown on the charts.",
+      "INVALID_VALUE": "Please enter a valid value",
+      "LAST_VALUE": "Last value",
+      "PARAMETER_NOT_FOUND": "Parameter not found. Contact your administrator.",
+      "SAVE_ERROR": "Error while saving",
+      "SAVED": "Daily value saved",
+      "TITLE": "Daily value",
+      "VALUE_LABEL": "Value",
+      "VALUE_PLACEHOLDER": "0.000"
     },
     "DATE_FILTER": {
       "APPLY": "Apply",
@@ -1156,9 +1265,11 @@
   "MENU": {
     "ADMINISTRATION": {
       "ADD_COMPANY_USER": "Add Company & User",
+      "ADD_OSM_ADMIN": "Add OSM Admin",
       "COMPANY_PROFILES": "Company Profiles",
       "DASHBOARD": "Admin Dashboard",
-      "TITLE": "Administration"
+      "TITLE": "Administration",
+      "USERS": "User Management"
     },
     "CUSTOMERS": {
       "ACTIONS": {
@@ -2194,6 +2305,7 @@
       "QUALITYCONTROLRULE": "Quality Control Rule",
       "READ": "View",
       "RECEPTION": "Reception",
+      "RESET_PASSWORD": "Reset Password",
       "REJECT ": "Reject",
       "REMOVE_LINE": "Remove Line",
       "REPORT": "Report",

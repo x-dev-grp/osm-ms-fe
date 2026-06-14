@@ -43,6 +43,10 @@ export class UnifiedDelivery {
   categoryOliveOil?: string;
   lotOliveNumber?: string| null;
 
+  publicCode?: string | null;
+  qrHex?: string | null;
+  qrUrl?: string | null;
+  qrImageBase64?: string | null;
 }
 
 

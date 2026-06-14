@@ -9,6 +9,7 @@ import { ThemeLayoutService } from 'src/app/theme/services/theme-layout.service'
 import { SharedModule } from 'src/app/shared/shared.module';
 import { NavBarComponent } from 'src/app/theme/layouts/toolbar/toolbar.component';
 import { VerticalMenuComponent } from 'src/app/theme/layouts/menu/vertical-menu';
+import { HorizontalMenuComponent } from 'src/app/theme/layouts/menu/horizontal-menu/horizontal-menu.component';
 
 import { BreadcrumbComponent } from 'src/app/theme/components/breadcrumb/breadcrumb.component';
 import { FooterComponent } from 'src/app/theme/layouts/footer/footer.component';
@@ -40,6 +41,7 @@ import { ThemeConfig, ThemeConfigService } from '../../../shared/services/theme-
     CommonModule,
     NavBarComponent,
     VerticalMenuComponent,
+    HorizontalMenuComponent,
 
     BreadcrumbComponent,
      FooterComponent
@@ -86,9 +88,13 @@ export class AdminComponent implements OnInit, AfterViewInit {
   // life cycle event
   logoPreview: string | null = null;
   ngOnInit() {
-  const cfg = this.themeConfig.loadConfig();
-   this.themeConfig.applyConfig(cfg)
-   this.breakpointObserver.observe([MIN_WIDTH_1025PX, MAX_WIDTH_1024PX]).subscribe((result) => {
+    const cfg = this.themeConfig.loadConfig();
+    this.themeConfig.applyConfig(cfg);
+    this.currentLayout = cfg.layout;
+    this.rtlMode = cfg.rtlLayout;
+    this.manageLayout(cfg.layout);
+
+    this.breakpointObserver.observe([MIN_WIDTH_1025PX, MAX_WIDTH_1024PX]).subscribe((result) => {
       if (result.breakpoints[MAX_WIDTH_1024PX]) {
         this.modeValue = 'over';
       } else if (result.breakpoints[MIN_WIDTH_1025PX]) {

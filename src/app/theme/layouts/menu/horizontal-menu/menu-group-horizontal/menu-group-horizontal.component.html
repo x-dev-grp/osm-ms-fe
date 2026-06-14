@@ -1,0 +1,9 @@
+@if (!item().hidden) {
+  @for (items of item().children; track items.id) {
+    @if (items.type === 'collapse') {
+      <app-menu-collapse [item]="items" [parentRole]="item().role" />
+    } @else if (items.type === 'item') {
+      <app-menu-item [item]="items" [parentRole]="item().role" />
+    }
+  }
+}

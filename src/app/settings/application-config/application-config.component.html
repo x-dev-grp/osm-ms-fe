@@ -251,8 +251,8 @@
       <div class="mb-4">
         <h6 class="fw-semibold">{{ 'APPLICATION_CONFIG.MENU_ORIENTATION.TITLE' | translate }}</h6>
         <p class="text-muted">{{ 'APPLICATION_CONFIG.MENU_ORIENTATION.DESCRIPTION' | translate }}</p>
-        <div class="row">
-          <div class="col-6">
+        <div class="row g-2">
+          <div class="col-md-4">
             <button
               [matTooltip]="'APPLICATION_CONFIG.MENU_ORIENTATION.VERTICAL' | translate"
               mat-stroked-button
@@ -265,7 +265,7 @@
               {{ 'APPLICATION_CONFIG.MENU_ORIENTATION.VERTICAL' | translate }}
             </button>
           </div>
-          <div class="col-6">
+          <div class="col-md-4">
             <button
               [matTooltip]="'APPLICATION_CONFIG.MENU_ORIENTATION.HORIZONTAL' | translate"
               mat-stroked-button
@@ -276,6 +276,19 @@
             >
               <img src="assets/images/customizer/horizontal.svg" [alt]="'APPLICATION_CONFIG.MENU_ORIENTATION.HORIZONTAL' | translate" class="img-fluid" width="70%" />
               {{ 'APPLICATION_CONFIG.MENU_ORIENTATION.HORIZONTAL' | translate }}
+            </button>
+          </div>
+          <div class="col-md-4">
+            <button
+              [matTooltip]="'APPLICATION_CONFIG.MENU_ORIENTATION.COMPACT' | translate"
+              mat-stroked-button
+              class="customize-button w-100"
+              [ngClass]="{ active: layout === 'compact' }"
+              (click)="setMenuOrientation('compact')"
+              [attr.aria-label]="'APPLICATION_CONFIG.MENU_ORIENTATION.COMPACT' | translate"
+            >
+              <img src="assets/images/customizer/mini-menu.svg" [alt]="'APPLICATION_CONFIG.MENU_ORIENTATION.COMPACT' | translate" class="img-fluid" width="70%" />
+              {{ 'APPLICATION_CONFIG.MENU_ORIENTATION.COMPACT' | translate }}
             </button>
           </div>
         </div>

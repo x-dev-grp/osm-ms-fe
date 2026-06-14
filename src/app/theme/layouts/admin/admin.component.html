@@ -25,11 +25,8 @@
             </a>
           </a>
         </div>
-        @if (currentLayout === 'vertical') {
+        @if (currentLayout === 'vertical' || currentLayout === 'compact') {
           <app-vertical-menu [menus]="menus" />
-        }
-        @if (currentLayout === 'compact') {
-          <app-compact-menu [menus]="osm_menus" />
         }
       </div>
     </nav>
@@ -42,13 +39,13 @@
     />
     @if (currentLayout === 'horizontal') {
       <app-horizontal-menu
-        [menus]="osm_menus"
+        [menus]="menus"
         [ngClass]="{
           'horizontal-menu': currentLayout === 'horizontal'
         }"
       />
     }
-    <div class="app-container">
+    <div class="app-container" [class.app-container--horizontal]="currentLayout === 'horizontal'">
       <app-breadcrumb [dashboard]="true" />
       <div class="main-body">
         <div class="page-wrapper">

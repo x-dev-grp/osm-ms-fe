@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -14,8 +14,8 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { forkJoin, of, Subject } from 'rxjs';
-import { catchError, finalize, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, forkJoin, of, Subject } from 'rxjs';
+import { catchError, finalize, take, takeUntil } from 'rxjs/operators';
 import { UnifiedDelivery } from '../../shared/models/UnifiedDelivery';
 import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
 import { SupplierType } from '../../shared/models/supplier-type';
@@ -28,9 +28,9 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { EarningChartComponent } from '../../theme/pages/apex-chart/earning-chart/earning-chart.component';
 import { CardComponent } from '../../theme/components/card/card.component';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { DailyMetricClient } from '../../shared/services/DailyMetricPayload';
-import { ToastService } from '../../shared/services/toast.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DailyMetricClient, normalizeMetricValue } from '../../shared/services/DailyMetricPayload';
+import { DailyMetricDialogComponent } from '../../shared/components/daily-metric-dialog/daily-metric-dialog.component';
 import { OperationType } from '../../shared/models/operation-type.enum';
 
 type TrendGranularity = 'daily' | 'weekly' | 'monthly' | 'yearly';
@@ -71,10 +71,9 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<void>();
   lastUpdated: Date | null = new Date();
 
-  // Dialog Management
-  @ViewChild('dailyMetricDialog') dailyMetricDialogTpl!: TemplateRef<any>;
-  dailyMetricRef?: MatDialogRef<any>;
-  dailyMetricValue: number | null = null;
+  // Daily base-price metric (DAILY_OIL_METRIC parameter)
+  private readonly DAILY_METRIC_CODE = 'DAILY_OIL_METRIC';
+  canEditToday$ = new BehaviorSubject(true);
   // Quick period configuration for compact pills
   quickPeriods = [
     { value: 'today' as PresetPeriod, label: 'DASHBOARD.DATE_FILTER.TODAY' },
@@ -145,8 +144,6 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
     }
   };
   receptionsTrendChartOptions: Partial<ApexOptions> = {};
-  private readonly DAILY_METRIC_CODE = 'DAILY_OIL_METRIC';
-  canEditToday$ = this.dailyMetric.canEditToday(this.DAILY_METRIC_CODE);
   private allReceptions: UnifiedDelivery[] = [];
   // Services
   private deliveryService = inject(UnifiedDeliveryService);
@@ -156,8 +153,7 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
 
   constructor(
     private dialog: MatDialog,
-    private dailyMetric: DailyMetricClient,
-    private toast: ToastService
+    private dailyMetric: DailyMetricClient
   ) {
     this.initializeDefaultDateRange();
     this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => this.updateChartLabels());
@@ -188,8 +184,9 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
+    this.refreshDailyMetricState();
     this.loadData();
-  this.onOperationTypeChange(OperationType.SIMPLE_RECEPTION)
+    this.onOperationTypeChange(OperationType.SIMPLE_RECEPTION);
   }
 
   ngOnDestroy(): void {
@@ -270,56 +267,31 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
     this.applyFiltersAndRebuild();
   }
 
-  // === Daily Metric Dialog ===
   openDailyMetricDialog(): void {
-    this.canEditToday$.subscribe((can) => {
-      if (!can) {
-        this.toast.info('La valeur du jour a déjà été saisie.');
-        return;
+    const dialogRef = this.dialog.open(DailyMetricDialogComponent, {
+      width: '440px',
+      autoFocus: true,
+      restoreFocus: false,
+      panelClass: 'daily-metric-dialog',
+      data: {
+        code: this.DAILY_METRIC_CODE,
+        unit: 'TND/kg'
       }
-      this.dailyMetric.get(this.DAILY_METRIC_CODE).subscribe({
-        next: (p) => {
-          this.dailyMetricValue = Number(p.current) || 0;
-          this.dailyMetricRef = this.dialog.open(this.dailyMetricDialogTpl, {
-            width: '420px',
-            autoFocus: true,
-            restoreFocus: false,
-            panelClass: 'daily-metric-dialog'
-          });
-        },
-        error: () => {
-          this.dailyMetricValue = null;
-          this.dailyMetricRef = this.dialog.open(this.dailyMetricDialogTpl, {
-            width: '420px',
-            autoFocus: true,
-            restoreFocus: false,
-            panelClass: 'daily-metric-dialog'
-          });
-        }
-      });
+    });
+
+    dialogRef.afterClosed().subscribe((saved) => {
+      if (saved) {
+        this.refreshDailyMetricState();
+        this.applyFiltersAndRebuild();
+      }
     });
   }
 
-  saveDailyMetric(): void {
-    const val = Number(this.dailyMetricValue);
-    if (!isFinite(val) || val < 0) {
-      this.toast.warning('Veuillez saisir une valeur valide');
-      return;
-    }
-
-    this.dailyMetric.upsertToday(this.DAILY_METRIC_CODE, val).subscribe((result) => {
-      if (result instanceof Error) {
-        if (result.message === "Déjà saisi pour aujourd'hui.") {
-          this.toast.warning(result.message);
-        } else {
-          this.toast.error('Erreur lors de la sauvegarde: ' + result.message);
-        }
-      } else {
-        this.toast.success('Valeur quotidienne enregistrée');
-        this.dailyMetricRef?.close();
-        window.location.reload();
-      }
-    });
+  private refreshDailyMetricState(): void {
+    this.dailyMetric
+      .canEditToday(this.DAILY_METRIC_CODE)
+      .pipe(take(1), takeUntil(this.destroy$))
+      .subscribe((canEdit) => this.canEditToday$.next(canEdit));
   }
 
   updateReceptionTrendView(view: 'monthly' | 'weekly' | 'daily'): void {
@@ -522,8 +494,8 @@ export class ReceptionDashboardComponent implements OnInit, OnDestroy {
       next: (payload) => {
         const histMap = new Map<string, number>(Array.isArray(payload?.history) ? (payload.history as [string, number][]) : []);
         const refData = cats.map((d) => {
-          const v = histMap.has(d) ? Number(histMap.get(d)) : Number(payload?.current) || 0;
-          return +(v || 0).toFixed(3);
+          const v = histMap.has(d) ? normalizeMetricValue(histMap.get(d)) : normalizeMetricValue(payload?.current);
+          return +v.toFixed(3);
         });
 
         this.baseUnitPriceTrendChartOptions = {

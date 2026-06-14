@@ -12,6 +12,11 @@
   },
   "ADMIN": {
     "ADD_COMPANY_USER_TITLE": "Créer une société et son premier utilisateur",
+    "ADD_OSM_ADMIN_BUTTON": "Ajouter un admin OSM",
+    "ADD_OSM_ADMIN_ROLE": "Rôle",
+    "ADD_OSM_ADMIN_ROLE_VALUE": "Admin OSM",
+    "ADD_OSM_ADMIN_SAVE": "Créer l'admin OSM",
+    "ADD_OSM_ADMIN_TITLE": "Créer un utilisateur admin OSM",
     "CANCEL": "Annuler",
     "COMPANY_NAME": "Nom de la société",
     "COMPANY_NAME_REQUIRED": "Le nom de la société est requis.",
@@ -29,6 +34,77 @@
     "PHONE": "Téléphone",
     "REG_NUMBER": "Numéro d'enregistrement",
     "TAX_ID": "Identifiant fiscal"
+  },
+  "ADMIN_DASHBOARD": {
+    "ADD_COMPANY_LINK": "Créer un nouveau tenant et son utilisateur admin.",
+    "ADD_OSM_ADMIN_LINK": "Créer un nouveau compte administrateur de la plateforme.",
+    "COMPANIES_LINK": "Parcourir et gérer tous les profils entreprise.",
+    "HERO": {
+      "ACTIVE": "actifs",
+      "LAST_30_DAYS": "30 derniers jours",
+      "TENANTS": "Total tenants",
+      "USERS": "Total utilisateurs"
+    },
+    "KPIS": {
+      "ACTIVE_TENANTS": "Tenants actifs",
+      "ACTIVE_USERS": "Utilisateurs actifs",
+      "INACTIVE_TENANTS": "Tenants inactifs",
+      "LOCKED_USERS": "Utilisateurs verrouillés",
+      "NEW_USERS_30D": "Nouveaux utilisateurs (30 j)",
+      "TOTAL_TENANTS": "Total tenants",
+      "TOTAL_USERS": "Total utilisateurs",
+      "USERS_WITHOUT_TENANT": "Utilisateurs sans tenant"
+    },
+    "LOADING": "Chargement du tableau de bord admin...",
+    "LOAD_ERROR": "Impossible de charger les statistiques. Veuillez réessayer.",
+    "NO_DATA": "Aucune donnée disponible.",
+    "SECTIONS": {
+      "QUICK_ACTIONS": "Actions rapides",
+      "RECENT_TENANTS": "Tenants récemment créés",
+      "RECENT_USERS": "Utilisateurs récemment créés",
+      "TENANTS": "Vue d'ensemble des tenants",
+      "TOP_TENANTS": "Top tenants par utilisateurs",
+      "USERS": "Vue d'ensemble des utilisateurs",
+      "USERS_BY_ROLE": "Utilisateurs par rôle"
+    },
+    "STATUS": {
+      "ACTIVE": "Actif",
+      "INACTIVE": "Inactif"
+    },
+    "TABLE": {
+      "CREATED": "Créé le",
+      "STATUS": "Statut",
+      "USERS": "Utilisateurs"
+    },
+    "TITLE": "Vue d'ensemble admin",
+    "SUBTITLE": "Vue globale des tenants et utilisateurs de la plateforme"
+  },
+  "ADMIN_USERS": {
+    "CARD_DESCRIPTION": "Rechercher les utilisateurs de tous les tenants et déclencher une réinitialisation de mot de passe.",
+    "FIELDS": {
+      "CONFIRMATION_METHOD": "Méthode de confirmation",
+      "EMAIL": "Email",
+      "FIRST_NAME": "Nom",
+      "LAST_NAME": "Prénom",
+      "LOCKED": "Verrouillé",
+      "PHONE": "Téléphone",
+      "ROLE": "Rôle",
+      "TENANT": "Tenant",
+      "USERNAME": "Nom d'utilisateur"
+    },
+    "RESET_CONFIRM": "Envoyer le mot de passe temporaire",
+    "RESET_ERROR": "Impossible d'envoyer le mot de passe temporaire.",
+    "RESET_MESSAGE": "Un nouveau mot de passe temporaire sera généré et envoyé à l'email ou au téléphone de l'utilisateur. Il devra le changer à la première connexion, comme pour un nouveau compte.",
+    "RESET_NO_CONTACT": "Cet utilisateur n'a ni email ni numéro de téléphone.",
+    "RESET_SUCCESS": "Mot de passe temporaire envoyé avec succès.",
+    "RESET_TITLE": "Réinitialiser le mot de passe",
+    "SECTIONS": {
+      "ROLE": "Rôle",
+      "TENANT": "Tenant associé",
+      "USER_INFO": "Informations utilisateur"
+    },
+    "TITLE": "Tous les utilisateurs",
+    "VIEW_TITLE": "Détails de l'utilisateur"
   },
   "APPLICATION_CONFIG": {
     "CUSTOM_THEME": {
@@ -51,6 +127,7 @@
       "TITLE": "Largeur de la Disposition"
     },
     "MENU_ORIENTATION": {
+      "COMPACT": "Compact (icônes seules)",
       "DESCRIPTION": "Choisissez l'Orientation du Menu",
       "HORIZONTAL": "Horizontal",
       "TITLE": "Orientation du Menu",
@@ -140,6 +217,24 @@
     "ADD": "Ajouter Type",
     "ADD_TITLE": "Ajouter un type",
     "CATEGORY": "Catégorie",
+    "TITLE": "Types génériques",
+    "FIELDS": {
+      "NAME": "Nom",
+      "DESCRIPTION": "Description",
+      "TYPE": "Catégorie"
+    },
+    "FORM": {
+      "ADD_TITLE": "Ajouter un type générique",
+      "EDIT_TITLE": "Modifier un type générique",
+      "VIEW_TITLE": "Détail du type générique"
+    },
+    "MESSAGES": {
+      "CREATE_SUCCESS": "Type enregistré avec succès",
+      "UPDATE_SUCCESS": "Type mis à jour avec succès",
+      "SAVE_FAILED": "Échec de l'enregistrement du type",
+      "LOAD_FAILED": "Erreur lors du chargement du type",
+      "NOT_FOUND": "Type introuvable"
+    },
     "OIL_TYPE": "Type d'huile",
     "OIL_VARIETY": "Variété d'huile",
     "OLIVE_TYPE": "Type olive",
@@ -557,6 +652,20 @@
         "MEDIUM": "Moyen",
         "SMALL": "Petit"
       }
+    },
+    "DAILY_METRIC": {
+      "ALREADY_ENTERED": "La valeur du jour a déjà été saisie",
+      "BUTTON": "Valeur du jour",
+      "BUTTON_VIEW": "Voir valeur du jour",
+      "DESCRIPTION": "Saisissez la valeur du jour pour le prix de référence BASE. Elle sera enregistrée et visible dans les graphiques.",
+      "INVALID_VALUE": "Veuillez saisir une valeur valide",
+      "LAST_VALUE": "Dernière valeur",
+      "PARAMETER_NOT_FOUND": "Paramètre introuvable. Contactez l'administrateur.",
+      "SAVE_ERROR": "Erreur lors de la sauvegarde",
+      "SAVED": "Valeur quotidienne enregistrée",
+      "TITLE": "Valeur quotidienne",
+      "VALUE_LABEL": "Valeur",
+      "VALUE_PLACEHOLDER": "0.000"
     },
     "DATE_FILTER": {
       "APPLY": "Appliquer",
@@ -1154,9 +1263,11 @@
   "MENU": {
     "ADMINISTRATION": {
       "ADD_COMPANY_USER": "Ajouter société & utilisateur",
+      "ADD_OSM_ADMIN": "Ajouter admin OSM",
       "COMPANY_PROFILES": "Profils de société",
       "DASHBOARD": "Tableau de bord admin",
-      "TITLE": "Administration"
+      "TITLE": "Administration",
+      "USERS": "Gestion des utilisateurs"
     },
     "CONDITIONNEMENT": {
       "EXPEDITIONS": "Expéditions & BL",
@@ -2220,6 +2331,7 @@
       "QUALITYCONTROLRULE": "Critère de contrôle qualité",
       "READ": "Afficher",
       "RECEPTION": "Réception",
+      "RESET_PASSWORD": "Réinitialiser le mot de passe",
       "REJECT ": "Rejeter",
       "REMOVE_LINE": "Supprimer une ligne",
       "REPORT": "Rapport",

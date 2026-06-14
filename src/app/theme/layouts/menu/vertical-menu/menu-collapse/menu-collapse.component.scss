@@ -1,1 +1,16 @@
+:host {
+  display: block;
+}
 
+.nav-link--parent {
+  &.nav-link--expanded {
+    color: var(--primary-500, #4680ff);
+    font-weight: 600;
+  }
+}
+
+.coded-hasmenu.nav-item--expanded {
+  > .nav-link--parent {
+    background: rgba(70, 128, 255, 0.06);
+  }
+}

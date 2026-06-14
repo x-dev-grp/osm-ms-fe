@@ -1,0 +1,63 @@
+<h2 mat-dialog-title>{{ 'ADMIN_USERS.VIEW_TITLE' | translate }}</h2>
+
+<mat-dialog-content class="admin-user-detail-content">
+  <section class="detail-section">
+    <h3>{{ 'ADMIN_USERS.SECTIONS.USER_INFO' | translate }}</h3>
+    <dl class="detail-grid">
+      <div class="detail-item">
+        <dt>{{ 'ADMIN_USERS.FIELDS.USERNAME' | translate }}</dt>
+        <dd>{{ displayValue(data.user['username']) }}</dd>
+      </div>
+      <div class="detail-item">
+        <dt>{{ 'ADMIN_USERS.FIELDS.FIRST_NAME' | translate }}</dt>
+        <dd>{{ displayValue(data.user['firstName']) }}</dd>
+      </div>
+      <div class="detail-item">
+        <dt>{{ 'ADMIN_USERS.FIELDS.LAST_NAME' | translate }}</dt>
+        <dd>{{ displayValue(data.user['lastName']) }}</dd>
+      </div>
+      <div class="detail-item">
+        <dt>{{ 'ADMIN_USERS.FIELDS.EMAIL' | translate }}</dt>
+        <dd>{{ displayValue(data.user['email']) }}</dd>
+      </div>
+      <div class="detail-item">
+        <dt>{{ 'ADMIN_USERS.FIELDS.PHONE' | translate }}</dt>
+        <dd>{{ displayValue(data.user['phoneNumber']) }}</dd>
+      </div>
+      <div class="detail-item">
+        <dt>{{ 'ADMIN_USERS.FIELDS.CONFIRMATION_METHOD' | translate }}</dt>
+        <dd>{{ displayValue(data.user['confirmationMethod']) }}</dd>
+      </div>
+      <div class="detail-item">
+        <dt>{{ 'ADMIN_USERS.FIELDS.LOCKED' | translate }}</dt>
+        <dd>{{ (isLocked ? 'COMMON.YES' : 'COMMON.NO') | translate }}</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="detail-section">
+    <h3>{{ 'ADMIN_USERS.SECTIONS.ROLE' | translate }}</h3>
+    <dl class="detail-grid">
+      <div class="detail-item">
+        <dt>{{ 'ADMIN_USERS.FIELDS.ROLE' | translate }}</dt>
+        <dd>{{ roleName }}</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="detail-section">
+    <h3>{{ 'ADMIN_USERS.SECTIONS.TENANT' | translate }}</h3>
+    <dl class="detail-grid">
+      <div class="detail-item">
+        <dt>{{ 'ADMIN_USERS.FIELDS.TENANT' | translate }}</dt>
+        <dd>{{ tenantName }}</dd>
+      </div>
+    </dl>
+  </section>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-flat-button color="primary" (click)="close()">
+    {{ 'COMMON.CLOSE' | translate }}
+  </button>
+</mat-dialog-actions>

@@ -7,6 +7,7 @@ import { environment } from '../../../environments/environment';
 import { OliveLotStatus } from '../models/OliveLotStatus';
 import { ExchangePricingDto } from '../models/ExchangePricingDto';
 import { deliveryType } from '../models/deleveryType';
+import { QrCodeInfo, QrResolveResponse } from '../models/qr-models';
 
 @Injectable({
   providedIn: 'root'
@@ -101,5 +102,13 @@ export class UnifiedDeliveryService {
 
   getDeliveriesByGlobalLotNumber(glotNumber: string): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/getDeliveriesByGlobalLotNumber/${glotNumber}`);
+  }
+
+  generateQr(deliveryId: string): Observable<QrCodeInfo> {
+    return this.http.get<QrCodeInfo>(`${this.baseUrl}/qr/UNIFIEDDELIVERY/${deliveryId}`);
+  }
+
+  searchByCode(code: string): Observable<QrResolveResponse> {
+    return this.http.get<QrResolveResponse>(`${this.baseUrl}/search/by-code`, { params: { code } });
   }
 }

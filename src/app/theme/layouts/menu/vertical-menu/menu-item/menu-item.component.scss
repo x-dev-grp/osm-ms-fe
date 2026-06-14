@@ -8,31 +8,33 @@ li {
     display: flex;
     align-items: center;
     padding: 12px 16px;
-    color: #333;
+    color: var(--accent-800);
     text-decoration: none;
-    border-radius: 4px;
+    border-radius: 8px;
     margin: 2px 8px;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease;
 
     &:hover {
-      background-color: #f5f5f5;
-      color: #1976d2;
+      background-color: var(--hover-bg, var(--accent-200));
+      color: var(--primary-500);
     }
 
-    &.active {
-      background-color: #e3f2fd;
-      color: #1976d2;
-      font-weight: 500;
+    &.active,
+    &.nav-link--selected {
+      background: linear-gradient(90deg, rgba(25, 118, 210, 0.14) 0%, rgba(25, 118, 210, 0.06) 100%);
+      color: var(--primary-400);
+      font-weight: 600;
       position: relative;
 
-      &::after {
+      &::before {
         content: '';
         position: absolute;
         left: 0;
-        top: 0;
-        height: 100%;
+        top: 6px;
+        bottom: 6px;
         width: 4px;
-        background-color: #1976d2;
+        border-radius: 0 4px 4px 0;
+        background-color: var(--primary-500);
       }
     }
 
@@ -60,7 +62,7 @@ li {
 }
 
 // RTL Support
-[dir="rtl"] {
+[dir='rtl'] {
   li {
     a.nav-link {
       .coded-micon {
@@ -68,10 +70,12 @@ li {
         margin-left: 12px;
       }
 
-      &.active {
-        &::after {
+      &.active,
+      &.nav-link--selected {
+        &::before {
           left: auto;
           right: 0;
+          border-radius: 4px 0 0 4px;
         }
       }
     }

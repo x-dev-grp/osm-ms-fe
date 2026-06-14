@@ -1,6 +1,22 @@
 .supplier-add-container {
-   max-width: 1200px;
+  max-width: 1200px;
   margin: 0 auto;
+
+  &--dialog {
+    max-width: none;
+    margin: 0;
+    padding: 0.25rem 0.5rem 0.5rem;
+
+    h2 {
+      margin-bottom: 16px;
+      font-size: 20px;
+    }
+
+    .supplier-form {
+      box-shadow: none;
+      padding: 0;
+    }
+  }
 
   h2 {
     margin-bottom: 24px;

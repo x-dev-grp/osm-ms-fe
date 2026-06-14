@@ -97,7 +97,7 @@
     align-items: center;
     padding: .5rem .75rem;
     border-radius: .5rem;
-    background: rgba(0,0,0,.03);
+    background: var(--surface-muted);
   }
 }
 
@@ -483,11 +483,8 @@
   --info-500: #2196f3;
   --secondary-500: #9c27b0;
 
-  // Additional variables for proper styling
-  --text-primary: #212529;
-  --text-secondary: #6c757d;
-  --surface: #ffffff;
-  --border-color: #dee2e6;
+  --surface: var(--surface-card);
+  --border-color: var(--border-subtle);
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
   --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.2);

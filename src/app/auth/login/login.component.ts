@@ -144,7 +144,9 @@ export class LoginComponent implements OnInit {
                 username: err.error.error_description,
                 id: err.error.error_uri
               }
-            ]);
+            ], {
+              state: { temporaryPassword: this.form.get('password')?.value }
+            });
           } else {
             this.errorMessage = err?.error;
           }

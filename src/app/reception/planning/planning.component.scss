@@ -6,13 +6,19 @@ $shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
 $shadow-md: 0 2px 4px rgba(0, 0, 0, 0.12);
 $shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.1);
 $transition-base: all 0.2s ease;
-$color-primary: #1976d2;
-$color-primary-dark: #1565c0;
-$color-accent: #ff4081;
-$color-text-primary: rgba(0, 0, 0, 0.87);
-$color-text-secondary: rgba(0, 0, 0, 0.6);
-$color-border: #e2e8f0;
-$color-background: #f8fafc;
+$color-primary: var(--primary-500, #1976d2);
+$color-primary-dark: var(--primary-600, #1565c0);
+$color-accent: var(--accent-500, #ff4081);
+$color-text-primary: var(--text-primary, var(--accent-900));
+$color-text-secondary: var(--text-secondary, var(--accent-700));
+$color-border: var(--border-subtle, var(--accent-300));
+$color-background: var(--surface-muted, var(--accent-100));
+
+:host {
+  display: block;
+  color: var(--text-primary, var(--accent-900));
+  direction: inherit;
+}
 
 // Layout
 .w-full {
@@ -175,10 +181,11 @@ $color-background: #f8fafc;
 }
 
 .stat-item {
-  background-color: #f5f5f5;
+  background-color: var(--accent-200, #f5f5f5);
   padding: 6px 12px;
   border-radius: 4px;
   font-weight: 500;
+  color: var(--text-primary, var(--accent-900));
 }
 
 /* Toolbar styling */
@@ -195,7 +202,7 @@ $color-background: #f8fafc;
   .title {
     font-size: 1.35rem;
     font-weight: 600;
-    color: #1e293b;
+    color: var(--text-primary, var(--accent-900));
     letter-spacing: -0.01em;
   }
 
@@ -207,7 +214,7 @@ $color-background: #f8fafc;
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    background: #ffffff;
+    background: var(--surface-card, var(--accent-50));
     padding: 0.75rem;
     border-radius: $border-radius-md;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
@@ -251,6 +258,7 @@ $color-background: #f8fafc;
   padding: 0.5rem;
   border-radius: $border-radius-sm;
   transition: background-color $transition-base;
+  background: var(--surface-card, var(--accent-50));
 }
 
 /* Card styling for reception items */
@@ -267,7 +275,7 @@ $color-background: #f8fafc;
   background: $color-background;
 
   &.flex {
-    background: #e3f2fd;
+    background: color-mix(in srgb, var(--primary-500, #1976d2) 14%, var(--surface-muted, var(--accent-100)));
     border-left: 4px solid $color-primary;
   }
 
@@ -302,7 +310,7 @@ $color-background: #f8fafc;
 
   .drag-handle {
     cursor: move;
-    color: rgba(0, 0, 0, 0.54);
+    color: var(--text-muted, var(--accent-600));
     width: 48px;
     height: 24px;
     display: flex;
@@ -312,7 +320,7 @@ $color-background: #f8fafc;
     font-weight: bold;
 
     &:hover {
-      color: #334155;
+      color: var(--text-primary, var(--accent-900));
     }
   }
 
@@ -368,8 +376,9 @@ $color-background: #f8fafc;
         align-items: center;
         gap: 0.25rem;
         padding: 0.125rem 0.375rem;
-        background: rgba(0, 0, 0, 0.04);
+        background: color-mix(in srgb, var(--accent-400, currentColor) 12%, transparent);
         border-radius: 0.25rem;
+        color: var(--text-secondary, var(--accent-700));
 
         &::before {
           font-family: 'Material Icons';
@@ -456,16 +465,16 @@ $color-background: #f8fafc;
   }
 
   &::-webkit-scrollbar-track {
-    background: #f1f5f9;
+    background: var(--accent-200, #f1f5f9);
     border-radius: 4px;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
+    background: var(--accent-400, #cbd5e1);
     border-radius: 4px;
 
     &:hover {
-      background: #94a3b8;
+      background: var(--accent-500, #94a3b8);
     }
   }
 }
@@ -484,9 +493,10 @@ $color-background: #f8fafc;
   position: sticky;
   top: 0;
   z-index: 2;
-  background: #fff;
+  background: var(--surface-muted, var(--accent-100)) !important;
+  color: var(--text-primary, var(--accent-900)) !important;
   box-shadow: 0 2px 4px -2px rgba(0, 0, 0, 0.08);
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--border-subtle, var(--accent-300));
 }
 
 mat-expansion-panel {
@@ -496,8 +506,25 @@ mat-expansion-panel {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06) !important;
   border: 1px solid $color-border;
   transition: $transition-base;
-  background: transparent;
+  background: var(--surface-card, var(--accent-50));
   overflow: hidden;
+
+  ::ng-deep {
+    .mat-expansion-panel-header {
+      background: var(--surface-muted, var(--accent-100));
+      color: var(--text-primary, var(--accent-900));
+    }
+
+    .mat-expansion-panel-header-title,
+    .mat-expansion-panel-header-description,
+    .mat-expansion-indicator::after {
+      color: var(--text-primary, var(--accent-900));
+    }
+
+    .mat-expansion-panel-body {
+      background: var(--surface-card, var(--accent-50));
+    }
+  }
 
   ::ng-deep .mat-expansion-panel-body {
     padding: 0 0 0.5rem 0;
@@ -505,12 +532,12 @@ mat-expansion-panel {
 }
 
 /* Capacity coloring on expansion headers */
-.at-capacity .mat-expansion-panel-header {
-  background: #fee2e2;
+.at-capacity ::ng-deep .mat-expansion-panel-header {
+  background: color-mix(in srgb, var(--warn-500, #ef4444) 18%, var(--surface-muted, var(--accent-100))) !important;
 }
 
-.near-capacity .mat-expansion-panel-header {
-  background: #fef9c3;
+.near-capacity ::ng-deep .mat-expansion-panel-header {
+  background: color-mix(in srgb, var(--warning-500, #eab308) 18%, var(--surface-muted, var(--accent-100))) !important;
 }
 
 mat-expansion-panel:not(:last-child) {
@@ -567,9 +594,9 @@ mat-expansion-panel:not(:last-child) {
   align-items: center;
   gap: 0.75rem 1rem;
   padding: .6rem .8rem;
-  border: 1px solid color-mix(in oklab, currentColor 12%, transparent);
+  border: 1px solid var(--border-subtle, var(--accent-300));
   border-radius: 14px;
-  background: color-mix(in oklab, Canvas 94%, currentColor 6%);
+  background: var(--surface-muted, var(--accent-100));
 }
 
 /* Search field */
@@ -606,8 +633,8 @@ mat-expansion-panel:not(:last-child) {
   font-size: .88rem;
   line-height: 1;
   border-radius: 999px;
-  background: color-mix(in oklab, currentColor 8%, transparent);
-  color: color-mix(in oklab, currentColor 70%, #000);
+  background: var(--accent-200, color-mix(in oklab, currentColor 8%, transparent));
+  color: var(--text-primary, var(--accent-900));
   white-space: nowrap;
 }
 
@@ -680,9 +707,4 @@ mat-expansion-panel:not(:last-child) {
 @media (max-width: 420px) {
   .actions-section { gap: .5rem; }
   .stat-item { padding: .3rem .5rem; font-size: .85rem; }
-}
-
-/* RTL/LTR friendliness via logical properties */
-:host {
-  direction: inherit;
 }

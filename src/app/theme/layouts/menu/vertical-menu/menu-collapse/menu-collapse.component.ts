@@ -1,5 +1,5 @@
 // Angular import
-import { Component, OnInit, effect, inject, input } from '@angular/core';
+import { Component, computed, effect, inject, input, OnInit, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { animate, style, transition, trigger } from '@angular/animations';
@@ -31,7 +31,13 @@ export class MenuCollapseComponent implements OnInit {
 
   // public props
   isEnabled: boolean = false;
-  isExpanded: boolean = false;
+  private readonly isExpandedState = signal(false);
+
+  readonly isOpen = computed(() => {
+    this.navigationActiveService.currentUrl();
+    this.navigationActiveService.activeMenuUrl();
+    return this.isExpandedState() || this.hasActiveChild();
+  });
 
   // all Version Get Item(Component Name Take)
   readonly item = input<NavigationItem>();
@@ -39,8 +45,10 @@ export class MenuCollapseComponent implements OnInit {
 
   constructor() {
     effect(() => {
+      this.navigationActiveService.currentUrl();
+      this.navigationActiveService.activeMenuUrl();
       if (this.hasActiveChild()) {
-        this.isExpanded = true;
+        this.isExpandedState.set(true);
       }
     });
   }
@@ -49,19 +57,13 @@ export class MenuCollapseComponent implements OnInit {
   ngOnInit() {
     const item = this.item();
     this.isEnabled = item?.disabled ? false : true;
-    this.isExpanded = this.hasActiveChild();
+    if (this.hasActiveChild()) {
+      this.isExpandedState.set(true);
+    }
   }
 
   hasActiveChild(): boolean {
     return (this.item()?.children ?? []).some((child) => this.navigationActiveService.isItemActive(child));
-  }
-
-  isActive(): boolean {
-    return this.navigationActiveService.isItemActive(this.item());
-  }
-
-  isOpen(): boolean {
-    return this.isExpanded || this.hasActiveChild();
   }
 
   // Method to handle the collapse of the navigation menu
@@ -72,6 +74,6 @@ export class MenuCollapseComponent implements OnInit {
       return;
     }
 
-    this.isExpanded = !this.isExpanded;
+    this.isExpandedState.update((open) => !open);
   }
 }

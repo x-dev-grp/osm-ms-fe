@@ -355,15 +355,14 @@ export class OilSaleAddComponent implements OnInit {
   }
 
   openAddSupplierDialog(): void {
-    const dialogRef = this.dialog.open(SupplierAddComponent, {
-      width: 'auto',
-      data: { fromDialog: true }
-    });
+    const dialogRef = this.dialog.open(SupplierAddComponent, SupplierAddComponent.dialogConfig);
 
     dialogRef.afterClosed().subscribe((newSupplier) => {
       if (newSupplier) {
         this.suppliers = [...this.suppliers, newSupplier];
-        this.oilSaleForm.get('supplier')?.setValue(newSupplier);
+        const supplierCtrl = this.oilSaleForm.get('supplier');
+        supplierCtrl?.setValue(newSupplier);
+        supplierCtrl?.updateValueAndValidity();
       }
     });
   }

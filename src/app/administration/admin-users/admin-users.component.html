@@ -1,0 +1,13 @@
+<div class="admin-users-page">
+  <div class="page-header">
+    <button mat-flat-button color="primary" routerLink="/administration/osm-admins/add">
+      <mat-icon>person_add</mat-icon>
+      <span>{{ 'ADMIN.ADD_OSM_ADMIN_BUTTON' | translate }}</span>
+    </button>
+  </div>
+  <osm-dashboard
+    #dashboard
+    (applyAction)="applyAction($event)"
+    [config]="dashboardConfig">
+  </osm-dashboard>
+</div>

@@ -1,11 +1,12 @@
 // Angular import
-import { Component, OnInit, inject, input } from '@angular/core';
+import { Component, computed, inject, input, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 // Project import
 import { NavigationItem } from 'src/app/theme/types/navigation';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { NavigationActiveService } from 'src/app/theme/services/navigation-active.service';
 
 @Component({
   selector: 'app-menu-item',
@@ -15,11 +16,20 @@ import { SharedModule } from 'src/app/shared/shared.module';
   styleUrls: ['./menu-item.component.scss']
 })
 export class MenuItemVerticalComponent implements OnInit {
+  private readonly navigationActiveService = inject(NavigationActiveService);
+
   // public props
   readonly item = input.required<NavigationItem>();
   readonly parentRole = input<string[]>();
 
   isEnabled: boolean = false;
+
+  readonly isSelected = computed(() => {
+    const item = this.item();
+    this.navigationActiveService.currentUrl();
+    this.navigationActiveService.activeMenuUrl();
+    return this.navigationActiveService.isRouteActive(item.url, item.exactMatch ?? false);
+  });
 
   //life cycle hook
   ngOnInit() {

@@ -4,6 +4,10 @@
   padding-top: 84px;
   min-height: calc(100vh - 146px);
 
+  &--horizontal {
+    padding-top: 164px;
+  }
+
   // apply when box layout has been set
   &.container {
     @media (min-width: 1200px) {
@@ -91,8 +95,6 @@
   transform: scale(1.1);
 }
 
-/* If your drawer or header has a solid bg, make it see-through */
-.mat-drawer,
-.m-header {
-  background: transparent !important;
+.mat-drawer.pc-sidebar {
+  background: var(--accent-50) !important;
 }

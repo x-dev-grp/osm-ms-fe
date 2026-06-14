@@ -26,9 +26,9 @@
 
 .section {
   padding: 1rem;
-  border: 1px solid rgba(0, 0, 0, .06);
+  border: 1px solid var(--border-subtle, var(--accent-300));
   border-radius: 12px;
-  background: var(--section-bg, #fff);
+  background: var(--section-bg, var(--accent-50));
 
   h4 {
     margin: 0 0 .75rem 0;
