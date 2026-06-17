@@ -270,21 +270,39 @@ export const DashboardStore = signalStore(
           );
           if (!rowWithValues) return [];
 
-          // safe getter
           const safeGet = (path?: string | null, obj?: any) => {
             if (!path || obj == null) return '';
             return path.split('.').reduce((acc: any, k: string) => (acc == null ? acc : acc[k]), obj);
           };
 
-          return (rowWithValues[parent.name] as any[]).map((itemData: any, index: number) => ({
-            ...parent,
-            // override identity & display
-            name: safeGet(parent.nameField, itemData),
-            label: safeGet(parent.nameField, itemData),
-            flattedItemIndex: index,
-            dataTable: true,
-            sortable:true,
-          }));
+          const resolveFlatColumnName = (itemData: any): string => {
+            const configuredName = safeGet(parent.nameField, itemData);
+            return (
+              configuredName ||
+              safeGet('rule.ruleName', itemData) ||
+              safeGet('rule.ruleKey', itemData) ||
+              safeGet('rule.label', itemData) ||
+              safeGet('name', itemData) ||
+              safeGet('label', itemData)
+            );
+          };
+
+          return (rowWithValues[parent.name] as any[])
+            .map((itemData: any, index: number): Field | null => {
+              const columnName = resolveFlatColumnName(itemData);
+              if (!columnName) return null;
+
+              return {
+                ...parent,
+                name: columnName,
+                label: columnName,
+                labelTranslatePath: undefined,
+                flattedItemIndex: index,
+                dataTable: true,
+                sortable: true,
+              };
+            })
+            .filter((field): field is Field => !!field);
         });
 
         // 3) Optional: de-dupe by label (use Set) to avoid duplicates on repeated calls

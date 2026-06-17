@@ -10,6 +10,40 @@
 .mat-form-field {
   margin: 0 8px; /* Espacement supplémentaire autour des champs */
 }
+
+.supplier-domain-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(49, 95, 27, 0.18);
+  background: #f6faf1;
+
+  mat-icon {
+    color: #315f1b;
+    margin-top: 2px;
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    strong {
+      font-size: 13px;
+      font-weight: 800;
+      color: #214212;
+    }
+
+    span {
+      font-size: 12px;
+      color: #687062;
+      line-height: 1.4;
+    }
+  }
+}
 .filter-item {
   margin-right: 16px;
 }
@@ -21,4 +55,38 @@
 
 .mat-form-field {
   margin: 0 8px; /* Espacement supplémentaire autour des champs */
+}
+
+.supplier-domain-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(49, 95, 27, 0.18);
+  background: #f6faf1;
+
+  mat-icon {
+    color: #315f1b;
+    margin-top: 2px;
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    strong {
+      font-size: 13px;
+      font-weight: 800;
+      color: #214212;
+    }
+
+    span {
+      font-size: 12px;
+      color: #687062;
+      line-height: 1.4;
+    }
+  }
 }

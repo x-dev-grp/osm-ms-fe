@@ -25,6 +25,11 @@
             </div>
 
             <div class="header-status">
+              <span class="domain-badge domain-badge--articles">
+                <i class="fas fa-boxes-stacked"></i>
+                {{ 'FOURNISSEUR.DOMAIN.ARTICLES_BADGE' | translate }}
+              </span>
+
               <span
                 class="status-badge"
                 [ngClass]="fournisseur.actif ? 'status-actif' : 'status-inactif'">

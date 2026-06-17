@@ -20,9 +20,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { catchError, debounceTime, filter, forkJoin, map, Observable, of, Subject } from 'rxjs';
+import { catchError, filter, forkJoin, map, Observable, of, Subject, takeUntil } from 'rxjs';
 import { MillMachineService } from '../../shared/services/mill-machine.service';
 import { MillMachine } from '../../shared/models/millMachine';
 import { MatDialog } from '@angular/material/dialog';
@@ -38,7 +38,6 @@ import {
   BoardItem,
   GlobalLot,
   GlobalLotDTO,
-  GlobalLotGroup,
   LotDTO,
   Mill,
   MillPlanDTO,
@@ -46,11 +45,10 @@ import {
   PlanningItem,
   PlanningSaveRequest
 } from '../../shared/models/planningDTOS';
-import { FilterLotPipe } from '../../shared/pipes/FilterLotPipe';
+import { FilterLotPipe, boardItemMatchesSearch } from '../../shared/pipes/FilterLotPipe';
 import { ToastService } from '../../shared/services/toast.service';
 import { CardComponent } from '../../theme/components/card/card.component';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
-import { PdfGeneratorService } from '../../shared/services/pdf-generator.service';
 import { OliveLotStatus } from '../../shared/models/OliveLotStatus';
 import { ApiResponse } from '../../shared/models/api-response';
 
@@ -65,6 +63,8 @@ type CompletionResult = {
   autoSetStorage?: boolean;
   operationType?: boolean;
   triturationDurationInMinutes?: number | null | '';
+  trtDate?: string;
+  finalObservation?: string;
 };
 
 @Component({
@@ -96,7 +96,6 @@ type CompletionResult = {
 })
 export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
   unassignedReceptions: BoardItem[] = [];
-  filteredReceptions: BoardItem[] = [];
   mills: Mill[] = [];
   globalLots: GlobalLot[] = [];
   isDesktop = true;
@@ -105,23 +104,23 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
   readonly LOT = PlanItemType.LOT;
   readonly GLOBAL_LOT = PlanItemType.GLOBAL_LOT;
   isFullScreen = false;
-  dirty = true; // tracks unsaved edits
+  dirty = false;
+  isLoading = false;
+  isSaving = false;
   searchTerm = '';
-  // pour gérer la saisie et filtrer en temps réel
-  searchControl = new FormControl('');
-  /* helper removes card from whichever column it's in */
-  isSaved: boolean = true;
-  private filterSubject = new Subject<string>();
   private readonly autoScrollPadding = 80;
   private readonly autoScrollSpeed = 100;
   @ViewChild('scrollContainer', { static: true, read: ElementRef }) private scrollContainer!: ElementRef<HTMLElement>;
   private destroy$ = new Subject<void>();
   /* ───────────────────────── New field ───────────────────────── */
   private fullReceptionMap: Map<string, PlanningItem> = new Map();
-  // gardez aussi ces tableaux pour restaurer l’état initial
-  private allUnassigned: any[] = [];
   @ViewChild('cancelDialog') cancelDialogTpl!: TemplateRef<any>;
   cancelCause = '';
+  private loadWarnings = {
+    planning: false,
+    mills: false,
+    deliveries: false
+  };
    constructor(
     private deliveryService: UnifiedDeliveryService,
     private millService: MillMachineService,
@@ -130,10 +129,12 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     private cdr: ChangeDetectorRef,
     private toast: ToastService,
     private dialog: MatDialog,
-    private currentDialogRef: MatDialog,
-    private planningService: PlanningService,
-    private pdfGeneratorService: PdfGeneratorService
+    private planningService: PlanningService
   ) {}
+
+  get visibleUnassignedCount(): number {
+    return this.countMatchingItems(this.unassignedReceptions);
+  }
 
   get totalAssigned(): number {
     return this.mills.reduce((sum, mill) => {
@@ -159,6 +160,10 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     return this.selectedIds().length > 1;
   }
 
+  hasSingleLotSelection(): boolean {
+    return this.selectedIds().length === 1;
+  }
+
   selectedIds(): string[] {
     return Object.keys(this.selection).filter((id) => {
       const item = this.findItemById(id);
@@ -167,6 +172,9 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   savePlan(): void {
+    if (!this.dirty || this.isSaving) {
+      return;
+    }
     this.confirm(this.translationservice.instant('RECEPTION.PLANNING.CONFIRM_SAVE'))
       .pipe(filter((ok) => ok))
       .subscribe(() => {
@@ -174,49 +182,33 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
       });
   }
 
-  savePlanSilently(): void {
-    // this._savePlan(); // the old body moved to a private method
-    // this.dirty = false;
-  }
-
   groupSelected(): void {
     this.confirm(this.translationservice.instant('RECEPTION.PLANNING.GLOBAL_LOT.CONFIRM_CREATE_FROM_SELECTION'))
       .pipe(filter((ok) => ok))
       .subscribe(() => {
-        this._groupSelected(); // old logic here
-        this.dirty = true;
+        this._groupSelected();
+        this.markPlanningDirty();
+        this.offerSaveAfterChange();
       });
   }
 
   ungroupLot(gl: GlobalLot): void {
-    // called from the menu
     this.confirm(this.translationservice.instant('RECEPTION.PLANNING.GLOBAL_LOT.CONFIRM_UNGROUP', { globalLotNumber: gl.globalLotNumber }))
       .pipe(filter((ok) => ok))
       .subscribe(() => {
-        this._ungroupLot(gl); // old logic here
-        this.dirty = true;
+        this._ungroupLot(gl);
+        this.markPlanningDirty();
+        this.offerSaveAfterChange();
       });
   }
 
-  getGlobalLotGroups(items: BoardItem[]): GlobalLotGroup[] {
-    const groups: { [key: string]: BoardItem[] } = {};
-    items.forEach((item) => {
-      const key =
-        item.type === PlanItemType.LOT
-          ? (item.data as PlanningItem).globalLotNumber || 'ungrouped'
-          : (item.data as GlobalLot).globalLotNumber;
-      if (!groups[key]) groups[key] = [];
-      groups[key].push(item);
-    });
-    return Object.entries(groups).map(([globalLotNumber, items]) => ({
-      globalLotNumber: globalLotNumber === 'ungrouped' ? null : globalLotNumber,
-      items
-    }));
+  private offerSaveAfterChange(): void {
+    this.confirm(this.translationservice.instant('RECEPTION.PLANNING.SAVE_AFTER_CHANGE'))
+      .pipe(filter((ok) => ok))
+      .subscribe(() => this._savePlan());
   }
 
   onDragMove(event: CdkDragMove): void {
-    this.dirty = true;
-    this.isSaved = false;
     const scroller = this.scrollContainer.nativeElement;
     const { x: pointerX } = event.pointerPosition;
     const { left, right } = scroller.getBoundingClientRect();
@@ -228,17 +220,12 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.bp.observe('(min-width: 1024px)').subscribe((r) => {
+    this.bp.observe('(min-width: 1024px)').pipe(takeUntil(this.destroy$)).subscribe((r) => {
       this.isDesktop = r.matches;
       this.cdr.markForCheck();
     });
-    this.filterSubject.pipe(debounceTime(300)).subscribe((value) => {
-      this.applyFilter(value);
-    });
-    this.allUnassigned = [...this.unassignedReceptions];
-    this.mills.forEach((m) => (m.receptions = [...m.receptions]));
 
-    this.loadPlanning(); // Fetch planning from backend
+    this.loadPlanning();
   }
 
   ngAfterViewInit(): void {
@@ -246,8 +233,11 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   drop(event: CdkDragDrop<BoardItem[]>): void {
-    this.dirty = true;
-    this.isSaved = true;
+    if (event.previousContainer === event.container && event.previousIndex === event.currentIndex) {
+      return;
+    }
+
+    this.markPlanningDirty();
     /* 0 ─ context ----------------------------------------------------------- */
     const srcItem = event.item.data as BoardItem;
     const srcArray = event.previousContainer.data as BoardItem[];
@@ -301,8 +291,9 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     if (event.previousContainer.id === 'unassigned-list') {
       this.unassignedReceptions = this.unassignedReceptions.filter((i) => !itemsToMove.includes(i));
     }
-    if (intoUnassigned) {
-      this.filteredReceptions = [...this.unassignedReceptions];
+
+    if (destMill) {
+      this.warnIfMillOverCapacity(destMill);
     }
 
     /* 7 ─ refresh ----------------------------------------------------------- */
@@ -416,10 +407,10 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     // 8) Reset UI state
     this.globalLots.push(globalLot);
     this.selection = {};
-    this.filteredReceptions = [...this.unassignedReceptions];
     this.cdr.markForCheck();
-    this.translationservice.instant('RECEPTION.PLANNING.GLOBAL_LOT.CREATED_SUCCESS', { globalLotNumber });
-    this.savePlanSilently();
+    this.toast.success(
+      this.translationservice.instant('RECEPTION.PLANNING.GLOBAL_LOT.CREATED_SUCCESS', { globalLotNumber })
+    );
   }
 
   _ungroupLot(globalLot: GlobalLot): void {
@@ -462,10 +453,6 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     // 3) Process child lots - fetch original data from fullReceptionMap
     const childLotsBoardItems: BoardItem[] = globalLot.items.map((item) => {
       const lot = item.data as PlanningItem;
-      console.log('[UNGROUP] Raw child lot from globalLot:', item);
-      console.log('[UNGROUP] Parsed child lot:', lot);
-
-      // Find the original lot data using lotNumber from the map
       const originalLot = this.fullReceptionMap.get(lot.lotNumber);
 
       if (!originalLot) {
@@ -477,7 +464,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
         const fallbackData: PlanningItem = {
           ...lot,
           globalLotNumber: null,
-          millMachineId: undefined,
+          millMachineId: foundMill?.id,
           supplier: lot.supplier || undefined,
           region: lot.region || undefined,
           oliveVariety: lot.oliveVariety || undefined,
@@ -488,16 +475,13 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
           oilQuantity: lot.oilQuantity || null,
           rendement: lot.rendement || null
         };
-        console.log('[UNGROUP] Fallback child lot data:', fallbackData);
         return { type: PlanItemType.LOT, data: fallbackData } as BoardItem;
       }
 
-      // Use the original lot data with updated references
       const ungroupedLotData: PlanningItem = {
-        ...originalLot, // Start with all original properties
-        // Overwrite/update planning-specific mutable fields
+        ...originalLot,
         globalLotNumber: null,
-        millMachineId: undefined,
+        millMachineId: foundMill?.id,
         deliveryDate: lot.deliveryDate || originalLot.deliveryDate, // Prioritize potentially updated date
         completed: lot.completed || originalLot.completed, // Prioritize potentially updated completion status
         oilQuantity: lot.oilQuantity || originalLot.oilQuantity, // Prioritize potentially updated oil quantity
@@ -511,24 +495,35 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
         sackCount: lot.sackCount || 0
       };
 
-      console.log('[UNGROUP] Processed child lot data:', ungroupedLotData);
       return { type: PlanItemType.LOT, data: ungroupedLotData } as BoardItem;
     });
 
-    // Add new child lot BoardItems to unassigned at the same position
-    this.unassignedReceptions.splice(foundIndex, 0, ...childLotsBoardItems);
-    this.filteredReceptions = [...this.unassignedReceptions];
+    if (foundMill) {
+      foundMill.receptions.splice(foundIndex, 0, ...childLotsBoardItems);
+    } else {
+      this.unassignedReceptions.splice(foundIndex, 0, ...childLotsBoardItems);
+    }
 
     // 4) Reset UI state
     this.selection = {};
     this.refreshConnectedDropLists();
     this.cdr.markForCheck();
-    this.translationservice.instant('RECEPTION.PLANNING.GLOBAL_LOT.UNGROUPED_SUCCESS', { globalLotNumber: globalLot.globalLotNumber });
-    this.savePlanSilently();
+    this.toast.success(
+      this.translationservice.instant('RECEPTION.PLANNING.GLOBAL_LOT.UNGROUPED_SUCCESS', {
+        globalLotNumber: globalLot.globalLotNumber
+      })
+    );
   }
 
   cancelPlan(): void {
-    this.loadPlanning(); // Reload planning from backend to reset
+    if (!this.dirty) {
+      this.loadPlanning();
+      return;
+    }
+
+    this.confirm(this.translationservice.instant('RECEPTION.PLANNING.CONFIRM_DISCARD'))
+      .pipe(filter((ok) => ok))
+      .subscribe(() => this.loadPlanning());
   }
 
   onDragStart(event: import('@angular/cdk/drag-drop').CdkDragStart): void {
@@ -537,31 +532,24 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onDragEnd(event: import('@angular/cdk/drag-drop').CdkDragEnd): void {
-    this.dirty = true;
     event.source.element.nativeElement.setAttribute('aria-grabbed', 'false');
-    this.bp.observe('(min-width: 1024px)').subscribe((r) => {
-      this.isDesktop = r.matches;
-      this.cdr.markForCheck();
-    });
-    this.savePlanSilently();
   }
-  openCancelDialog(d: UnifiedDelivery): void {
-    // reset cause input every time
+  openCancelDialog(lot: PlanningItem): void {
     this.cancelCause = '';
-     this.currentDialogRef.open(this.cancelDialogTpl, {
+    this.dialog.open(this.cancelDialogTpl, {
       width: '480px',
-      data: d,
+      data: lot,
       disableClose: true
     });
   }
 
-  confirmCancel(d: UnifiedDelivery): void {
+  confirmCancel(lot: PlanningItem): void {
     const cause = (this.cancelCause || '').trim();
-    // call your existing cancel with user-entered cause
-    this.cancelReception(d, cause);
-    if (this.currentDialogRef) {
-      this.currentDialogRef.closeAll();
-     }
+    if (!lot?.id) {
+      return;
+    }
+    this.cancelReceptionById(lot.id, cause);
+    this.dialog.closeAll();
   }
 
   toggleFullScreen(): void {
@@ -619,6 +607,12 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   _savePlan(): void {
+    if (this.isSaving) {
+      return;
+    }
+    this.isSaving = true;
+    this.cdr.markForCheck();
+
     // Track all LOT items in globalLots to avoid duplicates in millsPayload
     const globalLotLotNumbers = new Set(this.globalLots.flatMap((gl) => gl.items.map((i) => (i.data as PlanningItem).lotNumber)));
 
@@ -687,14 +681,15 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
       next: () => {
         this.toast.success('AUTO.PLANNING_SAVED_SUCCESSFULLY');
         this.dirty = false;
-        this.isSaved = false;
+        this.isSaving = false;
         this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('[SavePlan] Error saving planning:', err);
-        // Log the full error object to understand the cause
         console.error('[SavePlan] Full error details:', JSON.stringify(err, null, 2));
         this.toast.error('AUTO.FAILED_TO_SAVE_PLANNING_PLEASE_TRY_AGAIN');
+        this.isSaving = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -726,6 +721,18 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     return '';
   }
 
+  getGlobalLotEarliestDate(globalLot: GlobalLot): Date | null {
+    const dates = globalLot.items
+      .map((item) => (item.data as PlanningItem).deliveryDate)
+      .filter((date): date is Date => date instanceof Date && !Number.isNaN(date.getTime()));
+
+    if (!dates.length) {
+      return null;
+    }
+
+    return dates.reduce((earliest, current) => (current < earliest ? current : earliest));
+  }
+
   toPlanningItem(d: UnifiedDelivery): PlanningItem {
     // Ensure all fields are always present, even if undefined
     const extra: Partial<PlanningItem> = d as unknown as Partial<PlanningItem>;
@@ -745,6 +752,9 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
       operationType: d.operationType ?? undefined,
       poidsNet: d.poidsNet ?? undefined,
       sackCount: d.sackCount ?? undefined,
+      parcel: d.parcel?.name ?? undefined,
+      matriculeCamion: d.matriculeCamion ?? undefined,
+      description: d.description ?? undefined,
       oilQuantity: d.oilQuantity ?? null,
       rendement: d.rendement ?? null,
       completionDate: typeof extra.completionDate !== 'undefined' && extra.completionDate ? new Date(extra.completionDate) : undefined,
@@ -771,21 +781,19 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   clearSearch(): void {
-    this.searchControl.setValue('');
-    this.applyFilter('');
+    this.searchTerm = '';
+    this.cdr.markForCheck();
   }
 
-  cancelReception(d: UnifiedDelivery,cause:string): void {
-    if (d.id) {
-      this.deliveryService.updateStatus(d.id, OliveLotStatus.CANCELLED,cause).subscribe((res: ApiResponse<void>) => {
-        if (res.success) {
-          this.loadPlanning();
-          this.toast.success(this.translationservice.instant('PLANNING.CANCEL_RECEPTION'));
-        } else {
-          this.toast.error(this.translationservice.instant('LOGIN.UNEXPECTED_ERROR'));
-        }
-      });
-    }
+  cancelReceptionById(deliveryId: string, cause: string): void {
+    this.deliveryService.updateStatus(deliveryId, OliveLotStatus.CANCELLED, cause).subscribe((res: ApiResponse<void>) => {
+      if (res.success) {
+        this.loadPlanning();
+        this.toast.success(this.translationservice.instant('PLANNING.CANCEL_RECEPTION'));
+      } else {
+        this.toast.error(this.translationservice.instant('LOGIN.UNEXPECTED_ERROR'));
+      }
+    });
   }
 
   /** LOT flow */
@@ -796,16 +804,17 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
         map((r) => ({
           oilQuantity: Number(r.oilQuantity ?? 0),
           rendement: Number(r.rendement ?? 0),
-          // for LOT we use totalTriturationPrice as unpaid price when calling completeIt
           totalTriturationPrice: Number(r.totalTriturationPrice ?? 0),
           autoSetStorage: !!r.autoSetStorage,
           triturationDurationInMinutes:
             r.triturationDurationInMinutes === '' || r.triturationDurationInMinutes === undefined
               ? 0
-              : Number(r.triturationDurationInMinutes)
+              : Number(r.triturationDurationInMinutes),
+          trtDate: r.trtDate,
+          finalObservation: r.finalObservation
         }))
       )
-      .subscribe(({ oilQuantity, rendement, totalTriturationPrice, autoSetStorage, triturationDurationInMinutes }) => {
+      .subscribe(({ oilQuantity, rendement, totalTriturationPrice, autoSetStorage, triturationDurationInMinutes, trtDate, finalObservation }) => {
         const label = (item.data as PlanningItem).lotNumber;
 
         // Update UI model
@@ -824,10 +833,12 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
           label,
           oilQuantity,
           rendement,
-          totalTriturationPrice, // unpaidPrice for LOT
-          null, // childLotsRendement not used for LOT
+          totalTriturationPrice,
+          null,
           autoSetStorage,
-          triturationDurationInMinutes
+          triturationDurationInMinutes,
+          trtDate,
+          finalObservation
         );
         this.handleResponse(req$, item, target);
       });
@@ -847,10 +858,12 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
           triturationDurationInMinutes:
             r.triturationDurationInMinutes === '' || r.triturationDurationInMinutes === undefined
               ? 0
-              : Number(r.triturationDurationInMinutes)
+              : Number(r.triturationDurationInMinutes),
+          trtDate: r.trtDate,
+          finalObservation: r.finalObservation
         }))
       )
-      .subscribe(({ oilQuantity, rendement, childLotsRendement, autoSetStorage, triturationDurationInMinutes }) => {
+      .subscribe(({ oilQuantity, rendement, childLotsRendement, autoSetStorage, triturationDurationInMinutes, trtDate, finalObservation }) => {
         const label = (item.data as GlobalLot).globalLotNumber;
 
         // Update UI model
@@ -871,7 +884,9 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
           null,
           childLotsRendement,
           autoSetStorage,
-          triturationDurationInMinutes
+          triturationDurationInMinutes,
+          trtDate,
+          finalObservation
         );
         this.handleResponse(req$, item, target);
       });
@@ -883,11 +898,11 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const dialogRef = this.dialog.open(CompletionDetailsDialogComponent, {
       data: { item: item.data, itemType: item.type },
-      width: isMobile ? '100vw' : 'auto',
+      width: isMobile ? '100vw' : 'min(960px, 92vw)',
       height: isMobile ? '100vh' : undefined,
-      maxWidth: isMobile ? '100vw' : '80vw',
+      maxWidth: isMobile ? '100vw' : '960px',
       maxHeight: isMobile ? '100vh' : 'auto',
-      panelClass: isMobile ? 'mobile-fullscreen-dialog' : 'desktop-dialog',
+      panelClass: isMobile ? 'mobile-fullscreen-dialog' : 'completion-dialog-panel',
       autoFocus: false
     });
     return dialogRef.afterClosed() as Observable<CompletionResult>;
@@ -928,7 +943,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
         // msg = "Lot completed successfully"
         this.toast.success(msg);
         this.removeFromBoard(itemToComplete);
-        this.dirty = true;
+        this.cdr.markForCheck();
       },
       error: (err) => {
         // only runs on real 4xx/5xx/network errors
@@ -954,7 +969,9 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     totalTriturationPrice: any,
     childLotsRendement: any,
     autoSetStorage: any,
-    triturationDurationInMinutes: any
+    triturationDurationInMinutes: any,
+    trtDate?: string,
+    finalObservation?: string
   ) {
     if (itemToComplete.type === PlanItemType.LOT) {
       return this.planningService.completeLotWithDetails(
@@ -963,7 +980,9 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
         rendement,
         totalTriturationPrice,
         autoSetStorage,
-        triturationDurationInMinutes
+        triturationDurationInMinutes,
+        trtDate,
+        finalObservation
       );
     } else {
       return this.planningService.completeGlobalLotWithDetails(
@@ -972,8 +991,9 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
         oilQuantity,
         rendement,
         totalTriturationPrice,
-
-        triturationDurationInMinutes
+        triturationDurationInMinutes,
+        trtDate,
+        finalObservation
       );
     }
   }
@@ -1030,22 +1050,11 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     return result;
   }
 
-  private applyFilter(value: string): void {
-    const search = value?.trim().toLowerCase() ?? '';
-    this.filteredReceptions = search
-      ? this.unassignedReceptions.filter((item) => {
-          if (item.type === PlanItemType.LOT) {
-            const data = item.data as PlanningItem;
-            return data.id.toLowerCase().includes(search) || data.lotNumber.toLowerCase().includes(search);
-          } else {
-            const data = item.data as GlobalLot;
-            return (
-              data.globalLotNumber.toLowerCase().includes(search) || data.childLotNumbers.some((lot) => lot.toLowerCase().includes(search))
-            );
-          }
-        })
-      : [...this.unassignedReceptions];
-    this.cdr.markForCheck();
+  private countMatchingItems(items: BoardItem[]): number {
+    if (!this.searchTerm?.trim()) {
+      return items.length;
+    }
+    return items.filter((item) => boardItemMatchesSearch(item, this.searchTerm)).length;
   }
 
   private findItemById(id: string): BoardItem | undefined {
@@ -1070,22 +1079,29 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private loadPlanning(): void {
+    this.isLoading = true;
+    this.loadWarnings = { planning: false, mills: false, deliveries: false };
+    this.cdr.markForCheck();
+
     forkJoin({
       planning: this.planningService.getPlanning().pipe(
         catchError((err) => {
           console.error('Error loading planning:', err);
+          this.loadWarnings.planning = true;
           return of({ mills: [], globalLots: [] } as PlanningSaveRequest);
         })
       ),
       mills: this.millService.getAllMillMachines().pipe(
         catchError((err) => {
           console.error('Error loading mills:', err);
+          this.loadWarnings.mills = true;
           return of([]);
         })
       ),
       deliveries: this.deliveryService.getAllDeliveriesListForPlanning().pipe(
         catchError((err) => {
           console.error('Error loading deliveries:', err);
+          this.loadWarnings.deliveries = true;
           return of({ data: [] });
         })
       )
@@ -1095,20 +1111,20 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
         this.populateReceptionMap(deliveries);
         this.processPlanningData(planning);
         this.refreshConnectedDropLists();
+        this.dirty = false;
+        this.isLoading = false;
+        this.showLoadWarnings();
         this.cdr.markForCheck();
         this.logAssignmentSummary();
-        console.log('[LOAD] Planning loaded successfully.');
       },
       error: (err) => {
         console.error('Error in loadPlanning:', err);
+        this.isLoading = false;
         this.toast.error('AUTO.FAILED_TO_LOAD_PLANNING_DATA_PLEASE_TRY_AGAIN');
-        this.loadReceptions(); // Fallback to basic loading
+        this.loadReceptions();
+        this.cdr.markForCheck();
       }
     });
-    // ← Nouvel ajout : met à jour les copies et applique le filtre courant
-    this.allUnassigned = [...this.unassignedReceptions];
-    this.mills.forEach((m) => (m.receptions = [...m.receptions]));
-    this.applyFilter(this.searchControl.value!);
   }
 
   private initializeMills(machines: MillMachine[]): void {
@@ -1407,9 +1423,6 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
         type: PlanItemType.LOT,
         data: item // Use the master copy directly
       }));
-
-    this.filteredReceptions = [...this.unassignedReceptions];
-    console.log('[LOAD] Unassigned receptions created:', this.unassignedReceptions.length);
   }
 
   private loadReceptions(): void {
@@ -1420,12 +1433,14 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
           type: PlanItemType.LOT,
           data: this.toPlanningItem(delivery)
         }));
-        this.filteredReceptions = [...this.unassignedReceptions];
+        this.isLoading = false;
         this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('Error loading deliveries:', err);
+        this.isLoading = false;
         this.toast.error('AUTO.FAILED_TO_LOAD_RECEPTIONS_PLEASE_TRY_AGAIN');
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1446,23 +1461,34 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     this.cdr.markForCheck();
   }
 
-  private logCurrentState(): void {
-    console.group('🛠 Current planning');
-    console.table(
-      this.mills.map((m) => ({
-        mill: m.name,
-        receptions: m.receptions
-          .map((r) => {
-            if (r.type === PlanItemType.LOT) {
-              return (r.data as PlanningItem).lotNumber;
-            } else {
-              return (r.data as GlobalLot).globalLotNumber;
-            }
-          })
-          .join(', ')
-      }))
-    );
-    console.groupEnd();
+  private showLoadWarnings(): void {
+    if (this.loadWarnings.planning) {
+      this.toast.warning(this.translationservice.instant('RECEPTION.PLANNING.LOAD_WARNING_PLANNING'));
+    }
+    if (this.loadWarnings.mills) {
+      this.toast.warning(this.translationservice.instant('RECEPTION.PLANNING.LOAD_WARNING_MILLS'));
+    }
+    if (this.loadWarnings.deliveries) {
+      this.toast.warning(this.translationservice.instant('RECEPTION.PLANNING.LOAD_WARNING_DELIVERIES'));
+    }
+  }
+
+  private warnIfMillOverCapacity(mill: Mill): void {
+    const used = this.getMillUsedCapacity(mill);
+    const capacity = mill.capacity ?? 1000;
+    if (used > capacity) {
+      this.toast.warning(
+        this.translationservice.instant('RECEPTION.PLANNING.MILL_OVER_CAPACITY', {
+          mill: mill.name,
+          used: Math.round(used),
+          capacity
+        })
+      );
+    }
+  }
+
+  private markPlanningDirty(): void {
+    this.dirty = true;
   }
 
   private removeFromBoard(item: BoardItem): void {
@@ -1471,24 +1497,8 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
       mill.receptions = mill.receptions.filter((i) => i !== item);
     } else {
       this.unassignedReceptions = this.unassignedReceptions.filter((i) => i !== item);
-      this.filteredReceptions = [...this.unassignedReceptions];
     }
-    this.cdr.markForCheck(); // Added to ensure UI updates after removing item
-  }
-
-  private findUnifiedDeliveryByLotNumber(lotNumber: string): UnifiedDelivery | undefined {
-    // Search in unassignedReceptions and all mill receptions
-    const allDeliveries = [...this.unassignedReceptions, ...this.mills.flatMap((m) => m.receptions)];
-    for (const item of allDeliveries) {
-      if (item.type === PlanItemType.LOT) {
-        const data = item.data as PlanningItem;
-        // Use Partial<UnifiedDelivery> to check for deliveryType property
-        if (data.lotNumber === lotNumber && (data as Partial<UnifiedDelivery>).deliveryType) {
-          return data as unknown as UnifiedDelivery;
-        }
-      }
-    }
-    return undefined;
+    this.cdr.markForCheck();
   }
 
   private logAssignmentSummary(): void {
@@ -1530,22 +1540,5 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     console.log('=== END ASSIGNMENT SUMMARY ===\n');
-  }
-
-  private applyFilterSearch(term: string): void {
-    const filterValue = (term || '').trim().toLowerCase();
-
-    // colonne non assignée
-    this.filteredReceptions = filterValue ? this.allUnassigned.filter((item) => this.matches(item, filterValue)) : [...this.allUnassigned];
-
-    // chaque colonne de moulin
-    this.mills.forEach((mill) => {
-      mill.receptions = filterValue ? mill.receptions!.filter((item) => this.matches(item, filterValue)) : [...mill.receptions!];
-    });
-  }
-
-  private matches(item: BoardItem, filterValue: string): boolean {
-    const lot = ((item.data as PlanningItem).lotNumber || '').toString().toLowerCase();
-    return lot.includes(filterValue);
   }
 }

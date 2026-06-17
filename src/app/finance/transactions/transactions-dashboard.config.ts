@@ -12,6 +12,15 @@ export const TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
   /* ─────────────────── bouton "ajouter une transaction" ─────────────── */
   addNewItem: true,
   addNewItemUrl: '/finance/transactions/new',
+  specificActions: [
+    { action: 'READ', color: 'primary', icon: 'visibility' },
+    { action: 'PRINT_BILL', color: 'primary', icon: 'request_quote' },
+    { action: 'PRINT', color: 'primary', icon: 'print' },
+    { action: 'UPDATE', color: 'primary', icon: 'edit' },
+    { action: 'APPROVE', color: 'primary', icon: 'check_circle', disabled: { field: 'approved', value: true } },
+    { action: 'REJECT', color: 'warn', icon: 'cancel', disabled: { field: 'approved', value: false } },
+    { action: 'DUPLICATE', color: 'primary', icon: 'content_copy' }
+  ],
 
   /* ─────────────────────────── colonnes du tableau ──────────────── */
   fields: [

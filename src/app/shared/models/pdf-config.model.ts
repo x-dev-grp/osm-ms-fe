@@ -24,16 +24,43 @@ export interface PdfConfig {
   fileName?: string;
 }
 
+export interface PdfInvoiceLineItem {
+  description: string;
+  /** Unit price excluding VAT (prix unitaire HT). */
+  unitPrice: number;
+  quantity: number;
+  /** Line total excluding VAT (montant HT). Computed when omitted. */
+  total?: number;
+  /** VAT rate in percent (Tunisia: 19%, 13%, 7% or 0%). Defaults to 19% for TND invoices. */
+  vatRatePercent?: number;
+  /** Billing unit for unified deliveries: kg (olive) or L (oil). */
+  unit?: string;
+}
+
+export interface PdfFactureClientInfo {
+  name?: string;
+  addressLines?: string[];
+  /** Client matricule fiscal (when subject to fiscal registration). */
+  taxId?: string;
+}
+
 export interface PdfFactureConfig {
   title: string;
   reference: string;
   date?: string;
+  currency?: string;
+  conditions?: string;
+  /** Default VAT % when line items omit vatRatePercent (Tunisia standard: 19). */
+  defaultVatRatePercent?: number;
+  /** Optional suspended VAT amount (taxe suspendue) per Art. 18 Code TVA. */
+  suspendedVatAmount?: number;
 
-  // Informations générales (affichées après le tableau)
+  clientInfo?: PdfFactureClientInfo;
+  lineItems?: PdfInvoiceLineItem[];
+
+  // Legacy flat lines (converted to lineItems when lineItems is absent)
   generalInfo?: { label: string; value: string }[];
-
-  // Tableau des lignes (produits)
-  fields?: { name?:string;label: string; value: string }[];
+  fields?: { name?: string; label: string; value: string }[];
   // Informations supplémentaires (poids, colis, réception, etc.)
   additionalInfo?: {
 
@@ -58,6 +85,7 @@ export interface PdfFactureConfig {
   footerContact?: {
     name?: string;
     phone?: string;
+    companyName?: string;
   };
 
   // Informations de l'entreprise (logo + adresse, etc.)

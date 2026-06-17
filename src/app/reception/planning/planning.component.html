@@ -9,10 +9,12 @@
             matInput
             placeholder="{{ 'PLANNING_SEARCH_PLACEHOLDER' | translate }}"
             type="search">
-
         </mat-form-field>
         <div class="actions-section">
-          <span class="stat-item">{{ 'PLANNING_UNASSIGNED' | translate }} {{ filteredReceptions.length }}</span>
+          @if (dirty) {
+            <span class="stat-item unsaved-badge">{{ 'RECEPTION.PLANNING.UNSAVED_CHANGES' | translate }}</span>
+          }
+          <span class="stat-item">{{ 'PLANNING_UNASSIGNED' | translate }} {{ visibleUnassignedCount }}</span>
           <span class="stat-item">
             {{ 'PLANNING_ASSIGNED' | translate }} {{ totalAssigned }}
           </span>
@@ -30,9 +32,14 @@
               </span>
             </button>
 
+            @if (hasSingleLotSelection()) {
+              <span class="stat-item group-hint">{{ 'RECEPTION.PLANNING.GROUP_REQUIRES_TWO' | translate }}</span>
+            }
+
             <button
               (click)="savePlan()"
-              [matTooltip]="'PLANNING_SAVE' | translate"
+              [disabled]="!dirty || isSaving || isLoading"
+              [matTooltip]="dirty ? ('PLANNING_SAVE' | translate) : ('RECEPTION.PLANNING.NOTHING_TO_SAVE' | translate)"
               aria-label="{{ 'PLANNING_SAVE' | translate }}"
               class="action-btn primary"
               mat-raised-button
@@ -79,6 +86,7 @@
 
             <button
               (click)="savePlan()"
+              [disabled]="!dirty || isSaving || isLoading"
               [matTooltip]="'PLANNING_SAVE' | translate"
               aria-label="{{ 'PLANNING_SAVE' | translate }}"
               mat-icon-button
@@ -109,7 +117,13 @@
     </ng-template>
 
     <!-- Columns as expansion panels -->
-    <div class="planning-container">
+    <div class="planning-container" [class.is-loading]="isLoading">
+      @if (isLoading) {
+        <div class="planning-loading-overlay" aria-live="polite">
+          <mat-spinner diameter="40"></mat-spinner>
+          <span>{{ 'RECEPTION.PLANNING.LOADING' | translate }}</span>
+        </div>
+      }
       <!-- Fixed Unassigned Column -->
       <div class="fixed-column">
         <mat-expansion-panel expanded>
@@ -123,13 +137,13 @@
             (cdkDropListDropped)="drop($event)"
             (cdkDropListEntered)="onDropListEntered($event)"
             [cdkDropListConnectedTo]="connectedDropLists"
-            [cdkDropListData]="filteredReceptions"
+            [cdkDropListData]="unassignedReceptions"
             cdkDropList
             class="drop-list"
             id="unassigned-list"
             role="list"
           >
-            @for (item of filteredReceptions| filterLot:searchTerm; track trackByReception($index, item)) {
+            @for (item of unassignedReceptions | filterLot:searchTerm; track trackByReception($index, item)) {
                 @if (item.type === LOT) {
                   @let data = item.data ;
                   <div
@@ -170,7 +184,7 @@
                               <div class="quantity-info">
 
                                 @if (data.poidsNet) {
-                                  <span class="quantity">Net : {{ data.poidsNet }} kg</span>
+                                  <span class="quantity">{{ 'PLANNING_NET'|translate }} {{ data.poidsNet }} kg</span>
                                 }
                               </div>
                               <div class="details-info">
@@ -224,11 +238,6 @@
                     <div class="drag-handle" cdkDragHandle>
                       <mat-icon fontIcon="drag_indicator"></mat-icon>
                     </div>
-                    <mat-checkbox
-                      class="select-box"
-                      [(ngModel)]="selection[data.id]"
-                      (change)="onSelectChange(item)"
-                    ></mat-checkbox>
                   </div>
                   <div class="card-content">
                     <div class="flex space-between">
@@ -270,6 +279,8 @@
                   </div>
                 </div>
               }
+            } @empty {
+              <p class="empty-drop-list">{{ 'RECEPTION.PLANNING.EMPTY_UNASSIGNED' | translate }}</p>
             }
           </div>
         </mat-expansion-panel>
@@ -279,10 +290,11 @@
       <div #scrollContainer class="scrollable-columns">
         @for (mill of mills; track trackByMill($index,
           mill); let i = $index) {
-          <mat-expansion-panel expanded>
+          <mat-expansion-panel expanded [class]="getMillCapacityClass(mill)">
             <mat-expansion-panel-header class="sticky-header">
-              <mat-panel-description>
-                {{ mill.name }}
+              <mat-panel-title class="mill-title">{{ mill.name }}</mat-panel-title>
+              <mat-panel-description class="mill-capacity-label">
+                {{ getMillUsedCapacity(mill) | number:'1.0-0' }} / {{ mill.capacity ?? 1000 }} {{ 'PLANNING_KG' | translate }}
               </mat-panel-description>
             </mat-expansion-panel-header>
 
@@ -318,6 +330,13 @@
                         [(ngModel)]="selection[data.id]"
                         (change)="onSelectChange(item)"
                       ></mat-checkbox>
+                      <button
+                        mat-icon-button
+                        class="cancel-btn"
+                        (click)="openCancelDialog(data)"
+                        [attr.aria-label]="'PLANNING.CANCEL_TITLE' | translate">
+                        <mat-icon>cancel</mat-icon>
+                      </button>
                     </div>
                     <div class="card-content">
                       <div class="flex space-between">
@@ -329,7 +348,7 @@
                           <div class="quantity-info">
 
                             @if (data.poidsNet) {
-                              <span class="quantity">Net : {{ data.poidsNet }} kg</span>
+                              <span class="quantity">{{ 'PLANNING_NET'|translate }} {{ data.poidsNet }} kg</span>
                             }
                           </div>
                           <div class="details-info">
@@ -358,7 +377,11 @@
                             class="block text-xs text-gray-600 gl-badge">{{ data.deliveryDate | date: 'shortDate' }}</small>
                         </div>
                         <div>
-                          <button [disabled]="dirty" mat-icon-button (click)="markAsCompleted(item)">
+                          <button
+                            [disabled]="dirty"
+                            [matTooltip]="dirty ? ('RECEPTION.PLANNING.COMPLETE_REQUIRES_SAVE' | translate) : ('RECEPTION.PLANNING.COMPLETE_LOT' | translate)"
+                            mat-icon-button
+                            (click)="markAsCompleted(item)">
                             <mat-icon class="text-green-500">check_circle</mat-icon>
                           </button>
 <!--                          <button mat-icon-button (click)="creatBonProduction(item)">-->
@@ -386,11 +409,6 @@
                       <div class="drag-handle" cdkDragHandle>
                         <mat-icon fontIcon="drag_indicator"></mat-icon>
                       </div>
-                      <mat-checkbox
-                        class="select-box"
-                        [(ngModel)]="selection[data.id]"
-                        (change)="onSelectChange(item)"
-                      ></mat-checkbox>
                     </div>
                     <div class="card-content">
                       <div class="flex space-between">
@@ -400,7 +418,7 @@
                           </div>
 
                           <div class="quantity-info">
-                            <span class="quantity">Net : {{ data.items | sum:'data.poidsNet' }} kg</span>
+                            <span class="quantity">{{ 'PLANNING_NET'|translate }} {{ data.items | sum:'data.poidsNet' }} kg</span>
                           </div>
 
 
@@ -415,10 +433,17 @@
                               }
                             </div>
                           </div>
-                          <small class="block text-xs text-gray-600">{{ data.deliveryDate | date: 'shortDate' }}</small>
+                          @let glDate = getGlobalLotEarliestDate(data);
+                          @if (glDate) {
+                            <small class="block text-xs text-gray-600">{{ glDate | date: 'shortDate' }}</small>
+                          }
                         </div>
                         <div>
-                          <button [disabled]="dirty" mat-icon-button (click)="markAsCompleted(item)">
+                          <button
+                            [disabled]="dirty"
+                            [matTooltip]="dirty ? ('RECEPTION.PLANNING.COMPLETE_REQUIRES_SAVE' | translate) : ('RECEPTION.PLANNING.COMPLETE_LOT' | translate)"
+                            mat-icon-button
+                            (click)="markAsCompleted(item)">
                             <mat-icon class="text-green-500">check_circle</mat-icon>
                           </button>
                           <button mat-icon-button (click)="ungroupLot(data)">
@@ -430,6 +455,8 @@
                     </div>
                   </div>
                 }
+              } @empty {
+                <p class="empty-drop-list">{{ 'RECEPTION.PLANNING.EMPTY_MILL' | translate }}</p>
               }
             </div>
           </mat-expansion-panel>

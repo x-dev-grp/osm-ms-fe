@@ -1,3 +1,11 @@
+ <div class="supplier-domain-banner supplier-domain-banner--olive-oil">
+  <mat-icon aria-hidden="true">agriculture</mat-icon>
+  <div class="supplier-domain-banner__text">
+    <strong>{{ 'SUPPLIER.DOMAIN.OLIVE_OIL_BADGE' | translate }}</strong>
+    <span>{{ 'SUPPLIER.DOMAIN.OLIVE_OIL_HINT' | translate }}</span>
+  </div>
+</div>
+
  <osm-dashboard #dashboard
   [config]="dashboardConfig"
   (applyAction)="handleAction($event)">

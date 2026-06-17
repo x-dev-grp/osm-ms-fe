@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { CompanyProfile } from '../models/CompanyProfile';
-import { PdfFactureConfig, PdfPaymentNoteConfig } from '../models/pdf-config.model';
+import { PdfFactureConfig, PdfInvoiceLineItem, PdfPaymentNoteConfig } from '../models/pdf-config.model';
+import { TUNISIA_VAT_STANDARD_RATE } from '../constants/tunisia-vat.constants';
 import { TranslateService } from '@ngx-translate/core';
 import { UnifiedDelivery } from '../models/UnifiedDelivery';
+import { resolveUnifiedDeliveryBillLine } from '../utils/unified-delivery-bill.util';
 import { InvoiceSource } from '../../reception/suppliers/supplier-details/supplier-details.component';
 import { CompanyProfileService } from './company-profile.service';
 import { OperationType } from '../models/operation-type.enum';
@@ -136,15 +138,34 @@ export class PdfConfigFactoryService {
 
     // ---------- Facture ----------
     const typeFields = this.getTypeFieldsForInvoice(data, source);
-    const facture: PdfFactureConfig = {
-      title: this.getInvoiceTitle(data, source),
-      reference: this.getReferenceDate(data, source),
-      date: nowStr,
+    const invoiceRef =
+      this.getInvoiceNumber(data, source) ||
+      this.getReferenceDate(data, source);
+    const lineItems =
+      source === InvoiceSource.DELIVERY_inv
+        ? this.buildUnifiedDeliveryLineItems(data as UnifiedDelivery)
+        : this.buildLineItems(typeFields.fields, data, source);
 
-      generalInfo,
-      fields: typeFields.fields,
+    const facture: PdfFactureConfig = {
+      title: 'PDF.COMMERCIAL_INVOICE',
+      reference: invoiceRef,
+      date: nowStr,
+      currency: 'TND',
+      conditions: String(this.getOperationType(data, source) || ''),
+      defaultVatRatePercent: TUNISIA_VAT_STANDARD_RATE,
+
+      clientInfo: {
+        name: supplierNameLike(data),
+        taxId: (data as any)?.supplier?.matriculeFiscal,
+        addressLines: [supplierAddressLike(data), supplierPhoneLike(data)].filter(Boolean)
+      },
+      lineItems,
 
       companyInfo,
+      footerContact: {
+        companyName: companyInfo.companyName,
+        phone: companyInfo.mobile
+      },
       fileName: typeFields.fileName
     };
 
@@ -155,29 +176,65 @@ export class PdfConfigFactoryService {
   // Internals
   // =========================
 
-  /**
-   * Title for INVOICE (uses source first, then falls back to type guards)
-   */
-  private getInvoiceTitle(data: any, source?: InvoiceSource): string {
-    switch (source) {
-      case InvoiceSource.DELIVERY_inv:
-        return this.translateService.instant('PDF.FACTURE') + ` ${data.lotNumber ?? '—'}`;
-      case InvoiceSource.OIL_SALE_inv:
-        return this.translateService.instant('PDF.FACTURE');
-      case InvoiceSource.WASTE_SALE_inv:
-        return this.translateService.instant('PDF.FACTURE_VENTE_DECHET');
-      // Add other app-specific sources here if you have them
-    }
-    // Fallback to inferred type
+  private buildUnifiedDeliveryLineItems(delivery: UnifiedDelivery): PdfInvoiceLineItem[] {
+    const resolved = resolveUnifiedDeliveryBillLine(delivery);
+    const description = this.translateService.instant(
+      'DELIVERIES.OPERATION_TYPE.' + (delivery.operationType || '')
+    );
 
-    return 'PDF.FACTURE';
+    return [
+      {
+        description: description || (resolved.isOil ? "Huile d'olive" : 'Olives'),
+        unitPrice: resolved.unitPrice,
+        quantity: resolved.quantity,
+        total: resolved.totalHt,
+        unit: resolved.unit,
+        vatRatePercent: TUNISIA_VAT_STANDARD_RATE
+      }
+    ];
   }
 
+  private buildLineItems(
+    fields: Array<{ label: string; value: string }>,
+    data: any,
+    source?: InvoiceSource
+  ): PdfInvoiceLineItem[] {
+    const byLabel: Record<string, string> = {};
+    fields.forEach((f) => (byLabel[f.label] = f.value));
 
+    const desc = byLabel['PDF.DESCRIPTION'] || this.getProductDescription(data, source);
+    const unitPrice = this.parseNum(byLabel['PDF.PRICE_UNIT']);
+    const quantity = this.parseNum(byLabel['PDF.QUANTITY']);
+    let total = this.parseNum(byLabel['PDF.TOTAL']);
+    if (!total && unitPrice && quantity) {
+      total = unitPrice * quantity;
+    }
+    if (!total) {
+      total = this.getTotalAmount(data, source);
+    }
+
+    return [{ description: desc, unitPrice, quantity, total, vatRatePercent: TUNISIA_VAT_STANDARD_RATE }];
+  }
+
+  private getProductDescription(data: any, source?: InvoiceSource): string {
+    if (source === InvoiceSource.OIL_SALE_inv) {
+      return "Vente Huile d'olive";
+    }
+    if (source === InvoiceSource.WASTE_SALE_inv) {
+      return (data as any)?.description ?? `Vente de déchets (${(data as any)?.type ?? ''})`;
+    }
+    return '';
+  }
+
+  private parseNum(value?: string): number {
+    if (!value) return 0;
+    const match = String(value).replace(',', '.').match(/-?\d+(\.\d+)?/);
+    return match ? Number(match[0]) : 0;
+  }
 
   private getOperationType(data: any, source?: InvoiceSource): any {
     if (source === InvoiceSource.DELIVERY_inv) {
-      return this.translateService.instant('OPERATION_TYPE.' + data.operationType);
+      return this.translateService.instant('DELIVERIES.OPERATION_TYPE.' + data.operationType);
     }
     if (source === InvoiceSource.OIL_SALE_inv) return (data as any)?.type || 'VENTE HUILE';
     if (source === InvoiceSource.WASTE_SALE_inv) return (data as any)?.type || 'VENTE DECHET';
@@ -259,39 +316,8 @@ export class PdfConfigFactoryService {
     fileName: string;
   } {
     if (source === InvoiceSource.DELIVERY_inv) {
-      // Prefer provided unitPrice; else compute price/poidsNet; else 0
-      const providedUnit = Number((data as any)?.unitPrice);
-      const hasUnitPrice = providedUnit !== undefined && providedUnit !== null && !isNaN(providedUnit);
-
-      const priceNum = Number((data as any)?.price);
-      const poidsNetNum = Number((data as any)?.poidsNet);
-      const canCompute = !isNaN(priceNum) && !isNaN(poidsNetNum) && poidsNetNum > 0;
-
-      const unitPrice: number = hasUnitPrice ? providedUnit : (canCompute ? priceNum / poidsNetNum : 0);
-
-      let qty: number;
-      if ((data as UnifiedDelivery).deliveryType?.toLowerCase() === 'oil') {
-        qty = Number((data as any)?.oilQuantity) || 0;
-      } else {
-        qty = poidsNetNum || 0;
-      }
-
-      const total = this.getTotalAmount(data, source);
-      const desc = (data as any)?.deliveryType || "Huile d'olive";
       const fileName = `Facture_${(data as any)?.deliveryNumber ?? 'inconnu'}.pdf`;
-
-      return {
-        fields: [
-          { label: 'PDF.DESCRIPTION', value: desc },
-          {
-            label: 'PDF.PRICE_UNIT',
-            value: `${unitPrice.toFixed(3)} TND/kg`
-          },
-          { label: 'PDF.QUANTITY', value: `${qty} kg` },
-          { label: 'PDF.TOTAL', value: fmtMoney(total) }
-        ],
-        fileName
-      };
+      return { fields: [], fileName };
     }
 
     if (source === InvoiceSource.OIL_SALE_inv) {

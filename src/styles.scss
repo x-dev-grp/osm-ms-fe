@@ -241,6 +241,22 @@ a.flex {
   border-radius: 0;
 }
 
+.completion-dialog-panel .mat-mdc-dialog-container,
+.completion-dialog-panel .mat-mdc-dialog-surface,
+.completion-dialog-panel .mat-mdc-dialog-content {
+  overflow: hidden !important;
+}
+
+.completion-dialog-panel .mat-mdc-dialog-content {
+  max-height: none !important;
+}
+
+.mobile-fullscreen-dialog .mat-mdc-dialog-container,
+.mobile-fullscreen-dialog .mat-mdc-dialog-surface,
+.mobile-fullscreen-dialog .mat-mdc-dialog-content {
+  overflow: hidden !important;
+}
+
 /* Scoped fallback for the project expedition list.
    Keeps /projets/expeditions usable if component-scoped SCSS is not hot-reloaded. */
 .expedition-list-page.abioc-container {

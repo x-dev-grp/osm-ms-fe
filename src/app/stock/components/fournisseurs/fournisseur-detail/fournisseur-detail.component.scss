@@ -31,6 +31,23 @@ $blue: #2563eb;
   font-size: 13px;
 }
 
+.domain-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  border: 1px solid transparent;
+}
+
+.domain-badge--articles {
+  color: #1e40af;
+  background: #dbeafe;
+  border-color: rgba(30, 64, 175, 0.18);
+}
+
 .fournisseur-detail-page {
   min-height: 100vh;
   padding: 24px;

@@ -207,6 +207,10 @@
           <mat-icon>print</mat-icon>
           {{ 'COMMON.PRINT' | translate }}
         </button>
+        <button mat-button type="button" (click)="onPrintBill()">
+          <mat-icon>request_quote</mat-icon>
+          {{ 'TRANSACTIONS.ACTIONS.PRINT_BILL' | translate }}
+        </button>
         <button mat-button type="button" (click)="onDuplicate()">
           <mat-icon>content_copy</mat-icon>
           {{ 'TRANSACTIONS.ACTIONS.DUPLICATE' | translate }}

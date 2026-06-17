@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
@@ -47,6 +47,7 @@ export class DetailsReceptionComponent implements OnInit {
   private readonly translate = inject(TranslateService);
   private readonly dialog = inject(MatDialog);
   private readonly confirmationDialog = inject(ConfirmationDialogService);
+  private readonly router = inject(Router);
 
   receptionId!: string | null;
   deliveryData: UnifiedDelivery | null = null;
@@ -66,8 +67,72 @@ export class DetailsReceptionComponent implements OnInit {
     this.loadReceptionById(id);
   }
 
+  isOliveReception(): boolean {
+    return (this.deliveryData?.deliveryType || '').toUpperCase() === 'OLIVE';
+  }
+
   isOilReception(): boolean {
     return (this.deliveryData?.deliveryType || '').toUpperCase() === 'OIL';
+  }
+
+  hasPositiveNumber(value: number | null | undefined): boolean {
+    return Number(value ?? 0) > 0;
+  }
+
+  getSupplierDisplayName(): string {
+    const supplier = this.deliveryData?.supplier;
+    return [supplier?.name, supplier?.lastname].filter(Boolean).join(' ').trim();
+  }
+
+  getOilVarietyName(): string {
+    return this.deliveryData?.oilVariety?.name || this.deliveryData?.oliveVariety?.name || '';
+  }
+
+  getPaymentStatusTranslatePath(): string {
+    const paid = Number(this.deliveryData?.paidAmount ?? 0);
+    const unpaid = Number(this.deliveryData?.unpaidAmount ?? 0);
+
+    if (unpaid <= 0 && paid > 0) return 'PDF.PAID';
+    if (paid > 0 && unpaid > 0) return 'PDF.PARTIALLY_PAID';
+    return 'PDF.UNPAID';
+  }
+
+  openFinancialTransactions(): void {
+    const lotNumber = this.deliveryData?.lotNumber;
+    this.router.navigate(['/finance/transactions'], {
+      queryParams: lotNumber ? { lotNumber } : undefined
+    });
+  }
+
+  openOilTransactions(): void {
+    const lotNumber = this.deliveryData?.lotNumber;
+    this.router.navigate(['/storage/oil-transactions'], {
+      queryParams: lotNumber ? { lotNumber } : undefined
+    });
+  }
+
+  openSupplierDetails(): void {
+    const supplierId = this.deliveryData?.supplier?.id;
+    if (!supplierId) return;
+    this.router.navigate(['/reception/fournisseur/details', supplierId]);
+  }
+
+  openSupplierPayments(): void {
+    const supplierId = this.deliveryData?.supplier?.id;
+    if (!supplierId) return;
+    this.router.navigate(['/reception/fournisseur/payments', supplierId]);
+  }
+
+  openStorageUnit(): void {
+    const storageUnitId = this.deliveryData?.storageUnit?.id;
+    if (!storageUnitId) return;
+    this.router.navigate(['/storage', storageUnitId, 'view']);
+  }
+
+  openQualityControl(): void {
+    const deliveryId = this.deliveryData?.id;
+    if (!deliveryId) return;
+    this.router.navigate(['/reception/quality', deliveryId]);
   }
 
   getQrCodeText(): string {

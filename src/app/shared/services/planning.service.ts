@@ -39,20 +39,60 @@ export class PlanningService {
   /* ───── NEW: mark lot(s) completed ──────────────────────────── */
 
   /** POST one single LOT's status → COMPLETED, with oilQuantity and rendement */
-  completeLotWithDetails(lotNumber: string, oilQuantity: number, rendement: number, unpaidPrice: number, autoSetStorage: boolean, triturationDurationInMinutes?: number | null): Observable<string> {
-    const payload = { oilQuantity, rendement, unpaidPrice, autoSetStorage, triturationDurationInMinutes
+  completeLotWithDetails(
+    lotNumber: string,
+    oilQuantity: number,
+    rendement: number,
+    unpaidPrice: number,
+    autoSetStorage: boolean,
+    triturationDurationInMinutes?: number | null,
+    trtDate?: string | null,
+    finalObservation?: string | null
+  ): Observable<string> {
+    const payload: Record<string, unknown> = {
+      oilQuantity,
+      rendement,
+      unpaidPrice,
+      autoSetStorage,
+      triturationDurationInMinutes
     };
+    if (trtDate) {
+      payload['trtDate'] = trtDate;
+    }
+    if (finalObservation?.trim()) {
+      payload['finalObservation'] = finalObservation.trim();
+    }
     return this.http.post(`${this.API_BASE_URL}/lots/${lotNumber}/completed`, payload, { responseType: 'text' });
   }
 
   /** POST all lots in a global lot → COMPLETED, with oilQuantity and rendement */
-  completeGlobalLotWithDetails(globalLotNumber: string, childLots: ChildLotCompletionDto[], oilQuantity: number, rendement: number, totalTriturationPrice: number | null,   triturationDurationInMinutes?: number | null): Observable<string> {
-    const payload = { childLots, oilQuantity, rendement, totalTriturationPrice, triturationDurationInMinutes
+  completeGlobalLotWithDetails(
+    globalLotNumber: string,
+    childLots: ChildLotCompletionDto[],
+    oilQuantity: number,
+    rendement: number,
+    totalTriturationPrice: number | null,
+    triturationDurationInMinutes?: number | null,
+    trtDate?: string | null,
+    finalObservation?: string | null
+  ): Observable<string> {
+    const payload: Record<string, unknown> = {
+      childLots,
+      oilQuantity,
+      rendement,
+      totalTriturationPrice,
+      triturationDurationInMinutes
     };
+    if (trtDate) {
+      payload['trtDate'] = trtDate;
+    }
+    if (finalObservation?.trim()) {
+      payload['finalObservation'] = finalObservation.trim();
+    }
     return this.http.post(
       `${this.API_BASE_URL}/globalLots/${globalLotNumber}/completed`,
       payload,
-      { responseType: 'text' } // 👈 expect text, not JSON
+      { responseType: 'text' }
     );
   }
 }

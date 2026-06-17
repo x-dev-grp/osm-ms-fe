@@ -90,6 +90,45 @@
     </div>
   </div>
 
+  <div class="related-links" role="navigation" [attr.aria-label]="'DELIVERIES.DETAILS.RELATED_LINKS.TITLE' | translate">
+    <div class="related-links__header">
+      <mat-icon aria-hidden="true">hub</mat-icon>
+      <span>{{ 'DELIVERIES.DETAILS.RELATED_LINKS.TITLE' | translate }}</span>
+    </div>
+
+    <div class="related-links__actions">
+      <button mat-stroked-button type="button" (click)="openFinancialTransactions()">
+        <mat-icon aria-hidden="true">account_balance_wallet</mat-icon>
+        <span>{{ 'DELIVERIES.DETAILS.RELATED_LINKS.FINANCIAL_TRANSACTIONS' | translate }}</span>
+      </button>
+
+      <button *ngIf="isOilReception()" mat-stroked-button type="button" (click)="openOilTransactions()">
+        <mat-icon aria-hidden="true">swap_horiz</mat-icon>
+        <span>{{ 'DELIVERIES.DETAILS.RELATED_LINKS.OIL_TRANSACTIONS' | translate }}</span>
+      </button>
+
+      <button *ngIf="deliveryData.supplier?.id" mat-stroked-button type="button" (click)="openSupplierDetails()">
+        <mat-icon aria-hidden="true">person</mat-icon>
+        <span>{{ 'DELIVERIES.DETAILS.RELATED_LINKS.SUPPLIER_DETAILS' | translate }}</span>
+      </button>
+
+      <button *ngIf="deliveryData.supplier?.id" mat-stroked-button type="button" (click)="openSupplierPayments()">
+        <mat-icon aria-hidden="true">payments</mat-icon>
+        <span>{{ 'DELIVERIES.DETAILS.RELATED_LINKS.SUPPLIER_PAYMENTS' | translate }}</span>
+      </button>
+
+      <button *ngIf="deliveryData.storageUnit?.id" mat-stroked-button type="button" (click)="openStorageUnit()">
+        <mat-icon aria-hidden="true">warehouse</mat-icon>
+        <span>{{ 'DELIVERIES.DETAILS.RELATED_LINKS.STORAGE_UNIT' | translate }}</span>
+      </button>
+
+      <button *ngIf="deliveryData.qualityControlResults?.length" mat-stroked-button type="button" (click)="openQualityControl()">
+        <mat-icon aria-hidden="true">fact_check</mat-icon>
+        <span>{{ 'DELIVERIES.DETAILS.RELATED_LINKS.QUALITY_CONTROL' | translate }}</span>
+      </button>
+    </div>
+  </div>
+
   <mat-card-content class="scrollable-content">
     <!-- General Information -->
     <div class="section">
@@ -107,9 +146,9 @@
       </div>
 
       <div class="grid-row">
-        <div class="grid-item">
+        <div *ngIf="deliveryData.globalLotNumber" class="grid-item">
           <strong>{{ 'DELIVERIES.FIELDS.GLOBAL_LOT_NUMBER' | translate }}:</strong>
-          {{ deliveryData.globalLotNumber || 'N/A' }}
+          {{ deliveryData.globalLotNumber }}
         </div>
         <div class="grid-item">
           <strong>{{ 'DELIVERIES.FIELDS.DELIVERY_DATE' | translate }}:</strong>
@@ -141,11 +180,11 @@
       <h3 class="section-title">{{ 'DELIVERIES.FORM.SECTIONS.WEIGHT_QUANTITY' | translate }}</h3>
 
       <div class="grid-row">
-        <div class="grid-item">
+        <div *ngIf="isOliveReception() || hasPositiveNumber(deliveryData.poidsBrute)" class="grid-item">
           <strong>{{ 'DELIVERIES.FIELDS.GROSS_WEIGHT' | translate }}:</strong>
           {{ deliveryData.poidsBrute ?? 'N/A' }} kg
         </div>
-        <div class="grid-item">
+        <div *ngIf="isOliveReception() || hasPositiveNumber(deliveryData.poidsCamionVide)" class="grid-item">
           <strong>{{ 'OLIVE_RECEPTION.FORM.FIELDS.EMPTY_TRUCK_WEIGHT' | translate }}:</strong>
           {{ deliveryData.poidsCamionVide ?? 'N/A' }} kg
         </div>
@@ -156,7 +195,7 @@
           <strong>{{ 'DELIVERIES.FIELDS.NET_WEIGHT' | translate }}:</strong>
           {{ deliveryData.poidsNet ?? 'N/A' }} kg
         </div>
-        <div *ngIf="deliveryData?.oliveQuantity != null" class="grid-item">
+        <div *ngIf="isOliveReception() && hasPositiveNumber(deliveryData.oliveQuantity)" class="grid-item">
           <strong>{{ 'DELIVERIES.FIELDS.OLIVE_QUANTITY' | translate }}:</strong>
           {{ deliveryData.oliveQuantity }} kg
         </div>
@@ -170,10 +209,7 @@
       <div class="grid-row">
         <div class="grid-item">
           <strong>{{ 'DELIVERIES.FIELDS.SUPPLIER_NAME' | translate }}:</strong>
-          {{
-            (deliveryData.supplier?.name || '') + ' ' + (deliveryData.supplier?.lastname || '')
-            || ('DELIVERIES.DETAILS.NOT_PROVIDED' | translate)
-          }}
+          {{ getSupplierDisplayName() || ('DELIVERIES.DETAILS.NOT_PROVIDED' | translate) }}
         </div>
         <div class="grid-item">
           <strong>{{ 'DELIVERIES.FIELDS.SUPPLIER_PHONE' | translate }}:</strong>
@@ -181,14 +217,14 @@
         </div>
       </div>
 
-      <div class="grid-row">
-        <div class="grid-item">
+      <div *ngIf="deliveryData.supplier?.rib || deliveryData.supplier?.bankName" class="grid-row">
+        <div *ngIf="deliveryData.supplier?.rib" class="grid-item">
           <strong>{{ 'DELIVERIES.FIELDS.SUPPLIER_RIB' | translate }}:</strong>
-          {{ deliveryData.supplier?.rib || ('DELIVERIES.DETAILS.NOT_PROVIDED' | translate) }}
+          {{ deliveryData.supplier?.rib }}
         </div>
-        <div class="grid-item">
+        <div *ngIf="deliveryData.supplier?.bankName" class="grid-item">
           <strong>{{ 'DELIVERIES.FIELDS.SUPPLIER_BANK' | translate }}:</strong>
-          {{ deliveryData.supplier?.bankName || ('DELIVERIES.DETAILS.NOT_PROVIDED' | translate) }}
+          {{ deliveryData.supplier?.bankName }}
         </div>
       </div>
     </div>
@@ -239,9 +275,9 @@
         <h3 class="section-title">{{ 'DELIVERIES.DETAILS.SECTIONS.OIL_INFO' | translate }}</h3>
 
         <div class="grid-row">
-          <div class="grid-item">
+          <div *ngIf="getOilVarietyName()" class="grid-item">
             <strong>{{ 'DELIVERIES.FIELDS.OLIVE_VARIETY' | translate }}:</strong>
-            {{ deliveryData.oilVariety?.name || 'N/A' }}
+            {{ getOilVarietyName() }}
           </div>
           <div class="grid-item">
             <strong>{{ 'DELIVERIES.FIELDS.OIL_TYPE' | translate }}:</strong>
@@ -271,9 +307,9 @@
           <strong>{{ 'DELIVERIES.FIELDS.TRUCK_PLATE' | translate }}:</strong>
           {{ deliveryData.matriculeCamion || 'N/A' }}
         </div>
-        <div class="grid-item">
+        <div *ngIf="deliveryData.etatCamion" class="grid-item">
           <strong>{{ 'DELIVERIES.FIELDS.TRUCK_STATE' | translate }}:</strong>
-          {{ deliveryData.etatCamion || 'N/A' }}
+          {{ deliveryData.etatCamion }}
         </div>
       </div>
     </div>
@@ -330,22 +366,18 @@
       <div class="grid-row">
         <div class="grid-item">
           <strong>{{ 'DELIVERIES.FIELDS.PAID_AMOUNT' | translate }}:</strong>
-          {{ (deliveryData.paidAmount ?? 'N/A') }} TND
+          {{ (deliveryData.paidAmount ?? 0) | number:'1.2-2' }} TND
         </div>
         <div class="grid-item">
           <strong>{{ 'DELIVERIES.FIELDS.UNPAID_AMOUNT' | translate }}:</strong>
-          {{ (deliveryData.unpaidAmount ?? 'N/A') }} TND
+          {{ (deliveryData.unpaidAmount ?? 0) | number:'1.2-2' }} TND
         </div>
       </div>
 
       <div class="grid-row">
         <div class="grid-item">
-          <strong>{{ 'DELIVERIES.FIELDS.PAYMENT_MODE' | translate }}:</strong>
-          {{ deliveryData.paymentMode || 'N/A' }}
-        </div>
-        <div class="grid-item">
           <strong>{{ 'DELIVERIES.FIELDS.PAYMENT_STATUS' | translate }}:</strong>
-          {{ deliveryData.paymentStatus || 'N/A' }}
+          {{ getPaymentStatusTranslatePath() | translate }}
         </div>
       </div>
     </div>

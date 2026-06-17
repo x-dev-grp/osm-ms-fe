@@ -3,11 +3,13 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogActions, MatDialogModule, MatDialo
 import { MatFormField } from '@angular/material/form-field';
 import { MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from '@angular/material/datepicker';
 import { SharedModule } from '../../../shared/shared.module';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { GlobalLot, PlanItemType, PlanningItem } from '../../../shared/models/planningDTOS';
+import { SupplierType } from '../../../shared/models/supplier-type';
 import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import {
   ConfirmationDialogData,
@@ -16,6 +18,7 @@ import {
 } from '../../../shared/services/confirmation-dialog.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AppParameterService } from '../../../shared/services/AppParameterService';
+import { ToastService } from '../../../shared/services/toast.service';
 
 interface ChildLotWithRendement extends PlanningItem {
   calculatedRendement?: number;
@@ -34,9 +37,9 @@ interface ChildLotWithRendement extends PlanningItem {
     MatDatepicker,
     MatDatepickerInput,
     SharedModule,
-    DatePipe,
     MatInputModule,
     MatButtonModule,
+    MatIconModule,
     MatDialogModule,
     CommonModule,
     FormsModule,
@@ -48,14 +51,14 @@ export class CompletionDetailsDialogComponent implements OnInit {
   inputOilQuantity: number | null = null;
   finalObservation: string = '';
   completionDate: Date = new Date();
+  completionTime = this.toTimeInputValue(new Date());
   childLotsWithRendement: ChildLotWithRendement[] = [];
-  autoSetStorage = false; // ← new flag
+  autoSetStorage = false;
 
-  // Trituration duration fields
   triturationHours: number | null = null;
   triturationMinutes: number | null = null;
+  triturationPricePerKg: number | null = null;
 
-  triturationPricePerKg: number | null = null; // Only used for single lots
   item: PlanningItem | GlobalLot;
   itemType: PlanItemType;
   protected readonly PlanItemType = PlanItemType;
@@ -65,6 +68,7 @@ export class CompletionDetailsDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<CompletionDetailsDialogComponent>,
     private dialog: MatDialog, // ← here
     private translate: TranslateService,
+    private toast: ToastService,
     private parameterService: AppParameterService,
     @Inject(MAT_DIALOG_DATA)
     public data: {
@@ -92,23 +96,27 @@ export class CompletionDetailsDialogComponent implements OnInit {
   }
 
   shouldShowTriturationPrice(): boolean {
-    const item: any = (this as any)?.item;
-    const itemType: any = (this as any)?.itemType;
+    const item: any = this.item;
+    const rawOpSource =
+      this.itemType === PlanItemType.GLOBAL_LOT
+        ? this.firstChildOpTypeFromGlobal(item) ?? item?.operationType
+        : item?.operationType;
+    const rawOp = rawOpSource?.toString().toUpperCase();
 
-    // If GLOBAL_LOT → prefer first child's op; else use item's op
-    const rawOp =
-      (itemType === 'GLOBAL_LOT' || itemType === (window as any)?.PlanItemType?.GLOBAL_LOT)
-        ? (this.firstChildOpTypeFromGlobal(item) ?? item?.operationType) .toUpperCase()
-        : item?.operationType.toUpperCase();
+    if (!rawOp) {
+      return false;
+    }
 
-
-    // allow/deny lists
     const showOps = new Set(['SIMPLE_RECEPTION']);
     const hideOps = new Set(['OLIVE_PURCHASE', 'OIL_PURCHASE', 'EXCHANGE', 'PAYMENT', 'OIL_SALE']);
 
-    if (showOps.has(rawOp)) return true;
-    if (hideOps.has(rawOp)) return false;
-    return false; // fallback
+    if (showOps.has(rawOp)) {
+      return true;
+    }
+    if (hideOps.has(rawOp)) {
+      return false;
+    }
+    return false;
   }
 
   get totalTriturationPrice(): number {
@@ -160,8 +168,60 @@ export class CompletionDetailsDialogComponent implements OnInit {
     return null;
   }
 
-  // Call price calculation when child lots or oliveWeight changes
+  get lotItem(): PlanningItem | null {
+    return this.itemType === PlanItemType.LOT ? (this.item as PlanningItem) : null;
+  }
+
+  get durationSummary(): string {
+    const total = this.triturationDurationInMinutes;
+    if (total == null || total <= 0) {
+      return '';
+    }
+    const hours = Math.floor(total / 60);
+    const minutes = total % 60;
+    if (hours > 0 && minutes > 0) {
+      return this.translate.instant('RECEPTION.PLANNING.COMPLETION.DURATION_TOTAL_HM', { hours, minutes });
+    }
+    if (hours > 0) {
+      return this.translate.instant('RECEPTION.PLANNING.COMPLETION.DURATION_TOTAL_H', { hours });
+    }
+    return this.translate.instant('RECEPTION.PLANNING.COMPLETION.DURATION_TOTAL_M', { minutes });
+  }
+
+  formatDateTime(value: Date | string | null | undefined): string {
+    if (!value) {
+      return '—';
+    }
+    const date = value instanceof Date ? value : new Date(value);
+    if (Number.isNaN(date.getTime())) {
+      return '—';
+    }
+    return new Intl.DateTimeFormat(undefined, {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    }).format(date);
+  }
+
+  getSupplierName(supplier?: SupplierType): string {
+    if (!supplier) {
+      return '—';
+    }
+    return [supplier.name, supplier.lastname].filter(Boolean).join(' ').trim() || '—';
+  }
+
+  getCompletionDateTime(): Date {
+    const result = new Date(this.completionDate);
+    const [hours, minutes] = (this.completionTime || '00:00').split(':').map((part) => parseInt(part, 10));
+    result.setHours(Number.isNaN(hours) ? 0 : hours, Number.isNaN(minutes) ? 0 : minutes, 0, 0);
+    return result;
+  }
+
   ngOnInit(): void {
+    this.completionTime = this.toTimeInputValue(this.completionDate);
     this.loadTriturationPriceFromParam();
     this.calculateChildLotsPrice();
   }
@@ -186,37 +246,38 @@ export class CompletionDetailsDialogComponent implements OnInit {
 
   onConfirm(): void {
     if (this.inputOilQuantity == null || this.inputOilQuantity < 0) {
-      console.error('[DIALOG] Invalid oil quantity:', this.inputOilQuantity);
+      this.toast.warning(this.translate.instant('RECEPTION.PLANNING.COMPLETION.INVALID_OIL_QUANTITY'));
       return;
     }
     if (!this.isDurationValid()) {
-      console.error('[DIALOG] Invalid trituration duration (hours/minutes)');
+      this.toast.warning(this.translate.instant('RECEPTION.PLANNING.COMPLETION.INVALID_DURATION'));
       return;
     }
 
     if (this.triturationPricePerKg != null && this.triturationPricePerKg < 0) {
-      console.error('[DIALOG] Invalid trituration price:', this.triturationPricePerKg);
+      this.toast.warning(this.translate.instant('RECEPTION.PLANNING.COMPLETION.INVALID_TRITURATION_PRICE'));
       return;
     }
     if (this.oliveWeight == null || this.oliveWeight <= 0) {
-      console.error('[DIALOG] Invalid olive weight:', this.oliveWeight);
+      this.toast.warning(this.translate.instant('RECEPTION.PLANNING.COMPLETION.INVALID_OLIVE_WEIGHT'));
       return;
     }
     const calcRend = this.rendement;
     if (calcRend == null || calcRend < 0) {
-      console.error('[DIALOG] Invalid rendement:', calcRend);
+      this.toast.warning(this.translate.instant('RECEPTION.PLANNING.COMPLETION.INVALID_YIELD'));
       return;
     }
 
-    // Global-lot child checks
     if (this.itemType === PlanItemType.GLOBAL_LOT) {
       if (!this.childLotsWithRendement.length) {
-        console.error('[DIALOG] No child lots found');
+        this.toast.warning(this.translate.instant('RECEPTION.PLANNING.COMPLETION.NO_CHILD_LOTS'));
         return;
       }
       for (const lot of this.childLotsWithRendement) {
         if (lot.oilQuantity == null || lot.oilQuantity < 0) {
-          console.error('[DIALOG] Invalid child lot oilQuantity:', lot.lotNumber, lot.oilQuantity);
+          this.toast.warning(
+            this.translate.instant('RECEPTION.PLANNING.COMPLETION.INVALID_CHILD_OIL', { lotNumber: lot.lotNumber })
+          );
           return;
         }
       }
@@ -275,7 +336,8 @@ export class CompletionDetailsDialogComponent implements OnInit {
       confirmed: true,
       oilQuantity: this.inputOilQuantity!,
       rendement: this.rendement!,
-      completionDate: this.completionDate,
+      completionDate: this.getCompletionDateTime(),
+      trtDate: this.getCompletionDateTime().toISOString(),
       finalObservation: this.finalObservation.trim() || undefined,
       triturationPricePerKg: this.triturationPricePerKg,
       totalTriturationPrice: this.totalTriturationPrice,
@@ -400,30 +462,33 @@ export class CompletionDetailsDialogComponent implements OnInit {
   isDurationValid(): boolean {
     const h = this.triturationHours;
     const m = this.triturationMinutes;
-
     const hasH = h !== null && h !== undefined && h !== 0;
     const hasM = m !== null && m !== undefined && m !== 0;
-
-    // must provide at least one (hours or minutes)
-    if (!hasH && !hasM) return false;
-
-    if (hasH) {
-      const hh = Number(h);
-      if (isNaN(hh) || hh < 0) return false;
+    if (!hasH && !hasM) {
+      return false;
     }
-
+    if (hasH && (Number.isNaN(Number(h)) || Number(h) < 0)) {
+      return false;
+    }
     if (hasM) {
       const mm = Number(m);
-      if (isNaN(mm) || mm < 0 || mm > 59) return false;
+      if (Number.isNaN(mm) || mm < 0 || mm > 59) {
+        return false;
+      }
     }
-
     return true;
   }
 
   onPricePerKgChange(value: number | string | null): void {
     const num = value === null ? null : Number(value);
     this.triturationPricePerKg = Number.isFinite(num as number) ? (num as number) : null;
-    this.calculateChildLotsPrice(); // ✅ recompute per-lot prices immediately
+    this.calculateChildLotsPrice();
+  }
+
+  private toTimeInputValue(date: Date): string {
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${hours}:${minutes}`;
   }
 
 }

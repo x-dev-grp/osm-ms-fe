@@ -164,6 +164,37 @@
   }
 }
 
+.related-links {
+  margin: .75rem 1rem 0;
+  border: 1px solid var(--border-subtle, var(--accent-300));
+  border-radius: 12px;
+  background: var(--section-bg, var(--surface-card, var(--accent-50)));
+  padding: .75rem .9rem;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin-bottom: .65rem;
+    font-weight: 700;
+    color: var(--text-primary, var(--accent-900));
+
+    mat-icon {
+      color: var(--primary-500, #0d6efd);
+    }
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+
+    button[mat-stroked-button] {
+      border-radius: 10px;
+    }
+  }
+}
+
 /* ----------------------------
  * Content sections
  * -------------------------- */

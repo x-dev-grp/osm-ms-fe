@@ -61,6 +61,8 @@ export interface TransactionSupplier {
   lastname?: string;
   phone?: string;
   email?: string;
+  address?: string;
+  matriculeFiscal?: string;
 }
 
 export interface FinancialTransaction {
@@ -101,4 +103,52 @@ export function parseTransactionAmount(value: number | string | null | undefined
     return 0;
   }
   return typeof value === 'number' ? value : Number(value) || 0;
+}
+
+export interface BillParty {
+  displayName: string;
+  taxRegistrationNumber?: string;
+  address: string;
+  phone?: string;
+  email?: string;
+  website?: string;
+}
+
+export interface BillBankInfo {
+  bankName?: string;
+  iban?: string;
+  swiftCode?: string;
+}
+
+export interface BillLogistics {
+  grossWeight?: string;
+  netWeight?: string;
+  packages?: string;
+  incoterm?: string;
+  deliveryAddress?: string;
+}
+
+export interface BillFooterContact {
+  companyName?: string;
+  name?: string;
+  phone?: string;
+}
+
+export interface TransactionBillRequest {
+  title?: string;
+  conditions?: string;
+  logoBase64?: string;
+  logoContentType?: string;
+  issuer: BillParty;
+  clientOverride?: BillParty;
+  designation?: string;
+  vatRatePercent?: number;
+  logistics?: BillLogistics;
+  bankInfo?: BillBankInfo;
+  paymentTerms?: string[];
+  footerContact?: BillFooterContact;
+  electronicInvoice?: boolean;
+  ttnReference?: string;
+  issuerElectronicSeal?: string;
+  notes?: string;
 }

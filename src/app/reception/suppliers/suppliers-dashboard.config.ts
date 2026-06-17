@@ -8,6 +8,7 @@ export const SUPPLIERS_DASHBOARD_CONFIG: DashboardConfig = {
   titleTranslatePath: 'MENU.RECEPTION.AGRICULTURE',
   baseURL: 'production/suppliers_type',
   searchEndpoint: 'production/suppliers_type',
+  doubleClickAction: 'DETAIL',
 
   /* ───────── add-new button ───────── */
   addNewItem: true,

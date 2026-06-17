@@ -7,8 +7,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { ToastService } from '../../shared/services/toast.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
+import { resolveBillConditions, resolveBillDesignation } from '../utils/bill-labels.util';
 import { FinancialTransaction } from '../models/financial-transaction.model';
 import { FinancialTransactionService } from '../service/financial-transaction.service';
 import { TRANSACTIONS_DASHBOARD_CONFIG } from './transactions-dashboard.config';
@@ -16,6 +17,11 @@ import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
 import { SharedModule } from '../../shared/shared.module';
 import { Action, DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
 import { ACTION_ICONS } from 'src/app/shared/modules/osm-dashboard/models/actions';
+import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
+import { CompanyProfileService } from '../../shared/services/company-profile.service';
+import { CompanyProfile } from '../../shared/models/CompanyProfile';
+import { TUNISIA_VAT_STANDARD_RATE } from '../../shared/constants/tunisia-vat.constants';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-transactions',
@@ -41,11 +47,14 @@ export class TransactionsComponent implements OnInit, OnDestroy {
   constructor(
     private transactionService: FinancialTransactionService,
     private router: Router,
+    private route: ActivatedRoute,
     private toast: ToastService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private companyProfileService: CompanyProfileService
   ) {}
 
   ngOnInit(): void {
+    this.dashboardConfig = this.buildDashboardConfigFromQueryParams();
    }
 
   ngOnDestroy(): void {
@@ -66,6 +75,10 @@ export class TransactionsComponent implements OnInit, OnDestroy {
 
       case 'PRINT':
         this.print(event.row.id!);
+        break;
+
+      case 'PRINT_BILL':
+        this.printBill(event.row);
         break;
 
       case 'UPDATE':
@@ -97,6 +110,34 @@ export class TransactionsComponent implements OnInit, OnDestroy {
     const tree = this.router.createUrlTree(['/finance/transactions', id, 'view'], { queryParams: { print: true } });
     const url = window.location.origin + this.router.serializeUrl(tree);
     window.open(url, '_blank');
+  }
+
+  printBill(transaction: FinancialTransaction): void {
+    if (!transaction.id) {
+      this.showError('TRANSACTIONS.MESSAGES.BILL_ERROR');
+      return;
+    }
+
+    const profile = this.companyProfileService.getProfileFromCache();
+    if (!profile) {
+      this.showError('TRANSACTIONS.MESSAGES.COMPANY_PROFILE_REQUIRED');
+      return;
+    }
+
+    this.loading = true;
+    this.transactionService.generateTransactionBillPdf(transaction.id, this.buildBillRequest(transaction, profile))
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.downloadPdf(response.body, this.extractPdfFileName(response.headers.get('content-disposition'), transaction));
+          this.showSuccess('TRANSACTIONS.MESSAGES.BILL_SUCCESS');
+          this.loading = false;
+        },
+        error: (error) => {
+          this.showBillError(error);
+          this.loading = false;
+        }
+      });
   }
 
 
@@ -249,5 +290,97 @@ export class TransactionsComponent implements OnInit, OnDestroy {
 
   private showError(message: string): void {
     this.toast.error(message );
+  }
+
+  private showBillError(error: unknown): void {
+    this.extractErrorMessage(error).then((message) => this.toast.error(message || 'TRANSACTIONS.MESSAGES.BILL_ERROR'));
+  }
+
+  private async extractErrorMessage(error: unknown): Promise<string | null> {
+    if (!(error instanceof HttpErrorResponse)) {
+      return null;
+    }
+    if (error.error instanceof Blob) {
+      const text = await error.error.text();
+      try {
+        const parsed = JSON.parse(text);
+        return parsed.message || text;
+      } catch {
+        return text || null;
+      }
+    }
+    return error.error?.message || error.message || null;
+  }
+
+  private buildBillRequest(transaction: FinancialTransaction, profile: CompanyProfile) {
+    return {
+      title: 'Facture commerciale',
+      issuer: this.toIssuerParty(profile),
+      logoBase64: profile.logoData,
+      logoContentType: profile.logoContentType,
+      designation: resolveBillDesignation(this.i18n, transaction),
+      conditions: resolveBillConditions(this.i18n, transaction),
+      vatRatePercent: TUNISIA_VAT_STANDARD_RATE,
+      footerContact: {
+        companyName: profile.legalName,
+        phone: profile.phone
+      },
+      notes: transaction.lotNumber ? `Lot: ${transaction.lotNumber}` : undefined
+    };
+  }
+
+  private toIssuerParty(profile: CompanyProfile) {
+    const address = [profile.addressLine1, profile.postalCode, profile.city, profile.governorate].filter(Boolean).join(', ');
+    return {
+      displayName: profile.legalName,
+      taxRegistrationNumber: profile.taxId,
+      address: address || 'N/A',
+      phone: profile.phone,
+      email: profile.email,
+      website: profile.website || profile.email
+    };
+  }
+
+  private downloadPdf(blob: Blob | null, fileName: string): void {
+    if (!blob) {
+      this.showError('TRANSACTIONS.MESSAGES.BILL_ERROR');
+      return;
+    }
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = fileName;
+    anchor.click();
+    URL.revokeObjectURL(url);
+  }
+
+  private extractPdfFileName(contentDisposition: string | null, transaction: FinancialTransaction): string {
+    const match = contentDisposition?.match(/filename="?([^";]+)"?/i);
+    if (match?.[1]) {
+      return match[1];
+    }
+    return `facture-${transaction.invoiceReference || transaction.id || 'transaction'}.pdf`;
+  }
+
+  private buildDashboardConfigFromQueryParams(): DashboardConfig {
+    const lotNumber = this.route.snapshot.queryParamMap.get('lotNumber');
+    if (!lotNumber) {
+      return TRANSACTIONS_DASHBOARD_CONFIG;
+    }
+
+    const config = JSON.parse(JSON.stringify(TRANSACTIONS_DASHBOARD_CONFIG)) as DashboardConfig;
+    config.defaultSearchData = {
+      ...config.defaultSearchData,
+      page: 0,
+      searchData: {
+        operation: SearchOperation.AND,
+        searchs: [],
+        search: {
+          ...(config.defaultSearchData?.searchData?.search ?? {}),
+          lotNumber: { equalValue: lotNumber }
+        }
+      }
+    };
+    return config;
   }
 }

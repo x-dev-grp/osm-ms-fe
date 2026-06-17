@@ -3,7 +3,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { OIL_TRANSACTIONS_DASHBOARD_CONFIG } from './oil-transactions-dashboard.config';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
 import { SharedModule } from '../../shared/shared.module';
 import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
@@ -23,6 +23,7 @@ import { ToastService } from '../../shared/services/toast.service';
 import { getOilSortiePdfConfig } from './Oil-sortie-pdf-config';
 import { getBonCommandeHuileConfig } from '../../finance/oil-sales/Oil-COMMAND-pdf-config';
 import { OilSaleService } from '../../finance/service/oil-sale.service';
+import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
 
 @Component({
   selector: 'app-oil-transactions',
@@ -47,11 +48,13 @@ export class OilTransactionsComponent implements OnInit {
     private storageUnitService: StorageUnitDtoService,
     private dialog: MatDialog,
     private router: Router,
+    private route: ActivatedRoute,
     private oilsaleService: OilSaleService,
     private pdfService: PdfGeneratorService
   ) {}
 
   ngOnInit(): void {
+    this.dashboardConfig = this.buildDashboardConfigFromQueryParams();
     this.loadStorageUnits();
   }
 
@@ -266,5 +269,27 @@ export class OilTransactionsComponent implements OnInit {
           this.toast.error('OIL_TRANSACTIONS.FORM.MESSAGES.ERROR.LOAD_STORAGE_UNITS');
         }
       });
+  }
+
+  private buildDashboardConfigFromQueryParams(): DashboardConfig {
+    const lotNumber = this.route.snapshot.queryParamMap.get('lotNumber');
+    if (!lotNumber) {
+      return OIL_TRANSACTIONS_DASHBOARD_CONFIG;
+    }
+
+    const config = JSON.parse(JSON.stringify(OIL_TRANSACTIONS_DASHBOARD_CONFIG)) as DashboardConfig;
+    config.defaultSearchData = {
+      ...config.defaultSearchData,
+      page: 0,
+      searchData: {
+        operation: SearchOperation.AND,
+        searchs: [],
+        search: {
+          ...(config.defaultSearchData?.searchData?.search ?? {}),
+          'reception.lotNumber': { equalValue: lotNumber }
+        }
+      }
+    };
+    return config;
   }
 }

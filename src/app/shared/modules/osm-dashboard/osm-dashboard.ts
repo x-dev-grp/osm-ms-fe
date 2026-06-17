@@ -123,15 +123,9 @@ export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
   }
   getTargetItemFromFlattedList(record: any, item: Field): any {
     if (!item?.flattedListName || !record?.[item.flattedListName]) return null;
-    // console.log({
-    //   targetList:record?.[item.flattedListName],
-    // })
-    const targetItem: any = record?.[item.flattedListName]?.find((f: any) => this.getValue(item.nameField, f) == item?.name);
-    // console.log({
-    //   item:item,
-    //   targetItem:targetItem,
-    // })
-    return targetItem || null;
+    const targetList = record?.[item.flattedListName];
+    const targetItem: any = targetList?.find((f: any) => this.getValue(item.nameField, f) == item?.name);
+    return targetItem || targetList?.[item.flattedItemIndex ?? -1] || null;
   }
 
   getSelectDataTableValue(value: string, fieldName: string): string {

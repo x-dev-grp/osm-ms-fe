@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CardComponent } from '../../../theme/components/card/card.component';
 import {
   FinancialTransaction,
@@ -14,6 +14,11 @@ import {
 } from '../../models/financial-transaction.model';
 import { FinancialTransactionService } from '../../service/financial-transaction.service';
 import { ToastService } from '../../../shared/services/toast.service';
+import { CompanyProfileService } from '../../../shared/services/company-profile.service';
+import { CompanyProfile } from '../../../shared/models/CompanyProfile';
+import { TUNISIA_VAT_STANDARD_RATE } from '../../../shared/constants/tunisia-vat.constants';
+import { HttpErrorResponse } from '@angular/common/http';
+import { resolveBillConditions, resolveBillDesignation } from '../../utils/bill-labels.util';
 
 @Component({
   selector: 'app-transaction-view',
@@ -42,7 +47,9 @@ export class TransactionViewComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private transactionService: FinancialTransactionService,
-    private toast: ToastService
+    private toast: ToastService,
+    private companyProfileService: CompanyProfileService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -91,6 +98,27 @@ export class TransactionViewComponent implements OnInit {
 
   onPrint(): void {
     window.print();
+  }
+
+  onPrintBill(): void {
+    if (!this.transaction?.id) {
+      this.showError('TRANSACTIONS.MESSAGES.BILL_ERROR');
+      return;
+    }
+
+    const profile = this.companyProfileService.getProfileFromCache();
+    if (!profile) {
+      this.showError('TRANSACTIONS.MESSAGES.COMPANY_PROFILE_REQUIRED');
+      return;
+    }
+
+    this.transactionService.generateTransactionBillPdf(this.transaction.id, this.buildBillRequest(profile)).subscribe({
+      next: (response) => {
+        this.downloadPdf(response.body, this.extractPdfFileName(response.headers.get('content-disposition')));
+        this.toast.success('TRANSACTIONS.MESSAGES.BILL_SUCCESS');
+      },
+      error: (error) => this.showBillError(error)
+    });
   }
 
   onDuplicate(): void {
@@ -193,5 +221,75 @@ export class TransactionViewComponent implements OnInit {
 
   private showError(message: string): void {
     this.toast.error(message);
+  }
+
+  private showBillError(error: unknown): void {
+    this.extractErrorMessage(error).then((message) => this.toast.error(message || 'TRANSACTIONS.MESSAGES.BILL_ERROR'));
+  }
+
+  private async extractErrorMessage(error: unknown): Promise<string | null> {
+    if (!(error instanceof HttpErrorResponse)) {
+      return null;
+    }
+    if (error.error instanceof Blob) {
+      const text = await error.error.text();
+      try {
+        const parsed = JSON.parse(text);
+        return parsed.message || text;
+      } catch {
+        return text || null;
+      }
+    }
+    return error.error?.message || error.message || null;
+  }
+
+  private buildBillRequest(profile: CompanyProfile) {
+    return {
+      title: 'Facture commerciale',
+      issuer: this.toIssuerParty(profile),
+      logoBase64: profile.logoData,
+      logoContentType: profile.logoContentType,
+      designation: this.transaction ? resolveBillDesignation(this.translate, this.transaction) : '',
+      conditions: this.transaction ? resolveBillConditions(this.translate, this.transaction) : undefined,
+      vatRatePercent: TUNISIA_VAT_STANDARD_RATE,
+      footerContact: {
+        companyName: profile.legalName,
+        phone: profile.phone
+      },
+      notes: this.transaction?.lotNumber ? `Lot: ${this.transaction.lotNumber}` : undefined
+    };
+  }
+
+  private toIssuerParty(profile: CompanyProfile) {
+    const address = [profile.addressLine1, profile.postalCode, profile.city, profile.governorate].filter(Boolean).join(', ');
+    return {
+      displayName: profile.legalName,
+      taxRegistrationNumber: profile.taxId,
+      address: address || 'N/A',
+      phone: profile.phone,
+      email: profile.email,
+      website: profile.website || profile.email
+    };
+  }
+
+  private downloadPdf(blob: Blob | null, fileName: string): void {
+    if (!blob) {
+      this.showError('TRANSACTIONS.MESSAGES.BILL_ERROR');
+      return;
+    }
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = fileName;
+    anchor.click();
+    URL.revokeObjectURL(url);
+  }
+
+  private extractPdfFileName(contentDisposition: string | null): string {
+    const match = contentDisposition?.match(/filename="?([^";]+)"?/i);
+    if (match?.[1]) {
+      return match[1];
+    }
+    return `facture-${this.transaction?.invoiceReference || this.transaction?.id || 'transaction'}.pdf`;
   }
 }

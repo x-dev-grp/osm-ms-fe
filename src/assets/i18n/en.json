@@ -741,6 +741,15 @@
         "LOAD_ERROR": "Error loading details."
       },
       "NOT_PROVIDED": "Not provided",
+      "RELATED_LINKS": {
+        "FINANCIAL_TRANSACTIONS": "Financial transactions",
+        "OIL_TRANSACTIONS": "Oil movements",
+        "QUALITY_CONTROL": "Quality control",
+        "STORAGE_UNIT": "Storage unit",
+        "SUPPLIER_DETAILS": "Supplier details",
+        "SUPPLIER_PAYMENTS": "Supplier payments",
+        "TITLE": "Related links"
+      },
       "SECTIONS": {
         "ADDITIONAL_INFO": "ℹ️ Additional Info",
         "GENERAL_INFO": "📦 General Information",
@@ -2281,6 +2290,9 @@
       "FOURNISSEUR": "Supplier",
       "GEN_INVOICE": "Generate Invoice",
       "GEN_PDF": "Generate Receipt",
+      "PRINT_BILL": "Print bill",
+      "PRINT": "Print",
+      "DUPLICATE": "Duplicate",
       "GEN_PDF_BON_COMMANDE": "Oil purchase order ",
       "GEN_PDF_PRODUCTION": "Generate Production voucher",
       "GEN_PDF_QC_OIL": "Generate oil QC receipt ",
@@ -2328,7 +2340,7 @@
       "RECEPTION": "Reception",
       "REFUSE": "Refuse",
       "RESET_PASSWORD": "Reset Password",
-      "REJECT ": "Reject",
+      "REJECT": "Reject",
       "REMOVE_LINE": "Remove Line",
       "REPORT": "Report",
       "RESERVER_STOCK": "Reserve Stock",
@@ -2589,6 +2601,16 @@
     "SUBTOTAL": "Subtotal",
     "SUPPLIER": "Supplier",
     "TANK_NUMBER": "N° Article",
+    "TAX_ID": "Tax ID",
+    "TVA_LEGAL_MENTION": "Invoice issued in accordance with Article 18 of the Tunisian VAT Code. Unit prices exclude VAT. VAT rates and amounts are shown per line.",
+    "UNIT_PRICE_HT": "Unit price excl. VAT",
+    "AMOUNT_HT": "Amount excl. VAT",
+    "VAT_RATE": "VAT %",
+    "VAT_AMOUNT": "VAT amount",
+    "TOTAL_TTC": "Total incl. VAT",
+    "SUBTOTAL_HT": "Subtotal excl. VAT",
+    "TOTAL_VAT": "Total VAT",
+    "SUSPENDED_VAT": "Suspended tax",
     "TERMS": "Condition",
     "TOTAL": "Total Amount",
     "TOTAL_AMOUNT": "Total Amount",
@@ -2628,7 +2650,7 @@
   "PLANNING_CARD_TITLE": "Olive Reception Planning",
   "PLANNING_EXIT_FULLSCREEN": "Exit fullscreen",
   "PLANNING_FULLSCREEN": "Fullscreen",
-  "PLANNING_GROUP": "Create a GLobal lot",
+  "PLANNING_GROUP": "Create a global lot",
   "PLANNING_KG": "kg",
   "PLANNING_LOTS_LIST": "List of Lots:",
   "PLANNING_NET": "Net:",
@@ -2637,7 +2659,7 @@
   "PLANNING_SACKS": "Sacks:",
   "PLANNING_SAVE": "Save",
   "PLANNING_SEARCH": "Search lot",
-  "PLANNING_SEARCH_PLACEHOLDER": "Lot number",
+  "PLANNING_SEARCH_PLACEHOLDER": "Lot, supplier, global lot…",
   "PLANNING_SUPPLIER": "Supplier:",
   "PLANNING_TYPE": "Type:",
   "PLANNING_UNASSIGNED": "Unassigned",
@@ -2732,40 +2754,81 @@
   "RECEPTION": {
     "PLANNING": {
       "COMPLETION": {
-        "COMPLETION_DATE_LABEL": "Completion Date",
-        "COMPLETION_DETAILS_TITLE": "Completion Details",
-        "CONFIRMATION_TEXT": "Are you sure you want to mark this as completed?",
-        "DELIVERY_DATE": "Delivery Date",
-        "DELIVERY_NUMBER": "Delivery Number",
-        "DETAILS_TITLE": "Completion Details",
-        "FINAL_OBSERVATION_LABEL": "Final Observation (Optional)",
+        "CHILD_LOT_COUNT": "Child lots",
+        "COMPLETION_DATE_LABEL": "Completion date",
+        "COMPLETION_DATETIME_PREVIEW": "Recorded completion",
+        "COMPLETION_DETAILS_TITLE": "Completion details",
+        "COMPLETION_SCHEDULE_TITLE": "Completion schedule",
+        "COMPLETION_TIME_LABEL": "Completion time",
+        "CONFIRMATION_TEXT": "Are you sure you want to mark this lot as completed?",
+        "DELIVERY_DATE": "Delivery date",
+        "DELIVERY_DATETIME": "Reception date & time",
+        "DELIVERY_NUMBER": "Delivery number",
+        "DETAILS_TITLE": "Completion details",
+        "DURATION_AUTO_HINT": "Duration is calculated automatically from the crushing timer.",
+        "DURATION_SECTION_TITLE": "Crushing duration",
+        "DURATION_TOTAL_H": "Total duration: {{hours}} h",
+        "DURATION_TOTAL_HM": "Total duration: {{hours}} h {{minutes}} min",
+        "DURATION_TOTAL_M": "Total duration: {{minutes}} min",
+        "FINAL_OBSERVATION_LABEL": "Final observation (optional)",
         "FINISH_BUTTON": "Finish",
-        "GLOBAL_LOT_NUMBER": "Global Lot Number",
-        "LOT_INFO_TITLE": "Lot Information",
-        "LOT_LIST": "Lot List",
-        "LOT_LIST_NUMBER": "No.",
+        "GLOBAL_LOT_NUMBER": "Global lot number",
+        "GROSS_WEIGHT": "Gross weight",
+        "LOT_INFO_TITLE": "Lot information",
+        "LOT_LIST": "Lot list",
+        "LOT_LIST_NUMBER": "Lot",
         "LOT_LIST_OIL_QUANTITY": "Oil (kg)",
-        "LOT_LIST_QUANTITY": "Qty (kg)",
+        "LOT_LIST_QUANTITY": "Net olives (kg)",
         "LOT_LIST_SUPPLIER": "Supplier",
         "LOT_LIST_TRITURATION_PRICE": "Crushing price",
         "LOT_LIST_YIELD": "Yield (%)",
-        "LOT_NUMBER": "Lot Number",
-        "OBSERVATION": "Observation",
-        "OIL_QUANTITY_LABEL": "Oil Quantity (kg)",
-        "OLIVE_QUANTITY": "Net Olive Weight",
-        "OLIVE_TYPE": "Olive Type",
-        "OLIVE_VARIETY": "Olive Variety",
+        "LOT_NUMBER": "Lot number",
+        "OBSERVATION": "Reception note",
+        "INVALID_CHILD_OIL": "Invalid oil quantity for child lot {{lotNumber}}",
+        "INVALID_DURATION": "Enter a valid crushing duration (hours and/or minutes)",
+        "INVALID_OIL_QUANTITY": "Enter a valid oil quantity",
+        "INVALID_OLIVE_WEIGHT": "Olive weight is missing or invalid",
+        "INVALID_TRITURATION_PRICE": "Crushing price cannot be negative",
+        "INVALID_YIELD": "Yield could not be calculated",
+        "NO_CHILD_LOTS": "No child lots found for this global lot",
+        "OIL_QUANTITY_LABEL": "Oil produced",
+        "OLIVE_QUANTITY": "Net olive weight",
+        "OLIVE_TYPE": "Olive type",
+        "OLIVE_VARIETY": "Olive variety",
+        "PARCEL": "Parcel",
         "REGION": "Region",
+        "RESET_TIMER": "Reset",
+        "SACK_COUNT": "Sack count",
+        "START_CRUSHING": "Start crushing",
+        "STOP_CRUSHING": "Pause",
         "SUPPLIER": "Supplier",
-        "TITLE": "Completion",
-        "TOTAL_OLIVE_WEIGHT": "Total Olive Weight",
+        "TIMER_ELAPSED": "Elapsed",
+        "TIMER_RUNNING": "In progress",
+        "TITLE": "Complete lot",
+        "TOTAL_OLIVE_WEIGHT": "Total olive weight",
         "TOTAL_TRITURATION_PRICE_LABEL": "Total crushing price",
-        "TRITURATION_DURATION_HOURS": "Duration",
-        "TRITURATION_DURATION_MINUTES": "Duration (Minutes)",
+        "TRITURATION_DURATION_HOURS": "Hours",
+        "TRITURATION_DURATION_MINUTES": "Minutes",
         "TRITURATION_PRICE_PER_KG_LABEL": "Crushing price (per kg)",
-        "YIELD_LABEL": "Yield (%)"
+        "TRUCK_PLATE": "Truck plate",
+        "YIELD_HINT": "Calculated from oil produced / net olive weight",
+        "YIELD_LABEL": "Yield"
       },
+      "GROUP_REQUIRES_TWO": "Select at least two lots to create a global lot",
       "CONFIRM_SAVE": "Save the current planning?",
+      "CONFIRM_DISCARD": "Discard unsaved planning changes and reload?",
+      "COMPLETE_LOT": "Complete lot",
+      "COMPLETE_REQUIRES_SAVE": "Save planning changes before completing",
+      "EMPTY_MILL": "No lots assigned to this mill",
+      "EMPTY_UNASSIGNED": "No unassigned receptions",
+      "LOADING": "Loading planning...",
+      "LOAD_WARNING_DELIVERIES": "Could not load all reception details. Some cards may be incomplete.",
+      "LOAD_WARNING_MILLS": "Could not load mill machines. Mill columns may be missing.",
+      "LOAD_WARNING_PLANNING": "Could not load saved planning assignments.",
+      "MILL_OVER_CAPACITY": "{{mill}} is over capacity ({{used}} / {{capacity}} kg)",
+      "NOTHING_TO_SAVE": "No changes to save",
+      "SAVE_AFTER_CHANGE": "Save planning now to keep this change?",
+      "UNSAVED_CHANGES": "Unsaved changes",
       "GLOBAL_LOT": {
         "CONFIRM_CREATE_FROM_SELECTION": "Create a new global lot from the selected lots?",
         "CONFIRM_UNGROUP": "Ungroup global lot {{globalLotNumber}}?",
@@ -3085,16 +3148,24 @@
       "TRANSACTIONS": "transactions",
       "TRANSACTIONS_TITLE": "Financial transactions",
       "UNPAID": "Unpaid"
+    },
+    "DOMAIN": {
+      "OLIVE_OIL_BADGE": "Olive & oil supplier",
+      "OLIVE_OIL_HINT": "For olive reception, oil delivery, payments and financial transactions. Separate from stock/article suppliers."
     }
   },
   "FOURNISSEUR": {
+    "DOMAIN": {
+      "ARTICLES_BADGE": "Articles & stock supplier",
+      "ARTICLES_HINT": "For inventory articles, purchase orders and packaging. Separate from olive/oil reception suppliers."
+    },
     "FIELDS": {
       "CERTIFICATIONS": "Certifications",
       "DAYS": "days",
       "LAST_ORDER_DATE": "Last order date"
     },
     "FINANCE": {
-      "NO_LEDGER_LINK": "Inventory suppliers are not linked to the finance ledger yet. Payment terms and currency are shown for reference."
+      "NO_LEDGER_LINK": "This supplier type is for stock and articles only. Financial transactions are managed on reception (olive & oil) suppliers."
     }
   },
   "SUPPLIERS": {
@@ -3228,7 +3299,11 @@
   "TAB_TITLE": "General Configuration",
   "TRANSACTIONS": {
     "ACTIONS": {
-      "DUPLICATE": "Duplicate"
+      "DUPLICATE": "Duplicate",
+      "PRINT_BILL": "Print bill"
+    },
+    "BILL": {
+      "DEFAULT_DESIGNATION": "Service"
     },
     "CURRENCIES": {
       "EUR": "€",
@@ -3276,7 +3351,13 @@
       "CHECK": "Check",
       "MIXED": "Mixed",
       "OIL": "Oil",
+      "OIL_CREDIT": "Oil Credit",
       "TRANSFER": "Transfer"
+    },
+    "MESSAGES": {
+      "BILL_ERROR": "Unable to generate bill",
+      "BILL_SUCCESS": "Bill generated",
+      "COMPANY_PROFILE_REQUIRED": "Company profile is required to generate a bill"
     },
     "SECTIONS": {
       "APPROVAL": "Approval",

@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
-import { PdfFactureConfig } from '../../shared/models/pdf-config.model';
+import { PdfFactureConfig, PdfInvoiceLineItem } from '../../shared/models/pdf-config.model';
+import { TUNISIA_VAT_STANDARD_RATE } from '../../shared/constants/tunisia-vat.constants';
 import { UnifiedDelivery } from '../../shared/models/UnifiedDelivery';
 import { CompanyProfile } from '../../shared/models/CompanyProfile';
 import { CompanyProfileService } from '../../shared/services/company-profile.service';
 import { WasteSale } from '../models/Waste.model';
 import { OilSale } from '../models/oil-sale.model';
 import { OperationType } from '../../shared/models/operation-type.enum';
-import { Observable, map, of } from 'rxjs';
+import { Observable, map } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 export enum InvoiceType {
   TRITURATION = 'TRITURATION',
@@ -27,7 +29,10 @@ export interface CompanyInfoForPdf {
   providedIn: 'root'
 })
 export class InvoiceConfigService {
-  constructor(private companyProfileService: CompanyProfileService) {}
+  constructor(
+    private companyProfileService: CompanyProfileService,
+    private translate: TranslateService
+  ) {}
 
   /**
    * Generate PDF configuration based on operation type and data
@@ -142,53 +147,46 @@ export class InvoiceConfigService {
     const unpaidAmount = serviceAmount - paidAmount;
     const paymentStatus = this.getPaymentStatus(paidAmount, serviceAmount);
     const companyInfo = this.formatCompanyInfo(company);
+    const clientName = `${delivery.supplier?.name || ''} ${delivery.supplier?.lastname || ''}`.trim();
+    const addressLines = [delivery.supplier?.address, delivery.supplier?.phone]
+      .map((v) => (v || '').trim())
+      .filter(Boolean);
+
+    const lineItems: PdfInvoiceLineItem[] = [
+      {
+        description: 'PDF.TRITURATION_SERVICE',
+        unitPrice: triturationPrice,
+        quantity: delivery.poidsNet,
+        total: serviceAmount,
+        unit: 'kg',
+        vatRatePercent: TUNISIA_VAT_STANDARD_RATE
+      }
+    ];
 
     return {
-      title: 'FACTURE ' + (delivery.lotNumber ?? 'Sans titre'),
-      reference: `${delivery.lotNumber || 'XXXX'} PDF.TRITURATION`,
+      title: 'PDF.COMMERCIAL_INVOICE',
+      reference: delivery.deliveryNumber || delivery.lotNumber || '—',
       date: new Date().toLocaleDateString(),
+      currency: 'TND',
+      conditions: this.t('PDF.TRITURATION'),
+      defaultVatRatePercent: TUNISIA_VAT_STANDARD_RATE,
 
       companyInfo,
-
-      generalInfo: [
-        {
-          label: 'PDF.CUSTOMER',
-          value: `${delivery.supplier?.name || ''} ${delivery.supplier?.lastname || ''}`.trim()
-        },
-        { label: 'PDF.PHONE', value: delivery.supplier?.phone || '' },
-        {
-          label: 'PDF.ADDRESS',
-          value: delivery.supplier?.address || ''
-        },
-        {
-          label: 'PDF.REGION',
-          value: this.getRegionValue(delivery.supplier?.region)
-        },
-        { label: 'PDF.INVOICE_DATE', value: new Date().toLocaleDateString() },
-        {
-          label: 'PDF.DELIVERY_DATE',
-          value: new Date(delivery.deliveryDate).toLocaleDateString()
-        }
+      clientInfo: {
+        name: clientName,
+        addressLines,
+        taxId: delivery.supplier?.matriculeFiscal
+      },
+      lineItems,
+      paymentTerms: [
+        `${this.t('PDF.PAID_AMOUNT')}: ${paidAmount.toFixed(3)} TND`,
+        `${this.t('PDF.UNPAID_AMOUNT')}: ${unpaidAmount.toFixed(3)} TND`,
+        `${this.t('PDF.PAYMENT_STATUS')}: ${this.t(paymentStatus)}`
       ],
-
-      fields: [
-        { label: 'PDF.SERVICE_DESCRIPTION', value: 'PDF.TRITURATION_SERVICE' },
-        {
-          label: 'PDF.PRICE_UNIT',
-          value: `${triturationPrice.toFixed(3)} TND/kg`
-        },
-        { label: 'PDF.QUANTITY', value: `${delivery.poidsNet} kg` },
-        {
-          label: 'PDF.TOTAL_SERVICE_AMOUNT',
-          value: `${serviceAmount.toFixed(3)} TND`
-        },
-        { label: 'PDF.PAID_AMOUNT', value: `${paidAmount.toFixed(3)} TND` },
-        {
-          label: 'PDF.UNPAID_AMOUNT',
-          value: `${unpaidAmount.toFixed(3)} TND`
-        },
-        { label: 'PDF.PAYMENT_STATUS', value: paymentStatus }
-      ],
+      footerContact: {
+        companyName: companyInfo.companyName,
+        phone: companyInfo.mobile
+      },
 
       fileName: `Facture_Trituration_${delivery.deliveryNumber || 'inconnu'}.pdf`
     };
@@ -204,68 +202,43 @@ export class InvoiceConfigService {
     const unpaidAmount = oilSale.unpaidAmount || totalAmount - paidAmount;
     const paymentStatus = this.getPaymentStatus(paidAmount, totalAmount);
     const companyInfo = this.formatCompanyInfo(company);
+    const clientName = `${oilSale.supplier?.name || ''} ${oilSale.supplier?.lastname || ''}`.trim();
+    const addressLines = [oilSale.supplier?.address, oilSale.supplier?.phone]
+      .map((v) => (v || '').trim())
+      .filter(Boolean);
 
     return {
-      title: 'FACTURE ' + (oilSale.invoiceNumber ?? 'Sans titre'),
-      reference: `${oilSale.invoiceNumber || 'XXXX'} PDF.VENTE_HUILE`,
+      title: 'PDF.COMMERCIAL_INVOICE',
+      reference: oilSale.invoiceNumber || '—',
       date: new Date().toLocaleDateString(),
+      currency: 'TND',
+      conditions: this.t('PDF.VENTE_HUILE'),
+      defaultVatRatePercent: TUNISIA_VAT_STANDARD_RATE,
 
       companyInfo,
-
-      generalInfo: [
+      clientInfo: {
+        name: clientName,
+        addressLines,
+        taxId: oilSale.supplier?.matriculeFiscal
+      },
+      lineItems: [
         {
-          label: 'PDF.CUSTOMER',
-          value: `${oilSale.supplier?.name || ''} ${oilSale.supplier?.lastname || ''}`.trim()
-        },
-        { label: 'PDF.PHONE', value: oilSale.supplier?.phone || '' },
-        {
-          label: 'PDF.ADDRESS',
-          value: oilSale.supplier?.address || ''
-        },
-        {
-          label: 'PDF.REGION',
-          value: this.getRegionValue(oilSale.supplier?.region)
-        },
-        {
-          label: 'PDF.INVOICE_DATE',
-          value: new Date().toLocaleDateString()
-        },
-        {
-          label: 'PDF.SALE_DATE',
-          value: new Date(oilSale.saleDate).toLocaleDateString()
+          description: oilSale.description || 'PDF.EXTRA_VIRGIN_OLIVE_OIL',
+          unitPrice,
+          quantity: oilSale.quantity,
+          total: totalAmount,
+          vatRatePercent: TUNISIA_VAT_STANDARD_RATE
         }
       ],
-
-      fields: [
-        {
-          label: 'PDF.DESCRIPTION',
-          value: oilSale.description || 'PDF.EXTRA_VIRGIN_OLIVE_OIL'
-        },
-        {
-          label: 'PDF.PRICE_UNIT',
-          value: `${unitPrice.toFixed(3)} TND/kg`
-        },
-        {
-          label: 'PDF.QUANTITY',
-          value: `${oilSale.quantity} kg`
-        },
-        {
-          label: 'PDF.TOTAL_AMOUNT',
-          value: `${totalAmount.toFixed(3)} TND`
-        },
-        {
-          label: 'PDF.PAID_AMOUNT',
-          value: `${paidAmount.toFixed(3)} TND`
-        },
-        {
-          label: 'PDF.UNPAID_AMOUNT',
-          value: `${unpaidAmount.toFixed(3)} TND`
-        },
-        {
-          label: 'PDF.PAYMENT_STATUS',
-          value: paymentStatus
-        }
+      paymentTerms: [
+        `${this.t('PDF.PAID_AMOUNT')}: ${paidAmount.toFixed(3)} TND`,
+        `${this.t('PDF.UNPAID_AMOUNT')}: ${unpaidAmount.toFixed(3)} TND`,
+        `${this.t('PDF.PAYMENT_STATUS')}: ${this.t(paymentStatus)}`
       ],
+      footerContact: {
+        companyName: companyInfo.companyName,
+        phone: companyInfo.mobile
+      },
 
       fileName: `Facture_VenteHuile_${oilSale.invoiceNumber || 'inconnu'}.pdf`
     };
@@ -282,65 +255,43 @@ export class InvoiceConfigService {
     const unpaidAmount = wasteSale.unpaidAmount || totalAmount - paidAmount;
     const paymentStatus = this.getPaymentStatus(paidAmount, totalAmount);
     const companyInfo = this.formatCompanyInfo(company);
+    const clientName = `${wasteSale.supplier?.name || ''} ${wasteSale.supplier?.lastname || ''}`.trim();
+    const addressLines = [wasteSale.supplier?.address, wasteSale.supplier?.phone]
+      .map((v) => (v || '').trim())
+      .filter(Boolean);
 
     return {
-      title: 'FACTURE ' + (wasteSale.invoiceNumber ?? 'Sans titre'),
-      reference: `${wasteSale.invoiceNumber || 'XXXX'} PDF.VENTE_DECHET`,
+      title: 'PDF.COMMERCIAL_INVOICE',
+      reference: wasteSale.invoiceNumber || '—',
       date: new Date().toLocaleDateString(),
+      currency: 'TND',
+      conditions: this.t('PDF.VENTE_DECHET'),
+      defaultVatRatePercent: TUNISIA_VAT_STANDARD_RATE,
 
       companyInfo,
-
-      generalInfo: [
+      clientInfo: {
+        name: clientName,
+        addressLines,
+        taxId: wasteSale.supplier?.matriculeFiscal
+      },
+      lineItems: [
         {
-          label: 'PDF.CUSTOMER',
-          value: `${wasteSale.supplier?.name || ''} ${wasteSale.supplier?.lastname || ''}`.trim()
-        },
-        { label: 'PDF.PHONE', value: wasteSale.supplier?.phone || '' },
-        {
-          label: 'PDF.ADDRESS',
-          value: wasteSale.supplier?.address || ''
-        },
-        {
-          label: 'PDF.REGION',
-          value: this.getRegionValue(wasteSale.supplier?.region)
-        },
-        { label: 'PDF.INVOICE_DATE', value: new Date().toLocaleDateString() },
-        {
-          label: 'PDF.SALE_DATE',
-          value: new Date(wasteSale.saleDate).toLocaleDateString()
+          description: wasteSale.description || 'PDF.WASTE_PROCESSING',
+          unitPrice,
+          quantity,
+          total: totalAmount,
+          vatRatePercent: TUNISIA_VAT_STANDARD_RATE
         }
       ],
-
-      fields: [
-        {
-          label: 'PDF.DESCRIPTION',
-          value: wasteSale.description || 'PDF.WASTE_PROCESSING'
-        },
-        {
-          label: 'PDF.PRICE_UNIT',
-          value: `${unitPrice.toFixed(3)} TND/kg`
-        },
-        {
-          label: 'PDF.QUANTITY',
-          value: `${quantity} kg`
-        },
-        {
-          label: 'PDF.TOTAL_AMOUNT',
-          value: `${totalAmount.toFixed(3)} TND`
-        },
-        {
-          label: 'PDF.PAID_AMOUNT',
-          value: `${paidAmount.toFixed(3)} TND`
-        },
-        {
-          label: 'PDF.UNPAID_AMOUNT',
-          value: `${unpaidAmount.toFixed(3)} TND`
-        },
-        {
-          label: 'PDF.PAYMENT_STATUS',
-          value: paymentStatus
-        }
+      paymentTerms: [
+        `${this.t('PDF.PAID_AMOUNT')}: ${paidAmount.toFixed(3)} TND`,
+        `${this.t('PDF.UNPAID_AMOUNT')}: ${unpaidAmount.toFixed(3)} TND`,
+        `${this.t('PDF.PAYMENT_STATUS')}: ${this.t(paymentStatus)}`
       ],
+      footerContact: {
+        companyName: companyInfo.companyName,
+        phone: companyInfo.mobile
+      },
 
       fileName: `Facture_Dechet_${wasteSale.invoiceNumber || 'inconnu'}.pdf`
     };
@@ -382,5 +333,9 @@ export class InvoiceConfigService {
 
   private isWasteSale(data: any): data is WasteSale {
     return data && 'quantityInKg' in data && 'type' in data && 'wasteSale' in data.constructor.name.toLowerCase();
+  }
+
+  private t(key: string): string {
+    return this.translate.instant(key);
   }
 }

@@ -24,6 +24,9 @@ export interface PlanningItem {
   poidsBrute?: number;
   poidsNet?: number;
   sackCount?: number | null | undefined;
+  parcel?: string;
+  matriculeCamion?: string;
+  description?: string;
   autoSetStorage?:false;
   triturationDurationInMinutes?:number;
   totalTriturationPrice?:number;

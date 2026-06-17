@@ -1,253 +1,249 @@
-/* completion-details-dialog.component.scss
-   Mobile-first refresh. Same layout/markup, only CSS.
-   - Better small-screen spacing & typography
-   - Sticky action bar on mobile
-   - Safer scroll areas & touch sizes
-   - Logical props for RTL/LTR
-*/
-
-/* ---------- Base / host ---------- */
 :host {
   display: block;
-  //--card-radius: 16px;
-  //--section-gap: 1rem;
-  //--row-gap: .65rem;
-  //--label-color: var(--mat-sys-on-surface-variant, #6b7280);
-  //--value-color: var(--mat-sys-on-surface, #111827);
-  //--border-color: color-mix(in oklab, currentColor 12%, transparent);
-  //--muted-bg: color-mix(in oklab, Canvas 92%, currentColor 8%);
-  //--safe-top: env(safe-area-inset-top, 0px);
-  //--safe-bottom: env(safe-area-inset-bottom, 0px);
+  --border-color: color-mix(in oklab, currentColor 12%, transparent);
+  --label-color: #6b7280;
+  --value-color: #111827;
+  --muted-bg: #f6f8f4;
 }
 
-/* container inside the dialog */
+:host ::ng-deep .mat-mdc-dialog-content {
+  overflow: hidden !important;
+  max-height: none !important;
+  padding-top: 0.25rem;
+}
+
+:host ::ng-deep .mat-mdc-dialog-surface {
+  overflow: hidden;
+}
+
+.dialog-title {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0;
+  padding-bottom: 0.35rem;
+}
+
 .completed-dialog-content {
-  padding: clamp(.75rem, 2vw, 1rem);
-  padding-block-start: calc(.75rem + var(--safe-top));
-  padding-block-end: calc(.75rem + var(--safe-bottom));
+  overflow: hidden;
 }
 
-/* ---------- Layout: mobile-first (1 column) ---------- */
-.dialog-scroll-container {
+.dialog-layout {
   display: grid;
-  grid-template-columns: 1fr; /* mobile: stacked */
-  gap: var(--section-gap);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0.75rem;
   align-items: start;
-  max-block-size: 70vh; /* keep header visible on small phones */
-  overflow: auto;
-  overscroll-behavior: contain;
-  scrollbar-width: thin;
+  overflow: hidden;
 }
 
-/* >= 960px: use two columns (info | inputs) like desktop */
-@media (min-width: 960px) {
-  .dialog-scroll-container {
-    grid-template-columns: 1fr minmax(380px, 480px);
-    max-block-size: none;
-    overflow: visible;
-  }
-}
-
-/* ---------- Cards / sections ---------- */
 .info-section,
 .input-section {
   background: var(--muted-bg);
   border: 1px solid var(--border-color);
-  border-radius: var(--card-radius);
-  padding: clamp(.75rem, 2.5vw, 1rem);
+  border-radius: 12px;
+  padding: 0.65rem 0.75rem;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .section-header {
-  margin-block-end: .6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.5rem;
 
   h3 {
     margin: 0;
-    font-size: clamp(.98rem, 2.8vw, 1.05rem);
-    line-height: 1.35;
+    font-size: 0.92rem;
     font-weight: 600;
-    letter-spacing: .2px;
-    color: var(--value-color);
+  }
+
+  mat-icon {
+    color: #315f1b;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
   }
 }
 
-/* ---------- Info side ---------- */
-.info-content {
+.info-compact-grid {
   display: grid;
-  gap: .6rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.4rem 0.55rem;
+  margin: 0;
 }
 
-.info-group {
-  display: grid;
-  gap: var(--row-gap);
-}
+.info-item {
+  margin: 0;
+  padding: 0.4rem 0.5rem;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid var(--border-color);
+  min-width: 0;
 
-.info-row {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: .4rem .75rem;
-  align-items: start;
-  padding: .45rem .6rem;
-  border-radius: .5rem;
-
-  &:nth-child(odd) {
-    background: color-mix(in oklab, var(--muted-bg) 85%, transparent);
+  &.span-full {
+    grid-column: 1 / -1;
   }
 
-  .label {
-    font-size: .85rem;
+  dt {
+    margin: 0;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
     color: var(--label-color);
-    white-space: nowrap;
+    line-height: 1.25;
   }
 
-  .value {
+  dd {
+    margin: 0.15rem 0 0;
+    font-size: 0.82rem;
+    font-weight: 600;
     color: var(--value-color);
-    font-weight: 500;
+    line-height: 1.35;
+    white-space: normal;
+    overflow: visible;
+    word-break: break-word;
+
+    &.emphasis {
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+  }
+}
+
+.supplier-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.supplier-name {
+  min-width: 0;
+  flex: 1 1 auto;
+  word-break: break-word;
+}
+
+.domain-chip {
+  flex-shrink: 0;
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+  background: #eaf3e2;
+  color: #214212;
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.child-lot-chips {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.35rem;
+  margin-top: 0.45rem;
+}
+
+.child-chip {
+  display: grid;
+  gap: 0.1rem;
+  padding: 0.35rem 0.45rem;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid var(--border-color);
+  font-size: 0.72rem;
+
+  strong {
+    font-size: 0.78rem;
+  }
+
+  span {
+    color: var(--label-color);
+    white-space: normal;
     word-break: break-word;
   }
 }
 
-/* ---------- Child lots table ---------- */
-.child-lots {
-  display: flex;
-  flex-direction: column;
-}
-
-.child-lots-container {
-  border: 1px dashed var(--border-color);
-  border-radius: .75rem;
-  background: color-mix(in oklab, var(--muted-bg) 80%, transparent);
-  padding: .5rem;
-}
-
-/* mobile: allow both vertical and horizontal scroll */
-.child-lots-scroll {
-  max-block-size: 240px;
-  overflow: auto;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-}
-
-.child-lots-table {
-  inline-size: 100%;
-  border-collapse: collapse;
-  font-size: .92rem;
-  min-inline-size: 520px; /* enable horizontal scroll on very small screens */
-
-  thead th {
-    position: sticky;
-    inset-block-start: 0;
-    background: color-mix(in oklab, var(--muted-bg) 70%, white);
-    text-align: start;
-    font-weight: 600;
-    padding: .55rem .65rem;
-    border-block-end: 1px solid var(--border-color);
-    z-index: 1;
-  }
-
-  tbody td {
-    padding: .5rem .65rem;
-    border-block-end: 1px solid color-mix(in oklab, var(--border-color) 70%, transparent);
-    vertical-align: middle;
-    white-space: nowrap;
-  }
-
-  tbody tr:hover {
-    background: color-mix(in oklab, var(--muted-bg) 75%, transparent);
-  }
-}
-
-/* ---------- Form side ---------- */
 .input-content {
   display: grid;
-  gap: .85rem;
+  gap: 0.5rem;
 }
 
-
-/* mobile: single column fields */
 .form-row {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: .6rem;
-
-  /* >= 640px we can show two columns comfortably */
-  @media (min-width: 640px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  gap: 0.5rem;
+  grid-template-columns: minmax(0, 1fr);
 }
 
-.form-field {
-  inline-size: 100%;
+.form-row--split {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-
-
-/* Observations textarea spans full row */
-.observation-field {
-  grid-column: 1 / -1;
-
-  textarea {
-    min-block-size: 96px;
-    resize: vertical;
-  }
-}
-
-/* helper / confirmation block */
-.confirmation-text-container {
-  margin-block-start: .15rem;
-  padding: .65rem .8rem;
-  background: color-mix(in oklab, var(--muted-bg) 75%, transparent);
+.form-subsection {
+  padding: 0.55rem;
+  border-radius: 10px;
   border: 1px solid var(--border-color);
-  border-radius: .65rem;
-
-  .confirmation-text {
-    margin: 0;
-    font-size: .9rem;
-    color: color-mix(in oklab, var(--value-color) 70%, #000);
-  }
+  background: #fff;
 }
 
-/* ---------- Actions: sticky on mobile ---------- */
+.subsection-title {
+  margin: 0 0 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.duration-summary,
+.confirmation-text {
+  margin: 0.2rem 0 0;
+  font-size: 0.72rem;
+  color: var(--label-color);
+}
+
+.confirmation-text {
+  padding: 0.45rem 0.55rem;
+  border-radius: 8px;
+  background: #fff8e6;
+  border: 1px solid #f0dfa0;
+  color: #6b5b2b;
+}
+
+.form-field,
+.observation-field {
+  width: 100%;
+  min-width: 0;
+}
+
+:host ::ng-deep .dense-field {
+  width: 100%;
+}
+
+:host ::ng-deep .dense-field .mat-mdc-form-field-infix {
+  min-height: 40px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  width: 100%;
+}
+
+:host ::ng-deep .dense-field .mat-mdc-text-field-wrapper {
+  padding-bottom: 0;
+  width: 100%;
+}
+
+:host ::ng-deep .dense-field .mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}
+
 .dialog-actions {
-  position: sticky;
-  inset-block-end: 0;
   display: flex;
-  justify-content: center;
-  gap: .6rem;
-  padding: .65rem clamp(.75rem, 2vw, 1rem) calc(.65rem + var(--safe-bottom));
-  background: color-mix(in oklab, var(--muted-bg) 70%, white);
-  border-block-start: 1px solid var(--border-color);
-  backdrop-filter: saturate(120%) blur(6px);
-  z-index: 2;
-
-  button[mat-raised-button] {
-    text-transform: none;
-    letter-spacing: .2px;
-    border-radius: .65rem;
-    padding-inline: .9rem;
-    min-inline-size: 44px;   /* tap minimums */
-    min-block-size: 40px;
-  }
-
-  /* desktop: non-sticky, restore spacing */
-  @media (min-width: 960px) {
-    position: static;
-    backdrop-filter: none;
-    border-block-start: 0;
-    padding: 0.75rem 0  0.75rem;
-  }
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding-top: 0.35rem;
 }
 
+@media (max-width: 900px) {
+  .dialog-layout {
+    grid-template-columns: 1fr;
+  }
 
-/* ---------- Dark/contrast friendliness ---------- */
-@media (prefers-contrast: more) {
-  .child-lots-container { border-style: solid; }
-}
-
-/* ---------- Container queries (very narrow sheets) ---------- */
-@container (inline-size < 420px) {
-  .info-row {
-    grid-template-columns: 1fr; /* stack label/value on tiny screens */
-    .label { white-space: normal; }
+  .form-row--split {
+    grid-template-columns: 1fr;
   }
 }

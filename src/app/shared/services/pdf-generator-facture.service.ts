@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
 import jsPDF from 'jspdf';
 import { TranslateService } from '@ngx-translate/core';
-import { PdfFactureConfig, PdfPaymentNoteConfig } from '../models/pdf-config.model';
+import { PdfFactureConfig, PdfInvoiceLineItem, PdfPaymentNoteConfig } from '../models/pdf-config.model';
+import {
+  TUNISIA_VAT_LEGAL_MENTION_KEY,
+  TUNISIA_VAT_STANDARD_RATE
+} from '../constants/tunisia-vat.constants';
 
 @Injectable({ providedIn: 'root' })
 export class PdfGeneratorFactureService {
@@ -13,39 +17,31 @@ export class PdfGeneratorFactureService {
   constructor(private translationService: TranslateService) {}
 
   // ============================================================
-  // FACTURE (Invoice) – matches sample layout:
-  // Client block LEFT, company/title block RIGHT,
-  // perfectly aligned table + right-locked grand total.
+  // FACTURE (Invoice) – canonical commercial layout (FACTURE SUISSE)
   // ============================================================
   async generatePdfDocument(config: PdfFactureConfig): Promise<void> {
     try {
       const base64Logo = await this.pickLogo(config.companyInfo?.logoUrl);
       const doc = new jsPDF({ unit: 'mm', format: 'a4' });
 
-      // ---------- GRID / CONSTANTS ----------
       const pageWidth = 210;
       const marginLeft = 12;
       const marginRight = 12;
       const contentWidth = pageWidth - marginLeft - marginRight;
+      const rightMetaX = pageWidth - marginRight;
+      const fsS = 9;
+      const fsM = 10;
+      const fsL = 12;
+      const lineStep = 4.5;
+      const currency = (config.currency || 'TND').toUpperCase();
+      const defaultVat =
+        config.defaultVatRatePercent ??
+        (currency === 'EURO' || currency === 'EUR' ? 0 : TUNISIA_VAT_STANDARD_RATE);
 
-      // Two-column header (client left, company/right on the right)
-      const gap = 6;
-      const leftColW = 96; // left column width (client block)
-      const rightColW = contentWidth - leftColW - gap;
-
-      const leftColX = marginLeft;
-      const rightColX = marginLeft + leftColW + gap;
-
-      const headerTopY = 12;
-
-      // Fonts
-      const fsS = 9, fsM = 10, fsL = 12;
-
-      // Helpers
       const t = (key: string) => this.translationService.instant(key);
-      const norm = (v: any) => (v == null || v === 'undefined' ? '' : String(v).trim());
+      const norm = (v: unknown) => (v == null || v === 'undefined' ? '' : String(v).trim());
       const safeText = (
-        text: any,
+        text: unknown,
         x: number,
         y: number,
         align: 'left' | 'right' | 'center' = 'left'
@@ -54,344 +50,283 @@ export class PdfGeneratorFactureService {
         if (str) doc.text(str, x, y, { align });
       };
       const drawWrapped = (
-        text: any,
+        text: unknown,
         x: number,
         y: number,
         maxWidth: number,
-        lineStep = 5,
+        step = lineStep,
         align: 'left' | 'right' | 'center' = 'left'
-      ) => {
+      ): number => {
         const str = norm(text);
         if (!str) return y;
         const lines = doc.splitTextToSize(str, maxWidth);
-        lines.forEach((ln: string, i: number) => doc.text(ln, x, y + i * lineStep, { align }));
-        return y + lines.length * lineStep;
+        lines.forEach((ln: string, i: number) => doc.text(ln, x, y + i * step, { align }));
+        return y + lines.length * step;
       };
 
-      // ---------- LEFT COLUMN: Logo + Company info ----------
-      const logoW = 48, logoH = 48;
+      const headerTopY = 12;
+      const logoW = 38;
+      const logoH = 38;
+      const leftColW = 96;
 
-      // LOGO (top-left)
+      // ---------- TOP LEFT: logo + company ----------
       if (base64Logo) {
-        const logoX = leftColX;
         try {
-          doc.addImage(base64Logo, undefined as any, logoX, headerTopY, logoW, logoH);
+          doc.addImage(base64Logo, undefined as any, marginLeft, headerTopY, logoW, logoH);
         } catch {
-          doc.addImage(base64Logo, 'JPEG', logoX, headerTopY, logoW, logoH);
+          doc.addImage(base64Logo, 'JPEG', marginLeft, headerTopY, logoW, logoH);
         }
       }
 
-      // COMPANY INFO (left column, below logo) — now wrapped
-      let companyY = headerTopY + logoH + 4;
+      let companyY = headerTopY + logoH + 3;
+      doc.setFont(this._fontName, 'bold');
+      doc.setFontSize(fsM);
+      companyY = drawWrapped(config.companyInfo?.companyName, marginLeft, companyY, leftColW);
+
       doc.setFont(this._fontName, 'normal');
       doc.setFontSize(fsS);
-
-      const companyMaxW = leftColW; // keep within the left column
-      companyY = drawWrapped(config.companyInfo?.address || t('PDF.ADDRESS'), leftColX, companyY, companyMaxW);
+      companyY = drawWrapped(config.companyInfo?.address, marginLeft, companyY, leftColW);
       if (config.companyInfo?.vatNumber) {
-        companyY = drawWrapped(`${t('PDF.VAT')}: ${config.companyInfo.vatNumber}`, leftColX, companyY, companyMaxW);
+        companyY = drawWrapped(`${t('PDF.TAX_ID')}: ${config.companyInfo.vatNumber}`, marginLeft, companyY, leftColW);
       }
       if (config.companyInfo?.mobile) {
-        companyY = drawWrapped(`${t('PDF.MOBILE')}: ${config.companyInfo.mobile}`, leftColX, companyY, companyMaxW);
+        companyY = drawWrapped(`${t('PDF.MOBILE')} ${config.companyInfo.mobile}`, marginLeft, companyY, leftColW);
       }
       if (config.companyInfo?.website) {
-        companyY = drawWrapped(`${t('PDF.WEBSITE')}: ${config.companyInfo.website}`, leftColX, companyY, companyMaxW);
+        companyY = drawWrapped(config.companyInfo.website, marginLeft, companyY, leftColW);
       }
 
       const companyBottom = companyY;
 
-      // ---------- RIGHT COLUMN: Title + Reference ----------
+      // ---------- TOP RIGHT: title + invoice meta ----------
+      const titleKey = config.title || 'PDF.COMMERCIAL_INVOICE';
+      const titleText = titleKey.startsWith('PDF.') ? t(titleKey) : titleKey;
+      const conditions = this.resolveConditions(config);
+
       doc.setFont(this._fontName, 'bold');
       doc.setFontSize(fsL);
-      // keep centered at right area; allow wrapping if extremely long
-      const rightCenterX = pageWidth - (marginRight + 20);
-      drawWrapped(t('PDF.INVOICE') || 'Facture', rightCenterX, headerTopY + 20, rightColW, 5, 'center');
+      safeText(titleText, rightMetaX, headerTopY + 8, 'right');
 
-      // Reference (wrap if long)
-      doc.setFontSize(fsM);
-      drawWrapped(config.reference || '', rightCenterX, headerTopY + 15, rightColW, 5, 'center');
+      doc.setFont(this._fontName, 'normal');
+      doc.setFontSize(fsS);
+      let metaY = headerTopY + 16;
+      safeText(config.reference || '', rightMetaX, metaY, 'right');
+      metaY += lineStep + 1;
+      safeText(this.formatInvoiceDate(config.date), rightMetaX, metaY, 'right');
+      if (conditions) {
+        metaY += lineStep + 1;
+        safeText(`${t('PDF.CONDITIONS')}: ${conditions}`, rightMetaX, metaY, 'right');
+      }
 
-      // ---------- CLIENT BLOCK (below company info, bordered) ----------
-      let terms = '';
-      const clientInfo = (config.generalInfo || []).filter(
-        (g) =>
-          g &&
-          g.value != null &&
-          String(g.value).trim() !== '' &&
-          g.label !== 'PDF.OPERATION_TYPE' &&
-          g.label !== 'PDF.INVOICE_NUMBER' &&
-          g.label !== 'PDF.LOT_NUMBER' &&
-          g.label !== 'PDF.REFERENCE_DATE'
-      );
-
-      (config.generalInfo || []).forEach((g) => {
-        if (g.label === 'PDF.OPERATION_TYPE') {
-          terms = String(g.value).trim();
-        }
-      });
-
-      const clientBlockX = leftColX;
-      const clientBlockY = companyBottom + 10;
+      // ---------- CLIENT BOX (name + address only) ----------
+      const clientLines = this.resolveClientLines(config);
+      const clientBlockX = marginLeft;
+      const clientBlockY = companyBottom + 8;
       const clientBlockW = leftColW;
       const pad = 4;
 
-      // measure height
-      let clientBlockH = 0;
-      if (clientInfo.length) {
-        clientInfo.forEach((info) => {
-          const full = `${t(info.label)}: ${info.value}`;
-          const lines = doc.splitTextToSize(full, clientBlockW - pad * 2);
-          clientBlockH += lines.length * 5;
-        });
-      }
-
-      // border (no fill)
-      doc.setDrawColor(0);
-      doc.rect(clientBlockX, clientBlockY, clientBlockW, clientBlockH + pad * 2, 'D');
-
-      // content (no title)
       doc.setFont(this._fontName, 'normal');
       doc.setFontSize(fsS);
-      let y = clientBlockY + pad + 4;
-      clientInfo.forEach((info) => {
-        const full = `${t(info.label)}: ${info.value}`;
-        y = drawWrapped(full, clientBlockX + pad, y, clientBlockW - pad * 2, 5);
+      let clientContentH = 0;
+      clientLines.forEach((line) => {
+        const lines = doc.splitTextToSize(line, clientBlockW - pad * 2);
+        clientContentH += lines.length * lineStep;
       });
 
-      const clientBottom = clientBlockY + clientBlockH + pad * 2;
+      const clientBlockH = clientContentH + pad * 2;
+      doc.setDrawColor(0);
+      doc.rect(clientBlockX, clientBlockY, clientBlockW, clientBlockH, 'D');
 
-      // ---------- RIGHT OF CLIENT: Date and Terms ----------
-      const rightClientX = clientBlockX + clientBlockW + 10;
-      let rightClientY = clientBlockY + pad + 4;
-      safeText(`${t('PDF.DATE')}: ${config.date || new Date().toLocaleDateString()}`, rightClientX, rightClientY);
-      rightClientY += 7;
-      if (terms) {
-        const label = `${t('PDF.TERMS') || 'Terms'}: `;
-        const labelW = doc.getTextWidth(label);
-        safeText(label, rightClientX, rightClientY);
-        doc.setTextColor(0, 0, 255);
-        // wrap the value portion if long
-        rightClientY = drawWrapped(terms, rightClientX + labelW, rightClientY, rightColW - labelW, 5);
-        doc.setTextColor(0);
-        rightClientY += 2;
-      }
+      let clientTextY = clientBlockY + pad + 3;
+      clientLines.forEach((line) => {
+        clientTextY = drawWrapped(line, clientBlockX + pad, clientTextY, clientBlockW - pad * 2);
+      });
 
-      const rightClientBottom = rightClientY;
+      let currentY = clientBlockY + clientBlockH + 10;
 
-      // current Y for table
-      let currentY = Math.max(clientBottom, rightClientBottom) + 12;
-
-      // ---------- PRODUCTS TABLE ----------
+      // ---------- PRODUCTS TABLE (Tunisia TVA: HT + rate + VAT + TTC per line) ----------
       const tableLeft = marginLeft;
       const cols = [
-        { key: 'desc', w: 100 },
-        { key: 'unit', w: 30 },
-        { key: 'qty', w: 30 },
-        { key: 'total', w: 30 }
+        { w: 52 },
+        { w: 24 },
+        { w: 18 },
+        { w: 24 },
+        { w: 14 },
+        { w: 24 },
+        { w: 24 }
       ];
-
-      // Precompute X positions
       const colX: number[] = [tableLeft];
       for (let i = 0; i < cols.length - 1; i++) colX.push(colX[i] + cols[i].w);
 
-      const headerH = 10;
-      const rowH = 8;
+      const headerH = 9;
+      const lineItems = this.resolveLineItems(config);
+      const taxTotals = { ht: 0, vat: 0, ttc: 0 };
 
-      // Header background
-      doc.setFillColor(225, 225, 225);
-      cols.forEach((c, i) => doc.rect(colX[i], currentY, c.w, headerH, 'FD'));
+      cols.forEach((c, i) => doc.rect(colX[i], currentY, c.w, headerH));
 
-      // Header labels (centered)
       doc.setFont(this._fontName, 'bold');
       doc.setFontSize(fsS);
+      const priceUnitSuffix = this.resolvePriceUnitSuffix(lineItems);
       safeText(t('PDF.DESCRIPTION'), colX[0] + cols[0].w / 2, currentY + 6, 'center');
-      safeText(t('Price'),          colX[1] + cols[1].w / 2, currentY + 6, 'center');
-      safeText(t('PDF.QUANTITY'),   colX[2] + cols[2].w / 2, currentY + 6, 'center');
-      safeText(t('PDF.TOTAL_AMOUNT'), colX[3] + cols[3].w / 2, currentY + 6, 'center');
+      safeText(`${t('PDF.UNIT_PRICE_HT')} ${currency}${priceUnitSuffix}`, colX[1] + cols[1].w / 2, currentY + 6, 'center');
+      safeText(t('PDF.QUANTITY'), colX[2] + cols[2].w / 2, currentY + 6, 'center');
+      safeText(`${t('PDF.AMOUNT_HT')} ${currency}`, colX[3] + cols[3].w / 2, currentY + 6, 'center');
+      safeText(t('PDF.VAT_RATE'), colX[4] + cols[4].w / 2, currentY + 6, 'center');
+      safeText(`${t('PDF.VAT_AMOUNT')} ${currency}`, colX[5] + cols[5].w / 2, currentY + 6, 'center');
+      safeText(`${t('PDF.TOTAL_TTC')} ${currency}`, colX[6] + cols[6].w / 2, currentY + 6, 'center');
 
       currentY += headerH;
-
-      // Rows (config.fields)
       doc.setFont(this._fontName, 'normal');
-      doc.setFontSize(fsS);
 
-      const lines = (config.fields || []) as Array<{ label: string; value: string }>;
-      let grandTotal = 0;
+      lineItems.forEach((item) => {
+        const line = this.computeLineTax(item, defaultVat);
+        taxTotals.ht += line.ht;
+        taxTotals.vat += line.vat;
+        taxTotals.ttc += line.ttc;
 
-      // Group the 4 standard fields into ONE row if present
-      const byLabel: Record<string, string> = {};
-      lines.forEach((it) => (byLabel[it.label] = it.value));
+        const descLines = doc.splitTextToSize(item.description || '', cols[0].w - 4);
+        const rowH = Math.max(8, descLines.length * lineStep + 3);
 
-      const hasStdFields =
-        byLabel['PDF.DESCRIPTION'] != null ||
-        byLabel['PDF.PRICE_UNIT'] != null ||
-        byLabel['PDF.QUANTITY'] != null ||
-        byLabel['PDF.TOTAL'] != null;
-
-      if (hasStdFields) {
-        const desc = terms || '';
-        const unitPriceNum = this.parseNumberFrom(byLabel['PDF.PRICE_UNIT'] || '');
-        const qtyNum = this.parseNumberFrom(byLabel['PDF.QUANTITY'] || '');
-        let totalNum = this.parseNumberFrom(byLabel['PDF.TOTAL'] || '');
-
-        if ((!totalNum || Number.isNaN(totalNum)) && isFinite(unitPriceNum) && isFinite(qtyNum)) {
-          totalNum = unitPriceNum * qtyNum;
-        }
-
-        // draw row borders
         cols.forEach((c, i) => doc.rect(colX[i], currentY, c.w, rowH));
 
-        // description (left-aligned) — keep single line to preserve row height
-        const descLines = doc.splitTextToSize(desc, cols[0].w - 4);
-        safeText(descLines[0] || '', colX[0] + 2, currentY + 5);
-
-        // numbers (centered)
-        const unitStr = isFinite(unitPriceNum) && unitPriceNum !== 0 ? this.formatMoney(unitPriceNum) : '';
-        const qtyStr = isFinite(qtyNum) && qtyNum !== 0 ? this.formatQty(qtyNum) : '';
-        const totStr = isFinite(totalNum) && totalNum !== 0 ? this.formatMoney(totalNum) : '';
-
-        safeText(unitStr, colX[1] + cols[1].w / 2, currentY + 5, 'center');
-        safeText(qtyStr,  colX[2] + cols[2].w / 2, currentY + 5, 'center');
-        safeText(totStr,  colX[3] + cols[3].w / 2, currentY + 5, 'center');
-
-        grandTotal += isFinite(totalNum) ? totalNum : 0;
-        currentY += rowH;
-      } else {
-        // Fallback: each line as its own row
-        lines.forEach((it) => {
-          const { desc, unitPrice, qty, total } = this.parseInvoiceLine(it.label, it.value);
-
-          cols.forEach((c, i) => doc.rect(colX[i], currentY, c.w, rowH));
-
-          const descLines = doc.splitTextToSize(desc, cols[0].w - 4);
-          safeText(descLines[0] || '', colX[0] + 2, currentY + 5);
-
-          const unitStr = unitPrice != null ? this.formatMoney(unitPrice) : '';
-          const qtyStr = qty != null ? this.formatQty(qty) : '';
-          const rowTot = total != null ? total : unitPrice != null && qty != null ? unitPrice * qty : null;
-          const totStr = rowTot != null ? this.formatMoney(rowTot) : '';
-
-          safeText(unitStr, colX[1] + cols[1].w / 2, currentY + 5, 'center');
-          safeText(qtyStr,  colX[2] + cols[2].w / 2, currentY + 5, 'center');
-          safeText(totStr,  colX[3] + cols[3].w / 2, currentY + 5, 'center');
-
-          if (rowTot != null) grandTotal += rowTot;
-          currentY += rowH;
+        descLines.forEach((ln: string, i: number) => {
+          safeText(ln, colX[0] + 2, currentY + 5 + i * lineStep);
         });
+
+        safeText(
+          isFinite(item.unitPrice) && item.unitPrice !== 0 ? this.formatMoney(item.unitPrice, currency) : '',
+          colX[1] + cols[1].w / 2,
+          currentY + 5,
+          'center'
+        );
+        safeText(
+          isFinite(item.quantity) && item.quantity !== 0
+            ? this.formatQtyWithUnit(item.quantity, item.unit)
+            : '',
+          colX[2] + cols[2].w / 2,
+          currentY + 5,
+          'center'
+        );
+        safeText(this.formatMoney(line.ht, currency), colX[3] + cols[3].w / 2, currentY + 5, 'center');
+        safeText(this.formatQty(line.vatRate), colX[4] + cols[4].w / 2, currentY + 5, 'center');
+        safeText(this.formatMoney(line.vat, currency), colX[5] + cols[5].w / 2, currentY + 5, 'center');
+        safeText(this.formatMoney(line.ttc, currency), colX[6] + cols[6].w / 2, currentY + 5, 'center');
+
+        currentY += rowH;
+      });
+
+      currentY += 4;
+
+      // ---------- TVA SUMMARY ----------
+      const summaryX = pageWidth - marginRight;
+      doc.setFont(this._fontName, 'bold');
+      doc.setFontSize(fsS);
+      safeText(`${t('PDF.SUBTOTAL_HT')} ${currency}: ${this.formatMoney(taxTotals.ht, currency)}`, summaryX, currentY, 'right');
+      currentY += lineStep + 1;
+      safeText(`${t('PDF.TOTAL_VAT')} ${currency}: ${this.formatMoney(taxTotals.vat, currency)}`, summaryX, currentY, 'right');
+      currentY += lineStep + 1;
+      if (config.suspendedVatAmount && config.suspendedVatAmount > 0) {
+        safeText(
+          `${t('PDF.SUSPENDED_VAT')} ${currency}: ${this.formatMoney(config.suspendedVatAmount, currency)}`,
+          summaryX,
+          currentY,
+          'right'
+        );
+        currentY += lineStep + 1;
+      }
+      doc.setFontSize(fsM);
+      safeText(`${t('PDF.TOTAL_TTC')} ${currency}: ${this.formatMoney(taxTotals.ttc, currency)}`, summaryX, currentY, 'right');
+      currentY += lineStep + 4;
+
+      doc.setFont(this._fontName, 'normal');
+      doc.setFontSize(8);
+      currentY = drawWrapped(t(TUNISIA_VAT_LEGAL_MENTION_KEY), marginLeft, currentY, contentWidth);
+      currentY += 6;
+
+      // ---------- LOGISTICS (below table, left) ----------
+      const add = config.additionalInfo || {};
+      const logisticsLines: string[] = [];
+      if (add.grossWeight) {
+        logisticsLines.push(`${t('PDF.GROSS_WEIGHT_TOTAL')}: ${add.grossWeight}`);
+      }
+      if (add.netWeight) {
+        logisticsLines.push(`${t('PDF.NET_WEIGHT_TOTAL')}: ${add.netWeight}`);
+      }
+      if (add.packages) {
+        logisticsLines.push(`${t('PDF.NUMBER_OF_PACKAGES')}: ${add.packages}`);
+      }
+      if (add.incoterm) {
+        logisticsLines.push(`${t('PDF.INCOTERM')}: ${add.incoterm}`);
+      }
+      if (add.deliveryAddress) {
+        logisticsLines.push(`${t('PDF.DELIVERY_ADDRESS')}: ${add.deliveryAddress}`);
       }
 
-      // ---------- GRAND TOTAL BOX (exactly the Total column) ----------
-      const totalBoxX = colX[3];
-      const totalBoxW = cols[3].w;
-      const totalBoxY = currentY;
-
-      doc.setLineWidth(0.5);
-      doc.rect(totalBoxX, totalBoxY, totalBoxW, rowH);
-      doc.setFont(this._fontName, 'bold');
-      doc.setFontSize(fsM);
-      safeText(this.formatMoney(grandTotal), totalBoxX + totalBoxW / 2, totalBoxY + 5.2, 'center');
-
-      currentY += rowH + 8;
-
-      // ---------- BOTTOM INFO BLOCKS ----------
-      const blockLeftX = leftColX;
-      const blockRightX = rightColX;
-      const blockLeftW = leftColW;
-      const blockRightW = rightColW;
-
-      // Additional Info (left) — already wrapped
-      const add = config.additionalInfo || {};
-      const addLines: string[] = [];
-      if (add.grossWeight) addLines.push(`${t('PDF.GROSS_WEIGHT')}: ${add.grossWeight}`);
-      if (add.netWeight)   addLines.push(`${t('PDF.NET_WEIGHT')}: ${add.netWeight}`);
-      if (add.packages)    addLines.push(`${t('PDF.PACKAGES')}: ${add.packages}`);
-      if (add.incoterm)    addLines.push(`${t('PDF.INCOTERM')}: ${add.incoterm}`);
-      if (add.deliveryAddress) addLines.push(`${t('PDF.DELIVERY_ADDRESS')}: ${add.deliveryAddress}`);
+      const blockLeftW = 96;
+      const blockRightX = marginLeft + blockLeftW + 8;
+      const blockRightW = contentWidth - blockLeftW - 8;
 
       let leftBottomY = currentY;
-      if (addLines.length) {
-        doc.setFont(this._fontName, 'bold');
-        doc.setFontSize(fsS);
-        safeText(t('PDF.ADDITIONAL_INFO'), blockLeftX, leftBottomY);
-        leftBottomY += 5;
+      doc.setFont(this._fontName, 'normal');
+      doc.setFontSize(fsS);
+      logisticsLines.forEach((ln) => {
+        leftBottomY = drawWrapped(ln, marginLeft, leftBottomY, blockLeftW);
+      });
 
-        doc.setFont(this._fontName, 'normal');
-        doc.setFontSize(fsS);
-        addLines.forEach((ln) => {
-          leftBottomY = drawWrapped(ln, blockLeftX, leftBottomY, blockLeftW, 5);
-        });
-      }
-
-      // Bank Info (right) — now wrapped
+      // ---------- BANK DETAILS (right column) ----------
       const bank = config.bankInfo || {};
       let rightBottomY = currentY;
       if (bank.bankName || bank.iban || bank.swiftCode) {
         doc.setFont(this._fontName, 'bold');
         doc.setFontSize(fsS);
-        safeText(t('PDF.BANK_INFO'), blockRightX, rightBottomY);
-        rightBottomY += 5;
+        safeText(t('PDF.BANK_DETAILS'), blockRightX, rightBottomY);
+        rightBottomY += lineStep;
 
         doc.setFont(this._fontName, 'normal');
-        doc.setFontSize(fsS);
         if (bank.bankName) {
-          rightBottomY = drawWrapped(`${t('PDF.BANK')}: ${bank.bankName}`, blockRightX, rightBottomY, blockRightW, 5);
+          rightBottomY = drawWrapped(`${t('PDF.BANK')}: ${bank.bankName}`, blockRightX, rightBottomY, blockRightW);
         }
         if (bank.iban) {
-          rightBottomY = drawWrapped(`IBAN: ${bank.iban}`, blockRightX, rightBottomY, blockRightW, 5);
+          rightBottomY = drawWrapped(`IBAN: ${bank.iban}`, blockRightX, rightBottomY, blockRightW);
         }
         if (bank.swiftCode) {
-          rightBottomY = drawWrapped(`SWIFT: ${bank.swiftCode}`, blockRightX, rightBottomY, blockRightW, 5);
+          rightBottomY = drawWrapped(`${t('PDF.SWIFT_CODE')}: ${bank.swiftCode}`, blockRightX, rightBottomY, blockRightW);
         }
       }
 
       currentY = Math.max(leftBottomY, rightBottomY) + 6;
 
-      // Payment Terms (full width) — wrapped & centered
+      // ---------- PAYMENT TERMS ----------
       const termsList = config.paymentTerms || [];
       if (termsList.length) {
         doc.setFont(this._fontName, 'bold');
         doc.setFontSize(fsS);
-        safeText(t('PDF.PAYMENT_TERMS'), pageWidth / 2, currentY, 'center');
-        currentY += 5;
+        safeText(t('PDF.PAYMENT_TERMS'), marginLeft, currentY);
+        currentY += lineStep;
 
         doc.setFont(this._fontName, 'normal');
-        doc.setFontSize(fsS);
-        const fullW = pageWidth - marginLeft - marginRight;
         termsList.forEach((term) => {
-          const wrapped = doc.splitTextToSize(`• ${term}`, fullW);
-          wrapped.forEach((wln: string) => {
-            safeText(wln, pageWidth / 2, currentY, 'center');
-            currentY += 5;
-          });
+          currentY = drawWrapped(`• ${term}`, marginLeft, currentY, contentWidth);
         });
         currentY += 2;
       }
 
-      // Footer contact (full width) — wrapped & centered
+      // ---------- FOOTER (bottom-left) ----------
       const fc = config.footerContact || {};
-      if (fc.name || fc.phone) {
-        doc.setFont(this._fontName, 'bold');
-        doc.setFontSize(fsS);
-        safeText(t('PDF.CONTACT'), pageWidth / 2, currentY, 'center');
-        currentY += 5;
-
-        doc.setFont(this._fontName, 'normal');
-        doc.setFontSize(fsS);
-        const parts = [
-          fc.name ? `${t('PDF.NAME')}: ${fc.name}` : '',
-          fc.phone ? `${t('PDF.PHONE')}: ${fc.phone}` : ''
-        ].filter(Boolean);
-        const fullW = pageWidth - marginLeft - marginRight;
-        parts.forEach((p) => {
-          const wrapped = doc.splitTextToSize(p, fullW);
-          wrapped.forEach((ln: string) => {
-            safeText(ln, pageWidth / 2, currentY, 'center');
-            currentY += 5;
-          });
-        });
+      const footerY = 285;
+      let footY = footerY;
+      doc.setFont(this._fontName, 'normal');
+      doc.setFontSize(fsS);
+      if (fc.companyName || config.companyInfo?.companyName) {
+        footY = drawWrapped(fc.companyName || config.companyInfo?.companyName, marginLeft, footY, leftColW);
+      }
+      if (fc.name) {
+        footY = drawWrapped(fc.name, marginLeft, footY, leftColW);
+      }
+      if (fc.phone) {
+        drawWrapped(`${t('PDF.MOBILE')} ${fc.phone}`, marginLeft, footY, leftColW);
       }
 
-      // OPEN
       window.open(doc.output('bloburl'), '_blank');
     } catch (err) {
       console.error('Erreur lors de la génération de la facture :', err);
@@ -671,6 +606,144 @@ export class PdfGeneratorFactureService {
     }
   }
 
+  private resolveConditions(config: PdfFactureConfig): string {
+    if (config.conditions) return config.conditions;
+    const op = (config.generalInfo || []).find((g) => g.label === 'PDF.OPERATION_TYPE');
+    return op?.value ? String(op.value).trim() : '';
+  }
+
+  private resolveClientLines(config: PdfFactureConfig): string[] {
+    if (config.clientInfo) {
+      const lines: string[] = [];
+      if (config.clientInfo.name) lines.push(config.clientInfo.name);
+      if (config.clientInfo.taxId) {
+        lines.push(`${this.translationService.instant('PDF.TAX_ID')}: ${config.clientInfo.taxId}`);
+      }
+      (config.clientInfo.addressLines || []).forEach((l) => {
+        if (l?.trim()) lines.push(l.trim());
+      });
+      if (lines.length) return lines;
+    }
+
+    const clientLabels = new Set([
+      'PDF.CLIENT',
+      'PDF.CUSTOMER',
+      'PDF.CLIENT_NAME',
+      'PDF.ADDRESS',
+      'PDF.CLIENT_ADDRESS',
+      'PDF.PHONE',
+      'PDF.CLIENT_PHONE',
+      'PDF.REGION'
+    ]);
+    const skip = new Set([
+      'PDF.OPERATION_TYPE',
+      'PDF.INVOICE_NUMBER',
+      'PDF.LOT_NUMBER',
+      'PDF.REFERENCE_DATE',
+      'PDF.INVOICE_DATE',
+      'PDF.DELIVERY_DATE',
+      'PDF.SALE_DATE'
+    ]);
+
+    return (config.generalInfo || [])
+      .filter((g) => g?.value && String(g.value).trim() && !skip.has(g.label))
+      .filter((g) => clientLabels.has(g.label))
+      .map((g) => String(g.value).trim());
+  }
+
+  private resolveLineItems(config: PdfFactureConfig): PdfInvoiceLineItem[] {
+    if (config.lineItems?.length) {
+      const defaultRate = config.defaultVatRatePercent ?? TUNISIA_VAT_STANDARD_RATE;
+      return config.lineItems.map((item) => ({
+        ...item,
+        vatRatePercent: item.vatRatePercent ?? defaultRate
+      }));
+    }
+
+    const paymentLabels = new Set([
+      'PDF.PAID_AMOUNT',
+      'PDF.UNPAID_AMOUNT',
+      'PDF.PAYMENT_STATUS',
+      'PDF.TOTAL_SERVICE_AMOUNT',
+      'PDF.TOTAL_AMOUNT',
+      'PDF.TOTAL'
+    ]);
+
+    const lines = (config.fields || []).filter((f) => !paymentLabels.has(f.label));
+    const byLabel: Record<string, string> = {};
+    lines.forEach((it) => (byLabel[it.label] = it.value));
+
+    const hasStdFields =
+      byLabel['PDF.DESCRIPTION'] != null ||
+      byLabel['PDF.SERVICE_DESCRIPTION'] != null ||
+      byLabel['PDF.PRICE_UNIT'] != null ||
+      byLabel['PDF.QUANTITY'] != null ||
+      byLabel['PDF.TOTAL'] != null;
+
+    if (hasStdFields) {
+      const desc =
+        byLabel['PDF.DESCRIPTION'] ||
+        byLabel['PDF.SERVICE_DESCRIPTION'] ||
+        this.resolveConditions(config) ||
+        '';
+      const unitPriceNum = this.parseNumberFrom(byLabel['PDF.PRICE_UNIT'] || '');
+      const qtyNum = this.parseNumberFrom(byLabel['PDF.QUANTITY'] || '');
+      let totalNum = this.parseNumberFrom(
+        byLabel['PDF.TOTAL'] || byLabel['PDF.TOTAL_AMOUNT'] || byLabel['PDF.TOTAL_SERVICE_AMOUNT'] || ''
+      );
+      if ((!totalNum || Number.isNaN(totalNum)) && isFinite(unitPriceNum) && isFinite(qtyNum)) {
+        totalNum = unitPriceNum * qtyNum;
+      }
+      const translated = this.translationService.instant(desc);
+      return [
+        {
+          description: translated !== desc ? translated : desc,
+          unitPrice: unitPriceNum,
+          quantity: qtyNum,
+          total: totalNum,
+          vatRatePercent: config.defaultVatRatePercent ?? TUNISIA_VAT_STANDARD_RATE
+        }
+      ];
+    }
+
+    return lines.map((it) => {
+      const { desc, unitPrice, qty, total } = this.parseInvoiceLine(it.label, it.value);
+      const translatedDesc = this.translationService.instant(desc);
+      return {
+        description: translatedDesc !== desc ? translatedDesc : desc,
+        unitPrice: unitPrice ?? 0,
+        quantity: qty ?? 0,
+        total: total ?? undefined,
+        vatRatePercent: config.defaultVatRatePercent ?? TUNISIA_VAT_STANDARD_RATE
+      };
+    });
+  }
+
+  private computeLineTax(
+    item: PdfInvoiceLineItem,
+    defaultVatRate: number
+  ): { ht: number; vatRate: number; vat: number; ttc: number } {
+    const vatRate = item.vatRatePercent ?? defaultVatRate ?? TUNISIA_VAT_STANDARD_RATE;
+    const ht =
+      item.total != null && isFinite(item.total)
+        ? item.total
+        : (item.unitPrice || 0) * (item.quantity || 0);
+    const vat = ht * (vatRate / 100);
+    return { ht, vatRate, vat, ttc: ht + vat };
+  }
+
+  private formatInvoiceDate(date?: string): string {
+    const parsed = date ? new Date(date) : new Date();
+    if (!isNaN(parsed.getTime())) {
+      return parsed.toLocaleDateString('fr-FR', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+      });
+    }
+    return date || new Date().toLocaleDateString('fr-FR');
+  }
+
   /**
    * Parse a number from a string like "9.500 TND/kg" or "100 kg".
    * Keeps only the first valid numeric token.
@@ -727,11 +800,12 @@ export class PdfGeneratorFactureService {
     return { desc, unitPrice, qty, total };
   }
 
-  private formatMoney(n: number): string {
+  private formatMoney(n: number, currency = 'TND'): string {
     if (!isFinite(n)) return '0';
-    let s = n.toFixed(3).replace('.', ',');
+    const decimals = currency === 'EURO' || currency === 'EUR' ? 2 : 3;
+    let s = n.toFixed(decimals).replace('.', ',');
     s = s.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-    if (s.endsWith(',000')) {
+    if (decimals === 3 && s.endsWith(',000')) {
       s = s.slice(0, -4);
     }
     return s;
@@ -743,5 +817,18 @@ export class PdfGeneratorFactureService {
       return n.toString();
     }
     return n.toFixed(2).replace('.', ',');
+  }
+
+  private formatQtyWithUnit(quantity: number, unit?: string): string {
+    const formatted = this.formatQty(quantity);
+    if (!unit) {
+      return formatted;
+    }
+    return `${formatted} ${unit}`;
+  }
+
+  private resolvePriceUnitSuffix(lineItems: PdfInvoiceLineItem[]): string {
+    const unit = lineItems.find((item) => item.unit)?.unit;
+    return unit ? `/${unit}` : '';
   }
 }

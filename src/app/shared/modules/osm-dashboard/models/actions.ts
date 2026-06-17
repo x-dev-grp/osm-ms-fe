@@ -26,6 +26,7 @@ export const ACTION_ICONS: Map<string, string> = new Map<string, string>([
   ['OIL_RECEPTION', 'download'],
   ['SET_PRICE', 'attach_money '],
   ['GEN_PDF', 'print'],
+  ['PRINT_BILL', 'request_quote'],
   ['GEN_PDF_QC_OIL', 'print'],
   ['GEN_PDF_QC_OLIVE', 'print'],
   ['GEN_PDF_BON_COMMANDE', 'print'],

@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import {
-  FinancialTransaction
-} from '../models/financial-transaction.model';
+import { FinancialTransaction, TransactionBillRequest } from '../models/financial-transaction.model';
 import { ApiResponse, ApiSingleResponse } from '../../shared/models/api-response';
 
 export interface SupplierFinancialSummary {
@@ -24,6 +22,7 @@ export interface SupplierFinancialSummary {
 })
 export class FinancialTransactionService {
   private baseUrl = environment.apiUrl + '/api/finance/transactions';
+  private billBaseUrl = environment.apiUrl + '/api/finance/bills';
 
   constructor(private http: HttpClient) {}
 
@@ -93,6 +92,13 @@ export class FinancialTransactionService {
 
   getSupplierFinancialSummary(supplierId: string): Observable<SupplierFinancialSummary> {
     return this.http.get<SupplierFinancialSummary>(`${this.baseUrl}/supplier/${supplierId}/summary`);
+  }
+
+  generateTransactionBillPdf(transactionId: string, payload: TransactionBillRequest): Observable<HttpResponse<Blob>> {
+    return this.http.post(`${this.billBaseUrl}/transactions/${transactionId}/pdf`, payload, {
+      observe: 'response',
+      responseType: 'blob'
+    });
   }
 
 }
