@@ -9,26 +9,28 @@
     </div>
     <div class="status-badges" *ngIf="!loading && lines.length">
       <span class="badge ok" *ngIf="allSufficient">
-        <i class="fas fa-circle-check"></i> Stock suffisant
+        <i class="fas fa-circle-check"></i>  {{ 'AUTO.STOCK_SUFFISANT' | translate }}
       </span>
       <span class="badge ko" *ngIf="!allSufficient">
-        <i class="fas fa-triangle-exclamation"></i> Stock insuffisant
+        <i class="fas fa-triangle-exclamation"></i>  {{ 'AUTO.STOCK_INSUFFISANT' | translate }}
       </span>
     </div>
   </header>
 
   <p class="mode-hint" *ngIf="useReservedStock">
     <i class="fas fa-bookmark"></i>
-    Mode projet : les besoins sont comparés au stock <strong>réservé</strong> (pas au disponible libre).
+
+    {{ 'AUTO.MODE_PROJET_LES_BESOINS_SONT_COMPARES_AU_STOCK' | translate }} <strong>{{ 'AUTO.RESERVE' | translate }}</strong>  {{ 'AUTO.PAS_AU_DISPONIBLE_LIBRE' | translate }}
   </p>
   <p class="mode-hint" *ngIf="!useReservedStock">
     <i class="fas fa-warehouse"></i>
-    Comparaison avec le stock <strong>disponible</strong> (actuel − réservé).
+
+    {{ 'AUTO.COMPARAISON_AVEC_LE_STOCK' | translate }} <strong>{{ 'AUTO.DISPONIBLE' | translate }}</strong>  {{ 'AUTO.ACTUEL_RESERVE' | translate }}
   </p>
 
   <div *ngIf="loading" class="state loading">
     <span class="spinner"></span>
-    <span>Calcul des besoins matières…</span>
+    <span>{{ 'AUTO.CALCUL_DES_BESOINS_MATIERES' | translate }}</span>
   </div>
 
   <div *ngIf="error" class="state error">
@@ -38,17 +40,17 @@
 
   <div *ngIf="!loading && !error && !lines.length" class="state empty">
     <i class="fas fa-list-ul"></i>
-    <span>Aucune ligne de nomenclature à afficher.</span>
+    <span>{{ 'AUTO.AUCUNE_LIGNE_DE_NOMENCLATURE_A_AFFICHER' | translate }}</span>
   </div>
 
   <div class="table-wrap" *ngIf="!loading && lines.length">
     <table class="needs-table">
       <thead>
         <tr>
-          <th>Article</th>
-          <th class="num">Besoin</th>
+          <th>{{ 'OSM_DASHBOARD.ACTIONS.ARTICLESEC' | translate }}</th>
+          <th class="num">{{ 'AUTO.BESOIN' | translate }}</th>
           <th class="num">{{ stockLabel() }}</th>
-          <th class="status-col">État</th>
+          <th class="status-col">{{ 'AUTO.ETAT' | translate }}</th>
         </tr>
       </thead>
       <tbody>
@@ -66,7 +68,7 @@
           <td class="num">{{ availableQty(line) }}</td>
           <td class="status-col">
             <span class="status ok" *ngIf="isLineOk(line)">
-              <i class="fas fa-check"></i> OK
+              <i class="fas fa-check"></i>  {{ 'AUTO.OK' | translate }}
             </span>
             <span class="status ko" *ngIf="!isLineOk(line)">
               <i class="fas fa-xmark"></i>

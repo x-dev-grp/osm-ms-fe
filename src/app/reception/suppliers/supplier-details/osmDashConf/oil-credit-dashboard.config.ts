@@ -104,6 +104,7 @@ export const OIL_CREDIT_DASHBOARD: DashboardConfig = {
     {
       name: 'supplier',
       label: 'Destinataire',
+      labelTranslatePath: 'OIL_CREDIT.FIELDS.RECIPIENT',
       attributeType: AttributeType.object,
       fieldType: FieldType.autocomplete,
       exportable: true,

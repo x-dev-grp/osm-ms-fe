@@ -3,6 +3,7 @@ import { AttributeType, DashboardConfig, FieldType } from '../../../../shared/mo
 export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
   icon: 'local_gas_station',
   title: "Ventes d'huile",
+  titleTranslatePath: 'OIL_SALES.TITLE',
   baseURL: 'production/oil_sale',
   searchEndpoint: 'production/oil_sale',
   addNewItem: false,

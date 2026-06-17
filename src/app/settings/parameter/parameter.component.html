@@ -10,39 +10,43 @@
   <table [dataSource]="filtered" class="mat-elevation-z2" mat-table>
     <!-- Code Column -->
     <ng-container matColumnDef="code">
-      <th *matHeaderCellDef mat-header-cell>Code</th>
+      <th *matHeaderCellDef mat-header-cell>{{ 'AUTO.CODE' | translate }}</th>
       <td *matCellDef="let param" mat-cell>{{ param.code }}</td>
     </ng-container>
 
     <!-- Value Column -->
     <ng-container matColumnDef="value">
-      <th *matHeaderCellDef mat-header-cell>Value</th>
+      <th *matHeaderCellDef mat-header-cell>{{ 'DASHBOARD.DAILY_METRIC.VALUE_LABEL' | translate }}</th>
       <td *matCellDef="let param" class="value-cell" mat-cell>
         <ng-container [ngSwitch]="getParameterType(param)">
           <mat-form-field *ngSwitchCase="'DOUBLE'" appearance="outline" class="value-field">
             <input step="0.01" [(ngModel)]="param.value" [formControlName]="'param_' + param.code" matInput required type="number">
             <mat-error *ngIf="paramForm.get('param_' + param.code)?.hasError('required')">
-              Value is required
+
+              {{ 'AUTO.VALUE_IS_REQUIRED' | translate }}
             </mat-error>
           </mat-form-field>
           <mat-form-field *ngSwitchCase="'INTEGER'" appearance="outline" class="value-field">
             <input step="1" [(ngModel)]="param.value" [formControlName]="'param_' + param.code" matInput required type="number">
             <mat-error *ngIf="paramForm.get('param_' + param.code)?.hasError('required')">
-              Value is required
+
+              {{ 'AUTO.VALUE_IS_REQUIRED' | translate }}
             </mat-error>
           </mat-form-field>
 
           <mat-form-field *ngSwitchCase="'STRING'" appearance="outline" class="value-field string-field">
             <textarea [(ngModel)]="param.value" [formControlName]="'param_' + param.code" matInput required rows="4"></textarea>
             <mat-error *ngIf="paramForm.get('param_' + param.code)?.hasError('required')">
-              Value is required
+
+              {{ 'AUTO.VALUE_IS_REQUIRED' | translate }}
             </mat-error>
           </mat-form-field>
 
           <mat-form-field *ngSwitchCase="'DATE'" appearance="outline" class="value-field">
             <input [(ngModel)]="param.value" [formControlName]="'param_' + param.code" matInput required type="date">
             <mat-error *ngIf="paramForm.get('param_' + param.code)?.hasError('required')">
-              Value is required
+
+              {{ 'AUTO.VALUE_IS_REQUIRED' | translate }}
             </mat-error>
           </mat-form-field>
 
@@ -54,7 +58,8 @@
           <mat-form-field *ngSwitchDefault appearance="outline" class="value-field">
             <input [(ngModel)]="param.value" [formControlName]="'param_' + param.code" matInput required type="text">
             <mat-error *ngIf="paramForm.get('param_' + param.code)?.hasError('required')">
-              Value is required
+
+              {{ 'AUTO.VALUE_IS_REQUIRED' | translate }}
             </mat-error>
           </mat-form-field>
         </ng-container>
@@ -63,7 +68,7 @@
 
     <!-- Description Column -->
     <ng-container matColumnDef="description">
-      <th *matHeaderCellDef mat-header-cell>Description</th>
+      <th *matHeaderCellDef mat-header-cell>{{ 'BASE_TYPE.FIELDS.DESCRIPTION' | translate }}</th>
       <td *matCellDef="let param" mat-cell>{{ param.description }}</td>
     </ng-container>
 
@@ -71,7 +76,7 @@
     <ng-container matColumnDef="action">
       <th *matHeaderCellDef mat-header-cell></th>
       <td *matCellDef="let param" mat-cell>
-        <button (click)="save(param)" [disabled]="param.dirty || param.invalid" aria-label="Save parameter"
+        <button (click)="save(param)" [disabled]="param.dirty || param.invalid" [attr.aria-label]="'AUTO.SAVE_PARAMETER' | translate"
                 class="save-button" mat-icon-button>
           <mat-icon>save</mat-icon>
         </button>
@@ -82,7 +87,8 @@
     <tr *matRowDef="let row; columns: displayedColumns;" mat-row></tr>
     <tr *ngIf="filtered.length === 0">
       <td [attr.colspan]="displayedColumns.length" class="empty-state-cell">
-        Aucun parametre trouve pour cette configuration.
+
+        {{ 'AUTO.AUCUN_PARAMETRE_TROUVE_POUR_CETTE_CONFIGURATION' | translate }}
       </td>
     </tr>
   </table>

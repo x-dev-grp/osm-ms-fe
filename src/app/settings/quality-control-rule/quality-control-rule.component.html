@@ -1,3 +1,8 @@
+ <div class="qc-rules-toolbar">
+   <button mat-stroked-button color="primary" type="button" (click)="provisionDefaults()" [disabled]="isLoading">
+     Charger les règles Tunisia par défaut
+   </button>
+ </div>
  <osm-dashboard #dashboard (applyAction)="onRowAction($event)" [config]="dashboardConfig"></osm-dashboard>
 
 

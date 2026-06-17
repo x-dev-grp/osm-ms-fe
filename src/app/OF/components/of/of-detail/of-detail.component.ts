@@ -1,3 +1,5 @@
+import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -7,15 +9,17 @@ import { OFService } from "../../../services/OFService";
 import { ToastService } from "../../../../shared/services/toast.service";
 import { ProductionGenealogy, ProductionRootSource } from '../../../../shared/models/production-genealogy.model';
 import { ProductionTraceabilityService } from '../../../../shared/services/production-traceability.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-of-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [TranslateModule, CommonModule, RouterLink, FormsModule],
   templateUrl: './of-detail.component.html',
   styleUrls: ['./of-detail.component.scss']
 })
 export class OFDetailComponent implements OnInit, OnDestroy {
+  private readonly i18n = inject(TranslateService);
   of!: OrdreFabrication;
   loading = true;
   time = 0;
@@ -154,7 +158,7 @@ export class OFDetailComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         console.error(err);
-        alert('Erreur lors de la génération du QR');
+        alert(this.i18n.instant('AUTO.ERREUR_LORS_DE_LA_GENERATION_DU_QR'));
         this.generatingQr = false;
       }
     });
@@ -162,7 +166,7 @@ export class OFDetailComponent implements OnInit, OnDestroy {
 
   printQr(): void {
     if (!this.of.qrImageBase64) {
-      alert('QR non disponible');
+      alert(this.i18n.instant('AUTO.QR_NON_DISPONIBLE'));
       return;
     }
 

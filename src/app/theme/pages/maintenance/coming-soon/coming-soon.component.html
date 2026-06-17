@@ -9,8 +9,8 @@
             </div>
             <div class="col-md-4">
               <div>
-                <div class="m-t-50 f-38 f-w-700">Coming Soon</div>
-                <div class="m-t-5 f-16 text-muted">Something new is on its way</div>
+                <div class="m-t-50 f-38 f-w-700">{{ 'Coming Soon' | translate }}</div>
+                <div class="m-t-5 f-16 text-muted">{{ 'AUTO.SOMETHING_NEW_IS_ON_ITS_WAY' | translate }}</div>
                 <div class="time-block row m-t-25 justify-content-center" id="timer-block">
                   <div class="col-auto">
                     <div class="time-block__item">
@@ -39,12 +39,12 @@
                 <div class="email-subscribe flex m-t-15 m-b-15 align-item-center">
                   <div class="email-box">
                     <mat-form-field appearance="outline" class="w-100 subscribe-email">
-                      <input matInput placeholder="Placeholder" />
+                      <input matInput [placeholder]="'AUTO.PLACEHOLDER' | translate" />
                     </mat-form-field>
                   </div>
                   <div class="subscribe-button m-l-20">
                     <div class="grid">
-                      <button mat-flat-button color="primary">Notify Me</button>
+                      <button mat-flat-button color="primary">{{ 'AUTO.NOTIFY_ME' | translate }}</button>
                     </div>
                   </div>
                 </div>

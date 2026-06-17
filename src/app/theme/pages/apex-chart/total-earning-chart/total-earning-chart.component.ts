@@ -6,10 +6,11 @@ import { SharedModule } from 'src/app/shared/shared.module';
 
 // third party
 import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-total-earning-chart',
-  imports: [SharedModule, NgApexchartsModule],
+  imports: [TranslateModule, SharedModule, NgApexchartsModule],
   templateUrl: './total-earning-chart.component.html',
   standalone: true,
   styleUrl: './total-earning-chart.component.scss'

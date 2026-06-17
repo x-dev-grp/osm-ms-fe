@@ -10,10 +10,11 @@ import { DARK, LIGHT } from 'src/app/theme/const';
 
 // third party
 import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-transactions-chart',
-  imports: [SharedModule, NgApexchartsModule],
+  imports: [TranslateModule, SharedModule, NgApexchartsModule],
   templateUrl: './transactions-chart.component.html',
   styleUrl: './transactions-chart.component.scss'
 })

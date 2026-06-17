@@ -1,0 +1,76 @@
+<div class="rail-card label-preview-rail">
+    <header class="rail-header">
+      <div class="rail-title">
+        <mat-icon>label</mat-icon>
+        <div>
+          <strong>Etiquette produit</strong>
+          <small>Apercu de l'etiquette generee</small>
+        </div>
+      </div>
+      @if (primaryLabel) {
+        <span class="status-pill" [class.is-final]="primaryLabel.status === 'FINALIZED'">
+          {{ statusLabel(primaryLabel.status) }}
+        </span>
+      }
+    </header>
+
+    @if (loading) {
+      <div class="rail-loading">
+        <mat-spinner diameter="32"></mat-spinner>
+        <span>Chargement de l'etiquette...</span>
+      </div>
+    } @else if (!productId) {
+      <div class="rail-placeholder">
+        <div class="placeholder-art">
+          <mat-icon>save</mat-icon>
+        </div>
+        <h3>Produit non enregistre</h3>
+        <p>Enregistrez le produit pour generer ou lier une etiquette conforme.</p>
+      </div>
+    } @else if (productType !== 'NON_VRAC') {
+      <div class="rail-placeholder">
+        <div class="placeholder-art">
+          <mat-icon>opacity</mat-icon>
+        </div>
+        <h3>Produit vrac</h3>
+        <p>Les etiquettes sont associees aux produits conditionnes (embouteilles).</p>
+      </div>
+    } @else if (primaryLabel && carouselSlides.length) {
+      <div class="rail-preview">
+        <app-label-preview-carousel
+          [slides]="carouselSlides"
+          size="miniature"
+          [showExpand]="true"
+          (expand)="openPreviewDialog($event)"
+        ></app-label-preview-carousel>
+      </div>
+      <div class="rail-actions">
+        <a mat-stroked-button [routerLink]="labelEditLink">
+          <mat-icon>edit</mat-icon>
+          Modifier l'etiquette
+        </a>
+        <a mat-button [routerLink]="['/labels', primaryLabel.id]">
+          <mat-icon>open_in_new</mat-icon>
+          Voir le detail
+        </a>
+      </div>
+    } @else {
+      <div class="rail-placeholder">
+        <div class="placeholder-art">
+          <mat-icon>qr_code_2</mat-icon>
+        </div>
+        <h3>Aucune etiquette</h3>
+        <p>Ce produit n'a pas encore d'etiquette. Creez-en une dans le studio d'etiquetage.</p>
+        <a
+          mat-flat-button
+          color="primary"
+          class="create-label-btn"
+          [routerLink]="labelCreateLink"
+          [queryParams]="labelCreateQueryParams"
+        >
+          <mat-icon>add</mat-icon>
+          Creer une etiquette
+        </a>
+      </div>
+    }
+</div>

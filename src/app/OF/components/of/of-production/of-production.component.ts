@@ -1,3 +1,5 @@
+import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -11,15 +13,17 @@ import { Stock } from '../../../../stock/models/stock.model';
 import { catchError, forkJoin, map, of } from 'rxjs';
 import { BomService } from '../../../../stock/services/BomService';
 import { MaterialNeedLine } from '../../../../shared/models/material-need-line.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-of-production',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [TranslateModule, CommonModule, RouterLink, FormsModule],
   templateUrl: './of-production.component.html',
   styleUrls: ['./of-production.component.scss']
 })
 export class OFProductionComponent implements OnInit, OnDestroy {
+  private readonly i18n = inject(TranslateService);
   of!: OrdreFabrication;
   loading = true;
   newBons = 0;
@@ -227,7 +231,7 @@ export class OFProductionComponent implements OnInit, OnDestroy {
       next: (updated) => {
         this.of = updated;
         this.startTimer();
-        this.toast.success('Production demarree');
+        this.toast.success('AUTO.PRODUCTION_DEMARREE');
       },
       error: (err) => {
         const msg = err.error?.error || err.error?.message || err.message || 'Erreur au demarrage';
@@ -239,30 +243,30 @@ export class OFProductionComponent implements OnInit, OnDestroy {
   }
 
   pause(): void {
-    if (!confirm('Mettre en pause ?')) {
+    if (!confirm(this.i18n.instant('AUTO.METTRE_EN_PAUSE'))) {
       return;
     }
     this.ofService.pause(this.of.id!).subscribe({
       next: (updated) => {
         this.of = updated;
         this.stopTimer();
-        this.toast.success('Production mise en pause');
+        this.toast.success('AUTO.PRODUCTION_MISE_EN_PAUSE');
       },
-      error: () => this.toast.error('Erreur pause')
+      error: () => this.toast.error('AUTO.ERREUR_PAUSE')
     });
   }
 
   resume(): void {
-    if (!confirm('Reprendre la production ?')) {
+    if (!confirm(this.i18n.instant('AUTO.REPRENDRE_LA_PRODUCTION'))) {
       return;
     }
     this.ofService.reprendre(this.of.id!).subscribe({
       next: (updated) => {
         this.of = updated;
         this.startTimer();
-        this.toast.success('Production reprise');
+        this.toast.success('AUTO.PRODUCTION_REPRISE');
       },
-      error: () => this.toast.error('Erreur reprise')
+      error: () => this.toast.error('AUTO.ERREUR_REPRISE')
     });
   }
 
@@ -274,10 +278,10 @@ export class OFProductionComponent implements OnInit, OnDestroy {
       next: (updated) => {
         this.of = updated;
         this.stopTimer();
-        this.toast.success('OF cloture avec succes');
+        this.toast.success('AUTO.OF_CLOTURE_AVEC_SUCCES');
       },
       error: (err) => {
-        const errorMessage = err.error?.error || err.message || 'Erreur lors de la cloture';
+        const errorMessage = err.error?.error || err.message || this.i18n.instant('AUTO.ERREUR_LORS_DE_LA_CLOTURE');
         console.error('Erreur cloture:', errorMessage);
         this.toast.error(errorMessage);
       }
@@ -286,15 +290,15 @@ export class OFProductionComponent implements OnInit, OnDestroy {
 
   recordProduction(): void {
     if (this.newBons < 0 || this.newNC < 0) {
-      alert('Les quantites ne peuvent pas etre negatives');
+      alert(this.i18n.instant('AUTO.LES_QUANTITES_NE_PEUVENT_PAS_ETRE_NEGATIVES'));
       return;
     }
     if (this.newBons === 0 && this.newNC === 0) {
-      alert('Veuillez saisir une quantite positive');
+      alert(this.i18n.instant('AUTO.VEUILLEZ_SAISIR_UNE_QUANTITE_POSITIVE'));
       return;
     }
     if (this.newNC > 0 && (!this.motifNC || this.motifNC.trim() === '')) {
-      alert('Le motif est obligatoire pour les produits non conformes (NC)');
+      alert(this.i18n.instant('AUTO.LE_MOTIF_EST_OBLIGATOIRE_POUR_LES_PRODUITS_NON_CONFORMES_NC'));
       return;
     }
 
@@ -310,10 +314,10 @@ export class OFProductionComponent implements OnInit, OnDestroy {
         this.newBons = 0;
         this.newNC = 0;
         this.motifNC = '';
-        this.toast.success('Production enregistree');
+        this.toast.success('AUTO.PRODUCTION_ENREGISTREE');
         if (updated.statut === StatutOF.CLOTURE) {
           this.stopTimer();
-          this.toast.info('Production terminee, OF cloture automatiquement');
+          this.toast.info('AUTO.PRODUCTION_TERMINEE_OF_CLOTURE_AUTOMATIQUEMENT');
         }
       },
       error: (err) => {
@@ -332,7 +336,7 @@ export class OFProductionComponent implements OnInit, OnDestroy {
     this.ofService.ajusterConsommation(this.of.id!, ajustement).subscribe({
       next: (updated) => {
         this.of = updated;
-        this.toast.success('Ajustement enregistre avec succes');
+        this.toast.success('AUTO.AJUSTEMENT_ENREGISTRE_AVEC_SUCCES');
       },
       error: (err) => {
         console.error(err);

@@ -34,9 +34,10 @@
       </div>
 
       <div class="dialog-actions">
-        <button (click)="dialogRef.close()" mat-button>Annuler</button>
+        <button (click)="dialogRef.close()" mat-button>{{ 'ADMIN.CANCEL' | translate }}</button>
         <button (click)="confirmPrice(dialogRef)" [disabled]="setPriceForm.invalid" color="primary" mat-flat-button>
-          Valider
+          
+          {{ 'CONTROLE_QUALITE.BUTTONS.VALIDATE' | translate }}
         </button>
       </div>
     </div>

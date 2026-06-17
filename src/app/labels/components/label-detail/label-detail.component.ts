@@ -1,3 +1,5 @@
+import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -38,21 +40,27 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatCardModule } from '@angular/material/card';
+import { MatChip, MatChipListbox } from '@angular/material/chips';
 import { TypeCategory } from "../../../shared/models/type-category.enum";
 import { resolveQualityGradeLabel } from '../../../shared/models/quality-grades.enum';
 import { ProductionGenealogy, ProductionRootSource } from '../../../shared/models/production-genealogy.model';
 import { ProductionTraceabilityService } from '../../../shared/services/production-traceability.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-label-detail',
   standalone: true,
-  imports: [
+  imports: [TranslateModule,
     CommonModule,
     MatButtonModule,
     MatIconModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
     MatDividerModule,
+    MatCardModule,
+    MatChipListbox,
+    MatChip,
     MatDialogModule,
     LabelPreviewCardComponent
   ],
@@ -60,6 +68,7 @@ import { ProductionTraceabilityService } from '../../../shared/services/producti
   styleUrls: ['./label-detail.component.scss']
 })
 export class LabelDetailComponent implements OnInit, OnDestroy {
+  private readonly i18n = inject(TranslateService);
   label: LabelContentDto | null = null;
   currentGenealogy: ProductionGenealogy | null = null;
   availableCertifications: Certification[] = [];
@@ -133,7 +142,7 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
           this.loading = false;
           this.errorMessage = this.resolveErrorMessage(
             error,
-            'Impossible de charger les types huile et les variétés.'
+            this.i18n.instant('AUTO.IMPOSSIBLE_DE_CHARGER_LES_TYPES_HUILE_ET_LES_VARIETES')
           );
         }
       });
@@ -144,7 +153,7 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
 
     if (!id) {
       this.loading = false;
-      this.errorMessage = 'Identifiant etiquette absent.';
+      this.errorMessage = this.i18n.instant('AUTO.IDENTIFIANT_ETIQUETTE_ABSENT');
       return;
     }
 
@@ -163,7 +172,7 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
           this.loading = false;
           this.errorMessage = this.resolveErrorMessage(
             error,
-            'Impossible de charger le detail de cette etiquette.'
+            this.i18n.instant('AUTO.IMPOSSIBLE_DE_CHARGER_LE_DETAIL_DE_CETTE_ETIQUETTE')
           );
         }
       });
@@ -354,7 +363,7 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
   unlock(): void {
     if (
       !this.label?.id ||
-      !confirm('Êtes-vous sûr de vouloir déverrouiller cette étiquette ? Elle repassera en mode édition.')
+      !confirm(this.i18n.instant('AUTO.ETES_VOUS_SUR_DE_VOULOIR_DEVERROUILLER_CETTE_ETIQUETTE_ELLE_REPA'))
     ) {
       return;
     }
@@ -369,11 +378,11 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
         next: (updated) => {
           this.unlocking = false;
           this.label = updated;
-          this.successMessage = 'L\'étiquette a été déverrouillée et est à nouveau éditable.';
+          this.successMessage = this.i18n.instant('AUTO.L_ETIQUETTE_A_ETE_DEVERROUILLEE_ET_EST_A_NOUVEAU_EDITABLE');
         },
         error: (error) => {
           this.unlocking = false;
-          this.errorMessage = this.resolveErrorMessage(error, 'Erreur lors du déverrouillage.');
+          this.errorMessage = this.resolveErrorMessage(error, this.i18n.instant('AUTO.ERREUR_LORS_DU_DEVERROUILLAGE'));
         }
       });
   }
@@ -405,7 +414,7 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.deleting = false;
-          this.errorMessage = this.resolveErrorMessage(error, 'Erreur lors de la suppression.');
+          this.errorMessage = this.resolveErrorMessage(error, this.i18n.instant('AUTO.ERREUR_LORS_DE_LA_SUPPRESSION'));
         }
       });
   }
@@ -420,7 +429,7 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
     }
 
     if (this.label.status !== 'FINALIZED' && this.label.status !== 'EXPORTED_JSON') {
-      this.errorMessage = 'Seule une etiquette finalisee peut etre exportee.';
+      this.errorMessage = this.i18n.instant('AUTO.SEULE_UNE_ETIQUETTE_FINALISEE_PEUT_ETRE_EXPORTEE');
       return;
     }
 
@@ -449,13 +458,13 @@ export class LabelDetailComponent implements OnInit, OnDestroy {
             } as LabelContentDto;
           }
 
-          this.successMessage = 'JSON etiquette exporte avec succes.';
+          this.successMessage = this.i18n.instant('AUTO.JSON_ETIQUETTE_EXPORTE_AVEC_SUCCES');
         },
         error: (error) => {
           this.exporting = false;
           this.errorMessage = this.resolveErrorMessage(
             error,
-            'Erreur lors de l export de l etiquette.'
+            this.i18n.instant('AUTO.ERREUR_LORS_DE_L_EXPORT_DE_L_ETIQUETTE')
           );
         }
       });

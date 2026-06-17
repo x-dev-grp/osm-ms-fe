@@ -335,22 +335,24 @@
         <button
           mat-flat-button
           color="primary"
-          matTooltip="Apply theme settings"
+          [matTooltip]="'AUTO.APPLY_THEME_SETTINGS' | translate"
           (click)="applySettings()"
-          aria-label="Apply settings"
+          [attr.aria-label]="'AUTO.APPLY_SETTINGS' | translate"
         >
           <mat-icon class="me-1">save</mat-icon>
-          Apply
+
+          {{ 'Apply' | translate }}
         </button>
         <button
           mat-stroked-button
           color="warn"
-          matTooltip="Reset all settings"
+          [matTooltip]="'AUTO.RESET_ALL_SETTINGS' | translate"
           (click)="resetLayout()"
-          aria-label="Reset layout"
+          [attr.aria-label]="'AUTO.RESET_LAYOUT' | translate"
         >
           <mat-icon class="me-1">undo</mat-icon>
-          Reset
+
+          {{ 'COMPANY_PROFILE_UI.ACTIONS.RESET' | translate }}
         </button>
       </div>
     </div>

@@ -109,7 +109,7 @@ export class ReceptionListComponent implements OnInit {
           const config = getControlQualitePdfConfig(event.row, 'OIL');
           this.pdfGeneratorService.generatePdf(config);
         } else {
-          this.toast.error('no quality control for oil');
+          this.toast.error('AUTO.NO_QUALITY_CONTROL_FOR_OIL');
         }
         break;
 
@@ -117,9 +117,9 @@ export class ReceptionListComponent implements OnInit {
         if (event.row.qualityControlResults && event.row.qualityControlResults.length > 0) {
           const config = getControlQualitePdfConfig(event.row, 'OLIVE');
           this.pdfGeneratorService.generatePdf(config);
-          this.toast.success(`[OilReception] Generating quality control PDF for delivery: ${event.row.lotNumber}`);
+          this.toast.success('AUTO.OILRECEPTION_GENERATING_QUALITY_CONTROL_PDF_FOR_DELIVERY', { value0: event.row.lotNumber });
         } else {
-          this.toast.error('no quality control for olive');
+          this.toast.error('AUTO.NO_QUALITY_CONTROL_FOR_OLIVE');
         }
         break;
 
@@ -173,9 +173,9 @@ export class ReceptionListComponent implements OnInit {
       // this.unifiedPdfGenerator.generatePdf(unifiedConfig);
 
       // For now, we'll just show a toast message to indicate the feature is available
-      this.toast.success(`Unified PDF generation feature is ready for implementation`);
+      this.toast.success('AUTO.UNIFIED_PDF_GENERATION_FEATURE_IS_READY_FOR_IMPLEMENTATION');
     } catch (error) {
-      this.toast.error(`Error generating unified PDF: ${error}`);
+      this.toast.error('AUTO.ERROR_GENERATING_UNIFIED_PDF', { value0: error });
     }
   }
 

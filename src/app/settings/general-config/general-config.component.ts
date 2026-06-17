@@ -113,7 +113,7 @@ export class GeneralConfigComponent implements OnInit {
 
     const currentProfile = this.companyProfile ?? this.companyProfileService.getProfileFromCache();
     if (!currentProfile) {
-      this.toast.error('Impossible de charger la configuration de campagne');
+      this.toast.error('AUTO.IMPOSSIBLE_DE_CHARGER_LA_CONFIGURATION_DE_CAMPAGNE');
       return;
     }
 
@@ -133,10 +133,10 @@ export class GeneralConfigComponent implements OnInit {
         });
         this.productionConfigForm.disable();
         this.productionConfigFormEnabled = false;
-        this.toast.success('Configuration de campagne enregistree avec succes');
+        this.toast.success('AUTO.CONFIGURATION_DE_CAMPAGNE_ENREGISTREE_AVEC_SUCCES');
       },
       error: () => {
-        this.toast.error('Erreur lors de l enregistrement de la campagne');
+        this.toast.error('AUTO.ERREUR_LORS_DE_L_ENREGISTREMENT_DE_LA_CAMPAGNE');
       }
     });
   }
@@ -163,10 +163,10 @@ export class GeneralConfigComponent implements OnInit {
         this.patchFinanceConfig(this.millingPriceParameter);
         this.financeConfigForm.disable();
         this.financeConfigFormEnabled = false;
-        this.toast.success('Configuration finance enregistree avec succes');
+        this.toast.success('AUTO.CONFIGURATION_FINANCE_ENREGISTREE_AVEC_SUCCES');
       },
       error: () => {
-        this.toast.error('Erreur lors de l enregistrement du prix de trituration');
+        this.toast.error('AUTO.ERREUR_LORS_DE_L_ENREGISTREMENT_DU_PRIX_DE_TRITURATION');
       }
     });
   }
@@ -249,7 +249,7 @@ export class GeneralConfigComponent implements OnInit {
       },
       error: () => {
         if (!cachedProfile) {
-          this.toast.error('Impossible de charger la configuration de campagne');
+          this.toast.error('AUTO.IMPOSSIBLE_DE_CHARGER_LA_CONFIGURATION_DE_CAMPAGNE');
         }
       }
     });

@@ -112,12 +112,12 @@ export class WasteComponent {
             // Recharger les données du dashboard
             // this.loadDashboardData();
           } else {
-           this.toast.error('Erreur lors de la confirmation');
+           this.toast.error('AUTO.ERREUR_LORS_DE_LA_CONFIRMATION');
           }
         },
         error: (error) => {
           console.error('Error confirming waste sale:', error);
-         this.toast.error('Erreur lors de la confirmation');
+         this.toast.error('AUTO.ERREUR_LORS_DE_LA_CONFIRMATION');
         }
       });
     }
@@ -132,12 +132,12 @@ export class WasteComponent {
             // Recharger les données du dashboard
             // this.loadDashboardData();
           } else {
-           this.toast.error('Erreur lors de l\'annulation');
+           this.toast.error('DELIVERIES.MESSAGES.CANCELLED_ERROR');
           }
         },
         error: (error) => {
           console.error('Error cancelling waste sale:', error);
-         this.toast.error('Erreur lors de l\'annulation');
+         this.toast.error('DELIVERIES.MESSAGES.CANCELLED_ERROR');
         }
       });
     }
@@ -152,12 +152,12 @@ export class WasteComponent {
             // Recharger les données du dashboard
             // this.loadDashboardData();
           } else {
-           this.toast.error('Erreur lors de la réception');
+           this.toast.error('AUTO.ERREUR_LORS_DE_LA_RECEPTION');
           }
         },
         error: (error) => {
           console.error('Error delivering waste sale:', error);
-         this.toast.error('Erreur lors de la réception');
+         this.toast.error('AUTO.ERREUR_LORS_DE_LA_RECEPTION');
         }
       });
     }

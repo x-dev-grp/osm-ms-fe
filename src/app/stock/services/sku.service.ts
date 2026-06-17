@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { Product, ProductType, SKU } from '../models/sku.model';
 import { environment } from "../../../environments/environment";
 import { QrCodeInfo, QrResolveResponse } from '../../shared/models/qr-models';
+import { ApiResponse, ApiSingleResponse } from '../../shared/models/api-response';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +16,8 @@ export class SKUService {
   constructor(private http: HttpClient) {}
 
   getAllProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(this.apiUrl).pipe(
-      map((products) => (products ?? []).map((product) => this.normalizeProduct(product)))
+    return this.http.get<ApiResponse<Product>>(`${this.apiUrl}/fetchAll`).pipe(
+      map((response) => (response?.data ?? []).map((product) => this.normalizeProduct(product)))
     );
   }
 
@@ -25,8 +26,8 @@ export class SKUService {
   }
 
   getProductById(id: string): Observable<Product> {
-    return this.http.get<Product>(`${this.apiUrl}/${id}`).pipe(
-      map((product) => this.normalizeProduct(product))
+    return this.http.get<ApiSingleResponse<Product>>(`${this.apiUrl}/fetch/${id}`).pipe(
+      map((response) => this.normalizeProduct(response.data))
     );
   }
 
@@ -35,8 +36,8 @@ export class SKUService {
   }
 
   createProduct(product: Product): Observable<Product> {
-    return this.http.post<Product>(`${this.apiUrl}/create`, this.toPayload(product)).pipe(
-      map((created) => this.normalizeProduct(created))
+    return this.http.post<ApiSingleResponse<Product>>(this.apiUrl, this.toPayload(product)).pipe(
+      map((response) => this.normalizeProduct(response.data))
     );
   }
 
@@ -45,8 +46,9 @@ export class SKUService {
   }
 
   updateProduct(id: string, product: Product): Observable<Product> {
-    return this.http.put<Product>(`${this.apiUrl}/${id}`, this.toPayload(product)).pipe(
-      map((updated) => this.normalizeProduct(updated))
+    const payload = { ...this.toPayload(product), id };
+    return this.http.put<ApiSingleResponse<Product>>(this.apiUrl, payload).pipe(
+      map((response) => this.normalizeProduct(response.data))
     );
   }
 
@@ -55,7 +57,7 @@ export class SKUService {
   }
 
   deleteProduct(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/delete/${id}`);
   }
 
   deleteSku(id: string): Observable<void> {

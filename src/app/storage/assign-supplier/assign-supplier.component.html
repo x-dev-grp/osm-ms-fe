@@ -1,14 +1,15 @@
-<h2 mat-dialog-title>Assign Supplier</h2>
+<h2 mat-dialog-title>{{ 'OSM_DASHBOARD.ACTIONS.ASSIGN_SUPPLIER' | translate }}</h2>
 <mat-dialog-content [formGroup]="form">
   <!-- Message for paid storage units -->
   <div *ngIf="data.storageUnit.paidStorage" class="paid-storage-message">
     <mat-icon class="info-icon">info</mat-icon>
     <span>This is a paid storage unit. Monthly rental price: {{ data.storageUnit.monthlyRentalPrice | number:'1.2-2' }} TND</span>
-    <span>A transaction will be created monthly for this payment.</span>
+    <span>{{ 'AUTO.A_TRANSACTION_WILL_BE_CREATED_MONTHLY_FOR_THIS_PAYMENT' | translate }}</span>
   </div>
 
   <mat-checkbox formControlName="hasSupplier">
-    Currently assigned
+
+    {{ 'AUTO.CURRENTLY_ASSIGNED' | translate }}
   </mat-checkbox>
   <supplierList
     [formControl]="form?.controls?.supplierId"
@@ -16,12 +17,13 @@
   </supplierList>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-button (click)="cancel()">{{ 'ADMIN.CANCEL' | translate }}</button>
   <button
     mat-flat-button
     color="primary"
     (click)="save()"
     >
-    Save
+
+    {{ 'ADMIN.SAVE' | translate }}
   </button>
 </mat-dialog-actions>

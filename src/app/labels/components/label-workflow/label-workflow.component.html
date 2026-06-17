@@ -1,384 +1,397 @@
-<section class="label-workflow-page">
+<div class="label-studio" *ngIf="!pageBusy()">
 
-  <!-- HEADER -->
-  <header class="hero-header">
-    <div class="header-main">
-      <div class="header-left">
-        <button mat-icon-button (click)="clearAndRestart()" matTooltip="Retour à la liste" class="back-btn">
-          <mat-icon>arrow_back</mat-icon>
-        </button>
-        <div>
-          <p class="eyebrow">Conditionnement</p>
-          <h1>{{ currentLabel ? 'Édition de l\'étiquette' : 'Nouvelle étiquette' }}</h1>
-        </div>
+  <header class="studio-header">
+    <div class="studio-header__left">
+      <button mat-icon-button type="button" class="back-btn" (click)="clearAndRestart()" [matTooltip]="'COMMON.BACK' | translate">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div>
+        <h1>{{ pageTitle() }}</h1>
+        <p>Conformité étiquetage huile d'olive — Tunisie</p>
       </div>
-
-      <div class="header-right" *ngIf="currentLabel">
-        <span class="status-badge" [class.finalized]="isFinalized()" [class.draft]="!isFinalized()">
-          <mat-icon>{{ isFinalized() ? 'lock' : 'edit' }}</mat-icon>
-          {{ currentLabel.status === 'DRAFT' ? 'Brouillon' : (currentLabel.status === 'FINALIZED' ? 'Finalisée' :
-          (currentLabel.status === 'VALIDATED' ? 'Validée' : (currentLabel.status === 'EXPORTED_JSON' ? 'Exportée JSON'
-          : currentLabel.status))) }}
-        </span>
-        <button mat-flat-button *ngIf="isFinalized()" (click)="exportLabel()" [disabled]="exporting" class="btn-export">
-          <mat-spinner diameter="16" *ngIf="exporting"></mat-spinner>
-          <mat-icon *ngIf="!exporting">download</mat-icon>
-          Exporter JSON
-        </button>
-      </div>
+    </div>
+    <div class="studio-header__right" *ngIf="currentLabel">
+      <span class="status-chip" [class.is-finalized]="isFinalized()">{{ statusLabel(currentLabel.status) }}</span>
+      <button mat-stroked-button *ngIf="isFinalized()" type="button" (click)="exportLabel()" [disabled]="exporting">
+        <mat-icon *ngIf="!exporting">download</mat-icon>
+        <mat-spinner diameter="16" *ngIf="exporting"></mat-spinner>
+        {{ 'AUTO.EXPORTER_JSON' | translate }}
+      </button>
     </div>
   </header>
 
-  <!-- FEEDBACK BANNERS -->
-  <div class="banners-area">
-    <div class="feedback success" *ngIf="successMessage">
-      <mat-icon>check_circle</mat-icon> {{ successMessage }}
-      <button mat-icon-button (click)="successMessage = ''"><mat-icon>close</mat-icon></button>
-    </div>
-    <div class="feedback error" *ngIf="errorMessage">
-      <mat-icon>warning</mat-icon> {{ errorMessage }}
-      <button mat-icon-button (click)="errorMessage = ''"><mat-icon>close</mat-icon></button>
-    </div>
-    <div class="feedback loading" *ngIf="pageBusy()">
-      <mat-spinner diameter="18"></mat-spinner> Chargement du moteur d'étiquetage...
-    </div>
-  </div>
+  <div *ngIf="errorMessage" class="studio-alert studio-alert--error">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="studio-alert studio-alert--success">{{ successMessage }}</div>
 
-  <!-- MAIN STUDIO LAYOUT: Form Left + Preview Right -->
-  <div class="studio-layout">
-
-    <!-- =========== LEFT: FORM COLUMN =========== -->
-    <div class="form-column">
+  <div class="studio-grid">
+    <!-- FORM -->
+    <main class="studio-form">
       <form [formGroup]="labelForm">
+        <mat-accordion class="studio-accordion" multi>
 
-        <!-- SECTION 1: SOURCE & CONFIGURATION -->
-        <div class="form-section">
-          <div class="section-header">
-            <mat-icon>settings</mat-icon>
-            <div>
-              <h3>Configuration de base</h3>
-              <p>Source du lot et paramètres initiaux</p>
-            </div>
-            <button mat-icon-button type="button" (click)="loadLotsAndPackaging()" [disabled]="loadingLookups"
-              matTooltip="Actualiser" class="refresh-btn">
-              <mat-icon>sync</mat-icon>
-            </button>
-          </div>
+          <!-- 1. Source -->
+          <mat-expansion-panel [expanded]="!currentLabel">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <mat-icon>inventory_2</mat-icon>
+                Source & conditionnement
+              </mat-panel-title>
+              <mat-panel-description>Lot filtré et packaging</mat-panel-description>
+            </mat-expansion-panel-header>
 
-          <div class="form-grid">
-            <div class="form-group span-full">
-              <label>Opération de filtration (source) <span class="req">*</span></label>
-              <select class="form-control" formControlName="lotId" [disabled]="!!currentLabel"
-                (change)="onLotChange($event)">
-                <option value="">-- Sélectionner une opération --</option>
-                <option *ngFor="let op of filtrationOperations; trackBy: trackById" [value]="op.operationId">
-                  {{ filtrationOperationLabel(op) }}
-                </option>
-              </select>
-            </div>
-
-            <div class="source-summary span-full" *ngIf="selectedFiltrationOperation()">
-              <div class="source-summary-item">
-                <span>Cuve non filtree</span>
-                <strong>{{ selectedSourceStorageLabel() }}</strong>
+            <div class="panel-body">
+              <div class="field-row field-row--full">
+                <label>{{ 'AUTO.OPERATION_DE_FILTRATION_SOURCE' | translate }} <span class="req">*</span></label>
+                <select class="field" formControlName="lotId" [disabled]="!!currentLabel" (change)="onLotChange($event)">
+                  <option value="">{{ 'AUTO.SELECTIONNER_UNE_OPERATION' | translate }}</option>
+                  <option *ngFor="let op of filtrationOperations; trackBy: trackById" [value]="op.operationId">
+                    {{ filtrationOperationLabel(op) }}
+                  </option>
+                </select>
               </div>
-              <mat-icon>arrow_forward</mat-icon>
-              <div class="source-summary-item">
-                <span>Cuve filtree utilisee pour etiquette</span>
-                <strong>{{ selectedFilteredStorageLabel() }}</strong>
+
+              <div class="flow-banner" *ngIf="selectedFiltrationOperation()">
+                <div class="flow-step">
+                  <span class="flow-label">{{ 'AUTO.CUVE_NON_FILTREE' | translate }}</span>
+                  <strong>{{ selectedSourceStorageLabel() }}</strong>
+                </div>
+                <mat-icon>arrow_forward</mat-icon>
+                <div class="flow-step">
+                  <span class="flow-label">{{ 'AUTO.CUVE_FILTREE_UTILISEE_POUR_ETIQUETTE' | translate }}</span>
+                  <strong>{{ selectedFilteredStorageLabel() }}</strong>
+                </div>
+              </div>
+
+              <app-traceability-preview [anchorId]="traceabilityAnchorId()"></app-traceability-preview>
+
+              <div class="field-row field-row--full">
+                <label>{{ 'AUTO.PACKAGING_PRODUIT' | translate }} <span class="req">*</span></label>
+                <select class="field" formControlName="packagingId" [disabled]="!!currentLabel" (change)="onPackagingChange($event)">
+                  <option value="">{{ 'AUTO.SELECTIONNER_UN_PACKAGING' | translate }}</option>
+                  <option *ngFor="let product of packagingOptions; trackBy: trackById" [value]="product.id">
+                    {{ productLabel(product) }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="field-grid">
+                <div class="field-row">
+                  <label>{{ 'AUTO.DATE_CONDITIONNEMENT' | translate }} <span class="req">*</span></label>
+                  <input type="date" class="field" formControlName="packagingDate" [readonly]="isFinalized()" />
+                </div>
+                <div class="field-row">
+                  <label>{{ 'BASE_TYPE.CATEGORY' | translate }}</label>
+                  <select class="field" formControlName="labelCategory" [disabled]="isFinalized()">
+                    <option value="UNIT">{{ 'AUTO.UNITE_BOUTEILLE' | translate }}</option>
+                    <option value="COLIS">{{ 'AUTO.COLIS' | translate }}</option>
+                    <option value="PALLET">{{ 'AUTO.PALETTE' | translate }}</option>
+                  </select>
+                </div>
+                <div class="field-row">
+                  <label>{{ 'AUTO.LANGUE' | translate }}</label>
+                  <select class="field" formControlName="language" [disabled]="isFinalized()">
+                    <option *ngFor="let lang of languages" [value]="lang">{{ lang }}</option>
+                  </select>
+                </div>
+              </div>
+
+              <button mat-button type="button" class="refresh-link" (click)="loadLotsAndPackaging()" [disabled]="loadingLookups">
+                <mat-icon>sync</mat-icon> {{ 'AUTO.ACTUALISER' | translate }}
+              </button>
+            </div>
+          </mat-expansion-panel>
+
+          <!-- 2. Identity -->
+          <mat-expansion-panel [expanded]="!!currentLabel">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <mat-icon>label</mat-icon>
+                Identité produit
+              </mat-panel-title>
+              <mat-panel-description>Nom, lot, quantité, origine</mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <div class="panel-body">
+              <div class="field-row field-row--full">
+                <label>{{ 'AUTO.DENOMINATION_LEGALE' | translate }}</label>
+                <input type="text" class="field" formControlName="legalDenomination" [readonly]="isFinalized()"
+                  [placeholder]="'AUTO.EX_HUILE_D_OLIVE_VIERGE_EXTRA' | translate" />
+              </div>
+
+              <div class="field-grid">
+                <div class="field-row">
+                  <label>{{ 'OIL_TRANSACTION.DETAILS.QUALITY_GRADE' | translate }}</label>
+                  <select class="field" formControlName="qualityGrade" [disabled]="isFinalized()" (change)="onQualityGradeChange()">
+                    <option value="">{{ 'AUTO.SELECTIONNER' | translate }}</option>
+                    <option *ngFor="let grade of grades" [value]="grade">{{ resolveQualityLabel(grade) }}</option>
+                  </select>
+                </div>
+                <div class="field-row">
+                  <label>{{ 'AUTO.N_DE_LOT' | translate }}</label>
+                  <input type="text" class="field" formControlName="lotNumber" [readonly]="isFinalized()" />
+                </div>
+                <div class="field-row">
+                  <label>{{ 'AUTO.QUANTITE_NETTE' | translate }}</label>
+                  <input type="text" class="field" formControlName="netQuantity" [readonly]="isFinalized()" placeholder="500 ml" />
+                </div>
+                <div class="field-row">
+                  <label>{{ 'AUTO.D_D_M' | translate }}</label>
+                  <input type="text" class="field" formControlName="bestBeforeDate" [readonly]="isFinalized()" placeholder="12/2027" />
+                </div>
+                <div class="field-row">
+                  <label>{{ 'DELIVERIES.FIELDS.OLIVE_VARIETY' | translate }}</label>
+                  <select class="field" formControlName="variety" [disabled]="isFinalized()">
+                    <option value="">{{ 'AUTO.SELECTIONNER' | translate }}</option>
+                    <option *ngFor="let v of oilVarieties; trackBy: trackById" [value]="baseTypeValue(v)">{{ baseTypeLabel(v) }}</option>
+                  </select>
+                </div>
+                <div class="field-row">
+                  <label>{{ 'AUTO.PAYS_D_ORIGINE' | translate }}</label>
+                  <input type="text" class="field" formControlName="originCountry" [readonly]="isFinalized()" placeholder="Tunisie" />
+                </div>
               </div>
             </div>
+          </mat-expansion-panel>
 
-            <app-traceability-preview
-              class="span-full"
-              [anchorId]="traceabilityAnchorId()">
-            </app-traceability-preview>
+          <!-- 3. Compliance -->
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <mat-icon>gavel</mat-icon>
+                Déclarations obligatoires
+              </mat-panel-title>
+              <mat-panel-description>Ingrédients & conformité</mat-panel-description>
+            </mat-expansion-panel-header>
 
-            <div class="form-group span-full">
-              <label>Packaging (produit) <span class="req">*</span></label>
-              <select class="form-control" formControlName="packagingId" [disabled]="!!currentLabel"
-                (change)="onPackagingChange($event)">
-                <option value="">-- Sélectionner un packaging --</option>
-                <option *ngFor="let product of packagingOptions; trackBy: trackById" [value]="product.id">
-                  {{ productLabel(product) }}
-                </option>
-              </select>
+            <div class="panel-body">
+              <div class="evoo-banner" *ngIf="isEvooCategory()">
+                <mat-icon>verified</mat-icon>
+                <p>{{ evooLegalStatement }}</p>
+              </div>
+
+              <div class="field-grid">
+                <div class="field-row field-row--wide">
+                  <label>Ingrédients <span class="req">*</span></label>
+                  <input type="text" class="field" formControlName="ingredientDeclaration" [readonly]="isFinalized()" />
+                </div>
+                <div class="field-row">
+                  <label>Marque</label>
+                  <input type="text" class="field" formControlName="brandName" [readonly]="isFinalized()" />
+                </div>
+                <div class="field-row">
+                  <label>Année de récolte</label>
+                  <input type="text" class="field" formControlName="harvestYear" [readonly]="isFinalized()" placeholder="2025" />
+                </div>
+                <div class="field-row">
+                  <label>Acidité</label>
+                  <input type="text" class="field" formControlName="acidityLevel" [readonly]="isFinalized()" placeholder="0,4 %" />
+                </div>
+                <div class="field-row">
+                  <label>EAN-13</label>
+                  <input type="text" class="field" formControlName="ean13" [readonly]="isFinalized()" maxlength="13" />
+                  <app-ean-barcode
+                    *ngIf="labelForm.value.ean13"
+                    [value]="labelForm.value.ean13"
+                    size="compact"
+                  ></app-ean-barcode>
+                </div>
+              </div>
+
+              <div class="composition-section">
+                <div class="composition-section__header">
+                  <h4>Composition estimée (pour 100 ml)</h4>
+                  <p>Valeurs issues du contrôle qualité ou des références Tunisie — modifiables avant finalisation.</p>
+                </div>
+
+                <div class="composition-table-wrap" *ngIf="compositionEntries().length; else compositionEmpty">
+                  <table class="composition-table">
+                    <thead>
+                      <tr>
+                        <th>Paramètre</th>
+                        <th>Valeur / 100 ml</th>
+                        <th>Source</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let entry of compositionEntries(); trackBy: trackByCompositionKey">
+                        <td>{{ entry.label }}</td>
+                        <td>
+                          <input
+                            type="text"
+                            class="field field--compact"
+                            [value]="compositionPer100Value(entry)"
+                            (input)="onCompositionOverride(entry.key, $any($event.target).value)"
+                            [readonly]="isFinalized()"
+                          />
+                        </td>
+                        <td>
+                          <span class="source-pill" [class.is-measured]="entry.source === 'measured'">
+                            {{ compositionSourceLabel(entry.source) }}
+                          </span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <ng-template #compositionEmpty>
+                  <p class="composition-empty">Sélectionnez une source de filtration et une quantité nette pour calculer la composition.</p>
+                </ng-template>
+              </div>
             </div>
+          </mat-expansion-panel>
 
-            <div class="form-group">
-              <label>Date conditionnement <span class="req">*</span></label>
-              <input type="date" class="form-control" formControlName="packagingDate" [readonly]="isFinalized()" />
+          <!-- 4. Producer -->
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <mat-icon>business</mat-icon>
+                Producteur & qualité
+              </mat-panel-title>
+              <mat-panel-description>Responsable, stockage, profil</mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <div class="panel-body">
+              <div class="field-grid">
+                <div class="field-row field-row--wide">
+                  <label>{{ 'AUTO.RESPONSABLE' | translate }}</label>
+                  <input type="text" class="field" formControlName="responsibleName" [readonly]="isFinalized()" />
+                </div>
+                <div class="field-row field-row--wide">
+                  <label>{{ 'PDF.ADDRESS' | translate }}</label>
+                  <input type="text" class="field" formControlName="responsibleAddress" [readonly]="isFinalized()" />
+                </div>
+                <div class="field-row">
+                  <label>{{ 'AUTO.METHODE_D_EXTRACTION' | translate }}</label>
+                  <input type="text" class="field" formControlName="extractionMethod" [readonly]="isFinalized()" />
+                </div>
+                <div class="field-row field-row--wide">
+                  <label>{{ 'AUTO.CONDITIONS_DE_STOCKAGE' | translate }}</label>
+                  <textarea class="field field--area" rows="2" formControlName="storageConditions" [readonly]="isFinalized()"></textarea>
+                </div>
+                <div class="field-row field-row--wide">
+                  <label>{{ 'AUTO.PROFIL_SENSORIEL' | translate }}</label>
+                  <textarea class="field field--area" rows="2" formControlName="sensoryProfile" [readonly]="isFinalized()"></textarea>
+                </div>
+              </div>
             </div>
+          </mat-expansion-panel>
 
-            <div class="form-group">
-              <label>Catégorie <span class="req">*</span></label>
-              <select class="form-control" formControlName="labelCategory" [disabled]="isFinalized()">
-                <option value="UNIT">Unité (Bouteille)</option>
-                <option value="COLIS">Colis</option>
-                <option value="PALLET">Palette</option>
-              </select>
+          <!-- 5. Marketing (optional) -->
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <mat-icon>verified</mat-icon>
+                Marketing & certifications
+              </mat-panel-title>
+              <mat-panel-description>Optionnel</mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <div class="panel-body">
+              <div class="field-grid">
+                <div class="field-row field-row--wide">
+                  <label>{{ 'AUTO.ALLEGATIONS_MARKETING' | translate }}</label>
+                  <mat-select formControlName="claimTypes" multiple class="field field--select" subscriptSizing="dynamic" [disabled]="isFinalized()">
+                    <mat-option *ngFor="let opt of claimTypeOptions" [value]="opt.value">{{ opt.label }}</mat-option>
+                  </mat-select>
+                </div>
+                <div class="field-row field-row--wide">
+                  <label>{{ 'AUTO.CERTIFICATIONS_QUALITE' | translate }}</label>
+                  <mat-select formControlName="certifications" multiple class="field field--select" subscriptSizing="dynamic" [disabled]="isFinalized()">
+                    <mat-option *ngFor="let cert of availableCertifications" [value]="cert.name">
+                      <div class="cert-option">
+                        <img *ngIf="cert.logoData" [src]="'data:' + cert.logoContentType + ';base64,' + cert.logoData" class="cert-logo-mini" />
+                        <span>{{ cert.name }}</span>
+                      </div>
+                    </mat-option>
+                  </mat-select>
+                </div>
+              </div>
             </div>
+          </mat-expansion-panel>
 
-            <div class="form-group">
-              <label>Langue <span class="req">*</span></label>
-              <select class="form-control" formControlName="language" [disabled]="isFinalized()">
-                <option *ngFor="let lang of languages" [value]="lang">{{ lang }}</option>
-              </select>
-            </div>
-          </div>
-        </div>
+        </mat-accordion>
 
-        <!-- SECTION 2: IDENTITÉ & TRAÇABILITÉ -->
-        <div class="form-section">
-          <div class="section-header">
-            <mat-icon>fingerprint</mat-icon>
-            <div>
-              <h3>Identité & Traçabilité</h3>
-              <p>Informations légales et de lot</p>
-            </div>
-          </div>
-
-          <div class="form-grid">
-            <div class="form-group span-full">
-              <label>Dénomination légale</label>
-              <input type="text" class="form-control" formControlName="legalDenomination" [readonly]="isFinalized()"
-                placeholder="Ex : Huile d'olive vierge extra" />
-            </div>
-
-            <div class="form-group">
-              <label>N° de Lot</label>
-              <input type="text" class="form-control" formControlName="lotNumber" [readonly]="isFinalized()" />
-            </div>
-
-            <div class="form-group">
-              <label>Quantité Nette</label>
-              <input type="text" class="form-control" formControlName="netQuantity" [readonly]="isFinalized()"
-                placeholder="Ex : 500 ml" />
-            </div>
-
-            <div class="form-group">
-              <label>D.D.M.</label>
-              <input type="text" class="form-control" formControlName="bestBeforeDate" [readonly]="isFinalized()"
-                placeholder="Ex : Voir fond bouteille" />
-            </div>
-
-            <div class="form-group">
-              <label>Qualité</label>
-              <select class="form-control" formControlName="qualityGrade" [disabled]="isFinalized()">
-                <option value="">-- Sélectionner --</option>
-                <option *ngFor="let grade of grades" [value]="grade">
-                  {{ resolveQualityLabel(grade) }}
-                </option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label>Variété</label>
-              <select class="form-control" formControlName="variety" [disabled]="isFinalized()">
-                <option value="">-- Sélectionner --</option>
-                <option *ngFor="let v of oilVarieties; trackBy: trackById" [value]="baseTypeValue(v)">{{
-                  baseTypeLabel(v) }}</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label>Pays d'origine</label>
-              <input type="text" class="form-control" formControlName="originCountry" [readonly]="isFinalized()"
-                placeholder="Ex : Tunisie" />
-            </div>
-          </div>
-        </div>
-
-        <!-- SECTION 3: MARKETING & CONFORMITÉ -->
-        <div class="form-section">
-          <div class="section-header">
-            <mat-icon>verified</mat-icon>
-            <div>
-              <h3>Marketing & Conformité</h3>
-              <p>Allégations et certifications</p>
-            </div>
-          </div>
-
-          <div class="form-grid">
-            <div class="form-group span-two">
-              <label>Allégations Marketing</label>
-              <mat-select formControlName="claimTypes" multiple class="form-control" [disabled]="isFinalized()">
-                <mat-option *ngFor="let opt of claimTypeOptions" [value]="opt.value">{{ opt.label }}</mat-option>
-              </mat-select>
-            </div>
-
-            <div class="form-group span-full">
-              <label>Certifications Qualité</label>
-              <mat-select formControlName="certifications" multiple class="form-control" [disabled]="isFinalized()">
-                <mat-option *ngFor="let cert of availableCertifications" [value]="cert.name">
-                  <div class="cert-option">
-                    <img *ngIf="cert.logoData" [src]="'data:' + cert.logoContentType + ';base64,' + cert.logoData"
-                      class="cert-logo-mini" />
-                    <span>{{ cert.name }}</span>
-                  </div>
-                </mat-option>
-              </mat-select>
-            </div>
-          </div>
-        </div>
-
-        <!-- SECTION 4: RESPONSABILITÉ & PROCÉDÉS -->
-        <div class="form-section">
-          <div class="section-header">
-            <mat-icon>business</mat-icon>
-            <div>
-              <h3>Responsabilité & Procédés</h3>
-              <p>Opérateur responsable et méthodes</p>
-            </div>
-          </div>
-
-          <div class="form-grid">
-            <div class="form-group span-full">
-              <label>Responsable</label>
-              <input type="text" class="form-control" formControlName="responsibleName" [readonly]="isFinalized()" />
-            </div>
-
-            <div class="form-group span-full">
-              <label>Adresse</label>
-              <input type="text" class="form-control" formControlName="responsibleAddress" [readonly]="isFinalized()" />
-            </div>
-
-            <div class="form-group span-full">
-              <label>Méthode d'extraction</label>
-              <input type="text" class="form-control" formControlName="extractionMethod" [readonly]="isFinalized()" />
-            </div>
-
-            <div class="form-group span-full">
-              <label>Conditions de stockage</label>
-              <textarea class="form-control" rows="2" formControlName="storageConditions"
-                [readonly]="isFinalized()"></textarea>
-            </div>
-
-            <div class="form-group span-full">
-              <label>Profil sensoriel</label>
-              <textarea class="form-control" rows="2" formControlName="sensoryProfile"
-                [readonly]="isFinalized()"></textarea>
-            </div>
-          </div>
-        </div>
-
-        <!-- ACTION FOOTER -->
-        <div class="form-actions" *ngIf="!isFinalized()">
-          <!-- CREATE MODE -->
+        <footer class="studio-actions" *ngIf="!isFinalized()">
           <ng-container *ngIf="!currentLabel">
-            <button mat-flat-button type="button" class="btn-primary" (click)="generateLabel()"
+            <button mat-flat-button color="primary" type="button" (click)="generateLabel()"
               [disabled]="generating || pageBusy() || labelForm.invalid">
               <mat-spinner diameter="18" *ngIf="generating"></mat-spinner>
               <mat-icon *ngIf="!generating">auto_awesome</mat-icon>
-              Créer l'étiquette
+              {{ 'AUTO.CREER_L_ETIQUETTE' | translate }}
             </button>
           </ng-container>
-
-          <!-- EDIT MODE -->
           <ng-container *ngIf="currentLabel">
-            <button mat-flat-button type="button" class="btn-primary" (click)="saveDraftChanges()" [disabled]="saving">
-              <mat-spinner diameter="18" *ngIf="saving"></mat-spinner>
+            <button mat-stroked-button type="button" (click)="saveDraftChanges()" [disabled]="saving">
               <mat-icon *ngIf="!saving">save</mat-icon>
-              Sauvegarder
+              <mat-spinner diameter="18" *ngIf="saving"></mat-spinner>
+              {{ 'ADMIN.SAVE' | translate }}
             </button>
-            <button mat-flat-button type="button" class="btn-finalize" (click)="finalizeLabel()"
+            <button mat-flat-button color="primary" type="button" (click)="finalizeLabel()"
               [disabled]="finalizing || !canFinalize()"
-              [matTooltip]="!canFinalize() ? 'Veuillez remplir tous les champs obligatoires' : 'Finaliser l\'étiquette'">
-              <mat-spinner diameter="18" *ngIf="finalizing"></mat-spinner>
+              [matTooltip]="!canFinalize() ? 'Complétez les champs obligatoires' : 'Finaliser'">
               <mat-icon *ngIf="!finalizing">lock</mat-icon>
-              Finaliser
+              <mat-spinner diameter="18" *ngIf="finalizing"></mat-spinner>
+              {{ 'OSM_DASHBOARD.ACTIONS.FINALIZE' | translate }}
             </button>
           </ng-container>
-        </div>
-
+        </footer>
       </form>
-    </div>
+    </main>
 
-    <!-- =========== RIGHT: PREVIEW COLUMN =========== -->
-    <div class="preview-column">
-      <div class="sticky-container">
-
-        <!-- LIVE LABEL PREVIEW -->
-        <div class="preview-panel">
-          <div class="preview-panel-header">
-            <mat-icon>visibility</mat-icon>
-            <span>Aperçu en direct</span>
-            <button
-              mat-stroked-button
-              type="button"
-              class="preview-popup-btn"
-              (click)="openPreviewDialog()"
-              matTooltip="Ouvrir l'aperçu en plein écran"
-            >
-              <mat-icon>open_in_full</mat-icon>
-              Visualiser
-            </button>
-            <span class="status-badge mini" *ngIf="currentLabel" [class.finalized]="isFinalized()">
-              {{ currentLabel.status === 'DRAFT' ? 'Brouillon' : (currentLabel.status === 'FINALIZED' ? 'Finalisée' :
-              (currentLabel.status === 'VALIDATED' ? 'Validée' : (currentLabel.status === 'EXPORTED_JSON' ? 'Exportée
-              JSON' : currentLabel.status))) }}
-            </span>
-            <span class="status-badge mini draft" *ngIf="!currentLabel">BROUILLON</span>
+    <!-- PREVIEW RAIL -->
+    <aside class="studio-rail">
+      <div class="rail-card readiness-card">
+        <div class="readiness-header">
+          <div>
+            <span class="readiness-label">Conformité</span>
+            <strong class="readiness-value">{{ complianceReadyCount() }}/{{ mandatoryChecklist.length }}</strong>
           </div>
-
-          <div class="passport-preview-container">
-            <app-label-preview-card [preview]="previewViewModel()" size="miniature"></app-label-preview-card>
+          <div class="readiness-ring" [style.--progress]="compliancePercent() + '%'">
+            <span>{{ compliancePercent() }}%</span>
           </div>
         </div>
-
-        <!-- VALIDATION / READINESS PANEL -->
-        <ng-container *ngIf="currentLabel">
-
-          <!-- Missing required fields -->
-          <div class="validation-panel" *ngIf="missingRequiredFields().length > 0">
-            <div class="validation-header">
-              <mat-icon>pending_actions</mat-icon>
-              <span>Champs requis manquants ({{ missingRequiredFields().length }})</span>
-            </div>
-            <div class="issues-list">
-              <div class="issue-item" *ngFor="let f of missingRequiredFields()">
-                <span class="issue-badge blocking">!</span>
-                <div class="issue-content">
-                  <h4>{{ f.label }}</h4>
-                  <p>Ce champ est obligatoire pour finaliser</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Server-side blocking issues -->
-          <div class="validation-panel" *ngIf="currentLabel.validationIssues?.length">
-            <div class="validation-header">
-              <mat-icon>rule</mat-icon>
-              <span>Problèmes techniques</span>
-            </div>
-            <div class="issues-list">
-              <div class="issue-item" *ngFor="let issue of currentLabel.validationIssues">
-                <span class="issue-badge" [class.blocking]="issue.blocking">{{ issue.blocking ? '!' : 'i' }}</span>
-                <div class="issue-content">
-                  <h4>{{ issue.field }}</h4>
-                  <p>{{ issue.message }}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- All clear banner removed as per user request -->
-
-        </ng-container>
-
-        <!-- Not yet created -->
-        <div class="validation-panel" *ngIf="!currentLabel">
-          <div class="validation-header">
-            <mat-icon>info</mat-icon>
-            <span>En attente de création</span>
-          </div>
-          <p class="validation-hint">Remplissez les champs et cliquez sur <strong>Créer l'étiquette</strong> pour
-            commencer.</p>
-        </div>
-
+        <ul class="checklist">
+          <li *ngFor="let item of mandatoryChecklist" [class.is-done]="!isChecklistItemMissing(item.field)">
+            <mat-icon>{{ isChecklistItemMissing(item.field) ? 'radio_button_unchecked' : 'check_circle' }}</mat-icon>
+            <span>{{ item.label }}</span>
+          </li>
+        </ul>
+        <p class="readiness-hint" *ngIf="!currentLabel">
+          Créez l'étiquette pour activer la finalisation.
+        </p>
+        <p class="readiness-hint is-ok" *ngIf="currentLabel && canFinalize()">
+          Prêt à finaliser.
+        </p>
       </div>
-    </div>
 
+      <div class="rail-card preview-card">
+        <div class="preview-card__header">
+          <span><mat-icon>visibility</mat-icon> Aperçu multilingue</span>
+        </div>
+        <div class="preview-card__body">
+          <app-label-preview-carousel
+            [slides]="previewCarouselSlides()"
+            size="miniature"
+            [showExpand]="true"
+            (expand)="openPreviewDialog($event)"
+          ></app-label-preview-carousel>
+        </div>
+      </div>
+
+      <div class="rail-card issues-card" *ngIf="missingRequiredFields().length > 0 && currentLabel">
+        <div class="issues-card__title">
+          <mat-icon>error_outline</mat-icon>
+          {{ missingRequiredFields().length }} champ(s) à corriger
+        </div>
+        <ul>
+          <li *ngFor="let f of missingRequiredFields()">{{ f.label }}</li>
+        </ul>
+      </div>
+    </aside>
   </div>
-</section>
+</div>
+
+<div *ngIf="pageBusy()" class="loading-overlay">
+  <mat-spinner diameter="50"></mat-spinner>
+</div>

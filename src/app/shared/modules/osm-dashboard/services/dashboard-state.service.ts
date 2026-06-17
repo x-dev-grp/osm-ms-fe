@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { SearchData } from 'src/app/shared/models/advanced-search/searchData';
 import { SearchResponse } from '../../../models/advanced-search/searchResponse';
 import {  Field, FieldType } from '../models/dashboard-config';
@@ -8,7 +9,6 @@ import { catchError, defer, EMPTY, finalize, Subject, switchMap, tap } from 'rxj
 import { SearchDetails } from 'src/app/shared/models/advanced-search/searchDetails';
 import { SearchOperation } from 'src/app/shared/models/advanced-search/searchOperation';
 import { SearchModel } from 'src/app/shared/models/advanced-search/searchModel';
-import { HttpClient } from '@angular/common/http';
 import { saveAs } from 'file-saver';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -29,6 +29,8 @@ export interface DashboardState {
   resetFieldsSubject: Subject<void>;
   searchTrigger$: Subject<any>;
   fileName:string;
+  clientSide: boolean;
+  clientSource: any[];
 
 }
 
@@ -53,6 +55,8 @@ const initialState: DashboardState = {
   resetFieldsSubject: new Subject<void>(),
   searchTrigger$: new Subject<SearchData>(),
   fileName:'default',
+  clientSide: false,
+  clientSource: [],
 
 };
 
@@ -82,10 +86,11 @@ export const DashboardStore = signalStore(
         return path?.split('.')?.reduce((acc, key) => acc && acc[key], object);
       };
     return {
-      initialize(endpoint: string, allFields: Field[], searchData?: SearchData,fileName?:string,filterTenant?:boolean): void {
+      initialize(endpoint: string, allFields: Field[], searchData?: SearchData,fileName?:string,filterTenant?:boolean, clientSide?: boolean): void {
         patchState(store, {
           endpoint: endpoint,
           allFields: allFields,
+          clientSide: !!clientSide,
           filterFields: allFields.filter((field) => field.filterable).map((field) => ({ field, checked: field.defaultFilter ?? false })),
           exportFields: allFields.filter((field) => field.exportable).map((field) => ({ field, checked: true })),
           dataTableFields: allFields.filter((field) => field.dataTable),
@@ -105,6 +110,9 @@ export const DashboardStore = signalStore(
 
       },
       export(exportType: string) {
+        if (store.clientSide()) {
+          return;
+        }
         exportType=='pdf'?this.setExportPdfLoading(true):this.setExportExcelLoading(true);
         const fieldsToExport:{
                  name: string;
@@ -177,6 +185,11 @@ export const DashboardStore = signalStore(
       },
       fetchData() {
          console.log('New search triggered with:', store.searchData());
+         if (store.clientSide()) {
+           this.setLoading(true);
+           this.applyClientPage();
+           return;
+         }
          this.setLoading(true);
 
       _searchService.search(store.searchData(), store.endpoint())
@@ -326,6 +339,7 @@ export const DashboardStore = signalStore(
               }
         const newSearchData = {
           ...currentSearchData,
+          ...(store.clientSide() ? { page: 0 } : {}),
           searchData: {
             ...currentSearchData.searchData,
             searchs: updatedSearchs
@@ -418,6 +432,55 @@ export const DashboardStore = signalStore(
         const currentSearchData = store.searchData();
         const newSearchData = { ...currentSearchData, sort, order };
         patchState(store, { searchData: newSearchData });
+      },
+      setClientSource: (rows: any[]) => {
+        patchState(store, { clientSource: rows ?? [] });
+        const currentSearchData = store.searchData();
+        patchState(store, { searchData: { ...currentSearchData, page: 0 } });
+      },
+      applyClientPage: () => {
+        const searchData = store.searchData();
+        const pageSize = Math.max(searchData.size ?? 25, 1);
+        const pageIndex = Math.max(searchData.page ?? 0, 0);
+        const sort = searchData.sort;
+        const order = searchData.order;
+        const criteria = searchData.searchData?.searchs?.[0]?.search ?? {};
+        let rows = [...store.clientSource()].filter((row) => matchesClientSearch(row, criteria, getValue));
+
+        if (sort) {
+          rows.sort((a, b) => {
+            const av = getValue(sort, a);
+            const bv = getValue(sort, b);
+            if (av == null && bv == null) return 0;
+            if (av == null) return 1;
+            if (bv == null) return -1;
+            if (typeof av === 'number' && typeof bv === 'number') {
+              return order === 'DESC' ? bv - av : av - bv;
+            }
+            const cmp = String(av).localeCompare(String(bv), 'fr', { sensitivity: 'base', numeric: true });
+            return order === 'DESC' ? -cmp : cmp;
+          });
+        }
+
+        const start = pageIndex * pageSize;
+        const slice = rows.slice(start, start + pageSize);
+        const totalPages = rows.length > 0 ? Math.ceil(rows.length / pageSize) : 1;
+
+        patchState(store, {
+          data: {
+            data: slice,
+            total: rows.length,
+            totalPages,
+            page: pageIndex,
+            totals: new Map<string, number>()
+          },
+          loading: false
+        });
+
+        const baseCols = store
+          .allFields()
+          .filter((f: Field) => f.dataTable && !f.flattedList);
+        patchState(store, { dataTableFields: baseCols });
       }
     };
   }),
@@ -438,3 +501,94 @@ export const DashboardStore = signalStore(
     }
   })
 );
+
+function matchesClientSearch(
+  row: Record<string, unknown>,
+  criteria: Record<string, SearchDetails>,
+  getValue: (path: string | undefined, object: unknown) => unknown
+): boolean {
+  for (const [key, details] of Object.entries(criteria)) {
+    if (!details) {
+      continue;
+    }
+
+    if (key === 'userSearch' && details.likeValue) {
+      const term = String(details.likeValue).toLowerCase();
+      const createdBy = String(row['createdBy'] ?? '').toLowerCase();
+      const lastModifiedBy = String(row['lastModifiedBy'] ?? '').toLowerCase();
+      if (!createdBy.includes(term) && !lastModifiedBy.includes(term)) {
+        return false;
+      }
+      continue;
+    }
+
+    if (key === 'entityDisplayName' && details.likeValue) {
+      const term = String(details.likeValue).toLowerCase().trim();
+      const technical = String(row['entityName'] ?? '').toLowerCase();
+      const business = String(row['entityDisplayName'] ?? '').toLowerCase();
+      if (!technical.includes(term) && !business.includes(term)) {
+        return false;
+      }
+      continue;
+    }
+
+    if (details.minValueOrEqual != null || details.maxValueOrEqual != null) {
+      const rawDate = row[key] ?? row['createdDate'];
+      const dateVal = rawDate ? new Date(String(rawDate)) : null;
+      if (!dateVal || Number.isNaN(dateVal.getTime())) {
+        return false;
+      }
+      if (details.minValueOrEqual != null) {
+        const min = new Date(String(details.minValueOrEqual));
+        if (dateVal < min) {
+          return false;
+        }
+      }
+      if (details.maxValueOrEqual != null) {
+        const max = new Date(String(details.maxValueOrEqual));
+        if (dateVal > max) {
+          return false;
+        }
+      }
+      continue;
+    }
+
+    if (details.minValue != null || details.maxValue != null) {
+      const rawDate = row[key] ?? row['createdDate'];
+      const dateVal = rawDate ? new Date(String(rawDate)) : null;
+      if (!dateVal || Number.isNaN(dateVal.getTime())) {
+        return false;
+      }
+      if (details.minValue != null) {
+        const min = new Date(String(details.minValue));
+        if (dateVal < min) {
+          return false;
+        }
+      }
+      if (details.maxValue != null) {
+        const max = new Date(String(details.maxValue));
+        if (dateVal > max) {
+          return false;
+        }
+      }
+      continue;
+    }
+
+    if (details.equalValue != null && details.equalValue !== '') {
+      const rowVal = getValue(key, row);
+      if (rowVal !== details.equalValue) {
+        return false;
+      }
+      continue;
+    }
+
+    if (details.likeValue) {
+      const rowVal = String(getValue(key, row) ?? '').toLowerCase();
+      if (!rowVal.includes(String(details.likeValue).toLowerCase())) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}

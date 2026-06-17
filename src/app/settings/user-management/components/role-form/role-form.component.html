@@ -2,24 +2,25 @@
   <form [formGroup]="roleForm">
     <div class="form-fields">
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Role Name</mat-label>
-        <input matInput formControlName="roleName" placeholder="Enter role name">
+        <mat-label>{{ 'AUTO.ROLE_NAME' | translate }}</mat-label>
+        <input matInput formControlName="roleName" [placeholder]="'AUTO.ENTER_ROLE_NAME' | translate">
         <mat-error *ngIf="roleForm.get('roleName')?.hasError('required')">
-          Role est obligatoire
+
+          {{ 'AUTO.ROLE_EST_OBLIGATOIRE' | translate }}
         </mat-error>
       </mat-form-field>
       <mat-form-field appearance="outline" class="full-width mt-2">
-        <mat-label>Description</mat-label>
-        <textarea matInput formControlName="description" placeholder="Role description" rows="3"></textarea>
+        <mat-label>{{ 'BASE_TYPE.FIELDS.DESCRIPTION' | translate }}</mat-label>
+        <textarea matInput formControlName="description" [placeholder]="'AUTO.ROLE_DESCRIPTION' | translate" rows="3"></textarea>
       </mat-form-field>
     </div>
-    
+
     <mat-divider></mat-divider>
-    
+
     <div class="permissions-section">
-      <h3>Permissions</h3>
-      <p class="hint-text">Selectionner les permissions</p>
-      
+      <h3>{{ 'AUTO.PERMISSIONS' | translate }}</h3>
+      <p class="hint-text">{{ 'AUTO.SELECTIONNER_LES_PERMISSIONS' | translate }}</p>
+
       <permission-tree
         [initialPermissions]="selectedPermissions"
         (permissionsChange)="onPermissionsChange($event)"
@@ -28,19 +29,19 @@
     </div>
   </form>
   <ng-template #actionTemplate >
-    <button (click)="cancel()" mat-button type="button">Annuler</button>
+    <button (click)="cancel()" mat-button type="button">{{ 'ADMIN.CANCEL' | translate }}</button>
     @if (!viewMode && !updateMode) {
-       <button mat-raised-button color="primary" type="button" 
+       <button mat-raised-button color="primary" type="button"
       [disabled]="roleForm.invalid" (click)="saveRole(fasle)">
      <mat-spinner *ngIf="loading" diameter="25" color="warn"></mat-spinner>
-     <span *ngIf="!loading">Sauvgarder</span>
+     <span *ngIf="!loading">{{ 'AUTO.SAUVGARDER' | translate }}</span>
     </button>
     }
      @if (!viewMode && updateMode) {
-       <button mat-raised-button color="primary" type="button" 
+       <button mat-raised-button color="primary" type="button"
       [disabled]="roleForm.invalid" (click)="saveRole(true)">
           <mat-spinner *ngIf="loading" diameter="25" color="warn"></mat-spinner>
-          <span *ngIf="!loading">Modifier</span>
+          <span *ngIf="!loading">{{ 'BANK_ACCOUNTS.ACTIONS.EDIT' | translate }}</span>
     </button>
     }
  </ng-template>

@@ -1,3 +1,22 @@
+.total-count-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-inline-start: 0.5rem;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: var(--accent-100, rgba(63, 81, 181, 0.12));
+  color: var(--accent-700, #303f9f);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+  white-space: nowrap;
+
+  &--loading {
+    opacity: 0.6;
+  }
+}
+
 .success-button {
   color: var(--success-600, #43a047);
   transition: all 0.2s ease;
@@ -235,4 +254,12 @@ th.mat-mdc-header-cell {
 .checkbox-cell {
   width: 17px;
   height: 17px;
+}
+
+.mat-mdc-row.row-clickable {
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(95, 111, 56, 0.06);
+  }
 }

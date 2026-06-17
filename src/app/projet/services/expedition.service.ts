@@ -10,12 +10,7 @@ import {
   ExpeditionUpdateRequest,
   ResolveResponse
 } from '../models/expedition.model';
-
-interface ApiSingleResponse<T> {
-  success: boolean;
-  message: string;
-  data: T;
-}
+import { ApiResponse, ApiSingleResponse } from '../../shared/models/api-response';
 
 @Injectable({ providedIn: 'root' })
 export class ExpeditionService {
@@ -24,19 +19,21 @@ export class ExpeditionService {
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<ExpeditionDto[]> {
-    return this.http.get<ExpeditionDto[]>(this.baseUrl);
+    return this.http.get<ApiResponse<ExpeditionDto>>(`${this.baseUrl}/fetchAll`).pipe(
+      map((response) => response?.data ?? [])
+    );
   }
 
   create(request: ExpeditionCreateRequest): Observable<ExpeditionDto> {
     return this.http
       .post<ApiSingleResponse<ExpeditionDto>>(this.baseUrl, request)
-      .pipe(map(response => response.data));
+      .pipe(map((response) => response.data));
   }
 
   getById(expeditionId: string): Observable<ExpeditionDto> {
     return this.http
       .get<ApiSingleResponse<ExpeditionDto>>(`${this.baseUrl}/fetch/${expeditionId}`)
-      .pipe(map(response => response.data));
+      .pipe(map((response) => response.data));
   }
 
   getByProject(projectId: string): Observable<ExpeditionDto[]> {
@@ -45,19 +42,20 @@ export class ExpeditionService {
 
   getProjectTraceability(projectId: string): Observable<any> {
     return this.http.get<ApiSingleResponse<any>>(`${this.baseUrl}/project/${projectId}/traceability`)
-      .pipe(map(response => response.data || response));
+      .pipe(map((response) => response.data || response));
   }
 
   getExpeditionTraceability(expeditionId: string): Observable<Record<string, unknown>> {
     return this.http
       .get<ApiSingleResponse<Record<string, unknown>>>(`${this.baseUrl}/${expeditionId}/traceability`)
-      .pipe(map(response => response.data || response));
+      .pipe(map((response) => response.data || response));
   }
 
   update(expeditionId: string, request: ExpeditionUpdateRequest): Observable<ExpeditionDto> {
+    const payload = { ...request, id: expeditionId };
     return this.http
-      .put<ApiSingleResponse<ExpeditionDto>>(`${this.baseUrl}/${expeditionId}`, request)
-      .pipe(map(response => response.data));
+      .put<ApiSingleResponse<ExpeditionDto>>(this.baseUrl, payload)
+      .pipe(map((response) => response.data));
   }
 
   addLine(expeditionId: string, request: ExpeditionLineCreateRequest): Observable<ExpeditionDto> {

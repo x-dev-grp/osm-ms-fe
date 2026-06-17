@@ -12,11 +12,12 @@ import { QCResult } from '../../../models/QCResult.model';
 import { OrdreFabrication } from '../../../models/of.model';
 import { QualityService } from "../../../services/QualityService";
 import { QCControlPoint } from '../../../models/QCControlPoint.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-quality-history',
   standalone: true,
-  imports: [
+  imports: [TranslateModule,
     CommonModule,
     FormsModule,
     MatExpansionModule,
@@ -60,7 +61,7 @@ export class QualityHistoryComponent implements OnInit {
               this.loadHistory();
               sub.unsubscribe();
             },
-            error: () => this.toast.error('Erreur chargement OF')
+            error: () => this.toast.error('AUTO.ERREUR_CHARGEMENT_OF')
           });
         }
       }
@@ -72,7 +73,7 @@ export class QualityHistoryComponent implements OnInit {
       next: (data: OrdreFabrication[]) => {
         this.ofs = data || [];
       },
-      error: () => this.toast.error('Erreur chargement OF')
+      error: () => this.toast.error('AUTO.ERREUR_CHARGEMENT_OF')
     });
   }
 
@@ -87,13 +88,13 @@ export class QualityHistoryComponent implements OnInit {
           this.history = res.data || [];
           this.loadControlPoints(this.selectedOfId!);
         } else {
-          this.toast.error(res.message || 'Erreur lors du chargement de l\'historique');
+          this.toast.error(res.message || 'AUTO.ERREUR_LORS_DU_CHARGEMENT_DE_L_HISTORIQUE');
           this.loading = false;
         }
       },
       error: (err) => {
         console.error(err);
-        this.toast.error('Erreur réseau lors du chargement de l\'historique');
+        this.toast.error('AUTO.ERREUR_RESEAU_LORS_DU_CHARGEMENT_DE_L_HISTORIQUE');
         this.loading = false;
       }
     });
@@ -116,7 +117,7 @@ export class QualityHistoryComponent implements OnInit {
       },
       error: (err) => {
         console.error(err);
-        this.toast.error('Erreur lors du chargement des noms des points');
+        this.toast.error('AUTO.ERREUR_LORS_DU_CHARGEMENT_DES_NOMS_DES_POINTS');
         this.loading = false;
       }
     });

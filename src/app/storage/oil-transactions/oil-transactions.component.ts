@@ -91,12 +91,12 @@ export class OilTransactionsComponent implements OnInit {
                 const config = getBonCommandeHuileConfig(oilsale);
                 this.pdfService.generatePdf(config);
               } else {
-                this.toast.error('Oil sale not found');
+                this.toast.error('AUTO.OIL_SALE_NOT_FOUND');
               }
             },
             error: (error) => {
               console.error('Error loading oil sale:', error);
-              this.toast.error('Error loading oil sale');
+              this.toast.error('AUTO.ERROR_LOADING_OIL_SALE');
             }
           });
         }
@@ -167,12 +167,12 @@ export class OilTransactionsComponent implements OnInit {
               this.toast.success();
               this.dashboard.refrechData();
             } else {
-              this.toast.error('Error validating oil sale: ' + response.message);
+              this.toast.error('AUTO.ERROR_VALIDATING_OIL_SALE' + response.message);
             }
           },
           error: (error) => {
             console.error('Error validating oil sale:', error);
-            this.toast.error('Error validating oil sale');
+            this.toast.error('AUTO.ERROR_VALIDATING_OIL_SALE');
           }
         });
       }

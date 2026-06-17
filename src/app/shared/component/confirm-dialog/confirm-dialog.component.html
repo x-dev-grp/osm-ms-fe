@@ -1,7 +1,7 @@
 <!-- confirm-dialog.component.html -->
-<h2 mat-dialog-title>Confirmation</h2>
+<h2 mat-dialog-title>{{ 'STANDARD.CONFIRMATION.SIMPLE.TITLE' | translate }}</h2>
 <mat-dialog-content>{{ data.message }}</mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button (click)="cancel()" mat-button>Cancel</button>
-  <button (click)="ok()" color="primary" mat-button>OK</button>
+  <button (click)="cancel()" mat-button>{{ 'ADMIN.CANCEL' | translate }}</button>
+  <button (click)="ok()" color="primary" mat-button>{{ 'AUTO.OK' | translate }}</button>
 </mat-dialog-actions>

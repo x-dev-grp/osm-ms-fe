@@ -3,6 +3,7 @@ import { SearchOperation } from '../../shared/models/advanced-search/searchOpera
 
 export const userDashboardConfig: DashboardConfig = {
   title: 'Gestion des utilisateurs',
+  titleTranslatePath: 'MENU.ADMINISTRATION.USERS',
   baseURL: 'security/user',
   searchEndpoint: 'security/user',
   addNewItem: true,
@@ -27,6 +28,7 @@ export const userDashboardConfig: DashboardConfig = {
     {
       name: 'username',
       label: "Nom d'utilisateur",
+      labelTranslatePath: 'ADMIN_USERS.FIELDS.USERNAME',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       sortable: true,
@@ -38,6 +40,7 @@ export const userDashboardConfig: DashboardConfig = {
     {
       name: 'email',
       label: 'Email',
+      labelTranslatePath: 'ADMIN_COMPANY_PROFILE.EMAIL',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       sortable: true,
@@ -49,6 +52,7 @@ export const userDashboardConfig: DashboardConfig = {
     {
       name: 'phoneNumber',
       label: 'Numéro de téléphone',
+      labelTranslatePath: 'AUTO.NUMERO_DE_TELEPHONE',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       sortable: true,
@@ -60,6 +64,7 @@ export const userDashboardConfig: DashboardConfig = {
     {
       name: 'confirmationMethod',
       label: 'Méthode de confirmation',
+      labelTranslatePath: 'ADMIN_USERS.FIELDS.CONFIRMATION_METHOD',
       attributeType: AttributeType.enum,
       fieldType: FieldType.select,
       sortable: true,
@@ -82,6 +87,7 @@ export const userDashboardConfig: DashboardConfig = {
       name: 'locked',
       booleanAttributeName: 'isLocked',
       label: 'Désactiver',
+      labelTranslatePath: 'AUTO.DESACTIVER',
       attributeType: AttributeType.boolean,
       fieldType: FieldType.checkbox,
       sortable: true,
@@ -93,6 +99,7 @@ export const userDashboardConfig: DashboardConfig = {
     {
       name: 'role',
       label: 'Role',
+      labelTranslatePath: 'ADMIN.ADD_OSM_ADMIN_ROLE',
       attributeType: AttributeType.object,
       fieldType: FieldType.autocomplete,
       sortable: true,

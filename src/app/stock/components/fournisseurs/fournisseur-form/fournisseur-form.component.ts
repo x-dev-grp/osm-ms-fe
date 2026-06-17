@@ -1,19 +1,23 @@
+import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FournisseurService } from '../../../services/fournisseur.service';
 import { Fournisseur, CategorieFournisseur } from '../../../models/fournisseur.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 @Component({
   selector: 'app-fournisseur-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [TranslateModule, CommonModule, ReactiveFormsModule],
   templateUrl: './fournisseur-form.component.html',
   styleUrls: ['./fournisseur-form.component.scss']
 })
 export class FournisseurFormComponent implements OnInit {
+  private readonly i18n = inject(TranslateService);
   fournisseurForm: FormGroup;
   categories = Object.values(CategorieFournisseur);
 
@@ -114,7 +118,7 @@ export class FournisseurFormComponent implements OnInit {
         error: (error) => {
           console.error('Erreur mise à jour:', error);
           this.submitting = false;
-          alert('Erreur lors de la mise à jour du fournisseur');
+          alert(this.i18n.instant('AUTO.ERREUR_LORS_DE_LA_MISE_A_JOUR_DU_FOURNISSEUR'));
         }
       });
     } else {
@@ -125,7 +129,7 @@ export class FournisseurFormComponent implements OnInit {
         error: (error) => {
           console.error('Erreur création:', error);
           this.submitting = false;
-          alert('Erreur lors de la création du fournisseur');
+          alert(this.i18n.instant('AUTO.ERREUR_LORS_DE_LA_CREATION_DU_FOURNISSEUR'));
         }
       });
     }

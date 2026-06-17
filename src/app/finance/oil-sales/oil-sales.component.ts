@@ -70,12 +70,12 @@ export class OilSalesComponent implements OnInit {
           if (response.success) {
             this.toast.success();
           } else {
-            this.toast.error(response.message || 'Error confirming oil sale');
+            this.toast.error(response.message || 'AUTO.ERROR_CONFIRMING_OIL_SALE');
           }
         },
         error: (error) => {
           console.error('Error confirming oil sale:', error);
-          this.toast.error('Error confirming oil sale');
+          this.toast.error('AUTO.ERROR_CONFIRMING_OIL_SALE');
         }
       });
     }
@@ -88,12 +88,12 @@ export class OilSalesComponent implements OnInit {
           if (response.success) {
             this.toast.success();
           } else {
-            this.toast.error(response.message || 'Error cancelling oil sale');
+            this.toast.error(response.message || 'AUTO.ERROR_CANCELLING_OIL_SALE');
           }
         },
         error: (error) => {
           console.error('Error cancelling oil sale:', error);
-          this.toast.error('Error cancelling oil sale');
+          this.toast.error('AUTO.ERROR_CANCELLING_OIL_SALE');
         }
       });
     }
@@ -106,12 +106,12 @@ export class OilSalesComponent implements OnInit {
           if (response.success) {
             this.toast.success();
           } else {
-            this.toast.error(response.message || 'Error delivering oil sale');
+            this.toast.error(response.message || 'AUTO.ERROR_DELIVERING_OIL_SALE');
           }
         },
         error: (error) => {
           console.error('Error delivering oil sale:', error);
-          this.toast.error('Error delivering oil sale');
+          this.toast.error('AUTO.ERROR_DELIVERING_OIL_SALE');
         }
       });
     }
@@ -120,10 +120,10 @@ export class OilSalesComponent implements OnInit {
   private generateInvoice(oilSale: OilSale): void {
     try {
       // this.invoiceService.generateOilSaleInvoice(oilSale as any);
-      this.toast.success('Facture générée');
+      this.toast.success('AUTO.FACTURE_GENEREE');
     } catch (error) {
       console.error('Error generating invoice PDF:', error);
-      this.toast.error('Erreur lors de la génération de la facture');
+      this.toast.error('AUTO.ERREUR_LORS_DE_LA_GENERATION_DE_LA_FACTURE');
     }
   }
 }

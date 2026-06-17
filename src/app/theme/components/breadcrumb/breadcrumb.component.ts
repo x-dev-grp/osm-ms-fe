@@ -58,7 +58,7 @@ export class BreadcrumbComponent {
         this.navigationList = breadcrumbList;
         this.componentList = this.filterNavigation(this.ComponentNavigations, activeLink);
         const title = breadcrumbList[breadcrumbList.length - 1]?.title || 'Welcome';
-        this.titleService.setTitle(this.translateservice.instant(title)+ ' | OSM');
+        this.titleService.setTitle(this.translateservice.instant(title)+ this.translateservice.instant('AUTO.OSM'));
       }
     });
   }

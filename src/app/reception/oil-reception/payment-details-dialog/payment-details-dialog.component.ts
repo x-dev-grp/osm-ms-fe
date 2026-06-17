@@ -7,7 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateModule } from '@ngx-translate/core';
 
 export interface PaymentDetailsDialogData {
   /** Max oil quantity allowed (from original olive reception: oilQuantity or fallback to poidsNet) */
@@ -58,7 +58,7 @@ function capValidator(maxQty: number, maxTotal: number): ValidatorFn {
 @Component({
   selector: 'app-payment-details-dialog',
   standalone: true,
-  imports: [
+  imports: [TranslateModule, 
     CommonModule,
     ReactiveFormsModule,
     MatDialogModule,

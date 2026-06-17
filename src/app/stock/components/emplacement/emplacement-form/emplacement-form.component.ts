@@ -1,7 +1,17 @@
+import { inject } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { EmplacementStockService } from '../../../services/emplacement-stock.service';
 import { EmplacementStock, TypeEmplacement } from '../../../models/emplacement-stock.model';
 import { CategorieArticle } from '../../../models/article.model';
@@ -9,11 +19,25 @@ import { CategorieArticle } from '../../../models/article.model';
 @Component({
   selector: 'app-emplacement-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    TranslateModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+    MatSelectModule,
+    MatTooltipModule
+  ],
   templateUrl: './emplacement-form.component.html',
   styleUrls: ['./emplacement-form.component.scss']
 })
 export class EmplacementFormComponent implements OnInit {
+  private readonly i18n = inject(TranslateService);
+
   emplacementForm: FormGroup;
   isEditMode = false;
   emplacementId?: string;
@@ -75,15 +99,69 @@ export class EmplacementFormComponent implements OnInit {
     return this.emplacementForm.controls;
   }
 
+  pageTitle(): string {
+    return this.isEditMode
+      ? this.i18n.instant('AUTO.MODIFIER_CET_EMPLACEMENT')
+      : this.i18n.instant('AUTO.NOUVEL_EMPLACEMENT');
+  }
+
+  pageSubtitle(): string {
+    return this.isEditMode
+      ? this.i18n.instant('AUTO.IDENTITE_ET_CLASSIFICATION_DE_L_EMPLACEMENT')
+      : this.i18n.instant('AUTO.COMMENCEZ_PAR_CREER_VOTRE_PREMIER_EMPLACEMENT_DE_STOCKAGE');
+  }
+
+  submitLabel(): string {
+    return this.isEditMode
+      ? this.i18n.instant('ADMIN.SAVE')
+      : this.i18n.instant('AUTO.CREER_UN_EMPLACEMENT');
+  }
+
+  availabilityLabel(): string {
+    return this.emplacementForm.get('disponible')?.value
+      ? this.i18n.instant('AUTO.DISPONIBLE')
+      : this.i18n.instant('AUTO.RESERVE');
+  }
+
+  parseCapacity(value: unknown): number | null {
+    if (value == null || value === '') {
+      return null;
+    }
+    const num = Number(String(value).replace(',', '.').replace(/[^\d.-]/g, ''));
+    return Number.isFinite(num) ? num : null;
+  }
+
+  hasCapacityData(): boolean {
+    return this.parseCapacity(this.emplacementForm.get('capaciteMaximale')?.value) != null;
+  }
+
+  fillPercent(): number {
+    const max = this.parseCapacity(this.emplacementForm.get('capaciteMaximale')?.value);
+    const current = this.parseCapacity(this.emplacementForm.get('capaciteActuelle')?.value) ?? 0;
+    if (!max || max <= 0) {
+      return 0;
+    }
+    return Math.min(100, Math.round((current / max) * 100));
+  }
+
+  capacityFillClass(): string {
+    const pct = this.fillPercent();
+    if (pct >= 95) {
+      return 'full';
+    }
+    if (pct >= 80) {
+      return 'warn';
+    }
+    return '';
+  }
+
   loadEmplacement(): void {
     if (!this.emplacementId) return;
 
     this.loading = true;
 
     this.emplacementService.getEmplacementById(this.emplacementId).subscribe({
-      next: (response) => {
-        const emp: EmplacementStock = (response.data || []).flat()[0];
-
+      next: (emp) => {
         if (emp) {
           this.emplacementForm.patchValue({
             code: emp.code,
@@ -193,4 +271,3 @@ export class EmplacementFormComponent implements OnInit {
     return labels[categorie] || categorie;
   }
 }
-

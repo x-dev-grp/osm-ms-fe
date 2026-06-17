@@ -1,3 +1,5 @@
+import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -14,11 +16,12 @@ import { LigneConditionnement, Statue } from '../../../models/ligne-conditionnem
 import { ToastService } from '../../../../shared/services/toast.service';
 import { QrDialogComponent } from '../../../../shared/components/qr-dialog/qr-dialog.component';
 import { ConfirmationDialogService, ConfirmationType } from '../../../../shared/services/confirmation-dialog.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-ligne-detail',
   standalone: true,
-  imports: [
+  imports: [TranslateModule,
     CommonModule,
     RouterLink,
     MatButtonModule,
@@ -32,6 +35,7 @@ import { ConfirmationDialogService, ConfirmationType } from '../../../../shared/
   styleUrls: ['./ligne-detail.component.scss']
 })
 export class LigneDetailComponent implements OnInit {
+  private readonly i18n = inject(TranslateService);
   ligne = signal<LigneConditionnement | null>(null);
   loading = signal<boolean>(false);
   generatingQr = signal<boolean>(false);
@@ -67,7 +71,7 @@ export class LigneDetailComponent implements OnInit {
         console.error('Erreur chargement detail', err);
         this.error.set('Impossible de charger les détails de la ligne');
         this.loading.set(false);
-        this.toast.error('Erreur lors du chargement des données');
+        this.toast.error('DELIVERIES.FORM.MESSAGES.LOAD_ERROR');
       }
     });
   }
@@ -187,16 +191,16 @@ export class LigneDetailComponent implements OnInit {
     }
 
     this.confirmationDialog.confirm({
-      title: 'Regenerate QR Code',
-      message: 'This will regenerate the QR code and may invalidate already printed physical QR labels.',
+      title: this.i18n.instant('AUTO.REGENERATE_QR_CODE'),
+      message: this.i18n.instant('AUTO.THIS_WILL_REGENERATE_THE_QR_CODE_AND_MAY_INVALIDATE_ALREADY_PRIN'),
       type: ConfirmationType.WARNING,
-      confirmText: 'Regenerate',
-      cancelText: 'Cancel',
+      confirmText: this.i18n.instant('AUTO.REGENERATE'),
+      cancelText: this.i18n.instant('ADMIN.CANCEL'),
       showIcon: true,
       destructive: true,
-      requiredText: 'OKAY',
-      requiredTextHint: 'To continue, type OKAY in the field below.',
-      requiredTextPlaceholder: 'Type OKAY'
+      requiredText: this.i18n.instant('AUTO.OKAY'),
+      requiredTextHint: this.i18n.instant('AUTO.TO_CONTINUE_TYPE_OKAY_IN_THE_FIELD_BELOW'),
+      requiredTextPlaceholder: this.i18n.instant('AUTO.TYPE_OKAY')
     }).pipe(take(1))
       .subscribe((result) => {
         onResolved(!!result?.confirmed);

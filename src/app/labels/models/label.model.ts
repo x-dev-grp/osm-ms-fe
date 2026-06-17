@@ -63,6 +63,12 @@ export interface LabelContentDto {
   qualityGrade?: QualityGrades | string;
   extractionMethod?: string;
   sensoryProfile?: string;
+  ingredientDeclaration?: string;
+  nutritionDeclarationJson?: string;
+  ean13?: string;
+  harvestYear?: string;
+  acidityLevel?: string;
+  brandName?: string;
 
   certifications?: string[];
   claimTypes?: LabelClaimType[];
@@ -109,6 +115,12 @@ export interface LabelContentUpdateRequestDto {
   marketingClaims?: string[];
   qualityGrade?: QualityGrades;
   variety?: string;
+  ingredientDeclaration?: string;
+  nutritionDeclarationJson?: string;
+  ean13?: string;
+  harvestYear?: string;
+  acidityLevel?: string;
+  brandName?: string;
 }
 
 export interface LabelExportDto {

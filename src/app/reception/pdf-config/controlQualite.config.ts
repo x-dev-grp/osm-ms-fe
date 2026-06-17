@@ -43,7 +43,7 @@ export function getControlQualitePdfConfig(delivery: UnifiedDelivery, deliveryTy
 
   // -- fields --------------------------------------------------------------
 
-  const fields: { label: string; value: string }[] = [];
+  const fields: { label: string; labelTranslatePath?: string; value: string }[] = [];
 
   // Parcourir TOUS les résultats de contrôle qualité
   if (delivery.qualityControlResults && delivery.qualityControlResults.length > 0) {
@@ -57,7 +57,8 @@ export function getControlQualitePdfConfig(delivery: UnifiedDelivery, deliveryTy
       fields.push({ label, value });
     });
   } else {
-    fields.push({ label: 'PDF.NO_QUALITY_DATA', value: 'N/A' });
+    fields.push({ label: 'PDF.NO_QUALITY_DATA',
+                  labelTranslatePath: 'AUTO.PDF_NO_QUALITY_DATA', value: 'N/A' });
   }
 
   // -- config --------------------------------------------------------------
@@ -72,26 +73,33 @@ export function getControlQualitePdfConfig(delivery: UnifiedDelivery, deliveryTy
     generalInfo: [
       {
         label: 'PDF.DATE',
+        labelTranslatePath: 'AUTO.PDF_DATE',
         value: delivery.deliveryDate ? new Date(delivery.deliveryDate).toLocaleDateString() : 'N/A'
       },
       {
         label: 'PDF.SUPPLIER',
+        labelTranslatePath: 'AUTO.PDF_SUPPLIER',
         value: `${delivery.supplier?.name || ''} ${delivery.supplier?.lastname || ''}`.trim() || 'N/A'
       },
       {
         label: 'PDF.EXPENSE_RECEIPT_NUMBER',
+        labelTranslatePath: 'AUTO.PDF_EXPENSE_RECEIPT_NUMBER',
         value: delivery.deliveryNumber || 'N/A'
       },
-      { label: 'PDF.VEHICLE_REGISTRATION', value: delivery.matriculeCamion || 'N/A' },
+      { label: 'PDF.VEHICLE_REGISTRATION',
+        labelTranslatePath: 'AUTO.PDF_VEHICLE_REGISTRATION', value: delivery.matriculeCamion || 'N/A' },
       {
         label: 'PDF.TRUCK_STATE',
+        labelTranslatePath: 'AUTO.PDF_TRUCK_STATE',
         value: delivery.etatCamion || 'N/A'
       }
     ],
 
     fields,
 
-    footerInfo: [{ label: 'PDF.SIGNATURE_AGENT' }, { label: 'PDF.SIGNATURE_RESPONSIBLE' }],
+    footerInfo: [{ label: 'PDF.SIGNATURE_AGENT',
+                   labelTranslatePath: 'AUTO.PDF_SIGNATURE_AGENT' }, { label: 'PDF.SIGNATURE_RESPONSIBLE',
+                                                     labelTranslatePath: 'AUTO.PDF_SIGNATURE_RESPONSIBLE' }],
 
     fileName: `Bon_Reception_${isOil ? 'Huile' : isOlive ? 'Olive' : 'Inconnu'}_${delivery.deliveryNumber || 'inconnu'}.pdf`
   };

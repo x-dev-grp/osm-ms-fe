@@ -9,7 +9,8 @@
   <p>{{ error }}</p>
   <button mat-raised-button color="primary" (click)="loadMachine(machine?.id)">
     <mat-icon>refresh</mat-icon>
-    Retry
+
+    {{ 'STANDARD.BTNS.RETRY' | translate }}
   </button>
 </div>
 
@@ -20,43 +21,47 @@
       <div class="form-grid">
         <!-- Type de maintenance -->
         <mat-form-field appearance="outline">
-          <mat-label>Type de maintenance</mat-label>
+          <mat-label>{{ 'AUTO.TYPE_DE_MAINTENANCE' | translate }}</mat-label>
           <mat-select formControlName="maintenanceType" required>
             <mat-option *ngFor="let type of maintenanceTypes" [value]="type.value">
               {{ type.label }}
             </mat-option>
           </mat-select>
           <mat-error *ngIf="form.get('maintenanceType')?.hasError('required')">
-            Le type de maintenance est requis
+
+            {{ 'AUTO.LE_TYPE_DE_MAINTENANCE_EST_REQUIS' | translate }}
           </mat-error>
         </mat-form-field>
 
         <!-- Description -->
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Description</mat-label>
+          <mat-label>{{ 'BASE_TYPE.FIELDS.DESCRIPTION' | translate }}</mat-label>
           <textarea matInput formControlName="description" rows="3" required></textarea>
           <mat-error *ngIf="form.get('description')?.hasError('required')">
-            La description est requise
+
+            {{ 'AUTO.LA_DESCRIPTION_EST_REQUISE' | translate }}
           </mat-error>
           <mat-error *ngIf="form.get('description')?.hasError('minlength')">
-            La description doit contenir au moins 10 caractères
+
+            {{ 'AUTO.LA_DESCRIPTION_DOIT_CONTENIR_AU_MOINS_10_CARACTERES' | translate }}
           </mat-error>
         </mat-form-field>
 
         <!-- Date de début -->
         <mat-form-field appearance="outline">
-          <mat-label>Date de début</mat-label>
+          <mat-label>{{ 'CONTRACT.START_DATE' | translate }}</mat-label>
           <input matInput [matDatepicker]="startPicker" formControlName="startDate" required>
           <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
           <mat-datepicker #startPicker></mat-datepicker>
           <mat-error *ngIf="form.get('startDate')?.hasError('required')">
-            La date de début est requise
+
+            {{ 'AUTO.LA_DATE_DE_DEBUT_EST_REQUISE' | translate }}
           </mat-error>
         </mat-form-field>
 
         <!-- Date de fin -->
         <mat-form-field appearance="outline">
-          <mat-label>Date de fin</mat-label>
+          <mat-label>{{ 'CONTRACT.END_DATE' | translate }}</mat-label>
           <input matInput [matDatepicker]="endPicker" formControlName="endDate">
           <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
           <mat-datepicker #endPicker></mat-datepicker>
@@ -64,47 +69,51 @@
 
         <!-- Statut -->
         <mat-form-field appearance="outline">
-          <mat-label>Statut</mat-label>
+          <mat-label>{{ 'ADMIN_DASHBOARD.TABLE.STATUS' | translate }}</mat-label>
           <mat-select formControlName="status" required>
             <mat-option *ngFor="let status of maintenanceStatuses" [value]="status.value">
               {{ status.label }}
             </mat-option>
           </mat-select>
           <mat-error *ngIf="form.get('status')?.hasError('required')">
-            Le statut est requis
+
+            {{ 'EXPENSES.ERRORS.STATUS_REQUIRED' | translate }}
           </mat-error>
         </mat-form-field>
 
         <!-- Technicien -->
         <mat-form-field appearance="outline">
-          <mat-label>Technicien</mat-label>
+          <mat-label>{{ 'AUTO.TECHNICIEN' | translate }}</mat-label>
           <input matInput formControlName="technician" required>
           <mat-error *ngIf="form.get('technician')?.hasError('required')">
-            Le technicien est requis
+
+            {{ 'AUTO.LE_TECHNICIEN_EST_REQUIS' | translate }}
           </mat-error>
         </mat-form-field>
 
         <!-- Coût -->
         <mat-form-field appearance="outline">
-          <mat-label>Coût</mat-label>
+          <mat-label>{{ 'AUTO.COUT' | translate }}</mat-label>
           <input matInput type="number" formControlName="cost" required>
           <mat-error *ngIf="form.get('cost')?.hasError('required')">
-            Le coût est requis
+
+            {{ 'AUTO.LE_COUT_EST_REQUIS' | translate }}
           </mat-error>
           <mat-error *ngIf="form.get('cost')?.hasError('min')">
-            Le coût doit être positif
+
+            {{ 'AUTO.LE_COUT_DOIT_ETRE_POSITIF' | translate }}
           </mat-error>
         </mat-form-field>
 
         <!-- Pièces remplacées -->
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Pièces remplacées</mat-label>
+          <mat-label>{{ 'AUTO.PIECES_REMPLACEES' | translate }}</mat-label>
           <textarea matInput formControlName="partsReplaced" rows="2"></textarea>
         </mat-form-field>
 
         <!-- Notes -->
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Notes</mat-label>
+          <mat-label>{{ 'CUSTOMERS.FIELDS.NOTES' | translate }}</mat-label>
           <textarea matInput formControlName="notes" rows="3"></textarea>
         </mat-form-field>
       </div>
@@ -113,13 +122,15 @@
       <div class="form-actions">
         <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid || loading">
           <mat-icon>save</mat-icon>
-          Enregistrer
+
+          {{ 'BANK_ACCOUNTS.ACTIONS.SAVE' | translate }}
         </button>
         <button mat-stroked-button type="button" (click)="cancel()" [disabled]="loading">
           <mat-icon>cancel</mat-icon>
-          Annuler
+
+          {{ 'ADMIN.CANCEL' | translate }}
         </button>
       </div>
     </form>
   </app-card>
-</div> 
+</div>

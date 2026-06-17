@@ -1,0 +1,29 @@
+<aside class="qc-rail" [class.collapsed]="!expanded">
+  <button type="button" class="qc-rail__toggle" (click)="toggle()">
+    <mat-icon>{{ expanded ? 'chevron_right' : 'chevron_left' }}</mat-icon>
+    <span class="qc-rail__score">{{ summary.percent }}%</span>
+    <span class="qc-rail__count">{{ summary.passed }}/{{ summary.total }}</span>
+  </button>
+
+  <div class="qc-rail__body" *ngIf="expanded">
+    <h3>Conformité QC</h3>
+    <div class="qc-rail__stats">
+      <div><strong>{{ summary.passed }}</strong> ✅</div>
+      <div><strong>{{ summary.failed }}</strong> ❌</div>
+      <div><strong>{{ summary.pending }}</strong> …</div>
+    </div>
+
+    <p class="qc-rail__grade" *ngIf="summary.suggestedGrade">
+      Grade suggéré (COI): <strong>{{ summary.suggestedGrade }}</strong>
+    </p>
+
+    <mat-list dense>
+      <mat-list-item *ngFor="let item of summary.items">
+        <span matListItemIcon class="qc-rail__status" [attr.aria-label]="item.passed === true ? 'Conforme' : 'Non conforme'">
+          {{ item.passed === true ? '✅' : '❌' }}
+        </span>
+        <span matListItemTitle>{{ item.ruleName }}</span>
+      </mat-list-item>
+    </mat-list>
+  </div>
+</aside>

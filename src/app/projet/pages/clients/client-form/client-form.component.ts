@@ -1,3 +1,5 @@
+import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -6,15 +8,17 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ClientService } from '../../../services/client.service';
 import { Client, ClientType } from '../../../models/client.model';
 import { ApiResponse } from '../../../../shared/models/api-response';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-client-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [TranslateModule, CommonModule, ReactiveFormsModule],
   templateUrl: './client-form.component.html',
   styleUrls: ['./client-form.component.scss']
 })
 export class ClientFormComponent implements OnInit {
+  private readonly i18n = inject(TranslateService);
   readonly ClientType = ClientType;
 
   clientForm: FormGroup;
@@ -59,11 +63,8 @@ export class ClientFormComponent implements OnInit {
 
   loadClient(): void {
     this.clientService.getClientById(this.clientId!).subscribe({
-      next: (response: ApiResponse<Client>) => {
-        if (response.success && response.data && response.data.length > 0) {
-          const client = response.data[0];
-
-          this.clientForm.patchValue({
+      next: (client) => {
+        this.clientForm.patchValue({
             nom: client.nom,
             type: client.type ?? ClientType.BUYER,
             codeClient: client.codeClient || '',
@@ -78,10 +79,6 @@ export class ClientFormComponent implements OnInit {
             numeroTva: client.numeroTva || '',
             notes: client.notes || ''
           });
-        } else {
-          this.error = response.message || 'Client non trouvé';
-          setTimeout(() => this.router.navigate(['/stock/clients']), 2000);
-        }
       },
       error: (err) => {
         console.error('Erreur chargement client', err);
@@ -92,12 +89,12 @@ export class ClientFormComponent implements OnInit {
   }
 
   onSubmit(): void {
-    alert("Bouton cliqué ! Validation du formulaire...");
+    alert(this.i18n.instant('AUTO.BOUTON_CLIQUE_VALIDATION_DU_FORMULAIRE'));
     this.submitted = true;
     this.error = null;
 
     if (this.clientForm.invalid) {
-      alert("Le formulaire est invalide ! Vérifiez les champs obligatoires (ex: Nom).");
+      alert(this.i18n.instant('AUTO.LE_FORMULAIRE_EST_INVALIDE_VERIFIEZ_LES_CHAMPS_OBLIGATOIRES_EX_N'));
       this.error = "Veuillez remplir correctement tous les champs obligatoires.";
       this.clientForm.markAllAsTouched();
       return;
@@ -113,20 +110,15 @@ export class ClientFormComponent implements OnInit {
       email: formValue.email?.trim() || undefined
     };
 
-    alert("Envoi en cours vers le serveur...");
+    alert(this.i18n.instant('AUTO.ENVOI_EN_COURS_VERS_LE_SERVEUR'));
 
     if (this.isEditMode) {
       this.clientService.updateClient(this.clientId!, client).subscribe({
-        next: (response: ApiResponse<Client>) => {
-          if (response.success) {
-            this.successMessage = 'Client mis à jour avec succès';
-            setTimeout(() => {
-              this.router.navigate(['/stock/clients', this.clientId]);
-            }, 1500);
-          } else {
-            this.error = response.message || 'Erreur lors de la mise à jour';
-            this.submitting = false;
-          }
+        next: () => {
+          this.successMessage = this.i18n.instant('CUSTOMERS.MESSAGES.UPDATE_SUCCESS');
+          setTimeout(() => {
+            this.router.navigate(['/stock/clients', this.clientId]);
+          }, 1500);
         },
         error: (err) => {
           console.error('Erreur mise à jour', err);
@@ -136,21 +128,15 @@ export class ClientFormComponent implements OnInit {
       });
     } else {
       this.clientService.createClient(client).subscribe({
-        next: (response: ApiResponse<Client>) => {
-          if (response.success && response.data && response.data.length > 0) {
-            const created = response.data[0];
-            this.successMessage = 'Client créé avec succès';
-            setTimeout(() => {
-              this.router.navigate(['/stock/clients', created.id]);
-            }, 1500);
-          } else {
-            this.error = response.message || 'Erreur lors de la création';
-            this.submitting = false;
-          }
+        next: (created) => {
+          this.successMessage = this.i18n.instant('CUSTOMERS.MESSAGES.SAVE_SUCCESS');
+          setTimeout(() => {
+            this.router.navigate(['/stock/clients', created.id]);
+          }, 1500);
         },
         error: (err) => {
           console.error('Erreur création', err);
-          alert("Erreur du serveur : " + (err.error?.message || err.message || 'Erreur inconnue'));
+          alert(this.i18n.instant('AUTO.ERREUR_DU_SERVEUR') + (err.error?.message || err.message || this.i18n.instant('AUTO.ERREUR_INCONNUE')));
           this.error = err.error?.message || 'Erreur lors de la création';
           this.submitting = false;
         }

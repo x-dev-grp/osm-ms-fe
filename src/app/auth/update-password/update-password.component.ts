@@ -11,14 +11,14 @@ import { AuthenticationService } from 'src/app/auth/services/authentication.serv
 import { MatDialog } from '@angular/material/dialog';
 import { User } from 'src/app/theme/types/user';
 import { TokenService } from '../services/tokenService.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-update-password',
   templateUrl: './update-password.component.html',
   styleUrls: ['../authentication.scss'],
   standalone: true,
-  imports: [CommonModule, SharedModule, RouterModule]
+  imports: [TranslateModule, CommonModule, SharedModule, RouterModule]
 })
 export class UpdatePasswordComponent implements OnInit {
   @ViewChild('changePwdTpl') changePwdTpl: TemplateRef<unknown>;
@@ -107,13 +107,13 @@ export class UpdatePasswordComponent implements OnInit {
 
     const userId = this.route.snapshot.paramMap?.get('id');
     if (!userId) {
-      this.errorMessage = 'Invalid user';
+      this.errorMessage = this.translateService.instant('AUTO.INVALID_USER');
       return;
     }
 
     const temporaryPassword = history.state?.temporaryPassword;
     if (!temporaryPassword) {
-      this.errorMessage = 'Invalid credentials';
+      this.errorMessage = this.translateService.instant('AUTO.INVALID_CREDENTIALS');
       return;
     }
 

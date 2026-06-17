@@ -8,14 +8,14 @@
   </div>
   <div class="style-block">
     <div class="customize-header align-item-center">
-      <div class="f-16 f-w-600">Settings</div>
+      <div class="f-16 f-w-600">{{ 'Setting' | translate }}</div>
       <button
         type="button"
         mat-icon-button
         class="close-drawer"
         color="warn"
         (click)="styleSelectorToggle = !styleSelectorToggle"
-        matTooltip="Close Customizer "
+        [matTooltip]="'AUTO.CLOSE_CUSTOMIZER' | translate"
       >
         <mat-icon>close</mat-icon>
       </button>
@@ -25,13 +25,13 @@
         <ul class="list-group">
           <li class="list-group-item">
             <div class="pc-dark">
-              <div class="m-b-5 f-16 f-w-600">Theme Mode</div>
-              <p class="text-muted">Choose Light or Dark Mode or Auto</p>
+              <div class="m-b-5 f-16 f-w-600">{{ 'APPLICATION_CONFIG.THEME_MODE.TITLE' | translate }}</div>
+              <p class="text-muted">{{ 'APPLICATION_CONFIG.THEME_MODE.DESCRIPTION' | translate }}</p>
               <div class="row">
                 <div class="col-4">
                   <div class="grid">
                     <button
-                      matTooltip="Light Mode"
+                      [matTooltip]="'AUTO.LIGHT_MODE' | translate"
                       mat-stroked-button
                       class="customize-button"
                       [ngClass]="{ active: layoutType === 'light' }"
@@ -46,7 +46,7 @@
                 <div class="col-4">
                   <div class="grid">
                     <button
-                      matTooltip="Dark Mode"
+                      [matTooltip]="'AUTO.DARK_MODE' | translate"
                       mat-stroked-button
                       class="customize-button"
                       [ngClass]="{ active: layoutType === 'dark' }"
@@ -61,7 +61,7 @@
                 <div class="col-4">
                   <div class="grid">
                     <button
-                      matTooltip="Auto Mode"
+                      [matTooltip]="'AUTO.AUTO_MODE' | translate"
                       mat-stroked-button
                       class="customize-button auto-button"
                       [ngClass]="{ active: layoutType === 'auto' }"
@@ -79,13 +79,13 @@
 
           @if (layoutType !== 'dark') {
             <li class="list-group-item">
-              <div class="m-b-5 f-16 f-w-600">Theme Contrast</div>
-              <p class="text-muted">Choose Theme Contrast</p>
+              <div class="m-b-5 f-16 f-w-600">{{ 'APPLICATION_CONFIG.THEME_CONTRAST.TITLE' | translate }}</div>
+              <p class="text-muted">{{ 'APPLICATION_CONFIG.THEME_CONTRAST.DESCRIPTION' | translate }}</p>
               <div class="row">
                 <div class="col-6">
                   <div class="grid">
                     <button
-                      matTooltip="Light Contrast"
+                      [matTooltip]="'AUTO.LIGHT_CONTRAST' | translate"
                       mat-stroked-button
                       class="customize-button"
                       [ngClass]="{ active: contrast === true }"
@@ -100,7 +100,7 @@
                 <div class="col-6">
                   <div class="grid">
                     <button
-                      matTooltip="Gray Contrast"
+                      [matTooltip]="'AUTO.GRAY_CONTRAST' | translate"
                       mat-stroked-button
                       class="customize-button"
                       [ngClass]="{ active: contrast === false }"
@@ -116,12 +116,12 @@
             </li>
           }
           <li class="list-group-item">
-            <div class="m-b-5 f-16 f-w-600">Custom Theme</div>
-            <p class="text-muted">Choose your Primary color</p>
+            <div class="m-b-5 f-16 f-w-600">{{ 'APPLICATION_CONFIG.CUSTOM_THEME.TITLE' | translate }}</div>
+            <p class="text-muted">{{ 'APPLICATION_CONFIG.CUSTOM_THEME.DESCRIPTION' | translate }}</p>
             <div class="theme-color">
               <a
                 href="javascript:"
-                matTooltip="Blue Layout"
+                [matTooltip]="'AUTO.BLUE_LAYOUT' | translate"
                 class="blue-layout"
                 [ngClass]="{ active: bodyColor === 'blue-theme' }"
                 (click)="SetBodyColor('blue-theme')"
@@ -131,7 +131,7 @@
               </a>
               <a
                 href="javascript:"
-                matTooltip="Indigo Layout"
+                [matTooltip]="'AUTO.INDIGO_LAYOUT' | translate"
                 class="indigo-layout"
                 [ngClass]="{ active: bodyColor === 'indigo-theme' }"
                 (click)="SetBodyColor('indigo-theme')"
@@ -141,7 +141,7 @@
               </a>
               <a
                 href="javascript:"
-                matTooltip="Purple Layout"
+                [matTooltip]="'AUTO.PURPLE_LAYOUT' | translate"
                 class="purple-layout"
                 [ngClass]="{ active: bodyColor === 'purple-theme' }"
                 (click)="SetBodyColor('purple-theme')"
@@ -151,7 +151,7 @@
               </a>
               <a
                 href="javascript:"
-                matTooltip="Pink Layout"
+                [matTooltip]="'AUTO.PINK_LAYOUT' | translate"
                 class="pink-layout"
                 [ngClass]="{ active: bodyColor === 'pink-theme' }"
                 (click)="SetBodyColor('pink-theme')"
@@ -161,7 +161,7 @@
               </a>
               <a
                 href="javascript:"
-                matTooltip="Red Layout"
+                [matTooltip]="'AUTO.RED_LAYOUT' | translate"
                 class="red-layout"
                 [ngClass]="{ active: bodyColor === 'red-theme' }"
                 (click)="SetBodyColor('red-theme')"
@@ -171,7 +171,7 @@
               </a>
               <a
                 href="javascript:"
-                matTooltip="Orange Layout"
+                [matTooltip]="'AUTO.ORANGE_LAYOUT' | translate"
                 class="orange-layout"
                 [ngClass]="{ active: bodyColor === 'orange-theme' }"
                 (click)="SetBodyColor('orange-theme')"
@@ -181,7 +181,7 @@
               </a>
               <a
                 href="javascript:"
-                matTooltip="Yellow Layout"
+                [matTooltip]="'AUTO.YELLOW_LAYOUT' | translate"
                 class="yellow-layout"
                 [ngClass]="{ active: bodyColor === 'yellow-theme' }"
                 (click)="SetBodyColor('yellow-theme')"
@@ -191,7 +191,7 @@
               </a>
               <a
                 href="javascript:"
-                matTooltip="Green Layout"
+                [matTooltip]="'AUTO.GREEN_LAYOUT' | translate"
                 class="green-layout"
                 [ngClass]="{ active: bodyColor === 'green-theme' }"
                 (click)="SetBodyColor('green-theme')"
@@ -201,7 +201,7 @@
               </a>
               <a
                 href="javascript:"
-                matTooltip="Teal Layout"
+                [matTooltip]="'AUTO.TEAL_LAYOUT' | translate"
                 class="teal-layout"
                 [ngClass]="{ active: bodyColor === 'teal-theme' }"
                 (click)="SetBodyColor('teal-theme')"
@@ -211,7 +211,7 @@
               </a>
               <a
                 href="javascript:"
-                matTooltip="Cyan Layout"
+                [matTooltip]="'AUTO.CYAN_LAYOUT' | translate"
                 class="cyan-layout"
                 [ngClass]="{ active: bodyColor === 'cyan-theme' }"
                 (click)="SetBodyColor('cyan-theme')"
@@ -222,13 +222,13 @@
             </div>
           </li>
           <li class="list-group-item">
-            <div class="m-b-5 f-16 f-w-600">Sidebar Caption</div>
-            <p class="text-muted">Sidebar Caption Hide/Show</p>
+            <div class="m-b-5 f-16 f-w-600">{{ 'APPLICATION_CONFIG.SIDEBAR_CAPTION.TITLE' | translate }}</div>
+            <p class="text-muted">{{ 'APPLICATION_CONFIG.SIDEBAR_CAPTION.DESCRIPTION' | translate }}</p>
             <div class="row">
               <div class="col-6">
                 <div class="grid">
                   <button
-                    matTooltip="Show Menu Caption"
+                    [matTooltip]="'AUTO.SHOW_MENU_CAPTION' | translate"
                     mat-stroked-button
                     class="customize-button"
                     [ngClass]="{ active: caption === false }"
@@ -241,7 +241,7 @@
               <div class="col-6">
                 <div class="grid">
                   <button
-                    matTooltip="Hide Menu Caption"
+                    [matTooltip]="'AUTO.HIDE_MENU_CAPTION' | translate"
                     mat-stroked-button
                     class="customize-button"
                     [ngClass]="{ active: caption === true }"
@@ -254,13 +254,13 @@
             </div>
           </li>
           <li class="list-group-item">
-            <div class="m-b-5 f-16 f-w-600">Theme Layout</div>
-            <p class="text-muted">LTR/RTL</p>
+            <div class="m-b-5 f-16 f-w-600">{{ 'APPLICATION_CONFIG.THEME_LAYOUT.TITLE' | translate }}</div>
+            <p class="text-muted">{{ 'APPLICATION_CONFIG.THEME_LAYOUT.DESCRIPTION' | translate }}</p>
             <div class="row">
               <div class="col-6">
                 <div class="grid">
                   <button
-                    matTooltip="LTR Mode"
+                    [matTooltip]="'AUTO.LTR_MODE' | translate"
                     mat-stroked-button
                     class="customize-button"
                     [ngClass]="{ active: rtlLayout === false }"
@@ -273,7 +273,7 @@
               <div class="col-6">
                 <div class="grid">
                   <button
-                    matTooltip="RTL Mode"
+                    [matTooltip]="'AUTO.RTL_MODE' | translate"
                     [disabled]="layout === 'horizontal'"
                     mat-stroked-button
                     class="customize-button"
@@ -287,13 +287,13 @@
             </div>
           </li>
           <li class="list-group-item">
-            <div class="m-b-5 f-16 f-w-600">Menu Orientation</div>
-            <p class="text-muted">Choose Vertical or Horizontal or Compact Menu Orientation</p>
+            <div class="m-b-5 f-16 f-w-600">{{ 'APPLICATION_CONFIG.MENU_ORIENTATION.TITLE' | translate }}</div>
+            <p class="text-muted">{{ 'AUTO.CHOOSE_VERTICAL_OR_HORIZONTAL_OR_COMPACT_MENU_ORIENTATION' | translate }}</p>
             <div class="row">
               <div class="col-4">
                 <div class="grid">
                   <button
-                    matTooltip="Vertical Menu"
+                    [matTooltip]="'AUTO.VERTICAL_MENU' | translate"
                     mat-stroked-button
                     class="customize-button"
                     [ngClass]="{ active: layout === 'vertical' }"
@@ -306,7 +306,7 @@
               <div class="col-4">
                 <div class="grid">
                   <button
-                    matTooltip="Horizontal Menu"
+                    [matTooltip]="'AUTO.HORIZONTAL_MENU' | translate"
                     [disabled]="rtlLayout === true"
                     mat-stroked-button
                     class="customize-button"
@@ -320,7 +320,7 @@
               <div class="col-4">
                 <div class="grid">
                   <button
-                    matTooltip="Compact Menu"
+                    [matTooltip]="'AUTO.COMPACT_MENU' | translate"
                     mat-stroked-button
                     class="customize-button"
                     [ngClass]="{ active: layout === 'compact' }"
@@ -333,13 +333,13 @@
             </div>
           </li>
           <li class="list-group-item">
-            <div class="m-b-5 f-16 f-w-600">Layout Width</div>
-            <p class="text-muted">Choose Full or Container Layout</p>
+            <div class="m-b-5 f-16 f-w-600">{{ 'APPLICATION_CONFIG.LAYOUT_WIDTH.TITLE' | translate }}</div>
+            <p class="text-muted">{{ 'AUTO.CHOOSE_FULL_OR_CONTAINER_LAYOUT' | translate }}</p>
             <div class="row">
               <div class="col-6">
                 <div class="grid">
                   <button
-                    matTooltip="Full Layout"
+                    [matTooltip]="'AUTO.FULL_LAYOUT' | translate"
                     mat-stroked-button
                     class="customize-button"
                     [ngClass]="{ active: boxLayouts === false }"
@@ -352,7 +352,7 @@
               <div class="col-6">
                 <div class="grid">
                   <button
-                    matTooltip="Container Layout"
+                    [matTooltip]="'AUTO.CONTAINER_LAYOUT' | translate"
                     mat-stroked-button
                     class="customize-button"
                     [ngClass]="{ active: boxLayouts === true }"
@@ -367,13 +367,14 @@
           <li class="list-group-item">
             <div class="grid">
               <button
-                matTooltip="Reset Layout"
+                [matTooltip]="'AUTO.RESET_LAYOUT' | translate"
                 mat-stroked-button
                 class="bg-primary-50 text-primary-500 b-rad-20 b-primary-50"
                 [ngClass]="{ active: resetLayoutType === 'reset' }"
                 (click)="setResetLayout('reset'); styleSelectorToggle = !styleSelectorToggle"
               >
-                Reset Layout
+
+                {{ 'AUTO.RESET_LAYOUT' | translate }}
               </button>
             </div>
           </li>

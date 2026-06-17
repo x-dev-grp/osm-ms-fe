@@ -1,3 +1,5 @@
+import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -15,6 +17,7 @@ import { MillMachineService } from '../../../shared/services/mill-machine.servic
 import { ToastService } from '../../../shared/services/toast.service';
 import { ApiResponse } from '../../../shared/models/api-response';
 import { Mill } from '../../../shared/models/planningDTOS';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface MaintenanceData {
   maintenanceType: string;
@@ -34,7 +37,7 @@ interface MaintenanceData {
   templateUrl: './mill-machine-maintenance.component.html',
   styleUrls: ['./mill-machine-maintenance.component.scss'],
   standalone: true,
-  imports: [
+  imports: [TranslateModule,
     CommonModule,
     ReactiveFormsModule,
     MatButtonModule,
@@ -47,6 +50,7 @@ interface MaintenanceData {
   ]
 })
 export class MillMachineMaintenanceComponent implements OnInit {
+  private readonly i18n = inject(TranslateService);
   form: FormGroup;
   machine: MillMachine | null = null;
   loading = false;
@@ -113,12 +117,12 @@ export class MillMachineMaintenanceComponent implements OnInit {
           this.toast.success(response.message);
 
         } else {
-          this.toast.error(response.message || 'Failed to load machine');
+          this.toast.error(response.message || 'AUTO.FAILED_TO_LOAD_MACHINE');
         }
         this.loading = false;
       },
       error: (err: any) => {
-        const errorMessage = 'An error occurred while loading the machine';
+        const errorMessage = this.i18n.instant('AUTO.AN_ERROR_OCCURRED_WHILE_LOADING_THE_MACHINE');
         this.error = errorMessage;
         this.toast.error(errorMessage!);
         this.loading = false;
@@ -155,14 +159,14 @@ export class MillMachineMaintenanceComponent implements OnInit {
           this.toast.success();
           this.router.navigate(['/reception/mill-machines']);
         } else {
-          const errorMessage = response.message || 'Failed to schedule maintenance';
+          const errorMessage = response.message || this.i18n.instant('AUTO.FAILED_TO_SCHEDULE_MAINTENANCE');
           this.error = errorMessage;
           this.toast.error(errorMessage!);
         }
         this.loading = false;
       },
       error: (err: any) => {
-        const errorMessage = 'An error occurred while scheduling maintenance';
+        const errorMessage = this.i18n.instant('AUTO.AN_ERROR_OCCURRED_WHILE_SCHEDULING_MAINTENANCE');
         this.error = errorMessage;
         this.toast.error(errorMessage!);
         this.loading = false;

@@ -9,11 +9,11 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { AuthService, OSMUserOUTDTO } from 'src/app/shared/services/auth.service';
 import { catchError, first, of } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-forgot-password',
-  imports: [CommonModule, SharedModule, RouterModule, MatProgressSpinnerModule],
+  imports: [TranslateModule, CommonModule, SharedModule, RouterModule, MatProgressSpinnerModule],
   templateUrl: './forgot-password.component.html',
   standalone: true,
   styleUrls: ['../authentication.scss']
@@ -54,7 +54,7 @@ export class ForgotPasswordComponent implements OnInit {
       first(),
       catchError(err => {
         this.loading = false;
-        this.errorMessage = typeof err?.error === 'string'
+        this.errorMessage = typeof err?.error === this.translateService.instant('AUTO.STRING')
           ? err.error
           : this.translateService.instant('FORGOT_PASSWORD.ERROR_MESSAGE');
         return of(null);

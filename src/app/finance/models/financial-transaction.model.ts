@@ -2,13 +2,14 @@
 
 import { BankAccount } from './BankAccount';
 import { Expense } from './expense.model';
-import { SupplierType } from '../../shared/models/supplier-type';
-  export enum PaymentMethod {
-  CASH = 'cash',
+
+export enum PaymentMethod {
+  CASH = 'CASH',
   CHEQUE = 'CHEQUE',
   TRANSFER = 'TRANSFER',
-  OIL='oil',
-  BOTH='both',
+  OIL = 'OIL',
+  MIXED = 'MIXED',
+  BOTH = 'MIXED',
 }
 
 export enum TransactionType {
@@ -26,7 +27,17 @@ export enum TransactionType {
   DEPOSIT = 'DEPOSIT',
   WITHDRAWAL = 'WITHDRAWAL',
   CHECK_DEPOSIT = 'CHECK_DEPOSIT',
-  CHECK_PAYMENT = 'CHECK_PAYMENT'
+  CHECK_PAYMENT = 'CHECK_PAYMENT',
+  RECEPTION_IN = 'RECEPTION_IN',
+  TRANSFER_IN = 'TRANSFER_IN',
+  FILTRATION = 'FILTRATION',
+  SALE = 'SALE',
+  EXCHANGE = 'EXCHANGE',
+  OIL_CONTAINER_SALE = 'OIL_CONTAINER_SALE',
+  WASTE_SALE = 'WASTE_SALE',
+  WASTE_PAYMENT = 'WASTE_PAYMENT',
+  WASTE_DISPOSAL_COST = 'WASTE_DISPOSAL_COST',
+  STORAGE_RENTAL = 'STORAGE_RENTAL'
 }
 
 export enum TransactionDirection {
@@ -43,19 +54,29 @@ export enum Currency {
 
 // ==================== INTERFACES ====================
 
+export interface TransactionSupplier {
+  id?: string;
+  externalId?: string;
+  name?: string;
+  lastname?: string;
+  phone?: string;
+  email?: string;
+}
+
 export interface FinancialTransaction {
   id?: string;
-  transactionType?: TransactionType;
-  direction?: TransactionDirection;
-  amount: number;
-  currency?: Currency;
-  paymentMethod: PaymentMethod;
+  transactionType?: TransactionType | string;
+  direction?: TransactionDirection | string;
+  amount: number | string;
+  currency?: Currency | string;
+  paymentMethod: PaymentMethod | string;
   bankAccount?: BankAccount;
   checkNumber?: string;
   externalTransactionId?: string;
   lotNumber?: string;
-  supplierId?: SupplierType;
-   expense?: Expense;
+  supplier?: TransactionSupplier;
+  supplierId?: TransactionSupplier;
+  expense?: Expense;
   description?: string;
   invoiceReference?: string;
   receiptReference?: string;
@@ -67,4 +88,17 @@ export interface FinancialTransaction {
   lastModifiedDate?: string;
   createdBy?: string;
   lastModifiedBy?: string;
+  operationType?: string;
+  resourceName?: string;
+  vendorName?: string;
+  paidAmount?: number;
+  unpaidAmount?: number;
+}
+
+/** Normalizes API amounts that may arrive as number or string (BigDecimal). */
+export function parseTransactionAmount(value: number | string | null | undefined): number {
+  if (value == null || value === '') {
+    return 0;
+  }
+  return typeof value === 'number' ? value : Number(value) || 0;
 }

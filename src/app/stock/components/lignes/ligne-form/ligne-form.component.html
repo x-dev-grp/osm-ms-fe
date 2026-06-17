@@ -3,9 +3,9 @@
     <button
       mat-icon-button
       class="back-button"
-      matTooltip="Retour"
+      [matTooltip]="'COMMON.BACK' | translate"
       matTooltipPosition="above"
-      aria-label="Retour"
+      [attr.aria-label]="'COMMON.BACK' | translate"
       (click)="onCancel()"
     >
       <mat-icon>arrow_back</mat-icon>
@@ -16,7 +16,7 @@
     </div>
 
     <div class="hero-copy">
-      <div class="eyebrow">Production · Ligne de conditionnement</div>
+      <div class="eyebrow">{{ 'AUTO.PRODUCTION_LIGNE_DE_CONDITIONNEMENT' | translate }}</div>
       <h1>{{ isEditMode ? 'Modifier la ligne' : 'Nouvelle ligne de conditionnement' }}</h1>
       <p>
         {{
@@ -31,7 +31,7 @@
   @if (loading()) {
     <div class="loading-state">
       <mat-spinner diameter="42"></mat-spinner>
-      <p>Chargement des données...</p>
+      <p>{{ 'AUTO.CHARGEMENT_DES_DONNEES' | translate }}</p>
     </div>
   }
 
@@ -45,46 +45,48 @@
                 <mat-icon>info_outline</mat-icon>
               </span>
               <div>
-                <h2>Informations de base</h2>
-                <p>Identification générale de la ligne.</p>
+                <h2>{{ 'CUSTOMERS.SECTIONS.BASIC_INFO' | translate }}</h2>
+                <p>{{ 'AUTO.IDENTIFICATION_GENERALE_DE_LA_LIGNE' | translate }}</p>
               </div>
             </div>
           </div>
 
           <div class="card-body">
             <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Nom de la ligne</mat-label>
-              <input matInput formControlName="nom" placeholder="Ex: Ligne d'embouteillage A" />
+              <mat-label>{{ 'AUTO.NOM_DE_LA_LIGNE' | translate }}</mat-label>
+              <input matInput formControlName="nom" [placeholder]="'AUTO.EX_LIGNE_D_EMBOUTEILLAGE_A' | translate" />
               <mat-icon matSuffix>label</mat-icon>
 
               <mat-error *ngIf="ligneForm.get('nom')?.hasError('required')">
-                Le nom est obligatoire
+
+                {{ 'AUTO.LE_NOM_EST_OBLIGATOIRE' | translate }}
               </mat-error>
 
               <mat-error *ngIf="ligneForm.get('nom')?.hasError('minlength')">
-                Le nom doit contenir au moins 3 caractères
+
+                {{ 'AUTO.LE_NOM_DOIT_CONTENIR_AU_MOINS_3_CARACTERES' | translate }}
               </mat-error>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Responsable</mat-label>
+              <mat-label>{{ 'AUTO.RESPONSABLE' | translate }}</mat-label>
               <mat-select formControlName="responsable">
-                <mat-option value="">Non assigné</mat-option>
+                <mat-option value="">{{ 'AUTO.NON_ASSIGNE' | translate }}</mat-option>
                 <mat-option *ngFor="let user of responsables()" [value]="user.username">
                   {{ user.displayName || user.username }}
                   <span *ngIf="user.roleName"> ({{ user.roleName }})</span>
                 </mat-option>
               </mat-select>
               <mat-icon matSuffix>person</mat-icon>
-              <mat-hint *ngIf="loadingResponsables()">Chargement des utilisateurs...</mat-hint>
+              <mat-hint *ngIf="loadingResponsables()">{{ 'AUTO.CHARGEMENT_DES_UTILISATEURS' | translate }}</mat-hint>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Description</mat-label>
+              <mat-label>{{ 'BASE_TYPE.FIELDS.DESCRIPTION' | translate }}</mat-label>
               <input
                 matInput
                 formControlName="description"
-                placeholder="Brève description de la ligne..."
+                [placeholder]="'AUTO.BREVE_DESCRIPTION_DE_LA_LIGNE' | translate"
               />
               <mat-icon matSuffix>notes</mat-icon>
             </mat-form-field>          </div>
@@ -97,44 +99,44 @@
                 <mat-icon>settings</mat-icon>
               </span>
               <div>
-                <h2>Paramètres opérationnels</h2>
-                <p>Capacité, état et temps techniques.</p>
+                <h2>{{ 'AUTO.PARAMETRES_OPERATIONNELS' | translate }}</h2>
+                <p>{{ 'AUTO.CAPACITE_ETAT_ET_TEMPS_TECHNIQUES' | translate }}</p>
               </div>
             </div>
           </div>
 
           <div class="card-body compact">
             <mat-form-field appearance="outline" class="w-full">
-              <mat-label>État opérationnel</mat-label>
+              <mat-label>{{ 'AUTO.ETAT_OPERATIONNEL' | translate }}</mat-label>
               <mat-select formControlName="etat">
-                <mat-option value="ACTIF">Actif</mat-option>
-                <mat-option value="INACTIF">Inactif</mat-option>
-                <mat-option value="EN_MAINTENANCE">En maintenance</mat-option>
-                <mat-option value="EN_PANNE">En panne</mat-option>
+                <mat-option value="ACTIF">{{ 'ADMIN_DASHBOARD.STATUS.ACTIVE' | translate }}</mat-option>
+                <mat-option value="INACTIF">{{ 'ADMIN_DASHBOARD.STATUS.INACTIVE' | translate }}</mat-option>
+                <mat-option value="EN_MAINTENANCE">{{ 'AUTO.EN_MAINTENANCE' | translate }}</mat-option>
+                <mat-option value="EN_PANNE">{{ 'AUTO.EN_PANNE' | translate }}</mat-option>
               </mat-select>
               <mat-icon matSuffix>sensors</mat-icon>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Vitesse nominale</mat-label>
+              <mat-label>{{ 'AUTO.VITESSE_NOMINALE' | translate }}</mat-label>
               <input matInput type="number" formControlName="vitesseNominale" />
               <mat-icon matSuffix>speed</mat-icon>
-              <mat-hint>Unités par heure</mat-hint>
+              <mat-hint>{{ 'AUTO.UNITES_PAR_HEURE' | translate }}</mat-hint>
             </mat-form-field>
 
             <div class="two-fields">
               <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Préparation</mat-label>
+                <mat-label>{{ 'AUTO.PREPARATION' | translate }}</mat-label>
                 <input matInput type="number" formControlName="tempsPreparation" />
                 <mat-icon matSuffix>hourglass_top</mat-icon>
-                <mat-hint>minutes</mat-hint>
+                <mat-hint>{{ 'AUTO.MINUTES' | translate }}</mat-hint>
               </mat-form-field>
 
               <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Nettoyage</mat-label>
+                <mat-label>{{ 'STORAGE.VIEW.STATUS.CLEANING' | translate }}</mat-label>
                 <input matInput type="number" formControlName="tempsNettoyage" />
                 <mat-icon matSuffix>clean_hands</mat-icon>
-                <mat-hint>minutes</mat-hint>
+                <mat-hint>{{ 'AUTO.MINUTES' | translate }}</mat-hint>
               </mat-form-field>
             </div>
           </div>
@@ -147,37 +149,38 @@
                 <mat-icon>build_circle</mat-icon>
               </span>
               <div>
-                <h2>Planification de maintenance</h2>
-                <p>Interventions techniques.</p>
+                <h2>{{ 'AUTO.PLANIFICATION_DE_MAINTENANCE' | translate }}</h2>
+                <p>{{ 'AUTO.INTERVENTIONS_TECHNIQUES' | translate }}</p>
               </div>
             </div>
           </div>
 
           <div class="card-body compact">
             <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Dernière</mat-label>
+              <mat-label>{{ 'AUTO.DERNIERE' | translate }}</mat-label>
               <input matInput [matDatepicker]="picker1" formControlName="dateDerniereMaintenance" />
               <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
               <mat-datepicker #picker1></mat-datepicker>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Prochaine</mat-label>
+              <mat-label>{{ 'AUTO.PROCHAINE' | translate }}</mat-label>
               <input matInput [matDatepicker]="picker2" formControlName="dateProchaineMaintenance" />
               <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
               <mat-datepicker #picker2></mat-datepicker>
 
               <mat-error *ngIf="ligneForm.hasError('dateInvalid')">
-                Date invalide
+
+                {{ 'AUTO.DATE_INVALIDE' | translate }}
               </mat-error>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="w-full notes-field">
-              <mat-label>Notes</mat-label>
+              <mat-label>{{ 'CUSTOMERS.FIELDS.NOTES' | translate }}</mat-label>
               <input
                 matInput
                 formControlName="notes"
-                placeholder="Observations..."
+                [placeholder]="'AUTO.OBSERVATIONS' | translate"
               />
               <mat-icon matSuffix>edit_note</mat-icon>
             </mat-form-field>
@@ -194,7 +197,8 @@
           [disabled]="submitting()"
         >
           <mat-icon>close</mat-icon>
-          Annuler
+
+          {{ 'ADMIN.CANCEL' | translate }}
         </button>
 
         <button
@@ -210,7 +214,8 @@
 
           @if (submitting()) {
             <mat-spinner diameter="18"></mat-spinner>
-            Traitement...
+
+            {{ 'AUTO.TRAITEMENT' | translate }}
           }
         </button>
       </div>

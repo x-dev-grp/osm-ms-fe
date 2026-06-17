@@ -44,7 +44,8 @@
       <div class="form-section">
         <h3 class="section-title">
           <i class="fas fa-info-circle"></i>
-          Informations principales
+
+          {{ 'AUTO.INFORMATIONS_PRINCIPALES' | translate }}
         </h3>
 
         <div class="row section-grid">
@@ -52,7 +53,8 @@
             <div class="form-group">
               <label for="nom" class="required">
                 <i class="fas fa-building"></i>
-                Nom / Raison sociale
+
+                {{ 'AUTO.NOM_RAISON_SOCIALE' | translate }}
               </label>
 
               <input
@@ -61,11 +63,12 @@
                 class="form-control"
                 [class.is-invalid]="submitted && f['nom'].errors"
                 formControlName="nom"
-                placeholder="Nom du client ou raison sociale">
+                [placeholder]="'AUTO.NOM_DU_CLIENT_OU_RAISON_SOCIALE' | translate">
 
               @if (submitted && f['nom'].errors) {
                 <div class="error-message">
-                  Le nom est requis
+
+                  {{ 'GENERIC_TYPE.ERRORS.NAME_REQUIRED' | translate }}
                 </div>
               }
             </div>
@@ -75,7 +78,8 @@
             <div class="form-group">
               <label for="type" class="required">
                 <i class="fas fa-tags"></i>
-                Type client
+
+                {{ 'AUTO.TYPE_CLIENT' | translate }}
               </label>
 
               <select
@@ -84,13 +88,14 @@
                 [class.is-invalid]="submitted && f['type'].errors"
                 formControlName="type">
 
-                <option [value]="ClientType.BUYER">Acheteur</option>
-                <option [value]="ClientType.BRAND">Marque</option>
+                <option [value]="ClientType.BUYER">{{ 'AUTO.ACHETEUR' | translate }}</option>
+                <option [value]="ClientType.BRAND">{{ 'AUTO.MARQUE' | translate }}</option>
               </select>
 
               @if (submitted && f['type'].errors) {
                 <div class="error-message">
-                  Le type client est requis
+
+                  {{ 'AUTO.LE_TYPE_CLIENT_EST_REQUIS' | translate }}
                 </div>
               }
             </div>
@@ -102,7 +107,8 @@
             <div class="form-group">
               <label for="email">
                 <i class="fas fa-envelope"></i>
-                Email
+
+                {{ 'ADMIN_COMPANY_PROFILE.EMAIL' | translate }}
               </label>
 
               <input
@@ -110,11 +116,12 @@
                 id="email"
                 class="form-control"
                 formControlName="email"
-                placeholder="contact@client.com">
+                [placeholder]="'AUTO.CONTACT_CLIENT_COM' | translate">
 
               @if (submitted && f['email'].errors) {
                 <div class="error-message">
-                  Format d'email invalide
+
+                  {{ 'SUPPLIER.ERRORS.EMAIL_INVALID' | translate }}
                 </div>
               }
             </div>
@@ -124,7 +131,8 @@
             <div class="form-group">
               <label for="telephone">
                 <i class="fas fa-phone"></i>
-                Téléphone
+
+                {{ 'ADMIN_COMPANY_PROFILE.PHONE' | translate }}
               </label>
 
               <input
@@ -142,13 +150,15 @@
       <div class="form-section">
         <h3 class="section-title">
           <i class="fas fa-map-marker-alt"></i>
-          Adresse
+
+          {{ 'PDF.ADDRESS' | translate }}
         </h3>
 
         <div class="form-group wide-field">
           <label for="adresse">
             <i class="fas fa-road"></i>
-            Adresse
+
+            {{ 'PDF.ADDRESS' | translate }}
           </label>
 
           <input
@@ -156,7 +166,7 @@
             id="adresse"
             class="form-control"
             formControlName="adresse"
-            placeholder="Numéro et nom de rue">
+            [placeholder]="'AUTO.NUMERO_ET_NOM_DE_RUE' | translate">
         </div>
 
         <div class="row section-grid">
@@ -164,7 +174,8 @@
             <div class="form-group">
               <label for="ville">
                 <i class="fas fa-city"></i>
-                Ville
+
+                {{ 'ADMIN_COMPANY_PROFILE.CITY' | translate }}
               </label>
 
               <input
@@ -172,7 +183,7 @@
                 id="ville"
                 class="form-control"
                 formControlName="ville"
-                placeholder="Ville">
+                [placeholder]="'ADMIN_COMPANY_PROFILE.CITY' | translate">
             </div>
           </div>
 
@@ -180,7 +191,8 @@
             <div class="form-group">
               <label for="codePostal">
                 <i class="fas fa-mail-bulk"></i>
-                Code postal
+
+                {{ 'CUSTOMERS.FIELDS.POSTAL_CODE' | translate }}
               </label>
 
               <input
@@ -188,7 +200,7 @@
                 id="codePostal"
                 class="form-control"
                 formControlName="codePostal"
-                placeholder="Code postal">
+                [placeholder]="'CUSTOMERS.FIELDS.POSTAL_CODE' | translate">
             </div>
           </div>
 
@@ -196,7 +208,8 @@
             <div class="form-group">
               <label for="pays">
                 <i class="fas fa-globe"></i>
-                Pays
+
+                {{ 'CUSTOMERS.FIELDS.COUNTRY' | translate }}
               </label>
 
               <input
@@ -204,7 +217,7 @@
                 id="pays"
                 class="form-control"
                 formControlName="pays"
-                placeholder="Pays">
+                [placeholder]="'CUSTOMERS.FIELDS.COUNTRY' | translate">
             </div>
           </div>
         </div>
@@ -214,7 +227,8 @@
       <div class="form-section">
         <h3 class="section-title">
           <i class="fas fa-gavel"></i>
-          Informations légales
+
+          {{ 'AUTO.INFORMATIONS_LEGALES' | translate }}
         </h3>
 
         <div class="row section-grid">
@@ -222,7 +236,8 @@
             <div class="form-group">
               <label for="siret">
                 <i class="fas fa-id-card"></i>
-                SIRET
+
+                {{ 'AUTO.SIRET' | translate }}
               </label>
 
               <input
@@ -238,7 +253,8 @@
             <div class="form-group">
               <label for="numeroTva">
                 <i class="fas fa-percent"></i>
-                Numéro TVA
+
+                {{ 'PDF.VAT' | translate }}
               </label>
 
               <input
@@ -246,7 +262,7 @@
                 id="numeroTva"
                 class="form-control"
                 formControlName="numeroTva"
-                placeholder="FR12345678901">
+                [placeholder]="'AUTO.FR12345678901' | translate">
             </div>
           </div>
         </div>
@@ -260,11 +276,13 @@
 
           <label for="privateLabel" class="form-check-label">
             <i class="fas fa-star"></i>
-            Client Private Label
+
+            {{ 'AUTO.CLIENT_PRIVATE_LABEL' | translate }}
           </label>
 
           <small class="form-text text-muted d-block">
-            Cocher si ce client a sa propre marque (produits sous sa marque)
+
+            {{ 'AUTO.COCHER_SI_CE_CLIENT_A_SA_PROPRE_MARQUE_PRODUITS_SOUS_SA_MARQUE' | translate }}
           </small>
         </div>
       </div>
@@ -273,18 +291,19 @@
       <div class="form-section">
         <h3 class="section-title">
           <i class="fas fa-sticky-note"></i>
-          Notes
+
+          {{ 'CUSTOMERS.FIELDS.NOTES' | translate }}
         </h3>
 
         <div class="form-group notes-field">
-          <label for="notes">Notes internes</label>
+          <label for="notes">{{ 'AUTO.NOTES_INTERNES' | translate }}</label>
 
           <textarea
             id="notes"
             class="form-control"
             formControlName="notes"
             rows="4"
-            placeholder="Informations complémentaires, remarques, historique..."></textarea>
+            [placeholder]="'AUTO.INFORMATIONS_COMPLEMENTAIRES_REMARQUES_HISTORIQUE' | translate"></textarea>
         </div>
       </div>
 
@@ -292,7 +311,8 @@
       <div class="form-actions">
         <button type="button" class="btn-cancel" (click)="onCancel()">
           <i class="fas fa-times"></i>
-          Annuler
+
+          {{ 'ADMIN.CANCEL' | translate }}
         </button>
 
         <button type="button" class="btn-save" [disabled]="submitting" (click)="onSubmit()">

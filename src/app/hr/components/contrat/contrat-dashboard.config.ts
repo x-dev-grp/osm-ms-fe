@@ -4,6 +4,7 @@ import { SearchOperation } from '../../../shared/models/advanced-search/searchOp
 export const dashboardConfig: DashboardConfig = {
   icon: 'assignment',
   title: 'Liste des contrats',
+  titleTranslatePath: 'AUTO.LISTE_DES_CONTRATS',
   baseURL: 'hr/contract',
   searchEndpoint: 'hr/contract',
   addNewItem: true,
@@ -73,11 +74,16 @@ export const dashboardConfig: DashboardConfig = {
       dataTable: true,
       exportable: true,
       options:[
-        {label:"INTERNSHIP", value:"INTERNSHIP"},
-        {label:"CDI", value:"CDI"},
-        {label:"CDD", value:"CDD"},
-        {label:"TEMPORARY", value:"TEMPORARY"},
-        {label:"STAGE", value:"STAGE"},
+        {label:"INTERNSHIP",
+         labelTranslatePath: 'AUTO.INTERNSHIP', value:"INTERNSHIP"},
+        {label:"CDI",
+         labelTranslatePath: 'AUTO.CDI', value:"CDI"},
+        {label:"CDD",
+         labelTranslatePath: 'AUTO.CDD', value:"CDD"},
+        {label:"TEMPORARY",
+         labelTranslatePath: 'AUTO.TEMPORARY', value:"TEMPORARY"},
+        {label:"STAGE",
+         labelTranslatePath: 'AUTO.STAGE', value:"STAGE"},
 
       ]
     },

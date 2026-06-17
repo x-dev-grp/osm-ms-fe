@@ -68,7 +68,8 @@
               <mat-label>{{ translate.instant('OLIVE_RECEPTION.FORM.FIELDS.TRUCK_PLATE') }}</mat-label>
               <input formControlName="matriculeCamion" matInput required />
               <mat-error *ngIf="receptionForm.get('matriculeCamion')?.hasError('pattern')">
-                Le format doit être 3 chiffres + TN + 4 chiffres (ex 258TN1234)
+
+                {{ 'AUTO.LE_FORMAT_DOIT_ETRE_3_CHIFFRES_TN_4_CHIFFRES_EX_258TN1234' | translate }}
               </mat-error>
             </mat-form-field>
           </div>

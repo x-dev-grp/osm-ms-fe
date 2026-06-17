@@ -1,27 +1,28 @@
 <div class="bom-form-page">
 
   <header class="page-hero">
-    <button class="btn-back" routerLink="/stock/boms" type="button" aria-label="Retour">
+    <button class="btn-back" routerLink="/stock/boms" type="button" [attr.aria-label]="'COMMON.BACK' | translate">
       <i class="fas fa-arrow-left"></i>
     </button>
 
     <div class="hero-text">
       <h1>{{ isEditMode ? 'Modifier la nomenclature' : 'Nouvelle nomenclature' }}</h1>
       <p>
-        Définissez les articles consommés <strong>par unité</strong> de produit fini
-        (emballage, consommables).
+
+        {{ 'AUTO.DEFINISSEZ_LES_ARTICLES_CONSOMMES' | translate }} <strong>{{ 'AUTO.PAR_UNITE' | translate }}</strong>  {{ 'AUTO.DE_PRODUIT_FINI_EMBALLAGE_CONSOMMABLES' | translate }}
       </p>
     </div>
 
     <span class="hero-status" *ngIf="isEditMode && bomForm.get('active')?.value">
       <i class="fas fa-star"></i>
-      Nomenclature active
+
+      {{ 'AUTO.NOMENCLATURE_ACTIVE' | translate }}
     </span>
   </header>
 
   <div *ngIf="loading" class="loading-container">
     <div class="spinner-border"></div>
-    <p>Chargement...</p>
+    <p>{{ 'COMMON.LOADING' | translate }}</p>
   </div>
 
   <main *ngIf="!loading" class="form-shell">
@@ -35,28 +36,29 @@
           </div>
 
           <div>
-            <h2>Produit & statut</h2>
+            <h2>{{ 'AUTO.PRODUIT_STATUT' | translate }}</h2>
           </div>
         </div>
 
         <div class="form-grid" [class.has-version]="isEditMode && bom?.version">
           <div class="form-group" [class.span-2]="!(isEditMode && bom?.version)">
-            <label for="productId">Produit fini <span class="req">*</span></label>
+            <label for="finalProductId">{{ 'AUTO.PRODUIT_FINI' | translate }} <span class="req">*</span></label>
 
-            <select id="productId" class="form-control" formControlName="productId">
-              <option value="" disabled>Choisir un produit NON_VRAC</option>
-              <option *ngFor="let product of products" [value]="product.id">
-                {{ productName(product) }}
+            <select id="finalProductId" class="form-control" formControlName="finalProductId">
+              <option value="" disabled>{{ 'AUTO.CHOISIR_UN_PRODUIT_NON_VRAC' | translate }}</option>
+              <option *ngFor="let finalProduct of finalProducts" [value]="finalProduct.id">
+                {{ finalProductName(finalProduct) }}
               </option>
             </select>
 
-            <div class="error" *ngIf="bomForm.get('productId')?.invalid && bomForm.get('productId')?.touched">
-              Le produit est requis
+            <div class="error" *ngIf="bomForm.get('finalProductId')?.invalid && bomForm.get('finalProductId')?.touched">
+
+              {{ 'AUTO.LE_PRODUIT_EST_REQUIS' | translate }}
             </div>
           </div>
 
           <div class="form-group version-field" *ngIf="isEditMode && bom?.version">
-            <label for="bomVersion">Version</label>
+            <label for="bomVersion">{{ 'AUTO.VERSION' | translate }}</label>
             <input id="bomVersion" class="form-control readonly" [value]="bom!.version" readonly />
           </div>
 
@@ -73,8 +75,8 @@
                 </label>
 
                 <div class="toggle-copy">
-                  <strong>Nomenclature active</strong>
-                  <small>Utilisée par défaut pour les OF et projets sur ce produit</small>
+                  <strong>{{ 'AUTO.NOMENCLATURE_ACTIVE' | translate }}</strong>
+                  <small>{{ 'AUTO.UTILISEE_PAR_DEFAUT_POUR_LES_OF_ET_PROJETS_SUR_CE_PRODUIT' | translate }}</small>
                 </div>
               </div>
             </div>
@@ -91,27 +93,29 @@
             </div>
 
             <div>
-              <h2>Composants</h2>
+              <h2>{{ 'AUTO.COMPOSANTS' | translate }}</h2>
             </div>
           </div>
 
           <button type="button" class="btn-add" (click)="addLine()">
             <i class="fas fa-plus"></i>
-            Ajouter une ligne
+
+            {{ 'OSM_DASHBOARD.ACTIONS.ADD_LINE' | translate }}
           </button>
         </div>
 
         <p class="empty-lines" *ngIf="lines.length === 0">
-          Ajoutez au moins un article : bouteille, carton, bouchon, étiquette...
+
+          {{ 'AUTO.AJOUTEZ_AU_MOINS_UN_ARTICLE_BOUTEILLE_CARTON_BOUCHON_ETIQUETTE' | translate }}
         </p>
 
         <div formArrayName="lines" class="lines-panel">
           <div class="lines-header">
             <span>#</span>
-            <span>Article <strong>*</strong></span>
+            <span>{{ 'OSM_DASHBOARD.ACTIONS.ARTICLESEC' | translate }} <strong>*</strong></span>
             <div class="qty-unit-group qty-unit-header">
-              <span>Qté / unité <strong>*</strong></span>
-              <span>Unité <strong>*</strong></span>
+              <span>{{ 'AUTO.QTE_UNITE' | translate }} <strong>*</strong></span>
+              <span>{{ 'OIL_CREDIT.FIELDS.UNIT' | translate }} <strong>*</strong></span>
             </div>
             <span></span>
           </div>
@@ -127,7 +131,7 @@
 
             <div class="form-group article-field">
               <select class="form-control" formControlName="articleId" (change)="onArticleChange(i)">
-                <option value="" disabled>Choisir un article</option>
+                <option value="" disabled>{{ 'AUTO.CHOISIR_UN_ARTICLE' | translate }}</option>
                 <option *ngFor="let article of getFilteredArticlesForLine(i)" [value]="article.id">
                   {{ article.nom }} ({{ article.um }})
                 </option>
@@ -158,7 +162,7 @@
               class="btn-remove"
               (click)="removeLine(i)"
               *ngIf="lines.length > 1"
-              title="Supprimer la ligne">
+              [title]="'AUTO.SUPPRIMER_LA_LIGNE' | translate">
               <i class="fas fa-trash"></i>
             </button>
           </div>
@@ -169,17 +173,19 @@
         *ngIf="isEditMode && bomId"
         [bomId]="bomId"
         [quantity]="1"
-        title="Aperçu stock — besoins pour 1 unité produite">
+        [title]="'AUTO.APERCU_STOCK_BESOINS_POUR_1_UNITE_PRODUITE' | translate">
       </app-material-needs-preview>
 
       <p class="save-hint" *ngIf="!isEditMode">
         <i class="fas fa-info-circle"></i>
-        Après enregistrement, vous pourrez simuler les besoins pour une quantité de production depuis la fiche détail.
+
+        {{ 'AUTO.APRES_ENREGISTREMENT_VOUS_POURREZ_SIMULER_LES_BESOINS_POUR_UNE_Q' | translate }}
       </p>
 
       <footer class="form-actions">
         <button type="button" class="btn-cancel" (click)="cancel()">
-          Annuler
+
+          {{ 'ADMIN.CANCEL' | translate }}
         </button>
 
         <button type="submit" class="btn-save" [disabled]="bomForm.invalid || isSubmitting || lines.length === 0">

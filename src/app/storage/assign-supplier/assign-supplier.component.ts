@@ -7,6 +7,7 @@ import { MatFormField } from '@angular/material/form-field';
 import { SupplierComponent } from '../../shared/modules/supplierList/supplier.component';
 import { SharedModule } from '../../shared/shared.module';
 import { DecimalPipe, NgIf } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 export interface ChangeSupplierDto {
   /** Path param */
   storageId: string;
@@ -17,7 +18,7 @@ export interface ChangeSupplierDto {
   selector: 'app-assign-supplier',
   templateUrl: './assign-supplier.component.html',
   standalone: true,
-  imports: [MatDialogContent, MatFormField, SupplierComponent, SharedModule, DecimalPipe, NgIf],
+  imports: [TranslateModule, MatDialogContent, MatFormField, SupplierComponent, SharedModule, DecimalPipe, NgIf],
   styleUrls: ['./assign-supplier.component.scss']
 })
 export class AssignSupplierComponent implements OnInit {

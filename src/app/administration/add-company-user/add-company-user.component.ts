@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { Component, DestroyRef, inject } from '@angular/core';
 import { CardComponent } from '../../theme/components/card/card.component';
 import { MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/material/autocomplete';
@@ -20,11 +21,12 @@ import { catchError, EMPTY, filter, Observable, of, switchMap, tap } from 'rxjs'
 import { SearchResponse } from '../../shared/models/advanced-search/searchResponse';
 import { AddCompanyUserService } from '../../shared/services/add-company-user.service';
 import { CompanyUserDto } from '../../shared/models/company-user-dto';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-add-company-user',
   standalone: true,
-  imports: [
+  imports: [TranslateModule, 
     CardComponent,
     MatAutocomplete,
     MatAutocompleteTrigger,
@@ -44,6 +46,7 @@ import { CompanyUserDto } from '../../shared/models/company-user-dto';
   styleUrls: ['./add-company-user.component.scss']
 })
 export class AddCompanyUserComponent {
+  private readonly i18n = inject(TranslateService);
   readonly destroyRef = inject(DestroyRef);
   userForm: FormGroup;
   _fb = inject(FormBuilder);
@@ -123,7 +126,7 @@ export class AddCompanyUserComponent {
         catchError((err: any) => {
           console.log(err);
           if ([504, 503].includes(err?.status)) {
-            this.errorMessage = 'Service unavailable please try again later';
+            this.errorMessage = this.i18n.instant('LOGIN.SERVICE_UNAVAILABLE');
           } else {
             this.errorMessage = err?.error;
           }

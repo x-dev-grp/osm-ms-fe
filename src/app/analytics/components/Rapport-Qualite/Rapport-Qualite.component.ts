@@ -1,7 +1,10 @@
+import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
 import { AnalyticsService } from '../../services/analytics.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 type QualityRow = {
   productName: string;
@@ -14,11 +17,12 @@ type QualityRow = {
 @Component({
   selector: 'app-quality-report',
   standalone: true,
-  imports: [CommonModule, NgApexchartsModule],
+  imports: [TranslateModule, CommonModule, NgApexchartsModule],
   templateUrl: './Rapport-Qualite.component.html',
   styleUrls: ['./Rapport-Qualite.component.scss']
 })
 export class RapportQualiteComponent implements OnInit {
+  private readonly i18n = inject(TranslateService);
   data: QualityRow[] = [];
   loading = false;
   errorMessage = '';
@@ -64,7 +68,7 @@ export class RapportQualiteComponent implements OnInit {
         console.error('Error loading quality report', err);
         this.data = [];
         this.conformityChartOptions = null;
-        this.errorMessage = err?.error?.message || err?.message || 'Impossible de charger le rapport qualite.';
+        this.errorMessage = err?.error?.message || err?.message || this.i18n.instant('AUTO.IMPOSSIBLE_DE_CHARGER_LE_RAPPORT_QUALITE');
         this.loading = false;
       }
     });
@@ -85,7 +89,7 @@ export class RapportQualiteComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error exporting PDF', err);
-        this.errorMessage = err?.error?.message || err?.message || 'Impossible d exporter le PDF.';
+        this.errorMessage = err?.error?.message || err?.message || this.i18n.instant('AUTO.IMPOSSIBLE_D_EXPORTER_LE_PDF');
         this.loading = false;
       }
     });

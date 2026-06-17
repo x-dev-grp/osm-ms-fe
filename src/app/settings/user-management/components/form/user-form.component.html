@@ -11,77 +11,83 @@
   <div class="row">
 
     <div class="col-lg-4 col-md-6 col-sm-12">
-      <label for="name" class="f-w-500">Nom</label>
+      <label for="name" class="f-w-500">{{ 'ADMIN_USERS.FIELDS.FIRST_NAME' | translate }}</label>
       <mat-form-field appearance="outline" class="w-100 ">
-        <input id="name" matInput type="text" formControlName="firstName" placeholder="Nom" />
+        <input id="name" matInput type="text" formControlName="firstName" [placeholder]="'ADMIN_USERS.FIELDS.FIRST_NAME' | translate" />
 
       </mat-form-field>
     </div>
 
     <div class="col-lg-4 col-md-6 col-sm-12">
-      <label for="lastName" class="f-w-500">Prénom</label>
+      <label for="lastName" class="f-w-500">{{ 'ADMIN_USERS.FIELDS.LAST_NAME' | translate }}</label>
       <mat-form-field appearance="outline" class="w-100 ">
-        <input matInput id="lastName" type="text" formControlName="lastName" placeholder="Prénom" />
+        <input matInput id="lastName" type="text" formControlName="lastName" [placeholder]="'ADMIN_USERS.FIELDS.LAST_NAME' | translate" />
       </mat-form-field>
     </div>
 
     <div class="col-lg-4 col-md-6 col-sm-12">
-      <label for="username" class="f-w-500">Nom d'utilisateur  <span class="text-warn-500">*</span></label>
+      <label for="username" class="f-w-500">{{ 'ADMIN_USERS.FIELDS.USERNAME' | translate }}  <span class="text-warn-500">*</span></label>
       <mat-form-field appearance="outline" class="w-100 ">
-        <input matInput id="username" type="text" formControlName="username" placeholder="Nom d'utilisateur" />
+        <input matInput id="username" type="text" formControlName="username" [placeholder]="'ADMIN_USERS.FIELDS.USERNAME' | translate" />
         <mat-error *ngIf="userForm.get('username')?.hasError('required')">
-          Le nom d'utilisateur est requis.
+
+          {{ 'USER_FORM.USERNAME_REQUIRED' | translate }}
         </mat-error>
       </mat-form-field>
     </div>
 
     <div class="col-lg-4 col-md-6 col-sm-12">
-      <label for="email" class="f-w-500">Email  <span *ngIf="userForm.get('email')?.hasError('emailRequired')" class="text-warn-500">*</span></label>
+      <label for="email" class="f-w-500">{{ 'ADMIN_COMPANY_PROFILE.EMAIL' | translate }}  <span *ngIf="userForm.get('email')?.hasError('emailRequired')" class="text-warn-500">*</span></label>
       <mat-form-field appearance="outline" class="w-100 ">
-        <input matInput id="email" type="text" formControlName="email" placeholder="Email" />
+        <input matInput id="email" type="text" formControlName="email" [placeholder]="'ADMIN_COMPANY_PROFILE.EMAIL' | translate" />
         <mat-error *ngIf="userForm.get('email')?.hasError('emailRequired')">
-          L’email est requis!.
+
+          {{ 'AUTO.L_EMAIL_EST_REQUIS' | translate }}
         </mat-error>
         <mat-error *ngIf="userForm.get('email')?.hasError('email')">
-          Format d’email invalide.
+
+          {{ 'AUTO.FORMAT_D_EMAIL_INVALIDE' | translate }}
         </mat-error>
       </mat-form-field>
     </div>
 
     <div class="col-lg-4 col-md-6 col-sm-12">
-      <label for="phone" class="f-w-500">Numéro de téléphone  <span *ngIf="userForm.get('phoneNumber')?.hasError('phoneRequired')" class="text-warn-500">*</span></label>
+      <label for="phone" class="f-w-500">{{ 'AUTO.NUMERO_DE_TELEPHONE' | translate }}  <span *ngIf="userForm.get('phoneNumber')?.hasError('phoneRequired')" class="text-warn-500">*</span></label>
       <mat-form-field appearance="outline" class="w-100">
-        <input matInput id="phone" type="text" formControlName="phoneNumber" placeholder="Numéro de téléphone"/>
+        <input matInput id="phone" type="text" formControlName="phoneNumber" [placeholder]="'AUTO.NUMERO_DE_TELEPHONE' | translate"/>
         <mat-error *ngIf="userForm.get('phoneNumber')?.hasError('phoneRequired')">
-          Le numéro de téléphone est requis.
+
+          {{ 'AUTO.LE_NUMERO_DE_TELEPHONE_EST_REQUIS' | translate }}
         </mat-error>
         <mat-error *ngIf="userForm.get('phoneNumber')?.hasError('pattern')">
-          Format de numéro invalide.
+
+          {{ 'AUTO.FORMAT_DE_NUMERO_INVALIDE' | translate }}
         </mat-error>
       </mat-form-field>
 
     </div>
 
     <div class="col-lg-4 col-md-6 col-sm-12">
-      <label for="method" class="f-w-500">Méthode de confirmation  <span class="text-warn-500">*</span></label>
+      <label for="method" class="f-w-500">{{ 'ADMIN_USERS.FIELDS.CONFIRMATION_METHOD' | translate }}  <span class="text-warn-500">*</span></label>
       <mat-form-field appearance="outline" class="w-100">
         <mat-select formControlName="confirmationMethod" id="method">
-          <mat-option value="EMAIL">Email</mat-option>
-          <mat-option value="PHONE">Téléphone</mat-option>
+          <mat-option value="EMAIL">{{ 'ADMIN_COMPANY_PROFILE.EMAIL' | translate }}</mat-option>
+          <mat-option value="PHONE">{{ 'ADMIN_COMPANY_PROFILE.PHONE' | translate }}</mat-option>
         </mat-select>
         <mat-error *ngIf="userForm.get('confirmationMethod')?.hasError('required')">
-          Le nom d'utilisateur est requis.
+
+          {{ 'USER_FORM.USERNAME_REQUIRED' | translate }}
         </mat-error>
       </mat-form-field>
     </div>
 
 
     <div class="col-lg-4 col-md-6 col-sm-12">
-      <label for="role" class="f-w-500">Role  <span class="text-warn-500">*</span></label>
+      <label for="role" class="f-w-500">{{ 'ADMIN.ADD_OSM_ADMIN_ROLE' | translate }}  <span class="text-warn-500">*</span></label>
       <mat-form-field appearance="outline">
                 <input
                 matInput
-                placeholder="Role"
+                [placeholder]="'ADMIN.ADD_OSM_ADMIN_ROLE' | translate"
                 formControlName="role"
                 [matAutocomplete]="auto"
 
@@ -99,20 +105,20 @@
     </div>
 
     <div class="col-lg-4 col-md-6 col-sm-12 mt-3">
-      <mat-slide-toggle id="locked" formControlName="locked" color="primary"> Désactiver </mat-slide-toggle>
+      <mat-slide-toggle id="locked" formControlName="locked" color="primary">  {{ 'AUTO.DESACTIVER' | translate }} </mat-slide-toggle>
     </div>
 
   </div>
 </form>
 <div class="text-end">
-  <button (click)="cancel()" mat-stroked-button class="m-r-10">Annuler</button>
+  <button (click)="cancel()" mat-stroked-button class="m-r-10">{{ 'ADMIN.CANCEL' | translate }}</button>
   <button [disabled]="userForm.invalid" (click)="onSubmit()" mat-flat-button *ngIf="updateMode" class="m-r-10" color="primary">
     <mat-spinner *ngIf="loading" diameter="25" color="warn"></mat-spinner>
-    <span *ngIf="!loading">Modifier</span>
+    <span *ngIf="!loading">{{ 'BANK_ACCOUNTS.ACTIONS.EDIT' | translate }}</span>
   </button>
   <button [disabled]="userForm.invalid" (click)="onSubmit()" mat-flat-button *ngIf="!viewMode && !updateMode" class="m-r-10" color="primary">
     <mat-spinner *ngIf="loading" diameter="25" color="warn"></mat-spinner>
-    <span *ngIf="!loading">Sauvgarder</span>
+    <span *ngIf="!loading">{{ 'AUTO.SAUVGARDER' | translate }}</span>
   </button>
 </div>
 </app-card>

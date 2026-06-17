@@ -145,6 +145,7 @@ export function getOilPdfConfig(delivery: UnifiedDelivery): PdfConfig {
 
   return {
     title: 'PDF.RECEPTION_OIL',
+    titleTranslatePath: 'AUTO.PDF_RECEPTION_OIL',
     reference: 'FOR-ACH-21',
     date: '01/12/2024',
     revision: '00',
@@ -153,28 +154,38 @@ export function getOilPdfConfig(delivery: UnifiedDelivery): PdfConfig {
     generalInfo: [
       {
         label: 'PDF.DATE',
+        labelTranslatePath: 'AUTO.PDF_DATE',
         value: delivery.deliveryDate ? new Date(delivery.deliveryDate).toLocaleDateString() : ''
       },
 
       {
         label: 'PDF.SUPPLIER',
+        labelTranslatePath: 'AUTO.PDF_SUPPLIER',
         value: [delivery.supplier?.name || '', delivery.supplier?.lastname || ''].filter(Boolean).join(' ')
       },
       {
         label: 'PDF.RECPT_NOTE_OR_OLIVE_LOT_NUMBER',
+        labelTranslatePath: 'AUTO.PDF_RECPT_NOTE_OR_OLIVE_LOT_NUMBER',
         value: String(delivery.lotOliveNumber || delivery.deliveryNumber)
       },
-      { label: 'PDF.CODEECH', value: String(delivery.lotNumber || '') },
-      { label: 'PDF.QUALITY', value: oilGradeLabelKey(getOilQuality(delivery)) },
+      { label: 'PDF.CODEECH',
+        labelTranslatePath: 'AUTO.PDF_CODEECH', value: String(delivery.lotNumber || '') },
+      { label: 'PDF.QUALITY',
+        labelTranslatePath: 'AUTO.PDF_QUALITY', value: oilGradeLabelKey(getOilQuality(delivery)) },
 
-      { label: 'PDF.LIEU_DU_STOCKAGE', value: String(delivery.storageUnit?.name || 'N/A') },
+      { label: 'PDF.LIEU_DU_STOCKAGE',
+        labelTranslatePath: 'AUTO.PDF_LIEU_DU_STOCKAGE', value: String(delivery.storageUnit?.name || 'N/A') },
 
-      { label: 'PDF.OIL_QUANTITY', value: `${(delivery.oilQuantity ?? 0.0).toFixed(2)} kg` },
-      { label: 'PDF.UNIT_PRICE', value: `${(delivery.unitPrice ?? 0.0).toFixed(2)} TND/kg` }
+      { label: 'PDF.OIL_QUANTITY',
+        labelTranslatePath: 'AUTO.PDF_OIL_QUANTITY', value: `${(delivery.oilQuantity ?? 0.0).toFixed(2)} kg` },
+      { label: 'PDF.UNIT_PRICE',
+        labelTranslatePath: 'AUTO.PDF_UNIT_PRICE', value: `${(delivery.unitPrice ?? 0.0).toFixed(2)} TND/kg` }
     ],
     fields: [],
 
-    footerInfo: [{ label: 'PDF.SIGNATURE_AGENT' }, { label: 'PDF.SIGNATURE_RESPONSIBLE' }],
+    footerInfo: [{ label: 'PDF.SIGNATURE_AGENT',
+                   labelTranslatePath: 'AUTO.PDF_SIGNATURE_AGENT' }, { label: 'PDF.SIGNATURE_RESPONSIBLE',
+                                                     labelTranslatePath: 'AUTO.PDF_SIGNATURE_RESPONSIBLE' }],
     fileName: `Bon_Reception_Huile_${delivery.deliveryNumber || 'inconnu'}.pdf`
   };
 }

@@ -1,3 +1,5 @@
+import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { BonCommandeService } from '../../../services/bon-commande.service';
@@ -11,15 +13,17 @@ import { ApiResponse } from "../../../../shared/models/api-response";
 import { QrDialogComponent } from '../../../../shared/components/qr-dialog/qr-dialog.component';
 import { ConfirmationDialogService, ConfirmationType } from '../../../../shared/services/confirmation-dialog.service';
 import { ToastService } from '../../../../shared/services/toast.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-bc-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, MatDialogModule, MatTooltipModule],
+  imports: [TranslateModule, CommonModule, FormsModule, RouterLink, MatDialogModule, MatTooltipModule],
   templateUrl: './bc-detail.component.html',
   styleUrls: ['./bc-detail.component.scss']
 })
 export class BcDetailComponent implements OnInit {
+  private readonly i18n = inject(TranslateService);
   bon: BonCommande | null = null;
   loading = true;
   generatingQr = false;
@@ -49,17 +53,12 @@ export class BcDetailComponent implements OnInit {
   loadBon(id: string): void {
     this.loading = true;
     this.bonCommandeService.getBonCommandeById(id).subscribe({
-      next: (response: ApiResponse<BonCommande>) => {
-        if (response.success && response.data && response.data.length > 0) {
-          this.bon = this.normalizeQrFields(response.data[0]);
-          // Déduire le fournisseur de la première ligne
-          if (this.bon.lignes?.length && this.bon.lignes[0].article?.fournisseur?.nom) {
-            this.fournisseurNom = this.bon.lignes[0].article.fournisseur.nom;
-          } else {
-            this.fournisseurNom = 'Non spécifié';
-          }
+      next: (bon) => {
+        this.bon = this.normalizeQrFields(bon);
+        if (this.bon.lignes?.length && this.bon.lignes[0].article?.fournisseur?.nom) {
+          this.fournisseurNom = this.bon.lignes[0].article.fournisseur.nom;
         } else {
-          this.error = response.message || 'Bon de commande non trouvé';
+          this.fournisseurNom = 'Non spécifié';
         }
         this.loading = false;
       },
@@ -73,7 +72,7 @@ export class BcDetailComponent implements OnInit {
 
   validerBon(): void {
     if (!this.bon?.id) return;
-    if (!confirm('Valider ce bon de commande ?')) return;
+    if (!confirm(this.i18n.instant('AUTO.VALIDER_CE_BON_DE_COMMANDE'))) return;
 
     this.bonCommandeService.validerBonCommande(this.bon.id).subscribe({
       next: (response: ApiResponse<any>) => {
@@ -92,7 +91,7 @@ export class BcDetailComponent implements OnInit {
 
   refuserBon(): void {
     if (!this.bon?.id) return;
-    const motif = prompt('Motif de refus :');
+    const motif = prompt(this.i18n.instant('AUTO.MOTIF_DE_REFUS'));
     if (!motif) return;
 
     this.bonCommandeService.refuserBonCommande(this.bon.id, motif).subscribe({
@@ -159,19 +158,15 @@ export class BcDetailComponent implements OnInit {
       .map(([id, quantiteRecue]) => ({ id, quantiteRecue }));
 
     if (payload.length === 0) {
-      alert('Veuillez saisir au moins une quantité à réceptionner');
+      alert(this.i18n.instant('AUTO.VEUILLEZ_SAISIR_AU_MOINS_UNE_QUANTITE_A_RECEPTIONNER'));
       return;
     }
 
     this.bonCommandeService.receptionnerCommande(this.bon.id, payload).subscribe({
-      next: (response: ApiResponse<BonCommande>) => {
-        if (response.success && response.data && response.data.length > 0) {
-          this.bon = this.normalizeQrFields(response.data[0]);
-          this.showReception = false;
-          this.showSuccess('Réception enregistrée avec succès');
-        } else {
-          this.error = response.message || 'Erreur lors de la réception';
-        }
+      next: (bon) => {
+        this.bon = this.normalizeQrFields(bon);
+        this.showReception = false;
+        this.showSuccess('Réception enregistrée avec succès');
       },
       error: (err) => {
         console.error(err);
@@ -260,16 +255,16 @@ export class BcDetailComponent implements OnInit {
     }
 
     this.confirmationDialog.confirm({
-      title: 'Regenerate QR Code',
-      message: 'This will regenerate the QR code and may invalidate already printed physical QR labels.',
+      title: this.i18n.instant('AUTO.REGENERATE_QR_CODE'),
+      message: this.i18n.instant('AUTO.THIS_WILL_REGENERATE_THE_QR_CODE_AND_MAY_INVALIDATE_ALREADY_PRIN'),
       type: ConfirmationType.WARNING,
-      confirmText: 'Regenerate',
-      cancelText: 'Cancel',
+      confirmText: this.i18n.instant('AUTO.REGENERATE'),
+      cancelText: this.i18n.instant('ADMIN.CANCEL'),
       showIcon: true,
       destructive: true,
-      requiredText: 'OKAY',
-      requiredTextHint: 'To continue, type OKAY in the field below.',
-      requiredTextPlaceholder: 'Type OKAY'
+      requiredText: this.i18n.instant('AUTO.OKAY'),
+      requiredTextHint: this.i18n.instant('AUTO.TO_CONTINUE_TYPE_OKAY_IN_THE_FIELD_BELOW'),
+      requiredTextPlaceholder: this.i18n.instant('AUTO.TYPE_OKAY')
     }).pipe(take(1))
       .subscribe((result) => {
         onResolved(!!result?.confirmed);

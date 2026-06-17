@@ -10,6 +10,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Role } from 'src/app/shared/models/security/role.model';
 import { RoleService } from '../../services/role.service';
 import { catchError, EMPTY, tap } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 @Component({
@@ -17,7 +18,7 @@ import { catchError, EMPTY, tap } from 'rxjs';
   templateUrl: './role-form.component.html',
   styleUrls: ['./role-form.component.scss'],
   standalone: true,
-  imports: [
+  imports: [TranslateModule, 
     CommonModule,
     SharedModule,
     PermissionComponent

@@ -154,7 +154,7 @@
 
             <div class="col-md-4 w-100 m-b-10">
               <mat-form-field appearance="outline" class="w-100">
-                <mat-label>Oil Type</mat-label>
+                <mat-label>{{ 'CONTROLE_QUALITE.FINANCIAL.OIL_TYPE' | translate }}</mat-label>
                 <mat-select formControlName="oilType">
                   <mat-option *ngFor="let o of olive_oil_Options" [value]="o">
                     {{ o }}

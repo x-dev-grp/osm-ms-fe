@@ -28,7 +28,10 @@ import { SIMPLE_RECEPTION_DASHBOARD } from './osmDashConf/simple-trt--dashboard.
 import { OIL_PURCHASE_DASHBOARD } from './osmDashConf/oil-purchase-dashboard.config';
 import { OIL_SALES_DASHBOARD_CONFIG } from './osmDashConf/oil-sales-dashboard.config';
 import { WASTE_DASHBOARD } from './osmDashConf/waste-sale-dashboard.config';
+import { SupplierTypeService } from '../../../shared/services/supplier.service';
 import { SupplierType } from '../../../shared/models/supplier-type';
+import { FinancialTransactionService, SupplierFinancialSummary } from '../../../finance/service/financial-transaction.service';
+import { buildSupplierTransactionsDashboard } from './supplier-transactions-dashboard.config';
 import { catchError, tap } from 'rxjs/operators';
 
 export enum PaymentSourceType {
@@ -85,7 +88,12 @@ export class SupplierDetailsComponent implements OnInit {
   supplierId: string | null = null;
   supplier: SupplierType | null = null;
   supplierDisplayName = '';
+  activePageTab: 'operations' | 'finance' | 'profile' = 'operations';
   activeOp: OperationType = 'SIMPLE_RECEPTION';
+  financeSummary: SupplierFinancialSummary | null = null;
+  financeSummaryLoading = false;
+  financeDashboardConfig?: DashboardConfig;
+  @ViewChild('financeDashboard') financeDashboard?: OsmDashboard;
 
   operationCards: OperationCard[] = [
     {
@@ -205,6 +213,8 @@ export class SupplierDetailsComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private searchService: AdvancedSearchService,
+    private supplierService: SupplierTypeService,
+    private financialTransactionService: FinancialTransactionService,
     private _dialog: MatDialog,
     private translate: TranslateService,
     private breakpointObserver: BreakpointObserver,
@@ -226,11 +236,11 @@ export class SupplierDetailsComponent implements OnInit {
       this.supplier = fromState;
       this.supplierDisplayName = `${this.supplier.name ?? ''} ${this.supplier.lastname ?? ''}`.trim();
     } else if (this.supplierId) {
-      // ✅ fallback fetch to get the supplier name when not passed via state
-      //this.fetchSupplierById(this.supplierId).subscribe();
+      this.fetchSupplierById(this.supplierId).subscribe();
     }
 
     if (this.supplierId) {
+      this.financeDashboardConfig = buildSupplierTransactionsDashboard(this.supplierId);
       this.dashboardConfigs = {
         BASE: this.withSupplierFilter(this.baseDashboardConfigs['BASE'], this.supplierId, false),
         OLIVE_PURCHASE: this.withSupplierFilter(this.baseDashboardConfigs['OLIVE_PURCHASE'], this.supplierId, false),
@@ -249,6 +259,44 @@ export class SupplierDetailsComponent implements OnInit {
       this.loadOperation(this.activeOp);
       this.dashboardByOperation.refrechData();
     }
+  }
+
+  loadPageTab(tab: 'operations' | 'finance' | 'profile'): void {
+    this.activePageTab = tab;
+    if (tab === 'finance') {
+      this.loadFinanceSummary();
+      this.financeDashboard?.refrechData();
+    }
+  }
+
+  loadFinanceSummary(): void {
+    if (!this.supplierId || this.financeSummaryLoading) return;
+    this.financeSummaryLoading = true;
+    this.financialTransactionService.getSupplierFinancialSummary(this.supplierId).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      tap((summary) => {
+        this.financeSummary = summary;
+        this.financeSummaryLoading = false;
+      }),
+      catchError(() => {
+        this.financeSummaryLoading = false;
+        return of(null);
+      })
+    ).subscribe();
+  }
+
+  handleFinanceAction(event: { row: { id?: string }; action: string }): void {
+    if (event.action?.toUpperCase() === 'READ' && event.row?.id) {
+      this.router.navigate(['/finance/transactions', event.row.id, 'view']);
+    }
+  }
+
+  get supplierTypeLabel(): string {
+    return this.supplier?.genericSupplierType?.name ?? '';
+  }
+
+  showStorageInfo(): boolean {
+    return !!this.supplier?.hasStorage;
   }
 
   handlePaymentAction(e: { row: any; action: string }) {
@@ -293,11 +341,11 @@ export class SupplierDetailsComponent implements OnInit {
         takeUntilDestroyed(this.destroyRef),
         tap((result) => {
           if (result?.ok) {
-            this.toast.success(result.message || 'Paiement réussi.');
+            this.toast.success(result.message || 'AUTO.PAIEMENT_REUSSI');
             this.countAllOperations();
             this.dashboardByOperation.refrechData();
           } else if (result) {
-            this.toast.error(result.message || 'Échec du paiement.');
+            this.toast.error(result.message || 'AUTO.ECHEC_DU_PAIEMENT');
           }
         })
       )
@@ -327,21 +375,7 @@ export class SupplierDetailsComponent implements OnInit {
   }
 
   private fetchSupplierById(id: string): Observable<any> {
-    const search: SearchData = {
-      page: 0,
-      size: 1,
-      sort: 'createdDate',
-      order: 'DESC',
-      searchData: {
-        operation: 'AND' as any,
-        searchs: [],
-        search: {
-          isDeleted: { equalValue: false },
-          id: { equalValue: id }
-        }
-      }
-    };
-    return this.searchService.search(search, 'production/suppliers_type').pipe(
+    return this.supplierService.getSupplier(id).pipe(
       takeUntilDestroyed(this.destroyRef),
       tap((res: any) => {
         const item = Array.isArray(res?.data) ? res.data[0] : (res?.data ?? null);
@@ -350,7 +384,7 @@ export class SupplierDetailsComponent implements OnInit {
           this.supplierDisplayName = `${this.supplier.name ?? ''} ${this.supplier.lastname ?? ''}`.trim();
          }
       }),
-      catchError(() => of(null)) // Non-blocking
+      catchError(() => of(null))
     );
   }
 

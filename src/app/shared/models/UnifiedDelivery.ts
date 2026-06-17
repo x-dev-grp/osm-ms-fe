@@ -40,6 +40,7 @@ export class UnifiedDelivery {
   parcel?: BaseType | null;
   storageUnit?: StorageUnitDto | null;
   qualityControlResults?: QualityControlResultDto[] | null;
+  hasQualityControl?: boolean;
   categoryOliveOil?: string;
   lotOliveNumber?: string| null;
 

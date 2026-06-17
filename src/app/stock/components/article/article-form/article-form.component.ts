@@ -1,3 +1,5 @@
+import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -6,15 +8,17 @@ import { ArticleService } from '../../../services/article.service';
 import { FournisseurService } from '../../../services/fournisseur.service';
 import { Article, CategorieArticle, UniteMesure, UniteMesureOption, ArticleConfig, categorieLabels } from '../../../models/article.model';
 import { Fournisseur } from '../../../models/fournisseur.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-article-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [TranslateModule, CommonModule, ReactiveFormsModule],
   templateUrl: './article-form.component.html',
   styleUrls: ['./article-form.component.scss']
 })
 export class ArticleFormComponent implements OnInit {
+  private readonly i18n = inject(TranslateService);
   articleForm: FormGroup;
   categories = Object.values(CategorieArticle);
   allUnitesMesure: UniteMesureOption[] = this.getFallbackUnitesMesure();
@@ -271,11 +275,11 @@ export class ArticleFormComponent implements OnInit {
 
   clearAllDynamicValidators(): void {
     const dynamicFields = [
-      'uniteVolumeMl', 'colisUnitArticleId', 'colisUnitsPerColis', 
-      'colisLength', 'colisWidth', 'colisHeight', 
+      'uniteVolumeMl', 'colisUnitArticleId', 'colisUnitsPerColis',
+      'colisLength', 'colisWidth', 'colisHeight',
       'paletteColisId', 'paletteColisPerLayer', 'paletteNumberOfLayers'
     ];
-    
+
     dynamicFields.forEach(field => {
       const control = this.articleForm.get(field);
       if (control) {
@@ -511,7 +515,7 @@ export class ArticleFormComponent implements OnInit {
     this.normalizeArticleFormValues();
 
     if (this.articleForm.invalid) {
-      alert("Le formulaire est invalide. Veuillez vérifier les champs obligatoires (en rouge).");
+      alert(this.i18n.instant('AUTO.LE_FORMULAIRE_EST_INVALIDE_VEUILLEZ_VERIFIER_LES_CHAMPS_OBLIGATO'));
       this.articleForm.markAllAsTouched();
       return;
     }
@@ -541,7 +545,7 @@ export class ArticleFormComponent implements OnInit {
         error: (error) => {
           console.error('Erreur mise à jour:', error);
           this.submitting = false;
-          alert('Erreur lors de la mise à jour');
+          alert(this.i18n.instant('TRANSACTIONS.ERRORS.UPDATE_ERROR'));
         }
       });
     } else {
@@ -552,7 +556,7 @@ export class ArticleFormComponent implements OnInit {
         error: (error) => {
           console.error('Erreur création:', error);
           this.submitting = false;
-          alert('Erreur du serveur : ' + (error.error?.error || error.message || 'Erreur inconnue'));
+          alert(this.i18n.instant('AUTO.ERREUR_DU_SERVEUR') + (error.error?.error || error.message || this.i18n.instant('AUTO.ERREUR_INCONNUE')));
         }
       });
     }

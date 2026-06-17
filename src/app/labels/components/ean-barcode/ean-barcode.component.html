@@ -1,0 +1,10 @@
+<div class="ean-barcode" [class.is-invalid]="value && !isValid" [class]="'ean-barcode--' + size">
+  <svg
+    #barcodeSvg
+    class="ean-barcode__svg"
+    [class.is-hidden]="!isValid"
+    role="img"
+    [attr.aria-label]="isValid ? 'EAN-13 ' + value : null"
+  ></svg>
+  <p class="ean-barcode__hint" *ngIf="value && !isValid">Code EAN-13 invalide (13 chiffres + clé de contrôle)</p>
+</div>

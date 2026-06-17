@@ -1,0 +1,59 @@
+<div class="qc-rule-field" [class.compact]="compact">
+  <div class="qc-rule-field__header">
+    <label [for]="rule.ruleKey">{{ ruleLabel() }}</label>
+    <mat-chip-set>
+      <mat-chip
+        [class.chip-pass]="evaluation === 'pass'"
+        [class.chip-fail]="evaluation !== 'pass'"
+        [attr.aria-label]="evaluation === 'pass' ? 'Conforme' : 'Non conforme'"
+      >{{ evaluation === 'pass' ? '✅' : '❌' }}</mat-chip>
+    </mat-chip-set>
+  </div>
+
+  <p class="qc-rule-field__hint" *ngIf="rule.description">{{ rule.description }}</p>
+
+  <mat-form-field appearance="outline" class="qc-rule-field__control" *ngIf="rule.ruleType === 'NUMERIC'">
+    <mat-label>{{ ruleLabel() }}</mat-label>
+    <input
+      matInput
+      type="number"
+      [step]="numericStep()"
+      [id]="rule.ruleKey"
+      [formControl]="control"
+      [attr.min]="rule.minValue ?? null"
+      [attr.max]="rule.maxValue ?? null"
+    />
+    <mat-hint *ngIf="rule.minValue != null || rule.maxValue != null">
+      Min: {{ rule.minValue ?? '-' }} • Max: {{ rule.maxValue ?? '-' }}
+    </mat-hint>
+    <mat-error *ngIf="control.hasError('required')">
+      {{ 'CONTROLE_QUALITE.FORM.VALIDATION.REQUIRED' | translate }}
+    </mat-error>
+    <mat-error *ngIf="control.hasError('min') || control.hasError('max')">
+      {{ 'CONTROLE_QUALITE.FORM.VALIDATION.MAX' | translate }}
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="qc-rule-field__control" *ngIf="rule.ruleType === 'STRING' && options.length > 0">
+    <mat-label>{{ ruleLabel() }}</mat-label>
+    <mat-select [id]="rule.ruleKey" [formControl]="control">
+      <mat-option *ngFor="let option of options" [value]="option">{{ option }}</mat-option>
+    </mat-select>
+    <mat-error *ngIf="control.hasError('required')">
+      {{ 'CONTROLE_QUALITE.FORM.VALIDATION.REQUIRED' | translate }}
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="qc-rule-field__control" *ngIf="rule.ruleType === 'STRING' && options.length === 0">
+    <mat-label>{{ ruleLabel() }}</mat-label>
+    <input matInput type="text" [id]="rule.ruleKey" [formControl]="control" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="qc-rule-field__control" *ngIf="rule.ruleType === 'BOOLEAN'">
+    <mat-label>{{ ruleLabel() }}</mat-label>
+    <mat-select [id]="rule.ruleKey" [formControl]="control">
+      <mat-option [value]="true">{{ 'STANDARD.BOOLEAN.TRUE' | translate }}</mat-option>
+      <mat-option [value]="false">{{ 'STANDARD.BOOLEAN.FALSE' | translate }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>

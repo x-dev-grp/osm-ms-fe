@@ -10,10 +10,11 @@ import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
 
 // const
 import { DARK, LIGHT } from 'src/app/theme/const';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-languages-support-chart',
-  imports: [SharedModule, NgApexchartsModule],
+  imports: [TranslateModule, SharedModule, NgApexchartsModule],
   templateUrl: './languages-support-chart.component.html',
   standalone: true,
   styleUrl: './languages-support-chart.component.scss'

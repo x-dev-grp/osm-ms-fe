@@ -1,3 +1,5 @@
+import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -12,15 +14,17 @@ import {CategorieArticle} from "../../../models/article.model";
 import { QrDialogComponent } from '../../../../shared/components/qr-dialog/qr-dialog.component';
 import { ConfirmationDialogService, ConfirmationType } from '../../../../shared/services/confirmation-dialog.service';
 import { ToastService } from '../../../../shared/services/toast.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-emplacement-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatButtonModule, MatDialogModule, MatIconModule, MatTooltipModule],
+  imports: [TranslateModule, CommonModule, RouterLink, MatButtonModule, MatDialogModule, MatIconModule, MatTooltipModule],
   templateUrl: './emplacement-detail.component.html',
   styleUrls: ['./emplacement-detail.component.scss']
 })
 export class EmplacementDetailComponent implements OnInit {
+  private readonly i18n = inject(TranslateService);
 
   emplacement: EmplacementStock | null = null;
   loading: boolean = true;
@@ -50,12 +54,8 @@ export class EmplacementDetailComponent implements OnInit {
   loadEmplacement(id: string): void {
     this.loading = true;
     this.emplacementService.getEmplacementById(id).subscribe({
-      next: (response: any) => {
-        if (Array.isArray(response?.data)) {
-          this.emplacement = this.normalizeQrFields(response.data[0] ?? null);
-        } else {
-          this.emplacement = this.normalizeQrFields(response?.data ?? null);
-        }
+      next: (emplacement) => {
+        this.emplacement = this.normalizeQrFields(emplacement ?? null);
         this.loading = false;
       },
       error: (err) => {
@@ -209,24 +209,20 @@ export class EmplacementDetailComponent implements OnInit {
   reserverEmplacement(): void {
     if (!this.emplacement?.id) return;
 
-    const client = prompt('Nom du client ou destination :');
+    const client = prompt(this.i18n.instant('AUTO.NOM_DU_CLIENT_OU_DESTINATION'));
 
     if (client) {
       this.emplacementService.reserverEmplacement(this.emplacement.id, client).subscribe({
-        next: (response: any) => {
-          if (Array.isArray(response?.data)) {
-            this.emplacement = this.normalizeQrFields(response.data[0] ?? null);
-          } else {
-            this.emplacement = this.normalizeQrFields(response?.data ?? null);
-          }
-          this.successMessage = 'Emplacement réservé avec succès';
+        next: (emplacement) => {
+          this.emplacement = this.normalizeQrFields(emplacement ?? null);
+          this.successMessage = this.i18n.instant('AUTO.EMPLACEMENT_RESERVE_AVEC_SUCCES');
           setTimeout(() => {
             this.successMessage = '';
           }, 3000);
         },
         error: (err) => {
           console.error('Erreur réservation', err);
-          alert('Erreur lors de la réservation');
+          alert(this.i18n.instant('AUTO.ERREUR_LORS_DE_LA_RESERVATION'));
         }
       });
     }
@@ -237,20 +233,16 @@ export class EmplacementDetailComponent implements OnInit {
 
     if (confirm(`Libérer l'emplacement "${this.emplacement.code}" ?`)) {
       this.emplacementService.libererEmplacement(this.emplacement.id).subscribe({
-        next: (response: any) => {
-          if (Array.isArray(response?.data)) {
-            this.emplacement = this.normalizeQrFields(response.data[0] ?? null);
-          } else {
-            this.emplacement = this.normalizeQrFields(response?.data ?? null);
-          }
-          this.successMessage = 'Emplacement libéré avec succès';
+        next: (emplacement) => {
+          this.emplacement = this.normalizeQrFields(emplacement ?? null);
+          this.successMessage = this.i18n.instant('AUTO.EMPLACEMENT_LIBERE_AVEC_SUCCES');
           setTimeout(() => {
             this.successMessage = '';
           }, 3000);
         },
         error: (err) => {
           console.error('Erreur libération', err);
-          alert('Erreur lors de la libération');
+          alert(this.i18n.instant('AUTO.ERREUR_LORS_DE_LA_LIBERATION'));
         }
       });
     }
@@ -286,16 +278,16 @@ export class EmplacementDetailComponent implements OnInit {
     }
 
     this.confirmationDialog.confirm({
-      title: 'Regenerate QR Code',
-      message: 'This will regenerate the QR code and may invalidate already printed physical QR labels.',
+      title: this.i18n.instant('AUTO.REGENERATE_QR_CODE'),
+      message: this.i18n.instant('AUTO.THIS_WILL_REGENERATE_THE_QR_CODE_AND_MAY_INVALIDATE_ALREADY_PRIN'),
       type: ConfirmationType.WARNING,
-      confirmText: 'Regenerate',
-      cancelText: 'Cancel',
+      confirmText: this.i18n.instant('AUTO.REGENERATE'),
+      cancelText: this.i18n.instant('ADMIN.CANCEL'),
       showIcon: true,
       destructive: true,
-      requiredText: 'OKAY',
-      requiredTextHint: 'To continue, type OKAY in the field below.',
-      requiredTextPlaceholder: 'Type OKAY'
+      requiredText: this.i18n.instant('AUTO.OKAY'),
+      requiredTextHint: this.i18n.instant('AUTO.TO_CONTINUE_TYPE_OKAY_IN_THE_FIELD_BELOW'),
+      requiredTextPlaceholder: this.i18n.instant('AUTO.TYPE_OKAY')
     }).pipe(take(1))
       .subscribe((result) => onResolved(!!result?.confirmed));
   }

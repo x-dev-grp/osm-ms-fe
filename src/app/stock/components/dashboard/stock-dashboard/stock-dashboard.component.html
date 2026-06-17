@@ -1,8 +1,8 @@
 <div class="dashboard-container">
   <div class="dashboard-header">
     <div class="header-title">
-      <h1>Tableau de bord Stock</h1>
-      <p class="text-muted">Aperçu général des stocks et alertes</p>
+      <h1>{{ 'AUTO.TABLEAU_DE_BORD_STOCK' | translate }}</h1>
+      <p class="text-muted">{{ 'AUTO.APERCU_GENERAL_DES_STOCKS_ET_ALERTES' | translate }}</p>
     </div>
     <div class="header-actions">
       <button
@@ -12,7 +12,7 @@
         [disabled]="loading || !stats"
       >
         <i class="fas fa-download"></i>
-        <span>Exporter</span>
+        <span>{{ 'OSM_DASHBOARD.ACTIONS.EXPORT' | translate }}</span>
       </button>
       <button
         type="button"
@@ -29,13 +29,13 @@
   <div class="alert-banner danger" *ngIf="loadError && !loading">
     <i class="fas fa-exclamation-circle"></i>
     <span>{{ loadError }}</span>
-    <button type="button" class="btn-retry" (click)="loadDashboardData()">Réessayer</button>
+    <button type="button" class="btn-retry" (click)="loadDashboardData()">{{ 'STANDARD.BTNS.RETRY' | translate }}</button>
   </div>
 
   <div class="stats-grid" *ngIf="!loading && stats">
     <div class="stat-card">
       <div class="stat-header">
-        <h3>Total stock</h3>
+        <h3>{{ 'AUTO.TOTAL_STOCK' | translate }}</h3>
       </div>
       <div class="stat-value">{{ stats?.valeurTotaleStock | number:'1.0-0' }}</div>
       <div class="stat-footer">
@@ -46,7 +46,7 @@
 
     <div class="stat-card warning">
       <div class="stat-header">
-        <h3>Articles en alerte</h3>
+        <h3>{{ 'AUTO.ARTICLES_EN_ALERTE' | translate }}</h3>
         <span class="badge-critical">{{ stats?.articlesEnAlerte }} critiques</span>
       </div>
       <div class="stat-value">{{ stats?.articlesEnAlerte }} / {{ stats?.totalArticles }}</div>
@@ -58,7 +58,7 @@
 
     <div class="stat-card danger">
       <div class="stat-header">
-        <h3>Taux de rupture</h3>
+        <h3>{{ 'AUTO.TAUX_DE_RUPTURE' | translate }}</h3>
       </div>
       <div class="stat-value">{{ stats?.tauxRupture | number:'1.1-1' }}%</div>
       <div class="stat-footer">
@@ -69,7 +69,7 @@
 
     <div class="stat-card info">
       <div class="stat-header">
-        <h3>Bons en attente</h3>
+        <h3>{{ 'AUTO.BONS_EN_ATTENTE' | translate }}</h3>
       </div>
       <div class="stat-value">{{ stats?.bonsEnAttente }}</div>
       <div class="stat-footer">
@@ -81,32 +81,33 @@
 
   <div *ngIf="loading" class="loading-container">
     <div class="spinner"></div>
-    <p>Chargement du tableau de bord…</p>
+    <p>{{ 'AUTO.CHARGEMENT_DU_TABLEAU_DE_BORD' | translate }}</p>
   </div>
 
   <div *ngIf="!loading && !stats" class="empty-dashboard">
     <i class="fas fa-chart-line"></i>
-    <p>Aucune donnée disponible.</p>
-    <button type="button" class="btn btn-primary" (click)="loadDashboardData()">Réessayer</button>
+    <p>{{ 'ADMIN_DASHBOARD.NO_DATA' | translate }}</p>
+    <button type="button" class="btn btn-primary" (click)="loadDashboardData()">{{ 'STANDARD.BTNS.RETRY' | translate }}</button>
   </div>
 
   <div class="dashboard-grid" *ngIf="!loading && stats">
     <div class="card chart-card">
       <div class="card-header">
-        <h5>Mouvements par mois</h5>
+        <h5>{{ 'AUTO.MOUVEMENTS_PAR_MOIS' | translate }}</h5>
       </div>
       <div class="card-body">
         <canvas #stockChartCanvas width="400" height="220"></canvas>
         <p class="chart-empty" *ngIf="!chartHasData()">
-          Aucun mouvement enregistré sur les 6 derniers mois.
+
+          {{ 'AUTO.AUCUN_MOUVEMENT_ENREGISTRE_SUR_LES_6_DERNIERS_MOIS' | translate }}
         </p>
       </div>
     </div>
 
     <div class="card critical-card">
       <div class="card-header">
-        <h5>Articles sous seuil critique</h5>
-        <a routerLink="/stock/articles" class="view-all">Voir tout</a>
+        <h5>{{ 'AUTO.ARTICLES_SOUS_SEUIL_CRITIQUE' | translate }}</h5>
+        <a routerLink="/stock/articles" class="view-all">{{ 'AUTO.VOIR_TOUT' | translate }}</a>
       </div>
 
       <div class="card-body p-0">
@@ -131,7 +132,7 @@
 
           <div *ngIf="articlesCritiques.length === 0" class="empty-list">
             <i class="fas fa-check-circle text-success"></i>
-            <p>Aucun article critique</p>
+            <p>{{ 'AUTO.AUCUN_ARTICLE_CRITIQUE' | translate }}</p>
           </div>
         </div>
       </div>
@@ -139,8 +140,8 @@
 
     <div class="card movements-card">
       <div class="card-header">
-        <h5>Derniers mouvements</h5>
-        <a routerLink="/stock/mouvements" class="view-all">Voir tout</a>
+        <h5>{{ 'AUTO.DERNIERS_MOUVEMENTS' | translate }}</h5>
+        <a routerLink="/stock/mouvements" class="view-all">{{ 'AUTO.VOIR_TOUT' | translate }}</a>
       </div>
 
       <div class="card-body p-0">
@@ -164,7 +165,7 @@
 
           <div *ngIf="mouvementsRecents.length === 0" class="empty-list">
             <i class="fas fa-exchange-alt"></i>
-            <p>Aucun mouvement récent</p>
+            <p>{{ 'AUTO.AUCUN_MOUVEMENT_RECENT' | translate }}</p>
           </div>
         </div>
       </div>
@@ -172,8 +173,8 @@
 
     <div class="card pending-card">
       <div class="card-header">
-        <h5>Bons de commande en attente</h5>
-        <a routerLink="/stock/bons-commande" class="view-all">Voir tout</a>
+        <h5>{{ 'AUTO.BONS_DE_COMMANDE_EN_ATTENTE' | translate }}</h5>
+        <a routerLink="/stock/bons-commande" class="view-all">{{ 'AUTO.VOIR_TOUT' | translate }}</a>
       </div>
 
       <div class="card-body p-0">
@@ -201,7 +202,7 @@
 
           <div *ngIf="bonsEnAttente.length === 0" class="empty-list">
             <i class="fas fa-check-circle text-success"></i>
-            <p>Aucun bon en attente</p>
+            <p>{{ 'AUTO.AUCUN_BON_EN_ATTENTE' | translate }}</p>
           </div>
         </div>
       </div>

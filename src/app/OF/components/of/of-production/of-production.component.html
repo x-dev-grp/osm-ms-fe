@@ -9,16 +9,16 @@
     </div>
     <div class="header-actions">
       <button *ngIf="canStart()" class="btn-action start" [disabled]="!canStartNow()" (click)="start()">
-        <i class="fas fa-play"></i> Demarrer
+        <i class="fas fa-play"></i>  {{ 'AUTO.DEMARRER' | translate }}
       </button>
       <button *ngIf="canPause()" class="btn-action pause" (click)="pause()">
-        <i class="fas fa-pause"></i> Pause
+        <i class="fas fa-pause"></i>  {{ 'OSM_DASHBOARD.ACTIONS.PAUSE' | translate }}
       </button>
       <button *ngIf="canResume()" class="btn-action resume" (click)="resume()">
-        <i class="fas fa-play-circle"></i> Reprendre
+        <i class="fas fa-play-circle"></i>  {{ 'OSM_DASHBOARD.ACTIONS.RESUME' | translate }}
       </button>
       <button *ngIf="canClose()" class="btn-action close" (click)="close()">
-        <i class="fas fa-check-circle"></i> Cloturer
+        <i class="fas fa-check-circle"></i>  {{ 'AUTO.CLOTURER' | translate }}
       </button>
     </div>
   </div>
@@ -26,15 +26,18 @@
   <div class="stats-banner" *ngIf="of.statut === 'EN_COURS'">
     <div class="stat-item">
       <i class="fas fa-hourglass-half"></i>
-      Temps ecoule : <strong>{{ TimeFormatted }}</strong>
+
+      {{ 'AUTO.TEMPS_ECOULE' | translate }} <strong>{{ TimeFormatted }}</strong>
     </div>
     <div class="stat-item">
       <i class="fas fa-check-circle"></i>
-      Bons : <strong>{{ of.quantiteBonne }}</strong>
+
+      {{ 'AUTO.BONS' | translate }} <strong>{{ of.quantiteBonne }}</strong>
     </div>
     <div class="stat-item">
       <i class="fas fa-times-circle"></i>
-      NC : <strong>{{ of.quantiteNC }}</strong>
+
+      {{ 'AUTO.NC' | translate }} <strong>{{ of.quantiteNC }}</strong>
     </div>
   </div>
 
@@ -43,7 +46,7 @@
       <i class="fas fa-boxes-stacked"></i>
     </div>
     <div class="flow-banner-copy">
-      <strong>Flux stock en cours de production</strong>
+      <strong>{{ 'AUTO.FLUX_STOCK_EN_COURS_DE_PRODUCTION' | translate }}</strong>
       <p>{{ stockAdjustmentHint() }}</p>
       <span class="flow-banner-chip">Verification au demarrage: {{ stockCheckLabel() }}</span>
       <span class="flow-banner-chip">Deduction a la cloture: {{ stockCloseLabel() }}</span>
@@ -52,7 +55,7 @@
 
   <div class="card-box stock-check-card" *ngIf="canStart()">
     <div class="stock-check-head">
-      <h5>Verification stock avant demarrage</h5>
+      <h5>{{ 'AUTO.VERIFICATION_STOCK_AVANT_DEMARRAGE' | translate }}</h5>
       <button class="btn-refresh-stock" (click)="refreshStockCheck()" [disabled]="checkingStock">
         <i class="fas fa-rotate"></i> {{ checkingStock ? 'Verification...' : 'Actualiser' }}
       </button>
@@ -70,11 +73,11 @@
     <table class="data-table stock-check-table" *ngIf="stockRows.length > 0">
       <thead>
       <tr>
-        <th>Article</th>
-        <th>Besoin</th>
+        <th>{{ 'OSM_DASHBOARD.ACTIONS.ARTICLESEC' | translate }}</th>
+        <th>{{ 'AUTO.BESOIN' | translate }}</th>
         <th>{{ stockQuantityHeader() }}</th>
-        <th>Source</th>
-        <th>Resultat</th>
+        <th>{{ 'AUTO.SOURCE' | translate }}</th>
+        <th>{{ 'AUTO.RESULTAT' | translate }}</th>
       </tr>
       </thead>
       <tbody>
@@ -86,9 +89,9 @@
           <span>{{ row.sourceLabel }}</span>
         </td>
         <td data-label="Resultat">
-          <span class="stock-status ok" *ngIf="row.status === 'OK'">OK</span>
-          <span class="stock-status warn" *ngIf="row.status === 'INSUFFICIENT'">Insuffisant</span>
-          <span class="stock-status danger" *ngIf="row.status === 'MISSING'">Manquant</span>
+          <span class="stock-status ok" *ngIf="row.status === 'OK'">{{ 'AUTO.OK' | translate }}</span>
+          <span class="stock-status warn" *ngIf="row.status === 'INSUFFICIENT'">{{ 'AUTO.INSUFFISANT' | translate }}</span>
+          <span class="stock-status danger" *ngIf="row.status === 'MISSING'">{{ 'AUTO.MANQUANT' | translate }}</span>
         </td>
       </tr>
       </tbody>
@@ -96,39 +99,40 @@
   </div>
 
   <div class="card-box production-card" *ngIf="isEditable()">
-    <h5>Saisie de production</h5>
+    <h5>{{ 'AUTO.SAISIE_DE_PRODUCTION' | translate }}</h5>
     <div class="production-form">
       <div class="form-group">
-        <label>Bons</label>
+        <label>{{ 'AUTO.BONS' | translate }}</label>
         <input type="number" [(ngModel)]="newBons" class="form-control" min="0">
       </div>
       <div class="form-group">
-        <label>Non-conformes</label>
+        <label>{{ 'AUTO.NON_CONFORMES' | translate }}</label>
         <input type="number" [(ngModel)]="newNC" class="form-control" min="0">
       </div>
       <div class="form-group" *ngIf="newNC > 0">
-        <label>Motif NC <span style="color: red;">*</span></label>
-        <input type="text" [(ngModel)]="motifNC" class="form-control" placeholder="Motif obligatoire">
+        <label>{{ 'AUTO.MOTIF_NC' | translate }} <span style="color: red;">*</span></label>
+        <input type="text" [(ngModel)]="motifNC" class="form-control" [placeholder]="'AUTO.MOTIF_OBLIGATOIRE' | translate">
       </div>
       <button class="btn-save" (click)="recordProduction()">
-        <i class="fas fa-save"></i> Enregistrer
+        <i class="fas fa-save"></i>  {{ 'BANK_ACCOUNTS.ACTIONS.SAVE' | translate }}
       </button>
     </div>
   </div>
 
   <div class="card-box lines-card">
-    <h5>Composants consommes</h5>
+    <h5>{{ 'AUTO.COMPOSANTS_CONSOMMES' | translate }}</h5>
     <p class="lines-caption" *ngIf="isEditable()">
-      La quantite reelle enregistree ici prepare la consommation finale. Aucun mouvement de stock n'est lance avant la cloture de l'OF.
+
+      {{ 'AUTO.LA_QUANTITE_REELLE_ENREGISTREE_ICI_PREPARE_LA_CONSOMMATION_FINAL' | translate }}
     </p>
     <table class="data-table">
       <thead>
       <tr>
-        <th>Article</th>
-        <th>Quantite theorique</th>
-        <th>Quantite reelle</th>
-        <th>Motif</th>
-        <th>Action</th>
+        <th>{{ 'OSM_DASHBOARD.ACTIONS.ARTICLESEC' | translate }}</th>
+        <th>{{ 'AUTO.QUANTITE_THEORIQUE' | translate }}</th>
+        <th>{{ 'AUTO.QUANTITE_REELLE' | translate }}</th>
+        <th>{{ 'AUTO.MOTIF' | translate }}</th>
+        <th>{{ 'AUTO.ACTION' | translate }}</th>
       </tr>
       </thead>
       <tbody>
@@ -154,16 +158,16 @@
   </div>
 
   <div class="card-box quality-card">
-    <h5>Controle qualite</h5>
+    <h5>{{ 'AUTO.CONTROLE_QUALITE' | translate }}</h5>
     <div class="quality-actions">
       <button class="btn-quality" (click)="goToQualityControl()">
-        <i class="fas fa-clipboard-list"></i> Voir points de controle
+        <i class="fas fa-clipboard-list"></i>  {{ 'AUTO.VOIR_POINTS_DE_CONTROLE' | translate }}
       </button>
       <button class="btn-quality" (click)="goToQualityEntry()">
-        <i class="fas fa-pen-alt"></i> Saisir controle
+        <i class="fas fa-pen-alt"></i>  {{ 'AUTO.SAISIR_CONTROLE' | translate }}
       </button>
       <button class="btn-quality" (click)="goToQualityHistory()">
-        <i class="fas fa-history"></i> Historique qualite
+        <i class="fas fa-history"></i>  {{ 'AUTO.HISTORIQUE_QUALITE' | translate }}
       </button>
     </div>
   </div>
@@ -171,5 +175,5 @@
 
 <div *ngIf="loading" class="loading-container">
   <div class="spinner-border"></div>
-  <p>Chargement...</p>
+  <p>{{ 'COMMON.LOADING' | translate }}</p>
 </div>

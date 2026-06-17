@@ -57,7 +57,8 @@
     <app-card cardTitle="Project - Able Pro">
       <div class="m-b-25">
         <p class="m-b-10">
-          Tasks done
+
+          {{ 'AUTO.TASKS_DONE' | translate }}
           <span class="float-end">30%</span>
         </p>
         <mat-progress-bar mode="determinate" color="primary" value="50"></mat-progress-bar>
@@ -70,7 +71,7 @@
             </div>
             <div class="flex-grow-1">
               <p class="m-b-0 grid text-start">
-                <span class="text-muted text-truncate w-100">Horizontal Layout</span>
+                <span class="text-muted text-truncate w-100">{{ 'AUTO.HORIZONTAL_LAYOUT' | translate }}</span>
               </p>
             </div>
             <div class="user-status bg-accent-300 text-muted m-l-10 f-12">
@@ -97,7 +98,8 @@
           <button mat-flat-button color="primary" class="b-rad-20">
             <div class="flex align-item-center">
               <i class="ti ti-plus f-18 m-r-10"></i>
-              Add Task
+
+              {{ 'AUTO.ADD_TASK' | translate }}
             </div>
           </button>
         </div>
@@ -116,14 +118,14 @@
           </div>
         </div>
         <div class="flex-grow-1 m-l-15">
-          <div class="f-16 f-w-500">Able pro</div>
-          <div class="text-muted mat-caption">&#64;ableprodevelop</div>
+          <div class="f-16 f-w-500">{{ 'AUTO.ABLE_PRO' | translate }}</div>
+          <div class="text-muted mat-caption">{{ 'AUTO.ABLEPRODEVELOP' | translate }}</div>
         </div>
         <a [matMenuTriggerFor]="menu" class="avatar avatar-s"><i class="ti ti-dots-vertical f-18"></i></a>
         <mat-menu #menu="matMenu">
-          <a mat-menu-item>Today</a>
-          <a mat-menu-item>Weekly</a>
-          <a mat-menu-item>Monthly</a>
+          <a mat-menu-item>{{ 'DASHBOARD.DATE_FILTER.TODAY' | translate }}</a>
+          <a mat-menu-item>{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.WEEKLY' | translate }}</a>
+          <a mat-menu-item>{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.MONTHLY' | translate }}</a>
         </mat-menu>
       </div>
       <div class="flex justify-content-between align-item-center m-t-25 able-user-group">
@@ -162,14 +164,14 @@
           <div class="col-lg-6 m-t-10">
             <div class="grid">
               <button class="grid b-rad-20" mat-stroked-button>
-                <span class="text-truncate w-100">View all Transaction History</span>
+                <span class="text-truncate w-100">{{ 'AUTO.VIEW_ALL_TRANSACTION_HISTORY' | translate }}</span>
               </button>
             </div>
           </div>
           <div class="col-lg-6 m-t-10">
             <div class="grid">
               <button class="grid b-rad-20" mat-flat-button color="primary">
-                <span class="text-truncate w-100">Create new Transaction</span>
+                <span class="text-truncate w-100">{{ 'AUTO.CREATE_NEW_TRANSACTION' | translate }}</span>
               </button>
             </div>
           </div>

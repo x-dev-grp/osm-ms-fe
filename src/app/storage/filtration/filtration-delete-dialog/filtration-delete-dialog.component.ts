@@ -12,12 +12,13 @@ import {FormsModule} from "@angular/forms";
 import {MatCheckbox} from "@angular/material/checkbox";
 import {MatIcon} from "@angular/material/icon";
 import {DatePipe, NgClass} from "@angular/common";
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-filtration-delete-dialog',
   templateUrl: './filtration-delete-dialog.component.html',
   styleUrls: ['./filtration-delete-dialog.component.scss'],
-  imports: [
+  imports: [TranslateModule, 
     MatDialogTitle,
     MatDialogContent,
     MatDialogActions,

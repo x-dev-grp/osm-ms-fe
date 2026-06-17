@@ -193,4 +193,24 @@ export class QualityControlRuleComponent implements OnInit, OnDestroy {
   viewRule(r: QualityControlRule): void {
     this.router.navigate(['settings/quality-control-rule-details', r.id]);
   }
+
+  provisionDefaults(): void {
+    this.isLoading = true;
+    this.service
+      .provisionDefaults()
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => (this.isLoading = false))
+      )
+      .subscribe({
+        next: (res) => {
+          if (res?.success) {
+            this.toastService.success(res.message || 'Règles Tunisia provisionnées');
+          } else {
+            this.toastService.warning('Provisionnement non effectué');
+          }
+        },
+        error: () => this.toastService.error('Erreur lors du provisionnement des règles QC')
+      });
+  }
 }

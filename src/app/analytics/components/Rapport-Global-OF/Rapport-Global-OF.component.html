@@ -6,19 +6,19 @@
           <i class="fas fa-chart-pie"></i>
         </div>
         <div class="header-title-block">
-          <h1 class="page-title">Rapport Global des OF</h1>
+          <h1 class="page-title">{{ 'AUTO.RAPPORT_GLOBAL_DES_OF' | translate }}</h1>
           <p class="stats-badge">
             <i class="fas fa-eye me-1"></i>
-            <span>Apercu macroscopique de la production</span>
+            <span>{{ 'AUTO.APERCU_MACROSCOPIQUE_DE_LA_PRODUCTION' | translate }}</span>
           </p>
         </div>
       </div>
       <div class="header-actions">
         <button class="header-btn btn-outline-primary" type="button" (click)="exportPdf()" [disabled]="loading || !data">
-          <i class="fas fa-file-pdf"></i> Exporter PDF
+          <i class="fas fa-file-pdf"></i>  {{ 'OSM_DASHBOARD.EXPORT.PDF' | translate }}
         </button>
         <button class="header-btn btn-primary" type="button" (click)="loadData()" [disabled]="loading">
-          <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i> Actualiser
+          <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>  {{ 'AUTO.ACTUALISER' | translate }}
         </button>
       </div>
     </div>
@@ -26,7 +26,7 @@
 
   <div *ngIf="loading" class="loading-state-modern">
     <div class="spinner-container"></div>
-    <p class="loading-text">Chargement du rapport global...</p>
+    <p class="loading-text">{{ 'AUTO.CHARGEMENT_DU_RAPPORT_GLOBAL' | translate }}</p>
   </div>
 
   <div *ngIf="!loading && errorMessage" class="loading-state-modern">
@@ -34,53 +34,53 @@
   </div>
 
   <div *ngIf="!loading && !errorMessage && !hasData" class="loading-state-modern">
-    <p class="loading-text">Aucune donnee analytics disponible pour le moment.</p>
+    <p class="loading-text">{{ 'AUTO.AUCUNE_DONNEE_ANALYTICS_DISPONIBLE_POUR_LE_MOMENT' | translate }}</p>
   </div>
 
   <div class="stats-grid" *ngIf="!loading && data && hasData">
     <div class="stat-card">
       <div class="stat-header">
-        <h3>Total OF</h3>
+        <h3>{{ 'AUTO.TOTAL_OF' | translate }}</h3>
         <div class="stat-icon"><i class="fas fa-clipboard-list"></i></div>
       </div>
       <div class="stat-value">{{ data.totalOf }}</div>
-      <div class="stat-footer">Tous statuts confondus</div>
+      <div class="stat-footer">{{ 'AUTO.TOUS_STATUTS_CONFONDUS' | translate }}</div>
     </div>
 
     <div class="stat-card info">
       <div class="stat-header">
-        <h3>En cours</h3>
+        <h3>{{ 'DELIVERIES.STATUS.IN_PROGRESS' | translate }}</h3>
         <div class="stat-icon"><i class="fas fa-spinner"></i></div>
       </div>
       <div class="stat-value">{{ data.inProgressOf }}</div>
-      <div class="stat-footer">Actuellement en production</div>
+      <div class="stat-footer">{{ 'AUTO.ACTUELLEMENT_EN_PRODUCTION' | translate }}</div>
     </div>
 
     <div class="stat-card success">
       <div class="stat-header">
-        <h3>Termines</h3>
+        <h3>{{ 'AUTO.TERMINES' | translate }}</h3>
         <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
       </div>
       <div class="stat-value">{{ data.completedOf }}</div>
-      <div class="stat-footer">Production achevee</div>
+      <div class="stat-footer">{{ 'AUTO.PRODUCTION_ACHEVEE' | translate }}</div>
     </div>
 
     <div class="stat-card warning">
       <div class="stat-header">
-        <h3>Planifies</h3>
+        <h3>{{ 'AUTO.PLANIFIES' | translate }}</h3>
         <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
       </div>
       <div class="stat-value">{{ data.plannedOf }}</div>
-      <div class="stat-footer">En attente de demarrage</div>
+      <div class="stat-footer">{{ 'AUTO.EN_ATTENTE_DE_DEMARRAGE' | translate }}</div>
     </div>
 
     <div class="stat-card danger">
       <div class="stat-header">
-        <h3>Clotures</h3>
+        <h3>{{ 'AUTO.CLOTURES' | translate }}</h3>
         <div class="stat-icon"><i class="fas fa-archive"></i></div>
       </div>
       <div class="stat-value">{{ data.canceledOf }}</div>
-      <div class="stat-footer">Dossiers fermes</div>
+      <div class="stat-footer">{{ 'AUTO.DOSSIERS_FERMES' | translate }}</div>
     </div>
   </div>
 
@@ -88,7 +88,7 @@
     <div class="col-lg-6 mb-4">
       <div class="card h-100 border-0 shadow-sm rounded-4">
         <div class="card-header bg-white border-0 pt-4 pb-0">
-          <h5 class="fw-bold mb-0 text-dark">Repartition par statut</h5>
+          <h5 class="fw-bold mb-0 text-dark">{{ 'AUTO.REPARTITION_PAR_STATUT' | translate }}</h5>
         </div>
         <div class="card-body">
           <apx-chart
@@ -108,7 +108,7 @@
     <div class="col-lg-6 mb-4">
       <div class="volumes-card h-100 border-0 shadow-sm rounded-4">
         <div class="card-header bg-white border-0 pt-4 pb-0">
-          <h5 class="fw-bold mb-0 text-dark">Volumes de production</h5>
+          <h5 class="fw-bold mb-0 text-dark">{{ 'AUTO.VOLUMES_DE_PRODUCTION' | translate }}</h5>
         </div>
         <div class="card-body">
           <apx-chart
@@ -125,11 +125,11 @@
           <div class="row align-items-center mt-4">
             <div class="col-md-6 border-end volume-block text-center">
               <h3 class="text-secondary fw-bold mb-1">{{ data.totalTargetQuantity | number }}</h3>
-              <p class="text-muted small text-uppercase fw-semibold mb-0">Cible globale</p>
+              <p class="text-muted small text-uppercase fw-semibold mb-0">{{ 'AUTO.CIBLE_GLOBALE' | translate }}</p>
             </div>
             <div class="col-md-6 volume-block text-center">
               <h3 class="text-success fw-bold mb-1">{{ data.totalProducedQuantity | number }}</h3>
-              <p class="text-muted small text-uppercase fw-semibold mb-0">Production globale</p>
+              <p class="text-muted small text-uppercase fw-semibold mb-0">{{ 'AUTO.PRODUCTION_GLOBALE' | translate }}</p>
             </div>
           </div>
         </div>

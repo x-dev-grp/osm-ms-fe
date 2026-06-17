@@ -117,7 +117,7 @@ export class BankAccountsComponent implements OnInit {
           },
           error: (error) => {
             console.error('Error loading bank accounts:', error);
-            this.toast.error('Error loading bank accounts');
+            this.toast.error('AUTO.ERROR_LOADING_BANK_ACCOUNTS');
           }
         });
       }

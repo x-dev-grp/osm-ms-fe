@@ -4,10 +4,11 @@ import { CommonModule } from '@angular/common';
 
 // project import
 import { SharedModule } from 'src/app/shared/shared.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-footer',
-  imports: [CommonModule, SharedModule],
+  imports: [TranslateModule, CommonModule, SharedModule],
   templateUrl: './footer.component.html',
   standalone: true,
   styleUrls: ['./footer.component.scss']

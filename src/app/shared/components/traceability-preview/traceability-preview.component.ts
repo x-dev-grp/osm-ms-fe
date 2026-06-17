@@ -6,11 +6,12 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ProductionTraceabilityService } from '../../services/production-traceability.service';
 import { ProductionGenealogy } from '../../models/production-genealogy.model';
 import { oilReceptionsFromGenealogy, OilReceptionDisplay } from '../../utils/traceability-display.util';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-traceability-preview',
   standalone: true,
-  imports: [CommonModule, DatePipe, MatIconModule, MatProgressSpinnerModule],
+  imports: [TranslateModule, CommonModule, DatePipe, MatIconModule, MatProgressSpinnerModule],
   templateUrl: './traceability-preview.component.html',
   styleUrls: ['./traceability-preview.component.scss']
 })

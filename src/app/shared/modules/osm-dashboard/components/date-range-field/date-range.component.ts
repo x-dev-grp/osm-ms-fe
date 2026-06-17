@@ -17,6 +17,7 @@ import { DashboardStore } from '../../services/dashboard-state.service';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { SearchDetails } from 'src/app/shared/models/advanced-search/searchDetails';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'date-range',
@@ -24,7 +25,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrls: ['./date-range.component.scss'],
   standalone: true,
   providers: [provideNativeDateAdapter(), DatePipe],
-  imports: [
+  imports: [TranslateModule, 
     CommonModule,
     MatButtonModule,
     MatIconModule,

@@ -8,11 +8,11 @@
       <form [formGroup]="productionConfigForm" (ngSubmit)="onSaveProductionConfig()" class="form-section">
         <div class="row">
           <div class="col-12">
-            <h3 class="mb-3">Campagne agricole</h3>
+            <h3 class="mb-3">{{ 'AUTO.CAMPAGNE_AGRICOLE' | translate }}</h3>
           </div>
           <div class="col-md-3">
             <mat-form-field appearance="outline" class="w-100 mb-3">
-              <mat-label>Mois debut</mat-label>
+              <mat-label>{{ 'AUTO.MOIS_DEBUT' | translate }}</mat-label>
               <mat-select formControlName="campaignStartMonth" [disabled]="!productionConfigFormEnabled">
                 <mat-option *ngFor="let month of months" [value]="month.value">{{ month.label }}</mat-option>
               </mat-select>
@@ -20,13 +20,13 @@
           </div>
           <div class="col-md-3">
             <mat-form-field appearance="outline" class="w-100 mb-3">
-              <mat-label>Jour debut</mat-label>
+              <mat-label>{{ 'AUTO.JOUR_DEBUT' | translate }}</mat-label>
               <input matInput type="number" min="1" max="31" formControlName="campaignStartDay" [disabled]="!productionConfigFormEnabled" />
             </mat-form-field>
           </div>
           <div class="col-md-3">
             <mat-form-field appearance="outline" class="w-100 mb-3">
-              <mat-label>Mois fin</mat-label>
+              <mat-label>{{ 'AUTO.MOIS_FIN' | translate }}</mat-label>
               <mat-select formControlName="campaignEndMonth" [disabled]="!productionConfigFormEnabled">
                 <mat-option *ngFor="let month of months" [value]="month.value">{{ month.label }}</mat-option>
               </mat-select>
@@ -34,13 +34,14 @@
           </div>
           <div class="col-md-3">
             <mat-form-field appearance="outline" class="w-100 mb-3">
-              <mat-label>Jour fin</mat-label>
+              <mat-label>{{ 'AUTO.JOUR_FIN' | translate }}</mat-label>
               <input matInput type="number" min="1" max="31" formControlName="campaignEndDay" [disabled]="!productionConfigFormEnabled" />
             </mat-form-field>
           </div>
           <div class="col-12">
             <p class="text-muted small mb-3">
-              Campagne courante calculee: <strong>{{ campaignPreview }}</strong>
+
+              {{ 'AUTO.CAMPAGNE_COURANTE_CALCULEE' | translate }} <strong>{{ campaignPreview }}</strong>
             </p>
           </div>
         </div>
@@ -65,7 +66,7 @@
       <!-- Finance Config Section -->
       <form [formGroup]="financeConfigForm" (ngSubmit)="onSaveFinanceConfig()" class="form-section">
         <mat-form-field appearance="outline" class="w-100 mb-3">
-          <mat-label>Milling Price per Kg</mat-label>
+          <mat-label>{{ 'AUTO.MILLING_PRICE_PER_KG' | translate }}</mat-label>
           <input matInput formControlName="millingPricePerKg" type="number" min="0" step="0.01" />
         </mat-form-field>
         <div class="actions">

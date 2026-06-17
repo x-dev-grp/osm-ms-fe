@@ -1,3 +1,5 @@
+import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -20,6 +22,7 @@ import { PdfGeneratorExpeditionService } from '../../../../shared/services/pdf-g
 import { CompanyProfileService } from '../../../../shared/services/company-profile.service';
 import { PdfExpeditionConfig } from '../../../../shared/models/pdf-config.model';
 import { TraceabilityTimelineComponent } from '../../../../shared/components/traceability-timeline/traceability-timeline.component';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   countGenealogyLots,
   countOfDetails,
@@ -29,7 +32,7 @@ import {
 @Component({
   selector: 'app-projet-expedition',
   standalone: true,
-  imports: [
+  imports: [TranslateModule,
     CommonModule,
     ReactiveFormsModule,
     DatePipe,
@@ -44,6 +47,7 @@ import {
   styleUrls: ['./projet-expedition.component.scss']
 })
 export class ProjetExpeditionComponent implements OnInit {
+  private readonly i18n = inject(TranslateService);
   readonly statusValues: ExpeditionStatus[] = Object.values(ExpeditionStatus);
 
   projectId: string | null = null;
@@ -258,7 +262,7 @@ export class ProjetExpeditionComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erreur chargement tracabilite expedition', err);
-        this.toast.error('Impossible de charger la traçabilité de l\'expédition');
+        this.toast.error('AUTO.IMPOSSIBLE_DE_CHARGER_LA_TRACABILITE_DE_L_EXPEDITION');
         this.traceabilityLoading = false;
       }
     });
@@ -344,7 +348,7 @@ export class ProjetExpeditionComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erreur chargement projet', err);
-        this.toast.error('Erreur lors du chargement du projet');
+        this.toast.error('AUTO.ERREUR_LORS_DU_CHARGEMENT_DU_PROJET');
       }
     });
   }
@@ -373,7 +377,7 @@ export class ProjetExpeditionComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erreur chargement expeditions', err);
-        this.toast.error('Erreur lors du chargement des expeditions');
+        this.toast.error('AUTO.ERREUR_LORS_DU_CHARGEMENT_DES_EXPEDITIONS');
         this.loading = false;
       }
     });
@@ -414,7 +418,7 @@ export class ProjetExpeditionComponent implements OnInit {
         if (this.selectedExpedition?.id === exp.id) {
           this.deselectExpedition();
         }
-        this.toast.success('Expedition supprimee');
+        this.toast.success('AUTO.EXPEDITION_SUPPRIMEE');
       },
       error: (err) => {
         console.error('Erreur suppression expedition', err);
@@ -482,13 +486,13 @@ export class ProjetExpeditionComponent implements OnInit {
       .filter(line => line.ofId && line.quantity > 0);
 
     if (!selectedLines.length) {
-      this.toast.warning('Selectionnez au moins un OF a expedier');
+      this.toast.warning('AUTO.SELECTIONNEZ_AU_MOINS_UN_OF_A_EXPEDIER');
       return;
     }
 
     const totalSelected = selectedLines.reduce((sum, line) => sum + Number(line.quantity || 0), 0);
     if (totalSelected > this.remainingProjectQuantity) {
-      this.toast.warning(`Quantite depassee. Maximum autorise: ${this.remainingProjectQuantity}.`);
+      this.toast.warning('AUTO.QUANTITE_DEPASSEE_MAXIMUM_AUTORISE', { value0: this.remainingProjectQuantity });
       return;
     }
 
@@ -509,11 +513,11 @@ export class ProjetExpeditionComponent implements OnInit {
           this.expeditions = [expedition, ...this.expeditions];
           this.applyProjectDeliveryCompletion();
           this.selectExpedition(expedition);
-          this.toast.success('Expedition creee avec succes');
+          this.toast.success('AUTO.EXPEDITION_CREEE_AVEC_SUCCES');
         },
         error: (err) => {
           console.error('Erreur creation expedition', err);
-          this.toast.error(extractHttpErrorMessage(err, 'Erreur lors de la creation de l\'expedition'));
+          this.toast.error(extractHttpErrorMessage(err, 'AUTO.ERREUR_LORS_DE_LA_CREATION_DE_L_EXPEDITION'));
           this.creating = false;
         }
       });
@@ -540,11 +544,11 @@ export class ProjetExpeditionComponent implements OnInit {
         next: (updated) => {
           this.saving = false;
           this.syncExpedition(updated);
-          this.toast.success('Modifications enregistrees');
+          this.toast.success('AUTO.MODIFICATIONS_ENREGISTREES');
         },
         error: (err) => {
           console.error('Erreur sauvegarde expedition', err);
-          this.toast.error('Erreur lors de la sauvegarde');
+          this.toast.error('CONTROLE_QUALITE.MESSAGES.ERROR.SAVE');
           this.saving = false;
         }
       });
@@ -552,14 +556,14 @@ export class ProjetExpeditionComponent implements OnInit {
 
   addLine(): void {
     if (this.projectDeliveryComplete) {
-      this.toast.warning('Projet deja livre. Impossible d ajouter une ligne d expedition.');
+      this.toast.warning('AUTO.PROJET_DEJA_LIVRE_IMPOSSIBLE_D_AJOUTER_UNE_LIGNE_D_EXPEDITION');
       return;
     }
 
     if (!this.selectedExpedition?.id || this.addingLine || this.lineForm.invalid) {
       this.lineForm.markAllAsTouched();
       if (this.lineForm.invalid) {
-        this.toast.warning('Veuillez selectionner un OF et saisir une quantite');
+        this.toast.warning('AUTO.VEUILLEZ_SELECTIONNER_UN_OF_ET_SAISIR_UNE_QUANTITE');
       }
       return;
     }
@@ -568,7 +572,7 @@ export class ProjetExpeditionComponent implements OnInit {
     const requestedQty = Number(this.lineForm.value.quantity ?? 0);
     const projected = this.usedProjectQuantity + requestedQty;
     if (projected > this.projectTargetQuantity) {
-      this.toast.warning(`Quantite depassee. Maximum restant projet: ${this.remainingProjectQuantity}.`);
+      this.toast.warning('AUTO.QUANTITE_DEPASSEE_MAXIMUM_RESTANT_PROJET', { value0: this.remainingProjectQuantity });
       this.addingLine = false;
       return;
     }
@@ -594,7 +598,7 @@ export class ProjetExpeditionComponent implements OnInit {
             unit: this.project?.unite === 'LITRES' ? 'L' : 'UNIT'
           });
           this.syncExpedition(updated);
-          this.toast.success('Ligne ajoutee');
+          this.toast.success('AUTO.LIGNE_AJOUTEE');
         },
         error: (err) => {
           console.error('Erreur ajout ligne expedition', err);
@@ -610,14 +614,14 @@ export class ProjetExpeditionComponent implements OnInit {
       return;
     }
 
-    if (!confirm('Supprimer cette ligne ?')) {
+    if (!confirm(this.i18n.instant('AUTO.SUPPRIMER_CETTE_LIGNE'))) {
       return;
     }
 
     this.expeditionService.removeLine(this.selectedExpedition.id, lineId).subscribe({
       next: (updated) => {
         this.syncExpedition(updated);
-        this.toast.success('Ligne supprimee');
+        this.toast.success('AUTO.LIGNE_SUPPRIMEE');
       },
       error: (err) => {
         console.error('Erreur suppression ligne', err);
@@ -655,7 +659,7 @@ export class ProjetExpeditionComponent implements OnInit {
           this.showTraceability = true;
           this.loadExpeditionTraceability();
         }
-        this.toast.success(`Action ${action.toUpperCase()} effectuee`);
+        this.toast.success('AUTO.ACTION_EFFECTUEE', { value0: action.toUpperCase() });
       },
       error: (err) => {
         console.error('Erreur action expedition', err);
@@ -673,23 +677,23 @@ export class ProjetExpeditionComponent implements OnInit {
     this.expeditionService.resolve(code).subscribe({
       next: (resolved) => {
         if (!resolved.entityId) {
-          this.toast.warning('Aucune expedition trouvee pour ce code');
+          this.toast.warning('AUTO.AUCUNE_EXPEDITION_TROUVEE_POUR_CE_CODE');
           return;
         }
         this.expeditionService.getById(resolved.entityId).subscribe({
           next: (expedition) => {
             this.syncExpedition(expedition);
-            this.toast.info('Expedition chargee');
+            this.toast.info('AUTO.EXPEDITION_CHARGEE');
           },
           error: (err) => {
             console.error('Erreur chargement expedition resolue', err);
-            this.toast.error('Erreur lors du chargement de l\'expedition trouvee');
+            this.toast.error('AUTO.ERREUR_LORS_DU_CHARGEMENT_DE_L_EXPEDITION_TROUVEE');
           }
         });
       },
       error: (err) => {
         console.error('Erreur resolve expedition', err);
-        this.toast.error('Code introuvable');
+        this.toast.error('AUTO.CODE_INTROUVABLE');
       }
     });
   }
@@ -855,7 +859,7 @@ export class ProjetExpeditionComponent implements OnInit {
 
     if (clamped !== value) {
       control.patchValue({ quantity: clamped }, { emitEvent: false });
-      this.toast.info(`Quantite ajustee au maximum autorise (${max}).`);
+      this.toast.info('AUTO.QUANTITE_AJUSTEE_AU_MAXIMUM_AUTORISE', { value0: max });
     }
   }
 

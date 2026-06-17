@@ -18,13 +18,14 @@ import { catchError, debounceTime, EMPTY, filter, Observable, switchMap, tap } f
 
 import { DashboardStore } from '../../services/dashboard-state.service';
 import { SearchDetails } from 'src/app/shared/models/advanced-search/searchDetails';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'input-text',
   templateUrl: './text-input.component.html',
   styleUrls: ['./text-input.component.scss'],
   standalone: true,
-  imports: [
+  imports: [TranslateModule, 
     CommonModule,
     MatButtonModule,
     MatIconModule,

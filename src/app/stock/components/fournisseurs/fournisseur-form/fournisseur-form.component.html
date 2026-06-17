@@ -24,7 +24,8 @@
 
       <button type="button" class="btn btn-secondary hero-back" (click)="onCancel()">
         <i class="fas fa-arrow-left"></i>
-        Retour
+
+        {{ 'COMMON.BACK' | translate }}
       </button>
     </section>
 
@@ -40,44 +41,45 @@
             </div>
 
             <div>
-              <h3>Informations générales</h3>
-              <p>Identité principale du fournisseur.</p>
+              <h3>{{ 'DELIVERIES.FORM.SECTIONS.GENERAL_INFO' | translate }}</h3>
+              <p>{{ 'AUTO.IDENTITE_PRINCIPALE_DU_FOURNISSEUR' | translate }}</p>
             </div>
           </div>
 
           <div class="form-grid two-cols">
             <div class="form-group">
-              <label for="nom">Nom *</label>
+              <label for="nom">{{ 'AUTO.NOM' | translate }}</label>
               <input
                 type="text"
                 id="nom"
                 class="form-control"
-                placeholder="Nom du fournisseur"
+                [placeholder]="'AUTO.NOM_DU_FOURNISSEUR' | translate"
                 [class.is-invalid]="submitted && f['nom'].errors"
                 formControlName="nom">
 
               <div class="invalid-feedback" *ngIf="submitted && f['nom'].errors">
-                Le nom est requis
+
+                {{ 'GENERIC_TYPE.ERRORS.NAME_REQUIRED' | translate }}
               </div>
             </div>
 
             <div class="form-group">
-              <label for="nomCommercial">Nom commercial</label>
+              <label for="nomCommercial">{{ 'AUTO.NOM_COMMERCIAL' | translate }}</label>
               <input
                 type="text"
                 id="nomCommercial"
                 class="form-control"
-                placeholder="Nom commercial"
+                [placeholder]="'AUTO.NOM_COMMERCIAL' | translate"
                 formControlName="nomCommercial">
             </div>
 
             <div class="form-group">
-              <label for="categorieFournisseur">Catégorie</label>
+              <label for="categorieFournisseur">{{ 'BASE_TYPE.CATEGORY' | translate }}</label>
               <select
                 id="categorieFournisseur"
                 class="form-control"
                 formControlName="categorieFournisseur">
-                <option value="">Sélectionner...</option>
+                <option value="">{{ 'AUTO.SELECTIONNER' | translate }}</option>
                 <option *ngFor="let cat of categories" [value]="cat">
                   {{ cat | titlecase }}
                 </option>
@@ -85,20 +87,21 @@
             </div>
 
             <div class="form-group">
-              <label for="currency">Devise *</label>
+              <label for="currency">{{ 'AUTO.DEVISE' | translate }}</label>
               <select
                 id="currency"
                 class="form-control"
                 [class.is-invalid]="submitted && f['currency'].errors"
                 formControlName="currency">
-                <option value="EUR">Euro (EUR)</option>
-                <option value="USD">Dollar (USD)</option>
-                <option value="GBP">Livre (GBP)</option>
-                <option value="TND">Dinar (TND)</option>
+                <option value="EUR">{{ 'AUTO.EURO_EUR' | translate }}</option>
+                <option value="USD">{{ 'AUTO.DOLLAR_USD' | translate }}</option>
+                <option value="GBP">{{ 'AUTO.LIVRE_GBP' | translate }}</option>
+                <option value="TND">{{ 'AUTO.DINAR_TND' | translate }}</option>
               </select>
 
               <div class="invalid-feedback" *ngIf="submitted && f['currency'].errors">
-                La devise est requise
+
+                {{ 'BANK_ACCOUNTS.ERRORS.CURRENCY_REQUIRED' | translate }}
               </div>
             </div>
           </div>
@@ -114,8 +117,8 @@
               <span class="switch-ui"></span>
 
               <span class="switch-text">
-                <strong>Fournisseur actif</strong>
-                <small>Disponible pour les achats, commandes et opérations courantes.</small>
+                <strong>{{ 'AUTO.FOURNISSEUR_ACTIF' | translate }}</strong>
+                <small>{{ 'AUTO.DISPONIBLE_POUR_LES_ACHATS_COMMANDES_ET_OPERATIONS_COURANTES' | translate }}</small>
               </span>
             </label>
           </div>
@@ -129,29 +132,30 @@
             </div>
 
             <div>
-              <h3>Coordonnées</h3>
-              <p>Email, téléphone, fax et site web.</p>
+              <h3>{{ 'AUTO.COORDONNEES' | translate }}</h3>
+              <p>{{ 'AUTO.EMAIL_TELEPHONE_FAX_ET_SITE_WEB' | translate }}</p>
             </div>
           </div>
 
           <div class="form-grid two-cols">
             <div class="form-group">
-              <label for="email">Email</label>
+              <label for="email">{{ 'ADMIN_COMPANY_PROFILE.EMAIL' | translate }}</label>
               <input
                 type="email"
                 id="email"
                 class="form-control"
-                placeholder="email@domaine.com"
+                [placeholder]="'AUTO.EMAIL_DOMAINE_COM' | translate"
                 [class.is-invalid]="submitted && f['email'].errors"
                 formControlName="email">
 
               <div class="invalid-feedback" *ngIf="submitted && f['email'].errors">
-                Email invalide
+
+                {{ 'AUTO.EMAIL_INVALIDE' | translate }}
               </div>
             </div>
 
             <div class="form-group">
-              <label for="telephone">Téléphone</label>
+              <label for="telephone">{{ 'ADMIN_COMPANY_PROFILE.PHONE' | translate }}</label>
               <input
                 type="tel"
                 id="telephone"
@@ -161,22 +165,22 @@
             </div>
 
             <div class="form-group">
-              <label for="fax">Fax</label>
+              <label for="fax">{{ 'CUSTOMERS.FIELDS.FAX' | translate }}</label>
               <input
                 type="text"
                 id="fax"
                 class="form-control"
-                placeholder="Fax"
+                [placeholder]="'CUSTOMERS.FIELDS.FAX' | translate"
                 formControlName="fax">
             </div>
 
             <div class="form-group">
-              <label for="siteWeb">Site web</label>
+              <label for="siteWeb">{{ 'COMPANY_PROFILE_UI.CONTACT_INFO.WEBSITE' | translate }}</label>
               <input
                 type="url"
                 id="siteWeb"
                 class="form-control"
-                placeholder="https://..."
+                [placeholder]="'AUTO.HTTPS' | translate"
                 formControlName="siteWeb">
             </div>
           </div>
@@ -190,61 +194,61 @@
             </div>
 
             <div>
-              <h3>Adresse</h3>
-              <p>Adresse administrative et informations fiscales.</p>
+              <h3>{{ 'PDF.ADDRESS' | translate }}</h3>
+              <p>{{ 'AUTO.ADRESSE_ADMINISTRATIVE_ET_INFORMATIONS_FISCALES' | translate }}</p>
             </div>
           </div>
 
           <div class="form-grid one-col">
             <div class="form-group">
-              <label for="adresse">Adresse</label>
+              <label for="adresse">{{ 'PDF.ADDRESS' | translate }}</label>
               <textarea
                 id="adresse"
                 class="form-control textarea"
                 rows="3"
-                placeholder="Adresse complète"
+                [placeholder]="'AUTO.ADRESSE_COMPLETE' | translate"
                 formControlName="adresse"></textarea>
             </div>
           </div>
 
           <div class="form-grid two-cols">
             <div class="form-group">
-              <label for="ville">Ville</label>
+              <label for="ville">{{ 'ADMIN_COMPANY_PROFILE.CITY' | translate }}</label>
               <input
                 type="text"
                 id="ville"
                 class="form-control"
-                placeholder="Ville"
+                [placeholder]="'ADMIN_COMPANY_PROFILE.CITY' | translate"
                 formControlName="ville">
             </div>
 
             <div class="form-group">
-              <label for="codePostal">Code postal</label>
+              <label for="codePostal">{{ 'CUSTOMERS.FIELDS.POSTAL_CODE' | translate }}</label>
               <input
                 type="text"
                 id="codePostal"
                 class="form-control"
-                placeholder="Code postal"
+                [placeholder]="'CUSTOMERS.FIELDS.POSTAL_CODE' | translate"
                 formControlName="codePostal">
             </div>
 
             <div class="form-group">
-              <label for="pays">Pays</label>
+              <label for="pays">{{ 'CUSTOMERS.FIELDS.COUNTRY' | translate }}</label>
               <input
                 type="text"
                 id="pays"
                 class="form-control"
-                placeholder="Pays"
+                [placeholder]="'CUSTOMERS.FIELDS.COUNTRY' | translate"
                 formControlName="pays">
             </div>
 
             <div class="form-group">
-              <label for="numeroTva">Numéro TVA</label>
+              <label for="numeroTva">{{ 'PDF.VAT' | translate }}</label>
               <input
                 type="text"
                 id="numeroTva"
                 class="form-control"
-                placeholder="Numéro TVA"
+                [placeholder]="'PDF.VAT' | translate"
                 formControlName="numeroTva">
             </div>
           </div>
@@ -258,49 +262,50 @@
             </div>
 
             <div>
-              <h3>Contact principal</h3>
-              <p>Personne de référence chez le fournisseur.</p>
+              <h3>{{ 'AUTO.CONTACT_PRINCIPAL' | translate }}</h3>
+              <p>{{ 'AUTO.PERSONNE_DE_REFERENCE_CHEZ_LE_FOURNISSEUR' | translate }}</p>
             </div>
           </div>
 
           <div class="form-grid two-cols">
             <div class="form-group">
-              <label for="contactNom">Nom</label>
+              <label for="contactNom">{{ 'ADMIN_USERS.FIELDS.FIRST_NAME' | translate }}</label>
               <input
                 type="text"
                 id="contactNom"
                 class="form-control"
-                placeholder="Nom du contact"
+                [placeholder]="'AUTO.NOM_DU_CONTACT' | translate"
                 formControlName="contactNom">
             </div>
 
             <div class="form-group">
-              <label for="contactPrenom">Prénom</label>
+              <label for="contactPrenom">{{ 'ADMIN_USERS.FIELDS.LAST_NAME' | translate }}</label>
               <input
                 type="text"
                 id="contactPrenom"
                 class="form-control"
-                placeholder="Prénom du contact"
+                [placeholder]="'AUTO.PRENOM_DU_CONTACT' | translate"
                 formControlName="contactPrenom">
             </div>
 
             <div class="form-group">
-              <label for="contactEmail">Email</label>
+              <label for="contactEmail">{{ 'ADMIN_COMPANY_PROFILE.EMAIL' | translate }}</label>
               <input
                 type="email"
                 id="contactEmail"
                 class="form-control"
-                placeholder="contact@domaine.com"
+                [placeholder]="'AUTO.CONTACT_DOMAINE_COM' | translate"
                 [class.is-invalid]="submitted && f['contactEmail'].errors"
                 formControlName="contactEmail">
 
               <div class="invalid-feedback" *ngIf="submitted && f['contactEmail'].errors">
-                Email invalide
+
+                {{ 'AUTO.EMAIL_INVALIDE' | translate }}
               </div>
             </div>
 
             <div class="form-group">
-              <label for="contactTelephone">Téléphone</label>
+              <label for="contactTelephone">{{ 'ADMIN_COMPANY_PROFILE.PHONE' | translate }}</label>
               <input
                 type="tel"
                 id="contactTelephone"
@@ -319,14 +324,14 @@
             </div>
 
             <div>
-              <h3>Informations commerciales</h3>
-              <p>Conditions de paiement et délai moyen.</p>
+              <h3>{{ 'AUTO.INFORMATIONS_COMMERCIALES' | translate }}</h3>
+              <p>{{ 'AUTO.CONDITIONS_DE_PAIEMENT_ET_DELAI_MOYEN' | translate }}</p>
             </div>
           </div>
 
           <div class="form-grid two-cols">
             <div class="form-group">
-              <label for="delaiLivraisonMoyen">Délai livraison moyen (jours)</label>
+              <label for="delaiLivraisonMoyen">{{ 'AUTO.DELAI_LIVRAISON_MOYEN_JOURS' | translate }}</label>
               <input
                 type="number"
                 id="delaiLivraisonMoyen"
@@ -337,12 +342,12 @@
             </div>
 
             <div class="form-group">
-              <label for="conditionsPaiement">Conditions de paiement</label>
+              <label for="conditionsPaiement">{{ 'AUTO.CONDITIONS_DE_PAIEMENT' | translate }}</label>
               <input
                 type="text"
                 id="conditionsPaiement"
                 class="form-control"
-                placeholder="Ex : 30 jours fin de mois"
+                [placeholder]="'AUTO.EX_30_JOURS_FIN_DE_MOIS' | translate"
                 formControlName="conditionsPaiement">
             </div>
           </div>
@@ -352,7 +357,8 @@
         <div class="form-actions">
           <button type="button" class="btn btn-secondary" (click)="onCancel()">
             <i class="fas fa-xmark"></i>
-            Annuler
+
+            {{ 'ADMIN.CANCEL' | translate }}
           </button>
 
           <button type="submit" class="btn btn-primary" [disabled]="submitting">

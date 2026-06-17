@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatError, MatFormField } from '@angular/material/form-field';
@@ -12,11 +13,12 @@ import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, of, tap } from 'rxjs';
 import { AdminUserService } from '../services/admin-user.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-add-osm-admin-user',
   standalone: true,
-  imports: [
+  imports: [TranslateModule, 
     MatButton,
     MatError,
     MatFormField,
@@ -32,6 +34,7 @@ import { AdminUserService } from '../services/admin-user.service';
   styleUrls: ['./add-osm-admin-user.component.scss']
 })
 export class AddOsmAdminUserComponent implements OnInit {
+  private readonly i18n = inject(TranslateService);
   readonly destroyRef = inject(DestroyRef);
   userForm!: FormGroup;
   private readonly fb = inject(FormBuilder);
@@ -75,9 +78,9 @@ export class AddOsmAdminUserComponent implements OnInit {
         }),
         catchError((err: { status?: number; error?: string }) => {
           if ([504, 503].includes(err?.status ?? 0)) {
-            this.errorMessage = 'Service unavailable please try again later';
+            this.errorMessage = this.i18n.instant('LOGIN.SERVICE_UNAVAILABLE');
           } else {
-            this.errorMessage = err?.error ?? 'An error occurred';
+            this.errorMessage = err?.error ?? this.i18n.instant('OSM_DASHBOARD.ACTIONS.ERROR');
           }
           this.loading = false;
           return of(null);

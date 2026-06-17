@@ -245,6 +245,7 @@ export const OliveQCDASHBOARD_olive: DashboardConfig = {
       name: 'qualityControlResults',
       flattedListName: 'qualityControlResults',
       label: 'qualityControlResults ',
+      labelTranslatePath: 'AUTO.QUALITYCONTROLRESULTS',
       exportLabel: 'Quality results',
       attributeType: AttributeType.object,
       fieldType: FieldType.list,

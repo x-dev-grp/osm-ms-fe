@@ -1,10 +1,10 @@
 <app-card [showHeader]="false">
   <div class="flex align-item-center justify-content-between">
-    <div class="f-16 f-w-600">Visitors</div>
+    <div class="f-16 f-w-600">{{ 'AUTO.VISITORS' | translate }}</div>
     <select class="form-select-sm">
-      <option>Today</option>
-      <option>Weekly</option>
-      <option selected>Monthly</option>
+      <option>{{ 'DASHBOARD.DATE_FILTER.TODAY' | translate }}</option>
+      <option>{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.WEEKLY' | translate }}</option>
+      <option selected>{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.MONTHLY' | translate }}</option>
     </select>
   </div>
   <div class="m-t-15" id="chart">
@@ -28,6 +28,6 @@
     </div>
   </div>
   <div class="grid">
-    <button class="b-rad-20" mat-stroked-button>View more</button>
+    <button class="b-rad-20" mat-stroked-button>{{ 'AUTO.VIEW_MORE' | translate }}</button>
   </div>
 </app-card>

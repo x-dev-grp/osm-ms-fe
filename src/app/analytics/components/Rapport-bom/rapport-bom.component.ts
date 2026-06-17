@@ -1,8 +1,11 @@
+import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
 import { AnalyticsService } from '../../services/analytics.service';
 import { ArticleService } from '../../../stock/services/article.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 type BomGapRow = {
   materialName: string;
@@ -15,11 +18,12 @@ type BomGapRow = {
 @Component({
   selector: 'app-bom-gap-report',
   standalone: true,
-  imports: [CommonModule, NgApexchartsModule],
+  imports: [TranslateModule, CommonModule, NgApexchartsModule],
   templateUrl: './rapport-bom.component.html',
   styleUrls: ['./rapport-bom.component.scss']
 })
 export class RapportBomComponent implements OnInit {
+  private readonly i18n = inject(TranslateService);
   data: BomGapRow[] = [];
   loading = false;
   errorMessage = '';
@@ -65,7 +69,7 @@ export class RapportBomComponent implements OnInit {
         this.data = [];
         this.distributionChartOptions = null;
         this.topGapsChartOptions = null;
-        this.errorMessage = err?.error?.message || err?.message || 'Impossible de charger le rapport BOM.';
+        this.errorMessage = err?.error?.message || err?.message || this.i18n.instant('AUTO.IMPOSSIBLE_DE_CHARGER_LE_RAPPORT_BOM');
         this.loading = false;
       }
     });
@@ -86,7 +90,7 @@ export class RapportBomComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error exporting BOM gap PDF', err);
-        this.errorMessage = err?.error?.message || err?.message || 'Impossible d exporter le PDF.';
+        this.errorMessage = err?.error?.message || err?.message || this.i18n.instant('AUTO.IMPOSSIBLE_D_EXPORTER_LE_PDF');
         this.loading = false;
       }
     });

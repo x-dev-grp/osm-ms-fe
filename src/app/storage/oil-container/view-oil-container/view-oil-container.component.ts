@@ -55,7 +55,7 @@ export class ViewOilContainerComponent implements OnInit {
       },
       error: (err) => {
         console.error('Failed to load oil container', err);
-        this.toast.error('Failed to load oil container');
+        this.toast.error('AUTO.FAILED_TO_LOAD_OIL_CONTAINER');
         this.fail('Failed to load oil container');
         this.loading = false;
         this.cdr.markForCheck();

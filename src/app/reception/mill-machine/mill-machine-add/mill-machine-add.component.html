@@ -10,86 +10,95 @@
       <div class="form-grid">
         <!-- Nom -->
         <mat-form-field appearance="outline">
-          <mat-label>Nom</mat-label>
+          <mat-label>{{ 'ADMIN_USERS.FIELDS.FIRST_NAME' | translate }}</mat-label>
           <input matInput formControlName="name" required />
           <mat-error *ngIf="form.get('name')?.hasError('required')">
-            Le nom est requis
+
+            {{ 'GENERIC_TYPE.ERRORS.NAME_REQUIRED' | translate }}
           </mat-error>
           <mat-error *ngIf="form.get('name')?.hasError('minlength')">
-            Le nom doit contenir au moins 2 caractères
+
+            {{ 'SUPPLIER.ERRORS.NAME_MIN' | translate }}
           </mat-error>
         </mat-form-field>
 
         <!-- Type de machine -->
         <mat-form-field appearance="outline">
-          <mat-label>Type de machine</mat-label>
+          <mat-label>{{ 'MILL_MACHINE.FIELDS.MACHINE_TYPE' | translate }}</mat-label>
           <input matInput formControlName="machineType" required />
           <mat-error *ngIf="form.get('machineType')?.hasError('required')">
-            Le type est requis
+
+            {{ 'AUTO.LE_TYPE_EST_REQUIS' | translate }}
           </mat-error>
           <mat-error *ngIf="form.get('machineType')?.hasError('minlength')">
-            Le type doit contenir au moins 2 caractères
+
+            {{ 'AUTO.LE_TYPE_DOIT_CONTENIR_AU_MOINS_2_CARACTERES' | translate }}
           </mat-error>
         </mat-form-field>
 
         <!-- Fabricant -->
         <mat-form-field appearance="outline">
-          <mat-label>Fabricant</mat-label>
+          <mat-label>{{ 'MILL_MACHINE.FIELDS.MANUFACTURER' | translate }}</mat-label>
           <input matInput formControlName="manufacturer" />
         </mat-form-field>
 
         <!-- Modèle -->
         <mat-form-field appearance="outline">
-          <mat-label>Modèle</mat-label>
+          <mat-label>{{ 'MILL_MACHINE.FIELDS.MODEL' | translate }}</mat-label>
           <input matInput formControlName="model" />
         </mat-form-field>
 
         <!-- Numéro de série -->
         <mat-form-field appearance="outline">
-          <mat-label>Numéro de série</mat-label>
+          <mat-label>{{ 'AUTO.NUMERO_DE_SERIE' | translate }}</mat-label>
           <input matInput formControlName="serialNumber" />
         </mat-form-field>
 
         <!-- Capacité -->
         <mat-form-field appearance="outline">
-          <mat-label>Capacité</mat-label>
+          <mat-label>{{ 'MILL_MACHINE.FIELDS.CAPACITY' | translate }}</mat-label>
           <input matInput type="number" formControlName="capacity" required />
           <mat-error *ngIf="form.get('capacity')?.hasError('required')">
-            La capacité est requise
+
+            {{ 'MILL_MACHINE.ERRORS.CAPACITY_REQUIRED' | translate }}
           </mat-error>
           <mat-error *ngIf="form.get('capacity')?.hasError('min')">
-            La capacité doit être supérieure à 0
+
+            {{ 'MILL_MACHINE.ERRORS.CAPACITY_MIN' | translate }}
           </mat-error>
         </mat-form-field>
 
         <!-- Statut -->
         <mat-form-field appearance="outline">
-          <mat-label>Statut</mat-label>
+          <mat-label>{{ 'ADMIN_DASHBOARD.TABLE.STATUS' | translate }}</mat-label>
           <mat-select formControlName="operatingStatus" required>
-            <mat-option value="ACTIVE">Actif</mat-option>
-            <mat-option value="INACTIVE">Inactif</mat-option>
-            <mat-option value="MAINTENANCE">En maintenance</mat-option>
+            <mat-option value="ACTIVE">{{ 'ADMIN_DASHBOARD.STATUS.ACTIVE' | translate }}</mat-option>
+            <mat-option value="INACTIVE">{{ 'ADMIN_DASHBOARD.STATUS.INACTIVE' | translate }}</mat-option>
+            <mat-option value="MAINTENANCE">{{ 'AUTO.EN_MAINTENANCE' | translate }}</mat-option>
           </mat-select>
           <mat-error *ngIf="form.get('operatingStatus')?.hasError('required')">
-            Le statut est requis
+
+            {{ 'EXPENSES.ERRORS.STATUS_REQUIRED' | translate }}
           </mat-error>
         </mat-form-field>
 
         <!-- Heures de fonctionnement -->
         <mat-form-field appearance="outline">
-          <mat-label>Heures de fonctionnement</mat-label>
+          <mat-label>{{ 'AUTO.HEURES_DE_FONCTIONNEMENT' | translate }}</mat-label>
           <input matInput type="number" formControlName="hoursOperated" required />
           <mat-error *ngIf="form.get('hoursOperated')?.hasError('required')">
-            Ce champ est requis
+
+            {{ 'COMMON.VALIDATION.REQUIRED' | translate }}
           </mat-error>
           <mat-error *ngIf="form.get('hoursOperated')?.hasError('min')">
-            Ne peut pas être négatif
+
+            {{ 'AUTO.NE_PEUT_PAS_ETRE_NEGATIF' | translate }}
           </mat-error>
         </mat-form-field>
 
         <!-- Dernière maintenance -->
         <mat-form-field appearance="outline">
-          <mat-label>Date de dernière maintenance</mat-label>
+          <mat-label>{{ 'AUTO.DATE_DE_DERNIERE_MAINTENANCE' | translate }}</mat-label>
           <input
             matInput
             [matDatepicker]="pickerLast"
@@ -101,7 +110,7 @@
 
         <!-- Prochaine maintenance -->
         <mat-form-field appearance="outline">
-          <mat-label>Date de prochaine maintenance</mat-label>
+          <mat-label>{{ 'AUTO.DATE_DE_PROCHAINE_MAINTENANCE' | translate }}</mat-label>
           <input
             matInput
             [matDatepicker]="pickerNext"
@@ -113,7 +122,7 @@
 
         <!-- Description -->
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Description</mat-label>
+          <mat-label>{{ 'BASE_TYPE.FIELDS.DESCRIPTION' | translate }}</mat-label>
           <textarea matInput formControlName="description" rows="3"></textarea>
         </mat-form-field>
       </div>
@@ -130,7 +139,8 @@
           (click)="cancel()"
           [disabled]="loading"
         >
-          Annuler
+
+          {{ 'ADMIN.CANCEL' | translate }}
         </button>
       </div>
     </form>

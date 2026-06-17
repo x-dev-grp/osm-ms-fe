@@ -7,59 +7,59 @@
 
     <div class="details-grid">
       <div class="detail-item">
-        <span class="label">Nom:</span>
+        <span class="label">{{ 'AUTO.NOM' | translate }}</span>
         <span class="value">{{ machine.name }}</span>
       </div>
 
       <div class="detail-item">
-        <span class="label">Type:</span>
+        <span class="label">{{ 'PLANNING_TYPE' | translate }}</span>
         <span class="value">{{ machine.machineType }}</span>
       </div>
 
       <div class="detail-item">
-        <span class="label">Fabricant:</span>
+        <span class="label">{{ 'AUTO.FABRICANT' | translate }}</span>
         <span class="value">{{ machine.manufacturer }}</span>
       </div>
 
       <div class="detail-item">
-        <span class="label">Modèle:</span>
+        <span class="label">{{ 'AUTO.MODELE' | translate }}</span>
         <span class="value">{{ machine.model }}</span>
       </div>
 
       <div class="detail-item">
-        <span class="label">Numéro de série:</span>
+        <span class="label">{{ 'AUTO.NUMERO_DE_SERIE' | translate }}</span>
         <span class="value">{{ machine.serialNumber }}</span>
       </div>
 
       <div class="detail-item">
-        <span class="label">Capacité:</span>
+        <span class="label">{{ 'AUTO.CAPACITE' | translate }}</span>
         <span class="value">{{ machine.capacity }}</span>
       </div>
 
       <div class="detail-item">
-        <span class="label">Statut:</span>
+        <span class="label">{{ 'AUTO.STATUT' | translate }}</span>
         <span class="value" [ngClass]="'status-' + machine.operatingStatus?.toLowerCase()">
           {{ machine.operatingStatus }}
         </span>
       </div>
 
       <div class="detail-item">
-        <span class="label">Heures d'opération:</span>
+        <span class="label">{{ 'AUTO.HEURES_D_OPERATION' | translate }}</span>
         <span class="value">{{ machine.hoursOperated }}</span>
       </div>
 
       <div class="detail-item">
-        <span class="label">Dernière maintenance:</span>
+        <span class="label">{{ 'AUTO.DERNIERE_MAINTENANCE' | translate }}</span>
         <span class="value">{{ machine.lastMaintenanceDate | date:'shortDate' }}</span>
       </div>
 
       <div class="detail-item">
-        <span class="label">Prochaine maintenance:</span>
+        <span class="label">{{ 'AUTO.PROCHAINE_MAINTENANCE' | translate }}</span>
         <span class="value">{{ machine.nextMaintenanceDate | date:'shortDate' }}</span>
       </div>
 
       <div class="detail-item full-width">
-        <span class="label">Description:</span>
+        <span class="label">{{ 'AUTO.DESCRIPTION' | translate }}</span>
         <span class="value">{{ machine.description }}</span>
       </div>
     </div>

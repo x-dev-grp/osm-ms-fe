@@ -8,6 +8,7 @@ import { TransactionsChartComponent } from './transactions-chart/transactions-ch
 import { CashFlowChartComponent } from './cash-flow-chart/cash-flow-chart.component';
 import { CategoryChartComponent } from './category-chart/category-chart.component';
 import { transactionsHistoryList } from 'src/app/fake-data/transactions_history_list';
+import { TranslateModule } from '@ngx-translate/core';
 
 export interface history_data {
   image: string;
@@ -23,7 +24,7 @@ const history_data = transactionsHistoryList;
 
 @Component({
   selector: 'app-finance',
-  imports: [SharedModule, CommonModule, TransactionsChartComponent, CashFlowChartComponent, CategoryChartComponent],
+  imports: [TranslateModule, SharedModule, CommonModule, TransactionsChartComponent, CashFlowChartComponent, CategoryChartComponent],
   templateUrl: './finance.component.html',
   styleUrl: './finance.component.scss'
 })

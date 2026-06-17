@@ -16,11 +16,12 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import {MatTooltip} from "@angular/material/tooltip";
 import {EmployeeService} from "../../../services/employee-service";
 import {PointageService} from "../../../services/pointage-service";
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-pointage',
   standalone: true,
-  imports: [
+  imports: [TranslateModule, 
     CommonModule,
     MatFormFieldModule,
     MatInputModule,

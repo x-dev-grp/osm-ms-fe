@@ -4,17 +4,20 @@
       <div>
         <h1 class="page-title">
           <i class="fas fa-plus-circle"></i>
-          Nouveau bon de commande
+
+          {{ 'AUTO.NOUVEAU_BON_DE_COMMANDE' | translate }}
         </h1>
         <p class="text-muted mb-0">
           <i class="fas fa-info-circle me-1"></i>
-          Créez un nouveau bon de commande
+
+          {{ 'AUTO.CREEZ_UN_NOUVEAU_BON_DE_COMMANDE' | translate }}
         </p>
       </div>
       <div class="action-buttons">
         <button type="button" class="btn-cancel" (click)="onCancel()">
           <i class="fas fa-times me-1"></i>
-          Annuler
+
+          {{ 'ADMIN.CANCEL' | translate }}
         </button>
         <button type="submit" form="bcForm" class="btn-save" [disabled]="submitting">
           <i class="fas" [ngClass]="submitting ? 'fa-spinner fa-spin' : 'fa-save'"></i>
@@ -38,7 +41,7 @@
   @if (loading) {
     <div class="loading-state">
       <div class="spinner"></div>
-      <p>Chargement du bon de commande...</p>
+      <p>{{ 'AUTO.CHARGEMENT_DU_BON_DE_COMMANDE' | translate }}</p>
     </div>
   }
   @if (!loading) {
@@ -47,13 +50,14 @@
         <div class="form-section">
           <div class="section-header">
             <i class="fas fa-info-circle"></i>
-            <h3>Informations générales</h3>
+            <h3>{{ 'DELIVERIES.FORM.SECTIONS.GENERAL_INFO' | translate }}</h3>
           </div>
           <div class="section-body">
             <div class="form-group">
               <label class="required">
                 <i class="fas fa-calendar-check me-1"></i>
-                Date réception prévue
+
+                {{ 'AUTO.DATE_RECEPTION_PREVUE' | translate }}
               </label>
               <input type="date"
                      class="form-control"
@@ -62,10 +66,12 @@
               @if (dateReceptionTouched && dateReceptionErrors) {
                 <div class="error-message">
                   @if (dateReceptionErrors['required']) {
-                    La date de réception est obligatoire
+
+                    {{ 'AUTO.LA_DATE_DE_RECEPTION_EST_OBLIGATOIRE' | translate }}
                   }
                   @if (dateReceptionErrors['futureDate']) {
-                    La date de réception doit être postérieure à aujourd'hui
+
+                    {{ 'AUTO.LA_DATE_DE_RECEPTION_DOIT_ETRE_POSTERIEURE_A_AUJOURD_HUI' | translate }}
                   }
                 </div>
               }
@@ -75,10 +81,11 @@
         <div class="form-section">
           <div class="section-header">
             <i class="fas fa-boxes"></i>
-            <h3>Articles commandés</h3>
+            <h3>{{ 'AUTO.ARTICLES_COMMANDES' | translate }}</h3>
             <button type="button" class="btn-add" (click)="ajouterLigne()">
               <i class="fas fa-plus"></i>
-              Ajouter un article
+
+              {{ 'AUTO.AJOUTER_UN_ARTICLE' | translate }}
             </button>
           </div>
 
@@ -97,12 +104,12 @@
 
                   <div class="ligne-body">
                     <div class="form-group article-select">
-                      <label class="required">Article</label>
+                      <label class="required">{{ 'OSM_DASHBOARD.ACTIONS.ARTICLESEC' | translate }}</label>
                       <div class="article-search-wrapper">
                         <i class="fas fa-search search-icon"></i>
                         <input type="text"
                                class="form-control search-input"
-                               placeholder="Rechercher un article..."
+                               [placeholder]="'AUTO.RECHERCHER_UN_ARTICLE' | translate"
                                [value]="ligne.get('articleNom')?.value"
                                (input)="onArticleSearch($event, i)"
                                (focus)="showArticleDropdown = true">
@@ -120,7 +127,7 @@
                       </div>
 
                       @if (ligne.get('articleId')?.touched && !ligne.get('articleId')?.valid) {
-                        <div class="error-message">L'article est obligatoire</div>
+                        <div class="error-message">{{ 'AUTO.L_ARTICLE_EST_OBLIGATOIRE' | translate }}</div>
                       }
                       @if (ligne.get('articleSku')?.value) {
                         <div class="article-info">
@@ -133,7 +140,7 @@
                     <div class="row">
                       <div class="col-md-4">
                         <div class="form-group">
-                          <label class="required">Quantité</label>
+                          <label class="required">{{ 'OIL_CREDIT.FIELDS.QUANTITY' | translate }}</label>
                           <input type="number"
                                  class="form-control"
                                  formControlName="quantiteCommandee"
@@ -142,10 +149,10 @@
                           @if (ligne.get('quantiteCommandee')?.touched && ligne.get('quantiteCommandee')?.errors) {
                             <div class="error-message">
                               @if (ligne.get('quantiteCommandee')?.errors?.['required']) {
-                                <span>Quantité requise</span>
+                                <span>{{ 'AUTO.QUANTITE_REQUISE' | translate }}</span>
                               }
                               @if (ligne.get('quantiteCommandee')?.errors?.['min']) {
-                                <span>Minimum 1</span>
+                                <span>{{ 'AUTO.MINIMUM_1' | translate }}</span>
                               }
                             </div>
                           }
@@ -153,7 +160,7 @@
                       </div>
                       <div class="col-md-4">
                         <div class="form-group">
-                          <label>Prix unitaire</label>
+                          <label>{{ 'OIL_SALES.FIELDS.UNIT_PRICE' | translate }}</label>
                           <input type="number"
                                  class="form-control"
                                  formControlName="prixUnitaire"
@@ -163,7 +170,7 @@
                       </div>
                       <div class="col-md-4">
                         <div class="form-group">
-                          <label>Total</label>
+                          <label>{{ 'SUPPLIER.DETAILS.TOTAL' | translate }}</label>
                           <div class="total-field">
                             @if (ligne.get('prixUnitaire')?.value && ligne.get('quantiteCommandee')?.value) {
                               <span class="total-amount">
@@ -183,15 +190,15 @@
             @if (lignes.length > 0) {
               <div class="recap-section">
                 <div class="recap-item">
-                  <span>Nombre d'articles:</span>
+                  <span>{{ 'AUTO.NOMBRE_D_ARTICLES' | translate }}</span>
                   <strong>{{ getNombreArticles() }}</strong>
                 </div>
                 <div class="recap-item">
-                  <span>Quantité totale:</span>
+                  <span>{{ 'AUTO.QUANTITE_TOTALE' | translate }}</span>
                   <strong>{{ getQuantiteTotale() }} unités</strong>
                 </div>
                 <div class="recap-item total">
-                  <span>Total TTC:</span>
+                  <span>{{ 'AUTO.TOTAL_TTC' | translate }}</span>
                   <strong>{{ getTotalPrix() | number:'1.2-2' }} </strong>
                 </div>
               </div>

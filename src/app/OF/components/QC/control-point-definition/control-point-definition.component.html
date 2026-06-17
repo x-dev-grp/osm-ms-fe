@@ -1,34 +1,34 @@
 <div *ngIf="showCreatePlanModal" class="modal-overlay">
   <div class="modal-content">
     <div class="modal-header">
-      <h3>Créer un plan qualité</h3>
+      <h3>{{ 'AUTO.CREER_UN_PLAN_QUALITE' | translate }}</h3>
       <button class="close-button" (click)="cancelCreatePlan()">&times;</button>
     </div>
     <div class="modal-body">
       <input
         type="text"
         [(ngModel)]="newPlanTitle"
-        placeholder="Titre du plan"
+        [placeholder]="'AUTO.TITRE_DU_PLAN' | translate"
         class="plan-title-input"
         autofocus
       />
     </div>
     <div class="modal-footer">
-      <button class="btn-secondary" (click)="cancelCreatePlan()">Annuler</button>
-      <button class="btn-primary" (click)="createPlanWithTitle()">Créer</button>
+      <button class="btn-secondary" (click)="cancelCreatePlan()">{{ 'ADMIN.CANCEL' | translate }}</button>
+      <button class="btn-primary" (click)="createPlanWithTitle()">{{ 'Create' | translate }}</button>
     </div>
   </div>
 </div>
 
 <div class="control-point-definition">
   <div class="page-header">
-    <h2>Définition des points de contrôle</h2>
-    <p>Sélectionnez un OF pour définir les critères qualité</p>
+    <h2>{{ 'AUTO.DEFINITION_DES_POINTS_DE_CONTROLE' | translate }}</h2>
+    <p>{{ 'AUTO.SELECTIONNEZ_UN_OF_POUR_DEFINIR_LES_CRITERES_QUALITE' | translate }}</p>
   </div>
 
   <div class="of-selector">
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>OF</mat-label>
+      <mat-label>{{ 'PDF.OF' | translate }}</mat-label>
       <mat-select [(ngModel)]="selectedOfId" (selectionChange)="onOfSelected()">
         <mat-option *ngFor="let of of ofs" [value]="of.id">
           {{ of.code }} - {{ of.productName || of.skuCode || of.productId || of.skuId }}
@@ -39,61 +39,62 @@
 
   <div *ngIf="selectedOfId" class="plan-section">
     <div class="plan-header">
-      <h3>Plan de contrôle</h3>
+      <h3>{{ 'AUTO.PLAN_DE_CONTROLE' | translate }}</h3>
       <div class="plan-actions">
         <!-- Nouveau bouton pour voir le détail de l'OF -->
         <button mat-raised-button color="basic" (click)="goToOFDetail()" *ngIf="selectedOfId">
-          <mat-icon>visibility</mat-icon> Détails OF
+          <mat-icon>visibility</mat-icon>  {{ 'AUTO.DETAILS_OF' | translate }}
         </button>
         <button mat-raised-button color="primary" (click)="openCreatePlanModal()" *ngIf="!plan">
-          Créer un plan
+
+          {{ 'AUTO.CREER_UN_PLAN' | translate }}
         </button>
         <button mat-raised-button color="accent" (click)="goToQualityEntry()"
                 *ngIf="selectedOfId && plan?.actif" [disabled]="!points.length">
-          <mat-icon>assignment</mat-icon> Saisir contrôle
+          <mat-icon>assignment</mat-icon>  {{ 'AUTO.SAISIR_CONTROLE' | translate }}
         </button>
-        <button mat-raised-button color="warn" *ngIf="plan && !plan.actif" disabled>Plan désactivé</button>
+        <button mat-raised-button color="warn" *ngIf="plan && !plan.actif" disabled>{{ 'AUTO.PLAN_DESACTIVE' | translate }}</button>
       </div>
     </div>
 
     <div *ngIf="plan" class="plan-details">
-      <p><strong>Titre :</strong> {{ plan.titre }}</p>
-      <p><strong>Statut :</strong> {{ plan.actif ? 'Actif' : 'Inactif' }}</p>
+      <p><strong>{{ 'AUTO.TITRE' | translate }}</strong> {{ plan.titre }}</p>
+      <p><strong>{{ 'AUTO.STATUT' | translate }}</strong> {{ plan.actif ? 'Actif' : 'Inactif' }}</p>
 
       <div class="points-section">
-        <h4>Points de contrôle</h4>
+        <h4>{{ 'AUTO.POINTS_DE_CONTROLE' | translate }}</h4>
         <button mat-stroked-button color="primary" (click)="addPoint()" *ngIf="plan.actif">
-          <mat-icon>add</mat-icon> Ajouter un point
+          <mat-icon>add</mat-icon>  {{ 'AUTO.AJOUTER_UN_POINT' | translate }}
         </button>
 
         <table mat-table [dataSource]="points" class="mat-elevation-z1">
           <ng-container matColumnDef="nom">
-            <th mat-header-cell *matHeaderCellDef> Nom </th>
+            <th mat-header-cell *matHeaderCellDef>  {{ 'ADMIN_USERS.FIELDS.FIRST_NAME' | translate }} </th>
             <td mat-cell *matCellDef="let point"> {{point.nom}}  </td>
           </ng-container>
 
           <ng-container matColumnDef="type">
-            <th mat-header-cell *matHeaderCellDef> Type </th>
+            <th mat-header-cell *matHeaderCellDef>  {{ 'CONFIGURATION.RECEPTION.TABLE.TYPE' | translate }} </th>
             <td mat-cell *matCellDef="let point"> {{point.type}}  </td>
           </ng-container>
 
           <ng-container matColumnDef="min">
-            <th mat-header-cell *matHeaderCellDef> Min </th>
+            <th mat-header-cell *matHeaderCellDef>  {{ 'AUTO.MIN' | translate }} </th>
             <td mat-cell *matCellDef="let point"> {{point.minValue}}  </td>
           </ng-container>
 
           <ng-container matColumnDef="max">
-            <th mat-header-cell *matHeaderCellDef> Max </th>
+            <th mat-header-cell *matHeaderCellDef>  {{ 'AUTO.MAX' | translate }} </th>
             <td mat-cell *matCellDef="let point"> {{point.maxValue}}  </td>
           </ng-container>
 
           <ng-container matColumnDef="blocking">
-            <th mat-header-cell *matHeaderCellDef> Bloquant </th>
+            <th mat-header-cell *matHeaderCellDef>  {{ 'AUTO.BLOQUANT' | translate }} </th>
             <td mat-cell *matCellDef="let point"> {{point.blocking ? 'Oui' : 'Non'}}  </td>
           </ng-container>
 
           <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef> Actions </th>
+            <th mat-header-cell *matHeaderCellDef>  {{ 'CONFIGURATION.RECEPTION.TABLE.ACTIONS' | translate }} </th>
             <td mat-cell *matCellDef="let point; let i=index">
               <button mat-icon-button color="warn" (click)="removePoint(i)">
                 <mat-icon>delete</mat-icon>
@@ -110,16 +111,16 @@
 </div>
 
 <ng-template #pointDialog>
-  <h2 mat-dialog-title>Ajouter un point de contrôle</h2>
+  <h2 mat-dialog-title>{{ 'AUTO.AJOUTER_UN_POINT_DE_CONTROLE' | translate }}</h2>
   <mat-dialog-content>
     <form [formGroup]="pointForm">
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Nom</mat-label>
+        <mat-label>{{ 'ADMIN_USERS.FIELDS.FIRST_NAME' | translate }}</mat-label>
         <input matInput formControlName="nom" required>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Type</mat-label>
+        <mat-label>{{ 'CONFIGURATION.RECEPTION.TABLE.TYPE' | translate }}</mat-label>
         <mat-select formControlName="type" required>
           <mat-option *ngFor="let type of controlTypes" [value]="type">
             {{ type }}
@@ -129,21 +130,21 @@
 
       <div *ngIf="pointForm.get('type')?.value === numericType">
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Valeur minimale</mat-label>
+          <mat-label>{{ 'AUTO.VALEUR_MINIMALE' | translate }}</mat-label>
           <input matInput type="number" formControlName="minValue">
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Valeur maximale</mat-label>
+          <mat-label>{{ 'AUTO.VALEUR_MAXIMALE' | translate }}</mat-label>
           <input matInput type="number" formControlName="maxValue">
         </mat-form-field>
       </div>
 
-      <mat-checkbox formControlName="blocking">Point bloquant (NOK empêche la clôture)</mat-checkbox>
+      <mat-checkbox formControlName="blocking">{{ 'AUTO.POINT_BLOQUANT_NOK_EMPECHE_LA_CLOTURE' | translate }}</mat-checkbox>
     </form>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close>Annuler</button>
-    <button mat-raised-button color="primary" [disabled]="pointForm.invalid" (click)="savePoint()">Enregistrer</button>
+    <button mat-button mat-dialog-close>{{ 'ADMIN.CANCEL' | translate }}</button>
+    <button mat-raised-button color="primary" [disabled]="pointForm.invalid" (click)="savePoint()">{{ 'BANK_ACCOUNTS.ACTIONS.SAVE' | translate }}</button>
   </mat-dialog-actions>
 </ng-template>

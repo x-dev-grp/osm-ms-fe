@@ -1,8 +1,10 @@
+import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
-import { SKUService } from '../../../services/sku.service';
+import { FinalProductService } from '../../../services/final-product.service';
 import { LabelService } from '../../../../labels/services/label.service';
 import { LabelContentDto } from '../../../../labels/models/label.model';
 import { ToastService } from '../../../../shared/services/toast.service';
@@ -11,24 +13,26 @@ import {
   ConfirmationType
 } from '../../../../shared/services/confirmation-dialog.service';
 import {
-  ProductType,
-  SKU,
-  productCartonsPerPallet,
-  productDisplayName,
-  productTypeLabel,
-  productUnitsPerCarton
-} from '../../../models/sku.model';
+  FinalProduct,
+  FinalProductType,
+  finalProductCartonsPerPallet,
+  finalProductDisplayName,
+  finalProductTypeLabel,
+  finalProductUnitsPerCarton
+} from '../../../models/final-product.model';
 import { resolveQualityGradeLabel } from '../../../../shared/models/quality-grades.enum';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-sku-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [TranslateModule, CommonModule, RouterLink],
   templateUrl: './sku-detail.component.html',
   styleUrls: ['./sku-detail.component.scss']
 })
 export class SkuDetailComponent implements OnInit {
-  sku: SKU | null = null;
+  private readonly i18n = inject(TranslateService);
+  sku: FinalProduct | null = null;
   relatedLabels: LabelContentDto[] = [];
   loading = true;
   labelsLoading = false;
@@ -38,7 +42,7 @@ export class SkuDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private skuService: SKUService,
+    private finalProductService: FinalProductService,
     private labelService: LabelService,
     private toast: ToastService,
     private confirmationDialog: ConfirmationDialogService
@@ -49,7 +53,7 @@ export class SkuDetailComponent implements OnInit {
     if (id) {
       this.loadSku(id);
     } else {
-      this.toast.error('ID du produit manquant');
+      this.toast.error('AUTO.ID_DU_PRODUIT_MANQUANT');
       this.loading = false;
       this.router.navigate(['/stock/products']);
     }
@@ -60,7 +64,7 @@ export class SkuDetailComponent implements OnInit {
     this.labelsLoading = true;
 
     forkJoin({
-      sku: this.skuService.getProductById(id),
+      sku: this.finalProductService.getFinalProductById(id),
       labels: this.labelService.getByProductId(id)
     }).subscribe({
       next: ({ sku, labels }) => {
@@ -73,7 +77,7 @@ export class SkuDetailComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erreur chargement produit', err);
-        this.toast.error('Impossible de charger le produit');
+        this.toast.error('AUTO.IMPOSSIBLE_DE_CHARGER_LE_PRODUIT');
         this.loading = false;
         this.labelsLoading = false;
         this.router.navigate(['/stock/products']);
@@ -87,11 +91,11 @@ export class SkuDetailComponent implements OnInit {
     const action = isCurrentlyActif ? 'desactiver' : 'activer';
 
     this.confirmationDialog.confirm({
-      title: 'Confirmation',
+      title: this.i18n.instant('STANDARD.CONFIRMATION.SIMPLE.TITLE'),
       message: `Voulez-vous vraiment ${action} le produit "${this.getProductName()}" ?`,
       type: ConfirmationType.WARNING,
-      confirmText: isCurrentlyActif ? 'Desactiver' : 'Activer',
-      cancelText: 'Annuler',
+      confirmText: isCurrentlyActif ? this.i18n.instant('AUTO.DESACTIVER') : this.i18n.instant('AUTO.ACTIVER'),
+      cancelText: this.i18n.instant('ADMIN.CANCEL'),
       showIcon: true,
       destructive: isCurrentlyActif
     }).subscribe((result) => {
@@ -100,15 +104,15 @@ export class SkuDetailComponent implements OnInit {
       }
 
       const request = this.sku.actif
-        ? this.skuService.desactiverSku(this.sku.id)
-        : this.skuService.activerSku(this.sku.id);
+        ? this.finalProductService.deactivateFinalProduct(this.sku.id)
+        : this.finalProductService.activateFinalProduct(this.sku.id);
 
       request.subscribe({
         next: () => {
           if (this.sku) {
             this.sku.actif = !this.sku.actif;
           }
-          this.toast.success(`Produit ${action} avec succes`);
+          this.toast.success('AUTO.PRODUIT_AVEC_SUCCES', { value0: action });
         },
         error: (err) => {
           console.error(`Erreur lors de ${action}`, err);
@@ -134,9 +138,9 @@ export class SkuDetailComponent implements OnInit {
         }
 
         this.deleting = true;
-        this.skuService.deleteSku(this.sku.id).subscribe({
+        this.finalProductService.deleteFinalProduct(this.sku.id).subscribe({
           next: () => {
-            this.toast.success('Produit supprime avec succes');
+            this.toast.success('AUTO.PRODUIT_SUPPRIME_AVEC_SUCCES');
             this.router.navigate(['/stock/products']);
           },
           error: (err) => {
@@ -148,11 +152,15 @@ export class SkuDetailComponent implements OnInit {
   }
 
   getProductName(): string {
-    return productDisplayName(this.sku);
+    return finalProductDisplayName(this.sku);
   }
 
-  formatProductType(type?: ProductType): string {
-    return productTypeLabel(type);
+  formatFinalProductType(type?: FinalProductType): string {
+    return finalProductTypeLabel(type);
+  }
+
+  formatProductType(type?: FinalProductType): string {
+    return this.formatFinalProductType(type);
   }
 
   formatGradeLabel(grade?: string | null): string {
@@ -178,11 +186,11 @@ export class SkuDetailComponent implements OnInit {
   }
 
   getUnitsPerCarton(): number | undefined {
-    return productUnitsPerCarton(this.sku);
+    return finalProductUnitsPerCarton(this.sku);
   }
 
   getCartonsPerPallet(): number | undefined {
-    return productCartonsPerPallet(this.sku);
+    return finalProductCartonsPerPallet(this.sku);
   }
 
   isVrac(): boolean {
@@ -239,7 +247,7 @@ export class SkuDetailComponent implements OnInit {
     }
 
     this.generatingQr = true;
-    this.skuService.generateQr(this.sku.id).subscribe({
+    this.finalProductService.generateQr(this.sku.id).subscribe({
       next: (qrInfo) => {
         if (this.sku) {
           this.sku = {
@@ -253,7 +261,7 @@ export class SkuDetailComponent implements OnInit {
         this.generatingQr = false;
       },
       error: () => {
-        this.toast.error('Erreur lors de la generation du QR code');
+        this.toast.error('AUTO.ERREUR_LORS_DE_LA_GENERATION_DU_QR_CODE');
         this.generatingQr = false;
       }
     });
@@ -261,7 +269,7 @@ export class SkuDetailComponent implements OnInit {
 
   printQr(): void {
     if (!this.sku?.qrImageBase64) {
-      this.toast.warning('QR code non disponible');
+      this.toast.warning('AUTO.QR_CODE_NON_DISPONIBLE');
       return;
     }
 

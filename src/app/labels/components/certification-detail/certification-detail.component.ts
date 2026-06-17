@@ -12,7 +12,16 @@ import { CertificationFormComponent } from '../certification-form/certification-
 @Component({
   selector: 'app-certification-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatIconModule, MatButtonModule, MatChipsModule, MatDialogModule],
+  imports: [
+    TranslateModule,
+    CommonModule,
+    RouterModule,
+    MatIconModule,
+    MatButtonModule,
+    MatChipsModule,
+    MatDialogModule,
+    MatProgressSpinner
+  ],
   templateUrl: './certification-detail.component.html',
   styleUrls: ['./certification-detail.component.scss']
 })
@@ -48,13 +57,13 @@ export class CertificationDetailComponent implements OnInit {
 
   openEditForm(): void {
     if (!this.certification) return;
-    
+
     const dialogRef = this.dialog.open(CertificationFormComponent, {
       width: '600px',
       data: this.certification
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.isLoading = true;
         this.certService.update(result).subscribe(() => {
@@ -70,7 +79,7 @@ export class CertificationDetailComponent implements OnInit {
 
   viewLargeLogo(): void {
     if (!this.certification?.logoData) return;
-    
+
     this.dialog.open(ImagePreviewDialog, {
       data: {
         image: `data:${this.certification.logoContentType};base64,${this.certification.logoData}`,
@@ -112,3 +121,5 @@ export class ImagePreviewDialog {
 
 import { Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';

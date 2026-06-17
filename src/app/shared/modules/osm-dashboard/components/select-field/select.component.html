@@ -9,7 +9,7 @@
     [placeholder]="field().labelTranslatePath ? (field().labelTranslatePath | translate) : field().label"
     (selectionChange)="selectChange($event)">
     <mat-option *ngFor="let option of field().options" [value]="option.value">
-      {{ option.label }}
+      {{ option.labelTranslatePath ? (option.labelTranslatePath | translate) : option.label }}
     </mat-option>
   </mat-select>
 

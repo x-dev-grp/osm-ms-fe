@@ -1,231 +1,197 @@
-<div class="emplacement-form-page">
-  <div class="emplacement-form-container">
-
-    <section class="form-hero">
-      <div class="hero-left">
-        <div class="hero-icon">
-          <i class="fas fa-warehouse"></i>
-        </div>
-
-        <div>
-          <h1>
-            {{ isEditMode ? 'Modifier emplacement' : 'Nouvel emplacement' }}
-          </h1>
-          <p>
-            {{
-              isEditMode
-                ? 'Modifier les informations de l’emplacement de stock.'
-                : 'Ajouter un nouvel emplacement pour organiser votre stockage.'
-            }}
-          </p>
-        </div>
-      </div>
-
-      <button type="button" class="btn btn-secondary hero-back" (click)="onCancel()">
-        <i class="fas fa-arrow-left"></i>
-        Retour
+<div class="emplacement-studio">
+  <header class="studio-header">
+    <div class="studio-header__left">
+      <button mat-icon-button type="button" class="back-btn" (click)="onCancel()" [matTooltip]="'COMMON.BACK' | translate">
+        <mat-icon>arrow_back</mat-icon>
       </button>
-    </section>
-
-    <section class="form-card">
-      <div class="error-banner" *ngIf="error">
-        <i class="fas fa-exclamation-triangle"></i>
-        <span>{{ error }}</span>
+      <div>
+        <h1>{{ pageTitle() }}</h1>
+        <p>{{ pageSubtitle() }}</p>
       </div>
+    </div>
+    <div class="studio-header__right">
+      <span class="status-chip" [class.is-reserved]="!emplacementForm.get('disponible')?.value">
+        {{ availabilityLabel() }}
+      </span>
+      <span class="type-chip" *ngIf="emplacementForm.get('typeEmplacement')?.value">
+        {{ getTypeLabel(emplacementForm.get('typeEmplacement')?.value) }}
+      </span>
+    </div>
+  </header>
 
-      <div class="loading-state" *ngIf="loading">
-        <div class="spinner-border"></div>
-        <p>Chargement...</p>
-      </div>
+  <div class="error-banner" *ngIf="error">
+    <mat-icon>error_outline</mat-icon>
+    <span>{{ error }}</span>
+  </div>
 
-      <form *ngIf="!loading" [formGroup]="emplacementForm" (ngSubmit)="onSubmit()">
+  <div *ngIf="loading && isEditMode" class="studio-loading">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
 
-        <div class="form-section">
-          <div class="section-header">
-            <div class="section-icon">
-              <i class="fas fa-id-card"></i>
-            </div>
+  <div class="studio-grid" *ngIf="!loading || !isEditMode">
+    <main class="studio-form">
+      <form [formGroup]="emplacementForm" (ngSubmit)="onSubmit()">
+        <div class="studio-cards">
+          <section class="studio-card">
+            <header class="studio-card__head">
+              <mat-icon>badge</mat-icon>
+              <span>{{ 'AUTO.INFORMATIONS_GENERALES' | translate }}</span>
+            </header>
+            <div class="studio-card__body field-grid">
+              <mat-form-field appearance="outline" class="field-row" *ngIf="isEditMode">
+                <mat-label>{{ 'AUTO.CODE' | translate }}</mat-label>
+                <input matInput formControlName="code" readonly />
+              </mat-form-field>
 
-            <div>
-              <h3>Informations generales</h3>
-              <p>Identite et classification de l’emplacement.</p>
-            </div>
-          </div>
+              <mat-form-field appearance="outline" class="field-row" [class.field-row--wide]="!isEditMode">
+                <mat-label>{{ 'AUTO.NOM' | translate }}</mat-label>
+                <input matInput formControlName="nom" [placeholder]="'AUTO.NOM_DE_L_EMPLACEMENT' | translate" />
+                <mat-error *ngIf="submitted && f['nom'].errors">
+                  {{ 'GENERIC_TYPE.ERRORS.NAME_REQUIRED' | translate }}
+                </mat-error>
+              </mat-form-field>
 
-          <div class="form-grid two-cols">
-            <div class="form-group" *ngIf="isEditMode">
-              <label for="code">Code</label>
-              <input id="code" type="text" class="form-control" formControlName="code" readonly />
-            </div>
+              <mat-form-field appearance="outline" class="field-row">
+                <mat-label>{{ 'AUTO.ZONE' | translate }}</mat-label>
+                <input matInput formControlName="zone" [placeholder]="'AUTO.ZONE' | translate" />
+              </mat-form-field>
 
-            <div class="form-group">
-              <label for="nom">Nom *</label>
-              <input
-                id="nom"
-                type="text"
-                class="form-control"
-                formControlName="nom"
-                placeholder="Nom de l’emplacement"
-                [class.is-invalid]="submitted && f['nom'].errors" />
-              <div class="invalid-feedback" *ngIf="submitted && f['nom'].errors">
-                Le nom est requis
+              <mat-form-field appearance="outline" class="field-row">
+                <mat-label>{{ 'AUTO.TYPE_D_EMPLACEMENT' | translate }}</mat-label>
+                <mat-select formControlName="typeEmplacement">
+                  <mat-option *ngFor="let type of typesEmplacement" [value]="type">
+                    {{ getTypeLabel(type) }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="submitted && f['typeEmplacement'].errors">
+                  {{ 'AUTO.LE_TYPE_EST_REQUIS' | translate }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="field-row">
+                <mat-label>{{ 'AUTO.CATEGORIE_ARTICLE_STOCKE' | translate }}</mat-label>
+                <mat-select formControlName="categorieArticleStocke">
+                  <mat-option [value]="null">{{ 'AUTO.NON_SPECIFIEE' | translate }}</mat-option>
+                  <mat-option *ngFor="let cat of categoriesArticle" [value]="cat">
+                    {{ getCategorieLabel(cat) }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <div class="field-row field-row--wide availability-row">
+                <mat-checkbox formControlName="disponible" color="primary">
+                  {{ 'AUTO.DISPONIBLE' | translate }}
+                </mat-checkbox>
+                <mat-form-field
+                  appearance="outline"
+                  class="reserve-field"
+                  *ngIf="!emplacementForm.get('disponible')?.value">
+                  <mat-label>{{ 'AUTO.RESERVE_POUR' | translate }}</mat-label>
+                  <input matInput formControlName="reservePour" />
+                </mat-form-field>
               </div>
             </div>
+          </section>
 
-            <div class="form-group">
-              <label for="zone">Zone</label>
-              <input
-                id="zone"
-                type="text"
-                class="form-control"
-                formControlName="zone"
-                placeholder="Zone" />
-            </div>
+          <section class="studio-card">
+            <header class="studio-card__head">
+              <mat-icon>thermostat</mat-icon>
+              <span>{{ 'AUTO.CAPACITE_ET_CONDITIONS' | translate }}</span>
+            </header>
+            <div class="studio-card__body field-grid">
+              <mat-form-field appearance="outline" class="field-row">
+                <mat-label>{{ 'AUTO.CAPACITE_MAXIMALE' | translate }}</mat-label>
+                <input matInput formControlName="capaciteMaximale" [placeholder]="'AUTO.CAPACITE_MAXIMALE' | translate" />
+              </mat-form-field>
 
-            <div class="form-group">
-              <label for="typeEmplacement">Type d’emplacement *</label>
-              <select
-                id="typeEmplacement"
-                class="form-control"
-                formControlName="typeEmplacement"
-                [class.is-invalid]="submitted && f['typeEmplacement'].errors">
-                <option value="" disabled>Selectionner...</option>
-                <option *ngFor="let type of typesEmplacement" [value]="type">
-                  {{ getTypeLabel(type) }}
-                </option>
-              </select>
-              <div class="invalid-feedback" *ngIf="submitted && f['typeEmplacement'].errors">
-                Le type est requis
-              </div>
-            </div>
+              <mat-form-field appearance="outline" class="field-row">
+                <mat-label>{{ 'AUTO.CAPACITE_ACTUELLE' | translate }}</mat-label>
+                <input matInput formControlName="capaciteActuelle" [placeholder]="'AUTO.CAPACITE_ACTUELLE' | translate" />
+              </mat-form-field>
 
-            <div class="form-group">
-              <label for="categorieArticleStocke">Categorie article stocke</label>
-              <select id="categorieArticleStocke" class="form-control" formControlName="categorieArticleStocke">
-                <option [ngValue]="null">Non specifiee</option>
-                <option *ngFor="let cat of categoriesArticle" [value]="cat">
-                  {{ getCategorieLabel(cat) }}
-                </option>
-              </select>
+              <mat-form-field appearance="outline" class="field-row">
+                <mat-label>{{ 'AUTO.TEMPERATURE_MIN_C' | translate }}</mat-label>
+                <input matInput type="number" step="0.1" formControlName="temperatureMin" />
+                <span matSuffix>°C</span>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="field-row">
+                <mat-label>{{ 'AUTO.TEMPERATURE_MAX_C' | translate }}</mat-label>
+                <input matInput type="number" step="0.1" formControlName="temperatureMax" />
+                <span matSuffix>°C</span>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="field-row field-row--wide">
+                <mat-label>{{ 'AUTO.CONDITIONS_SPECIALES' | translate }}</mat-label>
+                <input matInput formControlName="conditionsSpeciales" [placeholder]="'AUTO.CONDITIONS_SPECIALES' | translate" />
+              </mat-form-field>
             </div>
-          </div>
+          </section>
+
+          <section class="studio-card">
+            <header class="studio-card__head">
+              <mat-icon>notes</mat-icon>
+              <span>{{ 'AUTO.DESCRIPTION_ET_NOTES' | translate }}</span>
+            </header>
+            <div class="studio-card__body field-grid field-grid--notes">
+              <mat-form-field appearance="outline" class="field-row">
+                <mat-label>{{ 'BASE_TYPE.FIELDS.DESCRIPTION' | translate }}</mat-label>
+                <textarea matInput rows="2" formControlName="description"></textarea>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="field-row">
+                <mat-label>{{ 'CUSTOMERS.FIELDS.NOTES' | translate }}</mat-label>
+                <textarea matInput rows="2" formControlName="notes" [placeholder]="'AUTO.NOTES_INTERNES' | translate"></textarea>
+              </mat-form-field>
+            </div>
+          </section>
         </div>
 
-        <div class="form-section">
-          <div class="section-header">
-            <div class="section-icon">
-              <i class="fas fa-sliders-h"></i>
-            </div>
-
-            <div>
-              <h3>Capacite et conditions</h3>
-              <p>Bornes de capacite, temperature et contraintes specifiques.</p>
-            </div>
-          </div>
-
-          <div class="form-grid two-cols">
-            <div class="form-group">
-              <label for="capaciteMaximale">Capacite maximale</label>
-              <input
-                id="capaciteMaximale"
-                type="text"
-                class="form-control"
-                formControlName="capaciteMaximale"
-                placeholder="Capacite maximale" />
-            </div>
-
-            <div class="form-group">
-              <label for="capaciteActuelle">Capacite actuelle</label>
-              <input
-                id="capaciteActuelle"
-                type="text"
-                class="form-control"
-                formControlName="capaciteActuelle"
-                placeholder="Capacite actuelle" />
-            </div>
-
-            <div class="form-group">
-              <label for="temperatureMin">Temperature min (C)</label>
-              <input
-                id="temperatureMin"
-                type="number"
-                step="0.1"
-                class="form-control"
-                formControlName="temperatureMin"
-                placeholder="Temperature min" />
-            </div>
-
-            <div class="form-group">
-              <label for="temperatureMax">Temperature max (C)</label>
-              <input
-                id="temperatureMax"
-                type="number"
-                step="0.1"
-                class="form-control"
-                formControlName="temperatureMax"
-                placeholder="Temperature max" />
-            </div>
-
-            <div class="form-group">
-              <label for="conditionsSpeciales">Conditions speciales</label>
-              <input
-                id="conditionsSpeciales"
-                type="text"
-                class="form-control"
-                formControlName="conditionsSpeciales"
-                placeholder="Conditions speciales" />
-            </div>
-          </div>
-        </div>
-
-        <div class="form-section">
-          <div class="section-header">
-            <div class="section-icon">
-              <i class="fas fa-align-left"></i>
-            </div>
-
-            <div>
-              <h3>Description et notes</h3>
-              <p>Informations complementaires pour l’equipe operationnelle.</p>
-            </div>
-          </div>
-
-          <div class="form-grid one-col">
-            <div class="form-group">
-              <label for="description">Description</label>
-              <textarea
-                id="description"
-                class="form-control textarea"
-                rows="3"
-                formControlName="description"
-                placeholder="Description"></textarea>
-            </div>
-            <div class="form-group">
-              <label for="notes">Notes</label>
-              <textarea
-                id="notes"
-                class="form-control textarea"
-                rows="3"
-                formControlName="notes"
-                placeholder="Notes internes"></textarea>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-actions">
-          <button type="button" class="btn btn-secondary" (click)="onCancel()">
-            <i class="fas fa-xmark"></i>
-            Annuler
+        <footer class="studio-actions">
+          <button mat-stroked-button type="button" (click)="onCancel()">{{ 'ADMIN.CANCEL' | translate }}</button>
+          <button mat-flat-button color="primary" type="submit" [disabled]="submitting">
+            <mat-spinner *ngIf="submitting" diameter="18"></mat-spinner>
+            <span *ngIf="!submitting">{{ submitLabel() }}</span>
           </button>
-
-          <button type="submit" class="btn btn-primary" [disabled]="submitting">
-            <span *ngIf="submitting" class="spinner-border spinner-border-sm"></span>
-            <i *ngIf="!submitting" class="fas fa-check"></i>
-            {{ isEditMode ? 'Mettre a jour' : 'Creer' }}
-          </button>
-        </div>
-
+        </footer>
       </form>
-    </section>
+    </main>
+
+    <aside class="studio-rail">
+      <div class="rail-card">
+        <h3>{{ 'STORAGE.RAIL.SUMMARY' | translate }}</h3>
+
+        <div class="fill-meter" *ngIf="hasCapacityData()">
+          <div class="fill-meter__bar">
+            <div class="fill-meter__fill" [style.width.%]="fillPercent()" [class]="capacityFillClass()"></div>
+          </div>
+          <div class="fill-meter__labels">
+            <span>{{ fillPercent() }}%</span>
+            <span>{{ emplacementForm.get('capaciteActuelle')?.value || '0' }} / {{ emplacementForm.get('capaciteMaximale')?.value || '—' }}</span>
+          </div>
+        </div>
+
+        <dl class="rail-stats">
+          <div *ngIf="emplacementForm.get('zone')?.value">
+            <dt>{{ 'AUTO.ZONE' | translate }}</dt>
+            <dd>{{ emplacementForm.get('zone')?.value }}</dd>
+          </div>
+          <div *ngIf="emplacementForm.get('categorieArticleStocke')?.value">
+            <dt>{{ 'AUTO.CATEGORIE_ARTICLE_STOCKE' | translate }}</dt>
+            <dd>{{ getCategorieLabel(emplacementForm.get('categorieArticleStocke')?.value) }}</dd>
+          </div>
+          <div *ngIf="emplacementForm.get('temperatureMin')?.value != null || emplacementForm.get('temperatureMax')?.value != null">
+            <dt>{{ 'AUTO.TEMPERATURE_MIN_C' | translate }}</dt>
+            <dd>
+              {{ emplacementForm.get('temperatureMin')?.value ?? '—' }} – {{ emplacementForm.get('temperatureMax')?.value ?? '—' }} °C
+            </dd>
+          </div>
+          <div *ngIf="!emplacementForm.get('disponible')?.value && emplacementForm.get('reservePour')?.value">
+            <dt>{{ 'AUTO.RESERVE_POUR' | translate }}</dt>
+            <dd>{{ emplacementForm.get('reservePour')?.value }}</dd>
+          </div>
+        </dl>
+      </div>
+    </aside>
   </div>
 </div>

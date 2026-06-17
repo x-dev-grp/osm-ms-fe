@@ -8,6 +8,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, EMPTY, tap } from 'rxjs';
 import { Role } from 'src/app/shared/models/security/role.model';
 import { BaseService } from 'src/app/shared/services/base.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 @Component({
@@ -15,7 +16,7 @@ import { BaseService } from 'src/app/shared/services/base.service';
   templateUrl: './role-dashboard.component.html',
   styleUrls: ['./role-dashboard.component.scss'],
   standalone: true,
-  imports: [
+  imports: [TranslateModule, 
     CommonModule,
     SharedModule  ]
 })

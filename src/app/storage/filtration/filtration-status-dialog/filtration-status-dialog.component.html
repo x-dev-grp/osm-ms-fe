@@ -6,22 +6,22 @@
 <mat-dialog-content class="abioc-dialog-content">
   <div class="operation-info">
     <div class="info-card">
-      <span class="info-label">Opération</span>
-      <span class="info-value mono">Operation selectionnee</span>
+      <span class="info-label">{{ 'AUTO.OPERATION' | translate }}</span>
+      <span class="info-value mono">{{ 'AUTO.OPERATION_SELECTIONNEE' | translate }}</span>
     </div>
 
     <div class="info-card">
-      <span class="info-label">Cuve source</span>
+      <span class="info-label">{{ 'AUTO.CUVE_SOURCE' | translate }}</span>
       <span class="info-value">{{ data.row.source?.name ?? 'Inconnue' }}</span>
     </div>
 
     <div class="info-card">
-      <span class="info-label">Cuve cible</span>
+      <span class="info-label">{{ 'AUTO.CUVE_CIBLE' | translate }}</span>
       <span class="info-value">{{ data.row.target?.name ?? 'Inconnue' }}</span>
     </div>
 
     <div class="info-card">
-      <span class="info-label">Statut actuel</span>
+      <span class="info-label">{{ 'AUTO.STATUT_ACTUEL' | translate }}</span>
       <span class="status-chip">{{ currentStatusLabel }}</span>
     </div>
   </div>
@@ -29,14 +29,14 @@
   @if (allowedStatuses().length === 0) {
     <div class="no-transition-message">
       <mat-icon>info</mat-icon>
-      <span>Aucun changement de statut autorisé pour cette opération.</span>
+      <span>{{ 'AUTO.AUCUN_CHANGEMENT_DE_STATUT_AUTORISE_POUR_CETTE_OPERATION' | translate }}</span>
     </div>
   }
 
   @if (allowedStatuses().length > 0) {
     <form [formGroup]="form" class="abioc-form">
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Nouveau statut</mat-label>
+        <mat-label>{{ 'AUTO.NOUVEAU_STATUT' | translate }}</mat-label>
         <mat-select formControlName="status">
           @for (s of allowedStatuses(); track s) {
             <mat-option [value]="s">
@@ -56,24 +56,24 @@
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Note (optionnel)</mat-label>
+        <mat-label>{{ 'AUTO.NOTE_OPTIONNEL' | translate }}</mat-label>
         <textarea matInput rows="4" formControlName="note"></textarea>
-        <mat-hint>Raison du changement de statut</mat-hint>
+        <mat-hint>{{ 'AUTO.RAISON_DU_CHANGEMENT_DE_STATUT' | translate }}</mat-hint>
       </mat-form-field>
 
       @if (showsCompleteHint()) {
         <div class="complete-hint">
           <mat-icon>info</mat-icon>
-          <span>L'operation sera demarree puis cloturee avec le volume saisi.</span>
+          <span>{{ 'AUTO.L_OPERATION_SERA_DEMARREE_PUIS_CLOTUREE_AVEC_LE_VOLUME_SAISI' | translate }}</span>
         </div>
       }
 
       @if (isCompleteSelected()) {
         <mat-form-field appearance="outline" class="full-width volume-field">
-          <mat-label>Volume après filtration (L)</mat-label>
+          <mat-label>{{ 'AUTO.VOLUME_APRES_FILTRATION_L' | translate }}</mat-label>
           <input matInput type="number" formControlName="volumeAfter" step="0.1" />
           <span matSuffix class="volume-suffix">L</span>
-          <mat-hint>Obligatoire si l'opération est terminée.</mat-hint>
+          <mat-hint>{{ 'AUTO.OBLIGATOIRE_SI_L_OPERATION_EST_TERMINEE' | translate }}</mat-hint>
         </mat-form-field>
       }
     </form>
@@ -82,7 +82,8 @@
 
 <mat-dialog-actions align="end" class="abioc-dialog-actions">
   <button mat-stroked-button (click)="close()" [disabled]="loading">
-    Annuler
+
+    {{ 'ADMIN.CANCEL' | translate }}
   </button>
 
   <button

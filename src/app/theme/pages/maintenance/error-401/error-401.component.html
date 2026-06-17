@@ -8,13 +8,15 @@
               <img src="assets/images/pages/img-error-401.svg" class="img-fluid" alt="img" />
             </div>
             <div class="error-text">
-              <div class="m-t-50 f-38 f-w-700">Error Unauthorized</div>
+              <div class="m-t-50 f-38 f-w-700">{{ 'AUTO.ERROR_UNAUTHORIZED' | translate }}</div>
               <div class="m-t-5 f-16 m-b-25 text-muted">
-                Your authorization failed.
+
+                {{ 'AUTO.YOUR_AUTHORIZATION_FAILED' | translate }}
                 <br />
-                Please try refreshing the page and fill in the correct login details.
+
+                {{ 'AUTO.PLEASE_TRY_REFRESHING_THE_PAGE_AND_FILL_IN_THE_CORRECT_LOGIN_DET' | translate }}
               </div>
-              <button mat-flat-button color="primary" [routerLink]="['/dashboard']">Back To Home</button>
+              <button mat-flat-button color="primary" [routerLink]="['/dashboard']">{{ 'PAGE_404.BACK_HOME' | translate }}</button>
             </div>
           </div>
         </div>

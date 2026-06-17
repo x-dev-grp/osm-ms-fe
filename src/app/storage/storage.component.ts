@@ -1,3 +1,5 @@
+import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -48,6 +50,7 @@ import { AssignSupplierComponent } from './assign-supplier/assign-supplier.compo
   styleUrls: ['./storage.component.scss']
 })
 export class StorageUnitsComponent implements OnInit {
+  private readonly i18n = inject(TranslateService);
   @ViewChild('dashboard') dashboard!: OsmDashboard;
   storageUnits: StorageUnitDto[] = [];
   oilTypes: BaseType[] = [];
@@ -123,7 +126,7 @@ export class StorageUnitsComponent implements OnInit {
   }
 
   private deleteStorageUnit(unit: StorageUnitDto): void {
-    if (confirm('Are you sure you want to delete this storage unit?')) {
+    if (confirm(this.i18n.instant('AUTO.ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_STORAGE_UNIT'))) {
       this.storageUnitService.deleteStorageUnit(unit.id!).subscribe({
         next: (response) => {
           if (response.success) {

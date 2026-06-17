@@ -4,9 +4,9 @@
       <ul class="list-inline m-b-15">
         <li class="list-inline-item">
           <select class="select-item">
-            <option>Today</option>
-            <option>Weekly</option>
-            <option selected>Monthly</option>
+            <option>{{ 'DASHBOARD.DATE_FILTER.TODAY' | translate }}</option>
+            <option>{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.WEEKLY' | translate }}</option>
+            <option selected>{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.MONTHLY' | translate }}</option>
           </select>
         </li>
         <li class="list-inline-item">
@@ -22,10 +22,10 @@
         <li class="list-inline-item">
           <a href="javascript:" [matMenuTriggerFor]="paymentInfo" class="avatar avatar-s border">
             <mat-menu #paymentInfo="matMenu">
-              <a href="javascript:" mat-menu-item>Name</a>
-              <a href="javascript:" mat-menu-item>Date</a>
-              <a href="javascript:" mat-menu-item>Rating</a>
-              <a href="javascript:" mat-menu-item>Unread</a>
+              <a href="javascript:" mat-menu-item>{{ 'BASE_TYPE.FIELDS.NAME' | translate }}</a>
+              <a href="javascript:" mat-menu-item>{{ 'PDF.DATE' | translate }}</a>
+              <a href="javascript:" mat-menu-item>{{ 'AUTO.RATING' | translate }}</a>
+              <a href="javascript:" mat-menu-item>{{ 'AUTO.UNREAD' | translate }}</a>
             </mat-menu>
             <i class="ti ti-dots f-20"></i>
           </a>

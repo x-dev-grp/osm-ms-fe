@@ -1,3 +1,5 @@
+import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule, DatePipe, NgClass } from '@angular/common';
@@ -11,15 +13,17 @@ import { EmplacementStock } from '../../../models/emplacement-stock.model';
 import { MouvementStock, TypeMouvement } from '../../../models/mouvement-stock.model';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { mergeStockIntoArticle, stockFromArticle } from '../../../utils/article-stock.util';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-article-detail',
   standalone: true,
-  imports: [CommonModule, DatePipe, RouterLink, NgClass, FormsModule],
+  imports: [TranslateModule, CommonModule, DatePipe, RouterLink, NgClass, FormsModule],
   templateUrl: './article-detail.component.html',
   styleUrls: ['./article-detail.component.scss']
 })
 export class ArticleDetailComponent implements OnInit {
+  private readonly i18n = inject(TranslateService);
 
   article!: Article;
   stock: Stock | null = null;
@@ -143,7 +147,7 @@ export class ArticleDetailComponent implements OnInit {
 
   onMouvement(): void {
     if (this.quantite <= 0) {
-      this.toast.warning('La quantité doit être positive');
+      this.toast.warning('AUTO.LA_QUANTITE_DOIT_ETRE_POSITIVE');
       return;
     }
 
@@ -158,7 +162,7 @@ export class ArticleDetailComponent implements OnInit {
           this.reloadArticle();
         },
         error: (err) => {
-          this.toast.error(err?.error?.error || err?.error?.message || "Erreur lors de l'entrée en stock");
+          this.toast.error(err?.error?.error || err?.error?.message || 'AUTO.ERREUR_LORS_DE_L_ENTREE_EN_STOCK');
         }
       });
       return;
@@ -174,14 +178,14 @@ export class ArticleDetailComponent implements OnInit {
         this.reloadArticle();
       },
       error: (err) => {
-        this.toast.error(err?.error?.error || err?.error?.message || 'Erreur lors de la sortie de stock');
+        this.toast.error(err?.error?.error || err?.error?.message || 'AUTO.ERREUR_LORS_DE_LA_SORTIE_DE_STOCK');
       }
     });
   }
 
   onAjustement(): void {
     if (this.ajustementQuantite === 0) {
-      this.toast.warning("La quantité d'ajustement ne peut pas être nulle");
+      this.toast.warning('AUTO.LA_QUANTITE_D_AJUSTEMENT_NE_PEUT_PAS_ETRE_NULLE');
       return;
     }
     this.stockService.ajusterStock(this.article.id!, this.ajustementQuantite, this.ajustementMotif).subscribe({
@@ -194,7 +198,7 @@ export class ArticleDetailComponent implements OnInit {
         this.reloadArticle();
       },
       error: (err) => {
-        this.toast.error(err?.error?.error || err?.error?.message || "Erreur lors de l'ajustement du stock");
+        this.toast.error(err?.error?.error || err?.error?.message || 'AUTO.ERREUR_LORS_DE_L_AJUSTEMENT_DU_STOCK');
       }
     });
   }
@@ -235,15 +239,8 @@ export class ArticleDetailComponent implements OnInit {
     this.selectedEmplacementId = null;
 
     this.emplacementService.getAllEmplacements().subscribe({
-      next: (response) => {
-        let data: EmplacementStock[] = [];
-        if (Array.isArray(response)) {
-          data = response;
-        } else if (response && Array.isArray(response.data)) {
-          // @ts-ignore
-          data = response.data;
-        }
-        this.emplacements = data.filter(
+      next: (emplacements) => {
+        this.emplacements = emplacements.filter(
           (emp) =>
             emp.actif !== false &&
             (emp.disponible !== false && emp.disponible !== 'false' as any) &&
@@ -253,7 +250,7 @@ export class ArticleDetailComponent implements OnInit {
       },
       error: () => {
         this.loadingEmplacements = false;
-        this.toast.error('Impossible de charger la liste des emplacements');
+        this.toast.error('AUTO.IMPOSSIBLE_DE_CHARGER_LA_LISTE_DES_EMPLACEMENTS');
       }
     });
   }
@@ -265,11 +262,11 @@ export class ArticleDetailComponent implements OnInit {
       selectedId = (selectEl?.value ?? '').trim();
     }
     if (!selectedId || selectedId === 'null' || selectedId === 'undefined') {
-      this.toast.warning('Veuillez sélectionner un emplacement');
+      this.toast.warning('AUTO.VEUILLEZ_SELECTIONNER_UN_EMPLACEMENT');
       return;
     }
     if (!this.stock?.id) {
-      this.toast.error('Stock introuvable pour cet article, veuillez recharger la page');
+      this.toast.error('AUTO.STOCK_INTROUVABLE_POUR_CET_ARTICLE_VEUILLEZ_RECHARGER_LA_PAGE');
       return;
     }
 
@@ -278,27 +275,27 @@ export class ArticleDetailComponent implements OnInit {
         this.applyStockMutation(updatedStock);
         this.showEmplacementForm = false;
         this.selectedEmplacementId = null;
-        this.toast.success('Emplacement assigné avec succès');
+        this.toast.success('AUTO.EMPLACEMENT_ASSIGNE_AVEC_SUCCES');
         this.reloadArticle();
       },
       error: (err) => {
-        this.toast.error(err?.error?.error || err?.error?.message || "Erreur lors de l'assignation de l'emplacement");
+        this.toast.error(err?.error?.error || err?.error?.message || 'AUTO.ERREUR_LORS_DE_L_ASSIGNATION_DE_L_EMPLACEMENT');
       }
     });
   }
 
   retirerEmplacement(): void {
     if (!this.stock?.id) return;
-    if (!confirm("Voulez-vous vraiment retirer l'emplacement actuel ?")) return;
+    if (!confirm(this.i18n.instant('AUTO.VOULEZ_VOUS_VRAIMENT_RETIRER_L_EMPLACEMENT_ACTUEL'))) return;
 
     this.stockService.retirerEmplacement(this.stock.id).subscribe({
       next: (updatedStock) => {
         this.applyStockMutation(updatedStock);
-        this.toast.success('Emplacement retiré avec succès');
+        this.toast.success('AUTO.EMPLACEMENT_RETIRE_AVEC_SUCCES');
         this.reloadArticle();
       },
       error: (err) => {
-        this.toast.error(err?.error?.error || err?.error?.message || "Erreur lors du retrait de l'emplacement");
+        this.toast.error(err?.error?.error || err?.error?.message || 'AUTO.ERREUR_LORS_DU_RETRAIT_DE_L_EMPLACEMENT');
       }
     });
   }
@@ -321,7 +318,7 @@ export class ArticleDetailComponent implements OnInit {
         this.generatingQr = false;
       },
       error: () => {
-        this.toast.error('Erreur lors de la génération du QR code');
+        this.toast.error('AUTO.ERREUR_LORS_DE_LA_GENERATION_DU_QR_CODE');
         this.generatingQr = false;
       }
     });
@@ -329,7 +326,7 @@ export class ArticleDetailComponent implements OnInit {
 
   printQr(): void {
     if (!this.article.qrImageBase64) {
-      this.toast.warning('QR code non disponible');
+      this.toast.warning('AUTO.QR_CODE_NON_DISPONIBLE');
       return;
     }
 

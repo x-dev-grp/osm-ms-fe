@@ -50,31 +50,60 @@ export class ToastService {
     return merged;
   }
 
-  open(message: string, action?: string, config?: MatSnackBarConfig) {
-    return this.snackBar.open(message, action, this.withViewport(config));
-  }
-
-  success(message?: string) {
-    return this.open(
-      message || this.translate.instant('OSM_DASHBOARD.ACTIONS.SUCCESS'),
-      'Close',
-      { panelClass: ['app-toast', 'app-toast-success'] }
+  open(
+    message: string,
+    action?: string,
+    config?: MatSnackBarConfig,
+    interpolateParams?: Record<string, unknown>
+  ) {
+    const translatedParams = interpolateParams
+      ? Object.fromEntries(
+          Object.entries(interpolateParams).map(([key, value]) => [
+            key,
+            typeof value === 'string' ? this.translate.instant(value) : value
+          ])
+        )
+      : undefined;
+    const translatedMessage = this.translate.instant(message, translatedParams);
+    return this.snackBar.open(
+      this.translate.instant(translatedMessage, translatedParams),
+      action ? this.translate.instant(action) : undefined,
+      this.withViewport(config)
     );
   }
 
-  error(message: string) {
+  success(message?: string, interpolateParams?: Record<string, unknown>) {
+    return this.open(
+      message || 'OSM_DASHBOARD.ACTIONS.SUCCESS',
+      'COMMON.CLOSE',
+      { panelClass: ['app-toast', 'app-toast-success'] },
+      interpolateParams
+    );
+  }
+
+  error(message: string, interpolateParams?: Record<string, unknown>) {
     const duration = Math.min(Math.max(message.length * 45, 5000), 12000);
-    return this.open(message, 'close', {
+    return this.open(message, 'COMMON.CLOSE', {
       duration,
       panelClass: ['app-toast', 'app-toast-error']
-    });
+    }, interpolateParams);
   }
 
-  info(message: string) {
-    return this.open(message, 'close', { panelClass: ['app-toast', 'app-toast-info'] });
+  info(message: string, interpolateParams?: Record<string, unknown>) {
+    return this.open(
+      message,
+      'COMMON.CLOSE',
+      { panelClass: ['app-toast', 'app-toast-info'] },
+      interpolateParams
+    );
   }
 
-  warning(message: string) {
-    return this.open(message, 'close', { panelClass: ['app-toast', 'app-toast-warning'] });
+  warning(message: string, interpolateParams?: Record<string, unknown>) {
+    return this.open(
+      message,
+      'COMMON.CLOSE',
+      { panelClass: ['app-toast', 'app-toast-warning'] },
+      interpolateParams
+    );
   }
 }

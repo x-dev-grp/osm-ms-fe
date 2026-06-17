@@ -2,15 +2,16 @@
 
   <!-- HEADER SANS BACKGROUND IMAGE -->
   <header class="detail-hero">
-    <button class="btn-back" routerLink="/stock/boms" type="button" aria-label="Retour">
+    <button class="btn-back" routerLink="/stock/boms" type="button" [attr.aria-label]="'COMMON.BACK' | translate">
       <i class="fas fa-arrow-left"></i>
     </button>
 
     <div class="hero-text">
-      <h1>Nomenclature</h1>
+      <h1>{{ 'OSM_DASHBOARD.ACTIONS.BOM' | translate }}</h1>
 
       <p *ngIf="bom">
-        Consultation détaillée de la nomenclature, des composants et des besoins matières.
+
+        {{ 'AUTO.CONSULTATION_DETAILLEE_DE_LA_NOMENCLATURE_DES_COMPOSANTS_ET_DES_' | translate }}
       </p>
 
       <div class="hero-badges" *ngIf="bom">
@@ -20,20 +21,23 @@
 
         <span class="status-pill active" *ngIf="bom.active">
           <i class="fas fa-star"></i>
-          Active
+
+          {{ 'ADMIN_DASHBOARD.STATUS.ACTIVE' | translate }}
         </span>
 
         <span class="status-pill inactive" *ngIf="!bom.active">
-          Inactive
+
+          {{ 'ADMIN_DASHBOARD.STATUS.INACTIVE' | translate }}
         </span>
       </div>
     </div>
 
     <div class="header-actions" *ngIf="bom">
       @if (hasCompleteQrMetadata()) {
-        <button class="btn-action" matTooltip="View QR" (click)="openExistingQrDialog()">
+        <button class="btn-action" [matTooltip]="'AUTO.VIEW_QR' | translate" (click)="openExistingQrDialog()">
           <i class="fas fa-qrcode"></i>
-          QR
+
+          {{ 'AUTO.QR' | translate }}
         </button>
       }
       <button class="btn-action" [disabled]="generatingQr" (click)="generateQr()">
@@ -58,7 +62,8 @@
         [routerLink]="['/stock/boms', bom.id, 'editer']"
         type="button">
         <i class="fas fa-edit"></i>
-        Modifier
+
+        {{ 'BANK_ACCOUNTS.ACTIONS.EDIT' | translate }}
       </button>
     </div>
   </header>
@@ -66,7 +71,7 @@
   <!-- LOADING -->
   <div *ngIf="loading" class="loading-container">
     <div class="spinner-border"></div>
-    <p>Chargement de la nomenclature...</p>
+    <p>{{ 'AUTO.CHARGEMENT_DE_LA_NOMENCLATURE' | translate }}</p>
   </div>
 
   <ng-container *ngIf="!loading && bom">
@@ -82,37 +87,39 @@
           </span>
 
           <div>
-            <h2>Informations</h2>
-            <p>Données principales de la nomenclature.</p>
+            <h2>{{ 'AUTO.INFORMATIONS' | translate }}</h2>
+            <p>{{ 'AUTO.DONNEES_PRINCIPALES_DE_LA_NOMENCLATURE' | translate }}</p>
           </div>
         </div>
 
         <div class="info-list">
           <div class="info-row">
-            <span>Produit fini</span>
-            <strong>{{ bom.productName || bom.skuCode || '—' }}</strong>
+            <span>{{ 'AUTO.PRODUIT_FINI' | translate }}</span>
+            <strong>{{ bom.finalProductName || bom.productName || '�' }}</strong>
           </div>
 
           <div class="info-row">
-            <span>Version</span>
+            <span>{{ 'AUTO.VERSION' | translate }}</span>
             <strong class="mono">{{ bom.version }}</strong>
           </div>
 
           <div class="info-row">
-            <span>Statut</span>
+            <span>{{ 'ADMIN_DASHBOARD.TABLE.STATUS' | translate }}</span>
 
             <span class="status-pill active" *ngIf="bom.active">
               <i class="fas fa-star"></i>
-              Active
+
+              {{ 'ADMIN_DASHBOARD.STATUS.ACTIVE' | translate }}
             </span>
 
             <span class="status-pill inactive" *ngIf="!bom.active">
-              Inactive
+
+              {{ 'ADMIN_DASHBOARD.STATUS.INACTIVE' | translate }}
             </span>
           </div>
 
           <div class="info-row">
-            <span>Composants</span>
+            <span>{{ 'AUTO.COMPOSANTS' | translate }}</span>
             <strong>{{ bom.lines.length }} article(s)</strong>
           </div>
         </div>
@@ -126,8 +133,8 @@
           </span>
 
           <div>
-            <h2>Composants par unité</h2>
-            <p>Articles consommés pour une unité de produit fini.</p>
+            <h2>{{ 'AUTO.COMPOSANTS_PAR_UNITE' | translate }}</h2>
+            <p>{{ 'AUTO.ARTICLES_CONSOMMES_POUR_UNE_UNITE_DE_PRODUIT_FINI' | translate }}</p>
           </div>
         </div>
 
@@ -136,9 +143,9 @@
             <thead>
             <tr>
               <th>#</th>
-              <th>Article</th>
-              <th class="num">Qté / unité</th>
-              <th>Unité</th>
+              <th>{{ 'OSM_DASHBOARD.ACTIONS.ARTICLESEC' | translate }}</th>
+              <th class="num">{{ 'AUTO.QTE_UNITE' | translate }}</th>
+              <th>{{ 'OIL_CREDIT.FIELDS.UNIT' | translate }}</th>
             </tr>
             </thead>
 
@@ -175,7 +182,8 @@
               <td colspan="4" class="empty-row">
                 <div class="empty-state">
                   <i class="fas fa-inbox"></i>
-                  Aucun composant défini.
+
+                  {{ 'AUTO.AUCUN_COMPOSANT_DEFINI' | translate }}
                 </div>
               </td>
             </tr>
@@ -196,13 +204,13 @@
             </span>
 
             <div>
-              <h2>Simulation des besoins</h2>
-              <p>Calculer les besoins matières selon la quantité produite.</p>
+              <h2>{{ 'AUTO.SIMULATION_DES_BESOINS' | translate }}</h2>
+              <p>{{ 'AUTO.CALCULER_LES_BESOINS_MATIERES_SELON_LA_QUANTITE_PRODUITE' | translate }}</p>
             </div>
           </div>
 
           <div class="preview-controls">
-            <label for="previewQty">Quantité</label>
+            <label for="previewQty">{{ 'OIL_CREDIT.FIELDS.QUANTITY' | translate }}</label>
 
             <input
               id="previewQty"
@@ -212,14 +220,14 @@
               class="qty-input"
               [(ngModel)]="previewQuantity" />
 
-            <span>unités produites</span>
+            <span>{{ 'AUTO.UNITES_PRODUITES' | translate }}</span>
           </div>
         </div>
 
         <app-material-needs-preview
           [bomId]="bom.id!"
           [quantity]="previewQuantity"
-          title="Besoins matières vs stock">
+          [title]="'AUTO.BESOINS_MATIERES_VS_STOCK' | translate">
         </app-material-needs-preview>
       </div>
     </section>

@@ -1,178 +1,72 @@
-import { AfterViewInit, Component, OnInit, ViewChild, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatDividerModule } from '@angular/material/divider';
+import { Component, ViewChild, inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
-import { SKUService } from '../../../services/sku.service';
-import {
-  ProductType,
-  SKU,
-  productCartonsPerPallet,
-  productDisplayName,
-  productTypeLabel,
-  productUnitsPerCarton
-} from '../../../models/sku.model';
+import { FinalProduct, finalProductDisplayName } from '../../../models/final-product.model';
+import { FinalProductService } from '../../../services/final-product.service';
 import { ToastService } from '../../../../shared/services/toast.service';
 import {
   ConfirmationDialogService,
   ConfirmationType
 } from '../../../../shared/services/confirmation-dialog.service';
-import { configureMatTableCreatedDateSort } from '../../../../shared/utils/table-sort.util';
+import { OsmDashboard } from '../../../../shared/modules/osm-dashboard/osm-dashboard';
+import { DashboardConfig } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { SKU_DASHBOARD_CONFIG } from './sku-dashboard.config';
 
 @Component({
   selector: 'app-sku-list',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterLink,
-    MatTableModule,
-    MatButtonModule,
-    MatIconModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatProgressSpinnerModule,
-    MatTooltipModule,
-    MatMenuModule,
-    MatDividerModule
-  ],
+  imports: [TranslateModule, OsmDashboard],
   templateUrl: './sku-list.component.html',
   styleUrls: ['./sku-list.component.scss']
 })
-export class SkuListComponent implements OnInit, AfterViewInit {
-  dataSource = new MatTableDataSource<SKU>([]);
+export class SkuListComponent {
+  private readonly i18n = inject(TranslateService);
 
-  loading = signal<boolean>(false);
-  searchTerm = signal<string>('');
-  categoryFilter = signal<string>('');
-  typeFilter = signal<ProductType | ''>('');
-  togglingId = signal<string | null>(null);
-  deletingId = signal<string | null>(null);
+  @ViewChild('dashboard') dashboard!: OsmDashboard;
 
-  readonly productTypes: ProductType[] = ['VRAC', 'NON_VRAC'];
-  displayedColumns: string[] = ['status', 'code', 'name', 'type', 'category', 'packaging', 'createdDate', 'actions'];
-
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
+  dashboardConfig: DashboardConfig = SKU_DASHBOARD_CONFIG;
 
   constructor(
-    private readonly skuService: SKUService,
+    private readonly finalProductService: FinalProductService,
     private readonly toast: ToastService,
     private readonly confirmationDialog: ConfirmationDialogService,
     public readonly router: Router
   ) {}
 
-  ngOnInit(): void {
-    this.loadSkus();
+  handleAction(event: { row: FinalProduct; action: string }): void {
+    const finalProduct = event.row;
 
-    configureMatTableCreatedDateSort(this.dataSource);
-
-    this.dataSource.filterPredicate = (data: SKU, filter: string) => {
-      const searchObj = JSON.parse(filter) as {
-        term: string;
-        category: string;
-        type: ProductType | '';
-      };
-
-      const term = searchObj.term.toLowerCase();
-      const matchesTerm = !term ||
-        productDisplayName(data).toLowerCase().includes(term) ||
-        (data.code || '').toLowerCase().includes(term) ||
-        (data.category || '').toLowerCase().includes(term) ||
-        (data.grade || '').toLowerCase().includes(term) ||
-        (data.brand || '').toLowerCase().includes(term) ||
-        (data.barcode || '').toLowerCase().includes(term);
-
-      const matchesCategory = !searchObj.category || data.category === searchObj.category;
-      const matchesType = !searchObj.type || data.type === searchObj.type;
-
-      return matchesTerm && matchesCategory && matchesType;
-    };
-  }
-
-  ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-  }
-
-  loadSkus(): void {
-    this.loading.set(true);
-
-    this.skuService.getAllProducts().subscribe({
-      next: (data) => {
-        this.dataSource.data = data ?? [];
-        this.loading.set(false);
-        this.applyFilters();
-      },
-      error: (err) => {
-        console.error('Erreur chargement produits:', err);
-        this.toast.error('Impossible de charger la liste des produits');
-        this.loading.set(false);
-      }
-    });
-  }
-
-  applyFilters(): void {
-    this.dataSource.filter = JSON.stringify({
-      term: this.searchTerm(),
-      category: this.categoryFilter(),
-      type: this.typeFilter()
-    });
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+    switch (event.action) {
+      case 'READ':
+        void this.router.navigate(['/stock/products', finalProduct.id]);
+        break;
+      case 'UPDATE':
+        void this.router.navigate(['/stock/products', finalProduct.id, 'edit']);
+        break;
+      case 'TOGGLE_ACTIVE':
+        this.toActif(finalProduct);
+        break;
+      case 'REMOVE':
+        this.deleteFinalProduct(finalProduct);
+        break;
     }
   }
 
-  onSearch(event: Event): void {
-    this.searchTerm.set((event.target as HTMLInputElement).value);
-    this.applyFilters();
-  }
-
-  onCategoryChange(value: string): void {
-    this.categoryFilter.set(value);
-    this.applyFilters();
-  }
-
-  onTypeChange(value: ProductType | ''): void {
-    this.typeFilter.set(value);
-    this.applyFilters();
-  }
-
-  resetFilters(): void {
-    this.searchTerm.set('');
-    this.categoryFilter.set('');
-    this.typeFilter.set('');
-    this.applyFilters();
-  }
-
-  toActif(sku: SKU): void {
-    if (!sku.id) {
+  private toActif(finalProduct: FinalProduct): void {
+    if (!finalProduct.id) {
       return;
     }
 
-    const isCurrentlyActif = sku.actif === true;
+    const isCurrentlyActif = finalProduct.actif === true;
     const action = isCurrentlyActif ? 'desactiver' : 'activer';
 
     this.confirmationDialog.confirm({
-      title: 'Confirmation',
-      message: `Voulez-vous vraiment ${action} le produit "${productDisplayName(sku)}" ?`,
+      title: this.i18n.instant('STANDARD.CONFIRMATION.SIMPLE.TITLE'),
+      message: `Voulez-vous vraiment ${action} le produit "${finalProductDisplayName(finalProduct)}" ?`,
       type: ConfirmationType.WARNING,
-      confirmText: isCurrentlyActif ? 'Desactiver' : 'Activer',
-      cancelText: 'Annuler',
+      confirmText: isCurrentlyActif ? this.i18n.instant('AUTO.DESACTIVER') : this.i18n.instant('AUTO.ACTIVER'),
+      cancelText: this.i18n.instant('ADMIN.CANCEL'),
       showIcon: true,
       destructive: isCurrentlyActif
     }).subscribe((result) => {
@@ -180,111 +74,42 @@ export class SkuListComponent implements OnInit, AfterViewInit {
         return;
       }
 
-      this.togglingId.set(sku.id!);
-
       const request = isCurrentlyActif
-        ? this.skuService.desactiverSku(sku.id!)
-        : this.skuService.activerSku(sku.id!);
+        ? this.finalProductService.deactivateFinalProduct(finalProduct.id!)
+        : this.finalProductService.activateFinalProduct(finalProduct.id!);
 
       request.subscribe({
         next: () => {
-          const updated = this.dataSource.data.map((item) =>
-            item.id === sku.id ? { ...item, actif: !isCurrentlyActif } : item
-          ).sort((a, b) => {
-            if (a.actif !== b.actif) {
-              return a.actif ? -1 : 1;
-            }
-            const dateA = a.createdDate ? new Date(a.createdDate).getTime() : 0;
-            const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
-            return dateB - dateA;
+          this.dashboard?.refrechData();
+          this.toast.success('AUTO.PRODUIT_AVEC_SUCCES', {
+            value0: isCurrentlyActif ? 'AUTO.DESACTIVE' : 'ADMIN_DASHBOARD.HERO.ACTIVE'
           });
-
-          this.dataSource.data = updated;
-          this.applyFilters();
-          this.toast.success(`Produit ${isCurrentlyActif ? 'desactive' : 'active'} avec succes`);
-          this.togglingId.set(null);
         },
-        error: (err) => {
-          console.error('Erreur changement statut produit:', err);
-          this.togglingId.set(null);
-        }
+        error: (err) => console.error('Erreur changement statut produit:', err)
       });
     });
   }
 
-  deleteSku(sku: SKU): void {
-    if (!sku.id) {
+  private deleteFinalProduct(finalProduct: FinalProduct): void {
+    if (!finalProduct.id) {
       return;
     }
 
     this.confirmationDialog.confirmDelete(
-      productDisplayName(sku),
-      `Voulez-vous vraiment supprimer le produit "${productDisplayName(sku)}" ?`
+      finalProductDisplayName(finalProduct),
+      `Voulez-vous vraiment supprimer le produit "${finalProductDisplayName(finalProduct)}" ?`
     ).subscribe((result) => {
       if (!result?.confirmed) {
         return;
       }
 
-      this.deletingId.set(sku.id!);
-
-      this.skuService.deleteSku(sku.id!).subscribe({
+      this.finalProductService.deleteFinalProduct(finalProduct.id!).subscribe({
         next: () => {
-          this.dataSource.data = this.dataSource.data.filter((item) => item.id !== sku.id);
-          this.applyFilters();
-          this.toast.success('Produit supprime avec succes');
-          this.deletingId.set(null);
+          this.dashboard?.refrechData();
+          this.toast.success('AUTO.PRODUIT_SUPPRIME_AVEC_SUCCES');
         },
-        error: (err) => {
-          console.error('Erreur suppression produit:', err);
-          this.deletingId.set(null);
-        }
+        error: (err) => console.error('Erreur suppression produit:', err)
       });
     });
-  }
-
-  totalCount(): number {
-    return this.dataSource.data.length;
-  }
-
-  activeCount(): number {
-    return this.dataSource.data.filter((row) => row.actif).length;
-  }
-
-  bulkCount(): number {
-    return this.dataSource.data.filter((row) => row.type === 'VRAC').length;
-  }
-
-  getCategories(): string[] {
-    return [...new Set(
-      this.dataSource.data
-        .map((sku) => sku.category)
-        .filter((value): value is string => !!value)
-    )].sort((a, b) => a.localeCompare(b));
-  }
-
-  getProductName(sku: SKU): string {
-    return productDisplayName(sku);
-  }
-
-  formatProductType(type?: ProductType): string {
-    return productTypeLabel(type);
-  }
-
-  packagingSummary(sku: SKU): string {
-    if (sku.type === 'VRAC') {
-      return [sku.unitOfMeasure, sku.density ? `densite ${sku.density}` : '', sku.storageUnit]
-        .filter(Boolean)
-        .join(' / ') || '-';
-    }
-
-    const unitsPerCarton = productUnitsPerCarton(sku);
-    const cartonsPerPallet = productCartonsPerPallet(sku);
-
-    return [
-      sku.volume ? `${sku.volume} ml` : '',
-      sku.packagingType || '',
-      unitsPerCarton ? `${unitsPerCarton} u/carton` : '',
-      cartonsPerPallet ? `${cartonsPerPallet} c/palette` : ''
-    ].filter(Boolean).join(' / ') || '-';
   }
 }

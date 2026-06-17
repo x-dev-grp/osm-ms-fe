@@ -1,7 +1,7 @@
 <form [formGroup]="paymentForm" class="spm-mobile-root" (ngSubmit)="processPayment()">
   <!-- HEADER (Sticky) -->
   <header class="spm-mobile-header" role="banner">
-    <button type="button" class="icon-btn" mat-icon-button (click)="closePaymentForm()" aria-label="Fermer">
+    <button type="button" class="icon-btn" mat-icon-button (click)="closePaymentForm()" [attr.aria-label]="'COMMON.CLOSE' | translate">
       <mat-icon>close</mat-icon>
     </button>
 
@@ -14,7 +14,7 @@
             class="icon-chip small-label"
             mat-stroked-button
             disableRipple
-            aria-label="Direction de paiement">
+            [attr.aria-label]="'AUTO.DIRECTION_DE_PAIEMENT' | translate">
       <mat-icon>
         {{ derivedDirection === TransactionDirection.INBOUND ? 'call_received' : 'call_made' }}
       </mat-icon>
@@ -81,7 +81,7 @@
                [max]="data?.row?.unpaidAmount"
                step="0.001"
                required>
-        <span matSuffix class="suffix">TND</span>
+        <span matSuffix class="suffix">{{ 'OIL_SALES.CURRENCIES.TND' | translate }}</span>
 
         <mat-error *ngIf="paymentForm.get('amount')?.hasError('required')">
           {{ 'SUPPLIER_PAYMENT.ERRORS.AMOUNT_REQUIRED' | translate }}
@@ -109,7 +109,7 @@
         <mat-form-field appearance="outline" class="field">
           <mat-label>{{ 'SUPPLIER_PAYMENT.OIL_PRICE' | translate }}</mat-label>
           <input matInput type="number" formControlName="oilPrice" readonly disabled>
-          <span matSuffix class="suffix">TND</span>
+          <span matSuffix class="suffix">{{ 'OIL_SALES.CURRENCIES.TND' | translate }}</span>
         </mat-form-field>
       </div>
     </section>

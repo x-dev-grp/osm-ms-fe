@@ -5,7 +5,19 @@ import { environment } from '../../../environments/environment';
 import {
   FinancialTransaction
 } from '../models/financial-transaction.model';
-import { ApiResponse } from '../../shared/models/api-response';
+import { ApiResponse, ApiSingleResponse } from '../../shared/models/api-response';
+
+export interface SupplierFinancialSummary {
+  supplierId?: string;
+  transactionCount: number;
+  totalAmount: number;
+  totalPaidAmount: number;
+  totalUnpaidAmount: number;
+  inboundAmount: number;
+  outboundAmount: number;
+  inboundCount: number;
+  outboundCount: number;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -27,22 +39,22 @@ export class FinancialTransactionService {
   /**
    * Get transaction by ID
    */
-  getTransactionById(id: string): Observable<ApiResponse<FinancialTransaction>> {
-    return this.http.get<ApiResponse<FinancialTransaction>>(`${this.baseUrl}/fetch/${id}`);
+  getTransactionById(id: string): Observable<ApiSingleResponse<FinancialTransaction>> {
+    return this.http.get<ApiSingleResponse<FinancialTransaction>>(`${this.baseUrl}/fetch/${id}`);
   }
 
   /**
    * Create new transaction
    */
-  createTransaction(dto: FinancialTransaction): Observable<ApiResponse<FinancialTransaction>> {
-    return this.http.post<ApiResponse<FinancialTransaction>>(`${this.baseUrl}`, dto);
+  createTransaction(dto: FinancialTransaction): Observable<ApiSingleResponse<FinancialTransaction>> {
+    return this.http.post<ApiSingleResponse<FinancialTransaction>>(`${this.baseUrl}`, dto);
   }
 
   /**
    * Update transaction
    */
-  updateTransaction(dto: FinancialTransaction): Observable<ApiResponse<FinancialTransaction>> {
-    return this.http.put<ApiResponse<FinancialTransaction>>(`${this.baseUrl}/${dto.id}`, dto);
+  updateTransaction(dto: FinancialTransaction): Observable<ApiSingleResponse<FinancialTransaction>> {
+    return this.http.put<ApiSingleResponse<FinancialTransaction>>(`${this.baseUrl}/${dto.id}`, dto);
   }
 
   /**
@@ -53,15 +65,15 @@ export class FinancialTransactionService {
   /**
    * Approve transaction
    */
-  approveTransaction(id: string, approvedBy: string): Observable<ApiResponse<FinancialTransaction>> {
-    return this.http.post<ApiResponse<FinancialTransaction>>(`${this.baseUrl}/${id}/approve`, { approvedBy });
+  approveTransaction(id: string): Observable<ApiSingleResponse<FinancialTransaction>> {
+    return this.http.post<ApiSingleResponse<FinancialTransaction>>(`${this.baseUrl}/${id}/approve`, {});
   }
 
   /**
    * Reject transaction
    */
-  rejectTransaction(id: string, approvedBy: string, reason?: string): Observable<ApiResponse<FinancialTransaction>> {
-    return this.http.post<ApiResponse<FinancialTransaction>>(`${this.baseUrl}/${id}/reject`, { approvedBy, reason });
+  rejectTransaction(id: string, reason?: string): Observable<ApiSingleResponse<FinancialTransaction>> {
+    return this.http.post<ApiSingleResponse<FinancialTransaction>>(`${this.baseUrl}/${id}/reject`, { reason });
   }
 
 
@@ -73,6 +85,14 @@ export class FinancialTransactionService {
     return this.http.get<ApiResponse<FinancialTransaction>>(
       `${this.baseUrl}/bank/${bankId}`,
      );
+  }
+
+  getTransactionsBySupplier(supplierId: string): Observable<ApiResponse<FinancialTransaction>> {
+    return this.http.get<ApiResponse<FinancialTransaction>>(`${this.baseUrl}/supplier/${supplierId}`);
+  }
+
+  getSupplierFinancialSummary(supplierId: string): Observable<SupplierFinancialSummary> {
+    return this.http.get<SupplierFinancialSummary>(`${this.baseUrl}/supplier/${supplierId}/summary`);
   }
 
 }

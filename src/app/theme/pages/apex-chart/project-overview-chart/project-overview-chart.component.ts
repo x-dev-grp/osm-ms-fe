@@ -10,10 +10,11 @@ import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
 
 // const
 import { DARK, LIGHT } from 'src/app/theme/const';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-project-overview-chart',
-  imports: [SharedModule, NgApexchartsModule],
+  imports: [TranslateModule, SharedModule, NgApexchartsModule],
   templateUrl: './project-overview-chart.component.html',
   styleUrl: './project-overview-chart.component.scss'
 })

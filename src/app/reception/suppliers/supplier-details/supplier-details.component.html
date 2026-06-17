@@ -4,52 +4,186 @@
   <!-- Error message -->
   <div class="error-container">
     <mat-icon color="warn">error</mat-icon>
-    <p>Fournisseur non trouvé avec ce id !</p>
+    <p>{{ 'AUTO.FOURNISSEUR_NON_TROUVE_AVEC_CE_ID' | translate }}</p>
   </div>
 } @else {
-  <div class="history-cards-container">
-    <div class="history-cards">
+  <nav class="page-tabs">
+    <button class="page-tab-btn" [class.active]="activePageTab === 'operations'" (click)="loadPageTab('operations')">
+      <mat-icon>history</mat-icon>
+      {{ 'SUPPLIER.FINANCE.TAB_OPERATIONS' | translate }}
+    </button>
+    <button class="page-tab-btn" [class.active]="activePageTab === 'finance'" (click)="loadPageTab('finance')">
+      <mat-icon>account_balance_wallet</mat-icon>
+      {{ 'SUPPLIER.FINANCE.TAB_FINANCE' | translate }}
+    </button>
+    <button class="page-tab-btn" [class.active]="activePageTab === 'profile'" (click)="loadPageTab('profile')">
+      <mat-icon>badge</mat-icon>
+      {{ 'SUPPLIER.FINANCE.TAB_PROFILE' | translate }}
+    </button>
+  </nav>
 
-      <!-- Dynamic cards by OPERATION TYPE -->
-      @for (op of operationCards; track op.type) {
-        <mat-card
-          class="history-card"
-          [class.active]="activeOp === op.type"
-          tabindex="0"
-          (click)="loadOperation(op.type)">
-          <mat-card-content>
-            <div class="card-header">
-              <mat-icon class="card-icon" [color]="op.color">{{ op.icon }}</mat-icon>
-              <h3 class="card-title">{{ op.titleKey | translate }}</h3>
-            </div>
-
-            <div class="card-stats">
-              <div class="stat-item">
-                <span class="stat-label">{{ 'SUPPLIER.DETAILS.COUNT' | translate }}</span>
-                <span class="stat-value" [ngClass]="op.color">
-                  {{ (stats[op.type]?.count ?? 0) }}
-                </span>
+  @if (activePageTab === 'operations') {
+    <div class="history-cards-container">
+      <div class="history-cards">
+        @for (op of operationCards; track op.type) {
+          <mat-card
+            class="history-card"
+            [class.active]="activeOp === op.type"
+            tabindex="0"
+            (click)="loadOperation(op.type)">
+            <mat-card-content>
+              <div class="card-header">
+                <mat-icon class="card-icon" [color]="op.color">{{ op.icon }}</mat-icon>
+                <h3 class="card-title">{{ op.titleKey | translate }}</h3>
               </div>
 
-              <div class="stat-item">
-                <span class="stat-label">{{ 'SUPPLIER.DETAILS.TOTAL' | translate }}</span>
-                <span class="stat-value amount" [ngClass]="op.color">
-                  {{ (stats[op.type]?.total ?? 0) | currency:'TND' }}
-                </span>
-              </div>
-            </div>
-          </mat-card-content>
-        </mat-card>
-      }
+              <div class="card-stats">
+                <div class="stat-item">
+                  <span class="stat-label">{{ 'SUPPLIER.DETAILS.COUNT' | translate }}</span>
+                  <span class="stat-value" [ngClass]="op.color">
+                    {{ (stats[op.type]?.count ?? 0) }}
+                  </span>
+                </div>
 
+                <div class="stat-item">
+                  <span class="stat-label">{{ 'SUPPLIER.DETAILS.TOTAL' | translate }}</span>
+                  <span class="stat-value amount" [ngClass]="op.color">
+                    {{ (stats[op.type]?.total ?? 0) | currency:'TND' }}
+                  </span>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        }
+      </div>
     </div>
-  </div>
 
-  <div class="table-section">
-    <osm-dashboard
-      #dashboardByOperation
-      [config]="dashboardConfigs[activeOp]"
-      (applyAction)="handlePaymentAction($event)">
-    </osm-dashboard>
-  </div>
+    <div class="table-section">
+      <osm-dashboard
+        #dashboardByOperation
+        [config]="dashboardConfigs[activeOp]"
+        (applyAction)="handlePaymentAction($event)">
+      </osm-dashboard>
+    </div>
+  }
+
+  @if (activePageTab === 'finance') {
+    <section class="finance-overview">
+      @if (financeSummaryLoading) {
+        <div class="finance-loading">
+          <mat-spinner diameter="36"></mat-spinner>
+        </div>
+      } @else if (financeSummary) {
+        <div class="finance-summary-grid">
+          <mat-card class="summary-card">
+            <mat-card-content>
+              <span class="summary-label">{{ 'SUPPLIER.FINANCE.TOTAL_AMOUNT' | translate }}</span>
+              <span class="summary-value">{{ financeSummary.totalAmount | currency:'TND' }}</span>
+              <span class="summary-meta">{{ financeSummary.transactionCount }} {{ 'SUPPLIER.FINANCE.TRANSACTIONS' | translate }}</span>
+            </mat-card-content>
+          </mat-card>
+          <mat-card class="summary-card">
+            <mat-card-content>
+              <span class="summary-label">{{ 'SUPPLIER.FINANCE.PAID' | translate }}</span>
+              <span class="summary-value paid">{{ financeSummary.totalPaidAmount | currency:'TND' }}</span>
+            </mat-card-content>
+          </mat-card>
+          <mat-card class="summary-card">
+            <mat-card-content>
+              <span class="summary-label">{{ 'SUPPLIER.FINANCE.UNPAID' | translate }}</span>
+              <span class="summary-value unpaid">{{ financeSummary.totalUnpaidAmount | currency:'TND' }}</span>
+            </mat-card-content>
+          </mat-card>
+          <mat-card class="summary-card">
+            <mat-card-content>
+              <span class="summary-label">{{ 'SUPPLIER.FINANCE.INBOUND' | translate }}</span>
+              <span class="summary-value inbound">{{ financeSummary.inboundAmount | currency:'TND' }}</span>
+              <span class="summary-meta">{{ financeSummary.inboundCount }}</span>
+            </mat-card-content>
+          </mat-card>
+          <mat-card class="summary-card">
+            <mat-card-content>
+              <span class="summary-label">{{ 'SUPPLIER.FINANCE.OUTBOUND' | translate }}</span>
+              <span class="summary-value outbound">{{ financeSummary.outboundAmount | currency:'TND' }}</span>
+              <span class="summary-meta">{{ financeSummary.outboundCount }}</span>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      }
+    </section>
+
+    @if (financeDashboardConfig) {
+      <div class="table-section">
+        <osm-dashboard
+          #financeDashboard
+          [config]="financeDashboardConfig"
+          (applyAction)="handleFinanceAction($event)">
+        </osm-dashboard>
+      </div>
+    }
+  }
+
+  @if (activePageTab === 'profile') {
+    <section class="profile-section">
+      <mat-card class="profile-card">
+        <mat-card-content>
+          <h3>{{ supplierDisplayName || ('SUPPLIER.FIELDS.NAME' | translate) }}</h3>
+          <div class="profile-grid">
+            <div class="profile-item">
+              <span class="profile-label">{{ 'SUPPLIER.FIELDS.SUPPLIER_TYPE' | translate }}</span>
+              <span class="profile-value">{{ supplierTypeLabel || '—' }}</span>
+            </div>
+            <div class="profile-item">
+              <span class="profile-label">{{ 'SUPPLIER.FIELDS.PHONE' | translate }}</span>
+              <span class="profile-value">{{ supplier?.phone || '—' }}</span>
+            </div>
+            <div class="profile-item">
+              <span class="profile-label">{{ 'SUPPLIER.FIELDS.EMAIL' | translate }}</span>
+              <span class="profile-value">{{ supplier?.email || '—' }}</span>
+            </div>
+            <div class="profile-item">
+              <span class="profile-label">{{ 'SUPPLIER.FIELDS.ADDRESS' | translate }}</span>
+              <span class="profile-value">{{ supplier?.address || '—' }}</span>
+            </div>
+            <div class="profile-item">
+              <span class="profile-label">{{ 'SUPPLIER.FIELDS.REGION' | translate }}</span>
+              <span class="profile-value">{{ supplier?.region?.name || '—' }}</span>
+            </div>
+            <div class="profile-item">
+              <span class="profile-label">{{ 'CUSTOMERS.FIELDS.MATRICULE_FISCAL' | translate }}</span>
+              <span class="profile-value">{{ supplier?.matriculeFiscal || '—' }}</span>
+            </div>
+            <div class="profile-item">
+              <span class="profile-label">{{ 'SUPPLIER.FIELDS.RIB' | translate }}</span>
+              <span class="profile-value">{{ supplier?.rib || '—' }}</span>
+            </div>
+            <div class="profile-item">
+              <span class="profile-label">{{ 'SUPPLIER.FIELDS.BANK_NAME' | translate }}</span>
+              <span class="profile-value">{{ supplier?.bankName || '—' }}</span>
+            </div>
+            <div class="profile-item">
+              <span class="profile-label">{{ 'SUPPLIER.FIELDS.HAS_STORAGE' | translate }}</span>
+              <span class="profile-value">
+                {{ supplier?.hasStorage ? ('COMMON.YES' | translate) : ('COMMON.NO' | translate) }}
+              </span>
+            </div>
+          </div>
+
+          @if (showStorageInfo()) {
+            <div class="category-panel storage-panel">
+              <mat-icon>warehouse</mat-icon>
+              <p>{{ 'SUPPLIER.FINANCE.STORAGE_SUPPLIER_HINT' | translate }}</p>
+            </div>
+          }
+
+          @if (supplierTypeLabel) {
+            <div class="category-panel">
+              <h4>{{ 'SUPPLIER.FINANCE.CATEGORY_INFO' | translate }}</h4>
+              <p>{{ 'SUPPLIER.FINANCE.CATEGORY_TYPE' | translate }}: <strong>{{ supplierTypeLabel }}</strong></p>
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+    </section>
+  }
 }

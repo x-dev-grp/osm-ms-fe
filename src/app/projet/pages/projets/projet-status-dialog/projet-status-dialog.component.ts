@@ -9,6 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 
 import { ProjetDto } from '../../../models/TypeProduit';
+import { TranslateModule } from '@ngx-translate/core';
 
 export interface ProjetStatusDialogData {
   projet: ProjetDto;
@@ -24,7 +25,7 @@ type NormalizedStatus = 'CREATED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED' | 
 @Component({
   selector: 'app-projet-status-dialog',
   standalone: true,
-  imports: [
+  imports: [TranslateModule, 
     CommonModule,
     ReactiveFormsModule,
     MatDialogModule,

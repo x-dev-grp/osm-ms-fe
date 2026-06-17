@@ -141,16 +141,16 @@ export class DetailsReceptionComponent implements OnInit {
     }
 
     this.confirmationDialog.confirm({
-      title: 'Regenerate QR Code',
-      message: 'This will regenerate the QR code and may invalidate already printed physical QR labels.',
+      title: this.translate.instant('AUTO.REGENERATE_QR_CODE'),
+      message: this.translate.instant('AUTO.THIS_WILL_REGENERATE_THE_QR_CODE_AND_MAY_INVALIDATE_ALREADY_PRIN'),
       type: ConfirmationType.WARNING,
-      confirmText: 'Regenerate',
-      cancelText: 'Cancel',
+      confirmText: this.translate.instant('AUTO.REGENERATE'),
+      cancelText: this.translate.instant('ADMIN.CANCEL'),
       showIcon: true,
       destructive: true,
-      requiredText: 'OKAY',
-      requiredTextHint: 'To continue, type OKAY in the field below.',
-      requiredTextPlaceholder: 'Type OKAY'
+      requiredText: this.translate.instant('AUTO.OKAY'),
+      requiredTextHint: this.translate.instant('AUTO.TO_CONTINUE_TYPE_OKAY_IN_THE_FIELD_BELOW'),
+      requiredTextPlaceholder: this.translate.instant('AUTO.TYPE_OKAY')
     }).pipe(take(1)).subscribe((result) => {
       onResolved(!!result?.confirmed);
     });

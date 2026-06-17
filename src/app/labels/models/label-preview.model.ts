@@ -11,6 +11,7 @@ export interface LabelPreviewViewModel {
   lotNumber: string;
   legalDenomination: string;
   originCountry: string;
+  originDisplay?: string;
   netQuantity: string;
   qualityLabel: string;
   varietyLabel: string;
@@ -31,4 +32,9 @@ export interface LabelPreviewViewModel {
   publicCode?: string;
   status?: LabelContentStatus | string;
   statusLabel?: string;
+  ingredientDeclaration?: string;
+  evooLegalStatement?: string;
+  ean13?: string;
+  harvestYear?: string;
+  acidityLevel?: string;
 }

@@ -16,11 +16,12 @@ import { OrdreFabrication } from '../../../models/of.model';
 import { SharedModule } from '../../../../shared/shared.module';
 import { QualityService } from '../../../services/QualityService';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-quality-control-entry',
   standalone: true,
-  imports: [
+  imports: [TranslateModule,
     CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -71,7 +72,7 @@ export class QualityControlEntryComponent implements OnInit {
               sub.unsubscribe();
               this.onOfSelected();
             },
-            error: () => this.toast.error('Erreur chargement OF')
+            error: () => this.toast.error('AUTO.ERREUR_CHARGEMENT_OF')
           });
         }
       }
@@ -81,7 +82,7 @@ export class QualityControlEntryComponent implements OnInit {
   loadOFs(): void {
     this.ofService.getAll().subscribe({
       next: (data) => this.ofs = data,
-      error: () => this.toast.error('Erreur chargement OF')
+      error: () => this.toast.error('AUTO.ERREUR_CHARGEMENT_OF')
     });
   }
 
@@ -98,12 +99,12 @@ export class QualityControlEntryComponent implements OnInit {
           this.photosBase64 = {};
           this.buildForm();
         } else {
-          this.toast.error(res.message || 'Aucun point actif');
+          this.toast.error(res.message || 'AUTO.AUCUN_POINT_ACTIF');
         }
       },
       error: (err) => {
         console.error(err);
-        this.toast.error('Erreur lors du chargement des points');
+        this.toast.error('AUTO.ERREUR_LORS_DU_CHARGEMENT_DES_POINTS');
       }
     });
   }
@@ -129,7 +130,7 @@ export class QualityControlEntryComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = (ev: any) => {
         this.photosBase64[pointId] = ev.target.result.split(',')[1];
-        this.toast.info('Photo ajoutée');
+        this.toast.info('AUTO.PHOTO_AJOUTEE');
       };
       reader.readAsDataURL(file);
     };
@@ -175,7 +176,7 @@ export class QualityControlEntryComponent implements OnInit {
         next: () => {
           okCount++;
           if (okCount === total) {
-            this.toast.success('Contrôle qualité enregistré');
+            this.toast.success('AUTO.CONTROLE_QUALITE_ENREGISTRE');
             if (this.selectedOfId && this.selectedOfCode) {
               this.router.navigate(['/of/qualite/points'], {
                 queryParams: {
@@ -192,7 +193,7 @@ export class QualityControlEntryComponent implements OnInit {
         },
         error: (err) => {
           console.error(err);
-          this.toast.error('Erreur lors de l\'enregistrement');
+          this.toast.error('AUTO.ERREUR_LORS_DE_L_ENREGISTREMENT');
         }
       });
     }

@@ -17,7 +17,7 @@
           <span class="meta-pill">{{ preview.labelCategory || 'UNIT' }}</span>
         </div>
         <div class="lot-number">
-          <small>LOT N°</small>
+          <small>{{ 'AUTO.LOT_N' | translate }}</small>
           <strong>{{ preview.lotNumber || 'BROUILLON' }}</strong>
         </div>
       </div>
@@ -35,65 +35,124 @@
     </div>
   </div>
 
-  <div class="product-info">
+  <div class="product-info front-label">
     <h1 class="legal-name">{{ preview.legalDenomination || 'Huile d\'Olive' }}</h1>
+    <p class="category-line" *ngIf="preview.qualityLabel">{{ preview.qualityLabel }}</p>
     <p class="origin">
       <mat-icon>place</mat-icon>
-      {{ preview.originCountry || 'Tunisie' }}
+      {{ preview.originDisplay || ('Origine : ' + (preview.originCountry || 'Tunisie')) }}
     </p>
+    <p class="net-qty-front"><strong>{{ preview.netQuantity || '-' }}</strong></p>
   </div>
+
+  <p class="evoo-statement" *ngIf="preview.evooLegalStatement">{{ preview.evooLegalStatement }}</p>
 
   <div class="specs-grid">
     <div class="spec-item">
-      <span>Quantité</span>
+      <span>{{ 'OIL_CREDIT.FIELDS.QUANTITY' | translate }}</span>
       <strong>{{ preview.netQuantity || '-' }}</strong>
     </div>
     <div class="spec-item">
-      <span>Qualité</span>
+      <span>{{ 'OIL_TRANSACTION.DETAILS.QUALITY_GRADE' | translate }}</span>
       <strong>{{ preview.qualityLabel }}</strong>
     </div>
     <div class="spec-item">
-      <span>Variété</span>
+      <span>{{ 'DELIVERIES.FIELDS.OLIVE_VARIETY' | translate }}</span>
       <strong>{{ preview.varietyLabel }}</strong>
     </div>
     <div class="spec-item">
-      <span>D.D.M.</span>
+      <span>{{ 'AUTO.D_D_M' | translate }}</span>
       <strong>{{ preview.bestBeforeDate || '-' }}</strong>
     </div>
     <div class="spec-item">
-      <span>Date Cond.</span>
+      <span>{{ 'AUTO.DATE_COND' | translate }}</span>
       <strong>{{ preview.packagingDate || '-' }}</strong>
     </div>
     <div class="spec-item">
-      <span>Langue</span>
+      <span>{{ 'AUTO.LANGUE' | translate }}</span>
       <strong>{{ preview.language || 'FR' }}</strong>
     </div>
   </div>
 
   <div class="claims-section" *ngIf="preview.claimLabels.length > 0">
-    <label>Allégations Marketing</label>
+    <label>{{ 'AUTO.ALLEGATIONS_MARKETING' | translate }}</label>
     <div class="claims-pills">
       <span class="claim-pill" *ngFor="let claim of preview.claimLabels">{{ claim }}</span>
     </div>
   </div>
 
-  <div class="mentions-box">
+  <div class="mentions-box back-label">
+    <div class="mention span-full" *ngIf="preview.ingredientDeclaration">
+      <label>Ingrédients</label>
+      <p>{{ preview.ingredientDeclaration }}</p>
+    </div>
+
+    <div class="nutrition-section span-full" *ngIf="preview.nutritionTable">
+      <label class="nutrition-title">{{ preview.nutritionTable.title }}</label>
+      <p class="nutrition-serving" *ngIf="size !== 'miniature'">
+        <span><strong>{{ preview.nutritionTable.servingSizeLabel }}</strong> {{ preview.nutritionTable.servingSize }}</span>
+        <span><strong>{{ preview.nutritionTable.servingsPerPackLabel }}</strong> {{ preview.nutritionTable.servingsPerPack }}</span>
+      </p>
+      <div class="nutrition-grid">
+        <div class="nutrition-row header">
+          <span class="nutrition-param">{{ preview.nutritionTable.columns.parameter }}</span>
+          <span class="nutrition-value">{{ preview.nutritionTable.columns.per100 }}</span>
+        </div>
+        <div class="nutrition-row" *ngFor="let row of preview.nutritionTable.rows" [class.is-sub]="row.key === 'acides_gras_satures' || row.key === 'acides_gras_trans'">
+          <span class="nutrition-param">{{ row.parameter }}</span>
+          <span class="nutrition-value">{{ row.per100 }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="composition-section span-full" *ngIf="preview.compositionEstimate?.length && size !== 'miniature'">
+      <label>Composition estimée</label>
+      <div class="composition-grid">
+        <div class="composition-row header">
+          <span>Paramètre</span>
+          <span>/ 100 ml</span>
+        </div>
+        <div class="composition-row" *ngFor="let entry of preview.compositionEstimate">
+          <span>{{ entry.label }}</span>
+          <span>{{ entry.per100ml || entry.value }}</span>
+        </div>
+      </div>
+    </div>
+
     <div class="mention" *ngIf="preview.extractionMethod">
-      <label>Extraction</label>
+      <label>{{ 'AUTO.EXTRACTION' | translate }}</label>
       <p>{{ preview.extractionMethod }}</p>
     </div>
     <div class="mention">
-      <label>Stockage</label>
+      <label>{{ 'AUTO.STOCKAGE' | translate }}</label>
       <p>{{ preview.storageConditions }}</p>
     </div>
     <div class="mention span-full" *ngIf="preview.sensoryProfile">
       <label>{{ preview.sensoryFromQualityControl ? 'Contrôle qualité après filtration' : 'Profil Sensoriel' }}</label>
       <p>{{ preview.sensoryProfile }}</p>
     </div>
+
+    <div class="mention" *ngIf="preview.harvestYear">
+      <label>Récolte</label>
+      <p>{{ preview.harvestYear }}</p>
+    </div>
+
+    <div class="mention" *ngIf="preview.acidityLevel">
+      <label>Acidité</label>
+      <p>{{ preview.acidityLevel }}</p>
+    </div>
+
+    <div class="mention span-full ean-barcode-block" *ngIf="preview.ean13">
+      <label>EAN-13</label>
+      <app-ean-barcode
+        [value]="preview.ean13"
+        [size]="size === 'full' ? 'full' : 'miniature'"
+      ></app-ean-barcode>
+    </div>
   </div>
 
   <div class="qc-section" *ngIf="preview.qualityControls.length > 0">
-    <label>Contrôle Qualité</label>
+    <label>{{ 'CONTROLE_QUALITE.TITLE' | translate }}</label>
     <div class="qc-grid">
       <div class="qc-item" *ngFor="let qc of preview.qualityControls">
         <span>{{ qc.label }}</span>
@@ -102,15 +161,21 @@
     </div>
   </div>
 
-  <div class="card-footer">
+  <div class="card-footer back-footer">
     <div class="responsible">
-      <small>Responsable</small>
+      <small>Produit et embouteillé par</small>
       <strong>{{ preview.responsibleName || '-' }}</strong>
       <address>{{ preview.responsibleAddress }}</address>
     </div>
-    <div class="qr-placeholder">
-      <mat-icon>qr_code_2</mat-icon>
+    <div class="qr-placeholder" *ngIf="preview.publicCode; else qrIcon">
+      <small>QR</small>
+      <code>{{ preview.publicCode }}</code>
     </div>
+    <ng-template #qrIcon>
+      <div class="qr-placeholder">
+        <mat-icon>qr_code_2</mat-icon>
+      </div>
+    </ng-template>
   </div>
   </div>
 </div>

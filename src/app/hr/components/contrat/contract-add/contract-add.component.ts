@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
 import { ContractService } from '../../../services/contract-service';
 import { Contract, ContractStatus, ContractType } from '../../../model/contract.model';
 import { ToastService } from '../../../../shared/services/toast.service';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService, TranslateModule } from '@ngx-translate/core';
 import { CardComponent } from '../../../../theme/components/card/card.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -25,7 +25,7 @@ import { EmployeeService } from '../../../services/employee-service';
   standalone: true,
   templateUrl: './contract-add.component.html',
   styleUrls: ['./contract-add.component.scss'],
-  imports: [
+  imports: [TranslateModule,
     CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -189,13 +189,13 @@ export class ContractAddComponent implements OnInit {
 
     this.contractService.addContractEmployee(this.employeeId, contract).subscribe({
       next: (res: any) => {
-        this.toast.success(res.message || ' enregistrés avec succès.');
+        this.toast.success(res.message || 'AUTO.ENREGISTRES_AVEC_SUCCES');
         this.loading = false; // Fix: Reset loading state on success
         this.router.navigate(['/hr/employee/fetch', this.employeeId]);
       },
       error: (err) => {
         console.log(err);
-        this.toast.error("Erreur lors de l'enregistrement ");
+        this.toast.error('AUTO.ERREUR_LORS_DE_L_ENREGISTREMENT');
         this.loading = false; // Fix: Reset loading state on error
       }
     });

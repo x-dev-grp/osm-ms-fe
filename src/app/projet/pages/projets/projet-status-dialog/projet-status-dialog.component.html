@@ -1,27 +1,28 @@
 <h1 mat-dialog-title class="dialog-title">
   <mat-icon>swap_horiz</mat-icon>
-  Changer le statut
+
+  {{ 'AUTO.CHANGER_LE_STATUT' | translate }}
 </h1>
 
 <div mat-dialog-content class="dialog-content">
   <div class="info-grid">
     <div class="info-card">
-      <span class="label">Projet</span>
+      <span class="label">{{ 'OSM_DASHBOARD.ACTIONS.PROJET' | translate }}</span>
       <strong>{{ data.projet.code || '-' }}</strong>
     </div>
 
     <div class="info-card">
-      <span class="label">Client</span>
+      <span class="label">{{ 'OLIVE_RECEPTION.FORM.FIELDS.CLIENT' | translate }}</span>
       <strong>{{ data.projet.client.nom || '-' }}</strong>
     </div>
 
     <div class="info-card">
-      <span class="label">Produit</span>
+      <span class="label">{{ 'OIL_CONTAINER.DASHBOARD.FIELDS.SKU' | translate }}</span>
       <strong>{{ data.projet.typeProduit || '-' }}</strong>
     </div>
 
     <div class="info-card">
-      <span class="label">Statut actuel</span>
+      <span class="label">{{ 'AUTO.STATUT_ACTUEL' | translate }}</span>
       <span class="status-chip">
         {{ getCurrentStatusLabel() }}
       </span>
@@ -30,7 +31,7 @@
 
   <form [formGroup]="form">
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Nouveau statut *</mat-label>
+      <mat-label>{{ 'AUTO.NOUVEAU_STATUT' | translate }}</mat-label>
       <mat-select formControlName="newStatus">
         @for (s of getAvailableStatuses(); track s.value) {
           <mat-option [value]="s.value">
@@ -41,29 +42,32 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Note (optionnel)</mat-label>
+      <mat-label>{{ 'AUTO.NOTE_OPTIONNEL' | translate }}</mat-label>
       <textarea
         matInput
         rows="4"
         formControlName="note"
-        placeholder="Raison du changement de statut">
+        [placeholder]="'AUTO.RAISON_DU_CHANGEMENT_DE_STATUT' | translate">
       </textarea>
     </mat-form-field>
   </form>
 
   <div class="no-transition" *ngIf="!hasAvailableStatuses()">
-    Aucun changement de statut autorise pour cet etat.
+
+    {{ 'AUTO.AUCUN_CHANGEMENT_DE_STATUT_AUTORISE_POUR_CET_ETAT' | translate }}
   </div>
 </div>
 
 <div mat-dialog-actions align="end">
   <button mat-stroked-button type="button" (click)="onCancel()">
-    Annuler
+
+    {{ 'ADMIN.CANCEL' | translate }}
   </button>
 
   <button mat-flat-button color="primary" type="button" [disabled]="!canSubmit()" (click)="onSave()">
     <mat-icon>save</mat-icon>
-    Enregistrer
+
+    {{ 'BANK_ACCOUNTS.ACTIONS.SAVE' | translate }}
   </button>
 </div>
 

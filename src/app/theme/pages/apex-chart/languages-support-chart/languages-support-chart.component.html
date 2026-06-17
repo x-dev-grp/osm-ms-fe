@@ -1,12 +1,12 @@
 <app-card [showHeader]="false">
   <div class="flex align-item-center justify-content-between">
-    <div class="f-w-600 f-16">Languages support</div>
+    <div class="f-w-600 f-16">{{ 'AUTO.LANGUAGES_SUPPORT' | translate }}</div>
     <a [matMenuTriggerFor]="paymentInfo" class="avatar avatar-s hover"><i class="ti ti-dots-vertical f-18"></i></a>
     <mat-menu #paymentInfo="matMenu">
-      <a href="javascript:" mat-menu-item>Name</a>
-      <a href="javascript:" mat-menu-item>Date</a>
-      <a href="javascript:" mat-menu-item>Rating</a>
-      <a href="javascript:" mat-menu-item>Unread</a>
+      <a href="javascript:" mat-menu-item>{{ 'BASE_TYPE.FIELDS.NAME' | translate }}</a>
+      <a href="javascript:" mat-menu-item>{{ 'PDF.DATE' | translate }}</a>
+      <a href="javascript:" mat-menu-item>{{ 'AUTO.RATING' | translate }}</a>
+      <a href="javascript:" mat-menu-item>{{ 'AUTO.UNREAD' | translate }}</a>
     </mat-menu>
   </div>
   <div class="flex align-item-center">
@@ -17,8 +17,9 @@
     </div>
     <div class="flex-grow-1 m-l-15">
       <div class="f-w-500">
-        Update version
-        <span class="user-status bg-success-50 text-success-500">V1.1.0</span>
+
+        {{ 'AUTO.UPDATE_VERSION' | translate }}
+        <span class="user-status bg-success-50 text-success-500">{{ 'AUTO.V1_1_0' | translate }}</span>
       </div>
     </div>
   </div>

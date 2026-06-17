@@ -17,13 +17,14 @@ import { Field } from '../../models/dashboard-config';
 import { DashboardStore } from '../../services/dashboard-state.service';
 import { SearchDetails } from 'src/app/shared/models/advanced-search/searchDetails';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'slider',
   templateUrl: './slider.component.html',
   styleUrls: ['./slider.component.scss'],
   standalone: true,
-  imports: [
+  imports: [TranslateModule, 
     CommonModule,
     MatButtonModule,
     MatIconModule,

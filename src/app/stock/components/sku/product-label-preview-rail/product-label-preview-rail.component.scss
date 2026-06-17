@@ -1,0 +1,134 @@
+$olive-50: #f7f8f3;
+$olive-100: #eef1e6;
+$olive-200: #dde4cc;
+$olive-500: #7d8f4e;
+$olive-600: #5f6f38;
+$olive-700: #4a572c;
+
+.rail-card.label-preview-rail {
+  border: 1px solid $olive-200;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.label-preview-rail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 1rem;
+}
+
+.rail-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.rail-title {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  min-width: 0;
+
+  mat-icon {
+    color: $olive-600;
+    margin-top: 0.1rem;
+  }
+
+  strong {
+    display: block;
+    font-size: 0.95rem;
+    color: $olive-700;
+  }
+
+  small {
+    display: block;
+    color: #6d7558;
+    font-size: 0.78rem;
+  }
+}
+
+.status-pill {
+  flex-shrink: 0;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: $olive-100;
+  color: $olive-700;
+  font-size: 0.72rem;
+  font-weight: 600;
+
+  &.is-final {
+    background: #e8f3df;
+    color: #3f6b2d;
+  }
+}
+
+.rail-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 2rem 1rem;
+  color: #6d7558;
+  font-size: 0.85rem;
+}
+
+.rail-preview {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.rail-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  a {
+    justify-content: flex-start;
+  }
+}
+
+.rail-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.55rem;
+  padding: 1.25rem 0.75rem 0.5rem;
+
+  h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: $olive-700;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.82rem;
+    line-height: 1.45;
+    color: #6d7558;
+  }
+}
+
+.placeholder-art {
+  display: grid;
+  place-items: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 16px;
+  border: 1px dashed $olive-200;
+  background: $olive-50;
+  color: $olive-500;
+
+  mat-icon {
+    width: 2rem;
+    height: 2rem;
+    font-size: 2rem;
+  }
+}
+
+.create-label-btn {
+  margin-top: 0.35rem;
+  width: 100%;
+}

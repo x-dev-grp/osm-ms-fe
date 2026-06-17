@@ -35,6 +35,7 @@ import { PaymentDetailsDialogComponent } from './payment-details-dialog/payment-
 import { getProductionPdfConfig } from '../pdf-config/production-pdf.config';
 import { getOilPdfConfig } from '../pdf-config/reception-oil-pdf.config';
 import { getControlQualitePdfConfig } from '../pdf-config/controlQualite.config';
+import { TranslateModule } from '@ngx-translate/core';
 
 /* ──────────────────────────────────────────────────────────── */
 /* validators                                                   */
@@ -54,7 +55,7 @@ export const netNotGreaterThanGross: ValidatorFn = (g: AbstractControl): Validat
 @Component({
   selector: 'app-oil-reception',
   standalone: true,
-  imports: [
+  imports: [TranslateModule,
     CommonModule,
     MatButtonModule,
     MatTableModule,
@@ -196,7 +197,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
         this.loading = false;
       },
       error: () => {
-        this.toast.error('Erreur lors du chargement des données initiales.');
+        this.toast.error('AUTO.ERREUR_LORS_DU_CHARGEMENT_DES_DONNEES_INITIALES');
         this.loading = false;
       }
     });
@@ -292,12 +293,12 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
 
         default:
           console.warn(`[OilReception] Unknown action: ${e.action} for delivery: ${e.row.lotNumber}`);
-          this.toast.info(`Action non reconnue: ${e.action}`);
+          this.toast.info('AUTO.ACTION_NON_RECONNUE', { value0: e.action });
           break;
       }
     } catch (error) {
       console.error(`[OilReception] Error processing action ${e.action} for delivery ${e.row.lotNumber}:`, error);
-      this.toast.error(`Erreur lors du traitement de l'action: ${e.action}`);
+      this.toast.error('AUTO.ERREUR_LORS_DU_TRAITEMENT_DE_L_ACTION', { value0: e.action });
     }
   }
 
@@ -318,7 +319,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
         this.toast.success();
       },
       error: () => {
-        this.toast.error("Erreur lors de l'enregistrement du prix.");
+        this.toast.error('AUTO.ERREUR_LORS_DE_L_ENREGISTREMENT_DU_PRIX');
         this.isLoading = false;
       }
     });
@@ -373,7 +374,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
             const validationResult = this.validatePaymentData(row.unitPrice, row.oilQuantity, row.paidAmount, row.unpaidAmount);
             if (!validationResult.isValid) {
               console.error('[OilReception] Payment validation failed:', validationResult.error);
-              this.toast.error(validationResult.error || 'Erreur de validation');
+              this.toast.error(validationResult.error || 'OIL_TRANSACTIONS.FORM.VALIDATION.CAPACITY');
               return;
             }
             const dto = {
@@ -394,7 +395,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
               error: (error) => {
                 console.error(`[OilReception] Error processing payment:`, error);
                 const errorMessage = this.getErrorMessageFromError(error);
-                this.toast.error(`Erreur lors du traitement du paiement: ${errorMessage}`);
+                this.toast.error('AUTO.ERREUR_LORS_DU_TRAITEMENT_DU_PAIEMENT', { value0: errorMessage });
               },
               complete: () => {
                 this.isLoading = false;
@@ -460,26 +461,26 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
     // Comprehensive form validation
     if (!this.paymentDetailsForm) {
       console.error('[OilReception] Payment details form is not initialized');
-      this.toast.warning('Formulaire de paiement non initialisé');
+      this.toast.warning('AUTO.FORMULAIRE_DE_PAIEMENT_NON_INITIALISE');
       return;
     }
 
     if (!this.paymentDetailsForm.valid) {
       console.error('[OilReception] Payment details form is invalid:', this.paymentDetailsForm.errors);
       this.logFormValidationErrors();
-      this.toast.warning('Formulaire de paiement invalide. Veuillez vérifier les champs.');
+      this.toast.warning('AUTO.FORMULAIRE_DE_PAIEMENT_INVALIDE_VEUILLEZ_VERIFIER_LES_CHAMPS');
       return;
     }
 
     if (!this.selectedRow) {
       console.error('[OilReception] No selected row for payment confirmation');
-      this.toast.warning('Aucune réception sélectionnée');
+      this.toast.warning('AUTO.AUCUNE_RECEPTION_SELECTIONNEE');
       return;
     }
 
     if (!this.selectedRow.id) {
       console.error('[OilReception] Selected row has no ID');
-      this.toast.warning('ID de réception manquant');
+      this.toast.warning('AUTO.ID_DE_RECEPTION_MANQUANT');
       return;
     }
 
@@ -496,7 +497,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
       const validationResult = this.validatePaymentData(unitPrice, quantity, total, unpaidAmount);
       if (!validationResult.isValid) {
         console.error('[OilReception] Payment validation failed:', validationResult.error);
-        this.toast.error(validationResult.error || 'Erreur de validation');
+        this.toast.error(validationResult.error || 'OIL_TRANSACTIONS.FORM.VALIDATION.CAPACITY');
         return;
       }
 
@@ -532,7 +533,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
         error: (error) => {
           console.error(`[OilReception] Error processing payment:`, error);
           const errorMessage = this.getErrorMessageFromError(error);
-          this.toast.error(`Erreur lors du traitement du paiement: ${errorMessage}`);
+          this.toast.error('AUTO.ERREUR_LORS_DU_TRAITEMENT_DU_PAIEMENT', { value0: errorMessage });
         },
         complete: () => {
           this.isLoading = false;
@@ -540,7 +541,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
       });
     } catch (error) {
       console.error(`[OilReception] Unexpected error during payment confirmation:`, error);
-      this.toast.error('Erreur inattendue lors de la confirmation du paiement');
+      this.toast.error('AUTO.ERREUR_INATTENDUE_LORS_DE_LA_CONFIRMATION_DU_PAIEMENT');
       this.isLoading = false;
     }
   }

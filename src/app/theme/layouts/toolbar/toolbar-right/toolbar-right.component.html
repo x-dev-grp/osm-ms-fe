@@ -4,8 +4,8 @@
     <mat-form-field appearance="fill" subscriptSizing="dynamic" class="global-search-field">
       <input
         matInput
-        aria-label="Recherche globale"
-        placeholder="Recherche globale"
+        [attr.aria-label]="'AUTO.RECHERCHE_GLOBALE' | translate"
+        [placeholder]="'AUTO.RECHERCHE_GLOBALE' | translate"
         [(ngModel)]="searchCode"
         (keyup.enter)="Search()"
       />
@@ -13,7 +13,7 @@
         matSuffix
         mat-icon-button
         type="button"
-        aria-label="Lancer la recherche globale"
+        [attr.aria-label]="'AUTO.LANCER_LA_RECHERCHE_GLOBALE' | translate"
         (click)="Search()"
         [disabled]="searching"
       >
@@ -22,7 +22,7 @@
     </mat-form-field>
   </div>
 
-  <button [matMenuTriggerFor]="languages" aria-label="mode" class="header-item" mat-button>
+  <button [matMenuTriggerFor]="languages" [attr.aria-label]="'AUTO.MODE' | translate" class="header-item" mat-button>
     <a class="pc-head-link">
       <svg class="pc-icon">
         <use xlink:href="assets/fonts/custom-icon.svg#custom-global"></use>
@@ -30,21 +30,21 @@
     </a>
   </button>
 
-  <button [matMenuTriggerFor]="user" aria-label="mode" class="header-item" mat-button>
+  <button [matMenuTriggerFor]="user" [attr.aria-label]="'AUTO.MODE' | translate" class="header-item" mat-button>
     <a class="pc-head-link">
       <img alt="user-image" class="user-avatar" src="assets/images/user/avatar-2.png" />
     </a>
   </button>
 
   <mat-menu #languages="matMenu" xPosition="before">
-    <button mat-menu-item (click)="useLanguage('en')">English</button>
-    <button mat-menu-item (click)="useLanguage('fr')">Francais</button>
-    <button mat-menu-item (click)="useLanguage('ar')">Arabic</button>
+    <button mat-menu-item (click)="useLanguage('en')">{{ 'AUTO.ENGLISH' | translate }}</button>
+    <button mat-menu-item (click)="useLanguage('fr')">{{ 'AUTO.FRANCAIS' | translate }}</button>
+    <button mat-menu-item (click)="useLanguage('ar')">{{ 'AUTO.ARABIC' | translate }}</button>
   </mat-menu>
 
   <mat-menu #user="matMenu" class="dropdown-user-profile" xPosition="before">
     <div class="dropdown-header flex align-item-center justify-content-between">
-      <div class="user-title f-16 f-w-600">Profile</div>
+      <div class="user-title f-16 f-w-600">{{ 'Profile' | translate }}</div>
     </div>
     <ng-scrollbar [dir]="direction" visibility="hover">  <!-- ✅ direction typée correctement -->
       <div class="dropdown-body">
@@ -61,10 +61,10 @@
         </div>
         <mat-divider class="m-y-15"></mat-divider>
         <app-card [showHeader]="false" [padding]="16">  <!-- ✅ [padding]="16" au lieu de padding="16" -->
-          <div class="m-b-15 mat-body f-w-500">Manage</div>
+          <div class="m-b-15 mat-body f-w-500">{{ 'AUTO.MANAGE' | translate }}</div>
           <a [routerLink]="['/application/profile/account/account']" class="dropdown-item text-muted" href="javascript:">
             <i class="ti ti-user"></i>
-            <div class="m-b-0 mat-body">My Account</div>
+            <div class="m-b-0 mat-body">{{ 'AUTO.MY_ACCOUNT' | translate }}</div>
           </a>
           <a [routerLink]="['/settings/general-config']" class="dropdown-item text-muted" href="javascript:">
             <i class="ti ti-settings"></i>
@@ -73,24 +73,24 @@
         </app-card>
         <mat-divider class="m-y-15"></mat-divider>
         <app-card [showHeader]="false" [padding]="16">  <!-- ✅ [padding]="16" -->
-          <div class="m-b-15 mat-body f-w-500">Language</div>
+          <div class="m-b-15 mat-body f-w-500">{{ 'AUTO.LANGUAGE' | translate }}</div>
           <a (click)="useLanguage('en')" class="dropdown-item text-muted" href="javascript:">
             <svg class="pc-icon m-r-10">
               <use xlink:href="assets/fonts/custom-icon.svg#custom-global"></use>
             </svg>
-            <div class="m-b-0 mat-body">English (uk)</div>
+            <div class="m-b-0 mat-body">{{ 'AUTO.ENGLISH_UK' | translate }}</div>
           </a>
           <a (click)="useLanguage('fr')" class="dropdown-item text-muted" href="javascript:">
             <svg class="pc-icon m-r-10">
               <use xlink:href="assets/fonts/custom-icon.svg#custom-global"></use>
             </svg>
-            <div class="m-b-0 mat-body">français</div>
+            <div class="m-b-0 mat-body">{{ 'AUTO.FRANCAIS' | translate }}</div>
           </a>
           <a (click)="useLanguage('ar')" class="dropdown-item text-muted" href="javascript:">
             <svg class="pc-icon m-r-10">
               <use xlink:href="assets/fonts/custom-icon.svg#custom-global"></use>
             </svg>
-            <div class="m-b-0 mat-body">Arabe</div>
+            <div class="m-b-0 mat-body">{{ 'AUTO.ARABE' | translate }}</div>
           </a>
         </app-card>
         <mat-divider class="m-b-15 m-t-15"></mat-divider>
@@ -100,7 +100,8 @@
               <svg class="pc-icon m-r-10">
                 <use xlink:href="assets/fonts/custom-icon.svg#custom-logout-1-outline"></use>
               </svg>
-              Logout
+
+              {{ 'AUTO.LOGOUT' | translate }}
             </div>
           </button>
         </div>

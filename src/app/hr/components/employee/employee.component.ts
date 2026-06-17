@@ -6,11 +6,11 @@ import {Employee} from '../../model/employee-model';
 import {CurrencyPipe} from "@angular/common";
 import {MatCard, MatCardContent} from "@angular/material/card";
 import {MatIcon} from "@angular/material/icon";
-import {TranslatePipe} from "@ngx-translate/core";
+import { TranslatePipe, TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-employee',
-  imports: [OsmDashboard,  MatCard, MatCardContent, MatIcon, ],
+  imports: [TranslateModule, OsmDashboard,  MatCard, MatCardContent, MatIcon, ],
   templateUrl: './employee.component.html',
   standalone: true,
   styleUrl: './employee.component.scss'

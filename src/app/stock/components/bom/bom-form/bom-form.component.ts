@@ -5,23 +5,24 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ArticleService } from '../../../services/article.service';
 import { Article, UniteMesure, UniteMesureOption } from '../../../models/article.model';
 import { Bom } from "../../../models/Bom";
-import { Product, productDisplayName } from "../../../models/sku.model";
+import { FinalProduct, finalProductDisplayName } from "../../../models/final-product.model";
 import { BomService } from "../../../services/BomService";
-import { SKUService } from "../../../services/sku.service";
+import { FinalProductService } from "../../../services/final-product.service";
 import { ToastService } from '../../../../shared/services/toast.service';
 import { MaterialNeedsPreviewComponent } from '../../../../shared/components/material-needs-preview/material-needs-preview.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 @Component({
   selector: 'app-bom-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, MaterialNeedsPreviewComponent],
+  imports: [TranslateModule, CommonModule, ReactiveFormsModule, RouterLink, MaterialNeedsPreviewComponent],
   templateUrl: './bom-form.component.html',
   styleUrls: ['./bom-form.component.scss']
 })
 export class BomFormComponent implements OnInit {
   bomForm!: FormGroup;
-  products: Product[] = [];
+  finalProducts: FinalProduct[] = [];
   articles: Article[] = [];
   unitOptions: UniteMesureOption[] = Object.values(UniteMesure).map((value) => ({ value, label: value }));
   loading = false;
@@ -29,22 +30,23 @@ export class BomFormComponent implements OnInit {
   isEditMode = false;
   bomId: string | null = null;
   bom: Bom | null = null;
-  private preselectedProductId: string | null = null;
+  private preselectedFinalProductId: string | null = null;
 
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     private bomService: BomService,
-    private skuService: SKUService,
+    private finalProductService: FinalProductService,
     private articleService: ArticleService,
     private toast: ToastService
   ) { }
 
   ngOnInit(): void {
     this.initForm();
-    this.preselectedProductId = this.route.snapshot.queryParamMap.get('productId');
-    this.loadSkus();
+    this.preselectedFinalProductId = this.route.snapshot.queryParamMap.get('finalProductId')
+      || this.route.snapshot.queryParamMap.get('productId');
+    this.loadFinalProducts();
     this.loadArticles();
 
     const id = this.route.snapshot.paramMap.get('id');
@@ -63,7 +65,7 @@ export class BomFormComponent implements OnInit {
 
   private initForm(): void {
     this.bomForm = this.fb.group({
-      productId: ['', Validators.required],
+      finalProductId: ['', Validators.required],
       active: [true],
       lines: this.fb.array([])
     });
@@ -85,14 +87,14 @@ export class BomFormComponent implements OnInit {
     this.lines.removeAt(index);
   }
 
-  loadSkus(): void {
-    this.skuService.getActiveProductsByType('NON_VRAC').subscribe({
-      next: (data: Product[]) => {
-        this.products = data;
-        if (!this.isEditMode && this.preselectedProductId) {
-          const exists = this.products.some((p) => p.id === this.preselectedProductId);
+  loadFinalProducts(): void {
+    this.finalProductService.getActiveFinalProductsByType('NON_VRAC').subscribe({
+      next: (data: FinalProduct[]) => {
+        this.finalProducts = data;
+        if (!this.isEditMode && this.preselectedFinalProductId) {
+          const exists = this.finalProducts.some((p) => p.id === this.preselectedFinalProductId);
           if (exists) {
-            this.bomForm.patchValue({ productId: this.preselectedProductId });
+            this.bomForm.patchValue({ finalProductId: this.preselectedFinalProductId });
           }
         }
       },
@@ -124,7 +126,7 @@ export class BomFormComponent implements OnInit {
       next: (bom) => {
         this.bom = bom;
         this.bomForm.patchValue({
-          productId: bom.productId || bom.skuId,
+          finalProductId: bom.finalProductId || bom.productId || bom.skuId,
           version: bom.version,
           active: bom.active ?? false
         });
@@ -154,7 +156,7 @@ export class BomFormComponent implements OnInit {
 
   onSubmit(): void {
     if (this.lines.length === 0) {
-      this.toast.warning('Ajoutez au moins une ligne à la nomenclature');
+      this.toast.warning('AUTO.AJOUTEZ_AU_MOINS_UNE_LIGNE_A_LA_NOMENCLATURE');
       return;
     }
     if (this.bomForm.invalid) {
@@ -165,7 +167,7 @@ export class BomFormComponent implements OnInit {
     this.isSubmitting = true;
     const formValue = this.bomForm.getRawValue();
     const payload: Bom = {
-      productId: formValue.productId,
+      finalProductId: formValue.finalProductId,
       active: !!formValue.active,
       lines: formValue.lines,
       version: this.bom?.version || ''
@@ -175,26 +177,26 @@ export class BomFormComponent implements OnInit {
       this.bomService.update(this.bomId, payload).subscribe({
         next: () => {
           this.isSubmitting = false;
-          this.toast.success('Nomenclature mise à jour');
+          this.toast.success('AUTO.NOMENCLATURE_MISE_A_JOUR');
           this.router.navigate(['/stock/boms']);
         },
         error: (err) => {
           console.error('Erreur mise à jour', err);
           this.isSubmitting = false;
-          this.toast.error(err?.error?.error || err?.error?.message || 'Erreur lors de la mise à jour');
+          this.toast.error(err?.error?.error || err?.error?.message || 'TRANSACTIONS.ERRORS.UPDATE_ERROR');
         }
       });
     } else {
       this.bomService.create(payload).subscribe({
         next: () => {
           this.isSubmitting = false;
-          this.toast.success('Nomenclature créée');
+          this.toast.success('AUTO.NOMENCLATURE_CREEE');
           this.router.navigate(['/stock/boms']);
         },
         error: (err) => {
           console.error('Erreur création', err);
           this.isSubmitting = false;
-          this.toast.error(err?.error?.error || err?.error?.message || 'Erreur lors de la création');
+          this.toast.error(err?.error?.error || err?.error?.message || 'TRANSACTIONS.ERRORS.CREATE_ERROR');
         }
       });
     }
@@ -251,7 +253,7 @@ export class BomFormComponent implements OnInit {
     this.router.navigate(['/stock/boms']);
   }
 
-  productName(product: Product): string {
-    return productDisplayName(product);
+  finalProductName(finalProduct: FinalProduct): string {
+    return finalProductDisplayName(finalProduct);
   }
 }

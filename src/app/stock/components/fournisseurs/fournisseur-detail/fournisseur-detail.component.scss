@@ -21,6 +21,16 @@ $danger: #b42318;
 $warning: #b7791f;
 $blue: #2563eb;
 
+.finance-note {
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: 8px;
+  background: #fff8e6;
+  border: 1px solid #f0dfa0;
+  color: $text-soft;
+  font-size: 13px;
+}
+
 .fournisseur-detail-page {
   min-height: 100vh;
   padding: 24px;

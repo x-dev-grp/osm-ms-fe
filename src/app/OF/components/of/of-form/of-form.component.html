@@ -5,13 +5,13 @@
     </button>
     <div>
       <h2 class="form-title">{{ isEditMode ? 'Modifier l\'ordre' : 'Nouvel ordre' }}</h2>
-      <p class="form-subtitle">Planifiez votre production</p>
+      <p class="form-subtitle">{{ 'AUTO.PLANIFIEZ_VOTRE_PRODUCTION' | translate }}</p>
     </div>
   </div>
 
   <div *ngIf="loading" class="loading-container">
     <div class="spinner-border"></div>
-    <p>Chargement...</p>
+    <p>{{ 'COMMON.LOADING' | translate }}</p>
   </div>
 
   <div *ngIf="!loading" class="form-content">
@@ -19,34 +19,36 @@
       <!-- Section 1: Produit & Quantité -->
       <div class="form-section">
         <div class="section-title">
-          <i class="fas fa-bullseye"></i> Objectifs & Quantité
+          <i class="fas fa-bullseye"></i>  {{ 'AUTO.OBJECTIFS_QUANTITE' | translate }}
         </div>
         <div class="form-grid">
           <div class="form-group span-2">
-            <label><i class="fas fa-project-diagram"></i> Projet *</label>
+            <label><i class="fas fa-project-diagram"></i>  {{ 'AUTO.PROJET' | translate }}</label>
             <select class="form-control" formControlName="projectId"
               [class.is-invalid]="ofForm.get('projectId')?.invalid && ofForm.get('projectId')?.touched">
-              <option value="">-- Sélectionner un projet --</option>
+              <option value="">{{ 'AUTO.SELECTIONNER_UN_PROJET' | translate }}</option>
               <option *ngFor="let p of projects" [value]="p.id">{{ p.code }} — {{ p.client.nom }}</option>
             </select>
             <div class="error" *ngIf="ofForm.get('projectId')?.invalid && ofForm.get('projectId')?.touched">
-              Le projet est obligatoire.
+
+              {{ 'AUTO.LE_PROJET_EST_OBLIGATOIRE' | translate }}
             </div>
           </div>
           <div class="form-group">
-            <label><i class="fas fa-chart-line"></i> Quantité cible</label>
+            <label><i class="fas fa-chart-line"></i>  {{ 'AUTO.QUANTITE_CIBLE' | translate }}</label>
             <input type="number" step="1" class="form-control" formControlName="quantiteCible"
               [attr.max]="projectRemainingQuantity !== null ? projectRemainingQuantity : null"
               (input)="onQuantiteInput()"
               [class.is-invalid]="projectRemainingQuantity !== null && ofForm.get('quantiteCible')?.value > projectRemainingQuantity"
               required>
             <div class="remaining-info" *ngIf="projectRemainingQuantity !== null">
-              <i class="fas fa-info-circle"></i> Reste à produire : <strong>{{ projectRemainingQuantity }}</strong> {{
+              <i class="fas fa-info-circle"></i>  {{ 'AUTO.RESTE_A_PRODUIRE' | translate }} <strong>{{ projectRemainingQuantity }}</strong> {{
               selectedProject?.unite }}
             </div>
             <div class="error"
               *ngIf="projectRemainingQuantity !== null && ofForm.get('quantiteCible')?.value > projectRemainingQuantity">
-              Dépasse la limite du projet !
+
+              {{ 'AUTO.DEPASSE_LA_LIMITE_DU_PROJET' | translate }}
             </div>
           </div>
         </div>
@@ -55,28 +57,28 @@
       <!-- Section 2: Configuration technique -->
       <div class="form-section">
         <div class="section-title">
-          <i class="fas fa-tools"></i> Configuration technique
+          <i class="fas fa-tools"></i>  {{ 'AUTO.CONFIGURATION_TECHNIQUE' | translate }}
         </div>
         <div class="form-grid">
           <div class="form-group">
-            <label><i class="fas fa-cube"></i> Produit fini</label>
+            <label><i class="fas fa-cube"></i>  {{ 'AUTO.PRODUIT_FINI' | translate }}</label>
             <select class="form-control" formControlName="productId" required>
-              <option value="" disabled>Choisir un produit</option>
+              <option value="" disabled>{{ 'AUTO.CHOISIR_UN_PRODUIT' | translate }}</option>
               <option *ngFor="let product of products" [value]="product.id">{{ productName(product) }}</option>
             </select>
           </div>
           <div class="form-group">
-            <label><i class="fas fa-list"></i> Nomenclature</label>
+            <label><i class="fas fa-list"></i>  {{ 'OSM_DASHBOARD.ACTIONS.BOM' | translate }}</label>
             <select class="form-control" formControlName="bomId" required>
-              <option value="" disabled>-- Choisir Nomenclature --</option>
+              <option value="" disabled>{{ 'AUTO.CHOISIR_NOMENCLATURE' | translate }}</option>
               <option *ngFor="let bom of boms" [value]="bom.id">{{ bom.version }}{{ bom.active ? ' (active)' : '' }}</option>
             </select>
-            <div class="error" *ngIf="loadingBoms">Chargement...</div>
+            <div class="error" *ngIf="loadingBoms">{{ 'COMMON.LOADING' | translate }}</div>
           </div>
           <div class="form-group">
-            <label><i class="fas fa-cogs"></i> Ligne (optionnel)</label>
+            <label><i class="fas fa-cogs"></i>  {{ 'AUTO.LIGNE_OPTIONNEL' | translate }}</label>
             <select class="form-control" formControlName="ligneId">
-              <option value="">-- Aucune --</option>
+              <option value="">{{ 'AUTO.AUCUNE' | translate }}</option>
               <option *ngFor="let ligne of lignes" [value]="ligne.id">{{ ligne.nom }}</option>
             </select>
           </div>
@@ -87,7 +89,7 @@
             [bomId]="ofForm.get('bomId')?.value"
             [quantity]="ofForm.get('quantiteCible')?.value || 0"
             [useReservedStock]="!!ofForm.get('projectId')?.value"
-            title="Besoins emballage vs stock">
+            [title]="'AUTO.BESOINS_EMBALLAGE_VS_STOCK' | translate">
           </app-material-needs-preview>
         </div>
       </div>
@@ -95,25 +97,25 @@
       <!-- Section 3: Planning & Ressources -->
       <div class="form-section">
         <div class="section-title">
-          <i class="fas fa-calendar-check"></i> Planning & Ressources
+          <i class="fas fa-calendar-check"></i>  {{ 'AUTO.PLANNING_RESSOURCES' | translate }}
         </div>
         <div class="form-grid">
           <div class="form-group">
-            <label><i class="fas fa-droplet"></i> Cuve source</label>
+            <label><i class="fas fa-droplet"></i>  {{ 'AUTO.CUVE_SOURCE' | translate }}</label>
             <select class="form-control" formControlName="lotVracId">
-              <option value="">-- Choisir cuve --</option>
+              <option value="">{{ 'AUTO.CHOISIR_CUVE' | translate }}</option>
               <option *ngFor="let unit of storageUnits" [value]="unit.id">{{ unit.name }} ({{ unit.lotNumber }})
               </option>
             </select>
-            <div class="error" *ngIf="storageUnits.length === 0">Aucune cuve disponible</div>
+            <div class="error" *ngIf="storageUnits.length === 0">{{ 'AUTO.AUCUNE_CUVE_DISPONIBLE' | translate }}</div>
             <app-traceability-preview [anchorId]="ofForm.get('lotVracId')?.value || null"></app-traceability-preview>
           </div>
           <div class="form-group">
-            <label><i class="fas fa-calendar-alt"></i> Date début</label>
+            <label><i class="fas fa-calendar-alt"></i>  {{ 'AUTO.DATE_DEBUT' | translate }}</label>
             <input type="date" class="form-control" formControlName="dateDebutPrevue">
           </div>
           <div class="form-group">
-            <label><i class="fas fa-calendar-check"></i> Date fin</label>
+            <label><i class="fas fa-calendar-check"></i>  {{ 'AUTO.DATE_FIN' | translate }}</label>
             <input type="date" class="form-control" formControlName="dateFinPrevue">
           </div>
         </div>
@@ -123,13 +125,13 @@
       <div
         *ngIf="ofForm.errors?.['dateFinAfterDebut'] && (ofForm.get('dateFinPrevue')?.touched || ofForm.get('dateDebutPrevue')?.touched)"
         class="error-message">
-        <i class="fas fa-exclamation-circle"></i> La date de fin doit être postérieure au début.
+        <i class="fas fa-exclamation-circle"></i>  {{ 'AUTO.LA_DATE_DE_FIN_DOIT_ETRE_POSTERIEURE_AU_DEBUT' | translate }}
       </div>
 
       <div class="form-actions">
-        <button type="button" class="btn-cancel" (click)="cancel()">Annuler</button>
+        <button type="button" class="btn-cancel" (click)="cancel()">{{ 'ADMIN.CANCEL' | translate }}</button>
         <button type="submit" class="btn-save" [disabled]="ofForm.invalid || isSubmitting || exceedsProjectRemaining">
-          <i class="fas fa-save"></i> Enregistrer
+          <i class="fas fa-save"></i>  {{ 'BANK_ACCOUNTS.ACTIONS.SAVE' | translate }}
         </button>
       </div>
     </form>

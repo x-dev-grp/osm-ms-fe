@@ -9,7 +9,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { ActivatedRoute, Data, ParamMap, Router } from '@angular/router';
 import { Subscription, tap } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 
 import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
 import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
@@ -40,7 +40,7 @@ function setOpToLS(opKey?: string) {
 @Component({
   selector: 'app-olive-reception',
   standalone: true,
-  imports: [
+  imports: [TranslateModule,
     CommonModule,
     MatButtonModule,
     MatTableModule,
@@ -217,7 +217,7 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
           const config = getControlQualitePdfConfig(e.row, deliveryType);
           this.pdfService.generatePdf(config);
         } else {
-          this.toast.error('no quality control for oil');
+          this.toast.error('AUTO.NO_QUALITY_CONTROL_FOR_OIL');
         }
         break;
       case 'GEN_PDF_QC_OLIVE':
@@ -226,7 +226,7 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
           const config = getControlQualitePdfConfig(e.row, deliveryType);
           this.pdfService.generatePdf(config);
         } else {
-          this.toast.error('no quality control for olive');
+          this.toast.error('AUTO.NO_QUALITY_CONTROL_FOR_OLIVE');
         }
         break;
       case 'CANCEL':
@@ -271,7 +271,7 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
           });
         },
         error: () => {
-          this.toast.error("Erreur lors de l'enregistrement du prix d'échange.");
+          this.toast.error('AUTO.ERREUR_LORS_DE_L_ENREGISTREMENT_DU_PRIX_D_ECHANGE');
           this.isLoading = false;
         }
       });

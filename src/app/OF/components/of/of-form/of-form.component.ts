@@ -1,3 +1,5 @@
+import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
@@ -17,15 +19,17 @@ import { ProjetService } from "../../../../projet/services/projet.service";
 import { ProjetDto } from "../../../../projet/models/TypeProduit";
 import { TraceabilityPreviewComponent } from "../../../../shared/components/traceability-preview/traceability-preview.component";
 import { MaterialNeedsPreviewComponent } from '../../../../shared/components/material-needs-preview/material-needs-preview.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-of-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, TraceabilityPreviewComponent, MaterialNeedsPreviewComponent],
+  imports: [TranslateModule, CommonModule, ReactiveFormsModule, RouterLink, TraceabilityPreviewComponent, MaterialNeedsPreviewComponent],
   templateUrl: './of-form.component.html',
   styleUrls: ['./of-form.component.scss']
 })
 export class OFFormComponent implements OnInit {
+  private readonly i18n = inject(TranslateService);
   ofForm!: FormGroup;
   products: Product[] = [];
   projects: ProjetDto[] = [];
@@ -223,7 +227,7 @@ export class OFFormComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erreur chargement OF:', err);
-        this.toast.error('Impossible de charger les données de l\'OF');
+        this.toast.error('AUTO.IMPOSSIBLE_DE_CHARGER_LES_DONNEES_DE_L_OF');
         this.loading = false;
       }
     });
@@ -289,7 +293,7 @@ export class OFFormComponent implements OnInit {
     // Validation métier: Quantité totale projet
     if (this.selectedProject && this.projectRemainingQuantity !== null) {
       if (formValue.quantiteCible > this.projectRemainingQuantity) {
-        this.toast.error(`La quantité (${formValue.quantiteCible}) dépasse le reste à produire du projet (${this.projectRemainingQuantity} ${this.selectedProject.unite || ''})`);
+        this.toast.error('AUTO.LA_QUANTITE_DEPASSE_LE_RESTE_A_PRODUIRE_DU_PROJET', { value0: formValue.quantiteCible, value1: this.projectRemainingQuantity, value2: this.selectedProject.unite || '' });
         this.isSubmitting = false;
         return;
       }
@@ -316,13 +320,13 @@ export class OFFormComponent implements OnInit {
     request.subscribe({
       next: () => {
         this.isSubmitting = false;
-        this.toast.success(this.isEditMode ? 'OF mis à jour avec succès' : 'OF créé avec succès');
+        this.toast.success(this.isEditMode ? 'AUTO.OF_MIS_A_JOUR_AVEC_SUCCES' : 'AUTO.OF_CREE_AVEC_SUCCES');
         this.router.navigate(['/of']);
       },
       error: (err) => {
         this.isSubmitting = false;
         console.error(err);
-        let errorMessage = 'Erreur lors de la création de l\'OF';
+        let errorMessage = this.i18n.instant('AUTO.ERREUR_LORS_DE_LA_CREATION_DE_L_OF');
         if (err.error) {
           errorMessage = err.error.error || err.error.message || errorMessage;
         } else if (err.message) {

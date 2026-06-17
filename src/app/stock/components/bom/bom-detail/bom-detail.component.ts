@@ -1,3 +1,5 @@
+import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -11,16 +13,18 @@ import { ToastService } from '../../../../shared/services/toast.service';
 import { MaterialNeedsPreviewComponent } from '../../../../shared/components/material-needs-preview/material-needs-preview.component';
 import { QrDialogComponent } from '../../../../shared/components/qr-dialog/qr-dialog.component';
 import { ConfirmationDialogService, ConfirmationType } from '../../../../shared/services/confirmation-dialog.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 @Component({
   selector: 'app-bom-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, MaterialNeedsPreviewComponent, MatDialogModule, MatTooltipModule],
+  imports: [TranslateModule, CommonModule, RouterLink, FormsModule, MaterialNeedsPreviewComponent, MatDialogModule, MatTooltipModule],
   templateUrl: './bom-detail.component.html',
   styleUrls: ['./bom-detail.component.scss']
 })
 export class BomDetailComponent implements OnInit {
+  private readonly i18n = inject(TranslateService);
   bom: Bom | null = null;
   loading = true;
   activating = false;
@@ -68,11 +72,11 @@ export class BomDetailComponent implements OnInit {
       next: (updated) => {
         this.bom = updated;
         this.activating = false;
-        this.toast.success('Nomenclature définie comme active');
+        this.toast.success('AUTO.NOMENCLATURE_DEFINIE_COMME_ACTIVE');
       },
       error: (err) => {
         this.activating = false;
-        this.toast.error(err?.error?.error || err?.error?.message || 'Impossible d\'activer la nomenclature');
+        this.toast.error(err?.error?.error || err?.error?.message || 'AUTO.IMPOSSIBLE_D_ACTIVER_LA_NOMENCLATURE');
       }
     });
   }
@@ -157,16 +161,16 @@ export class BomDetailComponent implements OnInit {
     }
 
     this.confirmationDialog.confirm({
-      title: 'Regenerate QR Code',
-      message: 'This will regenerate the QR code and may invalidate already printed physical QR labels.',
+      title: this.i18n.instant('AUTO.REGENERATE_QR_CODE'),
+      message: this.i18n.instant('AUTO.THIS_WILL_REGENERATE_THE_QR_CODE_AND_MAY_INVALIDATE_ALREADY_PRIN'),
       type: ConfirmationType.WARNING,
-      confirmText: 'Regenerate',
-      cancelText: 'Cancel',
+      confirmText: this.i18n.instant('AUTO.REGENERATE'),
+      cancelText: this.i18n.instant('ADMIN.CANCEL'),
       showIcon: true,
       destructive: true,
-      requiredText: 'OKAY',
-      requiredTextHint: 'To continue, type OKAY in the field below.',
-      requiredTextPlaceholder: 'Type OKAY'
+      requiredText: this.i18n.instant('AUTO.OKAY'),
+      requiredTextHint: this.i18n.instant('AUTO.TO_CONTINUE_TYPE_OKAY_IN_THE_FIELD_BELOW'),
+      requiredTextPlaceholder: this.i18n.instant('AUTO.TYPE_OKAY')
     }).pipe(take(1))
       .subscribe((result) => {
         onResolved(!!result?.confirmed);

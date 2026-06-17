@@ -2,14 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { OrdreFabrication } from '../models/of.model';
-import {environment} from "../../../environments/environment";
-import { QrCodeInfo } from "../../shared/models/qr-models";
-
-interface ApiResponse<T> {
-  success: boolean;
-  message: string;
-  data: T;
-}
+import { environment } from '../../../environments/environment';
+import { QrCodeInfo } from '../../shared/models/qr-models';
+import { ApiResponse, ApiSingleResponse } from '../../shared/models/api-response';
 
 @Injectable({ providedIn: 'root' })
 export class OFService {
@@ -18,14 +13,19 @@ export class OFService {
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<OrdreFabrication[]> {
-    return this.http.get<OrdreFabrication[]>(`${this.baseUrl}/all`);
+    return this.http.get<ApiResponse<OrdreFabrication>>(`${this.baseUrl}/fetchAll`).pipe(
+      map((response) => response?.data ?? [])
+    );
   }
 
   getByProject(projectId: string): Observable<OrdreFabrication[]> {
     return this.http.get<OrdreFabrication[]>(`${this.baseUrl}/project/${projectId}`);
   }
+
   getById(id: string): Observable<OrdreFabrication> {
-    return this.http.get<OrdreFabrication>(`${this.baseUrl}/${id}`);
+    return this.http.get<ApiSingleResponse<OrdreFabrication>>(`${this.baseUrl}/fetch/${id}`).pipe(
+      map((response) => response.data)
+    );
   }
 
   getByCode(code: string): Observable<OrdreFabrication> {
@@ -36,14 +36,14 @@ export class OFService {
 
   create(of: OrdreFabrication): Observable<OrdreFabrication> {
     return this.http
-      .post<ApiResponse<OrdreFabrication>>(`${this.baseUrl}/create`, of)
-      .pipe(map(response => response.data));
+      .post<ApiSingleResponse<OrdreFabrication>>(this.baseUrl, of)
+      .pipe(map((response) => response.data));
   }
 
   update(id: string, of: OrdreFabrication): Observable<OrdreFabrication> {
     return this.http
-      .put<ApiResponse<OrdreFabrication>>(this.baseUrl, { ...of, id })
-      .pipe(map(response => response.data));
+      .put<ApiSingleResponse<OrdreFabrication>>(this.baseUrl, { ...of, id })
+      .pipe(map((response) => response.data));
   }
 
   demarrer(id: string): Observable<OrdreFabrication> {
@@ -70,12 +70,7 @@ export class OFService {
     return this.http.put<OrdreFabrication>(`${this.baseUrl}/${id}/ajustements`, ajustement);
   }
 
-  //-------QRCode-------//
   generateQr(entityId: string): Observable<QrCodeInfo> {
-    return this.http.get<QrCodeInfo>(
-      `${this.baseUrl}/qr/OF/${entityId}`
-    );
+    return this.http.get<QrCodeInfo>(`${this.baseUrl}/qr/OF/${entityId}`);
   }
-  //-------QRCode-------//
-
 }

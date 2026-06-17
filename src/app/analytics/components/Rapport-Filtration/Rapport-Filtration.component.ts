@@ -1,7 +1,10 @@
+import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
 import { AnalyticsService } from '../../services/analytics.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 type FiltrationRow = {
   operationId: string;
@@ -17,11 +20,12 @@ type FiltrationRow = {
 @Component({
   selector: 'app-filtration-report',
   standalone: true,
-  imports: [CommonModule, NgApexchartsModule],
+  imports: [TranslateModule, CommonModule, NgApexchartsModule],
   templateUrl: './Rapport-Filtration.component.html',
   styleUrls: ['./Rapport-Filtration.component.scss']
 })
 export class RapportFiltrationComponent implements OnInit {
+  private readonly i18n = inject(TranslateService);
   data: FiltrationRow[] = [];
   loading = false;
   errorMessage = '';
@@ -68,7 +72,7 @@ export class RapportFiltrationComponent implements OnInit {
         this.data = [];
         this.efficiencyChartOptions = null;
         this.volumeTrendsChartOptions = null;
-        this.errorMessage = err?.error?.message || err?.message || 'Impossible de charger le rapport de filtration.';
+        this.errorMessage = err?.error?.message || err?.message || this.i18n.instant('AUTO.IMPOSSIBLE_DE_CHARGER_LE_RAPPORT_DE_FILTRATION');
         this.loading = false;
       }
     });
@@ -88,7 +92,7 @@ export class RapportFiltrationComponent implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        this.errorMessage = err?.error?.message || err?.message || 'Impossible d exporter le PDF.';
+        this.errorMessage = err?.error?.message || err?.message || this.i18n.instant('AUTO.IMPOSSIBLE_D_EXPORTER_LE_PDF');
         this.loading = false;
       }
     });

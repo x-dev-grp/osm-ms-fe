@@ -9,12 +9,3 @@ export interface AuditDto {
   revision?: number;
   revisionType?: string;
 }
-
-export interface AuditFilters {
-  dateDebut: string;
-  dateFin: string;
-  typeAction: string;
-  utilisateur: string;
-  entityName: string;
-}
-

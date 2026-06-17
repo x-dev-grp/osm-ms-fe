@@ -21,11 +21,12 @@ import { QualityControlResultDto } from '../../../shared/models/QualityControlRe
 import { OilTransaction } from '../../../shared/models/OilTransaction';
 import { ProductionGenealogy, ProductionRootSource } from '../../../shared/models/production-genealogy.model';
 import { FiltrationQcEntryDialogComponent } from './filtration-qc-entry-dialog.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-filtration-traceability-page',
   standalone: true,
-  imports: [
+  imports: [TranslateModule,
     CommonModule,
     RouterModule,
     MatIconModule,
@@ -169,7 +170,7 @@ export class FiltrationTraceabilityPageComponent implements OnInit {
     const operation = this.operation();
     const filtrationOperationId = operation?.operationId;
     if (!filtrationOperationId) {
-      this.toast.error('Operation de filtration introuvable.');
+      this.toast.error('AUTO.OPERATION_DE_FILTRATION_INTROUVABLE');
       return;
     }
 

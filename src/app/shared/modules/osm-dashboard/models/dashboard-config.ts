@@ -27,6 +27,14 @@ export interface DashboardConfig {
     fields:Field[];
     actions?:Map<string,string>
     fileName?:string;
+    countBadgeSuffix?: string;
+    countBadgeSuffixTranslatePath?: string;
+    /** When true, data is supplied via setClientSource() instead of search API. */
+    clientSide?: boolean;
+    /** Hide the actions column (read-only dashboards). */
+    hideActions?: boolean;
+    /** Action triggered on row double-click. Defaults to READ, then READ_ARTICLE, then DETAIL. */
+    doubleClickAction?: string;
 }
 export interface Action {
   label: string;

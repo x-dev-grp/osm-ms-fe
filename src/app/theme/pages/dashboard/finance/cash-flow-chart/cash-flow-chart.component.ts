@@ -10,10 +10,11 @@ import { DARK, LIGHT } from 'src/app/theme/const';
 
 // third party
 import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-cash-flow-chart',
-  imports: [SharedModule, NgApexchartsModule],
+  imports: [TranslateModule, SharedModule, NgApexchartsModule],
   templateUrl: './cash-flow-chart.component.html',
   styleUrl: './cash-flow-chart.component.scss'
 })

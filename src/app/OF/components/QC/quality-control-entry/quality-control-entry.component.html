@@ -1,12 +1,12 @@
 <div class="quality-control-entry">
   <div class="page-header">
-    <h2>Saisie du contrôle qualité</h2>
-    <p>Sélectionnez un OF et remplissez les points de contrôle</p>
+    <h2>{{ 'AUTO.SAISIE_DU_CONTROLE_QUALITE' | translate }}</h2>
+    <p>{{ 'AUTO.SELECTIONNEZ_UN_OF_ET_REMPLISSEZ_LES_POINTS_DE_CONTROLE' | translate }}</p>
   </div>
 
   <div class="of-selector">
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>OF</mat-label>
+      <mat-label>{{ 'PDF.OF' | translate }}</mat-label>
       <mat-select [(ngModel)]="selectedOfId" (selectionChange)="onOfSelected()">
         <mat-option *ngFor="let of of ofs" [value]="of.id">
           {{ of.code }} - {{ of.productName || of.skuCode || of.productId || of.skuId }}
@@ -24,29 +24,29 @@
           <mat-card-content>
             <div *ngIf="point.type === 'NUMERIC'">
               <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Valeur</mat-label>
+                <mat-label>{{ 'DASHBOARD.DAILY_METRIC.VALUE_LABEL' | translate }}</mat-label>
                 <input matInput type="number" [formControlName]="'val_' + point.id" required>
                 <mat-hint>Plage: {{ point.minValue }} – {{ point.maxValue }}</mat-hint>
               </mat-form-field>
             </div>
             <div *ngIf="point.type === 'BOOLEAN'">
               <mat-radio-group [formControlName]="'val_' + point.id">
-                <mat-radio-button value="OK">OK</mat-radio-button>
-                <mat-radio-button value="NOK">NOK</mat-radio-button>
+                <mat-radio-button value="OK">{{ 'AUTO.OK' | translate }}</mat-radio-button>
+                <mat-radio-button value="NOK">{{ 'AUTO.NOK' | translate }}</mat-radio-button>
               </mat-radio-group>
             </div>
 
             <mat-form-field appearance="outline" class="full-width" style="margin-top: 12px;">
-              <mat-label>Commentaire</mat-label>
+              <mat-label>{{ 'AUTO.COMMENTAIRE' | translate }}</mat-label>
               <textarea matInput rows="2" [formControlName]="'commentaire_' + point.id"></textarea>
             </mat-form-field>
 
             <div class="photo-section">
               <button mat-stroked-button type="button" (click)="takePhoto(point.id)">
-                <mat-icon>camera_alt</mat-icon> Prendre une photo
+                <mat-icon>camera_alt</mat-icon>  {{ 'AUTO.PRENDRE_UNE_PHOTO' | translate }}
               </button>
               <span *ngIf="photosBase64[point.id]" class="photo-ok">
-    <mat-icon>check_circle</mat-icon> Photo prise
+    <mat-icon>check_circle</mat-icon>  {{ 'AUTO.PHOTO_PRISE' | translate }}
   </span>
               <!-- Afficher un aperçu si une photo existe -->
               <div *ngIf="photosBase64[point.id]" class="photo-preview">
@@ -60,10 +60,10 @@
 
       <div class="signature-section">
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Signature (nom, prénom, ...)</mat-label>
+          <mat-label>{{ 'AUTO.SIGNATURE_NOM_PRENOM' | translate }}</mat-label>
           <input matInput [(ngModel)]="signatureText"
                  [ngModelOptions]="{standalone: true}"
-                 placeholder="Saisissez votre signature">
+                 [placeholder]="'AUTO.SAISISSEZ_VOTRE_SIGNATURE' | translate">
         </mat-form-field>
       </div>
 
@@ -71,7 +71,8 @@
         <button mat-raised-button color="primary"
                 (click)="submit()"
                 [disabled]="qcForm.invalid">
-          Enregistrer le contrôle
+
+          {{ 'AUTO.ENREGISTRER_LE_CONTROLE' | translate }}
         </button>
       </div>
 

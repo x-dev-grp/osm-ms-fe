@@ -1,0 +1,87 @@
+<div
+  class="label-preview-carousel"
+  *ngIf="slides.length > 0"
+  [class.is-full]="size === 'full'"
+  [class.is-miniature]="size === 'miniature'"
+>
+  <div class="carousel-top">
+    <div class="carousel-tabs" role="tablist" aria-label="Langues d'étiquette">
+      <button
+        type="button"
+        class="carousel-tab"
+        role="tab"
+        *ngFor="let slide of slides; let i = index; trackBy: trackByLanguage"
+        [class.is-active]="i === activeIndex"
+        [attr.aria-selected]="i === activeIndex"
+        (click)="select(i)"
+      >
+        <span class="carousel-tab__code">{{ slide.language }}</span>
+        <span class="carousel-tab__name">{{ slide.label }}</span>
+      </button>
+    </div>
+
+    <button
+      *ngIf="showExpand"
+      mat-icon-button
+      type="button"
+      class="carousel-expand"
+      (click)="onExpand()"
+      matTooltip="Plein écran"
+      aria-label="Aperçu plein écran"
+    >
+      <mat-icon>open_in_full</mat-icon>
+    </button>
+  </div>
+
+  <div class="carousel-stage">
+    <button
+      mat-icon-button
+      type="button"
+      class="carousel-nav carousel-nav--prev"
+      (click)="previous()"
+      [matTooltip]="'Précédent'"
+      aria-label="Étiquette précédente"
+    >
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+
+    <div class="carousel-viewport" #viewport>
+      <div class="carousel-track" [style.transform]="'translateX(-' + activeIndex * 100 + '%)'">
+        <div
+          class="carousel-slide"
+          *ngFor="let slide of slides; trackBy: trackByLanguage"
+          [class.is-rtl]="isRtl(slide.language)"
+          [attr.dir]="isRtl(slide.language) ? 'rtl' : 'ltr'"
+          role="tabpanel"
+        >
+          <app-label-preview-card [preview]="slide.preview" [size]="size"></app-label-preview-card>
+        </div>
+      </div>
+    </div>
+
+    <button
+      mat-icon-button
+      type="button"
+      class="carousel-nav carousel-nav--next"
+      (click)="next()"
+      [matTooltip]="'Suivant'"
+      aria-label="Étiquette suivante"
+    >
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
+
+  <div class="carousel-footer">
+    <span class="carousel-counter">{{ activeIndex + 1 }} / {{ slides.length }}</span>
+    <div class="carousel-dots">
+      <button
+        type="button"
+        class="carousel-dot"
+        *ngFor="let slide of slides; let i = index; trackBy: trackByLanguage"
+        [class.is-active]="i === activeIndex"
+        [attr.aria-label]="'Afficher ' + slide.language"
+        (click)="select(i)"
+      ></button>
+    </div>
+  </div>
+</div>

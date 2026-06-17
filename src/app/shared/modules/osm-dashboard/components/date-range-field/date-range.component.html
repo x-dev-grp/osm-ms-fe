@@ -2,10 +2,10 @@
   <mat-form-field appearance="outline" >
       <mat-label>{{ field().labelTranslatePath ? (field().labelTranslatePath | translate) : field().label }}</mat-label>
       <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
-        <input matStartDate formControlName="start" placeholder="date debut" class="w-100">
-        <input matEndDate formControlName="end" placeholder="date fin" class="w-100">
+        <input matStartDate formControlName="start" [placeholder]="'AUTO.DATE_DEBUT' | translate" class="w-100">
+        <input matEndDate formControlName="end" [placeholder]="'AUTO.DATE_FIN' | translate" class="w-100">
       </mat-date-range-input>
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-date-range-picker (closed)="onDateRangeClosed()" #picker></mat-date-range-picker>
   </mat-form-field>
-              
+

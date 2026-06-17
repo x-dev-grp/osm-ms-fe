@@ -5,11 +5,12 @@ import { ClientService } from '../../../services/client.service';
 import { Client } from '../../../models/client.model';
 import { ApiResponse } from '../../../../shared/models/api-response';
 import { extractHttpErrorMessage } from '../../../../shared/utils/http-error.util';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-client-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [TranslateModule, CommonModule, RouterLink],
   templateUrl: './client-detail.component.html',
   styleUrls: ['./client-detail.component.scss']
 })
@@ -41,12 +42,8 @@ export class ClientDetailComponent implements OnInit {
     this.error = null;
 
     this.clientService.getClientById(id).subscribe({
-      next: (response: ApiResponse<Client>) => {
-        if (response.success && response.data && response.data.length > 0) {
-          this.client = response.data[0];
-        } else {
-          this.error = response.message || 'Client non trouvé';
-        }
+      next: (client) => {
+        this.client = client;
         this.loading = false;
       },
       error: (err) => {
@@ -70,13 +67,9 @@ export class ClientDetailComponent implements OnInit {
         : this.clientService.activerClient(this.client.id);     // If actif=false → activer
 
       request.subscribe({
-        next: (response: ApiResponse<Client>) => {
-          if (response.success && response.data && response.data.length > 0) {
-            this.client = response.data[0];
-            this.successMessage = `Client ${action} avec succès`;
-          } else {
-            this.error = response.message || 'Erreur lors du changement de statut';
-          }
+        next: () => {
+          this.loadClient(this.client!.id!);
+          this.successMessage = `Client ${action} avec succès`;
           this.Actif = false;
         },
         error: (err) => {

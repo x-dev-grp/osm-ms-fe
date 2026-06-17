@@ -1,12 +1,12 @@
 <app-card [showHeader]="false">
   <div class="flex align-item-center justify-content-between m-b-15">
-    <div class="f-w-600 f-16">Overview Product</div>
+    <div class="f-w-600 f-16">{{ 'AUTO.OVERVIEW_PRODUCT' | translate }}</div>
     <a [matMenuTriggerFor]="paymentInfo" class="avatar avatar-s hover"><i class="ti ti-dots-vertical f-18"></i></a>
     <mat-menu #paymentInfo="matMenu">
-      <a href="javascript:" mat-menu-item>Name</a>
-      <a href="javascript:" mat-menu-item>Date</a>
-      <a href="javascript:" mat-menu-item>Rating</a>
-      <a href="javascript:" mat-menu-item>Unread</a>
+      <a href="javascript:" mat-menu-item>{{ 'BASE_TYPE.FIELDS.NAME' | translate }}</a>
+      <a href="javascript:" mat-menu-item>{{ 'PDF.DATE' | translate }}</a>
+      <a href="javascript:" mat-menu-item>{{ 'AUTO.RATING' | translate }}</a>
+      <a href="javascript:" mat-menu-item>{{ 'AUTO.UNREAD' | translate }}</a>
     </mat-menu>
   </div>
   <div class="product-overview" id="chart">
@@ -35,12 +35,12 @@
   <div class="row text-center m-t-25">
     <div class="col-sm-6 m-t-10">
       <div class="grid">
-        <button mat-stroked-button class="b-rad-20">View All</button>
+        <button mat-stroked-button class="b-rad-20">{{ 'AUTO.VIEW_ALL' | translate }}</button>
       </div>
     </div>
     <div class="col-sm-6 m-t-10">
       <div class="grid">
-        <button mat-flat-button class="b-rad-20" color="primary">Create New Page</button>
+        <button mat-flat-button class="b-rad-20" color="primary">{{ 'AUTO.CREATE_NEW_PAGE' | translate }}</button>
       </div>
     </div>
   </div>

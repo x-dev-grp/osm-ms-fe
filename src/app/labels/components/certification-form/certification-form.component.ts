@@ -8,11 +8,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { Certification } from '../../models/certification.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-certification-form',
   standalone: true,
-  imports: [
+  imports: [TranslateModule, 
     CommonModule,
     ReactiveFormsModule,
     MatDialogModule,

@@ -109,7 +109,7 @@ export class AddOilContainerComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading oil container:', err);
-        this.toast.error('Failed to load oil container');
+        this.toast.error('AUTO.FAILED_TO_LOAD_OIL_CONTAINER');
       }
     });
   }

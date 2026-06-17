@@ -40,10 +40,12 @@
             <strong>{{ evt.title }}</strong>
             <small *ngIf="evt.timestamp">{{ evt.timestamp | date: 'dd/MM/yyyy HH:mm' }}</small>
             <p class="event-meta" *ngIf="eventDetail(evt, 'deliveryNumber') as dn">
-              N° livraison : <code>{{ dn }}</code>
+
+              {{ 'AUTO.N_LIVRAISON' | translate }} <code>{{ dn }}</code>
             </p>
             <p class="event-meta" *ngIf="eventDetail(evt, 'quantityKg') as qty">
-              Quantité : <strong>{{ qty }}</strong> kg
+
+              {{ 'AUTO.QUANTITE' | translate }} <strong>{{ qty }}</strong>  {{ 'PLANNING_KG' | translate }}
             </p>
             <p
               class="event-meta"
@@ -62,7 +64,8 @@
               Destination: {{ $any(evt.details)['destination'] }}
             </p>
             <p *ngIf="evt.type === 'LABEL' && $any(evt.details)?.['publicCode']">
-              Code: <code>{{ $any(evt.details)['publicCode'] }}</code>
+
+              {{ 'AUTO.CODE' | translate }} <code>{{ $any(evt.details)['publicCode'] }}</code>
             </p>
           </div>
         </div>
@@ -89,9 +92,9 @@
                     <span *ngSwitchDefault>{{ step.type }}</span>
                   </ng-container>
                 </strong>
-                <p *ngIf="step.lotNumber">Lot : <code>{{ step.lotNumber }}</code></p>
-                <p *ngIf="step.deliveryNumber">N° livraison : <code>{{ step.deliveryNumber }}</code></p>
-                <p *ngIf="step.quantityKg != null">Quantité : <strong>{{ step.quantityKg }}</strong> kg</p>
+                <p *ngIf="step.lotNumber">{{ 'AUTO.LOT' | translate }} <code>{{ step.lotNumber }}</code></p>
+                <p *ngIf="step.deliveryNumber">{{ 'AUTO.N_LIVRAISON' | translate }} <code>{{ step.deliveryNumber }}</code></p>
+                <p *ngIf="step.quantityKg != null">{{ 'AUTO.QUANTITE' | translate }} <strong>{{ step.quantityKg }}</strong>  {{ 'PLANNING_KG' | translate }}</p>
                 <div class="qc-grid" *ngIf="step.qualityControls && (step.qualityControls | keyvalue).length > 0">
                   <div class="qc-item" *ngFor="let qc of step.qualityControls | keyvalue">
                     <span class="qc-label">{{ qc.key }}:</span>
@@ -114,7 +117,7 @@
             </span>
             <div class="info-box">
               <strong>{{ root.supplierName }}</strong>
-              <p>Lot vrac: <code>{{ root.lotNumber }}</code></p>
+              <p>{{ 'AUTO.LOT_VRAC' | translate }} <code>{{ root.lotNumber }}</code></p>
               <div class="qc-grid" *ngIf="root.qualityControls && (root.qualityControls | keyvalue).length > 0">
                 <div class="qc-item" *ngFor="let qc of root.qualityControls | keyvalue">
                   <span class="qc-label">{{ qc.key }}:</span>
@@ -133,9 +136,9 @@
         <div class="timeline-item filt" *ngFor="let filt of genea.filtrations">
           <div class="marker"></div>
           <div class="content">
-            <span class="label">Filtration</span>
+            <span class="label">{{ 'AUTO.FILTRATION' | translate }}</span>
             <div class="info-box">
-              <strong>Lot cible: <code>{{ filt.targetLotNumber }}</code></strong>
+              <strong>{{ 'AUTO.LOT_CIBLE' | translate }} <code>{{ filt.targetLotNumber }}</code></strong>
               <p>
                 Volume: {{ filt.volumeFiltered }} L
                 <span *ngIf="filt.sourceStorageUnitName">| Source: {{ filt.sourceStorageUnitName }}</span>
@@ -146,7 +149,7 @@
         </div>
 
         <div class="conditioning-section" *ngIf="labelsFor(ofItem.value) as labels">
-          <h4 class="sub-title">Conditionnement & étiquettes</h4>
+          <h4 class="sub-title">{{ 'AUTO.CONDITIONNEMENT_ETIQUETTES' | translate }}</h4>
           <div class="label-qc-card" *ngFor="let label of labels">
             <div class="label-info">
               <strong>Lot conditionné: {{ $any(label).lotNumber }}</strong>
@@ -160,10 +163,10 @@
         <div class="timeline-item final">
           <div class="marker"></div>
           <div class="content">
-            <span class="label">Unité de stockage finale</span>
+            <span class="label">{{ 'AUTO.UNITE_DE_STOCKAGE_FINALE' | translate }}</span>
             <div class="info-box accent">
               <strong>{{ genea.storageUnitName }}</strong>
-              <p>Lot final: <code>{{ genea.lotNumber }}</code></p>
+              <p>{{ 'AUTO.LOT_FINAL' | translate }} <code>{{ genea.lotNumber }}</code></p>
             </div>
           </div>
         </div>
@@ -173,7 +176,7 @@
     <ng-template #noGeneaTpl>
       <div class="empty-mini">
         <mat-icon>warning_amber</mat-icon>
-        <p>Aucune généalogie huile pour cet OF (réception → filtration).</p>
+        <p>{{ 'AUTO.AUCUNE_GENEALOGIE_HUILE_POUR_CET_OF_RECEPTION_FILTRATION' | translate }}</p>
       </div>
     </ng-template>
   </div>
@@ -182,6 +185,6 @@
 <ng-template #noDataTpl>
   <div class="empty-mini">
     <mat-icon>history_edu</mat-icon>
-    <p>Aucune donnée de traçabilité à afficher.</p>
+    <p>{{ 'AUTO.AUCUNE_DONNEE_DE_TRACABILITE_A_AFFICHER' | translate }}</p>
   </div>
 </ng-template>

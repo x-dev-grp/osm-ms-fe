@@ -10,19 +10,23 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIcon } from '@angular/material/icon';
-import { MatChip } from '@angular/material/chips';
+import { MatChip, MatChipListbox } from '@angular/material/chips';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { HttpErrorResponse } from '@angular/common/http';
 
+import { CardComponent } from '../../../theme/components/card/card.component';
 import { FiltrationApiService } from '../../../shared/services/filtration-api.service';
 import { FiltrationOperation } from '../../../shared/models/filtration-operation';
 import { StorageUnitDtoService } from '../../../shared/services/storage.service';
 import { StorageUnitDto } from '../../../shared/models/StorageUnitDto';
 import { ToastService } from '../../../shared/services/toast.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-filtration-form',
   standalone: true,
   imports: [
+    TranslateModule,
     CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -31,7 +35,10 @@ import { ToastService } from '../../../shared/services/toast.service';
     MatButtonModule,
     MatSelectModule,
     MatIcon,
-
+    MatChip,
+    MatChipListbox,
+    MatTooltipModule,
+    CardComponent
   ],
   templateUrl: './filtration-form.component.html',
   styleUrls: ['./filtration-form.component.scss'],
@@ -115,6 +122,13 @@ export class FiltrationFormComponent implements OnInit {
 
   isCompletedEdit(): boolean {
     return this.isEdit && this.op?.status === 'COMPLETED';
+  }
+
+  get formTitle(): string {
+    if (!this.isEdit) {
+      return 'Créer une filtration';
+    }
+    return this.op?.status === 'CREATED' ? 'Modifier une filtration' : 'Modifier la note';
   }
 
   submitCreate(): void {

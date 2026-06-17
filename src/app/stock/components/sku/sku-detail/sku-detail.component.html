@@ -5,8 +5,8 @@
         <div class="spinner-ring"></div>
         <div class="spinner-ring-inner"></div>
       </div>
-      <p class="loading-text">Chargement du produit</p>
-      <p class="loading-subtext">Veuillez patienter...</p>
+      <p class="loading-text">{{ 'AUTO.CHARGEMENT_DU_PRODUIT' | translate }}</p>
+      <p class="loading-subtext">{{ 'AUTO.VEUILLEZ_PATIENTER' | translate }}</p>
     </div>
   }
 
@@ -14,14 +14,14 @@
     <div class="detail-content fade-in">
       <section class="product-hero">
         <div class="hero-left">
-          <button class="btn-back" (click)="goBack()" aria-label="Retour">
+          <button class="btn-back" (click)="goBack()" [attr.aria-label]="'COMMON.BACK' | translate">
             <i class="fas fa-arrow-left"></i>
           </button>
 
           <div class="title-section">
             <div class="title-badge">
               <i class="fas fa-cube"></i>
-              <span>Produit</span>
+              <span>{{ 'OIL_CONTAINER.DASHBOARD.FIELDS.SKU' | translate }}</span>
             </div>
 
             <div class="title-line">
@@ -60,12 +60,14 @@
 
           <button class="btn-outline" [routerLink]="['/stock/products', sku.id, 'edit']">
             <i class="fas fa-edit"></i>
-            Modifier
+
+            {{ 'BANK_ACCOUNTS.ACTIONS.EDIT' | translate }}
           </button>
 
           <button class="btn-outline btn-delete" (click)="deleteSku()" [disabled]="deleting">
             <i class="fas fa-trash-alt"></i>
-            Supprimer
+
+            {{ 'COMMON.DELETE' | translate }}
           </button>
         </div>
       </section>
@@ -76,7 +78,7 @@
             <div class="header-icon-wrapper">
               <i class="fas fa-info-circle"></i>
             </div>
-            <h3>Informations générales</h3>
+            <h3>{{ 'DELIVERIES.FORM.SECTIONS.GENERAL_INFO' | translate }}</h3>
             <span class="header-decoration"></span>
           </div>
 
@@ -84,7 +86,8 @@
             <div class="info-row">
               <span class="info-label">
                 <i class="fas fa-align-left"></i>
-                Nom du produit
+
+                {{ 'AUTO.NOM_DU_PRODUIT' | translate }}
               </span>
               <span class="info-value">{{ getProductName() }}</span>
             </div>
@@ -92,7 +95,8 @@
             <div class="info-row">
               <span class="info-label">
                 <i class="fas fa-barcode"></i>
-                Code interne
+
+                {{ 'AUTO.CODE_INTERNE' | translate }}
               </span>
               <span class="info-value">{{ sku.code || '-' }}</span>
             </div>
@@ -100,7 +104,8 @@
             <div class="info-row">
               <span class="info-label">
                 <i class="fas fa-box"></i>
-                Type
+
+                {{ 'CONFIGURATION.RECEPTION.TABLE.TYPE' | translate }}
               </span>
               <span class="info-value">
                 <span class="category-chip">
@@ -113,7 +118,8 @@
             <div class="info-row">
               <span class="info-label">
                 <i class="fas fa-list"></i>
-                Catégorie
+
+                {{ 'BASE_TYPE.CATEGORY' | translate }}
               </span>
               <span class="info-value">{{ sku.category || '-' }}</span>
             </div>
@@ -121,7 +127,8 @@
             <div class="info-row">
               <span class="info-label">
                 <i class="fas fa-ruler-combined"></i>
-                Unité
+
+                {{ 'OIL_CREDIT.FIELDS.UNIT' | translate }}
               </span>
               <span class="info-value">{{ sku.unitOfMeasure || '-' }}</span>
             </div>
@@ -133,7 +140,7 @@
             <div class="header-icon-wrapper">
               <i class="fas fa-tint"></i>
             </div>
-            <h3>Profil huile</h3>
+            <h3>{{ 'AUTO.PROFIL_HUILE' | translate }}</h3>
             <span class="header-decoration"></span>
           </div>
 
@@ -141,7 +148,8 @@
             <div class="info-row">
               <span class="info-label">
                 <i class="fas fa-award"></i>
-                Grade
+
+                {{ 'AUTO.GRADE' | translate }}
               </span>
               <span class="info-value">{{ formatGradeLabel(sku.grade) }}</span>
             </div>
@@ -149,7 +157,8 @@
             <div class="info-row">
               <span class="info-label">
                 <i class="fas fa-map-marker-alt"></i>
-                Origine
+
+                {{ 'AUTO.ORIGINE' | translate }}
               </span>
               <span class="info-value">{{ sku.origin || '-' }}</span>
             </div>
@@ -157,7 +166,8 @@
             <div class="info-row">
               <span class="info-label">
                 <i class="fas fa-calendar-alt"></i>
-                Campagne
+
+                {{ 'AUTO.CAMPAGNE' | translate }}
               </span>
               <span class="info-value">{{ sku.harvestCampaign || '-' }}</span>
             </div>
@@ -165,7 +175,8 @@
             <div class="info-row">
               <span class="info-label">
                 <i class="fas fa-file-alt"></i>
-                Description
+
+                {{ 'BASE_TYPE.FIELDS.DESCRIPTION' | translate }}
               </span>
               <span class="info-value">{{ sku.description || '-' }}</span>
             </div>
@@ -177,7 +188,7 @@
             <div class="header-icon-wrapper">
               <i class="fas fa-qrcode"></i>
             </div>
-            <h3>QR Code</h3>
+            <h3>{{ 'AUTO.QR_CODE' | translate }}</h3>
             <span class="header-decoration"></span>
           </div>
 
@@ -190,11 +201,12 @@
                     alt="QR Code"
                   />
                 } @else {
-                  <p class="qr-status">Le code public existe, mais l'image QR doit etre regeneree.</p>
+                  <p class="qr-status">{{ 'AUTO.LE_CODE_PUBLIC_EXISTE_MAIS_L_IMAGE_QR_DOIT_ETRE_REGENEREE' | translate }}</p>
                 }
 
                 <p class="public-code">
-                  Code manuel :
+
+                  {{ 'AUTO.CODE_MANUEL' | translate }}
                   <strong>{{ sku.publicCode }}</strong>
                 </p>
 
@@ -211,13 +223,14 @@
                   @if (sku.qrImageBase64) {
                     <button class="btn-qr btn-qr-print" (click)="printQr()">
                       <i class="fas fa-print"></i>
-                      Imprimer
+
+                      {{ 'BANK_ACCOUNTS.ACTIONS.PRINT' | translate }}
                     </button>
                   }
                 </div>
               </div>
             } @else {
-              <p class="qr-status">Pas encore de QR code pour ce produit.</p>
+              <p class="qr-status">{{ 'AUTO.PAS_ENCORE_DE_QR_CODE_POUR_CE_PRODUIT' | translate }}</p>
               <button class="btn-qr" (click)="generateQr()" [disabled]="generatingQr">
                 <i class="fas fa-qrcode"></i>
                 {{ generatingQr ? 'Generation...' : 'Generer QR Code' }}
@@ -232,7 +245,7 @@
               <div class="header-icon-wrapper">
                 <i class="fas fa-cube"></i>
               </div>
-              <h3>Conditionnement</h3>
+              <h3>{{ 'OSM_DASHBOARD.ACTIONS.CONDITIONING' | translate }}</h3>
               <span class="header-decoration"></span>
             </div>
 
@@ -240,12 +253,13 @@
               <div class="info-row">
                 <span class="info-label">
                   <i class="fas fa-bottle-water"></i>
-                  Volume unitaire
+
+                  {{ 'AUTO.VOLUME_UNITAIRE' | translate }}
                 </span>
                 <span class="info-value">
                   @if (sku.volume) {
                     <span class="metric-value">
-                      <strong>{{ sku.volume | number:'1.0-3' }}</strong><small>ml</small>
+                      <strong>{{ sku.volume | number:'1.0-3' }}</strong><small>{{ 'AUTO.ML' | translate }}</small>
                     </span>
                   } @else {
                     -
@@ -256,7 +270,8 @@
               <div class="info-row">
                 <span class="info-label">
                   <i class="fas fa-box-open"></i>
-                  Type packaging
+
+                  {{ 'AUTO.TYPE_PACKAGING' | translate }}
                 </span>
                 <span class="info-value">{{ sku.packagingType || '-' }}</span>
               </div>
@@ -264,7 +279,8 @@
               <div class="info-row">
                 <span class="info-label">
                   <i class="fas fa-tag"></i>
-                  Marque
+
+                  {{ 'AUTO.MARQUE' | translate }}
                 </span>
                 <span class="info-value">{{ sku.brand || '-' }}</span>
               </div>
@@ -272,7 +288,8 @@
               <div class="info-row">
                 <span class="info-label">
                   <i class="fas fa-barcode"></i>
-                  Code barre
+
+                  {{ 'AUTO.CODE_BARRE' | translate }}
                 </span>
                 <span class="info-value">{{ sku.barcode || '-' }}</span>
               </div>
@@ -280,7 +297,8 @@
               <div class="info-row">
                 <span class="info-label">
                   <i class="fas fa-boxes-stacked"></i>
-                  Unités par carton
+
+                  {{ 'AUTO.UNITES_PAR_CARTON' | translate }}
                 </span>
                 <span class="info-value">{{ getUnitsPerCarton() || '-' }}</span>
               </div>
@@ -288,7 +306,8 @@
               <div class="info-row">
                 <span class="info-label">
                   <i class="fas fa-pallet"></i>
-                  Cartons par palette
+
+                  {{ 'AUTO.CARTONS_PAR_PALETTE' | translate }}
                 </span>
                 <span class="info-value">{{ getCartonsPerPallet() || '-' }}</span>
               </div>
@@ -296,7 +315,8 @@
               <div class="info-row">
                 <span class="info-label">
                   <i class="fas fa-weight-hanging"></i>
-                  Poids net / brut
+
+                  {{ 'AUTO.POIDS_NET_BRUT' | translate }}
                 </span>
                 <span class="info-value">
                   {{ sku.netWeight || '-' }} kg / {{ sku.grossWeight || '-' }} kg
@@ -312,7 +332,7 @@
               <div class="header-icon-wrapper">
                 <i class="fas fa-industry"></i>
               </div>
-              <h3>Vrac</h3>
+              <h3>{{ 'AUTO.VRAC' | translate }}</h3>
               <span class="header-decoration"></span>
             </div>
 
@@ -320,7 +340,8 @@
               <div class="info-row">
                 <span class="info-label">
                   <i class="fas fa-vial"></i>
-                  Densité
+
+                  {{ 'AUTO.DENSITE' | translate }}
                 </span>
                 <span class="info-value">{{ sku.density || '-' }}</span>
               </div>
@@ -328,7 +349,8 @@
               <div class="info-row">
                 <span class="info-label">
                   <i class="fas fa-warehouse"></i>
-                  Stockage par défaut
+
+                  {{ 'AUTO.STOCKAGE_PAR_DEFAUT' | translate }}
                 </span>
                 <span class="info-value">{{ sku.storageUnit || '-' }}</span>
               </div>
@@ -343,7 +365,7 @@
             <div class="header-icon-wrapper">
               <i class="fas fa-tags"></i>
             </div>
-            <h3>Étiquettes liées</h3>
+            <h3>{{ 'AUTO.ETIQUETTES_LIEES' | translate }}</h3>
           </div>
 
           <span class="header-decoration"></span>
@@ -353,7 +375,7 @@
           @if (labelsLoading) {
             <div class="labels-state">
               <div class="mini-spinner"></div>
-              <span>Chargement des étiquettes...</span>
+              <span>{{ 'AUTO.CHARGEMENT_DES_ETIQUETTES' | translate }}</span>
             </div>
           } @else if (relatedLabelsCount() === 0) {
             <div class="labels-empty">
@@ -361,7 +383,7 @@
                 <i class="fas fa-leaf"></i>
               </div>
 
-              <p>Aucune étiquette liée à ce produit pour le moment.</p>
+              <p>{{ 'AUTO.AUCUNE_ETIQUETTE_LIEE_A_CE_PRODUIT_POUR_LE_MOMENT' | translate }}</p>
 
               @if (!isVrac()) {
                 <a
@@ -370,14 +392,15 @@
                   [queryParams]="{ packagingId: sku.id }"
                 >
                   <i class="fas fa-plus"></i>
-                  Créer une étiquette
+
+                  {{ 'AUTO.CREER_UNE_ETIQUETTE' | translate }}
                 </a>
               }
             </div>
           } @else {
             <div class="labels-summary">
               <span class="labels-count">{{ relatedLabelsCount() }}</span>
-              <span class="labels-text">étiquette(s) trouvée(s)</span>
+              <span class="labels-text">{{ 'AUTO.ETIQUETTE_S_TROUVEE_S' | translate }}</span>
             </div>
 
             <div class="labels-list">
@@ -392,15 +415,15 @@
                     </div>
 
                     <div class="label-item-meta">
-                      <span><strong>Lot:</strong> {{ label.lotNumber || '-' }}</span>
-                      <span><strong>Date:</strong> {{ labelDate(label) }}</span>
-                      <span><strong>Langue:</strong> {{ label.language || '-' }}</span>
+                      <span><strong>{{ 'AUTO.LOT' | translate }}</strong> {{ label.lotNumber || '-' }}</span>
+                      <span><strong>{{ 'AUTO.DATE' | translate }}</strong> {{ labelDate(label) }}</span>
+                      <span><strong>{{ 'AUTO.LANGUE' | translate }}</strong> {{ label.language || '-' }}</span>
                     </div>
                   </div>
 
                   <div class="label-item-actions">
-                    <a class="btn-label-link" [routerLink]="['/labels', label.id]">Voir</a>
-                    <a class="btn-label-link secondary" [routerLink]="['/labels', label.id, 'edit']">Éditer</a>
+                    <a class="btn-label-link" [routerLink]="['/labels', label.id]">{{ 'AUTO.VOIR' | translate }}</a>
+                    <a class="btn-label-link secondary" [routerLink]="['/labels', label.id, 'edit']">{{ 'AUTO.EDITER' | translate }}</a>
                   </div>
                 </div>
               }

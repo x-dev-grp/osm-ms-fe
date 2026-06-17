@@ -49,7 +49,7 @@ import {
 import { FilterLotPipe } from '../../shared/pipes/FilterLotPipe';
 import { ToastService } from '../../shared/services/toast.service';
 import { CardComponent } from '../../theme/components/card/card.component';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { PdfGeneratorService } from '../../shared/services/pdf-generator.service';
 import { OliveLotStatus } from '../../shared/models/OliveLotStatus';
 import { ApiResponse } from '../../shared/models/api-response';
@@ -72,7 +72,7 @@ type CompletionResult = {
   templateUrl: './planning.component.html',
   styleUrls: ['./planning.component.scss'],
   standalone: true,
-  imports: [
+  imports: [TranslateModule,
     MatToolbarModule,
     MatCardModule,
     MatButtonModule,
@@ -685,7 +685,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.planningService.savePlanning(request).subscribe({
       next: () => {
-        this.toast.success('Planning saved successfully!');
+        this.toast.success('AUTO.PLANNING_SAVED_SUCCESSFULLY');
         this.dirty = false;
         this.isSaved = false;
         this.cdr.markForCheck();
@@ -694,7 +694,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
         console.error('[SavePlan] Error saving planning:', err);
         // Log the full error object to understand the cause
         console.error('[SavePlan] Full error details:', JSON.stringify(err, null, 2));
-        this.toast.error('Failed to save planning. Please try again.');
+        this.toast.error('AUTO.FAILED_TO_SAVE_PLANNING_PLEASE_TRY_AGAIN');
       }
     });
   }
@@ -933,7 +933,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
       error: (err) => {
         // only runs on real 4xx/5xx/network errors
         console.error('[COMPLETE] lot error', err);
-        this.toast.error(err?.error?.message || 'Erreur lors de la finalisation.');
+        this.toast.error(err?.error?.message || 'AUTO.ERREUR_LORS_DE_LA_FINALISATION');
         if (targetItemData) {
           targetItemData.oilQuantity = null;
           targetItemData.rendement = null;
@@ -1101,7 +1101,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
       },
       error: (err) => {
         console.error('Error in loadPlanning:', err);
-        this.toast.error('Failed to load planning data. Please try again.');
+        this.toast.error('AUTO.FAILED_TO_LOAD_PLANNING_DATA_PLEASE_TRY_AGAIN');
         this.loadReceptions(); // Fallback to basic loading
       }
     });
@@ -1425,7 +1425,7 @@ export class PlanningComponent implements OnInit, OnDestroy, AfterViewInit {
       },
       error: (err) => {
         console.error('Error loading deliveries:', err);
-        this.toast.error('Failed to load receptions. Please try again.');
+        this.toast.error('AUTO.FAILED_TO_LOAD_RECEPTIONS_PLEASE_TRY_AGAIN');
       }
     });
   }

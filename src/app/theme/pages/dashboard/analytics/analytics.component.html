@@ -11,15 +11,15 @@
   <div class="col-md-6 col-xxl-3">
     <app-card [showHeader]="false" cardClass="storage-card text-white">
       <div class="flex align-item-center justify-content-between">
-        <div class="f-w-600">Dropbox Storage</div>
-        <div class="f-16 f-w-600">150GB</div>
+        <div class="f-w-600">{{ 'AUTO.DROPBOX_STORAGE' | translate }}</div>
+        <div class="f-16 f-w-600">{{ 'AUTO.150GB' | translate }}</div>
       </div>
       <div class="m-b-15 dropbox-card">
         <div class="avatar avatar-s">
           <i class="ti ti-cloud f-18"></i>
         </div>
       </div>
-      <div class="mat-caption f-w-500">134,2GB of 150GB Users</div>
+      <div class="mat-caption f-w-500">{{ 'AUTO.134_2GB_OF_150GB_USERS' | translate }}</div>
       <div class="m-t-10">
         <mat-progress-bar mode="determinate" [value]="75" color="warn"></mat-progress-bar>
       </div>
@@ -27,7 +27,7 @@
     <app-card [showHeader]="false" cardClass="balance-card text-white" padding="16">
       <div class="flex align-item-center justify-content-between">
         <div>
-          <p class="m-b-0 text-white text-opacity-75">Available Balance</p>
+          <p class="m-b-0 text-white text-opacity-75">{{ 'AUTO.AVAILABLE_BALANCE' | translate }}</p>
           <h4 class="m-b-0 f-20 f-w-600 text-white">$1,234.90</h4>
         </div>
         <div class="avatar">
@@ -95,10 +95,10 @@
                   <div class="flex-shrink-0 m-l-10">
                     <a [matMenuTriggerFor]="paymentInfo" class="avatar avatar-s hover"><i class="ti ti-dots-vertical f-18"></i></a>
                     <mat-menu #paymentInfo="matMenu">
-                      <a href="javascript:" mat-menu-item>Name</a>
-                      <a href="javascript:" mat-menu-item>Date</a>
-                      <a href="javascript:" mat-menu-item>Rating</a>
-                      <a href="javascript:" mat-menu-item>Unread</a>
+                      <a href="javascript:" mat-menu-item>{{ 'BASE_TYPE.FIELDS.NAME' | translate }}</a>
+                      <a href="javascript:" mat-menu-item>{{ 'PDF.DATE' | translate }}</a>
+                      <a href="javascript:" mat-menu-item>{{ 'AUTO.RATING' | translate }}</a>
+                      <a href="javascript:" mat-menu-item>{{ 'AUTO.UNREAD' | translate }}</a>
                     </mat-menu>
                   </div>
                 </div>
@@ -107,7 +107,7 @@
           </ul>
           <ng-template #actionTemplate>
             <div class="grid">
-              <button mat-stroked-button class="b-rad-20">View All</button>
+              <button mat-stroked-button class="b-rad-20">{{ 'AUTO.VIEW_ALL' | translate }}</button>
             </div>
           </ng-template>
         </app-card>

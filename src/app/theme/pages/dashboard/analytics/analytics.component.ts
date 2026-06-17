@@ -12,10 +12,11 @@ import { IncomeChartComponent } from '../../apex-chart/income-chart/income-chart
 import { LanguagesSupportChartComponent } from '../../apex-chart/languages-support-chart/languages-support-chart.component';
 import { OverviewProductChartComponent } from '../../apex-chart/overview-product-chart/overview-product-chart.component';
 import { TotalEarningChartComponent } from '../../apex-chart/total-earning-chart/total-earning-chart.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-analytics',
-  imports: [
+  imports: [TranslateModule, 
     CommonModule,
     SharedModule,
     NewOrderChartComponent,

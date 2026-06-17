@@ -23,24 +23,28 @@
           </div>
 
           <p>
-            Client :
+
+            {{ 'AUTO.CLIENT' | translate }}
             <strong>{{ p.client?.nom || '-' }}</strong>
           </p>
 
           <div class="actions-bar">
             <button class="btn-outline" (click)="onBack()">
               <mat-icon>arrow_back</mat-icon>
-              Retour
+
+              {{ 'COMMON.BACK' | translate }}
             </button>
 
             <button class="btn-primary" [disabled]="p.statut === 'FAILED'" (click)="openExpedition()">
               <mat-icon>local_shipping</mat-icon>
-              Expédition
+
+              {{ 'OSM_DASHBOARD.ACTIONS.EXPEDITION' | translate }}
             </button>
 
             <button class="btn-light-primary" (click)="openTraceability()">
               <mat-icon>history_edu</mat-icon>
-              Traçabilité
+
+              {{ 'AUTO.TRACABILITE' | translate }}
             </button>
           </div>
         </div>
@@ -67,12 +71,12 @@
     <div class="d-flex align-items-center gap-3">
       <mat-icon style="color: #1fc53b; font-size: 28px; width: 28px; height: 28px;">check_circle</mat-icon>
       <div>
-        <strong style="font-size: 16px; display: block; margin-bottom: 2px;">Production terminée</strong>
-        <span class="small" style="color: #14601c !important;">Tous les Ordres de Fabrication de ce projet sont terminés. Vous pouvez maintenant procéder à l'expédition.</span>
+        <strong style="font-size: 16px; display: block; margin-bottom: 2px;">{{ 'AUTO.PRODUCTION_TERMINEE' | translate }}</strong>
+        <span class="small" style="color: #14601c !important;">{{ 'AUTO.TOUS_LES_ORDRES_DE_FABRICATION_DE_CE_PROJET_SONT_TERMINES_VOUS_P' | translate }}</span>
       </div>
     </div>
     <button class="btn btn-success btn-sm" (click)="openExpedition()" style="background-color: #1fc53b; border: none; color: white; padding: 8px 16px; border-radius: 6px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
-      <mat-icon style="font-size: 16px; width: 16px; height: 16px;">local_shipping</mat-icon> Expédier
+      <mat-icon style="font-size: 16px; width: 16px; height: 16px;">local_shipping</mat-icon>  {{ 'OSM_DASHBOARD.ACTIONS.SHIP' | translate }}
     </button>
   </div>
 
@@ -86,7 +90,7 @@
         <div class="card-header">
           <div class="section-title">
             <mat-icon>description</mat-icon>
-            <h5>Détails du projet</h5>
+            <h5>{{ 'AUTO.DETAILS_DU_PROJET' | translate }}</h5>
           </div>
         </div>
 
@@ -98,7 +102,7 @@
                 <mat-icon>person</mat-icon>
               </div>
               <div>
-                <span class="label">Client</span>
+                <span class="label">{{ 'OLIVE_RECEPTION.FORM.FIELDS.CLIENT' | translate }}</span>
                 <span class="value">{{ p.client?.nom || '-' }}</span>
               </div>
             </div>
@@ -108,7 +112,7 @@
                 <mat-icon>business</mat-icon>
               </div>
               <div>
-                <span class="label">Type client</span>
+                <span class="label">{{ 'AUTO.TYPE_CLIENT' | translate }}</span>
                 <span class="value">
                   {{ p.client?.type === ClientType.BUYER ? 'Acheteur' : p.client?.type === 'BRAND' ? 'Marque' : '-' }}
                 </span>
@@ -120,7 +124,7 @@
                 <mat-icon>eco</mat-icon>
               </div>
               <div>
-                <span class="label">Produit</span>
+                <span class="label">{{ 'OIL_CONTAINER.DASHBOARD.FIELDS.SKU' | translate }}</span>
                 <span class="value">{{ p.typeProduit | titlecase }}</span>
               </div>
             </div>
@@ -130,7 +134,7 @@
                 <mat-icon>local_drink</mat-icon>
               </div>
               <div>
-                <span class="label">Emballage</span>
+                <span class="label">{{ 'OIL_CREDIT.FIELDS.PACKAGING' | translate }}</span>
                 <span class="value">{{ p.typeEmballage | titlecase }}</span>
               </div>
             </div>
@@ -140,7 +144,7 @@
                 <mat-icon>track_changes</mat-icon>
               </div>
               <div>
-                <span class="label">Quantité cible</span>
+                <span class="label">{{ 'AUTO.QUANTITE_CIBLE' | translate }}</span>
                 <span class="value">
                   {{ p.quantiteCible | number }} {{ p.unite === 'LITRES' ? 'L' : 'unités' }}
                 </span>
@@ -148,12 +152,12 @@
             </div>
 
             <div class="detail-item">
-              <span class="label">Quantite planifiee en OF</span>
+              <span class="label">{{ 'AUTO.QUANTITE_PLANIFIEE_EN_OF' | translate }}</span>
               <span class="value">{{ totalOfTargetQuantity | number }} {{ p.unite === 'LITRES' ? 'L' : 'unites' }}</span>
             </div>
 
             <div class="detail-item">
-              <span class="label">Quantite OF restante</span>
+              <span class="label">{{ 'AUTO.QUANTITE_OF_RESTANTE' | translate }}</span>
               <span class="value" [class.text-danger]="remainingOfQuantity > 0">
                 {{ remainingOfQuantity | number }} {{ p.unite === 'LITRES' ? 'L' : 'unites' }}
               </span>
@@ -164,7 +168,7 @@
                 <mat-icon>event</mat-icon>
               </div>
               <div>
-                <span class="label">Date limite de livraison</span>
+                <span class="label">{{ 'AUTO.DATE_LIMITE_DE_LIVRAISON' | translate }}</span>
                 <span class="value">{{ p.dateLimiteLivraison | date:'dd/MM/yyyy' }}</span>
               </div>
             </div>
@@ -174,7 +178,7 @@
                 <mat-icon>sell</mat-icon>
               </div>
               <div>
-                <span class="label">Prix unitaire</span>
+                <span class="label">{{ 'OIL_SALES.FIELDS.UNIT_PRICE' | translate }}</span>
                 <span class="value">{{ p.prixUnitaire | currency:'TND' }}</span>
               </div>
             </div>
@@ -184,7 +188,7 @@
                 <mat-icon>payments</mat-icon>
               </div>
               <div>
-                <span class="label">Valeur totale</span>
+                <span class="label">{{ 'AUTO.VALEUR_TOTALE' | translate }}</span>
                 <span class="value amount">{{ p.valeurTotale | currency:'TND' }}</span>
               </div>
             </div>
@@ -194,7 +198,7 @@
                 <mat-icon>local_shipping</mat-icon>
               </div>
               <div>
-                <span class="label">Conditions de livraison</span>
+                <span class="label">{{ 'AUTO.CONDITIONS_DE_LIVRAISON' | translate }}</span>
                 <span class="value">{{ p.conditionsLivraison || '-' }}</span>
               </div>
             </div>
@@ -208,7 +212,7 @@
         <div class="card-header">
           <div class="section-title">
             <mat-icon>settings</mat-icon>
-            <h5>Ordres de fabrication (OF)</h5>
+            <h5>{{ 'MENU.CONDITIONNEMENT.OF' | translate }}</h5>
           </div>
 
           <span class="count-badge">{{ ofs.length }} OF</span>
@@ -222,18 +226,18 @@
         <div class="card-body p-0">
           <div *ngIf="loadingOfs" class="loading-inline">
             <i class="fas fa-spinner fa-spin"></i>
-            <p>Chargement des OF...</p>
+            <p>{{ 'AUTO.CHARGEMENT_DES_OF' | translate }}</p>
           </div>
 
           <div class="table-responsive" *ngIf="!loadingOfs && ofs.length > 0">
             <table class="modern-table">
               <thead>
               <tr>
-                <th>Code OF</th>
-                <th>Statut</th>
-                <th class="text-center">Qté cible</th>
-                <th class="text-center">Qté bonne</th>
-                <th>Date début prévue</th>
+                <th>{{ 'AUTO.CODE_OF' | translate }}</th>
+                <th>{{ 'ADMIN_DASHBOARD.TABLE.STATUS' | translate }}</th>
+                <th class="text-center">{{ 'AUTO.QTE_CIBLE' | translate }}</th>
+                <th class="text-center">{{ 'AUTO.QTE_BONNE' | translate }}</th>
+                <th>{{ 'AUTO.DATE_DEBUT_PREVUE' | translate }}</th>
               </tr>
               </thead>
 
@@ -267,8 +271,8 @@
 
           <div *ngIf="!loadingOfs && ofs.length === 0" class="empty-state">
             <mat-icon>assignment</mat-icon>
-            <h5>Aucun OF associé</h5>
-            <p>Ce projet ne contient actuellement aucun ordre de fabrication.</p>
+            <h5>{{ 'AUTO.AUCUN_OF_ASSOCIE' | translate }}</h5>
+            <p>{{ 'AUTO.CE_PROJET_NE_CONTIENT_ACTUELLEMENT_AUCUN_ORDRE_DE_FABRICATION' | translate }}</p>
           </div>
         </div>
       </div>
@@ -278,7 +282,7 @@
         <div class="card-header">
           <div class="section-title">
             <mat-icon>inventory_2</mat-icon>
-            <h5>Produits finis (SKU) à produire</h5>
+            <h5>{{ 'AUTO.PRODUITS_FINIS_SKU_A_PRODUIRE' | translate }}</h5>
           </div>
 
           <span class="count-badge">{{ p.produits.length }}</span>
@@ -289,9 +293,9 @@
             <table class="modern-table">
               <thead>
               <tr>
-                <th>Produit / SKU</th>
-                <th class="text-center">Quantité cible</th>
-                <th class="text-center">Nomenclature (BOM)</th>
+                <th>{{ 'AUTO.PRODUIT_SKU' | translate }}</th>
+                <th class="text-center">{{ 'AUTO.QUANTITE_CIBLE' | translate }}</th>
+                <th class="text-center">{{ 'AUTO.NOMENCLATURE_BOM' | translate }}</th>
               </tr>
               </thead>
 
@@ -301,7 +305,8 @@
                 <td class="text-center good-value">{{ prod.quantiteCible | number }}</td>
                 <td class="text-center muted-cell">
                   <i class="fas fa-file-alt me-1"></i>
-                  Liée
+
+                  {{ 'AUTO.LIEE' | translate }}
                 </td>
               </tr>
               </tbody>
@@ -315,7 +320,7 @@
         <div class="card-header">
           <div class="section-title">
             <mat-icon>warehouse</mat-icon>
-            <h5>Besoins (Réservations de stock)</h5>
+            <h5>{{ 'AUTO.BESOINS_RESERVATIONS_DE_STOCK' | translate }}</h5>
           </div>
 
           <span class="count-badge info">{{ p.reservations.length }}</span>
@@ -326,9 +331,9 @@
             <table class="modern-table">
               <thead>
               <tr>
-                <th>Article (Composant)</th>
-                <th class="text-center">Quantité réservée</th>
-                <th class="text-center">Statut</th>
+                <th>{{ 'AUTO.ARTICLE_COMPOSANT' | translate }}</th>
+                <th class="text-center">{{ 'AUTO.QUANTITE_RESERVEE' | translate }}</th>
+                <th class="text-center">{{ 'ADMIN_DASHBOARD.TABLE.STATUS' | translate }}</th>
               </tr>
               </thead>
 
@@ -364,12 +369,12 @@
         <div class="card-header no-print">
           <div class="section-title">
             <mat-icon>verified_user</mat-icon>
-            <h5>Traçabilité (QR Code)</h5>
+            <h5>{{ 'AUTO.TRACABILITE_QR_CODE' | translate }}</h5>
           </div>
         </div>
 
         <div class="card-body qr-section">
-          <h2>Projet</h2>
+          <h2>{{ 'OSM_DASHBOARD.ACTIONS.PROJET' | translate }}</h2>
           <h3>{{ p.code }}</h3>
 
           <div class="qr-box" *ngIf="hasQrImage()">
@@ -377,19 +382,22 @@
           </div>
 
           <p class="manual-code">
-            Code manuel :
+
+            {{ 'AUTO.CODE_MANUEL' | translate }}
             <strong>{{ getManualCode() }}</strong>
           </p>
 
           <div class="actions-bar justify-content-center no-print">
             <button class="btn-primary qr-btn" *ngIf="!hasQrImage()" (click)="generateQr()" [disabled]="generatingQr">
               <mat-icon>qr_code</mat-icon>
-              Générer QR
+
+              {{ 'AUTO.GENERER_QR' | translate }}
             </button>
 
             <button class="btn-outline qr-btn" *ngIf="hasQrImage()" (click)="printQr()">
               <mat-icon>print</mat-icon>
-              Imprimer
+
+              {{ 'BANK_ACCOUNTS.ACTIONS.PRINT' | translate }}
             </button>
           </div>
         </div>
@@ -401,5 +409,5 @@
 
 <div *ngIf="loading" class="loading-state-modern">
   <div class="spinner-container"></div>
-  <p class="loading-text">Chargement des détails du projet...</p>
+  <p class="loading-text">{{ 'AUTO.CHARGEMENT_DES_DETAILS_DU_PROJET' | translate }}</p>
 </div>

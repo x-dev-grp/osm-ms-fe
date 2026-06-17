@@ -1,220 +1,134 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  DestroyRef,
-  ViewChild,
-  inject,
-  signal
-} from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { Component, DestroyRef, ViewChild, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatTableModule } from '@angular/material/table';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatDivider } from '@angular/material/divider';
+import { TranslateModule } from '@ngx-translate/core';
+
 import { FiltrationApiService } from '../../shared/services/filtration-api.service';
 import { FiltrationOperation } from '../../shared/models/filtration-operation';
-import { FILTRATION_STATUS_LABEL, FiltrationStatus } from '../../shared/models/filtration-status';
+import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
+import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
+import { FILTRATION_DASHBOARD_CONFIG } from './filtration-dashboard.config';
 import { FiltrationStatusDialogComponent } from './filtration-status-dialog/filtration-status-dialog.component';
 import { FiltrationDeleteDialogComponent } from './filtration-delete-dialog/filtration-delete-dialog.component';
-import { FiltrationTraceabilityDialogComponent } from './traceability/filtration-traceability-dialog.component';
+
 @Component({
   selector: 'app-filtration-list',
   standalone: true,
-  imports: [
-    CommonModule,
-    DatePipe,
-    MatDialogModule,
-    MatTableModule,
-    MatButtonModule,
-    MatIconModule,
-    MatMenuModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatChipsModule,
-    MatProgressSpinnerModule,
-    MatPaginator,
-    MatDivider
-  ],
+  imports: [TranslateModule, MatDialogModule, OsmDashboard],
   templateUrl: './filtration-list.component.html',
-  styleUrls: ['./filtration-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./filtration-list.component.scss']
 })
 export class FiltrationListComponent {
-  readonly displayedColumns: string[] = [
-    'timestamp',
-    'source',
-    'target',
-    'volumeFiltered',
-    'volumeAfter',
-    'lossPercent',
-    'status',
-    'actions'
-  ];
-  readonly statusOptions: Array<FiltrationStatus | 'ALL'> = [
-    'ALL',
-    'CREATED',
-    'IN_PROGRESS',
-    'COMPLETED',
-    'CANCELLED'
-  ];
-  readonly loading = signal(false);
-  readonly rows = signal<FiltrationOperation[]>([]);
-  readonly statusFilter = signal<FiltrationStatus | 'ALL'>('ALL');
-  pageSize = 10;
-  totalElements = signal(0);
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  dashboardConfig: DashboardConfig = FILTRATION_DASHBOARD_CONFIG;
+
+  @ViewChild('dashboard') dashboard!: OsmDashboard;
+
   private readonly destroyRef = inject(DestroyRef);
   private readonly api = inject(FiltrationApiService);
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
-  constructor() {
-    this.load();
+
+  handleAction(event: { row: FiltrationOperation & { id?: string }; action: string }): void {
+    const row = this.normalizeRow(event.row);
+    const operationId = row.operationId;
+    const action = event.action?.toUpperCase();
+
+    if (!operationId) {
+      return;
+    }
+
+    switch (action) {
+      case 'READ':
+        void this.router.navigate(['storage', 'oil-filtering', operationId, 'view']);
+        break;
+      case 'UPDATE':
+        this.onEdit(row, operationId);
+        break;
+      case 'START':
+        this.onStart(operationId);
+        break;
+      case 'STATUS':
+        this.onChangeStatus(row);
+        break;
+      case 'TRACEABILITY':
+        void this.router.navigate(['storage', 'oil-filtering', operationId, 'traceability']);
+        break;
+      case 'PREPARE_LABEL':
+        this.onPrepareLabel(row);
+        break;
+      case 'REMOVE':
+        this.onDelete(row);
+        break;
+    }
   }
-  load(): void {
-    this.loading.set(true);
-    const filter = this.statusFilter();
-    const request$ = filter === 'ALL' ? this.api.getAll() : this.api.getByStatus(filter);
-    request$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (data) => {
-        this.rows.set(data ?? []);
-        this.totalElements.set(data?.length ?? 0);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.rows.set([]);
-        this.totalElements.set(0);
-        this.loading.set(false);
-      }
+
+  private onEdit(row: FiltrationOperation, operationId: string): void {
+    const status = String(row.status);
+    if (status !== 'CREATED' && status !== 'COMPLETED') {
+      return;
+    }
+    void this.router.navigate(['storage', 'oil-filtering', operationId, 'edit']);
+  }
+
+  private onStart(operationId: string): void {
+    this.api.start(operationId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () => this.refreshDashboard()
     });
   }
 
-  onCreate(): void {
-    this.router.navigate(['storage', 'oil-filtering', 'new']);
-  }
-
-
-  onStatusChange(value: FiltrationStatus | 'ALL'): void {
-    this.statusFilter.set(value);
-    this.load();
-  }
-  statusLabel(status: string): string {
-    const mappedStatus = status as FiltrationStatus;
-    return FILTRATION_STATUS_LABEL[mappedStatus] ?? status;
-  }
-
-
-  canEdit(row: FiltrationOperation): boolean {
-    const status = row.status as string;
-    return status === 'CREATED' || status === 'COMPLETED';
-  }
-
-  canStart(row: FiltrationOperation): boolean {
-    return (row.status as string) === 'CREATED';
-  }
-
-  canChangeStatus(row: FiltrationOperation): boolean {
-    const status = row.status as string;
-    return status === 'CREATED' || status === 'IN_PROGRESS';
-  }
-
-  canDelete(row: FiltrationOperation): boolean {
-    return (row.status as string) === 'CREATED';
-  }
-
-  statusActionLabel(row: FiltrationOperation): string {
-    const status = row.status as string;
-    if (status === 'CREATED' || status === 'IN_PROGRESS') {
-      return 'Terminer';
-    }
-    return 'Changer statut';
-  }
-
-  statusActionIcon(row: FiltrationOperation): string {
-    const status = row.status as string;
-    if (status === 'CREATED' || status === 'IN_PROGRESS') {
-      return 'task_alt';
-    }
-    return 'swap_horiz';
-  }
-
-  canTraceability(row: FiltrationOperation): boolean {
-    return true;  // toujours accessible
-  }
-
-  canPrepareLabel(row: FiltrationOperation): boolean {
-    return true;  // toujours accessible
-  }
-
-
-  onEdit(row: FiltrationOperation): void {
-    if (!this.canEdit(row)) {
-      return;
-    }
-    this.router.navigate(['storage', 'oil-filtering', row.operationId, 'edit']);
-  }
-  onStart(row: FiltrationOperation): void {
-    if (!this.canStart(row)) {
-      return;
-    }
-    this.loading.set(true);
-    this.api.start(row.operationId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: () => this.load(),
-      error: () => this.loading.set(false)
-    });
-  }
-  onChangeStatus(row: FiltrationOperation): void {
+  private onChangeStatus(row: FiltrationOperation): void {
     const dialogRef = this.dialog.open(FiltrationStatusDialogComponent, {
       width: '520px',
-      data: { row }
+      data: { row: this.normalizeRow(row) }
     });
+
     dialogRef.afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((changed: boolean) => {
       if (changed) {
-        this.load();
+        this.refreshDashboard();
       }
     });
   }
-  onDelete(row: FiltrationOperation): void {
+
+  private onDelete(row: FiltrationOperation): void {
     const dialogRef = this.dialog.open(FiltrationDeleteDialogComponent, {
       width: '420px',
-      data: { row }
+      data: { row: this.normalizeRow(row) }
     });
+
     dialogRef.afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((confirmed: boolean) => {
       if (!confirmed) {
         return;
       }
-      this.loading.set(true);
+
       this.api.delete(row.operationId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-        next: () => this.load(),
-        error: () => this.loading.set(false)
+        next: () => this.refreshDashboard()
       });
     });
   }
-  onPageChange(event: { pageSize: number }): void {
-    this.pageSize = event.pageSize;
-  }
 
-  onTraceability(row: FiltrationOperation): void {
-    this.router.navigate(['storage', 'oil-filtering', row.operationId, 'traceability']);
-  }
-  onPrepareLabel(row: FiltrationOperation): void {
-    if (!row.target?.id) {
+  private onPrepareLabel(row: FiltrationOperation & { targetStorageUnit?: { id?: string }; target?: { id?: string } }): void {
+    const targetId = row.target?.id ?? row.targetStorageUnit?.id;
+    if (!targetId) {
       return;
     }
-    this.router.navigate(['/labels', 'new'], {
-      queryParams: {
-        lotId: row.target.id
-      }
+
+    void this.router.navigate(['/labels', 'new'], {
+      queryParams: { lotId: targetId }
     });
   }
+
+  private refreshDashboard(): void {
+    this.dashboard?.refrechData();
+  }
+
+  private normalizeRow(row: FiltrationOperation & { id?: string }): FiltrationOperation {
+    return {
+      ...row,
+      operationId: row.operationId ?? row.id ?? '',
+      source: row.source ?? (row as { sourceStorageUnit?: FiltrationOperation['source'] }).sourceStorageUnit,
+      target: row.target ?? (row as { targetStorageUnit?: FiltrationOperation['target'] }).targetStorageUnit,
+      volumeFiltered: row.volumeFiltered ?? (row as { volumeToFilter?: number }).volumeToFilter ?? 0
+    };
+  }
 }
-
-

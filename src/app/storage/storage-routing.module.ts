@@ -120,7 +120,7 @@ const routes: Routes = [
       {
         path: 'oil-filtering/:id/view',
         loadComponent: () =>
-          import('./filtration/filtration-form/filtration-form.component').then((m) => m.FiltrationFormComponent),
+          import('./filtration/filtration-detail/filtration-detail.component').then((m) => m.FiltrationDetailComponent),
         // CHANGE: permissions - require PRODUCTION:STORAGEUNIT:READ
         canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.READ)])]
       }, {

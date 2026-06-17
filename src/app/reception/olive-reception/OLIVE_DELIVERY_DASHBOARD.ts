@@ -168,10 +168,12 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
       options: [
         {
           label: 'OC',
+          labelTranslatePath: 'HC',
           value: 'OC'
         },
         {
           label: 'OB',
+          labelTranslatePath: 'HB',
           value: 'OB'
         }
       ],

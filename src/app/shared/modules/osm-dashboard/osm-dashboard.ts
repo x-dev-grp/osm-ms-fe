@@ -33,7 +33,7 @@ import { ACTION_ICONS } from './models/actions';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { getValue } from '@ngx-translate/core';
+import { getValue, TranslateModule } from '@ngx-translate/core';
 import { SortByTranslatedPipe } from '../../pipes/sort-by-translated.pipe';
 
 @Component({
@@ -43,7 +43,7 @@ import { SortByTranslatedPipe } from '../../pipes/sort-by-translated.pipe';
   styleUrls: ['./osm-dashboard.scss'],
   standalone: true,
   providers: [DashboardStore],
-  imports: [
+  imports: [TranslateModule, 
     CommonModule,
     MatButtonModule,
     MatTableModule,
@@ -76,12 +76,16 @@ export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
   private readonly _checked = 'checked';
   private readonly _delete = 'DELETE';
   private readonly _actions = 'actions';
+  private readonly _viewActions = ['READ', 'READ_ARTICLE', 'DETAIL'];
   dataTableFields$ = toObservable(this._store.dataTableFields);
   constructor() {
     this.dataTableFields$.pipe(takeUntilDestroyed()).subscribe((fields) => {
       console.log('dataTableFields$', fields);
-      this.displayedColumns = [...fields.filter((field) => field.dataTable).map((field) => field.label), this._actions];
-      this.displayedColumns = [...this.displayedColumns];
+      const cols = fields.filter((field) => field.dataTable).map((field) => field.label);
+      if (!this.config()?.hideActions) {
+        cols.push(this._actions);
+      }
+      this.displayedColumns = cols;
       console.log('displayColumns changed:', this.displayedColumns);
     });
   }
@@ -92,7 +96,8 @@ export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
       this.config().fields,
       this.config()?.defaultSearchData,
       this.config().fileName,
-      this.config().filterTenant
+      this.config().filterTenant,
+      this.config()?.clientSide
     );
 
     this.cdr.detectChanges(); // Force change detection
@@ -175,6 +180,11 @@ export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
     this._store.fetchData();
   }
 
+  setClientSource(rows: unknown[]) {
+    this._store.setClientSource(rows);
+    this._store.applyClientPage();
+  }
+
   actionApply(action: string, row: unknown) {
     if (action === this._delete) {
       this._confirmationDialog.confirmDelete().subscribe((result) => {
@@ -185,5 +195,58 @@ export class OsmDashboard implements OnInit, AfterViewInit, OnChanges {
       return;
     }
     this.applyAction.emit({ row: row, action: action });
+  }
+
+  onRowDoubleClick(row: unknown, event: MouseEvent): void {
+    if (this.config()?.hideActions || this._store.actionLoading()) {
+      return;
+    }
+
+    const target = event.target as HTMLElement | null;
+    if (target?.closest('button, a, input, mat-checkbox, .mat-mdc-checkbox, .mat-mdc-menu-panel')) {
+      return;
+    }
+
+    const action = this.resolveViewAction(row);
+    if (action) {
+      this.actionApply(action, row);
+    }
+  }
+
+  private resolveViewAction(row: unknown): string | null {
+    const preferred = this.config()?.doubleClickAction;
+    if (preferred && this.isActionAvailable(preferred, row)) {
+      return preferred;
+    }
+
+    for (const action of this._viewActions) {
+      if (this.isActionAvailable(action, row)) {
+        return action;
+      }
+    }
+
+    return null;
+  }
+
+  private isActionAvailable(action: string, row: unknown): boolean {
+    if (this.config()?.filteredActions?.includes(action)) {
+      return false;
+    }
+
+    const record = row as Record<string, unknown> & { actions?: string[] };
+    const specificActions = this.config()?.specificActions;
+
+    if (specificActions?.length) {
+      const item = specificActions.find((entry) => entry.action === action);
+      if (!item) {
+        return false;
+      }
+      if (item.disabled?.field && record[item.disabled.field] === item.disabled.value) {
+        return false;
+      }
+      return true;
+    }
+
+    return (record?.actions ?? []).includes(action);
   }
 }

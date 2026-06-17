@@ -4,9 +4,9 @@
     <!-- Loading -->
     <div *ngIf="loading" class="loading-container">
       <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Chargement...</span>
+        <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
       </div>
-      <p class="loading-text">Chargement des informations...</p>
+      <p class="loading-text">{{ 'AUTO.CHARGEMENT_DES_INFORMATIONS' | translate }}</p>
     </div>
 
     <div *ngIf="!loading && fournisseur">
@@ -44,9 +44,10 @@
 
         <div class="header-actions">
           @if (hasCompleteQrMetadata()) {
-            <button class="btn-action" matTooltip="View QR" (click)="openExistingQrDialog()">
+            <button class="btn-action" [matTooltip]="'AUTO.VIEW_QR' | translate" (click)="openExistingQrDialog()">
               <i class="fas fa-qrcode"></i>
-              QR
+
+              {{ 'AUTO.QR' | translate }}
             </button>
           }
           <button class="btn-action" [disabled]="generatingQr" (click)="generateQr()">
@@ -61,7 +62,8 @@
             class="btn-action btn-edit"
             [routerLink]="['/stock/fournisseurs', fournisseur.id, 'editer']">
             <i class="fas fa-edit"></i>
-            Modifier
+
+            {{ 'BANK_ACCOUNTS.ACTIONS.EDIT' | translate }}
           </button>
 
           <button
@@ -83,7 +85,8 @@
           [class.active]="activeTab === 'info'"
           (click)="activeTab = 'info'">
           <i class="fas fa-info-circle"></i>
-          Informations générales
+
+          {{ 'DELIVERIES.FORM.SECTIONS.GENERAL_INFO' | translate }}
         </button>
 
         <button
@@ -91,7 +94,8 @@
           [class.active]="activeTab === 'contact'"
           (click)="activeTab = 'contact'">
           <i class="fas fa-address-card"></i>
-          Contact
+
+          {{ 'AUTO.CONTACT' | translate }}
         </button>
 
         <button
@@ -99,7 +103,26 @@
           [class.active]="activeTab === 'commercial'"
           (click)="activeTab = 'commercial'">
           <i class="fas fa-chart-line"></i>
-          Commercial
+
+          {{ 'AUTO.COMMERCIAL' | translate }}
+        </button>
+
+        <button
+          class="tab-btn"
+          [class.active]="activeTab === 'finance'"
+          (click)="activeTab = 'finance'">
+          <i class="fas fa-coins"></i>
+
+          {{ 'SUPPLIER.FINANCE.TAB_FINANCE' | translate }}
+        </button>
+
+        <button
+          class="tab-btn"
+          [class.active]="activeTab === 'category'"
+          (click)="activeTab = 'category'">
+          <i class="fas fa-layer-group"></i>
+
+          {{ 'SUPPLIER.FINANCE.CATEGORY_INFO' | translate }}
         </button>
       </nav>
 
@@ -114,27 +137,28 @@
               <span class="card-icon">
                 <i class="fas fa-building"></i>
               </span>
-              Identité
+
+              {{ 'AUTO.IDENTITE' | translate }}
             </h3>
 
             <div class="info-list">
               <div class="info-item">
-                <span class="info-label">Raison sociale</span>
+                <span class="info-label">{{ 'ADMIN_COMPANY_PROFILE.LEGAL_NAME' | translate }}</span>
                 <span class="info-value">{{ fournisseur.nom }}</span>
               </div>
 
               <div class="info-item" *ngIf="fournisseur.nomCommercial">
-                <span class="info-label">Nom commercial</span>
+                <span class="info-label">{{ 'AUTO.NOM_COMMERCIAL' | translate }}</span>
                 <span class="info-value">{{ fournisseur.nomCommercial }}</span>
               </div>
 
               <div class="info-item">
-                <span class="info-label">Code fournisseur</span>
+                <span class="info-label">{{ 'AUTO.CODE_FOURNISSEUR' | translate }}</span>
                 <span class="info-value code">{{ fournisseur.code }}</span>
               </div>
 
               <div class="info-item">
-                <span class="info-label">Catégorie</span>
+                <span class="info-label">{{ 'BASE_TYPE.CATEGORY' | translate }}</span>
                 <span class="info-value">
                   <span class="badge-categorie">
                     {{ fournisseur.categorieFournisseur || 'Non définie' }}
@@ -143,7 +167,7 @@
               </div>
 
               <div class="info-item">
-                <span class="info-label">Devise</span>
+                <span class="info-label">{{ 'BANK_ACCOUNTS.FIELDS.CURRENCY' | translate }}</span>
                 <span class="info-value">{{ fournisseur.currency }}</span>
               </div>
             </div>
@@ -154,17 +178,18 @@
               <span class="card-icon">
                 <i class="fas fa-map-marker-alt"></i>
               </span>
-              Coordonnées
+
+              {{ 'AUTO.COORDONNEES' | translate }}
             </h3>
 
             <div class="info-list">
               <div class="info-item" *ngIf="fournisseur.adresse">
-                <span class="info-label">Adresse</span>
+                <span class="info-label">{{ 'PDF.ADDRESS' | translate }}</span>
                 <span class="info-value">{{ fournisseur.adresse }}</span>
               </div>
 
               <div class="info-item" *ngIf="fournisseur.ville || fournisseur.codePostal">
-                <span class="info-label">Ville / CP</span>
+                <span class="info-label">{{ 'AUTO.VILLE_CP' | translate }}</span>
                 <span class="info-value">
                   {{ fournisseur.ville }}
                   <span *ngIf="fournisseur.codePostal">
@@ -174,12 +199,12 @@
               </div>
 
               <div class="info-item" *ngIf="fournisseur.pays">
-                <span class="info-label">Pays</span>
+                <span class="info-label">{{ 'CUSTOMERS.FIELDS.COUNTRY' | translate }}</span>
                 <span class="info-value">{{ fournisseur.pays }}</span>
               </div>
 
               <div class="info-item" *ngIf="fournisseur.numeroTva">
-                <span class="info-label">N° TVA</span>
+                <span class="info-label">{{ 'AUTO.N_TVA' | translate }}</span>
                 <span class="info-value">{{ fournisseur.numeroTva }}</span>
               </div>
             </div>
@@ -195,7 +220,8 @@
               <span class="card-icon">
                 <i class="fas fa-user-tie"></i>
               </span>
-              Contact principal
+
+              {{ 'AUTO.CONTACT_PRINCIPAL' | translate }}
             </h3>
 
             <div class="contact-avatar">
@@ -228,7 +254,8 @@
                 <div
                   class="empty-message"
                   *ngIf="!fournisseur.contactEmail && !fournisseur.contactTelephone && !fournisseur.contactNom && !fournisseur.contactPrenom">
-                  Aucun contact principal renseigné.
+
+                  {{ 'AUTO.AUCUN_CONTACT_PRINCIPAL_RENSEIGNE' | translate }}
                 </div>
               </div>
             </div>
@@ -239,14 +266,15 @@
               <span class="card-icon">
                 <i class="fas fa-comments"></i>
               </span>
-              Communication
+
+              {{ 'AUTO.COMMUNICATION' | translate }}
             </h3>
 
             <div class="comm-list">
               <div class="comm-item" *ngIf="fournisseur.email">
                 <i class="fas fa-envelope"></i>
                 <div class="comm-details">
-                  <span class="comm-label">Email</span>
+                  <span class="comm-label">{{ 'ADMIN_COMPANY_PROFILE.EMAIL' | translate }}</span>
                   <a [href]="'mailto:' + fournisseur.email" class="comm-value">
                     {{ fournisseur.email }}
                   </a>
@@ -256,7 +284,7 @@
               <div class="comm-item" *ngIf="fournisseur.telephone">
                 <i class="fas fa-phone"></i>
                 <div class="comm-details">
-                  <span class="comm-label">Téléphone</span>
+                  <span class="comm-label">{{ 'ADMIN_COMPANY_PROFILE.PHONE' | translate }}</span>
                   <a [href]="'tel:' + fournisseur.telephone" class="comm-value">
                     {{ fournisseur.telephone }}
                   </a>
@@ -266,7 +294,7 @@
               <div class="comm-item" *ngIf="fournisseur.siteWeb">
                 <i class="fas fa-globe"></i>
                 <div class="comm-details">
-                  <span class="comm-label">Site web</span>
+                  <span class="comm-label">{{ 'COMPANY_PROFILE_UI.CONTACT_INFO.WEBSITE' | translate }}</span>
                   <a
                     [href]="fournisseur.siteWeb"
                     target="_blank"
@@ -279,7 +307,8 @@
               <div
                 class="empty-message"
                 *ngIf="!fournisseur.email && !fournisseur.telephone && !fournisseur.siteWeb">
-                Aucune information de communication renseignée.
+
+                {{ 'AUTO.AUCUNE_INFORMATION_DE_COMMUNICATION_RENSEIGNEE' | translate }}
               </div>
             </div>
           </article>
@@ -294,12 +323,13 @@
               <span class="card-icon">
                 <i class="fas fa-truck"></i>
               </span>
-              Conditions commerciales
+
+              {{ 'AUTO.CONDITIONS_COMMERCIALES' | translate }}
             </h3>
 
             <div class="commercial-list">
               <div class="commercial-item">
-                <span class="commercial-label">Délai de livraison</span>
+                <span class="commercial-label">{{ 'AUTO.DELAI_DE_LIVRAISON' | translate }}</span>
                 <span class="commercial-value">
                   {{
                     fournisseur.delaiLivraisonMoyen
@@ -310,14 +340,14 @@
               </div>
 
               <div class="commercial-item">
-                <span class="commercial-label">Conditions de paiement</span>
+                <span class="commercial-label">{{ 'AUTO.CONDITIONS_DE_PAIEMENT' | translate }}</span>
                 <span class="commercial-value">
                   {{ fournisseur.conditionsPaiement || 'Non définies' }}
                 </span>
               </div>
 
               <div class="commercial-item">
-                <span class="commercial-label">Devise</span>
+                <span class="commercial-label">{{ 'BANK_ACCOUNTS.FIELDS.CURRENCY' | translate }}</span>
                 <span class="commercial-value">
                   {{ fournisseur.currency }}
                 </span>
@@ -326,6 +356,70 @@
             </div>
           </article>
 
+        </div>
+
+        <!-- Finance -->
+        <div class="commercial-grid" *ngIf="activeTab === 'finance'">
+          <article class="info-card">
+            <h3 class="card-title">
+              <span class="card-icon"><i class="fas fa-handshake"></i></span>
+              {{ 'SUPPLIER.FINANCE.RELATIONSHIP' | translate }}
+            </h3>
+            <div class="commercial-list">
+              <div class="commercial-item">
+                <span class="commercial-label">{{ 'AUTO.CONDITIONS_DE_PAIEMENT' | translate }}</span>
+                <span class="commercial-value">{{ fournisseur.conditionsPaiement || ('COMMON.NOT_DEFINED' | translate) }}</span>
+              </div>
+              <div class="commercial-item">
+                <span class="commercial-label">{{ 'BANK_ACCOUNTS.FIELDS.CURRENCY' | translate }}</span>
+                <span class="commercial-value">{{ fournisseur.currency || '—' }}</span>
+              </div>
+              <div class="commercial-item" *ngIf="fournisseur.dateDerniereCommande">
+                <span class="commercial-label">{{ 'FOURNISSEUR.FIELDS.LAST_ORDER_DATE' | translate }}</span>
+                <span class="commercial-value">{{ fournisseur.dateDerniereCommande | date:'shortDate' }}</span>
+              </div>
+            </div>
+            <p class="finance-note">{{ 'FOURNISSEUR.FINANCE.NO_LEDGER_LINK' | translate }}</p>
+          </article>
+        </div>
+
+        <!-- Category-specific -->
+        <div class="commercial-grid" *ngIf="activeTab === 'category'">
+          <article class="info-card">
+            <h3 class="card-title">
+              <span class="card-icon"><i class="fas fa-tags"></i></span>
+              {{ 'SUPPLIER.FINANCE.CATEGORY_INFO' | translate }}
+            </h3>
+            <div class="commercial-list">
+              <div class="commercial-item">
+                <span class="commercial-label">{{ 'BASE_TYPE.CATEGORY' | translate }}</span>
+                <span class="commercial-value">{{ fournisseur.categorieFournisseur || ('COMMON.NOT_DEFINED' | translate) }}</span>
+              </div>
+
+              <ng-container *ngIf="showDeliveryFields()">
+                <div class="commercial-item">
+                  <span class="commercial-label">{{ 'AUTO.DELAI_DE_LIVRAISON' | translate }}</span>
+                  <span class="commercial-value">
+                    {{ fournisseur.delaiLivraisonMoyen ? fournisseur.delaiLivraisonMoyen + ' ' + ('FOURNISSEUR.FIELDS.DAYS' | translate) : ('COMMON.NOT_DEFINED' | translate) }}
+                  </span>
+                </div>
+              </ng-container>
+
+              <ng-container *ngIf="showPackagingFields()">
+                <div class="commercial-item" *ngIf="fournisseur.certifications">
+                  <span class="commercial-label">{{ 'FOURNISSEUR.FIELDS.CERTIFICATIONS' | translate }}</span>
+                  <span class="commercial-value">{{ fournisseur.certifications }}</span>
+                </div>
+              </ng-container>
+
+              <ng-container *ngIf="showServiceFields()">
+                <div class="commercial-item">
+                  <span class="commercial-label">{{ 'AUTO.CONDITIONS_DE_PAIEMENT' | translate }}</span>
+                  <span class="commercial-value">{{ fournisseur.conditionsPaiement || ('COMMON.NOT_DEFINED' | translate) }}</span>
+                </div>
+              </ng-container>
+            </div>
+          </article>
         </div>
 
       </section>

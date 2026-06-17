@@ -1,3 +1,5 @@
+import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, CurrencyPipe, DatePipe, TitleCasePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -11,11 +13,12 @@ import { OrdreFabrication } from '../../../../OF/models/of.model';
 import { ClientType } from "../../../models/client.model";
 import { ArticleService } from '../../../../stock/services/article.service';
 import { SKUService } from '../../../../stock/services/sku.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-projet-detail',
   standalone: true,
-  imports: [
+  imports: [TranslateModule,
     CommonModule,
     CurrencyPipe,
     DatePipe,
@@ -28,6 +31,7 @@ import { SKUService } from '../../../../stock/services/sku.service';
   styleUrls: ['./projet-detail.component.scss']
 })
 export class ProjetDetailComponent implements OnInit {
+  private readonly i18n = inject(TranslateService);
   projet: ProjetDto | null = null;
   ofs: OrdreFabrication[] = [];
   loading = false;
@@ -196,7 +200,7 @@ export class ProjetDetailComponent implements OnInit {
     }
 
     if (this.projet?.statut === 'FAILED') {
-      alert('Action impossible: Le projet a échoué en raison de réservations de stock insuffisantes.');
+      alert(this.i18n.instant('AUTO.ACTION_IMPOSSIBLE_LE_PROJET_A_ECHOUE_EN_RAISON_DE_RESERVATIONS_D'));
       return;
     }
 
@@ -248,7 +252,7 @@ export class ProjetDetailComponent implements OnInit {
       },
       error: (err) => {
         console.error(err);
-        alert('Erreur lors de la generation du QR');
+        alert(this.i18n.instant('AUTO.ERREUR_LORS_DE_LA_GENERATION_DU_QR'));
         this.generatingQr = false;
       }
     });
@@ -258,7 +262,7 @@ export class ProjetDetailComponent implements OnInit {
     const qrImage = this.getQrImage();
 
     if (!qrImage) {
-      alert('QR non disponible. Veuillez le generer d\'abord.');
+      alert(this.i18n.instant('AUTO.QR_NON_DISPONIBLE_VEUILLEZ_LE_GENERER_D_ABORD'));
       return;
     }
 

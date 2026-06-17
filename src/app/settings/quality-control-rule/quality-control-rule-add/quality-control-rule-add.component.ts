@@ -1,3 +1,5 @@
+import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {QualityControlRuleService} from "../../../shared/services/quality-control-rule.service";
@@ -17,11 +19,13 @@ import {MatButton, MatIconButton} from "@angular/material/button";
 import {MatInput} from "@angular/material/input";
 import { ToastService } from '../../../shared/services/toast.service';
 import { SharedModule } from '../../../shared/shared.module';
+import { TranslateModule } from '@ngx-translate/core';
+import { isAboveVirginCoiLimit, isTunisiaDefaultRule } from '../../../shared/qc/utils/tunisia-qc-defaults.util';
 
 @Component({
   selector: 'app-quality-control-rule-add',
   standalone: true,
-  imports: [
+  imports: [TranslateModule,
      MatFormField,
     MatCheckbox,
     MatSelect,
@@ -41,6 +45,7 @@ import { SharedModule } from '../../../shared/shared.module';
   styleUrl: './quality-control-rule-add.component.scss'
 })
 export class QualityControlRuleAddComponent implements OnInit {
+  private readonly i18n = inject(TranslateService);
   ruleForm: FormGroup;
   private destroy$ = new Subject<void>();
   formOpen = false;
@@ -49,6 +54,7 @@ export class QualityControlRuleAddComponent implements OnInit {
   isLoading = false;
   loading: boolean = false;
   errorMessage: string | null = null;
+  isTunisiaDefault = false;
 
 
   constructor(
@@ -72,9 +78,9 @@ export class QualityControlRuleAddComponent implements OnInit {
       this.loadRuleData(ruleID).then(() => {
         this.loading = false;
       }).catch((error) => {
-        this.errorMessage = 'Erreur lors du chargement de la critère.';
+        this.errorMessage = this.i18n.instant('AUTO.ERREUR_LORS_DU_CHARGEMENT_DE_LA_CRITERE');
         console.error(this.errorMessage, error);
-        this.toast.error(this.errorMessage);
+        this.toast.error(this.errorMessage!);
         this.loading = false;
       });
     } else {
@@ -155,9 +161,9 @@ export class QualityControlRuleAddComponent implements OnInit {
         throw new Error('Données introuvables');
       }
     } catch (error) {
-      this.errorMessage = 'Erreur lors du chargement de la critère.';
+      this.errorMessage = this.i18n.instant('AUTO.ERREUR_LORS_DU_CHARGEMENT_DE_LA_CRITERE');
       console.error(this.errorMessage, error);
-      this.toast.error(this.errorMessage);
+      this.toast.error(this.errorMessage!);
       this.router.navigate(['/settings/quality-control']); // Rediriger si erreur
       throw error;
     }
@@ -171,6 +177,13 @@ export class QualityControlRuleAddComponent implements OnInit {
 
     const v = this.ruleForm.value;
     const ruleType = v.ruleType;
+
+    if (
+      ruleType === 'numeric' &&
+      isAboveVirginCoiLimit(v.ruleKey, v.maxValue)
+    ) {
+      this.toast.warning('La valeur max dépasse les limites COI/Tunisia (vierge)');
+    }
 
     const payload = {
       id: v.id,
@@ -205,11 +218,11 @@ export class QualityControlRuleAddComponent implements OnInit {
           // this.loadRules();
           this.cancel();
         } else {
-          this.toast.error('Échec de l\'enregistrement ❌' );
+          this.toast.error('AUTO.ECHEC_DE_L_ENREGISTREMENT' );
         }
       },
       error: () => {
-        this.toast.error('Erreur de communication avec le serveur ⚠️' );
+        this.toast.error('AUTO.ERREUR_DE_COMMUNICATION_AVEC_LE_SERVEUR' );
       }
     });
   }
@@ -217,6 +230,7 @@ export class QualityControlRuleAddComponent implements OnInit {
 
 
   private patchForm(data: any): void {
+    this.isTunisiaDefault = isTunisiaDefaultRule(data.description);
     this.ruleForm.patchValue({
       id: data.id,
       ruleKey: data.ruleKey,

@@ -1,3 +1,5 @@
+import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -7,14 +9,14 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatCard } from '@angular/material/card';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateModule } from '@ngx-translate/core';
 import { MatInput } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
 
 @Component({
   selector: 'app-reset-confirm',
   standalone: true,
-  imports: [
+  imports: [TranslateModule,
     CommonModule,
     ReactiveFormsModule,
     MatError,
@@ -30,6 +32,7 @@ import { MatButton } from '@angular/material/button';
   styleUrls: ['../authentication.scss']
 })
 export class ResetConfirmComponent implements OnInit {
+  private readonly i18n = inject(TranslateService);
   phase: 'code' | 'password' | 'done' = 'code';
   loading = false;
 
@@ -86,7 +89,7 @@ export class ResetConfirmComponent implements OnInit {
       error: (err) => {
         this.loading = false;
         // Backend uses 400 for invalid/expired code with plain text body
-        this.errorMessage = typeof err?.error === 'string' ? err.error : 'Invalid or expired code.';
+        this.errorMessage = typeof err?.error === this.i18n.instant('AUTO.STRING') ? err.error : this.i18n.instant('AUTO.INVALID_OR_EXPIRED_CODE');
       }
     });
   }
@@ -107,12 +110,12 @@ export class ResetConfirmComponent implements OnInit {
     this.http.post<void>(url, dto).subscribe({
       next: () => {
         this.loading = false;
-        this.successMessage = 'Your password has been updated successfully.';
+        this.successMessage = this.i18n.instant('AUTO.YOUR_PASSWORD_HAS_BEEN_UPDATED_SUCCESSFULLY');
         this.phase = 'done';
       },
       error: (err) => {
         this.loading = false;
-        this.errorMessage = typeof err?.error === 'string' ? err.error : 'Could not update password.';
+        this.errorMessage = typeof err?.error === this.i18n.instant('AUTO.STRING') ? err.error : this.i18n.instant('AUTO.COULD_NOT_UPDATE_PASSWORD');
       }
     });
   }

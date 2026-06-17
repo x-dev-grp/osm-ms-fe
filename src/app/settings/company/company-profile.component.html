@@ -21,7 +21,7 @@
           (click)="formEnabled && fileInput.click()"
           [tabindex]="formEnabled ? 0 : -1"
           [attr.aria-disabled]="!formEnabled"
-          aria-label="Upload company logo">
+          [attr.aria-label]="'AUTO.UPLOAD_COMPANY_LOGO' | translate">
           <input
             #fileInput
             type="file"
@@ -38,7 +38,7 @@
               class="remove-btn"
               (click)="formEnabled && removeLogo(); $event.stopPropagation()"
               [disabled]="!formEnabled"
-              aria-label="Remove logo"
+              [attr.aria-label]="'COMPANY_PROFILE_UI.LOGO.REMOVE' | translate"
               matTooltip="{{ 'GENERAL_CONFIG_UI.LOGO.REMOVE' | translate }}">
               <mat-icon>close</mat-icon>
             </button>
@@ -70,7 +70,7 @@
           <div class="col-md-6">
             <mat-form-field appearance="outline" class="w-100 mb-3">
               <mat-label>{{ 'COMPANY_PROFILE_FORM.LEGAL_NAME' | translate }}</mat-label>
-              <input matInput formControlName="legalName" aria-label="Legal Name" />
+              <input matInput formControlName="legalName" [attr.aria-label]="'ADMIN_COMPANY_PROFILE.LEGAL_NAME' | translate" />
               <mat-icon matSuffix>business</mat-icon>
               <mat-error *ngIf="profileForm.get('legalName')?.invalid && (profileForm.get('legalName')?.touched || profileForm.get('legalName')?.dirty)">
                 {{ 'COMPANY_PROFILE_FORM.LEGAL_NAME_REQUIRED' | translate }}
@@ -80,7 +80,7 @@
           <div class="col-md-6">
             <mat-form-field appearance="outline" class="w-100 mb-3">
               <mat-label>{{ 'COMPANY_PROFILE_FORM.REG_NUMBER' | translate }}</mat-label>
-              <input matInput formControlName="registrationNumber" aria-label="Registration Number" />
+              <input matInput formControlName="registrationNumber" [attr.aria-label]="'ADMIN_COMPANY_PROFILE.REG_NUMBER' | translate" />
               <mat-icon matSuffix>badge</mat-icon>
               <mat-error *ngIf="profileForm.get('registrationNumber')?.invalid && (profileForm.get('registrationNumber')?.touched || profileForm.get('registrationNumber')?.dirty)">
                 {{ 'COMPANY_PROFILE_FORM.REG_NUMBER_REQUIRED' | translate }}
@@ -93,7 +93,7 @@
           <div class="col-md-6">
             <mat-form-field appearance="outline" class="w-100 mb-3">
               <mat-label>{{ 'COMPANY_PROFILE_FORM.TAX_ID' | translate }}</mat-label>
-              <input matInput formControlName="taxId" aria-label="Tax ID" />
+              <input matInput formControlName="taxId" [attr.aria-label]="'ADMIN_COMPANY_PROFILE.TAX_ID' | translate" />
               <mat-icon matSuffix>receipt_long</mat-icon>
               <mat-error *ngIf="profileForm.get('taxId')?.invalid && (profileForm.get('taxId')?.touched || profileForm.get('taxId')?.dirty)">
                 {{ 'COMPANY_PROFILE_FORM.TAX_ID_REQUIRED' | translate }}
@@ -103,7 +103,7 @@
           <div class="col-md-6">
             <mat-form-field appearance="outline" class="w-100 mb-3">
               <mat-label>{{ 'COMPANY_PROFILE_FORM.CNSS_NUMBER' | translate }}</mat-label>
-              <input matInput formControlName="cnssNumber" aria-label="CNSS Number" />
+              <input matInput formControlName="cnssNumber" [attr.aria-label]="'COMPANY_PROFILE_FORM.CNSS_NUMBER' | translate" />
               <mat-icon matSuffix>health_and_safety</mat-icon>
               <mat-error *ngIf="profileForm.get('cnssNumber')?.invalid && (profileForm.get('cnssNumber')?.touched || profileForm.get('cnssNumber')?.dirty)">
                 {{ 'COMPANY_PROFILE_FORM.CNSS_NUMBER_REQUIRED' | translate }}
@@ -116,7 +116,7 @@
           <div class="col-md-4">
             <mat-form-field appearance="outline" class="w-100 mb-3">
               <mat-label>{{ 'GENERAL_CONFIG_UI.COMPANY_INFO.LEGAL_FORM' | translate }}</mat-label>
-              <mat-select formControlName="legalForm" aria-label="Legal Form">
+              <mat-select formControlName="legalForm" [attr.aria-label]="'ADMIN_COMPANY_PROFILE.LEGAL_FORM' | translate">
                 <mat-option value="SARL">{{ 'GENERAL_CONFIG_UI.COMPANY_INFO.LEGAL_FORMS.SARL' | translate }}</mat-option>
                 <mat-option value="SUARL">{{ 'GENERAL_CONFIG_UI.COMPANY_INFO.LEGAL_FORMS.SUARL' | translate }}</mat-option>
                 <mat-option value="SA">{{ 'GENERAL_CONFIG_UI.COMPANY_INFO.LEGAL_FORMS.SA' | translate }}</mat-option>
@@ -132,7 +132,7 @@
           <div class="col-md-4">
             <mat-form-field appearance="outline" class="w-100 mb-3">
               <mat-label>{{ 'GENERAL_CONFIG_UI.COMPANY_INFO.CAPITAL' | translate }}</mat-label>
-              <input matInput type="number" formControlName="capital" aria-label="Capital" />
+              <input matInput type="number" formControlName="capital" [attr.aria-label]="'ADMIN_COMPANY_PROFILE.CAPITAL' | translate" />
               <mat-icon matSuffix>payments</mat-icon>
               <mat-error *ngIf="profileForm.get('capital')?.invalid && (profileForm.get('capital')?.touched || profileForm.get('capital')?.dirty)">
                 {{ 'GENERAL_CONFIG_UI.COMPANY_INFO.CAPITAL_REQUIRED' | translate }}
@@ -142,7 +142,7 @@
           <div class="col-md-4">
             <mat-form-field appearance="outline" class="w-100 mb-3">
               <mat-label>{{ 'GENERAL_CONFIG_UI.COMPANY_INFO.CREATION_DATE' | translate }}</mat-label>
-              <input matInput formControlName="creationDate" [matDatepicker]="picker" aria-label="Creation Date" />
+              <input matInput formControlName="creationDate" [matDatepicker]="picker" [attr.aria-label]="'COMPANY_PROFILE_UI.COMPANY_INFO.CREATION_DATE' | translate" />
               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
               <mat-datepicker #picker></mat-datepicker>
               <mat-icon matSuffix>calendar_today</mat-icon>
@@ -167,7 +167,7 @@
           <div class="col-md-4">
             <mat-form-field appearance="outline" class="w-100 mb-3">
               <mat-label>{{ 'GENERAL_CONFIG_UI.CONTACT_INFO.EMAIL' | translate }}</mat-label>
-              <input matInput formControlName="email" type="email" aria-label="Email" />
+              <input matInput formControlName="email" type="email" [attr.aria-label]="'ADMIN_COMPANY_PROFILE.EMAIL' | translate" />
               <mat-icon matSuffix>email</mat-icon>
               <mat-error *ngIf="profileForm.get('email')?.invalid && (profileForm.get('email')?.touched || profileForm.get('email')?.dirty)">
                 {{ 'GENERAL_CONFIG_UI.CONTACT_INFO.EMAIL_REQUIRED' | translate }}
@@ -177,7 +177,7 @@
           <div class="col-md-4">
             <mat-form-field appearance="outline" class="w-100 mb-3">
               <mat-label>{{ 'GENERAL_CONFIG_UI.CONTACT_INFO.PHONE' | translate }}</mat-label>
-              <input matInput formControlName="phone" aria-label="Phone" />
+              <input matInput formControlName="phone" [attr.aria-label]="'ADMIN_COMPANY_PROFILE.PHONE' | translate" />
               <mat-icon matSuffix>phone</mat-icon>
               <mat-error *ngIf="profileForm.get('phone')?.invalid && (profileForm.get('phone')?.touched || profileForm.get('phone')?.dirty)">
                 {{ 'GENERAL_CONFIG_UI.CONTACT_INFO.PHONE_REQUIRED' | translate }}
@@ -187,7 +187,7 @@
           <div class="col-md-4">
             <mat-form-field appearance="outline" class="w-100 mb-3">
               <mat-label>{{ 'GENERAL_CONFIG_UI.CONTACT_INFO.WEBSITE' | translate }}</mat-label>
-              <input matInput formControlName="website" aria-label="Website" />
+              <input matInput formControlName="website" [attr.aria-label]="'COMPANY_PROFILE_UI.CONTACT_INFO.WEBSITE' | translate" />
               <mat-icon matSuffix>language</mat-icon>
               <mat-error *ngIf="profileForm.get('website')?.invalid && (profileForm.get('website')?.touched || profileForm.get('website')?.dirty)">
                 {{ 'GENERAL_CONFIG_UI.CONTACT_INFO.WEBSITE_REQUIRED' | translate }}
@@ -209,7 +209,7 @@
           <div class="col-12">
             <mat-form-field appearance="outline" class="w-100 mb-3">
               <mat-label>{{ 'GENERAL_CONFIG_UI.ADDRESS_INFO.ADDRESS' | translate }}</mat-label>
-              <input matInput formControlName="addressLine1" aria-label="Address" />
+              <input matInput formControlName="addressLine1" [attr.aria-label]="'COMPANY_PROFILE_UI.ADDRESS_INFO.ADDRESS' | translate" />
               <mat-icon matSuffix>home</mat-icon>
               <mat-error *ngIf="profileForm.get('addressLine1')?.invalid && (profileForm.get('addressLine1')?.touched || profileForm.get('addressLine1')?.dirty)">
                 {{ 'GENERAL_CONFIG_UI.ADDRESS_INFO.ADDRESS_REQUIRED' | translate }}
@@ -220,8 +220,8 @@
         <div class="row">
           <div class="col-md-4">
             <mat-form-field appearance="outline" class="w-100 mb-3">
-              <mat-label>City</mat-label>
-              <input matInput formControlName="city" aria-label="City" />
+              <mat-label>{{ 'ADMIN_COMPANY_PROFILE.CITY' | translate }}</mat-label>
+              <input matInput formControlName="city" [attr.aria-label]="'ADMIN_COMPANY_PROFILE.CITY' | translate" />
               <mat-icon matSuffix>location_city</mat-icon>
               <mat-error *ngIf="profileForm.get('city')?.invalid && (profileForm.get('city')?.touched || profileForm.get('city')?.dirty)">
                 {{ 'GENERAL_CONFIG_UI.ADDRESS_INFO.CITY_REQUIRED' | translate }}
@@ -230,8 +230,8 @@
           </div>
           <div class="col-md-4">
             <mat-form-field appearance="outline" class="w-100 mb-3">
-              <mat-label>Postal Code</mat-label>
-              <input matInput formControlName="postalCode" maxlength="4" aria-label="Postal Code" />
+              <mat-label>{{ 'CUSTOMERS.FIELDS.POSTAL_CODE' | translate }}</mat-label>
+              <input matInput formControlName="postalCode" maxlength="4" [attr.aria-label]="'CUSTOMERS.FIELDS.POSTAL_CODE' | translate" />
               <mat-icon matSuffix>markunread_mailbox</mat-icon>
               <mat-error *ngIf="profileForm.get('postalCode')?.invalid && (profileForm.get('postalCode')?.touched || profileForm.get('postalCode')?.dirty)">
                 {{ 'GENERAL_CONFIG_UI.ADDRESS_INFO.POSTAL_CODE_REQUIRED' | translate }}
@@ -240,8 +240,8 @@
           </div>
           <div class="col-md-4">
             <mat-form-field appearance="outline" class="w-100 mb-3">
-              <mat-label>Governorate</mat-label>
-              <mat-select formControlName="governorate" aria-label="Governorate">
+              <mat-label>{{ 'ADMIN_COMPANY_PROFILE.GOVERNORATE' | translate }}</mat-label>
+              <mat-select formControlName="governorate" [attr.aria-label]="'ADMIN_COMPANY_PROFILE.GOVERNORATE' | translate">
                 <mat-option *ngFor="let g of governorates" [value]="g">{{ g }}</mat-option>
               </mat-select>
               <mat-icon matSuffix>map</mat-icon>
@@ -258,7 +258,7 @@
     <div class="profile-section" *ngIf="bankAccounts?.length">
       <div class="section-header">
         <mat-icon class="me-2">account_balance</mat-icon>
-        <span>Bank Accounts</span>
+        <span>{{ 'BANK_ACCOUNTS.TITLE' | translate }}</span>
       </div>
       <div class="section-content">
         <mat-card class="bank-accounts-card">
@@ -280,7 +280,7 @@
         <span>{{ 'GENERAL_CONFIG_UI.ACTIONS.SAVE' | translate }}</span>
       </button>
       <button mat-stroked-button color="warn" type="button" (click)="onReset()" [disabled]="!formEnabled"
-        matTooltip="{{ 'GENERAL_CONFIG_UI.ACTIONS.RESET' | translate }}" aria-label="Reset">
+        matTooltip="{{ 'GENERAL_CONFIG_UI.ACTIONS.RESET' | translate }}" [attr.aria-label]="'COMPANY_PROFILE_UI.ACTIONS.RESET' | translate">
         <mat-icon>undo</mat-icon>
         <span>{{ 'GENERAL_CONFIG_UI.ACTIONS.RESET' | translate }}</span>
       </button>
@@ -298,8 +298,8 @@
     <div class="dialog-content">
       <p>{{ 'GENERAL_CONFIG_UI.MESSAGES.CONFIRM_RESET' | translate }}</p>
       <div class="dialog-actions">
-        <button mat-flat-button color="warn" (click)="doReset()" aria-label="Confirm Reset">{{ 'GENERAL_CONFIG_UI.ACTIONS.RESET' | translate }}</button>
-        <button mat-stroked-button (click)="cancelReset()" aria-label="Cancel">{{ 'GENERAL_CONFIG_UI.ACTIONS.CANCEL' | translate }}</button>
+        <button mat-flat-button color="warn" (click)="doReset()" [attr.aria-label]="'AUTO.CONFIRM_RESET' | translate">{{ 'GENERAL_CONFIG_UI.ACTIONS.RESET' | translate }}</button>
+        <button mat-stroked-button (click)="cancelReset()" [attr.aria-label]="'ADMIN.CANCEL' | translate">{{ 'GENERAL_CONFIG_UI.ACTIONS.CANCEL' | translate }}</button>
       </div>
     </div>
   </div>

@@ -16,13 +16,14 @@ import { MACHIN_RECEPTION_DASHBOARD } from './MACHIN_RECEPTION_DASHBOARD';
 import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
 import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
 import { SharedModule } from '../../../shared/shared.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-mill-machine-view',
   templateUrl: './mill-machine-view.component.html',
   styleUrls: ['./mill-machine-view.component.scss'],
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, SharedModule, OsmDashboard]
+  imports: [TranslateModule, CommonModule, MatButtonModule, MatIconModule, SharedModule, OsmDashboard]
 })
 export class MillMachineViewComponent implements OnInit {
   machine: MillMachine;

@@ -1,3 +1,5 @@
+import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -18,11 +20,12 @@ import { OrdreFabrication } from '../../../models/of.model';
 import {ActivatedRoute, Router} from '@angular/router';
 import { SharedModule } from "../../../../shared/shared.module";
 import { QualityService } from "../../../services/QualityService";
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-control-point-definition',
   standalone: true,
-  imports: [
+  imports: [TranslateModule,
     CommonModule,
     ReactiveFormsModule,
     MatDialogModule,
@@ -40,6 +43,7 @@ import { QualityService } from "../../../services/QualityService";
   styleUrls: ['./control-point-definition.component.scss']
 })
 export class ControlPointDefinitionComponent implements OnInit {
+  private readonly i18n = inject(TranslateService);
   ofs: OrdreFabrication[] = [];
   selectedOfId: string | null = null;
   plan: QCPlan | null = null;
@@ -92,7 +96,7 @@ export class ControlPointDefinitionComponent implements OnInit {
           sub.unsubscribe();
           this.loadPlan();
         },
-        error: () => this.toast.error('Erreur chargement OF')
+        error: () => this.toast.error('AUTO.ERREUR_CHARGEMENT_OF')
       });
     }
   }
@@ -102,7 +106,7 @@ export class ControlPointDefinitionComponent implements OnInit {
       next: (data: OrdreFabrication[]) => {
         this.ofs = data || [];
       },
-      error: () => this.toast.error('Erreur chargement OF')
+      error: () => this.toast.error('AUTO.ERREUR_CHARGEMENT_OF')
     });
   }
 
@@ -148,21 +152,21 @@ export class ControlPointDefinitionComponent implements OnInit {
 
   createPlanWithTitle(): void {
     if (!this.newPlanTitle.trim()) {
-      this.toast.warning('Veuillez saisir un titre');
+      this.toast.warning('AUTO.VEUILLEZ_SAISIR_UN_TITRE');
       return;
     }
     this.qualityService.createPlan(this.selectedOfId!, this.newPlanTitle.trim()).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.plan = res.data as QCPlan;
-          this.toast.success('Plan créé');
+          this.toast.success('AUTO.PLAN_CREE');
           this.loadPoints();
           this.cancelCreatePlan();
         } else {
           this.toast.error(res.message);
         }
       },
-      error: () => this.toast.error('Erreur lors de la création')
+      error: () => this.toast.error('TRANSACTIONS.ERRORS.CREATE_ERROR')
     });
   }
 
@@ -199,7 +203,7 @@ export class ControlPointDefinitionComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.points = [...this.points, res.data as QCControlPoint];
-          this.toast.success('Point ajouté');
+          this.toast.success('AUTO.POINT_AJOUTE');
           this.dialog.closeAll();
         } else {
           this.toast.error(res.message);
@@ -207,7 +211,7 @@ export class ControlPointDefinitionComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erreur complète :', err);
-        this.toast.error('Erreur lors de l\'ajout');
+        this.toast.error('AUTO.ERREUR_LORS_DE_L_AJOUT');
       }
     });
   }
@@ -216,14 +220,14 @@ export class ControlPointDefinitionComponent implements OnInit {
     const point = this.points[index];
     if (!point.id) return;
 
-    if (confirm('Supprimer définitivement ce point de contrôle ?')) {
+    if (confirm(this.i18n.instant('AUTO.SUPPRIMER_DEFINITIVEMENT_CE_POINT_DE_CONTROLE'))) {
       this.qualityService.deleteControlPoint(point.id).subscribe({
         next: (res: any) => {
           if (res.success) {
             this.points = this.points.filter((_, i) => i !== index);
-            this.toast.success('Point supprimé');
+            this.toast.success('AUTO.POINT_SUPPRIME');
           } else {
-            this.toast.error(res.message || 'Erreur lors de la suppression');
+            this.toast.error(res.message || 'DELIVERIES.MESSAGES.DELETE_ERROR');
           }
         },
         error: (err) => {
@@ -234,7 +238,7 @@ export class ControlPointDefinitionComponent implements OnInit {
   }
   goToQualityEntry(): void {
     if (!this.selectedOfId) {
-      this.toast.warning('Veuillez sélectionner un OF');
+      this.toast.warning('AUTO.VEUILLEZ_SELECTIONNER_UN_OF');
       return;
     }
     this.router.navigate(['/of/qualite/entry'], {
@@ -243,7 +247,7 @@ export class ControlPointDefinitionComponent implements OnInit {
   }
   goToOFDetail(): void {
     if (!this.selectedOfId) {
-      this.toast.warning('Aucun OF sélectionné');
+      this.toast.warning('AUTO.AUCUN_OF_SELECTIONNE');
       return;
     }
     this.router.navigate(['/of/', this.selectedOfId]);

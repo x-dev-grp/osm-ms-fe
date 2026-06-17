@@ -1,0 +1,233 @@
+$olive-50: #f7f8f3;
+$olive-100: #eef1e6;
+$olive-200: #dde4cc;
+$olive-500: #7d8f4e;
+$olive-600: #5f6f38;
+$olive-700: #4a572c;
+
+.label-preview-carousel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.carousel-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.carousel-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.35rem;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.carousel-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  padding: 0.35rem 0.25rem;
+  border: 1px solid $olive-200;
+  border-radius: 8px;
+  background: #fff;
+  color: $olive-600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+
+  &__code {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+  }
+
+  &__name {
+    font-size: 0.62rem;
+    line-height: 1.2;
+    text-align: center;
+    word-break: break-word;
+  }
+
+  &.is-active {
+    background: $olive-100;
+    border-color: $olive-500;
+    color: $olive-700;
+  }
+}
+
+.carousel-expand {
+  flex-shrink: 0;
+  color: $olive-600;
+  margin-top: 1px;
+}
+
+.carousel-stage {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.carousel-nav {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  margin: 0;
+  color: $olive-600;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  z-index: 1;
+
+  &:hover,
+  &:focus-visible {
+    background: transparent;
+    color: $olive-700;
+  }
+
+  .mat-icon {
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+  }
+}
+
+.carousel-viewport {
+  flex: 1 1 auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  min-width: 0;
+  border-radius: 8px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: $olive-200 transparent;
+}
+
+.carousel-track {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  transition: transform 0.28s ease;
+  will-change: transform;
+}
+
+.carousel-slide {
+  flex: 0 0 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow: visible;
+
+  &.is-rtl {
+    text-align: right;
+
+    ::ng-deep .origin {
+      flex-direction: row-reverse;
+      justify-content: flex-end;
+    }
+
+    ::ng-deep .nutrition-value,
+    ::ng-deep .composition-row span:last-child {
+      text-align: left;
+    }
+  }
+}
+
+.carousel-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.carousel-counter {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: $olive-600;
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.carousel-dot {
+  width: 7px;
+  height: 7px;
+  border: none;
+  border-radius: 50%;
+  padding: 0;
+  background: $olive-200;
+  cursor: pointer;
+
+  &.is-active {
+    background: $olive-500;
+    transform: scale(1.15);
+  }
+}
+
+.label-preview-carousel.is-full {
+  gap: 0.75rem;
+
+  .carousel-stage {
+    gap: 0.35rem;
+  }
+
+  .carousel-nav {
+    width: 36px;
+    height: 36px;
+
+    .mat-icon {
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+      line-height: 28px;
+    }
+  }
+
+  .carousel-viewport {
+    border-radius: 12px;
+    max-height: min(72vh, 760px);
+  }
+}
+
+.label-preview-carousel.is-miniature {
+  .carousel-stage {
+    gap: 0.1rem;
+  }
+
+  .carousel-viewport {
+    max-height: min(58vh, 520px);
+    padding-bottom: 4px;
+  }
+}
+
+::ng-deep .label-preview-carousel .carousel-nav.mat-mdc-icon-button {
+  --mdc-icon-button-state-layer-size: 28px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+
+  .mat-mdc-button-persistent-ripple::before,
+  .mat-mdc-button-ripple {
+    opacity: 0;
+  }
+
+  &:hover .mat-mdc-button-persistent-ripple::before {
+    opacity: 0.08;
+  }
+}
+
+::ng-deep .label-preview-carousel.is-full .carousel-nav.mat-mdc-icon-button {
+  --mdc-icon-button-state-layer-size: 36px;
+}

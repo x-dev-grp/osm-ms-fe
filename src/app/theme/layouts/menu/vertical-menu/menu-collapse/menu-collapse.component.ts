@@ -9,10 +9,11 @@ import { NavigationItem } from 'src/app/theme/types/navigation';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { MenuItemVerticalComponent } from '../menu-item/menu-item.component';
 import { NavigationActiveService } from 'src/app/theme/services/navigation-active.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-menu-collapse',
-  imports: [SharedModule, RouterModule, MenuItemVerticalComponent, CommonModule],
+  imports: [TranslateModule, SharedModule, RouterModule, MenuItemVerticalComponent, CommonModule],
   templateUrl: './menu-collapse.component.html',
   styleUrls: ['./menu-collapse.component.scss'],
   standalone: true,

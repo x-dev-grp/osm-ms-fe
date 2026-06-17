@@ -1,17 +1,43 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { TranslateModule } from '@ngx-translate/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { AuditService } from '../../services/AuditService';
-import { AuditDto, AuditFilters } from '../../models/AuditDto';
+import { AuditDto } from '../../models/AuditDto';
+import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
+import { DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { AUDIT_DASHBOARD_CONFIG } from './audit-dashboard.config';
+
+interface AuditRow extends AuditDto {
+  entityDisplayName: string;
+  actionType: string;
+}
 
 @Component({
   selector: 'app-audit',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+    TranslateModule,
+    CommonModule,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    OsmDashboard
+  ],
   templateUrl: './audit.component.html',
   styleUrls: ['./audit.component.scss']
 })
 export class AuditComponent implements OnInit {
+  @ViewChild('dashboard') dashboard?: OsmDashboard;
+
+  private readonly destroyRef = inject(DestroyRef);
+  private filteredCountSubscribed = false;
+
+  readonly dashboardConfig: DashboardConfig = AUDIT_DASHBOARD_CONFIG;
+
   readonly entityBusinessNames: Record<string, string> = {
     ArticleSec: 'Article de stock',
     BOM: 'Nomenclature',
@@ -41,23 +67,10 @@ export class AuditComponent implements OnInit {
   };
 
   audits: AuditDto[] = [];
-  filteredAudits: AuditDto[] = [];
-  paginatedAudits: AuditDto[] = [];
+  filteredCount = 0;
   loading = false;
   error: string | null = null;
-  currentPage = 1;
-  pageSize = 25;
-  readonly pageSizeOptions = [10, 25, 50, 100];
 
-  filters: AuditFilters = {
-    dateDebut: '',
-    dateFin: '',
-    typeAction: 'TOUS',
-    utilisateur: '',
-    entityName: ''
-  };
-
-  typeActions = ['TOUS', 'CRÉATION', 'MODIFICATION'];
   entityNames: string[] = [];
   utilisateurs: string[] = [];
 
@@ -76,13 +89,13 @@ export class AuditComponent implements OnInit {
         this.audits = response.sort((a, b) => {
           const dateA = new Date(a.lastModifiedDate || a.createdDate || 0).getTime();
           const dateB = new Date(b.lastModifiedDate || b.createdDate || 0).getTime();
-
           return dateB - dateA;
         });
 
         this.extractData();
-        this.applyFilters();
+        this.filteredCount = this.audits.length;
         this.loading = false;
+        setTimeout(() => this.setupDashboardIntegration());
       },
       error: (err) => {
         console.error('Erreur chargement audit:', err);
@@ -100,11 +113,9 @@ export class AuditComponent implements OnInit {
       if (audit.createdBy) {
         users.add(audit.createdBy);
       }
-
       if (audit.lastModifiedBy) {
         users.add(audit.lastModifiedBy);
       }
-
       if (audit.entityName) {
         entities.add(this.getEntityDisplayName(audit.entityName));
       }
@@ -118,171 +129,10 @@ export class AuditComponent implements OnInit {
     );
   }
 
-  applyFilters(): void {
-    this.filteredAudits = this.audits.filter((audit) => {
-      if (this.filters.dateDebut || this.filters.dateFin) {
-        const auditDate = new Date(audit.lastModifiedDate || audit.createdDate);
-
-        if (this.filters.dateDebut) {
-          const dateDebut = new Date(this.filters.dateDebut);
-          dateDebut.setHours(0, 0, 0, 0);
-
-          if (auditDate < dateDebut) {
-            return false;
-          }
-        }
-
-        if (this.filters.dateFin) {
-          const dateFin = new Date(this.filters.dateFin);
-          dateFin.setHours(23, 59, 59, 999);
-
-          if (auditDate > dateFin) {
-            return false;
-          }
-        }
-      }
-
-      if (this.filters.typeAction !== 'TOUS') {
-        const actionType = this.getActionType(audit);
-
-        if (actionType !== this.filters.typeAction) {
-          return false;
-        }
-      }
-
-      if (this.filters.utilisateur) {
-        const searchTerm = this.filters.utilisateur.toLowerCase();
-        const matchesCreatedBy = audit.createdBy?.toLowerCase().includes(searchTerm);
-        const matchesModifiedBy = audit.lastModifiedBy?.toLowerCase().includes(searchTerm);
-
-        if (!matchesCreatedBy && !matchesModifiedBy) {
-          return false;
-        }
-      }
-
-      if (this.filters.entityName) {
-        const entitySearchTerm = this.filters.entityName.toLowerCase().trim();
-        const technicalEntityName = audit.entityName?.toLowerCase() || '';
-        const businessEntityName = this.getEntityDisplayName(audit.entityName).toLowerCase();
-
-        if (
-          !technicalEntityName.includes(entitySearchTerm) &&
-          !businessEntityName.includes(entitySearchTerm)
-        ) {
-          return false;
-        }
-      }
-
-      return true;
-    });
-
-    this.filteredAudits.sort((a, b) => {
-      const dateA = new Date(a.lastModifiedDate || a.createdDate || 0).getTime();
-      const dateB = new Date(b.lastModifiedDate || b.createdDate || 0).getTime();
-
-      return dateB - dateA;
-    });
-
-    this.currentPage = 1;
-    this.updatePaginatedAudits();
-  }
-
-  resetFilters(): void {
-    this.filters = {
-      dateDebut: '',
-      dateFin: '',
-      typeAction: 'TOUS',
-      utilisateur: '',
-      entityName: ''
-    };
-
-    this.applyFilters();
-  }
-
-  get totalPages(): number {
-    return this.filteredAudits.length > 0
-      ? Math.ceil(this.filteredAudits.length / this.pageSize)
-      : 1;
-  }
-
-  get pageStartIndex(): number {
-    if (this.filteredAudits.length === 0) {
-      return 0;
-    }
-
-    return (this.currentPage - 1) * this.pageSize + 1;
-  }
-
-  get pageEndIndex(): number {
-    if (this.filteredAudits.length === 0) {
-      return 0;
-    }
-
-    return Math.min(this.currentPage * this.pageSize, this.filteredAudits.length);
-  }
-
-  get visiblePageNumbers(): number[] {
-    if (this.filteredAudits.length === 0) {
-      return [];
-    }
-
-    const maxVisiblePages = 5;
-    const halfWindow = Math.floor(maxVisiblePages / 2);
-    let startPage = Math.max(1, this.currentPage - halfWindow);
-    const maxStartPage = Math.max(1, this.totalPages - maxVisiblePages + 1);
-    startPage = Math.min(startPage, maxStartPage);
-
-    const endPage = Math.min(this.totalPages, startPage + maxVisiblePages - 1);
-
-    return Array.from(
-      { length: endPage - startPage + 1 },
-      (_, index) => startPage + index
-    );
-  }
-
-  onPageSizeChange(pageSize: number | string): void {
-    this.pageSize = Number(pageSize);
-    this.currentPage = 1;
-    this.updatePaginatedAudits();
-  }
-
-  goToPage(page: number): void {
-    if (page < 1 || page > this.totalPages || page === this.currentPage) {
-      return;
-    }
-
-    this.currentPage = page;
-    this.updatePaginatedAudits();
-  }
-
-  goToPreviousPage(): void {
-    if (this.currentPage <= 1) {
-      return;
-    }
-
-    this.currentPage -= 1;
-    this.updatePaginatedAudits();
-  }
-
-  goToNextPage(): void {
-    if (this.currentPage >= this.totalPages) {
-      return;
-    }
-
-    this.currentPage += 1;
-    this.updatePaginatedAudits();
-  }
-
-  trackByAudit(index: number, audit: AuditDto): string {
-    const activityDate = audit.lastModifiedDate || audit.createdDate || `${index}`;
-    return `${audit.entityName || 'audit'}-${audit.id}-${activityDate}`;
-  }
-
   getEntityDisplayName(entityName: string | null | undefined): string {
     if (!entityName) {
       return '-';
     }
-
     return this.entityBusinessNames[entityName] || entityName;
   }
 
@@ -290,62 +140,43 @@ export class AuditComponent implements OnInit {
     if (audit.revisionType === 'ADD') {
       return 'CRÉATION';
     }
-
     if (audit.revisionType === 'MOD') {
       return 'MODIFICATION';
     }
-
     if (audit.createdDate === audit.lastModifiedDate) {
       return 'CRÉATION';
     }
-
     return 'MODIFICATION';
   }
 
-  getActionClass(action: string): string {
-    switch (action) {
-      case 'CRÉATION':
-        return 'badge-creation';
-      case 'MODIFICATION':
-        return 'badge-modification';
-      default:
-        return '';
-    }
+  private mapRows(audits: AuditDto[]): AuditRow[] {
+    return audits.map((audit) => ({
+      ...audit,
+      entityDisplayName: this.getEntityDisplayName(audit.entityName),
+      actionType: this.getActionType(audit)
+    }));
   }
 
-  formatDate(dateStr: string): string {
-    if (!dateStr) {
-      return '-';
-    }
-
-    const date = new Date(dateStr);
-
-    return date.toLocaleString('fr-FR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
-    });
+  private setupDashboardIntegration(): void {
+    this.syncDashboard();
+    this.watchFilteredCount();
   }
 
-  min(a: number, b: number): number {
-    return Math.min(a, b);
+  private syncDashboard(): void {
+    this.dashboard?.setClientSource(this.mapRows(this.audits));
   }
 
-  private updatePaginatedAudits(): void {
-    if (this.filteredAudits.length === 0) {
-      this.currentPage = 1;
-      this.paginatedAudits = [];
+  private watchFilteredCount(): void {
+    const store = this.dashboard?._store;
+    if (!store || this.filteredCountSubscribed) {
       return;
     }
 
-    this.currentPage = Math.min(Math.max(1, this.currentPage), this.totalPages);
-
-    const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
-
-    this.paginatedAudits = this.filteredAudits.slice(startIndex, endIndex);
+    this.filteredCountSubscribed = true;
+    toObservable(store.data)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((data) => {
+        this.filteredCount = data.total;
+      });
   }
 }

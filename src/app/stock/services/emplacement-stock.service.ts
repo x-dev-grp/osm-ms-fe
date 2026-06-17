@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { EmplacementStock, TypeEmplacement } from '../models/emplacement-stock.model';
+import { map } from 'rxjs/operators';
+import { EmplacementStock } from '../models/emplacement-stock.model';
 import { environment } from 'src/environments/environment';
-import { ApiResponse } from 'src/app/shared/models/api-response';
+import { ApiResponse, ApiSingleResponse } from 'src/app/shared/models/api-response';
 import { QrCodeInfo, QrResolveResponse } from 'src/app/shared/models/qr-models';
 
 @Injectable({
@@ -18,41 +19,53 @@ export class EmplacementStockService {
     return this.http.get<any>(`${this.apiUrl}/audit/all`);
   }
 
-  getAllEmplacements(): Observable<ApiResponse<EmplacementStock[]>> {
-    return this.http.get<ApiResponse<EmplacementStock[]>>(this.apiUrl);
-  }
-  getEmplacementById(id: string): Observable<ApiResponse<EmplacementStock>> {
-    return this.http.get<ApiResponse<EmplacementStock>>(`${this.apiUrl}/${id}`);
-  }
-
-  createEmplacement(emplacement: EmplacementStock): Observable<ApiResponse<EmplacementStock>> {
-    return this.http.post<ApiResponse<EmplacementStock>>(`${this.apiUrl}/create`, emplacement);
+  getAllEmplacements(): Observable<EmplacementStock[]> {
+    return this.http.get<ApiResponse<EmplacementStock>>(`${this.apiUrl}/fetchAll`).pipe(
+      map((response) => response?.data ?? [])
+    );
   }
 
-  updateEmplacement(id: string, emplacement: EmplacementStock): Observable<ApiResponse<EmplacementStock>> {
-    return this.http.put<ApiResponse<EmplacementStock>>(`${this.apiUrl}/${id}`, emplacement);
+  getEmplacementById(id: string): Observable<EmplacementStock> {
+    return this.http.get<ApiSingleResponse<EmplacementStock>>(`${this.apiUrl}/fetch/${id}`).pipe(
+      map((response) => response.data)
+    );
   }
 
-  reserverEmplacement(id: string, reservePour: string): Observable<ApiResponse<EmplacementStock>> {
-    return this.http.put<ApiResponse<EmplacementStock>>(`${this.apiUrl}/${id}/reserver`, { reservePour });
+  createEmplacement(emplacement: EmplacementStock): Observable<EmplacementStock> {
+    return this.http.post<ApiSingleResponse<EmplacementStock>>(this.apiUrl, emplacement).pipe(
+      map((response) => response.data)
+    );
   }
 
-  libererEmplacement(id: string): Observable<ApiResponse<EmplacementStock>> {
-    return this.http.put<ApiResponse<EmplacementStock>>(`${this.apiUrl}/${id}/liberer`, {});
+  updateEmplacement(id: string, emplacement: EmplacementStock): Observable<EmplacementStock> {
+    const payload = { ...emplacement, id };
+    return this.http.put<ApiSingleResponse<EmplacementStock>>(this.apiUrl, payload).pipe(
+      map((response) => response.data)
+    );
   }
 
-  mettreAJourCapacite(id: string, capaciteActuelle: string): Observable<ApiResponse<EmplacementStock>> {
-    return this.http.put<ApiResponse<EmplacementStock>>(`${this.apiUrl}/${id}/capacite`, { capaciteActuelle });
+  reserverEmplacement(id: string, reservePour: string): Observable<EmplacementStock> {
+    return this.http.put<EmplacementStock>(`${this.apiUrl}/${id}/reserver`, { reservePour });
   }
 
-  deleteEmplacement(id: string): Observable<ApiResponse<EmplacementStock>> {
-    return this.http.delete<ApiResponse<EmplacementStock>>(`${this.apiUrl}/${id}`);
+  libererEmplacement(id: string): Observable<EmplacementStock> {
+    return this.http.put<EmplacementStock>(`${this.apiUrl}/${id}/liberer`, {});
   }
-  activerEmplacement(id: string): Observable<ApiResponse<EmplacementStock>> {
-    return this.http.put<ApiResponse<EmplacementStock>>(`${this.apiUrl}/${id}/activer`, {});
+
+  mettreAJourCapacite(id: string, capaciteActuelle: string): Observable<EmplacementStock> {
+    return this.http.put<EmplacementStock>(`${this.apiUrl}/${id}/capacite`, { capaciteActuelle });
   }
-  desactiverEmplacement(id: string): Observable<ApiResponse<EmplacementStock>> {
-    return this.http.put<ApiResponse<EmplacementStock>>(`${this.apiUrl}/${id}/desactiver`, {});
+
+  deleteEmplacement(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/delete/${id}`);
+  }
+
+  activerEmplacement(id: string): Observable<EmplacementStock> {
+    return this.http.put<EmplacementStock>(`${this.apiUrl}/${id}/activer`, {});
+  }
+
+  desactiverEmplacement(id: string): Observable<EmplacementStock> {
+    return this.http.put<EmplacementStock>(`${this.apiUrl}/${id}/desactiver`, {});
   }
 
   searchByCode(code: string): Observable<QrResolveResponse> {

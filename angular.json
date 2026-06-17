@@ -44,6 +44,7 @@
             "styles": [
               "src/styles.scss",
               "src/app/theme/styles/material-overrides.scss",
+              "src/app/theme/styles/theme-mode/_theme-mode-adaptation.scss",
               "src/toast-theme.scss"
             ],
             "stylePreprocessorOptions": {

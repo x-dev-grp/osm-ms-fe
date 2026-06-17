@@ -19,11 +19,12 @@ import { LigneConditionnement, Statue } from '../../../models/ligne-conditionnem
 import { ToastService } from '../../../../shared/services/toast.service';
 import { AssignableUser, UserService } from '../../../../settings/user-management/services/user.service';
 import { Action, InventoryEntity, OSMModule } from '../../../../theme/types/permissions';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-ligne-form',
   standalone: true,
-  imports: [
+  imports: [TranslateModule,
     CommonModule,
     ReactiveFormsModule,
     RouterLink,
@@ -100,7 +101,7 @@ export class LigneFormComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erreur chargement ligne', err);
-        this.toast.error('Erreur lors du chargement des données');
+        this.toast.error('DELIVERIES.FORM.MESSAGES.LOAD_ERROR');
         this.loading.set(false);
       }
     });
@@ -121,7 +122,7 @@ export class LigneFormComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erreur chargement responsables', err);
-        this.toast.error('Impossible de charger la liste des responsables');
+        this.toast.error('AUTO.IMPOSSIBLE_DE_CHARGER_LA_LISTE_DES_RESPONSABLES');
         this.loadingResponsables.set(false);
       }
     });
@@ -152,13 +153,13 @@ export class LigneFormComponent implements OnInit {
   onSubmit(): void {
     if (this.ligneForm.invalid) {
       this.ligneForm.markAllAsTouched();
-      this.toast.warning('Veuillez vérifier les champs du formulaire');
+      this.toast.warning('AUTO.VEUILLEZ_VERIFIER_LES_CHAMPS_DU_FORMULAIRE');
       return;
     }
 
     this.submitting.set(true);
     const formValue = this.ligneForm.value;
-    
+
     // Format dates back to string if needed by backend (assuming ISO string)
     const payload = {
       ...formValue,
@@ -169,26 +170,26 @@ export class LigneFormComponent implements OnInit {
     if (this.isEditMode && this.ligneId) {
       this.ligneService.updateLigne(this.ligneId, payload).subscribe({
         next: () => {
-          this.toast.success('Ligne mise à jour avec succès');
+          this.toast.success('AUTO.LIGNE_MISE_A_JOUR_AVEC_SUCCES');
           this.router.navigate(['/stock/lignes', this.ligneId]);
           this.submitting.set(false);
         },
         error: (err) => {
           console.error('Erreur update', err);
-          this.toast.error('Erreur lors de la mise à jour');
+          this.toast.error('TRANSACTIONS.ERRORS.UPDATE_ERROR');
           this.submitting.set(false);
         }
       });
     } else {
       this.ligneService.createLigne(payload).subscribe({
         next: (created) => {
-          this.toast.success('Ligne créée avec succès');
+          this.toast.success('AUTO.LIGNE_CREEE_AVEC_SUCCES');
           this.router.navigate(['/stock/lignes', created.id]);
           this.submitting.set(false);
         },
         error: (err) => {
           console.error('Erreur create', err);
-          this.toast.error('Erreur lors de la création');
+          this.toast.error('TRANSACTIONS.ERRORS.CREATE_ERROR');
           this.submitting.set(false);
         }
       });

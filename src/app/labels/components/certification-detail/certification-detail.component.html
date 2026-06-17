@@ -2,11 +2,11 @@
   <!-- Top Navigation -->
   <div class="top-nav">
     <button mat-button class="btn-back" (click)="goBack()">
-      <mat-icon>arrow_back</mat-icon> Retour à la liste
+      <mat-icon>arrow_back</mat-icon>  {{ 'DELIVERIES.DETAILS.BUTTONS.BACK' | translate }}
     </button>
     <div class="action-group">
       <button mat-flat-button class="btn-edit" (click)="openEditForm()">
-        <mat-icon>edit</mat-icon> Modifier
+        <mat-icon>edit</mat-icon>  {{ 'BANK_ACCOUNTS.ACTIONS.EDIT' | translate }}
       </button>
     </div>
   </div>
@@ -17,14 +17,14 @@
       <div class="details-list shadow-premium">
         <div class="card-header-internal">
           <mat-icon class="header-icon">eco</mat-icon>
-          <h2>Informations générales</h2>
+          <h2>{{ 'DELIVERIES.FORM.SECTIONS.GENERAL_INFO' | translate }}</h2>
         </div>
 
         <!-- Nom -->
         <div class="detail-row">
           <div class="label-box">
             <mat-icon>eco</mat-icon>
-            <span class="label">Nom de la certification</span>
+            <span class="label">{{ 'AUTO.NOM_DE_LA_CERTIFICATION' | translate }}</span>
           </div>
           <span class="value bold">{{ certification.name }}</span>
         </div>
@@ -33,7 +33,7 @@
         <div class="detail-row">
           <div class="label-box">
             <mat-icon>sell</mat-icon>
-            <span class="label">Code</span>
+            <span class="label">{{ 'AUTO.CODE' | translate }}</span>
           </div>
           <span class="value bold">{{ certification.code || '--' }}</span>
         </div>
@@ -42,7 +42,7 @@
         <div class="detail-row">
           <div class="label-box">
             <mat-icon>chat_bubble_outline</mat-icon>
-            <span class="label">Description</span>
+            <span class="label">{{ 'BASE_TYPE.FIELDS.DESCRIPTION' | translate }}</span>
           </div>
           <span class="value description">{{ certification.description || 'Aucune description fournie.' }}</span>
         </div>
@@ -51,7 +51,7 @@
         <div class="detail-row">
           <div class="label-box">
             <mat-icon>business</mat-icon>
-            <span class="label">Organisme certificateur</span>
+            <span class="label">{{ 'AUTO.ORGANISME_CERTIFICATEUR' | translate }}</span>
           </div>
           <span class="value">{{ certification.issuingBody }}</span>
         </div>
@@ -60,7 +60,7 @@
         <div class="detail-row">
           <div class="label-box">
             <mat-icon>grid_view</mat-icon>
-            <span class="label">Catégorie</span>
+            <span class="label">{{ 'BASE_TYPE.CATEGORY' | translate }}</span>
           </div>
           <span class="value">{{ certification.category }}</span>
         </div>
@@ -69,7 +69,7 @@
         <div class="detail-row">
           <div class="label-box">
             <mat-icon>language</mat-icon>
-            <span class="label">Site Web</span>
+            <span class="label">{{ 'CONFIGURATION.SITE.FIELDS.WEBSITE' | translate }}</span>
           </div>
           <a [href]="certification.websiteUrl" target="_blank" class="value link" *ngIf="certification.websiteUrl">
             {{ certification.websiteUrl }}
@@ -81,7 +81,7 @@
         <div class="detail-row">
           <div class="label-box">
             <mat-icon>verified_user</mat-icon>
-            <span class="label">Statut</span>
+            <span class="label">{{ 'ADMIN_DASHBOARD.TABLE.STATUS' | translate }}</span>
           </div>
           <div class="status-pill" [class.active]="certification.isActive">
             {{ certification.isActive ? 'Actif' : 'Inactif' }}
@@ -92,7 +92,7 @@
         <div class="detail-row">
           <div class="label-box">
             <mat-icon>calendar_today</mat-icon>
-            <span class="label">Date de création</span>
+            <span class="label">{{ 'COMPANY_PROFILE_UI.COMPANY_INFO.CREATION_DATE' | translate }}</span>
           </div>
           <span class="value">{{ certification.createdDate | date:'dd MMMM yyyy' }}</span>
         </div>
@@ -101,7 +101,7 @@
         <div class="detail-row">
           <div class="label-box">
             <mat-icon>edit_calendar</mat-icon>
-            <span class="label">Dernière mise à jour</span>
+            <span class="label">{{ 'AUTO.DERNIERE_MISE_A_JOUR' | translate }}</span>
           </div>
           <span class="value">{{ (certification.lastModifiedDate || certification.createdDate) | date:'dd MMMM yyyy'
             }}</span>
@@ -113,7 +113,7 @@
     <div class="logo-preview-container">
       <div class="logo-card shadow-premium">
         <div class="card-header-internal">
-          <h3>Aperçu du logo</h3>
+          <h3>{{ 'AUTO.APERCU_DU_LOGO' | translate }}</h3>
         </div>
 
         <div class="logo-display">
@@ -125,7 +125,7 @@
 
         <div class="logo-actions">
           <button mat-stroked-button class="btn-view-large" (click)="viewLargeLogo()">
-            <mat-icon>visibility</mat-icon> Voir en grand
+            <mat-icon>visibility</mat-icon>  {{ 'AUTO.VOIR_EN_GRAND' | translate }}
           </button>
         </div>
       </div>
@@ -135,5 +135,5 @@
 
 <div class="loading-state" *ngIf="isLoading">
   <mat-spinner diameter="40"></mat-spinner>
-  <p>Chargement des informations...</p>
+  <p>{{ 'AUTO.CHARGEMENT_DES_INFORMATIONS' | translate }}</p>
 </div>

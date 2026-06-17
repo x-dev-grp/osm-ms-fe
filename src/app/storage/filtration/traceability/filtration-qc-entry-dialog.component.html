@@ -1,55 +1,15 @@
-<h2 mat-dialog-title>Controle qualite apres filtration</h2>
+<h2 mat-dialog-title>{{ 'AUTO.CONTROLE_QUALITE_APRES_FILTRATION' | translate }}</h2>
 
 <mat-dialog-content>
-  <div class="loading" *ngIf="loading">
-    <mat-spinner diameter="28"></mat-spinner>
-    <span>Chargement des regles...</span>
-  </div>
-
-  <form [formGroup]="form" *ngIf="!loading && rules.length > 0" class="qc-form">
-    <div class="rule-row" *ngFor="let rule of rules">
-      <label>{{ ruleLabel(rule) }}</label>
-
-      <mat-form-field appearance="outline" *ngIf="rule.ruleType === 'NUMERIC'">
-        <input
-          matInput
-          type="number"
-          [formControl]="asControl(rule.ruleKey)"
-          [placeholder]="'Min: ' + (rule.minValue ?? '-') + ' / Max: ' + (rule.maxValue ?? '-')"
-        />
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" *ngIf="rule.ruleType === 'BOOLEAN'">
-        <mat-select [formControl]="asControl(rule.ruleKey)">
-          <mat-option [value]="true">Conforme</mat-option>
-          <mat-option [value]="false">Non conforme</mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" *ngIf="rule.ruleType === 'STRING' && stringOptions(rule).length > 0">
-        <mat-select [formControl]="asControl(rule.ruleKey)">
-          <mat-option *ngFor="let option of stringOptions(rule)" [value]="option">
-            {{ option }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" *ngIf="rule.ruleType === 'STRING' && stringOptions(rule).length === 0">
-        <input matInput type="text" [formControl]="asControl(rule.ruleKey)" />
-      </mat-form-field>
-    </div>
-  </form>
-
-  <div class="empty" *ngIf="!loading && rules.length === 0">
-    <mat-icon>info</mat-icon>
-    <span>Aucune regle de controle qualite huile disponible.</span>
-  </div>
+  <app-qc-entry-studio
+    context="FILTRATION"
+    [filtrationOperationId]="data.filtrationOperationId"
+    [traceabilityLotId]="data.traceabilityLotId"
+    [compact]="true"
+    (saved)="onSaved()"
+  />
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button (click)="cancel()" [disabled]="saving">Annuler</button>
-  <button mat-flat-button color="primary" (click)="submit()" [disabled]="loading || saving || rules.length === 0">
-    <mat-spinner *ngIf="saving" diameter="18"></mat-spinner>
-    <span *ngIf="!saving">Enregistrer</span>
-  </button>
+  <button mat-button type="button" (click)="cancel()">{{ 'ADMIN.CANCEL' | translate }}</button>
 </mat-dialog-actions>

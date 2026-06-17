@@ -1,90 +1,214 @@
-<app-card
-  [cardTitle]="isEditing ? 'Edit Storage Unit' : 'Add Storage Unit'"
-  [icon]="'inventory_2'"
->
-  <div class="form-container">
-    <form
-      class="storage-form"
-      [formGroup]="storageForm"
-      (ngSubmit)="save()"
-      [class.loading]="loading"
-      autocomplete="off"
-      novalidate
-    >
-      <!-- Row 1 -->
-      <mat-form-field appearance="outline" class="field">
-        <mat-label>Name</mat-label>
-        <input matInput formControlName="name" required />
-        <mat-error *ngIf="storageForm.get('name')?.hasError('required')">
-          Name is required
-        </mat-error>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="field">
-        <mat-label>Status</mat-label>
-        <mat-select formControlName="status" required>
-          <mat-option value="AVAILABLE">Available</mat-option>
-          <mat-option value="FULL">Full</mat-option>
-          <mat-option value="FILLING">Filling</mat-option>
-          <mat-option value="MAINTENANCE">Maintenance</mat-option>
-          <mat-option value="IN_USE">In Use</mat-option>
-          <mat-option value="CLEANING">Cleaning</mat-option>
-          <mat-option value="RESERVED">Reserved</mat-option>
-          <mat-option value="OUT_OF_SERVICE">Out of Service</mat-option>
-        </mat-select>
-        <mat-error *ngIf="storageForm.get('status')?.hasError('required')">
-          Status is required
-        </mat-error>
-      </mat-form-field>
-
-      <!-- Row 2 -->
-      <mat-form-field appearance="outline" class="field">
-        <mat-label>Max Capacity</mat-label>
-        <input matInput type="number" formControlName="maxCapacity" required />
-        <span matSuffix>kg&nbsp;</span>
-        <mat-error *ngIf="storageForm.get('maxCapacity')?.hasError('required')">
-          Max capacity is required
-        </mat-error>
-        <mat-error *ngIf="storageForm.get('maxCapacity')?.hasError('min')">
-          Must be greater than 0
-        </mat-error>
-      </mat-form-field>
-
-      <!-- New Row for Filtered Oil checkbox -->
-      <div class="field checkbox-field">
-        <mat-checkbox formControlName="filteredOil" color="primary">
-          Filtered Oil
-        </mat-checkbox>
+<div class="storage-studio">
+  <header class="studio-header">
+    <div class="studio-header__left">
+      <button mat-icon-button type="button" class="back-btn" (click)="onBack()" [matTooltip]="'COMMON.BACK' | translate">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div>
+        <h1>{{ pageTitle() }}</h1>
+        <p>{{ isEditing ? ('STORAGE.EDIT.SUBTITLE' | translate) : ('STORAGE.ADD.SUBTITLE' | translate) }}</p>
       </div>
+    </div>
+    <div class="studio-header__right">
+      <span class="status-chip" [class]="statusChipClass()">{{ statusLabel() }}</span>
+      <span class="type-chip" [class.is-filtered]="storageForm.get('filteredOil')?.value">
+        {{ storageForm.get('filteredOil')?.value ? ('AUTO.FILTERED_OIL' | translate) : ('AUTO.HUILE_BRUTE' | translate) }}
+      </span>
+    </div>
+  </header>
 
-      <mat-form-field appearance="outline" class="field">
-        <mat-label>{{ 'OIL_TRANSACTION.DETAILS.QUALITY_GRADE' | translate }}</mat-label>
-        <mat-select formControlName="qualityGrade">
-          <mat-option [value]="null">— Sélectionner —</mat-option>
-          <mat-option *ngFor="let grade of grades" [value]="grade">
-            {{ ('OIL_TRANSACTIONS.QUALITY_GRADES.' + grade) | translate }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <!-- Description (full width) -->
-      <mat-form-field appearance="outline" class="field span-2">
-        <mat-label>Description</mat-label>
-        <textarea matInput rows="3" formControlName="description"></textarea>
-      </mat-form-field>
-
-      <!-- Actions -->
-      <div class="form-actions span-2">
-        <button mat-stroked-button type="button" (click)="onBack()">Cancel</button>
-        <button
-          mat-flat-button
-          color="primary"
-          type="submit"
-          [disabled]="loading || storageForm.invalid"
-        >
-          {{ isEditing ? 'Update' : 'Create' }}
-        </button>
-      </div>
-    </form>
+  <div *ngIf="loading && isEditing" class="studio-loading">
+    <mat-spinner diameter="40"></mat-spinner>
   </div>
-</app-card>
+
+  <div class="studio-grid" *ngIf="!loading || !isEditing">
+    <main class="studio-form">
+      <form [formGroup]="storageForm" (ngSubmit)="save()">
+        <div class="studio-cards">
+          <!-- Identity + Capacity -->
+          <section class="studio-card">
+            <header class="studio-card__head">
+              <mat-icon>inventory_2</mat-icon>
+              <span>{{ 'STORAGE.SECTIONS.IDENTITY' | translate }}</span>
+              <span class="studio-card__sep">·</span>
+              <span class="studio-card__sub">{{ 'STORAGE.SECTIONS.CAPACITY' | translate }}</span>
+            </header>
+            <div class="studio-card__body field-grid">
+              <mat-form-field appearance="outline" class="field-row field-row--wide">
+                <mat-label>{{ 'BASE_TYPE.FIELDS.NAME' | translate }}</mat-label>
+                <input matInput formControlName="name" required />
+                <mat-error *ngIf="storageForm.get('name')?.hasError('required')">
+                  {{ 'GENERIC_TYPE.ERRORS.NAME_REQUIRED' | translate }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="field-row">
+                <mat-label>{{ 'PDF.LOT' | translate }}</mat-label>
+                <input matInput formControlName="lotNumber" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="field-row">
+                <mat-label>{{ 'STORAGE.VIEW.LOCATION' | translate }}</mat-label>
+                <input matInput formControlName="location" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="field-row">
+                <mat-label>{{ 'ADMIN_DASHBOARD.TABLE.STATUS' | translate }}</mat-label>
+                <mat-select formControlName="status" required>
+                  <mat-option value="AVAILABLE">{{ 'STORAGE.VIEW.STATUS.AVAILABLE' | translate }}</mat-option>
+                  <mat-option value="FULL">{{ 'STORAGE.VIEW.STATUS.FULL' | translate }}</mat-option>
+                  <mat-option value="FILLING">{{ 'STORAGE.VIEW.STATUS.FILLING' | translate }}</mat-option>
+                  <mat-option value="MAINTENANCE">{{ 'MILL_MACHINE.ACTIONS.MAINTENANCE' | translate }}</mat-option>
+                  <mat-option value="IN_USE">{{ 'STORAGE.VIEW.STATUS.IN_USE' | translate }}</mat-option>
+                  <mat-option value="CLEANING">{{ 'STORAGE.VIEW.STATUS.CLEANING' | translate }}</mat-option>
+                  <mat-option value="RESERVED">{{ 'STORAGE.VIEW.STATUS.RESERVED' | translate }}</mat-option>
+                  <mat-option value="OUT_OF_SERVICE">{{ 'STORAGE.VIEW.STATUS.OUT_OF_SERVICE' | translate }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="field-row">
+                <mat-label>{{ 'STORAGE.VIEW.MAX_CAPACITY' | translate }}</mat-label>
+                <input matInput type="number" formControlName="maxCapacity" required min="1" />
+                <span matSuffix>kg</span>
+                <mat-error *ngIf="storageForm.get('maxCapacity')?.hasError('required')">
+                  {{ 'AUTO.MAX_CAPACITY_IS_REQUIRED' | translate }}
+                </mat-error>
+                <mat-error *ngIf="storageForm.get('maxCapacity')?.hasError('min')">
+                  {{ 'AUTO.MUST_BE_GREATER_THAN_0' | translate }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="field-row" *ngIf="isEditing">
+                <mat-label>{{ 'STORAGE.VIEW.CURRENT_VOLUME' | translate }}</mat-label>
+                <input matInput type="number" formControlName="currentVolume" min="0" />
+                <span matSuffix>kg</span>
+              </mat-form-field>
+
+              <p class="capacity-warning field-row--wide" *ngIf="storageForm.hasError('capacityExceeded')">
+                <mat-icon>warning</mat-icon>
+                {{ 'OIL_TRANSACTIONS.FORM.VALIDATION.CAPACITY' | translate }}
+              </p>
+            </div>
+          </section>
+
+          <!-- Oil -->
+          <section class="studio-card">
+            <header class="studio-card__head">
+              <mat-icon>eco</mat-icon>
+              <span>{{ 'STORAGE.SECTIONS.OIL' | translate }}</span>
+            </header>
+            <div class="studio-card__body field-grid field-grid--oil">
+              <div class="field-row base-type-field">
+                <base-type
+                  [formControl]="storageForm.controls['oilVariety']"
+                  [options]="oilVarietys"
+                  [type]="'OIL_VARIETY'">
+                </base-type>
+              </div>
+
+              <mat-form-field appearance="outline" class="field-row">
+                <mat-label>{{ 'OIL_TRANSACTION.DETAILS.QUALITY_GRADE' | translate }}</mat-label>
+                <mat-select formControlName="qualityGrade">
+                  <mat-option [value]="null">{{ 'AUTO.SELECTIONNER' | translate }}</mat-option>
+                  <mat-option *ngFor="let grade of grades" [value]="grade">
+                    {{ ('OIL_TRANSACTIONS.QUALITY_GRADES.' + grade) | translate }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <div class="field-row oil-type-row">
+                <span class="field-label">{{ 'STORAGE.VIEW.OIL_TYPE' | translate }}</span>
+                <div class="type-switcher" role="group" [attr.aria-label]="'STORAGE.VIEW.OIL_TYPE' | translate">
+                  <button
+                    type="button"
+                    class="type-pill"
+                    [class.active]="!storageForm.get('filteredOil')?.value"
+                    (click)="setFilteredOil(false)">
+                    <mat-icon>water_drop</mat-icon>
+                    {{ 'AUTO.HUILE_BRUTE' | translate }}
+                  </button>
+                  <button
+                    type="button"
+                    class="type-pill"
+                    [class.active]="!!storageForm.get('filteredOil')?.value"
+                    (click)="setFilteredOil(true)">
+                    <mat-icon>filter_alt</mat-icon>
+                    {{ 'AUTO.FILTERED_OIL' | translate }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Notes -->
+          <section class="studio-card">
+            <header class="studio-card__head">
+              <mat-icon>notes</mat-icon>
+              <span>{{ 'STORAGE.SECTIONS.NOTES' | translate }}</span>
+            </header>
+            <div class="studio-card__body">
+              <mat-form-field appearance="outline" class="notes-field">
+                <mat-label>{{ 'BASE_TYPE.FIELDS.DESCRIPTION' | translate }}</mat-label>
+                <textarea matInput rows="2" formControlName="description"></textarea>
+              </mat-form-field>
+
+              <div class="paid-storage-row" [class.is-active]="storageForm.get('paidStorage')?.value">
+                <mat-checkbox formControlName="paidStorage" color="primary">
+                  {{ 'STORAGE.FORM.IS_PAID_STORAGE' | translate }}
+                </mat-checkbox>
+                <mat-form-field
+                  appearance="outline"
+                  class="paid-price-field"
+                  *ngIf="storageForm.get('paidStorage')?.value">
+                  <mat-label>{{ 'STORAGE.FORM.MONTHLY_RENTAL_PRICE' | translate }}</mat-label>
+                  <input matInput type="number" formControlName="monthlyRentalPrice" min="0" />
+                  <span matSuffix>TND</span>
+                  <mat-error *ngIf="storageForm.get('monthlyRentalPrice')?.hasError('required')">
+                    {{ 'AUTO.CHAMP_OBLIGATOIRE' | translate }}
+                  </mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <footer class="studio-actions">
+          <button mat-stroked-button type="button" (click)="onBack()">{{ 'ADMIN.CANCEL' | translate }}</button>
+          <button mat-flat-button color="primary" type="submit" [disabled]="loading || storageForm.invalid">
+            <mat-spinner *ngIf="loading" diameter="18"></mat-spinner>
+            <span *ngIf="!loading">{{ isEditing ? ('ADMIN.SAVE' | translate) : ('STORAGE.ADD.CREATE' | translate) }}</span>
+          </button>
+        </footer>
+      </form>
+    </main>
+
+    <aside class="studio-rail">
+      <div class="rail-card">
+        <h3>{{ 'STORAGE.RAIL.SUMMARY' | translate }}</h3>
+        <div class="fill-meter">
+          <div class="fill-meter__bar">
+            <div class="fill-meter__fill" [style.width.%]="fillPercent()" [class]="capacityFillClass()"></div>
+          </div>
+          <div class="fill-meter__labels">
+            <span>{{ fillPercent() }}%</span>
+            <span>{{ 'STORAGE.RAIL.FREE_CAPACITY' | translate:{ amount: (availableCapacity() | number:'1.0-0') } }}</span>
+          </div>
+        </div>
+        <dl class="rail-stats">
+          <div>
+            <dt>{{ 'STORAGE.VIEW.MAX_CAPACITY' | translate }}</dt>
+            <dd>{{ (storageForm.get('maxCapacity')?.value || 0) | number:'1.0-0' }} kg</dd>
+          </div>
+          <div *ngIf="isEditing">
+            <dt>{{ 'STORAGE.VIEW.CURRENT_VOLUME' | translate }}</dt>
+            <dd>{{ (storageForm.get('currentVolume')?.value || 0) | number:'1.0-0' }} kg</dd>
+          </div>
+          <div *ngIf="storageForm.get('qualityGrade')?.value">
+            <dt>{{ 'OIL_TRANSACTION.DETAILS.QUALITY_GRADE' | translate }}</dt>
+            <dd>{{ ('OIL_TRANSACTIONS.QUALITY_GRADES.' + storageForm.get('qualityGrade')?.value) | translate }}</dd>
+          </div>
+        </dl>
+      </div>
+    </aside>
+  </div>
+</div>

@@ -1,0 +1,63 @@
+.qc-rail {
+  position: sticky;
+  top: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fafafa;
+  min-width: 260px;
+}
+
+.qc-rail.collapsed {
+  min-width: 72px;
+  width: 72px;
+}
+
+.qc-rail__toggle {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.75rem;
+  cursor: pointer;
+}
+
+.qc-rail__score {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.qc-rail__count {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.qc-rail__body {
+  padding: 0 0.85rem 0.85rem;
+}
+
+.qc-rail__body h3 {
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+}
+
+.qc-rail__stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  margin-bottom: 0.75rem;
+}
+
+.qc-rail__grade {
+  font-size: 0.82rem;
+  margin: 0 0 0.75rem;
+}
+
+.qc-rail__status {
+  display: inline-flex;
+  width: 28px;
+  font-size: 1rem;
+  line-height: 1;
+}

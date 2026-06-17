@@ -96,7 +96,12 @@ export class PdfGeneratorService {
       doc.setFontSize(10);
       doc.setFont(this._fontName, this._fontStyleItalic);
       // Title always a key (e.g., GEN_PDF_BON_COMMANDE)
-      doc.text(this.translationService.instant(this.safeText(config.title, '')), centerX + centerWidth / 2, currentY + 14, { align: 'center' });
+      doc.text(
+        this.translationService.instant(this.safeText(config.titleTranslatePath || config.title, '')),
+        centerX + centerWidth / 2,
+        currentY + 14,
+        { align: 'center' }
+      );
 
       // --- Right info box ---
       const rightX = centerX + centerWidth;
@@ -133,7 +138,7 @@ export class PdfGeneratorService {
       // --- General info (skip empty) ---
       const generalInfo = (config.generalInfo || [])
         .map(g => ({
-          label: this.translationService.instant(this.safeText(g.label, '')),
+          label: this.translationService.instant(this.safeText(g.labelTranslatePath || g.label, '')),
           // g.value may be a key (PDF.*) or plain value
           value: this.translateOrText(g.value)
         }))
@@ -152,7 +157,7 @@ export class PdfGeneratorService {
       // === Horizontal fields row (labels on top, values under) ===
       const fields = (config.fields || [])
         .map(f => ({
-          label: this.translationService.instant(this.safeText(f.label, '')),
+          label: this.translationService.instant(this.safeText(f.labelTranslatePath || f.label, '')),
           value: this.safeText(f.value, '—')
         }))
         .filter(f => this.hasText(f.label) && this.hasText(f.value));
@@ -229,7 +234,9 @@ export class PdfGeneratorService {
 
         config.footerInfo.slice(0, maxItemsPerRow).forEach((footerItem, index) => {
           const x = marginLeft + index * spacing;
-          const label = this.translationService.instant(this.safeText(footerItem.label, ''));
+          const label = this.translationService.instant(
+            this.safeText(footerItem.labelTranslatePath || footerItem.label, '')
+          );
           if (!this.hasText(label)) return;
 
           doc.text(`${label} :`, x, footerY);

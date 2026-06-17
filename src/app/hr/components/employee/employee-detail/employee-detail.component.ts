@@ -6,7 +6,7 @@ import { ContractService } from '../../../services/contract-service';
 import { Employee, Gender, MaritalStatus } from '../../../model/employee-model';
 import { Contract } from '../../../model/contract.model';
 import { ToastService } from '../../../../shared/services/toast.service';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService, TranslateModule } from '@ngx-translate/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -21,7 +21,7 @@ import { CardComponent } from "../../../../theme/components/card/card.component"
   standalone: true,
   templateUrl: './employee-detail.component.html',
   styleUrls: ['./employee-detail.component.scss'],
-  imports: [
+  imports: [TranslateModule, 
     CommonModule,
     MatCardModule,
     MatButtonModule,

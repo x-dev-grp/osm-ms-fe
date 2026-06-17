@@ -1,3 +1,5 @@
+import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
@@ -8,11 +10,12 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-import { SharedModule } from '../../shared/shared.module';
 import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
 import { BaseType } from '../../shared/models/base-type';
 import { StorageUnitDtoService } from '../../shared/services/storage.service';
@@ -51,7 +54,8 @@ function sanitizeBaseType(obj: any | null) {
     MatButtonModule,
     MatProgressSpinnerModule,
     MatCheckboxModule,
-    SharedModule,
+    MatIconModule,
+    MatTooltipModule,
     BaseTypeComponent,
     TranslateModule
   ],
@@ -59,6 +63,7 @@ function sanitizeBaseType(obj: any | null) {
   styleUrls: ['./storage-add.component.scss']
 })
 export class StorageAddComponent implements OnInit, OnDestroy {
+  private readonly i18n = inject(TranslateService);
   loading = false;
   isEditing = false;
   errorMessage: string | null = null;
@@ -108,6 +113,10 @@ export class StorageAddComponent implements OnInit, OnDestroy {
     const storageId = this.route.snapshot.paramMap.get('id');
     this.isEditing = storageId !== null && storageId !== 'new';
 
+    if (this.isEditing) {
+      this.loading = true;
+    }
+
     // Toggle monthlyRentalPrice required based on paidStorage
     this.subscriptions.add(
       this.storageForm.get('paidStorage')!.valueChanges.subscribe((isPaid: boolean) => {
@@ -141,7 +150,7 @@ export class StorageAddComponent implements OnInit, OnDestroy {
   save(): void {
     if (this.storageForm.invalid) {
       this.storageForm.markAllAsTouched();
-      this.toast.warning('Please fill in all required fields.');
+      this.toast.warning('AUTO.PLEASE_FILL_IN_ALL_REQUIRED_FIELDS');
       return;
     }
     const v = this.storageForm.value;
@@ -170,15 +179,15 @@ export class StorageAddComponent implements OnInit, OnDestroy {
     ).subscribe({
       next: (res) => {
         if (res?.success) {
-          this.toast.success(this.isEditing ? 'Storage unit updated successfully' : 'Storage unit created successfully');
+          this.toast.success(this.isEditing ? 'AUTO.STORAGE_UNIT_UPDATED_SUCCESSFULLY' : 'AUTO.STORAGE_UNIT_CREATED_SUCCESSFULLY');
           this.router.navigate(['/storage']);
         } else {
-          this.toast.error(res?.message || 'Operation failed');
+          this.toast.error(res?.message || 'AUTO.OPERATION_FAILED');
         }
         this.loading = false;
       },
       error: () => {
-        this.toast.error('Server error');
+        this.toast.error('AUTO.SERVER_ERROR');
         this.loading = false;
       }
     });
@@ -187,6 +196,48 @@ export class StorageAddComponent implements OnInit, OnDestroy {
 
   onBack(): void {
     this.router.navigate(['/storage']);
+  }
+
+  setFilteredOil(filtered: boolean): void {
+    this.storageForm.get('filteredOil')?.setValue(filtered);
+  }
+
+  pageTitle(): string {
+    return this.isEditing
+      ? this.i18n.instant('STORAGE.EDIT.TITLE')
+      : this.i18n.instant('STORAGE.ADD.TITLE');
+  }
+
+  statusLabel(): string {
+    const status = this.storageForm.get('status')?.value || 'AVAILABLE';
+    return this.i18n.instant(`STORAGE.VIEW.STATUS.${status}`);
+  }
+
+  statusChipClass(): string {
+    const status = this.storageForm.get('status')?.value;
+    if (status === 'FULL' || status === 'OUT_OF_SERVICE') return 'is-alert';
+    if (status === 'MAINTENANCE' || status === 'CLEANING') return 'is-warn';
+    return '';
+  }
+
+  fillPercent(): number {
+    const max = Number(this.storageForm.get('maxCapacity')?.value) || 0;
+    const current = Number(this.storageForm.get('currentVolume')?.value) || 0;
+    if (max <= 0) return 0;
+    return Math.min(100, Math.round((current / max) * 100));
+  }
+
+  availableCapacity(): number {
+    const max = Number(this.storageForm.get('maxCapacity')?.value) || 0;
+    const current = Number(this.storageForm.get('currentVolume')?.value) || 0;
+    return Math.max(0, max - current);
+  }
+
+  capacityFillClass(): string {
+    const pct = this.fillPercent();
+    if (pct >= 95) return 'full';
+    if (pct >= 80) return 'warn';
+    return '';
   }
 
   private loadOilVarieties(): void {
@@ -205,7 +256,7 @@ export class StorageAddComponent implements OnInit, OnDestroy {
           this.oilVarietysLoaded = true;
           this.tryPatchWhenReady();
           this.finishLoadingIfCreateMode();
-          this.toast.error('Failed to load oil varieties');
+          this.toast.error('AUTO.FAILED_TO_LOAD_OIL_VARIETIES');
         }
       });
     this.subscriptions.add(sub);
@@ -224,8 +275,8 @@ export class StorageAddComponent implements OnInit, OnDestroy {
           this.tryPatchWhenReady();
         },
         error: () => {
-          this.errorMessage = 'Error loading storage unit.';
-          this.toast.error(this.errorMessage);
+          this.errorMessage = this.i18n.instant('AUTO.ERROR_LOADING_STORAGE_UNIT');
+          this.toast.error(this.errorMessage!);
           this.router.navigate(['/storage']);
         },
         complete: () => {

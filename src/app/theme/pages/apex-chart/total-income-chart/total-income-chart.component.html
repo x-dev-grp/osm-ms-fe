@@ -1,11 +1,11 @@
 <app-card [showHeader]="false">
   <div class="flex align-item-center justify-content-between">
-    <div class="f-16 f-w-600">Total Income</div>
+    <div class="f-16 f-w-600">{{ 'AUTO.TOTAL_INCOME' | translate }}</div>
     <a [matMenuTriggerFor]="menu" class="avatar avatar-s hover"><i class="ti ti-dots-vertical f-18"></i></a>
     <mat-menu #menu="matMenu">
-      <a mat-menu-item>Today</a>
-      <a mat-menu-item>Weekly</a>
-      <a mat-menu-item>Monthly</a>
+      <a mat-menu-item>{{ 'DASHBOARD.DATE_FILTER.TODAY' | translate }}</a>
+      <a mat-menu-item>{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.WEEKLY' | translate }}</a>
+      <a mat-menu-item>{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.MONTHLY' | translate }}</a>
     </mat-menu>
   </div>
   <apx-chart

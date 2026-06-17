@@ -1,0 +1,58 @@
+<div class="qc-studio" [class.compact]="compact">
+  <div class="qc-studio__loading" *ngIf="loading">
+    <mat-spinner diameter="36"></mat-spinner>
+    <span>{{ 'CONTROLE_QUALITE.LOADING' | translate }}</span>
+  </div>
+
+  <div class="qc-studio__error" *ngIf="message && !loading">
+    <mat-icon>error_outline</mat-icon>
+    <p>{{ message }}</p>
+  </div>
+
+  <div class="qc-studio__grid" *ngIf="!loading && !message && rules.length > 0" [class.rail-collapsed]="!railExpanded">
+    <main class="qc-studio__main">
+      <form [formGroup]="form">
+        <mat-accordion multi>
+          <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <mat-icon>tune</mat-icon>
+                {{ 'CONTROLE_QUALITE.SECTIONS.PARAMETERS' | translate }}
+              </mat-panel-title>
+              <mat-panel-description>Tunisia / COI</mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <div class="qc-studio__rules">
+              <app-qc-rule-field
+                *ngFor="let rule of rules"
+                [rule]="rule"
+                [control]="asControl(rule.ruleKey)"
+                [compact]="compact"
+              />
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </form>
+
+      <div class="qc-studio__actions" *ngIf="showSaveButton">
+        <button
+          mat-flat-button
+          color="primary"
+          type="button"
+          (click)="onSave()"
+          [disabled]="saving || readOnly || !form.valid || !canSubmit"
+        >
+          <mat-spinner *ngIf="saving" diameter="18"></mat-spinner>
+          <mat-icon *ngIf="!saving">save</mat-icon>
+          {{ 'CONFIGURATION.SITE.BTNS.SAVE' | translate }}
+        </button>
+      </div>
+    </main>
+
+    <app-qc-compliance-rail
+      *ngIf="!compact"
+      [summary]="summary"
+      [expanded]="railExpanded"
+    />
+  </div>
+</div>

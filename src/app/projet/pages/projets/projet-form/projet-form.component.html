@@ -7,13 +7,13 @@
 
       <div class="hero-title">
         <h1>{{ isEdit ? 'Modifier projet' : 'Nouveau projet' }}</h1>
-        <p>Paramétrage des besoins de conditionnement</p>
+        <p>{{ 'AUTO.PARAMETRAGE_DES_BESOINS_DE_CONDITIONNEMENT' | translate }}</p>
       </div>
     </div>
 
     @if (projetCode) {
     <div class="code-card">
-      <span>Code projet</span>
+      <span>{{ 'AUTO.CODE_PROJET' | translate }}</span>
       <strong>{{ projetCode }}</strong>
     </div>
     }
@@ -25,10 +25,12 @@
             <i class="fas fa-info"></i>
           </div>
           <span>
-            <strong>Note de production :</strong>
-            Ce projet utilisera de l'huile en
-            <strong>Vrac (Matière Première)</strong>
-            pour produire des unités emballées.
+            <strong>{{ 'AUTO.NOTE_DE_PRODUCTION' | translate }}</strong>
+
+            {{ 'AUTO.CE_PROJET_UTILISERA_DE_L_HUILE_EN' | translate }}
+            <strong>{{ 'AUTO.VRAC_MATIERE_PREMIERE' | translate }}</strong>
+
+            {{ 'AUTO.POUR_PRODUIRE_DES_UNITES_EMBALLEES' | translate }}
           </span>
         </div>
 
@@ -37,42 +39,43 @@
             <div class="section-icon">
               <i class="fas fa-clipboard-list"></i>
             </div>
-            <h2>Informations générales</h2>
+            <h2>{{ 'DELIVERIES.FORM.SECTIONS.GENERAL_INFO' | translate }}</h2>
             <span></span>
           </div>
 
           <div class="form-grid two-cols">
             <div class="field-block">
-              <label>Client *</label>
+              <label>{{ 'AUTO.CLIENT' | translate }}</label>
               <select formControlName="clientId" class="form-select" [class.is-invalid]="isFieldInvalid('clientId')">
-                <option value="">-- Sélectionner --</option>
+                <option value="">{{ 'AUTO.SELECTIONNER' | translate }}</option>
                 <option *ngFor="let c of clients" [value]="c.id">
                   {{ c.nom }} ({{ c.type === ClientType.BUYER ? 'Acheteur' : 'Marque' }})
                 </option>
               </select>
               <div class="invalid-feedback d-block" *ngIf="isFieldInvalid('clientId')">
-                Le client est obligatoire.
+
+                {{ 'AUTO.LE_CLIENT_EST_OBLIGATOIRE' | translate }}
               </div>
             </div>
 
             <div class="field-block">
-              <label>Variété de l'huile (Source Vrac) *</label>
+              <label>{{ 'AUTO.VARIETE_DE_L_HUILE_SOURCE_VRAC' | translate }}</label>
               <select formControlName="typeProduit" class="form-select">
                 <option *ngFor="let t of typeProduits" [value]="t">
                   {{ t | titlecase }}
                 </option>
               </select>
-              <small class="form-hint">Type d'huile en vrac à conditionner</small>
+              <small class="form-hint">{{ 'AUTO.TYPE_D_HUILE_EN_VRAC_A_CONDITIONNER' | translate }}</small>
             </div>
 
             <div class="field-block">
-              <label>Mode de livraison / Emballage *</label>
+              <label>{{ 'AUTO.MODE_DE_LIVRAISON_EMBALLAGE' | translate }}</label>
               <select formControlName="typeEmballage" class="form-select">
                 <option *ngFor="let e of typeEmballages" [value]="e">
                   {{ e === 'VRAC' ? 'Export Vrac (Huile)' : 'Conditionnement (' + (e | titlecase) + ')' }}
                 </option>
               </select>
-              <small class="form-hint">Définit si le produit est emballé ou vendu en vrac</small>
+              <small class="form-hint">{{ 'AUTO.DEFINIT_SI_LE_PRODUIT_EST_EMBALLE_OU_VENDU_EN_VRAC' | translate }}</small>
             </div>
           </div>
         </section>
@@ -82,12 +85,13 @@
             <div class="section-icon">
               <i class="fas fa-box-open"></i>
             </div>
-            <h2>Produits finis à produire</h2>
+            <h2>{{ 'AUTO.PRODUITS_FINIS_A_PRODUIRE' | translate }}</h2>
             <span></span>
 
             <button type="button" class="btn-add-product" (click)="addProduit()">
               <i class="fas fa-plus"></i>
-              Ajouter Produit
+
+              {{ 'AUTO.AJOUTER_PRODUIT' | translate }}
             </button>
           </div>
 
@@ -103,10 +107,10 @@
 
               <div class="product-grid" [class.has-error]="prod.invalid && (prod.touched || prod.dirty)">
                 <div class="field-block">
-                  <label>Produit fini à produire *</label>
+                  <label>{{ 'AUTO.PRODUIT_FINI_A_PRODUIRE' | translate }}</label>
                   <select formControlName="productId" class="form-select"
                     [class.is-invalid]="prod.get('productId')?.invalid && prod.get('productId')?.touched">
-                    <option value="">-- Sélectionner un produit --</option>
+                    <option value="">{{ 'AUTO.SELECTIONNER_UN_PRODUIT' | translate }}</option>
                     <option *ngFor="let sku of filteredSkus" [value]="sku.id">
                       {{ sku.code }} - {{ sku.packagingType }} - ({{ sku.volume }} ml / {{ sku.unitOfMeasure }})
                     </option>
@@ -114,10 +118,10 @@
                 </div>
 
                 <div class="field-block" *ngIf="prod.get('productId')?.value && form.get('typeEmballage')?.value !== 'VRAC'">
-                  <label>Nomenclature (BOM) *</label>
+                  <label>{{ 'AUTO.NOMENCLATURE_BOM' | translate }}</label>
                   <select formControlName="bomId" class="form-select"
                     [class.is-invalid]="prod.get('bomId')?.invalid && prod.get('bomId')?.touched">
-                    <option value="" disabled>-- Sélectionner une nomenclature --</option>
+                    <option value="" disabled>{{ 'AUTO.SELECTIONNER_UNE_NOMENCLATURE' | translate }}</option>
                     <option *ngFor="let bom of productBoms[prod.get('productId')?.value] || []" [value]="bom.id">
                       {{ bom.version || bom.code || bom.name || bom.id }}
                     </option>
@@ -132,7 +136,7 @@
                     <div class="detail-header">
                       <div class="d-flex align-items-center gap-2">
                         <i class="fas fa-microchip"></i>
-                        <span>Articles requis pour ce conditionnement</span>
+                        <span>{{ 'AUTO.ARTICLES_REQUIS_POUR_CE_CONDITIONNEMENT' | translate }}</span>
                       </div>
                       <span class="item-count-badge">{{ lines.length }} types d'articles</span>
                     </div>
@@ -155,7 +159,8 @@
                 <ng-template #noBom>
                   <div class="bom-loading">
                     <i class="fas fa-spinner fa-spin me-2"></i>
-                    Chargement de la nomenclature...
+
+                    {{ 'AUTO.CHARGEMENT_DE_LA_NOMENCLATURE' | translate }}
                   </div>
                 </ng-template>
               </div>
@@ -164,7 +169,8 @@
             <div class="empty-products" *ngIf="produits.length === 0"
               [class.is-invalid]="form.get('produits')?.invalid && form.get('produits')?.touched">
               <i class="fas fa-exclamation-triangle"></i>
-              Aucun produit ajouté. Vous devez ajouter au moins un produit pour enregistrer le projet.
+
+              {{ 'AUTO.AUCUN_PRODUIT_AJOUTE_VOUS_DEVEZ_AJOUTER_AU_MOINS_UN_PRODUIT_POUR' | translate }}
             </div>
           </div>
         </section>
@@ -174,14 +180,14 @@
             <div class="section-icon">
               <i class="fas fa-layer-group"></i>
             </div>
-            <h2>Estimation des besoins (Nomenclature)</h2>
+            <h2>{{ 'AUTO.ESTIMATION_DES_BESOINS_NOMENCLATURE' | translate }}</h2>
             <span></span>
           </div>
 
           <div class="summary-card">
             <div class="summary-header">
               <i class="fas fa-microchip"></i>
-              <h3>Articles à réserver</h3>
+              <h3>{{ 'AUTO.ARTICLES_A_RESERVER' | translate }}</h3>
               <span class="summary-badge">{{ bomSummary.length }} Articles identifiés</span>
             </div>
 
@@ -189,10 +195,10 @@
               <table class="summary-table">
                 <thead>
                   <tr>
-                    <th>Article</th>
-                    <th class="text-end">Quantité à réserver</th>
-                    <th>Unité</th>
-                    <th>Statut</th>
+                    <th>{{ 'OSM_DASHBOARD.ACTIONS.ARTICLESEC' | translate }}</th>
+                    <th class="text-end">{{ 'AUTO.QUANTITE_A_RESERVER' | translate }}</th>
+                    <th>{{ 'OIL_CREDIT.FIELDS.UNIT' | translate }}</th>
+                    <th>{{ 'ADMIN_DASHBOARD.TABLE.STATUS' | translate }}</th>
                   </tr>
                 </thead>
 
@@ -207,7 +213,8 @@
                     <td>
                       <span class="status-indicator">
                         <i class="fas fa-clock"></i>
-                        Pré-calculé
+
+                        {{ 'AUTO.PRE_CALCULE' | translate }}
                       </span>
                     </td>
                   </tr>
@@ -221,16 +228,18 @@
                 [quantity]="materialPreviewQuantity"
                 [useReservedStock]="false"
                 quantityLabel="Unités à vérifier"
-                title="Vérification stock avant réservation">
+                [title]="'AUTO.VERIFICATION_STOCK_AVANT_RESERVATION' | translate">
               </app-material-needs-preview>
             </div>
 
             <div class="summary-footer">
               <i class="fas fa-shield-alt"></i>
               <span>
-                Ces articles seront
-                <strong>automatiquement réservés</strong>
-                dans le stock physique lors de l'enregistrement du projet.
+
+                {{ 'AUTO.CES_ARTICLES_SERONT' | translate }}
+                <strong>{{ 'AUTO.AUTOMATIQUEMENT_RESERVES' | translate }}</strong>
+
+                {{ 'AUTO.DANS_LE_STOCK_PHYSIQUE_LORS_DE_L_ENREGISTREMENT_DU_PROJET' | translate }}
               </span>
             </div>
           </div>
@@ -241,13 +250,13 @@
             <div class="section-icon">
               <i class="fas fa-truck"></i>
             </div>
-            <h2>Planification et livraison</h2>
+            <h2>{{ 'AUTO.PLANIFICATION_ET_LIVRAISON' | translate }}</h2>
             <span></span>
           </div>
 
           <div class="form-grid two-cols">
             <div class="field-block full-row">
-              <label>Lignes de conditionnement *</label>
+              <label>{{ 'AUTO.LIGNES_DE_CONDITIONNEMENT' | translate }}</label>
 
               <div class="ligne-cards" [class.is-invalid]="isFieldInvalid('ligneIds')">
                 <label class="ligne-card" *ngFor="let ligne of lignes" [class.selected]="isLigneSelected(ligne.id)">
@@ -266,21 +275,23 @@
               </div>
 
               <div class="invalid-feedback d-block" *ngIf="isFieldInvalid('ligneIds')">
-                Sélectionnez au moins une ligne de conditionnement.
+
+                {{ 'AUTO.SELECTIONNEZ_AU_MOINS_UNE_LIGNE_DE_CONDITIONNEMENT' | translate }}
               </div>
             </div>
 
             <div class="field-block">
-              <label>Date limite livraison *</label>
+              <label>{{ 'AUTO.DATE_LIMITE_LIVRAISON' | translate }}</label>
               <input type="date" formControlName="dateLimiteLivraison" class="form-control"
                 [class.is-invalid]="isFieldInvalid('dateLimiteLivraison')" />
               <div class="invalid-feedback d-block" *ngIf="isFieldInvalid('dateLimiteLivraison')">
-                La date limite est obligatoire.
+
+                {{ 'AUTO.LA_DATE_LIMITE_EST_OBLIGATOIRE' | translate }}
               </div>
             </div>
 
             <div class="field-block">
-              <label>Quantité cible *</label>
+              <label>{{ 'AUTO.QUANTITE_CIBLE' | translate }}</label>
               <div class="input-group">
                 <input type="number" step="0.01" formControlName="quantiteCible" class="form-control"
                   [class.is-invalid]="isFieldInvalid('quantiteCible')" />
@@ -291,33 +302,36 @@
               </div>
 
               <div class="invalid-feedback d-block" *ngIf="isFieldInvalid('quantiteCible')">
-                La quantité doit être supérieure à 0.
+
+                {{ 'OIL_CREDIT.FORM.ERRORS.QUANTITY_MIN' | translate }}
               </div>
             </div>
 
             <div class="field-block">
-              <label>Prix unitaire (TND) *</label>
+              <label>{{ 'AUTO.PRIX_UNITAIRE_TND' | translate }}</label>
               <input type="number" step="0.01" formControlName="prixUnitaire" class="form-control"
                 [class.is-invalid]="isFieldInvalid('prixUnitaire')" />
               <div class="invalid-feedback d-block" *ngIf="isFieldInvalid('prixUnitaire')">
-                Le prix unitaire doit être supérieur à 0.
+
+                {{ 'AUTO.LE_PRIX_UNITAIRE_DOIT_ETRE_SUPERIEUR_A_0' | translate }}
               </div>
             </div>
 
             <div class="field-block value-box">
-              <label>Valeur totale estimée</label>
+              <label>{{ 'AUTO.VALEUR_TOTALE_ESTIMEE' | translate }}</label>
               <div class="readonly-value">
                 {{ valeurTotaleEstimee | currency:'TND' }}
               </div>
             </div>
 
             <div class="field-block full-row">
-              <label>Conditions de livraison</label>
+              <label>{{ 'AUTO.CONDITIONS_DE_LIVRAISON' | translate }}</label>
               <textarea formControlName="conditionsLivraison" rows="3" class="form-control"
                 [class.is-invalid]="isFieldInvalid('conditionsLivraison')"></textarea>
 
               <div class="invalid-feedback d-block" *ngIf="isFieldInvalid('conditionsLivraison')">
-                Les conditions de livraison ne doivent pas dépasser 2000 caractères.
+
+                {{ 'AUTO.LES_CONDITIONS_DE_LIVRAISON_NE_DOIVENT_PAS_DEPASSER_2000_CARACTE' | translate }}
               </div>
             </div>
           </div>
@@ -331,7 +345,8 @@
 
           <button type="button" class="btn btn-secondary" (click)="onCancel()">
             <i class="fas fa-times"></i>
-            Annuler
+
+            {{ 'ADMIN.CANCEL' | translate }}
           </button>
         </div>
       </form>

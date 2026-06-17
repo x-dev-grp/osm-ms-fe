@@ -19,6 +19,7 @@
     <div class="header-row" style="display: flex; align-items: center; gap: 10px;">
 
       <h3>{{ (isEditing ? 'QUALITY_CONTROL_RULE_ADD.CARD_TITLE.EDIT' : 'QUALITY_CONTROL_RULE_ADD.CARD_TITLE.ADD') | translate }}</h3>
+      <span *ngIf="isTunisiaDefault" class="tunisia-default-badge">Tunisia default</span>
     </div>
 
     <hr style="margin-bottom: 40px;"/>

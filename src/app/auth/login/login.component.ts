@@ -12,11 +12,11 @@ import { catchError, first, of } from 'rxjs';
 import { User } from 'src/app/theme/types/user';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Role } from '../../theme/types/role';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, SharedModule, RouterModule, MatProgressSpinnerModule],
+  imports: [TranslateModule, CommonModule, SharedModule, RouterModule, MatProgressSpinnerModule],
   templateUrl: './login.component.html',
   standalone: true,
   styleUrls: ['../authentication.scss']

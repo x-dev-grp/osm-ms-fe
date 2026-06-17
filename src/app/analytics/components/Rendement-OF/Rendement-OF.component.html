@@ -6,19 +6,19 @@
           <i class="fas fa-chart-line"></i>
         </div>
         <div class="header-title-block">
-          <h1 class="page-title">Rendement des OF</h1>
+          <h1 class="page-title">{{ 'AUTO.RENDEMENT_DES_OF' | translate }}</h1>
           <p class="stats-badge">
             <i class="fas fa-industry me-1"></i>
-            <span>Analyse de la performance de production</span>
+            <span>{{ 'AUTO.ANALYSE_DE_LA_PERFORMANCE_DE_PRODUCTION' | translate }}</span>
           </p>
         </div>
       </div>
       <div class="header-actions">
         <button class="header-btn btn-outline-primary" type="button" (click)="exportPdf()" [disabled]="loading || !data?.length">
-          <i class="fas fa-file-pdf"></i> Exporter PDF
+          <i class="fas fa-file-pdf"></i>  {{ 'OSM_DASHBOARD.EXPORT.PDF' | translate }}
         </button>
         <button class="header-btn btn-primary" type="button" (click)="loadData()" [disabled]="loading">
-          <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i> Actualiser
+          <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>  {{ 'AUTO.ACTUALISER' | translate }}
         </button>
       </div>
     </div>
@@ -26,14 +26,14 @@
 
   <div *ngIf="loading" class="loading-state-modern">
     <div class="spinner-container"></div>
-    <p class="loading-text">Analyse des rendements en cours...</p>
+    <p class="loading-text">{{ 'AUTO.ANALYSE_DES_RENDEMENTS_EN_COURS' | translate }}</p>
   </div>
 
   <div class="row mt-4" *ngIf="!loading && data?.length">
     <div class="col-lg-5 mb-4">
       <div class="card h-100 border-0 shadow-sm rounded-4">
         <div class="card-header bg-white border-0 pt-4 pb-0">
-          <h5 class="fw-bold mb-0 text-dark">Statuts des OF</h5>
+          <h5 class="fw-bold mb-0 text-dark">{{ 'AUTO.STATUTS_DES_OF' | translate }}</h5>
         </div>
         <div class="card-body d-flex align-items-center justify-content-center">
           <apx-chart
@@ -48,11 +48,11 @@
         </div>
       </div>
     </div>
-    
+
     <div class="col-lg-7 mb-4">
       <div class="card h-100 border-0 shadow-sm rounded-4">
         <div class="card-header bg-white border-0 pt-4 pb-0">
-          <h5 class="fw-bold mb-0 text-dark">Top 10 Rendements par OF</h5>
+          <h5 class="fw-bold mb-0 text-dark">{{ 'AUTO.TOP_10_RENDEMENTS_PAR_OF' | translate }}</h5>
         </div>
         <div class="card-body">
           <apx-chart
@@ -85,12 +85,12 @@
       <table class="modern-table">
         <thead>
           <tr>
-            <th>Code OF</th>
-            <th>Statut</th>
-            <th class="text-center">Cible</th>
-            <th class="text-center">Produite</th>
-            <th class="text-center">NC</th>
-            <th>Rendement</th>
+            <th>{{ 'AUTO.CODE_OF' | translate }}</th>
+            <th>{{ 'ADMIN_DASHBOARD.TABLE.STATUS' | translate }}</th>
+            <th class="text-center">{{ 'AUTO.CIBLE' | translate }}</th>
+            <th class="text-center">{{ 'AUTO.PRODUITE' | translate }}</th>
+            <th class="text-center">{{ 'AUTO.NC' | translate }}</th>
+            <th>{{ 'DELIVERIES.FIELDS.YIELD' | translate }}</th>
           </tr>
         </thead>
         <tbody>
@@ -103,7 +103,7 @@
             <td>
               <div class="d-flex align-items-center">
                 <div class="flex-grow-1 progress me-2">
-                  <div class="progress-bar" 
+                  <div class="progress-bar"
                        [ngClass]="getProgressBarClass(row.yieldPercent)"
                        [style.width.%]="row.yieldPercent">
                   </div>
@@ -112,12 +112,12 @@
               </div>
             </td>
           </tr>
-          
+
           <tr *ngIf="!data || data.length === 0">
             <td colspan="6" class="empty-state">
               <div class="empty-icon"><i class="fas fa-search"></i></div>
-              <h3>Aucune donnée disponible</h3>
-              <p class="empty-text">Aucun ordre de fabrication n'a été trouvé pour la période sélectionnée.</p>
+              <h3>{{ 'OSM_DASHBOARD.TABLE.NO_DATA' | translate }}</h3>
+              <p class="empty-text">{{ 'AUTO.AUCUN_ORDRE_DE_FABRICATION_N_A_ETE_TROUVE_POUR_LA_PERIODE_SELECT' | translate }}</p>
             </td>
           </tr>
         </tbody>

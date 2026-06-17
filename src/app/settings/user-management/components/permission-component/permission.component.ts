@@ -9,6 +9,7 @@ import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { SelectionModel } from '@angular/cdk/collections';
 import { PermissionService } from '../../services/permission.service';
 import { tap } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 interface PermissionNode {
   id: string;
   permissionName: string;
@@ -28,7 +29,7 @@ export interface Permission {
   templateUrl: './permission.component.html',
   styleUrls: ['./permission.component.scss'],
   standalone: true,
-  imports: [
+  imports: [TranslateModule, 
     CommonModule,
     SharedModule,
 

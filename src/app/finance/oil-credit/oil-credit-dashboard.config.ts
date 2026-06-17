@@ -5,6 +5,7 @@ import { SearchOperation } from '../../shared/models/advanced-search/searchOpera
 export const OIL_CREDIT_DASHBOARD: DashboardConfig = {
   icon: 'credit_score',
   title: 'Gestion des crédits d\'huile',
+  titleTranslatePath: 'OIL_CREDIT.TITLE',
   baseURL: 'finance/oil-credit',
   searchEndpoint: 'finance/oil-credit',
   addNewItem: true,

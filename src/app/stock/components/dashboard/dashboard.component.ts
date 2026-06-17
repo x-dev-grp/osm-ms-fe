@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [],
+  imports: [TranslateModule, ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })

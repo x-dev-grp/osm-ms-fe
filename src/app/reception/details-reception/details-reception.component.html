@@ -15,7 +15,7 @@
 
     <div class="header-actions">
       <div class="header-chips">
-      <mat-chip-listbox aria-label="Reception meta">
+      <mat-chip-listbox [attr.aria-label]="'AUTO.RECEPTION_META' | translate">
         <mat-chip>
           {{ 'DELIVERIES.FIELDS.DELIVERY_TYPE' | translate }}:
           {{ deliveryData.deliveryType || 'N/A' }}
@@ -42,7 +42,8 @@
             (click)="openExistingQrDialog()"
           >
             <mat-icon>qr_code_2</mat-icon>
-            QR
+
+            {{ 'AUTO.QR' | translate }}
           </button>
         }
         <button
@@ -64,7 +65,7 @@
   </div>
 
   <!-- Linked counterpart banner (OLIVE <-> OIL) -->
-  <div *ngIf="associatedCounterpart" class="assoc-banner" role="region" aria-label="Associated reception">
+  <div *ngIf="associatedCounterpart" class="assoc-banner" role="region" [attr.aria-label]="'AUTO.ASSOCIATED_RECEPTION' | translate">
     <div class="assoc-banner__content">
       <mat-icon class="assoc-banner__icon" aria-hidden="true">link</mat-icon>
 

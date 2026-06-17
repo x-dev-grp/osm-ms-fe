@@ -1,3 +1,5 @@
+import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -15,15 +17,17 @@ import { ArticleService } from '../../../services/article.service';
 import { Article } from '../../../models/article.model';
 import { BonCommande, StatutBonCommande } from '../../../models/bon-commande.model';
 import { ApiResponse } from "../../../../shared/models/api-response";
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-bc-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [TranslateModule, CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './bc-form.component.html',
   styleUrls: ['./bc-form.component.scss']
 })
 export class BcFormComponent implements OnInit {
+  private readonly i18n = inject(TranslateService);
   bcForm: FormGroup;
   loading = false;
   submitting = false;
@@ -151,14 +155,9 @@ export class BcFormComponent implements OnInit {
     const formData = this.prepareFormData();
 
     this.bonCommandeService.createBonCommande(formData).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.successMessage = 'Bon de commande créé avec succès';
-          setTimeout(() => this.router.navigate(['/stock/bons-commande']), 2000);
-        } else {
-          this.error = response.message || 'Erreur lors de la création';
-          this.submitting = false;
-        }
+      next: () => {
+        this.successMessage = this.i18n.instant('AUTO.BON_DE_COMMANDE_CREE_AVEC_SUCCES');
+        setTimeout(() => this.router.navigate(['/stock/bons-commande']), 2000);
       },
       error: (err) => {
         console.error('Erreur création', err);

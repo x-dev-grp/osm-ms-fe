@@ -1,298 +1,202 @@
-<section class="label-detail-container">
-  <!-- TOP BAR -->
-  <header class="detail-header">
-    <div class="header-left">
-      <button mat-button class="back-link" (click)="backToList()">
-        <mat-icon>arrow_back</mat-icon>
-        Retour
-      </button>
-      <div class="header-title">
-        <mat-icon class="leaf-icon">eco</mat-icon>
-        <h1>Détail de l'étiquette</h1>
+<div *ngIf="loading" class="loading-overlay">
+  <mat-spinner diameter="50"></mat-spinner>
+</div>
+
+<div *ngIf="errorMessage && !loading" class="error-message">
+  {{ errorMessage }}
+</div>
+
+<div *ngIf="label && !loading" class="detail-layout detail-layout--compact">
+  <mat-card class="details-card main-card">
+    <div class="card-header">
+      <mat-card-title>{{ 'AUTO.DETAIL_DE_L_ETIQUETTE' | translate }}</mat-card-title>
+      <div class="header-actions">
+        <mat-chip-listbox aria-label="Status">
+          <mat-chip>{{ statusLabel(label.status) }}</mat-chip>
+        </mat-chip-listbox>
+        <button mat-stroked-button type="button" (click)="backToList()">
+          <mat-icon>arrow_back</mat-icon>
+          {{ 'COMMON.BACK' | translate }}
+        </button>
+        <button mat-stroked-button type="button" (click)="exportLabel()" [disabled]="exporting || !canExport()">
+          <mat-icon *ngIf="!exporting">download</mat-icon>
+          <mat-spinner diameter="18" *ngIf="exporting"></mat-spinner>
+          {{ 'AUTO.EXPORTER_EN_JSON' | translate }}
+        </button>
+        <button mat-flat-button color="primary" type="button" (click)="edit()">
+          <mat-icon>edit</mat-icon>
+          {{ 'BANK_ACCOUNTS.ACTIONS.EDIT' | translate }}
+        </button>
       </div>
     </div>
 
-    <div class="header-right">
-      <div class="status-badge" [ngClass]="statusClass(label?.status)">
-        <mat-icon>check</mat-icon>
-        <span>{{ label?.status === 'DRAFT' ? 'Brouillon' : (label?.status === 'FINALIZED' ? 'Finalisée' : (label?.status === 'VALIDATED' ? 'Validée' : (label?.status === 'EXPORTED_JSON' ? 'Exportée JSON' : label?.status))) }}</span>
-      </div>
-      <button mat-button class="export-btn" (click)="exportLabel()" [disabled]="exporting || !canExport()">
-        <mat-icon *ngIf="!exporting">download</mat-icon>
-        <mat-spinner diameter="18" *ngIf="exporting"></mat-spinner>
-        Exporter en JSON
-      </button>
-    </div>
-  </header>
-
-  <div class="detail-grid" *ngIf="label && !loading">
-
-    <!-- LEFT COLUMN: SECTIONS -->
-    <div class="sections-column">
-
-      <!-- 1. Configuration de base -->
-      <div class="section-card">
-        <div class="section-header">
-          <div class="section-icon"><mat-icon>liquor</mat-icon></div>
-          <h2>1. Configuration de base</h2>
-        </div>
-
-        <div class="data-grid">
-          <div class="data-item">
-            <label>SOURCE DE L'ETIQUETTE</label>
-            <p>{{ label.filtrationOperationId ? 'Filtration liee' : '-' }}</p>
+    <mat-card-content class="scrollable-content">
+      <div class="section">
+        <h3 class="section-title">{{ 'AUTO.CONFIGURATION_DE_BASE' | translate }}</h3>
+        <div class="grid-row">
+          <div class="grid-item">
+            <strong>{{ 'AUTO.SOURCE_DE_L_ETIQUETTE' | translate }}:</strong>
+            {{ label.filtrationOperationId ? 'Filtration liée' : '-' }}
           </div>
-          <div class="data-item">
-            <label>PACKAGING (PRODUIT)</label>
-            <p>{{ packagingDisplayLabel }}</p>
+          <div class="grid-item">
+            <strong>{{ 'AUTO.PACKAGING_PRODUIT' | translate }}:</strong>
+            {{ packagingDisplayLabel }}
           </div>
-          <div class="data-item">
-            <label>DATE CONDITIONNEMENT</label>
-            <div class="date-val">
-              <mat-icon>calendar_today</mat-icon>
-              <span>{{ (label.packagingDate | date:'dd/MM/yyyy') || '-' }}</span>
-            </div>
+          <div class="grid-item">
+            <strong>{{ 'AUTO.DATE_CONDITIONNEMENT' | translate }}:</strong>
+            {{ (label.packagingDate | date:'dd/MM/yyyy') || '-' }}
           </div>
-          <div class="data-item">
-            <label>CATÉGORIE</label>
-            <p>{{ categoryLabel(label.labelCategory || 'UNIT') }}</p>
+          <div class="grid-item">
+            <strong>{{ 'AUTO.CATEGORIE' | translate }}:</strong>
+            {{ categoryLabel(label.labelCategory || 'UNIT') }}
           </div>
-          <div class="data-item">
-            <label>LANGUE</label>
-            <p>{{ languageLabel(label.language) }}</p>
+          <div class="grid-item">
+            <strong>{{ 'AUTO.LANGUE' | translate }}:</strong>
+            {{ languageLabel(label.language) }}
           </div>
         </div>
       </div>
 
-      <!-- 2. Identité & Traçabilité -->
-      <div class="section-card">
-        <div class="section-header">
-          <div class="section-icon"><mat-icon>fingerprint</mat-icon></div>
-          <h2>2. Identité & Traçabilité</h2>
-          <div class="header-line"></div>
-        </div>
-
-        <div class="data-grid cols-3">
-          <div class="data-item">
-            <label>DÉNOMINATION LÉGALE</label>
-            <p>{{ label.legalDenomination || 'Huile d\'olive' }}</p>
+      <div class="section">
+        <h3 class="section-title">{{ 'AUTO.IDENTITE_TRACABILITE' | translate }}</h3>
+        <div class="grid-row">
+          <div class="grid-item">
+            <strong>{{ 'AUTO.DENOMINATION_LEGALE' | translate }}:</strong>
+            {{ label.legalDenomination || 'Huile d\'olive' }}
           </div>
-          <div class="data-item">
-            <label>N° DE LOT</label>
-            <p>{{ label.lotNumber || '-' }}</p>
+          <div class="grid-item">
+            <strong>{{ 'AUTO.N_DE_LOT' | translate }}:</strong>
+            {{ label.lotNumber || '-' }}
           </div>
-          <div class="data-item">
-            <label>QUANTITÉ NETTE</label>
-            <p>{{ label.netQuantity || '-' }}</p>
+          <div class="grid-item">
+            <strong>{{ 'AUTO.QUANTITE_NETTE' | translate }}:</strong>
+            {{ label.netQuantity || '-' }}
           </div>
-          <div class="data-item">
-            <label>D.D.M.</label>
-            <p>{{ label.bestBeforeDate || '05/2027' }}</p>
+          <div class="grid-item">
+            <strong>{{ 'AUTO.D_D_M' | translate }}:</strong>
+            {{ label.bestBeforeDate || '-' }}
           </div>
-          <div class="data-item">
-            <label>QUALITÉ</label>
-            <p>{{ getQualityGradeLabel(label.qualityGrade) || 'Huile d\'olive' }}</p>
+          <div class="grid-item">
+            <strong>{{ 'AUTO.QUALITE' | translate }}:</strong>
+            {{ getQualityGradeLabel(label.qualityGrade) || '-' }}
           </div>
-          <div class="data-item">
-            <label>VARIÉTÉ</label>
-            <p>{{ getVarietyLabel(label.variety) || '-' }}</p>
+          <div class="grid-item">
+            <strong>{{ 'AUTO.VARIETE' | translate }}:</strong>
+            {{ getVarietyLabel(label.variety) || '-' }}
           </div>
-          <div class="data-item">
-            <label>TRACEABILITE</label>
-            <p>{{ label.traceabilityLotId ? 'Verifiee' : '-' }}</p>
+          <div class="grid-item">
+            <strong>{{ 'AUTO.PAYS_D_ORIGINE' | translate }}:</strong>
+            {{ label.originCountry || 'Tunisie' }}
           </div>
-          <div class="data-item" *ngIf="hasOriginIdentity">
-            <label>RECEPTION RACINE</label>
-            <p>{{ rootSource?.lotNumber || rootSource?.supplierName || '-' }}</p>
+          <div class="grid-item" *ngIf="hasOriginIdentity">
+            <strong>{{ 'AUTO.RECEPTION_RACINE' | translate }}:</strong>
+            {{ rootSource?.lotNumber || rootSource?.supplierName || '-' }}
           </div>
-          <div class="data-item" *ngIf="hasFilteredLotStorageName">
-            <label>CUVE FILTREE</label>
-            <p>{{ filteredLotStorageName }}</p>
-          </div>
-          <div class="data-item full-width">
-            <label>PAYS D'ORIGINE</label>
-            <p>{{ label.originCountry || 'Tunisie' }}</p>
+          <div class="grid-item" *ngIf="hasFilteredLotStorageName">
+            <strong>{{ 'AUTO.CUVE_FILTREE' | translate }}:</strong>
+            {{ filteredLotStorageName }}
           </div>
         </div>
       </div>
 
-      <div class="section-card" *ngIf="filteredLotGenealogy || label.sourceSnapshots?.length">
-        <div class="section-header">
-          <div class="section-icon"><mat-icon>account_tree</mat-icon></div>
-          <h2>3. Chaîne d'origine</h2>
-          <div class="header-line"></div>
-        </div>
-
-        <div class="origin-grid">
-          <div class="origin-summary">
-            <div class="origin-row">
-              <label>Ancre de traçabilité</label>
-              <p>{{ traceabilityAnchor !== '-' ? 'Verifiee' : '-' }}</p>
-            </div>
-            <div class="origin-row" *ngIf="hasOriginIdentity">
-              <label>Source racine</label>
-              <p>{{ originSourceLabel }}</p>
-            </div>
-            <div class="origin-row" *ngIf="originLotLabel !== '-'">
-              <label>Lot d'origine</label>
-              <p>{{ originLotLabel }}</p>
-            </div>
-            <div class="origin-row">
-              <label>Preuves enregistrées</label>
-              <p>{{ sourceProofLabel }}</p>
-            </div>
+      <div class="section" *ngIf="filteredLotGenealogy || label.sourceSnapshots?.length">
+        <h3 class="section-title">{{ 'AUTO.3_CHAINE_D_ORIGINE' | translate }}</h3>
+        <div class="grid-row">
+          <div class="grid-item">
+            <strong>{{ 'AUTO.ANCRE_DE_TRACABILITE' | translate }}:</strong>
+            {{ traceabilityAnchor !== '-' ? 'Vérifiée' : '-' }}
           </div>
-
-          <div class="origin-root" *ngIf="rootSource as root">
-            <label>Origine identifiée</label>
-            <h3>{{ root.supplierName || '-' }}</h3>
-            <p>{{ root.type || '-' }} | {{ root.date | date:'dd/MM/yyyy' }}</p>
-            <div class="origin-tags" *ngIf="root.qualityControls && (root.qualityControls | keyvalue).length">
-              <span class="origin-tag" *ngFor="let qc of root.qualityControls | keyvalue">
-                {{ qc.key }}: {{ qc.value }}
-              </span>
-            </div>
+          <div class="grid-item" *ngIf="hasOriginIdentity">
+            <strong>{{ 'AUTO.SOURCE_RACINE' | translate }}:</strong>
+            {{ originSourceLabel }}
           </div>
-
-          <div class="origin-root" *ngIf="sensoryFromQualityControl">
-            <label>Controle qualite apres filtration</label>
-            <h3>Resultats du lot filtre</h3>
-            <div class="origin-tags">
-              <span class="origin-tag" *ngFor="let qc of nonCompositionPostFiltrationQualityControls | keyvalue">
-                {{ qc.key }}: {{ qc.value }}
-              </span>
-            </div>
+          <div class="grid-item" *ngIf="originLotLabel !== '-'">
+            <strong>{{ 'AUTO.LOT_D_ORIGINE' | translate }}:</strong>
+            {{ originLotLabel }}
+          </div>
+          <div class="grid-item">
+            <strong>{{ 'AUTO.PREUVES_ENREGISTREES' | translate }}:</strong>
+            {{ sourceProofLabel }}
           </div>
         </div>
 
-        <div class="filtration-chain" *ngIf="filteredLotGenealogy?.filtrations?.length">
-          <div class="chain-step" *ngFor="let step of filteredLotGenealogy?.filtrations">
+        <div class="grid-row m-t-10" *ngIf="rootSource as root">
+          <div class="grid-item col-span-2">
+            <strong>{{ 'AUTO.ORIGINE_IDENTIFIEE' | translate }}:</strong>
+            {{ root.supplierName || '-' }} — {{ root.type || '-' }} ({{ root.date | date:'dd/MM/yyyy' }})
+          </div>
+        </div>
+
+        <div class="grid-row m-t-10" *ngIf="filteredLotGenealogy?.filtrations?.length">
+          <div class="grid-item col-span-2" *ngFor="let step of filteredLotGenealogy?.filtrations">
             <strong>{{ step.targetLotNumber || '-' }}</strong>
-            <span>{{ step.sourceStorageUnitName || step.sourceLotNumber || '-' }}</span>
-            <span>{{ step.volumeFiltered || 0 }} L</span>
-            <span>{{ step.timestamp | date:'dd/MM/yyyy HH:mm' }}</span>
+            {{ step.sourceStorageUnitName || step.sourceLotNumber || '-' }} —
+            {{ step.volumeFiltered || 0 }} L ({{ step.timestamp | date:'dd/MM/yyyy HH:mm' }})
           </div>
         </div>
       </div>
 
-      <!-- 4. Marketing & Conformité -->
-      <div class="section-card">
-        <div class="section-header">
-          <div class="section-icon"><mat-icon>verified</mat-icon></div>
-          <h2>4. Marketing & Conformité</h2>
-          <div class="header-line"></div>
-        </div>
-
-        <div class="data-grid cols-2">
-          <div class="data-item">
-            <label>ALLÉGATIONS MARKETING</label>
-            <div class="badge-row">
-              <span class="marketing-badge" *ngFor="let claim of label.marketingClaims">{{ claim }}</span>
-              <span class="marketing-badge" *ngIf="!label.marketingClaims?.length">Produit de Tunisie</span>
-            </div>
+      <div class="section">
+        <h3 class="section-title">{{ 'AUTO.MARKETING_CONFORMITE' | translate }}</h3>
+        <div class="grid-row">
+          <div class="grid-item">
+            <strong>{{ 'AUTO.ALLEGATIONS_MARKETING' | translate }}:</strong>
+            {{ label.marketingClaims?.length ? label.marketingClaims.join(', ') : ('AUTO.PRODUIT_DE_TUNISIE' | translate) }}
           </div>
-          <div class="data-item">
-            <label>CERTIFICATIONS QUALITÉ</label>
-            <p>{{ certificationsLabel }}</p>
+          <div class="grid-item">
+            <strong>{{ 'AUTO.CERTIFICATIONS_QUALITE' | translate }}:</strong>
+            {{ certificationsLabel }}
           </div>
         </div>
       </div>
 
-      <!-- 4. Responsabilité & Procédés -->
-      <div class="section-card">
-        <div class="section-header">
-          <div class="section-icon"><mat-icon>groups</mat-icon></div>
-          <h2>5. Responsabilité & Procédés</h2>
-          <div class="header-line"></div>
-        </div>
-
-        <div class="responsability-grid">
-          <div class="resp-left">
-            <div class="data-item">
-              <label>RESPONSABLE</label>
-              <p>{{ label.responsibleName || '-' }}</p>
-            </div>
-            <div class="data-item">
-              <label>ADRESSE</label>
-              <p>{{ label.responsibleAddress || 'Tunisie' }}</p>
-            </div>
-            <div class="data-item">
-              <label>MÉTHODE D'EXTRACTION</label>
-              <p>{{ extractionMethodLabel }}</p>
-            </div>
+      <div class="section">
+        <h3 class="section-title">{{ 'AUTO.RESPONSABILITE_PROCEDES' | translate }}</h3>
+        <div class="grid-row">
+          <div class="grid-item">
+            <strong>{{ 'AUTO.RESPONSABLE' | translate }}:</strong>
+            {{ label.responsibleName || '-' }}
           </div>
-
-          <div class="resp-right">
-            <div class="info-box">
-              <div class="box-icon"><mat-icon>inventory_2</mat-icon></div>
-              <div class="box-content">
-                <label>CONDITIONS DE STOCKAGE</label>
-                <p>{{ storageConditionsDisplay }}</p>
-              </div>
-            </div>
-
-            <div class="info-box">
-              <div class="box-icon"><mat-icon>psychology</mat-icon></div>
-              <div class="box-content">
-                <label>{{ sensoryFromQualityControl ? 'CONTRÔLE QUALITÉ APRÈS FILTRATION' : 'PROFIL SENSORIEL' }}</label>
-                <p>{{ sensoryProfileDisplay || '-' }}</p>
-              </div>
-            </div>
+          <div class="grid-item">
+            <strong>{{ 'PDF.ADDRESS' | translate }}:</strong>
+            {{ label.responsibleAddress || 'Tunisie' }}
+          </div>
+          <div class="grid-item">
+            <strong>{{ 'AUTO.METHODE_D_EXTRACTION' | translate }}:</strong>
+            {{ extractionMethodLabel }}
+          </div>
+          <div class="grid-item">
+            <strong>{{ 'AUTO.CONDITIONS_DE_STOCKAGE' | translate }}:</strong>
+            {{ storageConditionsDisplay }}
+          </div>
+          <div class="grid-item col-span-2">
+            <strong>{{ sensoryFromQualityControl ? 'Contrôle qualité après filtration' : ('AUTO.PROFIL_SENSORIEL' | translate) }}:</strong>
+            {{ sensoryProfileDisplay || '-' }}
+          </div>
+          <div class="grid-item">
+            <strong>{{ 'AUTO.DERNIERE_MISE_A_JOUR' | translate }}:</strong>
+            {{ (label.finalizedAt | date:'dd/MM/yyyy HH:mm') || '-' }}
+          </div>
+          <div class="grid-item">
+            <strong>{{ 'EXPENSES.FIELDS.CREATED_BY' | translate }}:</strong>
+            {{ label.finalizedBy || '-' }}
           </div>
         </div>
       </div>
+
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="details-card preview-card">
+    <div class="card-header">
+      <mat-card-title>{{ 'AUTO.APERCU_EN_DIRECT' | translate }}</mat-card-title>
+      <button mat-stroked-button type="button" (click)="openPreviewDialog()">
+        <mat-icon>open_in_full</mat-icon>
+        {{ 'AUTO.VISUALISER' | translate }}
+      </button>
     </div>
-
-    <!-- RIGHT COLUMN: PREVIEW -->
-    <div class="preview-column">
-      <div class="preview-panel">
-        <div class="preview-header">
-          <mat-icon>visibility</mat-icon>
-          <span>Aperçu en direct</span>
-          <button
-            mat-stroked-button
-            type="button"
-            class="preview-popup-btn"
-            (click)="openPreviewDialog()"
-            matTooltip="Ouvrir l'aperçu en plein écran"
-          >
-            <mat-icon>open_in_full</mat-icon>
-            Visualiser
-          </button>
-          <span class="status-badge mini" [ngClass]="statusClass(label.status)">
-            {{ statusLabel(label.status) }}
-          </span>
-        </div>
-
-        <div class="passport-preview-container">
-          <app-label-preview-card [preview]="previewViewModel()" size="miniature"></app-label-preview-card>
-        </div>
-      </div>
-
-      <div class="status-info-card">
-        <div class="status-meta">
-          <div class="meta-item">
-            <mat-icon>event_available</mat-icon>
-            <div>
-              <small>Dernière mise à jour</small>
-              <span>{{ (label.finalizedAt | date:'dd/MM/yyyy à HH:mm') || '-' }}</span>
-            </div>
-          </div>
-          <div class="meta-item">
-            <mat-icon>person_outline</mat-icon>
-            <div>
-              <small>Créé par</small>
-              <span>{{ label.finalizedBy || '-' }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- LOADING -->
-  <div class="loading-overlay" *ngIf="loading">
-    <mat-spinner diameter="48"></mat-spinner>
-    <p>Chargement des détails de l'étiquette...</p>
-  </div>
-</section>
+    <mat-card-content>
+      <app-label-preview-card [preview]="previewViewModel()" size="miniature"></app-label-preview-card>
+    </mat-card-content>
+  </mat-card>
+</div>

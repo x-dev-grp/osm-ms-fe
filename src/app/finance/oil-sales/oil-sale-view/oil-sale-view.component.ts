@@ -46,7 +46,7 @@ export class OilSaleViewComponent implements OnInit {
     if (this.oilSaleId) {
       this.loadOilSale(this.oilSaleId);
     } else {
-      this.toast.error('No oil sale ID provided');
+      this.toast.error('AUTO.NO_OIL_SALE_ID_PROVIDED');
       this.router.navigate(['/finance/oil-sales']);
     }
   }
@@ -59,12 +59,12 @@ export class OilSaleViewComponent implements OnInit {
             this.toast.success();
             this.loadOilSale(this.oilSaleId!);
           } else {
-            this.toast.error(response.message || 'Error confirming oil sale');
+            this.toast.error(response.message || 'AUTO.ERROR_CONFIRMING_OIL_SALE');
           }
         },
         error: (error) => {
           console.error('Error confirming oil sale:', error);
-          this.toast.error('Error confirming oil sale');
+          this.toast.error('AUTO.ERROR_CONFIRMING_OIL_SALE');
         }
       });
     }
@@ -78,12 +78,12 @@ export class OilSaleViewComponent implements OnInit {
             this.toast.success();
             this.loadOilSale(this.oilSaleId!);
           } else {
-            this.toast.error(response.message || 'Error cancelling oil sale');
+            this.toast.error(response.message || 'AUTO.ERROR_CANCELLING_OIL_SALE');
           }
         },
         error: (error) => {
           console.error('Error cancelling oil sale:', error);
-          this.toast.error('Error cancelling oil sale');
+          this.toast.error('AUTO.ERROR_CANCELLING_OIL_SALE');
         }
       });
     }
@@ -97,12 +97,12 @@ export class OilSaleViewComponent implements OnInit {
             this.toast.success();
             this.loadOilSale(this.oilSaleId!);
           } else {
-            this.toast.error(response.message || 'Error delivering oil sale');
+            this.toast.error(response.message || 'AUTO.ERROR_DELIVERING_OIL_SALE');
           }
         },
         error: (error) => {
           console.error('Error delivering oil sale:', error);
-          this.toast.error('Error delivering oil sale');
+          this.toast.error('AUTO.ERROR_DELIVERING_OIL_SALE');
         }
       });
     }
@@ -146,14 +146,14 @@ export class OilSaleViewComponent implements OnInit {
         if (response.success && response.data) {
           this.oilSale = Array.isArray(response.data) ? response.data[0] : response.data;
         } else {
-          this.toast.error('Oil sale not found');
+          this.toast.error('AUTO.OIL_SALE_NOT_FOUND');
           this.router.navigate(['/finance/oil-sales']);
         }
         this.loading = false;
       },
       error: (error) => {
         console.error('Error loading oil sale:', error);
-        this.toast.error('Error loading oil sale');
+        this.toast.error('AUTO.ERROR_LOADING_OIL_SALE');
         this.router.navigate(['/finance/oil-sales']);
         this.loading = false;
       }

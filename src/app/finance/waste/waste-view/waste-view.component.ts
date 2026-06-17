@@ -9,11 +9,12 @@ import {CardComponent} from '../../../theme/components/card/card.component';
 import {WasteSale} from '../../models/Waste.model';
 import {WasteSaleService} from '../../service/wasteSale.service';
 import {ToastService} from '../../../shared/services/toast.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-waste-view',
   standalone: true,
-  imports: [
+  imports: [TranslateModule,
     CommonModule,
     MatButtonModule,
     MatIconModule,
@@ -42,7 +43,7 @@ export class WasteViewComponent implements OnInit {
     if (this.wasteId) {
       this.loadWasteSale();
     } else {
-      this.toast.error('ID de vente de déchet manquant');
+      this.toast.error('AUTO.ID_DE_VENTE_DE_DECHET_MANQUANT');
       this.onBack();
     }
   }
@@ -87,14 +88,14 @@ export class WasteViewComponent implements OnInit {
         if (response.success && response.data) {
           this.wasteSale = Array.isArray(response.data) ? response.data[0] : response.data;
         } else {
-          this.toast.error('Vente de déchet introuvable');
+          this.toast.error('AUTO.VENTE_DE_DECHET_INTROUVABLE');
           this.onBack();
         }
         this.loading = false;
       },
       error: (error) => {
         console.error('Error loading waste sale:', error);
-        this.toast.error('Erreur lors du chargement');
+        this.toast.error('CONTROLE_QUALITE.MESSAGES.ERROR.LOAD');
         this.onBack();
       }
     });

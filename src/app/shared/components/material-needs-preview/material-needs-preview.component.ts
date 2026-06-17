@@ -2,11 +2,12 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { BomService } from '../../../stock/services/BomService';
 import { MaterialNeedLine } from '../../models/material-need-line.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-material-needs-preview',
   standalone: true,
-  imports: [CommonModule, DecimalPipe],
+  imports: [TranslateModule, CommonModule, DecimalPipe],
   templateUrl: './material-needs-preview.component.html',
   styleUrls: ['./material-needs-preview.component.scss']
 })

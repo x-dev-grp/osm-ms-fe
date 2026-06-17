@@ -265,7 +265,7 @@ export class ViewOilTransactionComponent implements OnInit, OnDestroy {
     // Validate form
     const validation = this.formService.validateForm();
     if (!validation.isValid) {
-      this.toast.warning(validation.errors.join(', '));
+      this.toast.warning(validation.errors.join('AUTO.MESSAGE'));
       return;
     }
 
@@ -280,7 +280,7 @@ export class ViewOilTransactionComponent implements OnInit, OnDestroy {
     const businessValidation = this.viewService.validateExchangeCompletion(formData, this.viewData.availableStorageUnits);
 
     if (!businessValidation.isValid) {
-      this.toast.warning(businessValidation.errors.join(', '));
+      this.toast.warning(businessValidation.errors.join('AUTO.MESSAGE'));
       return;
     }
 

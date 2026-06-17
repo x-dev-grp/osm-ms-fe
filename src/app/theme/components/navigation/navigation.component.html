@@ -10,7 +10,7 @@
                 <input
                   type="search"
                   class="form-control"
-                  placeholder="Search Components"
+                  [placeholder]="'AUTO.SEARCH_COMPONENTS' | translate"
                   id="compo-menu-search"
                   [(ngModel)]="searchMenus"
                 />
@@ -35,7 +35,8 @@
           <div class="m-t-5">
             <button (click)="toggleMenu()" mat-flat-button color="primary" class="component-explore m-y-15 align-item-center">
               <i class="ti ti-menu-2"></i>
-              Explore Component
+
+              {{ 'AUTO.EXPLORE_COMPONENT' | translate }}
             </button>
             <app-breadcrumb [Component]="true" [dashboard]="false"></app-breadcrumb>
             <router-outlet></router-outlet>

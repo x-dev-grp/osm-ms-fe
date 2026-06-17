@@ -8,12 +8,23 @@ import {
 import { LabelPreviewViewModel } from '../models/label-preview.model';
 import { ProductionGenealogy } from '../../shared/models/production-genealogy.model';
 import {
+  showEvooLegalStatement
+} from './label-compliance.util';
+import {
+  applyCompositionOverrides,
   buildLabelQcCompositionBundle,
   hasSensoryQualityControls,
   resolvePostFiltrationQualityControls,
-  resolveSensoryProfileDisplay,
-  resolveStorageConditionsDisplay
+  resolveSensoryProfileDisplay
 } from './label-qc-composition.util';
+import {
+  buildLocalizedEvooStatement,
+  buildLocalizedIngredientDeclaration,
+  buildLocalizedOriginLine,
+  buildLocalizedProductName,
+  resolveLocalizedOrigin,
+  resolveLocalizedStorageConditions
+} from './label-preview-localization.util';
 
 export interface LabelFormPreviewValues {
   language?: LabelLanguage | null;
@@ -33,6 +44,10 @@ export interface LabelFormPreviewValues {
   sensoryProfile?: string | null;
   responsibleName?: string | null;
   responsibleAddress?: string | null;
+  ingredientDeclaration?: string | null;
+  ean13?: string | null;
+  harvestYear?: string | null;
+  acidityLevel?: string | null;
 }
 
 export interface BuildLabelPreviewPayloadOptions {
@@ -43,6 +58,8 @@ export interface BuildLabelPreviewPayloadOptions {
   brandLogoData?: string;
   brandLogoContentType?: string;
   postFiltrationQualityControls?: Record<string, string> | null;
+  compositionOverrides?: Record<string, string> | null;
+  previewLanguage?: LabelLanguage | null;
   genealogy?: ProductionGenealogy | null;
   productDensity?: number | null;
   resolveQualityLabel: (value: string | null | undefined) => string;
@@ -63,6 +80,79 @@ function resolveBrandName(
   );
 }
 
+function buildQcBundle(options: BuildLabelPreviewPayloadOptions) {
+  const { form, currentLabel } = options;
+  const resolvedControls = resolvePostFiltrationQualityControls(
+    options.genealogy,
+    currentLabel,
+    options.postFiltrationQualityControls
+  );
+  const language =
+    options.previewLanguage || form.language || currentLabel?.language || 'FR';
+  const baseBundle = buildLabelQcCompositionBundle(
+    resolvedControls,
+    form.netQuantity,
+    options.productDensity,
+    language
+  );
+
+  return applyCompositionOverrides(
+    baseBundle,
+    options.compositionOverrides,
+    form.netQuantity,
+    language
+  );
+}
+
+function resolvePreviewLanguage(options: BuildLabelPreviewPayloadOptions): LabelLanguage {
+  return options.previewLanguage || options.form.language || options.currentLabel?.language || 'FR';
+}
+
+function resolvePreviewIngredientDeclaration(
+  options: BuildLabelPreviewPayloadOptions,
+  previewLang: LabelLanguage
+): string {
+  const { form, currentLabel } = options;
+  const formLang = form.language || currentLabel?.language || 'FR';
+  const custom = form.ingredientDeclaration?.trim() || currentLabel?.ingredientDeclaration?.trim();
+
+  if (custom && previewLang === formLang) {
+    return custom;
+  }
+
+  return buildLocalizedIngredientDeclaration(form.qualityGrade, previewLang);
+}
+
+function resolvePreviewLegalDenomination(
+  options: BuildLabelPreviewPayloadOptions,
+  previewLang: LabelLanguage
+): string {
+  const { form, currentLabel } = options;
+  const custom = form.legalDenomination?.trim() || currentLabel?.legalDenomination?.trim();
+  const localized = buildLocalizedProductName(form.qualityGrade, previewLang);
+
+  if (custom && previewLang === (form.language || currentLabel?.language || 'FR')) {
+    return custom;
+  }
+
+  return localized || custom || (previewLang === 'FR' ? 'Huile d\'Olive' : localized || 'Olive Oil');
+}
+
+function resolvePreviewStorageConditions(
+  options: BuildLabelPreviewPayloadOptions,
+  previewLang: LabelLanguage
+): string {
+  const { form, currentLabel } = options;
+  const formLang = form.language || currentLabel?.language || 'FR';
+  const custom = form.storageConditions?.trim() || currentLabel?.storageConditions?.trim();
+
+  if (custom && previewLang === formLang) {
+    return custom;
+  }
+
+  return resolveLocalizedStorageConditions(custom, previewLang);
+}
+
 export function buildLabelPreviewViewModel(
   options: BuildLabelPreviewPayloadOptions
 ): LabelPreviewViewModel {
@@ -76,23 +166,20 @@ export function buildLabelPreviewViewModel(
     currentLabel,
     options.postFiltrationQualityControls
   );
-  const language = form.language || currentLabel?.language || 'FR';
-  const qcBundle = buildLabelQcCompositionBundle(
-    resolvedControls,
-    form.netQuantity,
-    options.productDensity,
-    language
-  );
+  const qcBundle = buildQcBundle(options);
+  const previewLang = resolvePreviewLanguage(options);
+  const originCountry = resolveLocalizedOrigin(form.originCountry, previewLang);
 
   return {
     brandName: resolveBrandName(brandName, form, currentLabel),
     brandLogoData: brandLogoData || undefined,
     brandLogoContentType: brandLogoContentType || undefined,
-    language: form.language || currentLabel?.language || 'FR',
+    language: previewLang,
     labelCategory: form.labelCategory || currentLabel?.labelCategory || 'UNIT',
     lotNumber: form.lotNumber?.trim() || currentLabel?.lotNumber || 'BROUILLON',
-    legalDenomination: form.legalDenomination?.trim() || 'Huile d\'Olive',
-    originCountry: form.originCountry?.trim() || 'Tunisie',
+    legalDenomination: resolvePreviewLegalDenomination(options, previewLang),
+    originCountry,
+    originDisplay: buildLocalizedOriginLine(form.originCountry, previewLang),
     netQuantity: form.netQuantity?.trim() || '-',
     qualityLabel: resolveQualityLabel(form.qualityGrade),
     varietyLabel: resolveVarietyLabel(form.variety),
@@ -104,7 +191,7 @@ export function buildLabelPreviewViewModel(
       : (currentLabel?.marketingClaims || []),
     certifications: certifications.filter((cert) => selectedCertNames.includes(cert.name)),
     extractionMethod: form.extractionMethod?.trim() || undefined,
-    storageConditions: resolveStorageConditionsDisplay(form.storageConditions),
+    storageConditions: resolvePreviewStorageConditions(options, previewLang),
     sensoryProfile: resolveSensoryProfileDisplay(resolvedControls, form.sensoryProfile) || undefined,
     sensoryFromQualityControl: hasSensoryQualityControls(resolvedControls),
     qualityControls: qcBundle.qualityControls,
@@ -112,6 +199,13 @@ export function buildLabelPreviewViewModel(
     nutritionTable: qcBundle.nutritionTable,
     responsibleName: form.responsibleName?.trim() || '-',
     responsibleAddress: form.responsibleAddress?.trim() || undefined,
+    ingredientDeclaration: resolvePreviewIngredientDeclaration(options, previewLang),
+    evooLegalStatement: showEvooLegalStatement(form.qualityGrade)
+      ? buildLocalizedEvooStatement(previewLang)
+      : undefined,
+    ean13: form.ean13?.trim() || currentLabel?.ean13,
+    harvestYear: form.harvestYear?.trim() || currentLabel?.harvestYear,
+    acidityLevel: form.acidityLevel?.trim() || currentLabel?.acidityLevel,
     publicCode: currentLabel?.publicCode,
     status: currentLabel?.status,
     statusLabel: resolveStatusLabel(currentLabel?.status)
@@ -139,23 +233,18 @@ export function buildLabelEtiquettePayload(
     currentLabel,
     options.postFiltrationQualityControls
   );
-  const language = form.language || currentLabel?.language || 'FR';
-  const qcBundle = buildLabelQcCompositionBundle(
-    resolvedControls,
-    form.netQuantity,
-    options.productDensity,
-    language
-  );
+  const qcBundle = buildQcBundle(options);
+  const previewLang = resolvePreviewLanguage(options);
 
   return {
     brandName: resolveBrandName(brandName, form, currentLabel),
     brandLogoData: brandLogoData || null,
     brandLogoContentType: brandLogoContentType || null,
-    legalDenomination: form.legalDenomination?.trim() || null,
-    originCountry: form.originCountry?.trim() || null,
+    legalDenomination: resolvePreviewLegalDenomination(options, previewLang),
+    originCountry: resolveLocalizedOrigin(form.originCountry, previewLang),
     netQuantity: form.netQuantity?.trim() || null,
     bestBeforeDate: form.bestBeforeDate?.trim() || null,
-    storageConditions: resolveStorageConditionsDisplay(form.storageConditions),
+    storageConditions: resolvePreviewStorageConditions(options, previewLang),
     responsibleName: form.responsibleName?.trim() || null,
     responsibleAddress: form.responsibleAddress?.trim() || null,
     lotNumber: form.lotNumber?.trim() || null,
@@ -169,7 +258,7 @@ export function buildLabelEtiquettePayload(
     qualityControls: qcBundle.qualityControls,
     oilCompositionEstimate: qcBundle.compositionEstimate,
     nutritionTable: qcBundle.nutritionTable,
-    language,
+    language: previewLang,
     labelCategory: form.labelCategory || currentLabel?.labelCategory || 'UNIT',
     packagingDate: form.packagingDate || currentLabel?.packagingDate || null,
     claimTypes,

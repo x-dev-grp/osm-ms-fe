@@ -1,3 +1,5 @@
+import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import {Component, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
@@ -13,13 +15,14 @@ import {SharedModule} from '../../../shared/shared.module';
 import {MillMachine} from '../../../shared/models/millMachine';
 import {MillMachineService} from '../../../shared/services/mill-machine.service';
 import {ToastService} from '../../../shared/services/toast.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-mill-machine-add',
   templateUrl: './mill-machine-add.component.html',
   styleUrls: ['./mill-machine-add.component.scss'],
   standalone: true,
-  imports: [
+  imports: [TranslateModule,
     CommonModule,
     ReactiveFormsModule,
     MatButtonModule,
@@ -32,6 +35,7 @@ import {ToastService} from '../../../shared/services/toast.service';
   ]
 })
 export class MillMachineAddComponent implements OnInit {
+  private readonly i18n = inject(TranslateService);
   form: FormGroup;
   isEditing = false;
   loading = false;
@@ -95,7 +99,7 @@ export class MillMachineAddComponent implements OnInit {
             description: this.machine.description
           });
         } else {
-          const errorMessage = response.message || 'Failed to load machine';
+          const errorMessage = response.message || this.i18n.instant('AUTO.FAILED_TO_LOAD_MACHINE');
           this.error = errorMessage;
           this.toastService.error(errorMessage);
         }

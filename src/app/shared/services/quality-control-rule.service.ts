@@ -56,4 +56,11 @@ export class QualityControlRuleService {
   deleteRule(id: string): Observable<ApiResponse<void>> {
     return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/${id}`);
   }
+
+  provisionDefaults(): Observable<{ success: boolean; created: number; message: string }> {
+    return this.http.post<{ success: boolean; created: number; message: string }>(
+      `${this.baseUrl}/provision-defaults`,
+      {}
+    );
+  }
 }

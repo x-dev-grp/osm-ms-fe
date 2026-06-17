@@ -1,7 +1,7 @@
 <div class="product-labels-card section-card">
   <div class="section-title">
     <div class="section-icon"><i class="fas fa-tags"></i></div>
-    <h2>Étiquettes liées</h2>
+    <h2>{{ 'AUTO.ETIQUETTES_LIEES' | translate }}</h2>
     <span></span>
   </div>
 
@@ -16,7 +16,7 @@
                 <small class="muted">{{ l.createdAt | date:'short' }}</small>
               </div>
               <div class="label-actions">
-                <a [routerLink]="['/labels', l.id]">Voir</a>
+                <a [routerLink]="['/labels', l.id]">{{ 'AUTO.VOIR' | translate }}</a>
               </div>
             </li>
           </ul>
@@ -27,19 +27,20 @@
     <ng-template #noProduct>
       <div class="info-banner-modern">
         <i class="fas fa-info"></i>
-        Créez le produit pour pouvoir lier ou générer des étiquettes.
+
+        {{ 'AUTO.CREEZ_LE_PRODUIT_POUR_POUVOIR_LIER_OU_GENERER_DES_ETIQUETTES' | translate }}
       </div>
     </ng-template>
 
     <ng-template #empty>
       <div class="empty-state">
         <i class="fas fa-box-open"></i>
-        <p>Aucune étiquette liée pour le moment.</p>
+        <p>{{ 'AUTO.AUCUNE_ETIQUETTE_LIEE_POUR_LE_MOMENT' | translate }}</p>
       </div>
     </ng-template>
 
     <ng-template #loading>
-      <div class="loading">Chargement des étiquettes…</div>
+      <div class="loading">{{ 'AUTO.CHARGEMENT_DES_ETIQUETTES' | translate }}</div>
     </ng-template>
   </div>
 </div>

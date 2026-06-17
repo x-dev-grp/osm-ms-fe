@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Client } from '../models/client.model';
 import { environment } from 'src/environments/environment';
-import { ApiResponse } from 'src/app/shared/models/api-response';
-import {map} from "rxjs/operators";
-
+import { ApiResponse, ApiSingleResponse } from 'src/app/shared/models/api-response';
 
 @Injectable({
   providedIn: 'root'
@@ -16,31 +15,39 @@ export class ClientService {
   constructor(private http: HttpClient) {}
 
   getAllClients(): Observable<Client[]> {
-    return this.http
-      .get<{ data: Client[] }>(this.apiUrl)
-      .pipe(map(response => response.data ?? []));
-  }
-  getClientById(id: string): Observable<ApiResponse<Client>> {
-    return this.http.get<ApiResponse<Client>>(`${this.apiUrl}/${id}`);
+    return this.http.get<ApiResponse<Client>>(`${this.apiUrl}/fetchAll`).pipe(
+      map((response) => response?.data ?? [])
+    );
   }
 
-  createClient(client: Client): Observable<ApiResponse<Client>> {
-    return this.http.post<ApiResponse<Client>>(`${this.apiUrl}/create`, client);
+  getClientById(id: string): Observable<Client> {
+    return this.http.get<ApiSingleResponse<Client>>(`${this.apiUrl}/fetch/${id}`).pipe(
+      map((response) => response.data)
+    );
   }
 
-  updateClient(id: string, client: Client): Observable<ApiResponse<Client>> {
-    return this.http.put<ApiResponse<Client>>(`${this.apiUrl}/${id}`, client);
+  createClient(client: Client): Observable<Client> {
+    return this.http.post<ApiSingleResponse<Client>>(this.apiUrl, client).pipe(
+      map((response) => response.data)
+    );
   }
 
-  activerClient(id: string): Observable<ApiResponse<Client>> {
-    return this.http.put<ApiResponse<Client>>(`${this.apiUrl}/${id}/activer`, {});
+  updateClient(id: string, client: Client): Observable<Client> {
+    const payload = { ...client, id };
+    return this.http.put<ApiSingleResponse<Client>>(this.apiUrl, payload).pipe(
+      map((response) => response.data)
+    );
   }
 
-  desactiverClient(id: string): Observable<ApiResponse<Client>> {
-    return this.http.put<ApiResponse<Client>>(`${this.apiUrl}/${id}/desactiver`, {});
+  activerClient(id: string): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}/activer`, {});
   }
 
-  deleteClient(id: string): Observable<ApiResponse<Client>> {
-    return this.http.delete<ApiResponse<Client>>(`${this.apiUrl}/${id}`);
+  desactiverClient(id: string): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}/desactiver`, {});
+  }
+
+  deleteClient(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/delete/${id}`);
   }
 }

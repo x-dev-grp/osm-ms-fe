@@ -1,21 +1,21 @@
 <div class="container-fluid p-4">
   <div *ngIf="loading" class="text-center py-5">
     <div class="spinner-border text-primary"></div>
-    <p class="mt-2">Chargement du bon de commande...</p>
+    <p class="mt-2">{{ 'AUTO.CHARGEMENT_DU_BON_DE_COMMANDE' | translate }}</p>
   </div>
 
   <div *ngIf="!loading && bon" class="bon-detail">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <div>
         <button class="btn btn-outline-secondary me-2" routerLink="/stock/bons-commande">
-          <i class="fas fa-arrow-left"></i> Retour
+          <i class="fas fa-arrow-left"></i>  {{ 'COMMON.BACK' | translate }}
         </button>
         <h2 class="d-inline-block ms-2">Bon de commande {{ bon.numeroBC }}</h2>
       </div>
       <div class="btn-group">
         @if (hasCompleteQrMetadata()) {
-          <button class="btn btn-outline-primary" matTooltip="View QR" (click)="openExistingQrDialog()">
-            <i class="fas fa-qrcode"></i> QR
+          <button class="btn btn-outline-primary" [matTooltip]="'AUTO.VIEW_QR' | translate" (click)="openExistingQrDialog()">
+            <i class="fas fa-qrcode"></i>  {{ 'AUTO.QR' | translate }}
           </button>
         }
         <button class="btn btn-outline-primary" [disabled]="generatingQr" (click)="generateQr()">
@@ -26,10 +26,10 @@
           <span class="badge bg-light text-dark border ms-2 qr-code-badge">{{ getQrCodeText() }}</span>
         }
         <button *ngIf="bon.status === 'EN_ATTENTE'" class="btn btn-success" (click)="validerBon()">
-          <i class="fas fa-check"></i> Valider
+          <i class="fas fa-check"></i>  {{ 'CONTROLE_QUALITE.BUTTONS.VALIDATE' | translate }}
         </button>
         <button *ngIf="bon.status === 'EN_ATTENTE'" class="btn btn-danger" (click)="refuserBon()">
-          <i class="fas fa-times"></i> Refuser
+          <i class="fas fa-times"></i>  {{ 'AUTO.REFUSER' | translate }}
         </button>
       </div>
     </div>
@@ -46,29 +46,29 @@
       <div class="col-md-6">
         <div class="card mb-4">
           <div class="card-header">
-            <h5>Informations générales</h5>
+            <h5>{{ 'DELIVERIES.FORM.SECTIONS.GENERAL_INFO' | translate }}</h5>
           </div>
           <div class="card-body">
             <table class="table table-borderless">
               <tr>
-                <th>N° Bon de commande :</th>
+                <th>{{ 'AUTO.N_BON_DE_COMMANDE' | translate }}</th>
                 <td>{{ bon.numeroBC }}</td>
               </tr>
               <!-- Ligne Fournisseur supprimée -->
               <tr>
-                <th>Date création :</th>
+                <th>{{ 'AUTO.DATE_CREATION' | translate }}</th>
                 <td>{{ bon.createdDate | date:'dd/MM/yyyy HH:mm' }}</td>
               </tr>
               <tr>
-                <th>Date réception prévue :</th>
+                <th>{{ 'AUTO.DATE_RECEPTION_PREVUE' | translate }}</th>
                 <td>{{ bon.dateReceptionPrevue | date:'dd/MM/yyyy' || 'Non spécifiée' }}</td>
               </tr>
               <tr *ngIf="bon.dateValidation">
-                <th>Date validation :</th>
+                <th>{{ 'AUTO.DATE_VALIDATION' | translate }}</th>
                 <td>{{ bon.dateValidation | date:'dd/MM/yyyy HH:mm' }}</td>
               </tr>
               <tr *ngIf="bon.motifRefus">
-                <th>Motif refus :</th>
+                <th>{{ 'AUTO.MOTIF_REFUS' | translate }}</th>
                 <td class="text-danger">{{ bon.motifRefus }}</td>
               </tr>
             </table>
@@ -79,17 +79,17 @@
       <div class="col-md-6">
         <div class="card mb-4">
           <div class="card-header">
-            <h5>Récapitulatif</h5>
+            <h5>{{ 'AUTO.RECAPITULATIF' | translate }}</h5>
           </div>
           <div class="card-body">
             <div class="row text-center">
               <div class="col-6">
                 <h3>{{ getTotalArticles() }}</h3>
-                <small class="text-muted">Articles différents</small>
+                <small class="text-muted">{{ 'AUTO.ARTICLES_DIFFERENTS' | translate }}</small>
               </div>
               <div class="col-6">
                 <h3>{{ getQuantiteTotale() }}</h3>
-                <small class="text-muted">Quantité totale</small>
+                <small class="text-muted">{{ 'AUTO.QUANTITE_TOTALE' | translate }}</small>
               </div>
             </div>
           </div>
@@ -98,23 +98,23 @@
     </div>
     <div *ngIf="bon.status === 'VALIDE' || bon.status === 'PARTIELLEMENT_RECU'" class="mb-3">
       <button class="btn-reception" (click)="toggleReception()">
-        <i class="fas fa-truck-loading"></i> Réceptionner
+        <i class="fas fa-truck-loading"></i>  {{ 'AUTO.RECEPTIONNER' | translate }}
       </button>
     </div>
     <div *ngIf="showReception" class="card mb-4 border-primary">
       <div class="card-header bg-primary text-white">
-        <h5 class="mb-0">Réceptionner la commande</h5>
+        <h5 class="mb-0">{{ 'AUTO.RECEPTIONNER_LA_COMMANDE' | translate }}</h5>
       </div>
       <div class="card-body">
         <div class="table-responsive">
           <table class="table table-sm">
             <thead>
             <tr>
-              <th>Article</th>
-              <th>Quantité commandée</th>
-              <th>Déjà reçu</th>
-              <th>À recevoir</th>
-              <th>Quantité reçue</th>
+              <th>{{ 'OSM_DASHBOARD.ACTIONS.ARTICLESEC' | translate }}</th>
+              <th>{{ 'AUTO.QUANTITE_COMMANDEE' | translate }}</th>
+              <th>{{ 'AUTO.DEJA_RECU' | translate }}</th>
+              <th>{{ 'AUTO.A_RECEVOIR' | translate }}</th>
+              <th>{{ 'AUTO.QUANTITE_RECUE' | translate }}</th>
             </tr>
             </thead>
             <tbody>
@@ -136,29 +136,30 @@
         </div>
         <div class="mt-3 text-end">
           <button class="btn btn-success me-2" (click)="receptionner()">
-            <i class="fas fa-save"></i> Enregistrer
+            <i class="fas fa-save"></i>  {{ 'BANK_ACCOUNTS.ACTIONS.SAVE' | translate }}
           </button>
           <button class="btn btn-secondary" (click)="showReception = false">
-            Annuler
+
+            {{ 'ADMIN.CANCEL' | translate }}
           </button>
         </div>
       </div>
     </div>
     <div class="card">
       <div class="card-header">
-        <h5>Détail des articles</h5>
+        <h5>{{ 'AUTO.DETAIL_DES_ARTICLES' | translate }}</h5>
       </div>
       <div class="card-body p-0">
         <div class="table-responsive">
           <table class="table table-hover mb-0">
             <thead class="table-light">
             <tr>
-              <th>Article</th>
-              <th>Fournisseur</th>
-              <th>Catégorie</th>
-              <th class="text-end">Qté commandée</th>
-              <th class="text-end">Prix unitaire</th>
-              <th class="text-end">Total</th>
+              <th>{{ 'OSM_DASHBOARD.ACTIONS.ARTICLESEC' | translate }}</th>
+              <th>{{ 'CONTROLE_QUALITE.FORM.FIELDS.SUPPLIER' | translate }}</th>
+              <th>{{ 'BASE_TYPE.CATEGORY' | translate }}</th>
+              <th class="text-end">{{ 'AUTO.QTE_COMMANDEE' | translate }}</th>
+              <th class="text-end">{{ 'OIL_SALES.FIELDS.UNIT_PRICE' | translate }}</th>
+              <th class="text-end">{{ 'SUPPLIER.DETAILS.TOTAL' | translate }}</th>
             </tr>
             </thead>
             <tbody>
@@ -180,7 +181,7 @@
             </tbody>
             <tfoot class="table-light">
             <tr>
-              <td colspan="4" class="text-end"><strong>Total</strong></td>
+              <td colspan="4" class="text-end"><strong>{{ 'SUPPLIER.DETAILS.TOTAL' | translate }}</strong></td>
               <td class="text-end">
                 <strong>{{ getTotalPrix() | number:'1.2-2' }} dt</strong>
               </td>

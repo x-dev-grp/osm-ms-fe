@@ -38,7 +38,7 @@ export const osm_menus: Navigation[] = [
       },
       {
         id: 'item-dashboard-stocks',
-        title: 'Stocks',
+        title: 'AUTO.STOCKS',
         type: 'item',
         url: '/stock/dashboard',
         icon: 'analytics',
@@ -47,7 +47,7 @@ export const osm_menus: Navigation[] = [
       },
       {
         id: 'item-storage-storage-recap',
-        title: 'Stockage Huile',
+        title: 'MENU.STORAGE.TITLE',
         type: 'item',
         url: '/storage/storage_recap',
         icon: 'water_drop',
@@ -56,14 +56,14 @@ export const osm_menus: Navigation[] = [
       },
       {
         id: 'collapse-dashboard-reports',
-        title: 'Rapports & Analyses',
+        title: 'AUTO.RAPPORTS_ANALYSES',
         type: 'collapse',
         icon: 'insights',
         permissions: [permissionKey(OSMModule.CONDITIONING, ConditioningEntity.ANALYTICS, Action.READ)],
         children: [
           {
             id: 'item-analytics-dashboard',
-            title: 'Vue Globale (OF)',
+            title: 'AUTO.VUE_GLOBALE_OF',
             type: 'item',
             url: '/analytics/dashboard',
             icon: 'dashboard',
@@ -72,7 +72,7 @@ export const osm_menus: Navigation[] = [
           },
           {
             id: 'item-analytics-of-yield',
-            title: 'Rendements des OF',
+            title: 'AUTO.RENDEMENTS_DES_OF',
             type: 'item',
             url: '/analytics/of-yield',
             icon: 'speed',
@@ -81,7 +81,7 @@ export const osm_menus: Navigation[] = [
           },
           {
             id: 'item-analytics-quality',
-            title: 'Qualité & Non-conformités',
+            title: 'AUTO.QUALITE_NON_CONFORMITES',
             type: 'item',
             url: '/analytics/quality',
             icon: 'fact_check',
@@ -90,7 +90,7 @@ export const osm_menus: Navigation[] = [
           },
           {
             id: 'item-analytics-bom-gap',
-            title: 'Écarts Nomenclatures (BOM)',
+            title: 'AUTO.ECARTS_NOMENCLATURES_BOM',
             type: 'item',
             url: '/analytics/bom-gap',
             icon: 'difference',
@@ -99,7 +99,7 @@ export const osm_menus: Navigation[] = [
           },
           {
             id: 'item-analytics-filtration',
-            title: 'Efficacité Filtrage',
+            title: 'AUTO.EFFICACITE_FILTRAGE',
             type: 'item',
             url: '/analytics/filtration',
             icon: 'filter_alt',
@@ -172,19 +172,19 @@ export const osm_menus: Navigation[] = [
       },
       {
         id: 'collapse-reception-lists',
-        title: 'Historique des réceptions',
+        title: 'MENU.PRODUCTION.RECEPTIONS',
         type: 'collapse',
         icon: 'list_alt',
         children: [
           {
             id: 'collapse-reception-list-olive',
-            title: 'Réception Olive',
+            title: 'MENU.PRODUCTION.RECEPTION_OLIVE',
             type: 'collapse',
             icon: 'spa',
             children: [
               {
                 id: 'item-reception-list-olive-simple',
-                title: 'Trituration Particulier',
+                title: 'AUTO.TRITURATION_PARTICULIER',
                 type: 'item',
                 url: '/reception/reception-list/olive/SIMPLE_RECEPTION',
                 icon: 'person',
@@ -193,7 +193,7 @@ export const osm_menus: Navigation[] = [
               },
               {
                 id: 'item-reception-list-olive-base',
-                title: 'Trituration sur Base',
+                title: 'AUTO.TRITURATION_SUR_BASE',
                 type: 'item',
                 url: '/reception/reception-list/olive/BASE',
                 icon: 'recycling',
@@ -202,7 +202,7 @@ export const osm_menus: Navigation[] = [
               },
               {
                 id: 'item-reception-list-olive-purchase',
-                title: 'Achat Olive',
+                title: 'AUTO.ACHAT_OLIVE',
                 type: 'item',
                 url: '/reception/reception-list/olive/OLIVE_PURCHASE',
                 icon: 'shopping_basket',
@@ -211,7 +211,7 @@ export const osm_menus: Navigation[] = [
               },
               {
                 id: 'item-reception-list-olive-exchange',
-                title: 'Échange',
+                title: 'OPERATION_TYPE.EXCHANGE',
                 type: 'item',
                 url: '/reception/reception-list/olive/EXCHANGE',
                 icon: 'compare_arrows',
@@ -222,7 +222,7 @@ export const osm_menus: Navigation[] = [
           },
           {
             id: 'item-reception-list-oil',
-            title: 'Réception Huile',
+            title: 'MENU.PRODUCTION.RECEPTION_OIL',
             type: 'item',
             url: '/reception/reception-list/oil',
             icon: 'water_drop',
@@ -233,7 +233,7 @@ export const osm_menus: Navigation[] = [
       },
       {
         id: 'item-reception-supplier-manage',
-        title: 'Fournisseurs & apporteurs',
+        title: 'AUTO.FOURNISSEURS_APPORTEURS',
         type: 'item',
         url: '/reception/fournisseur',
         icon: 'contact_page',
@@ -242,7 +242,7 @@ export const osm_menus: Navigation[] = [
       },
       {
         id: 'item-reception-mill-schedules',
-        title: 'Plannings Trituration',
+        title: 'AUTO.PLANNINGS_TRITURATION',
         type: 'item',
         url: '/reception/mill-schedules',
         icon: 'schedule',
@@ -259,7 +259,7 @@ export const osm_menus: Navigation[] = [
     children: [
       {
         id: 'collapse-production-quality',
-        title: 'Contrôle qualité',
+        title: 'CONTROLE_QUALITE.FORM.SECTIONS.QUALITY_CONTROL',
         type: 'collapse',
         icon: 'rule',
         children: [
@@ -285,7 +285,7 @@ export const osm_menus: Navigation[] = [
       },
       {
         id: 'collapse-production-storage',
-        title: 'Stockage & flux huile',
+        title: 'AUTO.STOCKAGE_FLUX_HUILE',
         type: 'collapse',
         icon: 'warehouse',
         children: [
@@ -301,7 +301,7 @@ export const osm_menus: Navigation[] = [
 
           {
             id: 'item-storage-oil-transactions',
-            title: 'Transactions huile',
+            title: 'AUTO.TRANSACTIONS_HUILE',
             type: 'item',
             url: '/storage/oil-transactions',
             icon: 'water_drop',
@@ -310,7 +310,7 @@ export const osm_menus: Navigation[] = [
           },
           {
             id: 'item-storage-oil-filtering',
-            title: 'Filtrage Huile',
+            title: 'AUTO.FILTRAGE_HUILE',
             type: 'item',
             url: '/storage/oil-filtering',
             icon: 'filter_alt',
@@ -319,7 +319,7 @@ export const osm_menus: Navigation[] = [
           },
           {
             id: 'item-storage-containers',
-            title: 'Contenants huile',
+            title: 'AUTO.CONTENANTS_HUILE',
             type: 'item',
             url: '/storage/oil-container',
             icon: 'inbox',
@@ -331,19 +331,19 @@ export const osm_menus: Navigation[] = [
   },
   {
     id: 'group-conditioning',
-    title: 'Conditionnement',
+    title: 'OSM_DASHBOARD.ACTIONS.CONDITIONING',
     type: 'group',
     modulePermission: 'CONDITIONING',
     children: [
       {
         id: 'collapse-conditioning-operations',
-        title: 'Opérations',
+        title: 'AUTO.OPERATIONS',
         type: 'collapse',
         icon: 'precision_manufacturing',
         children: [
           {
             id: 'item-conditioning-of',
-            title: 'Ordres de Fab. (OF)',
+            title: 'AUTO.ORDRES_DE_FAB_OF',
             type: 'item',
             url: '/of',
             icon: 'factory',
@@ -352,7 +352,7 @@ export const osm_menus: Navigation[] = [
           },
           {
             id: 'item-conditioning-lines',
-            title: 'Lignes de Conditionnement',
+            title: 'AUTO.LIGNES_DE_CONDITIONNEMENT',
             type: 'item',
             url: '/stock/lignes',
             icon: 'precision_manufacturing',
@@ -361,7 +361,7 @@ export const osm_menus: Navigation[] = [
           },
           {
             id: 'item-conditioning-labels',
-            title: 'Étiquettes & Labellisation',
+            title: 'AUTO.ETIQUETTES_LABELLISATION',
             type: 'item',
             url: '/labels',
             icon: 'label',
@@ -372,13 +372,13 @@ export const osm_menus: Navigation[] = [
       },
       {
         id: 'collapse-conditioning-commercial',
-        title: 'Clients & logistique',
+        title: 'AUTO.CLIENTS_LOGISTIQUE',
         type: 'collapse',
         icon: 'local_shipping',
         children: [
           {
             id: 'item-projet-list',
-            title: 'Liste des projets',
+            title: 'AUTO.LISTE_DES_PROJETS',
             type: 'item',
             url: '/projets',
             icon: 'list_alt',
@@ -387,7 +387,7 @@ export const osm_menus: Navigation[] = [
           },
           {
             id: 'item-projet-expeditions',
-            title: 'Expéditions',
+            title: 'AUTO.EXPEDITIONS',
             type: 'item',
             url: '/projets/expeditions',
             icon: 'route',
@@ -396,7 +396,7 @@ export const osm_menus: Navigation[] = [
           },
           {
             id: 'item-client-cond',
-            title: 'Gestion Clients',
+            title: 'AUTO.GESTION_CLIENTS',
             type: 'item',
             url: '/projets/clients',
             icon: 'groups',
@@ -409,19 +409,19 @@ export const osm_menus: Navigation[] = [
   },
   {
     id: 'group-inventory',
-    title: 'Inventaire',
+    title: 'OSM_DASHBOARD.ACTIONS.INVENTAIR',
     type: 'group',
     modulePermission: 'INVENTAIR',
     children: [
       {
         id: 'collapse-stock-items',
-        title: 'Référentiel',
+        title: 'AUTO.REFERENTIEL',
         type: 'collapse',
         icon: 'inventory_2',
         children: [
           {
             id: 'item-stocks-articles',
-            title: 'Articles de cond.',
+            title: 'AUTO.ARTICLES_DE_COND',
             type: 'item',
             url: '/stock/articles',
             icon: 'category',
@@ -430,7 +430,7 @@ export const osm_menus: Navigation[] = [
           },
           {
             id: 'item-stocks-products',
-            title: 'Produits finis',
+            title: 'AUTO.PRODUITS_FINIS',
             type: 'item',
             url: '/stock/products',
             icon: 'inventory_2',
@@ -439,7 +439,7 @@ export const osm_menus: Navigation[] = [
           },
           {
             id: 'item-stocks-bom',
-            title: 'Nomenclatures (BOM)',
+            title: 'AUTO.NOMENCLATURES_BOM',
             type: 'item',
             url: '/stock/boms',
             icon: 'receipt',
@@ -450,13 +450,13 @@ export const osm_menus: Navigation[] = [
       },
       {
         id: 'collapse-stock-operations',
-        title: 'Stock & zones',
+        title: 'AUTO.STOCK_ZONES',
         type: 'collapse',
         icon: 'inventory',
         children: [
           {
             id: 'item-stocks-mouvements',
-            title: 'Mouvements Stock',
+            title: 'AUTO.MOUVEMENTS_STOCK',
             type: 'item',
             url: '/stock/mouvements',
             icon: 'swap_horiz',
@@ -465,7 +465,7 @@ export const osm_menus: Navigation[] = [
           },
           {
             id: 'item-stocks-emplacements',
-            title: 'Emplacements',
+            title: 'AUTO.EMPLACEMENTS',
             type: 'item',
             url: '/stock/emplacements',
             icon: 'grid_view',
@@ -474,7 +474,7 @@ export const osm_menus: Navigation[] = [
           },
           {
             id: 'item-stocks-par-emplacement',
-            title: 'Stock par Zone',
+            title: 'AUTO.STOCK_PAR_ZONE',
             type: 'item',
             url: '/stock/par-emplacement',
             icon: 'view_list',
@@ -483,7 +483,7 @@ export const osm_menus: Navigation[] = [
           },
           {
             id: 'item-stocks-audit',
-            title: "Journal d'Audit",
+            title: 'AUTO.JOURNAL_D_AUDIT',
             type: 'item',
             url: '/stock/audit',
             icon: 'history',
@@ -494,13 +494,13 @@ export const osm_menus: Navigation[] = [
       },
       {
         id: 'collapse-stock-purchasing',
-        title: 'Achats',
+        title: 'AUTO.ACHATS',
         type: 'collapse',
         icon: 'shopping_bag',
         children: [
           {
             id: 'item-stocks-bons-commande',
-            title: 'Bons de Commande',
+            title: 'AUTO.BONS_DE_COMMANDE',
             type: 'item',
             url: '/stock/bons-commande',
             icon: 'description',
@@ -509,7 +509,7 @@ export const osm_menus: Navigation[] = [
           },
           {
             id: 'item-stocks-fournisseurs',
-            title: 'Fournisseurs Mat.',
+            title: 'AUTO.FOURNISSEURS_MAT',
             type: 'item',
             url: '/stock/fournisseurs',
             icon: 'business',
@@ -528,7 +528,7 @@ export const osm_menus: Navigation[] = [
     children: [
       {
         id: 'collapse-group-finance-main',
-        title: 'Trésorerie & banques',
+        title: 'AUTO.TRESORERIE_BANQUES',
         type: 'collapse',
         icon: 'account_balance',
         children: [
@@ -563,7 +563,7 @@ export const osm_menus: Navigation[] = [
       },
       {
         id: 'collapse-finance-sales',
-        title: 'Ventes & Crédits',
+        title: 'AUTO.VENTES_CREDITS',
         type: 'collapse',
         icon: 'sell',
         children: [
@@ -606,7 +606,7 @@ export const osm_menus: Navigation[] = [
     children: [
       {
         id: 'collapse-settings-production',
-        title: 'Production & qualité',
+        title: 'AUTO.PRODUCTION_QUALITE',
         type: 'collapse',
         icon: 'settings',
         children: [
@@ -642,7 +642,7 @@ export const osm_menus: Navigation[] = [
           },
           {
             id: 'item-settings-certifications',
-            title: 'Certifications',
+            title: 'AUTO.CERTIFICATIONS',
             type: 'item',
             url: '/labels/certifications',
             icon: 'verified_user',
@@ -681,7 +681,7 @@ export const osm_menus: Navigation[] = [
       },
       {
         id: 'collapse-settings-security',
-        title: 'Sécurité & accès',
+        title: 'AUTO.SECURITE_ACCES',
         type: 'collapse',
         icon: 'security',
         children: [

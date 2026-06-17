@@ -4,6 +4,7 @@ import { SearchOperation } from '../../../shared/models/advanced-search/searchOp
 export const dashboardConfig: DashboardConfig = {
   icon: 'work',
   title: 'Liste des postes',
+  titleTranslatePath: 'AUTO.LISTE_DES_POSTES',
   baseURL: 'hr/poste',
   searchEndpoint: 'hr/poste',
   addNewItem: true,

@@ -5,10 +5,11 @@ import { Parameter } from '../../shared/models/Parameter';
 import { SharedModule } from '../../shared/shared.module';
 import { NgIf, NgSwitch, NgSwitchCase, NgSwitchDefault } from '@angular/common';
 import { ToastService } from '../../shared/services/toast.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-parameter',
-  imports: [SharedModule, NgSwitchCase, NgSwitch, NgSwitchDefault, NgIf],
+  imports: [TranslateModule, SharedModule, NgSwitchCase, NgSwitch, NgSwitchDefault, NgIf],
   templateUrl: './parameter.component.html',
   standalone: true,
   styleUrl: './parameter.component.scss'
@@ -71,10 +72,10 @@ export class ParameterComponent implements OnInit {
 
         this.applyFilters();
         this.paramForm.get(controlKey)?.setValue(updated.value);
-        this.toast.success('Parametre mis a jour avec succes');
+        this.toast.success('AUTO.PARAMETRE_MIS_A_JOUR_AVEC_SUCCES');
       },
       error: () => {
-        this.toast.error('Erreur lors de la mise a jour du parametre');
+        this.toast.error('AUTO.ERREUR_LORS_DE_LA_MISE_A_JOUR_DU_PARAMETRE');
       }
     });
   }

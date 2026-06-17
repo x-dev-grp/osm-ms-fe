@@ -3,13 +3,14 @@
     <div class="header-content">
 
       <div class="header-text">
-        <h2>Détails de la vente de déchet</h2>
-        <p class="header-subtitle">Informations complètes de la vente</p>
+        <h2>{{ 'AUTO.DETAILS_DE_LA_VENTE_DE_DECHET' | translate }}</h2>
+        <p class="header-subtitle">{{ 'AUTO.INFORMATIONS_COMPLETES_DE_LA_VENTE' | translate }}</p>
       </div>
       <div class="header-actions">
         <button (click)="onEdit()" color="primary" mat-raised-button>
           <mat-icon>edit</mat-icon>
-          Modifier
+
+          {{ 'BANK_ACCOUNTS.ACTIONS.EDIT' | translate }}
         </button>
       </div>
     </div>
@@ -22,7 +23,8 @@
         <div class="detail-item">
           <span class="label">
             <mat-icon>category</mat-icon>
-            Type de déchet
+
+            {{ 'WASTE.FIELDS.TYPE' | translate }}
           </span>
           <span class="value">{{ getWasteTypeDisplay(wasteSale.type) }}</span>
         </div>
@@ -30,7 +32,8 @@
         <div class="detail-item">
           <span class="label">
             <mat-icon>scale</mat-icon>
-            Quantité
+
+            {{ 'OIL_CREDIT.FIELDS.QUANTITY' | translate }}
           </span>
           <span class="value">{{ wasteSale.quantity | number:'1.2-2' }} kg</span>
         </div>
@@ -38,7 +41,8 @@
         <div class="detail-item">
           <span class="label">
             <mat-icon>attach_money</mat-icon>
-            Prix unitaire
+
+            {{ 'OIL_SALES.FIELDS.UNIT_PRICE' | translate }}
           </span>
           <span class="value">{{ wasteSale.unitPrice | number:'1.2-2' }} TND/kg</span>
         </div>
@@ -46,7 +50,8 @@
         <div class="detail-item total-highlight">
           <span class="label">
             <mat-icon>calculate</mat-icon>
-            Prix total
+
+            {{ 'OIL_TRANSACTION.DELIVERY.TOTAL_PRICE' | translate }}
           </span>
           <span class="value total-value">{{ wasteSale.totalPrice | number:'1.2-2' }} TND</span>
         </div>
@@ -59,7 +64,8 @@
         <div class="detail-item">
           <span class="label">
             <mat-icon>event</mat-icon>
-            Date de vente
+
+            {{ 'OIL_SALES.FIELDS.SALE_DATE' | translate }}
           </span>
           <span class="value">{{ wasteSale.saleDate | date:'fullDate' }}</span>
         </div>
@@ -67,7 +73,8 @@
         <div class="detail-item" *ngIf="wasteSale.invoiceNumber">
           <span class="label">
             <mat-icon>receipt</mat-icon>
-            Numéro de facture
+
+            {{ 'OIL_SALES.FIELDS.INVOICE_NUMBER' | translate }}
           </span>
           <span class="value">{{ wasteSale.invoiceNumber }}</span>
         </div>
@@ -75,7 +82,8 @@
         <div class="detail-item" *ngIf="wasteSale.storageLocationCode">
           <span class="label">
             <mat-icon>inventory_2</mat-icon>
-            Code de stockage
+
+            {{ 'AUTO.CODE_DE_STOCKAGE' | translate }}
           </span>
           <span class="value">{{ wasteSale.storageLocationCode }}</span>
         </div>
@@ -83,7 +91,8 @@
         <div class="detail-item" *ngIf="wasteSale.supplier">
           <span class="label">
             <mat-icon>person</mat-icon>
-            Fournisseur
+
+            {{ 'CONTROLE_QUALITE.FORM.FIELDS.SUPPLIER' | translate }}
           </span>
           <span class="value">{{ getSupplierDisplay() }}</span>
         </div>
@@ -96,7 +105,8 @@
         <div class="detail-item">
           <span class="label">
             <mat-icon>account_balance</mat-icon>
-            Statut de paiement
+
+            {{ 'PDF.PAYMENT_STATUS' | translate }}
           </span>
           <span class="value" [class.paid-status]="wasteSale.paid" [class.unpaid-status]="!wasteSale.paid">
             <mat-icon>{{ wasteSale.paid ? 'check_circle' : 'schedule' }}</mat-icon>
@@ -107,7 +117,8 @@
         <div class="detail-item" *ngIf="wasteSale.paid && wasteSale.paymentDate">
           <span class="label">
             <mat-icon>payment</mat-icon>
-            Date de paiement
+
+            {{ 'WASTE.FIELDS.PAYMENT_DATE' | translate }}
           </span>
           <span class="value">{{ wasteSale.paymentDate | date:'fullDate' }}</span>
         </div>
@@ -126,6 +137,6 @@
 <ng-template #loadingTemplate>
   <div class="loading-container">
     <mat-spinner diameter="50"></mat-spinner>
-    <p>Chargement des détails...</p>
+    <p>{{ 'AUTO.CHARGEMENT_DES_DETAILS' | translate }}</p>
   </div>
 </ng-template>

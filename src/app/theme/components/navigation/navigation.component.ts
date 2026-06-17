@@ -12,10 +12,11 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
 import { ComponentGroupComponent } from './group/group.component';
 import { SearchFilterPipe } from '../../services/search-filter.pipe';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-component-navigation',
-  imports: [SharedModule, BreadcrumbComponent, RouterModule, ComponentGroupComponent, SearchFilterPipe],
+  imports: [TranslateModule, SharedModule, BreadcrumbComponent, RouterModule, ComponentGroupComponent, SearchFilterPipe],
   templateUrl: './navigation.component.html',
   standalone: true,
   styleUrls: ['./navigation.component.scss']

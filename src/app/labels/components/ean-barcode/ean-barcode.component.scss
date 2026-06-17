@@ -1,0 +1,42 @@
+.ean-barcode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+
+  &__svg {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+
+    &.is-hidden {
+      display: none;
+    }
+  }
+
+  &__hint {
+    margin: 0;
+    font-size: 0.72rem;
+    color: #b45309;
+    text-align: center;
+  }
+
+  &.is-invalid {
+    padding: 0.35rem 0;
+  }
+
+  &--compact {
+    max-width: 220px;
+  }
+
+  &--miniature {
+    max-width: 100%;
+  }
+
+  &--full {
+    max-width: 360px;
+  }
+}

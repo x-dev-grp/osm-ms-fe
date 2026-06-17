@@ -1,17 +1,19 @@
 <div class="traceability-page" *ngIf="!loading; else loadingTpl">
   <div class="header">
     <div>
-      <h1>Rapport de Traçabilité Global</h1>
+      <h1>{{ 'AUTO.RAPPORT_DE_TRACABILITE_GLOBAL' | translate }}</h1>
       <p>{{ project?.code }} — {{ project?.client.nom }}</p>
     </div>
     <div class="header-actions">
       <button mat-flat-button color="accent" (click)="generatePDF()">
         <mat-icon>picture_as_pdf</mat-icon>
-        Exporter PDF
+
+        {{ 'OSM_DASHBOARD.EXPORT.PDF' | translate }}
       </button>
       <button mat-stroked-button color="primary" (click)="onBack()">
         <mat-icon>arrow_back</mat-icon>
-        Retour
+
+        {{ 'COMMON.BACK' | translate }}
       </button>
     </div>
   </div>
@@ -19,7 +21,8 @@
   <div class="alert-info" *ngIf="traceabilityData">
     <mat-icon>info</mat-icon>
     <span>
-      Chronologie : réception → stockage → filtration → conditionnement → expédition.
+
+      {{ 'AUTO.CHRONOLOGIE_RECEPTION_STOCKAGE_FILTRATION_CONDITIONNEMENT_EXPEDI' | translate }}
     </span>
   </div>
 
@@ -33,13 +36,13 @@
 <ng-template #loadingTpl>
   <div class="loader-box">
     <mat-spinner diameter="50"></mat-spinner>
-    <p>Génération du rapport de traçabilité en cours...</p>
+    <p>{{ 'AUTO.GENERATION_DU_RAPPORT_DE_TRACABILITE_EN_COURS' | translate }}</p>
   </div>
 </ng-template>
 
 <ng-template #noDataTpl>
   <div class="empty-state card">
     <mat-icon>history_edu</mat-icon>
-    <p>Aucune donnée de traçabilité disponible pour ce projet.</p>
+    <p>{{ 'AUTO.AUCUNE_DONNEE_DE_TRACABILITE_DISPONIBLE_POUR_CE_PROJET' | translate }}</p>
   </div>
 </ng-template>

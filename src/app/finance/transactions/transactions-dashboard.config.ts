@@ -117,12 +117,10 @@ export const TRANSACTIONS_DASHBOARD_CONFIG: DashboardConfig = {
       filterable: true,
       options: [
         { value: 'CASH', label: 'Espèces', labelTranslatePath: 'TRANSACTIONS.PAYMENT_METHODS.CASH' },
-        { value: 'BANK_TRANSFER', label: 'Virement Bancaire', labelTranslatePath: 'TRANSACTIONS.PAYMENT_METHODS.BANK_TRANSFER' },
-        { value: 'CHECK', label: 'Chèque', labelTranslatePath: 'TRANSACTIONS.PAYMENT_METHODS.CHECK' },
-        { value: 'CREDIT_CARD', label: 'Carte de Crédit', labelTranslatePath: 'TRANSACTIONS.PAYMENT_METHODS.CREDIT_CARD' },
-        { value: 'DEBIT_CARD', label: 'Carte de Débit', labelTranslatePath: 'TRANSACTIONS.PAYMENT_METHODS.DEBIT_CARD' },
-        { value: 'MOBILE_PAYMENT', label: 'Paiement Mobile', labelTranslatePath: 'TRANSACTIONS.PAYMENT_METHODS.MOBILE_PAYMENT' },
-        { value: 'OIL_CREDIT', label: 'Crédit Huile', labelTranslatePath: 'TRANSACTIONS.PAYMENT_METHODS.OIL_CREDIT' }
+        { value: 'CHEQUE', label: 'Chèque', labelTranslatePath: 'TRANSACTIONS.PAYMENT_METHODS.CHEQUE' },
+        { value: 'TRANSFER', label: 'Virement Bancaire', labelTranslatePath: 'TRANSACTIONS.PAYMENT_METHODS.TRANSFER' },
+        { value: 'OIL', label: 'Huile', labelTranslatePath: 'TRANSACTIONS.PAYMENT_METHODS.OIL' },
+        { value: 'MIXED', label: 'Mixte', labelTranslatePath: 'TRANSACTIONS.PAYMENT_METHODS.MIXED' }
       ]
     },
 

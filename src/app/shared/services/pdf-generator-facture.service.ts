@@ -395,7 +395,7 @@ export class PdfGeneratorFactureService {
       window.open(doc.output('bloburl'), '_blank');
     } catch (err) {
       console.error('Erreur lors de la génération de la facture :', err);
-      alert('Impossible de générer la facture.');
+      alert(this.translationService.instant('AUTO.IMPOSSIBLE_DE_GENERER_LA_FACTURE'));
     }
   }
 
@@ -577,7 +577,7 @@ export class PdfGeneratorFactureService {
       window.open(doc.output('bloburl'), '_blank');
     } catch (err) {
       console.error('Erreur lors de la génération de la note de paiement :', err);
-      alert('Impossible de générer la note de paiement.');
+      alert(this.translationService.instant('AUTO.IMPOSSIBLE_DE_GENERER_LA_NOTE_DE_PAIEMENT'));
     }
   }
 

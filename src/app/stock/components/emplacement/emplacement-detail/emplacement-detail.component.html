@@ -32,8 +32,8 @@
         <div class="spinner-ring"></div>
         <div class="spinner-ring-inner"></div>
       </div>
-      <p class="loading-text">Chargement de l'emplacement</p>
-      <p class="loading-subtext">Veuillez patienter...</p>
+      <p class="loading-text">{{ 'AUTO.CHARGEMENT_DE_L_EMPLACEMENT' | translate }}</p>
+      <p class="loading-subtext">{{ 'AUTO.VEUILLEZ_PATIENTER' | translate }}</p>
     </div>
   }
 
@@ -47,7 +47,7 @@
           <div class="title-section">
             <div class="title-badge">
               <i class="fas fa-warehouse"></i>
-              <span>Emplacement</span>
+              <span>{{ 'OIL_CONTAINER.DASHBOARD.FIELDS.STORAGE_LOCATION_CODE' | translate }}</span>
             </div>
             <h1 class="page-title">{{ emplacement.code }}</h1>
             @if (emplacement.nom) {
@@ -57,9 +57,10 @@
         </div>
         <div class="header-actions">
           @if (hasCompleteQrMetadata()) {
-            <button class="btn-icon-edit" matTooltip="View QR" (click)="openExistingQrDialog()">
+            <button class="btn-icon-edit" [matTooltip]="'AUTO.VIEW_QR' | translate" (click)="openExistingQrDialog()">
               <i class="fas fa-qrcode me-2"></i>
-              QR
+
+              {{ 'AUTO.QR' | translate }}
             </button>
           }
           <button class="btn-icon-edit" [disabled]="generatingQr" (click)="generateQr()">
@@ -71,7 +72,8 @@
           }
           <button class="btn-icon-edit" [routerLink]="['/stock/emplacements', emplacement.id, 'edit']">
             <i class="fas fa-edit me-2"></i>
-            Modifier
+
+            {{ 'BANK_ACCOUNTS.ACTIONS.EDIT' | translate }}
           </button>
         </div>
       </div>
@@ -94,22 +96,22 @@
             <div class="header-icon-wrapper">
               <i class="fas fa-tag"></i>
             </div>
-            <h3>Identification</h3>
+            <h3>{{ 'AUTO.IDENTIFICATION' | translate }}</h3>
           </div>
           <div class="card-body">
             <div class="info-row">
-              <span class="info-label">Code</span>
+              <span class="info-label">{{ 'AUTO.CODE' | translate }}</span>
               <span class="info-value code-highlight">{{ emplacement.code }}</span>
             </div>
             @if (emplacement.nom) {
               <div class="info-row">
-                <span class="info-label">Nom</span>
+                <span class="info-label">{{ 'ADMIN_USERS.FIELDS.FIRST_NAME' | translate }}</span>
                 <span class="info-value">{{ emplacement.nom }}</span>
               </div>
             }
             @if (emplacement.description) {
               <div class="info-row description">
-                <span class="info-label">Description</span>
+                <span class="info-label">{{ 'BASE_TYPE.FIELDS.DESCRIPTION' | translate }}</span>
                 <p class="info-text">{{ emplacement.description }}</p>
               </div>
             }
@@ -120,11 +122,11 @@
             <div class="header-icon-wrapper" [ngClass]="getTypeColor(emplacement.typeEmplacement)">
               <i class="fas {{ getTypeIcon(emplacement.typeEmplacement) }}"></i>
             </div>
-            <h3>Type & caractéristiques</h3>
+            <h3>{{ 'AUTO.TYPE_CARACTERISTIQUES' | translate }}</h3>
           </div>
           <div class="card-body">
             <div class="info-row">
-              <span class="info-label">Type</span>
+              <span class="info-label">{{ 'CONFIGURATION.RECEPTION.TABLE.TYPE' | translate }}</span>
               <span class="info-value">
                 <span class="type-badge {{ getTypeColor(emplacement.typeEmplacement) }}">
                   <i class="fas {{ getTypeIcon(emplacement.typeEmplacement) }} me-1"></i>
@@ -134,7 +136,7 @@
             </div>
             @if (hasTemperature()) {
               <div class="info-row">
-                <span class="info-label">Température</span>
+                <span class="info-label">{{ 'AUTO.TEMPERATURE' | translate }}</span>
                 <span class="info-value temperature-range">
                   <i class="fas fa-thermometer-half me-2"></i>
                   {{ emplacement.temperatureMin || 'N/A' }}°C / {{ emplacement.temperatureMax || 'N/A' }}°C
@@ -143,7 +145,7 @@
             }
             @if (emplacement.conditionsSpeciales) {
               <div class="info-row">
-                <span class="info-label">Conditions spéciales</span>
+                <span class="info-label">{{ 'AUTO.CONDITIONS_SPECIALES' | translate }}</span>
                 <span class="info-value">
                   <span class="condition-badge">
                     <i class="fas fa-exclamation-triangle me-1"></i>
@@ -159,7 +161,7 @@
             <div class="header-icon-wrapper accent">
               <i class="fas fa-chart-bar"></i>
             </div>
-            <h3>Capacité</h3>
+            <h3>{{ 'MILL_MACHINE.FIELDS.CAPACITY' | translate }}</h3>
           </div>
           <div class="card-body">
             @if (emplacement.capaciteMaximale) {
@@ -182,12 +184,12 @@
               </div>
             } @else {
               <div class="info-row">
-                <span class="info-label">Capacité maximale</span>
-                <span class="info-value value-placeholder">Non définie</span>
+                <span class="info-label">{{ 'STORAGE.VIEW.MAX_CAPACITY' | translate }}</span>
+                <span class="info-value value-placeholder">{{ 'AUTO.NON_DEFINIE' | translate }}</span>
               </div>
               @if (emplacement.capaciteActuelle) {
                 <div class="info-row">
-                  <span class="info-label">Capacité actuelle</span>
+                  <span class="info-label">{{ 'AUTO.CAPACITE_ACTUELLE' | translate }}</span>
                   <span class="info-value">{{ emplacement.capaciteActuelle }}</span>
                 </div>
               }
@@ -199,12 +201,12 @@
             <div class="header-icon-wrapper success">
               <i class="fas fa-calendar-check"></i>
             </div>
-            <h3>Réservation</h3>
+            <h3>{{ 'AUTO.RESERVATION' | translate }}</h3>
           </div>
           <div class="card-body">
             @if (emplacement.reservePour) {
               <div class="info-row highlight-row">
-                <span class="info-label">Réservé pour</span>
+                <span class="info-label">{{ 'AUTO.RESERVE_POUR' | translate }}</span>
                 <span class="info-value highlight-value">
                   <i class="fas fa-user me-2"></i>
                   {{ emplacement.reservePour }}
@@ -212,19 +214,19 @@
               </div>
             } @else {
               <div class="info-row">
-                <span class="info-label">Statut</span>
+                <span class="info-label">{{ 'ADMIN_DASHBOARD.TABLE.STATUS' | translate }}</span>
                 <span class="info-value">
                   @if (emplacement.disponible) {
-                    <span class="text-success">Non réservé</span>
+                    <span class="text-success">{{ 'AUTO.NON_RESERVE' | translate }}</span>
                   } @else {
-                    <span class="text-danger">Occupé sans réservation</span>
+                    <span class="text-danger">{{ 'AUTO.OCCUPE_SANS_RESERVATION' | translate }}</span>
                   }
                 </span>
               </div>
             }
             @if (emplacement.categorieArticleStocke) {
               <div class="info-row">
-                <span class="info-label">Catégorie stockée</span>
+                <span class="info-label">{{ 'AUTO.CATEGORIE_STOCKEE' | translate }}</span>
                 <span class="info-value">
           <span class="type-badge info">
             <i class="fas fa-boxes me-1"></i>
@@ -238,13 +240,15 @@
               @if (emplacement.disponible && !emplacement.reservePour) {
                 <button class="btn-action-primary" (click)="reserverEmplacement()">
                   <i class="fas fa-calendar-check me-2"></i>
-                  Réserver
+
+                  {{ 'AUTO.RESERVER' | translate }}
                 </button>
               }
               @if (!emplacement.disponible && emplacement.reservePour) {
                 <button class="btn-action-warning" (click)="libererEmplacement()">
                   <i class="fas fa-times-circle me-2"></i>
-                  Libérer
+
+                  {{ 'AUTO.LIBERER' | translate }}
                 </button>
               }
             </div>
@@ -256,7 +260,7 @@
               <div class="header-icon-wrapper">
                 <i class="fas fa-sticky-note"></i>
               </div>
-              <h3>Notes</h3>
+              <h3>{{ 'CUSTOMERS.FIELDS.NOTES' | translate }}</h3>
             </div>
             <div class="card-body">
               <div class="notes-content">
@@ -270,11 +274,13 @@
       <div class="action-footer">
         <button class="btn-outline" (click)="goBack()">
           <i class="fas fa-arrow-left me-2"></i>
-          Retour à la liste
+
+          {{ 'DELIVERIES.DETAILS.BUTTONS.BACK' | translate }}
         </button>
         <button class="btn-primary" [routerLink]="['/stock/emplacements', emplacement.id, 'edit']">
           <i class="fas fa-edit me-2"></i>
-          Modifier cet emplacement
+
+          {{ 'AUTO.MODIFIER_CET_EMPLACEMENT' | translate }}
         </button>
       </div>
     </div>

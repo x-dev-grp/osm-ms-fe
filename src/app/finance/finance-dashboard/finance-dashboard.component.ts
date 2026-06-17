@@ -31,7 +31,7 @@ import { FinancialTransactionService } from '../service/financial-transaction.se
 
 import { BankAccount } from '../models/BankAccount';
 import { Expense, ExpenseCategory } from '../models/expense.model';
-import { FinancialTransaction, TransactionDirection } from '../models/financial-transaction.model';
+import { FinancialTransaction, parseTransactionAmount, TransactionDirection } from '../models/financial-transaction.model';
 import { ToastService } from '../../shared/services/toast.service';
 
 type TrendGranularity = 'daily' | 'weekly' | 'monthly' | 'yearly';
@@ -430,7 +430,7 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Error loading finance summary:', error);
-          this.toast.error('Erreur lors du chargement du tableau de bord');
+          this.toast.error('AUTO.ERREUR_LORS_DU_CHARGEMENT_DU_TABLEAU_DE_BORD');
           this.error = 'Erreur lors du chargement des données';
         }
       });
@@ -771,7 +771,7 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
     };
 
     // --- Recent Transactions (Bar) - Using real transaction data ---
-    const recentTransactionAmounts = this.allTransactions.slice(-5).map((t) => Math.round(t.amount || 0));
+    const recentTransactionAmounts = this.allTransactions.slice(-5).map((t) => Math.round(parseTransactionAmount(t.amount)));
     const recentTransactionLabels = this.allTransactions.slice(-5).map((t, index) => `T${(index + 1).toString().padStart(3, '0')}`);
 
     this.recentTransactionsChartOptions = {
@@ -1025,7 +1025,7 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
 
     // Update Recent Transactions chart with real data
     if (this.allTransactions.length > 0) {
-      const recentTransactionAmounts = this.allTransactions.slice(-5).map((t) => Math.round(t.amount || 0));
+      const recentTransactionAmounts = this.allTransactions.slice(-5).map((t) => Math.round(parseTransactionAmount(t.amount)));
       const recentTransactionLabels = this.allTransactions.slice(-5).map((t, index) => `T${(index + 1).toString().padStart(3, '0')}`);
 
       this.recentTransactionsChartOptions = {
@@ -1307,10 +1307,10 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
 
           const income = transactions
             .filter((t) => t.direction === TransactionDirection.INBOUND)
-            .reduce((sum, t) => sum + (t.amount || 0), 0);
+            .reduce((sum, t) => sum + parseTransactionAmount(t.amount), 0);
           const expenses = transactions
             .filter((t) => t.direction === TransactionDirection.OUTBOUND)
-            .reduce((sum, t) => sum + (t.amount || 0), 0);
+            .reduce((sum, t) => sum + parseTransactionAmount(t.amount), 0);
 
           // Calculate debited and credited payments
           // Debited payments are outbound transactions (money going out)
@@ -1324,10 +1324,10 @@ export class FinanceDashboardComponent implements OnInit, OnDestroy {
           const inboundTransactions = transactions.filter((t) => t.direction === TransactionDirection.INBOUND);
           const outboundTransactions = transactions.filter((t) => t.direction === TransactionDirection.OUTBOUND);
 
-          const inboundPaid = inboundTransactions.filter((t) => t.approved).reduce((sum, t) => sum + (t.amount || 0), 0);
-          const inboundUnpaid = inboundTransactions.filter((t) => !t.approved).reduce((sum, t) => sum + (t.amount || 0), 0);
-          const outboundPaid = outboundTransactions.filter((t) => t.approved).reduce((sum, t) => sum + (t.amount || 0), 0);
-          const outboundUnpaid = outboundTransactions.filter((t) => !t.approved).reduce((sum, t) => sum + (t.amount || 0), 0);
+          const inboundPaid = inboundTransactions.filter((t) => t.approved).reduce((sum, t) => sum + parseTransactionAmount(t.amount), 0);
+          const inboundUnpaid = inboundTransactions.filter((t) => !t.approved).reduce((sum, t) => sum + parseTransactionAmount(t.amount), 0);
+          const outboundPaid = outboundTransactions.filter((t) => t.approved).reduce((sum, t) => sum + parseTransactionAmount(t.amount), 0);
+          const outboundUnpaid = outboundTransactions.filter((t) => !t.approved).reduce((sum, t) => sum + parseTransactionAmount(t.amount), 0);
 
           const inboundPaidCount = inboundTransactions.filter((t) => t.approved).length;
           const inboundUnpaidCount = inboundTransactions.filter((t) => !t.approved).length;

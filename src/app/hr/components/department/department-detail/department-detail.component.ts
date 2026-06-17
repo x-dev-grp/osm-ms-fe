@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DepartmentService } from '../../../services/departement-service';
 import { Department } from '../../../model/department.model';
 import { ToastService } from '../../../../shared/services/toast.service';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService, TranslateModule } from '@ngx-translate/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,7 +18,7 @@ import { EmployeeService } from "../../../services/employee-service";
   standalone: true,
   templateUrl: './department-detail.component.html',
   styleUrls: ['./department-detail.component.scss'],
-  imports: [
+  imports: [TranslateModule, 
     CommonModule,
     MatCardModule,
     MatButtonModule,

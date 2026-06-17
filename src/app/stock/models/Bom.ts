@@ -2,7 +2,9 @@ import {BomLine} from "./BomLine";
 
 export interface Bom {
   id?: string;
-  productId: string;
+  finalProductId: string;
+  finalProductName?: string;
+  productId?: string;
   productName?: string;
   skuId?: string;
   skuCode?: string;

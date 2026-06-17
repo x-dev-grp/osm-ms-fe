@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
 import { EmployeeService } from '../../../services/employee-service';
 import { Employee, Gender, MaritalStatus } from '../../../model/employee-model';
 import { ToastService } from '../../../../shared/services/toast.service';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService, TranslateModule } from '@ngx-translate/core';
 import { CardComponent } from '../../../../theme/components/card/card.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -25,7 +25,7 @@ import{Department} from "../../../model/department.model";
   standalone: true,
   templateUrl: './employee-add.component.html',
   styleUrls: ['./employee-add.component.scss'],
-  imports: [
+  imports: [TranslateModule, 
     CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,

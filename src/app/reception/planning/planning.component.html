@@ -155,7 +155,7 @@
                         mat-icon-button
                         class="cancel-btn"
                         (click)="openCancelDialog(data)"
-                        aria-label="Cancel reception">
+                        [attr.aria-label]="'PLANNING.CANCEL_TITLE' | translate">
                         <mat-icon>cancel</mat-icon>
                       </button>
                     </div>
@@ -249,7 +249,7 @@
 
                         <!-- Child Lot Details -->
                         <div class="child-lot-details">
-                          <div class="details-header">Liste des Lots :</div>
+                          <div class="details-header">{{ 'PLANNING_LOTS_LIST' | translate }}</div>
                           <div class="child-lot-numbers">
                             @for (childItem of data.items; track trackByReception($index, childItem)) {
                               @let childData = childItem.data ;
@@ -405,7 +405,7 @@
 
 
                           <div class="child-lot-details">
-                            <div class="details-header">Liste des Lots :</div>
+                            <div class="details-header">{{ 'PLANNING_LOTS_LIST' | translate }}</div>
                             <div class="child-lot-numbers">
                               @for (childItem of data.items; track trackByReception($index, childItem)) {
                                 @let childData = childItem.data ;

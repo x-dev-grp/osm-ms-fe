@@ -1,3 +1,5 @@
+import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -47,20 +49,47 @@ import { ProductionGenealogy } from '../../../shared/models/production-genealogy
 import { TraceabilityPreviewComponent } from '../../../shared/components/traceability-preview/traceability-preview.component';
 import { LabelPreviewCardComponent } from '../label-preview-card/label-preview-card.component';
 import {
+  LabelPreviewCarouselComponent,
+  LabelPreviewCarouselSlide
+} from '../label-preview-carousel/label-preview-carousel.component';
+import {
   LabelPreviewDialogComponent,
   LabelPreviewDialogData
 } from '../label-preview-dialog/label-preview-dialog.component';
 import { LabelPreviewViewModel } from '../../models/label-preview.model';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   buildLabelEtiquettePayload,
   buildLabelPreviewViewModel,
   formatLabelPayloadJson
 } from '../../utils/label-preview-payload.util';
+import {
+  buildIngredientDeclaration,
+  buildNutritionDeclarationJson,
+  buildProductName,
+  extractCompositionOverrides,
+  mergeValidationIssues,
+  showEvooLegalStatement,
+  TUNISIA_LABEL_DEFAULTS,
+  validateLabelComplianceForm
+} from '../../utils/label-compliance.util';
+import {
+  applyCompositionOverrides,
+  buildLabelQcCompositionBundle,
+  compositionSourceLabel,
+  resolvePostFiltrationQualityControls as resolveQcControls
+} from '../../utils/label-qc-composition.util';
+import { LabelCompositionEntry } from '../../models/label-qc-composition.model';
+import {
+  PREVIEW_CAROUSEL_LANGUAGES,
+  previewLanguageLabel
+} from '../../utils/label-preview-localization.util';
+import { EanBarcodeComponent } from '../ean-barcode/ean-barcode.component';
 
 @Component({
   selector: 'app-label-workflow',
   standalone: true,
-  imports: [
+  imports: [TranslateModule,
     CommonModule,
     ReactiveFormsModule,
     MatButtonModule,
@@ -75,12 +104,15 @@ import {
     MatExpansionModule,
     MatDialogModule,
     TraceabilityPreviewComponent,
-    LabelPreviewCardComponent
+    LabelPreviewCardComponent,
+    LabelPreviewCarouselComponent,
+    EanBarcodeComponent
   ],
   templateUrl: './label-workflow.component.html',
   styleUrls: ['./label-workflow.component.scss']
 })
 export class LabelWorkflowComponent implements OnInit {
+  private readonly i18n = inject(TranslateService);
   readonly languages: LabelLanguage[] = ['FR', 'EN', 'AR'];
 
   readonly claimTypeOptions: { value: LabelClaimType; label: string }[] = [
@@ -91,7 +123,14 @@ export class LabelWorkflowComponent implements OnInit {
     { value: 'OTHER', label: 'Autre' }
   ];
 
-  readonly grades = Object.values(QualityGrades);
+  readonly grades = [
+    QualityGrades.EXTRA_VIRGIN,
+    QualityGrades.VIRGIN,
+    QualityGrades.REFINED,
+    QualityGrades.POMACE
+  ];
+
+  readonly evooLegalStatement = TUNISIA_LABEL_DEFAULTS.evooStatement;
 
   readonly labelForm = this.fb.group({
     lotId: ['', Validators.required],
@@ -114,7 +153,12 @@ export class LabelWorkflowComponent implements OnInit {
     responsibleName: [''],
     responsibleAddress: [''],
     extractionMethod: [''],
-    bestBeforeDate: ['']
+    bestBeforeDate: [''],
+    ingredientDeclaration: [''],
+    ean13: [''],
+    harvestYear: [''],
+    acidityLevel: [''],
+    brandName: ['']
   });
 
   filtrationOperations: FiltrationOperation[] = [];
@@ -138,6 +182,7 @@ export class LabelWorkflowComponent implements OnInit {
   private companyProfile: CompanyProfile | null = null;
   currentGenealogy: ProductionGenealogy | null = null;
   postFiltrationQualityControls: Record<string, string> | null = null;
+  compositionOverrides: Record<string, string> = {};
 
   private draftSavedTimer: ReturnType<typeof setTimeout> | null = null;
   private finalizedTimer: ReturnType<typeof setTimeout> | null = null;
@@ -177,30 +222,148 @@ export class LabelWorkflowComponent implements OnInit {
     return this.currentLabel?.status === 'FINALIZED';
   }
 
+  statusLabel(status: string | undefined): string {
+    switch (status) {
+      case 'DRAFT':
+        return 'Brouillon';
+      case 'FINALIZED':
+        return 'Finalisée';
+      case 'VALIDATED':
+        return 'Validée';
+      case 'EXPORTED_JSON':
+        return 'Exportée JSON';
+      default:
+        return status || '-';
+    }
+  }
+
   blockingIssues(): LabelValidationIssueDto[] {
     return (this.currentLabel?.validationIssues || []).filter((i) => i.blocking);
   }
 
-  /** Returns list of required fields that are currently empty */
+  /** Returns list of required fields that are currently empty (Tunisia compliance). */
   missingRequiredFields(): { field: string; label: string }[] {
     const v = this.labelForm.value;
-    const missing: { field: string; label: string }[] = [];
+    return mergeValidationIssues(
+      validateLabelComplianceForm({
+        legalDenomination: v.legalDenomination,
+        qualityGrade: v.qualityGrade,
+        originCountry: v.originCountry,
+        netQuantity: v.netQuantity,
+        responsibleName: v.responsibleName,
+        responsibleAddress: v.responsibleAddress,
+        lotNumber: v.lotNumber,
+        bestBeforeDate: v.bestBeforeDate,
+        storageConditions: v.storageConditions,
+        ingredientDeclaration: v.ingredientDeclaration,
+        nutritionDeclarationJson: this.buildNutritionDeclarationPayload(),
+        ean13: v.ean13
+      }),
+      this.currentLabel?.validationIssues
+    );
+  }
 
-    if (!v.legalDenomination?.trim()) missing.push({ field: 'legalDenomination', label: 'Dénomination légale' });
-    if (!v.lotNumber?.trim()) missing.push({ field: 'lotNumber', label: 'N° de Lot' });
-    if (!v.netQuantity?.trim()) missing.push({ field: 'netQuantity', label: 'Quantité nette' });
-    if (!v.packagingDate?.trim()) missing.push({ field: 'packagingDate', label: 'Date de conditionnement' });
-    if (!v.bestBeforeDate?.trim()) missing.push({ field: 'bestBeforeDate', label: 'D.D.M.' });
-    if (!v.originCountry?.trim()) missing.push({ field: 'originCountry', label: 'Pays d\'origine' });
-    if (!v.qualityGrade) missing.push({ field: 'qualityGrade', label: 'Qualité' });
-    if (!v.responsibleName?.trim()) missing.push({ field: 'responsibleName', label: 'Responsable' });
-    if (!v.responsibleAddress?.trim()) missing.push({ field: 'responsibleAddress', label: 'Adresse du responsable' });
+  isEvooCategory(): boolean {
+    return showEvooLegalStatement(this.labelForm.value.qualityGrade);
+  }
 
-    return missing;
+  onQualityGradeChange(): void {
+    const grade = this.labelForm.value.qualityGrade;
+    if (!grade) {
+      return;
+    }
+    this.labelForm.patchValue({
+      legalDenomination: buildProductName(grade) || this.labelForm.value.legalDenomination,
+      ingredientDeclaration: buildIngredientDeclaration(grade)
+    });
+  }
+
+  compositionEntries(): LabelCompositionEntry[] {
+    return this.buildCompositionBundle().compositionEstimate;
+  }
+
+  compositionSourceLabel(source: LabelCompositionEntry['source']): string {
+    return compositionSourceLabel(source);
+  }
+
+  compositionPer100Value(entry: LabelCompositionEntry): string {
+    return entry.per100ml || entry.value;
+  }
+
+  onCompositionOverride(key: string, value: string): void {
+    const trimmed = value.trim();
+    if (trimmed) {
+      this.compositionOverrides = { ...this.compositionOverrides, [key]: trimmed };
+    } else {
+      const { [key]: _removed, ...rest } = this.compositionOverrides;
+      this.compositionOverrides = rest;
+    }
+    this.labelForm.markAsDirty();
+  }
+
+  private buildCompositionBundle() {
+    const form = this.labelForm.getRawValue();
+    const packaging = this.packagingOptions.find((product) => product.id === form.packagingId);
+    const controls = resolveQcControls(
+      this.currentGenealogy,
+      this.currentLabel,
+      this.postFiltrationQualityControls
+    );
+    const language = form.language || this.currentLabel?.language || 'FR';
+    const baseBundle = buildLabelQcCompositionBundle(
+      controls,
+      form.netQuantity,
+      packaging?.density ?? null,
+      language
+    );
+
+    return applyCompositionOverrides(
+      baseBundle,
+      this.compositionOverrides,
+      form.netQuantity,
+      language
+    );
+  }
+
+  private buildNutritionDeclarationPayload(): string {
+    return buildNutritionDeclarationJson(this.compositionEntries());
+  }
+
+  private loadCompositionOverridesFromLabel(label?: LabelContentDto | null): void {
+    this.compositionOverrides = extractCompositionOverrides(label?.nutritionDeclarationJson);
   }
 
   canFinalize(): boolean {
     return this.missingRequiredFields().length === 0 && this.blockingIssues().length === 0;
+  }
+
+  readonly mandatoryChecklist: { field: string; label: string }[] = [
+    { field: 'legalDenomination', label: 'Nom du produit' },
+    { field: 'qualityGrade', label: 'Catégorie' },
+    { field: 'originCountry', label: 'Origine' },
+    { field: 'netQuantity', label: 'Quantité nette' },
+    { field: 'responsibleName', label: 'Producteur' },
+    { field: 'responsibleAddress', label: 'Adresse' },
+    { field: 'lotNumber', label: 'N° de lot' },
+    { field: 'bestBeforeDate', label: 'D.D.M.' },
+    { field: 'storageConditions', label: 'Stockage' },
+    { field: 'ingredientDeclaration', label: 'Ingrédients' }
+  ];
+
+  isChecklistItemMissing(field: string): boolean {
+    return this.missingRequiredFields().some((item) => item.field === field);
+  }
+
+  complianceReadyCount(): number {
+    return this.mandatoryChecklist.filter((item) => !this.isChecklistItemMissing(item.field)).length;
+  }
+
+  compliancePercent(): number {
+    return Math.round((this.complianceReadyCount() / this.mandatoryChecklist.length) * 100);
+  }
+
+  pageTitle(): string {
+    return this.currentLabel ? 'Modifier l\'étiquette' : 'Nouvelle étiquette';
   }
 
   previewPayload(): string {
@@ -219,14 +382,28 @@ export class LabelWorkflowComponent implements OnInit {
     return buildLabelPreviewViewModel(this.buildPreviewPayloadOptions());
   }
 
-  openPreviewDialog(): void {
+  previewCarouselSlides(): LabelPreviewCarouselSlide[] {
+    const baseOptions = this.buildPreviewPayloadOptions();
+
+    return PREVIEW_CAROUSEL_LANGUAGES.map((language) => ({
+      language,
+      label: previewLanguageLabel(language),
+      preview: buildLabelPreviewViewModel({
+        ...baseOptions,
+        previewLanguage: language
+      })
+    }));
+  }
+
+  openPreviewDialog(slide?: LabelPreviewCarouselSlide): void {
     const data: LabelPreviewDialogData = {
-      viewModel: this.previewViewModel(),
-      payloadJson: this.previewPayload()
+      slides: this.previewCarouselSlides(),
+      payloadJson: this.previewPayload(),
+      initialLanguage: slide?.language
     };
 
     this.dialog.open(LabelPreviewDialogComponent, {
-      width: '900px',
+      width: '980px',
       maxWidth: '96vw',
       maxHeight: '95vh',
       panelClass: 'label-preview-dialog-panel',
@@ -272,7 +449,7 @@ export class LabelWorkflowComponent implements OnInit {
         this.loadingLookups = false;
         this.errorMessage = this.resolveErrorMessage(
           error,
-          'Impossible de charger les donnees necessaires a la generation des etiquettes.'
+          this.i18n.instant('AUTO.IMPOSSIBLE_DE_CHARGER_LES_DONNEES_NECESSAIRES_A_LA_GENERATION_DE')
         );
       }
     });
@@ -289,7 +466,7 @@ export class LabelWorkflowComponent implements OnInit {
     const filteredStorageId = selectedOp?.target?.id;
 
     if (!selectedOp || !filteredStorageId) {
-      this.errorMessage = 'Selectionnez une operation de filtration terminee avec une cuve filtree valide.';
+      this.errorMessage = this.i18n.instant('AUTO.SELECTIONNEZ_UNE_OPERATION_DE_FILTRATION_TERMINEE_AVEC_UNE_CUVE_');
       this.labelForm.get('lotId')?.enable();
       return;
     }
@@ -316,13 +493,13 @@ export class LabelWorkflowComponent implements OnInit {
       next: (label) => {
         this.generating = false;
         this.syncFormWithLabel(label);
-        this.successMessage = 'Le brouillon a été généré avec succès.';
+        this.successMessage = this.i18n.instant('AUTO.LE_BROUILLON_A_ETE_GENERE_AVEC_SUCCES');
       },
       error: (error) => {
         this.generating = false;
         this.errorMessage = this.resolveErrorMessage(
           error,
-          'Erreur lors de la generation de l etiquette.'
+          this.i18n.instant('AUTO.ERREUR_LORS_DE_LA_GENERATION_DE_L_ETIQUETTE')
         );
       }
     });
@@ -392,7 +569,7 @@ export class LabelWorkflowComponent implements OnInit {
       next: (label) => {
         this.saving = false;
         this.syncFormWithLabel(label);
-        this.successMessage = 'Le brouillon a été mis à jour.';
+        this.successMessage = this.i18n.instant('AUTO.LE_BROUILLON_A_ETE_MIS_A_JOUR');
         this.showDraftSavedIndicator();
       },
       error: (error) => {
@@ -400,7 +577,7 @@ export class LabelWorkflowComponent implements OnInit {
         this.resetDraftSavedIndicator();
         this.errorMessage = this.resolveErrorMessage(
           error,
-          'Erreur lors de la mise à jour du brouillon.'
+          this.i18n.instant('AUTO.ERREUR_LORS_DE_LA_MISE_A_JOUR_DU_BROUILLON')
         );
       }
     });
@@ -411,7 +588,7 @@ export class LabelWorkflowComponent implements OnInit {
       return;
     }
 
-    if (!confirm('Êtes-vous sûr de vouloir déverrouiller cette étiquette ? Elle repassera en mode brouillon.')) {
+    if (!confirm(this.i18n.instant('AUTO.ETES_VOUS_SUR_DE_VOULOIR_DEVERROUILLER_CETTE_ETIQUETTE_ELLE_REPA'))) {
       return;
     }
 
@@ -424,13 +601,13 @@ export class LabelWorkflowComponent implements OnInit {
       next: (label) => {
         this.drafting = false;
         this.syncFormWithLabel(label);
-        this.successMessage = 'L\'étiquette a été remise en brouillon.';
+        this.successMessage = this.i18n.instant('AUTO.L_ETIQUETTE_A_ETE_REMISE_EN_BROUILLON');
       },
       error: (error) => {
         this.drafting = false;
         this.errorMessage = this.resolveErrorMessage(
           error,
-          'Erreur lors du retour au statut brouillon.'
+          this.i18n.instant('AUTO.ERREUR_LORS_DU_RETOUR_AU_STATUT_BROUILLON')
         );
       }
     });
@@ -452,7 +629,7 @@ export class LabelWorkflowComponent implements OnInit {
         next: (label) => {
           this.finalizing = false;
           this.syncFormWithLabel(label);
-          this.successMessage = 'Le contenu etiquette a ete finalise et fige.';
+          this.successMessage = this.i18n.instant('AUTO.LE_CONTENU_ETIQUETTE_A_ETE_FINALISE_ET_FIGE');
           this.showFinalizedIndicator();
         },
         error: (error) => {
@@ -460,7 +637,7 @@ export class LabelWorkflowComponent implements OnInit {
           this.resetFinalizedIndicator();
           this.errorMessage = this.resolveErrorMessage(
             error,
-            'Erreur lors de la finalisation de l etiquette.'
+            this.i18n.instant('AUTO.ERREUR_LORS_DE_LA_FINALISATION_DE_L_ETIQUETTE')
           );
         }
       });
@@ -479,13 +656,13 @@ export class LabelWorkflowComponent implements OnInit {
         this.exporting = false;
         this.exportedLabel = labelExport;
         this.downloadJson(labelExport);
-        this.successMessage = 'Le JSON etiquette a ete exporte.';
+        this.successMessage = this.i18n.instant('AUTO.LE_JSON_ETIQUETTE_A_ETE_EXPORTE');
       },
       error: (error) => {
         this.exporting = false;
         this.errorMessage = this.resolveErrorMessage(
           error,
-          'Erreur lors de l export de l etiquette.'
+          this.i18n.instant('AUTO.ERREUR_LORS_DE_L_EXPORT_DE_L_ETIQUETTE')
         );
       }
     });
@@ -516,8 +693,14 @@ export class LabelWorkflowComponent implements OnInit {
       responsibleName: '',
       responsibleAddress: '',
       extractionMethod: '',
-      bestBeforeDate: ''
+      bestBeforeDate: '',
+      ingredientDeclaration: '',
+      ean13: '',
+      harvestYear: '',
+      acidityLevel: '',
+      brandName: ''
     });
+    this.compositionOverrides = {};
     this.applyCompanyDefaultsToForm();
 
     this.clearMessages();
@@ -631,6 +814,10 @@ export class LabelWorkflowComponent implements OnInit {
     return typedItem?.id ?? typedItem?.operationId ?? `${index}`;
   }
 
+  trackByCompositionKey(_index: number, entry: LabelCompositionEntry): string {
+    return entry.key;
+  }
+
   private saveChanges(): Observable<LabelContentDto> {
     if (!this.currentLabel?.id || this.isFinalized() || !this.labelForm.dirty) {
       return of(this.currentLabel as LabelContentDto);
@@ -658,7 +845,13 @@ export class LabelWorkflowComponent implements OnInit {
       responsibleName: this.labelForm.value.responsibleName?.trim() || undefined,
       responsibleAddress: this.labelForm.value.responsibleAddress?.trim() || undefined,
       extractionMethod: this.labelForm.value.extractionMethod?.trim() || undefined,
-      bestBeforeDate: this.labelForm.value.bestBeforeDate?.trim() || undefined
+      bestBeforeDate: this.labelForm.value.bestBeforeDate?.trim() || undefined,
+      ingredientDeclaration: this.labelForm.value.ingredientDeclaration?.trim() || buildIngredientDeclaration(this.labelForm.value.qualityGrade),
+      nutritionDeclarationJson: this.buildNutritionDeclarationPayload(),
+      ean13: this.labelForm.value.ean13?.trim() || undefined,
+      harvestYear: this.labelForm.value.harvestYear?.trim() || undefined,
+      acidityLevel: this.labelForm.value.acidityLevel?.trim() || undefined,
+      brandName: this.labelForm.value.brandName?.trim() || undefined
     };
   }
 
@@ -706,13 +899,13 @@ export class LabelWorkflowComponent implements OnInit {
       next: (label) => {
         this.loadingLabel = false;
         this.syncFormWithLabel(label);
-        this.successMessage = 'Etiquette chargee avec succes.';
+        this.successMessage = this.i18n.instant('AUTO.ETIQUETTE_CHARGEE_AVEC_SUCCES');
       },
       error: (error) => {
         this.loadingLabel = false;
         this.errorMessage = this.resolveErrorMessage(
           error,
-          'Impossible de charger cette etiquette.'
+          this.i18n.instant('AUTO.IMPOSSIBLE_DE_CHARGER_CETTE_ETIQUETTE')
         );
       }
     });
@@ -743,8 +936,14 @@ export class LabelWorkflowComponent implements OnInit {
       responsibleName: label.responsibleName || '',
       responsibleAddress: label.responsibleAddress || '',
       extractionMethod: label.extractionMethod || '',
-      bestBeforeDate: label.bestBeforeDate || ''
+      bestBeforeDate: label.bestBeforeDate || '',
+      ingredientDeclaration: label.ingredientDeclaration || buildIngredientDeclaration(label.qualityGrade),
+      ean13: label.ean13 || '',
+      harvestYear: label.harvestYear || '',
+      acidityLevel: label.acidityLevel || '',
+      brandName: label.brandName || ''
     });
+    this.loadCompositionOverridesFromLabel(label);
     this.applyCompanyDefaultsToForm();
 
     this.labelForm.markAsPristine();
@@ -1039,6 +1238,7 @@ export class LabelWorkflowComponent implements OnInit {
       brandLogoData: this.companyProfile?.logoData,
       brandLogoContentType: this.companyProfile?.logoContentType,
       postFiltrationQualityControls: this.postFiltrationQualityControls,
+      compositionOverrides: this.compositionOverrides,
       genealogy: this.currentGenealogy,
       productDensity: packaging?.density ?? null,
       resolveQualityLabel: (value: string | null | undefined) => this.resolveQualityLabel(value),

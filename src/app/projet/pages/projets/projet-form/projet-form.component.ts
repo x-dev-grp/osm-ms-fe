@@ -1,3 +1,5 @@
+import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import {Component, OnInit} from '@angular/core';
 import {CommonModule, CurrencyPipe, TitleCasePipe} from '@angular/common';
 import {FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators} from '@angular/forms';
@@ -18,15 +20,17 @@ import {Article} from '../../../../stock/models/article.model';
 import { MaterialNeedsPreviewComponent } from '../../../../shared/components/material-needs-preview/material-needs-preview.component';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { extractHttpErrorMessage } from '../../../../shared/utils/http-error.util';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-projet-form',
   standalone: true,
   templateUrl: './projet-form.component.html',
-  imports: [CommonModule, ReactiveFormsModule, TitleCasePipe, CurrencyPipe, MaterialNeedsPreviewComponent],
+  imports: [TranslateModule, CommonModule, ReactiveFormsModule, TitleCasePipe, CurrencyPipe, MaterialNeedsPreviewComponent],
   styleUrls: ['./projet-form.component.scss']
 })
 export class ProjetFormComponent implements OnInit {
+  private readonly i18n = inject(TranslateService);
   form!: FormGroup;
 
   clients: Client[] = [];
@@ -248,7 +252,7 @@ export class ProjetFormComponent implements OnInit {
       });
 
       console.error('Champs invalides:', invalidFields);
-      alert('Veuillez remplir tous les champs obligatoires (Client, Produits, Date, Lignes, Prix, etc.).');
+      alert(this.i18n.instant('AUTO.VEUILLEZ_REMPLIR_TOUS_LES_CHAMPS_OBLIGATOIRES_CLIENT_PRODUITS_DA'));
       return;
     }
 
@@ -257,14 +261,14 @@ export class ProjetFormComponent implements OnInit {
     if (!selectedClient) {
       this.form.get('clientId')?.setErrors({required: true});
       this.form.get('clientId')?.markAsTouched();
-      alert('Veuillez selectionner un client valide.');
+      alert(this.i18n.instant('AUTO.VEUILLEZ_SELECTIONNER_UN_CLIENT_VALIDE'));
       return;
     }
 
     if (this.form.get('typeEmballage')?.value !== TypeEmballage.VRAC) {
       const missingBom = this.produits.controls.some(control => !control.get('bomId')?.value);
       if (missingBom) {
-        alert('La nomenclature est obligatoire pour un projet non VRAC.');
+        alert(this.i18n.instant('AUTO.LA_NOMENCLATURE_EST_OBLIGATOIRE_POUR_UN_PROJET_NON_VRAC'));
         return;
       }
     }

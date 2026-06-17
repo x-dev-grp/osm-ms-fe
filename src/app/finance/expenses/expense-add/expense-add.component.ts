@@ -15,13 +15,14 @@ import { PaymentMethod } from '../../models/financial-transaction.model';
 import { ToastService } from '../../../shared/services/toast.service';
 import { map, Observable } from 'rxjs';
 import { startWith } from 'rxjs/operators';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-expense-add',
   templateUrl: './expense-add.component.html',
   styleUrls: ['./expense-add.component.scss'],
   standalone: true,
-  imports: [
+  imports: [TranslateModule,
     CommonModule,
     ReactiveFormsModule,
     MatButtonModule,
@@ -45,10 +46,10 @@ export class ExpenseAddComponent implements OnInit {
   categoryOptions: ExpenseCategory[] = Object.values(ExpenseCategory) as ExpenseCategory[];
   categoryFilterCtrl = new FormControl<string>('', { nonNullable: true });
   filteredCategories$!: Observable<ExpenseCategory[]>;
-  
+
   // Screen size detection for responsive behavior
   isMobileView = false;
-  
+
   constructor(
     private fb: FormBuilder,
     private expenseService: ExpenseService,
@@ -72,13 +73,13 @@ export class ExpenseAddComponent implements OnInit {
       })
     );
   }
-  
+
   // Listen for window resize events to adjust layout
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.checkScreenSize();
   }
-  
+
   // Check screen size to determine mobile view
   private checkScreenSize() {
     this.isMobileView = window.innerWidth <= 768;
@@ -92,7 +93,7 @@ export class ExpenseAddComponent implements OnInit {
       this.categoryFilterCtrl.setValue(''); // clear search when closed
     }
   }
-  
+
   private initForm(): void {
     this.form = this.fb.group({
       invoiceRef: ['', Validators.required],
@@ -147,7 +148,7 @@ export class ExpenseAddComponent implements OnInit {
         this.loading = false;
       },
       error: () => {
-        this.toast.error('Erreur lors du chargement de la dépense');
+        this.toast.error('AUTO.ERREUR_LORS_DU_CHARGEMENT_DE_LA_DEPENSE');
         this.loading = false;
         this.router.navigate(['/finance/expenses']);
       }
@@ -156,7 +157,7 @@ export class ExpenseAddComponent implements OnInit {
 
   save(): void {
     if (this.form.invalid) {
-      this.toast.error('Veuillez remplir tous les champs obligatoires');
+      this.toast.error('OIL_RECEPTION.ADD.MESSAGES.ERROR.INCOMPLETE_FORM');
       return;
     }
 
@@ -173,15 +174,15 @@ export class ExpenseAddComponent implements OnInit {
     request$.subscribe({
       next: (response) => {
         if (response.success) {
-          this.toast.success(this.editing ? 'Dépense mise à jour avec succès' : 'Dépense créée avec succès');
+          this.toast.success(this.editing ? 'AUTO.DEPENSE_MISE_A_JOUR_AVEC_SUCCES' : 'AUTO.DEPENSE_CREEE_AVEC_SUCCES');
           this.router.navigate(['/finance/expenses']);
         } else {
-          this.toast.error(response.message || 'Une erreur est survenue');
+          this.toast.error(response.message || 'AUTO.UNE_ERREUR_EST_SURVENUE');
         }
         this.loading = false;
       },
       error: () => {
-        this.toast.error('Une erreur est survenue');
+        this.toast.error('AUTO.UNE_ERREUR_EST_SURVENUE');
         this.loading = false;
       }
     });

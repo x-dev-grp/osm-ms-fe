@@ -2,21 +2,21 @@
   <div class="col-md-5 col-xxl-4">
     <app-card [showHeader]="false">
       <div class="flex align-item-center justify-content-between m-b-15">
-        <div class="f-16 f-w-600">My Card</div>
+        <div class="f-16 f-w-600">{{ 'AUTO.MY_CARD' | translate }}</div>
         <a [matMenuTriggerFor]="menu" href="javascript:" class="avatar avatar-xs hover">
           <i class="ti ti-dots-vertical f-18 text-accent-500"></i>
         </a>
         <mat-menu #menu="matMenu">
-          <a mat-menu-item>Today</a>
-          <a mat-menu-item>Weekly</a>
-          <a mat-menu-item>Monthly</a>
+          <a mat-menu-item>{{ 'DASHBOARD.DATE_FILTER.TODAY' | translate }}</a>
+          <a mat-menu-item>{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.WEEKLY' | translate }}</a>
+          <a mat-menu-item>{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.MONTHLY' | translate }}</a>
         </mat-menu>
       </div>
       <app-card [showHeader]="false" cardClass="overflow-hidden my-card">
         <div class="flex">
           <div class="flex-grow-1 m-r-15">
-            <p class="text-white mat-small m-b-0">CARD NAME</p>
-            <div class="text-white f-16 f-w-600">Jonh Smith</div>
+            <p class="text-white mat-small m-b-0">{{ 'AUTO.CARD_NAME' | translate }}</p>
+            <div class="text-white f-16 f-w-600">{{ 'AUTO.JONH_SMITH' | translate }}</div>
           </div>
           <div class="flex-shrink-0">
             <img src="assets/images/widget/img-card-master.svg" alt="img" class="img-fluid" />
@@ -25,30 +25,30 @@
         <div class="f-20 f-w-600 text-white m-y-15">**** **** **** **** 8361</div>
         <div class="row">
           <div class="col-auto">
-            <p class="text-accent-400 mat-small m-b-0">EXP</p>
+            <p class="text-accent-400 mat-small m-b-0">{{ 'AUTO.EXP' | translate }}</p>
             <div class="f-w-600 text-white m-b-0">7/30</div>
           </div>
           <div class="col-auto">
-            <p class="text-accent-400 mat-small m-b-0">CVV</p>
+            <p class="text-accent-400 mat-small m-b-0">{{ 'AUTO.CVV' | translate }}</p>
             <div class="text-white f-w-600">455</div>
           </div>
         </div>
       </app-card>
       <div class="text-center m-t-15">
         <div class="m-b-5 f-w-600 f-24">$1.480.000</div>
-        <p class="text-muted m-b-0">Total Balance</p>
+        <p class="text-muted m-b-0">{{ 'AUTO.TOTAL_BALANCE' | translate }}</p>
       </div>
     </app-card>
     <app-card [showHeader]="false" [padding]="0">
       <div class="flex align-item-center justify-content-between p-15">
-        <div class="f-16 f-w-600">Transactions</div>
+        <div class="f-16 f-w-600">{{ 'MENU.FINANCE.DASHBOARD.TRANSACTIONS' | translate }}</div>
         <a [matMenuTriggerFor]="menu" href="javascript:" class="avatar avatar-xs hover">
           <i class="ti ti-dots-vertical f-18 text-accent-500"></i>
         </a>
         <mat-menu #menu="matMenu">
-          <a mat-menu-item>Today</a>
-          <a mat-menu-item>Weekly</a>
-          <a mat-menu-item>Monthly</a>
+          <a mat-menu-item>{{ 'DASHBOARD.DATE_FILTER.TODAY' | translate }}</a>
+          <a mat-menu-item>{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.WEEKLY' | translate }}</a>
+          <a mat-menu-item>{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.MONTHLY' | translate }}</a>
         </mat-menu>
       </div>
       <ul class="list-group list-group-flush">
@@ -96,11 +96,11 @@
     <app-cash-flow-chart />
     <app-card [showHeader]="false">
       <div class="moneyGo">
-        <div class="f-16 f-w-600">Where your money go ?</div>
+        <div class="f-16 f-w-600">{{ 'AUTO.WHERE_YOUR_MONEY_GO' | translate }}</div>
         <button mat-flat-button color="primary">
           <div class="flex align-item-center">
             <i class="ti ti-plus m-r-15"></i>
-            <span>Add New</span>
+            <span>{{ 'GENERIC_TYPE.ACTION.ADD_NEW' | translate }}</span>
           </div>
         </button>
       </div>
@@ -114,9 +114,9 @@
                   <i class="ti ti-dots-vertical f-18 text-accent-500"></i>
                 </a>
                 <mat-menu #menu="matMenu">
-                  <a mat-menu-item>Today</a>
-                  <a mat-menu-item>Weekly</a>
-                  <a mat-menu-item>Monthly</a>
+                  <a mat-menu-item>{{ 'DASHBOARD.DATE_FILTER.TODAY' | translate }}</a>
+                  <a mat-menu-item>{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.WEEKLY' | translate }}</a>
+                  <a mat-menu-item>{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.MONTHLY' | translate }}</a>
                 </mat-menu>
               </div>
               <div class="m-b-15 f-w-600">{{ item.title }}</div>
@@ -135,7 +135,7 @@
   </div>
   <div class="col-md-12 col-xxl-4">
     <app-card [showHeader]="false">
-      <div class="m-b-15 f-16 f-w-600">Accounts</div>
+      <div class="m-b-15 f-16 f-w-600">{{ 'AUTO.ACCOUNTS' | translate }}</div>
       <div class="row g-3">
         @for (card of accountCardList; track card) {
           <div class="col-12">
@@ -145,7 +145,7 @@
                   <span class="wid-40 hei-40 flex align-item-center justify-content-center bg-dark text-white border-50">
                     <i class="ti ti-plus f-18"></i>
                   </span>
-                  <span class="text-muted">Add to Account</span>
+                  <span class="text-muted">{{ 'AUTO.ADD_TO_ACCOUNT' | translate }}</span>
                 </span>
               </app-card>
             } @else {
@@ -157,12 +157,12 @@
                   <div class="flex-grow-1 m-l-15">
                     <div class="flex align-item-center justify-content-center gap-2 text-success-500">
                       <i class="ti ti-circle f-10"></i>
-                      <p class="m-b-0">Active</p>
+                      <p class="m-b-0">{{ 'ADMIN_DASHBOARD.STATUS.ACTIVE' | translate }}</p>
                     </div>
                   </div>
                   <div class="flex-shrink-0">
                     <div class="f-w-600">12,920.000</div>
-                    <p class="mb-0">US Dollar</p>
+                    <p class="mb-0">{{ 'AUTO.US_DOLLAR' | translate }}</p>
                   </div>
                 </div>
               </app-card>
@@ -175,14 +175,14 @@
   <div class="col-md-6 col-xxl-4">
     <app-card [showHeader]="false">
       <div class="flex align-item-center justify-content-between mb-3">
-        <div class="f-16 f-w-600 m-b-0">Quick Transfer</div>
+        <div class="f-16 f-w-600 m-b-0">{{ 'AUTO.QUICK_TRANSFER' | translate }}</div>
         <a [matMenuTriggerFor]="menu" href="javascript:" class="avatar avatar-xs hover">
           <i class="ti ti-dots-vertical f-18 text-accent-500"></i>
         </a>
         <mat-menu #menu="matMenu">
-          <a mat-menu-item>Today</a>
-          <a mat-menu-item>Weekly</a>
-          <a mat-menu-item>Monthly</a>
+          <a mat-menu-item>{{ 'DASHBOARD.DATE_FILTER.TODAY' | translate }}</a>
+          <a mat-menu-item>{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.WEEKLY' | translate }}</a>
+          <a mat-menu-item>{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.MONTHLY' | translate }}</a>
         </mat-menu>
       </div>
       <div class="flex align-item-center justify-content-between gap-2 m-y-15">
@@ -198,7 +198,7 @@
           }
         }
       </div>
-      <div class="m-y-10 f-16 f-w-600">Recent Transfer</div>
+      <div class="m-y-10 f-16 f-w-600">{{ 'AUTO.RECENT_TRANSFER' | translate }}</div>
       <ul class="list-group list-group-flush">
         @for (list of recentTransfer; track list; let last = $last) {
           <li class="list-group-item p-x-0" [ngClass]="{ 'p-b-5': last }">
@@ -231,12 +231,12 @@
   <div class="col-sm-12">
     <app-card cardTitle="Transaction History" padding="0">
       <ng-template #headerOptionsTemplate>
-        <a href="javascript:" class="text-primary-500">View All</a>
+        <a href="javascript:" class="text-primary-500">{{ 'AUTO.VIEW_ALL' | translate }}</a>
       </ng-template>
       <div class="table-responsive p-b-5">
         <table mat-table [dataSource]="historySource" class="mat-elevation-z8 monthly-table">
           <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef>USER NAME</th>
+            <th mat-header-cell *matHeaderCellDef>{{ 'AUTO.USER_NAME' | translate }}</th>
             <td mat-cell class="text-nowrap" *matCellDef="let element" class="text-nowrap p-l-25">
               <div class="flex align-item-center">
                 <div class="flex-shrink-0">
@@ -249,40 +249,40 @@
             </td>
           </ng-container>
           <ng-container matColumnDef="category">
-            <th mat-header-cell *matHeaderCellDef>CATEGORY</th>
+            <th mat-header-cell *matHeaderCellDef>{{ 'AUTO.CATEGORY' | translate }}</th>
             <td mat-cell *matCellDef="let element" class="text-nowrap">
               {{ element.category }}
             </td>
           </ng-container>
           <ng-container matColumnDef="date">
-            <th mat-header-cell *matHeaderCellDef>DATE/TIME</th>
+            <th mat-header-cell *matHeaderCellDef>{{ 'AUTO.DATE_TIME' | translate }}</th>
             <td mat-cell class="text-nowrap f-w-600" *matCellDef="let element" class="text-nowrap">
               {{ element.date }}
               <span class="text-muted mat-small block">{{ element.time }}</span>
             </td>
           </ng-container>
           <ng-container matColumnDef="amount">
-            <th mat-header-cell *matHeaderCellDef>AMOUNT</th>
+            <th mat-header-cell *matHeaderCellDef>{{ 'AUTO.AMOUNT' | translate }}</th>
             <td mat-cell *matCellDef="let element" class="text-nowrap">
               {{ element.amount }}
             </td>
           </ng-container>
           <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef>STATUS</th>
+            <th mat-header-cell *matHeaderCellDef>{{ 'AUTO.STATUS' | translate }}</th>
             <td mat-cell *matCellDef="let element" class="text-nowrap">
               @if (element.status === 'completed') {
-                <span class="user-status bg-success-500 text-white mat-small">Completed</span>
+                <span class="user-status bg-success-500 text-white mat-small">{{ 'DELIVERIES.STATUS.COMPLETED' | translate }}</span>
               } @else if (element.status === 'pending') {
-                <span class="user-status bg-warning-500 text-white mat-small">Pending</span>
+                <span class="user-status bg-warning-500 text-white mat-small">{{ 'MENU.FINANCE.DASHBOARD.CHART_LABELS.PENDING' | translate }}</span>
               } @else if (element.status === 'canceled') {
-                <span class="user-status bg-warn-500 text-white mat-small">Canceled</span>
+                <span class="user-status bg-warn-500 text-white mat-small">{{ 'AUTO.CANCELED' | translate }}</span>
               } @else if (element.status === 'progress') {
-                <span class="user-status bg-primary-500 text-white mat-small">In Progress</span>
+                <span class="user-status bg-primary-500 text-white mat-small">{{ 'DELIVERIES.STATUS.IN_PROGRESS' | translate }}</span>
               }
             </td>
           </ng-container>
           <ng-container matColumnDef="action">
-            <th mat-header-cell *matHeaderCellDef>Action</th>
+            <th mat-header-cell *matHeaderCellDef>{{ 'AUTO.ACTION' | translate }}</th>
             <td mat-cell *matCellDef="let element" class="text-nowrap">
               <a href="javascript:" class="avatar avatar-xs hover text-accent-500">
                 <i class="ti ti-eye f-20"></i>

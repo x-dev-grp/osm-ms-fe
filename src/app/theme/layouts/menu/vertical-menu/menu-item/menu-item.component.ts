@@ -7,10 +7,11 @@ import { CommonModule } from '@angular/common';
 import { NavigationItem } from 'src/app/theme/types/navigation';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { NavigationActiveService } from 'src/app/theme/services/navigation-active.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-menu-item',
-  imports: [RouterModule, SharedModule, CommonModule],
+  imports: [TranslateModule, RouterModule, SharedModule, CommonModule],
   templateUrl: './menu-item.component.html',
   standalone: true,
   styleUrls: ['./menu-item.component.scss']

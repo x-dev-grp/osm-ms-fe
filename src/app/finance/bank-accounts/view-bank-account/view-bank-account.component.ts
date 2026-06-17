@@ -73,7 +73,7 @@ export class ViewBankAccountComponent implements OnInit {
   private loadBankAccount(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) {
-      this.toast.error('Invalid bank account ID');
+      this.toast.error('AUTO.INVALID_BANK_ACCOUNT_ID');
       this.router.navigate(['/finance/banks']);
       return;
     }
@@ -85,14 +85,14 @@ export class ViewBankAccountComponent implements OnInit {
             this.bankAccount = Array.isArray(response.data) ? response.data[0] : response.data;
 
         } else {
-          this.toast.error('Bank account not found');
+          this.toast.error('AUTO.BANK_ACCOUNT_NOT_FOUND');
           this.router.navigate(['/finance/banks']);
         }
         this.loading = false;
       },
       error: (error) => {
         console.error('Error loading bank account:', error);
-        this.toast.error('Error loading bank account details');
+        this.toast.error('AUTO.ERROR_LOADING_BANK_ACCOUNT_DETAILS');
         this.router.navigate(['/finance/banks']);
         this.loading = false;
       }
@@ -107,13 +107,13 @@ export class ViewBankAccountComponent implements OnInit {
           console.log(this.transactions)
         } else {
           this.transactions = [];
-          this.toast.info('No transactions found for this bank');
+          this.toast.info('AUTO.NO_TRANSACTIONS_FOUND_FOR_THIS_BANK');
         }
         this.loading = false;
       },
       error: (error) => {
         console.error('Error loading bank transactions:', error);
-        this.toast.error('Error loading bank transactions');
+        this.toast.error('AUTO.ERROR_LOADING_BANK_TRANSACTIONS');
         this.loading = false;
       }
     });

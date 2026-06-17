@@ -12,10 +12,11 @@ import { CompanyProfileService } from 'src/app/shared/services/company-profile.s
 import { AuthenticationService } from 'src/app/auth/services/authentication.service';
 import { Role } from 'src/app/theme/types/role';
 import { CompanyProfile } from '../../../../shared/models/CompanyProfile';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-default',
-  imports: [
+  imports: [TranslateModule, 
     CommonModule,
     SharedModule,
     TotalIncomeChartComponent,

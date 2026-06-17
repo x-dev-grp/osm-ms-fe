@@ -10,10 +10,11 @@ import { DARK, LIGHT } from 'src/app/theme/const';
 
 // apexChart
 import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-statistics-chart',
-  imports: [SharedModule, NgApexchartsModule],
+  imports: [TranslateModule, SharedModule, NgApexchartsModule],
   templateUrl: './statistics-chart.component.html',
   styleUrl: './statistics-chart.component.scss'
 })

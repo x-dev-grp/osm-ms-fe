@@ -9,7 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 
 // third party
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 
 // project import
 import { AuthenticationService } from 'src/app/auth/services/authentication.service';
@@ -23,7 +23,7 @@ import { QrResolveResponse } from '../../../../shared/models/qr-models';
 
 @Component({
   selector: 'app-nav-right',
-  imports: [
+  imports: [TranslateModule,
     SharedModule,
     CommonModule,
     RouterModule,
@@ -158,14 +158,14 @@ export class NavRightComponent {
         this.searching = false;
         const hit = response.result || response.results?.[0];
         if (!hit) {
-          alert('Code introuvable');
+          alert(this.translate.instant('AUTO.CODE_INTROUVABLE'));
           return;
         }
         this.navigateToFoundEntity(hit);
       },
       error: () => {
         this.searching = false;
-        alert('Code introuvable');
+        alert(this.translate.instant('AUTO.CODE_INTROUVABLE'));
       }
     });
   }

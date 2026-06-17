@@ -13,11 +13,12 @@ import { PdfGeneratorExpeditionService } from '../../../../shared/services/pdf-g
 import { CompanyProfileService } from '../../../../shared/services/company-profile.service';
 import { PdfExpeditionConfig } from '../../../../shared/models/pdf-config.model';
 import { TraceabilityTimelineComponent } from '../../../../shared/components/traceability-timeline/traceability-timeline.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-projet-traceability',
   standalone: true,
-  imports: [
+  imports: [TranslateModule,
     CommonModule,
     DatePipe,
     MatButtonModule,
@@ -48,7 +49,7 @@ export class ProjetTraceabilityComponent implements OnInit {
   ngOnInit(): void {
     this.projectId = this.route.snapshot.paramMap.get('id');
     if (!this.projectId) {
-      this.toast.error('ID Projet manquant');
+      this.toast.error('AUTO.ID_PROJET_MANQUANT');
       this.router.navigate(['/projets']);
       return;
     }
@@ -68,7 +69,7 @@ export class ProjetTraceabilityComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erreur chargement projet', err);
-        this.toast.error('Impossible de charger le projet');
+        this.toast.error('AUTO.IMPOSSIBLE_DE_CHARGER_LE_PROJET');
         this.loading = false;
       }
     });
@@ -83,7 +84,7 @@ export class ProjetTraceabilityComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erreur chargement tracabilite', err);
-        this.toast.error('Impossible de charger la traçabilité en direct');
+        this.toast.error('AUTO.IMPOSSIBLE_DE_CHARGER_LA_TRACABILITE_EN_DIRECT');
         this.loading = false;
       }
     });

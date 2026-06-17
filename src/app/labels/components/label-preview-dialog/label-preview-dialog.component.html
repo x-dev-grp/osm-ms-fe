@@ -1,17 +1,31 @@
 <div class="preview-dialog">
   <div class="dialog-header">
     <div>
-      <h2>Aperçu de l'étiquette</h2>
-      <p>Visualisation complète et payload JSON exportable</p>
+      <h2>{{ 'AUTO.APERCU_DE_L_ETIQUETTE' | translate }}</h2>
+      <p>{{ 'AUTO.VISUALISATION_COMPLETE_ET_PAYLOAD_JSON_EXPORTABLE' | translate }}</p>
     </div>
-    <button mat-icon-button type="button" (click)="close()" aria-label="Fermer">
+    <button mat-icon-button type="button" (click)="close()" [attr.aria-label]="'COMMON.CLOSE' | translate">
       <mat-icon>close</mat-icon>
     </button>
   </div>
 
   <div class="dialog-body">
     <div class="preview-frame">
-      <app-label-preview-card [preview]="data.viewModel" size="full"></app-label-preview-card>
+      <app-label-preview-carousel
+        *ngIf="usesCarousel; else singlePreview"
+        [slides]="carouselSlides"
+        [initialLanguage]="data.initialLanguage"
+        size="full"
+        [showExpand]="false"
+      ></app-label-preview-carousel>
+
+      <ng-template #singlePreview>
+        <app-label-preview-card
+          *ngIf="carouselSlides[0] as slide"
+          [preview]="slide.preview"
+          size="full"
+        ></app-label-preview-card>
+      </ng-template>
     </div>
 
     <div class="json-section">
@@ -25,6 +39,6 @@
   </div>
 
   <div class="dialog-actions">
-    <button mat-flat-button type="button" (click)="close()">Fermer</button>
+    <button mat-flat-button type="button" (click)="close()">{{ 'COMMON.CLOSE' | translate }}</button>
   </div>
 </div>

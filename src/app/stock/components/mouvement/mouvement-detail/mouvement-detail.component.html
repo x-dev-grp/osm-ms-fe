@@ -1,0 +1,61 @@
+<div *ngIf="loading" class="loading-overlay">
+  <mat-spinner diameter="50"></mat-spinner>
+</div>
+
+<div *ngIf="errorMessage && !loading" class="error-message">
+  {{ errorMessage }}
+  <button mat-stroked-button type="button" (click)="backToList()">{{ 'COMMON.BACK' | translate }}</button>
+</div>
+
+<mat-card *ngIf="!loading && mouvement as mvt" class="details-card">
+  <div class="card-header">
+    <mat-card-title>{{ 'DASHBOARD_TITLES.STOCK_MOVEMENTS' | translate }}</mat-card-title>
+    <div class="header-actions">
+      <mat-chip-listbox aria-label="Type">
+        <mat-chip>{{ movementTypeLabel(mvt.typeMouvement) }}</mat-chip>
+      </mat-chip-listbox>
+      <button mat-stroked-button type="button" (click)="backToList()">
+        <mat-icon>arrow_back</mat-icon>
+        {{ 'COMMON.BACK' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <mat-card-content class="scrollable-content">
+    <div class="section">
+      <h3 class="section-title">{{ 'DELIVERIES.DETAILS.SECTIONS.GENERAL_INFO' | translate }}</h3>
+      <div class="grid-row">
+        <div class="grid-item">
+          <strong>{{ 'DASHBOARD_FIELDS.MOVEMENT_DATE' | translate }}:</strong>
+          {{ mvt.dateMouvement | date:'short' }}
+        </div>
+        <div class="grid-item">
+          <strong>{{ 'DASHBOARD_FIELDS.MOVEMENT_TYPE' | translate }}:</strong>
+          {{ movementTypeLabel(mvt.typeMouvement) }}
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title">{{ 'DASHBOARD_FIELDS.ARTICLE' | translate }}</h3>
+      <div class="grid-row">
+        <div class="grid-item">
+          <strong>{{ 'DASHBOARD_FIELDS.ARTICLE_CODE' | translate }}:</strong>
+          {{ mvt.article?.code || 'N/A' }}
+        </div>
+        <div class="grid-item">
+          <strong>{{ 'DASHBOARD_FIELDS.ARTICLE' | translate }}:</strong>
+          {{ mvt.article?.nom || 'N/A' }}
+        </div>
+        <div class="grid-item">
+          <strong>{{ 'DASHBOARD_FIELDS.QUANTITY' | translate }}:</strong>
+          {{ mvt.quantite }}
+        </div>
+        <div class="grid-item">
+          <strong>{{ 'DASHBOARD_FIELDS.REASON' | translate }}:</strong>
+          {{ mvt.motif || 'N/A' }}
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

@@ -126,7 +126,7 @@
                   placeholder="{{ 'OIL_TRANSACTIONS.FORM.PLACEHOLDERS.QUANTITY_KG' | translate }}"
                   step="0.01"
                   min="0.01">
-                <span matSuffix>kg</span>
+                <span matSuffix>{{ 'PLANNING_KG' | translate }}</span>
                 <mat-error *ngIf="form.get('quantityKg')?.hasError('required')">
                   {{ getErrorMessage('quantityKg') }}
                 </mat-error>
@@ -151,7 +151,7 @@
                   placeholder="{{ 'OIL_TRANSACTIONS.FORM.PLACEHOLDERS.UNIT_PRICE' | translate }}"
                   step="0.01"
                   min="0">
-                <span matSuffix>TND/kg</span>
+                <span matSuffix>{{ 'AUTO.TND_KG' | translate }}</span>
                 <mat-error *ngIf="form.get('unitPrice')?.hasError('required')">
                   {{ getErrorMessage('unitPrice') }}
                 </mat-error>
@@ -167,7 +167,7 @@
                   matInput
                   formControlName="totalPrice"
                   readonly>
-                <span matSuffix>TND</span>
+                <span matSuffix>{{ 'OIL_SALES.CURRENCIES.TND' | translate }}</span>
                 <mat-hint>{{ 'OIL_TRANSACTIONS.FORM.HINTS.TOTAL_PRICE' | translate }}</mat-hint>
               </mat-form-field>
             </div>

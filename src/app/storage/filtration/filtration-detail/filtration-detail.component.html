@@ -1,0 +1,90 @@
+<div *ngIf="loading()" class="loading-overlay">
+  <mat-spinner diameter="50"></mat-spinner>
+</div>
+
+<div *ngIf="errorMessage() && !loading()" class="error-message">
+  {{ errorMessage() }}
+  <button mat-stroked-button type="button" (click)="backToList()">{{ 'COMMON.BACK' | translate }}</button>
+</div>
+
+<mat-card *ngIf="!loading() && operation() as op" class="details-card">
+  <div class="card-header">
+    <mat-card-title>{{ 'DASHBOARD_TITLES.FILTRATION' | translate }}</mat-card-title>
+    <div class="header-actions">
+      <mat-chip-listbox aria-label="Status">
+        <mat-chip>{{ op.status }}</mat-chip>
+      </mat-chip-listbox>
+      <button mat-stroked-button type="button" (click)="backToList()">
+        <mat-icon>arrow_back</mat-icon>
+        {{ 'COMMON.BACK' | translate }}
+      </button>
+      <button mat-stroked-button type="button" (click)="openTraceability()">
+        <mat-icon>account_tree</mat-icon>
+        {{ 'OSM_DASHBOARD.ACTIONS.TRACEABILITY' | translate }}
+      </button>
+      @if (op.status === 'CREATED' || op.status === 'COMPLETED') {
+        <button mat-flat-button color="primary" type="button" (click)="editOperation()">
+          <mat-icon>edit</mat-icon>
+          {{ 'BANK_ACCOUNTS.ACTIONS.EDIT' | translate }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <mat-card-content class="scrollable-content">
+    <div class="section">
+      <h3 class="section-title">{{ 'DELIVERIES.DETAILS.SECTIONS.GENERAL_INFO' | translate }}</h3>
+      <div class="grid-row">
+        <div class="grid-item">
+          <strong>{{ 'AUTO.OPERATION' | translate }}:</strong>
+          {{ op.operationId }}
+        </div>
+        <div class="grid-item">
+          <strong>{{ 'PDF.DATE' | translate }}:</strong>
+          {{ op.timestamp | date:'short' }}
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title">{{ 'AUTO.CUVE_SOURCE' | translate }} / {{ 'AUTO.CUVE_CIBLE' | translate }}</h3>
+      <div class="grid-row">
+        <div class="grid-item">
+          <strong>{{ 'AUTO.SOURCE' | translate }}:</strong>
+          {{ op.source?.name ?? op.source?.id ?? 'N/A' }}
+        </div>
+        <div class="grid-item">
+          <strong>{{ 'AUTO.CIBLE' | translate }}:</strong>
+          {{ op.target?.name ?? op.target?.id ?? 'N/A' }}
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title">{{ 'AUTO.VOLUME_A_FILTRER' | translate }}</h3>
+      <div class="grid-row">
+        <div class="grid-item">
+          <strong>{{ 'DASHBOARD_FIELDS.FILTERED_VOLUME' | translate }}:</strong>
+          {{ op.volumeFiltered | number:'1.3-3' }} L
+        </div>
+        <div class="grid-item">
+          <strong>{{ 'DASHBOARD_FIELDS.VOLUME_AFTER' | translate }}:</strong>
+          {{ op.volumeAfter != null ? (op.volumeAfter | number:'1.3-3') + ' L' : 'N/A' }}
+        </div>
+        <div class="grid-item">
+          <strong>{{ 'DASHBOARD_FIELDS.LOSS_PERCENT' | translate }}:</strong>
+          {{ op.lossPercent != null ? (op.lossPercent | number:'1.2-2') + ' %' : 'N/A' }}
+        </div>
+      </div>
+    </div>
+
+    @if (op.note) {
+      <div class="section">
+        <h3 class="section-title">{{ 'AUTO.NOTE' | translate }}</h3>
+        <div class="grid-row">
+          <div class="grid-item col-span-2">{{ op.note }}</div>
+        </div>
+      </div>
+    }
+  </mat-card-content>
+</mat-card>

@@ -6,20 +6,20 @@
           <i class="fas fa-boxes"></i>
         </div>
         <div class="header-title-block">
-          <h1 class="page-title">Ecarts Nomenclatures</h1>
+          <h1 class="page-title">{{ 'AUTO.ECARTS_NOMENCLATURES' | translate }}</h1>
           <p class="stats-badge">
             <i class="fas fa-balance-scale me-1"></i>
-            <span>Analyse des ecarts de consommation matiere</span>
+            <span>{{ 'AUTO.ANALYSE_DES_ECARTS_DE_CONSOMMATION_MATIERE' | translate }}</span>
           </p>
         </div>
       </div>
       <div class="header-actions">
         <button class="header-btn btn-outline-primary" type="button" (click)="exportPdf()"
           [disabled]="loading || !hasData">
-          <i class="fas fa-file-pdf"></i> Exporter PDF
+          <i class="fas fa-file-pdf"></i>  {{ 'OSM_DASHBOARD.EXPORT.PDF' | translate }}
         </button>
         <button class="header-btn btn-primary" type="button" (click)="loadData()" [disabled]="loading">
-          <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i> Actualiser
+          <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>  {{ 'AUTO.ACTUALISER' | translate }}
         </button>
       </div>
     </div>
@@ -27,7 +27,7 @@
 
   <div *ngIf="loading" class="loading-state-modern">
     <div class="spinner-container"></div>
-    <p class="loading-text">Analyse des nomenclatures en cours...</p>
+    <p class="loading-text">{{ 'AUTO.ANALYSE_DES_NOMENCLATURES_EN_COURS' | translate }}</p>
   </div>
 
   <div *ngIf="!loading && errorMessage" class="loading-state-modern">
@@ -38,7 +38,7 @@
     <div class="col-lg-5 mb-4">
       <div class="card h-100 border-0 shadow-sm rounded-4">
         <div class="card-header bg-white border-0 pt-4 pb-0">
-          <h5 class="fw-bold mb-0 text-dark">Repartition des ecarts</h5>
+          <h5 class="fw-bold mb-0 text-dark">{{ 'AUTO.REPARTITION_DES_ECARTS' | translate }}</h5>
         </div>
         <div class="card-body d-flex align-items-center justify-content-center">
           <apx-chart *ngIf="distributionChartOptions" [series]="distributionChartOptions.series"
@@ -52,7 +52,7 @@
     <div class="col-lg-7 mb-4">
       <div class="card h-100 border-0 shadow-sm rounded-4">
         <div class="card-header bg-white border-0 pt-4 pb-0">
-          <h5 class="fw-bold mb-0 text-dark">Top 10 ecarts absolus</h5>
+          <h5 class="fw-bold mb-0 text-dark">{{ 'AUTO.TOP_10_ECARTS_ABSOLUS' | translate }}</h5>
         </div>
         <div class="card-body">
           <apx-chart *ngIf="topGapsChartOptions" [series]="topGapsChartOptions.series"
@@ -78,11 +78,11 @@
       <table class="modern-table">
         <thead>
           <tr>
-            <th>Article / Matiere</th>
-            <th class="text-center">Quantite theorique</th>
-            <th class="text-center">Quantite reelle</th>
-            <th class="text-center">Ecart absolu</th>
-            <th class="text-center">Ecart %</th>
+            <th>{{ 'AUTO.ARTICLE_MATIERE' | translate }}</th>
+            <th class="text-center">{{ 'AUTO.QUANTITE_THEORIQUE' | translate }}</th>
+            <th class="text-center">{{ 'AUTO.QUANTITE_REELLE' | translate }}</th>
+            <th class="text-center">{{ 'AUTO.ECART_ABSOLU' | translate }}</th>
+            <th class="text-center">{{ 'AUTO.ECART' | translate }}</th>
           </tr>
         </thead>
         <tbody>
@@ -107,8 +107,8 @@
           <tr *ngIf="!hasData && !errorMessage">
             <td colspan="5" class="empty-state">
               <div class="empty-icon"><i class="fas fa-box-open"></i></div>
-              <h3>Aucun ecart detecte</h3>
-              <p class="empty-text">Les nomenclatures correspondent parfaitement ou aucune donnee n'est disponible.</p>
+              <h3>{{ 'AUTO.AUCUN_ECART_DETECTE' | translate }}</h3>
+              <p class="empty-text">{{ 'AUTO.LES_NOMENCLATURES_CORRESPONDENT_PARFAITEMENT_OU_AUCUNE_DONNEE_N_' | translate }}</p>
             </td>
           </tr>
         </tbody>

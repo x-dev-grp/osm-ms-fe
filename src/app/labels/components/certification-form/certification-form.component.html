@@ -2,7 +2,7 @@
   <div class="form-header">
     <div class="header-title">
       <mat-icon class="title-icon">eco</mat-icon>
-      <h2>Informations générales</h2>
+      <h2>{{ 'DELIVERIES.FORM.SECTIONS.GENERAL_INFO' | translate }}</h2>
     </div>
     <button mat-icon-button (click)="onCancel()" class="close-btn">
       <mat-icon>close</mat-icon>
@@ -14,63 +14,63 @@
       <!-- Name & Code Row -->
       <div class="form-grid">
         <div class="form-field-group">
-          <label>Nom de la certification <span class="required">*</span></label>
+          <label>{{ 'AUTO.NOM_DE_LA_CERTIFICATION' | translate }} <span class="required">*</span></label>
           <mat-form-field appearance="outline">
             <mat-icon matPrefix>eco</mat-icon>
-            <input matInput formControlName="name" placeholder="Ex : Agriculture Biologique">
-            <mat-error *ngIf="certForm.get('name')?.hasError('required')">Le nom est requis</mat-error>
-            <mat-error *ngIf="certForm.get('name')?.hasError('minlength')">Le nom doit contenir au moins 2 caractères</mat-error>
+            <input matInput formControlName="name" [placeholder]="'AUTO.EX_AGRICULTURE_BIOLOGIQUE' | translate">
+            <mat-error *ngIf="certForm.get('name')?.hasError('required')">{{ 'GENERIC_TYPE.ERRORS.NAME_REQUIRED' | translate }}</mat-error>
+            <mat-error *ngIf="certForm.get('name')?.hasError('minlength')">{{ 'SUPPLIER.ERRORS.NAME_MIN' | translate }}</mat-error>
           </mat-form-field>
         </div>
 
         <div class="form-field-group">
-          <label>Code <span class="required">*</span></label>
+          <label>{{ 'AUTO.CODE' | translate }} <span class="required">*</span></label>
           <mat-form-field appearance="outline">
             <mat-icon matPrefix>sell</mat-icon>
-            <input matInput formControlName="code" placeholder="Ex : BIO">
-            <mat-error *ngIf="certForm.get('code')?.hasError('required')">Le code est requis</mat-error>
+            <input matInput formControlName="code" [placeholder]="'AUTO.EX_BIO' | translate">
+            <mat-error *ngIf="certForm.get('code')?.hasError('required')">{{ 'AUTO.LE_CODE_EST_REQUIS' | translate }}</mat-error>
           </mat-form-field>
         </div>
       </div>
 
       <!-- Description Area -->
       <div class="form-field-group">
-        <label>Description</label>
+        <label>{{ 'BASE_TYPE.FIELDS.DESCRIPTION' | translate }}</label>
         <mat-form-field appearance="outline" class="full-width">
           <mat-icon matPrefix>chat_bubble_outline</mat-icon>
-          <textarea matInput formControlName="description" rows="3" placeholder="Décrivez cette certification..."></textarea>
+          <textarea matInput formControlName="description" rows="3" [placeholder]="'AUTO.DECRIVEZ_CETTE_CERTIFICATION' | translate"></textarea>
         </mat-form-field>
       </div>
 
       <!-- Issuing Body & Category Row -->
       <div class="form-grid">
         <div class="form-field-group">
-          <label>Organisme certificateur <span class="required">*</span></label>
+          <label>{{ 'AUTO.ORGANISME_CERTIFICATEUR' | translate }} <span class="required">*</span></label>
           <mat-form-field appearance="outline">
             <mat-icon matPrefix>business</mat-icon>
-            <input matInput formControlName="issuingBody" placeholder="Ex : Ecocert">
-            <mat-error *ngIf="certForm.get('issuingBody')?.hasError('required')">L'organisme certificateur est requis</mat-error>
+            <input matInput formControlName="issuingBody" [placeholder]="'AUTO.EX_ECOCERT' | translate">
+            <mat-error *ngIf="certForm.get('issuingBody')?.hasError('required')">{{ 'AUTO.L_ORGANISME_CERTIFICATEUR_EST_REQUIS' | translate }}</mat-error>
           </mat-form-field>
         </div>
 
         <div class="form-field-group">
-          <label>Catégorie <span class="required">*</span></label>
+          <label>{{ 'BASE_TYPE.CATEGORY' | translate }} <span class="required">*</span></label>
           <mat-form-field appearance="outline">
             <mat-icon matPrefix>grid_view</mat-icon>
-            <mat-select formControlName="category" placeholder="Sélectionnez une catégorie">
-              <mat-option value="LEGAL">Légale</mat-option>
-              <mat-option value="MARKETING">Marketing</mat-option>
-              <mat-option value="QUALITY">Qualité</mat-option>
+            <mat-select formControlName="category" [placeholder]="'AUTO.SELECTIONNEZ_UNE_CATEGORIE' | translate">
+              <mat-option value="LEGAL">{{ 'AUTO.LEGALE' | translate }}</mat-option>
+              <mat-option value="MARKETING">{{ 'AUTO.MARKETING' | translate }}</mat-option>
+              <mat-option value="QUALITY">{{ 'OIL_TRANSACTION.DETAILS.QUALITY_GRADE' | translate }}</mat-option>
             </mat-select>
-            <mat-error *ngIf="certForm.get('category')?.hasError('required')">La catégorie est requise</mat-error>
+            <mat-error *ngIf="certForm.get('category')?.hasError('required')">{{ 'AUTO.LA_CATEGORIE_EST_REQUISE' | translate }}</mat-error>
           </mat-form-field>
         </div>
       </div>
 
       <div class="logo-section">
         <div class="section-info">
-          <label class="main-label">Logo de la certification <span class="required">*</span></label>
-          <span class="file-hint">Formats acceptés : <span class="highlight">PNG, JPG</span> (max 200KB)</span>
+          <label class="main-label">{{ 'AUTO.LOGO_DE_LA_CERTIFICATION' | translate }} <span class="required">*</span></label>
+          <span class="file-hint">{{ 'AUTO.FORMATS_ACCEPTES' | translate }} <span class="highlight">{{ 'AUTO.PNG_JPG' | translate }}</span>  {{ 'AUTO.MAX_200KB' | translate }}</span>
         </div>
 
         <div class="upload-area"
@@ -89,8 +89,8 @@
             <div class="upload-icon-circle">
               <mat-icon>cloud_upload</mat-icon>
             </div>
-            <p>Glissez-déposez votre logo ici</p>
-            <p class="secondary">ou <span class="link">cliquez pour parcourir</span></p>
+            <p>{{ 'COMPANY_PROFILE_UI.LOGO.DRAG_DROP' | translate }}</p>
+            <p class="secondary">{{ 'AUTO.OU' | translate }} <span class="link">{{ 'AUTO.CLIQUEZ_POUR_PARCOURIR' | translate }}</span></p>
           </div>
 
           <!-- Logo Preview State -->
@@ -98,9 +98,9 @@
             <img [src]="logoPreview" alt="Logo preview" class="preview-img">
             <div class="preview-overlay">
               <mat-icon>cached</mat-icon>
-              <span>Changer le logo</span>
+              <span>{{ 'AUTO.CHANGER_LE_LOGO' | translate }}</span>
             </div>
-            <button mat-icon-button color="warn" (click)="removeLogo($event)" class="remove-btn" matTooltip="Supprimer le logo">
+            <button mat-icon-button color="warn" (click)="removeLogo($event)" class="remove-btn" [matTooltip]="'COMPANY_PROFILE_UI.LOGO.REMOVE' | translate">
               <mat-icon>delete_outline</mat-icon>
             </button>
           </div>
@@ -109,33 +109,34 @@
         <!-- Error message -->
         <div class="logo-error-msg" *ngIf="logoMissing">
           <mat-icon>error_outline</mat-icon>
-          Le logo est requis
+
+          {{ 'AUTO.LE_LOGO_EST_REQUIS' | translate }}
         </div>
       </div>
 
       <!-- Website URL -->
       <div class="form-field-group mt-2">
-        <label>Site Web</label>
+        <label>{{ 'CONFIGURATION.SITE.FIELDS.WEBSITE' | translate }}</label>
         <mat-form-field appearance="outline" class="full-width">
           <mat-icon matPrefix>language</mat-icon>
-          <input matInput formControlName="websiteUrl" placeholder="https://www.exemple.com">
+          <input matInput formControlName="websiteUrl" [placeholder]="'AUTO.HTTPS_WWW_EXEMPLE_COM' | translate">
         </mat-form-field>
       </div>
 
       <!-- Status Row -->
       <div class="form-field-group">
-        <label>Statut <span class="required">*</span></label>
+        <label>{{ 'ADMIN_DASHBOARD.TABLE.STATUS' | translate }} <span class="required">*</span></label>
         <mat-form-field appearance="outline" class="status-field">
           <mat-icon matPrefix>verified_user</mat-icon>
           <mat-select formControlName="isActive">
             <mat-option [value]="true">
               <div class="status-option">
-                <span class="dot active"></span> Actif
+                <span class="dot active"></span>  {{ 'ADMIN_DASHBOARD.STATUS.ACTIVE' | translate }}
               </div>
             </mat-option>
             <mat-option [value]="false">
               <div class="status-option">
-                <span class="dot inactive"></span> Inactif
+                <span class="dot inactive"></span>  {{ 'ADMIN_DASHBOARD.STATUS.INACTIVE' | translate }}
               </div>
             </mat-option>
           </mat-select>
@@ -145,7 +146,7 @@
   </mat-dialog-content>
 
   <mat-dialog-actions class="form-footer">
-    <button mat-button class="btn-cancel" (click)="onCancel()">Annuler</button>
+    <button mat-button class="btn-cancel" (click)="onCancel()">{{ 'ADMIN.CANCEL' | translate }}</button>
     <button mat-flat-button class="btn-submit" [disabled]="certForm.invalid" (click)="onSave()">
       <mat-icon>eco</mat-icon>
       {{ isEdit ? 'Mettre à jour' : 'Créer la certification' }}

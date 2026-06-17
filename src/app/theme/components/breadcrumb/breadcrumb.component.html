@@ -9,7 +9,7 @@
                 <ul class="breadcrumb align-item-center">
                   <li class="breadcrumb-item">
                     @if (type === 'theme2') {
-                      <a [routerLink]="['/dashboard']" title="Home"><i class="ti ti-home-2"></i></a>
+                      <a [routerLink]="['/dashboard']" [title]="'Home' | translate"><i class="ti ti-home-2"></i></a>
                     }
                     @if (type === 'theme1') {
                       <a [routerLink]="['/dashboard']">{{ 'Home' | translate }}</a>
@@ -61,7 +61,8 @@
                 <button mat-stroked-button class="bg-accent-300 b-rad-20 m-b-15 p-x-10">
                   <a href="{{ breadcrumb.link }}" target="_blank" class="text-accent-900">
                     <i class="ti ti-external-link"></i>
-                    Reference
+                    
+                    {{ 'PDF.REFERENCE' | translate }}
                   </a>
                 </button>
               }

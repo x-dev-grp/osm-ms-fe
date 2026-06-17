@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { AfterViewInit, Component, DestroyRef, inject, OnInit } from '@angular/core';
 
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
@@ -14,6 +15,7 @@ import { SearchData } from 'src/app/shared/models/advanced-search/searchData';
 import { User } from 'src/app/theme/types/user';
 import { OptionsScrollDirective } from '../../../../shared/directives/options-scroll.directive';
 import { SearchOperation } from '../../../../shared/models/advanced-search/searchOperation';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 @Component({
@@ -21,9 +23,10 @@ import { SearchOperation } from '../../../../shared/models/advanced-search/searc
   templateUrl: './user-form.component.html',
   styleUrls: ['./user-form.component.scss'],
   standalone: true,
-  imports: [CommonModule, SharedModule, OptionsScrollDirective]
+  imports: [TranslateModule, CommonModule, SharedModule, OptionsScrollDirective]
 })
 export class UserFormComponent implements OnInit, AfterViewInit {
+  private readonly i18n = inject(TranslateService);
   readonly destroyRef = inject(DestroyRef);
   userForm: FormGroup;
   _fb = inject(FormBuilder);
@@ -187,9 +190,9 @@ export class UserFormComponent implements OnInit, AfterViewInit {
         catchError((err: any) => {
           console.log(err);
           if ([504, 503].includes(err?.status)) {
-            this.errorMessage = 'Service unavailable please try again later';
+            this.errorMessage = this.i18n.instant('LOGIN.SERVICE_UNAVAILABLE');
           } else if(err.status==500){
-            this.errorMessage = "Internal server error";
+            this.errorMessage = this.i18n.instant('AUTO.INTERNAL_SERVER_ERROR');
           }else{
             this.errorMessage = err?.error;
           }

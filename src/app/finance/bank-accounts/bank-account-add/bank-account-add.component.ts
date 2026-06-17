@@ -95,7 +95,7 @@ export class BankAccountAddComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading bank account:', error);
-        this.toast.error('Error loading bank account details');
+        this.toast.error('AUTO.ERROR_LOADING_BANK_ACCOUNT_DETAILS');
         this.loading = false;
       }
     });
@@ -116,13 +116,13 @@ export class BankAccountAddComponent implements OnInit {
             this.toast.success();
             this.router.navigate(['/finance/banks']);
           } else {
-            this.toast.error(response.message || 'Operation failed');
+            this.toast.error(response.message || 'AUTO.OPERATION_FAILED');
           }
           this.loading = false;
         },
         error: (error) => {
           console.error('Error saving bank account:', error);
-          this.toast.error('Error saving bank account');
+          this.toast.error('AUTO.ERROR_SAVING_BANK_ACCOUNT');
           this.loading = false;
         }
       });

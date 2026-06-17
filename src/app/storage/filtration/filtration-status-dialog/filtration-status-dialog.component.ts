@@ -16,12 +16,13 @@ import { MatIcon } from "@angular/material/icon";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { MatInput } from "@angular/material/input";
 import { MatButton } from "@angular/material/button";
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-filtration-status-dialog',
   templateUrl: './filtration-status-dialog.component.html',
   styleUrls: ['./filtration-status-dialog.component.scss'],
-  imports: [
+  imports: [TranslateModule, 
     CommonModule,
     MatOption,
     MatFormField,

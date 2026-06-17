@@ -17,11 +17,12 @@ import {
   oilReceptionsFromGenealogy
 } from '../../utils/traceability-display.util';
 import { ProductionGenealogy, ProductionIntakeStep } from '../../models/production-genealogy.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-traceability-timeline',
   standalone: true,
-  imports: [CommonModule, DatePipe, KeyValuePipe, MatIconModule],
+  imports: [TranslateModule, CommonModule, DatePipe, KeyValuePipe, MatIconModule],
   templateUrl: './traceability-timeline.component.html',
   styleUrls: ['./traceability-timeline.component.scss']
 })

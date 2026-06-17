@@ -4,6 +4,7 @@ import { AttributeType, DashboardConfig, FieldType } from '../../shared/modules/
 export const dashboardConfig: DashboardConfig = {
   icon: 'inventory_2',
   title: "Gestion des contenants d'huile",
+  titleTranslatePath: 'AUTO.GESTION_DES_CONTENANTS_D_HUILE',
   baseURL: 'production/oil_container',
   searchEndpoint: 'production/oil_container',
   addNewItem: true,

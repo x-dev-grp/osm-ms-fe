@@ -7,13 +7,15 @@
             <img src="assets/images/pages/under-construction.png" class="img-fluid" alt="img" />
           </div>
           <div class="error-text">
-            <div class="m-t-50 f-38 f-w-700">Under Construction</div>
+            <div class="m-t-50 f-38 f-w-700">{{ 'Under Construction' | translate }}</div>
             <div class="m-t-5 f-16 m-b-25 text-muted">
-              Hey! Please check out this site later. We are doing
+
+              {{ 'AUTO.HEY_PLEASE_CHECK_OUT_THIS_SITE_LATER_WE_ARE_DOING' | translate }}
               <br />
-              some maintenance on it right now.
+
+              {{ 'AUTO.SOME_MAINTENANCE_ON_IT_RIGHT_NOW' | translate }}
             </div>
-            <button mat-flat-button color="primary" [routerLink]="['/dashboard']">Back To Home</button>
+            <button mat-flat-button color="primary" [routerLink]="['/dashboard']">{{ 'PAGE_404.BACK_HOME' | translate }}</button>
           </div>
         </div>
       </div>

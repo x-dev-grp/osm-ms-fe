@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Article, CategorieArticle, UniteMesureOption } from '../models/article.model';
-import {environment} from "../../../environments/environment";
-import {QrCodeInfo, QrResolveResponse} from "../../shared/models/qr-models";
-
+import { environment } from '../../../environments/environment';
+import { QrCodeInfo, QrResolveResponse } from '../../shared/models/qr-models';
+import { ApiResponse, ApiSingleResponse } from '../../shared/models/api-response';
 
 @Injectable({
   providedIn: 'root'
@@ -15,11 +16,13 @@ export class ArticleService {
   constructor(private http: HttpClient) {}
 
   getAllArticles(): Observable<Article[]> {
-    return this.http.get<Article[]>(this.apiUrl);
+    return this.http.get<ApiResponse<Article>>(`${this.apiUrl}/fetchAll`).pipe(
+      map((response) => response?.data ?? [])
+    );
   }
+
   getArticlesByCategorie(categorie: CategorieArticle | string): Observable<Article[]> {
-    const params = new HttpParams().set('categorie', categorie);
-    return this.http.get<Article[]>(this.apiUrl, { params });
+    return this.http.get<Article[]>(`${this.apiUrl}/categorie/${categorie}`);
   }
 
   getUnitesMesure(): Observable<UniteMesureOption[]> {
@@ -27,15 +30,26 @@ export class ArticleService {
   }
 
   getArticleById(id: string): Observable<Article> {
-    return this.http.get<Article>(`${this.apiUrl}/${id}`);
+    return this.http.get<ApiSingleResponse<Article>>(`${this.apiUrl}/fetch/${id}`).pipe(
+      map((response) => response.data)
+    );
   }
 
   createArticle(article: Article): Observable<Article> {
-    return this.http.post<Article>(`${this.apiUrl}/create`, article);
+    return this.http.post<ApiSingleResponse<Article>>(this.apiUrl, article).pipe(
+      map((response) => response.data)
+    );
   }
 
   updateArticle(id: string, article: Article): Observable<Article> {
-    return this.http.put<Article>(`${this.apiUrl}/${id}`, article);
+    const payload = { ...article, id };
+    return this.http.put<ApiSingleResponse<Article>>(this.apiUrl, payload).pipe(
+      map((response) => response.data)
+    );
+  }
+
+  deleteArticle(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/delete/${id}`);
   }
 
   activerArticle(id: string): Observable<Article> {
@@ -45,13 +59,13 @@ export class ArticleService {
   desactiverArticle(id: string): Observable<Article> {
     return this.http.put<Article>(`${this.apiUrl}/${id}/desactiver`, {});
   }
+
   getActiveArticles(): Observable<Article[]> {
     return this.http.get<Article[]>(`${this.apiUrl}/actifs`);
   }
+
   generateQr(articleId: string): Observable<QrCodeInfo> {
-    return this.http.get<QrCodeInfo>(
-      `${this.apiUrl}/qr/ARTICLE/${articleId}`
-    );
+    return this.http.get<QrCodeInfo>(`${this.apiUrl}/qr/ARTICLE/${articleId}`);
   }
 
   searchByCode(code: string): Observable<QrResolveResponse> {

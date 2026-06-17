@@ -32,24 +32,16 @@ const COMPOSITION_KEY_PATTERNS: { key: string; label: string; patterns: string[]
 
 const DEFAULT_SERVING_ML = 15;
 
-/** Reference values for extra virgin olive oil — per 100 ml (approximate, regulatory-style). */
+/** Reference values for olive oil — per 100 ml (Tunisia compliance defaults). */
 const REFERENCE_COMPOSITION_PER_100ML: Omit<LabelCompositionEntry, 'source'>[] = [
   { key: 'energie', label: 'Énergie', value: '824 kcal / 3389 kJ', per100ml: '824 kcal / 3389 kJ' },
   { key: 'proteines', label: 'Protéines', value: '0 g', per100ml: '0 g' },
   { key: 'glucides', label: 'Glucides', value: '0 g', per100ml: '0 g' },
-  { key: 'lipides', label: 'Lipides', value: '100 g', per100ml: '100 g' },
-  { key: 'acides_gras_satures', label: 'Acides gras saturés', value: '14 g', per100ml: '14 g' },
-  { key: 'acides_gras_trans', label: 'Acides gras trans', value: '0 g', per100ml: '0 g' },
+  { key: 'lipides', label: 'Matières grasses', value: '91,6 g', per100ml: '91,6 g' },
+  { key: 'acides_gras_satures', label: 'dont acides gras saturés', value: '13,8 g', per100ml: '13,8 g' },
+  { key: 'acides_gras_trans', label: 'dont acides gras trans', value: '0 g', per100ml: '0 g' },
   { key: 'cholesterol', label: 'Cholestérol', value: '0 mg', per100ml: '0 mg' },
-  { key: 'sel', label: 'Sodium', value: '0 mg', per100ml: '0 mg' },
-  { key: 'omega_3', label: 'Acides gras Oméga-3', value: '0,8 g', per100ml: '0,8 g' },
-  { key: 'omega_6', label: 'Acides gras Oméga-6', value: '9,8 g', per100ml: '9,8 g' },
-  { key: 'acides_gras_mono', label: 'AG monoinsaturés (MUFA)', value: '73 g', per100ml: '73 g' },
-  { key: 'acides_gras_poly', label: 'AG polyinsaturés (PUFA)', value: '11 g', per100ml: '11 g' },
-  { key: 'vitamine_e', label: 'Vitamine E', value: '14 mg', per100ml: '14 mg' },
-  { key: 'vitamine_a', label: 'Vitamine A', value: '0 µg', per100ml: '0 µg' },
-  { key: 'vitamine_d', label: 'Vitamine D', value: '0 µg', per100ml: '0 µg' },
-  { key: 'vitamine_k', label: 'Vitamine K', value: '0 µg', per100ml: '0 µg' }
+  { key: 'sel', label: 'Sel', value: '0 g', per100ml: '0 g' }
 ];
 
 const NUTRITION_ROW_ORDER: { key: string; rdaKey?: string; footnote?: 'nmt' | 'min' }[] = [
@@ -670,6 +662,38 @@ export function buildLabelQcCompositionBundle(
     compositionEstimate,
     nutritionTable,
     postFiltrationQualityControls
+  };
+}
+
+export function applyCompositionOverrides(
+  bundle: LabelQcCompositionBundle,
+  overrides: Record<string, string> | null | undefined,
+  netQuantity?: string | null,
+  language?: LabelLanguage | string | null
+): LabelQcCompositionBundle {
+  if (!overrides || Object.keys(overrides).length === 0) {
+    return bundle;
+  }
+
+  const volumeMl = parseVolumeMl(netQuantity);
+  const compositionEstimate = bundle.compositionEstimate.map((entry) => {
+    const override = overrides[entry.key]?.trim();
+    if (!override) {
+      return entry;
+    }
+
+    return {
+      ...entry,
+      per100ml: override,
+      value: scalePer100mlValue(override, volumeMl) || override,
+      source: 'measured' as LabelCompositionSource
+    };
+  });
+
+  return {
+    ...bundle,
+    compositionEstimate,
+    nutritionTable: buildLabelNutritionTable(compositionEstimate, netQuantity, language)
   };
 }
 

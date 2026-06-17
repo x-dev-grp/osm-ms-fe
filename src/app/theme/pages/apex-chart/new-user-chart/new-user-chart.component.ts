@@ -10,10 +10,11 @@ import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
 
 // const
 import { DARK, LIGHT } from 'src/app/theme/const';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-new-user-chart',
-  imports: [SharedModule, NgApexchartsModule],
+  imports: [TranslateModule, SharedModule, NgApexchartsModule],
   templateUrl: './new-user-chart.component.html',
   standalone: true,
   styleUrl: './new-user-chart.component.scss'

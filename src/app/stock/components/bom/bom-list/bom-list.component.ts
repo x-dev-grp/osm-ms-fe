@@ -1,161 +1,80 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Component, ViewChild, inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+
 import { Bom } from '../../../models/Bom';
 import { BomService } from '../../../services/BomService';
 import { ToastService } from '../../../../shared/services/toast.service';
-import { sortRowsByCreatedDate, TableSortDirection, toggleSortDirection } from '../../../../shared/utils/table-sort.util';
+import { OsmDashboard } from '../../../../shared/modules/osm-dashboard/osm-dashboard';
+import { DashboardConfig } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { BOM_DASHBOARD_CONFIG } from './bom-dashboard.config';
 
 @Component({
   selector: 'app-bom-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [TranslateModule, OsmDashboard],
   templateUrl: './bom-list.component.html',
   styleUrls: ['./bom-list.component.scss']
 })
-export class BomListComponent implements OnInit {
-  boms: Bom[] = [];
-  displayedBoms: Bom[] = [];
-  loading = true;
-  searchTerm = '';
-  filterActive: '' | 'active' | 'inactive' = '';
-  activatingId: string | null = null;
-  activeDropdown: string | null = null;
-  currentPage = 1;
-  pageSize = 10;
-  pageSizeOptions = [10, 25, 50];
-  sortDirection: TableSortDirection = 'desc';
+export class BomListComponent {
+  private readonly i18n = inject(TranslateService);
+
+  @ViewChild('dashboard') dashboard!: OsmDashboard;
+
+  dashboardConfig: DashboardConfig = BOM_DASHBOARD_CONFIG;
 
   constructor(
-    private bomService: BomService,
-    private toast: ToastService,
-    private router: Router
+    private readonly bomService: BomService,
+    private readonly toast: ToastService,
+    private readonly router: Router
   ) {}
 
-  ngOnInit(): void {
-    this.loadBoms();
-  }
-
-  loadBoms(): void {
-    this.bomService.getAll().subscribe({
-      next: (data) => {
-        this.boms = data ?? [];
-        this.applyFilter();
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Erreur chargement des nomenclatures', err);
-        this.loading = false;
-      }
-    });
-  }
-
-  applyFilter(): void {
-    const search = this.searchTerm.trim().toLowerCase();
-    this.displayedBoms = this.boms.filter((bom) => {
-      const searchableText = `${bom.productName || ''} ${bom.skuCode || ''} ${bom.version || ''}`.toLowerCase();
-      const matchesSearch = search.length === 0 || searchableText.includes(search);
-
-      if (this.filterActive === 'active') {
-        return !!bom.active && matchesSearch;
-      }
-      if (this.filterActive === 'inactive') {
-        return !bom.active && matchesSearch;
-      }
-      return matchesSearch;
-    });
-    this.displayedBoms = sortRowsByCreatedDate(this.displayedBoms, this.sortDirection);
-    this.currentPage = 1;
-  }
-
-  toggleCreatedDateSort(): void {
-    this.sortDirection = toggleSortDirection(this.sortDirection);
-    this.applyFilter();
-  }
-
-  get pagedBoms(): Bom[] {
-    const start = (this.currentPage - 1) * this.pageSize;
-    return this.displayedBoms.slice(start, start + this.pageSize);
-  }
-
-  get totalPages(): number {
-    return Math.max(1, Math.ceil(this.displayedBoms.length / this.pageSize));
-  }
-
-  get paginationStart(): number {
-    return this.displayedBoms.length ? (this.currentPage - 1) * this.pageSize + 1 : 0;
-  }
-
-  get paginationEnd(): number {
-    return Math.min(this.currentPage * this.pageSize, this.displayedBoms.length);
-  }
-
-  onPageSizeChange(size: number): void {
-    this.pageSize = Number(size);
-    this.currentPage = 1;
-  }
-
-  goToPage(page: number): void {
-    this.currentPage = Math.min(Math.max(page, 1), this.totalPages);
-  }
-
-  resetFilters(): void {
-    this.searchTerm = '';
-    this.filterActive = '';
-    this.applyFilter();
-  }
-
-  goToDetail(id: string | undefined, event: MouseEvent): void {
-    const target = event.target as HTMLElement;
-    if (target.closest('button, a')) {
-      return;
-    }
-    if (id) {
-      this.router.navigate(['/stock/boms', id]);
+  handleAction(event: { row: Bom; action: string }): void {
+    switch (event.action) {
+      case 'READ':
+        void this.router.navigate(['/stock/boms', event.row.id]);
+        break;
+      case 'UPDATE':
+        void this.router.navigate(['/stock/boms', event.row.id, 'editer']);
+        break;
+      case 'ACTIVATE':
+        this.activateBom(event.row);
+        break;
+      case 'REMOVE':
+        this.deleteBom(event.row.id);
+        break;
     }
   }
 
-  toggleDropdown(id: string | undefined, event: Event): void {
-    event.stopPropagation();
-    this.activeDropdown = this.activeDropdown === id ? null : id ?? null;
-  }
-
-  activateBom(bom: Bom, event: Event): void {
-    event.preventDefault();
-    event.stopPropagation();
+  private activateBom(bom: Bom): void {
     if (!bom.id || bom.active) {
       return;
     }
 
-    this.activatingId = bom.id;
     this.bomService.activate(bom.id).subscribe({
       next: () => {
-        this.activatingId = null;
-        this.activeDropdown = null;
-        this.toast.success(`Nomenclature ${bom.version} activee`);
-        this.loadBoms();
+        this.toast.success('AUTO.NOMENCLATURE_ACTIVEE', { value0: bom.version });
+        this.dashboard?.refrechData();
       },
-      error: (err) => {
-        this.activatingId = null;
-      }
+      error: (err) => console.error('Erreur activation nomenclature', err)
     });
   }
 
-  deleteBom(id: string, event?: Event): void {
-    event?.preventDefault();
-    event?.stopPropagation();
-    if (confirm('Etes-vous sur de vouloir supprimer cette nomenclature ?')) {
-      this.bomService.delete(id).subscribe({
-        next: () => {
-          this.activeDropdown = null;
-          this.toast.success('Nomenclature supprimee');
-          this.loadBoms();
-        },
-        error: (err) => {
-          console.error('Erreur lors de la suppression de la nomenclature', err);
-        }
-      });
+  private deleteBom(id?: string): void {
+    if (!id) {
+      return;
     }
+
+    if (!confirm(this.i18n.instant('AUTO.ETES_VOUS_SUR_DE_VOULOIR_SUPPRIMER_CETTE_NOMENCLATURE'))) {
+      return;
+    }
+
+    this.bomService.delete(id).subscribe({
+      next: () => {
+        this.toast.success('AUTO.NOMENCLATURE_SUPPRIMEE');
+        this.dashboard?.refrechData();
+      },
+      error: (err) => console.error('Erreur lors de la suppression de la nomenclature', err)
+    });
   }
 }

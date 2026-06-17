@@ -4,11 +4,12 @@ import { Observable, of } from 'rxjs';
 import { LabelService } from '../../../../labels/services/label.service';
 import { LabelContentDto } from '../../../../labels/models/label.model';
 import { RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-product-labels',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [TranslateModule, CommonModule, RouterModule],
   templateUrl: './product-labels.component.html',
   styleUrls: ['./product-labels.component.scss']
 })

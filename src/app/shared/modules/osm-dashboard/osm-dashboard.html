@@ -29,7 +29,7 @@
         (matSortChange)="sortChange($event)"
         [class.loading]="true"
         [dataSource]="_store.data().data"
-        aria-label="Example table with sorting"
+        [attr.aria-label]="'AUTO.EXAMPLE_TABLE_WITH_SORTING' | translate"
         class="mat-elevation-z8 w-100"
         mat-table
         matSort
@@ -132,28 +132,34 @@
             </td>
           </ng-container>
         }
+        @if (!config().hideActions) {
         <ng-container matColumnDef="actions">
           <th *matHeaderCellDef mat-header-cell>{{ 'OSM_DASHBOARD.ACTIONS.TITLE' | translate }}</th>
           <td *matCellDef="let record" mat-cell>
             <div class="table-cell-value">
               @if (config().specificActions) {
-                <div class="flex">
+                @if (_store.actionLoading()) {
+                  <mat-spinner diameter="25" color="warn"></mat-spinner>
+                } @else {
+                  <button mat-icon-button [matMenuTriggerFor]="specificMenu"
+                          [matTooltip]="'OSM_DASHBOARD.ACTIONS.MORE' | translate"
+                          matTooltipPosition="above"
+                          aria-label="{{ 'OSM_DASHBOARD.ACTIONS.MORE' | translate }}">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                }
+
+                <mat-menu #specificMenu="matMenu">
                   @for (item of config().specificActions; track item; ) {
                     <button
-                      style="cursor: pointer"
-                      mat-raised-button
                       (click)="actionApply(item?.action, record)"
-                      [color]="item?.color || 'primary'"
                       [disabled]="!!item?.disabled && record[item.disabled.field] === item.disabled.value"
-                      size="small"
-                      [matTooltip]=" ('OSM_DASHBOARD.ACTIONS.' + item?.action| translate )"
-                      matTooltipPosition="above"
-                    >
+                      mat-menu-item>
+                      <span>{{ 'OSM_DASHBOARD.ACTIONS.' + item?.action | translate }}</span>
                       <mat-icon>{{ item?.icon }}</mat-icon>
-
                     </button>
                   }
-                </div>
+                </mat-menu>
               } @else {
                 @if (_store.actionLoading()) {
                   <mat-spinner diameter="25" color="warn"></mat-spinner>
@@ -183,9 +189,15 @@
             </div>
           </td>
         </ng-container>
+        }
 
         <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
-        <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
+        <tr
+          *matRowDef="let row; columns: displayedColumns"
+          mat-row
+          [class.row-clickable]="!config().hideActions"
+          (dblclick)="onRowDoubleClick(row, $event)">
+        </tr>
       </table>
       <mat-paginator
         (page)="onPageChange($event)"
@@ -199,8 +211,23 @@
     <!-- <ng-template #actionTemplate>
         <button mat-button>CANCEL</button>
       </ng-template> -->
+    <ng-template #headerTitleTemplate>
+      <span
+        class="total-count-badge"
+        [class.total-count-badge--loading]="_store.loading()"
+        [matTooltip]="'OSM_DASHBOARD.TABLE.TOTAL_ITEMS' | translate"
+        matTooltipPosition="above">
+        {{ _store.data().total }}
+        @if (config().countBadgeSuffixTranslatePath) {
+          {{ config().countBadgeSuffixTranslatePath! | translate }}
+        } @else if (config().countBadgeSuffix) {
+          {{ config().countBadgeSuffix }}
+        }
+      </span>
+    </ng-template>
     <ng-template #headerOptionsTemplate>
       <div class="button-container">
+        @if (!config()?.clientSide) {
         <button [disabled]="!_store?.exportFields()?.length" [matMenuTriggerFor]="exportCsvMenu"
                 [matTooltip]="'OSM_DASHBOARD.EXPORT.CSV' | translate"
                 class="success-button m-2" mat-stroked-button
@@ -226,6 +253,7 @@
             </ng-container>
           }
         </button>
+        }
         <button [matMenuTriggerFor]="filterMenu"
                 [matTooltip]="'OSM_DASHBOARD.FILTER.TITLE' | translate"
                 aria-label="{{ 'OSM_DASHBOARD.FILTER.TITLE' | translate }}"
@@ -282,7 +310,9 @@
                 [checked]="item?.checked"
                 (change)="onExportFieldChange($event,item.field)"
               />
-              <label for="{{item?.field?.name}}">{{ item?.field?.label }}</label>
+              <label for="{{item?.field?.name}}">
+                {{ item?.field?.labelTranslatePath ? (item?.field?.labelTranslatePath | translate) : item?.field?.label }}
+              </label>
             </div>
           }
         </div>
@@ -290,7 +320,8 @@
           <button (click)="exportCsv()" [disabled]="!_store?.checkedExportFields()?.length"
                   class="success-button success_button m-2"
                   mat-stroked-button>
-            Exporter
+
+            {{ 'OSM_DASHBOARD.ACTIONS.EXPORT' | translate }}
           </button>
         </div>
 
@@ -317,14 +348,17 @@
                 [checked]="item?.checked"
                 (change)="onExportFieldChange($event,item.field)"
               />
-              <label for="{{item?.field?.name}}">{{ item?.field?.label }}</label>
+              <label for="{{item?.field?.name}}">
+                {{ item?.field?.labelTranslatePath ? (item?.field?.labelTranslatePath | translate) : item?.field?.label }}
+              </label>
             </div>
           }
         </div>
         <div class="w-100 action-button">
           <button (click)="exportPdf()" [disabled]="!_store?.checkedExportFields()?.length" class="accent-button"
                   color="accent" mat-stroked-button>
-            Exporter
+
+            {{ 'OSM_DASHBOARD.ACTIONS.EXPORT' | translate }}
           </button>
         </div>
 
@@ -350,7 +384,9 @@
                 [checked]="item?.checked"
                 (change)="onFilterFieldChange($event,item.field)"
               />
-              <label for="{{item?.field?.name}}">{{ item?.field?.label }}</label>
+              <label for="{{item?.field?.name}}">
+                {{ item?.field?.labelTranslatePath ? (item?.field?.labelTranslatePath | translate) : item?.field?.label }}
+              </label>
             </div>
           }
         </div>

@@ -23,10 +23,11 @@
                   <button
                     mat-stroked-button
                     color="accent"
-                    matTooltip="View QR"
+                    [matTooltip]="'AUTO.VIEW_QR' | translate"
                     (click)="openExistingQrDialog()">
                     <mat-icon>qr_code_2</mat-icon>
-                    QR
+
+                    {{ 'AUTO.QR' | translate }}
                   </button>
                 }
                 <button

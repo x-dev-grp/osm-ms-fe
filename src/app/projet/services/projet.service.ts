@@ -5,11 +5,7 @@ import { ProjetDto } from "../models/TypeProduit";
 import { environment } from "../../../environments/environment";
 import { QrCodeInfo } from "../../shared/models/qr-models";
 
-interface ApiResponse<T> {
-  success: boolean;
-  message: string;
-  data: T;
-}
+import { ApiResponse, ApiSingleResponse } from '../../shared/models/api-response';
 
 @Injectable({ providedIn: 'root' })
 export class ProjetService {
@@ -19,20 +15,14 @@ export class ProjetService {
 
   getAll(): Observable<ProjetDto[]> {
     return this.http
-      .get<ApiResponse<ProjetDto[]>>(`${this.baseUrl}/fetchAll`)
-      .pipe(
-        // Correction: securiser le retour si data est null/undefined
-        map(response => response.data ?? [])
-      );
+      .get<ApiResponse<ProjetDto>>(`${this.baseUrl}/fetchAll`)
+      .pipe(map((response) => response.data ?? []));
   }
 
   getById(id: string): Observable<ProjetDto> {
     return this.http
-      .get<ApiResponse<ProjetDto>>(`${this.baseUrl}/fetch/${id}`)
-      .pipe(
-        // Correction: retour direct du DTO contenu dans ApiResponse
-        map(response => response.data)
-      );
+      .get<ApiSingleResponse<ProjetDto>>(`${this.baseUrl}/fetch/${id}`)
+      .pipe(map((response) => response.data));
   }
 
   getByCode(code: string): Observable<ProjetDto> {
@@ -42,21 +32,16 @@ export class ProjetService {
 
   create(projet: ProjetDto): Observable<ProjetDto> {
     return this.http
-      .post<ApiResponse<ProjetDto> | ProjetDto>(`${this.baseUrl}/create`, projet)
+      .post<ApiSingleResponse<ProjetDto>>(this.baseUrl, projet)
       .pipe(
         map((response) => {
-          if (response && typeof response === 'object' && 'success' in response) {
-            const apiResponse = response as ApiResponse<ProjetDto>;
-            if (apiResponse.success === false) {
-              throw apiResponse;
-            }
-            if (!apiResponse.data) {
-              throw new Error(apiResponse.message || 'Erreur lors de la creation du projet');
-            }
-            return apiResponse.data;
+          if (response?.success === false) {
+            throw response;
           }
-
-          return response as ProjetDto;
+          if (!response?.data) {
+            throw new Error(response?.message || 'Erreur lors de la creation du projet');
+          }
+          return response.data;
         })
       );
   }
@@ -68,63 +53,46 @@ export class ProjetService {
     };
 
     return this.http
-      .put<ApiResponse<ProjetDto>>(this.baseUrl, payload)
-      .pipe(
-        // Correction: extraction du DTO depuis ApiResponse
-        map(response => response.data)
-      );
+      .put<ApiSingleResponse<ProjetDto>>(this.baseUrl, payload)
+      .pipe(map((response) => response.data));
   }
 
   cancel(id: string): Observable<ProjetDto> {
     return this.http
-      .put<ApiResponse<ProjetDto>>(`${this.baseUrl}/${id}/cancel`, {})
-      .pipe(
-        // Correction: extraction du DTO de retour
-        map(response => response.data)
-      );
+      .put<ApiSingleResponse<ProjetDto>>(`${this.baseUrl}/${id}/cancel`, {})
+      .pipe(map((response) => response.data));
   }
 
   delete(id: string): Observable<ProjetDto> {
     return this.http
-      .delete<ApiResponse<ProjetDto>>(`${this.baseUrl}/delete/${id}`)
-      .pipe(
-        // Correction: extraction du DTO supprime
-        map(response => response.data)
-      );
+      .delete<ApiSingleResponse<ProjetDto>>(`${this.baseUrl}/delete/${id}`)
+      .pipe(map((response) => response.data));
   }
 
   updateStatus(id: string, statut: string): Observable<ProjetDto> {
     return this.http
-      .put<ApiResponse<ProjetDto>>(
+      .put<ApiSingleResponse<ProjetDto>>(
         `${this.baseUrl}/${id}/status`,
         {},
-        {
-          // Correction: passer le statut via query params HttpClient
-          // au lieu de concatener manuellement l'URL
-          params: { statut }
-        }
+        { params: { statut } }
       )
-      .pipe(
-        // Correction: retourner le projet mis a jour, sinon le composant
-        // ne peut pas exploiter correctement la reponse
-        map(response => response.data)
-      );
+      .pipe(map((response) => response.data));
   }
 
   getByUniqueCode(code: string): Observable<ProjetDto> {
     return this.http
-      .get<ApiResponse<ProjetDto>>(`${this.baseUrl}/unique/${code}`)
-      .pipe(map(response => response.data));
+      .get<ApiSingleResponse<ProjetDto>>(`${this.baseUrl}/unique/${code}`)
+      .pipe(map((response) => response.data));
   }
 
   updateStatusByCode(code: string, statut: string): Observable<ProjetDto> {
     return this.http
-      .put<ApiResponse<ProjetDto>>(
+      .put<ApiSingleResponse<ProjetDto>>(
         `${this.baseUrl}/status-by-code/${code}`,
         {},
         { params: { statut } }
       )
-      .pipe(map(response => response.data));
+      .pipe(map((response) => response.data));
   }
 
   getQrImageUrl(id: string): string {

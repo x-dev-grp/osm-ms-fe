@@ -6,13 +6,13 @@
         <mat-icon>local_shipping</mat-icon>
       </div>
       <div>
-        <h1 class="page-title">Expéditions & Livraisons</h1>
+        <h1 class="page-title">{{ 'AUTO.EXPEDITIONS_LIVRAISONS' | translate }}</h1>
         <p class="page-subtitle">{{ project?.code || projectId }} - {{ project?.client?.nom || 'Client non défini' }}</p>
       </div>
     </div>
     <div class="header-actions">
       <button class="btn-outline" (click)="onBack()">
-        <mat-icon>assignment</mat-icon> Projet
+        <mat-icon>assignment</mat-icon>  {{ 'OSM_DASHBOARD.ACTIONS.PROJET' | translate }}
       </button>
       <button class="btn-create-icon" (click)="toggleCreateForm()" [disabled]="!canCreateExpedition()" [matTooltip]="createExpeditionDisabledMessage()">
         <mat-icon>{{ showCreateForm ? 'close' : 'add' }}</mat-icon>
@@ -22,10 +22,11 @@
 
   <div class="filters-card" *ngIf="!selectedExpedition && !showCreateForm && projectDeliveryComplete">
     <div class="card-title-olive" style="margin-bottom: 6px;">
-      <mat-icon>verified</mat-icon> Projet livre
+      <mat-icon>verified</mat-icon>  {{ 'AUTO.PROJET_LIVRE' | translate }}
     </div>
     <p style="margin: 0; color: #5d6b4f; font-weight: 700;">
-      La quantite cible est entierement livree. Nouvelle expedition desactivee.
+
+      {{ 'AUTO.LA_QUANTITE_CIBLE_EST_ENTIEREMENT_LIVREE_NOUVELLE_EXPEDITION_DES' | translate }}
     </p>
   </div>
 
@@ -46,17 +47,17 @@
       </div>
     </div>
     <div class="header-actions">
-      <button class="btn-reset text-danger" (click)="generatePDF(selectedExpedition)" matTooltip="Imprimer le bon de livraison">
+      <button class="btn-reset text-danger" (click)="generatePDF(selectedExpedition)" [matTooltip]="'AUTO.IMPRIMER_LE_BON_DE_LIVRAISON' | translate">
         <mat-icon>picture_as_pdf</mat-icon>
       </button>
-      <button class="btn-reset text-danger" (click)="deleteExpedition(selectedExpedition)" *ngIf="canDelete()" matTooltip="Supprimer l'expédition">
+      <button class="btn-reset text-danger" (click)="deleteExpedition(selectedExpedition)" *ngIf="canDelete()" [matTooltip]="'AUTO.SUPPRIMER_L_EXPEDITION' | translate">
         <mat-icon>delete</mat-icon>
       </button>
-      <button class="btn-reset text-warning" (click)="doAction('cancel')" *ngIf="canAction('cancel')" matTooltip="Annuler l'expédition">
+      <button class="btn-reset text-warning" (click)="doAction('cancel')" *ngIf="canAction('cancel')" [matTooltip]="'AUTO.ANNULER_L_EXPEDITION' | translate">
         <mat-icon>cancel</mat-icon>
       </button>
       <button class="btn-reset" (click)="deselectExpedition()">
-        <mat-icon>arrow_back</mat-icon> Retour
+        <mat-icon>arrow_back</mat-icon>  {{ 'COMMON.BACK' | translate }}
       </button>
     </div>
   </div>
@@ -65,15 +66,15 @@
   <div class="filters-card" *ngIf="!selectedExpedition && !showCreateForm">
     <form class="filters-grid" [formGroup]="searchForm" (ngSubmit)="searchByCode()">
       <div class="filter-group" style="grid-column: 1 / span 1;">
-        <label>Code expédition ou QR</label>
+        <label>{{ 'AUTO.CODE_EXPEDITION_OU_QR' | translate }}</label>
         <div class="input-with-icon">
           <mat-icon>qr_code_scanner</mat-icon>
-          <input type="text" class="form-control" formControlName="code" placeholder="Scanner ou taper le code..." />
+          <input type="text" class="form-control" formControlName="code" [placeholder]="'AUTO.SCANNER_OU_TAPER_LE_CODE' | translate" />
         </div>
       </div>
       <div class="filter-actions">
         <button class="btn-reset" type="submit" style="width: 100%; justify-content: center; background: #eef4e4; color: #44651f; border-color: #cbd8b8;">
-          <mat-icon>search</mat-icon> Rechercher
+          <mat-icon>search</mat-icon>  {{ 'COMMON.SEARCH' | translate }}
         </button>
       </div>
     </form>
@@ -82,27 +83,27 @@
   <!-- CREATE FORM -->
   <div class="filters-card" *ngIf="!selectedExpedition && showCreateForm">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-      <h2 style="margin: 0; color: #203b13; font-weight: 850;">Nouvelle expédition</h2>
+      <h2 style="margin: 0; color: #203b13; font-weight: 850;">{{ 'AUTO.NOUVELLE_EXPEDITION' | translate }}</h2>
     </div>
     <form class="create-form" [formGroup]="createForm">
       <div class="form-grid">
         <div class="form-field">
-          <label>Destination</label>
-          <input type="text" class="form-control" formControlName="destination" placeholder="Lieu de livraison" />
+          <label>{{ 'AUTO.DESTINATION' | translate }}</label>
+          <input type="text" class="form-control" formControlName="destination" [placeholder]="'AUTO.LIEU_DE_LIVRAISON' | translate" />
         </div>
         <div class="form-field">
-          <label>Date prévue</label>
+          <label>{{ 'AUTO.DATE_PREVUE' | translate }}</label>
           <input type="date" class="form-control" formControlName="plannedShipDate" />
         </div>
         <div class="form-field full">
-          <label>Notes</label>
-          <input type="text" class="form-control" formControlName="notes" placeholder="Informations utiles" />
+          <label>{{ 'CUSTOMERS.FIELDS.NOTES' | translate }}</label>
+          <input type="text" class="form-control" formControlName="notes" [placeholder]="'AUTO.INFORMATIONS_UTILES' | translate" />
         </div>
       </div>
 
       <div class="line-form-container mt-3" [formGroup]="createLinesForm">
         <div style="margin-bottom: 10px;">
-          <h3 style="margin: 0; color: #203b13; font-size: 15px; font-weight: 800;">OF du projet à expédier</h3>
+          <h3 style="margin: 0; color: #203b13; font-size: 15px; font-weight: 800;">{{ 'AUTO.OF_DU_PROJET_A_EXPEDIER' | translate }}</h3>
           <p style="margin: 4px 0 0; font-size: 13px; color: #6d735f;">Maximum autorisé : {{ remainingProjectQuantity }} {{ project?.unite === 'LITRES' ? 'L' : 'u' }}</p>
         </div>
 
@@ -111,9 +112,9 @@
             <thead>
               <tr>
                 <th></th>
-                <th>OF</th>
-                <th>Article / Produit</th>
-                <th>Quantité</th>
+                <th>{{ 'PDF.OF' | translate }}</th>
+                <th>{{ 'AUTO.ARTICLE_PRODUIT' | translate }}</th>
+                <th>{{ 'OIL_CREDIT.FIELDS.QUANTITY' | translate }}</th>
 
               </tr>
             </thead>
@@ -138,7 +139,7 @@
 
       <div class="form-actions">
         <button class="btn-reset" type="button" (click)="createExpedition()" [disabled]="creating || !canCreateExpedition() || selectedCreateLineQuantity > remainingProjectQuantity || remainingProjectQuantity <= 0" style="background: #44651f; color: white; border-color: #203b13;">
-          <mat-icon>add</mat-icon> Créer l'expédition
+          <mat-icon>add</mat-icon>  {{ 'AUTO.CREER_L_EXPEDITION' | translate }}
         </button>
       </div>
     </form>
@@ -150,14 +151,14 @@
       <table class="table" *ngIf="expeditions.length; else noExpTpl">
         <thead>
           <tr>
-            <th>N° Expédition</th>
-            <th>Date Prévue</th>
-            <th>Statut</th>
-            <th>Transporteur</th>
-            <th>Destination</th>
-            <th class="text-center">Articles</th>
-            <th class="text-center">Volume</th>
-            <th class="text-center">Actions</th>
+            <th>{{ 'AUTO.N_EXPEDITION' | translate }}</th>
+            <th>{{ 'AUTO.DATE_PREVUE' | translate }}</th>
+            <th>{{ 'ADMIN_DASHBOARD.TABLE.STATUS' | translate }}</th>
+            <th>{{ 'OSM_DASHBOARD.ACTIONS.TRANSPORTER' | translate }}</th>
+            <th>{{ 'AUTO.DESTINATION' | translate }}</th>
+            <th class="text-center">{{ 'AUTO.ARTICLES' | translate }}</th>
+            <th class="text-center">{{ 'AUTO.VOLUME' | translate }}</th>
+            <th class="text-center">{{ 'CONFIGURATION.RECEPTION.TABLE.ACTIONS' | translate }}</th>
           </tr>
         </thead>
         <tbody>
@@ -196,85 +197,85 @@
             <mat-icon>inventory_2</mat-icon>
             <div>
               <span class="metric-value">{{ selectedExpedition.totalQuantity || 0 }}</span>
-              <span class="metric-label">Articles total</span>
+              <span class="metric-label">{{ 'AUTO.ARTICLES_TOTAL' | translate }}</span>
             </div>
           </div>
           <div class="metric-card" *ngIf="selectedExpedition.totalVolume">
             <mat-icon>straighten</mat-icon>
             <div>
               <span class="metric-value">{{ selectedExpedition.totalVolume }} m³</span>
-              <span class="metric-label">Volume total</span>
+              <span class="metric-label">{{ 'AUTO.VOLUME_TOTAL' | translate }}</span>
             </div>
           </div>
           <div class="metric-card">
             <mat-icon>calendar_today</mat-icon>
             <div>
               <span class="metric-value">{{ selectedExpedition.plannedShipDate ? (selectedExpedition.plannedShipDate | date:'dd/MM/yy') : '-' }}</span>
-              <span class="metric-label">Date prévue</span>
+              <span class="metric-label">{{ 'AUTO.DATE_PREVUE' | translate }}</span>
             </div>
           </div>
         </div>
 
         <div class="filters-card">
           <div class="card-title-olive">
-            <mat-icon>route</mat-icon> Étapes de l'expédition
+            <mat-icon>route</mat-icon>  {{ 'AUTO.ETAPES_DE_L_EXPEDITION' | translate }}
           </div>
           <div class="workflow-content">
             <div class="action-form" [formGroup]="actionForm">
-              <input type="text" class="form-control" formControlName="comment" placeholder="Commentaire d'action" />
+              <input type="text" class="form-control" formControlName="comment" [placeholder]="'AUTO.COMMENTAIRE_D_ACTION' | translate" />
             </div>
             <div class="workflow-actions mt-3">
-              <button class="btn-reset" (click)="doAction('ready')" *ngIf="canAction('ready')" [disabled]="actionLoading">Prêt pour validation</button>
-              <button class="btn-reset" style="color: #0369a1; background: #e0f2fe; border-color: #bae6fd;" (click)="doAction('validate')" *ngIf="canAction('validate')" [disabled]="actionLoading">Valider l'expédition</button>
-              <button class="btn-reset" style="color: #86198f; background: #fae8ff; border-color: #f5d0fe;" (click)="doAction('ship')" *ngIf="canAction('ship')" [disabled]="actionLoading">Marquer comme expédié</button>
-              <button class="btn-reset" style="color: #166534; background: #dcfce7; border-color: #bbf7d0;" (click)="doAction('deliver')" *ngIf="canAction('deliver')" [disabled]="actionLoading">Confirmer la livraison</button>
-              <button class="btn-reset" (click)="doAction('close')" *ngIf="canAction('close')" [disabled]="actionLoading">Clôturer le dossier</button>
+              <button class="btn-reset" (click)="doAction('ready')" *ngIf="canAction('ready')" [disabled]="actionLoading">{{ 'AUTO.PRET_POUR_VALIDATION' | translate }}</button>
+              <button class="btn-reset" style="color: #0369a1; background: #e0f2fe; border-color: #bae6fd;" (click)="doAction('validate')" *ngIf="canAction('validate')" [disabled]="actionLoading">{{ 'AUTO.VALIDER_L_EXPEDITION' | translate }}</button>
+              <button class="btn-reset" style="color: #86198f; background: #fae8ff; border-color: #f5d0fe;" (click)="doAction('ship')" *ngIf="canAction('ship')" [disabled]="actionLoading">{{ 'AUTO.MARQUER_COMME_EXPEDIE' | translate }}</button>
+              <button class="btn-reset" style="color: #166534; background: #dcfce7; border-color: #bbf7d0;" (click)="doAction('deliver')" *ngIf="canAction('deliver')" [disabled]="actionLoading">{{ 'AUTO.CONFIRMER_LA_LIVRAISON' | translate }}</button>
+              <button class="btn-reset" (click)="doAction('close')" *ngIf="canAction('close')" [disabled]="actionLoading">{{ 'AUTO.CLOTURER_LE_DOSSIER' | translate }}</button>
             </div>
           </div>
         </div>
 
         <div class="filters-card">
           <div class="card-title-olive">
-            <mat-icon>local_shipping</mat-icon> Logistique & Destination
+            <mat-icon>local_shipping</mat-icon>  {{ 'AUTO.LOGISTIQUE_DESTINATION' | translate }}
           </div>
           <form [formGroup]="editForm" (ngSubmit)="saveExpedition()">
             <div class="form-grid">
               <div class="form-field">
-                <label>Destination</label>
-                <input type="text" class="form-control" formControlName="destination" placeholder="Lieu de livraison" [readonly]="!isEditable()" />
+                <label>{{ 'AUTO.DESTINATION' | translate }}</label>
+                <input type="text" class="form-control" formControlName="destination" [placeholder]="'AUTO.LIEU_DE_LIVRAISON' | translate" [readonly]="!isEditable()" />
               </div>
               <div class="form-field">
-                <label>Date prévue</label>
+                <label>{{ 'AUTO.DATE_PREVUE' | translate }}</label>
                 <input type="date" class="form-control" formControlName="plannedShipDate" [readonly]="!isEditable()" />
               </div>
               <div class="form-field">
-                <label>Transporteur</label>
-                <input type="text" class="form-control" formControlName="carrierName" placeholder="Nom du transporteur" [readonly]="!isEditable()" />
+                <label>{{ 'OSM_DASHBOARD.ACTIONS.TRANSPORTER' | translate }}</label>
+                <input type="text" class="form-control" formControlName="carrierName" [placeholder]="'AUTO.NOM_DU_TRANSPORTEUR' | translate" [readonly]="!isEditable()" />
               </div>
               <div class="form-field">
-                <label>Chauffeur</label>
-                <input type="text" class="form-control" formControlName="driverName" placeholder="Nom du chauffeur" [readonly]="!isEditable()" />
+                <label>{{ 'PDF.DRIVER' | translate }}</label>
+                <input type="text" class="form-control" formControlName="driverName" [placeholder]="'AUTO.NOM_DU_CHAUFFEUR' | translate" [readonly]="!isEditable()" />
               </div>
               <div class="form-field">
-                <label>Camion</label>
-                <input type="text" class="form-control" formControlName="truckNumber" placeholder="Plaque d'immatriculation" [readonly]="!isEditable()" />
+                <label>{{ 'PDF.TRUCK' | translate }}</label>
+                <input type="text" class="form-control" formControlName="truckNumber" [placeholder]="'AUTO.PLAQUE_D_IMMATRICULATION' | translate" [readonly]="!isEditable()" />
               </div>
               <div class="form-field">
-                <label>Tracking</label>
-                <input type="text" class="form-control" formControlName="trackingNumber" placeholder="Numéro de suivi" [readonly]="!isEditable()" />
+                <label>{{ 'AUTO.TRACKING' | translate }}</label>
+                <input type="text" class="form-control" formControlName="trackingNumber" [placeholder]="'AUTO.NUMERO_DE_SUIVI' | translate" [readonly]="!isEditable()" />
               </div>
               <div class="form-field">
-                <label>Incoterm</label>
-                <input type="text" class="form-control" formControlName="incoterm" placeholder="Ex: EXW, FOB" [readonly]="!isEditable()" />
+                <label>{{ 'PDF.INCOTERM' | translate }}</label>
+                <input type="text" class="form-control" formControlName="incoterm" [placeholder]="'AUTO.EX_EXW_FOB' | translate" [readonly]="!isEditable()" />
               </div>
               <div class="form-field full">
-                <label>Notes</label>
-                <textarea class="form-control" formControlName="notes" placeholder="Informations complémentaires" [readonly]="!isEditable()"></textarea>
+                <label>{{ 'CUSTOMERS.FIELDS.NOTES' | translate }}</label>
+                <textarea class="form-control" formControlName="notes" [placeholder]="'AUTO.INFORMATIONS_COMPLEMENTAIRES' | translate" [readonly]="!isEditable()"></textarea>
               </div>
             </div>
             <div class="form-actions" *ngIf="isEditable()">
               <button class="btn-reset" style="background: #44651f; color: white; border-color: #203b13;" type="submit" [disabled]="saving">
-                <mat-icon>{{ saving ? 'sync' : 'save' }}</mat-icon> Enregistrer
+                <mat-icon>{{ saving ? 'sync' : 'save' }}</mat-icon>  {{ 'BANK_ACCOUNTS.ACTIONS.SAVE' | translate }}
               </button>
             </div>
           </form>
@@ -283,10 +284,10 @@
         <div class="table-card">
           <div style="padding: 20px 24px; border-bottom: 1px solid #e2dccb; display: flex; justify-content: space-between; align-items: center;">
             <div class="card-title-olive" style="margin: 0;">
-              <mat-icon>format_list_bulleted</mat-icon> Articles à expédier
+              <mat-icon>format_list_bulleted</mat-icon>  {{ 'AUTO.ARTICLES_A_EXPEDIER' | translate }}
             </div>
             <button class="btn-outline" (click)="toggleAddLine()" *ngIf="isEditable() && !projectDeliveryComplete">
-              <mat-icon>{{ showAddLine ? 'remove' : 'add' }}</mat-icon> Ajouter un OF
+              <mat-icon>{{ showAddLine ? 'remove' : 'add' }}</mat-icon>  {{ 'AUTO.AJOUTER_UN_OF' | translate }}
             </button>
           </div>
 
@@ -294,29 +295,29 @@
             <form [formGroup]="lineForm" (ngSubmit)="addLine()">
               <div class="form-grid align-items-end">
                 <div class="form-field" style="flex: 2">
-                  <label>Ordre de fabrication</label>
+                  <label>{{ 'OSM_DASHBOARD.ACTIONS.OF' | translate }}</label>
                   <select class="form-control" formControlName="ofId" (change)="onOfSelected($event)">
-                    <option value="">Sélectionner un OF</option>
+                    <option value="">{{ 'AUTO.SELECTIONNER_UN_OF' | translate }}</option>
                     <option *ngFor="let of of projectOfs" [value]="of.id">
                       {{ of.code }} ({{ of.quantiteCible }} {{ of.unite === 'LITRES' ? 'L' : 'u' }})
                     </option>
                   </select>
                 </div>
                 <div class="form-field">
-                  <label>Quantité</label>
+                  <label>{{ 'OIL_CREDIT.FIELDS.QUANTITY' | translate }}</label>
                   <input type="number" class="form-control" formControlName="quantity" />
                 </div>
                 <div class="form-field">
-                  <label>Lot</label>
-                  <input type="text" class="form-control" formControlName="lotNumber" placeholder="Numéro de lot" />
+                  <label>{{ 'PDF.LOT' | translate }}</label>
+                  <input type="text" class="form-control" formControlName="lotNumber" [placeholder]="'CONTROLE_QUALITE.FORM.FIELDS.LOT_NUMBER' | translate" />
                 </div>
                 <div class="form-field">
-                  <label>Volume (m³)</label>
+                  <label>{{ 'AUTO.VOLUME_M3' | translate }}</label>
                   <input type="number" class="form-control" step="0.01" formControlName="volume" />
                 </div>
                 <div class="form-actions" style="margin-top: 0">
                   <button class="btn-reset" type="submit" [disabled]="addingLine || lineForm.invalid">
-                    <mat-icon>check</mat-icon> Confirmer
+                    <mat-icon>check</mat-icon>  {{ 'OIL_SALES.CONFIRM' | translate }}
                   </button>
                 </div>
               </div>
@@ -327,11 +328,11 @@
             <table class="table" *ngIf="selectedExpedition.lines?.length; else noLinesTpl">
               <thead>
                 <tr>
-                  <th>OF</th>
-                  <th>Article / Produit</th>
-                  <th class="text-center">Quantité</th>
-                  <th>Lot</th>
-                  <th>Volume</th>
+                  <th>{{ 'PDF.OF' | translate }}</th>
+                  <th>{{ 'AUTO.ARTICLE_PRODUIT' | translate }}</th>
+                  <th class="text-center">{{ 'OIL_CREDIT.FIELDS.QUANTITY' | translate }}</th>
+                  <th>{{ 'PDF.LOT' | translate }}</th>
+                  <th>{{ 'AUTO.VOLUME' | translate }}</th>
                   <th *ngIf="isEditable()"></th>
                 </tr>
               </thead>
@@ -356,7 +357,8 @@
             <div class="traceability-panel-header" (click)="toggleTraceability()">
               <div class="card-title-olive">
                 <mat-icon>history</mat-icon>
-                Chaîne de traçabilité (réception → filtration → OF → étiquettes)
+
+                {{ 'AUTO.CHAINE_DE_TRACABILITE_RECEPTION_FILTRATION_OF_ETIQUETTES' | translate }}
               </div>
               <mat-icon>{{ showTraceability ? 'expand_less' : 'expand_more' }}</mat-icon>
             </div>
@@ -370,15 +372,17 @@
             <div class="traceability-body" *ngIf="showTraceability">
               <div class="alert-frozen" *ngIf="isTraceabilityFrozen(selectedExpedition)">
                 <mat-icon>lock</mat-icon>
-                Snapshot figé à la validation — ce document ne changera plus.
+
+                {{ 'AUTO.SNAPSHOT_FIGE_A_LA_VALIDATION_CE_DOCUMENT_NE_CHANGERA_PLUS' | translate }}
               </div>
               <div class="alert-live" *ngIf="!isTraceabilityFrozen(selectedExpedition)">
                 <mat-icon>info</mat-icon>
-                Aperçu en direct des lignes de cette expédition. La traçabilité sera figée à la validation.
+
+                {{ 'AUTO.APERCU_EN_DIRECT_DES_LIGNES_DE_CETTE_EXPEDITION_LA_TRACABILITE_S' | translate }}
               </div>
 
               <div class="traceability-loading" *ngIf="traceabilityLoading">
-                <p>Chargement de la traçabilité…</p>
+                <p>{{ 'AUTO.CHARGEMENT_DE_LA_TRACABILITE' | translate }}</p>
               </div>
 
               <app-traceability-timeline
@@ -394,7 +398,7 @@
         <div class="qr-card">
           <img *ngIf="getQrImage(selectedExpedition)" [src]="getQrImage(selectedExpedition)" alt="QR Code" />
           <div class="qr-info">
-            <span class="qr-label">Code traçabilité</span>
+            <span class="qr-label">{{ 'AUTO.CODE_TRACABILITE' | translate }}</span>
             <code>{{ selectedExpedition.publicCode || '-' }}</code>
           </div>
         </div>
@@ -406,28 +410,28 @@
 <ng-template #loadingTpl>
   <div class="loading-state">
     <div class="spinner"></div>
-    <p>Chargement du module expédition...</p>
+    <p>{{ 'AUTO.CHARGEMENT_DU_MODULE_EXPEDITION' | translate }}</p>
   </div>
 </ng-template>
 
 <ng-template #noExpTpl>
   <div class="empty-state">
     <mat-icon>inventory_2</mat-icon>
-    <p>Aucune expédition n'a encore été créée pour ce projet.</p>
+    <p>{{ 'AUTO.AUCUNE_EXPEDITION_N_A_ENCORE_ETE_CREEE_POUR_CE_PROJET' | translate }}</p>
     <button class="btn-reset mt-3" type="button" (click)="toggleCreateForm()" [disabled]="!canCreateExpedition()" style="background: #eef4e4;">
-      <mat-icon>add</mat-icon> Nouvelle expédition
+      <mat-icon>add</mat-icon>  {{ 'AUTO.NOUVELLE_EXPEDITION' | translate }}
     </button>
   </div>
 </ng-template>
 
 <ng-template #noLinesTpl>
   <div class="empty-state small">
-    <p>Cette expédition est vide. Ajoutez des articles ci-dessus.</p>
+    <p>{{ 'AUTO.CETTE_EXPEDITION_EST_VIDE_AJOUTEZ_DES_ARTICLES_CI_DESSUS' | translate }}</p>
   </div>
 </ng-template>
 
 <ng-template #noProjectOfTpl>
   <div class="empty-state small">
-    <p>Aucun OF disponible pour créer une expédition.</p>
+    <p>{{ 'AUTO.AUCUN_OF_DISPONIBLE_POUR_CREER_UNE_EXPEDITION' | translate }}</p>
   </div>
 </ng-template>

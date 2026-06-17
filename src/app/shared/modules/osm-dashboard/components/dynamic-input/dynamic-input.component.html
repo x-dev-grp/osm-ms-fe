@@ -22,7 +22,9 @@
         }
         @case ("radio") {
             <mat-radio-group [formControl]="formControl" [placeholder]="field().labelTranslatePath?(field().labelTranslatePath|translate):field().label" class="w-100">
-                <mat-radio-button *ngFor="let option of field().options" [value]="option.value">{{option.label}}</mat-radio-button>
+                <mat-radio-button *ngFor="let option of field().options" [value]="option.value">
+                  {{ option.labelTranslatePath ? (option.labelTranslatePath | translate) : option.label }}
+                </mat-radio-button>
             </mat-radio-group>
         }
         @default{

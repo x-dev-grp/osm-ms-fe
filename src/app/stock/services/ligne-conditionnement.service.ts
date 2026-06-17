@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { LigneConditionnement, Statue } from '../models/ligne-conditionnement.model';
-import {environment} from "../../../environments/environment";
+import { environment } from '../../../environments/environment';
 import { QrCodeInfo, QrResolveResponse } from '../../shared/models/qr-models';
-
+import { ApiResponse, ApiSingleResponse } from '../../shared/models/api-response';
 
 @Injectable({
   providedIn: 'root'
@@ -15,20 +16,34 @@ export class LigneConditionnementService {
   constructor(private http: HttpClient) {}
 
   getAllLignes(): Observable<LigneConditionnement[]> {
-    return this.http.get<LigneConditionnement[]>(this.apiUrl);
+    return this.http.get<ApiResponse<LigneConditionnement>>(`${this.apiUrl}/fetchAll`).pipe(
+      map((response) => response?.data ?? [])
+    );
   }
 
   getLigneById(id: string): Observable<LigneConditionnement> {
-    return this.http.get<LigneConditionnement>(`${this.apiUrl}/${id}`);
+    return this.http.get<ApiSingleResponse<LigneConditionnement>>(`${this.apiUrl}/fetch/${id}`).pipe(
+      map((response) => response.data)
+    );
   }
 
   createLigne(ligne: LigneConditionnement): Observable<LigneConditionnement> {
-    return this.http.post<LigneConditionnement>(`${this.apiUrl}/create`, ligne);
+    return this.http.post<ApiSingleResponse<LigneConditionnement>>(this.apiUrl, ligne).pipe(
+      map((response) => response.data)
+    );
   }
 
   updateLigne(id: string, ligne: LigneConditionnement): Observable<LigneConditionnement> {
-    return this.http.put<LigneConditionnement>(`${this.apiUrl}/${id}`, ligne);
+    const payload = { ...ligne, id };
+    return this.http.put<ApiSingleResponse<LigneConditionnement>>(this.apiUrl, payload).pipe(
+      map((response) => response.data)
+    );
   }
+
+  deleteLigne(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/delete/${id}`);
+  }
+
   getActiveLignes(): Observable<LigneConditionnement[]> {
     return this.http.get<LigneConditionnement[]>(`${this.apiUrl}/actifs`);
   }

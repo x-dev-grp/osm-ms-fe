@@ -17,6 +17,7 @@ import { BonCommande, StatutBonCommande } from '../../../models/bon-commande.mod
 import { StatistiquesStock } from '../../../models/statistiques.model';
 import { ArticleCritique, MouvementRecent } from '../../../models/stock-dashboard-payload.model';
 import { ToastService } from '../../../../shared/services/toast.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface DashboardLoadOptions {
   notifyThresholdCheck?: boolean;
@@ -26,7 +27,7 @@ interface DashboardLoadOptions {
 @Component({
   selector: 'app-stock-dashboard',
   templateUrl: './stock-dashboard.component.html',
-  imports: [CommonModule, DatePipe, DecimalPipe, RouterLink, NgClass],
+  imports: [TranslateModule, CommonModule, DatePipe, DecimalPipe, RouterLink, NgClass],
   styleUrls: ['./stock-dashboard.component.scss']
 })
 export class StockDashboardComponent implements OnInit, OnDestroy {
@@ -94,8 +95,8 @@ export class StockDashboardComponent implements OnInit, OnDestroy {
 
   private loadBonsEnAttente(options: DashboardLoadOptions): void {
     this.bonCommandeService.getAllBonsCommande().subscribe({
-      next: (response: ApiResponse<BonCommande>) => {
-        this.bonsEnAttente = this.extractPendingBons(response);
+      next: (bons) => {
+        this.bonsEnAttente = this.extractPendingBons(bons);
         if (this.stats) {
           this.stats = { ...this.stats, bonsEnAttente: this.bonsEnAttente.length };
         }
@@ -126,12 +127,12 @@ export class StockDashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  private extractPendingBons(response: ApiResponse<BonCommande> | null): BonCommande[] {
-    if (!response?.success || !response.data) {
+  private extractPendingBons(bons: BonCommande[] | null): BonCommande[] {
+    if (!bons) {
       return [];
     }
 
-    return response.data
+    return bons
       .filter((bon) => bon.status === StatutBonCommande.EN_ATTENTE)
       .slice(0, 5);
   }

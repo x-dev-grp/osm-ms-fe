@@ -1,7 +1,7 @@
 <div class="ligne-detail-page">
   <section class="detail-hero">
     <div class="hero-left">
-      <button mat-icon-button class="back-button" (click)="goBack()" title="Retour">
+      <button mat-icon-button class="back-button" (click)="goBack()" [title]="'COMMON.BACK' | translate">
         <mat-icon>arrow_back</mat-icon>
       </button>
 
@@ -10,7 +10,7 @@
       </div>
 
       <div class="hero-copy" *ngIf="ligne() as current">
-        <div class="eyebrow">Production · Ligne de conditionnement</div>
+        <div class="eyebrow">{{ 'AUTO.PRODUCTION_LIGNE_DE_CONDITIONNEMENT' | translate }}</div>
         <div class="title-row">
           <h1>{{ current.nom }}</h1>
           <span class="status-badge" [ngClass]="getEtatClass(current.etat)">
@@ -25,16 +25,17 @@
       </div>
 
       <div class="hero-copy" *ngIf="!ligne()">
-        <div class="eyebrow">Production · Ligne de conditionnement</div>
-        <h1>Détails de la ligne</h1>
+        <div class="eyebrow">{{ 'AUTO.PRODUCTION_LIGNE_DE_CONDITIONNEMENT' | translate }}</div>
+        <h1>{{ 'AUTO.DETAILS_DE_LA_LIGNE' | translate }}</h1>
       </div>
     </div>
 
     <div class="hero-actions" *ngIf="ligne() as current">
       @if (hasCompleteQrMetadata()) {
-        <button mat-stroked-button matTooltip="View QR" (click)="openExistingQrDialog()">
+        <button mat-stroked-button [matTooltip]="'AUTO.VIEW_QR' | translate" (click)="openExistingQrDialog()">
           <mat-icon>qr_code_2</mat-icon>
-          QR
+
+          {{ 'AUTO.QR' | translate }}
         </button>
       }
       <button mat-stroked-button color="primary" [disabled]="generatingQr()" (click)="generateQr()">
@@ -46,25 +47,27 @@
       }
       <button mat-stroked-button class="btn-light" [routerLink]="['/stock/lignes', current.id, 'edit']">
         <mat-icon>edit</mat-icon>
-        Modifier
+
+        {{ 'BANK_ACCOUNTS.ACTIONS.EDIT' | translate }}
       </button>
       <button mat-flat-button class="btn-primary" (click)="loadLigne(current.id!)" [disabled]="loading()">
         <mat-icon [class.spinning]="loading()">refresh</mat-icon>
-        Actualiser
+
+        {{ 'AUTO.ACTUALISER' | translate }}
       </button>
     </div>
   </section>
 
   <div class="state-card" *ngIf="loading() && !ligne()">
     <mat-spinner diameter="46"></mat-spinner>
-    <p>Chargement des données...</p>
+    <p>{{ 'AUTO.CHARGEMENT_DES_DONNEES' | translate }}</p>
   </div>
 
   <div class="state-card error" *ngIf="error() && !loading()">
     <mat-icon>error_outline</mat-icon>
-    <h3>Erreur de chargement</h3>
+    <h3>{{ 'AUTO.ERREUR_DE_CHARGEMENT' | translate }}</h3>
     <p>{{ error() }}</p>
-    <button mat-flat-button color="warn" (click)="ngOnInit()">Réessayer</button>
+    <button mat-flat-button color="warn" (click)="ngOnInit()">{{ 'STANDARD.BTNS.RETRY' | translate }}</button>
   </div>
 
   <div class="detail-grid" *ngIf="ligne() as current">
@@ -73,23 +76,24 @@
         <div class="card-head">
           <h2>
             <mat-icon>info</mat-icon>
-            Informations Générales
+
+            {{ 'EXPENSES.SECTION.GENERAL_INFO' | translate }}
           </h2>
         </div>
         <div class="card-body details-grid">
           <div class="item">
-            <span class="label">Code de la ligne</span>
+            <span class="label">{{ 'AUTO.CODE_DE_LA_LIGNE' | translate }}</span>
             <span class="value">{{ current.code }}</span>
           </div>
           <div class="item">
-            <span class="label">Responsable</span>
+            <span class="label">{{ 'AUTO.RESPONSABLE' | translate }}</span>
             <span class="value with-icon">
               <mat-icon>person</mat-icon>
               {{ current.responsable || 'Non assigné' }}
             </span>
           </div>
           <div class="item full">
-            <span class="label">Description</span>
+            <span class="label">{{ 'BASE_TYPE.FIELDS.DESCRIPTION' | translate }}</span>
             <span class="description">{{ current.description || 'Aucune description fournie.' }}</span>
           </div>
         </div>
@@ -99,31 +103,32 @@
         <div class="card-head">
           <h2>
             <mat-icon>settings</mat-icon>
-            Paramètres Techniques
+
+            {{ 'AUTO.PARAMETRES_TECHNIQUES' | translate }}
           </h2>
         </div>
         <div class="card-body metrics-grid">
           <div class="metric primary">
             <mat-icon>speed</mat-icon>
             <div>
-              <span class="metric-label">Vitesse nominale</span>
-              <span class="metric-value">{{ current.vitesseNominale || 0 }} <small>u/h</small></span>
+              <span class="metric-label">{{ 'AUTO.VITESSE_NOMINALE' | translate }}</span>
+              <span class="metric-value">{{ current.vitesseNominale || 0 }} <small>{{ 'AUTO.U_H' | translate }}</small></span>
             </div>
           </div>
 
           <div class="metric indigo">
             <mat-icon>hourglass_empty</mat-icon>
             <div>
-              <span class="metric-label">Préparation</span>
-              <span class="metric-value">{{ current.tempsPreparation || 0 }} <small>min</small></span>
+              <span class="metric-label">{{ 'AUTO.PREPARATION' | translate }}</span>
+              <span class="metric-value">{{ current.tempsPreparation || 0 }} <small>{{ 'AUTO.MIN' | translate }}</small></span>
             </div>
           </div>
 
           <div class="metric slate">
             <mat-icon>clean_hands</mat-icon>
             <div>
-              <span class="metric-label">Nettoyage</span>
-              <span class="metric-value">{{ current.tempsNettoyage || 0 }} <small>min</small></span>
+              <span class="metric-label">{{ 'STORAGE.VIEW.STATUS.CLEANING' | translate }}</span>
+              <span class="metric-value">{{ current.tempsNettoyage || 0 }} <small>{{ 'AUTO.MIN' | translate }}</small></span>
             </div>
           </div>
         </div>
@@ -133,7 +138,8 @@
         <div class="card-head">
           <h2>
             <mat-icon>notes</mat-icon>
-            Notes Additionnelles
+
+            {{ 'AUTO.NOTES_ADDITIONNELLES' | translate }}
           </h2>
         </div>
         <div class="card-body">
@@ -150,14 +156,15 @@
         <div class="card-head">
           <h2>
             <mat-icon>build</mat-icon>
-            Maintenance
+
+            {{ 'MILL_MACHINE.ACTIONS.MAINTENANCE' | translate }}
           </h2>
         </div>
         <div class="card-body stack">
           <div class="meta-row">
             <mat-icon>event_available</mat-icon>
             <div>
-              <span class="label">Dernière fois</span>
+              <span class="label">{{ 'AUTO.DERNIERE_FOIS' | translate }}</span>
               <span class="value">{{ current.dateDerniereMaintenance ? (current.dateDerniereMaintenance | date:'dd/MM/yyyy') : 'Jamais' }}</span>
             </div>
           </div>
@@ -165,14 +172,15 @@
           <div class="meta-row" [class.alert]="isMaintenanceDue()">
             <mat-icon>{{ isMaintenanceDue() ? 'priority_high' : 'event_repeat' }}</mat-icon>
             <div>
-              <span class="label">Prochaine échéance</span>
+              <span class="label">{{ 'AUTO.PROCHAINE_ECHEANCE' | translate }}</span>
               <span class="value">{{ current.dateProchaineMaintenance ? (current.dateProchaineMaintenance | date:'dd/MM/yyyy') : 'Non planifiée' }}</span>
             </div>
           </div>
 
           <div class="warning-note" *ngIf="isMaintenanceDue()">
             <mat-icon>warning</mat-icon>
-            Action de maintenance requise immédiatement.
+
+            {{ 'AUTO.ACTION_DE_MAINTENANCE_REQUISE_IMMEDIATEMENT' | translate }}
           </div>
         </div>
       </mat-card>
@@ -181,20 +189,21 @@
         <div class="card-head">
           <h2>
             <mat-icon>history</mat-icon>
-            Traçabilité
+
+            {{ 'AUTO.TRACABILITE' | translate }}
           </h2>
         </div>
         <div class="card-body stack">
           <div class="trace-row">
-            <span>Créé le :</span>
+            <span>{{ 'AUTO.CREE_LE' | translate }}</span>
             <strong>{{ current.createdDate | date:'dd/MM/yyyy HH:mm' }}</strong>
           </div>
           <div class="trace-row">
-            <span>Modifié le :</span>
+            <span>{{ 'AUTO.MODIFIE_LE' | translate }}</span>
             <strong>{{ current.lastModifiedDate | date:'dd/MM/yyyy HH:mm' }}</strong>
           </div>
           <div class="trace-row">
-            <span>Statut :</span>
+            <span>{{ 'AUTO.STATUT' | translate }}</span>
             <strong [class.ok]="current.actif" [class.ko]="!current.actif">
               {{ current.actif ? 'ACTIF' : 'INACTIF' }}
             </strong>

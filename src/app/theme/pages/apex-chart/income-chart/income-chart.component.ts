@@ -10,10 +10,11 @@ import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
 
 // const
 import { DARK, LIGHT } from 'src/app/theme/const';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-income-chart',
-  imports: [SharedModule, NgApexchartsModule],
+  imports: [TranslateModule, SharedModule, NgApexchartsModule],
   templateUrl: './income-chart.component.html',
   standalone: true,
   styleUrl: './income-chart.component.scss'

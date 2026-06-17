@@ -23,6 +23,7 @@ import { DashboardStore } from '../../services/dashboard-state.service';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { SearchDetails } from 'src/app/shared/models/advanced-search/searchDetails';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'auto-complete',
@@ -30,7 +31,7 @@ import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
   styleUrls: ['./auto-complete.component.scss'],
   standalone: true,
   providers: [provideNativeDateAdapter(), DatePipe],
-  imports: [
+  imports: [TranslateModule, 
     CommonModule,
     MatButtonModule,
     MatIconModule,

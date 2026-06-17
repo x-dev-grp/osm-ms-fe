@@ -80,7 +80,7 @@ export class TransactionAddComponent implements OnInit {
     this.transactionForm = this.fb.group({
       transactionType: ['', Validators.required],
       direction: ['', Validators.required],
-      amount: ['', [Validators.required, Validators.min(0)]],
+      amount: ['', [Validators.required, Validators.min(0.01)]],
       currency: [Currency.TND],
       paymentMethod: ['', Validators.required],
       description: [''],
@@ -103,7 +103,7 @@ export class TransactionAddComponent implements OnInit {
       paymentMethod: queryParams.get('paymentMethod') || '',
       description: queryParams.get('description') || '',
       lotNumber: queryParams.get('lotNumber') || '',
-      transactionDate: queryParams.get('transactionDate') || new Date() // Use Date object for datepicker
+      transactionDate: queryParams.get('transactionDate') ? new Date(queryParams.get('transactionDate')!) : new Date()
     });
   }
 
@@ -112,7 +112,7 @@ export class TransactionAddComponent implements OnInit {
     this.transactionService.getTransactionById(id).subscribe({
       next: (response) => {
         if (response.success && response.data) {
-        let  res=response.data[0]
+          const res = response.data;
           this.transactionForm.patchValue({
             transactionType: res.transactionType,
             direction: res.direction,
@@ -138,7 +138,7 @@ export class TransactionAddComponent implements OnInit {
   onSubmit(): void {
     if (this.transactionForm.valid) {
       this.loading = true;
-      const formValue = this.transactionForm.value;
+      const formValue = this.toPayload(this.transactionForm.value);
 
       if (this.isEditMode && this.transactionId) {
         // Update existing transaction
@@ -203,6 +203,19 @@ export class TransactionAddComponent implements OnInit {
 
   private showError(message: string): void {
     this.toast.error(message );
+  }
+
+  private toPayload(formValue: any): FinancialTransaction {
+    return {
+      ...formValue,
+      transactionDate: this.toLocalDateTime(formValue.transactionDate)
+    };
+  }
+
+  private toLocalDateTime(value: Date | string): string {
+    const date = value instanceof Date ? value : new Date(value);
+    const pad = (part: number) => part.toString().padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
   }
 
   getTitle(): string {

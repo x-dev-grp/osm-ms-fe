@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Stock } from '../models/stock.model';
-import {environment} from "../../../environments/environment";
-import {MouvementStock} from "../models/mouvement-stock.model";
+import { environment } from '../../../environments/environment';
+import { MouvementStock } from '../models/mouvement-stock.model';
 import { ArticleStockSummary } from '../models/article-stock-summary.model';
+import { ApiResponse } from '../../shared/models/api-response';
 
 
 @Injectable({
@@ -31,8 +33,14 @@ export class StockService {
   getMouvementsByArticle(articleId: string): Observable<MouvementStock[]> {
     return this.http.get<MouvementStock[]>(`${this.apiUrl}/mouvements/article/${articleId}`);
   }
+
+  getMouvementById(id: string): Observable<MouvementStock> {
+    return this.http.get<MouvementStock>(`${environment.apiUrl}/api/inventaire/mouvements-stocks/${id}`);
+  }
   getAllStocks(): Observable<Stock[]> {
-    return this.http.get<Stock[]>(this.apiUrl);
+    return this.http.get<ApiResponse<Stock>>(`${this.apiUrl}/fetchAll`).pipe(
+      map((response) => response?.data ?? [])
+    );
   }
 
   getStockSummary(): Observable<ArticleStockSummary[]> {

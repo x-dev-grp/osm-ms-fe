@@ -1,3 +1,5 @@
+import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -31,6 +33,7 @@ import { ACTION_ICONS } from 'src/app/shared/modules/osm-dashboard/models/action
   styleUrls: ['./transactions.component.scss']
 })
 export class TransactionsComponent implements OnInit, OnDestroy {
+  private readonly i18n = inject(TranslateService);
   dashboardConfig: DashboardConfig = TRANSACTIONS_DASHBOARD_CONFIG;
   loading = false;
   private destroy$ = new Subject<void>();
@@ -100,14 +103,13 @@ export class TransactionsComponent implements OnInit, OnDestroy {
 
   /** Approuve une transaction */
   approve(id: string): void {
-    if (!confirm('Êtes-vous sûr de vouloir approuver cette transaction ?')) {
+    if (!confirm(this.i18n.instant('AUTO.ETES_VOUS_SUR_DE_VOULOIR_APPROUVER_CETTE_TRANSACTION'))) {
       return;
     }
 
     this.loading = true;
-    const currentUser = localStorage.getItem('currentUser') || 'System';
 
-    this.transactionService.approveTransaction(id, currentUser)
+    this.transactionService.approveTransaction(id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response: any) => {
@@ -127,19 +129,18 @@ export class TransactionsComponent implements OnInit, OnDestroy {
 
   /** Rejette une transaction */
   reject(id: string): void {
-    const reason = prompt('Veuillez indiquer la raison du rejet :');
+    const reason = prompt(this.i18n.instant('AUTO.VEUILLEZ_INDIQUER_LA_RAISON_DU_REJET'));
     if (!reason) {
       return;
     }
 
-    if (!confirm('Êtes-vous sûr de vouloir rejeter cette transaction ?')) {
+    if (!confirm(this.i18n.instant('AUTO.ETES_VOUS_SUR_DE_VOULOIR_REJETER_CETTE_TRANSACTION'))) {
       return;
     }
 
     this.loading = true;
-    const currentUser = localStorage.getItem('currentUser') || 'System';
 
-    this.transactionService.rejectTransaction(id, currentUser, reason)
+    this.transactionService.rejectTransaction(id, reason)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response: any) => {
@@ -160,7 +161,7 @@ export class TransactionsComponent implements OnInit, OnDestroy {
 
   /** Duplicate a transaction */
   duplicate(id: string): void {
-    if (!confirm('Voulez-vous dupliquer cette transaction ?')) {
+    if (!confirm(this.i18n.instant('AUTO.VOULEZ_VOUS_DUPLIQUER_CETTE_TRANSACTION'))) {
       return;
     }
 
@@ -170,7 +171,7 @@ export class TransactionsComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (response) => {
           if (response.success && response.data) {
-            const transaction = response.data[0];
+            const transaction = response.data;
             // Navigate to add form with pre-filled data
             this.router.navigate(['/finance/transactions/new'], {
               queryParams: {
@@ -204,12 +205,11 @@ export class TransactionsComponent implements OnInit, OnDestroy {
     }
 
     this.loading = true;
-    const currentUser = localStorage.getItem('currentUser') || 'System';
     let completed = 0;
     let errors = 0;
 
     ids.forEach(id => {
-      this.transactionService.approveTransaction(id, currentUser)
+      this.transactionService.approveTransaction(id)
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: (response: any) => {

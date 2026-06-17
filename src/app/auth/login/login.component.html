@@ -41,7 +41,7 @@
           <div class="button-container">
             <button [disabled]="loading || form.invalid" (click)="submit()" mat-flat-button color="primary" class="login-button">
               <mat-spinner *ngIf="loading" diameter="25" color="warn"></mat-spinner>
-              <span *ngIf="!loading">Connexion</span>
+              <span *ngIf="!loading">{{ 'Login' | translate }}</span>
             </button>
           </div>
         </form>

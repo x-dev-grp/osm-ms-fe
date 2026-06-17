@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
 import { AnalyticsService } from '../../services/analytics.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-of-yield-report',
   standalone: true,
-  imports: [CommonModule, NgApexchartsModule],
+  imports: [TranslateModule, CommonModule, NgApexchartsModule],
   templateUrl: './Rendement-OF.component.html',
   styleUrls: ['./Rendement_OF.component.scss']
 })

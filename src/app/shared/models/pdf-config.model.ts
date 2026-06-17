@@ -1,15 +1,18 @@
 export interface PdfField {
   label: string;
+  labelTranslatePath?: string;
   value: string;
 }
 
 export interface PdfFooterInfo {
   label: string;
+  labelTranslatePath?: string;
   placeholder?: string;
 }
 
 export interface PdfConfig {
   title: string;
+  titleTranslatePath?: string;
   reference: string;
   Number?: string;
   revision?: string;

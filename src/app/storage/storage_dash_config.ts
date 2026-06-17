@@ -5,6 +5,7 @@ import { TypeCategory } from '../shared/models/type-category.enum';
 export const dashboardConfig: DashboardConfig = {
   icon: 'warehouse',
   title: 'Gestion des réservoirs',
+  titleTranslatePath: 'AUTO.GESTION_DES_RESERVOIRS',
   baseURL: 'production/storage-units',
   searchEndpoint: 'production/storage-units',
   addNewItem: true,
@@ -139,6 +140,7 @@ export const dashboardConfig: DashboardConfig = {
     {
       name: 'filteredOil',
       label: 'Pour filtrage',
+      labelTranslatePath: 'AUTO.POUR_FILTRAGE',
       attributeType: AttributeType.boolean,
       fieldType: FieldType.checkbox,
       sortable: true,

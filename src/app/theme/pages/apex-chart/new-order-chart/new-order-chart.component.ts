@@ -10,10 +10,11 @@ import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
 
 // const
 import { DARK, LIGHT } from 'src/app/theme/const';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-new-order-chart',
-  imports: [SharedModule, NgApexchartsModule],
+  imports: [TranslateModule, SharedModule, NgApexchartsModule],
   templateUrl: './new-order-chart.component.html',
   standalone: true,
   styleUrl: './new-order-chart.component.scss'

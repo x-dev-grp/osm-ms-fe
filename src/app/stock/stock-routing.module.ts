@@ -8,6 +8,7 @@ import { BcListComponent } from './components/bon-commande/bc-list/bc-list.compo
 import { BcFormComponent } from './components/bon-commande/bc-form/bc-form.component';
 import { BcDetailComponent } from './components/bon-commande/bc-detail/bc-detail.component';
 import { MouvementListComponent } from './components/mouvement/mouvement-list/mouvement-list.component';
+import { MouvementDetailComponent } from './components/mouvement/mouvement-detail/mouvement-detail.component';
 import {FournisseurListComponent} from "./components/fournisseurs/fournisseur-list/fournisseur-list.component";
 import {FournisseurFormComponent} from "./components/fournisseurs/fournisseur-form/fournisseur-form.component";
 import {FournisseurDetailComponent} from "./components/fournisseurs/fournisseur-detail/fournisseur-detail.component";
@@ -47,6 +48,7 @@ const routes: Routes = [
       { path: 'bons-commande/:id/edit', component: BcFormComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.BONCOMMANDE, Action.UPDATE)])] },
       { path: 'bons-commande/:id', component: BcDetailComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.BONCOMMANDE, Action.READ)])] },
       { path: 'mouvements', component: MouvementListComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.MOUVEMENTSTOCKSEC, Action.READ)])] },
+      { path: 'mouvements/:id', component: MouvementDetailComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.MOUVEMENTSTOCKSEC, Action.READ)])] },
 
       { path: 'fournisseurs', component: FournisseurListComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.FOURNISSEUR, Action.READ)])] },
       { path: 'fournisseurs/nouveau', component: FournisseurFormComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.FOURNISSEUR, Action.CREATE)])] },

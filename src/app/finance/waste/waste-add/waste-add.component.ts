@@ -28,10 +28,11 @@ import {CardComponent} from "../../../theme/components/card/card.component";
  import { WasteSale } from '../../models/Waste.model';
 import { ToastService } from '../../../shared/services/toast.service';
 import { Currency } from '../../models/financial-transaction.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-waste-add',
-  imports: [
+  imports: [TranslateModule,
     CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -140,13 +141,13 @@ export class WasteAddComponent implements OnInit{
               this.toast.success();
               this.router.navigate(['/finance/waste-sales']);
             } else {
-              this.toast.error('Erreur lors de la modification');
+              this.toast.error('AUTO.ERREUR_LORS_DE_LA_MODIFICATION');
             }
             this.loading = false;
           },
           error: (error) => {
             console.error('Error updating waste sale:', error);
-            this.toast.error('Erreur lors de la modification');
+            this.toast.error('AUTO.ERREUR_LORS_DE_LA_MODIFICATION');
             this.loading = false;
           }
         });
@@ -157,13 +158,13 @@ export class WasteAddComponent implements OnInit{
               this.toast.success();
               this.router.navigate(['/finance/waste-sales']);
             } else {
-              this.toast.error('Erreur lors de la création');
+              this.toast.error('TRANSACTIONS.ERRORS.CREATE_ERROR');
             }
             this.loading = false;
           },
           error: (error) => {
             console.error('Error creating waste sale:', error);
-            this.toast.error('Erreur lors de la création');
+            this.toast.error('TRANSACTIONS.ERRORS.CREATE_ERROR');
             this.loading = false;
           }
         });
@@ -268,13 +269,13 @@ export class WasteAddComponent implements OnInit{
             this.setupSupplierAutocomplete();
             resolve();
           } else {
-            this.toast.error('Aucun fournisseur trouvé');
+            this.toast.error('AUTO.AUCUN_FOURNISSEUR_TROUVE');
             reject(new Error('No suppliers found'));
           }
         },
         error: (error) => {
           console.error('Error loading suppliers:', error);
-          this.toast.error('Erreur lors du chargement des fournisseurs');
+          this.toast.error('AUTO.ERREUR_LORS_DU_CHARGEMENT_DES_FOURNISSEURS');
           reject(error);
         }
       });
@@ -328,14 +329,14 @@ export class WasteAddComponent implements OnInit{
 
           console.log('Form patched with values:', this.wasteSaleForm.value);
         } else {
-          this.toast.error('Vente de déchet introuvable');
+          this.toast.error('AUTO.VENTE_DE_DECHET_INTROUVABLE');
           this.router.navigate(['/finance/waste-sales']);
         }
         this.loading = false;
       },
       error: (error) => {
         console.error('Error loading waste sale:', error);
-        this.toast.error('Erreur lors du chargement de la vente de déchet');
+        this.toast.error('AUTO.ERREUR_LORS_DU_CHARGEMENT_DE_LA_VENTE_DE_DECHET');
         this.loading = false;
         this.router.navigate(['/finance/waste-sales']);
       }

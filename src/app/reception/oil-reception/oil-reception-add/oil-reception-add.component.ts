@@ -153,7 +153,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
         this.regions = res.success ? res.data : [];
       },
       error: () => {
-        this.toast.error('Erreur chargement régions');
+        this.toast.error('AUTO.ERREUR_CHARGEMENT_REGIONS');
       },
       complete: () => this.markCallDone()
     });
@@ -166,7 +166,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
         this.parcels = res.success ? res.data : [];
       },
       error: () => {
-        this.toast.error('Erreur chargement parcels');
+        this.toast.error('AUTO.ERREUR_CHARGEMENT_PARCELS');
       },
       complete: () => this.markCallDone()
     });
@@ -192,7 +192,7 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
         }
       },
       error: () => {
-        this.toast.error('Erreur chargement fournisseurs');
+        this.toast.error('AUTO.ERREUR_CHARGEMENT_FOURNISSEURS');
       },
       complete: () => this.markCallDone()
     });
@@ -235,12 +235,12 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
               this.patchForm(deliveryObj);
             }
           } else {
-            this.errorMessage = 'Erreur lors du chargement de la réception.';
+            this.errorMessage = this.translate.instant('AUTO.ERREUR_LORS_DU_CHARGEMENT_DE_LA_RECEPTION');
             this.router.navigate(['/reception-huile']);
           }
         },
         error: () => {
-          this.errorMessage = 'Erreur lors du chargement de la réception.';
+          this.errorMessage = this.translate.instant('AUTO.ERREUR_LORS_DU_CHARGEMENT_DE_LA_RECEPTION');
           this.router.navigate(['/reception-huile']);
         },
         complete: () => this.markCallDone()

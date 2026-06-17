@@ -6,10 +6,11 @@ import { SharedModule } from 'src/app/shared/shared.module';
 
 // third party
 import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-category-chart',
-  imports: [SharedModule, NgApexchartsModule],
+  imports: [TranslateModule, SharedModule, NgApexchartsModule],
   templateUrl: './category-chart.component.html',
   styleUrl: './category-chart.component.scss'
 })
