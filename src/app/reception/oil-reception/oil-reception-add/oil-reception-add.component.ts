@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, startWith, Subscription } from 'rxjs';
 import { BaseType } from '../../../shared/models/base-type';
 import { SupplierType } from '../../../shared/models/supplier-type';
+import { deliveryType } from '../../../shared/models/deleveryType';
 import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
 import { GenericTypeService } from '../../../shared/services/generic-type.service';
 import { SupplierTypeService } from '../../../shared/services/supplier.service';
@@ -71,7 +72,6 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
   receptionForm: FormGroup;
   suppliers: SupplierType[] = [];
   oilVariety: BaseType[] = [];
-  deliveries: UnifiedDelivery[] = [];
   operationTypes: { value: OperationType; label: string }[] = [];
   olive_oil_Options = Object.values(Olive_Oil_Type);
   regions: BaseType[] = [];
@@ -203,24 +203,17 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
         c.setValue(0, { emitEvent: false });
       }
     });
-    // ===== 2️⃣  Charger la liste des réceptions =====
-    this.pendingCalls++;
+    // ===== 2️⃣  Next delivery/lot numbers (create mode) =====
+    if (!this.isEditing) {
+      this.pendingCalls++;
+      const numbersSub = this.deliverySrv.getNextDeliveryNumbers(deliveryType.OIL).subscribe({
+        next: (res) => this.applyNextNumbers(res),
+        error: () => this.toast.error('AUTO.ERREUR_CHARGEMENT_RECEPTIONS'),
+        complete: () => this.markCallDone()
+      });
+      this.subscriptions.push(numbersSub);
+    }
 
-    /*************** 2.  Dans le flux de chargement des réceptions ****************/
-    const deliveriesSub = this.deliverySrv.getAllDeliveriesList().subscribe({
-      next: (res) => {
-        this.deliveries = res?.success ? (res.data ?? []) : [];
-
-        if (!this.isEditing) {
-          // if nested: map(d => d.delivery?.deliveryNumber)
-          const nextNumber = this.nextFreeNumber(this.deliveries.map((d) => d.deliveryNumber));
-
-          this.receptionForm.patchValue({ deliveryNumber: nextNumber, lotNumber: nextNumber }, { emitEvent: false });
-        }
-      },
-      complete: () => this.markCallDone()
-    });
-    this.subscriptions.push(deliveriesSub);
     // ===== 3️⃣  Si édition, charger la réception à modifier =====
     if (this.isEditing && this.deliveryId) {
       this.pendingCalls++;
@@ -454,11 +447,16 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     return n.includes(q) || l.includes(q);
   }
 
-  private nextFreeNumber(nums: Array<number | string>): number {
-    const used = new Set(nums.map((n) => Number(n)).filter((n) => Number.isInteger(n) && n > 0));
-    let i = 1;
-    while (used.has(i)) i++;
-    return i;
+  private applyNextNumbers(res: { success?: boolean; data?: { deliveryNumber: string; lotNumber: string } }): void {
+    if (res?.success && res.data) {
+      this.receptionForm.patchValue(
+        {
+          deliveryNumber: res.data.deliveryNumber,
+          lotNumber: res.data.lotNumber
+        },
+        { emitEvent: false }
+      );
+    }
   }
 
   // single place to wire autocomplete filtering (supplier typing)
@@ -484,20 +482,6 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  /*************** 1.  Méthode utilitaire ****************/
-  private setNextNumbers(): void {
-    const deliveryCount = this.deliveries.length; // nb. total de réceptions déjà saisies
-    const maxLot = Math.max(0, ...this.deliveries.map((d) => Number(d.lotNumber) || 0)); // plus grand n° de lot existant
-
-    this.receptionForm.patchValue(
-      {
-        deliveryNumber: deliveryCount + 1, // prochain n° de réception
-        lotNumber: maxLot + 1 // prochain n° de lot
-      },
-      { emitEvent: false }
-    );
-  }
-
   // patch with matched objects by id; avoid manual DOM pokes
   private patchForm(d: UnifiedDelivery): void {
     const parseDate = (v: string | Date | null | undefined): Date | null => (!v ? null : v instanceof Date ? v : new Date(v));
@@ -520,20 +504,15 @@ export class OilReceptionFormComponent implements OnInit, OnDestroy {
     );
   }
 
-  private generateLotNumber(oilType: Olive_Oil_Type | null, deliveryNumber: number): string {
-    if (!oilType) return '';
-    const year = new Date().getFullYear().toString().slice(-2);
-    const paddedNumber = deliveryNumber.toString().padStart(3, '0');
-    return `E${paddedNumber}${year}`;
-  }
-
   private setupFormSubscriptions(): void {
-    // lot number from oil type (leave as you had if identical)
     this.subscriptions.push(
-      this.receptionForm.get('oilType')!.valueChanges.subscribe((oilType: Olive_Oil_Type | null) => {
-        const deliveryNumber = this.receptionForm.get('deliveryNumber')?.value || this.deliveries.length + 1;
-        const lotNumber = this.generateLotNumber(oilType, deliveryNumber);
-        this.receptionForm.patchValue({ lotNumber }, { emitEvent: false });
+      this.receptionForm.get('oilType')!.valueChanges.subscribe(() => {
+        if (!this.isEditing) {
+          const deliveryNumber = this.receptionForm.get('deliveryNumber')?.value;
+          if (deliveryNumber != null && deliveryNumber !== '') {
+            this.receptionForm.patchValue({ lotNumber: String(deliveryNumber) }, { emitEvent: false });
+          }
+        }
       })
     );
 

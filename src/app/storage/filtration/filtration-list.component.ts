@@ -54,6 +54,13 @@ export class FiltrationListComponent {
       case 'TRACEABILITY':
         void this.router.navigate(['storage', 'oil-filtering', operationId, 'traceability']);
         break;
+      case 'QUALITY':
+      case 'OIL_QUALITY':
+      case 'UPDATE_OIL_QUALITY':
+        if (String(row.status) === 'COMPLETED') {
+          void this.router.navigate(['storage', 'oil-filtering', operationId, 'quality']);
+        }
+        break;
       case 'PREPARE_LABEL':
         this.onPrepareLabel(row);
         break;

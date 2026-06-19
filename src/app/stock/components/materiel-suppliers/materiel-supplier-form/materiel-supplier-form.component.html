@@ -1,0 +1,450 @@
+<div class="supplier-form-page">
+  <div class="supplier-form-container">
+
+    <div *ngIf="loading" class="loading-overlay">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
+      </div>
+    </div>
+
+    <!-- HERO -->
+    <section class="form-hero">
+      <div class="hero-left">
+        <div class="hero-icon">
+          <i class="fas fa-user-plus"></i>
+        </div>
+
+        <div>
+          <h1>
+            {{ (isEditMode ? 'MATERIEL_SUPPLIER.FORM.TITLE_EDIT' : 'MATERIEL_SUPPLIER.FORM.TITLE_CREATE') | translate }}
+          </h1>
+          <p>
+            {{ (isEditMode ? 'MATERIEL_SUPPLIER.FORM.SUBTITLE_EDIT' : 'MATERIEL_SUPPLIER.FORM.SUBTITLE_CREATE') | translate }}
+          </p>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-secondary hero-back" (click)="onCancel()">
+        <i class="fas fa-arrow-left"></i>
+        {{ 'COMMON.BACK' | translate }}
+      </button>
+    </section>
+
+    <!-- FORM CARD -->
+    <section class="form-card">
+      <form [formGroup]="supplierForm" (ngSubmit)="onSubmit()" novalidate>
+
+        <div class="form-alert" *ngIf="submitted && supplierForm.invalid">
+          <i class="fas fa-circle-exclamation"></i>
+          {{ 'MATERIEL_SUPPLIER.ERRORS.INVALID_FORM' | translate }}
+        </div>
+
+        <!-- INFORMATIONS GÉNÉRALES -->
+        <div class="form-section">
+          <div class="section-header">
+            <div class="section-icon">
+              <i class="fas fa-id-card"></i>
+            </div>
+
+            <div>
+              <h3>{{ 'DELIVERIES.FORM.SECTIONS.GENERAL_INFO' | translate }}</h3>
+              <p>{{ 'MATERIEL_SUPPLIER.FORM.SECTION_GENERAL_HINT' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="form-grid two-cols">
+            <div class="form-group">
+              <label for="nom">{{ 'AUTO.NOM' | translate }} <span class="required">*</span></label>
+              <input
+                type="text"
+                id="nom"
+                class="form-control"
+                [placeholder]="'MATERIEL_SUPPLIER.FORM.NAME_PLACEHOLDER' | translate"
+                [class.is-invalid]="isFieldInvalid('nom')"
+                formControlName="nom">
+
+              <div class="invalid-feedback" *ngIf="getFieldErrorKey('nom') as errorKey">
+                {{ errorKey | translate }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="nomCommercial">{{ 'AUTO.NOM_COMMERCIAL' | translate }}</label>
+              <input
+                type="text"
+                id="nomCommercial"
+                class="form-control"
+                [placeholder]="'AUTO.NOM_COMMERCIAL' | translate"
+                [class.is-invalid]="isFieldInvalid('nomCommercial')"
+                formControlName="nomCommercial">
+
+              <div class="invalid-feedback" *ngIf="getFieldErrorKey('nomCommercial') as errorKey">
+                {{ errorKey | translate }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="category">{{ 'BASE_TYPE.CATEGORY' | translate }} <span class="required">*</span></label>
+              <select
+                id="category"
+                class="form-control"
+                [class.is-invalid]="isFieldInvalid('category')"
+                formControlName="category">
+                <option value="">{{ 'AUTO.SELECTIONNER' | translate }}</option>
+                <option *ngFor="let cat of categories" [value]="cat">
+                  {{ categoryLabels[cat] | translate }}
+                </option>
+              </select>
+
+              <div class="invalid-feedback" *ngIf="getFieldErrorKey('category') as errorKey">
+                {{ errorKey | translate }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="currency">{{ 'AUTO.DEVISE' | translate }} <span class="required">*</span></label>
+              <select
+                id="currency"
+                class="form-control"
+                [class.is-invalid]="isFieldInvalid('currency')"
+                formControlName="currency">
+                <option *ngFor="let currency of currencies" [value]="currency">
+                  {{ currency }}
+                </option>
+              </select>
+
+              <div class="invalid-feedback" *ngIf="getFieldErrorKey('currency') as errorKey">
+                {{ errorKey | translate }}
+              </div>
+            </div>
+          </div>
+
+          <div class="active-box">
+            <label for="actif" class="switch-row">
+              <input
+                type="checkbox"
+                id="actif"
+                class="switch-input"
+                formControlName="actif">
+
+              <span class="switch-ui"></span>
+
+              <span class="switch-text">
+                <strong>{{ 'MATERIEL_SUPPLIER.FORM.ACTIVE_LABEL' | translate }}</strong>
+                <small>{{ 'MATERIEL_SUPPLIER.FORM.ACTIVE_HINT' | translate }}</small>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <!-- COORDONNÉES -->
+        <div class="form-section">
+          <div class="section-header">
+            <div class="section-icon">
+              <i class="fas fa-address-book"></i>
+            </div>
+
+            <div>
+              <h3>{{ 'AUTO.COORDONNEES' | translate }}</h3>
+              <p>{{ 'AUTO.EMAIL_TELEPHONE_FAX_ET_SITE_WEB' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="form-grid two-cols">
+            <div class="form-group">
+              <label for="email">{{ 'ADMIN_COMPANY_PROFILE.EMAIL' | translate }}</label>
+              <input
+                type="email"
+                id="email"
+                class="form-control"
+                [placeholder]="'AUTO.EMAIL_DOMAINE_COM' | translate"
+                [class.is-invalid]="isFieldInvalid('email')"
+                formControlName="email">
+
+              <div class="invalid-feedback" *ngIf="getFieldErrorKey('email') as errorKey">
+                {{ errorKey | translate }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="telephone">{{ 'ADMIN_COMPANY_PROFILE.PHONE' | translate }}</label>
+              <input
+                type="tel"
+                id="telephone"
+                class="form-control"
+                placeholder="+216 ..."
+                [class.is-invalid]="isFieldInvalid('telephone')"
+                formControlName="telephone">
+
+              <div class="invalid-feedback" *ngIf="getFieldErrorKey('telephone') as errorKey">
+                {{ errorKey | translate }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="fax">{{ 'CUSTOMERS.FIELDS.FAX' | translate }}</label>
+              <input
+                type="text"
+                id="fax"
+                class="form-control"
+                [placeholder]="'CUSTOMERS.FIELDS.FAX' | translate"
+                [class.is-invalid]="isFieldInvalid('fax')"
+                formControlName="fax">
+
+              <div class="invalid-feedback" *ngIf="getFieldErrorKey('fax') as errorKey">
+                {{ errorKey | translate }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="siteWeb">{{ 'COMPANY_PROFILE_UI.CONTACT_INFO.WEBSITE' | translate }}</label>
+              <input
+                type="url"
+                id="siteWeb"
+                class="form-control"
+                [placeholder]="'AUTO.HTTPS' | translate"
+                [class.is-invalid]="isFieldInvalid('siteWeb')"
+                formControlName="siteWeb">
+
+              <div class="invalid-feedback" *ngIf="getFieldErrorKey('siteWeb') as errorKey">
+                {{ errorKey | translate }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ADRESSE -->
+        <div class="form-section">
+          <div class="section-header">
+            <div class="section-icon">
+              <i class="fas fa-map-marker-alt"></i>
+            </div>
+
+            <div>
+              <h3>{{ 'PDF.ADDRESS' | translate }}</h3>
+              <p>{{ 'AUTO.ADRESSE_ADMINISTRATIVE_ET_INFORMATIONS_FISCALES' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="form-grid one-col">
+            <div class="form-group">
+              <label for="adresse">{{ 'PDF.ADDRESS' | translate }}</label>
+              <textarea
+                id="adresse"
+                class="form-control textarea"
+                rows="3"
+                [placeholder]="'AUTO.ADRESSE_COMPLETE' | translate"
+                [class.is-invalid]="isFieldInvalid('adresse')"
+                formControlName="adresse"></textarea>
+
+              <div class="invalid-feedback" *ngIf="getFieldErrorKey('adresse') as errorKey">
+                {{ errorKey | translate }}
+              </div>
+            </div>
+          </div>
+
+          <div class="form-grid two-cols">
+            <div class="form-group">
+              <label for="ville">{{ 'ADMIN_COMPANY_PROFILE.CITY' | translate }}</label>
+              <input
+                type="text"
+                id="ville"
+                class="form-control"
+                [placeholder]="'ADMIN_COMPANY_PROFILE.CITY' | translate"
+                [class.is-invalid]="isFieldInvalid('ville')"
+                formControlName="ville">
+
+              <div class="invalid-feedback" *ngIf="getFieldErrorKey('ville') as errorKey">
+                {{ errorKey | translate }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="codePostal">{{ 'CUSTOMERS.FIELDS.POSTAL_CODE' | translate }}</label>
+              <input
+                type="text"
+                id="codePostal"
+                class="form-control"
+                [placeholder]="'CUSTOMERS.FIELDS.POSTAL_CODE' | translate"
+                [class.is-invalid]="isFieldInvalid('codePostal')"
+                formControlName="codePostal">
+
+              <div class="invalid-feedback" *ngIf="getFieldErrorKey('codePostal') as errorKey">
+                {{ errorKey | translate }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="pays">{{ 'CUSTOMERS.FIELDS.COUNTRY' | translate }}</label>
+              <input
+                type="text"
+                id="pays"
+                class="form-control"
+                [placeholder]="'CUSTOMERS.FIELDS.COUNTRY' | translate"
+                [class.is-invalid]="isFieldInvalid('pays')"
+                formControlName="pays">
+
+              <div class="invalid-feedback" *ngIf="getFieldErrorKey('pays') as errorKey">
+                {{ errorKey | translate }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="numeroTva">{{ 'PDF.VAT' | translate }}</label>
+              <input
+                type="text"
+                id="numeroTva"
+                class="form-control"
+                [placeholder]="'PDF.VAT' | translate"
+                [class.is-invalid]="isFieldInvalid('numeroTva')"
+                formControlName="numeroTva">
+
+              <div class="invalid-feedback" *ngIf="getFieldErrorKey('numeroTva') as errorKey">
+                {{ errorKey | translate }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONTACT PRINCIPAL -->
+        <div class="form-section">
+          <div class="section-header">
+            <div class="section-icon">
+              <i class="fas fa-user-tie"></i>
+            </div>
+
+            <div>
+              <h3>{{ 'AUTO.CONTACT_PRINCIPAL' | translate }}</h3>
+              <p>{{ 'MATERIEL_SUPPLIER.FORM.CONTACT_HINT' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="form-grid two-cols">
+            <div class="form-group">
+              <label for="contactNom">{{ 'ADMIN_USERS.FIELDS.FIRST_NAME' | translate }}</label>
+              <input
+                type="text"
+                id="contactNom"
+                class="form-control"
+                [placeholder]="'AUTO.NOM_DU_CONTACT' | translate"
+                [class.is-invalid]="isFieldInvalid('contactNom')"
+                formControlName="contactNom">
+
+              <div class="invalid-feedback" *ngIf="getFieldErrorKey('contactNom') as errorKey">
+                {{ errorKey | translate }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="contactPrenom">{{ 'ADMIN_USERS.FIELDS.LAST_NAME' | translate }}</label>
+              <input
+                type="text"
+                id="contactPrenom"
+                class="form-control"
+                [placeholder]="'AUTO.PRENOM_DU_CONTACT' | translate"
+                [class.is-invalid]="isFieldInvalid('contactPrenom')"
+                formControlName="contactPrenom">
+
+              <div class="invalid-feedback" *ngIf="getFieldErrorKey('contactPrenom') as errorKey">
+                {{ errorKey | translate }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="contactEmail">{{ 'ADMIN_COMPANY_PROFILE.EMAIL' | translate }}</label>
+              <input
+                type="email"
+                id="contactEmail"
+                class="form-control"
+                [placeholder]="'AUTO.CONTACT_DOMAINE_COM' | translate"
+                [class.is-invalid]="isFieldInvalid('contactEmail')"
+                formControlName="contactEmail">
+
+              <div class="invalid-feedback" *ngIf="getFieldErrorKey('contactEmail') as errorKey">
+                {{ errorKey | translate }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="contactTelephone">{{ 'ADMIN_COMPANY_PROFILE.PHONE' | translate }}</label>
+              <input
+                type="tel"
+                id="contactTelephone"
+                class="form-control"
+                placeholder="+216 ..."
+                [class.is-invalid]="isFieldInvalid('contactTelephone')"
+                formControlName="contactTelephone">
+
+              <div class="invalid-feedback" *ngIf="getFieldErrorKey('contactTelephone') as errorKey">
+                {{ errorKey | translate }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- INFORMATIONS COMMERCIALES -->
+        <div class="form-section">
+          <div class="section-header">
+            <div class="section-icon">
+              <i class="fas fa-file-invoice-dollar"></i>
+            </div>
+
+            <div>
+              <h3>{{ 'AUTO.INFORMATIONS_COMMERCIALES' | translate }}</h3>
+              <p>{{ 'AUTO.CONDITIONS_DE_PAIEMENT_ET_DELAI_MOYEN' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="form-grid two-cols">
+            <div class="form-group">
+              <label for="delaiLivraisonMoyen">{{ 'AUTO.DELAI_LIVRAISON_MOYEN_JOURS' | translate }}</label>
+              <input
+                type="number"
+                id="delaiLivraisonMoyen"
+                class="form-control"
+                placeholder="0"
+                [class.is-invalid]="isFieldInvalid('delaiLivraisonMoyen')"
+                formControlName="delaiLivraisonMoyen"
+                min="0">
+
+              <div class="invalid-feedback" *ngIf="getFieldErrorKey('delaiLivraisonMoyen') as errorKey">
+                {{ errorKey | translate }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="conditionsPaiement">{{ 'AUTO.CONDITIONS_DE_PAIEMENT' | translate }}</label>
+              <input
+                type="text"
+                id="conditionsPaiement"
+                class="form-control"
+                [placeholder]="'AUTO.EX_30_JOURS_FIN_DE_MOIS' | translate"
+                [class.is-invalid]="isFieldInvalid('conditionsPaiement')"
+                formControlName="conditionsPaiement">
+
+              <div class="invalid-feedback" *ngIf="getFieldErrorKey('conditionsPaiement') as errorKey">
+                {{ errorKey | translate }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACTIONS -->
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="submitting">
+            <i class="fas fa-xmark"></i>
+            {{ 'ADMIN.CANCEL' | translate }}
+          </button>
+
+          <button type="submit" class="btn btn-primary" [disabled]="submitting || loading">
+            <span *ngIf="submitting" class="spinner-border spinner-border-sm"></span>
+            <i *ngIf="!submitting" class="fas fa-check"></i>
+            {{ (isEditMode ? 'MATERIEL_SUPPLIER.FORM.SUBMIT_UPDATE' : 'MATERIEL_SUPPLIER.FORM.SUBMIT_CREATE') | translate }}
+          </button>
+        </div>
+
+      </form>
+    </section>
+
+  </div>
+</div>

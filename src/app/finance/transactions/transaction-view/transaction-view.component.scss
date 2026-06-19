@@ -142,6 +142,25 @@
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       font-size: 0.8rem;
     }
+
+    &.muted {
+      color: #6b7280;
+      font-size: 0.82rem;
+    }
+  }
+
+  &--hint .label {
+    visibility: hidden;
+  }
+}
+
+.oil-sale-link {
+  color: #5f6f38;
+  font-weight: 600;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
   }
 }
 

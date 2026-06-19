@@ -16,6 +16,7 @@ export const FILTRATION_DASHBOARD_CONFIG: DashboardConfig = {
     { action: 'START', color: 'primary', icon: 'play_arrow' },
     { action: 'STATUS', color: 'primary', icon: 'swap_horiz' },
     { action: 'TRACEABILITY', color: 'primary', icon: 'account_tree' },
+    { action: 'OIL_QUALITY', color: 'primary', icon: 'science' },
     { action: 'PREPARE_LABEL', color: 'primary', icon: 'sell' },
     { action: 'REMOVE', color: 'warn', icon: 'delete' }
   ],

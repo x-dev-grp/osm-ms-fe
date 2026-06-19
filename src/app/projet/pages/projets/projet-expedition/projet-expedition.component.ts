@@ -18,9 +18,7 @@ import { OFService } from '../../../../OF/services/OFService';
 import { OrdreFabrication } from '../../../../OF/models/of.model';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { extractHttpErrorMessage } from '../../../../shared/utils/http-error.util';
-import { PdfGeneratorExpeditionService } from '../../../../shared/services/pdf-generator-expedition.service';
-import { CompanyProfileService } from '../../../../shared/services/company-profile.service';
-import { PdfExpeditionConfig } from '../../../../shared/models/pdf-config.model';
+import { DocumentGenerationService } from '../../../../shared/services/document-generation.service';
 import { TraceabilityTimelineComponent } from '../../../../shared/components/traceability-timeline/traceability-timeline.component';
 import { TranslateModule } from '@ngx-translate/core';
 import {
@@ -53,7 +51,6 @@ export class ProjetExpeditionComponent implements OnInit {
   projectId: string | null = null;
   project: ProjetDto | null = null;
   projectOfs: OrdreFabrication[] = [];
-  companyProfile: any = null;
 
   expeditions: ExpeditionDto[] = [];
   selectedExpedition: ExpeditionDto | null = null;
@@ -118,8 +115,7 @@ export class ProjetExpeditionComponent implements OnInit {
     private expeditionService: ExpeditionService,
     private ofService: OFService,
     private toast: ToastService,
-    private pdfService: PdfGeneratorExpeditionService,
-    private companyService: CompanyProfileService
+    private documentGenerationService: DocumentGenerationService
   ) {}
 
   getParsedSnapshot(exp: ExpeditionDto): any {
@@ -286,39 +282,9 @@ export class ProjetExpeditionComponent implements OnInit {
   }
 
   generatePDF(exp: ExpeditionDto) {
-    const snapshot = this.getParsedSnapshot(exp) ?? (exp.id === this.selectedExpedition?.id ? this.expeditionTraceabilityData : null);
-    const config: PdfExpeditionConfig = {
-      title: 'Bon de Livraison & Tracabilite',
-      reference: exp.expeditionNumber,
-      date: new Date(exp.createdDate || '').toLocaleDateString(),
-      clientInfo: {
-        name: this.project?.client.nom,
-        address: '' // Address not in ProjetDto, could be added later
-      },
-      logistics: {
-        carrier: exp.carrierName,
-        driver: exp.driverName,
-        truck: exp.truckNumber,
-        tracking: exp.trackingNumber,
-        incoterm: exp.incoterm,
-        destination: exp.destination
-      },
-      lines: (exp.lines || []).map(l => ({
-        ofCode: l.ofCode || '',
-        articleName: l.articleName || '',
-        quantity: l.quantity,
-        unit: l.unit || '',
-        lotNumber: l.lotNumber || ''
-      })),
-      traceability: snapshot,
-      companyInfo: {
-        companyName: this.companyProfile?.companyName,
-        address: this.companyProfile?.address,
-        logoUrl: this.companyProfile?.logoData ? `data:${this.companyProfile.logoContentType};base64,${this.companyProfile.logoData}` : undefined
-      }
-    };
-
-    this.pdfService.generatePdf(config);
+    if (exp.id) {
+      this.documentGenerationService.downloadExpeditionPdf(exp.id);
+    }
   }
 
   ngOnInit(): void {
@@ -334,8 +300,6 @@ export class ProjetExpeditionComponent implements OnInit {
     this.loadProject(this.projectId);
     this.loadExpeditions(this.projectId);
     this.loadProjectOfs(this.projectId);
-
-    this.companyService.getProfile().subscribe((p: any) => this.companyProfile = p);
   }
 
   private loadProject(id: string): void {

@@ -107,7 +107,13 @@
                   disabled
                 />
               } @else if (item?.fieldType === "select") {
-                {{ getSelectDataTableValue(record[item?.name], item?.name) | translate }}
+                @if (item?.name === 'status') {
+                  <span class="status-badge" [ngClass]="'status-' + (record[item?.name] | lowercase)">
+                    {{ getSelectDataTableValue(record[item?.name], item?.name) | translate }}
+                  </span>
+                } @else {
+                  {{ getSelectDataTableValue(record[item?.name], item?.name) | translate }}
+                }
               } @else if (item?.fieldType === "date") {
                 {{ (item?.valuePath ? getValue(item?.valuePath, record) : getValue(item?.name, record)) | date:'dd-MM-yyyy HH:mm' }}
               } @else if (item.flattedItemIndex || item.flattedItemIndex == 0) {

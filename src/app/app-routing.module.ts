@@ -48,7 +48,7 @@ const routes: Routes = [
       },
       {
         path: 'welcome',
-        loadComponent: () => import('./welcome/welcome.component').then((m) => m.WelcomeComponent)
+        loadComponent: () => import('./home-dashboard/home-dashboard.component').then((m) => m.HomeDashboardComponent)
       },
 
       {

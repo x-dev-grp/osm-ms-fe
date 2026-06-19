@@ -1,6 +1,6 @@
 // Angular import
 import { Component, computed, effect, inject, input, OnInit, signal } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { animate, style, transition, trigger } from '@angular/animations';
 
@@ -29,6 +29,7 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class MenuCollapseComponent implements OnInit {
   readonly navigationActiveService = inject(NavigationActiveService);
+  private readonly router = inject(Router);
 
   // public props
   isEnabled: boolean = false;
@@ -37,7 +38,7 @@ export class MenuCollapseComponent implements OnInit {
   readonly isOpen = computed(() => {
     this.navigationActiveService.currentUrl();
     this.navigationActiveService.activeMenuUrl();
-    return this.isExpandedState() || this.hasActiveChild();
+    return this.isExpandedState() || this.hasActiveChild() || this.isSelfActive();
   });
 
   // all Version Get Item(Component Name Take)
@@ -67,11 +68,26 @@ export class MenuCollapseComponent implements OnInit {
     return (this.item()?.children ?? []).some((child) => this.navigationActiveService.isItemActive(child));
   }
 
-  // Method to handle the collapse of the navigation menu
+  isSelfActive(): boolean {
+    return this.navigationActiveService.isItemActive(this.item());
+  }
+
+  // Expand/collapse submenu; navigate when the collapse item defines a list url.
   navCollapse(e: MouseEvent) {
     e.stopPropagation();
 
-    if (!this.isEnabled || this.hasActiveChild()) {
+    if (!this.isEnabled) {
+      return;
+    }
+
+    const item = this.item();
+    if (item?.url) {
+      void this.router.navigateByUrl(item.url);
+      this.isExpandedState.set(true);
+      return;
+    }
+
+    if (this.hasActiveChild()) {
       return;
     }
 

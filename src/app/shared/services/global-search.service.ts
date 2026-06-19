@@ -36,8 +36,8 @@ export class GlobalSearchService {
       this.http.get<QrResolveResponse>(`${this.baseUrl}/api/inventaire/emplacements/search/by-code`, { params })
     );
 
-    const fournisseur$ = silent(
-      this.http.get<QrResolveResponse>(`${this.baseUrl}/api/inventaire/fournisseurs/search/by-code`, { params })
+    const materielSupplier$ = silent(
+      this.http.get<QrResolveResponse>(`${this.baseUrl}/api/inventaire/materiel-suppliers/search/by-code`, { params })
     );
 
     const storageUnit$ = silent(
@@ -65,14 +65,14 @@ export class GlobalSearchService {
       article: article$,
       produitFinal: produitFinal$,
       emplacement: emplacement$,
-      fournisseur: fournisseur$,
+      materielSupplier: materielSupplier$,
       storageUnit: storageUnit$,
       bonCommande: bonCommande$,
       ligneConditionnement: ligneConditionnement$,
       bom: bom$,
       unifiedDelivery: unifiedDelivery$
     }).pipe(
-      map(({ conditioning, article, produitFinal, emplacement, fournisseur, storageUnit, bonCommande, ligneConditionnement, bom, unifiedDelivery }) => {
+      map(({ conditioning, article, produitFinal, emplacement, materielSupplier, storageUnit, bonCommande, ligneConditionnement, bom, unifiedDelivery }) => {
         const matches = new Map<string, QrResolveResponse>();
 
         const add = (hit?: QrResolveResponse | null) => {
@@ -92,7 +92,7 @@ export class GlobalSearchService {
         add(article);
         add(produitFinal);
         add(emplacement);
-        add(fournisseur);
+        add(materielSupplier);
         add(storageUnit);
         add(bonCommande);
         add(ligneConditionnement);

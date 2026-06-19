@@ -1,42 +1,31 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
-import { TranslateModule } from '@ngx-translate/core';
-
-import { QcEntryStudioComponent } from '../../../shared/qc/components/qc-entry-studio/qc-entry-studio.component';
+import { Component, Inject, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 interface FiltrationQcDialogData {
   filtrationOperationId: string;
   traceabilityLotId?: string | null;
 }
 
+/** @deprecated Use full-page route /storage/oil-filtering/:id/quality */
 @Component({
   selector: 'app-filtration-qc-entry-dialog',
   standalone: true,
-  templateUrl: './filtration-qc-entry-dialog.component.html',
-  styleUrls: ['./filtration-qc-entry-dialog.component.scss'],
-  imports: [
-    TranslateModule,
-    CommonModule,
-    MatDialogTitle,
-    MatDialogContent,
-    MatDialogActions,
-    MatButtonModule,
-    QcEntryStudioComponent
-  ]
+  template: '',
+  imports: [CommonModule]
 })
-export class FiltrationQcEntryDialogComponent {
+export class FiltrationQcEntryDialogComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public readonly data: FiltrationQcDialogData,
-    private readonly dialogRef: MatDialogRef<FiltrationQcEntryDialogComponent>
+    private readonly dialogRef: MatDialogRef<FiltrationQcEntryDialogComponent>,
+    private readonly router: Router
   ) {}
 
-  cancel(): void {
+  ngOnInit(): void {
     this.dialogRef.close(false);
-  }
-
-  onSaved(): void {
-    this.dialogRef.close(true);
+    if (this.data?.filtrationOperationId) {
+      void this.router.navigate(['/storage', 'oil-filtering', this.data.filtrationOperationId, 'quality']);
+    }
   }
 }

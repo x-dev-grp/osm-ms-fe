@@ -1,0 +1,122 @@
+<h2 mat-dialog-title>
+  {{ step === 'confirm'
+    ? ('OIL_CONTAINER.PURCHASE.CONFIRM_TITLE' | translate)
+    : ('OIL_CONTAINER.PURCHASE.DIALOG_TITLE' | translate) }}
+</h2>
+
+<mat-dialog-content>
+  <p class="dialog-hint">
+    {{ step === 'confirm'
+      ? ('OIL_CONTAINER.PURCHASE.CONFIRM_HINT' | translate)
+      : ('OIL_CONTAINER.PURCHASE.DIALOG_HINT' | translate:{ name: data.container.name }) }}
+  </p>
+
+  <form *ngIf="step === 'form'" [formGroup]="form" class="purchase-form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>{{ 'OIL_CONTAINER.PURCHASE.QUANTITY' | translate }}</mat-label>
+      <input matInput type="number" min="1" formControlName="quantity" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>{{ 'OIL_CONTAINER.DASHBOARD.FIELDS.BUY_PRICE' | translate }}</mat-label>
+      <input matInput type="number" min="0.01" step="0.01" formControlName="unitPrice" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>{{ 'OIL_CONTAINER.PURCHASE.VENDOR' | translate }}</mat-label>
+      <input
+        #supplierTrig="matAutocompleteTrigger"
+        (blur)="markSupplierTouched()"
+        (keydown.enter)="selectActiveOption(supplierAuto, supplierTrig)"
+        [matAutocomplete]="supplierAuto"
+        formControlName="materielSupplier"
+        matInput
+        required>
+      <mat-autocomplete
+        #supplierAuto="matAutocomplete"
+        (optionSelected)="onSupplierSelected($event)"
+        [displayWith]="displaySupplierFn">
+        <mat-option *ngFor="let supplier of filteredSuppliers$ | async" [value]="supplier">
+          {{ displaySupplierFn(supplier) }}
+        </mat-option>
+      </mat-autocomplete>
+      <mat-error *ngIf="form.get('materielSupplier')?.hasError('required') || form.get('materielSupplier')?.hasError('selectionRequired')">
+        {{ 'OIL_CONTAINER.PURCHASE.SUPPLIER_REQUIRED' | translate }}
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>{{ 'OIL_SALES.FIELDS.PAYMENT_METHOD' | translate }}</mat-label>
+      <mat-select formControlName="paymentMethod">
+        <mat-option *ngFor="let method of paymentMethods" [value]="method">
+          {{ 'OIL_SALES.PAYMENT_METHODS.' + method | translate }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>{{ 'OIL_SALES.DESCRIPTION' | translate }}</mat-label>
+      <textarea matInput rows="2" formControlName="notes"></textarea>
+    </mat-form-field>
+
+    <div class="summary-box">
+      <div class="summary-row">
+        <span>{{ 'OIL_CONTAINER.DASHBOARD.FIELDS.STOCK_QUANTITY' | translate }}</span>
+        <span>{{ data.container.stockQuantity ?? 0 }} → {{ newStockQuantity }}</span>
+      </div>
+      <div class="summary-row total">
+        <span>{{ 'OIL_SALES.TOTAL_AMOUNT' | translate }}</span>
+        <span>{{ totalAmount | number:'1.2-2' }} TND</span>
+      </div>
+    </div>
+  </form>
+
+  <div *ngIf="step === 'confirm' && pendingValue" class="summary-box">
+    <div class="summary-row">
+      <span>{{ 'OIL_CONTAINER.DASHBOARD.FIELDS.NAME' | translate }}</span>
+      <span>{{ data.container.name }}</span>
+    </div>
+    <div class="summary-row">
+      <span>{{ 'OIL_CONTAINER.PURCHASE.QUANTITY' | translate }}</span>
+      <span>{{ pendingValue.quantity }}</span>
+    </div>
+    <div class="summary-row">
+      <span>{{ 'OIL_CONTAINER.DASHBOARD.FIELDS.BUY_PRICE' | translate }}</span>
+      <span>{{ pendingValue.unitPrice | number:'1.2-2' }} TND</span>
+    </div>
+    <div class="summary-row">
+      <span>{{ 'OIL_CONTAINER.PURCHASE.VENDOR' | translate }}</span>
+      <span>{{ pendingValue.vendor }}</span>
+    </div>
+    <div class="summary-row">
+      <span>{{ 'OIL_CONTAINER.DASHBOARD.FIELDS.STOCK_QUANTITY' | translate }}</span>
+      <span>{{ data.container.stockQuantity ?? 0 }} → {{ (data.container.stockQuantity ?? 0) + pendingValue.quantity }}</span>
+    </div>
+    <div class="summary-row total">
+      <span>{{ 'OIL_SALES.TOTAL_AMOUNT' | translate }}</span>
+      <span>{{ pendingValue.quantity * pendingValue.unitPrice | number:'1.2-2' }} TND</span>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button type="button" (click)="onCancel()">
+    {{ step === 'confirm' ? ('COMMON.BACK' | translate) : ('COMMON.CANCEL' | translate) }}
+  </button>
+  <button
+    *ngIf="step === 'form'"
+    mat-flat-button
+    color="primary"
+    type="button"
+    (click)="onContinue()">
+    {{ 'OIL_CONTAINER.PURCHASE.NEXT' | translate }}
+  </button>
+  <button
+    *ngIf="step === 'confirm'"
+    mat-flat-button
+    color="primary"
+    type="button"
+    (click)="onConfirm()">
+    {{ 'OIL_CONTAINER.PURCHASE.CONFIRM' | translate }}
+  </button>
+</mat-dialog-actions>

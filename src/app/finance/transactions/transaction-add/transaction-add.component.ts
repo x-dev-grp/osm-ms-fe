@@ -85,7 +85,6 @@ export class TransactionAddComponent implements OnInit {
       paymentMethod: ['', Validators.required],
       description: [''],
       lotNumber: [''],
-      invoiceReference: [''],
       receiptReference: [''],
       transactionDate: [new Date(), Validators.required]
     });

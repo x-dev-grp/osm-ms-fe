@@ -1,4 +1,5 @@
 import { AttributeType, DashboardConfig, FieldType } from '../../../../shared/modules/osm-dashboard/models/dashboard-config';
+import { SearchOperation } from '../../../../shared/models/advanced-search/searchOperation';
 
 export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
   icon: 'local_gas_station',
@@ -82,32 +83,38 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
     },
 
     {
-      name: 'customer.customerLastName',
-      label: 'Nom du client',
-      labelTranslatePath: 'SUPPLIER.FIELDS.LASTNAME',
+      name: 'qualityGrade',
+      label: 'Qualité',
+      labelTranslatePath: 'OIL_TRANSACTION.DETAILS.QUALITY_GRADE',
+      attributeType: AttributeType.enum,
+      fieldType: FieldType.select,
+      exportable: true,
+      sortable: true,
+      dataTable: true,
+      filterable: true,
+      options: [
+        { value: 'VIRGIN', label: 'VIRGIN', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.VIRGIN' },
+        {
+          value: 'EXTRA_VIRGIN',
+          label: 'EXTRA_VIRGIN',
+          labelTranslatePath: 'PDF.OIL_GRADE.EXTRA_VIRGIN'
+        },
+        { value: 'LAMPANTE', label: 'LAMPANTE', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.LAMPANTE' },
+        { value: 'REFINED', label: 'REFINED', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.REFINED' },
+        { value: 'OTHER', label: 'OTHER', labelTranslatePath: 'OIL_TRANSACTIONS.QUALITY_GRADES.OTHER' }
+      ]
+    },
+    {
+      name: 'supplier.fullName',
+      label: 'Client / Fournisseur',
+      labelTranslatePath: 'OIL_SALES.FIELDS.SUPPLIER',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
-      sortable: true,
-      dataTable: false, // Hide from main table, available in details
-      filterable: true
+      sortable: false,
+      dataTable: true,
+      filterable: false
     },
-
-    // ==================== SUPPLIER INFORMATION ====================
-    {
-      name: 'supplier.name',
-      label: 'Fournisseur',
-      labelTranslatePath: 'OIL_SALES.FIELDS.SUPPLIER',
-      attributeType: AttributeType.object,
-      fieldType: FieldType.autocomplete,
-      exportable: true,
-      sortable: true,
-      dataTable: true, // Hide from main table, available in details
-      filterable: true,
-      valuePath: 'name'
-    },
-
-    // ==================== STORAGE UNIT INFORMATION ====================
     {
       name: 'storageUnit.name',
       label: 'Unité de stockage',
@@ -115,10 +122,9 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
-      sortable: true,
-      dataTable: true,
-      filterable: true,
-      valuePath: 'name'
+      sortable: false,
+      dataTable: false,
+      filterable: false
     },
     {
       name: 'oilType.name',
@@ -255,8 +261,8 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
     // ==================== DELIVERY INFORMATION ====================
     {
       name: 'deliveryDate',
-      label: 'Date ',
-      labelTranslatePath: 'CONTROLE_QUALITE.FORM.FIELDS.DELIVERY_DATE',
+      label: 'Date de livraison',
+      labelTranslatePath: 'OIL_SALES.FIELDS.DELIVERY_DATE',
       attributeType: AttributeType.date,
       fieldType: FieldType.date,
       exportable: true,
@@ -268,8 +274,8 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
     },
     {
       name: 'deliveryAddress',
-      label: 'Adresse de réception',
-      labelTranslatePath: 'CONFIGURATION.SITE.FIELDS.ADDRESS',
+      label: 'Adresse de livraison',
+      labelTranslatePath: 'OIL_SALES.FIELDS.DELIVERY_ADDRESS',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
@@ -326,6 +332,20 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
       filterable: true
     }
   ],
+
+  defaultSearchData: {
+    page: 0,
+    size: 10,
+    sort: 'createdDate',
+    order: 'DESC',
+    searchData: {
+      operation: SearchOperation.AND,
+      search: {
+        isDeleted: { equalValue: false }
+      },
+      searchs: []
+    }
+  },
 
   /* ── Menu actions ───────────────────────── */
   fileName: 'ventes-huile'

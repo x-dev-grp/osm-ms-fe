@@ -318,13 +318,13 @@
             </div>
 
             <div class="field-block">
-              <label for="fournisseur">{{ 'AUTO.FOURNISSEUR_PRINCIPAL' | translate }}</label>
+              <label for="materielSupplier">{{ 'AUTO.FOURNISSEUR_PRINCIPAL' | translate }}</label>
 
-              <select id="fournisseur" class="form-select" formControlName="fournisseur">
+              <select id="materielSupplier" class="form-select" formControlName="materielSupplier">
                 <option value="">{{ 'AUTO.AUCUN' | translate }}</option>
 
-                <option *ngFor="let fournisseur of fournisseurs" [value]="fournisseur.id">
-                  {{ fournisseur.nom }}
+                <option *ngFor="let supplier of materielSuppliers" [value]="supplier.id">
+                  {{ supplier.nom }}
                 </option>
               </select>
             </div>

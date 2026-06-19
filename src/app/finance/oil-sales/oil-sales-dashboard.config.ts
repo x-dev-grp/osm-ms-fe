@@ -59,7 +59,7 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
     },
     {
       name: 'qualityGrade',
-      label: 'qualityGrade',
+      label: 'Qualité',
       labelTranslatePath: 'OIL_TRANSACTION.DETAILS.QUALITY_GRADE',
       attributeType: AttributeType.enum,
       fieldType: FieldType.select,
@@ -82,42 +82,16 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
     },
     // ==================== CUSTOMER INFORMATION ====================
     {
-      name: 'customer.customerName',
-      label: 'Client',
-      labelTranslatePath: 'OIL_SALES.FIELDS.CUSTOMER',
-      attributeType: AttributeType.string,
-      fieldType: FieldType.text,
-      exportable: true,
-      sortable: true,
-      dataTable: true,
-      filterable: true
-    },
-    {
-      name: 'customer.customerLastName',
-      label: 'Nom du client',
-      labelTranslatePath: 'OIL_SALES.FIELDS.CUSTOMER_LAST_NAME',
-      attributeType: AttributeType.string,
-      fieldType: FieldType.text,
-      exportable: true,
-      sortable: true,
-      dataTable: false, // Hide from main table, available in details
-      filterable: true
-    },
-
-    // ==================== SUPPLIER INFORMATION ====================
-    {
-      name: 'supplier.name',
-      label: 'Fournisseur',
+      name: 'supplier.fullName',
+      label: 'Client / Fournisseur',
       labelTranslatePath: 'OIL_SALES.FIELDS.SUPPLIER',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
-      sortable: true,
-      dataTable: false, // Hide from main table, available in details
-      filterable: true
+      sortable: false,
+      dataTable: true,
+      filterable: false
     },
-
-    // ==================== STORAGE UNIT INFORMATION ====================
     {
       name: 'storageUnit.name',
       label: 'Unité de stockage',
@@ -125,23 +99,10 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
       exportable: true,
-      sortable: true,
+      sortable: false,
       dataTable: true,
-      filterable: true
+      filterable: false
     },
-    {
-      name: 'oilType.name',
-      label: "Type d'huile",
-      labelTranslatePath: 'OIL_SALES.FIELDS.OIL_TYPE',
-      attributeType: AttributeType.string,
-      fieldType: FieldType.text,
-      exportable: true,
-      sortable: true,
-      dataTable: false, // Hide from main table, available in details
-      filterable: true
-    },
-
-    // ==================== QUANTITY & PRICING ====================
     {
       name: 'quantity',
       label: 'Quantité (L)',
@@ -264,7 +225,7 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
     // ==================== DELIVERY INFORMATION ====================
     {
       name: 'deliveryDate',
-      label: 'Date ',
+      label: 'Date de livraison',
       labelTranslatePath: 'OIL_SALES.FIELDS.DELIVERY_DATE',
       attributeType: AttributeType.date,
       fieldType: FieldType.date,
@@ -275,7 +236,7 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
     },
     {
       name: 'deliveryAddress',
-      label: 'Adresse de réception',
+      label: 'Adresse de livraison',
       labelTranslatePath: 'OIL_SALES.FIELDS.DELIVERY_ADDRESS',
       attributeType: AttributeType.string,
       fieldType: FieldType.text,
@@ -336,7 +297,7 @@ export const OIL_SALES_DASHBOARD_CONFIG: DashboardConfig = {
   defaultSearchData: {
     page: 0,
     size: 10,
-    sort: 'legalName',
+    sort: 'createdDate',
     order: 'DESC',
     searchData: {
       operation: SearchOperation.AND,

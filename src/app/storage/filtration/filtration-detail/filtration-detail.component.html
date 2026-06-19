@@ -22,6 +22,12 @@
         <mat-icon>account_tree</mat-icon>
         {{ 'OSM_DASHBOARD.ACTIONS.TRACEABILITY' | translate }}
       </button>
+      @if (op.status === 'COMPLETED') {
+        <button mat-flat-button color="accent" type="button" (click)="openQualityControl()">
+          <mat-icon>science</mat-icon>
+          {{ 'OSM_DASHBOARD.ACTIONS.UPDATE_OIL_QUALITY' | translate }}
+        </button>
+      }
       @if (op.status === 'CREATED' || op.status === 'COMPLETED') {
         <button mat-flat-button color="primary" type="button" (click)="editOperation()">
           <mat-icon>edit</mat-icon>

@@ -1,5 +1,5 @@
- import { OilSaleCreateRequest } from './oil-sale-create.request';
- import { OilSale } from '../../models/oil-sale.model';
+import { ContainerSaleLine, OilSaleCreateRequest } from './oil-sale-create.request';
+import { OilSale } from '../../models/oil-sale.model';
 
 /** Return a LocalDateTime (no timezone suffix) so BE (LocalDateTime) won't shift it. */
 export function toLocalDateTimeString(d: Date | string): string {
@@ -10,6 +10,24 @@ export function toLocalDateTimeString(d: Date | string): string {
     pad(date.getMonth() + 1),
     pad(date.getDate())
   ].join('-') + 'T' + [pad(date.getHours()), pad(date.getMinutes()), pad(date.getSeconds())].join(':');
+}
+
+function mapContainerSales(lines: OilSale['containerSales']): ContainerSaleLine[] | undefined {
+  if (!lines?.length) {
+    return undefined;
+  }
+
+  const mapped = lines
+    .map((line): ContainerSaleLine | null => {
+      const id = line.containerId ?? line.id;
+      if (!id || !line.count) {
+        return null;
+      }
+      return { id, count: line.count };
+    })
+    .filter((line): line is ContainerSaleLine => line !== null);
+
+  return mapped.length ? mapped : undefined;
 }
 
 /** Maps the rich UI model to the lean create payload expected by the backend. */
@@ -27,14 +45,12 @@ export function mapOilSaleToCreateRequest(ui: OilSale): OilSaleCreateRequest {
     saleDate: toLocalDateTimeString(ui.saleDate),
     qualityGrade: ui.qualityGrade,
 
-    invoiceNumber: ui.invoiceNumber,
     description: ui.description,
+    deliveryAddress: ui.deliveryAddress,
 
     paidAmount: ui.paidAmount ?? 0,
 
     // if containers not provided or empty, omit the field
-    containerSales: ui.containerSales && ui.containerSales.length
-      ? ui.containerSales.map(l => ({ id: l.id, count: l.count }))
-      : undefined,
+    containerSales: mapContainerSales(ui.containerSales),
   };
 }

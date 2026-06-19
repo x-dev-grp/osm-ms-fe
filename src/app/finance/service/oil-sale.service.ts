@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { OilSaleDeliveryRequest } from '../oil-sales/oil-sale-delivery.request';
 import { environment } from '../../../environments/environment';
 import {
   OilSale,
@@ -49,9 +50,9 @@ export class OilSaleService {
     return this.http.patch<ApiResponse<OilSale>>(`${this.baseUrl}/${id}/cancel`, {});
   }
 
-  // Deliver oil sale (update status to DELIVERED)
-  deliverOilSale(id: string): Observable<ApiResponse<OilSale>> {
-    return this.http.patch<ApiResponse<OilSale>>(`${this.baseUrl}/${id}/deliver`, {});
+  // Deliver oil sale (optionally with delivery info in the same request)
+  deliverOilSale(id: string, delivery?: OilSaleDeliveryRequest): Observable<ApiResponse<OilSale>> {
+    return this.http.patch<ApiResponse<OilSale>>(`${this.baseUrl}/${id}/deliver`, delivery ?? {});
   }
 
   processPayment(payload:any): Observable<ApiResponse<any>> {

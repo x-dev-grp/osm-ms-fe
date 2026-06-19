@@ -1,12 +1,16 @@
-<!-- ===================== Finance Dashboard (Able Pro + Angular 19) ===================== -->
+<!-- ===================== Finance Dashboard ===================== -->
+<div class="dashboard-shell finance-dashboard">
 
-<!-- ========= Sticky Page Header (separate from filters) ========= -->
-<div class="page-header sticky-actions">
+<!-- ========= Sticky Page Header ========= -->
+<div class="page-header sticky-actions page-header--finance">
   <div class="page-header__left">
-    <mat-icon class="text-primary">dashboard</mat-icon>
-    <h2 class="m-0 f-w-600">{{ 'MENU.FINANCE.DASHBOARD.TITLE' | translate }}</h2>
-
-    <span *ngIf="lastUpdated" class="text-muted d-none d-sm-inline ms-2 page-header__updated">
+    <div class="header-icon-wrap header-icon-wrap--finance">
+      <mat-icon>account_balance</mat-icon>
+    </div>
+    <div>
+      <h2 class="m-0 f-w-600">{{ 'MENU.FINANCE.DASHBOARD.TITLE' | translate }}</h2>
+    </div>
+    <span *ngIf="lastUpdated" class="text-muted d-none d-lg-inline ms-2 page-header__updated">
       <mat-icon class="me-1" inline>update</mat-icon>
       {{ 'COMMON.LAST_UPDATED' | translate }}: {{ lastUpdated | date:'short' }}
     </span>
@@ -20,7 +24,7 @@
       [disabled]="loading"
       matTooltip="{{ 'COMMON.REFRESH' | translate }}"
     >
-      <mat-icon>refresh</mat-icon>
+      <mat-icon [class.spinning]="loading">refresh</mat-icon>
       <span class="d-none d-sm-inline ms-1">{{ 'COMMON.REFRESH' | translate }}</span>
     </button>
   </div>
@@ -499,4 +503,5 @@
 
 
 
+</div>
 </div>

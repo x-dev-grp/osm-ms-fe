@@ -102,10 +102,6 @@ export class CompanyProfileComponent implements OnInit {
       city: ['', Validators.required],
       postalCode: ['', Validators.required],
       governorate: ['', Validators.required],
-      campaignStartMonth: [9, Validators.required],
-      campaignStartDay: [1, [Validators.required, Validators.min(1), Validators.max(31)]],
-      campaignEndMonth: [4, Validators.required],
-      campaignEndDay: [30, [Validators.required, Validators.min(1), Validators.max(31)]],
       logoData: [null, Validators.required],
       logoContentType: [null, Validators.required]
     });
@@ -171,7 +167,13 @@ export class CompanyProfileComponent implements OnInit {
     const formValue = this.profileForm.getRawValue();
     const profileToSave: CompanyProfile = {
       ...formValue,
-      id: this.profile?.id
+      id: this.profile?.id,
+      campaignStartAt: this.profile?.campaignStartAt,
+      campaignEndAt: this.profile?.campaignEndAt,
+      campaignStartMonth: this.profile?.campaignStartMonth,
+      campaignStartDay: this.profile?.campaignStartDay,
+      campaignEndMonth: this.profile?.campaignEndMonth,
+      campaignEndDay: this.profile?.campaignEndDay
     };
     this.companyProfileService.saveProfile(profileToSave).subscribe({
       next: () => {
@@ -234,10 +236,6 @@ export class CompanyProfileComponent implements OnInit {
       city: profileData.city,
       postalCode: profileData.postalCode,
       governorate: profileData.governorate,
-      campaignStartMonth: profileData.campaignStartMonth ?? 9,
-      campaignStartDay: profileData.campaignStartDay ?? 1,
-      campaignEndMonth: profileData.campaignEndMonth ?? 4,
-      campaignEndDay: profileData.campaignEndDay ?? 30,
       logoData: profileData.logoData,
       logoContentType: profileData.logoContentType
     });

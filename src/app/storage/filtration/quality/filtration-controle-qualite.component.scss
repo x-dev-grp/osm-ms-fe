@@ -1,0 +1,33 @@
+@import '../../../reception/controleQualite/controleQualite.component.scss';
+
+.page-toolbar {
+  margin-bottom: 1rem;
+}
+
+.operation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.operation-card {
+  background: var(--surface-muted, var(--accent-100));
+  border: 1px solid var(--border-subtle, var(--accent-300));
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  .operation-label {
+    font-size: 0.85rem;
+    color: var(--text-muted, var(--accent-600));
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  strong {
+    color: var(--text-primary, var(--accent-900));
+    font-size: 1rem;
+  }
+}

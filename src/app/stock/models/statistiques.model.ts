@@ -10,5 +10,5 @@ export interface StatistiquesStock {
   montantAchatsMois?: number;
   mouvementsParMois?: Record<string, number>;
   alertesParCategorie?: Record<string, number>;
-  achatsParFournisseur?: Record<string, number>;
+  achatsParMaterielSupplier?: Record<string, number>;
 }

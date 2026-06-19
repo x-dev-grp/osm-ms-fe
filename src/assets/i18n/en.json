@@ -22,7 +22,8 @@
     "COMPANY_NAME_REQUIRED": "Company name is requeird",
     "COMPANY_SECTION": "Company informations",
     "SAVE": "Save",
-    "USER_SECTION": "User informations"
+    "USER_SECTION": "User informations",
+    "SEARCH": "Search"
   },
   "ADMIN_COMPANY_PROFILE": {
     "CAPITAL": "Capital",
@@ -194,7 +195,8 @@
       "IBAN_LENGTH": "IBAN must be 24 characters long",
       "IBAN_REQUIRED": "IBAN is required",
       "RIB_LENGTH": "RIB must be 24 characters long",
-      "RIB_REQUIRED": "RIB is required"
+      "RIB_REQUIRED": "RIB is required",
+      "BALANCE_MIN": "Balance must be zero or greater"
     },
     "FIELDS": {
       "ACCOUNT_TYPE": "Account Type",
@@ -209,7 +211,9 @@
       "INACTIVE": "Inactive",
       "RIB": "RIB",
       "SAVINGS": "Savings",
-      "STATUS": "Status"
+      "STATUS": "Status",
+      "BALANCE": "Balance",
+      "LAST_TRANSACTION_DATE": "Last transaction date"
     },
     "TITLE": "Bank Accounts"
   },
@@ -268,10 +272,14 @@
     "VALIDATION": {
       "EMAIL": "Please enter a valid email address",
       "MAX_LENGTH": "Maximum length is {{maxLength}} characters",
-      "REQUIRED": "This field is required"
+      "REQUIRED": "This field is required",
+      "MIN_LENGTH": "Minimum length not met",
+      "PATTERN": "Invalid format"
     },
     "VIEW": "View",
-    "YES": "Yes"
+    "YES": "Yes",
+    "CLEAR": "Clear",
+    "SELECT": "Select"
   },
   "CERTIFICATIONS": {
     "FIELDS": {
@@ -441,7 +449,18 @@
     "STATUS": "Contract status",
     "TITLE": "Contracts",
     "TYPE": "Type",
-    "UPDATE": "Update contract"
+    "UPDATE": "Update contract",
+    "DASHBOARD": {
+      "FIELDS": {
+        "CONTRACT_STATUS": "Contract status",
+        "CONTRACT_TYPE": "Contract type",
+        "EMPLOYEE": "Employee",
+        "END_DATE": "End date",
+        "POSTE": "Position",
+        "SALARY": "Salary",
+        "START_DATE": "Start date"
+      }
+    }
   },
   "CONTRAT": {
     "STATUS": {
@@ -492,7 +511,8 @@
       "VALIDATION": {
         "MAX_VALUE": "Value must be less than {{max}}",
         "MIN_VALUE": "Value must be greater than 0",
-        "REQUIRED": "This field is required"
+        "REQUIRED": "This field is required",
+        "MAX": "Value exceeds maximum"
       }
     },
     "LOADING": "Loading quality control parameters...",
@@ -558,10 +578,18 @@
         "SELECTED": "Storage unit selected: {{name}} (to validate)",
         "SELECTION_ERROR": "Error: Storage unit not found"
       },
-      "PLACEHOLDER": "Select storage unit"
+      "PLACEHOLDER": "Select storage unit",
+      "STATUS": "Storage unit status"
     },
     "SUBTITLE": "Complete the quality assessment for this delivery",
     "TITLE": "Quality Control"
+  },
+  "FILTRATION_QC": {
+    "TITLE": "Filtered oil quality control",
+    "SUBTITLE": "Complete the quality assessment for filtered oil after filtration",
+    "OPERATION_INFO": "Filtration operation",
+    "ENTER_CONTROL": "Enter quality control",
+    "ONLY_COMPLETED": "Quality control is available only for completed filtration operations"
   },
   "CUSTOMERS": {
     "ACTIONS": {
@@ -764,7 +792,8 @@
         "STORAGE_UNIT": "🏭 Storage Unit",
         "SUPPLIER": "👤 Supplier",
         "TRUCK": "🚚 Truck Information",
-        "WEIGHT_CONTAINER ": "⚖️ Weight Information"
+        "WEIGHT_CONTAINER ": "⚖️ Weight Information",
+        "DOCUMENTS": "Documents"
       },
       "TITLE": "Reception Details"
     },
@@ -920,10 +949,15 @@
       "BASE": "Base",
       "EXCHANGE": "Exchange",
       "INTERNAL_RECEPTION": "Internal Reception",
+      "OIL_CONTAINER_SALE": "Container sale",
       "OIL_PURCHASE": "Oil Purchase",
+      "OIL_SALE": "Oil sale",
+      "OIL_SALE_PAYMENT": "Oil sale payment",
       "OLIVE_PURCHASE": "Olive Purchase",
       "PAYMENT": "Payment",
-      "SIMPLE_RECEPTION": "Simple Reception"
+      "SIMPLE_RECEPTION": "Simple Reception",
+      "STORAGE_RENTAL": "Storage rental",
+      "WASTE_SALE": "Waste sale"
     },
     "STATUS": {
       "CANCELLED": "Cancelled",
@@ -948,7 +982,18 @@
     },
     "MESSAGES": {
       "NOT_FOUND": "Department not found"
-    }
+    },
+    "DASHBOARD": {
+      "FIELDS": {
+        "DESCRIPTION": "Description",
+        "EMPLOYEES_COUNT": "Employee count",
+        "MANAGER_ID": "Manager",
+        "NAME": "Name"
+      }
+    },
+    "DESCRIPTION": "Description",
+    "MANAGER": "Manager",
+    "NAME": "Department name"
   },
   "DIVORCED": "Divorced",
   "Dashboard": "Dashboard",
@@ -1062,7 +1107,8 @@
       "OBJECT_REQUIRED": "Object is required",
       "PAYMENT_METHOD_REQUIRED": "Payment method is required",
       "PURCHASE_NATURE_REQUIRED": "Purchase nature is required",
-      "STATUS_REQUIRED": "Status is required"
+      "STATUS_REQUIRED": "Status is required",
+      "CATEGORY_REQUIRED": "Category is required"
     },
     "FIELDS": {
       "AMOUNT": "Amount",
@@ -1135,7 +1181,7 @@
     },
     "CAPITAL": "Capital",
     "CITY": "City",
-    "EMAIL": "E-mail",
+    "EMAIL": "Email",
     "EXPANDABLE": {
       "CONFIGURATIONS": "Configurations",
       "FINANCE_CONFIG": "Finance Config",
@@ -1148,7 +1194,13 @@
       "LOGO_FORMAT": "Logo must be a JPEG or PNG file.",
       "LOGO_TOO_LARGE": "Logo file is too large"
     },
-    "TITLE": "General Configuration"
+    "TITLE": "General Configuration",
+    "GOVERNORATE": "Governorate",
+    "LEGAL_FORM": "Legal Form",
+    "LEGAL_NAME": "Legal Name",
+    "PHONE": "Phone",
+    "REG_NUMBER": "Registration Number",
+    "TAX_ID": "Tax ID"
   },
   "GENERAL_CONFIG.CITY": "City",
   "GENERAL_CONFIG.EMAIL": "Email",
@@ -1297,6 +1349,17 @@
       "TITLE": "Administration",
       "USERS": "User Management"
     },
+    "CONDITIONNEMENT": {
+      "EXPEDITIONS": "Shipments & delivery notes",
+      "LABELS": "Label management",
+      "LINES": "Packaging lines",
+      "LOGISTICS": "Projects & shipments",
+      "OF": "Manufacturing orders (MO)",
+      "PROJECTS": "Production projects",
+      "TITLE": "Packaging & logistics",
+      "WORKSHOP": "Packaging workshop",
+      "ANALYTICS": "Analytics & reports"
+    },
     "CUSTOMERS": {
       "ACTIONS": {
         "BACK": "Back to Customers",
@@ -1423,24 +1486,29 @@
         },
         "OIL_CREDITS": "Oil Credits",
         "OIL_SALES": "Oil Sales",
-        "TITLE": "Finance Dashboard",
+        "TITLE": "Finance dashboard",
         "TRANSACTIONS": "Transactions",
         "WASTE_SALES": "Waste Sales"
       },
       "EXPENSES": "Expenses",
+      "DASHBOARD_OVERVIEW": "Finance dashboard",
       "OIL_CREDIT": "Oil Credit",
       "OIL_SALES": "Oil Sales",
       "OIL_TRANSACTIONS": "Oil Transactions",
+      "SALES": "Sales & credits",
       "TITLE": "Finance & Accounting",
       "TRANSACTIONS": "Financial Transactions",
-      "WASTE_MANAGEMENT": "Gestion des déchets"
+      "TREASURY": "Treasury & banks",
+      "WASTE_MANAGEMENT": "Waste management"
     },
     "HOME": {
+      "ANALYTICS_REPORTS": "Reports & analytics",
       "DASHBOARD": {
         "ANALYTICS": "Analytics",
         "DEFAULT": "Default",
         "FINANCE": "Finance",
         "RECEPTION": "Reception",
+        "STOCK": "Stock & inventory",
         "STORAGE_RECAP": "Storage state",
         "TITLE": "Dashboard"
       },
@@ -1452,17 +1520,33 @@
       "TITLE": "Human Resources"
     },
     "PRODUCTION": {
+      "ALL_OLIVE_RECEPTIONS": "All olive receptions",
       "MILLING_HISTORY": "Milling History",
       "MILLING_SCHEDULE": "Milling Schedule",
+      "QUALITY": "Quality control",
       "RECEPTIONS": "Receptions History",
       "RECEPTION_OIL": "Oil Reception",
       "RECEPTION_OLIVE": "Olive Reception",
-      "TITLE": "Production"
+      "STORAGE": "Oil storage & flows",
+      "STORAGE_OVERVIEW": "Storage overview",
+      "TITLE": "Production",
+      "ACHAT_OLIVE": "Olive purchase reception",
+      "ECHANGE": "Exchange reception",
+      "MILL_TITLE": "Milling unit",
+      "RECEPTIONS_HUILE": "Oil receptions",
+      "RECEPTIONS_OLIVE": "Olive receptions",
+      "TRITURATION_BASE": "Base milling reception",
+      "TRITURATION_PARTICULIER": "Private milling reception"
     },
     "RECEPTION": {
       "AGRICULTURE": "Agriculters",
+      "HISTORY": "History",
       "OIL": "Oil Reception",
       "OLIVE": "Olive Reception",
+      "OPERATIONS": "New receptions",
+      "OVERVIEW": "Overview",
+      "PARTNERS": "Suppliers & contributors",
+      "PLANNING": "Planning",
       "QUALITY_CONTROL": "Quality Control",
       "QUALITY_CONTROL_HUILE": "Oil quality controle",
       "QUALITY_CONTROL_OLIVE": "Olive quality controle",
@@ -1471,13 +1555,23 @@
     },
     "SETTINGS": {
       "APP_UI": "Application settings",
+      "COMPANY": "Company & application",
       "GENERAL_CONFIG": "General Configuration",
       "GENERIC_TYPES": "Generic Types",
       "MILLING_MACHINES": "Milling Machines",
       "QUALITY_CONTROL_RULES": "Quality Control Rules",
+      "QUALITY_EQUIPMENT": "Quality & equipment",
       "ROLES": "Role Management",
+      "SECURITY": "Security & access",
       "TITLE": "System Settings",
       "USERS": "User Management"
+    },
+    "STOCKS_INV": {
+      "DASHBOARD": "Stock dashboard",
+      "ITEMS": "Catalog & items",
+      "OPERATIONS": "Stock movements & zones",
+      "PURCHASING": "Purchasing & suppliers",
+      "TITLE": "Stock & inventory"
     },
     "STORAGE": {
       "FORM": {
@@ -1495,13 +1589,18 @@
         },
         "PAID_STORAGE": "Paid Storage",
         "PER_MONTH": "per month",
-        "SHOW_ONLY_PAID": "Show only paid storage"
+        "SHOW_ONLY_PAID": "Show only paid storage",
+        "FILTERED": "Filtered",
+        "FILTERED_OIL": "Filtered oil"
       }
     },
     "SUPPLIER": {
       "DASHBOARD": "Supplier Dashboard",
       "HISTORY": "Supplier History",
       "TITLE": "Suppliers"
+    },
+    "DASHBOARDS": {
+      "TITLE": "Dashboards"
     }
   },
   "MESSAGES": {
@@ -1600,6 +1699,20 @@
     "MESSAGES": {
       "CREATED": "Oil container created successfully",
       "UPDATED": "Oil container updated successfully"
+    },
+    "PURCHASE": {
+      "CONFIRM": "Confirm purchase",
+      "CONFIRM_HINT": "Review the details. This will create an expense, a financial transaction, and update stock.",
+      "CONFIRM_TITLE": "Confirm purchase",
+      "DIALOG_HINT": "Purchase {{name}} — enter quantity and supplier.",
+      "DIALOG_TITLE": "Buy containers",
+      "ERROR": "Failed to record purchase",
+      "NEXT": "Continue",
+      "QUANTITY": "Quantity purchased",
+      "SUCCESS": "Purchase recorded and stock updated",
+      "SUCCESS_WITH_INVOICE": "Purchase recorded. Invoice no.: {{invoiceRef}}",
+      "SUPPLIER_REQUIRED": "Supplier is required.",
+      "VENDOR": "Supplier"
     },
     "TITLE_ADD": "Add Oil Container",
     "TITLE_EDIT": "Edit Oil Container"
@@ -1808,7 +1921,8 @@
       "TOTAL": "Total (DH)",
       "UNIT_PRICE": "Unit Price (DH)",
       "VEHICLE_INFO": "Vehicle Information",
-      "WEIGHT_QUANTITY": "Weight and Quantity"
+      "WEIGHT_QUANTITY": "Weight and Quantity",
+      "CLIENT_REGION": "Client region"
     },
     "DASHBOARD": {
       "ACTIONS": {
@@ -1853,16 +1967,32 @@
     "REQUIRED": "This field is required",
     "SUBMIT": "Submit",
     "TOTAL": "Total (TND)",
-    "UNIT_PRICE": "Unit Price (TND)"
+    "UNIT_PRICE": "Unit Price (TND)",
+    "QUANTITY_MAX": "Quantity exceeds maximum",
+    "TOTAL_MAX": "Total exceeds maximum"
   },
   "OIL_SALES": {
+    "ACTIONS": {
+      "DOCUMENTS": "Documents",
+      "LIFECYCLE": "Actions"
+    },
+    "CONFIRMATIONS": {
+      "CANCEL_MESSAGE": "This sale will be cancelled and stock will be restored if applicable.",
+      "CANCEL_TITLE": "Cancel oil sale?",
+      "CONFIRM_MESSAGE": "The sale will be confirmed and stock will be reserved.",
+      "CONFIRM_TITLE": "Confirm oil sale?"
+    },
     "ADD_TITLE": "Add Oil Sale",
     "CANCEL": "Cancel",
     "CONFIRM": "Confirm",
     "CONTAINERS": {
-      "COUNT": "Number of containers needed",
+      "COUNT": "Quantity",
+      "LINE_TOTAL": "Line total",
+      "NAME": "Container",
       "SHOW": "Show the list of containers",
-      "TITLE": "Choose conatiner(s)"
+      "SALE_TITLE": "Containers sold",
+      "TITLE": "Choose container(s)",
+      "UNIT_PRICE": "Unit price"
     },
     "CONTAINERS_TOTAL_PRICE": "Total containers price",
     "CREATED_BY": "Created By",
@@ -1880,6 +2010,14 @@
     "CUSTOMER_NAME": "Customer Name",
     "CUSTOMER_PHONE": "Customer Phone",
     "DELIVER": "Deliver",
+    "DELIVERY": {
+      "CLIENT_ADDRESS_HINT": "Using the client's saved address.",
+      "CUSTOM_ADDRESS_HINT": "Enter a delivery address for this sale.",
+      "DIALOG_HINT": "Enter delivery information before marking the sale as delivered.",
+      "DIALOG_TITLE": "Confirm delivery",
+      "TITLE": "Delivery information",
+      "USE_CLIENT_ADDRESS": "Use client address"
+    },
     "DESCRIPTION": "Description",
     "DETAILS": "Oil Sale Details",
     "EDIT_TITLE": "Edit Oil Sale",
@@ -1887,7 +2025,10 @@
       "CREATED_DATE": "Created date ",
       "CURRENCY": "Currency",
       "CUSTOMER": "Customer",
-      "DELIVERY_NOTES": "Notes",
+      "DELIVERY_ADDRESS": "Delivery address",
+      "DELIVERY_DATE": "Delivery date",
+      "DELIVERY_NOTES": "Delivery notes",
+      "DESCRIPTION": "Description",
       "INVOICE_NUMBER": "Invoice Number",
       "PARTIALLYPAID": "Partially paid ",
       "PAYMENT_METHOD": "Payment Method",
@@ -1898,10 +2039,15 @@
       "SUPPLIER": "Supplier",
       "TOTAL_AMOUNT": "Total Amount",
       "UNIT_PRICE": "Unit Price",
-      "UNPAIDAMOUNT": "unpaid amount"
+      "UNPAIDAMOUNT": "unpaid amount",
+      "BANK_ACCOUNT": "Bank account",
+      "CHECK_NUMBER": "Check number",
+      "EXTERNAL_TRANSACTION_ID": "External transaction ID",
+      "LAST_MODIFIED_DATE": "Last modified date"
     },
     "FORM": {
       "VALIDATION": {
+        "ADDRESS_REQUIRED": "A delivery address is required. Use the client address or enter one manually.",
         "BOTH_CUSTOMER_AND_SUPPLIER_SELECTED": "Please select either customer or supplier, not both",
         "CUSTOMER_OR_SUPPLIER_REQUIRED": "Either customer or supplier must be selected",
         "INCOMPLETE_FORM": "Please complete all required fields in the form."
@@ -1923,6 +2069,9 @@
       },
       "SUCCESS": {
         "ADD": "Oil sale added successfully.",
+        "CANCEL": "Oil sale cancelled.",
+        "CONFIRM": "Oil sale confirmed.",
+        "DELIVER": "Oil sale delivered.",
         "UPDATE": "Oil sale updated successfully."
       },
       "WARNING": {
@@ -1934,10 +2083,14 @@
     "PAYMENT_METHODS": {
       "BANK_TRANSFER": "Bank Transfer",
       "CASH": "Cash",
+      "CHEQUE": "Check",
+      "TRANSFER": "Transfer",
       "CHECK": "Check",
       "CREDIT_CARD": "Credit Card",
       "DEBIT_CARD": "Debit Card",
+      "MIXED": "Mixed payment",
       "MOBILE_PAYMENT": "Mobile Payment",
+      "OIL": "Oil payment",
       "OIL_CREDIT": "Oil Credit"
     },
     "QUANTITY": "Quantity",
@@ -2120,6 +2273,7 @@
       "EXTRA_VIRGIN": "Extra Virgin",
       "LAMPANTE": "Lampante",
       "OTHER": "Other",
+      "POMACE": "Pomace oil",
       "REFINED": "Refined",
       "VIRGIN": "Virgin"
     },
@@ -2160,7 +2314,10 @@
         "RECEPTION_INFO": "Reception",
         "STORAGE_UNITS": "Storage Units"
       },
-      "TITLE": "Oil Transaction Details"
+      "TITLE": "Oil Transaction Details",
+      "MESSAGES": {
+        "ERROR": "Error loading oil transaction"
+      }
     }
   },
   "OLIVE_RECEPTION": {
@@ -2235,10 +2392,12 @@
   },
   "OPERATION_TYPE": {
     "BASE": "Base milling",
+    "DECHET": "Waste",
     "EXCHANGE": "Exchange",
     "INTERNAL_RECEPTION": "Internal reception",
     "OIL_PURCHASE": "Oil purchase",
     "OLIVE_PURCHASE": "Olive purchase",
+    "PAYMENT": "Payment",
     "SIMPLE_RECEPTION": "Private milling"
   },
   "OSM_DASHBOARD": {
@@ -2372,7 +2531,9 @@
       "UPDATE_STATUS": "Update Status",
       "USER": "User",
       "VALIDATE": "Validate",
-      "WRITE": "Add"
+      "WAITING": "Waiting",
+      "WRITE": "Add",
+      "GEN_PDF_BON_LIVRAISON": "Generate delivery note PDF"
     },
     "COLUMNS": {
       "HIDE": "Hide Columns",
@@ -2434,7 +2595,7 @@
     "ACIDITY": "Acidity",
     "ADDRESS": "Adresse",
     "BANK_DETAILS": "Bank Details",
-    "BASCULE": "Balance agent",
+    "BASCULE": "Weighbridge",
     "CATEGORY_OIL": "Oil Category",
     "CATEGORY_OLIVE": "Olive Category",
     "CLIENT": "Client",
@@ -2489,7 +2650,7 @@
     "FACTURE_TRITURATION": "Crushing Invoice",
     "FACTURE_VENTE_DECHET": "Waste Sale Invoice",
     "FACTURE_VENTE_HUILE": "Oil Sale Invoice",
-    "FERME": "Farme",
+    "FERME": "Farm",
     "FERMENTED_PERCENT": "Fermented %",
     "FICH_CONTROL_QUALITE": "Quality controle sheet",
     "FICH_CONTROL_QUALITE_HUIL": "Oil Quality Control Sheet",
@@ -2611,7 +2772,7 @@
     "SUBTOTAL_HT": "Subtotal excl. VAT",
     "TOTAL_VAT": "Total VAT",
     "SUSPENDED_VAT": "Suspended tax",
-    "TERMS": "Condition",
+    "TERMS": "Terms & conditions",
     "TOTAL": "Total Amount",
     "TOTAL_AMOUNT": "Total Amount",
     "TOTAL_PRICE": "Total Price",
@@ -2621,7 +2782,7 @@
     "TRANSACTION_STATE": "Transaction State",
     "TRANSACTION_TYPE": "Transaction Type",
     "TRANSFER_IN": "Transfer In",
-    "TRANSPORTER": "Driver livreur/Véhicule",
+    "TRANSPORTER": "Transporter",
     "TRITURATION": "Trituration",
     "TRITURATION_SERVICE": "Olive Oil Trituration Service",
     "TRUCK_MAT": "Truck Mat",
@@ -2636,7 +2797,19 @@
     "VENTE_HUILE": "Oil Sale",
     "WASTE_PROCESSING": "Olive Waste Processing",
     "WEBSITE": "Website",
-    "YIELD": "Yield"
+    "YIELD": "Yield",
+    "ARTICLE": "Article",
+    "CARRIER": "Carrier",
+    "CLIENT_DESTINATION": "Client destination",
+    "GEN_PDF_BON_LIVRAISON": "Generate delivery note PDF",
+    "INCOTERM": "Incoterm",
+    "LOGISTICS_INFO": "Logistics information",
+    "OF": "Manufacturing order",
+    "SHIPMENT_CONTENT": "Shipment content",
+    "SNAPSHOT_CAPTURED_AT": "Snapshot captured at",
+    "TRACEABILITY_GENEALOGY": "Traceability genealogy",
+    "TRUCK": "Truck",
+    "UNIT": "Unit"
   },
   "PLANNING": {
     "CANCEL_CAUSE": "Cancellation reason",
@@ -2690,11 +2863,11 @@
   "QR": {
     "ENCRYPTED": "Encrypted",
     "ERROR": {
-      "GENERATE": "Error generating QR code"
+      "GENERATE": "Unable to generate QR code"
     },
-    "GENERATE": "Generate QR Code",
-    "TITLE": "Universal QR Code",
-    "TYPE": "Entity Type"
+    "GENERATE": "Generate QR",
+    "TITLE": "QR code",
+    "TYPE": "Type"
   },
   "QUALITY_CONTROL_RULE": {
     "ACTIONS": {
@@ -2860,7 +3033,21 @@
       "REGION": "Region",
       "STATUS": "Status",
       "SUPPLIER": "Supplier",
-      "TRUCK_PLATE": "Truck Plate"
+      "TRUCK_PLATE": "Truck Plate",
+      "CATEGORY_OLIVE_OIL": "Olive / oil category",
+      "DESCRIPTION": "Description",
+      "EMPTY_TRUCK_WEIGHT": "Empty truck weight",
+      "GROSS_WEIGHT": "Gross weight",
+      "LOT_OLIVE_NUMBER": "Olive lot number",
+      "OIL_VARIETY": "Oil variety",
+      "OLIVE_QUANTITY": "Olive quantity",
+      "OLIVE_VARIETY": "Olive variety",
+      "PARCEL": "Parcel",
+      "RENDEMENT": "Yield",
+      "SACK_COUNT": "Sack count",
+      "STORAGE_UNIT": "Storage unit",
+      "TRT_DATE": "Milling date",
+      "TRUCK_STATE": "Truck condition"
     },
     "STATUS": {
       "CANCELLED": "Cancelled",
@@ -3075,7 +3262,9 @@
       "TOTALCOST": "Total cost",
       "TOTAL_PRICE": "Total Price",
       "TRANSACTION_HISTORY": "Transaction History",
-      "UNIT_PRICE": "Unit Price"
+      "UNIT_PRICE": "Unit Price",
+      "FILTERED_OIL": "Filtered oil",
+      "OIL_VARIETY": "Oil variety"
     }
   },
   "SUPPLIER": {
@@ -3089,8 +3278,8 @@
       "TITLE_EDIT": "Edit Agriculture"
     },
     "DETAILS": {
-      "COUNT": "Count:",
-      "NO_EMAIL": "No Email",
+      "COUNT": "Count",
+      "NO_EMAIL": "No email",
       "OIL_CREDIT_STATS_TITLE": "Oil Credit Stats",
       "OIL_CREDIT_TOTAL": "Oil Credits",
       "PAID_OILSALES_TITLE": "Paid Oil sales",
@@ -3116,7 +3305,9 @@
       "PHONE_REQUIRED": "Phone is required",
       "REGION_REQUIRED": "Region is required",
       "RIB_PATTERN": "RIB must be 24 digits",
-      "SUPPLIER_TYPE_REQUIRED": "Supplier type is required"
+      "SUPPLIER_TYPE_REQUIRED": "Supplier type is required",
+      "LOAD": "Unable to load supplier",
+      "NOT_FOUND": "Supplier not found"
     },
     "FIELDS": {
       "ADDRESS": "Address",
@@ -3168,6 +3359,79 @@
       "NO_LEDGER_LINK": "This supplier type is for stock and articles only. Financial transactions are managed on reception (olive & oil) suppliers."
     }
   },
+  "MATERIEL_SUPPLIER": {
+    "DOMAIN": {
+      "ARTICLES_BADGE": "Material & stock supplier",
+      "ARTICLES_HINT": "For inventory articles, purchase orders and packaging. Distinct from olive/oil reception suppliers."
+    },
+    "FORM": {
+      "TITLE_CREATE": "New material supplier",
+      "TITLE_EDIT": "Edit material supplier",
+      "SUBTITLE_CREATE": "Add a material supplier for packaging, articles and purchase orders.",
+      "SUBTITLE_EDIT": "Update supplier information and contact details.",
+      "SUBMIT_CREATE": "Create supplier",
+      "SUBMIT_UPDATE": "Update supplier",
+      "SECTION_GENERAL_HINT": "Primary identity of the material supplier.",
+      "NAME_PLACEHOLDER": "Supplier name",
+      "ACTIVE_LABEL": "Active supplier",
+      "ACTIVE_HINT": "Available for purchases, orders and day-to-day operations.",
+      "CONTACT_HINT": "Reference person at the supplier."
+    },
+    "ERRORS": {
+      "INVALID_FORM": "Please correct the highlighted fields before submitting.",
+      "NAME_REQUIRED": "Supplier name is required.",
+      "CATEGORY_REQUIRED": "Category is required.",
+      "CURRENCY_REQUIRED": "Currency is required.",
+      "EMAIL_INVALID": "Invalid email address.",
+      "URL_INVALID": "Invalid website URL.",
+      "DELIVERY_DELAY_MIN": "Average delivery delay cannot be negative.",
+      "MAX_LENGTH": "This field exceeds the maximum allowed length.",
+      "INVALID_VALUE": "Invalid value.",
+      "LOAD_FAILED": "Unable to load material supplier.",
+      "CREATE_FAILED": "Unable to create material supplier.",
+      "UPDATE_FAILED": "Unable to update material supplier.",
+      "STATUS_UPDATE_FAILED": "Unable to update supplier status."
+    },
+    "STATUS": {
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive"
+    },
+    "ACTIONS": {
+      "ACTIVATE": "Activate",
+      "DEACTIVATE": "Deactivate",
+      "GENERATE_QR": "Generate QR",
+      "GENERATING_QR": "Generating..."
+    },
+    "CONFIRM": {
+      "ACTIVATE_TITLE": "Activate supplier",
+      "ACTIVATE_MESSAGE": "Do you want to activate \"{{name}}\"?",
+      "DEACTIVATE_TITLE": "Deactivate supplier",
+      "DEACTIVATE_MESSAGE": "Do you want to deactivate \"{{name}}\"?"
+    },
+    "MESSAGES": {
+      "ACTIVATED": "Supplier activated successfully.",
+      "DEACTIVATED": "Supplier deactivated successfully."
+    },
+    "DETAIL": {
+      "CATEGORY_UNDEFINED": "Not defined",
+      "NOT_DEFINED": "Not defined"
+    },
+    "CATEGORIES": {
+      "MATIERES_PREMIERES": "Raw materials",
+      "EMBALLAGES": "Packaging",
+      "PRODUITS_FINIS": "Finished products",
+      "ETIQUETTES": "Labels",
+      "BOUCHONS": "Caps",
+      "CAPSULES": "Capsules",
+      "OPERCULES": "Seals",
+      "FILMS": "Films",
+      "CARTONS": "Cartons",
+      "PALETTES": "Pallets",
+      "SERVICES": "Services",
+      "TRANSPORT": "Transport",
+      "AUTRE": "Other"
+    }
+  },
   "SUPPLIERS": {
     "ACTIONS": "Actions",
     "ADDRESS": "Address",
@@ -3177,7 +3441,151 @@
     "PHONE": "Phone",
     "REGION": "Region",
     "TITLE": "Suppliers",
-    "TYPE": "Type"
+    "TYPE": "Type",
+    "TRANSACTIONS": {
+      "FIELDS": {
+        "TRANSACTION_TYPE": "نوع المعاملة"
+      }
+    },
+    "USER": {
+      "EMAIL": "البريد الإلكتروني",
+      "FIRST_NAME": "الاسم الأول",
+      "GROUP": "المجموعة",
+      "LAST_NAME": "اسم العائلة",
+      "PASSWORD": "كلمة المرور",
+      "STATUS": "الحالة",
+      "USERNAME": "اسم المستخدم"
+    },
+    "USERS": {
+      "ACTIONS": {
+        "ADD": "إضافة",
+        "CANCEL": "إلغاء",
+        "DELETE": "حذف",
+        "EDIT": "تعديل",
+        "GENERATE_PDF": "إنشاء إيصال"
+      },
+      "FIELDS": {
+        "EMAIL": "البريد الإلكتروني",
+        "FIRST_NAME": "الاسم الأول",
+        "GROUP": "المجموعة",
+        "LAST_NAME": "اسم العائلة",
+        "PASSWORD": "كلمة المرور",
+        "STATUS": "الحالة",
+        "USERNAME": "اسم المستخدم"
+      },
+      "MESSAGES": {
+        "DELETE": "هل أنت متأكد أنك تريد حذف هذا المستخدم؟ هذا الإجراء لا يمكن التراجع عنه.",
+        "ERROR": {
+          "EMAIL_REQUIRED": "البريد الإلكتروني مطلوب",
+          "PASSWORD_REQUIRED": "كلمة المرور مطلوبة",
+          "USERNAME_REQUIRED": "اسم المستخدم مطلوب"
+        },
+        "LOAD": "خطأ أثناء تحميل المستخدم",
+        "LOADING": "جارٍ التحميل...",
+        "SAVE": "خطأ أثناء حفظ المستخدم",
+        "SUCCESS": {
+          "DELETE": "تم حذف المستخدم بنجاح",
+          "SAVE": "تم حفظ المستخدم بنجاح"
+        }
+      },
+      "TITLE": "المستخدمين"
+    },
+    "WASTE": {
+      "ACTIONS": {
+        "ADD": "إضافة",
+        "CANCEL": "إلغاء",
+        "EDIT": "تعديل"
+      },
+      "ADD": {
+        "TITLE_ADD": "إضافة نفايات",
+        "TITLE_EDIT": "تعديل النفايات"
+      },
+      "FIELDS": {
+        "AMOUNT": "الكمية",
+        "DATE": "التاريخ",
+        "DESCRIPTION": "الوصف",
+        "METHOD": "الطريقة",
+        "OIL_TYPE": "نوع الزيت",
+        "OLIVE_TYPE": "نوع الزيتون",
+        "OPERATION_TYPE": "نوع العملية",
+        "PRICE": "السعر",
+        "REGION": "المنطقة",
+        "SUPPLIER": "المورد",
+        "TREATMENT_DATE": "تاريخ المعالجة",
+        "TYPE": "النوع",
+        "WEIGHT": "الوزن"
+      },
+      "MESSAGES": {
+        "LOAD_ERROR": "خطأ أثناء تحميل بيانات النفايات",
+        "SAVE_ERROR": "خطأ أثناء حفظ بيانات النفايات",
+        "SAVE_SUCCESS": "تم حفظ بيانات النفايات بنجاح"
+      },
+      "METHODS": {
+        "BURY": "دفن",
+        "DUMP": " выброс",
+        "RECYCLE": "تنقية",
+        "SOLD": "بيع"
+      },
+      "TITLE": "النفايات",
+      "TYPES": {
+        "OIL": "زيت",
+        "OLIVE": "زيتون"
+      }
+    },
+    "WASTE_PROCESSING": {
+      "FORM": {
+        "FIELDS": {
+          "METHOD": "الطريقة",
+          "OIL_TYPE": "نوع الزيت",
+          "OLIVE_TYPE": "نوع الزيتون",
+          "PRICE": "السعر",
+          "REGION": "المنطقة",
+          "WEIGHT": "الوزن"
+        },
+        "MESSAGES": {
+          "LOAD_ERROR": "خطأ أثناء تحميل بيانات معالجة النفايات",
+          "SAVE_ERROR": "خطأ أثناء حفظ بيانات معالجة النفايات",
+          "SAVE_SUCCESS": "تم حفظ بيانات معالجة النفايات بنجاح"
+        },
+        "METHODS": {
+          "BURY": "دفن",
+          "DUMP": " выброс",
+          "RECYCLE": "تنقية",
+          "SOLD": "بيع"
+        },
+        "TITLE": "معالجة النفايات"
+      }
+    },
+    "WASTE_PROCESSING_LIST": {
+      "ACTIONS": {
+        "DELETE": "حذف",
+        "EDIT": "تعديل",
+        "GENERATE_PDF": "إنشاء إيصال"
+      },
+      "FIELDS": {
+        "AMOUNT": "الكمية",
+        "DATE": "التاريخ",
+        "DESCRIPTION": "الوصف",
+        "METHOD": "الطريقة",
+        "OIL_TYPE": "نوع الزيت",
+        "OLIVE_TYPE": "نوع الزيتون",
+        "PRICE": "السعر",
+        "REGION": "المنطقة",
+        "TYPE": "النوع",
+        "WEIGHT": "الوزن"
+      },
+      "TITLE": "معالجة النفايات"
+    },
+    "WASTE_PROCESSING_METHODS": {
+      "BURY": "دفن",
+      "DUMP": " выброс",
+      "RECYCLE": "تنقية",
+      "SOLD": "بيع"
+    },
+    "WASTE_PROCESSING_TYPES": {
+      "OIL": "زيت",
+      "OLIVE": "زيتون"
+    }
   },
   "SUPPLIER_PAYMENT": {
     "ACTIONS": "Actions",
@@ -3212,7 +3620,8 @@
       "OIL_QUANTITY_EXCEEDS_REMAINING": "Oil quantity exceeds remaining amount",
       "OIL_QUANTITY_MIN": "Oil quantity must be greater than 0",
       "OIL_QUANTITY_REQUIRED": "Oil quantity is required",
-      "SUPPLIER_ID_NOT_FOUND": "Supplier ID not found"
+      "SUPPLIER_ID_NOT_FOUND": "Supplier ID not found",
+      "AMOUNT_MAX": "Amount exceeds maximum"
     },
     "INBOUND": "Payment in",
     "LOT": "Lot",
@@ -3300,7 +3709,15 @@
   "TRANSACTIONS": {
     "ACTIONS": {
       "DUPLICATE": "Duplicate",
-      "PRINT_BILL": "Print bill"
+      "PRINT_BILL": "Print bill",
+      "ADD": "Add transaction",
+      "APPROVE": "Approve",
+      "DELETE": "Delete",
+      "EDIT": "Edit transaction",
+      "EXPORT": "Export",
+      "PRINT": "Print",
+      "REJECT": "Reject",
+      "VIEW": "View"
     },
     "BILL": {
       "DEFAULT_DESIGNATION": "Service"
@@ -3317,7 +3734,15 @@
     },
     "ERRORS": {
       "LOAD_ERROR": "Error loading transaction",
-      "NOT_FOUND": "Transaction not found"
+      "NOT_FOUND": "Transaction not found",
+      "AMOUNT_MIN": "Amount must be greater than zero",
+      "AMOUNT_REQUIRED": "Amount is required",
+      "CREATE_ERROR": "Error creating transaction",
+      "DIRECTION_REQUIRED": "Direction is required",
+      "PAYMENT_METHOD_REQUIRED": "Payment method is required",
+      "TRANSACTION_DATE_REQUIRED": "Transaction date is required",
+      "TRANSACTION_TYPE_REQUIRED": "Transaction type is required",
+      "UPDATE_ERROR": "Error updating transaction"
     },
     "FIELDS": {
       "AMOUNT": "Amount",
@@ -3332,6 +3757,8 @@
       "DESCRIPTION": "Description",
       "DIRECTION": "Direction",
       "EXTERNAL_ID": "External reference",
+      "OIL_SALE_LINK": "Linked oil sale",
+      "LINKED_OIL_SALE_HINT": "This transaction belongs to an oil sale. Invoice and delivery documents include oil and containers together.",
       "INVOICE_REFERENCE": "Bill ref",
       "LAST_MODIFIED": "Last modified",
       "LOT_NUMBER": "Lot number",
@@ -3342,22 +3769,39 @@
       "TRANSACTION_DATE": "Transaction date",
       "TRANSACTION_TYPE": "Movment Type",
       "UNPAID_AMOUNT": "Unpaid amount",
-      "VENDOR": "Vendor"
+      "VENDOR": "Vendor",
+      "CUSTOMER": "Customer"
     },
     "PAYMENT_METHODS": {
       "BANK_TRANSFER": "Bank transfert",
       "CASH": "Cash",
       "CHEQUE": "Check",
       "CHECK": "Check",
-      "MIXED": "Mixed",
+      "MIXED": "Mixed payment",
       "OIL": "Oil",
       "OIL_CREDIT": "Oil Credit",
-      "TRANSFER": "Transfer"
+      "TRANSFER": "Transfer",
+      "BOTH": "Both",
+      "CREDIT_CARD": "Credit card",
+      "DEBIT_CARD": "Debit card",
+      "MOBILE_PAYMENT": "Mobile payment"
     },
     "MESSAGES": {
       "BILL_ERROR": "Unable to generate bill",
       "BILL_SUCCESS": "Bill generated",
-      "COMPANY_PROFILE_REQUIRED": "Company profile is required to generate a bill"
+      "COMPANY_PROFILE_REQUIRED": "Company profile is required to generate a bill",
+      "APPROVE_ERROR": "Error approving transaction",
+      "APPROVE_SUCCESS": "Transaction approved successfully",
+      "CREATE_ERROR": "Error creating transaction",
+      "CREATE_SUCCESS": "Transaction created successfully",
+      "DELETE_ERROR": "Error deleting transaction",
+      "DELETE_SUCCESS": "Transaction deleted successfully",
+      "DUPLICATE_SUCCESS": "Transaction duplicated successfully",
+      "LOAD_ERROR": "Error loading transactions",
+      "REJECT_ERROR": "Error rejecting transaction",
+      "REJECT_SUCCESS": "Transaction rejected successfully",
+      "UPDATE_ERROR": "Error updating transaction",
+      "UPDATE_SUCCESS": "Transaction updated successfully"
     },
     "SECTIONS": {
       "APPROVAL": "Approval",
@@ -3369,7 +3813,8 @@
     },
     "STATUS": {
       "APPROVED": "Approved",
-      "PENDING": "Pending"
+      "PENDING": "Pending",
+      "REJECTED": "Rejected"
     },
     "TITLE": "Financial transactions",
     "TYPES": {
@@ -3378,19 +3823,44 @@
       "CREDIT": "Credit",
       "DEBIT": "Debit",
       "DEPOSIT": "Deposit",
+      "EXCHANGE": "Exchange",
       "EXPENSE": "Expense",
+      "FILTRATION": "Filtration",
       "INTERNAL_TRANSFER": "Internal transfert",
       "LOAN": "Loan",
+      "OIL_CONTAINER_SALE": "Container sale",
       "OIL_PURCHASE": "Oil purchase",
       "OIL_SALE": "Oil sale",
       "PAYMENT": "Payment",
       "PURCHASE": "Buying",
+      "RECEPTION_IN": "Reception in",
+      "SALE": "Sale",
+      "STORAGE_RENTAL": "Storage rental",
       "SUPPLIER_CREDIT": "Farmer credit",
       "SUPPLIER_PAYMENT": "Farmer paiment",
+      "TRANSFER_IN": "Transfer in",
+      "WASTE_DISPOSAL_COST": "Waste disposal cost",
+      "WASTE_PAYMENT": "Waste payment",
+      "WASTE_SALE": "Waste sale",
       "WITHDRAWAL": "Withdrawl"
     },
     "VIEW": {
       "TITLE": "Transaction details"
+    },
+    "PLACEHOLDERS": {
+      "DESCRIPTION": "Enter transaction description…",
+      "INVOICE_REFERENCE": "Enter invoice reference…",
+      "LOT_NUMBER": "Enter lot number…",
+      "RECEIPT_REFERENCE": "Enter receipt reference…"
+    },
+    "SUMMARY": {
+      "APPROVED_TRANSACTIONS": "Approved transactions",
+      "BALANCE": "Balance",
+      "PENDING_TRANSACTIONS": "Pending transactions",
+      "TOTAL_AMOUNT": "Total amount",
+      "TOTAL_INBOUND": "Total inbound",
+      "TOTAL_OUTBOUND": "Total outbound",
+      "TOTAL_TRANSACTIONS": "Total transactions"
     }
   },
   "Table": "Table",
@@ -3445,6 +3915,69 @@
       "VEGETAL_SOLIDS": "Solide"
     }
   },
+  "HOME_DASHBOARD": {
+    "TITLE": "Home",
+    "GREETING": "Welcome back to OSM",
+    "GREETING_NAMED": "Welcome back, {{name}}",
+    "LOADING": "Loading your overview…",
+    "LOAD_ERROR": "Could not load the dashboard overview.",
+    "NO_MODULES": "No module dashboards are available for your account. Contact an administrator if you need access.",
+    "OPEN_MODULE": "Open module",
+    "HERO": {
+      "ATTENTION": "Needs attention",
+      "ATTENTION_HINT": "Items across your visible modules",
+      "MODULES": "Active modules",
+      "MODULES_HINT": "Recap sections you can access"
+    },
+    "QUICK_LINKS": {
+      "TITLE": "Quick links",
+      "STORAGE_HINT": "Tanks, oil movements & stock",
+      "STOCK_HINT": "Articles, movements & purchase orders"
+    },
+    "SECTIONS": {
+      "TITLE": "Module recap",
+      "RECEPTION": {
+        "TITLE": "Reception",
+        "SUBTITLE": "Olives, oil lots & milling workflow"
+      },
+      "FINANCE": {
+        "TITLE": "Finance",
+        "SUBTITLE": "Payments, expenses & sales"
+      },
+      "STORAGE": {
+        "TITLE": "Storage",
+        "SUBTITLE": "Tanks and oil transactions"
+      },
+      "INVENTORY": {
+        "TITLE": "Inventory",
+        "SUBTITLE": "Stock levels and purchase orders"
+      },
+      "CONDITIONING": {
+        "TITLE": "Conditioning",
+        "SUBTITLE": "Production orders and projects"
+      },
+      "HR": {
+        "TITLE": "Human resources",
+        "SUBTITLE": "Employees and HR records"
+      }
+    },
+    "METRICS": {
+      "IN_PROGRESS": "In progress",
+      "AWAITING_ACTION": "Awaiting action",
+      "UNPAID": "Unpaid",
+      "PENDING_EXPENSES": "Pending expenses",
+      "TRANSACTIONS": "Transactions",
+      "PENDING_OIL_SALES": "Pending oil sales",
+      "PENDING_OIL_TX": "Pending oil tx",
+      "STORAGE_UNITS": "Storage units",
+      "CRITICAL_ARTICLES": "Critical articles",
+      "PENDING_PURCHASE_ORDERS": "Pending POs",
+      "TOTAL_ARTICLES": "Total articles",
+      "PRODUCTION_ORDERS": "Production orders",
+      "PROJECTS": "Projects",
+      "EMPLOYEES": "Employees"
+    }
+  },
   "WELCOME": {
     "CTA": {
       "DOCS": "Open Docs",
@@ -3495,7 +4028,7 @@
     "CHARGEMENT_IMPOSSIBLE": "Unable to load",
     "EFFICACITE_DE_FILTRATION": "Filtration Efficiency",
     "TENDANCES_DES_VOLUMES_10_DERNIERES_OPERATIONS": "Volume Trends (Last 10 Operations)",
-    "OPERATION": "Operation",
+    "OPERATION": "Operation :",
     "VOLUME_ENTRANT_L": "Input Volume (L)",
     "VOLUME_SORTANT_L": "Outgoing Volume (L)",
     "PERTES_L": "Losses (L)",
@@ -3509,7 +4042,7 @@
     "TOTAL_OF": "Total OF",
     "TOUS_STATUTS_CONFONDUS": "All statuses combined",
     "ACTUELLEMENT_EN_PRODUCTION": "Currently in production",
-    "TERMINES": "You finish",
+    "TERMINES": "Completed",
     "PRODUCTION_ACHEVEE": "Production completed",
     "PLANIFIES": "Planifies",
     "EN_ATTENTE_DE_DEMARRAGE": "Waiting to start",
@@ -3538,38 +4071,34 @@
     "CODE_OF": "Code OF",
     "CIBLE": "Target",
     "PRODUITE": "Produced",
-    "NC": "NC",
+    "NC": "NC :",
     "AUCUN_ORDRE_DE_FABRICATION_N_A_ETE_TROUVE_POUR_LA_PERIODE_SELECT": "No production orders were found for the selected period.",
-    "TYPE_DE_DECHET": "Type of waste *",
+    "TYPE_DE_DECHET": "Type of waste:",
     "SOLIDES_VEGETAUX": "Plant solids",
     "LE_TYPE_DE_DECHET_EST_REQUIS": "The type of waste is required",
     "QUANTITE_KG": "Quantity (kg) *",
     "PRIX_UNITAIRE_TND_KG": "Unit price (TND/kg) *",
     "TND_KG": "TND/kg",
     "LE_PRIX_UNITAIRE_EST_REQUIS": "Unit price is required",
-    "LE_PRIX_UNITAIRE_DOIT_ETRE_SUPERIEUR_A_0": "The unit price must be greater than 0",
-    "DATE_DE_VENTE": "Date of sale *",
+    "LE_PRIX_UNITAIRE_DOIT_ETRE_SUPERIEUR_A_0": "The unit price must be greater than 0.",
+    "DATE_DE_VENTE": "Date of sale:",
     "LA_DATE_DE_VENTE_EST_REQUISE": "Date of sale is required",
     "INFORMATIONS_ADMINISTRATIVES": "Administrative information",
     "CODE_DE_STOCKAGE": "Storage code",
     "EX_ST_A1_001": "Ex: ST-A1-001",
-    "FOURNISSEUR": "Supplier *",
+    "FOURNISSEUR": "Supplier:",
     "INFORMATIONS_COMPLEMENTAIRES": "Additional information",
-    "DATE_DE_PAIEMENT": "Payment date *",
+    "DATE_DE_PAIEMENT": "Payment date:",
     "LA_DATE_DE_PAIEMENT_EST_REQUISE_SI_LE_STATUT_EST_PAYE": "Payment date is required if status is 'Paid'",
     "AJOUTEZ_DES_DETAILS": "Add details...",
     "CHARGEMENT_DES_DONNEES": "Loading data...",
-    "FOURNISSEUR": "Supplier:",
     "AUCUN_SELECTIONNE": "None selected",
-    "TYPE_DE_DECHET": "Type of waste:",
-    "QUANTITE": "Quantity:",
+    "QUANTITE": "Quantity :",
     "PRIX_UNITAIRE": "Unit price:",
     "PRIX_TOTAL": "Total price:",
-    "DATE_DE_VENTE": "Date of sale:",
     "N_FACTURE": "Invoice No.:",
     "CODE_STOCKAGE": "Storage code:",
     "STATUT_PAIEMENT": "Payment status:",
-    "DATE_DE_PAIEMENT": "Payment date:",
     "DETAILS_DE_LA_VENTE_DE_DECHET": "Waste sale details",
     "INFORMATIONS_COMPLETES_DE_LA_VENTE": "Complete sale information",
     "CHARGEMENT_DES_DETAILS": "Loading details...",
@@ -3577,7 +4106,7 @@
     "RECHERCHER_EMPLOYE": "Search employee",
     "NOM_EMPLOYE": "Name of employee",
     "NOM_DE_LA_CERTIFICATION": "Certification name",
-    "CODE": "Code",
+    "CODE": "Code :",
     "ORGANISME_CERTIFICATEUR": "Certification body",
     "DERNIERE_MISE_A_JOUR": "Last update",
     "APERCU_DU_LOGO": "Logo preview",
@@ -3590,7 +4119,7 @@
     "EX_ECOCERT": "Ex : Ecocert",
     "L_ORGANISME_CERTIFICATEUR_EST_REQUIS": "The certification body is required",
     "SELECTIONNEZ_UNE_CATEGORIE": "Select a category",
-    "LEGALE": "Legal",
+    "LEGALE": "link",
     "MARKETING": "Marketing",
     "LA_CATEGORIE_EST_REQUISE": "Category is required",
     "LOGO_DE_LA_CERTIFICATION": "Certification logo",
@@ -3621,21 +4150,21 @@
     "EXPORTER_EN_JSON": "Export to JSON",
     "1_CONFIGURATION_DE_BASE": "1. Configuration de base",
     "SOURCE_DE_L_ETIQUETTE": "LABEL SOURCE",
-    "PACKAGING_PRODUIT": "PACKAGING (PRODUIT)",
-    "DATE_CONDITIONNEMENT": "PACKAGING DATE",
-    "CATEGORIE": "CATEGORY",
-    "LANGUE": "LANGUAGE",
+    "PACKAGING_PRODUIT": "Packaging (product)",
+    "DATE_CONDITIONNEMENT": "Packaging date",
+    "CATEGORIE": "Category *",
+    "LANGUE": "Language:",
     "2_IDENTITE_TRACABILITE": "2. Identity & Traceability",
-    "DENOMINATION_LEGALE": "LEGAL NAME",
-    "N_DE_LOT": "LOT NO.",
-    "QUANTITE_NETTE": "NET QUANTITY",
-    "D_D_M": "D.D.M.",
-    "QUALITE": "QUALITY",
+    "DENOMINATION_LEGALE": "Legal name",
+    "N_DE_LOT": "Batch No.",
+    "QUANTITE_NETTE": "Net Quantity",
+    "D_D_M": "Best before date",
+    "QUALITE": "Quality :",
     "VARIETE": "VARIETY",
-    "TRACEABILITE": "TRACEABILITE",
-    "RECEPTION_RACINE": "RECEPTION RACINE",
+    "TRACEABILITE": "Traceabilite",
+    "RECEPTION_RACINE": "Reception racine",
     "CUVE_FILTREE": "FILTERED TANK",
-    "PAYS_D_ORIGINE": "COUNTRY OF ORIGIN",
+    "PAYS_D_ORIGINE": "Country of origin",
     "3_CHAINE_D_ORIGINE": "3. Original channel",
     "ANCRE_DE_TRACABILITE": "Traceability anchor",
     "SOURCE_RACINE": "Source racine",
@@ -3645,14 +4174,14 @@
     "CONTROLE_QUALITE_APRES_FILTRATION": "Quality control after filtration",
     "RESULTATS_DU_LOT_FILTRE": "Filter batch results",
     "4_MARKETING_CONFORMITE": "4. Marketing & Compliance",
-    "ALLEGATIONS_MARKETING": "MARKETING CLAIMS",
+    "ALLEGATIONS_MARKETING": "Marketing Claims",
     "PRODUIT_DE_TUNISIE": "Product of Tunisia",
-    "CERTIFICATIONS_QUALITE": "QUALITY CERTIFICATIONS",
+    "CERTIFICATIONS_QUALITE": "Quality Certifications",
     "5_RESPONSABILITE_PROCEDES": "5. Responsibility & Processes",
-    "RESPONSABLE": "RESPONSIBLE",
+    "RESPONSABLE": "Responsible",
     "ADRESSE": "ADDRESS",
-    "METHODE_D_EXTRACTION": "EXTRACTION METHOD",
-    "CONDITIONS_DE_STOCKAGE": "STORAGE CONDITIONS",
+    "METHODE_D_EXTRACTION": "Extraction method",
+    "CONDITIONS_DE_STOCKAGE": "Storage conditions",
     "APERCU_EN_DIRECT": "Live preview",
     "OUVRIR_L_APERCU_EN_PLEIN_ECRAN": "Open full screen preview",
     "VISUALISER": "View",
@@ -3667,31 +4196,22 @@
     "OUVRIR": "Open",
     "CREATION": "Creation",
     "TOUTES_LES_ETIQUETTES": "All labels",
-    "STATUT": "STATUS",
+    "STATUT": "Status:",
     "VALIDEE": "Valid idea",
     "FINALISEE": "Finalisee",
     "EXPORTEE_JSON": "Exportee JSON",
-    "CATEGORIE": "CATEGORIES",
-    "LEGALE": "link",
     "RESPONSABILITE": "Responsibility",
     "LISTE_DES_ETIQUETTES": "List of labels",
     "DENOMINATION": "Denomination",
-    "QUANTITE": "Quantity",
     "CERTIFICATIONS": "Certifications",
-    "DATE_COND": "Date cond.",
-    "DATE_CREATION": "Creation date",
-    "CATEGORIE": "Categories",
-    "LANGUE": "Language",
+    "DATE_COND": "Date Cond.",
+    "DATE_CREATION": "Creation date:",
     "VOIR_DETAILS": "See details",
     "AUCUNE_ETIQUETTE_TROUVEE": "No labels found",
-    "SELECTIONNER_LA_PAGE": "Select page",
     "CHARGEMENT_DES_EMPREINTES": "Loading fingerprints...",
     "LOT_N": "LOT N°",
-    "DATE_COND": "Date Cond.",
-    "ALLEGATIONS_MARKETING": "Marketing Claims",
     "EXTRACTION": "Extraction",
     "STOCKAGE": "Storage",
-    "RESPONSABLE": "Responsible",
     "APERCU_DE_L_ETIQUETTE": "Label preview",
     "VISUALISATION_COMPLETE_ET_PAYLOAD_JSON_EXPORTABLE": "Full visualization and exportable JSON payload",
     "EXPORTER_JSON": "Exporter JSON",
@@ -3702,30 +4222,21 @@
     "SELECTIONNER_UNE_OPERATION": "-- Select an operation --",
     "CUVE_NON_FILTREE": "Unfiltered tank",
     "CUVE_FILTREE_UTILISEE_POUR_ETIQUETTE": "Filtered tank used for label",
-    "PACKAGING_PRODUIT": "Packaging (product)",
     "SELECTIONNER_UN_PACKAGING": "-- Select packaging --",
-    "DATE_CONDITIONNEMENT": "Packaging date",
     "UNITE_BOUTEILLE": "Unit (Bottle)",
     "COLIS": "Package",
     "PALETTE": "Palette",
     "IDENTITE_TRACABILITE": "Identity & Traceability",
     "INFORMATIONS_LEGALES_ET_DE_LOT": "Legal and batch information",
-    "DENOMINATION_LEGALE": "Legal name",
     "EX_HUILE_D_OLIVE_VIERGE_EXTRA": "Ex: Extra virgin olive oil",
-    "N_DE_LOT": "Batch No.",
-    "QUANTITE_NETTE": "Net Quantity",
     "EX_500_ML": "Ex : 500 ml",
     "EX_VOIR_FOND_BOUTEILLE": "Ex: See bottle bottom",
-    "SELECTIONNER": "-- Select --",
-    "PAYS_D_ORIGINE": "Country of origin",
+    "SELECTIONNER": "- Select -",
     "EX_TUNISIE": "From: Tunisia",
     "MARKETING_CONFORMITE": "Marketing & Compliance",
     "ALLEGATIONS_ET_CERTIFICATIONS": "Claims and certifications",
-    "CERTIFICATIONS_QUALITE": "Quality Certifications",
     "RESPONSABILITE_PROCEDES": "Responsibility & Processes",
     "OPERATEUR_RESPONSABLE_ET_METHODES": "Responsible operator and methods",
-    "METHODE_D_EXTRACTION": "Extraction method",
-    "CONDITIONS_DE_STOCKAGE": "Storage conditions",
     "PROFIL_SENSORIEL": "Sensory profile",
     "CREER_L_ETIQUETTE": "Create the label",
     "BROUILLON": "DRAFT",
@@ -3737,20 +4248,18 @@
     "ATTENTION_CET_OF_EST": "Please note: This OF is",
     "BLOQUE_PAR_LA_QUALITE": "blocked by quality",
     "LES_ACTIONS_DE_PRODUCTION_SONT_LIMITEES": ". Production actions are limited.",
-    "QUALITE": "Quality :",
     "LIBRE": "Libre",
     "AUCUN_BLOCAGE": "– No blocking.",
-    "PRODUCTION_QUALITE": "Production & Quality",
+    "PRODUCTION_QUALITE": "Production & quality",
     "LES_AJUSTEMENTS_DE_CONSOMMATION_PREPARES_PENDANT_LA_PRODUCTION_N": "Consumption adjustments prepared during production do not deduct inventory immediately. The real movement is applied to the closure of the OF.",
-    "LIGNE": "Ligne",
-    "LOT_VRAC": "Lot vrac",
-    "TRACEABILITE": "Traceabilite",
-    "BLOQUE": "Blocked",
-    "QUANTITE_CIBLE": "Target quantity",
+    "LIGNE": "Line {{value0}} {{value1}}",
+    "LOT_VRAC": "Lot vrac:",
+    "BLOQUE": "(blocked)",
+    "QUANTITE_CIBLE": "Target quantity *",
     "BON_NC": "Good / NC",
     "MOTIF_NC": "Motif NC",
     "DUREE_REELLE_MIN": "Actual duration (min)",
-    "TEMPS_ECOULE": "Time elapsed",
+    "TEMPS_ECOULE": "Time elapses:",
     "PROGRESSION": "Progression",
     "DATES": "Dates",
     "PREVU_DEBUT": "Planned start",
@@ -3760,10 +4269,9 @@
     "TRACABILITE_HUILE": "Oil traceability",
     "CHARGEMENT_DE_LA_GENEALOGIE": "Loading genealogy...",
     "AUCUNE_GENEALOGIE_DISPONIBLE_POUR_CE_LOT": "No genealogy available for this lot.",
-    "RECEPTION_RACINE": "Reception racine",
     "CUVE_FINALE": "Final tank",
-    "LOT_FINAL": "Lot final",
-    "ORIGINE": "Origin",
+    "LOT_FINAL": "Lot final:",
+    "ORIGINE": "Origin:",
     "LOT_SOURCE": "Lot source:",
     "QR_CODE": "QR Code",
     "LE_CODE_PUBLIC_EXISTE_DEJA_MAIS_L_IMAGE_QR_DOIT_ETRE_REGENEREE": "The public code already exists, but the QR image needs to be regenerated.",
@@ -3784,11 +4292,11 @@
     "AUCUNE": "-- None --",
     "BESOINS_EMBALLAGE_VS_STOCK": "Packaging vs. stock needs",
     "PLANNING_RESSOURCES": "Planning & Resources",
-    "CUVE_SOURCE": "Source tank",
+    "CUVE_SOURCE": "Source tank:",
     "CHOISIR_CUVE": "-- Choose tank --",
     "AUCUNE_CUVE_DISPONIBLE": "No tank available",
-    "DATE_DEBUT": "Start date",
-    "DATE_FIN": "Date fin",
+    "DATE_DEBUT": "date debut",
+    "DATE_FIN": "date fin",
     "LA_DATE_DE_FIN_DOIT_ETRE_POSTERIEURE_AU_DEBUT": "The end date must be later than the start.",
     "PRODUCTION_FABRICATION": "Production · Fabrication",
     "ORDRES_DE_FABRICATION": "Manufacturing Orders",
@@ -3796,7 +4304,6 @@
     "NOUVEL_OF": "Nouvel OF",
     "TOUS_LES_ORDRES_ENREGISTRES": "All registered orders",
     "OF_ACTUELLEMENT_EN_PRODUCTION": "OF currently in production",
-    "TERMINES": "Completed",
     "OF_TERMINES_OU_CLOTURES": "OF completed or closed",
     "FILTRES_DE_RECHERCHE": "Search filters",
     "CODE_OF_PRODUIT_LIGNE": "OF code, product, line...",
@@ -3808,9 +4315,7 @@
     "VOIR_OF": "See OF",
     "DEMARRER": "To start up",
     "CLOTURER": "To enclose",
-    "TEMPS_ECOULE": "Time elapses:",
-    "BONS": "Bons :",
-    "NC": "NC :",
+    "BONS": "Bons",
     "FLUX_STOCK_EN_COURS_DE_PRODUCTION": "Stock flow during production",
     "VERIFICATION_STOCK_AVANT_DEMARRAGE": "Stock check before start-up",
     "BESOIN": "Need",
@@ -3820,8 +4325,6 @@
     "INSUFFISANT": "Insufficient",
     "MANQUANT": "Missing",
     "SAISIE_DE_PRODUCTION": "Production entry",
-    "BONS": "Bons",
-    "NON_CONFORMES": "Non-compliant",
     "MOTIF_OBLIGATOIRE": "Mandatory reason",
     "COMPOSANTS_CONSOMMES": "Components consumed",
     "LA_QUANTITE_REELLE_ENREGISTREE_ICI_PREPARE_LA_CONSOMMATION_FINAL": "The actual quantity recorded here prepares for final consumption. No stock movement is launched before the closing of the OF.",
@@ -3838,13 +4341,11 @@
     "PLAN_DE_CONTROLE": "Control Plan",
     "DETAILS_OF": "OF Details",
     "CREER_UN_PLAN": "Create a plan",
-    "SAISIR_CONTROLE": "Enter control",
     "PLAN_DESACTIVE": "Plan disabled",
     "TITRE": "Titre :",
-    "STATUT": "Status :",
     "POINTS_DE_CONTROLE": "Checkpoints",
     "AJOUTER_UN_POINT": "Add a point",
-    "MIN": "Min",
+    "MIN": "min",
     "MAX": "Max",
     "BLOQUANT": "Blocking",
     "AJOUTER_UN_POINT_DE_CONTROLE": "Add a checkpoint",
@@ -3854,7 +4355,7 @@
     "SAISIE_DU_CONTROLE_QUALITE": "Quality control entry",
     "SELECTIONNEZ_UN_OF_ET_REMPLISSEZ_LES_POINTS_DE_CONTROLE": "Select an OF and complete the checkpoints",
     "NOK": "ENOUGH",
-    "COMMENTAIRE": "Comment",
+    "COMMENTAIRE": "Comment:",
     "PRENDRE_UNE_PHOTO": "Take a photo",
     "PHOTO_PRISE": "Photo taken",
     "SIGNATURE_NOM_PRENOM": "Signature (surname, first name, etc.)",
@@ -3863,7 +4364,6 @@
     "HISTORIQUE_DES_CONTROLES_QUALITE": "Quality control history",
     "CONSULTEZ_LES_RESULTATS_POUR_UN_OF": "Consult the results for an OF",
     "DATE": "Date:",
-    "COMMENTAIRE": "Comment:",
     "PHOTO": "Photo:",
     "VOIR_PHOTO": "See photo",
     "SIGNATURE": "Signature:",
@@ -3894,8 +4394,8 @@
     "TOTAL_EXPEDITIONS": "Total shipments",
     "PRETES": "Ready",
     "EN_LIVRAISON": "In delivery",
-    "QUANTITE_TOTALE": "Total quantity",
-    "CLIENT": "Client :",
+    "QUANTITE_TOTALE": "Total quantity:",
+    "CLIENT": "Client *",
     "TRACABILITE": "Traceability",
     "PRODUCTION_TERMINEE": "Production completed",
     "TOUS_LES_ORDRES_DE_FABRICATION_DE_CE_PROJET_SONT_TERMINES_VOUS_P": "All Manufacturing Orders for this project have been completed. You can now proceed with shipping.",
@@ -3913,13 +4413,12 @@
     "CE_PROJET_NE_CONTIENT_ACTUELLEMENT_AUCUN_ORDRE_DE_FABRICATION": "This project currently does not contain any production orders.",
     "PRODUITS_FINIS_SKU_A_PRODUIRE": "Finished products (SKU) to be produced",
     "PRODUIT_SKU": "Product/SKU",
-    "NOMENCLATURE_BOM": "Nomenclature (BOM)",
+    "NOMENCLATURE_BOM": "Nomenclature (BOM) *",
     "LIEE": "Related",
     "BESOINS_RESERVATIONS_DE_STOCK": "Requirements (Stock Reservations)",
     "ARTICLE_COMPOSANT": "Item (Component)",
     "QUANTITE_RESERVEE": "Quantity reserved",
     "TRACABILITE_QR_CODE": "Traceability (QR Code)",
-    "CODE_MANUEL": "Manual code:",
     "GENERER_QR": "Generate QR",
     "CHARGEMENT_DES_DETAILS_DU_PROJET": "Loading project details...",
     "EXPEDITIONS_LIVRAISONS": "Shipping & Deliveries",
@@ -3933,13 +4432,12 @@
     "NOUVELLE_EXPEDITION": "New expedition",
     "DESTINATION": "Destination",
     "LIEU_DE_LIVRAISON": "Delivery location",
-    "DATE_PREVUE": "Expected date",
+    "DATE_PREVUE": "Expected Date",
     "INFORMATIONS_UTILES": "Useful information",
     "OF_DU_PROJET_A_EXPEDIER": "OF the project to be shipped",
     "ARTICLE_PRODUIT": "Item / Product",
     "CREER_L_EXPEDITION": "Create shipment",
     "N_EXPEDITION": "Shipping No.",
-    "DATE_PREVUE": "Expected Date",
     "ARTICLES": "Articles",
     "ARTICLES_TOTAL": "Articles total",
     "VOLUME_TOTAL": "Volume total",
@@ -3964,7 +4462,7 @@
     "CHAINE_DE_TRACABILITE_RECEPTION_FILTRATION_OF_ETIQUETTES": "Chain of traceability (reception → filtration → OF → labels)",
     "SNAPSHOT_FIGE_A_LA_VALIDATION_CE_DOCUMENT_NE_CHANGERA_PLUS": "Snapshot frozen upon validation — this document will no longer change.",
     "APERCU_EN_DIRECT_DES_LIGNES_DE_CETTE_EXPEDITION_LA_TRACABILITE_S": "Live overview of the lines of this expedition. Traceability will be fixed upon validation.",
-    "CHARGEMENT_DE_LA_TRACABILITE": "Loading traceability…",
+    "CHARGEMENT_DE_LA_TRACABILITE": "Loading traceability...",
     "CODE_TRACABILITE": "Traceability code",
     "CHARGEMENT_DU_MODULE_EXPEDITION": "Loading the shipping module...",
     "AUCUNE_EXPEDITION_N_A_ENCORE_ETE_CREEE_POUR_CE_PROJET": "No shipments have yet been created for this project.",
@@ -3975,7 +4473,6 @@
     "CE_PROJET_UTILISERA_DE_L_HUILE_EN": "This project will use oil in",
     "VRAC_MATIERE_PREMIERE": "Bulk (Raw Material)",
     "POUR_PRODUIRE_DES_UNITES_EMBALLEES": "to produce packaged units.",
-    "CLIENT": "Client *",
     "LE_CLIENT_EST_OBLIGATOIRE": "The customer is obligatory.",
     "VARIETE_DE_L_HUILE_SOURCE_VRAC": "Variety of oil (Bulk Source) *",
     "TYPE_D_HUILE_EN_VRAC_A_CONDITIONNER": "Type of bulk oil to package",
@@ -3985,7 +4482,6 @@
     "AJOUTER_PRODUIT": "Add Product",
     "PRODUIT_FINI_A_PRODUIRE": "Finished product to be produced *",
     "SELECTIONNER_UN_PRODUIT": "-- Select a product --",
-    "NOMENCLATURE_BOM": "Nomenclature (BOM) *",
     "SELECTIONNER_UNE_NOMENCLATURE": "-- Select a nomenclature --",
     "ARTICLES_REQUIS_POUR_CE_CONDITIONNEMENT": "Items required for this packaging",
     "CHARGEMENT_DE_LA_NOMENCLATURE": "Loading the nomenclature...",
@@ -3999,13 +4495,11 @@
     "AUTOMATIQUEMENT_RESERVES": "automatically reserved",
     "DANS_LE_STOCK_PHYSIQUE_LORS_DE_L_ENREGISTREMENT_DU_PROJET": "in physical stock when saving the project.",
     "PLANIFICATION_ET_LIVRAISON": "Planning and delivery",
-    "LIGNES_DE_CONDITIONNEMENT": "Packaging lines *",
+    "LIGNES_DE_CONDITIONNEMENT": "Packaging Lines",
     "SELECTIONNEZ_AU_MOINS_UNE_LIGNE_DE_CONDITIONNEMENT": "Select at least one packaging line.",
     "DATE_LIMITE_LIVRAISON": "Delivery deadline *",
     "LA_DATE_LIMITE_EST_OBLIGATOIRE": "The deadline is mandatory.",
-    "QUANTITE_CIBLE": "Target quantity *",
     "PRIX_UNITAIRE_TND": "Unit price (TND) *",
-    "LE_PRIX_UNITAIRE_DOIT_ETRE_SUPERIEUR_A_0": "The unit price must be greater than 0.",
     "VALEUR_TOTALE_ESTIMEE": "Total estimated value",
     "LES_CONDITIONS_DE_LIVRAISON_NE_DOIVENT_PAS_DEPASSER_2000_CARACTE": "Delivery conditions must not exceed 2000 characters.",
     "PROJETS_DE_CONDITIONNEMENT": "Packaging Projects",
@@ -4017,7 +4511,7 @@
     "VALIDES": "Validated",
     "CHANGER_LE_STATUT": "Change status",
     "STATUT_ACTUEL": "Current status",
-    "NOUVEAU_STATUT": "New status *",
+    "NOUVEAU_STATUT": "New status",
     "NOTE_OPTIONNEL": "Note (optional)",
     "RAISON_DU_CHANGEMENT_DE_STATUT": "Reason for change of status",
     "AUCUN_CHANGEMENT_DE_STATUT_AUTORISE_POUR_CET_ETAT": "No status changes allowed for this state.",
@@ -4029,7 +4523,7 @@
     "ASSOCIATED_RECEPTION": "Associated reception",
     "LE_TYPE_EST_REQUIS": "Type is required",
     "LE_TYPE_DOIT_CONTENIR_AU_MOINS_2_CARACTERES": "Type must contain at least 2 characters",
-    "NUMERO_DE_SERIE": "Serial number",
+    "NUMERO_DE_SERIE": "Serial number:",
     "EN_MAINTENANCE": "Under maintenance",
     "HEURES_DE_FONCTIONNEMENT": "Operating hours",
     "NE_PEUT_PAS_ETRE_NEGATIF": "Can't be negative",
@@ -4046,12 +4540,10 @@
     "LE_COUT_EST_REQUIS": "Cost is required",
     "LE_COUT_DOIT_ETRE_POSITIF": "The cost must be positive",
     "PIECES_REMPLACEES": "Parts replaced",
-    "NOM": "Nom:",
+    "NOM": "Nom *",
     "FABRICANT": "Manufacturer:",
     "MODELE": "Model:",
-    "NUMERO_DE_SERIE": "Serial number:",
-    "CAPACITE": "Ability:",
-    "STATUT": "Status:",
+    "CAPACITE": "Empower",
     "HEURES_D_OPERATION": "Hours of operation:",
     "DERNIERE_MAINTENANCE": "Last maintenance:",
     "PROCHAINE_MAINTENANCE": "Next maintenance:",
@@ -4061,10 +4553,14 @@
     "APPLY_THEME_SETTINGS": "Apply theme settings",
     "APPLY_SETTINGS": "Apply settings",
     "RESET_ALL_SETTINGS": "Reset all settings",
-    "RESET_LAYOUT": "Reset layout",
+    "RESET_LAYOUT": "Reset Layout",
     "UPLOAD_COMPANY_LOGO": "Upload company logo",
     "CONFIRM_RESET": "Confirm Reset",
     "CAMPAGNE_AGRICOLE": "Agricultural campaign",
+    "DATE_DEBUT_CAMPAGNE": "Campaign start date",
+    "HEURE_DEBUT_CAMPAGNE": "Campaign start time",
+    "DATE_FIN_CAMPAGNE": "Campaign end date:",
+    "MARQUER_DATE_FIN": "Mark end date",
     "MOIS_DEBUT": "Start month",
     "JOUR_DEBUT": "Start day",
     "MOIS_FIN": "End month",
@@ -4079,7 +4575,7 @@
     "NUMERO_DE_TELEPHONE": "Phone number",
     "LE_NUMERO_DE_TELEPHONE_EST_REQUIS": "Telephone number is required.",
     "FORMAT_DE_NUMERO_INVALIDE": "Invalid number format.",
-    "DESACTIVER": "Disable",
+    "DESACTIVER": "Deactivate",
     "SAUVGARDER": "Sauvgarder",
     "CREER_NOUVEAU_ROLE": "Create new role",
     "UTILISATEURS": "users",
@@ -4098,7 +4594,7 @@
     "STOCK_SUFFISANT": "Sufficient stock",
     "STOCK_INSUFFISANT": "Insufficient stock",
     "MODE_PROJET_LES_BESOINS_SONT_COMPARES_AU_STOCK": "Project mode: needs are compared to stock",
-    "RESERVE": "reserve",
+    "RESERVE": "Reserve",
     "PAS_AU_DISPONIBLE_LIBRE": "(not freely available).",
     "COMPARAISON_AVEC_LE_STOCK": "Comparison with stock",
     "DISPONIBLE": "available",
@@ -4107,26 +4603,19 @@
     "AUCUNE_LIGNE_DE_NOMENCLATURE_A_AFFICHER": "No BOM lines to display.",
     "ETAT": "État",
     "VERIFICATION_DE_LA_CHAINE_DE_TRACABILITE": "Verification of the chain of custody…",
-    "ORIGINE": "Origin:",
     "NON_RESOLUE": "Unresolved",
     "RECEPTION_HUILE": "Oil reception",
     "LOT_TRACABILITE": "Traceability batch:",
     "FILTRATIONS": "Filtrations:",
     "CUVE": "Tank:",
     "N_LIVRAISON": "Delivery number:",
-    "QUANTITE": "Quantity :",
-    "CODE": "Code:",
-    "LOT": "Lot :",
-    "LOT_VRAC": "Lot vrac:",
+    "LOT": "Lot:",
     "FILTRATION": "Filtration",
     "LOT_CIBLE": "Target batch:",
     "CONDITIONNEMENT_ETIQUETTES": "Packaging & labels",
     "UNITE_DE_STOCKAGE_FINALE": "Final storage unit",
-    "LOT_FINAL": "Lot final:",
     "AUCUNE_GENEALOGIE_HUILE_POUR_CET_OF_RECEPTION_FILTRATION": "No oil genealogy for this OF (reception → filtration).",
     "AUCUNE_DONNEE_DE_TRACABILITE_A_AFFICHER": "No traceability data to display.",
-    "DATE_DEBUT": "date debut",
-    "DATE_FIN": "date fin",
     "EXAMPLE_TABLE_WITH_SORTING": "Example table with sorting",
     "CHARGEMENT_DE_L_ARTICLE": "Loading the article...",
     "DETAIL_DE_L_ARTICLE": "Item Detail",
@@ -4158,11 +4647,10 @@
     "IDENTITE_DE_L_ARTICLE": "Item identity",
     "NOM_DE_L_ARTICLE": "Item Name *",
     "EX_BOUTEILLE_MARASCA_750ML": "Ex: Marasca bottle 750ml",
-    "CATEGORIE": "Category *",
     "SELECTIONNER_UNE_CATEGORIE": "Select a category...",
     "SPECIFICATIONS_TECHNIQUES": "Technical specifications",
     "EX_VERRE_PLASTIQUE": "Ex: Glass, Plastic",
-    "VOLUME_ML": "Volume (ml)",
+    "VOLUME_ML": "Volume (ml) *",
     "COULEUR": "Color",
     "TYPE_DE_GOULOT": "Bottleneck type",
     "EX_DOP_VIS": "From: DOP, Force",
@@ -4193,11 +4681,10 @@
     "QUANTITE_CONTENUE": "Quantity contained",
     "TEMPERATURE_DE_STOCKAGE_C": "Storage temperature (°C)",
     "LOGISTIQUE_UNITE": "Logistics & Unit",
-    "UNITE_DE_MESURE": "Unit of measurement *",
+    "UNITE_DE_MESURE": "Unit of measurement",
     "FOURNISSEUR_PRINCIPAL": "Main supplier",
     "AUCUN": "None",
     "ARTICLE_ACTIF": "Active Item",
-    "SEUILS_DE_STOCK": "Stock thresholds",
     "STOCK_D_ALERTE_MIN": "Alert Stock (Min)",
     "CAPACITE_MAX": "Max capacity",
     "GESTION_DES_ARTICLES_ET_PRODUITS": "Management of articles and products",
@@ -4274,8 +4761,7 @@
     "CHARGEMENT_DU_BON_DE_COMMANDE": "Loading the purchase order...",
     "REFUSER": "Refuse",
     "N_BON_DE_COMMANDE": "Purchase order number:",
-    "DATE_CREATION": "Creation date:",
-    "DATE_RECEPTION_PREVUE": "Expected receipt date:",
+    "DATE_RECEPTION_PREVUE": "Expected receipt date",
     "DATE_VALIDATION": "Date validation :",
     "MOTIF_REFUS": "Reason for refusal:",
     "RECAPITULATIF": "Summary",
@@ -4318,10 +4804,8 @@
     "AUCUN_BON_EN_ATTENTE": "No vouchers pending",
     "INFORMATIONS_GENERALES": "General information",
     "IDENTITE_ET_CLASSIFICATION_DE_L_EMPLACEMENT": "Location identity and classification.",
-    "NOM": "Nom *",
     "NOM_DE_L_EMPLACEMENT": "Location Name",
     "TYPE_D_EMPLACEMENT": "Type d’emplacement *",
-    "SELECTIONNER": "Selectionner...",
     "CATEGORIE_ARTICLE_STOCKE": "Category article stock",
     "NON_SPECIFIEE": "Non specifiee",
     "CAPACITE_ET_CONDITIONS": "Capacity and conditions",
@@ -4351,7 +4835,6 @@
     "CODE_NOM_ZONE_RESERVATION": "Code, nom, zone, reservation...",
     "TOUS_LES_TYPES": "All types",
     "TOUTES_LES_ZONES": "All areas",
-    "RESERVE": "Reserve",
     "OCCUPE": "Busy",
     "REINITIALISER": "reinitializer",
     "EMPLACEMENT_WORKS": "emplacement works!",
@@ -4372,7 +4855,6 @@
     "CONDITIONS_DE_PAIEMENT": "Payment terms",
     "IDENTITE_PRINCIPALE_DU_FOURNISSEUR": "Primary identity of the provider.",
     "NOM_DU_FOURNISSEUR": "Supplier Name",
-    "SELECTIONNER": "Select...",
     "DEVISE": "Devise *",
     "EURO_EUR": "Euros (EUR)",
     "DOLLAR_USD": "Dollar (USD)",
@@ -4412,7 +4894,6 @@
     "VITESSE_NOMINALE": "Rated speed",
     "U_H": "u/h",
     "PREPARATION": "Preparation",
-    "MIN": "min",
     "NOTES_ADDITIONNELLES": "Additional Notes",
     "DERNIERE_FOIS": "Last time",
     "PROCHAINE_ECHEANCE": "Next deadline",
@@ -4420,7 +4901,6 @@
     "CREE_LE": "Created on:",
     "MODIFIE_LE": "Modified on:",
     "PRODUCTION_CONDITIONNEMENT": "Production · Packaging",
-    "LIGNES_DE_CONDITIONNEMENT": "Packaging Lines",
     "GEREZ_VOS_UNITES_DE_PRODUCTION_SUIVEZ_LEUR_ETAT_OPERATIONNEL_ET_": "Manage your production units, monitor their operational status and control packaging capacity.",
     "NOUVELLE_LIGNE": "New line",
     "TOTAL_LIGNES": "Total lines",
@@ -4432,7 +4912,6 @@
     "ETAT_DE_LA_LIGNE": "Line Status",
     "TOUS_LES_ETATS": "All states",
     "PANNE": "Breakdown",
-    "REINITIALISER_LES_FILTRES": "Reset filters",
     "LISTE_DES_LIGNES": "List of lines",
     "VUE_OPERATIONNELLE_DES_LIGNES_DE_CONDITIONNEMENT": "Operational view of the packaging lines.",
     "NOM_DE_LA_LIGNE": "Line name",
@@ -4467,14 +4946,12 @@
     "ETIQUETTES_LIEES": "Related tags",
     "CREEZ_LE_PRODUIT_POUR_POUVOIR_LIER_OU_GENERER_DES_ETIQUETTES": "Create the product so you can link or generate labels.",
     "AUCUNE_ETIQUETTE_LIEE_POUR_LE_MOMENT": "No tags linked yet.",
-    "CHARGEMENT_DES_ETIQUETTES": "Loading labels…",
+    "CHARGEMENT_DES_ETIQUETTES": "Loading labels...",
     "PARAMETRAGE_DU_PRODUIT_DU_VRAC_ET_DE_LA_NOMENCLATURE_D_EMBALLAGE": "Setting up the product, bulk and packaging nomenclature",
     "IDENTITE_PRODUIT": "Product identity",
-    "NOM_DU_PRODUIT": "Product Name *",
     "NOM_DU_PRODUIT": "Product Name",
     "CODE_INTERNE": "Code interne",
     "CE_CODE_SERA_CREE_AUTOMATIQUEMENT_PAR_LE_SYSTEME": "This code will be created automatically by the system.",
-    "UNITE_DE_MESURE": "Unit of measurement",
     "CAMPAGNE": "Campaign",
     "EX_2025_2026": "Ex: 2025/2026",
     "GRADE_HUILE": "Oil grade",
@@ -4506,7 +4983,6 @@
     "FILTRES_DE_STOCK": "Stock filters",
     "TOUS_LES_EMPLACEMENTS": "All locations",
     "RECHERCHE_ARTICLE": "Article search",
-    "TOUTES_LES_CATEGORIES": "All categories",
     "A_TRANSACTION_WILL_BE_CREATED_MONTHLY_FOR_THIS_PAYMENT": "A transaction will be created monthly for this payment.",
     "CURRENTLY_ASSIGNED": "Currently assigned",
     "SUPPRIMER_L_OPERATION": "Delete operation",
@@ -4515,32 +4991,24 @@
     "DETAILS_DE_L_OPERATION": "Operation details",
     "ID_OPERATION": "Operation ID",
     "OPERATION_SELECTIONNEE": "Operation selectionnee",
-    "CUVE_CIBLE": "Target tank",
+    "CUVE_CIBLE": "Target tank:",
     "JE_CONFIRME_LA_SUPPRESSION_DEFINITIVE": "I confirm the permanent deletion",
     "SUIVI_DES_OPERATIONS_ENTRE_CUVES": "Monitoring of operations between tanks",
     "NOUVELLE_FILTRATION": "New filtration",
     "RECHERCHE_ET_FILTRES": "Search and filters",
     "FILTRER_LES_OPERATIONS_DE_FILTRATION_PAR_STATUT": "Filter filtration operations by status",
-    "OPERATION": "Operation",
     "CHARGEMENT_DES_REGLES": "Loading the rules...",
     "AUCUNE_REGLE_DE_CONTROLE_QUALITE_HUILE_DISPONIBLE": "No oil quality control rules available.",
     "TRACABILITE_DE_L_OPERATION": "Traceability of the operation",
-    "OPERATION": "Operation :",
-    "CUVE_SOURCE": "Source tank:",
-    "CUVE_CIBLE": "Target tank:",
-    "VOLUME_FILTRE": "Filtered volume:",
-    "VOLUME_APRES": "Volume after:",
-    "PERTES": "Losses:",
+    "VOLUME_FILTRE": "Filtered volume",
+    "VOLUME_APRES": "Volume after",
+    "PERTES": "Losses",
     "GENERER_ETIQUETTE": "Generate label",
     "FILTRATION_TRACABILITE_COMPLETE": "Filtration · Full traceability",
     "HISTORIQUE_DE_L_OPERATION": "History of the operation",
-    "CHARGEMENT_DE_LA_TRACABILITE": "Loading traceability...",
     "OPERATION_DE_FILTRATION": "Filtration operation",
-    "ID_OPERATION": "Operation ID",
     "DATE_HEURE": "Date/Time",
-    "VOLUME_FILTRE": "Filtered volume",
     "VOLUME_APRES_FILTRATION": "Volume after filtration",
-    "PERTES": "Losses",
     "SOURCE_HUILE_NON_FILTREE": "Source — Unfiltered Oil",
     "HUILE_BRUTE": "crude oil",
     "CIBLE_HUILE_FILTREE": "Target — Filtered oil",
@@ -4554,13 +5022,11 @@
     "POIDS_NET": "Net weight",
     "REGLE": "Ruler",
     "VALEUR_MESUREE": "Measured value",
-    "RESULTAT": "Result",
     "AUCUNE_LIVRAISON_SOURCE_IDENTIFIEE_POUR_CE_LOT_DE_FILTRATION": "No source delivery identified for this filtration batch.",
     "TRANSACTION_ENREGISTREE": "Transaction recorded",
     "MAX_CAPACITY_IS_REQUIRED": "Max capacity is required",
     "MUST_BE_GREATER_THAN_0": "Must be greater than 0",
     "FILTERED_OIL": "Filtered Oil",
-    "SELECTIONNER": "- Select -",
     "SEARCH_COMPONENTS": "Search Components",
     "EXPLORE_COMPONENT": "Explore Component",
     "CLOSE_CUSTOMIZER": "Close Customizer",
@@ -4588,19 +5054,17 @@
     "CHOOSE_FULL_OR_CONTAINER_LAYOUT": "Choose Full or Container Layout",
     "FULL_LAYOUT": "Full Layout",
     "CONTAINER_LAYOUT": "Container Layout",
-    "RESET_LAYOUT": "Reset Layout",
     "OSM_CRAFTED_WITH_BY_TEAM_XDEV": "OSM crafted with ♥ by team XDEV",
     "RECHERCHE_GLOBALE": "Global search",
     "LANCER_LA_RECHERCHE_GLOBALE": "Start global search",
     "MODE": "mode",
     "ENGLISH": "English",
-    "FRANCAIS": "Francais",
+    "FRANCAIS": "French",
     "ARABIC": "Arabic",
     "MANAGE": "Manage",
     "MY_ACCOUNT": "My Account",
     "LANGUAGE": "Language",
     "ENGLISH_UK": "English (uk)",
-    "FRANCAIS": "French",
     "ARABE": "Arab",
     "LOGOUT": "Logout",
     "RATING": "Rating",
@@ -4608,7 +5072,7 @@
     "INCOME": "Income",
     "LANGUAGES_SUPPORT": "Languages support",
     "UPDATE_VERSION": "Update version",
-    "V1_1_0": "V1.1.0",
+    "V1_1_0": "0",
     "NEW_ORDERS": "New Orders",
     "VIEW_MORE": "View more",
     "NEW_USERS": "New Users",
@@ -4659,7 +5123,7 @@
     "ERROR_UNAUTHORIZED": "Error Unauthorized",
     "YOUR_AUTHORIZATION_FAILED": "Your authorization failed.",
     "PLEASE_TRY_REFRESHING_THE_PAGE_AND_FILL_IN_THE_CORRECT_LOGIN_DET": "Please try refreshing the page and fill in the correct login details.",
-    "INTERNAL_SERVER_ERROR": "Internal Server Error",
+    "INTERNAL_SERVER_ERROR": "Internal server error",
     "SERVER_ERROR_500_WE_FIXING_THE_PROBLEM_PLEASE": "Server error 500. we fixing the problem. please",
     "TRY_AGAIN_AT_A_LATER_STAGE": "try again at a later stage.",
     "HEY_PLEASE_CHECK_OUT_THIS_SITE_LATER_WE_ARE_DOING": "Hey! Please check out this site later. We are doing",
@@ -4667,7 +5131,6 @@
     "AUCUN_ORDRE_DE_FABRICATION_TROUVE": "No production orders found.",
     "MODIFIEZ_LES_FILTRES_OU_CREEZ_UN_NOUVEL_OF": "Modify the filters or create a new OF.",
     "DETAIL_DU_CLIENT": "Customer detail",
-    "CODE": "Code :",
     "CODE_CLIENT": "Code client",
     "PRIVATE_LABEL": "Private Label",
     "STANDARD": "Standard",
@@ -4676,7 +5139,6 @@
     "LE_TYPE_CLIENT_EST_REQUIS": "Customer type is required",
     "CHARGEMENT_DES_CLIENTS": "Loading clients...",
     "LOCALISATION": "Localisation",
-    "VOIR_DETAILS": "See details",
     "AUCUN_CLIENT_TROUVE": "No customers found",
     "COMMENCEZ_PAR_CREER_UN_NOUVEAU_CLIENT": "Start by creating a new client",
     "CHARGEMENT_DES_EXPEDITIONS": "Loading shipments...",
@@ -4693,7 +5155,6 @@
     "FOURNISSEUR_NON_TROUVE_AVEC_CE_ID": "Supplier not found with this id!",
     "VIEW_QR": "View QR",
     "QR": "QR",
-    "DATE_RECEPTION_PREVUE": "Expected receipt date",
     "LA_DATE_DE_RECEPTION_EST_OBLIGATOIRE": "The date of receipt is mandatory",
     "LA_DATE_DE_RECEPTION_DOIT_ETRE_POSTERIEURE_A_AUJOURD_HUI": "The receipt date must be after today",
     "ARTICLES_COMMANDES": "Items ordered",
@@ -4703,16 +5164,13 @@
     "QUANTITE_REQUISE": "Quantity required",
     "MINIMUM_1": "Minimum 1",
     "NOMBRE_D_ARTICLES": "Number of items:",
-    "QUANTITE_TOTALE": "Total quantity:",
     "TOTAL_TTC": "Total TTC:",
     "CHARGEMENT_DE_L_EMPLACEMENT": "Loading location",
     "VEUILLEZ_PATIENTER": "Please wait...",
     "IDENTIFICATION": "Identification",
     "TYPE_CARACTERISTIQUES": "Type & characteristics",
     "TEMPERATURE": "Temperature",
-    "CONDITIONS_SPECIALES": "Special conditions",
     "NON_DEFINIE": "Not defined",
-    "CAPACITE_ACTUELLE": "Current capacity",
     "RESERVATION": "Reservation",
     "NON_RESERVE": "Not reserved",
     "OCCUPE_SANS_RESERVATION": "Busy without reservation",
@@ -4725,10 +5183,7 @@
     "JOURNAL_D_EMPLACEMENTS": "Journal d'emplacements",
     "HISTORIQUE_COMPLET_TRIE_AVEC_LES_EMPLACEMENTS_ACTIFS_EN_PRIORITE": "Complete history sorts with active locations prioritized.",
     "CODE_NOM": "Code / Name",
-    "CAPACITE": "Empower",
-    "TEMPERATURE": "Temperature",
     "N_A": "n/a",
-    "DESACTIVER": "Deactivate",
     "AUCUN_EMPLACEMENT_TROUVE": "No location found",
     "COMMENCEZ_PAR_CREER_VOTRE_PREMIER_EMPLACEMENT_DE_STOCKAGE": "Start by creating your first storage location.",
     "CREER_UN_EMPLACEMENT": "Create a location",
@@ -4757,7 +5212,6 @@
     "CHARGEMENT_DU_PRODUIT": "Product loading",
     "PROFIL_HUILE": "Oil profile",
     "GRADE": "Grade",
-    "LE_CODE_PUBLIC_EXISTE_MAIS_L_IMAGE_QR_DOIT_ETRE_REGENEREE": "The public code exists, but the QR image needs to be regenerated.",
     "PAS_ENCORE_DE_QR_CODE_POUR_CE_PRODUIT": "No QR code yet for this product.",
     "VOLUME_UNITAIRE": "Unit volume",
     "ML": "ml",
@@ -4769,15 +5223,12 @@
     "VRAC": "Bulk",
     "DENSITE": "Density",
     "STOCKAGE_PAR_DEFAUT": "Default storage",
-    "CHARGEMENT_DES_ETIQUETTES": "Loading labels...",
     "AUCUNE_ETIQUETTE_LIEE_A_CE_PRODUIT_POUR_LE_MOMENT": "No labels linked to this product at this time.",
     "CREER_UNE_ETIQUETTE": "Create a label",
     "ETIQUETTE_S_TROUVEE_S": "tag(s) found",
-    "LOT": "Lot:",
-    "LANGUE": "Language:",
     "EDITER": "Edit",
     "HUILE_EN_VRAC": "Bulk oil",
-    "PRODUIT_CONDITIONNE": "Packaged product",
+    "PRODUIT_CONDITIONNE": "Packaged Product:",
     "LE_NOM_DU_PRODUIT_EST_REQUIS": "The product name is required.",
     "EX_HUILE_EXTRA_VIERGE_VRAC_2024_2025": "Ex: Extra Virgin Oil Bulk 2024/2025",
     "EX_HUILE_OLIVEA_750ML_BOUTEILLE_VERRE": "Ex: Olivéa Oil 750ml Glass Bottle",
@@ -4790,9 +5241,7 @@
     "CUVE_UNITE_DE_STOCKAGE": "Tank / Storage unit",
     "SELECTIONNER_UNE_CUVE": "— Select a tank —",
     "SPECIFICATIONS_PRODUIT_CONDITIONNE": "Packaged product specifications",
-    "PRODUIT_CONDITIONNE": "Packaged Product:",
     "L_HUILE_EST_MISE_EN_BOUTEILLE_OU_BIDON_RENSEIGNEZ_LES_CARACTERIS": "the oil is bottled or canned. Provide the physical characteristics of the finished product.",
-    "VOLUME_ML": "Volume (ml) *",
     "EX_750": "Ex: 750",
     "REQUIS": "Required.",
     "EX_750_1000_5000": "Ex: 750, 1000, 5000",
@@ -4846,13 +5295,10 @@
     "OPERATIONS_DE_FILTRATION": "Filtration operations",
     "LISTE_DES_MOUVEMENTS_DE_FILTRATION_ENTRE_CUVES": "List of filtration movements between tanks",
     "VOLUME_INITIAL": "Volume initial",
-    "VOLUME_APRES": "Volume after",
     "PERTE": "Loss",
-    "BLOQUE": "(blocked)",
     "PREPARER_L_ETIQUETTE": "Prepare the label",
     "EN_COURS": "(in progress)",
     "AUCUN_CHANGEMENT_DE_STATUT_AUTORISE_POUR_CETTE_OPERATION": "No status changes allowed for this operation.",
-    "NOUVEAU_STATUT": "New status",
     "L_OPERATION_SERA_DEMARREE_PUIS_CLOTUREE_AVEC_LE_VOLUME_SAISI": "The operation will be started then closed with the volume entered.",
     "VOLUME_APRES_FILTRATION_L": "Volume after filtration (L)",
     "OBLIGATOIRE_SI_L_OPERATION_EST_TERMINEE": "Required if the operation is completed.",
@@ -5013,8 +5459,6 @@
     "ID_DU_PRODUIT_MANQUANT": "Missing Product ID",
     "IMPOSSIBLE_DE_CHARGER_LE_PRODUIT": "Unable to load product",
     "PRODUIT_SUPPRIME_AVEC_SUCCES": "Product deleted successfully",
-    "ERREUR_LORS_DE_LA_GENERATION_DU_QR_CODE": "Error generating the QR code",
-    "VEUILLEZ_VERIFIER_LES_CHAMPS_DU_FORMULAIRE": "Please check the form fields",
     "PRODUIT_MIS_A_JOUR_AVEC_SUCCES": "Product successfully updated",
     "PRODUIT_CREE_AVEC_SUCCES": "Product successfully created",
     "PRODUIT_ENREGISTRE_MAIS_LA_NOMENCLATURE_N_A_PAS_PU_ETRE_CREEE": "Product registered, but the nomenclature could not be created",
@@ -5029,7 +5473,6 @@
     "ERREUR_LORS_DU_CHARGEMENT_DES_REGLES_QUALITE": "Error loading quality rules.",
     "OPERATION_DE_FILTRATION_INTROUVABLE": "Filtration operation not found.",
     "FAILED_TO_LOAD_OIL_CONTAINER": "Failed to load oil container",
-    "ERROR_VALIDATING_OIL_SALE": "Error validating oil sale:",
     "ERROR_VALIDATING_OIL_SALE": "Error validating oil sale",
     "MESSAGE": ",",
     "PLEASE_FILL_IN_ALL_REQUIRED_FIELDS": "Please fill in all required fields.",
@@ -5055,7 +5498,7 @@
     "IMPOSSIBLE_DE_CHARGER_LES_TYPES_HUILE_ET_LES_VARIETES": "Unable to load oil types and varieties.",
     "IDENTIFIANT_ETIQUETTE_ABSENT": "Label identifier missing.",
     "IMPOSSIBLE_DE_CHARGER_LE_DETAIL_DE_CETTE_ETIQUETTE": "Unable to load the details of this label.",
-    "ETES_VOUS_SUR_DE_VOULOIR_DEVERROUILLER_CETTE_ETIQUETTE_ELLE_REPA": "Are you sure you want to unlock this tag? It will return to edit mode.",
+    "ETES_VOUS_SUR_DE_VOULOIR_DEVERROUILLER_CETTE_ETIQUETTE_ELLE_REPA": "Are you sure you want to unlock this tag? It will return to draft mode.",
     "L_ETIQUETTE_A_ETE_DEVERROUILLEE_ET_EST_A_NOUVEAU_EDITABLE": "The label has been unlocked and is editable again.",
     "ERREUR_LORS_DU_DEVERROUILLAGE": "Error while unlocking.",
     "ERREUR_LORS_DE_LA_SUPPRESSION": "Error deleting.",
@@ -5075,7 +5518,6 @@
     "ERREUR_LORS_DE_LA_GENERATION_DE_L_ETIQUETTE": "Error generating the label.",
     "LE_BROUILLON_A_ETE_MIS_A_JOUR": "The draft has been updated.",
     "ERREUR_LORS_DE_LA_MISE_A_JOUR_DU_BROUILLON": "Error updating draft.",
-    "ETES_VOUS_SUR_DE_VOULOIR_DEVERROUILLER_CETTE_ETIQUETTE_ELLE_REPA": "Are you sure you want to unlock this tag? It will return to draft mode.",
     "L_ETIQUETTE_A_ETE_REMISE_EN_BROUILLON": "The label has been returned to draft.",
     "ERREUR_LORS_DU_RETOUR_AU_STATUT_BROUILLON": "Error returning to draft status.",
     "LE_CONTENU_ETIQUETTE_A_ETE_FINALISE_ET_FIGE": "The label content has been finalized and frozen.",
@@ -5098,7 +5540,6 @@
     "ERREUR_DU_SERVEUR": "Server error:",
     "ERREUR_INCONNUE": "Unknown error",
     "ACTION_IMPOSSIBLE_LE_PROJET_A_ECHOUE_EN_RAISON_DE_RESERVATIONS_D": "Impossible action: The project failed due to insufficient inventory reservations.",
-    "ERREUR_LORS_DE_LA_GENERATION_DU_QR": "Error generating QR",
     "QR_NON_DISPONIBLE_VEUILLEZ_LE_GENERER_D_ABORD": "QR not available. Please generate it first.",
     "SUPPRIMER_CETTE_LIGNE": "Delete this line?",
     "VEUILLEZ_REMPLIR_TOUS_LES_CHAMPS_OBLIGATOIRES_CLIENT_PRODUITS_DA": "Please complete all required fields (Customer, Products, Date, Lines, Price, etc.).",
@@ -5118,7 +5559,6 @@
     "AN_ERROR_OCCURRED_WHILE_SCHEDULING_MAINTENANCE": "An error occurred while scheduling maintenance",
     "ERREUR_LORS_DU_CHARGEMENT_DE_LA_RECEPTION": "Error loading receipt.",
     "ERREUR_LORS_DU_CHARGEMENT_DE_LA_CRITERE": "Error loading the criterion.",
-    "INTERNAL_SERVER_ERROR": "Internal server error",
     "IMPOSSIBLE_DE_GENERER_LA_FACTURE": "Unable to generate invoice.",
     "IMPOSSIBLE_DE_GENERER_LA_NOTE_DE_PAIEMENT": "Unable to generate payment note.",
     "VOULEZ_VOUS_VRAIMENT_RETIRER_L_EMPLACEMENT_ACTUEL": "Are you sure you want to remove the current location?",
@@ -5150,7 +5590,6 @@
     "ERROR_GENERATING_UNIFIED_PDF": "Error generating unified PDF: {{value0}}",
     "NOMENCLATURE_ACTIVEE": "Nomenclature {{value0}} activee",
     "EMPLACEMENT_AVEC_SUCCES": "Location {{value0}} successfully",
-    "LIGNE": "Line {{value0}} {{value1}}",
     "PRODUIT_AVEC_SUCCES": "Produced {{value0}} successfully",
     "LISTE_DES_CONTRATS": "List of contracts",
     "INTERNSHIP": "INTERNSHIP",
@@ -5169,7 +5608,7 @@
     "LISTE_DES_POSTES": "List of positions",
     "PDF_NO_QUALITY_DATA": "PDF.NO_QUALITY_DATA",
     "PDF_DATE": "PDF.DATE",
-    "PDF_SUPPLIER": "PDF.SUPPLIER",
+    "PDF_SUPPLIER": "Supplier",
     "PDF_EXPENSE_RECEIPT_NUMBER": "PDF.EXPENSE_RECEIPT_NUMBER",
     "PDF_VEHICLE_REGISTRATION": "PDF.VEHICLE_REGISTRATION",
     "PDF_TRUCK_STATE": "PDF.TRUCK_STATE",
@@ -5185,7 +5624,7 @@
     "DELIVERIES_FIELDS_OLIVE_QUANTITY": "DELIVERIES.FIELDS.OLIVE_QUANTITY",
     "PDF_OIL_QUANTITY": "PDF.OIL_QUANTITY",
     "PDF_YIELD": "PDF.YIELD",
-    "CONTROLE_QUALITE_STORAGE_UNIT_LABEL": "QUALITY_CONTROL.STORAGE_UNIT.LABEL",
+    "CONTROLE_QUALITE_STORAGE_UNIT_LABEL": "Storage unit",
     "PDF_QUALITY_MANAGER": "PDF.QUALITY_MANAGER",
     "PDF_PRODUCTION_MANAGER": "PDF.PRODUCTION_MANAGER",
     "PDF_SIGNATURE": "PDF.SIGNATURE",
@@ -5196,19 +5635,19 @@
     "PDF_LIEU_DU_STOCKAGE": "PDF.LOCATION OF STORAGE",
     "PDF_UNIT_PRICE": "PDF.UNIT_PRICE",
     "PDF_RECEPTION_OLIVE": "PDF.RECEPTION_OLIVE",
-    "PDF_PRODUCER": "PDF.PRODUCER",
-    "PDF_FERME": "PDF.FIRM",
+    "PDF_PRODUCER": "Producer",
+    "PDF_FERME": "Farm",
     "PDF_LOT": "PDF.LOT",
     "PDF_TYPE": "PDF.TYPE",
-    "PDF_PARCEL": "PDF.PARCEL",
+    "PDF_PARCEL": "Parcel",
     "PDF_NCOLIS": "PDF.NCOLIS",
     "PDF_GROSS_WEIGHT": "PDF.GROSS_WEIGHT",
     "DELIVERIES_FIELDS_NET_WEIGHT": "DELIVERIES.FIELDS.NET_WEIGHT",
-    "PDF_TRANSPORTER": "PDF.TRANSPORTER",
+    "PDF_TRANSPORTER": "Transporter",
     "PDF_BASCULE": "PDF.BASCULE",
     "GESTION_DES_CONTENANTS_D_HUILE": "Management of oil containers",
     "PDF_TRANSACTION_OIL": "PDF.TRANSACTION_OIL",
-    "PDF_SOURCE_UNIT": "PDF.SOURCE_UNIT",
+    "PDF_SOURCE_UNIT": "SOURCE UNIT",
     "PDF_DESTINATION_UNIT": "PDF.DESTINATION_UNIT",
     "PDF_TRANSACTION_STATE": "PDF.TRANSACTION_STATE",
     "PDF_CREATED_DATE": "PDF.CREATED_DATE",
@@ -5218,7 +5657,7 @@
     "PDF_RECEPTION_ID": "PDF.RECEPTION_ID",
     "PDF_RECEPTION_SUPPLIER": "PDF.RECEPTION_SUPPLIER",
     "PDF_RECEPTION_REGION": "PDF.RECEPTION_REGION",
-    "PDF_ERROR": "PDF.ERROR",
+    "PDF_ERROR": "PDF error",
     "QUALITYCONTROLRESULTS": "qualityControlResults",
     "GESTION_DES_RESERVOIRS": "Reservoir management",
     "POUR_FILTRAGE": "For filtering",
@@ -5256,13 +5695,14 @@
     "FOURNISSEURS_MAT": "Mat Suppliers.",
     "TRESORERIE_BANQUES": "Treasury & banks",
     "VENTES_CREDITS": "Sales & Credits",
-    "PRODUCTION_QUALITE": "Production & quality",
-    "SECURITE_ACCES": "Security & access"
+    "SECURITE_ACCES": "Security & access",
+    "CHAMP_OBLIGATOIRE": "Required field"
   },
   "DASHBOARD_TITLES": {
     "CERTIFICATIONS": "Certifications Management",
     "ARTICLES": "Articles Management",
     "SUPPLIERS": "Suppliers Management",
+    "MATERIEL_SUPPLIERS": "Material suppliers",
     "LOCATIONS": "Locations Management",
     "PRODUCTS": "Products Management",
     "BOMS": "Bills of Materials Management",
@@ -5353,6 +5793,25 @@
     "FILTRATION_CREATED": "Created",
     "FILTRATION_IN_PROGRESS": "In progress",
     "FILTRATION_COMPLETED": "Completed",
-    "FILTRATION_CANCELLED": "Cancelled"
-  }
+    "FILTRATION_CANCELLED": "Cancelled",
+    "MATERIEL_SUPPLIER": "Material supplier"
+  },
+  "Level 2": {
+    "1": "Level 2.1"
+  },
+  "Menu Level 2": {
+    "2": "Menu Level 2.2",
+    "3": "Menu Level 2.3"
+  },
+  "Menu Level 3": {
+    "1": "Menu Level 3.1",
+    "2": "Menu Level 3.2",
+    "3": "Menu Level 3.3"
+  },
+  "Menu Level 4": {
+    "1": "Menu Level 4.1",
+    "2": "Menu Level 4.2"
+  },
+  "CANCEL": "Cancel",
+  "OIL_FILTRAGE_MANAGEMENT": "Oil filtration management"
 }

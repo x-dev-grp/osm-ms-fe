@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
@@ -31,7 +31,8 @@ import { resolveBillConditions, resolveBillDesignation } from '../../utils/bill-
     MatChipsModule,
     MatProgressSpinnerModule,
     TranslateModule,
-    CardComponent
+    CardComponent,
+    RouterLink
   ],
   styleUrls: ['./transaction-view.component.scss']
 })
@@ -193,8 +194,20 @@ export class TransactionViewComponent implements OnInit {
       this.transaction?.lotNumber ||
       this.transaction?.invoiceReference ||
       this.transaction?.receiptReference ||
-      this.transaction?.externalTransactionId
+      this.transaction?.externalTransactionId ||
+      this.isLinkedOilSale()
     );
+  }
+
+  isLinkedOilSale(): boolean {
+    return this.transaction?.resourceName === 'OILSALE' && !!this.transaction?.externalTransactionId;
+  }
+
+  getOilSaleViewLink(): string[] | null {
+    if (!this.isLinkedOilSale() || !this.transaction?.externalTransactionId) {
+      return null;
+    }
+    return ['/finance/oil-sales', this.transaction.externalTransactionId, 'view'];
   }
 
   hasParties(): boolean {

@@ -16,13 +16,9 @@ import { StorageUnitDto } from '../../shared/models/StorageUnitDto';
 import { StorageUnitDtoService } from '../../shared/services/storage.service';
 import { ExchangeValidationDialogComponent } from './exchange-validation-dialog/exchange-validation-dialog.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { getOilTransactionPdfConfig } from './transaction-pdf.config';
-import { PdfGeneratorService } from '../../shared/services/pdf-generator.service';
+import { DocumentGenerationService } from '../../shared/services/document-generation.service';
 import { OilSaleValidationDialogComponent } from './oil-sale-validation/oil-sale-validation.component';
 import { ToastService } from '../../shared/services/toast.service';
-import { getOilSortiePdfConfig } from './Oil-sortie-pdf-config';
-import { getBonCommandeHuileConfig } from '../../finance/oil-sales/Oil-COMMAND-pdf-config';
-import { OilSaleService } from '../../finance/service/oil-sale.service';
 import { SearchOperation } from '../../shared/models/advanced-search/searchOperation';
 
 @Component({
@@ -49,8 +45,7 @@ export class OilTransactionsComponent implements OnInit {
     private dialog: MatDialog,
     private router: Router,
     private route: ActivatedRoute,
-    private oilsaleService: OilSaleService,
-    private pdfService: PdfGeneratorService
+    private documentGenerationService: DocumentGenerationService
   ) {}
 
   ngOnInit(): void {
@@ -58,13 +53,10 @@ export class OilTransactionsComponent implements OnInit {
     this.loadStorageUnits();
   }
 
-  /**
-   * Génère un PDF pour une transaction d'huile
-   * Les traductions sont maintenant correctement appliquées grâce aux clés PDF.*
-   */
   generateOilTransactionPdf(data: OilTransaction): void {
-    const config = getOilTransactionPdfConfig(data);
-    this.pdfService.generatePdf(config);
+    if (data.id) {
+      this.documentGenerationService.downloadOilTransactionReceiptPdf(data.id);
+    }
   }
 
   handleAction(event: { action: string; row: OilTransaction }): void {
@@ -85,23 +77,10 @@ export class OilTransactionsComponent implements OnInit {
         }
         break;
       case 'GEN_PDF_BON_COMMANDE':
-        if (event.row) {
-          this.oilsaleService.getOilSale(event.row.oilSaleId!).subscribe({
-            next: (response) => {
-              if (response.success && response.data) {
-                const oilsale = Array.isArray(response.data) ? response.data[0] : response.data;
-
-                const config = getBonCommandeHuileConfig(oilsale);
-                this.pdfService.generatePdf(config);
-              } else {
-                this.toast.error('AUTO.OIL_SALE_NOT_FOUND');
-              }
-            },
-            error: (error) => {
-              console.error('Error loading oil sale:', error);
-              this.toast.error('AUTO.ERROR_LOADING_OIL_SALE');
-            }
-          });
+        if (event.row?.oilSaleId) {
+          this.documentGenerationService.downloadOilSaleBonCommandePdf(event.row.oilSaleId);
+        } else {
+          this.toast.error('AUTO.OIL_SALE_NOT_FOUND');
         }
         break;
 
@@ -133,9 +112,10 @@ export class OilTransactionsComponent implements OnInit {
     }
   }
 
-  generateOilSortiePdf(data: OilTransaction) {
-    const config = getOilSortiePdfConfig(data);
-    this.pdfService.generatePdf(config);
+  generateOilSortiePdf(data: OilTransaction): void {
+    if (data.id) {
+      this.documentGenerationService.downloadOilSortiePdf(data.id);
+    }
   }
 
   private openOilSaleValidationDialog(row: OilTransaction): void {

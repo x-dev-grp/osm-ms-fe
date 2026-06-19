@@ -24,7 +24,7 @@ export const OLIVE_DELIVERY_DASHBOARD: DashboardConfig = {
           equalValue: false
         },
         status: {
-          inValues: ['NEW', 'IN_PROGRESS', 'OLIVE_CONTROLLED', 'WAITING', 'WAITING_FOR_PRICING', 'PROD_READY', 'REFUSED']
+          inValues: ['NEW', 'IN_PROGRESS', 'OLIVE_CONTROLLED', 'WAITING', 'WAITING_FOR_PRICING', 'PROD_READY', 'COMPLETED', 'REFUSED']
         },
         deliveryType: {
           equalValue: deliveryType.OLIVE

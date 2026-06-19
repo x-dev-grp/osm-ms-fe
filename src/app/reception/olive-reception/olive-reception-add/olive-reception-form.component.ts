@@ -21,6 +21,7 @@ import {
 import { Observable, Subscription } from 'rxjs';
 import { ActivatedRoute, Data, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { deliveryType } from '../../../shared/models/deleveryType';
 import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
 import { BaseType } from '../../../shared/models/base-type';
 import { SupplierType } from '../../../shared/models/supplier-type';
@@ -108,7 +109,6 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
 
   /** When true, the OPERATION_TYPE select is replaced with read-only display */
   opLocked = false;
-  deliveries: UnifiedDelivery[] = [];
   // Autocomplete filtered options
   filteredRegions!: Observable<BaseType[]>;
   filteredSuppliers$!: Observable<SupplierType[]>;
@@ -239,20 +239,16 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     });
     this.subscriptions.push(supplierSub);
 
-    // --- load existing deliveries (for numbering when creating) ---
-    this.pendingCalls++;
-    const deliveriesSub = this.deliveryService.getAllDeliveriesList().subscribe({
-      next: (res) => {
-        this.deliveries = res?.success ? (res.data ?? []) : [];
-        if (!this.isEditing) {
-          const nextNumber = this.nextFreeNumber(this.deliveries.map((d) => d.deliveryNumber));
-          this.receptionForm.patchValue({ deliveryNumber: nextNumber, lotNumber: nextNumber }, { emitEvent: false });
-        }
-      },
-      error: () => this.showToast(this.translate.instant('DELIVERIES.FORM.MESSAGES.LOAD_ERROR'), 'error'),
-      complete: () => this.markCallDone()
-    });
-    this.subscriptions.push(deliveriesSub);
+    // --- next delivery/lot numbers (create mode) ---
+    if (!this.isEditing) {
+      this.pendingCalls++;
+      const numbersSub = this.deliveryService.getNextDeliveryNumbers(deliveryType.OLIVE).subscribe({
+        next: (res) => this.applyNextNumbers(res),
+        error: () => this.showToast(this.translate.instant('DELIVERIES.FORM.MESSAGES.LOAD_ERROR'), 'error'),
+        complete: () => this.markCallDone()
+      });
+      this.subscriptions.push(numbersSub);
+    }
 
     // party label by operationType (watch form control)
     this.updatePartyLabel(this.receptionForm.get('operationType')?.value as OperationType);
@@ -491,11 +487,23 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
   }
 
 
-  private nextFreeNumber(nums: Array<number | string>): number {
-    const used = new Set(nums.map((n) => Number(n)).filter((n) => Number.isInteger(n) && n > 0));
-    let i = 1;
-    while (used.has(i)) i++;
-    return i;
+  private applyNextNumbers(res: { success?: boolean; data?: { deliveryNumber: string; lotNumber: string } }): void {
+    if (res?.success && res.data) {
+      this.receptionForm.patchValue(
+        {
+          deliveryNumber: res.data.deliveryNumber,
+          lotNumber: res.data.lotNumber
+        },
+        { emitEvent: false }
+      );
+    }
+  }
+
+  private refreshNextNumbers(oliveType?: Olive_Oil_Type | null): void {
+    this.deliveryService.getNextDeliveryNumbers(deliveryType.OLIVE, oliveType ?? undefined).subscribe({
+      next: (res) => this.applyNextNumbers(res),
+      error: () => this.showToast(this.translate.instant('DELIVERIES.FORM.MESSAGES.LOAD_ERROR'), 'error')
+    });
   }
 
   // Validator that enforces: control must contain a SupplierType object (not a string)
@@ -556,12 +564,6 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Calculate maximum lot number from deliveries
-  private getMaxLotNumber(): number {
-    const lotNumbers = this.deliveries.map((d) => parseInt(d.lotNumber?.replace(/^\D+/, '') ?? '0', 10)).filter((n) => !isNaN(n));
-    return lotNumbers.length ? Math.max(...lotNumbers) : 0;
-  }
-
   private _getNestedValue<T extends Record<string, unknown>>(obj: T, path: string): string {
     return path.split('.').reduce((acc, part) => {
       if (acc && typeof acc === 'object') {
@@ -618,9 +620,9 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
   private setupFormSubscriptions(): void {
     this.subscriptions.push(
       this.receptionForm.get('oliveType')!.valueChanges.subscribe((oliveType: Olive_Oil_Type | null) => {
-        const deliveryNumber = this.receptionForm.get('deliveryNumber')?.value || this.deliveries.length + 1;
-        const lotNumber = this.generateLotNumber(oliveType, deliveryNumber);
-        this.receptionForm.patchValue({ lotNumber }, { emitEvent: false });
+        if (!this.isEditing) {
+          this.refreshNextNumbers(oliveType);
+        }
       })
     );
 
@@ -695,13 +697,5 @@ export class OliveReceptionFormComponent implements OnInit, OnDestroy {
       const fieldValue = this._getNestedValue(item as any, displayField);
       return fieldValue?.toLowerCase().includes(filterValue);
     });
-  }
-
-  // Generate lot number based on olive type and delivery number
-  private generateLotNumber(oliveType: Olive_Oil_Type | null, deliveryNumber: number): string {
-    if (!oliveType) return '';
-    const year = new Date().getFullYear().toString().slice(-2);
-    const paddedNumber = deliveryNumber.toString().padStart(4, '0');
-    return `${paddedNumber}${oliveType}${year}`;
   }
 }

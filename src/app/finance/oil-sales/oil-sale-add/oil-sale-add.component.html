@@ -230,7 +230,51 @@
               </mat-form-field>
             </div>
 
-            <!-- Row 4: Slide Toggle -->
+            <!-- Row 4: Currency + Payment Method -->
+            <div class="form-row two-cols">
+              <mat-form-field appearance="outline" class="half-width" id="oilSaleForm-field-currency">
+                <mat-label>{{ 'OIL_SALES.FIELDS.CURRENCY' | translate }}</mat-label>
+                <mat-select formControlName="currency" id="oilSaleForm-currency">
+                  <mat-option value="TND">{{ 'OIL_SALES.CURRENCIES.TND' | translate }}</mat-option>
+                  <mat-option value="EUR">{{ 'OIL_SALES.CURRENCIES.EUR' | translate }}</mat-option>
+                  <mat-option value="USD">{{ 'OIL_SALES.CURRENCIES.USD' | translate }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="half-width" id="oilSaleForm-field-paymentMethod">
+                <mat-label>{{ 'OIL_SALES.FIELDS.PAYMENT_METHOD' | translate }}</mat-label>
+                <mat-select formControlName="paymentMethod" id="oilSaleForm-paymentMethod">
+                  <mat-option value="CASH">{{ 'OIL_SALES.PAYMENT_METHODS.CASH' | translate }}</mat-option>
+                  <mat-option value="CHEQUE">{{ 'OIL_SALES.PAYMENT_METHODS.CHEQUE' | translate }}</mat-option>
+                  <mat-option value="TRANSFER">{{ 'OIL_SALES.PAYMENT_METHODS.TRANSFER' | translate }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <!-- Row 6: Slide Toggle -->
+            <div class="form-row" *ngIf="getSelectedSupplier()">
+              <div class="full-width address-section">
+                <mat-slide-toggle
+                  *ngIf="getSelectedSupplier()?.address"
+                  formControlName="useClientAddress"
+                  id="oilSaleForm-useClientAddress">
+                  {{ 'OIL_SALES.DELIVERY.USE_CLIENT_ADDRESS' | translate }}
+                </mat-slide-toggle>
+
+                <mat-form-field appearance="outline" class="full-width" id="oilSaleForm-field-deliveryAddress">
+                  <mat-label>{{ 'OIL_SALES.FIELDS.DELIVERY_ADDRESS' | translate }}</mat-label>
+                  <textarea formControlName="deliveryAddress" id="oilSaleForm-deliveryAddress" matInput rows="2"></textarea>
+                  <mat-hint *ngIf="oilSaleForm.get('useClientAddress')?.value && getSelectedSupplier()?.address">
+                    {{ 'OIL_SALES.DELIVERY.CLIENT_ADDRESS_HINT' | translate }}
+                  </mat-hint>
+                  <mat-hint *ngIf="!oilSaleForm.get('useClientAddress')?.value || !getSelectedSupplier()?.address">
+                    {{ 'OIL_SALES.DELIVERY.CUSTOM_ADDRESS_HINT' | translate }}
+                  </mat-hint>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <!-- Row 6: Slide Toggle -->
             <div class="form-row">
               <mat-slide-toggle
                 formControlName="showContainers"
@@ -368,7 +412,7 @@
           <!-- Unit Price -->
           <div class="summary-row" id="oilSaleForm-summary-unitPrice">
             <span>{{ 'OIL_SALES.UNIT_PRICE' | translate }}:</span>
-            <span>{{ oilSaleForm.get('unitPrice')?.value | number:'1.2-2' }} TND /L</span>
+            <span>{{ oilSaleForm.get('unitPrice')?.value | number:'1.2-2' }} {{ oilSaleForm.get('currency')?.value || 'TND' }} /L</span>
           </div>
 
           <!-- Total Capacity (Containers) -->
@@ -402,7 +446,7 @@
           <div class="summary-row total" id="oilSaleForm-summary-totalOilAmount">
             <span>{{ 'OIL_SALES.TOTAL_OILAMOUNT' | translate }}:</span>
             <span class="total-amount">
-              {{ getTotalOilAmount() | number:'1.2-2' }} TND
+              {{ getTotalOilAmount() | number:'1.2-2' }} {{ oilSaleForm.get('currency')?.value || 'TND' }}
             </span>
           </div>
 
@@ -410,7 +454,7 @@
           <div class="summary-row totalFinal" id="oilSaleForm-summary-totalAmount">
             <span>{{ 'OIL_SALES.TOTAL_AMOUNT' | translate }}:</span>
             <span class="total-amount">
-              {{ getTotalAmount() | number:'1.2-2' }} TND
+              {{ getTotalAmount() | number:'1.2-2' }} {{ oilSaleForm.get('currency')?.value || 'TND' }}
             </span>
           </div>
 

@@ -1,8 +1,8 @@
-# OSM — Récapitulatif : stock, nomenclature, traçabilité et améliorations de l'interface utilisateur/UX
+# OSM — Récapitulatif : stock, nomenclature, traçabilité et améliorations de l'interface utilisateur/UX
 
-**Date :** mai 2026  
-**Dépôts :** `osm-ms-fe` (Angulaire), `osmproject` (`osm-pack`, `osm-cond`)  
-**Portée :** Commande de traçabilité de bout en bout, règles métier d'inventaire/nomenclature, intégration de conditionnement (projets/OF), UX frontend et tests opérationnels.
+**Date :** mai 2026  
+**Dépôts :** `osm-ms-fe` (Angulaire), `osmproject` (`osm-pack`, `osm-cond`)  
+**Portée :** Commande de traçabilité de bout en bout, règles métier d'inventaire/nomenclature, intégration de conditionnement (projets/OF), UX frontend et tests opérationnels.
 
 ---
 
@@ -41,14 +41,14 @@ Ce travail repose sur trois piliers :
 
 ### Problème
 
-Le calendrier de traçabilité peut apparaître **le plus récent en premier** ou placer les nœuds de contrôle qualité/d'admission de manière incorrecte pour les raisons suivantes :
+Le calendrier de traçabilité peut apparaître **le plus récent en premier** ou placer les nœuds de contrôle qualité/d'admission de manière incorrecte pour les raisons suivantes :
 
 - Un tri global sur `displayOrderRank`
 - `Collections.reverse()` appliqué après la construction de l'arbre
 
 ### Solution (`TraceabilityEventTreeBuilder.java`)
 
-L'ordre de construction est désormais **explicite et chronologique** :
+L'ordre de construction est désormais **explicite et chronologique** :
 
 1. Chaîne d'admission amont (`sourceIntakeChain` de la filtration la plus ancienne)
 2. Événements racine (dédupliqués)
@@ -96,7 +96,7 @@ Comprendre est utile lors du test des flux de nomenclature, de projets et d'OF.
 
 - Client simulé `clientInventaire` appelle les API d'inventaire.
 - **Projets** réserve de stock lors de la sauvegarde (lot atomique avec restauration en cas de panne partielle).
-- **OF** créer/démarrer/fermer consommer ou vérifier le stock ; La nomenclature active peut être automatiquement sélectionnée lors de la création.
+- **OF** créer/démarrer/fermer consommer ou vérifier le stock ; La nomenclature active peut être automatiquement sélectionnée lors de la création.
 
 ---
 
@@ -111,8 +111,8 @@ Comprendre est utile lors du test des flux de nomenclature, de projets et d'OF.
 
 | Fonctionnalité | Descriptif |
 |---------|-------------|
-| **`active` drapeau** | Une nomenclature active par produit fini ; l'activation désactive les frères et sœurs (`saveAll`). |
-| **Validation** | Produit requis ; au moins une ligne ; pas d'articles en double ; articles actifs uniquement ; aucun produit VRAC comme en-tête de nomenclature. |
+| **`active` drapeau** | Une nomenclature active par produit fini ; l'activation désactive les frères et sœurs (`saveAll`). |
+| **Validation** | Produit requis ; au moins une ligne ; pas d'articles en double ; articles actifs uniquement ; aucun produit VRAC comme en-tête de nomenclature. |
 | **`activateBom`** | `PUT /api/inventaire/boms/{id}/activate` |
 | **`getActiveBomForProduct`** | `GET .../product/{productId}/active` (404 si aucun) |
 | **`material-needs`** | `GET .../boms/{id}/material-needs?quantity=` — besoin par ligne par rapport au stock disponible |
@@ -159,7 +159,7 @@ osm-pack/src/main/java/com/osm/inventory_service/
 
 ### Projet (`ProjetService`)
 
-- **Réservations atomiques :** toutes les réservations d'articles tentées ; en cas d'échec, **rollback** confirme les réservations et fait apparaître une erreur claire.
+- **Réservations atomiques :** toutes les réservations d'articles tentées ; en cas d'échec, **rollback** confirme les réservations et fait apparaître une erreur claire.
 - Message de blocage lorsque les réservations sont insuffisantes sur les transitions de statut.
 
 ### DE (`OFService`)
@@ -205,7 +205,7 @@ Appliquez-le dans tous les environnements avant de vous fier à une nomenclature
 
 | Composant | Chemin | Rôle |
 |-----------|------|------|
-| **`MaterialNeedsPreviewComponent`** | `src/app/shared/components/material-needs-preview/` | Appels `GET .../boms/{id}/material-needs`; affiche OK / manque par ligne ; prend en charge `useReservedStock` for projet mode |
+| **`MaterialNeedsPreviewComponent`** | `src/app/shared/components/material-needs-preview/` | Appels `GET .../boms/{id}/material-needs`; affiche OK / manque par ligne ; prend en charge `useReservedStock` for projet mode |
 
 ### Services
 
@@ -216,19 +216,19 @@ Appliquez-le dans tous les environnements avant de vous fier à une nomenclature
 
 ### Stock — Articles
 
-- **Liste :** colonnes En stock / Disponible / Réservé du résumé API ; lignes d'alerte inférieures au minimum ; bannière d'informations avec nombre d'alertes.
-- **Détail :** Grille KPI (stock / réservé / disponible) ; indice en cas de réservation ; état vide lorsqu'il n'y a pas d'enregistrement de stock.
+- **Liste :** colonnes En stock / Disponible / Réservé du résumé API ; lignes d'alerte inférieures au minimum ; bannière d'informations avec nombre d'alertes.
+- **Détail :** Grille KPI (stock / réservé / disponible) ; indice en cas de réservation ; état vide lorsqu'il n'y a pas d'enregistrement de stock.
 
 ### Stock — Nomenclature
 
-- **Liste :** filtre actif/inactif, bannière d'informations, clic sur la ligne → détail, activation à partir de la liste, pilules d'état.
-- **Formulaire :** validation + toasts ; **bascule active en mode édition** ; aperçu du matériau lors de l'édition ; fil d'Ariane; pied de page collant.
-- **Détail :** bouton d'activation ; simulateur de quantité + aperçu des besoins en matériel.
+- **Liste :** filtre actif/inactif, bannière d'informations, clic sur la ligne → détail, activation à partir de la liste, pilules d'état.
+- **Formulaire :** validation + toasts ; **bascule active en mode édition** ; aperçu du matériau lors de l'édition ; fil d'Ariane; pied de page collant.
+- **Détail :** bouton d'activation ; simulateur de quantité + aperçu des besoins en matériel.
 
 ### Projet & DE
 
 - **Formulaire projet :** aperçu du matériel avant réservation (`useReservedStock: true`).
-- **Formulaire OF :** aperçu lorsque la nomenclature + la quantité cible sont définies ; `useReservedStock` lorsqu'il est lié à un projet.
+- **Formulaire OF :** aperçu lorsque la nomenclature + la quantité cible sont définies ; `useReservedStock` lorsqu'il est lié à un projet.
 
 ### Modèles
 
@@ -243,8 +243,8 @@ Appliquez-le dans tous les environnements avant de vous fier à une nomenclature
 
 **Déposer:** `src/app/stock/styles/_inventory-ui.scss`
 
-- Jetons de conception : `$inv-primary`, `$inv-success`, `$inv-danger`, bordures, rayons, ombres.
-- Mixins : `inv-card`, `inv-pill`, `inv-page-shell`.
+- Jetons de conception : `$inv-primary`, `$inv-success`, `$inv-danger`, bordures, rayons, ombres.
+- Mixins : `inv-card`, `inv-pill`, `inv-page-shell`.
 
 ### Écrans mis à jour
 
@@ -258,26 +258,26 @@ Appliquez-le dans tous les environnements avant de vous fier à une nomenclature
 | **Le matériel a besoin d'un aperçu** | Badges d'en-tête (suffisants/insuffisants), conseils de mode (disponible vs réservé), nombre de pénuries dans le tableau |
 | **Formulaires Projet / OF** | `material-preview-block` style séparateur |
 
-Construction vérifiée : `ng build --configuration=development` réussit.
+Construction vérifiée : `ng build --configuration=development` réussit.
 
 ---
 
 ## 9. Corrections de bugs (modification de nomenclature / actif)
 
-Problèmes signalés et correctifs :
+Problèmes signalés et correctifs :
 
 | Problème | Parce que | Corriger |
 |-------|-------|-----|
 | Impossible de marquer la nomenclature active lors de l'édition | Case à cocher active uniquement lors de la création (`*ngIf="!isEditMode"`) | Bascule active affichée en mode édition |
 | Impossible de supprimer les lignes de nomenclature | Supprimer le bouton à l'extérieur `*ngFor` | Bouton à l'intérieur de chaque ligne |
 | Liste déroulante d'articles vide lors de la modification | Uniquement les articles actifs chargés | `getAllArticles` + `ensureArticleInList` pour lignes existantes |
-| L'activation d'une nomenclature a laissé les autres actives dans la base de données | `updateBom` n'a pas `saveAll` frères et sœurs | Back-end `saveAll` lors de l'activation ; FE envoie `version` + `active` |
+| L'activation d'une nomenclature a laissé les autres actives dans la base de données | `updateBom` n'a pas `saveAll` frères et sœurs | Back-end `saveAll` lors de l'activation ; FE envoie `version` + `active` |
 
 ---
 
 ## 10. Référence API (nouveau / important)
 
-URL de l'inventaire de base (via la passerelle) : `{apiUrl}/api/inventaire`
+URL de l'inventaire de base (via la passerelle) : `{apiUrl}/api/inventaire`
 
 ### Nomenclature
 
@@ -300,7 +300,7 @@ URL de l'inventaire de base (via la passerelle) : `{apiUrl}/api/inventaire`
 
 ### Forme d'erreur (inventaire)
 
-Corps d’erreur métier typique :
+Corps d’erreur métier typique :
 
 ```json
 {
@@ -314,13 +314,13 @@ Corps d’erreur métier typique :
 
 ## 11. Ordre de déploiement et de vérification
 
-1. **Base de données** – Exécuter `V20260523__stock_bom_enhancements.sql` (ou équivalent) sur la base de données d'inventaire.
+1. **Base de données** – Exécuter `V20260523__stock_bom_enhancements.sql` (ou équivalent) sur la base de données d'inventaire.
 2. **Redémarrage `osm-pack`** — service d'inventaire avec une nouvelle logique BOM/stock.
 3. **Redémarrage `osm-cond`** — conditionnement avec Feign + modifications projet/OF/traçabilité.
 4. ** Reconstruire et déployer `osm-ms-fe`** — Application angulaire avec de nouveaux composants et itinéraires inchangés.
 5. **Test de fumée** — Activation de la nomenclature, besoins matériels, récapitulatif de la liste d'articles, sauvegarde du projet avec réservation, démarrage OF.
 
-**Remarque :** La cible de la compilation back-end est **Java 21**.
+**Remarque :** La cible de la compilation back-end est **Java 21**.
 
 ---
 
@@ -336,9 +336,9 @@ Corps d’erreur métier typique :
 
 - [ ] Créer une nomenclature avec des lignes → enregistrer → apparaît dans la liste.
 - [ ] Activer depuis la liste ou le détail → un seul actif par produit.
-- [ ] Modifier la nomenclature : modifier les lignes, activer, enregistrer.
+- [ ] Modifier la nomenclature : modifier les lignes, activer, enregistrer.
 - [ ] Essayez de supprimer la nomenclature active → toast d'erreur.
-- [ ] `material-needs` sur le détail : modifier la quantité → mises à jour du tableau ; lignes de pénurie mises en évidence.
+- [ ] `material-needs` sur le détail : modifier la quantité → mises à jour du tableau ; lignes de pénurie mises en évidence.
 
 ### Articles et stocks
 
@@ -350,7 +350,7 @@ Corps d’erreur métier typique :
 ### Projet
 
 - [ ] Create projet with products → BOM summary + material preview (réservé mode).
-- [ ] Enregistrer → réservations en inventaire ; une défaillance partielle est annulée (tester avec un stock insuffisant si possible).
+- [ ] Enregistrer → réservations en inventaire ; une défaillance partielle est annulée (tester avec un stock insuffisant si possible).
 
 ### DE
 
@@ -397,10 +397,10 @@ Corps d’erreur métier typique :
 | Article | Remarques |
 |------|-------|
 | **Aucun aperçu côté client pour la nomenclature non enregistrée** | L'API des besoins matériels nécessite une persistance `bomId`; la nouvelle nomenclature doit d'abord être enregistrée. |
-| **Activer depuis la liste** | Fonctionne via API ; UX en option : bascule en ligne sans navigation. |
+| **Activer depuis la liste** | Fonctionne via API ; UX en option : bascule en ligne sans navigation. |
 | **Mappage global des exceptions** | Quelques `RuntimeException`Les s en inventaire peuvent toujours correspondre à 400 – intentionnel pour les toasts FE mais peuvent masquer des bugs inattendus. |
 | **Autres écrans de stock** | Emplacements, liste de mouvements — pas encore alignés sur `_inventory-ui.scss` (suivi facultatif). |
-| **Feignez 404 sur la nomenclature active** | Attendu lorsqu'aucune nomenclature n'est active ; DE créer des poignées avec grâce. |
+| **Feignez 404 sur la nomenclature active** | Attendu lorsqu'aucune nomenclature n'est active ; DE créer des poignées avec grâce. |
 
 ---
 

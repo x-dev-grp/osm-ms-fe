@@ -5,9 +5,9 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService } from '../../../services/article.service';
-import { FournisseurService } from '../../../services/fournisseur.service';
+import { MaterielSupplierService } from '../../../services/materiel-supplier.service';
 import { Article, CategorieArticle, UniteMesure, UniteMesureOption, ArticleConfig, categorieLabels } from '../../../models/article.model';
-import { Fournisseur } from '../../../models/fournisseur.model';
+import { MaterielSupplier } from '../../../models/materiel-supplier.model';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -24,7 +24,7 @@ export class ArticleFormComponent implements OnInit {
   allUnitesMesure: UniteMesureOption[] = this.getFallbackUnitesMesure();
   unitesMesure: UniteMesureOption[] = [...this.allUnitesMesure];
   categorieLabels = categorieLabels;
-  fournisseurs: Fournisseur[] = [];
+  materielSuppliers: MaterielSupplier[] = [];
   uniteArticles: Article[] = [];
   loadingUnites = false;
   loadingUnitesMesure = false;
@@ -57,13 +57,13 @@ export class ArticleFormComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private articleService: ArticleService,
-    private fournisseurService: FournisseurService,
+    private materielSupplierService: MaterielSupplierService,
   ) {
     this.articleForm = this.fb.group({
       nom: ['', Validators.required],
       categorie: ['', Validators.required],
       um: ['', Validators.required],
-      fournisseur: [''],
+      materielSupplier: [''],
       stockMinimum: [0, [Validators.min(0)]],
       stockMaximum: [0, [Validators.min(0)]],
       actif: [true],
@@ -109,7 +109,7 @@ export class ArticleFormComponent implements OnInit {
   ngOnInit(): void {
     this.articleId = this.route.snapshot.params['id'];
     this.isEditMode = !!this.articleId;
-    this.loadFournisseurs();
+    this.loadMaterielSuppliers();
     this.loadUnitesMesure();
     if (this.isEditMode) {
       this.loadArticle();
@@ -129,12 +129,12 @@ export class ArticleFormComponent implements OnInit {
     this.setupAutoCalculations();
   }
 
-  loadFournisseurs(): void {
-    this.fournisseurService.getActiveFournisseurs().subscribe({
+  loadMaterielSuppliers(): void {
+    this.materielSupplierService.getActive().subscribe({
       next: (data) => {
-        this.fournisseurs = data;
+        this.materielSuppliers = data;
       },
-      error: (error) => console.error('Erreur chargement fournisseurs:', error)
+      error: (error) => console.error('Erreur chargement fournisseurs materiel:', error)
     });
   }
 
@@ -316,7 +316,7 @@ export class ArticleFormComponent implements OnInit {
       nom: this.normalizeEmptySelectValue(this.articleForm.get('nom')?.value),
       categorie: this.normalizeEmptySelectValue(categorie),
       um: this.normalizeEmptySelectValue(this.articleForm.get('um')?.value),
-      fournisseur: this.normalizeEmptySelectValue(this.articleForm.get('fournisseur')?.value),
+      materielSupplier: this.normalizeEmptySelectValue(this.articleForm.get('materielSupplier')?.value),
       stockMinimum: this.normalizeNumberValue(this.articleForm.get('stockMinimum')?.value),
       stockMaximum: this.normalizeNumberValue(this.articleForm.get('stockMaximum')?.value)
     };
@@ -368,7 +368,7 @@ export class ArticleFormComponent implements OnInit {
           nom: article.nom,
           categorie: article.categorie,
           um: article.um,
-          fournisseur: article.fournisseur?.id ?? '',
+          materielSupplier: article.materielSupplier?.id ?? '',
           stockMinimum: article.stockMinimum,
           stockMaximum: article.stockMaximum,
           actif: article.actif
@@ -522,8 +522,8 @@ export class ArticleFormComponent implements OnInit {
 
     this.submitting = true;
     const formValue = this.articleForm.value;
-    const selectedFournisseur = formValue.fournisseur
-      ? this.fournisseurs.find(f => f.id === formValue.fournisseur)
+    const selectedMaterielSupplier = formValue.materielSupplier
+      ? this.materielSuppliers.find(f => f.id === formValue.materielSupplier)
       : undefined;
 
     const articleData: any = {
@@ -533,7 +533,7 @@ export class ArticleFormComponent implements OnInit {
       stockMinimum: formValue.stockMinimum,
       stockMaximum: formValue.stockMaximum,
       actif: formValue.actif,
-      fournisseur: selectedFournisseur,
+      materielSupplier: selectedMaterielSupplier,
       configuration: this.buildConfiguration()
     };
 

@@ -1,13 +1,19 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApiResponse } from '../models/api-response';
+import { ApiResponse, ApiSingleResponse } from '../models/api-response';
 import { UnifiedDelivery } from '../models/UnifiedDelivery';
 import { environment } from '../../../environments/environment';
 import { OliveLotStatus } from '../models/OliveLotStatus';
 import { ExchangePricingDto } from '../models/ExchangePricingDto';
 import { deliveryType } from '../models/deleveryType';
+import { Olive_Oil_Type } from '../models/olive-type.enum';
 import { QrCodeInfo, QrResolveResponse } from '../models/qr-models';
+
+export interface NextDeliveryNumbers {
+  deliveryNumber: string;
+  lotNumber: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +31,21 @@ export class UnifiedDeliveryService {
 
   getAllDeliveriesListForPlanning(): Observable<ApiResponse<UnifiedDelivery>> {
     return this.http.get<ApiResponse<UnifiedDelivery>>(`${this.baseUrl}/planning`);
+  }
+
+  getNextDeliveryNumbers(
+    deliveryType: deliveryType,
+    oliveType?: Olive_Oil_Type,
+    oilType?: Olive_Oil_Type
+  ): Observable<ApiSingleResponse<NextDeliveryNumbers>> {
+    let params = new HttpParams().set('deliveryType', deliveryType);
+    if (oliveType) {
+      params = params.set('oliveType', oliveType);
+    }
+    if (oilType) {
+      params = params.set('oilType', oilType);
+    }
+    return this.http.get<ApiSingleResponse<NextDeliveryNumbers>>(`${this.baseUrl}/next-numbers`, { params });
   }
 
   // Retrieve a single UnifiedDeliverycc by ID.

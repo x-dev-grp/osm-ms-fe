@@ -1,10 +1,9 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ToastService } from '../../shared/services/toast.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,7 +14,7 @@ import { MatListModule } from '@angular/material/list';
 import { SharedModule } from '../../shared/shared.module';
 import { CompanyProfileService } from '../../shared/services/company-profile.service';
 import { CompanyProfile } from '../../shared/models/CompanyProfile';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { CompanyProfileComponent } from '../company/company-profile.component';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ParameterComponent } from '../parameter/parameter.component';
@@ -34,7 +33,6 @@ import { switchMap } from 'rxjs/operators';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
     MatIconModule,
@@ -65,21 +63,6 @@ export class GeneralConfigComponent implements OnInit {
   hrConfigFormEnabled = false;
   otherConfigFormEnabled = false;
 
-  readonly months = [
-    { value: 1, label: 'Janvier' },
-    { value: 2, label: 'Fevrier' },
-    { value: 3, label: 'Mars' },
-    { value: 4, label: 'Avril' },
-    { value: 5, label: 'Mai' },
-    { value: 6, label: 'Juin' },
-    { value: 7, label: 'Juillet' },
-    { value: 8, label: 'Aout' },
-    { value: 9, label: 'Septembre' },
-    { value: 10, label: 'Octobre' },
-    { value: 11, label: 'Novembre' },
-    { value: 12, label: 'Decembre' }
-  ];
-
   constructor(
     private fb: FormBuilder,
     private toast: ToastService,
@@ -90,10 +73,9 @@ export class GeneralConfigComponent implements OnInit {
 
   ngOnInit(): void {
     this.productionConfigForm = this.fb.group({
-      campaignStartMonth: [9, Validators.required],
-      campaignStartDay: [1, [Validators.required, Validators.min(1), Validators.max(31)]],
-      campaignEndMonth: [4, Validators.required],
-      campaignEndDay: [30, [Validators.required, Validators.min(1), Validators.max(31)]]
+      campaignStartDate: [null, Validators.required],
+      campaignStartTime: ['00:00', Validators.required],
+      campaignEndAt: [null as string | null]
     });
     this.financeConfigForm = this.fb.group({
       millingPricePerKg: [0, [Validators.required, Validators.min(0)]]
@@ -117,20 +99,25 @@ export class GeneralConfigComponent implements OnInit {
       return;
     }
 
+    const rawValue = this.productionConfigForm.getRawValue();
+    const campaignStartAt = this.campaignService.combineDateTime(rawValue.campaignStartDate, rawValue.campaignStartTime);
+    const monthDayFields = this.campaignService.extractMonthDayFields(
+      campaignStartAt,
+      rawValue.campaignEndAt,
+      currentProfile
+    );
+
     const payload: CompanyProfile = {
       ...currentProfile,
-      ...this.productionConfigForm.getRawValue()
+      campaignStartAt,
+      campaignEndAt: rawValue.campaignEndAt ?? undefined,
+      ...monthDayFields
     };
 
     this.companyProfileService.saveProfile(payload).subscribe({
       next: (savedProfile) => {
         this.companyProfile = savedProfile;
-        this.productionConfigForm.patchValue({
-          campaignStartMonth: savedProfile.campaignStartMonth ?? 9,
-          campaignStartDay: savedProfile.campaignStartDay ?? 1,
-          campaignEndMonth: savedProfile.campaignEndMonth ?? 4,
-          campaignEndDay: savedProfile.campaignEndDay ?? 30
-        });
+        this.patchProductionConfig(savedProfile);
         this.productionConfigForm.disable();
         this.productionConfigFormEnabled = false;
         this.toast.success('AUTO.CONFIGURATION_DE_CAMPAGNE_ENREGISTREE_AVEC_SUCCES');
@@ -232,7 +219,22 @@ export class GeneralConfigComponent implements OnInit {
   }
 
   get campaignPreview(): string {
-    return this.campaignService.getCampaignPreview(new Date(), this.productionConfigForm.getRawValue());
+    return this.campaignService.getCampaignPreview(new Date(), this.buildCampaignProfileFromForm());
+  }
+
+  get campaignEndDisplay(): string | null {
+    const endAt = this.productionConfigForm.getRawValue().campaignEndAt as string | null;
+    return endAt ? this.campaignService.formatDateTime(endAt) : null;
+  }
+
+  markCampaignEndDate(): void {
+    if (!this.productionConfigFormEnabled) {
+      return;
+    }
+
+    this.productionConfigForm.patchValue({
+      campaignEndAt: new Date().toISOString()
+    });
   }
 
   private loadProductionConfig(): void {
@@ -256,12 +258,21 @@ export class GeneralConfigComponent implements OnInit {
   }
 
   private patchProductionConfig(profile: CompanyProfile | null): void {
+    const { date, time } = this.campaignService.splitDateTime(profile?.campaignStartAt);
     this.productionConfigForm.patchValue({
-      campaignStartMonth: profile?.campaignStartMonth ?? 9,
-      campaignStartDay: profile?.campaignStartDay ?? 1,
-      campaignEndMonth: profile?.campaignEndMonth ?? 4,
-      campaignEndDay: profile?.campaignEndDay ?? 30
+      campaignStartDate: date ?? this.campaignService.resolveStartDate(profile),
+      campaignStartTime: date ? time : '00:00',
+      campaignEndAt: profile?.campaignEndAt ?? null
     }, { emitEvent: false });
+  }
+
+  private buildCampaignProfileFromForm(): CompanyProfile {
+    const rawValue = this.productionConfigForm.getRawValue();
+    return {
+      ...(this.companyProfile ?? {}),
+      campaignStartAt: this.campaignService.combineDateTime(rawValue.campaignStartDate, rawValue.campaignStartTime),
+      campaignEndAt: rawValue.campaignEndAt ?? undefined
+    } as CompanyProfile;
   }
 
   private loadFinanceConfig(): void {

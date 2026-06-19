@@ -223,6 +223,11 @@ export const receptionRoutes: Routes = [
 
   // RECEPTION LIST (READ)
   {
+    path: 'reception-list',
+    component: ReceptionListComponent,
+    canActivate: [allPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)])]
+  },
+  {
     path: 'reception-list/:deliveryType',
     component: ReceptionListComponent,
     canActivate: [allPermissionGuard([permissionKey(OSMModule.RECEPTION, ReceptionEntity.UNIFIEDDELIVERY, Action.READ)])]

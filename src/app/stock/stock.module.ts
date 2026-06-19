@@ -12,9 +12,9 @@ import { BcListComponent } from './components/bon-commande/bc-list/bc-list.compo
 import { BcFormComponent } from './components/bon-commande/bc-form/bc-form.component';
 import { BcDetailComponent } from './components/bon-commande/bc-detail/bc-detail.component';
 import { MouvementListComponent } from './components/mouvement/mouvement-list/mouvement-list.component';
-import { FournisseurListComponent } from "./components/fournisseurs/fournisseur-list/fournisseur-list.component";
-import { FournisseurFormComponent } from "./components/fournisseurs/fournisseur-form/fournisseur-form.component";
-import { FournisseurDetailComponent } from "./components/fournisseurs/fournisseur-detail/fournisseur-detail.component";
+import { MaterielSupplierListComponent } from "./components/materiel-suppliers/materiel-supplier-list/materiel-supplier-list.component";
+import { MaterielSupplierFormComponent } from "./components/materiel-suppliers/materiel-supplier-form/materiel-supplier-form.component";
+import { MaterielSupplierDetailComponent } from "./components/materiel-suppliers/materiel-supplier-detail/materiel-supplier-detail.component";
 import { SkuListComponent } from "./components/sku/sku-list/sku-list.component";
 import { SkuFormComponent } from "./components/sku/sku-form/sku-form.component";
 import { SkuDetailComponent } from "./components/sku/sku-detail/sku-detail.component";
@@ -52,9 +52,9 @@ import { StockDashboardComponent } from './components/dashboard/stock-dashboard/
     BcFormComponent,
     BcDetailComponent,
     MouvementListComponent,
-    FournisseurListComponent,
-    FournisseurFormComponent,
-    FournisseurDetailComponent,
+    MaterielSupplierListComponent,
+    MaterielSupplierFormComponent,
+    MaterielSupplierDetailComponent,
     SkuListComponent,
     SkuFormComponent,
     SkuDetailComponent,

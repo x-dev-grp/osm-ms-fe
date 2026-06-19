@@ -1,5 +1,7 @@
 # OSM Management System - Frontend Documentation
 
+> **Central docs:** Architecture, getting started, and domain guides live in [`../docs/`](../docs/README.md). This file is a module-level reference; some sections (e.g. Angular version) may lag behind `docs/frontend/structure.md`.
+
 ## Overview
 This is an Angular-based frontend application for an Olive Oil Mill Management System (OSM). The application provides comprehensive management capabilities for olive oil production, including reception, storage, finance, and quality control.
 

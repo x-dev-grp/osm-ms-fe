@@ -6,7 +6,12 @@
     [class.nav-item--expanded]="isOpen()"
     [ngClass]="{ disabled: !isEnabled }"
    >
-    <a class="nav-link nav-link--parent" [class.nav-link--expanded]="isOpen()" (click)="navCollapse($event); $event.stopPropagation()">
+    <a
+      class="nav-link nav-link--parent"
+      [class.nav-link--expanded]="isOpen()"
+      [class.active]="isSelfActive()"
+      (click)="navCollapse($event); $event.stopPropagation()"
+    >
       <mat-icon *ngIf="item()!.icon" class="coded-micon">{{ item()!.icon }}</mat-icon>
       <span class="coded-mtext">{{ item()!.title | translate }}</span>
     </a>

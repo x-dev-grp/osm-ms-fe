@@ -80,4 +80,12 @@ export class FiltrationDetailComponent implements OnInit {
     }
     void this.router.navigate(['storage', 'oil-filtering', op.operationId, 'traceability']);
   }
+
+  openQualityControl(): void {
+    const op = this.operation();
+    if (!op?.operationId || String(op.status) !== 'COMPLETED') {
+      return;
+    }
+    void this.router.navigate(['storage', 'oil-filtering', op.operationId, 'quality']);
+  }
 }

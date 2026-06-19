@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
@@ -11,9 +11,8 @@ import { SharedModule } from '../../shared/shared.module';
 import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
 import { DashboardConfig } from '../../shared/modules/osm-dashboard/models/dashboard-config';
 import { OilQCDASHBOARD } from './oilQC.DASHBOARD';
-import { PdfGeneratorService } from '../../shared/services/pdf-generator.service';
+import { DocumentGenerationService } from '../../shared/services/document-generation.service';
 import { UnifiedDelivery } from '../../shared/models/UnifiedDelivery';
-import { getControlQualitePdfConfig } from '../pdf-config/controlQualite.config';
 
 @Component({
   selector: 'app-quality-control-list',
@@ -31,52 +30,30 @@ import { getControlQualitePdfConfig } from '../pdf-config/controlQualite.config'
   ],
   templateUrl: './oilQC.component.html'
 })
-export class OilQCComponent implements OnInit {
+export class OilQCComponent {
   dashboardConfig: DashboardConfig = OilQCDASHBOARD;
 
   constructor(
     private router: Router,
-    private pdfService: PdfGeneratorService
+    private documentGenerationService: DocumentGenerationService
   ) {}
 
-  ngOnInit(): void {}
-
-  onRowAction(event: { row: UnifiedDelivery; action: any }): void {
+  onRowAction(event: { row: UnifiedDelivery; action: string }): void {
     switch (event.action) {
       case 'QUALITY':
       case 'OIL_QUALITY':
       case 'UPDATE_OIL_QUALITY':
-        this.startQualityControl(event.row);
+        this.router.navigate(['/reception/quality', event.row.id]);
         break;
       case 'READ':
-        this.viewDelivery(event.row);
+        this.router.navigate(['/reception/reception-details', event.row.id]);
         break;
       case 'GEN_PDF':
-        if (event.row) {
-          this.generateBonControleQualite(event.row);
-        }
-        break;
       case 'GEN_PDF_QC_OIL':
-        if (event.row.qualityControlResults) {
-          const deliveryType = event.row.deliveryType?.toUpperCase() || '';
-          const config = getControlQualitePdfConfig(event.row, deliveryType);
-          this.pdfService.generatePdf(config);
+        if (event.row?.id) {
+          this.documentGenerationService.downloadQualityControlPdf(event.row.id);
         }
         break;
     }
-  }
-
-  generateBonControleQualite(delivery: UnifiedDelivery): void {
-    const deliveryType = delivery.deliveryType?.toUpperCase() || '';
-    const config = getControlQualitePdfConfig(delivery, deliveryType);
-    this.pdfService.generatePdf(config);
-  }
-
-  private startQualityControl(delivery: UnifiedDelivery): void {
-    this.router.navigate(['/reception/quality', delivery.id]);
-  }
-
-  private viewDelivery(delivery: UnifiedDelivery): void {
-    this.router.navigate(['/reception/reception-details', delivery.id]);
   }
 }

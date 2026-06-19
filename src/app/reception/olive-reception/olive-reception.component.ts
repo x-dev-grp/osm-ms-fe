@@ -8,7 +8,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatSortModule } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { ActivatedRoute, Data, ParamMap, Router } from '@angular/router';
-import { Subscription, tap } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 
 import { OsmDashboard } from '../../shared/modules/osm-dashboard/osm-dashboard';
@@ -17,16 +17,12 @@ import { UnifiedDelivery } from '../../shared/models/UnifiedDelivery';
 import { UnifiedDeliveryService } from '../../shared/services/delivery.service';
 
 import { OLIVE_DELIVERY_DASHBOARD } from './OLIVE_DELIVERY_DASHBOARD';
-import { PdfGeneratorService } from '../../shared/services/pdf-generator.service';
-import { ApiResponse } from '../../shared/models/api-response';
-import { OliveLotStatus } from '../../shared/models/OliveLotStatus';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { OperationType } from '../../shared/models/operation-type.enum';
 import { ExchangePricingDto } from '../../shared/models/ExchangePricingDto';
 import { ToastService } from '../../shared/services/toast.service';
+import { OliveReceptionActionsService } from './olive-reception-actions.service';
 import { SharedModule } from '../../shared/shared.module';
-import { getControlQualitePdfConfig } from '../pdf-config/controlQualite.config';
-import { getOlivePdfConfig } from '../pdf-config/reception-olive-pdf.config';
 
 const LS_OP_KEY = 'OSM_RECEPTION_SELECTED_OP';
 
@@ -82,11 +78,11 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
     private deliveryService: UnifiedDeliveryService,
     private toast: ToastService,
     private router: Router,
-    private pdfService: PdfGeneratorService,
     private translate: TranslateService,
     private fb: FormBuilder,
     private dialog: MatDialog,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private oliveActions: OliveReceptionActionsService
   ) {}
 
   ngOnInit(): void {
@@ -94,6 +90,7 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
       this.route.data.subscribe((d: Data) => {
         const op = (d?.['op'] ?? '').toString().toUpperCase();
         if (op) {
+          this.forcedOp = this.normalizeOp(op);
           const i18n = `DELIVERIES.OPERATION_TYPE.${op}`;
           this.dashboardConfig = {
             ...this.dashboardConfig,
@@ -153,86 +150,17 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
     }
   }
 
-  viewDelivery(d: UnifiedDelivery): void {
-    this.router.navigate(['reception/reception-details', d.id]);
-  }
-
-  QualityControl(d: UnifiedDelivery): void {
-    this.router.navigate(['reception/quality', d.id]);
-  }
-
-
-
-  cancelDelivery(d: UnifiedDelivery): void {
-    if (d.id) {
-      const updatedDelivery = { ...d, status: OliveLotStatus.CANCELLED };
-      this.subs.add(
-        this.deliveryService.updateUnifiedDelivery(updatedDelivery).subscribe(
-          (res: ApiResponse<UnifiedDelivery>) => {
-            if (res.success) {
-              this.toast.success(this.translate.instant('DELIVERIES.MESSAGES.CANCELLED_SUCCESS'));
-            } else {
-              this.toast.error(this.translate.instant('DELIVERIES.MESSAGES.CANCELLED_ERROR'));
-            }
-          },
-          () => this.toast.warning(this.translate.instant('DELIVERIES.MESSAGES.CANCELLED_ERROR'))
-        )
-      );
-    }
-  }
-
-  generateBonReception(delivery: UnifiedDelivery): void {
-    const config = getOlivePdfConfig(delivery);
-    this.pdfService.generatePdfDocument(config);
-  }
-
   onRowAction(e: { row: UnifiedDelivery; action: string }): void {
-    switch (e.action) {
-      case 'READ':
-        this.viewDelivery(e.row);
-        break;
-      case 'UPDATE':
-        this.selectReception(e.row); // will navigate with the row's operationType if present
-        break;
-
-      case 'GEN_PDF':
-        if (e.row) {
-          this.generateBonReception(e.row);
-        }
-        break;
-      case 'SET_PRICE':
-        this.setPrice(e.row);
-        break;
-
-      case 'OIL_OUT_TRANSACTION':
-        this.createOilTransactionFromExchange(e.row);
-        break;
-      case 'OLIVE_QUALITY':
-      case 'QUALITY':
-        this.QualityControl(e.row);
-        break;
-      case 'GEN_PDF_QC_OIL':
-        if (e.row.qualityControlResults) {
-          const deliveryType = e.row.deliveryType?.toUpperCase() || '';
-          const config = getControlQualitePdfConfig(e.row, deliveryType);
-          this.pdfService.generatePdf(config);
-        } else {
-          this.toast.error('AUTO.NO_QUALITY_CONTROL_FOR_OIL');
-        }
-        break;
-      case 'GEN_PDF_QC_OLIVE':
-        if (e.row.qualityControlResults) {
-          const deliveryType = e.row.deliveryType?.toUpperCase() || '';
-          const config = getControlQualitePdfConfig(e.row, deliveryType);
-          this.pdfService.generatePdf(config);
-        } else {
-          this.toast.error('AUTO.NO_QUALITY_CONTROL_FOR_OLIVE');
-        }
-        break;
-      case 'CANCEL':
-        this.cancelDelivery(e.row);
-        break;
+    if (e.action === 'SET_PRICE') {
+      this.setPrice(e.row);
+      return;
     }
+
+    this.oliveActions.handleAction(e.action, e.row, {
+      onRefresh: () => this.dashboard?.refrechData(),
+      onEdit: (row) => this.selectReception(row),
+      onSetPrice: (row) => this.setPrice(row)
+    });
   }
 
   confirmPrice(dialogRef: MatDialogRef<unknown>): void {
@@ -396,11 +324,4 @@ export class OliveReceptionComponent implements OnInit, OnDestroy {
       panelClass: 'set-price-dialog'
     });
   }
-
-  private createOilTransactionFromExchange = (row: UnifiedDelivery) => {
-    this.deliveryService
-      .createOilTransactionFromExchange(row?.id)
-      .pipe(tap((response: ApiResponse<unknown>) => console.log(response)))
-      .subscribe();
-  };
 }

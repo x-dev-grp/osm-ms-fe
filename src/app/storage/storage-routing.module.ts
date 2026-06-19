@@ -144,6 +144,12 @@ const routes: Routes = [
         canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.STORAGEUNIT, Action.READ)])]
       },
       {
+        path: 'oil-filtering/:id/quality',
+        loadComponent: () =>
+          import('./filtration/quality/filtration-controle-qualite.component').then((m) => m.FiltrationControleQualiteComponent),
+        canActivate: [AuthGuardChild, allPermissionGuard([permissionKey(OSMModule.PRODUCTION, ProductionEntity.QUALITYCONTROLRESULT, Action.READ)])]
+      },
+      {
         path: 'oil-container/:id/edit',
         loadComponent: () =>
           import('./filtration/filtration-form/filtration-form.component').then((m) => m.FiltrationFormComponent),

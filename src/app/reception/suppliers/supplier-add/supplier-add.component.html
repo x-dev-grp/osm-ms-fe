@@ -73,16 +73,16 @@
         </mat-error>
       </mat-form-field>
 
-      <!--      <mat-form-field appearance="outline">-->
-      <!--        <mat-label>{{ 'SUPPLIER.FIELDS.ADDRESS' | translate }}</mat-label>-->
-      <!--        <input formControlName="address" matInput required />-->
-      <!--        <mat-error *ngIf="supplierForm.get('address')?.hasError('required')">-->
-      <!--          {{ 'SUPPLIER.ERRORS.ADDRESS_REQUIRED' | translate }}-->
-      <!--        </mat-error>-->
-      <!--        <mat-error *ngIf="supplierForm.get('address')?.hasError('minlength')">-->
-      <!--          {{ 'SUPPLIER.ERRORS.ADDRESS_MIN' | translate }}-->
-      <!--        </mat-error>-->
-      <!--      </mat-form-field>-->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ 'SUPPLIER.FIELDS.ADDRESS' | translate }}</mat-label>
+        <textarea formControlName="address" matInput rows="2" [required]="inDialog"></textarea>
+        <mat-error *ngIf="supplierForm.get('address')?.hasError('required')">
+          {{ 'SUPPLIER.ERRORS.ADDRESS_REQUIRED' | translate }}
+        </mat-error>
+        <mat-error *ngIf="supplierForm.get('address')?.hasError('minlength')">
+          {{ 'SUPPLIER.ERRORS.ADDRESS_MIN' | translate }}
+        </mat-error>
+      </mat-form-field>
 
       <div class="col-md-4 w-100 m-b-10">
         <!-- region is BaseType at ROOT now -->

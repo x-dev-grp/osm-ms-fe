@@ -1,189 +1,406 @@
 <div class="oil-sale-view-container">
+
   <div *ngIf="loading" class="loading-container">
+
     <mat-spinner diameter="50"></mat-spinner>
+
     <p>{{ 'COMMON.LOADING' | translate }}</p>
+
   </div>
+
+
 
   <div *ngIf="!loading && oilSale" class="oil-sale-details">
-    <!-- Header -->
-    <mat-card class="header-card" *ngIf="oilSale.invoiceNumber">
-      <mat-card-header>
-        <mat-card-title>
-          <mat-icon>local_gas_station</mat-icon>
-          {{ 'OIL_SALES.DETAILS' | translate }}
-        </mat-card-title>
-        <mat-card-subtitle>
-          {{ 'OIL_SALES.INVOICE' | translate }}: {{ oilSale.invoiceNumber || 'N/A' }}
-        </mat-card-subtitle>
-      </mat-card-header>
 
-    </mat-card>
+    <div class="view-header">
 
-    <!-- Status -->
-    <mat-card class="status-card">
-      <mat-card-content>
-        <div class="status-section">
+      <button mat-stroked-button type="button" (click)="onBack()">
 
-          <h3>{{ 'OIL_SALES.FIELDS.STATUS' | translate }}</h3>
+        <mat-icon>arrow_back</mat-icon>
 
-          <mat-chip [color]="getStatusColor(oilSale.status)" selected>
-            {{ 'OIL_SALES.STATUS.' + oilSale.status | translate }}
-          </mat-chip>
+        {{ 'COMMON.BACK' | translate }}
+
+      </button>
+
+
+
+      <div class="header-title-block">
+
+        <h2>{{ 'OIL_SALES.DETAILS' | translate }}</h2>
+
+        <span [class]="getStatusClass(oilSale.status)">
+
+          {{ 'OIL_SALES.STATUS.' + oilSale.status | translate }}
+
+        </span>
+
+        <span *ngIf="oilSale.invoiceNumber" class="invoice-ref">
+
+          {{ 'OIL_SALES.INVOICE_NUMBER' | translate }}: {{ oilSale.invoiceNumber }}
+
+        </span>
+
+      </div>
+
+    </div>
+
+
+
+    <div class="view-actions">
+
+      <div class="action-group">
+
+        <span class="action-group-label">{{ 'OIL_SALES.ACTIONS.LIFECYCLE' | translate }}</span>
+
+        <button *ngIf="canEdit()" mat-stroked-button type="button" (click)="onEdit()">
+
+          <mat-icon>edit</mat-icon>
+
+          {{ 'COMMON.EDIT' | translate }}
+
+        </button>
+
+        <button *ngIf="canConfirm()" mat-flat-button color="primary" type="button" (click)="onConfirm()">
+
+          <mat-icon>check_circle</mat-icon>
+
+          {{ 'OIL_SALES.CONFIRM' | translate }}
+
+        </button>
+
+        <button *ngIf="canDeliver()" mat-flat-button color="accent" type="button" (click)="onDeliver()">
+
+          <mat-icon>local_shipping</mat-icon>
+
+          {{ 'OIL_SALES.DELIVER' | translate }}
+
+        </button>
+
+        <button *ngIf="canCancel()" mat-stroked-button color="warn" type="button" (click)="onCancel()">
+
+          <mat-icon>cancel</mat-icon>
+
+          {{ 'OIL_SALES.CANCEL' | translate }}
+
+        </button>
+
+      </div>
+
+
+
+      <div class="action-group">
+
+        <span class="action-group-label">{{ 'OIL_SALES.ACTIONS.DOCUMENTS' | translate }}</span>
+
+        <button *ngIf="canDownloadBonCommande()" mat-stroked-button type="button" (click)="onDownloadBonCommande()">
+
+          <mat-icon>print</mat-icon>
+
+          {{ 'PDF.GEN_PDF_BON_COMMANDE' | translate }}
+
+        </button>
+
+        <button *ngIf="canDownloadInvoice()" mat-stroked-button type="button" (click)="onDownloadInvoice()">
+
+          <mat-icon>request_quote</mat-icon>
+
+          {{ 'OSM_DASHBOARD.ACTIONS.GEN_INVOICE' | translate }}
+
+        </button>
+
+        <button *ngIf="canDownloadBonLivraison()" mat-stroked-button type="button" (click)="onDownloadBonLivraison()">
+
+          <mat-icon>local_shipping</mat-icon>
+
+          {{ 'PDF.GEN_PDF_BON_LIVRAISON' | translate }}
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+
+    <div class="details-grid">
+
+      <app-card [cardTitle]="'OIL_SALES.CUSTOMER_INFO' | translate" icon="person" class="detail-section">
+
+        <div class="info-grid">
+
+          <div class="info-row">
+
+            <span class="label">{{ 'OIL_SALES.FIELDS.SUPPLIER' | translate }}</span>
+
+            <span class="value">{{ getSupplierDisplay() }}</span>
+
+          </div>
+
+          <div class="info-row" *ngIf="oilSale.supplier?.email">
+
+            <span class="label">{{ 'OIL_SALES.CUSTOMER_EMAIL' | translate }}</span>
+
+            <span class="value">{{ oilSale.supplier?.email }}</span>
+
+          </div>
+
+          <div class="info-row" *ngIf="oilSale.supplier?.phone">
+
+            <span class="label">{{ 'OIL_SALES.CUSTOMER_PHONE' | translate }}</span>
+
+            <span class="value">{{ oilSale.supplier?.phone }}</span>
+
+          </div>
+
+          <div class="info-row" *ngIf="oilSale.supplier?.address">
+
+            <span class="label">{{ 'OIL_SALES.CUSTOMER_ADDRESS' | translate }}</span>
+
+            <span class="value">{{ oilSale.supplier?.address }}</span>
+
+          </div>
 
         </div>
-      </mat-card-content>
-    </mat-card>
 
-    <!-- Customer Information -->
-    <mat-card class="info-card">
-      <mat-card-header>
-        <mat-card-title>
-          <mat-icon>person</mat-icon>
-          {{ 'OIL_SALES.CUSTOMER_INFO' | translate }}
-        </mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        @if (oilSale.customer) {
-          <div class="info-grid">
-            <div class="info-row">
-              <span class="label">{{ 'OIL_SALES.CUSTOMER_NAME' | translate }}:</span>
-              <span class="value">{{ oilSale.customer?.customerName }} {{ oilSale.customer?.customerLastName }}</span>
-            </div>
-            <div class="info-row" *ngIf="oilSale.customer?.email">
-              <span class="label">{{ 'OIL_SALES.CUSTOMER_EMAIL' | translate }}:</span>
-              <span class="value">{{ oilSale.customer.email }}</span>
-            </div>
-            <div class="info-row" *ngIf="oilSale.customer?.phone">
-              <span class="label">{{ 'OIL_SALES.CUSTOMER_PHONE' | translate }}:</span>
-              <span class="value">{{ oilSale.customer.phone }}</span>
-            </div>
-            <div class="info-row" *ngIf="oilSale.customer?.address">
-              <span class="label">{{ 'OIL_SALES.CUSTOMER_ADDRESS' | translate }}:</span>
-              <span class="value">{{ oilSale.customer.address }}</span>
-            </div>
-          </div>
-        } @else {
-          <div class="info-grid">
-            <div class="info-row">
-              <span class="label">{{ 'OIL_SALES.CUSTOMER_NAME' | translate }}:</span>
-              <span
-                class="value">{{ oilSale?.supplier?.name }} {{ oilSale.supplier?.lastname }}</span>
-            </div>
-            <div class="info-row" *ngIf="oilSale.supplier?.email">
-              <span class="label">{{ 'OIL_SALES.CUSTOMER_EMAIL' | translate }}:</span>
-              <span class="value">{{ oilSale.supplier?.email }}</span>
-            </div>
-            <div class="info-row" *ngIf="oilSale.supplier?.phone">
-              <span class="label">{{ 'OIL_SALES.CUSTOMER_PHONE' | translate }}:</span>
-              <span class="value">{{ oilSale.supplier?.phone }}</span>
-            </div>
-            <div class="info-row" *ngIf="oilSale.supplier?.address">
-              <span class="label">{{ 'OIL_SALES.CUSTOMER_ADDRESS' | translate }}:</span>
-              <span class="value">{{ oilSale.supplier?.address }}</span>
-            </div>
-          </div>
-        }
-      </mat-card-content>
-    </mat-card>
+      </app-card>
 
-    <!-- Storage Unit Information -->
-    <mat-card class="info-card" *ngIf="oilSale.storageUnit">
-      <mat-card-header>
-        <mat-card-title>
-          <mat-icon>storage</mat-icon>
-          {{ 'OIL_SALES.STORAGE_UNIT_INFO' | translate }}
-        </mat-card-title>
-      </mat-card-header>
-      <mat-card-content >
+
+
+      <app-card [cardTitle]="'OIL_SALES.STORAGE_UNIT_INFO' | translate" icon="storage" class="detail-section">
+
         <div class="info-grid">
+
           <div class="info-row">
-            <span class="label">{{ 'OIL_SALES.STORAGE_UNIT_NAME' | translate }}:</span>
-            <span class="value">{{ oilSale.storageUnit?.name }}</span>
+
+            <span class="label">{{ 'OIL_SALES.STORAGE_UNIT_NAME' | translate }}</span>
+
+            <span class="value">{{ getStorageUnitDisplay() }}</span>
+
           </div>
-          <div class="info-row">
-            <span class="label">{{ 'OIL_SALES.STORAGE_UNIT_LOCATION' | translate }}:</span>
-            <span class="value">{{ oilSale.storageUnit?.location }}</span>
+
+          <div class="info-row" *ngIf="oilSale.storageUnit?.location">
+
+            <span class="label">{{ 'OIL_SALES.STORAGE_UNIT_LOCATION' | translate }}</span>
+
+            <span class="value">{{ oilSale.storageUnit.location }}</span>
+
           </div>
-          <div class="info-row">
-            <span class="label">{{ 'OIL_SALES.STORAGE_UNIT_CAPACITY' | translate }}:</span>
-            <span class="value">{{ oilSale.storageUnit?.currentVolume | number:'1.2-2' }}
-              L / {{ oilSale.storageUnit?.maxCapacity | number:'1.2-2' }}L</span>
+
+          <div class="info-row" *ngIf="oilSale.storageUnit?.currentVolume != null">
+
+            <span class="label">{{ 'OIL_SALES.STORAGE_UNIT_CAPACITY' | translate }}</span>
+
+            <span class="value">
+
+              {{ oilSale.storageUnit.currentVolume | number:'1.2-2' }}
+
+              L / {{ oilSale.storageUnit.maxCapacity | number:'1.2-2' }} L
+
+            </span>
+
           </div>
-          <div *ngIf="oilSale.storageUnit?.oilType" class="info-row">
-            <span class="label">{{ 'OIL_SALES.OIL_TYPE' | translate }}:</span>
-            <span class="value">{{ oilSale.storageUnit.oilType.name }}</span>
+
+          <div class="info-row" *ngIf="oilSale.storageUnit?.qualityGrade">
+
+            <span class="label">{{ 'OIL_TRANSACTION.DETAILS.QUALITY_GRADE' | translate }}</span>
+
+            <span class="value">{{ ('OIL_TRANSACTIONS.QUALITY_GRADES.' + oilSale.storageUnit.qualityGrade) | translate }}</span>
+
           </div>
+
+          <div class="info-row" *ngIf="oilSale.storageUnit?.status">
+
+            <span class="label">{{ 'CONTROLE_QUALITE.STORAGE_UNIT.STATUS' | translate }}</span>
+
+            <span class="value">{{ oilSale.storageUnit.status }}</span>
+
+          </div>
+
+          <div class="info-row" *ngIf="oilSale.storageUnit?.oilVariety?.name">
+
+            <span class="label">{{ 'OIL_SALES.OIL_TYPE' | translate }}</span>
+
+            <span class="value">{{ oilSale.storageUnit.oilVariety.name }}</span>
+
+          </div>
+
         </div>
-      </mat-card-content>
-    </mat-card>
 
-    <!-- Sale Details -->
-    <mat-card class="info-card">
-      <mat-card-header>
-        <mat-card-title>
-          <mat-icon>receipt</mat-icon>
-          {{ 'OIL_SALES.SALE_DETAILS' | translate }}
-        </mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
+      </app-card>
+
+
+
+      <app-card [cardTitle]="'OIL_SALES.SALE_DETAILS' | translate" icon="receipt" class="detail-section">
+
         <div class="info-grid">
+
           <div class="info-row">
-            <span class="label">{{ 'OIL_SALES.QUANTITY' | translate }}:</span>
-            <span class="value">{{ oilSale.quantity | number:'1.2-2' }} L</span>
-          </div>
-          <div class="info-row">
-            <span class="label">{{ 'OIL_SALES.UNIT_PRICE' | translate }}:</span>
-            <span class="value">{{ oilSale.unitPrice | number:'1.2-2' }} {{ oilSale.currency }}</span>
-          </div>
-          <div class="info-row total">
-            <span class="label">{{ 'OIL_SALES.TOTAL_AMOUNT' | translate }}:</span>
-            <span class="value total-amount">{{ oilSale.totalAmount | number:'1.2-2' }} {{ oilSale.currency }}</span>
-          </div>
-          <div class="info-row">
-            <span class="label">{{ 'OIL_SALES.CURRENCY' | translate }}:</span>
-            <span class="value">{{ oilSale.currency }}</span>
-          </div>
-          <div *ngIf="oilSale.paymentMethod" class="info-row">
-            <span class="label">{{ 'OIL_SALES.PAYMENT_METHOD' | translate }}:</span>
-            <span class="value">{{ 'OIL_SALES.PAYMENT_METHOD.' + oilSale.paymentMethod | translate }}</span>
-          </div>
-          <div class="info-row">
-            <span class="label">{{ 'OIL_SALES.SALE_DATE' | translate }}:</span>
+
+            <span class="label">{{ 'OIL_SALES.FIELDS.SALE_DATE' | translate }}</span>
+
             <span class="value">{{ oilSale.saleDate | date:'medium' }}</span>
+
           </div>
-          <div *ngIf="oilSale.invoiceNumber" class="info-row">
-            <span class="label">{{ 'OIL_SALES.INVOICE_NUMBER' | translate }}:</span>
-            <span class="value">{{ oilSale.invoiceNumber }}</span>
+
+          <div class="info-row" *ngIf="oilSale.qualityGrade">
+
+            <span class="label">{{ 'OIL_TRANSACTION.DETAILS.QUALITY_GRADE' | translate }}</span>
+
+            <span class="value">{{ ('OIL_TRANSACTIONS.QUALITY_GRADES.' + oilSale.qualityGrade) | translate }}</span>
+
           </div>
-          <div *ngIf="oilSale.description" class="info-row">
-            <span class="label">{{ 'OIL_SALES.DESCRIPTION' | translate }}:</span>
+
+          <div class="info-row">
+
+            <span class="label">{{ 'OIL_SALES.FIELDS.QUANTITY' | translate }}</span>
+
+            <span class="value">{{ oilSale.quantity | number:'1.2-2' }} L</span>
+
+          </div>
+
+          <div class="info-row">
+
+            <span class="label">{{ 'OIL_SALES.FIELDS.UNIT_PRICE' | translate }}</span>
+
+            <span class="value">{{ oilSale.unitPrice | number:'1.2-2' }} {{ oilSale.currency }}</span>
+
+          </div>
+
+          <div class="info-row total">
+
+            <span class="label">{{ 'OIL_SALES.FIELDS.TOTAL_AMOUNT' | translate }}</span>
+
+            <span class="value total-amount">{{ oilSale.totalAmount | number:'1.2-2' }} {{ oilSale.currency }}</span>
+
+          </div>
+
+          <div class="info-row">
+
+            <span class="label">{{ 'OIL_SALES.FIELDS.CURRENCY' | translate }}</span>
+
+            <span class="value">{{ oilSale.currency }}</span>
+
+          </div>
+
+          <div class="info-row" *ngIf="oilSale.paymentMethod">
+
+            <span class="label">{{ 'OIL_SALES.FIELDS.PAYMENT_METHOD' | translate }}</span>
+
+            <span class="value">{{ 'OIL_SALES.PAYMENT_METHODS.' + oilSale.paymentMethod | translate }}</span>
+
+          </div>
+
+          <div class="info-row" *ngIf="oilSale.description">
+
+            <span class="label">{{ 'OIL_SALES.DESCRIPTION' | translate }}</span>
+
             <span class="value">{{ oilSale.description }}</span>
+
+          </div>
+
+        </div>
+
+      </app-card>
+
+
+
+      <app-card
+        *ngIf="hasContainerSales()"
+        [cardTitle]="'OIL_SALES.CONTAINERS.SALE_TITLE' | translate"
+        icon="inventory_2"
+        class="detail-section">
+
+        <div class="info-grid container-lines">
+          <div class="container-line header">
+            <span>{{ 'OIL_SALES.CONTAINERS.NAME' | translate }}</span>
+            <span>{{ 'OIL_SALES.CONTAINERS.COUNT' | translate }}</span>
+            <span>{{ 'OIL_SALES.CONTAINERS.UNIT_PRICE' | translate }}</span>
+            <span>{{ 'OIL_SALES.CONTAINERS.LINE_TOTAL' | translate }}</span>
+          </div>
+          <div class="container-line" *ngFor="let line of oilSale.containerSales">
+            <span class="value">
+              {{ line.containerName || line.containerId }}
+              <small *ngIf="line.capacityInLiters">({{ line.capacityInLiters | number:'1.0-0' }} L)</small>
+            </span>
+            <span class="value">{{ line.count }}</span>
+            <span class="value">{{ line.unitPrice | number:'1.2-2' }} {{ oilSale.currency }}</span>
+            <span class="value">{{ containerLineTotal(line) | number:'1.2-2' }} {{ oilSale.currency }}</span>
           </div>
         </div>
-      </mat-card-content>
-    </mat-card>
 
-    <!-- Timestamps -->
-    <mat-card class="info-card">
-      <mat-card-header>
-        <mat-card-title>
-          <mat-icon>schedule</mat-icon>
-          {{ 'OIL_SALES.TIMESTAMPS' | translate }}
-        </mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
+      </app-card>
+
+
+
+      <app-card
+
+        *ngIf="hasDeliveryInfo()"
+
+        [cardTitle]="'OIL_SALES.DELIVERY.TITLE' | translate"
+
+        icon="local_shipping"
+
+        class="detail-section">
+
         <div class="info-grid">
-          <div *ngIf="oilSale.createdDate" class="info-row">
-            <span class="label">{{ 'OIL_SALES.CREATED_DATE' | translate }}:</span>
-            <span class="value">{{ oilSale.createdDate | date:'medium' }}</span>
+
+          <div class="info-row" *ngIf="oilSale.deliveryDate">
+
+            <span class="label">{{ 'OIL_SALES.FIELDS.DELIVERY_DATE' | translate }}</span>
+
+            <span class="value">{{ oilSale.deliveryDate | date:'medium' }}</span>
+
           </div>
-          <div *ngIf="oilSale.lastModifiedDate" class="info-row">
-            <span class="label">{{ 'OIL_SALES.LAST_MODIFIED_DATE' | translate }}:</span>
-            <span class="value">{{ oilSale.lastModifiedDate | date:'medium' }}</span>
+
+          <div class="info-row" *ngIf="oilSale.deliveryAddress">
+
+            <span class="label">{{ 'OIL_SALES.FIELDS.DELIVERY_ADDRESS' | translate }}</span>
+
+            <span class="value">{{ oilSale.deliveryAddress }}</span>
+
+          </div>
+
+          <div class="info-row" *ngIf="oilSale.deliveryNotes">
+
+            <span class="label">{{ 'OIL_SALES.FIELDS.DELIVERY_NOTES' | translate }}</span>
+
+            <span class="value">{{ oilSale.deliveryNotes }}</span>
+
           </div>
 
         </div>
-      </mat-card-content>
-    </mat-card>
+
+      </app-card>
+
+
+
+      <app-card [cardTitle]="'OIL_SALES.TIMESTAMPS' | translate" icon="schedule" class="detail-section">
+
+        <div class="info-grid">
+
+          <div class="info-row" *ngIf="oilSale.createdDate">
+
+            <span class="label">{{ 'OIL_SALES.FIELDS.CREATED_DATE' | translate }}</span>
+
+            <span class="value">{{ oilSale.createdDate | date:'medium' }}</span>
+
+          </div>
+
+          <div class="info-row" *ngIf="oilSale.lastModifiedDate">
+
+            <span class="label">{{ 'OIL_SALES.LAST_MODIFIED_DATE' | translate }}</span>
+
+            <span class="value">{{ oilSale.lastModifiedDate | date:'medium' }}</span>
+
+          </div>
+
+        </div>
+
+      </app-card>
+
+    </div>
+
   </div>
+
 </div>
+

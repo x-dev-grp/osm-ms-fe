@@ -14,10 +14,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { SupplierPaymentHistoryComponent } from '../supplier-payment-history/supplier-payment-history.component';
 import { ToastService } from '../../../shared/services/toast.service';
-import { PdfGeneratorFactureService } from '../../../shared/services/pdf-generator-facture.service';
+import { DocumentGenerationService } from '../../../shared/services/document-generation.service';
+import { OilSaleActionsService } from '../../../finance/service/oil-sale-actions.service';
+import { OliveReceptionActionsService } from '../../olive-reception/olive-reception-actions.service';
+import { OilReceptionActionsService } from '../../oil-reception/oil-reception-actions.service';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { SupplierPaymentHistoryMobileComponent } from '../supplier-payment-history-mobile/supplier-payment-history-mobile.component';
-import { PdfConfigFactoryService } from '../../../shared/services/pdf-config-factory.service';
 import { OsmDashboard } from '../../../shared/modules/osm-dashboard/osm-dashboard';
 import { CardComponent } from '../../../theme/components/card/card.component';
 import { DashboardConfig } from '../../../shared/modules/osm-dashboard/models/dashboard-config';
@@ -158,7 +160,8 @@ export class SupplierDetailsComponent implements OnInit {
     OIL_SALE: OIL_SALES_DASHBOARD_CONFIG
   };
   dashboardConfigs: Record<OperationType, DashboardConfig> = { ...this.baseDashboardConfigs };
-  private deliveryTypes: OperationType[] = ['BASE', 'OLIVE_PURCHASE', 'OIL_PURCHASE', 'EXCHANGE', 'SIMPLE_RECEPTION'];
+  private oliveDeliveryTypes: OperationType[] = ['BASE', 'OLIVE_PURCHASE', 'EXCHANGE', 'SIMPLE_RECEPTION'];
+  private oilDeliveryTypes: OperationType[] = ['OIL_PURCHASE'];
   private opStatConfigs: Record<
     OperationType,
     {
@@ -219,8 +222,10 @@ export class SupplierDetailsComponent implements OnInit {
     private translate: TranslateService,
     private breakpointObserver: BreakpointObserver,
     private toast: ToastService,
-    private pdfFactureService: PdfGeneratorFactureService,
-    private pdfFactory: PdfConfigFactoryService
+    private documentGenerationService: DocumentGenerationService,
+    private oilSaleActions: OilSaleActionsService,
+    private oliveActions: OliveReceptionActionsService,
+    private oilActions: OilReceptionActionsService
   ) {}
 
   ngOnInit(): void {
@@ -300,16 +305,67 @@ export class SupplierDetailsComponent implements OnInit {
   }
 
   handlePaymentAction(e: { row: any; action: string }) {
-    const actionLabel = e.action;
+    const actionLabel = e.action?.toUpperCase();
+
+    if (this.activeOp === 'OIL_SALE') {
+      switch (actionLabel) {
+        case 'PAY':
+          this.initiatePayment(e.row, PaymentSourceType.OIL_SALE_prc);
+          return;
+        case 'GEN_INVOICE':
+          if (e.row?.id) {
+            this.documentGenerationService.downloadOilSaleInvoicePdf(e.row.id);
+          }
+          return;
+        default:
+          this.oilSaleActions.handleAction(actionLabel, e.row, () => {
+            this.countAllOperations();
+            this.dashboardByOperation.refrechData();
+          });
+          return;
+      }
+    }
+
+    if (this.oilDeliveryTypes.includes(this.activeOp)) {
+      if (actionLabel === 'GEN_INVOICE') {
+        if (!e.row?.id) return;
+        this.documentGenerationService.downloadCommercialPdf(e.row.id);
+        return;
+      }
+      this.oilActions.handleAction(actionLabel, e.row, {
+        onRefresh: () => {
+          this.countAllOperations();
+          this.dashboardByOperation.refrechData();
+        }
+      });
+      return;
+    }
+
+    if (this.oliveDeliveryTypes.includes(this.activeOp)) {
+      if (actionLabel === 'GEN_INVOICE') {
+        if (!e.row?.id) return;
+        this.documentGenerationService.downloadCommercialPdf(e.row.id);
+        return;
+      }
+      this.oliveActions.handleAction(actionLabel, e.row, {
+        onRefresh: () => {
+          this.countAllOperations();
+          this.dashboardByOperation.refrechData();
+        }
+      });
+      return;
+    }
+
     switch (actionLabel) {
       case 'GEN_INVOICE': {
-        if (!e.row) return;
+        if (!e.row?.id) return;
         const src = this.getCurrentInvoiceSourceType();
-        const cfg = this.pdfFactory.build(e.row, src);
-        if ('total' in cfg && 'paid' in cfg && 'unpaid' in cfg) {
-          this.pdfFactureService.generatePdfNoteDocument(cfg);
+        if (src === InvoiceSource.DELIVERY_inv) {
+          this.documentGenerationService.downloadCommercialPdf(e.row.id);
+        } else if (src === InvoiceSource.OIL_SALE_inv) {
+          this.documentGenerationService.downloadOilSaleInvoicePdf(e.row.id);
         } else {
-          this.pdfFactureService.generatePdfDocument(cfg);
+          this.toast.error('AUTO.IMPOSSIBLE_DE_GENERER_LA_FACTURE');
         }
         break;
       }
@@ -442,7 +498,7 @@ export class SupplierDetailsComponent implements OnInit {
           ...(baseCfg.defaultSearchData?.searchData?.search || {}),
           isDeleted: { equalValue: false },
           [statConfig.filterField]: { equalValue: this.supplierId },
-          ...(this.deliveryTypes.includes(op) ? { operationType: { equalValue: op } } : {})
+          ...([...this.oliveDeliveryTypes, ...this.oilDeliveryTypes].includes(op) ? { operationType: { equalValue: op } } : {})
         }
       }
     };

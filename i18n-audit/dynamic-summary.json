@@ -1,0 +1,67 @@
+{
+  "uniqueMissingDynamicKeys": 0,
+  "totalMissingEntries": 0,
+  "byPrefix": {
+    "TRANSACTIONS.TYPES": {
+      "total": 25,
+      "missing": 0,
+      "missingValues": []
+    },
+    "TRANSACTIONS.DIRECTIONS": {
+      "total": 3,
+      "missing": 0,
+      "missingValues": []
+    },
+    "TRANSACTIONS.CURRENCIES": {
+      "total": 3,
+      "missing": 0,
+      "missingValues": []
+    },
+    "TRANSACTIONS.PAYMENT_METHODS": {
+      "total": 5,
+      "missing": 0,
+      "missingValues": []
+    },
+    "DELIVERIES.OPERATION_TYPE": {
+      "total": 12,
+      "missing": 0,
+      "missingValues": []
+    },
+    "OPERATION_TYPE": {
+      "total": 7,
+      "missing": 0,
+      "missingValues": []
+    },
+    "OIL_TRANSACTIONS.QUALITY_GRADES": {
+      "total": 6,
+      "missing": 0,
+      "missingValues": []
+    },
+    "OIL_SALES.STATUS": {
+      "total": 4,
+      "missing": 0,
+      "missingValues": []
+    },
+    "OIL_SALES.PAYMENT_METHODS": {
+      "total": 5,
+      "missing": 0,
+      "missingValues": []
+    },
+    "EXPENSE.CATEGORY": {
+      "total": 25,
+      "missing": 0,
+      "missingValues": []
+    },
+    "OSM_DASHBOARD.ACTIONS": {
+      "total": 55,
+      "missing": 0,
+      "missingValues": []
+    },
+    "STORAGE.VIEW.STATUS": {
+      "total": 8,
+      "missing": 0,
+      "missingValues": []
+    }
+  },
+  "uniqueMissingKeys": []
+}

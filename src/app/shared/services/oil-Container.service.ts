@@ -37,4 +37,14 @@ export class OilContainerService {
     return this.http.post<QrCodeResponse>(`${this.baseUrl}/generate`, request);
   }
 
+  purchase(containerId: string, payload: {
+    quantity: number;
+    unitPrice: number;
+    materielSupplierId: string;
+    vendor: string;
+    paymentMethod: string;
+    notes?: string;
+  }): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/${containerId}/purchase`, payload);
+  }
 }

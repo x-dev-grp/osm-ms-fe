@@ -5,7 +5,7 @@ This guide explains how route permissions work and how to add them.
 ## Permission model
 
 - Format: `MODULE:ENTITY:ACTION` (e.g., `FINANCE:EXPENSE:APPROVE`).
-- Source: Backend seeds permissions (see `OSM PROJECT/osm-prod/.../insert Permissions.sql`). The JWT contains the user's `authorities` array.
+- Source: Backend permission catalog (`oosm/modules/security/src/main/resources/permissions/permissions-spec.json`). Regenerate with `node oosm/scripts/sync-permissions.cjs`. Legacy SQL: `insert Permissions.sql`.
 - Admin bypass: Users with role `Admin` bypass all permission checks.
 
 ## Frontend building blocks

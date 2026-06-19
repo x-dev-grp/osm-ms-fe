@@ -16,6 +16,7 @@ export interface SupplierType {
   matriculeFiscal: string;
   rib: string;
   bankName: string;
+  fullName?: string;
 }
 
 

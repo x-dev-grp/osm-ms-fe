@@ -1,4 +1,4 @@
-import {Fournisseur} from "./fournisseur.model";
+import { MaterielSupplier } from './materiel-supplier.model';
 import {EmplacementStock} from "./emplacement-stock.model";
 
 export interface Article {
@@ -6,8 +6,8 @@ export interface Article {
   code?: string;
   nom: string;
   categorie: CategorieArticle;
-  fournisseur?: Fournisseur;
-  fournisseurId?: string;
+  materielSupplier?: MaterielSupplier;
+  materielSupplierId?: string;
   stockMinimum: number;
   stockMaximum: number;
   actif: boolean;

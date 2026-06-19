@@ -47,7 +47,7 @@ export class AuditComponent implements OnInit {
     EmplacementStock: 'Emplacement de stock',
     Expedition: 'Expédition',
     ExpeditionArticle: 'Article expédié',
-    Fournisseur: 'Fournisseur',
+    MaterielSupplier: 'Fournisseur matériel',
     LabelContent: 'Étiquette',
     LabelSource: 'Source d’étiquette',
     LigneBonCommande: 'Ligne de bon de commande',

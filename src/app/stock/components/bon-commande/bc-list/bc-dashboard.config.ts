@@ -17,7 +17,7 @@ export const BC_DASHBOARD_CONFIG: DashboardConfig = {
   ],
   fields: [
     { name: 'numeroBC', label: 'Numero', labelTranslatePath: 'DASHBOARD_FIELDS.NUMBER', attributeType: AttributeType.string, fieldType: FieldType.text, exportable: true, sortable: true, dataTable: true, filterable: true },
-    { name: 'fournisseurNom', label: 'Fournisseur', labelTranslatePath: 'DASHBOARD_FIELDS.SUPPLIER', attributeType: AttributeType.string, fieldType: FieldType.text, exportable: true, sortable: true, dataTable: true, filterable: true },
+    { name: 'materielSupplierName', label: 'Material supplier', labelTranslatePath: 'DASHBOARD_FIELDS.MATERIEL_SUPPLIER', attributeType: AttributeType.string, fieldType: FieldType.text, exportable: true, sortable: true, dataTable: true, filterable: true },
     { name: 'status', label: 'Statut', labelTranslatePath: 'CERTIFICATIONS.FIELDS.STATUS', attributeType: AttributeType.enum, fieldType: FieldType.select, exportable: true, sortable: true, dataTable: true, filterable: true },
     { name: 'dateValidation', label: 'Date validation', labelTranslatePath: 'DASHBOARD_FIELDS.VALIDATION_DATE', attributeType: AttributeType.date, fieldType: FieldType.date, exportable: true, sortable: true, dataTable: true, filterable: true },
     { name: 'dateReceptionPrevue', label: 'Reception prevue', labelTranslatePath: 'DASHBOARD_FIELDS.EXPECTED_RECEPTION', attributeType: AttributeType.date, fieldType: FieldType.date, exportable: true, sortable: true, dataTable: true, filterable: true },

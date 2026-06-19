@@ -1,13 +1,18 @@
-<div class="audit-page">
-  <div class="page-header">
+<div class="dashboard-shell audit-page">
+  <div class="page-header sticky-actions page-header--inventory">
     <div class="page-header__left">
-      <h2>{{ 'AUTO.AUDIT_GLOBAL' | translate }}</h2>
-      <p>{{ 'AUTO.SUIVEZ_TOUTES_LES_ACTIONS_EFFECTUEES_DANS_LE_SYSTEME' | translate }}</p>
+      <div class="header-icon-wrap header-icon-wrap--inventory">
+        <mat-icon>fact_check</mat-icon>
+      </div>
+      <div>
+        <h2 class="m-0 f-w-600">{{ 'AUTO.AUDIT_GLOBAL' | translate }}</h2>
+        <p class="header-subtitle">{{ 'AUTO.SUIVEZ_TOUTES_LES_ACTIONS_EFFECTUEES_DANS_LE_SYSTEME' | translate }}</p>
+      </div>
     </div>
     <div class="page-header__right">
-      <button mat-stroked-button type="button" (click)="loadAudit()" [disabled]="loading">
-        <mat-icon>{{ loading ? 'hourglass_empty' : 'refresh' }}</mat-icon>
-        {{ 'AUTO.ACTUALISER' | translate }}
+      <button mat-stroked-button color="primary" type="button" (click)="loadAudit()" [disabled]="loading">
+        <mat-icon [class.spinning]="loading">{{ loading ? 'hourglass_empty' : 'refresh' }}</mat-icon>
+        <span class="d-none d-sm-inline ms-1">{{ 'AUTO.ACTUALISER' | translate }}</span>
       </button>
     </div>
   </div>
@@ -55,8 +60,8 @@
     </div>
   </section>
 
-  <div *ngIf="loading" class="loading-state">
-    <mat-spinner diameter="40"></mat-spinner>
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner diameter="56"></mat-spinner>
     <p>{{ 'AUTO.CHARGEMENT_DES_DONNEES_D_AUDIT' | translate }}</p>
   </div>
 

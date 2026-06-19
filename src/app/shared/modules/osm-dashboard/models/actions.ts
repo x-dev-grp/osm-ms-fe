@@ -9,6 +9,8 @@ export const ACTION_ICONS: Map<string, string> = new Map<string, string>([
   ['TOGGLE_ACTIVE', 'power_settings_new'],
   ['ACTIVATE', 'check_circle'],
   ['CANCEL', 'cancel'],
+  ['CONFIRM', 'check_circle'],
+  ['DELIVER', 'local_shipping'],
   ['REFUSE', 'cancel'],
   ['STATUS', 'published_with_changes'],
   ['EXPEDITION', 'local_shipping'],
@@ -30,6 +32,7 @@ export const ACTION_ICONS: Map<string, string> = new Map<string, string>([
   ['GEN_PDF_QC_OIL', 'print'],
   ['GEN_PDF_QC_OLIVE', 'print'],
   ['GEN_PDF_BON_COMMANDE', 'print'],
+  ['GEN_PDF_BON_LIVRAISON', 'local_shipping'],
   ['GEN_INVOICE', 'request_quote'],
   ['GEN_PDF_PRODUCTION', 'build_circle'],
   ['VALIDATE', 'done'],
@@ -38,5 +41,6 @@ export const ACTION_ICONS: Map<string, string> = new Map<string, string>([
   ['PAY', 'payments'],
   ['MAINTENANCE', 'handyman'],
   ['WAITING', 'hourglass_pause'],
-  ['RESET_PASSWORD', 'lock_reset']
+  ['RESET_PASSWORD', 'lock_reset'],
+  ['ENTREE_STOCK', 'add_shopping_cart']
 ]);

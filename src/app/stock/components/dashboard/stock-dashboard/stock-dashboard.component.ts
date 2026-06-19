@@ -18,6 +18,9 @@ import { StatistiquesStock } from '../../../models/statistiques.model';
 import { ArticleCritique, MouvementRecent } from '../../../models/stock-dashboard-payload.model';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 interface DashboardLoadOptions {
   notifyThresholdCheck?: boolean;
@@ -27,7 +30,7 @@ interface DashboardLoadOptions {
 @Component({
   selector: 'app-stock-dashboard',
   templateUrl: './stock-dashboard.component.html',
-  imports: [TranslateModule, CommonModule, DatePipe, DecimalPipe, RouterLink, NgClass],
+  imports: [TranslateModule, CommonModule, DatePipe, DecimalPipe, RouterLink, NgClass, MatButtonModule, MatIconModule, MatProgressSpinnerModule],
   styleUrls: ['./stock-dashboard.component.scss']
 })
 export class StockDashboardComponent implements OnInit, OnDestroy {
@@ -348,7 +351,7 @@ export class StockDashboardComponent implements OnInit, OnDestroy {
       '',
       bon.numeroBC || '',
       bon.status || '',
-      bon.fournisseurNom || 'Non spécifié',
+      bon.materielSupplierName || 'Non spécifié',
       this.formatExportDate(bon.createdDate),
       `${this.getReceptionProgress(bon)}%`
     ]);

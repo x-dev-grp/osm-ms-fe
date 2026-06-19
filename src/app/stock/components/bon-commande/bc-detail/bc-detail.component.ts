@@ -28,7 +28,7 @@ export class BcDetailComponent implements OnInit {
   loading = true;
   generatingQr = false;
   error = '';
-  fournisseurNom = '';
+  materielSupplierName = '';
   showReception = false;
   receptionQuantities: { [key: string]: number } = {};
 
@@ -55,10 +55,10 @@ export class BcDetailComponent implements OnInit {
     this.bonCommandeService.getBonCommandeById(id).subscribe({
       next: (bon) => {
         this.bon = this.normalizeQrFields(bon);
-        if (this.bon.lignes?.length && this.bon.lignes[0].article?.fournisseur?.nom) {
-          this.fournisseurNom = this.bon.lignes[0].article.fournisseur.nom;
+        if (this.bon.lignes?.length && this.bon.lignes[0].article?.materielSupplier?.nom) {
+          this.materielSupplierName = this.bon.lignes[0].article.materielSupplier.nom;
         } else {
-          this.fournisseurNom = 'Non spécifié';
+          this.materielSupplierName = 'Non spécifié';
         }
         this.loading = false;
       },

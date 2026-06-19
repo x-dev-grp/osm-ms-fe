@@ -27,6 +27,7 @@ export interface OilSaleCreateRequest {
 
   invoiceNumber?: string;
   description?: string;
+  deliveryAddress?: string;
 
   paidAmount?: number;             // optional; default 0 if omitted
 

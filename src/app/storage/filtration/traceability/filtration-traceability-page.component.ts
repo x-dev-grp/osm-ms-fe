@@ -9,7 +9,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatDialog } from '@angular/material/dialog';
 import { ToastService } from '../../../shared/services/toast.service';
 
 import { FiltrationApiService } from '../../../shared/services/filtration-api.service';
@@ -20,13 +19,13 @@ import { UnifiedDelivery } from '../../../shared/models/UnifiedDelivery';
 import { QualityControlResultDto } from '../../../shared/models/QualityControlResultDto';
 import { OilTransaction } from '../../../shared/models/OilTransaction';
 import { ProductionGenealogy, ProductionRootSource } from '../../../shared/models/production-genealogy.model';
-import { FiltrationQcEntryDialogComponent } from './filtration-qc-entry-dialog.component';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-filtration-traceability-page',
   standalone: true,
-  imports: [TranslateModule,
+  imports: [
+    TranslateModule,
     CommonModule,
     RouterModule,
     MatIconModule,
@@ -39,7 +38,6 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrls: ['./filtration-traceability-page.component.scss']
 })
 export class FiltrationTraceabilityPageComponent implements OnInit {
-
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
 
@@ -53,7 +51,6 @@ export class FiltrationTraceabilityPageComponent implements OnInit {
     private filtrationApi: FiltrationApiService,
     private transactionService: OilTransactionService,
     private productionTraceability: ProductionTraceabilityService,
-    private dialog: MatDialog,
     private toast: ToastService
   ) {}
 
@@ -65,35 +62,38 @@ export class FiltrationTraceabilityPageComponent implements OnInit {
       return;
     }
 
-    this.filtrationApi.getById(id).pipe(
-      switchMap(op => {
-        this.operation.set(op);
+    this.filtrationApi
+      .getById(id)
+      .pipe(
+        switchMap((op) => {
+          this.operation.set(op);
 
-        const sourceUnitId = op.source?.id;
-        if (!sourceUnitId) {
+          const sourceUnitId = op.source?.id;
+          if (!sourceUnitId) {
+            return of({ genealogy: null, deliveries: [] });
+          }
+
+          const genealogyAnchor = op.target?.id || op.source?.id;
+          const genealogy$ = genealogyAnchor
+            ? this.productionTraceability.getGenealogy(genealogyAnchor).pipe(catchError(() => of(null)))
+            : of(null);
+
+          return forkJoin({
+            genealogy: genealogy$,
+            deliveries: this.loadDeliveriesFromTransactions(sourceUnitId)
+          });
+        }),
+        catchError(() => {
+          this.error.set('Erreur lors du chargement de la tracabilite.');
+          this.loading.set(false);
           return of({ genealogy: null, deliveries: [] });
-        }
-
-        const genealogyAnchor = op.target?.id || op.source?.id;
-        const genealogy$ = genealogyAnchor
-          ? this.productionTraceability.getGenealogy(genealogyAnchor).pipe(catchError(() => of(null)))
-          : of(null);
-
-        return forkJoin({
-          genealogy: genealogy$,
-          deliveries: this.loadDeliveriesFromTransactions(sourceUnitId)
-        });
-      }),
-      catchError(() => {
-        this.error.set('Erreur lors du chargement de la tracabilite.');
+        })
+      )
+      .subscribe(({ genealogy, deliveries }) => {
+        this.genealogy.set(genealogy);
+        this.sourceDeliveries.set(deliveries || []);
         this.loading.set(false);
-        return of({ genealogy: null, deliveries: [] });
-      })
-    ).subscribe(({ genealogy, deliveries }) => {
-      this.genealogy.set(genealogy);
-      this.sourceDeliveries.set(deliveries || []);
-      this.loading.set(false);
-    });
+      });
   }
 
   get statusClass(): string {
@@ -123,9 +123,9 @@ export class FiltrationTraceabilityPageComponent implements OnInit {
       return Object.entries(direct).map(([key, value]) => ({ key, value }));
     }
 
-    const fromStep = this.genealogy()?.filtrations
-      ?.map(step => step.qualityControls)
-      .find(controls => !!controls && Object.keys(controls).length > 0);
+    const fromStep = this.genealogy()
+      ?.filtrations?.map((step) => step.qualityControls)
+      .find((controls) => !!controls && Object.keys(controls).length > 0);
 
     return fromStep ? Object.entries(fromStep).map(([key, value]) => ({ key, value })) : [];
   }
@@ -173,21 +173,7 @@ export class FiltrationTraceabilityPageComponent implements OnInit {
       this.toast.error('AUTO.OPERATION_DE_FILTRATION_INTROUVABLE');
       return;
     }
-
-    const ref = this.dialog.open(FiltrationQcEntryDialogComponent, {
-      width: '860px',
-      maxWidth: '96vw',
-      data: {
-        filtrationOperationId,
-        traceabilityLotId: this.genealogy()?.traceabilityLotId || null
-      }
-    });
-
-    ref.afterClosed().subscribe((saved: boolean) => {
-      if (saved) {
-        this.refreshGenealogy();
-      }
-    });
+    void this.router.navigate(['/storage', 'oil-filtering', filtrationOperationId, 'quality']);
   }
 
   canEnterFilteredQc(): boolean {
@@ -202,7 +188,7 @@ export class FiltrationTraceabilityPageComponent implements OnInit {
         const deliveries: UnifiedDelivery[] = [];
         const seenIds = new Set<string>();
 
-        transactions.forEach(tx => {
+        transactions.forEach((tx) => {
           if (tx.reception?.id && !seenIds.has(tx.reception.id) && tx.storageUnitDestination?.id === sourceUnitId) {
             deliveries.push(tx.reception);
             seenIds.add(tx.reception.id);
@@ -213,19 +199,5 @@ export class FiltrationTraceabilityPageComponent implements OnInit {
       }),
       catchError(() => of([]))
     );
-  }
-
-  private refreshGenealogy(): void {
-    const op = this.operation();
-    const genealogyAnchor = op?.target?.id || op?.source?.id;
-    if (!genealogyAnchor) {
-      return;
-    }
-
-    this.productionTraceability.getGenealogy(genealogyAnchor)
-      .pipe(catchError(() => of(null)))
-      .subscribe((genealogy) => {
-        this.genealogy.set(genealogy);
-      });
   }
 }

@@ -33,7 +33,7 @@ import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { ToastService } from '../../../shared/services/toast.service';
 import { MatDialog } from '@angular/material/dialog';
 import { SupplierAddComponent } from '../../../reception/suppliers/supplier-add/supplier-add.component';
-import { mapOilSaleToCreateRequest } from './oil-sale.mapper';
+import { mapOilSaleToCreateRequest, toLocalDateTimeString } from './oil-sale.mapper';
 
 @Component({
   selector: 'app-oil-sale-add',
@@ -161,6 +161,12 @@ export class OilSaleAddComponent implements OnInit {
       return;
     }
 
+    const deliveryAddress = this.resolveDeliveryAddress();
+    if (!deliveryAddress) {
+      this.toast.warning('OIL_SALES.FORM.VALIDATION.ADDRESS_REQUIRED');
+      return;
+    }
+
     // Validate storage unit has enough oil
     const selectedStorageUnit = this.oilSaleForm.get('storageUnit')?.value;
     if (selectedStorageUnit && this.isStorageUnitDisabled(selectedStorageUnit)) {
@@ -182,8 +188,10 @@ export class OilSaleAddComponent implements OnInit {
       count: ctrl.get('count')?.value || 0
     }));
 
-    // Use current date/time automatically
-    const saleDate = new Date().toISOString();
+    // Use form date or current date
+    const saleDateValue = formValue.saleDate instanceof Date
+      ? toLocalDateTimeString(formValue.saleDate)
+      : (formValue.saleDate ? toLocalDateTimeString(formValue.saleDate) : toLocalDateTimeString(new Date()));
 
     if (this.isEditing && this.oilSaleId) {
       const updateDto: OilSale = {
@@ -196,12 +204,12 @@ export class OilSaleAddComponent implements OnInit {
         quantity: formValue.quantity,
         qualityGrade: formValue.qualityGrade,
         unitPrice: formValue.unitPrice,
-        currency: formValue.currency,
-        paymentMethod: formValue.paymentMethod,
-        saleDate: saleDate,
-        invoiceNumber: formValue.invoiceNumber,
+        currency: formValue.currency || 'TND',
+        paymentMethod: formValue.paymentMethod || 'CASH',
+        saleDate: saleDateValue,
         status: OilSaleStatus.PENDING,
         description: formValue.description,
+        deliveryAddress,
         totalAmount: totalAmount,
         containerSales: containers
       };
@@ -231,12 +239,12 @@ export class OilSaleAddComponent implements OnInit {
         oilTransactionUUID: '',
         paidAmount: 0,
         unpaidAmount: totalAmount,
-        currency: formValue.currency,
-        paymentMethod: formValue.paymentMethod,
-        saleDate: saleDate,
-        invoiceNumber: formValue.invoiceNumber,
+        currency: formValue.currency || 'TND',
+        paymentMethod: formValue.paymentMethod || 'CASH',
+        saleDate: saleDateValue,
         qualityGrade: formValue.qualityGrade,
         description: formValue.description,
+        deliveryAddress,
         totalAmount: totalAmount,
         status: OilSaleStatus.PENDING,
         containerSales: containers
@@ -338,6 +346,7 @@ export class OilSaleAddComponent implements OnInit {
     const ctrl = this.oilSaleForm.get('supplier')!;
     ctrl.setValue(selected);
     ctrl.updateValueAndValidity();
+    this.syncDeliveryAddressFromSupplier(selected);
   }
 
   selectActiveOption(auto: MatAutocomplete, trig: any) {
@@ -363,21 +372,24 @@ export class OilSaleAddComponent implements OnInit {
         const supplierCtrl = this.oilSaleForm.get('supplier');
         supplierCtrl?.setValue(newSupplier);
         supplierCtrl?.updateValueAndValidity();
+        this.syncDeliveryAddressFromSupplier(newSupplier);
       }
     });
   }
 
   private buildForm(): void {
     this.oilSaleForm = this.fb.group({
-      // Required fields
       supplier: [null, [Validators.required, this.requireSupplierSelection()]],
       quantity: ['', [Validators.required, Validators.min(0.01)]],
       storageUnit: [null, Validators.required],
       unitPrice: ['', [Validators.required, Validators.min(0.01)]],
       qualityGrade: ['', Validators.required],
-
-      // Optional fields
+      saleDate: [new Date(), Validators.required],
+      currency: ['TND'],
+      paymentMethod: ['CASH'],
       description: [''],
+      useClientAddress: [true],
+      deliveryAddress: [''],
       showContainers: [false],
       selectedContainers: [[]],
       containerSelections: this.fb.array([])
@@ -407,7 +419,46 @@ export class OilSaleAddComponent implements OnInit {
       .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((selected: OilContainer[]) => this.onContainerSelectionChange({ value: selected } as MatSelectChange));
 
+    this.oilSaleForm
+      .get('useClientAddress')!
+      .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.updateDeliveryAddressState());
+
     this.setupSupplierAutocomplete();
+  }
+
+  private syncDeliveryAddressFromSupplier(supplier: SupplierType | null | undefined): void {
+    const hasAddress = !!(supplier?.address?.trim());
+    this.oilSaleForm.patchValue(
+      {
+        useClientAddress: hasAddress,
+        deliveryAddress: hasAddress ? supplier!.address!.trim() : ''
+      },
+      { emitEvent: false }
+    );
+    this.updateDeliveryAddressState();
+  }
+
+  private updateDeliveryAddressState(): void {
+    const useClient = !!this.oilSaleForm.get('useClientAddress')?.value;
+    const supplier = this.getSelectedSupplier();
+    const addressCtrl = this.oilSaleForm.get('deliveryAddress')!;
+
+    if (useClient) {
+      const clientAddress = supplier?.address?.trim() ?? '';
+      addressCtrl.setValue(clientAddress, { emitEvent: false });
+      addressCtrl.disable({ emitEvent: false });
+    } else {
+      addressCtrl.enable({ emitEvent: false });
+    }
+  }
+
+  private resolveDeliveryAddress(): string | undefined {
+    const raw = this.oilSaleForm.getRawValue();
+    if (raw.useClientAddress) {
+      return raw.supplier?.address?.trim() || undefined;
+    }
+    return raw.deliveryAddress?.trim() || undefined;
   }
 
   private distributeCounts(): void {
@@ -491,11 +542,18 @@ export class OilSaleAddComponent implements OnInit {
             quantity: oilSale.quantity,
             unitPrice: oilSale.unitPrice,
             qualityGrade: oilSale.qualityGrade,
+            saleDate: oilSale.saleDate ? new Date(oilSale.saleDate) : new Date(),
+            currency: oilSale.currency || 'TND',
+            paymentMethod: oilSale.paymentMethod || 'CASH',
             description: oilSale.description,
+            useClientAddress: !oilSale.deliveryAddress && !!matchedSupplier?.address,
+            deliveryAddress: oilSale.deliveryAddress || matchedSupplier?.address || '',
             selectedContainers: (oilSale.containerSales || []).map((c: any) =>
               this.containerList.find((container) => container.id === c.id)
             )
           });
+
+          this.updateDeliveryAddressState();
 
           this.oilSaleForm.setControl('containerSelections', containerSelections);
         }

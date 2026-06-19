@@ -27,14 +27,13 @@ import { TypeCategory } from '../../shared/models/type-category.enum';
 import { SupplierType } from '../../shared/models/supplier-type';
 import { SupplierTypeService } from '../../shared/services/supplier.service';
 
-import { PdfGeneratorService } from '../../shared/services/pdf-generator.service';
+import { DocumentGenerationService } from '../../shared/services/document-generation.service';
+import { OilReceptionActionsService } from './oil-reception-actions.service';
 import { OIL_DELIVERY_DASHBOARD } from './OIL_DELIVERY_DASHBOARD';
 import { AppParameterService } from '../../shared/services/AppParameterService';
 import { ToastService } from '../../shared/services/toast.service';
 import { PaymentDetailsDialogComponent } from './payment-details-dialog/payment-details-dialog.component';
-import { getProductionPdfConfig } from '../pdf-config/production-pdf.config';
-import { getOilPdfConfig } from '../pdf-config/reception-oil-pdf.config';
-import { getControlQualitePdfConfig } from '../pdf-config/controlQualite.config';
+import { deliveryType } from '../../shared/models/deleveryType';
 import { TranslateModule } from '@ngx-translate/core';
 
 /* ──────────────────────────────────────────────────────────── */
@@ -114,9 +113,9 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
     private supplierService: SupplierTypeService,
     private toast: ToastService,
     private router: Router,
-    private pdfService: PdfGeneratorService,
+    private documentGenerationService: DocumentGenerationService,
     private dialog: MatDialog,
-    private pdfGeneratorService: PdfGeneratorService
+    private oilActions: OilReceptionActionsService
   ) {
     this.receptionForm = this.fb.group(
       {
@@ -228,15 +227,10 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
   /* ——— UI actions ——— */
 
   generateBonReception(delivery: UnifiedDelivery): void {
-    let config = getOilPdfConfig(delivery);
-    config = { ...config, layout: 'oilReceptionForm' };
-    this.pdfService.generatePdf(config);
-  }
-
-  generateBonProduction(delivery: UnifiedDelivery): void {
-    const parameters = JSON.parse(localStorage.getItem('osm_app_parameters') || '{}');
-    const config = getProductionPdfConfig(delivery, parameters);
-    this.pdfGeneratorService.generatePdf(config);
+    if (!delivery?.id) {
+      return;
+    }
+    this.documentGenerationService.downloadReceptionPdf(delivery.id);
   }
 
   /* ——— data loading & table helpers ——— */
@@ -248,58 +242,11 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param e Object containing the row data and action to perform
    */
   onRowAction(e: { row: UnifiedDelivery; action: string }): void {
-    try {
-      switch (e.action) {
-        case 'READ':
-          console.log(`[OilReception] Viewing delivery: ${e.row.lotNumber}`);
-          this.viewDelivery(e.row);
-          break;
-
-        case 'UPDATE':
-          console.log(`[OilReception] Editing delivery: ${e.row.lotNumber}`);
-          this.selectReception(e.row);
-          break;
-
-        case 'QUALITY':
-        case 'OIL_QUALITY':
-        case 'UPDATE_OIL_QUALITY':
-          console.log(`[OilReception] Opening quality control for delivery: ${e.row.lotNumber}`);
-          this.QualityControl(e.row);
-          break;
-
-        case 'SET_PRICE':
-          console.log(`[OilReception] Setting price for delivery: ${e.row.lotNumber}`);
-          this.setPrice(e.row);
-          break;
-        case 'COMPLETE_PAYMENT_DETAILS':
-          console.log(`[OilReception] Opening payment details dialog for delivery: ${e.row.lotNumber}`);
-          this.openPaymentDetailsDialogFromParent(e.row);
-          break;
-
-        case 'GEN_PDF':
-          if (e.row) {
-            console.log(`[OilReception] Generating PDF for delivery: ${e.row.lotNumber}`);
-            this.generateBonReception(e.row);
-          }
-          break;
-        case 'GEN_PDF_QC_OIL':
-          if (e.row.qualityControlResults) {
-            console.log(`[OilReception] Generating PDF for delivery: ${e.row.lotNumber}`);
-            const deliveryType = e.row.deliveryType?.toUpperCase() || '';
-            const config = getControlQualitePdfConfig(e.row, deliveryType);
-            this.pdfService.generatePdf(config);
-          }
-          break;
-
-        default:
-          console.warn(`[OilReception] Unknown action: ${e.action} for delivery: ${e.row.lotNumber}`);
-          this.toast.info('AUTO.ACTION_NON_RECONNUE', { value0: e.action });
-          break;
-      }
-    } catch (error) {
-      console.error(`[OilReception] Error processing action ${e.action} for delivery ${e.row.lotNumber}:`, error);
-      this.toast.error('AUTO.ERREUR_LORS_DU_TRAITEMENT_DE_L_ACTION', { value0: e.action });
-    }
+    this.oilActions.handleAction(e.action, e.row, {
+      onRefresh: () => this.dashboard?.refrechData(),
+      onEdit: (row) => this.selectReception(row),
+      onSetPrice: (row) => this.setPrice(row)
+    });
   }
 
   confirmPrice(dialogRef: MatDialogRef<unknown>): void {
@@ -333,7 +280,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param row The oil delivery row that needs payment details completion
    */
   openPaymentDetailsDialogFromParent(row: any) {
-    this.deliveryService.getDeliveryByLotNumber(row.lotOliveNumber!).subscribe({
+    this.deliveryService.getDeliveryByLotNumberAndType(row.lotOliveNumber!, deliveryType.OLIVE).subscribe({
       next: (res) => {
         if (res.success && res.data) {
           this.originalOliveReception = res.data;
@@ -346,11 +293,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
           // Derive maxTotal = “original olive delivery price” / unpaid amount to allocate
           // Map this to whatever field your backend provides:
           // e.g., originalOliveReception.price OR (total - paid)
-          const maxTotal = (() => {
-            const total = Number(this.originalOliveReception?.unpaidAmount);
-            const paid = Number(this.originalOliveReception?.paidAmount);
-            return Math.max(0, (total || 0) - (paid || 0));
-          })();
+          const maxTotal = Math.max(0, Number(this.originalOliveReception?.unpaidAmount ?? 0));
 
           // Optional seeds from current row
           const initialUnitPrice = Number(row?.unitPrice) || null;
@@ -683,7 +626,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
       // Prevent the old bottom block from opening the dialog too early
       return;
     } else if (row.lotOliveNumber) {
-      this.deliveryService.getDeliveryByLotNumber(row.lotOliveNumber!).subscribe({
+      this.deliveryService.getDeliveryByLotNumberAndType(row.lotOliveNumber!, deliveryType.OLIVE).subscribe({
         next: (res) => {
           if (res.success && res.data) {
             // NOTE: global lot returns a list
@@ -698,9 +641,7 @@ export class OilReceptionComponent implements OnInit, OnDestroy, AfterViewInit {
             const computedUnitPrice = totalOilQty > 0 ? Number((totalCost / totalOilQty).toFixed(3)) : 0;
 
             // Max total across the lot
-            const totalUnpaid = this.originalOliveReception.unpaidAmount || 0;
-            const totalPaid = this.originalOliveReception.paidAmount || 0;
-            const maxTotal = Math.max(0, totalUnpaid - totalPaid);
+            const maxTotal = Math.max(0, Number(this.originalOliveReception?.unpaidAmount ?? 0));
 
             // Seeds: prefer row’s oil qty; else total
             let quantity = Number(row?.oilQuantity || 0).toFixed(3) || totalOilQty || 0;

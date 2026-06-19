@@ -1,198 +1,341 @@
 .oil-sale-view-container {
+
   padding: 20px;
+
   max-width: 1200px;
+
   margin: 0 auto;
 
+
+
   .loading-container {
+
     display: flex;
+
     flex-direction: column;
+
     align-items: center;
+
     justify-content: center;
+
     min-height: 400px;
+
     gap: 16px;
-    
+
+
+
     p {
+
       color: #666;
+
       margin: 0;
+
     }
+
   }
 
-  .oil-sale-details {
-    .header-card {
-      margin-bottom: 20px;
-      
-      .mat-mdc-card-header {
-        .mat-mdc-card-title {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          margin: 0;
-          
-          mat-icon {
-            color: #1976d2;
-          }
-        }
+
+
+  .view-header {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    align-items: flex-start;
+
+    gap: 16px;
+
+    margin-bottom: 16px;
+
+
+
+    .header-title-block {
+
+      display: flex;
+
+      flex-wrap: wrap;
+
+      align-items: center;
+
+      gap: 12px;
+
+      flex: 1;
+
+
+
+      h2 {
+
+        margin: 0;
+
+        font-size: 1.5rem;
+
       }
 
-      .mat-mdc-card-actions {
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-        
-        button {
-          min-width: 120px;
-        }
+
+
+      .invoice-ref {
+
+        color: #666;
+
+        font-size: 0.95rem;
+
       }
+
     }
 
-    .status-card {
-      margin-bottom: 20px;
-      
-      .status-section {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        
-        h3 {
-          margin: 0;
-          color: #333;
-        }
+  }
+
+
+
+  .view-actions {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 16px;
+
+    margin-bottom: 24px;
+
+
+
+    .action-group {
+
+      display: flex;
+
+      flex-wrap: wrap;
+
+      align-items: center;
+
+      gap: 8px;
+
+      padding: 12px 16px;
+
+      border: 1px solid #e0e0e0;
+
+      border-radius: 8px;
+
+      background: #fafafa;
+
+
+
+      .action-group-label {
+
+        width: 100%;
+
+        font-size: 0.75rem;
+
+        font-weight: 600;
+
+        text-transform: uppercase;
+
+        letter-spacing: 0.04em;
+
+        color: #666;
+
+        margin-bottom: 4px;
+
       }
+
     }
 
-    .info-card {
-      margin-bottom: 20px;
-      
-      .mat-mdc-card-header {
-        .mat-mdc-card-title {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          margin: 0;
+  }
+
+
+
+  .details-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+
+    gap: 16px;
+
+  }
+
+
+
+  .info-grid {
+
+    .info-row {
+
+      display: flex;
+
+      justify-content: space-between;
+
+      align-items: flex-start;
+
+      gap: 16px;
+
+      padding: 10px 0;
+
+      border-bottom: 1px solid #f0f0f0;
+
+
+
+      &:last-child {
+
+        border-bottom: none;
+
+      }
+
+
+
+      &.total {
+
+        font-weight: 600;
+
+        border-top: 2px solid #e0e0e0;
+
+        margin-top: 8px;
+
+        padding-top: 14px;
+
+
+
+        .total-amount {
+
+          color: #1976d2;
+
           font-size: 1.1rem;
-          
-          mat-icon {
-            color: #666;
-          }
+
         }
+
       }
 
-      .info-grid {
-        .info-row {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 12px 0;
-          border-bottom: 1px solid #f0f0f0;
 
-          &:last-child {
-            border-bottom: none;
-          }
 
-          &.total {
-            font-weight: 600;
-            font-size: 1.1rem;
-            color: #1976d2;
-            border-top: 2px solid #e0e0e0;
-            margin-top: 8px;
-            padding-top: 16px;
+      .label {
 
-            .total-amount {
-              font-size: 1.2rem;
-              color: #1976d2;
-            }
-          }
+        font-weight: 500;
 
-          .label {
-            font-weight: 500;
-            color: #666;
-            min-width: 200px;
-          }
+        color: #666;
 
-          .value {
-            color: #333;
-            text-align: right;
-            flex: 1;
-            margin-left: 16px;
-          }
-        }
+        min-width: 140px;
+
       }
+
+
+
+      .value {
+
+        color: #333;
+
+        text-align: right;
+
+        flex: 1;
+
+      }
+
+    }
+
+  }
+
+}
+
+
+
+.status-badge {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  padding: 4px 12px;
+
+  border-radius: 999px;
+
+  font-size: 0.8rem;
+
+  font-weight: 600;
+
+  letter-spacing: 0.02em;
+
+
+
+  &.status-pending {
+
+    background: #fff3e0;
+
+    color: #e65100;
+
+  }
+
+
+
+  &.status-confirmed {
+
+    background: #e3f2fd;
+
+    color: #1565c0;
+
+  }
+
+
+
+  &.status-delivered {
+
+    background: #e8f5e9;
+
+    color: #2e7d32;
+
+  }
+
+
+
+  &.status-cancelled {
+
+    background: #ffebee;
+
+    color: #c62828;
+
+  }
+
+}
+
+
+
+.container-lines {
+  .container-line {
+    display: grid;
+    grid-template-columns: 2fr repeat(3, minmax(80px, 1fr));
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+
+    &.header {
+      font-weight: 600;
+      color: rgba(0, 0, 0, 0.6);
     }
   }
 }
 
-// Responsive design
+
+
 @media (max-width: 768px) {
+
   .oil-sale-view-container {
-    padding: 10px;
 
-    .oil-sale-details {
-      .header-card {
-        .mat-mdc-card-actions {
-          justify-content: center;
-          
-          button {
-            width: 100%;
-            margin-bottom: 8px;
-          }
-        }
+    padding: 12px;
+
+
+
+    .info-grid .info-row {
+
+      flex-direction: column;
+
+
+
+      .value {
+
+        text-align: left;
+
       }
 
-      .info-card {
-        .info-grid {
-          .info-row {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 4px;
-
-            .label {
-              min-width: auto;
-              font-size: 0.9rem;
-            }
-
-            .value {
-              text-align: left;
-              margin-left: 0;
-              font-weight: 500;
-            }
-          }
-        }
-      }
     }
+
   }
+
 }
 
-// Material Design overrides
-.mat-mdc-card {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-}
-
-.mat-mdc-raised-button {
-  border-radius: 6px;
-}
-
-.mat-mdc-stroked-button {
-  border-radius: 6px;
-}
-
-.mat-mdc-chip {
-  font-size: 12px;
-  font-weight: 500;
-}
-
-// Status colors
-.mat-mdc-chip.mat-warn {
-  background-color: #ff9800;
-  color: white;
-}
-
-.mat-mdc-chip.mat-primary {
-  background-color: #1976d2;
-  color: white;
-}
-
-.mat-mdc-chip.mat-accent {
-  background-color: #4caf50;
-  color: white;
-} 

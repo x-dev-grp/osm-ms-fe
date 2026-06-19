@@ -1,0 +1,82 @@
+<div class="quality-control-container">
+  <div class="page-toolbar">
+    <button mat-stroked-button type="button" (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+      {{ 'COMMON.BACK' | translate }}
+    </button>
+  </div>
+
+  <div class="quality-header">
+    <div class="header-content">
+      <div class="header-icon">
+        <mat-icon>science</mat-icon>
+      </div>
+      <div class="header-text">
+        <h2>{{ 'FILTRATION_QC.TITLE' | translate }}</h2>
+        <p>{{ 'FILTRATION_QC.SUBTITLE' | translate }}</p>
+      </div>
+      <div *ngIf="isQualityControlDone" class="header-status">
+        <mat-chip color="accent" selected>
+          <mat-icon>check_circle</mat-icon>
+          {{ 'CONTROLE_QUALITE.STATUS.COMPLETED' | translate }}
+        </mat-chip>
+      </div>
+      <div class="rawstring-banner" *ngIf="operation?.targetLotNumber || operation?.operationId">
+        <mat-chip color="primary" selected>
+          <mat-icon>label</mat-icon>
+          {{ operation?.targetLotNumber || operation?.operationId }}
+        </mat-chip>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-state">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>{{ 'CONTROLE_QUALITE.LOADING' | translate }}</p>
+  </div>
+
+  <div *ngIf="message && !isLoading" class="error-state">
+    <mat-icon>error_outline</mat-icon>
+    <p>{{ message | translate }}</p>
+  </div>
+
+  <div *ngIf="operation && !isLoading && !message" class="quality-content">
+    <div class="quality-form">
+      <div class="form-section">
+        <div class="section-header">
+          <mat-icon>filter_alt</mat-icon>
+          <h3>{{ 'FILTRATION_QC.OPERATION_INFO' | translate }}</h3>
+        </div>
+
+        <div class="operation-grid">
+          <div class="operation-card">
+            <span class="operation-label">{{ 'AUTO.CUVE_SOURCE' | translate }}</span>
+            <strong>{{ storageLabel(operation.source) }}</strong>
+          </div>
+          <div class="operation-card">
+            <span class="operation-label">{{ 'AUTO.CUVE_CIBLE' | translate }}</span>
+            <strong>{{ storageLabel(operation.target) }}</strong>
+          </div>
+          <div class="operation-card">
+            <span class="operation-label">{{ 'AUTO.VOLUME_FILTRE' | translate }}</span>
+            <strong>{{ operation.volumeFiltered | number:'1.0-3' }} L</strong>
+          </div>
+          <div class="operation-card" *ngIf="operation.volumeAfter != null">
+            <span class="operation-label">{{ 'AUTO.VOLUME_APRES_FILTRATION' | translate }}</span>
+            <strong>{{ operation.volumeAfter | number:'1.0-3' }} L</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-qc-entry-studio
+    *ngIf="operation && !isLoading && !message"
+    context="FILTRATION"
+    [filtrationOperationId]="operation.operationId"
+    [traceabilityLotId]="traceabilityLotId"
+    [canSubmit]="true"
+    [compact]="false"
+    (saved)="onQcSaved()"
+  />
+</div>

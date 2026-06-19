@@ -1,0 +1,23 @@
+{
+  "keyCounts": {
+    "en": 4877,
+    "fr": 4877,
+    "ar": 4877
+  },
+  "missingAcrossLangs": {
+    "en": 0,
+    "fr": 0,
+    "ar": 0
+  },
+  "emptyValues": {
+    "en": 0,
+    "fr": 0,
+    "ar": 0
+  },
+  "usedKeysInCode": 2377,
+  "usedButMissingEn": 0,
+  "usedButMissingFr": 0,
+  "usedButMissingAr": 0,
+  "wrongCaseKeysUsed": 0,
+  "orphanKeysInEn": 2500
+}

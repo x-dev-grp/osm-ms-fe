@@ -9,9 +9,9 @@ import { BcFormComponent } from './components/bon-commande/bc-form/bc-form.compo
 import { BcDetailComponent } from './components/bon-commande/bc-detail/bc-detail.component';
 import { MouvementListComponent } from './components/mouvement/mouvement-list/mouvement-list.component';
 import { MouvementDetailComponent } from './components/mouvement/mouvement-detail/mouvement-detail.component';
-import {FournisseurListComponent} from "./components/fournisseurs/fournisseur-list/fournisseur-list.component";
-import {FournisseurFormComponent} from "./components/fournisseurs/fournisseur-form/fournisseur-form.component";
-import {FournisseurDetailComponent} from "./components/fournisseurs/fournisseur-detail/fournisseur-detail.component";
+import { MaterielSupplierListComponent } from './components/materiel-suppliers/materiel-supplier-list/materiel-supplier-list.component';
+import { MaterielSupplierFormComponent } from './components/materiel-suppliers/materiel-supplier-form/materiel-supplier-form.component';
+import { MaterielSupplierDetailComponent } from './components/materiel-suppliers/materiel-supplier-detail/materiel-supplier-detail.component';
 import {SkuListComponent} from "./components/sku/sku-list/sku-list.component";
 import {SkuFormComponent} from "./components/sku/sku-form/sku-form.component";
 import {SkuDetailComponent} from "./components/sku/sku-detail/sku-detail.component";
@@ -50,10 +50,16 @@ const routes: Routes = [
       { path: 'mouvements', component: MouvementListComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.MOUVEMENTSTOCKSEC, Action.READ)])] },
       { path: 'mouvements/:id', component: MouvementDetailComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.MOUVEMENTSTOCKSEC, Action.READ)])] },
 
-      { path: 'fournisseurs', component: FournisseurListComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.FOURNISSEUR, Action.READ)])] },
-      { path: 'fournisseurs/nouveau', component: FournisseurFormComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.FOURNISSEUR, Action.CREATE)])] },
-      { path: 'fournisseurs/:id', component: FournisseurDetailComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.FOURNISSEUR, Action.READ)])] },
-      { path: 'fournisseurs/:id/editer', component: FournisseurFormComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.FOURNISSEUR, Action.UPDATE)])] },
+      { path: 'materiel-suppliers', component: MaterielSupplierListComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.MATERIEL_SUPPLIER, Action.READ)])] },
+      { path: 'materiel-suppliers/nouveau', component: MaterielSupplierFormComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.MATERIEL_SUPPLIER, Action.CREATE)])] },
+      { path: 'materiel-suppliers/:id', component: MaterielSupplierDetailComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.MATERIEL_SUPPLIER, Action.READ)])] },
+      { path: 'materiel-suppliers/:id/editer', component: MaterielSupplierFormComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.MATERIEL_SUPPLIER, Action.UPDATE)])] },
+      { path: 'materiel-suppliers/:id/edit', component: MaterielSupplierFormComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.MATERIEL_SUPPLIER, Action.UPDATE)])] },
+      { path: 'fournisseurs', redirectTo: 'materiel-suppliers', pathMatch: 'full' },
+      { path: 'fournisseurs/nouveau', redirectTo: 'materiel-suppliers/nouveau', pathMatch: 'full' },
+      { path: 'fournisseurs/:id/editer', redirectTo: 'materiel-suppliers/:id/editer' },
+      { path: 'fournisseurs/:id/edit', redirectTo: 'materiel-suppliers/:id/edit' },
+      { path: 'fournisseurs/:id', redirectTo: 'materiel-suppliers/:id' },
 
       { path: 'products', component: SkuListComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.PRODUCT, Action.READ)])] },
       { path: 'products/nouveau', component: SkuFormComponent, canActivate: [anyPermissionGuard([permissionKey(OSMModule.INVENTAIR, InventoryEntity.PRODUCT, Action.CREATE)])] },

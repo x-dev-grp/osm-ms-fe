@@ -19,6 +19,8 @@ export interface CompanyProfile {
   city?: string;
   postalCode?: string;
   governorate?: string;
+  campaignStartAt?: string;
+  campaignEndAt?: string;
   campaignStartMonth?: number;
   campaignStartDay?: number;
   campaignEndMonth?: number;

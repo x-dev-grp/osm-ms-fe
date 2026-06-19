@@ -31,6 +31,8 @@ export const OIL_DELIVERY_DASHBOARD: DashboardConfig = {
             'WAITING',
             'REFUSED',
             'STOCK_READY',
+            'IN_STOCK',
+            'COMPLETED',
             'CANCELLED',
             'WAITING_FOR_PAYMENT_DETAILS'
           ]

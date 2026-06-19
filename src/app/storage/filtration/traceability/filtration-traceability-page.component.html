@@ -10,6 +10,16 @@
       </button>
 
       <button
+        *ngIf="canEnterFilteredQc()"
+        class="label-btn"
+        mat-flat-button
+        color="accent"
+        (click)="openFiltrationQcEntry()">
+        <mat-icon>science</mat-icon>
+        {{ 'FILTRATION_QC.ENTER_CONTROL' | translate }}
+      </button>
+
+      <button
         *ngIf="operation()?.target?.id"
         class="label-btn"
         mat-flat-button

@@ -1,0 +1,13 @@
+<div class="supplier-domain-banner supplier-domain-banner--articles">
+  <i class="fas fa-boxes-stacked" aria-hidden="true"></i>
+  <div class="supplier-domain-banner__text">
+    <strong>{{ 'MATERIEL_SUPPLIER.DOMAIN.ARTICLES_BADGE' | translate }}</strong>
+    <span>{{ 'MATERIEL_SUPPLIER.DOMAIN.ARTICLES_HINT' | translate }}</span>
+  </div>
+</div>
+
+<osm-dashboard
+  #dashboard
+  [config]="dashboardConfig"
+  (applyAction)="handleAction($event)">
+</osm-dashboard>

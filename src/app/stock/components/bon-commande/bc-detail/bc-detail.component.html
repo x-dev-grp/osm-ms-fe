@@ -165,7 +165,7 @@
             <tbody>
             <tr *ngFor="let ligne of bon?.lignes">
               <td>{{ ligne.article.nom }}</td>
-              <td>{{ ligne.article.fournisseur?.nom || 'Non spécifié' }}</td>
+              <td>{{ ligne.article.materielSupplier?.nom || 'Non spécifié' }}</td>
               <td>{{ ligne.article.categorie }}</td>
               <td class="text-end">{{ ligne.quantiteCommandee }} {{ ligne.article.um }}</td>
               <td class="text-end">

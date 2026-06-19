@@ -84,6 +84,8 @@ export class SupplierAddComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (this.inDialog) {
+      this.supplierForm.get('address')?.setValidators([Validators.required, Validators.minLength(5)]);
+      this.supplierForm.get('address')?.updateValueAndValidity();
       return;
     }
 

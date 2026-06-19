@@ -9,9 +9,7 @@ import { ProjetDto } from '../../../models/TypeProduit';
 import { ProjetService } from '../../../services/projet.service';
 import { ExpeditionService } from '../../../services/expedition.service';
 import { ToastService } from '../../../../shared/services/toast.service';
-import { PdfGeneratorExpeditionService } from '../../../../shared/services/pdf-generator-expedition.service';
-import { CompanyProfileService } from '../../../../shared/services/company-profile.service';
-import { PdfExpeditionConfig } from '../../../../shared/models/pdf-config.model';
+import { DocumentGenerationService } from '../../../../shared/services/document-generation.service';
 import { TraceabilityTimelineComponent } from '../../../../shared/components/traceability-timeline/traceability-timeline.component';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -34,7 +32,6 @@ export class ProjetTraceabilityComponent implements OnInit {
   project: ProjetDto | null = null;
   traceabilityData: any = null;
   loading = true;
-  companyProfile: any = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -42,8 +39,7 @@ export class ProjetTraceabilityComponent implements OnInit {
     private projetService: ProjetService,
     private expeditionService: ExpeditionService,
     private toast: ToastService,
-    private pdfService: PdfGeneratorExpeditionService,
-    private companyService: CompanyProfileService
+    private documentGenerationService: DocumentGenerationService
   ) {}
 
   ngOnInit(): void {
@@ -55,7 +51,6 @@ export class ProjetTraceabilityComponent implements OnInit {
     }
 
     this.loadData();
-    this.loadCompanyProfile();
   }
 
   loadData(): void {
@@ -90,39 +85,11 @@ export class ProjetTraceabilityComponent implements OnInit {
     });
   }
 
-  loadCompanyProfile(): void {
-    this.companyService.getProfile().subscribe(profile => {
-      this.companyProfile = profile;
-    });
-  }
-
   generatePDF(): void {
-    if (!this.project || !this.traceabilityData) return;
-
-    const config: PdfExpeditionConfig = {
-      title: 'Rapport de Traçabilité Projet',
-      reference: this.project.code || 'PROJET',
-      date: new Date().toLocaleDateString(),
-      clientInfo: {
-        name: this.project.client.nom,
-        address: ''
-      },
-      lines: Object.values(this.traceabilityData.ofDetails || {}).map((of: any) => ({
-        ofCode: of.code || '',
-        articleName: of.articleName || '',
-        quantity: of.quantityGood || 0,
-        unit: 'UNIT', // Fallback
-        lotNumber: of.traceabilityLotId || of.lotVracId || ''
-      })),
-      traceability: this.traceabilityData,
-      companyInfo: {
-        companyName: this.companyProfile?.companyName,
-        address: this.companyProfile?.address,
-        logoUrl: this.companyProfile?.logoData ? `data:${this.companyProfile.logoContentType};base64,${this.companyProfile.logoData}` : undefined
-      }
-    };
-
-    this.pdfService.generatePdf(config);
+    if (!this.projectId) {
+      return;
+    }
+    this.documentGenerationService.downloadProjectTraceabilityPdf(this.projectId);
   }
 
   onBack(): void {

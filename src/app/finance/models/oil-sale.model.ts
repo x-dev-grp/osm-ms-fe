@@ -8,7 +8,7 @@ import { QualityGrades } from '../../shared/models/quality-grades.enum';
 export interface OilSale {
   id?: string;
   supplier?: SupplierType;
-  storageUnit: StorageUnitDto;
+  storageUnit?: StorageUnitDto;
   quantity: number;
   unitPrice: number;
   totalAmount: number;
@@ -20,13 +20,27 @@ export interface OilSale {
   qualityGrade: QualityGrades;
   invoiceNumber?: string;
   description?: string;
+  deliveryDate?: string;
+  deliveryAddress?: string;
+  deliveryNotes?: string;
+  paid?: boolean;
   status: OilSaleStatus;
   oilTransactionUUID?: string;
   createdDate?: string;
   lastModifiedDate?: string;
   createdBy?: string;
   lastModifiedBy?: string;
-  containerSales?: { id: string; count: number }[];
+  containerSales?: OilContainerSaleLine[];
+}
+
+export interface OilContainerSaleLine {
+  id?: string;
+  containerId?: string;
+  containerName?: string;
+  capacityInLiters?: number;
+  count: number;
+  unitPrice?: number;
+  lineTotal?: number;
 }
 
 export enum OilSaleStatus {

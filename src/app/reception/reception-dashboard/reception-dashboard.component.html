@@ -1,134 +1,137 @@
-<!-- ========= Compact Integrated Page Header ========= -->
-<div class="page-header">
-  <!-- Title & Actions Row -->
-  <div class="header-main">
-    <div class="header-title">
-      <mat-icon class="text-primary">dashboard</mat-icon>
-      <h2>{{ 'DASHBOARD.TITLE.RECEPTION' | translate }}</h2>
-      <span *ngIf="lastUpdated" class="last-updated">
-        <mat-icon inline>update</mat-icon>
-        {{ lastUpdated | date:'short' }}
-      </span>
-    </div>
+<!-- ========= Reception Dashboard ========= -->
+<div class="dashboard-shell reception-dashboard">
 
-    <div class="header-actions">
-      <button
-        (click)="openDailyMetricDialog()"
-        [disabled]="isLoading"
-        [matTooltip]="((canEditToday$ | async) ? 'DASHBOARD.DAILY_METRIC.BUTTON' : 'DASHBOARD.DAILY_METRIC.BUTTON_VIEW') | translate"
-        class="compact-btn"
-        color="accent"
-        mat-stroked-button>
-        <mat-icon>trending_up</mat-icon>
-        <span class="btn-text">{{ ((canEditToday$ | async) ? 'DASHBOARD.DAILY_METRIC.BUTTON' : 'DASHBOARD.DAILY_METRIC.BUTTON_VIEW') | translate }}</span>
-      </button>
-
-      <button
-        (click)="refresh()"
-        [disabled]="isLoading"
-        class="compact-btn"
-        color="primary"
-        mat-stroked-button>
-        <mat-icon>refresh</mat-icon>
-        <span class="btn-text">{{ 'COMMON.REFRESH' | translate }}</span>
-      </button>
+<div class="page-header sticky-actions page-header--reception">
+  <div class="page-header__left">
+    <div class="header-icon-wrap header-icon-wrap--reception">
+      <mat-icon>spa</mat-icon>
     </div>
+    <div>
+      <h2 class="m-0 f-w-600">{{ 'DASHBOARD.TITLE.RECEPTION' | translate }}</h2>
+    </div>
+    <span *ngIf="lastUpdated" class="d-none d-lg-inline ms-2 page-header__updated">
+      <mat-icon class="me-1" inline>update</mat-icon>
+      {{ 'COMMON.LAST_UPDATED' | translate }}: {{ lastUpdated | date:'short' }}
+    </span>
   </div>
 
-  <!-- Filters Row -->
-  <div [class.loading]="isLoading" class="header-filters">
-    <!-- Period Pills -->
-    <div class="filter-group period-pills">
-      <button
-        (click)="selectPresetPeriod(period.value)"
-        *ngFor="let period of quickPeriods "
-        [class.active]="selectedPreset === period.value"
-        [disabled]="isLoading"
-        class="period-pill"
-        mat-button>
-        {{ period.label | translate }}
-      </button>
-    </div>
+  <div class="page-header__right">
+    <button
+      (click)="openDailyMetricDialog()"
+      [disabled]="isLoading"
+      [matTooltip]="((canEditToday$ | async) ? 'DASHBOARD.DAILY_METRIC.BUTTON' : 'DASHBOARD.DAILY_METRIC.BUTTON_VIEW') | translate"
+      color="accent"
+      mat-stroked-button>
+      <mat-icon>trending_up</mat-icon>
+      <span class="d-none d-sm-inline ms-1">{{ ((canEditToday$ | async) ? 'DASHBOARD.DAILY_METRIC.BUTTON' : 'DASHBOARD.DAILY_METRIC.BUTTON_VIEW') | translate }}</span>
+    </button>
 
-    <!-- Custom Date Range -->
-    <div class="filter-group date-range">
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
-        <mat-label>{{ 'DASHBOARD.DATE_FILTER.FROM_DATE' | translate }}</mat-label>
-        <input
-          [(ngModel)]="customStartDate"
-          [disabled]="isLoading"
-          [matDatepicker]="startPicker"
-          [max]="customEndDate || maxDate"
-          matInput
-        />
-        <mat-datepicker-toggle [for]="startPicker" matSuffix></mat-datepicker-toggle>
-        <mat-datepicker #startPicker></mat-datepicker>
-      </mat-form-field>
-
-      <span class="date-separator">→</span>
-
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
-        <mat-label>{{ 'DASHBOARD.DATE_FILTER.TO_DATE' | translate }}</mat-label>
-        <input
-          [(ngModel)]="customEndDate"
-          [disabled]="isLoading"
-          [matDatepicker]="endPicker"
-          [max]="maxDate"
-          [min]="customStartDate"
-          matInput
-        />
-        <mat-datepicker-toggle [for]="endPicker" matSuffix></mat-datepicker-toggle>
-        <mat-datepicker #endPicker></mat-datepicker>
-      </mat-form-field>
-
-      <button
-        (click)="applyCustomDateRange()"
-        [disabled]="!customStartDate || !customEndDate || isLoading"
-        color="primary"
-        mat-icon-button
-        matTooltip="{{ 'DASHBOARD.DATE_FILTER.APPLY' | translate }}">
-        <mat-icon>check</mat-icon>
-      </button>
-    </div>
-
-    <!-- Operation Type & Period Indicator -->
-    <div class="filter-group type-and-info">
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
-        <mat-label>{{ 'BASE_TYPE.OPERATION_TYPE' | translate }}</mat-label>
-        <mat-select
-          (selectionChange)="onOperationTypeChange($event.value)"
-          [(value)]="selectedOperationType">
-
-          <mat-option *ngFor="let op of operationTypes" [value]="op.value">
-            {{ op.labelKey | translate }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <div *ngIf="selectedPeriodDisplay && selectedPreset !== 'thisMonth'" class="period-badge">
-        <mat-icon>event</mat-icon>
-        <span>{{ selectedPeriodDisplay }}</span>
-        <button
-          (click)="clearDateRange()"
-          [disabled]="isLoading"
-          mat-icon-button>
-          <mat-icon>close</mat-icon>
-        </button>
-      </div>
-    </div>
+    <button
+      (click)="refresh()"
+      [disabled]="isLoading"
+      color="primary"
+      mat-stroked-button>
+      <mat-icon [class.spinning]="isLoading">refresh</mat-icon>
+      <span class="d-none d-sm-inline ms-1">{{ 'COMMON.REFRESH' | translate }}</span>
+    </button>
   </div>
 </div>
 
+<section class="dashboard-section">
+  <app-card
+    [cardTitle]="'DASHBOARD.DATE_FILTER.TITLE' | translate"
+    [icon]="'date_range'"
+    class="date-filter-card panel-card">
+    <div [class.loading]="isLoading" class="reception-filters">
+      <div class="filter-group period-pills">
+        <button
+          (click)="selectPresetPeriod(period.value)"
+          *ngFor="let period of quickPeriods"
+          [class.active]="selectedPreset === period.value"
+          [disabled]="isLoading"
+          class="period-pill"
+          mat-stroked-button>
+          {{ period.label | translate }}
+        </button>
+      </div>
+
+      <div class="filter-group date-range">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>{{ 'DASHBOARD.DATE_FILTER.FROM_DATE' | translate }}</mat-label>
+          <input
+            [(ngModel)]="customStartDate"
+            [disabled]="isLoading"
+            [matDatepicker]="startPicker"
+            [max]="customEndDate || maxDate"
+            matInput
+          />
+          <mat-datepicker-toggle [for]="startPicker" matSuffix></mat-datepicker-toggle>
+          <mat-datepicker #startPicker></mat-datepicker>
+        </mat-form-field>
+
+        <span class="date-separator">→</span>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>{{ 'DASHBOARD.DATE_FILTER.TO_DATE' | translate }}</mat-label>
+          <input
+            [(ngModel)]="customEndDate"
+            [disabled]="isLoading"
+            [matDatepicker]="endPicker"
+            [max]="maxDate"
+            [min]="customStartDate"
+            matInput
+          />
+          <mat-datepicker-toggle [for]="endPicker" matSuffix></mat-datepicker-toggle>
+          <mat-datepicker #endPicker></mat-datepicker>
+        </mat-form-field>
+
+        <button
+          (click)="applyCustomDateRange()"
+          [disabled]="!customStartDate || !customEndDate || isLoading"
+          color="primary"
+          mat-icon-button
+          matTooltip="{{ 'DASHBOARD.DATE_FILTER.APPLY' | translate }}">
+          <mat-icon>check</mat-icon>
+        </button>
+      </div>
+
+      <div class="filter-group type-and-info">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>{{ 'BASE_TYPE.OPERATION_TYPE' | translate }}</mat-label>
+          <mat-select
+            (selectionChange)="onOperationTypeChange($event.value)"
+            [(value)]="selectedOperationType">
+            <mat-option *ngFor="let op of operationTypes" [value]="op.value">
+              {{ op.labelKey | translate }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div *ngIf="selectedPeriodDisplay && selectedPreset !== 'thisMonth'" class="period-badge">
+          <mat-icon>event</mat-icon>
+          <span>{{ selectedPeriodDisplay }}</span>
+          <button
+            (click)="clearDateRange()"
+            [disabled]="isLoading"
+            mat-icon-button>
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </app-card>
+</section>
+
 <!-- ========= Loading State ========= -->
 <div *ngIf="isLoading" class="loading-container">
-  <mat-spinner diameter="60"></mat-spinner>
+  <mat-spinner diameter="56"></mat-spinner>
   <p>{{ 'DASHBOARD.LOADING.TEXT' | translate }}</p>
 </div>
 
 <!-- ========= Dashboard Content ========= -->
 <ng-container *ngIf="!isLoading">
-  <!-- KPI Cards Row -->
-  <div class="dashboard-kpis row g-3">
+  <section class="dashboard-section">
+    <div class="dashboard-kpis row g-3">
     <!-- First Row: Earning Charts -->
     <div class="col-md-6 col-xxl-4">
       <app-earning-chart
@@ -219,10 +222,16 @@
         </div>
       </app-card>
     </div>
-  </div>
+    </div>
+  </section>
 
   <!-- Charts Row -->
-  <div class="row g-3 mt-1">
+  <section class="dashboard-section">
+    <div class="section-heading">
+      <mat-icon>show_chart</mat-icon>
+      <h3>{{ 'DASHBOARD.ANALYTICS.RECEPTION_TREND.TITLE' | translate }}</h3>
+    </div>
+    <div class="row g-3 mt-1">
     <!-- Base Unit Price Trend Chart -->
     <div class="col-12" *ngIf="selectedOperationType==OperationType.BASE">
       <app-card
@@ -260,5 +269,8 @@
         </div>
       </app-card>
     </div>
-  </div>
+    </div>
+  </section>
 </ng-container>
+
+</div>

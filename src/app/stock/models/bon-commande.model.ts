@@ -9,7 +9,7 @@ export interface BonCommande {
   status: StatutBonCommande;
   lignes: LigneBonCommande[];
   createdDate?: string;
-  fournisseurNom?: string;
+  materielSupplierName?: string;
   publicCode?: string;
   qrHex?: string;
   qrUrl?: string;
